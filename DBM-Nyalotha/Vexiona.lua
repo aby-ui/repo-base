@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200120030400")
+mod:SetRevision("20200120230655")
 mod:SetCreatureID(151798)
 mod:SetEncounterID(2336)
 mod:SetZone()
@@ -228,6 +228,9 @@ function mod:SPELL_CAST_START(args)
 			else
 				warnBrutalSmash:Show()
 			end
+		end
+		if self:AntiSpam(3, args.sourceGUID) then
+			self:SendSync("NoEscape", args.sourceGUID)
 		end
 	end
 end

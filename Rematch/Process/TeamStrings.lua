@@ -220,15 +220,28 @@ end
 -- if text contains string teams, returns the number of teams and the number of those keys
 -- already used for an existing saved team. the first team is sidelined. if gather given
 -- as a table, string lines are added to it
-function rematch:TestTextForStringTeams(text,gather)
+-- if tabMap table is passed, then populate its keys with encountered tabs and the team lines in those tabs
+function rematch:TestTextForStringTeams(text,gather,tabMap)
+   local currentTabName = nil
 	text = (text or ""):trim()
 	if text=="" then return end
    local numTeams = 0 -- number of teams in the text
    local numUsedKeys = 0 -- number of keys already used by an existing saved team
    for line in text:gmatch("[^\n]+") do
       line = line:trim()
+      -- watch for tabs
+      local tabName = line:match("^__ (.+) __$")
+      if tabName and tabMap and not tabMap[tabName] then
+         tabMap[tabName] = {}
+         currentTabName = tabName
+      end
       local name,npcID = rematch:GetTeamStringNameAndNpcID(line)
       if name then
+         if type(tabMap)=="table" then
+            if currentTabName and tabMap[currentTabName] then
+               tinsert(tabMap[currentTabName],line)
+            end
+         end
          if type(gather)=="table" then
             tinsert(gather,line)
          else
@@ -244,7 +257,7 @@ function rematch:TestTextForStringTeams(text,gather)
       end
    end
    if numTeams>0 then
-      return numTeams,numUsedKeys
+      return numTeams,numUsedKeys,tabMap
    end
 end
 

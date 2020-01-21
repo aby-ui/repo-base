@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200119192324")
+mod:SetRevision("20200121042756")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -11,8 +11,8 @@ mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA"
 )
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299055 299110 307863 300351 300388 304101 304282 306001 306199 303589 305875 306828 306617 300388 296537 305378",
-	"SPELL_AURA_APPLIED 311390 315385 316481 311641",
+	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299110 307863 300351 300388 304101 304282 306001 306199 303589 305875 306828 306617 300388 296537 305378",
+	"SPELL_AURA_APPLIED 311390 315385 316481 311641 299055",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_CAST_SUCCESS 297237",
 	"SPELL_PERIODIC_DAMAGE 303594",
@@ -29,8 +29,7 @@ mod:RegisterEventsInCombat(
 local warnCriesoftheVoid			= mod:NewCastAnnounce(304976, 4)
 local warnVoidQuills				= mod:NewCastAnnounce(304251, 3)
 --Other notable abilities by mini bosses/trash
-local warnDarkForce					= mod:NewSpellAnnounce(299055, 3)
-local warnVoidTorrent				= mod:NewCastAnnounce(307863, 3)
+local warnDarkForce					= mod:NewTargetNoFilterAnnounce(299055, 3)
 local warnExplosiveLeap				= mod:NewCastAnnounce(306001, 3)
 local warnVisceralFluid				= mod:NewCastAnnounce(305875, 3)
 local warnEndlessHungerTotem		= mod:NewSpellAnnounce(297237, 4)
@@ -53,8 +52,9 @@ local specWarnHopelessness			= mod:NewSpecialWarningMoveTo(297574, nil, nil, nil
 local specWarnDefiledGround			= mod:NewSpecialWarningDodge(306726, nil, nil, nil, 2, 2)--Can this be dodged?
 --Other notable abilities by mini bosses/trash
 local specWarnOrbofAnnihilation		= mod:NewSpecialWarningDodge(299110, nil, nil, nil, 2, 2)
+local specWarnDarkForce				= mod:NewSpecialWarningYou(299055, nil, nil, nil, 1, 2)
+local specWarnVoidTorrent			= mod:NewSpecialWarningDodge(307863, nil, nil, nil, 2, 8)
 local specWarnSurgingFist			= mod:NewSpecialWarningDodge(300351, nil, nil, nil, 2, 2)
-local yellSurgingFist				= mod:NewYell(300351)
 local specWarnDecimator				= mod:NewSpecialWarningDodge(300412, nil, nil, nil, 2, 2)
 local specWarnDesperateRetching		= mod:NewSpecialWarningYou(304165, nil, nil, nil, 1, 2)
 local yellDesperateRetching			= mod:NewYell(304165)
@@ -72,8 +72,9 @@ local specWarnMentalAssault			= mod:NewSpecialWarningInterrupt(296537, "HasInter
 local timerSurgingDarknessCD	= mod:NewCDTimer(23.1, 297822, nil, nil, nil, 3)
 local timerSeismicSlamCD		= mod:NewCDTimer(12.1, 297746, nil, nil, nil, 3)
 --Extra Abilities (used by Thrall and the area LTs)
-local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
+--local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
 local timerDefiledGroundCD		= mod:NewAITimer(21, 306726, nil, nil, nil, 3)
+--Both surging fist and Decimator are 9.7 second cds, worth adding?
 
 mod:AddInfoFrameOption(307831, true)
 
@@ -86,13 +87,6 @@ function mod:SeismicSlamTarget(targetname, uId)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		yellSeismicSlam:Yell()
-	end
-end
-
-function mod:SurgingFistTarget(targetname, uId)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		yellSurgingFist:Yell()
 	end
 end
 
@@ -126,7 +120,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 304976 then
 		warnCriesoftheVoid:Show()
-		timerCriesoftheVoidCD:Start()
+		--timerCriesoftheVoidCD:Start()
 	elseif spellId == 297574 then
 		specWarnHopelessness:Show(DBM_CORE_ORB)
 		specWarnHopelessness:Play("orbrun")--Technically not quite accurate but closest match to "find orb"
@@ -137,18 +131,21 @@ function mod:SPELL_CAST_START(args)
 		specWarnDefiledGround:Play("shockwave")
 		timerDefiledGroundCD:Start()
 	elseif spellId == 299055 then
-		warnDarkForce:Show()
+		if args:IsPlayer() then
+			specWarnDarkForce:Show()
+			specWarnDarkForce:Play("targetyou")
+		else
+			warnDarkForce:Show(args.destName)
+		end
 	elseif spellId == 299110 then
 		specWarnOrbofAnnihilation:Show()
 		specWarnOrbofAnnihilation:Play("watchorb")
 	elseif spellId == 307863 then
-		warnVoidTorrent:Show()
+		specWarnVoidTorrent:Show()
+		specWarnVoidTorrent:Play("behindmob")
 	elseif spellId == 300351 then
 		specWarnSurgingFist:Show()
 		specWarnSurgingFist:Play("chargemove")
-		if GetNumGroupMembers() > 1 then
-			self:BossTargetScanner(args.sourceGUID, "SurgingFistTarget", 0.1, 7)
-		end
 	elseif spellId == 300388 then
 		specWarnDecimator:Show()
 		specWarnDecimator:Play("watchorb")
@@ -241,12 +238,12 @@ function mod:UNIT_DIED(args)
 	if cid == 152089 then--Thrall
 		timerSurgingDarknessCD:Stop()
 		timerSeismicSlamCD:Stop()
-		timerCriesoftheVoidCD:Stop()
+		--timerCriesoftheVoidCD:Stop()
 		timerDefiledGroundCD:Stop()
 		DBM:EndCombat(self)
 		started = false
 	elseif cid == 156161 then--Inquisitor Gnshal
-		timerCriesoftheVoidCD:Stop()
+		--timerCriesoftheVoidCD:Stop()
 		self.vb.GnshalCleared = true
 	elseif cid == 152874 then--Vez'okk the Lightless
 		timerDefiledGroundCD:Stop()
@@ -279,8 +276,8 @@ function mod:ENCOUNTER_START(encounterID)
 		else
 			timerSeismicSlamCD:Start(4.6)
 		end
-		if self.vb.GnshalCleared then
-			timerCriesoftheVoidCD:Start(1)
-		end
+		--if self.vb.GnshalCleared then
+		--	timerCriesoftheVoidCD:Start(1)
+		--end
 	end
 end

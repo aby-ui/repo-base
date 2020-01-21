@@ -29,8 +29,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 7
-local CURRENT_LOOT_DB_VERSION = 20
+local CURRENT_DB_VERSION = 8
+local CURRENT_LOOT_DB_VERSION = 21
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -907,10 +907,14 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 					RareScanner:AddTomtomWaypoint(vignetteInfo)
 				end
 	
-				if (already_notified[vignetteInfo.id]) then
+				-- FIX Blubbery Blobule (NPCID = 160841) multipoping
+				if (already_notified[vignetteInfo.id] or (npcID == 160841 and already_notified[160841])) then
 					return
 				else
 					already_notified[vignetteInfo.id] = true
+					if (npcID == 160841) then
+						already_notified[160841] = true
+					end
 					-- flashes the wow icon in windows bar
 					FlashClientIcon()
 					self:PlaySoundAlert(iconid)

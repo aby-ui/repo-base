@@ -573,7 +573,7 @@ function rematch:CHAT_MSG_SYSTEM(message)
 		-- if "%s has been added to your pet journal!" and %s is a pet link
 		local petLink = message:match(patternNewPet)
 		if petLink then
-			local _,petID = petLink:match("battlepet:(%d+):.+:(BattlePet%-.-)\124h")
+			local _,petID = petLink:match("battlepet:(%d+):.+:(BattlePet%-.-):(%d+)\124h") -- 1/20/20 added :(%d+) before |h
 			if petID and rematch:PetCanLevel(petID) then
 				local addID
 				local speciesID,_,level,_,_,_,_,name = C_PetJournal.GetPetInfoByPetID(petID)

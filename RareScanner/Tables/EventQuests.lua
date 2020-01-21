@@ -18,6 +18,7 @@ private.EVENT_QUEST_IDS = {
 	[154328] = { 56180 }; --Guardian vinculado
 	[327554] = { 56178 }; --Conducto del Vacío
 	[154095] = { 56090 }; --Proteger al robusto
+	[154118] = { 56099 }; --Fuente de corrupción
 	
 	-- Events 8.3.0 Uldum
 	[156865] = { 57219 }; --Centinela desenterrado
@@ -35,4 +36,16 @@ private.EVENT_QUEST_IDS = {
 	[152398] = { 55357 }; --Baliza del Rey del Sol
 	[156956] = { 57234 }; --Recolector solar
 	[156849] = { 57217 }; --Centinela desenterrado
+	[163223] = { 58981 }; --Colmena aguerrida
+	[163264] = { 58990 }; --Huevo de titanus
+	[163204] = { 58974 }; --Colonos emboscados
+	[163356] = { 58660 }; --Terrores cavadores
+	[163358] = { 58662 }; --Terrores cavadores
+	[163359] = { 58667 }; --Extracción de obsidiana
+	[163362] = { 58952 }; --Llamas purgantes
+	[163361] = { 58679 }; --Destructor durmiente
+	[163337] = { 59003 }; --Crisálidas inflamables
+	[163360] = { 58676 }; --Destructor durmiente
+	[163198] = { 58961 }; --Colonos emboscados
+	[163357] = { 58661 }; --Terrores cavadores
 }

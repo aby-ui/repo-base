@@ -102,7 +102,7 @@ private.CONSTRUCTION_PROJECTS = {
 private.ZONE_IDS = {
 	[50062] = { zoneID = 207, x = 0.296, y = 0.412 }; --Aeonaxx
 	[58778] = { zoneID = 390, x = 0.35, y = 0.894 }; --Aetha
-	[50750] = { zoneID = 371, x = 0.335535854101181, y = 0.5078285336494446 }; --Aethis
+	[50750] = { zoneID = 371, artID = 383, x = 0.335535854101181, y = 0.5078285336494446 }; --Aethis
 	[50817] = { zoneID = 379, x = 0.406, y = 0.428 }; --Ahone the Wanderer
 	[50821] = { zoneID = 422, artID = 434, x = 0.3473765254020691, y = 0.2323136329650879 }; --Ai-Li Skymirror
 	[50822] = { zoneID = 390, x = 0.428373157978058, y = 0.692486047744751 }; --Ai-Ran the Shifting Cloud
@@ -196,7 +196,7 @@ private.ZONE_IDS = {
 	[68322] = { zoneID = 418, x = 0.106829673051834, y = 0.568354487419128 }; --Muerta
 	[69664] = { zoneID = 504, x = 0.35, y = 0.624 }; --Mumta
 	[50364] = { zoneID = 376, x = 0.0871068835258484, y = 0.601235747337341 }; --Nal'lak the Ripper
-	[50776] = { zoneID = 422, x = 0.6424978375434875, y = 0.5846092104911804 }; --Nalash Verdantis
+	[50776] = { zoneID = 422, artID = 434, x = 0.6424978375434875, y = 0.5846092104911804 }; --Nalash Verdantis
 	[50811] = { zoneID = 376, x = 0.883906960487366, y = 0.178552865982056 }; --Nasra Spothide
 	[50789] = { zoneID = 379, x = 0.638989269733429, y = 0.137338951230049 }; --Nessos the Oracle
 	[70276] = { zoneID = 508, x = 0.268, y = 0.22600001 }; --No'ku Stormsayer
@@ -248,7 +248,7 @@ private.ZONE_IDS = {
 	[63510] = { zoneID = 390, x = 0.453419357538223, y = 0.762421667575836 }; --Wulon
 	[50336] = { zoneID = 390, x = 0.880822241306305, y = 0.443360209465027 }; --Yorik Sharpeye
 	[50820] = { zoneID = 388, x = 0.318518072366715, y = 0.619663238525391 }; --Yul Wildpaw
-	[50769] = { zoneID = 379, artID = 391, x = 0.7412360906600952, y = 0.7880914807319641 }; --Zai the Outcast
+	[50769] = { zoneID = 379, artID = 391, x = 0.7437088489532471, y = 0.7929604053497314 }; --Zai the Outcast
 	[69769] = { zoneID = { 
 					[422] = { x = 0.476, y = 0.616 }; 
 					[388] = { x = 0.366 , y = 0.856 };
@@ -785,7 +785,7 @@ private.ZONE_IDS = {
 	[96590] = { zoneID = 650, x = 0.55799997, y = 0.614 }; --Gurbog da Basher
 	[108823] = { zoneID = 634, x = 0.39400002, y = 0.65800005 }; --Halfdan
 	[107926] = { zoneID = 634, x = 0.516, y = 0.744 }; --Hannval the Butcher
-	[103214] = { zoneID = 680, x = 0.6763334274291992, y = 0.7097100019454956 }; --Har'kess the Insatiable
+	[103214] = { zoneID = 680, artID = 704, x = 0.6763334274291992, y = 0.7097100019454956 }; --Har'kess the Insatiable
 	[110361] = { zoneID = 641, x = 0.698, y = 0.516 }; --Harbinger of Screams
 	[97326] = { zoneID = 650, x = 0.510739028453827, y = 0.482337236404419 }; --Hartli the Snatcher
 	[103154] = { zoneID = 120, x = 0.33400002, y = 0.582 }; --Hati
@@ -904,7 +904,7 @@ private.ZONE_IDS = {
 	[111007] = { zoneID = 680, x = 0.49647468328476, y = 0.789832532405853 }; --Randril
 	[105547] = { zoneID = 680, x = 0.239824831485748, y = 0.255260318517685 }; --Rauren
 	[89016] = { zoneID = 630, x = 0.410028517246246, y = 0.418138235807419 }; --Ravyn-Drath
-	[103575] = { zoneID = 680, x = 0.7634055018424988, y = 0.5853645205497742 }; --Reef Lord Raj'his
+	[103575] = { zoneID = 680, artID = 704, x = 0.7634055018424988, y = 0.5853645205497742 }; --Reef Lord Raj'his
 	[103183] = { zoneID = 680, x = 0.796, y = 0.726 }; --Rok'nash
 	[110363] = { zoneID = 634, x = 0.582, y = 0.34 }; --Roteye
 	[109317] = { zoneID = 634, x = 0.804, y = 0.116000004 }; --Rulf Bonesnapper
@@ -1103,11 +1103,11 @@ private.ZONE_IDS = {
 	[127090] = { zoneID = 885, x = 0.732, y = 0.704 }; --Admiral Rel'var
 	[127096] = { zoneID = 885, artID = 910, x = 0.7613534927368164, y = 0.5612897276878357 }; --All-Seer Xanarian
 	[126887] = { zoneID = 882, x = 0.301190555095673, y = 0.402085304260254 }; --Ataxon
-	[126862] = { zoneID = 882, x = 0.438358306884766, y = 0.606420278549194 }; --Baruut the Bloodthirsty
+	[126862] = { zoneID = 882, artID = 907, x = 0.438358306884766, y = 0.606420278549194 }; --Baruut the Bloodthirsty
 	[122958] = { zoneID = 885, artID = 910, x = 0.6182929873466492, y = 0.369049608707428 }; --Blistermaw
 	[124479] = { zoneID = 0 }; --Blisterwing
 	[126869] = { zoneID = 882, x = 0.271795690059662, y = 0.300196826457977 }; --Captain Faruq
-	[127376] = { zoneID = 885, x = 0.6140248775482178, y = 0.2086676359176636 }; --Chief Alchemist Munculus
+	[127376] = { zoneID = 885, artID = 910, x = 0.6140248775482178, y = 0.2086676359176636 }; --Chief Alchemist Munculus
 	[124775] = { zoneID = 830, x = 0.452994585037231, y = 0.588177084922791 }; --Commander Endaxis
 	[122912] = { zoneID = 830, x = 0.334076285362244, y = 0.757020115852356 }; --Commander Sathrenael
 	[127084] = { zoneID = 885, x = 0.826780915260315, y = 0.65571665763855 }; --Commander Texlaz
@@ -1120,7 +1120,7 @@ private.ZONE_IDS = {
 	[124684] = { zoneID = 0 }; --Eye of the Torturer
 	[126864] = { zoneID = 882, artID = 907, x = 0.4114360809326172, y = 0.1149210929870606 }; --Feasel the Muffin Thief
 	[122999] = { zoneID = 885, x = 0.557023167610168, y = 0.459368109703064 }; --Gar'zoth
-	[126896] = { zoneID = 882, x = 0.3595643043518066, y = 0.5897888541221619 }; --Herald of Chaos
+	[126896] = { zoneID = 882, artID = 907, x = 0.3595643043518066, y = 0.5897888541221619 }; --Herald of Chaos
 	[124412] = { zoneID = 0 }; --Houndcaller Orox
 	[127288] = { zoneID = 885, x = 0.632, y = 0.236 }; --Houndmaster Kerrax
 	[125820] = { zoneID = 830, x = 0.424242496490479, y = 0.698739051818848 }; --Imp Mother Laglath
@@ -1130,7 +1130,7 @@ private.ZONE_IDS = {
 	[126860] = { zoneID = 882, x = 0.37689208984375, y = 0.54334020614624 }; --Kaara the Pale
 	[125824] = { zoneID = 830, x = 0.438, y = 0.064 }; --Khazaduum
 	[126254] = { zoneID = 885, x = 0.622, y = 0.53400004 }; --Lieutenant Xakaar
-	[122947] = { zoneID = 885, x = 0.5735042095184326, y = 0.3355348110198975 }; --Mistress Il'thendra
+	[122947] = { zoneID = 885, artID = 910, x = 0.5735042095184326, y = 0.3355348110198975 }; --Mistress Il'thendra
 	[127705] = { zoneID = 885, x = 0.666, y = 0.17799999 }; --Mother Rosula
 	[126419] = { zoneID = 830, x = 0.709208011627197, y = 0.333872020244598 }; --Naroua
 	[124440] = { zoneID = 882, x = 0.584, y = 0.374 }; --Overseer Y'Beda
@@ -1147,7 +1147,7 @@ private.ZONE_IDS = {
 	[126913] = { zoneID = 882, x = 0.488710463047028, y = 0.523534536361694 }; --Slithon the Last
 	[126889] = { zoneID = 882, x = 0.702948212623596, y = 0.459836542606354 }; --Sorolis the Ill-Fated
 	[127704] = { zoneID = 0 }; --Soultender Videx
-	[126815] = { zoneID = 882, x = 0.5308129787445068, y = 0.6737957000732422 }; --Soultwisted Monstrosity
+	[126815] = { zoneID = 882, artID = 907, x = 0.5308129787445068, y = 0.6737957000732422 }; --Soultwisted Monstrosity
 	[127700] = { zoneID = 885, x = 0.84400004, y = 0.81 }; --Squadron Commander Vishax
 	[123689] = { zoneID = 830, x = 0.54906576871872, y = 0.810298085212708 }; --Talestra the Vile
 	[125479] = { zoneID = 830, x = 0.698190450668335, y = 0.809173941612244 }; --Tar Spitter
@@ -1180,7 +1180,7 @@ private.ZONE_IDS = {
 	[132591] = { zoneID = 81, artID = 962, x = 0.274, y = 0.742 }; --Ogmot the Mad
 	[132578] = { zoneID = 81, artID = 962, x = 0.588879227638245, y = 0.117889001965523 }; --Qroshekx
 	[133042] = { zoneID = 0 }; --Sky Marshall Gabriel
-	[132580] = { zoneID = 81, x = 0.545726895332336, y = 0.79739773273468 }; --Ssinkrix
+	[132580] = { zoneID = 81, artID = 962, x = 0.545726895332336, y = 0.79739773273468 }; --Ssinkrix
 	[132584] = { zoneID = 81, artID = 962, x = 0.294995754957199, y = 0.349105477333069 }; --Xaarshej
 	
 	-- Rares BFA 8.0.1
@@ -1204,7 +1204,7 @@ private.ZONE_IDS = {
 	[140090] = { zoneID = 0 }; --Ana'tashe
 	[139350] = { zoneID = 0 }; --Anaha Witherbreath
 	[129660] = { zoneID = 0 }; --Ancient Armor
-	[125250] = { zoneID = 863, x = 0.678053319454193, y = 0.294774979352951 }; --Ancient Jawbreaker
+	[125250] = { zoneID = 863, artID = 888, x = 0.678053319454193, y = 0.294774979352951 }; --Ancient Jawbreaker
 	[134807] = { zoneID = 0 }; --Ancient Spineshell
 	[139758] = { zoneID = 0 }; --Annie Two-Pistols
 	[140268] = { zoneID = 0 }; --Ano Forest-Keeper
@@ -1226,7 +1226,7 @@ private.ZONE_IDS = {
 	[129343] = { zoneID = 862, x = 0.498327016830444, y = 0.574247598648071 }; --Avatar of Xolotal
 	[140066] = { zoneID = 0 }; --Axeclaw
 	[128553] = { zoneID = 864, artID = 889, x = 0.490243494510651, y = 0.890353441238403 }; --Azer'tor
-	[134298] = { zoneID = 863, x = 0.541163146495819, y = 0.810748040676117 }; --Azerite-Infused Elemental
+	[134298] = { zoneID = 863, artID = 888, x = 0.541163146495819, y = 0.810748040676117 }; --Azerite-Infused Elemental
 	[134293] = { zoneID = 863, artID = 888, x = 0.330107837915421, y = 0.281001359224319 }; --Azerite-Infused Slag
 	[138511] = { zoneID = 0 }; --Azurescale
 	[122606] = { zoneID = 0 }; --Azurewing
@@ -1237,7 +1237,7 @@ private.ZONE_IDS = {
 	[139348] = { zoneID = 0 }; --Baga the Frostshield
 	[134539] = { zoneID = 0 }; --Bajiani the Slick
 	[128497] = { zoneID = 864, artID = 889, x = 0.310031145811081, y = 0.81087863445282 }; --Bajiani the Slick
-	[126142] = { zoneID = 863, x = 0.428373396396637, y = 0.605336964130402 }; --Bajiatha
+	[126142] = { zoneID = 863, artID = 888, x = 0.428373396396637, y = 0.605336964130402 }; --Bajiatha
 	[130143] = { zoneID = 896, x = 0.586628019809723, y = 0.298962503671646 }; --Balethorn
 	[143314] = { zoneID = 0 }; --Bane of the Woods
 	[139873] = { zoneID = 0 }; --Banechitter
@@ -1250,7 +1250,7 @@ private.ZONE_IDS = {
 	[138447] = { zoneID = 0 }; --Battle-Maiden Salaria
 	[138847] = { zoneID = 0 }; --Battle-Mender Ka'vaz
 	[132837] = { zoneID = 0 }; --Beach Strider
-	[142709] = { zoneID = 14, x = 0.647300124168396, y = 0.716875612735748 }; --Beastrider Kama
+	[142709] = { zoneID = 14, artID = 1137, x = 0.647300124168396, y = 0.716875612735748 }; --Beastrider Kama
 	[136853] = { zoneID = 0 }; --Beefa Warbeard
 	[134147] = { zoneID = 942, artID = 967, x = 0.6648228168487549, y = 0.7479041218757629 }; --Beehemoth
 	[138828] = { zoneID = 0 }; --Berhild the Fierce
@@ -1305,7 +1305,7 @@ private.ZONE_IDS = {
 	[139190] = { zoneID = 0 }; --Branch-Leaper the Swift
 	[126427] = { zoneID = 14, artID = 1137 }; --Branchlord Aldrus CHECK IF DELETE
 	[142508] = { zoneID = 14, x = 0.22693045437336, y = 0.224014028906822 }; --Branchlord Aldrus
-	[134643] = { zoneID = 864, x = 0.297807991504669, y = 0.464617788791657 }; --Brgl-Lrgl the Basher
+	[134643] = { zoneID = 864, artID = 889, x = 0.297807991504669, y = 0.464617788791657 }; --Brgl-Lrgl the Basher
 	[138244] = { zoneID = 896, x = 0.412, y = 0.38 }; --Briarwood Bulwark
 	[140836] = { zoneID = 0 }; --Brightfire
 	[139701] = { zoneID = 0 }; --Brineshell Minor Oracle
@@ -1330,7 +1330,7 @@ private.ZONE_IDS = {
 	[136892] = { zoneID = 0 }; --Brutalsnout
 	[139471] = { zoneID = 0 }; --Bugan the Flesh-Crusher
 	[139593] = { zoneID = 0 }; --Burk the Literate
-	[141615] = { zoneID = 14, x = 0.3063477873802185, y = 0.4473559856414795 }; --Burning Goliath
+	[141615] = { zoneID = 14, artID = 1137, x = 0.3063477873802185, y = 0.4473559856414795 }; --Burning Goliath
 	[139354] = { zoneID = 0 }; --Butun the Boneripper
 	[139763] = { zoneID = 0 }; --Cannonmaster Arlin
 	[140075] = { zoneID = 1501, artID = 1301, x = 0.4864931106567383, y = 0.678702712059021 }; --Canus
@@ -1366,7 +1366,7 @@ private.ZONE_IDS = {
 	[138635] = { zoneID = 0 }; --Commander Husan
 	[138845] = { zoneID = 0 }; --CommanderJo'vak
 	[124722] = { zoneID = 864, x = 0.425121307373047, y = 0.920830368995667 }; --Commodore Calhoun
-	[126187] = { zoneID = 863, x = 0.413166344165802, y = 0.534317910671234 }; --Corpse Bringer Yal'kar
+	[126187] = { zoneID = 863, artID = 888, x = 0.413166344165802, y = 0.534317910671234 }; --Corpse Bringer Yal'kar
 	[140992] = { zoneID = 0 }; --Corpseburster
 	[140370] = { zoneID = 0 }; --Corpsefeaster
 	[140797] = { zoneID = 0 }; --Corpseharvest
@@ -1382,7 +1382,7 @@ private.ZONE_IDS = {
 	[140181] = { zoneID = 0 }; --Cragtusk
 	[135046] = { zoneID = 0 }; --Crawmog
 	[139027] = { zoneID = 0 }; --Crescent Oracle
-	[141618] = { zoneID = 14, x = 0.6209917664527893, y = 0.3151117563247681 }; --Cresting Goliath
+	[141618] = { zoneID = 14, artID = 1137, x = 0.6209917664527893, y = 0.3151117563247681 }; --Cresting Goliath
 	[142418] = { zoneID = 943, x = 0.393534123897553, y = 0.585049092769623 }; --Cresting Goliath
 	[138506] = { zoneID = 0 }; --Crimsonscale
 	[140938] = { zoneID = 942, x = 0.62930178642273, y = 0.328283965587616 }; --Croaker
@@ -1398,13 +1398,13 @@ private.ZONE_IDS = {
 	[139756] = { zoneID = 0 }; --Cutthroat Sheila
 	[135837] = { zoneID = 0 }; --Cyclonic Lieutenant
 	[140696] = { zoneID = 0 }; --Da'zu the Feared
-	[133190] = { zoneID = 862, x = 0.7416980862617493, y = 0.3932296335697174 }; --Daggerjaw
+	[133190] = { zoneID = 862, artID = 887, x = 0.7416980862617493, y = 0.3932296335697174 }; --Daggerjaw
 	[130644] = { zoneID = 0 }; --Daggertooth
 	[134897] = { zoneID = 942, x = 0.678599655628204, y = 0.398300379514694 }; --Dagrus the Scorned
 	[140296] = { zoneID = 0 }; --Dampfur the Musky
 	[133995] = { zoneID = 0 }; --Dangerpearl
 	[132877] = { zoneID = 0 }; --Dankscale
-	[142688] = { zoneID = 14, x = 0.5038369297981262, y = 0.6102936863899231 }; --Darbel Montrose
+	[142688] = { zoneID = 14, artID = 1137, x = 0.5038369297981262, y = 0.6102936863899231 }; --Darbel Montrose
 	[138890] = { zoneID = 0 }; --Dargulf the Spirit-Seeker
 	[136428] = { zoneID = 862, x = 0.441243767738342, y = 0.76513284444809 }; --Dark Chronicler
 	[138039] = { zoneID = 1161, x = 0.31429588794708, y = 0.63912308216095 }; --Dark Ranger Clea
@@ -1470,7 +1470,7 @@ private.ZONE_IDS = {
 	[123347] = { zoneID = 0 }; --Earthcaller Malan
 	[140760] = { zoneID = 0 }; --Earthliving Giant
 	[140842] = { zoneID = 0 }; --Ebb
-	[141668] = { zoneID = 14, x = 0.5707384347915649, y = 0.347373366355896 }; --Echo of Myzrael
+	[141668] = { zoneID = 14, artID = 1137, x = 0.5707384347915649, y = 0.347373366355896 }; --Echo of Myzrael
 	[139026] = { zoneID = 0 }; --Eclipse-Caller
 	[139877] = { zoneID = 0 }; --Egg-Tender Kahasz
 	[140371] = { zoneID = 0 }; --Egg-Tender Ny'xik
@@ -1488,7 +1488,7 @@ private.ZONE_IDS = {
 	[130016] = { zoneID = 0 }; --Emily Mayville
 	[129995] = { zoneID = 896, x = 0.634058952331543, y = 0.400964945554733 }; --Emily Mayville
 	[138515] = { zoneID = 0 }; --Endalion
-	[136335] = { zoneID = 864, x = 0.619885861873627, y = 0.378450602293015 }; --Enraged Krolusk
+	[136335] = { zoneID = 864, artID = 889, x = 0.619885861873627, y = 0.378450602293015 }; --Enraged Krolusk
 	[134294] = { zoneID = 863, x = 0.816973626613617, y = 0.608972847461701 }; --Enraged Water Elemental
 	[138871] = { zoneID = 896, x = 0.24200001, y = 0.218 }; --Ernie
 	[139039] = { zoneID = 0 }; --Eso the Fathom-Hunter
@@ -1496,7 +1496,7 @@ private.ZONE_IDS = {
 	[138505] = { zoneID = 0 }; --Evolved Clutch-Warden
 	[134213] = { zoneID = 896, x = 0.308804243803024, y = 0.183919593691826 }; --Executioner Blackwell
 	[136010] = { zoneID = 0 }; --Faceted Earthbreaker
-	[136323] = { zoneID = 864, x = 0.5364658236503601, y = 0.3457550704479218 }; --Fangcaller Xorreth
+	[136323] = { zoneID = 864, artID = 889, x = 0.5364658236503601, y = 0.3457550704479218 }; --Fangcaller Xorreth
 	[134950] = { zoneID = 0 }; --Fanged Terror
 	[139407] = { zoneID = 0 }; --Fangterror
 	[138446] = { zoneID = 0 }; --Fathom-Caller Zelissa
@@ -1515,12 +1515,12 @@ private.ZONE_IDS = {
 	[140272] = { zoneID = 0 }; --Forest-Strider
 	[139386] = { zoneID = 1501, artID = 1301, x = 0.4560864567756653, y = 0.8058711290359497 }; --Forked-Tongue
 	[139766] = { zoneID = 0 }; --Former Navigator Dublin
-	[142686] = { zoneID = 14, x = 0.223221302032471, y = 0.511286735534668 }; --Foulbelly
+	[142686] = { zoneID = 14, artID = 1137, x = 0.223221302032471, y = 0.511286735534668 }; --Foulbelly
 	[132211] = { zoneID = 895, x = 0.907093226909638, y = 0.772382318973541 }; --Fowlmouth
 	[132127] = { zoneID = 895, x = 0.601013600826263, y = 0.221902117133141 }; --Foxhollow Skyterror
 	[126462] = { zoneID = 14, artID = 1137 }; --Fozruk CHECK IF DELETE
 	[140757] = { zoneID = 14, artID = 1137 }; --Fozruk CHECK IF DELETE
-	[142433] = { zoneID = 14, x = 0.5937888026237488, y = 0.2822422683238983 }; --Fozruk
+	[142433] = { zoneID = 14, artID = 1137, x = 0.5937888026237488, y = 0.2822422683238983 }; --Fozruk
 	[139768] = { zoneID = 0 }; --Freebooter Dan
 	[132448] = { zoneID = 0 }; --Frostbeard the Candlekeeper
 	[140763] = { zoneID = 0 }; --Frosthill Giant
@@ -1556,7 +1556,7 @@ private.ZONE_IDS = {
 	[140682] = { zoneID = 0 }; --Glacierfist
 	[139599] = { zoneID = 0 }; --Gladiator Ortugg
 	[140089] = { zoneID = 0 }; --Gloamhoof the Elder
-	[121242] = { zoneID = 863, x = 0.687739431858063, y = 0.574723422527313 }; --Glompmaw
+	[121242] = { zoneID = 863, artID = 888, x = 0.687739431858063, y = 0.574723422527313 }; --Glompmaw
 	[134793] = { zoneID = 0 }; --Glowspine
 	[127844] = { zoneID = 896, x = 0.631081759929657, y = 0.697352588176727 }; --Gluttonous Yeti
 	[140981] = { zoneID = 0 }; --Gnashing Horror
@@ -1600,8 +1600,8 @@ private.ZONE_IDS = {
 	[138993] = { zoneID = 0 }; --Gurlack
 	[137057] = { zoneID = 0 }; --Gurthani the Elder
 	[140681] = { zoneID = 0 }; --Gurudu The Gorge
-	[128674] = { zoneID = 864, x = 0.6402006149291992, y = 0.4750157296657562 }; --Gut-Gut the Glutton
-	[128426] = { zoneID = 863, x = 0.328894168138504, y = 0.430654585361481 }; --Gutrip
+	[128674] = { zoneID = 864, artID = 889, x = 0.6402006149291992, y = 0.4750157296657562 }; --Gut-Gut the Glutton
+	[128426] = { zoneID = 863, artID = 888, x = 0.328894168138504, y = 0.430654585361481 }; --Gutrip
 	[140768] = { zoneID = 0 }; --Guuru the Mountain-Breaker
 	[127001] = { zoneID = 863, artID = 888, x = 0.338049709796906, y = 0.859970271587372 }; --Gwugnug the Cursed
 	[141226] = { zoneID = 942, x = 0.351858049631119, y = 0.777995228767395 }; --Haegol the Hammer
@@ -1636,7 +1636,7 @@ private.ZONE_IDS = {
 	[139875] = { zoneID = 0 }; --Hollow Widow
 	[137183] = { zoneID = 895, x = 0.64199996, y = 0.192 }; --Honey-Coated Slitherer
 	[138370] = { zoneID = 0 }; --Horko
-	[142725] = { zoneID = 14, x = 0.194308683276176, y = 0.613148748874664 }; --Horrific Apparition
+	[142725] = { zoneID = 14, artID = 1137, x = 0.194308683276176, y = 0.613148748874664 }; --Horrific Apparition
 	[138831] = { zoneID = 0 }; --Horvuld Oceanscythe
 	[138653] = { zoneID = 0 }; --Hosvir of the Rotting Hull
 	[135923] = { zoneID = 0 }; --Hound of Gazzran
@@ -1663,7 +1663,7 @@ private.ZONE_IDS = {
 	[139764] = { zoneID = 0 }; --Jaime the Cutlass
 	[141043] = { zoneID = 942, x = 0.534797251224518, y = 0.645272314548492 }; --Jakala the Cruel
 	[136858] = { zoneID = 0 }; --Jan'li
-	[133373] = { zoneID = 863, x = 0.451775312423706, y = 0.518914878368378 }; --Jax'teb the Reanimated
+	[133373] = { zoneID = 863, artID = 888, x = 0.451775312423706, y = 0.518914878368378 }; --Jax'teb the Reanimated
 	[140387] = { zoneID = 0 }; --Jeweled Queen
 	[133527] = { zoneID = 863, artID = 888, x = 0.281568825244904, y = 0.338956534862518 }; --Juba the Scarred
 	[129283] = { zoneID = 864, artID = 889, x = 0.37400621175766, y = 0.852293848991394 }; --Jumbo Sandsnapper
@@ -1675,9 +1675,9 @@ private.ZONE_IDS = {
 	[139038] = { zoneID = 0 }; --Kaihu
 	[124397] = { zoneID = 863, artID = 888, x = 0.529076397418976, y = 0.131552219390869 }; --Kal'draxa
 	[138482] = { zoneID = 0 }; --Kaluriak the Alchemist
-	[128686] = { zoneID = 864, x = 0.3506928086280823, y = 0.5183804035186768 }; --Kamid the Trapper
+	[128686] = { zoneID = 864, artID = 889, x = 0.3506928086280823, y = 0.5183804035186768 }; --Kamid the Trapper
 	[122062] = { zoneID = 0 }; --Kamul Cloudsong
-	[126637] = { zoneID = 862, x = 0.6865893006324768, y = 0.4876110553741455 }; --Kandak
+	[126637] = { zoneID = 862, artID = 887, x = 0.6865893006324768, y = 0.4876110553741455 }; --Kandak
 	[139227] = { zoneID = 0 }; --Keeper Undarius
 	[130791] = { zoneID = 0 }; --Khut'een
 	[132244] = { zoneID = 862, x = 0.756284356117249, y = 0.359045714139938 }; --Kiboku
@@ -1686,17 +1686,17 @@ private.ZONE_IDS = {
 	[136852] = { zoneID = 0 }; --Kilnkeeper Odo
 	[136835] = { zoneID = 0 }; --Kin'toga Beastbane
 	[137681] = { zoneID = 864, x = 0.382785707712173, y = 0.414023399353027 }; --King Clickyclack
-	[129005] = { zoneID = 863, x = 0.534226179122925, y = 0.428368985652924 }; --King Kooba
+	[129005] = { zoneID = 863, artID = 888, x = 0.534226179122925, y = 0.428368985652924 }; --King Kooba
 	[140081] = { zoneID = 0 }; --King Lukka
 	[134796] = { zoneID = 0 }; --King Spineclaw
-	[142739] = { zoneID = 14, x = 0.48907858133316, y = 0.399451732635498 }; --Knight-Captain Aldrin
+	[142739] = { zoneID = 14, artID = 1137, x = 0.48907858133316, y = 0.399451732635498 }; --Knight-Captain Aldrin
 	[123269] = { zoneID = 0 }; --Kook
 	[142112] = { zoneID = 14, artID = 1137, x = 0.49181067943573, y = 0.841642618179321 }; --Kor'gresh Coldrage
-	[142684] = { zoneID = 14, x = 0.252199590206146, y = 0.485551804304123 }; --Kovork
+	[142684] = { zoneID = 14, artID = 1137, x = 0.252199590206146, y = 0.485551804304123 }; --Kovork
 	[129832] = { zoneID = 0 }; --Krack
 	[125214] = { zoneID = 863, x = 0.757058322429657, y = 0.359346568584442 }; --Krubbs
 	[138564] = { zoneID = 0 }; --Kshuun
-	[120899] = { zoneID = 1165, x = 0.5498871207237244, y = 0.8253210783004761 }; --Kul'krazahn
+	[120899] = { zoneID = 1165, artID = 1143, x = 0.5498871207237244, y = 0.8253210783004761 }; --Kul'krazahn
 	[140083] = { zoneID = 0 }; --Kula the Thunderer
 	[131520] = { zoneID = 895, x = 0.479090541601181, y = 0.226362377405167 }; --Kulett the Ornery
 	[138388] = { zoneID = 0 }; --Kung
@@ -1731,7 +1731,7 @@ private.ZONE_IDS = {
 	[135844] = { zoneID = 0 }; --Lord Sumar
 	[135997] = { zoneID = 0 }; --Lord Zircon
 	[139432] = { zoneID = 0 }; --Lu'si
-	[134296] = { zoneID = 863, x = 0.681004285812378, y = 0.202328741550446 }; --Lucille
+	[134296] = { zoneID = 863, artID = 888, x = 0.681004285812378, y = 0.202328741550446 }; --Lucille
 	[139189] = { zoneID = 0 }; --Lumberclaw the Ancient
 	[134106] = { zoneID = 895, x = 0.683352112770081, y = 0.200146958231926 }; --Lumbergrasp Sentinel
 	[134791] = { zoneID = 0 }; --Luminous Crawler
@@ -1740,7 +1740,7 @@ private.ZONE_IDS = {
 	[139290] = { zoneID = 895, x = 0.585159420967102, y = 0.494630873203278 }; --Maison the Portable
 	[128935] = { zoneID = 863, x = 0.526238262653351, y = 0.53823584318161 }; --Mala'kili
 	[135958] = { zoneID = 0 }; --Malachite
-	[142716] = { zoneID = 14, x = 0.521666824817658, y = 0.767394900321961 }; --Man-Hunter Rog
+	[142716] = { zoneID = 14, artID = 1137, x = 0.521666824817658, y = 0.767394900321961 }; --Man-Hunter Rog
 	[138387] = { zoneID = 0 }; --Mangol
 	[140454] = { zoneID = 0 }; --Many-Braids the Elder
 	[139411] = { zoneID = 0 }; --Many-Fangs
@@ -1749,7 +1749,7 @@ private.ZONE_IDS = {
 	[143560] = { zoneID = 0 }; --Marshal Gabriel
 	[139600] = { zoneID = 0 }; --Maruk the Volcano
 	[134112] = { zoneID = 0 }; --Matron Christiane
-	[137704] = { zoneID = 896, x = 0.3484510183334351, y = 0.1986713856458664 }; --Matron Morana
+	[137704] = { zoneID = 896, artID = 921, x = 0.3484510183334351, y = 0.1986713856458664 }; --Matron Morana
 	[128610] = { zoneID = 863, x = 0.498930662870407, y = 0.672028541564941 }; --Maw of Shul-Nagruth
 	[135217] = { zoneID = 0 }; --Maximillian of Northshire
 	[139814] = { zoneID = 0 }; --Merger Specialist Huzzle
@@ -1770,7 +1770,7 @@ private.ZONE_IDS = {
 	[140248] = { zoneID = 0 }; --Moonchaser the Swift
 	[135723] = { zoneID = 0 }; --Moonclaw
 	[139025] = { zoneID = 0 }; --Moonsong
-	[134694] = { zoneID = 864, x = 0.3743573129177094, y = 0.8910739421844482 }; --Mor'fani the Exile
+	[134694] = { zoneID = 864, artID = 889, x = 0.3743573129177094, y = 0.8910739421844482 }; --Mor'fani the Exile
 	[139694] = { zoneID = 0 }; --Mordshell
 	[139670] = { zoneID = 0 }; --Morgok
 	[140828] = { zoneID = 0 }; --Morningdew
@@ -1818,7 +1818,7 @@ private.ZONE_IDS = {
 	[139024] = { zoneID = 0 }; --Nightfeather
 	[139876] = { zoneID = 0 }; --Nightleech
 	[134904] = { zoneID = 0 }; --Nightlurker
-	[142692] = { zoneID = 14, x = 0.676216185092926, y = 0.608678758144379 }; --Nimar the Slayer
+	[142692] = { zoneID = 14, artID = 1137, x = 0.676216185092926, y = 0.608678758144379 }; --Nimar the Slayer
 	[140297] = { zoneID = 0 }; --Nok-arak
 	[118192] = { zoneID = 0 }; --Norgor
 	[138391] = { zoneID = 0 }; --Norko the Thrower
@@ -1845,20 +1845,20 @@ private.ZONE_IDS = {
 	[141239] = { zoneID = 942, x = 0.42269292473793, y = 0.63249546289444 }; --Osca the Bloodied
 	[126019] = { zoneID = 0 }; --Overfed Mawfiend
 	[136818] = { zoneID = 0 }; --Overseer Flamelicker
-	[142423] = { zoneID = 14, x = 0.274756163358688, y = 0.570993065834045 }; --Overseer Krix
+	[142423] = { zoneID = 14, artID = 1137, x = 0.274756163358688, y = 0.570993065834045 }; --Overseer Krix
 	[138503] = { zoneID = 0 }; --Overseer of Twilight
 	[136819] = { zoneID = 0 }; --Overseer Rat-Tail
 	[136816] = { zoneID = 0 }; --Overseer Snorgle
 	[136817] = { zoneID = 0 }; --Overseer Steelsnout
-	[124375] = { zoneID = 863, x = 0.621072351932526, y = 0.6520676612854 }; --Overstuffed Saurolisk
+	[124375] = { zoneID = 863, artID = 888, x = 0.621072351932526, y = 0.6520676612854 }; --Overstuffed Saurolisk
 	[139205] = { zoneID = 895, x = 0.652314186096191, y = 0.645278990268707 }; --P4-N73R4
 	[131262] = { zoneID = 895, x = 0.388924062252045, y = 0.153003871440887 }; --Pack Leader Asenya
 	[138631] = { zoneID = 0 }; --Pathfinder Qadim
-	[137649] = { zoneID = 942, x = 0.363614559173584, y = 0.3763246834278107 }; --Pest Remover Mk. II
+	[137649] = { zoneID = 942, artID = 967, x = 0.363614559173584, y = 0.3763246834278107 }; --Pest Remover Mk. II
 	[140452] = { zoneID = 0 }; --Pikehorn the Sleeper
 	[140093] = { zoneID = 0 }; --Pinegraze Fawnmother
 	[139298] = { zoneID = 942, x = 0.382612287998199, y = 0.511345088481903 }; --Pinku'shon
-	[142435] = { zoneID = 14, x = 0.3762062788009644, y = 0.6341533660888672 }; --Plaguefeather
+	[142435] = { zoneID = 14, artID = 1137, x = 0.3762062788009644, y = 0.6341533660888672 }; --Plaguefeather
 	[142361] = { zoneID = 0 }; --Plaguefeather
 	[141286] = { zoneID = 942, x = 0.346519261598587, y = 0.679694294929504 }; --Poacher Zane
 	[143313] = { zoneID = 896, x = 0.666961014270783, y = 0.509763598442078 }; --Portakillo
@@ -1874,7 +1874,7 @@ private.ZONE_IDS = {
 	[135959] = { zoneID = 0 }; --Quakestomp the Rumbler
 	[140373] = { zoneID = 0 }; --Queen Duneshell
 	[140327] = { zoneID = 0 }; --Queen Stonehusk
-	[128974] = { zoneID = 863, x = 0.577178299427033, y = 0.677038967609406 }; --Queen Tzxi'kik
+	[128974] = { zoneID = 863, artID = 888, x = 0.577178299427033, y = 0.677038967609406 }; --Queen Tzxi'kik
 	[125453] = { zoneID = 896, x = 0.665780901908875, y = 0.427338033914566 }; --Quillrat Matriarch
 	[140155] = { zoneID = 0 }; --Rabid Rotclaw
 	[140073] = { zoneID = 0 }; --Rabidmaw
@@ -1895,8 +1895,8 @@ private.ZONE_IDS = {
 	[128580] = { zoneID = 0 }; --Razorjaw
 	[140343] = { zoneID = 0 }; --Razorwing
 	[137983] = { zoneID = 1161, x = 0.31429588794708, y = 0.63912308216095 }; --Rear Admiral Hainsworth
-	[132047] = { zoneID = 942, x = 0.6901285648345947, y = 0.520180344581604 }; --Reinforced Hullbreaker
-	[136340] = { zoneID = 864, x = 0.48990672826767, y = 0.721690893173218 }; --Relic Hunter Hazaak
+	[132047] = { zoneID = 942, artID = 967, x = 0.6901285648345947, y = 0.520180344581604 }; --Reinforced Hullbreaker
+	[136340] = { zoneID = 864, artID = 889, x = 0.48990672826767, y = 0.721690893173218 }; --Relic Hunter Hazaak
 	[135643] = { zoneID = 0 }; --Ren'kiri
 	[140593] = { zoneID = 0 }; --Restless Horror
 	[135650] = { zoneID = 0 }; --REUSE
@@ -1917,9 +1917,9 @@ private.ZONE_IDS = {
 	[140995] = { zoneID = 0 }; --Ruinstalker
 	[126432] = { zoneID = 943, x = 0.5689457654953, y = 0.612031698226929 }; --Rumbling Goliath
 	[140765] = { zoneID = 0 }; --Rumbling Goliath
-	[141620] = { zoneID = 14, x = 0.2986208200454712, y = 0.5982843041419983 }; --Rumbling Goliath
+	[141620] = { zoneID = 14, artID = 1137, x = 0.2986208200454712, y = 0.5982843041419983 }; --Rumbling Goliath
 	[140273] = { zoneID = 0 }; --Runehoof Denkeeper
-	[142683] = { zoneID = 14, x = 0.4290017485618591, y = 0.5649527907371521 }; --Ruul Onestone
+	[142683] = { zoneID = 14, artID = 1137, x = 0.4290017485618591, y = 0.5649527907371521 }; --Ruul Onestone
 	[139335] = { zoneID = 0 }; --Sabertron
 	[139328] = { zoneID = 942, x = 0.342, y = 0.324 }; --Sabertron
 	[139356] = { zoneID = 942 }; --Sabertron
@@ -1947,8 +1947,8 @@ private.ZONE_IDS = {
 	[140794] = { zoneID = 0 }; --Scartalon
 	[139762] = { zoneID = 0 }; --Scavenger Faith
 	[136336] = { zoneID = 864, artID = 889, x = 0.327064871788025, y = 0.650914132595062 }; --Scorpox
-	[127820] = { zoneID = 863, x = 0.591399550437927, y = 0.387850403785706 }; --Scout Skrasniss
-	[127873] = { zoneID = 863, x = 0.580807864665985, y = 0.0893820598721504 }; --Scrounger Patriarch
+	[127820] = { zoneID = 863, artID = 888, x = 0.591399550437927, y = 0.387850403785706 }; --Scout Skrasniss
+	[127873] = { zoneID = 863, artID = 888, x = 0.580807864665985, y = 0.0893820598721504 }; --Scrounger Patriarch
 	[140424] = { zoneID = 0 }; --Scythehorn
 	[138938] = { zoneID = 942, x = 0.337620079517365, y = 0.384156703948975 }; --Seabreaker Skoloth
 	[139769] = { zoneID = 0 }; --Second Mate Barnaby
@@ -1978,14 +1978,14 @@ private.ZONE_IDS = {
 	[138568] = { zoneID = 1502, artID = 1302, x = 0.3579469323158264, y = 0.3875377774238586 }; --Shuk'shuguun the Subjugator
 	[138648] = { zoneID = 0 }; --Sigrid the Shroud-Weaver
 	[126449] = { zoneID = 0 }; --Siltspitter
-	[142690] = { zoneID = 14, x = 0.5058895349502563, y = 0.5745139718055725 }; --Singer
+	[142690] = { zoneID = 14, artID = 1137, x = 0.5058895349502563, y = 0.5745139718055725 }; --Singer
 	[136338] = { zoneID = 864, x = 0.245719775557518, y = 0.684502422809601 }; --Sirokar
 	[141143] = { zoneID = 942, x = 0.615729331970215, y = 0.570583462715149 }; --Sister Absinthe
 	[139226] = { zoneID = 0 }; --Sister Anana
 	[138863] = { zoneID = 896, x = 0.329817295074463, y = 0.571168899536133 }; --Sister Martha
 	[126508] = { zoneID = 0 }; --Skethik
 	[143316] = { zoneID = 862, x = 0.494994431734085, y = 0.652647376060486 }; --Skullcap
-	[142437] = { zoneID = 14, x = 0.5625219345092773, y = 0.4411258697509766 }; --Skullripper
+	[142437] = { zoneID = 14, artID = 1137, x = 0.5625219345092773, y = 0.4411258697509766 }; --Skullripper
 	[142312] = { zoneID = 943, artID = 968, x = 0.663362264633179, y = 0.57548850774765 }; --Skullripper
 	[139602] = { zoneID = 0 }; --Skur the Unbroken
 	[125816] = { zoneID = 1165, x = 0.500356078147888, y = 0.84046745300293 }; --Sky Queen
@@ -2012,7 +2012,7 @@ private.ZONE_IDS = {
 	[136304] = { zoneID = 864, x = 0.668966114521027, y = 0.244509622454643 }; --Songstress Nahjeen
 	[138441] = { zoneID = 0 }; --Songstress of the Deep
 	[140358] = { zoneID = 0 }; --Sorrowcall
-	[137665] = { zoneID = 896, x = 0.271853893995285, y = 0.5488458871841431 }; --Soul Goliath
+	[137665] = { zoneID = 896, artID = 921, x = 0.271853893995285, y = 0.5488458871841431 }; --Soul Goliath
 	[138851] = { zoneID = 0 }; --Soul Hunter
 	[139438] = { zoneID = 0 }; --Soul-Bringer Togan
 	[139346] = { zoneID = 0 }; --Soul-Speaker Galani
@@ -2033,7 +2033,7 @@ private.ZONE_IDS = {
 	[140333] = { zoneID = 0 }; --Steelshell
 	[140988] = { zoneID = 0 }; --Steelshred
 	[132450] = { zoneID = 0 }; --Stinkboot
-	[137708] = { zoneID = 896, x = 0.4976232051849365, y = 0.4379974007606506 }; --Stone Golem
+	[137708] = { zoneID = 896, artID = 921, x = 0.4976232051849365, y = 0.4379974007606506 }; --Stone Golem
 	[139473] = { zoneID = 0 }; --Stone Machinist Nu-Xin
 	[139472] = { zoneID = 0 }; --Stone-Lord Qinsho
 	[140088] = { zoneID = 0 }; --Stonehorn the Charger
@@ -2081,7 +2081,7 @@ private.ZONE_IDS = {
 	[136841] = { zoneID = 0 }; --Thu'zun the Vile
 	[140359] = { zoneID = 0 }; --Thunderhawk Devourer
 	[142419] = { zoneID = 943, x = 0.607041954994202, y = 0.487267136573792 }; --Thundering Goliath
-	[141616] = { zoneID = 14, x = 0.4633708596229553, y = 0.5211744904518127 }; --Thundering Goliath
+	[141616] = { zoneID = 14, artID = 1137, x = 0.4633708596229553, y = 0.5211744904518127 }; --Thundering Goliath
 	[118176] = { zoneID = 0 }; --Thundershock
 	[140099] = { zoneID = 0 }; --Thundersnort the Loud
 	[133163] = { zoneID = 862, x = 0.642841815948486, y = 0.232442662119865 }; --Tia'Kawan
@@ -2104,7 +2104,7 @@ private.ZONE_IDS = {
 	[127939] = { zoneID = 862, x = 0.46736291050911, y = 0.653291344642639 }; --Torraske the Eternal
 	[139235] = { zoneID = 895, x = 0.704130411148071, y = 0.557437896728516 }; --Tort Jaw
 	[138640] = { zoneID = 0 }; --Torus
-	[126056] = { zoneID = 863, x = 0.494227945804596, y = 0.376948654651642 }; --Totem Maker Jash'ga
+	[126056] = { zoneID = 863, artID = 888, x = 0.494227945804596, y = 0.376948654651642 }; --Totem Maker Jash'ga
 	[132076] = { zoneID = 895, x = 0.46851196885109, y = 0.206489250063896 }; --Totes
 	[136860] = { zoneID = 0 }; --Tracker Vu'ka
 	[136875] = { zoneID = 0 }; --Trader Udu
@@ -2133,7 +2133,7 @@ private.ZONE_IDS = {
 	[136857] = { zoneID = 0 }; --Undol the Herdmaster
 	[139353] = { zoneID = 0 }; --Unliving Champion
 	[138990] = { zoneID = 0 }; --Urgl the Blind
-	[128965] = { zoneID = 863, x = 0.442639172077179, y = 0.487708687782288 }; --Uroku the Bound
+	[128965] = { zoneID = 863, artID = 888, x = 0.442639172077179, y = 0.487708687782288 }; --Uroku the Bound
 	[138889] = { zoneID = 0 }; --Uvuld the Forseer
 	[136865] = { zoneID = 0 }; --Uzan the Sandreaver
 	[140339] = { zoneID = 0 }; --Vale Terror
@@ -2141,8 +2141,8 @@ private.ZONE_IDS = {
 	[130401] = { zoneID = 864, artID = 889, x = 0.573196887969971, y = 0.732954561710358 }; --Vathikur
 	[134795] = { zoneID = 0 }; --Veiled Hermit
 	[136837] = { zoneID = 981, artID = 981, x = 0.6080244779586792, y = 0.2072033286094666 }; --Venomancer Ant'su
-	[142438] = { zoneID = 14, x = 0.572603166103363, y = 0.5413687825202942 }; --Venomarus
-	[142301] = { zoneID = 943, x = 0.5163794755935669, y = 0.09363508224487305 }; --Venomarus
+	[142438] = { zoneID = 14, artID = 1137, x = 0.572603166103363, y = 0.5413687825202942 }; --Venomarus
+	[142301] = { zoneID = 943, artID = 968, x = 0.5163794755935669, y = 0.09363508224487305 }; --Venomarus
 	[139210] = { zoneID = 0 }; --Venombulb
 	[126926] = { zoneID = 863, artID = 888, x = 0.292170405387878, y = 0.505377769470215 }; --Venomjaw
 	[140113] = { zoneID = 0 }; --Venomlash
@@ -2180,13 +2180,13 @@ private.ZONE_IDS = {
 	[139416] = { zoneID = 0 }; --Volshas
 	[139889] = { zoneID = 0 }; --Vorus'arak
 	[138563] = { zoneID = 0 }; --Vudax
-	[128584] = { zoneID = 863, x = 0.467468827962875, y = 0.337344348430634 }; --Vugthuth
+	[128584] = { zoneID = 863, artID = 888, x = 0.467468827962875, y = 0.337344348430634 }; --Vugthuth
 	[134048] = { zoneID = 862, x = 0.618749618530274, y = 0.462318748235703 }; --Vukuba
 	[138649] = { zoneID = 0 }; --Vulf Stormshore
 	[140329] = { zoneID = 0 }; --Vy'lix the Corpse-Mauler
 	[133842] = { zoneID = 862, x = 0.439351499080658, y = 0.254376530647278 }; --Warcrawler Karkithiss
 	[127831] = { zoneID = 0 }; --Warmother Zug
-	[129411] = { zoneID = 864, x = 0.4390358328819275, y = 0.5404481291770935 }; --Zunashi the Exile
+	[129411] = { zoneID = 864, artID = 889, x = 0.4390358328819275, y = 0.5404481291770935 }; --Zunashi the Exile
 	[126095] = { zoneID = 0 }; --Vyliss
 	[134805] = { zoneID = 0 }; --Wandering Behemoth
 	[123282] = { zoneID = 0 }; --Warlord Mo'gosh
@@ -2196,15 +2196,15 @@ private.ZONE_IDS = {
 	[136838] = { zoneID = 0 }; --Zgordo the Brutalizer
 	[136840] = { zoneID = 0 }; --Zoga
 	[130079] = { zoneID = 942, x = 0.420291185379028, y = 0.747672557830811 }; --Wagga Snarltusk
-	[129180] = { zoneID = 864, x = 0.3706750869750977, y = 0.4604599177837372 }; --Warbringer Hozzik
+	[129180] = { zoneID = 864, artID = 889, x = 0.3706750869750977, y = 0.4604599177837372 }; --Warbringer Hozzik
 	[123189] = { zoneID = 0 }; --Warcaller Mog'ra
-	[126907] = { zoneID = 863, x = 0.489739298820496, y = 0.507702112197876 }; --Wardrummer Zurula
-	[134638] = { zoneID = 864, x = 0.301964282989502, y = 0.52557384967804 }; --Warlord Zothix
+	[126907] = { zoneID = 863, artID = 888, x = 0.489739298820496, y = 0.507702112197876 }; --Wardrummer Zurula
+	[134638] = { zoneID = 864, artID = 889, x = 0.301964282989502, y = 0.52557384967804 }; --Warlord Zothix
 	[134625] = { zoneID = 864, x = 0.507168173789978, y = 0.308826357126236 }; --Warmother Captive
 	[128973] = { zoneID = 896, x = 0.649695754051209, y = 0.21432276070118 }; --Whargarble the Ill-Tempered
 	[129803] = { zoneID = 942, x = 0.473651260137558, y = 0.65836900472641 }; --Whiplash
 	[134088] = { zoneID = 0 }; --Xibalan Apex
-	[133531] = { zoneID = 863, x = 0.365385383367538, y = 0.505169451236725 }; --Xu'ba
+	[133531] = { zoneID = 863, artID = 888, x = 0.365385383367538, y = 0.505169451236725 }; --Xu'ba
 	[124362] = { zoneID = 0 }; --Xu'e
 	[129657] = { zoneID = 863, artID = 888, x = 0.387917220592499, y = 0.267669886350632 }; --Za'amar the Queen's Blade
 	[133812] = { zoneID = 863, artID = 888, x = 0.380031049251556, y = 0.720523536205292 }; --Zanxib
@@ -2233,7 +2233,7 @@ private.ZONE_IDS = {
 	[140975] = { zoneID = 0 }; --Youngercraw
 	[140844] = { zoneID = 0 }; --Zephis
 	[142088] = { zoneID = 942, x = 0.468111276626587, y = 0.423692256212235 }; --Whirlwing
-	[142251] = { zoneID = 943, x = 0.442937970161438, y = 0.282260119915009 }; --Yogursa
+	[142251] = { zoneID = 943, artID = 968, x = 0.442937970161438, y = 0.282260119915009 }; --Yogursa
 	[142440] = { zoneID = 14, x = 0.141743019223213, y = 0.376583099365234 }; --Yogursa
 	[142682] = { zoneID = 14, x = 0.628907322883606, y = 0.811282753944397 }; --Zalas Witherbark
 	[130350] = { zoneID = 895, x = 0.614758729934692, y = 0.516900360584259 }; --Guardian of the Spring
@@ -2255,7 +2255,7 @@ private.ZONE_IDS = {
 	[145292] = { zoneID = 0 }; --Alsian Vistreth
 	[147966] = { zoneID = 62, artID = 1176, x = 0.3782728910446167, y = 0.8478325605392456 }; --Aman
 	[145392] = { zoneID = 895, artID = 920, x = 0.790230453014374, y = 0.422422796487808 }; --Ambassador Gaines
-	[148393] = { zoneID = 862, x = 0.7567368149757385, y = 0.3576402962207794 }; --Ancient Defender
+	[148393] = { zoneID = 862, artID = 887, x = 0.7567368149757385, y = 0.3576402962207794 }; --Ancient Defender
 	[144855] = { zoneID = 0 }; --Apothecary Jerrod
 	[148679] = { zoneID = 0 }; --Arcanist Quintril
 	[147750] = { zoneID = 895, artID = 920, x = 0.831941902637482, y = 0.405085414648056 }; --Artillery Master Goodwin
@@ -2267,11 +2267,11 @@ private.ZONE_IDS = {
 	[146178] = { zoneID = 0 }; --Azurespine
 	[146131] = { zoneID = 0 }; --Bartok the Burrower
 	[149336] = { zoneID = 0 }; --Basaltic Azerite
-	[148075] = { zoneID = 942, x = 0.349937230348587, y = 0.603082776069641 }; --Beast Tamer Watkins
+	[148075] = { zoneID = 942, artID = 967, x = 0.349937230348587, y = 0.603082776069641 }; --Beast Tamer Watkins
 	[148477] = { zoneID = 0 }; --Beastlord Drakara
 	[148428] = { zoneID = 0 }; --Bilestomper
 	[145272] = { zoneID = 0 }; --Blackpaw
-	[149516] = { zoneID = 1332, x = 0.567801594734192, y = 0.351940155029297 }; --Blackpaw
+	[149516] = { zoneID = 1332, artID = 1185, x = 0.567801594734192, y = 0.351940155029297 }; --Blackpaw
 	[149651] = { zoneID = 0 }; --Blackpaw
 	[149660] = { zoneID = 62, artID = 1176, x = 0.4966042935848236, y = 0.2494930773973465 }; --Blackpaw
 	[146238] = { zoneID = 0 }; --Blacksting
@@ -2312,14 +2312,14 @@ private.ZONE_IDS = {
 	[148343] = { zoneID = 862, artID = 887, x = 0.648285806179047, y = 0.398898929357529 }; --Dinohunter Wildbeard
 	[148264] = { zoneID = 0 }; --Dinomancer Dajingo
 	[145278] = { zoneID = 0 }; --Dinomancer Zakuru
-	[148695] = { zoneID = 896, x = 0.31676921248436, y = 0.416014492511749 }; --Doctor Lazane
+	[148695] = { zoneID = 896, artID = 921, x = 0.31676921248436, y = 0.416014492511749 }; --Doctor Lazane
 	[145020] = { zoneID = 0 }; --Dolizite
 	[148510] = { zoneID = 0 }; --Drox'ar Morgar
 	[148563] = { zoneID = 0 }; --Duchess Fallensong the Frigid
 	[146848] = { zoneID = 0 }; --Eerie Conglomeration
 	[145465] = { zoneID = 0 }; --Engineer Bolthold
 	[149356] = { zoneID = 0 }; --Enraged Azergem Crystalback
-	[148308] = { zoneID = 862, x = 0.770987033843994, y = 0.489081621170044 }; --Eric Quietfist
+	[148308] = { zoneID = 862, artID = 887, x = 0.770987033843994, y = 0.489081621170044 }; --Eric Quietfist
 	[148534] = { zoneID = 864, artID = 889, x = 0.391450017690659, y = 0.673005223274231 }; --Evezon the Eternal
 	[146188] = { zoneID = 0 }; --Firesting Dominator
 	[144915] = { zoneID = 0 }; --Firewarden Viton Darkflare
@@ -2336,8 +2336,8 @@ private.ZONE_IDS = {
 	[146887] = { zoneID = 0 }; --Ghern the Rancid
 	[146880] = { zoneID = 0 }; --Gholvran the Cryptic
 	[145269] = { zoneID = 1332, artID = 1185, x = 0.444968700408936, y = 0.357046842575073 }; --Glimmerspine
-	[149654] = { zoneID = 62, x = 0.4350595772266388, y = 0.1963830888271332 }; --Glimmerspine
-	[147744] = { zoneID = 62, x = 0.5738148093223572, y = 0.1567018181085587 }; --Glrglrr
+	[149654] = { zoneID = 62, artID = 1176, x = 0.4350595772266388, y = 0.1963830888271332 }; --Glimmerspine
+	[147744] = { zoneID = 62, artID = 1176, x = 0.5738148093223572, y = 0.1567018181085587 }; --Glrglrr
 	[147222] = { zoneID = 49, x = 0.243567138910294, y = 0.70962792634964 }; --Gnollfeaster
 	[146139] = { zoneID = 0 }; --Goldspine
 	[146942] = { zoneID = 0 }; --Grand Marshal Fury
@@ -2370,7 +2370,7 @@ private.ZONE_IDS = {
 	[145934] = { zoneID = 0 }; --Ivan the Mad
 	[147849] = { zoneID = 0 }; --Jadeflare
 	[146845] = { zoneID = 981, artID = 981, x = 0.7504346370697021, y = 0.443051815032959 }; --Jared the Jagged
-	[148390] = { zoneID = 862, x = 0.7547145485877991, y = 0.3590312898159027 }; --Jessibelle Moonshield
+	[148390] = { zoneID = 862, artID = 887, x = 0.7547145485877991, y = 0.3590312898159027 }; --Jessibelle Moonshield
 	[149352] = { zoneID = 0 }; --Jeweled Azergem Crystalback
 	[148456] = { zoneID = 0 }; --Jin'tago
 	[146872] = { zoneID = 0 }; --Kachota the Exiled
@@ -2409,7 +2409,7 @@ private.ZONE_IDS = {
 	[149664] = { zoneID = 0 }; --Orwell Stevenson
 	[148651] = { zoneID = 863, artID = 888, x = 0.422923773527145, y = 0.230231314897537 }; --Overgrown Ancient
 	[146246] = { zoneID = 0 }; --Ovix the Toxic
-	[148044] = { zoneID = 942, x = 0.508994996547699, y = 0.5228568911552429 }; --Owynn Graddock
+	[148044] = { zoneID = 942, artID = 967, x = 0.508994996547699, y = 0.5228568911552429 }; --Owynn Graddock
 	[148648] = { zoneID = 0 }; --Packmaster Swiftarrow
 	[144951] = { zoneID = 0 }; --Palefur Devourer
 	[149339] = { zoneID = 0 }; --Permeated Azerite
@@ -2422,7 +2422,7 @@ private.ZONE_IDS = {
 	[149351] = { zoneID = 0 }; --Rhodochrosite
 	[148558] = { zoneID = 864, artID = 889, x = 0.4299772083759308, y = 0.3842089772224426 }; --Rockfury
 	[148494] = { zoneID = 0 }; --Sandbinder Sodir
-	[148103] = { zoneID = 62, x = 0.3297478258609772, y = 0.8394355177879333 }; --Sapper Odette
+	[148103] = { zoneID = 62, artID = 1176, x = 0.3297478258609772, y = 0.8394355177879333 }; --Sapper Odette
 	[145242] = { zoneID = 1332, artID = 1185, x = 0.52639228105545, y = 0.715166330337524 }; --Scalefiend
 	[149665] = { zoneID = 62, artID = 1176, x = 0.4763897657394409, y = 0.4454483985900879 }; --Scalefiend
 	[148198] = { zoneID = 0 }; --Scout Captain Grizzleknob
@@ -2689,7 +2689,7 @@ private.ZONE_IDS = {
 	[157167] = { zoneID = 1527, artID = 1343, x = 0.7541301250457764, y = 0.5221226215362549 }; --Champion Sen-mat
 	[157146] = { zoneID = 1527, artID = 1343, x = 0.6829407215118408, y = 0.3187127411365509 }; --Rotfeaster
 	[157287] = { zoneID = 1530, artID = 1342, x = 0.4222050607204437, y = 0.5626040697097778 }; --Dokani Obliterator
-	[157267] = { zoneID = 1530, artID = 1342, x = 0.4573220312595367, y = 0.3888576626777649 }; --Escaped Mutation
+	[157267] = { zoneID = 1530, artID = 1342, x = 0.4475433826446533, y = 0.4573350548744202 }; --Escaped Mutation
 	[154106] = { zoneID = 1530, artID = 1342, x = 0.9020876884460449, y = 0.4600565135478973 }; --Quid
 	[157162] = { zoneID = 1530, artID = 1342, x = 0.2190355062484741, y = 0.1233530044555664 }; --Rei Lun
 	[154490] = { zoneID = 1530, artID = 1342, x = 0.6417983770370483, y = 0.5173835754394531 }; --Rijz'x the Devourer
@@ -2698,7 +2698,7 @@ private.ZONE_IDS = {
 	[151852] = { zoneID = 1527, artID = 1343, x = 0.8029593229293823, y = 0.5194658637046814 }; --Watcher Rehu
 	[154087] = { zoneID = 1530, artID = 1342, x = 0.7094403505325317, y = 0.4055947959423065 }; --Zror'um the Infinite
 	[154467] = { zoneID = 1530, artID = 1342, x = 0.8119672536849976, y = 0.6448803544044495 }; --Chief Mek-mek
-	[158632] = { zoneID = 1527, artID = 1343, x = 0.5950, y = 0.4859 }; --Corrupted Fleshbeast
+	[158632] = { zoneID = 1527, artID = 1343, x = 0.595, y = 0.4859 }; --Corrupted Fleshbeast
 	[151995] = { zoneID = 1527, artID = 1343, x = 0.7723165154457092, y = 0.4598969519138336 }; --Hik-ten the Taskmaster
 	[160968] = { zoneID = 1530, artID = 1342, x = 0.1721127778291702, y = 0.1160250082612038 }; --Jade Colossus
 	[152657] = { zoneID = 1527, artID = 1343, x = 0.6592769026756287, y = 0.3519814312458038 }; --Tat the Bonechewer
@@ -2713,7 +2713,7 @@ private.ZONE_IDS = {
 	[160126] = { zoneID = 1570, artID = 1363, x = 0.9107797145843506, y = 0.6525700688362122 }; --Manipulator Yggshoth
 	[152677] = { zoneID = 1527, artID = 1343, x = 0.6198843717575073, y = 0.2459364980459213 }; --Nebet the Ascended
 	[161033] = { zoneID = 1527, artID = 1343, x = 0.526218593120575, y = 0.4306498765945435 }; --Shadowmaw
-	[154578] = { zoneID = 1527, artID = 1343, x = 0.4083, y = 0.3822 }; --Aqir Flayer
+	[154578] = { zoneID = 1527, artID = 1343, x = 0.4148433804512024, y = 0.4145828783512116 }; --Aqir Flayer
 	[154447] = { zoneID = 1530, artID = 1342, x = 0.5710684061050415, y = 0.4095928370952606 }; --Brother Meller
 	[158597] = { zoneID = 1527, artID = 1343, x = 0.5468721985816956, y = 0.4316814839839935 }; --High Executor Yothrim
 	[155180] = { zoneID = 0 }; --Obscuron
@@ -2740,7 +2740,7 @@ private.ZONE_IDS = {
 	[159318] = { zoneID = 0 }; --Shadow-Walker Yash'gth
 	[160906] = { zoneID = 1530, artID = 1342, x = 0.2507, y = 0.4411 }; --Skiver
 	[144632] = { zoneID = 0 }; --Velaris
-	[154576] = { zoneID = 1527, artID = 1343, x = 0.4192, y = 0.4440 }; --Aqir Titanus
+	[154576] = { zoneID = 1527, artID = 1343, x = 0.3334197402000427, y = 0.6663163304328918 }; --Aqir Titanus
 	[160878] = { zoneID = 1530, artID = 1342, x = 0.0665, y = 0.7066 }; --Buh'gzaki the Blasphemous
 	[156451] = { zoneID = 1570, artID = 1363, x = 0.9137915372848511, y = 0.6522283554077148 }; --Darkspeaker Thul'grsh
 	[158528] = { zoneID = 1527, artID = 1343, x = 0.5368, y = 0.7933 }; --High Guard Reshef
@@ -2751,7 +2751,7 @@ private.ZONE_IDS = {
 	[160341] = { zoneID = 1470, artID = 1340, x = 0.6733, y = 0.5733 }; --Sewer Beastling
 	[156654] = { zoneID = 1527, artID = 1343, x = 0.585440993309021, y = 0.8282287120819092 }; --Shol'thoss the Doomspeaker
 	[158636] = { zoneID = 1527, artID = 1343, x = 0.4932844936847687, y = 0.8234254717826843 }; --The Grand Executor
-	[152788] = { zoneID = 0 }; --Uat-ka the Sun's Wrath
+	[152788] = { zoneID = 1527, artID = 1343, x = 0.674, y = 0.638 }; --Uat-ka the Sun's Wrath
 	[154072] = { zoneID = 0 }; --Vog'reth the Insatiable
 	[157443] = { zoneID = 1530, artID = 1342, x = 0.5380496382713318, y = 0.4886441826820374 }; --Xiln the Mountain
 	[152110] = { zoneID = 0 }; --Corrupter
@@ -2760,7 +2760,7 @@ private.ZONE_IDS = {
 	[160874] = { zoneID = 1530, artID = 1342, x = 0.1201, y = 0.4051 }; --Drone Keeper Ak'thet
 	[160876] = { zoneID = 1530, artID = 1342, x = 0.1146, y = 0.4062 }; --Enraged Amber Elemental
 	[160868] = { zoneID = 1530, artID = 1342, x = 0.1253, y = 0.5136 }; --Harrier Nir'verash
-	[154604] = { zoneID = 1527, artID = 1343, x = 0.3474, y = 0.1885 }; --Lord Aj'qirai
+	[154604] = { zoneID = 1527, artID = 1343, x = 0.3467540740966797, y = 0.188981831073761 }; --Lord Aj'qirai
 	[160708] = { zoneID = 0 }; --Mail Muncher
 	[161199] = { zoneID = 0 }; --Vaultkeeper Jazra
 	[142604] = { zoneID = 0 }; --Beach Strider
@@ -2784,7 +2784,7 @@ private.ZONE_IDS = {
 	[157183] = { zoneID = 1530, artID = 1342, x = 0.2012019902467728, y = 0.6402083039283752 }; --Coagulated Anima
 	[156820] = { zoneID = 0 }; --Dod
 	[152086] = { zoneID = 0 }; --Faceless Arbiter
-	[160805] = { zoneID = 1570, artID = 1363, x = 0.9065689444541931, y = 0.6365889310836792 }; --Gloopy Globule
+	[160805] = { zoneID = 1570, artID = 1363, x = 0.8776026964187622, y = 0.5721611976623535 }; --Gloopy Globule
 	[160826] = { zoneID = 1530, artID = 1342, x = 0.2083, y = 0.6264 }; --Hive-Guard Naz'ruzek
 	[160930] = { zoneID = 1530, artID = 1342, x = 0.1707, y = 0.6655 }; --Infused Amber Ooze
 	[161150] = { zoneID = 0 }; --Lesser Amber Elemental
@@ -2796,28 +2796,28 @@ private.ZONE_IDS = {
 	[155958] = { zoneID = 1530, artID = 1342, x = 0.2935356199741364, y = 0.2225103080272675 }; --Tashara
 	[157157] = { zoneID = 1527, artID = 1343, x = 0.6685683727264404, y = 0.203079104423523 }; --Muminah the Incandescent
 	[151609] = { zoneID = 1527, artID = 1343, x = 0.7334067225456238, y = 0.744735062122345 }; --Sun Prophet Epaphos
-	[162141] = { zoneID = 1527, artID = 1343, x = 0.4086, y = 0.4226 }; --Zuythiz
-	[155703] = { zoneID = 1527, artID = 1343, x = 0.3245, y = 0.6496 }; --Anq'uri the Titanic
+	[162141] = { zoneID = 1527, artID = 1343, x = 0.4102282822132111, y = 0.4215969741344452 }; --Zuythiz
+	[155703] = { zoneID = 1527, artID = 1343, x = 0.3242964446544647, y = 0.6445568203926086 }; --Anq'uri the Titanic
 	[157472] = { zoneID = 0 }; --Aphrom the Guise of Madness
 	[160872] = { zoneID = 1530, artID = 1342, x = 0.1595, y = 0.3668 }; --Destroyer Krox'tazar
-	[155531] = { zoneID = 1527, artID = 1343, x = 0.2320, y = 0.5852 }; --Infested Wastewander Captain
-	[156078] = { zoneID = 1527, artID = 1343, x = 0.3124, y = 0.6546 }; --Magus Rehleth
+	[155531] = { zoneID = 1527, artID = 1343, x = 0.2206471413373947, y = 0.6044082641601562 }; --Infested Wastewander Captain
+	[156078] = { zoneID = 1527, artID = 1343, x = 0.3076080679893494, y = 0.6646535992622375 }; --Magus Rehleth
 	[157470] = { zoneID = 0 }; --R'aas the Anima Devourer
 	[157390] = { zoneID = 0 }; --R'oyolok the Reality Eater
 	[157476] = { zoneID = 0 }; --Shugshul the Flesh Gorger
 	[157473] = { zoneID = 0 }; --Yiphrim the Will Ravager
 	[157469] = { zoneID = 0 }; --Zoth'rum the Intellect Pillager
 	[161683] = { zoneID = 0 }; --Antak'shal
-	[162142] = { zoneID = 1527, artID = 1343, x = 0.3782, y = 0.6028 }; --Qho
-	[162170] = { zoneID = 1527, artID = 1343, x = 0.3350, y = 0.2618 }; --Warcaster Xeshro
-	[162171] = { zoneID = 1527, artID = 1343, x = 0.4556, y = 0.5782 }; --Captain Dunewalker
+	[162142] = { zoneID = 1527, artID = 1343, x = 0.3775959014892578, y = 0.6024743318557739 }; --Qho
+	[162170] = { zoneID = 1527, artID = 1343, x = 0.3359153568744659, y = 0.2569640874862671 }; --Warcaster Xeshro
+	[162171] = { zoneID = 1527, artID = 1343, x = 0.4559796452522278, y = 0.5776904821395874 }; --Captain Dunewalker
 	[162163] = { zoneID = 1527, artID = 1343, x = 0.4240, y = 0.5803 }; --High Priest Ytaessis
-	[162196] = { zoneID = 1527, artID = 1343, x = 0.3501, y = 0.1742 }; --Obsidian Annihilator
+	[162196] = { zoneID = 1527, artID = 1343, x = 0.3505869209766388, y = 0.1729116439819336 }; --Obsidian Annihilator
 	[162198] = { zoneID = 0 }; --Obsidian Annihilator
-	[162172] = { zoneID = 1527, artID = 1343, x = 0.4028, y = 0.4141 }; --Aqir Warcaster
-	[162147] = { zoneID = 1527, artID = 1343, x = 0.3085, y = 0.4971 }; --Corpse Eater
-	[162173] = { zoneID = 1527, artID = 1343, x = 0.2890, y = 0.1765 }; --R'krox the Runt
-	[162140] = { zoneID = 1527, artID = 1343, x = 0.2123, y = 0.6105 }; --Skikx'traz
+	[162172] = { zoneID = 1527, artID = 1343, x = 0.3928209841251373, y = 0.3876182436943054 }; --Aqir Warcaster
+	[162147] = { zoneID = 1527, artID = 1343, x = 0.3080518245697022, y = 0.4974889755249023 }; --Corpse Eater
+	[162173] = { zoneID = 1527, artID = 1343, x = 0.2945761680603027, y = 0.1976281851530075 }; --R'krox the Runt
+	[162140] = { zoneID = 1527, artID = 1343, x = 0.2440903335809708, y = 0.6224110126495361 }; --Skikx'traz
 	[162370] = { zoneID = 1527, artID = 1343, x = 0.4520887434482575, y = 0.4168759286403656 }; --Armagedillo
 	[162352] = { zoneID = 1527, artID = 1343, x = 0.499293863773346, y = 0.4011290669441223 }; --Spirit of Dark Ritualist Zakahn
 	[163534] = { zoneID = 0 }; --Pet Training Dummy
@@ -2831,67 +2831,67 @@ private.CONTAINER_ZONE_IDS = {
 	[272455] = { zoneID = 830, x = 0.51056182384491, y = 0.591467618942261 }; 
 	[272456] = { zoneID = 830, x = 0.604903697967529, y = 0.278079926967621 }; 
 	[273222] = { zoneID = 830, x = 0.718485116958618, y = 0.754145503044128 }; 
-	[282722] = { zoneID = 863, x = 0.3234589397907257, y = 0.4855552017688751 }; 
+	[282722] = { zoneID = 863, artID = 888, x = 0.3234589397907257, y = 0.4855552017688751 }; 
 	[282723] = { zoneID = 863, artID = 888, x = 0.2513234615325928, y = 0.7799379825592041 }; 
 	[277561] = { zoneID = 862, x = 0.494994431734085, y = 0.652647376060486 }; 
 	[281898] = { zoneID = 862, x = 0.387856274843216, y = 0.344339638948441 }; 
-	[278456] = { zoneID = 862, x = 0.5950086116790771, y = 0.207179993391037 }; 
+	[278456] = { zoneID = 862, artID = 887, x = 0.5950086116790771, y = 0.207179993391037 }; 
 	[276735] = { zoneID = 1165, x = 0.382825076580048, y = 0.0714827105402947 }; 
 	[278713] = { zoneID = 862, artID = 887, x = 0.6442182660102844, y = 0.2858370244503021 }; 
 	[287320] = { zoneID = 864, x = 0.445057660341263, y = 0.261491566896439 }; 
-	[278459] = { zoneID = 862, x = 0.4727555513381958, y = 0.6646109819412231 }; 
+	[278459] = { zoneID = 862, artID = 887, x = 0.4727555513381958, y = 0.6646109819412231 }; 
 	[288596] = { zoneID = 1165, x = 0.444255739450455, y = 0.26922270655632 }; 
-	[278460] = { zoneID = 862, x = 0.51072758436203, y = 0.4169873297214508 }; 
-	[281903] = { zoneID = 862, x = 0.4088299572467804, y = 0.7651941776275635 }; 
-	[278461] = { zoneID = 862, x = 0.493593603372574, y = 0.279375284910202 }; 
-	[284454] = { zoneID = 1165, x = 0.5930131673812866, y = 0.8866457939147949 }; 
-	[278462] = { zoneID = 862, x = 0.6698203682899475, y = 0.3710588216781616 }; 
-	[281905] = { zoneID = 862, x = 0.8108474612236023, y = 0.4071697592735291 }; 
+	[278460] = { zoneID = 862, artID = 887, x = 0.51072758436203, y = 0.4169873297214508 }; 
+	[281903] = { zoneID = 862, artID = 887, x = 0.4088299572467804, y = 0.7651941776275635 }; 
+	[278461] = { zoneID = 862, artID = 887, x = 0.493593603372574, y = 0.279375284910202 }; 
+	[284454] = { zoneID = 1165, artID = 1143, x = 0.5930131673812866, y = 0.8866457939147949 }; 
+	[278462] = { zoneID = 862, artID = 887, x = 0.6698203682899475, y = 0.3710588216781616 }; 
+	[281905] = { zoneID = 862, artID = 887, x = 0.8108474612236023, y = 0.4071697592735291 }; 
 	[287324] = { zoneID = 864, artID = 889, x = 0.577404975891113, y = 0.646397650241852 }; 
 	[281906] = { zoneID = 862, x = 0.567527949810028, y = 0.753980457782745 }; 
 	[280504] = { zoneID = 863, x = 0.768778026103973, y = 0.621428787708283 }; 
 	[280951] = { zoneID = 864, x = 0.443273097276688, y = 0.92215222120285 }; 
-	[290770] = { zoneID = 864, x = 0.5221953988075256, y = 0.8337863683700562 }; 
-	[288604] = { zoneID = 862, x = 0.7637903690338135, y = 0.5188829302787781 }; 
-	[279299] = { zoneID = 863, x = 0.462193876504898, y = 0.829722404479981 }; 
-	[279366] = { zoneID = 863, x = 0.384000986814499, y = 0.268951743841171 }; 
+	[290770] = { zoneID = 864, artID = 889, x = 0.5221953988075256, y = 0.8337863683700562 }; 
+	[288604] = { zoneID = 862, artID = 887, x = 0.7637903690338135, y = 0.5188829302787781 }; 
+	[279299] = { zoneID = 863, artID = 888, x = 0.462193876504898, y = 0.829722404479981 }; 
+	[279366] = { zoneID = 863, artID = 888, x = 0.384000986814499, y = 0.268951743841171 }; 
 	[278793] = { zoneID = 862, artID = 887, x = 0.6335594654083252, y = 0.1542438864707947 }; 
-	[278795] = { zoneID = 862, x = 0.745059728622437, y = 0.247647061944008 }; 
+	[278795] = { zoneID = 862, artID = 887, x = 0.745059728622437, y = 0.247647061944008 }; 
 	[271849] = { zoneID = 830, x = 0.568218350410461, y = 0.721074283123016 }; 
-	[284408] = { zoneID = 864, x = 0.606896162033081, y = 0.1222416535019875 }; 
-	[277715] = { zoneID = 863, x = 0.430601298809052, y = 0.507829606533051 }; 
-	[284409] = { zoneID = 864, x = 0.535581827163696, y = 0.164618626236916 }; 
-	[279373] = { zoneID = 863, x = 0.4635122716426849, y = 0.4842756986618042 }; 
+	[284408] = { zoneID = 864, artID = 889, x = 0.606896162033081, y = 0.1222416535019875 }; 
+	[277715] = { zoneID = 863, artID = 888, x = 0.430601298809052, y = 0.507829606533051 }; 
+	[284409] = { zoneID = 864, artID = 889, x = 0.535581827163696, y = 0.164618626236916 }; 
+	[279373] = { zoneID = 863, artID = 888, x = 0.4635122716426849, y = 0.4842756986618042 }; 
 	[280522] = { zoneID = 863, x = 0.778979897499085, y = 0.463620781898499 }; 
 	[284411] = { zoneID = 864, artID = 889, x = 0.529038071632385, y = 0.301978290081024 }; 
 	[284413] = { zoneID = 864, artID = 889, x = 0.3849479258060455, y = 0.4681097567081451 }; 
 	[290725] = { zoneID = 862, x = 0.529649674892426, y = 0.471931338310242 }; 
-	[284416] = { zoneID = 864, x = 0.304890334606171, y = 0.538099825382233 }; 
+	[284416] = { zoneID = 864, artID = 889, x = 0.304890334606171, y = 0.538099825382233 }; 
 	[279253] = { zoneID = 863, x = 0.776865720748901, y = 0.361358255147934 }; 
-	[284418] = { zoneID = 864, x = 0.3758132457733154, y = 0.7604649066925049 }; 
-	[279260] = { zoneID = 863, x = 0.356361865997314, y = 0.856095612049103 }; 
-	[278716] = { zoneID = 862, x = 0.752567768096924, y = 0.623573303222656 }; 
+	[284418] = { zoneID = 864, artID = 889, x = 0.3758132457733154, y = 0.7604649066925049 }; 
+	[279260] = { zoneID = 863, artID = 888, x = 0.356361865997314, y = 0.856095612049103 }; 
+	[278716] = { zoneID = 862, artID = 887, x = 0.752567768096924, y = 0.623573303222656 }; 
 	[272633] = { zoneID = 863, x = 0.817662239074707, y = 0.305250853300095 }; 
 	[278436] = { zoneID = 863, x = 0.667924702167511, y = 0.173468172550201 }; 
 	[281092] = { zoneID = 862, x = 0.647117555141449, y = 0.216731280088425 }; 
 	[278437] = { zoneID = 863, artID = 888, x = 0.427721112966538, y = 0.261998921632767 }; 
-	[284417] = { zoneID = 864, x = 0.318463087081909, y = 0.614532947540283 }; 
-	[284420] = { zoneID = 864, x = 0.5497770309448242, y = 0.7612513899803162 }; 
+	[284417] = { zoneID = 864, artID = 889, x = 0.318463087081909, y = 0.614532947540283 }; 
+	[284420] = { zoneID = 864, artID = 889, x = 0.5497770309448242, y = 0.7612513899803162 }; 
 	[132662] = { zoneID = 864, x = 0.465910941362381, y = 0.880130112171173 }; 
-	[278694] = { zoneID = 862, x = 0.795598804950714, y = 0.157251968979836 }; 
+	[278694] = { zoneID = 862, artID = 887, x = 0.795598804950714, y = 0.157251968979836 }; 
 	[284412] = { zoneID = 864, artID = 889, x = 0.6416643261909485, y = 0.2528935074806213 }; 
-	[277885] = { zoneID = 863, x = 0.354499757289887, y = 0.549823462963104 }; 
+	[277885] = { zoneID = 863, artID = 888, x = 0.354499757289887, y = 0.549823462963104 }; 
 	[284419] = { zoneID = 864, artID = 889, x = 0.4633530974388123, y = 0.8124615550041199 }; 
 	[284414] = { zoneID = 864, artID = 889, x = 0.479725956916809, y = 0.867695510387421 }; 
-	[287304] = { zoneID = 864, x = 0.497808903455734, y = 0.793953478336334 }; 
+	[287304] = { zoneID = 864, artID = 889, x = 0.497808903455734, y = 0.793953478336334 }; 
 	[294317] = { zoneID = 864, x = 0.405703127384186, y = 0.857449233531952 }; 
 	[279609] = { zoneID = 862, x = 0.517133891582489, y = 0.86875331401825 }; 
 	[284455] = { zoneID = 862, x = 0.718238651752472, y = 0.167784661054611 }; 
 	[281655] = { zoneID = 862, x = 0.5143, y = 0.2661 };
-	[287326] = { zoneID = 864, x = 0.293794602155685, y = 0.874249041080475 }; 
-	[287318] = { zoneID = 864, x = 0.4718587398529053, y = 0.5846220850944519 }; 
+	[287326] = { zoneID = 864, artID = 889, x = 0.293794602155685, y = 0.874249041080475 }; 
+	[287318] = { zoneID = 864, artID = 889, x = 0.4718587398529053, y = 0.5846220850944519 }; 
 	[279352] = { zoneID = 864, artID = 889, x = 0.6797625422477722, y = 0.8617241382598877 }; 
-	[284410] = { zoneID = 864, x = 0.6446936726570129, y = 0.3225581645965576 }; 
+	[284410] = { zoneID = 864, artID = 889, x = 0.6446936726570129, y = 0.3225581645965576 }; 
 	[279378] = { zoneID = 863, artID = 888, x = 0.694839417934418, y = 0.303050100803375 }; 
 	[284415] = { zoneID = 864, artID = 889, x = 0.4637280106544495, y = 0.4536804854869843 }; 
 	[279689] = { zoneID = 863, x = 0.620965301990509, y = 0.348738849163055 }; 
@@ -2915,59 +2915,59 @@ private.CONTAINER_ZONE_IDS = {
 	[282153] = { zoneID = 942, x = 0.67216569185257, y = 0.432080954313278 }; 
 	[279042] = { zoneID = 942, x = 0.585993111133576, y = 0.83877170085907 }; 
 	[293350] = { zoneID = 942, x = 0.444388657808304, y = 0.735307514667511 }; 
-	[291254] = { zoneID = 942, x = 0.5974079370498657, y = 0.3895588517189026 }; 
+	[291254] = { zoneID = 942, artID = 967, x = 0.5974079370498657, y = 0.3895588517189026 }; 
 	[291255] = { zoneID = 942, artID = 967, x = 0.736365377902985, y = 0.314059495925903 }; 
 	[279379] = { zoneID = 863, artID = 888, x = 0.610132098197937, y = 0.210287019610405 }; 
-	[277336] = { zoneID = 1165, x = 0.4423371851444244, y = 0.1318767964839935 }; 
+	[277336] = { zoneID = 1165, artID = 1143, x = 0.4423371851444244, y = 0.1318767964839935 }; 
 	[131453] = { zoneID = 895, x = 0.673954129219055, y = 0.516639292240143 }; 
 	[291266] = { zoneID = 942, artID = 967, x = 0.3885087668895721, y = 0.4199527204036713 }; 
 	[281176] = { zoneID = 862, x = 0.716771185398102, y = 0.412778198719025 }; 
 	[273900] = { zoneID = 895, artID = 920, x = 0.770786345005035, y = 0.773464381694794 }; 
 	[273902] = { zoneID = 895, artID = 920, x = 0.7768117189407349, y = 0.8504564762115479 }; 
 	[273903] = { zoneID = 895, artID = 920, x = 0.73459392786026, y = 0.831866979598999 }; 
-	[273905] = { zoneID = 895, x = 0.372227728366852, y = 0.283539295196533 }; 
-	[273910] = { zoneID = 895, x = 0.4308087229728699, y = 0.3019811511039734 }; 
+	[273905] = { zoneID = 895, artID = 920, x = 0.372227728366852, y = 0.283539295196533 }; 
+	[273910] = { zoneID = 895, artID = 920, x = 0.4308087229728699, y = 0.3019811511039734 }; 
 	[273917] = { zoneID = 895, artID = 920, x = 0.8134256601333618, y = 0.4935251176357269 }; 
 	[275070] = { zoneID = 895, artID = 920, x = 0.5544219613075256, y = 0.1718996316194534 }; 
 	[275071] = { zoneID = 895, artID = 920, x = 0.899773120880127, y = 0.782447695732117 }; 
 	[275074] = { zoneID = 895, artID = 920, x = 0.688045859336853, y = 0.1738923192024231 }; 
-	[275076] = { zoneID = 895, x = 0.4853620529174805, y = 0.1829876750707626 }; 
-	[273956] = { zoneID = 895, x = 0.5740616917610168, y = 0.2850312888622284 }; 
-	[280751] = { zoneID = 895, x = 0.4097157120704651, y = 0.1414643377065659 }; 
-	[273919] = { zoneID = 895, x = 0.6988694071769714, y = 0.5229026675224304 }; 
-	[291228] = { zoneID = 896, x = 0.252302497625351, y = 0.4981349408626556 }; 
-	[291229] = { zoneID = 896, x = 0.2647028863430023, y = 0.5900713801383972 }; 
+	[275076] = { zoneID = 895, artID = 920, x = 0.4853620529174805, y = 0.1829876750707626 }; 
+	[273956] = { zoneID = 895, artID = 920, x = 0.5740616917610168, y = 0.2850312888622284 }; 
+	[280751] = { zoneID = 895, artID = 920, x = 0.4097157120704651, y = 0.1414643377065659 }; 
+	[273919] = { zoneID = 895, artID = 920, x = 0.6988694071769714, y = 0.5229026675224304 }; 
+	[291228] = { zoneID = 896, artID = 921, x = 0.252302497625351, y = 0.4981349408626556 }; 
+	[291229] = { zoneID = 896, artID = 921, x = 0.2647028863430023, y = 0.5900713801383972 }; 
 	[279750] = { zoneID = 895, x = 0.673626244068146, y = 0.516348123550415 }; 
 	[291246] = { zoneID = 942, artID = 967, x = 0.6723926067352295, y = 0.432004988193512 }; 
 	[294174] = { zoneID = 942, x = 0.460047096014023, y = 0.306927144527435 }; 
 	[273955] = { zoneID = 895, artID = 920, x = 0.5304228663444519, y = 0.3133111894130707 }; 
-	[291244] = { zoneID = 942, x = 0.6994632482528687, y = 0.5702658891677856 }; 
+	[291244] = { zoneID = 942, artID = 967, x = 0.6994632482528687, y = 0.5702658891677856 }; 
 	[302955] = { zoneID = 895, x = 0.836409330368042, y = 0.35724875330925 }; 
 	[293881] = { zoneID = 895, x = 0.904966056346893, y = 0.755060434341431 }; 
 	[293852] = { zoneID = 895, x = 0.549934208393097, y = 0.460786372423172 };
 	[293884] = { zoneID = 895, x = 0.489785760641098, y = 0.375943332910538 }; 
 	[293880] = { zoneID = 895, x = 0.292241752147675, y = 0.253416895866394 }; 
-	[291204] = { zoneID = 896, x = 0.6155473589897156, y = 0.204302653670311 }; 
+	[291204] = { zoneID = 896, artID = 921, x = 0.6155473589897156, y = 0.204302653670311 }; 
 	[291213] = { zoneID = 896, artID = 921, x = 0.5472766160964966, y = 0.4441965520381928 }; 
-	[291201] = { zoneID = 896, x = 0.6608323454856873, y = 0.2411868423223496 }; 
-	[291217] = { zoneID = 896, x = 0.65118819475174, y = 0.518438220024109 }; 
+	[291201] = { zoneID = 896, artID = 921, x = 0.6608323454856873, y = 0.2411868423223496 }; 
+	[291217] = { zoneID = 896, artID = 921, x = 0.65118819475174, y = 0.518438220024109 }; 
 	[291223] = { zoneID = 896, artID = 921, x = 0.679749667644501, y = 0.630029976367951 }; 
 	[291224] = { zoneID = 896, artID = 921, x = 0.3017767071723938, y = 0.1821585595607758 }; 
 	[291226] = { zoneID = 896, artID = 921, x = 0.232158660888672, y = 0.126123666763306 }; 
-	[291211] = { zoneID = 896, x = 0.4625930488109589, y = 0.2688711285591126 }; 
+	[291211] = { zoneID = 896, artID = 921, x = 0.4625930488109589, y = 0.2688711285591126 }; 
 	[297879] = { zoneID = 896, x = 0.556, y = 0.5181 }; 
 	[297878] = { zoneID = 896, x = 0.18509602546692, y = 0.51338189840317 };
 	[297881] = { zoneID = 896, x = 0.25455021858215, y = 0.24183428287506 };
 	[291225] = { zoneID = 896, artID = 921, x = 0.2826936841011047, y = 0.3040754199028015 }; 
-	[291227] = { zoneID = 896, x = 0.2459205985069275, y = 0.4028444290161133 }; 
-	[291230] = { zoneID = 896, x = 0.3766935169696808, y = 0.5944631099700928 }; 
+	[291227] = { zoneID = 896, artID = 921, x = 0.2459205985069275, y = 0.4028444290161133 }; 
+	[291230] = { zoneID = 896, artID = 921, x = 0.3766935169696808, y = 0.5944631099700928 }; 
 	[297880] = { zoneID = 896, x = 0.67761027812958, y = 0.7368004322052 };
 	[291263] = { zoneID = 942, artID = 967, x = 0.4628048241138458, y = 0.727338969707489 }; 
-	[291264] = { zoneID = 942, x = 0.343027800321579, y = 0.7591455578804016 }; 
+	[291264] = { zoneID = 942, artID = 967, x = 0.343027800321579, y = 0.7591455578804016 }; 
 	[303039] = { zoneID = 942, x = 0.321534246206284, y = 0.662365257740021 }; 
 	[291258] = { zoneID = 942, artID = 967, x = 0.4839732646942139, y = 0.657026469707489 }; 
 	[303170] = { zoneID = 942, x = 0.328831404447556, y = 0.696503639221191 }; 
-	[291265] = { zoneID = 942, x = 0.300043404102325, y = 0.514639973640442 }; 
+	[291265] = { zoneID = 942, artID = 967, x = 0.300043404102325, y = 0.514639973640442 }; 
 	[284421] = { zoneID = 864, artID = 889, x = 0.5343242883682251, y = 0.5150306224822998 }; 
 	[281646] = { zoneID = 942, x = 0.665571808815003, y = 0.711404800415039 };
 	[294319] = { zoneID = 864, x = 0.264735639095306, y = 0.453562617301941 };
@@ -2977,10 +2977,10 @@ private.CONTAINER_ZONE_IDS = {
 	[292676] = { zoneID = 1161, x = 0.63129240274429, y = 0.8186137676239 };
 	[292677] = { zoneID = 1161, x = 0.55979037284851, y = 0.91297948360443 };
 	[292686] = { zoneID = 1161, x = 0.5519585609436, y = 0.90129750967026 };
-	[273407] = { zoneID = 882, x = 0.6220277547836304, y = 0.2635809183120728 }; 
-	[273301] = { zoneID = 882, x = 0.4804967641830444, y = 0.6121742129325867 }; 
-	[273412] = { zoneID = 882, x = 0.4053158760070801, y = 0.5537358522415161 }; 
-	[273415] = { zoneID = 882, x = 0.494375705718994, y = 0.23897922039032 }; 
+	[273407] = { zoneID = 882, artID = 907, x = 0.6220277547836304, y = 0.2635809183120728 }; 
+	[273301] = { zoneID = 882, artID = 907, x = 0.4804967641830444, y = 0.6121742129325867 }; 
+	[273412] = { zoneID = 882, artID = 907, x = 0.4053158760070801, y = 0.5537358522415161 }; 
+	[273415] = { zoneID = 882, artID = 907, x = 0.494375705718994, y = 0.23897922039032 }; 
 	[277637] = { zoneID = 882, artID = 907, x = 0.3233698010444641, y = 0.2129942178726196 }; 
 	[237724] = { zoneID = 590, artID = 614, x = 0.4211061298847199, y = 0.4722975492477417 }; 
 	[272770] = { zoneID = 830, x = 0.354208886623383, y = 0.563741266727448 }; 
@@ -3003,20 +3003,20 @@ private.CONTAINER_ZONE_IDS = {
 	[136109] = { zoneID = 864, x = 0.304547965526581, y = 0.601355373859406 }; 
 	[136144] = { zoneID = 864, x = 0.280950307846069, y = 0.641453504562378 };
 	[298920] = { zoneID = 896, x = 0.244, y = 0.486 };
-	[291257] = { zoneID = 942, x = 0.7414090037345886, y = 0.6779300570487976 }; 
-	[291259] = { zoneID = 942, x = 0.4784861207008362, y = 0.5546790957450867 }; 
+	[291257] = { zoneID = 942, artID = 967, x = 0.7414090037345886, y = 0.6779300570487976 }; 
+	[291259] = { zoneID = 942, artID = 967, x = 0.4784861207008362, y = 0.5546790957450867 }; 
 	[273918] = { zoneID = 895, artID = 920, x = 0.7610440850257874, y = 0.6732258200645447 }; 
-	[291267] = { zoneID = 942, x = 0.622101366519928, y = 0.4885431528091431 }; 
-	[279325] = { zoneID = 863, x = 0.6236646175384521, y = 0.5430987477302551 }; 
-	[287531] = { zoneID = 942, x = 0.6133604645729065, y = 0.6310023069381714 }; 
+	[291267] = { zoneID = 942, artID = 967, x = 0.622101366519928, y = 0.4885431528091431 }; 
+	[279325] = { zoneID = 863, artID = 888, x = 0.6236646175384521, y = 0.5430987477302551 }; 
+	[287531] = { zoneID = 942, artID = 967, x = 0.6133604645729065, y = 0.6310023069381714 }; 
 	[281381] = { zoneID = 863, x = 0.808919012546539, y = 0.46753516793251 }; 
 	[281390] = { zoneID = 863, x = 0.685224831104279, y = 0.328186571598053 }; 
 	[284469] = { zoneID = 895, artID = 920, x = 0.7432176470756531, y = 0.4039365649223328 }; 
-	[282721] = { zoneID = 863, x = 0.6668678522109985, y = 0.5005109310150146 }; 
+	[282721] = { zoneID = 863, artID = 888, x = 0.6668678522109985, y = 0.5005109310150146 }; 
 	[294311] = { zoneID = 942, artID = 967, x = 0.821177661418915, y = 0.44027104973793 }; 
-	[279367] = { zoneID = 863, x = 0.4928281009197235, y = 0.3332444727420807 }; 
+	[279367] = { zoneID = 863, artID = 888, x = 0.4928281009197235, y = 0.3332444727420807 }; 
 	[281388] = { zoneID = 863, x = 0.340138584375382, y = 0.751240253448486 }; 
-	[291222] = { zoneID = 896, x = 0.6470158100128174, y = 0.61958247423172 }; 
+	[291222] = { zoneID = 896, artID = 921, x = 0.6470158100128174, y = 0.61958247423172 }; 
 	[237722] = { zoneID = 582, x = 0.370548129081726, y = 0.318072825670242 }; 
 	[273414] = { zoneID = 882, x = 0.671606361865997, y = 0.537978172302246 }; 
 	[281365] = { zoneID = 862, artID = 887, x = 0.627342820167542, y = 0.205701038241386 }; 
@@ -3027,7 +3027,7 @@ private.CONTAINER_ZONE_IDS = {
 	[273519] = { zoneID = 885, artID = 910, x = 0.6213501691818237, y = 0.6937665939331055 }; 
 	[273521] = { zoneID = 885, x = 0.516927540302277, y = 0.352976560592651 }; 
 	[273524] = { zoneID = 885, x = 0.506362676620483, y = 0.57169634103775 }; 
-	[273527] = { zoneID = 885, x = 0.6794126033782959, y = 0.4005668759346008 }; 
+	[273527] = { zoneID = 885, artID = 910, x = 0.6794126033782959, y = 0.4005668759346008 }; 
 	[273535] = { zoneID = 885, x = 0.680888891220093, y = 0.507434844970703 }; 
 	[273538] = { zoneID = 885, artID = 910, x = 0.6551705598831177, y = 0.4075368046760559 }; 
 	[277384] = { zoneID = 903, x = 0.299846708774567, y = 0.740603685379028 }; 
@@ -3044,15 +3044,15 @@ private.CONTAINER_ZONE_IDS = {
 	[252448] = { zoneID = 680, x = 0.419633239507675, y = 0.191859796643257 }; 
 	[28441] = { zoneID = 903, x = 0.299846708774567, y = 0.740603685379028 }; 
 	[254001] = { zoneID = 749, x = 0.410724103450775, y = 0.535785436630249 }; 
-	[273523] = { zoneID = 885, x = 0.637017548084259, y = 0.2568875551223755 }; 
+	[273523] = { zoneID = 885, artID = 910, x = 0.637017548084259, y = 0.2568875551223755 }; 
 	[276224] = { zoneID = 882, x = 0.505763053894043, y = 0.383922278881073 }; 
-	[273533] = { zoneID = 885, x = 0.596255898475647, y = 0.1399575471878052 }; 
+	[273533] = { zoneID = 885, artID = 910, x = 0.596255898475647, y = 0.1399575471878052 }; 
 	[273439] = { zoneID = 882, x = 0.253742933273315, y = 0.301466047763824 }; 
 	[277207] = { zoneID = 885, x = 0.491382896900177, y = 0.59389990568161 }; 
 	[276225] = { zoneID = 882, x = 0.611298263072968, y = 0.725621700286865 }; 
 	[277340] = { zoneID = 882, x = 0.621334791183472, y = 0.224928438663483 }; 
 	[273901] = { zoneID = 1169, x = 0.274347364902496, y = 0.667651534080505 }; 
-	[273528] = { zoneID = 885, x = 0.7724431753158569, y = 0.5876553654670715 }; 
+	[273528] = { zoneID = 885, artID = 910, x = 0.7724431753158569, y = 0.5876553654670715 }; 
 	[290129] = { zoneID = 62, x = 0.502631604671478, y = 0.426830559968948 }; 
 	[326411] = { zoneID = 1355, artID = 1186, x = 0.3446361422538757, y = 0.4036139845848084 }; 
 	[326399] = { zoneID = 1355, artID = 1186, x = 0.3790086507797241, y = 0.06442147493362427 }; 
@@ -3105,12 +3105,12 @@ private.CONTAINER_ZONE_IDS = {
 	[334237] = { zoneID = 1530, artID = 1342, x = 0.5227696299552917, y = 0.6731983423233032 }; 
 	[334228] = { zoneID = 1530, artID = 1342, x = 0.3098151385784149, y = 0.3065865635871887 }; 
 	[334229] = { zoneID = 1530, artID = 1342, x = 0.2798174023628235, y = 0.1820761114358902 }; 
-	[334213] = { zoneID = 1530, artID = 1342, x = 0.6493009924888611, y = 0.2682294547557831 }; 
-	[334215] = { zoneID = 1530, artID = 1342, x = 0.6520653367042542, y = 0.6504901051521301 }; 
-	[334216] = { zoneID = 1530, artID = 1342, x = 0.878266453742981, y = 0.3771698772907257 }; 
-	[334220] = { zoneID = 1530, artID = 1342, x = 0.6309910416603088, y = 0.7059316635131836 }; 
-	[334189] = { zoneID = 1530, artID = 1342, x = 0.4448193311691284, y = 0.3692551851272583 }; 
-	[334223] = { zoneID = 1530, artID = 1342, x = 0.4245273768901825, y = 0.6853962540626526 }; 
+	[334213] = { zoneID = 1530, artID = 1342, x = 0.6721922755241394, y = 0.2782274782657623 }; 
+	[334215] = { zoneID = 1530, artID = 1342, x = 0.6257796883583069, y = 0.5724075436592102 }; 
+	[334216] = { zoneID = 1530, artID = 1342, x = 0.77410888671875, y = 0.313030481338501 }; 
+	[334220] = { zoneID = 1530, artID = 1342, x = 0.7150130867958069, y = 0.6854743361473083 }; 
+	[334189] = { zoneID = 1530, artID = 1342, x = 0.5267727971076965, y = 0.3967708647251129 }; 
+	[334223] = { zoneID = 1530, artID = 1342, x = 0.4419025778770447, y = 0.6853326559066772 }; 
 	[324413] = { zoneID = 1527, artID = 1343, x = 0.849989116191864, y = 0.509798526763916 }; 
 	[325973] = { zoneID = 1527, artID = 1343, x = 0.722179114818573, y = 0.6422584652900696 }; 
 	[325974] = { zoneID = 1527, artID = 1343, x = 0.7636181712150574, y = 0.4879870116710663 }; 
@@ -3124,12 +3124,18 @@ private.CONTAINER_ZONE_IDS = {
 	[335711] = { zoneID = 1527, artID = 1343, x = 0.6443648338317871, y = 0.6501119136810303 }; 
 	[161139] = { zoneID = 1571, artID = 1364, x = 0.5512126088142395, y = 0.3465163111686707 }; 
 	[335703] = { zoneID = 1527, artID = 1343, x = 0.716468334197998, y = 0.7333951592445374 }; 
+	[339243] = { zoneID = 1527, artID = 1343, x = 0.3626028001308441, y = 0.232399120926857 }; 
+	[339247] = { zoneID = 1527, artID = 1343, x = 0.3395749926567078, y = 0.3036787807941437 }; 
+	[339249] = { zoneID = 1527, artID = 1343, x = 0.1835607886314392, y = 0.6129975914955139 }; 
+	[339251] = { zoneID = 1527, artID = 1343, x = 0.4717409014701843, y = 0.5609307885169983 }; 
+	[339250] = { zoneID = 1527, artID = 1343, x = 0.3297179341316223, y = 0.6011260747909546 }; 
+	[339248] = { zoneID = 1527, artID = 1343, x = 0.3877929449081421, y = 0.4014920592308044 }; 
 }
 
 private.EVENT_ZONE_IDS = {
 	[125230] = { zoneID = 863, x = 0.81867903470993, y = 0.305899769067764 }; 
-	[141124] = { zoneID = 863, x = 0.529609858989716, y = 0.72052788734436 }; 
-	[282660] = { zoneID = 863, x = 0.380861282348633, y = 0.576815903186798 }; 
+	[141124] = { zoneID = 863, artID = 888, x = 0.529609858989716, y = 0.72052788734436 }; 
+	[282660] = { zoneID = 863, artID = 888, x = 0.380861282348633, y = 0.576815903186798 }; 
 	[137180] = { zoneID = 895, x = 0.643052101135254, y = 0.193795710802078 }; 
 	[127651] = { zoneID = 896, x = 0.731506824493408, y = 0.601005792617798 }; 
 	[277897] = { zoneID = 896, x = 0.679904878139496, y = 0.668847680091858 }; 
@@ -3204,4 +3210,16 @@ private.EVENT_ZONE_IDS = {
 	[156614] = { zoneID = 1527, artID = 1343, x = 0.6444364190101624, y = 0.2270469963550568 }; 
 	[327554] = { zoneID = 1530, artID = 1342, x = 0.5668133497238159, y = 0.593210756778717 }; 
 	[164361] = { zoneID = 1527, artID = 1343, x = 0.7159016728401184, y = 0.4586372673511505 }; 
+	[163356] = { zoneID = 1527, artID = 1343, x = 0.3160574436187744, y = 0.4381363987922669 }; 
+	[163357] = { zoneID = 1527, artID = 1343, x = 0.451382577419281, y = 0.4306272268295288 }; 
+	[163358] = { zoneID = 1527, artID = 1343, x = 0.3713153004646301, y = 0.6708606481552124 }; 
+	[163359] = { zoneID = 1527, artID = 1343, x = 0.314061164855957, y = 0.555548906326294 }; 
+	[163360] = { zoneID = 1527, artID = 1343, x = 0.2073018252849579, y = 0.5906980633735657 }; 
+	[163361] = { zoneID = 1527, artID = 1343, x = 0.344004213809967, y = 0.2929791212081909 }; 
+	[163362] = { zoneID = 1527, artID = 1343, x = 0.2242819964885712, y = 0.6412353515625 }; 
+	[163204] = { zoneID = 1527, artID = 1343, x = 0.2776930332183838, y = 0.5705471038818359 }; 
+	[163223] = { zoneID = 1527, artID = 1343, x = 0.4685384333133698, y = 0.580745279788971 }; 
+	[163264] = { zoneID = 1527, artID = 1343, x = 0.2832901775836945, y = 0.6559913158416748 }; 
+	[163337] = { zoneID = 1527, artID = 1343, x = 0.3653130233287811, y = 0.2066219300031662 }; 
+	[163198] = { zoneID = 1527, artID = 1343, x = 0.3707422912120819, y = 0.4778100848197937 }; 
 }

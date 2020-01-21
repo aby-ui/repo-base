@@ -225,6 +225,8 @@
 		[SPELLID_SHAMAN_SLT] = true, --> Spirit Link Toten
 		[SPELLID_PALADIN_LIGHTMARTYR] = true, --> Light of the Martyr
 		[SPELLID_MONK_STAGGER] = true, --> Stagger
+		[315161] = true, --> Eye of Corruption --REMOVE ON 9.0
+		[315197] = true, --> Thing From Beyond --REMOVE ON 9.0
 	}
 	
 	--> damage spells to ignore
@@ -528,6 +530,11 @@
 		if (is_using_spellId_override) then
 			spellid = override_spellId [spellid] or spellid
 		end
+
+		--Thing From Beyond 8.3 REMOVE ON 9.0
+		if(alvo_serial:match("161895%-%w+$")) then
+			alvo_flags = 0xa48
+		end
 		
 		--> avoid doing spellID checks on each iteration
 		if (special_damage_spells [spellid]) then
@@ -543,6 +550,14 @@
 			elseif (spellid == SPELLID_PALADIN_LIGHTMARTYR) then -- or spellid == 183998 < healing part
 				return parser:LOTM_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
 				
+			--Eye of Corruption 8.3 REMOVE ON 9.0
+			elseif (spellid == 315161) then
+				local enemyName = GetSpellInfo(315161)
+				who_serial, who_name, who_flags = "", enemyName, 0xa48
+				
+			--Thing From Beyond 8.3 REMOVE ON 9.0
+			elseif (spellid == 315197) then
+				who_flags = 0xa48
 			end
 		end
 		
@@ -1966,6 +1981,12 @@
 	--> recording debuffs applied by player
 
 		elseif (tipo == "DEBUFF") then
+
+			--Eye of Corruption 8.3 REMOVE ON 9.0
+			if (spellid == 315161) then
+				local enemyName = GetSpellInfo(315161)
+				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
 			
 			if (_in_combat) then
 			
@@ -2213,6 +2234,13 @@
 
 		elseif (tipo == "DEBUFF") then
 		--print ("debuff - ", token, spellname)
+
+			--Eye of Corruption 8.3 REMOVE ON 9.0
+			if (spellid == 315161) then
+				local enemyName = GetSpellInfo(315161)
+				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
+
 			if (_in_combat) then
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
@@ -2344,6 +2372,12 @@
 	--> recording debuffs applied by player
 		elseif (tipo == "DEBUFF") then
 		
+			--Eye of Corruption 8.3 REMOVE ON 9.0
+			if (spellid == 315161) then
+				local enemyName = GetSpellInfo(315161)
+				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
+
 			if (_in_combat) then
 			------------------------------------------------------------------------------------------------
 			--> buff uptime

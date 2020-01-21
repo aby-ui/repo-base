@@ -58,6 +58,7 @@ rematch.notableGroups = {
 	[26] = L["Nazjatar"],
 	[27] = L["Mechagon"],
 	[28] = L["Stratholme"],
+	[29] = L["Blackrock Depths"],
 }
 
 rematch.notableNPCs = {
@@ -411,6 +412,19 @@ rematch.notableNPCs = {
 	{ 155414, 28, 2768, 2769, 2770 }, -- Fras Siabi
 	{ 155413, 28, 2774, 2771, 2772 }, -- Postmaster Malown
 
+	{ 160209, 29, 2801, 2800, 2799 }, -- Horu Cloudwatcher
+	{ 161650, 29, 2816 }, -- Liz
+	{ 161649, 29, 2815 }, -- Rampage
+	{ 161651, 29, 2817 }, -- Ralf
+	{ 160207, 29, 2802, 2803 }, -- Therin Skysong
+	{ 161661, 29, 2821 }, -- Wilbur
+	{ 161658, 29, 2820 }, -- Shred
+	{ 161656, 29, 2818 }, -- Splint
+	{ 161662, 29, 2822 }, -- Char
+	{ 160206, 29, 2804, 2805, 2806 }, -- Alran Heartshade
+	{ 160208, 29, 2807, 2808, 2809 }, -- Zuna Skullcrush
+	{ 160210, 29, 2810, 2811, 2812 }, -- Tasha Riley
+	{ 160205, 29, 2814 }, -- Pixy Wizzle
 
 }
 
