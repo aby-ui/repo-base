@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200121043449")
+mod:SetRevision("20200121232330")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetZone()
@@ -54,7 +54,7 @@ local warnInsanityBomb						= mod:NewTargetAnnounce(306984, 2)
 
 --General
 local specWarnGiftofNzoth					= mod:NewSpecialWarningYou(313334, nil, nil, nil, 1, 2)
-local specWarnServantofNzoth				= mod:NewSpecialWarningTargetChange(307832, "-Healer", nil, nil, 1, 2)
+local specWarnServantofNzoth				= mod:NewSpecialWarningTargetChange(307832, false, nil, 2, 1, 2)
 local yellServantofNzoth					= mod:NewYell(307832)
 local specWarnBlackScar						= mod:NewSpecialWarningStack(315954, nil, 2, nil, nil, 1, 6)
 local specWarnBlackScarTaunt				= mod:NewSpecialWarningTaunt(315954, nil, nil, nil, 1, 2)

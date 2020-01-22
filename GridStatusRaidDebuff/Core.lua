@@ -1,4 +1,5 @@
 local zoneOrder = {
+    [C_Map.GetMapInfo(1581).name] = 1,
     [C_Map.GetMapInfo(1512).name] = 1,
     [C_Map.GetMapInfo(1358).name] = 1.1,
     [C_Map.GetMapInfo(1162).name] = 1.1,

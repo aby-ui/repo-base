@@ -871,8 +871,10 @@ do
             Broker_CurrencyCharDB["summary1755"] = true
             Broker_CurrencyCharDB.show1721 = false
             Broker_CurrencyCharDB["summary1721"] = false
-            Broker_CurrencyCharDB.show1718 = false
-            Broker_CurrencyCharDB["summary1718"] = false
+        elseif not Broker_CurrencyCharDB.update830b then
+            Broker_CurrencyCharDB.update830b = true
+            Broker_CurrencyCharDB.show1718 = true
+            Broker_CurrencyCharDB["summary1718"] = true
         end
 
 

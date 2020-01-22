@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2369, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191213230833")
+mod:SetRevision("20200121194329")
 mod:SetCreatureID(157620)
 mod:SetEncounterID(2334)
 mod:SetZone()
@@ -211,6 +211,9 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 308065 or spellId == 307950 then
 		if args:IsPlayer() then
 			yellShredPsycheFades:Cancel()
+		end
+		if self.Options.SetIconOnAdds then
+			self:SetIcon(args.destName, 0)
 		end
 	end
 end

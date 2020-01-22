@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200120230655")
+mod:SetRevision("20200122052607")
 mod:SetCreatureID(151798)
 mod:SetEncounterID(2336)
 mod:SetZone()
@@ -402,7 +402,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			self.vb.gatewayCount = self.vb.gatewayCount + 1
 			specWarnDarkGateway:Show(self.vb.gatewayCount)
 			specWarnDarkGateway:Play("killmob")
-			timerDarkGatewayCD:Start(33.2, self.vb.gatewayCount+1)
+			timerDarkGatewayCD:Start(33, self.vb.gatewayCount+1)
 		end
 	elseif spellId == 316437 then--No Escape
 		local guid = UnitGUID(uId)

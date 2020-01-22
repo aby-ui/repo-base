@@ -45,7 +45,7 @@ local FrameDefaults = {
 	itemScale = Addon.ItemScale or 1,
 	spacing = 2,
 
-	brokerObject = 'Broker Currency', --163ui ADDON .. 'Launcher',
+	brokerObject = Addon.Name .. 'Launcher',
 	hiddenRules = {contain = true},
 	hiddenBags = {},
 
@@ -64,36 +64,31 @@ local ProfileDefaults = {
 		borderColor = {1, 1, 1, 1},
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
-		columns = 10,
+		columns = 8,
 		width = 384,
 		height = 200,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
-		exclusiveReagent = true,
 		borderColor = {1, 1, 0, 1},
 		point = 'LEFT',
-		columns = 14,
+		columns = 12,
 		width = 600,
 		height = 500,
-        showBags = true,
-        hiddenBags = {
-            [-3] = true,
-        },
 		x = 95
 	}, FrameDefaults),
 
 	vault = SetDefaults({
 		borderColor = {1, 0, 0.98, 1},
 		point = 'LEFT',
-		columns = 14,
+		columns = 10,
 		x = 95
 	}, FrameDefaults),
 
 	guild = SetDefaults({
 		borderColor = {0, 1, 0, 1},
 		point = 'CENTER',
-		columns = 14,
+		columns = 7,
 	}, FrameDefaults)
 }
 
