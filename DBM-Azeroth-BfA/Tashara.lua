@@ -1,8 +1,7 @@
-if not WorldMap_EventOverlayDataProviderMixin then return end--Random 8.3 api check
 local mod	= DBM:NewMod(2380, "DBM-Azeroth-BfA", 6, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200110170305")
+mod:SetRevision("20200122205902")
 --mod:SetCreatureID(132253)--Still Unknown, 3 IDs exist, only 1 is correct
 mod:SetEncounterID(2352)
 mod:SetReCombatTime(20)

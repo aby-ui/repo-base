@@ -491,6 +491,32 @@ GTFO.SpellID["302305"] = {
   sound = 3;
 };
 
+GTFO.SpellID["308357"] = {
+  --desc = "Piercing Shot (Fallen Heartpiercer)";
+  sound = 3;
+};
+
+GTFO.SpellID["308508"] = {
+  --desc = "Rift Strike (Fallen Riftwalker)";
+  sound = 3;
+};
+
+GTFO.SpellID["308481"] = {
+  --desc = "Rift Strike (Fallen Riftwalker)";
+  sound = 3;
+};
+
+GTFO.SpellID["308288"] = {
+  --desc = "Darkened Sky (Alleria Windrunner)";
+  sound = 3;
+};
+
+GTFO.SpellID["309819"] = {
+  --desc = "Void Eruption (Alleria Windrunner)";
+  sound = 3;
+};
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -1804,5 +1830,37 @@ GTFO.SpellID["303729"] = {
   --desc = "Crackling Tornado (Rak'sha the Swift)";
   sound = 3;
 };
+
+-- *************
+-- * Ny'alotha *
+-- *************
+
+-- TODO: Molten Eruption (Wrathion)
+-- TODO: Tail Swipe (Wrathion)
+-- TODO: Gale Blast (Wrathion) (Avoid?)
+-- TODO: Searing Breath (Wrathion) (Non-Tank)
+-- TODO: Black Wings (Maut) (?)
+-- TODO: Terror Wave (Dark Inquisitor Xanesh)
+-- TODO: Doom (Dark Inquisitor Xanesh)
+-- TODO: Torment (Dark Inquisitor Xanesh)
+-- TODO: Nullification Blast (Tek'ris)
+-- TODO: Entropic Echo (Tek'ris)
+-- TODO: Umbral Eruption (Shad'har the Insatiable) -- Avoidable?
+-- TODO: Umbral Breath (Shad'har the Insatiable) -- Avoidable?
+-- TODO: Entropic Breath (Shad'har the Insatiable) -- Avoidable?
+-- TODO: Bubbling Breath (Shad'har the Insatiable) -- Avoidable?
+-- TODO: Eye of N'Zoth (Il'gynoth, Corruption Reborn) -- Non-Tank
+-- TODO: Twilight Breath (Vexiona) -- Non-Tank
+-- TODO: Brutal Smash (Iron-Willed Enforcer) -- Mythic only, avoidable?
+-- TODO: Twilight Decimator (Vexiona)
+-- TODO: Madness Bomb (Carapace of N'Zoth) -- FF alert
+-- TODO: Horrific Hemorrhage (Carapace of N'Zoth) -- Avoidable?
+-- TODO: Insanity Bomb (Carapace of N'Zoth) -- FF alert
+-- TODO: Corrupted Viscera (N'Zoth) -- Avoidable?
+-- TODO: Psychic Burst (N'Zoth) -- FF
+-- TODO: Flames of Insanity (N'Zoth) -- Avoidable?
+-- TODO: Stupefying Glare (N'Zoth) -- Avoidable?
+
+
 
 end

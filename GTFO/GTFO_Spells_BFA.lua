@@ -363,6 +363,12 @@ GTFO.SpellID["312682"] = {
   sound = 1;
 };
 
+GTFO.SpellID["316258"] = {
+  --desc = "Bile (Aqir Goliath)";
+  sound = 1;
+};
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -1145,5 +1151,51 @@ GTFO.SpellID["298569"] = {
   sound = 1;
   minimumStacks = 5;
 };
+
+-- *************
+-- * Ny'alotha *
+-- *************
+
+-- TODO: Burning Cataclysm (Wrathion)
+-- TODO: Crackling Shard (Wrathion) -- Alert when NOT afflicated with Burning Madness
+-- TODO: Scorching Blisters (Wrathion)
+-- TODO: Acidic Blood (Ka'zir) -- Mythic only, avoidable?
+-- TODO: Shadowy Residue (Vexiona)
+-- TODO: Mycelial Growth (Carapace of N'Zoth) 
+-- TODO: Infinite Void (Carapace of N'Zoth) 
+-- TODO: Paranoia (N'Zoth) -- FF, complicated mechanic to track?
+-- TODO: Devour Thoughts (N'Zoth) -- FF
+-- TODO: Contempt (N'Zoth) -- Low damage?
+
+GTFO.SpellID["306824"] = {
+  --desc = "Molten Pool (Wrathion)";
+  sound = 1;
+};
+
+GTFO.SpellID["307053"] = {
+  --desc = "Lava Pools (Wrathion)";
+  sound = 1;
+};
+
+GTFO.SpellID["305575"] = {
+  --desc = "Ritual Field (Dark Inquisitor Xanesh)";
+  sound = 1;
+};
+
+GTFO.SpellID["310322"] = {
+  --desc = "Morass of Corruption (Il'gynoth, Corruption Reborn)";
+  sound = 1;
+};
+
+GTFO.SpellID["307343"] = {
+  --desc = "Shadowy Residue (Vexiona)";
+  sound = 1;
+};
+
+GTFO.SpellID["309991"] = {
+  --desc = "Anguish (N'Zoth)";
+  sound = 1;
+};
+
 
 end

@@ -1,8 +1,7 @@
-if not WorldMap_EventOverlayDataProviderMixin then return end--Random 8.3 api check
 local mod	= DBM:NewMod(2381, "DBM-Azeroth-BfA", 6, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200110170305")
+mod:SetRevision("20200122205902")
 mod:SetCreatureID(160970)
 mod:SetEncounterID(2353)
 mod:SetReCombatTime(20)

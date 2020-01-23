@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200121042756")
+mod:SetRevision("20200122202716")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -25,7 +25,8 @@ mod:RegisterEventsInCombat(
 --TODO, maybe add https://ptr.wowhead.com/spell=298510/aqiri-mind-toxin
 --TODO, improve https://ptr.wowhead.com/spell=306001/explosive-leap warning if can get throw target
 --TODO, can https://ptr.wowhead.com/spell=305875/visceral-fluid be dodged? If so upgrade the warning
---Extra Abilities (used by Thrall and the area LTs)
+local warnScorchedFeet				= mod:NewSpellAnnounce(315385, 4)
+--Extra Abilities (used by main boss and the area LTs)
 local warnCriesoftheVoid			= mod:NewCastAnnounce(304976, 4)
 local warnVoidQuills				= mod:NewCastAnnounce(304251, 3)
 --Other notable abilities by mini bosses/trash
@@ -38,7 +39,7 @@ local warnEndlessHungerTotem		= mod:NewSpellAnnounce(297237, 4)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 local specWarnEntomophobia			= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
 --local specWarnDarkDelusions			= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
-local specWarnScorchedFeet			= mod:NewSpecialWarningYou(315385, nil, nil, nil, 1, 2)
+local specWarnScorchedFeet			= mod:NewSpecialWarningYou(315385, false, nil, 2, 1, 2)
 local yellScorchedFeet				= mod:NewYell(315385)
 local specWarnSplitPersonality		= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
 local specWarnWaveringWill			= mod:NewSpecialWarningReflect(311641, "false", nil, nil, 1, 2)--Off by default, it's only 5%, but that might matter to some classes
@@ -199,8 +200,12 @@ function mod:SPELL_AURA_APPLIED(args)
 --		specWarnDarkDelusions:Show()
 --		specWarnDarkDelusions:Play("justrun")
 	elseif spellId == 315385 and args:IsPlayer() then
-		specWarnScorchedFeet:Show()
-		specWarnScorchedFeet:Play("targetyou")
+		if self.Options.SpecWarn315385you then
+			specWarnScorchedFeet:Show()
+			specWarnScorchedFeet:Play("targetyou")
+		else
+			warnScorchedFeet:Show()
+		end
 		if IsInGroup() then--Warn allies if in scenario with others
 			yellScorchedFeet:Yell()
 		end

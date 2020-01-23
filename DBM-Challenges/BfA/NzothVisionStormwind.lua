@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200119192324")
+mod:SetRevision("20200122202716")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -11,7 +11,7 @@ mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA"
 )
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911",
+	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911 296537 308481",
 	"SPELL_AURA_APPLIED 311390 315385 316481 311641 308380 308366 308265",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_CAST_SUCCESS 309035",
@@ -31,6 +31,9 @@ mod:RegisterEventsInCombat(
 --TODO, verify all the Affix warnings using correct spellIds/events
 --TODO, maybe add https://ptr.wowhead.com/spell=292021/madness-leaden-foot#see-also-other affix? just depends on warning to stop moving can be counter to a stacked affix
 --TODO, see if target scanning will work on Entropic Leap
+--General
+local warnScorchedFeet			= mod:NewSpellAnnounce(315385, 4)
+--Extra Abilities (used by main boss and the area LTs)
 local warnTaintedPolymorph		= mod:NewCastAnnounce(309648, 3)
 local warnExplosiveOrdnance		= mod:NewSpellAnnounce(305672, 3)
 --Other notable abilities by mini bosses/trash
@@ -42,7 +45,7 @@ local warnChaosBreath			= mod:NewCastAnnounce(296911, 3)
 local specWarnGTFO				= mod:NewSpecialWarningGTFO(312121, nil, nil, nil, 1, 8)
 local specWarnEntomophobia		= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
 --local specWarnDarkDelusions		= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
-local specWarnScorchedFeet		= mod:NewSpecialWarningYou(315385, nil, nil, nil, 1, 2)
+local specWarnScorchedFeet		= mod:NewSpecialWarningYou(315385, false, nil, 2, 1, 2)
 local yellScorchedFeet			= mod:NewYell(315385)
 local specWarnSplitPersonality	= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
 local specWarnWaveringWill		= mod:NewSpecialWarningReflect(311641, "false", nil, nil, 1, 2)--Off by default, it's only 5%, but that might matter to some classes
@@ -60,6 +63,8 @@ local specWarnRoaringBlast		= mod:NewSpecialWarningDodge(311456, nil, nil, nil, 
 local specWarnCorruptedBlight	= mod:NewSpecialWarningDispel(308265, nil, nil, nil, 1, 2)
 local yellCorruptedBlight		= mod:NewYell(308265)
 local specWarnEntropicMissiles	= mod:NewSpecialWarningInterrupt(309035, "HasInterrupt", nil, nil, 1, 2)
+local specWarnMentalAssault		= mod:NewSpecialWarningInterrupt(296537, "HasInterrupt", nil, nil, 1, 2)
+local specWarnRiftStrike		= mod:NewSpecialWarningDodge(308481, nil, nil, nil, 2, 2)
 
 --Alleria Windrunner
 local timerDarkenedSkyCD		= mod:NewCDTimer(13.3, 308278, nil, nil, nil, 3)
@@ -120,6 +125,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 308366 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnAgonizingTorment:Show(args.sourceName)
 		specWarnAgonizingTorment:Play("kickcast")
+	elseif spellId == 296537 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnMentalAssault:Show(args.sourceName)
+		specWarnMentalAssault:Play("kickcast")
 	elseif spellId == 308406 then
 		warnEntropicLeap:Show()
 	elseif spellId == 311456 then
@@ -127,6 +135,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnRoaringBlast:Play("shockwave")
 	elseif spellId == 296911 then
 		warnChaosBreath:Show()
+	elseif spellId == 308481 and self:AntiSpam(5, 3) then
+		specWarnRiftStrike:Show()
+		specWarnRiftStrike:Play("watchstep")
 	end
 end
 
@@ -153,8 +164,12 @@ function mod:SPELL_AURA_APPLIED(args)
 --		specWarnDarkDelusions:Show()
 --		specWarnDarkDelusions:Play("justrun")
 	elseif spellId == 315385 and args:IsPlayer() then
-		specWarnScorchedFeet:Show()
-		specWarnScorchedFeet:Play("targetyou")
+		if self.Options.SpecWarn315385you then
+			specWarnScorchedFeet:Show()
+			specWarnScorchedFeet:Play("targetyou")
+		else
+			warnScorchedFeet:Show()
+		end
 		if GetNumGroupMembers() > 1 then--Warn allies if in scenario with others
 			yellScorchedFeet:Yell()
 		end
