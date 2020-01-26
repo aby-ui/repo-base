@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2036, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191110182401")
+mod:SetRevision("20200126025600")
 mod:SetCreatureID(122965)
 mod:SetEncounterID(2085)
 mod:SetZone()
@@ -50,7 +50,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 195254 then
+	if spellId == 250258 then
 		specWarnLeap:Show()
 		specWarnLeap:Play("watchstep")
 		timerLeapCD:Start()

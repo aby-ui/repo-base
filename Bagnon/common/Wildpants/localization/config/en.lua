@@ -1,7 +1,5 @@
 --[[
-	English Localization
-		This file must be present to have partial translations
-		***
+  English Localization (default)
 --]]
 
 local CONFIG = ...

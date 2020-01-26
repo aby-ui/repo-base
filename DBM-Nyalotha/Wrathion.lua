@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200121232330")
+mod:SetRevision("20200126013532")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetZone()
@@ -36,7 +36,6 @@ local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 
 --Stage One: The Black Emperor
 local warnSearingArmor						= mod:NewStackAnnounce(306015, 2, nil, "Tank")
 local warnIncineration						= mod:NewTargetAnnounce(306111, 3)
-local warnBurningCata						= mod:NewPreWarnAnnounce(306735, 10, 4)
 --Stage Two: Smoke and Mirrors
 local warnScales							= mod:NewSpellAnnounce(308682, 2)
 local warnBurningMadness					= mod:NewTargetNoFilterAnnounce(307013, 1)
@@ -148,10 +147,6 @@ function mod:OnCombatStart(delay)
 	if self.Options.NPAuraOnHardenedCore then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
-	if self.Options.InfoFrame then
-		DBM.InfoFrame:SetHeader(OVERVIEW)
-		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
-	end
 end
 
 function mod:OnCombatEnd()
@@ -186,7 +181,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnBurningCataclysm:Play("specialsoon")
 		timerBurningCataclysm:Start()
 		if self.vb.cataCast == 1 then
-			timerBurningCataclysmCD:Start(75.6, 2)
+			timerBurningCataclysmCD:Start(75.6, 2)--75-77.32
 		end
 	elseif spellId == 306995 and self.vb.phase == 1 then--P2 Smoke and Mirrors
 		self.vb.phase = 2
@@ -196,6 +191,10 @@ function mod:SPELL_CAST_START(args)
 		timerIncinerationCD:Stop()
 		timerGaleBlastCD:Stop()
 		timerBurningCataclysmCD:Stop()
+		if self.Options.InfoFrame then
+			DBM.InfoFrame:SetHeader(OVERVIEW)
+			DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
+		end
 	end
 end
 
@@ -297,6 +296,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerGaleBlastCD:Start(45, 1)
 		timerBurningCataclysmCD:Start(59.7, 1)
 		timerSmokeandMirrorsCD:Start(155)
+		if self.Options.InfoFrame then
+			DBM.InfoFrame:Hide()
+		end
 	end
 end
 
@@ -324,7 +326,5 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnScales:Show()
 	elseif spellId == 312389 then--Create Assassins
 		warnSpawnAdds:Show()
-	elseif spellId == 306948 then--Burning Cataclysm
-		warnBurningCata:Show()
 	end
 end

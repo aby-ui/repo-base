@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200123034810")
+mod:SetRevision("20200124185451")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetZone()
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 307809 307092 313039 315820 315891 315947",
 	"SPELL_CAST_SUCCESS 313362 306971 306986 306988",
-	"SPELL_AURA_APPLIED 313334 307832 306973 306990 306984 315954",
+	"SPELL_AURA_APPLIED 313334 307832 306973 306990 306984 315954 307079",
 	"SPELL_AURA_APPLIED_DOSE 315954",
 	"SPELL_AURA_REMOVED 313334 306973 306990 307079 306984",
 	"SPELL_AURA_REMOVED_DOSE 307079",
@@ -84,11 +84,11 @@ local timerGiftofNzoth						= mod:NewBuffFadesTimer(20, 313334, nil, nil, nil, 5
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20558))
 ----Fury of N'Zoth
 local timerMadnessBombCD					= mod:NewCDTimer(22.2, 306973, nil, nil, nil, 3)--22-24
-local timerAdaptiveMembraneCD				= mod:NewCDTimer(27.7, 306990, nil, nil, nil, 5, nil, DBM_CORE_DAMAGE_ICON..DBM_CORE_TANK_ICON, nil, 3, 4)
-local timerAdaptiveMembrane					= mod:NewBuffActiveTimer(12, 306990, nil, nil, nil, 5, nil, DBM_CORE_DAMAGE_ICON)
+local timerAdaptiveMembraneCD				= mod:NewCDTimer(27.7, 306990, nil, nil, nil, 5, nil, DBM_CORE_DAMAGE_ICON..DBM_CORE_TANK_ICON, nil, 3, 3)
+local timerAdaptiveMembrane					= mod:NewBuffActiveTimer(12, 306990, nil, false, 2, 5, nil, DBM_CORE_DAMAGE_ICON)
 local timerMentalDecayCD					= mod:NewCDTimer(21, 313364, nil, nil, nil, 3)
-local timerGrowthCoveredTentacleCD			= mod:NewNextCountTimer(60, 307131, nil, nil, nil, 1, nil, nil, nil, 1, 4)
-local timerMandibleSlamCD					= mod:NewCDTimer(12.7, 306990, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--12.7
+local timerGrowthCoveredTentacleCD			= mod:NewNextCountTimer(60, 307131, nil, nil, nil, 1, nil, nil, nil, 1, 3)
+local timerMandibleSlamCD					= mod:NewCDTimer(12.7, 306990, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--12.7
 ----Adds
 local timerGazeofMadnessCD					= mod:NewCDCountTimer(58, "ej20565", nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
 --Stage 2: Subcutaneous Tunnel

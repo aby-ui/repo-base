@@ -1,4 +1,4 @@
-## Interface: 80300
+﻿## Interface: 80300
 ## LoadOnDemand: 1
 ## Title: Lib: Babble-SubZone-3.0
 ## Title-frFR: Lib: Babble-SubZone-3.0
@@ -15,7 +15,7 @@
 ## X-eMail: arithmandarjp at yahoo.co.jp
 ## X-Category: Library
 ## X-License: MIT
-## X-Date: 2018-08-12T09:41:21Z
+## X-Date: 2020-01-17T14:10:05Z
 ## X-Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
 
 LibStub\LibStub.lua

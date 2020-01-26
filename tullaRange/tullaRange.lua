@@ -13,7 +13,9 @@ local ATTACK_BUTTON_FLASH_TIME = _G.ATTACK_BUTTON_FLASH_TIME
 
 local IsActionInRange = _G.IsActionInRange
 local IsUsableAction = _G.IsUsableAction
-local HasAction = _G.HasAction
+local IsAttackAction = _G.IsAttackAction
+local ActionHasRange = _G.ActionHasRange
+-- local HasAction = _G.HasAction
 
 --[[
 	Helper Functions
@@ -227,7 +229,7 @@ end
 function Addon:UpdateButtonStatus(button)
 	local action = button.action
 
-	if action and button:IsVisible() and HasAction(action) then
+	if action and button:IsVisible() and (ActionHasRange(action) or IsAttackAction(action)) then
 		self.buttonsToUpdate[button] = true
 	else
 		self.buttonsToUpdate[button] = nil

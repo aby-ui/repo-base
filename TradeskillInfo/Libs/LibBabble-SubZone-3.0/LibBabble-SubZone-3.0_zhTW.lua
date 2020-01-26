@@ -1,7 +1,7 @@
  --[[
-$Id: LibBabble-SubZone-3.0_zhTW.lua 218 2018-08-12 09:41:21Z arith $
+$Id: LibBabble-SubZone-3.0_zhTW.lua 227 2020-01-17 14:10:05Z arith $
 Name: LibBabble-SubZone-3.0
-Revision: $Rev: 218 $
+Revision: $Rev: 227 $
 Maintainers: arith
 Last updated by: $Author: arith $
 Website: http://www.wowace.com/addons/libbabble-subzone-3-0/
@@ -18,8 +18,6 @@ lib:SetCurrentTranslations
 	["7th Legion Base Camp"] = "第七軍團營地",
 	["7th Legion Front"] = "第七軍團前線",
 	["7th Legion Submarine"] = "第七軍團潛水艇",
-	--[[Translation missing --]]
-	--[[ ["8.0 Islands - Ship - Player Alliance - Kul'Tiras Medium 01 With Gangplank"] = "8.0 Islands - Ship - Player Alliance - Kul'Tiras Medium 01 With Gangplank",--]] 
 	["A Brewing Storm"] = "雷電佳釀",
 	["A Dark Place"] = "黑暗處所",
 	["A Hero's Welcome"] = "英雄光臨",
@@ -33,6 +31,7 @@ lib:SetCurrentTranslations
 	["Abandoned Junkheap"] = "廢棄垃圾堆",
 	["Abandoned Kirin Tor Camp"] = "廢棄的祈倫托營地",
 	["Abandoned Mine"] = "廢棄礦坑",
+	["Abandoned Mines"] = "廢棄礦坑",
 	["Abandoned Passage"] = "荒棄之路",
 	["Abandoned Reef"] = "廢棄的暗礁",
 	["Abandoned Ruin"] = "荒棄廢墟",
@@ -111,12 +110,8 @@ lib:SetCurrentTranslations
 	["Alliance Shipyard Taxi"] = "聯盟船塢飛行點",
 	["Alliance Submarine"] = "聯盟潛水艇",
 	["Alliance Submarine (7.1.5 Boat Holiday)"] = "聯盟潛水艇(7.1.5鬥船節)",
-	--[[Translation missing --]]
-	--[[ ["Allied - Dark Iron Dwarf Unlock"] = "Allied - Dark Iron Dwarf Unlock",--]] 
 	["Allied - Highmountain Tauren Unlock"] = "同盟種族 - 解鎖高嶺牛頭人",
 	["Allied - Lightforged Draenei Unlock"] = "同盟種族 - 解鎖光鑄德萊尼",
-	--[[Translation missing --]]
-	--[[ ["Allied - Mag'har Orc Unlock"] = "Allied - Mag'har Orc Unlock",--]] 
 	["Allied - Nightborne Unlock"] = "同盟種族 - 解鎖夜裔精靈",
 	["Allied - Orgrimmar"] = "同盟 - 奧格瑪",
 	["Allied - Stormwind"] = "同盟 - 暴風城",
@@ -780,8 +775,6 @@ lib:SetCurrentTranslations
 	["Cave of the Blood Trial"] = "血煉洞窟",
 	["Cave of the Bloodtotem"] = "血圖騰洞穴",
 	["Cave of the Crane"] = "鶴之洞穴",
-	--[[Translation missing --]]
-	--[[ ["Cave of the Enduring"] = "Cave of the Enduring",--]] 
 	["Cave of the Undying"] = "幽魂洞穴",
 	["Cave of Words"] = "箴言之穴",
 	["Cavern of Endless Echoes"] = "無盡回聲洞穴",
@@ -979,8 +972,6 @@ lib:SetCurrentTranslations
 	["Cove of Nashal"] = "納夏爾海灣",
 	["Covescale Rise"] = "灣鱗高地",
 	["Crackling Ridge"] = "裂石嶺",
-	--[[Translation missing --]]
-	--[[ ["Crackling RidgeDELETE JDA"] = "Crackling RidgeDELETE JDA",--]] 
 	["Cradle of Chi-Ji"] = "赤吉搖籃",
 	["Cradle of the Ancients"] = "先祖育床",
 	["Craftsmen's Terrace"] = "工匠區",
@@ -1079,8 +1070,6 @@ lib:SetCurrentTranslations
 	["Dalaran Underbelly"] = "達拉然城底區",
 	["Dalaran Visitor Center"] = "達拉然旅客中心",
 	["Dalson's Farm"] = "達爾松農場",
-	--[[Translation missing --]]
-	--[[ ["Damarcus_World"] = "Damarcus_World",--]] 
 	["Damp Cave"] = "潮濕洞穴",
 	["Damplight Cavern"] = "霧光洞穴",
 	["Damplight Chamber"] = "霧光之間",
@@ -1259,8 +1248,6 @@ lib:SetCurrentTranslations
 	["Destiny Unfulfilled"] = "未竟的命運",
 	["Destructor's Rise"] = "毀滅者高臺",
 	["Detention Block"] = "禁閉室",
-	--[[Translation missing --]]
-	--[[ ["Dev Map - G"] = "Dev Map - G",--]] 
 	["Development Land"] = "開發之地",
 	["Devoted Sanctuary"] = "虔信者聖所",
 	["Diamond Island"] = "鑽石島",
@@ -1419,8 +1406,6 @@ lib:SetCurrentTranslations
 	["Dustquill Ravine"] = "塵羽峽谷",
 	["Dustwallow Bay"] = "塵泥海灣",
 	["Dustwallow Marsh"] = "塵泥沼澤",
-	--[[Translation missing --]]
-	--[[ ["Dustwallow Marsh UNUSED"] = "Dustwallow Marsh UNUSED",--]] 
 	["Dustwind Cave"] = "塵風洞穴",
 	["Dustwind Dig"] = "塵風挖掘場",
 	["Dustwind Gulch"] = "塵風峽谷",
@@ -1648,8 +1633,6 @@ lib:SetCurrentTranslations
 	["Fe-Feng Village"] = "非凡村",
 	["Fel Core"] = "魔化核心",
 	["Fel Expanse"] = "魔化瀚洋",
-	--[[Translation missing --]]
-	--[[ ["Fel Hammer DH Scenario"] = "Fel Hammer DH Scenario",--]] 
 	["Fel Reaver Ruins"] = "惡魔劫奪者廢墟",
 	["Fel Rock"] = "惡魔石",
 	["Felbane Camp"] = "魔禍營地",
@@ -1840,8 +1823,6 @@ lib:SetCurrentTranslations
 	["Fox Grove"] = "狐林",
 	["Foxhollow Woods"] = "狐穴森林",
 	["Fractured Front"] = "崩裂的前線",
-	--[[Translation missing --]]
-	--[[ ["Francesco test - internal only"] = "Francesco test - internal only",--]] 
 	["Fray Island"] = "勇士島",
 	["Frayfeather Highlands"] = "亂羽高地",
 	["Frazzlecraz Motherlode"] = "弗雷卓克雷茲母礦",
@@ -1999,8 +1980,6 @@ lib:SetCurrentTranslations
 	["Giant's Fall"] = "巨人瀑布",
 	["Giant's Run"] = "巨人奔印",
 	["Giants' Run"] = "巨人小徑",
-	--[[Translation missing --]]
-	--[[ ["Gilded Docks of Zak'rajan DELETE JDA"] = "Gilded Docks of Zak'rajan DELETE JDA",--]] 
 	["Gilded Fan"] = "金扇澤",
 	["Gillijim's Isle"] = "吉利吉姆之島",
 	["Gilnean Coast"] = "吉爾尼斯海岸",
@@ -2385,8 +2364,6 @@ lib:SetCurrentTranslations
 	["Helya's Throne"] = "黑爾雅王座",
 	["Hemet's Happy Hunting Grounds"] = "赫米特的開心狩獵場",
 	["Herb Garden"] = "草藥園",
-	--[[Translation missing --]]
-	--[[ ["Hero Stage LD Demo Area"] = "Hero Stage LD Demo Area",--]] 
 	["Heroes' Rest"] = "英雄之眠",
 	["Heroes' Vigil"] = "英雄崗哨",
 	["Hero's Rest Inn"] = "英雄之眠旅店",
@@ -2500,8 +2477,6 @@ lib:SetCurrentTranslations
 	["Hyjal Barrow Dens"] = "海加爾獸穴",
 	["Hyjal Past"] = "過往的海加爾山",
 	["Hyjal Summit"] = "海加爾山之巔",
-	--[[Translation missing --]]
-	--[[ ["Hyjal War of the Ancients Quest"] = "Hyjal War of the Ancients Quest",--]] 
 	["Ice Heart Cavern"] = "冰心洞窟",
 	["Ice Thistle Hills"] = "冰薊嶺",
 	["Iceblister Den"] = "冰瘡之巢",
@@ -2840,8 +2815,6 @@ lib:SetCurrentTranslations
 	["Legacy of the Windrunners"] = "風行者之遺",
 	["Legash Encampment"] = "雷加什營地",
 	["Legendary Leathers"] = "傳奇皮革",
-	--[[Translation missing --]]
-	--[[ ["Legion - Command Center"] = "Legion - Command Center",--]] 
 	["Legion Camp: Chaos"] = "燃燒軍團營地：混沌",
 	["Legion Camp: Ruin"] = "燃燒軍團營地：毀滅",
 	["Legion Command Ship"] = "軍團指揮艦",
@@ -3042,8 +3015,6 @@ lib:SetCurrentTranslations
 	["Mardum Treasure Scenario"] = "馬頓寶藏場景事件",
 	["Mardum, the Shattered Abyss"] = "馬爾頓，碎裂深淵",
 	["Mar'gok's Overwatch"] = "瑪爾戈克堡壘",
-	--[[Translation missing --]]
-	--[[ ["Margoss' Retreat"] = "Margoss' Retreat",--]] 
 	["Margoss's Retreat"] = "瑪苟斯的居所",
 	["Mariner's Row"] = "水手路",
 	["Mariner's Strand"] = "水手海岸",
@@ -3131,8 +3102,6 @@ lib:SetCurrentTranslations
 	["Mizjah Ruins"] = "米扎廢墟",
 	["Moa'ki"] = "默亞基",
 	["Moa'ki Harbor"] = "默亞基港",
-	--[[Translation missing --]]
-	--[[ ["Model Size Land"] = "Model Size Land",--]] 
 	["Moggle Point"] = "摩戈爾哨塔",
 	["Mo'grosh Stronghold"] = "莫格羅什要塞",
 	["Mogu Island Daily Area"] = "魔古島每日任務區域",
@@ -3508,8 +3477,6 @@ lib:SetCurrentTranslations
 	["Paledoom's Overlook"] = "蒼滅瞰臺",
 	["Palemane Rock"] = "白鬃石",
 	["Paletide Den"] = "蒼潮之穴",
-	--[[Translation missing --]]
-	--[[ ["Pandaren Farm Dev"] = "Pandaren Farm Dev",--]] 
 	["Pandaren Mine"] = "熊貓人礦坑",
 	["Pandaria"] = "潘達利亞",
 	["Pandemonium"] = "混沌界",
@@ -3676,8 +3643,6 @@ lib:SetCurrentTranslations
 	["Rainspeaker Canopy"] = "雨頌者之篷",
 	["Rainspeaker Rapids"] = "雨頌者急湍",
 	["Rakjan's Peak"] = "拉奇昂之巔",
-	--[[Translation missing --]]
-	--[[ ["Rak'jan's Perch DELETE JDA"] = "Rak'jan's Perch DELETE JDA",--]] 
 	["Ramkahen"] = "蘭姆卡韓",
 	["Ramkahen Legion Outpost"] = "蘭姆卡韓軍團哨站",
 	["Rampart of Skulls"] = "骸顱壁壘",
@@ -3825,8 +3790,6 @@ lib:SetCurrentTranslations
 	["Riverbend"] = "河彎",
 	["River's Heart"] = "大河之心",
 	["Riverside Post"] = "河畔哨站",
-	--[[Translation missing --]]
-	--[[ ["RiverZone_Art"] = "RiverZone_Art",--]] 
 	["Roaring Highland"] = "咆哮高地",
 	["Rock of Durotan"] = "杜洛坦之石",
 	["Rock Spire"] = "岩石塔",
@@ -4670,10 +4633,6 @@ lib:SetCurrentTranslations
 	["Stormfeather Outpost"] = "風暴之羽崗哨",
 	["Stormglen Village"] = "颶谷村",
 	["Stormheim"] = "斯鐸海姆",
-	--[[Translation missing --]]
-	--[[ ["Stormheim Prescenario Skyfire"] = "Stormheim Prescenario Skyfire",--]] 
-	--[[Translation missing --]]
-	--[[ ["Stormheim Prescenario Windrunner"] = "Stormheim Prescenario Windrunner",--]] 
 	["Stormpike Graveyard"] = "雷矛墓地",
 	["Stormrage Barrow Dens"] = "怒風獸穴",
 	["Storm's Eye Overlook"] = "風暴之眼瞰臺",
@@ -4904,8 +4863,6 @@ lib:SetCurrentTranslations
 	["Temple of Invention"] = "發明神殿",
 	["Temple of Karabor"] = "卡拉伯爾神廟",
 	["Temple of Kimbul"] = "金布爾神廟",
-	--[[Translation missing --]]
-	--[[ ["Temple of Kimbul - DO NOT USE"] = "Temple of Kimbul - DO NOT USE",--]] 
 	["Temple of Kotmogu"] = "科特魔古神廟",
 	["Temple of Life"] = "生命神殿",
 	["Temple of Order"] = "秩序神殿",
@@ -5014,8 +4971,6 @@ lib:SetCurrentTranslations
 	["The Arcatraz"] = "亞克崔茲",
 	["The Archivum"] = "大資料庫",
 	["The Arcway"] = "幽暗地道",
-	--[[Translation missing --]]
-	--[[ ["The Arcway - Suramar Scenario"] = "The Arcway - Suramar Scenario",--]] 
 	["The Arcway Vaults"] = "幽暗地窖",
 	["The Argent Stand"] = "銀白看臺",
 	["The Argent Valiants' Ring"] = "銀白驍士競技場",
@@ -5035,6 +4990,7 @@ lib:SetCurrentTranslations
 	["The Bank of Silvermoon"] = "銀月城銀行",
 	["The Banquet Hall"] = "宴會大廳",
 	["The Banshee's Wail"] = "女妖之嚎",
+	["The Barrens"] = "貧瘠之地",
 	["The Barrier Hills"] = "阻礙之丘",
 	["The Bartering Cave"] = "貿易洞窟",
 	["The Bastion of Twilight"] = "暮光堡壘",
@@ -6401,8 +6357,6 @@ lib:SetCurrentTranslations
 	["Troll War Camp Outskirts"] = "食人妖戰營外圍",
 	["Trollbane Hall"] = "托爾貝恩大廳",
 	["Trophy Hall"] = "勝利紀念大廳",
-	--[[Translation missing --]]
-	--[[ ["Tropical Isle 8.0"] = "Tropical Isle 8.0",--]] 
 	["Troves of the Thunder King"] = "雷王的珍寶",
 	["Trueshot Lodge"] = "神獵廳",
 	["Trueshot Point"] = "強擊崗哨",
@@ -6641,8 +6595,6 @@ lib:SetCurrentTranslations
 	["Verrall River"] = "維羅河",
 	["Vestibule of the Faithless"] = "無信者之室",
 	["Vestibule of the Silver Hand"] = "白銀之手門廊",
-	--[[Translation missing --]]
-	--[[ ["VictorCortisLand"] = "VictorCortisLand",--]] 
 	["Victor's Point"] = "勝利者崗哨",
 	["Vigil Hill"] = "守望山丘",
 	["Vile Cavern"] = "污穢洞穴",
@@ -6992,8 +6944,6 @@ lib:SetCurrentTranslations
 	["Zabra'jin"] = "薩布拉金",
 	["Zaetar's Choice"] = "札爾塔的選擇",
 	["Zaetar's Grave"] = "札爾塔之墓",
-	--[[Translation missing --]]
-	--[[ ["Zak'rajan's Throne Room DELETE JDA"] = "Zak'rajan's Throne Room DELETE JDA",--]] 
 	["Zal'amak"] = "札拉瑪克",
 	["Zalamar"] = "札拉瑪",
 	["Zalashji's Den"] = "薩拉辛之穴",

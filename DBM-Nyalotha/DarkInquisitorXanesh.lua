@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2377, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200121232330")
+mod:SetRevision("20200125193738")
 mod:SetCreatureID(160229)
 mod:SetEncounterID(2328)
 mod:SetZone()
@@ -46,11 +46,11 @@ local specWarnTorment						= mod:NewSpecialWarningDodgeCount(306208, nil, nil, n
 local specWarnTerrorWave					= mod:NewSpecialWarningInterruptCount(316211, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
-local timerAbyssalStrikeCD					= mod:NewCDTimer(42.6, 311551, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--42.9-47
+local timerAbyssalStrikeCD					= mod:NewCDTimer(40, 311551, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--42.9-47
 local timerVoidRitualCD						= mod:NewNextCountTimer(79.7, 312336, nil, nil, nil, 5, nil, nil, nil, 1, 4)
 local timerSummonRitualObeliskCD			= mod:NewNextCountTimer(79.7, 306495, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerSoulFlayCD						= mod:NewCDTimer(46.7, 306319, nil, nil, nil, 3)
-local timerTormentCD						= mod:NewNextCountTimer(46.7, 306208, nil, nil, nil, 3, nil, nil, nil, 3, 4)
+local timerTormentCD						= mod:NewNextCountTimer(46.5, 306208, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
@@ -64,7 +64,7 @@ mod.vb.obeliskCount = 0
 mod.vb.tormentCount = 0
 mod.vb.addIcon = 8
 local voidWokenTargets = {}
-local tormentTimers = {20.5, 71.8, 30.4, 65.7, 30.6, 65.6, 30.5}--Normal and mythic
+local tormentTimers = {20.5, 71.6, 30.4, 64.3, 30.3, 61.9, 30.5}
 local castsPerGUID = {}
 
 local updateInfoFrame
@@ -142,26 +142,23 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 312336 then
 		self.vb.ritualCount = self.vb.ritualCount + 1
+		self.vb.addIcon = 8
 		if self.Options.SpecWarn312336count then
 			specWarnVoidRitual:Show(self.vb.ritualCount)
 			specWarnVoidRitual:Play("specialsoon")
 		else
 			warnVoidRitual:Show(self.vb.ritualCount)
 		end
-		timerVoidRitualCD:Start(95.2, self.vb.ritualCount+1)
+		timerVoidRitualCD:Start(94.7, self.vb.ritualCount+1)
 	elseif spellId == 316211 then
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 		end
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
-		if self.Options.SetIconOnAdds then
+		if self.Options.SetIconOnAdds and self.vb.addIcon > 3 then--Only use up to 5 icons
 			self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12)
 		end
-		--Increment icon for next cast/seticon
-		self.vb.addIcon = self.vb.addIcon + 1
-		if self.vb.addIcon == 3 then--4, 5, 6, 7, 8
-			self.vb.addIcon = 8--Reset to 8 if its 3
-		end
+		self.vb.addIcon = self.vb.addIcon - 1
 		local count = castsPerGUID[args.sourceGUID]
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnTerrorWave:Show(args.sourceName, count)
@@ -187,7 +184,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 311551 then
 		timerAbyssalStrikeCD:Start()
 	elseif spellId == 306319 then
-		timerSoulFlayCD:Start(57.2)
+		timerSoulFlayCD:Start(57)
 	elseif spellId == 306208 then
 		self.vb.tormentCount = self.vb.tormentCount + 1
 		specWarnTorment:Show(self.vb.tormentCount)

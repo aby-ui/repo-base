@@ -739,10 +739,13 @@ function Simulationcraft:GetBagItemStrings()
             -- slot starts at 39, I believe that is based on some older location values
             -- GetContainerItemInfo uses a 0-based slot index
             -- So take the slot from the unpack and subtract 39 to get the right index for GetContainerItemInfo.
+            --
             -- 2018/01/17 - Change magic number to 47 to account for new backpack slots. Not sure why it went up by 8
             -- instead of 4, possible blizz is leaving the door open to more expansion in the future?
+            --
+            -- 2020/01/24 - Change magic number to 51. Not sure why this changed again but it did! See y'all in 2022?
             container = BANK_CONTAINER
-            slot = slot - 47
+            slot = slot - 51
           end
           _, _, _, _, _, _, itemLink, _, _, itemId = GetContainerItemInfo(container, slot)
           if itemLink then
@@ -927,6 +930,10 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     playerProfessions = ''
   end
 
+  -- create a header comment with basic player info and a date
+  local headerComment = "# " .. playerName .. ' - ' .. playerSpec .. ' - ' .. date('%Y-%m-%d %H:%M') .. ' - ' .. playerRegion .. '/' .. playerRealm
+
+
   -- Construct SimC-compatible strings from the basic information
   local player = Tokenize(playerClass) .. '="' .. playerName .. '"'
   playerLevel = 'level=' .. playerLevel
@@ -940,9 +947,11 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   local playerTalents = CreateSimcTalentString()
 
   -- Build the output string for the player (not including gear)
-  local simulationcraftProfile = versionComment .. '\n'
   local simcPrintError = nil
+  local simulationcraftProfile = ''
 
+  simulationcraftProfile = simulationcraftProfile .. headerComment .. '\n'
+  simulationcraftProfile = simulationcraftProfile .. versionComment .. '\n'
   simulationcraftProfile = simulationcraftProfile .. simcVersionWarning .. '\n'
   simulationcraftProfile = simulationcraftProfile .. '\n'
 

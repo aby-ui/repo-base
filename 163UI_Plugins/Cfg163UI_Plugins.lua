@@ -21,9 +21,10 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
-        var = "AutoSwapRacial", text = U1_NEW_ICON.."自动替换种族天赋", default = false,
-        tip = "说明`（测试功能）在达萨罗之战剧情更换种族时，自动替换动作栏上的主动种族天赋。",
+        var = "AlwaysShowAltBarText", text = U1_NEW_ICON .. "始终显示特殊能量条的文字", default = true,
+        tip = "说明`在大小幻象里，始终显示能量条上面的文字，便于查看。",
     },
+
     {
         var = "CastSound",
         text = U1_NEW_ICON.."战斗节奏音",
@@ -208,6 +209,11 @@ U1RegisterAddon("163UI_Plugins", {
                 return mod:Init()
             end
         end,
+    },
+
+    {
+        var = "AutoSwapRacial", text = "自动替换种族天赋", default = false,
+        tip = "说明`（测试功能）在达萨罗之战剧情更换种族时，自动替换动作栏上的主动种族天赋。",
     },
 
     {

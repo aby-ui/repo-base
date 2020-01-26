@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2374, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200120030400")
+mod:SetRevision("20200124211018")
 mod:SetCreatureID(158328)
 mod:SetEncounterID(2345)
 mod:SetZone()
@@ -305,7 +305,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 311367 then
-		warnTouchoftheCorruptor:CombinedShow(0.3, args.destName)
+		warnTouchoftheCorruptor:CombinedShow(1, args.destName)
 		if args:IsPlayer() then
 			specWarnTouchoftheCorruptor:Show()
 			specWarnTouchoftheCorruptor:Play("targetyou")

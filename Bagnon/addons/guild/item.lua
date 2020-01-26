@@ -18,7 +18,6 @@ function Item:Construct()
 	b:SetScript('PreClick', nil)
 	b:RegisterForDrag('LeftButton')
 	b:RegisterForClicks('anyUp')
-	b.SplitStack = nil -- template onload screws this up
 	return b
 end
 

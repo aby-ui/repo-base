@@ -370,6 +370,7 @@ function Item:CreateDummy()
 	local function showTooltip(slot)
 		local parent = slot:GetParent()
 		local link = parent.info.link
+        if not link then return end
 
 		GameTooltip:SetOwner(parent:GetTipAnchor())
 		parent:LockHighlight()

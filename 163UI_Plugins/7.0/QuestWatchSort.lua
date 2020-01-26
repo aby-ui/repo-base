@@ -77,7 +77,9 @@ local function UpdateQuestsDistance()
 
         -- force update
         if ObjectiveTrackerFrame and ObjectiveTrackerFrame:IsVisible() and not InCombatLockdown() then
+            AbyQuestWatchSortUpdate = 1
             ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST);
+            AbyQuestWatchSortUpdate = nil
             if QuestObjectiveTracker_UpdatePOIs then
                 QuestObjectiveTracker_UpdatePOIs()
             else

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191110182401")
+mod:SetRevision("20200124012530")
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 --mod:DisableESCombatDetection()
@@ -157,75 +157,6 @@ function mod:MeteorLeapTarget(targetname, uId, bossuid, scanningTime)
 	else
 		warnMeteorLeap:Show(targetname)
 	end
-end
-
---/run DBM:GetModByName("2335"):TestLiveRealm()
---Run me to test starting bars who already have fade variable set
-function mod:TestLiveRealm()
-	--Set fade defaults to fade bwonsamdi's timers
-	timerInevitableEndCD:SetFade(true)
-	timerDreadReapingCD:SetFade(true)
-	timerZombieDustTotemCD:SetFade(false)
-	timerScorchingDetonationCD:SetFade(false)
-	timerPlagueofFireCD:SetFade(false)
-	--Rasta
-	timerZombieDustTotemCD:Start(10)
-	timerDeathsDoorCD:Start(27.5)
-	timerScorchingDetonationCD:Start(32.8, 1)
-	timerPlagueofFireCD:Start(40)
-	--Bwon
-	timerDreadReapingCD:Start(7.6)
-	timerInevitableEndCD:Start(35.8, 1)
-end
-
---/run DBM:GetModByName("2335"):TestDeathRealm()
---Run me to do same as above but on alternate timers
-function mod:TestDeathRealm()
-	--Set fade defaults to fade bwonsamdi's timers
-	timerInevitableEndCD:SetFade(false)
-	timerDreadReapingCD:SetFade(false)
-	timerZombieDustTotemCD:SetFade(true)
-	timerScorchingDetonationCD:SetFade(true)
-	timerPlagueofFireCD:SetFade(true)
-	--Rasta
-	timerZombieDustTotemCD:Start(10)
-	timerDeathsDoorCD:Start(27.5)
-	timerScorchingDetonationCD:Start(32.8, 1)
-	timerPlagueofFireCD:Start(40)
-	--Bwon
-	timerDreadReapingCD:Start(7.6)
-	timerInevitableEndCD:Start(35.8, 1)
-end
-
---/run DBM:GetModByName("2335"):TestLiveUpdate()
---Run me to test fade running on an already running timer (fade update event)
-function mod:TestLiveUpdate()
-	--Rasta
-	timerZombieDustTotemCD:Start(10)
-	timerDeathsDoorCD:Start(27.5)
-	timerScorchingDetonationCD:Start(32.8, 1)
-	timerPlagueofFireCD:Start(40)
-	--Bwon
-	timerDreadReapingCD:Start(7.6)
-	timerInevitableEndCD:Start(35.8, 1)
-	--Set fade defaults to fade bwonsamdi's timers
-	timerInevitableEndCD:SetFade(false, 1)
-	timerDreadReapingCD:SetFade(false)
-	timerZombieDustTotemCD:SetFade(true)
-	timerScorchingDetonationCD:SetFade(true, 1)
-	timerPlagueofFireCD:SetFade(true)
-end
-
---/run DBM:GetModByName("2335"):EndTests()
-function mod:EndTest()
-	--Rasta
-	timerZombieDustTotemCD:Stop()
-	timerDeathsDoorCD:Stop(5)
-	timerScorchingDetonationCD:Stop()
-	timerPlagueofFireCD:Stop()
-	--Bwon
-	timerDreadReapingCD:Stop()
-	timerInevitableEndCD:Stop()
 end
 
 function mod:OnCombatStart(delay)

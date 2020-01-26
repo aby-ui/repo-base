@@ -18,10 +18,10 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 26)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 27)
 if not Lib then return end
 
-local PLAYER, GUILD, FACTION, REALM, REALMS
+local PLAYER, FACTION, REALM, REALMS
 local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
 local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
 local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
@@ -32,7 +32,6 @@ local FindRealms = function()
 		PLAYER, REALM = UnitFullName('player')
 		FACTION = UnitFactionGroup('player')
 		REALMS = GetAutoCompleteRealms()
-		GUILD = GetGuildInfo('player')
 
 		if not REALMS or #REALMS == 0 then
 			REALMS = {REALM}
@@ -286,7 +285,7 @@ function Lib:GetOwnerAddress(owner)
 end
 
 function Lib:IsOwnerCached(realm, name, isguild)
-	return realm ~= REALM or name ~= (isguild and GUILD or PLAYER)
+	return realm ~= REALM or name ~= (isguild and GetGuildInfo('player') or PLAYER)
 end
 
 function Lib:IsBagCached(realm, name, isguild, bag)

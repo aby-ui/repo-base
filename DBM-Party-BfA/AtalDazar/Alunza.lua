@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2082, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191110182401")
+mod:SetRevision("20200126025600")
 mod:SetCreatureID(122967)
 mod:SetEncounterID(2084)
 mod:SetZone()
@@ -57,8 +57,10 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 255579 then
-		specWarnClaws:Show()
-		specWarnClaws:Play("defensive")
+		if not self.Options.SpecWarn255579dispel then
+			specWarnClaws:Show()
+			specWarnClaws:Play("defensive")
+		end
 		timerGildedClawsCD:Start()
 	elseif spellId == 255591 then
 		warnMoltenGold:Show()

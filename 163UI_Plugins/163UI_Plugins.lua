@@ -468,3 +468,18 @@ CoreDependCall("Blizzard_AzeriteEssenceUI", function()
         end
     end
 end)
+
+--[[------------------------------------------------------------
+始终显示特殊能量条的文字
+---------------------------------------------------------------]]
+do
+    local function forceShowStatusFrame(self, barID)
+        if self ~= PlayerPowerBarAlt then return end
+        if not U1GetCfgValue(addonName, 'AlwaysShowAltBarText') then return end
+        --barID = barID or UnitPowerBarID(self.unit)
+        --print("barID", barID)
+        PlayerPowerBarAltStatusFrameText:GetParent():Show()
+    end
+    hooksecurefunc("UnitPowerBarAlt_SetUp", forceShowStatusFrame)
+    hooksecurefunc("UnitPowerBarAlt_OnLeave", function(self) forceShowStatusFrame(self) end)
+end

@@ -11,7 +11,6 @@ local ADDON, Addon = CONFIG:match('[^_]+'), _G[CONFIG:match('[^_]+')]
 local Rules = Addon.GeneralOptions:New('RuleOptions', CreateAtlasMarkup('None'))
 Rules.Expandable, Rules.Expanded = {}, {}
 
-
 function Rules:Populate()
   self.sets = Addon.profile[self.frame]
   self:AddFrameChoice()
@@ -44,7 +43,7 @@ function Rules:Toggle(id)
     tinsert(self.sets.rules, id)
   end
 
-  self.sets.hiddenRules[id] = i and true
+  self.sets.hiddenRules[id] = i and true or false
   Addon.Frames:Update()
 end
 

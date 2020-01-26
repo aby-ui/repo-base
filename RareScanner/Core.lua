@@ -30,7 +30,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 8
-local CURRENT_LOOT_DB_VERSION = 21
+local CURRENT_LOOT_DB_VERSION = 22
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -310,6 +310,7 @@ scanner_button:RegisterEvent("LOOT_OPENED")
 
 -- Avoid addon on cinematics
 scanner_button:RegisterEvent("CINEMATIC_START")
+scanner_button:RegisterEvent("CINEMATIC_STOP")
 
 -- Chat messages
 scanner_button:RegisterEvent("CHAT_MSG_MONSTER_YELL")
@@ -319,6 +320,7 @@ scanner_button:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 scanner_button:RegisterEvent("QUEST_TURNED_IN")
 
 -- Captures all events
+local isCinematicPlaying = false
 scanner_button:SetScript("OnEvent", function(self, event, ...)
 	-- Playe login
 	if (event == "PLAYER_LOGIN") then
@@ -641,9 +643,12 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		end		
 	-- Others
 	elseif (event == "CINEMATIC_START") then
+		isCinematicPlaying = true
 		if (self:IsVisible()) then
 			self:HideButton()
 		end
+	elseif (event == "CINEMATIC_STOP") then
+		isCinematicPlaying = false
 	else
 		return
 	end
@@ -860,10 +865,14 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 	end
 	
 	-- Options disabled/enabled
-	if (iconid) then	
-		-- disable ALL alerts in instances
+	if (iconid) then
 		local isInstance, instanceType = IsInInstance()
-		if (isInstance == true and not private.db.general.scanInstances) then
+		
+		-- disable ALL alerts while cinematic is playing
+		if (isCinematicPlaying) then
+			return
+		-- disable ALL alerts in instances
+		elseif (isInstance == true and not private.db.general.scanInstances) then
 			return
 		-- disable alerts while flying
 		elseif (UnitOnTaxi("player") and not private.db.general.scanOnTaxi) then

@@ -19,6 +19,17 @@ private.EVENT_QUEST_IDS = {
 	[327554] = { 56178 }; --Conducto del Vacío
 	[154095] = { 56090 }; --Proteger al robusto
 	[154118] = { 56099 }; --Fuente de corrupción
+	[158521] = { 57299 }; --Sarcófago misterioso
+	[157144] = { 57272 }; --Efigie Vinculasangre
+	[158467] = { 57023 }; --Artefacto mogu pesado
+	[333213] = { 57049 }; --Cámara de almas
+	[161070] = { 58367 }; --Demoledor potenciado
+	[161089] = { 58370 }; --Demoledor potenciado
+	[157341] = { 57323 }; --Vinculación de dragón
+	[157106] = { 57256 }; --Arena de Electormenta
+	[158472] = { 57087 }; --Obliterador baruk
+	[158470] = { 57339 }; --Ritual de construcción
+	[156623] = { 57171 }; --Guardián de Ramaoro
 	
 	-- Events 8.3.0 Uldum
 	[156865] = { 57219 }; --Centinela desenterrado
@@ -48,4 +59,11 @@ private.EVENT_QUEST_IDS = {
 	[163360] = { 58676 }; --Destructor durmiente
 	[163198] = { 58961 }; --Colonos emboscados
 	[163357] = { 58661 }; --Terrores cavadores
+	[158725] = { 57543 }; --Ejecutor de N'Zoth
+	[158736] = { 57522 }; --Llamada del Vacío
+	[339484] = { 58256 }; --Fauces acuciantes
+	[339494] = { 58258 }; --Fauces acuciantes
+	[158738] = { 57585 }; --Llamada del Vacío
+	[158726] = { 57580 }; --Ejecutor de N'Zoth
+	[158727] = { 57582 }; --Ejecutor de N'Zoth
 }

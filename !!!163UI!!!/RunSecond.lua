@@ -147,6 +147,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
             --if not IsAddOnLoaded("!KalielsTracker") then return end
             self = self or module
             if isWorldQuests and not self.ShowWorldQuests then return end
+            if _G.AbyQuestWatchSortUpdate then return end
 
             -- 除了watches之外，还有一个当前区域的世界任务，所以不循环GetNumWorldQuestWatches直接循环usedBlocks
             --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   UpdateTrackedWorldQuests(module)
