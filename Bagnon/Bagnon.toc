@@ -7,7 +7,7 @@
 ## Version: 8.3.3
 
 addons\main\main.xml
-
+Bagnon_ReagentBankButton\style.xml
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 背包整合
 ## X-Vendor: AbyUI

@@ -1,0 +1,16 @@
+## Interface: 80300
+## Title: HandyNotes_WarfrontRares
+## Version: 0.5.4
+## Notes: Warfront Rares
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: HandyNotesArathiDB
+
+localization\enUS.lua
+localization\zhCN.lua
+localization\zhTW.lua
+HandyNotes_WarfrontRares.lua
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 战争前线稀有
+## X-Vendor: AbyUI

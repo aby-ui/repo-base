@@ -9,6 +9,24 @@ for i=0, 9 do for j=0, 9 do n2s_float[i+j/10] = format("%.1f", i+j/10) end end
 function noop() end
 function pdebug(...) print("params", ...); print(debugstack(2)) end
 
+function find_global(pattern)
+    for k,v in pairs(_G) do
+        if type(v) == "string" and v:find(pattern) then
+            print(k,v)
+        end
+    end
+    print("=========================")
+end
+
+function find_global_key(pattern)
+    for k,v in pairs(_G) do
+        if type(k) == "string" and k:find(pattern) then
+            print(k,v)
+        end
+    end
+    print("=========================")
+end
+
 _empty_table = {};
 _temp_table = {};
 

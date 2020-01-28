@@ -1,0 +1,27 @@
+## Interface: 80300
+## Title: HandyNotes: Mechagon & Nazjatar
+## Version: 13
+## Notes: Mechagon & Nazjatar Notes
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: HandyNotes_MechagonAndNazjatarDB
+
+localization\enUS.lua
+localization\zhTW.lua
+localization\zhCN.lua
+
+core\class.lua
+core\core.lua
+core\icons.lua
+core\options.lua
+core\map.lua
+core\nodes.lua
+core\rewards.lua
+
+mechagon.lua
+nazjatar.lua
+
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 麦卡贡纳沙塔尔
+## X-Vendor: AbyUI

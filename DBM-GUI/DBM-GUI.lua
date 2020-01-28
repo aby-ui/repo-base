@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("20200124201925", 1, -5))
+local revision =(string.sub("20200128044806", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -3212,6 +3212,7 @@ local function CreateOptionsMenu()
 			{	text	= L.FilterInterrupts,	value 	= "onlyTandF"},
 			{	text	= L.FilterInterrupts2,	value 	= "TandFandBossCooldown"},
 			{	text	= L.FilterInterrupts3,	value 	= "TandFandAllCooldown"},
+			{	text	= L.FilterInterrupts4,	value 	= "Always"},
 		}
 		local interruptDropDown		= spamSpecArea:CreateDropdown(L.FilterInterruptsHeader, interruptOptions, "DBM", "FilterInterrupt2", function(value)
 			DBM.Options.FilterInterrupt2 = value

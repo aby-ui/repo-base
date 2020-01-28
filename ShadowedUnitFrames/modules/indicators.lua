@@ -154,7 +154,7 @@ end
 function Indicators:UpdateLeader(frame)
 	if( not frame.indicators.leader or not frame.indicators.leader.enabled ) then return end
 
-	if( UnitIsGroupLeader(frame.unit) ) then
+	if( UnitIsGroupLeader(frame.unit) or (frame.unit == "target" and UnitLeadsAnyGroup(frame.unit)) ) then
 		if( HasLFGRestrictions() ) then
 			frame.indicators.leader:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
 			frame.indicators.leader:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
@@ -318,6 +318,11 @@ function Indicators:UpdateReadyCheck(frame, event)
 	frame.indicators.ready:Show()
 end
 
+function Indicators:UpdateFlags(frame)
+	self:UpdateLeader(frame)
+	self:UpdatePVPFlag(frame)
+end
+
 function Indicators:OnEnable(frame)
 	-- Forces the indicators to be above the bars/portraits/etc
 	if( not frame.indicators ) then
@@ -379,7 +384,6 @@ function Indicators:OnEnable(frame)
 	end
 
 	if( config.indicators.pvp and config.indicators.pvp.enabled ) then
-		frame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", self, "UpdatePVPFlag")
 		frame:RegisterUnitEvent("UNIT_FACTION", self, "UpdatePVPFlag")
 		frame:RegisterUpdateFunc(self, "UpdatePVPFlag")
 
@@ -454,6 +458,10 @@ function Indicators:OnEnable(frame)
 	-- As they all share the function, register it as long as one is active
 	if( frame.indicators.leader or frame.indicators.masterLoot or frame.indicators.role or ( frame.unit ~= "player" and frame.indicators.lfdRole ) ) then
 		frame:RegisterNormalEvent("GROUP_ROSTER_UPDATE", self, "GroupRosterUpdate")
+	end
+
+	if( frame.indicators.leader or frame.indicators.pvp ) then
+		frame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", self, "UpdateFlags")
 	end
 end
 

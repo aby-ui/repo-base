@@ -324,6 +324,13 @@ function Lib:RestoreItemData(item)
 	item.stack = item.stack or stack
 	item.set = item.set or set
 	item.subclass = item.subclass or subclass
+    --abyui https://wow.gamepedia.com/ItemType
+    if item.link and (item.class == LE_ITEM_CLASS_WEAPON or item.class == LE_ITEM_CLASS_ARMOR) then
+        self._tmp = self._tmp or {}
+        table.wipe(self._tmp)
+        GetItemStats(item.link, self._tmp)
+        item.corruption = self._tmp.ITEM_MOD_CORRUPTION
+    end
 	return item
 end
 

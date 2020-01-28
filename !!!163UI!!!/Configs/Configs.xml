@@ -16,13 +16,11 @@
     <Include file="..\..\AchievementsReminder\CfgAchievementsReminder.lua"/>
     <Include file="..\..\AngryKeystones\CfgAngryKeystones.lua"/>
     <Include file="..\..\AtlasLootReverse\CfgAtlasLootReverse.lua"/>
-    <Include file="..\..\AuctionLite\CfgAuctionLite.lua"/>
     <Include file="..\..\AutoTurnIn\CfgAutoTurnIn.lua"/>
     <Include file="..\..\BGDefender\CfgBGDefender.lua"/>
     <Include file="..\..\BagBrother\CfgBagBrother.lua"/>
     <Include file="..\..\Bagnon\CfgBagnon.lua"/>
     <Include file="..\..\BattlegroundTargets\CfgBattlegroundTargets.lua"/>
-    <Include file="..\..\BaudAuction\CfgBaudAuction.lua"/>
     <Include file="..\..\BigDebuffs\CfgBigDebuffs.lua"/>
     <Include file="..\..\BlinkHealthText\CfgBlinkHealthText.lua"/>
     <Include file="..\..\BlizzMove\CfgBlizzMove.lua"/>
@@ -124,6 +122,7 @@
     <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>
     <Include file="..\..\RareScanner\CfgRareScanner.lua"/>
+    <Include file="..\..\RECrystallize\CfgRECrystallize.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

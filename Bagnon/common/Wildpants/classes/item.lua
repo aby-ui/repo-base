@@ -233,9 +233,11 @@ function Item:UpdateBorder()
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
 			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and Search:InSet(self.info.link) then
-	  	r,g,b = .1, 1, 1
+	  	    r,g,b = .1, 1, 1
+            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
+            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
 		end
 	end
 

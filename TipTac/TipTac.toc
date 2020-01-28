@@ -11,5 +11,6 @@ Local_zhCN.lua
 Local_zhTW.lua
 ttCore.lua
 
+## OptionalDeps: RECrystallize
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 鼠标提示增强
 ## X-Vendor: AbyUI

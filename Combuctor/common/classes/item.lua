@@ -233,11 +233,13 @@ function Item:UpdateBorder()
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
 			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and Search:InSet(self.info.link) then
-	  	r,g,b = .1, 1, 1
-		elseif Addon.sets.glowQuality and quality and quality > 1 then
-			r,g,b = GetItemQualityColor(quality)
-		end
-	end
+            r,g,b = .1, 1, 1
+            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
+        elseif Addon.sets.glowQuality and quality and quality > 1 then
+            r,g,b = GetItemQualityColor(quality)
+            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
+        end
+    end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
 	self.IconBorder:SetVertexColor(r,g,b)
@@ -322,8 +324,8 @@ end
 --[[ Tooltip ]]--
 
 function Item:UpdateTooltip()
-	if self.info.link or self.info.id then
-		if self.info.link and self.info.cached then
+    if self.info.link or self.info.id then
+   		if self.info.link and self.info.cached then
 			self:ShowCachedTooltip()
 		else
 			self:ShowTooltip()
@@ -370,20 +372,20 @@ function Item:CreateDummy()
 	local function showTooltip(slot)
 		local parent = slot:GetParent()
 		local link = parent.info.link
-        if not link then return end
+		if link then
+			GameTooltip:SetOwner(parent:GetTipAnchor())
+			parent:LockHighlight()
+			CursorUpdate(parent)
 
-		GameTooltip:SetOwner(parent:GetTipAnchor())
-		parent:LockHighlight()
-		CursorUpdate(parent)
+			if link:find('battlepet:') then
+				local _, specie, level, quality, health, power, speed = strsplit(':', link)
+				local name = link:match('%[(.-)%]')
 
-		if link:find('battlepet:') then
-			local _, specie, level, quality, health, power, speed = strsplit(':', link)
-			local name = link:match('%[(.-)%]')
-
-			BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
-		else
-			GameTooltip:SetHyperlink(link)
-			GameTooltip:Show()
+				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
+			else
+				GameTooltip:SetHyperlink(link)
+				GameTooltip:Show()
+			end
 		end
 	end
 
@@ -403,8 +405,8 @@ function Item:CreateDummy()
 
 	slot:SetScript('OnLeave', function(slot)
 		slot:GetParent():UnlockHighlight()
+		slot:GetParent():OnLeave()
 		slot:Hide()
-		ResetCursor()
 	end)
 
 	return slot

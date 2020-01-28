@@ -27,35 +27,60 @@
     }
 });
 
-U1RegisterAddon("HandyNotes_DraenorTreasures", {
-    title = "德拉诺地图宝箱",
+U1RegisterAddon("HandyNotes_VisionsOfNZoth", {
+    title = "恩佐斯幻象(8.3)",
+    defaultEnable = 1,
+    load = "LATER",
+});
+
+U1RegisterAddon("HandyNotes_MechagonAndNazjatar", {
+    title = "麦卡贡和纳沙塔尔(8.2)",
+    defaultEnable = 1,
+    load = "LATER",
+});
+
+U1RegisterAddon("HandyNotes_WarfrontRares", {
+    title = "战争前线稀有位置(8.1)",
+    defaultEnable = 1,
+    load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_BattleForAzerothTreasures", {
+    title = "争霸艾酱地图宝箱(8.0)",
+    defaultEnable = 1,
+    load = "LATER",
+    desc = "在8.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
+})
+
+U1RegisterAddon("HandyNotes_Argus", {
+    title = "阿古斯地图宝箱(7.3)",
     defaultEnable = 0,
     load = "LATER",
-    desc = "在德拉诺地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
     modifier = "Vincero@NGA汉化",
 })
 
 U1RegisterAddon("HandyNotes_LegionRaresTreasures", {
-    title = "军团再临地图宝箱",
+    title = "军团再临地图宝箱(7.0)",
     defaultEnable = 0,
     load = "LATER",
     desc = "在军团再临地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
     modifier = "Vincero@NGA汉化",
 })
 
-U1RegisterAddon("HandyNotes_BattleForAzerothTreasures", {
-    title = "争霸艾酱地图宝箱",
-    defaultEnable = 1,
-    load = "LATER",
-    desc = "在8.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
-})
-
 U1RegisterAddon("HandyNotes_SuramarTelemancy", {
-    title = "苏拉玛传送门",
+    title = "苏拉玛传送门(7.0)",
     desc = "苏拉玛传送门及魔网标记, NGA网友karlock汉化补充",
     modifier = "karlock",
     defaultEnable = 1,
     load = "LATER",
+})
+
+U1RegisterAddon("HandyNotes_DraenorTreasures", {
+    title = "德拉诺地图宝箱(6.0)",
+    defaultEnable = 0,
+    load = "LATER",
+    desc = "在德拉诺地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
+    modifier = "Vincero@NGA汉化",
 })
 
 U1RegisterAddon("HandyNotes_HallowsEnd", {
@@ -70,27 +95,8 @@ U1RegisterAddon("HandyNotes_SummerFestival", {
     load = "LATER",
 })
 
-U1RegisterAddon("HandyNotes_Argus", {
-    title = "阿古斯地图宝箱",
-    defaultEnable = 0,
-    load = "LATER",
-    modifier = "Vincero@NGA汉化",
-})
-
 U1RegisterAddon("HandyNotes_LunarFestival", {
     title = "春节长者位置",
-    defaultEnable = 1,
-    load = "LATER",
-})
-
-U1RegisterAddon("HandyNotes_Arathi", {
-    title = "阿拉希稀有位置",
-    defaultEnable = 1,
-    load = "LATER",
-})
-
-U1RegisterAddon("HandyNotes_WarfrontRares", {
-    title = "战争前线稀有位置",
     defaultEnable = 1,
     load = "LATER",
 })
@@ -100,36 +106,3 @@ U1RegisterAddon("HandyNotes_DungeonLocations", {
     defaultEnable = 1,
     load = "LATER",
 })
-
-U1RegisterAddon("TomCats-DarkshoreRares", {
-    title = "黑海岸稀有",
-    defaultEnable = 1,
-    minimap = "TomCats-DarkshoreRaresMinimapButtonButton",
-    tags = { TAG_MAPQUEST, },
-    icon = "Interface\\AddOns\\TomCats-DarkshoreRares\\images\\darnassus-icon",
-    desc = "在黑海岸战争前线大地图上显示稀有精英图标及掉落",
-    pics = 2,
-    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
-});
-
-U1RegisterAddon("TomCats-Nazjatar", {
-    title = "纳沙塔尔稀有",
-    defaultEnable = 1,
-    --minimap = "TomCats-NazjatarMinimapButton",
-    tags = { TAG_MAPQUEST, },
-    icon = "Interface\\AddOns\\TomCats-Nazjatar\\images\\nazjatar-icon",
-    desc = "在纳沙塔尔地图上显示稀有精英图标及掉落，也可以作为HandyNotes插件",
-    pics = 2,
-    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
-});
-
-U1RegisterAddon("TomCats-Mechagon", {
-    title = "麦卡贡稀有",
-    defaultEnable = 1,
-    --minimap = "TomCats-MechagonMinimapButton",
-    tags = { TAG_MAPQUEST, },
-    icon = "Interface\\AddOns\\TomCats-Mechagon\\images\\mechagon-icon",
-    desc = "在麦卡贡地图上显示稀有精英图标及掉落，也可以作为HandyNotes插件",
-    pics = 2,
-    { text = "HandyNotes插件设置", callback = function(cfg, v, loading) LibStub("AceConfigDialog-3.0"):Open("HandyNotes") end },
-});

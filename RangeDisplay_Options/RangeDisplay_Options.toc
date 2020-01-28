@@ -10,14 +10,6 @@
 ## X-License: Public Domain
 ## X-RelSite-WoWI: 7297
 
-#@no-lib-strip@
-libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
-libs\Ace3\AceConfig-3.0\AceConfigRegistry-3.0\AceConfigRegistry-3.0.xml
-libs\Ace3\AceConfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.xml
-libs\Ace3\AceDBOptions-3.0\AceDBOptions-3.0.xml
-libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
-#@end-no-lib-strip@
-
 localizations.lua
 Options.lua
 

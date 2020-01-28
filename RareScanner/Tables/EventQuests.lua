@@ -30,6 +30,19 @@ private.EVENT_QUEST_IDS = {
 	[158472] = { 57087 }; --Obliterador baruk
 	[158470] = { 57339 }; --Ritual de construcción
 	[156623] = { 57171 }; --Guardián de Ramaoro
+	[161048] = { 58334 }; --Bruma Otoñal en llamas
+	[157601] = { 57445 }; --Carrito de fideos de Chin
+	[157934] = { 57484 }; --Ritual del despertar
+	[164307] = { 57558 }; --Criadero mántide
+	[158033] = { 57517 }; --Invocador de enjambre
+	[158036] = { 57519 }; --Invocador de enjambre
+	[157718] = { 57453 }; --Invocador de enjambre
+	[158037] = { 57521 }; --Carro de guerra potenciado
+	[157874] = { 57476 }; --Zona de alimentación Vil'thik
+	[158016] = { 57508 }; --Estandarte de guerra Vil'thik
+	[153241] = { 57384 }; --Monstruosidad reparadora
+	[158069] = { 57540 }; --Incubadora kunchong
+	[156289] = { 57085 }; --Carro de guerra potenciado
 	
 	-- Events 8.3.0 Uldum
 	[156865] = { 57219 }; --Centinela desenterrado
@@ -66,4 +79,11 @@ private.EVENT_QUEST_IDS = {
 	[158738] = { 57585 }; --Llamada del Vacío
 	[158726] = { 57580 }; --Ejecutor de N'Zoth
 	[158727] = { 57582 }; --Ejecutor de N'Zoth
+	[160915] = { 58275 }; --Invocación monstruosa
+	[158728] = { 57592 }; --Ejecutor de N'Zoth
+	[158721] = { 57449 }; --Ejecutor de N'Zoth
+	[339488] = { 58257 }; --Fauces acuciantes
+	[163306] = { 57590 }; --Bebedor de espíritus
+	[160818] = { 58271 }; --Ritual de llama del Vacío
+	[158737] = { 57541 }; --Llamada del Vacío
 }

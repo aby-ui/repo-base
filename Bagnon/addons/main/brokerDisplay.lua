@@ -151,7 +151,11 @@ end
 function Display:UpdateText()
 	local obj = self:GetObject()
 	local text = obj and (obj.text or obj.label or '') or 'Select Databroker Plugin'
-
+    if obj and obj.name == "Broker Currency" then
+        --abyui
+        --text = "1,268,715\124TInterface\\MoneyFrame\\UI-GoldIcon:12:12:2:0\124t \124T141"
+        text = text:gsub("[0-9,]*%|TInterface%\\MoneyFrame%\\UI%-GoldIcon:[0-9:]+%|t[ ]?", "")
+    end
 	self.text:SetText(text)
 	self:Layout()
 end
@@ -159,6 +163,7 @@ end
 function Display:UpdateIcon()
 	local obj = self:GetObject()
 	local icon = obj and obj.icon
+    if obj and obj.name == "Broker Currency" then icon = nil end
 	self.icon:SetTexture(icon)
 	self.icon:SetShown(icon)
 	self:Layout()

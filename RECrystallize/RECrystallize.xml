@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Script file="RECrystallize.lua"/>
+
+	<Frame name="RECrystallizeFrame">
+		<Scripts>
+			<OnLoad>RECrystallize:OnLoad(self)</OnLoad>
+			<OnEvent>RECrystallize:OnEvent(self, event, ...)</OnEvent>
+		</Scripts>
+	</Frame>
+
+</Ui>

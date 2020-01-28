@@ -141,6 +141,10 @@ if AL then
 	AL["LOOT_TOOLTIP_POSITION"] = "掉落物品提示位置"
 	AL["LOOT_TOOLTIP_POSITION_DESC"] = "设置鼠标移动到图标上时掉落物品提示条的显示位置"
 	AL["MAIN_BUTTON_OPTIONS"] = "主按钮选项"
+	--[[Translation missing --]]
+	AL["MAP_MENU_DISABLE_LAST_SEEN_CONTAINER_FILTER"] = "Show containers that you saw a long time ago but that can respawn"
+	--[[Translation missing --]]
+	AL["MAP_MENU_DISABLE_LAST_SEEN_EVENT_FILTER"] = "Show events that you saw a long time ago but that can respawn"
 	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "显示你很久以前见过但可以重新召唤的稀有NPC"
 	AL["MAP_MENU_SHOW_CONTAINERS"] = "在地图上显示宝箱图标"
 	AL["MAP_MENU_SHOW_EVENTS"] = "在地图上显示事件图标"
@@ -153,12 +157,20 @@ if AL then
 	AL["MAP_SCALE_ICONS_DESC"] = "调整地图上的图标缩放，1表示原始尺寸"
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED"] = "宝箱开启后仍然显示"
 	AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"] = "禁用此选项时，宝箱开启后图标会自动消失。"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_AFTER_COMPLETED"] = "Keep showing event icons after completion"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"] = "When disabled the icon will disappear after you complete the event."
 	AL["MAP_SHOW_ICON_AFTER_DEAD"] = "NPC击杀后仍然显示"
 	AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"] = "禁用此选项时，NPC击杀后图标会自动消失。当你再次发现该NPC时图标会再次出现。这个选择只对击杀后再次出现保持稀有属性的NPC有效。"
 	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"] = "在NPC死亡后持续显示图标（仅在可重置区域）"
 	AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"] = "禁用时，当你击杀NPC后图标会隐藏。图标会在你再次发现该NPC时出现。本选项只在NPC击杀后依然为精英的区域（随世界任务重置）生效"
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"] = "隐藏宝箱图标计时器（以分钟记）"
 	AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"] = "设置发现宝箱最大分钟数。在这个时间后直到你再次找到这个宝箱，图标不会在世界地图显示。如果设置为0分钟，无论宝箱被发现了多久图标都会显示。这个选项不会对某成就要求的宝箱起作用。"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"] = "Timer to hide event icons (in minutes)"
+	--[[Translation missing --]]
+	AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"] = "Sets the maximum number of minutes since you have seen the event. After that time, the icon won't be shown on the world map until you find the event again. If you select zero minutes the icons will be shown regardless of how long since you have seen the event."
 	AL["MAP_SHOW_ICON_MAX_SEEN_TIME"] = "隐藏稀有NPC图标计时器（以小时记）"
 	AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"] = "设置发现稀有NPC最大小时数。在这个时间后直到你再次找到这个NPC，图标不会在世界地图显示。如果设置为0小时，无论NPC被发现了多久图标都会显示。"
 	AL["MAP_TOOLTIP_ACHIEVEMENT"] = "这是成就 %s 的一项"

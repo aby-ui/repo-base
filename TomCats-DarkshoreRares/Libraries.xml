@@ -1,9 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <Include file="libs\TomCatsLibs\TomCatsLibs.xml" />
-    <Include file="libs\TomCatsLibs\Events.xml" />
-    <Include file="libs\TomCatsLibs\Locales.xml" />
-    <Include file="libs\TomCatsLibs\SavedVariables.xml" />
-    <Include file="libs\TomCatsLibs\UUID.xml" />
-    <Include file="libs\TomCatsLibs\Data.xml" />
-    <Include file="libs\TomCatsLibs\Charms.xml" />
-</Ui>
