@@ -166,9 +166,18 @@ function DWC_SetChatType(chatType, index)
     --	else
 
     if(chatType == 'WHISPER') then
+        --do return ChatFrame_ReplyTell2() end
         local lastTell = ChatEdit_GetLastTellTarget()
-        if(lastTell == '') then lastTell = false end
+        if lastTell and lastTell ~= '' then
+            return ChatFrame_ReplyTell()
+        end
 
+        lastTell = ChatEdit_GetLastToldTarget()
+        if lastTell and lastTell ~= '' then
+            return ChatFrame_ReplyTell2()
+        end
+
+        if(lastTell == '') then lastTell = false end
         if(not lastTell) then
             if(UnitExists'target' and UnitIsFriend('target', 'player') and UnitIsPlayer'target') then
                 local name, realm = UnitName'target'

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191128133309")
+mod:SetRevision("20200126211630")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 mod:SetZone()
@@ -55,7 +55,7 @@ mod:AddNamePlateOption("NPAuraOnWalkieShockie", 296522, false)
 mod.vb.hard = false
 local unitTracked = {}
 
-local function checkHardMode(self, delay)
+local function checkHardMode(self)
 	local found = false
 	for i = 1, 5 do
 		local unitID = "boss"..i

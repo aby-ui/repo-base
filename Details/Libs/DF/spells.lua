@@ -918,7 +918,57 @@ function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 	return spellIDs
 end
 
+--default spells to use in the range check
+DF.SpellRangeCheckListBySpec = {
+	-- 185245 spellID for Torment, it is always failing to check range with IsSpellInRange()
+	[577] = 278326, --> havoc demon hunter - Consume Magic
+	[581] = 278326, --> vengeance demon hunter - Consume Magic
 
+	[250] = 56222, --> blood dk - dark command
+	[251] = 56222, --> frost dk - dark command
+	[252] = 56222, --> unholy dk - dark command
+	
+	[102] = 8921, -->  druid balance - Moonfire (45 yards)
+	[103] = 8921, -->  druid feral - Moonfire (40 yards)
+	[104] = 6795, -->  druid guardian - Growl
+	[105] = 8921, -->  druid resto - Moonfire (40 yards)
+
+	[253] = 193455, -->  hunter bm - Cobra Shot
+	[254] = 19434, --> hunter marks - Aimed Shot
+	[255] = 271788, --> hunter survivor - Serpent Sting
+	
+	[62] = 227170, --> mage arcane - arcane blast
+	[63] = 133, --> mage fire - fireball
+	[64] = 228597, --> mage frost - frostbolt
+	
+	[268] = 115546 , --> monk bm - Provoke
+	[269] = 117952, --> monk ww - Crackling Jade Lightning (40 yards)
+	[270] = 117952, --> monk mw - Crackling Jade Lightning (40 yards)
+	
+	[65] = 20473, --> paladin holy - Holy Shock (40 yards)
+	[66] = 62124, --> paladin protect - Hand of Reckoning
+	[70] = 62124, --> paladin ret - Hand of Reckoning
+	
+	[256] = 585, --> priest disc - Smite
+	[257] = 585, --> priest holy - Smite
+	[258] = 8092, --> priest shadow - Mind Blast
+	
+	[259] = 185565, --> rogue assassination - Poisoned Knife (30 yards)
+	[260] = 185763, --> rogue outlaw - Pistol Shot (20 yards)
+	[261] = 114014, --> rogue sub - Shuriken Toss (30 yards)
+
+	[262] = 188196, --> shaman elemental - Lightning Bolt
+	[263] = 187837, --> shaman enhancement - Lightning Bolt (instance cast)
+	[264] = 403, --> shaman resto - Lightning Bolt
+
+	[265] = 686, --> warlock aff - Shadow Bolt
+	[266] = 686, --> warlock demo - Shadow Bolt
+	[267] = 116858, --> warlock destro - Chaos Bolt
+	
+	[71] = 355, --> warrior arms - Taunt
+	[72] = 355, --> warrior fury - Taunt
+	[73] = 355, --> warrior protect - Taunt
+}
 
 
 

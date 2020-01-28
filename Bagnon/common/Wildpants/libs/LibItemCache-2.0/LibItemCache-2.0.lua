@@ -18,13 +18,15 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 27)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 28)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS
 local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
 local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
-local PET_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
+local PET_STRING = '^' .. strrep('%d+:', 7) .. '%d+$'
+local KEYSTONE_LINK  = '|c%s|Hkeystone:%sx0|h[%s]|h|r'
+local KEYSTONE_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
 
 local FindRealms = function()
@@ -325,24 +327,29 @@ function Lib:RestoreItemData(item)
 	return item
 end
 
-function Lib:RestoreLinkData(partial)
-	if type(partial) == 'string' and not partial:find(COMPLETE_LINK) then
-		if partial:sub(1,9) == 'battlepet' or partial:find(PET_STRING) then
-			local id, quality = partial:match('(%d+):%d+:(%d+)')
+function Lib:RestoreLinkData(input)
+	local isString = type(input) == 'string'
+	local complete = isString and input:find(COMPLETE_LINK)
+
+	if isString and not complete then
+		if input:sub(1,9) == 'battlepet' or input:find(PET_STRING) then
+			local id, quality = input:match('(%d+):%d+:(%d+)')
 			local id, quality = tonumber(id), tonumber(quality)
 			local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
 			local color = select(4, GetItemQualityColor(quality))
 
-			return PET_LINK:format(color, partial, name), id, quality, icon
-		elseif partial:sub(1,5) ~= 'item:' then
-			partial = 'item:' .. partial
+			return PET_LINK:format(color, input, name), id, quality, icon
+		elseif input:sub(1,9) == 'keystone' or input:find(KEYSTONE_STRING) then
+			input = 138019
+		elseif input:sub(1,5) ~= 'item:' then
+			input = 'item:' .. input
 		end
 	end
 
-	if partial then
-		local id, _, _, equip, icon, class, subclass = GetItemInfoInstant(partial)
-		local name, link, quality, level, minLevel, _, _, stack, _,_, price, _,_, bind, expac, set, crafting = GetItemInfo(partial)
-		return link, id, quality, icon, equip, class, subclass, name, level, minLevel, stack, price, bind, expac, set, crafting
+	if input then
+		local id, _, _, equip, icon, class, subclass = GetItemInfoInstant(input)
+		local name, link, quality, level, minLevel, _, _, stack, _,_, price, _,_, bind, expac, set, crafting = GetItemInfo(input)
+		return complete and input or link, id, quality, icon, equip, class, subclass, name, level, minLevel, stack, price, bind, expac, set, crafting
 	end
 end
 

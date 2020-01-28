@@ -5098,6 +5098,7 @@ DF.IconRowFunctions = {
 					end
 					
 					iconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", iconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
+					DF:SetFontSize (iconFrame.CountdownText, self.options.text_size)
 					iconFrame.CountdownText:SetText (formattedTime)
 					iconFrame.Cooldown:SetHideCountdownNumbers (true)
 				else
@@ -5203,6 +5204,7 @@ local default_icon_row_options = {
 	texcoord = {.1, .9, .1, .9},
 	show_text = true,
 	text_color = {1, 1, 1, 1},
+	text_size = 12,
 	text_anchor = "center",
 	text_rel_anchor = "center",
 	text_x_offset = 0,
@@ -6851,6 +6853,33 @@ function DF:BuildStatusbarAuthorInfo (f, addonBy, authorsNameString)
 
 end
 
+local statusbar_default_options = {
+	attach = "bottom", --bottomleft from statusbar attach to bottomleft of the frame | other option is "top": topleft attach to bottomleft
+}
+
+function DF:CreateStatusBar(f, options)
+	local statusBar = CreateFrame ("frame", nil, f)
+	
+	DF:Mixin (statusBar, DF.OptionsFunctions)
+	DF:Mixin (statusBar, DF.LayoutFrame)
+
+	statusBar:BuildOptionsTable (statusbar_default_options, options)
+
+	if (statusBar.options.attach == "bottom") then
+		statusBar:SetPoint ("bottomleft", f, "bottomleft")
+		statusBar:SetPoint ("bottomright", f, "bottomright")
+
+	else
+		statusBar:SetPoint ("topleft", f, "bottomleft")
+		statusBar:SetPoint ("topright", f, "bottomright")
+	end
+
+	statusBar:SetHeight (20)
+	DF:ApplyStandardBackdrop (statusBar)
+	statusBar:SetAlpha (0.8)
+
+	return statusBar
+end
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

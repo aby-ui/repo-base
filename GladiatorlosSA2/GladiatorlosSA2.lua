@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 2.2 |r(|cFF00FF968.3 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A 2.2.1|r(|cFF00FF968.3 Battle for Azeroth|r)"
  local GSA_AUTHOR = " "
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -99,6 +99,7 @@
 		ronlyTF = false,
 		drinking = false,
 		class = false,
+		connected = false,
 		interruptedfriendly = true,
 		
 		custom = {},
@@ -312,6 +313,7 @@ end
 	
 
  function GladiatorlosSA:COMBAT_LOG_EVENT_UNFILTERED(event , ...)
+ 	local _,currentZoneType = IsInInstance()
 	-- Checks if alerts should occur here.
 	if (not self:CanTalkHere()) then
 		return

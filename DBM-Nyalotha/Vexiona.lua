@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200126013532")
+mod:SetRevision("20200127182636")
 mod:SetCreatureID(151798)
 mod:SetEncounterID(2336)
 mod:SetZone()
@@ -97,7 +97,7 @@ local timerDesolationCD						= mod:NewCDTimer(32.3, 310325, nil, nil, nil, 3, ni
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(20684))
 local timerAnnihilationCD					= mod:NewCDTimer(14.6, 307403, nil, nil, nil, 3)
 
---local berserkTimer						= mod:NewBerserkTimer(600)
+local berserkTimer							= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption(6, 264382)
 mod:AddInfoFrameOption(307019, true)
@@ -126,6 +126,7 @@ function mod:OnCombatStart(delay)
 	timerEncroachingShadowsCD:Start(14.8-delay)
 	timerDarkGatewayCD:Start(32.9-delay, 1)
 	timerTwilightDecimatorCD:Start(89.7-delay, 1)
+	berserkTimer:Start(720-delay)--Normal confirmed, heroic people didn't have parses that far yet, but likely same
 	if self.Options.NPAuraOnPoweroftheChosen then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 		self:RegisterOnUpdateHandler(function(self)
@@ -194,7 +195,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnTwilightBreath:Show()
 			specWarnTwilightBreath:Play("breathsoon")
 		end
-	elseif spellId == 307403 or spellId == 306982 then--Enemy, Player
+	elseif (spellId == 307403 or spellId == 306982) and self:AntiSpam(3, args.sourceName) then--Enemy, Player
 		specWarnAnnihilation:Show(args.sourceName)
 		specWarnAnnihilation:Play("shockwave")
 		if spellId == 307403 then--Cast by mob not player

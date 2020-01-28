@@ -89,6 +89,7 @@ local LocalDatabase, GlobalDatabase, SavedVars = unpack(select(2, ...))
     end
 
 --<<SCAN QUEST DATA>>-------------------------------------------------------------------------------<<>>
+    local IgnoredQuests = { ["突袭：黑暗帝国"] = true } --TODO 用任务ID
     local ObjectiveLines = {}
     local function ScanPlate(plateData)                                                         --GlobalDatabase.EventBucket_AddLine("Kib_QuestMobs", "Plate Scanned and Cached: " .. plateData.unitName)
         local PlayerQuest, GroupQuest, AreaQuest, QuestTasks = nil, nil, nil, _empty_table --{}
@@ -103,7 +104,30 @@ local LocalDatabase, GlobalDatabase, SavedVars = unpack(select(2, ...))
             if texture:GetTexture() == 3083385 then
                 local anchor = select(2, texture:GetPoint())
                 local line = tonumber(anchor:GetName():sub(#"KibQuestTooltipTextLeft" + 1))
-                ObjectiveLines[line] = true
+                --一个人的时候是 <任务>\n - 进度，组队的时候是 <任务>\n人名\n-进度
+
+                if GetNumGroupMembers() == 0 then
+                    local quest = _G["KibQuestTooltipTextLeft" .. (line-1)]
+                    quest = quest and quest:GetText()
+                    if not IgnoredQuests[quest] then
+                        ObjectiveLines[line] = true
+                    end
+                    -- 不需要记录false
+                else
+                    if ObjectiveLines[line - 2] == true then
+                        ObjectiveLines[line] = true
+                    elseif ObjectiveLines[line - 2] == false then
+                        ObjectiveLines[line] = false
+                    else
+                        local quest = _G["KibQuestTooltipTextLeft" .. (line-2)]
+                        quest = quest and quest:GetText()
+                        if IgnoredQuests[quest] then
+                            ObjectiveLines[line] = false
+                        else
+                            ObjectiveLines[line] = true
+                        end
+                    end
+                end
             end
         end
 

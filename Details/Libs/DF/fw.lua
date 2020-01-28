@@ -1,5 +1,5 @@
 
-local dversion = 164
+local dversion = 167
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -17,6 +17,9 @@ local _type = type
 local _unpack = unpack
 local upper = string.upper
 local string_match = string.match
+
+local UnitPlayerControlled = UnitPlayerControlled
+local UnitIsTapDenied = UnitIsTapDenied
 
 SMALL_NUMBER = 0.000001
 ALPHA_BLEND_AMOUNT = 0.8400251
@@ -2925,6 +2928,157 @@ function DF:GetCLEncounterIDs()
 	return DF.CLEncounterID
 end
 
+DF.ClassSpecs = {
+	["DEMONHUNTER"] = {
+		[577] = true, 
+		[581] = true,
+	},
+	["DEATHKNIGHT"] = {
+		[250] = true,
+		[251] = true,
+		[252] = true,
+	},
+	["WARRIOR"] = {
+		[71] = true,
+		[72] = true,
+		[73] = true,
+	},
+	["MAGE"] = {
+		[62] = true,
+		[63] = true,
+		[64] = true,
+	},
+	["ROGUE"] = {
+		[259] = true,
+		[260] = true,		
+		[261] = true,
+	},
+	["DRUID"] = {
+		[102] = true,
+		[103] = true,
+		[104] = true,
+		[105] = true,
+	},
+	["HUNTER"] = {
+		[253] = true,
+		[254] = true,		
+		[255] = true,
+	},
+	["SHAMAN"] = {
+		[262] = true,
+		[263] = true,
+		[264] = true,
+	},
+	["PRIEST"] = {
+		[256] = true,
+		[257] = true,
+		[258] = true,
+	},
+	["WARLOCK"] = {
+		[265] = true,
+		[266] = true,
+		[267] = true,
+	},
+	["PALADIN"] = {
+		[65] = true,
+		[66] = true,
+		[70] = true,
+	},
+	["MONK"] = {
+		[268] = true, 
+		[269] = true, 
+		[270] = true, 
+	},
+}
+
+DF.SpecListByClass = {
+	["DEMONHUNTER"] = {
+		577, 
+		581,
+	},
+	["DEATHKNIGHT"] = {
+		250,
+		251,
+		252,
+	},
+	["WARRIOR"] = {
+		71,
+		72,
+		73,
+	},
+	["MAGE"] = {
+		62,
+		63,
+		64,
+	},
+	["ROGUE"] = {
+		259,
+		260,		
+		261,
+	},
+	["DRUID"] = {
+		102,
+		103,
+		104,
+		105,
+	},
+	["HUNTER"] = {
+		253,
+		254,		
+		255,
+	},
+	["SHAMAN"] = {
+		262,
+		263,
+		264,
+	},
+	["PRIEST"] = {
+		256,
+		257,
+		258,
+	},
+	["WARLOCK"] = {
+		265,
+		266,
+		267,
+	},
+	["PALADIN"] = {
+		65,
+		66,
+		70,
+	},
+	["MONK"] = {
+		268, 
+		269, 
+		270, 
+	},
+}
+
+--given a class and a  specId, return if the specId is a spec from the class passed
+function DF:IsSpecFromClass(class, specId)
+	return DF.ClassSpecs[class] and DF.ClassSpecs[class][specId]
+end
+
+--return a has table where specid is the key and 'true' is the value
+function DF:GetClassSpecs(class)
+	return DF.ClassSpecs [class]
+end
+
+--return a numeric table with spec ids
+function DF:GetSpecListFromClass(class)
+	return DF.SpecListByClass [class]
+end
+
+--return a list with specIds as keys and spellId as value
+function DF:GetSpellsForRangeCheck()
+	return SpellRangeCheckListBySpec
+end
+
+--return a list with specIds as keys and spellId as value
+function DF:GetRangeCheckSpellForSpec(specId)
+	return SpellRangeCheckListBySpec[specId]
+end
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> delta seconds reader
@@ -3034,5 +3188,11 @@ DF.DebugMixin = {
 	
 }
 
---doo elsee 
---was doing double loops due to not enought height
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	
+--> returns if the unit is tapped (gray health color when another player hit the unit first) 
+function DF:IsUnitTapDenied (unitId)
+	return unitId and not UnitPlayerControlled (unitId) and UnitIsTapDenied (unitId)
+end
+
+

@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: Masque_CleanUI
 ## Author: Seharad
-## Version: 8.2.0
+## Version: 8.3.0
 ## Notes: Masque Skin for the CleanUI look and feel
 ## Notes-zhTW: Masque的CleanUI皮膚。
 ## Notes-zhCN: Masque的CleanUI皮肤。

@@ -508,6 +508,8 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     tiptext = tiptext .. "\n|cffffd200绿字总和:|r " .. GREEN_FONT_COLOR_CODE .. greenTotal .. "|r"
     for i=1, 4 do if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "") end end
     if not inspecting then tiptext = tiptext .. "\n|cffffd200精通系数:|r " .. YELLOW_FONT_COLOR_CODE .. format("%.2f", select(2, GetMasteryEffect())) .. "|r" end
+    local i=9 if stats_total[i] then tiptext = tiptext .. "\n|cff946cd0".."合计腐蚀"..":|r".."|cff946cd0".." +"..format("%-4d", max(0, stats_total[i] - stats_total[i+1]))..format(" (+%d)", stats_total[i]).."|r" end
+    local i=10 if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..YELLOW_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r" end
 
 	GearStatsSummary_SetFrameText(frame, tiptitle, tiptext, unit);
 	frame:Show();

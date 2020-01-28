@@ -75,11 +75,6 @@ points[50] = { -- "StranglethornJungle"
 	[71043430] = { 8716, 912, 5 }, -- Elder Starglade
 }
 
-points[224] = { -- "StranglethornVale"
-	[63282265] = { 8716, 912, 5 }, -- Elder Starglade
-	[37327920] = { 8674, 912, 6 }, -- Elder Winterhoof
-}
-
 points[317] = { -- "Stratholme"
 	[78622215] = { 8727, 910, 6 }, -- Elder Farwhisper
 }
@@ -319,10 +314,6 @@ points[241] = { -- "TwilightHighlands"
 points[249] = { -- "Uldum"
 	[65521867] = { 29742, 6006, 2 }, -- Elder Menkhaf
 	[31596298] = { 29741, 6006, 3 }, -- Elder Sekhemi
-}
-
-points[203] = { -- "Vashjir"
-	[69828251] = { 29738, 6006, 8 }, -- Elder Moonlance
 }
 
 points[205] = { -- "VashjirRuins"

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191128133309")
+mod:SetRevision("20200126155822")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetZone()
@@ -103,6 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 263246 then--Lightning Shield
 		warnLightningShield:Show(args.destName)
+		warnLightningShield:Play("targetchange")
 		local cid = self:GetCIDFromGUID(args.destGUID)
 		--Start lightning timers and stop wind
 		if cid == 133379 then--Adderis

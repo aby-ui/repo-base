@@ -2196,6 +2196,7 @@ function KT:ToggleEmptyTracker(added)
 end
 
 function KT:SetMessage(text, r, g, b, pattern, icon, x, y)
+    if not text then return end
 	if pattern then
 		text = format(pattern, text.." ...")
 	end

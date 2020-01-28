@@ -21,11 +21,14 @@ local continents = {
 	[13]  = true, -- Eastern Kingdoms
 	[101] = true, -- Outland
 	[113] = true, -- Northrend
+	[203] = true, -- Vashj'ir
+	[224] = true, -- Stranglethorn Vale
 	[424] = true, -- Pandaria
 	[572] = true, -- Draenor
 	[619] = true, -- Broken Isles
 	[875] = true, -- Zandalar
 	[876] = true, -- Kul Tiras
+	[947] = true, -- Azeroth
 }
 
 local notes = {
@@ -260,7 +263,7 @@ function LunarFestival:OnEnable()
 	end
 
 	for continentMapID in next, continents do
-		local children = C_Map.GetMapChildrenInfo(continentMapID)
+		local children = C_Map.GetMapChildrenInfo(continentMapID, nil, true)
 		for _, map in next, children do
 			local coords = points[map.mapID]
 			if coords then

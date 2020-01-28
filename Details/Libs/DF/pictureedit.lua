@@ -5,29 +5,36 @@ if (not DF or not DetailsFrameworkCanLoad) then
 end
 
 local _
+local ttexcoord
 
-	local window = DF:NewPanel (UIParent, nil, "DetailsFrameworkImageEdit", nil, 100, 100, false)
+local CreateImageEditorFrame = function()
+
+	local window = DF:NewPanel (UIParent, nil, "DetailsFrameworkImageEdit", nil, 650, 500, false)
 	window:SetPoint ("center", UIParent, "center")
 	window:SetResizable (true)
 	window:SetMovable (true)
 	window:SetClampedToScreen (true)
 	tinsert (UISpecialFrames, "DetailsFrameworkImageEdit")
 	window:SetFrameStrata ("TOOLTIP")
-	window:SetMaxResize (650, 500)
+	window:SetMaxResize (500, 500)
+
+	_G.DetailsFrameworkImageEditTable = window
 	
 	window.hooks = {}
 	
-	local background = DF:NewImage (window, nil, nil, nil, "background", nil, nil, "$parentBackground")
+	local background = DF:NewImage (window, nil, nil, nil, "background", nil, "background", "$parentBackground")
 	background:SetAllPoints()
 	background:SetTexture (0, 0, 0, .8)
 	
-	local edit_texture = DF:NewImage (window, nil, 650, 500, "artwork", nil, nil, "$parentImage")
+	local edit_texture = DF:NewImage (window, nil, 500, 500, "artwork", nil, "edit_texture", "$parentImage")
 	edit_texture:SetAllPoints()
+	_G.DetailsFrameworkImageEdit_EditTexture = edit_texture
 	
 	local background_frame = CreateFrame ("frame", "DetailsFrameworkImageEditBackground", DetailsFrameworkImageEdit)
-	background_frame:SetPoint ("topleft", DetailsFrameworkImageEdit, "topleft", -10, 12)
-	background_frame:SetFrameStrata ("DIALOG")
-	background_frame:SetSize (800, 540)
+	background_frame:SetPoint ("topleft", DetailsFrameworkImageEdit, "topleft", -10, 30)
+	background_frame:SetFrameStrata ("TOOLTIP")
+	background_frame:SetFrameLevel (window:GetFrameLevel())
+	background_frame:SetSize (790, 560)
 	
 	background_frame:SetResizable (true)
 	background_frame:SetMovable (true)
@@ -38,11 +45,15 @@ local _
 	background_frame:SetScript ("OnMouseUp", function()
 		window:StopMovingOrSizing()
 	end)
-	
+
+	DF:CreateTitleBar (background_frame, "Image Editor")
+	DF:ApplyStandardBackdrop (background_frame, false, 0.98)
+	DF:CreateStatusBar(background_frame)
+
 	background_frame:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
 	background_frame:SetBackdropColor (0, 0, 0, 0.9)
 	background_frame:SetBackdropBorderColor (0, 0, 0, 1)
-	
+
 	local haveHFlip = false
 	local haveVFlip = false
 	
@@ -223,22 +234,27 @@ local _
 			window [side.."Slider"]:Show()
 		end
 		
+		local yMod = -10
+
 		local leftTexCoordButton = DF:NewButton (buttonsBackground, nil, "$parentLeftTexButton", nil, 100, 20, enableTexEdit, "left", nil, nil, "Crop Left", 1)
-		leftTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -10)
+		leftTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -10 + yMod)
+		leftTexCoordButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+
 		local rightTexCoordButton = DF:NewButton (buttonsBackground, nil, "$parentRightTexButton", nil, 100, 20, enableTexEdit, "right", nil, nil, "Crop Right", 1)
-		rightTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -30)
+		rightTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -30 + yMod)
+		rightTexCoordButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+
 		local topTexCoordButton = DF:NewButton (buttonsBackground, nil, "$parentTopTexButton", nil, 100, 20, enableTexEdit, "top", nil, nil, "Crop Top", 1)
-		topTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -50)
+		topTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -50 + yMod)
+		topTexCoordButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+
 		local bottomTexCoordButton = DF:NewButton (buttonsBackground, nil, "$parentBottomTexButton", nil, 100, 20, enableTexEdit, "bottom", nil, nil, "Crop Bottom", 1)
-		bottomTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -70)
-		leftTexCoordButton:InstallCustomTexture()
-		rightTexCoordButton:InstallCustomTexture()
-		topTexCoordButton:InstallCustomTexture()
-		bottomTexCoordButton:InstallCustomTexture()
+		bottomTexCoordButton:SetPoint ("topright", buttonsBackground, "topright", -8, -70 + yMod)
+		bottomTexCoordButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		
 		local Alpha = DF:NewButton (buttonsBackground, nil, "$parentBottomAlphaButton", nil, 100, 20, alpha, nil, nil, nil, "Alpha", 1)
-		Alpha:SetPoint ("topright", buttonsBackground, "topright", -8, -115)
-		Alpha:InstallCustomTexture()
+		Alpha:SetPoint ("topright", buttonsBackground, "topright", -8, -115 + yMod)
+		Alpha:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		
 	--> overlay color
 		local selectedColor = function (default)
@@ -288,8 +304,8 @@ local _
 		end
 		
 		local changeColorButton = DF:NewButton (buttonsBackground, nil, "$parentOverlayColorButton", nil, 100, 20, changeColor, nil, nil, nil, "Color", 1)
-		changeColorButton:SetPoint ("topright", buttonsBackground, "topright", -8, -95)
-		changeColorButton:InstallCustomTexture()
+		changeColorButton:SetPoint ("topright", buttonsBackground, "topright", -8, -95 + yMod)
+		changeColorButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		
 		alphaFrame = DF:NewPanel (buttonsBackground, nil, "DetailsFrameworkImageEditAlphaBg", nil, 40, 225)
 		alphaFrame:SetPoint ("topleft", buttonsBackground, "topright", 2, 0)
@@ -397,8 +413,8 @@ local _
 		end
 		
 		local flipButtonH = DF:NewButton (buttonsBackground, nil, "$parentFlipButton", nil, 100, 20, flip, 1, nil, nil, "Flip H", 1)
-		flipButtonH:SetPoint ("topright", buttonsBackground, "topright", -8, -140)
-		flipButtonH:InstallCustomTexture()
+		flipButtonH:SetPoint ("topright", buttonsBackground, "topright", -8, -140 + yMod)
+		flipButtonH:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		--
 
 		
@@ -527,43 +543,8 @@ local _
 		
 		local acceptButton = DF:NewButton (buttonsBackground, nil, "$parentAcceptButton", nil, 100, 20, window.accept, nil, nil, nil, "Done", 1)
 		acceptButton:SetPoint ("topright", buttonsBackground, "topright", -8, -200)
-		acceptButton:InstallCustomTexture()
-		
+		acceptButton:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 
-
-window:Hide()
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		
-		local ttexcoord
-		function DF:ImageEditor (callback, texture, texcoord, colors, width, height, extraParam, alpha, maximize)
-		
-			texcoord = texcoord or {0, 1, 0, 1}
-			ttexcoord = texcoord
-		
-			colors = colors or {1, 1, 1, 1}
-			
-			alpha = alpha or 1
-		
-			edit_texture:SetTexture (texture)
-			edit_texture.width = width
-			edit_texture.height = height
-			edit_texture.maximize = maximize
-			
-			edit_texture:SetVertexColor (colors [1], colors [2], colors [3])
-			
-			edit_texture:SetAlpha (alpha)
-
-			DF:ScheduleTimer ("RefreshImageEditor", 0.2)
-			
-			window:Show()
-			window.callback_func = callback
-			window.extra_param = extraParam
-			buttonsBackground:Show()
-			buttonsBackground.widget:SetBackdrop (nil)
-			
-			table.wipe (window.hooks)
-		end
-		
 		function DF:RefreshImageEditor()
 		
 			if (edit_texture.maximize) then
@@ -598,5 +579,47 @@ window:Hide()
 				window.accept (nil, nil, true)
 			end
 
+		end		
+
+		window:Hide()
+
+	end
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		
+		
+		function DF:ImageEditor (callback, texture, texcoord, colors, width, height, extraParam, alpha, maximize)
+		
+			if (not _G.DetailsFrameworkImageEdit) then
+				CreateImageEditorFrame()
+			end
+
+			local window = _G.DetailsFrameworkImageEditTable
+
+			texcoord = texcoord or {0, 1, 0, 1}
+			ttexcoord = texcoord
+		
+			colors = colors or {1, 1, 1, 1}
+			
+			alpha = alpha or 1
+		
+			_G.DetailsFrameworkImageEdit_EditTexture:SetTexture (texture)
+			_G.DetailsFrameworkImageEdit_EditTexture.width = width
+			_G.DetailsFrameworkImageEdit_EditTexture.height = height
+			_G.DetailsFrameworkImageEdit_EditTexture.maximize = maximize
+			
+			_G.DetailsFrameworkImageEdit_EditTexture:SetVertexColor (colors [1], colors [2], colors [3])
+			_G.DetailsFrameworkImageEdit_EditTexture:SetAlpha (alpha)
+
+			DF:ScheduleTimer ("RefreshImageEditor", 0.2)
+			
+			window:Show()
+			window.callback_func = callback
+			window.extra_param = extraParam
+			DetailsFrameworkImageEditButtonsBg:Show()
+			DetailsFrameworkImageEditButtonsBg:SetBackdrop (nil)
+			
+			table.wipe (window.hooks)
 		end
+		
+
 		
