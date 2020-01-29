@@ -75,8 +75,9 @@ L["pools_of_power"] = "在能量池中，入口在鎏金亭（地图中间雕像
 L["right_eye"] = "掉落全视双眼玩具的右半部分"
 L["tisiphon"] = "点击丹妮尔的好运鱼竿"
 
-L["ambered_cache"] = "Ambered Cache"
-L["ambered_coffer"] = "Ambered Coffer"
+L["ambered_cache"] = "琥珀宝箱"
+L["ambered_coffer"] = "琥珀制成的箱子"
+L["mantid_relic"] = "需要螳螂妖圣物"
 L["mogu_plunder"] = "Mogu Plunder"
 L["mogu_strongbox"] = "Mogu Strongbox"
 
@@ -88,6 +89,12 @@ L["protect_stout"] = "保护NPC"
 L["bound_guardian"] = "杀怪救NPC"
 L["abyssal_ritual"] = "杀完小怪杀大怪"
 L["pulse_mound"] = "杀怪"
+L["kunchong_incubator"] = "摧毁所有力场生成器"
+L["mending_monstro"] = "摧毁所有愈疗琥珀"
+L["war_banner"] = "燃烧战旗然后杀怪"
+L["feeding_grounds"] = "销毁静滞容器"
+L["swarm_caller"] = "销毁虫群召唤器"
+L["empowered_wagon"] = "捡起影踪派军需品然后放在强化的战车下面"
 
 -------------------------------------------------------------------------------
 ----------------------------------- VOLDUN ------------------------------------

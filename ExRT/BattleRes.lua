@@ -113,11 +113,25 @@ function module:timer(elapsed)
 		module.frame:Show()
 		module.frame.cooldown:Show()
 	end
-	local time = duration - (GetTime() - started)
 
-	module.frame.time:SetFormattedText("%d:%02d", floor(time/60), time%60)
-	module.frame.charge:SetText(charges)
-	module.frame.cooldown:SetCooldown(started,duration)
+	if maxCharges == charges then
+		module.frame.time:SetFormattedText("")
+		module.frame.charge:SetText(charges)
+		if not module.frame.cooldown.is0 then
+			module.frame.cooldown:Hide()
+			module.frame.cooldown.is0 = true
+		end
+	else
+		local time = duration - (GetTime() - started)
+
+		module.frame.time:SetFormattedText("%d:%02d", floor(time/60), time%60)
+		module.frame.charge:SetText(charges)
+		if module.frame.cooldown.is0 then
+			module.frame.cooldown:Show()
+			module.frame.cooldown.is0 = nil
+		end
+		module.frame.cooldown:SetCooldown(started,duration)
+	end
 	if charges == 0 then
 		module.frame.charge:SetTextColor(1,0,0,1)
 	else

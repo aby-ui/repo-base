@@ -113,10 +113,11 @@ module.db.findspecspells = {
 	[205546] = 72, [23881] = 72, [184367] = 72,
 	[203524] = 73, [20243] = 73, [23922] = 73,
 	
-	[202767] = 102, [190984] = 102, --[78674] = 102, 
-	[210722] = 103, [52610] = 103, --[1822] = 103, 
-	[200851] = 104, [33917] = 104, --[22842] = 104,
-	[208253] = 105, [188550] = 105, --[8936] = 105, 
+	--hard fix on druid spells
+	--[202767] = 102, [190984] = 102, --[78674] = 102, 
+	--[210722] = 103, [52610] = 103, --[1822] = 103, 
+	--[200851] = 104, [33917] = 104, --[22842] = 104,
+	--[208253] = 105, [188550] = 105, --[8936] = 105, 
 
 	[205223] = 250, [206930] = 250, [50842] = 250,
 	[190778] = 251, [49143] = 251, [49184] = 251,
@@ -3598,14 +3599,14 @@ function module.main:UNIT_PET(arg)
 end
 
 function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
-	if encounterID == 1866 then
+	if encounterID == 1866 or encounterID == 2334 then
 		module.db.disableCDresetting = true
 	end
 end
 function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, groupSize, success)
-	if encounterID == 1866 then
+	if encounterID == 1866 or encounterID == 2334 then
 		module.db.disableCDresetting = nil
-	end	
+	end
 end
 
 

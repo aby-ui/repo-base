@@ -36,6 +36,7 @@ module.DEFAULT_SPELLS = {
 		200829, -- Plea
 		194509, -- Power Word: Radiance
 		212036, -- Mass Resurrection
+		21562, -- Power Word: Fortitude
 	},
 
 	DRUID = {
@@ -88,10 +89,13 @@ module.DEFAULT_SPELLS = {
 		114030, -- Vigilance
 		3411, -- Intervene
 		198304, -- Intercept
+		6673, -- Battle Shout
 	},
 
 	MAGE = {
 		130, -- Slow Fall
+		1459, -- Arcane Intellect
+		475, -- Remove Curse
 	},
 
 	WARLOCK = {
@@ -123,6 +127,7 @@ module.DEFAULT_SPELLS = {
 		116849, -- Life Cocoon
 		212051, -- Reawaken
 		115450, -- Detox
+		116670, -- Vivify
 	},
 
 	DEMONHUNTER = {
@@ -240,7 +245,7 @@ end
 
 local defaultdb = {}
 
-local temp = CLASS_DEFAULTS[CLASS] or {}
+local temp = CLASS_DEFAULTS[CLASS]
 local key, value
 for key, value in pairs(temp) do
 	--if value == "emergent" then

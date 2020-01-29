@@ -59,6 +59,7 @@ addon.L = {
 	["unit spacing"] = "Unit spacing",
 	["horizontal align"] = "Horizontally align groups",
 	["keep raid groups together"] = "Keep raid groups together",
+	["show vehicle health bar"] = "Show vehicle health bar",
 	["show bar background"] = "Show bar background",
 	["debug mode"] = "Debug mode",
 	["health text"] = "Health text: ",

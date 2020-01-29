@@ -126,6 +126,7 @@ group:AddButton(L["show raid pets"], "showRaidPets", 1, "charOption", 1)
 group:AddButton(L["show friendly npc"], "showFriendlyNpc", 1, "charOption", 1)
 group:AddButton(L["horizontal align"], "grouphoriz", 1)
 group:AddButton(L["keep raid groups together"], "keepgroupstogether", 1)
+group:AddButton(L["show vehicle health bar"], "showVehicleHealthBar", 1)
 
 local lockCheck = group[1]
 addon:RegisterOptionCallback("lock", function(value)
@@ -461,6 +462,7 @@ local function InitOptionData(db, chardb)
 
 	LoadOption("grouphoriz")
 	LoadOption("keepgroupstogether")
+	LoadOption("showVehicleHealthBar")
 	LoadOption("raidFilter")
 
 	LoadOption("containerAlpha", 75, 0, 100)

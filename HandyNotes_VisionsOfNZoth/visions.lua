@@ -19,6 +19,13 @@ local defaults = ns.optionDefaults.profile
 ------------------------------------- MAP -------------------------------------
 -------------------------------------------------------------------------------
 
+local orgrimmar = Map({ id=1469 })
+
+function orgrimmar:enabled (node, coord, minimap)
+    if not Map.enabled(self, node, coord, minimap) then return false end
+    return ns.addon.db.profile.misc_visions
+end
+
 local stormwind = Map({ id=1470 })
 
 function stormwind:enabled (node, coord, minimap)
@@ -48,12 +55,27 @@ options.mailVisions = {
 }
 
 -------------------------------------------------------------------------------
----------------------------------- STORMWIND ----------------------------------
--------------------------------------------------------------------------------
 
 local MAIL = Node({icon=133468, label=L["mailbox"], rewards={
     Mount({id=1315, item=174653}) -- Mail Muncher
 }, note=L["mail_muncher"]})
+
+-------------------------------------------------------------------------------
+---------------------------------- ORGRIMMAR ----------------------------------
+-------------------------------------------------------------------------------
+
+orgrimmar.nodes[39304900] = MAIL
+orgrimmar.nodes[39708030] = MAIL
+orgrimmar.nodes[52707580] = MAIL
+orgrimmar.nodes[60105130] = MAIL
+
+orgrimmar.nodes[39906120] = Node({icon=1001616, label=L["shave_kit"], note=L["shave_kit_note"], rewards={
+    Toy({item=174920}) -- Coifcurl's Close Shave Kit
+}})
+
+-------------------------------------------------------------------------------
+---------------------------------- STORMWIND ----------------------------------
+-------------------------------------------------------------------------------
 
 stormwind.nodes[49688700] = MAIL
 stormwind.nodes[54645752] = MAIL
@@ -76,4 +98,5 @@ stormwind.nodes[59106390] = Rare({id=158284, pois={
 
 -------------------------------------------------------------------------------
 
+ns.maps[orgrimmar.id] = orgrimmar
 ns.maps[stormwind.id] = stormwind

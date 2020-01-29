@@ -161,185 +161,62 @@ GridStatusRaidDebuff.defaultDB = {
 
 	["debuff_options"] = {
         ["群星庭院"] = {
-            ["伪装"] = {
-                ["disable"] = true,
-            },
+            ["伪装"] = { ["disable"] = true, },
         },
         ["萨格拉斯之墓"] = {
-            ["造物者之赐"] = {
-                ["disable"] = true,
-            },
-            ["吞噬巨口"] = {
-                ["disable"] = true,
-            },
-            ["千魂之暗"] = {
-                ["c_prior"] = 1,
-                ["i_prior"] = 1,
-                ["disable"] = true,
-            },
-            ["枯萎"] = {
-                ["c_prior"] = 9,
-                ["stackable"] = false,
-                ["i_prior"] = 9,
-            },
-            ["阴影弥漫"] = {
-                ["c_prior"] = 3,
-                ["i_prior"] = 3,
-                ["disable"] = true,
-            },
-            ["回响之痛"] = {
-                ["timer"] = true,
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["无形"] = {
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["月光弥漫"] = {
-                ["c_prior"] = 3,
-                ["i_prior"] = 3,
-                ["disable"] = true,
-            },
-            ["邪爪"] = {
-                ["i_prior"] = 8,
-                ["c_prior"] = 8,
-            },
-            ["月光之火"] = {
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["昏暗隐匿"] = {
-                ["disable"] = true,
-            },
-            ["恶魔活力"] = {
-                ["disable"] = true,
-            },
-            ["光明之触"] = {
-                ["disable"] = true,
-            },
-            ["痛苦负担"] = {
-                ["disable"] = true,
-            },
-            ["动荡的灵魂"] = {
-                ["c_prior"] = 10,
-                ["i_prior"] = 10,
-                ["disable"] = false,
-            },
-            ["光明灌注"] = {
-                ["disable"] = true,
-            },
-            ["急速射击"] = {
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["星界净化"] = {
-                ["i_prior"] = 4,
-                ["c_prior"] = 4,
-            },
-            ["邪能灌注"] = {
-                ["disable"] = true,
-            },
-            ["邪能之触"] = {
-                ["disable"] = true,
-            },
-            ["破碎尖叫"] = {
-                ["c_prior"] = 10,
-                ["stackable"] = true,
-                ["i_prior"] = 10,
-                ["timer"] = true,
-            },
-            ["释放混沌"] = {
-                ["c_prior"] = 9,
-                ["i_prior"] = 9,
-            },
-            ["苦痛之矛"] = {
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["污染墨汁"] = {
-                ["i_prior"] = 4,
-            },
+            ["造物者之赐"] = { ["disable"] = true, },
+            ["吞噬巨口"] = { ["disable"] = true, },
+            ["千魂之暗"] = { ["c_prior"] = 1, ["i_prior"] = 1, ["disable"] = true, },
+            ["枯萎"] = { ["c_prior"] = 9, ["stackable"] = false, ["i_prior"] = 9, },
+            ["阴影弥漫"] = { ["c_prior"] = 3, ["i_prior"] = 3, ["disable"] = true, },
+            ["回响之痛"] = { ["timer"] = true, ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["无形"] = { ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["月光弥漫"] = { ["c_prior"] = 3, ["i_prior"] = 3, ["disable"] = true, },
+            ["邪爪"] = { ["i_prior"] = 8, ["c_prior"] = 8, },
+            ["月光之火"] = { ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["昏暗隐匿"] = { ["disable"] = true, },
+            ["恶魔活力"] = { ["disable"] = true, },
+            ["光明之触"] = { ["disable"] = true, },
+            ["痛苦负担"] = { ["disable"] = true, },
+            ["动荡的灵魂"] = { ["c_prior"] = 10, ["i_prior"] = 10, ["disable"] = false, },
+            ["光明灌注"] = { ["disable"] = true, },
+            ["急速射击"] = { ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["星界净化"] = { ["i_prior"] = 4, ["c_prior"] = 4, },
+            ["邪能灌注"] = { ["disable"] = true, },
+            ["邪能之触"] = { ["disable"] = true, },
+            ["破碎尖叫"] = { ["c_prior"] = 10, ["stackable"] = true, ["i_prior"] = 10, ["timer"] = true, },
+            ["释放混沌"] = { ["c_prior"] = 9, ["i_prior"] = 9, },
+            ["苦痛之矛"] = { ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["污染墨汁"] = { ["i_prior"] = 4, },
         },
 
         ["安托鲁斯，燃烧王座"] = {
-            ["灵能突袭"] = {
-                ["i_prior"] = 10,
-                ["stackable"] = true,
-            },
-            ["熵能爆裂"] = {
-                ["stackable"] = true,
-            },
-            ["邪能折磨"] = {
-                ["disable"] = true,
-            },
-            ["诺甘农的幽灵军团"] = {
-                ["disable"] = true,
-            },
-            ["烈焰折磨"] = {
-                ["disable"] = true,
-            },
-            ["冰霜折磨"] = {
-                ["disable"] = true,
-            },
-            ["高戈奈斯之怒"] = {
-                ["disable"] = true,
-            },
-            ["恐惧"] = {
-                ["disable"] = true,
-            },
-            ["冥魂之拥"] = {
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["暗影折磨"] = {
-                ["disable"] = true,
-            },
-            ["天空之赐"] = {
-                ["i_prior"] = 4,
-            },
-            ["海洋之赐"] = {
-                ["i_prior"] = 4,
-            },
-            ["灵魂爆发"] = {
-                ["i_prior"] = 10,
-            },
-            ["灵魂炸弹"] = {
-                ["i_prior"] = 10,
-            },
-            ["海洋之力"] = {
-                ["stackable"] = true,
-            },
-            ["天空之力"] = {
-                ["stackable"] = true,
-            },
-            ["强化脉冲手雷"] = {
-                ["i_prior"] = 8,
-            },
-            ["冰霜之球"] = {
-                ["c_prior"] = 5,
-                ["i_prior"] = 5,
-                ["disable"] = true,
-            },
-            ["阿曼苏尔的诡诈"] = {
-                ["c_prior"] = 1,
-                ["i_prior"] = 1,
-                ["timer"] = false,
-            },
-            ["冷凝之血"] = {
-                ["c_prior"] = 9,
-                ["i_prior"] = 9,
-                ["timer"] = true,
-            },
-            ["爆裂脉冲"] = {
-                ["timer"] = true,
-                ["i_prior"] = 10,
-                ["c_prior"] = 10,
-            },
-            ["洪荒烈火"] = {
-                ["i_prior"] = 9,
-            },
+            ["灵能突袭"] = { ["i_prior"] = 10, ["stackable"] = true, },
+            ["熵能爆裂"] = { ["stackable"] = true, },
+            ["邪能折磨"] = { ["disable"] = true, },
+            ["诺甘农的幽灵军团"] = { ["disable"] = true, },
+            ["烈焰折磨"] = { ["disable"] = true, },
+            ["冰霜折磨"] = { ["disable"] = true, },
+            ["高戈奈斯之怒"] = { ["disable"] = true, },
+            ["恐惧"] = { ["disable"] = true, },
+            ["冥魂之拥"] = { ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["暗影折磨"] = { ["disable"] = true, },
+            ["天空之赐"] = { ["i_prior"] = 4, },
+            ["海洋之赐"] = { ["i_prior"] = 4, },
+            ["灵魂爆发"] = { ["i_prior"] = 10, },
+            ["灵魂炸弹"] = { ["i_prior"] = 10, },
+            ["海洋之力"] = { ["stackable"] = true, },
+            ["天空之力"] = { ["stackable"] = true, },
+            ["强化脉冲手雷"] = { ["i_prior"] = 8, },
+            ["冰霜之球"] = { ["c_prior"] = 5, ["i_prior"] = 5, ["disable"] = true, },
+            ["阿曼苏尔的诡诈"] = { ["c_prior"] = 1, ["i_prior"] = 1, ["timer"] = false, },
+            ["冷凝之血"] = { ["c_prior"] = 9, ["i_prior"] = 9, ["timer"] = true, },
+            ["爆裂脉冲"] = { ["timer"] = true, ["i_prior"] = 10, ["c_prior"] = 10, },
+            ["洪荒烈火"] = { ["i_prior"] = 9, },
         },
+        [C_Map.GetMapInfo(1581).name] = {
+            [GetSpellInfo(319346)] = { disable = true, },
+        }
     },
 	["detected_debuff"] = {},
 }

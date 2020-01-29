@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200124234652")
+mod:SetRevision("20200129034746")
 mod:SetZone()
 mod.onlyNormal = true
 

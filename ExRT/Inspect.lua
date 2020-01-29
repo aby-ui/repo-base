@@ -57,10 +57,9 @@ module.db.statsNames = {
 	armor = {L.cd2InspectBonusArmor},
 	avoidance = {L.cd2InspectAvoidance},
 	speed = {L.cd2InspectSpeed},
+
+	corruption = {"%+(%d+) "..ITEM_MOD_CORRUPTION.."$"},
 }
-if ExRT.is83 then
-	module.db.statsNames.corruption = {"%+(%d+) "..ITEM_MOD_CORRUPTION}
-end
 
 module.db.itemsSlotTable = {
 	1,	--INVSLOT_HEAD

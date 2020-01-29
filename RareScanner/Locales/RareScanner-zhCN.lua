@@ -142,10 +142,10 @@ if AL then
 	AL["LOOT_TOOLTIP_POSITION_DESC"] = "设置鼠标移动到图标上时掉落物品提示条的显示位置"
 	AL["MAIN_BUTTON_OPTIONS"] = "主按钮选项"
 	--[[Translation missing --]]
-	AL["MAP_MENU_DISABLE_LAST_SEEN_CONTAINER_FILTER"] = "Show containers that you saw a long time ago but that can respawn"
+	AL["MAP_MENU_DISABLE_LAST_SEEN_CONTAINER_FILTER"] = "显示可以重复刷新的宝箱"
 	--[[Translation missing --]]
-	AL["MAP_MENU_DISABLE_LAST_SEEN_EVENT_FILTER"] = "Show events that you saw a long time ago but that can respawn"
-	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "显示你很久以前见过但可以重新召唤的稀有NPC"
+	AL["MAP_MENU_DISABLE_LAST_SEEN_EVENT_FILTER"] = "显示可以重复完成的事件"
+	AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"] = "显示可以重复刷新的稀有NPC"
 	AL["MAP_MENU_SHOW_CONTAINERS"] = "在地图上显示宝箱图标"
 	AL["MAP_MENU_SHOW_EVENTS"] = "在地图上显示事件图标"
 	AL["MAP_MENU_SHOW_NOT_DISCOVERED"] = "未发现的实体"

@@ -188,6 +188,8 @@ end)
 
 local TimedEvent = Class('TimedEvent', Quest, {scale=2, note=''})
 
+TimedEvent.group = "assaultevents"
+
 function TimedEvent.getters:icon ()
     -- Override icon getter to be a simple yellow peg
     return 'peg_yellow'

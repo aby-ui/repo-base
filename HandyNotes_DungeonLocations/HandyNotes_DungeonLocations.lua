@@ -1304,6 +1304,25 @@ nodes[249] = { -- Uldum
   type = "Raid",
  }, -- Throne of the Four Winds
 }
+nodes[1527] = { -- Uldum
+ [76808450] = {
+  id = 68,
+  type = "Dungeon",
+ }, -- The Vortex Pinnacle
+ [60506430] = {
+  id = 69,
+  type = "Dungeon",
+ }, -- Lost City of Tol'Vir
+ [69105290] = {
+  id = 70,
+  type = "Dungeon",
+ }, -- Halls of Origination
+ --[[[38308060] = {
+  id = 74,
+  type = "Raid",
+ }, -- Throne of the Four Winds
+ ]]--
+}
 nodes[203] = { -- Vashjir
  [48204040] =  {
   id = 65,
@@ -1362,7 +1381,7 @@ nodes[388] = { -- TownlongWastes
   type = "Dungeon",
  }, -- Siege of Niuzao Temple
 }
-nodes[390 ] = { -- ValeofEternalBlossoms
+nodes[390] = { -- ValeofEternalBlossoms
  [15907410] = {
   id = 303,
   type = "Dungeon",
@@ -1375,6 +1394,20 @@ nodes[390 ] = { -- ValeofEternalBlossoms
   id = 369,
   type = "Raid",
  }, -- Siege of Orgrimmar
+}
+nodes[1530] = { -- ValeofEternalBlossoms New Map
+ [15907410] = {
+  id = 303,
+  type = "Dungeon",
+ }, -- Gate of the Setting Sun
+ [80803270] = {
+  id = 321,
+  type = "Dungeon",
+ }, -- Mogu'shan Palace
+ --[[[74104200] = {
+  id = 369,
+  type = "Raid",
+ }, -- Siege of Orgrimmar ]]--
 }
 nodes[376] = { -- ValleyoftheFourWinds
  [36106920] = {

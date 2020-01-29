@@ -7,7 +7,7 @@
 ## X-License: All Rights Reserved
 ## X-Category: Raid
 ## OptionalDeps: Ace3, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibQTip-1.0
-## SavedVariables: SavedInstancesDB
+## SavedVariables: SavedInstancesDB,MethodAltManagerDB
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 
@@ -35,6 +35,8 @@ Warfront.lua
 SavedInstances.lua
 
 config.lua
+
+../MethodAltManager/MethodAltManager.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r SavedInstances 副本进度
 ## X-Vendor: AbyUI

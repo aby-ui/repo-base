@@ -165,4 +165,7 @@ GridStatusRaidDebuff:DebuffId(zoneid, 302565, 151, 5, 5, true) --Conductive Ink
 GridStatusRaidDebuff:DebuffId(zoneid, 310073, 152, 5, 5, true) --Mindgrasp
 GridStatusRaidDebuff:DebuffId(zoneid, 313793, 153, 5, 5, true) --Flames of Insanity
 GridStatusRaidDebuff:DebuffId(zoneid, 313663, 153, 5, 5, true) --Psyche Shredder
+GridStatusRaidDebuff:DebuffId(zoneid, 319346, 153, 5, 5, true) --全场AOE
+
+
 

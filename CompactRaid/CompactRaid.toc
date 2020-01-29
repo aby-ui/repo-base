@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Title: CompactRaid
-## Version: 5.09
+## Version: 5.10
 ## Author: Abin
 ## SavedVariables: CompactRaidDB
 ## OptionalDeps: Clique, TomTom

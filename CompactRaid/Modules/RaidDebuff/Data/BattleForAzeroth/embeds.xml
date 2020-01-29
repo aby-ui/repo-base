@@ -5,4 +5,5 @@
 	<Script file="ZuldazarRaid.lua" />
 	<Script file="CrucibleofStorms.lua" />
 	<Script file="EternalPalace.lua" />
+	<Script file="TheWakingCity.lua" />
 </Ui>

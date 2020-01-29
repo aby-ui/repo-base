@@ -186,12 +186,12 @@ function DEATH_ANNOUNCE_CLEU(...)
     if ( subevent == "SPELL_INTERRUPT" ) then
         if not IsRaidMemberFlag(sourceFlags) then return end
         if sourceGUID == playerGUID and U1GetCfgValue and U1GetCfgValue("deathannounce/yell") then
-            if IsInInstance() then SendChatMessage(string.format("我已打断%s的%s", destName, GetSpellLink(param4)), "YELL") end
+            if IsInInstance() then SendChatMessage(string.format("已断%s", GetSpellLink(param4)), "YELL") end
         elseif sourceName then
             if RaidAlerter_SET and RaidAlerter_SET.Break_Magic then return end
             --太刷屏了，加了个开关
             if sourceGUID == playerGUID or (U1GetCfgValue and U1GetCfgValue("deathannounce/othersir")) then
-                DEATH_ANNOUNCE_Print(string.format("%s 打断了%s的%s", sourceName, destName, GetSpellLink(param4)), false, true)
+                DEATH_ANNOUNCE_Print(string.format("%s 打断了%s", sourceName, GetSpellLink(param4)), false, true)
             end
         end
         return

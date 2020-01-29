@@ -1,6 +1,14 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4130
+* Note: fixed colorizing highlighted text
+* Battle Res: fixed visualization for max combat res stacks (5 for M+)
+* Raid cooldowns: fixed cd reset during skitra encounter
+* Raid cooldowns: fixed disappearing cooldowns for druids 
+* Raid Inspect: fixed corruption counting (still showing character's max corruption number without corruption resistance)
+* Minor fixes
+
 v.4120
 * 8.3 Update
 * Marks Bar: added option for different pull timers for left and right clicks

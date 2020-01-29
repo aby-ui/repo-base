@@ -7,8 +7,69 @@
 
     icon = [[Interface\Icons\Ability_Hunter_MarkedForDeath]],
     desc = "一个小巧且全能的地图标记注释功能类插件.``ALT+右键 添加一个注释标记`Ctrl+Shift+拖拽 移动已经添加的注释标记```设置口令：/handynotes",
-
     nopic = 1,
+
+    toggle = function(name, info, enable, justload)
+        if justload then
+            local function hook(overlayFrame)
+                local plugins = { "HandyNotes_MechagonAndNazjatar", "HandyNotesArgus", "HandyNotes_VisionsOfNZoth", "LegionRaresTreasures", "BattleForAzerothTreasures" }
+                hooksecurefunc(overlayFrame, 'InitializeDropDown', function(self)
+                    local function OnSelection(button)
+                        self:OnSelection(button.value, button.checked);
+                    end
+
+                    UIDropDownMenu_AddSeparator();
+                    local info = UIDropDownMenu_CreateInfo();
+
+                    info.notCheckable = nil;
+                    info.isNotRadio = true;
+                    info.keepShownOnClick = true;
+                    info.func = OnSelection;
+
+                    info.text = "显示HandyNotes宝箱稀有";
+                    info.value = "ShowHandyNotesRares";
+                    local db = HandyNotes.db.profile
+                    db.enabledPlugins = db.enabledPlugins or {}
+                    info.checked = true
+                    for _, k in pairs(plugins) do
+                        if db.enabledPlugins[k] == false then
+                            info.checked = false
+                        end
+                    end
+                    UIDropDownMenu_AddButton(info);
+                end)
+
+                local origOverlayFrame_onSelection = overlayFrame.OnSelection;
+                overlayFrame.OnSelection = function(self, value, checked)
+                    if (value == "ShowHandyNotesRares") then
+                        if IsModifierKeyDown() then
+                            LibStub("AceConfigDialog-3.0"):Open("HandyNotes")
+                            LibStub("AceConfigDialog-3.0"):SelectGroup("HandyNotes", "plugins")
+                        end
+                        local db = HandyNotes.db.profile
+                        db.enabledPlugins = db.enabledPlugins or {}
+                        for _, k in pairs(plugins) do
+                            local old = db.enabledPlugins[k]
+                            if old == nil then old = true end
+                            db.enabledPlugins[k] = checked
+                            if (checked and true or false) ~= old then
+                                HandyNotes:UpdatePluginMap(nil, k)
+                            end
+                        end
+                    end
+                    origOverlayFrame_onSelection(self, value, checked)
+                end
+            end
+
+            for _, overlayFrame in next, WorldMapFrame.overlayFrames do
+                if(overlayFrame.Border and overlayFrame.Border:GetTexture() == 'Interface\\Minimap\\MiniMap-TrackingBorder') then
+                    hook(overlayFrame)
+                    break
+                end
+            end
+        end
+    end,
+
     {
         text = "配置选项",
         callback = function()

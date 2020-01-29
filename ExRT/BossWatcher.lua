@@ -1618,6 +1618,7 @@ local EnvironmentalTypeToSpellID = {
 
 local DeathLogBlackList = {
 	[154420] = true, --Azshara encounter
+	[157452] = true, --Nzoth spine
 }
 
 if ExRT.isClassic then

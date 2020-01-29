@@ -270,7 +270,7 @@ local encounterIDtoEJidData = {
 	[2343] = 2373,	--Drest'agath
 	[2345] = 2374,	--Il'gynoth, Corruption Reborn
 	[2337] = 2366,	--Carapace of N'Zoth
-	[2344] = 2374,	--N'Zoth the Corruptor
+	[2344] = 2375,	--N'Zoth the Corruptor
 
 	[2298] = 2352,	--Abyssal Commander Sivara
 	[2305] = 2353,	--Radiance of Azshara

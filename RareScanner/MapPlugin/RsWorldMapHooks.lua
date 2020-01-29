@@ -58,6 +58,7 @@ function RareScanner:HookDropDownMenu()
 				info.checked = private.db.map.displayEventIcons
 				UIDropDownMenu_AddButton(info);
 
+                --[[
 				info.text = AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"];
 				info.value = DISABLE_LAST_SEEN_FILTER;
 				info.checked = private.db.map.disableLastSeenFilter
@@ -72,6 +73,7 @@ function RareScanner:HookDropDownMenu()
 				info.value = DISABLE_LAST_SEEN_EVENT_FILTER;
 				info.checked = private.db.map.disableLastSeenEventFilter
 				UIDropDownMenu_AddButton(info);
+				--]]
 				 
 				info.text = AL["MAP_MENU_SHOW_NOT_DISCOVERED"];
 				info.value = SHOW_NOT_DISCOVERED_ICONS;

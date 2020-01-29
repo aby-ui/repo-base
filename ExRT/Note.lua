@@ -873,7 +873,7 @@ function module.options:Load()
 	end) 
 	self.buttoncopy:Hide()
 	
-	local function AddTextToEditBox(self,text,mypos)
+	local function AddTextToEditBox(self,text,mypos,noremove)
 		local addedText = nil
 		if not self then
 			addedText = text
@@ -883,7 +883,9 @@ function module.options:Load()
 				addedText = self.iconTextShift
 			end
 		end
-		module.options.NoteEditBox.EditBox:Insert("")
+		if not noremove then
+			module.options.NoteEditBox.EditBox:Insert("")
+		end
 		local txt = module.options.NoteEditBox.EditBox:GetText()
 		local pos = module.options.NoteEditBox.EditBox:GetCursorPosition()
 		if not self and type(mypos)=='number' then
@@ -1019,10 +1021,10 @@ function module.options:Load()
 		local selectedStart,selectedEnd = module.options.NoteEditBox.EditBox:GetTextHighlight()
 		colorCode = string.gsub(colorCode,"|","||")
 		if selectedStart == selectedEnd then
-			AddTextToEditBox(nil,colorCode.."||r")
+			AddTextToEditBox(nil,colorCode.."||r",nil,true)
 		else
-			AddTextToEditBox(nil,"||r",selectedEnd)
-			AddTextToEditBox(nil,colorCode,selectedStart)
+			AddTextToEditBox(nil,"||r",selectedEnd,true)
+			AddTextToEditBox(nil,colorCode,selectedStart,true)
 		end
 	end
 	for i=1,#self.dropDownColor.list do

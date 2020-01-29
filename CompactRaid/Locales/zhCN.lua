@@ -61,6 +61,7 @@ addon.L = {
 	["unit spacing"] = "单位间距",
 	["horizontal align"] = "横向排列队伍",
 	["keep raid groups together"] = "团队中保持小队相连",
+	["show vehicle health bar"] = "显示载具生命条",
 	["show bar background"] = "显示状态条背景",
 	["debug mode"] = "调试模式",
 	["health text"] = "生命值：",
