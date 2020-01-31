@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200128210208")
+mod:SetRevision("20200130221417")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetZone()
 mod:SetUsedIcons(4, 3, 2, 1)
-mod:SetHotfixNoticeRev(20200127000000)--2020, 1, 26
-mod:SetMinSyncRevision(20200127000000)
+mod:SetHotfixNoticeRev(20200127000000)--2020, 1, 27
+mod:SetMinSyncRevision(20200129000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -24,7 +24,7 @@ mod:RegisterEventsInCombat(
 --	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"UNIT_SPELLCAST_SUCCEEDED boss1",
 	"UNIT_SPELLCAST_START boss1",
-	"UNIT_POWER_FREQUENT boss1"
+	"UNIT_POWER_UPDATE boss1"
 )
 
 --TODO, add tracking of tasty Morsel carriers to infoframe?
@@ -50,7 +50,7 @@ local warnEntropicBuildup					= mod:NewCountAnnounce(308177, 2)
 local warnEntropicBreath					= mod:NewSpellAnnounce(306930, 2, nil, "Tank")
 local warnTastyMorsel						= mod:NewTargetNoFilterAnnounce(312099, 1)
 
-local specWarnUncontrollablyRavenous		= mod:NewSpecialWarningSpell(312329, nil, nil, nil, 3, 2)--Mythic
+local specWarnUncontrollablyRavenous		= mod:NewSpecialWarningSpell(312329, nil, nil, nil, 3, 2, 4)--Mythic
 local specWarnCrushTaunt					= mod:NewSpecialWarningTaunt(307471, nil, nil, nil, 3, 2)
 local specWarnDissolveTaunt					= mod:NewSpecialWarningTaunt(307472, nil, nil, nil, 1, 2)
 local specWarnSlurryBreath					= mod:NewSpecialWarningDodge(306736, nil, nil, nil, 2, 2)
@@ -62,7 +62,7 @@ local specWarnGTFO							= mod:NewSpecialWarningGTFO(308149, nil, nil, nil, 1, 8
 
 local timerCrushCD							= mod:NewCDTimer(25.1, 307471, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)
 local timerSlurryBreathCD					= mod:NewCDTimer(17, 306736, nil, nil, nil, 3, nil, nil, nil, 1, 3)
-local timerDebilitatingSpitCD				= mod:NewCDTimer(30.1, 306953, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
+local timerDebilitatingSpitCD				= mod:NewCDTimer(30.1, 306953, 58519, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)
 local timerFixateCD							= mod:NewCDTimer(30.2, 307260, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
 local timerUmbralEruptionCD					= mod:NewNextTimer(10, 308157, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
 local timerBubblingOverflowCD				= mod:NewNextTimer(10, 314736, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
@@ -124,23 +124,29 @@ local function entropicBuildupLoop(self)
 end
 
 local function updateBreathTimer(self, start)
-	--Update Breath timer
+	self:Unschedule(updateBreathTimer)
+	--Start or Update Breath timer
 	local bossPower = UnitPower("boss1")
 	if bossPower == 100 then--Don't start a timer if full energy
 		timerSlurryBreathCD:Stop()
-		DBM:Debug("Boss power was full, so updateBreathTimer exited with no timer update")
+		DBM:Debug("Boss power was full, so updateBreathTimer scheduled another check in 1 second")
+		self:Schedule(1, updateBreathTimer, self, start)--check again up until energy is not 100
 		return
 	end
-	local breathTimerTotal = 100 / self.vb.bossPowerUpdateRate
-	local bossProgress = (100 - bossPower) / self.vb.bossPowerUpdateRate
-	--Using update method to both start a new timer and update an existing one because it supports both
-	timerSlurryBreathCD:Update(bossProgress, breathTimerTotal)
-	DBM:Debug("updateBreathTimer fired with: "..bossProgress..", "..breathTimerTotal)
-	--[[if start then
-		timerSlurryBreathCD:Start(breathTimerTotal)
-	else
+	local bossRemaining = (100 - bossPower) / self.vb.bossPowerUpdateRate
+	if start then--Starting a new bar
+		timerSlurryBreathCD:Start(bossRemaining)
+		DBM:Debug("updateBreathTimer started with: "..bossRemaining)
+	else--Updating an existing bar instead of starting new/replacing
+		local breathTimerTotal = 100 / self.vb.bossPowerUpdateRate
+		local bossProgress = breathTimerTotal - bossRemaining
+		DBM:Debug("updateBreathTimer unadjusted timers: "..bossProgress..", "..breathTimerTotal)
+		--Adjust to 10th decimal only
+		bossProgress = math.floor(bossProgress*10)/10
+		breathTimerTotal = math.floor(breathTimerTotal*10)/10
 		timerSlurryBreathCD:Update(bossProgress, breathTimerTotal)
-	end--]]
+		DBM:Debug("updateBreathTimer updated with: "..bossProgress..", "..breathTimerTotal)
+	end
 end
 
 function mod:SpitTarget(targetname, uId)
@@ -207,9 +213,9 @@ function mod:SPELL_CAST_START(args)
 		end
 		self.vb.comboCount = self.vb.comboCount + 1
 		--Only show taunt warning if you don't have debuff and it's 2nd or 3rd cast and you aren't already tanking
-		if self.vb.comboCount >= 1 and not DBM:UnitDebuff("player", 307471) and not self:IsTanking("player", "boss1", nil, true) then--Crush
-			specWarnCrushTaunt:Show(L.name)
-			specWarnCrushTaunt:Play("tauntboss")
+		if self.vb.comboCount >= 2 and not DBM:UnitDebuff("player", 307471) and not self:IsTanking("player", "boss1", nil, true) then--Crush
+			specWarnDissolveTaunt:Show(L.name)
+			specWarnDissolveTaunt:Play("tauntboss")
 		end
 	elseif spellId == 307476 then--Crush
 		if self:AntiSpam(11, 1) then
@@ -217,7 +223,7 @@ function mod:SPELL_CAST_START(args)
 		end
 		self.vb.comboCount = self.vb.comboCount + 1
 		--Only show taunt warning if you don't have debuff and it's 2nd or 3rd cast and you aren't already tanking
-		if self.vb.comboCount >= 1 and not DBM:UnitDebuff("player", 307472) and not self:IsTanking("player", "boss1", nil, true) then--Dissolve
+		if self.vb.comboCount >= 2 and not DBM:UnitDebuff("player", 307472) and not self:IsTanking("player", "boss1", nil, true) then--Dissolve
 			specWarnCrushTaunt:Show(L.name)
 			specWarnCrushTaunt:Play("tauntboss")
 		end
@@ -227,7 +233,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 312528 or spellId == 306928 or spellId == 312529 or spellId == 306929 or spellId == 312530 or spellId == 306930 then--Breaths
-		self:Schedule(1.5, updateBreathTimer, self, true)--Delay so we do not get the boss at 100/100 energy
+		updateBreathTimer(self, true)
 	end
 end
 
@@ -410,7 +416,7 @@ do
 	--Still not perfect because it seems to support non even numbers internally but api isn't gonna report only whole numbers
 	--I have two logs that have energy rate/timing pegged at exactly 5.85 where as it'd end up rounding to 6 since blizz would only send whole number energy updates thus shorting timer by teeny bit
 	--Case and point to above issue 17.0, 17.1, 21.9, 17.0, 17.1. to get 17.1 update rate would HAVE to be less than 6 but greater than 5. About 5.85
-	function mod:UNIT_POWER_FREQUENT(uId, type)
+	function mod:UNIT_POWER_UPDATE(uId)
 		local bossPower = UnitPower("boss1") --Get Boss Power
 		local currentRate = bossPower - lastPower
 		lastPower = bossPower

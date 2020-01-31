@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200129060822")
+mod:SetRevision("20200130202759")
 mod:SetCreatureID(151798)
 mod:SetEncounterID(2336)
 mod:SetZone()
@@ -44,6 +44,7 @@ local warnSpitefulAssault					= mod:NewSpellAnnounce(307396, 2)
 local warnBrutalSmash						= mod:NewSpellAnnounce(315932, 4)--Fall back warning that'll only fire if special warning for brutal smash disabled
 ----Stage 3: The Void Unleashed
 local warnPhase3							= mod:NewPhaseAnnounce(3, 2)
+local warnDesolation						= mod:NewTargetNoFilterAnnounce(310325, 4)
 
 --Vexiona
 ----Stage 1: Cult of the Void
@@ -57,7 +58,7 @@ local specWarnDespairOther					= mod:NewSpecialWarningTarget(307359, "Healer", n
 local specWarnDarkGateway					= mod:NewSpecialWarningSwitchCount(307057, "-Healer", nil, nil, 1, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(307343, nil, nil, nil, 1, 8)
 ----Iron-Willed Enforcer
-local specWarnBrutalSmash					= mod:NewSpecialWarningDodge(315932, false, nil, 2, 2, 2)--May feel spammy if multiple adds are up so elect in instead of out
+local specWarnBrutalSmash					= mod:NewSpecialWarningDodge(315932, false, nil, 2, 2, 2, 4)--May feel spammy if multiple adds are up so elect in instead of out
 ----Stage 2: Death From Above
 local specWarnTwilightDecimator				= mod:NewSpecialWarningDodgeCount(307218, nil, nil, nil, 2, 2)
 ----Stage 3: The Void Unleashed
@@ -65,7 +66,7 @@ local specWarnHeartofDarkness				= mod:NewSpecialWarningRun(307639, nil, nil, ni
 local specWarnDesolation					= mod:NewSpecialWarningYou(310325, nil, nil, nil, 1, 2)
 local yellDesolation						= mod:NewYell(310325, nil, nil, nil, "YELL")
 local yellDesolationFades					= mod:NewShortFadesYell(310325, nil, nil, nil, "YELL")
-local specWarnDesolationShare				= mod:NewSpecialWarningMoveTo(310325, "-Tank", nil, nil, 1, 2)
+local specWarnDesolationShare				= mod:NewSpecialWarningMoveTo(310325, false, nil, 2, 1, 2)
 --Adds
 ----Void Ascendant
 local specWarnAnnihilation					= mod:NewSpecialWarningDodgeCount(307403, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.dodge:format(307403), nil, 2, 2)
@@ -76,7 +77,7 @@ local specWarnVoidBolt						= mod:NewSpecialWarningInterrupt(307177, "HasInterru
 ----Stage 1: Cult of the Void
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20661))
 local timerEncroachingShadowsCD				= mod:NewCDTimer(14.6, 307314, nil, nil, nil, 3)
-local timerTwilightBreathCD					= mod:NewCDTimer(14.8, 307020, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--14.8-20.0
+local timerTwilightBreathCD					= mod:NewCDTimer(14.8, 307020, 18620, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--14.8-20.0
 local timerDespairCD						= mod:NewCDTimer(35.2, 307359, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON)--35.2-36.4
 local timerShatteredResolve					= mod:NewTargetTimer(6, 307371, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
 local timerDarkGatewayCD					= mod:NewCDCountTimer(33.2, 307057, nil, nil, nil, 1, nil, nil, nil, 1, 4)
@@ -84,7 +85,7 @@ local timerDarkGatewayCD					= mod:NewCDCountTimer(33.2, 307057, nil, nil, nil, 
 local timerNoEscapeCD						= mod:NewCDCountTimer(11, 316437, nil, nil, nil, 3, nil, DBM_CORE_MYTHIC_ICON)
 ----Stage 2: Death From Above
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(20667))
-local timerTwilightDecimatorCD				= mod:NewNextCountTimer(12.2, 307218, nil, nil, nil, 3)
+local timerTwilightDecimatorCD				= mod:NewNextCountTimer(12.2, 307218, 125030, nil, nil, 3)--Deep Breath shorttext
 ----Stage 3: The Void Unleashed
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20669))
 local timerHeartofDarknessCD				= mod:NewCDCountTimer(31.6, 307639, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
@@ -233,11 +234,12 @@ function mod:SPELL_CAST_START(args)
 			self:SendSync("NoEscape", args.sourceGUID)
 		end
 	--TODO, i want to say there was a reason i was using SUCCESS instead of START, DO gateway or something persist until this spell finishes?
-	elseif spellId == 307453 and (self.vb.phase < 3) then
+	elseif spellId == 307453 then
 		self.vb.phase = 3
 		self.vb.TwilightDCasts = 0
 		warnPhase3:Show()
 		warnPhase3:Play("pthree")
+		timerTwilightDecimatorCD:Stop()
 		timerEncroachingShadowsCD:Stop()
 		timerTwilightBreathCD:Stop()
 		timerDespairCD:Stop()
@@ -307,9 +309,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDesolation:Play("targetyou")
 			yellDesolation:Yell()
 			yellDesolationFades:Countdown(spellId)
-		else
+		elseif self.Options.SpecWarn310325moveto then
 			specWarnDesolationShare:Show(args.destName)
 			specWarnDesolationShare:Play("gathershare")
+		else
+			warnDesolation:Show(args.destName)
 		end
 	end
 end

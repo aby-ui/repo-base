@@ -33,6 +33,7 @@ local defaultDB = {
     --WorldMapFrame = {save = true, },
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
+    PlayerPowerBarAlt = { save = true, },
 }
 
 local userPlaced = {
@@ -469,12 +470,14 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith("ScrappingMachineFrame", "Blizzard_ScrappingMachineUI");
         BM_SetMoveHandlerWith("AzeriteEmpoweredItemUI", "Blizzard_AzeriteUI");
 
-        if not hasConflict then 
-            BM_SetMoveHandler(PlayerPowerBarAlt) 
+        if not hasConflict then
+            BM_SetMoveHandler(PlayerPowerBarAlt)
+            --[[ --多米诺发现BlizzMove启用时不加载Encounter模块
             if IsAddOnLoaded("Dominos_Encounter") then
                 PlayerPowerBarAlt:SetScript("OnDragStart", function() U1Message("由于多米诺动作条已启用，不能拖动，请点击|TInterface\\Addons\\Dominos\\Dominos:0|t按钮进行布局") end)
                 PlayerPowerBarAlt:SetScript("OnDragStop", nil)
             end
+            --]]
         end
         --if not hasConflict then BM_SetMoveHandler(Boss1TargetFrame) Boss1TargetFrame:SetClampedToScreen(true) end --
         if not hasConflict then BM_SetMoveHandler(MinimapCluster, MinimapZoneTextButton) end

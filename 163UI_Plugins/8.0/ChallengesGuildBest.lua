@@ -72,20 +72,21 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     CoreOnEvent("CHALLENGE_MODE_LEADERS_UPDATE", update)
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
-    local drops  = { nil, 435, 435, 440, 445, 445, 450, 450, 450, 455, 455, 460, 460, 460, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465 }
+    --levels           1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
+    local drops  = { nil, 435, 435, 440, 445, 445, 450, 455, 455, 455, 460, 460, 460, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465 }
     local levels = { nil, 440, 445, 450, 450, 455, 460, 460, 460, 465, 465, 470, 470, 470, 475, 475, 475, 475, 475, 475, 475, 475, 475, 475, 475 }
-    local titans = { nil, nil, nil, nil, nil, nil, nil, nil, nil, 1700, 1790, 1880, 1970, 2060, 2150, 2240, 2330, 2420, 2510, 2600, 2665,2730,2795,2860,2915}
+    local titans = { nil, nil, nil, nil, nil,  75, 330, 365, 400, 1700, 1790, 1880, 1970, 2060, 2150, 2240, 2330, 2420, 2510, 2600, 2665,2730,2795,2860,2915}
     ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("钥石层数  掉落  周箱  奖励精华")
             local start = 2
             if self.level and self.level > 0 then
-                start = self.level - 5
+                start = self.level - 8
             elseif self.ownedKeystoneLevel and self.ownedKeystoneLevel > 0 then
                 --start = self.ownedKeystoneLevel - 5
             end
-            for i = start, start + 10 do
+            for i = start, start + 12 do
                 if levels[i] or titans[i] then
                     local line = "    %2d层 |T130758:10:15:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:15:0:0:32:32:10:22:10:22|t %s"
                     local drop = drops[i] and format("%d", drops[i]) or " ? "

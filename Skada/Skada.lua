@@ -2451,7 +2451,8 @@ function Skada:AddSubviewToTooltip(tooltip, win, mode, id, label)
     end
 
 	-- Ask mode to populate dataset in our fake window.
-	mode:Update(ttwin, win:get_selected_set())
+    local set = win:get_selected_set()
+	if set then mode:Update(ttwin, set) end
 
 	-- Sort dataset unless we are using ordersort.
 	if not mode.metadata or not mode.metadata.ordersort then

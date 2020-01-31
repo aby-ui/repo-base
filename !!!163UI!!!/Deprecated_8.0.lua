@@ -336,3 +336,80 @@ end
 ---------------------------------------------------------------]]
 if not UIDropDownMenu_StopCounting then UIDropDownMenu_StopCounting = noop end
 if not UIDropDownMenu_StartCounting then UIDropDownMenu_StartCounting = noop end
+
+CoreDependCall("Blizzard_AuctionHouseUI", function()
+    U1DBG.auction_fav = U1DBG.auction_fav or {}
+    local saved = U1DBG.auction_fav
+    local load = function()
+        if C_AuctionHouse.FavoritesAreAvailable() then
+            for i, v in ipairs(saved) do
+                SET_FAVORITE_ABYUI = true
+                C_AuctionHouse.SetFavoriteItem(v, true)
+                SET_FAVORITE_ABYUI = nil
+            end
+        end
+    end
+    --if not C_AuctionHouse.HasFavorites() then load() end --only load when no fav at all. 加载不全，还是手动吧
+
+    if AuctionHouseFrame and AuctionHouseFrame.SearchBar and AuctionHouseFrame.SearchBar.FavoritesSearchButton then
+        local all_match = true
+        for _, v in ipairs(saved) do
+            if not C_AuctionHouse.IsFavoriteItem(v) then all_match = false break end
+        end
+        if all_match then return end
+        local parent = AuctionHouseFrame.SearchBar.FavoritesSearchButton
+        local btn = WW:Button("AbyLoadFavourites", parent, "UIMenuButtonStretchTemplate")
+        :SetTextFont(ChatFontNormal, 13, "")
+        :SetAlpha(0.8)
+        :SetText("加载")
+        :Size(40,26)
+        :TOPRIGHT(parent, "TOPLEFT", -5, -4)
+        :AddFrameLevel(0, parent)
+        :Disable()
+        :un()
+
+        btn:SetScript("OnClick", function(self) load() self:Hide() end)
+        btn:SetScript("OnUpdate", function(self, elapsed)
+            if not self.timer or self.timer > 1 then
+                self.timer = 0
+                if C_AuctionHouse.FavoritesAreAvailable() then
+                    self:Enable()
+                    self:SetScript("OnUpdate", nil)
+                end
+            else
+                self.timer = self.timer + elapsed
+            end
+        end)
+        CoreUIEnableTooltip(btn, '加载收藏列表', function(self, tip)
+            tip:AddLine("暴雪的BUG导致8.3新拍卖行的收藏登出就没了，爱不易临时保存在插件里，可以加载回来。", 1, 1, 0, true)
+            tip:AddLine(" ")
+            tip:AddLine("已保存收藏列表：", 1, 1, 1)
+            for _, v in ipairs(saved) do
+                if v.itemID then
+                    local name = GetItemInfo(v.itemID)
+                    tip:AddLine(name)
+                end
+            end
+        end)
+    end
+
+    hooksecurefunc(C_AuctionHouse, "SetFavoriteItem", function(itemKey, isFav)
+        if SET_FAVORITE_ABYUI then return end
+        for i, v in ipairs(saved) do
+            local match = true
+            for key, value in pairs(itemKey) do
+                if v[key] ~= value then
+                    match = false
+                    break
+                end
+            end
+            if match then
+                if not isFav then
+                    table.remove(saved, i)
+                end
+                return
+            end
+        end
+        if isFav then table.insert(saved, itemKey) end
+    end)
+end)

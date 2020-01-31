@@ -1,5 +1,5 @@
 ## Interface: 80300
-## Version: v8.3.1.0
+## Version: v8.3.1.1
 ## Title: GridStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: tptbk(Doadin-Malorne-US)

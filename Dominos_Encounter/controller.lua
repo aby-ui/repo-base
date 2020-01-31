@@ -1,6 +1,10 @@
 local PlayerPowerBarAlt = _G.PlayerPowerBarAlt
 if not PlayerPowerBarAlt then return end
 
+if U1PlayerName and U1IsAddonEnabled then
+    if GetAddOnEnableState(U1PlayerName, "BlizzMove")>=2 or U1IsAddonEnabled("BlizzMove") then return end
+end
+
 local _, Addon = ...
 local EncounterBarModule = _G.Dominos:NewModule('EncounterBar', 'AceEvent-3.0')
 

@@ -27,6 +27,40 @@ function find_global_key(pattern)
     print("=========================")
 end
 
+function GetMouseFocusParentKey()
+    local frame = GetMouseFocus();
+    if frame then
+        if frame:GetName() then
+            print(frame:GetName())
+        else
+            local parent = frame:GetParent();
+            local path, found
+            while parent do
+                found = false
+                for k, v in pairs(parent) do
+                    if v==frame then
+                        found = true
+                        path = k..(path and "."..path or "")
+                        break
+                    end
+                end
+                if not found or parent:GetName() then
+                    path = (parent:GetName() or "[UNKNOWN]").."."..(path or "nil")
+                    break;
+                else
+                    frame = parent
+                    parent = frame:GetParent()
+                end
+            end
+            print(path)
+        end
+    end
+end
+
+SLASH_MOUSEFOCUSNAME1 = "/getmn"
+SLASH_MOUSEFOCUSNAME2 = "/getmouseparentkey"
+SlashCmdList["MOUSEFOCUSNAME"] = GetMouseFocusParentKey
+
 _empty_table = {};
 _temp_table = {};
 

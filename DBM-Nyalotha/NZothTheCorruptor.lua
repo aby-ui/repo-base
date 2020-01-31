@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200128005259")
+mod:SetRevision("20200130225601")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetZone()
@@ -127,9 +127,9 @@ local specWarnStupefyingGlare				= mod:NewSpecialWarningDodgeCount(317874, nil, 
 local specWarnThoughtHarvester				= mod:NewSpecialWarningSwitch("ej21308", false, nil, nil, 1, 2)
 local specWarnHarvestThoughts				= mod:NewSpecialWarningCount(317066, nil, nil, nil, 2, 2)
 --Stage 3 Mythic
-local specWarnEventHorizon					= mod:NewSpecialWarningDefensive(318196, nil, nil, nil, 1, 2)
-local specWarnEventHorizonSwap				= mod:NewSpecialWarningTaunt(318196, nil, nil, nil, 1, 2)
-local specWarnAnnihilate					= mod:NewSpecialWarningMoveAway(318459, nil, nil, nil, 1, 2)
+local specWarnEventHorizon					= mod:NewSpecialWarningDefensive(318196, nil, nil, nil, 1, 2, 4)
+local specWarnEventHorizonSwap				= mod:NewSpecialWarningTaunt(318196, nil, nil, nil, 1, 2, 4)
+local specWarnAnnihilate					= mod:NewSpecialWarningMoveAway(318459, nil, nil, nil, 1, 2, 4)
 local yellAnnihilate						= mod:NewYell(318459)
 local yellAnnihilateFades					= mod:NewShortFadesYell(318459)
 
@@ -172,7 +172,7 @@ local timerVoidLashCD						= mod:NewCDTimer(22.9, 309698, nil, false, 2, 5, nil,
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20767))
 ----N'Zoth
 local timerEvokeAnguishCD					= mod:NewCDCountTimer(30.5, 317102, nil, nil, nil, 3)--30.5-44.9, delayed by boss doing other stuff?
-local timerStupefyingGlareCD				= mod:NewCDCountTimer(22.9, 317874, nil, nil, nil, 3)
+local timerStupefyingGlareCD				= mod:NewCDCountTimer(22.9, 317874, 239918, nil, nil, 3)
 ----Thought Harvester
 local timerThoughtHarvesterCD				= mod:NewCDCountTimer(30.1, "ej21308", nil, nil, nil, 1, 231298)
 local timerHarvestThoughtsCD				= mod:NewCDTimer(35.2, 317066, nil, nil, nil, 3)
@@ -335,10 +335,7 @@ function mod:OnCombatEnd()
 	--if self.Options.NPAuraOnShock then
 	--	DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	--end
-	--We either collected a new timer in which case we want user to report it, or we're running debug code which means we just want to see data regardless
-	if DBM.Options.DebugMode or harvesterDebugTriggered == 2 then
-		DBM:AddMsg("New Harvester Spawn Timers collected. If you see this message, Please report these numbers and raid difficulty to DBM author: " .. table.concat(debugSpawnTable, ", "))
-	end
+	DBM:AddMsg("Harvester Spawn Timers collected. If you see this message, Please report these numbers and raid difficulty to DBM author: " .. table.concat(debugSpawnTable, ", "))
 end
 
 function mod:OnTimerRecovery()
@@ -506,7 +503,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerEvokeAnguishCD:Start(timer, self.vb.harvesterCount+1)
 		end
 	elseif spellId == 318714 then--Corrupted Viscera
-		local cid = self:GetCIDFromGUID(args.destGUID)
+		local cid = self:GetCIDFromGUID(args.sourceGUID)
 		if cid == 158367 then--Basher Tentacle
 			if self:AntiSpam(5, 4) then
 				self.vb.BasherCount = self.vb.BasherCount + 1
@@ -754,9 +751,6 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				local timer = self:IsHard() and stage3HeroicTimers[316711][self.vb.harvesterCount+1] or self:IsEasy() and stage3NormalTimers[316711][self.vb.harvesterCount+1]
 				if timer then
 					timerThoughtHarvesterCD:Start(timer, self.vb.harvesterCount+1)
-				else
-					--incriment because at only harvesterDebugTriggered = 1 it just means we ran out of timers to show, but we haven't collected a new timer until we've incrimented this twice
-					harvesterDebugTriggered = harvesterDebugTriggered + 1
 				end
 				local currentTime = GetTime() - lastHarvesterTime
 				debugSpawnTable[self.vb.harvesterCount] = math.floor(currentTime*10)/10--Floored but only after trying to preserve at least one decimal place

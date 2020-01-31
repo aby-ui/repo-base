@@ -216,6 +216,8 @@ GridStatusRaidDebuff.defaultDB = {
         },
         [C_Map.GetMapInfo(1581).name] = {
             [GetSpellInfo(319346)] = { disable = true, },
+            [GetSpellInfo(309657)] = { disable = true, },
+            [GetSpellInfo(315161)] = { c_prior = 1, i_prior = 1 }, --腐蚀
         }
     },
 	["detected_debuff"] = {},

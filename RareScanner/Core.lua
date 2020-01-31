@@ -916,14 +916,11 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 					RareScanner:AddTomtomWaypoint(vignetteInfo)
 				end
 	
-				-- FIX Blubbery Blobule (NPCID = 160841) multipoping
-				if (already_notified[vignetteInfo.id] or (npcID == 160841 and already_notified[160841])) then
+				if (already_notified[vignetteInfo.id]) then
 					return
 				else
 					already_notified[vignetteInfo.id] = true
-					if (npcID == 160841) then
-						already_notified[160841] = true
-					end
+					
 					-- flashes the wow icon in windows bar
 					FlashClientIcon()
 					self:PlaySoundAlert(iconid)
@@ -958,10 +955,14 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 	
 	-- Check if we have found the NPC in the last 5 minutes
 	if (not isNavigating) then
-		if (already_notified[vignetteInfo.id]) then
+		-- FIX Blubbery Blobule (NPCID = 160841) multipoping
+		if (already_notified[vignetteInfo.id] or (npcID == 160841 and already_notified[160841])) then
 			return
 		else
 			already_notified[vignetteInfo.id] = true
+			if (npcID == 160841) then
+				already_notified[160841] = true
+			end
 		end
 	end
 
@@ -1056,7 +1057,11 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 
 	-- timer to reset already found NPC
 	C_Timer.After(RESCAN_TIMER, function() 
-		already_notified[vignetteInfo.id] = false 
+		already_notified[vignetteInfo.id] = false
+		-- FIX Blubbery Blobule (NPCID = 160841) multipoping
+		if (npcID == 160841) then
+			already_notified[160841] = false
+		end
 		private.dbglobal.recentlySeen[npcID] = nil
 	end)
 end

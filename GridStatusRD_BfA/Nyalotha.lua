@@ -37,6 +37,15 @@ GridStatusRaidDebuff:DebuffId(zoneid, 315000, 1, 5, 5, true) --Shadow Chisel
 GridStatusRaidDebuff:DebuffId(zoneid, 298514, 1, 5, 5, true) --Aqiri Mind Toxin
 GridStatusRaidDebuff:DebuffId(zoneid, 307020, 1, 5, 5, true) --Twilight Breath
 GridStatusRaidDebuff:DebuffId(zoneid, 306981, 1, 5, 5, true) --Gift of the Void
+GridStatusRaidDebuff:DebuffId(zoneid, 315311, 1, 5, 5, true) --Ravage
+GridStatusRaidDebuff:DebuffId(zoneid, 314347, 1, 5, 5, true) --Noxious Choke   
+GridStatusRaidDebuff:DebuffId(zoneid, 314188, 1, 5, 5, true) --Mind Flay      
+GridStatusRaidDebuff:DebuffId(zoneid, 313672, 1, 5, 5, true) --Acid Pool       
+GridStatusRaidDebuff:DebuffId(zoneid, 307053, 1, 5, 5, true) --Lava Pools     
+GridStatusRaidDebuff:DebuffId(zoneid, 314451, 1, 5, 5, true) --Leeching Bite   
+GridStatusRaidDebuff:DebuffId(zoneid, 313460, 1, 5, 5, true) --Nullification    
+GridStatusRaidDebuff:DebuffId(zoneid, 311362, 1, 5, 5, true) --Rising Heat     
+GridStatusRaidDebuff:DebuffId(zoneid, 314593, 1, 5, 5, true) --Mind-Numbing Toxin
 
 -- Wrathion
 GridStatusRaidDebuff:BossNameId(zoneid, 10, "Wrathion")

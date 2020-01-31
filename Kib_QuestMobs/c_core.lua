@@ -89,7 +89,7 @@ local LocalDatabase, GlobalDatabase, SavedVars = unpack(select(2, ...))
     end
 
 --<<SCAN QUEST DATA>>-------------------------------------------------------------------------------<<>>
-    local IgnoredQuests = { ["突袭：黑暗帝国"] = true } --TODO 用任务ID
+    local IgnoredQuests = { [C_TaskQuest.GetQuestInfoByQuestID(56064)] = true, [C_TaskQuest.GetQuestInfoByQuestID(56308)] = true  } --突袭黑暗帝国
     local ObjectiveLines = {}
     local function ScanPlate(plateData)                                                         --GlobalDatabase.EventBucket_AddLine("Kib_QuestMobs", "Plate Scanned and Cached: " .. plateData.unitName)
         local PlayerQuest, GroupQuest, AreaQuest, QuestTasks = nil, nil, nil, _empty_table --{}
