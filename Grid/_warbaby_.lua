@@ -53,6 +53,44 @@ meta.__newindex = function(t, k, v)
 end
 setmetatable(Grid.options.args, meta)
 
+--[[------------------------------------------------------------
+使用 warbaby_aura 里的副本特殊配置
+---------------------------------------------------------------]]
+if GridWarbabyMoreAuras then
+    local more = {}
+    for id, v in pairs(GridWarbabyMoreAuras) do
+        local spell = GetSpellInfo(id)
+        if spell then
+            local set = {
+                text = spell,
+                color = { r = 1, g = 1, b = 1, a = 1 },
+                priority = 98,
+                raid = true,
+                statusText = v.stack and "count" or "duration",
+            }
+            if v.buff then
+                set.buffID = id
+                set.buff = spell
+                set.desc = v.desc or format(L["Buff: %s"], spell)
+                more["buff_" .. id] = set
+            else
+                set.debuffID = id
+                set.debuff = spell
+                set.desc = v.desc or format(L["Debuff: %s"], spell)
+                more["debuff_" .. id] = set
+            end
+        end
+    end
+    Mixin(GridStatus:GetModule("GridStatusAuras").defaultDB, more)
+    local textstack = {}
+    for k, v in pairs(more) do
+        if v.statusText == "count" then
+            textstack[k] = true
+        end
+    end
+    GridWarbabyStatusMapTextStack = textstack
+end
+
 --把光环的设置复制过来
 hooksecurefunc(GridStatus:GetModule("GridStatusAuras"), "PostInitialize", function()
     local auras_option = Grid.options.args.GridStatus.args.GridStatusAuras.args
@@ -125,11 +163,11 @@ function GridFrame:OpenStatusOptions(status)
 end
 
 --[[------------------------------------------------------------
-把指示关联的选项分成两页, 光环/Hots这种很多的放到第二页
+把指示关联的选项分成多组：自定义光环，副本光环，普通光环，通用状态
 指示器选择状态时，未启用的状态标记[X]
 指示器列表的图标
 ---------------------------------------------------------------]]
-local indicator_icons = { barcolor=1, border=1, corner1=1, corner2=1, corner3=1, corner4=1, cornertextbottomleft=1, cornertextbottomright=1, cornertexttopleft=1, cornertexttopright=1, frameAlpha=1, healingBar=1, icon=1, iconbottom=1, iconleft=1, iconright=1, iconrole=1, icontop=1, manabar=1, text=1, text2=1, }
+local indicator_icons = { barcolor=1, border=1, corner1=1, corner2=1, corner3=1, corner4=1, cornertextbottomleft=1, cornertextbottomright=1, cornertexttopleft=1, cornertexttopright=1, frameAlpha=1, healingBar=1, icon=1, iconbottom=1, iconleft=1, iconright=1, iconrole=1, icontop=1, manabar=1, text=1, text2=1, textstack=1 }
 local indicator_config_func = function(info, test)
     local id = info[#info-1] --print(id)
     if id == "healingBar" then id = "bar" end
@@ -152,7 +190,7 @@ hooksecurefunc(GridFrame, "UpdateOptionsForIndicator", function(self, indicator,
         return
     end
 
-    menu[indicator].childGroups = "tab"
+    menu[indicator].childGroups = "select" --"tab"
 
     --指示器图标
     if indicator_icons[indicator] then
@@ -163,11 +201,11 @@ hooksecurefunc(GridFrame, "UpdateOptionsForIndicator", function(self, indicator,
 
     if not indicatorMenu.general163 then
         indicatorMenu.general163 = { name = L["General"], type = "group", order = 1, args = {}, }
-        indicatorMenu.auras163 = { name = L["Auras"], type = "group", order = 2, args = {}, }
-        indicatorMenu.config = {
+        indicatorMenu.auras163 = { name = EMPTY, type = "group", order = 2, args = {}, }
+        indicatorMenu.config = indicatorMenu.config or {
             name = format(L["Options for Indicator %s"], menu[indicator].name),
             type = "execute",
-            width="full",
+            width = "full",
             order = 0,
             hidden = function(info) return indicator_config_func(info, true) end,
             func = function(info) indicator_config_func(info) end
@@ -176,6 +214,10 @@ hooksecurefunc(GridFrame, "UpdateOptionsForIndicator", function(self, indicator,
         wipe(indicatorMenu.general163.args)
         wipe(indicatorMenu.auras163.args)
     end
+    indicatorMenu.general163.args.header1 = { type = "header", width = "full", order = 10, name = "自定义光环", }
+    indicatorMenu.general163.args.header2 = { type = "header", width = "full", order = 20, name = "副本光环", }
+    indicatorMenu.general163.args.header3 = { type = "header", width = "full", order = 30, name = "其他光环", }
+    indicatorMenu.general163.args.header4 = { type = "header", width = "full", order = 40, name = "通用状态", }
 
     for status, module, descr in GridStatus:RegisteredStatusIterator() do
         local menu = indicatorMenu[status]
@@ -203,15 +245,26 @@ hooksecurefunc(GridFrame, "UpdateOptionsForIndicator", function(self, indicator,
             if not enable then
                 menu.name = menu.name.."|cffff0000[关}|r" --为保持顺序只能在后面加
             end
+            local settings = GridStatus:GetModule(module).db.profile[status]
             local args
-            if status:find("^buff_") or status:find("^debuff_") or status:find("^dispel_")
-                    or descr:find("^Hots: ") or descr:find("^HoT: ") then
-                args = indicatorMenu.auras163.args
+            if module == "GridStatusAuras" then --if status:find("^buff_") or status:find("^debuff_") or status:find("^dispel_") or descr:find("^Hots: ") or descr:find("^HoT: ") then
+                --args = indicatorMenu.auras163.args
+                local default = GridStatus:GetModule(module).defaultDB[status]
+                --区分自定义和默认的，自定义的defaultDB也会被赋值为statusDefaultDB，所以需要判断是否有desc
+                if default and (default.text or default.desc) then
+                    menu.order = settings.raid and 21 or 31
+                else
+                    menu.order = 11
+                end
             else
-                args = indicatorMenu.general163.args
+                --args = indicatorMenu.general163.args
+                menu.order = 41
             end
+            local spellId = settings.debuffID or settings.buffID
+            if spellId then menu.desc = menu.desc .. "\nID: " .. spellId end
             menu.width = "normal"
-            args[status] = menu
+
+            indicatorMenu.general163.args[status] = menu
             indicatorMenu[status] = nil
         end
     end
@@ -336,7 +389,8 @@ Mixin(GridFrame.defaultDB, {
             debuff_209858              = true,
             debuff_240559              = true,
             debuff_240443              = true,
-        }
+        },
+        textstack = GridWarbabyStatusMapTextStack,
     }
 })
 --GridStatus:GetModule("GridStatusVoiceComm").defaultDB.alert_voice.enable = true
@@ -345,7 +399,8 @@ GridStatus:GetModule("GridStatusMana").defaultDB.alert_lowMana.enable = false
 GridStatus:GetModule("GridStatusMouseover").defaultDB.mouseover.enable = false
 GridStatus:GetModule("GridStatusStagger").defaultDB.alert_stagger.enable = false
 GridStatus:GetModule("GridStatusHealth").defaultDB.alert_ghost.priority = 97 --dead is 95
---后添加的BUFF默认关闭
+
+--AuraClass里后添加的BUFF(_extra=true)默认是关闭的，如果在默认方案里配置了这些BUFF，则强制打开
 local mapped_status = {}
 for k,v in pairs(GridFrame.defaultDB.statusmap) do
     for status, _ in pairs(v) do

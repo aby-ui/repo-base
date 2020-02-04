@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200129182926")
+mod:SetRevision("20200201141212")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetZone()
@@ -312,7 +312,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 315954 then
 		local amount = args.amount or 1
-		if amount >= 2 then
+		if amount >= 3 then
 			if args:IsPlayer() then
 				specWarnBlackScar:Show(amount)
 				specWarnBlackScar:Play("stackhigh")

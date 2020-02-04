@@ -6,9 +6,8 @@ local hook = function()
     PaperDollFrame_UpdateCorruptedItemGlows(true)
 end
 SetOrHookScript(CharacterFrame, "OnShow", hook)
-SetOrHookScript(CharacterFrame, "OnShow", hook)
 local CorruptFrame = CharacterStatsPane.ItemLevelFrame.Corruption
-if CorruptFrame then SetOrHookScript(CorruptFrame, "OnLeave", hook) end
+--if CorruptFrame then SetOrHookScript(CorruptFrame, "OnLeave", hook) end
 
 CoreDependCall("Blizzard_InspectUI", function()
 
@@ -19,6 +18,7 @@ CoreDependCall("Blizzard_InspectUI", function()
             local bc = frame:CreateTexture(nil, "OVERLAY", nil, 1)
             bc:SetAtlas("Nzoth-charactersheet-item-glow", true)
             bc:SetPoint("CENTER", frame)
+            bc:SetScale(1.05)
             frame._aby_corrupt = bc
         end
         if not link then

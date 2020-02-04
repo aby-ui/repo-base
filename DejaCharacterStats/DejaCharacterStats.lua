@@ -270,3 +270,32 @@ local dcsresetcheck = CreateFrame("Button", "DCSResetButton", DejaCharacterStats
 	dcsMiscPanelCategoryFS:SetText('|cffffffff' .. L["Miscellaneous:"] .. '|r')
 	dcsMiscPanelCategoryFS:SetPoint("LEFT", 25, -165)
 	dcsMiscPanelCategoryFS:SetFontObject("GameFontNormalLarge") --Use instead of SetFont("Fonts\\FRIZQT__.TTF", 15) or Russian, Korean and Chinese characters won't work.
+
+	--------------------------------
+--Show Character Frame Button --
+--------------------------------
+local DCSShowCharacterFrameButton = CreateFrame("Button", "DCSShowCharacterFrameButton", DejaCharacterStatsPanel, "UIPanelButtonTemplate")
+DCSShowCharacterFrameButton:RegisterEvent("PLAYER_LOGIN")
+
+DCSShowCharacterFrameButton:ClearAllPoints()
+DCSShowCharacterFrameButton:SetPoint("TOPRIGHT", -73, -57)
+DCSShowCharacterFrameButton:SetScale(0.80)
+DCSShowCharacterFrameButton:SetWidth(220)
+DCSShowCharacterFrameButton:SetHeight(30)
+_G[DCSShowCharacterFrameButton:GetName() .. "Text"]:SetText(L["Show Character Frame"])
+
+CharacterFrame:HookScript("OnShow", function(self)
+	_G[DCSShowCharacterFrameButton:GetName() .. "Text"]:SetText(L["Hide Character Frame"])
+end)
+
+CharacterFrame:HookScript("OnHide", function(self)
+	_G[DCSShowCharacterFrameButton:GetName() .. "Text"]:SetText(L["Show Character Frame"])
+end)
+
+DCSShowCharacterFrameButton:SetScript("OnClick", function(self, button, down)
+	if CharacterFrame:IsShown() then
+		HideUIPanel(CharacterFrame)
+	else
+		ShowUIPanel(CharacterFrame)
+	end
+end)

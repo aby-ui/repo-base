@@ -215,9 +215,10 @@ GridStatusRaidDebuff.defaultDB = {
             ["洪荒烈火"] = { ["i_prior"] = 9, },
         },
         [C_Map.GetMapInfo(1581).name] = {
-            [GetSpellInfo(319346)] = { disable = true, },
-            [GetSpellInfo(309657)] = { disable = true, },
-            [GetSpellInfo(315161)] = { c_prior = 1, i_prior = 1 }, --腐蚀
+            [GetSpellInfo(315161)] = { c_prior = 1, i_prior = 1 }, --腐化之眼
+            [GetSpellInfo(319346)] = { disable = true, }, --无尽丧钟
+            [GetSpellInfo(309657)] = { disable = true, }, --黑暗仪式
+            [GetSpellInfo(313250)] = { disable = true, }, --1号蠕行疯狂
         }
     },
 	["detected_debuff"] = {},

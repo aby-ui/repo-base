@@ -62,6 +62,7 @@ Statuses\Target.lua
 Statuses\Vehicle.lua
 
 Statuses\AurasByClass.lua
+_warbaby_aura.lua
 _warbaby_.lua
 
 ## Title: |cff880303[爱不易]|r Grid 团队框架

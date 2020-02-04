@@ -665,7 +665,7 @@ function GridStatusAuras:RegisterStatuses()
 						end
 					end
 				end
-				--[[if status == "boss_aura" then
+                --[[if status == "boss_aura" then
 					self:RegisterStatus(status, settings.desc, { text = false }, false, settings.order)
 
 				else]] if settings.buff or settings.debuff or self.defaultDB[status] then
@@ -674,21 +674,22 @@ function GridStatusAuras:RegisterStatuses()
 					local isBuff = not not settings.buff
 					local order = settings.order or (isBuff and 15 or 35)
 
-                if not isBuff or GridStatusAuras:ShouldRegisterByClass(settings.buff) then --163ui
-					self:Debug("Registering", status, desc)
-					if not self.defaultDB[status] then
-						self.defaultDB[status] = {}
-						self:CopyDefaults(self.defaultDB[status], statusDefaultDB)
-					end
-					self:CopyDefaults(settings, self.defaultDB[status])
-					self:RegisterStatus(status, desc, self:OptionsForStatus(status, isBuff), false, order)
-                end
+                    if not isBuff or GridStatusAuras:ShouldRegisterByClass(settings.buff) then --163ui
+                        self:Debug("Registering", status, desc)
+                        if not self.defaultDB[status] then
+                            self.defaultDB[status] = {}
+                            self:CopyDefaults(self.defaultDB[status], statusDefaultDB)
+                        end
+                        self:CopyDefaults(settings, self.defaultDB[status])
+                        settings.desc = (self.defaultDB[status] or {}).desc or settings.desc --abyui, without this, custom aura desc will not be replaced by default desc.
+                        self:RegisterStatus(status, desc, self:OptionsForStatus(status, isBuff), false, order)
+                    end
 				end
 			else
 				-- Can't do this because it screws people who play in multiple languages.
 				--self:Debug("Removing invalid status:", status)
 				--profile[status] = nil
-			end
+            end
 		end
 	end
 	self.db:RegisterDefaults({ profile = self.defaultDB or {} })
@@ -1061,9 +1062,10 @@ function GridStatusAuras:CreateRemoveOptions()
 		local status = status
 		if type(settings) == "table" and settings.text and not default_auras[status] then
 			local debuffName = settings.desc or settings.text
+            local spellId = settings.debuffID or settings.buffID
 			self.options.args.delete_aura.args[status] = {
 				name = debuffName,
-				desc = format(L["Remove %s from the menu"], debuffName),
+				desc = format(L["Remove %s from the menu"], debuffName) .. (spellId and "\n" .. spellId or ""),
 				width = "double",
 				type = "execute",
 				func = function() return
@@ -1122,9 +1124,10 @@ function GridStatusAuras:AddAura(name, isBuff)
 	self:CopyDefaults(settings, self.defaultDB[status])
 	self.db.profile[status] = settings
 
+    local spellId = settings.debuffID or settings.buffID
 	self.options.args.delete_aura.args[status] = {
 		name = desc,
-		desc = format(L["Remove %s from the menu"], desc),
+		desc = format(L["Remove %s from the menu"], desc) .. (spellId and "\n" .. spellId or ""),
 		width = "double",
 		type = "execute",
 		func = function()

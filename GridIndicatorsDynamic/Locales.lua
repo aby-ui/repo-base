@@ -20,6 +20,7 @@ L["cornertexttopleft"]      = "◇左上角文字"
 L["cornertexttopright"]     = "◇右上角文字"
 L["cornertextbottomleft"]   = "◇左下角文字"
 L["cornertextbottomright"]  = "◇右下角文字"
+L["textstack"]   = "层数专用文字"
 
 L["Show Remain Time"] = "强制显示剩余时间"
 L["Show status's remain time (only if supported) instead of status text. The numbers will be updated by GridIndicatorsDynamic. It's more efficient than other ways."] = "强制显示状态的剩余时间而不是文本。这种方式下，数字会被统一刷新，比Grid光环设置成'显示剩余时间'效率更高。如果需要显示堆叠层数，应关闭此选项。"

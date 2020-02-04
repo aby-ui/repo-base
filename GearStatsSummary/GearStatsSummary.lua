@@ -448,7 +448,8 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
             local iconformat = "\124TInterface\\AddOns\\GearStatsSummary\\icons\\%s:11\124t"
             local emptyformat = "\124T" .. emptyTex .. ":11\124t"
             local attrIcons = ""
-            local attrs = (k==16 or k==17) and U1GetItemStats(unit, k, tmptable, true, classID, specID) or U1GetItemStats(v, nil, tmptable, true, classID, specID)
+            local attrs = U1GetItemStats(v, nil, tmptable, true, classID, specID)
+            --(k==16 or k==17) and U1GetItemStats(unit, k, tmptable, true, classID, specID) 7.0神器用
             for i=1, 4 do
                 local icon = i == 1 and "crit" or i == 2 and "haste" or i == 3 and "vers" or i == 4 and "mastery"
                 attrIcons = attrIcons .. (attrs[i] and attrs[i] > 0 and iconformat:format(icon) or emptyformat)
@@ -459,6 +460,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
             end
 
             local _, _, ccode, linkp1, itemname = v:find("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r")
+            if attrs[9] and attrs[9] > 0 then ccode = "|cffC21010" end
             if (GetLocale() == "zhCN" or GetLocale() == "zhTW") and string.utf8len(itemname) > 6 then itemname = string.utf8sub(itemname,1,5).."…" end
             --v = v:gsub("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r", "%2\124h" .. sum["ItemLevels"][k] .. " %1%3\124r\124h")
             v = sum["ItemLevels"][k] .. " " .. ccode..linkp1.."\124h"..itemname.."\124h\124r"

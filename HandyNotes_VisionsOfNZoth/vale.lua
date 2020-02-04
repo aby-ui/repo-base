@@ -295,6 +295,7 @@ nodes[15887672] = MANTR1
 -- quest=58225
 nodes[16021946] = MANTR2
 nodes[17432634] = MANTR2
+nodes[19001350] = clone(MANTR2, {note=L["guolai"]})
 nodes[21051415] = MANTR2
 -- quest=58226
 nodes[07693682] = MANTR3
@@ -438,6 +439,7 @@ nodes[65855969] = EMPTR3
 nodes[67565584] = EMPTR3
 -- quest=57201
 nodes[70215370] = EMPTR4
+nodes[76594867] = EMPTR4
 nodes[77076363] = EMPTR4
 nodes[77413129] = EMPTR4
 nodes[78305251] = EMPTR4
@@ -451,6 +453,7 @@ nodes[60806337] = EMPTR5
 nodes[63107059] = EMPTR5
 nodes[64297053] = EMPTR5
 nodes[68306247] = EMPTR5
+nodes[68705880] = EMPTR5
 nodes[70686357] = EMPTR5
 nodes[71516854] = EMPTR5
 -- quest=57203
@@ -543,7 +546,7 @@ nodes[43624146] = TimedEvent({quest=57146, assault=EMP, note=L["corruption_tear"
 nodes[49356668] = TimedEvent({quest=56074, assault=EMP, note=L["void_conduit"]}) -- Void Conduit
 nodes[56685933] = TimedEvent({quest=56178, assault=EMP, note=L["void_conduit"]}) -- Void Conduit
 nodes[60614333] = TimedEvent({quest=56163, assault=EMP, note=L["bound_guardian"]}) -- Bound Guardian
-nodes[60706594] = TimedEvent({quest=56099, assault=EMP, note=L["big_blossom_mine"]..' '..L["font_corruption"]}) -- Font of Corruption
+nodes[60416780] = TimedEvent({quest=56099, assault=EMP, note=L["big_blossom_mine"]..' '..L["font_corruption"]}) -- Font of Corruption
 nodes[69502214] = TimedEvent({quest=57375, assault=EMP, note=L["pulse_mound"]}) -- Pulsating Mound
 nodes[74164004] = TimedEvent({quest=56076, assault=EMP, note=L["abyssal_ritual"]}) -- Abyssal Ritual
 nodes[76365163] = TimedEvent({quest=57379, assault=EMP, note=L["infested_statue"]}) -- Infested Jade Statue

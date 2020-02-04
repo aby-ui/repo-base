@@ -92,4 +92,13 @@ L["Versatility Rating"] = "臨機應變點數"
 L["weapon auto attack (white) DPS."] = "武器自動攻擊(白字)每秒傷害。"
 L["Weapon DPS"] = "武器每秒傷害"
 
+L["Hide Character Frame"] = "隱藏角色視窗"
+L["Show Character Frame"] = "顯示角色視窗"
+-- L["Spirit"] = "精神"
+-- L["Stamina"] = "耐力"
+-- L["Strength"] = "力量"
+-- L["Intellect"] = "智力"
+-- L["Agility"] = "敏捷"
+-- L["Armor"] = "護甲"
+
 return end

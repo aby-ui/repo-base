@@ -69,3 +69,6 @@ L.TipRollBar = '在团队中显示物品掷点面板'
 L.TipVehicleBar = [[
 显示瞄准和离开载具的控制按钮.
 其他载具按钮将在心灵控制条上显示.]]
+
+L.BarDisplayName = "%s Bar"
+L.ActionBarDisplayName = "动作条 %s"

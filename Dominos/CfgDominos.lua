@@ -21,7 +21,7 @@
 
         --对DebuffCaster的支持
         Dominos.ActionButton.oriCreate = Dominos.ActionButton.Create;
-        Dominos.OWNER_NAME = {artifact="神器",exp="经验声望",page="翻\n页",vehicle="离开\n载具",pet="宠物技能",menu="菜单",bags="背包",roll="掷骰框",alerts="提示框",extra="特殊\n动作",encounter="战斗能量",cast="施法条",cast_new="美化施法条"}
+        Dominos.OWNER_NAME = {artifact="神器",exp="经验声望",page="翻\n页",vehicle="离开\n载具",pet="宠物技能",menu="菜单",bags="背包",roll="掷骰框",alerts="提示框",extra="特殊\n动作",encounter="战斗能量",cast="施法条",cast_new="美化施法条",zone="区域\n技能"}
         function Dominos.ActionButton:Create(id)
             local b = self:oriCreate(id)
             if b and b.cooldown then b.cooldown.DCFlag=nil end
@@ -52,8 +52,9 @@
             Dominos:U1_InitPreset(true)
             Dominos.isNewProfile = nil
             Dominos:Load()
-            local masque = U1GetMasqueCore and U1GetMasqueCore()
-            if masque then masque:Group("Dominos"):ReSkinWithSub() end
+            --local masque = U1GetMasqueCore and U1GetMasqueCore()
+            --if masque then masque:Group("Dominos"):ReSkinWithSub() end
+            Dominos:GetModule("ButtonThemer"):Reskin() --LibStub("AceAddon-3.0"):GetAddon("Dominos")
         end
     },
 

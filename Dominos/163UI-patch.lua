@@ -192,6 +192,8 @@ function Dominos:U1_GetPreset(style)
     --frames.roll = { x=0, y=0, point='CENTER', numButtons = NUM_GROUP_LOOT_FRAMES, spacing=2, columns=1, }
     frames.page = { x=0, y=0, point='BOTTOMLEFT', spacing=0, columns=1, anchor='1LC', scale=0.9, fadeAlpha=0.35, }
     frames.encounter = { x=0, point='BOTTOM', x=0, y=mini and 200+30 or 160+30, anchor='BOTTOM' }
+    frames.extra = { point = 'CENTER', x = -244, y = 0 }
+    frames.zone = { point = 'CENTER', x = 0, y = -244, showInPetBattleUI = true, showInOverrideUI = true }
 
     --基于MINI
     if real_style == "COMPACT" then

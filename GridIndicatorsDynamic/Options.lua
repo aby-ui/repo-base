@@ -50,11 +50,12 @@ GridIndicatorsDynamic.defaultDB.icontop = Mixin({}, defaultIconOption, { anchor 
 GridIndicatorsDynamic.defaultDB.iconbottom = Mixin({}, defaultIconOption, { anchor = "BOTTOM", name = L"iconbottom", iconSize = 10, offsetY = 2 })
 GridIndicatorsDynamic.defaultDB.iconleft = Mixin({}, defaultIconOption, { anchor = "LEFT", name = L"iconleft", iconSize = 12, offsetX = -5, offsetY = 1 })
 GridIndicatorsDynamic.defaultDB.iconright = Mixin({}, defaultIconOption, { anchor = "RIGHT", name = L"iconright", iconSize = 13, offsetX = 3, offsetY = 1 })
+GridIndicatorsDynamic.defaultDB.iconrole = Mixin({}, defaultIconOption, { anchor = "TOPLEFT", name = L"iconrole", iconSize = 11, offsetX = -2, offsetY = -1, iconBorderSize = 0, enableIconStackText = false, enableIconCooldown = false, frameLevel = 1 })
 GridIndicatorsDynamic.defaultDB.cornertexttopleft = Mixin({}, defaultTextOption, { anchor = "TOPLEFT", name = L"cornertexttopleft", offsetX = -1, offsetY = 2, })
 GridIndicatorsDynamic.defaultDB.cornertexttopright = Mixin({}, defaultTextOption, { anchor = "TOPRIGHT", name = L"cornertexttopright", offsetX = 1, offsetY = 2, })
 GridIndicatorsDynamic.defaultDB.cornertextbottomleft = Mixin({}, defaultTextOption, { anchor = "BOTTOMLEFT", name = L"cornertextbottomleft", offsetX = -1, offsetY = -1, })
 GridIndicatorsDynamic.defaultDB.cornertextbottomright = Mixin({}, defaultTextOption, { anchor = "BOTTOMRIGHT", name = L"cornertextbottomright", fontSize = 10, fontOutline = "OUTLINE", offsetX = 1, offsetY = -1, })
-GridIndicatorsDynamic.defaultDB.iconrole = Mixin({}, defaultIconOption, { anchor = "TOPLEFT", name = L"iconrole", iconSize = 11, offsetX = -2, offsetY = -1, iconBorderSize = 0, enableIconStackText = false, enableIconCooldown = false, frameLevel = 1 })
+GridIndicatorsDynamic.defaultDB.textstack = Mixin({}, defaultTextOption, { anchor = "RIGHT", name = L"textstack", fontSize = 10, fontOutline = "OUTLINE", offsetX = 1, offsetY = 0, })
 
 local options
 

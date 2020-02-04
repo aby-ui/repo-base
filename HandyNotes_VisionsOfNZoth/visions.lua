@@ -68,10 +68,18 @@ orgrimmar.nodes[39304900] = MAIL
 orgrimmar.nodes[39708030] = MAIL
 orgrimmar.nodes[52707580] = MAIL
 orgrimmar.nodes[60105130] = MAIL
+orgrimmar.nodes[67673924] = MAIL
 
-orgrimmar.nodes[39906120] = Node({icon=1001616, label=L["shave_kit"], note=L["shave_kit_note"], rewards={
+local SHAVE_KIT = Node({icon=1001616, label=L["shave_kit"], note=L["shave_kit_note"], rewards={
     Toy({item=174920}) -- Coifcurl's Close Shave Kit
 }})
+
+function SHAVE_KIT:enabled (map, coord, minimap)
+    if not Node.enabled(self, map, coord, minimap) then return false end
+    return ns.addon.db.profile.always_show_treasures or (not self:done())
+end
+
+orgrimmar.nodes[39906120] = SHAVE_KIT
 
 -------------------------------------------------------------------------------
 ---------------------------------- STORMWIND ----------------------------------
@@ -83,9 +91,16 @@ stormwind.nodes[61687604] = MAIL
 stormwind.nodes[62073082] = MAIL
 stormwind.nodes[76306430] = MAIL
 
-stormwind.nodes[58905290] = Node({icon=237272, label=L["void_skull"], note=L["void_skull_note"], rewards={
+local VOID_SKULL = Node({icon=237272, label=L["void_skull"], note=L["void_skull_note"], rewards={
     Toy({item=174921}) -- Void-Touched Skull
 }})
+
+function VOID_SKULL:enabled (map, coord, minimap)
+    if not Node.enabled(self, map, coord, minimap) then return false end
+    return ns.addon.db.profile.always_show_treasures or (not self:done())
+end
+
+stormwind.nodes[58905290] = VOID_SKULL
 
 stormwind.nodes[59106390] = Rare({id=158284, pois={
     Path({

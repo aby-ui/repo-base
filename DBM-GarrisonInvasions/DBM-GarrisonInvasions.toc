@@ -27,13 +27,8 @@
 ## Version: r46
 
 localization.en.lua
-localization.fr.lua
 localization.tw.lua
-localization.kr.lua
-localization.de.lua
 localization.cn.lua
-localization.br.lua
-localization.es.lua
 Invasions.lua
 Annihilon.lua
 Teluur.lua

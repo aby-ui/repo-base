@@ -386,10 +386,11 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                 if (link) then
                     local level = GuildNewsItemCache[link] or select(2, LibItemInfo:GetItemInfo(link))
                     if (level > 0) then
-                        local power = 10e6
-                        local gem
+                        local power = 10e5
+                        local gem, corrupt
                         if level > power then
-                            gem = level / power >= 2
+                            gem = level % (power*10) / power >= 2
+                            corrupt = level / (power*10) >= 2
                             level = level % power
                         else
                             local n = 0 wipe(stats) GetItemStats(link, stats)
@@ -399,9 +400,11 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                                     break
                                 end
                             end
+                            corrupt = IsCorruptedItem(link)
                         end
-                        GuildNewsItemCache[link] = level + (gem and 2 or 1) * power
+                        GuildNewsItemCache[link] = level + (gem and 2 or 1) * power + (corrupt and 2 or 1) * power * 10
                         gem = gem and "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t" or ""
+                        gem = gem .. (corrupt and "|T3004126:0|t" or "")
                         if level > 220 then
                             local r,g,b = U1GetInventoryLevelColor(level)
                             local hex = ("%.2x%.2x%.2x"):format(r*255, g*255, b*255)
@@ -533,8 +536,9 @@ local function ChatItemLevel(Hyperlink)
 	            end
 	        end
 	        local gem = string.rep("|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t", n)
-	        if (quality == 6 and class == WEAPON) then gem = "" end		
-            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..gem)
+            local corrupt = IsCorruptedItem(link) and "|T3004126:0|t" or ""
+	        if (quality == 6 and class == WEAPON) then gem = "" end
+            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..corrupt..gem)
         end
         Caches[Origin] = Hyperlink
     elseif (subclass and subclass == MOUNTS) then

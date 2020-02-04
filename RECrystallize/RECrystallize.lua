@@ -4,7 +4,9 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RECrystallize")
 local GUI = LibStub("AceGUI-3.0")
 _G.RECrystallize = RE
 
-local time, collectgarbage, hooksecurefunc, strsplit, next, select, string, pairs, tonumber, floor, print = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.string, _G.pairs, _G.tonumber, _G.floor, _G.print
+local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print
+local sMatch, sFormat = _G.string.match, _G.string.format
+local tConcat = _G.table.concat
 local IsLinkType = _G.LinkUtil.IsLinkType
 local ExtractLink = _G.LinkUtil.ExtractLink
 local After = _G.C_Timer.After
@@ -17,7 +19,6 @@ local SendChatMessage = _G.SendChatMessage
 local SetTooltipMoney = _G.SetTooltipMoney
 local FormatLargeNumber = _G.FormatLargeNumber
 local GetItemCount = _G.GetItemCount
-local GetCoinTextureString = _G.GetCoinTextureString
 local ReplicateItems = _G.C_AuctionHouse.ReplicateItems
 local GetNumReplicateItems = _G.C_AuctionHouse.GetNumReplicateItems
 local GetReplicateItemInfo = _G.C_AuctionHouse.GetReplicateItemInfo
@@ -53,6 +54,27 @@ local function tCount(table)
 	return count
 end
 
+local function GetPetMoneyString(money, size)
+	local goldString, silverString
+	local gold = floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD))
+	local silver = floor((money - (gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER)
+
+    goldString = GOLD_AMOUNT_TEXTURE_STRING:format(FormatLargeNumber(gold), size, size)
+    silverString = SILVER_AMOUNT_TEXTURE:format(silver, size, size)
+
+	local moneyString = ""
+	local separator = ""
+	if gold > 0 then
+		moneyString = goldString
+		separator = " "
+	end
+	if silver > 0 then
+		moneyString = moneyString..separator..silverString
+	end
+
+	return moneyString
+end
+
 function RE:OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("AUCTION_HOUSE_SHOW")
@@ -64,10 +86,10 @@ function RE:OnEvent(self, event, ...)
 		RE:Scan()
 	elseif event == "CHAT_MSG_GUILD" then
 		local msg = ...
-		if string.match(msg, "^!!!") then
+		if sMatch(msg, "^!!!") then
 			local itemID, itemStr = 0, ""
 			if IsLinkType(msg, "item") then
-				itemID = tonumber(string.match(msg, "item:(%d*)"))
+				itemID = tonumber(sMatch(msg, "item:(%d+)"))
 				itemStr = RE:GetItemString(msg)
 			elseif IsLinkType(msg, "battlepet") then
 				itemID = PETCAGEID
@@ -148,8 +170,8 @@ function RE:OnEvent(self, event, ...)
 		end
 
 		_G.GameTooltip:HookScript("OnTooltipSetItem", function(self) RE:TooltipAddPrice(self); RE.TooltipCustomCount = -1 end)
-		hooksecurefunc("BattlePetToolTip_ShowLink", function(link) RE:TooltipPetAddPrice(link) end)
-		hooksecurefunc("FloatingBattlePet_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(string.format("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
+		hooksecurefunc("BattlePetToolTip_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
+		hooksecurefunc("FloatingBattlePet_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
 
 		local SetRecipeReagentItem = _G.GameTooltip.SetRecipeReagentItem
 		function _G.GameTooltip:SetRecipeReagentItem(...)
@@ -184,7 +206,7 @@ function RE:TooltipAddPrice(self)
 	if link and IsLinkType(link, "item") then
 		if link ~= RE.TooltipLink then
 			RE.TooltipLink = link
-			RE.TooltipItemID = tonumber(string.match(link, "item:(%d*)"))
+			RE.TooltipItemID = tonumber(sMatch(link, "item:(%d+)"))
 			RE.TooltipItemVariant = RE:GetItemString(link)
 			RE.TooltipCount = GetItemCount(RE.TooltipItemID)
 		end
@@ -211,12 +233,16 @@ function RE:TooltipPetAddPrice(link)
 	elseif _G.FloatingBattlePetTooltip:IsShown() then
 		tt = _G.FloatingBattlePetTooltip
 	end
-	if not tt then return end
-	if tt:IsForbidden() then return end
-	local petString = RE:GetPetString(link)
-	if RE.DB[RE.RealmString][PETCAGEID] ~= nil and RE.DB[RE.RealmString][PETCAGEID][petString] ~= nil then
-		tt:AddLine("|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r    |cFFFFFFFF"..GetCoinTextureString(RE.DB[RE.RealmString][PETCAGEID][petString].Price, tt.Name:GetStringHeight() * 0.65).."|r")
-		tt:SetHeight((select(2, tt.Level:GetFont()) + 4.5) * ((tt.Owned:GetText() ~= nil and 7 or 6) + (tt == _G.FloatingBattlePetTooltip and 1.15 or 0) + tt.linePool:GetNumActive()))
+	if tt then
+		if tt:IsForbidden() then return end
+		if link ~= RE.TooltipLink then
+			RE.TooltipLink = link
+			RE.TooltipItemVariant = RE:GetPetString(link)
+		end
+		if RE.DB[RE.RealmString][PETCAGEID] ~= nil and RE.DB[RE.RealmString][PETCAGEID][RE.TooltipItemVariant] ~= nil then
+			tt:AddLine("|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r    |cFFFFFFFF"..GetPetMoneyString(RE.DB[RE.RealmString][PETCAGEID][RE.TooltipItemVariant].Price, tt.Name:GetStringHeight() * 0.65).."|r")
+			tt:SetHeight((select(2, tt.Level:GetFont()) + 4.5) * ((tt.Owned:GetText() ~= nil and 7 or 6) + (tt == _G.FloatingBattlePetTooltip and 1.15 or 0) + tt.linePool:GetNumActive()))
+		end
 	end
 end
 
@@ -344,5 +370,5 @@ end
 
 function RE:GetPetString(link)
 	local raw = select(2, ExtractLink(link))
-	return string.reverse(select(3, strsplit(":", string.reverse(raw), 3)))
+	return tConcat({sMatch(raw, "^(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)")}, ":")
 end
