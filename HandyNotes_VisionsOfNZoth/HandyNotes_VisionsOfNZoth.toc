@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Title: HandyNotes: Visions Of N'Zoth
-## Version: 31
+## Version: 32
 ## Notes: Visions Of N'Zoth Notes
 ## OptionalDeps: Ace3
 ## RequiredDeps: HandyNotes

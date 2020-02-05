@@ -1,10 +1,10 @@
 <Bindings>
 	<Binding name="GRIDBUFFICONS_TOGGLE_BUFF" runOnUp="false" header="GRIDBUFFICONS">
-		Grid:GetModule("GridBuffIconStatus").db.profile.showbuff = not Grid:GetModule("GridBuffIconStatus").db.profile.showbuff;
-		Grid:GetModule("GridBuffIconStatus"):UpdateAllUnitsBuffs();
+		Grid:GetModule("GridBuffIcons").db.profile.showbuff = not Grid:GetModule("GridBuffIcons").db.profile.showbuff;
+		Grid:GetModule("GridBuffIcons"):UpdateAllUnitsBuffs();
 	</Binding>
 	<Binding name="GRIDBUFFICONS_TOGGLE_BUFF_FILTER" runOnUp="false">
-		Grid:GetModule("GridBuffIconStatus").db.profile.bufffilter = not Grid:GetModule("GridBuffIconStatus").db.profile.bufffilter;
-		Grid:GetModule("GridBuffIconStatus"):UpdateAllUnitsBuffs();
+		Grid:GetModule("GridBuffIcons").db.profile.bufffilter = not Grid:GetModule("GridBuffIcons").db.profile.bufffilter;
+		Grid:GetModule("GridBuffIcons"):UpdateAllUnitsBuffs();
 	</Binding>
 </Bindings>

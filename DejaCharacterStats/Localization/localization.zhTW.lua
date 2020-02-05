@@ -8,7 +8,7 @@ if namespace.locale == "zhTW" then
 	-- uses the US English locale code.
 
 -- #######################################################################################################################
--- ##	繁體中文 (Traditional Chinese) translations provided by BNSSNB, killsophia, konraddo, and y123ao6 on Curseforge.	##
+-- ##	繁體中文 (Traditional Chinese) translations provided by BNS333, BNSSNB, killsophia, konraddo, and y123ao6 on Curseforge.	##
 -- #######################################################################################################################
 
 L["  /dcstats config: Opens the DejaCharacterStats addon config menu."] = "/dcstats config: 開啟DejaCharacterStats插件設置選項。"
@@ -94,11 +94,20 @@ L["Weapon DPS"] = "武器每秒傷害"
 
 L["Hide Character Frame"] = "隱藏角色視窗"
 L["Show Character Frame"] = "顯示角色視窗"
--- L["Spirit"] = "精神"
--- L["Stamina"] = "耐力"
--- L["Strength"] = "力量"
--- L["Intellect"] = "智力"
--- L["Agility"] = "敏捷"
--- L["Armor"] = "護甲"
+L["Spirit"] = "精神"
+L["Stamina"] = "耐力"
+L["Strength"] = "力量"
+L["Intellect"] = "智力"
+L["Agility"] = "敏捷"
+L["Armor"] = "護甲"
+L["Power"] = "攻強"
+L["Damage"] = "傷害"
+L["Melee Attack"] = "近戰攻擊"
+L["Ranged Attack"] = "遠程攻擊"
+
+L["Corruption"] = "腐化"
+L["Base Corruption"] = "基礎腐化"
+L["Corruption Resistance"] = "腐化抗性"
+L["Total Corruption"] = "總腐化"
 
 return end

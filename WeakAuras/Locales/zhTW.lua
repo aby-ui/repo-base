@@ -214,6 +214,7 @@ L[ [=[Current Zone
 ]=] ] = "目前區域"
 L["Curse"] = "詛咒"
 L["Custom"] = "自訂"
+L["Custom Color"] = "自訂顏色"
 L["Custom Configuration"] = "自訂設定選項"
 L["Custom Function"] = "自訂功能"
 L["Damage"] = "傷害"

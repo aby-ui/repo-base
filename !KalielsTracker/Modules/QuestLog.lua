@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -115,17 +115,18 @@ local function SetHooks()
 
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 
-		if ( IsShiftKeyDown() ) then
+		local isDisabledQuest = C_QuestLog.IsQuestDisabledForSession(self.questID);
+		if not isDisabledQuest and IsShiftKeyDown() then
 			QuestMapQuestOptions_TrackQuest(self.questID);
 		else
-			if ( button == "RightButton" ) then
+			if not isDisabledQuest and button == "RightButton" then
 				if ( self.questID ~= dropDownFrame.questID ) then
 					MSA_CloseDropDownMenus();
 				end
 				dropDownFrame.questID = self.questID;
 				QuestMapFrame.questID = self.questID;	-- for Abandon
 				MSA_ToggleDropDownMenu(1, nil, dropDownFrame, "cursor", 6, -6, nil, nil, MSA_DROPDOWNMENU_SHOW_TIME);
-			else
+			elseif button == "LeftButton" then
 				if IsModifiedClick(db.menuWowheadURLModifier) then
 					KT:ShowPopup("quest", self.questID)
 				else

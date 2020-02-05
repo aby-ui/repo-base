@@ -268,6 +268,10 @@ if AL then
 	AL["NOTE_332220"] = "你需要完成一個小遊戲，在火球碰到地上到圓圈前射擊他們。當火球碰到地面或者你的技能沒有打到火球時能量會減少，當能量歸零你需要從頭開始遊戲。"
 	AL["PROFILES"] = "設定檔"
 	AL["RAIDS"] = "團隊"
+	--[[Translation missing --]]
+	AL["RESET_POSITION"] = "Reset position"
+	--[[Translation missing --]]
+	AL["RESET_POSITION_DESC"] = "Restores the original position of the main button."
 	AL["SHOW_CHAT_ALERT"] = "顯示聊天通知"
 	AL["SHOW_CHAT_ALERT_DESC"] = "每當寶藏、寶箱或NPC出現時，在聊天視窗中顯示一則私人訊息。"
 	AL["SHOW_RAID_WARNING"] = "切換是否顯示團隊警告"

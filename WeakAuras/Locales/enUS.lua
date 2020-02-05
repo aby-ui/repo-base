@@ -211,6 +211,7 @@ L[ [=[Current Zone
 ]=]
 L["Curse"] = "Curse"
 L["Custom"] = "Custom"
+L["Custom Color"] = "Custom Color"
 L["Custom Configuration"] = "Custom Configuration"
 L["Custom Function"] = "Custom Function"
 L["Damage"] = "Damage"

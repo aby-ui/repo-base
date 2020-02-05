@@ -86,4 +86,5 @@ private.EVENT_QUEST_IDS = {
 	[163306] = { 57590 }; --Bebedor de espíritus
 	[160818] = { 58271 }; --Ritual de llama del Vacío
 	[158737] = { 57541 }; --Llamada del Vacío
+	[156869] = { 57223 }; --Centinela desenterrado
 }

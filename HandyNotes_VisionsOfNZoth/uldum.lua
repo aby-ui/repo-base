@@ -368,8 +368,13 @@ local NefRare = Class('NefersetRare', Rare, {
 
 function NefRare:enabled (map, coord, minimap)
     if not Rare.enabled(self, map, coord, minimap) then return false end
-    -- Only show if the Summoning Ritual event is active or completed
-    return C_TaskQuest.GetQuestTimeLeftMinutes(57359) or IsQuestFlaggedCompleted(57359)
+    -- Only show if a Summoning Ritual event is active or completed
+    for i, quest in ipairs({57359, 57621}) do
+        if C_TaskQuest.GetQuestTimeLeftMinutes(quest) or IsQuestFlaggedCompleted(quest) then
+            return true
+        end
+    end
+    return false
 end
 
 nodes[coord(0, 0)] = NefRare({id=157472, quest=57437}) -- Aphrom the Guise of Madness
@@ -470,6 +475,7 @@ nodes[60576213] = EMPTR3
 nodes[61778172] = EMPTR3
 nodes[62588188] = EMPTR3
 nodes[62977610] = EMPTR3
+nodes[62996440] = EMPTR3
 nodes[64436501] = EMPTR3
 nodes[67547066] = EMPTR3
 nodes[70217325] = EMPTR3
@@ -520,14 +526,17 @@ local AMATR5 = AMAChest({quest=55699, icon='chest_teal'})
 local AMATR6 = AMAChest({quest=55700, icon='chest_lime'})
 
 -- quest=55689
+nodes[78265073] = AMATR1
 nodes[80575110] = AMATR1
 nodes[80785611] = AMATR1
 nodes[81585359] = AMATR1
 nodes[84534540] = AMATR1
 nodes[84836185] = AMATR1
+nodes[85005097] = AMATR1
 nodes[85275138] = AMATR1
 nodes[85285297] = AMATR1
 -- quest=55690
+nodes[70325819] = AMATR2
 nodes[71226851] = AMATR2
 nodes[71305922] = AMATR2
 nodes[72216422] = AMATR2
@@ -544,6 +553,7 @@ nodes[73045143] = AMATR3
 nodes[74195187] = AMATR3
 nodes[75335579] = AMATR3
 nodes[75575372] = AMATR3
+nodes[76364879] = AMATR3
 nodes[78125302] = AMATR3
 -- quest=55698
 nodes[71884388] = AMATR4
@@ -553,18 +563,23 @@ nodes[73714646] = AMATR4
 nodes[74364390] = AMATR4
 nodes[75134608] = AMATR4
 nodes[76344679] = AMATR4
+nodes[77274934] = AMATR4
+nodes[77544828] = AMATR4
 nodes[79314578] = AMATR4
 -- quest=55699 (no blizzard minimap icon for this one?)
 nodes[63084970] = AMATR5
 nodes[64094488] = AMATR5
 nodes[65403796] = AMATR5
 nodes[66394350] = AMATR5
+nodes[66624829] = AMATR5
+nodes[67004050] = AMATR5
 nodes[67884158] = AMATR5
 nodes[69744236] = AMATR5
 nodes[69874163] = AMATR5
 -- quest=55700
 nodes[60932455] = AMATR6
 nodes[61343060] = AMATR6
+nodes[62722355] = AMATR6
 nodes[63122508] = clone(AMATR6, {note=L["chamber_of_the_stars"]})
 nodes[63532160] = AMATR6
 nodes[65543142] = AMATR6
@@ -624,6 +639,7 @@ nodes[59767241] = TimedEvent({quest=57429, assault=EMP, note=L["pyre_amalgamated
     Pet({id=2851, item=174478}) -- Wicked Lurker
 }}) -- Pyre of the Amalgamated One (also 58330?)
 nodes[50568833] = TimedEvent({quest=57359, assault=EMP, note=L["summoning_ritual"]}) -- Summoning Ritual
+nodes[55227932] = TimedEvent({quest=57621, assault=EMP, note=L["summoning_ritual"]}) -- Summoning Ritual
 nodes[62037070] = TimedEvent({quest=58271, assault=EMP, note=L["voidflame_ritual"]}) -- Voidflame Ritual
 
 nodes[47174044] = TimedEvent({quest=57456, assault=EMP, pois={
@@ -635,14 +651,17 @@ nodes[58347785] = TimedEvent({quest=57590, assault=EMP, pois={
 nodes[59022780] = TimedEvent({quest=57588, assault=EMP, pois={
     Path({58102290, 58422547, 59022780, 59602914, 60063133, 60753296, 60453467})
 }}) -- Spirit Drinker
--- nodes[60005506] = TimedEvent({quest=, assault=EMP, pois={
+nodes[64066598] = TimedEvent({quest=57589, assault=EMP, pois={
+    Path({63356496, 64066598, 65306702, 65436896, 66697001, 67986971, 68547031, 68677190, 69447238, 69867349})
+}}) -- Spirit Drinker
+-- nodes[60005506] = TimedEvent({quest=nil, assault=EMP, pois={
 --     Path({60315245, 59785364, 60005506, 60385696, 60495866})
 -- }}) -- Spirit Drinker (57591, 57586, 57587)
 
 -------------------------------------------------------------------------------
 
 nodes[84205548] = TimedEvent({quest=55670, assault=AMA, note=L["raiding_fleet"]}) -- Amathet Raiding Fleet
-nodes[76004700] = TimedEvent({quest=57243, assault=AMA, note=L["slave_camp"]}) -- Amathet Slave Camp
+nodes[76094793] = TimedEvent({quest=57243, assault=AMA, note=L["slave_camp"]}) -- Amathet Slave Camp
 nodes[62062069] = TimedEvent({quest=55356, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King
 nodes[71594586] = TimedEvent({quest=55358, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King
 nodes[83496186] = TimedEvent({quest=55357, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King

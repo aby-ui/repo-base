@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2373, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200130145650")
+mod:SetRevision("20200204203451")
 mod:SetCreatureID(157602)
 mod:SetEncounterID(2343)
 mod:SetZone()
@@ -28,7 +28,7 @@ mod:RegisterEventsInCombat(
 --TODO, personal https://ptr.wowhead.com/spell=308377/void-infused-ichor tracker when infoframe code added
 --TODO, target scan acid splash?
 --TODO, Add spawn timers
---TODO, all adds of same name still have same GUID, so nameplate auras and icons still not reliable. If this ever changes, nameplate aura and stuff can return
+--TODO, all adds of same name still have same GUID, so nameplate auras and icons still not reliable. If this ever changes, nameplate aura will work.
 --[[
 (ability.id = 308941 or ability.id = 310246 or ability.id = 310329 or ability.id = 310396) and type = "begincast"
  or (ability.id = 310277 or ability.id = 310478) and type = "cast"
@@ -111,10 +111,6 @@ function mod:OnCombatEnd()
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
 end
-
---function mod:OnTimerRecovery()
-
---end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
@@ -296,7 +292,7 @@ do
 		local bossPower = UnitPower("boss1") --Get Boss Power
 		if (lastPower > bossPower) and bossPower < 85 then
 			warnedSoon = false
-		elseif bossPower >= 85 then--One 15 energy tentacle away, or 2 10 energy ones
+		elseif not warnedSoon and bossPower >= 85 then--One 15 energy tentacle away, or 2 10 energy ones
 			warnedSoon = true
 			warnThrowsSoon:Show()
 		end

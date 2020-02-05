@@ -4,7 +4,7 @@
 ## Notes: Single window displays for your inventory and bank
 ## OptionalDeps: BagBrother, WoWUnit, TestPoncho
 ## SavedVariables: Bagnon_Sets
-## Version: 8.3.3
+## Version: 8.3.4
 
 addons\main\main.xml
 Bagnon_ReagentBankButton\style.xml

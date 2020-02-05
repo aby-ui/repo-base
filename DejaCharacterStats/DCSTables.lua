@@ -905,8 +905,8 @@ DCS_TableData.StatData.CR_TOTAL_CORRUPTION = {
 		local c, r = GetCorruption(), GetCorruptionResistance()
 		CR_TOTAL_CORRUPTION = max(0, c - r)  -- max to prevent negative values
 
-		PaperDollFrame_SetLabelAndText(statFrame, ratingname, totalcorruption, false, totalcorruption);
-		statFrame.tooltip = highlight_code..ratingname.." "..totalcorruption..font_color_close;
+		PaperDollFrame_SetLabelAndText(statFrame, "|cff8787ED"..ratingname.."|r", "|cff8787ED"..totalcorruption.."|r", false, totalcorruption);
+		statFrame.tooltip = "|cff8787ED" .. ratingname .. " " .. totalcorruption .. "|r";
 		statFrame:Show();
 	end
 }

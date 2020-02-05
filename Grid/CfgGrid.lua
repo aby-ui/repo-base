@@ -44,11 +44,11 @@ U1RegisterAddon("GridBuffIcons", {
         tip = "说明`状态图标模块是显示全部状态还是只显示自己可释放/移除的。",
         default = true,
         getvalue = function()
-            local mod = Grid:GetModule("GridBuffIconStatus", true);
+            local mod = Grid:GetModule("GridBuffIcons", true);
             return mod.db.profile.bufffilter
         end,
         callback = function(cfg, v, loading)
-            local mod = Grid:GetModule("GridBuffIconStatus", true);
+            local mod = Grid:GetModule("GridBuffIcons", true);
             if mod then
                 mod.db.profile.bufffilter = v;
                 mod:UpdateAllUnitsBuffs();
@@ -61,11 +61,11 @@ U1RegisterAddon("GridBuffIcons", {
         tip = "说明`开启状态图标后，可以方便的在BUFF和DEBUFF之间切换，既可检查团队状态信息，又可关注战斗减益。",
         default = false,
         getvalue = function()
-            local mod = Grid:GetModule("GridBuffIconStatus", true);
+            local mod = Grid:GetModule("GridBuffIcons", true);
             return mod.db.profile.showbuff
         end,
         callback = function(cfg, v, loading)
-            local mod = Grid:GetModule("GridBuffIconStatus", true);
+            local mod = Grid:GetModule("GridBuffIcons", true);
             if mod then
                 mod.db.profile.showbuff = v;
                 mod:UpdateAllUnitsBuffs();

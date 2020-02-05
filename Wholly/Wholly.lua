@@ -371,6 +371,33 @@
 --		070	Updates Interface in TOC to 80100.
 --			Allows map button to work with Titan Location.
 --			Adds a little defensive code to avoid a Lua error.
+--		071	Updates Interface in TOC to 80200.
+--			Adds a little defensive code to avoid a Lua error.
+--			Makes it so achievements are not loaded in Classic.
+--			Makes it so some of the UI elements are not used in Classic.
+--			Adds the ability to show a message in the chat indicating a breadcrumb is available.
+--			Corrects issue where map pins could be the wrong type.
+--		072	Fixes a problem where the open world map in Classic errors when changing zones.
+--			Fixes the problem where the Wholly map button was not appearing and working properly in Classic.
+--			Fixes the problem where exclusive classes in Classic were failing because of Retail classes.
+--			Adds the ability to have the Wholly information appear in a tooltip when hovering over a quest in the Blizzard quest panel.
+--			Adds the ability to have the Wholly tooltip contain the quest title and description in Classic, with the description in white.
+--		073	Makes it so lack of NPC name for item drops no longer causes a Lua error.
+--			Makes it so NPCs are colored red if they are not available to the player.
+--			Adds the ability to display the NPC comments in the Wholly quest tooltip.
+--		074	Makes it so the Wholly map button does not move when TomTom is installed.
+--			Makes it so the Wholly map button moves when Questie is also loaded.
+--			Makes the Wholly quest panel appear much nicer in Classic.
+--		075 *** Requires Grail 104 or later ***
+--			Fixes a problem where the search edit box was not created properly.
+--			Shows quests that are turned in to a zone in the Wholly quest panel.
+--			Adds the ability to show map pins for quest turn in locations.
+--		076	Updates the Classic Wholly quest panel to have a right side.
+--			Changes the colors for turn in pins to be white and yellow to match the NPCs in the world.
+--			Updates preferences to allow control over displaying turn in map pins that are complete or incomplete.
+--			Corrects issue where map button does not appear upon first login for new character.
+--		077	Adjusts the position of the breadcrumb frame to look better in Classic.
+--			Adds support for Heart of Azeroth level requirements.
 --
 --	Known Issues
 --
@@ -421,13 +448,13 @@ local UIParent = UIParent
 local QuestFrame = QuestFrame
 local WorldMapFrame = WorldMapFrame
 
-local GRAIL = nil	-- will be set in ADDON_LOADED
+local GRAIL = nil	-- will be set in PLAYER_LOGIN
 
 local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 96
+local requiredGrailVersion = 104
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -470,6 +497,9 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 									self:_RecordTooltipNPCs(Grail.GetCurrentMapAreaID())
 								end,
 		color = {
+			['?'] = "FFFFFF00",	-- yellow	[turn in]
+			['*'] = "FFFFFFFF",	-- white	[turn in, not complete]
+			['!'] = "FFFF0000",	-- red		[turn in, failed]
 			['B'] = "FF996600",	-- brown	[unobtainable]
 			['C'] = "FF00FF00",	-- green	[completed]
 			['D'] = "FF0099CC",	-- daily	[repeatable]
@@ -517,14 +547,14 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 									Wholly:UpdateCoordinateSystem()
 								end,
 		configurationScript9 = function(self)
-									if WhollyDatabase.loadAchievementData then
+									if WhollyDatabase.loadAchievementData and Grail.capabilities.usesAchievements then
 										Grail:LoadAddOn("Grail-Achievements")
 									end
 									Wholly:_InitializeLevelOneData()
 								end,
 		configurationScript10 = function(self)
 									if WhollyDatabase.loadReputationData then
-										Grail:LoadAddOn("Grail-Reputations")
+										Grail:LoadReputations()
 									end
 									Wholly:_InitializeLevelOneData()
 								end,
@@ -624,7 +654,7 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 				-- that the Achievements were not appearing properly, and this turned out to be caused by a
 				-- change that Blizzard seems to have done to make it so GetAchievementInfo() no longer has
 				-- a proper title in its return values at that point.
-				if WhollyDatabase.loadAchievementData then
+				if WhollyDatabase.loadAchievementData and Grail.capabilities.usesAchievements then
 					self.configurationScript9()
 				end
 
@@ -633,96 +663,106 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 			['QUEST_PROGRESS'] = function(self, frame)
 				self:BreadcrumbUpdate(frame, true)
 			end,
-			['ADDON_LOADED'] = function(self, frame, arg1)
-				if "Wholly" == arg1 then
-					local WDB = WhollyDatabase
+			['PLAYER_LOGIN'] = function(self, frame, arg1)
+--				if "Wholly" == arg1 then	-- this is a remnant from when this was ADDON_LOADED and not PLAYER_LOGIN
+GRAIL = Grail
+if not GRAIL or GRAIL.versionNumber < requiredGrailVersion then
+local errorMessage = format(self.s.REQUIRES_FORMAT, requiredGrailVersion)
+print(errorMessage)
+UIErrorsFrame:AddMessage(errorMessage)
+return
+end
+self.checkedGrailVersion = true
+
+					self:_RegisterSlashCommand()
+
+					self:_SetupWhollyQuestPanel()
+
+					self:_SetupSearchFrame()
+
+com_mithrandir_whollyFrameTitleText:SetText("Wholly ".. com_mithrandir_whollyFrameTitleText:GetText())
+com_mithrandir_whollyFrameWideTitleText:SetText("Wholly ".. com_mithrandir_whollyFrameWideTitleText:GetText())
+
+self.toggleButton = CreateFrame("Button", "com_mithrandir_whollyFrameHiddenToggleButton", com_mithrandir_whollyFrame, "SecureHandlerClickTemplate")
+self.toggleButton:SetAttribute("_onclick", [=[
+local parent = self:GetParent()
+if parent:IsShown() then
+parent:Hide()
+else
+parent:Show()
+end
+]=])
+
+self.currentFrame = com_mithrandir_whollyFrame
+
+-- The frame is not allowing button presses to things just on the outside of its bounds so we move the hit rect
+--frame:SetHitRectInsets(0, 32, 0, 84)
+
+					self:_SetupLibDataBroker()
+					self:_SetupTooltip()
+					self:_SetupWorldMapWhollyButton()
+
+
+-- if the UI panel disappears (maximized WorldMapFrame) we need to change parents
+UIParent:HookScript("OnHide", function()
+self.tooltip:SetParent(WorldMapFrame);
+self.tooltip:SetFrameStrata("TOOLTIP");
+end)
+UIParent:HookScript("OnShow", function()
+self.tooltip:SetParent(UIParent);
+self.tooltip:SetFrameStrata("TOOLTIP");
+end)
+
+GameTooltip:HookScript("OnTooltipSetUnit", Wholly._CheckNPCTooltip)
+
+					self:_SetupBlizzardQuestLogSupport()
+					self:_SetupQuestInfoFrame()
+
+-- Our frame positions are wrong for MoP, so we change them here.
+com_mithrandir_whollyQuestInfoBuggedFrame:SetPoint("TOPLEFT", QuestFrame, "TOPLEFT", 100, -35)
+if Grail.existsClassic then
+com_mithrandir_whollyBreadcrumbFrame:SetPoint("TOPLEFT", QuestFrame, "BOTTOMLEFT", 16, 70)
+else
+com_mithrandir_whollyBreadcrumbFrame:SetPoint("TOPLEFT", QuestFrame, "BOTTOMLEFT", 16, -10)
+end
+
+if "deDE" == GetLocale() then
+com_mithrandir_whollyFramePreferencesButton:SetText("Einstellungen")
+end
+if "ruRU" == GetLocale() then
+com_mithrandir_whollyFrameSortButton:SetText("Сортировать")
+end
+
+com_mithrandir_whollyFrameSwitchZoneButton:SetText(self.s.MAP)
+com_mithrandir_whollyFrameWideSwitchZoneButton:SetText(self.s.MAP)
+
 					local Grail = Grail
 					local TomTom = TomTom
 
-					if nil == WDB.defaultsLoaded then
-						WDB = self:_LoadDefaults()
-					end
-					if nil == WDB.currentSortingMode then
-						WDB.currentSortingMode = 1
-					end
-					if nil == WDB.closedHeaders then
-						WDB.closedHeaders = {}
-					end
-					if nil == WDB.ignoredQuests then
-						WDB.ignoredQuests = {}
-					end
+					local WDB = self:_SetupDefaults()
 
 					-- load all the localized quest names
-					Grail:LoadAddOn("Grail-Quests-" .. Grail.playerLocale)
+					Grail:LoadLocalizedQuestNames()
 
-					-- Setup the colors, only setting those that do not already exist
-					WDB.color = WDB.color or {}
-					for code, colorCode in pairs(self.color) do
-						WDB.color[code] = WDB.color[code] or colorCode
-					end
-
+					-- Setup the preferences
+--					local com_mithrandir_whollyConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
+--					local com_mithrandir_whollyTitleAppearanceConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyTitleAppearanceConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
+--					local com_mithrandir_whollyWorldMapConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyWorldMapConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
+--					local com_mithrandir_whollyWidePanelConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyWidePanelConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
+--					local com_mithrandir_whollyLoadDataConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyLoadDataConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
+--					local com_mithrandir_whollyOtherConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
+--					com_mithrandir_whollyOtherConfigFrame:SetScript("OnShow", function(self) Wholly:ConfigFrame_OnShow(self) end)
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyConfigFrame, "Wholly")
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyTitleAppearanceConfigFrame, Wholly.s.TITLE_APPEARANCE, "Wholly")
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyWorldMapConfigFrame, Wholly.s.WORLD_MAP, "Wholly")
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyWidePanelConfigFrame, Wholly.s.WIDE_PANEL, "Wholly")
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyLoadDataConfigFrame, Wholly.s.LOAD_DATA, "Wholly")
 					self:ConfigFrame_OnLoad(com_mithrandir_whollyOtherConfigFrame, Wholly.s.OTHER_PREFERENCE, "Wholly")
-
-					-- Now to be nicer to those that have used the addon before the current
-					-- incarnation, newly added defaults will have their normal setting set
-					-- as appropriate.
-					if nil == WDB.version then		-- first loaded prior to version 006, so default options added in 006
-						WDB.displaysHolidaysAlways = true		-- version 006
-						WDB.updatesWorldMapOnZoneChange = true	-- version 006
-						WDB.version = 6							-- just to make sure none of the other checks fails
-					end
-					if WDB.version < 7 then
-						WDB.showsInLogQuestStatus = true			-- version 007
-					end
-					if WDB.version < 16 then
-						WDB.showsAchievementCompletionColors = true	-- version 016
-					end
-					if WDB.version < 17 then
-						-- transform old values into new ones as appropriate
-						if WDB.showsDailyQuests then
-							WDB.showsRepeatableQuests = true
-						end
-						WDB.loadAchievementData = true
-						WDB.loadReputationData = true
-					end
-					if WDB.version < 27 then
-						WDB.showsHolidayQuests = true
-					end
-					if WDB.version < 34 then
-						WDB.loadDateData = true
-					end
-					if WDB.version < 38 then
-						WDB.displaysBlizzardQuestTooltips = true
-					end
-					if WDB.version < 39 then
-						WDB.showsWeeklyQuests = true
-					end
-					if WDB.version < 51 then
-						WDB.showsLegendaryQuests = true
-					end
-					if WDB.version < 53 then
-						WDB.showsPetBattleQuests = true
-					end
-					if WDB.version < 56 then
-						WDB.showsPVPQuests = true
-					end
-					if WDB.version < 60 then
-						WDB.showsWorldQuests = true
-					end
-					WDB.version = Wholly.versionNumber
-
-					if WDB.maximumTooltipLines then
-						self.currentMaximumTooltipLines = WDB.maximumTooltipLines
-					else
-						self.currentMaximumTooltipLines = self.defaultMaximumTooltipLines
-					end
-
-local mapPinsTemplateName = "WhollyPinsTemplate"
 
 self.mapPinsPool.parent = WorldMapFrame:GetCanvas()
 self.mapPinsPool.creationFunc = function(framepool)
@@ -736,42 +776,54 @@ self.mapPinsPool.resetterFunc = function(pinPool, pin)
     pin.pinTemplate = nil
     pin.owningMap = nil
 end
-WorldMapFrame.pinPools[mapPinsTemplateName] = self.mapPinsPool
+WorldMapFrame.pinPools[Wholly.mapPinsTemplateName] = self.mapPinsPool
 
 function self.mapPinsProvider:RemoveAllData()
-    self:GetMap():RemoveAllPinsByTemplate(mapPinsTemplateName)
+    self:GetMap():RemoveAllPinsByTemplate(Wholly.mapPinsTemplateName)
 end
 function self.mapPinsProvider:RefreshAllData(fromOnShow)
     self:RemoveAllData()
-    Wholly:_HideAllPins()
     if WhollyDatabase.displaysMapPins then
         local uiMapID = self:GetMap():GetMapID()
+        Wholly.zoneInfo.pins.mapId = uiMapID
         if not uiMapID then return end
         Wholly.cachedPinQuests = Wholly:_ClassifyQuestsInMap(uiMapID) or {}
         Wholly:_FilterPinQuests()
         local questsInMap = Wholly.filteredPinQuests
-        local codeMapping = { ['G'] = 1, ['W'] = 2, ['D'] = 3, ['R'] = 4, ['K'] = 5, ['H'] = 6, ['Y'] = 7, ['P'] = 8, ['L'] = 9, ['O'] = 10, ['U'] = 11, }
+        local codeMapping = { ['?'] = 0, ['G'] = 1, ['W'] = 2, ['D'] = 3, ['R'] = 4, ['K'] = 5, ['H'] = 6, ['Y'] = 7, ['P'] = 8, ['L'] = 9, ['O'] = 10, ['U'] = 11, ['*'] = 12, ['!'] = 13 }
         for i = 1, #questsInMap do
             local id = questsInMap[i][1]
             local code = questsInMap[i][2]
             if 'D' == code and Grail:IsRepeatable(id) then code = 'R' end
+            if 'I' == code then
+            	local _, completed = Grail:IsQuestInQuestLog(id)
+            	completed = completed or 0
+            	if completed > 0 then
+            		code = '?'
+				elseif completed < 0 then
+					code = '!'
+				else
+					code = '*'
+				end
+			end
             local codeValue = codeMapping[code]
-            local locations = Grail:QuestLocationsAccept(id, false, false, true, uiMapID, true, 0)
+            local locations = ('?' == code or '*' == code or '!' == code) and Grail:QuestLocationsTurnin(id, true, false, true, uiMapID) or Grail:QuestLocationsAccept(id, false, false, true, uiMapID, true, 0)
             if nil ~= locations then
                 for _, npc in pairs(locations) do
                     local xcoord, ycoord, npcName, npcId = npc.x, npc.y, npc.name, npc.id
                     if nil ~= xcoord then
-                        local pin, isNew = Wholly:_GetPin(npcId, self:GetMap())
-                        local pinValue = codeMapping[pin.texType]
-                        if codeValue < pinValue then
-                            pin:SetType(code)
-                        end
-                        if isNew then
-                            pin:ClearAllPoints()
-                            pin.questId = id
-                            pin:SetPosition(xcoord/100, ycoord/100)
-                            pin:Show()
-                        end
+						-- Either find an existing pin to see whether we need to change its texture type or create
+						-- a new pin.  We might need to change the texture depending on how many quests are going
+						-- to be displayed for the NPC.  We want the map to show one pin for the NPC and have its
+						-- texture be for the "best" quest type that NPC shows.
+						local possibleExistingPin = Wholly:RegisteredMapPin(xcoord, ycoord, npcId)
+						if nil ~= possibleExistingPin then
+							if codeValue < codeMapping[possibleExistingPin.texType] then
+								possibleExistingPin:SetType(code)
+							end
+						else
+							self:GetMap():AcquirePin(Wholly.mapPinsTemplateName, code, self:GetMap(), xcoord, ycoord, npcId)
+						end
                     end
                 end
             end
@@ -780,16 +832,28 @@ function self.mapPinsProvider:RefreshAllData(fromOnShow)
         Wholly.mapCountLine = ""        -- do not display a tooltip for pins we are not showing
     end
 end
+
 function self.mapPinsProviderPin:OnLoad()
     self:UseFrameLevelType("PIN_FRAME_LEVEL_AREA_POI")
-    self:SetScalingLimits(1, 1.0, 1.2)
+	self.texture = self:CreateTexture()
+	self:SetScalingLimits(1, 1.0, 1.2)
+	self:SetMouseMotionEnabled(true)
+	self:SetScript("OnEnter", function(self) Wholly:ShowTooltip(self) end)
+	self:SetScript("OnLeave", function() Wholly:_HideTooltip() end)
+	self.SetType = Wholly._PinSetType
 end
-function self.mapPinsProviderPin:OnAcquired()
+function self.mapPinsProviderPin:OnAcquired(code, map, x, y, npcId)
+	self:SetPosition(x/100, y/100)
+	self:SetType(code)
+	self.map = map
+	self.npcId = npcId
+	self.xcoord = x
+	self.ycoord = y
+	Wholly:RegisterMapPin(self, x, y, npcId)
+	self:Show()
 end
 function self.mapPinsProviderPin:OnReleased()
-    if self.questId and self.npcId then
-        Wholly:_HidePin(self.questId .. ":" .. self.npcId, self)
-    end
+	Wholly:UnregisterMapPin(self)
 end
 WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 
@@ -873,15 +937,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					self:_InitializeLevelOneData()
 					if WDB.useWidePanel then self:ToggleCurrentFrame() end
 
-					-- Make it so we can populate the questId into the QuestLogPopupDetailFrame
-					self.QuestLogPopupDetailFrame_Show = QuestLogPopupDetailFrame_Show
-					QuestLogPopupDetailFrame_Show = function(questLogIndex)
-						local questId = select(8, GetQuestLogTitle(questLogIndex))
-						com_mithrandir_whollyPopupQuestInfoFrameText:SetText(questId)
-						Wholly.QuestLogPopupDetailFrame_Show(questLogIndex)
-					end
-
-				end
+--				end	-- matching the if arg1 == "Wholly" then
 			end,
 			['PLAYER_ENTERING_WORLD'] = function(self, frame)
 				self.zoneInfo.zone.mapId = Grail.GetCurrentMapAreaID()
@@ -893,7 +949,8 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 
 				self.zoneInfo.zone.mapId = Grail.GetCurrentMapAreaID()
 				if WDB.updatesWorldMapOnZoneChange and WorldMapFrame:IsVisible() then
-					OpenWorldMap(self.zoneInfo.zone.mapId)
+					WorldMapFrame:SetMapID(self.zoneInfo.zone.mapId)
+--					OpenWorldMap(self.zoneInfo.zone.mapId)	-- does not work on Classic, Blizzard errors
 				end
 				self:UpdateQuestCaches(false, false, WDB.updatesPanelWhenZoneChanges, true)
 
@@ -945,6 +1002,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
         mapPinsProvider = CreateFromMixins(MapCanvasDataProviderMixin),
         mapPinsProviderPin = CreateFromMixins(MapCanvasPinMixin),
         mapPinsRegistry = {},
+		mapPinsTemplateName = "WhollyPinsTemplate",
 		mapPinCount = 0,
 		maximumSearchHistory = 10,
 		npcs = {},
@@ -1045,12 +1103,15 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			['REPEATABLE_COMPLETED'] = "Show whether repeatable quests previously completed",
 			['IN_LOG_STATUS'] = "Show status of quests in log",
 			['MAP_PINS'] = "Display map pins for quest givers",
+			['MAP_PINS_TURNIN'] = "Display map pins for turn in for completed quests in log",
+			['MAP_PINS_TURNIN_INCOMPLETE'] = "Display map pins for turn in for incomplete quests in log",
 			['MAP_BUTTON'] = "Display button on world map",
 			['MAP_DUNGEONS'] = "Display dungeon quests in outer map",
 			['MAP_UPDATES'] = "Open world map updates when zones change",
 			['OTHER_PREFERENCE'] = "Other",
 			['PANEL_UPDATES'] = "Quest log panel updates when zones change",
 			['SHOW_BREADCRUMB'] = "Display breadcrumb quest information on Quest Frame",
+			['SHOW_BREADCRUMB_MESSAGE'] = "Display breadcrumb message in chat",
 			['SHOW_LOREMASTER'] = "Show only Loremaster quests",
 			['ENABLE_COORDINATES'] = "Enable player coordinates",
 			['ACHIEVEMENT_COLORS'] = "Show achievement completion colors",
@@ -1151,7 +1212,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 		end,
 
 		--	This adds a line to the "current" tooltip, creating a new one as needed.
-		_AddLine = function(self, value, value2, texture)
+		_AddLine = function(self, value, value2, texture, shouldWrap)
 			if not self.onlyAddingTooltipToGameTooltip then
 				local tt = self.tt[self.currentTt]
 				if tt:NumLines() >= self.currentMaximumTooltipLines then
@@ -1168,7 +1229,11 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				if nil ~= value2 then
 					tt:AddDoubleLine(value, value2)
 				else
-					tt:AddLine(value)
+					if shouldWrap then
+						tt:AddLine(value, 1, 1, 1, shouldWrap)
+					else
+						tt:AddLine(value)
+					end
 				end
 				if nil ~= texture then
 					tt:AddTexture(texture)
@@ -1177,7 +1242,11 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				if nil ~= value2 then
 					GameTooltip:AddDoubleLine(value, value2)
 				else
-					GameTooltip:AddLine(value)
+					if shouldWrap then
+						GameTooltip:AddLine(value, 1, 1, 1, shouldWrap)
+					else
+						GameTooltip:AddLine(value)
+					end
 				end
 				if nil ~= texture then
 					GameTooltip:AddTexture(texture)
@@ -1352,7 +1421,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				local showsLoremasterOnly = WDB.showsLoremasterOnly
 				if mapId >= Grail.mapAreaBaseHoliday and mapId <= Grail.mapAreaMaximumHoliday then displaysHolidayQuestsAlways = true end
 				retval = {}
-				local questsInMap = Grail:QuestsInMap(mapId, WDB.displaysDungeonQuests, showsLoremasterOnly) or {}
+				local questsInMap = Grail:QuestsInMap(mapId, WDB.displaysDungeonQuests, showsLoremasterOnly, true) or {}
 				for _,questId in pairs(questsInMap) do
 					tinsert(retval, { questId, Grail:ClassificationOfQuestCode(questId, displaysHolidayQuestsAlways, WDB.buggedQuestsConsideredUnobtainable) })
 				end
@@ -1711,7 +1780,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					end
 				end
 			end
-			local repuationQuest = false
+			local reputationQuest = false
 			if nil ~= currentMapId and currentMapId > Grail.mapAreaBaseReputation and currentMapId <= Grail.mapAreaMaximumReputation then
 				reputationQuest = true
 			end
@@ -1739,7 +1808,18 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				shouldAdd = shouldAdd and self:_FilterQuestsBasedOnSettings(questId, status, dealingWithHolidays)
 
 				if not forPanel then
-					if 'I' == statusCode or 'C' == statusCode then shouldAdd = false end
+					if 'I' == statusCode then
+						shouldAdd = (nil ~= Grail:QuestLocationsTurnin(questId, true, false, true, self.zoneInfo.pins.mapId))
+						if shouldAdd then
+							local _, completed = Grail:IsQuestInQuestLog(questId)
+							if completed then
+								shouldAdd = WDB.displaysMapPinsTurnin
+							else
+								shouldAdd = WDB.displaysMapPinsTurninIncomplete
+							end
+						end
+					end
+					if 'C' == statusCode then shouldAdd = false end
 					if 'B' == statusCode then shouldAdd = false end
 				end
 
@@ -1833,90 +1913,91 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			return mathmin(mathmax(cx, 0), 1), mathmin(mathmax(cy, 0), 1);
 		end,
 
-		_GetPin = function(self, npcId, parentFrame)
-			self:_PinFrameSetup(parentFrame)
-			if nil ~= self.pins[parentFrame]["npcs"][npcId] then return self.pins[parentFrame]["npcs"][npcId], false end
+		_PinSetType = function(pin, texType)
+			if pin.texType == texType then return end -- don't need to make changes
+			local colorString = WhollyDatabase.color[texType]
+			local r = tonumber(strsub(colorString, 3, 4), 16) / 255
+			local g = tonumber(strsub(colorString, 5, 6), 16) / 255
+			local b = tonumber(strsub(colorString, 7, 8), 16) / 255
 
---			self.mapPinCount = self.mapPinCount + 1
---			local pin = CreateFrame("Frame", "com_mithrandir_WhollyMapPin"..self.mapPinCount, parentFrame);
-local pin = parentFrame:AcquirePin("WhollyPinsTemplate")
-            pin.originalParentFrame = parentFrame
-			pin.npcId = npcId
---			pin:SetWidth(16);
---          pin:SetHeight(16);
---			pin:EnableMouse(true);
-pin:SetMouseMotionEnabled(true)
-			pin:SetScript("OnEnter", function(pin) self:ShowTooltip(pin) end)
-			pin:SetScript("OnLeave", function() self:_HideTooltip() end)
-			pin.SetType = function(self, texType)
-				if self.texType == texType then return end -- don't need to make changes
-				local colorString = WhollyDatabase.color[texType]
-				local r = tonumber(strsub(colorString, 3, 4), 16) / 255
-				local g = tonumber(strsub(colorString, 5, 6), 16) / 255
-				local b = tonumber(strsub(colorString, 7, 8), 16) / 255
-
-				self.texture = self:CreateTexture()
-				-- WoD beta does not allow custom textures so we go back to the old way
-				if not Grail.existsWoD or Grail.blizzardRelease >= 18663 then
-					if 'R' == texType then
-						self.texture:SetTexture("Interface\\Addons\\Wholly\\question")
-					else
-						self.texture:SetTexture("Interface\\Addons\\Wholly\\exclamation")
-					end
-					self.texture:SetVertexColor(r, g, b)
+			-- WoD beta does not allow custom textures so we go back to the old way
+			if not Grail.existsWoD or Grail.blizzardRelease >= 18663 then
+				if 'R' == texType or '?' == texType or '*' == texType or '!' == texType then
+					pin.texture:SetTexture("Interface\\Addons\\Wholly\\question")
 				else
-					local width, height = 0.125, 0.125
-					self.texture:SetTexture("Interface\\MINIMAP\\ObjectIcons.blp")
-					self.texture:SetDesaturated(false)
-					self.texture:SetVertexColor(1, 1, 1)
-					if texType == "D" then
-						self.texture:SetTexCoord(3*width, 4*width, 1*height, 2*height);
-					elseif texType == "R" then
-						self.texture:SetTexCoord(4*width, 5*width, 1*height, 2*height);
-					elseif texType == "P" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetVertexColor(1.0, 0.0, 0.0);
-					elseif texType == "O" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetVertexColor(1.0, 192/255, 203/255);
-					elseif texType == "Y" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetVertexColor(12/15, 6/15, 0.0);
-					elseif texType == "H" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetVertexColor(0.0, 0.0, 1.0);
-					elseif texType == "W" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetVertexColor(0.75, 0.75, 0.75);
-					elseif texType == "L" then
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-						self.texture:SetDesaturated(1);
-					else
-						self.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
-					end
+					pin.texture:SetTexture("Interface\\Addons\\Wholly\\exclamation")
 				end
-				self.texture:SetAllPoints()
-				self.texType = texType
+				pin.texture:SetVertexColor(r, g, b)
+			else
+				local width, height = 0.125, 0.125
+				pin.texture:SetTexture("Interface\\MINIMAP\\ObjectIcons.blp")
+				pin.texture:SetDesaturated(false)
+				pin.texture:SetVertexColor(1, 1, 1)
+				if texType == "D" then
+					pin.texture:SetTexCoord(3*width, 4*width, 1*height, 2*height);
+				elseif texType == "R" then
+					pin.texture:SetTexCoord(4*width, 5*width, 1*height, 2*height);
+				elseif texType == "P" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetVertexColor(1.0, 0.0, 0.0);
+				elseif texType == "O" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetVertexColor(1.0, 192/255, 203/255);
+				elseif texType == "Y" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetVertexColor(12/15, 6/15, 0.0);
+				elseif texType == "H" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetVertexColor(0.0, 0.0, 1.0);
+				elseif texType == "W" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetVertexColor(0.75, 0.75, 0.75);
+				elseif texType == "L" then
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+					pin.texture:SetDesaturated(1);
+				else
+					pin.texture:SetTexCoord(1*width, 2*width, 1*height, 2*height);
+				end
 			end
-
-			pin.texType = 'U'
-			self.pins[parentFrame]["npcs"][npcId] = pin
-			return pin, true;
+			pin.texture:SetAllPoints()
+			pin.texType = texType
 		end,
 
-		_HideAllPins = function(self)
-			local frame = WorldMapFrame
-			self:_PinFrameSetup(frame)
-			for i, v in pairs(self.pins[frame]["ids"]) do
-				self:_HidePin(i, v)
+		_PinIndex = function(self, x, y, npcId)
+			return format("%d:%d:%d", npcId, x, y)
+		end,
+
+		RegisterMapPin = function(self, pin, x, y, npcId)
+			self.mapPins = self.mapPins or {}
+			if nil ~= pin and nil ~= npcId and nil ~= x and nil ~= y then
+				self.mapPins[self:_PinIndex(x, y, npcId)] = pin
 			end
 		end,
 
-		_HidePin = function(self, id, pin)
-			pin:Hide()
-			local pinTable = self.pins[pin.originalParentFrame]
-			pinTable["npcs"][pin.npcId] = nil
-			pinTable["ids"][id] = nil
+		RegisteredMapPin = function(self, x, y, npcId)
+			self.mapPins = self.mapPins or {}
+			local retval = nil
+			if nil ~= npcId and nil ~= x and nil ~= y then
+				retval = self.mapPins[self:_PinIndex(x, y, npcId)]
+			end
+			return retval
+		end,
+
+		_RegisterSlashCommand = function(self)
+			SlashCmdList["WHOLLY"] = function(msg)
+				self:SlashCommand(frame, msg)
+			end
+			SLASH_WHOLLY1 = "/wholly"
+		end,
+
+		UnregisterMapPin = function(self, pin)
+			self.mapPins = self.mapPins or {}
+			if pin then
+				pin:Hide()
+				if pin.npcId and pin.xcoord and pin.ycoord then
+					self.mapPins[self:_PinIndex(pin.xcoord, pin.ycoord, pin.npcId)] = nil
+				end
+			end
 		end,
 
 		_HideTooltip = function(self)
@@ -1990,7 +2071,9 @@ pin:SetMouseMotionEnabled(true)
 			tablesort(t1.children, function(a, b) return a.displayName < b.displayName end)
 			tinsert(entries, t1)
 
-			tinsert(entries, { displayName = Wholly.s.WORLD_EVENTS, index = -1 })
+			if Grail.capabilities.usesWorldEvents then
+				tinsert(entries, { displayName = Wholly.s.WORLD_EVENTS, index = -1 })
+			end
 			tinsert(entries, { displayName = CLASS, index = -2 })
 			tinsert(entries, { displayName = TRADE_SKILLS, index = -3 })		-- Professions
 			if not WDB.ignoreReputationQuests then
@@ -1998,17 +2081,19 @@ pin:SetMouseMotionEnabled(true)
 			end
 
 			--	Achievements
-			if WDB.loadAchievementData then
+			if WDB.loadAchievementData and Grail.capabilities.usesAchievements then
 				t1 = { displayName = ACHIEVEMENTS, header = 2, children = {} }
 				for mapId, continentTable in pairs(Grail.continents) do
 					tinsert(t1.children, { displayName = continentTable.name, index = 13000 + mapId })
 				end
 				tablesort(t1.children, function(a, b) return a.displayName < b.displayName end)
 				local i = 0
-				if nil ~= Grail.worldEventAchievements and nil ~= Grail.worldEventAchievements[Grail.playerFaction] then
-					for holidayKey, _ in pairs(Grail.worldEventAchievements[Grail.playerFaction]) do
-						i = i + 1
-						tinsert(t1.children, { displayName = Grail.holidayMapping[holidayKey], index = 15000 + i, holidayName = Grail.holidayMapping[holidayKey]})
+				if Grail.capabilities.usesWorldEvents then
+					if nil ~= Grail.worldEventAchievements and nil ~= Grail.worldEventAchievements[Grail.playerFaction] then
+						for holidayKey, _ in pairs(Grail.worldEventAchievements[Grail.playerFaction]) do
+							i = i + 1
+							tinsert(t1.children, { displayName = Grail.holidayMapping[holidayKey], index = 15000 + i, holidayName = Grail.holidayMapping[holidayKey]})
+						end
 					end
 				end
 				i = 0
@@ -2027,17 +2112,21 @@ pin:SetMouseMotionEnabled(true)
 			if WDB.loadReputationData then
 				t1 = { displayName = COMBAT_TEXT_SHOW_REPUTATION_TEXT, header = 3, children = {} }
 				tinsert(t1.children, { displayName = EXPANSION_NAME0, index = -100 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME1, index = -101 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME2, index = -102 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME3, index = -103 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME4, index = -104 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME5, index = -105 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME6, index = -106 })
-				tinsert(t1.children, { displayName = EXPANSION_NAME7, index = -107 })
+				if not Grail.existsClassic then
+					tinsert(t1.children, { displayName = EXPANSION_NAME1, index = -101 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME2, index = -102 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME3, index = -103 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME4, index = -104 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME5, index = -105 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME6, index = -106 })
+					tinsert(t1.children, { displayName = EXPANSION_NAME7, index = -107 })
+				end
 				tinsert(entries, t1)
 			end
 
-			tinsert(entries, { displayName = Wholly.s.FOLLOWERS, index = -5})
+			if Grail.capabilities.usesFollowers then
+				tinsert(entries, { displayName = Wholly.s.FOLLOWERS, index = -5})
+			end
 			tinsert(entries, { displayName = Wholly.s.OTHER, index = -6 })
 			tinsert(entries, { displayName = SEARCH, index = -7 })
 			tinsert(entries, { displayName = Wholly.s.TAGS, index = -8 })
@@ -2277,7 +2366,9 @@ pin:SetMouseMotionEnabled(true)
 					tinsert(t, { sortName = "  ", displayName = Wholly.s.TAGS_DELETE, f = function() Wholly._TagDelete(Wholly) Wholly.zoneInfo.panel.mapId = nil Wholly._SetLevelTwoCurrent(Wholly, nil) Wholly._ForcePanelMapArea(Wholly,true) end })
 				end
 			end
-			tablesort(t, function(a, b) return a.sortName < b.sortName end)
+			if nil ~= t and #t > 1 then
+				tablesort(t, function(a, b) return a.sortName < b.sortName end)
+			end
 
 			-- We want to make sure we retain the proper selection
 			if nil ~= self.levelTwoCurrent then
@@ -2316,6 +2407,7 @@ pin:SetMouseMotionEnabled(true)
 			db.displaysMapFrame = true
 			db.displaysDungeonQuests = true
 			db.displaysBreadcrumbs = true
+			db.displaysBreadcrumbMessages = false
 			db.displaysHolidaysAlways = true
 			db.updatesWorldMapOnZoneChange = true
 			db.showsInLogQuestStatus = true
@@ -2329,6 +2421,8 @@ pin:SetMouseMotionEnabled(true)
 			db.showsPVPQuests = true
 			db.showsWorldQuests = true
 			db.loadDataData = true
+			db.displaysMapPinsTurnin = true
+			db.displaysMapPinsTurninIncomplete = false
 			db.version = Wholly.versionNumber
 			WhollyDatabase = db
 			return db
@@ -2359,10 +2453,24 @@ pin:SetMouseMotionEnabled(true)
 							nameToUse = nameToUse .. " (" .. npc.dropName .. ')'
 						end
 						local prettiness = self:_PrettyNPCString(nameToUse, npc.kill, npc.realArea)
+						-- Check to ensure the NPC is available for this player
+						local soughtFactionCode = 'A'
+						if 'Horde' == Grail.playerFaction then
+							soughtFactionCode = 'H'
+						end
+						local factionCode = Grail:_NPCFaction(npcId)
+						if nil ~= factionCode and soughtFactionCode ~= factionCode then
+							-- We need to turn the NPC red because the player cannot access this
+							prettiness = "|cffff0000" .. prettiness .. "|r"
+						end
 						if processingPrerequisites then
 							self:_QuestInfoSection({prettiness, locationString}, second)
 						else
 							self:_AddLine(prettiness, locationString)
+						end
+						local comment = Grail:NPCComment(npcId)
+						if nil ~= comment then
+							self:_AddLine(" ", comment)
 						end
 						if meetsCriteria then
 							local desiredMacroValue = self.s.SLASH_TARGET .. ' ' .. rawNameToUse
@@ -2385,6 +2493,7 @@ pin:SetMouseMotionEnabled(true)
 
 		_OnEnterBlizzardQuestButton = function(blizzardQuestButton)
 			if WhollyDatabase.displaysBlizzardQuestTooltips then
+				local frame = blizzardQuestButton
 				local questId = blizzardQuestButton.questID
 				-- Prior to BfA beta 26567 this check and reassigning of questId was not needed.
 				-- Now in 26610 it is not needed anymore.
@@ -2392,10 +2501,18 @@ pin:SetMouseMotionEnabled(true)
 --					local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, theQuestId, startEvent = Grail:GetQuestLogTitle(blizzardQuestButton.questLogIndex)
 --					questId = theQuestId
 --				end
-				Wholly.onlyAddingTooltipToGameTooltip = true
-				Wholly:_PopulateTooltipForQuest(blizzardQuestButton, questId)
-				Wholly.onlyAddingTooltipToGameTooltip = false
-				GameTooltip:Show()
+				if Grail.existsClassic then
+					local questLogIndex = blizzardQuestButton:GetID() + FauxScrollFrame_GetOffset(QuestLogListScrollFrame)
+					local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, theQuestId, startEvent = Grail:GetQuestLogTitle(questLogIndex)
+					questId = theQuestId
+					frame = not isHeader and blizzardQuestButton or nil
+				end
+				if nil ~= frame then
+					Wholly.onlyAddingTooltipToGameTooltip = not Grail.existsClassic
+					Wholly:_PopulateTooltipForQuest(frame, questId)
+					Wholly.onlyAddingTooltipToGameTooltip = false
+					GameTooltip:Show()
+				end
 			end
 		end,
 
@@ -2409,158 +2526,6 @@ pin:SetMouseMotionEnabled(true)
 		end,
 
 		OnLoad = function(self, frame)
-			GRAIL = Grail
-			if not GRAIL or GRAIL.versionNumber < requiredGrailVersion then
-				local errorMessage = format(self.s.REQUIRES_FORMAT, requiredGrailVersion)
-				print(errorMessage)
-				UIErrorsFrame:AddMessage(errorMessage)
-				return 
-			end
-			self.checkedGrailVersion = true
-			SlashCmdList["WHOLLY"] = function(msg)
-				self:SlashCommand(frame, msg)
-			end
-			SLASH_WHOLLY1 = "/wholly"
-			com_mithrandir_whollyFrameTitleText:SetText("Wholly ".. com_mithrandir_whollyFrameTitleText:GetText())
-			com_mithrandir_whollyFrameWideTitleText:SetText("Wholly ".. com_mithrandir_whollyFrameWideTitleText:GetText())
-
-			self.toggleButton = CreateFrame("Button", "com_mithrandir_whollyFrameHiddenToggleButton", com_mithrandir_whollyFrame, "SecureHandlerClickTemplate")
-			self.toggleButton:SetAttribute("_onclick", [=[
-				local parent = self:GetParent()
-				if parent:IsShown() then
-					parent:Hide()
-				else
-					parent:Show()
-				end
-				]=])
-
-			self.currentFrame = com_mithrandir_whollyFrame
-
-			-- The frame is not allowing button presses to things just on the outside of its bounds so we move the hit rect
-			frame:SetHitRectInsets(0, 32, 0, 84)
-
-			local LibStub = _G["LibStub"]
-			if LibStub then
-				local LDB = LibStub("LibDataBroker-1.1", true)
-				if LDB then
-					local launcher = LDB:NewDataObject("Wholly", { type="launcher", icon="Interface\\Icons\\INV_Misc_Book_07",
-							OnClick = function(theFrame, button) if button == "RightButton" then Wholly:_OpenInterfaceOptions() else Wholly.currentFrame:Show() end end,
-							OnTooltipShow = function(tooltip)
-								Wholly:_ProcessInitialUpdate()
-								Wholly.ldbTooltipOwner = tooltip:GetOwner()
-								local dropdownValue = Wholly:_Dropdown_GetText()
-								local printValue = dropdownValue or ""
-								tooltip:AddLine("Wholly - " .. printValue )
-								tooltip:AddLine(Wholly.panelCountLine)
-								end, 
-							})
-					self.coordinates = LDB:NewDataObject("Wholly Coordinates", { type="data source", icon="Interface\\Icons\\INV_Misc_Map02", text="",
-							OnClick = function(theFrame, button) Wholly.pairedCoordinatesButton:Click() end,
-							OnTooltipShow = function(tooltip)
-								Wholly.ldbCoordinatesTooltipOwner = tooltip:GetOwner()
-								local mapAreaId = Wholly.zoneInfo.zone.mapId
-								local mapAreaName = GRAIL:MapAreaName(mapAreaId) or "UNKNOWN"
-								tooltip:AddLine(strformat("%d %s", mapAreaId, mapAreaName)) end,
-							})
-				end
-			end
-
-			self.tooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollyTooltip", UIParent, "GameTooltipTemplate");
-			self.tooltip:SetFrameStrata("TOOLTIP");
-			self.tooltip.large = com_mithrandir_WhollyTooltipTextLeft1:GetFontObject();
-			self.tooltip.small = com_mithrandir_WhollyTooltipTextLeft2:GetFontObject();
-			self.tooltip.SetLastFont = function(self, fontObj, rightText)
-				local txt = rightText and "Right" or "Left"
-				_G[format("com_mithrandir_WhollyTooltipText%s%d", txt, self:NumLines())]:SetFont(fontObj:GetFont())
-			end
-
-			self.tt = { [1] = GameTooltip }
-
-			local f = CreateFrame("Button", "WhollyMapButton", WorldMapFrame.BorderFrame, "UIPanelButtonTemplate")
-			f:SetSize(100, 25)
-			if nil == Gatherer_WorldMapDisplay then
-				f:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Tutorial, "TOPRIGHT", 0, -30)
-			else
-				f:SetPoint("TOPLEFT", Gatherer_WorldMapDisplay, "TOPRIGHT", 4, 0)
-			end
-			f:SetToplevel(true)
-            --f:SetFrameLevel(WorldMapTitleButton:GetFrameLevel()+1)
-			f:SetScale(0.7)
-			f:SetText("可接任务")
-            f:RegisterForClicks("AnyUp");
-			f:SetScript("OnShow", function(self)
-									if nil == Gatherer_WorldMapDisplay then
-                                        if TomTomWorldFrame and TomTomWorldFrame.Player then
-											f:SetPoint("TOPLEFT", TomTomWorldFrame.Player, "TOPRIGHT", 10, 6)
-										elseif TitanMapCursorLocation then
-											f:SetPoint("TOPLEFT", TitanMapCursorLocation, "TOPRIGHT", 10, 6)
-										else
---											f:SetPoint("TOPLEFT", WorldMapFrameTutorialButton, "TOPRIGHT", 0, -30)
-f:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Tutorial, "TOPRIGHT", 0, -30)
-										end
-									else
-										self:SetPoint("TOPLEFT", Gatherer_WorldMapDisplay, "TOPRIGHT", 4, 0)
-									end
-								end)
-			f:SetScript("OnEnter", function(self) local t = Wholly.tooltip t:ClearLines() t:SetOwner(self) t:AddLine(Wholly.mapCountLine) t:Show() t:ClearAllPoints() t:SetPoint("TOPLEFT", self, "BOTTOMRIGHT") end)
-			f:SetScript("OnLeave", function(self) Wholly.tooltip:Hide() end)
-			f:SetScript("OnClick", function(self, button) if button=='RightButton' then InterfaceOptionsFrame_OpenToCategory("Wholly") else Wholly.pairedConfigurationButton:Click() end end)
-			f:Hide()
-			self.mapFrame = f
-
-			-- if the UI panel disappears (maximized WorldMapFrame) we need to change parents
-			UIParent:HookScript("OnHide", function()
-				self.tooltip:SetParent(WorldMapFrame);
-				self.tooltip:SetFrameStrata("TOOLTIP");
-			end)
-			UIParent:HookScript("OnShow", function()
-				self.tooltip:SetParent(UIParent);
-				self.tooltip:SetFrameStrata("TOOLTIP");
-			end)
-
-			GameTooltip:HookScript("OnTooltipSetUnit", Wholly._CheckNPCTooltip)
-
---			-- Code by Ashel from http://us.battle.net/wow/en/forum/topic/10388639018?page=2
---			if not WhollyDatabase.taintFixed and GRAIL.blizzardRelease < 17644 then		-- this is an arbitrary version from the PTR where things are fixed
---				UIParent:HookScript("OnEvent", function(s, e, a1, a2)
---					if e:find("ACTION_FORBIDDEN") and ((a1 or "")..(a2 or "")):find("IsDisabledByParentalControls") then
---						StaticPopup_Hide(e)
---					end
---				end)
---			end
-
-			-- Make it so the Blizzard quest log can display our tooltips
-            hooksecurefunc("QuestMapLogTitleButton_OnEnter", Wholly._OnEnterBlizzardQuestButton)
-			-- Now since the Blizzard UI has probably created a quest frame before I get
-			-- the chance to hook the function I need to go through all the quest frames
-			-- and hook them too.
-if not Grail.battleForAzeroth then
-			local titles = QuestMapFrame.QuestsFrame.Contents.Titles
-			for i = 1, #(titles) do
-				titles[i]:HookScript("OnEnter", Wholly._OnEnterBlizzardQuestButton)
-			end
-end
-
-			-- Our frame positions are wrong for MoP, so we change them here.
-			com_mithrandir_whollyQuestInfoFrame:SetPoint("TOPRIGHT", QuestFrame, "TOPRIGHT", -15, -35)
-			com_mithrandir_whollyQuestInfoBuggedFrame:SetPoint("TOPLEFT", QuestFrame, "TOPLEFT", 100, -35)
-			com_mithrandir_whollyBreadcrumbFrame:SetPoint("TOPLEFT", QuestFrame, "BOTTOMLEFT", 16, -10)
-
-			local nf = CreateFrame("Frame")
-			self.notificationFrame = nf
-			nf:SetScript("OnEvent", function(frame, event, ...) self:_OnEvent(frame, event, ...) end)
-			nf:RegisterEvent("ADDON_LOADED")
-
-			if "deDE" == GetLocale() then
-				com_mithrandir_whollyFramePreferencesButton:SetText("Einstellungen")
-			end
-			if "ruRU" == GetLocale() then
-				com_mithrandir_whollyFrameSortButton:SetText("Сортировать")
-			end
-
-			com_mithrandir_whollyFrameSwitchZoneButton:SetText(self.s.MAP)
-			com_mithrandir_whollyFrameWideSwitchZoneButton:SetText(self.s.MAP)
-
 		end,
 
 		---
@@ -2598,12 +2563,6 @@ end
 		_OpenInterfaceOptions = function(self)
 			InterfaceOptionsFrame_OpenToCategory("Wholly")
 			InterfaceOptionsFrame_OpenToCategory("Wholly")
-		end,
-
-		_PinFrameSetup = function(self, frame)
-			if nil == self.pins[frame] then
-				self.pins[frame] = { ["npcs"] = {}, ["ids"] = {}, }
-			end
 		end,
 
 		_PresentTooltipForBlizzardQuest = function(self, blizzardQuestButton)
@@ -2747,13 +2706,16 @@ end
 				return format("|c%s%s %s [%s]|r", colorCode, phaseLocation, questCode, phaseString)
 			elseif questCode == 'x' then
 				return format("|c%s"..ARTIFACTS_KNOWLEDGE_TOOLTIP_LEVEL.."|r", colorCode, numeric)
-			elseif questCode == 'a' then
+			elseif questCode == 'a' or questCode == 'b' then
 				return format("|c%s"..AVAILABLE_QUEST.."|r", colorCode)
 			elseif questCode == '@' then
 				return format("|c%s%s %s %d|r", colorCode, Grail:NPCName(100000000 + subcode), self.s.LEVEL, numeric)
 			elseif questCode == '#' then
 				return format(GARRISON_MISSION_TIME, format("|c%s%s|r", colorCode, Grail:MissionName(numeric) or numeric))
 --				return format("Mission Needed: |c%s%s|r", colorCode, Grail:MissionName(numeric))	-- GARRISON_MISSION_TIME
+			elseif questCode == '&' then
+				local message = format(REQUIRES_AZERITE_LEVEL_TOOLTIP, numeric)
+				return format("|c%s%s|r", colorCode, message)
 			else
 				questId = numeric
 				local typeString = ""
@@ -2772,6 +2734,8 @@ end
 					typeString = format(" [%s, %s]", self.s.COMPLETE, self.s.TURNED_IN)
 				elseif questCode == 'H' then
 					typeString = format(" [%s]", self.s.EVER_COMPLETED)
+				elseif questCode == 'h' then
+					typeString = format(" ![%s]", self.s.EVER_COMPLETED)
 				elseif questCode == 'M' then
 					typeString = format(" [%s]", self.s.ABANDONED)
 				elseif questCode == 'm' then
@@ -2812,7 +2776,17 @@ end
 			end
 			if nil == questId then return end
 			if not self.onlyAddingTooltipToGameTooltip then
-				self.tt[1]:SetHyperlink(format("quest:%d", questId))
+				if not Grail.existsClassic then
+					self.tt[1]:SetHyperlink(format("quest:%d", questId))
+				else
+					self:_AddLine(self:_QuestName(questId))
+					local description = Grail.quest.description[questId]
+					if nil ~= description then
+						description = description:gsub("$B", "\n")
+						self:_AddLine(" ")
+						self:_AddLine(description, nil, nil, true)
+					end
+				end
 			end
 			if not Grail:DoesQuestExist(questId) then self:_AddLine(" ") self:_AddLine(self.s.GRAIL_NOT_HAVE) return end
 
@@ -2908,10 +2882,12 @@ end
 						local englishName = Grail.classMapping[letterCode]
 						local localizedGenderClassName = Grail:CreateClassNameLocalizedGenderized(englishName)
 						local classColor = RAID_CLASS_COLORS[englishName]
-						classString = classString .. format("|cff%.2x%.2x%.2x%s|r ", classColor.r*255, classColor.g*255, classColor.b*255, localizedGenderClassName)
+						if nil ~= localizedGenderClassName and nil ~= classColor then
+							classString = classString .. format("|cff%.2x%.2x%.2x%s|r ", classColor.r*255, classColor.g*255, classColor.b*255, localizedGenderClassName)
+						end
 					end
 				end
-				trim(classString)
+				classString = trim(classString)
 			end
 			if bitband(statusCode, Grail.bitMaskClass) > 0 then colorCode = redColor elseif bitband(statusCode, Grail.bitMaskAncestorClass) > 0 then colorCode = orangeColor else colorCode = normalColor end
 			self:_AddLine("|c"..colorCode..CLASS.."|r", classString)
@@ -3035,7 +3011,7 @@ end
 			self:_QuestInfoSection(self.s.OAC, Grail:QuestOnAcceptCompletes(questId))
 			self:_QuestInfoSection(self.s.OCC, Grail:QuestOnCompletionCompletes(questId))
 			self:_QuestInfoTurninSection(self.s.OTC, Grail:QuestOnTurninCompletes(questId))
-			if nil ~= Grail.quests[questId]['AZ'] then
+			if nil ~= Grail.quests[questId] and nil ~= Grail.quests[questId]['AZ'] then
 				self:_AddLine(" ")
 				if "table" == type(Grail.quests[questId]['AZ']) then
 					for _, mapAreaId in pairs(Grail.quests[questId]['AZ']) do
@@ -3069,7 +3045,10 @@ end
 			-- Technically we should be able to fetch quest reward information for quests that are not in our quest log
 			self:_AddLine(" ")
 			self:_AddLine(self.s.QUEST_REWARDS .. ":")
-			local rewardXp = GetQuestLogRewardXP(questId)
+			local rewardXp = 0
+			if not Grail.existsClassic then
+				rewardXp = GetQuestLogRewardXP(questId)
+			end
 			if 0 ~= rewardXp then
 				self:_AddLine(strformat(self.s.GAIN_EXPERIENCE_FORMAT, rewardXp))
 			end
@@ -3077,7 +3056,11 @@ end
 			if 0 ~= rewardMoney then
 				self:_AddLine(GetCoinTextureString(rewardMoney))
 			end
-			for counter = 1, GetNumQuestLogRewardCurrencies(questId) do
+			local numberRewardCurrencies = 0
+			if not Grail.existsClassic then
+				numberRewardCurrencies = GetNumQuestLogRewardCurrencies(questId)
+			end
+			for counter = 1, numberRewardCurrencies do
 				local currencyName, currencyTexture, currencyCount = GetQuestLogRewardCurrencyInfo(counter, questId)
 				self:_AddLine(currencyName, currencyCount, currencyTexture)
 			end
@@ -3164,10 +3147,12 @@ end
 		end,
 
 		QuestInfoEnterPopup = function(self, frame)
+if not Grail.existsClassic then
 			self:_PopulateTooltipForQuest(frame, QuestLogPopupDetailFrame.questID)
 			for i = 1, self.currentTt do
 				self.tt[i]:Show()
 			end
+end
 		end,
 
 		_QuestInfoSection = function(self, heading, tableOrString, lastUsedIndex)
@@ -3390,8 +3375,8 @@ end
 			if not InCombatLockdown() then
 				Wholly:ScrollFrame_Update()
 			else
-				self.combatScrollUpdate = true
-				self.notificationFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+				Wholly.combatScrollUpdate = true
+				Wholly.notificationFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 			end
 		end,
 
@@ -3687,18 +3672,438 @@ end
 			end
 		end,
 
-		ShowBreadcrumbInfo = function(self)
+		_GetBreadcrumbMessage = function(self)
+			local retval = nil
 			local questId = self:_BreadcrumbQuestId()
 			local breadcrumbs = Grail:AvailableBreadcrumbs(questId)
+			if nil ~= breadcrumbs then
+				if 1 == #breadcrumbs then
+					retval = self.s.SINGLE_BREADCRUMB_FORMAT
+				else
+					retval = format(self.s.MULTIPLE_BREADCRUMB_FORMAT, #breadcrumbs)
+				end
+			end
+			return retval
+		end,
+
+		_SetupBlizzardQuestLogSupport = function(self)
+			-- Make it so the Blizzard quest log can display our tooltips
+			if not Grail.existsClassic then
+				hooksecurefunc("QuestMapLogTitleButton_OnEnter", Wholly._OnEnterBlizzardQuestButton)
+				-- Now since the Blizzard UI has probably created a quest frame before I get
+				-- the chance to hook the function I need to go through all the quest frames
+				-- and hook them too.
+				if not Grail.battleForAzeroth then
+					local titles = QuestMapFrame.QuestsFrame.Contents.Titles
+					for i = 1, #(titles) do
+						titles[i]:HookScript("OnEnter", Wholly._OnEnterBlizzardQuestButton)
+					end
+				end
+			else
+				hooksecurefunc("QuestLogTitleButton_OnEnter", Wholly._OnEnterBlizzardQuestButton)
+			end
+		end,
+
+		_SetupDefaults = function(self)
+			local WDB = WhollyDatabase or {}
+
+			if nil == WDB.defaultsLoaded then
+				WDB = self:_LoadDefaults()
+			end
+			if nil == WDB.currentSortingMode then
+				WDB.currentSortingMode = 1
+			end
+			if nil == WDB.closedHeaders then
+				WDB.closedHeaders = {}
+			end
+			if nil == WDB.ignoredQuests then
+				WDB.ignoredQuests = {}
+			end
+			-- Setup the colors, only setting those that do not already exist
+			WDB.color = WDB.color or {}
+			for code, colorCode in pairs(self.color) do
+				WDB.color[code] = WDB.color[code] or colorCode
+			end
+
+			-- Now to be nicer to those that have used the addon before the current
+			-- incarnation, newly added defaults will have their normal setting set
+			-- as appropriate.
+			if nil == WDB.version then		-- first loaded prior to version 006, so default options added in 006
+				WDB.displaysHolidaysAlways = true		-- version 006
+				WDB.updatesWorldMapOnZoneChange = true	-- version 006
+				WDB.version = 6							-- just to make sure none of the other checks fails
+			end
+			if WDB.version < 7 then
+				WDB.showsInLogQuestStatus = true			-- version 007
+			end
+			if WDB.version < 16 then
+				WDB.showsAchievementCompletionColors = true	-- version 016
+			end
+			if WDB.version < 17 then
+				-- transform old values into new ones as appropriate
+				if WDB.showsDailyQuests then
+					WDB.showsRepeatableQuests = true
+				end
+				WDB.loadAchievementData = true
+				WDB.loadReputationData = true
+			end
+			if WDB.version < 27 then WDB.showsHolidayQuests = true end
+			if WDB.version < 34 then WDB.loadDateData = true end
+			if WDB.version < 38 then WDB.displaysBlizzardQuestTooltips = true end
+			if WDB.version < 39 then WDB.showsWeeklyQuests = true end
+			if WDB.version < 51 then WDB.showsLegendaryQuests = true end
+			if WDB.version < 53 then WDB.showsPetBattleQuests = true end
+			if WDB.version < 56 then WDB.showsPVPQuests = true end
+			if WDB.version < 60 then WDB.showsWorldQuests = true end
+			if WDB.version < 75 then
+				WDB.displaysMapPinsTurnin = true
+				WDB.color["?"] = self.color["?"]
+			end
+			if WDB.version < 76 then
+				WDB.displaysMapPinsTurninIncomplete = false
+				WDB.color["*"] = self.color["*"]
+				WDB.color["!"] = self.color["!"]
+			end
+			WDB.version = Wholly.versionNumber
+
+			if WDB.maximumTooltipLines then
+				self.currentMaximumTooltipLines = WDB.maximumTooltipLines
+			else
+				self.currentMaximumTooltipLines = self.defaultMaximumTooltipLines
+			end
+			WhollyDatabase = WDB
+			return WhollyDatabase
+		end,
+
+		_SetupLibDataBroker = function(self)
+			local LibStub = _G["LibStub"]
+			if LibStub then
+				local LDB = LibStub("LibDataBroker-1.1", true)
+				if LDB then
+					local launcher = LDB:NewDataObject("Wholly", {	type="launcher",
+																	icon="Interface\\Icons\\INV_Misc_Book_07",
+																	OnClick = function(theFrame, button)
+																		if button == "RightButton" then
+																			Wholly:_OpenInterfaceOptions()
+																		else
+																			Wholly.currentFrame:Show()
+																		end
+																	end,
+																	OnTooltipShow = function(tooltip)
+																		Wholly:_ProcessInitialUpdate()
+																		Wholly.ldbTooltipOwner = tooltip:GetOwner()
+																		local dropdownValue = Wholly:_Dropdown_GetText()
+																		local printValue = dropdownValue or ""
+																		tooltip:AddLine("Wholly - " .. printValue )
+																		tooltip:AddLine(Wholly.panelCountLine)
+																	end,
+																})
+					self.coordinates = LDB:NewDataObject("Wholly Coordinates", {	type="data source",
+																					icon="Interface\\Icons\\INV_Misc_Map02",
+																					text="",
+																					OnClick = function(theFrame, button)
+																						Wholly.pairedCoordinatesButton:Click()
+																					end,
+																					OnTooltipShow = function(tooltip)
+																						Wholly.ldbCoordinatesTooltipOwner = tooltip:GetOwner()
+																						local mapAreaId = Wholly.zoneInfo.zone.mapId
+																						local mapAreaName = Grail:MapAreaName(mapAreaId) or "UNKNOWN"
+																						tooltip:AddLine(strformat("%d %s", mapAreaId, mapAreaName))
+																					end,
+																				})
+				end
+			end
+		end,
+
+		_SetupQuestInfoFrame = function(self)
+			-- Create the quest info frame
+			if nil == com_mithrandir_whollyQuestInfoFrame then
+				local frame = CreateFrame("Frame", "com_mithrandir_whollyQuestInfoFrame", QuestFrame)
+				frame:EnableMouse(true)
+				frame:SetSize(60, 14)
+				local xOffset, yOffset = -15, -35
+				if Grail.existsClassic then
+					xOffset, yOffset = -55, -55
+				end
+				frame:SetPoint("TOPRIGHT", QuestFrame, "TOPRIGHT", xOffset, yOffset)
+				frame:SetScript("OnEnter", function(self) Wholly:QuestInfoEnter(self) end)
+				frame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+				local fontString = frame:CreateFontString("com_mithrandir_whollyQuestInfoFrameText", "BACKGROUND", "GameFontNormal")
+				fontString:SetJustifyH("RIGHT")
+				fontString:SetSize(60, 20)
+				fontString:SetPoint("CENTER")	-- needed to add this even though it worked without this in XML
+				fontString:SetText("None")
+			end
+		end,
+
+		_SetupSearchFrame = function(self)
+			if nil == com_mithrandir_whollySearchFrame then
+				local frameName = "com_mithrandir_whollySearchFrame"
+				local frame = CreateFrame("Frame", frameName, com_mithrandir_whollyFrame)
+				frame:Hide()
+				frame:SetSize(288, 96)
+				frame:SetPoint("BOTTOMLEFT", com_mithrandir_whollyFrame, "TOPLEFT", 64, -14)
+
+				frame:SetBackdrop({	bgFile = "Interface/TutorialFrame/TutorialFrameBackground",
+									edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+									tile = true,
+									tileSize = 32,
+									edgeSize = 16,
+									insets = { left = 5, right = 5, top = 5, bottom = 5 }
+									});
+
+				local fontString = frame:CreateFontString(frameName.."Title", "ARTWORK", "ChatFontNormal")
+				fontString:SetPoint("TOP", 0, -8)
+				fontString:SetText(SEARCH)
+
+				local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -3, -3)
+				closeButton:SetScript("OnClick", function(self) com_mithrandir_whollySearchFrame:Hide() end)
+
+				local editBox = CreateFrame("EditBox", "com_mithrandir_whollySearchEditBox", frame)
+				editBox:SetMaxLetters(50)
+				local texture = editBox:CreateTexture(nil, "BACKGROUND")
+				texture:SetColorTexture(.2, .2, .2, 1)
+				editBox:SetSize(190, 20)
+				editBox:SetPoint("TOP", 0, -32)
+				editBox:SetScript("OnEnterPressed", function(self) Wholly:SearchEntered() end)
+				editBox:SetScript("OnEscapePressed", function(self) com_mithrandir_whollySearchFrame:Hide() end)
+				editBox:SetFontObject("ChatFontNormal")
+
+				local searchButton = CreateFrame("Button", nil, frame, "OptionsButtonTemplate")
+				searchButton:SetText(SEARCH)
+				searchButton:SetPoint("BOTTOM", 0, 8)
+				searchButton:SetScript("OnClick", function(self) Wholly:SearchEntered() end)
+			end
+		end,
+
+		_SetupTooltip = function(self)
+			self.tooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollyTooltip", UIParent, "GameTooltipTemplate");
+			self.tooltip:SetFrameStrata("TOOLTIP");
+			self.tooltip.large = com_mithrandir_WhollyTooltipTextLeft1:GetFontObject();
+			self.tooltip.small = com_mithrandir_WhollyTooltipTextLeft2:GetFontObject();
+			self.tooltip.SetLastFont = function(self, fontObj, rightText)
+				local txt = rightText and "Right" or "Left"
+				_G[format("com_mithrandir_WhollyTooltipText%s%d", txt, self:NumLines())]:SetFont(fontObj:GetFont())
+			end
+			self.tt = { [1] = GameTooltip }
+		end,
+
+		_SetupWhollyQuestPanel = function(self)
+			if nil == com_mithrandir_whollyFrame then
+				local frameName = "com_mithrandir_whollyFrame"
+				local frame = CreateFrame("Frame", frameName, UIParent)
+				frame:SetToplevel(true)
+				frame:EnableMouse(true)
+				frame:SetMovable(true)
+				frame:Hide()
+				if Grail.existsClassic then
+					frame:SetSize(348, 445)
+				else
+					frame:SetSize(384, 512)
+				end
+				frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -104)
+
+				local topLeftTexture = frame:CreateTexture(nil, "BORDER")
+				topLeftTexture:SetPoint("TOPLEFT")
+				if Grail.existsClassic then
+					local originalTextureX, originalTextureY = 512, 512
+					local desiredX, desiredY = 322, 445
+					topLeftTexture:SetSize(desiredX, desiredY)
+					topLeftTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Left")
+					topLeftTexture:SetTexCoord(0, desiredX / originalTextureX, 0, desiredY / originalTextureY)
+				else
+					topLeftTexture:SetSize(256, 256)
+					topLeftTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-TopLeft")
+				end
+
+				local topRightTexture = frame:CreateTexture(nil, "BORDER")
+				topRightTexture:SetPoint("TOPRIGHT")
+				if Grail.existsClassic then
+					topRightTexture:SetSize(26, 445)
+					topRightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Right")
+					topRightTexture:SetTexCoord(0.55, 0.65, 0, 0.86914)
+				else
+					topRightTexture:SetSize(128, 256)
+					topRightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-TopRight")
+				end
+
+				if not Grail.existsClassic then
+					local bottomLeftTexture = frame:CreateTexture(nil, "BORDER")
+					bottomLeftTexture:SetSize(256, 256)
+					bottomLeftTexture:SetPoint("BOTTOMLEFT")
+					bottomLeftTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BotLeft")
+
+					local bottomRightTexture = frame:CreateTexture(nil, "BORDER")
+					bottomRightTexture:SetSize(128, 256)
+					bottomRightTexture:SetPoint("BOTTOMRIGHT")
+					bottomRightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BotRight")
+				end
+
+				local bookTexture = frame:CreateTexture(nil, "BACKGROUND")
+				bookTexture:SetSize(64, 64)
+				bookTexture:SetPoint("TOPLEFT", 3, -4)
+				bookTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BookIcon")
+
+				local fontString = frame:CreateFontString(frameName.."TitleText", "ARTWORK", "GameFontNormal")
+				fontString:SetSize(300, 14)
+				fontString:SetPoint("TOP", 0, -15)
+				fontString:SetText(QUEST_LOG)
+
+				local offsetX, offsetY = 0, 0
+				if Grail.existsClassic then
+					offsetX = 36
+					offsetY = -67
+				end
+
+				local closeButton = CreateFrame("Button", frameName.."CloseButton", frame, "UIPanelCloseButton")
+				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30 + offsetX, -8)
+
+				local sortButton = CreateFrame("Button", frameName.."SortButton", frame, "UIPanelButtonTemplate")
+				sortButton:SetText(TRACKER_SORT_LABEL)
+				sortButton:SetSize(110, 21)
+				sortButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -43 + offsetX, 80 + offsetY)
+				sortButton:SetScript("OnClick", function(self) Wholly:Sort(self) end)
+				sortButton:SetScript("OnEnter", function(self) Wholly:SortButtonEnter(self) end)
+				sortButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+
+				local preferencesButton = CreateFrame("Button", frameName.."PreferencesButton", frame, "UIPanelButtonTemplate")
+				preferencesButton:SetText(PREFERENCES)
+				preferencesButton:SetSize(110, 21)
+				preferencesButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -151 + offsetX, 80 + offsetY)
+				preferencesButton:SetScript("OnClick", function(self) Wholly:_OpenInterfaceOptions() end)
+
+				local mapButton = CreateFrame("Button", frameName.."SwitchZoneButton", frame, "UIPanelButtonTemplate")
+				mapButton:SetText(MAP)
+				mapButton:SetSize(110, 21)
+				mapButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -259 + offsetX, 80 + offsetY)
+				mapButton:SetScript("OnClick", function(self) Wholly:SetCurrentMapToPanel(self) end)
+				mapButton:SetScript("OnEnter", function(self) Wholly:ZoneButtonEnter(self) end)
+				mapButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+
+				local scrollFrameName = frameName.."ScrollFrame"
+				local scrollFrame = CreateFrame("ScrollFrame", scrollFrameName, frame, "HybridScrollFrameTemplate")
+				scrollFrame:SetSize(305, 335)
+				scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 19, -75)
+
+				local slider = CreateFrame("Slider", scrollFrameName.."ScrollBar", scrollFrame, "HybridScrollBarTemplate")
+				slider:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", 0, -13)
+				slider:SetPoint("BOTTOMLEFT", scrollFrame, "BOTTOMRIGHT", 0, 14)
+				slider:SetScript("OnLoad", function(self)
+					local name = self:GetName()
+					_G[name.."BG"]:Hide()
+					_G[name.."Top"]:Hide()
+					_G[name.."Bottom"]:Hide()
+					_G[name.."Middle"]:Hide()
+					self.doNotHide = true
+				end)
+				scrollFrame.scrollBar = slider	-- hopefully this is parentKey="scrollBar"
+
+				local highlightName = scrollFrameName.."LogHighlightFrame"
+				local subSubFrame = CreateFrame("Frame", highlightName)
+				subSubFrame:Hide()
+				subSubFrame:SetPoint("TOPLEFT")
+				subSubFrame:SetPoint("BOTTOMRIGHT")
+				local highlightTexture = subSubFrame:CreateTexture(highlightName.."LogSkillHighlight", "ARTWORK")
+				highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
+			--				highlightTexture:SetAlphaMode("ADD")
+				subSubFrame:SetScript("OnLoad", function(self) self:SetParent(nil) end)
+				scrollFrame:SetScript("OnLoad", function(self) Wholly:ScrollFrame_OnLoad(self) end)
+
+				frame:SetScript("OnShow", function(self)
+					Wholly:OnShow(self)
+					PlaySound(PlaySoundKitID and "igCharacterInfoOpen" or 839)
+				end)
+				frame:SetScript("OnHide", function(self)
+					Wholly:OnHide(self)
+					PlaySound(PlaySoundKitID and "igCharacterInfoClose" or 840)
+					if self.isMoving then
+						self:StopMovingOrSizing()
+						self.isMoving = false
+					end
+				end)
+				frame:SetScript("OnMouseUp", function(self)
+					if self.isMoving then
+						self:StopMovingOrSizing()
+						self.isMoving = false
+					end
+				end)
+				frame:SetScript("OnMouseDown", function(self, button)
+					if (not self.isLocked or self.isLocked == 0) and button == "LeftButton" then
+						self:StartMoving()
+						self.isMoving = true
+					end
+				end)
+
+				Wholly:OnLoad(frame)	-- no need to do this, as it does nothing
+				tinsert(UISpecialFrames, frame:GetName())
+				Wholly:ScrollFrame_OnLoad(scrollFrame)
+			end
+		end,
+
+		_SetupWorldMapWhollyButton = function(self)
+			local parentFrame = Grail.existsClassic and WorldMapFrame or WorldMapFrame.BorderFrame
+			local f = CreateFrame("Button", "WhollyMapButton", parentFrame, "UIPanelButtonTemplate")
+			f:SetSize(100, 25)
+			f:SetToplevel(true)
+            --f:SetFrameLevel(WorldMapTitleButton:GetFrameLevel()+1)
+			if not Grail.existsClassic then
+				f:SetScale(0.7)
+			end
+			f:SetText("可接任务")
+            f:RegisterForClicks("AnyUp");
+			f:SetScript("OnShow", function(self)
+				if Gatherer_WorldMapDisplay then
+					self:SetPoint("TOPLEFT", Gatherer_WorldMapDisplay, "TOPRIGHT", 4, 0)
+				elseif Questie_Toggle then
+					self:SetPoint("TOPRIGHT", Questie_Toggle, "TOPLEFT", -8, 2)
+				elseif TitanMapCursorLocation then
+					self:SetPoint("TOPLEFT", TitanMapCursorLocation, "TOPRIGHT", 10, 6)
+				elseif Grail.existsClassic then
+					self:SetPoint("TOPRIGHT", WorldMapContinentDropDown, "TOPLEFT", 10, 0)
+				elseif TomTomWorldFrame and TomTomWorldFrame.Player then
+					self:SetPoint("TOPLEFT", TomTomWorldFrame.Player, "TOPRIGHT", 10, 6)
+				else
+					self:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Tutorial, "TOPRIGHT", 0, -30)
+				end
+			end)
+			f:SetScript("OnEnter", function(self)
+				local t = Wholly.tooltip
+				t:ClearLines()
+				t:SetOwner(self)
+				t:AddLine(Wholly.mapCountLine)
+				t:Show()
+				t:ClearAllPoints()
+				t:SetPoint("TOPLEFT", self, "BOTTOMRIGHT")
+			end)
+			f:SetScript("OnLeave", function(self) Wholly.tooltip:Hide() end)
+            f:SetScript("OnClick", function(self, button) if button=='RightButton' then SlashCmdList["WHOLLY"]() Wholly:_OpenInterfaceOptions() else Wholly.pairedConfigurationButton:Click() end end)
+			f:Hide()
+			self.mapFrame = f
+		end,
+
+		ShowBreadcrumbInfo = function(self)
+			local questId = self:_BreadcrumbQuestId()
+--			local breadcrumbs = Grail:AvailableBreadcrumbs(questId)
 			com_mithrandir_whollyBreadcrumbFrame:Hide()
 			com_mithrandir_whollyQuestInfoFrameText:SetText(questId)
 			self:UpdateBuggedText(questId)
-			if nil ~= breadcrumbs then
-				if 1 == #breadcrumbs then com_mithrandir_whollyBreadcrumbFrameMessage:SetText(self.s.SINGLE_BREADCRUMB_FORMAT)
-				else com_mithrandir_whollyBreadcrumbFrameMessage:SetText(format(self.s.MULTIPLE_BREADCRUMB_FORMAT, #breadcrumbs))
+			local breadcrumbMessage = self:_GetBreadcrumbMessage()
+			if nil ~= breadcrumbMessage then
+				if WhollyDatabase.displaysBreadcrumbs then
+					com_mithrandir_whollyBreadcrumbFrameMessage:SetText(breadcrumbMessage)
+					com_mithrandir_whollyBreadcrumbFrame:Show()
 				end
-				com_mithrandir_whollyBreadcrumbFrame:Show()
+				if WhollyDatabase.displaysBreadcrumbMessages then
+					print(format("|cFFFFFF00Wholly|r |cFFFF00FF%s|r", breadcrumbMessage))
+				end
 			end
+--			if nil ~= breadcrumbs then
+--				if 1 == #breadcrumbs then com_mithrandir_whollyBreadcrumbFrameMessage:SetText(self.s.SINGLE_BREADCRUMB_FORMAT)
+--				else com_mithrandir_whollyBreadcrumbFrameMessage:SetText(format(self.s.MULTIPLE_BREADCRUMB_FORMAT, #breadcrumbs))
+--				end
+--				com_mithrandir_whollyBreadcrumbFrame:Show()
+--			end
 		end,
 
 		ShowTooltip = function(self, pin)
@@ -3714,18 +4119,21 @@ end
 			local npcNames = {}
 
 			local questsInMap = self.filteredPinQuests
-			local questId
+			local questId, code
 			for i = 1, #questsInMap do
 				questId = questsInMap[i][1]
-                local locations = Grail:QuestLocationsAccept(questId, false, false, true, parentFrame:GetMapID(), true, 0)
+				code = questsInMap[i][2]
+--                local locations = Grail:QuestLocationsAccept(questId, false, false, true, parentFrame:GetMapID(), true, 0)
+				local locations = 'I' == code and Grail:QuestLocationsTurnin(questId, true, false, true, pin.map) or Grail:QuestLocationsAccept(questId, false, false, true, pin.map, true, 0)
 				if nil ~= locations then
 					for _, npc in pairs(locations) do
 						if nil ~= npc.x then
                             local dist = sqrt( (mx - npc.x/100)^2 + (my - npc.y/100)^2 )
-							if dist <= 0.02 or (NxMap1 == parentFrame and npc.id == pin.npcId) then
+--							if dist <= 0.02 or (NxMap1 == parentFrame and npc.id == pin.npcId) then
+							if dist <= 0.02 then
 								if not npcList[npc.id] then
 									npcList[npc.id] = {}
-									local nameToUse = npc.name
+									local nameToUse = npc.name or "??"
 									if npc.dropName then
 										nameToUse = nameToUse .. " (" .. npc.dropName .. ')'
 									end
@@ -3952,7 +4360,7 @@ end
 		---
 		--	Sets up the event monitoring to handle those associated with displaying breadcrumb information.
 		UpdateBreadcrumb = function(self)
-			if WhollyDatabase.displaysBreadcrumbs then
+			if WhollyDatabase.displaysBreadcrumbs or WhollyDatabase.displaysBreadcrumbMessages then
 				self.notificationFrame:RegisterEvent("QUEST_DETAIL")
 				if QuestFrame:IsVisible() then
 					self:ShowBreadcrumbInfo()
@@ -4010,6 +4418,11 @@ end
 		end,
 
 		}
+
+	local nf = CreateFrame("Frame")
+	Wholly.notificationFrame = nf
+	nf:SetScript("OnEvent", function(frame, event, ...) Wholly:_OnEvent(frame, event, ...) end)
+	nf:RegisterEvent("PLAYER_LOGIN")
 
 	local locale = GetLocale()
 	local S = Wholly.s
@@ -4111,6 +4524,7 @@ end
 		S["SEARCH_NEW"] = "Neue Suche"
 		S["SELF"] = "Selbst"
 		S["SHOW_BREADCRUMB"] = "Detaillierte Questinformationen im Questfenster anzeigen"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Zeige nur Meister-der-Lehren-Quests"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Brotkrumen-Quest verfügbar"
 		S["SP_MESSAGE"] = "Spezial-Quests tauchen niemals in Blizzards Quest-Log auf"
@@ -4224,6 +4638,7 @@ end
 		S["SEARCH_NEW"] = "Nueva"
 		S["SELF"] = "Auto"
 		S["SHOW_BREADCRUMB"] = "Mostrar información de cadenas de misión en interfaz de misión"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Solo mostrar misiones de Maestro Cultural"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Cadenas de misiones disponibles"
 		S["SP_MESSAGE"] = "Misión especial, no entra en registro de misiones de Blizzard"
@@ -4339,6 +4754,7 @@ end
 		S["SEARCH_NEW"] = "Nueva búsqueda"
 		S["SELF"] = "Auto"
 		S["SHOW_BREADCRUMB"] = "Mostrar la información de la Mision El Sendero de Migas en la Cuadra de Búsqueda"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Solo mostrar misiones del Maestro Cultural"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Mision El Sendero de Migas de Pan Disponible"
 		S["SP_MESSAGE"] = "Misiones especiales nunca entran al registro de misiones de Blizzard"
@@ -4452,6 +4868,7 @@ end
 		S["SEARCH_NEW"] = "Nouvelle"
 		S["SELF"] = "Soi-même"
 		S["SHOW_BREADCRUMB"] = "Afficher les informations d'une suite de quêtes dans le journal de quêtes"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Afficher uniquement les quêtes comptant pour le haut fait de \"Maître des traditions\""
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Quête préalable disponible"
 		S["SP_MESSAGE"] = "Certaines quêtes spéciales ne sont jamais affichées dans le journal de quêtes de Blizzard"
@@ -4588,6 +5005,7 @@ end
 		S["SEARCH_NEW"] = "Nuova"
 		S["SELF"] = "Se stesso"
 		S["SHOW_BREADCRUMB"] = "Mostra informazioni sul percorso della missione sul Quest Frame"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Mostra solo le missioni Loremaster"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Cerca missioni disponibili"
 		S["SP_MESSAGE"] = "Missione speciale mai entrata nel diario della Blizzard"
@@ -4712,6 +5130,7 @@ end
 		S["SEARCH_NEW"] = "신규"
 		S["SELF"] = "자신"
 		S["SHOW_BREADCRUMB"] = "퀘스트 창에 여러 퀘스트 정보 표시"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Loremaster 퀘스트만 표시"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "추가 목표 퀘스트가 가능합니다."
 --Translation missing 
@@ -4827,6 +5246,7 @@ end
 		S["SEARCH_NEW"] = "Nova"
 		S["SELF"] = "Por si só"
 		S["SHOW_BREADCRUMB"] = "Mostrar informações de andamento na Janela de Missões"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Exibir somente missões do Mestre Historiador"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Sequência de missão disponível"
 		S["SP_MESSAGE"] = "Missões especiais nunca entram no registro de missões da Blizzard"
@@ -4940,6 +5360,7 @@ end
 		S["SEARCH_NEW"] = "Новый"
 		S["SELF"] = "Само"
 		S["SHOW_BREADCRUMB"] = "Показывать наличие направляющих заданий"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Показывать лишь задания, необходимые для получения \"Хранителя мудрости\""
 		S["SINGLE_BREADCRUMB_FORMAT"] = "Доступно направляющее задание"
 		S["SP_MESSAGE"] = "Особое задание никогда не попадает в журнал заданий Blizzard"
@@ -5019,6 +5440,8 @@ end
 		S["MAP_BUTTON"] = "在世界地图上显示按钮"
 		S["MAP_DUNGEONS"] = "在外部地图显示副本任务"
 		S["MAP_PINS"] = "在地图上显示任务给予者"
+        S['MAP_PINS_TURNIN'] = "在地图上显示已完成任务的交还者"
+        S['MAP_PINS_TURNIN_INCOMPLETE'] = "在地图上显示未完成任务的交还者"
 		S["MAP_UPDATES"] = "当区域变更时更新世界地图"
 		S["MAPAREA_NONE"] = "无"
 		S["MAXIMUM_LEVEL_NONE"] = "无"
@@ -5053,6 +5476,7 @@ end
 		S["SEARCH_NEW"] = "新的"
 		S["SELF"] = "自己"
 		S["SHOW_BREADCRUMB"] = "在接受任务时如果跳过了引导任务，则显示警告"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "仅显示博学大师成就相关任务"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "可取得引导任务"
 		S["SP_MESSAGE"] = "不会进入内建任务纪录的特殊任务"
@@ -5166,6 +5590,7 @@ end
 		S["SEARCH_NEW"] = "新的"
 		S["SELF"] = "自己"
 		S["SHOW_BREADCRUMB"] = "在任務提示中顯示後續任務資訊"
+		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "僅顯示博學大師成就相關任務"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "可取得後續任務"
 		S["SP_MESSAGE"] = "不在遊戲內建任務記錄的特殊任務"
@@ -5187,7 +5612,7 @@ end
 	-- variables that represent specific strings.  In other words, these
 	-- do not need to be localized since Blizzard does the work for us.
 	S['MAILBOX'] = MINIMAP_TRACKING_MAILBOX								-- "Mailbox"
-	S['CREATED_ITEMS'] = NONEQUIPSLOT									-- "Created Items"
+	S['CREATED_ITEMS'] = NONEQUIPSLOT									-- "Created Items"	-- in Classic this is "Not equippable."
 	S['SLASH_TARGET'] = SLASH_TARGET1									-- "/target"
 	S['SPELLS'] = SPELLS												-- "Spells"
 	S['FACTION'] = FACTION												-- "Faction"
@@ -5206,8 +5631,8 @@ end
 	S['MAX_LEVEL'] = GUILD_RECRUITMENT_MAXLEVEL							-- "Max Level"
 	S['FEMALE'] = FEMALE												-- "Female"
 	S['MALE'] = MALE													-- "Male"
-	S['REPUTATION_CHANGES'] = COMBAT_TEXT_SHOW_REPUTATION_TEXT			-- "Reputation Changes"
-	S['QUEST_GIVERS'] = TUTORIAL_TITLE1									-- "Quest Givers"
+	S['REPUTATION_CHANGES'] = COMBAT_TEXT_SHOW_REPUTATION_TEXT			-- "Reputation Changes"	-- in Classic this is "Show Reputation"
+	S['QUEST_GIVERS'] = TUTORIAL_TITLE1									-- "Quest Givers"	-- in Classic this is "Questgivers"
 	S['TURN_IN'] = TURN_IN_QUEST										-- "Turn in"
 	S['DAILY'] = DAILY													-- "Daily"
 	S['WEEKLY'] = CALENDAR_REPEAT_WEEKLY								-- "Weekly"
@@ -5271,6 +5696,8 @@ end
 	Wholly.configuration[S.WORLD_MAP] = {
 		{ S.WORLD_MAP },
 		{ S.MAP_PINS, 'displaysMapPins', 'configurationScript2', nil, 'pairedConfigurationButton' },
+		{ S.MAP_PINS_TURNIN, 'displaysMapPinsTurnin', 'configurationScript2' },
+		{ S.MAP_PINS_TURNIN_INCOMPLETE, 'displaysMapPinsTurninIncomplete', 'configurationScript2' },
 		{ S.MAP_BUTTON, 'displaysMapFrame', 'configurationScript3' },
 		{ S.MAP_DUNGEONS, 'displaysDungeonQuests', 'configurationScript4' },
 		{ S.MAP_UPDATES, 'updatesWorldMapOnZoneChange', 'configurationScript1' },
@@ -5297,6 +5724,7 @@ end
 		{ S.OTHER_PREFERENCE },
 		{ S.PANEL_UPDATES, 'updatesPanelWhenZoneChanges', 'configurationScript1' },
 		{ S.SHOW_BREADCRUMB, 'displaysBreadcrumbs', 'configurationScript5' },
+		{ S.SHOW_BREADCRUMB_MESSAGE, 'displaysBreadcrumbMessages', 'configurationScript5' },
 		{ S.SHOW_LOREMASTER, 'showsLoremasterOnly', 'configurationScript4' },
 		{ S.ENABLE_COORDINATES, 'enablesPlayerCoordinates', 'configurationScript8', nil, 'pairedCoordinatesButton' },
 		{ S.ACHIEVEMENT_COLORS, 'showsAchievementCompletionColors', 'configurationScript1' },
@@ -5324,63 +5752,63 @@ end
 	end
 
 -- Starting in BfA beta 26567 there is no more WorldMapFrame_Update so we cannot support this at the moment...
-if not Grail.battleForAzeroth then
-hooksecurefunc("WorldMapFrame_Update", function()
-	local wpth = Wholly.poisToHide
-	if WhollyDatabase.hidesWorldMapFlightPoints or WhollyDatabase.hidesWorldMapTreasures or WhollyDatabase.hidesDungeonEntrances then
-		for i = 1, GetNumMapLandmarks() do
-			local landmarkType, name, description, textureIndex, x, y = GetMapLandmarkInfo(i)
-			local shouldHide = false
-			if WhollyDatabase.hidesWorldMapTreasures and 197 == textureIndex then shouldHide = true end
-			if WhollyDatabase.hidesDungeonEntrances and LE_MAP_LANDMARK_TYPE_DUNGEON_ENTRANCE == landmarkType then shouldHide = true end
-			if WhollyDatabase.hidesWorldMapFlightPoints and LE_MAP_LANDMARK_TYPE_TAXINODE == landmarkType then shouldHide = true end
-			if shouldHide then
-				local poi = _G["WorldMapFramePOI"..i]
-				if poi then
-				-- The "if poi then" check is probably not needed, but better safe than sorry!
---					print("Hiding icon for",name)
---					poi:Hide()
-					wpth[#wpth + 1] = poi
-				end
-			end
-		end
-	end
-	if WhollyDatabase.hidesBlizzardWorldMapQuestPins then
-		for i = 1, C_Questline.GetNumAvailableQuestlines() do
-			local poi = _G["WorldMapStoryLine"..i]
-			if poi then
-				wpth[#wpth + 1] = poi
-			end
-		end
-	end
-	Wholly:_HidePOIs()
-end)
-end
+--if not Grail.battleForAzeroth then
+--hooksecurefunc("WorldMapFrame_Update", function()
+--	local wpth = Wholly.poisToHide
+--	if WhollyDatabase.hidesWorldMapFlightPoints or WhollyDatabase.hidesWorldMapTreasures or WhollyDatabase.hidesDungeonEntrances then
+--		for i = 1, GetNumMapLandmarks() do
+--			local landmarkType, name, description, textureIndex, x, y = GetMapLandmarkInfo(i)
+--			local shouldHide = false
+--			if WhollyDatabase.hidesWorldMapTreasures and 197 == textureIndex then shouldHide = true end
+--			if WhollyDatabase.hidesDungeonEntrances and LE_MAP_LANDMARK_TYPE_DUNGEON_ENTRANCE == landmarkType then shouldHide = true end
+--			if WhollyDatabase.hidesWorldMapFlightPoints and LE_MAP_LANDMARK_TYPE_TAXINODE == landmarkType then shouldHide = true end
+--			if shouldHide then
+--				local poi = _G["WorldMapFramePOI"..i]
+--				if poi then
+--				-- The "if poi then" check is probably not needed, but better safe than sorry!
+----					print("Hiding icon for",name)
+----					poi:Hide()
+--					wpth[#wpth + 1] = poi
+--				end
+--			end
+--		end
+--	end
+--	if WhollyDatabase.hidesBlizzardWorldMapQuestPins then
+--		for i = 1, C_Questline.GetNumAvailableQuestlines() do
+--			local poi = _G["WorldMapStoryLine"..i]
+--			if poi then
+--				wpth[#wpth + 1] = poi
+--			end
+--		end
+--	end
+--	Wholly:_HidePOIs()
+--end)
+--end
 
 -- Starting in BfA beta 26567 there is no more WorldMap_UpdateQuestBonusObjectives so we cannot support this at the moment...
-if not Grail.battleForAzeroth then
-hooksecurefunc("WorldMap_UpdateQuestBonusObjectives", function()
-	if WhollyDatabase.hidesBlizzardWorldMapBonusObjectives then
-		local mapAreaID = Grail.GetCurrentDisplayedMapAreaID()
-		local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapAreaID)
-		local numTaskPOIs = 0;
-		if(taskInfo ~= nil) then
-			numTaskPOIs = #taskInfo;
-		end
-		local taskIconCount = 1;
-		if ( numTaskPOIs > 0 ) then
-			local wpth = Wholly.poisToHide
-			for _, info  in next, taskInfo do
-				local taskPOIName = "WorldMapFrameTaskPOI"..taskIconCount;
-				local taskPOI = _G[taskPOIName];
---				taskPOI:Hide();
-				wpth[#wpth + 1] = taskPOI
-				taskIconCount = taskIconCount + 1;
-			end
-			Wholly:_HidePOIs()
-		end
-	end
-end)
-end
+--if not Grail.battleForAzeroth then
+--hooksecurefunc("WorldMap_UpdateQuestBonusObjectives", function()
+--	if WhollyDatabase.hidesBlizzardWorldMapBonusObjectives then
+--		local mapAreaID = Grail.GetCurrentDisplayedMapAreaID()
+--		local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapAreaID)
+--		local numTaskPOIs = 0;
+--		if(taskInfo ~= nil) then
+--			numTaskPOIs = #taskInfo;
+--		end
+--		local taskIconCount = 1;
+--		if ( numTaskPOIs > 0 ) then
+--			local wpth = Wholly.poisToHide
+--			for _, info  in next, taskInfo do
+--				local taskPOIName = "WorldMapFrameTaskPOI"..taskIconCount;
+--				local taskPOI = _G[taskPOIName];
+----				taskPOI:Hide();
+--				wpth[#wpth + 1] = taskPOI
+--				taskIconCount = taskIconCount + 1;
+--			end
+--			Wholly:_HidePOIs()
+--		end
+--	end
+--end)
+--end
 
 end

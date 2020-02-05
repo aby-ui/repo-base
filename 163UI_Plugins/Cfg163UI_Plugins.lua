@@ -248,3 +248,14 @@ U1RegisterAddon("163UI_Plugins", {
 })
 
 --U1RegisterAddon("GrievousHelper", { title = "重伤助手(自动摘武器)", defaultEnable = 1, parent = "163UI_Plugins", })
+
+U1RegisterAddon("AbyAuctionFavoritesSavior", {
+    title = "拍卖收藏保存",
+    defaultEnable = 1,
+    load = "DEMAND",
+    nolodbutton = 1,
+    tags = { TAG_TRADING, TAG_GOOD },
+    desc = "暴雪的BUG导致8.3新拍卖行的收藏登出就没了，爱不易临时保存在插件里，可以加载回来。当插件发现系统保存的收藏列表和本地保存的收藏列表不一致的时候，会在系统默认收藏按钮旁边增加一个'加载'按钮，点击就可以加载。",
+    icon = [[Interface\Icons\INV_WorseRobot]],
+    author = "|cffcd1a1c[爱不易原创]|r",
+});

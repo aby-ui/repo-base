@@ -1,0 +1,13 @@
+## Interface: 80300
+## Title: AbyAuctionFavoritesSavior
+## Notes: Save auction favorites, so that you can load them while Blizzard cannot.
+## LoadOnDemand: 1
+## LoadWith: Blizzard_AuctionHouseUI
+## SavedVariables: AbyAuctionFavoritesDB
+## Version: v1.0.0
+
+AbyAuctionFavoritesSavior.lua
+
+## Title-zhCN: |cff880303[爱不易]|r AbyAuction 保存拍卖行收藏
+## X-Vendor: AbyUI
+

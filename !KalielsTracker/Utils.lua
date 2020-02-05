@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -57,7 +57,11 @@ end
 
 function KT.GetCurrentMapContinent()
     local mapID = C_Map.GetBestMapForUnit("player")
-    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+    if mapID == 1355 then   -- Nazjatar
+        return C_Map.GetMapInfo(mapID) or {}
+    else
+        return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+    end
 end
 
 function KT.GetMapContinent(mapID)
@@ -99,21 +103,35 @@ function KT.RgbToHex(color)
 end
 
 -- GameTooltip
+local colorNotUsable = { r = 1, g = 0, b = 0 }
 function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
+    local bckQuestLogSelection = GetQuestLogSelection()  -- backup Quest Log selection
     local questLogIndex = GetQuestLogIndexByID(questID)
     SelectQuestLogEntry(questLogIndex)	-- for num Choices
-    if GetQuestLogRewardXP(questID) > 0 or
-            GetQuestLogRewardMoney(questID) > 0 or
-            GetQuestLogRewardArtifactXP(questID) > 0 or
-            GetNumQuestLogRewardCurrencies(questID) > 0 or
-            GetQuestLogRewardHonor(questID) > 0 or
-            GetNumQuestLogRewards(questID) > 0 or
-            GetNumQuestLogChoices() > 0 then
+
+    local xp = GetQuestLogRewardXP(questID)
+    local money = GetQuestLogRewardMoney(questID)
+    local artifactXP = GetQuestLogRewardArtifactXP(questID)
+    local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
+    local numQuestRewards = GetNumQuestLogRewards(questID)
+    local numQuestSpellRewards = GetNumQuestLogRewardSpells(questID)
+    local numQuestChoices = GetNumQuestLogChoices()
+    local honor = GetQuestLogRewardHonor(questID)
+    if xp > 0 or
+            money > 0 or
+            artifactXP > 0 or
+            numQuestCurrencies > 0 or
+            numQuestRewards > 0 or
+            numQuestSpellRewards > 0 or
+            numQuestChoices > 0 or
+            honor > 0 then
+        local isQuestWorldQuest = QuestUtils_IsQuestWorldQuest(questID)
+        local isWarModeDesired = C_PvP.IsWarModeDesired()
+        local questHasWarModeBonus = C_QuestLog.QuestHasWarModeBonus(questID)
         tooltip:AddLine(" ")
         tooltip:AddLine(REWARDS..":")
         if not isBonus then
             -- choices
-            local numQuestChoices = GetNumQuestLogChoices()
             for i = 1, numQuestChoices do
                 local name, texture, numItems, quality, isUsable = GetQuestLogChoiceInfo(i)
                 local text
@@ -123,13 +141,19 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
                     text = format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name)
                 end
                 if text then
-                    local color = ITEM_QUALITY_COLORS[quality]
+                    local color = isUsable and ITEM_QUALITY_COLORS[quality] or colorNotUsable
                     tooltip:AddLine(text, color.r, color.g, color.b)
                 end
             end
         end
+        -- spells
+        for i = 1, numQuestSpellRewards do
+            local texture, name = GetQuestLogRewardSpell(i, questID)
+            if name and texture then
+                tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name), 1, 1, 1)
+            end
+        end
         -- items
-        local numQuestRewards = GetNumQuestLogRewards(questID)
         for i = 1, numQuestRewards do
             local name, texture, numItems, quality, isUsable = GetQuestLogRewardInfo(i, questID)
             local text
@@ -139,32 +163,41 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
                 text = format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name)
             end
             if text then
-                local color = ITEM_QUALITY_COLORS[quality]
+                local color = isUsable and ITEM_QUALITY_COLORS[quality] or colorNotUsable
                 tooltip:AddLine(text, color.r, color.g, color.b)
             end
         end
         -- xp
-        local xp = GetQuestLogRewardXP(questID)
         if xp > 0 then
             tooltip:AddLine(format(BONUS_OBJECTIVE_EXPERIENCE_FORMAT, FormatLargeNumber(xp).."|c0000ff00"), 1, 1, 1)
+            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
+                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_XP_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
+            end
         end
         -- money
-        local money = GetQuestLogRewardMoney(questID)
         if money > 0 then
-            --SetTooltipMoney(tooltip, money, nil)
             tooltip:AddLine(GetCoinTextureString(money, 12), 1, 1, 1)
+            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
+                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
+            end
         end
         -- artifact power
-        local artifactXP = GetQuestLogRewardArtifactXP(questID)
         if artifactXP > 0 then
-            tooltip:AddLine(format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(artifactXP)).."xx", 1, 1, 1)
+            tooltip:AddLine(format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(artifactXP)), 1, 1, 1)
         end
         -- currencies
-        QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip)
+        if numQuestCurrencies > 0 then
+            QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip)
+        end
         -- honor
-        local honorAmount = GetQuestLogRewardHonor(questID)
-        if honorAmount > 0 then
-            tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, "Interface\\ICONS\\Achievement_LegionPVPTier4", honorAmount, HONOR), 1, 1, 1)
+        if honor > 0 then
+            tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, "Interface\\ICONS\\Achievement_LegionPVPTier4", honor, HONOR), 1, 1, 1)
+        end
+        -- war mode bonus (quest only)
+        if isWarModeDesired and not isQuestWorldQuest and questHasWarModeBonus then
+            tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
         end
     end
+
+    SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
 end

@@ -1109,7 +1109,7 @@ local globalConditions =
   ["hastarget"] = {
     display = L["Has Target"],
     type = "bool",
-    events = {"PLAYER_TARGET_CHANGED"},
+    events = {"PLAYER_TARGET_CHANGED", "PLAYER_ENTERING_WORLD"},
     globalStateUpdate = function(state)
       state.hastarget = UnitExists("target");
     end
@@ -1540,6 +1540,30 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+
+do -- Archive stuff
+  local Archivist = select(2, ...).Archivist
+  function WeakAuras.OpenArchive()
+    if Archivist:IsInitialized() then
+      return Archivist
+    else
+      if not IsAddOnLoaded("WeakAurasArchive") then
+        local ok, reason = LoadAddOn("WeakAurasArchive")
+        if not ok then
+          error("Could not load WeakAuras Archive, reason: |cFFFF00" .. (reason or "UNKNOWN"))
+        end
+      end
+      Archivist:Initialize(WeakAurasArchive)
+    end
+    return Archivist
+  end
+
+  function WeakAuras.LoadFromArchive(storeType, storeID)
+    local Archivist = WeakAuras.OpenArchive()
+    return Archivist:Load(storeType, storeID)
+  end
+end
+
 local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
 function WeakAuras.IsLoginFinished()
@@ -1553,6 +1577,20 @@ end
 function WeakAuras.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     WeakAuras.Pause();
+
+    if db.history then
+      local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
+      local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")
+      for uid, hist in pairs(db.history) do
+        local histStore = histRepo:Set(uid, hist.data)
+        local migrationStore = migrationRepo:Set(uid, hist.migration)
+        coroutine.yield()
+      end
+      -- history is now in archive so we can shrink WeakAurasSaved
+      db.history = nil
+      coroutine.yield();
+    end
+
     local toAdd = {};
     loginFinished = false
     loginMessage = L["Options will open after the login process has completed."]
@@ -1665,13 +1703,14 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
-      local isFirstUIDValidation = db.history == nil;
+      local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
       WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
-      db.history = db.history or {};
-      if db.clearOldHistory ~= false and type(db.clearOldHistory) ~= "number" then
-        db.clearOldHistory = 30
+
+      if db.lastArchiveClear == nil then
+        db.lastArchiveClear = time();
+      elseif db.lastArchiveClear < time() - 86400 then
+        WeakAuras.CleanArchive(db.historyCutoff, db.migrationCutoff);
       end
-      WeakAuras.LoadHistory(db.history, db.clearOldHistory);
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
@@ -1714,6 +1753,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
         WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         WeakAuras.UpdateCurrentInstanceType();
+        WeakAuras.InitializeEncounterAndZoneLists()
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = WeakAuras.CreatePvPTalentCache;
@@ -2135,6 +2175,7 @@ if not WeakAuras.IsClassic() then
   loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
 end
+loadFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 loadFrame:RegisterEvent("ZONE_CHANGED");
 loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
 loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
@@ -2143,8 +2184,6 @@ loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
-loadFrame:RegisterEvent("GROUP_JOINED");
-loadFrame:RegisterEvent("GROUP_LEFT");
 loadFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
 loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
@@ -2754,9 +2793,9 @@ function WeakAuras.RepairDatabase(loginAfter)
     db.dbVersion = WeakAuras.InternalVersion()
     -- reinstall snapshots from history
     for id, data in pairs(db.displays) do
-      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
+      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid, true)
       if snapshot then
-        db.displays[id] = CopyTable(snapshot)
+        db.displays[id] = snapshot
         coroutine.yield()
       end
     end
@@ -4245,6 +4284,7 @@ local function pAdd(data, simpleChange)
   if simpleChange then
     db.displays[id] = data
     WeakAuras.SetRegion(data)
+    WeakAuras.UpdatedTriggerState(id)
   else
     if (data.controlledChildren) then
       WeakAuras.ClearAuraEnvironment(id);

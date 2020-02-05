@@ -9,6 +9,7 @@
 --
 --	Version History
 --		001	Initial version.
+--		002 Converted to using Grail:CurrentDateTime()
 --
 
 GrailWhenPlayer = { ['when'] = {}, ['count'] = {} }
@@ -18,8 +19,7 @@ local bitMask = Grail.bitMaskQuestRepeatable + Grail.bitMaskQuestDaily + Grail.b
 Grail._When = function(callbackType, questId)
 	questId = tonumber(questId)
 	if nil ~= questId then
-		local hour, minute = GetGameTime()
-		local weekday, month, day, year = CalendarGetDate()
+		local weekday, month, day, year, hour, minute = Grail:CurrentDateTime()
 		GrailWhenPlayer['when'][questId] = string.format("%4d-%02d-%02d %02d:%02d", year, month, day, hour, minute)
 		if bit.band(Grail:CodeType(questId), bitMask) > 0 then
 			local currentCount = GrailWhenPlayer['count'][questId] or 0

@@ -1480,6 +1480,14 @@ end
 
 local EnableOrLoadDependencies
 
+--[[
+debugprofilestart()
+local last = 0
+if name == _ then U1DB.load_time = {} end
+local now = debugprofilestop()
+tinsert(U1DB.load_time or {}, { format("%10d", math.floor(now - last)), name, math.floor(now) , })
+last = now
+--]]
 function U1:ADDON_LOADED(event, name)
     if name == _ then
 
@@ -1508,6 +1516,7 @@ function U1:ADDON_LOADED(event, name)
         U1DBG = U1DBG or { first_run = true }
         U1DBG.ap_spell = nil
         U1DBG.AtlasLootReverseDBx = nil
+        if U1DBG.lastReloadTime and math.abs(GetTime() - U1DBG.lastReloadTime) > 5 then U1DBG.lastReloadTime = nil end
         db.selectedTag = db.selectedTag or defaultDB.selectedTag;
 
         if U1.returnFromDisableAll then
@@ -1779,7 +1788,7 @@ local function loadAddon(secure)
                     end
                     U1Message(L["还有至少["]..count..L["]个插件尚未更新完，请等待更新器全部完成后运行/reload重载界面。"], 1, 1, 0);
                 else
-                    U1Message(L["全部插件加载完毕。"])
+                    U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or ""))
                 end
                 --simEventsAndLoadCfgs(); --因为先加载插件再注册事件的话，可能导致一些插件加载后先响应了其他事件，而DB却未创建
                 initComplete = true;

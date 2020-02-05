@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -148,9 +148,16 @@ local options = {
 						version = {
 							name = L" |cffffd100Version:|r  "..KT.version,
 							type = "description",
-							width = "double",
+							width = "normal",
 							fontSize = "medium",
-							order = 0.1,
+							order = 0.11,
+						},
+						build = {
+							name = " |cffffd100Build:|r  Retail",
+							type = "description",
+							width = "normal",
+							fontSize = "medium",
+							order = 0.12,
 						},
 						slashCmd = {
 							name = cBold..L" /kt|r  |cff808080...............|r  Toggle (expand/collapse) the tracker\n"..
@@ -957,6 +964,7 @@ local options = {
 								return (not IsAddOnLoaded("Masque") or not db.addonMasque or not KT.AddonOthers:IsEnabled())
 							end,
 							func = function()
+								SlashCmdList["MASQUE"]()
 								SlashCmdList["MASQUE"]()
 							end,
 							order = 5.61,

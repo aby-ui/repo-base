@@ -28,9 +28,11 @@ U1RegisterAddon("Wholly", {
 --依赖的Grail库, 不再单独写Cfg
 U1RegisterAddon("Grail", { parent = "Wholly", load = "DEMAND", protected = 1, ignoreLoadAll = 1, title = "库:任务数据", }) --需要在toc里设置## LoadOnDemand: 1
 U1RegisterAddon("Grail-Achievements", { load = "DEMAND", protected = 1, hide = 1, })
-U1RegisterAddon("Grail-Reputations", { load = "DEMAND", protected = 1, hide = 1, })
-U1RegisterAddon("Grail-When", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-NPCs-_retail_", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-NPCs-_retail_-enUS", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-NPCs-_retail_-zhCN", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-Quests-_retail_", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-Quests-_retail_-zhCN", { load = "DEMAND", protected = 1, hide = 1, })
+U1RegisterAddon("Grail-Reputations-_retail_", { load = "DEMAND", protected = 1, hide = 1, })
 U1RegisterAddon("Grail-Rewards", { load = "DEMAND", protected = 1, hide = 1, })
-U1RegisterAddon("Grail-Quests-zhCN", { title = "任务名称本地化-简中", load = "DEMAND", defaultEnable = 1, })
-U1RegisterAddon("Grail-Quests-zhTW", { title = "任务名称本地化-繁中", load = "DEMAND", defaultEnable = 0, })
-U1RegisterAddon("Grail-Quests-enUS", { title = "任务名称本地化-英文", load = "DEMAND", defaultEnable = 0, })
+U1RegisterAddon("Grail-When", { load = "DEMAND", protected = 1, hide = 1, })

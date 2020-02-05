@@ -268,6 +268,8 @@ if AL then
 	AL["NOTE_332220"] = "You have to complete a minigame where you have to shoot the fire balls before they touch the circles on the ground. Everytime a ball touches the ground or you use the spell without hitting a ball, the energy will decrease, and if it reaches zero then you will have to start again."
 	AL["PROFILES"] = "Profiles"
 	AL["RAIDS"] = "Raids"
+	AL["RESET_POSITION"] = "Reset position"
+	AL["RESET_POSITION_DESC"] = "Restores the original position of the main button."
 	AL["SHOW_CHAT_ALERT"] = "Toggle showing chat alerts"
 	AL["SHOW_CHAT_ALERT_DESC"] = "Shows a private message in the chat every time a treasure, chest or NPC is found"
 	AL["SHOW_RAID_WARNING"] = "Toggle showing raid warnings"
@@ -293,7 +295,7 @@ if AL then
 	AL["UNKNOWN_TARGET"] = "Unknown target"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
-
+					
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {
 		[9999] = "Class Halls"; --Class Halls

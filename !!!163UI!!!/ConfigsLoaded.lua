@@ -50,7 +50,7 @@ function U1ConfigsLoaded()
         --把true条件去掉就是默认的不变，加上就是默认的也是VARIABLE_LOADED之后加载
         --如果没有realLOD，则DBM模块无法显示
         if (v.registered and v.load~="NORMAL" and not v.realLOD) and k~=strlower(_) then
-            DisableAddOn(k);
+            DisableAddOn(k); --v.load = "NORMAL" --用来完全关闭LATER和LOGIN
         end
 
         if v.dummy then

@@ -506,8 +506,16 @@ local function GetDisplayOptions()
 					width = "double",
 					disabled = function() return not private.db.display.displayButton end,	
 				},
-				test = {
+				resetPosition = {
 					order = 5.2,
+					name = AL["RESET_POSITION"],
+					desc = AL["RESET_POSITION_DESC"],
+					type = "execute",
+					func = function() RareScanner:ResetPosition() end,
+					width = "normal",
+				},
+				test = {
+					order = 5.3,
 					name = AL["TEST"],
 					desc = AL["TEST_DESC"],
 					type = "execute",

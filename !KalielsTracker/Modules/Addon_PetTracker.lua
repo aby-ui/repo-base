@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -42,8 +42,9 @@ local function SetHooks()
 	function PetTracker.Objectives:Startup()	-- R
 		self:SetScript("OnEvent", self.TrackingChanged)
 		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-
 		self:SetParent(content)
+		self:Hide()
+
 		self.Header = header
 		self.maxEntries = 100
 
@@ -130,17 +131,22 @@ local function SetHooks()
 	-- WorldMap (for hacked Sushi Lib)
 	hooksecurefunc(PetTracker.MapFilter, "Init", function(self, frame)
 		if not filterButton then
-			for i, overlay in ipairs(frame.overlayFrames or {}) do
-				if overlay.OnClick == WorldMapTrackingOptionsButtonMixin.OnClick then
+			for _, overlay in ipairs(frame.overlayFrames or {}) do
+				if overlay.OnClick == WorldMapTrackingOptionsButtonMixin.OnClick and overlay:IsObjectType('Button') then
 					filterButton = overlay
 					break
 				end
 			end
+
+			self.frames[frame]:HookScript("OnEditFocusLost", function()
+				MSA_CloseDropDownMenus()
+			end)
 		end
 	end)
 
 	hooksecurefunc(PetTracker.MapFilter, "UpdateFrames", function(self)
 		SushiDropFrame:CloseAll()
+		MSA_CloseDropDownMenus()	-- TODO: Delete after fixed in addon
 		SushiDropFrame:Toggle("TOPLEFT", filterButton, "BOTTOMLEFT", 0, -15, true, self.ShowTrackingTypes)
 	end)
 
@@ -178,7 +184,8 @@ local function SetHooks()
 		end
 
 		function SushiDropFrame:CloseAll()
-			MSA_CloseDropDownMenus()
+			-- TODO: Uncomment after fixed in addon
+			--MSA_CloseDropDownMenus()
 		end
 	end
 end
@@ -295,7 +302,7 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.1.2") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.3.0") and db.addonPetTracker)
 
 	if self.isLoaded then
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")

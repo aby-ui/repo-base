@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -74,7 +74,7 @@ local function WorldQuestPOIGetIconInfo(mapAreaID, questID)
 	local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapAreaID)
 	if taskInfo then
 		for _, info  in ipairs(taskInfo) do
-			if HaveQuestData(info.questId) then
+			if HaveQuestRewardData(info.questId) then
 				if info.questId == questID then
 					x = info.x
 					y = info.y
@@ -109,7 +109,7 @@ local function AddWaypoint(questID, silent)
 	if QuestUtils_IsQuestWorldQuest(questID) then
 		title = C_TaskQuest.GetQuestInfoByQuestID(questID)
 		mapID = C_TaskQuest.GetQuestZoneID(questID)
-		if mapID ~= 0 and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
+		if mapID and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
 			x, y = WorldQuestPOIGetIconInfo(mapID, questID)
 		end
 	else
@@ -186,7 +186,7 @@ local function SetHooks()
 		end
 	end)
 	
-	-- Blizzard	
+	-- Blizzard
 	hooksecurefunc("SetSuperTrackedQuestID", function(questID)
 		if questID ~= superTrackedQuestID or not questWaypoints[questID] then
 			RemoveWaypoint(superTrackedQuestID)
@@ -266,7 +266,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v80200-1.0.1") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v80300-1.1.0") and db.addonTomTom)
 
 	local defaults = KT:MergeTables({
 		profile = {

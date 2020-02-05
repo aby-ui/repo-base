@@ -1151,7 +1151,7 @@ function GenericTrigger.Add(data, region)
         else
           triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""), id);
           if (trigger.custom_type == "stateupdate") then
-            tsuConditionVariables = WeakAuras.LoadFunction("return \n" .. (trigger.customVariables or ""));
+            tsuConditionVariables = WeakAuras.LoadFunction("return function() return \n" .. (trigger.customVariables or "") .. "\n end");
           end
 
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
@@ -3121,7 +3121,7 @@ local itemCountWatchFrame;
 function WeakAuras.RegisterItemCountWatch()
   if not(itemCountWatchFrame) then
     itemCountWatchFrame = CreateFrame("frame");
-    itemCountWatchFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+    itemCountWatchFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
     itemCountWatchFrame:SetScript("OnEvent", function()
       WeakAuras.StartProfileSystem("generictrigger");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
@@ -3227,7 +3227,7 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
   if (trigger.type == "custom") then
     if (trigger.custom_type == "stateupdate") then
       local count = 0;
-      local variables = events[data.id][triggernum].tsuConditionVariables;
+      local variables = events[data.id][triggernum].tsuConditionVariables();
       if (type(variables) == "table") then
         if (type(variables.additionalProgress) == "table") then
           count = #variables.additionalProgress;
@@ -3350,6 +3350,9 @@ function GenericTrigger.SetToolTip(trigger, state)
   if (trigger.type == "custom" and trigger.custom_type == "stateupdate") then
     if (state.spellId) then
       GameTooltip:SetSpellByID(state.spellId);
+      return true
+    elseif (state.link) then
+      GameTooltip:SetHyperlink(state.link);
       return true
     elseif (state.itemId) then
       GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
@@ -3541,25 +3544,23 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
       return result;
     elseif (trigger.custom_type == "stateupdate") then
       if (events[data.id][triggernum] and events[data.id][triggernum].tsuConditionVariables) then
-        if (type(events[data.id][triggernum].tsuConditionVariables)) ~= "table" then
+        WeakAuras.ActivateAuraEnvironment(data.id, nil, nil, nil, true)
+        local result = events[data.id][triggernum].tsuConditionVariables()
+        WeakAuras.ActivateAuraEnvironment(nil)
+        if (type(result)) ~= "table" then
           return nil;
         end
-        local result = CopyTable(events[data.id][triggernum].tsuConditionVariables);
         -- Make the life of tsu authors easier, by automatically filling in the details for
         -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
         -- By allowing a short-hand notation of just variable = type
         -- In addition to the long form of variable = { type = xyz, display = "desc"}
-        if (not result) then
-          return nil;
-        end
-
         for k, v in pairs(commonConditions) do
           if (result[k] and type(result[k]) ~= "table") then
             result[k] = v;
           end
         end
 
-        for k, v in pairs(events[data.id][triggernum].tsuConditionVariables) do
+        for k, v in pairs(result) do
           if (type(v) == "string") then
             result[k] = {
               display = k,
@@ -3610,7 +3611,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   end
 
   if (event.stacksFunc) then
-    local ok, stacks = event.stacksFunc(firstTrigger);
+    local ok, stacks = xpcall(event.stacksFunc, geterrorhandler(), firstTrigger);
     state.stacks = ok and stacks or nil;
   end
 

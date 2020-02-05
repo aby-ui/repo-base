@@ -1,0 +1,12 @@
+## Interface: 80300
+## Title: Grail |cff69ccf0Quests |r|cff0000ffRetail|r|cff69ccf0 zhCN|r
+## Author: Scott M Harrison
+## Notes: Provides localized zhCN quest names to Grail for Retail
+## Version: 31478
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Quests-_retail_-zhCN.lua
+
+## Title: |cff880303[爱不易]|r Grail 任务简体中文
+## X-Vendor: AbyUI

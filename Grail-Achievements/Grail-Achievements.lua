@@ -38,31 +38,17 @@ local debugStartTime = debugprofilestop()
 local supportedFactions = {'Alliance', 'Horde'}
 
 -- We use continents as separators and their mapIds as indexes
-local mapKalimdor = 13
-local mapEasternKingdoms = 14
-local mapOutland = 466
-local mapNorthrend = 485
-local mapTheMaelstrom = 751
-local mapPandaria = 862
-local mapDraenor = 962
-local mapBrokenIsles = 1007
-local mapArgus = 1184
-local mapZandalar = 0
-local mapKulTiras = 0
-
-if Grail.battleForAzeroth then
-	mapKalimdor = 12
-	mapEasternKingdoms = 13
-	mapOutland = 101
-	mapNorthrend = 113
-	mapTheMaelstrom = 948
-	mapPandaria = 424
-	mapDraenor = 572
-	mapBrokenIsles = 619
-	mapArgus = 905
-	mapZandalar = 875
-	mapKulTiras = 876
-end
+local mapKalimdor = 12
+local mapEasternKingdoms = 13
+local mapOutland = 101
+local mapNorthrend = 113
+local mapTheMaelstrom = 948
+local mapPandaria = 424
+local mapDraenor = 572
+local mapBrokenIsles = 619
+local mapArgus = 905
+local mapZandalar = 875
+local mapKulTiras = 876
 
 --	These are the achievements organized by zone for completing the "loremaster" achievements (basically completing a specific number of quests in each zone).
 Grail.loremasterAchievements = {
@@ -6832,7 +6818,7 @@ G[35015]={508845}	-- needed for Purifying the Gene Pool part of As I Walk Throug
 G[35061]={508927}	-- needed for The Taking of Lokrath part of Nagrandeur
 G[35063]={508923}	-- needed for We Need an Outpost of Putting the Gore in Gorgrond
 G[35088]={508927,508928}	-- needed for The Shadow of the Void part of Nagrandeur
-G[35097]={508928}
+G[35097]={508928}	-- needed for The Taking of Lokrath part of Nagrandeur
 G[35136]={508924}
 G[35137]={508923}	-- The Sparring Arena
 G[35151]={508924}	-- needed for Your Base, Your Choice part of Putting the Gore in Gorgrond

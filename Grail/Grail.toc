@@ -4,22 +4,12 @@
 ## Dependencies: Wholly
 ## Author: Scott M Harrison
 ## Notes: Knows about quests
-## Version: 099
+## Version: 107
 ## SavedVariables: GrailDatabase
 ## SavedVariablesPerCharacter: GrailDatabasePlayer
 
 Grail.lua
 
-Grail-Quests.lua
-
-Grail-NPCs.lua
-Grail-NPCs-enUS.lua
-Grail-NPCs-zhCN.lua
-Grail-NPCs-zhTW.lua
-
-Grail-BuggedQuests.lua
-
 ## Title-zhCN: |cff880303[爱不易]|r Grail 任务数据库
 ## Notes-zhCN: 给Wholly可接任务插件提供数据
 ## X-Vendor: AbyUI
-

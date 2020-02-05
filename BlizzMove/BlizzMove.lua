@@ -4,10 +4,10 @@ local frame = CreateFrame("Frame")
 local optionPanel = nil
 
 local defaultDB = {
-    version = "20180816",
+    version = "20200206",
     AchievementFrame = {save = true},
     CalendarFrame = {save = true},
-    AuctionFrame = {save = true},
+    --AuctionFrame = {save = true},
     GuildBankFrame = {save = true},
     CastingBarFrame = {save = true},
     WardrobeFrame = {save = true},
@@ -34,6 +34,9 @@ local defaultDB = {
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
     PlayerPowerBarAlt = { save = true, },
+    AuctionHouseFrame = {save = true},
+    CommunitiesFrame = {save = true},
+    --CommunitiesFrame = {save = true},
 }
 
 local userPlaced = {
@@ -463,7 +466,7 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith("CalendarFrame", "Blizzard_Calendar");
         BM_SetMoveHandlerWith("ClassTrainerFrame", "Blizzard_TrainerUI");
         BM_SetMoveHandlerWith("KeyBindingFrame", "Blizzard_BindingUI");
-        BM_SetMoveHandlerWith("AuctionFrame", "Blizzard_AuctionUI");
+        --BM_SetMoveHandlerWith("AuctionFrame", "Blizzard_AuctionUI");
         BM_SetMoveHandlerWith("LookingForGuildFrame", "Blizzard_LookingForGuildUI");
         BM_SetMoveHandlerWith("ArchaeologyFrame", "Blizzard_ArchaeologyUI");
         BM_SetMoveHandlerWith("ArtifactRelicForgeFrame", "Blizzard_ArtifactUI");
@@ -536,6 +539,12 @@ local function OnEvent(self, event, arg1, arg2)
             BM_SetMoveHandler(GuildFrame, GuildFrame.TitleMouseover);
         end);
 
+        --8.0
+        BM_SetMoveHandlerWith("AuctionHouseFrame", "Blizzard_AuctionHouseUI");
+        BM_SetMoveHandlerWith("CommunitiesFrame", "Blizzard_Communities");
+        BM_SetMoveHandlerWith("AzeriteEssenceUI", "Blizzard_AzeriteEssenceUI");
+        --BM_SetMoveHandlerWith("AzeriteEmpoweredItemUI", "Blizzard_AzeriteUI");
+        BM_SetMoveHandlerWith("OrderHallTalentFrame", "Blizzard_OrderHallUI");
 
         frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
         

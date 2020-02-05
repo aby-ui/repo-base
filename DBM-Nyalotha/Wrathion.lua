@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200202054906")
+mod:SetRevision("20200204201308")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetZone()
@@ -247,7 +247,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 306163 then
-		warnIncineration:CombinedShow(0.3, args.destName)
+		warnIncineration:CombinedShow(1, args.destName)
 		if args:IsPlayer() then
 			specWarnIncineration:Show()
 			specWarnIncineration:Play("runout")

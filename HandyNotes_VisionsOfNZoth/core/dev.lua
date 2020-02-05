@@ -66,11 +66,19 @@ local function BootstrapDevelopmentEnvironment()
         for id = 0, max_quest_id do quests[id] = IsQuestFlaggedCompleted(id) end
         QTFrame:SetScript('OnUpdate', function ()
             if GetTime() - lastCheck > 1 then
+                local changed = {}
                 for id = 0, max_quest_id do
                     local s = IsQuestFlaggedCompleted(id)
                     if s ~= quests[id] then
-                        ns.debugQuest('Quest', id, 'changed:', tostring(quests[id]), '=>', tostring(s))
+                        changed[#changed + 1] = {'Quest', id, 'changed:', tostring(quests[id]), '=>', tostring(s)}
                         quests[id] = s
+                    end
+                end
+                if #changed <= 10 then
+                    -- changing zones will sometimes cause thousands of quest
+                    -- ids to flip state, we do not want to report on those
+                    for i, args in ipairs(changed) do
+                        ns.debugQuest(unpack(args))
                     end
                 end
                 lastCheck = GetTime()

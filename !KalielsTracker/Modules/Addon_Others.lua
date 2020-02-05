@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2019, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -59,7 +59,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.14", true) then
+    if KT:CheckAddOn("ElvUI", "11.33", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -87,7 +87,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.24", true) then
+    if KT:CheckAddOn("Tukui", "18.28", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -95,7 +95,7 @@ end
 
 -- RealUI
 local function RealUI_SetSupport()
-    if KT:CheckAddOn("nibRealUI", "2.0.0", true) then
+    if KT:CheckAddOn("nibRealUI", "2.1.4", true) then
         local R = _G.RealUI
         R:SetModuleEnabled("Objectives Adv.", false)
         -- Fade
@@ -114,7 +114,7 @@ end
 
 -- SyncUI
 local function SyncUI_SetSupport()
-    if KT:CheckAddOn("SyncUI", "8.0.3", true) then
+    if KT:CheckAddOn("SyncUI", "8.2.5.2", true) then
         SyncUI_ObjTracker.Show = function() end
         SyncUI_ObjTracker:Hide()
         SyncUI_ObjTracker:SetScript("OnLoad", nil)
@@ -125,7 +125,7 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "5.1.2", true) then
+    if KT:CheckAddOn("SpartanUI", "5.2.14", true) then
         local ACD = LibStub("AceConfigDialog-3.0")
         SUI.DB.EnabledComponents.Objectives = false
         local module = SUI:GetModule("Component_Objectives")
@@ -224,7 +224,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    KT:CheckAddOn("Masque", "8.0.1")
+    KT:CheckAddOn("Masque", "8.2.8")
 end
 
 function M:OnEnable()

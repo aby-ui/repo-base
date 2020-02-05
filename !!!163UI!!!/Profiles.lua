@@ -248,6 +248,7 @@ eventFrame:SetScript('OnEvent', function(self, event)
         end
     elseif event == 'PLAYER_LOGOUT' then
         U1DB.last_logout_time = reloading and "reload" or time()
+        if not reloading then U1DBG.lastReloadTime = nil end
         if(not reloading and UnitLevel("player") >= 10) then
             P:BackupSession(L["Before Logout"])
         end
@@ -259,5 +260,6 @@ eventFrame:RegisterEvent'PLAYER_LOGOUT'
 eventFrame:RegisterEvent'PLAYER_LOGIN'
 
 hooksecurefunc("ReloadUI", function()
+    U1DBG.lastReloadTime = GetTime()
     reloading = true
 end)
