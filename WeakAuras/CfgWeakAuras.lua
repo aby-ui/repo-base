@@ -16,3 +16,4 @@ U1RegisterAddon("WeakAuras", {
 U1RegisterAddon("WeakAurasModelPaths", {title = "WeakAuras:材质路径库", protected = nil, hide = nil });
 U1RegisterAddon("WeakAurasOptions", {title = "WeakAuras:配置界面", protected = nil, hide = nil });
 U1RegisterAddon("WeakAurasTemplates", {title = "WeakAuras：预设模板", protected = nil, hide = nil });
+U1RegisterAddon("WeakAurasArchive", {title = "WeakAuras：数据存档", protected = nil, hide = nil });
