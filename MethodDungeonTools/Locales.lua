@@ -17,6 +17,133 @@ L["Right-click to lock Minimap Button"] = "右键锁定小地图按钮"
 --L["Default"] = "默认"
 --L["<New Preset>"] = "<新建预案>"
 
+--[[
+local i = 1
+while true do
+  local insID = EJ_GetInstanceByIndex(i, false)
+  if not insID then break else i=i+1 end
+  local name, _, _, _, _, _, mapID = EJ_GetInstanceInfo(insID)
+  print(insID, name)
+end
+]]
+local dungeonList = {
+    [1] = "Black Rook Hold",             --740
+    [2] = "Cathedral of Eternal Night",  --900
+    [3] = "Court of Stars",              --800
+    [4] = "Darkheart Thicket",           --762
+    [5] = "Eye of Azshara",              --716
+    [6] = "Halls of Valor",              --721
+    [7] = "Maw of Souls",                --727
+    [8] = "Neltharion's Lair",           --767
+    [9] = "Return to Karazhan Lower",    --860
+    [10] = "Return to Karazhan Upper",   --860
+    [11] = "Seat of the Triumvirate",    --945
+    [12] = "The Arcway",                 --726
+    [13] = "Vault of the Wardens",       --707
+    [14] = " >Battle for Azeroth",       --0
+    [15] = "Atal'Dazar",                 --968
+    [16] = "Freehold",                   --1001
+    [17] = "Kings' Rest",                --1041
+    [18] = "Shrine of the Storm",        --1036
+    [19] = "Siege of Boralus",           --1023
+    [20] = "Temple of Sethraliss",       --1030
+    [21] = "The MOTHERLODE!!",           --1012
+    [22] = "The Underrot",               --1022
+    [23] = "Tol Dagor",                  --1002
+    [24] = "Waycrest Manor",             --1021
+    [25] = "Mechagon - Junkyard",        --1178
+    [26] = "Mechagon - Workshop",        --1178
+    [27] = " >Legion",                   --0
+}
+
+--[[
+local list = { 740,900,800,762,716,721,727,767,860,860,945,726,707,0,968,1001,1041,1036,1023,1030,1012,1022,1002,1021,1178,1178,0 }
+local floors = {}
+for i, id in ipairs(list) do
+    floors[i] = {}
+    if id ~= 0 then
+        local name, _, _, _, _, _, mapID = EJ_GetInstanceInfo(id)
+        local mapGroupID = C_Map.GetMapGroupID(mapID)
+        if not mapGroupID then
+            floors[i][1] = C_Map.GetMapInfo(mapID).name
+        else
+            local mapGroupMembersInfo = C_Map.GetMapGroupMembersInfo(mapGroupID);
+            for j, v in ipairs(mapGroupMembersInfo) do
+                floors[i][j] = v.name
+            end
+        end
+    end
+end
+wowluacopy(floors)
+--]]
+
+MDT_DungeonSubLevels_zhCN = {
+    {
+        "渡鸦墓地",
+        "大礼堂",
+        "渡鸦堡",
+        "渡鸦栖木",
+        "拉文凯斯领主大厅",
+        "渡鸦之冠",
+    },
+    {
+        "月之圣殿",
+        "黎明森林",
+        "翡翠档案室",
+        "辉光之路",
+        "艾露恩圣器室",
+    },
+    { "群星庭院", "宝石庄园", "露台", },
+    { "黑心林地", },
+    { "艾萨拉之眼", },
+    { "至高之门", "永恒猎场", "英灵殿", },
+    { "冥口峭壁", "堡垒", "纳格法尔号", },
+    { "奈萨里奥的巢穴", },
+    {
+        "主宰的露台",
+        "歌剧院楼座",
+        "会客间",
+        "宴会厅",
+        "上层马厩",
+        "仆役宿舍",
+    },
+    {
+        "下层断阶",
+        "上层断阶",
+        "展览馆",
+        "守护者的图书馆",
+        "图书馆一层",
+        "上层图书馆",
+        "象棋大厅",
+        "虚空异界",
+    },
+    { "执政团之座", },
+    { "魔法回廊", },
+    { "守望者庭院", "守望者地窟", "背叛者地窟", },
+    nil,
+    { "阿塔达萨", "献祭之池", },
+    { "自由镇", },
+    { "诸王之眠", },
+    { "风暴神殿", "风暴之陨", },
+    { "围攻伯拉勒斯", "围攻伯拉勒斯(楼上)",},
+    { "塞塔里斯神庙", "塞塔里斯中庭", },
+    { "暴富矿区！！", },
+    { "地渊孢林", "破灭沉降梯", },
+    {
+        "托尔达戈",
+        "排水道",
+        "海狱",
+        "禁闭室",
+        "军官区",
+        "狱长棱堡",
+        "狱长平台",
+    },
+    { "大堂", "上层", "地窖", "墓穴", "裂隙", },
+    { "麦卡贡岛", "麦卡贡岛（通道）", },
+    { "机械天穹", "废物管道", "地渊废料场", "麦卡贡市", },
+    nil
+}
+
 L["Black Rook Hold"] = "黑鸦堡"
 L["Cathedral of Eternal Night"] = "永夜大教堂"
 L["Court of Stars"] = "群星庭院"
@@ -90,6 +217,26 @@ L["Reset Preset"] = "重置预案"
 L["Level "] = "等级 "
 L["Forces: %d\nTotal: %d/%d"] = "进度值：%d\n总进度：%d/%d"
 L["\nTotal :"] = "\n 总计 "
+
+L["MDI"] = "比赛选项"
+L["MDI Mode"] = "MDI模式"
+L["Seasonal Affix:"] = "赛季词缀"
+L["Beguiling 1 Void"] = "迷醉：奥暴"
+L["Beguiling 2 Tides"] = "迷醉：免控"
+L["Beguiling 3 Ench."] = "迷醉：反伤"
+L["Reaping"] = "收割"
+L["Awakened A"] = "觉醒A"
+L["Awakened B"] = "觉醒B"
+L["Freehold:"] = "自由镇事件"
+L["1. Cutwater"] = "乔里(追狗)"
+L["2. Blacktooth"] = "拉乌尔(拳手)"
+L["3. Bilge Rats"] = "尤朵拉(喝酒)"
+L["Join Crew"] = "完成事件"
+
+L["  Join Crew:"] = "完成事件:"
+L["Blacktooth"] = "黑齿拳手"
+L["Cutwater"] = "追狗"
+L["Bilge Rats"] = "喝酒"
 
 --- AceGUIWidget-MethodDungeonToolsPullButton.lua ---
 L["+ Add pull"] = "+ 新增一波"

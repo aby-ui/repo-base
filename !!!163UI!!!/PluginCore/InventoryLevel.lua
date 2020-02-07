@@ -386,7 +386,7 @@ do
 end
 
 
-----物等显示
+--[[ --装等显示，统一用TinyInspect
 local slot = {'Head','Neck','Shoulder','Chest','Waist','Legs','Feet','Wrist','Hands','Finger0','Finger1','Trinket0','Trinket1','Back','MainHand','SecondaryHand'}
 local function CreateIlvText(slotName)
     local f = _G[slotName]
@@ -409,7 +409,7 @@ local function CheckItem(unit, frame)
                 else
                     local _, _, itemQuality = GetItemInfo(itemLink)
                     local ilvl = U1GetRealItemLevel(itemLink, unit, slotId)
-                    f.ilv:SetText(ilvl)
+                    f.ilv:SetText(ilvl .. (IsCorruptedItem(itemLink) and "|cffFF0000◆|r" or ""))
                     f.ilv:SetTextColor(U1GetInventoryLevelColor(ilvl, itemQuality))
                 end
             end
@@ -432,6 +432,7 @@ CharacterFrame:HookScript('OnEvent', function(self, event)
    if event ~= 'PLAYER_EQUIPMENT_CHANGED' then return end 
    CheckItem('player', 'Character') 
 end)
+--]]
 
 --[[------------------------------------------------------------
 scan stats

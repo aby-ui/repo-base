@@ -51,6 +51,7 @@ local DefaultDB = {
     PaperDollItemLevelOutsideString = false, --PaperDoll文字外邊顯示(沒有在配置面板)
     ItemLevelAnchorPoint = "TOPLEFT",         --裝等位置
     ShowPluginGreenState = false,         --裝備綠字屬性前綴顯示
+    ShowCorruptedMark = true,             --装等显示腐蚀值
 }
 
 local options = {
@@ -59,6 +60,7 @@ local options = {
       child = {
         { key = "ShowColoredItemLevelString" },
         { key = "ShowItemSlotString" },
+        { key = "ShowCorruptedMark" },
       },
       subtype = {
         { key = "Bag" },

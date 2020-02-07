@@ -128,7 +128,7 @@ function ELP_ScanStats(itemID, itemLink)
     itemID = itemID or GetItemIDFromLink(itemLink)
     local name, link, _, iLevel = GetItemInfo(itemID)
     if not link or not iLevel then return end
-    local fakeLink = format("item:%d::::::::120::::2:%d:3517::", itemID, 1472+(920-iLevel))
+    local fakeLink = format("item:%d::::::::120::::1:%d:::", itemID, 1472+(465-iLevel))
     local stats = U1GetItemStats(fakeLink, nil, nil, false, select(3, UnitClass("player")), GetSpecializationInfo(GetSpecialization() or 0))
     if type(stats) == "table" then stats[3],stats[4] = stats[4], stats[3] end
     return stats

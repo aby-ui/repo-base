@@ -29,7 +29,7 @@ local defaultDB = {
     CollectionsJournal = {save = true, },
     GuildFrame = {save = true, },
     FriendsFrame = {save = true, },
-    ObjectiveTrackerFrame_abyuiBG = { save = true, },
+    ObjectiveTrackerFrame_abyuiBG = { save = true, modifyKey = "IsShiftKeyDown", },
     --WorldMapFrame = {save = true, },
     ScrappingMachineFrame = { save = true, },
     AzeriteEmpoweredItemUI = { save = true, },
@@ -140,7 +140,8 @@ local function hookSetPoint(self, point, parent, relative, offsetx, offsety)
     end
 end
 
-local function OnDragStart(self)
+local function OnDragStart(self, button)
+    if button == "RightButton" then return end
     local frameToMove = self.frameToMove
     local settings = frameToMove.settings
     if settings and not settings.default then -- set defaults
@@ -379,6 +380,7 @@ local function OnEvent(self, event, arg1, arg2)
         frame:RegisterEvent("ADDON_LOADED") --for blizz lod addons
         db = BlizzMoveDB and BlizzMoveDB.version == defaultDB.version and BlizzMoveDB or defaultDB
         if db.ObjectiveTrackerFrame then db.ObjectiveTrackerFrame_abyuiBG = db.ObjectiveTrackerFrame db.ObjectiveTrackerFrame = nil end
+        db.ObjectiveTrackerFrame_abyuiBG.modifyKey = "IsShiftKeyDown"
 
         BlizzMoveDB = db
         for k, v in pairs(db) do
@@ -396,11 +398,11 @@ local function OnEvent(self, event, arg1, arg2)
         --BM_SetMoveHandler(WatchFrame,WatchFrameCollapseExpandButton)
         --userPlaced[WatchFrame] = true --加了也不好，UIParent里写的有问题
 
-        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(22,22):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
-        CoreUIEnableTooltip(OTFMover, "面板移动","Ctrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
+        WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(36,24):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
+        CoreUIEnableTooltip(OTFMover, "面板移动","按住SHIFT拖动\nCtrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
         local bg = BM_CreateBackground(ObjectiveTrackerFrame, "ObjectiveTrackerFrame_abyuiBG", "TOPLEFT", "BOTTOMRIGHT")
         BM_SetMoveHandler(bg,OTFMover)
-        BM_SetMoveHandler(bg,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
+        --BM_SetMoveHandler(bg,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
 
         BM_SetMoveHandler(GameMenuFrame)
         BM_SetMoveHandler(GossipFrame)

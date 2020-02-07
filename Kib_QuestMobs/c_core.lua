@@ -89,7 +89,7 @@ local LocalDatabase, GlobalDatabase, SavedVars = unpack(select(2, ...))
     end
 
 --<<SCAN QUEST DATA>>-------------------------------------------------------------------------------<<>>
-    local IgnoredQuests = { 56064, 56308, 55350 }
+    local IgnoredQuests = { 56064, 56308, 55350, 57728 }
     for _, v in ipairs(IgnoredQuests) do IgnoredQuests[C_TaskQuest.GetQuestInfoByQuestID(v)] = true end
     local ObjectiveLines = {}
     local function ScanPlate(plateData)                                                         --GlobalDatabase.EventBucket_AddLine("Kib_QuestMobs", "Plate Scanned and Cached: " .. plateData.unitName)

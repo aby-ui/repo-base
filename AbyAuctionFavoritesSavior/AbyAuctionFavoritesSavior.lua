@@ -119,3 +119,7 @@ frame:SetScript("OnEvent", function(self, event, addon)
         if not AbyLoadFavourites then init() end
     end
 end)
+
+--self:GetAuctionHouseFrame():QueryAll(AuctionHouseSearchContext.AllFavorites);
+--C_AuctionHouse.SearchForFavorites(sorts);
+--/dump hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, "UpdateBrowseResults", function() print(AuctionHouseFrame.isDisplayingFavorites, self.browseResults) end)

@@ -35,6 +35,7 @@ ns.L = {
     PaperDoll                   = "人物面板",
     Chat                        = "聊天",
     Loot                        = "拾取",
+    ShowCorruptedMark           = "装等后面显示腐蚀标记",
 }
 
 BINDING_NAME_InspectRaidFrame = "显示团队观察面板"

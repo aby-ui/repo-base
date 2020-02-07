@@ -510,9 +510,22 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     tiptext = tiptext .. "\n|cffffd200绿字总和:|r " .. GREEN_FONT_COLOR_CODE .. greenTotal .. "|r"
     for i=1, 4 do if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "") end end
     if not inspecting then tiptext = tiptext .. "\n|cffffd200精通系数:|r " .. YELLOW_FONT_COLOR_CODE .. format("%.2f", select(2, GetMasteryEffect())) .. "|r" end
-    local i=9 if stats_total[i] then tiptext = tiptext .. "\n|cff946cd0".."合计腐蚀"..":|r".."|cff946cd0".." +"..format("%-4d", max(0, stats_total[i] - (stats_total[i+1] or 0)))..format(" (+%d)", stats_total[i]).."|r" end
-    local i=10 if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..YELLOW_FONT_COLOR_CODE .." +"..format("%d",stats_total[i]).."|r (未计精华)" end
-
+    --8.3 CORRUPTION
+    --local i=10 if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..YELLOW_FONT_COLOR_CODE .." +"..format("%d",stats_total[i]).."|r (未计精华)" end
+    local corruption_resistence = (stats_total[10] or 0) + 10
+    local i=9 if stats_total[i] then tiptext = tiptext .. "\n|cff946cd0".."合计腐蚀"..":|r".."|cff946cd0".." +"..format("%-5d", max(0, stats_total[i] - corruption_resistence))..format(" (+%d)", stats_total[i]).."|r" end
+    if U1GetCorruptionInfo then
+        local slots = { Waist=6, Legs=7, Feet=8, Wrist=9, Hands=10, Finger0=11, Finger1=12, MainHand=16, SecondaryHand=17, }
+        for _, slot in pairs(slots) do
+            local link = sum["ItemLink"][slot]
+            if link then
+                local name, corrupt, level = U1GetCorruptionInfo(link)
+                if name then
+                    tiptext = tiptext .. "\n|cff946cd0 - ".. (level and format("%d级%s", level, name) or "1级专有") .. "    (+"..corrupt..")|r"
+                end
+            end
+        end
+    end
 	GearStatsSummary_SetFrameText(frame, tiptitle, tiptext, unit);
 	frame:Show();
 end

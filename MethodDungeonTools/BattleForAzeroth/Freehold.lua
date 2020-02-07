@@ -1,3 +1,5 @@
+local L = MethodDungeonTools.L
+
 local dungeonIndex = 16
 MethodDungeonTools.mapInfo[dungeonIndex] = {
     viewportPositionOverrides =
@@ -71,10 +73,10 @@ function MethodDungeonTools:UpdateFreeholdSelector(week)
     selectorGroup:ReleaseChildren()
     MethodDungeonTools:GetCurrentPreset().freeholdCrew = (MethodDungeonTools:GetCurrentPreset().freeholdCrew and week) or nil
     local label = AceGUI:Create("Label")
-    label:SetText("  Join Crew:")
+    label:SetText(L"  Join Crew:")
     selectorGroup:AddChild(label)
     local check = AceGUI:Create("CheckBox")
-    check:SetLabel((week==2 and "Blacktooth") or (week==1 and "Cutwater") or (week==3 and "Bilge Rats"))
+    check:SetLabel((week==2 and L"Blacktooth") or (week==1 and L"Cutwater") or (week==3 and L"Bilge Rats"))
     selectorGroup:AddChild(check)
     check:SetCallback("OnValueChanged",function(widget,callbackName,value)
         MethodDungeonTools:GetCurrentPreset().freeholdCrew = (value and week) or nil

@@ -64,6 +64,8 @@ local ProcessGarrisonLandingPageMMB = function()
 
     --其他动画不用设置
     GarrisonLandingPageMinimapButton.LoopingGlow:SetSize(36,36)
+    --关闭教程位置漂移
+    SetOrHookScript(GarrisonLandingPageTutorialBox, "OnShow", function(self) self.CloseButton:Click() end)
 end
 
 local addonName = ...

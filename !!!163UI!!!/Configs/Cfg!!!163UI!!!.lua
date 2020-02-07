@@ -92,11 +92,13 @@ U1RegisterAddon("!!!163UI!!!", {
             end -- alwaysCompareItems
         end
     },
+    --[[
     {
         var = "showLevelOnSlot",
-        text = "装备栏左上角显示物品等级",
+        text = "玩家面板左上角显示装等",
         default = 1,
     },
+    --]]
     --[[ 7.0 以后无法显示详细信息，只能取消了
     {
         var = "lootenh",
@@ -251,17 +253,17 @@ U1RegisterAddon("!!!163UI!!!", {
         callback = function(cfg, v, loading)
             if loading and not v then return end
             --- 拍卖行不会自动关闭
-            CoreDependCall("Blizzard_AuctionUI", function()
+            CoreDependCall("Blizzard_AuctionHouseUI", function()
                 if v then
-                    AuctionFrame:SetAttribute("UIPanelLayout-area", false);
-                    tinsertdata(UISpecialFrames, "AuctionFrame")
+                    AuctionHouseFrame:SetAttribute("UIPanelLayout-area", false);
+                    tinsertdata(UISpecialFrames, "AuctionHouseFrame")
                 else
-                    AuctionFrame:SetAttribute("UIPanelLayout-area", "doublewide");
-                    tremovedata(UISpecialFrames, "AuctionFrame")
+                    AuctionHouseFrame:SetAttribute("UIPanelLayout-area", "doublewide");
+                    tremovedata(UISpecialFrames, "AuctionHouseFrame")
                 end
-                if not AuctionFrame._hooked163 then
-                    AuctionFrame._hooked163 = true
-                    hooksecurefunc(AuctionFrame, "SetAttribute", function(self, arg1, value)
+                if not AuctionHouseFrame._hooked163 then
+                    AuctionHouseFrame._hooked163 = true
+                    hooksecurefunc(AuctionHouseFrame, "SetAttribute", function(self, arg1, value)
                         if (arg1 == "UIPanelLayout-area" and value and U1GetCfgValue(cfg._path)) then
                             self:SetAttribute(arg1, false);
                         end

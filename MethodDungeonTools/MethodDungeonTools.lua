@@ -380,6 +380,7 @@ local dungeonSubLevels = {
         [4] = "Mechagon City",
     },
 }
+if _G["MDT_DungeonSubLevels_"..GetLocale()] then dungeonSubLevels = _G["MDT_DungeonSubLevels_"..GetLocale()] end
 function MethodDungeonTools:GetDungeonSublevels()
     return dungeonSubLevels
 end
@@ -1322,7 +1323,7 @@ function MethodDungeonTools:MakeSidePanel(frame)
 
     --MDI
     frame.MDIButton = AceGUI:Create("Button")
-    frame.MDIButton:SetText("MDI")
+    frame.MDIButton:SetText(L"MDI")
     frame.MDIButton:SetWidth(buttonWidth)
     frame.MDIButton.frame:SetNormalFontObject(fontInstance)
     frame.MDIButton.frame:SetHighlightFontObject(fontInstance)
@@ -1633,13 +1634,13 @@ function MethodDungeonTools:DisplayMDISelector()
         MethodDungeonTools.MDISelector.frame:SetPoint("BOTTOMRIGHT",MethodDungeonTools.main_frame,"BOTTOMRIGHT",0,0)
 
         local label = AceGUI:Create("Label")
-        label:SetText("MDI Mode")
+        label:SetText(L"MDI Mode")
         MethodDungeonTools.MDISelector:AddChild(label)
 
         --beguiling
         MethodDungeonTools.MDISelector.BeguilingDropDown = AceGUI:Create("Dropdown")
-        MethodDungeonTools.MDISelector.BeguilingDropDown:SetLabel("Seasonal Affix:")
-        local beguilingList = {[1]="Beguiling 1 Void",[2]="Beguiling 2 Tides",[3]="Beguiling 3 Ench.",[13]="Reaping",[14]="Awakened A",[15]="Awakened B"}
+        MethodDungeonTools.MDISelector.BeguilingDropDown:SetLabel(L"Seasonal Affix:")
+        local beguilingList = {[1]=L"Beguiling 1 Void",[2]=L"Beguiling 2 Tides",[3]=L"Beguiling 3 Ench.",[13]=L"Reaping",[14]=L"Awakened A",[15]=L"Awakened B"}
         MethodDungeonTools.MDISelector.BeguilingDropDown:SetList(beguilingList)
         MethodDungeonTools.MDISelector.BeguilingDropDown:SetCallback("OnValueChanged",function(widget,callbackName,key)
             local preset = self:GetCurrentPreset()
@@ -1654,8 +1655,8 @@ function MethodDungeonTools:DisplayMDISelector()
 
         --freehold
         MethodDungeonTools.MDISelector.FreeholdDropDown = AceGUI:Create("Dropdown")
-        MethodDungeonTools.MDISelector.FreeholdDropDown:SetLabel("Freehold:")
-        local freeholdList = {"1. Cutwater","2. Blacktooth","3. Bilge Rats"}
+        MethodDungeonTools.MDISelector.FreeholdDropDown:SetLabel(L"Freehold:")
+        local freeholdList = {L"1. Cutwater",L"2. Blacktooth",L"3. Bilge Rats"}
         MethodDungeonTools.MDISelector.FreeholdDropDown:SetList(freeholdList)
         MethodDungeonTools.MDISelector.FreeholdDropDown:SetCallback("OnValueChanged",function(widget,callbackName,key)
             local preset = MethodDungeonTools:GetCurrentPreset()
@@ -1673,7 +1674,7 @@ function MethodDungeonTools:DisplayMDISelector()
         MethodDungeonTools.MDISelector:AddChild(MethodDungeonTools.MDISelector.FreeholdDropDown)
 
         MethodDungeonTools.MDISelector.FreeholdCheck = AceGUI:Create("CheckBox")
-        MethodDungeonTools.MDISelector.FreeholdCheck:SetLabel("Join Crew")
+        MethodDungeonTools.MDISelector.FreeholdCheck:SetLabel(L"Join Crew")
         MethodDungeonTools.MDISelector.FreeholdCheck:SetCallback("OnValueChanged",function(widget,callbackName,value)
             local preset = MethodDungeonTools:GetCurrentPreset()
             preset.mdi.freeholdJoined = value

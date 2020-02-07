@@ -21,6 +21,7 @@ Simc.lua
 FiveCombo.lua
 8.0\ChallengesGuildBest.xml
 8.0\InspectCorrupt.lua
+8.0\CorruptInfo.lua
 
 yClassColors\core.lua
 yClassColors\battlefield.lua
