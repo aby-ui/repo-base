@@ -544,13 +544,13 @@ local function ChatItemLevel(Hyperlink)
                 corrupt = "|T3004126:0|t"
                 if U1GetCorruptionInfo then
                     local name, _, level = U1GetCorruptionInfo(link)
-                    corrupt = corrupt .. name .. level
+                    corrupt = corrupt .. "|cff946cd0" .. (level and (name .. level) or "") .. "|r"
                 end
             else
                 corrupt = IsCorruptedItem(link) and "|T3004126:0|t" or ""
             end
 	        if (quality == 6 and class == WEAPON) then gem = "" end
-            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h"..gem..corrupt).." "
+            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h")..gem..corrupt.." "
         end
         Caches[Origin] = Hyperlink
     elseif (subclass and subclass == MOUNTS) then

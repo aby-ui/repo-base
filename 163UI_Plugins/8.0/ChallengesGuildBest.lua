@@ -108,3 +108,61 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         end
     end)
 end)
+
+--[[------------------------------------------------------------
+大米赛季光辉事迹
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_ChallengesUI", function()
+    -- local aID10, aID15 = 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
+    -- local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
+    hooksecurefunc("ChallengesFrame_Update", function(self)
+        --[[
+        table.wipe(crits)
+        local ar10 = select(4, GetAchievementInfo(aID10))
+        local ar15 = select(4, GetAchievementInfo(aID15))
+        for i=1, numCrits do
+            local name, _, _, complete = GetAchievementCriteriaInfo(aID15, i)
+            if complete == 1 then
+                crits[name] = 15
+            else
+                name, _, _, complete = GetAchievementCriteriaInfo(aID10, i)
+                if complete == 1 then crits[name] = 10 end
+            end
+        end
+        --]]
+
+        for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+            --local name = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            if not icon.tex then
+                WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, 3):Key("tex"):up():un()
+                SetOrHookScript(icon, "OnEnter", function()
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                    GameTooltip:AddLine("爱不易提供：")
+                    --https://wow.tools/dbc/?dbc=uitextureatlasmember&build=8.3.0.33237#search=VignetteKillElite&page=1
+                    --https://wow.tools/dbc/?dbc=manifestinterfacedata&build=8.3.0.33237#search=1121272&page=1
+                    local atlas = C_Texture.GetAtlasInfo("VignetteKill")
+                    local texCoord = format("%d:%d:%d:%d", atlas.leftTexCoord*1024,atlas.rightTexCoord*1024,atlas.topTexCoord*512,atlas.bottomTexCoord*512)
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:"..texCoord.."\124t 已限时10层")
+                    local atlas = C_Texture.GetAtlasInfo("VignetteKillElite")
+                    local texCoord = format("%d:%d:%d:%d", atlas.leftTexCoord*1024,atlas.rightTexCoord*1024,atlas.topTexCoord*512,atlas.bottomTexCoord*512)
+                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:"..texCoord.."\124t 已限时15层")
+                    GameTooltip:Show()
+                end)
+            end
+            icon.tex:Show()
+            local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(icon.mapID);
+            if inTimeInfo then
+                if inTimeInfo.level >= 15 then
+                    icon.tex:SetAtlas("VignetteKillElite")
+                elseif inTimeInfo.level >= 10 then
+                    icon.tex:SetAtlas("VignetteKill")
+                else
+                    icon.tex:Hide()
+                end
+            else
+                icon.tex:Hide()
+            end
+        end
+    end)
+    --ChallengesFrame_Update(ChallengesFrame)
+end)

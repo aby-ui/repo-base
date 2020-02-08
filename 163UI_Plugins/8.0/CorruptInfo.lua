@@ -200,23 +200,24 @@ function U1GetCorruptionInfo(itemString)
 end
 
 local pattern = "^"..ITEM_CORRUPTION_BONUS_STAT:gsub("%+%%d", "%%+[0-9]+").."$" --"+%d 腐蚀"
-SetOrHookScript(GameTooltip, "OnTooltipSetItem", function(self, link)
+local hookTooltipSetItem = function(self, link)
     link = select(2, self:GetItem())
     local name, corrupt, level, levels = U1GetCorruptionInfo(link)
+    local tooltipName = self:GetName()
     if name then
-        for i=5, 20 do
-            local left = _G["GameTooltipTextLeft" .. i]:GetText()
+        for i = 5, 20 do
+            local left = _G[tooltipName .. "TextLeft" .. i]:GetText()
             if left:match(pattern) then
-                local right = _G["GameTooltipTextRight" .. i]
+                local right = _G[tooltipName .. "TextRight" .. i]
                 local text = ""
                 if not level then
                     text = name
                 else
                     text = format(LOCALES.PATTERN_INFO, level, name)
                     text = text .. "("
-                    for j=1,#levels do
-                        if j>1 then text = text .. "/" end
-                        if j==level then text = text.."|cff00ff00"..levels[j].."|r" else text = text..levels[j] end
+                    for j = 1, #levels do
+                        if j > 1 then text = text .. "/" end
+                        if j == level then text = text .. "|cff00ff00" .. levels[j] .. "|r" else text = text .. levels[j] end
                     end
                     text = text .. ")"
                 end
@@ -227,4 +228,6 @@ SetOrHookScript(GameTooltip, "OnTooltipSetItem", function(self, link)
             end
         end
     end
-end)
+end
+SetOrHookScript(GameTooltip, "OnTooltipSetItem", hookTooltipSetItem)
+SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
