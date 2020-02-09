@@ -115,6 +115,8 @@ function roster:UpdateOwned()
 		for _,pet in pairs(sanctuary) do
 			pet[2] = nil
 		end
+		-- in case user caged the gcd pet, reset gcd pet
+		rematch.GCDPetID = nil
 		-- next expand filters
 		roster:ExpandJournalFilters()
 		local numPets,owned = C_PetJournal.GetNumPets() -- get this AFTER expanding

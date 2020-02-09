@@ -96,11 +96,7 @@
                     <OnLoad>
                         self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
                     </OnLoad>
-                    <OnClick>
-                        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-                        SetSuperTrackedQuestID(self.questID);
-                        WorldMapPing_StartPingQuest(self.questID);
-                    </OnClick>
+                    <OnClick function="KT_WorldQuestPOIButton_OnClick"/>
                 </Scripts>
             </Button>
         </Frames>

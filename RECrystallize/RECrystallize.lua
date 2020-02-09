@@ -7,9 +7,6 @@ _G.RECrystallize = RE
 local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print
 local sMatch, sFormat = _G.string.match, _G.string.format
 local tConcat = _G.table.concat
-local IsLinkType = _G.LinkUtil.IsLinkType
-local ExtractLink = _G.LinkUtil.ExtractLink
-local After = _G.C_Timer.After
 local Round = _G.Round
 local PlaySound = _G.PlaySound
 local GetItemInfo = _G.GetItemInfo
@@ -20,6 +17,9 @@ local IsShiftKeyDown = _G.IsShiftKeyDown
 local SendChatMessage = _G.SendChatMessage
 local SetTooltipMoney = _G.SetTooltipMoney
 local FormatLargeNumber = _G.FormatLargeNumber
+local After = _G.C_Timer.After
+local IsLinkType = _G.LinkUtil.IsLinkType
+local ExtractLink = _G.LinkUtil.ExtractLink
 local ReplicateItems = _G.C_AuctionHouse.ReplicateItems
 local GetNumReplicateItems = _G.C_AuctionHouse.GetNumReplicateItems
 local GetReplicateItemInfo = _G.C_AuctionHouse.GetReplicateItemInfo
@@ -32,7 +32,7 @@ local ElvUI = _G.ElvUI
 
 local PETCAGEID = 82800
 
-RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["ScanPulse"] = 1, ["DatabaseVersion"] = 1}
+RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1}
 RE.GUIInitialized = false
 RE.RecipeLock = false
 RE.BlockTooltip = 0
@@ -42,6 +42,42 @@ RE.TooltipIcon = ""
 RE.TooltipItemID = 0
 RE.TooltipCount = 0
 RE.TooltipCustomCount = -1
+
+RE.AceConfig = {
+	type = "group",
+	args = {
+		minimap = {
+			name = L["Always display the price of the entire stock"],
+			desc = L["When enabled the functionality of the SHIFT button will be swapped."],
+			type = "toggle",
+			width = "full",
+			order = 1,
+			set = function(_, val) RE.Config.AlwaysShowAll = val end,
+			get = function(_) return RE.Config.AlwaysShowAll end
+		},
+		dbcleanup = {
+			name = L["Data freshness"],
+			desc = L["The number of days after which old data will be deleted."],
+			type = "range",
+			width = "double",
+			order = 2,
+			min = 1,
+			max = 14,
+			step = 1,
+			set = function(_, val) RE.Config.DatabaseCleanup = val * 86400 end,
+			get = function(_) return RE.Config.DatabaseCleanup / 86400 end
+		},
+		dbpurge = {
+			name = L["Purge this server database"],
+			desc = L["WARNING! This operation is not reversible!"],
+			type = "execute",
+			width = "double",
+			order = 3,
+			confirm = true,
+			func = function() RE.DB[RE.RealmString] = {}; collectgarbage("collect") end
+		},
+	}
+}
 
 local function ElvUISwag(sender)
 	if sender == "Livarax-BurningLegion" then
@@ -186,6 +222,8 @@ function RE:OnEvent(self, event, ...)
 		if RE.DB[RE.RealmString] == nil then
 			RE.DB[RE.RealmString] = {}
 		end
+		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RECrystallize", RE.AceConfig)
+		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RECrystallize", "RECrystallize")
 
 		if RE.Config.GuildChatPC then
 			self:RegisterEvent("CHAT_MSG_GUILD")
@@ -248,7 +286,8 @@ function RE:TooltipAddPrice(self)
 				RE.TooltipIcon = " |TInterface\\AddOns\\RECrystallize\\Icons\\Warning:8|t"
 			end
 			if RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant] ~= nil then
-				if IsShiftKeyDown() and (RE.TooltipCount > 0 or RE.TooltipCustomCount > 0) then
+				local shiftPressed = IsShiftKeyDown()
+				if ((shiftPressed and not RE.Config.AlwaysShowAll) or (not shiftPressed and RE.Config.AlwaysShowAll)) and (RE.TooltipCount > 0 or RE.TooltipCustomCount > 0) then
 					local count = RE.TooltipCustomCount > 0 and RE.TooltipCustomCount or RE.TooltipCount
 					SetTooltipMoney(self, RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant].Price * count, nil, "|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r", " (x"..count..")"..RE.TooltipIcon)
 				else
@@ -281,7 +320,7 @@ function RE:TooltipPetAddPrice(link)
 end
 
 function RE:HandleButton(mode)
-	if mode == _G.AuctionHouseFrameDisplayMode.Buy then
+	if mode == _G.AuctionHouseFrameDisplayMode.Buy or mode == _G.AuctionHouseFrameDisplayMode.ItemBuy or mode == _G.AuctionHouseFrameDisplayMode.CommoditiesBuy then
 		RE.AHButton.frame:Show()
 	else
 		RE.AHButton.frame:Hide()
@@ -319,7 +358,7 @@ function RE:Scan()
 	RE.AHButton:SetText(count.." / "..num)
 	payloadDiff = count - payloadDiff
 	if payloadDiff > 0 then
-		After(RE.Config.ScanPulse, RE.Scan)
+		After(0.25, RE.Scan)
 	else
 		RE:EndScan()
 	end
@@ -336,10 +375,10 @@ function RE:EndScan()
 	RE.AHButton:SetText(L["Scan finished!"])
 	PlaySound(_G.SOUNDKIT.AUCTION_WINDOW_CLOSE)
 	print("|cFF9D9D9D---|r |cFF74D06CRE|rCrystallize "..LANDING_PAGE_REPORT.." |cFF9D9D9D---|r")
-	print(L["Scan time"]..": "..SecondsToTime(time() - RE.Config.LastScan))
-	print(L["New items"]..": "..RE.ScanStats[1])
-	print(L["Updated items"]..": "..RE.ScanStats[2])
-	print(L["Removed items"]..": "..RE.ScanStats[3])
+	print("|cFF74D06C"..L["Scan time"]..":|r "..SecondsToTime(time() - RE.Config.LastScan))
+	print("|cFF74D06C"..L["New items"]..":|r "..RE.ScanStats[1])
+	print("|cFF74D06C"..L["Updated items"]..":|r "..RE.ScanStats[2])
+	print("|cFF74D06C"..L["Removed items"]..":|r "..RE.ScanStats[3])
 end
 
 function RE:ParseDatabase()
@@ -416,4 +455,44 @@ function RE:GetCheapestVariant(items)
 		end
 	end
 	return target
+end
+
+-- API
+
+function RECrystallize_PriceCheck(link)
+	if link then
+		local itemID
+		local variant
+		local partial = false
+
+		if IsLinkType(link, "item") then
+			itemID = tonumber(sMatch(link, "item:(%d+)"))
+			variant = RE:GetItemString(link)
+		elseif IsLinkType(link, "battlepet") then
+			itemID = PETCAGEID
+			variant = RE:GetPetString(link)
+		else
+			return
+		end
+
+		if RE.DB[RE.RealmString][itemID] ~= nil then
+			if itemID ~= PETCAGEID and RE.DB[RE.RealmString][itemID][variant] == nil then
+				variant = RE:GetCheapestVariant(RE.DB[RE.RealmString][itemID])
+				partial = true
+			end
+			if RE.DB[RE.RealmString][itemID][variant] ~= nil then
+				return RE.DB[RE.RealmString][itemID][variant].Price, RE.DB[RE.RealmString][itemID][variant].LastSeen, partial
+			end
+		end
+	end
+end
+
+function RECrystallize_PriceCheckItemID(itemID)
+	if type(itemID) == "number" then
+		local variant = RE:GetCheapestVariant(RE.DB[RE.RealmString][itemID])
+
+		if RE.DB[RE.RealmString][itemID][variant] ~= nil then
+			return RE.DB[RE.RealmString][itemID][variant].Price, RE.DB[RE.RealmString][itemID][variant].LastSeen
+		end
+	end
 end

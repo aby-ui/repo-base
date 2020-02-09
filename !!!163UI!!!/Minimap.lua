@@ -518,7 +518,10 @@ function U1_MMBCreateCoordsButton()
     local HBD = LibStub("HereBeDragons-2.0")
     local function MinimapCoordsButton_OnUpdate()
         local px, py = HBD:GetPlayerZonePosition(false)
-        if not px or not py and btn:IsShown() then btn.originShown = true; btn:Hide() return end
+        if not px or not py then
+            if btn:IsShown() then btn.originShown = true; btn:Hide() end
+            return
+        end
         if btn.originShown then btn:Show() btn.originShown = nil end
         if(px == 0 and py == 0) then
             fot:SetText("无坐标");

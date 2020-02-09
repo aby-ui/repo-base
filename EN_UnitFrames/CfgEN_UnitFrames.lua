@@ -188,6 +188,22 @@ U1RegisterAddon("EN_UnitFrames", {
                 secure = 1,
                 text = "显示队友的目标",
                 callback = function(cfg, v, loading)
+                    local parentEnable = U1LoadDBValue(cfg._parent)
+                    for i=1, 4 do
+                        local powerBar = _G["PartyMemberFrame" .. i .. "PowerBarAlt"]
+                        if powerBar then
+                            powerBar:ClearAllPoints()
+                            if not parentEnable then
+                                powerBar:SetPoint("LEFT",_G["PartyMemberFrame"..i],"RIGHT",13,5)
+                            else
+                                if v then
+                                    powerBar:SetPoint("LEFT",_G["PartyMemberFrame"..i],"RIGHT",13+50+80,5)
+                                else
+                                    powerBar:SetPoint("LEFT",_G["PartyMemberFrame"..i],"RIGHT",13+50,5)
+                                end
+                            end
+                        end
+                    end
                     if InCombatLockdown() then return end
                     PartyTarget_Toggle(v);
                 end,

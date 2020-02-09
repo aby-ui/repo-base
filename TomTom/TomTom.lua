@@ -1106,7 +1106,7 @@ function TomTom:DebugListAllWaypoints()
     self:Printf(L["You are at (%s) in '%s' (map: %s)"], ctxt, czone, tostring(m))
     for m in pairs(waypoints) do
         local c,z,w = TomTom:GetCZWFromMapID(m)
-        local zoneName = hbd:GetLocalizedMap(m)
+        local zoneName = hbd:GetLocalizedMap(m) or "?"
         self:Printf("%s: (map: %d, zone: %s, continent: %s, world: %s)", zoneName, m, tostring(z), tostring(c), tostring(w))
         for key, wp in pairs(waypoints[m]) do
             local ctxt = RoundCoords(wp[2], wp[3], 2)

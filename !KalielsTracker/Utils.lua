@@ -65,7 +65,11 @@ function KT.GetCurrentMapContinent()
 end
 
 function KT.GetMapContinent(mapID)
-    return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+    if mapID == 1355 then   -- Nazjatar
+        return C_Map.GetMapInfo(mapID) or {}
+    else
+        return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+    end
 end
 
 function KT.GetMapNameByID(mapID)

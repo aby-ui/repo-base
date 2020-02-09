@@ -130,7 +130,8 @@ end
 
 -- /run for a=325, 400, 5 do ChatFrame1:AddMessage(a, U1GetInventoryLevelColor(a)) end
 function U1GetInventoryLevelColor(avgLevel, quality)
-    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 415, 455, 476, 481
+    --STEP3 随机以下，普通M STEP4 大米H减5， STEP5 玩家能得到最高的，STEP6 橙色
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 430, 460, 481, 481
     --local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then

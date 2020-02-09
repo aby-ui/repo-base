@@ -179,6 +179,21 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		return false
 	end
 
+	-- If the NPC belongs to an invasion/asault/event and its not active
+	if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].zoneQuestId and RS_tContains(C_QuestLog.GetActiveThreatMaps(), mapID)) then
+		local active = false
+		for i, questID in ipairs(private.ZONE_IDS[npcID].zoneQuestId) do
+			if (C_TaskQuest.IsActive(questID) or IsQuestFlaggedCompleted(questID)) then
+				active = true
+				break
+			end
+		end
+		
+		if (not active) then
+			return false
+		end
+	end
+	
 	---If its an NPC
 	if (npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE) then
 		-- If the NPC doesnt exist delete it

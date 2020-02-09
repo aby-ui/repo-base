@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2365, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200203212050")
+mod:SetRevision("20200206171259")
 mod:SetCreatureID(156523)
 mod:SetEncounterID(2327)--Obsidian Destroyer ID, but only one left after eliminating all others, should be correct
 mod:SetZone()
@@ -49,7 +49,7 @@ local specWarnShadowWoundsTaunt				= mod:NewSpecialWarningTaunt(307399, nil, nil
 local specWarnDevourMagic					= mod:NewSpecialWarningMoveAway(307805, nil, nil, nil, 1, 2)
 local yellDevourMagic						= mod:NewYell(307805)
 local yellDevourMagicFades					= mod:NewShortFadesYell(307805)
-local specWarnStygianAnnihilation			= mod:NewSpecialWarningMoveTo(308044, nil, nil, nil, 3, 2)
+local specWarnStygianAnnihilation			= mod:NewSpecialWarningMoveTo(308044, nil, 307421, nil, 3, 2)
 local specWarnBlackWing						= mod:NewSpecialWarningDodge(305663, nil, nil, nil, 2, 2)
 local specWarnDarkManifestation				= mod:NewSpecialWarningDodge(308903, nil, nil, nil, 2, 2)
 local specWarnAncientCurse					= mod:NewSpecialWarningYou(315025, nil, nil, nil, 1, 2, 4)

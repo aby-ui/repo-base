@@ -85,7 +85,7 @@ function toolbar:OnEvent(event,...)
 	if event=="UNIT_AURA" or event=="BAG_UPDATE" then -- can't qualify what changed on these two
 		update = true -- possibly bandages, treats or safari hat added/removed from inventory
 	elseif event=="SPELL_UPDATE_COOLDOWN" then
-		update = rematch:FindGCDPetID()
+		update = rematch:GetGCDPetID()
 	elseif event=="UNIT_SPELLCAST_SUCCEEDED" and select(5,...)==125439 then
 		update = true -- revive battle pets cast
 	elseif event=="COMPANION_UPDATE" and select(1,...)=="CRITTER" then
@@ -405,7 +405,7 @@ end
 -- updates most cooldowns (treat cooldowns handled in the Update due to special handling for old treat buffs)
 function toolbar:UpdateCooldowns()
 	-- update summon button's GCD (using FindGCDPetID in the SPELL_UPDATE_COOLDOWN)
-	local GCDPetID = rematch.GCDPetID
+	local GCDPetID = rematch:GetGCDPetID()
 	if GCDPetID then
 		toolbar.SummonRandom.Cooldown:SetCooldown(C_PetJournal.GetPetCooldownByGUID(GCDPetID))
 	end

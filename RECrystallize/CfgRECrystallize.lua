@@ -7,4 +7,10 @@ U1RegisterAddon("RECrystallize", {
     icon = [[Interface\Icons\INV_Misc_Coin_16]],
 
     ------- Options --------
+    {
+        text = "配置选项",
+        callback = function(cfg, v, loading)
+            LibStub("AceConfigDialog-3.0"):Open("RECrystallize")
+        end
+    }
 });

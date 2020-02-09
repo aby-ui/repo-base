@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2369, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200203212050")
+mod:SetRevision("20200206171259")
 mod:SetCreatureID(157620)
 mod:SetEncounterID(2334)
 mod:SetZone()
@@ -37,7 +37,7 @@ local warnProjectionsOver					= mod:NewEndAnnounce(307725, 2)
 local specWarnCloudedMind					= mod:NewSpecialWarningYou(307784, nil, nil, nil, 1, 2)--voice not yet decided
 local specWarnTwistedMind					= mod:NewSpecialWarningYou(307785, nil, nil, nil, 1, 2)--voice not yet decided
 local yellMark								= mod:NewPosYell(307784, DBM_CORE_AUTO_YELL_CUSTOM_POSITION, false)
-local specWarnImagesofAbsolutionSwitch		= mod:NewSpecialWarningSwitch(313239, "dps", nil, nil, 1, 2, 3)--30 seconds after spawn, when killable
+local specWarnImagesofAbsolutionSwitch		= mod:NewSpecialWarningSwitch(313239, "dps", 127876, nil, 1, 2, 3)--30 seconds after spawn, when killable
 local specWarnShadowShock					= mod:NewSpecialWarningStack(308059, nil, 7, nil, nil, 1, 6)
 local specWarnShadowShockTaunt				= mod:NewSpecialWarningTaunt(308059, nil, nil, nil, 1, 2)
 local specWarnShredPsyche					= mod:NewSpecialWarningMoveAway(307937, nil, nil, nil, 1, 2)

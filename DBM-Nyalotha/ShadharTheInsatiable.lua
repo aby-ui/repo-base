@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200203212050")
+mod:SetRevision("20200209032212")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetZone()
 mod:SetUsedIcons(4, 3, 2, 1)
-mod:SetHotfixNoticeRev(20200127000000)--2020, 1, 27
-mod:SetMinSyncRevision(20200129000000)
+mod:SetHotfixNoticeRev(20200205000000)--2020, 2, 5
+mod:SetMinSyncRevision(20200205000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -42,7 +42,7 @@ local warnBubblingOverflow					= mod:NewCountAnnounce(314736, 2)
 local warnEntropicMantle					= mod:NewSpellAnnounce(306933, 2)
 local warnCrush								= mod:NewTargetNoFilterAnnounce(307471, 3, nil, "Tank")
 local warnDissolve							= mod:NewTargetNoFilterAnnounce(307472, 3, nil, "Tank")
-local warnDebilitatingSpit					= mod:NewTargetNoFilterAnnounce(307358, 3, nil, false)
+local warnDebilitatingSpit					= mod:NewTargetNoFilterAnnounce(307358, 3, nil, false, 58519)
 local warnFrenzy							= mod:NewTargetNoFilterAnnounce(306942, 2)
 local warnFixate							= mod:NewTargetAnnounce(307260, 2)
 local warnEntropicBuildup					= mod:NewCountAnnounce(308177, 2)
@@ -53,7 +53,7 @@ local specWarnUncontrollablyRavenous		= mod:NewSpecialWarningSpell(312329, nil, 
 local specWarnCrushTaunt					= mod:NewSpecialWarningTaunt(307471, nil, nil, nil, 3, 2)
 local specWarnDissolveTaunt					= mod:NewSpecialWarningTaunt(307472, nil, nil, nil, 1, 2)
 local specWarnSlurryBreath					= mod:NewSpecialWarningDodge(306736, nil, nil, nil, 2, 2)
-local specWarnDebilitatingSpit				= mod:NewSpecialWarningYou(307358, nil, nil, nil, 1, 2)
+local specWarnDebilitatingSpit				= mod:NewSpecialWarningYou(307358, nil, 58519, nil, 1, 2)
 local specWarnFixate						= mod:NewSpecialWarningRun(307260, nil, nil, nil, 4, 2)
 local yellFixate							= mod:NewYell(307260, nil, true, 2)
 local specWarnUmbralEruption				= mod:NewSpecialWarningDodge(308157, false, nil, 2, 2, 2)--Because every 8-10 seconds is excessive, let user opt in for this
@@ -80,6 +80,9 @@ mod.vb.buildupCount = 0
 mod.vb.fixateCount = 0
 mod.vb.bossPowerUpdateRate = 4
 mod.vb.comboCount = 0
+mod.vb.firstCrush = nil
+mod.vb.firstDissolve = nil
+local playerName = UnitName("player")
 local SpitStacks = {}
 local orbTimersHeroic = {4, 22, 25, 28, 21, 26}
 local orbTimersNormal = {4, 25, 25, 25, 25}
@@ -150,7 +153,7 @@ end
 
 function mod:SpitTarget(targetname, uId)
 	if not targetname then return end
-	if targetname == UnitName("player") and self:AntiSpam(5, 5) then
+	if targetname == playerName and self:AntiSpam(5, 5) then
 		specWarnDebilitatingSpit:Show()
 		specWarnDebilitatingSpit:Play("targetyou")
 	else
@@ -163,6 +166,8 @@ function mod:OnCombatStart(delay)
 	self.vb.fixateCount = 0
 	self.vb.bossPowerUpdateRate = 4
 	self.vb.comboCount = 0
+	self.vb.firstCrush = nil
+	self.vb.firstDissolve = nil
 	table.wipe(SpitStacks)
 	table.wipe(seenAdds)
 	timerDebilitatingSpitCD:Start(10.1-delay)--START
@@ -211,20 +216,26 @@ function mod:SPELL_CAST_START(args)
 			self.vb.comboCount = 0
 		end
 		self.vb.comboCount = self.vb.comboCount + 1
-		--Only show taunt warning if you don't have debuff and it's 2nd or 3rd cast and you aren't already tanking
-		if self.vb.comboCount >= 2 and not DBM:UnitDebuff("player", 307471) and not self:IsTanking("player", "boss1", nil, true) then--Crush
-			specWarnDissolveTaunt:Show(L.name)
-			specWarnDissolveTaunt:Play("tauntboss")
+		--there is already a crush debuffed tank, and it is not us, therefor WE must taunt dissolve
+		--or, we are the dissolve debuffed tank and we need to tank this dissolve too
+		if not self:IsTanking("player", "boss1", nil, true) then
+			if (self.vb.firstCrush and self.vb.firstCrush ~= playerName) or (self.vb.firstDissolve and self.vb.firstDissolve == playerName) then
+				specWarnDissolveTaunt:Show(self.vb.firstCrush)
+				specWarnDissolveTaunt:Play("tauntboss")
+			end
 		end
 	elseif spellId == 307476 then--Crush
 		if self:AntiSpam(11, 1) then
 			self.vb.comboCount = 0
 		end
 		self.vb.comboCount = self.vb.comboCount + 1
-		--Only show taunt warning if you don't have debuff and it's 2nd or 3rd cast and you aren't already tanking
-		if self.vb.comboCount >= 2 and not DBM:UnitDebuff("player", 307472) and not self:IsTanking("player", "boss1", nil, true) then--Dissolve
-			specWarnCrushTaunt:Show(L.name)
-			specWarnCrushTaunt:Play("tauntboss")
+		--there is already a dissolve debuffed tank, and it is not us, therefor WE must taunt crush
+		--or, we are the crush debuffed tank and we need to tank this crush too
+		if not self:IsTanking("player", "boss1", nil, true) then
+			if (self.vb.firstDissolve and self.vb.firstDissolve ~= playerName) or (self.vb.firstCrush and self.vb.firstCrush == playerName) then
+				specWarnCrushTaunt:Show(self.vb.firstCrush)
+				specWarnCrushTaunt:Play("tauntboss")
+			end
 		end
 	end
 end
@@ -244,8 +255,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnUncontrollablyRavenous:Show()
 		specWarnUncontrollablyRavenous:Play("stilldanger")
 	elseif spellId == 307471 then
+		if not self.vb.firstCrush then
+			self.vb.firstCrush = args.destName
+		end
 		warnCrush:Show(args.destName)
 	elseif spellId == 307472 then
+		if not self.vb.firstDissolve then
+			self.vb.firstDissolve = args.destName
+		end
 		warnDissolve:Show(args.destName)
 	elseif spellId == 307358 then
 		local amount = args.amount or 1
@@ -374,6 +391,8 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 307469 then--Crush & Dissolve Cover
+		self.vb.firstCrush = nil
+		self.vb.firstDissolve = nil
 		timerCrushCD:Start()
 	end
 end

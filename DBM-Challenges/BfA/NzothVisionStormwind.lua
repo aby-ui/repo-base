@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200129034746")
+mod:SetRevision("20200205154736")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -74,7 +74,6 @@ local timerVoidEruptionCD		= mod:NewCDTimer(27.9, 309819, nil, nil, nil, 2)
 local timerTaintedPolymorphCD	= mod:NewAITimer(21, 309648, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)
 local timerExplosiveOrdnanceCD	= mod:NewCDTimer(20.7, 305672, nil, nil, nil, 3)--20-25 (on alleria anyways, forgot to log other guy)
 local timerChainsofServitudeCD	= mod:NewAITimer(21, 298691, nil, nil, nil, 2)
-local timerDarkGazeCD			= mod:NewAITimer(21, 308669, nil, nil, nil, 3)
 
 mod:AddInfoFrameOption(307831, true)
 
@@ -119,10 +118,9 @@ function mod:SPELL_CAST_START(args)
 		specWarnChainsofServitude:Show()
 		specWarnChainsofServitude:Play("justrun")
 		timerChainsofServitudeCD:Start()
-	elseif spellId == 308669 then
+	elseif spellId == 308669 and self:AntiSpam(5, 4) then
 		specWarnDarkGaze:Show(args.sourceName)
 		specWarnDarkGaze:Play("turnaway")
-		timerDarkGazeCD:Start()
 	elseif spellId == 308366 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnAgonizingTorment:Show(args.sourceName)
 		specWarnAgonizingTorment:Play("kickcast")
@@ -216,11 +214,8 @@ function mod:UNIT_DIED(args)
 		timerTaintedPolymorphCD:Stop()
 		timerExplosiveOrdnanceCD:Stop()
 		timerChainsofServitudeCD:Stop()
-		timerDarkGazeCD:Stop()--Stopped when she dies or eye?
 		DBM:EndCombat(self)
 		started = false
-	elseif cid == 158315 then--Eye of Chaos
-		timerDarkGazeCD:Stop()--Stopped when she dies or eye?
 	elseif cid == 156577 then--Therum Deepforge
 		timerExplosiveOrdnanceCD:Stop()
 		self.vb.TherumCleared = true
@@ -228,7 +223,6 @@ function mod:UNIT_DIED(args)
 		timerChainsofServitudeCD:Stop()
 		self.vb.UlrokCleared = true
 	elseif cid == 158157 then--Overlord Mathias Shaw
-		timerDarkGazeCD:Stop()--Stopped when he dies or eye?
 		self.vb.ShawCleared = true
 	elseif cid == 158035 then--Magister Umbric
 		timerTaintedPolymorphCD:Stop()
@@ -256,9 +250,6 @@ function mod:ENCOUNTER_START(encounterID)
 		end
 		if self.vb.UlrokCleared then
 			timerChainsofServitudeCD:Start(1)
-		end
-		if self.vb.ShawCleared then
-			timerDarkGazeCD:Start(1)
 		end
 		if self.vb.UmbricCleared then
 			timerTaintedPolymorphCD:Start(1)

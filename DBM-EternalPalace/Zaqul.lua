@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200125193830")
+mod:SetRevision("20200206174247")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetZone()
@@ -63,10 +63,10 @@ local specWarnMaddeningEruption			= mod:NewSpecialWarningMoveTo(292996, "Tank", 
 local specWarShatteredPsyche			= mod:NewSpecialWarningDispel(295327, "Healer", nil, 3, 1, 2)
 --Stage Four: All Pathways Open
 local specWarnDarkPulse					= mod:NewSpecialWarningSwitch(303978, "-Healer", nil, nil, 1, 2)
-local specWarnPsychoticSplit			= mod:NewSpecialWarningSwitch(301068, "-Healer", nil, nil, 1, 2)
+local specWarnPsychoticSplit			= mod:NewSpecialWarningSwitch(301068, "-Healer", nil, nil, 1, 2, 4)--Mythic
 local yellDreadScream					= mod:NewPosYell(303543)
 local yellDreadScreamFades				= mod:NewIconFadesYell(303543)--Mythic
-local specWarnVoidSlam					= mod:NewSpecialWarningDodge(302593, nil, nil, nil, 2, 2)--Mythic
+local specWarnVoidSlam					= mod:NewSpecialWarningDodge(302593, nil, nil, nil, 2, 2, 4)--Mythic
 local yellManicDread					= mod:NewPosYell(296018)
 local yellManicDreadFades				= mod:NewIconFadesYell(296018)
 

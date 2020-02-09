@@ -259,6 +259,6 @@ U1.PINYIN={
     ['入侵时刻表']={'ruqinshikebiao','rqskb'},
     ['目标姓名板标记']={'mubiaoxingmingbanbiaoji','mbxmbbj'},
     ['大秘路线']={'damiluxian','dmlx'},
-    ['纳沙塔尔稀有']={'nashataerxiyou','nstexy'},
-    ['麦卡贡稀有']={'maikagongxiyou','mkgxy'},
+    ['拍卖价格统计']={'paimaijiagetongji','pmjgtj'},
+    ['拍卖收藏保存']={'paimaishoucangbaocun','pmscbc'},
 }

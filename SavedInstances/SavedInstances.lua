@@ -2529,7 +2529,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.0" then
+  if versionString == "8.3.0-1-g34ee498" then
     versionString = "Dev"
   end
   --@end-debug@]===]

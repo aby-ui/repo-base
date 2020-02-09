@@ -30,7 +30,7 @@ local DEBUG_MODE = false
 
 -- Config constants
 local CURRENT_DB_VERSION = 8
-local CURRENT_LOOT_DB_VERSION = 24
+local CURRENT_LOOT_DB_VERSION = 25
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -956,13 +956,15 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 	
 	-- Check if we have found the NPC in the last 5 minutes
 	if (not isNavigating) then
-		-- FIX Blubbery Blobule (NPCID = 160841) multipoping
-		if (already_notified[vignetteInfo.id] or (npcID == 160841 and already_notified[160841])) then
+		-- FIX Blubbery Blobule/Unstable Glob (NPCID = 160841/161407) multipoping
+		if (already_notified[vignetteInfo.id] or (npcID == 160841 and already_notified[160841]) or (npcID == 161407 and already_notified[161407])) then
 			return
 		else
 			already_notified[vignetteInfo.id] = true
 			if (npcID == 160841) then
 				already_notified[160841] = true
+			elseif (npcID == 161407) then
+				already_notified[161407] = true
 			end
 		end
 	end
@@ -1062,6 +1064,8 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 		-- FIX Blubbery Blobule (NPCID = 160841) multipoping
 		if (npcID == 160841) then
 			already_notified[160841] = false
+		elseif (npcID == 161407) then
+			already_notified[161407] = false
 		end
 		private.dbglobal.recentlySeen[npcID] = nil
 	end)

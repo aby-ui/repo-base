@@ -2723,5 +2723,6 @@ private.NPC_DISPLAY_IDS = {
 	[163534] = 3019, --Pet Training Dummy
 	[162372] = 36707, --Spirit of Cyrus the Black
 	[162619] = 76647, --Void Wrai
+	[161407] = 92229, --Unstable Glob
 	[161532] = 94590; --Instructor Teshal
 }

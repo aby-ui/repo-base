@@ -95,7 +95,7 @@ local function UpdateTime(block, elapsedTime)
 	end
 
 	if elapsedTime > block.timeLimit then
-		block.TimeLeft:SetText(GetTimeStringFromSeconds(elapsedTime - block.timeLimit, false, true))
+		block.TimeLeft:SetText(SecondsToClock(elapsedTime - block.timeLimit, false))
 	end
 end
 

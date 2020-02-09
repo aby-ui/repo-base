@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2347, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200125193830")
+mod:SetRevision("20200206174247")
 mod:SetCreatureID(150653)
 mod:SetEncounterID(2289)
 mod:SetZone()
@@ -35,7 +35,7 @@ local specWarnFeedingFrenzy				= mod:NewSpecialWarningCount(298424, nil, DBM_COR
 local specWarnFeedingFrenzyOther		= mod:NewSpecialWarningTaunt(298424, nil, nil, nil, 1, 2)
 local specWarnShockPulse				= mod:NewSpecialWarningCount(292270, nil, nil, nil, 2, 2)
 local specWarnCavitation				= mod:NewSpecialWarningSpell(292083, nil, nil, nil, 2, 2)
-local specWarnPiercingBarb				= mod:NewSpecialWarningYou(301494, nil, nil, nil, 1, 2)
+local specWarnPiercingBarb				= mod:NewSpecialWarningYou(301494, nil, nil, nil, 1, 2, 4)
 local yellPiercingBarb					= mod:NewYell(301494)
 local yellPiercingBarbFades				= mod:NewShortFadesYell(301494)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)

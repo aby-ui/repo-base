@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200125193830")
+mod:SetRevision("20200206044232")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 --mod:DisableESCombatDetection()
@@ -255,7 +255,7 @@ function mod:SPELL_AURA_APPLIED(args)
 					warnRendingBite:Show(args.destName, amount)
 				end
 			else
-				warnCrushed:Show(args.destName, amount)
+				warnRendingBite:Show(args.destName, amount)
 			end
 		end
 	elseif spellId == 286434 or spellId == 285659 then

@@ -62,6 +62,9 @@ L["slave_camp"] = "打开所有奴隶笼子"
 L["unsealed_tomb"] = "保护NPC"
 L["voidflame_ritual"] = "扑灭所有虚触蜡烛"
 L["call_of_void"] = "清除仪式晶塔周围所有的怪物"
+L["executor_nzoth"] = "杀死恩佐斯的执行者，然后摧毁执行者之锚"
+L["gaze_of_nzoth"] = "和眼球怪共享刷新，不断击杀眼球怪即可"
+L["pyre_amalgamated"] = "地上有个融合者的火堆，点击之后击杀小怪直到稀有出现，火堆刷的不是很快"
 
 -------------------------------------------------------------------------------
 ------------------------------------ VALE -------------------------------------
@@ -100,6 +103,8 @@ L["empowered_wagon"] = "捡起影踪派军需品然后放在强化的战车下�
 L["mantid_hatch"] = "拾取影踪派喷火器烧毁所有螳螂妖虫卵"
 L["ritual_wakening"] = "杀死卡拉克西唤醒者"
 L["font_corruption"] = "旋转魔古雕像将光束连接到泰坦控制台左右两边的小圆柱上，然后点击泰坦控制台"
+L["ravager_hive"] = "消灭树上所有的蜂巢"
+L["noodle_cart"] = "保护胖熊猫"
 
 -------------------------------------------------------------------------------
 ----------------------------------- VISIONS -----------------------------------
@@ -195,6 +200,7 @@ L["options_title"] = "恩佐斯的幻象"
 
 L["options_icon_settings"] = "图标设置"
 L["options_icons_treasures"] = "宝藏图标"
+L["options_icons_assaultevents"] = "事件图标"
 L["options_icons_rares"] = "稀有图标"
 L["options_icons_caves"] = "洞穴图标"
 L["options_icons_pet_battles"] = "战斗宠物图标"

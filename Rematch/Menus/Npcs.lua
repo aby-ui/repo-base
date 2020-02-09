@@ -55,10 +55,11 @@ rematch.notableGroups = {
 	[23] = L["Zandalar"],
 	[24] = L["Kul Tiras"],
 	[25] = L["Gnomeregan"], 
-	[26] = L["Nazjatar"],
-	[27] = L["Mechagon"],
+	[26] = false, -- was L["Nazjatar"],
+	[27] = false, -- was L["Mechagon"],
 	[28] = L["Stratholme"],
 	[29] = L["Blackrock Depths"],
+	[30] = L["Battle for Azeroth"],
 }
 
 rematch.notableNPCs = {
@@ -374,28 +375,30 @@ rematch.notableNPCs = {
 	{ 145988, 25, 2488 }, -- Pulverizer Bot Mk 60001
 
 	-- Nazjatar
-	{ 154910, 26, 2723 }, -- Prince Wiggletail
-	{ 154912, 26, 2725 }, -- Silence
-	{ 154914, 26, 2727 }, -- Pearlhusk Crawler
-	{ 154916, 26, 2729 }, -- Ravenous Scalespawn
-	{ 154918, 26, 2731 }, -- Kelpstone
-	{ 154920, 26, 2733 }, -- Frenzied Knifefang
-	{ 154911, 26, 2724 }, -- Chomp
-	{ 154913, 26, 2726 }, -- Shadowspike Lurker
-	{ 154915, 26, 2728 }, -- Elderspawn of Nalaada
-	{ 154917, 26, 2730 }, -- Mindshackle
-	{ 154919, 26, 2732 }, -- Voltgorger
-	{ 154921, 26, 2734 }, -- Giant Opaline Conch
+	{ L["Nazjatar"], 30 },
+	{ 154910, 30, 2723 }, -- Prince Wiggletail
+	{ 154912, 30, 2725 }, -- Silence
+	{ 154914, 30, 2727 }, -- Pearlhusk Crawler
+	{ 154916, 30, 2729 }, -- Ravenous Scalespawn
+	{ 154918, 30, 2731 }, -- Kelpstone
+	{ 154920, 30, 2733 }, -- Frenzied Knifefang
+	{ 154911, 30, 2724 }, -- Chomp
+	{ 154913, 30, 2726 }, -- Shadowspike Lurker
+	{ 154915, 30, 2728 }, -- Elderspawn of Nalaada
+	{ 154917, 30, 2730 }, -- Mindshackle
+	{ 154919, 30, 2732 }, -- Voltgorger
+	{ 154921, 30, 2734 }, -- Giant Opaline Conch
 
 	-- Mechagon
-	{ 154922, 27, 2735 }, -- Gnomefeaster
-	{ 154924, 27, 2737 }, -- Goldenbot XD
-	{ 154926, 27, 2739 }, -- CK-9 Micro-Oppression Unit
-	{ 154928, 27, 2741 }, -- Unit 6
-	{ 154923, 27, 2736 }, -- Sputtertube
-	{ 154925, 27, 2738 }, -- Creakclank
-	{ 154927, 27, 2740 }, -- Unit 35
-	{ 154929, 27, 2742 }, -- Unit 17
+	{ L["Mechagon"], 30 },
+	{ 154922, 30, 2735 }, -- Gnomefeaster
+	{ 154924, 30, 2737 }, -- Goldenbot XD
+	{ 154926, 30, 2739 }, -- CK-9 Micro-Oppression Unit
+	{ 154928, 30, 2741 }, -- Unit 6
+	{ 154923, 30, 2736 }, -- Sputtertube
+	{ 154925, 30, 2738 }, -- Creakclank
+	{ 154927, 30, 2740 }, -- Unit 35
+	{ 154929, 307, 2742 }, -- Unit 17
 
 	-- Stratholme
 	{ 150923, 28, 2609 }, -- Belchling
@@ -412,6 +415,7 @@ rematch.notableNPCs = {
 	{ 155414, 28, 2768, 2769, 2770 }, -- Fras Siabi
 	{ 155413, 28, 2774, 2771, 2772 }, -- Postmaster Malown
 
+	-- Blackrock Depths
 	{ 160209, 29, 2801, 2800, 2799 }, -- Horu Cloudwatcher
 	{ 161650, 29, 2816 }, -- Liz
 	{ 161649, 29, 2815 }, -- Rampage
@@ -425,6 +429,17 @@ rematch.notableNPCs = {
 	{ 160208, 29, 2807, 2808, 2809 }, -- Zuna Skullcrush
 	{ 160210, 29, 2810, 2811, 2812 }, -- Tasha Riley
 	{ 160205, 29, 2814 }, -- Pixy Wizzle
+
+	{ L["Vale of Eternal Blossom"], 30 },
+	{ 162468, 30, 2858 }, -- K'tiny the Mad
+	{ 162469, 30, 2859 }, -- Tormentius
+	{ 162470, 30, 2860 }, -- Baruk Stone Defender
+	{ 162471, 30, 2861 }, -- Vil'thik Hatchling
+	{ L["Uldum"], 30 },
+	{ 162458, 30, 2854 }, -- Retinus the Seeker
+	{ 162461, 30, 2855 }, -- Whispers
+	{ 162465, 30, 2856 }, -- Aqir Sandcrawler
+	{ 162466, 30, 2857 }, -- Blotto
 
 }
 

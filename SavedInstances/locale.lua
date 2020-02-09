@@ -416,7 +416,7 @@ La["Display instances with space inserted between categories"] = "Instanzen mit 
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Quest Debugging Information"
 La["Dump time debugging information"] = "Zeit Debugging Informationen"
-La["Emissary Missing"] = "Abgesandtenkiste fehlt"
+La["Emissary Missing"] = "Abgesandte Truhe fehlt"
 La["Emissary Quests"] = "Abgesandtenquests"
 La["Emissary quests"] = "Abgesandtenquests"
 La["Expansion"] = "Erweiterung"
@@ -447,24 +447,21 @@ La["LFG cooldown"] = "Dungeonbrowser-Abklingzeit"
 La["LFR"] = "LFR"
 La["List categories from the current expansion pack first"] = "Kategorien der aktuellen Erweiterung zuerst auflisten"
 La["List raid categories before dungeon categories"] = "Schlachtzugskategorien vor Dungeonkategorien auflisten"
---[[Translation missing --]]
 La["Lord Kazzak"] = "Lord Kazzak"
 La["Manage"] = "Verwalten"
 --[[Translation missing --]]
 La["Mechanized Chest"] = "Mechanized Chest"
-La["Miscellaneous Tracking"] = "Verschiedenes"
+La["Miscellaneous Tracking"] = "Sontige Verfolgung"
 --[[Translation missing --]]
 La["ML"] = "ML"
 La["Most recent first"] = "Aktuellste zuerst"
---[[Translation missing --]]
-La["Mythic Best"] = "Mythic Best"
-La["Mythic Key Best"] = "Bester mythischer Schlüsselstein"
+La["Mythic Best"] = "Beste Mytische"
+La["Mythic Key Best"] = "Bester mythischer Schlüssel"
 La["Mythic Keystone"] = "Mythischer Schlüsselstein"
 La["Never show"] = "Nie anzeigen"
 La["Opacity of the tooltip row highlighting"] = "Transparenz der Zeilenhervorhebung im Tooltip"
 La["Open config"] = "Konfiguration öffnen"
---[[Translation missing --]]
-La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
+La["Order must be a number in [0 - 999]"] = "Auftrag muss eine Zahl mit [0 - 999] sein"
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 --[[Translation missing --]]
@@ -479,8 +476,8 @@ La["Reverse ordering"] = "Umgekehrte Anordung"
 La["Roll Bonus"] = "Bonuswürfe"
 La["Row Highlight"] = "Zeilenhervorhebung"
 La["Set All"] = "Alle festlegen"
-La["Show all emissary names"] = "Zeige alle Abgesandtennamen"
-La["Show both factions' emissay name"] = "Zeige Abgesandtennamen beider Fraktionen"
+La["Show all emissary names"] = "Zeige alle Namen der Abgesandten"
+La["Show both factions' emissay name"] = "Zeige den Namen beider Fraktionen der Abgesandten"
 La["Show category names"] = "Kategorienamen anzeigen"
 La["Show category names in the tooltip"] = "Kategorienamen im Tooltip anzeigen"
 La["Show cooldown for characters to use battleground system"] = "Zeigt Abklingzeiten für Charaktere, um das Schlachtfeldsystem zu benutzen, an."
@@ -504,7 +501,7 @@ La["Show server name"] = "Realmname anzeigen"
 La["Show the SavedInstances minimap button"] = "Den SavedInstances-Minikartenbutton anzeigen"
 La["Show tooltip hints"] = "Tooltip-Hinweise anzeigen"
 La["Show When"] = "Zeigen, wenn"
-La["Show when completed"] = "Zeige wenn abgeschlossen"
+La["Show when completed"] = "Zeigen, wenn abgeschlossen"
 La["Show when saved"] = "Anzeigen, wenn gespeichert"
 La["Show/Hide the SavedInstances tooltip"] = "Zeige/Verstecke den SavedInstances-Tooltip"
 --[[Translation missing --]]
@@ -540,20 +537,17 @@ La["Type"] = "Wert"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Klassenfarbe verwenden"
---[[Translation missing --]]
-La["Warfronts"] = "Warfronts"
+La["Warfronts"] = "Kriegsfronten"
 La["Warn about instance limit"] = "Vor Instanzlimit warnen"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Achtung: Du hast kürzlich %i Instanzen betreten und näherst Dich dem Limit von %i Instanzen pro Stunde für Deinen Account. Weitere Instanzen sollten in %s verfügbar sein."
 La["Weekly Quests"] = "Wöchentliche Quests"
 La["Wild Transmute"] = "Wilde Transmutation"
 --[[Translation missing --]]
 La["WM"] = "WM"
---[[Translation missing --]]
-La["WORK"] = "WORK"
+La["WORK"] = "ARBEIT"
 La["World Boss"] = "Weltboss"
 La["World Bosses"] = "Weltbosse"
---[[Translation missing --]]
-La["YARD"] = "YARD"
+La["YARD"] = "PLATZ"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Nach Wunsch können Icons und Text in einem einzelnen Indikator kombiniert werden. Wähle ein Icon und gebe das Wort ICON in das Textfeld ein. Wo auch immer das Wort ICON gefunden wird, wird das gewählte Icon angefügt."
 
 elseif locale == "koKR" then
@@ -709,12 +703,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "주간 퀘스트"
 La["Wild Transmute"] = "거친 변환"
 La["WM"] = "저택"
---[[Translation missing --]]
-La["WORK"] = "WORK"
+La["WORK"] = "작업장"
 La["World Boss"] = "월드보스"
 La["World Bosses"] = "야외 우두머리"
---[[Translation missing --]]
-La["YARD"] = "YARD"
+La["YARD"] = "고철장"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "원할 경우 단일 표시기에 아이콘과 문자를 조합하여 사용이 가능합니다. 단순히 아이콘을 선택하면 문자 영역에 문자열 아이콘을 삽입합니다. 어디에서든 문자열 아이콘을 찾을 수 있으며, 선택한 아이콘으로 대체됩니다."
 
 elseif locale == "esMX" then
@@ -1078,12 +1070,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
 La["WM"] = "УУ"
---[[Translation missing --]]
-La["WORK"] = "WORK"
+La["WORK"] = "Операция «Мехагон» — мастерская"
 La["World Boss"] = "Мировой босс"
 La["World Bosses"] = "Мировые боcсы"
---[[Translation missing --]]
-La["YARD"] = "YARD"
+La["YARD"] = "Операция «Мехагон» — свалка"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде где слово ICON будет найдено, вместо него будет ваш выбранный значок."
 
 elseif locale == "zhCN" then

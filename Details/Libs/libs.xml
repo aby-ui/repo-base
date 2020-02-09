@@ -4,7 +4,7 @@
 	<!--<Include file="LibCompress\lib.xml"/>-->
 	<!--<Include file="LibDeflate\lib.xml"/>-->
 	<!--<Include file="LibItemUpgradeInfo-1.0\LibItemUpgradeInfo-1.0.xml"/>-->
-	<Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/>
+	<!--<Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/>-->
 	<!-- <Include file="LibGroupInSpecT-1.1\lib.xml"/> temp disabled due to classic-->	
 	<Include file="DF\load.xml"/>
 	<Include file="LibTranslit\LibTranslit-1.0.xml"/>

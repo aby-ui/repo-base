@@ -3,17 +3,17 @@ local LOCALES = {
     UNKNOWN = "Special",
 
     passive_crit_dam = "CritDam",
-    passive_mastery = "MasteryA",
-    passive_haste = "HasteA",
-    passive_versatility = "VersatA",
-    passive_crit = "CritA",
+    passive_mastery = "MasteryB",
+    passive_haste = "HasteB",
+    passive_versatility = "VersatB",
+    passive_crit = "CritB",
     passive_avoidance = "Avoid",
     passive_leech = "Leech",
 
-    proc_haste = "HasteB",
-    proc_crit = "CritB",
-    proc_mastery = "MasteryB",
-    proc_versatility = "VersatB",
+    proc_haste = "HasteA",
+    proc_crit = "CritA",
+    proc_mastery = "MasteryA",
+    proc_versatility = "VersatA",
 
     twilight = "Twinlight",
     ritual = "Ritual",
@@ -231,3 +231,62 @@ local hookTooltipSetItem = function(self, link)
 end
 SetOrHookScript(GameTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
+
+--[[
+DEFAULT_CHAT_FRAME:AddMessage("\124cff1eff00\124Hitem:119207::::::::120::::1:6551:\124h[切肉斧]\124h\124r");
+print("\124cffa335ee\124Hitem:174532::::::::120:65::5:7:4823:6578:6579:6550:6515:1502:4786:::\124h[脓液之刺指环]\124h\124r")
+print("\124cffa335ee\124Hitem:174532::::::::120:65::5:5:4823:6516:6515:1502:4786:::\124h[脓液之刺指环]\124h\124r")
+print("\124cffa335ee\124Hitem:174532::::::::120:65::5:3:4823:1502:6545:::\124h[脓液之刺指环]\124h\124r")
+
+list = { 6543, 6544, 6545, 6552, 6553, 6554 }
+diffs = { "", "", "4822:1487", "", "4823:1502", "4824:1517" }
+for _, affix in ipairs(list) do
+  local a = ""
+  for j, diff in ipairs(diffs) do
+    if diff~="" then a = a .. format("\124cffa335ee\124Hitem:174170::::::::120:65::%d:3:%s:%d:::\124h[龙骨护臂]\124h\124r", j, diff, affix) end
+  end
+  print(a)
+end
+--]]
+
+--[[
+6437 暴伤2 3 4
+6450 5腐蚀 6469 24腐蚀
+6470 20腐蚀
+6471 6%精通
+6472 9%精通
+6473 12%精通
+6474 6%急速 9 12
+6477 全能
+6480 暴击
+6483 闪避=急速*8% 12 16
+6486 洞察-冷却
+6493 吸血3% 5 8
+6537 暮光
+6540 仪式
+6543 鞭笞
+6546 洞察 15
+6547 12 冷却速度30%
+6548 30 冷却速度50%
+6549 回响
+6552 无尽之星
+6555 急速 15 546 4s
+6556 暴击 15 31*5
+6557 精通 15 392 10s
+6558 全能 15 312 20s
+6559 急速 20 728 4s
+6560 急速 35 1275
+6561 暴击 20 41*5
+6562 暴击 35 72*5
+6563 精通 20 523 10s
+6564 精通 35 915 10s
+6565 全能 20 416 20s
+6566 全能 35 728 20s
+6567 噬灵
+6568 猎人冷却
+6569 25 触须-30%速度6秒
+6570 20 智力
+6571 30 灼热七夕
+6572 50 黑曜石之肤
+6573 渗血
+]]

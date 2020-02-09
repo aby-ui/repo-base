@@ -24,6 +24,7 @@
 <Include file="LibCompress\LibCompress.lua"/><!--WeakAuras,MDT,Details-->
 <Include file="LibDeflate\LibDeflate.lua"/><!--ExRT,WeakAuras,Details,MethodDungeonTools-->
 <Include file="!NoTaint_UIDropDownMenu\UIDropDownMenu.xml"/><!--AutoTurnIn, Dresser-->
+<Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/><!--Detail,ZenTracker-->
 
 <Include file="UTF8\utf8data.lua"/>
 <Include file="UTF8\utf8.lua"/>

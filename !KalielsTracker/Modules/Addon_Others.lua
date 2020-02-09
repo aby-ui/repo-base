@@ -59,7 +59,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.33", true) then
+    if KT:CheckAddOn("ElvUI", "11.36", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -70,14 +70,14 @@ local function ElvUI_SetSupport()
         end)
         hooksecurefunc(E, "ToggleOptionsUI", function(self)
             if E.Libs.AceConfigDialog.OpenFrames[self.name] then
-                local options = self.Options.args.general.args.objectiveFrameGroup.args
+                local options = self.Options.args.general.args.blizzUIImprovements.args.objectiveFrameGroup.args
                 options.objectiveFrameAutoHide.disabled = true
                 options.objectiveFrameHeight.disabled = true
                 options.bonusObjectivePosition.disabled = true
                 options[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
-                    order = options.objectiveFrameHeader.order + 0.5,
+                    order = 0.5,
                 }
                 self.Options.args.skins.args.blizzard.args.objectiveTracker.disabled = true
             end
@@ -125,7 +125,7 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "5.2.14", true) then
+    if KT:CheckAddOn("SpartanUI", "5.3.0", true) then
         local ACD = LibStub("AceConfigDialog-3.0")
         SUI.DB.EnabledComponents.Objectives = false
         local module = SUI:GetModule("Component_Objectives")

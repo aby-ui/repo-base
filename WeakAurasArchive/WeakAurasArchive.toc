@@ -6,5 +6,5 @@
 
 WeakAurasArchive.lua
 
-## Title-zhCN: |cff880303[鐖变笉鏄揮|r WeakAuras 鏁版嵁瀛樻。
+## Title-zhCN: |cff880303[爱不易]|r WeakAuras 数据存档
 ## X-Vendor: AbyUI

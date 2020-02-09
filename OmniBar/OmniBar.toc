@@ -12,7 +12,7 @@
 Locales\Locales.xml
 OmniBar.xml
 Retail.lua
-Classic.lua
+#Classic.lua
 OmniBar.lua
 Options.lua
 

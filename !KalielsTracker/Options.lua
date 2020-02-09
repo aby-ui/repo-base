@@ -1164,7 +1164,7 @@ local options = {
 			type = "group",
 			args = {
 				sec1 = {
-					name = L"Order of Modules "..beta,
+					name = L"Order of Modules ",
 					type = "group",
 					inline = true,
 					order = 1,
@@ -1230,7 +1230,7 @@ local options = {
 							order = 1.21,
 						},
 						addonPetTrackerDesc = {
-							name = beta.." PetTracker support adjusts display of zone pet tracking inside "..KT.title..". It also fix some visual bugs.",
+							name = "PetTracker support adjusts display of zone pet tracking inside "..KT.title..". It also fix some visual bugs.",
 							type = "description",
 							width = "double",
 							order = 1.22,
@@ -1253,7 +1253,7 @@ local options = {
 							order = 1.31,
 						},
 						addonTomTomDesc = {
-							name = beta.." TomTom support combined Blizzard's POI and\nTomTom's Arrow.",
+							name = "TomTom support combined Blizzard's POI and TomTom's Arrow.",
 							type = "description",
 							width = "double",
 							order = 1.32,
