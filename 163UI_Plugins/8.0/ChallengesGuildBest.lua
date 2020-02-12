@@ -113,26 +113,46 @@ end)
 大米赛季光辉事迹
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_ChallengesUI", function()
-    -- local aID10, aID15 = 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
-    -- local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
+    local aID10, aID15 = 14144, 14145 --s3: 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
+    --/run for i, icon in pairs(ChallengesFrame.DungeonIcons) do print(C_ChallengeMode.GetMapUIInfo(icon.mapID), icon.mapID) end
+    --/run for i=1,12 do print(GetAchievementCriteriaInfo(14144,i),GetAchievementCriteriaInfo(14145,i)) end
+    local crits_to_mapid = { 244, 245, 249, 252, 353, 250, 247, 251, 246, 248, 369, 370 }
+    local crits_name_to_map_name = {}
+    local debug_unmapped = {}
+    local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
     hooksecurefunc("ChallengesFrame_Update", function(self)
-        --[[
         table.wipe(crits)
         local ar10 = select(4, GetAchievementInfo(aID10))
         local ar15 = select(4, GetAchievementInfo(aID15))
         for i=1, numCrits do
             local name, _, _, complete = GetAchievementCriteriaInfo(aID15, i)
+            if crits_to_mapid[i] then
+                crits_name_to_map_name[name] = C_ChallengeMode.GetMapUIInfo(crits_to_mapid[i])
+            end
             if complete == 1 then
                 crits[name] = 15
             else
+                crits[name] = 0
                 name, _, _, complete = GetAchievementCriteriaInfo(aID10, i)
-                if complete == 1 then crits[name] = 10 end
+                if complete == 1 then crits[name] = 10 else crits[name] = 0 end
             end
         end
-        --]]
+        -- 没匹配上的会映射名称
+        for crit_name, map_name in pairs(crits_name_to_map_name) do
+            if crits[map_name] == nil then
+                if not debug_unmapped[crit_name] then u1debug("映射成就名", crit_name, "到地图名", map_name) end
+                crits[map_name] = crits[crit_name]
+                debug_unmapped[crit_name] = true
+            end
+        end
 
         for i, icon in pairs(ChallengesFrame.DungeonIcons) do
-            --local name = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            local mapName = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            if DEBUG_MODE and crits[mapName] == nil and not debug_unmapped[mapName] then
+                debug_unmapped[mapName] = true
+                local names for nn in pairs(crits) do names = (names and names .. "," or "") ..  nn end
+                u1log("无法对应地图名称", mapName, names)
+            end
             if not icon.tex then
                 WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, 3):Key("tex"):up():un()
                 SetOrHookScript(icon, "OnEnter", function()
@@ -149,16 +169,15 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                     GameTooltip:Show()
                 end)
             end
-            icon.tex:Show()
             local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(icon.mapID);
             if inTimeInfo then
-                if inTimeInfo.level >= 15 then
-                    icon.tex:SetAtlas("VignetteKillElite")
-                elseif inTimeInfo.level >= 10 then
-                    icon.tex:SetAtlas("VignetteKill")
-                else
-                    icon.tex:Hide()
-                end
+                crits[mapName] = math.max(crits[mapName] or 0, inTimeInfo.level or 0)
+            end
+            icon.tex:Show()
+            if ar15 or (crits[mapName] or 0) >= 15 then
+                icon.tex:SetAtlas("VignetteKillElite")
+            elseif ar10 or (crits[mapName] or 0) >= 10 then
+                icon.tex:SetAtlas("VignetteKill")
             else
                 icon.tex:Hide()
             end

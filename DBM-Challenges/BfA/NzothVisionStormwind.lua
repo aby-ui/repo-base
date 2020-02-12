@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200205154736")
+mod:SetRevision("20200211183344")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -72,8 +72,8 @@ local timerDarkenedSkyCD		= mod:NewCDTimer(13.3, 308278, nil, nil, nil, 3)
 local timerVoidEruptionCD		= mod:NewCDTimer(27.9, 309819, nil, nil, nil, 2)
 --Extra Abilities (used by Alleria and the area LTs)
 local timerTaintedPolymorphCD	= mod:NewAITimer(21, 309648, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)
-local timerExplosiveOrdnanceCD	= mod:NewCDTimer(20.7, 305672, nil, nil, nil, 3)--20-25 (on alleria anyways, forgot to log other guy)
-local timerChainsofServitudeCD	= mod:NewAITimer(21, 298691, nil, nil, nil, 2)
+--local timerExplosiveOrdnanceCD	= mod:NewCDTimer(20.7, 305672, nil, nil, nil, 3)--20-25 (on alleria anyways, forgot to log other guy)
+local timerChainsofServitudeCD	= mod:NewCDTimer(32.9, 298691, nil, nil, nil, 2)
 
 mod:AddInfoFrameOption(307831, true)
 
@@ -117,7 +117,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 298691 then
 		specWarnChainsofServitude:Show()
 		specWarnChainsofServitude:Play("justrun")
-		timerChainsofServitudeCD:Start()
+		local cid = args:GetSrcCreatureID()
+		timerChainsofServitudeCD:Start(cid == 152718 and 32.9 or 20.8)
 	elseif spellId == 308669 and self:AntiSpam(5, 4) then
 		specWarnDarkGaze:Show(args.sourceName)
 		specWarnDarkGaze:Play("turnaway")
@@ -212,12 +213,12 @@ function mod:UNIT_DIED(args)
 		timerDarkenedSkyCD:Stop()
 		timerVoidEruptionCD:Stop()
 		timerTaintedPolymorphCD:Stop()
-		timerExplosiveOrdnanceCD:Stop()
+		--timerExplosiveOrdnanceCD:Stop()
 		timerChainsofServitudeCD:Stop()
 		DBM:EndCombat(self)
 		started = false
 	elseif cid == 156577 then--Therum Deepforge
-		timerExplosiveOrdnanceCD:Stop()
+		--timerExplosiveOrdnanceCD:Stop()
 		self.vb.TherumCleared = true
 	elseif cid == 153541 then--slavemaster-ulrok
 		timerChainsofServitudeCD:Stop()
@@ -246,10 +247,10 @@ function mod:ENCOUNTER_START(encounterID)
 		timerDarkenedSkyCD:Start(4.9)
 		timerVoidEruptionCD:Start(20.5)
 		if self.vb.TherumCleared then
-			timerExplosiveOrdnanceCD:Start(9.7)
+			--timerExplosiveOrdnanceCD:Start(9.7)
 		end
 		if self.vb.UlrokCleared then
-			timerChainsofServitudeCD:Start(1)
+			timerChainsofServitudeCD:Start(11)
 		end
 		if self.vb.UmbricCleared then
 			timerTaintedPolymorphCD:Start(1)
@@ -258,15 +259,15 @@ function mod:ENCOUNTER_START(encounterID)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 312260 and self:AntiSpam(3, 1) then--Explosive Ordnance (not in combat log)
+	if (spellId == 305708 or spellId == 312260) and self:AntiSpam(3, 1) then--Explosive Ordnance (not in combat log)
 		self:SendSync("ExplosiveOrd")
 	end
 end
 
-function mod:OnSync(msg)
+function mod:OnSync(msg, cid)
 	if not self:IsInCombat() then return end
-	if msg == "ExplosiveOrd" then
+	if cid and msg == "ExplosiveOrd" then
 		warnExplosiveOrdnance:Show()
-		timerExplosiveOrdnanceCD:Start()
+		--timerExplosiveOrdnanceCD:Start(cid == 156577 and 11.3 or 30.5)
 	end
 end

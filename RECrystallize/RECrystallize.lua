@@ -4,11 +4,12 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RECrystallize")
 local GUI = LibStub("AceGUI-3.0")
 _G.RECrystallize = RE
 
-local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print
+local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print, date = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print, _G.date
 local sMatch, sFormat = _G.string.match, _G.string.format
 local tConcat = _G.table.concat
 local Round = _G.Round
 local PlaySound = _G.PlaySound
+local GetCVar = _G.GetCVar
 local GetItemInfo = _G.GetItemInfo
 local GetItemCount = _G.GetItemCount
 local GetRealmName = _G.GetRealmName
@@ -32,7 +33,7 @@ local ElvUI = _G.ElvUI
 
 local PETCAGEID = 82800
 
-RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1}
+RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["SlowScan"] = false, ["DatabaseVersion"] = 1}
 RE.GUIInitialized = false
 RE.RecipeLock = false
 RE.BlockTooltip = 0
@@ -42,42 +43,6 @@ RE.TooltipIcon = ""
 RE.TooltipItemID = 0
 RE.TooltipCount = 0
 RE.TooltipCustomCount = -1
-
-RE.AceConfig = {
-	type = "group",
-	args = {
-		minimap = {
-			name = L["Always display the price of the entire stock"],
-			desc = L["When enabled the functionality of the SHIFT button will be swapped."],
-			type = "toggle",
-			width = "full",
-			order = 1,
-			set = function(_, val) RE.Config.AlwaysShowAll = val end,
-			get = function(_) return RE.Config.AlwaysShowAll end
-		},
-		dbcleanup = {
-			name = L["Data freshness"],
-			desc = L["The number of days after which old data will be deleted."],
-			type = "range",
-			width = "double",
-			order = 2,
-			min = 1,
-			max = 14,
-			step = 1,
-			set = function(_, val) RE.Config.DatabaseCleanup = val * 86400 end,
-			get = function(_) return RE.Config.DatabaseCleanup / 86400 end
-		},
-		dbpurge = {
-			name = L["Purge this server database"],
-			desc = L["WARNING! This operation is not reversible!"],
-			type = "execute",
-			width = "double",
-			order = 3,
-			confirm = true,
-			func = function() RE.DB[RE.RealmString] = {}; collectgarbage("collect") end
-		},
-	}
-}
 
 local function ElvUISwag(sender)
 	if sender == "Livarax-BurningLegion" then
@@ -222,11 +187,81 @@ function RE:OnEvent(self, event, ...)
 		if RE.DB[RE.RealmString] == nil then
 			RE.DB[RE.RealmString] = {}
 		end
-		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RECrystallize", RE.AceConfig)
+
+		local AceConfig = {
+			type = "group",
+			args = {
+				minimap = {
+					name = L["Always display the price of the entire stock"],
+					desc = L["When enabled the functionality of the SHIFT button will be swapped."],
+					type = "toggle",
+					width = "full",
+					order = 1,
+					set = function(_, val) RE.Config.AlwaysShowAll = val end,
+					get = function(_) return RE.Config.AlwaysShowAll end
+				},
+				slowscan = {
+					name = L["Enable slow scanning"],
+					desc = L["Enable this option if scanning is causing disconnects."],
+					type = "toggle",
+					width = "full",
+					order = 2,
+					set = function(_, val) RE.Config.SlowScan = val end,
+					get = function(_) return RE.Config.SlowScan end
+				},
+				dbcleanup = {
+					name = L["Data freshness"],
+					desc = L["The number of days after which old data will be deleted."],
+					type = "range",
+					width = "double",
+					order = 3,
+					min = 1,
+					max = 14,
+					step = 1,
+					set = function(_, val) RE.Config.DatabaseCleanup = val * 86400 end,
+					get = function(_) return RE.Config.DatabaseCleanup / 86400 end
+				},
+				dbpurge = {
+					name = L["Purge this server database"],
+					desc = L["WARNING! This operation is not reversible!"],
+					type = "execute",
+					width = "double",
+					order = 4,
+					confirm = true,
+					func = function() RE.DB[RE.RealmString] = {}; collectgarbage("collect") end
+				},
+				separator = {
+					type = "header",
+					name = STATISTICS,
+					order = 5
+				},
+				description = {
+					type = "description",
+					name = function(_)
+						local timeLeft = 1200 - (time() - RE.Config.LastScan)
+						local timeString = timeLeft > 0 and SecondsToTime(timeLeft) or L["Now"]
+						local timeLast = GetCVar("portal") == "US" and date("%I:%M %p %m/%d/%y", RE.Config.LastScan) or date("%H:%M %d.%m.%y", RE.Config.LastScan)
+						local s = L["Previous scan"]..": "..timeLast.."\n"..L["Next scan available in"]..": "..timeString.."\n\n"..L["Items in database"]..":\n"
+
+						for server, data in pairs(RE.DB) do
+							s = s..server.." - "..tCount(data).."\n"
+						end
+
+						return s
+					end,
+					order = 6
+				}
+			}
+		}
+		_G.LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RECrystallize", AceConfig)
 		_G.LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RECrystallize", "RECrystallize")
 
 		if RE.Config.GuildChatPC then
 			self:RegisterEvent("CHAT_MSG_GUILD")
+		end
+
+		if RE.Config.LastScan > time() then
+			RE.Config.LastScan = time()
 		end
 
 		_G.GameTooltip:HookScript("OnTooltipSetItem", function(self) RE:TooltipAddPrice(self); RE.TooltipCustomCount = -1 end)
@@ -358,7 +393,7 @@ function RE:Scan()
 	RE.AHButton:SetText(count.." / "..num)
 	payloadDiff = count - payloadDiff
 	if payloadDiff > 0 then
-		After(0.25, RE.Scan)
+		After(RE.Config.SlowScan and 1 or 0.25, RE.Scan)
 	else
 		RE:EndScan()
 	end

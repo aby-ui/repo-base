@@ -1,5 +1,5 @@
 
-local WIDGET, VERSION = 'ScrollSummaryHtml', 4
+local WIDGET, VERSION = 'ScrollSummaryHtml', 5
 
 local GUI = LibStub('NetEaseGUI-2.0')
 local ScrollSummaryHtml = GUI:NewClass(WIDGET, GUI:GetClass('ScrollFrame'), VERSION)
@@ -16,6 +16,12 @@ function ScrollSummaryHtml:Constructor()
 
     self:SetScript('OnShow', function()
         SummaryHtml:SetText(SummaryHtml:GetText())
+    end)
+end
+
+function ScrollSummaryHtml:SetText(text)
+    C_Timer.After(0, function()
+        self.SummaryHtml:SetText(text)
     end)
 end
 
@@ -43,7 +49,6 @@ local apis = {
     'SetShadowColor',
     'SetShadowOffset',
     'SetSpacing',
-    'SetText',
     'SetTextColor',
     'SetCallback',
 }

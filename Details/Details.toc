@@ -36,6 +36,7 @@ functions\report.lua
 functions\rowanimation.lua
 functions\raidinfo.lua
 functions\dungeon.lua
+functions\pack.lua
 
 core\timemachine.lua
 

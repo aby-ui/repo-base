@@ -276,7 +276,7 @@ GTFO.SpellID["302521"] = {
 GTFO.SpellID["318391"] = {
   --desc = "Great Worm's Foul Stench (Great Worm From Beyond)";
   applicationOnly = true;
-  sound = 1;
+  sound = 2;
 };
 
 GTFO.SpellID["315161"] = {
@@ -1156,11 +1156,8 @@ GTFO.SpellID["298569"] = {
 -- * Ny'alotha *
 -- *************
 
--- TODO: Burning Cataclysm (Wrathion)
 -- TODO: Crackling Shard (Wrathion) -- Alert when NOT afflicated with Burning Madness
--- TODO: Scorching Blisters (Wrathion)
 -- TODO: Acidic Blood (Ka'zir) -- Mythic only, avoidable?
--- TODO: Shadowy Residue (Vexiona)
 -- TODO: Mycelial Growth (Carapace of N'Zoth) 
 -- TODO: Infinite Void (Carapace of N'Zoth) 
 -- TODO: Paranoia (N'Zoth) -- FF, complicated mechanic to track?
@@ -1169,6 +1166,11 @@ GTFO.SpellID["298569"] = {
 
 GTFO.SpellID["306824"] = {
   --desc = "Molten Pool (Wrathion)";
+  sound = 1;
+};
+
+GTFO.SpellID["313959"] = {
+  --desc = "Scorching Blisters (Wrathion)";
   sound = 1;
 };
 
@@ -1192,10 +1194,20 @@ GTFO.SpellID["307343"] = {
   sound = 1;
 };
 
+GTFO.SpellID["307250"] = {
+  --desc = "Twilight Decimator (Vexiona)";
+  sound = 1;
+};
+
 GTFO.SpellID["309991"] = {
   --desc = "Anguish (N'Zoth)";
   sound = 1;
 };
 
+GTFO.SpellID["307421"] = {
+  --desc = "Annihilation (Void Ascendant)";
+  sound = 1;
+  tankSound = 0;
+};
 
 end

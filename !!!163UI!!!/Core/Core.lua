@@ -1851,29 +1851,31 @@ end
 
 ---可以输出代码位置的调试方法
 function CoreDebug(...)
-    local stack = debugstack(1);
-    local pos = stack:find("\n");
-    stack = pos and stack:sub(pos+1) or stack;
-    pos = stack:find("\n")
+    local stack = debugstack(2, 1, 0);
+    local pos = stack:find("\n")
     stack = pos and stack:sub(1, pos-1) or stack;
     --Interface\AddOns\163SettingPack\Main.lua:37: in function <Interface\AddOns\163SettingPack\Main.lua:30>
+    --[string "@Interface\AddOns\163UI_Plugins\8.0\ChallengesGuildBest.lua"]:143: in function <...ace\AddOns\163UI_Plugins\8.0\ChallengesGuildBest.lua:123>
+    --[string "CoreDebug("aaa")"]:1: in main chunk
     local parts = {strsplit(":", stack)};
     local params = {...}
     for i=1,#params do params[i] = tostring(params[i]) end
     if #parts >= 3 then
+        parts[1] = parts[1]:gsub('^%[string "@(.*)"%]$', '%1')
         local _,_,addon = strfind(parts[1], "^Interface\\AddOns\\(.-)\\.*");
         local _,_,file = strfind(parts[1], ".*\\(.-%.[%a]-)$");
         local line = tonumber(parts[2]);
-        local _,_,func = strfind(parts[3], " in function `(.-)'");
-        if not func then func = "?" end
-        print(format("|cff3f3f3f[%s]|r %s |cff3f3f3f@%s:%s():%d|r", addon or "macro", table.concat(params, ", "), file or "string", func, line));
+        print(format("%s |cff3f3f3f%s/%s:%d|r", table.concat(params, ", "), addon or "macro", file or "string", line));
+        --local _,_,func = strfind(parts[3], " in function `(.-)'");
+        --if not func then func = "?" end
+        --print(format("|cff3f3f3f[%s]|r %s |cff3f3f3f@%s:%s():%d|r", addon or "macro", table.concat(params, ", "), file or "string", func, line));
     else
         print(stack);
         print(format("|cff3f3f3f[%s]|r %s", core:GetName(), table.concat(params, ", ")));
     end
 end
 
-u1debug = DEBUG_MODE and CoreDebug or noop
+u1log = CoreDebug
 
 local CTAF = {}
 ---用来返回CreateFrame, hooksecurefunc, getreplacehook, togglefunc的工厂方法

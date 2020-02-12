@@ -26,6 +26,7 @@ L["kanebti"] = "Collect a Jeweled Scarab Figurine from a Jeweled Tomb Scarab, wh
 L["left_eye"] = "Drops the left half of the All-Seeing Eyes toy."
 L["neferset_rare"] = "These six rares share the same three spawn locations in Neferset. After a number of Summoning Ritual events have been completed, a random set of three will spawn."
 L["platform"] = "Spawns on top of the floating platform."
+L["single_chest"] = "This chest spawns in only one location! If it is not there, wait a bit and it will respawn."
 L["spirit_cave"] = "Cave entrance for Spirit of Dark Ritualist Zakahn."
 L["tomb_widow"] = "When the white egg-sacs are present by the pillars, kill the invisible spiders to summon."
 L["uatka"] = "Along with two other players, click each Mysterious Device. Requires a Suntouched Amulet from an Amathet Reliquary."
@@ -132,14 +133,56 @@ L["weighted_artifact"] = "Pick up the Oddly Heavy Vase and navigate the maze bac
 ----------------------------------- VISIONS -----------------------------------
 -------------------------------------------------------------------------------
 
+L["colored_potion"] = "Colored Potion"
+L["colored_potion_note"] = [[
+The potion next to the corpse of %s always indicates color of the negative-effect potion for the run.
+
+The color of the +100 sanity potion can be determined by the color of this potion (|cFFFF0000bad|r => |cFF00FF00good|r):
+
+Black => Green
+Blue => Purple
+Green => Red
+Purple => Black
+Red => Blue
+]]
+
+L["bear_spirit"] = "Bear Spirit"
+L["bear_spirit_note"] = "Kill the Angry Bear Rug Spirit and all waves of mobs to gain a 10% haste buff."
+L["buffs_change"] = "Available buffs change each week. If the building is closed or the NPC/object is missing, that buff is not up this week."
+L["clear_sight"] = "Requires Clear Sight rank %d."
+L["craggle"] = "Drop a toy on the ground (such as the Toy Train Set) to distract him. Pull his bots away and kill them first."
+L["empowered"] = "Empowered"
+L["empowered_note"] = "Go through the maze of mines and stand on the Experimental Buff Mine upstairs for a 10% damage buff."
+L["enriched"] = "Enriched"
+L["enriched_note"] = "Kill the Neglected Guild Bank for a 10% crit buff."
+L["ethereal_essence"] = "Ethereal Essence"
+L["ethereal_essence_note"] = "Kill Warpweaver Dushar for a 10% crit buff."
+L["ethereal_note"] = "Collect orange crystals hidden throughout the vision and return them to this NPC for extra momentos.\n\n|cFF00FF00Don't forget to loot the chest!|r"
+L["heroes_bulwark"] = "Heroes' Bulwark"
+L["heroes_bulwark_note"] = "Kill Gamon inside the inn for a 10% health buff."
 L["horrific_visions"] = "Horrific Visions"
+L["inside_building"] = "Inside a building."
 L["mailbox"] = "Mailbox"
 L["mail_muncher"] = "When opened, the Mail Muncher has a chance to spawn."
-L["options_toggle_visions_desc"] = "Show rewards locations inside horrific visions."
+L["morgan_pestle"] = "Morgan Pestle"
+L["requited_bulwark"] = "Requited Bulwark"
+L["requited_bulwark_note"] = "Kill Agustus Moulaine to gain a 7% versatility buff."
 L["shave_kit"] = "Coifcurl's Close Shave Kit"
 L["shave_kit_note"] = "Inside the barber shop. Loot the crate on the table."
+L["smiths_strength"] = "Smith's Strength"
+L["smiths_strength_note"] = "Kill Naros in the blacksmith hut for a 10% damage buff."
+L["spirit_of_wind"] = "Spirit of Wind"
+L["spirit_of_wind_note"] = "Kill Bwemba for a 10% haste and movement speed buff."
 L["void_skull"] = "Void-Touched Skull"
 L["void_skull_note"] = "Click the skull on the ground to loot the toy."
+L["yelmak"] = "Yelmak"
+
+L["options_toggle_visions_buffs"] = "Buffs"
+L["options_toggle_visions_buffs_desc"] = "Show locations of events that grant 1 hour damage buffs."
+L["options_toggle_visions_chest_desc"] = "Show possible chest locations inside horrific visions."
+L["options_toggle_visions_mail"] = "Mailboxes"
+L["options_toggle_visions_mail_desc"] = "Show mailbox locations for the Mail Muncher mount."
+L["options_toggle_visions_misc_desc"] = "Show rare, toy, potion and ethereal locations inside horrific visions."
 
 -------------------------------------------------------------------------------
 ----------------------------------- VOLDUN ------------------------------------

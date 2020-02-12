@@ -108,6 +108,7 @@ CanIMogIt.UNKNOWABLE_BY_CHARACTER =                         CanIMogIt.UNKNOWABLE
 CanIMogIt.UNKNOWN =                                         CanIMogIt.UNKNOWN_ICON .. CanIMogIt.RED_ORANGE .. UNKNOWN
 CanIMogIt.NOT_TRANSMOGABLE =                                CanIMogIt.NOT_TRANSMOGABLE_ICON .. CanIMogIt.GRAY .. NOT_TRANSMOGABLE
 CanIMogIt.NOT_TRANSMOGABLE_BOE =                            CanIMogIt.NOT_TRANSMOGABLE_BOE_ICON .. CanIMogIt.YELLOW .. NOT_TRANSMOGABLE
+CanIMogIt.CANNOT_DETERMINE =                                CanIMogIt.QUESTIONABLE_ICON
 
 
 CanIMogIt.tooltipIcons = {
@@ -130,7 +131,7 @@ CanIMogIt.tooltipIcons = {
     [CanIMogIt.UNKNOWN] = CanIMogIt.UNKNOWN_ICON,
     [CanIMogIt.NOT_TRANSMOGABLE] = CanIMogIt.NOT_TRANSMOGABLE_ICON,
     [CanIMogIt.NOT_TRANSMOGABLE_BOE] = CanIMogIt.NOT_TRANSMOGABLE_BOE_ICON,
-    -- [CanIMogIt.CANNOT_DETERMINE] = CanIMogIt.QUESTIONABLE_ICON,
+    [CanIMogIt.CANNOT_DETERMINE] = CanIMogIt.QUESTIONABLE_ICON,
 }
 
 
@@ -155,7 +156,7 @@ CanIMogIt.tooltipOverlayIcons = {
     [CanIMogIt.UNKNOWN] = CanIMogIt.UNKNOWN_ICON_OVERLAY,
     [CanIMogIt.NOT_TRANSMOGABLE] = CanIMogIt.NOT_TRANSMOGABLE_ICON_OVERLAY,
     [CanIMogIt.NOT_TRANSMOGABLE_BOE] = CanIMogIt.NOT_TRANSMOGABLE_BOE_ICON_OVERLAY,
-    -- [CanIMogIt.CANNOT_DETERMINE] = CanIMogIt.QUESTIONABLE_ICON_OVERLAY,
+    [CanIMogIt.CANNOT_DETERMINE] = CanIMogIt.QUESTIONABLE_ICON_OVERLAY,
 }
 
 
@@ -179,6 +180,7 @@ CanIMogIt.ICON_LOCATIONS = {
     ["LEFT"] = {"LEFT", 2, 0},
     ["BOTTOM"] = {"BOTTOM", 0, 2},
     ["TOP"] = {"TOP", 0, -2},
+    ["AUCTION_HOUSE"] = {"LEFT", 137, 0}
 }
 
 --------------------------------------------

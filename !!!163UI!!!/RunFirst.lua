@@ -7,6 +7,7 @@ U1PlayerClass = select(2, UnitClass("player"))
 local f01 = CreateFrame("Frame")
 f01:RegisterEvent("VARIABLES_LOADED")
 f01:SetScript("OnEvent", function(self)
+    u1debug = DEBUG_MODE and CoreDebug or noop
     if U1DB and U1DB.configs then
         local c = U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"]
         if c == "0" or c == "nil" then

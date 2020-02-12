@@ -69,9 +69,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200209032212"),
-	DisplayVersion = "8.3.13 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 2, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200212141330"),
+	DisplayVersion = "8.3.14 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 2, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -165,7 +165,6 @@ DBM.DefaultOptions = {
 	DisableStatusWhisper = false,
 	DisableGuildStatus = false,
 	HideBossEmoteFrame2 = true,
-	ShowFlashFrame = true,
 	SWarningAlphabetical = true,
 	SWarnNameInNote = true,
 	CustomSounds = 0,
@@ -244,12 +243,16 @@ DBM.DefaultOptions = {
 	SpecialWarningFlashAlph3 = 0.4,
 	SpecialWarningFlashAlph4 = 0.4,
 	SpecialWarningFlashAlph5 = 0.5,
-	SpecialWarningFlashRepeat1 = false,
-	SpecialWarningFlashRepeat2 = false,
-	SpecialWarningFlashRepeat3 = true,
-	SpecialWarningFlashRepeat4 = false,
-	SpecialWarningFlashRepeat5 = true,
-	SpecialWarningFlashRepeatAmount = 2,--Repeat 2 times, mean 3 flashes (first plus 2 repeat)
+	SpecialWarningFlash1 = true,
+	SpecialWarningFlash2 = true,
+	SpecialWarningFlash3 = true,
+	SpecialWarningFlash4 = true,
+	SpecialWarningFlash5 = true,
+	SpecialWarningFlashCount1 = 1,
+	SpecialWarningFlashCount2 = 1,
+	SpecialWarningFlashCount3 = 3,
+	SpecialWarningFlashCount4 = 2,
+	SpecialWarningFlashCount5 = 3,
 	SWarnClassColor = true,
 	ArrowPosX = 0,
 	ArrowPosY = -150,
@@ -457,7 +460,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 178, "4a8bec2"
+local fakeBWVersion, fakeBWHash = 182, "85a74be"
 local versionQueryString, versionResponseString = "Q^%d^%s", "V^%d^%s"
 
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
@@ -3708,6 +3711,7 @@ function DBM:UPDATE_BATTLEFIELD_STATUS(queueID)
 				local expiration = GetBattlefieldPortExpiration(queueID)
 				local timerIcon = GetPlayerFactionGroup("player") == "Alliance" and 132486 or 132485
 				self.Bars:CreateBar(expiration or 85, queuedBattlefield[i], timerIcon)
+				self:FlashClientIcon()
 				fireEvent("DBM_TimerStart", "DBMBFSTimer", queuedBattlefield[i], expiration or 85, tostring(timerIcon), "extratimer", nil, 0)
 			end
 			if self.Options.LFDEnhance then
@@ -9664,15 +9668,19 @@ do
 				local colorCode = ("|cff%.2x%.2x%.2x"):format(DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
 				self.mod:AddMsg(colorCode.."["..DBM_CORE_MOVE_SPECIAL_WARNING_TEXT.."] "..text.."|r", nil)
 			end
-			if not UnitIsDeadOrGhost("player") and DBM.Options.ShowFlashFrame then
+			if not UnitIsDeadOrGhost("player") then
 				if noteHasName then
-					local repeatCount = DBM.Options.SpecialWarningFlashRepeat5 and DBM.Options.SpecialWarningFlashRepeatAmount or 0
-					DBM.Flash:Show(DBM.Options.SpecialWarningFlashCol5[1],DBM.Options.SpecialWarningFlashCol5[2], DBM.Options.SpecialWarningFlashCol5[3], DBM.Options.SpecialWarningFlashDura5, DBM.Options.SpecialWarningFlashAlph5, repeatCount)
+					if DBM.Options.SpecialWarningFlash5 then--Not included in above if statement on purpose. we don't want to trigger else rule if noteHasName is true but SpecialWarningFlash5 is false
+						local repeatCount = DBM.Options.SpecialWarningFlashCount5 or 1
+						DBM.Flash:Show(DBM.Options.SpecialWarningFlashCol5[1],DBM.Options.SpecialWarningFlashCol5[2], DBM.Options.SpecialWarningFlashCol5[3], DBM.Options.SpecialWarningFlashDura5, DBM.Options.SpecialWarningFlashAlph5, repeatCount-1)
+					end
 				else
 					local number = self.flash
-					local repeatCount = DBM.Options["SpecialWarningFlashRepeat"..number] and DBM.Options.SpecialWarningFlashRepeatAmount or 0
-					local flashcolor = DBM.Options["SpecialWarningFlashCol"..number]
-					DBM.Flash:Show(flashcolor[1], flashcolor[2], flashcolor[3], DBM.Options["SpecialWarningFlashDura"..number], DBM.Options["SpecialWarningFlashAlph"..number], repeatCount)
+					if DBM.Options["SpecialWarningFlash"..number] then
+						local repeatCount = DBM.Options["SpecialWarningFlashCount"..number] or 1
+						local flashcolor = DBM.Options["SpecialWarningFlashCol"..number]
+						DBM.Flash:Show(flashcolor[1], flashcolor[2], flashcolor[3], DBM.Options["SpecialWarningFlashDura"..number], DBM.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
+					end
 				end
 			end
 			--Text: Full message text
@@ -10130,10 +10138,10 @@ do
 		if number and not noSound then
 			self:PlaySpecialWarningSound(number)
 		end
-		if self.Options.ShowFlashFrame and number then
+		if number and DBM.Options["SpecialWarningFlash"..number] then
 			local flashColor = self.Options["SpecialWarningFlashCol"..number]
-			local repeatCount = self.Options["SpecialWarningFlashRepeat"..number] and self.Options.SpecialWarningFlashRepeatAmount or 0
-			self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura"..number], self.Options["SpecialWarningFlashAlph"..number], repeatCount)
+			local repeatCount = self.Options["SpecialWarningFlashCount"..number] or 1
+			self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura"..number], self.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
 		end
 	end
 end
@@ -11467,7 +11475,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200209032212" then
+	if not revision or revision == "20200212141330" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

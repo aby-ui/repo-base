@@ -1836,13 +1836,10 @@ GTFO.SpellID["303729"] = {
 -- *************
 
 -- TODO: Molten Eruption (Wrathion)
--- TODO: Tail Swipe (Wrathion)
--- TODO: Gale Blast (Wrathion) (Avoid?)
--- TODO: Searing Breath (Wrathion) (Non-Tank)
+-- TODO: Gale Blast (Wrathion) (Avoid inner blast)
 -- TODO: Black Wings (Maut) (?)
 -- TODO: Terror Wave (Dark Inquisitor Xanesh)
 -- TODO: Doom (Dark Inquisitor Xanesh)
--- TODO: Torment (Dark Inquisitor Xanesh)
 -- TODO: Nullification Blast (Tek'ris)
 -- TODO: Entropic Echo (Tek'ris)
 -- TODO: Umbral Eruption (Shad'har the Insatiable) -- Avoidable?
@@ -1861,6 +1858,41 @@ GTFO.SpellID["303729"] = {
 -- TODO: Flames of Insanity (N'Zoth) -- Avoidable?
 -- TODO: Stupefying Glare (N'Zoth) -- Avoidable?
 
+GTFO.SpellID["305978"] = {
+  --desc = "Searing Breath (Wrathion)";
+  sound = 3;
+  tankSound = 0;
+};
 
+GTFO.SpellID["307974"] = {
+  --desc = "Tail Swipe (Wrathion)";
+  sound = 3;
+};
+
+GTFO.SpellID["314754"] = {
+  --desc = "Shadow Crash (Umbral Seer)";
+  sound = 3;
+};
+
+GTFO.SpellID["316383"] = {
+  --desc = "Void Slam (Anubisath Sentinel)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["315013"] = {
+  --desc = "Bursting Shadows (Aqir Shadowcrafter)";
+  sound = 3;
+};
+
+GTFO.SpellID["311383"] = {
+  --desc = "Torment (Dark Inquisitor Xanesh)";
+  sound = 3;
+};
+
+GTFO.SpellID["315932"] = {
+  --desc = "Brutal Smash (Iron-Willed Enforcer)";
+  sound = 3;
+};
 
 end

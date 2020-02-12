@@ -63,8 +63,8 @@ if GridWarbabyMoreAuras then
         if spell then
             local set = {
                 text = spell,
-                color = { r = 1, g = 1, b = 1, a = 1 },
-                priority = 98,
+                color = v.color and { r = v.color[1], g = v.color[2], b = v.color[3], a = v.color[4] } or { r = 1, g = 1, b = 1, a = 1 },
+                priority = v.priority or 98,
                 raid = true,
                 statusText = v.stack and "count" or "duration",
             }
@@ -167,7 +167,7 @@ end
 指示器选择状态时，未启用的状态标记[X]
 指示器列表的图标
 ---------------------------------------------------------------]]
-local indicator_icons = { barcolor=1, border=1, corner1=1, corner2=1, corner3=1, corner4=1, cornertextbottomleft=1, cornertextbottomright=1, cornertexttopleft=1, cornertexttopright=1, frameAlpha=1, healingBar=1, icon=1, iconbottom=1, iconleft=1, iconright=1, iconrole=1, icontop=1, manabar=1, text=1, text2=1, textstack=1 }
+local indicator_icons = { barcolor=1, border=1, borderglow=1, corner1=1, corner2=1, corner3=1, corner4=1, cornertextbottomleft=1, cornertextbottomright=1, cornertexttopleft=1, cornertexttopright=1, frameAlpha=1, healingBar=1, icon=1, iconbottom=1, iconleft=1, iconright=1, iconrole=1, icontop=1, manabar=1, text=1, text2=1, textstack=1 }
 local indicator_config_func = function(info, test)
     local id = info[#info-1] --print(id)
     if id == "healingBar" then id = "bar" end
@@ -391,6 +391,9 @@ Mixin(GridFrame.defaultDB, {
             debuff_240443              = true,
         },
         textstack = GridWarbabyStatusMapTextStack,
+        borderglow = {
+            debuff_314993              = true, --吸取精华-玛乌特
+        }
     }
 })
 --GridStatus:GetModule("GridStatusVoiceComm").defaultDB.alert_voice.enable = true
@@ -947,4 +950,56 @@ do
             self.core:SendStatusLost(guid, "alert_summon")
         end
     end
+end
+
+--[[------------------------------------------------------------
+边框闪光 borderglow
+---------------------------------------------------------------]]
+local LCG = LibStub("LibCustomGlow-1.0", true)
+
+if LCG then
+    GridFrame:RegisterIndicator("borderglow", "边框闪光",
+        -- New
+        function(frame)
+            return {}
+        end,
+
+        -- Reset
+        function(self)
+            local profile = GridFrame.db.profile
+            local size = profile.borderSize
+
+            local frame = self.__owner
+            LCG.PixelGlow_Stop(frame, "AbyGrid")
+        end,
+
+        -- SetStatus
+        function(self, color, text, value, maxValue, texture, texCoords, count, start, duration)
+            if not color then return end
+
+            local frame = self.__owner
+
+            frame.abyGlowColor = frame.abyGlowColor or {}
+            if type(color) == "table" then
+                frame.abyGlowColor[1] = color.r
+                frame.abyGlowColor[2] = color.g
+                frame.abyGlowColor[3] = color.b
+                frame.abyGlowColor[4] = color.a
+            else
+                frame.abyGlowColor[1] = 1
+                frame.abyGlowColor[2] = 1
+                frame.abyGlowColor[3] = 0
+                frame.abyGlowColor[4] = 1
+            end
+            --function lib.PixelGlow_Start(r,color,N,frequency,length,th,xOffset,yOffset,border,key,frameLevel)
+            LCG.PixelGlow_Start(frame, frame.abyGlowColor, 16, 0.25, nil, 3, nil, nil, false, "AbyGrid", nil)
+            --/run LibStub("LibCustomGlow-1.0").PixelGlow_Start(GridLayoutHeader1UnitButton1, {1,1,0}, 16, 0.25, nil, 3, nil, nil, false, "AbyGrid", nil)
+        end,
+
+        -- Clear
+        function(self)
+            local frame = self.__owner
+            LCG.PixelGlow_Stop(frame, "AbyGrid")
+        end
+    )
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2102, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200127014728")
+mod:SetRevision("20200211010544")
 mod:SetCreatureID(126832)
 mod:SetEncounterID(2093)
 mod:SetZone()
@@ -27,7 +27,6 @@ local warnPowderShot				= mod:NewSpellAnnounce(256106, 2)
 local specWarnCharge				= mod:NewSpecialWarningDodge(255952, nil, nil, nil, 2, 2)
 local specWarnDiveBomb				= mod:NewSpecialWarningDodge(272046, nil, nil, nil, 2, 2)
 --local specWarnPowderShot			= mod:NewSpecialWarningSpell(256106, nil, nil, nil, 2, 2)--Dodge?
---local yellSwirlingScythe			= mod:NewYell(195254)
 local specWarnBrew					= mod:NewSpecialWarningInterrupt(256060, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(256016, nil, nil, nil, 1, 8)
 

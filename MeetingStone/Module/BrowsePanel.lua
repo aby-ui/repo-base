@@ -1000,12 +1000,12 @@ function BrowsePanel:ToggleActivityMenu(anchor, activity)
                 },
             },
         },
-        {
-            text = L['加入关键字过滤'],
-            func = function()
-                SettingPanel:AddSpamWord(activity:GetSummary() or activity:GetComment())
-            end,
-        },
+        -- {
+        --     text = L['加入关键字过滤'],
+        --     func = function()
+        --         SettingPanel:AddSpamWord(activity:GetSummary() or activity:GetComment())
+        --     end,
+        -- },
         {
             text = CANCEL,
         },
