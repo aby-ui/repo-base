@@ -10,10 +10,10 @@ local activityCodeCaches
 
 do
     local function f()
-        return {
+        return { --
             [ACTIVITY_FILTER_BROWSE] = {},
             [ACTIVITY_FILTER_CREATE] = {},
-            [ACTIVITY_FILTER_OTHER]  = {},
+            [ACTIVITY_FILTER_OTHER] = {},
         }
     end
 
@@ -43,15 +43,15 @@ local function MakeActivityMenuTable(activityId, baseFilter, customId, menuType)
 
     local data = {}
 
-    data.text       = fullName
-    data.fullName   = fullName
+    data.text = fullName
+    data.fullName = fullName
     data.categoryId = categoryId
-    data.groupId    = groupId
+    data.groupId = groupId
     data.activityId = activityId
-    data.customId   = customId
-    data.filters    = filters
+    data.customId = customId
+    data.filters = filters
     data.baseFilter = baseFilter
-    data.value      = GetActivityCode(activityId, customId, categoryId, groupId)
+    data.value = GetActivityCode(activityId, customId, categoryId, groupId)
     if menuType == ACTIVITY_FILTER_BROWSE then
         data.full = C_LFGList.GetCategoryInfo(categoryId)
     end
@@ -66,7 +66,7 @@ local function MakeCustomActivityMenuTable(activityId, baseFilter, customId, men
     local customData = ACTIVITY_CUSTOM_DATA.A[activityId]
     if customData and not customId then
         data.menuTable = {}
-        data.hasArrow  = true
+        data.hasArrow = true
 
         for _, id in ipairs(customData) do
             tinsert(data.menuTable, MakeActivityMenuTable(activityId, baseFilter, id, menuType))
@@ -127,7 +127,7 @@ end
 
 local function MakeVersionMenuTable(categoryId, versionId, baseFilter, menuType)
     local data = {}
-    data.text = _G['EXPANSION_NAME'..versionId]
+    data.text = _G['EXPANSION_NAME' .. versionId]
     data.notClickable = true
 
     local menuTable = {}
@@ -147,7 +147,7 @@ local function MakeVersionMenuTable(categoryId, versionId, baseFilter, menuType)
 
     if #menuTable > 0 then
         data.menuTable = menuTable
-        data.hasArrow  = true
+        data.hasArrow = true
     else
         return
     end
@@ -201,17 +201,14 @@ local function MakeCategoryMenuTable(categoryId, baseFilter, menuType)
 
     if #menuTable > 0 then
         data.menuTable = menuTable
-        data.hasArrow  = true
+        data.hasArrow = true
     end
 
     return data
 end
 
-local PACKED_CATEGORYS = {
-    ['PvP'] = {
-        4, 7, 8, 9, 10,
-        key = 'packedPvp',
-    }
+local PACKED_CATEGORYS = { --
+    ['PvP'] = {4, 7, 8, 9, 10, key = 'packedPvp'},
 }
 
 local function FindPacked(categoryId)
@@ -227,12 +224,7 @@ local function FindPacked(categoryId)
 end
 
 local function MakePackedCategoryMenuTable(key, baseFilter, menuType)
-    local menuTable = {
-        text = key,
-        hasArrow = true,
-        notClickable = true,
-        menuTable = {}
-    }
+    local menuTable = {text = key, hasArrow = true, notClickable = true, menuTable = {}}
 
     for _, categoryId in ipairs(PACKED_CATEGORYS[key]) do
         if isCategoryValid(categoryId) then
@@ -321,26 +313,28 @@ function RefreshHistoryMenuTable(menuType)
     for _, value in ipairs(list) do
         local data = currentCodeCache[value]
         if data then
-            tinsert(menuTable, {
+            local item = {
                 categoryId = data.categoryId,
-                groupId    = data.groupId,
+                groupId = data.groupId,
                 activityId = data.activityId,
-                customId   = data.customId,
-                filters    = data.filters,
+                customId = data.customId,
+                filters = data.filters,
                 baseFilter = data.baseFilter,
-                value      = data.value,
-                text       = data.text,
-                full       = C_LFGList.GetCategoryInfo(data.categoryId),
-                fullName   = data.fullName,
-            })
+                value = data.value,
+                text = data.text,
+                fullName = data.fullName,
+            }
+
+            if menuType == ACTIVITY_FILTER_BROWSE then
+                item.full = C_LFGList.GetCategoryInfo(data.categoryId)
+            end
+
+            tinsert(menuTable, item)
         end
     end
 
     if #menuTable == 0 then
-        tinsert(menuTable, {
-            text     = L['暂无'],
-            disabled = true,
-        })
+        tinsert(menuTable, {text = L['暂无'], disabled = true})
     end
 
     return menuTable

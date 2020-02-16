@@ -29,8 +29,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 8
-local CURRENT_LOOT_DB_VERSION = 25
+local CURRENT_DB_VERSION = 9
+local CURRENT_LOOT_DB_VERSION = 26
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600

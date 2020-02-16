@@ -119,7 +119,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local crits_to_mapid = { 244, 245, 249, 252, 353, 250, 247, 251, 246, 248, 369, 370 }
     local crits_name_to_map_name = {}
     local debug_unmapped = {}
-    local crits, numCrits = {}, GetAchievementNumCriteria(aID10)
+    local crits, numCrits = {}, GetAchievementNumCriteria(aID15)
     hooksecurefunc("ChallengesFrame_Update", function(self)
         table.wipe(crits)
         local ar10 = select(4, GetAchievementInfo(aID10))

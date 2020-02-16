@@ -23,6 +23,7 @@ U1RegisterAddon("GTFO", {
                     end
                 end
 
+                --[=[
                 -- 紫圈快躲 3/3 01:31:26.500  SPELL_CAST_START,Creature-0-3911-1864-10934-148894-00007ABE3C,"失落的灵魂",0xa48,0x0,0000000000000000,nil,0x80000000,0x80000000,288694,"暗影碎击",0x20
                 if U1GetCfgValue("GTFO", "purple_circle", true) then
                     local timestamp, subEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
@@ -34,6 +35,7 @@ U1RegisterAddon("GTFO", {
                         _, play_handler = PlaySoundFile("Interface\\AddOns\\GTFO\\Sounds\\purple_circle.mp3", "MASTER")
                     end
                 end
+                --]=]
             end)
         end
     end,
@@ -42,6 +44,13 @@ U1RegisterAddon("GTFO", {
     icon = [[Interface\Icons\inv_misc_pyriumgrenade]],
     desc = "自动声音提示站位危险插件.``修改部分：已修改为中文语音版``设置口令：/GTFO",
     nopic = true,
+
+    {
+        text = "配置选项",
+        callback = function(cfg, v, loading)
+            GTFO_Command_Options()
+        end,
+    },
 
     {
         var = "mythic_blood",
@@ -56,6 +65,19 @@ U1RegisterAddon("GTFO", {
     },
 
     {
+        var = "ignore_eye",
+        text = "提示腐化之眼走开",
+        tip = "说明`8.3腐蚀效果，地上的圈，可以选择是否提醒",
+        getvalue = function() return not GTFO.Settings.IgnoreOptions.EyeOfCorruption end,
+        callback = function(cfg, v, loading)
+            if not loading then
+                GTFO.Settings.IgnoreOptions.EyeOfCorruption = not v and true or nil
+            end
+        end,
+    },
+
+    --[[
+    {
         var = "purple_circle",
         text = "提醒史诗秘钥收割时地板紫圈",
         tip = "说明`史诗秘境第2赛季，收割怪地上出紫圈时发出语音提醒",
@@ -66,4 +88,5 @@ U1RegisterAddon("GTFO", {
             end
         end,
     }
+    --]]
 });

@@ -2128,6 +2128,7 @@ private.NPC_DISPLAY_IDS = {
 	[138513] = 32230, --Vyrantion
 	[138507] = 31501, --Warlord Ultriss
 	[138442] = 66815, --Wavebreaker
+	[138794] = 88375, --Dunegorger Kraulok
 	[138843] = 86381, --Wingleader Srak'ik
 	[138844] = 86391, --Ya'vik the Imperial Blade
 	[139220] = 27572, --Vya Crystalbloom

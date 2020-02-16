@@ -1597,12 +1597,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "每週任務"
 La["Wild Transmute"] = "狂野塑形"
 La["WM"] = "莊園"
---[[Translation missing --]]
-La["WORK"] = "WORK"
+La["WORK"] = "工作"
 La["World Boss"] = "世界首領"
 La["World Bosses"] = "世界首領"
---[[Translation missing --]]
-La["YARD"] = "YARD"
+La["YARD"] = "場所"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "如果想要的話，可以在同個指標上顯示圖示與文字。首先選擇一個圖示，並在文字框中插入「ICON」到想要出現圖示的位置，就會自動替換成你選擇的圖示。"
 
 elseif locale == "ptBR" then

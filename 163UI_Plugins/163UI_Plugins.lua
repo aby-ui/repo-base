@@ -205,11 +205,11 @@ do
 end
 
 --[[------------------------------------------------------------
-拾取材料
+麦卡贡回收站拾取材料
 ---------------------------------------------------------------]]
 do
     local items = { [168217]=30, [168216]=10, [168215]=5 }
-    local pattern = "^" .. string.format(LOOT_ITEM_PUSHED_SELF, "(.+)") .. "$" --"你获得了物品：%s。"
+    local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)") .. "$" --"你获得了战利品：%s。"
     CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
         local _, _, link = msg:find(pattern)
         local itemId = link and select(3, link:find("\124Hitem:(%d+):"))

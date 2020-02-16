@@ -3,7 +3,7 @@ local P = addon.core:NewModule("Progress", "AceEvent-3.0")
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 
 -- Lua functions
-local pairs, type = pairs, type
+local ipairs, type = ipairs, type
 
 -- WoW API / Variables
 local C_PvP_GetWeeklyChestInfo = C_PvP.GetWeeklyChestInfo
@@ -119,6 +119,7 @@ local trackedQuest = {
     },
     weekly = true,
     resetFunc = KeepProgress,
+    relatedQuest = {53435, 53436},
   },
 }
 
@@ -130,7 +131,7 @@ end
 function P:QUEST_LOG_UPDATE()
   local t = addon.db.Toons[thisToon]
   if not t.Progress then t.Progress = {} end
-  for i, tbl in pairs(trackedQuest) do
+  for i, tbl in ipairs(trackedQuest) do
     if tbl.func then
       tbl.func(i)
     elseif tbl.quest then
@@ -162,7 +163,7 @@ end
 function P:OnDailyReset(toon)
   local t = addon.db.Toons[toon]
   if not t or not t.Progress then return end
-  for i, tbl in pairs(trackedQuest) do
+  for i, tbl in ipairs(trackedQuest) do
     if tbl.daily then
       if tbl.resetFunc then
         tbl.resetFunc(toon, i)
@@ -183,7 +184,7 @@ end
 function P:OnWeeklyReset(toon)
   local t = addon.db.Toons[toon]
   if not t or not t.Progress then return end
-  for i, tbl in pairs(trackedQuest) do
+  for i, tbl in ipairs(trackedQuest) do
     if tbl.weekly then
       if tbl.resetFunc then
         tbl.resetFunc(toon, i)
@@ -203,7 +204,7 @@ end
 
 function P:BuildOptions(order)
   local option = {}
-  for index, tbl in pairs(trackedQuest) do
+  for index, tbl in ipairs(trackedQuest) do
     option["Progress" .. index] = {
       type = "toggle",
       order = order + index * 0.01,
@@ -213,10 +214,26 @@ function P:BuildOptions(order)
   return option
 end
 
+function P:QuestEnabled(questID)
+  if not self.questMap then
+    self.questMap = {}
+    for index, tbl in ipairs(trackedQuest) do
+      if tbl.relatedQuest then
+        for _, quest in ipairs(tbl.relatedQuest) do
+          self.questMap[quest] = index
+        end
+      end
+    end
+  end
+  if self.questMap[questID] then
+    return addon.db.Tooltip["Progress" .. self.questMap[questID]]
+  end
+end
+
 function P:ShowTooltip(tooltip, columns, showall, preshow)
   local cpairs = addon.cpairs
   local first = true
-  for index, tbl in pairs(trackedQuest) do
+  for index, tbl in ipairs(trackedQuest) do
     if addon.db.Tooltip["Progress" .. index] or showall then
       local show
       for toon, t in cpairs(addon.db.Toons, true) do

@@ -797,7 +797,7 @@ end
 protection area
 ---------------------------------------------------------------]]
 
-U1STAFF={["心耀-冰风岗"]="爱不易开发者,",["大狸花猫-冰风岗"]="爱不易开发者",
+U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="爱不易开发者",
     ["Majere-冰风岗"]="爱不易开发者的会长",
     ["利爪-冰风岗"]="爱不易小狼狗",
     ["尬疗者-冰风岗"]="熊猫人爱好者",
@@ -956,6 +956,7 @@ do
     TempEnchant2:SetScript("OnUpdate", nil)
     TempEnchant3:SetScript("OnUpdate", nil)
 
+    --UpdateTooltip本来就有0.2秒的间隔, 需要新的机制，就是延迟出提示
     local lastModifierTime = 0
     CoreOnEvent("MODIFIER_STATE_CHANGED", function() lastModifierTime = GetTime() end)
     function AbyUpdateTooltipWrapperFunc(func, interval, caller)
@@ -975,7 +976,7 @@ do
         self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self.UpdateTooltip, interval or 1, self)
         self._abyNewUT = self.UpdateTooltip
     end
-    hooksecurefunc("PaperDollItemSlotButton_OnEnter", function(self) replaceUpdateTooltipWithWrapper(self) end)
+    --hooksecurefunc("PaperDollItemSlotButton_OnEnter", function(self) replaceUpdateTooltipWithWrapper(self) end)
     CoreDependCall("Blizzard_EncounterJournal", function()
         hooksecurefunc("EncounterJournal_SetLootButton", function(self)
             self.UpdateTooltip = AbyUpdateTooltipWrapperFunc(self:GetScript("OnEnter"), 2)
@@ -986,7 +987,8 @@ do
             replaceUpdateTooltipWithWrapper(v, 0.25)
         end
     end)
-    --bagnon and combuctor see components/item.lua
+    --已取消 bagnon and combuctor see components/item.lua
+    --if AbyUpdateTooltipWrapperFunc then Item.UpdateTooltip = AbyUpdateTooltipWrapperFunc(Item.UpdateTooltip, .5) end
 end
 
 --[==[-替换WorldFrame_OnUpdate，其中大量运算只是为了UIParent隐藏时, level>=60 是为了其中的Tutorial

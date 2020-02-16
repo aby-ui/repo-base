@@ -65,6 +65,10 @@ end
 
 function AuctionHouseFrame_CIMIOnValueChanged()
     local buttons = _G["AuctionHouseFrameScrollChild"]:GetParent().buttons
+    if buttons == nil then
+        return
+    end
+
     for i, button in pairs(buttons) do
         AuctionHouseFrame_CIMIUpdateIcon(button.CanIMogItOverlay)
     end

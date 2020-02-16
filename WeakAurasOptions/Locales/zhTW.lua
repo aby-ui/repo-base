@@ -499,6 +499,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Repeat every"] = "每次重複"
 	L["Required for Activation"] = "啟用需要"
 	L["Reset all options to their default values."] = "重置所有選項，恢復成預設值。"
+	L["Reset Entry"] = "重置項目"
 	L["Reset to Defaults"] = "重置為預設值"
 	L["Right"] = "右"
 	L["Right 2 HUD position"] = "右2 HUD 位置"

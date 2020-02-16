@@ -235,7 +235,7 @@ WorldQuestTracker.OnMapHasChanged = function (self)
 	end
 
 	C_Timer.After (0.05, function()
-		if (C_QuestLog.HasActiveThreats()) then
+		if (C_QuestLog.HasActiveThreats() and WorldQuestTracker.DoubleTapFrame) then
 			local eyeFrame = WorldQuestTracker.GetOverlay ("Eye") --REMOVE ON 9.0
 			if (WorldQuestTracker.DoubleTapFrame and WorldQuestTracker.DoubleTapFrame:IsShown()) then
 				eyeFrame:Refresh()

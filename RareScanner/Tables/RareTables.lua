@@ -2112,6 +2112,7 @@ private.RARE_LIST = {
 	138513, --Vyrantion
 	138507, --Warlord Ultriss
 	138442, --Wavebreaker
+	138794, --Dunegorger Kraulok
 	138843, --Wingleader Srak'ik
 	138844, --Ya'vik the Imperial Blade
 

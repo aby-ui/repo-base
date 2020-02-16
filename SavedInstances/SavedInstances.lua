@@ -297,6 +297,7 @@ addon.defaultDB = {
   -- weeklyMax: integer
   -- totalMax: integer
   -- season: integer
+  -- relatedItemCount: integer
 
   -- Quests:  key: QuestID  value:
   -- Title: string
@@ -752,8 +753,9 @@ function addon:QuestIgnored(questID)
       return
     end
     return true
+  elseif core:GetModule("Progress"):QuestEnabled(questID) then
+    return true
   end
-  return
 end
 
 function addon:QuestCount(toonname)
@@ -1662,7 +1664,7 @@ function addon:UpdateToonData()
       db.Quests[id] = nil
     end
   end
-  addon:UpdateCurrency()
+  core:GetModule("Currency"):UpdateCurrency()
   local zone = GetRealZoneText()
   if zone and #zone > 0 then
     t.Zone = zone
@@ -2401,13 +2403,9 @@ hoverTooltip.ShowSpellIDTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
-local weeklycap = CURRENCY_WEEKLY_CAP:gsub("%%%d*?([ds])","%%%1")
-local weeklycap_scan = weeklycap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-weeklycap = weeklycap:gsub("%%d","%%s")
-local totalcap = CURRENCY_TOTAL_CAP:gsub("%%%d*?([ds])","%%%1")
-local totalcap_scan = totalcap:gsub("%%d","(%%d+)"):gsub("%%s","(\124c%%x%%x%%x%%x%%x%%x%%x%%x)")
-totalcap = totalcap:gsub("%%d","%%s")
-local season_scan = CURRENCY_SEASON_TOTAL:gsub("%%%d*?([ds])","(%%%1*)")
+local weeklyCapPatten = gsub(CURRENCY_WEEKLY_CAP, "%%s%%s/%%s", "(.+)")
+local totalCapPatten = gsub(CURRENCY_TOTAL_CAP, "%%s%%s/%%s", "(.+)")
+local seasonTotalPatten = gsub(CURRENCY_SEASON_TOTAL, "%%s%%s", "(.+)")
 
 hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
   local toon, idx, ci = unpack(arg)
@@ -2421,16 +2419,13 @@ hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
   scantt:SetCurrencyByID(idx)
   name = scantt:GetName()
   local spacer
-  for i=1,scantt:NumLines() do
-    local left = _G[name.."TextLeft"..i]
+  for i = 1, scantt:NumLines() do
+    local left = _G[name .. "TextLeft" .. i]
     local text = left:GetText()
-    if text:find(weeklycap_scan) or
-      text:find(totalcap_scan) or
-      text:find(season_scan) then
-    -- omit player's values
-    else
+    if not (strfind(text, weeklyCapPatten) or strfind(text, totalCapPatten) or strfind(text, seasonTotalPatten)) then
+      -- omit player's values
       indicatortip:AddLine("")
-      indicatortip:SetCell(indicatortip:GetLineCount(),1,coloredText(left), nil, "LEFT",2, nil, nil, nil, 250)
+      indicatortip:SetCell(indicatortip:GetLineCount(), 1, coloredText(left), nil, "LEFT", 2, nil, nil, nil, 250)
       spacer = #strtrim(text) == 0
     end
   end
@@ -2439,14 +2434,27 @@ hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
       indicatortip:AddLine(" ")
       spacer = true
     end
-    indicatortip:AddLine(weeklycap:format("", CurrencyColor(ci.earnedThisWeek or 0,ci.weeklyMax), addon:formatNumber(ci.weeklyMax)))
+    indicatortip:AddLine(format(CURRENCY_WEEKLY_CAP, "", CurrencyColor(ci.earnedThisWeek or 0, ci.weeklyMax), addon:formatNumber(ci.weeklyMax)))
   end
   if ci.totalMax and ci.totalMax > 0 then
     if not spacer then
       indicatortip:AddLine(" ")
       spacer = true
     end
-    indicatortip:AddLine(totalcap:format("", CurrencyColor(ci.amount or 0,ci.totalMax), addon:formatNumber(ci.totalMax)))
+    indicatortip:AddLine(format(CURRENCY_TOTAL_CAP, "", CurrencyColor(ci.amount or 0,ci.totalMax), addon:formatNumber(ci.totalMax)))
+  end
+  if addon.specialCurrency[idx] and addon.specialCurrency[idx].relatedItem then
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
+    local itemName = GetItemInfo(addon.specialCurrency[idx].relatedItem.id) or ""
+    if addon.specialCurrency[idx].relatedItem.holdingMax then
+      local holdingMax = addon.specialCurrency[idx].relatedItem.holdingMax
+      indicatortip:AddLine(itemName .. ": " .. CurrencyColor(ci.relatedItemCount or 0, holdingMax) .. "/" .. holdingMax)
+    else
+      indicatortip:AddLine(itemName .. ": " .. (ci.relatedItemCount or 0))
+    end
   end
   if ci.season and #ci.season > 0 then
     if not spacer then
@@ -2468,6 +2476,12 @@ hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
   if not idx then return end
   local name,_,tex = GetCurrencyInfo(idx)
   tex = " \124T"..tex..":0\124t"
+  local itemFlag, itemIcon
+  if addon.specialCurrency[idx] and addon.specialCurrency[idx].relatedItem then
+    itemFlag = true
+    itemIcon = select(10, GetItemInfo(addon.specialCurrency[idx].relatedItem.id))
+    itemIcon = itemIcon and (" \124T" .. itemIcon .. ":0\124t") or ""
+  end
   openIndicator(2, "LEFT","RIGHT")
   indicatortip:AddHeader(name, "")
   local total = 0
@@ -2477,9 +2491,17 @@ hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
     local ci = t.currency and t.currency[idx]
     if ci and ci.amount then
       tmax = tmax or ci.totalMax
-      table.insert(temp, { ["toon"] = toon, ["amount"] = ci.amount,
-        ["str1"] = ClassColorise(t.Class, toon),
-        ["str2"] = CurrencyColor(ci.amount or 0,tmax)..tex,
+      local str2 = CurrencyColor(ci.amount or 0, tmax) .. tex
+      if itemFlag then
+        if addon.specialCurrency[idx].relatedItem.holdingMax then
+          str2 = str2 .. " + " .. CurrencyColor(ci.relatedItemCount or 0, addon.specialCurrency[idx].relatedItem.holdingMax) .. itemIcon
+        else
+          str2 = str2 .. " + " .. (ci.relatedItemCount or 0) .. itemIcon
+        end
+      end
+      tinsert(temp, {
+        toon = toon, amount = ci.amount, itemCount = ci.relatedItemCount or 0,
+        str1 = ClassColorise(t.Class, toon), str2 = str2,
       })
       total = total + ci.amount
     end
@@ -2488,10 +2510,10 @@ hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
   --indicatortip:AddLine(TOTAL, CurrencyColor(total,tmax)..tex)
   --indicatortip:AddLine(" ")
   addon.currency_sort = addon.currency_sort or function(a,b)
-    if a.amount > b.amount then
-      return true
-    elseif a.amount < b.amount then
-      return false
+    if a.amount ~= b.amount then
+      return a.amount > b.amount
+    elseif a.itemCount ~= b.itemCount then
+      return a.itemCount > b.itemCount
     end
     local an, as = a.toon:match('^(.*) [-] (.*)$')
     local bn, bs = b.toon:match('^(.*) [-] (.*)$')
@@ -2529,7 +2551,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.0-1-g34ee498" then
+  if versionString == "8.3.0-7-ga9290ae" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -4204,25 +4226,22 @@ function core:ShowTooltip(anchorframe)
   end
 
   local firstcurrency = true
-  for _,idx in ipairs(currency) do
-    local setting = addon.db.Tooltip["Currency"..idx]
-    if setting or showall then
+  for _, idx in ipairs(currency) do
+    if addon.db.Tooltip["Currency" .. idx] or showall then
       local show
       for toon, t in cpairs(addon.db.Toons, true) do
-        -- ci.name, ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax
+        -- ci.name, ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax, ci.relatedItemCount
         local ci = t.currency and t.currency[idx]
-        local gotsome
         if ci then
-          gotsome = ((ci.earnedThisWeek or 0) > 0 and (ci.weeklyMax or 0) > 0) or
-            ((ci.amount or 0) > 0 and showall)
-          -- or ((ci.amount or 0) > 0 and ci.weeklyMax == 0 and t.Level == maxlvl)
-        end
-        if ci and gotsome then
-          addColumns(columns, toon, tooltip)
-        end
-        if ci and (gotsome or (ci.amount or 0) > 0) and columns[toon..1] then
-          local name,_,tex = GetCurrencyInfo(idx)
-          show = string.format(" \124T%s:0\124t%s",tex,name)
+          local gotThisWeek = ((ci.earnedThisWeek or 0) > 0 and (ci.weeklyMax or 0) > 0)
+          local gotSome = ((ci.relatedItemCount or 0) > 0) or ((ci.amount or 0) > 0)
+          if gotThisWeek or (gotSome and showall) then
+            addColumns(columns, toon, tooltip)
+          end
+          if not show and (gotThisWeek or gotSome) and columns[toon .. 1] then
+            local name, _, tex = GetCurrencyInfo(idx)
+            show = format(" \124T%s:0\124t%s", tex, name)
+          end
         end
       end
       local currLine
@@ -4259,6 +4278,18 @@ function core:ShowTooltip(anchorframe)
                 str = earned.." ("..CurrencyColor(ci.earnedThisWeek,ci.weeklyMax)..weeklymax..")"
               elseif (ci.amount or 0) > 0 then
                 str = CurrencyColor(ci.amount,ci.totalMax)..totalmax
+              end
+              if addon.specialCurrency[idx] and addon.specialCurrency[idx].relatedItem then
+                if addon.specialCurrency[idx].relatedItem.holdingMax then
+                  local holdingMax = addon.specialCurrency[idx].relatedItem.holdingMax
+                  if addon.db.Tooltip.CurrencyMax then
+                    str = str .. " (" .. CurrencyColor(ci.relatedItemCount or 0, holdingMax) .. "/" .. holdingMax .. ")"
+                  else
+                    str = str .. " (" .. CurrencyColor(ci.relatedItemCount or 0, holdingMax) .. ")"
+                  end
+                else
+                  str = str .. " (" .. (ci.relatedItemCount or 0) .. ")"
+                end
               end
             end
             if str then

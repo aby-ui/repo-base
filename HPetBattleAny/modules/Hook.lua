@@ -77,9 +77,10 @@ HPetBattleAny.hook_PJ = hookPetJournal
 if HPetBattleAny.CreateLinkByInfo then
 	--hook原始创建链接函数
 	HPetBattleAny._GetBattlePetLink = C_PetJournal.GetBattlePetLink
-	C_PetJournal.GetBattlePetLink=function(id)
-		return HPetBattleAny.CreateLinkByInfo(id)
-	end
+    --缺少displayID无法显示
+	--C_PetJournal.GetBattlePetLink=function(id)
+	--	return HPetBattleAny.CreateLinkByInfo(id)
+	--end
 	--自定义创建链接函数
 	HP_L=function(id,mlevel,mhealth,mpower,mspeed,mrarity)
 		id,mlevel,mhealth,mpower,mspeed,mrarity = tonumber(id),tonumber(mlevel),tonumber(mhealth),tonumber(mpower),tonumber(mspeed),tonumber(mrarity)

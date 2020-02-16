@@ -317,7 +317,7 @@ function WorldQuestTracker.HideWorldQuestsOnWorldMap()
 		widget.questID = nil
 	end
 	--faction lines (deprecated)
-	for _, widget in ipairs (extra_widgets) do --linhas e bolas de fac��es
+	for _, widget in ipairs (extra_widgets) do --hide lines and indicators for factions
 		widget:Hide()
 	end
 	

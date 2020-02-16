@@ -36,12 +36,12 @@ local warfronts = {
   {
     Alliance = {
       id = 117,
-      scenario = {53992}, -- Warfront: The Battle for Darkshore (Alliance)
+      scenario = {53992, 57960}, -- Warfront: The Battle for Darkshore (Alliance)
       boss = 54895, -- Ivus the Decayed
     },
     Horde = {
       id = 118,
-      scenario = {53955}, -- Warfront: The Battle for Darkshore (Horde)
+      scenario = {53955, 57959}, -- Warfront: The Battle for Darkshore (Horde)
       boss = 54896, -- Ivus the Forest Lord
     },
   },

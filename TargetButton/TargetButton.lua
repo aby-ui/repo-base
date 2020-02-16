@@ -28,10 +28,10 @@ function TargetButton_CheckRange(self, elapsed)
     if timer >= 0.2 then
         timer = 0
         if CheckInteractDistance("target",1) then
-            TargetButtonsFrame_InspectButton:Enable();
+            --TargetButtonsFrame_InspectButton:Enable();
             TargetButtonsFrame_FollowButton:Enable();
         else
-            TargetButtonsFrame_InspectButton:Disable();
+            --TargetButtonsFrame_InspectButton:Disable();
             --TargetButtonsFrame_FollowButton:Disable();
         end
         if CheckInteractDistance("target",2) then
