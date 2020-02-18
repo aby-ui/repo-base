@@ -14,6 +14,15 @@ L.TARGET_GEAR_BUTTON_TOOLTIP_NEWBIE = [[Target gear
 L.UNDRESS_BUTTON_TEXT = "U"
 L.UNDRESS_BUTTON_TOOLTIP = "Undress unit"
 L.UNDRESS_BUTTON_TEXT_FULL = "Undress"
+L["Options"] = "Options"
+L["Set target"] = "Set target"
+L["Race"] = "Race"
+L["Gender"] = "Gender"
+L["Undress"] = "Undress"
+L["Reset"] = "Reset"
+L["Alliance"] = "Alliance"
+L["Horde"] = "Horde"
+L["Allied Races"] = "Allied Races"
 
 if locale == "deDE" then
 elseif locale == "esES" then
@@ -37,5 +46,13 @@ elseif locale == "zhCN" or locale == "zhTW" then
 	L.UNDRESS_BUTTON_TEXT = "脱"
 	L.UNDRESS_BUTTON_TOOLTIP = "脱光所有装备"
 	L.UNDRESS_BUTTON_TEXT_FULL = "脱光"
-elseif locale == "zhTW" then
+    L["Options"] = "试穿助手选项"
+    L["Set target"] = "设为目标模型"
+    L["Race"] = "种族"
+    L["Gender"] = "性别"
+    L["Undress"] = "脱下"
+    L["Reset"] = "重置"
+    L["Alliance"] = "联盟"
+    L["Horde"] = "部落"
+    L["Allied Races"] = "同盟种族"
 end

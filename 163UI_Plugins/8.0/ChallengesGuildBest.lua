@@ -185,3 +185,27 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     end)
     --ChallengesFrame_Update(ChallengesFrame)
 end)
+
+--[[------------------------------------------------------------
+PVP每周奖励
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_PVPUI", function()
+    local ratings  = { "0000~1399", "1400~1599", "1600~1799", "1800~2099", "2100~2399", "2400~9999" }
+    local match =    { 430,       440,        450,         455,         460,         465 }
+    local weekly =   { 445,       455,        460,         465,         470,         475 }
+    local weekly2 =  { 445,       460,        460,         475,         475,         475 }
+    PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest:HookScript("OnEnter", function(self)
+        if GameTooltip:IsVisible() then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("PVP等级  比赛结束  低保散件  低保特质")
+            for i, v in ipairs(ratings) do
+            local line = " %9s |T130758:10:20:0:0:32:32:10:22:10:22|t %d |T130758:10:28:0:0:32:32:10:22:10:22|t %d |T130758:10:35:0:0:32:32:10:22:10:22|t %d"
+                GameTooltip:AddLine(format(line, ratings[i], match[i], weekly[i], weekly2[i]))
+            end
+
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("500征服 首周440，2~9周445，10~25周460")
+            GameTooltip:Show()
+        end
+    end)
+end)

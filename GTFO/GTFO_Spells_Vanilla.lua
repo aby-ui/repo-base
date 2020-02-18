@@ -147,7 +147,7 @@ GTFO.SpellID["83019"] = {
 GTFO.SpellID["25989"] = {
 	--desc = "Toxin (Viscidus)";
 	sound = 2;
-	trivialLevel = 60;
+	trivialLevel = 61;
 };
 
 GTFO.SpellID["176369"] = {
@@ -158,6 +158,30 @@ GTFO.SpellID["176369"] = {
 GTFO.SpellID["176338"] = {
 	--desc = "Lava Blast (Ironmarch Scorcher)";
 	sound = 1;
+};
+
+GTFO.SpellID["150549"] = {
+  --desc = "Crushing Singularity (Voidwalker Minion)";
+  sound = 1;
+  trivialLevel = 70;
+};
+
+GTFO.SpellID["149894"] = {
+  --desc = "Maw of Death (Domina)";
+  sound = 1;
+  trivialLevel = 70;
+};
+
+GTFO.SpellID["152592"] = {
+  --desc = "Executioner's Strike (Executioner Gore)";
+  sound = 1;
+  trivialLevel = 70;
+};
+
+GTFO.SpellID["151268"] = {
+  --desc = "Toxic Bile (Aku'mai the Venomous)";
+  sound = 1;
+  trivialLevel = 70;
 };
 
 end

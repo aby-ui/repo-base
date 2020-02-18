@@ -1,3 +1,745 @@
+--[=[
+local addonName, ns = ...
+local addon = CreateFrame("Frame")
+addon:SetScript("OnEvent", function(addon, event, ...) addon[event](addon, event, ...) end)
+addon:RegisterEvent("ADDON_LOADED")
+
+-- addon:CreateModule(name:string, module:Module) => Module
+-- addon:GetModule(name:string) => Module
+do
+	---@class Module
+	local module = {
+		Loaded = nil,
+		Name = nil,
+		CanLoad = nil,
+		Widgets = nil,
+		Handlers = nil,
+		Events = nil,
+	}
+
+	---@type Module[]
+	local modules = {}
+
+	local function Init(module)
+		module.Loaded = true
+		for _, widget in pairs(module.Widgets) do
+			local frame = CreateFrame(widget.type, nil, _G[widget.parent] or widget.parent, widget.template)
+			frame.Module = module
+			frame.Widget = widget
+			for handler, script in pairs(module.Handlers) do
+				if handler == "OnLoad" then
+					script(frame)
+				end
+				frame:SetScript(handler, script)
+			end
+			if module.Events then
+				for _, event in pairs(module.Events) do
+					frame:RegisterEvent(event)
+				end
+			end
+			widget.Frame = frame
+		end
+	end
+
+	local function Load(module)
+		if module.Loaded then
+			return true
+		end
+		if type(module.CanLoad) == "function" then
+			if not module:CanLoad() then
+				return false
+			end
+		end
+		Init(module)
+		return true
+	end
+
+	---@param module Module
+	function addon:CreateModule(name, module)
+		modules[#modules + 1] = module
+		module.Loaded = false
+		module.Name = name
+		Load(module)
+		return module
+	end
+
+	---@return Module
+	function addon:GetModule(name)
+		for _, module in ipairs(modules) do
+			if module.Name == name then
+				return module
+			end
+		end
+	end
+
+	function addon:ADDON_LOADED(event, name)
+		for _, module in ipairs(modules) do
+			Load(module)
+		end
+	end
+end
+
+-- addon:ResetActors() => success:boolean
+-- addon:ResetActiveActor() => success:boolean
+-- addon:TryOn(item:string) => success:boolean
+-- addon:DressUpSources(appearanceSources:table, mainHandEnchant:number, offHandEnchant:number) => success:boolean
+-- addon:UndressActors() => success:boolean
+-- addon:UndressActorsSlot(index:number) => success:boolean
+-- addon:Undress() => success:boolean
+-- addon:UndressSlot(index:number) => success:boolean
+-- addon:CanSetUnit(unit:string) => success:boolean
+-- addon:SetUnit(unit:string) => success:boolean
+-- addon:SetSkinForUnit(unit:string) => success:boolean
+-- addon:GetCurrentSkin() => race:string, class:string
+-- addon:SetSkin(race:string, class:string) => success:boolean
+do
+	local activeActor = {}
+	local activeActorSkin = {}
+
+	local function GetActiveFrame()
+		local modelScene
+		local model
+		local frame
+		if SideDressUpFrame and SideDressUpFrame:IsShown() then
+			frame = SideDressUpFrame
+			modelScene = SideDressUpFrame.ModelScene
+		elseif DressUpFrame and DressUpFrame:IsShown() then
+			frame = DressUpFrame
+			modelScene = DressUpFrame.ModelScene
+		end
+		return modelScene, model, frame
+	end
+
+	local function GetActor(modelScene, unit)
+		local _, race
+		local sex, sex2
+		if unit then
+			_, race = UnitRace(unit)
+			if race then
+				race = race:lower()
+				if race == "scourge" then
+					race = "undead"
+				elseif race == "tauren" then
+					race = ""
+				end
+			end
+			sex = UnitSex(unit)
+			if sex == 2 then
+				sex = "male"
+				sex2 = "female"
+			elseif sex == 3 then
+				sex = "female"
+				sex2 = "male"
+			else
+				sex = nil
+			end
+		end
+		local tag, actor
+		if race then
+			if not actor and sex then
+				tag = race .. "-" .. sex
+				actor = modelScene:GetActorByTag(tag)
+			end
+			if not actor and sex2 then
+				tag = race .. "-" .. sex2
+				actor = modelScene:GetActorByTag(tag)
+			end
+			if not actor then
+				tag = race
+				actor = modelScene:GetActorByTag(race)
+			end
+		end
+		if not actor then
+			tag = "player"
+			actor = modelScene:GetActorByTag(tag)
+		end
+		return actor, tag
+	end
+
+	local function HideExtras(modelScene, mainActor)
+		for tag, actor in pairs(modelScene.tagToActor) do
+			if actor ~= mainActor then
+				actor:ClearModel()
+				actor:Hide()
+			end
+		end
+	end
+
+	local function GetActorHideExtras(modelScene, unit)
+		if not unit then
+			return activeActor[modelScene]
+		end
+		local actor, tag = GetActor(modelScene, unit)
+		if not actor then
+			actor, tag = GetActor(modelScene)
+		end
+		activeActor[modelScene] = actor
+		HideExtras(modelScene, actor)
+		if actor then
+			actor:Show()
+		end
+		return actor
+	end
+
+	local function ResetActors(modelScene)
+		for tag, actor in pairs(modelScene.tagToActor) do
+			if actor:IsShown() then
+				actor:SetSheathed(false)
+				actor:Dress()
+			end
+		end
+	end
+
+	function addon:ResetActors()
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return ResetActors(modelScene)
+		end
+		return false
+	end
+
+	local function ResetActiveActor(modelScene)
+		local currentActor = activeActor[modelScene]
+		if not currentActor then
+			return false
+		end
+		local playerActor = modelScene:GetPlayerActor()
+		local playerIsActive = playerActor == currentActor
+		for tag, actor in pairs(modelScene.tagToActor) do
+			if actor ~= currentActor and (not playerIsActive or actor ~= playerActor) then
+				actor:ClearModel()
+				actor:Hide()
+			end
+		end
+		local activeSkin = activeActorSkin[modelScene]
+		if activeSkin then
+			addon:SetSkin(activeSkin.race, activeSkin.class, true)
+		end
+		return true
+	end
+
+	function addon:ResetActiveActor()
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return ResetActiveActor(modelScene)
+		end
+		return false
+	end
+
+	local function TryOnModelScene(modelScene, link)
+		local actor = GetActorHideExtras(modelScene)
+		if not actor then
+			return false
+		end
+		return actor:TryOn(link) == Enum.ItemTryOnReason.Success
+	end
+
+	local function TryOnModel(model, link)
+		return model:TryOn(link)
+	end
+
+	function addon:TryOn(link)
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return TryOnModelScene(modelScene, link)
+		elseif model then
+			return TryOnModel(model, link)
+		end
+		return false
+	end
+
+	local function DressUpSourcesModelScene(modelScene, appearanceSources, mainHandEnchant, offHandEnchant)
+		local actor = GetActorHideExtras(modelScene)
+		if not actor then
+			return false
+		end
+		local mainHandSlotID = GetInventorySlotInfo("MAINHANDSLOT")
+		local secondaryHandSlotID = GetInventorySlotInfo("SECONDARYHANDSLOT")
+		for i = 1, #appearanceSources do
+			if i ~= mainHandSlotID and i ~= secondaryHandSlotID then
+				if appearanceSources[i] and appearanceSources[i] ~= NO_TRANSMOG_SOURCE_ID then
+					actor:TryOn(appearanceSources[i])
+				end
+			end
+		end
+		actor:TryOn(appearanceSources[mainHandSlotID], "MAINHANDSLOT", mainHandEnchant)
+		actor:TryOn(appearanceSources[secondaryHandSlotID], "SECONDARYHANDSLOT", offHandEnchant)
+	end
+
+	function addon:DressUpSources(appearanceSources, ...)
+		if not appearanceSources then
+			return false
+		end
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return DressUpSourcesModelScene(modelScene, appearanceSources, ...)
+		elseif model then
+			return DressUpSources(appearanceSources, ...)
+		end
+		return false
+	end
+
+	local function UndressActorsModelScene(modelScene)
+		for tag, actor in pairs(modelScene.tagToActor) do
+			if actor:IsShown() then
+				actor:Undress()
+			end
+		end
+	end
+
+	function addon:UndressActors()
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return UndressActorsModelScene(modelScene)
+		end
+		return false
+	end
+
+	local function UndressActorsSlotModelScene(modelScene, index)
+		for tag, actor in pairs(modelScene.tagToActor) do
+			if actor:IsShown() then
+				actor:UndressSlot(index)
+			end
+		end
+	end
+
+	function addon:UndressActorsSlot(index)
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return UndressActorsSlotModelScene(modelScene, index)
+		end
+		return false
+	end
+
+	local function UndressModelScene(modelScene)
+		local actor = GetActorHideExtras(modelScene)
+		if not actor then
+			return false
+		end
+		return actor:Undress()
+	end
+
+	local function UndressModel(model)
+		return model:Undress()
+	end
+
+	function addon:Undress()
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return UndressModelScene(modelScene)
+		elseif model then
+			return UndressModel(model)
+		end
+		return false
+	end
+
+	local function UndressSlotModelScene(modelScene, index)
+		local actor = GetActorHideExtras(modelScene)
+		if not actor then
+			return false
+		end
+		return actor:UndressSlot(index)
+	end
+
+	local function UndressSlotModel(model, index)
+		return model:UndressSlot(index)
+	end
+
+	function addon:UndressSlot(index)
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return UndressSlotModelScene(modelScene, index)
+		elseif model then
+			return UndressSlotModel(model, index)
+		end
+		return false
+	end
+
+	local function CanSetUnitModelScene(unit)
+		if not unit or not UnitExists(unit) then
+			return false
+		end
+		if UnitIsPlayer(unit) then
+			return true
+		end
+		local guid = UnitGUID(unit)
+		if not guid then
+			return false
+		end
+		local type, _, _, _, _, id = strsplit("-", guid)
+		if type == "Creature" or type == "Pet" or type == "GameObject" or type == "Vehicle" or type == "Vignette" then
+			local displayID = ns.CreatureToDisplayID[id]
+			return displayID ~= nil, displayID
+		end
+	end
+
+	local function CanSetUnitModel(unit)
+		return unit and UnitExists(unit)
+	end
+
+	function addon:CanSetUnit(unit)
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return CanSetUnitModelScene(unit)
+		elseif model then
+			return CanSetUnitModel(unit)
+		end
+		return false
+	end
+
+	local function UpdateCameraForNewActor(modelScene, actor)
+		modelScene:TransitionToModelSceneID(290, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true)
+	end
+
+	local function SetUnitModelScene(modelScene, unit)
+		local actor = GetActorHideExtras(modelScene, unit)
+		if not actor then
+			return false
+		end
+		local canSetUnit, displayID = CanSetUnitModelScene(unit)
+		if not canSetUnit then
+			return false
+		end
+		if not displayID then
+			local success = actor:SetModelByUnit(unit)
+			UpdateCameraForNewActor(modelScene, actor)
+			return success
+		end
+		if type(displayID) == "table" then
+			displayID = displayID[random(1, #displayID)]
+		end
+		if displayID then
+			local success = actor:SetModelByCreatureDisplayID(displayID)
+			UpdateCameraForNewActor(modelScene, actor)
+			return success
+		end
+	end
+
+	local function SetUnitModel(model, unit)
+		return model:SetUnit(unit)
+	end
+
+	function addon:SetUnit(unit)
+		local modelScene, model = GetActiveFrame()
+		if modelScene then
+			return SetUnitModelScene(modelScene, unit)
+		elseif model then
+			return SetUnitModel(model, unit)
+		end
+		return false
+	end
+
+	local function GetCurrentSkin(frame)
+		local race, class
+		if frame.BGTopLeft then
+			local texture = frame.BGTopLeft:GetTexture()
+			if type(texture) == "string" then
+				race = texture:lower():match("dressupbackground%-(.+)%d$")
+			end
+		end
+		if frame.ModelBackground then
+			local atlas = frame.ModelBackground:GetAtlas()
+			if type(atlas) == "string" then
+				class = atlas:lower():match("dressingroom%-background%-(.+)$")
+			end
+		end
+		return race, class
+	end
+
+	function addon:GetCurrentSkin()
+		local modelScene, model, frame = GetActiveFrame()
+		if frame then
+			return GetCurrentSkin(frame)
+		end
+		return false
+	end
+
+	local function CacheSkin(modelScene, frame, race, class)
+		local activeSkin = activeActorSkin[modelScene]
+		if not activeSkin then
+			activeSkin = {}
+			activeActorSkin[modelScene] = activeSkin
+		end
+		if frame then
+			activeSkin.race, activeSkin.class = GetCurrentSkin(frame)
+		else
+			activeSkin.race, activeSkin.class = race, class
+		end
+		return activeSkin
+	end
+
+	local function UpdateUnitSkin(frame, unit, modelScene)
+		local _, class = UnitClass(unit)
+		SetDressUpBackground(frame:GetParent(), nil, class)
+		if UnitIsPlayer(unit) then
+			CacheSkin(modelScene, frame:GetParent())
+		end
+		return true
+	end
+
+	function addon:SetSkinForUnit(unit)
+		local modelScene, model, frame = GetActiveFrame()
+		if frame then
+			return UpdateUnitSkin(modelScene or model, unit, modelScene)
+		end
+		return false
+	end
+
+	function addon:SetSkin(race, class, doNotSetActiveSkin)
+		local modelScene, model, frame = GetActiveFrame()
+		if frame then
+			if modelScene and not doNotSetActiveSkin then
+				local activeSkin = activeActorSkin[modelScene]
+				if not activeSkin then
+					activeSkin = {}
+					activeActorSkin[modelScene] = activeSkin
+				end
+				activeSkin.race = race
+				activeSkin.class = class
+			end
+			SetDressUpBackground(frame, race, class)
+			CacheSkin(modelScene, nil, race, class)
+			return true
+		end
+		return false
+	end
+end
+
+-- addon.UI.Resize.Update(frame:table)
+-- addon.UI.Undress.Setup(frame:table)
+-- addon.UI.Undress.Click(frame:table)
+-- addon.UI.Reset.Setup(frame:table)
+-- addon.UI.Reset.Click(frame:table)
+do
+	local UI = {}
+	addon.UI = UI
+
+	UI.Resize = {
+		Update = function(parent, frame)
+			if GetCVar(parent.MaxMinButtonFrame.cvar) == "0" then
+				frame:SetWidth(frame.Size or 60)
+				frame:SetText(frame.Text or frame.TextShort)
+			else
+				frame:SetWidth(frame.SizeShort or 60/1.5)
+				frame:SetText(frame.TextShort or frame.Text)
+			end
+		end,
+	}
+
+	UI.Undress = {
+		Setup = function(frame)
+			frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+		end,
+		Click = function(frame, button)
+			if button == "RightButton" then
+				addon:UndressActorsSlot(INVSLOT_HEAD)
+				addon:UndressActorsSlot(INVSLOT_BACK)
+				addon:UndressActorsSlot(INVSLOT_TABARD)
+				--addon:UndressSlot(INVSLOT_HEAD)
+				--addon:UndressSlot(INVSLOT_BACK)
+				--addon:UndressSlot(INVSLOT_TABARD)
+			else
+				addon:UndressActors()
+				--addon:Undress()
+			end
+		end,
+	}
+
+	UI.Reset = {
+		Setup = function(frame)
+			frame:HookScript("OnClick", function(...) UI.Reset.Click(...) end)
+		end,
+		Click = function(frame, button)
+			addon:ResetActiveActor()
+			--addon:ResetActors()
+		end,
+	}
+end
+
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+
+	local SDUF_UNDRESS = addon:CreateModule("SideDressUpFrame Undress", {
+		CanLoad = function()
+			return type(SideDressUpFrame) == "table"
+		end,
+		Handlers = {
+			OnLoad = function(self)
+				self:SetText(ns.L.UNDRESS)
+				self:SetSize(SideDressUpFrame.ResetButton:GetSize())
+				self:SetPoint("BOTTOM", SideDressUpFrame.ResetButton, "TOP", 0, 0)
+				SideDressUpFrame.ModelScene:SetPoint("BOTTOMRIGHT", -11, 40 + self:GetHeight() - 4)
+				addon.UI.Undress.Setup(self)
+				addon.UI.Reset.Setup(SideDressUpFrame.ResetButton)
+			end,
+			OnClick = function(self, button)
+				addon.UI.Undress.Click(self, button)
+			end,
+		},
+		Widgets = {
+			{ type = "Button", parent = "SideDressUpFrame", template = "UIPanelButtonTemplate" },
+		},
+	})
+
+	local DUF_UNDRESS = addon:CreateModule("DressUpFrame Undress", {
+		CanLoad = function()
+			return type(DressUpFrame) == "table"
+		end,
+		Handlers = {
+			OnLoad = function(self)
+				self.Text = ns.L.UNDRESS
+				self.TextShort = ns.L.UNDRESS_SHORT
+				self:SetPoint("RIGHT", DressUpFrame.ResetButton, "LEFT", 0, 0)
+				hooksecurefunc(DressUpFrame, "SetSize", function() C_Timer.After(0.01, function() addon.UI.Resize.Update(DressUpFrame, self) end) end)
+				addon.UI.Undress.Setup(self)
+				addon.UI.Reset.Setup(DressUpFrame.ResetButton)
+			end,
+			OnShow = function(self)
+				addon.UI.Resize.Update(DressUpFrame, self)
+			end,
+			OnClick = function(self, button)
+				addon.UI.Undress.Click(self, button)
+			end,
+		},
+		Widgets = {
+			{ type = "Button", parent = "DressUpFrameResetButton", template = "UIPanelButtonTemplate" },
+		},
+	})
+
+	local DUF_INSPECT = addon:CreateModule("DressUpFrame Inspect", {
+		CanLoad = function()
+			return type(DressUpFrame) == "table"
+		end,
+		Events = {
+			"PLAYER_TARGET_CHANGED",
+			"INSPECT_READY",
+		},
+		Handlers = {
+			OnLoad = function(self)
+				self.Text = ns.L.INSPECT
+				self.TextShort = ns.L.INSPECT_SHORT
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:SetPoint("RIGHT", DUF_UNDRESS.Widgets[1].Frame, "LEFT", 0, 0)
+				hooksecurefunc(DressUpFrame, "SetSize", function() C_Timer.After(0.01, function() addon.UI.Resize.Update(DressUpFrame, self) end) end)
+			end,
+			OnShow = function(self)
+				addon.UI.Resize.Update(DressUpFrame, self)
+				self.Module.UpdateButtonState(self)
+			end,
+			OnClick = function(self, button)
+				ClearInspectPlayer()
+				NotifyInspect("target")
+				self.UnitGUID = UnitGUID("target")
+				self.ShowRealItems = button == "RightButton"
+			end,
+			OnEvent = function(self, event, ...)
+				if event == "PLAYER_TARGET_CHANGED" then
+					self.Module.UpdateButtonState(self)
+				elseif event == "INSPECT_READY" then
+					if self.UnitGUID == ... then
+						self.Module.UpdateEquipment(self)
+					end
+				end
+			end,
+		},
+		Widgets = {
+			{ type = "Button", parent = "DressUpFrameResetButton", template = "UIPanelButtonTemplate" },
+		},
+		UpdateButtonState = function(self)
+			self:SetEnabled(CanInspect("target"))
+		end,
+		UpdateEquipment = function(self)
+			local race, class = addon:GetCurrentSkin()
+			if self.ShowRealItems then
+				for i = 1, 19 do
+					if GetInventoryItemTexture("target", i) then
+						local link = GetInventoryItemLink("target", i)
+						addon:TryOn(link)
+					end
+				end
+			else
+				addon:DressUpSources(C_TransmogCollection.GetInspectSources())
+			end
+			addon:SetSkin(race, class)
+		end,
+	})
+
+	local DUF_TARGET = addon:CreateModule("DressUpFrame Target", {
+		CanLoad = function()
+			return type(DressUpFrame) == "table"
+		end,
+		Events = {
+			"PLAYER_TARGET_CHANGED",
+		},
+		Handlers = {
+			OnLoad = function(self)
+				self.Text = ns.L.TARGET
+				self.TextShort = ns.L.TARGET_SHORT
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:SetPoint("RIGHT", DUF_INSPECT.Widgets[1].Frame, "LEFT", 0, 0)
+				hooksecurefunc(DressUpFrame, "SetSize", function() C_Timer.After(0.01, function() addon.UI.Resize.Update(DressUpFrame, self) end) end)
+			end,
+			OnShow = function(self)
+				addon.UI.Resize.Update(DressUpFrame, self)
+				self.Module.UpdateButtonState(self)
+				addon:SetUnit("player")
+				addon:SetSkinForUnit("player")
+			end,
+			OnClick = function(self, button)
+				addon:SetUnit("target")
+				addon:SetSkinForUnit("target")
+			end,
+			OnEvent = function(self, event, ...)
+				if event == "PLAYER_TARGET_CHANGED" then
+					self.Module.UpdateButtonState(self)
+				end
+			end,
+		},
+		Widgets = {
+			{ type = "Button", parent = "DressUpFrameResetButton", template = "UIPanelButtonTemplate" },
+		},
+		UpdateButtonState = function(self)
+			self:SetEnabled(addon:CanSetUnit("target"))
+		end,
+	})
+
+	--[===[
+	local DUF_CUSTOM = addon:CreateModule("DressUpFrame Custom", {
+		CanLoad = function()
+			return type(DressUpFrame) == "table"
+		end,
+		Handlers = {
+			OnLoad = function(self)
+				self.Text = ns.L.CUSTOM
+				self.TextShort = ns.L.CUSTOM_SHORT
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:SetPoint("RIGHT", DUF_TARGET.Widgets[1].Frame, "LEFT", 0, 0)
+				hooksecurefunc(DressUpFrame, "SetSize", function() C_Timer.After(0.01, function() addon.UI.Resize.Update(DressUpFrame, self) end) end)
+			end,
+			OnShow = function(self)
+				addon.UI.Resize.Update(DressUpFrame, self)
+			end,
+			OnClick = function(self, button)
+				self.Module.ShowMenu(self)
+			end,
+		},
+		Widgets = {
+			{ type = "Button", parent = "DressUpFrameResetButton", template = "UIPanelButtonTemplate" },
+		},
+		ShowMenu = function(self)
+			-- TODO
+		end,
+	})
+	--]===]
+
+end
+
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+end
+
+if true then return end
+--]=]
+
+-- [=[
 -- TODO: ctrlshiftalt click transmog gear to equip solo item + tooltip?
 -- TODO: dressup log what slots we equipped and reapply when changing race/gender/target - reset should drop the log and revert to first stage
 
@@ -24,7 +766,7 @@ manifest = {
 				options = true,
 				icon = "Interface\\BUTTONS\\UI-PAIDCHARACTERCUSTOMIZATION-BUTTON",
 				iconTexCoord = {.6, .9, .6, .9},
-				tooltip = "Options",
+				tooltip = L["Options"],
 				tooltipText = nil,
 			},
 		},
@@ -54,7 +796,7 @@ manifest = {
 
 						-- target model (but only on dressup models)
 						if model and model.TryOn then -- model.SetUnit = can't reset back to our own model
-							info.text = "Set target"
+							info.text = L["Set target"]
 							info.arg1 = { button = self, model = model, unit = "target" }
 							info.func = manifest.control.handlers.options.target
 							Lib_UIDropDownMenu_AddButton(info, level)
@@ -67,12 +809,12 @@ manifest = {
 
 						-- race
 						info.value = 1
-						info.text = "Race"
+						info.text = L["Race"]
 						Lib_UIDropDownMenu_AddButton(info, level)
 
 						-- gender
 						info.value = 2
-						info.text = "Gender"
+						info.text = L["Gender"]
 						Lib_UIDropDownMenu_AddButton(info, level)
 
 						-- can close if buttons below are clicked
@@ -81,7 +823,7 @@ manifest = {
 						-- undress
 						if model and model.Undress then
 							info.value = 3
-							info.text = "Undress"
+							info.text = L["Undress"]
 							info.arg1 = { model = model }
 							info.func = manifest.control.handlers.options.undress
 							Lib_UIDropDownMenu_AddButton(info, level)
@@ -92,7 +834,7 @@ manifest = {
 
 						-- reset (by using the Dress command)
 						if model and model.Dress then
-							info.text = "Reset"
+							info.text = L["Reset"]
 							info.arg1 = { model = model }
 							info.func = manifest.control.handlers.options.dress
 							Lib_UIDropDownMenu_AddButton(info, level)
@@ -120,11 +862,11 @@ manifest = {
 
 									local text
 									if prevRace == 1 then
-										text = "Alliance"
+										text = L["Alliance"]
 									elseif prevRace == 2 then
-										text = "Horde"
+										text = L["Horde"]
 									elseif prevRace == 3 then
-										text = "Neutral"
+										text = L["Neutral"]
 									end
 
 									if text then
@@ -162,7 +904,7 @@ manifest = {
 									info.notCheckable = nil
 									info.isTitle = nil
 									info.disabled = nil
-									info.text = race.text
+                                    info.text = C_CreatureInfo.GetRaceInfo(race.race).raceName
 									info.arg1 = { button = self, race = race }
 									info.func = manifest.control.handlers.options.click
 									info.checked = manifest.control.handlers.options.checked
@@ -201,7 +943,7 @@ manifest = {
 								local race = manifest.races[i]
 								if race.alliedLevel == LIB_UIDROPDOWNMENU_MENU_VALUE then
 									-- append allied race
-									info.text = race.text
+									info.text = C_CreatureInfo.GetRaceInfo(race.race).raceName
 									info.arg1 = { button = self, race = race }
 									info.func = manifest.control.handlers.options.click
 									info.checked = manifest.control.handlers.options.checked
@@ -437,10 +1179,10 @@ manifest = {
 		{ faction = 1, id = "NightElf", race = 4, text = "Night Elf" },
 		{ faction = 1, id = "Worgen", race = 22, text = "Worgen" },
 		-- Alliance Allied Races
-		{ faction = 1, id = "DarkIronDwarf", race = 34, text = "Dark Iron Dwarf", allied = "Allied Races", alliedLevel = 100 },
-		{ faction = 1, id = "KulTiran", race = 32, text = "Kul Tiran", allied = "Allied Races", alliedLevel = 100 },
-		{ faction = 1, id = "LightforgedDraenei", race = 30, text = "Lightforged Draenei", allied = "Allied Races", alliedLevel = 100 },
-		{ faction = 1, id = "VoidElf", race = 29, text = "Void Elf", allied = "Allied Races", alliedLevel = 100 },
+		{ faction = 1, id = "DarkIronDwarf", race = 34, text = "Dark Iron Dwarf", allied = L["Allied Races"], alliedLevel = 100 },
+		{ faction = 1, id = "KulTiran", race = 32, text = "Kul Tiran", allied = L["Allied Races"], alliedLevel = 100 },
+		{ faction = 1, id = "LightforgedDraenei", race = 30, text = "Lightforged Draenei", allied = L["Allied Races"], alliedLevel = 100 },
+		{ faction = 1, id = "VoidElf", race = 29, text = "Void Elf", allied = L["Allied Races"], alliedLevel = 100 },
 		-- Horde Races
 		{ faction = 2, id = "BloodElf", race = 10, text = "Blood Elf" },
 		{ faction = 2, id = "Goblin", race = 9, text = "Goblin" },
@@ -449,10 +1191,10 @@ manifest = {
 		{ faction = 2, id = "Troll", race = 8, text = "Troll" },
 		{ faction = 2, id = "Scourge", race = 5, text = "Undead" },
 		-- Horde Allied Races
-		{ faction = 2, id = "HighmountainTauren", race = 28, text = "Highmountain Tauren", allied = "Allied Races", alliedLevel = 200 },
-		{ faction = 2, id = "MagharOrc", race = 36, text = "Mag'har Orc", allied = "Allied Races", alliedLevel = 200 },
-		{ faction = 2, id = "Nightborne", race = 27, text = "Nightborne", allied = "Allied Races", alliedLevel = 200 },
-		{ faction = 2, id = "ZandalariTroll", race = 31, text = "Zandalari Troll", allied = "Allied Races", alliedLevel = 200 },
+		{ faction = 2, id = "HighmountainTauren", race = 28, text = "Highmountain Tauren", allied = L["Allied Races"], alliedLevel = 200 },
+		{ faction = 2, id = "MagharOrc", race = 36, text = "Mag'har Orc", allied = L["Allied Races"], alliedLevel = 200 },
+		{ faction = 2, id = "Nightborne", race = 27, text = "Nightborne", allied = L["Allied Races"], alliedLevel = 200 },
+		{ faction = 2, id = "ZandalariTroll", race = 31, text = "Zandalari Troll", allied = L["Allied Races"], alliedLevel = 200 },
 		-- Neutral
 		{ faction = 3, id = "Pandaren", race = 24, text = "Pandaren" },
 		-- Other Races
@@ -470,8 +1212,8 @@ manifest = {
 		-- { faction = 3, id = "Vulpera", race = 35, text = "Vulpera", allied = "Other Races", alliedLevel = 300 },
 	},
 	genders = {
-		{ id = 2, gender = 0, text = "Male" },
-		{ id = 3, gender = 1, text = "Female" },
+		{ id = 2, gender = 0, text = MALE },
+		{ id = 3, gender = 1, text = FEMALE },
 	},
 	slots = {
 		{ slot = INVSLOT_HEAD, text = INVTYPE_HEAD },
@@ -1901,12 +2643,20 @@ function addon:HookControlFrame(entry)
 		local cf = isCustomControlFrame and frame.controlFrame or frame
 		local width = 0
 
-		for _, child in pairs({cf:GetChildren()}) do
-			width = width + child:GetWidth() + .66
+		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+			if frame == _G.DressUpFrame then
+				cf = nil
+			end
 		end
 
-		if width > 0 then
-			cf:SetWidth(math.max(cf:GetWidth(), width))
+		if cf then
+			for _, child in pairs({cf:GetChildren()}) do
+				width = width + child:GetWidth() + .66
+			end
+
+			if width > 0 then
+				cf:SetWidth(math.max(cf:GetWidth(), width))
+			end
 		end
 	end
 end
@@ -1962,7 +2712,12 @@ function addon:HookLegacyFrame(entry)
 		if entry.side and control.text == L.UNDRESS_BUTTON_TEXT then
 			button:SetParent(button.model)
 			button:ClearAllPoints()
-			button:SetPoint("BOTTOM", entry.frame.ResetButton, "TOP", 0, 0)
+
+			if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+				button:SetPoint("TOP", entry.frame.ResetButton, "BOTTOM", 0, 0)
+			else
+				button:SetPoint("BOTTOM", entry.frame.ResetButton, "TOP", 0, 0)
+			end
 
 			button:SetWidth(entry.frame.ResetButton:GetWidth())
 			button:SetText(L.UNDRESS_BUTTON_TEXT_FULL)
@@ -2062,3 +2817,57 @@ function addon:ADDON_LOADED(event, name)
 end
 
 addon:RegisterEvent("ADDON_LOADED")
+
+-- fix the mount and battle pet dress up issue by forcing the old-frame to set the correct creature since we are hiding the new slick blizzard widget
+do
+	local function GetActiveFrames()
+		for i = 1, #manifest.control.frames do
+			local entry = manifest.control.frames[i]
+			local frame = entry.frame
+
+			if type(frame) == "table" and type(frame.GetObjectType) == "function" and frame:IsShown() then
+				local model = frame.DressUpModel
+
+				return frame, model, "Pet", "warrior"
+			end
+		end
+	end
+
+	local function DressUpBattlePet(creatureID, displayID, speciesID)
+		if (not creatureID or creatureID == 0) and (not displayID or displayID == 0) then
+			return
+		end
+		local frame, model, fileName, atlasPostfix = GetActiveFrames()
+		if not model then
+			return
+		end
+		model:SetPosition(0, 0, 0)
+		if displayID and displayID ~= 0 then
+			model:SetDisplayInfo(displayID)
+		else
+			model:SetCreature(creatureID)
+		end
+	end
+
+	local function DressUpMount(mountID)
+		if not mountID or mountID == 0 then
+			return
+		end
+		local creatureDisplayID = C_MountJournal.GetMountInfoExtraByID(mountID)
+		if not creatureDisplayID or creatureDisplayID == 0 then
+			return
+		end
+		local frame, model, fileName, atlasPostfix = GetActiveFrames()
+		if not model then
+			return
+		end
+		model:SetPosition(0, 0, 0)
+		model:SetDisplayInfo(creatureDisplayID)
+	end
+
+	hooksecurefunc("DressUpBattlePet", DressUpBattlePet)
+	hooksecurefunc("DressUpMount", DressUpMount)
+end
+
+if true then return end
+--]=]

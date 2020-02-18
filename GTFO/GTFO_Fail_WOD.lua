@@ -841,13 +841,19 @@ GTFO.SpellID["157659"] = {
 -- The Iron Maidens
 -- TODO: Incendiary Device - close impact avoidable?
 -- TODO: Blade Dash - fail if not first target
--- TODO: Swirling Vortex
 -- TODO: Blood Ritual - avoidable impact spray? Non-Tank fail?
 -- TODO: Volatile Bloodbolt - avoidable?
 -- TODO: Grapeshot Blast - avoidable?
 
 GTFO.SpellID["158601"] = {
 	--desc = "Dominator Blast (Turret)";
+	sound = 3;
+	applicationOnly = true;
+	trivialLevelApplication = 120;
+};
+
+GTFO.SpellID["160436"] = {
+	--desc = "Swirling Vortex";
 	sound = 3;
 	applicationOnly = true;
 };

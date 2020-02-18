@@ -190,5 +190,40 @@ GTFO.SpellID["79860"] = {
 	};
 };
 
+GTFO.SpellID["149869"] = {
+  --desc = "Shell Shocker (Ghamoo-Ra)";
+  sound = 3;
+  trivialLevel = 70;
+};
+
+GTFO.SpellID["152417"] = {
+  --desc = "Crush (Deep Terror)";
+  sound = 3;
+};
+
+GTFO.SpellID["149913"] = {
+  --desc = "Fillet of Flesh (Thruk)";
+  sound = 3;
+};
+
+GTFO.SpellID["149943"] = {
+  --desc = "Executioner's Strike (Executioner Gore)";
+  sound = 3;
+};
+
+GTFO.SpellID["150660"] = {
+  --desc = "Crush (Deep Terror)";
+  sound = 3;
+};
+
+GTFO.SpellID["152967"] = {
+  --desc = "Falling Debris (Aku'mai)";
+  sound = 3;
+};
+
+GTFO.SpellID["151269"] = {
+  --desc = "Toxic Bile (Aku'mai the Venomous)";
+  sound = 3;
+};
 
 end

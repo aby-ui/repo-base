@@ -157,6 +157,7 @@ addon.Spells = {
     [155835] = { type = BUFF_DEFENSIVE }, -- Bristling Fur
     [192081] = { type = BUFF_DEFENSIVE }, -- Ironfur
     [163505] = { type = CROWD_CONTROL }, -- Rake
+    [170855] = { type = ROOT }, -- Entangling Roots
     [194223] = { type = BUFF_OFFENSIVE }, -- Celestial Alignment
     [200851] = { type = BUFF_DEFENSIVE }, -- Rage of the Sleeper
     [202425] = { type = BUFF_OFFENSIVE }, -- Warrior of Elune

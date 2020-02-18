@@ -19,6 +19,7 @@ Sample:
 		alwaysAlert = true;
 		applicationOnly = true;
 		ignoreApplication = true;
+		trivialLevelApplication = 90;
 		minimumStacks = 1;
 		maximumStacks = 5;
 		specificMobs = { 123, 234, 345 };

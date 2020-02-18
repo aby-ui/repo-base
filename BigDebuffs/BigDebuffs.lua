@@ -1434,7 +1434,11 @@ function BigDebuffs:UNIT_AURA(unit)
         end
 
         -- Check buffs
-        _, n, _,_, d, e, caster, _,_, id = UnitBuff(unit, i)
+        if LibClassicDurations then
+            _, n, _,_, d, e, caster, _,_, id = LibClassicDurations:UnitAura(unit, i, "HELPFUL")
+        else
+            _, n, _,_, d, e, caster, _,_, id = UnitBuff(unit, i)
+        end
         if id then
             if self.Spells[id] then
                 if LibClassicDurations then

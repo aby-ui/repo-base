@@ -175,6 +175,12 @@ local SPELL_REAGENTS = {
 function Addon.GetActionReagentUses(action)
     local actionType, actionID = GetActionInfo(action)
 
+    if actionType == "macro" then
+        actionID = GetMacroSpell(actionID)
+        if not actionID then return false, 0 end
+        actionType = "spell"
+    end
+
     if actionType == "spell" then
         local reagents = SPELL_REAGENTS[actionID]
         -- single reagent, just return the count

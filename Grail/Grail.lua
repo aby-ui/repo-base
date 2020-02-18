@@ -483,6 +483,21 @@
 --			Changes interface to 80300.
 --			Adds support for threat quests.
 --			Adds support for Heart of Azeroth level requirements.
+--		108	Updates Classic Wetlands and Duskwood NPC information.
+--			Updates Retail horror quest information.
+--			Works around a problem learning world quests where the mapId is not defined.
+--			Corrects the Classic holiday code for Midsummer Fire Festival.
+--			Adds support for detecting Darkmoon Faire in Classic.
+--			Works around a problem where a holiday is not known.
+--			Corrects issue where CurrentDateTime() did not return weekday in Classic.
+--			Adds support for phase code 0000 in Classic for Darkmoon Faire location.  See _PhaseMatches() comments for specifics.
+--			Updates some Retail quest information.
+--			Corrects a Lua issue with localized French Classic quest names.
+--			Adds protection to ensure processing of NPCs does not occur if NPCs are not loaded.
+--			Adds protection to ensure loremaster quests can be handled if addons load out of order.
+--			Adds protection to ensure C_Reputation is not accessed on Classic.
+--			Corrects an improper prerequisite associated with the Classic quest "Filling the Soul Gem".
+--			Adds more Classic holiday quests and NPCs.
 --
 --	Known Issues
 --
@@ -960,7 +975,6 @@ experimental = false,	-- currently this implementation does not reduce memory si
 						self.environment = "_ptr_"
 					end
 
-					self.existsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)	-- was (self.blizzardVersionAsNumber < 2000000)
 					if self.existsClassic then
 						self.environment = "_classic_"
 					end
@@ -1014,6 +1028,14 @@ experimental = false,	-- currently this implementation does not reduce memory si
 							['U'] = { 'Scourge',  'Undead',    'Undead',    0x00400000 },
 							}
 						self.bitMaskRaceAll = 0x01e78000
+						
+						--	To make things a little prettier, because we are using phase 0000 to represent the location of the Darkmoon Faire we
+						--	define the map area for 0000 to be that.
+						self.mapAreaMapping[0] = self.holidayMapping['F']
+						
+						--	For the Classic setup for Darkmoon Faire we have a special holiday which will use the same name
+						self.holidayMapping['G'] = self.holidayMapping['F']
+
 					end
 
 					if self.battleForAzeroth then
@@ -1340,8 +1362,9 @@ experimental = false,	-- currently this implementation does not reduce memory si
 					end
 					self:LoadAddOn("Grail-Quests-" .. environmentToUse)
 					local originalMem = gcinfo()
-					self:LoadAddOn("Grail-NPCs-" .. environmentToUse)
-					self:_ProcessNPCs(originalMem)
+					if self:LoadAddOn("Grail-NPCs-" .. environmentToUse) then
+						self:_ProcessNPCs(originalMem)
+					end
 					self:LoadAddOn("Grail-NPCs-" .. environmentToUse .. "-" .. self.playerLocale)
 					self.npc.name[1] = ADVENTURE_JOURNAL
 
@@ -2174,6 +2197,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 --			end,
 
 			},
+		existsClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC),
 		factionMapping = { ['A'] = 'Alliance', ['H'] = 'Horde', },
 		followerMapping = {},
 		forceLocalizedQuestNameLoad = true,
@@ -2264,13 +2288,17 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 		},
 		genderMapping = { ['M'] = 2, ['F'] = 3, },
 		gossipNPCs = {},
+		--
+		--	***** Cannot add any more holidays with the current holidayToBitMapping use as we have run out of
+		--	***** 32 bits to use.  New holidays will mean new structures to implement.
+		--
 		holidayMapping = {	['A'] = 'Love is in the Air',
 							['B'] = 'Brewfest',
 							['C'] = "Children's Week",
 							['D'] = 'Day of the Dead',
 							['E'] = 'WoW Anniversary',
 							['F'] = 'Darkmoon Faire',
-							-- G
+							['G'] = 'Speecial used for Darkmoon Faire setup in Classic',
 							['H'] = 'Harvest Festival',
 							-- I
 							-- J
@@ -2291,7 +2319,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 							['Y'] = "Pilgrim's Bounty",
 							['Z'] = "Christmas Week",
 							['a'] = 'Apexis Bonus Event',
-							['b'] ='Arena Skirmish Bonus Event',
+							['b'] = 'Arena Skirmish Bonus Event',
 							['c'] = 'Battleground Bonus Event',
 							['d'] = 'Draenor Dungeon Event',
 							['e'] = 'Pet Battle Bonus Event',
@@ -2303,15 +2331,50 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 							-- k automatically assigned Timewalking Dungeon Event - Warlords of Draenor
 							-- l automatically assigned Timewalking Dungeon Event - Legion
 						},
-		holidayToBitMapping = { ['A'] = 0x00000001, ['B'] = 0x00000002, ['C'] = 0x00000004, ['D'] = 0x00000008, ['E'] = 0x04000000, ['F'] = 0x00000010,
-				['H'] = 0x00000020, ['K'] = 0x00010000, ['L'] = 0x00000040, ['M'] = 0x00000080, ['N'] = 0x00000100, ['P'] = 0x00000200, ['Q'] = 0x08000000,
-				['U'] = 0x00000400, ['V'] = 0x00000800, ['W'] = 0x00001000, ['X'] = 0x00008000, ['Y'] = 0x00002000, ['Z'] = 0x00004000, ['a'] = 0x00020000, ['b'] = 0x00040000, ['c'] = 0x00080000, ['d'] = 0x00100000, ['e'] = 0x00200000, ['f'] = 0x00400000, ['g'] = 0x00800000, ['h'] = 0x01000000, ['i'] = 0x02000000, ['j'] = 0x10000000, ['k'] = 0x20000000, ['l'] = 0x40000000, },
-		holidayToMapAreaMapping = { ['HA'] = 100001, ['HB'] = 100002, ['HC'] = 100003, ['HD'] = 100004, ['HE'] = 100005, ['HF'] = 100006, ['HH'] = 100008, ['HK'] = 100011, ['HL'] = 100012, ['HM'] = 100013,
+		--
+		--	***** Cannot add any more holidays with the current holidayToBitMapping use as we have run out of
+		--	***** 32 bits to use.  New holidays will mean new structures to implement.
+		--
+		holidayToBitMapping = {	['A'] = 0x00000001,
+								['B'] = 0x00000002,
+								['C'] = 0x00000004,
+								['D'] = 0x00000008,
+								['F'] = 0x00000010,
+								['H'] = 0x00000020,
+								['L'] = 0x00000040,
+								['M'] = 0x00000080,
+								['N'] = 0x00000100,
+								['P'] = 0x00000200,
+								['U'] = 0x00000400,
+								['V'] = 0x00000800,
+								['W'] = 0x00001000,
+								['Y'] = 0x00002000,
+								['Z'] = 0x00004000,
+								['X'] = 0x00008000,
+								['K'] = 0x00010000,
+								['a'] = 0x00020000,
+								['b'] = 0x00040000,
+								['c'] = 0x00080000,
+								['d'] = 0x00100000,
+								['e'] = 0x00200000,
+								['f'] = 0x00400000,
+								['g'] = 0x00800000,
+								['h'] = 0x01000000,
+								['i'] = 0x02000000,
+								['E'] = 0x04000000,
+								['Q'] = 0x08000000,
+								['j'] = 0x10000000,
+								['k'] = 0x20000000,
+								['l'] = 0x40000000,
+								['G'] = 0x80000000,
+								},
+		holidayToMapAreaMapping = { ['HA'] = 100001, ['HB'] = 100002, ['HC'] = 100003, ['HD'] = 100004, ['HE'] = 100005, ['HF'] = 100006, ['HG'] = 100007, ['HH'] = 100008, ['HK'] = 100011, ['HL'] = 100012, ['HM'] = 100013,
 				['HN'] = 100014, ['HP'] = 100016, ['HQ'] = 100017, ['HU'] = 100021, ['HV'] = 100022, ['HW'] = 100023, ['HX'] = 100024, ['HY'] = 100025, ['HZ'] = 100026, ['Ha'] = 100027, ['Hb'] = 100028, ['Hc'] = 100029, ['Hd'] = 100030, ['He'] = 100031, ['Hf'] = 100032, ['Hg'] = 100033, ['Hh'] = 100034, ['Hi'] = 100035, ['Hj'] = 100036, ['Hk'] = 100037, ['Hl'] = 100038, },
 		indexedQuests = {},
 		indexedQuestsExtra = {},
 		levelingLevel = nil,	-- this is set during the PLAYER_LEVEL_UP event because UnitLevel() does not work during it
 		locationCloseness = 1.55,
+		loremasterQuests = {},
 		mapAreaBaseAchievement = 500000,
 		mapAreaBaseClass = 200000,
 		mapAreaBaseDaily = 400000,
@@ -2599,6 +2662,8 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 									[93999] = 8010000,
 									-- And now for 7th Legion
 									[49499] = 5004500, [53999] = 6003000, [58499] = 6007500,
+									-- And now for Darmnoon Faire in Classic
+									[42499] = 4000500, [43099] = 4001100, [43699] = 4001700, [44499] = 4002500,
 									},
 
 		--	The keys are the actual faction values used by Blizzard converted into a 3-character hexidecimal value.
@@ -3081,7 +3146,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			},
 
 		slashCommandOptions = {},
-		specialQuests = { },
+		specialQuests = {},
 		statusMapping = { ['C'] = "Completed", ['F'] = 'Faction', ['G'] = 'Gender', ['H'] = 'Holiday', ['I'] = 'Invalidated', ['L'] = "InLog",
 			['P'] = 'Profession', ['Q'] = 'Prerequisites', ['R'] = 'Race', ['S'] = 'Class', ['T'] = 'Reputation', ['V'] = "Level", },
 		timeSinceLastUpdate = 0,
@@ -3089,6 +3154,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 		tooltip = nil,
 		tracking = false,
 		trackingStarted = false,
+		unnamedZones = {},
 		useAncestor = true,
 		verifyTable = {},
 		verifyTableCount = 0,
@@ -3574,7 +3640,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 				needToAddTCode = true
 			end
 
-			if nil == self.quests[questId] or (nil == self.quests[questId]['A'] and nil == self.quests[questId]['AP']) then
+			if (nil == self.quests[questId] or (nil == self.quests[questId]['A'] and nil == self.quests[questId]['AP'])) and nil ~= mapId then
 				local coordinates = strformat("%.2f,%.2f", x * 100 , y * 100)
 				local npcId = self._worldQuestSelfNPCs[mapId][coordinates]
 				if nil == npcId then
@@ -4033,6 +4099,28 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 
 		celebratingHolidayCache = {},	-- key is holidayName, value is table with key of date/time and value of 0(false) or 1(true)
 
+		CelebratingClassicDarkmoonFaire = function(self, includesPrecedingWeekend)
+			local retval = false
+			local weekday, month, day, year, hour, minute = self:CurrentDateTime()
+			-- Darkmoon Faire - first week from Monday to Sunday following first Friday in month
+			local weekdayToUse = (weekday == 0) and 8 or weekday
+			local thisOrLastMonday = day - weekdayToUse + 2
+			if thisOrLastMonday >= 4 and thisOrLastMonday <= 10 then
+				retval = true
+			end
+			-- For some quests they are available from the start of the Darkmoon Faire setup
+			if not retval and includesPrecedingWeekend then
+				if weekday == 6 and day < 8 then	-- Friday
+					retval = true
+				elseif weekday == 7 and day >= 2 and day < 9 then	-- Saturday
+					retval = true
+				elseif weekday == 1 and day >= 3 and day < 10 then	-- Sunday
+					retval = true
+				end
+			end
+			return retval
+		end,
+	
 		---
 		--	Determines whether the soughtHolidayName is currently being celebrated.
 		--	@param soughtHolidayName The localized name of a holiday, like Brewfest or Darkmoon Faire.
@@ -4042,21 +4130,25 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			local weekday, month, day, year, hour, minute = self:CurrentDateTime()
 			local elapsedMinutes = hour * 60 + minute
 			local datetimeKey = strformat("%4d-%02d-%02d %02d:%02d", year, month, day, hour, minute)
-			local holidayCode = self.reverseHolidayMapping[soughtHolidayName]
+			local holidayCode = self.reverseHolidayMapping[soughtHolidayName] or '?'
 			if self.celebratingHolidayCache[soughtHolidayName] and self.celebratingHolidayCache[soughtHolidayName][datetimeKey] then
 				retval = (self.celebratingHolidayCache[soughtHolidayName][datetimeKey] == 1)
 			elseif 'V' == holidayCode and self.existsClassic then
 				if 2019 == year and 12 == month and day >= 17 then
 					retval = true
 				end
+			elseif 'F' == holidayCode and self.existsClassic then
+				retval = self:CelebratingClassicDarkmoonFaire()
+			elseif 'G' == holidayCode and self.existsClassic then
+				retval = self:CelebratingClassicDarkmoonFaire(true)
 			elseif 'L' == holidayCode and self.existsClassic then
 				-- Lunar Festival 2/1 -> 2/7 10h00
 				if 2020 == year and 2 == month and (day <= 6 or (7 == day and (elapsedMinutes <= 10 * 60))) then
 					retval = true
 				end
 			elseif 'A' == holidayCode and self.existsClassic then
-				-- Love is in the Air 2/8 -> 2/21
-				if 2020 == year and 2 == month and day >= 8 and day <= 21 then
+				-- Love is in the Air 2/11 -> 2/16
+				if 2020 == year and 2 == month and day >= 11 and day <= 16 then
 					retval = true
 				end
 			elseif 'N' == holidayCode and self.existsClassic then
@@ -4069,7 +4161,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 				if 2020 == year and 5 == month and day <= 7 then
 					retval = true
 				end
-			elseif 'C' == holidayCode and self.existsClassic then
+			elseif 'M' == holidayCode and self.existsClassic then
 				-- Midsummer Fire Festival 6/21 10h00 -> 7/5 10h00
 				if 2020 == year then
 					if 6 == month then
@@ -5917,6 +6009,7 @@ end
 			if self.existsClassic then
 				date = C_DateAndTime.GetTodaysDate()
 				date.monthDay = date.day
+				date.weekday = date.weekDay	-- don't you just hate it when Blizzard API uses different capitalization!
 				date.hour, date.minute = GetGameTime()
 			else
 				date = C_DateAndTime.GetCurrentCalendarTime()
@@ -8344,6 +8437,17 @@ end
 			if 971 == phaseCode or 976 == phaseCode or 581 == phaseCode or 587 == phaseCode then
 				currentPhase = C_Garrison.GetGarrisonInfo(LE_GARRISON_TYPE_6_0) or 0	-- the API returns nil when there is no garrison
 			end
+			--	We are using phaseCode 0 to mean the Classic Darkmoon Faire location.
+			--	We assume perfect swapping back and forth between locations with Elwynn being in odd months.
+			--	The results should be phase 1 for Elwynn Forest and 2 for Mulgore
+			if 0 == phaseCode and self.existsClassic then
+				local weekday, month, day, year, hour, minute = self:CurrentDateTime()
+				if month == 1 or month == 3 or month == 5 or month == 7 or month == 9 or month == 11 then
+					currentPhase = 1
+				else
+					currentPhase = 2
+				end
+			end
 			if nil ~= currentPhase then
 				if ('=' == typeOfMatch and currentPhase == phaseNumber) or
 					('<' == typeOfMatch and currentPhase < phaseNumber) or
@@ -8614,6 +8718,10 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 		--	Internal Use.
 		_ProcessNPCs = function(self, originalMem)
 			local N = self.npc
+			if nil == self.npcs then
+				print("|cFFFF0000Grail|r: abandoned NPC processing because none loaded")
+				return
+			end
 			for key, value in pairs(self.npcs) do
 				if value[1] then
 					N.locations[key] = {}
@@ -9290,7 +9398,7 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 --					for npcId, prereqs in pairs(npcCodes) do
 						if isStartup or self:_AnyEvaluateTrueF(prereqs, nil, Grail._EvaluateCodeAsPrerequisite) then
 							local locations = self:NPCLocations(npcId, requiresNPCAvailable, onlySingleReturn, onlyMapAreaReturn, preferredMapId, dungeonLevel)
-							if nil ~= locations and 0 == #retval then
+							if nil ~= locations then
 								for _, npc in pairs(locations) do
 									tinsert(retval, npc)
 								end
@@ -9886,7 +9994,7 @@ if factionId == nil then print("Rep nil issue:", reputationName, reputationId, r
 				local name, description, standingId, barMin, barMax, barValue = GetFactionInfoByID(factionId)
 				if name then
 					actualEarnedValue = barValue + 42000	-- the reputationValue is stored with 42000 added to it so we do not have to deal with negative numbers, so we normalize here
-                    if C_Reputation.IsFactionParagon(factionId) then
+                    if C_Reputation and C_Reputation.IsFactionParagon(factionId) then
 						local paraValue, paraThreshold, paraQuestId, paraRewardPending = C_Reputation.GetFactionParagonInfo(factionId)
 						if paraValue and paraThreshold then
 							actualEarnedValue = actualEarnedValue + (paraValue % paraThreshold)
