@@ -110,6 +110,7 @@ local ignore_ids = {
     [304851] = true, -- 纳沙塔尔之战参战者
     [97821] = true, --虚空之触
     [313445] = true, --恩佐斯领域
+    [280661] = true, --个人护盾机
 }
 
 local clientVersion

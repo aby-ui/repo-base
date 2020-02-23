@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2010, "DBM-Argus", nil, 959)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(124514)
 mod:SetEncounterID(2081)
 --mod:SetReCombatTime(20)
@@ -54,7 +54,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then
 			local amount = args.amount or 1
-			if amount % 3 == 0 then 
+			if amount % 3 == 0 then
 				if amount >= 6 then--Lasts 30 seconds, cast every 5 seconds, swapping will be at 6
 					if args:IsPlayer() then--At this point the other tank SHOULD be clear.
 						specWarnInfectedClaws:Show(amount)

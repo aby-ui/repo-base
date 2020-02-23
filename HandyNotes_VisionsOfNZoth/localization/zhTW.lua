@@ -19,13 +19,14 @@ L["chamber_of_the_sun"] = "在日陽之間裡面。"
 L["dunewalker"] = "在上面的平台上點擊“太陽精華”以釋放他。"
 L["friendly_alpaca"] = "餵七次羊駝吉薩爾草，以作為坐騎收藏。 在一個位置出現10分鐘，然後很久後才重生。"
 L["gaze_of_nzoth"] = "與汙穢觀察者共用出生點。"
-L["gersahl_note"] = "餵給友善的羊駝七次獲得坐騎。 不需要草藥。"
+L["gersahl_note"] = "餵給友善的羊駝七次獲得坐騎。 不需要草藥學。"
 L["gersahl"] = "吉薩爾草叢"
 L["hmiasma"] = "餵食它周圍的軟泥，直到它啟動。"
 L["kanebti"] = "從一個珠寶古墓聖甲蟲中收集一個珠寶聖甲蟲小雕像，該雕像與普通的古墓聖甲蟲共用出生點。 將雕像插入聖甲蟲聖壇以召喚稀有怪。"
-L["left_eye"] = "放下全視之眼玩具的左半部分。"
+L["left_eye"] = "放下全知之眼玩具的左半部分。"
 L["neferset_rare"] = "這六個稀有怪在奈斐賽特具有相同的三個出生位置。 完成許多“召喚儀式”事件後，將隨機產生三個。"
 L["platform"] = "出生在浮動平台頂部。"
+L["single_chest"] = "此箱子僅在一個位置產生！ 如果不存在，請稍等一下，它將重新生成。"
 L["spirit_cave"] = "黑暗祭儀師扎坎恩之魂的洞穴入口。"
 L["tomb_widow"] = "當柱子上出現白色卵囊時，殺死隱形的蜘蛛來召喚。"
 L["uatka"] = "與其他兩個玩家一起，點擊每個神秘設備。 需要來自阿瑪賽特聖匣的觸日者護符。"
@@ -61,7 +62,7 @@ L["obsidian_extract"] = "摧毀所有虛空形成的黑曜石晶體。"
 L["purging_flames"] = "撿起屍體，扔進火裡。"
 L["pyre_amalgamated"] = "淨化材堆，然後殺死所有的小怪直到血肉融合體出現。"
 L["ritual_ascension"] = "殺死日觸祭儀師。"
-L["solar_collector"] = "在收集器的所有側面啟用所有五個單元。 單擊一個單元也會切換所有鄰近的單元。\ n \ n如果所有單元都為空，則最短序列為左->右->中間->左->右。"
+L["solar_collector"] = "在收集器的所有側面啟用所有五個單元。 單擊一個單元也會切換所有鄰近的單元。"
 L["summoning_ritual"] = "殺死侍僧，然後關閉召喚傳送門。事件多次完成後，奈斐賽特周圍將產生一組三種稀有。"
 L["titanus_egg"] = "消滅巨怪卵，然後擊敗精英怪年幼巨蟲，打不過就拉去旁邊階梯下讓NPC幫忙"
 L["unearthed_keeper"] = "消滅出土的守衛者。"
@@ -88,14 +89,14 @@ L["guolai_left"] = "在郭萊院中 (左邊通道)。"
 L["guolai_center"] = "在郭萊院中 (中央通道)。"
 L["guolai_right"] = "在郭萊院中 (右邊通道)。"
 L["pools_of_power"] = "在能量之池中，入口在黃金寶塔。"
-L["right_eye"] = "放下全視之眼玩具的右半部分。"
+L["right_eye"] = "放下全知之眼玩具的右半部分。"
 L["tisiphon"] = "點擊丹妮爾的幸運釣竿。"
 
 L["ambered_cache"] = "琥珀化寶箱"
 L["ambered_coffer"] = "琥珀寶庫"
 L["mantid_relic"] = "需要螳螂人聖物"
 L["mogu_plunder"] = "魔古的財寶"
-L["mogu_strongbox"] = "魔古保險箱"
+L["mogu_strongbox"] = "魔古寶箱"
 L["mogu_relic"] = "需要魔古聖物"
 
 L["abyssal_ritual"] = "殺死沉沒的擁護者然後殺死深淵巨怪。"
@@ -104,7 +105,7 @@ L["colored_flames"] = "從火把上收集彩色火焰，並帶到相對應的符
 L["construction_ritual"] = "將猛虎雕像推入光束中。"
 L["consuming_maw"] = "淨化生長物和觸手，直到被踢出。"
 L["corruption_tear"] = "點擊抓起一旁的巨大信標，在不讓旋轉的眼睛撞到你的情況下關閉裂口。"
-L["electric_empower"] = "殺死參天召喚者，然後殺死灌注者莫內克。(暫譯)"
+L["electric_empower"] = "殺死參天呼換者，然後殺死『灌注者』馬奈可。"
 L["empowered_demo"] = "關閉所有靈神聖匣"
 L["empowered_wagon"] = "拿起影潘爆彈，將其放在戰車下方。"
 L["feeding_grounds"] = "摧毀琥珀瓶和懸浮密室。"
@@ -132,14 +133,56 @@ L["weighted_artifact"] = "拿起古怪的重花瓶，穿越迷宮回到基座放
 ----------------------------------- VISIONS -----------------------------------
 -------------------------------------------------------------------------------
 
+L["colored_potion"] = "彩色藥水"
+L["colored_potion_note"] = [[
+％s屍體旁邊的藥水始終指示運行的負面效果藥水的顏色。
+
++100理智藥水的顏色可以由該藥水的顏色確定（| cFFFF0000壞 | r => | cFF00FF00好 | r）：
+
+黑色 => 綠色
+藍色 => 紫色
+綠色 => 紅色
+紫色 => 黑色
+紅色 => 藍色
+]]
+
+L["bear_spirit"] = "熊靈"
+L["bear_spirit_note"] = "殺死憤怒的熊地毯靈和所有小怪，即可獲得10％的加速增益。"
+L["buffs_change"] = "可用的增益每週更換一次。 如果建築物關閉或缺少NPC/物體，則本週該增益沒有提供。"
+L["clear_sight"] = "需要清除視線等級 %d。"
+L["craggle"] = "將玩具放在地面上（例如玩具火車組）以分散他的注意力。 拉開他的機器人，並先殺死他們。"
+L["empowered"] = "賦能"
+L["empowered_note"] = "穿過地雷的迷宮，站在樓上的實驗增益礦上，獲得10％的傷害增益。"
+L["enriched"] = "充實"
+L["enriched_note"] = "殺死被忽視的公會銀行，獲得10％暴擊增益。"
+L["ethereal_essence"] = "超凡的精華"
+L["ethereal_essence_note"] = "殺死Warpweaver Dushar，獲得10％暴擊增益。(暫譯)"
+L["ethereal_note"] = "收集隱藏在整個視覺範圍內的橙色晶體，並將其返回該NPC以獲取額外的獎勵。\ n \ n | cFF00FF00別忘了拾取箱子！|r"
+L["heroes_bulwark"] = "英雄壁壘"
+L["heroes_bulwark_note"] = "在旅館內殺死加蒙，獲得10％的生命增益。"
 L["horrific_visions"] = "驚懼幻象"
+L["inside_building"] = "在建築物內。"
 L["mailbox"] = "郵箱"
 L["mail_muncher"] = "開啟以後，郵件咀嚼者有機會出現。(暫譯)"
-L["options_toggle_visions_misc_desc"] = "在驚懼幻象內時顯示獎勵品位置。"
-L["shave_kit"] = "Coifcurl的緊身剃鬚套裝(暫譯)"
-L["shave_kit_note"] = "在理髮店裡面。"
+L["morgan_pestle"] = "Morgan Pestle"
+L["requited_bulwark"] = "退役的壁壘"
+L["requited_bulwark_note"] = "殺死Agustus Moulaine，可獲得7％的臨機應變增益。"
+L["shave_kit"] = "髮捲的剃髮工具組"
+L["shave_kit_note"] = "在理髮店裡面，拾取桌上的箱子。"
+L["smiths_strength"] = "Smith's Strength"
+L["smiths_strength_note"] = "在鐵匠小屋中殺死納羅斯，取得10％的傷害增益。"
+L["spirit_of_wind"] = "風之精靈"
+L["spirit_of_wind_note"] = "殺死布旺巴獲得10％的加速和移動速度提升。"
 L["void_skull"] = "虛無之觸頭顱"
 L["void_skull_note"] = "點擊地面上的頭顱以拾取玩具。"
+L["yelmak"] = "Yelmak"
+
+L["options_toggle_visions_buffs"] = "增益"
+L["options_toggle_visions_buffs_desc"] = "顯示可以造成1小時傷害增強的事件的位置。"
+L["options_toggle_visions_chest_desc"] = "在驚懼幻象中顯示可能的寶箱位置。"
+L["options_toggle_visions_mail"] = "郵箱"
+L["options_toggle_visions_mail_desc"] = "顯示郵件咀嚼者坐騎的郵箱位置。"
+L["options_toggle_visions_misc_desc"] = "在驚懼幻象中顯示稀有、玩具、藥水和增強的位置。"
 
 -------------------------------------------------------------------------------
 ----------------------------------- VOLDUN ------------------------------------

@@ -1,21 +1,6 @@
 local L
 
 ---------------------------
--- Goroth --
----------------------------
-L= DBM:GetModLocalization(1862)
-
----------------------------
--- Demonic Inquisition --
----------------------------
-L= DBM:GetModLocalization(1867)
-
----------------------------
--- Harjatan the Bludger --
----------------------------
-L= DBM:GetModLocalization(1856)
-
----------------------------
 -- Mistress Sassz'ine --
 ---------------------------
 L= DBM:GetModLocalization(1861)
@@ -25,11 +10,6 @@ L:SetOptionLocalization({
 })
 
 ---------------------------
--- Sisters of the Moon --
----------------------------
-L= DBM:GetModLocalization(1903)
-
----------------------------
 -- The Desolate Host --
 ---------------------------
 L= DBM:GetModLocalization(1896)
@@ -37,11 +17,6 @@ L= DBM:GetModLocalization(1896)
 L:SetOptionLocalization({
 	IgnoreTemplarOn3Tank	= "Ignore Reanimated Templars for Bone Armor infoframe/announces/nameplates when using 3 or more tanks (do not change this mid combat, it will break counts)"
 })
-
----------------------------
--- Maiden of Vigilance --
----------------------------
-L= DBM:GetModLocalization(1897)
 
 ---------------------------
 -- Fallen Avatar --

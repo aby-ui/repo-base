@@ -1,20 +1,6 @@
 local L
 
 ---------------------------
--- Garothi Worldbreaker --
----------------------------
-L= DBM:GetModLocalization(1992)
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
-
----------------------------
 -- Hounds of Sargeras --
 ---------------------------
 L= DBM:GetModLocalization(1987)
@@ -22,11 +8,6 @@ L= DBM:GetModLocalization(1987)
 L:SetOptionLocalization({
 	SequenceTimers =	"Squence the cooldown timers on heroic/mythic difficulty off previous ability casts instead of current ability cast to reduce timer clutter at expense of minor timer accuracy (1-2sec early)"
 })
-
----------------------------
--- War Council --
----------------------------
-L= DBM:GetModLocalization(1997)
 
 ---------------------------
 -- Eonar, the Lifebinder --
@@ -84,11 +65,6 @@ L:SetOptionLocalization({
 	InfoFrame =	"Show InfoFrame for fight overview",
 	UseAddTime = "Always show timers for what's coming next when boss leaves initialisation phase instead of hiding them. (If disabled, correct timers will resume when boss becomes active again, but may leave little warning if any cooldowns only had 1-2 seconds left)"
 })
-
----------------------------
--- Varimathras --
----------------------------
-L= DBM:GetModLocalization(1983)
 
 ---------------------------
 -- The Coven of Shivarra --

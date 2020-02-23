@@ -3,27 +3,16 @@
 
 if GetLocale() ~= "zhCN" then return end
 local L
----------------
--- Odyn --
----------------
-L= DBM:GetModLocalization(1819)
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
 
 ---------------------------
 -- Guarm --
 ---------------------------
 L= DBM:GetModLocalization(1830)
+
+L:SetOptionLocalization({
+	YellActualRaidIcon		= "Change all DBM yells for foam to say icon set on player instead of matching colors (Requires raid leader)",--Translate
+	FilterSameColor			= "Do not set icons, yell, or give special warning for Foams if they match players existing color"--Translate
+})
 
 ---------------------------
 -- Helya --

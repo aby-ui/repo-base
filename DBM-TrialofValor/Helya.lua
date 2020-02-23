@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190711011703")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetZone()
@@ -41,7 +41,6 @@ local warnTaintOfSea				= mod:NewTargetAnnounce(228054, 2)
 local warnPhase2					= mod:NewPhaseAnnounce(2, 2)
 local warnTentaclesRemaining		= mod:NewAddsLeftAnnounce("ej14309", 2, 228797)
 ----Grimelord
-local warnOrbOfCorruption			= mod:NewTargetAnnounce(229119, 3)
 local warnFetidRot					= mod:NewTargetAnnounce(193367, 3)
 ----Night Watch Mariner
 ----MistCaller

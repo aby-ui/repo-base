@@ -134,6 +134,16 @@ ns.options.args.VisibilityGroup = {
             order = 104,
             width = "full",
         },
+        restore_all_nodes = {
+            type = "execute",
+            name = L["options_restore_hidden_nodes"],
+            desc = L["options_restore_hidden_nodes_desc"],
+            order = 105,
+            func = function ()
+                table.wipe(ns.addon.db.char)
+                ns.addon:Refresh()
+            end
+        }
     },
 }
 

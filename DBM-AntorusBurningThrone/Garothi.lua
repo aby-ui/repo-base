@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1992, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(122450)
 mod:SetEncounterID(2076)
 mod:SetZone()
@@ -251,7 +251,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerFelBombardmentCD:Start(20.7)
 		end
 	elseif spellId == 245124 then
-		if self.vb.annihilatorHaywire and self.vb.lastCannon == 2 then 
+		if self.vb.annihilatorHaywire and self.vb.lastCannon == 2 then
 			self.vb.lastCannon = 1
 			specWarnAnnihilation:Show()
 			specWarnAnnihilation:Play("helpsoak")

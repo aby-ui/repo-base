@@ -86,6 +86,7 @@ U1RegisterAddon("DBM-DefaultSkin", { title = "默认皮肤", load = "NORMAL" });
 U1RegisterAddon("DBM-Brawlers", { title = '搏击俱乐部', });
 U1RegisterAddon("DBM-DMF", { title = '暗月马戏团', });
 U1RegisterAddon("DBM-WorldEvents", { title = "世界事件模块", });
+U1RegisterAddon("DBM-Challenges", { title = "DBM:个人挑战", });
 
 U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", protected = 1 });
 U1RegisterAddon("DBM-Azeroth-BfA", { title = "争霸艾泽拉斯世界BOSS", });

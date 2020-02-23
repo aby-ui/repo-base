@@ -7,6 +7,7 @@ ns.L = {
     ShowItemBorder              = "物品直角边框",
     EnableItemLevel             = "物品等级显示",
     ShowColoredItemLevelString  = "装等文字随物品品质",
+    ShowCorruptedMark           = "腐蚀装备星星标记",
     ShowItemSlotString          = "显示物品部位文字",
     ShowInspectAngularBorder    = "观察面板直角边框",
     ShowInspectColoredLabel     = "观察面板高亮橙装武器标签",

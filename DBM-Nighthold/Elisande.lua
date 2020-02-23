@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1743, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(106643)
 mod:SetEncounterID(1872)
 mod:SetZone()
@@ -487,7 +487,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		end
 	elseif spellId == 208863 then
 		self.vb.transitionActive = false
-		if self:IsMythic() then 
+		if self:IsMythic() then
 			if self.vb.phase == 3 then
 				berserkTimer:Start(194)
 			else

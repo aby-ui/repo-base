@@ -1,10 +1,5 @@
 local L
 
----------------
--- Skorpyron --
----------------
-L= DBM:GetModLocalization(1706)
-
 ---------------------------
 -- Chronomatic Anomaly --
 ---------------------------
@@ -15,16 +10,6 @@ L:SetOptionLocalization({
 	TimeRelease			= "Show players affected by Time Release",
 	TimeBomb			= "Show players affected by Time Bomb"
 })
-
----------------------------
--- Trilliax --
----------------------------
-L= DBM:GetModLocalization(1731)
-
-------------------
--- Spellblade Aluriel --
-------------------
-L= DBM:GetModLocalization(1751)
 
 ------------------
 -- Tichondrius --

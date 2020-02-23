@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1861, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190711011703")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(115767)--116328 Vellius, 115795 Abyss Stalker, 116329/116843 Sarukel
 mod:SetEncounterID(2037)
 mod:SetZone()
@@ -341,7 +341,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 			timerHydraShotCD:Stop()
 			timerBurdenofPainCD:Stop()
 			timerFromtheAbyssCD:Stop()
-			
 			timerInkCD:Start(11.6)
 			if self.Options.TauntOnPainSuccess then
 				timerBurdenofPainCD:Start(26, self.vb.burdenCount+1)
@@ -365,7 +364,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 			timerBurdenofPainCD:Stop()
 			timerDevouringMawCD:Stop()
 			timerFromtheAbyssCD:Stop()
-			
 			timerInkCD:Start(11.6)
 			if self.Options.TauntOnPainSuccess then
 				timerBurdenofPainCD:Start(26, self.vb.burdenCount+1)

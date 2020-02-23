@@ -18,4 +18,3 @@ U1RegisterAddon("DBM-EmeraldNightmare", {title = "DBM:翡翠梦魇", parent = "D
 U1RegisterAddon("DBM-Argus", {title = "DBM:阿古斯", parent = "DBM_Mods_Legion", protected = 1, });
 U1RegisterAddon("DBM-BrokenIsles", {title = 'DBM:破碎群岛', parent = "DBM_Mods_Legion", protected = 1, });
 U1RegisterAddon("DBM-Party-Legion", {title = 'DBM:军团5人本', parent = "DBM_Mods_Legion", protected = 1, });
-U1RegisterAddon("DBM-Challenges", { title = "DBM:法师塔挑战", parent = "DBM_Mods_Legion", protected = 1, });

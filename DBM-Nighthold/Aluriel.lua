@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1751, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(104881)
 mod:SetEncounterID(1871)
 mod:SetZone()
@@ -242,7 +242,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.annihilateCount = self.vb.annihilateCount + 1
 		local nextCount = self.vb.annihilateCount+1
 		local timer = self:IsMythic() and mythicAnnihilateTimers[nextCount] or annihilateTimers[nextCount]
-		if timer then	
+		if timer then
 			timerAnnihilateCD:Start(timer-3, nextCount)
 		end
 		if nextCount == 6 and not self:IsMythic() then
@@ -418,7 +418,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerFelSoul:Stop()
 	end
 end
-	
+
 do
 	local playerGUID = UnitGUID("player")
 	function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
@@ -437,7 +437,7 @@ do
 		end
 	end
 	mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-	
+
 	function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 		if spellId == 213520 and destGUID == playerGUID and self:AntiSpam(2, 1) then
 			specWarnArcaneFog:Show()

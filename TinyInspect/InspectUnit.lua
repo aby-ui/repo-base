@@ -96,6 +96,11 @@ local function GetInspectItemListFrame(parent)
             itemframe.itemString = itemframe:CreateFontString(nil, "ARTWORK", itemfont)
             itemframe.itemString:SetHeight(16)
             itemframe.itemString:SetPoint("LEFT", itemframe.levelString, "RIGHT", 2, 0)
+            itemframe.corruptedMark = itemframe:CreateTexture(nil, "OVERLAY")
+            itemframe.corruptedMark:SetSize(14, 18)
+            itemframe.corruptedMark:SetPoint("RIGHT", itemframe.label, "RIGHT", 6, -1)
+            itemframe.corruptedMark:SetTexture("Interface\\RaidFrame\\Raid-Icon-DebuffCurse")
+            itemframe.corruptedMark:SetVertexColor(1, 0, 0)
             itemframe:SetScript("OnEnter", function(self)
                 local r, g, b, a = self.label:GetBackdropColor()
                 self.label:SetBackdropColor(r, g, b, a+0.5)
@@ -171,6 +176,11 @@ function ShowInspectItemListFrame(unit, parent, ilevel, maxLevel)
         itemframe.level = level
         itemframe.quality = quality
         itemframe.itemString:SetWidth(0)
+        if (link and IsCorruptedItem(link)) then
+            itemframe.corruptedMark:Show()
+        else
+            itemframe.corruptedMark:Hide()
+        end
         if (level > 0) then
             itemframe.levelString:SetText(format(formats,level))
             itemframe.itemString:SetText(link or name)

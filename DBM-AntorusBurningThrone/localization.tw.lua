@@ -2,11 +2,6 @@ if GetLocale() ~= "zhTW" then return end
 local L
 
 ---------------------------
--- Garothi Worldbreaker --
----------------------------
-L= DBM:GetModLocalization(1992)
-
----------------------------
 -- Hounds of Sargeras --
 ---------------------------
 L= DBM:GetModLocalization(1987)
@@ -14,11 +9,6 @@ L= DBM:GetModLocalization(1987)
 L:SetOptionLocalization({
 	SequenceTimers =	"在英雄/傳奇難度下序列的冷卻計時器關閉先前的技能施放而不是當前的技能，以減少計時器雜亂，這犧牲計時器的準確性。(快1-2秒)"
 })
-
----------------------------
--- War Council --
----------------------------
-L= DBM:GetModLocalization(1997)
 
 ---------------------------
 -- Eonar, the Lifebinder --
@@ -69,11 +59,6 @@ L:SetOptionLocalization({
 	InfoFrame =	"為戰鬥總覽顯示訊息框架",
 	UseAddTime = "當首領離開初始階段時總是顯示計時器而非隱藏計時器。(如停用，正確的計時器會在首領活動時恢復，但可能缺少剩餘1-2秒的警告)"
 })
-
----------------------------
--- Varimathras --
----------------------------
-L= DBM:GetModLocalization(1983)
 
 ---------------------------
 -- The Coven of Shivarra --

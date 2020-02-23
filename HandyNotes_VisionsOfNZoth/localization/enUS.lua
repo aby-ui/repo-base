@@ -148,7 +148,7 @@ Red => Blue
 
 L["bear_spirit"] = "Bear Spirit"
 L["bear_spirit_note"] = "Kill the Angry Bear Rug Spirit and all waves of mobs to gain a 10% haste buff."
-L["buffs_change"] = "Available buffs change each week. If the building is closed or the NPC/object is missing, that buff is not up this week."
+L["buffs_change"] = "Available buffs change each run. If the building is closed or the NPC/object is missing, that buff is not up this run."
 L["clear_sight"] = "Requires Clear Sight rank %d."
 L["craggle"] = "Drop a toy on the ground (such as the Toy Train Set) to distract him. Pull his bots away and kill them first."
 L["empowered"] = "Empowered"
@@ -287,6 +287,8 @@ L["options_toggle_hide_done_rare"] = "Hide rare, if all loot known"
 L["options_toggle_hide_done_rare_desc"] = "Hide all rares for which all loot is known."
 L["options_toggle_hide_minimap"] = "Hide all icons on the minimap"
 L["options_toggle_hide_minimap_desc"] = "Hides all icons from this addon on the minimap and displays them only on the main map."
+L["options_restore_hidden_nodes"] = "Restore hidden nodes"
+L["options_restore_hidden_nodes_desc"] = "Restore all nodes hidden using the right-click context menu."
 
 L["options_toggle_battle_pets_desc"] = "Display locations of battle pet trainers and NPCs."
 L["options_toggle_battle_pets"] = "Battle Pets"

@@ -158,7 +158,6 @@ GridStatusRaidDebuff:DebuffId(zoneid, 309991, 147, 5, 5, true) --Anguish
 GridStatusRaidDebuff:DebuffId(zoneid, 313610, 148, 5, 5, true) --Mental Decay
 GridStatusRaidDebuff:DebuffId(zoneid, 310042, 149, 5, 5, true) --Tumultuous Burst
 GridStatusRaidDebuff:DebuffId(zoneid, 309698, 150, 5, 5, true) --Void Lash
-GridStatusRaidDebuff:DebuffId(zoneid, 302565, 151, 5, 5, true) --Conductive Ink
 GridStatusRaidDebuff:DebuffId(zoneid, 310073, 152, 5, 5, true) --Mindgrasp
 GridStatusRaidDebuff:DebuffId(zoneid, 313793, 153, 5, 5, true) --Flames of Insanity
 GridStatusRaidDebuff:DebuffId(zoneid, 313663, 153, 5, 5, true) --Psyche Shredder

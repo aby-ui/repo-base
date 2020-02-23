@@ -1,30 +1,29 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200211183344")
+mod:SetRevision("20200220023125")
 mod:SetZone()
 mod.onlyNormal = true
 
 mod:RegisterCombat("scenario", 2212)--2212, 2213 (org, stormwind)
 
-mod:RegisterEvents(
-	"ZONE_CHANGED_NEW_AREA"
-)
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299110 307863 300351 300388 304101 304282 306001 306199 303589 305875 306828 306617 300388 296537 305378 298630 298033",
+	"SPELL_CAST_START 297822 297746 304976 297574 304251 306726 299110 307863 300351 300388 304101 304282 306001 306199 303589 305875 306828 306617 300388 296537 305378 298630 298033 305236",
 	"SPELL_AURA_APPLIED 311390 315385 316481 311641 299055",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_CAST_SUCCESS 297237",
 	"SPELL_PERIODIC_DAMAGE 303594",
 	"SPELL_PERIODIC_MISSED 303594",
 	"UNIT_DIED",
-	"ENCOUNTER_START"
+	"ENCOUNTER_START",
+	"UNIT_AURA player"
 )
 
 --TODO, notable trash or affix warnings
 --TODO, maybe add https://ptr.wowhead.com/spell=298510/aqiri-mind-toxin
 --TODO, improve https://ptr.wowhead.com/spell=306001/explosive-leap warning if can get throw target
 --TODO, can https://ptr.wowhead.com/spell=305875/visceral-fluid be dodged? If so upgrade the warning
+local warnGiftoftheTitans			= mod:NewSpellAnnounce(313698, 1)
 local warnScorchedFeet				= mod:NewSpellAnnounce(315385, 4)
 --Extra Abilities (used by main boss and the area LTs)
 local warnCriesoftheVoid			= mod:NewCastAnnounce(304976, 4)
@@ -65,15 +64,17 @@ local specWarnMaddeningRoar			= mod:NewSpecialWarningRun(304101, nil, nil, nil, 
 local specWarnStampedingCorruption	= mod:NewSpecialWarningDodge(304282, nil, nil, nil, 2, 2)
 local specWarnHowlinginPain			= mod:NewSpecialWarningCast(306199, "SpellCaster", nil, nil, 1, 2)
 local specWarnSanguineResidue		= mod:NewSpecialWarningDodge(303589, nil, nil, nil, 2, 2)
-local specWarnDefiledGround			= mod:NewSpecialWarningDodge(306828, nil, nil, nil, 2, 2)
 local specWarnRingofChaos			= mod:NewSpecialWarningDodge(306617, nil, nil, nil, 2, 2)
 local specWarnHorrifyingShout		= mod:NewSpecialWarningInterrupt(305378, "HasInterrupt", nil, nil, 1, 2)
 local specWarnMentalAssault			= mod:NewSpecialWarningInterrupt(296537, "HasInterrupt", nil, nil, 1, 2)
 local specWarnTouchoftheAbyss		= mod:NewSpecialWarningInterrupt(298033, "HasInterrupt", nil, nil, 1, 2)
+local specWarnVenomBolt				= mod:NewSpecialWarningInterrupt(305236, "HasInterrupt", nil, nil, 1, 2)
 local specWarnShockwave				= mod:NewSpecialWarningDodge(298630, nil, nil, nil, 2, 2)
 
+--General
+local timerGiftoftheTitan		= mod:NewBuffFadesTimer(20, 313698, nil, nil, nil, 5)
 --Thrall
-local timerSurgingDarknessCD	= mod:NewCDTimer(23.1, 297822, nil, nil, nil, 3)
+local timerSurgingDarknessCD	= mod:NewCDTimer(20.6, 297822, nil, nil, nil, 3)
 local timerSeismicSlamCD		= mod:NewCDTimer(12.1, 297746, nil, nil, nil, 3)
 --Extra Abilities (used by Thrall and the area LTs)
 --local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
@@ -82,7 +83,6 @@ local timerDefiledGroundCD		= mod:NewAITimer(21, 306726, nil, nil, nil, 3)
 
 mod:AddInfoFrameOption(307831, true)
 
-local started = false
 local playerName = UnitName("player")
 mod.vb.GnshalCleared = false
 mod.vb.VezokkCleared = false
@@ -181,6 +181,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 305378 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnHorrifyingShout:Show(args.sourceName)
 		specWarnHorrifyingShout:Play("kickcast")
+	elseif spellId == 305236 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnVenomBolt:Show(args.sourceName)
+		specWarnVenomBolt:Play("kickcast")
 	elseif spellId == 298033 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnTouchoftheAbyss:Show(args.sourceName)
@@ -219,7 +222,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnScorchedFeet:Show()
 		end
-		if IsInGroup() then--Warn allies if in scenario with others
+		if GetNumGroupMembers() > 1 then--Warn allies if in scenario with others
 			yellScorchedFeet:Yell()
 		end
 	elseif spellId == 316481 and args:IsPlayer() then
@@ -232,7 +235,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnDesperateRetching:Show()
 			specWarnDesperateRetching:Play("keepmove")
-			if IsInGroup() then
+			if GetNumGroupMembers() > 1 then
 				yellDesperateRetching:Yell()
 			end
 		elseif self:CheckDispelFilter() then
@@ -259,7 +262,6 @@ function mod:UNIT_DIED(args)
 		--timerCriesoftheVoidCD:Stop()
 		timerDefiledGroundCD:Stop()
 		DBM:EndCombat(self)
-		started = false
 	elseif cid == 156161 then--Inquisitor Gnshal
 		--timerCriesoftheVoidCD:Stop()
 		self.vb.GnshalCleared = true
@@ -275,17 +277,6 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:ZONE_CHANGED_NEW_AREA()
-	local uiMap = C_Map.GetBestMapForUnit("player")
-	if started and uiMap ~= 1469 then
-		DBM:EndCombat(self, true)
-		started = false
-	elseif not uiMap and uiMap == 1469 then
-		self:StartCombat(self, 0, "LOADING_SCREEN_DISABLED")
-		started = true
-	end
-end
-
 function mod:ENCOUNTER_START(encounterID)
 	if encounterID == 2332 and self:IsInCombat() then
 		timerSurgingDarknessCD:Start(11.1)
@@ -297,5 +288,20 @@ function mod:ENCOUNTER_START(encounterID)
 		--if self.vb.GnshalCleared then
 		--	timerCriesoftheVoidCD:Start(1)
 		--end
+	end
+end
+
+do
+	--In blizzards infinite wisdom, Gift of the Titans isn't in combat log
+	local titanWarned = false
+	function mod:UNIT_AURA(uId)
+		local hasTitan = DBM:UnitBuff("player", 313698)
+		if hasTitan and not titanWarned then
+			warnGiftoftheTitans:Show()
+			timerGiftoftheTitan:Start()
+			titanWarned = true
+		elseif not hasTitan and titanWarned then
+			titanWarned = false
+		end
 	end
 end

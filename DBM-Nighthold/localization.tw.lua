@@ -1,11 +1,6 @@
 if GetLocale() ~= "zhTW" then return end
 local L
 
----------------
--- Skorpyron --
----------------
-L= DBM:GetModLocalization(1706)
-
 ---------------------------
 -- Chronomatic Anomaly --
 ---------------------------
@@ -16,16 +11,6 @@ L:SetOptionLocalization({
 	TimeRelease			= "顯示中了定時釋放的玩家",
 	TimeBomb			= "顯示中了定時炸彈的玩家"
 })
-
----------------------------
--- Trilliax --
----------------------------
-L= DBM:GetModLocalization(1731)
-
-------------------
--- Spellblade Aluriel --
-------------------
-L= DBM:GetModLocalization(1751)
 
 ------------------
 -- Tichondrius --

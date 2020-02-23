@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetZone()
@@ -115,7 +115,7 @@ local function updateRangeFrame(self)
 	elseif DBM:UnitDebuff("player", blackSoul) then
 		DBM.RangeCheck:Show(10)--10 for tainted discharge?
 	elseif self.vb.phase == 1 then--Maybe only show for ranged?
-		DBM.RangeCheck:Show(6)--Will be rounded up by 7.1 restrictions in 
+		DBM.RangeCheck:Show(6)--Will be rounded up by 7.1+ restrictions
 	else
 		DBM.RangeCheck:Hide()
 	end

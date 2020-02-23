@@ -30,6 +30,7 @@ do
 	local function SetContainerSpell(self, i, spellid, class, active)
 		local sname, _, sicon = GetSpellInfo(spellid)
 		if sicon == nil then
+            u1log('no spell', spellid)
 			sname = "bad spellid"
 			sicon = "bad spellid"
         end

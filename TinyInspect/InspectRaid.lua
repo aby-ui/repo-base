@@ -108,6 +108,8 @@ LibEvent:attachTrigger("UNIT_INSPECT_READY", function(self, data)
         member.ilevel = data.ilevel
         member.spec = data.spec
         member.name = data.name
+        member.class = data.class
+        member.realm = data.realm
         member.done = true
         LibEvent:trigger("RAID_INSPECT_READY", member)
     end

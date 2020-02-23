@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1903, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(118523, 118374, 118518)--118523 Huntress kasparian, 118374 Captain Yathae Moonstrike, 118518 Prestess Lunaspyre
 mod:SetEncounterID(2050)
 mod:SetZone()
@@ -176,11 +176,11 @@ function mod:SPELL_CAST_START(args)
 		if self:AntiSpam(5, 2) then
 			self.vb.specialCount = self.vb.specialCount + 1
 			for i = 1, 3 do
-	 			local unitGUID = UnitGUID("boss"..i)
-	 			if unitGUID then
-	 				self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
-	 			end
-	 		end
+				local unitGUID = UnitGUID("boss"..i)
+				if unitGUID then
+					self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
+				end
+			end
 		end
 	end
 end
@@ -218,11 +218,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self:AntiSpam(5, 2) then
 			self.vb.specialCount = self.vb.specialCount + 1
 			for i = 1, 3 do
-	 			local unitGUID = UnitGUID("boss"..i)
-	 			if unitGUID then
-	 				self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
-	 			end
-	 		end
+				local unitGUID = UnitGUID("boss"..i)
+				if unitGUID then
+					self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
+				end
+			end
 		end
 	elseif spellId == 236672 then
 		timerRapidShotCD:Start()
@@ -302,11 +302,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:AntiSpam(5, 2) then
 			self.vb.specialCount = self.vb.specialCount + 1
 			for i = 1, 3 do
-	 			local unitGUID = UnitGUID("boss"..i)
-	 			if unitGUID then
-	 				self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
-	 			end
-	 		end
+				local unitGUID = UnitGUID("boss"..i)
+				if unitGUID then
+					self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
+				end
+			end
 		end
 	elseif spellId == 233264 then--Dpser Embrace of the Eclipse
 		if not self:IsHealer() then
@@ -388,7 +388,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerTwilightVolleyCD:Stop()
 		--timerTwilightGlaiveCD:Stop()
 		timerIncorporealShotCD:Stop()--Stop Phase 1 special timer
-		
 		timerCallMoontalonCD:Start(8)
 		--timerTwilightGlaiveCD:Start(6)
 		timerTwilightVolleyCD:Start(10.9)
@@ -410,7 +409,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		timerMoonBurnCD:Stop()
 		timerCallMoontalonCD:Stop()
 		--timerTwilightGlaiveCD:Stop()
-		
 		--timerTwilightGlaiveCD:Start(3)
 		timerLunarFireCD:Start(6)
 		timerMoonBurnCD:Start(11)
@@ -425,11 +423,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 	elseif spellId == 61207 then--Sets all internal CDs back to 7 seconds
 		DBM:Debug("7 second internal CD activated")
 		for i = 1, 3 do
-	 		local unitGUID = UnitGUID("boss"..i)
-	 		if unitGUID then
-	 			self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
-	 		end
-	 	end
+			local unitGUID = UnitGUID("boss"..i)
+			if unitGUID then
+				self:BossTargetScannerAbort(unitGUID, "VolleyTarget")
+			end
+		end
 		local elapsedVolley, totalVolley = timerTwilightVolleyCD:GetTime()
 		local remaining = totalVolley - elapsedVolley
 		local extend = 7 - (totalVolley-elapsedVolley)

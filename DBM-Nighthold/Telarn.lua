@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1761, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(104528)--109042
 mod:SetEncounterID(1886)
 mod:SetZone()
@@ -24,10 +24,10 @@ mod:RegisterEventsInCombat(
 )
 
 --[[
-(target.id = 109040 or target.id = 109038 or target.id = 109041) and type = "death" or 
-(ability.id = 218438 or ability.id = 223034 or ability.id = 218774 or ability.id = 218927 or ability.id = 216830 or ability.id = 216877 or ability.id = 218148 or ability.id = 223219) and type = "begincast" 
-or (ability.id = 218807 or ability.id = 218424 or ability.id = 223437) and type = "cast" or 
-ability.id = 222021 or ability.id = 222010 or ability.id = 222020
+(target.id = 109040 or target.id = 109038 or target.id = 109041) and type = "death"
+ or (ability.id = 218438 or ability.id = 223034 or ability.id = 218774 or ability.id = 218927 or ability.id = 216830 or ability.id = 216877 or ability.id = 218148 or ability.id = 223219) and type = "begincast"
+ or (ability.id = 218807 or ability.id = 218424 or ability.id = 223437) and type = "cast"
+ or ability.id = 222021 or ability.id = 222010 or ability.id = 222020
 --]]
 --or self:IsMythic() and self.vb.phase == 1--Ready to go in case my theory is correct
 --Stage 1: The High Botanist
@@ -138,7 +138,7 @@ function mod:OnCombatStart(delay)
 	self.vb.CoNIcon = 1
 	self.vb.phase = 1
 	if self:IsMythic() then
-		self:SetCreatureID(109038, 109040, 109041)		
+		self:SetCreatureID(109038, 109040, 109041)
 		self.vb.globalTimer = 64
 		timerSolarCollapseCD:Start(5-delay)
 		timerParasiticFetterCD:Start(16-delay)--16-18
@@ -374,7 +374,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--This theory is disabled right now cause order of first two MIGHT matter maybe? Hard to say with convoluted shit dungeon journal
 --[[	if self.vb.phase == 3 then
 			if cid == 109040 then--Arcanist Lives
-				
+
 			elseif cid == 109038 then--Solarist Lives
 				timerCollapseofNightCD:Start(22)
 			elseif cid == 109041 then--Naturalist Lives

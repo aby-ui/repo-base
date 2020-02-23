@@ -7,20 +7,6 @@ if GetLocale() ~= "zhCN" then return end
 local L
 
 ---------------------------
--- Garothi Worldbreaker --
----------------------------
-L= DBM:GetModLocalization(1992)
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
-
----------------------------
 -- Hounds of Sargeras --
 ---------------------------
 L= DBM:GetModLocalization(1987)
@@ -28,11 +14,6 @@ L= DBM:GetModLocalization(1987)
 L:SetOptionLocalization({
 	SequenceTimers =	"采用预判技能排序来检测boss下一个技能，而不是在线检测 (1-2秒 提前)"
 })
-
----------------------------
--- War Council --
----------------------------
-L= DBM:GetModLocalization(1997)
 
 ---------------------------
 -- Eonar, the Lifebinder --
@@ -83,11 +64,6 @@ L:SetOptionLocalization({
 	InfoFrame	=	"为战斗总览显示信息窗",
 	UseAddTime	=	"当boss转阶段时也显示计时条。（如果不勾选，当boss入场时会恢复计时条，但可能会落下1-2秒的警告）"
 })
-
----------------------------
--- Varimathras --
----------------------------
-L= DBM:GetModLocalization(1983)
 
 ---------------------------
 -- The Coven of Shivarra --

@@ -1,22 +1,5 @@
 local L
 
----------------
--- Nythendra --
----------------
-L= DBM:GetModLocalization(1703)
-
-L:SetWarningLocalization({
-})
-
-L:SetTimerLocalization({
-})
-
-L:SetOptionLocalization({
-})
-
-L:SetMiscLocalization({
-})
-
 ---------------------------
 -- Il'gynoth, Heart of Corruption --
 ---------------------------
@@ -55,11 +38,6 @@ L:SetOptionLocalization({
 L:SetMiscLocalization({
 	SoakersText			= "Soakers Assigned: %s"
 })
-
----------------------------
--- Dragons of Nightmare --
----------------------------
-L= DBM:GetModLocalization(1704)
 
 ------------------
 -- Cenarius --

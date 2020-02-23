@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1738, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20191025204556")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(105393)
 mod:SetEncounterID(1873)
 mod:SetZone()
@@ -505,7 +505,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	for i = 1, 5 do
-		local bossUnitID
+		local bossUnitID = "boss"..i
 		if UnitExists(bossUnitID) then--Check if new units exist we haven't detected and added yet.
 			local cid = self:GetCIDFromGUID(UnitGUID(bossUnitID))
 			if not addsTable[UnitGUID(bossUnitID)] and cid == 105304 then--Dominator Tentacle

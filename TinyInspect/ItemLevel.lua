@@ -58,15 +58,16 @@ local function GetItemLevelFrame(self, category)
 end
 
 --設置裝等文字
-local function SetItemLevelString(self, text, quality, ilvl, link)
+local function SetItemLevelString(self, text, quality, link, ilvl)
     if ilvl and ilvl~="" and ilvl > 0 and U1GetInventoryLevelColor and TinyInspectDB.ShowColoredItemLevelString then
         self:SetTextColor(U1GetInventoryLevelColor(ilvl, quality))
     elseif text and text~="" and (quality and TinyInspectDB and TinyInspectDB.ShowColoredItemLevelString) then
         local r, g, b, hex = GetItemQualityColor(quality)
         text = format("|c%s%s|r", hex, text)
     end
-    if TinyInspectDB and TinyInspectDB.ShowCorruptedMark and text and text ~= "" and link and IsCorruptedItem(link) then
-        text = text .. "|cffFF0000◆|r"
+    --腐蚀的物品加个标记
+    if (TinyInspectDB and TinyInspectDB.ShowCorruptedMark and text and text ~= "" and link and IsCorruptedItem(link)) then
+        text = text .. "|cffFF3300◆|r"
     end
     self:SetText(text)
 end
@@ -100,7 +101,7 @@ local function SetItemLevelScheduled(button, ItemLevelFrame, link)
         onExecute = function(self)
             local count, level, _, _, quality, _, _, class, _, _, equipSlot = LibItemInfo:GetItemInfo(self.identity)
             if (count == 0) then
-                SetItemLevelString(self.frame.levelString, level > 0 and level or "", quality, nil, self.identity)
+                SetItemLevelString(self.frame.levelString, level > 0 and level or "", quality, self.identity)
                 SetItemSlotString(self.frame.slotString, class, equipSlot, link)
                 self.button.OrigItemLevel = (level and level > 0) and level or ""
                 self.button.OrigItemQuality = quality
@@ -117,7 +118,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
     if (not self) then return end
     local frame = GetItemLevelFrame(self, category)
     if (self.OrigItemLink == link) then
-        SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, self.OrigItemLevel, link)
+        SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link, self.OrigItemLevel)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else
         local level = ""
@@ -125,7 +126,9 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
         if (link and string.match(link, "item:(%d+):")) then
             if (BagID and SlotID and (category == "Bag" or category == "AltEquipment")) then
                 count, level = LibItemInfo:GetContainerItemLevel(BagID, SlotID)
-                _, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
+                local ilevel
+                _, _, quality, ilevel, _, class, subclass, _, equipSlot = GetItemInfo(link)
+                if level == 0 then level = ilevel end --使用离线银行的时候
             else
                 count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
             end
@@ -139,11 +142,11 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
                 class = subclass
             end
             if (count > 0) then
-                SetItemLevelString(frame.levelString, "...", nil, 1)
+                SetItemLevelString(frame.levelString, "...", nil, nil, 1)
                 return SetItemLevelScheduled(self, frame, link)
             else
                 if (tonumber(level) == 0) then level = "" end
-                SetItemLevelString(frame.levelString, level, quality, level, link)
+                SetItemLevelString(frame.levelString, level, quality, link, level)
                 SetItemSlotString(frame.slotString, class, equipSlot, link)
             end
         else
@@ -311,12 +314,12 @@ if (EquipmentFlyout_DisplayButton) then
             local link = GetContainerItemLink(bag, slot)
             --SetItemLevel(button, link, "AltEquipment", bag, slot)
             local ilvl = U1GetRealItemLevel(link)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, ilvl, link)
+            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, link, ilvl)
         else
             local link = GetInventoryItemLink("player", slot)
             --SetItemLevel(button, link, "AltEquipment")
             local ilvl = U1GetRealItemLevel(link, "player", slot)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, ilvl, link)
+            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, link, ilvl)
         end
     end)
 end
@@ -326,17 +329,21 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
     -- For Bagnon
     if (Bagnon and Bagnon.Item and Bagnon.Item.Update) then
         hooksecurefunc(Bagnon.Item, "Update", function(self)
-            SetItemLevel(self, self.info and self.info.link, "Bag", self:GetBag(), self:GetID())
+            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
+        end)
+    elseif (Bagnon and Bagnon.ItemSlot and Bagnon.ItemSlot.Update) then
+        hooksecurefunc(Bagnon.ItemSlot, "Update", function(self)
+            SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
         end)
     end
     -- For Combuctor
-    if (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
+    if (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
+        hooksecurefunc(Combuctor.Item, "Update", function(self)
+            SetItemLevel(self, self.GetItem and self:GetItem(), "Bag", self.GetBag and self:GetBag(), self.GetID and self:GetID())
+        end)
+    elseif (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
         hooksecurefunc(Combuctor.ItemSlot, "Update", function(self)
             SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
-        end)
-    elseif (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
-        hooksecurefunc(Combuctor.Item, "Update", function(self)
-            SetItemLevel(self, self.info and self.info.link, "Bag", self.bag, self.GetID and self:GetID())
         end)
     end
     -- For LiteBag
@@ -436,17 +443,17 @@ local function SetPaperDollItemLevel(self, unit)
             local itemLink = GetInventoryItemLink(unit, id)
             if not itemLink then SetItemLevelString(frame.levelString, "") return end
             local ilvl = U1GetRealItemLevel(itemLink, unit, id)
-            SetItemLevelString(frame.levelString, ilvl, nil, ilvl, itemLink)
+            SetItemLevelString(frame.levelString, ilvl, nil, itemLink, ilvl)
         else
         local count, level, _, link, quality, _, _, class, _, _, equipSlot = LibItemInfo:GetUnitItemInfo(unit, id)
-        SetItemLevelString(frame.levelString, level > 0 and level or "", quality, nil, link)
+        SetItemLevelString(frame.levelString, level > 0 and level or "", quality, link)
         SetItemSlotString(frame.slotString, class, equipSlot)
         --[[
         if (id == 16 or id == 17) then
             local _, mlevel, _, _, mquality = LibItemInfo:GetUnitItemInfo(unit, 16)
             local _, olevel, _, _, oquality = LibItemInfo:GetUnitItemInfo(unit, 17)
             if (mlevel > 0 and olevel > 0 and (mquality == 6 or oquality == 6)) then
-                SetItemLevelString(frame.levelString, max(mlevel,olevel), mquality or oquality, nil, link)
+                SetItemLevelString(frame.levelString, max(mlevel,olevel), mquality or oquality, link)
             end
         end
         --]]

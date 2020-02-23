@@ -369,7 +369,7 @@ local NefRare = Class('NefersetRare', Rare, {
 function NefRare:enabled (map, coord, minimap)
     if not Rare.enabled(self, map, coord, minimap) then return false end
     -- Only show if a Summoning Ritual event is active or completed
-    for i, quest in ipairs({57359, 57621}) do
+    for i, quest in ipairs({57359, 57620, 57621}) do
         if C_TaskQuest.GetQuestTimeLeftMinutes(quest) or IsQuestFlaggedCompleted(quest) then
             return true
         end
@@ -483,6 +483,7 @@ nodes[70217325] = EMPTR3
 -- quest=57627
 nodes[59816610] = EMPTR4
 nodes[59867422] = EMPTR4
+nodes[60246529] = EMPTR4
 nodes[60757493] = EMPTR4
 nodes[60967000] = EMPTR4
 nodes[61206544] = EMPTR4
@@ -535,6 +536,7 @@ nodes[80785611] = AMATR1
 nodes[81585359] = AMATR1
 nodes[84534540] = AMATR1
 nodes[84836185] = AMATR1
+nodes[84995395] = AMATR1
 nodes[85005097] = AMATR1
 nodes[85275138] = AMATR1
 nodes[85285297] = AMATR1
@@ -641,6 +643,7 @@ nodes[50578232] = TimedEvent({quest=58275, assault=EMP, note=L["monstrous_summon
 nodes[59767241] = TimedEvent({quest=57429, assault=EMP, note=L["pyre_amalgamated"], rewards={
     Pet({id=2851, item=174478}) -- Wicked Lurker
 }}) -- Pyre of the Amalgamated One (also 58330?)
+nodes[49997867] = TimedEvent({quest=57620, assault=EMP, note=L["summoning_ritual"]}) -- Summoning Ritual
 nodes[50568833] = TimedEvent({quest=57359, assault=EMP, note=L["summoning_ritual"]}) -- Summoning Ritual
 nodes[55227932] = TimedEvent({quest=57621, assault=EMP, note=L["summoning_ritual"]}) -- Summoning Ritual
 nodes[62037070] = TimedEvent({quest=58271, assault=EMP, note=L["voidflame_ritual"]}) -- Voidflame Ritual
@@ -674,9 +677,9 @@ nodes[76094793] = TimedEvent({quest=57243, assault=AMA, note=L["slave_camp"]}) -
 nodes[62062069] = TimedEvent({quest=55356, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King
 nodes[71594586] = TimedEvent({quest=55358, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King
 nodes[83496186] = TimedEvent({quest=55357, assault=AMA, note=L["beacon_of_sun_king"]}) -- Beacon of the Sun King
-nodes[64502982] = TimedEvent({quest=57215, assault=AMA, note=L["engine_of_ascen"]}) -- Engine of Ascension
+nodes[64502932] = TimedEvent({quest=57215, assault=AMA, note=L["engine_of_ascen"]}) -- Engine of Ascension
 nodes[64442267] = TimedEvent({quest=55355, assault=AMA, note=L["lightblade_training"]}) -- Lightblade Training Grounds
-nodes[64482984] = TimedEvent({quest=55359, assault=AMA, note=L["chamber_of_the_stars"]..' '..L["ritual_ascension"]}) -- Ritual of Ascension
+nodes[64483034] = TimedEvent({quest=55359, assault=AMA, note=L["chamber_of_the_stars"]..' '..L["ritual_ascension"]}) -- Ritual of Ascension
 nodes[66515030] = TimedEvent({quest=57235, assault=AMA, note=L["solar_collector"]}) -- Solar Collector
 nodes[80256607] = TimedEvent({quest=57234, assault=AMA, note=L["solar_collector"]}) -- Solar Collector
 nodes[69905991] = TimedEvent({quest=55360, assault=AMA, note=L["unsealed_tomb"]}) -- The Unsealed Tomb

@@ -7,21 +7,6 @@ if GetLocale() ~= "zhCN" then return end
 local L
 
 ---------------------------
--- Goroth --
----------------------------
-L= DBM:GetModLocalization(1862)
-
----------------------------
--- Demonic Inquisition --
----------------------------
-L= DBM:GetModLocalization(1867)
-
----------------------------
--- Harjatan the Bludger --
----------------------------
-L= DBM:GetModLocalization(1856)
-
----------------------------
 -- Mistress Sassz'ine --
 ---------------------------
 L= DBM:GetModLocalization(1861)
@@ -31,11 +16,6 @@ L:SetOptionLocalization({
 })
 
 ---------------------------
--- Sisters of the Moon --
----------------------------
-L= DBM:GetModLocalization(1903)
-
----------------------------
 -- The Desolate Host --
 ---------------------------
 L= DBM:GetModLocalization(1896)
@@ -43,11 +23,6 @@ L= DBM:GetModLocalization(1896)
 L:SetOptionLocalization({
 	IgnoreTemplarOn3Tank	= "当使用三个或以上Tank时忽略复活的圣殿骑士的骨盾的信息窗/提示/姓名条(请勿在战斗中更改，会打乱计次)"
 })
-
----------------------------
--- Maiden of Vigilance --
----------------------------
-L= DBM:GetModLocalization(1897)
 
 ---------------------------
 -- Fallen Avatar --

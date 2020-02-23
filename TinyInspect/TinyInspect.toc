@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Title: TinyInspect
-## Version: 8.2.1
+## Version: 8.3.0
 ## Notes: Show ItemLevel For Inspect & Party & Raid & Mouse & Bag & Bank ...
 ## Notes-zhCN: 装等观察,装等显示
 ## Notes-zhTW: 裝等觀察,裝等顯示
@@ -22,7 +22,7 @@ InspectUnitStats.lua
 InspectUnitGemAndEnchant.lua
 InspectUnitSpecialization.lua
 InspectMouse.lua
-#InspectGroupMember.lua
+##InspectGroupMember.lua
 InspectParty.lua
 InspectRaid.lua
 

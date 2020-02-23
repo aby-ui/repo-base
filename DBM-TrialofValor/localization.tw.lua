@@ -1,11 +1,6 @@
 if GetLocale() ~= "zhTW" then return end
 local L
 
----------------
--- Odyn --
----------------
-L= DBM:GetModLocalization(1819)
-
 ---------------------------
 -- 	--
 ---------------------------

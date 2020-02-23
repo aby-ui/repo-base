@@ -32,10 +32,6 @@
     <Include file="..\..\Comergy_Redux\CfgComergy_Redux.lua"/>
     <Include file="..\..\CompactRaid\CfgCompactRaid.lua"/>
     <Include file="..\..\DBM-Core\CfgDBM-Core.lua"/>
-    <Include file="..\..\DBM_Mods_Cataclysm\CfgDBM_Mods_Cataclysm.lua"/>
-    <Include file="..\..\DBM_Mods_MoP\CfgDBM_Mods_MoP.lua"/>
-    <Include file="..\..\DBM_Mods_WoD\CfgDBM_Mods_WoD.lua"/>
-    <Include file="..\..\DBM_Mods_WotLK\CfgDBM_Mods_WotLK.lua"/>
     <Include file="..\..\DBM_Mods_Legion\CfgDBM_Mods_Legion.lua"/>
     <Include file="..\..\DeathAnnounce\CfgDeathAnnounce.lua"/>
     <Include file="..\..\Decursive\CfgDecursive.lua"/>

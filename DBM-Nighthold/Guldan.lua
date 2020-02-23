@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1737, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(104154)--The Demon Within (111022)
 mod:SetEncounterID(1866)
 mod:SetZone()
@@ -205,7 +205,7 @@ local function upValueCapsAreStupid(self)
 	self.vb.visionCastCount = 0
 	self.vb.azzCount = 0
 	timerParasiticWoundCD:Start(8.3)
-	timerSoulSeverCD:Start(19.3, 1)	
+	timerSoulSeverCD:Start(19.3, 1)
 	timerManifestAzzinothCD:Start(26.3, 1)
 	timerFlameCrashCD:Start(29.3, 1)
 	timerSummonNightorbCD:Start(39.3, 1)
@@ -709,16 +709,16 @@ function mod:UNIT_DIED(args)
 		self.vb.bossLeft = self.vb.bossLeft - 1
 		timerFlamesofSargerasCD:Stop()
 		timerEyeofGuldanCD:Stop()
- 		timerBlackHarvestCD:Stop()
- 		timerStormOfDestroyerCD:Stop()
- 		timerWindsCD:Stop()
+		timerBlackHarvestCD:Stop()
+		timerStormOfDestroyerCD:Stop()
+		timerWindsCD:Stop()
 	end
 end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if (msg == L.prePullRP or msg:find(L.prePullRP)) and self:LatencyCheck() then
 		self:SendSync("GuldanRP")
-	elseif ( msg == L.mythicPhase3 or msg:find(L.mythicPhase3)) and self:IsMythic() then	
+	elseif ( msg == L.mythicPhase3 or msg:find(L.mythicPhase3)) and self:IsMythic() then
 		self:SendSync("mythicPhase3")
 	end
 end

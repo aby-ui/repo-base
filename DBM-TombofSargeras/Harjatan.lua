@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1856, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(116407)
 mod:SetEncounterID(2036)
 mod:SetZone()
@@ -272,7 +272,7 @@ function mod:UNIT_DIED(args)
 	--elseif cid == 117522 then--Darkscale Taskmaster
 		--timerFrostySpittleCD:Stop(args.destGUID)
 	elseif cid == 120545 then--Incubated Egg
-		
+
 	end
 end
 

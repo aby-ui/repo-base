@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1732, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200221012111")
 mod:SetCreatureID(103758)
 mod:SetEncounterID(1863)
 mod:SetZone()
@@ -593,7 +593,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 			timerIcyEjectionCD:Start(23.3, 1)
 		end
 	elseif spellId == 222133 then--Phase 3 Conversation
-		
 		self.vb.phase = 3
 		self.vb.isPhaseChanging = true
 		self.vb.felEjectionCount = 0

@@ -63,11 +63,18 @@ if GridWarbabyMoreAuras then
         if spell then
             local set = {
                 text = spell,
-                color = v.color and { r = v.color[1], g = v.color[2], b = v.color[3], a = v.color[4] } or { r = 1, g = 1, b = 1, a = 1 },
+                color = { r = 1, g = 1, b = 1, a = 1 },
                 priority = v.priority or 98,
                 raid = true,
-                statusText = v.stack and "count" or "duration",
             }
+            for key, value in pairs(v) do
+                if key == "color" or key == "durationColorLow" or key == "durationColorMiddle" or key == "durationColorHigh"
+                        or key == "countColorLow" or key == "countColorMiddle" or key == "countColorHigh" then
+                    set[key] = { r = value[1], g = value[2], b = value[3], a = value[4] or 1 }
+                elseif key ~= "buff" then
+                    set[key] = value
+                end
+            end
             if v.buff then
                 set.buffID = id
                 set.buff = spell
