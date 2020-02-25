@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1490, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200220142801")
 mod:SetCreatureID(91789)
 mod:SetEncounterID(1811)
 mod:SetZone()
@@ -10,7 +10,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 193698",
-	"SPELL_CAST_START 193682 193597 193611"
+	"SPELL_CAST_START 193682 193597"
 )
 
 --TODO, maybe add a "get back in boss area warning" if you take Crackling THunder damage
@@ -60,7 +60,5 @@ function mod:SPELL_CAST_START(args)
 		specWarnStaticNova:Play("findshelter")
 		timerFocusedLightningCD:Start()
 		specWarnFocusedLightning:Schedule(10)--5 seconds before focused lightning cast
---	elseif spellId == 193611 then--Maybe not needed at all
-		
 	end
 end

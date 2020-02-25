@@ -125,6 +125,7 @@ do
 
 		self:AddLayoutPanel(menu)
 		menu:AddAdvancedPanel()
+		menu:AddFadingPanel()
 
 		self.menu = menu
 	end

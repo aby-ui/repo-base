@@ -317,7 +317,7 @@ L:SetMiscLocalization({
 	NoPotions	= "無藥水瓶",
 	Book		= "書本",
 	Pouch		= "腰袋"
-}) 
+})
 
 -----------------------
 -- <<<The Maw of Souls>>> --

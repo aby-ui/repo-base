@@ -7,13 +7,13 @@ if( not Data ) then return end
 
 local L = {
 	-- WoD
-	["Roots"]              = "Roots",
-	["Stuns"]              = "Stuns",
-	["Silences"]           = "Silences",
-	["Taunts"]             = "Taunts",
-	["Knockbacks"]         = "Knockbacks",
-	["Incapacitates"]      = "Incapacitates",
-	["Disorients"]         = "Disorients",
+	["Roots"] = "Roots",
+	["Stuns"] = "Stuns",
+	["Silences"] = "Silences",
+	["Taunts"] = "Taunts",
+	["Knockbacks"] = "Knockbacks",
+	["Incapacitates"] = "Incapacitates",
+	["Disorients"] = "Disorients",
 }
 
 local locale = GetLocale()
@@ -108,7 +108,7 @@ end
 -- How long before DR resets ?
 Data.resetTimes = {
 	-- As of 6.1, this is always 18 seconds, and no longer has a range between 15 and 20 seconds.
-	default   = 18,
+	default = 18,
 	-- Knockbacks are a special case
 	knockback = 10,
 }
@@ -117,9 +117,9 @@ Data.RESET_TIME = Data.resetTimes.default
 -- Successives diminished durations
 Data.diminishedDurations = {
 	-- Decreases by 50%, immune at the 4th application
-	default   = { 0.50, 0.25 },
+	default = { 0.50, 0.25 },
 	-- Decreases by 35%, immune at the 5th application
-	taunt     = { 0.65, 0.42, 0.27 },
+	taunt = { 0.65, 0.42, 0.27 },
 	-- Immediately immune
 	knockback = {},
 }
@@ -391,32 +391,32 @@ local spellsAndProvidersByCategory = {
 
 -- Map deprecatedCategories to the new ones
 local deprecatedCategories = {
-	ctrlroot       = true,
-	shortroot      = true,
-	ctrlstun       = true,
-	rndstun        = true,
-	cyclone        = true,
+	ctrlroot = true,
+	shortroot = true,
+	ctrlstun = true,
+	rndstun = true,
+	cyclone = true,
 	shortdisorient = true,
-	fear           = true,
-	horror         = true,
-	mc             = true,
-	--disarm         = true,
+	fear = true,
+	horror = true,
+	mc = true,
+	--disarm = true,
 }
 
 Data.categoryNames = {
-	root           = L["Roots"],
-	stun           = L["Stuns"],
-	disorient      = L["Disorients"],
-	silence        = L["Silences"],
-	taunt          = L["Taunts"],
-	incapacitate   = L["Incapacitates"],
-	knockback      = L["Knockbacks"],
-	disarm         = L["Disarms"],
+	root = L["Roots"],
+	stun = L["Stuns"],
+	disorient = L["Disorients"],
+	silence = L["Silences"],
+	taunt = L["Taunts"],
+	incapacitate = L["Incapacitates"],
+	knockback = L["Knockbacks"],
+	disarm = L["Disarms"],
 }
 
 Data.pveDR = {
-	stun     = true,
-	taunt    = true,
+	stun = true,
+	taunt = true,
 }
 
 --- List of spellID -> DR category

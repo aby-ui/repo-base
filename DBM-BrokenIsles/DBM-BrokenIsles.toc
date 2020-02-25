@@ -22,7 +22,7 @@
 ## X-DBM-Mod-MinCoreRevision: 14737
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r16-4-gf0d8751
+## Version: r17
 AnaMouz.lua
 Apocron.lua
 Brutallus.lua

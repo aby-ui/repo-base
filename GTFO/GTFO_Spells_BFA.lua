@@ -368,6 +368,11 @@ GTFO.SpellID["316258"] = {
   sound = 1;
 };
 
+GTFO.SpellID["314565"] = {
+  --desc = "Defiled Ground (Blood of the Corruptor)";
+  sound = 1;
+};
+
 
 -- ***********************
 -- * Shrine of the Storm *

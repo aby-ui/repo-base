@@ -73,6 +73,7 @@ do
 		f.softLimits = options.softLimits
 		f.GetSavedValue = options.get
 		f.SetSavedValue = options.set
+		f.format = options.format
 
 		f.text = f:CreateFontString(nil, 'ARTWORK', 'GameFontNormalLeft')
 		f.text:SetPoint('BOTTOMLEFT', f, 'TOPLEFT')
@@ -211,7 +212,8 @@ do
 	end
 
 	function Slider:UpdateText(value)
-		self.valText:SetText(value or self:GetSavedValue())
+		self.valText:SetText(self.format and format(self.format, value or self:GetSavedValue()) or
+								 (value or self:GetSavedValue()))
 	end
 
 	function Slider:SetEnabled(enable)

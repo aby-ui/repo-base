@@ -53,51 +53,6 @@ meta.__newindex = function(t, k, v)
 end
 setmetatable(Grid.options.args, meta)
 
---[[------------------------------------------------------------
-使用 warbaby_aura 里的副本特殊配置
----------------------------------------------------------------]]
-if GridWarbabyMoreAuras then
-    local more = {}
-    for id, v in pairs(GridWarbabyMoreAuras) do
-        local spell = GetSpellInfo(id)
-        if spell then
-            local set = {
-                text = spell,
-                color = { r = 1, g = 1, b = 1, a = 1 },
-                priority = v.priority or 98,
-                raid = true,
-            }
-            for key, value in pairs(v) do
-                if key == "color" or key == "durationColorLow" or key == "durationColorMiddle" or key == "durationColorHigh"
-                        or key == "countColorLow" or key == "countColorMiddle" or key == "countColorHigh" then
-                    set[key] = { r = value[1], g = value[2], b = value[3], a = value[4] or 1 }
-                elseif key ~= "buff" then
-                    set[key] = value
-                end
-            end
-            if v.buff then
-                set.buffID = id
-                set.buff = spell
-                set.desc = v.desc or format(L["Buff: %s"], spell)
-                more["buff_" .. id] = set
-            else
-                set.debuffID = id
-                set.debuff = spell
-                set.desc = v.desc or format(L["Debuff: %s"], spell)
-                more["debuff_" .. id] = set
-            end
-        end
-    end
-    Mixin(GridStatus:GetModule("GridStatusAuras").defaultDB, more)
-    local textstack = {}
-    for k, v in pairs(more) do
-        if v.statusText == "count" then
-            textstack[k] = true
-        end
-    end
-    GridWarbabyStatusMapTextStack = textstack
-end
-
 --把光环的设置复制过来
 hooksecurefunc(GridStatus:GetModule("GridStatusAuras"), "PostInitialize", function()
     local auras_option = Grid.options.args.GridStatus.args.GridStatusAuras.args
@@ -397,10 +352,8 @@ Mixin(GridFrame.defaultDB, {
             debuff_240559              = true,
             debuff_240443              = true,
         },
-        textstack = GridWarbabyStatusMapTextStack,
-        borderglow = {
-            debuff_314993              = true, --吸取精华-玛乌特
-        }
+        textstack = {},
+        borderglow = {},
     }
 })
 --GridStatus:GetModule("GridStatusVoiceComm").defaultDB.alert_voice.enable = true
@@ -547,11 +500,13 @@ do
     option.reset_header = {
         type = "header", name = "重置单个模块的当前配置文件", order = 100,
     }
+    option.GridClickSets = { type = "execute", name = "重置点击施法", order = 101, confirm = true, func = function() GridClickSetsForTalents = {} end }
     for k, name in pairs(modules) do
         option[k] = {
             type = "execute",
             name = name,
             order = 102,
+            desc = "重置"..k.."模块的所有设置",
             func = function(info)
                 --info.option.disabled = true
                 Grid.db:GetNamespace(info[#info]):ResetProfile()
@@ -560,7 +515,17 @@ do
             end
         }
     end
-    option.GridClickSets = { type = "execute", name = "重置点击施法", order = 101, confirm = true, func = function() GridClickSetsForTalents = {} end }
+    option.reset_more_aura = {
+        type = "execute", name = "爱不易副本光环", order = 103, desc = "重置爱不易添加的团队副本（主要是史诗难度）特别需要注意的状态属性",
+        func = function(info)
+            local mod = Grid:GetModule("GridStatus"):GetModule("GridStatusAuras")
+            for k, v in pairs(mod.db.profile) do
+                if type(v) == "table" and mod.defaultDB[k] and mod.defaultDB[k].raid == true then
+                    mod.db.profile[k] = CopyTable(mod.defaultDB[k])
+                end
+            end
+        end
+    }
     option.reset_all_header = {
         type = "header", name = "整体重置", order = 200,
     }
@@ -1009,4 +974,49 @@ if LCG then
             LCG.PixelGlow_Stop(frame, "AbyGrid")
         end
     )
+end
+
+--[[------------------------------------------------------------
+使用 warbaby_aura 里的副本特殊配置
+---------------------------------------------------------------]]
+if GridWarbabyMoreAuras then
+    local def = GridFrame.defaultDB.statusmap --GridFrame的默认关联
+    local more = {}
+    for id, v in pairs(GridWarbabyMoreAuras) do
+        local spell = GetSpellInfo(id)
+        if spell then
+            local set = {
+                text = spell,
+                color = { r = 1, g = 1, b = 1, a = 1 },
+                priority = v.priority or 98,
+                raid = true,
+            }
+            for key, value in pairs(v) do
+                if key == "color" or key == "durationColorLow" or key == "durationColorMiddle" or key == "durationColorHigh"
+                        or key == "countColorLow" or key == "countColorMiddle" or key == "countColorHigh" then
+                    set[key] = { r = value[1], g = value[2], b = value[3], a = value[4] or 1 }
+                elseif key ~= "buff" and key ~= "indicator" then
+                    set[key] = value
+                end
+            end
+            local status_id
+            if v.buff then
+                set.buffID = id
+                set.buff = spell
+                set.desc = v.desc or format(L["Buff: %s"], spell)
+                status_id = "buff_" .. id
+            else
+                set.debuffID = id
+                set.debuff = spell
+                set.desc = v.desc or format(L["Debuff: %s"], spell)
+                status_id = "debuff_" .. id
+            end
+            more[status_id] = set
+
+            if def and v.indicator and def[v.indicator] then
+                def[v.indicator][status_id] = true
+            end
+        end
+    end
+    Mixin(GridStatus:GetModule("GridStatusAuras").defaultDB, more)
 end

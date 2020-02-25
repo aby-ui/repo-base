@@ -269,8 +269,6 @@ end
 local function Menu_AddLayoutPanel(menu)
 	local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
 
-	panel:NewOpacitySlider()
-	panel:NewFadeSlider()
 	panel:NewScaleSlider()
 	panel:NewPaddingSlider()
 	panel:NewSpacingSlider()
@@ -329,6 +327,7 @@ function MenuBar:CreateMenu()
 		Menu_AddLayoutPanel(menu)
 		Menu_AddDisableMenuButtonsPanel(menu)
 		menu:AddAdvancedPanel()
+		menu:AddFadingPanel()
 
 		self.menu = menu
 	end

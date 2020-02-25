@@ -218,6 +218,9 @@ U1RegisterAddon("!!!163UI!!!", {
                 local playS, playSF = PlaySound, PlaySoundFile
                 local wipe, playing, looping, updater = table.wipe, {}, {}, CreateFrame("Frame", "U1_SOUND_REDIRECT")
                 looping[SOUNDKIT.UI_BONUS_LOOT_ROLL_LOOP or ""] = true --LootFrame
+                looping[SOUNDKIT.IG_CREATURE_AGGRO_SELECT or 0] = true --TargetFrame_OnEvent
+                looping[SOUNDKIT.IG_CHARACTER_NPC_SELECT or 0] = true --TargetFrame_OnEvent
+                looping[SOUNDKIT.INTERFACE_SOUND_LOST_TARGET_UNIT or 0] = true --TargetFrame_OnHide
                 updater:SetScript("OnUpdate", function(self) wipe(playing) end)
                 if CreateLoopingSoundEffectEmitter then hooksecurefunc("CreateLoopingSoundEffectEmitter", function(startingSound, loopingSound) looping[loopingSound] = true end) end
                 local function shouldRedirect(channel, sound)

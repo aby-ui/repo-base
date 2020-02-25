@@ -108,6 +108,7 @@ function BagBar:CreateMenu()
 	layoutPanel:AddLayoutOptions()
 
 	menu:AddAdvancedPanel()
+	menu:AddFadingPanel()
 
 	self.menu = menu
 end

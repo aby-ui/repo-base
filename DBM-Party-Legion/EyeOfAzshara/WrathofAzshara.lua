@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1492, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision((string.sub("20190414033732", 1, -5)):sub(12, -3))
+mod:SetRevision((string.sub("20200220142801", 1, -5)):sub(12, -3))
 mod:SetCreatureID(96028)
 mod:SetEncounterID(1814)
 mod:SetZone()
@@ -32,10 +32,6 @@ mod:AddRangeFrameOption(10, 192706)
 
 mod.vb.phase = 1
 local serpMod = DBM:GetModByName(1479)
-
-function mod:CheckPhase2()
-	return 
-end
 
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1

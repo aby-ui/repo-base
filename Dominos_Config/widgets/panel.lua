@@ -338,13 +338,39 @@ function Panel:NewShowInPetBattleUICheckbox()
 	}
 end
 
+function Panel:NewFadeDelaySlider(smoothType)
+    return self:NewSlider({
+		name = L.Delay,
+		min = 0,
+		max = 10,
+		step = 0.1,
+		format = "%.1f",
+        get = smoothType == "IN" and function() return self.owner:GetFadeInDelay() end or
+            function() return self.owner:GetFadeOutDelay() end,
+        set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDelay(value) end or
+            function(_, value) self.owner:SetFadeOutDelay(value) end,
+    })
+end
+
+function Panel:NewFadeDurationSlider(smoothType)
+    return self:NewSlider({
+        name = L.Duration,
+		min = 0.1,
+		max = 10,
+		step = 0.1,
+		format = "%.1f",
+        get = smoothType == "IN" and function() return self.owner:GetFadeInDuration() end or
+            function() return self.owner:GetFadeOutDuration() end,
+        set = smoothType == "IN" and function(_, value) self.owner:SetFadeInDuration(value) end or
+            function(_, value) self.owner:SetFadeOutDuration(value) end,
+    })
+end
+
 function Panel:AddLayoutOptions()
 	self.colsSlider = self:NewColumnsSlider()
 	self.spacingSlider = self:NewSpacingSlider()
 	self.paddingSlider = self:NewPaddingSlider()
 	self.scaleSlider = self:NewScaleSlider()
-	self.opacitySlider = self:NewOpacitySlider()
-	self.fadeSlider = self:NewFadeSlider()
 end
 
 function Panel:AddAdvancedOptions()
@@ -365,6 +391,18 @@ function Panel:AddAdvancedOptions()
 		get = function() return self.owner:GetShowStates() end,
 		set = function(_, value) self.owner:SetShowStates(value) end
 	}
+end
+
+function Panel:AddFadingOptions()
+	self:NewHeader(L.FadeIn)
+	self:NewOpacitySlider()
+	self:NewFadeDelaySlider("IN")
+	self:NewFadeDurationSlider("IN")
+
+    self:NewHeader(L.FadeOut)
+    self:NewFadeSlider()
+	self:NewFadeDelaySlider("OUT")
+	self:NewFadeDurationSlider("OUT")
 end
 
 Addon.Panel = Panel

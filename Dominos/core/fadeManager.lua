@@ -14,12 +14,12 @@ function MouseOverWatcher:Update()
 		if f:IsFocus() then
 			if not f.focused then
 				f.focused = true
-				f:Fade()
+				f:FadeIn()
 			end
 		else
 			if f.focused then
 				f.focused = nil
-				f:Fade()
+				f:FadeOut()
 			end
 		end
 	end

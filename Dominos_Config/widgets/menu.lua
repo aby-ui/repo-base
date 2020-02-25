@@ -110,4 +110,12 @@ function Menu:AddAdvancedPanel()
 	return panel
 end
 
+function Menu:AddFadingPanel()
+	local panel = self:NewPanel(L.Fading)
+
+	panel:AddFadingOptions()
+
+	return panel
+end
+
 Addon.Menu = Menu

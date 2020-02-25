@@ -858,15 +858,33 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 				["link"] = {
 				  type = "execute",
 					name = "发送链接",
-					desc = "发送此BOSS技能链接到聊天窗",
+                    descStyle = "none for take control of gametooltip in AceConfigDialog-3.0.lua:512",
+					desc = function(info)
+                        local tooltip = LibStub("AceConfigDialog-3.0").tooltip
+                        tooltip:SetHyperlink(GetSpellLink(k.debuffId))
+                        tooltip:AddLine(" ")
+                        tooltip:AddLine("发送此BOSS技能链接到聊天窗")
+                        tooltip:Show()
+                    end,
 					order = 10,
-					func = function()
-									local chatWindow = ChatEdit_GetActiveWindow()
-            			if chatWindow then
-            				chatWindow:Insert(GetSpellLink(k.debuffId))
-            			end
-								end,
-				},
+                    func = function()
+                        --[[
+                        local chatWindow = ChatEdit_GetActiveWindow()
+                        if chatWindow then
+                            chatWindow:Insert(GetSpellLink(k.debuffId))
+                        end
+                        --]]
+                        --abyui
+                        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
+                        local eb = chatFrame and chatFrame.editBox
+                        if(eb) then
+                            eb:Insert(GetSpellLink(k.debuffId))
+                            eb:Show();
+                            eb:HighlightText()
+                            eb:SetFocus()
+                        end
+                    end,
+                },
 			},
 		}
 	end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200214135906")
+mod:SetRevision("20200224172352")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetZone()
@@ -483,7 +483,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnVoidPhase:Show()
 		self.vb.unstableVoidCount = 0
 		--timerUnstableVoidCD:Start(6, 1)--No longer started here, ra-den's cast will trigger first timer
-		timerCallVoidHunterCD:Start(6.9)--6.9-7.1
+		timerCallVoidHunterCD:Start(6)--6-7.1
 	elseif spellId == 312996 then--Nightmare Empowered
 		self.vb.callActive = false
 		warnNightmarePhase:Show()

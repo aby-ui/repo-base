@@ -113,7 +113,6 @@ local specialCurrency = {
   [1755] = { -- BfA - Coalescing Visions
     relatedItem = {
       id = 173363, -- Vessel of Horrific Visions
-      holdingMax = 5,
     },
   },
 }

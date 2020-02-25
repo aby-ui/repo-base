@@ -10,6 +10,7 @@ L.Height = 'Height'
 L.Display_time = "Show Time"
 L.Display_icon = 'Show Icon'
 L.Display_border = 'Show Border'
+L.Display_label = "Show Label"
 L.Padding = 'Padding'
 L.Font = 'Font'
 L.LatencyPadding = 'Latency Padding (ms)'

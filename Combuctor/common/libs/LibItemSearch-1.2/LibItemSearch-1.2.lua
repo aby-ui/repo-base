@@ -5,10 +5,15 @@
 
 local Search = LibStub('CustomSearch-1.0')
 local Unfit = LibStub('Unfit-1.0')
-local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 19)
+local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 20)
 if Lib then
-	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', UIParent, 'GameTooltipTemplate')
 	Lib.Filters = {}
+	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', UIParent, 'GameTooltipTemplate')
+	Lib.Scanner:RegisterEvent('GET_ITEM_INFO_RECEIVED')
+	Lib.Scanner:SetScript('OnEvent', function()
+		Lib.Filters.tipPhrases.keywords[FOLLOWERLIST_LABEL_CHAMPIONS:lower()] = Lib:TooltipLine('item:147556', 2)
+		Lib.Filters.tipPhrases.keywords[GARRISON_FOLLOWERS:lower()] = Lib:TooltipLine('item:147556', 2)
+	end)
 else
 	return
 end
@@ -325,9 +330,6 @@ Lib.Filters.tipPhrases = {
 		[GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM):lower()] = ITEM_BIND_QUEST,
 		[PROFESSIONS_USED_IN_COOKING:lower()] = PROFESSIONS_USED_IN_COOKING,
 		[TOY:lower()] = TOY,
-
-		[FOLLOWERLIST_LABEL_CHAMPIONS:lower()] = Lib:TooltipLine('item:147556', 2),
-		[GARRISON_FOLLOWERS:lower()] = Lib:TooltipLine('item:147556', 2),
 
   	['bound'] = ITEM_BIND_ON_PICKUP,
   	['bop'] = ITEM_BIND_ON_PICKUP,

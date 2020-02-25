@@ -94,10 +94,11 @@ function Frame:Create(id)
 	]])
 
 	frame.header:SetAttribute('_onstate-alpha', [[
-		self:CallMethod('Fade')
+		self:CallMethod('FadeOut')
 	]])
 
-	frame.header.Fade = function() frame:Fade() end
+	frame.header.FadeIn = function() frame:FadeIn() end
+	frame.header.FadeOut = function() frame:FadeOut() end
 
 	frame.header:SetAllPoints(frame)
 
@@ -283,6 +284,46 @@ function Frame:GetFadeMultiplier()
 	return self.sets.fadeAlpha or 1
 end
 
+function Frame:SetFadeInDelay(delay)
+	delay = tonumber(delay) or 0
+	self.sets.fadeInDelay = delay ~= 0 and delay
+	self:UpdateWatched()
+end
+
+function Frame:GetFadeInDelay()
+	return self.sets.fadeInDelay or 0
+end
+
+function Frame:SetFadeOutDelay(delay)
+	delay = tonumber(delay) or 0
+	self.sets.fadeOutDelay = delay ~= 0 and delay
+	self:UpdateWatched()
+end
+
+function Frame:GetFadeOutDelay()
+	return self.sets.fadeOutDelay or 0
+end
+
+function Frame:SetFadeInDuration(duration)
+	duration = tonumber(duration) or 0.1
+	self.sets.fadeInDuration = duration ~= 0.1 and duration
+	self:UpdateWatched()
+end
+
+function Frame:GetFadeInDuration()
+	return self.sets.fadeInDuration or 0.1
+end
+
+function Frame:SetFadeOutDuration(duration)
+	duration = tonumber(duration) or 0.1
+	self.sets.fadeOutDuration = duration ~= 0.1 and duration
+	self:UpdateWatched()
+end
+
+function Frame:GetFadeOutDuration()
+	return self.sets.fadeOutDuration or 0.1
+end
+
 function Frame:UpdateAlpha()
 	self:SetAlpha(self:GetExpectedAlpha())
 
@@ -382,22 +423,24 @@ end
 
 --[[ Fading ]]--
 
---fades the frame from the current opacity setting
---to the expected setting
-function Frame:Fade()
-	if floor(abs(self:GetExpectedAlpha()*100 - self:GetAlpha()*100)) == 0 then
-		return
-	end
+function Frame:FadeIn()
+    if floor(abs(self:GetExpectedAlpha() * 100 - self:GetAlpha() * 100)) == 0 then return end
 
-	if not self:FrameIsShown() then
-		return
-	end
+    if not self:FrameIsShown() then return end
 
-	Addon:Fade(self, self:GetExpectedAlpha(), 0.1)
+    Addon:Fade(self, self:GetExpectedAlpha(), self:GetFadeInDelay(), self:GetFadeInDuration())
 
-	if Addon:IsLinkedOpacityEnabled() then
-		self:ForDocked('Fade')
-	end
+    if Addon:IsLinkedOpacityEnabled() then self:ForDocked("FadeIn") end
+end
+
+function Frame:FadeOut()
+    if floor(abs(self:GetExpectedAlpha() * 100 - self:GetAlpha() * 100)) == 0 then return end
+
+    if not self:FrameIsShown() then return end
+
+    Addon:Fade(self, self:GetExpectedAlpha(), self:GetFadeOutDelay(), self:GetFadeOutDuration())
+
+    if Addon:IsLinkedOpacityEnabled() then self:ForDocked("FadeOut") end
 end
 
 --[[ Visibility ]]--
@@ -736,6 +779,7 @@ function Frame:CreateMenu()
 	self.menu = Addon:NewMenu(self.id)
 	self.menu:AddLayoutPanel()
 	self.menu:AddAdvancedPanel()
+	self.menu:AddFadingPanel()
 end
 
 function Frame:ShowMenu()

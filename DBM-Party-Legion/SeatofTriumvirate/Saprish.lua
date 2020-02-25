@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1980, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200220142801")
 mod:SetCreatureID(124872)
 mod:SetEncounterID(2066)
 mod:SetZone()
@@ -85,7 +85,7 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 247245 then
-		
+
 	end
 end
 

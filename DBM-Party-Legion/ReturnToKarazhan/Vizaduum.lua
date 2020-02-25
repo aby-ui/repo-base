@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1838, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190711011719")
+mod:SetRevision("20200220142801")
 mod:SetCreatureID(114790)
 mod:SetEncounterID(2017)
 mod:SetZone()
@@ -23,7 +23,7 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO: Burning Blast INterrupt helper. Figure out CD, then what to do with it
+--TODO: Burning Blast Interrupt helper. Figure out CD, then what to do with it
 --TODO: figure out what to do with Felguard Sentry (115730)
 --ALL
 local warnChaoticShadows			= mod:NewTargetAnnounce(229159, 3)
@@ -56,7 +56,7 @@ mod:AddRangeFrameOption(6, 230066)
 mod.vb.phase = 1
 mod.vb.kickCount = 0
 local chaoticShadowsTargets = {}
-local laserWarned = false
+--local laserWarned = false--What was this for? need to finish this mod one day
 
 local function breakShadows(self)
 	warnChaoticShadows:Show(table.concat(chaoticShadowsTargets, "<, >"))
@@ -66,7 +66,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.kickCount = 0
-	laserWarned = false
+	--laserWarned = false
 	table.wipe(chaoticShadowsTargets)
 	--These timers seem to vary about 1-2 sec
 	timerFelBeamCD:Start(5.2-delay)

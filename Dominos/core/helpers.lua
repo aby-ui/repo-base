@@ -42,42 +42,38 @@ end
 -- A functional way to fade a frame from one opacity to another without constantly
 -- creating new animation groups for the frame
 do
-    local faders = {}
-
     local function fader_OnFinished(self)
         self:GetParent():SetAlpha(self.toAlpha)
     end
 
-    local function fader_Create(parent)
-        local animation = parent:CreateAnimationGroup()
-        animation:SetLooping('NONE')
-        animation:SetScript('OnFinished', fader_OnFinished)
+    local faders = setmetatable({}, {
+        __index = function(t, k)
+            local animation = k:CreateAnimationGroup()
+            animation:SetLooping('NONE')
+            animation:SetScript('OnFinished', fader_OnFinished)
 
-        local fade = animation:CreateAnimation('Alpha')
-        fade:SetSmoothing('IN_OUT')
+            local fade = animation:CreateAnimation('Alpha')
+            fade:SetSmoothing('IN_OUT')
 
-        return function(toAlpha, duration)
-            if animation:IsPlaying() then
-                animation:Pause()
+            local v = function(toAlpha, delay, duration)
+                if animation:IsPlaying() then
+                    animation:Pause()
+                end
+
+                fade:SetFromAlpha(k:GetAlpha())
+                fade:SetToAlpha(toAlpha)
+                fade:SetStartDelay(delay)
+                fade:SetDuration(duration)
+
+                animation.toAlpha = toAlpha
+                animation:Play()
             end
-
-            fade:SetFromAlpha(parent:GetAlpha())
-            fade:SetToAlpha(toAlpha)
-            fade:SetDuration(duration)
-
-            animation.toAlpha = toAlpha
-            animation:Play()
+            t[k] = v
+            return v
         end
-    end
+    })
 
-    function Addon:Fade(frame, toAlpha, duration)
-        local fade = faders[frame]
-
-        if not fade then
-            fade = fader_Create(frame)
-            faders[frame] = fade
-        end
-
-        fade(toAlpha, duration)
+    function Addon:Fade(frame, toAlpha, delay, duration)
+        faders[frame](toAlpha, delay, duration)
     end
 end

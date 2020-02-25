@@ -1,6 +1,5 @@
 --[[
   Chinese Traditional Localization
-		***
 --]]
 
 local CONFIG = ...

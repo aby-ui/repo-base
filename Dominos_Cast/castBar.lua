@@ -692,6 +692,7 @@ do
 		self:AddLayoutPanel(menu)
 		self:AddTexturePanel(menu)
 		self:AddFontPanel(menu)
+		menu:AddFadingPanel()
 
 		self.menu = menu
 
@@ -762,8 +763,6 @@ do
 
 		panel.paddingSlider = panel:NewPaddingSlider()
 		panel.scaleSlider = panel:NewScaleSlider()
-		panel.opacitySlider = panel:NewOpacitySlider()
-		panel.fadeSlider = panel:NewFadeSlider()
 
 		panel.latencySlider = panel:NewSlider{
 			name = l.LatencyPadding,

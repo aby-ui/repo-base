@@ -159,16 +159,20 @@ local QuestExceptions = {
   [52953] = "Weekly", -- Call to Arms: Vol'dun (Horde)
   [52951] = "Weekly", -- Call to Arms: Zuldazar (Alliance)
   [52952] = "Weekly", -- Call to Arms: Zuldazar (Horde)
+  [56648] = "Weekly", -- Call to Arms: Nazjatar (Alliance)
+  [56148] = "Weekly", -- Call to Arms: Nazjatar (Horde)
+  [56649] = "Weekly", -- Call to Arms: Mechagon (Alliance)
+  [56650] = "Weekly", -- Call to Arms: Mechagon (Horde)
+  [59018] = "Weekly", -- Call to Arms: Vale of Eternal Blossoms (Alliance)
+  [59017] = "Weekly", -- Call to Arms: Vale of Eternal Blossoms (Horde)
+  [59019] = "Weekly", -- Call to Arms: Uldum (Alliance)
+  [59016] = "Weekly", -- Call to Arms: Uldum (Horde)
   -- Nazjatar
   [55121] = "Weekly", -- The Laboratory of Mardivas
   [56969] = "Weekly", -- Ancient Reefwalker Bark
-  [56648] = "Weekly", -- Call to Arms: Nazjatar (Alliance)
-  [56148] = "Weekly", -- Call to Arms: Nazjatar (Horde)
   [56050] = "Weekly", -- PvP Event: Battle for Nazjatar
   -- Mechagon
   [56116] = "Regular", -- Even More Recycling
-  [56649] = "Weekly", -- Call to Arms: Mechagon (Alliance)
-  [56650] = "Weekly", -- Call to Arms: Mechagon (Horde)
   -- Assaults
   [57157] = "Weekly", -- Assault: The Black Empire (Uldum)
   [56064] = "Weekly", -- Assault: The Black Empite (Vale of Eternal Blossoms)

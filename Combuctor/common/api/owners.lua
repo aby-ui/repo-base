@@ -10,11 +10,18 @@ local DEFAULT_COORDS = {0, 1, 0, 1}
 local CLASS_COLOR = '|cff%02x%02x%02x'
 local ALLIANCE_BANNER = 'Interface/Icons/inv_bannerpvp_02'
 local HORDE_BANNER = 'Interface/Icons/inv_bannerpvp_01'
-local RACE_TEXTURE, RACE_COORDS
+local RACE_TEXTURE, RACE_TABLE
 
-if not Addon.IsRetail then
+if Addon.IsRetail then
+	RACE_TABLE = {
+		highmountaintauren = 'highmountain',
+		lightforgeddraenei = 'lightforged',
+		scourge = 'undead',
+		zandalaritroll = 'zandalari',
+	}
+else
 	RACE_TEXTURE = 'Interface/Glues/CharacterCreate/UI-CharacterCreate-Races'
-	RACE_COORDS = {
+	RACE_TABLE = {
 		HUMAN_MALE		= {0, 0.25, 0, 0.25},
 		DWARF_MALE		= {0.25, 0.5, 0, 0.25},
 		GNOME_MALE		= {0.5, 0.75, 0, 0.25},
@@ -52,12 +59,11 @@ end
 function Owners:GetIcon(owner)
 	if owner.race then
 		if RACE_TEXTURE then
-			local gender = owner.gender == 3 and 'FEMALE' or 'MALE'
-			return RACE_TEXTURE, RACE_COORDS[owner.race:upper() .. '_' .. gender]
+			return RACE_TEXTURE, RACE_TABLE[owner.race:upper() .. '_' .. (owner.gender == 3 and 'FEMALE' or 'MALE')]
 		end
 
-		local race = owner.race ~= 'Scourge' and owner.race:lower() or 'undead'
-		return format('raceicon-%s-%s', race, owner.gender == 3 and 'female' or 'male')
+		local race = owner.race:lower()
+		return format('raceicon-%s-%s', RACE_TABLE[race] or race, owner.gender == 3 and 'female' or 'male')
 	end
 
 	return owner.faction == 'Alliance' and ALLIANCE_BANNER or HORDE_BANNER, DEFAULT_COORDS

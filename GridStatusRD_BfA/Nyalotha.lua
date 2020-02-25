@@ -75,14 +75,14 @@ GridStatusRaidDebuff:DebuffId(zoneid, 307950, 36, 5, 5, true) --Shred Psyche
 -- Shad'har the Insatiable
 GridStatusRaidDebuff:BossNameId(zoneid, 40, "Shad'har the Insatiable")
 GridStatusRaidDebuff:DebuffId(zoneid, 312590, 41, 5, 5, true) --Bitten Hand
-GridStatusRaidDebuff:DebuffId(zoneid, 306934, 43, 5, 5, true) --Entropic Mantle
-GridStatusRaidDebuff:DebuffId(zoneid, 307358, 44, 5, 5, true) --Debilitating Spit
+GridStatusRaidDebuff:DebuffId(zoneid, 306934, 43, 3, 3, true, nil, nil, true) --Entropic Mantle 熵能遮罩
+GridStatusRaidDebuff:DebuffId(zoneid, 307358, 44, 8, 8, true) --Debilitating Spit
 GridStatusRaidDebuff:DebuffId(zoneid, 307471, 45, 5, 5, true) --Crush
 GridStatusRaidDebuff:DebuffId(zoneid, 307472, 46, 5, 5, true, true) --Dissolve
-GridStatusRaidDebuff:DebuffId(zoneid, 306932, 47, 5, 5, true) --Noxious Mantle
-GridStatusRaidDebuff:DebuffId(zoneid, 318078, 48, 5, 5, true) --Fixate
-GridStatusRaidDebuff:DebuffId(zoneid, 308177, 49, 5, 5, true) --Entropic Buildup
-GridStatusRaidDebuff:DebuffId(zoneid, 306448, 50, 5, 5, true) --Umbral Mantle
+GridStatusRaidDebuff:DebuffId(zoneid, 306932, 47, 3, 3, true, nil, nil, true) --Noxious Mantle 剧毒遮罩
+GridStatusRaidDebuff:DebuffId(zoneid, 318078, 48, 8, 8, true) --Fixate
+GridStatusRaidDebuff:DebuffId(zoneid, 308177, 49, 5, 5, true) --Entropic Buildup 熵能聚合
+GridStatusRaidDebuff:DebuffId(zoneid, 306448, 50, 3, 3, true, nil, nil, true) --Umbral Mantle 幽影遮罩
 GridStatusRaidDebuff:DebuffId(zoneid, 306930, 51, 5, 5, true) --Entropic Breath
 GridStatusRaidDebuff:DebuffId(zoneid, 309704, 52, 5, 5, true) --Caustic Coating
 GridStatusRaidDebuff:DebuffId(zoneid, 306928, 53, 5, 5, true) --Umbral Breath

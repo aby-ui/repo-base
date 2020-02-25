@@ -47,10 +47,10 @@ do
 
 		local panel = menu:NewPanel(l.Layout)
 
-		panel.opacitySlider = panel:NewOpacitySlider()
-		panel.fadeSlider = panel:NewFadeSlider()
 		panel.scaleSlider = panel:NewScaleSlider()
 		panel.paddingSlider = panel:NewPaddingSlider()
+
+		menu:AddFadingPanel()
 
 		self.menu = menu
 	end

@@ -709,6 +709,7 @@ do
 		self:AddTextPanel(menu)
 		self:AddTexturePanel(menu)
 		self:AddFontPanel(menu)
+		menu:AddFadingPanel()
 
 		self.menu = menu
 
@@ -784,8 +785,6 @@ do
 		panel.spacingSlider = panel:NewSpacingSlider()
 		panel.paddingSlider = panel:NewPaddingSlider()
 		panel.scaleSlider = panel:NewScaleSlider()
-		panel.opacitySlider = panel:NewOpacitySlider()
-		panel.fadeSlider = panel:NewFadeSlider()
 	end
 
 	function ProgressBar:AddTextPanel(menu)

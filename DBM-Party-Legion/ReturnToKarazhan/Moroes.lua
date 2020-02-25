@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1837, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200220142801")
 mod:SetCreatureID(114312)
 mod:SetEncounterID(1961)
 mod:SetZone()
@@ -149,13 +149,13 @@ function mod:UNIT_DIED(args)
 	if cid == 114317 then--lady-catriona-vonindi
 		timerHealingStreamCD:Stop()
 	--elseif cid == 115440 then--baroness-dorothea-millstipe
-	
+
 	--elseif cid == 115439 then--baron-rafe-dreuger
-	
+
 	--elseif cid == 114319 then--lady-keira-berrybuck
-		
+
 	--elseif cid == 114320 then--lord-robin-daris
-			
+
 	elseif cid == 115441 then--lord-crispin-ference
 		timerWillBreakerCD:Stop()
 	end

@@ -49,65 +49,65 @@ if GetLocale():sub(1,2) == "zh" then
         clarity = "洞察",
         truth = "真相",
         echo = "回响",
-        star = "之星",
+        star = "无尽",
         bleed = "龟裂",
     }
 end
 
 local data = {
   affixes = {
-    [6437] = { corrupt = 10, key = "passive_crit_dam", level = 1, },
-    [6438] = { corrupt = 15, key = "passive_crit_dam", level = 2, },
-    [6439] = { corrupt = 20, key = "passive_crit_dam", level = 3, },
-    [6471] = { corrupt = 10, key = "passive_mastery", level = 1, },
-    [6472] = { corrupt = 15, key = "passive_mastery", level = 2, },
-    [6473] = { corrupt = 20, key = "passive_mastery", level = 3, },
-    [6474] = { corrupt = 10, key = "passive_haste", level = 1, },
-    [6475] = { corrupt = 15, key = "passive_haste", level = 2, },
-    [6476] = { corrupt = 20, key = "passive_haste", level = 3, },
-    [6477] = { corrupt = 10, key = "passive_versatility", level = 1, },
-    [6478] = { corrupt = 15, key = "passive_versatility", level = 2, },
-    [6479] = { corrupt = 20, key = "passive_versatility", level = 3, },
-    [6480] = { corrupt = 10, key = "passive_crit", level = 1, },
-    [6481] = { corrupt = 15, key = "passive_crit", level = 2, },
-    [6482] = { corrupt = 20, key = "passive_crit", level = 3, },
-    [6483] = { corrupt = 10, key = "passive_avoidance", level = 1, },
-    [6484] = { corrupt = 15, key = "passive_avoidance", level = 2, },
-    [6485] = { corrupt = 20, key = "passive_avoidance", level = 3, },
-    [6493] = { corrupt = 10, key = "passive_leech", level = 1, },
-    [6494] = { corrupt = 15, key = "passive_leech", level = 2, },
-    [6495] = { corrupt = 20, key = "passive_leech", level = 3, },
-    [6537] = { corrupt = 25, key = "twilight", level = 1, },
-    [6538] = { corrupt = 50, key = "twilight", level = 2, },
-    [6539] = { corrupt = 75, key = "twilight", level = 3, },
-    [6540] = { corrupt = 15, key = "ritual", level = 1, },
-    [6541] = { corrupt = 35, key = "ritual", level = 2, },
-    [6542] = { corrupt = 66, key = "ritual", level = 3, },
-    [6543] = { corrupt = 10, key = "twisted", level = 1, },
-    [6544] = { corrupt = 35, key = "twisted", level = 2, },
-    [6545] = { corrupt = 66, key = "twisted", level = 3, },
-    [6546] = { corrupt = 15, key = "clarity", level = 1, },
-    [6547] = { corrupt = 12, key = "truth", level = 1, },
-    [6548] = { corrupt = 30, key = "truth", level = 2, },
-    [6549] = { corrupt = 25, key = "echo", level = 1, },
-    [6550] = { corrupt = 35, key = "echo", level = 2, },
-    [6551] = { corrupt = 60, key = "echo", level = 3, },
-    [6552] = { corrupt = 20, key = "star", level = 1, },
-    [6553] = { corrupt = 50, key = "star", level = 2, },
-    [6554] = { corrupt = 75, key = "star", level = 3, },
-    [6555] = { corrupt = 15, key = "proc_haste", level = 1, },
-    [6556] = { corrupt = 15, key = "proc_crit", level = 1, },
-    [6557] = { corrupt = 15, key = "proc_mastery", level = 1, },
-    [6558] = { corrupt = 15, key = "proc_versatility", level = 1, },
-    [6559] = { corrupt = 20, key = "proc_haste", level = 2, },
-    [6560] = { corrupt = 35, key = "proc_haste", level = 3, },
-    [6561] = { corrupt = 20, key = "proc_crit", level = 2, },
-    [6562] = { corrupt = 35, key = "proc_crit", level = 3, },
-    [6563] = { corrupt = 20, key = "proc_mastery", level = 2, },
-    [6564] = { corrupt = 35, key = "proc_mastery", level = 3, },
-    [6565] = { corrupt = 20, key = "proc_versatility", level = 2, },
-    [6566] = { corrupt = 35, key = "proc_versatility", level = 3, },
-    [6573] = { corrupt = 15, key = "bleed", level = 1, },
+    [6437] = { key = "passive_crit_dam", level = 1, },
+    [6438] = { key = "passive_crit_dam", level = 2, },
+    [6439] = { key = "passive_crit_dam", level = 3, },
+    [6471] = { key = "passive_mastery", level = 1, },
+    [6472] = { key = "passive_mastery", level = 2, },
+    [6473] = { key = "passive_mastery", level = 3, },
+    [6474] = { key = "passive_haste", level = 1, },
+    [6475] = { key = "passive_haste", level = 2, },
+    [6476] = { key = "passive_haste", level = 3, },
+    [6477] = { key = "passive_versatility", level = 1, },
+    [6478] = { key = "passive_versatility", level = 2, },
+    [6479] = { key = "passive_versatility", level = 3, },
+    [6480] = { key = "passive_crit", level = 1, },
+    [6481] = { key = "passive_crit", level = 2, },
+    [6482] = { key = "passive_crit", level = 3, },
+    [6483] = { key = "passive_avoidance", level = 1, },
+    [6484] = { key = "passive_avoidance", level = 2, },
+    [6485] = { key = "passive_avoidance", level = 3, },
+    [6493] = { key = "passive_leech", level = 1, },
+    [6494] = { key = "passive_leech", level = 2, },
+    [6495] = { key = "passive_leech", level = 3, },
+    [6537] = { key = "twilight", level = 1, },
+    [6538] = { key = "twilight", level = 2, },
+    [6539] = { key = "twilight", level = 3, },
+    [6540] = { key = "ritual", level = 1, },
+    [6541] = { key = "ritual", level = 2, },
+    [6542] = { key = "ritual", level = 3, },
+    [6543] = { key = "twisted", level = 1, },
+    [6544] = { key = "twisted", level = 2, },
+    [6545] = { key = "twisted", level = 3, },
+    [6546] = { key = "clarity", level = 1, },
+    [6547] = { key = "truth", level = 1, },
+    [6548] = { key = "truth", level = 2, },
+    [6549] = { key = "echo", level = 1, },
+    [6550] = { key = "echo", level = 2, },
+    [6551] = { key = "echo", level = 3, },
+    [6552] = { key = "star", level = 1, },
+    [6553] = { key = "star", level = 2, },
+    [6554] = { key = "star", level = 3, },
+    [6555] = { key = "proc_haste", level = 1, },
+    [6556] = { key = "proc_crit", level = 1, },
+    [6557] = { key = "proc_mastery", level = 1, },
+    [6558] = { key = "proc_versatility", level = 1, },
+    [6559] = { key = "proc_haste", level = 2, },
+    [6560] = { key = "proc_haste", level = 3, },
+    [6561] = { key = "proc_crit", level = 2, },
+    [6562] = { key = "proc_crit", level = 3, },
+    [6563] = { key = "proc_mastery", level = 2, },
+    [6564] = { key = "proc_mastery", level = 3, },
+    [6565] = { key = "proc_versatility", level = 2, },
+    [6566] = { key = "proc_versatility", level = 3, },
+    [6573] = { key = "bleed", level = 1, },
   },
   corrupts = {
     bleed = { 15, },
@@ -131,6 +131,11 @@ local data = {
     twisted = { 10, 35, 66, },
   },
 }
+
+-- 修正闪避
+data.corrupts.passive_avoidance = { 8, 12, 16 } --8% 12% 16%
+data.corrupts.passive_leech = { 17, 28, 45 } --3% 5% 8%
+for _,v in pairs(data.affixes) do v.corrupt = data.corrupts[v.key][v.level] end
 
 --[[
 local function fake_item(diff, affix)
@@ -161,7 +166,7 @@ local affixes = {
   star = { 6552, 6553, 6554, },
   bleed = { 6573 },
 }
-local reverse = {}
+local reverse, corruptions = {}, {}
 local tmp = {}
 for k,v in pairs(affixes) do
   local passive = k:sub(1,8) == "passive_"
@@ -179,6 +184,7 @@ for k,v in pairs(affixes) do
       reverse[id].corrupt = tmp.ITEM_MOD_CORRUPTION
     end
     tinsert(corruptions[k], reverse[id].corrupt)
+    reverse[id].corrupt = nil
   end
 end
 wowluacopy({ affixes = reverse, corrupts = corruptions})

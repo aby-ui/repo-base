@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190421035925")
+mod:SetRevision("20200220142801")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetZone()
@@ -85,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellParanoia:Yell()
 		else
 			warnParanoia:Show(args.destName)
-		end		
+		end
 	end
 end
 mod.SPELL_AURA_REFRESH = mod.SPELL_AURA_APPLIED

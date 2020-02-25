@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Lib = LibStub:NewLibrary('Sushi-3.1', 3)
+local Lib = LibStub:NewLibrary('Sushi-3.1', 4)
 if not Lib then return end
 
 local Base = Lib.Base or LibStub('Poncho-2.0')()
-local Install = debugstack(1,1,0):match('^(.+)\\Sushi[%d\.\-]+\.lua')
+local Install = debugstack(1,1,0):match('^(.+)\\Sushi[%d\.\-]+\.lua') or ''
 local Root = 'Interface\\AddOns\\'
 
 if Install:sub(1,3) == '...' then
@@ -34,7 +34,7 @@ if Install:sub(1,3) == '...' then
 		end
 	end
 else
-	Install = Install:match('Interface\\AddOns\\.+')
+	Install = Install:match('Interface\\AddOns\\.+') or ''
 end
 
 function Base:NewSushi(name, version, type, template, global)
