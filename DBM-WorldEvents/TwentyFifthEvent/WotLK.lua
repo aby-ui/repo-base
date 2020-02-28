@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WrathEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200130141846")
+mod:SetRevision("20200130144829")
 mod:SetCreatureID(36597, 34564, 15936)
 mod:SetEncounterID(2321)
 mod:SetModelID(30721)--Lich King

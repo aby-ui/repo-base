@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200220023125")
+mod:SetRevision("20200227010509")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -12,11 +12,13 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 311390 315385 316481 311641 299055",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_CAST_SUCCESS 297237",
-	"SPELL_PERIODIC_DAMAGE 303594",
-	"SPELL_PERIODIC_MISSED 303594",
+	"SPELL_PERIODIC_DAMAGE 303594 313303",
+	"SPELL_PERIODIC_MISSED 303594 313303",
 	"UNIT_DIED",
 	"ENCOUNTER_START",
-	"UNIT_AURA player"
+	"UNIT_AURA player",
+	"NAME_PLATE_UNIT_ADDED",
+	"FORBIDDEN_NAME_PLATE_UNIT_ADDED"
 )
 
 --TODO, notable trash or affix warnings
@@ -38,6 +40,7 @@ local warnTouchoftheAbyss			= mod:NewCastAnnounce(298033, 4)
 --General (GTFOs and Affixes)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 local specWarnEntomophobia			= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
+local specWarnHauntingShadows		= mod:NewSpecialWarningDodge(306545, false, nil, 2, 1, 2)--Off by default because it requires messing with users nameplates to work
 --local specWarnDarkDelusions			= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
 local specWarnScorchedFeet			= mod:NewSpecialWarningYou(315385, false, nil, 2, 1, 2)
 local yellScorchedFeet				= mod:NewYell(315385)
@@ -78,7 +81,7 @@ local timerSurgingDarknessCD	= mod:NewCDTimer(20.6, 297822, nil, nil, nil, 3)
 local timerSeismicSlamCD		= mod:NewCDTimer(12.1, 297746, nil, nil, nil, 3)
 --Extra Abilities (used by Thrall and the area LTs)
 --local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
-local timerDefiledGroundCD		= mod:NewAITimer(21, 306726, nil, nil, nil, 3)
+local timerDefiledGroundCD		= mod:NewCDTimer(12.1, 306726, nil, nil, nil, 3)
 --Both surging fist and Decimator are 9.7 second cds, worth adding?
 
 mod:AddInfoFrameOption(307831, true)
@@ -86,6 +89,7 @@ mod:AddInfoFrameOption(307831, true)
 local playerName = UnitName("player")
 mod.vb.GnshalCleared = false
 mod.vb.VezokkCleared = false
+local CVAR1, CVAR2 = nil, nil
 
 function mod:SeismicSlamTarget(targetname, uId)
 	if not targetname then return end
@@ -97,6 +101,15 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.GnshalCleared = false
 	self.vb.VezokkCleared = false
+	if self.Options.SpecWarn306545dodge then
+		--This warning requires friendly nameplates, because it's only way to detect it.
+		CVAR1, CVAR2 = GetCVar("nameplateShowFriends ") or 0, GetCVar("nameplateShowFriendlyNPCs") or 0
+		--Check if they were disabled, if disabled, force enable them
+		if (CVAR1 == 0) or (CVAR2 == 0) then
+			SetCVar("nameplateShowFriends", 1)
+			SetCVar("nameplateShowFriendlyNPCs", 1)
+		end
+	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
 		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, 2)--Sorting lowest to highest
@@ -106,6 +119,12 @@ end
 function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
+	end
+	--Check if we changed users nameplate options and restore them
+	if (CVAR1 or CVAR2) and not InCombatLockdown() then
+		SetCVar("nameplateShowFriends", CVAR1)
+		SetCVar("nameplateShowFriendlyNPCs", CVAR2)
+		CVAR1, CVAR2 = nil, nil
 	end
 end
 
@@ -130,7 +149,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnHopelessness:Play("orbrun")--Technically not quite accurate but closest match to "find orb"
 	elseif spellId == 304251 and self:AntiSpam(4, 1) then--Two boars, 3 second throttle
 		warnVoidQuills:Show()
-	elseif spellId == 306726 then
+	elseif spellId == 306726 or spellId == 306828 then
 		specWarnDefiledGround:Show()
 		specWarnDefiledGround:Play("shockwave")
 		timerDefiledGroundCD:Start()
@@ -169,9 +188,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnSanguineResidue:Play("watchstep")
 	elseif spellId == 305875 then
 		warnVisceralFluid:Show()
-	elseif spellId == 306828 then
-		specWarnDefiledGround:Show()
-		specWarnDefiledGround:Play("shockwave")
 	elseif spellId == 306617 then
 		specWarnRingofChaos:Show()
 		specWarnRingofChaos:Play("watchorb")
@@ -247,7 +263,7 @@ end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 303594 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
+	if (spellId == 303594 or spellId == 313303) and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
@@ -268,12 +284,6 @@ function mod:UNIT_DIED(args)
 	elseif cid == 152874 then--Vez'okk the Lightless
 		timerDefiledGroundCD:Stop()
 		self.vb.VezokkCleared = true
-	--elseif cid == 153244 then--Oblivion Elemental
-
-	--elseif cid == 155098 then--Rexxar
-
-	--elseif cid == 157349 then--Wild Boar
-
 	end
 end
 
@@ -285,9 +295,6 @@ function mod:ENCOUNTER_START(encounterID)
 		else
 			timerSeismicSlamCD:Start(4.6)
 		end
-		--if self.vb.GnshalCleared then
-		--	timerCriesoftheVoidCD:Start(1)
-		--end
 	end
 end
 
@@ -305,3 +312,11 @@ do
 		end
 	end
 end
+
+function mod:NAME_PLATE_UNIT_ADDED(unit)
+	if unit and UnitName(unit) == playerName and self:AntiSpam(2, 2) then--Throttled because sometimes two spawn at once
+		specWarnHauntingShadows:Show()
+		specWarnHauntingShadows:Play("runaway")
+	end
+end
+mod.FORBIDDEN_NAME_PLATE_UNIT_ADDED = mod.NAME_PLATE_UNIT_ADDED--Just in case blizzard fixes map restrictions

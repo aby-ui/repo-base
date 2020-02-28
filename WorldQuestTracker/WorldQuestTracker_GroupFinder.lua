@@ -933,9 +933,9 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 			end
 
 			local tagID, tagName, worldQuestType, rarity, isElite = GetQuestTagInfo (questID)
+			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
 
 			if ((isWorldQuest and isInArea) or allAssaultQuests[questID] or tagID == 112 or (isElite and rarity == LE_WORLD_QUEST_QUALITY_EPIC)) then
-				print (2)
 				--FlashClientIcon()
 				--WorldQuestTracker.FindGroupForQuest (questID)
 				

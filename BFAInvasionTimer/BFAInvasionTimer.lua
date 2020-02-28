@@ -512,7 +512,7 @@ frame:SetScript("OnEvent", function(f)
 			tooltipHideMedals = false,
 			zoneWarnings = true,
 			hideInRaid = false,
-			mode = 1,
+			mode = 2,
 		},
 	}
 	f.db = LibStub("AceDB-3.0"):New("BFAInvasionTimerDB", defaults, true)

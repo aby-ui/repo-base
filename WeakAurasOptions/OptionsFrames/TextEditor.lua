@@ -203,7 +203,7 @@ local function ConstructTextEditor(frame)
       group:Close()
     end
     if key == "ESCAPE" then
-      group:CancelClose()
+      --abyui group:CancelClose()
     end
   end)
 
@@ -240,6 +240,13 @@ local function ConstructTextEditor(frame)
   editorLine:SetHeight(20);
   editorLine:SetNumeric(true);
   editorLine:SetTextInsets(10, 10, 0, 0);
+  editorLine:SetAutoFocus(false)
+  editor.editBox:HookScript("OnKeyDown", function(_, key)
+    if IsControlKeyDown() and key == "G" then
+      editorLine:SetFocus()
+      editorLine:HighlightText()
+    end
+  end)
 
 
   urlText:SetScript("OnChar", function(self) self:SetText(group.url); self:HighlightText(); end);
@@ -319,7 +326,7 @@ local function ConstructTextEditor(frame)
       end
     end
     editor:SetLabel(title);
-    editor.editBox:SetScript("OnEscapePressed", function() group:CancelClose(); end);
+    --abyui editor.editBox:SetScript("OnEscapePressed", function() group:CancelClose(); end);
     self.oldOnTextChanged = editor.editBox:GetScript("OnTextChanged");
     editor.editBox:SetScript("OnTextChanged", function(...)
       local str = editor.editBox:GetText();

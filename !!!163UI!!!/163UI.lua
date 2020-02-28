@@ -1794,6 +1794,7 @@ local function loadAddon(secure)
                 initComplete = true;
                 db.enteredWorld = true; --如果没加载完全部插件, 则下次还原db的设置, 而不是使用Enable/Disable状态
                 CoreFireEvent("INIT_COMPLETED")
+                SaveAddOns() --非常重要，如果这里不保存一下，ESC-插件 然后点击取消会调用ResetAddOns，就会重新开启所有插件，大概是因为加载时DisableAddOn不更新存储状态
                 wipe(loadedNormalAddons);
                 if ( UnitIsDead("player") and not StaticPopup_Visible("DEATH") ) then
                     if ( GetReleaseTimeRemaining() == 0 ) then

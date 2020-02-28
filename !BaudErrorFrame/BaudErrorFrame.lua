@@ -166,6 +166,7 @@ function BaudErrorFrameMinimapButton_Create()
         iconCoords = {0.09375+0.05, 0.90625+0.05, 0.46875, 0.859375},
         OnClick = BaudErrorFrameMinimapButton_OnClick,
         OnEnter = BaudErrorFrameMinimapButton_OnEnter,
+        OnLeave = BaudErrorFrameMinimapButton_OnLeave,
     })
     LibStub("LibDBIcon-1.0"):Register("BaudErrorFrame", ldb, BaudErrorFrameConfig);
 

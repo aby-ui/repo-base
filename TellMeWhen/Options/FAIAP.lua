@@ -1050,7 +1050,7 @@ local function textChangedHook(editbox, ...)
 	if oldFun then
 		oldFun(editbox, ...)
 	end
-	if enabled[editbox] then
+    if enabled[editbox] and not editbox:IsInIMECompositionMode() then
 		dirty[editbox] = GetTime()
 	end
 end
@@ -1070,8 +1070,8 @@ local function onUpdateHook(editbox, ...)
 	if oldFun then
 		oldFun(editbox, ...)
 	end
-	if enabled[editbox] then
-		local now = GetTime()
+    if enabled[editbox] and not editbox:IsInIMECompositionMode() then
+        local now = GetTime()
 		local lastUpdate = dirty[editbox] or now
 		if now - lastUpdate > 0.2 then
 			decodeCache[editbox] = nil

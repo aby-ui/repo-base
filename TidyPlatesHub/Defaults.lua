@@ -82,7 +82,7 @@ TidyPlatesHubDefaults = {
 	UnitSpotlightScaleEnable = true,
 	UnitSpotlightBarEnable = true,
 	UnitSpotlightGlowEnable = false,
-	UnitSpotlightList = "爆炸物\n炸藥\nTest地下城训练假人",
+	UnitSpotlightList = "爆炸物\n炸藥\n彼岸之物\nTest地下城训练假人",
 	UnitSpotlightLookup = {},
     UnitSpotlightVersion = "20180804",
 
