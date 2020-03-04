@@ -308,6 +308,9 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> internal functions
 -- _detalhes.statistics = {container_calls = 0, container_pet_calls = 0, container_unknow_pet = 0, damage_calls = 0, heal_calls = 0, absorbs_calls = 0, energy_calls = 0, pets_summons = 0}
+		function _detalhes:StartCombat(...)
+			return _detalhes:EntrarEmCombate (...)
+		end
 
 		-- ~start ~inicio ~novo �ovo
 		function _detalhes:EntrarEmCombate (...)

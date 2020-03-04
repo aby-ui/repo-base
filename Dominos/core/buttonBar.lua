@@ -38,7 +38,7 @@ function ButtonBar:AttachButton(index)
 	local button = self:GetButton(index)
 
 	if button then
-		button:SetParent(self.header)
+		button:SetParent(self)
 		button:EnableMouse(not self:GetClickThrough())
 		button:Show()
 
@@ -217,7 +217,7 @@ function ButtonBar:Layout()
 		local y = yOff + buttonHeight*row
 
 		button:ClearAllPoints()
-		button:SetParent(self.header)
+		button:SetParent(self)
 		button:SetPoint('TOPLEFT', x, -y)
 	end
 

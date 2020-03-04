@@ -86,19 +86,7 @@ function MenuBar:Create(...)
 		end
 	end
 
-	local requestLayoutUpdate
-	do
-		local frame = Addon:CreateHiddenFrame('Frame')
-
-		frame:SetScript('OnUpdate', function(_, elapsed)
-			frame:Hide()
-			bar:Layout()
-		end)
-
-		requestLayoutUpdate = function()
-			frame:Show()
-		end
-	end
+	local requestLayoutUpdate = Addon:Defer(function() bar:Layout() end, 0.1)
 
 	hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
 

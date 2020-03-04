@@ -65,5 +65,5 @@ addon.L = {
 	["general options"] = "一般選項",
 	["disable buttons"] = "禁用按鈕",
 	["crystal of insanity"] = "精神錯亂水晶",
-    ["Lightforged Augment Rune"] = "光鑄增強符文"
+    ["Lightning-Forged Augment Rune"] = "雷鑄增強符文"
 }

@@ -33,7 +33,7 @@ private.EVENT_QUEST_IDS = {
 	[161048] = { 58334 }; --Bruma Otoñal en llamas
 	[157601] = { 57445 }; --Carrito de fideos de Chin
 	[157934] = { 57484 }; --Ritual del despertar
-	[164307] = { 57558 }; --Criadero mántide
+	[164307] = { 57558, 57089 }; --Criadero mántide
 	[158033] = { 57517 }; --Invocador de enjambre
 	[158036] = { 57519 }; --Invocador de enjambre
 	[157718] = { 57453 }; --Invocador de enjambre
@@ -44,8 +44,8 @@ private.EVENT_QUEST_IDS = {
 	[158069] = { 57540 }; --Incubadora kunchong
 	[156289] = { 57085 }; --Carro de guerra potenciado
 	[158114] = { 57542 }; --Invocador de enjambre
-	[164307] = { 57089 }; --Criadero mántide
-	[156549] = { 56549 }; --Potenciación eléctrica
+	[156549] = { 57158 }; --Potenciación eléctrica
+	[157581] = { 57404 }; --Colmena de devastadores
 	
 	-- Events 8.3.0 Uldum
 	[156865] = { 57219 }; --Centinela desenterrado
@@ -98,4 +98,7 @@ private.EVENT_QUEST_IDS = {
 	[160928] = { 58276 }; --Mar'at en llamas
 	[163300] = { 57586 }; --Bebedor de espíritus
 	[163304] = { 57589 }; --Bebedor de espíritus
+	[158718] = { 57359 }; --Portal de invocacion
+	[158720] = { 57621 }; --Portal de invocacion
+	[163303] = { 57588 }; --Bebedor de espíritus
 }

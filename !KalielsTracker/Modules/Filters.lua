@@ -591,21 +591,20 @@ function DropDown_Initialize(self, level)
 			info.disabled = false
 			info.notCheckable = false
 
-			info.text = PetTracker.Locals.TrackPets
-			info.checked = (not PetTracker.Sets.HideTracker)
+			info.text = KT.AddonPetTracker.Texts.TrackPets
+			info.checked = (PetTracker.sets.trackPets)
 			info.func = function()
-				PetTracker.Tracker.Toggle()
-				if dbChar.collapsed and not PetTracker.Sets.HideTracker then
+				PetTracker.Tracker:Toggle()
+				if dbChar.collapsed and PetTracker.sets.trackPets then
 					ObjectiveTracker_MinimizeButton_OnClick()
 				end
 			end
 			MSA_DropDownMenu_AddButton(info)
 
-			info.text = PetTracker.Locals.CapturedPets
-			info.checked = (PetTracker.Sets.CapturedPets)
+			info.text = KT.AddonPetTracker.Texts.CapturedPets
+			info.checked = (PetTracker.sets.capturedPets)
 			info.func = function()
-				PetTracker.Sets.CapturedPets = not PetTracker.Sets.CapturedPets
-				PetTracker:ForAllModules("TrackingChanged")
+				PetTracker.Tracker:ToggleCaptured()
 			end
 			MSA_DropDownMenu_AddButton(info)
 		end

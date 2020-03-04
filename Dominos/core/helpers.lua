@@ -77,3 +77,22 @@ do
         faders[frame](toAlpha, delay, duration)
     end
 end
+
+-- somewhere between a debounce and a throttle
+function Addon:Defer(func, delay, ...)
+	delay = delay or 0
+
+	local waiting = false
+
+	local function callback(...)
+		func(...)
+		waiting = false
+	end
+
+	return function()
+		if not waiting then
+			waiting = true
+			_G.C_Timer.After(delay or 0, callback)
+		end
+	end
+end

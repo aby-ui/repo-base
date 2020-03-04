@@ -287,7 +287,7 @@
 
 	<!-- template for the typebar tabs -->
 	<Button name="RematchTypeBarTabTemplate" inherits="RematchTabTemplate" virtual="true">
-		<Size x="84" y="24"/>
+		<Size x="66" y="24"/>
 		<Scripts>
 			<OnClick>
 				RematchPetPanel.TypeBarTabOnClick(self)
@@ -367,25 +367,35 @@
 						<Frames>
 							<!-- type tab -->
 							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="1">
+								<Size x="56" y="24"/>
 								<Anchors>
-									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="4" y="-4"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="2" y="-4"/>
 								</Anchors>
 							</Button>
 							<!-- strong vs tab -->
 							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="2">
+								<Size x="72" y="24"/>
 								<Anchors>
-									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="83" y="-4"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="52" y="-4"/>
 								</Anchors>
 							</Button>
 							<!-- tough vs tab -->
 							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="3">
+								<Size x="72" y="24"/>
 								<Anchors>
-									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="162" y="-4"/>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="118" y="-4"/>
+								</Anchors>
+							</Button>
+							<!-- quality tab -->
+							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="4">
+								<Size x="68" y="24"/>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="184" y="-4"/>
 								</Anchors>
 							</Button>
 							<Button parentKey="Clear" inherits="RematchClearButtonTemplate">
 								<Anchors>
-									<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-5" y="0"/>
+									<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-3" y="-1"/>
 								</Anchors>
 								<Scripts>
 									<OnClick>
@@ -403,6 +413,62 @@
 							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="8"/>
 							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="9"/>
 							<CheckButton parentArray="Buttons" inherits="RematchTypeBarButtonTemplate" id="10"/>
+							<Frame parentKey="QualityBar">
+								<Anchors>
+									<Anchor point="TOPLEFT"/>
+									<Anchor point="BOTTOMRIGHT"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString parentKey="SortLabel" inherits="GameFontHighlightSmall" text="Sort by">
+											<Anchors>
+												<Anchor point="LEFT" x="20" y="0"/>
+											</Anchors>
+										</FontString>
+										<FontString parentKey="OnlyLabel" inherits="GameFontHighlightSmall" text="Only">
+											<Anchors>
+												<Anchor point="RIGHT" x="-80" y="0"/>
+											</Anchors>
+										</FontString>
+									</Layer>
+								</Layers>
+								<Frames>
+									<CheckButton parentKey="Level25Button" inherits="RematchTypeBarButtonTemplate">
+										<Anchors>
+											<Anchor point="LEFT" relativeKey="$parent.OnlyLabel" relativePoint="RIGHT" x="4" y="0"/>
+										</Anchors>
+										<Layers>
+											<Layer level="OVERLAY">
+												<FontString inherits="GameFontNormalSmall" text="25">
+													<Anchors>
+														<Anchor point="CENTER"/>
+													</Anchors>
+												</FontString>
+											</Layer>
+										</Layers>
+									</CheckButton>
+									<CheckButton parentKey="RareButton" inherits="RematchTypeBarButtonTemplate">
+										<Anchors>
+											<Anchor point="LEFT" relativeKey="$parent.OnlyLabel" relativePoint="RIGHT" x="30" y="0"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton parentKey="HealthButton" inherits="RematchTypeBarButtonTemplate">
+										<Anchors>
+											<Anchor point="LEFT" relativeKey="$parent.SortLabel" relativePoint="RIGHT" x="4" y="0"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton parentKey="PowerButton" inherits="RematchTypeBarButtonTemplate">
+										<Anchors>
+											<Anchor point="LEFT" relativeKey="$parent.SortLabel" relativePoint="RIGHT" x="30" y="0"/>
+										</Anchors>
+									</CheckButton>
+									<CheckButton parentKey="SpeedButton" inherits="RematchTypeBarButtonTemplate">
+										<Anchors>
+											<Anchor point="LEFT" relativeKey="$parent.SortLabel" relativePoint="RIGHT" x="56" y="0"/>
+										</Anchors>
+									</CheckButton>
+								</Frames>
+							</Frame>
 						</Frames>
 					</Frame>
 				</Frames>

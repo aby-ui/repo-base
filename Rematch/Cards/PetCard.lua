@@ -196,7 +196,8 @@ function rematch:ShowPetCard(parent,petID,force)
 	-- possible breeds
 	info.PossibleBreeds:Hide()
 	if petInfo.possibleBreedNames then
-		local possibleBreeds = table.concat(petInfo.possibleBreedNames,rematch:GetBreedSource()=="PetTracker_Breeds" and " " or ", ")
+		local breedSource = rematch:GetBreedSource()
+		local possibleBreeds = table.concat(petInfo.possibleBreedNames,(breedSource=="PetTracker_Breeds" or breedSource=="PetTracker") and " " or ", ")
 		info.PossibleBreeds:SetText(format("%s: \124cffffffff%s",L["Possible Breeds"],possibleBreeds))
 		info.PossibleBreeds:ClearAllPoints()
 		info.PossibleBreeds:SetPoint("BOTTOMLEFT",8,ybottom)
@@ -757,14 +758,16 @@ function card:FillBreedTable(speciesID,breeds)
 				tinsert(breeds,{rematch:GetBreedNameByID(breed),lib:GetPetPredictedStats(speciesID,breed,4,25)})
 			end
 		end
-	elseif breedSource=="PetTracker_Breeds" then
-		if PetTracker.Breeds[speciesID] then
-			for _,breed in pairs(PetTracker.Breeds[speciesID]) do
-				local health, power, speed = unpack(PetTracker.BreedStats[breed])
+	elseif breedSource=="PetTracker_Breeds" or breedSource=="PetTracker" then
+		local breedsTable = breedSource=="PetTracker_Breeds" and PetTracker.Breeds or PetTracker.SpecieBreeds
+		local statsTable = breedSource=="PetTracker_Breeds" and PetTracker.BreedStats or PetTracker.Predict.BreedStats
+		if breedsTable[speciesID] then
+			for _,breed in pairs(breedsTable[speciesID]) do
+				local health, power, speed = unpack(statsTable[breed])
 				health = health*50
 				power = power*50
 				speed = speed*50
-				tinsert(breeds,{(PetTracker:GetBreedIcon(breed,.95)),health>0 and format("%d%%",health) or "-    ",power>0 and format("%d%%",power) or "-    ",speed>0 and format("%d%%",speed) or "-    "})
+				tinsert(breeds,{(breedSource=="PetTracker_Breeds" and PetTracker:GetBreedIcon(breed,.95) or PetTracker.Breeds:Icon(breed,.95)),health>0 and format("%d%%",health) or "-    ",power>0 and format("%d%%",power) or "-    ",speed>0 and format("%d%%",speed) or "-    "})
 			end
 		end
 	end

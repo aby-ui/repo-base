@@ -307,7 +307,7 @@ L["STRING_MAXIMUM"] = "最大"
 L["STRING_MAXIMUM_SHORT"] = "最大"
 L["STRING_MEDIA"] = "媒体"
 L["STRING_MELEE"] = "近战"
-L["STRING_MEMORY_ALERT_BUTTON"] = "我明白了"
+L["STRING_MEMORY_ALERT_BUTTON"] = "我知道了"
 L["STRING_MEMORY_ALERT_TEXT1"] = "Details!使用了大量的内存，但是|cFFFF8800与流行的认知相反|r，插件的内存占用|cFFFF8800不会影响|r任何游戏表现和FPS。"
 L["STRING_MEMORY_ALERT_TEXT2"] = "所以，如果你看到Details!使用大量内存，不要惊慌 :D！|cFFFF8800一切正常！|r，已使用内存的一部分也会|cFFFF8800用于生成缓存|r，使插件运行更加流畅。"
 L["STRING_MEMORY_ALERT_TEXT3"] = "但是，如果你想知道|cFFFF8800哪个插件占用较多内存|r或会导致游戏帧数降低，可以安装这个插件：“|cFFFFFF00AddOns Cpu Usage|r”。"
@@ -566,15 +566,15 @@ L["STRING_OPTIONS_COMBAT_ALPHA_1"] = "无"
 L["STRING_OPTIONS_COMBAT_ALPHA_2"] = "战斗中"
 L["STRING_OPTIONS_COMBAT_ALPHA_3"] = "脱离战斗"
 L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "当退出队伍"
-L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "当不在战斗中"
-L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "当在战斗中"
+L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "当不在副本中"
+L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "当在副本中"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "团队副本测试"
-L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[选择怎样的战斗影响窗口透明度。
+L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[选择战斗状态如何影响窗口透明度。
 |cFFFFFF00没变化|r：不修改透明度。
-|cFFFFFF00当在战斗|r：当角色进入战斗时，所选的透明度将应用于窗口
-|cFFFFFF00脱离战斗|r：只要角色不在战斗中，就会应用alpha.
-|cFFFFFF00当退出队伍|r：当您不在队伍或团队中时，该窗口将采用所选的alpha.
-|cFFFFFF00重要|r：此选项会覆盖由“自动透明度”功能决定的Alpha.]=]
+|cFFFFFF00当在战斗|r：当角色进入战斗时，所选的Alpha将应用于窗口
+|cFFFFFF00脱离战斗|r：只要角色不在战斗中，就会应用此Alpha.
+|cFFFFFF00当退出队伍|r：当您不在队伍或团队中时，该窗口将采用所选的Alpha.
+|cFFFFFF00重要|r：此选项会覆盖由“自动透明度”功能设定的Alpha.]=]
 L["STRING_OPTIONS_COMBATTWEEKS"] = "战斗微调"
 L["STRING_OPTIONS_COMBATTWEEKS_DESC"] = "设定Details!如何调整一些战斗数据的细节。"
 L["STRING_OPTIONS_CONFIRM_ERASE"] = "要删除数据吗？"
@@ -1450,9 +1450,9 @@ L["STRING_VOIDZONE_TOOLTIP"] = "伤害和时间："
 L["STRING_WAITPLUGIN"] = [=[等待
 插件]=]
 L["STRING_WAVE"] = "波"
-L["STRING_WELCOME_1"] = [=[|cFFFFFFFF欢迎使用Details!快速安装向导
-|r本指南将帮助你一些重要的配置。
-您可以在任何时候跳过这只是点击“跳过”按钮。]=]
+L["STRING_WELCOME_1"] = [=[|cFFFFFFFF欢迎使用Details!快速安装向导|r
+本指南将帮你设置一些重要选项。
+可使用右下角的箭头翻页。]=]
 L["STRING_WELCOME_11"] = "如果你改变主意，你可以随时再通过选项面板中修改"
 L["STRING_WELCOME_12"] = "选择更新速度和动画。 此外，如果你的电脑有2GB或更少的内存RAM，它可能要减少和段的数量。"
 L["STRING_WELCOME_13"] = ""

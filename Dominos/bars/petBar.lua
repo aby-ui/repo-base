@@ -102,7 +102,7 @@ end
 --[[ keybound support ]]--
 
 function PetBar:KEYBOUND_ENABLED()
-	self.header:SetAttribute('state-visibility', 'display')
+	self:SetAttribute('state-visibility', 'display')
 
 	for _, button in pairs(self.buttons) do
 		button:Show()

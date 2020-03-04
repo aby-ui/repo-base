@@ -35,7 +35,7 @@ do
 		local frame = self.repositionedFrame
 
 		frame:ClearAllPoints()
-		frame:SetPoint('BOTTOM', self.header)
+		frame:SetPoint('BOTTOM', self)
 
 		local pW, pH = self:GetPadding()
 		self:SetSize(317 + pW, 119 + pH)

@@ -5,6 +5,7 @@
 --- This file is part of addon Kaliel's Tracker.
 
 local addonName, KT = ...
+KT.title = GetAddOnMetadata(addonName, "Title")
 
 -- Lua API
 local floor = math.floor
@@ -15,6 +16,8 @@ local strfind = string.find
 local strlen = string.len
 local strsub = string.sub
 local tonumber = tonumber
+
+local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
 
 -- Version
 function KT.IsHigherVersion(newVersion, oldVersion)
@@ -204,4 +207,97 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
     end
 
     SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
+end
+
+-- =====================================================================================================================
+
+local function StatiPopup_OnShow(self)
+    if self.text.text_arg1 then
+        self.text:SetText(self.text:GetText().." - "..self.text.text_arg1)
+    end
+    if self.text.text_arg2 then
+        if self.data then
+            self.SubText:SetFormattedText(self.text.text_arg2, unpack(self.data))
+        else
+            self.SubText:SetText(self.text.text_arg2)
+        end
+        self.SubText:SetTextColor(1, 1, 1)
+    else
+        self.SubText:Hide()
+    end
+end
+
+StaticPopupDialogs[addonName.."_Info"] = {
+    text = "|T"..mediaPath.."KT_logo:22:22:0:0|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r",
+    subText = "...",
+    button2 = CLOSE,
+    OnShow = StatiPopup_OnShow,
+    timeout = 0,
+    whileDead = 1
+}
+
+StaticPopupDialogs[addonName.."_ReloadUI"] = {
+    text = "|T"..mediaPath.."KT_logo:22:22:0:0|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r",
+    subText = "...",
+    button1 = RELOADUI,
+    OnShow = StatiPopup_OnShow,
+    OnAccept = function()
+        ReloadUI()
+    end,
+    timeout = 0,
+    whileDead = 1
+}
+
+StaticPopupDialogs[addonName.."_WowheadURL"] = {
+    text = "|T"..mediaPath.."KT_logo:22:22:0:-1|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r - Wowhead URL",
+    button2 = CLOSE,
+    hasEditBox = 1,
+    editBoxWidth = 300,
+    EditBoxOnEnterPressed = function(self)
+        self:GetParent():Hide()
+    end,
+    EditBoxOnEscapePressed = function(self)
+        self:GetParent():Hide()
+    end,
+    OnShow = function(self)
+        local name = "..."
+        if self.text.text_arg1 == "quest" then
+            name = QuestUtils_GetQuestName(self.text.text_arg2)
+        elseif self.text.text_arg1 == "achievement" then
+            name = select(2, GetAchievementInfo(self.text.text_arg2))
+        end
+        local www = KT.locale:sub(1, 2)
+        if www == "zh" then www = "cn" end
+        self.text:SetText(self.text:GetText().."\n|cffff7f00"..name.."|r")
+        self.editBox:SetText("http://"..www..".wowhead.com/"..self.text.text_arg1.."="..self.text.text_arg2)
+        self.editBox:SetFocus()
+        self.editBox:HighlightText()
+    end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1
+}
+
+function KT:Alert_ResetIncompatibleProfiles(version)
+    if self.db.global.version and self.IsHigherVersion(version, self.db.global.version) then
+        local profile
+        for _, v in ipairs(self.db:GetProfiles()) do
+            profile = self.db.profiles[v]
+            for k, _ in pairs(profile) do
+                profile[k] = nil
+            end
+        end
+		StaticPopup_Show(addonName.."_Info", nil, "任务增强的设置已经重置，因为新版本 %s 无法使用老版本的设置.", { self.version })
+    end
+end
+
+function KT:Alert_IncompatibleAddon(addon, version)
+    if self.IsHigherVersion(version, GetAddOnMetadata(addon, "Version")) then
+        self.db.profile["addon"..addon] = false
+        StaticPopup_Show(addonName.."_ReloadUI", nil, "|cff00ffe3%s|r support has been disabled. Please install version |cff00ffe3%s|r or later and enable addon support.", { GetAddOnMetadata(addon, "Title"), version })
+    end
+end
+
+function KT:Alert_WowheadURL(type, id)
+    StaticPopup_Show(addonName.."_WowheadURL", type, id)
 end

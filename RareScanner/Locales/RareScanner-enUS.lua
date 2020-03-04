@@ -188,6 +188,7 @@ if AL then
 	AL["NAVIGATION_SHOW_NEXT"] = "Show next entity found"
 	AL["NAVIGATION_SHOW_PREVIOUS"] = "Show previous entity found"
 	AL["NOT_TARGETEABLE"] = "Not targeteable"
+	AL["NOTE_10263"] = "The [Scarshield Warlock] opens a portal every now and then where the rare NPC can be summoned from."
 	AL["NOTE_130350"] = "You have to ride this rare to the container that you will find by following the path to the right of this position."
 	AL["NOTE_131453"] = "You have to ride [Guardian of the Spring] to this position. The horse is a friendly rare that you will find by following the path to the left of this container."
 	AL["NOTE_135497"] = "Only available while doing the daily quest [Aid from Nordrassil] obtained from Mylune. While you are on this quest you will find mushrooms under the trees. Clicking on them might spawn this NPC."

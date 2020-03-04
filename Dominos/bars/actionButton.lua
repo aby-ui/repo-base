@@ -7,7 +7,6 @@ local AddonName, Addon = ...
 local KeyBound = LibStub('LibKeyBound-1.0')
 
 local ActionButton = Addon:CreateClass('CheckButton', Addon.BindableButton)
-local HiddenFrame = CreateFrame('Frame'); HiddenFrame:Hide()
 
 ActionButton.unused = {}
 ActionButton.active = {}
@@ -122,25 +121,20 @@ function ActionButton:Restore(id)
 	end
 end
 
---destructor
-do
-	local HiddenActionButtonFrame = CreateFrame('Frame')
-	HiddenActionButtonFrame:Hide()
+-- destructor
+function ActionButton:Free()
+	local id = self:GetAttribute('action--base')
 
-	function ActionButton:Free()
-		local id = self:GetAttribute('action--base')
+	self.active[id] = nil
 
-		self.active[id] = nil
+	Addon:GetModule('Tooltips'):Unregister(self)
+	Addon.BindingsController:Unregister(self)
 
-		Addon:GetModule('Tooltips'):Unregister(self)
-		Addon.BindingsController:Unregister(self)
+	self:SetAttribute("statehidden", true)
+	self:SetParent(Addon.ShadowUIParent)
+	self:Hide()
 
-		self:SetAttribute("statehidden", true)
-		self:SetParent(HiddenActionButtonFrame)
-		self:Hide()
-
-		self.unused[id] = self
-	end
+	self.unused[id] = self
 end
 
 --keybound support
@@ -270,7 +264,7 @@ function ActionButton:UpdateState()
 end
 
 function ActionButton:UpdateShowEquippedItemBorders()
-	self.Border:SetParent(Addon:ShowEquippedItemBorders() and self or HiddenFrame)
+	self.Border:SetParent(Addon:ShowEquippedItemBorders() and self or Addon.ShadowUIParent)
 end
 
 --utility function, resyncs the button's current action, modified by state

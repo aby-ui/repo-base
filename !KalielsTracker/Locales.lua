@@ -80,7 +80,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["color|r"] = "颜色|r"
     KT.L[" Text"] = "文本"
     KT.L[" Buttons"] = "按钮"
-    KT.L[" Collapsed\n text"] = "窗口收起时的文本"
+    KT.L[" Collapsed tracker text"] = "窗口收起时的文本"
     KT.L["None"] = "无"
     KT.L["%d/%d Quests"] = "%d/%d 任务"
     KT.L["Show Quest Log and Achievements buttons"] = "显示任务日志和成就按钮"

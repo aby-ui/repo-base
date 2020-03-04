@@ -8506,10 +8506,10 @@ DF.BorderFunctions = {
 	end,
 	
 	SetBorderThickness = function (self, newThickness)
-		PixelUtil.SetWidth (f.leftBorder, newThickness, newThickness)
-		PixelUtil.SetWidth (f.rightBorder, newThickness, newThickness)
-		PixelUtil.SetHeight (f.topBorder, newThickness, newThickness)
-		PixelUtil.SetHeight (f.bottomBorder, newThickness, newThickness)
+		PixelUtil.SetWidth (self.leftBorder, newThickness, newThickness)
+		PixelUtil.SetWidth (self.rightBorder, newThickness, newThickness)
+		PixelUtil.SetHeight (self.topBorder, newThickness, newThickness)
+		PixelUtil.SetHeight (self.bottomBorder, newThickness, newThickness)
 	end,
 	
 	WidgetType = "border",

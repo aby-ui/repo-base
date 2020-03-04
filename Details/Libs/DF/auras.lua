@@ -10,7 +10,7 @@ local GetSpellInfo = GetSpellInfo
 local lower = string.lower
 local GetSpellBookItemInfo = GetSpellBookItemInfo
 
-local CONST_MAX_SPELLS = 300000
+local CONST_MAX_SPELLS = 400000
 
 function DF:GetAuraByName (unit, spellName, isDebuff)
 	isDebuff = isDebuff and "HARMFUL|PLAYER"

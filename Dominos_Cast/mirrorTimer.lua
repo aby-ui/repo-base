@@ -18,16 +18,23 @@ function MirrorTimer:New(id, ...)
 end
 
 function MirrorTimer:OnCreate()
-    self:Hide()
     self:SetFrameStrata("HIGH")
     self:SetScript("OnEvent", self.OnEvent)
 
-    local bg = self:CreateTexture(nil, "BACKGROUND")
+	local container = CreateFrame('Frame', nil, self)
+    container:SetAllPoints(container:GetParent())
+    container:Hide()
+
+    self.container = container
+
+    local bg = container:CreateTexture(nil, "BACKGROUND")
     bg:SetVertexColor(0, 0, 0, 0.5)
     self.bg = bg
 
-    local sb = CreateFrame("StatusBar", nil, self)
-    sb:SetScript("OnValueChanged", function(_, value) self:OnValueChanged(value) end)
+    local sb = CreateFrame("StatusBar", nil, container)
+    sb:SetScript("OnValueChanged", function(_, value)
+        self:OnValueChanged(value)
+    end)
 
     local timeText = sb:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     timeText:SetJustifyH("RIGHT")
@@ -52,7 +59,7 @@ function MirrorTimer:OnCreate()
 
     self.statusBar = sb
 
-    local border = CreateFrame("Frame", nil, self)
+    local border = CreateFrame("Frame", nil, container)
 
     border:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
     border:SetFrameLevel(sb:GetFrameLevel() + 3)
@@ -297,14 +304,14 @@ function MirrorTimer:Start(timer, value, maxValue, scale, paused, timerLabel)
     local color = MirrorTimerColors[timer]
     statusBar:SetStatusBarColor(color.r, color.g, color.b)
 
+    self.container:Show()
     self:SetScript("OnUpdate", self.OnUpdate)
-
-    self:Show()
 end
 
 function MirrorTimer:Reset()
-    self:Hide()
+    self.container:Hide()
     self.timer = nil
+    self:SetScript("OnUpdate", nil)
 end
 
 ---@param elapsed number
@@ -333,8 +340,8 @@ do
 
         self.menu:HookScript("OnShow", function()
             self:Start("BREATH", random(20, 60) * 1000, 60000, -1, 0, BREATH_LABEL)
-            self:SetScript("OnUpdate",
-                           function(_, elapsed)
+
+            self:SetScript("OnUpdate", function(_, elapsed)
                 self.statusBar:SetValue(self.statusBar:GetValue() - (elapsed))
             end)
         end)

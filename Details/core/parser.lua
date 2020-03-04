@@ -1813,11 +1813,11 @@
 			--> pet
 			if (meu_dono) then
 				meu_dono.total = meu_dono.total + cura_efetiva --> heal do pet
-				meu_dono.targets [alvo_name] = (meu_dono.targets [alvo_name] or 0) + amount
+				meu_dono.targets [alvo_name] = (meu_dono.targets [alvo_name] or 0) + cura_efetiva
 			end
 			
 			--> target amount
-			este_jogador.targets [alvo_name] = (este_jogador.targets [alvo_name] or 0) + amount
+			este_jogador.targets [alvo_name] = (este_jogador.targets [alvo_name] or 0) + cura_efetiva
 		end
 		
 		if (meu_dono) then

@@ -289,8 +289,9 @@ function S:UpdateUnitValues()
 		petheal, petmax = UnitHealth("pet"), UnitHealthMax("pet");
 		name = UnitName("pet");
 		_, powertype = UnitPowerType("player");
-	end
-	
+    end
+    if maxheal == 0 or maxpower == 0 then return end
+
 	perh = heal/maxheal * 100 + 0.5;
 	self:SetPercentText("player", perh);
 	local hexColor = self:ToHexColor(1, 0.65, 0.16);

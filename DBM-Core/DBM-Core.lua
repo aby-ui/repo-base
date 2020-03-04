@@ -69,7 +69,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200227040713"),
+	Revision = parseCurseDate("20200229131603"),
 	DisplayVersion = "8.3.16 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 2, 24) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -5128,7 +5128,7 @@ do
 	end
 
 	function DBM:ShowUpdateReminder(newVersion, newRevision, text, url)
-		urlText = url or DBM_CORE_UPDATEREMINDER_URL or "http://www.deadlybossmods.com"
+		urlText = url or "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki"
 		if not frame then
 			createFrame()
 		else
@@ -11476,7 +11476,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200227040713" then
+	if not revision or revision == "20200229131603" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

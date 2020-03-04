@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
-## Version: 3.2.1
+## Version: 3.2.2
 ## Author: Kaliel (Marouan Sabbagh)
 
 ## SavedVariables: KalielsTrackerDB

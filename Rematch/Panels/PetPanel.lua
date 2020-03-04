@@ -5,7 +5,7 @@ local roster = rematch.Roster
 local settings, saved
 
 local activeTypeMode = 1 -- start on "Type" tab of typebar (1=type, 2=strong, 3=tough)
-local typeModes = {"Types","Strong","Tough"}
+local typeModes = {"Types","Strong","Tough","Quality"}
 
 rematch:InitModule(function()
 	rematch.PetPanel = panel
@@ -17,8 +17,16 @@ rematch:InitModule(function()
 		rematch:FillPetTypeIcon(button.Icon,i,"Interface\\Icons\\Icon_PetFamily_")
 		button:SetPoint("LEFT",(i-1)*26+5,0)
 	end
+	-- set quality bar buttons
+	local qualityBar = typeBar.QualityBar
+	qualityBar.HealthButton.Icon:SetTexture("Interface\\Icons\\PetBattle_Health")
+	qualityBar.PowerButton.Icon:SetTexture("Interface\\Icons\\PetBattle_Attack")
+	qualityBar.SpeedButton.Icon:SetTexture("Interface\\Icons\\PetBattle_Speed")
+	qualityBar.Level25Button.Icon:SetTexture("Interface\\Common\\BlueMenuRing")
+	qualityBar.Level25Button.Icon:SetTexCoord(0.09375,0.7265625,0.09375,0.7265625)
+	qualityBar.RareButton.Icon:SetTexture("Interface\\Icons\\Icon_UpgradeStone_Rare")
 	-- set up typebar tabs text and colors
-	for k,v in pairs({{TYPE,.5,.41,0},{L["Strong vs"],0,.5,0},{L["Tough vs"],.5,0,0}}) do
+	for k,v in pairs({{TYPE,.5,.41,0},{L["Strong vs"],0,.5,0},{L["Tough vs"],.5,0,0},{L["Quality"],0,0.3,1}}) do
 		local text,r,g,b = v[1],v[2],v[3],v[4]
 		typeBar.Tabs[k]:SetText(text)
 		for _,e in pairs({"LeftSelected","MidSelected","RightSelected"}) do
@@ -75,6 +83,7 @@ end
 
 function panel:UpdateTypeBar()
 	local typeBar = panel.Top.TypeBar
+	local qualityBar = typeBar.QualityBar
 	if not settings.UseTypeBar then
 		typeBar:Hide()
 --		panel.Top.TypeBarInset:Hide()
@@ -83,17 +92,40 @@ function panel:UpdateTypeBar()
 		typeBar:Show()
 --		panel.Top.TypeBarInset:Show()
 		panel.Top:SetHeight(88)
-		for i=1,3 do
+		for i=1,4 do
 			typeBar.Tabs[i].Selected:SetShown(activeTypeMode==i)
-			typeBar.Tabs[i].HasStuff:SetShown(roster:IsFilterUsed(typeModes[i]))
+			if i<=3 then
+				typeBar.Tabs[i].HasStuff:SetShown(roster:IsFilterUsed(typeModes[i]))
+			else
+				typeBar.Tabs[i].HasStuff:SetShown(panel:IsQualityFilterSet())
+			end
 		end
-		local desaturate = roster:IsFilterUsed(typeModes[activeTypeMode])
-		for i=1,10 do
-			local isChecked = roster:GetFilter(typeModes[activeTypeMode],i)
-			typeBar.Buttons[i]:SetChecked(isChecked)
-			typeBar.Buttons[i].Icon:SetDesaturated(not isChecked and desaturate)
+		if activeTypeMode<=3 then
+			local desaturate = roster:IsFilterUsed(typeModes[activeTypeMode])
+			for i=1,10 do
+				local isChecked = roster:GetFilter(typeModes[activeTypeMode],i)
+				typeBar.Buttons[i]:SetChecked(isChecked)
+				typeBar.Buttons[i].Icon:SetDesaturated(not isChecked and desaturate)
+				typeBar.Buttons[i]:Show()
+			end
+			qualityBar:Hide()
+		elseif activeTypeMode==4 then -- Quality typebar
+			for i=1,10 do
+				typeBar.Buttons[i]:Hide()
+			end
+			qualityBar:Show()
+			qualityBar.Level25Button:SetChecked(roster:GetFilter("Level",4))
+			qualityBar.RareButton:SetChecked(roster:GetFilter("Rarity",4))
+			local statSortEnabled = roster:GetSort("Order")>=5 and roster:GetSort("Order")<=7
+			local statSortOrder = roster:GetSort("Order")
+			qualityBar.HealthButton.Icon:SetDesaturated(statSortEnabled and statSortOrder~=5)
+			qualityBar.PowerButton.Icon:SetDesaturated(statSortEnabled and statSortOrder~=6)
+			qualityBar.SpeedButton.Icon:SetDesaturated(statSortEnabled and statSortOrder~=7)
+			qualityBar.HealthButton:SetChecked(statSortEnabled and statSortOrder==5)
+			qualityBar.PowerButton:SetChecked(statSortEnabled and statSortOrder==6)
+			qualityBar.SpeedButton:SetChecked(statSortEnabled and statSortOrder==7)
 		end
-		typeBar.Clear:SetShown(roster:IsFilterUsed("Types") or roster:IsFilterUsed("Strong") or roster:IsFilterUsed("Tough"))
+		typeBar.Clear:SetShown(roster:IsFilterUsed("Types") or roster:IsFilterUsed("Strong") or roster:IsFilterUsed("Tough") or panel:IsQualityFilterSet())
 	end
 	rematch:SetTopToggleButton(panel.Top.Toggle,settings.UseTypeBar)
 end
@@ -105,34 +137,69 @@ end
 
 function panel:TypeBarButtonOnClick()
 	local typeMode = typeModes[activeTypeMode]
-	local index = self:GetID()
-
-	if IsShiftKeyDown() then -- shift+click selects all except what's being clicked
-		for i=1,10 do
-			roster:SetFilter(typeMode,i,i~=index)
+	local qualityBar = panel.Top.TypeBar.QualityBar
+	local index = self:GetID() -- only the pet type buttons 1-10 should have an ID, qualityBar buttons have 0
+	if index>0 then
+		if IsShiftKeyDown() then -- shift+click selects all except what's being clicked
+			for i=1,10 do
+				roster:SetFilter(typeMode,i,i~=index)
+			end
+		elseif IsAltKeyDown() then -- alt+click selects only what's being clicked (clears rest)
+			for i=1,10 do
+				roster:SetFilter(typeMode,i,i==index)
+			end
+		else
+			local isChecked = roster:GetFilter(typeMode,index)
+			roster:SetFilter(typeMode,index,not isChecked)
+			if roster:IsFilterFull(typeMode,10) then
+				roster:ClearFilter(typeMode)
+			end
 		end
-	elseif IsAltKeyDown() then -- alt+click selects only what's being clicked (clears rest)
-		for i=1,10 do
-			roster:SetFilter(typeMode,i,i==index)
+	elseif self==qualityBar.Level25Button then
+		local level25Enabled = roster:GetFilter("Level",4) -- 4 is max level index
+		roster:ClearFilter("Level") -- if turning on max level filter, then clear in case any other level filters on
+		if not level25Enabled then
+			roster:SetFilter("Level",4,true) -- turn on max level filter
 		end
-	else
-		local isChecked = roster:GetFilter(typeMode,index)
-		roster:SetFilter(typeMode,index,not isChecked)
-		if roster:IsFilterFull(typeMode,10) then
-			roster:ClearFilter(typeMode)
+	elseif self==qualityBar.RareButton then
+		local rareEnabled = roster:GetFilter("Rarity",4) -- 4 is "rare" index
+		roster:ClearFilter("Rarity")
+		if not rareEnabled then
+			roster:SetFilter("Rarity",4,true) -- turn on rare filter
 		end
+	elseif self==qualityBar.HealthButton then
+		roster:SetSort("Reverse",nil)
+		roster:SetSort("Order",roster:GetSort("Order")==5 and 1 or 5)
+	elseif self==qualityBar.PowerButton then
+		roster:SetSort("Reverse",nil)
+		roster:SetSort("Order",roster:GetSort("Order")==6 and 1 or 6)
+	elseif self==qualityBar.SpeedButton then
+		roster:SetSort("Reverse",nil)
+		roster:SetSort("Order",roster:GetSort("Order")==7 and 1 or 7)
 	end
 	rematch:UpdateRoster()
 end
 
+function panel:IsQualityFilterSet()
+	local sortOrder = roster:GetSort("Order")
+	return roster:GetFilter("Level",4) or roster:GetFilter("Rarity",4) or (sortOrder>=5 and sortOrder<=7)
+end
+
 function panel:TypeBarClear()
 	local typeMode = typeModes[activeTypeMode]
-	if roster:IsFilterUsed(typeMode) then
+	if activeTypeMode<4 and roster:IsFilterUsed(typeMode) then
 		roster:ClearFilter(typeMode)
+	elseif activeTypeMode==4 and panel:IsQualityFilterSet() then
+		roster:ClearFilter("Level")
+		roster:ClearFilter("Rarity")
+		roster:SetSort("Order",1)
 	else
 		roster:ClearFilter("Types")
 		roster:ClearFilter("Strong")
 		roster:ClearFilter("Tough")
+		roster:ClearFilter("Level")
+		roster:ClearFilter("Rarity")
+		roster:SetSort("Order",1)
 	end
 	rematch:UpdateRoster()
 end

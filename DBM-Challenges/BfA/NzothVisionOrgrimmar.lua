@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200227010509")
+mod:SetRevision("20200303020803")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -14,6 +14,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 297237",
 	"SPELL_PERIODIC_DAMAGE 303594 313303",
 	"SPELL_PERIODIC_MISSED 303594 313303",
+	"SPELL_INTERRUPT",
 	"UNIT_DIED",
 	"ENCOUNTER_START",
 	"UNIT_AURA player",
@@ -33,20 +34,18 @@ local warnVoidQuills				= mod:NewCastAnnounce(304251, 3)
 --Other notable abilities by mini bosses/trash
 local warnDarkForce					= mod:NewTargetNoFilterAnnounce(299055, 3)
 local warnExplosiveLeap				= mod:NewCastAnnounce(306001, 3)
-local warnVisceralFluid				= mod:NewCastAnnounce(305875, 3)
 local warnEndlessHungerTotem		= mod:NewSpellAnnounce(297237, 4)
 local warnTouchoftheAbyss			= mod:NewCastAnnounce(298033, 4)
 
 --General (GTFOs and Affixes)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 local specWarnEntomophobia			= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
-local specWarnHauntingShadows		= mod:NewSpecialWarningDodge(306545, false, nil, 2, 1, 2)--Off by default because it requires messing with users nameplates to work
+local specWarnHauntingShadows		= mod:NewSpecialWarningDodge(306545, nil, nil, 3, 1, 2)
 --local specWarnDarkDelusions			= mod:NewSpecialWarningRun(306955, nil, nil, nil, 4, 2)
 local specWarnScorchedFeet			= mod:NewSpecialWarningYou(315385, false, nil, 2, 1, 2)
 local yellScorchedFeet				= mod:NewYell(315385)
 local specWarnSplitPersonality		= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
 local specWarnWaveringWill			= mod:NewSpecialWarningReflect(311641, "false", nil, nil, 1, 2)--Off by default, it's only 5%, but that might matter to some classes
---local specWarnHauntingShadows		= mod:NewSpecialWarningDodge(310173, nil, nil, nil, 2, 2)--Not detectable apparently
 --Thrall
 local specWarnSurgingDarkness		= mod:NewSpecialWarningDodge(297822, nil, nil, nil, 2, 2)
 local specWarnSeismicSlam			= mod:NewSpecialWarningDodge(297746, nil, nil, nil, 2, 2)
@@ -57,7 +56,8 @@ local specWarnDefiledGround			= mod:NewSpecialWarningDodge(306726, nil, nil, nil
 --Other notable abilities by mini bosses/trash
 local specWarnOrbofAnnihilation		= mod:NewSpecialWarningDodge(299110, nil, nil, nil, 2, 2)
 local specWarnDarkForce				= mod:NewSpecialWarningYou(299055, nil, nil, nil, 1, 2)
-local specWarnVoidTorrent			= mod:NewSpecialWarningSpell(307863, nil, nil, nil, 2, 2)--Can really only be avoided by really fast running away, most can't avoid it
+local specWarnVoidTorrent			= mod:NewSpecialWarningYou(307863, nil, nil, nil, 4, 2)
+local yellVoidTorrent				= mod:NewYell(307863)
 local specWarnSurgingFist			= mod:NewSpecialWarningDodge(300351, nil, nil, nil, 2, 2)
 local specWarnDecimator				= mod:NewSpecialWarningDodge(300412, nil, nil, nil, 2, 2)
 local specWarnDesperateRetching		= mod:NewSpecialWarningYou(304165, nil, nil, nil, 1, 2)
@@ -73,6 +73,7 @@ local specWarnMentalAssault			= mod:NewSpecialWarningInterrupt(296537, "HasInter
 local specWarnTouchoftheAbyss		= mod:NewSpecialWarningInterrupt(298033, "HasInterrupt", nil, nil, 1, 2)
 local specWarnVenomBolt				= mod:NewSpecialWarningInterrupt(305236, "HasInterrupt", nil, nil, 1, 2)
 local specWarnShockwave				= mod:NewSpecialWarningDodge(298630, nil, nil, nil, 2, 2)
+local specWarnVisceralFluid			= mod:NewSpecialWarningDodge(305875, nil, nil, nil, 2, 2)
 
 --General
 local timerGiftoftheTitan		= mod:NewBuffFadesTimer(20, 313698, nil, nil, nil, 5)
@@ -80,11 +81,14 @@ local timerGiftoftheTitan		= mod:NewBuffFadesTimer(20, 313698, nil, nil, nil, 5)
 local timerSurgingDarknessCD	= mod:NewCDTimer(20.6, 297822, nil, nil, nil, 3)
 local timerSeismicSlamCD		= mod:NewCDTimer(12.1, 297746, nil, nil, nil, 3)
 --Extra Abilities (used by Thrall and the area LTs)
---local timerCriesoftheVoidCD		= mod:NewAITimer(21, 304976, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
 local timerDefiledGroundCD		= mod:NewCDTimer(12.1, 306726, nil, nil, nil, 3)
---Both surging fist and Decimator are 9.7 second cds, worth adding?
+--Other notable elite timers
+local timerSurgingFistCD		= mod:NewCDTimer(9.7, 300351, nil, nil, nil, 3)
+local timerDecimatorCD			= mod:NewCDTimer(9.7, 300412, nil, nil, nil, 3)
 
 mod:AddInfoFrameOption(307831, true)
+mod:AddNamePlateOption("NPAuraOnHaunting", 306545)
+mod:AddNamePlateOption("NPAuraOnAbyss", 298033)
 
 local playerName = UnitName("player")
 mod.vb.GnshalCleared = false
@@ -98,17 +102,33 @@ function mod:SeismicSlamTarget(targetname, uId)
 	end
 end
 
+function mod:VoidTorrentTarget(targetname, uId)
+	if not targetname then return end
+	if targetname == UnitName("player") then
+		specWarnVoidTorrent:Show()
+		specWarnVoidTorrent:Play("justrun")
+		yellVoidTorrent:Yell()
+	end
+end
+
 function mod:OnCombatStart(delay)
 	self.vb.GnshalCleared = false
 	self.vb.VezokkCleared = false
-	if self.Options.SpecWarn306545dodge then
+	if self.Options.SpecWarn306545dodge3 then
 		--This warning requires friendly nameplates, because it's only way to detect it.
-		CVAR1, CVAR2 = GetCVar("nameplateShowFriends ") or 0, GetCVar("nameplateShowFriendlyNPCs") or 0
+		CVAR1, CVAR2 = tonumber(GetCVar("nameplateShowFriends") or 0), tonumber(GetCVar("nameplateShowFriendlyNPCs") or 0)
 		--Check if they were disabled, if disabled, force enable them
 		if (CVAR1 == 0) or (CVAR2 == 0) then
 			SetCVar("nameplateShowFriends", 1)
 			SetCVar("nameplateShowFriendlyNPCs", 1)
 		end
+		--Making this option rely on another option is kind of required because this won't work without nameplateShowFriendlyNPCs
+		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting then
+			DBM:FireEvent("BossMod_EnableFriendlyNameplates")
+		end
+	end
+	if self.Options.NPAuraOnAbyss then
+		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
@@ -125,6 +145,9 @@ function mod:OnCombatEnd()
 		SetCVar("nameplateShowFriends", CVAR1)
 		SetCVar("nameplateShowFriendlyNPCs", CVAR2)
 		CVAR1, CVAR2 = nil, nil
+	end
+	if self.Options.NPAuraOnAbyss or self.Options.NPAuraOnHaunting then
+		DBM.Nameplate:Hide(true, nil, nil, nil, true, self.Options.NPAuraOnAbyss, not DBM:HasMapRestrictions())--isGUID, unit, spellId, texture, force, isHostile, isFriendly
 	end
 end
 
@@ -164,14 +187,20 @@ function mod:SPELL_CAST_START(args)
 		specWarnOrbofAnnihilation:Show()
 		specWarnOrbofAnnihilation:Play("watchorb")
 	elseif spellId == 307863 then
-		specWarnVoidTorrent:Show()
-		specWarnVoidTorrent:Play("specialsoon")
+		if GetNumGroupMembers() > 1 then
+			self:BossTargetScanner(args.sourceGUID, "VoidTorrentTarget", 0.1, 7)
+		else
+			specWarnVoidTorrent:Show()
+			specWarnVoidTorrent:Play("justrun")
+		end
 	elseif spellId == 300351 then
 		specWarnSurgingFist:Show()
 		specWarnSurgingFist:Play("chargemove")
+		timerSurgingFistCD:Start()
 	elseif spellId == 300388 then
 		specWarnDecimator:Show()
 		specWarnDecimator:Play("watchorb")
+		timerDecimatorCD:Start()
 	elseif spellId == 304101 then
 		specWarnMaddeningRoar:Show()
 		specWarnMaddeningRoar:Play("justrun")
@@ -187,7 +216,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnSanguineResidue:Show()
 		specWarnSanguineResidue:Play("watchstep")
 	elseif spellId == 305875 then
-		warnVisceralFluid:Show()
+		specWarnVisceralFluid:Show()
+		specWarnVisceralFluid:Play("watchstep")
 	elseif spellId == 306617 then
 		specWarnRingofChaos:Show()
 		specWarnRingofChaos:Play("watchorb")
@@ -206,6 +236,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnTouchoftheAbyss:Play("kickcast")
 		else
 			warnTouchoftheAbyss:Show()
+		end
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Show(true, args.sourceGUID, 298033, nil, 7)
 		end
 	elseif spellId == 298630 and self:AntiSpam(3, 3) then
 		specWarnShockwave:Show()
@@ -270,6 +303,14 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
+function mod:SPELL_INTERRUPT(args)
+	if type(args.extraSpellId) == "number" and args.extraSpellId == 298033 then
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Hide(true, args.destGUID, 298033)
+		end
+	end
+end
+
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 152089 then--Thrall
@@ -284,17 +325,27 @@ function mod:UNIT_DIED(args)
 	elseif cid == 152874 then--Vez'okk the Lightless
 		timerDefiledGroundCD:Stop()
 		self.vb.VezokkCleared = true
+	elseif cid == 153943 then
+		timerSurgingFistCD:Stop()
+		timerDecimatorCD:Stop()
+	elseif cid == 153401 then--K'thir Dominator
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Hide(true, args.destGUID, 298033)
+		end
 	end
 end
 
 function mod:ENCOUNTER_START(encounterID)
-	if encounterID == 2332 and self:IsInCombat() then
+	if not self:IsInCombat() then return end
+	if encounterID == 2332 then--Thrall
 		timerSurgingDarknessCD:Start(11.1)
 		if self.vb.VezokkCleared then
 			timerDefiledGroundCD:Start(1)
 		else
 			timerSeismicSlamCD:Start(4.6)
 		end
+	elseif encounterID == 2373 then--Vezokk
+		timerDefiledGroundCD:Start(3.4)
 	end
 end
 
@@ -314,9 +365,16 @@ do
 end
 
 function mod:NAME_PLATE_UNIT_ADDED(unit)
-	if unit and UnitName(unit) == playerName and self:AntiSpam(2, 2) then--Throttled because sometimes two spawn at once
-		specWarnHauntingShadows:Show()
-		specWarnHauntingShadows:Play("runaway")
+	if unit and UnitName(unit) == playerName then--Throttled because sometimes two spawn at once
+		if self:AntiSpam(2, 2) then
+			specWarnHauntingShadows:Show()
+			specWarnHauntingShadows:Play("runaway")
+		end
+		local guid = UnitGUID(unit)
+		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting and guid then
+			DBM.Nameplate:Show(true, guid, 306545, 1029718, 5)
+		end
 	end
 end
 mod.FORBIDDEN_NAME_PLATE_UNIT_ADDED = mod.NAME_PLATE_UNIT_ADDED--Just in case blizzard fixes map restrictions
+

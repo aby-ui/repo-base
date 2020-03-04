@@ -8,7 +8,7 @@
 ## Notes: In World of Warcraft healers have to die. This is a cruel truth that you're taught very early in the game. This add-on helps you influence this unfortunate destiny in a way or another depending on the healer's side...
 ## Notes-frFR: Dans World of Warcraft les soigneurs doivent mourir. C'est une vérité cruelle que vous apprenez très tôt dans le jeu. Cet add-on vous aide à influencer ce funeste destin d'une manière ou une autre en fonction du camp du soigneur...
 ## Notes-deDE: In World of Warcraft müssen Heiler sterben. Dies ist eine grausame Wahrheit, die ihnen sehr früh im Spiel gelehrt wird. Dieses Addon hilft ihnen, dieses bedauerliche Schicksal der Heiler auf dem einen oder anderen Weg, in Abhängigkeit davon auf welcher Seite der Heiler steht, zu beeinflussen
-## Notes-esES: ¡Descubre a esos sanadores sangrientos instantáneamente y ayúdales a cumplir su destino! (JcE y JcJ)
+## Notes-esES: En World of Warcraft los sanadores tienen que morir. Esta es una verdad cruel que se te enseña desde muy temprano en el juego. Este add-on te ayuda a influir en este desafortunado destino de una manera u otra dependiendo del lado del sanador...
 ## Notes-esMX: In World of Warcraft healers have to die. This is a cruel truth that you're taught very early in the game. This add-on helps you influence this unfortunate destiny in a way or another depending on the healer's side...
 ## Notes-koKR: 피의 힐러를 빠르게 발견하고 그들의 운명을 결정짓습니다! (PVP 와 PVE)
 ## Notes-ruRU: Мгновенно обнаружить этих чертовых лекарей и воздать им по заслугам! (PVP и PVE).
@@ -18,7 +18,7 @@
 
 
 ## Author: John Wellesz
-## Version: 2.4.9.4
+## Version: 2.4.9.5
 
 ## LoadManagers: AddonLoader
 
@@ -33,7 +33,7 @@
 ## OptionalDeps: Ace3, LibNameplateRegistry-1.0
 ## X-Embeds: Ace3, LibNameplateRegistry-1.0
 
-## X-ReleaseDate: "2019-10-28T15:27:28Z"
+## X-ReleaseDate: "2020-02-27T20:43:20Z"
 ## X-Category: PvP
 ## X-eMail: hhtd@2072productions.com
 ## X-Website: https://www.2072productions.com/to/HHTD.php

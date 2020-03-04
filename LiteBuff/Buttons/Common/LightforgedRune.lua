@@ -1,23 +1,24 @@
-if UnitLevel("player") > 119 then return end
+--if UnitLevel("player") > 119 then return end
 ------------------------------------------------------------
 -- copy from CrystalOfInsanity.lua by 163ui 2017/10
+-- modified for 8.3 by abyui 2020/03
 ------------------------------------------------------------
 
 local _, addon = ...
 local L = addon.L
 
-local AURA_NAME = GetSpellInfo(224001)
-local CONFLICTS = {} --addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551).conflicts
+local AURA_NAME = GetSpellInfo(317065)
+local CONFLICTS = addon:BuildSpellList(nil, 270058) --addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551).conflicts
 
 local itemName, itemLink
 
-local button = addon:CreateActionButton("LightforgedRune", L["Lightforged Augment Rune"], nil, 3600, "PLAYER_AURA", "ITEM")
-button:SetItem(153023)
-button:RequireItem(153023)
+local button = addon:CreateActionButton("LightforgedRune", L["Lightning-Forged Augment Rune"], nil, 3600, "PLAYER_AURA", "ITEM")
+button:SetItem(174906) --160053
+button:RequireItem(174906)
 button:SetFlyProtect("type", "item")
 button.icon.text:Hide()
 
-LibItemQuery:QueryItem(153023, button, 1)
+LibItemQuery:QueryItem(174906, button, 1)
 
 function button:OnItemInfoReceived(itemId, name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture)
 	self:SetAttribute("item", name)

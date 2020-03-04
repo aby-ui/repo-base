@@ -7,7 +7,6 @@
 
 local AddonName, Addon = ...
 local ActionButton = Addon.ActionButton
-local HiddenFrame = Addon:CreateHiddenFrame('Frame', nil, _G.UIParent)
 
 local MAX_BUTTONS = 120
 local ACTION_BUTTON_SHOW_GRID_REASON_ADDON = 1024
@@ -154,7 +153,7 @@ end
 -- if you leave a ; on the end of a statebutton string, it causes evaluation
 -- issues, especially if you're doing right click selfcast on the base state
 function ActionBar:UpdateStateDriver()
-	UnregisterStateDriver(self.header, 'page', 0)
+	UnregisterStateDriver(self, 'page', 0)
 
 	local header = ''
 	for i, state in Addon.BarStates:getAll() do
@@ -172,7 +171,7 @@ function ActionBar:UpdateStateDriver()
 	end
 
 	if header ~= '' then
-		RegisterStateDriver(self.header, 'page', header .. 0)
+		RegisterStateDriver(self, 'page', header .. 0)
 	end
 
 	self:UpdateActions()
@@ -218,19 +217,19 @@ function ActionBar:UpdateActions()
 end
 
 function ActionBar:LoadStateController()
-	self.header:SetAttribute('_onstate-overridebar', [[
+	self:SetAttribute('_onstate-overridebar', [[
 		self:RunAttribute('updateState')
 	]])
 
-	self.header:SetAttribute('_onstate-overridepage', [[
+	self:SetAttribute('_onstate-overridepage', [[
 		self:RunAttribute('updateState')
 	]])
 
-	self.header:SetAttribute('_onstate-page', [[
+	self:SetAttribute('_onstate-page', [[
 		self:RunAttribute('updateState')
 	]])
 
-	self.header:SetAttribute('updateState', [[
+	self:SetAttribute('updateState', [[
 		local overridePage = self:GetAttribute('state-overridepage')
 
 		local state
@@ -247,13 +246,13 @@ function ActionBar:LoadStateController()
 end
 
 function ActionBar:RefreshActions()
-	self.header:Execute([[ self:RunAttribute('updateState') ]])
+	self:Execute([[ self:RunAttribute('updateState') ]])
 end
 
 function ActionBar:UpdateOverrideBar()
 	local isOverrideBar = self:IsOverrideBar()
 
-	self.header:SetAttribute('state-overridebar', isOverrideBar)
+	self:SetAttribute('state-overridebar', isOverrideBar)
 end
 
 --returns true if the possess bar, false otherwise
@@ -294,7 +293,7 @@ end
 
 -- right click targeting support
 function ActionBar:UpdateRightClickUnit()
-	self.header:SetAttribute('*unit2', Addon:GetRightClickUnit())
+	self:SetAttribute('*unit2', Addon:GetRightClickUnit())
 end
 
 -- utility functions
@@ -338,7 +337,7 @@ function ActionBar:HideButtonCooldowns()
 	-- hide cooldown frames on transparent buttons by sticking them onto a
 	-- different parent
 	for _, button in pairs(self.buttons) do
-		button.cooldown:SetParent(HiddenFrame)
+		button.cooldown:SetParent(Addon.ShadowUIParent)
 	end
 end
 

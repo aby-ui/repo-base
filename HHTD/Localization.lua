@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.4
+Version 2.4.9.5
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -459,10 +459,8 @@ L["OPT_A_CHAT_WARNING_DESC"] = "Zeigt eine Chatwarnung an, wenn ein befreundeter
 L["OPT_A_HEALER_PROTECTION"] = "Einstellungen Heilerschutz"
 L["OPT_A_HUD_WARNING"] = "HUD-Warnung"
 L["OPT_A_HUD_WARNING_DESC"] = "Zeigt eine Warnung in deinem Blickfeld an, sobald ein verbündeter Heiler angegriffen wird."
---[[Translation missing --]]
-L["OPT_ALWAYS_SHOW_NAMEPLATES"] = "Always show nameplates"
---[[Translation missing --]]
-L["OPT_ALWAYS_SHOW_NAMEPLATES_DESC"] = "By default nameplates are hidden outside of combat"
+L["OPT_ALWAYS_SHOW_NAMEPLATES"] = "Namensplaketten immer anzeigen"
+L["OPT_ALWAYS_SHOW_NAMEPLATES_DESC"] = "Standardmäßig sind Namensplaketten außerhalb eines Kampfes ausgeblendet"
 L["OPT_ANNOUNCE"] = "Mitteilungen anzeigen"
 L["OPT_ANNOUNCE_DESC"] = "HHTD wird Mitteilungen anzeigen, wenn du auf einen feindlichen Heiler zielst oder die Maus über ihn bewegst."
 L["OPT_CLEAR_LOGS"] = "Protokolle löschen"
@@ -514,11 +512,8 @@ L["OPT_LOG_DESC"] = "Aktiviert die Protokollierung und fügt den Tab 'Protokolle
 L["OPT_LOGS"] = "Protokolle"
 L["OPT_LOGS_DESC"] = "Zeigt erkannte Heiler und Statistik an."
 L["OPT_MODULES"] = "Module"
---[[Translation missing --]]
-L["OPT_NPH_DISPLAY_HEALER_RANK"] = "Display healers' rank"
---[[Translation missing --]]
-L["OPT_NPH_DISPLAY_HEALER_RANK_DESC"] = [=[Add a number representing each healer's rank.
-The lower the number the better the healer.]=]
+L["OPT_NPH_DISPLAY_HEALER_RANK"] = "Den Rang eines Heilers anzeigen"
+L["OPT_NPH_DISPLAY_HEALER_RANK_DESC"] = "Fügt eine Nummer hinzu die den Rang eines Heilers anzeigt. Je niedriger die Nummer, desto besser der Heiler."
 L["OPT_NPH_ENEMY_NAMEPLATE"] = "Namensplaketten von Feinden"
 L["OPT_NPH_FRIENDLY_NAMEPLATE"] = "Namensplaketten von Verbündeten"
 L["OPT_NPH_MARKER_HIDDEN_WOW_SETTINGS"] = "Versteckte WoW-Einstellungen"
@@ -536,8 +531,7 @@ L["OPT_NPH_MARKER_X_OFFSET"] = "Horizontale Verschiebung"
 L["OPT_NPH_MARKER_X_OFFSET_DESC"] = "Verschiebt Markierungen horizontal."
 L["OPT_NPH_MARKER_Y_OFFSET"] = "Vertikale Verschiebung"
 L["OPT_NPH_MARKER_Y_OFFSET_DESC"] = "Verschiebt Markierungen vertikal."
---[[Translation missing --]]
-L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = "Maximum distance of nameplates"
+L["OPT_NPH_MAX_NAMEPLATE_DISTANCE"] = "Maximale Entfernung von Namensplaketten"
 --[[Translation missing --]]
 L["OPT_NPH_MAX_NAMEPLATE_DISTANCE_DESC"] = [=[Set the maximum distance at which to display nameplates.
 
@@ -589,8 +583,7 @@ L["OPT_SET_FRIENDLY_HEALERS_ROLE"] = "Rolle befreundeter Heiler setzen"
 L["OPT_SET_FRIENDLY_HEALERS_ROLE_DESC"] = "Legt automatisch die Schlachtzug-Heiler-Rolle bei erkannten freundlichen Heilern (wenn möglich) fest."
 --[[Translation missing --]]
 L["OPT_SHOW_CHAT_COMMAND_REMINDER"] = "Show /HHTDG chat command reminder"
---[[Translation missing --]]
-L["OPT_SHOW_CHAT_COMMAND_REMINDER_DESC"] = "Print a message in the chat every time HHTD is enabled."
+L["OPT_SHOW_CHAT_COMMAND_REMINDER_DESC"] = "Gibt eine Nachricht im Chat aus wenn HHTD aktiviert ist."
 L["OPT_SOUNDS"] = "Warnsignale"
 L["OPT_SOUNDS_DESC"] = "HHTD wird einen bestimmten Sound abspielen, wenn du auf einen feindlichen Heiler zielst oder die Maus über ihn bewegst."
 L["OPT_STRICTGUIDPVE"] = "Genaue PVE-Erkennung"
@@ -623,18 +616,15 @@ do
         L["ACTIVE"] = "¡Activo!"
 L["Announcer"] = "Anunciador"
 L["Announcer_DESC"] = "Este módulo te permite gestionar las alertas de chat y sonido."
---[[Translation missing --]]
-L["AUTO_RAID_PARTY_INSTANCE"] = "Auto: Raid Warning / Raid / Instance / Party"
-L["CHAT_POST_ANNOUNCE_FEATURE_NOT_CONFIGURED"] = "Los anuncios a mensajes de raid no están configurados. Teclea /HHTDG"
+L["AUTO_RAID_PARTY_INSTANCE"] = "Auto: aviso de banda / banda / instancia / grupo"
+L["CHAT_POST_ANNOUNCE_FEATURE_NOT_CONFIGURED"] = "Los mensajes de anunciar a la banda no están configurados. Escribe /HHTDG"
 --[[Translation missing --]]
 L["CHAT_POST_ANNOUNCE_TOO_SOON_WAIT"] = "It's too soon (see the announce throttle setting)."
 L["CHAT_POST_NO_HEALERS"] = "No hay sanadores en ninguno de los bandos :/ (aún)"
---[[Translation missing --]]
-L["CM"] = "Custom Marks"
---[[Translation missing --]]
-L["CM_DESC"] = "Enable this module to set permanent custom marks on NPC and Player units' nameplates."
-L["DESCRIPTION"] = "¡Descubre a esos sanadores sangrientos instantáneamente y ayúdales a cumplir su destino! (JcE y JcJ)"
-L["DISABLED"] = [=[hhtd ha sido desactivado!
+L["CM"] = "Marcas personalizadas"
+L["CM_DESC"] = "Activa este módulo para establecer marcas personalizadas permanentes en las placas de nombre de los PNJ y de los jugadores."
+L["DESCRIPTION"] = "En World of Warcraft los sanadores tienen que morir. Esta es una verdad cruel que se te enseña desde muy temprano en el juego. Este add-on te ayuda a influir en este desafortunado destino de una manera u otra dependiendo del lado del sanador..."
+L["DISABLED"] = [=[¡hhtd ha sido desactivado!
 Escribe /hhtd enable para reactivarlo.]=]
 L["ENABLED"] = "¡Activado! Escribe /HHTDG para una lista de opciones."
 L["HEALER_UNDER_ATTACK"] = "El sanador amigo %s esta siendo atacado por %s"
@@ -648,8 +638,7 @@ If you had previously disabled HHTD for some of your characters, you must login 
 This message will be displayed only once per character where HHTD's previous version was enabled.]=]
 L["HUMAN"] = "Humano"
 L["IDLE"] = "Inactivo"
---[[Translation missing --]]
-L["INSTANCE_CHAT"] = "Instance chat"
+L["INSTANCE_CHAT"] = "Chat de estancia"
 L["IS_A_HEALER"] = "¡%s es un sanador!"
 L["LOG_ACTIVE"] = "¡Activo!"
 --[[Translation missing --]]

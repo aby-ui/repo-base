@@ -20,17 +20,6 @@ local msqGroup1, msqGroup2
 
 local KTwarning = "  |cff00ffffAddon "..KT.title.." is active.  "
 
-StaticPopupDialogs[addonName.."_ReloadUI"] = {
-    text = KTwarning,
-    button1 = "Reload UI",
-    OnAccept = function()
-        ReloadUI()
-    end,
-    timeout = 0,
-    whileDead = true,
-    preferredIndex = 3,
-}
-
 --------------
 -- Internal --
 --------------
@@ -59,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.36", true) then
+    if KT:CheckAddOn("ElvUI", "11.371", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -159,7 +148,7 @@ local function SVUI_SetSupport()
     if KT:CheckAddOn("SVUI_!Core", "1.5.1", true) then
         if IsAddOnLoaded("SVUI_QuestTracker") then
             DisableAddOn("SVUI_QuestTracker")
-            StaticPopup_Show(addonName.."_ReloadUI")
+            StaticPopup_Show(addonName.."_ReloadUI", nil, "Addon |cff00ffe3SVUI_QuestTracker|r has been disabled.")
         end
     end
 end

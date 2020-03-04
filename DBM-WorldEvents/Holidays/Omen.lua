@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Omen", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200130144829")
+mod:SetRevision("20200130220509")
 mod:SetCreatureID(15467)
 mod:SetModelID(15879)
 mod:SetReCombatTime(10)

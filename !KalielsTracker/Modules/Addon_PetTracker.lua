@@ -23,13 +23,22 @@ OBJECTIVE_TRACKER_UPDATE_MODULE_PETTRACKER = 0x100000
 OBJECTIVE_TRACKER_UPDATE_PETTRACKER = 0x200000
 PETTRACKER_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable()
 
+M.Texts = {
+	TrackPets = GetSpellInfo(122026),
+	CapturedPets = "Show Captured",
+}
+
 --------------
 -- Internal --
 --------------
 
-local function SetHooks_Disabled()
-	if not db.addonPetTracker and PetTracker then
-		PetTracker.Objectives.Startup = function() end
+local function SetHooks_Init()
+	if PetTracker then
+		PetTracker.Objectives.OnEnable = function() end
+
+		if not db.addonPetTracker then
+			PetTracker.Objectives.Update = function() end
+		end
 	end
 end
 
@@ -39,67 +48,30 @@ local function SetHooks()
 		tinsert(self.MODULES_UI_ORDER, PETTRACKER_TRACKER_MODULE)
 	end)
 
-	function PetTracker.Objectives:Startup()	-- R
-		self:SetScript("OnEvent", self.TrackingChanged)
-		self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-		self:SetParent(content)
-		self:Hide()
-
-		self.Header = header
-		self.maxEntries = 100
-
-		-- Progress bar
-		self.Anchor:SetSize(content:GetWidth() - 4, 13)
-		self.Anchor:SetPoint("TOPLEFT", content, -8, -4)
-		self.Anchor.xOff = -2
-
-		self.Anchor.Overlay.BorderLeft:Hide()
-		self.Anchor.Overlay.BorderRight:Hide()
-		self.Anchor.Overlay.BorderCenter:Hide()
-
-		local border1 = self.Anchor:CreateTexture(nil, "BACKGROUND", nil, -2)
-		border1:SetPoint("TOPLEFT", -1, 1)
-		border1:SetPoint("BOTTOMRIGHT", 1, -1)
-		border1:SetColorTexture(0, 0, 0)
-
-		local border2 = self.Anchor:CreateTexture(nil, "BACKGROUND", nil, -3)
-		border2:SetPoint("TOPLEFT", -2, 2)
-		border2:SetPoint("BOTTOMRIGHT", 2, -2)
-		border2:SetColorTexture(0.4, 0.4, 0.4)
-
-		self.Anchor.Overlay.Text:SetPoint("CENTER", 0, 0.5)
-		self.Anchor.Overlay.Text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
-	end
-
-	function PetTracker.Objectives:TrackingChanged()	-- R
-		if not PetTracker.Sets.HideTracker then
-			self:Update()
+	function PetTracker.Objectives:Update()  -- R
+		if PetTracker.sets.trackPets then
+			self:GetClass().Update(self)
 		end
-		self:SetShown(not PetTracker.Sets.HideTracker and self.Anchor:IsShown())
+		self:SetShown(PetTracker.sets.trackPets and self.Anchor:IsShown())
 		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_PETTRACKER)
 	end
 	
-	function PetTracker.Tracker:AddSpecie(specie, quality, level)	-- R
-		local Journal = PetTracker.Journal
-		local sourceIcon = Journal:GetSourceIcon(specie)
-		if sourceIcon then
+	function PetTracker.Tracker:AddSpecie(specie, quality, level)  -- R
+		local source = specie:GetSourceIcon()
+		if source then
+			-- Specie Class fix
+			-- TODO: After fix in PetTracker, delete it.
+			function specie:GetID()
+				local best = self:GetBestOwned()
+				return best and best:GetID() or nil
+			end
 			-- original code
-			local name, icon = Journal:GetInfo(specie)
+			local name, icon = specie:GetInfo()
+			local text = name .. (level > 0 and format(' (%s)', level) or '')
 			local r,g,b = self:GetColor(quality)
-			local line = self:NewLine()
-			line.Text:SetText(name .. (level > 0 and format(' (%s)', level) or ''))
-			line.SubIcon:SetTexture(sourceIcon)
-			line.Icon:SetTexture(icon)
-			line:SetScript('OnClick', function()
-				Journal:Display(specie)
-			end)
-			line:SetScript('OnEnter', function()
-				line.Text:SetTextColor(r, g, b)
-			end)
-			line:SetScript('OnLeave', function()
-				line.Text:SetTextColor(r-.2, g-.2, b-.2)
-			end)
-			line:GetScript('OnLeave')(line)
+
+			local line = self:Add(text, icon, source, r,g,b)
+			line:SetScript('OnClick', function() specie:Display() end)
 			-- added code
 			line.Dash:SetText("")
 			line.SubIcon:ClearAllPoints()
@@ -124,70 +96,6 @@ local function SetHooks()
 			self.KTskinned = true
 		end
 	end)
-
-	-- Disable DropDown (it was moved to filters menu)
-	PetTracker.Tracker.ShowOptions = function() end
-
-	-- WorldMap (for hacked Sushi Lib)
-	hooksecurefunc(PetTracker.MapFilter, "Init", function(self, frame)
-		if not filterButton then
-			for _, overlay in ipairs(frame.overlayFrames or {}) do
-				if overlay.OnClick == WorldMapTrackingOptionsButtonMixin.OnClick and overlay:IsObjectType('Button') then
-					filterButton = overlay
-					break
-				end
-			end
-
-			self.frames[frame]:HookScript("OnEditFocusLost", function()
-				MSA_CloseDropDownMenus()
-			end)
-		end
-	end)
-
-	hooksecurefunc(PetTracker.MapFilter, "UpdateFrames", function(self)
-		SushiDropFrame:CloseAll()
-		MSA_CloseDropDownMenus()	-- TODO: Delete after fixed in addon
-		SushiDropFrame:Toggle("TOPLEFT", filterButton, "BOTTOMLEFT", 0, -15, true, self.ShowTrackingTypes)
-	end)
-
-	-- Sushi Lib - hack - revert back DropDownMenu
-	if SushiDropFrame then
-		local dropDownFrame = MSA_DropDownMenu_Create("SushiDropDownFrameFix")
-		function dropDownFrame:AddLine(data)
-			MSA_DropDownMenu_AddButton(data)
-		end
-
-		function SushiDropFrame:Toggle(...)
-			local n = select("#", ...)
-			if n < 4 then
-				dropDownFrame.relativeTo = ...
-			else
-				dropDownFrame.point, dropDownFrame.relativeTo, dropDownFrame.relativePoint, dropDownFrame.xOffset, dropDownFrame.yOffset = ...
-				if dropDownFrame.yOffset < 0 then
-					dropDownFrame.yOffset = dropDownFrame.yOffset + 10
-				else
-					dropDownFrame.yOffset = dropDownFrame.yOffset - 10
-				end
-			end
-			dropDownFrame.initialize = select(n, ...)
-			dropDownFrame.displayMode = "MENU"
-			if self.target ~= dropDownFrame.relativeTo then
-				MSA_CloseDropDownMenus()
-			end
-			self.target = dropDownFrame.relativeTo
-			MSA_ToggleDropDownMenu(1, nil, dropDownFrame)
-		end
-
-		function SushiDropFrame:Display(...)
-			self.target = nil
-			self:Toggle(...)
-		end
-
-		function SushiDropFrame:CloseAll()
-			-- TODO: Uncomment after fixed in addon
-			--MSA_CloseDropDownMenus()
-		end
-	end
 end
 
 local function SetHooks_PetTracker_Journal()
@@ -200,7 +108,7 @@ local function SetHooks_PetTracker_Journal()
 		infoFrame:SetFrameLevel(PetTrackerTrackToggle:GetFrameLevel() + 1)
 		infoFrame:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-			GameTooltip:AddLine(PetTracker.Locals.ZoneTracker, 1, 1, 1)
+			GameTooltip:AddLine(M.Texts.TrackPets, 1, 1, 1)
 			GameTooltip:AddLine("Support can be enabled inside addon "..KT.title, 1, 0, 0, true)
 			GameTooltip:Show()
 		end)
@@ -209,7 +117,7 @@ local function SetHooks_PetTracker_Journal()
 		end)
 	else
 		PetTrackerTrackToggle:HookScript("OnClick", function()
-			if dbChar.collapsed and not PetTracker.Sets.HideTracker then
+			if dbChar.collapsed and PetTracker.sets.trackPets then
 				ObjectiveTracker_MinimizeButton_OnClick()
 			end
 		end)
@@ -249,6 +157,36 @@ local function SetFrames()
 	content = CreateFrame("Frame", nil, OTF.BlocksFrame)
 	content:SetSize(232 - PETTRACKER_TRACKER_MODULE.blockOffsetX, 10)
 	content:Hide()
+
+	-- Objectives
+	local objectives = PetTracker.Objectives
+	objectives.MaxEntries = 100
+	objectives.Header = header
+
+	objectives:SetParent(content)
+	objectives:Hide()
+
+	-- Progress bar
+	objectives.Anchor:SetSize(content:GetWidth() - 4, 13)
+	objectives.Anchor:SetPoint("TOPLEFT", content, -8, -4)
+	objectives.Anchor.xOff = -2
+
+	objectives.Anchor.Overlay.BorderLeft:Hide()
+	objectives.Anchor.Overlay.BorderRight:Hide()
+	objectives.Anchor.Overlay.BorderCenter:Hide()
+
+	local border1 = objectives.Anchor:CreateTexture(nil, "BACKGROUND", nil, -2)
+	border1:SetPoint("TOPLEFT", -1, 1)
+	border1:SetPoint("BOTTOMRIGHT", 1, -1)
+	border1:SetColorTexture(0, 0, 0)
+
+	local border2 = objectives.Anchor:CreateTexture(nil, "BACKGROUND", nil, -3)
+	border2:SetPoint("TOPLEFT", -2, 2)
+	border2:SetPoint("BOTTOMRIGHT", 2, -2)
+	border2:SetColorTexture(0.4, 0.4, 0.4)
+
+	objectives.Anchor.Overlay.Text:SetPoint("CENTER", 0, 0.5)
+	objectives.Anchor.Overlay.Text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
 end
 
 --------------
@@ -302,9 +240,11 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.3.0") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.3.5") and db.addonPetTracker)
 
 	if self.isLoaded then
+		KT:Alert_IncompatibleAddon("PetTracker", "8.3.1")
+
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)
 	else
@@ -317,7 +257,7 @@ function M:OnInitialize()
 	end
 
 	SetFrames_Init()
-	SetHooks_Disabled()
+	SetHooks_Init()
 end
 
 function M:OnEnable()
@@ -334,8 +274,7 @@ end
 
 function M:IsShown()
 	return (self.isLoaded and
-		(PetTracker.Sets and not PetTracker.Sets.HideTracker) and
-		PetTracker.Objectives:IsShown())
+		(PetTracker.sets and PetTracker.sets.trackPets))
 end
 
 function M:SetPetsHeaderText(reset)

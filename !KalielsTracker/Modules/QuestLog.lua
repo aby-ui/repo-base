@@ -101,7 +101,7 @@ local function SetHooks()
 
 		if db.menuWowheadURL then
 			info.text = "|cff33ff99Wowhead|r URL";
-			info.func = KT.ShowPopup;
+			info.func = KT.Alert_WowheadURL;
 			info.arg1 = "quest";
 			info.arg2 = self.questID;
 			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
@@ -128,7 +128,7 @@ local function SetHooks()
 				MSA_ToggleDropDownMenu(1, nil, dropDownFrame, "cursor", 6, -6, nil, nil, MSA_DROPDOWNMENU_SHOW_TIME);
 			elseif button == "LeftButton" then
 				if IsModifiedClick(db.menuWowheadURLModifier) then
-					KT:ShowPopup("quest", self.questID)
+					KT:Alert_WowheadURL("quest", self.questID)
 				else
 					QuestMapFrame_ShowQuestDetails(self.questID);
 				end

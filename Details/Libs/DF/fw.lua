@@ -1,5 +1,5 @@
 
-local dversion = 167
+local dversion = 171
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -133,6 +133,8 @@ DF.SplitBarCounter = DF.SplitBarCounter or init_counter
 
 DF.FRAMELEVEL_OVERLAY = 750
 DF.FRAMELEVEL_BACKGROUND = 150
+
+--/dump DetailsFramework:PrintVersion()
 
 DF.FrameWorkVersion = tostring (dversion)
 function DF:PrintVersion()
@@ -309,6 +311,22 @@ function DF.table.copy (t1, t2)
 			if (type (value) == "table") then
 				t1 [key] = t1 [key] or {}
 				DF.table.copy (t1 [key], t2 [key])
+			else
+				t1 [key] = value
+			end
+		end
+	end
+	return t1
+end
+
+--> copy from table2 to table1 overwriting values but do not copy data that cannot be compressed
+function DF.table.copytocompress (t1, t2)
+	for key, value in pairs (t2) do
+		print (key, value)
+		if (key ~= "__index" and type(value) ~= "function") then
+			if (type (value) == "table") then
+				t1 [key] = t1 [key] or {}
+				DF.table.copytocompress (t1 [key], t2 [key])
 			else
 				t1 [key] = value
 			end
@@ -2546,28 +2564,31 @@ function DF:ReskinSlider (slider, heightOffset)
 		
 	else
 		--up button
+
+		local offset = 1 --space between the scrollbox and the scrollar
+
 		do
 			local normalTexture = slider.ScrollBar.ScrollUpButton.Normal
 			normalTexture:SetTexture ([[Interface\Buttons\Arrow-Up-Up]])
 			normalTexture:SetTexCoord (0, 1, .2, 1)
 			
-			normalTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", 1, 0)
-			normalTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", 1, 0)
+			normalTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", offset, 0)
+			normalTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", offset, 0)
 			
 			local pushedTexture = slider.ScrollBar.ScrollUpButton.Pushed
 			pushedTexture:SetTexture ([[Interface\Buttons\Arrow-Up-Down]])
 			pushedTexture:SetTexCoord (0, 1, .2, 1)
 			
-			pushedTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", 1, 0)
-			pushedTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", 1, 0)
+			pushedTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", offset, 0)
+			pushedTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", offset, 0)
 
 			local disabledTexture = slider.ScrollBar.ScrollUpButton.Disabled
 			disabledTexture:SetTexture ([[Interface\Buttons\Arrow-Up-Disabled]])
 			disabledTexture:SetTexCoord (0, 1, .2, 1)
 			disabledTexture:SetAlpha (.5)
 			
-			disabledTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", 1, 0)
-			disabledTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", 1, 0)
+			disabledTexture:SetPoint ("topleft", slider.ScrollBar.ScrollUpButton, "topleft", offset, 0)
+			disabledTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollUpButton, "bottomright", offset, 0)
 			
 			slider.ScrollBar.ScrollUpButton:SetSize (16, 16)
 			slider.ScrollBar.ScrollUpButton:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
@@ -2584,23 +2605,23 @@ function DF:ReskinSlider (slider, heightOffset)
 			normalTexture:SetTexture ([[Interface\Buttons\Arrow-Down-Up]])
 			normalTexture:SetTexCoord (0, 1, 0, .8)
 			
-			normalTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", 1, -4)
-			normalTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", 1, -4)
+			normalTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", offset, -4)
+			normalTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", offset, -4)
 			
 			local pushedTexture = slider.ScrollBar.ScrollDownButton.Pushed
 			pushedTexture:SetTexture ([[Interface\Buttons\Arrow-Down-Down]])
 			pushedTexture:SetTexCoord (0, 1, 0, .8)
 			
-			pushedTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", 1, -4)
-			pushedTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", 1, -4)
+			pushedTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", offset, -4)
+			pushedTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", offset, -4)
 			
 			local disabledTexture = slider.ScrollBar.ScrollDownButton.Disabled
 			disabledTexture:SetTexture ([[Interface\Buttons\Arrow-Down-Disabled]])
 			disabledTexture:SetTexCoord (0, 1, 0, .8)
 			disabledTexture:SetAlpha (.5)
 			
-			disabledTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", 1, -4)
-			disabledTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", 1, -4)
+			disabledTexture:SetPoint ("topleft", slider.ScrollBar.ScrollDownButton, "topleft", offset, -4)
+			disabledTexture:SetPoint ("bottomright", slider.ScrollBar.ScrollDownButton, "bottomright", offset, -4)
 			
 			slider.ScrollBar.ScrollDownButton:SetSize (16, 16)
 			slider.ScrollBar.ScrollDownButton:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
@@ -2611,11 +2632,16 @@ function DF:ReskinSlider (slider, heightOffset)
 			--slider.ScrollBar.ScrollDownButton:SetPoint ("top", slider.ScrollBar, "bottom", 0, 0)
 		end
 		
-		--
-		
-		slider.ScrollBar:SetPoint ("TOPLEFT", slider, "TOPRIGHT", 6, -16)
-		slider.ScrollBar:SetPoint ("BOTTOMLEFT", slider, "BOTTOMRIGHT", 6, 16 + (heightOffset and heightOffset*-1 or 0))
-		
+		--if the parent has a editbox, this is a code editor
+		if (slider:GetParent().editbox) then
+			slider.ScrollBar:SetPoint ("TOPLEFT", slider, "TOPRIGHT", 12 + offset, -6)
+			slider.ScrollBar:SetPoint ("BOTTOMLEFT", slider, "BOTTOMRIGHT", 12 + offset, 6 + (heightOffset and heightOffset*-1 or 0))
+
+		else
+			slider.ScrollBar:SetPoint ("TOPLEFT", slider, "TOPRIGHT", 6, -16)
+			slider.ScrollBar:SetPoint ("BOTTOMLEFT", slider, "BOTTOMRIGHT", 6, 16 + (heightOffset and heightOffset*-1 or 0))
+		end
+
 		slider.ScrollBar.ThumbTexture:SetColorTexture (.5, .5, .5, .3)
 		slider.ScrollBar.ThumbTexture:SetSize (12, 8)
 		

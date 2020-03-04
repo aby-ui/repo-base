@@ -154,7 +154,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 u1log("无法对应地图名称", mapName, names)
             end
             if not icon.tex then
-                WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, 3):Key("tex"):up():un()
+                WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, -3):Key("tex"):up():un()
                 SetOrHookScript(icon, "OnEnter", function()
                     GameTooltip_AddBlankLineToTooltip(GameTooltip);
                     GameTooltip:AddLine("爱不易提供：")

@@ -2201,42 +2201,45 @@ function _detalhes:TrocaTabela (instancia, segmento, atributo, sub_atributo, ini
 		if (_detalhes.instances_segments_locked and not iniciando_instancia) then
 			for _, instance in ipairs (_detalhes.tabela_instancias) do
 				if (instance.meu_id ~= instancia.meu_id and instance.ativa and not instance._postponing_switch and not instance._postponing_current) then
-					if (instance.modo == 2 or instance.modo == 3) then
-						--> na troca de segmento, conferir se a instancia esta frozen
-						if (instance.freezed) then
-							if (not iniciando_instancia) then
-								instance:UnFreeze()
-							else
-								instance.freezed = false
+					print (instance:GetSegment(), instancia:GetSegment())
+					if (instance:GetSegment() >= 0 and instancia:GetSegment() ~= -1) then
+						if (instance.modo == 2 or instance.modo == 3) then
+							--> na troca de segmento, conferir se a instancia esta frozen
+							if (instance.freezed) then
+								if (not iniciando_instancia) then
+									instance:UnFreeze()
+								else
+									instance.freezed = false
+								end
 							end
-						end
+							
+							instance.segmento = segmento
 						
-						instance.segmento = segmento
-					
-						if (segmento == -1) then --> overall
-							instance.showing = _detalhes.tabela_overall
-						elseif (segmento == 0) then --> combate atual
-							instance.showing = _detalhes.tabela_vigente; --print ("==> Changing the Segment now! - classe_instancia.lua 2148")
-						else --> alguma tabela do hist�rico
-							instance.showing = _detalhes.tabela_historico.tabelas [segmento]
-						end
-						
-						if (not instance.showing) then
-							if (not iniciando_instancia) then
-								instance:Freeze()
+							if (segmento == -1) then --> overall
+								instance.showing = _detalhes.tabela_overall
+							elseif (segmento == 0) then --> combate atual
+								instance.showing = _detalhes.tabela_vigente; --print ("==> Changing the Segment now! - classe_instancia.lua 2148")
+							else --> alguma tabela do hist�rico
+								instance.showing = _detalhes.tabela_historico.tabelas [segmento]
 							end
-							return
+							
+							if (not instance.showing) then
+								if (not iniciando_instancia) then
+									instance:Freeze()
+								end
+								return
+							end
+							
+							instance.v_barras = true
+							instance.showing [atributo].need_refresh = true
+							
+							if (not _detalhes.initializing and not iniciando_instancia) then
+								instance:ResetaGump()
+								instance:AtualizaGumpPrincipal (true)
+							end
+							
+							_detalhes:SendEvent ("DETAILS_INSTANCE_CHANGESEGMENT", nil, instance, segmento)
 						end
-						
-						instance.v_barras = true
-						instance.showing [atributo].need_refresh = true
-						
-						if (not _detalhes.initializing and not iniciando_instancia) then
-							instance:ResetaGump()
-							instance:AtualizaGumpPrincipal (true)
-						end
-						
-						_detalhes:SendEvent ("DETAILS_INSTANCE_CHANGESEGMENT", nil, instance, segmento)
 					end
 				end
 			end

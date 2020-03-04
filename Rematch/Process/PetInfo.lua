@@ -362,6 +362,17 @@ local queryAPIs = {
             if breedID then
                breedName = PetTracker:GetBreedIcon(breedID,.85) -- using PetTracker's breed icon
             end
+         elseif source=="PetTracker" then
+            if idType=="pet" then
+               breedID = PetTracker.Pet(self.petID):GetBreed()
+            elseif idType=="link" then
+               breedID = PetTracker.Predict:Breed(self.speciesID,self.level,self.rarity,self.maxHealth,self.power,self.speed)
+            elseif idType=="battle" then
+                breedID = PetTracker.Battle(self.battleOwner,self.battleIndex):GetBreed()
+            end
+            if breedID then
+               breedName = PetTracker.Breeds:Icon(breedID,0.85)
+            end
          elseif source=="LibPetBreedInfo-1.0" then
             if idType=="pet" then
                breedID = breedLib:GetBreedByPetID(self.petID)
@@ -400,15 +411,19 @@ local queryAPIs = {
             data = BPBID_Arrays.BreedsPerSpecies[speciesID]
          elseif source=="PetTracker_Breeds" then
             data = PetTracker.Breeds[speciesID]
+         elseif source=="PetTracker" then
+            data = PetTracker.SpecieBreeds[speciesID]
          elseif source=="LibPetBreedInfo-1.0" then
             data = breedLib:GetAvailableBreeds(speciesID)
          end
          -- if there's a table of breeds, copy them to possibleBreeds
-         if data then
+         if data and type(data)=="table" then
             for _,breed in ipairs(data) do
                tinsert(possibleBreedIDs,breed)
                if source=="PetTracker_Breeds" then
                   tinsert(possibleBreedNames,PetTracker:GetBreedIcon(breed,0.85))
+               elseif source=="PetTracker" then
+                  tinsert(possibleBreedNames,PetTracker.Breeds:Icon(breed,0.85))
                else
                   tinsert(possibleBreedNames,breedNames[breed])
                end
@@ -474,13 +489,15 @@ local queryAPIs = {
 -- addons are used in this priority: BattlePetBreedID, PetTracker_Breeds then LibPetBreedInfo-1.0
 function rematch:GetBreedSource()
    if breedSource==nil then
-      for _,addon in pairs({"BattlePetBreedID","PetTracker_Breeds"}) do
-		 if IsAddOnLoaded(addon) then
-			if addon~="PetTracker_Breeds" or GetAddOnMetadata("PetTracker_Breeds","Version")~="7.1.4" then
-            	breedSource = addon
-				return addon
-			end
-         end
+      if IsAddOnLoaded("BattlePetBreedID") then
+         breedSource = "BattlePetBreedID"
+         return "BattlePetBreedID"
+      elseif IsAddOnLoaded("PetTracker_Breeds") and GetAddOnMetadata("PetTracker_Breeds","Version")~="7.1.4" then
+         breedSource = "PetTracker_Breeds"
+         return "PetTracker_Breeds"
+      elseif IsAddOnLoaded("PetTracker") and PetTracker.Pet and PetTracker.Pet.GetBreed then
+         breedSource = "PetTracker"
+         return "PetTracker"
       end
       -- one of the sources is not loaded, try loading LibPetBreedInfo separately
       LoadAddOn("LibPetBreedInfo-1.0")
@@ -502,8 +519,11 @@ end
 
 -- returns the name of a breed by its ID (used by PetMenus' breed menu; not petInfo)
 function rematch:GetBreedNameByID(breedID)
-	if rematch:GetBreedSource()=="PetTracker_Breeds" then
-		return PetTracker:GetBreedIcon(breedID,.85)
+   local breedSource = rematch:GetBreedSource()
+	if breedSource=="PetTracker_Breeds" then
+      return PetTracker:GetBreedIcon(breedID,.85)
+   elseif breedSource=="PetTracker" and PetTracker.Breeds.Names[breedID] then
+      return PetTracker.Breeds:Icon(breedID,.85) .. " " .. PetTracker.Breeds.Names[breedID]
 	else
 		return breedNames[breedID]
 	end

@@ -64,5 +64,5 @@ addon.L = {
 	["general options"] = "General Options",
 	["disable buttons"] = "Disable Buttons",
 	["crystal of insanity"] = "Crystal of Insanity",
-    ["Lightforged Augment Rune"] = "Lightforged Augment Rune",
+    ["Lightning-Forged Augment Rune"] = "Lightning-Forged Augment Rune",
 }

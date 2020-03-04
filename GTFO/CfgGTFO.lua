@@ -71,7 +71,8 @@ U1RegisterAddon("GTFO", {
         getvalue = function() return not GTFO.Settings.IgnoreOptions.EyeOfCorruption end,
         callback = function(cfg, v, loading)
             if not loading then
-                GTFO.Settings.IgnoreOptions.EyeOfCorruption = not v and true or nil
+                GTFO.Settings.IgnoreOptions.EyeOfCorruption = not v and true or false
+                GTFO_SaveSettings()
             end
         end,
     },

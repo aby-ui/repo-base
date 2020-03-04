@@ -1,8 +1,4 @@
--- This module is responsible for hiding the main menu bar and other components
--- that we don't want visible when running Dominos
-local HiddenFrame = CreateFrame("Frame", nil, UIParent)
-HiddenFrame:SetAllPoints(UIParent)
-HiddenFrame:Hide()
+local _, Addon = ...
 
 local function apply(func, arg, ...)
     if select("#", ...) > 0 then
@@ -16,7 +12,7 @@ local function hide(frame)
     if not frame then return end
 
     frame:Hide()
-    frame:SetParent(HiddenFrame)
+    frame:SetParent(Addon.ShadowUIParent)
     frame.ignoreFramePositionManager = true
 
     -- with 8.2, there's more restrictions on frame anchoring if something

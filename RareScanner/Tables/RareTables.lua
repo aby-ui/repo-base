@@ -4,6 +4,350 @@
 local FOLDER_NAME, private = ...
 
 private.RARE_LIST = {
+	-- Rares Classic
+	14343, --Olm the Wise
+	5828, --Humar the Pridelord
+	11497, --The Razza
+	1552, --Scale Belly
+	3253, --Silithid Harvester
+	2175, --Shadowclaw
+	521, --Lupos
+	2850, --Broken Tooth
+	3652, --Trigore the Lasher
+	5829, --Snort the Heckler
+	10741, --Sian-Rotam
+	7846, --Teremus the Devourer
+	11498, --Skarr the Broken
+	462, --Vultros
+	10558, --Hearthsinger Forresten
+	1130, --Bjarn
+	3058, --Arra'chea
+	3581, --Sewer Beast
+	3535, --Blackmoss the Fetid
+	10200, --Rak'shiri
+	11447, --Mushgog
+	14430, --Duskstalker
+	8660, --The Evalcharr
+	3398, --Gesharahan
+	2453, --Lo'Grosh
+	14228, --Giggler
+	6584, --King Mosh
+	6585, --Uhk'loc
+	3068, --Mazzranache
+	14344, --Mongress
+	5823, --Death Flayer
+	8503, --Gibblewilt
+	5349, --Arash-ethis
+	10356, --Bayne
+	2779, --Prince Nazjak
+	8300, --Ravage
+	8924, --The Behemoth
+	10357, --Ressan the Needler
+	14276, --Scargil
+	14227, --Hissperak
+	8211, --Old Cliff Jumper
+	5347, --Antilus the Soarer
+	8299, --Spiteflayer
+	5832, --Thunderstomp
+	2753, --Barnabus
+	472, --Fedfennel
+	5842, --Takk the Leaper
+	9718, --Ghok Bashguud
+	10198, --Kashoch the Reaver
+	2931, --Zaricotl
+	10081, --Dustwraith
+	14339, --Death Howl
+	14475, --Rex Ashil
+	5807, --The Rake
+	14268, --Lord Condar
+	16184, --Nerubian Overseer
+	5831, --Swiftmane
+	14492, --Verifonix
+	9596, --Bannok Grimaxe
+	14506, --Lord Hel'nurath
+	2476, --Gosh-Haldir
+	471, --Mother Fang
+	2172, --Strider Clutchmother
+	5865, --Dishu
+	10828, --Lynnia Abbendis
+	14266, --Shanda the Spinner
+	5356, --Snarler
+	14222, --Araga
+	14491, --Kurmokk
+	8217, --Mith'rethis the Enchanter
+	14471, --Setis
+	1132, --Timber
+	10263, --Burning Felguard
+	9736, --Quartermaster Zigris
+	14223, --Cranky Benj
+	6583, --Gruff
+	10644, --Mist Howler
+	4015, --Pridewing Patriarch
+	6582, --Clutchmother Zavas
+	14477, --Grubthor
+	10826, --Lord Darkscythe
+	10393, --Skul
+	14232, --Dart
+	12431, --Gorefang
+	5935, --Ironeye the Invincible
+	4132, --Krkk'kx
+	2452, --Skhowl
+	596, --Brainwashed Noble
+	5912, --Deviate Faerie Dragon
+	5834, --Azzere the Skyblade
+	14280, --Big Samras
+	8303, --Grunter
+	10080, --Sandarr Dunereaver
+	8302, --Deatheye
+	10817, --Duggan Wildhammer
+	5835, --Foreman Grills
+	14275, --Tamra Stormpike
+	10119, --Volchan
+	10077, --Deathmaw
+	14270, --Squiddic
+	12037, --Ursol'lok
+	14427, --Gibblesnik
+	14487, --Gluggl
+	8205, --Haarka the Ravenous
+	14237, --Oozeworm
+	6581, --Ravasaur Matriarch
+	14488, --Roloch
+	9218, --Spirestone Battle Lord
+	14478, --Huricanian
+	8213, --Ironback
+	534, --Nefaru
+	14474, --Zora
+	10376, --Crystal Fang
+	6228, --Dark Iron Ambassador
+	616, --Chatter
+	7104, --Dessecus
+	12433, --Krethis the Shadowspinner
+	14473, --Lapress
+	5352, --Old Grizzlegut
+	13896, --Scalebeard
+	5928, --Sorrow Wing
+	10359, --Sri'skulk
+	5837, --Stonearm
+	1398, --Boss Galgosh
+	5824, --Captain Flat Tusk
+	10824, --Death-Hunter Hawkspear
+	10196, --General Colbatann
+	14278, --Ro'Bark
+	14345, --The Ongar
+	12237, --Meshlok the Harvester
+	9217, --Spirestone Lord Magus
+	5933, --Achellios the Banished
+	10202, --Azurous
+	6650, --General Fangferror
+	9604, --Gorgon'och
+	14221, --Gravis Slipknot
+	14472, --Gretheer
+	8215, --Grimungous
+	10199, --Grizzle Snowpaw
+	8214, --Jalinde Summerdrake
+	99, --Morgaine the Sly
+	574, --Naraxis
+	14225, --Prince Kellen
+	14490, --Rippa
+	14272, --Snarlflare
+	14428, --Uruson
+	7057, --Digmaster Shovelphlange
+	2754, --Anathemus
+	3270, --Elder Mystic Razorsnout
+	14431, --Fury Shelda
+	6651, --Gatekeeper Rageroar
+	1119, --Hammerspine
+	2603, --Kovork
+	1112, --Leech Widow
+	8297, --Magronos the Unyielding
+	2606, --Nimar the Slayer
+	5350, --Qirot
+	5785, --Sister Hatelash
+	599, --Marisa du'Paige
+	14340, --Alshirr Banebreath
+	6648, --Antilos
+	14425, --Gnawbone
+	8282, --Highlord Mastrogonde
+	14476, --Krellack
+	3470, --Rathorian
+	8978, --Thauris Balgarr
+	14479, --Twilight Lord Everun
+	8923, --Panzor the Invincible
+	14229, --Accursed Slitherblade
+	5838, --Brokespear
+	2186, --Carnivous the Breaker
+	4380, --Darkmist Widow
+	3736, --Darkslayer Mordenthal
+	14231, --Drogoth the Roamer
+	5863, --Geopriest Gukk'rok
+	1260, --Great Father Arctikus
+	62, --Gug Fatcandle
+	10821, --Hed'mush the Rotting
+	14281, --Jimmy the Bleeder
+	10559, --Lady Vespia
+	2090, --Ma'ruk Wyrmscale
+	2258, --Maggarrak
+	5937, --Vile Sting
+	3872, --Deathsworn Captain
+	6490, --Azshir the Sleepless
+	3672, --Boahn
+	5822, --Felweaver Scornn
+	573, --Foe Reaper 4000
+	1844, --Foreman Marcrid
+	14429, --Grimmaw
+	5343, --Lady Szallah
+	14277, --Lady Zephris
+	5848, --Malgin Barleybrew
+	79, --Narg the Taskmaster
+	14342, --Ragepaw
+	8277, --Rekk'tilac
+	8281, --Scald
+	14269, --Seeker Aqualon
+	3792, --Terrowulf Packlord
+	1851, --The Husk
+	61, --Thuros Lightfingers
+	1533, --Tormented Spirit
+	2749, --Barricade
+	5346, --Bloodroar the Stalker
+	8301, --Clack the Reaver
+	14279, --Creepthess
+	2601, --Foulbelly
+	7137, --Immolatus
+	14226, --Kaskk
+	14448, --Molt Thorn
+	1885, --Scarlet Smith
+	8298, --Akubar the Seer
+	14273, --Boulderheart
+	10641, --Branch Snapper
+	5851, --Captain Gerogg Hammertoe
+	1137, --Edan the Howler
+	14426, --Harb Foulmountain
+	1425, --Kubb
+	8296, --Mojo the Twisted
+	1140, --Razormaw Matriarch
+	3295, --Sludge Anomaly
+	6118, --Varo'then's Ghost
+	11467, --Tsu'zee
+	10082, --Zerillis
+	14224, --7:XT
+	2162, --Agal
+	5827, --Brontus
+	2598, --Darbel Montrose
+	5345, --Diamond Head
+	8304, --Dreadscorn
+	1843, --Foreman Jerris
+	2108, --Garneg Charskull
+	14234, --Hayoc
+	2191, --Licillin
+	503, --Lord Malathrom
+	1531, --Lost Soul
+	10197, --Mezzir the Howler
+	1910, --Muad
+	947, --Rohh the Silent
+	2752, --Rumbler
+	506, --Sergeant Brashclaw
+	519, --Slark
+	8283, --Slave Master Blackheart
+	14432, --Threggil
+	9219, --Spirestone Butcher
+	10809, --Stonespine
+	520, --Brack
+	5915, --Brother Ravenoak
+	14267, --Emogg the Crusher
+	507, --Fenros
+	1847, --Foulmane
+	2609, --Geomancer Flintdagger
+	10825, --Gish the Unmoving
+	6649, --Lady Sesspira
+	572, --Leprithus
+	14236, --Lord Angler
+	1848, --Lord Maldazzar
+	8981, --Malfunctioning Reaver
+	10647, --Prince Raze
+	14271, --Ribchaser
+	2602, --Ruul Onestone
+	1839, --Scarlet High Clerist
+	8280, --Shleipnarr
+	14433, --Sludginn
+	5786, --Snagglespear
+	8204, --Soriid the Devourer
+	5864, --Swinegart Spearhide
+	3773, --Akkrilus
+	10819, --Baron Bloodbane
+	4339, --Brimgore
+	14230, --Burgle Eye
+	14445, --Captain Wyrmak
+	10818, --Death Knight Soulbearer
+	10642, --Eck'alom
+	8207, --Emberwing
+	5836, --Engineer Whirleygig
+	10358, --Fellicent's Shade
+	9602, --Hahk'Zor
+	11383, --High Priestess Hai'watna
+	584, --Kazon
+	1399, --Magosh
+	1838, --Scarlet Interrogator
+	1837, --Scarlet Judge
+	5930, --Sister Riven
+	5932, --Taskmaster Whipfang
+	8219, --Zul'arek Hatefowler
+	3735, --Apothecary Falthis
+	1936, --Farmer Solliden
+	8279, --Faulty War Golem
+	2192, --Firecaller Radison
+	7015, --Flagglemurk the Cruel
+	8979, --Gruklash
+	5859, --Hagg Taurenbane
+	2541, --Lord Sakrasis
+	1424, --Master Digger
+	14424, --Mirelow
+	14233, --Ripscale
+	10639, --Rorgish Jowl
+	2744, --Shadowforge Commander
+	5830, --Sister Rathtalon
+	8278, --Smoldar
+	8212, --The Reak
+	14235, --The Rot
+	11688, --Cursed Centaur
+	10827, --Deathspeaker Selendre
+	1911, --Deeb
+	10820, --Duke Ragereaver
+	14447, --Gilmorian
+	5354, --Gnarl Leafbrother
+	8976, --Hematos
+	8200, --Jin'Zallah the Sandbringer
+	7016, --Lady Vespira
+	2604, --Molok the Crusher
+	4066, --Nal'taszar
+	8201, --Omgorn the Lost
+	5841, --Rocklance
+	1841, --Scarlet Executioner
+	5809, --Sergeant Curtis
+	8199, --Warleader Krazzilak
+	10823, --Zul'Brin Warpbranch
+	5348, --Dreamwatcher Forktongue
+	14446, --Fingat
+	5826, --Geolord Mottle
+	1063, --Jade
+	8203, --Kregg Keelhaul
+	2184, --Lady Moongazer
+	7017, --Lord Sinslayer
+	8216, --Retherokk the Berserker
+	2600, --Singer
+	10078, --Terrorspark
+	5849, --Digger Flameforge
+	5787, --Enforcer Emilgund
+	763, --Lost One Chieftain
+	1106, --Lost One Cook
+	10640, --Oakpaw
+	1850, --Putridius
+	8218, --Witherheart the Stalker
+	1849, --Dreadwhisper
+	8210, --Razortalon
+	2751, --War Golem
+	2605, --Zalas Witherbark
+	5847, --Heggin Stonewhisker
+
 	-- Rares Pandaria
 	50062, --Aeonaxx
 	58778, --Aetha

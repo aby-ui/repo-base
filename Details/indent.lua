@@ -1094,7 +1094,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         if oldFun then
             oldFun(editbox, ...)
         end
-        if enabled[editbox] and not editbox:IsInIMECompositionMode() then
+        if enabled[editbox] then
             dirty[editbox] = GetTime()
         end
     end
@@ -1114,7 +1114,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         if oldFun then
             oldFun(editbox, ...)
         end
-        if enabled[editbox] and not editbox:IsInIMECompositionMode() then
+        if enabled[editbox] then
             local now = GetTime()
             local lastUpdate = dirty[editbox] or now
             if now - lastUpdate > 0.2 then

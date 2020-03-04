@@ -1898,6 +1898,7 @@ function atributo_heal:MontaInfoHealingDone()
 	gump:JI_AtualizaContainerBarras (amt)
 
 	local max_ = minhas_curas[1] and minhas_curas[1][2] or 0
+	local foundSpellDetail = false
 
 	for index, tabela in _ipairs (minhas_curas) do
 
@@ -1929,8 +1930,9 @@ function atributo_heal:MontaInfoHealingDone()
 		barra.spellid = self.nome
 		barra:Show()
 
-		if (self.detalhes and self.detalhes == barra.show) then
+		if (self.detalhes and self.detalhes == barra.show and not foundSpellDetail) then
 			self:MontaDetalhes (self.detalhes, barra)
+			foundSpellDetail = true
 		end
 	end
 	

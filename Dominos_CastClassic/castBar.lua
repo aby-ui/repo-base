@@ -21,9 +21,9 @@ function CastingBar:Create(...)
 
 	local cbf = _G.CastingBarFrame
 
-	cbf:SetParent(bar.header)
+	cbf:SetParent(bar)
 	cbf:ClearAllPoints()
-	cbf:SetPoint('CENTER', bar.header, 'CENTER', 0, -2)
+	cbf:SetPoint('CENTER', bar, 'CENTER', 0, -2)
 
 	self.__cbf = cbf
 

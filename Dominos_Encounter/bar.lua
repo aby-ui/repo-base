@@ -24,8 +24,8 @@ end
 function EncounterBar:Layout()
 	local bar = self.__PlayerPowerBarAlt
 	bar:ClearAllPoints()
-	bar:SetParent(self.header)
-	bar:SetPoint('CENTER', self.header)
+	bar:SetParent(self)
+	bar:SetPoint('CENTER', self)
 
 	-- resize out of combat
 	if not InCombatLockdown() then

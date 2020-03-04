@@ -79,14 +79,19 @@ end
 function MirrorTimerModule:MIRROR_TIMER_START(event, timerName, value, maxValue, scale, paused, timerLabel)
     for i = 1, MIRRORTIMER_NUMTIMERS do
         local bar = self.bars[i]
-        if bar:IsShown() and bar.timer == timerName then
-            return bar:Start(timerName, value, maxValue, scale, paused, timerLabel)
+
+        if bar.timer == timerName then
+            bar:Start(timerName, value, maxValue, scale, paused, timerLabel)
+            return
         end
     end
+
     for i = 1, MIRRORTIMER_NUMTIMERS do
         local bar = self.bars[i]
-        if not bar:IsShown() then
-            return bar:Start(timerName, value, maxValue, scale, paused, timerLabel)
+
+        if not bar.timer then
+            bar:Start(timerName, value, maxValue, scale, paused, timerLabel)
+            return
         end
     end
 end

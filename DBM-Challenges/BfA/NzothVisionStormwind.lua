@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200227010509")
+mod:SetRevision("20200303020803")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -14,6 +14,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 309035",
 	"SPELL_PERIODIC_DAMAGE 312121 296674 308807 313303",
 	"SPELL_PERIODIC_MISSED 312121 296674 308807 313303",
+	"SPELL_INTERRUPT",
 	"UNIT_DIED",
 	"ENCOUNTER_START",
 	"UNIT_SPELLCAST_SUCCEEDED",
@@ -43,7 +44,7 @@ local warnBrutalSmash			= mod:NewCastAnnounce(309882, 3)
 --General (GTFOs and Affixes)
 local specWarnGTFO				= mod:NewSpecialWarningGTFO(312121, nil, nil, nil, 1, 8)
 local specWarnEntomophobia		= mod:NewSpecialWarningJump(311389, nil, nil, nil, 1, 6)
-local specWarnHauntingShadows	= mod:NewSpecialWarningDodge(306545, false, nil, 2, 1, 2)--Off by default because it requires messing with users nameplates to work
+local specWarnHauntingShadows	= mod:NewSpecialWarningDodge(306545, nil, nil, 3, 1, 2)
 local specWarnScorchedFeet		= mod:NewSpecialWarningYou(315385, false, nil, 2, 1, 2)
 local yellScorchedFeet			= mod:NewYell(315385)
 local specWarnSplitPersonality	= mod:NewSpecialWarningYou(316481, nil, nil, nil, 1, 2)
@@ -84,6 +85,8 @@ local timerVoidEruptionCD		= mod:NewCDTimer(27.9, 309819, nil, nil, nil, 2)
 --local timerChainsofServitudeCD	= mod:NewCDTimer(32.9, 298691, nil, nil, nil, 2)
 
 mod:AddInfoFrameOption(307831, true)
+mod:AddNamePlateOption("NPAuraOnHaunting", 306545)
+mod:AddNamePlateOption("NPAuraOnAbyss", 298033)
 
 --Antispam 1: Boss throttles, 2: GTFOs, 3: Dodge stuff on ground. 4: Face Away/special action. 5: Dodge Shockwaves
 
@@ -99,14 +102,21 @@ function mod:OnCombatStart(delay)
 	self.vb.UlrokCleared = false
 	self.vb.ShawCleared = false
 	self.vb.UmbricCleared = false
-	if self.Options.SpecWarn306545dodge then
+	if self.Options.SpecWarn306545dodge3 then
 		--This warning requires friendly nameplates, because it's only way to detect it.
-		CVAR1, CVAR2 = GetCVar("nameplateShowFriends ") or 0, GetCVar("nameplateShowFriendlyNPCs") or 0
+		CVAR1, CVAR2 = tonumber(GetCVar("nameplateShowFriends") or 0), tonumber(GetCVar("nameplateShowFriendlyNPCs") or 0)
 		--Check if they were disabled, if disabled, force enable them
 		if (CVAR1 == 0) or (CVAR2 == 0) then
 			SetCVar("nameplateShowFriends", 1)
 			SetCVar("nameplateShowFriendlyNPCs", 1)
 		end
+		--Making this option rely on another option is kind of required because this won't work without nameplateShowFriendlyNPCs
+		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting then
+			DBM:FireEvent("BossMod_EnableFriendlyNameplates")
+		end
+	end
+	if self.Options.NPAuraOnAbyss then
+		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
@@ -122,6 +132,9 @@ function mod:OnCombatEnd()
 		SetCVar("nameplateShowFriends", CVAR1)
 		SetCVar("nameplateShowFriendlyNPCs", CVAR2)
 		CVAR1, CVAR2 = nil, nil
+	end
+	if self.Options.NPAuraOnAbyss or self.Options.NPAuraOnHaunting then
+		DBM.Nameplate:Hide(true, nil, nil, nil, true, self.Options.NPAuraOnAbyss, not DBM:HasMapRestrictions())--isGUID, unit, spellId, texture, force, isHostile, isFriendly
 	end
 end
 
@@ -169,6 +182,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnTouchoftheAbyss:Play("kickcast")
 		else
 			warnTouchoftheAbyss:Show()
+		end
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Show(true, args.sourceGUID, 298033, nil, 7)
 		end
 	elseif spellId == 308406 then
 		warnEntropicLeap:Show()
@@ -256,6 +272,14 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
+function mod:SPELL_INTERRUPT(args)
+	if type(args.extraSpellId) == "number" and args.extraSpellId == 298033 then
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Hide(true, args.destGUID, 298033)
+		end
+	end
+end
+
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 152718 then--Alleria Windrunner
@@ -276,6 +300,10 @@ function mod:UNIT_DIED(args)
 	elseif cid == 158035 then--Magister Umbric
 		--timerTaintedPolymorphCD:Stop()
 		self.vb.UmbricCleared = true
+	elseif cid == 156795 then--S.I. Informant
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Hide(true, args.destGUID, 298033)
+		end
 	end
 end
 
@@ -324,9 +352,15 @@ do
 end
 
 function mod:NAME_PLATE_UNIT_ADDED(unit)
-	if unit and UnitName(unit) == playerName and self:AntiSpam(2, 2) then--Throttled because sometimes two spawn at once
-		specWarnHauntingShadows:Show()
-		specWarnHauntingShadows:Play("runaway")
+	if unit and UnitName(unit) == playerName then--Throttled because sometimes two spawn at once
+		if self:AntiSpam(2, 2) then
+			specWarnHauntingShadows:Show()
+			specWarnHauntingShadows:Play("runaway")
+		end
+		local guid = UnitGUID(unit)
+		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting and guid then
+			DBM.Nameplate:Show(true, guid, 306545, 1029718, 5)
+		end
 	end
 end
 mod.FORBIDDEN_NAME_PLATE_UNIT_ADDED = mod.NAME_PLATE_UNIT_ADDED--Just in case blizzard fixes map restrictions

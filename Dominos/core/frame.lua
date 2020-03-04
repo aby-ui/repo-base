@@ -19,7 +19,7 @@ function Frame:New(id, tooltipText)
 	frame:LoadSettings()
 	frame:SetTooltipText(tooltipText)
 
-	Addon.OverrideController:Add(frame.header)
+	Addon.OverrideController:Add(frame)
 
 	active[id] = frame
 
@@ -33,37 +33,48 @@ function Frame:OnEnable() end
 function Frame:Create(id)
 	local frameName = ('%sFrame%s'):format(AddonName, id)
 
-	local frame = self:Bind(CreateFrame('Frame', frameName, _G['UIParent']))
+	local frame = self:Bind(CreateFrame('Frame', frameName, UIParent, "SecureHandlerStateTemplate"))
 	frame:SetClampedToScreen(true)
 	frame:SetMovable(true)
 
 	frame.id = id
 
-	frame.header = CreateFrame('Frame', nil, frame, 'SecureHandlerStateTemplate')
+	frame:SetAttribute('id', id)
 
-	frame.header:SetAttribute('id', id)
-
-	frame.header:SetAttribute('_onstate-overrideui', [[
-		self:RunAttribute('updateShown')
+	frame:SetAttribute('_onstate-alpha', [[
+		self:CallMethod('FadeOut')
 	]])
 
-	frame.header:SetAttribute('_onstate-showinoverrideui', [[
-		self:RunAttribute('updateShown')
+	frame:SetAttribute('_onstate-overrideui', [[
+		self:RunAttribute('UpdateShown')
 	]])
 
-	frame.header:SetAttribute('_onstate-petbattleui', [[
-		self:RunAttribute('updateShown')
+	frame:SetAttribute('_onstate-showinoverrideui', [[
+		self:RunAttribute('UpdateShown')
 	]])
 
-	frame.header:SetAttribute('_onstate-showinpetbattleui', [[
-		self:RunAttribute('updateShown')
+	frame:SetAttribute('_onstate-petbattleui', [[
+		self:RunAttribute('UpdateShown')
 	]])
 
-	frame.header:SetAttribute('_onstate-display', [[
-		self:RunAttribute('updateShown')
+	frame:SetAttribute('_onstate-showinpetbattleui', [[
+		self:RunAttribute('UpdateShown')
 	]])
 
-	frame.header:SetAttribute('updateShown', [[
+	frame:SetAttribute('_onstate-display', [[
+		self:RunAttribute('UpdateShown')
+	]])
+
+	frame:SetAttribute("_onstate-hidden", [[
+		self:RunAttribute("UpdateShown")
+	]])
+
+	frame:SetAttribute('UpdateShown', [[
+		if self:GetAttribute("state-hidden") then
+			self:Hide()
+			return
+		end
+
 		local isOverrideUIShown = self:GetAttribute('state-overrideui') and true or false
 		local isPetBattleUIShown = self:GetAttribute('state-petbattleui') and true or false
 
@@ -82,6 +93,7 @@ function Frame:Create(id)
 			if self:GetAttribute('state-alpha') then
 				self:SetAttribute('state-alpha', nil)
 			end
+
 			self:Hide()
 			return
 		end
@@ -90,17 +102,9 @@ function Frame:Create(id)
 		if self:GetAttribute('state-alpha') ~= stateAlpha then
 			self:SetAttribute('state-alpha', stateAlpha)
 		end
+
 		self:Show()
 	]])
-
-	frame.header:SetAttribute('_onstate-alpha', [[
-		self:CallMethod('FadeOut')
-	]])
-
-	frame.header.FadeIn = function() frame:FadeIn() end
-	frame.header.FadeOut = function() frame:FadeOut() end
-
-	frame.header:SetAllPoints(frame)
 
 	frame:OnCreate()
 
@@ -127,9 +131,9 @@ function Frame:OnRestore() end
 function Frame:Free(deleteSettings)
 	active[self.id] = nil
 
-	UnregisterStateDriver(self.header, 'display', 'show')
+	UnregisterStateDriver(self, 'display', 'show')
 	Addon.MouseOverWatcher:Remove(self)
-	Addon.OverrideController:Remove(self.header)
+	Addon.OverrideController:Remove(self)
 
 	self.docked = nil
 
@@ -344,7 +348,7 @@ function Frame:GetExpectedAlpha()
 	end
 
 	--if there's a statealpha value for the frame, then use it
-	local stateAlpha = self.header:GetAttribute('state-alpha')
+	local stateAlpha = self:GetAttribute('state-alpha')
 	if stateAlpha then
 		return stateAlpha / 100
 	end
@@ -448,7 +452,7 @@ end
 function Frame:ShowFrame()
 	self.sets.hidden = nil
 
-	self:Show()
+	self:SetAttribute("state-hidden", nil)
 	self:UpdateWatched()
 	self:UpdateAlpha()
 
@@ -460,7 +464,7 @@ end
 function Frame:HideFrame()
 	self.sets.hidden = true
 
-	self:Hide()
+	self:SetAttribute("state-hidden", true)
 	self:UpdateWatched()
 	self:UpdateAlpha()
 
@@ -487,7 +491,7 @@ end
 function Frame:ShowInOverrideUI(enable)
 	self.sets.showInOverrideUI = enable and true or false
 
-	self.header:SetAttribute('state-showinoverrideui', enable)
+	self:SetAttribute('state-showinoverrideui', enable)
 end
 
 function Frame:ShowingInOverrideUI()
@@ -496,7 +500,7 @@ end
 
 function Frame:ShowInPetBattleUI(enable)
 	self.sets.showInPetBattleUI = enable and true or false
-	self.header:SetAttribute('state-showinpetbattleui', enable)
+	self:SetAttribute('state-showinpetbattleui', enable)
 end
 
 function Frame:ShowingInPetBattleUI()
@@ -543,12 +547,12 @@ function Frame:UpdateShowStates()
 	local showstates = self:GetShowStates()
 
 	if showstates and showstates ~= '' then
-		RegisterStateDriver(self.header, 'display', showstates)
+		RegisterStateDriver(self, 'display', showstates)
 	else
-		UnregisterStateDriver(self.header, 'display')
+		UnregisterStateDriver(self, 'display')
 
-		if self.header:GetAttribute('state-display') then
-			self.header:SetAttribute('state-display', nil)
+		if self:GetAttribute('state-display') then
+			self:SetAttribute('state-display', nil)
 		end
 	end
 end
@@ -697,7 +701,7 @@ function Frame:GetRelativeFramePosition()
 	local right = self:GetRight() or 0
 	local bottom = self:GetBottom() or 0
 
-	local parent = self:GetParent() or _G['UIParent']
+	local parent = self:GetParent() or UIParent
 	local pwidth = parent:GetWidth() / scale
 	local pheight = parent:GetHeight() / scale
 

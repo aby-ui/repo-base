@@ -51,12 +51,12 @@ function ProgressBar:Create(...)
 		bg = {0, 0, 0, 1}
 	}
 
-	local bg = bar.header:CreateTexture(nil, 'BACKGROUND')
+	local bg = bar:CreateTexture(nil, 'BACKGROUND')
 	bg:SetColorTexture(0, 0, 0, 1)
 	bg:SetAllPoints(bar)
 	bar.bg = bg
 
-	local click = CreateFrame('Button', nil, bar.header)
+	local click = CreateFrame('Button', nil, bar)
 	click:SetScript('OnClick', function(_, ...) bar:OnClick(...) end)
 	click:SetScript('OnEnter', function(_, ...) bar:OnEnter(...) end)
 	click:SetScript('OnLeave', function(_, ...) bar:OnLeave(...) end)

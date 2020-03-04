@@ -1243,7 +1243,7 @@
 			end			
 			
 			--wallpaper
-			local background = f:CreateTexture (nil, "border")
+			local background = f:CreateTexture ("$parentBackgroundImage", "border")
 			background:SetAlpha (0.3)
 			background:SetPoint ("topleft", f, "topleft", 6, -65)
 			background:SetPoint ("bottomright", f, "bottomright", -10, 28)
@@ -1386,7 +1386,7 @@
 							
 						--received one encounter table
 						elseif (guildSyncID == "A") then
-							f.DownloadedAmount = f.DownloadedAmount + 1
+							f.DownloadedAmount = (f.DownloadedAmount or 0) + 1
 							
 							--size = 1 byte per characters in the string
 							f.EstimateSize = length * f.RequestedAmount > f.EstimateSize and length * f.RequestedAmount or f.RequestedAmount
@@ -1454,6 +1454,7 @@
 				local instanceId = _detalhes:GetInstanceIdFromEncounterId (encounterId)
 				if (instanceId) then
 					local file, L, R, T, B = _detalhes:GetRaidBackground (instanceId)
+					
 					background:SetTexture (file)
 					background:SetTexCoord (L, R, T, B)
 				end

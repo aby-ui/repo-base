@@ -14,6 +14,7 @@ RareScanner.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
 RareScanner.EVENT_VIGNETTE = "VignetteEvent"
 RareScanner.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
 local RESCAN_TIMER = 120; -- 2 minutes to rescan for the same NPC
+local RANGE_TIMER = 1; -- 1 seconds
 
 -- Timers
 local CLEAN_RARES_FOUND_TIMER
@@ -29,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 9
-local CURRENT_LOOT_DB_VERSION = 26
+local CURRENT_DB_VERSION = 10
+local CURRENT_LOOT_DB_VERSION = 27
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -59,6 +60,9 @@ local HIGHLIGHT_BACK_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Ico
 
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
+
+-- Range checker
+local rc = LibStub("LibRangeCheck-2.0")
 
 -- Settings
 local PROFILE_DEFAULTS = {
@@ -298,6 +302,9 @@ scanner_button:RegisterEvent("PLAYER_LOGIN")
 -- Vignette events
 scanner_button:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
 
+-- Nameplates events
+scanner_button:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+
 -- Out of combat events
 scanner_button:RegisterEvent("PLAYER_REGEN_ENABLED")
 
@@ -339,6 +346,68 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		else
 			vignetteInfo.id = id
 			self:CheckNotificationCache(self, vignetteInfo)
+		end
+	-- Nameplates
+	elseif (event == "NAME_PLATE_UNIT_ADDED") then
+		-- If player in a zone with vignettes ignore it
+		local mapID = WorldMapFrame:GetMapID()
+		if (mapID and (not private.ZONES_WITHOUT_VIGNETTE[mapID] or not RS_tContains(private.ZONES_WITHOUT_VIGNETTE[mapID], C_Map.GetMapArtID(mapID)))) then
+			return
+		end
+		
+		local nameplateid = ...
+		if (nameplateid and not UnitIsUnit("player", nameplateid) and not UnitIsFriend("player", nameplateid)) then
+			local nameplateUnitGuid = UnitGUID(nameplateid)
+			if (nameplateUnitGuid) then
+				local _, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
+				local npcID = id and tonumber(id) or nil
+				if (npcID) then
+					-- Simulates vignette event
+					if (npcID and (private.dbglobal.rares_found[npcID] or private.ZONE_IDS[npcID]) and not private.dbchar.rares_killed[npcID]) then
+						local vignetteInfo = {}
+						vignetteInfo.atlasName = RareScanner.NPC_VIGNETTE
+						vignetteInfo.id = "NPC"..npcID
+						local nameplateUnitName, _ = UnitName(nameplateid)
+						vignetteInfo.name = nameplateUnitName
+						vignetteInfo.objectGUID = nameplateUnitGuid
+						
+						-- It uses the player position in first instance
+						local playerMapPosition = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+						if (playerMapPosition) then
+							local playerCoordX, playerCoordY = playerMapPosition:GetXY()
+							vignetteInfo.x = playerCoordX
+							vignetteInfo.y = playerCoordY
+						end
+						
+						-- In dungeons and such it doesnt return values, so use the ones in the database
+						-- They wont match the real position, but... what are we gonna do
+						if (not vignetteInfo.x or not vignetteInfo.y) then
+							if (type(private.ZONE_IDS[npcID].zoneID) == "table" and private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()]) then
+								vignetteInfo.x = private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()].x
+								vignetteInfo.y = private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()].y
+							else
+								vignetteInfo.x = private.ZONE_IDS[npcID].x
+								vignetteInfo.y = private.ZONE_IDS[npcID].y
+							end
+						end
+						self:CheckNotificationCache(self, vignetteInfo)
+						
+						-- And then in tries to find better coordinates
+						local minRange, maxRange = rc:GetRange(nameplateid)
+						if (playerMapPosition and (minRange or maxRange)) then
+							C_Timer.NewTicker(RANGE_TIMER, function() 
+								local minRange, maxRange = rc:GetRange(nameplateid)
+								if (minRange and minRange < 10) then
+									local playerCoordX, playerCoordY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
+									private.dbglobal.rares_found[npcID].coordX = playerCoordX
+									private.dbglobal.rares_found[npcID].coordY = playerCoordY
+									RareScanner:PrintDebugMessage("DEBUG: Localizadas nuevas coordenadas gracias al rango inferior a 5")
+								end
+							end, 15)
+						end
+					end
+				end
+			end
 		end
 	-- Out of combat actions
 	elseif (event == "PLAYER_REGEN_ENABLED") then
@@ -401,12 +470,17 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			end
 			-- check if killed
 			if (npcID and private.dbglobal.rares_found[npcID] and not private.dbchar.rares_killed[npcID]) then
+				-- Update coordinates (if zone doesnt use vignettes)
+				local playerMapPosition = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+				if (playerMapPosition) then
+					local playerCoordX, playerCoordY = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player"):GetXY()
+					private.dbglobal.rares_found[npcID].coordX = playerCoordX
+					private.dbglobal.rares_found[npcID].coordY = playerCoordY
+				end
+				
 				if (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
-					-- properly killed
-					--RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto porque ha dejado de ser raro en algun momento de la historia y nos habiamos enterado.")
 					RareScanner:ProcessKill(npcID)
 				else
-					--RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro muerto que sigue siendo raro, por lo tanto no lo hemos debido de matar nosotros.")
 					private.dbglobal.rares_found[npcID].foundTime = time()
 				end
 			-- Debug tools
