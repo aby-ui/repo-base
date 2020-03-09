@@ -33,6 +33,7 @@ U1RegisterAddon("GladiatorlosSA2", {
         {
             text = "在战场中启用",
             var = "battleground",
+            default = 1,
             getvalue = function() return GladiatorlosSA.db1.profile.battleground end,
             callback = function(cfg, v, loading) GladiatorlosSA.db1.profile.battleground = not not v end,
         },

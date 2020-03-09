@@ -18,7 +18,7 @@ local ToyPlusLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("ToyPlu
             if InterfaceOptionsFrame:IsVisible() then
                 InterfaceOptionsFrame:Hide()
 			else
-                InterfaceOptionsFrame_OpenToCategory(L"ToyPlus")
+                InterfaceOptionsFrame_OpenToCategory("ToyPlus")
             end
 		end
 	end,
@@ -66,7 +66,7 @@ end
 
 function ToyPlus:RegisterOptions()-- Blizzard Options
 	local AceConfig = LibStub("AceConfig-3.0")
-	AceConfig:RegisterOptionsTable(L"ToyPlus", {
+	AceConfig:RegisterOptionsTable("ToyPlus", {
 		type = 'group',
 		args = {
 			toyCols = {
@@ -139,7 +139,7 @@ function ToyPlus:RegisterOptions()-- Blizzard Options
 			},
 		},
 	})
-	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L"ToyPlus")
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("ToyPlus")
 end
 
 function ToyPlus:HideMenu()
@@ -863,7 +863,7 @@ function ToyPlus:CreateFrame()
 				ToyPlus:ShowList()
 			end
         elseif button == "RightButton" then
-			InterfaceOptionsFrame_OpenToCategory(L"ToyPlus")
+			InterfaceOptionsFrame_OpenToCategory("ToyPlus")
         end
 	end)
 	local iconH, iconV = 6, -27

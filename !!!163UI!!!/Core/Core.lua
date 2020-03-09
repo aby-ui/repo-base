@@ -358,12 +358,16 @@ end
 
 local eventRegistration = {}
 function CoreAddEvent(event)
-    eventRegistration[event] = {};
+    eventRegistration[event] = eventRegistration[event] or {};
 end
 function CoreRegisterEvent(event, obj)
     local reg = eventRegistration[event];
     assert(reg, "No event '"..event.."' is defined.");
     tinsert(reg, (WW and WW.un) and WW:un(obj) or obj._F or obj);
+    if event == "INIT_COMPLETED" and U1IsInitComplete() then
+        local obj = reg[#reg]
+        safecall(obj[event], obj);
+    end
 end
 function CoreUnregisterEvent(event, obj)
     local reg = eventRegistration[event];

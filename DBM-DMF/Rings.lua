@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Rings", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200130220509")
+mod:SetRevision("20200130225601")
 mod:SetZone()
 
 mod:RegisterCombat("combat")

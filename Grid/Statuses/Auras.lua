@@ -1105,7 +1105,7 @@ function GridStatusAuras:AddAura(name, isBuff)
         local spellID = tonumber(name)
         name = GetSpellInfo(spellID)
         if not name then
-            return DEFAULT_CHAT_FRAME:AddMessage("AddAura failed, no spell for id " .. name, 1, 0, 0)
+            return DEFAULT_CHAT_FRAME:AddMessage("AddAura failed, no spell for id " .. spellID, 1, 0, 0)
         end
         desc = isBuff and format(L["Buff: %s"], "ID-"..name) or format(L["Debuff: %s"], "ID-"..name)
         settings.text = self:TextForSpell(name)

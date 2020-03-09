@@ -13,6 +13,8 @@ BINDING_NAME_LITEBUFF_MOUNT_SURFACE = "Surface Mount";
 BINDING_NAME_LITEBUFF_MOUNT_VENDOR = "Vendor Mount";
 BINDING_NAME_LITEBUFF_MOUNT_UNDERWATER = "Underwater Mount";
 BINDING_NAME_LITEBUFF_MOUNT_NOFLY = "GroundOnly if not flyable";
+BINDING_NAME_LITEBUFF_MOUNT_AUCTION = "Auction Mount";
+BINDING_NAME_LITEBUFF_MOUNT_TRANSMOG = "Transmog Mount"
 
 addon.L = {
 	["lock frames"] = "Lock frames",
