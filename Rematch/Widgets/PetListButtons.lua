@@ -70,7 +70,7 @@ function rematch:FillPetListButton(button,petID,forLoadout)
 	if petInfo.breedName then
 		button.Breed:SetText(petInfo.breedName)
 		showBreed = true
-		yoff = rematch:GetBreedSource()=="PetTracker_Breeds" and -4 or -6
+		yoff = rematch:GetBreedFormat()=="icon" and -4 or -6
 	end
 	if petInfo.hasNotes then
 		showNotes = true

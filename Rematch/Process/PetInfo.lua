@@ -370,7 +370,7 @@ local queryAPIs = {
             elseif idType=="battle" then
                 breedID = PetTracker.Battle(self.battleOwner,self.battleIndex):GetBreed()
             end
-            if breedID then
+            if breedID and not RematchSettings.PetTrackerLetterBreeds then
                breedName = PetTracker.Breeds:Icon(breedID,0.85)
             end
          elseif source=="LibPetBreedInfo-1.0" then
@@ -422,7 +422,7 @@ local queryAPIs = {
                tinsert(possibleBreedIDs,breed)
                if source=="PetTracker_Breeds" then
                   tinsert(possibleBreedNames,PetTracker:GetBreedIcon(breed,0.85))
-               elseif source=="PetTracker" then
+               elseif source=="PetTracker" and not RematchSettings.PetTrackerLetterBreeds then
                   tinsert(possibleBreedNames,PetTracker.Breeds:Icon(breed,0.85))
                else
                   tinsert(possibleBreedNames,breedNames[breed])
@@ -493,8 +493,10 @@ function rematch:GetBreedSource()
          breedSource = "BattlePetBreedID"
          return "BattlePetBreedID"
       elseif IsAddOnLoaded("PetTracker_Breeds") and GetAddOnMetadata("PetTracker_Breeds","Version")~="7.1.4" then
-         breedSource = "PetTracker_Breeds"
-         return "PetTracker_Breeds"
+         if not PetTracker.Pet then -- only set this source if new PetTracker isn't enabled (PetTracker has its own issues when this is enabled alongside newer versions that don't include this)
+            breedSource = "PetTracker_Breeds"
+            return "PetTracker_Breeds"
+         end
       elseif IsAddOnLoaded("PetTracker") and PetTracker.Pet and PetTracker.Pet.GetBreed then
          breedSource = "PetTracker"
          return "PetTracker"
@@ -517,12 +519,22 @@ function rematch:GetBreedSource()
    return breedSource
 end
 
+-- either "text" or "icon", the format of breed to display
+function rematch:GetBreedFormat()
+   local source = rematch:GetBreedSource()
+   if source=="PetTracker_Breeds" or (source=="PetTracker" and not RematchSettings.PetTrackerLetterBreeds) then
+      return "icon"
+   else
+      return "text"
+   end
+end
+
 -- returns the name of a breed by its ID (used by PetMenus' breed menu; not petInfo)
 function rematch:GetBreedNameByID(breedID)
    local breedSource = rematch:GetBreedSource()
 	if breedSource=="PetTracker_Breeds" then
       return PetTracker:GetBreedIcon(breedID,.85)
-   elseif breedSource=="PetTracker" and PetTracker.Breeds.Names[breedID] then
+   elseif breedSource=="PetTracker" and PetTracker.Breeds.Names[breedID] and not RematchSettings.PetTrackerLetterBreeds then
       return PetTracker.Breeds:Icon(breedID,.85) .. " " .. PetTracker.Breeds.Names[breedID]
 	else
 		return breedNames[breedID]

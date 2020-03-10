@@ -197,7 +197,7 @@ function rematch:ShowPetCard(parent,petID,force)
 	info.PossibleBreeds:Hide()
 	if petInfo.possibleBreedNames then
 		local breedSource = rematch:GetBreedSource()
-		local possibleBreeds = table.concat(petInfo.possibleBreedNames,(breedSource=="PetTracker_Breeds" or breedSource=="PetTracker") and " " or ", ")
+		local possibleBreeds = table.concat(petInfo.possibleBreedNames,rematch:GetBreedFormat()=="icon" and " " or ", ")
 		info.PossibleBreeds:SetText(format("%s: \124cffffffff%s",L["Possible Breeds"],possibleBreeds))
 		info.PossibleBreeds:ClearAllPoints()
 		info.PossibleBreeds:SetPoint("BOTTOMLEFT",8,ybottom)
@@ -221,7 +221,7 @@ function rematch:ShowPetCard(parent,petID,force)
 				end
 			end
 		end
-		info.Collected:SetText(format("%s: %s",collected,table.concat(collectedPets,rematch:GetBreedSource()=="PetTracker_Breeds" and " " or ", ")))
+		info.Collected:SetText(format("%s: %s",collected,table.concat(collectedPets,rematch:GetBreedFormat()=="icon" and " " or ", ")))
 		info.Collected:ClearAllPoints()
 		info.Collected:SetPoint("BOTTOMLEFT",info,"BOTTOMLEFT",8,ybottom)
 		ybottom = ybottom + info.Collected:GetStringHeight()+4
@@ -767,7 +767,8 @@ function card:FillBreedTable(speciesID,breeds)
 				health = health*50
 				power = power*50
 				speed = speed*50
-				tinsert(breeds,{(breedSource=="PetTracker_Breeds" and PetTracker:GetBreedIcon(breed,.95) or PetTracker.Breeds:Icon(breed,.95)),health>0 and format("%d%%",health) or "-    ",power>0 and format("%d%%",power) or "-    ",speed>0 and format("%d%%",speed) or "-    "})
+				--tinsert(breeds,{(breedSource=="PetTracker_Breeds" and PetTracker:GetBreedIcon(breed,.95) or PetTracker.Breeds:Icon(breed,.95)),health>0 and format("%d%%",health) or "-    ",power>0 and format("%d%%",power) or "-    ",speed>0 and format("%d%%",speed) or "-    "})
+				tinsert(breeds,{rematch:GetBreedNameByID(breed),health>0 and format("%d%%",health) or "-    ",power>0 and format("%d%%",power) or "-    ",speed>0 and format("%d%%",speed) or "-    "})
 			end
 		end
 	end

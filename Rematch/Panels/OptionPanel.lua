@@ -55,6 +55,15 @@ rematch:InitModule(function()
 		end
 	end
 
+	-- remove the PetTrackerLetterBreeds option if PetTracker isn't the breed source
+	if rematch:GetBreedSource()~="PetTracker" then
+		for i=#panel.opts,1,-1 do
+			if panel.opts[i][2]=="PetTrackerLetterBreeds" then
+				tremove(panel.opts,i)
+			end
+		end
+	end
+
 	panel:PopulateList()
 
 	-- setup list scrollframe
@@ -311,6 +320,7 @@ panel.funcs.HideRarityBorders = rematch.UpdateUI
 panel.funcs.HideLevelBubbles = rematch.UpdateUI
 panel.funcs.ShowAbilityNumbers = rematch.UpdateUI
 panel.funcs.ShowAbilityNumbersLoaded = rematch.UpdateUI
+panel.funcs.PetTrackerLetterBreeds = rematch.UpdateUI
 panel.funcs.ResetSortWithFilters = rematch.UpdateUI
 panel.funcs.SortByNickname = rematch.UpdateRoster
 panel.funcs.AlwaysTeamTabs = function()

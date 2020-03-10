@@ -85,6 +85,7 @@ panel.opts = {
 	{ "check", "HideLevelBubbles", L["Hide Level At Max Level"], L["If a pet is level 25, don't show its level on the pet icon."], nil, true },
 	{ "check", "ShowAbilityNumbers", L["Show Ability Numbers"], L["In the ability flyout, show the numbers 1 and 2 to help with the common notation such as \"Pet Name 122\" to know which abilities to use."], nil, true },
 	{ "check", "ShowAbilityNumbersLoaded", L["On Loaded Abilities Too"], L["In addition to the flyouts, show the numbers 1 and 2 on loaded abilities."], "ShowAbilityNumbers", true },
+	{ "check", "PetTrackerLetterBreeds", L["Show Breeds As Text Not Icons"]..newIcon, L["Rather than use icons for PetTracker's breeds, display breeds in the more standard letter format such as B/B, H/P, etc.\n\n\124cffffffffNote:\124r This option only supports the later versions of PetTracker. Older PetTracker versions are not supported."], nil, true },
 	{ "header", L["Toolbar Options"], 9 },
 	{ "check", "BottomToolbar", L["Move Toolbar To Bottom"], L["Move the toolbar buttons (Revive Battle Pets, Battle Pet Bandages, Safari Hat, etc) to the bottom of the standalone window.\n\nAlso convert the red panel buttons (Save, Save As, Find Battle) to toolbar buttons."], nil, true },
 	{ "check", "ReverseToolbar", L["Reverse Toolbar Buttons"], L["Reverse the order of the toolbar buttons (Revive Battle Pets, Battle Pet Bandages, Safari Hat, etc)."], nil, true },
