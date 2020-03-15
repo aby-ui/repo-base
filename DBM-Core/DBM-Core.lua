@@ -69,9 +69,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200308164443"),
-	DisplayVersion = "8.3.16 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 2, 24) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200314130023"),
+	DisplayVersion = "8.3.18 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 3, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -4639,7 +4639,8 @@ do
 				if IsInInstance() then return end--Simple filter, if you are inside an instance, just filter it, if not in instance, good to go.
 				difficulty = tonumber(difficulty)
 				if not DBM.Options.ShowGuildMessagesPlus and difficulty == 8 then return end
-				local bossName = EJ_GetEncounterInfo(modId) or name or DBM_CORE_UNKNOWN
+				modId = tonumber(modId)
+				local bossName = modId and EJ_GetEncounterInfo(modId) or name or DBM_CORE_UNKNOWN
 				local difficultyName = DBM_CORE_UNKNOWN
 				if difficulty == 8 then
 					if difficultyModifier and difficultyModifier ~= 0 then
@@ -4665,7 +4666,8 @@ do
 				if IsInInstance() then return end--Simple filter, if you are inside an instance, just filter it, if not in instance, good to go.
 				difficulty = tonumber(difficulty)
 				if not DBM.Options.ShowGuildMessagesPlus and difficulty == 8 then return end
-				local bossName = EJ_GetEncounterInfo(modId) or name or DBM_CORE_UNKNOWN
+				modId = tonumber(modId)
+				local bossName = modId and EJ_GetEncounterInfo(modId) or name or DBM_CORE_UNKNOWN
 				local difficultyName = DBM_CORE_UNKNOWN
 				if difficulty == 8 then
 					if difficultyModifier and difficultyModifier ~= 0 then
@@ -11476,7 +11478,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200308164443" then
+	if not revision or revision == "20200314130023" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

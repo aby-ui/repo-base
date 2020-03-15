@@ -70,6 +70,9 @@ L["neferset_rare"] = "出现召唤仪式事件(坐标(50,78)，(50,88)和(55,79)
 L["solar_collector"] = "启用太阳能收集器四个方向上所有的能量水晶。点击每一个能量水晶会使其旁边的能量水晶反转。\n译者注（来源网上，并非最优解）：\n首先按上三下二的样式将能量水晶命名为\n1  2  3\n 4  5\n第一步：让1和3亮起来，哪个不亮点哪个\n第二步：观察245中哪些不亮\n第三步：全不亮:425\n              2不亮:213\n              4不亮:53\n              5不亮:21\n              45不亮:213425\n              24不亮:521\n              25不亮:53425"
 L["unearthed_keeper"] = "摧毁出土的守护者"
 L["ritual_ascension"] = "击杀日灼祭师"
+L["virnall_front"] = "杀怪直到战争使者梅尼普塔出现"
+L["kanebti"] = "将宝石甲虫塑像放置到甲虫神龛上"
+L["monstrous_summon"] = "杀死所有深渊先驱"
 
 
 -------------------------------------------------------------------------------
@@ -132,14 +135,56 @@ L["in_flames"] = "拾取水桶灭火"
 ----------------------------------- VISIONS -----------------------------------
 -------------------------------------------------------------------------------
 
+L["colored_potion"] = "颜色药水"
+L["colored_potion_note"] = [[
+%s旁边的药水颜色表示本次惊魂幻象内负面效果的药水颜色。
+
+加100理智的药水颜色可以由该药水确定(|cFFFF0000坏|r => |cFF00FF00好|r):
+
+黑色 => 绿色
+蓝色 => 紫色
+绿色 => 红色
+紫色 => 黑色
+红色 => 蓝色
+]]
+
+L["bear_spirit"] = "熊之魂"
+L["bear_spirit_note"] = "击杀愤怒的熊毯之灵获取急速+10%BUFF"
+L["buffs_change"] = "每次幻象可以获取的BUFF都会变。如果建筑没有开门或者NPC不在，说明这个BUFF在此次幻象内不存在"
+L["clear_sight"] = "需要科技：清晰视界%d级"
+L["craggle"] = "在地上放一个玩具（比如玩具火车）来扰乱他，然后将机器人拉开并优先击杀"
+L["empowered"] = "强化"
+L["empowered_note"] = "穿过布满地雷的房间到二楼（二楼上不去可以跳在楼梯扶手上过去）站在实验性增益地雷上获取+10%伤害BUFF"
+L["enriched"] = "浓缩"
+L["enriched_note"] = "击杀无人看管的公会银行获取+10%暴击BUFF"
+L["ethereal_essence"] = "Ethereal Essence"
+L["ethereal_essence_note"] = "Kill Warpweaver Dushar for a 10% crit buff."
+L["ethereal_note"] = "收集隐藏在整个幻象内的怪异水晶（橙色晶体）来交给这个NPC以获取额外的腐化纪念品\n\n|cFF00FF00别忘了拾取宝箱！|r"
+L["heroes_bulwark"] = "英雄的壁垒"
+L["heroes_bulwark_note"] = "击杀旅馆内的加摩尔获取生命值+10%BUFF"
 L["horrific_visions"] = "惊魂幻象"
+L["inside_building"] = "在建筑内"
 L["mailbox"] = "邮箱"
 L["mail_muncher"] = "打开邮箱会随机刷新邮件吞噬者"
-L["options_toggle_visions_misc_desc"] = "显示惊魂幻象内的奖励位置"
-L["shave_kit"] = "Coifcurl's Close Shave Kit"
-L["shave_kit_note"] = "Inside the barber shop."
-L["void_skull"] = "Void-Touched Skull"
-L["void_skull_note"] = "Click the skull on the ground to loot the toy."
+L["morgan_pestle"] = "摩根·匹斯特"
+L["requited_bulwark"] = "回恩壁垒"
+L["requited_bulwark_note"] = "击杀阿古塔斯·莫莱恩获取全能+7%BUFF"
+L["shave_kit"] = "科弗库尔的理发工具包"
+L["shave_kit_note"] = "在理发店内。拾取桌子上的箱子。"
+L["smiths_strength"] = "铁匠之力"
+L["smiths_strength_note"] = "击杀纳罗斯获取+10%伤害BUFF"
+L["spirit_of_wind"] = "风之魂"
+L["spirit_of_wind_note"] = "击杀布温巴获取急速及移动速度+10%BUFF"
+L["void_skull"] = "虚触徽记"
+L["void_skull_note"] = "点击地上的头骨（虚触徽记）获取玩具"
+L["yelmak"] = "耶尔玛克"
+
+L["options_toggle_visions_buffs"] = "增益效果"
+L["options_toggle_visions_buffs_desc"] = "显示可以获得持续一小时的伤害BUFF的事件位置"
+L["options_toggle_visions_chest_desc"] = "显示惊魂幻象内可能的宝箱位置"
+L["options_toggle_visions_mail"] = "邮箱"
+L["options_toggle_visions_mail_desc"] = "显示会掉落邮件吞噬者坐骑的邮箱位置"
+L["options_toggle_visions_misc_desc"] = "显示惊魂幻象内可能的奖励位置"
 
 -------------------------------------------------------------------------------
 ----------------------------------- VOLDUN ------------------------------------
@@ -201,7 +246,7 @@ L["incomplete"] = "未完成"
 L["known"] = "已获得"
 L["missing"] = "未获得"
 L["unobtainable"] = "无法获得"
-L["unlearnable"] = "无法解锁（相对当前职业、专精或其它原因）"
+L["unlearnable"] = "无法解锁"
 
 -------------------------------------------------------------------------------
 --------------------------------- CONTEXT MENU --------------------------------
@@ -258,6 +303,8 @@ L["options_toggle_rares"] = "稀有"
 L["options_toggle_supplies_desc"] = "显示战争补给箱（空投）的位置"
 L["options_toggle_supplies"] = "战争补给箱（空投）"
 L["options_toggle_treasures"] = "宝藏"
+L["options_restore_hidden_nodes"] = "恢复隐藏项"
+L["options_restore_hidden_nodes_desc"] = "恢复所有由右键菜单隐藏的节点"
 
 ---------------------------------- TOOLTIP ---------------------------------
 

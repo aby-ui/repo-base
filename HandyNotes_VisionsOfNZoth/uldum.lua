@@ -206,11 +206,9 @@ end)
 
 nodes[64572623] = Rare({id=157170, quest=57281, assault=AMA, note=L["chamber_of_the_stars"]}) -- Acolyte Taspu
 nodes[66817436] = Rare({id=158557, quest=57669, assault=EMP}) -- Actiss the Deceiver
-nodes[69714973] = Rare({id=151883, quest=55468, assault=AMA, pois={
-    Path({68645049, 69714973, 70955041, 71425210, 71005388, 69855463, 68695394, 68225217, 68645049})
-}}) -- Anaua
+nodes[73805180] = Rare({id=151883, quest=55468, assault=AMA}) -- Anaua
 nodes[32426443] = Rare({id=155703, quest=56834}) -- Anq'uri the Titanic
-nodes[38732500] = Rare({id=154578, quest=58612, note=L["aqir_flayer"], pois={
+nodes[38732500] = Rare({id=154578, quest=58612, assault=AQR, note=L["aqir_flayer"], pois={
     POI({ -- Aqir Hive Worker
         41202497, 40472249, 39882209, 38942459, 37102236, 36502179, 37782046,
         36761891, 37591749, 36041891, 35691808, 33551946, 32251624, 35031801,
@@ -222,7 +220,7 @@ nodes[38732500] = Rare({id=154578, quest=58612, note=L["aqir_flayer"], pois={
         29816310, 32056727, 32426645, 33646358, 37094853
     })
 }}) -- Aqir Flayer
-nodes[30595944] = Rare({id=154576, quest=58614, note=L["aqir_titanus"], pois={
+nodes[30595944] = Rare({id=154576, quest=58614, assault=AQR, note=L["aqir_titanus"], pois={
     POI({30266161, 30076533, 31496674, 33356610, 32486946, 34856598}),
     Path({37295892, 36485588, 37285284}),
     Path({38134884, 36535023, 34765141, 32935159}),
@@ -235,7 +233,7 @@ nodes[30595944] = Rare({id=154576, quest=58614, note=L["aqir_titanus"], pois={
     Path({32994510, 35434436, 36284239}),
     Path({41243247, 40503334, 39233745})
 }}) -- Aqir Titanus
-nodes[38214521] = Rare({id=162172, quest=58694, note=L["aqir_warcaster"], pois={
+nodes[38214521] = Rare({id=162172, quest=58694, assault=AQR, note=L["aqir_warcaster"], pois={
     POI({
         29666397, 30346691, 30396549, 30946805, 31296612, 31316747, 31546811,
         31586663, 31906347, 32256093, 32796516, 32856283, 33046590, 33246733,
@@ -276,7 +274,7 @@ nodes[80504715] = Rare({id=151995, quest=55502, assault=AMA, pois={
     Path({80504715, 79804519, 77204597})
 }}) -- Hik-Ten the Taskmaster
 nodes[60033950] = Rare({id=160623, quest=58206, assault=EMP, note=L["hmiasma"]}) -- Hungering Miasma
-nodes[19755847] = Rare({id=155531, quest=56823, note=L["wastewander"], pois={
+nodes[19755847] = Rare({id=155531, quest=56823, assault=AQR, note=L["wastewander"], pois={
     POI({
         17896249, 18026020, 18406490, 18966279, 19176080, 19626403, 19696174,
         19976498, 20036084, 20336267, 20686052, 20796452, 21365790, 22056027,
@@ -330,7 +328,7 @@ nodes[66676804] = Rare({id=162372, quest=58715, assault={AQR, AMA}, pois={
 }}) -- Spirit of Cyrus the Black
 nodes[49944011] = Rare({id=162352, quest=58716, assault={AQR, AMA}, note=L["in_water_cave"]}) -- Spirit of Dark Ritualist Zakahn
 nodes[52154012] = Cave({parent=nodes[49944011], assault={AQR, AMA}, label=L["spirit_cave"]}) -- Entrance
-nodes[78986389] = Rare({id=151878, quest=58613}) -- Sun King Nahkotep
+nodes[78986389] = Rare({id=151878, quest=58613, assault=AMA}) -- Sun King Nahkotep
 nodes[84785704] = Rare({id=151897, quest=55479, assault=AMA}) -- Sun Priestess Nubitt
 nodes[73347447] = Rare({id=151609, quest=55353, assault=AMA}) -- Sun Prophet Epaphos
 nodes[65903522] = Rare({id=152657, quest=55682, assault=AMA, pois={
@@ -348,7 +346,6 @@ nodes[33592569] = Rare({id=162170, quest=58702, assault=AQR}) -- Warcaster Xeshr
 nodes[79505217] = Rare({id=151852, quest=55461, assault=AMA, pois={
     Path({77755217, 81265217})
 }}) -- Watcher Rehu
-
 nodes[80165708] = Rare({id=157164, quest=57279, assault=AMA}) -- Zealot Tekem
 nodes[39694159] = Rare({id=162141, quest=58695, assault=AQR}) -- Zuythiz
 
@@ -420,6 +417,7 @@ nodes[33476998] = AQRTR2
 nodes[18356130] = AQRTR3
 nodes[19836512] = AQRTR3
 nodes[20585920] = AQRTR3
+nodes[21706436] = AQRTR3
 nodes[23406539] = AQRTR3
 nodes[23055936] = AQRTR3
 nodes[24525507] = AQRTR3
@@ -434,10 +432,12 @@ nodes[39754504] = AQRTR4
 nodes[40244251] = AQRTR4
 nodes[40454422] = AQRTR4
 nodes[40823893] = AQRTR4
+nodes[41604250] = AQRTR4
 -- quest=58142
 nodes[28030834] = AQRTR5
 nodes[30671611] = AQRTR5
 nodes[30903046] = AQRTR5
+nodes[31303070] = AQRTR5
 nodes[31521515] = AQRTR5
 nodes[33571901] = AQRTR5
 nodes[33953036] = AQRTR5
@@ -458,58 +458,62 @@ local EMPChest = Class('EMPChest', Treasure, {
 
 local EMPTR1 = EMPChest({quest=57623, icon='chest_blue', note=L["single_chest"]})
 local EMPTR2 = EMPChest({quest=57624, icon='chest_purple', note=L["single_chest"]})
-local EMPTR3 = EMPChest({quest=57626, icon='chest_orange'})
-local EMPTR4 = EMPChest({quest=57627, icon='chest_yellow'})
-local EMPTR5 = EMPChest({quest=57635, icon='chest_teal'})
+local EMPTR3 = EMPChest({quest=57625, icon='chest_lime', note=L["in_water"]..' '..L["single_chest"]})
+local EMPTR4 = EMPChest({quest=57626, icon='chest_orange'})
+local EMPTR5 = EMPChest({quest=57627, icon='chest_yellow'})
+local EMPTR6 = EMPChest({quest=57635, icon='chest_teal'})
 
 -- quest=57623
 nodes[58361535] = EMPTR1
 -- quest=57624
 nodes[50793143] = EMPTR2
+-- quest=57625
+nodes[52705006] = EMPTR3
 -- quest=57626
-nodes[57808250] = EMPTR3
-nodes[57817487] = EMPTR3
-nodes[58247282] = EMPTR3
-nodes[59226749] = EMPTR3
-nodes[60576213] = EMPTR3
-nodes[61778172] = EMPTR3
-nodes[62588188] = EMPTR3
-nodes[62977610] = EMPTR3
-nodes[62996440] = EMPTR3
-nodes[64436501] = EMPTR3
-nodes[66756810] = EMPTR3
-nodes[67547066] = EMPTR3
-nodes[70217325] = EMPTR3
+nodes[57808250] = EMPTR4
+nodes[57817487] = EMPTR4
+nodes[58247282] = EMPTR4
+nodes[59226749] = EMPTR4
+nodes[59416224] = EMPTR4
+nodes[60576213] = EMPTR4
+nodes[61778172] = EMPTR4
+nodes[62588188] = EMPTR4
+nodes[62977610] = EMPTR4
+nodes[62996440] = EMPTR4
+nodes[64436501] = EMPTR4
+nodes[66756810] = EMPTR4
+nodes[67547066] = EMPTR4
+nodes[70217325] = EMPTR4
 -- quest=57627
-nodes[59816610] = EMPTR4
-nodes[59867422] = EMPTR4
-nodes[60246529] = EMPTR4
-nodes[60757493] = EMPTR4
-nodes[60967000] = EMPTR4
-nodes[61206544] = EMPTR4
-nodes[61817595] = EMPTR4
-nodes[62157346] = EMPTR4
-nodes[62737184] = EMPTR4
-nodes[62807565] = EMPTR4
-nodes[63867065] = EMPTR4
-nodes[64607503] = EMPTR4
-nodes[65357117] = EMPTR4
-nodes[67167394] = EMPTR4
+nodes[59816610] = EMPTR5
+nodes[59867422] = EMPTR5
+nodes[60246529] = EMPTR5
+nodes[60757493] = EMPTR5
+nodes[60967000] = EMPTR5
+nodes[61206544] = EMPTR5
+nodes[61817595] = EMPTR5
+nodes[62157346] = EMPTR5
+nodes[62737184] = EMPTR5
+nodes[62807565] = EMPTR5
+nodes[63867065] = EMPTR5
+nodes[64607503] = EMPTR5
+nodes[65357117] = EMPTR5
+nodes[67167394] = EMPTR5
 -- quest=57635
-nodes[45697961] = EMPTR5
-nodes[47507687] = EMPTR5
-nodes[49037684] = EMPTR5
-nodes[49398584] = EMPTR5
-nodes[49807210] = EMPTR5
-nodes[50207510] = EMPTR5
-nodes[51157388] = EMPTR5
-nodes[51207970] = EMPTR5
-nodes[51707135] = EMPTR5
-nodes[51777298] = EMPTR5
-nodes[51897858] = EMPTR5
-nodes[52197757] = EMPTR5
-nodes[55397860] = EMPTR5
-nodes[55658346] = EMPTR5
+nodes[45697961] = EMPTR6
+nodes[47507687] = EMPTR6
+nodes[49037684] = EMPTR6
+nodes[49398584] = EMPTR6
+nodes[49807210] = EMPTR6
+nodes[50207510] = EMPTR6
+nodes[51157388] = EMPTR6
+nodes[51207970] = EMPTR6
+nodes[51707135] = EMPTR6
+nodes[51777298] = EMPTR6
+nodes[51897858] = EMPTR6
+nodes[52197757] = EMPTR6
+nodes[55397860] = EMPTR6
+nodes[55658346] = EMPTR6
 
 local EMPCOFF = Supply({quest=57628, assault=EMP, note=L["cursed_relic"],
     label=L["black_empire_coffer"]})
@@ -548,6 +552,7 @@ nodes[72216422] = AMATR2
 nodes[73117297] = AMATR2
 nodes[73707393] = AMATR2
 nodes[73987095] = AMATR2
+nodes[74206460] = AMATR2
 nodes[78286207] = AMATR2
 nodes[79166486] = AMATR2
 -- quest=55691

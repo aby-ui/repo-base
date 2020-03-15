@@ -161,7 +161,7 @@ module.db.RaidCheckReadyCheckTable = {}
 module.db.RaidCheckReadyPPLNum = 0
 module.db.RaidCheckReadyCheckHideSchedule = nil
 
-module.db.tableRunes = {[224001]=15,[270058]=60}
+module.db.tableRunes = {[224001]=15,[270058]=60,[317065]=60,}
 
 module.db.minFoodLevelToActual = {
 	[100] = 100,
@@ -1772,7 +1772,7 @@ function module.frame:UpdateData(onlyLine)
 					elseif module.db.tableRunes[spellId] then
 						local val = module.db.tableRunes[spellId]
 						
-						line.rune.texture:SetTexture(spellId == 270058 and 840006 or icon)
+						line.rune.texture:SetTexture((spellId == 270058 or spellId == 317065) and 840006 or icon)
 						if val >= 60 then
 							line.rune.text:SetTextColor(0,1,0)
 							line.rune.text:SetText("")
@@ -2113,18 +2113,6 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 	if prefix == "raidcheck" then
 		if sender then
 			ver = max(tonumber(ver or "0") or 0,3910)	--set min ver to 3910
-			if ver > ExRT.V then
-				if type == "FOOD" then
-					IsSendFoodByMe = nil
-				elseif type == "FLASK" then
-					IsSendFlaskByMe = nil
-				elseif type == "RUNES" then
-					IsSendRunesByMe = nil
-				elseif type == "BUFFS" then
-					IsSendBuffsByMe = nil
-				end
-				return
-			end
 			if type == "DUR" then
 				local val = ...
 				val = tonumber(val or "100") or 100
@@ -2139,6 +2127,18 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 				if line then
 					module.frame:UpdateData(line)
 				end
+			end
+			if ver > ExRT.V then
+				if type == "FOOD" then
+					IsSendFoodByMe = nil
+				elseif type == "FLASK" then
+					IsSendFlaskByMe = nil
+				elseif type == "RUNES" then
+					IsSendRunesByMe = nil
+				elseif type == "BUFFS" then
+					IsSendBuffsByMe = nil
+				end
+				return
 			end
 			if ExRT.F.IsPlayerRLorOfficer(ExRT.SDB.charName) == 2 then
 				return

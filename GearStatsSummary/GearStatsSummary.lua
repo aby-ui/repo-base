@@ -303,7 +303,7 @@ end
 function GearStatsSummary_GetSpecName(unit)
 	local spec, name, specID
     unit = unit or "player"
-    local classID = select(3, UnitClass("player"))
+    local classID = select(3, UnitClass(unit))
 	if not unit or unit == "player" then
 		spec = GetSpecialization()
         specID, name = GetSpecializationInfo(spec)

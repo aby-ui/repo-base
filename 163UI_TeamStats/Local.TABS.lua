@@ -14,7 +14,7 @@ local _, TS = ...
     },
 ]]
 
-TS.DATA_VERSION = 20200123
+TS.DATA_VERSION = 20200315
 
 TS.VERSION_BOSSES = { -13322, "吉", -13418, "乌", -13784, "艾", -14068, "恩" } --12110, "阿" -11874, "基" -- -11195, "古", --引领潮流 -11194, "萨", -11581, "海", 引领潮流：Ahead of the Curve: 千钧一发 Cutting Edge:
 
@@ -41,7 +41,7 @@ local INSTANCES = {
         { "扎库尔", 13613, 13614, { 13615, -13732, }, },
         { "艾萨拉女王", 13617, 13618, { 13619, -13733, }, },
       },
-      diff = { "", "H王宫", "M王宫", },
+      diff = { "", "", "M王宫", },
       tab = "永恒王宫",
     },
     {
@@ -59,7 +59,7 @@ local INSTANCES = {
             { "德雷阿佳丝", 14118, 14119, { 14120, -14049, }, },
             { "黑暗审判官夏奈什", 14102, 14104, { 14105, -14045, }, },
         },
-        diff = { "尼奥", "H尼奥", "M尼奥", },
+        diff = { "", "H尼奥", "M尼奥", },
         tab = "尼奥罗萨",
     },
 }
@@ -177,7 +177,7 @@ INSTANCES = {}
 for kk = 1, #instanceList do
     local instanceName = instanceList[kk]
     local mythicPattern = mythicPatterns[kk]
-    local DATA = { tab = instanceName, diff = copy(diff), bosses = {} }
+    local DATA = { tab = instanceName, diff = u1copy(diff), bosses = {} }
     tinsert(INSTANCES, DATA);
     for id, name in pairs(ACHIEVE_DATAS) do
         for diffId, diffName in next, diff do

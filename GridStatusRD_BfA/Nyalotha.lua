@@ -1,6 +1,8 @@
 -- local zone = "Ny'alotha"
 local zoneid = 1581
 
+--function GridStatusRaidDebuff:DebuffId(zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon)
+
 -- Trash
 GridStatusRaidDebuff:DebuffId(zoneid, 316959, 10000, 5, 5, true) --Devouring Acid
 GridStatusRaidDebuff:DebuffId(zoneid, 311019, 10000, 5, 5, true) --Weakening Blow
@@ -26,17 +28,12 @@ GridStatusRaidDebuff:DebuffId(zoneid, 316951, 10000, 5, 5, true) --Voracious Cha
 GridStatusRaidDebuff:DebuffId(zoneid, 311552, 10000, 5, 5, true) --Fear the Void
 GridStatusRaidDebuff:DebuffId(zoneid, 315932, 10000, 5, 5, true) --Brutal Smash
 GridStatusRaidDebuff:DebuffId(zoneid, 313938, 10000, 5, 5, true) --Crush
-GridStatusRaidDebuff:DebuffId(zoneid, 307019, 10000, 5, 5, true) --Void Corruption
 GridStatusRaidDebuff:DebuffId(zoneid, 311041, 10000, 5, 5, true) --Drive to Madness
 GridStatusRaidDebuff:DebuffId(zoneid, 309704, 10000, 5, 5, true) --Caustic Coating
 GridStatusRaidDebuff:DebuffId(zoneid, 315013, 10000, 5, 5, true) --Bursting Shadows
-GridStatusRaidDebuff:DebuffId(zoneid, 307359, 10000, 5, 5, true) --Despair
 GridStatusRaidDebuff:DebuffId(zoneid, 311097, 10000, 5, 5, true) --Condensing Void
 GridStatusRaidDebuff:DebuffId(zoneid, 315000, 10000, 5, 5, true) --Shadow Chisel
 GridStatusRaidDebuff:DebuffId(zoneid, 298514, 10000, 5, 5, true) --Aqiri Mind Toxin
-GridStatusRaidDebuff:DebuffId(zoneid, 307020, 10000, 5, 5, true) --Twilight Breath
-GridStatusRaidDebuff:DebuffId(zoneid, 306981, 10000, 5, 5, true) --Gift of the Void
-GridStatusRaidDebuff:DebuffId(zoneid, 315311, 10000, 5, 5, true) --Ravage
 GridStatusRaidDebuff:DebuffId(zoneid, 314347, 10000, 5, 5, true) --Noxious Choke
 GridStatusRaidDebuff:DebuffId(zoneid, 314188, 10000, 5, 5, true) --Mind Flay
 GridStatusRaidDebuff:DebuffId(zoneid, 313672, 10000, 5, 5, true) --Acid Pool
@@ -98,9 +95,10 @@ GridStatusRaidDebuff:DebuffId(zoneid, 306311, 64, 5, 5, true) --Soul Flay
 -- Vexiona
 GridStatusRaidDebuff:BossNameId(zoneid, 70, "Vexiona")
 GridStatusRaidDebuff:DebuffId(zoneid, 307019, 71, 5, 5, true, true) --Void Corruption
+GridStatusRaidDebuff:DebuffId(zoneid, 310224, 72, 6, 6, true, true) --毁灭
 GridStatusRaidDebuff:DebuffId(zoneid, 307284, 73, 5, 5, true) --Terrifying Presence
 GridStatusRaidDebuff:DebuffId(zoneid, 307343, 74, 5, 5, true) --Shadowy Residue
-GridStatusRaidDebuff:DebuffId(zoneid, 306981, 75, 5, 5, true) --Gift of the Void
+GridStatusRaidDebuff:DebuffId(zoneid, 306981, 75, 8, 8, true) --Gift of the Void
 GridStatusRaidDebuff:DebuffId(zoneid, 307359, 76, 5, 5, true) --Despair
 GridStatusRaidDebuff:DebuffId(zoneid, 307020, 77, 5, 5, true) --Twilight Breath
 GridStatusRaidDebuff:DebuffId(zoneid, 307250, 78, 5, 5, true) --Twilight Decimator

@@ -3,7 +3,7 @@ U1_NEW_ICON = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-
 
 -- default 仅在插件first run的时候运行，如果是nil则不会设置默认值
 function U1CfgMakeCVarOption(title, cvar, default, options)
-    local info = copy(options) or {}
+    local info = u1copy(options) or {}
 
     info.text = title
     info.var = "cvar_"..cvar

@@ -79,7 +79,7 @@ local function LootLink(linkAnyway)
 			local mobID = ExRT.F.GUIDtoID(sourceGUID)
 			if (linkAnyway or isFutureRaid) then
 				local itemLink =  GetLootSlotLink(i)
-				local _,_,_,quality = GetLootSlotInfo(i)
+				local _,_,_,_,quality = GetLootSlotInfo(i)
 				if itemLink and (not isFutureRaid or (quality and quality >= 4)) then
 					local itemID = itemLink:match("item:(%d+)")
 					if not itemID or not bannedItems[itemID] then

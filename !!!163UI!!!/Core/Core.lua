@@ -65,7 +65,7 @@ _empty_table = {};
 _temp_table = {};
 
 ---复制数据,如果不提供toTable则新建一个
-function copy(fromTable, toTable)
+function u1copy(fromTable, toTable)
     toTable = toTable or {}
     if not fromTable then return end
     for k,v in pairs(fromTable) do
@@ -73,6 +73,7 @@ function copy(fromTable, toTable)
     end
     return toTable;
 end
+copy = copy or u1copy
 
 function deepmix(targetTable, dataTable)
     for k, v in pairs(dataTable) do
@@ -125,6 +126,17 @@ function nocase(s)
 end
 function uncolor(s)
     return s and s:gsub("|c%x%x%x%x%x%x%x%x(.-)|r", "%1") or nil
+end
+local function ExtractColorValueFromHex(str, index)
+	return tonumber(str:sub(index, index + 1), 16) / 255;
+end
+function hex2rgba(hexColor)
+    if #hexColor == 8 then
+        local a, r, g, b = ExtractColorValueFromHex(hexColor, 1), ExtractColorValueFromHex(hexColor, 3), ExtractColorValueFromHex(hexColor, 5), ExtractColorValueFromHex(hexColor, 7);
+        return r, g, b, a;
+    else
+        error("format should be AARRGGBB")
+    end
 end
 
 function CoreBuildLocale()
@@ -251,7 +263,7 @@ function f2s(n, radius)
     end
 end
 
-local n2s,safecall,copy,tinsertdata,tremovedata,f2s = n2s,safecall,copy,tinsertdata,tremovedata,f2s
+local n2s,safecall,u1copy,tinsertdata,tremovedata,f2s = n2s,safecall,u1copy,tinsertdata,tremovedata,f2s
 LibStub("AceTimer-3.0"):Embed(core)
 function CoreScheduleTimer(repeating, delay, callback, arg)
     if(repeating)then
@@ -305,7 +317,7 @@ core.frame:SetScript("OnUpdate", function(self)
         runOnNextCount = runOnNextCount - oldCount;
         --将后面新加的复制到列表前面
         for i=1, runOnNextCount do
-            copy(runOnNextFrame[i+runOnNextCount], runOnNextFrame[i]);
+            u1copy(runOnNextFrame[i+runOnNextCount], runOnNextFrame[i]);
             wipe(runOnNextFrame[i+runOnNextCount]);
         end
     end

@@ -556,7 +556,12 @@ function TS.SetupColumns(f)
     local targetBtnOnEnter = function(self)
         for n, v in pairs(TS.db.players) do
             if v == self.line.player then
-                self.tooltipText = n
+                self.tooltipLines = self.tooltipLines or {}
+                self.tooltipLines[1] = n
+                self.tooltipLines[2] = "披风抗性    (-" .. (v.c_resist or 0) .. ")"
+                self.tooltipLines[3] = v.c_text and "|cff946cd0" .. v.c_text .. "|r" or ""
+                local corrupt = tostring(math.max(0, (v.c_total or 0) - (v.c_resist or 0) - 10))
+                self.tooltipLines[4] = "腐蚀合计：" .. corrupt
                 CoreUIShowTooltip(self, "ANCHOR_LEFT")
                 break
             end
@@ -734,6 +739,22 @@ function TS.SetupColumns(f)
             end
         },
         ]]
+        {
+            header = "腐蚀",
+            headerSpan = 1,
+            width = 36,
+            tip = "当前腐蚀值，计算了披风抗性并假设有10腐蚀抗性的特质",
+            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
+            update = function(line, widget, idx, colIdx)
+                local player = line.player
+                if (player.c_total) then
+                    widget:SetText(tostring(math.max(0, player.c_total - player.c_resist - 10)))
+                else
+                    widget:SetText("?")
+                end
+                if not player.gsGot then widget:SetTextColor(0.3,0.3,0.3) else widget:SetTextColor(0.5804, 0.4235, 0.8157) end --hex2rgba(ff946cd0)
+            end
+        },
         {
             header = "珠宝",
             headerSpan = 1,

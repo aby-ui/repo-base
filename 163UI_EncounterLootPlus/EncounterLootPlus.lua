@@ -27,7 +27,7 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
     if event == "VARIABLES_LOADED" then
         if ELPDATA and db ~= ELPDATA then
             wipe(db)
-            copy(ELPDATA, db)
+            u1copy(ELPDATA, db)
         end
         ELPDATA = db
         db.ITEMS = db.ITEMS or {}

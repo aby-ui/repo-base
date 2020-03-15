@@ -58,7 +58,7 @@ module.db.statsNames = {
 	avoidance = {L.cd2InspectAvoidance},
 	speed = {L.cd2InspectSpeed},
 
-	corruption = {"%+(%d+) "..ITEM_MOD_CORRUPTION.."$"},
+	corruption = {"%+(%d+) "..(ITEM_MOD_CORRUPTION or "Corruption").."$"},
 }
 
 module.db.itemsSlotTable = {
@@ -903,16 +903,18 @@ function module.main:ENCOUNTER_START()
 
 	local essTiers,essList = "",""
 	local milestones,milestone = C_AzeriteEssence.GetMilestones()
-	for i,milestone in ipairs(milestones) do
-		local eID = C_AzeriteEssence.GetMilestoneEssence(milestone.ID)
-		if eID then
-			local ess = C_AzeriteEssence.GetEssenceInfo(eID)
-			if milestone.ID == 115 then	--Major
-				essTiers =  ess.rank .. essTiers
-				essList = eID .. essList
-			else
-				essTiers = essTiers .. ess.rank
-				essList = essList .. ":" .. eID
+	if milestones then
+		for i,milestone in ipairs(milestones) do
+			local eID = C_AzeriteEssence.GetMilestoneEssence(milestone.ID)
+			if eID then
+				local ess = C_AzeriteEssence.GetEssenceInfo(eID)
+				if milestone.ID == 115 then	--Major
+					essTiers =  ess.rank .. essTiers
+					essList = eID .. essList
+				else
+					essTiers = essTiers .. ess.rank
+					essList = essList .. ":" .. eID
+				end
 			end
 		end
 	end
@@ -975,6 +977,8 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 	if prefix == "inspect" then
 		if subPrefix == "R" then
 			local str = ...
+			local senderFull = sender
+			sender = strsplit("-",sender)
 			while str do
 				local main,next = strsplit("^",str,2)
 				str = next
@@ -982,6 +986,7 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 				local key = main:sub(1,1)
 				if key == "E" then
 					cooldownsModule:ClearSessionDataReason(sender,"essence")
+					cooldownsModule:ClearSessionDataReason(senderFull,"essence")
 					
 					local essencePowers = module:GetEssenceDataByKey()
 					
@@ -1000,17 +1005,20 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 								for l=tier,1,-1 do
 									local ess = e[l]
 									cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
+									cooldownsModule.db.session_gGUIDs[senderFull] = {ess.spellID,"essence"}
 								end
 							end
 							for l=tier,1,-1 do
 								local ess = e[l*(-1)]
 								cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
+								cooldownsModule.db.session_gGUIDs[senderFull] = {ess.spellID,"essence"}
 							end
 							--print(sender,'added essence',e.id,e.name)
 						end
 					end
 				elseif key == "T" then
 					cooldownsModule:ClearSessionDataReason(sender,"talent")
+					cooldownsModule:ClearSessionDataReason(senderFull,"talent")
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1020,12 +1028,14 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						spellID = tonumber(spellID or "?")
 						if spellID and spellID ~= 0 then
 							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"talent"}
 							cooldownsModule.db.spell_isTalent[spellID] = true
 							--print(sender,'added talent',spellID)
 						end
 					end					
 				elseif key == "A" then
 					cooldownsModule:ClearSessionDataReason(sender,"azerite")
+					cooldownsModule:ClearSessionDataReason(senderFull,"azerite")
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1038,6 +1048,7 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 							if powerData then
 								local spellID = powerData.spellID
 								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"azerite"}
+								cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"azerite"}
 								cooldownsModule.db.spell_isAzeriteTalent[spellID] = true
 								--print(sender,'added azerite',powerID)
 							end

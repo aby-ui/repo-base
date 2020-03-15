@@ -1361,7 +1361,7 @@ function KT:SetupOptions()
     for i, module in ipairs(defaults.profile.modulesOrder) do def[module] = true end
     for i, module in ipairs(db.modulesOrder) do
         if not def[module] or exist[module] then
-            db.modulesOrder = copy(defaults.profile.modulesOrder)
+            db.modulesOrder = u1copy(defaults.profile.modulesOrder)
             break
         end
         exist[module] = true

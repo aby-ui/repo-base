@@ -575,7 +575,7 @@ function MySlot:RecoverData(msg, opt)
                     elseif slotType == MYSLOT_EMPTY then
                         PickupAction(slotId)
                     elseif slotType == MYSLOT_EQUIPMENTSET then
-                        PickupEquipmentSet(index)
+                        C_EquipmentSet.PickupEquipmentSet(index)
                     end
                     PlaceAction(slotId) 
                     ClearCursor()

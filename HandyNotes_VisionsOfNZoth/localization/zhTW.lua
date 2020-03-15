@@ -148,7 +148,7 @@ L["colored_potion_note"] = [[
 
 L["bear_spirit"] = "熊靈"
 L["bear_spirit_note"] = "殺死憤怒的熊地毯靈和所有小怪，即可獲得10％的加速增益。"
-L["buffs_change"] = "可用的增益每週更換一次。 如果建築物關閉或缺少NPC/物體，則本週該增益沒有提供。"
+L["buffs_change"] = "可用的增益每次都會更換。 如果建築物關閉或缺少NPC/物體，則本次該增益沒有提供。"
 L["clear_sight"] = "需要清除視線等級 %d。"
 L["craggle"] = "將玩具放在地面上（例如玩具火車組）以分散他的注意力。 拉開他的機器人，並先殺死他們。"
 L["empowered"] = "賦能"
@@ -287,6 +287,8 @@ L["options_toggle_hide_done_rare"] = "如果戰利品已收藏，隱藏稀有"
 L["options_toggle_hide_done_rare_desc"] = "隱藏所有戰利品已收藏的稀有。"
 L["options_toggle_hide_minimap"] = "隱藏小地圖上的所有圖示"
 L["options_toggle_hide_minimap_desc"] = "在小地圖上隱藏此插件的所有圖示，並只在主地圖上顯示它們。"
+L["options_restore_hidden_nodes"] = "恢復隱藏的節點"
+L["options_restore_hidden_nodes_desc"] = "恢復所有使用右鍵選單隱藏的節點。"
 
 L["options_toggle_battle_pets_desc"] = "顯示戰寵訓練師與NPC的位置。"
 L["options_toggle_battle_pets"] = "戰寵"

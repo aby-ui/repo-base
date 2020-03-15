@@ -93,6 +93,7 @@ PH.NoteHelp6 = "This example will be replaced with Sulfuras icon (|TInterface/Ic
 L.NoteDuplicate = "Duplicate"
 PH.NoteHelp7 = "This example will be replaced with dynamic timer for selected moment during bossfight."
 L.NoteTimer = "Timer:"
+L.NoteHelp8 = "All text inside this code (\"...\" in current example) will be shown only for selected classes (paladin and priest in this example). You can use any numbers of classes."
 
 L.setminimap1 = "Hide minimap icon"
 L.setauthor = "Author"

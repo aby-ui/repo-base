@@ -163,7 +163,7 @@ CoreDependCall("OmniCC", function()
             theme = theme or OmniCC:AddTheme(NEW_KEY)
             if theme.version ~= VERSION then
                 theme.version = VERSION
-                copy({
+                u1copy({
                     enableText = true,
                     scaleText = true,
                     spiralOpacity = 0.6,
@@ -202,7 +202,7 @@ CoreDependCall("OmniCC", function()
             end
             if rule.version ~= VERSION then
                 rule.version = VERSION
-                copy({
+                u1copy({
                     enabled = true,
                     patterns = { "GridLayoutHeader" },
                     priority = 1,

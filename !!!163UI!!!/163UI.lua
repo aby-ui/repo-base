@@ -1,6 +1,6 @@
 local floor,ceil,format,tostring=floor,ceil,format,tostring
 local pairs,ipairs,next,wipe,assert,type,tinsert,select,tremove,GetTime = pairs,ipairs,next,wipe,assert,type,tinsert,select,tremove,GetTime
-local n2s,safecall,copy,tinsertdata,tremovedata = n2s,safecall,copy,tinsertdata,tremovedata
+local n2s,safecall,u1copy,tinsertdata,tremovedata = n2s,safecall,u1copy,tinsertdata,tremovedata
 local U2, _, U1 = 163, ...
 local L = U1.L;
 U1.PINYIN = U1.PINYIN or {}
@@ -110,7 +110,7 @@ local function getInitialAddonInfo()
 
         --- copy a deps is mainly to calc parent, and the table is used later as info.optdeps
         --- there is no deps in raw_infos
-        local deps = copy(realDeps)
+        local deps = u1copy(realDeps)
         for _, known in ipairs(knownAddonPacks) do
             tremovedata(deps, known:lower())
         end
@@ -204,7 +204,7 @@ function U1LoadDBValue(cfg)
         local has, default = U1LoadDBDefault(cfg)
         if has then
             if type(default) == "table" then
-                v = copy(default)
+                v = u1copy(default)
             else
                 v = default
             end

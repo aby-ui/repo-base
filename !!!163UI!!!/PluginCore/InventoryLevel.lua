@@ -476,7 +476,7 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
 
     --缓存获取，装备搜索时includeGem是false, 不需要走缓存, 已经被db.ITEMS缓存了
     if slot == nil and includeGemEnchant and cache[link] and (not specID or primary_stats[specID]) then
-        copy(cache[link], tbl)
+        tbl = u1copy(cache[link], tbl)
         --移除非主属性
         if specID and primary_stats[specID] then
             for i=5, 8 do if i~=primary_stats[specID]+4 then tbl[i] = nil end end
@@ -519,8 +519,7 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         end
     end
     if slot == nil and includeGemEnchant and stats then
-        cache[link] = {}
-        copy(stats, cache[link])
+        cache[link] = copy(stats, cache[link])
         if specID and primary_stats[specID] then
             for i=5, 8 do if i~=primary_stats[specID]+4 then stats[i] = nil end end
         end

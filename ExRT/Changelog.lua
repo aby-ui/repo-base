@@ -1,6 +1,17 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4140
+* Note: added format restrictions for players class {c:Paladin}Press bubble{/c}
+* Note: added 8th group for quick name select
+* Raid check: added Lightning Forged Augment rune for tracking
+* Minor fixes
+
+v.4140-Classic
+* Note: added format restrictions for players class {c:Paladin}Press bubble{/c}
+* Note: added 8th group for quick name select
+* Minor fixes
+
 v.4130
 * Note: fixed colorizing highlighted text
 * Battle Res: fixed visualization for max combat res stacks (5 for M+)

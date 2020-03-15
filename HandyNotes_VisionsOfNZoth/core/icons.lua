@@ -1,6 +1,7 @@
 local ADDON_NAME, ns = ...
 local ICONS = "Interface\\Addons\\"..ADDON_NAME.."\\icons\\icons.blp"
-local ICONS_SIZE = 255
+local ICONS_WIDTH = 255
+local ICONS_HEIGHT = 511
 
 local function coords(x, y, grid, xo, yo)
     grid, xo, yo = grid or 32, xo or 0, yo or 0
@@ -47,6 +48,9 @@ ns.icons = {
     gpeg_green = { icon=ICONS, coords=coords(1, 7) },
     gpeg_yellow = { icon=ICONS, coords=coords(2, 7) },
 
+    envelope = { icon=ICONS, coords=coords(0, 8) },
+    orange_crystal = { icon=ICONS, coords=coords(2, 6) },
+
     door_down = { icon=ICONS, coords=coords(2, 0) },
     door_left = { icon=ICONS, coords=coords(2, 1) },
     door_right = { icon=ICONS, coords=coords(2, 2) },
@@ -90,10 +94,10 @@ ns.icons = {
 
 for name, icon in pairs(ns.icons) do
     if type(icon) == 'table' then
-        icon.tCoordLeft = icon.coords[1]/ICONS_SIZE
-        icon.tCoordRight = icon.coords[2]/ICONS_SIZE
-        icon.tCoordTop = icon.coords[3]/ICONS_SIZE
-        icon.tCoordBottom = icon.coords[4]/ICONS_SIZE
+        icon.tCoordLeft = icon.coords[1]/ICONS_WIDTH
+        icon.tCoordRight = icon.coords[2]/ICONS_WIDTH
+        icon.tCoordTop = icon.coords[3]/ICONS_HEIGHT
+        icon.tCoordBottom = icon.coords[4]/ICONS_HEIGHT
         icon.coords = nil
     end
 end

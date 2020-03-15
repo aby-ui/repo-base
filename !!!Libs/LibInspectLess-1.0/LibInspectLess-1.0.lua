@@ -16,8 +16,8 @@ lib.events = lib.events or  LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame", MAJOR.."_Frame")
 
 --==========================================================================================
-LibInspectLessInterval = 0.8		--use '/run LibInspectLessInterval=3' etc to change.
-LibInspectLessTimeout = 1.5 --观察超时的间隔
+LibInspectLessInterval = 0.5		--use '/run LibInspectLessInterval=3' etc to change.
+LibInspectLessTimeout = 1.0 --观察超时的间隔
 LibInspectLessDebug = false
 
 SlashCmdList["INSPECTLESS"] = function(msg)

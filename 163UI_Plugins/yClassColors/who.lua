@@ -19,7 +19,7 @@ hooksecurefunc('WhoList_Update', function()
         local info = C_FriendList.GetWhoInfo(index)
         if not info then return end
         local name, guild, level, race, class, zone, classFileName = info.fullName, info.fullGuildName, info.level, info.raceStr, info.classStr, info.area, info.filename
-        if(name) then
+        if(name and nameText) then
             if zone == playerZone then
                 zone = '|cff00ff00' .. zone
             end

@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200304234728")
+mod:SetRevision("20200310235600")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -11,7 +11,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911 296537 308481 308575 298033 308375 309882 309671 308305 311399 297315 308998",
 	"SPELL_AURA_APPLIED 311390 315385 316481 311641 308380 308366 308265 308998",
 	"SPELL_AURA_APPLIED_DOSE 311390",
-	"SPELL_AURA_REMOVED 308998",
+	"SPELL_AURA_REMOVED 308998 298033",
 	"SPELL_CAST_SUCCESS 309035",
 	"SPELL_PERIODIC_DAMAGE 312121 296674 308807 313303",
 	"SPELL_PERIODIC_MISSED 312121 296674 308807 313303",
@@ -25,7 +25,6 @@ mod:RegisterEventsInCombat(
 	"FORBIDDEN_NAME_PLATE_UNIT_ADDED"
 )
 
---TODO, notable trash or affix warnings
 --TODO, maybe add https://ptr.wowhead.com/spell=292021/madness-leaden-foot#see-also-other affix? just depends on warning to stop moving can be counter to a stacked affix
 --TODO, see if target scanning will work on Entropic Leap
 --General
@@ -100,6 +99,7 @@ mod.vb.UlrokCleared = false
 mod.vb.ShawCleared = false
 mod.vb.UmbricCleared = false
 local CVAR1, CVAR2, CVAR3 = nil, nil, nil
+local warnedGUIDs = {}
 
 --If you have potions when run ends, the debuffs throw you in combat for about 6 seconds after run has ended
 local function DelayedNameplateFix()
@@ -123,6 +123,7 @@ function mod:OnCombatStart(delay)
 	self.vb.ShawCleared = false
 	self.vb.UmbricCleared = false
 	CVAR1, CVAR2, CVAR3 = nil, nil, nil
+	table.wipe(warnedGUIDs)
 	if self.Options.SpecWarn306545dodge4 then
 		--This warning requires friendly nameplates, because it's only way to detect it.
 		CVAR1, CVAR2, CVAR3 = tonumber(GetCVar("nameplateShowFriends") or 0), tonumber(GetCVar("nameplateShowFriendlyNPCs") or 0), tonumber(GetCVar("nameplateShowOnlyNames") or 0)
@@ -147,6 +148,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
+	table.wipe(warnedGUIDs)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
@@ -302,6 +304,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.NPAuraOnMorale then
 			DBM.Nameplate:Hide(true, args.destGUID, spellId)
 		end
+	elseif spellId == 298033 then
+		if self.Options.NPAuraOnAbyss then
+			DBM.Nameplate:Hide(true, args.sourceGUID, 298033)
+		end
 	end
 end
 
@@ -401,12 +407,16 @@ end
 
 function mod:NAME_PLATE_UNIT_ADDED(unit)
 	if unit and (UnitName(unit) == playerName) and not (UnitPlayerOrPetInRaid(unit) or UnitPlayerOrPetInParty(unit)) then--Throttled because sometimes two spawn at once
-		if self:AntiSpam(2, 2) then
-			specWarnHauntingShadows:Show()
-			specWarnHauntingShadows:Play("runaway")
-		end
 		local guid = UnitGUID(unit)
-		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting2 and guid then
+		if not guid then return end
+		if not warnedGUIDs[guid] then
+			warnedGUIDs[guid] = true
+			if self:AntiSpam(2, 4) then
+				specWarnHauntingShadows:Show()
+				specWarnHauntingShadows:Play("runaway")
+			end
+		end
+		if not DBM:HasMapRestrictions() and self.Options.NPAuraOnHaunting2 then
 			DBM.Nameplate:Show(true, guid, 306545, 1029718, 5)
 		end
 	end
