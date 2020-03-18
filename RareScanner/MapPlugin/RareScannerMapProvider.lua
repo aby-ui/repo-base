@@ -234,7 +234,7 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 
 		-- If its been seen after our max show time
 		-- Ignore if its killed and we want to keep showing its icon
-		if (not npcInfo.notDiscovered and not keepShowingAfterDead and private.db.map.maxSeenTime ~= 0 and time() - npcInfo.foundTime > private.db.map.maxSeenTime * 3600) then
+		if (not npcInfo.notDiscovered and not keepShowingAfterDead and private.db.map.maxSeenTime ~= 0 and time() - npcInfo.foundTime > private.db.map.maxSeenTime * 60) then
 			return false
 		end
 	-- If its a container

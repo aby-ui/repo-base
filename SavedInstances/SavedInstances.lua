@@ -473,6 +473,7 @@ addon.defaultDB = {
     Currency1721 = true, -- Prismatic Manapearl
     CurrencyMax = false,
     CurrencyEarned = true,
+    CurrencySortName = false,
     MythicKey = true,
     MythicKeyBest = true,
     Emissary6 = false, -- LEG Emissary
@@ -2551,7 +2552,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.1" then
+  if versionString == "8.3.1-1-gfecbb28" then
     versionString = "Dev"
   end
   --@end-debug@]===]
@@ -4226,7 +4227,11 @@ function core:ShowTooltip(anchorframe)
   end
 
   local firstcurrency = true
-  for _, idx in ipairs(currency) do
+  local ckeys = currency
+  if addon.db.Tooltip.CurrencySortName then
+    ckeys = addon.currencySorted
+  end
+  for _, idx in ipairs(ckeys) do
     if addon.db.Tooltip["Currency" .. idx] or showall then
       local show
       for toon, t in cpairs(addon.db.Toons, true) do

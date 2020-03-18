@@ -1439,7 +1439,7 @@ local function GetMapOptions()
 					name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
 					min	= 0,
-					max	= 24,
+					max	= 30,
 					step = 1,
 					bigStep = 1,
 					get = function() return private.db.map.maxSeenTime end,

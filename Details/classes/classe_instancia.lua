@@ -2201,7 +2201,6 @@ function _detalhes:TrocaTabela (instancia, segmento, atributo, sub_atributo, ini
 		if (_detalhes.instances_segments_locked and not iniciando_instancia) then
 			for _, instance in ipairs (_detalhes.tabela_instancias) do
 				if (instance.meu_id ~= instancia.meu_id and instance.ativa and not instance._postponing_switch and not instance._postponing_current) then
-					print (instance:GetSegment(), instancia:GetSegment())
 					if (instance:GetSegment() >= 0 and instancia:GetSegment() ~= -1) then
 						if (instance.modo == 2 or instance.modo == 3) then
 							--> na troca de segmento, conferir se a instancia esta frozen

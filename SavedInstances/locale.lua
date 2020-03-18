@@ -148,6 +148,7 @@ Ld["Show/Hide the SavedInstances tooltip"] = "Show/Hide the SavedInstances toolt
 Ld["SIEGE"] = "SIEGE"
 Ld["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."
 Ld["Single category name"] = "Single category name"
+Ld["Sort by currency name"] = "Sort by currency name"
 Ld["Sort by server"] = "Sort by server"
 Ld["Sort categories by"] = "Sort categories by"
 Ld["Sort Order"] = "Sort Order"
@@ -326,6 +327,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Afficher/cacher l'infobulle de Sav
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "De la même manière, les mots KILLED et TOTAL seront remplacés par le nombre de boss tués et le nombre total de boss du raid pour ce verrouillage."
 La["Single category name"] = "Nom de catégorie unique"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Trier par serveur"
 La["Sort categories by"] = "Trier les catégories par :"
 La["Sort Order"] = "Ordre de tri "
@@ -508,6 +511,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Zeige/Verstecke den SavedInstances
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Ebenso werden die Wörter GETÖTET und GESAMT durch die Anzahl der getöteten und gesamten Bosse der ID ersetzt."
 La["Single category name"] = "Einzelner Kategoriename"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Nach Server sortieren"
 La["Sort categories by"] = "Kategorien sortieren nach"
 La["Sort Order"] = "Sortierung"
@@ -544,7 +549,7 @@ La["Weekly Quests"] = "Wöchentliche Quests"
 La["Wild Transmute"] = "Wilde Transmutation"
 --[[Translation missing --]]
 La["WM"] = "WM"
-La["WORK"] = "ARBEIT"
+La["WORK"] = "WS"
 La["World Boss"] = "Weltboss"
 La["World Bosses"] = "Weltbosse"
 La["YARD"] = "PLATZ"
@@ -674,6 +679,8 @@ La["Show/Hide the SavedInstances tooltip"] = "SavedInstances 툴팁 보기/숨�
 La["SIEGE"] = "보랄"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "마찬가지로, KILLED와 TOTAL의 단어가 귀속된 공격대의 '처치한 보스 숫자'와 '전체 보스'로 대체됩니다."
 La["Single category name"] = "단일 카테고리 이름"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "서버 별 정렬"
 La["Sort categories by"] = "카테고리 정렬"
 La["Sort Order"] = "정렬 순서"
@@ -869,6 +876,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Mostrar/ocultar la descripción"
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Las palabras \"KILLED\" y \"TOTAL\" se reemplazará por el número de jefes derrotados, y el número total de jefes de la instancia, respectivamente."
 La["Single category name"] = "Nombre de la categoría individual"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Ordenar por reino"
 La["Sort categories by"] = "Ordenar categorías por"
 La["Sort Order"] = "Establecer Orden"
@@ -1041,6 +1050,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Показать/Спрятать 
 La["SIEGE"] = "Осада"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Аналогично, слова KILLED и TOTAL будут заменены числом убитых и всего боссов в сохранении."
 La["Single category name"] = "Одиночное название категории"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Сорт. по серверам"
 La["Sort categories by"] = "Сорт. категории по"
 La["Sort Order"] = "Порядок сортировки"
@@ -1201,6 +1212,8 @@ La["Show/Hide the SavedInstances tooltip"] = "显示/隐藏 SavedInstances 界�
 La["SIEGE"] = "围攻"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "类似的，“KILLED”和“TOTAL”将被替换为首领的击杀数量和总数。"
 La["Single category name"] = "显示唯一分类名字"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "按服务器排序"
 La["Sort categories by"] = "排序分类按"
 La["Sort Order"] = "序号"
@@ -1396,6 +1409,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Mostrar/ocultar la ventana de info
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Las palabras \"KILLED\" y \"TOTAL\" se reemplazarán por el número de jefes derrotados y el total del registro."
 La["Single category name"] = "Nombre de la categoría individual"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Ordenar por reino"
 La["Sort categories by"] = "Ordenar categorías por"
 La["Sort Order"] = "Establecer orden"
@@ -1568,6 +1583,8 @@ La["Show/Hide the SavedInstances tooltip"] = "顯示/隱藏 SavedInstances 滑�
 La["SIEGE"] = "圍城"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "同樣的，「KILLED」和「TOTAL」字樣也會被替換為首領已擊殺與總數的數字。"
 La["Single category name"] = "單一分類名稱"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "按伺服器排序"
 La["Sort categories by"] = "排序分類按"
 La["Sort Order"] = "排列順序"
@@ -1597,10 +1614,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "每週任務"
 La["Wild Transmute"] = "狂野塑形"
 La["WM"] = "莊園"
-La["WORK"] = "工作"
+La["WORK"] = "工坊"
 La["World Boss"] = "世界首領"
 La["World Bosses"] = "世界首領"
-La["YARD"] = "場所"
+La["YARD"] = "廢料場"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "如果想要的話，可以在同個指標上顯示圖示與文字。首先選擇一個圖示，並在文字框中插入「ICON」到想要出現圖示的位置，就會自動替換成你選擇的圖示。"
 
 elseif locale == "ptBR" then
@@ -1762,6 +1779,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Mostrar/Ocultar as dicas do SavedI
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Da mesma forma, as palavras mortas e TOTAL será substituído com o número de chefes mortos e total do bloqueio."
 La["Single category name"] = "Nome da categoria única"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Organizar por servidor"
 La["Sort categories by"] = "Ordenar categorias por"
 La["Sort Order"] = "Organizar por"
@@ -1965,6 +1984,8 @@ La["Show/Hide the SavedInstances tooltip"] = "Mostra/nascondi la finestra di Sav
 La["SIEGE"] = "SIEGE"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Analogamente, le parole UCCISI e TOTALE saranno sostituite dal numero di boss uccisi e totali nel salvataggio"
 La["Single category name"] = "Nome categoria singolo"
+--[[Translation missing --]]
+La["Sort by currency name"] = "Sort by currency name"
 La["Sort by server"] = "Ordina per server"
 La["Sort categories by"] = "Ordina categorie per"
 La["Sort Order"] = "Ordinamento"

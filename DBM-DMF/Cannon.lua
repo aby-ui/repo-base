@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Cannon", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200202050204")
+mod:SetRevision("20200203000317")
 mod:SetZone()
 
 mod:RegisterEvents(

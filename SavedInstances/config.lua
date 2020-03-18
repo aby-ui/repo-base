@@ -528,8 +528,13 @@ function Config:BuildOptions()
             order = 40,
             name = L["Show currency earned"]
           },
-          CurrencyHeader = {
+          CurrencySortName = {
+            type = "toggle",
             order = 50,
+            name = L["Sort by currency name"],
+          },
+          CurrencyHeader = {
+            order = 60,
             type = "header",
             name = CURRENCY,
           },
@@ -867,12 +872,13 @@ function Config:BuildOptions()
       name = _G["EXPANSION_NAME" .. expansion],
     }
   end
+  local hdroffset = core.Options.args.Currency.args.CurrencyHeader.order
   for i, curr in ipairs(addon.currency) do
     local name,_,tex = GetCurrencyInfo(curr)
     tex = "\124T"..tex..":0\124t "
     core.Options.args.Currency.args["Currency"..curr] = {
       type = "toggle",
-      order = 50+i,
+      order = hdroffset+i,
       name = tex..name,
     }
   end

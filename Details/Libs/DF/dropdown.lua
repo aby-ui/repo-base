@@ -21,6 +21,8 @@ do
 	local metaPrototype = {
 		WidgetType = "dropdown",
 		SetHook = DF.SetHook,
+		HasHook = DF.HasHook,
+		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
 	}
 
@@ -454,8 +456,15 @@ function DropDownMetaFunctions:Selected (_table)
 	else
 		self.label:SetPoint ("left", self.label:GetParent(), "left", 4, 0)
 	end
-	
-	self.statusbar:SetTexture (_table.statusbar)
+
+	if (_table.statusbar) then
+		self.statusbar:SetTexture (_table.statusbar)
+		if (_table.statusbarcolor) then
+			self.statusbar:SetVertexColor (unpack(_table.statusbarcolor))
+		end
+	else
+		self.statusbar:SetTexture ([[Interface\Tooltips\CHATBUBBLE-BACKGROUND]])
+	end
 	
 	if (_table.color) then
 		local _value1, _value2, _value3, _value4 = DF:ParseColors (_table.color)
@@ -650,7 +659,23 @@ function DetailsFrameworkDropDownOnMouseDown (button)
 						_this_row.label:SetFont ("GameFontHighlightSmall", 10.5)
 					end
 					
-					_this_row.statusbar:SetTexture (_table.statusbar)
+					if (_table.statusbar) then
+						_this_row.statusbar:SetTexture (_table.statusbar)
+						if (_table.statusbarcolor) then
+							_this_row.statusbar:SetVertexColor (unpack(_table.statusbarcolor))
+						end
+					else
+						_this_row.statusbar:SetTexture ([[Interface\Tooltips\CHATBUBBLE-BACKGROUND]])
+					end
+
+					--an extra button in the right side of the row
+					--run a given function passing the button in the first argument, the row on 2nd and the _table in the 3rd
+					if (_table.rightbutton) then
+						DF:Dispatch (_table.rightbutton, _this_row.rightButton, _this_row, _table)
+					else
+						_this_row.rightButton:Hide()
+					end
+					
 					_this_row.label:SetText (_table.label)
 					
 					if (currentText and currentText == _table.label) then
@@ -1150,6 +1175,7 @@ function DF:CreateDropdownButton (parent, name)
 	statusbar:SetPoint ("left", f, "left", 1, 0)
 	statusbar:SetPoint ("right", f, "right", -10, 0)
 	statusbar:SetSize (150, 20)
+	statusbar:SetTexture ([[Interface\Tooltips\UI-Tooltip-Background]])
 	f.statusbar = statusbar
 	
 	local icon = f:CreateTexture ("$parent_IconTexture", "OVERLAY")
@@ -1164,6 +1190,10 @@ function DF:CreateDropdownButton (parent, name)
 	DF:SetFontSize (text, 10)
 	f.label = text
 	
+	local rightButton = DF:CreateButton(f, function()end, 16, 16, "", 0, 0, "", "rightButton", "$parentRightButton", nil, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+	rightButton:SetPoint("right", f, "right", -2, 0)
+	rightButton:Hide()
+
 	f:SetScript ("OnMouseDown", DetailsFrameworkDropDownOptionClick)
 	f:SetScript ("OnEnter", DetailsFrameworkDropDownOptionOnEnter)
 	f:SetScript ("OnLeave", DetailsFrameworkDropDownOptionOnLeave)

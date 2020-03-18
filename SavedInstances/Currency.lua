@@ -64,6 +64,17 @@ local currency = {
 }
 addon.currency = currency
 
+local currencySorted = {}
+for _, idx in ipairs(currency) do
+  table.insert(currencySorted, idx)
+end
+table.sort(currency, function (c1, c2)
+  local c1_name = GetCurrencyInfo(c1)
+  local c2_name = GetCurrencyInfo(c2)
+  return c1_name < c2_name
+end)
+addon.currencySorted = currencySorted
+
 local specialCurrency = {
   [1129] = { -- WoD - Seal of Tempered Fate
     weeklyMax = 3,

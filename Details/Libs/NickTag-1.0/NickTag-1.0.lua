@@ -4,7 +4,7 @@
 -- NickTag:SetNickname (name) -> set the player nick name, after set nicktag will broadcast the nick over addon guild channel.
 -- 
 
-local major, minor = "NickTag-1.0", 11
+local major, minor = "NickTag-1.0", 12
 local NickTag, oldminor = LibStub:NewLibrary (major, minor)
 
 if (not NickTag) then 
