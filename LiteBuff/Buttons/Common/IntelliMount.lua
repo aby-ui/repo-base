@@ -76,6 +76,8 @@ local utilityMounts = {
     { id = 214791, underwater = 1 },  --深海喂食者
     { id = 223018, underwater = 1 },  --深海水母
     { id = 278979, underwater = 1 },  --拍浪水母
+    { id = 300153, underwater = 1 },  --赤红浪骁
+    { id = 300151, underwater = 1 },  --墨鳞觅暗者
     { id = 253711, underwater = 1 },  --池塘水母
     { id = 228919, underwater = 1 },  --暗水鳐鱼
     { id = 278803, underwater = 1 },  --无尽之海鳐鱼

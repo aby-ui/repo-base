@@ -11,7 +11,7 @@ private.CONTINENT_ZONE_IDS = {
 	[12] = { zonefilter = true, id = 1, zones = {1,10,57,62,63,64,65,66,69,71,76,77,78,80,81,83,103,198,199,338,1469,1527,1571}, current = { 62,1527,1469,1571 } }; --Kalimdor
 	[113] = { zonefilter = true, id = 4, zones = {120} }; --Northrend
 	[424] = { zonefilter = true, id = 6, zones = {422,507,504,418,379,371,433,554,388,376,390,1530,1570}, current = { 1530,1570 } }; --Pandaria
-	--[101] = { id = 3, zones = {} }; --Outland
+	[101] = { zonefilter = true, id = 3, zones = {94,95,100,102,104,105,106,107,108,109} }; --Outland
 	[948] = { zonefilter = true, id = 5, zones = {207} }; --The Maelstrom
 	[876] = { zonefilter = true, id = 10, zones = {942,895,896,1161,1462}, current = { "all" } }; --Kul Tiras
 	[875] = { zonefilter = true, id = 11, zones = {864,863,862,1165}, current = { "all" } }; --Zandalar
@@ -19,7 +19,7 @@ private.CONTINENT_ZONE_IDS = {
 	[9999] = { zonefilter = true, zones = {628,672,276,734,702,695,747,378,739} }; --Class Halls
 	[9998] = { zonefilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, zones = {11,35,219,229,237,243,251,280,306,316,317,318,616,703,677,731,733,706,749,897,903} }; --Dungeons or scenarios
-	[9996] = { zonefilter = true, zones = {909,856,772} }; --Raids
+	[9996] = { zonefilter = true, zones = {909,856,772,366} }; --Raids
 	[9995] = { zonefilter = false, zones = {0} }; --Unknown
 }
 
@@ -50,6 +50,7 @@ private.SUBZONES_IDS = {
 	[237] = {238}; --Diremaul
 	[251] = {252, 253, 254, 255}; --Blackrock spire
 	[10] = {279}; --Northern barrens minimaps
+	[366] = {350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365}; --Karazhan (Outland raid)
 }
 
 private.ZONES_WITHOUT_VIGNETTE = {
@@ -95,6 +96,16 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[22] = {23}; --WESTERN_PLAGUELANDS
 	[51] = {56}; --SWAMP_OF_SORROWS
 	[71] = {76}; --TANARIS
+	[104] = {109}; --SHADOWMOON_VALLEY
+	[109] = {114}; --NETHERSTORM
+	[100] = {105}; --HELLFIRE_PENINSULA
+	[105] = {110}; --BLADES_EDGE_MOUNTAINS
+	[106] = {111}; --BLOODMYST_ISLE
+	[102] = {107}; --ZANGARMARSH
+	[108] = {113}; --TEROKKAR_FOREST
+	[107] = {112}; --NAGRAND
+	[95] = {100}; --GHOSTLANDS
+	[94] = {99}; --EVERSONG_WOODS
 	[73] = {77}; --THE_GAPING_CHASM
 	[72] = {78}; --THE_NOXIOUS_LAIR
 	[29] = {31}; --THE_GRIZZLED_DEN
@@ -121,6 +132,7 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[317] = {329}; --STRATHOLME_HUMAN
 	[35] = {36}; --BLACKROCK_DEPTHS_OUT
 	[243] = {254}; --BLACKROCK_DEPTHS2
+	[351] = {363}; --KARAZHAN
 }
 
 private.RESETABLE_KILLS_ZONE_IDS = {
@@ -527,6 +539,38 @@ private.ZONE_IDS = {
 	[2751] = { zoneID = 15, artID = 16, x = 0.48400003, y = 0.262 }; --War Golem
 	[2605] = { zoneID = 14, artID = 15, x = 0.624, y = 0.8 }; --Zalas Witherbark
 	[5847] = { zoneID = 199, artID = 204, x = 0.47, y = 0.886 }; --Heggin Stonewhisker
+	
+	-- Rares Burning Crusade
+	[18694] = { zoneID = 104, artID = 109, x = 0.366, y = 0.45 }; --Collidus the Warp-Watcher
+	[20932] = { zoneID = 109, artID = 114, x = 0.23200001, y = 0.78800005 }; --Nuramoc
+	[18697] = { zoneID = 109, artID = 114, x = 0.262, y = 0.404 }; --Chief Engineer Lorthander
+	[18695] = { zoneID = 104, artID = 109, x = 0.28, y = 0.48400003 }; --Ambassador Jerrikar
+	[18678] = { zoneID = 100, artID = 105, x = 0.236, y = 0.568 }; --Fulgorge
+	[18679] = { zoneID = 100, artID = 105, x = 0.714, y = 0.56 }; --Vorakem Doomspeaker
+	[16181] = { zoneID = 351, artID = 363, x = 0.59599996, y = 0.287 }; --Rokad the Ravager
+	[18692] = { zoneID = 105, artID = 110, x = 0.28, y = 0.66199994 }; --Hemathion
+	[18698] = { zoneID = 109, artID = 114, x = 0.206, y = 0.682 }; --Ever-Core the Punisher
+	[18690] = { zoneID = 105, artID = 110, x = 0.60400003, y = 0.248 }; --Morcrush
+	[22060] = { zoneID = 106, artID = 111, x = 0.148, y = 0.546 }; --Fenissa the Assassin
+	[18677] = { zoneID = 100, artID = 105, x = 0.41, y = 0.71 }; --Mekthorg the Wild
+	[18682] = { zoneID = 102, artID = 107, x = 0.23, y = 0.214 }; --Bog Lurker
+	[18696] = { zoneID = 104, artID = 109, x = 0.31, y = 0.45200002 }; --Kraator
+	[18689] = { zoneID = 108, artID = 113, x = 0.304, y = 0.638 }; --Crippler
+	[17144] = { zoneID = 107, artID = 112, x = 0.414, y = 0.414 }; --Goretooth
+	[18685] = { zoneID = 108, artID = 113, x = 0.304, y = 0.43400002 }; --Okrek
+	[18686] = { zoneID = 108, artID = 113, x = 0.35599998, y = 0.378 }; --Doomsayer Jurim
+	[18680] = { zoneID = 102, artID = 107, x = 0.098000005, y = 0.522 }; --Marticar
+	[18693] = { zoneID = 105, artID = 110, x = 0.39200002, y = 0.564 }; --Speaker Mar'grom
+	[18683] = { zoneID = 107, artID = 112, x = 0.322, y = 0.704 }; --Voidhunter Yar
+	[18681] = { zoneID = 102, artID = 107, x = 0.254, y = 0.374 }; --Coilfang Emissary
+	[16179] = { zoneID = 351, artID = 363, x = 0.59599996, y = 0.287 }; --Hyakiss the Lurker
+	[16180] = { zoneID = 351, artID = 363, x = 0.59599996, y = 0.287 }; --Shadikith the Glider
+	[22062] = { zoneID = 95, artID = 100, x = 0.294, y = 0.884 }; --Dr. Whitherlimb
+	[18684] = { zoneID = 107, artID = 112, x = 0.256, y = 0.518 }; --Bro'Gaz the Clanless
+	[16854] = { zoneID = 94, artID = 99, x = 0.682, y = 0.45 }; --Eldinarcus
+	[21724] = { zoneID = 108, artID = 113, x = 0.76199996, y = 0.812 }; --Hawkbane
+	[18241] = { zoneID = 66, artID = 71, x = 0.344, y = 0.216 }; --Crusty
+	[16855] = { zoneID = 94, artID = 99, x = 0.628, y = 0.796 }; --Tregla
 	
 	-- Rares Pandaria
 	[50062] = { zoneID = 207, x = 0.296, y = 0.412 }; --Aeonaxx

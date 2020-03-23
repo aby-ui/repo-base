@@ -471,6 +471,9 @@ addon.defaultDB = {
     Currency1717 = true, -- 7th Legion Service Medal
     Currency1718 = true, -- Titan Residuum
     Currency1721 = true, -- Prismatic Manapearl
+    Currency1719 = true, -- Corrupted Memento
+    Currency1755 = true, -- Coalescing Visions
+    Currency1803 = true, -- Echoes of Ny'alotha
     CurrencyMax = false,
     CurrencyEarned = true,
     CurrencySortName = false,
@@ -2552,7 +2555,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.1-1-gfecbb28" then
+  if versionString == "8.3.1-3-g7690d42" then
     versionString = "Dev"
   end
   --@end-debug@]===]

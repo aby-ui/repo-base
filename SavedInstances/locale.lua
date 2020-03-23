@@ -1212,8 +1212,7 @@ La["Show/Hide the SavedInstances tooltip"] = "显示/隐藏 SavedInstances 界�
 La["SIEGE"] = "围攻"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "类似的，“KILLED”和“TOTAL”将被替换为首领的击杀数量和总数。"
 La["Single category name"] = "显示唯一分类名字"
---[[Translation missing --]]
-La["Sort by currency name"] = "Sort by currency name"
+La["Sort by currency name"] = "按货币名称排序"
 La["Sort by server"] = "按服务器排序"
 La["Sort categories by"] = "排序分类按"
 La["Sort Order"] = "序号"
@@ -1583,8 +1582,7 @@ La["Show/Hide the SavedInstances tooltip"] = "顯示/隱藏 SavedInstances 滑�
 La["SIEGE"] = "圍城"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "同樣的，「KILLED」和「TOTAL」字樣也會被替換為首領已擊殺與總數的數字。"
 La["Single category name"] = "單一分類名稱"
---[[Translation missing --]]
-La["Sort by currency name"] = "Sort by currency name"
+La["Sort by currency name"] = "排序根據通貨名稱"
 La["Sort by server"] = "按伺服器排序"
 La["Sort categories by"] = "排序分類按"
 La["Sort Order"] = "排列順序"

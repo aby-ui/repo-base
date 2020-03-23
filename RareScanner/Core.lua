@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 10
-local CURRENT_LOOT_DB_VERSION = 27
+local CURRENT_DB_VERSION = 11
+local CURRENT_LOOT_DB_VERSION = 28
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -42,15 +42,14 @@ local HARD_RESET = {
 -- Command line input
 SLASH_RARESCANNER_CMD1 = "/rarescanner"
 local CMD_HELP = "help"
-local CMD_SHOW = "show"
-local CMD_HIDE = "hide"
-local CMD_TOGGLE = "toggle"
-local CMD_TOGGLE_RARES = "rares"
-local CMD_TOGGLE_EVENTS = "events"
-local CMD_TOGGLE_TREASURES = "treasures"
-local CMD_TOGGLE_RARES_SHORT = "tr"
-local CMD_TOGGLE_EVENTS_SHORT = "te"
-local CMD_TOGGLE_TREASURES_SHORT = "tt"
+local CMD_TOGGLE_MAP_ICONS = "tmi"
+local CMD_TOGGLE_ALERTS = "ta"
+local CMD_TOGGLE_RARES = "tr"
+local CMD_TOGGLE_RARES_ALERTS = "tra"
+local CMD_TOGGLE_EVENTS = "te"
+local CMD_TOGGLE_EVENTS_ALERTS = "tea"
+local CMD_TOGGLE_TREASURES = "tt"
+local CMD_TOGGLE_TREASURES_ALERTS = "tta"
 
 -- Textures
 local NORMAL_NEXT_ARROW_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RightArrowBlue.blp"
@@ -1874,42 +1873,45 @@ function RareScanner:LoadRareNames(db)
 	end, ITERATIONS);
 end
 
-SlashCmdList["RARESCANNER_CMD"] = function(msg)
-	local command, entity = strsplit(" ", msg)
-	if (command == CMD_SHOW) then
-		RareScanner:CmdShow()	
-	elseif (command == CMD_HIDE) then
-		RareScanner:CmdHide()
-	elseif (command == CMD_TOGGLE) then
-		if (not entity) then
-			if (not private.db.map.cmdToggle) then
-				RareScanner:CmdHide()
-				private.db.map.cmdToggle = true
-			else
-				RareScanner:CmdShow()
-				private.db.map.cmdToggle = false
-			end
-		elseif (entity == CMD_TOGGLE_RARES) then
-			RareScanner:CmdToggleRares()
-		elseif (entity == CMD_TOGGLE_EVENTS) then
-			RareScanner:CmdToggleEvents()
-		elseif (entity == CMD_TOGGLE_TREASURES) then
-			RareScanner:CmdToggleTreasures()
+SlashCmdList["RARESCANNER_CMD"] = function(command)
+	if (command == CMD_TOGGLE_MAP_ICONS) then
+		if (not private.db.map.cmdToggle) then
+			RareScanner:CmdHide()
+			private.db.map.cmdToggle = true
+		else
+			RareScanner:CmdShow()
+			private.db.map.cmdToggle = false
 		end
-	elseif (command == CMD_TOGGLE_RARES_SHORT) then
+	elseif (command == CMD_TOGGLE_ALERTS) then
+		if (not private.db.general.cmdToggleAlerts) then
+			RareScanner:CmdDisableAlerts()
+			private.db.general.cmdToggleAlerts = true
+		else
+			RareScanner:CmdEnableAlerts()
+			private.db.general.cmdToggleAlerts = false
+		end
+	elseif (command == CMD_TOGGLE_RARES) then
 		RareScanner:CmdToggleRares()
-	elseif (command == CMD_TOGGLE_EVENTS_SHORT) then
+	elseif (command == CMD_TOGGLE_RARES_ALERTS) then
+		RareScanner:CmdToggleRaresAlerts()
+	elseif (command == CMD_TOGGLE_EVENTS) then
 		RareScanner:CmdToggleEvents()
-	elseif (command == CMD_TOGGLE_TREASURES_SHORT) then
+	elseif (command == CMD_TOGGLE_EVENTS_ALERTS) then
+		RareScanner:CmdToggleEventsAlerts()
+	elseif (command == CMD_TOGGLE_TREASURES) then
 		RareScanner:CmdToggleTreasures()
+	elseif (command == CMD_TOGGLE_TREASURES_ALERTS) then
+		RareScanner:CmdToggleTreasuresAlerts()
 	else
-		RareScanner:PrintMessage(AL["CMD_HELP1"])
-		RareScanner:PrintMessage(AL["CMD_HELP2"])
-		RareScanner:PrintMessage(AL["CMD_HELP3"])
-		RareScanner:PrintMessage(AL["CMD_HELP4"])
-		RareScanner:PrintMessage(AL["CMD_HELP5"])
-		RareScanner:PrintMessage(AL["CMD_HELP6"])
-		RareScanner:PrintMessage(AL["CMD_HELP7"])
+		print("|cFFFBFF00"..AL["CMD_HELP1"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
 	end
 end
 
@@ -1927,6 +1929,20 @@ function RareScanner:CmdShow()
 	RareScanner:PrintMessage(AL["CMD_SHOW"])	
 end
 
+function RareScanner:CmdDisableAlerts()
+	private.db.general.scanRares = false
+	private.db.general.scanEvents = false
+	private.db.general.scanContainers = false
+	RareScanner:PrintMessage(AL["CMD_DISABLE_ALERTS"])
+end
+
+function RareScanner:CmdEnableAlerts()
+	private.db.general.scanRares = true
+	private.db.general.scanEvents = true
+	private.db.general.scanContainers = true
+	RareScanner:PrintMessage(AL["CMD_ENABLE_ALERTS"])	
+end
+
 function RareScanner:CmdToggleRares()
 	if (private.db.map.displayNpcIcons) then
 		private.db.map.displayNpcIcons = false
@@ -1934,6 +1950,16 @@ function RareScanner:CmdToggleRares()
 	else
 		private.db.map.displayNpcIcons = true
 		RareScanner:PrintMessage(AL["CMD_SHOW_RARES"])
+	end
+end
+
+function RareScanner:CmdToggleRaresAlerts()
+	if (private.db.general.scanRares) then
+		private.db.general.scanRares = false
+		RareScanner:PrintMessage(AL["CMD_DISABLE_RARES_ALERTS"])
+	else
+		private.db.general.scanRares = true
+		RareScanner:PrintMessage(AL["CMD_ENABLE_RARES_ALERTS"])
 	end
 end
 
@@ -1947,6 +1973,16 @@ function RareScanner:CmdToggleEvents()
 	end
 end
 
+function RareScanner:CmdToggleEventsAlerts()
+	if (private.db.general.scanEvents) then
+		private.db.general.scanEvents = false
+		RareScanner:PrintMessage(AL["CMD_DISABLE_EVENTS_ALERTS"])
+	else
+		private.db.general.scanEvents = true
+		RareScanner:PrintMessage(AL["CMD_ENABLE_EVENTS_ALERTS"])
+	end
+end
+
 function RareScanner:CmdToggleTreasures()
 	if (private.db.map.displayContainerIcons) then
 		private.db.map.displayContainerIcons = false
@@ -1954,6 +1990,16 @@ function RareScanner:CmdToggleTreasures()
 	else
 		private.db.map.displayContainerIcons = true
 		RareScanner:PrintMessage(AL["CMD_SHOW_TREASURES"])
+	end
+end
+
+function RareScanner:CmdToggleTreasuresAlerts()
+	if (private.db.general.scanContainers) then
+		private.db.general.scanContainers = false
+		RareScanner:PrintMessage(AL["CMD_DISABLE_CONTAINERS_ALERTS"])
+	else
+		private.db.general.scanContainers = true
+		RareScanner:PrintMessage(AL["CMD_ENABLE_CONTAINERS_ALERTS"])
 	end
 end
 

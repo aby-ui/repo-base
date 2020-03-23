@@ -347,6 +347,38 @@ private.RARE_LIST = {
 	2751, --War Golem
 	2605, --Zalas Witherbark
 	5847, --Heggin Stonewhisker
+	
+	-- Rares Burning Crusade
+	18694, --Collidus the Warp-Watcher
+	20932, --Nuramoc
+	18697, --Chief Engineer Lorthander
+	18695, --Ambassador Jerrikar
+	18678, --Fulgorge
+	18679, --Vorakem Doomspeaker
+	16181, --Rokad the Ravager
+	18692, --Hemathion
+	18698, --Ever-Core the Punisher
+	18690, --Morcrush
+	22060, --Fenissa the Assassin
+	18677, --Mekthorg the Wild
+	18682, --Bog Lurker
+	18696, --Kraator
+	18689, --Crippler
+	17144, --Goretooth
+	18685, --Okrek
+	18686, --Doomsayer Jurim
+	18680, --Marticar
+	18693, --Speaker Mar'grom
+	18683, --Voidhunter Yar
+	18681, --Coilfang Emissary
+	16179, --Hyakiss the Lurker
+	16180, --Shadikith the Glider
+	22062, --Dr. Whitherlimb
+	18684, --Bro'Gaz the Clanless
+	16854, --Eldinarcus
+	21724, --Hawkbane
+	18241, --Crusty
+	16855, --Tregla
 
 	-- Rares Pandaria
 	50062, --Aeonaxx
