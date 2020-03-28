@@ -1229,6 +1229,7 @@ G[1291254]='Bolstered Tideguard'
 G[1291260]="Myra's Favorite Pick"
 G[1292408]='Mountain of Bacon'
 G[1292523]='Wanted Poster'
+G[1292557]='Stormsong Supplies'
 G[1292673]='A Damp Scroll'
 G[1292674]='A Damp Scroll'
 G[1292675]='A Damp Scroll'

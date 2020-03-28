@@ -3,7 +3,6 @@
 -------------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
 
--- Table to set achievements that apply only to chests!
 private.ACHIEVEMENT_ZONE_IDS = {
 	[1165] = { 12851, 12944 }; --Zuldazar
 	[862] = { 12851, 12944 }; --Zuldazar
@@ -15,6 +14,13 @@ private.ACHIEVEMENT_ZONE_IDS = {
 	[942] = { 12853, 12940 }; --Stormsong Valley
 	[1355] = { 13549, 13691 }; --Nazjatar
 	[1462] = { 13470 }; --Mechagon
+	[104] = { 1312 }; --Shadowmoon valley (BC)
+	[109] = { 1312 }; --Netherstorm (BC)
+	[100] = { 1312 }; --Hellfire peninsula (BC)
+	[105] = { 1312 }; --Blades edge mountains (BC)
+	[102] = { 1312 }; --Zangarmarsh (BC)
+	[108] = { 1312 }; --Terokkar forest (BC)
+	[107] = { 1312 }; --Nagrand (BC)
 }
 
 private.ACHIEVEMENT_TARGET_IDS = {

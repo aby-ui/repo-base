@@ -398,6 +398,9 @@
 --			Corrects issue where map button does not appear upon first login for new character.
 --		077	Adjusts the position of the breadcrumb frame to look better in Classic.
 --			Adds support for Heart of Azeroth level requirements.
+--		078 *** Requires Grail 109 or later ***
+--			Updates the Classic interface to 11304 to match the latest Blizzard release.
+--			Updates getting NPC locations to newer API use in Grail.
 --
 --	Known Issues
 --
@@ -454,7 +457,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 104
+local requiredGrailVersion = 109
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -807,7 +810,7 @@ function self.mapPinsProvider:RefreshAllData(fromOnShow)
 				end
 			end
             local codeValue = codeMapping[code]
-            local locations = ('?' == code or '*' == code or '!' == code) and Grail:QuestLocationsTurnin(id, true, false, true, uiMapID) or Grail:QuestLocationsAccept(id, false, false, true, uiMapID, true, 0)
+            local locations = ('?' == code or '*' == code or '!' == code) and Grail:QuestLocationsTurnin(id, true, false, true, uiMapID) or Grail:QuestLocationsAccept(id, false, false, true, uiMapID, true)
             if nil ~= locations then
                 for _, npc in pairs(locations) do
                     local xcoord, ycoord, npcName, npcId = npc.x, npc.y, npc.name, npc.id
@@ -4123,8 +4126,8 @@ end
 			for i = 1, #questsInMap do
 				questId = questsInMap[i][1]
 				code = questsInMap[i][2]
---                local locations = Grail:QuestLocationsAccept(questId, false, false, true, parentFrame:GetMapID(), true, 0)
-				local locations = 'I' == code and Grail:QuestLocationsTurnin(questId, true, false, true, pin.map) or Grail:QuestLocationsAccept(questId, false, false, true, pin.map, true, 0)
+--                local locations = Grail:QuestLocationsAccept(questId, false, false, true, parentFrame:GetMapID(), true)
+				local locations = 'I' == code and Grail:QuestLocationsTurnin(questId, true, false, true, pin.map) or Grail:QuestLocationsAccept(questId, false, false, true, pin.map, true)
 				if nil ~= locations then
 					for _, npc in pairs(locations) do
 						if nil ~= npc.x then

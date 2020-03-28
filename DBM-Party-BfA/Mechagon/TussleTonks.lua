@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2336, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200224182835")
+mod:SetRevision("20200326020034")
 mod:SetCreatureID(144244, 145185)
 mod:SetEncounterID(2257)
 mod:SetZone()
@@ -113,9 +113,9 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 282801 then
-		local amount = args.amount or 1
+		local amount = args.amount or 0
 		warnPlatinumPlating:Cancel()
-		warnPlatinumPlating:Schedule(0.5, args.amount or 0)
+		warnPlatinumPlating:Schedule(0.5, amount)
 	elseif spellId == 285388 then
 		warnVentJets:Show()
 		timerVentJetsCD:Stop()

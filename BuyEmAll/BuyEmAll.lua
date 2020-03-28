@@ -206,11 +206,13 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
             self.partialFit = self.fit % stack;
         elseif (strmatch(self.itemLink, "currency")) then -- Same for if the purchase is a currency.
             self.stack = self.preset;
-            if (select(6, GetCurrencyInfo(self.itemLink)) == 0) then
+            local totalMax = select(6, GetCurrencyInfo(self.itemLink));
+            if (totalMax == 0) then
                 self.fit = 10000000;
-                self.partialFit = 0;
+            else
+                self.fit = totalMax - select(2, GetCurrencyInfo(self.itemLink));
             end
-            self.partialFit = select(6, GetCurrencyInfo(self.itemLink)) - select(2, GetCurrencyInfo(self.itemLink));
+            self.partialFit = 0; -- Currencies don't have stacks, so there can't be a partial stack.
         end
 
         if ((select(8, GetMerchantItemInfo(self.itemIndex)) == true) and (self.price == 0)) then -- Checks for alternate currency information then passes purchase to handler.

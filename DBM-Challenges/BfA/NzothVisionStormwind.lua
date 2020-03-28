@@ -1,14 +1,14 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200310235600")
+mod:SetRevision("20200323151931")
 mod:SetZone()
 mod.onlyNormal = true
 
 mod:RegisterCombat("scenario", 2213)--2212, 2213 (org, stormwind)
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911 296537 308481 308575 298033 308375 309882 309671 308305 311399 297315 308998",
+	"SPELL_CAST_START 308278 309819 309648 298691 308669 308366 308406 311456 296911 296537 308481 308575 298033 308375 309882 309671 308305 311399 297315 308998 308265 296669",
 	"SPELL_AURA_APPLIED 311390 315385 316481 311641 308380 308366 308265 308998",
 	"SPELL_AURA_APPLIED_DOSE 311390",
 	"SPELL_AURA_REMOVED 308998 298033",
@@ -36,10 +36,12 @@ local warnEntropicMissiles		= mod:NewSpellAnnounce(309373, 3)
 local warnExplosiveOrdnance		= mod:NewSpellAnnounce(305672, 3)
 local warnSeekAndDestroy		= mod:NewSpellAnnounce(311570, 3)
 local warnSummonEyeofChaos		= mod:NewSpellAnnounce(308681, 2)
+local warnCorruptedBlight		= mod:NewCastAnnounce(308265, 3)
+local warnLurkingAppendage		= mod:NewCastAnnounce(296669, 3)
 --Other notable abilities by mini bosses/trash
 local warnEntropicLeap			= mod:NewCastAnnounce(308406, 3)
 local warnConvert				= mod:NewTargetNoFilterAnnounce(308380, 3)
-local warnImprovedMorale			= mod:NewTargetNoFilterAnnounce(308998, 3)
+local warnImprovedMorale		= mod:NewTargetNoFilterAnnounce(308998, 3)
 local warnTouchoftheAbyss		= mod:NewCastAnnounce(298033, 4)
 local warnBrutalSmash			= mod:NewCastAnnounce(309882, 3)
 
@@ -79,6 +81,8 @@ local specWarnRiftStrike		= mod:NewSpecialWarningDodge(308481, nil, nil, nil, 2,
 
 --General
 local timerGiftoftheTitan		= mod:NewBuffFadesTimer(20, 313698, nil, nil, nil, 5)
+--Affixes/Masks
+local timerDarkImaginationCD	= mod:NewCDTimer(60, 315976, nil, nil, nil, 1, 296733)
 --Alleria Windrunner
 local timerDarkenedSkyCD		= mod:NewCDTimer(13.3, 308278, nil, nil, nil, 3)
 local timerVoidEruptionCD		= mod:NewCDTimer(27.9, 309819, nil, nil, nil, 2)
@@ -244,6 +248,10 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 311399 then
 		specWarnBladeFlourish:Show()
 		specWarnBladeFlourish:Play("justrun")
+	elseif spellId == 308265 then
+		warnCorruptedBlight:Show()
+	elseif spellId == 296669 then
+		warnLurkingAppendage:Show()
 	end
 end
 
@@ -378,6 +386,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED_UNFILTERED(uId, _, spellId)
 		self:SendSync("SeekandDestroy")
 	elseif spellId == 308681 and self:AntiSpam(2, 1) then
 		self:SendSync("SummonEye")
+	elseif spellId == 18950 and self:AntiSpam(2, 6) then
+		local cid = self:GetUnitCreatureId(uId)
+		if cid == 164189 or cid == 164188 then
+			self:SendSync("DarkImagination")
+		end
 	end
 end
 
@@ -433,5 +446,7 @@ function mod:OnSync(msg)
 		warnSeekAndDestroy:Show()
 	elseif msg == "SummonEye" then
 		warnSummonEyeofChaos:Show()
+	elseif msg == "DarkImagination" then
+		timerDarkImaginationCD:Start()
 	end
 end
