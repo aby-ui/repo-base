@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200326020034")
+mod:SetRevision("20200328172714")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetZone()
@@ -232,7 +232,7 @@ local allTimers = {
 			--Eternal Torment
 			[318449] = {32.7, 70.9, 44.9, 60.7},--Unique to LFR
 			--Thought Harvester spawns
-			[316711] = {15, 25.6, 44.9, 29.7, 30.1, 43, 30.5, 30.4},--16, 27, 45, 31, 30, 44, 30 in one LFR stream, so seems same
+			[316711] = {15, 25.6, 44.9, 29.6, 30.1, 42.9, 30.5, 30.4, 43.4},
 			--Evoke Anquish
 			[317102] = {15.3, 46.1, 30.4, 44.9, 36.4, 15.8, 51, 37.7},
 			--Stupefying Glare

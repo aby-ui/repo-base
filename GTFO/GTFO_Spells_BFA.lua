@@ -1163,7 +1163,6 @@ GTFO.SpellID["298569"] = {
 
 -- TODO: Crackling Shard (Wrathion) -- Alert when NOT afflicated with Burning Madness
 -- TODO: Acidic Blood (Ka'zir) -- Mythic only, avoidable?
--- TODO: Mycelial Growth (Carapace of N'Zoth) 
 -- TODO: Infinite Void (Carapace of N'Zoth) 
 -- TODO: Paranoia (N'Zoth) -- FF, complicated mechanic to track?
 -- TODO: Devour Thoughts (N'Zoth) -- FF
@@ -1213,6 +1212,36 @@ GTFO.SpellID["307421"] = {
   --desc = "Annihilation (Void Ascendant)";
   sound = 1;
   tankSound = 0;
+};
+
+GTFO.SpellID["317999"] = {
+  --desc = "Gaze from Beyond";
+  sound = 1;
+};
+
+GTFO.SpellID["314430"] = {
+  --desc = "Lingering Blood";
+  sound = 1;
+};
+
+GTFO.SpellID["309704"] = {
+  --desc = "Caustic Coating";
+  sound = 1;
+};
+
+GTFO.SpellID["310406"] = {
+  --desc = "Void Glare (Eyes of Drest'agath)";
+  sound = 1;
+};
+
+GTFO.SpellID["308995"] = {
+  --desc = "Reality Tear (Tentacle of Drest'agath)";
+  sound = 1;
+};
+
+GTFO.SpellID["307061"] = {
+  --desc = "Mycelial Growth (Fury of N'Zoth)";
+  sound = 1;
 };
 
 end

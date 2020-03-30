@@ -1696,6 +1696,16 @@ GTFO.SpellID["295182"] = {
   sound = 3;
 };
 
+GTFO.SpellID["285377"] = {
+  --desc = "B.4.T.T.L.3. Mine (The Platinum Pummeler)";
+  sound = 3;
+};
+
+GTFO.SpellID["293861"] = {
+  --desc = "Anti-Personnel Squirrel (Anti-Personnel Squirrel)";
+  sound = 3;
+};
+
 -- **********************
 -- * The Eternal Palace *
 -- **********************
@@ -1851,11 +1861,9 @@ GTFO.SpellID["303729"] = {
 -- TODO: Brutal Smash (Iron-Willed Enforcer) -- Mythic only, avoidable?
 -- TODO: Twilight Decimator (Vexiona)
 -- TODO: Madness Bomb (Carapace of N'Zoth) -- FF alert
--- TODO: Horrific Hemorrhage (Carapace of N'Zoth) -- Avoidable?
 -- TODO: Insanity Bomb (Carapace of N'Zoth) -- FF alert
 -- TODO: Corrupted Viscera (N'Zoth) -- Avoidable?
 -- TODO: Psychic Burst (N'Zoth) -- FF
--- TODO: Flames of Insanity (N'Zoth) -- Avoidable?
 -- TODO: Stupefying Glare (N'Zoth) -- Avoidable?
 
 GTFO.SpellID["305978"] = {
@@ -1892,6 +1900,74 @@ GTFO.SpellID["311383"] = {
 
 GTFO.SpellID["315932"] = {
   --desc = "Brutal Smash (Iron-Willed Enforcer)";
+  sound = 3;
+};
+
+GTFO.SpellID["314449"] = {
+  --desc = "Sanguine Fountain (Living Blood)";
+  sound = 3;
+};
+
+GTFO.SpellID["311547"] = {
+  --desc = "Rain of Blood (Sanguimar)";
+  sound = 3;
+};
+
+GTFO.SpellID["310614"] = {
+  --desc = "Crushing Slam (Tentacle of Drest'agath)";
+  sound = 3;
+};
+
+GTFO.SpellID["309961"] = {
+  --desc = "Eye of N'Zoth (Il'gynoth)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["318123"] = {
+  --desc = "Consumed by Void (N'zoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["317292"] = {
+  --desc = "Collapsing Mindscape (N'zoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["313793"] = {
+  --desc = "Flames of Insanity (N'zoth)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["318688"] = {
+  --desc = "Corrupted Viscera (N'zoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["313461"] = {
+  --desc = "Corrosion (Ka'zir)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["310005"] = {
+  --desc = "Void Eruption (Ra-den)";
+  sound = 3;
+};
+
+GTFO.SpellID["315878"] = {
+  --desc = "Occipital Blast (Fury of N'Zoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["315862"] = {
+  --desc = "Thrashing Tentacle (Fury of N'Zoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["313564"] = {
+  --desc = "Growth-Covered Tentacle (Fury of N'Zoth)";
   sound = 3;
 };
 
