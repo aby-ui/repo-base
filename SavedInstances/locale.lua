@@ -76,6 +76,12 @@ Ld["FH"] = "FH"
 Ld["Fit to screen"] = "Fit to screen"
 Ld["Flex"] = "Flex"
 Ld["Format large numbers"] = "Format large numbers"
+Ld["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+Ld["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+Ld["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+Ld["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+Ld["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+Ld["Full Clear No Masks"] = "Full Clear No Masks"
 Ld["General settings"] = "General settings"
 Ld["Group"] = "Group"
 Ld["Hold Alt to show all data"] = "Hold Alt to show all data"
@@ -88,6 +94,7 @@ Ld["Interleave"] = "Interleave"
 Ld["KR"] = "KR"
 Ld["Last updated"] = "Last updated"
 Ld["Legion Transmute"] = "Legion Transmute"
+Ld["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 Ld["Level %d Characters"] = "Level %d Characters"
 Ld["LFG cooldown"] = "LFG cooldown"
 Ld["LFR"] = "LFR"
@@ -172,6 +179,8 @@ Ld["Transmute"] = "Transmute"
 Ld["Type"] = "Type"
 Ld["UNDR"] = "UNDR"
 Ld["Use class color"] = "Use class color"
+Ld["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+Ld["Vision Boss Only"] = "Vision Boss Only"
 Ld["Warfronts"] = "Warfronts"
 Ld["Warn about instance limit"] = "Warn about instance limit"
 Ld["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."
@@ -244,6 +253,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "Ajuster à la taille de l'écran"
 La["Flex"] = "Dynamique"
 La["Format large numbers"] = "Formater les grands nombres"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Options générales"
 La["Group"] = "Grouper "
 La["Hold Alt to show all data"] = "Maintenez Alt pour afficher toutes les données."
@@ -257,6 +278,8 @@ La["Interleave"] = "Entrelacer "
 La["KR"] = "KR"
 La["Last updated"] = "Dernière mise à jour :"
 La["Legion Transmute"] = "Transmutation Légion"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Personnages de niveau %d"
 La["LFG cooldown"] = "Recherche de groupe"
 La["LFR"] = "RdR"
@@ -357,6 +380,10 @@ La["Type"] = "Type"
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Colorer par classe"
 --[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
 La["Warfronts"] = "Warfronts"
 La["Warn about instance limit"] = "Alerte sur la limite d'instance"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Attention : vous êtes entré dans %i instances récemment et approchez la limite de %i instances par heure pour ce compte. Plus d'instances seront disponibles dans environ %s."
@@ -431,6 +458,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "An Bildschirm anpassen"
 La["Flex"] = "Flex"
 La["Format large numbers"] = "Große Zahlen formatieren"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Allgemeine Einstellungen"
 La["Group"] = "Gruppieren"
 La["Hold Alt to show all data"] = "Halte Alt gedrückt, um alle Daten anzuzeigen"
@@ -445,6 +484,8 @@ La["Interleave"] = "Verschachteln"
 La["KR"] = "KR"
 La["Last updated"] = "Zuletzt aktualisiert"
 La["Legion Transmute"] = "Legion Transmutation"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Stufe-%d-Charaktere"
 La["LFG cooldown"] = "Dungeonbrowser-Abklingzeit"
 La["LFR"] = "LFR"
@@ -542,6 +583,10 @@ La["Type"] = "Wert"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Klassenfarbe verwenden"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "Kriegsfronten"
 La["Warn about instance limit"] = "Vor Instanzlimit warnen"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Achtung: Du hast kürzlich %i Instanzen betreten und näherst Dich dem Limit von %i Instanzen pro Stunde für Deinen Account. Weitere Instanzen sollten in %s verfügbar sein."
@@ -607,6 +652,18 @@ La["FH"] = "자유"
 La["Fit to screen"] = "화면에 맞춤"
 La["Flex"] = "탄력적 공격대"
 La["Format large numbers"] = "천 단위 구분자(,) 사용 여부"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "일반 설정"
 La["Group"] = "그룹"
 La["Hold Alt to show all data"] = "알트키를 누르고 있으면 모든 정보 표시"
@@ -619,6 +676,8 @@ La["Interleave"] = "끼워넣기"
 La["KR"] = "왕안"
 La["Last updated"] = "마지막 갱신"
 La["Legion Transmute"] = "군단 변환식"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "레벨 %d 캐릭터"
 La["LFG cooldown"] = "무작위 던전 대기시간 추적"
 La["LFR"] = "공찾"
@@ -704,6 +763,10 @@ La["Transmute"] = "변환"
 La["Type"] = "유형"
 La["UNDR"] = "썩굴"
 La["Use class color"] = "직업 색상 사용"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "격전지"
 La["Warn about instance limit"] = "인스턴스 제한 경고"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "경고 : 최근 %i 개의 인스턴스에 입장하였고, 귀하의 계정에 대해 시간 당 제한된 %i 개의 인스턴스에 근접하고 있습니다. 더 많은 인스턴스는 %s 후에 이용가능합니다."
@@ -785,6 +848,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "Ajustar a Pantalla"
 La["Flex"] = "Flexible"
 La["Format large numbers"] = "Formatear números extensos"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Opciones generales"
 La["Group"] = "Grupo"
 La["Hold Alt to show all data"] = "Pulse la tecla Alt para mostrar toda la información"
@@ -799,6 +874,8 @@ La["Interleave"] = "Entrelazado"
 La["KR"] = "KR"
 La["Last updated"] = "Última Actualización"
 La["Legion Transmute"] = "Transmutación de Legión"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Leveleá %d Personajes"
 La["LFG cooldown"] = "Seguir el cooldown de LFG"
 La["LFR"] = "BdB"
@@ -909,6 +986,10 @@ La["Type"] = "Tipo"
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Usar color de clase"
 --[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
 La["Warfronts"] = "Warfronts"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
@@ -978,6 +1059,18 @@ La["FH"] = "ВГ"
 La["Fit to screen"] = "Подогнать под размер экрана"
 La["Flex"] = "Гибкий"
 La["Format large numbers"] = "Формат больших чисел"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Общие настройки"
 La["Group"] = "Группировать"
 La["Hold Alt to show all data"] = "Нажмите Alt для просмотра всей информации"
@@ -990,6 +1083,8 @@ La["Interleave"] = "Смешивать в пределах соединенно�
 La["KR"] = "ГК"
 La["Last updated"] = "Последнее обновление"
 La["Legion Transmute"] = "Трансмутация Легиона"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Персонажи уровня %d"
 La["LFG cooldown"] = "Отслеживать время задержки Поиска группы для подземелий"
 La["LFR"] = "СПР (LFR)"
@@ -1075,6 +1170,10 @@ La["Transmute"] = "Трансмутация (алхимия)"
 La["Type"] = "Тип"
 La["UNDR"] = "Подг"
 La["Use class color"] = "Цвет класса"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "Фронты"
 La["Warn about instance limit"] = "Предупреждать о пределе подземелий"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Внимание! За последнее время вы вошли в %i подземелий и приближаетесь к ограничению в \"%i подземелий в час\" для вашего аккаунта. Новые подземелья будут доступны через %s."
@@ -1140,6 +1239,18 @@ La["FH"] = "自由"
 La["Fit to screen"] = "适应屏幕大小"
 La["Flex"] = "弹性"
 La["Format large numbers"] = "格式化大数字"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "综合"
 La["Group"] = "组合"
 La["Hold Alt to show all data"] = "按住Alt来显示所有信息"
@@ -1152,6 +1263,8 @@ La["Interleave"] = "交错"
 La["KR"] = "诸王"
 La["Last updated"] = "最后更新"
 La["Legion Transmute"] = "军团转化"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "等级 %d 人物"
 La["LFG cooldown"] = "随机地下城冷却"
 La["LFR"] = "团队搜寻器"
@@ -1236,6 +1349,10 @@ La["Transmute"] = "转化"
 La["Type"] = "类型"
 La["UNDR"] = "孢林"
 La["Use class color"] = "使用职业颜色"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "战争前线"
 La["Warn about instance limit"] = "达到副本进入限制时警告"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已经进入 %i 次副本，并且已经接近账号每小时 %i 次的进入限制，更多的副本可以在 %s 后允许进入。"
@@ -1317,6 +1434,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "Ajustar a pantalla"
 La["Flex"] = "Flexible"
 La["Format large numbers"] = "Dar formato a números grandes (separar con puntos los millares)"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Opciones generales"
 La["Group"] = "Grupo"
 La["Hold Alt to show all data"] = "Pulsa Alt para mostrar toda la información"
@@ -1331,6 +1460,8 @@ La["Interleave"] = "Entrelazado"
 La["KR"] = "KR"
 La["Last updated"] = "Última actualización"
 La["Legion Transmute"] = "Transmutación de Legión"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Personajes de nivel %d"
 La["LFG cooldown"] = "Tiempo de reutilización del Buscador de Grupo."
 La["LFR"] = "BdB"
@@ -1441,6 +1572,10 @@ La["Type"] = "Tipo"
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Usar color de clase"
 --[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
 La["Warfronts"] = "Warfronts"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
@@ -1510,6 +1645,18 @@ La["FH"] = "自由"
 La["Fit to screen"] = "不超出畫面"
 La["Flex"] = "彈性"
 La["Format large numbers"] = "格式化大數目"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "一般設定"
 La["Group"] = "群組"
 La["Hold Alt to show all data"] = "按住 Alt 顯示所有資料"
@@ -1522,6 +1669,8 @@ La["Interleave"] = "交錯"
 La["KR"] = "諸王"
 La["Last updated"] = "最近更新"
 La["Legion Transmute"] = "軍臨天下塑形"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "等級 %d 角色"
 La["LFG cooldown"] = "隨機隊伍冷卻"
 La["LFR"] = "隨機團隊"
@@ -1606,6 +1755,10 @@ La["Transmute"] = "轉化"
 La["Type"] = "類型"
 La["UNDR"] = "幽腐"
 La["Use class color"] = "使用職業顏色"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "戰爭前線"
 La["Warn about instance limit"] = "警告副本限制"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已經進入副本 %i 次，並且已經接近每小時 %i 次的帳號進入限制。 %s 後允許進入更多副本。"
@@ -1685,6 +1838,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "Ajustar à tela"
 La["Flex"] = "Flexível"
 La["Format large numbers"] = "Formatar números grandes"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Configurações Gerais"
 La["Group"] = "Grupo"
 La["Hold Alt to show all data"] = "Segure a tecla Alt para mostrar todos os dados"
@@ -1700,6 +1865,8 @@ La["Interleave"] = "Interleave"
 La["KR"] = "KR"
 La["Last updated"] = "Ultima atualização"
 La["Legion Transmute"] = "Transmutação de Legion"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Personagens nível %d"
 La["LFG cooldown"] = "Recarga do Localizador de Masmorras"
 La["LFR"] = "LdR"
@@ -1810,6 +1977,10 @@ La["Type"] = "Tipo"
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Usar cor das classes"
 --[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
 La["Warfronts"] = "Warfronts"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
@@ -1894,6 +2065,18 @@ La["FH"] = "FH"
 La["Fit to screen"] = "Adatta allo schermo"
 La["Flex"] = "Flex"
 La["Format large numbers"] = "Adatta i numeri grandi"
+--[[Translation missing --]]
+La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
+--[[Translation missing --]]
+La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
+--[[Translation missing --]]
+La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
+--[[Translation missing --]]
+La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
+--[[Translation missing --]]
+La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
+--[[Translation missing --]]
+La["Full Clear No Masks"] = "Full Clear No Masks"
 La["General settings"] = "Opzioni generali"
 La["Group"] = "Gruppo"
 La["Hold Alt to show all data"] = "Tieni premuto Alt per mostrare tutti i dati"
@@ -1908,6 +2091,8 @@ La["Interleave"] = "Interlinea"
 La["KR"] = "KR"
 La["Last updated"] = "Ultimo aggiornamento"
 La["Legion Transmute"] = "Trasmutazione di Legion"
+--[[Translation missing --]]
+La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
 La["Level %d Characters"] = "Personaggio di livello %d "
 La["LFG cooldown"] = "Tempo rimanente ricerca delle spedizioni"
 La["LFR"] = "Ricerca spedizioni"
@@ -2014,6 +2199,10 @@ La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
 La["Use class color"] = "Usa colori delle classi"
+--[[Translation missing --]]
+La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
+--[[Translation missing --]]
+La["Vision Boss Only"] = "Vision Boss Only"
 La["Warfronts"] = "Fronti di Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"

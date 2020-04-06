@@ -5,11 +5,12 @@ local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local seasonTotalPatten = gsub(CURRENCY_SEASON_TOTAL, "%%s%%s", "(.+)")
 
 -- Lua functions
-local wipe, ipairs, pairs = wipe, ipairs, pairs
+local ipairs, pairs, strfind, wipe = ipairs, pairs, strfind, wipe
 local _G = _G
 
 -- WoW API / Variables
 local GetCurrencyInfo = GetCurrencyInfo
+local GetItemCount = GetItemCount
 local GetMoney = GetMoney
 local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 

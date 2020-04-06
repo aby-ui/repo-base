@@ -87,7 +87,6 @@ for i = 0,10 do
 end
 
 local tooltip, indicatortip = nil, nil
-addon.indicatortip = indicatortip
 local thisToon = UnitName("player") .. " - " .. GetRealmName()
 local maxlvl = MAX_PLAYER_LEVEL_TABLE[#MAX_PLAYER_LEVEL_TABLE]
 
@@ -488,6 +487,9 @@ addon.defaultDB = {
     TrackParagon = true,
     Progress1 = true, -- PvP Conquest
     Progress2 = true, -- Island Weekly
+    Progress3 = true, -- Horrific Vision
+    Progress4 = true, -- N'Zoth Assaults
+    Progress5 = true, -- Lesser Visions of N'Zoth
     Warfront1 = true, -- Arathi Highlands
     Warfront2 = true, -- Darkshores
   },
@@ -1807,6 +1809,7 @@ end
 
 local function openIndicator(...)
   indicatortip = QTip:Acquire("SavedInstancesIndicatorTooltip", ...)
+  addon.indicatortip = indicatortip -- expose indicatortip to BonusRoll and Progress, remove in future
   indicatortip:Clear()
   indicatortip:SetHeaderFont(core:HeaderFont())
   indicatortip:SetScale(addon.db.Tooltip.Scale)
@@ -2535,6 +2538,54 @@ hoverTooltip.ShowCurrencySummary = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowHorrificVisionTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = addon.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), SPLASH_BATTLEFORAZEROTH_8_3_0_FEATURE1_TITLE)
+
+  local P = core:GetModule("Progress")
+  for i, descText in ipairs(P.TrackedQuest[index].rewardDesc) do
+    indicatortip:AddLine(descText[2], t.Progress[index][i] and
+      REDFONT .. ALREADY_LOOTED .. FONTEND or
+      GREENFONT .. AVAILABLE .. FONTEND
+    )
+  end
+  finishIndicator()
+end
+
+hoverTooltip.ShowNZothAssaultTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = addon.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t or not t.Quests then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), WORLD_MAP_THREATS)
+
+  local P = core:GetModule("Progress")
+  for keyQuestID, data in pairs(P.TrackedQuest[index].assaultQuest) do
+    if t.Quests[keyQuestID] or t.Progress[index][keyQuestID] then
+      indicatortip:AddLine(addon:QuestInfo(keyQuestID),
+        t.Quests[keyQuestID] and (REDFONT .. CRITERIA_COMPLETED .. FONTEND) or (GREENFONT .. AVAILABLE .. FONTEND)
+      )
+      for _, questID in ipairs(data) do
+        indicatortip:AddLine(addon:QuestInfo(questID),
+          t.Quests[questID] and (REDFONT .. CRITERIA_COMPLETED .. FONTEND) or (
+            t.Progress[index][questID] and
+            (GREENFONT .. AVAILABLE .. FONTEND) or
+            (REDFONT .. ADDON_NOT_AVAILABLE .. FONTEND)
+          )
+        )
+      end
+    end
+  end
+
+  finishIndicator()
+end
+
 -- global addon code below
 function core:toonInit()
   local ti = db.Toons[thisToon] or { }
@@ -2555,7 +2606,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.1-3-g7690d42" then
+  if versionString == "8.3.2" then
     versionString = "Dev"
   end
   --@end-debug@]===]

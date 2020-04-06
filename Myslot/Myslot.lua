@@ -352,6 +352,12 @@ function MySlot:Import(text, opt)
     return msg
 end
 
+local function UnifyCRLF(text)
+    text = string.gsub(text, "\r", "")
+    text = string.gsub(text, "\n", MYSLOT_LINE_SEP)
+    return text
+end
+
 -- {{{ FindOrCreateMacro
 function MySlot:FindOrCreateMacro(macroInfo)
     if not macroInfo then
@@ -363,6 +369,7 @@ function MySlot:FindOrCreateMacro(macroInfo)
     for i = 1, MAX_ACCOUNT_MACROS + MAX_CHARACTER_MACROS do
         
         local name, _, body = GetMacroInfo(i)
+        body = UnifyCRLF(body)
         if name then
             localMacro[ name .. "_" .. body ] = i
             localMacro[ body ] = i
@@ -374,8 +381,9 @@ function MySlot:FindOrCreateMacro(macroInfo)
     local name = macroInfo["name"]
     local icon = macroInfo["icon"]
     local body = macroInfo["body"]
+    body = UnifyCRLF(body)
 
-    local localIndex = localMacro[ name .. "_" .. body ] or localMacro[ body ]
+    local localIndex = localMacro[ name .. "_" .. body] or localMacro[ body ]
 
     if localIndex then
         return localIndex

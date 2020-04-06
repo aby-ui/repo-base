@@ -55,6 +55,7 @@ end
 U1RegisterAddon("!!!Libs", { load = "NORMAL", protected = 1, hide = 1 }) EnableAddOn("!!!Libs") --163UI必须第一个加载，不能依赖其他的，只能这样
 U1RegisterAddon("!!!163UI.pics!!!", { title = "插件说明图片", hide = 1, defaultEnable = 0 });
 U1RegisterAddon("!!!163UI.3dcodecmd!!!", { title = "爱不易核心", load = "NORMAL", hide = 1, protected = 1, defaultEnable = 1 });
+U1RegisterAddon("haohaoliaotian", { load = "NORMAL", protected = 1, hide = 1 }) EnableAddOn("haohaoliaotian")
 
 U1RegisterAddon("!!!163UI!!!", {
     title = L["爱不易"],

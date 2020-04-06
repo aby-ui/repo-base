@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2158, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200204040151")
+mod:SetRevision("20200330174239")
 mod:SetCreatureID(133007)
 mod:SetEncounterID(2123)
 mod:SetZone()
@@ -22,7 +22,7 @@ local warnVisage					= mod:NewAddsLeftAnnounce("ej18312", 2, 269692)
 
 local specWarnBloodVisage			= mod:NewSpecialWarningSwitch("ej18312", "-Healer", nil, nil, 1, 2)
 local specWarnVileExpulsion			= mod:NewSpecialWarningDodge(269843, nil, nil, nil, 2, 2)
-local specWarnCleansingLight		= mod:NewSpecialWarningYou(269310, nil, nil, nil, 1, 2)
+local specWarnCleansingLight		= mod:NewSpecialWarningSpell(269310, nil, nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(269838, nil, nil, nil, 1, 8)
 
 local timerBloodVisageCD			= mod:NewCDTimer(15.7, "ej18312", nil, nil, nil, 1, 269692)

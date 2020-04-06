@@ -23,7 +23,7 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.55.1"; -- Version number (text format)
+	Version = "4.55.2"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
 	RetailVersionNumber = 45501; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 45500; -- Numeric version number for checking out-of-date clients (classic)
