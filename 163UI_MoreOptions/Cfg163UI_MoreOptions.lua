@@ -262,6 +262,7 @@ if(not GetCVar) then return end --java parser
 do
     setProfanityFilter = function()
         if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then
+            ConsoleExec("SET portal TW")
             SetCVar('profanityFilter', '0')
             --if BNConnected() then
             pcall(BNSetMatureLanguageFilter, false)
