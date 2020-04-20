@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Script file="RSOverlayMixin.lua"/>
+  
+  <Frame name="RSOverlayTemplate" mixin="RSOverlayMixin" virtual="true">
+		<Size>
+			<AbsDimension x="10" y="10"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Texture" alphaMode="ADD">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnMouseEnter method="OnMouseEnter"/>
+			<OnMouseLeave method="OnMouseLeave"/>
+			<OnMouseDown method="OnMouseDown"/>
+		</Scripts>
+	</Frame>
+  
+</Ui>

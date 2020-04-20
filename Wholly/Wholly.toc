@@ -3,7 +3,7 @@
 ## Title: Wholly
 ## Author: Scott M Harrison
 ## Notes: Shows quest database and map pins
-## Version: 078
+## Version: 079
 ## Dependencies: Grail
 ## OptionalDeps: LibStub, LibDataBroker, TomTom, Gatherer, Questie
 ## SavedVariablesPerCharacter: WhollyDatabase

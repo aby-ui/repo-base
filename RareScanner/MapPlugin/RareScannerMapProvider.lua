@@ -33,6 +33,7 @@ end
  
 function RareScannerDataProviderMixin:RemoveAllData()
 	self:GetMap():RemoveAllPinsByTemplate("RSRarePinTemplate");
+	self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
 	self:InitializeAllTrackingTables();
 end
  
@@ -313,6 +314,11 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 
 	local pin = self:GetMap():AcquirePin("RSRarePinTemplate", npcID, npcInfo);
 	self.rareNpcToPins[npcID] = pin;
+	
+	-- Adds overlay if active
+	if (private.dbchar.overlayActive and private.dbchar.overlayActive == npcID) then
+		pin:ShowOverlay()
+	end
 	
 	-- Avoids overriding the recorded value
 	if (npcInfoBak) then

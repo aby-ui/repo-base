@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200206171259")
+mod:SetRevision("20200211023611")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetZone()

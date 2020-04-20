@@ -1092,6 +1092,15 @@ typeControlAdders = {
         return not option.useName
       end
     }
+    args[prefix .. "noMerge"] = {
+      type = "toggle",
+      name = name(option, "noMerge", L["Prevent Merging"]),
+      desc = desc(option, "noMerge", L["If checked, then this separator will not merge with other separators when selecting multiple auras."]),
+      order = order(),
+      width = WeakAuras.doubleWidth,
+      get = get(option, "noMerge"),
+      set = set(data, option, "noMerge"),
+    }
   end,
   group = function(options, args, data, order, prefix, i)
     local option = options[i]
@@ -1540,7 +1549,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     func = function()
       for id, optionData in pairs(option.references) do
         local path = optionData.path
-        local parentOptions = optionData.parent.options
+        local parent = optionData.parent
+        local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = WeakAuras.IsCollapsed(id, "author", optionData.path, true)
         WeakAuras.RemoveCollapsed(id, "author", optionData.path)
@@ -1565,7 +1575,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     func = function()
       for id, optionData in pairs(option.references) do
         local path = optionData.path
-        local parentOptions = optionData.parent.options
+        local parent = optionData.parent
+        local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = WeakAuras.IsCollapsed(id, "author", optionData.path, true)
         WeakAuras.RemoveCollapsed(id, "author", optionData.path)
@@ -2090,7 +2101,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
           }
           args[prefix .. "moveEntryDown"] = {
             type = "execute",
-            name = L["Move Entry Up"],
+            name = L["Move Entry Down"],
             order = order(),
             func = function()
               for id, optionData in pairs(option.references) do
@@ -2167,7 +2178,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         for id, optionData in pairs(option.references) do
           if value == nil then
             value = optionData.config[option.key][k]
-          elseif value ~= optionData.config[option.key] then
+          elseif value ~= optionData.config[option.key][k] then
             return
           end
         end
@@ -2275,23 +2286,29 @@ local function mergeOptions(mergedOptions, data, options, config, prepath, paren
     -- find the best place to start inserting the next option to merge
     local nextToMerge = options[i]
     local shouldMerge = false
-    for j = nextInsert, #mergedOptions + 1 do
-      local mergedOption = mergedOptions[j]
-      if not mergedOption then
-        break
-      end -- no more options to check, so must insert
-      local validMerge = true
-      for field in pairs(significantFieldsForMerge) do
-        if nextToMerge[field] ~= mergedOption[field] then
-          validMerge = false
+    if not nextToMerge.noMerge then
+      for j = nextInsert, #mergedOptions + 1 do
+        local mergedOption = mergedOptions[j]
+        if not mergedOption then
+          break
+        end -- no more options to check, so must insert
+        local validMerge = not mergedOption.noMerge
+        if validMerge then
+          for field in pairs(significantFieldsForMerge) do
+            if nextToMerge[field] ~= mergedOption[field] then
+              validMerge = false
+              break
+            end
+          end
+        end
+        if validMerge then
+          shouldMerge = true
+          nextInsert = j
           break
         end
       end
-      if validMerge then
-        shouldMerge = true
-        nextInsert = j
-        break
-      end
+    else
+      nextInsert = #mergedOptions + 1
     end
     -- now we know at what point to add nextToMerge
     if shouldMerge then

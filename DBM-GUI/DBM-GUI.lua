@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("20200401134419", 1, -5))
+local revision =(string.sub("20200415201050", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -921,17 +921,19 @@ local ListFrameButtonsPrototype = {}
 function ListFrameButtonsPrototype:CreateCategory(frame, parent)
 	if not type(frame) == "table" then
 		DBM:AddMsg("Failed to create category - frame is not a table")
-		DBM:AddMsg(debugstack())
+		--DBM:AddMsg(debugstack())
 		return false
 	elseif not frame.name then
 		DBM:AddMsg("Failed to create category - frame.name is missing")
-		DBM:AddMsg(debugstack())
+		--DBM:AddMsg(debugstack())
 		return false
 	elseif self:IsPresent(frame.name) then
 		DBM:AddMsg("Frame ("..frame.name..") already exists")
-		DBM:AddMsg(debugstack())
+		--DBM:AddMsg(debugstack())
 		return false
 	end
+
+	DBM:Debug(frame.name, 3)
 
 	if parent then
 		frame.depth = self:GetDepth(parent)
@@ -4649,7 +4651,9 @@ do
 			if not Categories[addon.category] then
 				-- Create a Panel for "Wrath of the Lich King" "Burning Crusade" ...
 				local expLevel = GetExpansionLevel()
-				if expLevel == 7 then--Choose default expanded category based on players current expansion is.
+				if expLevel == 8 then--Choose default expanded category based on players current expansion is.
+					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_"..addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper()=="SHADOWLANDS"))
+				elseif expLevel == 7 then--Choose default expanded category based on players current expansion is.
 					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_"..addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper()=="BFA"))
 				elseif expLevel == 6 then
 					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_"..addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper()=="LEG"))

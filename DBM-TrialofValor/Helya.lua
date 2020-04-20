@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200409014556")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetZone()
@@ -582,7 +582,7 @@ function mod:RAID_BOSS_WHISPER(msg)
 	end
 end
 
-function mod:UNIT_HEALTH_FREQUENT(uId)
+function mod:UNIT_HEALTH(uId)
 	if not self.vb.phase == 2 then
 		self:UnregisterShortTermEvents()
 		return
@@ -613,7 +613,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 			timerFuryofMawCD:Start(36.5, 1)
 		end
 		self:RegisterShortTermEvents(
-			"UNIT_HEALTH_FREQUENT boss1 boss2 boss3 boss4 boss5"
+			"UNIT_HEALTH boss1 boss2 boss3 boss4 boss5"
 		)
 	elseif spellId == 228546 then--Helya (Phase 3, 6 seconds slower than yell)
 		self:UnregisterShortTermEvents()

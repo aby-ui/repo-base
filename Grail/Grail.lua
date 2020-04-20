@@ -503,6 +503,9 @@
 --			Corrects the determination of Darkmoon Faire in Classic.
 --			Changes quest level storage and processing.
 --			Optimizes NPC location processing to cache values.
+--		110	Corrects checking a prerequisite code for level "less than".
+--			Updates GetPlayerMapPosition() to handle when UnitPosition() returns nils.
+--			Delays NPC name lookup from startup.
 --
 --	Known Issues
 --
@@ -6212,7 +6215,7 @@ end
 				elseif code == 'K' then	checkItem = true
 				elseif code == 'k' then	checkItemLack = true
 				elseif code == 'L' then checkLevelMeetsOrExceeds = true
-				elseif code == 'L' then checkLevelLessThan = true
+				elseif code == 'l' then checkLevelLessThan = true
 				elseif code == 'M' then	checkEverAbandoned = true
 				elseif code == 'm' then	checkNeverAbandoned = true
 				elseif code == 'N' then checkClass = true
@@ -6763,7 +6766,9 @@ end
 				R[2]:Subtract(R[1])
 				Grail.GetPlayerMapPositionMapRects[MapID] = R
 			end
-			P.x, P.y = UnitPosition(unitName)
+			local x, y = UnitPosition(unitName)
+			P.x = x or 0
+			P.y = y or 0
 			P:Subtract(R[1])
 			return (1/R[2].y)*P.y, (1/R[2].x)*P.x
 --	It turns out that using this code results in a memory increase because of the table returned
@@ -8800,9 +8805,14 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 								end
 							end
 						elseif 'F' == controlCode then
-							if 1 < strlen(code) then
-								N.faction[key] = strsub(code, 2, 2)
+							if 'FA' == code then
+								N.faction[key] = 'A'
+							elseif 'FH' == code then
+								N.faction[key] = 'H'
 							end
+--							if 1 < strlen(code) then
+--								N.faction[key] = strsub(code, 2, 2)
+--							end
 						elseif 'H' == controlCode then
 							-- the "has" codes are deprecated as we will populate the data based on "drop" codes instead
 							if 2 < strlen(code) then
@@ -9771,7 +9781,7 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 			if nil ~= self.npc.locations[npcId] and nil == retval then
 				retval = {}
 				local t = {}
-				t.name = self:NPCName(npcId)
+--				t.name = self:NPCName(npcId)
 				t.id = npcId
 				t.notes = self.npc.comment[npcId]
 				t.locations = self.npc.locations[npcId]
@@ -9798,7 +9808,7 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 				t.questId = self.npc.questAssociations[npcId] and self.npc.questAssociations[npcId][1] or nil
 				for _, t1 in pairs(t.locations) do
 					local t2 = {}
-					t2.name = t.name
+--					t2.name = t.name
 					t2.id = t.id
 					t2.notes = t.notes
 					t2.kill = t.kill
@@ -9817,7 +9827,7 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 				end
 				for _, t1 in pairs(t.droppers) do
 					local t2 = {}
-					t2.name = t1.name
+--					t2.name = t1.name
 					t2.id = t1.id
 					t2.notes = t1.notes
 					t2.kill = t.kill
@@ -9831,7 +9841,7 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 					t2.x = t1.x
 					t2.y = t1.y
 					t2.realArea = t1.realArea
-					t2.dropName = t.name
+--					t2.dropName = t.name
 					t2.dropId = t.id
 					t2.questId = t.questId
 					tinsert(retval, t2)

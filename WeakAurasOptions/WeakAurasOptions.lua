@@ -237,20 +237,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
     local reloadOptions = arg.reloadOptions;
     if (name and arg.type == "collapse") then
       options["summary_" .. arg.name] = {
-        type = "description",
-        width = WeakAuras.doubleWidth - 0.15,
-        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
-        order = order,
-        fontSize = "medium"
-      }
-      order = order + 1;
-      options["button_" .. arg.name] = {
         type = "execute",
-        width = 0.15,
-        name = function()
-          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
-          return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
-        end,
+        control = "WeakAurasExpandSmall",
+        width = WeakAuras.doubleWidth,
+        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
@@ -263,7 +253,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
           WeakAuras.ReloadTriggerOptions(data);
         end,
-        control = "WeakAurasIcon"
       }
       order = order + 1;
 
@@ -406,7 +395,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       else
         options["use_"..name] = {
           type = "toggle",
-          width = WeakAuras.normalWidth,
+          width = arg.width or WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -896,6 +885,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           name = arg.display,
           order = order,
           values = values,
+          control = arg.control,
           hidden = function()
             return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] == false;
           end,
@@ -1294,8 +1284,11 @@ function WeakAuras.DeleteOption(data, massDelete)
 
   frame:ClearPicks();
   WeakAuras.Delete(data);
-  frame.buttonsScroll:DeleteChild(displayButtons[id]);
-  displayButtons[id] = nil;
+
+  if(displayButtons[id])then
+    frame.buttonsScroll:DeleteChild(displayButtons[id]);
+    displayButtons[id] = nil;
+  end
 
   if(parentData and parentData.controlledChildren and not massDelete) then
     for index, childId in pairs(parentData.controlledChildren) do
@@ -3781,7 +3774,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
-      values = WeakAuras.anchor_frame_types,
+      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and WeakAuras.anchor_frame_types_group or WeakAuras.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {
@@ -3820,7 +3813,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
           return L["To Screen's"]
         elseif (data.anchorFrameType == "PRD") then
           return L["To Personal Ressource Display's"];
-        elseif (data.anchorFrameType == "SELECTFRAME" or data.anchorFrameType == "CUSTOM") then
+        else
           return L["To Frame's"];
         end
       end,
@@ -3840,7 +3833,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
     anchorPointGroup = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = function() return L["to group's"] end,
+      name = L["To Group's"],
       order = 76,
       hidden = function()
         if (data.anchorFrameType ~= "SCREEN") then

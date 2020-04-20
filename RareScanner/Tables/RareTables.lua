@@ -379,6 +379,36 @@ private.RARE_LIST = {
 	21724, --Hawkbane
 	18241, --Crusty
 	16855, --Tregla
+	
+	-- Wrath of the Lich King
+	32517, --Loque'nahak
+	32491, --Time-Lost Proto-Drake
+	35189, --Skoll
+	38453, --Arcturis
+	33776, --Gondria
+	32485, --King Krush
+	32630, --Vyragosa
+	32481, --Aotona
+	32361, --Icehorn
+	32500, --Dirkee
+	32398, --King Ping
+	32358, --Fumblub Gearwind
+	32377, --Perobas the Bloodthirster
+	32357, --Old Crystalbark
+	32475, --Terror Spinner
+	32409, --Crazed Indu'le Survivor
+	32501, --High Thane Jorfus
+	32438, --Syreian the Bonecarver
+	32487, --Putridus the Ancient
+	32471, --Griegen
+	32429, --Seething Hate
+	32422, --Grocklar
+	32400, --Tukemuth
+	32417, --Scarlet Highlord Daion
+	32386, --Vigdis the War Maiden
+	32495, --Hildana Deathstealer
+	32447, --Zul'drak Sentinel
+	32435, --Vern
 
 	-- Rares Pandaria
 	50062, --Aeonaxx
@@ -1500,7 +1530,6 @@ private.RARE_LIST = {
 	139598, --Backbreaker Bahaha
 	139442, --Backbreaker Zukan
 	139348, --Baga the Frostshield
-	134539, --Bajiani the Slick
 	128497, --Bajiani the Slick
 	126142, --Bajiatha
 	130143, --Balethorn
@@ -1809,7 +1838,6 @@ private.RARE_LIST = {
 	138575, --General Shuul'aqar
 	138572, --General Uvosh
 	138444, --General Vesparak
-	136278, --General Zaviul
 	142662, --Geomancer Flintdagger
 	138288, --Ghost of the Deep
 	140299, --Ghostfang
@@ -2023,7 +2051,6 @@ private.RARE_LIST = {
 	139414, --Mire Priest Vassz
 	139413, --Mirelurk Oasis-Speaker
 	139231, --Mirewood the Trampler
-	136379, --Misham Endseeker
 	140171, --Mistfur
 	140169, --Mogka the Rowdy
 	141942, --Molok the Crusher
@@ -2051,24 +2078,8 @@ private.RARE_LIST = {
 	140439, --Muskflank Herdleader
 	140065, --Muskhide
 	139759, --Mutineer Jalia
-	128498, --Mutineer Kabwalla
 	138565, --My'lyth
 	126223, --Mystic Sharpfang
-	132749, --NAME
-	132750, --NAME
-	136800, --NAME
-	136803, --NAME
-	136815, --NAME
-	138655, --NAME
-	138656, --NAME
-	138657, --NAME
-	138658, --NAME
-	132747, --NAME
-	138833, --NAME
-	138834, --NAME
-	138835, --NAME
-	132748, --NAME
-	138832, --NAME
 	138502, --Naroviak Wyrm-Bender
 	139219, --Nasira Morningfrost
 	139387, --Nassa the Cold-Blooded
@@ -2164,10 +2175,6 @@ private.RARE_LIST = {
 	136340, --Relic Hunter Hazaak
 	135643, --Ren'kiri
 	140593, --Restless Horror
-	135650, --REUSE
-	140856, --REUSE
-	140862, --REUSE
-	140859, --REUSE
 	128707, --Rimestone
 	140557, --Ripface
 	140300, --Ripshread
@@ -2192,11 +2199,9 @@ private.RARE_LIST = {
 	139336, --Sabertron
 	119103, --Sable Enforcer
 	138989, --Saltfin
-	141021, --Sand Apparition
 	138374, --Sand Fur
 	130581, --Sand-Eye
 	139988, --Sandfang
-	141306, --Sandscour
 	134768, --Sandskitter the Relentless
 	122090, --Sarashas the Pillager
 	127765, --Saurolisk Matriarch
@@ -2330,7 +2335,6 @@ private.RARE_LIST = {
 	131687, --Tambano
 	136814, --Tattertail
 	139539, --Tavok, Hammer of the Empress
-	131723, --Tehd and Marius
 	133356, --Tempestria
 	139289, --Tentulos the Drifter
 	131389, --Teres
@@ -2363,7 +2367,6 @@ private.RARE_LIST = {
 	139043, --Tidestriker Ocho
 	138994, --Timberfist
 	134804, --Timeless Runeback
-	140767, --TO DO
 	143311, --Toadcruel
 	140386, --Topaz Borer
 	127939, --Torraske the Eternal
@@ -2434,8 +2437,6 @@ private.RARE_LIST = {
 	139212, --Vinelash
 	135939, --Vinespeaker Ratha
 	128893, --Vinyeti
-	129977, --Vinyeti
-	129979, --Vinyeti
 	134912, --Violet Creeper
 	139410, --Visz the Silent Blade
 	139325, --Void Essence Kill Credit
@@ -2452,7 +2453,6 @@ private.RARE_LIST = {
 	
 	-- Build 8.0.1 26032
 	133842, --Warcrawler Karkithiss
-	127831, --Warmother Zug
 	129411, --Zunashi the Exile
 	
 	-- Build 8.0.1 26131
@@ -3012,7 +3012,6 @@ private.RARE_LIST = {
 	154005, --Heimir of the Black Fist
 	160623, --Hungering Miasma
 	154495, --Will of N'Zoth
-	144650, --Ava
 	160893, --Captain Vor'lek
 	154076, --Vengeful Earth
 	157593, --Amalgamation of Flesh
@@ -3025,7 +3024,6 @@ private.RARE_LIST = {
 	154650, --Seething Ancient Horror
 	159318, --Shadow-Walker Yash'gth
 	160906, --Skiver
-	144632, --Velaris
 	154576, --Aqir Titanus
 	160878, --Buh'gzaki the Blasphemous
 	156451, --Darkspeaker Thul'grsh
@@ -3049,7 +3047,6 @@ private.RARE_LIST = {
 	154604, --Lord Aj'qirai
 	160708, --Mail Muncher
 	161199, --Vaultkeeper Jazra
-	142604, --Beach Strider
 	159087, --Corrupted Bonestripper
 	154089, --Ludin the Beastbreaker
 	160825, --Amber-Shaper Esh'ri
@@ -3057,15 +3054,9 @@ private.RARE_LIST = {
 	160810, --Harbinger Il'koxik
 	161467, --Portalkeeper Jin'tashal
 	154651, --Putrid Ancient Horror
-	144651, --Bertie
 	156709, --Corrupted Sanity Despoiler
-	144648, --Fewz
-	144636, --Lou
-	144631, --Malto
 	160922, --Needler Zhesalla
 	157188, --The Tomb Widow
-	144652, --Urk
-	144649, --Wick
 	160841, --Blubbery Blobule
 	157183, --Coagulated Anima
 	156820, --Dod

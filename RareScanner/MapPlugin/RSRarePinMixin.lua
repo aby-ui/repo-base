@@ -145,7 +145,6 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 		end
 	end
 	self.HighlightTexture:SetAtlas(atlasName, true);
-	self.ShowAnim:Play();
 	self:SetPosition(self.x, self.y);
 end
  
@@ -357,6 +356,13 @@ function RSRarePinMixin:OnMouseEnter()
 		end
 	end
 	
+	-- Overlay
+	if (self.isNpc and private.ZONE_IDS[self.npcID] and (private.ZONE_IDS[self.npcID].overlay or type(private.ZONE_IDS[self.npcID].zoneID) == "table" and private.ZONE_IDS[self.npcID].zoneID[self.mapID] and private.ZONE_IDS[self.npcID].zoneID[self.mapID].overlay)) then
+		line = tooltip:AddSeparator(1, 1)
+		line = tooltip:AddLine()
+		tooltip:SetCell(line, 1, self:TextColor(AL["MAP_TOOLTIP_SHOW_OVERLAY"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
+	end
+	
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()
 end
@@ -371,24 +377,61 @@ function RSRarePinMixin:OnMouseLeave()
 end
 
 function RSRarePinMixin:OnMouseDown(button)
-	--Killed if discovered
-	if (button == "LeftButton" and IsShiftKeyDown()) then
-		-- Ignored
-		if (self.isNpc) then
-			RareScanner:ProcessKill(self.npcID, true)
-			self:Hide();
-		elseif (self.isContainer) then
-			RareScanner:ProcessOpenContainer(self.npcID)
-			self:Hide();
-		elseif (self.isEvent) then
-			RareScanner:ProcessCompletedEvent(self.npcID)
-			self:Hide();
+	if (button == "LeftButton") then
+		--Killed if discovered
+		if (IsShiftKeyDown()) then
+			-- Ignored
+			if (self.isNpc) then
+				RareScanner:ProcessKill(self.npcID, true)
+				self:Hide();
+			elseif (self.isContainer) then
+				RareScanner:ProcessOpenContainer(self.npcID)
+				self:Hide();
+			elseif (self.isEvent) then
+				RareScanner:ProcessCompletedEvent(self.npcID)
+				self:Hide();
+			end
+		-- Toggle overlay
+		else
+			-- If overlay showing then hide it
+			local overlayNpcID = private.dbchar.overlayActive
+			if (overlayNpcID) then
+				self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
+				if (overlayNpcID ~= self.npcID) then
+					self:ShowOverlay()
+				else
+					private.dbchar.overlayActive = nil
+				end
+			else
+				self:ShowOverlay()
+			end
 		end
 	end
 end
 
+function RSRarePinMixin:ShowOverlay()
+	if (private.ZONE_IDS[self.npcID]) then
+		if (private.ZONE_IDS[self.npcID].overlay) then
+			for i, coordinates in ipairs (private.ZONE_IDS[self.npcID].overlay) do
+				local x, y = strsplit("-", coordinates)
+				self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), self);
+			end
+			private.dbchar.overlayActive = self.npcID
+		elseif (type(private.ZONE_IDS[self.npcID].zoneID) == "table" and private.ZONE_IDS[self.npcID].zoneID[self.mapID] and private.ZONE_IDS[self.npcID].zoneID[self.mapID].overlay) then
+			for i, coordinates in ipairs (private.ZONE_IDS[self.npcID].zoneID[self.mapID].overlay) do
+				local x, y = strsplit("-", coordinates)
+				self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), self);
+			end
+			private.dbchar.overlayActive = self.npcID
+		else
+			private.dbchar.overlayActive = nil
+		end
+	else
+		private.dbchar.overlayActive = nil
+	end
+end
+
 function RSRarePinMixin:OnReleased()
-	self.ShowAnim:Stop();
 	if (self.tooltip) then
 		RareScannerMapTooltip:Release(self.tooltip)
 		self.tooltip:Hide()

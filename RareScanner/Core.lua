@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 11
-local CURRENT_LOOT_DB_VERSION = 28
+local CURRENT_DB_VERSION = 15
+local CURRENT_LOOT_DB_VERSION = 29
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -90,7 +90,7 @@ local PROFILE_DEFAULTS = {
 			displayButton = true,
 			displayMiniature = true,
 			displayButtonContainers = true,
-			scale = 0.85,
+			scale = 0.8,
 			autoHideButton = 0,
 			displayRaidWarning = true,
 			displayChatMessage = true,
@@ -142,12 +142,13 @@ local PROFILE_DEFAULTS = {
 }
 
 -- Main button
-local scanner_button = _G.CreateFrame("Button", "scanner_button", nil, "SecureActionButtonTemplate")
+local scanner_button = _G.CreateFrame("Button", "scanner_button", UIParent, "SecureActionButtonTemplate")
 scanner_button:Hide();
+scanner_button:SetIgnoreParentScale(true)
 scanner_button:SetFrameStrata("MEDIUM")
 scanner_button:SetFrameLevel(200)
 scanner_button:SetSize(200, 50)
-scanner_button:SetScale(0.85)
+scanner_button:SetScale(0.8)
 scanner_button:SetAttribute("type", "macro")
 scanner_button:SetNormalTexture([[Interface\AchievementFrame\UI-Achievement-Parchment-Horizontal-Desaturated]])
 scanner_button:SetBackdrop({ tile = true, edgeSize = 16, edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]] })
@@ -964,7 +965,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 		elseif ((iconid == RareScanner.EVENT_VIGNETTE or iconid == RareScanner.EVENT_ELITE_VIGNETTE) and not private.db.general.scanEvents) then
 			return
 		-- disable zones alerts if the player is in that zone
-		elseif (not private.db.zoneFilters.filterOnlyMap and next(private.db.general.filteredZones) ~= nil and private.db.general.filteredZones[zone_id] == false) then
+		elseif (npcID and not private.db.zoneFilters.filterOnlyMap and next(private.db.general.filteredZones) ~= nil and (private.db.general.filteredZones[zone_id] == false or RareScanner:ZoneFiltered(npcID))) then
 			return
 		-- disable alerts for containers
 		elseif (iconid == RareScanner.CONTAINER_VIGNETTE or iconid == RareScanner.CONTAINER_ELITE_VIGNETTE) then
@@ -1040,11 +1041,6 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 				already_notified[161407] = true
 			end
 		end
-	end
-
-	-- Filters NPC by zone just in case it belong to a different are from the current player's position
-	if (npcID and RareScanner:ZoneFiltered(npcID)) then
-		return
 	end
 	
 	-- Check if the NPC is filtered, in which case we don't show anything
@@ -1621,7 +1617,25 @@ function RareScanner:InitializeDataBase()
 
 			if (not dbversionFound) then
 				self:LoadRareNames(self.db)
-			else
+			else				
+				-- In case of script run too long, verify everything loaded properly the next time the client loads
+				for i, dbversion in ipairs(private.dbglobal.dbversion) do
+					if (dbversion.locale == GetLocale() and not dbversion.sync) then
+						local sync = true
+						for i, npcID in ipairs(private.RARE_LIST) do
+							if (not private.dbglobal.rare_names[GetLocale()][npcID]) then
+								self:PrintDebugMessage("No localizado "..npcID)
+								RareScanner:GetNpcName(npcID);
+								sync = false
+							end
+						end
+						
+						self:PrintDebugMessage("Version sincronizada: "..(sync and 'true' or 'false'))
+						dbversion.sync = sync
+						break;
+					end
+				end
+			
 				-- Initialize rare filter list
 				for k, v in pairs(private.dbglobal.rare_names[GetLocale()]) do 
 					PROFILE_DEFAULTS.profile.general.filteredRares[k] = true
@@ -1671,6 +1685,9 @@ function RareScanner:InitializeDataBase()
 			end
 		end
 		
+		-- Clear previous overlay if active when closed the game
+		private.dbchar.overlayActive = nil
+		
 		-- Fix possible errors in database
 		self:DumpBrokenData()
 	end
@@ -1688,9 +1705,20 @@ function RareScanner:DumpBrokenData()
 	
 	if (private.dbchar.rares_killed and next(private.dbchar.rares_killed) ~= nil) then
 		for npcID, timestamp in pairs(private.dbchar.rares_killed) do
-			-- If the NPC belongs to Mechagon or Nazjatar and its set as eternal death, reset it
-			if (timestamp == ETERNAL_DEATH and private.ZONE_IDS[npcID] and (private.ZONE_IDS[npcID].zoneID == 1462 or private.ZONE_IDS[npcID].zoneID == 1355)) then
-				private.dbchar.rares_killed[npcID] = nil
+			-- If the NPC belongs to a place that is reseteable and its set as eternal death, reset it
+			if (timestamp == ETERNAL_DEATH and private.ZONE_IDS[npcID]) then
+				local zoneID = private.ZONE_IDS[npcID].zoneID
+				if (type(zoneID) == "table") then
+					for id, _ in pairs (zoneID) do
+						if (not RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[id], "all") and not RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[id], C_Map.GetMapArtID(id))) then
+							private.dbchar.rares_killed[npcID] = nil
+						end
+					end
+				else
+					if (not RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") and not RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID))) then
+						private.dbchar.rares_killed[npcID] = nil
+					end
+				end
 			end
 		end
 	end
@@ -1744,7 +1772,7 @@ function RareScanner:MarkCompletedAchievements()
 		local _, _, _, completed, _, _, _, _, _, _, _, _, wasEarnedByMe, _ = GetAchievementInfo(achievementID)
 		if (completed and wasEarnedByMe) then
 			for i, npcID in ipairs(entities) do
-				if (private.ZONE_IDS[npcID] and not private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and not private.dbchar.rares_killed[npcID]) then
+				if (private.ZONE_IDS[npcID] and (RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID))) and not private.dbchar.rares_killed[npcID]) then
 					private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 				elseif (private.CONTAINER_ZONE_IDS[npcID] and not private.dbchar.containers_opened[npcID]) then
 					private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED
@@ -1849,7 +1877,7 @@ function RareScanner:LoadRareNames(db)
 
 	private.dbglobal.rare_names[GetLocale()] = {}
 	
-	local ITERATIONS = 5
+	local ITERATIONS = 3
 	current_iteration = 0
 	local ticker = C_Timer.NewTicker(1, function()
 		for i, npcID in ipairs(private.RARE_LIST) do
@@ -2047,25 +2075,6 @@ function RS_tContains(cTable, item)
 	return false;
 end
 
-local QTips = {}
-
-local QUEST_TIMEOUT = 0.3
-local function GetQTip()
-	local now = GetTime()
-	for i, tip in ipairs(QTips) do
-		if not tip.npcID or now - tip.lastUpdate > QUEST_TIMEOUT + 0.2 then
-			tip.lastUpdate = now
-			return tip
-		end
-	end
-	local tip = CreateFrame('GameTooltip',  'SemlarsQTip' .. (#QTips + 1), WorldFrame, 'GameTooltipTemplate')
-	tip:Show()
-	tip:SetHyperlink('unit:')
-	tip.lastUpdate = now
-	tinsert(QTips, tip)
-	return tip
-end
-
 function RareScanner:GetObjectName(objectID)
 	if (private.dbglobal.object_names and private.dbglobal.object_names[GetLocale()]) then
 		return private.dbglobal.object_names[GetLocale()][objectID]
@@ -2110,6 +2119,24 @@ function RareScanner:GetNpcId(name)
 			end
 		end
 	end
+end
+
+local QTips = {}
+
+local function GetQTip()
+	local now = GetTime()
+	for i, tip in ipairs(QTips) do
+		if not tip.npcID or now - tip.lastUpdate > 0.5 then
+			tip.lastUpdate = now
+			return tip
+		end
+	end
+	local tip = CreateFrame('GameTooltip', 'NameNpcsTip' .. (#QTips + 1), WorldFrame, 'GameTooltipTemplate')
+	tip:Show()
+	tip:SetHyperlink('unit:')
+	tip.lastUpdate = now
+	tinsert(QTips, tip)
+	return tip
 end
 
 function RareScanner:GetNpcName(npcID)

@@ -95,7 +95,8 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
     },
     text_fontFlagsDescription = {
-      type = "description",
+      type = "execute",
+      control = "WeakAurasExpandSmall",
       name = function()
         local textFlags = WeakAuras.font_flags[data.text_fontType]
         local color = format("%02x%02x%02x%02x",
@@ -118,29 +119,33 @@ local function createOptions(parentData, data, index, subIndex)
           textRotate = " " .. L["and rotated right"]
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify)
+        local textWidth = ""
+        if data.text_automaticWidth == "Fixed" then
+          local wordWarp = ""
+          if data.text_wordWrap == "WordWrap" then
+            wordWarp = L["wrapping"]
+          else
+            wordWarp = L["eliding"]
+          end
+          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+        end
+
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify, textWidth)
 
         return secondline
       end,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = WeakAuras.doubleWidth,
       order = 44,
-      fontSize = "medium"
-    },
-    text_fontFlagsExpand = {
-      type = "execute",
-      name = "",
-      order = 44.1,
-      width = 0.15,
+      func = function()
+        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
+      end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
       end,
       imageWidth = 24,
-      imageHeight = 24,
-      func = function()
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
-        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
-      end
+      imageHeight = 24
     },
 
     text_font_space = {
@@ -218,7 +223,54 @@ local function createOptions(parentData, data, index, subIndex)
       values = WeakAuras.justify_types,
       order = 50.5,
       hidden = hiddenFontExtra
-    }
+    },
+    text_font_space5 = {
+      type = "description",
+      name = "",
+      order = 51,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
+    text_automaticWidth = {
+      type = "select",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Width"],
+      order = 51.5,
+      values = WeakAuras.text_automatic_width,
+      hidden = hiddenFontExtra
+    },
+    text_font_space6 = {
+      type = "description",
+      name = "",
+      order = 52,
+      hidden = hiddenFontExtra,
+      width = WeakAuras.normalWidth
+    },
+    text_font_space7 = {
+      type = "description",
+      name = "",
+      order = 52.5,
+      width = indentWidth,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
+    text_fixedWidth = {
+      name = L["Width"],
+      width = WeakAuras.normalWidth - indentWidth,
+      order = 53,
+      type = "range",
+      min = 1,
+      softMax = 200,
+      bigStep = 1,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
+    text_wordWrap = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Overflow"],
+      order = 54,
+      values = WeakAuras.text_word_wrap,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
   }
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
@@ -238,13 +290,14 @@ local function createOptions(parentData, data, index, subIndex)
   end
   -- Anchor Options
   options.text_anchorsDescription = {
-    type = "description",
+    type = "execute",
+    control = "WeakAurasExpandSmall",
     name = function()
       local selfPoint = data.text_selfPoint ~= "AUTO" and self_point_types[data.text_selfPoint]
       local anchorPoint = anchors[data.text_anchorPoint or "CENTER"] or anchors["CENTER"]
 
-      local xOffset = data.anchorXOffset or 0
-      local yOffset = data.anchorYOffset or 0
+      local xOffset = data.text_anchorXOffset or 0
+      local yOffset = data.text_anchorYOffset or 0
 
       if (type(anchorPoint) == "table") then
         anchorPoint = anchorPoint[1] .. "/" .. anchorPoint[2]
@@ -264,16 +317,8 @@ local function createOptions(parentData, data, index, subIndex)
         end
       end
     end,
-    width = WeakAuras.doubleWidth - 0.15,
+    width = WeakAuras.doubleWidth,
     order = 60,
-    fontSize = "medium"
-  }
-
-  options.text_expandAnchors = {
-    type = "execute",
-    name = "",
-    order = 60.1,
-    width = 0.15,
     image = function()
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
@@ -285,6 +330,7 @@ local function createOptions(parentData, data, index, subIndex)
       WeakAuras.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end
   }
+
 
   local hiddenFunction = function()
     return WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)

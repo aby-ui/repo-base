@@ -78,8 +78,7 @@ local CheckInteractDistance, IsItemInRange, UnitInRange = CheckInteractDistance,
 local max, sin, cos, pi, pi2 = math.max, math.sin, math.cos, math.pi, math.pi * 2
 local GetBestMapForUnit = C_Map.GetBestMapForUnit
 
--- for Phanx' Class Colors
-local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
+local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS-- for Phanx' Class Colors
 local BLIP_TEX_COORDS = {
 	["WARRIOR"]		 = { 0, 0.125, 0, 0.25 },
 	["PALADIN"]		 = { 0.125, 0.25, 0, 0.25 },
@@ -491,7 +490,12 @@ local frameBackdrop = {
 
 function createTextFrame()
 	local elapsed = 0
-	local textFrame = CreateFrame("GameTooltip", "DBMRangeCheck", UIParent, "GameTooltipTemplate")
+	local textFrame
+	if DBM:GetTOC() >= 90001 then
+		textFrame = CreateFrame("GameTooltip", "DBMRangeCheck", UIParent, "SharedTooltipTemplate")
+	else
+		textFrame = CreateFrame("GameTooltip", "DBMRangeCheck", UIParent, "GameTooltipTemplate")
+	end
 	dropdownFrame = CreateFrame("Frame", "DBMRangeCheckDropdown", textFrame, "UIDropDownMenuTemplate")
 	textFrame:SetFrameStrata("DIALOG")
 	textFrame:SetBackdrop(frameBackdrop)

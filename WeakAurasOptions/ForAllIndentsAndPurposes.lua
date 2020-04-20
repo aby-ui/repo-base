@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- For All Indents And Purposes
-local revision = 22
+local revision = 23
 -- Maintainer: kristofer.karlsson@gmail.com
 
 -- For All Indents And Purposes -

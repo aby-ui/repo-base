@@ -69,7 +69,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200403014659"),
+	Revision = parseCurseDate("20200417005301"),
 	DisplayVersion = "8.3.20 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 3, 31) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -530,8 +530,7 @@ local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedComplete
 
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 
--- for Phanx' Class Colors
-local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
+local RAID_CLASS_COLORS = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
 ---------------------------------
 --  General (local) functions  --
@@ -5697,11 +5696,14 @@ do
 		["mythic"] = "mythic",
 		["worldboss"] = "normal",
 		["timewalker"] = "timewalker",
+		["progressivechallenges"] = "normal",
+		--BFA
 		["normalwarfront"] = "normal",
 		["heroicwarfront"] = "heroic",
 		["normalisland"] = "normal",
 		["heroicisland"] = "heroic",
 		["mythicisland"] = "mythic",
+		["teamingisland"] = "mythic",--Blizz uses mythic as fallback, so I will too
 		--Legacy
 		["lfr25"] = "lfr25",
 		["normal10"] = "normal",
@@ -6424,7 +6426,7 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "heroic", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 16 then--Mythic 20 man Raid
 		return "mythic", difficultyName.." - ", difficulty, instanceGroupSize, 0
-	elseif difficulty == 17 or difficulty == 151 then--Flexible LFR (ie post WoD zones)/8.3+ LFR?
+	elseif difficulty == 17 or difficulty == 151 then--Flexible LFR (ie post WoD zones)/8.3+ LFR
 		return "lfr", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 18 then--Special event 40 player LFR Queue (used by molten core aniversery event)
 		return "event40", difficultyName.." - ", difficulty, instanceGroupSize, 0
@@ -6448,6 +6450,10 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "normal20", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	elseif difficulty == 149 then--Heroic BfA Warfront
 		return "heroicwarfront", difficultyName.." - ",difficulty, instanceGroupSize, 0
+	elseif difficulty == 152 or difficulty == 167 then--Visions of Nzoth (bfa), Torghast (shadowlands)
+		return "progressivechallenges", difficultyName.." - ",difficulty, instanceGroupSize, 0
+	elseif difficulty == 153 then---Teaming BfA? Island expedition
+		return "teamingisland", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	else--failsafe
 		return "normal", "", difficulty, instanceGroupSize, 0
 	end
@@ -7606,7 +7612,7 @@ function bossModPrototype:IsValidWarning(sourceGUID, customunitID)
 	return false
 end
 
---Skip param is used when CheckInterruptFilter is actually being used for a simpe target/focus check and nothing more.
+--force param is used when CheckInterruptFilter is actually being used for a simpe target/focus check and nothing more.
 --checkCooldown should never be passed with skip or COUNT interrupt warnings. It should be passed with any other interrupt filter
 function bossModPrototype:CheckInterruptFilter(sourceGUID, force, checkCooldown, ignoreTandF)
 	if DBM.Options.FilterInterrupt2 == "None" and not force then return true end--user doesn't want to use interrupt filter, always return true
@@ -8021,10 +8027,11 @@ do
 		["RaidCooldown"] = true,
 		["RemovePoison"] = true,--from ally
 		["RemoveDisease"] = true,--from ally
-		["RemoveEnrage"] = true,--Can remove enemy enrage. returned in 8.x!
 		["RemoveCurse"] = true,--from ally
 		["RemoveMagic"] = true,--from ally
+		["RemoveEnrage"] = true,--Can remove enemy enrage. returned in 8.x+!
 		["MagicDispeller"] = true,--from ENEMY, not debuffs on players. use "Healer" or "RemoveMagic" for ally magic dispels. ALL healers can do that on retail, and warlock Imps
+		["ImmunityDispeller"] = true,--Priest mass dispel or Warrior Shattering Throw (shadowlands)
 		["HasInterrupt"] = true,--Has an interrupt that is 24 seconds or less CD that is BASELINE (not a talent)
 		["HasImmunity"] = true,--Has an immunity that can prevent or remove a spell effect (not just one that reduces damage like turtle or dispursion)
 	}]]
@@ -8081,13 +8088,15 @@ do
 			["RaidCooldown"] = true,--Rallying Cry
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+			["ImmunityDispeller"] = true,
 		},
 		[73] = {	--Protection Warrior
 			["Tank"] = true,
 			["Melee"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
-			["RaidCooldown"] = true,--Rallying Cry (in 8.x)
+			["RaidCooldown"] = true,--Rallying Cry
+			["ImmunityDispeller"] = true,
 		},
 		[102] = {	--Balance Druid
 			["Dps"] = true,
@@ -8157,6 +8166,7 @@ do
 			["RangedDps"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+			--["RemoveEnrage"] = true,--Enable in 9.0
 		},
 		[255] = {	--Survival Hunter (Legion+)
 			["Dps"] = true,
@@ -8176,6 +8186,7 @@ do
 			["RemoveDisease"] = true,
 			["RemoveMagic"] = true,
 			["MagicDispeller"] = true,
+			["ImmunityDispeller"] = true,
 		},
 		[258] = {	--Shadow Priest
 			["Dps"] = true,
@@ -8185,6 +8196,7 @@ do
 			["SpellCaster"] = true,
 			["CasterDps"] = true,
 			["MagicDispeller"] = true,
+			["ImmunityDispeller"] = true,
 			["HasInterrupt"] = true,
 			["RemoveDisease"] = true,
 		},
@@ -11478,7 +11490,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200403014659" then
+	if not revision or revision == "20200417005301" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

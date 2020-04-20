@@ -186,6 +186,7 @@ if AL then
 	AL["MAP_TOOLTIP_KILLED"] = "Shift-Left-Click to set as killed"
 	AL["MAP_TOOLTIP_NOT_FOUND"] = "You haven't seen this NPC and no one has shared it with you yet."
 	AL["MAP_TOOLTIP_SEEN"] = "Seen before: %s"
+	AL["MAP_TOOLTIP_SHOW_OVERLAY"] = "Left-click to toggle showing other spawn spots"
 	AL["MARKER"] = "Target marker"
 	AL["MARKER_DESC"] = "Choose the marker to add on top of the target when you click the main button."
 	AL["MESSAGE_OPTIONS"] = "Messages options"

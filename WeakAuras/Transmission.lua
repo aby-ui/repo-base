@@ -440,6 +440,10 @@ local function importPendingData()
       end
       if data then
         data.parent = parentData.id
+        data.authorMode = nil
+      end
+      if oldData then
+        oldData.authorMode = nil
       end
       local childData = install(data, oldData, patch, mode)
       if childData then
@@ -597,6 +601,7 @@ hooksecurefunc("SetItemRef", function(link, text)
           editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
         end
       else
+        characterName = characterName:gsub("%.", "")
         ShowTooltip({
           {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
           {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
@@ -1899,7 +1904,8 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
           WeakAuras.PreAdd(child)
         end
       end
-      WeakAuras.ShowDisplayTooltip(data, children, nil, icon, icons, sender, true)
+      local matchInfo = WeakAuras.MatchInfo(data, children)
+      WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);

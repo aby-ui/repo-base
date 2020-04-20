@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200205050236")
+mod:SetRevision("20200411230853")
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -72,7 +72,7 @@ local yellTemptingSong					= mod:NewYell(284405)
 --Stage Two: Laminaria
 local specWarnEnergizedStorm			= mod:NewSpecialWarningSwitch("ej19312", "RangedDps", nil, nil, 1, 2)
 local specWarnSeaSwell					= mod:NewSpecialWarningDodge(285118, nil, nil, 2, 3, 2)
-local specWarnIreoftheDeep				= mod:NewSpecialWarningSoak(285017, "-Tank", nil, nil, 1, 2)
+local specWarnIreoftheDeep				= mod:NewSpecialWarningSoak(285017, "-Tank", nil, nil, 1, 7)
 local specWarnStormsWail				= mod:NewSpecialWarningMoveTo(285350, nil, nil, 2, 3, 2)
 local yellStormsWail					= mod:NewYell(285350)
 local yellStormsWailFades				= mod:NewShortFadesYell(285350)

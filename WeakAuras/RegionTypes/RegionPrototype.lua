@@ -183,6 +183,11 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     softMax = screenHeight,
     bigStep = 1
   }
+  properties["glowexternal"] = {
+    display = L["Glow External Element"],
+    action = "GlowExternal",
+    type = "glowexternal"
+  }
 
   if (defaultsForRegion and defaultsForRegion.alpha) then
     properties["alpha"] = {
@@ -284,6 +289,13 @@ local function RunCode(self, func)
   end
 end
 
+local function GlowExternal(self, options)
+  if (not options or WeakAuras.IsOptionsOpen()) then
+    return
+  end
+  WeakAuras.HandleGlowAction(options, self)
+end
+
 local function UpdatePosition(self)
   if (not self.anchorPoint or not self.relativeTo or not self.relativePoint) then
     return;
@@ -379,7 +391,12 @@ local function SetRegionAlpha(self, alpha)
   end
 
   self.alpha = alpha;
-  self:SetAlpha(self.animAlpha or self.alpha or 1);
+  if (WeakAuras.IsOptionsOpen()) then
+    self:SetAlpha(max(self.animAlpha or self.alpha or 1, 0.5));
+  else
+    self:SetAlpha(self.animAlpha or self.alpha or 1);
+  end
+  self.subRegionEvents:Notify("AlphaChanged")
 end
 
 local function GetRegionAlpha(self)
@@ -391,7 +408,12 @@ local function SetAnimAlpha(self, alpha)
     return;
   end
   self.animAlpha = alpha;
-  self:SetAlpha(self.animAlpha or self.alpha or 1);
+  if (WeakAuras.IsOptionsOpen()) then
+    self:SetAlpha(max(self.animAlpha or self.alpha or 1, 0.5));
+  else
+    self:SetAlpha(self.animAlpha or self.alpha or 1);
+  end
+  self.subRegionEvents:Notify("AlphaChanged")
 end
 
 local function SetTriggerProvidesTimer(self, timerTick)
@@ -436,6 +458,7 @@ function WeakAuras.regionPrototype.create(region)
   region.SoundRepeatStop = SoundRepeatStop;
   region.SendChat = SendChat;
   region.RunCode = RunCode;
+  region.GlowExternal = GlowExternal;
 
   region.SetAnchor = SetAnchor;
   region.SetOffset = SetOffset;
@@ -517,7 +540,13 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   end
 
   if not parent or parent.regionType ~= "dynamicgroup" then
-    WeakAuras.AnchorFrame(data, region, parent);
+    if not (
+      data.anchorFrameType == "CUSTOM"
+      or data.anchorFrameType == "UNITFRAME"
+      or data.anchorFrameType == "NAMEPLATE"
+    ) then
+      WeakAuras.AnchorFrame(data, region, parent);
+    end
   end
 end
 
@@ -794,14 +823,18 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       WeakAuras.UnRegisterForFrameTick(region)
     end
     function region:Expand()
+      if data.anchorFrameType == "SELECTFRAME"
+      or data.anchorFrameType == "CUSTOM"
+      or data.anchorFrameType == "UNITFRAME"
+      or data.anchorFrameType == "NAMEPLATE"
+      then
+        WeakAuras.AnchorFrame(data, region, parent);
+      end
+
       if (region.toShow) then
         return;
       end
       region.toShow = true;
-
-      if (data.anchorFrameType == "SELECTFRAME" or data.anchorFrameType == "CUSTOM") then
-        WeakAuras.AnchorFrame(data, region, parent);
-      end
 
       region.justCreated = nil;
       if(region.PreShow) then

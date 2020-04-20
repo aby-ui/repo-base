@@ -496,7 +496,7 @@ local function GetDisplayOptions()
 					name = AL["DISPLAY_BUTTON_SCALE"],
 					desc = AL["DISPLAY_BUTTON_SCALE_DESC"],
 					min	= 0.4,
-					max	= 1,
+					max	= 1.1,
 					step = 0.01,
 					bigStep = 0.05,
 					get = function() return private.db.display.scale end,
@@ -870,12 +870,13 @@ local function GetZonesFilterOptions()
 					
 					if (tempName) then
 						local i = 2
-						while (zones_filter_options.args.zoneFilters.values[tempName]) do
-							tempName = tempName..' ('..i..')'
+						local tempLoopName = tempName
+						while (zones_filter_options.args.zoneFilters.values[tempLoopName]) do
+							tempLoopName = tempName..' ('..i..')'
 							i = i+1
 						end
 						
-						zones_filter_options.args.zoneFilters.values[tempName] = zoneID
+						zones_filter_options.args.zoneFilters.values[tempLoopName] = zoneID
 					end
 				end)
 				if (private.CONTINENT_ZONE_IDS[continentID].extrazones) then
@@ -894,12 +895,13 @@ local function GetZonesFilterOptions()
 					
 						if (tempName) then
 							local i = 2
-							while (zones_filter_options.args.zoneFilters.values[tempName]) do
-								tempName = tempName..' ('..i..')'
+							local tempLoopName = tempName
+							while (zones_filter_options.args.zoneFilters.values[tempLoopName]) do
+								tempLoopName = tempName..' ('..i..')'
 								i = i+1
 							end
 							
-							zones_filter_options.args.zoneFilters.values[tempName] = zoneID
+							zones_filter_options.args.zoneFilters.values[tempLoopName] = zoneID
 						end
 					end)
 				end

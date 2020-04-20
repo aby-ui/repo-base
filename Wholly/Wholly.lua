@@ -401,6 +401,8 @@
 --		078 *** Requires Grail 109 or later ***
 --			Updates the Classic interface to 11304 to match the latest Blizzard release.
 --			Updates getting NPC locations to newer API use in Grail.
+--		079	*** Requires Grail 110 or later ***
+--			Changes made to handle Grail's delayed loading of NPC names.
 --
 --	Known Issues
 --
@@ -457,7 +459,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 109
+local requiredGrailVersion = 110
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -1188,7 +1190,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					local t = {}
 					for _, npc in pairs(locations) do
 						if nil ~= npc.x then
-							local npcName = self:_PrettyNPCString(npc.name, npc.kill, npc.realArea) or "***"
+							local npcName = self:_PrettyNPCString(Grail:NPCName(npc.id), npc.kill, npc.realArea) or "***"
 							local uid = TomTom:AddWaypoint(npc.mapArea, npc.x/100, npc.y/100,
 									{	persistent = false,
 										title = npcName .. " - " .. self:_QuestName(questId),
@@ -2450,10 +2452,10 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 						elseif nil ~= npc.x then
 							locationString = locationString .. strformat(' %.2f, %.2f', npc.x, npc.y)
 						end
-						local rawNameToUse = npc.name or "**"
+						local rawNameToUse = Grail:NPCName(npc.id) or "**"
 						local nameToUse = rawNameToUse
-						if npc.dropName then
-							nameToUse = nameToUse .. " (" .. npc.dropName .. ')'
+						if npc.dropId then
+							nameToUse = nameToUse .. " (" .. Grail:NPCName(npc.dropId) .. ')'
 						end
 						local prettiness = self:_PrettyNPCString(nameToUse, npc.kill, npc.realArea)
 						-- Check to ensure the NPC is available for this player
@@ -4136,9 +4138,9 @@ end
 							if dist <= 0.02 then
 								if not npcList[npc.id] then
 									npcList[npc.id] = {}
-									local nameToUse = npc.name or "??"
-									if npc.dropName then
-										nameToUse = nameToUse .. " (" .. npc.dropName .. ')'
+									local nameToUse = Grail:NPCName(npc.id) or "??"
+									if npc.dropid then
+										nameToUse = nameToUse .. " (" .. Grail:NPCName(npc.dropId) .. ')'
 									end
 									npcNames[npc.id] = self:_PrettyNPCString(nameToUse, npc.kill, npc.realArea)
 								end

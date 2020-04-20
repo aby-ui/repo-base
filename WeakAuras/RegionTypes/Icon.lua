@@ -234,6 +234,7 @@ local function create(parent, data)
   local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
+  cooldown:SetDrawBling(false)
 
   region.values = {};
 
@@ -456,6 +457,9 @@ local function modify(parent, region, data)
     region:UpdateTexCoords();
   end
 
+  cooldown.expirationTime = nil;
+  cooldown.duration = nil;
+  cooldown:Hide()
   if(data.cooldown) then
     function region:SetValue(value, total)
       cooldown.duration = 0
@@ -464,7 +468,7 @@ local function modify(parent, region, data)
     end
 
     function region:SetTime(duration, expirationTime)
-      if (duration > 0) then
+      if (duration > 0 and expirationTime > GetTime()) then
         cooldown:Show();
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
@@ -522,7 +526,6 @@ local function modify(parent, region, data)
       region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
     end
   else
-    cooldown:Hide();
     region.SetValue = nil
     region.SetTime = nil
 
@@ -542,6 +545,12 @@ local function modify(parent, region, data)
   end
 
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+
+  --- WORKAROUND
+  -- This fixes a issue with barmodels not appearing on icons if the
+  -- icon is shown delayed
+  region:SetWidth(region:GetWidth())
+  region:SetHeight(region:GetHeight())
 end
 
 WeakAuras.RegisterRegionType("icon", create, modify, default, properties);
