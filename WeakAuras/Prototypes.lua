@@ -1080,14 +1080,13 @@ WeakAuras.load_prototype = {
     },
     {
       name = "vehicle",
-      display = L["In Vehicle"],
+      display = WeakAuras.IsClassic() and L["On Taxi"] or L["In Vehicle"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
-      enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic(),
-      events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UNIT_FLAGS"}
+      events = WeakAuras.IsClassic() and {"UNIT_FLAGS"}
+               or {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UNIT_FLAGS"}
     },
     {
       name = "vehicleUi",
@@ -1630,6 +1629,7 @@ WeakAuras.event_prototypes = {
   },
   ["Health"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -1853,6 +1853,7 @@ WeakAuras.event_prototypes = {
   },
   ["Power"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -2037,6 +2038,13 @@ WeakAuras.event_prototypes = {
         test = "true"
       },
       {
+        name = "stacks",
+        hidden = true,
+        init = "power",
+        store = true,
+        test = "true"
+      },
+      {
         name = "progressType",
         hidden = true,
         init = "'static'",
@@ -2120,6 +2128,7 @@ WeakAuras.event_prototypes = {
   },
   ["Alternate Power"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -6298,9 +6307,13 @@ WeakAuras.event_prototypes = {
       end
       local unit_events = {}
       local pet_unit_events = {}
-      if not WeakAuras.IsClassic() and trigger.use_vehicle ~= nil then
-        tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
-        tinsert(unit_events, "UNIT_EXITED_VEHICLE")
+      if trigger.use_vehicle ~= nil then
+        if WeakAuras.IsClassic() then
+          tinsert(unit_events, "UNIT_FLAGS")
+        else
+          tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
+          tinsert(unit_events, "UNIT_EXITED_VEHICLE")
+        end
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
       if trigger.use_HasPet ~= nil then
@@ -6383,11 +6396,9 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "vehicle",
-        display = L["In Vehicle"],
+        display = WeakAuras.IsClassic() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = "not WeakAuras.IsClassic() and UnitInVehicle('player')",
-        enable = not WeakAuras.IsClassic(),
-        hidden = WeakAuras.IsClassic()
+        init = WeakAuras.IsClassic() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
       },
       {
         name = "resting",

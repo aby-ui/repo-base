@@ -22,6 +22,7 @@
 	local _GetTime = GetTime
 	local _select = select
 	local _UnitBuff = UnitBuff
+	local _tonumber = tonumber
 	
 	local _CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
@@ -97,6 +98,8 @@
 		local bitfield_swap_cache = {}
 	--> damage and heal last events
 		local last_events_cache = {} --> initialize table (placeholder)
+	--> npcId cache
+		local npcid_cache = {}
 	--> pets
 		local container_pets = {} --> initialize table (placeholder)
 	--> ignore deaths
@@ -197,6 +200,9 @@
 	
 	--expose the override spells table to external scripts
 	_detalhes.OverridedSpellIds = override_spellId
+
+	--> list of ignored npcs by the user
+	local ignored_npcids = {}
 	
 	--> ignore soul link (damage from the warlock on his pet - current to demonology only)
 	local SPELLID_WARLOCK_SOULLINK = 108446
@@ -536,6 +542,26 @@
 			alvo_flags = 0xa48
 		end
 		
+		--> npcId check for ignored npcs
+			--target
+			local npcId = npcid_cache[alvo_serial]
+			if (not npcId) then
+				npcId = _tonumber(_select (6, _strsplit ("-", alvo_serial)) or 0)
+				npcid_cache[alvo_serial] = npcId
+			end
+			if (ignored_npcids[npcId]) then
+				return
+			end
+			--source
+			npcId = npcid_cache[who_serial]
+			if (not npcId) then
+				npcId = _tonumber(_select (6, _strsplit ("-", who_serial)) or 0)
+				npcid_cache[who_serial] = npcId
+			end
+			if (ignored_npcids[npcId]) then
+				return
+			end
+
 		--> avoid doing spellID checks on each iteration
 		if (special_damage_spells [spellid]) then
 			--> stagger
@@ -5135,6 +5161,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (misc_cache)
 		_table_wipe (misc_cache_pets)
 		_table_wipe (misc_cache_petsOwners)
+		_table_wipe (npcid_cache)
 		
 		_table_wipe (ignore_death)
 	
@@ -5300,7 +5327,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--_recording_took_damage = _detalhes.RecordRealTimeTookDamage
 		_recording_ability_with_buffs = _detalhes.RecordPlayerAbilityWithBuffs
 		_in_combat = _detalhes.in_combat
-		
+
+		--> grab the ignored npcid directly from the user profile
+		ignored_npcids = _detalhes.npcid_ignored
+
 		if (_in_combat) then
 			if (not _auto_regen_thread or _auto_regen_thread._cancelled) then
 				_auto_regen_thread = C_Timer.NewTicker (AUTO_REGEN_PRECISION / 10, regen_power_overflow_check)

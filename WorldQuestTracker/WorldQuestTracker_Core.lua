@@ -1996,62 +1996,69 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				local anchorSide = worldSummary.GetAnchorSide (true)
 				factionAnchor:ClearAllPoints()
 				
-				--set the point of the faction anchor
-				--[=[ this code is for anchoring in the top left or top right side, the faction anchor got moved to the bottom right with the alliance and horde buttons
-				if (anchorSide == "left") then
-					--factionAnchor:SetPoint ("topleft", worldSummary, "topleft", 2, WorldQuestTracker.db.profile.bar_anchor == "top" and -22 or 0)
-				
-				elseif (anchorSide == "right") then	
-					--using -40 due to the search button in the topright corner
-					--factionAnchor:SetPoint ("topright", worldSummary, "topright", -40, WorldQuestTracker.db.profile.bar_anchor == "top" and -22 or 0)
-					
-				end
-				--]=]
-				
 				local anchorWidth = 0
 				local anchorHeight = 0
+				local buttonId = 1
 				
 				--set the point of each individual button
 				local widgetWidget = factionAnchor.Widgets [1]:GetWidth() + 3
 				for buttonIndex, factionButton in ipairs (factionAnchor.Widgets) do
 					factionButton:ClearAllPoints()
+					local mapId = WorldQuestTracker.GetCurrentMapAreaID()
+					local factionsOfTheMap = WorldQuestTracker.GetFactionsAllowedOnMap(mapId)
 					
-					if (anchorSide == "left") then
-						if (buttonIndex == 1) then
-							factionButton:SetPoint ("center", factionAnchor, "topleft", 0, 0)
+					if (factionsOfTheMap) then
+						if (factionsOfTheMap[factionButton.FactionID]) then --error
+							if (anchorSide == "left") then
+								if (buttonId == 1) then
+									factionButton:SetPoint ("center", factionAnchor, "topleft", 0, 0)
+								else
+									factionButton:SetPoint ("center", factionAnchor, "topleft", widgetWidget * (buttonId-1), 0)
+								end
+								
+							elseif (anchorSide == "right") then	
+								if (buttonId == 1) then
+									factionButton:SetPoint ("center", factionAnchor, "topright", 0, 0)
+								else
+									factionButton:SetPoint ("center", factionAnchor, "topright", -widgetWidget * (buttonId-1), 0)
+								end
+							end
 							
-						else
-							--factionButton:SetPoint ("topleft", factionAnchor.Widgets [buttonIndex - 1], "topright", 2, 0)
-							factionButton:SetPoint ("center", factionAnchor, "topleft", widgetWidget * (buttonIndex-1), 0)
-						end
-						
-					elseif (anchorSide == "right") then	
-						if (buttonIndex == 1) then
-							factionButton:SetPoint ("center", factionAnchor, "topright", 0, 0)
+							anchorWidth = anchorWidth + factionButton:GetWidth() + 2
+							anchorHeight = factionButton:GetHeight()
 							
-						else
-							--factionButton:SetPoint ("topright", factionAnchor.Widgets [buttonIndex - 1], "topleft", -2, 0)
-							factionButton:SetPoint ("center", factionAnchor, "topright", -widgetWidget * (buttonIndex-1), 0)
-						end
-						
-					end
-					
-					anchorWidth = anchorWidth + factionButton:GetWidth() + 2
-					anchorHeight = factionButton:GetHeight()
-					
-					--see the reputation amount and change the alpha
-					local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (factionButton.FactionID)
-					local repAmount = barValue
-					barMax = barMax - barMin
-					barValue = barValue - barMin
-					barMin = 0
+							--see the reputation amount and change the alpha
+							local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (factionButton.FactionID)
+							local repAmount = barValue
+							barMax = barMax - barMin
+							barValue = barValue - barMin
+							barMin = 0
 
-					if (repAmount > 41900) then
-						factionButton:SetAlpha (.75)
-						--factionButton.Icon:SetDesaturated (true)
+							if (repAmount > 41900) then --exalted
+								factionButton:SetAlpha(1)
+								local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionButton.FactionID)
+								if (hasRewardPending) then
+									factionButton.paragonRewardIcon:Show()
+									factionButton.glowTexture:Show()
+									factionButton.paragonRewardIcon.glowAnimation:Play()
+								else
+									factionButton.paragonRewardIcon:Hide()
+									factionButton.glowTexture:Hide()
+								end
+							else
+								factionButton:SetAlpha(1)
+							end
+							
+							buttonId = buttonId + 1
+							factionButton:Show()
+						else
+							--this faction shouldn't show on this map
+							factionButton:Hide()
+						end
 					else
-						factionButton:SetAlpha (1)
-						--factionButton.Icon:SetDesaturated (false)
+						--no faction is supported by this map
+						--hide all?
+						factionButton:Hide()
 					end
 				end
 				
@@ -2107,6 +2114,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					GameCooltip:AddIcon ("", 1, 1, 1, 20)
 					GameCooltip:AddStatusBar (barValue / barMax * 100, 1, 0, 0.65, 0, 0.7, nil, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\Tooltips\UI-Tooltip-Background]]}, [[Interface\Tooltips\UI-Tooltip-Background]])
 
+					local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+					if (not tooLowLevelForParagon and rewardQuestID and currentValue and threshold) then
+						local value = currentValue % threshold
+						GameCooltip:AddLine ("Paragon", HIGHLIGHT_FONT_COLOR_CODE.." "..format(REPUTATION_PROGRESS_FORMAT, BreakUpLargeNumbers(value), BreakUpLargeNumbers(threshold))..FONT_COLOR_CODE_CLOSE)
+						GameCooltip:AddIcon ([[Interface\GossipFrame\VendorGossipIcon]], 1, 1, 20, 20, 0, 1, 0, 1)
+						GameCooltip:AddStatusBar (value / threshold * 100, 1, 0, 0.65, 0, 0.7, nil, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\Tooltips\UI-Tooltip-Background]]}, [[Interface\Tooltips\UI-Tooltip-Background]])
+					end
+
 					GameCooltip:Show()
 					
 					if (self.MyObject.OnLeaveAnimation:IsPlaying()) then
@@ -2156,10 +2171,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 				
 				--create buttons
-				for factionID, factionInfo in pairs (WorldQuestTracker.MapData.ReputationByFaction [playerFaction]) do
+				--for factionID, factionInfo in pairs (WorldQuestTracker.MapData.ReputationByFaction [playerFaction]) do
+				for factionID, _ in pairs (WorldQuestTracker.MapData.AllFactionIds) do --creates one button for each faction registered
 					if (type (factionID) == "number") then
 					
-						local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (factionID)
 						local factionButton = DF:CreateButton (factionAnchor, worldSummary.OnSelectFaction, 24, 24, "", factionButtonIndex)
 						
 						--animations
@@ -2187,6 +2202,29 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						DF:CreateBorder (factionButton.OverlayFrame, 1, 0, 0)
 						factionButton.OverlayFrame:SetBorderColor (1, .85, 0)
 						factionButton.OverlayFrame:SetBorderAlpha (.843, .1, .05)
+
+						local paragonRewardIcon = factionButton:CreateTexture(nil, "overlay")
+						paragonRewardIcon:SetTexture([[Interface\GossipFrame\VendorGossipIcon]])
+						paragonRewardIcon:SetPoint("topright", factionButton.widget, "topright", 6, 10)
+
+						local glowTexture = factionButton:CreateTexture(nil, "orverlay")
+						glowTexture:SetTexture([[Interface\PETBATTLES\PetBattle-SelectedPetGlow]])
+						glowTexture:SetSize(32, 32)
+						glowTexture:SetPoint("center", paragonRewardIcon, "center")
+						factionButton.glowTexture = glowTexture
+
+						paragonRewardIcon.glowAnimation = DF:CreateAnimationHub (glowTexture, function() end, function() end)
+						WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 1, 0.750, 0.4, 1)
+						WorldQuestTracker:CreateAnimation(paragonRewardIcon.glowAnimation, "Alpha", 2, 0.750, 1, 0.4)
+						paragonRewardIcon.glowAnimation:SetLooping ("REPEAT")
+
+						paragonRewardIcon.anim = paragonRewardIcon.glowAnimation
+
+						paragonRewardIcon:SetDrawLayer("overlay", 6)
+						glowTexture:SetDrawLayer("overlay", 5)
+
+						paragonRewardIcon:Hide()
+						factionButton.paragonRewardIcon = paragonRewardIcon
 						
 						local selectedBorder = factionButton:CreateTexture (nil, "overlay")
 						selectedBorder:SetPoint ("center")
@@ -2245,12 +2283,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			function worldSummary.RefreshFactionButtons()
 				for i, factionButton in ipairs (worldSummary.FactionAnchor.Widgets) do
 					if (factionButton.FactionID == worldSummary.FactionSelected) then
-						--factionButton:SetTemplate (worldSummary.FactionSelectedTemplate)
-						--factionButton.SelectedBorder:SetAlpha (0.55)
 						factionButton.OverlayFrame:SetAlpha (1)
 					else
-						--factionButton:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-						--factionButton.SelectedBorder:SetAlpha (0)
 						factionButton.OverlayFrame:SetAlpha (0)
 					end
 				end

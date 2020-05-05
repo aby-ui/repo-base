@@ -1,4 +1,4 @@
-﻿local mod	= DBM:NewMod("d640", "DBM-Challenges", 1, nil, function(t)
+﻿local mod	= DBM:NewMod("d640", "DBM-Challenges", 4, nil, function(t)
 	if GetLocale() == "deDE" then
 		return select(2, string.match(t, "(%S+): (%S+.%S+.%S+.%S+)")) -- "Feuerprobe: Tempel des Weißen Tigers QUEST nil"
 	else
@@ -7,7 +7,7 @@
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200111185047")
+mod:SetRevision("20200422121759")
 mod:SetZone()
 mod.noStatistics = true
 
@@ -22,16 +22,11 @@ mod:RegisterEvents(
 local warnRipperTank		= mod:NewSpellAnnounce(144084, 2, nil, false)--145408 is healer version of mob
 local warnFlamecallerTank	= mod:NewSpellAnnounce(144091, 2)--145401 is healer version of mob
 local warnWindGuard			= mod:NewSpellAnnounce(144087, 3)
-local warnAmbusher			= mod:NewSpellAnnounce(144086, 4)
 local warnConquerorTank		= mod:NewSpellAnnounce(144088, 3)--145409 is healer version of mob
 ----Other Stuff
 local warnPyroBlast			= mod:NewCastAnnounce(147601, 3, 3)--Tooltip says 2 but it actually has 3 sec cast
-local warnInvokeLava		= mod:NewSpellAnnounce(144374, 3)
-local warnWindBlast			= mod:NewSpellAnnounce(144106, 4)--Threat wipe & knockback, must taunt, very important
 local warnEnrage			= mod:NewTargetAnnounce(144404, 3)
-local warnPowerfulSlam		= mod:NewSpellAnnounce(144401, 4)
 --Damager
-local warnBanshee			= mod:NewSpellAnnounce(142838, 4)
 local warnAmberGlobule		= mod:NewSpellAnnounce(142189, 4)
 local warnHealIllusion		= mod:NewCastAnnounce(142238, 4)
 --Healer
@@ -41,27 +36,27 @@ local warnAquaBomb			= mod:NewTargetAnnounce(145206, 3)
 local warnBurrow			= mod:NewTargetAnnounce(145260, 2)
 
 --Tank
-local specWarnPyroBlast		= mod:NewSpecialWarningInterrupt(147601, false)
-local specWarnInvokeLava	= mod:NewSpecialWarningSpell(144374, nil, nil, nil, 2)
-local specWarnInvokeLavaSIS	= mod:NewSpecialWarningMove(144383)
-local specWarnWindBlast		= mod:NewSpecialWarningSpell(144106)
-local specWarnAmbusher		= mod:NewSpecialWarningSwitch(144086)
-local specWarnPowerfulSlam	= mod:NewSpecialWarningMove(144401)
+local specWarnPyroBlast		= mod:NewSpecialWarningInterrupt(147601, false, nil, nil, 1, 2)
+local specWarnInvokeLava	= mod:NewSpecialWarningSpell(144374, nil, nil, nil, 2, 2)
+local specWarnInvokeLavaSIS	= mod:NewSpecialWarningMove(144383, nil, nil, nil, 1, 2)
+local specWarnWindBlast		= mod:NewSpecialWarningSpell(144106, nil, nil, nil, 2, 2)
+local specWarnAmbusher		= mod:NewSpecialWarningSwitch(144086, nil, nil, nil, 1, 2)
+local specWarnPowerfulSlam	= mod:NewSpecialWarningMove(144401, nil, nil, nil, 1, 2)
 --Damager
-local specWarnAmberGlob		= mod:NewSpecialWarningSpell(142189)
-local specWarnHealIllusion	= mod:NewSpecialWarningInterrupt(142238)
-local specWarnBanshee		= mod:NewSpecialWarningSwitch(142838)
+local specWarnAmberGlob		= mod:NewSpecialWarningSpell(142189, nil, nil, nil, 1, 2)
+local specWarnHealIllusion	= mod:NewSpecialWarningInterrupt(142238, nil, nil, nil, 1, 2)
+local specWarnBanshee		= mod:NewSpecialWarningSwitch(142838, nil, nil, nil, 1, 2)
 --Healer
-local specWarnStinger		= mod:NewSpecialWarningSpell(145198, false)
-local specWarnSonicBlast	= mod:NewSpecialWarningInterrupt(145200, false)--have to be pretty damn fast to interrupt this, off by default and for the very skilled mainly
-local specWarnAquaBomb		= mod:NewSpecialWarningTarget(145206)--It's cast too often to dispel them off, so it's better as a target warning.
+local specWarnStinger		= mod:NewSpecialWarningSwitch(145198, false, nil, nil, 1, 2)
+local specWarnSonicBlast	= mod:NewSpecialWarningInterrupt(145200, false, nil, nil, 1, 2)--have to be pretty damn fast to interrupt this, off by default and for the very skilled mainly
+local specWarnAquaBomb		= mod:NewSpecialWarningTarget(145206, nil, nil, nil, 1, 2)--It's cast too often to dispel them off, so it's better as a target warning.
 
 --Tank
 local timerWindBlastCD		= mod:NewNextTimer(21, 144106, nil, nil, nil, 5)
 local timerPowerfulSlamCD	= mod:NewCDTimer(15, 144401, nil, nil, nil, 3)--15-17sec variation
 --Damager
 local timerAmberGlobCD		= mod:NewNextTimer(10.5, 142189, nil, nil, nil, 5)
-local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4)
+local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
 --Healer
 local timerAquaBombCD		= mod:NewCDTimer(12, 145206, nil, false, nil, 5)--12-22 second variation? off by default do to this
 local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation
@@ -71,32 +66,46 @@ local started = false
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 147601 then
-		warnPyroBlast:Show()
-		specWarnPyroBlast:Show(args.sourceName)
+		if self.Options.SpecWarn147601interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnPyroBlast:Show(args.sourceName)
+			specWarnPyroBlast:Play("kickcast")
+		else
+			warnPyroBlast:Show()
+		end
 	elseif spellId == 144374 then
-		warnInvokeLava:Show()
 		specWarnInvokeLava:Show()
+		specWarnInvokeLava:Play("watchstep")
 	elseif spellId == 144106 and self:AntiSpam(2.5, 2) then
-		warnWindBlast:Show()
 		specWarnWindBlast:Show()
+		specWarnWindBlast:Play("carefly")
 		timerWindBlastCD:Start(args.sourceGUID)
 	elseif spellId == 144401 and self:AntiSpam(2.5, 3) then
-		warnPowerfulSlam:Show()
 		specWarnPowerfulSlam:Show()
-		timerPowerfulSlamCD:Start(args.sourceGUID)
 		specWarnPowerfulSlam:Play("shockwave")
+		timerPowerfulSlamCD:Start(args.sourceGUID)
 	elseif spellId == 142189 then
-		warnAmberGlobule:Show()
-		specWarnAmberGlob:Show()
+		if self.Options.SpecWarn142189spell then
+			specWarnAmberGlob:Show()
+			specWarnAmberGlob:Play("watchstep")
+		else
+			warnAmberGlobule:Show()
+		end
 		timerAmberGlobCD:Start(args.sourceGUID)
 	elseif spellId == 142238 then
-		warnHealIllusion:Show()
-		specWarnHealIllusion:Show(args.sourceName)
 		timerHealIllusionCD:Start(args.sourceGUID)
-		specWarnHealIllusion:Play("kickcast")
+		if self.Options.SpecWarn142238interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnHealIllusion:Show(args.sourceName)
+			specWarnHealIllusion:Play("kickcast")
+		else
+			warnHealIllusion:Show()
+		end
 	elseif spellId == 145200 then
-		warnSonicBlast:Show()
-		specWarnSonicBlast:Show(args.sourceName)
+		if self.Options.SpecWarn145200interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnSonicBlast:Show(args.sourceName)
+			specWarnSonicBlast:Play("kickcast")
+		else
+			warnSonicBlast:Show()
+		end
 		timerSonicBlastCD:Start(args.sourceGUID)
 	end
 end
@@ -105,11 +114,16 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 144383 and args:IsPlayer() and self:AntiSpam(1.5, 1) then
 		specWarnInvokeLavaSIS:Show()
+		specWarnInvokeLavaSIS:Play("runaway")
 	elseif spellId == 144404 then
 		warnEnrage:Show(args.destName)
 	elseif spellId == 145206 then
-		warnAquaBomb:Show(args.destName)
-		specWarnAquaBomb:Show(args.destName)
+		if self.Options.SpecWarn145206target then
+			specWarnAquaBomb:Show(args.destName)
+			specWarnAquaBomb:Play("targetchange")--Iffy, but meh
+		else
+			warnAquaBomb:Show(args.destName)
+		end
 		timerAquaBombCD:Start(args.sourceGUID)
 	end
 end
@@ -137,18 +151,22 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 144088 and self:AntiSpam(2, 5) then
 		warnConquerorTank:Show()
 	elseif spellId == 144086 and self:AntiSpam(2, 6) then
-		warnAmbusher:Show()
 		specWarnAmbusher:Show()
+		specWarnAmbusher:Play("targetchange")
 	elseif spellId == 144087 and self:AntiSpam(2, 7) then
 		warnWindGuard:Show()
 	elseif spellId == 145260 and self:AntiSpam(2, 8) then
 		warnBurrow:Show(args.destName)
 	elseif spellId == 142838 and self:AntiSpam(2, 9) then
-		warnBanshee:Show()
 		specWarnBanshee:Show()
+		specWarnBanshee:Play("targetchange")
 	elseif spellId == 145198 and self:AntiSpam(2, 11) then
-		warnStinger:Show()
-		specWarnStinger:Show()
+		if self.Options.SpecWarn145198switch then
+			specWarnStinger:Show()
+			specWarnStinger:Play("targetchange")
+		else
+			warnStinger:Show()
+		end
 	end
 end
 

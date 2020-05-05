@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 15
-local CURRENT_LOOT_DB_VERSION = 29
+local CURRENT_DB_VERSION = 16
+local CURRENT_LOOT_DB_VERSION = 31
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -97,7 +97,8 @@ local PROFILE_DEFAULTS = {
 			displayLogWindow = false,
 			autoHideLogWindow = 0,
 			enableNavigation = true,
-			navigationLockEntity = false
+			navigationLockEntity = false,
+			lockPosition = false
 		},
 		rareFilters = {
 			filtersToggled = true,
@@ -159,8 +160,12 @@ scanner_button:SetUserPlaced(true)
 scanner_button:SetClampedToScreen(true)
 scanner_button:RegisterForDrag("LeftButton")
 
-scanner_button:SetScript("OnDragStart", scanner_button.StartMoving)
-scanner_button:SetScript("OnDragStop",function(self)
+scanner_button:SetScript("OnDragStart", function(self)
+	if (not private.db.display.lockPosition) then
+		self:StartMoving()
+	end
+end)
+scanner_button:SetScript("OnDragStop", function(self)
 	self:StopMovingOrSizing()
 	private.dbchar.scannerXPos = self:GetLeft()
 	private.dbchar.scannerYPos = self:GetBottom()
@@ -1498,6 +1503,8 @@ end
 function RareScanner:ResetPosition()
 	scanner_button:ClearAllPoints()
 	scanner_button:SetPoint("BOTTOM", UIParent, 0, 128)
+	private.dbchar.scannerXPos = scanner_button:GetLeft()
+	private.dbchar.scannerYPos = scanner_button:GetBottom()
 end
 
 ----------------------------------------------

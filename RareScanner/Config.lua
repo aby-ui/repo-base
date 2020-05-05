@@ -490,8 +490,13 @@ local function GetDisplayOptions()
 					width = "full",
 					disabled = function() return not private.db.display.displayButton end,
 				},
+				separatorButtonPosition = {
+					order = 5,
+					type = "header",
+					name = AL["DISPLAY_BUTTON_SCALE_POSITION"],
+				},
 				scale = {
-					order = 5.1,
+					order = 6.1,
 					type = "range",
 					name = AL["DISPLAY_BUTTON_SCALE"],
 					desc = AL["DISPLAY_BUTTON_SCALE_DESC"],
@@ -506,29 +511,40 @@ local function GetDisplayOptions()
 					width = "double",
 					disabled = function() return not private.db.display.displayButton end,	
 				},
-				resetPosition = {
-					order = 5.2,
-					name = AL["RESET_POSITION"],
-					desc = AL["RESET_POSITION_DESC"],
-					type = "execute",
-					func = function() RareScanner:ResetPosition() end,
-					width = "normal",
-				},
 				test = {
-					order = 5.3,
+					order = 6.2,
 					name = AL["TEST"],
 					desc = AL["TEST_DESC"],
 					type = "execute",
 					func = function() RareScanner:Test() end,
 					width = "normal",
 				},
+				lockPosition = {
+					order = 7.1,
+					type = "toggle",
+					name = AL["LOCK_BUTTON_POSITION"],
+					desc = AL["LOCK_BUTTON_POSITION_DESC"],
+					get = function() return private.db.display.lockPosition end,
+					set = function(_, value)
+						private.db.display.lockPosition = value
+					end,
+					width = "double",
+				},
+				resetPosition = {
+					order = 7.2,
+					name = AL["RESET_POSITION"],
+					desc = AL["RESET_POSITION_DESC"],
+					type = "execute",
+					func = function() RareScanner:ResetPosition() end,
+					width = "normal",
+				},
 				separatorMessages = {
-					order = 6,
+					order = 8,
 					type = "header",
 					name = AL["MESSAGE_OPTIONS"],
 				},
 				displayRaidWarning = {
-					order = 7,
+					order = 9,
 					type = "toggle",
 					name = AL["SHOW_RAID_WARNING"],
 					desc = AL["SHOW_RAID_WARNING_DESC"],
@@ -539,7 +555,7 @@ local function GetDisplayOptions()
 					width = "full",
 				},
 				displayChatMessage = {
-					order = 8,
+					order = 10,
 					type = "toggle",
 					name = AL["SHOW_CHAT_ALERT"],
 					desc = AL["SHOW_CHAT_ALERT_DESC"],
@@ -550,12 +566,12 @@ local function GetDisplayOptions()
 					width = "full",
 				},
 				separatorNavigation = {
-					order = 9,
+					order = 11,
 					type = "header",
 					name = AL["NAVIGATION_OPTIONS"],
 				},
 				enableNavigation = {
-					order = 10,
+					order = 12,
 					type = "toggle",
 					name = AL["NAVIGATION_ENABLE"],
 					desc = AL["NAVIGATION_ENABLE_DESC"],
@@ -566,7 +582,7 @@ local function GetDisplayOptions()
 					width = "full",
 				},
 				navigationLockEntity = {
-					order = 11,
+					order = 13,
 					type = "toggle",
 					name = AL["NAVIGATION_LOCK_ENTITY"],
 					desc = AL["NAVIGATION_LOCK_ENTITY_DESC"],
@@ -578,12 +594,12 @@ local function GetDisplayOptions()
 					disabled = function() return not private.db.display.enableNavigation end,
 				},
 				separatorLog = {
-					order = 12,
+					order = 14,
 					type = "header",
 					name = AL["LOG_WINDOW_OPTIONS"],
 				},
 				displayLogWindow = {
-					order = 13,
+					order = 15,
 					type = "toggle",
 					name = AL["DISPLAY_LOG_WINDOW"],
 					desc = AL["DISPLAY_LOG_WINDOW_DESC"],
@@ -594,7 +610,7 @@ local function GetDisplayOptions()
 					width = "full",
 				},
 				autoHideLogWindow = {
-					order = 14,
+					order = 16,
 					type = "range",
 					name = AL["LOG_WINDOW_AUTOHIDE"],
 					desc = AL["LOG_WINDOW_AUTOHIDE_DESC"],

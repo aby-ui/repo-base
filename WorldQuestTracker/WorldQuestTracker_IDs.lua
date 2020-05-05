@@ -435,6 +435,31 @@ WorldQuestTracker.MapData.ReputationIcons = {
 	[2032591] = true, --7th Legion
 }
 
+WorldQuestTracker.MapData.AllFactionIds = {
+	--BFA Factions
+	[2159] = true, --7th Legion
+	[2160] = true, --Proudmoore Admiralty
+	[2161] = true, --Order of Embers
+	[2162] = true, --Storm's Wake
+	[2103] = true, --Zandalari Empire
+	[2156] = true, --Talanji's Expedition
+	[2157] = true, --The Honorbound
+	[2158] = true, --Voldunai
+	[2163] = true, --Tortollan Seekers
+	[2164] = true, --Champions of Azeroth
+
+	--Legion Factions
+	[2170] = true, --Argussian Reach
+	[2045] = true, --Armies of Legionfall
+	[2165] = true, --Army of the Light
+	[1900] = true, --Court of Farondis
+	[1883] = true, --Dreamwavers
+	[1828] = true, --Highmountain Tribe
+	[1859] = true, --The Nightfallen
+	[1894] = true, --The Wardens
+	[1948] = true, --Valarjar
+}
+
 WorldQuestTracker.MapData.FactionIcons = {
 	--BFA
 	[2159] = "Interface\\ICONS\\inv__faction_alliancewareffort", --7th Legion
@@ -447,8 +472,87 @@ WorldQuestTracker.MapData.FactionIcons = {
 	[2158] = "Interface\\ICONS\\inv__faction_voldunai", --Voldunai
 	[2163] = "Interface\\ICONS\\inv__faction_tortollanseekers", --Tortollan Seekers
 	[2164] = "Interface\\ICONS\\inv__faction_championsofazeroth", --Champions of Azeroth
-	
+
+	--Legion
+	[2170] = "Interface\\ICONS\\INV_Legion_Faction_ArgussianReach", --Argussian Reach
+	[2045] = "Interface\\ICONS\\INV_Legion_Faction_Legionfall", --Armies of Legionfall
+	[2165] = "Interface\\ICONS\\INV_Legion_Faction_ArmyoftheLight", --Army of the Light
+	[1900] = "Interface\\ICONS\\INV_Legion_Faction_CourtofFarnodis", --Court of Farondis
+	[1883] = "Interface\\ICONS\\INV_Legion_Faction_DreamWeavers", --Dreamwavers
+	[1828] = "Interface\\ICONS\\INV_Legion_Faction_HightmountainTribes", --Highmountain Tribe
+	[1859] = "Interface\\ICONS\\INV_Legion_Faction_NightFallen", --The Nightfallen
+	[1894] = "Interface\\ICONS\\INV_Legion_Faction_Warden", --The Wardens
+	[1948] = "Interface\\ICONS\\INV_Legion_Faction_Valarjar", --Valarjar
+--	/run for i =1, 3000 do local N={GetFactionInfoByID(i)}if(N[1])then print(N[1].." "..N[14])end end
 }
+
+local BFAFactions = {
+	["Alliance"] = {
+		[2159] = true, --7th Legion
+		[2160] = true, --Proudmoore Admiralty
+		[2161] = true, --Order of Embers
+		[2162] = true, --Storm's Wake
+		[2400] = true, --Waveblade Ankoan
+
+		[2163] = true, --Tortollan Seekers
+		[2164] = true, --Champions of Azeroth
+		[2417] = true, --Uldum Accord
+		[2415] = true, --Rajani
+		[2391] = true, --Rustbolt Resistance
+	},
+
+	["Horde"] = {
+		--BFA
+		[2103] = true, --Zandalari Empire
+		[2156] = true, --Talanji's Expedition
+		[2157] = true, --The Honorbound
+		[2158] = true, --Voldunai
+		[2373] = true, --The Unshackled
+
+		[2163] = true, --Tortollan Seekers
+		[2164] = true, --Champions of Azeroth
+		[2417] = true, --Uldum Accord
+		[2415] = true, --Rajani
+		[2391] = true, --Rustbolt Resistance
+	}
+}
+
+local LegionFactions = {
+	[2170] = true, --Argussian Reach
+	[2045] = true, --Armies of Legionfall
+	[2165] = true, --Army of the Light
+	[1900] = true, --Court of Farondis
+	[1883] = true, --Dreamwavers
+	[1828] = true, --Highmountain Tribe
+	[1859] = true, --The Nightfallen
+	[1894] = true, --The Wardens
+	[1948] = true, --Valarjar
+}
+
+--what are the factionIds que belong to the map
+WorldQuestTracker.MapData.ReputationByMap = {
+	[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = LegionFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.ARGUS] = LegionFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = BFAFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = BFAFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = BFAFactions,
+}
+
+function WorldQuestTracker.GetFactionsAllowedOnMap(mapId)
+	local factionIdList = WorldQuestTracker.MapData.ReputationByMap[mapId]
+	if (not factionIdList) then
+		return
+	end
+
+	if (factionIdList.Horde and factionIdList.Alliance) then
+		local playerFactionGroup = UnitFactionGroup("player")
+		local list = factionIdList[playerFactionGroup]
+		return list
+
+	else
+		return factionIdList
+	end
+end
 
 --reputation IDs for each faction -- UnitFactionGroup ("player")
 --/run for i = 1, 5000 do local name = GetFactionInfoByID (i) if(name)then print (i,name) end end
@@ -467,8 +571,31 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[GetFactionInfoByID (2162) or "NotFound"] = 2162, --Storm's Wake
 		[GetFactionInfoByID (2163) or "NotFound"] = 2163, --Tortollan Seekers
 		[GetFactionInfoByID (2164) or "NotFound"] = 2164, --Champions of Azeroth
+
+		--Legion
+		[2170] = GetFactionInfoByID (2170), --Argussian Reach
+		[2045] = GetFactionInfoByID (2045), --Armies of Legionfall
+		[2165] = GetFactionInfoByID (2165), --Army of the Light
+		--[2135] = GetFactionInfoByID (2135), --Chromie
+		[1900] = GetFactionInfoByID (1900), --Court of Farondis
+		[1883] = GetFactionInfoByID (1883), --Dreamwavers
+		[1828] = GetFactionInfoByID (1828), --Highmountain Tribe
+		[1859] = GetFactionInfoByID (1859), --The Nightfallen
+		[1894] = GetFactionInfoByID (1894), --The Wardens
+		[1948] = GetFactionInfoByID (1948), --Valarjar		
+		[GetFactionInfoByID (2170) or "NotFound"] = 2170, --Argussian Reach
+		[GetFactionInfoByID (2045) or "NotFound"] = 2045, --Armies of Legionfall
+		[GetFactionInfoByID (2165) or "NotFound"] = 2165, --Army of the Light
+		--[GetFactionInfoByID (2135) or "NotFound"] = 2135, --Chromie
+		[GetFactionInfoByID (1900) or "NotFound"] = 1900, --Court of Farondis
+		[GetFactionInfoByID (1883) or "NotFound"] = 1883, --Dreamwavers
+		[GetFactionInfoByID (1828) or "NotFound"] = 1828, --Highmountain Tribe
+		[GetFactionInfoByID (1859) or "NotFound"] = 1859, --The Nightfallen
+		[GetFactionInfoByID (1894) or "NotFound"] = 1894, --The Wardens
+		[GetFactionInfoByID (1948) or "NotFound"] = 1948, --Valarjar
 	},
-	
+	--Legion
+
 	["Horde"] = {
 		--BFA
 		[2103] = GetFactionInfoByID (2103), --Zandalari Empire
@@ -483,6 +610,28 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[GetFactionInfoByID (2158) or "NotFound"] = 2158, --Voldunai
 		[GetFactionInfoByID (2163) or "NotFound"] = 2163, --Tortollan Seekers
 		[GetFactionInfoByID (2164) or "NotFound"] = 2164, --Champions of Azeroth
+
+		--Legion
+		[2170] = GetFactionInfoByID (2170), --Argussian Reach
+		[2045] = GetFactionInfoByID (2045), --Armies of Legionfall
+		[2165] = GetFactionInfoByID (2165), --Army of the Light
+		--[2135] = GetFactionInfoByID (2135), --Chromie
+		[1900] = GetFactionInfoByID (1900), --Court of Farondis
+		[1883] = GetFactionInfoByID (1883), --Dreamwavers
+		[1828] = GetFactionInfoByID (1828), --Highmountain Tribe
+		[1859] = GetFactionInfoByID (1859), --The Nightfallen
+		[1894] = GetFactionInfoByID (1894), --The Wardens
+		[1948] = GetFactionInfoByID (1948), --Valarjar
+		[GetFactionInfoByID (2170) or "NotFound"] = 2170, --Argussian Reach
+		[GetFactionInfoByID (2045) or "NotFound"] = 2045, --Armies of Legionfall
+		[GetFactionInfoByID (2165) or "NotFound"] = 2165, --Army of the Light
+		--[GetFactionInfoByID (2135) or "NotFound"] = 2135, --Chromie
+		[GetFactionInfoByID (1900) or "NotFound"] = 1900, --Court of Farondis
+		[GetFactionInfoByID (1883) or "NotFound"] = 1883, --Dreamwavers
+		[GetFactionInfoByID (1828) or "NotFound"] = 1828, --Highmountain Tribe
+		[GetFactionInfoByID (1859) or "NotFound"] = 1859, --The Nightfallen
+		[GetFactionInfoByID (1894) or "NotFound"] = 1894, --The Wardens
+		[GetFactionInfoByID (1948) or "NotFound"] = 1948, --Valarjar
 	},
 }
 

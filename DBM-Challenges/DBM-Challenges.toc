@@ -15,9 +15,9 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: SCENARIO
 ## X-DBM-Mod-Category: BFA
-## X-DBM-Mod-SubCategories: Proving Grounds,Legion Artifacts, BfA Visions
-## X-DBM-Mod-SubCategories-deDE: Feuerprobe,Legion Artefakte, BfA Visions
-## X-DBM-Mod-SubCategories-koKR: 수련의 장,군단 유물, 격아 환영
+## X-DBM-Mod-SubCategories: Shadowlands,Battle for Azeroth,Legion,Proving Grounds
+## X-DBM-Mod-SubCategories-deDE: Shadowlands,BfA Visions,Legion Artefakte,Feuerprobe
+## X-DBM-Mod-SubCategories-koKR: Shadowlands,격아 환영,군단 유물,수련의 장
 ## X-DBM-Mod-Name: Challenges
 ## X-DBM-Mod-Name-deDE: Herausforderungen
 ## X-DBM-Mod-Name-esES: Terreno de Pruebas
@@ -26,15 +26,16 @@
 ## X-DBM-Mod-Name-zhCN: 个人挑战
 ## X-DBM-Mod-Name-ruRU: Арена испытаний
 ## X-DBM-Mod-Sort: 416
-## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215
+## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162
 ## X-DBM-Mod-MinCoreRevision: 16130
 ## X-Curse-Project-ID: 61621
-## Version: r126
-
+## Version: r127-1-g64031c0
 localization.en.lua
 localization.tw.lua
 localization.cn.lua
-MoP\PGWhiteTiger.lua
+Shadowlands\Torghast.lua
+BfA\NzothVisionStormwind.lua
+BfA\NzothVisionOrgrimmar.lua
 Legion\DPSFelTotem.lua
 Legion\DPSImpossibleFoe.lua
 Legion\DPSQueen.lua
@@ -42,8 +43,7 @@ Legion\DPSTwins.lua
 Legion\DPSXylem.lua
 Legion\Healer.lua
 Legion\Tank.lua
-BfA\NzothVisionStormwind.lua
-BfA\NzothVisionOrgrimmar.lua
+MoP\PGWhiteTiger.lua
 
 
 ## X-Vendor: AbyUI

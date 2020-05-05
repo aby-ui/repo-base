@@ -1,4 +1,4 @@
-local internalVersion = 28;
+local internalVersion = 29;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -2077,7 +2077,9 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
   local inencounter = encounter_id ~= 0;
   local inpetbattle, vehicle, vehicleUi = false, false, false
-  if not WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() then
+    vehicle = UnitOnTaxi('player')
+  else
     inpetbattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
@@ -2117,8 +2119,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
       else
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
@@ -3823,6 +3825,23 @@ function WeakAuras.Modernize(data)
       end
       if data.actions.finish and data.actions.finish.do_glow then
         data.actions.finish.glow_frame_type = "FRAMESELECTOR"
+      end
+    end
+  end
+
+  if data.internalVersion < 29 then
+    if data.actions then
+      if data.actions.start
+      and data.actions.start.do_glow
+      and data.actions.start.glow_type == nil
+      then
+        data.actions.start.glow_type = "buttonOverlay"
+      end
+      if data.actions.finish
+      and data.actions.finish.do_glow
+      and data.actions.finish.glow_type == nil
+      then
+        data.actions.finish.glow_type = "buttonOverlay"
       end
     end
   end

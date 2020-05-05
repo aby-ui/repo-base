@@ -21,6 +21,8 @@ do
 	local metaPrototype = {
 		WidgetType = "button",
 		SetHook = DF.SetHook,
+		HasHook = DF.HasHook,
+		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
 	}
 

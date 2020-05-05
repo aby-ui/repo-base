@@ -570,8 +570,6 @@ L["Multi-target"] = "多目标"
 L["Mythic+ Affix"] = "大秘境词缀"
 L["Name"] = "名称"
 L["Name of Caster's Target"] = "施法者的目标的名字"
---[[Translation missing --]]
-L["Name Plate"] = "Name Plate"
 L["Nameplate"] = "姓名板"
 --[[Translation missing --]]
 L["Nameplate Type"] = "Nameplate Type"
@@ -611,6 +609,8 @@ L["Officer"] = "官员"
 L["Offset Timer"] = "位移计时器"
 L["Older set IDs can be found on websites such as wowhead.com/item-sets"] = "旧的套装 ID 可以在一些类似于wowhead.com/item-sets 的网站上找到"
 L["On Cooldown"] = "冷却中"
+--[[Translation missing --]]
+L["On Taxi"] = "On Taxi"
 L["Only if BigWigs shows it on it's bar"] = "仅当其在 BigWigs 条上出现时"
 L["Only if DBM shows it on it's bar"] = "仅当其在 DBM 条上出现时"
 L["Only if Primary"] = "只有当是首要时"

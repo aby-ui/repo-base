@@ -33,7 +33,7 @@ local ElvUI = _G.ElvUI
 
 local PETCAGEID = 82800
 
-RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["SlowScan"] = false, ["DatabaseVersion"] = 1}
+RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["ScanStep"] = 0.5, ["DatabaseVersion"] = 1}
 RE.GUIInitialized = false
 RE.RecipeLock = false
 RE.BlockTooltip = 0
@@ -200,14 +200,17 @@ function RE:OnEvent(self, event, ...)
 					set = function(_, val) RE.Config.AlwaysShowAll = val end,
 					get = function(_) return RE.Config.AlwaysShowAll end
 				},
-				slowscan = {
-					name = L["Enable slow scanning"],
-					desc = L["Enable this option if scanning is causing disconnects."],
-					type = "toggle",
-					width = "full",
+				scanstep = {
+					name = L["Scanning speed"],
+					desc = L["Increase this value if scanning is causing disconnects."],
+					type = "range",
+					width = "double",
 					order = 2,
-					set = function(_, val) RE.Config.SlowScan = val end,
-					get = function(_) return RE.Config.SlowScan end
+					min = 0.5,
+					max = 10,
+					step = 0.5,
+					set = function(_, val) RE.Config.ScanStep = val end,
+					get = function(_) return RE.Config.ScanStep end
 				},
 				dbcleanup = {
 					name = L["Data freshness"],
@@ -393,7 +396,7 @@ function RE:Scan()
 	RE.AHButton:SetText(count.." / "..num)
 	payloadDiff = count - payloadDiff
 	if payloadDiff > 0 then
-		After(RE.Config.SlowScan and 1 or 0.25, RE.Scan)
+		After(RE.Config.ScanStep, RE.Scan)
 	else
 		RE:EndScan()
 	end

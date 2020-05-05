@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 15
+local MINOR_VERSION = 16
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -244,9 +244,9 @@ function lib.GetUnitNameplate(unit)
     local nameplate = C_NamePlate.GetNamePlateForUnit(unit)
     if nameplate then
         -- credit to Exality for https://wago.io/explosiveorbs
-        if nameplate.unitFrame and nameplate.unitFrame.HealthBar then
+        if nameplate.unitFrame and nameplate.unitFrame.Health then
           -- elvui
-          return nameplate.unitFrame.HealthBar
+          return nameplate.unitFrame.Health
         elseif nameplate.unitFramePlater then
           -- plater
           return nameplate.unitFramePlater.healthBar

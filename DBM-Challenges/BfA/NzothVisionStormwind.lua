@@ -1,7 +1,7 @@
-﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 3)--1993 Stormwind 1995 Org
+﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200323151931")
+mod:SetRevision("20200418165651")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -419,12 +419,12 @@ do
 end
 
 function mod:NAME_PLATE_UNIT_ADDED(unit)
-	if unit and (UnitName(unit) == playerName) and not (UnitPlayerOrPetInRaid(unit) or UnitPlayerOrPetInParty(unit)) then--Throttled because sometimes two spawn at once
+	if unit and (UnitName(unit) == playerName) and not (UnitPlayerOrPetInRaid(unit) or UnitPlayerOrPetInParty(unit)) then
 		local guid = UnitGUID(unit)
 		if not guid then return end
 		if not warnedGUIDs[guid] then
 			warnedGUIDs[guid] = true
-			if self:AntiSpam(2, 4) then
+			if self:AntiSpam(2, 2) then--Throttled because sometimes two spawn at once
 				specWarnHauntingShadows:Show()
 				specWarnHauntingShadows:Play("runaway")
 			end

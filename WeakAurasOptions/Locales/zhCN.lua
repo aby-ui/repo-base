@@ -451,9 +451,9 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 只有一个单一的匹配值可以提取]=]
 	L["Name Info"] = "名称讯息"
 	L["Name Pattern Match"] = "名称规则匹配"
-	--[[Translation missing --]]
-	L["Name Plate"] = "Name Plate"
 	L["Name(s)"] = "名称"
+	--[[Translation missing --]]
+	L["Nameplate"] = "Nameplate"
 	L["Nameplates"] = "姓名板"
 	L["Negator"] = "不"
 	L["Never"] = "从不"

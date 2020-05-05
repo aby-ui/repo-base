@@ -1393,6 +1393,9 @@ local default_global_data = {
 	
 	--> raid information - can be accessed by plugins and third party mods
 		raid_data = {},
+
+	--> store all npcids blacklisted by the user
+		npcid_ignored = {},
 }
 
 _detalhes.default_global_data = default_global_data

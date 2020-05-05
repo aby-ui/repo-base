@@ -22,7 +22,10 @@ do
 	local metaPrototype = {
 		WidgetType = "slider",
 		SetHook = DF.SetHook,
+		HasHook = DF.HasHook,
+		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
+
 	}
 
 	_G [DF.GlobalWidgetControlNames ["slider"]] = _G [DF.GlobalWidgetControlNames ["slider"]] or metaPrototype
@@ -1177,6 +1180,8 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	SliderObject.thumb = SliderObject.slider:CreateTexture (nil, "artwork")
 	SliderObject.thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
 	SliderObject.thumb:SetSize (30+(h*0.2), h*1.2)
+	SliderObject.thumb.originalWidth = SliderObject.thumb:GetWidth()
+	SliderObject.thumb.originalHeight =SliderObject.thumb:GetHeight()
 	SliderObject.thumb:SetAlpha (0.7)
 	SliderObject.slider:SetThumbTexture (SliderObject.thumb)
 	SliderObject.slider.thumb = SliderObject.thumb

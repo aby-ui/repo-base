@@ -288,7 +288,7 @@ function DF:NewLabel (parent, container, name, member, text, font, size, color, 
 		container = container.widget
 	end
 
-	font = font or "GameFontHighlightSmall"
+	font = font == "" and "GameFontHighlightSmall" or font or "GameFontHighlightSmall"
 
 	LabelObject.label = parent:CreateFontString (name, layer or "OVERLAY", font)
 	LabelObject.widget = LabelObject.label

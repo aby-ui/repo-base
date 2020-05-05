@@ -3,7 +3,11 @@ if not L then return end
 
 L["Always display the price of the entire stock"] = "永遠顯示整組價格"
 L["Data freshness"] = "數據新鮮度"
+L["Items in database"] = "物品在數據庫"
 L["New items"] = "新物品"
+L["Next scan available in"] = "下次掃描可用於"
+L["Now"] = "現在"
+L["Previous scan"] = "先前掃描"
 L["Purge this server database"] = "清除此伺服器的數據庫"
 L["Removed items"] = "移除物品"
 L["Scan finished!"] = "掃描完成！"

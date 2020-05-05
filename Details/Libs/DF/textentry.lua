@@ -22,6 +22,8 @@ do
 	local metaPrototype = {
 		WidgetType = "textentry",
 		SetHook = DF.SetHook,
+		HasHook = DF.HasHook,
+		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
 	}
 
@@ -302,6 +304,12 @@ DF.TextEntryCounter = DF.TextEntryCounter or 1
 			if (self.editbox.borderframe) then
 				self.editbox.borderframe:SetBackdropColor (.5, .5, .5, .5)
 			end
+		end
+	end
+
+	function TextEntryMetaFunctions:SetCommitFunction(func)
+		if (type(func) == "function") then
+			self.func = func
 		end
 	end
 	
