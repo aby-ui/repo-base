@@ -1,0 +1,63 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/FrameXML/UI.xsd"
+>
+    <Script file="DominosTimerBarTemplate.lua" />
+
+    <Frame name="DominosTimerBarTemplate" setAllPoints="true" alpha="0" virtual="true" mixin="DominosTimerBarMixin">
+        <Animations>
+            <AnimationGroup parentKey="fadeIn" setToFinalAlpha="true">
+                <Alpha duration="0.3" fromAlpha="0" toAlpha="1"/>
+            </AnimationGroup>
+            <AnimationGroup parentKey="fadeOut" setToFinalAlpha="true">
+                <Alpha duration="0.3" fromAlpha="1" toAlpha="0"/>
+            </AnimationGroup>
+        </Animations>
+        <Frames>
+            <!-- we use a separate frame to contain the border so that it shows up over the status bars -->
+            <Frame parentKey="border" setAllPoints="true">
+                <Backdrop edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+                    <EdgeSize val="16" />
+                    <BackgroundInsets left="5" right="5" top="5" bottom="5"/>
+                    <Color color="TOOLTIP_DEFAULT_COLOR" />
+                </Backdrop>
+            </Frame>
+            <StatusBar parentKey="statusBar">
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString parentKey="text" inherits="GameFontHighlightSmall" justifyH="RIGHT" />
+                        <FontString parentKey="label" inherits="GameFontHighlightSmall" justifyH="LEFT" />
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <StatusBar parentKey="spark" setAllPoints="true">
+                        <BarTexture horizTile="true" alphaMode="BLEND">
+                            <Color r="1" g="1" b="1" a="0.5" />
+                            <Gradient orientation="HORIZONTAL">
+                                <MinColor r="0" g="0" b="0" a="0" />
+                                <MaxColor r="1" g="1" b="1" a="1" />
+                            </Gradient>
+                        </BarTexture>
+                    </StatusBar>
+                </Frames>
+            </StatusBar>
+        </Frames>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="icon">
+                    <!-- trim the edges of the texture to remove borders -->
+                    <TexCoords top="0.08" left="0.08" bottom="0.92" right="0.92"/>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="background" />
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="latencyBar" alphaMode="ADD" horizTile="true" />
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad method="OnLoad" />
+        </Scripts>
+    </Frame>
+</Ui>

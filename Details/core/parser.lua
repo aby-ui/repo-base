@@ -4,7 +4,8 @@
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 	local _tempo = time()
 	local _
-	
+	local DetailsFramework = DetailsFramework
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> local pointers
 
@@ -108,6 +109,8 @@
 		local ignore_actors = {}
 	--> spell containers for special cases
 		local monk_guard_talent = {} --guard talent for bm monks
+	--> holds transitory information about reflected spells
+		local reflected = {}
 		
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
@@ -461,6 +464,25 @@
 		--if (ignore_actors [alvo_serial]) then
 		--	return
 		--end
+
+		--> this cast may have been spell reflected
+		if (who_serial == alvo_serial) then
+			local idx = who_serial
+			if (reflected[idx] and reflected[idx].serial and DetailsFramework:IsNearlyEqual(reflected[idx].time, time, 3.0)) then
+				--> the 'SPELL_MISSED' with type 'REFLECT' appeared first -> log the reflection
+				who_serial = reflected[idx].serial
+				who_name = reflected[idx].name
+				who_flags = reflected[idx].who_flags
+				reflected[idx] = nil
+				return parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, -1, nil, nil, nil, nil, false, false, false, false)
+			else
+				--> otherwise log the amount for the 'SPELL_MISSED' event
+				reflected[idx] = {
+					amount = amount,
+					time = time
+				}
+			end
+		end
 		
 		--rules of specific encounters
 		
@@ -1332,7 +1354,7 @@
 	end
 
 	-- ~miss
-	function parser:missed (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, missType, isOffHand, amountMissed, arg1)
+	function parser:missed (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, missType, isOffHand, amountMissed, arg1, arg2, arg3)
 
 	------------------------------------------------------------------------------------------------
 	--> early checks and fixes
@@ -1432,6 +1454,27 @@
 				
 			end
 		
+        --> It is non deterministic whether the 'SPELL_DAMAGE' or the 'SPELL_MISSED' log appears first. We handle both cases.
+		elseif (missType == "REFLECT") then
+				
+				if (reflected[who_serial] and reflected[who_serial].amount > 0 and DetailsFramework:IsNearlyEqual(reflected[who_serial].time, time, 3.0)) then
+					--> 'SPELL_DAMAGE' was logged first -> log the reflect here
+					--> We cannot rely on amountMissed which is empty in the reflection case
+					local amount = reflected[who_serial].amount
+					reflected[who_serial] = nil
+					return parser:spell_dmg (token, time, alvo_serial, alvo_name, alvo_flags, who_serial, who_name, who_flags, nil, spellid, spellname, spelltype, amount, -1, nil, nil, nil, nil, false, false, false, false)
+
+				else
+					--> otherwise write out information used in the 'SPELL_DAMAGE' event
+					reflected[who_serial] = {
+						serial = alvo_serial,
+						name = alvo_name,
+						who_flags = alvo_flags,
+						time = time,
+						amount = 0
+					}
+				end
+
 		else
 			--colocando aqui apenas pois ele confere o override dentro do damage
 			if (is_using_spellId_override) then
@@ -5164,6 +5207,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (npcid_cache)
 		
 		_table_wipe (ignore_death)
+		_table_wipe (reflected)
 	
 		damage_cache = setmetatable ({}, _detalhes.weaktable)
 		damage_cache_pets = setmetatable ({}, _detalhes.weaktable)

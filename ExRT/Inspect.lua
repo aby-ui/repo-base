@@ -58,7 +58,8 @@ module.db.statsNames = {
 	avoidance = {L.cd2InspectAvoidance},
 	speed = {L.cd2InspectSpeed},
 
-	corruption = {"%+(%d+) "..(ITEM_MOD_CORRUPTION or "Corruption").."$"},
+	corruption = {"%+(%d+) ?"..(ITEM_MOD_CORRUPTION or "Corruption").."$"},
+	corruption_res = {"%+(%d+) ?"..(ITEM_MOD_CORRUPTION_RESISTANCE or "Corruption resistance").."$"},
 }
 
 module.db.itemsSlotTable = {

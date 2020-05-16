@@ -729,7 +729,40 @@ function module.options:Load()
 		{L.S_ZoneT25Nyalotha..": "..L.bossName[2345],{1596,0.48,0.31,3}},	--Il'gynoth, Corruption Reborn
 		{L.S_ZoneT25Nyalotha..": "..L.bossName[2337],{1597,0.48,0.5,1.2}},	--Carapace of N'Zoth
 		{L.S_ZoneT25Nyalotha..": "..L.bossName[2344],{1597,0.48,0.26,4}},	--N'Zoth the Corruptor
+		{"Razorgore the Untamed",{"Interface/AddOns/ExRT/mediaclassic/bwl_razorgore.tga"}},
+		{"Vaelastrasz the Corrupt",{"Interface/AddOns/ExRT/mediaclassic/bwl_vaelastrasz.tga"}},
+		{"Broodlord Laylash",{"Interface/AddOns/ExRT/mediaclassic/bwl_broodlord.tga"}},
+		{"Firemaw",{"Interface/AddOns/ExRT/mediaclassic/bwl_firemaw.tga"}},
+
+		--61-70
+		{"Ebonroc",{"Interface/AddOns/ExRT/mediaclassic/bwl_ebonroc.tga"}},
+		{"Flamegor",{"Interface/AddOns/ExRT/mediaclassic/bwl_flamegor.tga"}},
+		{"Chromaggus",{"Interface/AddOns/ExRT/mediaclassic/bwl_chromaggus.tga"}},
+		{"Nefarian",{"Interface/AddOns/ExRT/mediaclassic/bwl_nefarian.tga"}},
+		{"Molten Core",{"Interface/AddOns/ExRT/mediaclassic/mc.tga"}},
+		{"Zul'gurub",{"Interface/AddOns/ExRT/mediaclassic/zg.tga"}},
+		{"Ruins of Ahn'Qiraj",{"Interface/AddOns/ExRT/mediaclassic/aq20.tga"}},
+		{"Map",{"Interface/AddOns/ExRT/mediaclassic/aq40.tga"}},
+		{"Entrance",{"Interface/AddOns/ExRT/mediaclassic/aq40_entrance.tga"}},
+		{"C'Thun",{"Interface/AddOns/ExRT/mediaclassic/aq40_cthun.tga"}},
+		
+		--71-80
+		{"Map",{"Interface/AddOns/ExRT/mediaclassic/naxx.tga"}},
+		{"Arachnid Quarter",{"Interface/AddOns/ExRT/mediaclassic/naxx_arachnid.tga"}},
+		{"Construct Quarter",{"Interface/AddOns/ExRT/mediaclassic/naxx_construct.tga"}},
+		{"Militairy Quarter",{"Interface/AddOns/ExRT/mediaclassic/naxx_militairy.tga"}},
+		{"Plague Quarter",{"Interface/AddOns/ExRT/mediaclassic/naxx_plague.tga"}},
+		{"Sapphiron / Kel'thuzad",{"Interface/AddOns/ExRT/mediaclassic/naxx_sapp_kel.tga"}},
+		
 	}
+	--[[
+	MC: 243
+	ZA: 345
+	ZG: 349
+	AQ20: 258
+	AQ40: 331-333
+	Naxx: 167-172
+	]]
 	local mapsSorted = {
 		1,10,
 		{L.S_ZoneT25Nyalotha,45,46,47,48,49,50,51,52,53,54,55,56},
@@ -740,21 +773,34 @@ function module.options:Load()
 		{DUNGEONS,41,42,43,44,12,13,14,15,16,17,18,19},
 	}
 	if ExRT.isClassic then
-		for i=#mapsSorted,3,-1 do 
-			tremove(mapsSorted,i)
-		end
+		mapsSorted = {
+			1,10,
+			{"Blackwing Lair","by Wollie",57,58,59,60,61,62,63,64},
+			{"Molten Core",65},
+			{"Naxxramas","by Wollie",71,72,73,74,75,76},
+			{"Ruins of Ahn'Qiraj",67},
+			{"Temple of Ahn'Qiraj",68,69,70},
+			{"Zul'gurub",66},
+		}
 	end
 	for i=1,#mapsSorted do
 		local p = mapsSorted[i]
 		if type(p)=='table' then
 			local subList = {}
 			for j=2,#p do
-				subList[#subList + 1] = {
-					text = maps[ p[j] ][1],
-					func = SelectMapDropDown_SetValue,
-					arg1 = maps[ p[j] ][2],
-					arg2 = mapsSorted[i][j],
-				}
+				if type(p[j])=="string" then
+					subList[#subList + 1] = {
+						text = p[j],
+						isTitle = true,
+					}
+				else
+					subList[#subList + 1] = {
+						text = maps[ p[j] ][1],
+						func = SelectMapDropDown_SetValue,
+						arg1 = maps[ p[j] ][2],
+						arg2 = mapsSorted[i][j],
+					}
+				end
 			end
 			self.SelectMapDropDown.List[#self.SelectMapDropDown.List + 1] = {
 				text = p[1],
@@ -1006,7 +1052,7 @@ function module.options:Load()
 			T = GetText()
 		end
 		T:SetPoint("CENTER",self.main.C,"TOPLEFT",fromX,-fromY)
-		local size = max(12,toX - fromX)
+		local size = max(10,toX - fromX)
 		T:SetFont(T:GetFont(),size,"OUTLINE")
 
 		if not p then

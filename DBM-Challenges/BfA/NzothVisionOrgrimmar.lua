@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200418165651")
+mod:SetRevision("20200512201539")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -340,7 +340,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 311390 and args:IsPlayer() then
 		local amount = args.amount or 1
-		if amount >= 3 then
+		if amount >= 4 then
 			specWarnEntomophobia:Show()
 			specWarnEntomophobia:Play("keepjump")
 		end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2144, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221015927")
+mod:SetRevision("20200228141814")
 mod:SetCreatureID(133389)
 mod:SetEncounterID(2126)
 mod:SetZone()

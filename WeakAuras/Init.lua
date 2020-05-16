@@ -7,12 +7,12 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "2.17.4"
-local buildTime = "20200422171414"
+local versionString = "2.17.5"
+local buildTime = "20200511190745"
 
 local isDevVersion = false
 --[===[@debug@
-if versionStringFromToc == "2.17.4" then
+if versionStringFromToc == "2.17.5" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
   isDevVersion = true
@@ -50,7 +50,7 @@ WeakAuras.wrongTargetMessage = "This version of WeakAuras was packaged for World
                               (intendedWoWProject == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
                               ". Please install the " .. (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
                               " version instead.\nIf you are using the Twitch Client, then " ..
-                              " please contact the twitch support for further assistance."
+                              " contact Twitch support for further assistance and reinstall WeakAuras manually."
 
 if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(WeakAuras.wrongTargetMessage) end)
@@ -63,11 +63,11 @@ end
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
 WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
 
--- force enable WeakAurasCompanion and Archive because some addon managers interfere with it
+-- Force enable WeakAurasCompanion and Archive because some addon managers interfere with it
 EnableAddOn("WeakAurasCompanion")
 EnableAddOn("WeakAurasArchive")
 
---These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
+-- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 function WeakAuras.RegisterRegionType()
 end
 
@@ -86,7 +86,7 @@ end
 function WeakAuras.StopProfileAura()
 end
 
--- if weakauras shuts down due to being installed on the wrong target, keep the bindings from erroring
+-- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 function WeakAuras.StartProfile()
 end
 

@@ -67,7 +67,7 @@ function SlashCommands:OnCmd(args)
     elseif cmd == "configstatus" then
         self:PrintConfigModeStatus()
     else
-        if not Addon:ShowOptions() then
+        if not Addon:ShowOptionsFrame() then
             self:PrintHelp()
         end
     end

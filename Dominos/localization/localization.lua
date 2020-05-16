@@ -10,6 +10,7 @@ local L = LibStub('AceLocale-3.0'):NewLocale('Dominos', 'enUS', true)
 --system messages
 L.NewPlayer = 'Created new profile for %s'
 L.Updated = 'Updated to v%s'
+L.WrongBuildWarning = "You're running a %s version for %s on a %s server. Things may not work"
 
 --profiles
 L.ProfileCreated = 'Created new profile "%s"'
@@ -66,9 +67,7 @@ L.ConfigModeHelp = 'Drag any bar to move it. Right Click to configure. Middle Cl
 
 --bar tooltips
 L.TipRollBar = 'Displays frames for rolling on items, when in a group.'
-L.TipVehicleBar = [[
-Displays controls to aim and exit a vehicle.
-All other vehicle actions are displayed on the possess bar.]]
+L.TipVehicleBar = [[Displays controls to aim and exit a vehicle.\nAll other vehicle actions are displayed on the possess bar.]]
 
 L.BarDisplayName = "%s Bar"
 L.ActionBarDisplayName = "Action Bar %s"

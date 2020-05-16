@@ -3,6 +3,7 @@ U1RegisterAddon("MySlot", {
     defaultEnable = 0,
     tags = { TAG_MANAGEMENT, },
     icon = [[Interface\Icons\INV_Pet_SwapPet.png]],
+    minimap = "LibDBIcon10_Myslot",
     desc = "可以将当前角色的全部技能栏/宏命令/按键设置导出为一大段文本，另行保存到记事本里，这样洗掉专精再换回来时可以再导回来，也可以避免被其他人误修改。",
     nopic = 1,
 

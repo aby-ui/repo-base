@@ -1,5 +1,5 @@
-local Addon = select(2, ...)
-local Dominos = _G.Dominos
+local AddonName, Addon = ...
+local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
 
 function Addon:CreateClass(...)
 	return Dominos:CreateClass(...)
@@ -11,34 +11,39 @@ function Addon:CreateNameGenerator(prefix)
     local id = 0
 	return function()
         id = id + 1
-        return strjoin("_", 'DominosOptions', prefix, id)
+        return strjoin("_", AddonName, prefix, id)
 	end
 end
 
--- a thing to manage rendering stuff on the next frame
--- will probably push into Dominos since its generally useful
+-- a rough equivalent of js request animation frame
 do
+    local After = C_Timer.After
 	local subscribers = {}
-	local renderer = CreateFrame('Frame'); renderer:Hide()
+    local rendering = false    
 
-	renderer:SetScript('OnUpdate', function(self)
+    local function render()
 		while next(subscribers) do
-			table.remove(subscribers):OnRender()
-		end
+			tremove(subscribers):OnRender()
+        end
+        
+        rendering = false
+    end
 
-		self:Hide()
-	end)
-
-	function Addon:Render(frame)
+    function Addon:Render(frame)
 		for _, f in pairs(subscribers) do
 			if f == frame then
 				return false
 			end
-		end
+        end
+        
+		tinsert(subscribers, 1, frame)
+        
+        if not rendering then
+            rendering = true            
+            After(GetTickTime(), render)
+        end
 
-		table.insert(subscribers, 1, frame)
-		renderer:Show()
-		return true
+        return true
 	end
 end
 
@@ -54,7 +59,7 @@ do
         local args = {}
         local lastCall = 0
 
-        local callback = function()
+        local function callback()
             if (now() - lastCall) >= delay then
                 if #args > 0 then
                     func(unpack(args))

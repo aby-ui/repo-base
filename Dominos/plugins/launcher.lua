@@ -34,7 +34,7 @@ function Launcher:CreateDataBrokerObject()
 					Addon:ToggleLockedFrames()
 				end
 			elseif button == 'RightButton' then
-				Addon:ShowOptions()
+				Addon:ShowOptionsFrame()
 			end
 		end,
 

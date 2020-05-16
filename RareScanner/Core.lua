@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 16
-local CURRENT_LOOT_DB_VERSION = 31
+local CURRENT_DB_VERSION = 18
+local CURRENT_LOOT_DB_VERSION = 32
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -136,6 +136,7 @@ local PROFILE_DEFAULTS = {
 			filterCollectedItems = true,
 			filterItemsCompletedQuest = true,
 			filterNotMatchingClass = false,
+			filterNotMatchingFaction = true,
 			numItems = 10,
 			numItemsPerRow = 10
 		}
@@ -458,7 +459,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			-- check if rare but no viggnette
 			if (npcID and not private.dbglobal.rares_found[npcID] and private.ZONE_IDS[npcID]) then
 				local npcInfo = private.ZONE_IDS[npcID]
-				if (npcInfo.zoneID ~= 0) then
+				if (npcInfo.zoneID ~= 0 and type(npcInfo.zoneID) ~= "table") then
 					RareScanner:PrintDebugMessage("DEBUG: Identificado un NPC raro que no tiene viggnete y que vamos a volcar a rares_found desde nuestra base de datos ZONE_IDS.")
 					private.dbglobal.rares_found[npcID] = { mapID = npcInfo.zoneID, artID = npcInfo.artID or C_Map.GetMapArtID(npcInfo.zoneID), coordX = npcInfo.x, coordY = npcInfo.y, atlasName = RareScanner.NPC_VIGNETTE, foundTime = time() }
 				else

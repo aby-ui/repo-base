@@ -1,7 +1,7 @@
 ﻿--[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhCN.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhCN");
 
 if not L then
-    T._LoadedFiles["zhCN.lua"] = "2.7.6.7";
+    T._LoadedFiles["zhCN.lua"] = "2.7.7";
     return;
 end;
 
@@ -201,9 +201,9 @@ L["OPT_ADD_A_CUSTOM_SPELL"] = "添加一个自定义法术/物品"
 L["OPT_ADD_A_CUSTOM_SPELL_DESC"] = "拖动一个法术或可用物品到这里。也可以直接写它们的名称或数字 ID，或者使用Shift+点击。"
 L["OPT_ADDDEBUFF"] = "新增自定义减益"
 L["OPT_ADDDEBUFF_DESC"] = "向列表中新增一个减益。"
-L["OPT_ADDDEBUFF_USAGE"] = "<减益名称>"
-L["OPT_ADDDEBUFFFHIST"] = "新增一个最近受到的减益"
-L["OPT_ADDDEBUFFFHIST_DESC"] = "从历史记录中新增一个减益"
+L["OPT_ADDDEBUFF_USAGE"] = "<减益名称>（可以从 WoWHead.com 链接中找到法术 ID）"
+L["OPT_ADDDEBUFFFHIST"] = "新增一个最近祛除的减益"
+L["OPT_ADDDEBUFFFHIST_DESC"] = "从历史记录中新增一个最近祛除的减益"
 L["OPT_ADVDISP"] = "高级显示选项"
 L["OPT_ADVDISP_DESC"] = "允许分别设置面板和边框的透明度，以及微单元框体的间距。"
 L["OPT_AFFLICTEDBYSKIPPED"] = "%s受到%s的影响，但将被忽略。"
@@ -316,6 +316,7 @@ L["OPT_ENABLE_LIVELIST_DESC"] = [=[显示受影响玩家的信息列表。
 L["OPT_ENABLEDEBUG"] = "启用除错"
 L["OPT_ENABLEDEBUG_DESC"] = "启用除错输出"
 L["OPT_ENABLEDECURSIVE"] = "启用 Decursive"
+L["OPT_FILTERED_DEBUFF_RENAMED"] = "已过滤减益“%s”自动更名为“%s”，法术 ID %d"
 L["OPT_FILTEROUTCLASSES_FOR_X"] = "在战斗中指定的职业%q将被忽略。"
 L["OPT_GENERAL"] = "一般选项"
 L["OPT_GROWDIRECTION"] = "反向显示微单元框体"
@@ -334,6 +335,7 @@ L["OPT_INPUT_SPELL_BAD_INPUT_ALREADY_HERE"] = "法术已在列表中！"
 L["OPT_INPUT_SPELL_BAD_INPUT_DEFAULT_SPELL"] = "Decursive 已经包含此法术。Shift+点击此法术或输入它的 ID 添加一个特殊等级。"
 L["OPT_INPUT_SPELL_BAD_INPUT_ID"] = "法术 ID 不可用！"
 L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"] = "不能在技能书中找到法术！"
+L["OPT_ISNOTVALID_SPELLID"] = "不是有效的法术 ID"
 L["OPT_LIVELIST"] = "实时列表"
 L["OPT_LIVELIST_DESC"] = [=[这是显示在 Decursive 条下面受影响目标的相关设置列表。
 
@@ -418,6 +420,7 @@ L["OPT_RESTPROFILECONF"] = [=[你确定要重置配置文件
 为默认选项？]=]
 L["OPT_REVERSE_LIVELIST_DESC"] = "实时列表将从下往上显示"
 L["OPT_SCANLENGTH_DESC"] = "设置实时检测的时间间隔"
+L["OPT_SETAFFTYPECOLOR_DESC"] = "设置“%s”影响类型颜色。（通常出现在微单元框体提示和实时列表中）"
 L["OPT_SHOW_STEALTH_STATUS"] = "显示潜行状态"
 L["OPT_SHOW_STEALTH_STATUS_DESC"] = "当玩家潜行时，他的微单位框体将有一个特殊的颜色"
 L["OPT_SHOWBORDER"] = "显示职业彩色边框"
@@ -429,6 +432,9 @@ L["OPT_SHOWMFS_DESC"] = "如果要点击净化必须启用此项"
 L["OPT_SHOWMINIMAPICON"] = "小地图图标"
 L["OPT_SHOWMINIMAPICON_DESC"] = "切换小地图图标"
 L["OPT_SHOWTOOLTIP_DESC"] = "在实时列表以及微单元框体上显示信息提示"
+L["OPT_SPELL_DESCRIPTION_LOADING"] = "加载描述中…稍后再来。"
+L["OPT_SPELL_DESCRIPTION_UNAVAILABLE"] = "描述不可用"
+L["OPT_SPELLID_MISSING_READD"] = "需要重新添加此减益使用它的法术 ID 来查看正确的描述，而不是此信息。"
 L["OPT_STICKTORIGHT"] = "将微单元框体向右对齐"
 L["OPT_STICKTORIGHT_DESC"] = "这个选项将会使微单元框体向右对齐。"
 L["OPT_TESTLAYOUT"] = "测试布局"
@@ -493,4 +499,4 @@ L["UNSTABLERELEASE"] = "不稳定版本"
 
 
 
-T._LoadedFiles["zhCN.lua"] = "2.7.6.7";
+T._LoadedFiles["zhCN.lua"] = "2.7.7";

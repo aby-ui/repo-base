@@ -5,8 +5,8 @@ local VExRT = nil
 local module = ExRT.mod:New("AutoLogging",ExRT.L.Logging,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
-module.db.minRaidMapID = 1520
-module.db.minPartyMapID = 1456
+module.db.minRaidMapID = 1861
+module.db.minPartyMapID = 1754
 
 module.db.mapsToLog = not ExRT.isClassic and {} or {
 	[249] = true,
@@ -25,7 +25,7 @@ function module.options:Load()
 		end
 	end)
 		
-	self.shtml1 = ELib:Text(self," -"..L.S_ZoneT24Eternal.."\n -"..L.S_ZoneT23Storms.."\n -"..L.S_ZoneT23Siege.."\n -"..L.S_ZoneT22Uldir.."\n -"..L.S_ZoneT19Nightmare.."\n -"..L.S_ZoneT19ToV.."\n -"..L.S_ZoneT19Suramar.."\n -"..L.S_ZoneT20ToS.."\n -"..L.S_ZoneT21A,12):Size(620,0):Point("TOP",0,-65):Top()
+	self.shtml1 = ELib:Text(self," -"..L.S_ZoneT25Nyalotha.."\n -"..L.S_ZoneT24Eternal.."\n -"..L.S_ZoneT23Storms.."\n -"..L.S_ZoneT23Siege.."\n -"..L.S_ZoneT22Uldir,12):Size(620,0):Point("TOP",0,-65):Top()
 
 	self.shtml2 = ELib:Text(self,L.LoggingHelp1,12):Size(650,0):Point("TOP",self.shtml1,"BOTTOM",0,-15):Top()
 	

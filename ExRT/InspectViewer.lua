@@ -375,6 +375,9 @@ function module.options:Load()
 
 	do
 		local text = TOOLTIP_AZERITE_UNLOCK_LEVELS:gsub(" %(.*","")
+		if ExRT.locale == "zhTW" or ExRT.locale == "zhCN" then
+			text = TOOLTIP_AZERITE_UNLOCK_LEVELS:gsub(" ?%(.*","")
+		end
 		self.chkArtifact = ELib:Radio(self,text):Point(260,-28):AddButton():OnClick(reloadChks)
 		self.chkArtifact.id = 5
 	end
@@ -789,6 +792,21 @@ function module.options:Load()
 					end
 
 					line.ilvl:SetText(format("%.2f",data.ilvl or 0))
+					if type(data.corruption)=='number' and data.corruption >= 1 then
+						local essenceResist = 0
+						if data.essence then
+							local ess_d
+							for ess_c=1,#data.essence do	
+								ess_d = data.essence[ess_c]
+								if ess_d.id == 33 or ess_d.id == 34 or ess_d.id == 35 or ess_d.id == 36 or ess_d.id == 37 or ess_d.id == 16 or ess_d.id == 24 then
+									essenceResist = 10
+									break
+								end
+							end
+						end
+						local corrLevel = math.max(data.corruption - (data.corruption_res or 0) - essenceResist,0)
+						line.ilvl:SetText(format("%.2f",data.ilvl or 0).."|n".."|T3176469:16:16:0:0:256:128:11:51:24:64|t "..corrLevel)
+					end
 					
 					line.linkSpecID = spec
 					line.linkClassID = module.db.classIDs[class or "?"]
@@ -1417,7 +1435,7 @@ function module.options:Load()
 		
 		line.apinfo = ELib:Text(line,"",9):Color():Point("LEFT",100,0):Shadow()
 		
-		line.ilvl = ELib:Text(line,"630.52",11):Color():Point(160,0):Size(50,30):Shadow()
+		line.ilvl = ELib:Text(line,"630.52",11):Color():Point(160-5,0):Size(50,30):Shadow():Center()
 		
 		line.items = {}
 		for j=-1,18 do

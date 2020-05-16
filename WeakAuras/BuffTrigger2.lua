@@ -859,7 +859,7 @@ local function GetAllUnits(unit, allUnits)
     end
     return function()
       local ret = unit .. i
-      while allUnits or not UnitExistsFixed(ret) do
+      while not allUnits and not UnitExistsFixed(ret) do
         i = i + 1
         if i > max then
           i = 1
@@ -868,6 +868,10 @@ local function GetAllUnits(unit, allUnits)
         ret = unit .. i
       end
       i = i + 1
+      if i > max then
+        i = 1
+        return nil
+      end
       return ret
     end
   else
@@ -894,7 +898,19 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.ignoreDead and UnitIsDeadOrGhost(unit) then
+    return false
+  end
+
+  if triggerInfo.ignoreDisconnected and not UnitIsConnected(unit) then
+    return false
+  end
+
   if triggerInfo.groupRole and triggerInfo.groupRole ~= UnitGroupRolesAssigned(unit) then
+    return false
+  end
+
+  if triggerInfo.hostility and WeakAuras.GetPlayerReaction(unit) ~= triggerInfo.hostility then
     return false
   end
 
@@ -1526,6 +1542,10 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     nameplateExists[arg1] = false
     RecheckActiveForUnitType("nameplate", arg1, deactivatedTriggerInfos)
     tinsert(unitsToRemove, arg1)
+  elseif event == "UNIT_FACTION" then
+    if arg1:sub(1, 9) == "nameplate" then
+      RecheckActiveForUnitType("nameplate", arg1, deactivatedTriggerInfos)
+    end
   elseif event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
     local unitsToCheck = {}
     for unit in GetAllUnits("boss", true) do
@@ -1549,6 +1569,14 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       if not UnitExistsFixed(unit) then
         tinsert(unitsToRemove, unit)
       end
+    end
+  elseif event == "UNIT_FLAGS" then
+    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
+    end
+  elseif event == "PLAYER_FLAGS_CHANGED" then
+    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
   elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
     if arg1 == "player" then
@@ -1577,6 +1605,9 @@ local function EventHandler(frame, event, arg1, arg2, ...)
 end
 
 frame:RegisterEvent("UNIT_AURA")
+frame:RegisterEvent("UNIT_FACTION")
+frame:RegisterEvent("UNIT_FLAGS")
+frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -2164,9 +2195,12 @@ function BuffTrigger.Add(data)
       end
 
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-      local effectiveIgnoreSelf = groupTrigger  and trigger.ignoreSelf
+      local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
+      local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
+      local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
+      local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2217,10 +2251,13 @@ function BuffTrigger.Add(data)
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
+        ignoreDead = effectiveIgnoreDead,
+        ignoreDisconnected = effectiveIgnoreDisconnected,
         groupRole = effectiveGroupRole,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
         class = effectiveClass,
+        hostility = effectiveHostility,
         matchCountFunc = matchCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",

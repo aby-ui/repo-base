@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200323225936")
+mod:SetRevision("20200514025748")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetZone()
@@ -93,7 +93,7 @@ local seenAdds = {}
 
 local function umbralEruptionLoop(self)
 	self.vb.eruptionCount = self.vb.eruptionCount + 1
-	if self.Options.SpecWarn308157dodge then
+	if self.Options.SpecWarn308157dodge2 then
 		specWarnUmbralEruption:Show()
 		specWarnUmbralEruption:Play("watchstep")
 	else

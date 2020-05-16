@@ -555,10 +555,17 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     elseif (data.statesParameter == "unit") then
       if arg1 then
-        local cloneId = WeakAuras.multiUnitUnits[data.trigger.unit] and arg1 or ""
+        local unit, cloneId
+        if WeakAuras.multiUnitUnits[data.trigger.unit] then
+          unit = arg1
+          cloneId = arg1
+        else
+          unit = data.trigger.unit
+          cloneId = ""
+        end
         allStates[cloneId] = allStates[cloneId] or {};
         local state = allStates[cloneId];
-        local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
+        local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unit, arg1, arg2, ...);
         if (ok and returnValue) or optionsEvent then
           if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
             updateTriggerState = true;
@@ -785,6 +792,11 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
           end
           updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
         end
+        for unit, unitData in pairs(event.unit_events) do
+          for _, event in ipairs(unitData) do
+            updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event, unit) or updateTriggerState
+          end
+        end
       end
     end
   end
@@ -844,7 +856,9 @@ end
 function HandleUnitEvent(frame, event, unit, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit);
   if not(WeakAuras.IsPaused()) then
-    WeakAuras.ScanUnitEvents(event, unit, ...);
+    if (UnitIsUnit(unit, frame.unit)) then
+      WeakAuras.ScanUnitEvents(event, frame.unit, ...);
+    end
   end
   WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit);
 end
@@ -947,7 +961,7 @@ local function MultiUnitLoop(Func, unit, ...)
     for i = 1, 40 do
       Func("raid"..i, ...)
     end
-  elseif WeakAuras.baseUnitId[unit] then
+  else
     Func(unit, ...)
   end
 end
@@ -1060,6 +1074,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     for event in pairs(events) do
       if not frame.unitFrames[unit] then
         frame.unitFrames[unit] = CreateFrame("FRAME")
+        frame.unitFrames[unit].unit = unit
         frame.unitFrames[unit]:SetScript("OnEvent", HandleUnitEvent);
       end
       xpcall(frame.unitFrames[unit].RegisterUnitEvent, trueFunction, frame.unitFrames[unit], event, unit)
@@ -1199,7 +1214,6 @@ function GenericTrigger.Add(data, region)
               local trigger_all_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
-              trigger_unit_events = prototype.unit_events;
               if prototype.subevents then
                 trigger_subevents = prototype.subevents
                 if trigger_subevents and type(trigger_subevents) == "function" then
@@ -1976,27 +1990,29 @@ do
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
       WeakAuras.StartProfileSystem("generictrigger cd tracking");
-      if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
-        or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
-        or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE"
-        or event == "CHARACTER_POINTS_CHANGED") then
-        WeakAuras.CheckCooldownReady();
-      elseif(event == "SPELLS_CHANGED") then
-        WeakAuras.CheckSpellKnown();
-        WeakAuras.CheckCooldownReady();
-      elseif(event == "UNIT_SPELLCAST_SENT") then
-        local unit, guid, castGUID, name = ...;
-        if(unit == "player") then
-          name = GetSpellInfo(name);
-          if(gcdSpellName ~= name) then
-            local icon = GetSpellTexture(name);
-            gcdSpellName = name;
-            gcdSpellIcon = icon;
-            WeakAuras.ScanEvents("GCD_UPDATE");
+      if not WeakAuras.IsPaused() then
+        if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
+          or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
+          or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE"
+          or event == "CHARACTER_POINTS_CHANGED") then
+          WeakAuras.CheckCooldownReady();
+        elseif(event == "SPELLS_CHANGED") then
+          WeakAuras.CheckSpellKnown();
+          WeakAuras.CheckCooldownReady();
+        elseif(event == "UNIT_SPELLCAST_SENT") then
+          local unit, guid, castGUID, name = ...;
+          if(unit == "player") then
+            name = GetSpellInfo(name);
+            if(gcdSpellName ~= name) then
+              local icon = GetSpellTexture(name);
+              gcdSpellName = name;
+              gcdSpellIcon = icon;
+              WeakAuras.ScanEvents("GCD_UPDATE");
+            end
           end
+        elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
+          WeakAuras.CheckItemSlotCooldowns();
         end
-      elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
-        WeakAuras.CheckItemSlotCooldowns();
       end
       WeakAuras.StopProfileSystem("generictrigger cd tracking");
     end);
@@ -2583,8 +2599,11 @@ end
 local watchUnitChange
 
 -- Nameplates only distinguish between friends and everyone else
-function WeakAuras.GetPlayerReaciton(unit)
-  return UnitIsEnemy('player', unit) and 'hostile' or 'friendly'
+function WeakAuras.GetPlayerReaction(unit)
+  local r = UnitReaction("player", unit)
+  if r then
+    return r < 5 and "hostile" or "friendly"
+  end
 end
 
 function WeakAuras.WatchUnitChange(unit)
@@ -2607,6 +2626,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     watchUnitChange:RegisterEvent("UNIT_FACTION")
+    watchUnitChange:RegisterEvent("PLAYER_ENTERING_WORLD")
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       WeakAuras.StartProfileSystem("generictrigger unit change");
@@ -2617,11 +2637,11 @@ function WeakAuras.WatchUnitChange(unit)
           watchUnitChange.unitChangeGUIDS[unit] = newGuid
         end
         if event == "NAME_PLATE_UNIT_ADDED" then
-          watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaciton(unit)
+          watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaction(unit)
         end
       elseif event == "UNIT_FACTION" then
         if unit:sub(1, 9) == "nameplate" then
-          local reaction = WeakAuras.GetPlayerReaciton(unit)
+          local reaction = WeakAuras.GetPlayerReaction(unit)
           if reaction ~= watchUnitChange.nameplateFaction[unit] then
             watchUnitChange.nameplateFaction[unit] = reaction
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
@@ -2634,7 +2654,7 @@ function WeakAuras.WatchUnitChange(unit)
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
-          if guid ~= newGuid then
+          if guid ~= newGuid or event == "PLAYER_ENTERING_WORLD" then
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             watchUnitChange.unitChangeGUIDS[unit] = newGuid
           elseif WeakAuras.multiUnitUnits.group[unit] then
@@ -2650,9 +2670,7 @@ function WeakAuras.WatchUnitChange(unit)
             end
           end
         end
-
         watchUnitChange.inRaid = inRaid
-
       end
       WeakAuras.StopProfileSystem("generictrigger unit change");
     end)

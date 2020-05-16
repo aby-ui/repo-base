@@ -207,6 +207,16 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 		end
 	end
 	
+	-- Character faction filter
+	if (private.db.loot.filterNotMatchingFaction) then
+		local _, localizedFaction = UnitFactionGroup("player")
+		if (ScanToolTipFor(itemLink, ITEM_REQ_ALLIANCE) and localizedFaction ~= FACTION_ALLIANCE) then
+			return false;
+		elseif (ScanToolTipFor(itemLink, ITEM_REQ_HORDE) and localizedFaction ~= FACTION_HORDE) then
+			return false;
+		end
+	end
+	
 	-- Transmog filter
 	if (private.db.loot.showOnlyTransmogItems and (itemClassID == 2 or (itemClassID == 4 and itemSubClassID ~= 0))) then --weapons or armor (not rings, necks, etc.)	
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then

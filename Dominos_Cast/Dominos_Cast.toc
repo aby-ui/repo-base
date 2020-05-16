@@ -5,6 +5,7 @@
 ## Author: Tuller
 ## Dependencies: Dominos
 localization.xml
+DominosTimerBarTemplate.xml
 castBar.lua
 mirrorTimer.lua
 main.lua

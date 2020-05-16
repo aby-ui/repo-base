@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: WeakAuras Model Paths
 ## Author: Mirrored and the WeakAuras Team
-## Version: 2.17.4
+## Version: 2.17.5
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras

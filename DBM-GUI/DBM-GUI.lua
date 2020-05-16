@@ -43,7 +43,7 @@
 --
 
 
-local revision =(string.sub("20200423194829", 1, -5))
+local revision =(string.sub("20200508151853", 1, -5))
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -165,6 +165,9 @@ do
 	--
 	function PanelPrototype:CreateArea(name, width, height, autoplace)
 		local area = CreateFrame('Frame', FrameTitle..self:GetNewID(), self.frame, 'OptionsBoxTemplate')
+		if BackdropTemplateMixin then
+			Mixin(area, BackdropTemplateMixin)
+		end
 		area.mytype = "area"
 		area:SetBackdropBorderColor(0.4, 0.4, 0.4)
 		area:SetBackdropColor(0.15, 0.15, 0.15, 0.5)
@@ -1205,6 +1208,10 @@ do
 		local name = frame:GetName()
 
 		frame.scrollBar = _G[name.."ListScrollBar"]
+		--Very ugly place to do this, but easier to backwards compat vs XML hacks
+		if BackdropTemplateMixin then
+			Mixin(frame, BackdropTemplateMixin)
+		end
 		frame:SetBackdropBorderColor(0.6, 0.6, 0.6, 1)
 		_G[name.."Bottom"]:SetVertexColor(0.66, 0.66, 0.66)
 

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.6.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-11-18T13:42:00Z
+    This file was last updated on 2020-03-19T23:14:08Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -345,7 +345,7 @@ do
    local iterator = 1;
    local DebuffHistHashTable = {};
 
-   function D:Debuff_History_Add( DebuffName, DebuffType )
+   function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
 
        if not DebuffHistHashTable[DebuffName] then
 
@@ -355,8 +355,8 @@ do
            end
 
            -- clean hastable if necessary before adding a new entry
-           if DebuffHistHashTable[D.DebuffHistory[iterator]] then
-               DebuffHistHashTable[D.DebuffHistory[iterator]] = nil;
+           if D.DebuffHistory[iterator] and DebuffHistHashTable[D.DebuffHistory[iterator][1]] then
+               DebuffHistHashTable[D.DebuffHistory[iterator][1]] = nil;
            end
 
            -- Register the name in the HashTable using the debuff type
@@ -364,7 +364,7 @@ do
            --D:Debug(DebuffName, DebuffHistHashTable[DebuffName]);
 
            -- Put this debuff in our history
-           D.DebuffHistory[iterator] = DebuffName;
+           D.DebuffHistory[iterator] = {DebuffName, spellID};
 
            -- This is a useless comment
            iterator = iterator + 1;
@@ -386,9 +386,9 @@ do
 
        if Colored then
            --D:Debug(D.DebuffHistory[HumanIndex], DebuffHistHashTable[D.DebuffHistory[HumanIndex]]);
-           return D:ColorText(D.DebuffHistory[HumanIndex], "FF" .. DC.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex]]]), true;
+           return D:ColorText(D.DebuffHistory[HumanIndex][1], D.profile.TypeColors[DebuffHistHashTable[D.DebuffHistory[HumanIndex][1]]]), D.DebuffHistory[HumanIndex][2], true;
        else
-           return D.DebuffHistory[HumanIndex], true;
+           return D.DebuffHistory[HumanIndex][1], D.DebuffHistory[HumanIndex][2], true;
        end
    end
 
@@ -528,6 +528,7 @@ do
                 ThisUnitDebuffs[StoredDebuffIndex].TypeName       = TypeName;
                 ThisUnitDebuffs[StoredDebuffIndex].Type           = Type;
                 ThisUnitDebuffs[StoredDebuffIndex].Name           = Name;
+                ThisUnitDebuffs[StoredDebuffIndex].SpellID        = SpellID;
                 ThisUnitDebuffs[StoredDebuffIndex].index          = i;
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
@@ -874,6 +875,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.6.7";
+T._LoadedFiles["Decursive.lua"] = "2.7.7";
 
 -- Sin

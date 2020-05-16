@@ -632,6 +632,38 @@ local function GetDisplayOptions()
 	return display_options
 end
 
+local sortValues = function(list)
+	local sortedValues = {}
+	for key, value in pairs (list) do
+		tinsert(sortedValues, value)
+	end
+	table.sort(sortedValues)
+	
+	local sortedKeys = {}
+	for i, sortedValue in ipairs(sortedValues) do
+		for key, value in pairs (list) do
+			if (sortedValue == value) then
+				tinsert(sortedKeys, key)
+				break
+			end
+		end
+	end
+	
+	return sortedKeys
+end
+
+local getZoneName = function(zoneID)
+	local continentInfo = C_Map.GetMapInfo(zoneID)
+	if (continentInfo) then	
+		-- For those zones with the same name, add a comment
+		if (AL["ZONE_"..zoneID] ~= "ZONE_"..zoneID) then
+			return string.format(AL["ZONE_"..zoneID], continentInfo.name)
+		else
+			return continentInfo.name
+		end
+	end
+end
+
 local filter_options
 
 local function GetFilterOptions()
@@ -640,8 +672,7 @@ local function GetFilterOptions()
 		local CONTINENT_MAP_IDS = {} 
 		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
 			if (v.id) then
-				local continentInfo = C_Map.GetMapInfo(k)
-				CONTINENT_MAP_IDS[k] = continentInfo.name
+				CONTINENT_MAP_IDS[k] = getZoneName(k)
 			else
 				CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
 			end
@@ -655,20 +686,38 @@ local function GetFilterOptions()
 						if (npcName) then
 							if ((private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) and RS_tContains(v,npcName)) then
 								local i = 2
+								local sameNPC = false
 								while (filter_options.args.rareFilters.values[tempName]) do
+									-- If same NPC skip
+									if (filter_options.args.rareFilters.values[tempName] == k) then
+										sameNPC = true
+										break;
+									end
+									
 									tempName = v..' ('..i..')'
 									i = i+1
 								end
-								filter_options.args.rareFilters.values[tempName] = k
+								if (not sameNPC) then
+									filter_options.args.rareFilters.values[tempName] = k
+								end
 							end
 						else
 							if (private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) then
 								local i = 2
+								local sameNPC = false
 								while (filter_options.args.rareFilters.values[tempName]) do
+									-- If same NPC skip
+									if (filter_options.args.rareFilters.values[tempName] == k) then
+										sameNPC = true
+										break;
+									end
+									
 									tempName = v..' ('..i..')'
 									i = i+1
 								end
-								filter_options.args.rareFilters.values[tempName] = k
+								if (not sameNPC) then
+									filter_options.args.rareFilters.values[tempName] = k
+								end
 							end
 						end
 					else
@@ -692,9 +741,9 @@ local function GetFilterOptions()
 				filter_options.args.subzones.values = {}
 				private.filter_options_subzones = nil
 				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)	
-					local continentInfo = C_Map.GetMapInfo(zoneID)
-					if (continentInfo) then
-						filter_options.args.subzones.values[zoneID] = continentInfo.name
+					local zoneName = getZoneName(zoneID)
+					if (zoneName) then
+						filter_options.args.subzones.values[zoneID] = zoneName
 					end
 				end)
 			end
@@ -742,6 +791,7 @@ local function GetFilterOptions()
 					name = AL["FILTER_CONTINENT"],
 					desc = AL["FILTER_CONTINENT_DESC"],
 					values = CONTINENT_MAP_IDS,
+					sorting = sortValues(CONTINENT_MAP_IDS),
 					get = function(_, key) 
 						-- initialize
 						if (not private.filter_options_continents) then
@@ -766,7 +816,7 @@ local function GetFilterOptions()
 						filter_options.args.rareFilters.values = {}
 						searchNpcByContinentID(key, private.filter_options_input)					
 					end,
-					width = "normal",
+					width = 1.0,
 				},
 				subzones = {
 					order = 3.2,
@@ -774,6 +824,12 @@ local function GetFilterOptions()
 					name = AL["FILTER_ZONE"],
 					desc = AL["FILTER_ZONE_DESC"],
 					values = {},
+					sorting = function() 
+						if (next(filter_options.args.subzones.values)) then
+							return sortValues(filter_options.args.subzones.values)
+						end
+						return nil;
+					end,
 					get = function(_, key) return private.filter_options_subzones end,
 					set = function(_, key, value)
 						private.filter_options_subzones = key
@@ -782,7 +838,7 @@ local function GetFilterOptions()
 						filter_options.args.rareFilters.values = {}
 						searchNpcByZoneID(key, private.filter_options_input)
 					end,
-					width = "normal",
+					width = 1.925,
 					disabled = function() return (next(filter_options.args.subzones.values) == nil) end,
 				},
 				rareFiltersClear = {
@@ -801,7 +857,7 @@ local function GetFilterOptions()
 						filter_options.args.rareFilters.values = {}
 						searchNpcByContinentID(DEFAULT_CONTINENT_MAP_ID)	
 					end,
-					width = "normal",
+					width = 0.5,
 				},
 				separator = {
 					order = 4,
@@ -848,21 +904,22 @@ end
 
 function RS_Set(list)
 	local set = {}
-	for _, l in ipairs(list) do set[l] = true end
+	for k, _ in pairs(list) do 
+		set[k] = true 
+	end
 	return set
 end
 
 local zones_filter_options
 
 local function GetZonesFilterOptions()
-	if not zones_filter_options then
+	if not zones_filter_options then		
 		-- load continent combo
 		local CONTINENT_MAP_IDS = {} 
 		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
 			if (v.zonefilter) then
 				if (v.id) then
-					local continentInfo = C_Map.GetMapInfo(k)
-					CONTINENT_MAP_IDS[k] = continentInfo.name
+					CONTINENT_MAP_IDS[k] = getZoneName(k)
 				else
 					CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
 				end
@@ -874,14 +931,12 @@ local function GetZonesFilterOptions()
 				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
 					local tempName = nil
 					if (zoneName) then
-						local continentInfo = C_Map.GetMapInfo(zoneID)
-						local name = continentInfo.name
+						local name = getZoneName(zoneID)
 						if (string.find(string.upper(name), string.upper(zoneName))) then
 							tempName = name
 						end
 					else
-						local continentInfo = C_Map.GetMapInfo(zoneID)
-						tempName = continentInfo.name
+						tempName = getZoneName(zoneID)
 					end
 					
 					if (tempName) then
@@ -899,14 +954,12 @@ local function GetZonesFilterOptions()
 					table.foreach(private.CONTINENT_ZONE_IDS[continentID].extrazones, function(index, zoneID)
 						local tempName = nil
 						if (zoneName) then
-							local continentInfo = C_Map.GetMapInfo(zoneID)
-							local name = continentInfo.name
+							local name = getZoneName(zoneID)
 							if (string.find(string.upper(name), string.upper(zoneName))) then
 								tempName = name
 							end
 						else
-							local continentInfo = C_Map.GetMapInfo(zoneID)
-							tempName = continentInfo.name
+							tempName = getZoneName(zoneID)
 						end
 					
 						if (tempName) then
@@ -962,6 +1015,7 @@ local function GetZonesFilterOptions()
 					name = AL["FILTER_CONTINENT"],
 					desc = AL["FILTER_CONTINENT_DESC"],
 					values = CONTINENT_MAP_IDS,
+					sorting = sortValues(CONTINENT_MAP_IDS),
 					get = function(_, key) 
 						-- initialize
 						if (not private.zones_filter_options_continents) then
@@ -1299,6 +1353,18 @@ local function GetLootFilterOptions()
 							get = function() return private.db.loot.filterNotMatchingClass end,
 							set = function(_, value)
 								private.db.loot.filterNotMatchingClass = value
+							end,
+							width = "full",
+							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,
+						},
+						filterNotMatchingFaction = {
+							order = 7,
+							type = "toggle",
+							name = AL["LOOT_FILTER_NOT_MATCHING_FACTION"],
+							desc = AL["LOOT_FILTER_NOT_MATCHING_FACTION_DESC"],
+							get = function() return private.db.loot.filterNotMatchingFaction end,
+							set = function(_, value)
+								private.db.loot.filterNotMatchingFaction = value
 							end,
 							width = "full",
 							disabled = function() return (not private.db.loot.displayLoot and not private.db.loot.displayLootOnMap) end,

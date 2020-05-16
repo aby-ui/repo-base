@@ -674,7 +674,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Ignore Self"],
       order = 67.3,
       width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" or trigger.unit == "nameplate")) end
     },
 
     useClass = {
@@ -700,6 +700,47 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       order = 68.3,
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useClass) end
+    },
+
+    useHostility = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString .. L["Filter by Hostility"],
+      order = 68.4,
+      hidden = function() return
+        not (trigger.type == "aura2" and trigger.unit == "nameplate")
+      end
+    },
+    hostility = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Hostility"],
+      values = WeakAuras.hostility_types,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useHostility) end,
+      order = 68.5
+    },
+    hostilitySpace = {
+      type = "description",
+      name = "",
+      order = 68.6,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useHostility) end
+    },
+
+    ignoreDead = {
+      type = "toggle",
+      name = WeakAuras.newFeatureString .. L["Ignore Dead"],
+      order = 68.7,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
+    },
+
+    ignoreDisconnected = {
+      type = "toggle",
+      name = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
+      order = 68.8,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
 
     useGroup_count = {

@@ -37,6 +37,10 @@ function Frame:Create(id)
 	frame:SetClampedToScreen(true)
 	frame:SetMovable(true)
 
+	-- artfically increase the frame level of the bar to account for the header
+	-- frame we no longer use
+	frame:SetFrameLevel(frame:GetFrameLevel() + 1)
+
 	frame.id = id
 
 	frame:SetAttribute('id', id)
@@ -416,8 +420,8 @@ end
 function Frame:IsDockedFocus()
 	local docked = self.docked
 	if docked then
-		for _,f in pairs(docked) do
-			if f:IsFocus()  then
+		for _, frame in pairs(docked) do
+			if frame:IsFocus() then
 				return true
 			end
 		end
@@ -428,24 +432,22 @@ end
 --[[ Fading ]]--
 
 function Frame:FadeIn()
-    if floor(abs(self:GetExpectedAlpha() * 100 - self:GetAlpha() * 100)) == 0 then return end
-
-    if not self:FrameIsShown() then return end
-
-    Addon:Fade(self, self:GetExpectedAlpha(), self:GetFadeInDelay(), self:GetFadeInDuration())
-
-    if Addon:IsLinkedOpacityEnabled() then self:ForDocked("FadeIn") end
+	self:Fade(self:GetExpectedAlpha(), self:GetFadeInDelay(), self:GetFadeInDuration())
 end
 
 function Frame:FadeOut()
-    if floor(abs(self:GetExpectedAlpha() * 100 - self:GetAlpha() * 100)) == 0 then return end
-
-    if not self:FrameIsShown() then return end
-
-    Addon:Fade(self, self:GetExpectedAlpha(), self:GetFadeOutDelay(), self:GetFadeOutDuration())
-
-    if Addon:IsLinkedOpacityEnabled() then self:ForDocked("FadeOut") end
+    self:Fade(self:GetExpectedAlpha(), self:GetFadeOutDelay(), self:GetFadeOutDuration())
 end
+
+function Frame:Fade(targetAlpha, delay, duration)
+	if floor(abs(targetAlpha * 100 - self:GetAlpha() * 100)) == 0 then return end
+
+	Addon:Fade(self, targetAlpha, delay, duration)
+
+	if Addon:IsLinkedOpacityEnabled() then
+		self:ForDocked("Fade", targetAlpha, delay, duration)
+	end
+end 
 
 --[[ Visibility ]]--
 
@@ -835,24 +837,37 @@ function Frame:GetAll()
 	return pairs(active)
 end
 
+function Frame:CallMethod(method, ...)
+	local func = self[method]
+
+	if type(func) == "function" then
+		return func(self, ...)
+	else
+		error(("Frame %s does not have a method named %q"):format(self.id, method), 2)
+	end
+end
+
+function Frame:MaybeCallMethod(method, ...)
+	local func = self[method]
+
+	if type(func) == "function" then
+		return func(self, ...)
+	end
+end
+
 function Frame:ForAll(method, ...)
-	for _,f in self:GetAll() do
-		local action = f[method]
-		if action then
-			action(f, ...)
-		end
+	for _, frame in self:GetAll() do
+		frame:MaybeCallMethod(method, ...)
 	end
 end
 
 function Frame:ForDocked(method, ...)
-	if self.docked then
-		for _, f in pairs(self.docked) do
-			local action = f[method]
-			if action then
-				action(f, ...)
-			end
+	local docked = self.docked
+	if docked then
+		for _, frame in pairs(docked) do
+			frame:CallMethod(method, ...)
 		end
-	end
+	end	
 end
 
 --takes a frameId, and performs the specified action on that frame
@@ -875,19 +890,13 @@ function Frame:ForFrame(id, method, ...)
 			for i = startID, endID do
 				local f = self:Get(i)
 				if f then
-					local action = f[method]
-					if action then
-						action(f, ...)
-					end
+					f:MaybeCallMethod(method, ...)
 				end
 			end
 		else
 			local f = self:Get(id)
 			if f then
-				local action = f[method]
-				if action then
-					action(f, ...)
-				end
+				f:MaybeCallMethod(method, ...)
 			end
 		end
 	end

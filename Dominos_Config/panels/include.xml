@@ -1,5 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="addonOptionsPanel.lua"/>
-	<Script file="general.lua"/>
-	<Script file="profiles.lua"/>
-</Ui>

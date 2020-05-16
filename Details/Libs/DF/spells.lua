@@ -872,6 +872,7 @@ DF.PotionIDs = {
 
 DF.RuneIDs = {
 	[270058] = true, --Battle-Scarred Augment Rune
+	[317065] = true, --Lightning-Forged Augment Rune
 }
 
 --	/dump UnitAura ("player", 1)

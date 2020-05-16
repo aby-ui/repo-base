@@ -1,53 +1,53 @@
---[[
-	Action Button.lua
-		A Dominos action button
---]]
+--------------------------------------------------------------------------------
+-- Action Button.lua
+-- A Dominos action button
+--------------------------------------------------------------------------------
 
 local AddonName, Addon = ...
-local KeyBound = LibStub('LibKeyBound-1.0')
+local KeyBound = LibStub("LibKeyBound-1.0")
 
-local ActionButton = Addon:CreateClass('CheckButton', Addon.BindableButton)
+local ActionButton = Addon:CreateClass("CheckButton", Addon.BindableButton)
 
 ActionButton.unused = {}
 ActionButton.active = {}
 
 local function CreateActionButton(id)
-	local name = ('%sActionButton%d'):format(AddonName, id)
+	local name = ("%sActionButton%d"):format(AddonName, id)
 
-	return CreateFrame('CheckButton', name, nil, 'ActionBarButtonTemplate')
+	return CreateFrame("CheckButton", name, nil, "ActionBarButtonTemplate")
 end
 
 local function GetOrCreateActionButton(id)
 	if id <= 12 then
-		local b = _G[('ActionButton%d'):format(id)]
+		local b = _G[("ActionButton%d"):format(id)]
 
 		-- luacheck: push ignore 122
-		b.buttonType = 'ACTIONBUTTON'
+		b.buttonType = "ACTIONBUTTON"
 		-- luacheck: pop
 		return b
 	elseif id <= 24 then
 		return CreateActionButton(id - 12)
 	elseif id <= 36 then
-		return _G[('MultiBarRightButton%d'):format(id - 24)]
+		return _G[("MultiBarRightButton%d"):format(id - 24)]
 	elseif id <= 48 then
-		return  _G[('MultiBarLeftButton%d'):format(id - 36)]
+		return _G[("MultiBarLeftButton%d"):format(id - 36)]
 	elseif id <= 60 then
-		return _G[('MultiBarBottomRightButton%d'):format(id - 48)]
+		return _G[("MultiBarBottomRightButton%d"):format(id - 48)]
 	elseif id <= 72 then
-		return _G[('MultiBarBottomLeftButton%d'):format(id - 60)]
+		return _G[("MultiBarBottomLeftButton%d"):format(id - 60)]
 	else
 		return CreateActionButton(id - 60)
 	end
 end
 
---constructor
+-- constructor
 function ActionButton:New(id)
 	local button = self:Restore(id) or self:Create(id)
 
 	if button then
-		button:SetAttribute('showgrid', 0)
-		button:SetAttribute('action--base', id)
-		button:SetAttribute('_childupdate-action', [[
+		button:SetAttribute("showgrid", 0)
+		button:SetAttribute("action--base", id)
+		button:SetAttribute("_childupdate-action", [[
 			local state = message
 			local overridePage = self:GetParent():GetAttribute('state-overridepage')
 			local newActionID
@@ -64,13 +64,13 @@ function ActionButton:New(id)
 			end
 		]])
 
-		Addon.BindingsController:Register(button, button:GetName():match(AddonName .. 'ActionButton%d'))
-		Addon:GetModule('Tooltips'):Register(button)
+		Addon.BindingsController:Register(button, button:GetName():match(AddonName .. "ActionButton%d"))
+		Addon:GetModule("Tooltips"):Register(button)
 
-		--get rid of range indicator text
+		-- get rid of range indicator text
 		local hotkey = button.HotKey
-		if hotkey:GetText() == _G['RANGE_INDICATOR'] then
-			hotkey:SetText('')
+		if hotkey:GetText() == _G["RANGE_INDICATOR"] then
+			hotkey:SetText("")
 		end
 
 		button:UpdateMacro()
@@ -89,20 +89,20 @@ function ActionButton:Create(id)
 	if button then
 		self:Bind(button)
 
-		--this is used to preserve the button's old id
-		--we cannot simply keep a button's id at > 0 or blizzard code will take control of paging
-		--but we need the button's id for the old bindings system
-		button:SetAttribute('bindingid', button:GetID())
+		-- this is used to preserve the button's old id
+		-- we cannot simply keep a button's id at > 0 or blizzard code will take control of paging
+		-- but we need the button's id for the old bindings system
+		button:SetAttribute("bindingid", button:GetID())
 		button:SetID(0)
 
 		button:ClearAllPoints()
-		button:SetAttribute('useparent-actionpage', nil)
-		button:SetAttribute('useparent-unit', true)
+		button:SetAttribute("useparent-actionpage", nil)
+		button:SetAttribute("useparent-unit", true)
 		button:SetAttribute("statehidden", nil)
 		button:EnableMouseWheel(true)
-		button:HookScript('OnEnter', self.OnEnter)
+		button:HookScript("OnEnter", self.OnEnter)
 
-		Addon:GetModule('ButtonThemer'):Register(button, 'Action Bar')
+		Addon:GetModule("ButtonThemer"):Register(button, "Action Bar")
 	end
 
 	return button
@@ -123,11 +123,11 @@ end
 
 -- destructor
 function ActionButton:Free()
-	local id = self:GetAttribute('action--base')
+	local id = self:GetAttribute("action--base")
 
 	self.active[id] = nil
 
-	Addon:GetModule('Tooltips'):Unregister(self)
+	Addon:GetModule("Tooltips"):Unregister(self)
 	Addon.BindingsController:Unregister(self)
 
 	self:SetAttribute("statehidden", true)
@@ -143,34 +143,37 @@ function ActionButton:OnEnter()
 end
 
 --override the old update hotkeys function
-hooksecurefunc('ActionButton_UpdateHotkeys', ActionButton.UpdateHotkey)
+hooksecurefunc("ActionButton_UpdateHotkeys", ActionButton.UpdateHotkey)
 
 -- add inventory counts in classic
 if Addon:IsBuild("classic") then
 	local GetActionReagentUses = Addon.GetActionReagentUses
 
-	hooksecurefunc("ActionButton_UpdateCount", function(self)
-		local action = self.action
+	hooksecurefunc(
+		"ActionButton_UpdateCount",
+		function(self)
+			local action = self.action
 
-		-- check reagent counts
-		local requiresReagents, usesRemaining = GetActionReagentUses(action)
-		if requiresReagents then
-			self.Count:SetText(usesRemaining)
-			return
-		end
+			-- check reagent counts
+			local requiresReagents, usesRemaining = GetActionReagentUses(action)
+			if requiresReagents then
+				self.Count:SetText(usesRemaining)
+				return
+			end
 
-		-- standard inventory counts
-		if IsConsumableAction(action) or IsStackableAction(action)  then
-			local count = GetActionCount(action)
-			if count > (self.maxDisplayCount or 9999) then
-				self.Count:SetText("*")
-			elseif count > 0 then
-				self.Count:SetText(count)
-			else
-				self.Count:SetText("")
+			-- standard inventory counts
+			if IsConsumableAction(action) or IsStackableAction(action) then
+				local count = GetActionCount(action)
+				if count > (self.maxDisplayCount or 9999) then
+					self.Count:SetText("*")
+				elseif count > 0 then
+					self.Count:SetText(count)
+				else
+					self.Count:SetText("")
+				end
 			end
 		end
-	end)
+	)
 end
 
 function ActionButton:UpdateCount()
@@ -184,7 +187,9 @@ end
 --button visibility
 if Addon:IsBuild("classic") then
 	function ActionButton:ShowGrid()
-		if InCombatLockdown() then return end
+		if InCombatLockdown() then
+			return
+		end
 
 		self:SetAttribute("showgrid", (self:GetAttribute("showgrid") or 0) + 1)
 
@@ -194,7 +199,9 @@ if Addon:IsBuild("classic") then
 	end
 
 	function ActionButton:HideGrid()
-		if InCombatLockdown() then return end
+		if InCombatLockdown() then
+			return
+		end
 
 		local showgrid = (self:GetAttribute("showgrid") or 0)
 		if showgrid > 0 then
@@ -207,7 +214,9 @@ if Addon:IsBuild("classic") then
 	end
 else
 	function ActionButton:ShowGrid(reason)
-		if InCombatLockdown() then return end
+		if InCombatLockdown() then
+			return
+		end
 
 		self:SetAttribute("showgrid", bit.bor(self:GetAttribute("showgrid"), reason))
 
@@ -217,11 +226,13 @@ else
 	end
 
 	function ActionButton:HideGrid(reason)
-		if InCombatLockdown() then return end
+		if InCombatLockdown() then
+			return
+		end
 
-		local showgrid = self:GetAttribute("showgrid");
+		local showgrid = self:GetAttribute("showgrid")
 		if showgrid > 0 then
-			self:SetAttribute("showgrid", bit.band(showgrid, bit.bnot(reason)));
+			self:SetAttribute("showgrid", bit.band(showgrid, bit.bnot(reason)))
 		end
 
 		if self:GetAttribute("showgrid") == 0 and not HasAction(self.action) then
@@ -231,7 +242,9 @@ else
 end
 
 function ActionButton:UpdateGrid()
-	if InCombatLockdown() then return end
+	if InCombatLockdown() then
+		return
+	end
 
 	local showgrid = (self:GetAttribute("showgrid") or 0)
 	if showgrid > 0 and not self:GetAttribute("statehidden") then
@@ -243,7 +256,7 @@ function ActionButton:UpdateGrid()
 	end
 end
 
---macro text
+-- macro text
 function ActionButton:UpdateMacro()
 	if Addon:ShowMacroText() then
 		self.Name:Show()
@@ -253,28 +266,27 @@ function ActionButton:UpdateMacro()
 end
 
 function ActionButton:SetFlyoutDirection(direction)
-	if InCombatLockdown() then return end
+	if InCombatLockdown() then
+		return
+	end
 
-	self:SetAttribute('flyoutDirection', direction)
+	self:SetAttribute("flyoutDirection", direction)
 	ActionButton_UpdateFlyout(self)
 end
 
-function ActionButton:UpdateState()
-	ActionButton_UpdateState(self)
-end
+ActionButton.UpdateState = ActionButton_UpdateState
 
 function ActionButton:UpdateShowEquippedItemBorders()
 	self.Border:SetParent(Addon:ShowEquippedItemBorders() and self or Addon.ShadowUIParent)
 end
 
---utility function, resyncs the button's current action, modified by state
+-- utility function, resyncs the button's current action, modified by state
 function ActionButton:LoadAction()
-	local state = self:GetParent():GetAttribute('state-page')
-	local id = state and self:GetAttribute('action--' .. state) or self:GetAttribute('action--base')
+	local state = self:GetParent():GetAttribute("state-page")
+	local id = state and self:GetAttribute("action--" .. state) or self:GetAttribute("action--base")
 
-	self:SetAttribute('action', id)
+	self:SetAttribute("action", id)
 end
 
---[[ exports ]]--
-
+-- exports
 Addon.ActionButton = ActionButton

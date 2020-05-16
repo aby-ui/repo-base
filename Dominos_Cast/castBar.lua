@@ -1,17 +1,11 @@
-
-local Addon = (select(2, ...))
+local _, Addon = ...
 local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
-local LSM = LibStub('LibSharedMedia-3.0')
+local LSM = LibStub("LibSharedMedia-3.0")
 
---[[ global references ]]--
 
-local _G = _G
-local min = math.min
-local max = math.max
-
+-- local aliaes for some globals
 local GetSpellInfo = _G.GetSpellInfo
 local GetTime = _G.GetTime
-local GetNetStats = _G.GetNetStats
 
 local UnitCastingInfo = _G.UnitCastingInfo or _G.CastingInfo
 local UnitChannelInfo = _G.UnitChannelInfo or _G.ChannelInfo
@@ -24,14 +18,34 @@ local ICON_OVERRIDES = {
 	[136235] = 136243
 }
 
---[[ constants ]]--
+local CAST_BAR_COLORS = {
+	default = {1, 0.7, 0},
+	failed = {1, 0, 0},
+	harm = {0.63, 0.36, 0.94},
+	help = {0.31, 0.78, 0.47},
+	spell = {0, 1, 0},
+	uninterruptible = {0.63, 0.63, 0.63},
+}
 
-local LATENCY_BAR_ALPHA = 0.7
-local SPARK_ALPHA = 0.7
+local LATENCY_BAR_ALPHA = 0.5
 
---[[ casting bar ]]--
+local function GetSpellReaction(spellID)
+	local name = GetSpellInfo(spellID)
+	if name then
+		if IsHelpfulSpell(name) then
+			return "help"
+		end
+	
+		if IsHarmfulSpell(name) then
+			return "harm"
+		end
+	end
 
-local CastBar = Dominos:CreateClass('Frame', Dominos.Frame)
+	return "default"
+end
+
+
+local CastBar = Dominos:CreateClass("Frame", Dominos.Frame)
 
 function CastBar:New(id, units, ...)
 	local bar = CastBar.proto.New(self, id, ...)
@@ -44,95 +58,18 @@ function CastBar:New(id, units, ...)
 end
 
 function CastBar:OnCreate()
-	self:SetFrameStrata('HIGH')
-	self:SetScript('OnEvent', self.OnEvent)
+	CastBar.proto.OnCreate(self)
 
-	local container = CreateFrame('Frame', nil, self)
-	container:SetAllPoints(container:GetParent())
-	container:SetAlpha(0)
-	self.container = container
-
-		local fout = container:CreateAnimationGroup()
-		fout:SetLooping('NONE')
-		fout:SetScript('OnFinished', function() container:SetAlpha(0); self:OnFinished() end)
-
-			local a = fout:CreateAnimation('Alpha')
-			a:SetFromAlpha(1)
-			a:SetToAlpha(0)
-			a:SetDuration(0.5)
-
-		self.fout = fout
-
-		local fin = container:CreateAnimationGroup()
-		fin:SetLooping('NONE')
-		fin:SetScript('OnFinished', function() container:SetAlpha(1) end)
-
-			a = fin:CreateAnimation('Alpha')
-			a:SetFromAlpha(0)
-			a:SetToAlpha(1)
-			a:SetDuration(0.2)
-
-		self.fin = fin
-
-		local bg = container:CreateTexture(nil, 'BACKGROUND')
-		bg:SetVertexColor(0, 0, 0, 0.5)
-		self.bg = bg
-
-		local icon = container:CreateTexture(nil, 'ARTWORK')
-		icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-		self.icon = icon
-
-		local lb = container:CreateTexture(nil, 'OVERLAY')
-		lb:SetBlendMode('ADD')
-		self.latencyBar = lb
-
-		local sb = CreateFrame('StatusBar', nil, container)
-		sb:SetScript('OnValueChanged', function(_, value)
-			self:OnValueChanged(value)
-		end)
-
-			local timeText = sb:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightSmall')
-			timeText:SetJustifyH('RIGHT')
-			self.timeText = timeText
-
-			local labelText = sb:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightSmall')
-			labelText:SetJustifyH('LEFT')
-			self.labelText = labelText
-
-			local spark = CreateFrame('StatusBar', nil, sb)
-
-				local st = spark:CreateTexture(nil, 'ARTWORK')
-				st:SetColorTexture(1, 1, 1, SPARK_ALPHA)
-				st:SetGradientAlpha('HORIZONTAL', 0, 0, 0, 0, 1, 1, 1, SPARK_ALPHA)
-				st:SetBlendMode('BLEND')
-				st:SetHorizTile(true)
-
-			spark:SetStatusBarTexture(st)
-
-			spark:SetAllPoints(sb)
-			self.spark = spark
-
-		self.statusBar = sb
-
-		local border = CreateFrame('Frame', nil, container)
-
-		border:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
-		border:SetFrameLevel(sb:GetFrameLevel() + 3)
-		border:SetAllPoints(container)
-		border:SetBackdrop{
-			edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
-			edgeSize = 16,
-			insets   = { left = 5, right = 5, top = 5, bottom = 5 },
-		}
-
-		self.border = border
+	self:SetFrameStrata("HIGH")
+	self:SetScript("OnEvent", self.OnEvent)
 
 	self.props = {}
-
-	return self
+	self.timer = CreateFrame("Frame", nil, self, "DominosTimerBarTemplate")
 end
 
 function CastBar:OnFree()
+	CastBar.proto.OnFree(self)
+
 	self:UnregisterAllEvents()
 	LSM.UnregisterAllCallbacks(self)
 end
@@ -142,7 +79,8 @@ function CastBar:OnLoadSettings()
 		self.sets.display = {
 			icon = false,
 			time = true,
-			border = true
+			border = true,
+			latency = true,
 		}
 	end
 
@@ -153,24 +91,34 @@ end
 
 function CastBar:GetDefaults()
 	return {
-		point = 'BOTTOM',
+		point = "BOTTOM",
 		x = 0,
 		y = 200,
 		width = 240,
 		height = 24,
 		padW = 1,
 		padH = 1,
-		texture = 'Minimalist',
-		font = 'Friz Quadrata TT',
+		texture = "Minimalist",
+		font = "Friz Quadrata TT",
+		
+		useSpellReactionColors = true,
+
+		-- default to the spell queue window for latency padding
+		latencyPadding = tonumber(GetCVar("SpellQueueWindow")),
+
 		display = {
 			icon = true,
 			time = true,
-			border = false
-        }
+			border = true,
+			latency = true,
+			spark = true
+		}
 	}
 end
 
---[[ frame events ]]--
+--------------------------------------------------------------------------------
+-- Game Events
+--------------------------------------------------------------------------------
 
 function CastBar:OnEvent(event, ...)
     if IsAddOnLoaded("Quartz") then self:SetProperty("state", nil) return end
@@ -180,123 +128,95 @@ function CastBar:OnEvent(event, ...)
 	end
 end
 
-function CastBar:OnUpdateCasting(elapsed)
-	local sb = self.statusBar
-	local _, vmax = sb:GetMinMaxValues()
-	local v = sb:GetValue() + elapsed
-
-	if v < vmax then
-		sb:SetValue(v)
-	else
-		sb:SetValue(vmax)
-		self:SetProperty('state', nil)
-	end
-end
-
-function CastBar:OnUpdateChanneling(elapsed)
-	local sb = self.statusBar
-	local vmin = sb:GetMinMaxValues()
-	local v = sb:GetValue() - elapsed
-
-	if v > vmin then
-		sb:SetValue(v)
-	else
-		sb:SetValue(vmin)
-		self:SetProperty('state', nil)
-	end
-end
-
-function CastBar:OnChannelingValueChanged(value)
-	self.timeText:SetFormattedText('%.1f', value)
-	self.spark:SetValue(value)
-end
-
-function CastBar:OnCastingValueChanged(value)
-	self.timeText:SetFormattedText('%.1f', self.tend - value)
-	self.spark:SetValue(value)
-end
-
-function CastBar:OnFinished()
-	self:Reset()
-end
-
---[[ game events ]]--
-
 function CastBar:RegisterEvents()
 	local registerUnitEvents = function(...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_CHANNEL_START', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_CHANNEL_UPDATE', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_CHANNEL_STOP', ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", ...)
 
-		self:RegisterUnitEvent('UNIT_SPELLCAST_START', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_STOP', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_FAILED', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_FAILED_QUIET', ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_START", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED_QUIET", ...)
 
-		self:RegisterUnitEvent('UNIT_SPELLCAST_INTERRUPTED', ...)
-		self:RegisterUnitEvent('UNIT_SPELLCAST_DELAYED', ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", ...)
+		self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", ...)
 	end
 
 	registerUnitEvents(unpack(self.units))
-	LSM.RegisterCallback(self, 'LibSharedMedia_Registered')
+	LSM.RegisterCallback(self, "LibSharedMedia_Registered")
 end
 
 -- channeling events
 function CastBar:UNIT_SPELLCAST_CHANNEL_START(event, unit, castID, spellID)
-	self:SetProperty("unit", unit)
-	self:UpdateChanneling(true)
 	self:SetProperty("castID", castID)
-	self:SetProperty("state", "start")
+	self:SetProperty("unit", unit)
+
+	self:UpdateChanneling()
 end
 
 function CastBar:UNIT_SPELLCAST_CHANNEL_UPDATE(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
 	self:UpdateChanneling()
 end
 
 function CastBar:UNIT_SPELLCAST_CHANNEL_STOP(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
-	self:SetProperty("state", nil)
+	self:SetProperty("state", "stopped")
 end
 
 function CastBar:UNIT_SPELLCAST_START(event, unit, castID, spellID)
-	self:SetProperty("unit", unit)
-	self:UpdateCasting(true)
 	self:SetProperty("castID", castID)
-	self:SetProperty("state", "start")
+	self:SetProperty("unit", unit)
+
+	self:UpdateCasting()
 end
 
 function CastBar:UNIT_SPELLCAST_STOP(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
-	self:SetProperty("state", nil)
+	self:SetProperty("state", "stopped")
 end
 
 function CastBar:UNIT_SPELLCAST_FAILED(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
-	self:SetProperty("reaction", "failed")
 	self:SetProperty("label", _G.FAILED)
-	self:SetProperty("state", nil)
+	self:SetProperty("state", "failed")
 end
 
 CastBar.UNIT_SPELLCAST_FAILED_QUIET = CastBar.UNIT_SPELLCAST_FAILED
 
 function CastBar:UNIT_SPELLCAST_INTERRUPTED(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
-	self:SetProperty("reaction", "interrupted")
 	self:SetProperty("label", _G.INTERRUPTED)
-	self:SetProperty("state", nil)
+	self:SetProperty("state", "interrupted")
 end
 
 function CastBar:UNIT_SPELLCAST_DELAYED(event, unit, castID, spellID)
-	if castID ~= self:GetProperty('castID') then return end
+	if castID ~= self:GetProperty("castID") then
+		return
+	end
 
 	self:UpdateCasting()
 end
+
+--------------------------------------------------------------------------------
+-- Addon Events
+--------------------------------------------------------------------------------
 
 function CastBar:LibSharedMedia_Registered(event, mediaType, key)
 	if mediaType == LSM.MediaType.STATUSBAR and key == self:GetTextureID() then
@@ -306,88 +226,54 @@ function CastBar:LibSharedMedia_Registered(event, mediaType, key)
 	end
 end
 
---[[ attribute events ]]--
-
-function CastBar:mode_update(mode)
-	if mode == 'cast' then
-		self:SetScript('OnUpdate', self.OnUpdateCasting)
-	elseif mode == 'channel' then
-		self:SetScript('OnUpdate', self.OnUpdateChanneling)
-	elseif mode == 'demo' then
-		self:SetupDemo()
-	end
-end
+--------------------------------------------------------------------------------
+-- Cast Bar Property Events
+--------------------------------------------------------------------------------
 
 function CastBar:state_update(state)
-	if state == 'start' then
-		self.fout:Stop()
-		self.fin:Play()
+	if state == "interrupted" or state == "failed" then
+		self:UpdateColor()
+		self:Stop()
+	elseif state == "stopped" then
+		self:Stop()
 	else
-		self:SetScript('OnUpdate', nil)
-		self.fin:Stop()
-		self.fout:Play()
+		self:UpdateColor()
 	end
 end
 
 function CastBar:label_update(text)
-	self.labelText:SetText(text or '')
-end
-
-function CastBar:time_update(text)
-	self.timeText:SetText(text or '')
+	self.timer:SetLabel(text)
 end
 
 function CastBar:icon_update(texture)
-	self.icon:SetTexture(texture and ICON_OVERRIDES[texture] or texture)
-end
-
-function CastBar:spell_update(spellID)
-	if spellID and IsHelpfulSpell(spellID) then
-		self:SetProperty("reaction", "help")
-	elseif spellID and IsHarmfulSpell(spellID) then
-		self:SetProperty("reaction", "harm")
-	else
-		self:SetProperty("reaction", "neutral")
-	end
+	self.timer:SetIcon(texture and ICON_OVERRIDES[texture] or texture)
 end
 
 function CastBar:reaction_update(reaction)
-	if reaction == "failed" or reaction == "interrupted" then
-		self.statusBar:SetStatusBarColor(1, 0, 0)
-		self.latencyBar:SetVertexColor(1, 0, 0, 0, LATENCY_BAR_ALPHA)
-	elseif reaction == "help" then
-		self.statusBar:SetStatusBarColor(0.31, 0.78, 0.47)
-		self.latencyBar:SetVertexColor(0.78, 0.31, 0.62, LATENCY_BAR_ALPHA)
-	elseif reaction == "harm" then
-		self.statusBar:SetStatusBarColor(0.63, 0.36, 0.94)
-		self.latencyBar:SetVertexColor(0.67, 0.94, 0.36, LATENCY_BAR_ALPHA)
-	else
-		self.statusBar:SetStatusBarColor(1, 0.7, 0)
-		self.latencyBar:SetVertexColor(0, 0.3, 1, LATENCY_BAR_ALPHA)
-	end
+	self:UpdateColor()
+end
+
+function CastBar:spell_update(spellID)
+	local reaction = GetSpellReaction(spellID)
+
+	self:SetProperty("reaction", reaction)
+end
+
+function CastBar:uninterruptible_update(uninterruptible)
+	self:UpdateColor()
 end
 
 function CastBar:font_update(fontID)
-	self.sets.font = fontID
-
-	local newFont = LSM:Fetch(LSM.MediaType.FONT, fontID)
-	local oldFont, fontSize, fontFlags = self.labelText:GetFont()
-
-	if newFont and newFont ~= oldFont then
-		self.labelText:SetFont(newFont, fontSize, fontFlags)
-		self.timeText:SetFont(newFont, fontSize, fontFlags)
-	end
+	self.timer:SetFont(fontID)
 end
 
 function CastBar:texture_update(textureID)
-	local texture = LSM:Fetch(LSM.MediaType.STATUSBAR, self:GetTextureID())
-
-	self.statusBar:SetStatusBarTexture(texture)
-	self.bg:SetTexture(texture)
-	self.latencyBar:SetTexture(texture)
+	self.timer:SetTexture(textureID)
 end
 
---[[ updates ]]--
+--------------------------------------------------------------------------------
+-- Cast Bar Methods
+--------------------------------------------------------------------------------
 
 function CastBar:SetProperty(key, value)
 	local prev = self.props[key]
@@ -395,7 +281,7 @@ function CastBar:SetProperty(key, value)
 	if prev ~= value then
 		self.props[key] = value
 
-		local func = self[key .. '_update']
+		local func = self[key .. "_update"]
 		if func then
 			func(self, value, prev)
 		end
@@ -407,109 +293,40 @@ function CastBar:GetProperty(key)
 end
 
 function CastBar:Layout()
-	local padding = self:GetPadding()
-	local width, height = self:GetDesiredWidth(), self:GetDesiredHeight()
-	local displayingIcon = self:Displaying('icon')
-	local displayingTime = self:Displaying('time')
-	local displayingBorder = self:Displaying('border')
+	self:TrySetSize(self:GetDesiredWidth(), self:GetDesiredHeight())
 
-	local border = self.border
-	local bg = self.bg
-	local sb = self.statusBar
-	local time = self.timeText
-	local label = self.labelText
-	local icon = self.icon
-	local insets = border:GetBackdrop().insets.left / 2
+	self.timer:SetPadding(self:GetPadding())
 
-	self:TrySetSize(width, height)
+	self.timer:SetShowIcon(self:Displaying("icon"))
 
-	if displayingBorder then
-		border:SetPoint('TOPLEFT', padding - insets, -(padding - insets))
-		border:SetPoint('BOTTOMRIGHT', -(padding - insets), padding - insets)
-		border:Show()
+	self.timer:SetShowText(self:Displaying("time"))
 
-		padding = padding + insets/2
+	self.timer:SetShowBorder(self:Displaying("border"))
 
-		bg:SetPoint('TOPLEFT', padding, -padding)
-		bg:SetPoint('BOTTOMRIGHT', -padding, padding)
-	else
-		border:Hide()
+	self.timer:SetShowLatency(self:Displaying("latency"))
+	self.timer:SetLatencyPadding(self:GetLatencyPadding())
 
-		bg:SetPoint('TOPLEFT')
-		bg:SetPoint('BOTTOMRIGHT')
-	end
-
-	local widgetSize = height - padding*2
-
-	if displayingIcon then
-		icon:SetPoint('LEFT', padding, 0)
-		icon:SetSize(widgetSize, widgetSize)
-		icon:SetAlpha(1)
-
-		sb:SetPoint('LEFT', icon, 'RIGHT', 1)
-	else
-		icon:SetAlpha(0)
-
-		sb:SetPoint('LEFT', padding, 0)
-	end
-
-	sb:SetPoint('RIGHT', -padding, 0)
-	sb:SetHeight(widgetSize)
-
-	local textoffset = 2 + (displayingBorder and insets or 0)
-
-	label:SetPoint('LEFT', textoffset, 0)
-
-	if displayingTime then
-		time:SetPoint('RIGHT', -textoffset, 0)
-		time:SetAlpha(1)
-
-		label:SetPoint('RIGHT', time, 'LEFT', -textoffset, 0)
-	else
-		time:SetAlpha(0)
-
-		label:SetPoint('RIGHT', -textoffset, 0)
-	end
-
-	if displayingIcon or displayingTime then
-		label:SetJustifyH('LEFT')
-	else
-		label:SetJustifyH('CENTER')
-	end
-
-	return self
+	self.timer:SetShowSpark(self:Displaying("spark"))
 end
 
-function CastBar:UpdateChanneling(reset)
-	if reset then
-		self:Reset()
-	end
-
-	self.OnValueChanged = self.OnChannelingValueChanged
-
-	local name, text, texture, startTime, endTime, _, _, spellID = UnitChannelInfo(self:GetProperty("unit"))
+function CastBar:UpdateChanneling()
+	local name, text, texture, startTimeMS, endTimeMS, _, notInterruptible, spellID = UnitChannelInfo(self:GetProperty("unit"))
 
 	if name then
-		self:SetProperty('mode', 'channel')
-		self:SetProperty('label', name or text)
-		self:SetProperty('icon', texture)
-		self:SetProperty('spell', spellID)
+		self:SetProperty("state", "channeling")
+		self:SetProperty("label", name or text)
+		self:SetProperty("icon", texture)
+		self:SetProperty("spell", spellID)
+		self:SetProperty("uninterruptible", notInterruptible)
 
-		local vmin = 0
-		local vmax = (endTime - startTime) / 1000
-		local v = endTime / 1000 - GetTime()
+		self.timer:SetCountdown(true)
+		self.timer:SetShowLatency(false)
 
-		self.tend = vmax
+		local time = GetTime()
+		local startTime = startTimeMS / 1000
+		local endTime = endTimeMS / 1000
 
-		local sb = self.statusBar
-		sb:SetMinMaxValues(0, (endTime - startTime) / 1000)
-		sb:SetValue(v)
-
-		local spark = self.spark
-		spark:SetMinMaxValues(vmin, vmax)
-		spark:SetValue(v)
-
-		self.latencyBar:Hide()
+		self.timer:Start(endTime - time, 0, endTime - startTime)
 
 		return true
 	end
@@ -517,41 +334,24 @@ function CastBar:UpdateChanneling(reset)
 	return false
 end
 
-function CastBar:UpdateCasting(reset)
-	if reset then
-		self:Reset()
-	end
+function CastBar:UpdateCasting()
+	local name, text, texture, startTimeMS, endTimeMS, _, _, notInterruptible, spellID = UnitCastingInfo(self:GetProperty("unit"))
 
-	self.OnValueChanged = self.OnCastingValueChanged
-
-	local name, text, texture, startTime, endTime, _, _, _, spellID = UnitCastingInfo(self:GetProperty("unit"))
 	if name then
-		self:SetProperty('mode', 'cast')
-		self:SetProperty('label', text)
-		self:SetProperty('icon', texture)
-		self:SetProperty('spell', spellID)
+		self:SetProperty("state", "casting")
+		self:SetProperty("label", text)
+		self:SetProperty("icon", texture)
+		self:SetProperty("spell", spellID)
+		self:SetProperty("uninterruptible", notInterruptible)
 
-		local vmin = 0
-		local vmax = (endTime - startTime) / 1000
-		local v = GetTime() - startTime / 1000
-		local latency = self:GetLatency()
+		self.timer:SetCountdown(false)
+		self.timer:SetShowLatency(self:Displaying("latency"))
 
-		self.tend = vmax
+		local time = GetTime()
+		local startTime = startTimeMS / 1000
+		local endTime = endTimeMS / 1000
 
-		local sb = self.statusBar
-		sb:SetMinMaxValues(vmin, vmax)
-		sb:SetValue(v)
-
-		local spark = self.spark
-		spark:SetMinMaxValues(vmin, vmax)
-		spark:SetValue(v)
-
-		local lb = self.latencyBar
-		lb:SetPoint('TOPRIGHT', sb)
-		lb:SetPoint('BOTTOMRIGHT', sb)
-		lb:SetWidth(min(latency / vmax, 1) * sb:GetWidth())
-		lb:SetHorizTile(true)
-		lb:Show()
+		self.timer:Start(time - startTime, 0, endTime - startTime)
 
 		return true
 	end
@@ -559,51 +359,107 @@ function CastBar:UpdateCasting(reset)
 	return false
 end
 
-function CastBar:Reset()
-	self:SetProperty('state', nil)
-	self:SetProperty('mode', nil)
-	self:SetProperty('label', nil)
-	self:SetProperty('icon', nil)
-	self:SetProperty('spell', nil)
-	self:SetProperty('reaction', nil)
+local function getLatencyColor(r, g, b)
+	return 1 - r, 1 - g, 1 - b, LATENCY_BAR_ALPHA
+end
+
+
+function CastBar:GetColorID()
+	local state = self:GetProperty("state")
+	if state == "failed" or state == "interrupted" then
+		return "failed"
+	end
+
+	local reaction = self:GetProperty("reaction")
+
+	if self:UseSpellReactionColors() then
+		if reaction == "help" then
+			return "help"
+		end
+
+		if reaction == "harm" then
+			if self:GetProperty("uninterruptible") then
+				return "uninterruptible"
+			end
+
+			return "harm"
+		end
+	else
+		if reaction == "help" then
+			return "spell"
+		end
+
+		if reaction == "harm" then
+			if self:GetProperty("uninterruptible") then
+				return "uninterruptible"
+			end
+
+			return "spell"
+		end
+	end
+	
+	return "default"
+end
+
+function CastBar:UpdateColor()
+	local color = self:GetColorID()
+	local r, g, b = unpack(CAST_BAR_COLORS[self:GetColorID()])
+
+	self.timer.statusBar:SetStatusBarColor(r, g, b)
+
+	if color == "failed" then
+		self.timer.latencyBar:SetColorTexture(0, 0, 0, 0)
+	else
+		self.timer.latencyBar:SetColorTexture(getLatencyColor(r, g, b))
+	end
+end
+
+
+function CastBar:Stop()
+	self.timer:Stop()
 end
 
 function CastBar:SetupDemo()
-	self.OnValueChanged = self.OnCastingValueChanged
+	local spellID = self:GetRandomSpellID()
+	local name, rank, icon, castTime = GetSpellInfo(spellID)
+	
+	-- use the spell cast time if we have it, otherwise set a default one
+	-- of a few seconds
+	if not (castTime and castTime > 0) then
+		castTime = 3
+	else
+		castTime = castTime / 1000
+	end
 
-	local spellID = self:GetRandomspellID()
-	local name, _, icon = GetSpellInfo(spellID)
-
-	self:SetProperty('mode', 'demo')
+	self:SetProperty("state", "demo")
 	self:SetProperty("label", name)
 	self:SetProperty("icon", icon)
 	self:SetProperty("spell", spellID)
-	self.tend = 1
+	self:SetProperty("reaction", GetSpellReaction(spellID))
+	self:SetProperty("uninterruptible", nil)
 
-	self.statusBar:SetMinMaxValues(0, 1)
-	self.statusBar:SetValue(0.75)
+	self.timer:SetCountdown(false)
+	self.timer:SetShowLatency(self:Displaying("latency"))	
+	self.timer:Start(0, 0, castTime)
 
-	self.spark:SetMinMaxValues(0, 1)
-	self.spark:SetValue(0.75)
-
-	local lb = self.latencyBar
-	lb:SetPoint('TOPRIGHT', self.statusBar)
-	lb:SetPoint('BOTTOMRIGHT', self.statusBar)
-	lb:SetWidth(0.15 * self.statusBar:GetWidth())
-	lb:Show()
+	-- loop the demo if it is still visible
+	C_Timer.After(castTime, function() 
+		if self.menuShown and self:GetProperty("state") == "demo" then
+			self:SetupDemo()
+		end
+	end)
 end
 
-function CastBar:GetRandomspellID()
+function CastBar:GetRandomSpellID()
 	local spells = {}
 
 	for i = 1, GetNumSpellTabs() do
-		local offset, numSpells = select(3, GetSpellTabInfo(i))
-		local tabEnd = offset + numSpells
+		local _, _, offset, numSpells = GetSpellTabInfo(i)		
 
-		for j = offset, tabEnd - 1 do
-			local _, spellID = GetSpellBookItemInfo(j, 'player')
+		for j = offset, (offset + numSpells) - 1 do
+			local _, spellID = GetSpellBookItemInfo(j, "player")
 			if spellID then
-				table.insert(spells, spellID)
+				tinsert(spells, spellID)
 			end
 		end
 	end
@@ -611,16 +467,9 @@ function CastBar:GetRandomspellID()
 	return spells[math.random(1, #spells)]
 end
 
--- the latency indicator in the castbar is meant to tell you when you can
--- safely cast a spell, so we
-function CastBar:GetLatency()
-	local lagHome, lagWorld = select(3, GetNetStats())
-
-	return (max(lagHome, lagWorld) + self:GetLatencyPadding()) / 1000
-end
-
-
---[[ settings ]]--
+--------------------------------------------------------------------------------
+-- Cast Bar Configuration
+--------------------------------------------------------------------------------
 
 function CastBar:SetDesiredWidth(width)
 	self.sets.w = tonumber(width)
@@ -640,31 +489,31 @@ function CastBar:GetDesiredHeight()
 	return self.sets.h or 24
 end
 
---font
+-- font
 function CastBar:SetFontID(fontID)
 	self.sets.font = fontID
-	self:SetProperty('font', self:GetFontID())
+	self:SetProperty("font", self:GetFontID())
 
 	return self
 end
 
 function CastBar:GetFontID()
-	return self.sets.font or 'Friz Quadrata TT'
+	return self.sets.font or "Friz Quadrata TT"
 end
 
---texture
+-- texture
 function CastBar:SetTextureID(textureID)
 	self.sets.texture = textureID
-	self:SetProperty('texture', self:GetTextureID())
+	self:SetProperty("texture", self:GetTextureID())
 
 	return self
 end
 
 function CastBar:GetTextureID()
-	return self.sets.texture or 'blizzard'
+	return self.sets.texture or "blizzard"
 end
 
---display
+-- display
 function CastBar:SetDisplay(part, enable)
 	self.sets.display[part] = enable
 	self:Layout()
@@ -677,147 +526,158 @@ end
 --latency padding
 function CastBar:SetLatencyPadding(value)
 	self.sets.latencyPadding = value
+	self:Layout()
 end
 
 function CastBar:GetLatencyPadding()
-	return self.sets.latencyPadding or 0
+	return self.sets.latencyPadding or tonumber(GetCVar("SpellQueueWindow")) or 0
 end
 
---[[ menu ]]--
+function CastBar:SetUseSpellReactionColors(enable)
+	self.sets.useSpellReactionColors = enable or false
+	self:UpdateColor()
+end
 
-do
-	function CastBar:CreateMenu()
-		local menu = Dominos:NewMenu(self.id)
+function CastBar:UseSpellReactionColors(enable)
+	local state = self.sets.useSpellReactionColors
 
-		self:AddLayoutPanel(menu)
-		self:AddTexturePanel(menu)
-		self:AddFontPanel(menu)
-		menu:AddFadingPanel()
+	if self.sets.useSpellReactionColors == nil then
+		return true
+	end
 
-		self.menu = menu
+	return state
+end
 
-		self.menu:HookScript('OnShow', function()
+--------------------------------------------------------------------------------
+-- Cast Bar Right Click Menu
+--------------------------------------------------------------------------------
+
+function CastBar:CreateMenu()
+	local menu = Dominos:NewMenu(self.id)
+
+	self:AddLayoutPanel(menu)
+	self:AddTexturePanel(menu)
+	self:AddFontPanel(menu)
+
+	menu:HookScript("OnShow", function()
+		self.menuShown = true
+
+		if not (self:GetProperty("state") == "casting" or self:GetProperty("state") == "channeling") then
 			self:SetupDemo()
-			self:SetProperty("state", "start")
-		end)
-
-		self.menu:HookScript('OnHide', function()
-			if self:GetProperty("mode") == "demo" then
-				self:SetProperty("state", nil)
-			end
-		end)
-
-		return menu
-	end
-
-	function CastBar:AddLayoutPanel(menu)
-		local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
-
-		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-
-		for _, part in ipairs{'icon', 'time', 'border'} do
-			panel:NewCheckButton{
-				name = l['Display_' .. part],
-
-				get = function() return panel.owner:Displaying(part) end,
-
-				set = function(_, enable) panel.owner:SetDisplay(part, enable) end
-			}
 		end
+	end)
 
-		panel.widthSlider = panel:NewSlider{
-			name = l.Width,
+	menu:HookScript("OnHide", function()
+		self.menuShown = nil
 
-			min = 1,
+		if self:GetProperty("state") == "demo" then
+			self:Stop()
+		end
+	end)	
 
-			max = function()
-				return math.ceil(_G.UIParent:GetWidth() / panel.owner:GetScale())
-			end,
-
-			get = function()
-				return panel.owner:GetDesiredWidth()
-			end,
-
-			set = function(_, value)
-				panel.owner:SetDesiredWidth(value)
-			end,
-		}
-
-		panel.heightSlider = panel:NewSlider{
-			name = l.Height,
-
-			min = 1,
-
-			max = function()
-				return math.ceil(_G.UIParent:GetHeight() / panel.owner:GetScale())
-			end,
-
-			get = function()
-				return panel.owner:GetDesiredHeight()
-			end,
-
-			set = function(_, value)
-				panel.owner:SetDesiredHeight(value)
-			end,
-		}
-
-		panel.paddingSlider = panel:NewPaddingSlider()
-		panel.scaleSlider = panel:NewScaleSlider()
-
-		panel.latencySlider = panel:NewSlider{
-			name = l.LatencyPadding,
-
-			min = 0,
-
-			max = function()
-				return 500
-			end,
-
-			get = function()
-				return panel.owner:GetLatencyPadding()
-			end,
-
-			set = function(_, value)
-				panel.owner:SetLatencyPadding(value)
-			end,
-		}
-	end
-
-	function CastBar:AddFontPanel(menu)
-		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-		local panel = menu:NewPanel(l.Font)
-
-		panel.fontSelector = Dominos.Options.FontSelector:New{
-			parent = panel,
-
-			get = function()
-				return panel.owner:GetFontID()
-			end,
-
-			set = function(_, value)
-				panel.owner:SetFontID(value)
-			end,
-		}
-	end
-
-	function CastBar:AddTexturePanel(menu)
-		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-		local panel = menu:NewPanel(l.Texture)
-
-		panel.textureSelector = Dominos.Options.TextureSelector:New{
-			parent = panel,
-
-			get = function()
-				return panel.owner:GetTextureID()
-			end,
-
-			set = function(_, value)
-				panel.owner:SetTextureID(value)
-			end,
-		}
-	end
+	self.menu = menu
+	return menu
 end
 
---[[ exports ]]--
+function CastBar:AddLayoutPanel(menu)
+	local panel = menu:NewPanel(LibStub("AceLocale-3.0"):GetLocale("Dominos-Config").Layout)
 
+	local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+
+	panel:NewCheckButton{
+		name = l["UseSpellReactionColors"],
+		get = function() return panel.owner:UseSpellReactionColors() end,
+		set = function(_, enable) panel.owner:SetUseSpellReactionColors(enable) end
+	}	
+
+	for _, part in ipairs{"border", "icon", "latency", "time"} do
+		panel:NewCheckButton{
+			name = l["Display_" .. part],
+			get = function()
+				return panel.owner:Displaying(part)
+			end,
+			set = function(_, enable)
+				panel.owner:SetDisplay(part, enable)
+			end
+		}
+	end
+
+	panel.widthSlider = panel:NewSlider{
+		name = l.Width,
+		min = 1,
+		max = function()
+			return math.ceil(UIParent:GetWidth() / panel.owner:GetScale())
+		end,
+		get = function()
+			return panel.owner:GetDesiredWidth()
+		end,
+		set = function(_, value)
+			panel.owner:SetDesiredWidth(value)
+		end
+	}
+
+	panel.heightSlider = panel:NewSlider{
+		name = l.Height,
+		min = 1,
+		max = function()
+			return math.ceil(UIParent:GetHeight() / panel.owner:GetScale())
+		end,
+		get = function()
+			return panel.owner:GetDesiredHeight()
+		end,
+		set = function(_, value)
+			panel.owner:SetDesiredHeight(value)
+		end
+	}
+
+	panel.paddingSlider = panel:NewPaddingSlider()
+
+	panel.scaleSlider = panel:NewScaleSlider()
+
+	panel.latencySlider = panel:NewSlider{
+		name = l.LatencyPadding,
+		min = 0,
+		max = function()
+			return 500
+		end,
+		get = function()
+			return panel.owner:GetLatencyPadding()
+		end,
+		set = function(_, value)
+			panel.owner:SetLatencyPadding(value)
+		end
+	}
+end
+
+function CastBar:AddFontPanel(menu)
+	local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+	local panel = menu:NewPanel(l.Font)
+
+	panel.fontSelector = Dominos.Options.FontSelector:New{
+		parent = panel,
+		get = function()
+			return panel.owner:GetFontID()
+		end,
+		set = function(_, value)
+			panel.owner:SetFontID(value)
+		end
+	}
+end
+
+function CastBar:AddTexturePanel(menu)
+	local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+	local panel = menu:NewPanel(l.Texture)
+
+	panel.textureSelector = Dominos.Options.TextureSelector:New{
+		parent = panel,
+		get = function()
+			return panel.owner:GetTextureID()
+		end,
+		set = function(_, value)
+			panel.owner:SetTextureID(value)
+		end
+	}
+end
+
+-- exports
 Addon.CastBar = CastBar

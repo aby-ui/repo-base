@@ -644,6 +644,156 @@ private.RARE_LIST = {
 	69843, --Zao'cho
 	72245, --Zesqua
 	71919, --Zhu-Gon the Sour
+	50842, --Magmagan
+	50839, --Chromehound
+	51052, --Gib the Banana-Hoarder
+	50343, --Quall
+	50737, --Acroniss
+	50837, --Kash
+	50348, --Norissis
+	50346, --Ronak
+	50357, --Sunwing
+	51077, --Bushtail
+	51044, --Plague
+	50786, --Sparkwing
+	50908, --Nighthowl
+	50818, --The Dark Prowler
+	50819, --Iceclaw
+	50833, --Duskcoat
+	50792, --Chiaa
+	51045, --Arcanus
+	50328, --Fangor
+	50856, --Snark
+	50916, --Lamepaw the Whimperer
+	50864, --Thicket
+	51076, --Lopex
+	50874, --Tenok
+	50353, --Manas
+	50784, --Anith
+	50797, --Yukiko
+	50763, --Shadowstalker
+	51014, --Terrapis
+	50813, --Fene-mal
+	50825, --Feras
+	50895, --Volux
+	50788, --Quetzl
+	50915, --Snort
+	50335, --Alitus
+	51042, --Bleakheart
+	50743, --Manax
+	50362, --Blackbog the Fang
+	50803, --Bonechewer
+	50744, --Qu'rik
+	51018, --Zormus
+	50330, --Kree
+	50930, --Hibernus the Sleeper
+	50947, --Varah
+	50903, --Orlix the Swamplord
+	50370, --Karapax
+	50838, --Tabbs
+	50926, --Grizzled Ben
+	50949, --Finn's Gambit
+	51069, --Scintillex
+	50725, --Azelisk
+	50882, --Chupacabros
+	50986, --Goldenback
+	50906, --Mutilax
+	50846, --Slavermaw
+	50940, --Swee
+	50361, --Ornat
+	51040, --Snuffles
+	50993, --Gal'dorak
+	51048, --Rexxus
+	50886, --Seawing
+	50337, --Cackle
+	50342, --Heronis
+	50855, --Jaxx the Rabid
+	50858, --Dustwing
+	50790, --Ionis
+	50759, --Iriss the Widow
+	51037, --Lost Gilnean Wardog
+	51046, --Fidonis
+	50779, --Sporeggon
+	50997, --Bornak the Gorer
+	50995, --Bruiser
+	50810, --Favored of Isiset
+	51027, --Spirocula
+	51028, --The Deep Tunneler
+	50891, --Boros
+	50724, --Spinecrawl
+	51004, --Toxx
+	50884, --Dustflight the Cowardly
+	50925, --Grovepaw
+	50742, --Qem
+	50948, --Crystalback
+	51062, --Khep-Re
+	50775, --Likk the Hunter
+	51063, --Phalanax
+	50730, --Venomspine
+	50746, --Bornix the Burrower
+	50922, --Warg
+	50937, --Hamhide
+	50929, --Little Bjorn
+	50752, --Tarantis
+	50946, --Hogzilla
+	51021, --Vorticus
+	51017, --Gezan
+	50745, --Losaj
+	50727, --Strix the Barbed
+	50814, --Corpsefeeder
+	50876, --Avis
+	50952, --Barnacle Jim
+	50967, --Craw the Ravager
+	50738, --Shimmerscale
+	50345, --Alit
+	50905, --Cida
+	50809, --Heress
+	50955, --Carcinak
+	50778, --Ironweb
+	51007, --Serkett
+	50785, --Skyshadow
+	51066, --Crystalfang
+	50892, --Cyn
+	50329, --Rrakk
+	50945, --Scruff
+	50777, --Needle
+	51061, --Roth-Salam
+	51029, --Parasitus
+	51010, --Snips
+	50741, --Kaxx
+	51053, --Quirix
+	51000, --Blackshell the Impenetrable
+	51022, --Chordix
+	73854, --Cranegnasher
+	50728, --Deathstrike
+	51026, --Gnath
+	50931, --Mange
+	50731, --Needlefang
+	50812, --Arae
+	50735, --Blinkeye the Rattler
+	51067, --Glint
+	50726, --Kalixx
+	50807, --Catal
+	50901, --Teromak
+	51031, --Tracker
+	50875, --Nychus
+	50865, --Saurix
+	50942, --Snoot the Rooter
+	50804, --Ripwing
+	50957, --Hugeclaw
+	51008, --The Barbed Horror
+	50747, --Tix
+	50770, --Zorn
+	50964, --Chops
+	51025, --Dilennaa
+	51001, --Venomclaw
+	51002, --Scorpoxx
+	50764, --Paraliss
+	50748, --Nyaj
+	51058, --Aphis
+	50897, --Ffexk the Dunestalker
+	50765, --Miasmiss
+	51057, --Weevil
 	
 	-- Rares Draenor
 	77140, --Amaukwa
@@ -672,12 +822,10 @@ private.RARE_LIST = {
 	77085, --Dark Emanation
 	82268, --Darkmaster Go'vid
 	82411, --Darktalon
-	77763, --Deadshot Kizi
 	82058, --Depthroot
 	86729, --Direhoof
 	77561, --Dr. Gloom
 	84807, --Durkath Steelmaw
-	77768, --Elementalist Utrah
 	82676, --Enavra
 	82742, --Enavra
 	82207, --Faebright
@@ -688,12 +836,10 @@ private.RARE_LIST = {
 	74971, --Firefury Giant
 	88580, --Firestarter Grash
 	83483, --Flinthide
-	77648, --Forge Matron Targa
 	85250, --Fossilwood the Petrified
 	77614, --Frenzied Golem
 	78713, --Galzomar
 	82764, --Gar'lua
-	86058, --Garrison Ford
 	81038, --Gelgor of the Blue Flame
 	82882, --General Aevd
 	80471, --Gennadian
@@ -752,11 +898,9 @@ private.RARE_LIST = {
 	83680, --Outrider Duretha
 	78606, --Pale Fishmonger
 	78134, --Pathfinder Jalog
-	77095, --Pathstalker Draga
 	88208, --Pit Beast
 	84838, --Poisonmaster Bortusk
 	76918, --Primalist Mur'og
-	77642, --Pyrecaster Zindra
 	77741, --Ra'kahn
 	84392, --Ragore Driftstalker
 	82374, --Rai'vosh
@@ -791,9 +935,7 @@ private.RARE_LIST = {
 	75482, --Veloss
 	85078, --Voidreaver Urnae
 	83385, --Voidseer Kalurg
-	77926, --Vulceros
 	77776, --Wandering Vindicator
-	78733, --Warcaster Bargol
 	79024, --Warmaster Blugthol
 	75434, --Windfang Matriarch
 	82922, --Xothear, the Destroyer

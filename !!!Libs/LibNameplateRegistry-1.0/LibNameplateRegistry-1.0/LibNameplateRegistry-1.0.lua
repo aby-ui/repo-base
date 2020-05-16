@@ -5,7 +5,7 @@
         querying Blizzard's Nameplate frames with ease and efficiency.
 
         Copyright (c) 2013-2019 by John Wellesz (LibNameplateRegistry@2072productions.com)
-        
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -17,9 +17,9 @@
     GNU Lesser Public License for more details.
 
     You should have received a copy of the GNU Lesser Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-This file was last updated on 2019-09-02T13:51:45Z by Archarodim
+This file was last updated on 2020-04-11T17:41:39Z by Archarodim
 
 --]]
 
@@ -491,7 +491,7 @@ do
 
         PlateData = PlateRegistry_per_frame[namePlateFrameBase];
         ActivePlates_per_frame[namePlateFrameBase] = PlateData;
-        
+
         PlateData.unitToken = namePlateUnitToken;
         PlateData.name      = UnitName(namePlateUnitToken);
         -- if UnitName fails, store nothing and let the metaTable retry the query later
@@ -650,16 +650,16 @@ end
 -- public methods: :GetPlateName(), :GetPlateReaction(), :GetPlateType(), :GetPlateGUID(), :GetPlateByGUID(), :GetPlateRegion(), :EachPlateByName() {{{
 
 --- ==LibNameplateRegistry-1.0 public API documentation\\\\
--- Check the [[http://www.wowace.com/addons/libnameplateregistry-1-0/pages/callbacks/|Callbacks' page]] if you want details about those.\\\\
+-- Check the [[https://www.wowace.com/projects/libnameplateregistry-1-0/pages/callbacks|Callbacks' page]] if you want details about those.\\\\
 --
 -- Here is a fully working little add-on as an example displaying nameplates' information as they become available.\\
--- You can download a ready to go archive of this example add-on [[http://www.j2072.teaser-hosting.com/dropbox/example.rar|here]]\\\\
+-- You can download a ready to go archive of this example add-on [[https://github.com/2072/LibNameplateRegistry-1.0/tree/master/example|from GitHub]]\\\\
 --
--- For a more advanced usage example you can take a look at the [[http://www.wowace.com/addons/healers-have-to-die/files/|latest version of Healers Have To Die]].\\
+-- For a more advanced usage example you can take a look at the [[https://www.wowace.com/projects/h-h-t-d/files|latest version of Healers Have To Die]].\\
 --
 -- @usage
 -- local ADDON_NAME, T = ...;
--- 
+--
 -- -- Create a new Add-on object using AceAddon
 -- T.Example = LibStub("AceAddon-3.0"):NewAddon("Example", "LibNameplateRegistry-1.0");
 --
@@ -669,7 +669,7 @@ end
 --
 --
 -- local Example = T.Example;
--- 
+--
 -- function Example:OnEnable()
 --     -- Subscribe to callbacks
 --     self:LNR_RegisterCallback("LNR_ON_NEW_PLATE"); -- registering this event will enable the library else it'll remain idle
@@ -677,38 +677,38 @@ end
 --     self:LNR_RegisterCallback("LNR_ON_GUID_FOUND");
 --     self:LNR_RegisterCallback("LNR_ERROR_FATAL_INCOMPATIBILITY");
 -- end
--- 
+--
 -- function Example:OnDisable()
 --     -- unregister all LibNameplateRegistry callbacks, which will disable it if
 --     -- your add-on was the only one to use it
 --     self:LNR_UnregisterAllCallbacks();
 -- end
--- 
--- 
+--
+--
 -- function Example:LNR_ON_NEW_PLATE(eventname, plateFrame, plateData)
 --     print(ADDON_NAME, ":", plateData.name, "'s nameplate appeared!");
 --     print(ADDON_NAME, ":", "It's a", plateData.type, "and", plateData.reaction,
 --           plateData.GUID and ("we know its GUID: " .. plateData.GUID) or "GUID not yet known");
 -- end
--- 
--- 
+--
+--
 -- function Example:LNR_ON_RECYCLE_PLATE(eventname, plateFrame, plateData)
 --     print(ADDON_NAME, ":", plateData.name, "'s nameplate disappeared!");
 -- end
--- 
--- 
+--
+--
 -- function Example:LNR_ON_GUID_FOUND(eventname, frame, GUID, findmethod)
 --     -- This is now rarely useful since WoW 7 since GUIDs are linked directly on nameplate appearance.
 --     -- Sometimes though some data about a unit may not be available right away due to heavy lag.
 --     print(ADDON_NAME, ":", "GUID found using", findmethod, "for", self:GetPlateName(frame), "'s nameplate:", GUID);
 -- end
--- 
--- 
+--
+--
 -- function Example:LNR_ERROR_FATAL_INCOMPATIBILITY(eventname, icompatibilityType)
 --     -- Here you want to check if your add-on and LibNameplateRegistry are not
 --     -- outdated (old TOC) and display a nice error message to your user.
 -- end
--- 
+--
 --
 -- @class file
 -- @name LibNameplateRegistry-1.0.lua
@@ -767,7 +767,7 @@ LNR_Private.GetPlateByGUID = LNR_Public.GetPlateByGUID;
 
 
 --- (DEPRECATED) Gets a platename's frame specific region using a normalized name.
--- 
+--
 -- Since WoW 7 nameplates can be linked to unit IDs to get
 -- the proper information directly using the standard WoW API thus
 -- GetPlateRegion should not be used anymore.
@@ -833,7 +833,7 @@ do
     -- -- code
     -- end
     --
-    -- @return iterator 
+    -- @return iterator
     function LNR_Public:EachPlateByName (name)
         CurrentPlate = nil;
         Name = name;
@@ -849,7 +849,7 @@ end -- }}}
 --
 -- @paramsig callbackName [, method] [, extraArg]
 --
--- @param callbackName name of a callback (see the [[http://www.wowace.com/addons/libnameplateregistry-1-0/pages/callbacks/|Callbacks' page]])
+-- @param callbackName name of a callback (see the [[https://www.wowace.com/projects/libnameplateregistry-1-0/pages/callbacks|Callbacks' page]])
 --
 -- @param method (optional) The method to call when the callback fires, if ommitted, addon:eventname is used
 --
@@ -908,7 +908,7 @@ function LNR_Private.Ticker()
         end
     end
     --@end-debug@]===]
-    
+
     C_Timer.After(0.1, LNR_Private.Ticker);
 
 end -- }}}
@@ -924,7 +924,7 @@ function LNR_Private.callbacks:OnUsed(target, eventname)
         LNR_Private:Enable();
     end
 
-    
+
 end
 
 function LNR_Private.callbacks:OnUnused(target, eventname)
@@ -936,7 +936,7 @@ function LNR_Private.callbacks:OnUnused(target, eventname)
         LNR_Private:Disable();
     end
 
-    
+
 end
 
 function LNR_Private:Enable() -- {{{
@@ -945,7 +945,7 @@ function LNR_Private:Enable() -- {{{
     if InCombatLockdown() then
         Debug(WARNING, ":Enable(), InCombatLockdown, will retry later...");
         self.EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
-        
+
         return
     end
 
@@ -979,12 +979,12 @@ function LNR_Private:Enable() -- {{{
             end
 
             return count
-        end 
+        end
         -- assert that our state is clean
         assert(tCount(tCountTest) == 2, 'tCount test failure');
         assert(tCount(ActivePlates_per_frame) == tCount(ActivePlateFrames_per_unitToken), 'uncleaned state: count mismatch');
         assert(tCount(ActivePlates_per_frame) == 0, 'uncleaned state: old data exists: '..tCount(ActivePlates_per_frame));
-    end 
+    end
     --@end-debug@]===]
 
     local function findPlateUnitToken(plate, tokenID) -- only to be called on shown namePlates
@@ -1084,7 +1084,7 @@ function LNR_Public:Quit(reason)
     TimerDivisor              = nil;
 
     --[===[@debug@
-    callbacks_consisistency_check = nil;    
+    callbacks_consisistency_check = nil;
     --@end-debug@]===]
 
 

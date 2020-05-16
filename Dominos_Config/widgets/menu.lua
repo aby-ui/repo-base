@@ -4,44 +4,45 @@ local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
 
 local nextName = Addon:CreateNameGenerator('Menu')
 
-function Menu:New(parent)
-	local f = self:Bind(CreateFrame('Frame', nextName(), parent or _G.UIParent, "UIPanelDialogTemplate"))
+local MENU_WIDTH = 428
+local MENU_HEIGHT = 320
 
-	f.panels = {}
-	f:EnableMouse(true)
-	f:SetToplevel(true)
-	f:SetMovable(true)
-	f:SetClampedToScreen(true)
-	f:SetFrameStrata('DIALOG')
+function Menu:New(parent)
+	local menu = self:Bind(CreateFrame('Frame', nextName(), parent or UIParent, "UIPanelDialogTemplate"))
+
+	menu:SetSize(MENU_WIDTH, MENU_HEIGHT)
+	menu:EnableMouse(true)
+	menu:SetToplevel(true)
+	menu:SetMovable(true)
+	menu:SetClampedToScreen(true)
+	menu:SetFrameStrata('DIALOG')
 
 	-- title region
-	local tr = CreateFrame('Frame', nil, f, 'TitleDragAreaTemplate')
-	tr:SetAllPoints(f:GetName() .. 'TitleBG')
+	local tr = CreateFrame('Frame', nil, menu, 'TitleDragAreaTemplate')
+	tr:SetAllPoints(menu:GetName() .. 'TitleBG')
 
-	--title text
-	local text = f:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+	-- title text
+	local text = menu:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
 	text:SetPoint('CENTER', tr)
-	f.text = text
+	menu.text = text
+
+	-- panels
+	menu.panels = {}
 
 	-- panel selector
-	local panelSelector = Addon.PanelSelector:New(f)
-	panelSelector:SetPoint('TOPLEFT', tr, 'BOTTOMLEFT', 2, -6)
-	panelSelector:SetPoint('TOPRIGHT', tr, 'BOTTOMRIGHT', 0, -6)
-	panelSelector:SetHeight(20)
-	panelSelector.OnSelect = function(_, id)
-		f:OnShowPanel(id)
-	end
-	f.panelSelector = panelSelector
+	local panelSelector = Addon.PanelSelector:New(menu)
+	panelSelector:SetPoint('TOPLEFT', tr, 'BOTTOMLEFT', 2, -4)
+	panelSelector:SetPoint('BOTTOMRIGHT', menu, 'BOTTOMLEFT', 2 + 120, 10)
+	panelSelector.OnSelect = function(_, id) menu:OnShowPanel(id) end
+	menu.panelSelector = panelSelector
 
 	-- panel container
-	local panelContainer = Addon.ScrollableContainer:New(f)
-	panelContainer:SetPoint('TOPLEFT', panelSelector, 'BOTTOMLEFT', 4, -4)
-	panelContainer:SetPoint('TOPRIGHT', panelSelector, 'BOTTOMRIGHT', 0, -4)
-	panelContainer:SetPoint('BOTTOM', 0, 10)
-	f.panelContainer = panelContainer
+	local panelContainer = Addon.ScrollableContainer:New(menu)
+	panelContainer:SetPoint('TOPLEFT', panelSelector, 'TOPRIGHT', 2, 0)
+	panelContainer:SetPoint('BOTTOMRIGHT', -4, 10)
+	menu.panelContainer = panelContainer
 
-	f:SetSize(300, 400)
-	return f
+	return menu
 end
 
 --tells the panel what frame we're pointed to
@@ -57,7 +58,7 @@ function Menu:SetOwner(owner)
 end
 
 function Menu:Anchor(frame)
-	local ratio = _G.UIParent:GetScale() / frame:GetEffectiveScale()
+	local ratio = UIParent:GetScale() / frame:GetEffectiveScale()
 	local x = frame:GetLeft() / ratio
 	local y = frame:GetTop() / ratio
 
@@ -69,8 +70,6 @@ function Menu:NewPanel(id)
 	self.panelSelector:AddPanel(id)
 
 	local panel = Addon.Panel:New()
-	-- panel:SetAllPoints(self.panelContainer)
-	-- panel:Hide()
 
 	self.panels[id] = panel
 
@@ -86,7 +85,7 @@ function Menu:OnShowPanel(id)
 		for i, panel in pairs(self.panels) do
 			if i == id then
 				panel:Show()
-				self.panelContainer:SetChild(panel)
+				self.panelContainer:SetContent(panel)
 			else
 				panel:Hide()
 			end

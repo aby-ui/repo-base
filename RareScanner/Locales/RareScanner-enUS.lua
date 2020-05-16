@@ -132,6 +132,8 @@ if AL then
 	AL["LOOT_FILTER_NOT_EQUIPABLE_DESC"] = "When activated, armor and weapons that this character cannot wear won't show up on the loot bar. This filter doesn't affect other kinds of lootable items, whatsoever."
 	AL["LOOT_FILTER_NOT_MATCHING_CLASS"] = "Filter items that require a different class than yours"
 	AL["LOOT_FILTER_NOT_MATCHING_CLASS_DESC"] = "When activated, any item that requires a specific class to be used that doesn't match yours, won't show up on the loot bar."
+	AL["LOOT_FILTER_NOT_MATCHING_FACTION"] = "Filter items that require a different faction than yours"
+	AL["LOOT_FILTER_NOT_MATCHING_FACTION_DESC"] = "When activated, any item that requires a specific faction to be used that doesn't match yours, won't show up on the loot bar."
 	AL["LOOT_FILTER_NOT_TRANSMOG"] = "Show only transmog armor and weapons"
 	AL["LOOT_FILTER_NOT_TRANSMOG_DESC"] = "When activated, only armor and weapons that you haven't collected yet will be shown on the loot bar. This filter doesn't affect other kinds of lootable items, whatsoever."
 	AL["LOOT_FILTER_SUBCATEGORY_DESC"] = "Toggle showing this kind of loot on the loot bar. When disabled you won't see any item that matches this category on the loot shown when you find a rare NPC."
@@ -308,9 +310,15 @@ if AL then
 	AL["TOOLTIP_TOP"] = "Upper side"
 	AL["UNKNOWN"] = "Unknown"
 	AL["UNKNOWN_TARGET"] = "Unknown target"
+	AL["ZONE_1527"] = "%s (BFA Assault)"
+	AL["ZONE_1530"] = "%s (BFA Assault)"
+	AL["ZONE_1570"] = "%s (BFA Lesser vision of N'Zoth)"
+	AL["ZONE_1571"] = "%s (BFA Lesser vision of N'Zoth)"
+	AL["ZONE_317"] = "%s (Human side)"
+	AL["ZONE_318"] = "%s (Undead side)"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
-					
+				
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {
 		[9999] = "Class Halls"; --Class Halls

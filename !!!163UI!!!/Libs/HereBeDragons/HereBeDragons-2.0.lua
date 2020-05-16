@@ -255,7 +255,10 @@ local function UpdateCurrentPosition(instanceCheck)
     if instanceCheck then
         local _x, _y, instance = HereBeDragons:GetPlayerWorldPosition()
         if instance and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not dynamicInstanceIDOverrides[instance] then
+            --dump({ uiMapID, instance, mapData[uiMapID] })
+            if mapData[uiMapID].mapType ~= 2 then -- mapData[uiMapID].instance ~= 0 then -- 进大幻象切地图会先切到东部王国,uiMapID=13
             dynamicInstanceIDOverrides[instance] = mapData[uiMapID].instance
+            end
         end
     end
 

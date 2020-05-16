@@ -9,7 +9,6 @@ end
 
 function ProgressBarModule:OnEnable()
 	-- common events
-	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_UPDATE_RESTING")
 	self:RegisterEvent("UPDATE_EXHAUSTION")
@@ -37,7 +36,8 @@ function ProgressBarModule:OnEnable()
 		self:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 	end
 
-	-- libsharedmedia callbacks
+	-- addon and library callbacks
+	Dominos.RegisterCallback(self, "OPTIONS_MENU_LOADING")
 	LibStub("LibSharedMedia-3.0").RegisterCallback(self, 'LibSharedMedia_Registered')
 end
 
@@ -66,10 +66,7 @@ function ProgressBarModule:Unload()
 end
 
 -- events
-function ProgressBarModule:ADDON_LOADED(event, addonName)
-	if addonName ~= "Dominos_Config" then return end
-
-	self:UnregisterEvent("ADDON_LOADED")
+function ProgressBarModule:OPTIONS_MENU_LOADING()
 	self:AddOptionsPanel()
 end
 
@@ -132,59 +129,55 @@ function ProgressBarModule:UpdateAllBars()
 end
 
 function ProgressBarModule:AddOptionsPanel()
-	local panel = Dominos.Options.AddonOptions:NewPanel(L.Progress)
-	local prev = nil
+	Dominos.Options:AddOptionsPanel(function()
+		local options = {
+			key = "progress",
 
-	local oneBarModeToggle = panel:Add("CheckButton", {
-		name = L.OneBarMode,
+			name = L.Progress,
 
-		get = function()
-			return Addon.Config:OneBarMode()
-		end,
+			check(L.OneBarMode) {
+				get = function()
+					return Addon.Config:OneBarMode()
+				end,
+		
+				set = function(_, enable)
+					Addon.Config:SetOneBarMode(enable)
+					self:Unload()
+					self:Load()
+				end				
+			},
 
-		set = function(_, enable)
-			Addon.Config:SetOneBarMode(enable)
-			self:Unload()
-			self:Load()
+			check(L.SkipInactiveModes) {
+				get = function()
+					return Addon.Config:SkipInactiveModes()
+				end,
+		
+				set = function(_, enable)
+					Addon.Config:SetSkipInactiveModes(enable)
+				end		
+			},			
+
+			h(COLORS)
+		}		
+
+		for _, key in ipairs{ "xp", "xp_bonus", "honor", "artifact", "azerite" } do
+			tinsert(options, color(L["Color_" .. key]) {
+				hasAlpha = true,
+	
+				get = function()
+					return Addon.Config:GetColor(key)
+				end,
+	
+				set = function(_, ...)
+					Addon.Config:SetColor(key, ...)
+	
+					for _, bar in pairs(self.bars) do
+						bar:Init()
+					end
+				end				
+			})
 		end
-	})
 
-	oneBarModeToggle:SetPoint("TOPLEFT", 0, -2)
-
-	local skipInactiveModesToggle = panel:Add("CheckButton", {
-		name = L.SkipInactiveModes,
-
-		get = function()
-			return Addon.Config:SkipInactiveModes()
-		end,
-
-		set = function(_, enable)
-			Addon.Config:SetSkipInactiveModes(enable)
-		end
-	})
-
-	skipInactiveModesToggle:SetPoint("TOPLEFT", oneBarModeToggle, "BOTTOMLEFT", 0, -2)
-
-	for _, key in ipairs {"xp", "xp_bonus", "honor", "artifact", "azerite"} do
-		local picker = panel:Add("ColorPicker", {
-			name = L["Color_" .. key],
-
-			hasOpacity = true,
-
-			get = function()
-				return Addon.Config:GetColor(key)
-			end,
-
-			set = function(...)
-				Addon.Config:SetColor(key, ...)
-
-				for _, bar in pairs(self.bars) do
-					bar:Init()
-				end
-			end
-		})
-
-		picker:SetPoint("TOP", prev or skipInactiveModesToggle, "BOTTOM", 0, -6)
-		prev = picker
-	end
+		return options
+	end)
 end

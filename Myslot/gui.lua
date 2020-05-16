@@ -400,6 +400,20 @@ RegEvent("ADDON_LOADED", function()
 
 end)
 
+RegEvent("ADDON_LOADED", function()
+    local ldb = LibStub("LibDataBroker-1.1")
+    local icon = LibStub("LibDBIcon-1.0")
+    icon:Register("Myslot", ldb:NewDataObject("Myslot", {
+            icon = "Interface\\MacroFrame\\MacroFrame-Icon",
+            OnClick = function()
+                f:SetShown(not f:IsShown())
+            end,
+            OnTooltipShow = function(tooltip)
+                tooltip:AddLine(L["Myslot"])
+            end,
+        }),  { hide = false })
+end)
+
 SlashCmdList["MYSLOT"] = function(msg, editbox)
     local cmd, what = msg:match("^(%S*)%s*(%S*)%s*$")
 

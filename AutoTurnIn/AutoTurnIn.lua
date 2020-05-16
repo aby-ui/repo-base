@@ -408,9 +408,12 @@ function AutoTurnIn:QUEST_DETAIL()
 end
 
 function AutoTurnIn:QUEST_ACCEPTED(event, index)
-	if AutoTurnInCharacterDB.questshare and GetQuestLogPushable() and GetNumGroupMembers() >= 1 then
-		SelectQuestLogEntry(index);
-		QuestLogPushQuest(index);
+	if AutoTurnInCharacterDB.questshare and GetNumGroupMembers() >= 1 and not IsInRaid() then
+        SelectQuestLogEntry(index)
+        if GetQuestLogPushable() then
+            if U1Message then U1Message("已自动分享任务，可在<自动交接任务>的配置选项里关闭") end
+    		QuestLogPushQuest(index)
+        end
 	end
 end
 

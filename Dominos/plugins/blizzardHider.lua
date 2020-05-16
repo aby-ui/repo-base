@@ -89,6 +89,10 @@ end
 if ReputationWatchBar then
     ReputationWatchBar:UnregisterAllEvents()
     hide(ReputationWatchBar)
+    
+    hooksecurefunc("MainMenuBar_UpdateExperienceBars", function()
+        ReputationWatchBar:Hide()
+    end)
 end
 
 if KeyRingButton then
@@ -120,7 +124,7 @@ if VerticalMultiBarsContainer then
 end
 
 -- set the stock action buttons to hidden by default
-for id = 1, 12 do
+for id = 1, NUM_ACTIONBAR_BUTTONS do
     _G[('ActionButton%d'):format(id)]:SetAttribute("statehidden", true)
     _G[('MultiBarRightButton%d'):format(id)]:SetAttribute("statehidden", true)
     _G[('MultiBarLeftButton%d'):format(id)]:SetAttribute("statehidden", true)

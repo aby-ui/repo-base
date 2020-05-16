@@ -1,5 +1,5 @@
 
-local dversion = 179
+local dversion = 180
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -3799,7 +3799,11 @@ do
 				return object, true
             end
         end
-    end
+	end
+	
+	local get_all_inuse = function(self)
+		return self.inUse;
+	end
     
     local release = function(self, object)
         for i = #self.inUse, 1, -1 do
@@ -3838,7 +3842,8 @@ do
 		end
     
     local poolMixin = {
-        Get = get,
+		Get = get,
+		GetAllInUse = get_all_inuse,
         Acquire = get,
         Release = release,
         Reset = reset,

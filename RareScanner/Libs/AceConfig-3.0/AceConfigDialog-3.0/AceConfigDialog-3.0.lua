@@ -1177,6 +1177,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 
 				elseif v.type == "select" then
 					local values = GetOptionsMemberValue("values", v, options, path, appName)
+					local sorting = GetOptionsMemberValue("sorting", v, options, path, appName) or nil
 					if v.style == "radio" then
 						local disabled = CheckOptionDisabled(v, options, path, appName)
 						local width = GetOptionsMemberValue("width",v,options,path,appName)
@@ -1210,6 +1211,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 								radio:SetWidth(width_multiplier / 2)
 							elseif width == "full" then
 								radio.width = "fill"
+							elseif type(width) == "number" then
+								radio:SetWidth(width_multiplier * width)
 							else
 								radio:SetWidth(width_multiplier)
 							end
@@ -1229,7 +1232,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							itemType = nil
 						end
 						control:SetLabel(name)
-						control:SetList(values, nil, itemType)
+						control:SetList(values, sorting, itemType)
 						local value = GetOptionsMemberValue("get",v, options, path, appName)
 						if not values[value] then
 							value = nil
@@ -1272,6 +1275,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							control:SetWidth(width_multiplier / 2)
 						elseif width == "full" then
 							control.width = "fill"
+						elseif type(width) == "number" then
+							control:SetWidth(width_multiplier * width)
 						else
 							control:SetWidth(width_multiplier)
 						end
@@ -1308,6 +1313,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 								check:SetWidth(width_multiplier / 2)
 							elseif width == "full" then
 								check.width = "fill"
+							elseif type(width) == "number" then
+								check:SetWidth(width_multiplier * width)
 							else
 								check:SetWidth(width_multiplier)
 							end
@@ -1389,6 +1396,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							control:SetWidth(width_multiplier / 2)
 						elseif width == "full" then
 							control.width = "fill"
+						elseif type(width) == "number" then
+							control:SetWidth(width_multiplier * width)
 						else
 							control:SetWidth(width_multiplier)
 						end

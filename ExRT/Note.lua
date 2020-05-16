@@ -307,7 +307,7 @@ function module.options:Load()
 	self:CreateTilte()
 
 	module.db.otherIconsAdditionalList = ExRT.isClassic and {} or {
-		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,47536,246287,0,
+		31821,62618,97462,98008,115310,64843,740,265202,108280,204150,31884,196718,15286,64901,47536,246287,33891,0,
 		47788,33206,6940,102342,114030,1022,116849,633,204018,207399,0,
 		2825,32182,80353,0,
 		106898,192077,46968,119381,179057,192058,30283,0,
@@ -891,7 +891,19 @@ function module.options:Load()
 			text = text:gsub("||c........","")
 			text = text:gsub("||r","")
 			text = text:gsub("||T.-:0||t ","")
-			text = text:gsub("%b{}","")
+			for i=1,8 do
+				text = text:gsub(module.db.iconsLocalizatedNames[i],"{rt"..i.."}")
+				for _,lang in pairs(iconsLangs) do
+					text = text:gsub(module.db["icons"..lang.."Names"][i],"{rt"..i.."}")
+				end
+			end
+			text = text:gsub("%b{}",function(p)
+				if p and p:match("^{rt%d}$") then
+					return p
+				else
+					return ""
+				end
+			end)
 			
 			local lines = {strsplit("\n", text)}
 			for i=1,#lines do

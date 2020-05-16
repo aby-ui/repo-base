@@ -1,6 +1,19 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4150
+* Raid Inspect: added current corruption level
+* Note: fixed raid markers for duplicating in chat option
+* Saving log: removed Legion raids and dungeons
+* Minor fixes
+
+v.4150-Classic
+* Visual Note: added maps for AQ20, AQ40, Naxx (by Wollie)
+* Note: fixed raid markers for duplicating in chat option
+
+v.4145-Classic
+* Visual Note: added maps for BWL (by Wollie81), MC, ZG
+
 v.4140
 * Note: added format restrictions for players class {c:Paladin}Press bubble{/c}
 * Note: added 8th group for quick name select
