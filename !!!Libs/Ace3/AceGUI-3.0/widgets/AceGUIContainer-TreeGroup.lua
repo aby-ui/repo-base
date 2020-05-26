@@ -6,8 +6,6 @@ local Type, Version = "TreeGroup", 44
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local WoW80 = select(4, GetBuildInfo()) >= 80000
-
 -- Lua APIs
 local next, pairs, ipairs, assert, type = next, pairs, ipairs, assert, type
 local math_min, math_max, floor = math.min, math.max, floor
@@ -422,8 +420,7 @@ local methods = {
 		local maxlines = (floor(((self.treeframe:GetHeight()or 0) - 20 ) / 18))
 		if maxlines <= 0 then return end
 
-		-- workaround for lag spikes on WoW 8.0
-		if WoW80 and self.frame:GetParent() == UIParent and not fromOnUpdate then
+		if self.frame:GetParent() == UIParent and not fromOnUpdate then
 			self.frame:SetScript("OnUpdate", FirstFrameUpdate)
 			return
 		end

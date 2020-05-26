@@ -34,7 +34,7 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	warnSlamSoon		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.soon:format(205862)
+	warnSlamSoon		= DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.soon:format(205862)
 })
 
 L:SetMiscLocalization({

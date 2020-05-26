@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WrathEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(36597, 34564, 15936)
 mod:SetEncounterID(2321)
 mod:SetModelID(30721)--Lich King
@@ -61,7 +61,7 @@ local timerTeleport			= mod:NewTimer(90, "TimerTeleport", "135736", nil, nil, 6)
 local timerSubmerge			= mod:NewTimer(75, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp", nil, nil, 6)
 local timerEmerge			= mod:NewTimer(65, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp", nil, nil, 6)
 --Lich King
-local timerDefileCD			= mod:NewCDTimer(32.5, 72762, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 6)
+local timerDefileCD			= mod:NewCDTimer(32.5, 72762, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 6)
 
 local seenAdds = {}
 

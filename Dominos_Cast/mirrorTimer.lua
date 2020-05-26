@@ -26,13 +26,12 @@ function MirrorTimer:OnCreate()
 
     self.timer.OnUpdate = function(timer, elapsed)
         if self.timerName then
-            timer:SetValue(GetMirrorTimerProgress(self.timerName) / 1000)
+            local value = (GetMirrorTimerProgress(self.timerName) or 0) / 1000
+            timer:SetValue(value)
         else
             timer:SetValue(0)
         end
     end
-
-    self.timer:SetCountdown(true)
 end
 
 function MirrorTimer:OnFree()
@@ -202,6 +201,7 @@ function MirrorTimer:Start(timerName, value, maxValue, scale, paused, timerLabel
     self.timerName = timerName
 
     self.timer:SetLabel(timerLabel)
+    self.timer:SetCountdown(scale < 0)
     self.timer:Start(value / 1000, 0, maxValue / 1000)
 
     local color = MirrorTimerColors[timerName]
@@ -247,6 +247,7 @@ function MirrorTimer:Update()
         return
     end
 
+    self.timer:SetCountdown(scale < 0)
     self:Start(timerName, value, maxValue, scale, paused, timerLabel)
 end
 

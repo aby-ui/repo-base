@@ -11,8 +11,8 @@ local maxid = 3000 -- highest possible value for an instanceID, current max (Bat
 
 local table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub =
   table, math, bit, string, pairs, ipairs, unpack, strsplit, time, type, wipe, tonumber, select, strsub
-local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura =
-  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, LFGGetDungeonInfoByID, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura
+local GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura =
+  GetSavedInstanceInfo, GetNumSavedInstances, GetSavedInstanceChatLink, GetLFGDungeonNumEncounters, GetLFGDungeonEncounterInfo, GetNumRandomDungeons, GetLFGRandomDungeonInfo, GetLFGDungeonInfo, GetLFGDungeonRewards, GetTime, UnitIsUnit, GetInstanceInfo, IsInInstance, SecondsToTime, GetQuestResetTime, GetGameTime, GetCurrencyInfo, GetNumGroupMembers, UnitAura
 
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local RAID_FINDER = PLAYER_DIFFICULTY3
@@ -283,6 +283,7 @@ addon.defaultDB = {
   -- Zone: string
   -- Warmode: boolean
   -- Artifact: string
+  -- Cloak: string
   -- Paragon: table
   -- oRace: string
   -- isResting: boolean
@@ -1703,6 +1704,24 @@ function addon:UpdateToonData()
     local currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
     t.Artifact = format("%d (%d%%)", currentLevel, xp / totalLevelXP  * 100)
   end
+  local cloakItemLocation = ItemLocation:CreateFromEquipmentSlot(15)
+  if cloakItemLocation then
+    local itemID = C_Item.GetItemID(cloakItemLocation)
+    if itemID == 169223 then
+      local cloakIlvl = C_Item.GetCurrentItemLevel(cloakItemLocation)
+      local cloakRank = min(15, (cloakIlvl - 468) / 2)
+      local cloakResist = GetCorruptionResistance()
+      local essenceResist = 0
+      local milestones = {119, 117, 116, 115} -- neck essence slots
+      for _, milestone in ipairs(milestones) do
+        local essence = C_AzeriteEssence.GetMilestoneEssence(milestone)
+        if essence and (essence >= 33 or essence == 16 or essence == 24) then
+          essenceResist = 10
+        end
+      end
+      t.Cloak = format(AZERITE_ESSENCE_RANK.." (|cffffdf00+%d|r)", cloakRank, cloakResist - essenceResist)
+    end
+  end
 
   t.LastSeen = time()
 end
@@ -1851,6 +1870,9 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
   if t.Artifact then
     indicatortip:AddLine(ARTIFACT_POWER, t.Artifact)
+  end
+  if t.Cloak then
+    indicatortip:AddLine(AUCTION_SUBCATEGORY_CLOAK, t.Cloak)
   end
   if t.RBGrating and t.RBGrating > 0 then
     indicatortip:AddLine(BATTLEGROUND_RATING, t.RBGrating)
@@ -2606,7 +2628,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.2" then
+  if versionString == "8.3.3-2-g851e8cd" then
     versionString = "Dev"
   end
   --@end-debug@]===]

@@ -15,7 +15,7 @@
 
     <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<EdgeSize>
 				<AbsValue val="8"/>
 			</EdgeSize>
@@ -63,7 +63,7 @@
 
     <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<EdgeSize>
 				<AbsValue val="8"/>
 			</EdgeSize>

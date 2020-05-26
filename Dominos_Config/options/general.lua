@@ -9,6 +9,7 @@ Addon:AddOptionsPanel(
     function()
         return {
             key = "general",
+            order = 1,
             name = L.General,
             button(L.EnterConfigMode) {
                 func = function()

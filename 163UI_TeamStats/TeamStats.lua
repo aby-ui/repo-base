@@ -95,15 +95,11 @@ local function SaveGearScore(name, unit, isPlayer)
             if avgLevel and avgLevel > 0 then
                 -- 计算腐蚀值
                 local slots = { Waist=6, Legs=7, Feet=8, Wrist=9, Hands=10, Finger0=11, Finger1=12, Back=15, MainHand=16, SecondaryHand=17, }
-                local c_text --cff946cd0
+                local c_text = U1GetAllCorruptionText(itemLinks)
                 local tmptable, c_resist, c_total = {}, 0, 0
                 for _, slot in pairs(slots) do
                     local link = itemLinks[slot]
                     if link then
-                        local cname, corrupt, clevel = U1GetCorruptionInfo(link)
-                        if cname then
-                            c_text = (c_text and c_text .. "\n" or "") .. (clevel and format("%d级%s", clevel, cname) or "1级专有") .. "    (+"..corrupt..")"
-                        end
                         local attrs = U1GetItemStats(link, nil, tmptable, false, classID, specID)
                         c_resist = c_resist + math.abs(attrs[10] or 0)
                         c_total = c_total + math.abs(attrs[9] or 0)

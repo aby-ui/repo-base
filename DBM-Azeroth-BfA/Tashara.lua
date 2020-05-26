@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2380, "DBM-Azeroth-BfA", 6, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 --mod:SetCreatureID(132253)--Still Unknown, 3 IDs exist, only 1 is correct
 mod:SetEncounterID(2352)
 mod:SetReCombatTime(20)
@@ -24,7 +24,7 @@ local specWarnLandSlide					= mod:NewSpecialWarningSpell(314474, "Tank", nil, ni
 local specWarnGroundShatter				= mod:NewSpecialWarningDodge(314524, nil, nil, nil, 2, 2)
 local specWarnFleshtoStone				= mod:NewSpecialWarningMoveAway(314524, nil, nil, nil, 1, 2)
 
-local timerLandslideCD					= mod:NewAITimer(46.2, 314474, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerLandslideCD					= mod:NewAITimer(46.2, 314474, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerGroundShatterCD				= mod:NewAITimer(46.2, 314524, nil, nil, nil, 3)
 local timerFleshtoStoneCD				= mod:NewAITimer(46.2, 314587, nil, nil, nil, 3)
 

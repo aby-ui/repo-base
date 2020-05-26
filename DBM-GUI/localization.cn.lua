@@ -2,7 +2,7 @@
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
 -- Mini Dragon(projecteurs@gmail.com)
--- Last update: 2020/02/07
+-- Last update: 2020/05/22
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_Translations then DBM_GUI_Translations = {} end
@@ -153,7 +153,6 @@ L.BarEndColorUI				= "结束颜色 (自定义)"
 L.Bar7Header				= "自定义计时条选项"
 L.Bar7ForceLarge			= "总是使用大型计时条"
 L.Bar7CustomInline			= "使用自定义 '!' 图标"
-L.Bar7Footer				= "(测试用计时条)"
 --Dropdown Options
 L.CBTGeneric				= "基本"
 L.CBTAdd					= "小怪入场"
@@ -185,6 +184,7 @@ L.BarSpark					= "计时条闪光"
 L.BarFlash					= "快走完时闪动"
 L.BarSort					= "按剩余时间排序"
 L.BarColorByType			= "按类着色"
+L.NoBarFade					= "使用开始/结束颜色作为长/短计时条颜色，而不是颜色渐变"
 L.BarInlineIcons			= "显示条内图标"
 L.ShortTimerText			= "使用更短的计时条文字 (当可行时)"
 L.StripTimerText			= "分离CD/下一次 计时条"
@@ -193,7 +193,7 @@ L.KeepBar2					= "(当被模组支持时)"
 L.FadeBar					= "隐藏超出技能范围的计时条"
 
 -- Tab: Spec Warn Frame
-L.Panel_SpecWarnFrame		= "特殊警报"
+L.Panel_SpecWarnFrame		= "特殊团队警报"
 L.Area_SpecWarn				= "特殊警报设置"
 L.SpecWarn_ClassColor		= "为特殊警报启用分职业着色"
 L.ShowSWarningsInChat 		= "在聊天窗口中显示特殊警报"
@@ -205,13 +205,20 @@ L.SpecWarn_Font				= "特殊警报字体"
 L.SpecWarn_FontSize			= "字体大小: %d"
 L.SpecWarn_FontColor		= "字体颜色"
 L.SpecWarn_FontType			= "选择字体"
+L.SpecWarn_Flash			= "屏幕泛光"
 L.SpecWarn_FlashRepeat		= "重复泛光"
-L.SpecWarn_FlashColor		= "泛光顏色 (%d)"
+L.SpecWarn_FlashColor		= "泛光颜色 (%d)"
 L.SpecWarn_FlashDur			= "泛光持续时间: %0.1f"
 L.SpecWarn_FlashAlpha		= "泛光透明度: %0.1f"
 L.SpecWarn_DemoButton		= "测试警报"
 L.SpecWarn_MoveMe			= "设置位置"
 L.SpecWarn_ResetMe			= "重置"
+L.SpecialWarnSoundOption	= "设置默认声音"
+L.SpecialWarnHeader1		= "类型1: 设置影响您或您的操作的普通优先级警告选项"
+L.SpecialWarnHeader2		= "类型2: 设置影响每个人的正常优先级警告选项"
+L.SpecialWarnHeader3		= "类型3: 设置高优先级警告的选项"
+L.SpecialWarnHeader4		= "类型4: 设置“高优先级”选项会避免特殊警告"
+L.SpecialWarnHeader5		= "类型5: 设置警告选项，并包含玩家姓名"
 
 -- Tab: Spoken Alerts Frame
 L.Panel_SpokenAlerts		= "语音警告"

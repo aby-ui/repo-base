@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200330141411")
+mod:SetRevision("20200517140833")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -140,13 +140,3 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnInfectedWound:Play("helpdispel")
 	end
 end
-
---[[
-function mod:SPELL_CAST_SUCCESS(args)
-	if not self.Options.Enabled then return end
-	local spellId = args.spellId
-	if spellId == 200343 then
-
-	end
-end
---]]

@@ -1582,7 +1582,8 @@ end
 local fixedRaceAtlasNames = {
 	["highmountaintauren"] = "highmountain",
 	["lightforgeddraenei"] = "lightforged",
-	["scourge"] = "undead"
+	["scourge"] = "undead",
+	["zandalaritroll"] = "zandalari",
 };
 function TMW:GetRaceIconInfo(race)
 	race = race:lower()

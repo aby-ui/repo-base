@@ -118,7 +118,10 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     --/run for i=1,12 do print(GetAchievementCriteriaInfo(14144,i),GetAchievementCriteriaInfo(14145,i)) end
     local crits_to_mapid = { 244, 245, 249, 252, 353, 250, 247, 251, 246, 248, 369, 370 }
     local crits_name_to_map_name = {}
-    local debug_unmapped = {}
+    local debug_unmapped = {
+        ["麦卡贡车间"] = true,
+        ["麦卡贡垃圾场"] = true,
+    }
     local crits, numCrits = {}, GetAchievementNumCriteria(aID15)
     hooksecurefunc("ChallengesFrame_Update", function(self)
         table.wipe(crits)

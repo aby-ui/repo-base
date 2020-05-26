@@ -795,7 +795,7 @@ private.RARE_LIST = {
 	50765, --Miasmiss
 	51057, --Weevil
 	
-	-- Rares Draenor
+	-- Rares Warlords of Draenor
 	77140, --Amaukwa
 	82899, --Ancient Blademaster
 	86213, --Aqualir
@@ -1072,8 +1072,6 @@ private.RARE_LIST = {
 	51015, --Silthide
 	50883, --Pathrunner
 	81001, --Nok-Karosh
-	
-	-- Rares Draenor 6.2
 	91871, --Argosh the Destroyer
 	92552, --Belgork
 	90884, --Bilkor the Thrower
@@ -1084,7 +1082,6 @@ private.RARE_LIST = {
 	93076, --Captain Ironbeard
 	90434, --Ceraxas
 	90519, --Cindral the Wildfire
-	90081, --Dark Summoner Rendkra
 	90887, --Dorg the Bloody
 	93028, --Driss Vile
 	90888, --Drivnul
@@ -1096,19 +1093,15 @@ private.RARE_LIST = {
 	92941, --Gorabosh
 	91695, --Grand Warlock Nethekurse
 	93057, --Grannok
-	90089, --Grobthok Skullbreaker
 	90094, --Harbormaster Korak
-	90281, --High Priest Ikzan
 	90777, --High Priest Ikzan
 	90429, --Imp-Master Valessa
-	90087, --Iron Captain Argha
 	90437, --Jax'zor
 	92517, --Krell the Serene
 	93279, --Kris'kar the Unredeemed
 	90438, --Lady Oran
 	93002, --Magwia
 	90442, --Mistress Thavra
-	90088, --Ormak Bloodbolt
 	92411, --Overlord Ma'gruth
 	92274, --Painmistress Selora
 	91374, --Podlord Wakkawam
@@ -1146,8 +1139,6 @@ private.RARE_LIST = {
 	95054, --Vengeance
 	91921, --Wyrmple
 	96235, --Xemirkol
-	
-	-- Rares Draenor 6.2.1
 	98200, --Guk
 	98199, --Pugg
 	98198, --Rukdug
@@ -1156,7 +1147,15 @@ private.RARE_LIST = {
 	98285, --Smashum Grabb
 	98408, --Fel Overseer Mudlump
 	96323, --Arachnis
-	97209, --Eraakis
+	75590, --Enormous Bullfrog
+	87029, --Giga Sentinel
+	86621, --Morphed Sentient
+	85037, --Kenos the Unraveler
+	84376, --Earthshaker Holar
+	87622, --Ogom the Mangler
+	85036, --Formless Nightmare
+	77750, --Kaavu the Crimson Claw
+	84374, --Kaga the Ironbender
 
 	-- Rares Legion	
 	110378, --Drugon the Frostblood

@@ -6,6 +6,8 @@ local hook = function()
     PaperDollFrame_UpdateCorruptedItemGlows(true)
 end
 SetOrHookScript(CharacterFrame, "OnShow", hook)
+CoreOnEvent("PLAYER_EQUIPMENT_CHANGED", hook)
+CoreOnEvent("UNIT_INVENTORY_CHANGED", function(event, unit) if(unit == "player") then hook() end end)
 local CorruptFrame = CharacterStatsPane.ItemLevelFrame.Corruption
 --if CorruptFrame then SetOrHookScript(CorruptFrame, "OnLeave", hook) end
 

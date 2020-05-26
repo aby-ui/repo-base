@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2373, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200306003610")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(157602)
 mod:SetEncounterID(2343)
 mod:SetZone()
@@ -65,7 +65,7 @@ local specWarnMutteringsofBetrayal			= mod:NewSpecialWarningStack(310563, nil, 3
 
 --mod:AddTimerLine(BOSS)
 --Drest'agath
-local timerVolatileSeedCD					= mod:NewCDCountTimer(16.6, 310277, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 3)--16.6-26.8 (boss has some channeled abilities, spell queuing)
+local timerVolatileSeedCD					= mod:NewCDCountTimer(16.6, 310277, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)--16.6-26.8 (boss has some channeled abilities, spell queuing)
 local timerEntropicCrashCD					= mod:NewCDTimer(44.3, 310329, nil, nil, nil, 2)
 local timerMutteringsofInsanityCD			= mod:NewCDTimer(50.2, 310358, nil, nil, nil, 3)--45-60, it's almost always 50.3+ but have to use the 46
 local timerUnleashedInsanity				= mod:NewCastTimer(5, 310361, nil, nil, nil, 3)

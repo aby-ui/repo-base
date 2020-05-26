@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2099, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(127490)
 mod:SetEncounterID(2103)
 mod:SetZone()
@@ -14,8 +14,6 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 257028"
 )
 
---local warnSwirlingScythe			= mod:NewTargetAnnounce(195254, 2)
-
 local specWarnCinderflame			= mod:NewSpecialWarningDodge(256955, nil, nil, nil, 2, 2)
 local specWarnFuselighter			= mod:NewSpecialWarningYou(257028, nil, nil, nil, 1, 2)
 local yellFuselighter				= mod:NewYell(257028, nil, false)
@@ -24,7 +22,7 @@ local specWarnIgnition				= mod:NewSpecialWarningSpell(256970, nil, nil, nil, 1,
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerCinderflameCD			= mod:NewCDTimer(20.5, 256955, nil, nil, nil, 3)
-local timerFuselighterCD			= mod:NewCDTimer(14.7, 257028, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON)--14.7-23, health based?
+local timerFuselighterCD			= mod:NewCDTimer(14.7, 257028, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)--14.7-23, health based?
 local timerIgnitionCD				= mod:NewCDTimer(32.7, 256970, nil, nil, nil, 5)--Health based?
 
 function mod:OnCombatStart(delay)

@@ -7,7 +7,7 @@
 
 local L = LibStub('AceLocale-3.0'):NewLocale('Dominos-Progress', 'zhCN')
 if not L then return end
-L.OneBarMode = '在一个进度条里显示神器和经验'
+L.OneBarMode = '合并能量和经验条'
 L.Progress = '进度条'
 L.Texture = '材质'
 L.Width = '宽'
@@ -28,7 +28,9 @@ L.Color_xp = '经验条颜色'
 L.Color_xp_bonus = '双倍经验颜色'
 L.Color_honor = '荣誉颜色'
 L.Color_honor_bonus = '奖励荣誉颜色'
-L.Color_artifact = '神奇能量颜色'
+L.Color_artifact = '神器能量颜色'
+L.Color_azerite = '项链能量颜色'
 
 L.Paragon = '巅峰'
 L.Azerite = '艾心能量'
+L.SkipInactiveModes = "只显示选择的进度条"

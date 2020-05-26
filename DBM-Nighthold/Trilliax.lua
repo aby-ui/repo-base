@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1731, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(104288)
 mod:SetEncounterID(1867)
 mod:SetZone()
@@ -58,7 +58,7 @@ local specWarnTidyUp				= mod:NewSpecialWarningDodge(207513, nil, nil, nil, 2, 2
 local specWarnEchoDuder				= mod:NewSpecialWarningSwitchCount(214880, nil, nil, nil, 1, 2)
 
 --General
-local timerArcaneSlashCD			= mod:NewCDTimer(9, 206641, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerArcaneSlashCD			= mod:NewCDTimer(9, 206641, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
 local timerPhaseChange				= mod:NewNextTimer(45, 155005, nil, nil, nil, 6, nil, nil, nil, 1, 4)
 --Cleaner
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13285))
@@ -68,13 +68,13 @@ local timerCleansingRageCD			= mod:NewNextTimer(10, 206820, nil, nil, nil, 2)
 --Maniac
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13281))
 local timerArcingBondsCD			= mod:NewCDTimer(5, 208924, nil, nil, nil, 3)--5.7-8
-local timerAnnihilationCD			= mod:NewCDTimer(20.3, 207630, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
+local timerAnnihilationCD			= mod:NewCDTimer(20.3, 207630, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
 --Caretaker
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(13282))
 local timerTidyUpCD					= mod:NewNextTimer(10, 207513, nil, nil, nil, 1)
 local timerSucculentFeastCD			= mod:NewNextTimer(4.5, 207502, nil, nil, nil, 3)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerEchoDuder				= mod:NewNextTimer(10, 214880, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
+local timerEchoDuder				= mod:NewNextTimer(10, 214880, nil, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
 
 mod:AddRangeFrameOption(12, 208506)
 mod:AddInfoFrameOption(214573, false)

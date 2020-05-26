@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1995", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200512201539")
+mod:SetRevision("20200524145548")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -218,7 +218,7 @@ function mod:SPELL_CAST_START(args)
 		warnCriesoftheVoid:Show()
 		--timerCriesoftheVoidCD:Start()
 	elseif spellId == 297574 then
-		specWarnHopelessness:Show(DBM_CORE_ORB)
+		specWarnHopelessness:Show(DBM_CORE_L.ORB)
 		specWarnHopelessness:Play("orbrun")--Technically not quite accurate but closest match to "find orb"
 	elseif spellId == 304251 and self:AntiSpam(3.5, 1) then--1-4 boars, 3.5 second throttle
 		warnVoidQuills:Show()

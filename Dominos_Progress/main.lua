@@ -135,6 +135,8 @@ function ProgressBarModule:AddOptionsPanel()
 
 			name = L.Progress,
 
+            order = 2,
+
 			check(L.OneBarMode) {
 				get = function()
 					return Addon.Config:OneBarMode()

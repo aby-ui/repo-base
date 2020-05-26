@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 mod:SetZone()
@@ -40,16 +40,15 @@ local specWarnAntiTresField			= mod:NewSpecialWarningMoveTo(303252, nil, nil, ni
 local yellAntiTresField				= mod:NewYell(303252)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
---local timerCannonBlastCD			= mod:NewCDTimer(7.7, 295536, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)--7.7-13.4 variation, useless timer
+--local timerCannonBlastCD			= mod:NewCDTimer(7.7, 295536, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--7.7-13.4 variation, useless timer
 local timerReinforcementRelayCD		= mod:NewCDTimer(32.8, 301351, nil, nil, nil, 1)
-local timerWreckCD					= mod:NewCDTimer(24.3, 295445, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerFulminatingZapCD			= mod:NewCDTimer(17.0, 302274, nil, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)--Assumed
-local timerFulminatingBurstCD		= mod:NewCDTimer(17.0, 303885, nil, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)--Hard Mode
+local timerWreckCD					= mod:NewCDTimer(24.3, 295445, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerFulminatingZapCD			= mod:NewCDTimer(17.0, 302274, nil, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)--Assumed
+local timerFulminatingBurstCD		= mod:NewCDTimer(17.0, 303885, nil, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)--Hard Mode
 --Stage 2
 local timerHaywire					= mod:NewBuffActiveTimer(30, 296080, nil, nil, nil, 6)
---local timerHowlingFearCD			= mod:NewAITimer(13.4, 257791, nil, "HasInterrupt", nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+--local timerHowlingFearCD			= mod:NewAITimer(13.4, 257791, nil, "HasInterrupt", nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 
---mod:AddRangeFrameOption(5, 194966)
 mod:AddNamePlateOption("NPAuraOnWalkieShockie", 296522, false)
 
 mod.vb.hard = false
@@ -126,9 +125,6 @@ end
 
 function mod:OnCombatEnd()
 	table.wipe(unitTracked)
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 	if self.Options.NPAuraOnWalkieShockie then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
@@ -198,7 +194,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnAntiTresField:Play("gathershare")
 	end
 end
---mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
@@ -211,16 +206,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 228007 and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
-		specWarnGTFO:Show()
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
---]]
-
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 150295 or cid == 155760 then--tank-buster-mk1/tank-buster-mk2
@@ -230,10 +215,3 @@ function mod:UNIT_DIED(args)
 		timerFulminatingBurstCD:Stop()
 	end
 end
-
---[[
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257939 then
-	end
-end
---]]

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1750, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(104636)
 mod:SetEncounterID(1877)
 mod:SetZone()
@@ -54,20 +54,20 @@ local yellScornedTouch				= mod:NewYell(211471)
 --Cenarius
 mod:AddTimerLine(L.name)
 local timerNightmareBramblesCD		= mod:NewCDTimer(30, 210290, nil, "-Tank", 2, 3, nil, nil, nil, 3, 4)--On for all, for now. Doesn't target melee but melee still have to be aware. Just not AS aware.
-local timerDreadThornsCD			= mod:NewCDTimer(34, 210346, nil, false, 3, 5, nil, DBM_CORE_TANK_ICON)--Optional but off by default
-local timerNightmareBlastCD			= mod:NewNextTimer(32.5, 213162, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerDreadThornsCD			= mod:NewCDTimer(34, 210346, nil, false, 3, 5, nil, DBM_CORE_L.TANK_ICON)--Optional but off by default
+local timerNightmareBlastCD			= mod:NewNextTimer(32.5, 213162, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
 local timerForcesOfNightmareCD		= mod:NewCDCountTimer(77.6, 212726, nil, nil, nil, 1, nil, nil, nil, 1, 4)--77.8-80
-local timerSpearOfNightmaresCD		= mod:NewCDTimer(18.2, 214529, nil, "Melee|Healer", 3, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
-local timerBeastsOfNightmareCD		= mod:NewCDTimer(30, 214876, nil, nil, 2, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerEntanglingNightmareCD	= mod:NewNextTimer(51, 214505, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)
+local timerSpearOfNightmaresCD		= mod:NewCDTimer(18.2, 214529, nil, "Melee|Healer", 3, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
+local timerBeastsOfNightmareCD		= mod:NewCDTimer(30, 214876, nil, nil, 2, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerEntanglingNightmareCD	= mod:NewNextTimer(51, 214505, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
 ----Malfurion
 local timerCleansingGroundCD		= mod:NewNextTimer(77, 214249, nil, nil, nil, 3)--Phase 2 version only for now. Not sure if cast more than once though?
 ----Forces of Nightmare
 mod:AddTimerLine(DBM_ADDS)
-local timerScornedTouchCD			= mod:NewCDTimer(20.7, 211471, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
-local timerTouchofLifeCD			= mod:NewCDTimer(15, 211368, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerScornedTouchCD			= mod:NewCDTimer(20.7, 211471, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerTouchofLifeCD			= mod:NewCDTimer(15, 211368, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 local timerRottenBreathCD			= mod:NewCDTimer(24.3, 211192, nil, nil, nil, 3)
-local timerDisiccatingStompCD		= mod:NewCDTimer(32, 211073, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)
+local timerDisiccatingStompCD		= mod:NewCDTimer(32, 211073, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
 
 mod:AddRangeFrameOption(8, 211471)
 mod:AddSetIconOption("SetIconOnWisps", "ej13348", false, true)

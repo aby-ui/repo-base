@@ -8,6 +8,10 @@ local ADDON_NAME, private = ...
 -- Textures
 local BACKGROUND = "Interface\\AddOns\\RareScanner\\Media\\Icons\\Overlay.blp"
 
+function RareScanner:SetUpOverlayPin(pin)
+	pin.Texture:SetTexture(BACKGROUND)
+end
+
 RSOverlayMixin = CreateFromMixins(MapCanvasPinMixin);
  
 function RSOverlayMixin:OnLoad()
@@ -20,8 +24,8 @@ function RSOverlayMixin:OnAcquired(x, y, pin)
 	-- Set attributes
 	self.pin = pin
 		
-	-- Sets texture
-	self.Texture:SetTexture(BACKGROUND)
+	-- Loads pin information
+	RareScanner:SetUpOverlayPin(self)
 	self:SetPosition(x, y);
 end
 
@@ -47,5 +51,8 @@ function RSOverlayMixin:OnMouseDown(button)
 	if (button == "RightButton") then
 		self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
 		private.dbchar.overlayActive = nil
+	
+		-- Refresh minimap
+		RareScanner:UpdateMinimap(true)
 	end
 end

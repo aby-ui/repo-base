@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("ArtifactTwins", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200418165651")
+mod:SetRevision("20200524145548")
 mod:SetCreatureID(116409, 116410)--Raest Magespear, Karam Magespear
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
@@ -31,8 +31,8 @@ local specWarnRune				= mod:NewSpecialWarningMoveTo(236460, nil, nil, nil, 1, 2)
 --Karam
 local timerRisingDragonCD		= mod:NewCDTimer(35, 235426, nil, nil, nil, 2)
 --Raest
-local timerHandCD				= mod:NewNextTimer(28, 235580, nil, nil, nil, 1, 235578, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
-local timerGraspCD				= mod:NewCDTimer(15, 235578, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHandCD				= mod:NewNextTimer(28, 235580, nil, nil, nil, 1, 235578, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerGraspCD				= mod:NewCDTimer(15, 235578, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 local timerRuneCD				= mod:NewCDTimer(35, 236460, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 
 mod.vb.phase = 1
@@ -46,9 +46,9 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 235317 then--Dismiss (cast by Raest Magespear for phase 2 and phase 4 start)
 		self.vb.phase = self.vb.phase + 1
 		if self.vb.phase == 2 then
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(2))
+			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		else--4
-			warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(4))
+			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(4))
 			timerHandCD:Stop()
 		end
 	elseif spellId == 235578 then--Grasp from Beyond
@@ -86,9 +86,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			self.vb.phase = self.vb.phase + 1
 			timerHandCD:Start(9)
 			if self.vb.phase == 3 then
-				warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(3))
+				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			else--5
-				warnPhase:Show(DBM_CORE_AUTO_ANNOUNCE_TEXTS.stage:format(5))
+				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(5))
 				timerRuneCD:Start(18.2)
 				timerRisingDragonCD:Start(25)--Only one time? need more data to be sure
 			end

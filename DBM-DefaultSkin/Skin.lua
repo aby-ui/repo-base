@@ -12,4 +12,3 @@ skin.defaults = {
 	-- Most skins probably also want this option: the default texture (the user can still change this to any other texture from any DBT skin or LibSharedMedia)
 	Texture = "Interface\\AddOns\\DBM-DefaultSkin\\textures\\default.blp",
 }
-

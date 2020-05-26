@@ -26,14 +26,32 @@
 ## DefaultState: enabled
 ## Author: Nitram and Tandanu
 ## URL: http://www.deadlybossmods.com
+
 localization.en.lua
 localization.cn.lua
 localization.tw.lua
-DBM-GUI_DropDown.xml
-DBM-GUI_Templates.xml
+
 DBM-GUI.lua
 DBM-GUI_DropDown.lua
 
+# Modules
+modules\MainFramePrototype.lua
+modules\MainFrame.lua
+modules\ListFrameButtonsPrototype.lua
+modules\PanelPrototype.lua
+
+modules\options\Options.lua
+modules\options\GeneralWarnings.lua
+modules\options\RaidWarning.lua
+modules\options\RaidWarningSpecial.lua
+modules\options\Bars.lua
+modules\options\SpokenAlerts.lua
+modules\options\EventSounds.lua
+modules\options\GeneralOptions.lua
+modules\options\Spam.lua
+modules\options\HideBlizzard.lua
+modules\options\ExtraFeatures.lua
+modules\options\Profile.lua
 
 
 ## X-Vendor: AbyUI

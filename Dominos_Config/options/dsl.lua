@@ -129,6 +129,7 @@ do
 
         return self:AddOptionsPanelOptions(options.key, {
             type = "group",
+            order = options.order,
             name = options.name,
             args = args
         })

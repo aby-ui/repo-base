@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2198, "DBM-Azeroth-BfA", 1, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(140163)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -19,7 +19,7 @@ local warnVoidNova					= mod:NewSpellAnnounce(274842, 3)
 local specWarnEndlessAbyss			= mod:NewSpecialWarningRun(274932, nil, nil, nil, 4, 2)
 
 local timerVoidNovaCD				= mod:NewCDTimer(22.3, 274842, nil, nil, nil, 2)
-local timerEndlessAbyssCD			= mod:NewCDTimer(45.7, 274932, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerEndlessAbyssCD			= mod:NewCDTimer(45.7, 274932, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 

@@ -184,9 +184,9 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 	end
 	
 	-- Completed quests
-	if (private.db.loot.filterItemsCompletedQuest and itemClassID == 12) then --quest item
-		if (not private.LOOT_QUEST_IDS[itemID] or IsQuestFlaggedCompleted(private.LOOT_QUEST_IDS[itemID])) then
-			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por ser un objeto de mision que ya esta completada (IsQuestFlaggedCompleted)")
+	if (private.db.loot.filterItemsCompletedQuest and (itemClassID == 12 or (itemClassID == 0 and itemSubClassID == 8))) then --quest item
+		if (not private.LOOT_QUEST_IDS[itemID] or C_QuestLog.IsQuestFlaggedCompleted(private.LOOT_QUEST_IDS[itemID])) then
+			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por ser un objeto de mision que ya esta completada (C_QuestLog.IsQuestFlaggedCompleted)")
 			return false
 		end
 	end

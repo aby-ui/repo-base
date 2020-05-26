@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2025, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190812033049")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(124445)
 mod:SetEncounterID(2075)
 mod:SetZone()
@@ -55,7 +55,7 @@ local yellRainofFel						= mod:NewYell(248332)
 local yellRainofFelFades				= mod:NewShortFadesYell(248332)
 --Adds
 local specWarnSwing						= mod:NewSpecialWarningDodge(250701, "MeleeDps", nil, nil, 1, 2)
---local yellBurstingDreadflame			= mod:NewPosYell(238430, DBM_CORE_AUTO_YELL_CUSTOM_POSITION)
+--local yellBurstingDreadflame			= mod:NewPosYell(238430, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION)
 --local specWarnMalignantAnguish		= mod:NewSpecialWarningInterrupt(236597, "HasInterrupt")
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 --Mythic
@@ -73,14 +73,14 @@ mod:AddTimerLine(GENERAL)
 local timerSpearofDoomCD				= mod:NewCDCountTimer(55, 248789, nil, nil, nil, 3)--55-69
 local timerRainofFelCD					= mod:NewCDCountTimer(61, 248332, nil, nil, nil, 3)
 mod:AddTimerLine(DBM_ADDS)
-local timerDestructorCD					= mod:NewTimer(90, "timerDestructor", 254769, nil, nil, 1, DBM_CORE_TANK_ICON)
-local timerObfuscatorCD					= mod:NewTimer(90, "timerObfuscator", 246753, nil, nil, 1, DBM_CORE_DAMAGE_ICON)
-local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 1, DBM_CORE_TANK_ICON)
-local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_CORE_DAMAGE_ICON)
+local timerDestructorCD					= mod:NewTimer(90, "timerDestructor", 254769, nil, nil, 1, DBM_CORE_L.TANK_ICON)
+local timerObfuscatorCD					= mod:NewTimer(90, "timerObfuscator", 246753, nil, nil, 1, DBM_CORE_L.DAMAGE_ICON)
+local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 1, DBM_CORE_L.TANK_ICON)
+local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_CORE_L.DAMAGE_ICON)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 5)
-local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_CORE_HEROIC_ICON, nil, 1, 5)
+local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 2, 5)
+local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_CORE_L.HEROIC_ICON, nil, 1, 5)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 
@@ -124,21 +124,21 @@ local heroicBats = {170, 125, 105, 105}--170, 295, 405, 510 (probably way off fo
 local mythicBats = {195, 79.9, 100, 95}--195, 275, 375, 470
 local warnedAdds = {}
 local addCountToLocationMythic = {
-	["Dest"] = {DBM_CORE_MIDDLE, DBM_CORE_TOP, DBM_CORE_BOTTOM, DBM_CORE_MIDDLE, DBM_CORE_TOP, DBM_CORE_MIDDLE},
-	["Obfu"] = {DBM_CORE_BOTTOM, DBM_CORE_MIDDLE, DBM_CORE_TOP, DBM_CORE_BOTTOM},
-	["Pur"] = {DBM_CORE_MIDDLE, DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_TOP}
+	["Dest"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.TOP, DBM_CORE_L.BOTTOM, DBM_CORE_L.MIDDLE, DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE},
+	["Obfu"] = {DBM_CORE_L.BOTTOM, DBM_CORE_L.MIDDLE, DBM_CORE_L.TOP, DBM_CORE_L.BOTTOM},
+	["Pur"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP}
 }
 local addCountToLocationHeroic = {
-	["Dest"] = {DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_TOP, DBM_CORE_BOTTOM, DBM_CORE_MIDDLE.."/"..DBM_CORE_TOP, DBM_CORE_MIDDLE.."/"..DBM_CORE_TOP},
-	["Obfu"] = {DBM_CORE_TOP, DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_BOTTOM},
-	["Pur"] = {DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_MIDDLE}
+	["Dest"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP, DBM_CORE_L.BOTTOM, DBM_CORE_L.MIDDLE.."/"..DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE.."/"..DBM_CORE_L.TOP},
+	["Obfu"] = {DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.BOTTOM},
+	["Pur"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.MIDDLE}
 }
 local addCountToLocationNormal = {
-	["Dest"] = {DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_MIDDLE, DBM_CORE_TOP, DBM_CORE_BOTTOM, DBM_CORE_TOP, DBM_CORE_MIDDLE, DBM_CORE_TOP, DBM_CORE_MIDDLE},
-	["Obfu"] = {DBM_CORE_MIDDLE}
+	["Dest"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.MIDDLE, DBM_CORE_L.TOP, DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE, DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE},
+	["Obfu"] = {DBM_CORE_L.MIDDLE}
 }
 local addCountToLocationLFR = {
-	["Dest"] = {DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_TOP, DBM_CORE_MIDDLE, DBM_CORE_BOTTOM, DBM_CORE_TOP,DBM_CORE_BOTTOM, DBM_CORE_TOP, DBM_CORE_BOTTOM}
+	["Dest"] = {DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP, DBM_CORE_L.MIDDLE, DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP,DBM_CORE_L.BOTTOM, DBM_CORE_L.TOP, DBM_CORE_L.BOTTOM}
 }
 
 local lifeForceName = DBM:GetSpellInfo(250048)
@@ -236,31 +236,31 @@ function mod:OnCombatStart(delay)
 		if self:IsMythic() then
 			timerRainofFelCD:Start(6-delay, 1)
 			--timerSpearofDoomCD:Start(35-delay, 1)
-			timerDestructorCD:Start(17, DBM_CORE_MIDDLE)
+			timerDestructorCD:Start(17, DBM_CORE_L.MIDDLE)
 			self:Schedule(30, checkForDeadDestructor, self, 5)
-			timerObfuscatorCD:Start(46, DBM_CORE_BOTTOM)
-			timerPurifierCD:Start(65.7, DBM_CORE_MIDDLE)
+			timerObfuscatorCD:Start(46, DBM_CORE_L.BOTTOM)
+			timerPurifierCD:Start(65.7, DBM_CORE_L.MIDDLE)
 			timerFinalDoomCD:Start(59.3-delay, 1)
 			timerBatsCD:Start(195, 1)
 			self:Schedule(195, startBatsStuff, self)
 		elseif self:IsHeroic() then
 			timerRainofFelCD:Start(9.3-delay, 1)
-			timerDestructorCD:Start(7, DBM_CORE_MIDDLE)
+			timerDestructorCD:Start(7, DBM_CORE_L.MIDDLE)
 			self:Schedule(27, checkForDeadDestructor, self)
 			timerSpearofDoomCD:Start(34-delay, 1)
-			timerObfuscatorCD:Start(80.6, DBM_CORE_TOP)
-			timerPurifierCD:Start(125, DBM_CORE_MIDDLE)
+			timerObfuscatorCD:Start(80.6, DBM_CORE_L.TOP)
+			timerPurifierCD:Start(125, DBM_CORE_L.MIDDLE)
 			timerBatsCD:Start(170, 1)
 			self:Schedule(170, startBatsStuff, self)
 		else--Normal
-			timerDestructorCD:Start(7, DBM_CORE_MIDDLE)
+			timerDestructorCD:Start(7, DBM_CORE_L.MIDDLE)
 			self:Schedule(27, checkForDeadDestructor, self)
 			timerObfuscatorCD:Start(174, 1)
 			--timerRainofFelCD:Start(30-delay, 1)
 		end
 	else
 		self.vb.lifeRequired = 3
-		timerDestructorCD:Start(12, DBM_CORE_MIDDLE)
+		timerDestructorCD:Start(12, DBM_CORE_L.MIDDLE)
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Show(7, "function", updateInfoFrame, false, false)

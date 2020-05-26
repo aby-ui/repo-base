@@ -185,7 +185,7 @@
 						lower_instance:InstanceAlert ("Update Available!", {[[Interface\GossipFrame\AvailableQuestIcon]], 16, 16, false}, _detalhes.update_warning_timeout, {_detalhes.OpenUpdateWindow})
 					end
 				end
-				_detalhes:Msg (Loc ["STRING_VERSION_AVAILABLE"])
+				--_detalhes:Msg (Loc ["STRING_VERSION_AVAILABLE"])
 				_detalhes.lastUpdateWarning = time()
 			end
 		end

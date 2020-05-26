@@ -167,6 +167,10 @@ function CooldownSweep:OnNewInstance(icon)
 	-- cooldown2 displays charges.
 	self.cooldown2 = CreateFrame("Cooldown", self:GetChildNameBase() .. "Cooldown2", icon, "CooldownFrameTemplate")
 	
+	-- Let OmniCC detect this as the charge cooldown frame.
+	-- https://github.com/ascott18/TellMeWhen/issues/1784
+	icon.chargeCooldown = self.cooldown2
+	
 	self:SetSkinnableComponent("Cooldown", self.cooldown)
 end
 

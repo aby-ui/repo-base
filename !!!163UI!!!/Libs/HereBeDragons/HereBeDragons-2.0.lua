@@ -1,6 +1,6 @@
 -- HereBeDragons is a data API for the World of Warcraft mapping system
 
-local MAJOR, MINOR = "HereBeDragons-2.0", 10
+local MAJOR, MINOR = "HereBeDragons-2.0", 14
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -66,11 +66,16 @@ local instanceIDOverrides = {
     [1626] = 1220, -- Suramar Withered Scenario
     [1662] = 1220, -- Suramar Invasion Scenario
     -- BfA
-    [2241] = 1,    -- Uldum N'zoth invasion
+    [2213] = 0,    -- Horrific Vision of Stormwind
+    [2241] = 1,    -- Uldum N'zoth assault
+    [2274] = 1,    -- Uldum N'zoth Minor Vision
+    [2275] = 870,  -- Vale of Eternal Blossoms N'zoth Minor Vision
 }
 
 local dynamicInstanceIDOverrides = {}
 instanceIDOverrides = setmetatable(instanceIDOverrides, { __index = dynamicInstanceIDOverrides })
+
+local function overrideInstance(instance) return instanceIDOverrides[instance] or instance end
 
 -- debug only
 HereBeDragons.___DIIDO = dynamicInstanceIDOverrides
@@ -240,10 +245,7 @@ local function applyCoordinateTransforms(x, y, instanceID)
             end
         end
     end
-    if instanceIDOverrides[instanceID] then
-        instanceID = instanceIDOverrides[instanceID]
-    end
-    return x, y, instanceID
+    return x, y, overrideInstance(instanceID)
 end
 
 local StartUpdateTimer
@@ -254,11 +256,8 @@ local function UpdateCurrentPosition(instanceCheck)
     -- try to override the instance if possible
     if instanceCheck then
         local _x, _y, instance = HereBeDragons:GetPlayerWorldPosition()
-        if instance and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not dynamicInstanceIDOverrides[instance] then
-            --dump({ uiMapID, instance, mapData[uiMapID] })
-            if mapData[uiMapID].mapType ~= 2 then -- mapData[uiMapID].instance ~= 0 then -- 进大幻象切地图会先切到东部王国,uiMapID=13
+        if instance and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not instanceIDOverrides[instance] and not instanceIDOverrides[mapData[uiMapID].instance] then
             dynamicInstanceIDOverrides[instance] = mapData[uiMapID].instance
-            end
         end
     end
 
@@ -351,7 +350,7 @@ function HereBeDragons:GetWorldCoordinatesFromZone(x, y, zone)
     local width, height, left, top = data[1], data[2], data[3], data[4]
     x, y = left - width * x, top - height * y
 
-    return x, y, data.instance
+    return x, y, overrideInstance(data.instance)
 end
 
 --- Convert local/point coordinates to world coordinates in yards. The coordinates have to come from the Azeroth World Map
@@ -412,7 +411,7 @@ end
 local function TranslateAzerothWorldMapCoordinates(self, x, y, oZone, dZone, allowOutOfBounds)
     if (oZone ~= WORLD_MAP_ID and not mapData[oZone]) or (dZone ~= WORLD_MAP_ID and not mapData[dZone]) then return nil, nil end
     -- determine the instance we're working with
-    local instance = (oZone == WORLD_MAP_ID) and mapData[dZone].instance or mapData[oZone].instance
+    local instance = overrideInstance((oZone == WORLD_MAP_ID) and mapData[dZone].instance or mapData[oZone].instance)
     if not worldMapData[instance] then return nil, nil end
 
     if oZone == WORLD_MAP_ID then
@@ -441,7 +440,7 @@ function HereBeDragons:TranslateZoneCoordinates(x, y, oZone, dZone, allowOutOfBo
     if not xCoord then return nil, nil end
 
     local data = mapData[dZone]
-    if not data or data.instance ~= instance then return nil, nil end
+    if not data or overrideInstance(data.instance) ~= instance then return nil, nil end
 
     return self:GetZoneCoordinatesFromWorld(xCoord, yCoord, dZone, allowOutOfBounds)
 end
@@ -514,7 +513,7 @@ end
 function HereBeDragons:GetUnitWorldPosition(unitId)
     -- get the current position
     local y, x, _z, instanceID = UnitPosition(unitId)
-    if not x or not y then return nil, nil, instanceIDOverrides[instanceID] or instanceID end
+    if not x or not y then return nil, nil, overrideInstance(instanceID) end
 
     -- return transformed coordinates
     return applyCoordinateTransforms(x, y, instanceID)
@@ -526,7 +525,7 @@ end
 function HereBeDragons:GetPlayerWorldPosition()
     -- get the current position
     local y, x, _z, instanceID = UnitPosition("player")
-    if not x or not y then return nil, nil, instanceIDOverrides[instanceID] or instanceID end
+    if not x or not y then return nil, nil, overrideInstance(instanceID) end
 
     -- return transformed coordinates
     return applyCoordinateTransforms(x, y, instanceID)

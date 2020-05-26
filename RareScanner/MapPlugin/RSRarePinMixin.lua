@@ -42,44 +42,35 @@ local RED_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedStar
 local PINK_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkStar.blp"
 local BLUE_EVENT_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueStar.blp"
 
-RSRarePinMixin = CreateFromMixins(MapCanvasPinMixin);
- 
-function RSRarePinMixin:OnLoad()
-	self:SetScalingLimits(1, 0.75, 1.0);
-end
-
-function RSRarePinMixin:OnAcquired(npcID, npcInfo)
-	self:UseFrameLevelType("PIN_FRAME_LEVEL_VIGNETTE", self:GetMap():GetNumActivePinsByTemplate("RSRarePinTemplate"));
+function RareScanner:SetUpMapPin(pin, npcID, npcInfo)
+	pin.npcID = npcID
+	pin.foundTime = npcInfo.foundTime
+	pin.x = npcInfo.coordX
+	pin.y = npcInfo.coordY
+	pin.mapID = npcInfo.mapID
+	pin.isNpc = npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE
+	pin.isContainer = npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE
+	pin.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE
+	pin.notDiscovered = npcInfo.notDiscovered
 	
-	-- Loads information
-	self.npcID = npcID
-	self.foundTime = npcInfo.foundTime
-	self.x = npcInfo.coordX
-	self.y = npcInfo.coordY
-	self.mapID = npcInfo.mapID
-	self.isNpc = npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE
-	self.isContainer = npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE
-	self.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE
-	self.notDiscovered = npcInfo.notDiscovered
-	
-	if (self.isNpc) then
-		self.name = RareScanner:GetNpcName(npcID)
-	elseif (self.isContainer) then
-		self.name = RareScanner:GetObjectName(npcID) or AL["CONTAINER"]
-	elseif (self.isEvent) then
-		self.name = RareScanner:GetEventName(npcID) or AL["EVENT"]
+	if (pin.isNpc) then
+		pin.name = RareScanner:GetNpcName(npcID)
+	elseif (pin.isContainer) then
+		pin.name = RareScanner:GetObjectName(npcID) or AL["CONTAINER"]
+	elseif (pin.isEvent) then
+		pin.name = RareScanner:GetEventName(npcID) or AL["EVENT"]
 	end
 	
 	-- Looks for achievement container
-	self.achievementLink = nil
+	pin.achievementLink = nil
 	if (private.ACHIEVEMENT_ZONE_IDS[npcInfo.mapID]) then
 		for i, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[npcInfo.mapID]) do
 			local _, _, _, completed, _, _, _, _, _, _, _, _, wasEarnedByMe, _ = GetAchievementInfo(achievementID)
 			if (not completed or not wasEarnedByMe) then
 				for j, ID in ipairs(private.ACHIEVEMENT_TARGET_IDS[achievementID]) do
-					if (ID == self.npcID) then
+					if (ID == pin.npcID) then
 						local achievementLink = GetAchievementLink(achievementID)
-						self.achievementLink = achievementLink
+						pin.achievementLink = achievementLink
 						break;
 					end
 				end
@@ -92,58 +83,73 @@ function RSRarePinMixin:OnAcquired(npcID, npcInfo)
 	if (atlasName == RareScanner.NPC_VIGNETTE or atlasName == RareScanner.NPC_VIGNETTE_ELITE) then
 		atlasName = RareScanner.NPC_LEGION_VIGNETTE;
 	end
-	self.Texture:SetScale(private.db.map.scale)
 	
 	-- Sets texture colours
-	if (self.isNpc and private.dbchar.rares_killed[npcID]) then
-		self.Texture:SetTexture(BLUE_NPC_TEXTURE)
-	elseif (self.isContainer and private.dbchar.containers_opened[npcID]) then
-		self.Texture:SetTexture(BLUE_CONTAINER_TEXTURE)
-	elseif (self.isEvent and private.dbchar.events_completed[npcID]) then
-		self.Texture:SetTexture(BLUE_EVENT_TEXTURE)
+	if (pin.isNpc and private.dbchar.rares_killed[npcID]) then
+		pin.Texture:SetTexture(BLUE_NPC_TEXTURE)
+	elseif (pin.isContainer and private.dbchar.containers_opened[npcID]) then
+		pin.Texture:SetTexture(BLUE_CONTAINER_TEXTURE)
+	elseif (pin.isEvent and private.dbchar.events_completed[npcID]) then
+		pin.Texture:SetTexture(BLUE_EVENT_TEXTURE)
 	elseif (private.dbglobal.recentlySeen and private.dbglobal.recentlySeen[npcID]) then
-		if (self.isNpc) then
-			self.Texture:SetTexture(PINK_NPC_TEXTURE)
-		elseif (self.isContainer) then
-			self.Texture:SetTexture(PINK_CONTAINER_TEXTURE)
+		if (pin.isNpc) then
+			pin.Texture:SetTexture(PINK_NPC_TEXTURE)
+		elseif (pin.isContainer) then
+			pin.Texture:SetTexture(PINK_CONTAINER_TEXTURE)
 		else
-			self.Texture:SetTexture(PINK_EVENT_TEXTURE)
+			pin.Texture:SetTexture(PINK_EVENT_TEXTURE)
 		end
 	else
-		if (self.notDiscovered and not self.achievementLink) then
-			if (self.isNpc) then
-				self.Texture:SetTexture(RED_NPC_TEXTURE)
-			elseif (self.isContainer) then
-				self.Texture:SetTexture(RED_CONTAINER_TEXTURE)
+		if (pin.notDiscovered and not pin.achievementLink) then
+			if (pin.isNpc) then
+				pin.Texture:SetTexture(RED_NPC_TEXTURE)
+			elseif (pin.isContainer) then
+				pin.Texture:SetTexture(RED_CONTAINER_TEXTURE)
 			else
-				self.Texture:SetTexture(RED_EVENT_TEXTURE)
+				pin.Texture:SetTexture(RED_EVENT_TEXTURE)
 			end
-		elseif (self.notDiscovered and self.achievementLink) then
-			if (self.isNpc) then
-				self.Texture:SetTexture(YELLOW_NPC_TEXTURE)
-			elseif (self.isContainer) then
-				self.Texture:SetTexture(YELLOW_CONTAINER_TEXTURE)
+		elseif (pin.notDiscovered and pin.achievementLink) then
+			if (pin.isNpc) then
+				pin.Texture:SetTexture(YELLOW_NPC_TEXTURE)
+			elseif (pin.isContainer) then
+				pin.Texture:SetTexture(YELLOW_CONTAINER_TEXTURE)
 			else
-				self.Texture:SetTexture(YELLOW_EVENT_TEXTURE)
+				pin.Texture:SetTexture(YELLOW_EVENT_TEXTURE)
 			end
-		elseif (self.achievementLink) then
-			if (self.isNpc) then
-				self.Texture:SetTexture(GREEN_NPC_TEXTURE)
-			elseif (self.isContainer) then
-				self.Texture:SetTexture(GREEN_CONTAINER_TEXTURE)
+		elseif (pin.achievementLink) then
+			if (pin.isNpc) then
+				pin.Texture:SetTexture(GREEN_NPC_TEXTURE)
+			elseif (pin.isContainer) then
+				pin.Texture:SetTexture(GREEN_CONTAINER_TEXTURE)
 			else
-				self.Texture:SetTexture(GREN_EVENT_TEXTURE)
+				pin.Texture:SetTexture(GREN_EVENT_TEXTURE)
 			end
 		else
-			if (self.isNpc) then
-				self.Texture:SetTexture(NORMAL_NPC_TEXTURE)
-			elseif (self.isContainer) then
-				self.Texture:SetTexture(NORMAL_CONTAINER_TEXTURE)
+			if (pin.isNpc) then
+				pin.Texture:SetTexture(NORMAL_NPC_TEXTURE)
+			elseif (pin.isContainer) then
+				pin.Texture:SetTexture(NORMAL_CONTAINER_TEXTURE)
 			else
-				self.Texture:SetTexture(NORMAL_EVENT_TEXTURE)
+				pin.Texture:SetTexture(NORMAL_EVENT_TEXTURE)
 			end
 		end
 	end
+end
+
+RSRarePinMixin = CreateFromMixins(MapCanvasPinMixin);
+ 
+function RSRarePinMixin:OnLoad()
+	self:SetScalingLimits(1, 0.75, 1.0);
+end
+
+function RSRarePinMixin:OnAcquired(npcID, npcInfo)
+	self:UseFrameLevelType("PIN_FRAME_LEVEL_VIGNETTE", self:GetMap():GetNumActivePinsByTemplate("RSRarePinTemplate"));
+	
+	-- Loads pin information
+	RareScanner:SetUpMapPin(self, npcID, npcInfo)
+	
+	-- Adds extra setup for World Map pins
+	self.Texture:SetScale(private.db.map.scale)
 	self.HighlightTexture:SetAtlas(atlasName, true);
 	self:SetPosition(self.x, self.y);
 end
@@ -406,6 +412,9 @@ function RSRarePinMixin:OnMouseDown(button)
 				self:ShowOverlay()
 			end
 		end
+		
+		-- Refresh minimap
+		RareScanner:UpdateMinimap(true)
 	end
 end
 

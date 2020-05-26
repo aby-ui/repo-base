@@ -1,6 +1,7 @@
 local LOCALES = {
     PATTERN_INFO = "Level%d %s",
     UNKNOWN = "Special",
+    special = "Special",
 
     passive_crit_dam = "CritDam",
     passive_mastery = "MasteryB",
@@ -29,12 +30,13 @@ if GetLocale():sub(1,2) == "zh" then
     LOCALES = {
         PATTERN_INFO = "%d级%s",
         UNKNOWN = "其他或专有",
+        special = "专有",
 
         passive_crit_dam = "爆伤",
-        passive_mastery = "精通比",
-        passive_haste = "急速比",
-        passive_versatility = "全能比",
-        passive_crit = "暴击比",
+        passive_mastery = "渠精",
+        passive_haste = "渠急",
+        passive_versatility = "渠全",
+        passive_crit = "渠暴",
         passive_avoidance = "闪避",
         passive_leech = "吸血",
 
@@ -200,15 +202,88 @@ function U1GetCorruptionInfo(itemString)
   affixes = { strsplit(":", affixes, num + 1) }
   for i=1, num do
     local info = data.affixes[tonumber(affixes[i])]
-    if info then return LOCALES[info.key], info.corrupt, info.level, data.corrupts[info.key] end
+    if info then return LOCALES[info.key], info.corrupt, info.level, info.key, data.corrupts[info.key] end
   end
   return LOCALES.UNKNOWN, GetItemStats(itemString).ITEM_MOD_CORRUPTION
+end
+
+local wipe, strrep = wipe, strrep
+local slots = { Waist=6, Legs=7, Feet=8, Wrist=9, Hands=10, Finger0=11, Finger1=12, MainHand=16, SecondaryHand=17, }
+local tmpInfo = {}
+local tmpKeys = {}
+function U1GetAllCorruptionText(slotLinks)
+    wipe(tmpInfo)
+    local count_all, count_corrupted = 0, 0
+    for _, slot in pairs(slots) do
+        local link = slotLinks[slot]
+        if link then
+            count_all = count_all + 1
+            local name, corrupt, level, key = U1GetCorruptionInfo(link)
+            if name then
+                count_corrupted = count_corrupted + 1
+                key = key or "special"
+                level = level or 1
+                tmpInfo[key] = (tmpInfo[key] or 0) + (level == 1 and 1 or level == 2 and 100 or level == 3 and 10000 or 1000000)
+            end
+        end
+    end
+
+    wipe(tmpKeys)
+    for k, _ in pairs(tmpInfo) do tmpKeys[#tmpKeys+1] = k end
+    if #tmpKeys == 0 then return "" end
+    table.sort(tmpKeys)
+
+    local color = "|cff946cd0" --"|cffA377E4"
+    local text = ""
+    for _, key in ipairs(tmpKeys) do
+        local info = tmpInfo[key]
+        local lv1 = info % 100; info = math.floor(info / 100)
+        local lv2 = info % 100; info = math.floor(info / 100)
+        local lv3 = info % 100;
+        local line = (LOCALES[key] or LOCALES.UNKNOWN)
+
+        local total
+        if key:sub(1, #"passive_") == "passive_" then
+            -- 渠精 34% (3+3+3+2+2+1)
+            if key == "passive_crit_dam" then
+                total = (2 * lv1 + 3 * lv2 + 4 * lv3) .. "%"
+            elseif key == "passive_avoidance" then
+                total = (8 * lv1 + 12 * lv2 + 16 * lv3) .. "%"
+            elseif key == "passive_leech" then
+                total = (3 * lv1 + 5 * lv2 + 8 * lv3) .. "%"
+            else
+                total = (6 * lv1 + 9 * lv2 + 12 * lv3) .. "%"
+            end
+        elseif key == "bleed" or key == "twilight" or key == "clarity" or key == "star" or key == "twisted" or key == "echo" then
+            total = (1 * lv1 + 2 * lv2 + 3 * lv3) .. "级"
+        elseif key == "truth" then
+            total = (30 * lv1 + 50 * lv2) .. "%"
+        elseif key == "ritual" then
+            total = "" .. (14 * lv1 + 33 * lv2 + 63 * lv3)
+        elseif key == "proc_haste" then
+            total = "" .. (546 * lv1 + 728 * lv2 + 1275 * lv3)
+        elseif key == "proc_crit" then
+            total = "" .. (31 * lv1 + 41 * lv2 + 72 * lv3)
+        elseif key == "proc_mastery" then
+            total = "" .. (392 * lv1 + 523 * lv2 + 915 * lv3)
+        elseif key == "proc_versatility" then
+            total = "" .. (343 * lv1 + 458 * lv2 + 801 * lv3)
+        end
+        if total then line = line .. " |r|c0000ff00" .. total .. "|r" .. color end
+
+        line = line .. " (" ..  strrep("3+", lv3 or 0) .. strrep("2+", lv2 or 0) .. strrep("1+", lv1 or 0)
+        line = line:sub(1, -2) .. ")"
+
+        text = (#text > 0 and text .."\n" or "") .. line
+    end
+
+    return color .. text .. "|r", count_all, count_corrupted
 end
 
 local pattern = "^"..ITEM_CORRUPTION_BONUS_STAT:gsub("%+%%d", "%%+[0-9]+").."$" --"+%d 腐蚀"
 local hookTooltipSetItem = function(self, link)
     link = select(2, self:GetItem())
-    local name, corrupt, level, levels = U1GetCorruptionInfo(link)
+    local name, corrupt, level, key, levels = U1GetCorruptionInfo(link)
     local tooltipName = self:GetName()
     if name then
         for i = 5, 20 do

@@ -1,3 +1,5 @@
+--NOBODY, except Keseva touches this file.
+
 -- globals
 DBM.Nameplate = {}
 -- locals

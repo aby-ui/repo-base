@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2082, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(122967)
 mod:SetEncounterID(2084)
 mod:SetZone()
@@ -23,7 +23,7 @@ local specWarnClaws					= mod:NewSpecialWarningDefensive(255579, "Tank", nil, ni
 local specWarnClawsDispel			= mod:NewSpecialWarningDispel(255579, "MagicDispeller", nil, nil, 1, 2)
 
 local timerTransfusionCD			= mod:NewNextTimer(34, 255577, nil, nil, nil, 5)
-local timerGildedClawsCD			= mod:NewCDTimer(34, 255579, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerGildedClawsCD			= mod:NewCDTimer(34, 255579, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerMoltenGoldCD				= mod:NewNextTimer(34, 255591, nil, nil, nil, 3)
 
 local taintedBlood = DBM:GetSpellInfo(255558)

@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------
 local LibStub = _G.LibStub
 local RareScanner = LibStub("AceAddon-3.0"):GetAddon("RareScanner")
+local HBD_Pins = LibStub("HereBeDragons-Pins-2.0")
 local ADDON_NAME, private = ...
 
 -- Locales
@@ -12,36 +13,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 local ETERNAL_DEATH = -1
 local ETERNAL_COLLECTED = -1
 
-RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);
-
-function RareScannerDataProviderMixin:OnAdded(mapCanvas)
-	MapCanvasDataProviderMixin.OnAdded(self, mapCanvas);
-	self:InitializeAllTrackingTables();
-end
-
-function RareScannerDataProviderMixin:OnShow()
-
-end
- 
-function RareScannerDataProviderMixin:OnHide()
-	self:RemoveAllData()
-end
- 
-function RareScannerDataProviderMixin:OnEvent(event, ...)
-
-end
- 
-function RareScannerDataProviderMixin:RemoveAllData()
-	self:GetMap():RemoveAllPinsByTemplate("RSRarePinTemplate");
-	self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
-	self:InitializeAllTrackingTables();
-end
- 
-function RareScannerDataProviderMixin:InitializeAllTrackingTables()
-	self.rareNpcToPins = {};
-end
-
-local function AddNotDiscoveredIcons(mixin, entities, mapID, atlasName)
+function RareScanner:AddNotDiscoveredIcons(entities, mapID, atlasName, dataProviderMixin)
 	if (private.db.map.displayNotDiscoveredMapIcons and entities[mapID]) then
 		-- Skip if old expansion
 		if (not private.db.map.displayOldNotDiscoveredMapIcons) then
@@ -77,22 +49,13 @@ local function AddNotDiscoveredIcons(mixin, entities, mapID, atlasName)
 				npcInfo.mapID = mapID
 				npcInfo.atlasName = atlasName
 				npcInfo.notDiscovered = true
-				mixin:AddPin(npcID, npcInfo, mapID);
+				self:AddPin(npcID, npcInfo, mapID, dataProviderMixin);
 			end
 		end
 	end
 end
- 
-function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
-	self:RemoveAllData()
 
-	if (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) then
-		return
-	end
-	
-	local mapID = self:GetMap():GetMapID();
-	RareScanner:PrintDebugMessage("DEBUG: MAPID actual "..mapID.." ARTID actual "..C_Map.GetMapArtID(mapID))
-
+function RareScanner:RefreshAllData(mapID, dataProviderMixin)
 	-- don't show if map filtered
 	if (private.db.general.filteredZones[mapID] ~= false) then
 		-- Extract world quest in the area
@@ -112,11 +75,11 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			for npcID, npcInfo in pairs (private.dbglobal.rares_found) do
 				if (npcInfo.atlasName ~= RareScanner.NPC_LEGION_VIGNETTE) then
 					if (private.db.map.displayNpcIcons and npcInfo.atlasName == RareScanner.NPC_VIGNETTE) then
-						self:AddPin(npcID, npcInfo, mapID);
+						self:AddPin(npcID, npcInfo, mapID, dataProviderMixin);
 					elseif (private.db.map.displayContainerIcons and npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE) then
-						self:AddPin(npcID, npcInfo, mapID);
+						self:AddPin(npcID, npcInfo, mapID, dataProviderMixin);
 					elseif (private.db.map.displayEventIcons and npcInfo.atlasName == RareScanner.EVENT_VIGNETTE) then
-						self:AddPin(npcID, npcInfo, mapID);
+						self:AddPin(npcID, npcInfo, mapID, dataProviderMixin);
 					end
 				end
 			end
@@ -124,24 +87,21 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 		
 		-- Show pins in our database not discovered by the player
 		if (private.db.map.displayNpcIcons) then
-			AddNotDiscoveredIcons(self, private.RARES_NOT_DISCOVERED, mapID, RareScanner.NPC_VIGNETTE)
+			self:AddNotDiscoveredIcons(private.RARES_NOT_DISCOVERED, mapID, RareScanner.NPC_VIGNETTE, dataProviderMixin)
 		end
 
 		if (private.db.map.displayContainerIcons) then
-			AddNotDiscoveredIcons(self, private.CONTAINERS_NOT_DISCOVERED, mapID, RareScanner.CONTAINER_VIGNETTE)
+			self:AddNotDiscoveredIcons(private.CONTAINERS_NOT_DISCOVERED, mapID, RareScanner.CONTAINER_VIGNETTE, dataProviderMixin)
 		end
 		
 		if (private.db.map.displayEventIcons) then
-			AddNotDiscoveredIcons(self, private.EVENTS_NOT_DISCOVERED, mapID, RareScanner.EVENT_VIGNETTE)
+			self:AddNotDiscoveredIcons(private.EVENTS_NOT_DISCOVERED, mapID, RareScanner.EVENT_VIGNETTE, dataProviderMixin)
 		end
 	end
 end
+
  
-function RareScannerDataProviderMixin:OnMapChanged()
-	self:RefreshAllData();
-end
- 
-function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
+function RareScanner:AddPin(npcID, npcInfo, mapID, dataProviderMixin)
 	local npcInfoBak = nil
 	
 	-- If its an npc that can show up in more than one place, we adjust its data so it displays in other available places
@@ -184,7 +144,7 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 	if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].zoneQuestId and RS_tContains(C_QuestLog.GetActiveThreatMaps(), mapID)) then
 		local active = false
 		for i, questID in ipairs(private.ZONE_IDS[npcID].zoneQuestId) do
-			if (C_TaskQuest.IsActive(questID) or IsQuestFlaggedCompleted(questID)) then
+			if (C_TaskQuest.IsActive(questID) or C_QuestLog.IsQuestFlaggedCompleted(questID)) then
 				active = true
 				break
 			end
@@ -312,12 +272,25 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 		--RareScanner:PrintDebugMessage("DEBUG: La hora de ultimo avistamiento estaba corrupta, arreglado!")
 	end
 
-	local pin = self:GetMap():AcquirePin("RSRarePinTemplate", npcID, npcInfo);
-	self.rareNpcToPins[npcID] = pin;
-	
-	-- Adds overlay if active
-	if (private.dbchar.overlayActive and private.dbchar.overlayActive == npcID) then
-		pin:ShowOverlay()
+	-- If WorldMap pin
+	if (dataProviderMixin) then
+		local pin = dataProviderMixin:GetMap():AcquirePin("RSRarePinTemplate", npcID, npcInfo);
+		
+		-- Adds overlay if active
+		if (private.dbchar.overlayActive and private.dbchar.overlayActive == npcID) then
+			pin:ShowOverlay()
+		end
+	-- If MiniMap pin
+	else
+		local pin = self.pinFramesPool:Acquire()
+		RareScanner:SetUpMapPin(pin, npcID, npcInfo)
+		pin:SetScale(0.7)
+		HBD_Pins:AddMinimapIconMap(self, pin, npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), false, false)
+				
+		-- Adds overlay if active
+		if (private.dbchar.overlayActive and private.dbchar.overlayActive == npcID) then
+			pin:ShowOverlay()
+		end
 	end
 	
 	-- Avoids overriding the recorded value
@@ -330,4 +303,51 @@ function RareScannerDataProviderMixin:AddPin(npcID, npcInfo, mapID)
 	end
 	
 	return true
+end
+
+RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);
+
+function RareScannerDataProviderMixin:OnAdded(mapCanvas)
+	MapCanvasDataProviderMixin.OnAdded(self, mapCanvas);
+	self:InitializeAllTrackingTables();
+end
+
+function RareScannerDataProviderMixin:OnShow()
+
+end
+ 
+function RareScannerDataProviderMixin:OnHide()
+	self:RemoveAllData()
+end
+ 
+function RareScannerDataProviderMixin:OnEvent(event, ...)
+
+end
+ 
+function RareScannerDataProviderMixin:RemoveAllData()
+	self:GetMap():RemoveAllPinsByTemplate("RSRarePinTemplate");
+	self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
+	self:InitializeAllTrackingTables();
+end
+ 
+function RareScannerDataProviderMixin:InitializeAllTrackingTables()
+
+end
+ 
+function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
+	self:RemoveAllData()
+
+	if (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) then
+		return
+	end
+	
+	local mapID = self:GetMap():GetMapID();
+	RareScanner:PrintDebugMessage("DEBUG: MAPID actual "..mapID.." ARTID actual "..C_Map.GetMapArtID(mapID))
+
+	-- 
+	RareScanner:RefreshAllData(mapID, self)
+end
+ 
+function RareScannerDataProviderMixin:OnMapChanged()
+	self:RefreshAllData();
 end

@@ -423,7 +423,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
 		if v then
             --163ui Add Tooltip
             if not masks[k] then
-                masks[k] = WW:Frame("$parentM"..k, frame):Size(120, select(2, text:GetFont())):un() --:CreateTexture():SetColorTexture(0,1,0,0.5):ALL():up():un();
+                masks[k] = WW:Frame("$parentM"..k, frame):Size(160, select(2, text:GetFont())):un() --:CreateTexture():SetColorTexture(0,1,0,0.5):ALL():up():un();
                 masks[k].id = k
                 masks[k]:SetScript("OnEnter", GearStatsSummary_MaskOnEnter)
                 masks[k]:SetScript("OnLeave", GearStatsSummary_MaskOnLeave)
@@ -508,23 +508,18 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     local greenTotal = 0
     for i=1, 4 do greenTotal = greenTotal + (stats_total[i] or 0) end
     tiptext = tiptext .. "\n|cffffd200绿字总和:|r " .. GREEN_FONT_COLOR_CODE .. greenTotal .. "|r"
-    for i=1, 4 do if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "") end end
-    if not inspecting then tiptext = tiptext .. "\n|cffffd200精通系数:|r " .. YELLOW_FONT_COLOR_CODE .. format("%.2f", select(2, GetMasteryEffect())) .. "|r" end
+    for i=1, 4 do if stats_total[i] then tiptext = tiptext .. "\n |cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "") end end
+    if not inspecting then tiptext = tiptext .. "\n |cffffd200精通系数:|r " .. YELLOW_FONT_COLOR_CODE .. format("%.2f", select(2, GetMasteryEffect())) .. "|r" end
     --8.3 CORRUPTION
-    --local i=10 if stats_total[i] then tiptext = tiptext .. "\n|cffffd200"..U1ATTRSNAME[i]..":|r"..YELLOW_FONT_COLOR_CODE .." +"..format("%d",stats_total[i]).."|r (未计精华)" end
     local corruption_resistence = (stats_total[10] or 0) + 10
-    local i=9 if stats_total[i] then tiptext = tiptext .. "\n|cff946cd0".."合计腐蚀"..":|r".."|cff946cd0".." +"..format("%-5d", max(0, stats_total[i] - corruption_resistence))..format(" (+%d)", stats_total[i]).."|r" end
-    if U1GetCorruptionInfo then
-        local slots = { Waist=6, Legs=7, Feet=8, Wrist=9, Hands=10, Finger0=11, Finger1=12, MainHand=16, SecondaryHand=17, }
-        for _, slot in pairs(slots) do
-            local link = sum["ItemLink"][slot]
-            if link then
-                local name, corrupt, level = U1GetCorruptionInfo(link)
-                if name then
-                    tiptext = tiptext .. "\n|cff946cd0 - ".. (level and format("%d级%s", level, name) or "1级专有") .. "    (+"..corrupt..")|r"
-                end
-            end
-        end
+    if not inspecting then stats_total[9], corruption_resistence = GetCorruption(), GetCorruptionResistance() end
+    local total_corrupt = max(0, (stats_total[9] or 0) - corruption_resistence)
+    local cccode = "|cff946cd0"
+    local tccode = total_corrupt > 59 and "|cffff0000" or total_corrupt > 39 and "|cffFF6CD0" or cccode
+    local i=9 if stats_total[i] then tiptext = tiptext .. "\n"..cccode.."合计腐蚀"..":".." +"..format("|r"..tccode.."%d|r"..cccode, total_corrupt)..format(" (+%d)", stats_total[i], corruption_resistence).."|r" end
+    if U1GetAllCorruptionText then
+        local corrupt_text, c_all, c_corrupt = U1GetAllCorruptionText(sum["ItemLink"])
+        tiptext = tiptext .. format(" %d/%d", c_corrupt, c_all) .. "\n " .. U1GetAllCorruptionText(sum["ItemLink"]):gsub("\n", "\n ")
     end
 	GearStatsSummary_SetFrameText(frame, tiptitle, tiptext, unit);
 	frame:Show();

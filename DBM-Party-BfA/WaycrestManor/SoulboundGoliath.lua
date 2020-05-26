@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2126, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(260551)
 mod:SetEncounterID(2114)
 mod:SetZone()
@@ -17,8 +17,6 @@ mod:RegisterEventsInCombat(
 
 --ability.id = 260508 and type = "begincast" or ability.id = 260551 and type = "cast" or ability.id = 260541
 --TODO, review wildfire/burning bush stuff for heroic+ to see if blizzards warning is good enough.
---local warnSwirlingScythe			= mod:NewTargetAnnounce(195254, 2)
-
 local specWarnCrush					= mod:NewSpecialWarningDefensive(260508, "Tank", nil, nil, 1, 2)
 local specWarnThorns				= mod:NewSpecialWarningSwitch(267907, "Dps", nil, nil, 1, 2)
 local yellThorns					= mod:NewYell(267907)
@@ -26,8 +24,8 @@ local specWarnSoulHarvest			= mod:NewSpecialWarningMoveTo(260512, "Tank", nil, n
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --Timers subject to delays if boss gets stunned by fire
-local timerCrushCD					= mod:NewCDTimer(15, 260508, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--15 after last cast FINISHES
-local timerThornsCD					= mod:NewCDTimer(21.8, 267907, nil, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)
+local timerCrushCD					= mod:NewCDTimer(15, 260508, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--15 after last cast FINISHES
+local timerThornsCD					= mod:NewCDTimer(21.8, 267907, nil, nil, nil, 3, nil, DBM_CORE_L.DAMAGE_ICON)
 
 mod.vb.crushCount = 0
 

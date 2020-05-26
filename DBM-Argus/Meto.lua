@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2012, "DBM-Argus", nil, 959)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(124592)
 --mod:SetEncounterID(1952)--Does not have one
 --mod:SetReCombatTime(20)
@@ -27,9 +27,9 @@ local specWarnSowOther			= mod:NewSpecialWarningTaunt(247495, nil, nil, nil, 1, 
 local specSeedsofChaos			= mod:NewSpecialWarningSpell(247585, "-Tank", nil, nil, 1, 2)
 --local specWarnDeathField		= mod:NewSpecialWarningDodge(247632, nil, nil, nil, 2, 2)
 
-local timerReapCD				= mod:NewCDTimer(18.7, 247492, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--18-25
-local timerSowCD				= mod:NewCDTimer(13.4, 247495, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--13-19
-local timerSeedsofChaosCD		= mod:NewCDTimer(29.2, 247585, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
+local timerReapCD				= mod:NewCDTimer(18.7, 247492, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--18-25
+local timerSowCD				= mod:NewCDTimer(13.4, 247495, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--13-19
+local timerSeedsofChaosCD		= mod:NewCDTimer(29.2, 247585, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
 local timerDeathFieldCD			= mod:NewCDTimer(13.3, 247632, nil, nil, nil, 3)
 
 mod:AddReadyCheckOption(49198, false)

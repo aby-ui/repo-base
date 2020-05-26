@@ -14,7 +14,6 @@
 ## DefaultState: enabled
 ## X-Website: http://www.deadlybossmods.com
 
-DBT-Template.xml
 DBT.lua
 
 ## X-Vendor: AbyUI

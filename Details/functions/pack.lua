@@ -1,3 +1,1 @@
-
-
-local _detalhes = 		_G._detalhes
+local Details = Details

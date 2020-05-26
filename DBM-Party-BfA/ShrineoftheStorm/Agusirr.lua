@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2153, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(134056)--134828 split forms
 mod:SetEncounterID(2130)
 mod:SetZone()
@@ -21,12 +21,12 @@ local warnEruptingWaters			= mod:NewSpellAnnounce(264903, 2, nil, nil, nil, nil,
 
 local specWarnSurgingRush			= mod:NewSpecialWarningDodge(264101, nil, nil, nil, 1, 2)
 local specWarnChokingBrine			= mod:NewSpecialWarningDodge(264560, nil, nil, nil, 1, 2)
-local yellChokingBrine				= mod:NewFadesYell(264560, DBM_CORE_AUTO_YELL_CUSTOM_FADE)
+local yellChokingBrine				= mod:NewFadesYell(264560, DBM_CORE_L.AUTO_YELL_CUSTOM_FADE)
 local specWarnUndertow				= mod:NewSpecialWarningYou(264144, nil, nil, nil, 3, 2)
 
 local timerSurgingRushCD			= mod:NewCDTimer(13, 264101, nil, nil, nil, 3)
-local timerChokingBrineCD			= mod:NewCDTimer(13, 264560, nil, nil, nil, 5, nil, DBM_CORE_HEALER_ICON..DBM_CORE_MAGIC_ICON)
-local timerUndertowCD				= mod:NewCDTimer(13, 264144, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerChokingBrineCD			= mod:NewCDTimer(13, 264560, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON..DBM_CORE_L.MAGIC_ICON)
+local timerUndertowCD				= mod:NewCDTimer(13, 264144, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
 
 function mod:UndertowTarget(targetname, uId)
 	if not targetname then return end

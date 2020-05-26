@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1751, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(104881)
 mod:SetEncounterID(1871)
 mod:SetZone()
@@ -77,7 +77,7 @@ local specWarnFelLash				= mod:NewSpecialWarningSoon(230403, nil, nil, nil, 1, 2
 local timerFrostPhaseCD				= mod:NewNextTimer(80, 213864, nil, nil, nil, 6)
 local timerFirePhaseCD				= mod:NewNextTimer(85, 213867, nil, nil, nil, 6)
 local timerArcanePhaseCD			= mod:NewNextTimer(85, 213869, nil, nil, nil, 6)
-local timerAnnihilateCD				= mod:NewNextCountTimer(40, 212492, nil, "Tank", nil, 5, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerAnnihilateCD				= mod:NewNextCountTimer(40, 212492, nil, "Tank", nil, 5, nil, DBM_CORE_L.DEADLY_ICON..DBM_CORE_L.TANK_ICON, nil, 2, 4)
 --Debuffs
 local timerMarkOfFrostCD			= mod:NewNextTimer(16, 212531, nil, nil, nil, 3)
 local timerSearingBrandCD			= mod:NewNextTimer(16, 213148, nil, nil, nil, 3)
@@ -87,22 +87,22 @@ local timerMarkOfFrostRepCD			= mod:NewNextTimer(16, 212530, 160324, nil, nil, 3
 local timerSearingBrandRepCD		= mod:NewNextTimer(16, 213182, 160324, nil, nil, 3)--Short name "Replicate"
 local timerArcaneOrbRepCD			= mod:NewNextTimer(14.5, 213852, 160324, nil, nil, 3)--Short name "Replicate"
 --Detonates
-local timerMarkOfFrostDetonateCD	= mod:NewNextTimer(16, 212735, 29870, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)--Short name "Detonate"
-local timerSearingBrandDetonateCD	= mod:NewNextTimer(16, 213275, 29870, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)--Short name "Detonate"
-local timerArcaneOrbDetonateCD		= mod:NewNextTimer(16, 213390, 29870, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_HEALER_ICON)--Short name "Detonate"
+local timerMarkOfFrostDetonateCD	= mod:NewNextTimer(16, 212735, 29870, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)--Short name "Detonate"
+local timerSearingBrandDetonateCD	= mod:NewNextTimer(16, 213275, 29870, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)--Short name "Detonate"
+local timerArcaneOrbDetonateCD		= mod:NewNextTimer(16, 213390, 29870, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON..DBM_CORE_L.HEALER_ICON)--Short name "Detonate"
 --Animates
-local timerAnimateFrostCD			= mod:NewNextTimer(16, 213853, 124338, nil, nil, 1, 57612, DBM_CORE_TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
-local timerAnimateFireCD			= mod:NewNextTimer(16, 213567, 124338, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
-local timerAnimateArcaneCD			= mod:NewNextTimer(16, 213564, 124338, nil, nil, 1, nil, DBM_CORE_DEADLY_ICON..DBM_CORE_DAMAGE_ICON..DBM_CORE_TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
+local timerAnimateFrostCD			= mod:NewNextTimer(16, 213853, 124338, nil, nil, 1, 57612, DBM_CORE_L.TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
+local timerAnimateFireCD			= mod:NewNextTimer(16, 213567, 124338, nil, nil, 1, nil, DBM_CORE_L.DEADLY_ICON..DBM_CORE_L.TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
+local timerAnimateArcaneCD			= mod:NewNextTimer(16, 213564, 124338, nil, nil, 1, nil, DBM_CORE_L.DEADLY_ICON..DBM_CORE_L.DAMAGE_ICON..DBM_CORE_L.TANK_ICON)--"Animated" short name. Wrong tense but only short spell I can use
 --Animate Specials
-local timerArmageddon				= mod:NewCastTimer(33, 213568, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
+local timerArmageddon				= mod:NewCastTimer(33, 213568, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerFelSoulCD				= mod:NewNextTimer(15, 230951, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
+local timerFelSoulCD				= mod:NewNextTimer(15, 230951, nil, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
 local timerFelSoul					= mod:NewBuffActiveTimer(45, 230951, nil, nil, nil, 6)
-local timerDecimateCD				= mod:NewCDTimer(16.1, 230504, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--17-20 (Tank timer by default, holy/ret/etc that's doing taunting will have to enable by default)
-local timerFelStompCD				= mod:NewNextTimer(25, 230414, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON)
-local timerFelLashCD				= mod:NewNextCountTimer(25, 230403, nil, nil, nil, 2, nil, DBM_CORE_HEROIC_ICON, nil, 1, 3)
+local timerDecimateCD				= mod:NewCDTimer(16.1, 230504, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--17-20 (Tank timer by default, holy/ret/etc that's doing taunting will have to enable by default)
+local timerFelStompCD				= mod:NewNextTimer(25, 230414, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerFelLashCD				= mod:NewNextCountTimer(25, 230403, nil, nil, nil, 2, nil, DBM_CORE_L.HEROIC_ICON, nil, 1, 3)
 
 local berserkTimer					= mod:NewBerserkTimer(600)--480
 

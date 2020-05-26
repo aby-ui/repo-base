@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1770, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200110163156")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(108879)
 mod:SetEncounterID(1917)
 mod:SetReCombatTime(20)
@@ -32,8 +32,8 @@ local timerFireBoomCD			= mod:NewCDTimer(14, 216428, nil, nil, nil, 3)
 local timerStompCD				= mod:NewCDTimer(28.8, 216430, nil, nil, nil, 2)--28-37
 local timerIceFistCD			= mod:NewCDTimer(29, 216432, nil, nil, nil, 2)--29-37
 local timerSnowCD				= mod:NewCDTimer(35, 216467, nil, nil, nil, 2)
-local timerGoBangCD				= mod:NewCDTimer(24.4, 216817, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerGoBangStarts			= mod:NewTargetTimer(12, 216817, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerGoBangCD				= mod:NewCDTimer(24.4, 216817, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerGoBangStarts			= mod:NewTargetTimer(12, 216817, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 mod:AddRangeFrameOption(8, 216432)

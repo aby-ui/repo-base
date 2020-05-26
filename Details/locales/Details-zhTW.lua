@@ -604,6 +604,8 @@ L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "當不在隊伍時"
 L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "當不在副本時"
 L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "當在副本時"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "團隊除錯"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_COMBAT_ALPHA_8"] = ""--]] 
 L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[選擇戰鬥時的視窗透明度
 
 |cFFFFFF00不變|r: 不修改透明度。

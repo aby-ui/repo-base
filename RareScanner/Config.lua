@@ -764,6 +764,7 @@ local function GetFilterOptions()
 					get = function() return private.db.rareFilters.filterOnlyMap end,
 					set = function(_, value)
 						private.db.rareFilters.filterOnlyMap = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -881,6 +882,7 @@ local function GetFilterOptions()
 								private.db.general.filteredRares[v] = private.db.rareFilters.filtersToggled
 							end
 						end
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -893,6 +895,7 @@ local function GetFilterOptions()
 					get = function(_, key) return private.db.general.filteredRares[key] end,
 					set = function(_, key, value)
 						private.db.general.filteredRares[key] = value;
+						RareScanner:UpdateMinimap(true)
 					end,
 				}
 			},
@@ -992,6 +995,7 @@ local function GetZonesFilterOptions()
 					get = function() return private.db.zoneFilters.filterOnlyMap end,
 					set = function(_, value)
 						private.db.zoneFilters.filterOnlyMap = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -1072,6 +1076,7 @@ local function GetZonesFilterOptions()
 								private.db.general.filteredZones[v] = private.db.zoneFilters.filtersToggled
 							end
 						end
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -1091,6 +1096,7 @@ local function GetZonesFilterOptions()
 							end
 						end
 						private.db.general.filteredZones[key] = value;
+						RareScanner:UpdateMinimap(true)
 					end,
 				}
 			},
@@ -1414,6 +1420,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.displayNpcIcons end,
 					set = function(_, value)
 						private.db.map.displayNpcIcons = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -1425,6 +1432,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.displayContainerIcons end,
 					set = function(_, value)
 						private.db.map.displayContainerIcons = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -1436,6 +1444,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.displayEventIcons end,
 					set = function(_, value)
 						private.db.map.displayEventIcons = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 				},
@@ -1452,6 +1461,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.displayNotDiscoveredMapIcons end,
 					set = function(_, value)
 						private.db.map.displayNotDiscoveredMapIcons = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
@@ -1464,6 +1474,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.displayOldNotDiscoveredMapIcons end,
 					set = function(_, value)
 						private.db.map.displayOldNotDiscoveredMapIcons = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or not private.db.map.displayNotDiscoveredMapIcons) end,
@@ -1477,6 +1488,7 @@ local function GetMapOptions()
 					set = function(_, value)
 						private.db.map.keepShowingAfterDead = value
 						private.db.map.keepShowingAfterDeadReseteable = false
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
@@ -1489,6 +1501,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.keepShowingAfterDeadReseteable end,
 					set = function(_, value)
 						private.db.map.keepShowingAfterDeadReseteable = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.keepShowingAfterDead end,
@@ -1501,6 +1514,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.keepShowingAfterCollected end,
 					set = function(_, value)
 						private.db.map.keepShowingAfterCollected = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
@@ -1513,6 +1527,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.keepShowingAfterCompleted end,
 					set = function(_, value)
 						private.db.map.keepShowingAfterCompleted = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
@@ -1530,6 +1545,7 @@ local function GetMapOptions()
 					set = function(_, value)
 						private.db.map.maxSeenTime = value
 						private.db.map.maxSeenTimeBak = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.disableLastSeenFilter) end,	
@@ -1546,6 +1562,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.maxSeenTimeContainer end,
 					set = function(_, value)
 						private.db.map.maxSeenTimeContainer = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
@@ -1562,6 +1579,7 @@ local function GetMapOptions()
 					get = function() return private.db.map.maxSeenTimeEvent end,
 					set = function(_, value)
 						private.db.map.maxSeenTimeEvent = value
+						RareScanner:UpdateMinimap(true)
 					end,
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1743, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(106643)
 mod:SetEncounterID(1872)
 mod:SetZone()
@@ -46,7 +46,7 @@ local warnPermaliativeTorment		= mod:NewTargetAnnounce(210387, 3, nil, "Healer")
 local warnConflexiveBurst			= mod:NewTargetAnnounce(209598, 4)
 
 --Base
-local specWarnTimeElementals		= mod:NewSpecialWarningSwitchCount(208887, "-Healer", DBM_CORE_AUTO_SPEC_WARN_OPTIONS.switch:format(208887), nil, 1, 2)
+local specWarnTimeElementals		= mod:NewSpecialWarningSwitchCount(208887, "-Healer", DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.switch:format(208887), nil, 1, 2)
 ----Recursive Elemental
 local specWarnCompressedTime		= mod:NewSpecialWarningDodge(209590)
 local specWarnRecursion				= mod:NewSpecialWarningInterrupt(209620, "HasInterrupt", nil, nil, 1, 2)
@@ -82,19 +82,19 @@ local timerSlowTimeBubble			= mod:NewTimer(70, "timerSlowTimeBubble", 209165, ni
 --Time Layer 1
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerArcaneticRing			= mod:NewNextCountTimer(6, 208807, nil, nil, nil, 2, nil, nil, nil, 1, 4)
---local timerAblationCD				= mod:NewCDTimer(4.8, 209615, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+--local timerAblationCD				= mod:NewCDTimer(4.8, 209615, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerSpanningSingularityCD	= mod:NewNextCountTimer(16, 209168, nil, nil, nil, 3)
 --Time Layer 2
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerDelphuricBeamCD			= mod:NewNextCountTimer(16, 214278, nil, nil, nil, 3)
-local timerEpochericOrbCD			= mod:NewNextCountTimer(16, 210022, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerEpochericOrbCD			= mod:NewNextCountTimer(16, 210022, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 local timerAblatingExplosion		= mod:NewTargetTimer(6, 209973, nil, "Tank")
-local timerAblatingExplosionCD		= mod:NewCDTimer(20, 209973, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerAblatingExplosionCD		= mod:NewCDTimer(20, 209973, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 --Time Layer 3
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerConflexiveBurstCD		= mod:NewNextCountTimer(100, 209597, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 3, 4)
---local timerAblativePulseCD			= mod:NewCDTimer(9.6, 209971, nil, "Tank", nil, 4, nil, DBM_CORE_TANK_ICON..DBM_CORE_INTERRUPT_ICON)--12 now?
-local timerPermaliativeTormentCD	= mod:NewNextCountTimer(16, 210387, nil, "Healer", nil, 5, nil, DBM_CORE_DEADLY_ICON)
+local timerConflexiveBurstCD		= mod:NewNextCountTimer(100, 209597, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
+--local timerAblativePulseCD			= mod:NewCDTimer(9.6, 209971, nil, "Tank", nil, 4, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.INTERRUPT_ICON)--12 now?
+local timerPermaliativeTormentCD	= mod:NewNextCountTimer(16, 210387, nil, "Healer", nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(240)
 
@@ -179,7 +179,7 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		timerTimeElementalsCD:Start(8-delay, FAST)
 		timerSpanningSingularityCD:Start(53.7-delay, 2)
-		specWarnSpanningSingularityPre:Schedule(48.7, DBM_CORE_ROOM_EDGE)
+		specWarnSpanningSingularityPre:Schedule(48.7, DBM_CORE_L.ROOM_EDGE)
 		if self.Options.SpecWarn209168moveto then
 			specWarnSpanningSingularityPre:ScheduleVoice(48.7, "runtoedge")
 		end
@@ -542,7 +542,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 		if timer then
 			timerSpanningSingularityCD:Start(timer, nextCount)
 			if self:IsMythic() then
-				specWarnSpanningSingularityPre:Schedule(timer-5, DBM_CORE_ROOM_EDGE)
+				specWarnSpanningSingularityPre:Schedule(timer-5, DBM_CORE_L.ROOM_EDGE)
 				if self.Options.SpecWarn209168moveto then
 					specWarnSpanningSingularityPre:ScheduleVoice(timer-5, "runtoedge")
 				end

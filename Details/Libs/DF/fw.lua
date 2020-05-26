@@ -1,5 +1,5 @@
 
-local dversion = 180
+local dversion = 181
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -2049,11 +2049,22 @@ DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font
 
 DF.dropdown_templates = DF.dropdown_templates or {}
 DF.dropdown_templates ["OPTIONS_DROPDOWN_TEMPLATE"] = {
-	backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
-	backdropcolor = {1, 1, 1, .5},
+	backdrop = {
+		edgeFile = [[Interface\Buttons\WHITE8X8]],
+		edgeSize = 1,
+		bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
+		tileSize = 64,
+		tile = true
+	},
+
+	backdropcolor = {1, 1, 1, .7},
 	backdropbordercolor = {0, 0, 0, 1},
-	onentercolor = {1, 1, 1, .5},
+	onentercolor = {1, 1, 1, .9},
 	onenterbordercolor = {1, 1, 1, 1},
+
+	dropicon = "Interface\\BUTTONS\\arrow-Down-Down",
+	dropiconsize = {16, 16},
+	dropiconpoints = {-2, -3},
 }
 
 -- switches
@@ -3664,6 +3675,87 @@ DF.BattlegroundSizes = {
 	[1191] = 25, --Ashran
 	[1803] = 10, --Seething Shore
 }
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> execute range
+
+	function DF.GetExecuteRange(unitId)
+		unitId = unitId or "player"
+
+		local classLoc, class = UnitClass(unitId)
+		local spec = GetSpecialization()
+		
+		if (spec and class) then
+			--prist
+			if (class == "PRIEST") then
+				--playing as shadow?
+				local specID = GetSpecializationInfo(spec)
+				if (specID and specID ~= 0) then
+					if (specID == 258) then --shadow
+						local _, _, _, using_SWDeath = GetTalentInfo(5, 2, 1)
+						if (using_SWDeath) then
+							return 0.20
+						end
+					end
+				end
+				
+			elseif (class == "MAGE") then
+				--playing fire mage?
+				local specID = GetSpecializationInfo(spec)
+				if (specID and specID ~= 0) then
+					if (specID == 63) then --fire
+						local _, _, _, using_SearingTouch = GetTalentInfo(1, 3, 1)
+						if (using_SearingTouch) then
+							return 0.30
+						end
+					end
+				end
+				
+			elseif (class == "WARRIOR") then
+				--is playing as a Arms warrior?
+				local specID = GetSpecializationInfo(spec)
+				if (specID and specID ~= 0) then
+
+					if (specID == 71) then --arms
+						local _, _, _, using_Massacre = GetTalentInfo(3, 1, 1)
+						if (using_Massacre) then
+							--if using massacre, execute can be used at 35% health in Arms spec
+							return 0.35
+						end
+					end
+
+					if (specID == 71 or specID == 72) then --arms or fury
+						return 0.20
+					end
+				end
+				
+			elseif (class == "HUNTER") then
+				local specID = GetSpecializationInfo(spec)
+				if (specID and specID ~= 0) then
+					if (specID == 253) then --beast mastery
+						--> is using killer instinct?
+						local _, _, _, using_KillerInstinct = GetTalentInfo(1, 1, 1)
+						if (using_KillerInstinct) then
+							return 0.35
+						end
+					end
+				end
+
+			elseif (class == "PALADIN") then
+				local specID = GetSpecializationInfo(spec)
+				if (specID and specID ~= 0) then
+					if (specID == 70) then --retribution paladin
+						--> is using hammer of wrath?
+						local _, _, _, using_HammerOfWrath = GetTalentInfo(2, 3, 1)
+						if (using_HammerOfWrath) then
+							return 0.20
+						end
+					end
+				end
+			end
+		end
+	end	
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> delta seconds reader

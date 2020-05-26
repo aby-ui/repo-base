@@ -7463,7 +7463,14 @@ function _detalhes:SetCombatAlpha (modify_type, alpha_amount, interacting)
 			
 		elseif (self.hide_in_combat_type == 7) then --"Raid Debug" = Out of Combat and Inside Raid or Dungeon
 			_detalhes:ScheduleTimer ("DelayedCheckOutOfCombatAndGroupAlpha", 0.3, self)
-
+		
+		elseif (self.hide_in_combat_type == 8) then --"In Battlegrounds"
+			local isInInstance = IsInInstance()
+			if (isInInstance and _detalhes.zone_type == "pvp") then
+				self:SetWindowAlphaForCombat (true, true) --> hida a janela
+			else
+				self:SetWindowAlphaForCombat (false) --> deshida a janela
+			end
 		end
 		
 		return

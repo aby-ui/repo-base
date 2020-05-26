@@ -795,10 +795,10 @@ private.NPC_DISPLAY_IDS = {
 	[50765] = 27683, --Miasmiss
 	[51057] = 34898, --Weevil
 	
-	-- Rares Draenor
+	-- Rares Warlords of Draenor
 	[77140] = 60896, --Amaukwa
 	[82899] = 57365, --Ancient Blademaster
-	[86213] = 169, --Aqualir
+	[86213] = 58879, --Aqualir
 	[88043] = 56554, --Avatar of Socrethar
 	[82326] = 61022, --Ba'ruun
 	[81406] = 56398, --Bahameye
@@ -943,7 +943,7 @@ private.NPC_DISPLAY_IDS = {
 	[77529] = 53936, --Yazheera the Incinerator
 	[75435] = 54696, --Yggdrel
 	[71992] = 49249, --Moonfang
-	[84875] = 58331, --Ancient Inferno
+	[84875] = 61521, --Ancient Inferno
 	[83819] = 57974, --Brickhouse
 	[84911] = 60685, --Demidos
 	[85771] = 59472, --Elder Darkweaver Kath
@@ -995,7 +995,6 @@ private.NPC_DISPLAY_IDS = {
 	[86268] = 59427, --Alkali
 	[85568] = 57985, --Avalanche
 	[87837] = 57863, --Bonebreaker
-	[84926] = 169, --Burning Power
 	[87788] = 61423, --Durg Spinecrusher
 	[87019] = 61736, --Gluttonous Giant
 	[78269] = 54318, --Gnarljaw
@@ -1072,8 +1071,6 @@ private.NPC_DISPLAY_IDS = {
 	[51015] = 61216, --Silthide
 	[50883] = 61221, --Pathrunner
 	[81001] = 61674, --Nok-Karosh
-	
-	-- Rares Draenor 6.2
 	[91871] = 54516, --Argosh the Destroyer
 	[92552] = 63139, --Belgork
 	[90884] = 62140, --Bilkor the Thrower
@@ -1084,31 +1081,26 @@ private.NPC_DISPLAY_IDS = {
 	[93076] = 63424, --Captain Ironbeard
 	[90434] = 62027, --Ceraxas
 	[90519] = 58329, --Cindral the Wildfire
-	[90081] = 61858, --Dark Summoner Rendkra
 	[90887] = 60108, --Dorg the Bloody
 	[93028] = 63549, --Driss Vile
 	[90888] = 62142, --Drivnul
 	[91727] = 64023, --Executor Riloth
-	[93168] = 63467, --Felbore
+	[93168] = 62261, --Felbore
 	[92647] = 63208, --Felsmith Damorka
 	[91098] = 20431, --Felspark
 	[92508] = 63082, --Gloomtalon
 	[92941] = 62142, --Gorabosh
 	[91695] = 62706, --Grand Warlock Nethekurse
 	[93057] = 62816, --Grannok
-	[90089] = 61864, --Grobthok Skullbreaker
 	[90094] = 61867, --Harbormaster Korak
-	[90281] = 62629, --High Priest Ikzan
 	[90777] = 62123, --High Priest Ikzan
 	[90429] = 62118, --Imp-Master Valessa
-	[90087] = 61863, --Iron Captain Argha
 	[90437] = 62187, --Jax'zor
 	[92517] = 63093, --Krell the Serene
 	[93279] = 63514, --Kris'kar the Unredeemed
 	[90438] = 54366, --Lady Oran
 	[93002] = 61301, --Magwia
 	[90442] = 29442, --Mistress Thavra
-	[90088] = 61864, --Ormak Bloodbolt
 	[92411] = 63026, --Overlord Ma'gruth
 	[92274] = 20385, --Painmistress Selora
 	[91374] = 62418, --Podlord Wakkawam
@@ -1146,8 +1138,6 @@ private.NPC_DISPLAY_IDS = {
 	[95054] = 64263, --Vengeance
 	[91921] = 59296, --Wyrmple
 	[96235] = 62785, --Xemirkol
-	
-	-- Rares Draenor 6.2.1
 	[98200] = 65699, --Guk
 	[98199] = 57973, --Pugg
 	[98198] = 60608, --Rukdug
@@ -1156,7 +1146,15 @@ private.NPC_DISPLAY_IDS = {
 	[98285] = 58598, --Smashum Grabb
 	[98408] = 65796, --Fel Overseer Mudlump
 	[96323] = 65160, --Arachnis
-	[97209] = 64266, --Eraakis
+	[75590] = 52785, --Enormous Bullfrog
+	[87029] = 60145, --Giga Sentinel
+	[86621] = 18615, --Morphed Sentient
+	[85037] = 61035, --Kenos the Unraveler
+	[84376] = 58318, --Earthshaker Holar
+	[87622] = 58663, --Ogom the Mangler
+	[85036] = 60982, --Formless Nightmare
+	[77750] = 56084, --Kaavu the Crimson Claw
+	[84374] = 58318, --Kaga the Ironbender
 
 	-- Rares Legion	
 	[110378] = 68225, --Drugon the Frostblood

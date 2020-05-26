@@ -372,7 +372,7 @@ function Mod:CheckCurrentKeystone(announce)
 
 	if keystoneMapID ~= currentKeystoneMapID or keystoneLevel ~= currentKeystoneLevel then
         if currentKeystoneLevel and (currentKeystoneLevel < keystoneLevel - 1 or currentKeystoneLevel > keystoneLevel + 3) then return end
-        if DEBUG_MODE then print("AngryKeystone", hadKeystone, keystoneMapID, keystoneLevel, currentKeystoneMapID, currentKeystoneLevel) end
+        --if DEBUG_MODE then print("AngryKeystone", hadKeystone, keystoneMapID, keystoneLevel, currentKeystoneMapID, currentKeystoneLevel) end
 		currentKeystoneMapID = keystoneMapID
 		currentKeystoneLevel = keystoneLevel
 

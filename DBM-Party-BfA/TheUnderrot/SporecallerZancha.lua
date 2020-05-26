@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2130, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(131383)
 mod:SetEncounterID(2112)
 mod:SetZone()
@@ -27,10 +27,10 @@ local yellUpheaval					= mod:NewYell(259718)
 local yellUpheavalFades				= mod:NewShortFadesYell(259718)
 local specWarnUpheavalNear			= mod:NewSpecialWarningClose(259718, nil, nil, nil, 1, 2)
 
-local timerFesteringHarvestCD		= mod:NewCDTimer(51, 259732, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerFesteringHarvestCD		= mod:NewCDTimer(51, 259732, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 --local timerBoundlessRotCD			= mod:NewAITimer(13, 259830, nil, nil, nil, 3)
 local timerVolatilePodsCD			= mod:NewCDTimer(31.3, 273271, nil, nil, nil, 3)
-local timerShockwaveCD				= mod:NewCDTimer(14.6, 272457, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerShockwaveCD				= mod:NewCDTimer(14.6, 272457, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerUpheavalCD				= mod:NewCDTimer(20, 259718, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)

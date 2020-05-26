@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(138794)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -26,7 +26,7 @@ local specWarnEarthSpike			= mod:NewSpecialWarningDodge(275194, nil, nil, nil, 2
 --local timerSonicBellowCD				= mod:NewAITimer(16, 275175, nil, nil, nil, 3)--6-34?
 --local timerEarthSpikeCD				= mod:NewAITimer(16, 275194, nil, nil, nil, 3)
 local timerPrimalRageCD					= mod:NewCDTimer(32.7, 275200, nil, nil, nil, 3)
-local timerShakeLooseCD					= mod:NewCDTimer(28, 276046, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--28 seconds, but does it an extra time when he's really low
+local timerShakeLooseCD					= mod:NewCDTimer(28, 276046, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--28 seconds, but does it an extra time when he's really low
 
 mod:AddRangeFrameOption(5, 275194)
 --mod:AddReadyCheckOption(37460, false)

@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("Kruul", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200418165651")
+mod:SetRevision("20200524145548")
 mod:SetCreatureID(117933, 117198)--Variss, Kruul
 mod:SetZone()
 mod:SetBossHPInfoToHighest()
@@ -39,15 +39,15 @@ local specWarnAnnihilate		= mod:NewSpecialWarningDefensive(236572, nil, nil, nil
 local specWarnTwistedReflection	= mod:NewSpecialWarningInterrupt(234676, nil, nil, nil, 3, 2)
 
 --Tank
-local timerDrainLifeCD			= mod:NewCDTimer(24.3, 234423, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON, nil, 2, 4)
-local timerHolyWardCD			= mod:NewCDTimer(33, 233473, nil, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)
-local timerHolyWard				= mod:NewCastTimer(8, 233473, nil, false, nil, 3, nil, DBM_CORE_HEALER_ICON)
-local timerTormentingEyeCD		= mod:NewCDTimer(15.4, 234428, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--15.4-19.4
-local timerNetherAbberationCD	= mod:NewCDTimer(35, 235110, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 1, 4)
-local timerInfernalCD			= mod:NewCDTimer(65, 235112, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON, nil, 3, 4)
+local timerDrainLifeCD			= mod:NewCDTimer(24.3, 234423, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON, nil, 2, 4)
+local timerHolyWardCD			= mod:NewCDTimer(33, 233473, nil, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)
+local timerHolyWard				= mod:NewCastTimer(8, 233473, nil, false, nil, 3, nil, DBM_CORE_L.HEALER_ICON)
+local timerTormentingEyeCD		= mod:NewCDTimer(15.4, 234428, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--15.4-19.4
+local timerNetherAbberationCD	= mod:NewCDTimer(35, 235110, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerInfernalCD			= mod:NewCDTimer(65, 235112, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 3, 4)
 --Phase 2
 local timerShadowSweepCD		= mod:NewCDTimer(20, 234441, nil, nil, nil, 3)--20-27
-local timerAnnihilateCD			= mod:NewCDCountTimer(27, 236572, nil, nil, nil, 3, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerAnnihilateCD			= mod:NewCDCountTimer(27, 236572, nil, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
 
 mod.vb.phase = 1
 mod.vb.annihilateCast = 0

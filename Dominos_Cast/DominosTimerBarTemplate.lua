@@ -208,9 +208,9 @@ end
 function TimerBar:Stop()
     self:SetScript("OnUpdate", nil)
 
-    self.tmin = nil
-    self.tmax = nil
-    self.tvalue = nil
+    self.tmin = 0
+    self.tmax = 0
+    self.tvalue = 0
 
     self:FadeOut()
 end

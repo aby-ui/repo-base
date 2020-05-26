@@ -7,6 +7,7 @@ _G.RECrystallize = RE
 local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print, date = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print, _G.date
 local sMatch, sFormat = _G.string.match, _G.string.format
 local tConcat = _G.table.concat
+local Item = _G.Item
 local Round = _G.Round
 local PlaySound = _G.PlaySound
 local GetCVar = _G.GetCVar
@@ -18,7 +19,6 @@ local IsShiftKeyDown = _G.IsShiftKeyDown
 local SendChatMessage = _G.SendChatMessage
 local SetTooltipMoney = _G.SetTooltipMoney
 local FormatLargeNumber = _G.FormatLargeNumber
-local After = _G.C_Timer.After
 local IsLinkType = _G.LinkUtil.IsLinkType
 local ExtractLink = _G.LinkUtil.ExtractLink
 local ReplicateItems = _G.C_AuctionHouse.ReplicateItems
@@ -33,7 +33,7 @@ local ElvUI = _G.ElvUI
 
 local PETCAGEID = 82800
 
-RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["ScanStep"] = 0.5, ["DatabaseVersion"] = 1}
+RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1}
 RE.GUIInitialized = false
 RE.RecipeLock = false
 RE.BlockTooltip = 0
@@ -200,24 +200,12 @@ function RE:OnEvent(self, event, ...)
 					set = function(_, val) RE.Config.AlwaysShowAll = val end,
 					get = function(_) return RE.Config.AlwaysShowAll end
 				},
-				scanstep = {
-					name = L["Scanning speed"],
-					desc = L["Increase this value if scanning is causing disconnects."],
-					type = "range",
-					width = "double",
-					order = 2,
-					min = 0.5,
-					max = 10,
-					step = 0.5,
-					set = function(_, val) RE.Config.ScanStep = val end,
-					get = function(_) return RE.Config.ScanStep end
-				},
 				dbcleanup = {
 					name = L["Data freshness"],
 					desc = L["The number of days after which old data will be deleted."],
 					type = "range",
 					width = "double",
-					order = 3,
+					order = 2,
 					min = 1,
 					max = 14,
 					step = 1,
@@ -229,14 +217,14 @@ function RE:OnEvent(self, event, ...)
 					desc = L["WARNING! This operation is not reversible!"],
 					type = "execute",
 					width = "double",
-					order = 4,
+					order = 3,
 					confirm = true,
 					func = function() RE.DB[RE.RealmString] = {}; collectgarbage("collect") end
 				},
 				separator = {
 					type = "header",
 					name = STATISTICS,
-					order = 5
+					order = 4
 				},
 				description = {
 					type = "description",
@@ -252,7 +240,7 @@ function RE:OnEvent(self, event, ...)
 
 						return s
 					end,
-					order = 6
+					order = 5
 				}
 			}
 		}
@@ -378,27 +366,41 @@ end
 
 function RE:Scan()
 	local num = GetNumReplicateItems()
-	local payloadDiff = tCount(RE.DBScan)
+	local progress = 0
+	local inProgress = {}
 
 	for i = 0, num - 1 do
-		if RE.DBScan[i] == nil then
-			local count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
-			if status and count and quality and price and itemID and count > 0 and price > 0 and itemID > 0 then
-				local link = GetReplicateItemLink(i)
-				if link then
-					RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
-				end
-			end
-		end
-	end
+		local link
+		local count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
 
-	local count = tCount(RE.DBScan)
-	RE.AHButton:SetText(count.." / "..num)
-	payloadDiff = count - payloadDiff
-	if payloadDiff > 0 then
-		After(RE.Config.ScanStep, RE.Scan)
-	else
-		RE:EndScan()
+		if status and count and price and itemID and type(quality) == "number" and count > 0 and price > 0 and itemID > 0 then
+			link = GetReplicateItemLink(i)
+			if link then
+				progress = progress + 1
+				RE.AHButton:SetText(progress.." / "..num)
+				RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
+			end
+		else
+			local item = Item:CreateFromItemID(itemID)
+			inProgress[item] = true
+
+			item:ContinueOnItemLoad(function()
+				count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
+				inProgress[item] = nil
+				if status and count and price and itemID and type(quality) == "number" and count > 0 and price > 0 and itemID > 0 then
+					link = GetReplicateItemLink(i)
+					if link then
+						progress = progress + 1
+						RE.AHButton:SetText(progress.." / "..num)
+						RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
+					end
+				end
+				if not next(inProgress) then
+					inProgress = {}
+					RE:EndScan()
+				end
+			end)
+		end
 	end
 end
 

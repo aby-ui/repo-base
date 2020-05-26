@@ -19,10 +19,10 @@
 ## X-DBM-Mod-Sort: 507
 ## X-DBM-Mod-MapID: 1220
 ## X-DBM-Mod-LoadCID: 107023, 106981, 106984, 106982, 109943, 109331, 110378, 99929, 108879, 110321, 108678, 112350, 108829, 117239, 121124, 117470, 117303, 102075
-## X-DBM-Mod-MinCoreRevision: 14737
+## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r17-1-g62e6994
+## Version: r17-4-g59c3c3a
 AnaMouz.lua
 Apocron.lua
 Brutallus.lua

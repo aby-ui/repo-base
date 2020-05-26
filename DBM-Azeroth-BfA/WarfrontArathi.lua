@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WarfrontArathi", "DBM-Azeroth-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200524143937")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -50,7 +50,7 @@ local timerGreaterSerpentTotemCD	= mod:NewCDTimer(20.6, 272988, nil, nil, nil, 1
 local timerSinkholeTotemCD			= mod:NewCDTimer(20, 273118, nil, nil, nil, 2)
 --Horde - Danath Trollbane
 local timerAncestralCallCD			= mod:NewCDTimer(26, 303075, nil, nil, nil, 1)
-local timerDevastatingStrikeCD		= mod:NewCDTimer(13.1, 303075, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerDevastatingStrikeCD		= mod:NewCDTimer(13.1, 303075, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerEarthshatterCD			= mod:NewCDTimer(18.4, 270411, nil, nil, nil, 3)--18.4-23
 local timerStromgardeBombardmentCD	= mod:NewCDTimer(24.3, 276658, nil, nil, nil, 3)--24.3-30
 

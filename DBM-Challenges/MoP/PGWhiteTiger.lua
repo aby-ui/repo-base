@@ -7,7 +7,7 @@
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200422121759")
+mod:SetRevision("20200524145548")
 mod:SetZone()
 mod.noStatistics = true
 
@@ -56,7 +56,7 @@ local timerWindBlastCD		= mod:NewNextTimer(21, 144106, nil, nil, nil, 5)
 local timerPowerfulSlamCD	= mod:NewCDTimer(15, 144401, nil, nil, nil, 3)--15-17sec variation
 --Damager
 local timerAmberGlobCD		= mod:NewNextTimer(10.5, 142189, nil, nil, nil, 5)
-local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 --Healer
 local timerAquaBombCD		= mod:NewCDTimer(12, 145206, nil, false, nil, 5)--12-22 second variation? off by default do to this
 local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation

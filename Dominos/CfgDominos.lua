@@ -73,9 +73,11 @@
         callback = function()
             if(not IsAddOnLoaded'Dominos_Config') then
                 LoadAddOn'Dominos_Config'
-            end
-            if(_G['DominosOptions']) then
-                InterfaceOptionsFrame_OpenToCategory(_G['DominosOptions'])
+                C_Timer.After(GetTickTime()*2, function()
+                    LibStub("AceConfigDialog-3.0"):Open("Dominos")
+                end)
+            else
+                LibStub("AceConfigDialog-3.0"):Open("Dominos")
             end
         end,
     },

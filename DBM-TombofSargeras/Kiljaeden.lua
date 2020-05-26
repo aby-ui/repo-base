@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1898, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(117269)--121227 Illiden? 121193 Shadowsoul
 mod:SetEncounterID(2051)
 mod:SetZone()
@@ -66,7 +66,7 @@ local yellFocusedDreadflame			= mod:NewShortYell(238502)
 local yellFocusedDreadflameFades	= mod:NewFadesYell(238502)
 local specWarnFocusedDreadflameOther= mod:NewSpecialWarningTarget(238502, nil, nil, nil, 1, 2)
 local specWarnBurstingDreadflame	= mod:NewSpecialWarningMoveAway(238430, nil, nil, nil, 1, 2)
-local yellBurstingDreadflame		= mod:NewPosYell(238430, DBM_CORE_AUTO_YELL_CUSTOM_POSITION2)
+local yellBurstingDreadflame		= mod:NewPosYell(238430, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION2)
 local yellBurstingDreadflameFades	= mod:NewShortFadesYell(238430, nil, false)
 --Stage Two: Reflected Souls
 local specWarnSRHopeless			= mod:NewSpecialWarningYou(237590, nil, nil, 2, 3, 2)
@@ -83,12 +83,12 @@ local specWarnFlamingOrbSpawn		= mod:NewSpecialWarningDodge(239253, nil, nil, ni
 
 --Stage One: The Betrayer
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerFelclawsCD				= mod:NewCDCountTimer(25, 239932, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)
+local timerFelclawsCD				= mod:NewCDCountTimer(25, 239932, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
 local timerRupturingSingularityCD	= mod:NewCDCountTimer(61, 235059, nil, nil, nil, 3)--61-68?
-local timerRupturingSingularity		= mod:NewCastSourceTimer(9.7, 235059, 206577, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)--Shortname: Comet Impact
+local timerRupturingSingularity		= mod:NewCastSourceTimer(9.7, 235059, 206577, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)--Shortname: Comet Impact
 local timerArmageddonCD				= mod:NewCDCountTimer(42, 240910, nil, nil, nil, 5)
 local timerArmageddon				= mod:NewCastTimer(9, 234295, nil, nil, nil, 2)--Armageddon Rain
-local timerShadReflectionEruptingCD	= mod:NewCDTimer(35, 236710, 236711, nil, nil, 3, nil, DBM_CORE_DAMAGE_ICON)--Shortname : Erupting Reflection
+local timerShadReflectionEruptingCD	= mod:NewCDTimer(35, 236710, 236711, nil, nil, 3, nil, DBM_CORE_L.DAMAGE_ICON)--Shortname : Erupting Reflection
 --Intermission: Eternal Flame
 --mod:AddTimerLine(SCENARIO_STAGE:format(1.5))
 local timerTransition				= mod:NewPhaseTimer(57.9)
@@ -96,20 +96,20 @@ local timerFocusedDreadflameCD		= mod:NewCDCountTimer(31, 238502, nil, nil, nil,
 local timerBurstingDreadflameCD		= mod:NewCDCountTimer(31, 238430, nil, nil, nil, 3)
 --Stage Two: Reflected Souls
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerShadReflectionHopelessCD	= mod:NewCDTimer(196, 237590, 237724, nil, nil, 3, nil, DBM_CORE_HEALER_ICON)--Shortname : Hopeless Reflection
-local timerHopelessness				= mod:NewCastTimer(8, 237725, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
-local timerShadReflectionWailingCD	= mod:NewCDCountTimer(35, 236378, 236475, nil, nil, 3, nil, DBM_CORE_TANK_ICON)--Shortname : Wailing Reflection
+local timerShadReflectionHopelessCD	= mod:NewCDTimer(196, 237590, 237724, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)--Shortname : Hopeless Reflection
+local timerHopelessness				= mod:NewCastTimer(8, 237725, nil, "Healer", nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerShadReflectionWailingCD	= mod:NewCDCountTimer(35, 236378, 236475, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON)--Shortname : Wailing Reflection
 local timerSorrowfulWailCD			= mod:NewCDTimer(14.1, 241564, nil, nil, nil, 2)
 --Intermission: Deceiver's Veil
 --mod:AddTimerLine(SCENARIO_STAGE:format(2.5))
 local timerSightlessGaze			= mod:NewBuffActiveTimer(20, 241721, nil, nil, nil, 5)
 --Stage Three: Darkness of A Thousand Souls
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerDarknessofSoulsCD		= mod:NewCDCountTimer(89.7, 238999, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)
+local timerDarknessofSoulsCD		= mod:NewCDCountTimer(89.7, 238999, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 local timerTearRiftCD				= mod:NewCDCountTimer(95, 243982, nil, nil, nil, 3)
 local timerFlamingOrbCD				= mod:NewCDCountTimer(30, 239253, nil, nil, nil, 3)
 local timerObeliskCD				= mod:NewCDCountTimer(42, 239785, nil, nil, nil, 3)
-local timerObelisk					= mod:NewCastTimer(13, 239785, L.Obelisklasers, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 5)
+local timerObelisk					= mod:NewCastTimer(13, 239785, L.Obelisklasers, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
 
@@ -239,7 +239,7 @@ function mod:SPELL_CAST_START(args)
 		else--Move to rift
 			specWarnDarknessofSouls:Show(riftName)
 			if self.Options.InfoFrame then
-				DBM.InfoFrame:SetHeader(DBM_NO_DEBUFF:format(DBM_CORE_SAFE))
+				DBM.InfoFrame:SetHeader(DBM_NO_DEBUFF:format(DBM_CORE_L.SAFE))
 				DBM.InfoFrame:Show(10, "playergooddebuff", gravitySqueezeBuff)
 			end
 			self:Schedule(28.5, ObeliskWarning, self)

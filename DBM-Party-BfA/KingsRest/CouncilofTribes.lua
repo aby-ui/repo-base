@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200425190512")
+mod:SetRevision("20200524143937")
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetZone()
@@ -49,10 +49,10 @@ local timerWhirlingAxesCD			= mod:NewCDTimer(10.8, 266206, nil, nil, nil, 3)--Us
 local timerSeveringAxeCD			= mod:NewCDTimer(21.8, 266231, nil, nil, nil, 3)
 --Aka'ali the Conqueror
 local timerBarrelThroughCD			= mod:NewCDTimer(23, 266951, nil, nil, nil, 3)--Used inactive
-local timerDebilitatingBackhandCD	= mod:NewCDTimer(24.3, 266237, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON..DBM_CORE_DEADLY_ICON)
+local timerDebilitatingBackhandCD	= mod:NewCDTimer(24.3, 266237, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.DEADLY_ICON)
 --Zanazal the Wise
-local timerPoisonNovaCD				= mod:NewCDTimer(26.7, 267273, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)--Used inactive
-local timerTotemsCD					= mod:NewCDTimer(53.5, 267060, nil, nil, nil, 1, nil, DBM_CORE_DAMAGE_ICON)--Actual timer needs doing
+local timerPoisonNovaCD				= mod:NewCDTimer(26.7, 267273, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--Used inactive
+local timerTotemsCD					= mod:NewCDTimer(53.5, 267060, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--Actual timer needs doing
 
 mod:AddSetIconOption("SetIconOnBarrel", 266951, true, false, {1})
 mod:AddSetIconOption("SetIconOnAxe", 266231, false, false, {2})
@@ -222,39 +222,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			end
 		else
 			self.vb.bossTwo = cid
-			--Start Boss 1 Timer (17.9-25.5-28.9sec)
-			if self.vb.bossOne == 135475 then -- Kula the Butcher
-			--	timerWhirlingAxesCD:Start(25.5)
-			elseif self.vb.bossOne == 135470 then -- Aka'ali the Conqueror
-			--	timerBarrelThroughCD:Start(25.5)
-			elseif self.vb.bossOne == 135472 then -- Zanazal the Wise
-			--	timerPoisonNovaCD:Start(25.5)
-			end
-			--Start Boss 2 Timer (47.1/55.5 seconds)
-			if cid == 135475 then -- Kula the Butcher
-			--	timerWhirlingAxesCD:Start(55.5)
-			elseif cid == 135470 then -- Aka'ali the Conqueror
-			--	timerBarrelThroughCD:Start(55.5)
-			elseif cid == 135472 then -- Zanazal the Wise
-			--	timerPoisonNovaCD:Start(55.5)
-			end
 		end
-	--[[elseif spellID == 267422 then--Boss 1 Assist
-		if self.vb.bossOne == 135475 then -- Kula the Butcher
-
-		elseif self.vb.bossOne == 135470 then -- Aka'ali the Conqueror
-
-		elseif self.vb.bossOne == 135472 then -- Zanazal the Wise
-
-		end
-	elseif spellId == 267437 then--Boss 2 Assist
-		if cid == 135475 then -- Kula the Butcher
-
-		elseif cid == 135470 then -- Aka'ali the Conqueror
-
-		elseif cid == 135472 then -- Zanazal the Wise
-
-		end--]]
 	end
 end
 

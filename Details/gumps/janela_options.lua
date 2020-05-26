@@ -2571,14 +2571,16 @@ function window:CreateFrame17()
 			
 			_detalhes:SendOptionsModifiedEvent (DetailsOptionsWindow.instance)
 		end
+		local texCoords = {.9, 0.1, 0.1, .9}
 		local typeCombatAlpha = {
-			{value = 1, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_1"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_03", texcoord = {1, 0, 0, 1}, color = "gray"},
-			{value = 2, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_2"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}},
-			{value = 3, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}},
-			{value = 4, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_4"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}},
-			{value = 5, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_5"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}},
-			{value = 6, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}},
-			{value = 7, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_7"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = {1, 0, 0, 1}, desc = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"] .. " + " .. Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"]},
+			{value = 1, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_1"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_03", texcoord = texCoords, color = "gray"},
+			{value = 2, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_2"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			{value = 3, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			{value = 4, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_4"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			{value = 5, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_5"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			{value = 6, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			{value = 7, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_7"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords, desc = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"] .. " + " .. Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"]},
+			{value = 8, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_8"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
 		}
 		local buildTypeCombatAlpha = function()
 			return typeCombatAlpha

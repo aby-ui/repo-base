@@ -144,6 +144,11 @@ function TimerBar:UpdateValue(force)
 	end
 
 	local percent = self.Max == 0 and 0 or value / self.Max
+	if percent < 0 then
+		percent = 0
+	elseif percent > 1 then
+		percent = 1
+	end
 
 	if force or value ~= self.__value then
 		local bar = self.bar
@@ -152,7 +157,7 @@ function TimerBar:UpdateValue(force)
 		if abs(self.__oldPercent - percent) > 0.02 then
 			-- If the percentage of the bar changed by more than 2%, force an instant redraw of the texture.
 			-- For some reason, blizzard defers the updating of status bar textures until sometimes 1 or 2 frames after it is set.
-			self:UpdateStatusBarImmediate(value)
+			self:UpdateStatusBarImmediate(percent)
 		elseif bar:GetReverseFill() then
 			-- Bliizard goofed (or forgot) when they implemented reverse filling,
 			-- the tex coords are messed up. We'll just have to fix them ourselves.
@@ -207,12 +212,9 @@ function TimerBar:UpdateValue(force)
 	return ret
 end
 
-function TimerBar:UpdateStatusBarImmediate(value)
+function TimerBar:UpdateStatusBarImmediate(percent)
 	local bar = self.bar
 	local tex = self.texture
-	local percent = self.Max == 0 and 0 or value / self.Max
-	if percent < 0 then percent = 0 elseif percent > 1 then percent = 1 end
-
 
 	if bar:GetOrientation() == "VERTICAL" then
 		local height = bar:GetHeight()

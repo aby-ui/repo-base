@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2015, "DBM-Argus", nil, 959)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(124719)
 --mod:SetEncounterID(1952)--Does not have one
 --mod:SetReCombatTime(20)
@@ -25,9 +25,9 @@ local specWarnDrainTaunt		= mod:NewSpecialWarningTaunt(247742, nil, nil, nil, 1,
 local specWarnStomp				= mod:NewSpecialWarningSpell(247733, nil, nil, nil, 2, 2)
 --local specWarnGTFO			= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 
-local timerDrainCD				= mod:NewCDTimer(15.9, 247739, nil, "Melee", nil, 5, nil, DBM_CORE_TANK_ICON)--15-20
+local timerDrainCD				= mod:NewCDTimer(15.9, 247739, nil, "Melee", nil, 5, nil, DBM_CORE_L.TANK_ICON)--15-20
 local timerFelBreathCD			= mod:NewCDTimer(13.4, 247731, nil, nil, nil, 3)
-local timerStompCD				= mod:NewCDTimer(14.6, 247733, nil, nil, nil, 2, nil, DBM_CORE_HEALER_ICON)--15-35?
+local timerStompCD				= mod:NewCDTimer(14.6, 247733, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)--15-35?
 
 mod:AddReadyCheckOption(49196, false)
 mod:AddRangeFrameOption(8, 247739)--Mainly to ensure tanks are far enough from eachother. any dumb melee don't matter.

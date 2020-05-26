@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1956, "DBM-BrokenIsles", nil, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200110163156")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(121124)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -22,7 +22,7 @@ local specWarnSear						= mod:NewSpecialWarningDefensive(241518, "Tank", nil, ni
 
 local timerQuakeCD						= mod:NewCDTimer(22.1, 241458, nil, nil, nil, 2)--22.1-25.6
 local timerFelfireMissilesCD			= mod:NewCDTimer(9.7, 241498, nil, nil, nil, 3)--9.7-14.6
-local timerSearCD						= mod:NewCDTimer(9.7, 241518, nil, nil, nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerSearCD						= mod:NewCDTimer(9.7, 241518, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 

@@ -590,7 +590,7 @@ function CastBar:AddLayoutPanel(menu)
 		set = function(_, enable) panel.owner:SetUseSpellReactionColors(enable) end
 	}	
 
-	for _, part in ipairs{"border", "icon", "latency", "time"} do
+	for _, part in ipairs{"border", "icon", "latency", "spark", "time"} do
 		panel:NewCheckButton{
 			name = l["Display_" .. part],
 			get = function()

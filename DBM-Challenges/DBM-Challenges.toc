@@ -27,9 +27,9 @@
 ## X-DBM-Mod-Name-ruRU: Арена испытаний
 ## X-DBM-Mod-Sort: 416
 ## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162
-## X-DBM-Mod-MinCoreRevision: 16130
+## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 61621
-## Version: r128
+## Version: r128-2-g3d77018
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

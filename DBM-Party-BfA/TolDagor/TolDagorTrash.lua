@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TolDagorTrash", "DBM-Party-BfA", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200228141814")
+mod:SetRevision("20200517140833")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -10,7 +10,6 @@ mod.isTrashMod = true
 mod:RegisterEvents(
 	"SPELL_CAST_START 259711 258128 258153 258317 258313 258634 258869 258917 258935",
 	"SPELL_AURA_APPLIED 258153 265889 258133 259188"
---	"SPELL_CAST_SUCCESS"
 )
 
 --local warnRiotShield				= mod:NewSpellAnnounce(258317, 4)
@@ -86,13 +85,3 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnHeavilyArmed:Play("justrun")
 	end
 end
-
---[[
-function mod:SPELL_CAST_SUCCESS(args)
-	if not self.Options.Enabled then return end
-	local spellId = args.spellId
-	if spellId == 200343 then
-
-	end
-end
---]]

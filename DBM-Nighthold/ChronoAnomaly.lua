@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1725, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524145614")
 mod:SetCreatureID(104415)--104731 (Depleted Time Particle). 104676 (Waning Time Particle). 104491 (Accelerated Time particle). 104492 (Slow Time Particle)
 mod:SetEncounterID(1865)
 mod:SetZone()
@@ -40,12 +40,12 @@ local specWarnWarp					= mod:NewSpecialWarningInterrupt(207228, "HasInterrupt", 
 local specWarnBigAdd				= mod:NewSpecialWarningSwitch("ej13022", "-Healer", nil, nil, 1, 2)--Switch to waning time particle when section info known
 
 local timerTemporalOrbsCD			= mod:NewNextCountTimer(30, 219815, nil, nil, nil, 2)
-local timerPowerOverwhelmingCD		= mod:NewNextCountTimer(60, 211927, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerPowerOverwhelmingCD		= mod:NewNextCountTimer(60, 211927, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 local timerTimeBomb					= mod:NewBuffFadesTimer(30, 206617, nil, nil, nil, 5, nil, nil, nil, 3, 4)
 local timerTimeBombCD				= mod:NewNextCountTimer(30, 206617, nil, nil, nil, 3)
 local timerBurstofTimeCD			= mod:NewNextCountTimer(30, 206614, nil, nil, nil, 3)
-local timerTimeReleaseCD			= mod:NewNextCountTimer(30, 206610, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)
-local timerChronoPartCD				= mod:NewCDTimer(5, 206607, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerTimeReleaseCD			= mod:NewNextCountTimer(30, 206610, nil, "Healer", nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerChronoPartCD				= mod:NewCDTimer(5, 206607, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerBigAddCD					= mod:NewNextCountTimer(30, 206700, nil, nil, nil, 1, nil, nil, nil, 1, 4)--Switch to waning time particle when section info known
 local timerNextPhase				= mod:NewPhaseTimer(74)--Used anywhere phase change is NOT immediately after power overwhelming
 

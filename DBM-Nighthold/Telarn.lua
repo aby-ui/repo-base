@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1761, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200221012111")
+mod:SetRevision("20200524213722")
 mod:SetCreatureID(104528)--109042
 mod:SetEncounterID(1886)
 mod:SetZone()
@@ -66,23 +66,23 @@ local yellCoN						= mod:NewPosYell(218809)
 --Mythic is unknown but I suspect it's inversed. Needs to be revetted with new changes
 --Stage 1: The High Botanist
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerControlledChaosCD		= mod:NewNextTimer(35, 218438, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON, nil, 1, 4)
-local timerParasiticFetterCD		= mod:NewNextTimer(35, 218304, nil, nil, nil, 3, nil, DBM_CORE_MAGIC_ICON, nil, not mod:IsTank() and 2, 4)--Technically can also be made add timer instead of targetted
+local timerControlledChaosCD		= mod:NewNextTimer(35, 218438, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
+local timerParasiticFetterCD		= mod:NewNextTimer(35, 218304, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON, nil, not mod:IsTank() and 2, 4)--Technically can also be made add timer instead of targetted
 local timerSolarCollapseCD			= mod:NewNextTimer(35, 218148, nil, nil, nil, 3)
 
 --Stage 2: Nightosis
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerPlasmaSpheresCD			= mod:NewNextTimer(55, 218774, 104923, nil, nil, 1)--"Summon Balls" short text
-local timerFlareCD					= mod:NewCDTimer(8.5, 218806, nil, "Melee", nil, 5, nil, DBM_CORE_TANK_ICON)--Exception to 35, 40, 50 rule
+local timerFlareCD					= mod:NewCDTimer(8.5, 218806, nil, "Melee", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Exception to 35, 40, 50 rule
 --Stage 3: Pure Forms
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerToxicSporesCD			= mod:NewCDTimer(8, 219049, nil, nil, nil, 3)--Exception to 35, 40, 50 rule
-local timerGraceOfNatureCD			= mod:NewNextTimer(48, 218927, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, 2, 4)--48-51
+local timerGraceOfNatureCD			= mod:NewNextTimer(48, 218927, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)--48-51
 local timerCoNCD					= mod:NewNextTimer(50, 218809, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 3, 4)
 mod:AddTimerLine(PLAYER_DIFFICULTY6)
-local timerSummonChaosSpheresCD		= mod:NewNextTimer(35, 223034, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
-local timerCollapseofNightCD		= mod:NewNextTimer(35, 223437, nil, nil, nil, 3, nil, DBM_CORE_HEROIC_ICON, nil, not mod:IsTank() and 3, 4)
-local timerChaotiSpheresofNatureCD	= mod:NewNextTimer(35, 223219, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
+local timerSummonChaosSpheresCD		= mod:NewNextTimer(35, 223034, nil, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
+local timerCollapseofNightCD		= mod:NewNextTimer(35, 223437, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, not mod:IsTank() and 3, 4)
+local timerChaotiSpheresofNatureCD	= mod:NewNextTimer(35, 223219, nil, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(480)
 
@@ -332,9 +332,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnParasiticFixate:Show()
 			specWarnParasiticFixate:Play("targetyou")
-		end
-		if self.Options.NPAuraOnFixate then
-			DBM.Nameplate:Show(true, args.sourceGUID, spellId)
+			if self.Options.NPAuraOnFixate then
+				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
+			end
 		end
 --	elseif spellId == 219009 then
 --		local targetName = args.destName
@@ -463,7 +463,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SetIconOnFetter and not self:IsLFR() then
 			self:SetIcon(args.destName, 0)
 		end
-	elseif spellId == 218342 then
+	elseif spellId == 218342 and args:IsPlayer() then
 		if self.Options.NPAuraOnFixate then
 			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
 		end
