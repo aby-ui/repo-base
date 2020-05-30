@@ -1705,7 +1705,7 @@ function addon:UpdateToonData()
     t.Artifact = format("%d (%d%%)", currentLevel, xp / totalLevelXP  * 100)
   end
   local cloakItemLocation = ItemLocation:CreateFromEquipmentSlot(15)
-  if cloakItemLocation then
+  if cloakItemLocation and cloakItemLocation:IsValid() then
     local itemID = C_Item.GetItemID(cloakItemLocation)
     if itemID == 169223 then
       local cloakIlvl = C_Item.GetCurrentItemLevel(cloakItemLocation)
@@ -2628,7 +2628,7 @@ end
 function core:OnInitialize()
   local versionString = GetAddOnMetadata(addonName, "version")
   --[===[@debug@
-  if versionString == "8.3.3-2-g851e8cd" then
+  if versionString == "8.3.3-3-g3f26d9e" then
     versionString = "Dev"
   end
   --@end-debug@]===]

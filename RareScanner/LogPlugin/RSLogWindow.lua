@@ -69,7 +69,7 @@ buttonsFrame:SetPoint("BOTTOMRIGHT", rsRegisterFrame, "BOTTOMRIGHT", -7, 8)
 
 -- Create all button frames and hide
 for index=1, MAX_REGISTERS_LOG_WINDOW do 
-	local npcButton = _G.CreateFrame("Button", "Register"..index, buttonsFrame, "SecureActionButtonTemplate")
+	local npcButton = CreateFrame("Button", "Register"..index, buttonsFrame, "SecureActionButtonTemplate")
 	npcButton:SetSize(REGISTER_WIDTH, REGISTER_HEIGHT)
 	npcButton:SetPoint("TOPLEFT", 0, -(REGISTER_HEIGHT * (index - 1)))
 	npcButton:SetBackdrop({ tile = true, edgeSize = 16, edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]] })	
@@ -99,7 +99,7 @@ for index=1, MAX_REGISTERS_LOG_WINDOW do
 	-- --------------------- --
 	-- Close button icon
 	-- --------------------- --
-	npcButton.CloseButton = _G.CreateFrame("Button", "CloseButton", npcButton, "UIPanelCloseButton")
+	npcButton.CloseButton = CreateFrame("Button", "CloseButton", npcButton, "UIPanelCloseButton")
 	npcButton.CloseButton:SetPoint("BOTTOMRIGHT")
 	npcButton.CloseButton:SetSize(24, 24)
 	npcButton.CloseButton:SetHitRectInsets(8, 8, 8, 8)

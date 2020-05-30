@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1672, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(98965, 98970)
 mod:SetEncounterID(1835)
 mod:SetZone()
@@ -28,7 +28,7 @@ local specWarnSwarm					= mod:NewSpecialWarningYou(201733)
 local specWarnShadowBolt			= mod:NewSpecialWarningDefensive(202019, nil, nil, nil, 3, 2)
 
 local timerDarkBlastCD				= mod:NewCDTimer(18, 198820, nil, nil, nil, 3)
-local timerUnerringShearCD			= mod:NewCDTimer(12, 198635, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 2, 4)
+local timerUnerringShearCD			= mod:NewCDTimer(12, 198635, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, mod:IsTank() and 2, 4)
 local timerGuileCD					= mod:NewCDTimer(39, 199193, nil, nil, nil, 6)
 local timerGuile					= mod:NewBuffFadesTimer(24, 199193, nil, nil, nil, 6)
 local timerCloudCD					= mod:NewCDTimer(32.8, 199143, nil, nil, nil, 3)

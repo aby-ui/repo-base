@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200525202232"),
-	DisplayVersion = "8.3.22 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 5, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200530012545"),
+	DisplayVersion = "8.3.24", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 5, 27, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -202,6 +202,8 @@ DBM.DefaultOptions = {
 	HideTooltips = false,
 	DisableSFX = false,
 	EnableModels = true,
+	GUIWidth = 800,
+	GUIHeight = 600,
 	RangeFrameFrames = "radar",
 	RangeFrameUpdates = "Average",
 	RangeFramePoint = "CENTER",
@@ -514,7 +516,7 @@ local tinsert, tremove, twipe, tsort, tconcat = table.insert, table.remove, tabl
 local type, select = type, select
 local GetTime = GetTime
 local bband = bit.band
-local floor, ceiling, mhuge, mmin, mmax, mrandom = math.floor, math.ceil, math.huge, math.min, math.max, math.random
+local floor, mhuge, mmin, mmax, mrandom = math.floor, math.huge, math.min, math.max, math.random
 local GetNumGroupMembers, GetRaidRosterInfo = GetNumGroupMembers, GetRaidRosterInfo
 local UnitName, GetUnitName = UnitName, GetUnitName
 local IsInRaid, IsInGroup, IsInInstance = IsInRaid, IsInGroup, IsInInstance
@@ -1305,6 +1307,20 @@ do
 				C_TimerAfter(15, function() AddMsg(self, L.OUTDATEDPROFILES) end)
 				return
 			end
+			if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
+				local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
+				version = tonumber(string.sub(version, 2))
+				if version < 122 then
+					self:Disable(true)
+					self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDSPELLTIMERS)
+					return
+				end
+			end
+			if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
+				self:Disable(true)
+				self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDRLT)
+				return
+			end
 			if GetAddOnEnableState(playerName, "DPMCore") >= 1 then
 				self:Disable(true)
 				C_TimerAfter(15, function() AddMsg(self, L.DPMCORE) end)
@@ -1351,6 +1367,7 @@ do
 								sort			= tonumber(GetAddOnMetadata(i, "X-DBM-Mod-Sort") or mhuge) or mhuge,
 								type			= GetAddOnMetadata(i, "X-DBM-Mod-Type") or "OTHER",
 								category		= GetAddOnMetadata(i, "X-DBM-Mod-Category") or "Other",
+								optionsTab		= GetAddOnMetadata(i, "X-DBM-Mod-OptionsTab"),
 								name			= GetAddOnMetadata(i, "X-DBM-Mod-Name") or GetRealZoneText(tonumber(mapIdTable[1])) or L.UNKNOWN,
 								mapId			= mapIdTable,
 								subTabs			= GetAddOnMetadata(i, "X-DBM-Mod-SubCategoriesID") and {strsplit(",", GetAddOnMetadata(i, "X-DBM-Mod-SubCategoriesID"))} or GetAddOnMetadata(i, "X-DBM-Mod-SubCategories") and {strsplit(",", GetAddOnMetadata(i, "X-DBM-Mod-SubCategories"))},
@@ -2608,6 +2625,18 @@ do
 			self:AddMsg(L.OUTDATEDPROFILES)
 			return
 		end
+		if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
+			local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
+			version = tonumber(string.sub(version, 2))
+			if version < 122 then
+				self:AddMsg(L.OUTDATEDSPELLTIMERS)
+				return
+			end
+		end
+		if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
+			self:AddMsg(L.OUTDATEDRLT)
+			return
+		end
 		if GetAddOnEnableState(playerName, "DPMCore") >= 1 then
 			self:AddMsg(L.DPMCORE)
 			return
@@ -2620,6 +2649,7 @@ do
 			DBM:AddMsg(L.UPDATEREMINDER_DISABLE)
 			return
 		end
+		local firstLoad = false
 		if not IsAddOnLoaded("DBM-GUI") then
 			local enabled = GetAddOnEnableState(playerName, "DBM-GUI")
 			if enabled == 0 then
@@ -2634,13 +2664,17 @@ do
 				end
 				return false
 			end
-			tsort(callOnLoad, function(v1, v2) return v1[2] < v2[2] end)
-			for i, v in ipairs(callOnLoad) do v[1]() end
 			if not InCombatLockdown() and not UnitAffectingCombat("player") and not IsFalling() then--We loaded in combat but still need to avoid garbage collect in combat
 				collectgarbage("collect")
 			end
+			firstLoad = true
 		end
-		return DBM_GUI:ShowHide()
+		DBM_GUI:ShowHide()
+		if firstLoad then
+			firstLoad = false
+			tsort(callOnLoad, function(v1, v2) return v1[2] < v2[2] end)
+			for i, v in ipairs(callOnLoad) do v[1]() end
+		end
 	end
 
 	function DBM:RegisterOnGuiLoadCallback(f, sort)
@@ -2664,7 +2698,12 @@ do
 
 		function dataBroker.OnClick(self, button)
 			if IsShiftKeyDown() then return end
-			DBM:LoadGUI()
+			if button == "RightButton" then
+				DBM.Options.SilentMode = DBM.Options.SilentMode == false and true or false
+				DBM:AddMsg("SilentMode is " .. (DBM.Options.SilentMode and "ON" or "OFF"))
+			else
+				DBM:LoadGUI()
+			end
 		end
 
 		function dataBroker.OnTooltipShow(GameTooltip)
@@ -2673,7 +2712,7 @@ do
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine(L.MINIMAP_TOOLTIP_FOOTER, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b, 1)
 			GameTooltip:AddLine(L.LDB_TOOLTIP_HELP1, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
-		--	GameTooltip:AddLine(L.LDB_TOOLTIP_HELP2, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
+			GameTooltip:AddLine(L.LDB_TOOLTIP_HELP2, RAID_CLASS_COLORS.MAGE.r, RAID_CLASS_COLORS.MAGE.g, RAID_CLASS_COLORS.MAGE.b)
 		end
 	end
 
@@ -4497,8 +4536,8 @@ do
 			--150 people on, only 33% chance a DBM user replies to request
 			--1000 people online, only 5% chance a DBM user replies to request
 			local _, online = GetNumGuildMembers()
-			local chances = online / 50
-			chances = ceiling(chances)--Round up to nearest whole number, it should never be less than 1
+			local chances = (online or 1) / 50
+			if chances < 1 then chances = 1 end
 			if mrandom(1, chances) == 1 then
 				DBM:Schedule(5, SendVersion, true)--Send version if 5 seconds have past since last "Hi" sync
 			end
@@ -11304,6 +11343,7 @@ function bossModPrototype:SetOptionCategory(name, cat)
 		self.optionCategories[cat] = {}
 	end
 	tinsert(self.optionCategories[cat], name)
+	tinsert(self.categorySort, cat)
 end
 
 --------------
@@ -11539,7 +11579,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200525202232" then
+	if not revision or revision == "20200530012545" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

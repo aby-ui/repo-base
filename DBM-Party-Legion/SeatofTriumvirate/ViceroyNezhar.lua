@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1981, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(124874)
 mod:SetEncounterID(2067)
 mod:SetZone()
@@ -28,9 +28,9 @@ local specWarnEntropicForce				= mod:NewSpecialWarningSpell(246324, nil, nil, ni
 local specWarnAdds						= mod:NewSpecialWarningAdds(249336, "-Healer", nil, nil, 1, 2)
 
 local timerUmbralTentaclesCD			= mod:NewCDTimer(30.4, 244769, nil, nil, nil, 1)
-local timerHowlingDarkCD				= mod:NewCDTimer(28.0, 244751, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHowlingDarkCD				= mod:NewCDTimer(28.0, 244751, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 local timerEntropicForceCD				= mod:NewCDTimer(28.0, 246324, nil, nil, nil, 2)--28-38
-local timerEternalTwilight				= mod:NewCastTimer(10, 248736, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON, nil, 2, 4)
+local timerEternalTwilight				= mod:NewCastTimer(10, 248736, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 2, 4)
 local timerAddsCD						= mod:NewAddsTimer(61.9, 249336, nil, "-Healer")
 
 mod.vb.guardsActive = 0

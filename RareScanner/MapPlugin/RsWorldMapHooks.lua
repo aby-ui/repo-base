@@ -86,8 +86,7 @@ function RareScanner:HookDropDownMenu()
 				UIDropDownMenu_AddButton(info);
 			end)
 			
-			local origOverlayFrame_onSelection = overlayFrame.OnSelection;
-			overlayFrame.OnSelection = function(self, value, checked)
+			hooksecurefunc(overlayFrame, 'OnSelection', function(self, value, checked)
 				if (value == SHOW_RARE_NPC_ICONS) then
 					private.db.map.displayNpcIcons = checked
 					RareScanner:UpdateMinimap(true)
@@ -137,8 +136,8 @@ function RareScanner:HookDropDownMenu()
 						private.db.map.maxSeenTimeEvent = private.db.map.maxSeenEventTimeBak 
 					end
 				end
-				origOverlayFrame_onSelection(self, value, checked)
-			end
+				self:GetParent():RefreshAllDataProviders();
+			end)
 			break
 		end
 	end

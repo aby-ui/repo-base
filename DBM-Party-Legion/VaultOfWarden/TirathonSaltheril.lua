@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1467, "DBM-Party-Legion", 10, 707)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(95885)
 mod:SetEncounterID(1815)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START
@@ -29,7 +29,7 @@ local specWarnFuriousBlast			= mod:NewSpecialWarningInterrupt(191823, "HasInterr
 local specWarnFelMortar				= mod:NewSpecialWarningDodge(202913, nil, nil, nil, 2, 2)
 local specWarnFelMortarGTFO			= mod:NewSpecialWarningMove(202919, nil, nil, nil, 1, 2)
 
-local timerDarkStrikes				= mod:NewBuffActiveTimer(11, 191941, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--tooltip says 15 but every log was 10-11
+local timerDarkStrikes				= mod:NewBuffActiveTimer(11, 191941, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--tooltip says 15 but every log was 10-11
 
 function mod:OnCombatStart(delay)
 

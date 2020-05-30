@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1655, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(103344)
 mod:SetEncounterID(1837)
 mod:SetZone()
@@ -20,9 +20,9 @@ local yellThrow						= mod:NewYell(204658, 2764)--yell so others can avoid splas
 local specWarnBreath				= mod:NewSpecialWarningDefensive(204667, "Tank", nil, nil, 1, 2)
 
 local timerShatteredEarthCD			= mod:NewCDTimer(35, 204666, nil, nil, nil, 2)--35-62 variation? is this health based?
-local timerThrowCD					= mod:NewCDTimer(28, 204658, nil, nil, nil, 3, nil, DBM_CORE_TANK_ICON, nil, mod:IsTank() and 2, 4)--29-32
+local timerThrowCD					= mod:NewCDTimer(28, 204658, nil, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON, nil, mod:IsTank() and 2, 4)--29-32
 local timerRootsCD					= mod:NewCDTimer(23, 204574, nil, nil, nil, 3)--23-31
-local timerBreathCD					= mod:NewCDTimer(26.5, 204667, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--26--35
+local timerBreathCD					= mod:NewCDTimer(26.5, 204667, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--26--35
 
 --AKA Crushing Grip
 function mod:ThrowTarget(targetname, uId)

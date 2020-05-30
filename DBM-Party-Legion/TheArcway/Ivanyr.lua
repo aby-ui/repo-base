@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1497, "DBM-Party-Legion", 6, 726)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(98203)
 mod:SetEncounterID(1827)
 mod:SetZone()
@@ -31,7 +31,7 @@ local specWarnOverchargeMana		= mod:NewSpecialWarningInterrupt(196392, "HasInter
 
 local timerVolatileMagicCD			= mod:NewCDTimer(32, 196562, nil, nil, nil, 3)--Review, Might be health based? or just really variable
 local timerNetherLinkCD				= mod:NewCDTimer(30, 196804, nil, nil, nil, 3)
-local timerOverchargeManaCD			= mod:NewCDTimer(40, 196392, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerOverchargeManaCD			= mod:NewCDTimer(40, 196392, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 
 mod:AddRangeFrameOption(8, 196562)
 

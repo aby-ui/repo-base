@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1489, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(95676)
 mod:SetEncounterID(1809)
 mod:SetZone()
@@ -26,7 +26,7 @@ local specWarnAdd					= mod:NewSpecialWarningSwitch(201221, "-Healer", nil, nil,
 local specWarnSurge					= mod:NewSpecialWarningInterrupt(198750, "HasInterrupt", nil, nil, 1, 2)
 
 --local timerSpearCD					= mod:NewCDTimer(8, 198077, nil, nil, nil, 3)--More data needed
-local timerTempestCD				= mod:NewCDCountTimer(40, 198263, nil, nil, nil, 2, nil, DBM_CORE_DEADLY_ICON)--More data needed
+local timerTempestCD				= mod:NewCDCountTimer(40, 198263, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)--More data needed
 local timerShatterSpearsCD			= mod:NewCDTimer(56, 198077, nil, nil, nil, 2)
 local timerRunicBrandCD				= mod:NewCDCountTimer(56, 197961, nil, nil, nil, 3)
 local timerAddCD					= mod:NewCDTimer(54, 201221, nil, nil, nil, 1, 201215)--54-58

@@ -1,4 +1,4 @@
-local L = DBM_GUI_Translations
+local L = DBM_GUI_L
 
 DBM_GUI = {
 	frameTypes = {}
@@ -165,15 +165,14 @@ function DBM_GUI:CreateBossModPanel(mod)
 	local category
 
 	local iconstat = panel.frame:CreateFontString("DBM_GUI_Mod_Icons" .. mod.localization.general.name, "ARTWORK")
-	iconstat:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -168, -10)
+	iconstat:SetPoint("TOP", panel.frame, 0, -10)
 	iconstat:SetFontObject(GameFontNormal)
 	iconstat:SetText(L.IconsInUse)
 	for i = 1, 8 do
 		local icon = panel.frame:CreateTexture()
 		icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
-		icon:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -150 - (i * 18), -26)
-		icon:SetWidth(16)
-		icon:SetHeight(16)
+        icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26)
+        icon:SetSize(16, 16)
 		if not mod.usedIcons or not mod.usedIcons[i] then
 			icon:SetAlpha(0.25)
 		end
@@ -189,7 +188,7 @@ function DBM_GUI:CreateBossModPanel(mod)
 	end
 
 	local reset = panel:CreateButton(L.Mod_Reset, 155, 30, nil, GameFontNormalSmall)
-	reset:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -6, -6)
+	reset:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -24, -4)
 	reset:SetScript("OnClick", function(self)
 		DBM:LoadModDefaultOption(mod)
 	end)
@@ -200,10 +199,12 @@ function DBM_GUI:CreateBossModPanel(mod)
 		mod:Toggle()
 	end)
 
+	local scannedCategories = {}
 	for _, catident in pairs(mod.categorySort) do
 		category = mod.optionCategories[catident]
-		if category then
-			local catpanel = panel:CreateArea(mod.localization.cats[catident], nil, nil, true)
+		if not scannedCategories[catident] and category then
+			scannedCategories[catident] = true
+			local catpanel = panel:CreateArea(mod.localization.cats[catident])
 			local catbutton, lastButton, addSpacer
 			local hasDropdowns = 0
 			for _, v in ipairs(category) do
@@ -221,7 +222,9 @@ function DBM_GUI:CreateBossModPanel(mod)
 						else
 							catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true)
 						end
-						catbutton:SetChecked(mod.Options[v])
+						catbutton:SetScript("OnShow", function(self)
+							self:SetChecked(mod.Options[v])
+						end)
 						catbutton:SetScript("OnClick", function(self)
 							mod.Options[v] = not mod.Options[v]
 							if mod.optionFuncs and mod.optionFuncs[v] then
@@ -233,7 +236,10 @@ function DBM_GUI:CreateBossModPanel(mod)
 						catbutton = catpanel:CreateButton(v, but.width, but.height, but.onClick, but.fontObject)
 					elseif mod.editboxes and mod.editboxes[v] then
 						local editBox = mod.editboxes[v]
-						catbutton = catpanel:CreateEditBox(mod.localization.options[v], mod.Options[v], editBox.width, editBox.height)
+						catbutton = catpanel:CreateEditBox(mod.localization.options[v], "", editBox.width, editBox.height)
+						catbutton:SetScript("OnShow", function(self)
+							catbutton:SetText(mod.Options[v])
+						end)
 						catbutton:SetScript("OnEnterPressed", function(self)
 							if mod.optionFuncs and mod.optionFuncs[v] then
 								mod.optionFuncs[v]()
@@ -242,7 +248,9 @@ function DBM_GUI:CreateBossModPanel(mod)
 					elseif mod.sliders and mod.sliders[v] then
 						local slider = mod.sliders[v]
 						catbutton = catpanel:CreateSlider(mod.localization.options[v], slider.minValue, slider.maxValue, slider.valueStep)
-						catbutton:SetValue(mod.Options[v])
+						catbutton:SetScript("OnShow", function(self)
+							self:SetValue(mod.Options[v])
+						end)
 						catbutton:HookScript("OnValueChanged", function(self)
 							if mod.optionFuncs and mod.optionFuncs[v] then
 								mod.optionFuncs[v]()
@@ -274,7 +282,6 @@ function DBM_GUI:CreateBossModPanel(mod)
 				end
 			end
 			catpanel:AutoSetDimension(hasDropdowns)
-			panel:SetMyOwnHeight()
 		end
 	end
 end
@@ -470,15 +477,14 @@ do
 		local modProfileArea
 		if not subtab then
 			local modProfileDropdown = {}
-			modProfileArea = panel:CreateArea(L.Area_ModProfile, panel.frame:GetWidth() - 20, 135, true)
+			modProfileArea = panel:CreateArea(L.Area_ModProfile, 135)
 			modProfileArea.frame:SetPoint("TOPLEFT", 10, -25)
 			local resetButton = modProfileArea:CreateButton(L.ModAllReset, 200, 20)
 			resetButton:SetPoint("TOPLEFT", 10, -14)
 			resetButton:SetScript("OnClick", function()
 				DBM:LoadAllModDefaultOption(addon.modId)
 			end)
-			local savedVarsName = addon.modId:gsub("-", "") .. "_AllSavedVars"
-			for charname, charTable in pairs(_G[savedVarsName]) do
+			for charname, charTable in pairs(_G[addon.modId:gsub("-", "") .. "_AllSavedVars"] or {}) do
 				for bossid, optionTable in pairs(charTable) do
 					if type(optionTable) == "table" then
 						for i = 0, 3 do
@@ -567,7 +573,7 @@ do
 
 		local singleline = 0
 		local doubleline = 0
-		local area = panel:CreateArea(nil, panel.frame:GetWidth() - 20, 0)
+		local area = panel:CreateArea()
 		area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -180 or -25)
 		area.onshowcall = {}
 
@@ -1403,7 +1409,6 @@ do
 				v()
 			end
 		end)
-		panel:SetMyOwnHeight()
 		DBM_GUI_OptionsFrame:DisplayFrame(panel.frame, true)
 	end
 
@@ -1442,7 +1447,11 @@ do
 
 			if not addon.panel then
 				-- Create a Panel for "Naxxramas" "Eye of Eternity" ...
-				addon.panel = Categories[addon.category]:CreateNewPanel(addon.modId or "Error: No-modId", nil, false, nil, addon.name)
+				if addon.optionsTab then
+					addon.panel = DBM_GUI:CreateNewPanel(addon.modId or "Error: No-modId", addon.optionsTab, true, nil, addon.name)
+				else
+					addon.panel = Categories[addon.category]:CreateNewPanel(addon.modId or "Error: No-modId", nil, false, nil, addon.name)
+				end
 
 				if not IsAddOnLoaded(addon.modId) then
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
@@ -1456,8 +1465,6 @@ do
 							self:Hide()
 							self.headline:Hide()
 							CreateBossModTab(self.modid, self.modid.panel)
-							DBM_GUI_OptionsFrameBossMods:Hide()
-							DBM_GUI_OptionsFrameBossMods:Show()
 						end
 					end)
 					button:SetPoint("CENTER", 0, -20)
@@ -1485,9 +1492,9 @@ do
 				if mod.modId == addon.modId then
 					if not mod.panel and (not addon.subTabs or (addon.subPanels and addon.subPanels[mod.subTab])) then
 						if addon.subTabs and addon.subPanels[mod.subTab] then
-							mod.panel = addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", nil, nil, nil, mod.localization.general.name)
+							mod.panel = addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.optionsTab, nil, nil, mod.localization.general.name)
 						else
-							mod.panel = addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", nil, nil, nil, mod.localization.general.name)
+							mod.panel = addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.optionsTab, nil, nil, mod.localization.general.name)
 						end
 						DBM_GUI:CreateBossModPanel(mod)
 					end

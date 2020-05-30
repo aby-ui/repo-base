@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HoVTrash", "DBM-Party-Legion", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -20,7 +20,7 @@ local specWarnUnrulyYell			= mod:NewSpecialWarningInterrupt(199726, "HasInterrup
 
 function mod:CrackleTarget(targetname, uId)
 	if not targetname then
-		warnCrackle:Show(DBM_CORE_UNKNOWN)
+		warnCrackle:Show(DBM_CORE_L.UNKNOWN)
 		return
 	end
 	if targetname == UnitName("player") then

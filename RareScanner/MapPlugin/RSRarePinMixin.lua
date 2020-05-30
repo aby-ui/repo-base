@@ -229,7 +229,7 @@ function RSRarePinMixin:OnMouseEnter()
 	end)
 	
 	-- NPC name
-	line = tooltip:AddLine()
+	local line = tooltip:AddLine()
 	tooltip:SetCell(line, 1, self:TextColor(self.name, "3399FF"), nil, "LEFT", 10)
 	
 	-- Last time seen
@@ -442,8 +442,8 @@ end
 
 function RSRarePinMixin:OnReleased()
 	if (self.tooltip) then
-		RareScannerMapTooltip:Release(self.tooltip)
 		self.tooltip:Hide()
+		RareScannerMapTooltip:Release(self.tooltip)
 		self.tooltip = nil
 	end
 	ItemToolTip:Hide()

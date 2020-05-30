@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200528034849")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetZone()
@@ -315,8 +315,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:Unschedule(umbralEruptionLoop)
 			--Schedule P2 Loop
 			self.vb.bubblingCount = 0
-			timerBubblingOverflowCD:Start(10)
-			self:Schedule(10, bubblingOverflowLoop, self)
+			timerBubblingOverflowCD:Start(8)
+			self:Schedule(8, bubblingOverflowLoop, self)
 		end
 		updateBreathTimer(self)
 	elseif spellId == 306933 then

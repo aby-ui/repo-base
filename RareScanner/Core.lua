@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 20
-local CURRENT_LOOT_DB_VERSION = 34
+local CURRENT_DB_VERSION = 23
+local CURRENT_LOOT_DB_VERSION = 35
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -40,7 +40,7 @@ local HARD_RESET = {
 }
 
 -- Command line input
-SLASH_RARESCANNER_CMD1 = "/rarescanner"
+local SLASH_RARESCANNER_CMD1 = "/rarescanner"
 local CMD_HELP = "help"
 local CMD_TOGGLE_MAP_ICONS = "tmi"
 local CMD_TOGGLE_ALERTS = "ta"
@@ -144,7 +144,7 @@ local PROFILE_DEFAULTS = {
 }
 
 -- Main button
-local scanner_button = _G.CreateFrame("Button", "scanner_button", UIParent, "SecureActionButtonTemplate")
+local scanner_button = CreateFrame("Button", "scanner_button", UIParent, "SecureActionButtonTemplate")
 scanner_button:Hide();
 scanner_button:SetIgnoreParentScale(true)
 scanner_button:SetFrameStrata("MEDIUM")
@@ -185,7 +185,7 @@ scanner_button:SetScript("OnHide", function(self)
 end)
 
 -- Model view
-scanner_button.ModelView = _G.CreateFrame("PlayerModel", "mxpplayermodel", scanner_button)
+scanner_button.ModelView = CreateFrame("PlayerModel", "mxpplayermodel", scanner_button)
 scanner_button.ModelView:ClearAllPoints()
 scanner_button.ModelView:SetPoint("TOP", 0 , 122) -- bottom left corner 2px separation from scanner_button's top left corner
 scanner_button.ModelView:SetSize(120, 120)
@@ -225,14 +225,14 @@ scanner_button.Description_text:SetPoint("TOPLEFT", Description, "BOTTOMLEFT", 0
 scanner_button.Description_text:SetPoint("RIGHT", Description)
 
 -- Close button
-scanner_button.CloseButton = _G.CreateFrame("Button", "CloseButton", scanner_button, "UIPanelCloseButton")
+scanner_button.CloseButton = CreateFrame("Button", "CloseButton", scanner_button, "UIPanelCloseButton")
 scanner_button.CloseButton:SetPoint("BOTTOMRIGHT")
 scanner_button.CloseButton:SetSize(32, 32)
 scanner_button.CloseButton:SetScale(0.8)
 scanner_button.CloseButton:SetHitRectInsets(8, 8, 8, 8)
 
 -- Filter disabled button
-scanner_button.FilterDisabledButton = _G.CreateFrame("Button", "FilterDisabledButton", scanner_button, "GameMenuButtonTemplate")
+scanner_button.FilterDisabledButton = CreateFrame("Button", "FilterDisabledButton", scanner_button, "GameMenuButtonTemplate")
 scanner_button.FilterDisabledButton:SetPoint("BOTTOMLEFT", 5, 5)
 scanner_button.FilterDisabledButton:SetSize(16, 16)
 scanner_button.FilterDisabledButton:SetNormalTexture([[Interface\WorldMap\Dash_64]])
@@ -256,7 +256,7 @@ scanner_button.FilterDisabledButton:SetScript("OnLeave", function(self)
 end)
 
 -- Filter enabled button
-scanner_button.FilterEnabledButton = _G.CreateFrame("Button", "FilterEnabledButton", scanner_button, "GameMenuButtonTemplate")
+scanner_button.FilterEnabledButton = CreateFrame("Button", "FilterEnabledButton", scanner_button, "GameMenuButtonTemplate")
 scanner_button.FilterEnabledButton:SetPoint("BOTTOMLEFT", 5, 5)
 scanner_button.FilterEnabledButton:SetSize(16, 16)
 scanner_button.FilterEnabledButton:SetScript("OnClick", function(self)
@@ -287,19 +287,19 @@ scanner_button.FilterEnabledButton:SetNormalTexture(scanner_button.FilterEnabled
 scanner_button.FilterEnabledButton:Hide()
 
 -- Loot bar
-scanner_button.LootBar = _G.CreateFrame("Frame", "LootBar", scanner_button)
-scanner_button.LootBar.itemFramesPool = _G.CreateFramePool("FRAME", scanner_button.LootBar, "RSLootTemplate");
-scanner_button.LootBar.LootBarToolTip = _G.CreateFrame("GameTooltip", "LootBarToolTip", scanner_button, "GameTooltipTemplate")
-scanner_button.LootBar.LootBarToolTipComp1 = _G.CreateFrame("GameTooltip", "LootBarToolTipComp1", nil, "GameTooltipTemplate")
+scanner_button.LootBar = CreateFrame("Frame", "LootBar", scanner_button)
+scanner_button.LootBar.itemFramesPool = CreateFramePool("FRAME", scanner_button.LootBar, "RSLootTemplate");
+scanner_button.LootBar.LootBarToolTip = CreateFrame("GameTooltip", "LootBarToolTip", scanner_button, "GameTooltipTemplate")
+scanner_button.LootBar.LootBarToolTipComp1 = CreateFrame("GameTooltip", "LootBarToolTipComp1", nil, "GameTooltipTemplate")
 scanner_button.LootBar.LootBarToolTipComp1:SetScale(0.8)
-scanner_button.LootBar.LootBarToolTipComp2 = _G.CreateFrame("GameTooltip", "LootBarToolTipComp2", nil, "GameTooltipTemplate")
+scanner_button.LootBar.LootBarToolTipComp2 = CreateFrame("GameTooltip", "LootBarToolTipComp2", nil, "GameTooltipTemplate")
 scanner_button.LootBar.LootBarToolTipComp2:SetScale(0.8)
 scanner_button.LootBar.LootBarToolTip.shoppingTooltips = { scanner_button.LootBar.LootBarToolTipComp1, scanner_button.LootBar.LootBarToolTipComp2 }
 
 -- Show navigation buttons
-scanner_button.NextButton = _G.CreateFrame("Frame", "NextButton", scanner_button, "RSRightNavTemplate")
+scanner_button.NextButton = CreateFrame("Frame", "NextButton", scanner_button, "RSRightNavTemplate")
 scanner_button.NextButton:Hide()
-scanner_button.PreviousButton = _G.CreateFrame("Frame", "PreviousButton", scanner_button, "RSLeftNavTemplate")
+scanner_button.PreviousButton = CreateFrame("Frame", "PreviousButton", scanner_button, "RSLeftNavTemplate")
 scanner_button.PreviousButton:Hide()
 
 -- Player login
@@ -388,9 +388,9 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						-- In dungeons and such it doesnt return values, so use the ones in the database
 						-- They wont match the real position, but... what are we gonna do
 						if (not vignetteInfo.x or not vignetteInfo.y) then
-							if (type(private.ZONE_IDS[npcID].zoneID) == "table" and private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()]) then
-								vignetteInfo.x = private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()].x
-								vignetteInfo.y = private.ZONE_IDS[npcID].zoneID[WorldMapFrame:GetMapID()].y
+							if (type(private.ZONE_IDS[npcID].zoneID) == "table" and private.ZONE_IDS[npcID].zoneID[mapID]) then
+								vignetteInfo.x = private.ZONE_IDS[npcID].zoneID[mapID].x
+								vignetteInfo.y = private.ZONE_IDS[npcID].zoneID[mapID].y
 							else
 								vignetteInfo.x = private.ZONE_IDS[npcID].x
 								vignetteInfo.y = private.ZONE_IDS[npcID].y
@@ -763,7 +763,7 @@ end)
 
 function RareScanner:ProcessKill(npcID, forzed)
 	-- Mark as killed
-	if (npcID and private.dbglobal.rares_found[npcID] and private.ZONE_IDS[npcID]) then
+	if (npcID and private.ZONE_IDS[npcID]) then
 		-- If the npc belongs to several zones we have to use the players zone
 		if (type(private.ZONE_IDS[npcID].zoneID) == "table") then
 			local playerZoneID = C_Map.GetBestMapForUnit("player")
@@ -818,21 +818,6 @@ function RareScanner:ProcessKill(npcID, forzed)
 				RareScanner:PrintDebugMessage("Se ha detectado que ya disponemos de questID para el rare matado con ID "..npcID)
 			end
 		end
-	-- Mark as killed (ignored NPC)
-	elseif (npcID and private.ZONE_IDS[npcID]) then
-		-- If its a world quest reseteable rare
-		if (private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
-			private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
-		-- If its a warfront reseteable rare
-		elseif (private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
-			private.dbchar.rares_killed[npcID] = RareScanner:GetWarFrontResetTime()
-		-- If it wont ever be a rare anymore
-		elseif (private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.ZONE_IDS[npcID].zoneID], C_Map.GetMapArtID(private.ZONE_IDS[npcID].zoneID))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
-			private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
-		end
 	-- Just in case we dont have this element in our zone ids (some vignettes with wrong names or double vignette)
 	-- We can ignore this ones
 	elseif (npcID) then
@@ -851,17 +836,17 @@ function RareScanner:ProcessKillByZone(npcID, zoneID)
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." continua reapareciendo")
 	-- If its a world quest reseteable rare
 	elseif ((private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		or (private.dbglobal.rares_found[npcID] and private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
 		private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
 	-- If its a warfront reseteable rare
 	elseif ((private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		or (private.dbglobal.rares_found[npcID] and private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
 		private.dbchar.rares_killed[npcID] = RareScanner:GetWarFrontResetTime()
 	-- If it wont ever be a rare anymore
 	elseif ((private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID)))) then
+		or (private.dbglobal.rares_found[npcID] and private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
 		private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 	-- If it respawns after a while we dont need to keep track of death
@@ -1586,7 +1571,7 @@ function RareScanner:OnInitialize()
 	self:SetupOptions()
 	
 	-- Setup our map provider
-	WorldMapFrame:AddDataProvider(CreateFromMixins(RareScannerDataProviderMixin));
+	WorldMapFrame:AddDataProvider(RareScannerDataProviderMixin);
 	
 	-- Internal not discovered lists
 	self:LoadNotDiscoveredLists()
@@ -1958,7 +1943,7 @@ function RareScanner:LoadRareNames(db)
 	private.dbglobal.rare_names[GetLocale()] = {}
 	
 	local ITERATIONS = 3
-	current_iteration = 0
+	local current_iteration = 0
 	local ticker = C_Timer.NewTicker(1, function()
 		for i, npcID in ipairs(private.RARE_LIST) do
 			RareScanner:GetNpcName(npcID);
@@ -2211,7 +2196,8 @@ local function GetQTip()
 			return tip
 		end
 	end
-	local tip = CreateFrame('GameTooltip', 'NameNpcsTip' .. (#QTips + 1), WorldFrame, 'GameTooltipTemplate')
+	--local tip = CreateFrame('GameTooltip', 'NameNpcsTip' .. (#QTips + 1), UIParent, 'GameTooltipTemplate')
+	local tip = CreateFrame('GameTooltip', 'NameNpcsTip' .. (#QTips + 1), UIParent, 'GameTooltipTemplate')
 	tip:Show()
 	tip:SetHyperlink('unit:')
 	tip.lastUpdate = now
@@ -2225,7 +2211,7 @@ function RareScanner:GetNpcName(npcID)
 	end
 	
 	local tip = GetQTip()
-	tip:SetOwner(WorldFrame, 'ANCHOR_NONE')
+	tip:SetOwner(UIParent, 'ANCHOR_NONE')
 	tip.npcID = npcID or 0
 	tip:SetScript('OnTooltipSetUnit', function(self) 
 		local tipName = self:GetName()

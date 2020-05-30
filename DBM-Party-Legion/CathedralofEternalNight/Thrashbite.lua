@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1906, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(117194)
 mod:SetEncounterID(2057)
 mod:SetZone()
@@ -20,12 +20,12 @@ local warnScornfulGaze				= mod:NewTargetAnnounce(237726, 4, nil, nil, 2)
 local warnHeaveCrud					= mod:NewSpellAnnounce(243124, 2)
 
 local specWarnPulvCrudgel			= mod:NewSpecialWarningRun(237276, "Melee", nil, nil, 4, 2)
-local specWarnMindControl			= mod:NewSpecialWarningSwitchCount(238484, nil, DBM_CORE_AUTO_SPEC_WARN_OPTIONS.switch:format(238484), nil, 1, 2)
+local specWarnMindControl			= mod:NewSpecialWarningSwitchCount(238484, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.switch:format(238484), nil, 1, 2)
 local specWarnScornfulGaze			= mod:NewSpecialWarningMoveTo(237726, nil, nil, nil, 3, 2)
 local yellScornfulGaze				= mod:NewYell(237726)
 
-local timerPulvCrudgelCD			= mod:NewCDTimer(34.2, 237276, nil, nil, nil, 2, nil, DBM_CORE_TANK_ICON)--Might be shorter if not stunned by gaze/books
-local timerScornfulGazeCD			= mod:NewCDTimer(36.5, 237726, nil, nil, nil, 3, nil, DBM_CORE_DEADLY_ICON)
+local timerPulvCrudgelCD			= mod:NewCDTimer(34.2, 237276, nil, nil, nil, 2, nil, DBM_CORE_L.TANK_ICON)--Might be shorter if not stunned by gaze/books
+local timerScornfulGazeCD			= mod:NewCDTimer(36.5, 237726, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
 local timerHeaveCrudCD				= mod:NewCDTimer(36.5, 243124, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)

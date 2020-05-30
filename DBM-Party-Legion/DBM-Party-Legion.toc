@@ -30,10 +30,10 @@
 ## X-DBM-Mod-Name-koKR: 5인 던전 (군단)
 ## X-DBM-Mod-Sort: 515
 ## X-DBM-Mod-MapID: 1501, 1466, 1456, 1477, 1458, 1516, 1571, 1492, 1544, 1493, 1651, 1677, 1753
-## X-DBM-Mod-MinCoreRevision: 14737
+## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r14
+## Version: r16
 
 localization.en.lua
 localization.cn.lua

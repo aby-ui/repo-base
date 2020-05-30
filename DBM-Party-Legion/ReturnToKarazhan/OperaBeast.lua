@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1827, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200220142801")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(114329, 114522, 114330, 114328)
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END
@@ -44,14 +44,14 @@ local specWarnDentArmor				= mod:NewSpecialWarningDefensive(227985, nil, nil, ni
 local specWarnDinnerBell			= mod:NewSpecialWarningInterrupt(227987, "HasInterrupt", nil, nil, 1, 2)
 
 --Luminore
-local timerHeatWaveCD				= mod:NewCDTimer(26, 228025, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerHeatWaveCD				= mod:NewCDTimer(26, 228025, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 --Mrs.Cauldrons
-local timerLeftoversCD				= mod:NewCDTimer(17, 228019, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerLeftoversCD				= mod:NewCDTimer(17, 228019, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 --Babblet
 local timerSevereDustingCD			= mod:NewCDTimer(12, 228221, nil, nil, nil, 3)
 --Coggleston
 local timerDentArmorCD				= mod:NewCDTimer(20, 227985, nil, "Tank|Healer", nil, 5)
-local timerDinnerBellCD				= mod:NewCDTimer(10.9, 227987, nil, nil, nil, 4, nil, DBM_CORE_INTERRUPT_ICON)
+local timerDinnerBellCD				= mod:NewCDTimer(10.9, 227987, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
 

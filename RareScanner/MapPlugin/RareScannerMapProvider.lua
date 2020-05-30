@@ -100,7 +100,6 @@ function RareScanner:RefreshAllData(mapID, dataProviderMixin)
 	end
 end
 
- 
 function RareScanner:AddPin(npcID, npcInfo, mapID, dataProviderMixin)
 	local npcInfoBak = nil
 	
@@ -307,31 +306,17 @@ end
 
 RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);
 
-function RareScannerDataProviderMixin:OnAdded(mapCanvas)
-	MapCanvasDataProviderMixin.OnAdded(self, mapCanvas);
-	self:InitializeAllTrackingTables();
+function RareScannerDataProviderMixin:OnMapChanged()
+	self:RefreshAllData();
 end
 
-function RareScannerDataProviderMixin:OnShow()
-
-end
- 
 function RareScannerDataProviderMixin:OnHide()
 	self:RemoveAllData()
 end
- 
-function RareScannerDataProviderMixin:OnEvent(event, ...)
 
-end
- 
 function RareScannerDataProviderMixin:RemoveAllData()
 	self:GetMap():RemoveAllPinsByTemplate("RSRarePinTemplate");
 	self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
-	self:InitializeAllTrackingTables();
-end
- 
-function RareScannerDataProviderMixin:InitializeAllTrackingTables()
-
 end
  
 function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
@@ -344,10 +329,5 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	local mapID = self:GetMap():GetMapID();
 	RareScanner:PrintDebugMessage("DEBUG: MAPID actual "..mapID.." ARTID actual "..C_Map.GetMapArtID(mapID))
 
-	-- 
 	RareScanner:RefreshAllData(mapID, self)
-end
- 
-function RareScannerDataProviderMixin:OnMapChanged()
-	self:RefreshAllData();
 end

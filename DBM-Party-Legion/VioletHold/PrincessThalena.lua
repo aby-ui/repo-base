@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1702, "DBM-Party-Legion", 9, 777)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(102431)
 mod:SetEncounterID(1855)
 mod:SetZone()
@@ -27,8 +27,8 @@ local specWarnEssenceoftheBloodQueen= mod:NewSpecialWarningYou(202779)
 local specWarnBloodthirst			= mod:NewSpecialWarningYou(202792, nil, nil, nil, 3)
 local yellBloodThirst				= mod:NewShortFadesYell(202792)
 
-local timerHunger					= mod:NewBuffFadesTimer(20, 202792, nil, nil, nil, 5, nil, DBM_CORE_DEADLY_ICON)
-local timerBloodCallCD				= mod:NewNextTimer(30, 203381, nil, nil, nil, 1, nil, DBM_CORE_HEROIC_ICON)
+local timerHunger					= mod:NewBuffFadesTimer(20, 202792, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
+local timerBloodCallCD				= mod:NewNextTimer(30, 203381, nil, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
 
 function mod:OnCombatStart(delay)
 	if not self:IsNormal() then

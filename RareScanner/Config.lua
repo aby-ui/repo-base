@@ -171,6 +171,14 @@ local DEFAULT_MAIN_CATEGORY = 0
 
 local general_options
 
+local function RS_Set(list)
+	local set = {}
+	for k, _ in pairs(list) do 
+		set[k] = true 
+	end
+	return set
+end
+
 local function GetGeneralOptions()
 	local orderedMarkers = {}
 	for k, v in pairs(private.MARKERS) do
@@ -903,14 +911,6 @@ local function GetFilterOptions()
 	end
 	
 	return filter_options
-end
-
-function RS_Set(list)
-	local set = {}
-	for k, _ in pairs(list) do 
-		set[k] = true 
-	end
-	return set
 end
 
 local zones_filter_options

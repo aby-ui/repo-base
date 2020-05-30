@@ -139,6 +139,29 @@ data.corrupts.passive_avoidance = { 8, 12, 16 } --8% 12% 16%
 data.corrupts.passive_leech = { 17, 28, 45 } --3% 5% 8%
 for _,v in pairs(data.affixes) do v.corrupt = data.corrupts[v.key][v.level] end
 
+local icons = {
+  bleed = "Interface/Icons/Ability_IronMaidens_CorruptedBlood",
+  clarity = "Interface/Icons/ability_warlock_soulswap",
+  echo = "Interface/Icons/Ability_Priest_VoidEntropy",
+  passive_avoidance = "Interface/Icons/spell_warlock_demonsoul",
+  passive_crit = "Interface/Icons/Ability_Priest_ShadowyApparition",
+  passive_crit_dam = "Interface/Icons/Achievement_Profession_Fishing_FindFish",
+  passive_haste = "Interface/Icons/Ability_Mage_NetherWindPresence",
+  passive_leech = "Interface/Icons/Spell_Shadow_LifeDrain02_purple",
+  passive_mastery = "Interface/Icons/Ability_Rogue_SinisterCalling",
+  passive_versatility = "Interface/Icons/Spell_Arcane_ArcaneTactics",
+  proc_crit = "Interface/Icons/Ability_Hunter_RaptorStrike",
+  proc_haste = "Interface/Icons/Ability_Warrior_BloodFrenzy",
+  proc_mastery = "Interface/Icons/Spell_Nature_FocusedMind",
+  proc_versatility = "Interface/Icons/Ability_Hunter_OneWithNature",
+  ritual = "Interface/Icons/Spell_Shadow_Shadesofdarkness",
+  star = "Interface/Icons/Ability_Druid_Starfall",
+  truth = "Interface/Icons/INV_Wand_1H_NzothRaid_D_01",
+  twilight = "Interface/Icons/Spell_Priest_VoidSear",
+  twisted = "Interface/Icons/Achievement_Boss_YoggSaron_01",
+  special = "INterface\\Icons\\INV_Misc_QuestionMark",
+}
+
 --[[
 local function fake_item(diff, affix)
   local diffs = { "", "", "4822:1487", "", "4823:1502", "4824:1517" }
@@ -240,7 +263,7 @@ function U1GetAllCorruptionText(slotLinks)
         local lv1 = info % 100; info = math.floor(info / 100)
         local lv2 = info % 100; info = math.floor(info / 100)
         local lv3 = info % 100;
-        local line = (LOCALES[key] or LOCALES.UNKNOWN)
+        local line = format("\124T%s:11\124t ", icons[key] or icons.special) .. (LOCALES[key] or LOCALES.UNKNOWN)
 
         local total
         if key:sub(1, #"passive_") == "passive_" then
@@ -312,6 +335,74 @@ local hookTooltipSetItem = function(self, link)
 end
 SetOrHookScript(GameTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
+
+--[[------------------------------------------------------------
+兑换信息
+---------------------------------------------------------------]]
+local success, CharIcon = pcall(function() return CharacterStatsPane.ItemLevelFrame.Corruption end)
+if success and GetCVar("portal") == "CN" then
+    local prices = { [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
+    local vendors = {
+        { { "truth", 1, }, { "proc_mastery", 1, }, { "passive_crit_dam", 2, }, { "passive_mastery", 2, }, { "passive_haste", 3, }, { "twisted", 3, }, },
+        { { "proc_mastery", 1, }, { "ritual", 1, }, { "proc_crit", 2, }, { "passive_leech", 2, }, { "truth", 2, }, { "passive_versatility", 3, }, { "passive_avoidance", 2, }, },
+        { { "star", 2, }, { "proc_versatility", 1, }, { "clarity", 1, }, { "passive_crit", 2, }, { "proc_haste", 3, }, { "passive_leech", 3, }, { "passive_avoidance", 3, }, },
+        { { "passive_crit", 1, }, { "passive_leech", 1, }, { "passive_haste", 2, }, { "twilight", 2, }, { "proc_mastery", 3, }, { "passive_crit_dam", 3, }, },
+    }
+    local firstTime = time({ year =2020, month=5, day=21, hour=7})
+    local interval = 60*60*24*7/2
+    local timeFormat = "%m月%d日%H:%M"
+
+    local tip = CorruptionVendorTooltip or CreateFrame("GameTooltip", "CorruptionVendorTooltip", UIParent, "GameTooltipTemplate")
+    SetOrHookScript(GameTooltip, "OnHide", function() tip:Hide() end)
+
+    local function formatOne(key, level)
+        if not key then return " " end
+        return format("\124T%s:11\124t %d级%s %s", icons[key] or icons.special, level, LOCALES[key] or LOCALES.UNKNOWN, data.corrupts[key] and prices[data.corrupts[key][level]] or "????")
+    end
+
+    local function addVendorTip(list)
+        for i=1, #list, 2 do
+            local left = formatOne(list[i][1], list[i][2])
+            local right = list[i+1] and formatOne(list[i+1][1], list[i+1][2]) or " "
+            GameTooltip_AddColoredDoubleLine(tip, left, right, HIGHLIGHT_FONT_COLOR, HIGHLIGHT_FONT_COLOR, true);
+        end
+    end
+
+    CharIcon:HookScript("OnEnter", function()
+        local round = floor((time()-firstTime)/interval)
+        local nextDate = date("%m月%d日 %H:%M", firstTime + (round+1) * interval)
+
+        tip:SetOwner(GameTooltip, "ANCHOR_NONE")
+        tip:ClearAllPoints()
+        tip:SetMinimumWidth(100)
+        tip:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 5, 0)
+        GameTooltip_AddColoredLine(tip, "腐蚀兑换情况", HIGHLIGHT_FONT_COLOR);
+        GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，因为国服更新时间晚于美服，所以北京时间周二晚23:00可以预知周四早7:00，每周六中午11:00可以预知周日晚19:00刷新的腐蚀", NORMAL_FONT_COLOR);
+        GameTooltip_AddBlankLineToTooltip(tip);
+        GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR);
+        local list = vendors[round + 1]
+        if not list then
+            GameTooltip_AddColoredLine(tip, "没有数据，请更新爱不易", HIGHLIGHT_FONT_COLOR)
+            tip:Show()
+            return
+        end
+        addVendorTip(list)
+
+        GameTooltip_AddBlankLineToTooltip(tip);
+        GameTooltip_AddColoredLine(tip, "下一轮 " .. date(timeFormat, firstTime + (round+1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+2) * interval), NORMAL_FONT_COLOR);
+        list = vendors[round + 2]
+        if not list then
+            local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
+            GameTooltip_AddColoredLine(tip, round == round2 and "美服尚未更新，请等待并及时更新爱不易" or "没有数据，请等待并及时更新爱不易", HIGHLIGHT_FONT_COLOR)
+            tip:Show()
+            return
+        end
+        addVendorTip(list)
+
+        tip:Show()
+    end)
+end
+
 
 --[[
 DEFAULT_CHAT_FRAME:AddMessage("\124cff1eff00\124Hitem:119207::::::::120::::1:6551:\124h[切肉斧]\124h\124r");

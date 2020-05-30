@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1470, "DBM-Party-Legion", 10, 707)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(95888)
 mod:SetEncounterID(1818)
 mod:SetZone()
@@ -25,7 +25,7 @@ local specWarnHiddenOver			= mod:NewSpecialWarningEnd(192750, nil, nil, nil, 1, 
 local specWarnCreepingDoom			= mod:NewSpecialWarningDodge(197422, nil, nil, nil, 2)
 local specWarnVengeance				= mod:NewSpecialWarningMoveTo(205004, nil, nil, nil, 3, 6)
 
-local timerKickCD					= mod:NewCDTimer(16, 197251, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--16-42
+local timerKickCD					= mod:NewCDTimer(16, 197251, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--16-42
 local timerDeepeningShadowsCD		= mod:NewCDTimer(30.5, 213576, nil, nil, nil, 3)
 local timerCreepingDoom				= mod:NewBuffActiveTimer(35, 197422, nil, nil, nil, 6)--35-40
 local timerVengeanceCD				= mod:NewCDTimer(35, 205004, nil, nil, nil, 1)--35-40

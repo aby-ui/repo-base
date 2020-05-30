@@ -1,5 +1,4 @@
 ## Interface: 80300
-## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFSpell Timers|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFSpell Timers|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF冷却助手|r
@@ -17,8 +16,15 @@
 ## DefaultState: enabled
 ## Author: Nitram and Tandanu
 ## URL: http://www.deadlybossmods.com
-## SavedVariables: DBM_SpellTimers_Settings
-## Version: 82b587f
+## SavedVariables: DBMSpellTimers_AllSavedVars
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: OTHER
+## X-DBM-Mod-Category: OTHER
+## X-DBM-Mod-No-Statistics: 1
+## X-DBM-Mod-Name: SpellTimers
+## X-DBM-Mod-MinCoreRevision: 20200524142133
+## X-Curse-Project-ID: 18712
+## Version: r121
 localization.en.lua
 localization.cn.lua
 localization.tw.lua

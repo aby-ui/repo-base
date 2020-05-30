@@ -1164,7 +1164,6 @@ private.RARE_LIST = {
 	107544, --Nithogg
 	108678, --Shar'thos
 	100230, --"Sure-Shot" Arnie
-	97348, --Abesha
 	112705, --Achronos
 	108885, --Aegir Wavecrusher
 	104481, --Ala'washte
@@ -1183,31 +1182,25 @@ private.RARE_LIST = {
 	90244, --Arcavellus
 	97220, --Arru
 	99802, --Arthfael
-	103801, --Arthfael
 	106351, --Artificer Lothaire
 	92633, --Assassin Huwe
 	112758, --Auditor Esiel
 	112759, --Az'jatar
 	103787, --Baconlisk
 	110562, --Bahagar
-	97637, --Barax the Mauler
 	91187, --Beacher
 	111454, --Bestrix
 	107327, --Bilebrain
 	91874, --Bladesquall
 	92599, --Bloodstalker Alpha
-	98361, --Bloody Raven
 	98299, --Bodash the Hoarder
-	98178, --Boulderfall
 	109113, --Boulderfall, the Eroded
 	107127, --Brawlgoth
-	106863, --Brinebeard the Risen
 	97449, --Bristlemaul
 	91100, --Brogozog
 	94877, --Brogrul the Mighty
 	107105, --Broodmother Lizax
 	105632, --Broodmother Shu'malis
-	102863, --Bruiser
 	111463, --Bulvinkel
 	110726, --Cadraeus
 	91289, --Cailyn Paledoom
@@ -1215,7 +1208,6 @@ private.RARE_LIST = {
 	109163, --Captain Dargun
 	89846, --Captain Volo'ren
 	92604, --Champion Elodie
-	101596, --Charfeather
 	106990, --Chief Bitterbrine
 	109677, --Chief Treasurer Jabrill
 	111674, --Cinderwing
@@ -1223,18 +1215,14 @@ private.RARE_LIST = {
 	104519, --Colerian
 	107266, --Commander Soraax
 	100864, --Cora'kar
-	93778, --Coruscating Bloom
 	97058, --Count Nefarious
 	108255, --Coura, Mistress of Arcana
 	97933, --Crab Rider Grmlrml
 	97345, --Crawshuk the Hungry
-	90050, --Crystalbeard
-	105619, --Cyrilline
 	90057, --Daggerbeak
 	94313, --Daniel "Boomer" Vorick
 	100231, --Dargok Thunderuin
 	92631, --Dark Ranger Jess
-	92205, --Darkest Fear
 	107924, --Darkfiend Tormentor
 	109501, --Darkful
 	92965, --Darkshade
@@ -1245,12 +1233,9 @@ private.RARE_LIST = {
 	108790, --Den Mother Ylva
 	112637, --Devious Sunrunner
 	100495, --Devouring Darkness
-	93088, --Direclaw
 	91579, --Doomlord Kazrok
-	109727, --Dorbash the Smasher
 	108543, --Dread Captain Thedon
 	108541, --Dread Corsair
-	108531, --Dread Ship Krazatoa
 	94347, --Dread-Rider Cortis
 	97517, --Dreadbog
 	96072, --Durguth
@@ -1258,24 +1243,18 @@ private.RARE_LIST = {
 	96647, --Earlnoc the Beastbreaker
 	98188, --Egyl the Enduring
 	99792, --Elfbane
-	93372, --Enraged Earthservant
-	109728, --Ettin
 	91803, --Fathnyr
-	98225, --Fathnyr
 	105938, --Felwing
 	92040, --Fenri
-	98276, --Fenri
 	109584, --Fjordun
 	108827, --Fjorlag, the Grave's Chill
 	97793, --Flamescale
 	89884, --Flog the Captain-Eater
 	101649, --Frostshard
-	109729, --Fury
 	99610, --Garvrulg
 	93679, --Gathenak the Subjugator
 	97370, --General Volroth
 	91529, --Glimar Ironfist
-	95988, --Globulus
 	89816, --Golza the Iron Fin
 	101411, --Gom Crabbar
 	92117, --Gorebeak
@@ -1296,7 +1275,6 @@ private.RARE_LIST = {
 	92703, --Helmouth Raider
 	92682, --Helmouth Raider
 	103223, --Hertha Grimdottir
-	91649, --Hivequeen Zsala
 	92590, --Hook
 	107169, --Horux
 	92951, --Houndmaster Ely
@@ -1304,43 +1282,31 @@ private.RARE_LIST = {
 	110486, --Huk'roth the Huntmaster
 	108822, --Huntress Estrid
 	100067, --Hydrannon
-	92199, --Image of Ursoc
-	92200, --Image of Ursol
-	92189, --Imagined Horror
 	109630, --Immolian
 	90803, --Infernal Lord
 	90139, --Inquisitor Ernstenbok
 	107269, --Inquisitor Tivos
 	106532, --Inquisitor Volitix
-	93993, --Insatiable Gorger
 	93030, --Ironbranch
 	94413, --Isel the Hammer
-	109957, --Isel the Hammer
 	92751, --Ivory Sentinel
 	103975, --Jade Darkhaven
 	101467, --Jaggen-Ra
 	109500, --Jak
-	103203, --Jetsam
 	93686, --Jinikki the Puncturer
-	96208, --Jubei'thos
-	94636, --Kalazzius the Guileful
 	111731, --Karthax
 	109125, --Kathaw the Savage
 	96997, --Kethrazor
-	101063, --King Forgalash
 	103827, --King Morgalash
 	97059, --King Voras
 	94414, --Kiranys Duskwhisper
-	96212, --Korda Torros
 	111573, --Kosumoth the Hungering
 	98421, --Kottr Vondyr
 	103271, --Kraxa
-	96210, --Krol the Blade
 	99362, --Kudzilla
 	106526, --Lady Rivantas
 	109015, --Lagertha
 	102303, --Lieutenant Strathmar
-	100516, --Lilin the Ravenous
 	108366, --Long-Forgotten Hippogryph
 	98024, --Luggut the Eggeater
 	98241, --Lyrath Moonfeather
@@ -1359,7 +1325,6 @@ private.RARE_LIST = {
 	104517, --Mawat'aki
 	96621, --Mellok, Son of Torok
 	111653, --Miasu
-	111055, --Monstrous Plague Rat
 	93371, --Mordvigbjorn
 	93622, --Mortiferous
 	91780, --Mother Clacker
@@ -1369,14 +1334,8 @@ private.RARE_LIST = {
 	110340, --Myonix
 	101641, --Mythana
 	107477, --N.U.T.Z.
-	108016, --Necromagus Toldrethar
-	110451, --Nightmare Crystal
-	106165, --Nightmare WardenNOT SPAWNED
 	107023, --Nithogg
-	90248, --Normantis the Deposed
 	90217, --Normantis the Deposed
-	90253, --Normantis the Deposed
-	105657, --Notgarn
 	109990, --Nylaathria the Forgotten
 	105899, --Oglok the Furious
 	108715, --Ol' Eary
@@ -1387,24 +1346,20 @@ private.RARE_LIST = {
 	95204, --Oubdob da Smasher
 	97057, --Overseer Brutarg
 	99886, --Pacified Earth
-	110364, --Pale Dreadwing
 	113694, --Pashya
 	95318, --Perrexx
 	107846, --Pinchshank
 	103045, --Plaguemaw
 	94485, --Pollous the Fetid
-	108010, --Powdermaster Maclin
 	90901, --Pridelord Meowl
 	92613, --Priestess Liza
 	100302, --Puck
-	108256, --Quin'el, Master of Chillwind
 	110342, --Rabxach
 	101660, --Rage Rot
 	109504, --Ragemaw
 	99846, --Raging Earth
 	103199, --Ragoul
 	97102, --Ram'Pag
-	92140, --Rampant Mandragora
 	111007, --Randril
 	105547, --Rauren
 	89016, --Ravyn-Drath
@@ -1414,16 +1369,12 @@ private.RARE_LIST = {
 	109317, --Rulf Bonesnapper
 	109318, --Runeseer Sigvid
 	100232, --Ryael Dawndrifter
-	111010, --Saepher
-	111069, --Saepher
-	100184, --Sailor's Nightmare
 	105739, --Sanaar
 	105728, --Scythemaster Cil'raman
 	111434, --Sea King Tidross
 	92180, --Seersei
 	101077, --Sekhan
 	104522, --Selenyi
-	108251, --Selia, Master of Balefire
 	103841, --Shadowquill
 	109054, --Shal'an
 	104523, --Shalas'aman
@@ -1431,7 +1382,6 @@ private.RARE_LIST = {
 	91788, --Shellmaw
 	103605, --Shroudseeker
 	108794, --Shroudseeker's Shadow
-	92090, --Shyama the Dreaded
 	110438, --Siegemaster Aedrin
 	111052, --Silver Serpent
 	112636, --Sinister Leyrunner
@@ -1440,7 +1390,6 @@ private.RARE_LIST = {
 	95872, --Skullhat
 	111021, --Sludge Face
 	98890, --Slumber
-	92725, --Son of Goredome
 	112756, --Sorallus
 	109195, --Soulbinder Halldora
 	108494, --Soulfiend Tagerma
@@ -1449,7 +1398,6 @@ private.RARE_LIST = {
 	109594, --Stormfeather
 	109994, --Stormtalon
 	91795, --Stormwing Matriarch
-	98309, --Sunbreeze [DO NOT SPAWN]
 	90505, --Syphonus
 	97928, --Tamed Coralback
 	98268, --Tarben
@@ -1470,25 +1418,17 @@ private.RARE_LIST = {
 	93166, --Tiptog the Lost
 	102064, --Torrentius
 	92609, --Tracker Jack
-	95440, --Tremblade
-	91663, --Trubble
-	108881, --Turtle
 	103247, --Ultanok
 	109708, --Undergrell Ringleader
 	93401, --Urgev the Flayer
 	109575, --Valakar the Thirsty
-	109606, --Valitos
 	89650, --Valiyaka the Stormbringer
 	99899, --Vicious Whale Shark
-	91640, --Vinyeaty
-	91661, --Vinyeti
-	89906, --Vinyeti
 	112760, --Volshax, Breaker of Will
 	107113, --Vorthax
 	100224, --Vrykul Earthmaiden Spirit
 	100223, --Vrykul Earthshaper Spirit
 	90164, --Warbringer Mox'na
-	102092, --Warlord Vatilash
 	107431, --Weaponized Rabbot
 	103785, --Well-Fed Bear
 	92152, --Whitewater Typhoon
@@ -1496,7 +1436,6 @@ private.RARE_LIST = {
 	97504, --Wraithtalon
 	97069, --Wrath-Lord Lekos
 	109498, --Xaander
-	104831, --Xavrix
 	100303, --Zenobia
 	107170, --Zorux
 	97587, --Crazed Mage
@@ -1507,8 +1446,6 @@ private.RARE_LIST = {
 	97589, --Rotten Egg
 	97387, --Mana Seeper
 	97381, --Screek
-	
-	-- Rares Legion 7.1.0
 	115847, --Ariadne
 	116185, --Attendant Keeper
 	115853, --Doomlash
@@ -1516,27 +1453,18 @@ private.RARE_LIST = {
 	116004, --Flightmaster Volnath
 	116008, --Kar'zun
 	116395, --Nightwell Diviner
-	116036, --Regal Cloudwing
 	116059, --Regal Cloudwing
 	116034, --The Cow King
 	115914, --Torm the Brute
 	116158, --Tower Concubine
-	116652, --Treasure Goblin
 	116159, --Wily Sycophant
-	89407, --Wrymtongue Hoarder
 	116041, --Treasure Goblin
-	
-	-- Rares Legion 7.1.5
 	118244, --Lightning Paw
 	115537, --Lorthalium
-	
-	-- Rares Legion 7.2.0
 	121124, --Apocron
 	117303, --Malificus
 	117470, --Si'vash
-	116666, --Abyssal Ember
 	120675, --An'thyna
-	116657, --Angered Sea Giant
 	121092, --Anomalous Observer
 	121016, --Aqueux
 	121049, --Baleful Knight-Captain
@@ -1554,17 +1482,14 @@ private.RARE_LIST = {
 	120012, --Dresanoth
 	121134, --Duke Sithizi
 	117086, --Emberfire
-	116671, --Emberon
 	120020, --Erdu'val
 	116166, --Eye of Gurgh
 	120681, --Fel Obliterator
 	117093, --Felbringer Xar'thok
 	117103, --Felcaller Zelthae
-	117342, --Felhound
 	117091, --Felmaw Emberfiend
 	120998, --Flllurlokkr
 	120665, --Force-Commander Xillious
-	117493, --Grimtotem Warrior
 	121037, --Grossir
 	120686, --Illisthyndria
 	119718, --Imp Mother Bruva
@@ -1579,8 +1504,6 @@ private.RARE_LIST = {
 	117141, --Malgrazoth
 	117094, --Malorus the Soulkeeper
 	120717, --Mistress Dominix
-	116912, --Mo'arg Brute
-	116668, --Mor'tec the Soulslaver
 	117096, --Potionmaster Gloop
 	120715, --Raga'yut
 	121108, --Ruinous Overfiend
@@ -1597,10 +1520,7 @@ private.RARE_LIST = {
 	120003, --Warlord Darjah
 	121088, --Warped Voidlord
 	117090, --Xorogun the Flamecarver
-	116316, --Zirux
 	112712, --Gilded Guardian
-	
-	-- Rares Legion 7.2.5
 	123087, --Al'Abas
 	122524, --Bloodfeast
 	122521, --Bonesunder
@@ -1609,14 +1529,11 @@ private.RARE_LIST = {
 	122520, --Icefist
 	122522, --Iceshatter
 	122609, --Xavinox
-	
-	-- Rares Legion 7.3.0
 	127090, --Admiral Rel'var
 	127096, --All-Seer Xanarian
 	126887, --Ataxon
 	126862, --Baruut the Bloodthirsty
 	122958, --Blistermaw
-	124479, --Blisterwing
 	126869, --Captain Faruq
 	127376, --Chief Alchemist Munculus
 	124775, --Commander Endaxis
@@ -1626,13 +1543,9 @@ private.RARE_LIST = {
 	126910, --Commander Xethgar
 	122457, --Darkcaller
 	127703, --Doomcaster Suprax
-	127341, --Everburning Doombringer
-	124717, --Executioner Vaal
-	124684, --Eye of the Torturer
 	126864, --Feasel the Muffin Thief
 	122999, --Gar'zoth
 	126896, --Herald of Chaos
-	124412, --Houndcaller Orox
 	127288, --Houndmaster Kerrax
 	125820, --Imp Mother Laglath
 	126946, --Inquisitor Vethroz
@@ -1648,7 +1561,6 @@ private.RARE_LIST = {
 	125498, --Overseer Y'Morna
 	125497, --Overseer Y'Sorna
 	126040, --Puscilla
-	124572, --Pyromancer Volarr
 	127706, --Rezira the Seer
 	126898, --Sabuul
 	122838, --Shadowcaster Voruun
@@ -1657,7 +1569,6 @@ private.RARE_LIST = {
 	126912, --Skreeg the Devourer
 	126913, --Slithon the Last
 	126889, --Sorolis the Ill-Fated
-	127704, --Soultender Videx
 	126815, --Soultwisted Monstrosity
 	127700, --Squadron Commander Vishax
 	123689, --Talestra the Vile
@@ -1666,7 +1577,6 @@ private.RARE_LIST = {
 	127581, --The Many-Faced Devourer
 	126868, --Turek the Lucid
 	127906, --Twilight-Harbinger Tharuul
-	126691, --Tyrannosaurus Rekt
 	126885, --Umbraliss
 	125388, --Vagath the Betrayed
 	126208, --Varga
@@ -1684,17 +1594,14 @@ private.RARE_LIST = {
 	126852, --Wrangler Kravos
 	126338, --Wrath-Lord Yarez
 	126908, --Zul'tan the Numerous
-	124680, --Zul'zoloth
-	
-	-- Rares Legion 7.3.5
-	133044, --Grand Marshal Tremblade
-	133043, --High Warlord Volrath
 	125951, --Obsidian Deathwarder
 	132591, --Ogmot the Mad
 	132578, --Qroshekx
-	133042, --Sky Marshall Gabriel
 	132580, --Ssinkrix
 	132584, --Xaarshej
+	111122, --Large Vile Slime
+	90816, --Skystormer
+	100000, --Johnny Awesomer
 	
 	-- Rares BFA 8.0.1
 	136385, --Azurethos
@@ -3072,7 +2979,6 @@ private.RARE_LIST = {
 	152567, --Kelpwillow
 	152007, --Killsaw
 	152323, --King Gakula
-	152624, --King Gakula
 	153312, --Kyx'zhul the Deepspeaker
 	151845, --Lieutenant N'ot
 	151933, --Malfunctioning Beastbot

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1654, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200524145746")
 mod:SetCreatureID(96512)
 mod:SetEncounterID(1836)
 mod:SetZone()
@@ -25,12 +25,12 @@ local yellLeap					= mod:NewYell(196346)
 local specWarnRampage			= mod:NewSpecialWarningDefensive(198379, "Tank", nil, nil, 1, 2)
 
 local timerLeapCD				= mod:NewCDTimer(14, 196346, nil, nil, nil, 3)
-local timerRampageCD			= mod:NewCDTimer(15.8, 198379, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
+local timerRampageCD			= mod:NewCDTimer(15.8, 198379, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerNightfallCD			= mod:NewCDTimer(14.5, 198401, nil, nil, nil, 3)
 
 function mod:LeapTarget(targetname, uId)
 	if not targetname then
-		warnLeap:Show(DBM_CORE_UNKNOWN)
+		warnLeap:Show(DBM_CORE_L.UNKNOWN)
 		return
 	end
 	if targetname == UnitName("player") then

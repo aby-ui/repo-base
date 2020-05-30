@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1492, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision((string.sub("20200220142801", 1, -5)):sub(12, -3))
+mod:SetRevision((string.sub("20200524145746", 1, -5)):sub(12, -3))
 mod:SetCreatureID(96028)
 mod:SetEncounterID(1814)
 mod:SetZone()
@@ -24,8 +24,8 @@ local specWarnArcaneBomb			= mod:NewSpecialWarningMoveAway(192706, nil, nil, nil
 local yellArcaneBomb				= mod:NewYell(192706)
 
 local timerMythicTornadoCD			= mod:NewCDTimer(25, 192680, nil, nil, nil, 3)
-local timerMassiveDelugeCD			= mod:NewCDTimer(50, 192617, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)
-local timerArcaneBomb				= mod:NewTargetTimer(15, 192706, nil, "Healer", nil, 5, nil, DBM_CORE_HEALER_ICON)--Magic dispel for healer to dispel at correct time
+local timerMassiveDelugeCD			= mod:NewCDTimer(50, 192617, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerArcaneBomb				= mod:NewTargetTimer(15, 192706, nil, "Healer", nil, 5, nil, DBM_CORE_L.HEALER_ICON)--Magic dispel for healer to dispel at correct time
 local timerArcaneBombCD				= mod:NewCDTimer(23, 192706, nil, nil, nil, 3)--23-37
 
 mod:AddRangeFrameOption(10, 192706)
