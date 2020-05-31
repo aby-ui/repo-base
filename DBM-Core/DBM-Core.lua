@@ -70,8 +70,8 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200530012545"),
-	DisplayVersion = "8.3.24", -- the string that is shown as version
+	Revision = parseCurseDate("20200530231328"),
+	DisplayVersion = "8.3.25 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 5, 27, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -1308,13 +1308,9 @@ do
 				return
 			end
 			if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
-				local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
-				version = tonumber(string.sub(version, 2))
-				if version < 122 then
-					self:Disable(true)
-					self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDSPELLTIMERS)
-					return
-				end
+				self:Disable(true)
+				self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDSPELLTIMERS)
+				return
 			end
 			if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
 				self:Disable(true)
@@ -2626,12 +2622,8 @@ do
 			return
 		end
 		if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
-			local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
-			version = tonumber(string.sub(version, 2))
-			if version < 122 then
-				self:AddMsg(L.OUTDATEDSPELLTIMERS)
-				return
-			end
+			self:AddMsg(L.OUTDATEDSPELLTIMERS)
+			return
 		end
 		if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
 			self:AddMsg(L.OUTDATEDRLT)
@@ -11579,7 +11571,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200530012545" then
+	if not revision or revision == "20200530231328" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

@@ -377,7 +377,7 @@ if success and GetCVar("portal") == "CN" then
         tip:SetMinimumWidth(100)
         tip:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 5, 0)
         GameTooltip_AddColoredLine(tip, "腐蚀兑换情况", HIGHLIGHT_FONT_COLOR);
-        GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，因为国服更新时间晚于美服，所以北京时间周二晚23:00可以预知周四早7:00，每周六中午11:00可以预知周日晚19:00刷新的腐蚀", NORMAL_FONT_COLOR);
+        GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，因为国服更新时间晚于美服，所以北京时间每周二晚23:00可以预知周四早7:00、每周六中午11:00可以预知周日晚19:00刷新的腐蚀", NORMAL_FONT_COLOR);
         GameTooltip_AddBlankLineToTooltip(tip);
         GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR);
         local list = vendors[round + 1]

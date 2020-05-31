@@ -199,7 +199,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	
 	elseif (command == "spells") then
 		Details.OpenForge()
-		DetailsForgePanel.SelectModule (_, _, 2)
+		DetailsForgePanel.SelectModule (_, _, 1)
 	
 	elseif (command == "feedback") then
 		_detalhes.OpenFeedbackWindow()

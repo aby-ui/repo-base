@@ -3309,15 +3309,26 @@
 
 			-----------------------------------------------
 			
+			local spell_ignore_spell_func = function(row)
+				local data = all_modules [1].data [row]
+				local spellid = data[1]
+
+				if (not _detalhes.spellid_ignored[spellid]) then
+					_detalhes.spellid_ignored[spellid] = true
+				else
+					_detalhes.spellid_ignored[spellid] = nil
+				end
+			end
+
 			local spell_open_aura_creator = function (row)
-				local data = all_modules [2].data [row]
+				local data = all_modules [1].data [row]
 				local spellid = data[1]
 				local spellname, _, spellicon = GetSpellInfo (spellid)
 				_detalhes:OpenAuraPanel (spellid, spellname, spellicon, data[3])
 			end
 			
 			local spell_encounter_open_aura_creator = function (row)
-				local data = all_modules [1].data [row]
+				local data = all_modules [2].data [row]
 				local spellID = data[1]
 				local encounterID  = data [2]
 				local enemyName = data [3]
@@ -3418,8 +3429,9 @@
 					{name = L["STRING_FORGE_HEADER_NAME"], width = 150, type = "entry", func = no_func, onenter = function(self) GameTooltip:SetOwner (self.widget, "ANCHOR_TOPLEFT"); _detalhes:GameTooltipSetSpellByID (self.id); GameTooltip:Show() end, onleave = function(self) GameTooltip:Hide() end},
 					{name = L["STRING_FORGE_HEADER_SPELLID"], width = 60, type = "entry", func = no_func},
 					{name = L["STRING_FORGE_HEADER_SCHOOL"], width = 60, type = "entry", func = no_func},
-					{name = L["STRING_FORGE_HEADER_CASTER"], width = 120, type = "entry", func = no_func},
-					{name = L["STRING_FORGE_HEADER_EVENT"], width = 180, type = "entry", func = no_func},
+					{name = L["STRING_FORGE_HEADER_CASTER"], width = 100, type = "entry", func = no_func},
+					{name = L["STRING_FORGE_HEADER_EVENT"], width = 140, type = "entry", func = no_func},
+					{name = "Ignore", width = 50, type = "checkbox", func = spell_ignore_spell_func, icon = [[Interface\Glues\LOGIN\Glues-CheckBox-Check]], notext = true, iconalign = "center"},
 					{name = L["STRING_FORGE_HEADER_CREATEAURA"], width = 86, type = "button", func = spell_open_aura_creator, icon = [[Interface\AddOns\WeakAuras\Media\Textures\icon]], notext = true, iconalign = "center"},
 				},
 				fill_panel = false,
@@ -3439,12 +3451,13 @@
 						local classColor = RAID_CLASS_COLORS [data[2]] and RAID_CLASS_COLORS [data[2]].colorStr or "FFFFFFFF"
 						return {
 							index,
-							spellIcon,
+							{texture = spellIcon, texcoord = {.1, .9, .1, .9}},
 							{text = spellName or "", id = data[1] or 1},
 							data[1] or "",
 							_detalhes:GetSpellSchoolFormatedName (_detalhes.spell_school_cache [spellName]) or "",
 							"|c" .. classColor .. data[2] .. "|r",
-							events
+							events,
+							_detalhes.spellid_ignored[data[1]]
 						}
 					else
 						return nothing_to_show
@@ -4005,8 +4018,8 @@
 			f.SelectModule = select_module
 			f.AllModules = all_modules
 
-			f:InstallModule (encounter_spells_module)
 			f:InstallModule (all_spells_module)
+			f:InstallModule (encounter_spells_module)
 			
 			f:InstallModule (npc_ids_module)
 			

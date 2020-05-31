@@ -1396,6 +1396,8 @@ local default_global_data = {
 
 	--> store all npcids blacklisted by the user
 		npcid_ignored = {},
+	--> store all spellids blacklisted by the user
+		spellid_ignored = {},
 }
 
 _detalhes.default_global_data = default_global_data
