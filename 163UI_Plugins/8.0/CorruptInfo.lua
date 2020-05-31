@@ -341,7 +341,7 @@ SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 ---------------------------------------------------------------]]
 local success, CharIcon = pcall(function() return CharacterStatsPane.ItemLevelFrame.Corruption end)
 if success and GetCVar("portal") == "CN" then
-    local prices = { [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
+    local prices = { [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
     local vendors = {
         { { "truth", 1, }, { "proc_mastery", 1, }, { "passive_crit_dam", 2, }, { "passive_mastery", 2, }, { "passive_haste", 3, }, { "twisted", 3, }, },
         { { "proc_mastery", 1, }, { "ritual", 1, }, { "proc_crit", 2, }, { "passive_leech", 2, }, { "truth", 2, }, { "passive_versatility", 3, }, { "passive_avoidance", 2, }, },
@@ -360,17 +360,18 @@ if success and GetCVar("portal") == "CN" then
         return format("\124T%s:11\124t %d级%s %s", icons[key] or icons.special, level, LOCALES[key] or LOCALES.UNKNOWN, data.corrupts[key] and prices[data.corrupts[key][level]] or "????")
     end
 
-    local function addVendorTip(list)
+    local function addVendorTip(list, color)
         for i=1, #list, 2 do
             local left = formatOne(list[i][1], list[i][2])
             local right = list[i+1] and formatOne(list[i+1][1], list[i+1][2]) or " "
-            GameTooltip_AddColoredDoubleLine(tip, left, right, HIGHLIGHT_FONT_COLOR, HIGHLIGHT_FONT_COLOR, true);
+            GameTooltip_AddColoredDoubleLine(tip, left, right, color or HIGHLIGHT_FONT_COLOR, color or HIGHLIGHT_FONT_COLOR, true);
         end
     end
 
     CharIcon:HookScript("OnEnter", function()
         local round = floor((time()-firstTime)/interval)
-        local nextDate = date("%m月%d日 %H:%M", firstTime + (round+1) * interval)
+        round = round % 8 + 1 --0->1 7->8 8->1
+        local nextDate = date("%m月%d日 %H:%M", firstTime + round * interval)
 
         tip:SetOwner(GameTooltip, "ANCHOR_NONE")
         tip:ClearAllPoints()
@@ -378,26 +379,36 @@ if success and GetCVar("portal") == "CN" then
         tip:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 5, 0)
         GameTooltip_AddColoredLine(tip, "腐蚀兑换情况", HIGHLIGHT_FONT_COLOR);
         GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，因为国服更新时间晚于美服，所以北京时间每周二晚23:00可以预知周四早7:00、每周六中午11:00可以预知周日晚19:00刷新的腐蚀", NORMAL_FONT_COLOR);
-        GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR);
-        local list = vendors[round + 1]
-        if not list then
-            GameTooltip_AddColoredLine(tip, "没有数据，请更新爱不易", HIGHLIGHT_FONT_COLOR)
-            tip:Show()
-            return
-        end
-        addVendorTip(list)
 
         GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "下一轮 " .. date(timeFormat, firstTime + (round+1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+2) * interval), NORMAL_FONT_COLOR);
-        list = vendors[round + 2]
+        GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + round * interval), NORMAL_FONT_COLOR);
+        local list = vendors[round]
+        if not list then
+            GameTooltip_AddColoredLine(tip, "没有数据，请更新爱不易", HIGHLIGHT_FONT_COLOR)
+        else
+            addVendorTip(list)
+        end
+
+        GameTooltip_AddBlankLineToTooltip(tip);
+        GameTooltip_AddColoredLine(tip, "下一轮 " .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR);
+        list = vendors[round+1]
         if not list then
             local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
-            GameTooltip_AddColoredLine(tip, round == round2 and "美服尚未更新，请等待并及时更新爱不易" or "没有数据，请等待并及时更新爱不易", HIGHLIGHT_FONT_COLOR)
-            tip:Show()
-            return
+            GameTooltip_AddColoredLine(tip, round == round2 and "美服尚未更新，请等待并及时更新爱不易" or "没有数据，请等待并及时更新爱不易", GRAY_FONT_COLOR)
+        else
+            addVendorTip(list, GRAY_FONT_COLOR)
         end
-        addVendorTip(list)
+
+        for i=2,7 do
+            GameTooltip_AddBlankLineToTooltip(tip);
+            GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i+1) * interval), NORMAL_FONT_COLOR);
+            local list = vendors[(round+i-1)%8+1]
+            if not list then
+                GameTooltip_AddColoredLine(tip, "尚未轮换", GRAY_FONT_COLOR)
+            else
+                addVendorTip(list, GRAY_FONT_COLOR)
+            end
+        end
 
         tip:Show()
     end)
