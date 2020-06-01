@@ -3,7 +3,12 @@ local _, U1 = ...
 U1PlayerName = UnitName("player")
 U1PlayerClass = select(2, UnitClass("player"))
 
+DisableAddOn("VEM-Core")
+DisableAddOn("DBM-Profiles")
 DisableAddOn("DBM-SpellTimers")
+DisableAddOn("DBM-RaidLeadTools")
+DisableAddOn("DPMCore")
+DisableAddOn("DBM-VictorySound")
 
 -- 一些常用的变量会被莫名其妙重置的, 必须在VARIABLES_LOADED里设置
 local f01 = CreateFrame("Frame")

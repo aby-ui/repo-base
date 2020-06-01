@@ -40,7 +40,7 @@ local HARD_RESET = {
 }
 
 -- Command line input
-local SLASH_RARESCANNER_CMD1 = "/rarescanner"
+SLASH_RARESCANNER_CMD1 = "/rarescanner"
 local CMD_HELP = "help"
 local CMD_TOGGLE_MAP_ICONS = "tmi"
 local CMD_TOGGLE_ALERTS = "ta"
