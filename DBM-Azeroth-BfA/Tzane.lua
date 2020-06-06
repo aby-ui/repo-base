@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2139, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(132701)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -35,11 +35,13 @@ local timerTerrorWallCD				= mod:NewCDTimer(23.2, 261552, nil, nil, nil, 3)--24-
 mod:AddRangeFrameOption(8, 261605)
 --mod:AddReadyCheckOption(37460, false)
 
+--[[
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
 
 	end
 end
+--]]
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then

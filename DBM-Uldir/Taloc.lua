@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 mod:SetZone()
@@ -69,7 +69,7 @@ mod.vb.cudgelCount = 0
 mod.vb.enlargedCount = 0
 mod.vb.phase = 1
 
-function mod:StaticTarget(targetname, uId)
+function mod:StaticTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnSanguineStaticYou:Show()

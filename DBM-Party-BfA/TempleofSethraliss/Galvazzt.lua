@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2144, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133389)
 mod:SetEncounterID(2126)
 mod:SetZone()
@@ -25,7 +25,7 @@ local specWarnElectroshock			= mod:NewSpecialWarningStack(266923, nil, 5, nil, n
 
 mod:AddInfoFrameOption(265973, true)
 
-function mod:OnCombatStart(delay)
+function mod:OnCombatStart()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_L.INFOFRAME_POWER)
 		DBM.InfoFrame:Show(2, "enemypower", 2, 10)

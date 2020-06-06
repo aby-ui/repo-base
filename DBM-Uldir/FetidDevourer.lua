@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 mod:SetZone()
@@ -87,7 +87,7 @@ do
 		end
 		return lines, sortedLines
 	end
-	openInfoFrame = function(self, spellName)
+	openInfoFrame = function(_, spellName)
 		DBM.InfoFrame:SetHeader(spellName)
 		DBM.InfoFrame:Show(5, "function", updateInfoFrame, false, false)
 	end

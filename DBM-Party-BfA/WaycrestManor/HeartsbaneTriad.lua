@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
@@ -46,7 +46,7 @@ mod:AddSetIconOption("SetIconOnTriad", 260805, true, true, {8})
 mod.vb.activeTriad = nil
 local IrisBuff = DBM:GetSpellInfo(260805)
 
-function mod:NettlesTargetQuestionMark(targetname, uId)
+function mod:NettlesTargetQuestionMark(targetname)
 	if not targetname then return end
 	if self:AntiSpam(5, targetname) then
 		specWarnJaggedNettles:Show(targetname)
@@ -54,7 +54,7 @@ function mod:NettlesTargetQuestionMark(targetname, uId)
 	end
 end
 
-function mod:OnCombatStart(delay)
+function mod:OnCombatStart()
 	self.vb.activeTriad = nil
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_L.INFOFRAME_POWER)

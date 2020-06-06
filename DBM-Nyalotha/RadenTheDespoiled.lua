@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200605184054")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetZone()
@@ -274,13 +274,13 @@ do
 		table.wipe(sortedLines)
 		--Unstable Vita Tracker
 		if mod.vb.currentVita then
-			addLine(unstableVita, mod.vb.currentVita)
-			addLine(L.Furthest, mod.vb.lastHighest)
+			addLine(unstableVita, DBM:GetShortServerName(mod.vb.currentVita))
+			addLine(L.Furthest, DBM:GetShortServerName(mod.vb.lastHighest))
 		end
 		--Unstable Nightmare Tracker
 		if mod.vb.currentNightmare then
-			addLine(unstableNightmare, mod.vb.currentNightmare)
-			addLine(L.Closest, mod.vb.lastLowest)
+			addLine(unstableNightmare, DBM:GetShortServerName(mod.vb.currentNightmare))
+			addLine(L.Closest, DBM:GetShortServerName(mod.vb.lastLowest))
 		end
 		--Vulnerability
 		if #ExposureTargets > 0 then

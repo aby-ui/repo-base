@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2210, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(138794)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -31,7 +31,7 @@ local timerShakeLooseCD					= mod:NewCDTimer(28, 276046, nil, nil, nil, 1, nil, 
 mod:AddRangeFrameOption(5, 275194)
 --mod:AddReadyCheckOption(37460, false)
 
-function mod:OnCombatStart(delay, yellTriggered)
+function mod:OnCombatStart(_, yellTriggered)
 	if yellTriggered then
 		--timerSonicBellowCD:Start(1-delay)
 		--timerEarthSpikeCD:Start(1-delay)
@@ -79,7 +79,7 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 --]]
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 275194 and self:AntiSpam(4, 1) then
 		specWarnEarthSpike:Show()
 		specWarnEarthSpike:Play("watchstep")

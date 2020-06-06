@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2358, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200517140833")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(150222)
 mod:SetEncounterID(2292)
 mod:SetZone()
@@ -24,7 +24,6 @@ local warnSplatter					= mod:NewSpellAnnounce(297985, 2)
 
 local specWarnToxicWave				= mod:NewSpecialWarningSpell(297834, nil, nil, nil, 2, 2)
 local specWarnGooped				= mod:NewSpecialWarningYou(298259, nil, nil, nil, 1, 2)
-local yellGooped					= mod:NewYell(298259)
 local specWarnGoopedDispel			= mod:NewSpecialWarningDispel(298259, "RemoveDisease", nil, nil, 1, 2)
 local specWarnToxicGoopDispel		= mod:NewSpecialWarningDispel(297913, false, nil, nil, 1, 2)
 local specWarnCoalesce				= mod:NewSpecialWarningDodge(297835, nil, nil, nil, 2, 2)

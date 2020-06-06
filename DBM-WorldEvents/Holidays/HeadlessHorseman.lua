@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d285", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(23682, 23775)
 --mod:SetModelID(22351)--Model doesn't work/render for some reason.
 mod:SetZone()
@@ -41,7 +41,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 --	"<48.6> Headless Horseman:Possible Target<Omegal>:target:Headless Horseman Climax - Command, Head Repositions::0:42410", -- [35]
 	if spellId == 42410 then
 		self:SendSync("HeadRepositions")
@@ -59,7 +59,7 @@ end
 
 --Use syncing since these unit events require "target" or "focus" to detect.
 --At least someone in group should be targeting this stuff and sync it to those that aren't (like a healer)
-function mod:OnSync(event, arg)
+function mod:OnSync(event)
 	if event == "HeadRepositions" then
 		warnHorsemanHead:Show()
 	elseif event == "BodyStage1" then

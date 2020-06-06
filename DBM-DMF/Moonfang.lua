@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Moonfang", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(71992)
 --mod:SetModelID(328)
 mod:SetZone()
@@ -27,7 +27,7 @@ local timerLeapCD			= mod:NewCDTimer(12, 144546, nil, nil, nil, 3)
 local timerMoonfangsTearCD	= mod:NewNextTimer(23, 144702, nil, nil, nil, 2)
 
 
-function mod:LeapTarget(targetname, uId)
+function mod:LeapTarget(targetname)
 	if not targetname then return end
 	warnLeap:Show(targetname)
 	if targetname == UnitName("player") then

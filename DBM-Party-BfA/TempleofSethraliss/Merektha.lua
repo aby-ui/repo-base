@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2143, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133384)
 mod:SetEncounterID(2125)
 mod:SetZone()
@@ -121,7 +121,7 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 264172 then--Summon (cast when he burrows)
 		timerHadotoxinCD:Stop()
 		timerNoxiousBreathCD:Stop()

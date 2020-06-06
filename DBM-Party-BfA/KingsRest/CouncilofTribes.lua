@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetZone()
@@ -181,7 +181,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 	if msg:find("spell:266951") then
 		local targetname = DBM:GetUnitFullName(target)
 		if targetname then

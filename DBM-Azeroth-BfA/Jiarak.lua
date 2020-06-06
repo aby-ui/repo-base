@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2141, "DBM-Azeroth-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(132253)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -23,12 +23,13 @@ local timerStormWingCD				= mod:NewCDTimer(46.2, 260908, nil, nil, nil, 2)
 local timerHurricaneCrashCD			= mod:NewCDTimer(46.2, 261088, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 local timerMatriarchCallCD			= mod:NewCDTimer(46.2, 261467, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
 
-
+--[[
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
 
 	end
 end
+--]]
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

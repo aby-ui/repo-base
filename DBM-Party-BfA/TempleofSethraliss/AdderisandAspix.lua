@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetZone()
@@ -63,7 +63,7 @@ mod:AddSetIconOption("SetIconOnNoLit", 263246, true, true, {8})
 
 mod.vb.noLitShield = nil
 
-function mod:CycloneTarget(targetname, uId)
+function mod:CycloneTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnCycloneStrike:Show()
@@ -215,7 +215,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 263776 then--Gale Force
 		specWarnGaleForce:Show()
 		specWarnGaleForce:Play("specialsoon")

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2140, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(120553)
 mod:SetEncounterID(2100)
 mod:SetZone()
@@ -112,7 +112,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 270605 then--Summon Demolisher
 		timerDemolisherTerrorCD:Start(20)
 	elseif spellId == 269984 then--Damage Boss 35% (can use SPELL_CAST_START of 269456 alternatively)

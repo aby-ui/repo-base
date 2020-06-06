@@ -55,16 +55,21 @@ L.UseDialogChannel			= "對話聲道"
 L.UseSFXChannel				= "音效聲道"
 L.Latency_Text				= "設定最高延遲同步門檻:%d"
 
+L.Button_RangeFrame			= "顯示/隱藏距離監視器"
+L.Button_InfoFrame			= "顯示/隱藏訊息監視器"
+L.Button_TestBars			= "測試計時條"
+L.Button_ResetInfoRange		= "重置訊息/距離監視器"
+
 L.ModelOptions				= "3D模型預覽選項"
 L.EnableModels				= "在首領選項中啟用3D模型預覽"
 L.ModelSoundOptions			= "為模型預覽設置聲音"
 L.ModelSoundShort			= SHORT
 L.ModelSoundLong			= TOAST_DURATION_LONG
 
-L.Button_RangeFrame			= "顯示/隱藏距離監視器"
-L.Button_InfoFrame			= "顯示/隱藏訊息監視器"
-L.Button_TestBars			= "測試計時條"
-L.Button_ResetInfoRange		= "重置訊息/距離監視器"
+L.ResizeOptions			 	= "尺寸調整選項"
+L.Button_ResetWindowSize	= "重設GUI視窗大小"
+L.Editbox_WindowWidth		= "GUI視窗寬度"
+L.Editbox_WindowHeight		= "GUI視窗高度"
 
 -- Tab: Raidwarning
 L.Tab_RaidWarning 			= "團隊警告"
@@ -251,20 +256,23 @@ L.EventFilterMythicMusic	= "不要在傳奇/傳奇+難度播放戰鬥音樂"
 
 -- Tab: Global Filter
 L.Panel_SpamFilter			= "全局禁用及過濾"
-L.Area_SpamFilter_Outgoing	= "全局禁用及過濾選項"
+L.Area_SpamFilter_Anounces	= "Announce Global Disable & Filter Options"
 L.SpamBlockNoShowAnnounce	= "不顯示任何提示文字或播放警告音效"
 L.SpamBlockNoShowTgtAnnounce= "不顯示目標的提示文字或播放警告音效 (上列選項會覆蓋此選項)"
-L.SpamBlockNoSpecWarn		= "不顯示特別警告或播放特別警告音效"
 L.SpamBlockNoSpecWarnText	= "不顯示特別警告但仍允許播放語音包音效 (上列選項會覆蓋此選項)"
+
+L.Area_SpamFilter_Timers	= "Timer Global Disable & Filter Options"
 L.SpamBlockNoShowTimers		= "不顯示計時器"
 L.SpamBlockNoShowUTimers	= "不顯示玩家送出的計時器(自訂/拉怪/休息)"
+L.SpamBlockNoCountdowns		= "不播放倒數音效"
+
+L.Area_SpamFilter_Misc		= "Misc Global Disable & Filter Options"
 L.SpamBlockNoSetIcon		= "不設置標記在目標上"
 L.SpamBlockNoRangeFrame		= "不顯示距離框架"
 L.SpamBlockNoInfoFrame		= "不顯示訊息框架"
 L.SpamBlockNoHudMap			= "不要顯示HudMap"
 L.SpamBlockNoNameplate		= "不要顯示名條光環 (完全禁用)"
 L.SpamBlockNoNameplateLines	= "不要顯示名條光環行 (光環圖示仍然顯示)"
-L.SpamBlockNoCountdowns		= "不播放倒數音效"
 L.SpamBlockNoYells			= "不送出大喊至頻道"
 L.SpamBlockNoNoteSync		= "不接受註記分享"
 L.SpamBlockNoReminders		= "不顯示任何登入，推薦、模組缺失或更新訊息"
@@ -310,7 +318,6 @@ L.DisableSFX				= "首領戰鬥時禁用音效頻道"
 L.DisableCinematics			= "禁用遊戲中的過場動畫"
 L.OnlyFight					= "只有戰鬥中，每次動畫播放一次之後"
 L.AfterFirst				= "在副本中，每次動畫播放一次之後"
-L.Always					= ALWAYS
 L.CombatOnly				= "在任何戰鬥中停用"
 L.RaidCombat				= "只在首領戰鬥中停用"
 

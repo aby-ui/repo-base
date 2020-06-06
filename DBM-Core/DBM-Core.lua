@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200601040846"),
-	DisplayVersion = "8.3.25 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 5, 27, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200606011038"),
+	DisplayVersion = "8.3.26 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 6, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -271,8 +271,9 @@ DBM.DefaultOptions = {
 	-- global boss mod settings (overrides mod-specific settings for some options)
 	DontShowBossAnnounces = false,
 	DontShowTargetAnnouncements = true,
-	DontShowSpecialWarnings = false,
 	DontShowSpecialWarningText = false,
+	DontShowSpecialWarningFlash = false,
+	DontShowSpecialWarningSound = false,
 	DontShowBossTimers = false,
 	DontShowUserTimers = false,
 	DontShowFarWarnings = true,
@@ -283,7 +284,6 @@ DBM.DefaultOptions = {
 	DontShowInfoFrame = false,
 	DontShowHudMap2 = false,
 	DontShowNameplateIcons = false,
-	DontShowNameplateLines = false,
 	DontPlayCountdowns = false,
 	DontSendYells = false,
 	BlockNoteShare = false,
@@ -423,6 +423,7 @@ local schedule
 local unschedule
 local unscheduleAll
 local scheduleCountdown
+local scheduleRepeat
 local loadOptions
 local checkWipe
 local checkBossHealth
@@ -434,7 +435,7 @@ local playerRealm = GetRealmName()
 local connectedServers = GetAutoCompleteRealms()
 local LastInstanceMapID = -1
 local LastGroupSize = 0
-local LastInstanceType = nil
+local LastInstanceType
 local queuedBattlefield = {}
 local watchFrameRestore = false
 local bossHealth = {}
@@ -723,11 +724,10 @@ local function sendWhisper(target, msg)
 end
 local BNSendWhisper = sendWhisper
 
+--Another custom server name strip function that first strips out the "><" DBM wraps around playernames
 local function stripServerName(cap)
 	cap = cap:sub(2, -2)
-	if DBM.Options.StripServerName then
-		cap = Ambiguate(cap, "none")
-	end
+	cap = DBM:GetShortServerName(cap)
 	return cap
 end
 
@@ -1308,9 +1308,13 @@ do
 				return
 			end
 			if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
-				self:Disable(true)
-				self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDSPELLTIMERS)
-				return
+				local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
+				version = tonumber(string.sub(version, 2, 4)) or 0
+				if version < 122 then
+					self:Disable(true)
+					self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDSPELLTIMERS)
+					return
+				end
 			end
 			if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
 				self:Disable(true)
@@ -1620,7 +1624,7 @@ do
 	local popCachedTable, pushCachedTable
 	local numChachedTables = 0
 	do
-		local tableCache = nil
+		local tableCache
 
 		-- gets a table from the stack, it will then be recycled.
 		function popCachedTable()
@@ -1848,6 +1852,14 @@ do
 		numAnnounces = numAnnounces or 3
 		for i = 1, numAnnounces do
 			schedule(time - i, func, mod, self, i, ...)
+		end
+	end
+
+	function scheduleRepeat(time, spellId, func, mod, self, ...)
+		--Loops until debuff is gone
+		if DBM:UnitAura("player", spellId) then
+			func(...)--Probably not going to work, this is going to need to get a lot more hacky
+			schedule(time or 2, scheduleRepeat, time, spellId, func, mod, self, ...)
 		end
 	end
 
@@ -2622,8 +2634,12 @@ do
 			return
 		end
 		if GetAddOnEnableState(playerName, "DBM-SpellTimers") >= 1 then
-			self:AddMsg(L.OUTDATEDSPELLTIMERS)
-			return
+			local version = GetAddOnMetadata("DBM-SpellTimers", "Version") or "r0"
+			version = tonumber(string.sub(version, 2, 4)) or 0
+			if version < 122 then
+				self:AddMsg(L.OUTDATEDSPELLTIMERS)
+				return
+			end
 		end
 		if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 then
 			self:AddMsg(L.OUTDATEDRLT)
@@ -2979,9 +2995,22 @@ do
 		return playerName, playerLevel, playerRealm
 	end
 
+	--Intentionally grabs server name at all times, usually to make sure warning/infoframe target info can name match the combat log in the table
 	function DBM:GetUnitFullName(uId)
 		if not uId then return nil end
 		return GetUnitName(uId, true)
+	end
+
+	--Shortens name but custom so we add * to off realmers instead of stripping it entirely like Ambiguate does
+	--Technically GetUnitName without "true" can be used to shorten name to "name (*)" but "name*" is even shorter which is why we do this
+	function DBM:GetShortServerName(name)
+		if not DBM.Options.StripServerName then return name end--If strip is disabled, just return name
+		local shortName, serverName = string.split("-", name)
+		if serverName then
+			return shortName.."*"
+		else
+			return name
+		end
 	end
 
 	function DBM:GetFullPlayerNameByGUID(guid)
@@ -3866,14 +3895,18 @@ do
 			local path = "MISSING"
 			if self.Options.EventSoundDungeonBGM == "Random" then
 				local usedTable = self.Options.EventSoundMusicCombined and DBM.Music or DBM.DungeonMusic
-				local random = fastrandom(3, #usedTable)
-				path = usedTable[random].value
+				if #usedTable >= 3 then
+					local random = fastrandom(3, #usedTable)
+					path = usedTable[random].value
+				end
 			else
 				path = self.Options.EventSoundDungeonBGM
 			end
-			PlayMusic(path)
-			self.Options.musicPlaying = true
-			DBM:Debug("Starting Dungeon music with file: "..path)
+			if path ~= "MISSING" then
+				PlayMusic(path)
+				self.Options.musicPlaying = true
+				DBM:Debug("Starting Dungeon music with file: "..path)
+			end
 		end
 	end
 	local function SecondaryLoadCheck(self)
@@ -6011,14 +6044,18 @@ do
 					local path = "MISSING"
 					if self.Options.EventSoundMusic == "Random" then
 						local usedTable = self.Options.EventSoundMusicCombined and DBM.Music or DBM.BattleMusic
-						local random = fastrandom(3, #usedTable)
-						path = usedTable[random].value
+						if #usedTable >= 3 then
+							local random = fastrandom(3, #usedTable)
+							path = usedTable[random].value
+						end
 					else
 						path = self.Options.EventSoundMusic
 					end
-					PlayMusic(path)
-					self.Options.musicPlaying = true
-					DBM:Debug("Starting combat music with file: "..path)
+					if path ~= "MISSING" then
+						PlayMusic(path)
+						self.Options.musicPlaying = true
+						DBM:Debug("Starting combat music with file: "..path)
+					end
 				end
 			else
 				self:AddMsg(L.COMBAT_STATE_RECOVERED:format(difficultyText..name, strFromTime(delay)))
@@ -6167,8 +6204,10 @@ do
 					end
 					if self.Options.EventSoundWipe and self.Options.EventSoundWipe ~= "None" and self.Options.EventSoundWipe ~= "" then
 						if self.Options.EventSoundWipe == "Random" then
-							local random = fastrandom(3, #DBM.Defeat)
-							self:PlaySoundFile(DBM.Defeat[random].value)--Since this one hard reads table, shouldn't need to validate path
+							if #self.Defeat >= 3 then
+								local random = fastrandom(3, #self.Defeat)
+								self:PlaySoundFile(DBM.Defeat[random].value)
+							end
 						else
 							self:PlaySoundFile(self.Options.EventSoundWipe, nil, true)
 						end
@@ -6322,8 +6361,10 @@ do
 				end
 				if self.Options.EventSoundVictory2 and self.Options.EventSoundVictory2 ~= "None" and self.Options.EventSoundVictory2 ~= "" then
 					if self.Options.EventSoundVictory2 == "Random" then
-						local random = fastrandom(3, #DBM.Victory)
-						self:PlaySoundFile(DBM.Victory[random].value)
+						if #self.Victory >= 3 then
+							local random = fastrandom(3, #self.Victory)
+							self:PlaySoundFile(self.Victory[random].value)
+						end
 					else
 						self:PlaySoundFile(self.Options.EventSoundVictory2, nil, true)
 					end
@@ -6651,6 +6692,17 @@ function DBM:GetSpellInfo(spellId)
 		return nil
 	else--Good request, return now
 		return name, rank, icon, castingTime, minRange, maxRange, returnedSpellId
+	end
+end
+
+function DBM:UnitAura(uId, spellInput, spellInput2, spellInput3, spellInput4)
+	if not uId then return end
+	for i = 1, 60 do
+		local spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(uId, i)
+		if not spellName then return end
+		if spellInput == spellName or spellInput == spellId or spellInput2 == spellName or spellInput2 == spellId or spellInput3 == spellName or spellInput3 == spellId or spellInput4 == spellName or spellInput4 == spellId then
+			return spellName, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, nameplateShowAll, timeMod, value1, value2, value3
+		end
 	end
 end
 
@@ -7970,7 +8022,7 @@ end
 
 do
 	local bossCache = {}
-	local lastTank = nil
+	local lastTank
 
 	function bossModPrototype:GetCurrentTank(cidOrGuid)
 		if lastTank and GetTime() - (bossCache[cidOrGuid] or 0) < 2 then -- return last tank within 2 seconds of call
@@ -9038,9 +9090,7 @@ do
 					local noStrip = cap:match("noStrip ")
 					if not noStrip then
 						local name = cap
-						if DBM.Options.StripServerName then
-							cap = Ambiguate(cap, "short")
-						end
+						cap = DBM:GetShortServerName(cap)
 						local playerColor = RAID_CLASS_COLORS[DBM:GetRaidClass(name)] or color
 						if playerColor then
 							cap = ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, cap, color.r * 255, color.g * 255, color.b * 255)
@@ -9374,6 +9424,7 @@ do
 		end
 		local obj = setmetatable(
 			{
+				spellId = spellId,
 				text = displayText or yellText,
 				mod = self,
 				chatType = chatType,
@@ -9399,11 +9450,7 @@ do
 		end
 		if DBM.Options.DontSendYells or self.yellType and self.yellType == "position" and DBM:UnitBuff("player", voidForm) and DBM.Options.FilterVoidFormSay then return end
 		if not self.option or self.mod.Options[self.option] then
-			if self.yellType == "combo" then
-				SendChatMessage(pformat(self.text, ...), self.chatType or "YELL")
-			else
-				SendChatMessage(pformat(self.text, ...), self.chatType or "SAY")
-			end
+			SendChatMessage(pformat(self.text, ...), self.chatType or "SAY")
 		end
 	end
 	yellPrototype.Show = yellPrototype.Yell
@@ -9434,6 +9481,10 @@ do
 		else
 			scheduleCountdown(time, numAnnounces, self.Yell, self.mod, self, ...)
 		end
+	end
+
+	function yellPrototype:Repeat(...)
+		scheduleRepeat(time, self.Yell, self.spellId, self.mod, self, ...)
 	end
 
 	function yellPrototype:Cancel(...)
@@ -9470,6 +9521,14 @@ do
 
 	function bossModPrototype:NewComboYell(...)
 		return newYell(self, "combo", ...)
+	end
+
+	function bossModPrototype:NewPlayerRepeatYell(...)
+		return newYell(self, "repeatplayer", ...)
+	end
+
+	function bossModPrototype:NewIconRepeatYell(...)
+		return newYell(self, "repeaticon", ...)
 	end
 end
 
@@ -9638,9 +9697,7 @@ do
 		local noStrip = cap:match("noStrip ")
 		if not noStrip then
 			local name = cap
-			if DBM.Options.StripServerName then
-				cap = Ambiguate(cap, "short")
-			end
+			cap = DBM:GetShortServerName(cap)
 			if DBM.Options.SWarnClassColor then
 				local playerColor = RAID_CLASS_COLORS[DBM:GetRaidClass(name)]
 				if playerColor then
@@ -9675,8 +9732,13 @@ do
 	end
 
 	function specialWarningPrototype:Show(...)
-		if not DBM.Options.DontShowSpecialWarnings and not DBM.Options.DontShowSpecialWarningText and (not self.option or self.mod.Options[self.option]) and not moving and frame then
+		--Check if option for this warning is even enabled
+		if (not self.option or self.mod.Options[self.option]) and not moving and frame then
+			--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
+			if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+			--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 			if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
+			--Lastly, we check if it's a tank warning and filter if not in tank spec. This is done because tank warnings on by default and handled fluidly by spec, not option setting
 			if self.announceType == "taunt" and DBM.Options.FilterTankSpec and not self.mod:IsTank() then return end--Don't tell non tanks to taunt, ever.
 			local argTable = {...}
 			-- add a default parameter for move away warnings
@@ -9752,18 +9814,21 @@ do
 					end
 				end
 			end
-			--No stripping on switch warnings, ever. They will NEVER have player name, but often have adds with "-" in name
-			if self.announceType and not self.announceType:find("switch") then
-				text = text:gsub(">.-<", classColoringFunction)
+			--Text is disabled, suresss text from screen and chat frame
+			if not DBM.Options.DontShowSpecialWarningText then
+				--No stripping on switch warnings, ever. They will NEVER have player name, but often have adds with "-" in name
+				if self.announceType and not self.announceType:find("switch") then
+					text = text:gsub(">.-<", classColoringFunction)
+				end
+				DBM:AddSpecialWarning(text)
+				if DBM.Options.ShowSWarningsInChat then
+					local colorCode = ("|cff%.2x%.2x%.2x"):format(DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
+					self.mod:AddMsg(colorCode.."["..L.MOVE_SPECIAL_WARNING_TEXT.."] "..text.."|r", nil)
+				end
 			end
-			DBM:AddSpecialWarning(text)
 			self.combinedcount = 0
 			self.combinedtext = {}
-			if DBM.Options.ShowSWarningsInChat then
-				local colorCode = ("|cff%.2x%.2x%.2x"):format(DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
-				self.mod:AddMsg(colorCode.."["..L.MOVE_SPECIAL_WARNING_TEXT.."] "..text.."|r", nil)
-			end
-			if not UnitIsDeadOrGhost("player") then
+			if not UnitIsDeadOrGhost("player") and not DBM.Options.DontShowSpecialWarningFlash then
 				if noteHasName then
 					if DBM.Options.SpecialWarningFlash5 then--Not included in above if statement on purpose. we don't want to trigger else rule if noteHasName is true but SpecialWarningFlash5 is false
 						local repeatCount = DBM.Options.SpecialWarningFlashCount5 or 1
@@ -9791,7 +9856,7 @@ do
 			--Mod ID: Encounter ID as string, or a generic string for mods that don't have encounter ID (such as trash, dummy/test mods)
 			--boolean: Whether or not this warning is a special warning (higher priority).
 			fireEvent("DBM_Announce", text, self.icon, self.type, self.spellId, self.mod.id, true)
-			if self.sound then
+			if self.sound and not DBM.Options.DontPlaySpecialWarningSound then
 				local soundId = self.option and self.mod.Options[self.option .. "SWSound"] or self.flash
 				if noteHasName and type(soundId) == "number" then soundId = noteHasName end--Change number to 5 if it's not a custom sound, else, do nothing with it
 				if self.hasVoice and DBM.Options.ChosenVoicePack ~= "None" and not voiceSessionDisabled and self.hasVoice <= SWFilterDisabed and (type(soundId) == "number" and soundId < 5 and DBM.Options.VoiceOverSpecW2 == "DefaultOnly" or DBM.Options.VoiceOverSpecW2 == "All") then return end
@@ -9806,8 +9871,11 @@ do
 	end
 
 	function specialWarningPrototype:CombinedShow(delay, ...)
-		if DBM.Options.DontShowSpecialWarnings or DBM.Options.DontShowSpecialWarningText then return end
+		--Check if option for this warning is even enabled
 		if self.option and not self.mod.Options[self.option] then return end
+		--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
+		if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+		--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 		if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
 		local argTable = {...}
 		for i = 1, #argTable do
@@ -9847,7 +9915,7 @@ do
 		local voice = DBM.Options.ChosenVoicePack
 		if voiceSessionDisabled or voice == "None" then return end
 		if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
-		if (not DBM.Options.DontShowSpecialWarnings and (not self.option or self.mod.Options[self.option]) or always) and self.hasVoice <= SWFilterDisabed then
+		if ((not self.option or self.mod.Options[self.option]) or always) and self.hasVoice <= SWFilterDisabed then
 			--Filter tank specific voice alerts for non tanks if tank filter enabled
 			--But still allow AlwaysPlayVoice to play as well.
 			if (name == "changemt" or name == "tauntboss") and DBM.Options.FilterTankSpec and not self.mod:IsTank() and not always then return end
@@ -10247,9 +10315,9 @@ end
 do
 	local timerPrototype = {}
 	local mt = {__index = timerPrototype}
-	local countvoice1, countvoice2, countvoice3 = nil, nil, nil
+	local countvoice1, countvoice2, countvoice3
 	local countvoice1max, countvoice2max, countvoice3max = 5, 5, 5
-	local countpath1, countpath2, countpath3 = nil, nil, nil
+	local countpath1, countpath2, countpath3
 
 	--Merged countdown object for timers with build-in countdown
 	function DBM:BuildVoiceCountdownCache()
@@ -11571,7 +11639,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200601040846" then
+	if not revision or revision == "20200606011038" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

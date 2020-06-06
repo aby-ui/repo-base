@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("WrathEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(36597, 34564, 15936)
 mod:SetEncounterID(2321)
 mod:SetModelID(30721)--Lich King
@@ -67,7 +67,7 @@ local seenAdds = {}
 
 mod.vb.phase = 0
 
-function mod:OnCombatStart(delay)
+function mod:OnCombatStart()
 	table.wipe(seenAdds)
 	self.vb.phase = 0
 	self.vb.bossLeft = 4--Because we change it to 3 right away
@@ -173,12 +173,12 @@ end
 
 do
 	--Back in room has an emote, but that requires translation, scheduling works better
-	local function BackInRoom(time)
+	local function BackInRoom()
 		warnTeleportNow:Show()
 		timerTeleport:Start(88.5)
 		warnTeleportSoon:Schedule(78.5)
 	end
-	function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+	function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 		if spellId == 30211 then--Teleport Self
 			warnTeleportNow:Show()
 			warnTeleportSoon:Schedule(37.5)

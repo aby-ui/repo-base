@@ -556,7 +556,7 @@ end
 --  OnUpdate  --
 ----------------
 do
-	local UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected, UnitInPhase, GetPlayerFacing, UnitName, UnitClass, IsInRaid, GetNumGroupMembers, GetRaidTargetIndex, GetBestMapForUnit = UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected, UnitInPhase, GetPlayerFacing, UnitName, UnitClass, IsInRaid, GetNumGroupMembers, GetRaidTargetIndex, C_Map.GetBestMapForUnit
+	local UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected, UnitInPhase, GetPlayerFacing, UnitClass, IsInRaid, GetNumGroupMembers, GetRaidTargetIndex, GetBestMapForUnit, Ambiguate = UnitExists, UnitIsUnit, UnitIsDeadOrGhost, UnitIsConnected, UnitInPhase, GetPlayerFacing, UnitClass, IsInRaid, GetNumGroupMembers, GetRaidTargetIndex, C_Map.GetBestMapForUnit, Ambiguate
 	local max, sin, cos, pi2 = math.max, math.sin, math.cos, math.pi * 2
 	local circleColor, rotation, pixelsperyard, activeDots, prevRange, prevThreshold, prevNumClosePlayer, prevclosestRange, prevColor, prevType = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	local unitList = {}
@@ -664,8 +664,8 @@ do
 		local sinTheta = sin(rotation)
 		local cosTheta = cos(rotation)
 		local closePlayer = 0
-		local closestRange = nil
-		local closetName = nil
+		local closestRange
+		local closetName
 		local filter = mainFrame.filter
 		local type = reverse and 2 or filter and 1 or 0
 		local onlySummary = mainFrame.onlySummary
@@ -687,11 +687,13 @@ do
 						end
 					end
 					if not closetName then
-						closetName = UnitName(uId)
+						closetName = DBM:GetUnitFullName(uId)
+						closetName = DBM:GetShortServerName(closetName)
 					end
 				end
 				if tEnabled and inRange and not onlySummary and closePlayer < 6 then -- Display up to 5 players in text range frame.
-					local playerName = UnitName(uId)
+					local playerName = DBM:GetUnitFullName(uId)
+					playerName = DBM:GetShortServerName(playerName)
 					local color = RAID_CLASS_COLORS[dot.class] or NORMAL_FONT_COLOR
 					textFrame.lines[closePlayer]:SetText(dot.icon and ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t %s"):format(dot.icon, playerName) or playerName)
 					textFrame.lines[closePlayer]:SetTextColor(color.r, color.g, color.b)

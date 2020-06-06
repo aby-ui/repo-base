@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2093, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(126845, 126847, 126848)--Captain Jolly, Captain Raoul, Captain Eudora
 mod:SetEncounterID(2094)
 mod:SetZone()
@@ -115,7 +115,7 @@ local function scanCaptains(self, isPull, delay)
 	end
 end
 
-function mod:PowderShotTarget(targetname, uId)
+function mod:PowderShotTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnPowderShot:Show()

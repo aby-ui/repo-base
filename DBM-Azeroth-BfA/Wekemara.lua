@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2363, "DBM-Azeroth-BfA", 5, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(152671)--155702/spawn-of-wekemara
 mod:SetEncounterID(2318)
 mod:SetReCombatTime(20)
@@ -31,6 +31,7 @@ local timerElectricDischargeCD		= mod:NewCDTimer(25.6, 303451, nil, nil, nil, 2,
 
 --mod:AddReadyCheckOption(37460, false)
 
+--[[
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
 --		timerBioelectricblastCD:Start(1-delay)
@@ -38,6 +39,7 @@ function mod:OnCombatStart(delay, yellTriggered)
 --		timerElectricDischargeCD:Start(1-delay)
 	end
 end
+--]]
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

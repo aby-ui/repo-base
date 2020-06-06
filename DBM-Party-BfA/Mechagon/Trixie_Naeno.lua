@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2360, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(153755, 150712)
 mod:SetEncounterID(2312)
 mod:SetZone()
@@ -45,7 +45,7 @@ mod.vb.MetalCast = 0
 
 local SmokeBombName = DBM:GetSpellInfo(298573)
 
-function mod:MegaTazeTarget(targetname, uId)
+function mod:MegaTazeTarget(targetname)
 	if not targetname then return end
 	if self:AntiSpam(4, targetname) then--Antispam to lock out redundant later warning from firing if this one succeeds
 		if targetname == UnitName("player") then

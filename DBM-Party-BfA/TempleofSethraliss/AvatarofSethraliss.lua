@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2145, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133392)
 mod:SetEncounterID(2127)
 mod:SetZone()
@@ -20,7 +20,6 @@ mod:RegisterEventsInCombat(
 
 --TODO, work on Cds if adds long enough for more than 1 cast each wave
 local warnTaint						= mod:NewSpellAnnounce(273677, 2)
-local warnPlague					= mod:NewTargetAnnounce(269686, 2)
 local warnPulse						= mod:NewSpellAnnounce(268024, 3)
 local warnLifeForce					= mod:NewSpellAnnounce(274149, 1)
 

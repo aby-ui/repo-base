@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2348, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200517140833")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(144248)--Head Mechinist Sparkflux
 mod:SetEncounterID(2259)
 mod:SetZone()
@@ -68,7 +68,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 294853 then--Activate Plant
 		warnPlant:Show()
 		timerPlantCD:Start()

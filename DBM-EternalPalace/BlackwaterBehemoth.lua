@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2347, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(150653)
 mod:SetEncounterID(2289)
 mod:SetZone()
@@ -248,7 +248,7 @@ function mod:SPELL_INTERRUPT(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 292252 and self:AntiSpam(5, 3) then--Power Drain [DNT]
 		timerToxicSpineCD:Stop()
 		timerShockPulseCD:Stop()

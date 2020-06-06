@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2158, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(133007)
 mod:SetEncounterID(2123)
 mod:SetZone()
@@ -32,7 +32,6 @@ local timerCleansingLightCD			= mod:NewCDTimer(23.7, 269310, nil, nil, nil, 5)--
 mod:AddInfoFrameOption(269301, "Healer")
 
 mod.vb.remainingAdds = 6
-local vileExpulsion = DBM:GetSpellInfo(269843)
 
 function mod:OnCombatStart(delay)
 	self.vb.remainingAdds = 6
@@ -80,7 +79,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 272663 and self:AntiSpam(2, 1) then--Blood Clone Cosmetic
 		specWarnBloodVisage:Show()
 		specWarnBloodVisage:Play("killmob")

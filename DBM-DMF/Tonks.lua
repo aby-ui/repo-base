@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Tonks", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 mod:SetZone()
 
 mod:RegisterEvents(
@@ -23,7 +23,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 102178 then
 		timerGame:Start()
 	end
@@ -36,6 +36,6 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_EXITED_VEHICLE(uId)
+function mod:UNIT_EXITED_VEHICLE()
 	timerGame:Cancel()
 end

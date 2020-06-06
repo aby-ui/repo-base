@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Brawlers", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 --mod:SetCreatureID(60491)
 --mod:SetModelID(41448)
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
@@ -212,7 +212,7 @@ function mod:OnSync(msg)
 		end
 		self:Stop()--Sometimes NPC doesn't yell when a match ends too early, if a new match begins we stop on begin before starting new stuff
 		berserkTimer:Start()
-		for i, v in ipairs(startCallbacks) do
+		for _, v in ipairs(startCallbacks) do
 			v()
 		end
 	elseif msg == "MatchEnd" then
@@ -220,7 +220,7 @@ function mod:OnSync(msg)
 		currentFighter = nil
 		self:Stop()
 		--Boss from any rank can be fought by any rank now, so we just need to always cancel them all
-		for i, v in ipairs(endCallbacks) do
+		for _, v in ipairs(endCallbacks) do
 			v()
 		end
 		for i = 1, 7 do
@@ -245,7 +245,7 @@ function mod:OnSync(msg)
 end
 
 do
-	function mod:UNIT_AURA(uId)
+	function mod:UNIT_AURA()
 		local currentQueueRank = select(16, DBM:UnitBuff("player", QueuedBuff))
 		if currentQueueRank and currentQueueRank ~= lastRank then
 			lastRank = currentQueueRank

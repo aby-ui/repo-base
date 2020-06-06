@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BCEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200428193343")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(17968, 21212, 19622)
 mod:SetEncounterID(2319)
 mod:SetModelID(20939)--Archimond
@@ -37,7 +37,7 @@ mod:AddRangeFrameOption(10, 38280)
 mod.vb.phase = 0
 local seenAdds = {}
 
-function mod:OnCombatStart(delay)
+function mod:OnCombatStart()
 	table.wipe(seenAdds)
 	self.vb.phase = 0
 	self.vb.bossLeft = 4--Because we change it to 3 right away

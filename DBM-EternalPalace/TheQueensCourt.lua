@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2359, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(152852, 152853)--Pashmar 152852, Silivaz 152853
 mod:SetEncounterID(2311)
 mod:SetZone()
@@ -319,7 +319,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find("spell:298050") then--Form Ranks (Repeat Performance is next)
 		specWarnFormRanks:Show(L.Circles)
 		specWarnFormRanks:Play("gathershare")

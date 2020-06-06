@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2197, "DBM-Azeroth-BfA", 1, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(140252)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -26,6 +26,7 @@ local timerFreezingTempestCD		= mod:NewCDTimer(65.5, 274895, nil, nil, nil, 2, n
 --mod:AddReadyCheckOption(37460, false)
 local spikeName = DBM:GetSpellInfo(274896)
 
+--[[
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
 		--timerPermafrostSpikeCD:Start(1-delay)
@@ -33,6 +34,7 @@ function mod:OnCombatStart(delay, yellTriggered)
 		--timerFreezingTempestCD:Start(1-delay)
 	end
 end
+--]]
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

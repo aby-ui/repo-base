@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200605175350")
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -143,7 +143,7 @@ do
 				local uId = DBM:GetRaidUnitId(name)
 				local spellName, _, count = DBM:UnitDebuff(uId, 274195)
 				if spellName and count then
-					local unitName = UnitName(uId)
+					local unitName = DBM:GetUnitFullName(uId)
 					tempLines[unitName] = count
 					tempLinesSorted[#tempLinesSorted + 1] = unitName
 				end

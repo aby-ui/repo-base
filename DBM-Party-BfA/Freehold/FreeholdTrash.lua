@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200517140833")
+mod:SetRevision("20200602212246")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -41,7 +41,7 @@ local specWarnInfectedWound				= mod:NewSpecialWarningDispel(258323, "RemoveDise
 local specWarnOiledBlade				= mod:NewSpecialWarningDispel(257908, "Healer", nil, nil, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-function mod:RicochetingTarget(targetname, uId)
+function mod:RicochetingTarget(targetname)
 	if not targetname then return end
 	warnRicochetingThrow:Show(targetname)
 	if targetname == UnitName("player") then
@@ -49,7 +49,7 @@ function mod:RicochetingTarget(targetname, uId)
 	end
 end
 
-function mod:DashTarget(targetname, uId)
+function mod:DashTarget(targetname)
 	if not targetname then return end
 	warnDuelistDash:Show(targetname)
 	if targetname == UnitName("player") then

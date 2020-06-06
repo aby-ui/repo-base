@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", 3, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(creatureID)--Dooms Howl 138122, Lion's Roar 137374
 --mod:SetEncounterID(encounterID)
 mod:SetReCombatTime(20)
@@ -55,7 +55,7 @@ mod:AddRangeFrameOption(8, 271192)
 mod:AddNamePlateOption("NPAuraOnSentry", 271783)
 --mod:AddReadyCheckOption(37460, false)
 
-function mod:OnCombatStart(delay, yellTriggered)
+function mod:OnCombatStart(_, yellTriggered)
 	if yellTriggered then
 		--timerShatteringPulseCD:Start(-delay)
 		--timerMortarShotCD:Start(-delay)
@@ -153,7 +153,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 271164 and self:AntiSpam(5, 1) then
 		warnMortarShot:Show()
 		timerMortarShotCD:Start()

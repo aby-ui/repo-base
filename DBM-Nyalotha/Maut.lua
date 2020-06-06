@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2365, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(156523)
 mod:SetEncounterID(2327)--Obsidian Destroyer ID, but only one left after eliminating all others, should be correct
 mod:SetZone()
@@ -294,7 +294,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 314992 then--Drain Essence cast not in combat log, only debuffs
 		timerDrainEssenceCD:Start()
 	end

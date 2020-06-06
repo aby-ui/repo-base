@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetZone()
@@ -354,7 +354,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find("spell:292996") then--Maddening Eruption
 		specWarnMaddeningEruption:Show(L.Tear)
 		specWarnMaddeningEruption:Play("moveboss")
@@ -363,7 +363,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 299711 then--Pick A Portal (script for horrors)
 		--Controller used for horrors even if we're in a phase one isn't cast, becauase we still want to know where the script is before we push boss.
 		timerHorrificSummonerCD:Start()

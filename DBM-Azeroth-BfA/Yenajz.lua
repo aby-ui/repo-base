@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2198, "DBM-Azeroth-BfA", 1, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(140163)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -23,12 +23,14 @@ local timerEndlessAbyssCD			= mod:NewCDTimer(45.7, 274932, nil, nil, nil, 2, nil
 
 --mod:AddReadyCheckOption(37460, false)
 
+--[[
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then
 		--timerVoidNovaCD:Start(1-delay)
 		--timerEndlessAbyssCD:Start(1-delay)
 	end
 end
+--]]
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

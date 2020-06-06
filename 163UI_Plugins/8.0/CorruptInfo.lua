@@ -341,20 +341,20 @@ SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 ---------------------------------------------------------------]]
 local success, CharIcon = pcall(function() return CharacterStatsPane.ItemLevelFrame.Corruption end)
 if success and GetCVar("portal") == "CN" then
-    local prices = { [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
+    local prices = { [8] = 2400, [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
     local vendors = {
         { { "truth", 1, }, { "proc_mastery", 1, }, { "passive_crit_dam", 2, }, { "passive_mastery", 2, }, { "passive_haste", 3, }, { "twisted", 3, }, },
         { { "passive_mastery", 1, }, { "ritual", 1, }, { "proc_crit", 2, }, { "passive_leech", 2, }, { "truth", 2, }, { "passive_versatility", 3, }, { "passive_avoidance", 2, }, },
         { { "star", 1, }, { "proc_versatility", 1, }, { "clarity", 1, }, { "passive_crit", 2, }, { "proc_haste", 3, }, { "passive_leech", 3, }, { "passive_avoidance", 3, }, },
         { { "passive_crit", 1, }, { "passive_leech", 1, }, { "passive_haste", 2, }, { "twilight", 2, }, { "proc_mastery", 3, }, { "passive_crit_dam", 3, }, },
         { { "passive_haste", 1, }, { "twisted", 1, }, { "proc_haste", 2, }, { "echo", 2, }, { "star", 3, }, { "passive_crit", 3, }, },
+        { { "proc_haste", 1, }, { "passive_crit_dam", 1, }, { "proc_versatility", 2, }, { "ritual", 2, }, { "passive_mastery", 3, }, { "twilight", 3, }, { "passive_avoidance", 1, }, },
     }
     local firstTime = time({ year =2020, month=5, day=21, hour=7})
     local interval = 60*60*24*7/2
     local timeFormat = "%m月%d日%H:%M"
 
     local tip = CorruptionVendorTooltip or CreateFrame("GameTooltip", "CorruptionVendorTooltip", UIParent, "GameTooltipTemplate")
-    SetOrHookScript(GameTooltip, "OnHide", function() tip:Hide() end)
 
     local function formatOne(key, level)
         if not key then return " " end
@@ -369,6 +369,8 @@ if success and GetCVar("portal") == "CN" then
         end
     end
 
+    CoreScheduleTimer(false, 2, function()
+    SetOrHookScript(GameTooltip, "OnHide", function() tip:Hide() end)
     CharIcon:HookScript("OnEnter", function()
         local round = floor((time()-firstTime)/interval)
         round = round % 8 + 1 --0->1 7->8 8->1
@@ -413,6 +415,7 @@ if success and GetCVar("portal") == "CN" then
         end
 
         tip:Show()
+    end)
     end)
 end
 

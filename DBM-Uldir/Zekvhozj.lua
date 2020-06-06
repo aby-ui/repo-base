@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 mod:SetZone()
@@ -91,7 +91,7 @@ mod.vb.roilingCount = 0
 mod.vb.corruptorsPactCount = 0
 mod.vb.casterAddsRemaining = 0
 
-function mod:EyeBeamTarget(targetname, uId)
+function mod:EyeBeamTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") and self:AntiSpam(5, 5) then
 		specWarnEyeBeam:Show(self.vb.eyeCount)
@@ -105,7 +105,7 @@ function mod:EyeBeamTarget(targetname, uId)
 	end
 end
 
-function mod:RollingTarget(targetname, uId)
+function mod:RollingTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") and self:AntiSpam(5, 6) then
 		specWarnRoilingDeceit:Show(DBM_CORE_L.ROOM_EDGE)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2374, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524143937")
+mod:SetRevision("20200602212246")
 mod:SetCreatureID(158328)
 mod:SetEncounterID(2345)
 mod:SetZone()
@@ -135,7 +135,7 @@ do
 			autoMarkBlocked = false
 			return
 		end--None left, abort scans
-		local lowestUnitID = nil
+		local lowestUnitID
 		local lowestHealth = 100
 		local found = false
 		for i = 1, 40 do
