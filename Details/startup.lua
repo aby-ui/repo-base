@@ -1739,7 +1739,7 @@ function _G._detalhes:Start()
 	end
 	
 	--enforce to show 6 abilities on the tooltip
-	_detalhes.tooltip.tooltip_max_abilities = 6
+	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
 	
 	--enforce to use the new animation code
 	if (_detalhes.streamer_config) then

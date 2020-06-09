@@ -345,8 +345,10 @@ DF.CooldownsBySpec = {
 			[194407] = 1, --Spitting Cobra (talent)
 			
 			[186265] = 2, --Aspect of the Turtle
+			[109304] = 2, --Exhilaration
 			
 			[19577] = 5, --Intimidation
+			[187650] = 5, --Freezing Trap
 		},
 		--marksmanship
 		[254] = {
@@ -366,6 +368,7 @@ DF.CooldownsBySpec = {
 			[109304] = 2, --Exhilaration
 			
 			[19577] = 5, --Intimidation
+			[187650] = 5, --Freezing Trap
 		},
 
 	--MONK
@@ -657,6 +660,7 @@ DF.CrowdControlSpells = {
 	[33786] = "DRUID", --Cyclone (from pvp talent - resto druid)
 	
 	[3355] = "HUNTER", --Freezing Trap
+	[203337] = "HUNTER", --Diamond Ice (from pvp talent)
 	[19577] = "HUNTER", --Intimidation
 	[190927] = "HUNTER", --Harpoon
 	[162480] = "HUNTER", --Steel Trap

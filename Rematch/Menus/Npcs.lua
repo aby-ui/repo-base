@@ -398,7 +398,7 @@ rematch.notableNPCs = {
 	{ 154923, 30, 2736 }, -- Sputtertube
 	{ 154925, 30, 2738 }, -- Creakclank
 	{ 154927, 30, 2740 }, -- Unit 35
-	{ 154929, 307, 2742 }, -- Unit 17
+	{ 154929, 30, 2742 }, -- Unit 17
 
 	-- Stratholme
 	{ 150923, 28, 2609 }, -- Belchling
@@ -425,6 +425,8 @@ rematch.notableNPCs = {
 	{ 161658, 29, 2820 }, -- Shred
 	{ 161656, 29, 2818 }, -- Splint
 	{ 161662, 29, 2822 }, -- Char
+	{ 161657, 29, 2819 }, -- Ninn Jah
+	{ 161663, 29, 2823 }, -- Tempton
 	{ 160206, 29, 2804, 2805, 2806 }, -- Alran Heartshade
 	{ 160208, 29, 2807, 2808, 2809 }, -- Zuna Skullcrush
 	{ 160210, 29, 2810, 2811, 2812 }, -- Tasha Riley
@@ -678,3 +680,4 @@ SlashCmdList["REMATCHSPECIESINFO"] = function()
 	local txt = format("{ , 26, %d, %d, %d }, -- %s, %s, %s", speciesIDs[1] or 0, speciesIDs[2] or 0, speciesIDs[3] or 0, names[1] or "", names[2] or "", names[3] or "")
 	TinyPad.Insert(txt)
 end
+

@@ -1578,7 +1578,14 @@
 		
 -- /run local a,b=_detalhes.tooltip.header_statusbar,0.3;a[1]=b;a[2]=b;a[3]=b;a[4]=0.8;
 		
-		function _detalhes:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B)
+		function _detalhes:AddTooltipSpellHeaderText (headerText, headerColor, amount, iconTexture, L, R, T, B, separator)
+
+			if (separator and separator == true) then
+				GameCooltip:AddLine ("", "", nil, nil, 1, 1, 1, 1, 8)
+				
+				return
+			end
+
 			if (_detalhes.tooltip.show_amount) then
 				GameCooltip:AddLine (headerText, "x" .. amount .. "", nil, headerColor, 1, 1, 1, .4, _detalhes.tooltip.fontsize_title)
 			else
@@ -1592,13 +1599,12 @@
 		
 		local bgColor, borderColor = {0, 0, 0, 0.8}, {0, 0, 0, 0} --{0.37, 0.37, 0.37, .75}, {.30, .30, .30, .3}
 		
-		function _detalhes:BuildInstanceBarTooltip (frame)
+		function _detalhes:FormatCooltipForSpells()
 			local GameCooltip = GameCooltip
-			
+
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 
-			GameCooltip:SetOption ("MinWidth", _math_max (230, self.baseframe:GetWidth()*0.98))
 			GameCooltip:SetOption ("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background]])
 			
 			GameCooltip:SetOption ("TextSize", _detalhes.tooltip.fontsize)
@@ -1607,16 +1613,22 @@
 			GameCooltip:SetOption ("TextColorRight", _detalhes.tooltip.fontcolor_right)
 			GameCooltip:SetOption ("TextShadow", _detalhes.tooltip.fontshadow and "OUTLINE")
 			
-			GameCooltip:SetOption ("LeftBorderSize", -4)
-			GameCooltip:SetOption ("RightBorderSize", 4)
+			GameCooltip:SetOption ("LeftBorderSize", -5)
+			GameCooltip:SetOption ("RightBorderSize", 5)
 			GameCooltip:SetOption ("RightTextMargin", 0)
-			GameCooltip:SetOption ("VerticalOffset", 8) 
+			GameCooltip:SetOption ("VerticalOffset", 9)
 			GameCooltip:SetOption ("AlignAsBlizzTooltip", true)
 			GameCooltip:SetOption ("AlignAsBlizzTooltipFrameHeightOffset", -8)
 			GameCooltip:SetOption ("LineHeightSizeOffset", 4)
 			GameCooltip:SetOption ("VerticalPadding", -4)
 
 			GameCooltip:SetBackdrop (1, _detalhes.cooltip_preset2_backdrop, bgColor, borderColor)
+		end
+
+		function _detalhes:BuildInstanceBarTooltip (frame)
+			local GameCooltip = GameCooltip
+			_detalhes:FormatCooltipForSpells()
+			GameCooltip:SetOption ("MinWidth", _math_max (230, self.baseframe:GetWidth()*0.98))
 			
 			local myPoint = _detalhes.tooltip.anchor_point
 			local anchorPoint = _detalhes.tooltip.anchor_relative

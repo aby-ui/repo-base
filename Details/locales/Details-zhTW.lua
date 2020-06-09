@@ -2,8 +2,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale("Details", "zhTW")
 if not L then return end 
 
 L["ABILITY_ID"] = "技能 ID"
---[[Translation missing --]]
---[[ L["STRING_"] = ""--]] 
+L["STRING_"] = "-"
 L["STRING_ABSORBED"] = "吸收"
 L["STRING_ACTORFRAME_NOTHING"] = "沒有資料可供報告 :("
 L["STRING_ACTORFRAME_REPORTAT"] = "於"
@@ -464,8 +463,7 @@ L["STRING_OPTIONS_BAR_SPACING_DESC"] = "每個計量條的間距"
 L["STRING_OPTIONS_BAR_TEXTURE_DESC"] = "使用在頂部計量條的材質"
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM"] = "自定文字格式"
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM_DESC"] = "當啟用時，以方框中的規則格式化左邊的文字"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_BARLEFTTEXTCUSTOM2"] = ""--]] 
+L["STRING_OPTIONS_BARLEFTTEXTCUSTOM2"] = "-"
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM2_DESC"] = [=[|cFFFFFF00{data1}|r: 通常代表了玩家的位置編號。
 
 |cFFFFFF00{data2}|r: 總是玩家名字。
@@ -482,8 +480,7 @@ L["STRING_OPTIONS_BARORIENTATION"] = "計量條填滿方向"
 L["STRING_OPTIONS_BARORIENTATION_DESC"] = "計量條往哪個方向填滿。"
 L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM"] = "自定文字格式"
 L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM_DESC"] = "當啟用時，以方框中的規則格式化右邊的文字"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM2"] = ""--]] 
+L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM2"] = "-"
 L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM2_DESC"] = [=[|cFFFFFF00{data1}|r: 第一次數據測試，通常表示此數據已完成。
 
 |cFFFFFF00{data2}|r: 第二次數據測試，大多時候通常代表每秒平均。
@@ -512,10 +509,8 @@ L["STRING_OPTIONS_BG_ALL_ALLY"] = "顯示全部"
 L["STRING_OPTIONS_BG_ALL_ALLY_DESC"] = [=[當啟用時，敵方玩家也會顯示在隊伍模式中。
 |cFFFFFF00重要|r: 改變會在下次進入戰鬥時套用。]=]
 L["STRING_OPTIONS_BG_ANCHOR"] = "戰場:"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_BG_UNIQUE_SEGMENT"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_BG_UNIQUE_SEGMENT_DESC"] = ""--]] 
+L["STRING_OPTIONS_BG_UNIQUE_SEGMENT"] = "獨立片段"
+L["STRING_OPTIONS_BG_UNIQUE_SEGMENT_DESC"] = "戰場開始時創建一個片段，一直持續到戰場結束。"
 L["STRING_OPTIONS_CAURAS"] = "獲得光環"
 L["STRING_OPTIONS_CAURAS_DESC"] = [=[啟用獲得:
 
@@ -539,8 +534,7 @@ L["STRING_OPTIONS_CENERGY_DESC"] = [=[啟用獲得:
 - |cFFFFFF00符文能量生成|r]=]
 L["STRING_OPTIONS_CHANGE_CLASSCOLORS"] = "修改職業顏色"
 L["STRING_OPTIONS_CHANGE_CLASSCOLORS_DESC"] = "選擇職業的新顏色。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_CHANGECOLOR"] = ""--]] 
+L["STRING_OPTIONS_CHANGECOLOR"] = "修改顏色"
 L["STRING_OPTIONS_CHANGELOG"] = "版本註釋"
 L["STRING_OPTIONS_CHART_ADD"] = "增加數據"
 L["STRING_OPTIONS_CHART_ADD2"] = "增加"
@@ -604,8 +598,7 @@ L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "當不在隊伍時"
 L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "當不在副本時"
 L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "當在副本時"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "團隊除錯"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_COMBAT_ALPHA_8"] = ""--]] 
+L["STRING_OPTIONS_COMBAT_ALPHA_8"] = "戰場內"
 L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[選擇戰鬥時的視窗透明度
 
 |cFFFFFF00不變|r: 不修改透明度。
@@ -868,10 +861,10 @@ L["STRING_OPTIONS_PANIMODE"] = "慌亂模式"
 L["STRING_OPTIONS_PANIMODE_DESC"] = "如果啟用並且您從遊戲中退出（例如通過斷開連接），而您正在與首領對戰中，則所有片段都將被刪除，這將使您的登出過程更快。"
 L["STRING_OPTIONS_PDW_ANCHOR"] = "面板："
 L["STRING_OPTIONS_PDW_SKIN_DESC"] = "在玩家詳細訊息視窗、報告視窗和選項面板上使用的皮膚。 某些更改需要重載。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PERCENT_TYPE"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PERCENT_TYPE_DESC"] = ""--]] 
+L["STRING_OPTIONS_PERCENT_TYPE"] = "比例類型"
+L["STRING_OPTIONS_PERCENT_TYPE_DESC"] = [=[更改百分比法：
+|cFFFFFF00相對總體數據|r：百分比顯示的是RAID所有成員作出貢獻。
+|cFFFFFF00相對最高玩家|r：百分比是相對於最高玩家的分數。]=]
 L["STRING_OPTIONS_PERFORMANCE"] = "性能"
 L["STRING_OPTIONS_PERFORMANCE_ANCHOR"] = "一般:"
 L["STRING_OPTIONS_PERFORMANCE_ARENA"] = "競技場"
@@ -955,18 +948,12 @@ L["STRING_OPTIONS_PS_ABBREVIATE_DESC"] = [=[選擇縮寫方法。
 
 |cFFFFFF00Lower|r and |cFFFFFF00Upper|r: 是對 "K" 和 "M" 字母的引用 (如果是小寫或大寫)。]=]
 L["STRING_OPTIONS_PS_ABBREVIATE_NONE"] = "沒有"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOK"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOK0"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOK0MIN"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOK2"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOK2MIN"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_PS_ABBREVIATE_TOKMIN"] = ""--]] 
+L["STRING_OPTIONS_PS_ABBREVIATE_TOK"] = "精確到K I 大寫"
+L["STRING_OPTIONS_PS_ABBREVIATE_TOK0"] = "精確到M I 大寫"
+L["STRING_OPTIONS_PS_ABBREVIATE_TOK0MIN"] = "精確到M I 小寫"
+L["STRING_OPTIONS_PS_ABBREVIATE_TOK2"] = "精確到K II 大寫"
+L["STRING_OPTIONS_PS_ABBREVIATE_TOK2MIN"] = "精確到K II 小寫"
+L["STRING_OPTIONS_PS_ABBREVIATE_TOKMIN"] = "精確到K I 小寫"
 L["STRING_OPTIONS_PVPFRAGS"] = "僅 PvP 蓄意傷害"
 L["STRING_OPTIONS_PVPFRAGS_DESC"] = "當啟用, 只有殺死敵對玩家計數時從 |cFFFFFF00傷害 > 蓄意傷害|r 顯示。"
 L["STRING_OPTIONS_REALMNAME"] = "移除伺服器名"
@@ -1040,8 +1027,7 @@ L["STRING_OPTIONS_RT_INTERRUPTS_CUSTOM_DESC"] = [=[鍵入要發送的自己的�
 
 使用 |cFFFFFF00{next}|r 添加下一個玩家名稱。]=]
 L["STRING_OPTIONS_RT_INTERRUPTS_NEXT"] = "下一個玩家"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_RT_INTERRUPTS_NEXT_DESC"] = ""--]] 
+L["STRING_OPTIONS_RT_INTERRUPTS_NEXT_DESC"] = "當存在中斷的序列，將負責下一個中斷的玩家的名字。"
 L["STRING_OPTIONS_RT_INTERRUPTS_ONOFF_DESC"] = "當您成功地打斷施法時, 將發送一個訊息。"
 L["STRING_OPTIONS_RT_INTERRUPTS_WHISPER"] = "密語對象"
 L["STRING_OPTIONS_RT_OTHER_ANCHOR"] = "一般:"
@@ -1086,10 +1072,8 @@ L["STRING_OPTIONS_SENDFEEDBACK"] = "回饋"
 L["STRING_OPTIONS_SHOW_SIDEBARS"] = "顯示邊框"
 L["STRING_OPTIONS_SHOW_SIDEBARS_DESC"] = "顯示或隱藏視窗邊框。"
 L["STRING_OPTIONS_SHOW_STATUSBAR"] = "顯示狀態條"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SHOW_STATUSBAR_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SHOW_TOTALBAR_COLOR_DESC"] = ""--]] 
+L["STRING_OPTIONS_SHOW_STATUSBAR_DESC"] = "顯示或隱藏狀態欄下方。"
+L["STRING_OPTIONS_SHOW_TOTALBAR_COLOR_DESC"] = "選擇顏色。透明度值遵循行alpha值。"
 L["STRING_OPTIONS_SHOW_TOTALBAR_DESC"] = "顯示或隱藏總量欄。"
 L["STRING_OPTIONS_SHOW_TOTALBAR_ICON"] = "圖示"
 L["STRING_OPTIONS_SHOW_TOTALBAR_ICON_DESC"] = "選擇在總量欄上顯示的圖示。"
@@ -1123,8 +1107,7 @@ L["STRING_OPTIONS_SKIN_RESET_TOOLTIP_DESC"] = "將提示邊框顏色和紋理設
 L["STRING_OPTIONS_SKIN_SELECT"] = "選擇一個外觀"
 L["STRING_OPTIONS_SKIN_SELECT_ANCHOR"] = "外觀選擇:"
 L["STRING_OPTIONS_SOCIAL"] = "社交"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SOCIAL_DESC"] = ""--]] 
+L["STRING_OPTIONS_SOCIAL_DESC"] = "告訴你如何在你的公會環境中被知道"
 L["STRING_OPTIONS_SPELL_ADD"] = "添加"
 L["STRING_OPTIONS_SPELL_ADDICON"] = "新圖示: "
 L["STRING_OPTIONS_SPELL_ADDNAME"] = "新名稱: "
@@ -1133,24 +1116,18 @@ L["STRING_OPTIONS_SPELL_ADDSPELLID"] = "法術ID: "
 L["STRING_OPTIONS_SPELL_CLOSE"] = "關閉"
 L["STRING_OPTIONS_SPELL_ICON"] = "圖示"
 L["STRING_OPTIONS_SPELL_IDERROR"] = "無效的法術ID。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SPELL_INDEX"] = ""--]] 
+L["STRING_OPTIONS_SPELL_INDEX"] = "索引"
 L["STRING_OPTIONS_SPELL_NAME"] = "名稱"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SPELL_NAMEERROR"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_SPELL_NOTFOUND"] = ""--]] 
+L["STRING_OPTIONS_SPELL_NAMEERROR"] = "法術名稱無效。"
+L["STRING_OPTIONS_SPELL_NOTFOUND"] = "法術沒有找到。"
 L["STRING_OPTIONS_SPELL_REMOVE"] = "移除"
 L["STRING_OPTIONS_SPELL_RESET"] = "重置"
 L["STRING_OPTIONS_SPELL_SPELLID"] = "法術ID"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_STRETCH"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_STRETCH_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_STRETCHTOP"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_STRETCHTOP_DESC"] = ""--]] 
+L["STRING_OPTIONS_STRETCH"] = "拉伸按鈕錨點"
+L["STRING_OPTIONS_STRETCH_DESC"] = "交替拉伸按鈕的位置。"
+L["STRING_OPTIONS_STRETCHTOP"] = "拉伸按鈕始終在頂部"
+L["STRING_OPTIONS_STRETCHTOP_DESC"] = [=[拉伸按鈕將放置在FULLSCREEN底層上，並始終保持高於其他框架
+|cFFFFFF00重要|r：將抓取器移動到高層，它可能會留在其他框架前面，如背包，只有在你真正需要的時候使用]=]
 L["STRING_OPTIONS_SWITCH_ANCHOR"] = "切換:"
 L["STRING_OPTIONS_SWITCHINFO"] = "|cFFF79F81 左 禁用|r  |cFF81BEF7 右 啟用|r"
 L["STRING_OPTIONS_TABEMB_ANCHOR"] = "嵌入對話標籤"
@@ -1174,10 +1151,8 @@ L["STRING_OPTIONS_TEXT_LOUTILINE"] = "文本陰影"
 L["STRING_OPTIONS_TEXT_LOUTILINE_DESC"] = "啟用/禁用文本的輪廓陰影。"
 L["STRING_OPTIONS_TEXT_LPOSITION"] = "顯示號數"
 L["STRING_OPTIONS_TEXT_LPOSITION_DESC"] = "顯示在玩家姓名左側的排名號碼。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TEXT_LTRANSLIT"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TEXT_LTRANSLIT_DESC"] = ""--]] 
+L["STRING_OPTIONS_TEXT_LTRANSLIT"] = "轉寫"
+L["STRING_OPTIONS_TEXT_LTRANSLIT_DESC"] = "將俄文字符轉寫為更易懂的英文字符。"
 L["STRING_OPTIONS_TEXT_RIGHT_ANCHOR"] = "右邊文本:"
 L["STRING_OPTIONS_TEXT_ROUTILINE_DESC"] = "啟用或禁用右文本輪廓。"
 L["STRING_OPTIONS_TEXT_ROWICONS_ANCHOR"] = "圖示:"
@@ -1218,8 +1193,7 @@ L["STRING_OPTIONS_TEXTEDITOR_FUNC_TOOLTIP"] = [=[添加一個空函數。
 函數必須始終返回一個數位。]=]
 L["STRING_OPTIONS_TEXTEDITOR_RESET"] = "重置"
 L["STRING_OPTIONS_TEXTEDITOR_RESET_TOOLTIP"] = "清除所有代碼並添加預設代碼。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TEXTEDITOR_TOK"] = ""--]] 
+L["STRING_OPTIONS_TEXTEDITOR_TOK"] = "數值到K"
 L["STRING_OPTIONS_TEXTEDITOR_TOK_TOOLTIP"] = [=[添加函數以格式化數字縮寫。
 示例: 1500000轉1.5kk。]=]
 L["STRING_OPTIONS_TIMEMEASURE"] = "時間測量"
@@ -1251,11 +1225,9 @@ L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO"] = "錨"
 L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO_CHOOSE"] = "移動錨點"
 L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO_CHOOSE_DESC"] = "當錨點設置為時，移動錨點位置|cFFFFFF00錨點在屏幕之內|r."
 L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO_DESC"] = "工具提示附加在遊戲畫面上的懸停或選定點上。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO1"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO1"] = "窗口行"
 L["STRING_OPTIONS_TOOLTIPS_ANCHOR_TO2"] = "錨點在螢幕之內"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_ANCHORCOLOR"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_ANCHORCOLOR"] = "標題"
 L["STRING_OPTIONS_TOOLTIPS_BACKGROUNDCOLOR"] = "背景顏色"
 L["STRING_OPTIONS_TOOLTIPS_BACKGROUNDCOLOR_DESC"] = "選擇背景上使用的顏色。"
 L["STRING_OPTIONS_TOOLTIPS_BORDER_COLOR_DESC"] = "更變邊框顏色。"
@@ -1271,25 +1243,23 @@ L["STRING_OPTIONS_TOOLTIPS_FONTSIZE_DESC"] = "增加或減小工具提示文本�
 L["STRING_OPTIONS_TOOLTIPS_IGNORESUBWALLPAPER"] = "子功能表牆紙"
 L["STRING_OPTIONS_TOOLTIPS_IGNORESUBWALLPAPER_DESC"] = "啟用後, 某些功能表可能會在子功能表上使用自己的牆紙。"
 L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE"] = "最大化方案"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE1"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE_DESC"] = [=[選擇用於展開提示中顯示的信息的方法.
+|cFFFFFF00 在控制鍵上|r：按下Shift，Ctrl或Alt鍵時，提示框會展開
+|cFFFFFF00 始終最大化|r：工具提示始終顯示所有信息，沒有任何數量限制
+|cFFFFFF00 只有Shift塊|r：默認情況下提示上的第一個塊始終展開
+|cFFFFFF00 只有Ctrl塊|r：默認情況下第二個塊始終展開
+|cFFFFFF00 只有Alt塊|r：默認情況下第三個塊始終展開]=]
+L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE1"] = "在控制鍵上"
 L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE2"] = "始終最大化"
 L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE3"] = "只限制Shift"
 L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE4"] = "只限制Ctrl"
 L["STRING_OPTIONS_TOOLTIPS_MAXIMIZE5"] = "只限制Alt"
 L["STRING_OPTIONS_TOOLTIPS_MENU_WALLP"] = "編輯功能表牆紙"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_MENU_WALLP_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_OFFSETX"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_OFFSETX_DESC"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_OFFSETY"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_TOOLTIPS_OFFSETY_DESC"] = ""--]] 
+L["STRING_OPTIONS_TOOLTIPS_MENU_WALLP_DESC"] = "修改標題欄菜單背景圖的縮放比例。"
+L["STRING_OPTIONS_TOOLTIPS_OFFSETX"] = "距離 X"
+L["STRING_OPTIONS_TOOLTIPS_OFFSETX_DESC"] = "提示從其錨點水平放置距離"
+L["STRING_OPTIONS_TOOLTIPS_OFFSETY"] = "距離 Y"
+L["STRING_OPTIONS_TOOLTIPS_OFFSETY_DESC"] = "提示從其錨點垂直放置距離"
 L["STRING_OPTIONS_TOOLTIPS_SHOWAMT"] = "顯示合計"
 L["STRING_OPTIONS_TOOLTIPS_SHOWAMT_DESC"] = "顯示一個數位, 指示工具提示中有多少法術、目標和寵物。"
 L["STRING_OPTIONS_TOOLTIPS_TITLE"] = "提示"
@@ -1297,27 +1267,17 @@ L["STRING_OPTIONS_TOOLTIPS_TITLE_DESC"] = "這些選項控制工具提示的外�
 L["STRING_OPTIONS_TOTALBAR_ANCHOR"] = "總量欄:"
 L["STRING_OPTIONS_TRASH_SUPPRESSION"] = "垃圾限制"
 L["STRING_OPTIONS_TRASH_SUPPRESSION_DESC"] = "對於 |cFFFFFF00X|r 秒, 禁止自動切換, 禁止自動切換以顯示垃圾片段-記錄 (|cFFFFFF00只有打敗了老闆才會遇到 |r)。"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_ALPHA"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_ANCHOR"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_BLUE"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_CBOTTOM"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_CLEFT"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_CRIGHT"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_CTOP"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_FILE"] = ""--]] 
+L["STRING_OPTIONS_WALLPAPER_ALPHA"] = "Alpha:"
+L["STRING_OPTIONS_WALLPAPER_ANCHOR"] = "壁紙選擇:"
+L["STRING_OPTIONS_WALLPAPER_BLUE"] = "藍:"
+L["STRING_OPTIONS_WALLPAPER_CBOTTOM"] = "裁剪 (|cFFC0C0C0底部|r):"
+L["STRING_OPTIONS_WALLPAPER_CLEFT"] = "裁剪 (|cFFC0C0C0左|r):"
+L["STRING_OPTIONS_WALLPAPER_CRIGHT"] = "裁剪 (|cFFC0C0C0右|r):"
+L["STRING_OPTIONS_WALLPAPER_CTOP"] = "裁剪 (|cFFC0C0C0頂部|r):"
+L["STRING_OPTIONS_WALLPAPER_FILE"] = "文件:"
 L["STRING_OPTIONS_WALLPAPER_GREEN"] = "綠色:"
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_LOAD"] = ""--]] 
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_LOAD_DESC"] = ""--]] 
+L["STRING_OPTIONS_WALLPAPER_LOAD"] = "加載圖片"
+L["STRING_OPTIONS_WALLPAPER_LOAD_DESC"] = "從硬盤驅動器中選擇要用作壁紙的圖片"
 L["STRING_OPTIONS_WALLPAPER_LOAD_EXCLAMATION"] = [=[圖片需要：
 
 
@@ -1330,8 +1290,7 @@ L["STRING_OPTIONS_WALLPAPER_LOAD_EXCLAMATION"] = [=[圖片需要：
 
 -在粘貼檔案之前必須關閉遊戲]=]
 L["STRING_OPTIONS_WALLPAPER_LOAD_FILENAME"] = "檔案名稱："
---[[Translation missing --]]
---[[ L["STRING_OPTIONS_WALLPAPER_LOAD_FILENAME_DESC"] = ""--]] 
+L["STRING_OPTIONS_WALLPAPER_LOAD_FILENAME_DESC"] = "僅插入文件名，不包括路徑和擴展名"
 L["STRING_OPTIONS_WALLPAPER_LOAD_OKEY"] = "加載"
 L["STRING_OPTIONS_WALLPAPER_LOAD_TITLE"] = "從電腦："
 L["STRING_OPTIONS_WALLPAPER_LOAD_TROUBLESHOOT"] = "排查"
@@ -1436,8 +1395,7 @@ L["STRING_OPTIONSMENU_WINDOW"] = "視窗:一般"
 L["STRING_OVERALL"] = "整體"
 L["STRING_OVERHEAL"] = "過量治療"
 L["STRING_OVERHEALED"] = "已造成過量治療"
---[[Translation missing --]]
---[[ L["STRING_PARRY"] = ""--]] 
+L["STRING_PARRY"] = "招架"
 L["STRING_PERCENTAGE"] = "百分比"
 L["STRING_PET"] = "寵物"
 L["STRING_PETS"] = "寵物"
@@ -1545,8 +1503,7 @@ L["STRING_SEGMENTS_LIST_OVERALL"] = "整體"
 L["STRING_SEGMENTS_LIST_TIMEINCOMBAT"] = "戰鬥時間"
 L["STRING_SEGMENTS_LIST_TOTALTIME"] = "總時間"
 L["STRING_SEGMENTS_LIST_TRASH"] = "垃圾"
---[[Translation missing --]]
---[[ L["STRING_SEGMENTS_LIST_WASTED_TIME"] = ""--]] 
+L["STRING_SEGMENTS_LIST_WASTED_TIME"] = "不在戰鬥中"
 L["STRING_SHIELD_HEAL"] = "阻止"
 L["STRING_SHIELD_OVERHEAL"] = "浪費"
 L["STRING_SHORTCUT_RIGHTCLICK"] = "按右鍵可關閉"
@@ -1607,7 +1564,7 @@ L["STRING_TOTAL"] = "總數"
 L["STRING_TRANSLATE_LANGUAGE"] = "幫助翻譯Details!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = [=[您關閉了一個視窗, 您可以隨時重新打開它。
 要完全刪除某個視窗, 請轉到 "Details!選項">"視窗: "一般">"刪除"。]=]
-L["STRING_TUTORIAL_OVERALL1"] = "調整整體設定於選項介面 > PvE / PvP。"
+L["STRING_TUTORIAL_OVERALL1"] = "在一般設置 > 戰斗里調整總體數據設置。總體數據在離開戰鬥後才會更新，使用自訂裡的\"動態總體傷害\"可實時更新。"
 L["STRING_UNKNOW"] = "未知"
 L["STRING_UNKNOWSPELL"] = "未知法術"
 L["STRING_UNLOCK"] = [=[在這按鈕上
@@ -1627,8 +1584,7 @@ L["STRING_WELCOME_1"] = [=[|cFFFFFFFF歡迎來到 Details! 快速設定精靈|r
 ※:繁化翻譯可能有誤筆,歡迎到curseforge的Details!>Localization>Overview>Traditional Chinese一起協力完善翻譯^_^"!! 提示:/details ? 指令列表(但是當中部份是中文@_@"的確可用中文指令,但沒有說明都只能用英文)]=]
 L["STRING_WELCOME_11"] = "如果你改變主意, 你總是可以通過選項面板再次修改"
 L["STRING_WELCOME_12"] = "選擇視窗更新的速度, 您還可以為 HPS 和 DPS 數字啟用動畫和即時更新。"
---[[Translation missing --]]
---[[ L["STRING_WELCOME_13"] = ""--]] 
+L["STRING_WELCOME_13"] = "-"
 L["STRING_WELCOME_14"] = "更新速度"
 L["STRING_WELCOME_15"] = [=[視窗中每個更新之間的間隔 (以秒為單位)。
 

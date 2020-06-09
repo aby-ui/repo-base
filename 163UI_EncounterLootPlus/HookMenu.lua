@@ -13,6 +13,13 @@ local function makeSubInfo(info, text, arg, var, level)
     UIDropDownMenu_AddButton(info, level)
 end
 
+if not ELP_LAST_RAID_IDX then
+    for i=1,20 do
+        local _, name = EJ_GetInstanceByIndex(i, true)
+        if not name then break end
+        ELP_LAST_RAID_IDX, ELP_LAST_RAID_NAME = i, name
+    end
+end
 
 local function EncounterJournal_InitLootFilter_Mine(self, level)
     local info = UIDropDownMenu_CreateInfo();
@@ -55,6 +62,8 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
     if (UIDROPDOWNMENU_MENU_VALUE == "range") then
         makeSubInfo(info, "正常(单一副本)", 0, "range", level)
         makeSubInfo(info, "全部五人本", 2, "range", level)
+        makeSubInfo(info, ELP_LAST_RAID_NAME, 4, "range", level)
+        makeSubInfo(info, ELP_LAST_RAID_NAME .. "和五人本", 5, "range", level)
         makeSubInfo(info, "全部团队本", 1, "range", level)
         makeSubInfo(info, "全部副本　", 3, "range", level)
     elseif (UIDROPDOWNMENU_MENU_VALUE == "attr1") then

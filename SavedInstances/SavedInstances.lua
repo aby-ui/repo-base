@@ -2711,7 +2711,7 @@ function core:OnInitialize()
         RaidInfoFrame:Show()
       elseif button == "LeftButton" then
         addon:ToggleDetached()
-        local f = SlashCmdList.METHODALTMANAGER or noop; f("")
+        --local f = SlashCmdList.METHODALTMANAGER or noop; f("")
       else
         addon.config:ShowConfig()
       end

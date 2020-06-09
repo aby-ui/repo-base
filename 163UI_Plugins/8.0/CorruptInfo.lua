@@ -132,7 +132,35 @@ local data = {
     twilight = { 25, 50, 75, },
     twisted = { 10, 35, 66, },
   },
+  vendors = {
+      bleed = { 177977, },
+      clarity = { 177976, },
+      echo = { 177967, 177968, 177969, },
+      passive_avoidance = { 177970, 177971, 177972, },
+      passive_crit = { 177992, 177993, 177994, },
+      passive_crit_dam = { 177998, 177999, 178000, },
+      passive_haste = { 177973, 177974, 177975, },
+      passive_leech = { 177995, 177996, 177997, },
+      passive_mastery = { 177986, 177987, 177988, },
+      passive_versatility = { 178010, 178011, 178012, },
+      proc_crit = { 177955, 177965, 177966, },
+      proc_haste = { 177989, 177990, 177991, },
+      proc_mastery = { 177978, 177979, 177980, },
+      proc_versatility = { 178001, 178002, 178003, },
+      ritual = { 178013, 178014, 178015, },
+      star = { 177983, 177984, 177985, },
+      truth = { 177981, 177982, },
+      twilight = { 178004, 178005, 178006, },
+      twisted = { 178007, 178008, 178009, },
+  },
+  items = {},
 }
+
+for key, v in pairs(data.vendors) do
+    for lvl, id in ipairs(v) do
+        data.items[tostring(id)] = { key, lvl }
+    end
+end
 
 -- 修正闪避
 data.corrupts.passive_avoidance = { 8, 12, 16 } --8% 12% 16%
@@ -303,15 +331,24 @@ function U1GetAllCorruptionText(slotLinks)
     return color .. text .. "|r", count_all, count_corrupted
 end
 
-local pattern = "^"..ITEM_CORRUPTION_BONUS_STAT:gsub("%+%%d", "%%+[0-9]+").."$" --"+%d 腐蚀"
+local pattern1 = "^"..ITEM_CORRUPTION_BONUS_STAT:gsub("%+%%d", "%%+[0-9]+").."$" --"+%d 腐蚀"
+local pattern2 = "^\124cFFB686FF%d+[ ]*" .. ITEM_MOD_CORRUPTION .. "\124r$"
 local hookTooltipSetItem = function(self, link)
     link = select(2, self:GetItem())
-    local name, corrupt, level, key, levels = U1GetCorruptionInfo(link)
-    local tooltipName = self:GetName()
+    local name, corrupt, level, key, levels
+    local _, _, itemID = link:find("\124Hitem:([0-9]+):")
+    if itemID and data.items[itemID] then
+        key, level = unpack(data.items[itemID])
+        levels = data.corrupts[key]
+        name, corrupt = LOCALES[key], levels[level]
+    else
+        name, corrupt, level, key, levels = U1GetCorruptionInfo(link)
+    end
     if name then
-        for i = 5, 20 do
+        local tooltipName = self:GetName()
+        for i = 2, 20 do
             local left = _G[tooltipName .. "TextLeft" .. i]:GetText()
-            if left:match(pattern) then
+            if left and (left:match(pattern1) or left:match(pattern2)) then
                 local right = _G[tooltipName .. "TextRight" .. i]
                 local text = ""
                 if not level then
@@ -341,7 +378,7 @@ SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 ---------------------------------------------------------------]]
 local success, CharIcon = pcall(function() return CharacterStatsPane.ItemLevelFrame.Corruption end)
 if success and GetCVar("portal") == "CN" then
-    local prices = { [8] = 2400, [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
+    local prices = { [8] = 2400, [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [25] = 6250, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
     local vendors = {
         { { "truth", 1, }, { "proc_mastery", 1, }, { "passive_crit_dam", 2, }, { "passive_mastery", 2, }, { "passive_haste", 3, }, { "twisted", 3, }, },
         { { "passive_mastery", 1, }, { "ritual", 1, }, { "proc_crit", 2, }, { "passive_leech", 2, }, { "truth", 2, }, { "passive_versatility", 3, }, { "passive_avoidance", 2, }, },
@@ -349,6 +386,8 @@ if success and GetCVar("portal") == "CN" then
         { { "passive_crit", 1, }, { "passive_leech", 1, }, { "passive_haste", 2, }, { "twilight", 2, }, { "proc_mastery", 3, }, { "passive_crit_dam", 3, }, },
         { { "passive_haste", 1, }, { "twisted", 1, }, { "proc_haste", 2, }, { "echo", 2, }, { "star", 3, }, { "passive_crit", 3, }, },
         { { "proc_haste", 1, }, { "passive_crit_dam", 1, }, { "proc_versatility", 2, }, { "ritual", 2, }, { "passive_mastery", 3, }, { "twilight", 3, }, { "passive_avoidance", 1, }, },
+        { { "echo", 1, }, { "passive_versatility", 1, }, { "proc_mastery", 2, }, { "star", 2, }, { "proc_crit", 3, }, { "ritual", 3, }, { "bleed", 1, }, },
+        { { "twisted", 2, }, { "proc_crit", 1, }, { "passive_versatility", 2, }, { "proc_versatility", 3, }, { "twilight", 1, }, { "echo", 3, }, },
     }
     local firstTime = time({ year =2020, month=5, day=21, hour=7})
     local interval = 60*60*24*7/2
@@ -393,7 +432,7 @@ if success and GetCVar("portal") == "CN" then
         end
 
         GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "下一轮 " .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR);
+        GameTooltip_AddColoredLine(tip, "下轮 " .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR, false);
         list = vendors[round+1]
         if not list then
             local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
@@ -404,7 +443,7 @@ if success and GetCVar("portal") == "CN" then
         end
 
         for i=2,7 do
-            GameTooltip_AddBlankLineToTooltip(tip);
+            --GameTooltip_AddBlankLineToTooltip(tip);
             GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i+1) * interval), NORMAL_FONT_COLOR);
             local list = vendors[(round+i-1)%8+1]
             if not list then

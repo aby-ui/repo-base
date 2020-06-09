@@ -2895,7 +2895,7 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 		--> TOP HABILIDADES
 		
 			--get variables
-			local ActorDamage = self.total_without_pet --mostrando os pets no tooltip
+			--local ActorDamage = self.total_without_pet --mostrando os pets no tooltip
 			local ActorDamage = self.total
 			local ActorDamageWithPet = self.total
 			if (ActorDamage == 0) then
@@ -2903,6 +2903,8 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 			end
 			local ActorSkillsContainer = self.spells._ActorTable
 			local ActorSkillsSortTable = {}
+
+			local reflectionSpells = {}
 			
 			--get time type
 			local meu_tempo
@@ -2911,11 +2913,15 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 			elseif (_detalhes.time_type == 2) then
 				meu_tempo = instancia.showing:GetCombatTime()
 			end
-			
+
 			--add actor spells
 			for _spellid, _skill in _pairs (ActorSkillsContainer) do
 				ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo}
+				if (_skill.isReflection) then
+					reflectionSpells[#reflectionSpells+1] = _skill
+				end
 			end
+
 			--add actor pets
 			for petIndex, petName in _ipairs (self:Pets()) do
 				local petActor = instancia.showing[class_type]:PegarCombatente (nil, petName)
@@ -2941,9 +2947,6 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 
 			--tooltip stuff
 			local tooltip_max_abilities = _detalhes.tooltip.tooltip_max_abilities
-			if (instancia.sub_atributo == 2) then
-				tooltip_max_abilities = 6
-			end
 			
 			local is_maximized = false
 			if (keydown == "shift" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 3) then
@@ -2991,17 +2994,42 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 						GameCooltip:AddLine (nome_magia, FormatTooltipNumber (_, _math_floor (totalDPS)) .." (".._cstr("%.1f", totalDamage/ActorDamage*100).."%)")
 					end
 					
-					GameCooltip:AddIcon (icone_magia, nil, nil, icon_size.W, icon_size.H, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
+					GameCooltip:AddIcon (icone_magia, nil, nil, icon_size.W + 4, icon_size.H + 4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
 					_detalhes:AddTooltipBackgroundStatusbar (false, totalDamage/topAbility*100)
 				end
 			else
 				GameCooltip:AddLine (Loc ["STRING_NO_SPELL"])
 			end
-			
+
+		--> spell reflected
+			if (#reflectionSpells > 0) then
+				--small blank space
+				_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
+				_detalhes:AddTooltipSpellHeaderText ("Spells Reflected", headerColor, 1, select(3, _GetSpellInfo(reflectionSpells[1].id)), 0.1, 0.9, 0.1, 0.9) --localize-me
+				_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
+
+				for i = 1, #reflectionSpells do
+					local _spell = reflectionSpells[i]
+					local extraInfo = _spell.extra
+					for spellId, damageDone in pairs(extraInfo) do
+						local spellName, _, spellIcon = _GetSpellInfo(spellId)
+
+						if (spellName) then
+							GameCooltip:AddLine (spellName, FormatTooltipNumber (_, damageDone) .. " (" .. _math_floor (damageDone / self.total * 100) .. "%)")
+							_detalhes:AddTooltipBackgroundStatusbar (false, damageDone / self.total * 100)
+							GameCooltip:AddIcon (spellIcon, 1, 1, icon_size.W, icon_size.H, 0.1, 0.9, 0.1, 0.9)
+						end
+					end
+				end
+			end	
+
 		--> MOSTRA INIMIGOS
 			local topEnemy = ActorTargetsSortTable [1] and ActorTargetsSortTable [1][2] or 0
 			if (instancia.sub_atributo == 1 or instancia.sub_atributo == 6) then
 				
+				--small blank space
+				_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
+
 				_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_TARGETS"], headerColor, #ActorTargetsSortTable, [[Interface\Addons\Details\images\icons]], 0, 0.03125, 0.126953125, 0.15625)
 
 				local max_targets = _detalhes.tooltip.tooltip_max_targets
@@ -3038,6 +3066,9 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 		local alvos = {} --> armazena os alvos
 		local totais = {} --> armazena o dano total de cada objeto
 		
+		--small blank space
+		_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
+
 		for index, nome in _ipairs (meus_pets) do
 			if (not quantidade [nome]) then
 				quantidade [nome] = 1
@@ -3134,10 +3165,10 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 		if (bossInfo and phasesInfo) then
 			if (#phasesInfo > 1) then
 				
-				--_detalhes:AddTooltipSpellHeaderText ("Phases", headerColor, 1, [[Interface\Garrison\MobileAppIcons]], 2*130/1024, 3*130/1024, 5*130/1024, 6*130/1024)
-				--_detalhes:AddTooltipSpellHeaderText ("Phases", headerColor, 1, [[Interface\Garrison\orderhall-missions-mechanic10]], 0, 1, 0, 1)
+				--small blank space
+				_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
+
 				_detalhes:AddTooltipSpellHeaderText ("Damage by Encounter Phase", headerColor, 1, [[Interface\Garrison\orderhall-missions-mechanic8]], 11/64, 53/64, 11/64, 53/64) --localize-me
-				--GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_shift]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay1)
 				_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 				
 				local playerPhases = {}
@@ -3174,7 +3205,7 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 			end
 		end
 	end
-	
+
 	return true
 end
 
@@ -3649,7 +3680,7 @@ end
 --------------------------------------------- // JANELA DETALHES // ---------------------------------------------
 
 
----------> DETALHES BIFURCA��O
+---------> DETALHES BIFURCA��O ~detalhes ~detailswindow
 function atributo_damage:MontaInfo()
 	if (info.sub_atributo == 1 or info.sub_atributo == 2 or info.sub_atributo == 6) then --> damage done & dps
 		return self:MontaInfoDamageDone()
@@ -4239,12 +4270,12 @@ function atributo_damage:MontaInfoDamageDone()
 			
 			if (barra.mouse_over) then --> atualizar o tooltip
 				if (barra.isAlvo) then
-					GameTooltip:Hide() 
-					GameTooltip:SetOwner (barra, "ANCHOR_TOPRIGHT")
+					--GameTooltip:Hide() 
+					--GameTooltip:SetOwner (barra, "ANCHOR_TOPRIGHT")
 					if (not barra.minha_tabela:MontaTooltipAlvos (barra, index, instancia)) then
 						return
 					end
-					GameTooltip:Show()
+					--GameTooltip:Show()
 				end
 			end
 			
@@ -4895,34 +4926,48 @@ function atributo_damage:MontaTooltipDamageTaken (esta_barra, index)
 	
 end
 
-local targets_tooltips_table = {}
-
 function atributo_damage:MontaTooltipAlvos (esta_barra, index, instancia)
 	
 	local inimigo = esta_barra.nome_inimigo
-	local habilidades = targets_tooltips_table
-	
-	for i = 1, #habilidades do
-		local t = habilidades [i]
-		t[1], t[2], t[3] = "", 0, "" --name, total, icon
-	end
-	
+	local habilidades = {}
 	local total = self.total
-	
 	local i = 1
 	
+	_detalhes:FormatCooltipForSpells()
+	GameCooltip:SetOwner(esta_barra, "bottom", "top", 4, -2)
+	GameCooltip:SetOption ("MinWidth", _math_max (230, esta_barra:GetWidth()*0.98))
+
 	for spellid, spell in _pairs (self.spells._ActorTable) do
-		for target_name, amount in _pairs (spell.targets) do
-			if (target_name == inimigo) then
-				local nome, _, icone = _GetSpellInfo (spellid)
-				
-				local t = habilidades [i]
-				if (not t) then
-					habilidades [i] = {}
-					t = habilidades [i]
+		if (spell.isReflection) then
+			for target_name, amount in _pairs (spell.targets) do
+				if (target_name == inimigo) then
+					for reflectedSpellId, amount in _pairs (spell.extra) do
+						local spellName, _, spellIcon = _GetSpellInfo(reflectedSpellId)
+						local t = habilidades [i]
+						if (not t) then
+							habilidades [i] = {}
+							t = habilidades [i]
+						end
+	
+						t[1], t[2], t[3] = spellName .. " (|cFFCCBBBBreflected|r)", amount, spellIcon
+						i = i + 1
+					end
 				end
-				t[1], t[2], t[3] = nome, amount, icone
-				i = i + 1
+			end
+		else		
+			for target_name, amount in _pairs (spell.targets) do
+				if (target_name == inimigo) then
+					local nome, _, icone = _GetSpellInfo (spellid)
+					
+					local t = habilidades [i]
+					if (not t) then
+						habilidades [i] = {}
+						t = habilidades [i]
+					end
+
+					t[1], t[2], t[3] = nome, amount, icone
+					i = i + 1
+				end
 			end
 		end
 	end
@@ -4967,35 +5012,39 @@ function atributo_damage:MontaTooltipAlvos (esta_barra, index, instancia)
 	local is_dps = info.instancia.sub_atributo == 2
 	
 	if (is_dps) then
-		GameTooltip:AddLine (index..". "..inimigo)
-		GameTooltip:AddLine (Loc ["STRING_DAMAGE_DPS_IN"] .. ":")
-		GameTooltip:AddLine (" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_DAMAGE_DPS_IN"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
+
 	else
-		GameTooltip:AddLine (index..". "..inimigo)
-		GameTooltip:AddLine (Loc ["STRING_DAMAGE_FROM"] .. ":")
-		GameTooltip:AddLine (" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_DAMAGE_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
 	end
-	
-	for index, tabela in _ipairs (habilidades) do
-		
-		if (tabela [2] < 1) then
-			break
-		end
-		
-		if (index < 8) then
-			if (is_dps) then
-				GameTooltip:AddDoubleLine (index..". |T"..tabela[3]..":0|t "..tabela[1], _detalhes:comma_value ( _math_floor (tabela[2] / meu_tempo) ).." (".._cstr("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
-			else
-				GameTooltip:AddDoubleLine (index..". |T"..tabela[3]..":0|t " .. tabela[1], SelectedToKFunction (_, tabela[2]) .. " (".._cstr("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
+
+	local icon_size = _detalhes.tooltip.icon_size
+	local icon_border = _detalhes.tooltip.icon_border_texcoord
+
+	local topSpellDamage = habilidades[1] and habilidades[1][2]
+
+	if (topSpellDamage) then
+		for index, tabela in _ipairs (habilidades) do
+			if (tabela [2] < 1) then
+				break
 			end
-		else
+
 			if (is_dps) then
-				GameTooltip:AddDoubleLine (index..". "..tabela[1], _detalhes:comma_value ( _math_floor (tabela[2] / meu_tempo) ).." (".._cstr("%.1f", tabela[2]/total*100).."%)", .65, .65, .65, .65, .65, .65)
+				--GameCooltip:AddDoubleLine (index..". |T"..tabela[3]..":0|t "..tabela[1], _detalhes:comma_value ( _math_floor (tabela[2] / meu_tempo) ).." (".._cstr("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
+				GameCooltip:AddLine (tabela[1], _detalhes:comma_value ( _math_floor (tabela[2] / meu_tempo) ).." (".._cstr("%.1f", tabela[2]/total*100).."%)")
 			else
-				GameTooltip:AddDoubleLine (index..". "..tabela[1], SelectedToKFunction (_, tabela[2]).." (".._cstr("%.1f", tabela[2]/total*100).."%)", .65, .65, .65, .65, .65, .65)
+				--GameCooltip:AddDoubleLine (index..". |T"..tabela[3]..":0|t " .. tabela[1], SelectedToKFunction (_, tabela[2]) .. " (".._cstr("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
+				GameCooltip:AddLine (tabela[1], SelectedToKFunction (_, tabela[2]) .. " (".._cstr("%.1f", tabela[2]/total*100).."%)")
 			end
+
+			GameCooltip:AddIcon (tabela[3], nil, nil, icon_size.W + 4, icon_size.H + 4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
+			_detalhes:AddTooltipBackgroundStatusbar (false, tabela[2] / topSpellDamage * 100)
 		end
 	end
+
+	GameCooltip:Show()
 	
 	return true
 	
@@ -5107,11 +5156,18 @@ end
 				for spellid, habilidade in _pairs (actor.spells._ActorTable) do 
 					--> cria e soma o valor
 					local habilidade_shadow = shadow.spells:PegaHabilidade (spellid, true, nil, true)
-					--> refresh e soma os valores dos alvos
+
+					--> create the target value
 					for target_name, amount in _pairs (habilidade.targets) do 
-						--> cria e soma o valor do total
 						if (not habilidade_shadow.targets [target_name]) then
 							habilidade_shadow.targets [target_name] = 0
+						end
+					end
+
+					--> create the extra value
+					for spellId, amount in _pairs (habilidade.extra) do 
+						if (not habilidade_shadow.extra [spellId]) then
+							habilidade_shadow.extra [spellId] = 0
 						end
 					end
 
@@ -5224,10 +5280,17 @@ end
 				for spellid, habilidade in _pairs (actor.spells._ActorTable) do 
 					--> cria e soma o valor
 					local habilidade_shadow = shadow.spells:PegaHabilidade (spellid, true, nil, true)
+
 					--> refresh e soma os valores dos alvos
 					for target_name, amount in _pairs (habilidade.targets) do 
 						habilidade_shadow.targets [target_name] = (habilidade_shadow.targets [target_name] or 0) + amount
 					end
+
+					--> refresh and add extra values
+					for spellId, amount in _pairs (habilidade.extra) do 
+						habilidade_shadow.extra [spellId] = (habilidade_shadow.extra [spellId] or 0) + amount
+					end
+
 					--> soma todos os demais valores
 					for key, value in _pairs (habilidade) do 
 						if (_type (value) == "number") then
@@ -5322,10 +5385,17 @@ atributo_damage.__add = function (tabela1, tabela2)
 		for spellid, habilidade in _pairs (tabela2.spells._ActorTable) do 
 			--> pega a habilidade no primeiro ator
 			local habilidade_tabela1 = tabela1.spells:PegaHabilidade (spellid, true, "SPELL_DAMAGE", false)
+
 			--> soma os alvos
 			for target_name, amount in _pairs (habilidade.targets) do 	
 				habilidade_tabela1.targets = (habilidade_tabela1.targets [target_name] or 0) + amount
 			end
+
+			--> soma os extras
+			for spellId, amount in _pairs (habilidade.extra) do 	
+				habilidade_tabela1.extra = (habilidade_tabela1.extra [spellId] or 0) + amount
+			end
+
 			--> soma os valores da habilidade
 			for key, value in _pairs (habilidade) do 
 				if (_type (value) == "number") then
@@ -5401,15 +5471,25 @@ atributo_damage.__sub = function (tabela1, tabela2)
 		
 	--> reduz o container de habilidades
 		for spellid, habilidade in _pairs (tabela2.spells._ActorTable) do 
-			--> pega a habilidade no primeiro ator
+			--> get the spell from the first actor
 			local habilidade_tabela1 = tabela1.spells:PegaHabilidade (spellid, true, "SPELL_DAMAGE", false)
-			--> soma os alvos
-			for target_name, amount in _pairs (habilidade.targets._ActorTable) do 
+
+			--> subtract targets
+			for target_name, amount in _pairs (habilidade.targets) do 
 				local alvo_tabela1 = habilidade_tabela1.targets [target_name]
 				if (alvo_tabela1) then
 					habilidade_tabela1.targets [target_name] = habilidade_tabela1.targets [target_name] - amount
 				end
 			end
+
+			--> subtract extra table
+			for spellId, amount in _pairs (habilidade.extra) do 
+				local extra_tabela1 = habilidade_tabela1.extra [spellId]
+				if (extra_tabela1) then
+					habilidade_tabela1.extra [spellId] = habilidade_tabela1.extra [spellId] - amount
+				end
+			end
+
 			--> subtrai os valores da habilidade
 			for key, value in _pairs (habilidade) do 
 				if (_type (value) == "number") then

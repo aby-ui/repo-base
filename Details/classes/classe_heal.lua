@@ -1390,7 +1390,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 			
 		end
 		
-		GameCooltip:AddIcon (ActorHealingTable[i][4][3], nil, nil, icon_size.W, icon_size.H, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
+		GameCooltip:AddIcon (ActorHealingTable[i][4][3], nil, nil, icon_size.W+4, icon_size.H+4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
 		
 		_detalhes:AddTooltipBackgroundStatusbar (false, ActorHealingTable[i][2] / topAbility * 100)
 	end
@@ -1407,7 +1407,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 	local topTarget = ActorHealingTargets [1] and ActorHealingTargets [1][2] or 0
 	
 	if (instancia.sub_atributo == 1) then -- 1 or 2 -> healing done or hps
-	
+		_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
 		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_TARGETS"], headerColor, #ActorHealingTargets, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
 
 		local ismaximized = false
@@ -1504,6 +1504,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 		
 				if (not added_logo) then
 					added_logo = true
+					_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
 					_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_PETS"], headerColor, #totais, [[Interface\COMMON\friendship-heart]], 0.21875, 0.78125, 0.09375, 0.6875)
 
 					if (ismaximized) then
@@ -1540,11 +1541,8 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 			local phasesInfo = segment:GetPhases()
 			if (bossInfo and phasesInfo) then
 				if (#phasesInfo > 1) then
-					
-					--_detalhes:AddTooltipSpellHeaderText ("Phases", headerColor, 1, [[Interface\Garrison\MobileAppIcons]], 2*130/1024, 3*130/1024, 5*130/1024, 6*130/1024)
-					--_detalhes:AddTooltipSpellHeaderText ("Phases", headerColor, 1, [[Interface\Garrison\orderhall-missions-mechanic10]], 0, 1, 0, 1)
+					_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
 					_detalhes:AddTooltipSpellHeaderText ("Healing by Encounter Phase", headerColor, 1, [[Interface\Garrison\orderhall-missions-mechanic8]], 11/64, 53/64, 11/64, 53/64)
-					--GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_shift]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay1)
 					_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 					
 					local playerPhases = {}

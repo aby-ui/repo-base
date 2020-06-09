@@ -1567,8 +1567,8 @@ L["STRING_TOTAL"] = "Total"
 L["STRING_TRANSLATE_LANGUAGE"] = "Help Translate Details!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = [=[You closed a window and you may reopen it at any time.
 To fully delete a window, go to Options -> Window: General -> Delete.]=]
-L["STRING_TUTORIAL_OVERALL1"] = [=[adjust overall settings on options panel > PvE/PvP
-overall data updates when you leave combat, use 'Dynamic Overall Damage' from 'Custom' to update on real time.]=]
+L["STRING_TUTORIAL_OVERALL1"] = [=[Overall data only updates when the combat is done, if you want regular updates right click the title bar and select 'Dynamic Overall Data'.
+]=]
 L["STRING_UNKNOW"] = "Unknown"
 L["STRING_UNKNOWSPELL"] = "Unknow Spell"
 L["STRING_UNLOCK"] = [=[Ungroup windows

@@ -36,8 +36,6 @@ SavedInstances.lua
 
 config.lua
 
-../MethodAltManager/MethodAltManager.lua
-
 ## Title-zhCN: |cff880303[爱不易]|r SavedInstances 副本进度
 ## X-Vendor: AbyUI
 

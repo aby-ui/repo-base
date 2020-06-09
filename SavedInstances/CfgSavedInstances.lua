@@ -13,9 +13,5 @@ U1RegisterAddon("SavedInstances", {
     {
         text = "配置选项",
         callback = function(cfg, v, loading) SlashCmdList["ACECONSOLE_SAVEDINSTANCES"]("config") end,
-    },
-    {
-        text = "Method小号管理",
-        callback = function(cfg, v, loading) local f = SlashCmdList.METHODALTMANAGER or noop; f("") end,
-    },
+    }
 });

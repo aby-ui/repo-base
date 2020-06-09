@@ -5327,14 +5327,15 @@ local row_on_enter = function (self)
 			if (not self.minha_tabela or not self.minha_tabela:MontaTooltipDamageTaken (self, self._index, info.instancia)) then  -- > poderia ser aprimerado para uma tailcall
 				return
 			end
-		elseif (not self.minha_tabela or not self.minha_tabela:MontaTooltipAlvos (self, self._index, info.instancia)) then  -- > poderia ser aprimerado para uma tailcall
+			GameTooltip:Show()
+			self:SetHeight (CONST_TARGET_HEIGHT + 1)
 			return
 		end
-		
-		self:SetHeight (CONST_TARGET_HEIGHT + 1)
-		
-		GameTooltip:Show()
-		
+
+		if (not self.minha_tabela or not self.minha_tabela:MontaTooltipAlvos (self, self._index, info.instancia)) then  -- > poderia ser aprimerado para uma tailcall
+			return
+		end
+
 	elseif (self.isMain) then
 	
 		if (IsShiftKeyDown()) then
@@ -5573,17 +5574,22 @@ local target_on_enter = function (self)
 		
 			local ActorTargetsSortTable = {}
 			local ActorTargetsContainer
+			local total = 0
 			
-			local attribute, sub_attribute = info.instancia:GetDisplay()
-			if (attribute == 1 or attribute == 3) then
-				ActorTargetsContainer = spell.targets
+			if (spell.isReflection) then
+				ActorTargetsContainer = spell.extra
 			else
-				if (sub_attribute == 3) then --overheal
-					ActorTargetsContainer = spell.targets_overheal
-				elseif (sub_attribute == 6) then --absorbs
-					ActorTargetsContainer = spell.targets_absorbs
-				else
+				local attribute, sub_attribute = info.instancia:GetDisplay()
+				if (attribute == 1 or attribute == 3) then
 					ActorTargetsContainer = spell.targets
+				else
+					if (sub_attribute == 3) then --overheal
+						ActorTargetsContainer = spell.targets_overheal
+					elseif (sub_attribute == 6) then --absorbs
+						ActorTargetsContainer = spell.targets_absorbs
+					else
+						ActorTargetsContainer = spell.targets
+					end
 				end
 			end
 			
@@ -5591,6 +5597,7 @@ local target_on_enter = function (self)
 			for target_name, amount in _pairs (ActorTargetsContainer) do
 				--print (target_name, amount)
 				ActorTargetsSortTable [#ActorTargetsSortTable+1] = {target_name, amount or 0}
+				total = total + (amount or 0)
 			end
 			table.sort (ActorTargetsSortTable, _detalhes.Sort2)
 			
@@ -5611,21 +5618,52 @@ local target_on_enter = function (self)
 			
 			local SelectedToKFunction = _detalhes.ToKFunctions [_detalhes.ps_abbreviation]
 			
-			for index, target in ipairs (ActorTargetsSortTable) do 
-				if (target [2] > 0) then
-					local class = _detalhes:GetClass (target [1])
-					if (class and _detalhes.class_coords [class]) then
-						local cords = _detalhes.class_coords [class]
-						if (info.target_persecond) then
-							GameTooltip:AddDoubleLine (index .. ". |TInterface\\AddOns\\Details\\images\\classes_small_alpha:14:14:0:0:128:128:"..cords[1]*128 ..":"..cords[2]*128 ..":"..cords[3]*128 ..":"..cords[4]*128 .."|t " .. target [1], _detalhes:comma_value ( _math_floor (target [2] / meu_tempo) ), 1, 1, 1, 1, 1, 1)
+			if (spell.isReflection) then
+				_detalhes:FormatCooltipForSpells()
+				GameCooltip:SetOwner(self, "bottomright", "top", 4, -2)
+
+				_detalhes:AddTooltipSpellHeaderText ("Spells Reflected", {1, 0.9, 0.0, 1}, 1, select(3, _GetSpellInfo(spell.id)), 0.1, 0.9, 0.1, 0.9) --localize-me
+				_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 0.4)
+
+				GameCooltip:AddIcon(select(3, _GetSpellInfo(spell.id)), 1, 1, 16, 16, .1, .9, .1, .9)
+				_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 0.5)
+
+				local topDamage = ActorTargetsSortTable[1] and ActorTargetsSortTable[1][2]
+
+				for index, target in ipairs (ActorTargetsSortTable) do 
+					if (target [2] > 0) then
+						local spellId = target[1]
+						local damageDone = target[2]
+						local spellName, _, spellIcon = _GetSpellInfo(spellId)
+						GameCooltip:AddLine(spellName, SelectedToKFunction (_, damageDone) .. " (" .. floor(damageDone / topDamage * 100) .. "%)")
+						GameCooltip:AddIcon(spellIcon, 1, 1, 16, 16, .1, .9, .1, .9)
+						_detalhes:AddTooltipBackgroundStatusbar (false, damageDone / topDamage * 100)
+					end
+				end
+
+				GameCooltip:Show()
+
+				self.texture:SetAlpha (1)
+				self:SetAlpha (1)
+				barra:GetScript("OnEnter")(barra)
+				return
+			else
+				for index, target in ipairs (ActorTargetsSortTable) do 
+					if (target [2] > 0) then
+						local class = _detalhes:GetClass (target [1])
+						if (class and _detalhes.class_coords [class]) then
+							local cords = _detalhes.class_coords [class]
+							if (info.target_persecond) then
+								GameTooltip:AddDoubleLine (index .. ". |TInterface\\AddOns\\Details\\images\\classes_small_alpha:14:14:0:0:128:128:"..cords[1]*128 ..":"..cords[2]*128 ..":"..cords[3]*128 ..":"..cords[4]*128 .."|t " .. target [1], _detalhes:comma_value ( _math_floor (target [2] / meu_tempo) ), 1, 1, 1, 1, 1, 1)
+							else
+								GameTooltip:AddDoubleLine (index .. ". |TInterface\\AddOns\\Details\\images\\classes_small_alpha:14:14:0:0:128:128:"..cords[1]*128 ..":"..cords[2]*128 ..":"..cords[3]*128 ..":"..cords[4]*128 .."|t " .. target [1], SelectedToKFunction (_, target [2]), 1, 1, 1, 1, 1, 1)
+							end
 						else
-							GameTooltip:AddDoubleLine (index .. ". |TInterface\\AddOns\\Details\\images\\classes_small_alpha:14:14:0:0:128:128:"..cords[1]*128 ..":"..cords[2]*128 ..":"..cords[3]*128 ..":"..cords[4]*128 .."|t " .. target [1], SelectedToKFunction (_, target [2]), 1, 1, 1, 1, 1, 1)
-						end
-					else
-						if (info.target_persecond) then
-							GameTooltip:AddDoubleLine (index .. ". " .. target [1], _detalhes:comma_value ( _math_floor (target [2] / meu_tempo)), 1, 1, 1, 1, 1, 1)
-						else
-							GameTooltip:AddDoubleLine (index .. ". " .. target [1], SelectedToKFunction (_, target [2]), 1, 1, 1, 1, 1, 1)
+							if (info.target_persecond) then
+								GameTooltip:AddDoubleLine (index .. ". " .. target [1], _detalhes:comma_value ( _math_floor (target [2] / meu_tempo)), 1, 1, 1, 1, 1, 1)
+							else
+								GameTooltip:AddDoubleLine (index .. ". " .. target [1], SelectedToKFunction (_, target [2]), 1, 1, 1, 1, 1, 1)
+							end
 						end
 					end
 				end
@@ -5656,6 +5694,7 @@ end
 
 local target_on_leave = function (self)
 	GameTooltip:Hide()
+	GameCooltip:Hide()
 	self:GetParent():GetParent():GetScript("OnLeave")(self:GetParent():GetParent())
 	self.texture:SetAlpha (.7)
 	self:SetAlpha (.7)

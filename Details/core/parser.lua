@@ -109,8 +109,43 @@
 		local ignore_actors = {}
 	--> spell containers for special cases
 		local monk_guard_talent = {} --guard talent for bm monks
-	--> holds transitory information about reflected spells
-		local reflected = {}
+	--> spell reflection
+		local reflection_damage = {} --self-inflicted damage
+		local reflection_debuffs = {} --self-inflicted debuffs
+		local reflection_events = {} --spell_missed reflected events
+		local reflection_auras = {} --active reflecting auras
+		local reflection_dispels = {} --active reflecting dispels
+		local reflection_spellid = {
+			--> we can track which spell caused the reflection
+			--> this is used to credit this aura as the one doing the damage
+			[23920] = true, --warrior spell reflection
+			[216890] = true, --warrior spell reflection (pvp talent)
+			[213915] = true, --warrior mass spell reflection
+			[212295] = true, --warlock nether ward
+		}
+		local reflection_dispelid = {
+			--> some dispels also reflect, and we can track them
+			[122783] = true, --monk diffuse magic
+			
+			--[205604] = true, --demon hunter reverse magic
+			--> this last one is an odd one, like most dh spells is kindy buggy combatlog wise
+			--> for now it doesn't fire SPELL_DISPEL events even when dispelling stuff (thanks blizzard)
+			--> maybe someone can figure out something to track it... but for now it doesnt work
+		}
+		local reflection_ignore = {
+			--> common self-harm spells that we know weren't reflected
+			--> this list can be expanded
+			[111400] = true, --warlock burning rush
+			[124255] = true, --monk stagger
+			[196917] = true, --paladin light of the martyr
+			[217979] = true, --warlock health funnel
+			
+			--> bugged spells
+			[315197] = true, --thing from beyond grand delusions
+			--> this corruption when reflected causes insane amounts of damage to the thing from beyond
+			--> anywhere from a few hundred thousand damage to over 50 millons
+			--> filtering it the best course of action as nobody should care about this damage
+		}
 		
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
@@ -431,7 +466,7 @@
 --]=]	
 	
 	
-	function parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
+	function parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected)
 	
 	------------------------------------------------------------------------------------------------
 	--> early checks and fixes
@@ -465,21 +500,52 @@
 		--	return
 		--end
 
-		--> this cast may have been spell reflected
-		if (who_serial == alvo_serial) then
-			local idx = who_serial
-			if (reflected[idx] and reflected[idx].serial and DetailsFramework:IsNearlyEqual(reflected[idx].time, time, 3.0)) then
-				--> the 'SPELL_MISSED' with type 'REFLECT' appeared first -> log the reflection
-				who_serial = reflected[idx].serial
-				who_name = reflected[idx].name
-				who_flags = reflected[idx].who_flags
-				reflected[idx] = nil
-				return parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, -1, nil, nil, nil, nil, false, false, false, false)
+		------------------------------------------------------------------------------------------------
+		--> spell reflection
+		if (who_serial == alvo_serial and not reflection_ignore[spellid]) then --~reflect
+
+			--> this spell could've been reflected, check it
+			if (reflection_events[who_serial] and reflection_events[who_serial][spellid] and time-reflection_events[who_serial][spellid].time > 3.5 and (not reflection_debuffs[who_serial] or (reflection_debuffs[who_serial] and not reflection_debuffs[who_serial][spellid]))) then
+				--> here we check if we have to filter old reflection data
+				--> we check for two conditions
+				--> the first is to see if this is an old reflection
+				--> if more than 3.5 seconds have past then we can say that it is old... but!
+				--> the second condition is to see if there is an active debuff with the same spellid
+				--> if there is one then we ignore the timer and skip this
+				--> this should be cleared afterwards somehow... don't know how...
+				reflection_events[who_serial][spellid] = nil
+				if (next(reflection_events[who_serial]) == nil) then
+					--> there should be some better way of handling this kind of filtering, any suggestion?
+					reflection_events[who_serial] = nil
+				end
+			end
+
+			local reflection = reflection_events[who_serial] and reflection_events[who_serial][spellid]
+			if (reflection) then
+				--> if we still have the reflection data then we conclude it was reflected
+
+				--extend the duration of the timer to catch the rare channelling spells
+				reflection_events[who_serial][spellid].time = time
+				
+				--crediting the source of the reflection aura
+				who_serial = reflection.who_serial
+				who_name = reflection.who_name
+				who_flags = reflection.who_flags
+				
+				--data of the aura that caused the reflection
+				--print("2", spellid, GetSpellInfo(spellid))
+				isreflected = spellid --which spell was reflected
+				spellid = reflection.spellid --which spell made the reflection
+				spellname = reflection.spellname
+				spelltype = reflection.spelltype
+			
+				return parser:spell_dmg(token,time,who_serial,who_name,who_flags,alvo_serial,alvo_name,alvo_flags,alvo_flags2,spellid,spellname,0x400,amount,-1,nil,nil,nil,nil,false,false,false,false, isreflected)
 			else
-				--> otherwise log the amount for the 'SPELL_MISSED' event
-				reflected[idx] = {
+				--> saving information about this damage because it may occurred before a reflect event
+				reflection_damage[who_serial] = reflection_damage[who_serial] or {}
+				reflection_damage[who_serial][spellid] = {
 					amount = amount,
-					time = time
+					time = time,
 				}
 			end
 		end
@@ -1019,6 +1085,10 @@
 			if (_current_combat.is_boss and who_flags and _bit_band (who_flags, OBJECT_TYPE_ENEMY) ~= 0) then
 				_detalhes.spell_school_cache [spellname] = spelltype or school
 			end
+
+			if (isreflected) then
+				spell.isReflection = true
+			end
 		end
 		
 		if (_is_storing_cleu) then
@@ -1026,7 +1096,7 @@
 			_current_combat_cleu_events.n = _current_combat_cleu_events.n + 1
 		end
 		
-		return spell_damage_func (spell, alvo_serial, alvo_name, alvo_flags, amount, who_name, resisted, blocked, absorbed, critical, glacing, token, isoffhand)
+		return spell_damage_func (spell, alvo_serial, alvo_name, alvo_flags, amount, who_name, resisted, blocked, absorbed, critical, glacing, token, isoffhand, isreflected)
 	end
 
 	
@@ -1382,6 +1452,7 @@
 		local este_jogador = damage_cache [who_serial]
 		if (not este_jogador) then
 			--este_jogador, meu_dono, who_name = _current_damage_container:PegarCombatente (nil, who_name)
+			local meu_dono
 			este_jogador, meu_dono, who_name = _current_damage_container:PegarCombatente (who_serial, who_name, who_flags, true)
 			if (not este_jogador) then
 				return --> just return if actor doen't exist yet
@@ -1454,26 +1525,54 @@
 				
 			end
 		
-        --> It is non deterministic whether the 'SPELL_DAMAGE' or the 'SPELL_MISSED' log appears first. We handle both cases.
-		elseif (missType == "REFLECT") then
-				
-				if (reflected[who_serial] and reflected[who_serial].amount > 0 and DetailsFramework:IsNearlyEqual(reflected[who_serial].time, time, 3.0)) then
-					--> 'SPELL_DAMAGE' was logged first -> log the reflect here
-					--> We cannot rely on amountMissed which is empty in the reflection case
-					local amount = reflected[who_serial].amount
-					reflected[who_serial] = nil
-					return parser:spell_dmg (token, time, alvo_serial, alvo_name, alvo_flags, who_serial, who_name, who_flags, nil, spellid, spellname, spelltype, amount, -1, nil, nil, nil, nil, false, false, false, false)
-
-				else
-					--> otherwise write out information used in the 'SPELL_DAMAGE' event
-					reflected[who_serial] = {
-						serial = alvo_serial,
-						name = alvo_name,
-						who_flags = alvo_flags,
-						time = time,
-						amount = 0
-					}
+	------------------------------------------------------------------------------------------------
+	--> spell reflection
+		elseif (missType == "REFLECT" and reflection_auras[alvo_serial]) then --~reflect
+			--> a reflect event and we have the reflecting aura data
+			if (reflection_damage[who_serial] and reflection_damage[who_serial][spellid] and time-reflection_damage[who_serial][spellid].time > 3.5 and (not reflection_debuffs[who_serial] or (reflection_debuffs[who_serial] and not reflection_debuffs[who_serial][spellid]))) then
+				--> here we check if we have to filter old damage data
+				--> we check for two conditions
+				--> the first is to see if this is an old damage
+				--> if more than 3.5 seconds have past then we can say that it is old... but!
+				--> the second condition is to see if there is an active debuff with the same spellid
+				--> if there is one then we ignore the timer and skip this
+				--> this should be cleared afterwards somehow... don't know how...
+				reflection_damage[who_serial][spellid] = nil
+				if (next(reflection_damage[who_serial]) == nil) then
+					--> there should be some better way of handling this kind of filtering, any suggestion?
+					reflection_damage[who_serial] = nil
 				end
+			end
+			local damage = reflection_damage[who_serial] and reflection_damage[who_serial][spellid]
+			local reflection = reflection_auras[alvo_serial]
+			if (damage) then
+				--> damage ocurred first, so we have its data
+				local amount = reflection_damage[who_serial][spellid].amount
+				
+				--print("1", spellid, GetSpellInfo(spellid))
+				local isreflected = spellid --which spell was reflected
+				alvo_serial = reflection.who_serial
+				alvo_name = reflection.who_name
+				alvo_flags = reflection.who_flags
+				spellid = reflection.spellid
+				spellname = reflection.spellname
+				spelltype = reflection.spelltype
+				--> crediting the source of the aura that caused the reflection
+				--> also saying that the damage came from the aura that reflected the spell
+				
+				reflection_damage[who_serial][spellid] = nil
+				if next(reflection_damage[who_serial]) == nil then
+					--> this is so bad at clearing, there should be a better way of handling this
+					reflection_damage[who_serial] = nil
+				end
+
+				return parser:spell_dmg(token,time,alvo_serial,alvo_name,alvo_flags,who_serial,who_name,who_flags,nil,spellid,spellname,spelltype,amount,-1,nil,nil,nil,nil,false,false,false,false, isreflected)
+			else
+				--> saving information about this reflect because it occurred before the damage event
+				reflection_events[who_serial] = reflection_events[who_serial] or {}
+				reflection_events[who_serial][spellid] = reflection
+				reflection_events[who_serial][spellid].time = time
+			end
 
 		else
 			--colocando aqui apenas pois ele confere o override dentro do damage
@@ -2001,6 +2100,22 @@
 			who_flags = 0xa48
 			who_serial = ""
 		end 
+		
+	------------------------------------------------------------------------------------------------
+	--> spell reflection
+		if (reflection_spellid[spellid]) then --~reflect
+			--> this is a spell reflect aura
+			--> we save the info on who received this aura and from whom
+			--> this will be used to credit this spell as the one doing the damage
+			reflection_auras[alvo_serial] = {
+				who_serial = who_serial,
+				who_name = who_name,
+				who_flags = who_flags,
+				spellid = spellid,
+				spellname = spellname,
+				spelltype = spellschool,
+			}
+		end
 
 	------------------------------------------------------------------------------------------------
 	--> handle shields
@@ -2055,6 +2170,15 @@
 			if (spellid == 315161) then
 				local enemyName = GetSpellInfo(315161)
 				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
+			
+		------------------------------------------------------------------------------------------------
+		--> spell reflection
+			if (who_serial == alvo_serial and not reflection_ignore[spellid]) then
+				--> self-inflicted debuff that could've been reflected
+				--> just saving it as a boolean to check for reflections
+				reflection_debuffs[who_serial] = reflection_debuffs[who_serial] or {}
+				reflection_debuffs[who_serial][spellid] = true
 			end
 			
 			if (_in_combat) then
@@ -2446,7 +2570,41 @@
 				local enemyName = GetSpellInfo(315161)
 				who_serial, who_name, who_flags = "", enemyName, 0xa48
 			end
-
+			
+		------------------------------------------------------------------------------------------------
+		--> spell reflection
+			if (reflection_dispels[alvo_serial] and reflection_dispels[alvo_serial][spellid]) then
+				--> debuff was dispelled by a reflecting dispel and could've been reflected
+				--> save the data about whom dispelled who and the spell that was dispelled
+				local reflection = reflection_dispels[alvo_serial][spellid]
+				reflection_events[who_serial] = reflection_events[who_serial] or {}
+				reflection_events[who_serial][spellid] = {
+					who_serial = reflection.who_serial,
+					who_name = reflection.who_name,
+					who_flags = reflection.who_flags,
+					spellid = reflection.spellid,
+					spellname = reflection.spellname,
+					spelltype = reflection.spelltype,
+					time = time,
+				}
+				reflection_dispels[alvo_serial][spellid] = nil
+				if (next(reflection_dispels[alvo_serial]) == nil) then
+					--suggestion on how to make this better?
+					reflection_dispels[alvo_serial] = nil
+				end
+			end
+			
+		------------------------------------------------------------------------------------------------
+		--> spell reflection
+			if (reflection_debuffs[who_serial] and reflection_debuffs[who_serial][spellid]) then
+				--> self-inflicted debuff was removed, so we just clear this data
+				reflection_debuffs[who_serial][spellid] = nil
+				if (next(reflection_debuffs[who_serial]) == nil) then
+					--> better way of doing this? accepting suggestions
+					reflection_debuffs[who_serial] = nil
+				end
+			end
+		
 			if (_in_combat) then
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
@@ -3366,6 +3524,22 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			este_jogador.dispell_targets = {}
 			este_jogador.dispell_spells = container_habilidades:NovoContainer (container_misc)
 			este_jogador.dispell_oque = {}
+		end
+		
+	------------------------------------------------------------------------------------------------
+	--> spell reflection
+		if (reflection_dispelid[spellid]) then
+			--> this aura could've been reflected to the caster after the dispel
+			--> save data about whom was dispelled by who and what spell it was
+			reflection_dispels[alvo_serial] = reflection_dispels[alvo_serial] or {}
+			reflection_dispels[alvo_serial][extraSpellID] = {
+				who_serial = who_serial,
+				who_name = who_name,
+				who_flags = who_flags,
+				spellid = spellid,
+				spellname = spellname,
+				spelltype = spelltype,
+			}
 		end
 
 	------------------------------------------------------------------------------------------------
@@ -5207,7 +5381,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (npcid_cache)
 		
 		_table_wipe (ignore_death)
-		_table_wipe (reflected)
+		
+		_table_wipe (reflection_damage)
+		_table_wipe (reflection_debuffs)
+		_table_wipe (reflection_events)
+		_table_wipe (reflection_auras)
+		_table_wipe (reflection_dispels)
 	
 		damage_cache = setmetatable ({}, _detalhes.weaktable)
 		damage_cache_pets = setmetatable ({}, _detalhes.weaktable)

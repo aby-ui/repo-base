@@ -77,9 +77,15 @@ function ELP_UpdateItemList()
     local forceSlot = db.range > 0 and EJ_GetSlotFilter() == 0
     if forceSlot then EJ_SetSlotFilter(11) end
 
+    local range, lastRaid = db.range, nil
+    if range == 4 or range == 5 then
+        lastRaid = ELP_LAST_RAID_IDX
+        range = range == 4 and 1 or 3
+    end
+
     for i = 1, 2 do
-        local index = 1
-        while( bit.band(i, db.range) > 0 ) do
+        local index = (i == 1 and lastRaid or 1)
+        while( bit.band(i, range) > 0 ) do
             local insID, name, _, _, _, _, _, _, link = EJ_GetInstanceByIndex(index, i == 1)
             if not insID then break end
             index = index + 1

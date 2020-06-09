@@ -1620,7 +1620,7 @@ function DF:CreateCoolTip()
 			
 			--> height
 			if (CoolTip.OptionsTable.AlignAsBlizzTooltip) then
-				local height = _math_max (8, menuButton.leftText:GetStringHeight(), menuButton.rightText:GetStringHeight(), menuButton.leftIcon:GetHeight(), menuButton.rightIcon:GetHeight())
+				local height = _math_max (2, menuButton.leftText:GetStringHeight(), menuButton.rightText:GetStringHeight(), menuButton.leftIcon:GetHeight(), menuButton.rightIcon:GetHeight(), CoolTip.OptionsTable.AlignAsBlizzTooltipForceHeight or 2)
 				menuButton:SetHeight (height)
 				menuButton:SetPoint ("top", frame1, "top", 0, temp)
 				temp = temp + ( height * -1)

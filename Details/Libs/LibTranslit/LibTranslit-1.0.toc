@@ -4,7 +4,7 @@
 ## Author: Vardex
 ## X-Category: Library
 ## X-License: BSD
-## Version: DetailsRetail.8.3.0.7334.140
+## Version: DetailsRetail.8.3.0.7336.141
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 
