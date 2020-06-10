@@ -74,7 +74,7 @@ function ELP_UpdateItemList()
     for _, v in ipairs(ELP.currs) do wipe(v) end
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
-    local forceSlot = db.range > 0 and EJ_GetSlotFilter() == 0
+    local forceSlot = db.range > 0 and db.range ~= 4 and EJ_GetSlotFilter() == 0
     if forceSlot then EJ_SetSlotFilter(11) end
 
     local range, lastRaid = db.range, nil

@@ -25,11 +25,7 @@
 
 localization.en.lua
 localization.cn.lua
-localization.de.lua
 localization.tw.lua
-localization.es.lua
-localization.kr.lua
-localization.ru.lua
 Nythendra.lua
 Ilgynoth.lua
 Renferal.lua

@@ -433,7 +433,7 @@ if success and GetCVar("portal") == "CN" then
 
         GameTooltip_AddBlankLineToTooltip(tip);
         GameTooltip_AddColoredLine(tip, "下轮 " .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR, false);
-        list = vendors[round+1]
+        list = vendors[round % 8 + 1]
         if not list then
             local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
             round2 = round2 % 8 + 1
@@ -444,7 +444,7 @@ if success and GetCVar("portal") == "CN" then
 
         for i=2,7 do
             --GameTooltip_AddBlankLineToTooltip(tip);
-            GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i+1) * interval), NORMAL_FONT_COLOR);
+            GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i-1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i) * interval), NORMAL_FONT_COLOR);
             local list = vendors[(round+i-1)%8+1]
             if not list then
                 GameTooltip_AddColoredLine(tip, "尚未轮换", GRAY_FONT_COLOR)

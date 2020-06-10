@@ -11,7 +11,7 @@
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: 夏一可(普通话女)
 ## X-DBM-Voice-ShortName: Yike
-## X-DBM-Voice-Version: 10
+## X-DBM-Voice-Version: 11
 ## X-DBM-Voice-HasCount: 1
 
 ## Title-zhCN: |cff880303[爱不易]|r DBM 夏一可语音包

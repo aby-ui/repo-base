@@ -22,12 +22,8 @@
 ## Version: r18-1-g0ccf8c8
 
 localization.en.lua
-localization.de.lua
-localization.kr.lua
-localization.ru.lua
 localization.tw.lua
 localization.cn.lua
-localization.es.lua
 Odyn.lua
 Guarm.lua
 Helya.lua

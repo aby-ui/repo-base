@@ -24,10 +24,7 @@
 
 localization.en.lua
 localization.cn.lua
-localization.de.lua
 localization.tw.lua
-localization.es.lua
-localization.kr.lua
 Skorpyron.lua
 ChronoAnomaly.lua
 Trilliax.lua

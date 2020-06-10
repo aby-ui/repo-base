@@ -43,7 +43,7 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
             :LEFT(EncounterJournalInstanceSelectLootJournalTab, "RIGHT", 24, -2)
             :AddFrameLevel(3, CharacterFrameInsetRight)
             :SetScript("OnClick", function()
-                if db.range == 0 then db.range = 3 end
+                if db.range == 0 then db.range = 5 end
                 EncounterJournal_DisplayInstance(1023)
                 EncounterJournalEncounterFrameInfoLootTab:Click()
                 EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle:Click()
