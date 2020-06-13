@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1987, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200610151630")
 mod:SetCreatureID(122477, 122135)--122477 F'harg, 122135 Shatug
 mod:SetEncounterID(2074)
 mod:SetZone()
@@ -244,7 +244,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 248819 then--Siphoned
 		warnSiphoned:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnSiphoned:Show(DBM_ALLY)
+			specWarnSiphoned:Show(DBM_CORE_L.ALLY)
 			specWarnSiphoned:Play("gathershare")
 			yellSiphoned:Countdown(4)
 			if self.Options.RangeFrame then
@@ -254,7 +254,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 254429 then
 		warnWeightofDarkness:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnWeightOfDarkness:Show(DBM_ALLY)
+			specWarnWeightOfDarkness:Show(DBM_CORE_L.ALLY)
 			specWarnWeightOfDarkness:Play("gathershare")
 			yellWeightOfDarkness:Yell()
 			yellWeightOfDarknessFades:Countdown(5)

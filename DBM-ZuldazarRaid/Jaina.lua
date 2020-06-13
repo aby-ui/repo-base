@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200603015928")
+mod:SetRevision("20200610151551")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetZone()
@@ -483,7 +483,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 289387 then
 		if args:IsPlayer() then
-			specWarnFreezingBlood:Show(DBM_ALLY)
+			specWarnFreezingBlood:Show(DBM_CORE_L.ALLY)
 			specWarnFreezingBlood:Play("gathershare")
 			yellFreezingBlood:Countdown(spellId)
 		end

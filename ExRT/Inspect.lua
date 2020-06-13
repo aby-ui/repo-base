@@ -61,6 +61,10 @@ module.db.statsNames = {
 	corruption = {"%+(%d+) ?"..(ITEM_MOD_CORRUPTION or "Corruption").."$"},
 	corruption_res = {"%+(%d+) ?"..(ITEM_MOD_CORRUPTION_RESISTANCE or "Corruption resistance").."$"},
 }
+if ExRT.locale == "koKR" then
+	module.db.statsNames.corruption = {"^"..(ITEM_MOD_CORRUPTION or "Corruption").." ?%+(%d+)".."$"}
+	module.db.statsNames.corruption_res = {"^"..(ITEM_MOD_CORRUPTION_RESISTANCE or "Corruption resistance").." ?%+(%d+)".."$"}
+end
 
 module.db.itemsSlotTable = {
 	1,	--INVSLOT_HEAD
@@ -360,7 +364,7 @@ do
 								offHandSlot = ilvl
 								ArtifactIlvlSlot2 = ilvl
 							elseif itemSlotID == 2 and select(3,GetItemInfo(itemLink)) == 6 then
-								cooldownsModule.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - ((ilvl - 465) * 0.15 + 19.8) / 100)
+								cooldownsModule.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - min((ilvl - 465) * 0.15 + 19.8, 25) / 100)
 								--[[
 									63: 18.9
 									66: 19.8

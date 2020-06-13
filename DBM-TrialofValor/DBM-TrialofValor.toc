@@ -19,11 +19,15 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r18-1-g0ccf8c8
+## Version: r19
 
 localization.en.lua
+localization.de.lua
+localization.kr.lua
+localization.ru.lua
 localization.tw.lua
 localization.cn.lua
+localization.es.lua
 Odyn.lua
 Guarm.lua
 Helya.lua

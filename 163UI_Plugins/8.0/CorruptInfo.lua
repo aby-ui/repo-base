@@ -378,7 +378,7 @@ SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 ---------------------------------------------------------------]]
 local success, CharIcon = pcall(function() return CharacterStatsPane.ItemLevelFrame.Corruption end)
 if success and GetCVar("portal") == "CN" then
-    local prices = { [8] = 2400, [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [25] = 6250, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [66] = 13200, [75] = 15000, }
+    local prices = { [8] = 2400, [10] = 3000, [12] = 3300, [15] = 4125, [16] = 4250, [17] = 4250, [20] = 5000, [25] = 6250, [28] = 6300, [30] = 6750, [35] = 7875, [45] = 9000, [50] = 10000, [60] = 12000, [66] = 13200, [75] = 15000, }
     local vendors = {
         { { "truth", 1, }, { "proc_mastery", 1, }, { "passive_crit_dam", 2, }, { "passive_mastery", 2, }, { "passive_haste", 3, }, { "twisted", 3, }, },
         { { "passive_mastery", 1, }, { "ritual", 1, }, { "proc_crit", 2, }, { "passive_leech", 2, }, { "truth", 2, }, { "passive_versatility", 3, }, { "passive_avoidance", 2, }, },
@@ -444,8 +444,13 @@ if success and GetCVar("portal") == "CN" then
 
         for i=2,7 do
             --GameTooltip_AddBlankLineToTooltip(tip);
+            local round2 = (round + i - 1) % 8 + 1
+            if round2 == 1 then
+                GameTooltip_AddBlankLineToTooltip(tip)
+                GameTooltip_AddColoredLine(tip, "之后轮次顺序尚未确定，仅供参考：", ORANGE_FONT_COLOR)
+            end
             GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i-1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i) * interval), NORMAL_FONT_COLOR);
-            local list = vendors[(round+i-1)%8+1]
+            local list = vendors[round2]
             if not list then
                 GameTooltip_AddColoredLine(tip, "尚未轮换", GRAY_FONT_COLOR)
             else

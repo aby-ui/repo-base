@@ -2,7 +2,7 @@ local L		= DBM_GUI_L
 local CL	= DBM_CORE_L
 
 --Hard code STANDARD_TEXT_FONT since skinning mods like to taint it (or worse, set it to nil, wtf?)
-local standardFont = STANDARD_TEXT_FONT
+local standardFont
 if LOCALE_koKR then
 	standardFont = "Fonts\\2002.TTF"
 elseif LOCALE_zhCN then
@@ -164,7 +164,7 @@ local color2reset = raidwarncolors:CreateButton(L.Reset, 60, 10, nil, GameFontNo
 local color3reset = raidwarncolors:CreateButton(L.Reset, 60, 10, nil, GameFontNormalSmall)
 local color4reset = raidwarncolors:CreateButton(L.Reset, 60, 10, nil, GameFontNormalSmall)
 
-color1.myheight = 64
+color1.myheight = 84
 color2.myheight = 0
 color3.myheight = 0
 color4.myheight = 0

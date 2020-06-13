@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200525001701")
+mod:SetRevision("20200612160310")
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 --mod:DisableESCombatDetection()
@@ -121,7 +121,6 @@ local stormTargets = {}
 
 local updateInfoFrame
 do
-	local stormsWail = DBM:GetSpellInfo(285350)
 	local lines = {}
 	local sortedLines = {}
 	local function addLine(key, value)
@@ -140,7 +139,6 @@ do
 			end
 		end
 		if #stormTargets > 0 then
-			--addLine("", "")
 			for i=1, #stormTargets do
 				local name = stormTargets[i]
 				local uId = DBM:GetRaidUnitId(name)
@@ -433,7 +431,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnStormsWail:Show(freezingTidePod)
 			specWarnStormsWail:Play("targetyou")
 			yellStormsWail:Yell()
-			local spellName, _, _, _, _, expireTime = DBM:UnitDebuff("player", 285350, 285426)
+			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", 285350, 285426)
 			if expireTime then
 				local remaining = expireTime-GetTime()
 				specWarnStormsWail:Schedule(remaining-4.5, DBM_CORE_L.BACK)

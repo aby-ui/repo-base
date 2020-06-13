@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1706, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200610155013")
 mod:SetCreatureID(102263)
 mod:SetEncounterID(1849)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START
@@ -125,7 +125,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:SetHeader(DBM_NO_DEBUFF:format(goodDebuff))
+			DBM.InfoFrame:SetHeader(DBM_CORE_L.NO_DEBUFF:format(goodDebuff))
 			DBM.InfoFrame:Show(5, "playergooddebuff", goodDebuff)
 		end
 	elseif spellId == 204471 then

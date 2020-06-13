@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200610151630")
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetZone()
@@ -669,7 +669,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 257931 then
 		warnSargFear:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnSargFear:Show(DBM_ALLY)
+			specWarnSargFear:Show(DBM_CORE_L.ALLY)
 			specWarnSargFear:Play("gathershare")
 			yellSargFear:Yell()
 			fearCheck(self)

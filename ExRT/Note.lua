@@ -74,6 +74,7 @@ module.db.lasttext = ""
 
 module.db.encounter_time_p = {}	--phases
 module.db.encounter_time_c = {}	--custom
+module.db.encounter_time_wa_uids = {}	--wa custom events
 module.db.encounter_id = {}
 
 local function GSUB_Icon(spellID)
@@ -190,6 +191,7 @@ formats:
 {time:2:30,p2}	--start on phase 2, works only with bigwigs
 {time:0:30,SCC:17:2}	--start on combat log event. format "event:spellID:counter", events: SCC (SPELL_CAST_SUCCESS), SCS (SPELL_CAST_START), SAA (SPELL_AURA_APPLIED), SAR (SPELL_AURA_REMOVED)
 {time:0:30,e,customevent}	--start on ExRT.F.Note_Timer(customevent) function or "/rt note starttimer customevent" 
+{time:2:30,wa:nzoth_hs1}	--run weakauras custom event EXRT_NOTE_TIME_EVENT with arg1 = nzoth_hs1, arg2 = time left (event runs every second when timer has 5 seconds or lower), arg3 = note line text
 ]]
 local function GSUB_Time(t,msg)
 	local lineTime
@@ -206,6 +208,8 @@ local function GSUB_Time(t,msg)
 	end
 
 	local currTime = GetTime() - module.db.encounter_time
+
+	local wa_event_uid = t:match(",[wW][aA]:([^,]+)")
 
 	local CLEU = t:match(",S")
 	if CLEU then
@@ -240,7 +244,18 @@ local function GSUB_Time(t,msg)
 		end
 	end
 
-	if currTime > lineTime then
+	if (currTime >= lineTime or lineTime - currTime <= 5) and wa_event_uid and type(WeakAuras)=="table" then
+		local timeleft = currTime >= lineTime and 0 or ceil(lineTime - currTime)
+		local wa_event_uid_cache = timeleft..":"..wa_event_uid
+		if not module.db.encounter_time_wa_uids[wa_event_uid_cache] then
+			module.db.encounter_time_wa_uids[wa_event_uid_cache] = true
+			if WeakAuras.ScanEvents and type(WeakAuras.ScanEvents)=="function" then
+				WeakAuras.ScanEvents("EXRT_NOTE_TIME_EVENT",wa_event_uid,timeleft,msg)
+			end
+		end
+	end
+
+	if currTime >= lineTime then
 		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r\n"
 	elseif lineTime - currTime <= 10 then
 		t = lineTime - currTime
@@ -1223,7 +1238,7 @@ function module.options:Load()
 		end
 	end) 
 	
-	self.chkSaveAllNew = ELib:Check(self.tab.tabs[2],L.NoteEnableWhenReceive,VExRT.Note.EnableWhenReceive):Point(10,-165):OnClick(function(self) 
+	self.chkEnableWhenReceive = ELib:Check(self.tab.tabs[2],L.NoteEnableWhenReceive,VExRT.Note.EnableWhenReceive):Point(10,-165):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Note.EnableWhenReceive = true
 		else
@@ -1521,10 +1536,32 @@ function module.frame:Save(blackNoteID)
 		end
 	end
 
-	for i=1,#arrtosand do
-		ExRT.F.SendExMsg("multiline",indextosnd.."\t"..arrtosand[i])
+	if ExRT.isClassic then
+		local MSG_LIMIT_COUNT = 10
+		local MSG_LIMIT_TIME = 4.2
+		if #arrtosand >= MSG_LIMIT_COUNT and module.options.buttonsend then
+			module.options.buttonsend:Disable()
+			C_Timer.After(floor((#arrtosand+1)/MSG_LIMIT_COUNT * MSG_LIMIT_TIME),function()
+				module.options.buttonsend:Enable()
+			end)
+		end
+		for i=1,#arrtosand,MSG_LIMIT_COUNT do
+			local start = i
+			C_Timer.After(floor((start-1)/MSG_LIMIT_COUNT) * MSG_LIMIT_TIME + 0.05,function()
+				for j=start,min(#arrtosand,start+MSG_LIMIT_COUNT-1) do
+					ExRT.F.SendExMsg("multiline",indextosnd.."\t"..arrtosand[j])
+				end
+			end)
+		end
+		C_Timer.After(floor((#arrtosand)/MSG_LIMIT_COUNT) * MSG_LIMIT_TIME + 0.1,function()
+			ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,encounterID,noteName))
+		end)
+	else
+		for i=1,#arrtosand do
+			ExRT.F.SendExMsg("multiline",indextosnd.."\t"..arrtosand[i])
+		end
+		ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,encounterID,noteName))
 	end
-	ExRT.F.SendExMsg("multiline_add",ExRT.F.CreateAddonMsg(indextosnd,encounterID,noteName))
 end 
 
 function module.frame:Clear() 
@@ -1950,6 +1987,7 @@ do
 		end
 		if noteText:find("{time:([0-9:]+[^{}]*)}") then
 			wipe(module.db.encounter_time_c)
+			wipe(module.db.encounter_time_wa_uids)
 			module:RegisterTimer()
 			module.db.encounter_time = GetTime()
 			module.db.encounter_time_p[1] = module.db.encounter_time
@@ -1986,6 +2024,7 @@ do
 			module.db.encounter_time = nil
 			wipe(module.db.encounter_time_p)
 			wipe(module.db.encounter_time_c)
+			wipe(module.db.encounter_time_wa_uids)
 	
 			module:UnregisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
 		end
@@ -2078,3 +2117,16 @@ function module:slash(arg)
 		end
 	end
 end
+
+function module:GetText(removeColors,removeExtraSpaces)
+	local text = VExRT.Note.Text1
+	if removeColors then
+		text = text:gsub("|c........",""):gsub("|r","")
+	end
+	if removeExtraSpaces then
+		text = text:gsub(" *\n",""):gsub(" *$",""):gsub(" +"," ")
+	end
+	return text
+end
+ExRT.F.GetNote = module.GetText
+--- you can use to get note text GExRT.F:GetNote()

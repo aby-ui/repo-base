@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200525001701")
+mod:SetRevision("20200612160310")
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -434,8 +434,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			timerMindWipeCD:Stop()
 		end
 		if timerPakusWrathCD:GetRemaining(self.vb.pakuWrathCount+1) > 40 then
-			local elapsed, total = timerPakusWrathCD:GetTime(self.vb.pakuWrathCount+1)
-			local remaining = total - elapsed
 			DBM:Debug("timerPakusWrathCD extended by: 10 seconds do to boss death with > 40 remaining", 2)
 			timerPakusWrathCD:AddTime(10, self.vb.pakuWrathCount+1)
 		end

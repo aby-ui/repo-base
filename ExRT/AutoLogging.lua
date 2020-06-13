@@ -8,8 +8,9 @@ local ELib,L = ExRT.lib,ExRT.L
 module.db.minRaidMapID = 1861
 module.db.minPartyMapID = 1754
 
-module.db.mapsToLog = not ExRT.isClassic and {} or {
-	[249] = true,
+module.db.mapsToLog = {}
+module.db.mapsToLog_5ppl = {
+	[1594] = true,	--MOTHERLODE
 }
 
 function module.options:Load()
@@ -129,7 +130,7 @@ local function GetCurrentMapForLogging()
 			return true 
 		elseif zoneType == 'raid' and (tonumber(mapID) and mapID >= module.db.minRaidMapID) and ((difficulty == 16 and not VExRT.Logging.disableMythic) or (difficulty == 15 and not VExRT.Logging.disableHeroic) or (difficulty == 14 and not VExRT.Logging.disableNormal) or (difficulty ~= 14 and difficulty ~= 15 and difficulty ~= 16)) then
 			return true
-		elseif VExRT.Logging.enable5ppLegion and (difficulty == 8 or difficulty == 23) and (tonumber(mapID) and mapID >= module.db.minPartyMapID) then
+		elseif VExRT.Logging.enable5ppLegion and (difficulty == 8 or difficulty == 23) and (tonumber(mapID) and (mapID >= module.db.minPartyMapID or module.db.mapsToLog_5ppl[mapID])) then
 			return true
 		elseif VExRT.Logging.enable3ppBFA and zoneType == 'scenario' and (maxPlayers or 0) > 1 and (tonumber(mapID) and mapID >= module.db.minPartyMapID) then
 			return true

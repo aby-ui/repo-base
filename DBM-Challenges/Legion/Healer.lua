@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("ArtifactHealer", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145548")
+mod:SetRevision("20200610151606")
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 
 mod:RegisterEvents(
@@ -38,7 +38,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 235984 and args:IsPlayer() then
-		specWarnManaSling:Show(DBM_ALLY)
+		specWarnManaSling:Show(DBM_CORE_L.ALLY)
 		specWarnManaSling:Play("findshelter")
 	elseif spellId == 237188 then
 		specWarnIgniteSoul:Show()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200605131836")
+mod:SetRevision("20200612160310")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetZone()
@@ -429,7 +429,7 @@ end
 
 local updateInfoFrame
 do
-	local floor, tsort = math.floor, table.sort
+	local twipe, tsort = table.wipe, table.sort
 	local lines = {}
 	local sortedLines = {}
 	local tempLines = {}
@@ -441,10 +441,10 @@ do
 		sortedLines[#sortedLines + 1] = key
 	end
 	updateInfoFrame = function()
-		table.wipe(lines)
-		table.wipe(sortedLines)
-		table.wipe(tempLines)
-		table.wipe(tempLinesSorted)
+		twipe(lines)
+		twipe(sortedLines)
+		twipe(tempLines)
+		twipe(tempLinesSorted)
 		--Build Sanity Table
 		for uId in DBM:GetGroupMembers() do
 			if select(4, UnitPosition(uId)) == currentMapId and (difficultyName == "mythic" or not mod.Options.HideDead or not UnitIsDeadOrGhost(uId)) then
@@ -463,12 +463,6 @@ do
 		end
 		return lines, sortedLines
 	end
-end
-
---/run DBM:GetModByName("2375"):Test()
-function mod:Test()
-	specWarnStupefyingGlare:Show(1)
-	warnStupefyingGlareSoon:Countdown(10, 5)
 end
 
 function mod:OnCombatStart(delay)
@@ -874,11 +868,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			elseif icon == 10 then
 				icon = "(•_•)"
 			end
-			if ParanoiaTargets[#ParanoiaTargets-1] == UnitName("player") then
+			if ParanoiaTargets[#ParanoiaTargets-1] == playerName then
 				specWarnParanoia:Show(ParanoiaTargets[#ParanoiaTargets])
 				specWarnParanoia:Play("gather")
 				playerIsInPair = true
-			elseif ParanoiaTargets[#ParanoiaTargets] == UnitName("player") then
+			elseif ParanoiaTargets[#ParanoiaTargets] == playerName then
 				specWarnParanoia:Show(ParanoiaTargets[#ParanoiaTargets-1])
 				specWarnParanoia:Play("gather")
 				playerIsInPair = true
@@ -926,7 +920,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEventHorizon:Show()
 			specWarnEventHorizon:Play("defensive")
 		else
-			local uId = DBM:GetRaidUnitId(args.destName)
 			if self:IsTank() then
 				specWarnEventHorizonSwap:Show(args.destName)
 				specWarnEventHorizonSwap:Play("tauntboss")

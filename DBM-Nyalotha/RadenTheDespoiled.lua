@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200605184054")
+mod:SetRevision("20200610150404")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetZone()
@@ -74,7 +74,7 @@ local yellChainLightning					= mod:NewYell(306874)
 ----Void
 local specWarnCallVoidHunter				= mod:NewSpecialWarningSwitch("ej20549", "-Healer", nil, nil, 1, 2)
 ------Void Hunter
-local specWarnVoidCollapse					= mod:NewSpecialWarningYou(306881, nil, nil, nil, 3, 2)
+local specWarnVoidCollapse					= mod:NewSpecialWarningMoveTo(306881, nil, nil, nil, 3, 2)
 local yellVoidCollapse						= mod:NewYell(306881, nil, nil, nil, "YELL")
 local yellVoidCollapseFades					= mod:NewShortFadesYell(306881, nil, nil, nil, "YELL")
 ----Nightmare
@@ -309,8 +309,8 @@ end
 function mod:CollapseTarget(targetname, uId)
 	if not targetname then return end
 	if targetname == UnitName("player") then
-		specWarnVoidCollapse:Show()
-		specWarnVoidCollapse:Play("targetyou")
+		specWarnVoidCollapse:Show(DBM_CORE_L.ALLIES)
+		specWarnVoidCollapse:Play("gathershare")
 		yellVoidCollapse:Yell()
 		yellVoidCollapseFades:Countdown(3.5)
 	else
@@ -603,7 +603,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if spellId == 310019 then--Primary target
 			self.vb.bondsTarget = args.destName
 			if args:IsPlayer() then
-				specWarnChargedBonds:Show(DBM_ALLIES)
+				specWarnChargedBonds:Show(DBM_CORE_L.ALLIES)
 				specWarnChargedBonds:Play("runaway")
 			end
 			if self.Options.SetIconOnChargedBonds then

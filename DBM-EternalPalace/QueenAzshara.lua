@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200525001701")
+mod:SetRevision("20200610172832")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetZone()
@@ -217,7 +217,7 @@ local mobShielded = {}
 
 local updateInfoFrame
 do
-	local floor, tsort = math.floor, table.sort
+	local twipe, tsort = table.wipe, table.sort
 	local lines = {}
 	local tempLines = {}
 	local tempLinesSorted = {}
@@ -230,10 +230,10 @@ do
 		sortedLines[#sortedLines + 1] = key
 	end
 	updateInfoFrame = function()
-		table.wipe(lines)
-		table.wipe(tempLines)
-		table.wipe(tempLinesSorted)
-		table.wipe(sortedLines)
+		twipe(lines)
+		twipe(tempLines)
+		twipe(tempLinesSorted)
+		twipe(sortedLines)
 		--Power levels pulled from widgets?
 		----TODO
 		--Player Personal Checks

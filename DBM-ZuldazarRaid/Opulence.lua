@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2342, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200602212246")
+mod:SetRevision("20200610172832")
 mod:SetCreatureID(145261)
 mod:SetEncounterID(2271)
 --mod:DisableESCombatDetection()
@@ -150,7 +150,7 @@ do
 			local name = grosslyIncandescentTargets[i]
 			local uId = DBM:GetRaidUnitId(name)
 			if not uId then break end
-			local spellName, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 284798)
+			local _, _, _, _, _, expireTime = DBM:UnitDebuff(uId, 284798)
 			if expireTime then
 				local remaining = expireTime-GetTime()
 				addLine(name, grosslyIncan.."-"..math.floor(remaining))

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1898, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200610155013")
 mod:SetCreatureID(117269)--121227 Illiden? 121193 Shadowsoul
 mod:SetEncounterID(2051)
 mod:SetZone()
@@ -239,7 +239,7 @@ function mod:SPELL_CAST_START(args)
 		else--Move to rift
 			specWarnDarknessofSouls:Show(riftName)
 			if self.Options.InfoFrame then
-				DBM.InfoFrame:SetHeader(DBM_NO_DEBUFF:format(DBM_CORE_L.SAFE))
+				DBM.InfoFrame:SetHeader(DBM_CORE_L.NO_DEBUFF:format(DBM_CORE_L.SAFE))
 				DBM.InfoFrame:Show(10, "playergooddebuff", gravitySqueezeBuff)
 			end
 			self:Schedule(28.5, ObeliskWarning, self)

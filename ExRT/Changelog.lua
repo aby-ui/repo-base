@@ -1,6 +1,14 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4160
+* Raid Inspect: added nzoth curve achievement
+* Saving log: fixed motherlode instance
+* Bugfixes
+
+v.4160-Classic
+* Bugfixes
+
 v.4150
 * Raid Inspect: added current corruption level
 * Note: fixed raid markers for duplicating in chat option

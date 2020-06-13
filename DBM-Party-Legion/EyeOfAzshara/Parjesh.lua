@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1480, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190522211359")
+mod:SetRevision("20200610150546")
 mod:SetCreatureID(91784)
 mod:SetEncounterID(1810)
 mod:SetZone()
@@ -36,7 +36,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 192094 then
 		timerSpearCD:Start()
 		if args:IsPlayer() then
-			specWarnImpalingSpear:Show(DBM_ADDS)
+			specWarnImpalingSpear:Show(DBM_CORE_L.ADDS)
 			yellImpalingSpear:Yell()
 			specWarnImpalingSpear:Play("behindmob")
 		else

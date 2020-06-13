@@ -130,7 +130,7 @@ module.db.topEnchGems = {
 module.db.achievementsList = {
 	{	--Nyalotha
 		L.S_ZoneT25Nyalotha,
-		14193,14194,14195,14196,14041,14043,14044,14045,14050,14046,14051,14048,14049,14052,14054,14055,
+		14193,14194,14195,14196,14041,14043,14044,14045,14050,14046,14051,14048,14049,14052,14054,14055,14068,
 	},{	--EP
 		L.S_ZoneT24Eternal,
 		13718,13719,13725,13726,13727,13728,13729,13730,13731,13732,13733,13784,13785,
@@ -440,8 +440,8 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VExRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VExRT.InspectViewer.ColorizeNoValorUpgrade
 	
-	local colorizeLowIlvl630 = 385
-	local colorizeLowIlvl685 = 430
+	local colorizeLowIlvl630 = 430
+	local colorizeLowIlvl685 = 460
 	if UnitLevel'player' <= 110 then
 		colorizeLowIlvl630 = 185
 		colorizeLowIlvl685 = 240	

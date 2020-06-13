@@ -528,7 +528,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 
 module.db.spell_cdByTalent_scalable_data = {
 	[296320] = {
-		[1] = "*0.80",
+		[1] = "*0.75",
 	},
 }
 
