@@ -57,6 +57,8 @@ if AL then
 	AL["DISPLAY_CONTAINER_ICONS_DESC"] = "When disabled, icons of containers/treasures won't be shown on the world map."
 	AL["DISPLAY_EVENT_ICONS"] = "Toggle showing event icons on the world map"
 	AL["DISPLAY_EVENT_ICONS_DESC"] = "When disabled, icons of events won't be shown on the world map."
+	AL["DISPLAY_FRIENDLY_NPC_ICONS"] = "Toggle showing friendly rare NPC icons on the world map"
+	AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"] = "When disabled, icons of friendly rare NPCs won't be shown on the world map."
 	AL["DISPLAY_LOG_WINDOW"] = "Toggle showing the log window"
 	AL["DISPLAY_LOG_WINDOW_DESC"] = "When disabled the log window won't be shown again."
 	AL["DISPLAY_LOOT_ON_MAP"] = "Display loot on map tooltips"
@@ -94,6 +96,7 @@ if AL then
 	AL["ENABLE_TOMTOM_SUPPORT_DESC"] = "When this is activated it will add a Tomtom's waypoint at the entitie's found coordinates"
 	AL["ENABLED_SEARCHING_RARE"] = "Enabled alerts for this rare NPC: "
 	AL["EVENT"] = "Event"
+	AL["EXPEDITION_ISLANDS"] = "Expedition islands"
 	AL["FILTER"] = "NPC filters"
 	AL["FILTER_CONTINENT"] = "Continent/Category"
 	AL["FILTER_CONTINENT_DESC"] = "Continent or category name"
@@ -203,12 +206,18 @@ if AL then
 	AL["NAVIGATION_OPTIONS"] = "Navigation options"
 	AL["NAVIGATION_SHOW_NEXT"] = "Show next entity found"
 	AL["NAVIGATION_SHOW_PREVIOUS"] = "Show previous entity found"
-	AL["NOT_TARGETEABLE"] = "Not targeteable"
+	AL["NOT_TARGETEABLE"] = "Not targetable"
 	AL["NOTE_10263"] = "The [Scarshield Warlock] opens a portal every now and then where the rare NPC can be summoned from."
+	AL["NOTE_129836"] = "It doesn't have a vignette, so you won't get the alert from it. It is in the basement of the building."
 	AL["NOTE_130350"] = "You have to ride this rare to the container that you will find by following the path to the right of this position."
 	AL["NOTE_131453"] = "You have to ride [Guardian of the Spring] to this position. The horse is a friendly rare that you will find by following the path to the left of this container."
+	AL["NOTE_131735"] = "He is a neutral NPC. Once you kill him, a little piggy will show up giving you the pet [Taptaf]"
+	AL["NOTE_135448"] = "Only available in mythic difficulty. You have to find a [Discarded Cell Key] (they spawn on top of the furniture around the place) to open the prison where this skull shows up. Once inside, go through the hole on the wall and arrive to a room with a bucket. Click on it to summon the rare NPC."
 	AL["NOTE_135497"] = "Only available while doing the daily quest [Aid from Nordrassil] obtained from Mylune. While you are on this quest you will find mushrooms under the trees. Clicking on them might spawn this NPC."
+	AL["NOTE_140474"] = "You have to collect 20x[Abyssal Fragment] (world drop). Once you have the 20 items click on them to create [Abhorrent Essence of the Abyss]. You have to use the last item at the coordinates 73.23 (behind a waterfall). Once you use the item, it will point you to go to a mine where you can summon the rare NPC (entrance of the mine at the coordinates 46.36)"
 	AL["NOTE_149847"] = "When you aproach to him, he will tell you a colour that he hates. Once you know what colour it is, you have to go to the coordinates 63.41 where you will be painted that colour. When you will come back to his position, he will attack you."
+	AL["NOTE_149886"] = "He will show up ONLY once as soon as you step into the Royal Library. It's just a mere tribute to Stan Lee from Marvel."
+	AL["NOTE_149887"] = "He will show up ONLY once as soon as you step into the house at this position. It's just a mere tribute to Stan Lee from Marvel."
 	AL["NOTE_150342"] = "Only available during the event [Drill Rig DR-TR35]."
 	AL["NOTE_150394"] = "In order to kill him you have to bring him to the coordinates 63.38, where there is a device with blue lightning. Once the NPC is touched by lightning, it will explode and you will be able to loot him."
 	AL["NOTE_151124"] = "You have to loot a [Smashed Transport Relay] from the enemies that appear during the event [Drill Rig DR-JD99] (coordinates 59.67) and then use it on the machine that is found on the platform."
@@ -310,15 +319,17 @@ if AL then
 	AL["TOOLTIP_TOP"] = "Upper side"
 	AL["UNKNOWN"] = "Unknown"
 	AL["UNKNOWN_TARGET"] = "Unknown target"
+	AL["ZONE_1332"] = "%s (Warfront)"
 	AL["ZONE_1527"] = "%s (BFA Assault)"
 	AL["ZONE_1530"] = "%s (BFA Assault)"
 	AL["ZONE_1570"] = "%s (BFA Lesser vision of N'Zoth)"
 	AL["ZONE_1571"] = "%s (BFA Lesser vision of N'Zoth)"
 	AL["ZONE_317"] = "%s (Human side)"
 	AL["ZONE_318"] = "%s (Undead side)"
+	AL["ZONE_943"] = "%s (Warfront)"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
-				
+
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {
 		[9999] = "Class Halls"; --Class Halls
@@ -326,5 +337,6 @@ if AL then
 		[9997] = "Dungeons/Scenarios"; --Dungeons/Scenarios
 		[9996] = "Raids"; --Raids
 		[9995] = "Unknown"; --Unknown
+		[9994] = "Expedition islands"; --Expedition islands
 	}
 end

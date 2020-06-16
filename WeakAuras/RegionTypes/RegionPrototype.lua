@@ -703,8 +703,8 @@ end
 -- Expand/Collapse function
 function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
   local id = data.id
-  local indynamicgroup = parentRegionType == "dynamicgroup";
-  local ingroup = parentRegionType == "group";
+  local inDynamicGroup = parentRegionType == "dynamicgroup";
+  local inGroup = parentRegionType == "group";
 
   local startMainAnimation = function()
     WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
@@ -726,7 +726,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 
   local hideRegion;
-  if(indynamicgroup) then
+  if(inDynamicGroup) then
     hideRegion = function()
       if region.PreHide then
         region:PreHide()
@@ -757,7 +757,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     end
   end
 
-  if(indynamicgroup) then
+  if(inDynamicGroup) then
     function region:Collapse()
       if (not region.toShow) then
         return;
@@ -812,7 +812,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         hideRegion();
       end
 
-      if ingroup then
+      if inGroup then
         parent:UpdateBorder(region);
       end
 
@@ -850,7 +850,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         startMainAnimation();
       end
 
-      if ingroup then
+      if inGroup then
         parent:UpdateBorder(region);
       end
 

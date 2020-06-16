@@ -70,8 +70,8 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200612160310"),
-	DisplayVersion = "8.3.26", -- the string that is shown as version
+	Revision = parseCurseDate("20200615011558"),
+	DisplayVersion = "8.3.27 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 6, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -1297,14 +1297,14 @@ do
 		self:BuildVoiceCountdownCache()
 		--Break timer recovery
 		--Try local settings
-		if self.Options.tempBreak2 then
-			local timer, startTime = string.split("/", self.Options.tempBreak2)
+		if self.Options.RestoreSettingBreakTimer then
+			local timer, startTime = string.split("/", self.Options.RestoreSettingBreakTimer)
 			local elapsed = time() - tonumber(startTime)
 			local remaining = timer - elapsed
 			if remaining > 0 then
 				breakTimerStart(DBM, remaining, playerName)
 			else--It must have ended while we were offline, kill variable.
-				self.Options.tempBreak2 = nil
+				self.Options.RestoreSettingBreakTimer = nil
 			end
 		end
 		if IsInGuild() then
@@ -3297,9 +3297,10 @@ function DBM:LoadModOptions(modId, inCombat, first)
 				end
 			end
 			--clean unused saved variables (do not work on combat load)
+			--Why are saved options cleaned twice?
 			if not inCombat then
 				for option, _ in pairs(savedOptions[id][profileNum]) do
-					if mod.DefaultOptions[option] == nil then
+					if (mod.DefaultOptions[option] == nil) and not (option:find("talent") or option:find("FastestClear")) then
 						savedOptions[id][profileNum][option] = nil
 					elseif mod.DefaultOptions[option] and (type(mod.DefaultOptions[option]) == "table") then--recover broken dropdown option
 						if savedOptions[id][profileNum][option] and (type(savedOptions[id][profileNum][option]) == "boolean") then
@@ -3354,9 +3355,10 @@ function DBM:LoadModOptions(modId, inCombat, first)
 		end
 	end
 	--clean unused saved variables (do not work on combat load)
+	--Why are saved options cleaned twice?
 	if not inCombat then
 		for id, _ in pairs(savedOptions) do
-			if not existId[id] and not id:find("talent") then
+			if not existId[id] and not (id:find("talent") or id:find("FastestClear")) then
 				savedOptions[id] = nil
 			end
 		end
@@ -3737,6 +3739,8 @@ do
 		if migrated then
 			self:AddMsg(L.SOUNDKIT_MIGRATION)
 		end
+		--TODO, why doesn't DBM core garbage collection options like sub mods do?
+		--If deleted unused option check code does get added though it needs excemption from anything comtaining text "RestoreSetting"
 	end
 end
 
@@ -3912,9 +3916,9 @@ do
 	function DBM:TransitionToDungeonBGM(force, cleanup)
 		if cleanup then--Runs on zone change (first load delay) and combat end
 			self:Unschedule(self.TransitionToDungeonBGM)
-			if self.Options.tempMusicSetting then
-				SetCVar("Sound_EnableMusic", self.Options.tempMusicSetting)
-				self.Options.tempMusicSetting = nil
+			if self.Options.RestoreSettingMusic then
+				SetCVar("Sound_EnableMusic", self.Options.RestoreSettingMusic)
+				self.Options.RestoreSettingMusic = nil
 				DBM:Debug("Restoring Sound_EnableMusic CVAR")
 			end
 			if self.Options.musicPlaying then--Primarily so DBM doesn't call StopMusic unless DBM is one that started it. We don't want to screw with other addons
@@ -3928,12 +3932,12 @@ do
 		if LastInstanceType ~= "raid" and LastInstanceType ~= "party" and not force then return end
 		fireEvent("DBM_MusicStart", "RaidOrDungeon")
 		if self.Options.EventSoundDungeonBGM and self.Options.EventSoundDungeonBGM ~= "None" and self.Options.EventSoundDungeonBGM ~= "" and not (self.Options.EventDungMusicMythicFilter and (savedDifficulty == "mythic" or savedDifficulty == "challenge")) then
-			if not self.Options.tempMusicSetting then
-				self.Options.tempMusicSetting = tonumber(GetCVar("Sound_EnableMusic")) or 1
-				if self.Options.tempMusicSetting == 0 then
+			if not self.Options.RestoreSettingMusic then
+				self.Options.RestoreSettingMusic = tonumber(GetCVar("Sound_EnableMusic")) or 1
+				if self.Options.RestoreSettingMusic == 0 then
 					SetCVar("Sound_EnableMusic", 1)
 				else
-					self.Options.tempMusicSetting = nil--Don't actually need it
+					self.Options.RestoreSettingMusic = nil--Don't actually need it
 				end
 			end
 			local path = "MISSING"
@@ -4451,9 +4455,9 @@ do
 				dummyMod2.timer:Stop()
 			end
 			dummyMod2.text:Cancel()
-			DBM.Options.tempBreak2 = nil
+			DBM.Options.RestoreSettingBreakTimer = nil
 			if timer == 0 then return end--"/dbm break 0" will strictly be used to cancel the break timer (which is why we let above part of code run but not below)
-			self.Options.tempBreak2 = timer.."/"..time()
+			self.Options.RestoreSettingBreakTimer = timer.."/"..time()
 			if not self.Options.DontShowPT2 then
 				dummyMod2.timer:Start(timer, L.TIMER_BREAK)
 			end
@@ -4475,7 +4479,7 @@ do
 				if timer/60 > 1 then dummyMod2.text:Schedule(timer - 1*60, L.BREAK_MIN:format(1)) end
 				dummyMod2.text:Schedule(timer, L.ANNOUNCE_BREAK_OVER:format(hour..":"..minute))
 			end
-			C_TimerAfter(timer, function() self.Options.tempBreak2 = nil end)
+			C_TimerAfter(timer, function() self.Options.RestoreSettingBreakTimer = nil end)
 		end
 	end
 
@@ -5966,8 +5970,8 @@ do
 					GameTooltip.Temphide = function() GameTooltip:Hide() end; GameTooltip:SetScript("OnShow", GameTooltip.Temphide)
 				end
 				if self.Options.DisableSFX and GetCVar("Sound_EnableSFX") == "1" then
-					self.Options.sfxDisabled = true
 					SetCVar("Sound_EnableSFX", 0)
+					self.Options.RestoreSettingSFX = true
 				end
 				--boss health info scheduler
 				if mod.CustomHealthUpdate then
@@ -6095,12 +6099,12 @@ do
 				end
 				fireEvent("DBM_MusicStart", "BossEncounter")
 				if self.Options.EventSoundMusic and self.Options.EventSoundMusic ~= "None" and self.Options.EventSoundMusic ~= "" and not (self.Options.EventMusicMythicFilter and (savedDifficulty == "mythic" or savedDifficulty == "challenge")) then
-					if not self.Options.tempMusicSetting then
-						self.Options.tempMusicSetting = tonumber(GetCVar("Sound_EnableMusic")) or 1
-						if self.Options.tempMusicSetting == 0 then
+					if not self.Options.RestoreSettingMusic then
+						self.Options.RestoreSettingMusic = tonumber(GetCVar("Sound_EnableMusic")) or 1
+						if self.Options.RestoreSettingMusic == 0 then
 							SetCVar("Sound_EnableMusic", 1)
 						else
-							self.Options.tempMusicSetting = nil--Don't actually need it
+							self.Options.RestoreSettingMusic = nil--Don't actually need it
 						end
 					end
 					local path = "MISSING"
@@ -6395,9 +6399,9 @@ do
 					tooltipsHidden = false
 					GameTooltip:SetScript("OnShow", GameTooltip.Show)
 				end
-				if self.Options.sfxDisabled then
-					self.Options.sfxDisabled = nil
+				if self.Options.RestoreSettingSFX then
 					SetCVar("Sound_EnableSFX", 1)
+					self.Options.RestoreSettingSFX = nil
 				end
 				--cache table
 				twipe(autoRespondSpam)
@@ -6944,18 +6948,17 @@ do
 			end
 		end
 		--Check if any previous changed cvars were not restored and restore them
-		if self.Options.sfxDisabled then
-			self.Options.sfxDisabled = nil
+		if self.Options.RestoreSettingSFX then
 			SetCVar("Sound_EnableSFX", 1)
+			self.Options.RestoreSettingSFX = nil
 			DBM:Debug("Restoring Sound_EnableSFX CVAR")
 		end
-		if self.Options.tempQuestCVar then
-			SetCVar("showQuestTrackingTooltips", self.Options.tempQuestCVar)
-			self.Options.tempQuestCVar = nil
+		if self.Options.RestoreSettingQuestTooltips then
+			SetCVar("showQuestTrackingTooltips", self.Options.RestoreSettingQuestTooltips)
+			self.Options.RestoreSettingQuestTooltips = nil
 			DBM:Debug("Restoring showQuestTrackingTooltips CVAR")
 		end
-		--tempMusicSetting doens't need restoring here, since zone change transition will handle it
-		if self.Options.RestoreRange then self.Options.RestoreRange = nil end--User DCed while this was true, clear it
+		--RestoreSettingMusic doens't need restoring here, since zone change transition will handle it
 	end
 end
 
@@ -7092,11 +7095,11 @@ do
 	function DBM:HideBlizzardEvents(toggle, custom)
 		if toggle == 1 then
 			if self.Options.HideQuestTooltips then
-				self.Options.tempQuestCVar = tonumber(GetCVar("showQuestTrackingTooltips")) or 1
-				if self.Options.tempQuestCVar == 1 then
+				self.Options.RestoreSettingQuestTooltips = tonumber(GetCVar("showQuestTrackingTooltips")) or 1
+				if self.Options.RestoreSettingQuestTooltips == 1 then
 					SetCVar("showQuestTrackingTooltips", 0)
 				else
-					self.Options.tempQuestCVar = nil--Don't actually need it
+					self.Options.RestoreSettingQuestTooltips = nil--Don't actually need it
 				end
 			end
 			if (self.Options.HideBossEmoteFrame2 or custom) and not testBuild then
@@ -7113,9 +7116,9 @@ do
 				DisableEvent(AlertFrame, "GUILD_CHALLENGE_COMPLETED")
 			end
 		elseif toggle == 0 then
-			if self.Options.tempQuestCVar then
-				SetCVar("showQuestTrackingTooltips", self.Options.tempQuestCVar)
-				self.Options.tempQuestCVar = nil
+			if self.Options.RestoreSettingQuestTooltips then
+				SetCVar("showQuestTrackingTooltips", self.Options.RestoreSettingQuestTooltips)
+				self.Options.RestoreSettingQuestTooltips = nil
 				DBM:Debug("Restoring Quest Tooltip CVAR")
 			end
 			if (self.Options.HideBossEmoteFrame2 or custom) and not testBuild then
@@ -8615,7 +8618,7 @@ function bossModPrototype:IsHealer(uId)
 	end
 end
 
-function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested)
+function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID)
 	if isName then--Passed combat log name, so pull unit ID
 		unit = DBM:GetRaidUnitId(unit)
 	end
@@ -8631,12 +8634,31 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested)
 		end
 	else--Check all of them if one isn't defined
 		for i = 1, 5 do
-			--if UnitExists("boss"..i) then
-				local tanking, status = UnitDetailedThreatSituation(unit, "boss"..i)
-				if tanking or (status == 3) then
-					return true
+			local tanking, status = UnitDetailedThreatSituation(unit, "boss"..i)
+			if tanking or (status == 3) then
+				return true
+			end
+		end
+		--Check group targets if no boss unitIDs found and bossGUID passed.
+		--This allows IsTanking to be used in situations boss UnitIds don't exist
+		if bossGUID then
+			local groupType = (IsInRaid() and "raid") or "party"
+			for i = 0, GetNumGroupMembers() do
+				local unitID = (i == 0 and "target") or groupType..i.."target"
+				local guid = UnitGUID(unitID)
+				if guid and guid == bossGUID then
+					--Check threat first
+					local tanking, status = UnitDetailedThreatSituation(unit, unitID)
+					if tanking or (status == 3) then
+						return true
+					end
+					--Non threat fallback
+					local _, targetuid = self:GetBossTarget(bossGUID, true)
+					if UnitIsUnit(unit, targetuid) then
+						return true
+					end
 				end
-			--end
+			end
 		end
 	end
 	if not onlyRequested then
@@ -11644,7 +11666,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200612160310" then
+	if not revision or revision == "20200615011558" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

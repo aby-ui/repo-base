@@ -326,5 +326,6 @@ if AL then
 		[9997] = "地城/事件"; --Dungeons/Scenarios
 		[9996] = "團隊"; --Raids
 		[9995] = "未知"; --Unknown
+		[9994] = "Expedition islands"; --Expedition islands
 	}
 end

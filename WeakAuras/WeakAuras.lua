@@ -116,7 +116,7 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "pstop" then
     WeakAuras.StopProfile();
   elseif msg == "pprint" then
-    WeakAuras.PrintProfile(args[1]);
+    WeakAuras.PrintProfile();
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
@@ -723,38 +723,38 @@ function WeakAuras.GetActiveConditions(id, cloneId)
   return triggerState[id].activatedConditions[cloneId];
 end
 
-local function formatValueForAssignment(vtype, value, pathToCustomFunction)
+local function formatValueForAssignment(vType, value, pathToCustomFunction)
   if (value == nil) then
     value = false;
   end
-  if (vtype == "bool") then
+  if (vType == "bool") then
     return value and tostring(value) or "false";
-  elseif(vtype == "number") then
+  elseif(vType == "number") then
     return value and tostring(value) or "0";
-  elseif (vtype == "list") then
+  elseif (vType == "list") then
     return type(value) == "string" and string.format("%q", value) or "nil";
-  elseif(vtype == "color") then
+  elseif(vType == "color") then
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
     end
     return "{1, 1, 1, 1}";
-  elseif(vtype == "chat") then
+  elseif(vType == "chat") then
     if (value and type(value) == "table") then
       return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q, message_custom = %s}",
         tostring(value.message_type), tostring(value.message or ""),
         tostring(value.message_dest), tostring(value.message_channel),
         pathToCustomFunction);
     end
-  elseif(vtype == "sound") then
+  elseif(vType == "sound") then
     if (value and type(value) == "table") then
       return string.format("{ sound = %q, sound_channel = %q, sound_path = %q, sound_kit_id = %q, sound_type = %q, %s}",
         tostring(value.sound or ""), tostring(value.sound_channel or ""), tostring(value.sound_path or ""),
         tostring(value.sound_kit_id or ""), tostring(value.sound_type or ""),
         value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
     end
-  elseif(vtype == "customcode") then
+  elseif(vType == "customcode") then
     return string.format("%s", pathToCustomFunction);
-  elseif vtype == "glowexternal" then
+  elseif vType == "glowexternal" then
     if (value and type(value) == "table") then
       return ([[{ glow_action = %q, glow_frame_type = %q, glow_type = %q,
       glow_frame = %q, use_glow_color = %s, glow_color = {%s, %s, %s, %s},
@@ -868,7 +868,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     usedStates[trigger] = true;
 
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
-    local ctype = conditionTemplate and conditionTemplate.type;
+    local cType = conditionTemplate and conditionTemplate.type;
     local test = conditionTemplate and conditionTemplate.test;
 
     local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
@@ -881,27 +881,27 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
         local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
         check = "state and WeakAuras.CallCustomConditionTest(" .. testFunctionNumber .. ", state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end
-    elseif (ctype == "number" and op) then
+    elseif (cType == "number" and op) then
       local v = tonumber(value)
       if (v) then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. v;
       end
-    elseif (ctype == "timer" and op) then
+    elseif (cType == "timer" and op) then
       if (op == "==") then
         check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]." ..variable .. "- now -" .. value .. ") < 0.05";
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "- now" .. op .. value;
       end
-    elseif (ctype == "select" and op) then
+    elseif (cType == "select" and op) then
       if (tonumber(value)) then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. tonumber(value);
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. op .. "'" .. value .. "'";
       end
-    elseif (ctype == "bool") then
+    elseif (cType == "bool") then
       local rightSide = value == 0 and "false" or "true";
       check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. "==" .. rightSide
-    elseif (ctype == "string") then
+    elseif (cType == "string") then
       if(op == "==") then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]." .. variable .. " == [[" .. value .. "]]";
       elseif (op  == "find('%s')") then
@@ -911,7 +911,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
       end
     end
 
-    if (ctype == "timer" and value) then
+    if (cType == "timer" and value) then
       recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]." .. variable .. " and (state[" .. trigger .. "]." .. variable .. " -" .. value .. ")\n";
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
@@ -1338,8 +1338,8 @@ end
 
 function WeakAuras.RegisterForGlobalConditions(id)
   local data = WeakAuras.GetData(id);
-  for event, conditonFunctions in pairs(dynamicConditions) do
-    conditonFunctions.id = nil;
+  for event, conditionFunctions in pairs(dynamicConditions) do
+    conditionFunctions.id = nil;
   end
 
   local register = {};
@@ -1516,9 +1516,9 @@ WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 local function getAnchors(frame)
 	local x, y = frame:GetCenter()
 	if not x or not y then return "CENTER" end
-	local hhalf = (x > UIParent:GetWidth()*2/3) and "RIGHT" or (x < UIParent:GetWidth()/3) and "LEFT" or ""
-	local vhalf = (y > UIParent:GetHeight()/2) and "TOP" or "BOTTOM"
-	return vhalf..hhalf, frame, (vhalf == "TOP" and "BOTTOM" or "TOP")..hhalf
+	local hHalf = (x > UIParent:GetWidth()*2/3) and "RIGHT" or (x < UIParent:GetWidth()/3) and "LEFT" or ""
+	local vHalf = (y > UIParent:GetHeight()/2) and "TOP" or "BOTTOM"
+	return vHalf..hHalf, frame, (vHalf == "TOP" and "BOTTOM" or "TOP")..hHalf
 end
 
 local Broker_WeakAuras;
@@ -2086,22 +2086,22 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   local _, class = UnitClass("player");
 
-  local incombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
-  local inencounter = encounter_id ~= 0;
-  local inpetbattle, vehicle, vehicleUi = false, false, false
+  local inCombat = UnitAffectingCombat("player") -- or UnitAffectingCombat("pet");
+  local inEncounter = encounter_id ~= 0;
+  local inPetBattle, vehicle, vehicleUi = false, false, false
   if WeakAuras.IsClassic() then
     vehicle = UnitOnTaxi('player')
   else
-    inpetbattle = C_PetBattles.IsInBattle()
+    inPetBattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
-    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
+    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
   end
 
   local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
   WeakAuras.UpdateCurrentInstanceType(instanceType)
 
   if (WeakAuras.CurrentEncounter) then
-    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not incombat) then
+    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not inCombat) then
       encounter_id = 0
       WeakAuras.DestroyEncounterTable()
     end
@@ -2131,11 +2131,11 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
       else
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   incombat, inencounter, warmodeActive, inpetbattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -3896,7 +3896,7 @@ function WeakAuras.SyncParentChildRelationships(silent)
   -- 1. Find all auras where data.parent ~= nil or data.controlledChildren ~= nil
   --    If an aura has both, then remove data.parent
   --    If an aura has data.parent which doesn't exist, then remove data.parent
-  --    If an aura has data.parent which doesn't have data.controledChildren, then remove data.parent
+  --    If an aura has data.parent which doesn't have data.controlledChildren, then remove data.parent
   -- 2. For each aura with data.controlledChildren, iterate through the list of children and remove entries where:
   --    The child doesn't exist in the database
   --    The child ID is duplicated in data.controlledChildren (only the first will be kept)
@@ -4633,9 +4633,10 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc)
+function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when)
+  local useHiddenStates = when == "finish"
   if (message:find('%%')) then
-    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc);
+    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
@@ -4650,11 +4651,6 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
       else
         pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
       end
-    end
-  elseif(message_type == "CHANNEL") then
-    local channel = message_channel and tonumber(message_channel);
-    if(GetChannelName(channel)) then
-      pcall(function() SendChatMessage(message, "CHANNEL", nil, channel) end);
     end
   elseif(message_type == "SMARTRAID") then
     local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
@@ -4881,7 +4877,7 @@ function WeakAuras.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = WeakAuras.customActionsFunctions[data.id][when .. "_message"];
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when);
   end
 
   if (actions.stop_sound) then
@@ -6300,7 +6296,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state)
 end
 
 -- States:
--- 0 Normal state, text is just appened to result. Can transition to percent start state 1 via %
+-- 0 Normal state, text is just appended to result. Can transition to percent start state 1 via %
 -- 1 Percent start state, entered via %. Can transition to via { to braced, via % to normal, AZaz09 to percent rest state
 -- 2 Percent rest state, stay in it via AZaz09, transition to normal on anything else
 -- 3 Braced state, } transitions to normal, everything else stay in braced state
@@ -6412,31 +6408,33 @@ function WeakAuras.ContainsAnyPlaceHolders(textStr)
   return ContainsPlaceHolders(textStr, function(symbol) return true end)
 end
 
-local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
   local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
   triggerNum = triggerNum and tonumber(triggerNum)
   if triggerNum and sym then
-    if regionStates and regionStates[triggerNum] then
-      if regionStates[triggerNum][sym] then
-        return tostring(regionStates[triggerNum][sym]) or ""
-      else
-        local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
-        return value or ""
+    if regionStates[triggerNum] then
+      if (useHiddenStates or regionStates[triggerNum].show) then
+        if regionStates[triggerNum][sym] then
+          return tostring(regionStates[triggerNum][sym]) or ""
+        else
+          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
+          return value or ""
+        end
       end
     end
     return ""
-  elseif regionState and regionState[symbol] then
-    return regionState.show and tostring(regionState[symbol]) or ""
+  elseif regionState[symbol] then
+    return (useHiddenStates or regionState.show) and tostring(regionState[symbol]) or ""
   else
-    local value = regionState and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
+    local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
     return value or ""
   end
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
+function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates)
   local regionValues = region.values;
-  local regionState = region.state;
-  local regionStates = region.states;
+  local regionState = region.state or {};
+  local regionStates = region.states or {};
   if (not regionState and not regionValues) then
     return;
   end
@@ -6448,7 +6446,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
 
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
-      local value = ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
+      local value = (regionState.show or useHiddenStates) and ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
       if (value) then
         textStr = tostring(value);
       end
@@ -6486,7 +6484,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         -- 0-9a-zA-Z or dot character
       else -- End of variable
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
 
         if char == 37 then
         else
@@ -6496,7 +6494,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     elseif state == 3 then
       if char == 125 then -- } closing brace
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
         start = currentPos + 1
       end
     end
@@ -6508,7 +6506,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     result = result .. string.sub(textStr, start, currentPos - 1)
   elseif state == 2 and currentPos > start then
     local symbol = string.sub(textStr, start, currentPos - 1)
-    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
   elseif state == 1 then
     result = result .. "%"
   end
@@ -6625,7 +6623,7 @@ local function ensureMouseFrame()
       local optionsFrame = WeakAuras.OptionsFrame();
       local yOffset = (optionsFrame:GetTop() + optionsFrame:GetBottom()) / 2;
       local xOffset = xPositionNextToOptions();
-      -- We use the top right, because the main frame usees the top right as the reference too
+      -- We use the top right, because the main frame uses the top right as the reference too
       mouseFrame:ClearAllPoints();
       mouseFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset - GetScreenWidth(), yOffset - GetScreenHeight());
     end
@@ -7199,9 +7197,12 @@ for i = 1, 5 do
 end
 
 for i = 1, 4 do
-  trackableUnits["boss" .. i] = true
   trackableUnits["party" .. i] = true
   trackableUnits["partypet" .. i] = true
+end
+
+for i = 1, MAX_BOSS_FRAMES do
+  trackableUnits["boss" .. i] = true
 end
 
 for i = 1, 40 do

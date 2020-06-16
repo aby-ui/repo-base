@@ -29,6 +29,7 @@ local YELLOW_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\Yellow
 local RED_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\RedSkullDark.blp"
 local PINK_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\PinkSkullDark.blp"
 local BLUE_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueSkullDark.blp"
+local LIGHT_BLUE_NPC_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\BlueSkullLight.blp"
 local NORMAL_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\OriginalChest.blp"
 local GREEN_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\GreenChest.blp"
 local YELLOW_CONTAINER_TEXTURE = "Interface\\AddOns\\RareScanner\\Media\\Icons\\YellowChest.blp"
@@ -52,9 +53,14 @@ function RareScanner:SetUpMapPin(pin, npcID, npcInfo)
 	pin.isContainer = npcInfo.atlasName == RareScanner.CONTAINER_VIGNETTE or npcInfo.atlasName == RareScanner.CONTAINER_ELITE_VIGNETTE
 	pin.isEvent = npcInfo.atlasName == RareScanner.EVENT_VIGNETTE or npcInfo.atlasName == RareScanner.EVENT_ELITE_VIGNETTE
 	pin.notDiscovered = npcInfo.notDiscovered
+	pin.isFriendlyNpc = false
 	
 	if (pin.isNpc) then
 		pin.name = RareScanner:GetNpcName(npcID)
+		local faction, _ = UnitFactionGroup("player")
+		if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].friendly and RS_tContains(private.ZONE_IDS[npcID].friendly, string.sub(faction, 1, 1))) then
+			pin.isFriendlyNpc = true
+		end
 	elseif (pin.isContainer) then
 		pin.name = RareScanner:GetObjectName(npcID) or AL["CONTAINER"]
 	elseif (pin.isEvent) then
@@ -87,6 +93,8 @@ function RareScanner:SetUpMapPin(pin, npcID, npcInfo)
 	-- Sets texture colours
 	if (pin.isNpc and private.dbchar.rares_killed[npcID]) then
 		pin.Texture:SetTexture(BLUE_NPC_TEXTURE)
+	elseif (pin.isFriendlyNpc) then
+		pin.Texture:SetTexture(LIGHT_BLUE_NPC_TEXTURE)
 	elseif (pin.isContainer and private.dbchar.containers_opened[npcID]) then
 		pin.Texture:SetTexture(BLUE_CONTAINER_TEXTURE)
 	elseif (pin.isEvent and private.dbchar.events_completed[npcID]) then
@@ -391,10 +399,10 @@ function RSRarePinMixin:OnMouseDown(button)
 				RareScanner:ProcessKill(self.npcID, true)
 				self:Hide();
 			elseif (self.isContainer) then
-				RareScanner:ProcessOpenContainer(self.npcID)
+				RareScanner:ProcessOpenContainer(self.npcID, true)
 				self:Hide();
 			elseif (self.isEvent) then
-				RareScanner:ProcessCompletedEvent(self.npcID)
+				RareScanner:ProcessCompletedEvent(self.npcID, true)
 				self:Hide();
 			end
 		-- Toggle overlay

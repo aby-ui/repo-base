@@ -415,8 +415,16 @@ WorldQuestTracker.MapData.FactionByMapID = {
 	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = "BFA",
 	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = "BFA",
 	[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = "BFA",
+
 	[619] = "LEGION", --brosken isles map
 	[905] = "LEGION", --argus map
+
+	[WorldQuestTracker.MapData.ZoneIDs.ZULDAZAAR] = 	"BFA",
+	[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = 		"BFA",
+	[WorldQuestTracker.MapData.ZoneIDs.VOLDUN] = 		"BFA",
+	[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	"BFA",
+	[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	"BFA",
+	[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		"BFA",
 }
 
 -- texture ID of the reward when the world quest reward is a faction rep token

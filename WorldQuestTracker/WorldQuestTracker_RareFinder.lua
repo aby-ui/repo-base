@@ -657,6 +657,30 @@ rf:SetScript ("OnEvent", function (self, event, ...)
 		rf.IsTargetARare()
 		
 	elseif (event == "VIGNETTES_UPDATED") then
+
+		--track special events
+		for i, vignetteID in ipairs (C_VignetteInfo.GetVignettes()) do
+			local vignetteInfo = C_VignetteInfo.GetVignetteInfo (vignetteID)
+			
+			if (vignetteInfo) then
+				local serial = vignetteInfo.objectGUID
+	
+				if (serial) then
+					local name = vignetteInfo.name
+					local objectIcon = vignetteInfo.atlasName
+					
+					--naga event
+					if (objectIcon == "nazjatar-nagaevent") then
+						WorldQuestTracker.NagaEventCooldown = WorldQuestTracker.NagaEventCooldown or 0
+						if (WorldQuestTracker.NagaEventCooldown < time()) then
+							WorldQuestTracker:Msg("a naga event is happening, open the map for location.|r")
+							WorldQuestTracker.NagaEventCooldown = time() + 360 --6min
+						end
+					end
+				end
+			end
+		end
+
 		rf.ScanMinimapForRares()
 	end
 end)

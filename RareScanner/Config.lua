@@ -679,10 +679,12 @@ local function GetFilterOptions()
 		-- load continent combo
 		local CONTINENT_MAP_IDS = {} 
 		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
-			if (v.id) then
-				CONTINENT_MAP_IDS[k] = getZoneName(k)
-			else
-				CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
+			if (v.npcfilter) then
+				if (v.id) then
+					CONTINENT_MAP_IDS[k] = getZoneName(k)
+				else
+					CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
+				end
 			end
 		end
 	
@@ -692,7 +694,7 @@ local function GetFilterOptions()
 					if (private.ZONE_IDS[k]) then
 						local tempName = v
 						if (npcName) then
-							if ((private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) and RS_tContains(v,npcName)) then
+							if (((type(private.ZONE_IDS[k].zoneID) == "table" and (RS_Set(private.ZONE_IDS[k].zoneID)[zoneID] or (private.SUBZONES_IDS[zoneID] and RS_tContains(private.SUBZONES_IDS[zoneID],RS_Set(private.ZONE_IDS[k].zoneID))))) or private.ZONE_IDS[k].zoneID == zoneID or (private.SUBZONES_IDS[zoneID] and RS_tContains(private.SUBZONES_IDS[zoneID],private.ZONE_IDS[k].zoneID))) and RS_tContains(v,npcName)) then
 								local i = 2
 								local sameNPC = false
 								while (filter_options.args.rareFilters.values[tempName]) do
@@ -710,7 +712,7 @@ local function GetFilterOptions()
 								end
 							end
 						else
-							if (private.ZONE_IDS[k].zoneID == zoneID or (type(private.ZONE_IDS[k].zoneID) == "table" and RS_Set(private.ZONE_IDS[k].zoneID)[zoneID])) then
+							if ((type(private.ZONE_IDS[k].zoneID) == "table" and (RS_Set(private.ZONE_IDS[k].zoneID)[zoneID] or (private.SUBZONES_IDS[zoneID] and RS_tContains(private.SUBZONES_IDS[zoneID],RS_Set(private.ZONE_IDS[k].zoneID))))) or private.ZONE_IDS[k].zoneID == zoneID or (private.SUBZONES_IDS[zoneID] and RS_tContains(private.SUBZONES_IDS[zoneID],private.ZONE_IDS[k].zoneID))) then
 								local i = 2
 								local sameNPC = false
 								while (filter_options.args.rareFilters.values[tempName]) do
@@ -1453,8 +1455,21 @@ local function GetMapOptions()
 					type = "header",
 					name = AL["MAP_OPTIONS"],
 				},
-				displayNotDiscoveredMapIcons = {
+				displayFriendlyNpcIcons = {
 					order = 6,
+					type = "toggle",
+					name = AL["DISPLAY_FRIENDLY_NPC_ICONS"],
+					desc = AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"],
+					get = function() return private.db.map.displayFriendlyNpcIcons end,
+					set = function(_, value)
+						private.db.map.displayFriendlyNpcIcons = value
+						RareScanner:UpdateMinimap(true)
+					end,
+					width = "full",
+					disabled = function() return (not private.db.map.displayNpcIcons) end,
+				},
+				displayNotDiscoveredMapIcons = {
+					order = 7,
 					type = "toggle",
 					name = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS"],
 					desc = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC"],
@@ -1467,7 +1482,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				displayOldNotDiscoveredMapIcons = {
-					order = 7,
+					order = 8,
 					type = "toggle",
 					name = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS"],
 					desc = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC"],
@@ -1480,7 +1495,7 @@ local function GetMapOptions()
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or not private.db.map.displayNotDiscoveredMapIcons) end,
 				},
 				keepShowingAfterDead = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_DEAD"],
 					desc = AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"],
@@ -1494,7 +1509,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				keepShowingAfterDeadReseteable = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"],
 					desc = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"],
@@ -1507,7 +1522,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.keepShowingAfterDead end,
 				},
 				keepShowingAfterCollected = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_COLLECTED"],
 					desc = AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"],
@@ -1520,7 +1535,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				keepShowingAfterCompleted = {
-					order = 11,
+					order = 12,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_COMPLETED"],
 					desc = AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"],
@@ -1533,7 +1548,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				maxSeenTime = {
-					order = 12,
+					order = 13,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
@@ -1551,7 +1566,7 @@ local function GetMapOptions()
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.disableLastSeenFilter) end,	
 				},
 				maxSeenTimeContainer = {
-					order = 13,
+					order = 14,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"],
@@ -1568,7 +1583,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
 				},
 				maxSeenTimeEvent = {
-					order = 14,
+					order = 15,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"],

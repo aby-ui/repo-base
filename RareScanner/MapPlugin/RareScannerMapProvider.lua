@@ -191,6 +191,13 @@ function RareScanner:AddPin(npcID, npcInfo, mapID, dataProviderMixin)
 			--RareScanner:PrintDebugMessage("DEBUG: Ignorado porque este NPC esta siendo filtrado")
 			return false
 		end
+		
+		-- If friendly and filtered dont show
+		local faction, _ = UnitFactionGroup("player")
+		if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].friendly and not private.db.map.displayFriendlyNpcIcons and RS_tContains(private.ZONE_IDS[npcID].friendly, string.sub(faction, 1, 1))) then
+			--RareScanner:PrintDebugMessage("DEBUG: Ignorado porque este NPC es amistoso")
+			return false
+		end
 
 		-- If its been seen after our max show time
 		-- Ignore if its killed and we want to keep showing its icon

@@ -422,7 +422,10 @@ WeakAuras.subevent_prefix_types = {
   DAMAGE_SHIELD_MISSED = L["Damage Shield Missed"],
   PARTY_KILL = L["Party Kill"],
   UNIT_DIED = L["Unit Died"],
-  UNIT_DESTROYED = L["Unit Destroyed"]
+  UNIT_DESTROYED = L["Unit Destroyed"],
+  UNIT_DISSIPATES = L["Unit Dissipates"],
+  ENCHANT_APPLIED = L["Enchant Applied"],
+  ENCHANT_REMOVED = L["Enchant Removed"]
 }
 
 WeakAuras.subevent_actual_prefix_types = {
@@ -969,7 +972,7 @@ WeakAuras.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Trapezoid"] = "Trapezoid",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\triangle-border.tga"] = "Triangle with Border",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\triangle.tga"] = "Triangle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth2.tga"] = "Smoohth Circle Small",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth2.tga"] = "Smooth Circle Small",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\circle_border5.tga"] = "Circle Border",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\ring_glow3.tga"] = "Circle Border Glow",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_mini.tga"] = "Small Square",
@@ -1061,8 +1064,8 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura27"] = "Alert",
     [WeakAuras.PowerAurasPath.."Aura29"] = "Paw",
     [WeakAuras.PowerAurasPath.."Aura30"] = "Bull",
-    --   [WeakAuras.PowerAurasPath.."Aura31"] = "Heiroglyphics Horizontal",
-    [WeakAuras.PowerAurasPath.."Aura32"] = "Heiroglyphics",
+    --   [WeakAuras.PowerAurasPath.."Aura31"] = "Hieroglyphics Horizontal",
+    [WeakAuras.PowerAurasPath.."Aura32"] = "Hieroglyphics",
     [WeakAuras.PowerAurasPath.."Aura34"] = "Circled Arrow",
     [WeakAuras.PowerAurasPath.."Aura35"] = "Short Sword",
     --   [WeakAuras.PowerAurasPath.."Aura36"] = "Short Sword Horizontal",
@@ -1104,7 +1107,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     --   [WeakAuras.PowerAurasPath.."Aura111"] = "Hunter's Mark Horizontal",
     [WeakAuras.PowerAurasPath.."Aura112"] = "Kaleidoscope",
     [WeakAuras.PowerAurasPath.."Aura113"] = "Jesus Face",
-    [WeakAuras.PowerAurasPath.."Aura114"] = "Green Mushrrom",
+    [WeakAuras.PowerAurasPath.."Aura114"] = "Green Mushroom",
     [WeakAuras.PowerAurasPath.."Aura115"] = "Red Mushroom",
     [WeakAuras.PowerAurasPath.."Aura116"] = "Fire Flower",
     [WeakAuras.PowerAurasPath.."Aura117"] = "Radioactive",
@@ -1177,7 +1180,7 @@ if(WeakAuras.PowerAurasPath ~= "") then
     [WeakAuras.PowerAurasPath.."Aura39"] = "Silence",
     [WeakAuras.PowerAurasPath.."Aura40"] = "Root",
     [WeakAuras.PowerAurasPath.."Aura41"] = "Disorient",
-    [WeakAuras.PowerAurasPath.."Aura42"] = "Dispell",
+    [WeakAuras.PowerAurasPath.."Aura42"] = "Dispel",
     [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
     [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
     [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
@@ -1496,7 +1499,6 @@ WeakAuras.chat_message_types = {
 
 WeakAuras.send_chat_message_types = {
   WHISPER = L["Whisper"],
-  CHANNEL = L["Channel"],
   SAY = L["Say"],
   EMOTE = L["Emote"],
   YELL = L["Yell"],
@@ -2229,7 +2231,7 @@ for i = 1, 4 do
 end
 
 if not WeakAuras.IsClassic() then
-  for i = 1, 5 do
+  for i = 1, MAX_BOSS_FRAMES do
     WeakAuras.baseUnitId["arena"..i] = true
     WeakAuras.baseUnitId["boss"..i] = true
     WeakAuras.multiUnitUnits.arena["arena"..i] = true
@@ -2291,7 +2293,9 @@ if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
   WeakAuras.baseUnitId.vehicle = nil
   WeakAuras.multiUnitId.boss = nil
-  WeakAuras.multiUnitUnits.boss = nil
+  WeakAuras.multiUnitId.arena = nil
+  wipe(WeakAuras.multiUnitUnits.boss)
+  wipe(WeakAuras.multiUnitUnits.arena)
   WeakAuras.unit_types.focus = nil
   WeakAuras.unit_types_bufftrigger_2.focus = nil
   WeakAuras.unit_types_bufftrigger_2.boss = nil

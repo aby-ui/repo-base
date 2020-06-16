@@ -89,7 +89,7 @@ local scanFuncNameGroup = {}
 local scanFuncSpellIdGroup = {}
 local scanFuncGeneralGroup = {}
 
--- Contains all scanFuncs that should be check if the exitance of a unit changed
+-- Contains all scanFuncs that should be check if the existence of a unit changed
 local unitExistScanFunc = {}
 -- Which units exist
 local existingUnits = {}
@@ -369,12 +369,12 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   return changed or data.lastChanged == time
 end
 
-local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
-  if auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing then
+local function calculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime,  nextCheck)
+  if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaing
+      return auraDataExpirationTime - triggerInfoRemaining
     else
-      return min(auraDataExpirationTime - triggerInfoRemaing, nextCheck)
+      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
     end
   end
   return nextCheck
@@ -730,6 +730,11 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
+    if state.tooltip or state.tooltip1 or state.tooltip2 or state.tooltip3 then
+      state.tooltip, state.tooltip1, state.tooltip2, state.tooltip3 = nil, nil, nil, nil
+      changed = true
+    end
+
     if state.matchCount ~= matchCount then
       state.matchCount = matchCount
       changed = true
@@ -849,7 +854,7 @@ local function GetAllUnits(unit, allUnits)
     local i = 1
     local max
     if unit == "boss" then
-      max = 4
+      max = MAX_BOSS_FRAMES
     elseif unit == "arena" then
       max = 5
     elseif unit == "nameplate" then
@@ -917,7 +922,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
   if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
-      if unit:sub(1,4) ~= "raid" or not UnitInSubgroupOrPlayer(unit) then
+      if not WeakAuras.multiUnitUnits.raid[unit] or not UnitInSubgroupOrPlayer(unit) then
         return false
       end
     else
@@ -928,11 +933,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   end
 
   -- Filter our player/party# while in raid
-  if (triggerInfo.unit == "group" and triggerInfo.groupSubType == "group" and IsInRaid() and unit:sub(1,4) ~= "raid") then
+  if (triggerInfo.unit == "group" and triggerInfo.groupSubType == "group" and IsInRaid() and not WeakAuras.multiUnitUnits.raid[unit]) then
     return false
   end
 
-  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "raid" and unit:sub(1,4) ~= "raid" then
+  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "raid" and not WeakAuras.multiUnitUnits.raid[unit] then
     return false
   end
 
@@ -1399,13 +1404,13 @@ local function ScanAllBoss(time, matchDataChanged)
 end
 
 local function ScanUnit(time, arg1)
-  if (arg1:sub(1,4) == "raid" and IsInRaid()) then
+  if (WeakAuras.multiUnitUnits.raid[arg1] and IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
-  elseif ((arg1:sub(1,5) == "party" or arg1 == "player") and not IsInRaid()) then
+  elseif (WeakAuras.multiUnitUnits.party[arg1] and not IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
-  elseif arg1:sub(1,4) == "boss" then
+  elseif WeakAuras.multiUnitUnits.boss[arg1] then
     ScanGroupUnit(time, matchDataChanged, "boss", arg1)
-  elseif arg1:sub(1,5) == "arena" then
+  elseif WeakAuras.multiUnitUnits.arena[arg1] then
     ScanGroupUnit(time, matchDataChanged, "arena", arg1)
   elseif arg1:sub(1, 9) == "nameplate" then
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
@@ -1571,11 +1576,11 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       end
     end
   elseif event == "UNIT_FLAGS" then
-    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+    if WeakAuras.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
   elseif event == "PLAYER_FLAGS_CHANGED" then
-    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+    if WeakAuras.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
   elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then

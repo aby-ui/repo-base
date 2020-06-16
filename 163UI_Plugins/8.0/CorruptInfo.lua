@@ -387,7 +387,7 @@ if success and GetCVar("portal") == "CN" then
         { { "passive_haste", 1, }, { "twisted", 1, }, { "proc_haste", 2, }, { "echo", 2, }, { "star", 3, }, { "passive_crit", 3, }, },
         { { "proc_haste", 1, }, { "passive_crit_dam", 1, }, { "proc_versatility", 2, }, { "ritual", 2, }, { "passive_mastery", 3, }, { "twilight", 3, }, { "passive_avoidance", 1, }, },
         { { "echo", 1, }, { "passive_versatility", 1, }, { "proc_mastery", 2, }, { "star", 2, }, { "proc_crit", 3, }, { "ritual", 3, }, { "bleed", 1, }, },
-        { { "twisted", 2, }, { "proc_crit", 1, }, { "passive_versatility", 2, }, { "proc_versatility", 3, }, { "twilight", 1, }, { "echo", 3, }, },
+        { { "twilight", 1, },  {"proc_crit", 1, }, { "twisted", 2, }, { "passive_versatility", 2, }, { "echo", 3, }, { "proc_versatility", 3, }, },
     }
     local firstTime = time({ year =2020, month=5, day=21, hour=7})
     local interval = 60*60*24*7/2
@@ -395,15 +395,18 @@ if success and GetCVar("portal") == "CN" then
 
     local tip = CorruptionVendorTooltip or CreateFrame("GameTooltip", "CorruptionVendorTooltip", UIParent, "GameTooltipTemplate")
 
-    local function formatOne(key, level)
+    local function formatOne(key, level, right)
         if not key then return " " end
-        return format("\124T%s:11\124t %d级%s %s", icons[key] or icons.special, level, LOCALES[key] or LOCALES.UNKNOWN, data.corrupts[key] and prices[data.corrupts[key][level]] or "????")
+        local icon = "\124T" .. (icons[key] or icons.special) .. ":11\124t"
+        local price = data.corrupts[key] and format(right and "%5d" or "%d", prices[data.corrupts[key][level]]) or "?????"
+        local text = format("%d级%s %s", level, LOCALES[key] or LOCALES.UNKNOWN, price)
+        return false and text .. " " .. icon or icon .. " " .. text
     end
 
     local function addVendorTip(list, color)
         for i=1, #list, 2 do
             local left = formatOne(list[i][1], list[i][2])
-            local right = list[i+1] and formatOne(list[i+1][1], list[i+1][2]) or " "
+            local right = list[i+1] and formatOne(list[i+1][1], list[i+1][2], true) or " "
             GameTooltip_AddColoredDoubleLine(tip, left, right, color or HIGHLIGHT_FONT_COLOR, color or HIGHLIGHT_FONT_COLOR, true);
         end
     end
@@ -420,7 +423,7 @@ if success and GetCVar("portal") == "CN" then
         tip:SetMinimumWidth(100)
         tip:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", 5, 0)
         GameTooltip_AddColoredLine(tip, "腐蚀兑换情况", HIGHLIGHT_FONT_COLOR);
-        GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，因为国服更新时间晚于美服，所以北京时间每周二晚23:00可以预知周四早7:00、每周六中午11:00可以预知周日晚19:00刷新的腐蚀", NORMAL_FONT_COLOR);
+        GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，目前腐蚀兑换轮次已全部确定，每周四早7:00、每周日晚19:00随小突袭刷新。", NORMAL_FONT_COLOR);
 
         GameTooltip_AddBlankLineToTooltip(tip);
         GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + round * interval), NORMAL_FONT_COLOR);
@@ -432,7 +435,7 @@ if success and GetCVar("portal") == "CN" then
         end
 
         GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "下轮 " .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR, false);
+        GameTooltip_AddColoredLine(tip, "" .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR, false);
         list = vendors[round % 8 + 1]
         if not list then
             local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
@@ -445,10 +448,6 @@ if success and GetCVar("portal") == "CN" then
         for i=2,7 do
             --GameTooltip_AddBlankLineToTooltip(tip);
             local round2 = (round + i - 1) % 8 + 1
-            if round2 == 1 then
-                GameTooltip_AddBlankLineToTooltip(tip)
-                GameTooltip_AddColoredLine(tip, "之后轮次顺序尚未确定，仅供参考：", ORANGE_FONT_COLOR)
-            end
             GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i-1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i) * interval), NORMAL_FONT_COLOR);
             local list = vendors[round2]
             if not list then

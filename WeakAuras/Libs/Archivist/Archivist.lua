@@ -15,7 +15,7 @@ local LibDeflate = LibStub("LibDeflate")
 
 do -- boilerplate & static values
 	Archivist.buildDate = "@build-time@"
-	Archivist.version = "5d67e47"
+	Archivist.version = "5e673bb"
 	--[===[@debug@
 		Archivist.debug = true
 	--@end-debug@]===]
@@ -108,6 +108,7 @@ end
 --  Open - function (requried). Create from the provided data an active store object. Prototype may assume ownership of the provided data however it wishes.
 --  Commit - function (required). Return an image of the data that should be archived.
 --  Close - function (required). Release ownership of active store object. Optionally, return image of data to write into archive.
+--  Delete - function (optional). If provided, called when a store is deleted. Useful for cleaning up sub stores.
 -- Please note that Create, Open, Update (if provided), Commit, and Close may be called at any time if Archivist deems it necessary.
 -- Thus, these methods should ideally be as close to purely functional as is practical, to minimize friction.
 function Archivist:RegisterStoreType(prototype)
@@ -129,6 +130,7 @@ function Archivist:RegisterStoreType(prototype)
 		self:Assert(prototype.Update == nil or type(prototype.Update) == "function", "Invalid prototype field 'Update': Expected function, got %q instead.", type(prototype.Update))
 		self:Assert(type(prototype.Commit) == "function", "Invalid prototype field 'Commit': Expected function, got %q instead.", type(prototype.Commit))
 		self:Assert(type(prototype.Close) == "function", "Invalid prototype field 'Close': Expected function, got %q instead.", type(prototype.Close))
+		self:Assert(prototype.Delete == nil or type(prototype.Delete) == "function", "Invalid prototype field 'Delete': Expected function, got %q instead.", type(prototype.Delete))
 		-- prototype is now guaranteed to have Init, Create, Open, Update functions, and is thus well-formed.
 	end
 
@@ -266,8 +268,10 @@ function Archivist:CloneStore(store, newId, openStore)
 	return self:Clone(info.type, info.id, newId, openStore)
 end
 
--- deletes archived data if store is not currently open
--- Deleting unregistered store types must be done via setting force
+-- Closes store (if open), then deletes data from archive
+-- Prototype is given opportunity to perform actions using image (usually, to delete other sub stores)
+-- if store type is not registered, then force flag must be set in order to delete data,
+-- to reduce the chance of accidents
 function Archivist:Delete(storeType, id, force)
 	do -- arg validation
 		self:Warn(force or type(storeType == "string") and self.sv[storeType], "There are no stores to delete.")
@@ -275,6 +279,12 @@ function Archivist:Delete(storeType, id, force)
 	end
 
 	if id and storeType and self.sv[storeType] then
+		if self.prototypes[id] and self.prototypes[id].Delete then
+			local image = self.activeStores[storeType][id]
+						 and self:Close(self.activeStores[storeType][id])
+						 or self:Dearchive(self.sv[storeType][id])
+			self.prototypes[storeType]:Delete(image)
+		end
 		self.sv[storeType][id] = nil
 	end
 end

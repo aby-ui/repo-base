@@ -96,7 +96,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
-    defautl = 32,
+    default = 32,
   },
   height = {
     display = L["Height"],
@@ -240,6 +240,7 @@ local barPrototype = {
     self.fg:ClearAllPoints();
     self.fg:SetPoint(self.align1);
     self.fg:SetPoint(self.align2);
+    self.fgFrame:ClearAllPoints()
     self.fgFrame:SetPoint(self.align1);
     self.fgFrame:SetPoint(self.align2);
 

@@ -30,8 +30,8 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 23
-local CURRENT_LOOT_DB_VERSION = 35
+local CURRENT_DB_VERSION = 25
+local CURRENT_LOOT_DB_VERSION = 37
 
 -- Hard reset versions
 local CURRENT_ADDON_VERSION = 600
@@ -114,6 +114,7 @@ local PROFILE_DEFAULTS = {
 			displayContainerIcons = false,
 			displayEventIcons = true,
 			disableLastSeenFilter = false,
+			displayFriendlyNpcIcons = false,
 			displayNotDiscoveredMapIcons = true,
 			displayOldNotDiscoveredMapIcons = false,
 			keepShowingAfterDead = false,
@@ -831,27 +832,43 @@ function RareScanner:ProcessKill(npcID, forzed)
 end
 
 function RareScanner:ProcessKillByZone(npcID, zoneID)
-	-- If we know for sure it resets
+	-- If we know for sure it remains being a rare
 	if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].reset) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." continua reapareciendo")
+	-- If we know for sure it resets with quests
+	elseif (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].questReset) then
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." se resetea con las misiones del mundo")
+		private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
+	-- If we know for sure it resets with every week lockout
+	elseif (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].weeklyReset) then
+		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." se resetea cada semana")
+		private.dbchar.rares_killed[npcID] = RareScanner:GetWeeklyResetTime(0) --next reset lockout
 	-- If its a world quest reseteable rare
-	elseif ((private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.dbglobal.rares_found[npcID] and private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
+	elseif (RareScanner:IsReseteableZone(npcID, zoneID)) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
 		private.dbchar.rares_killed[npcID] = time() + GetQuestResetTime()
 	-- If its a warfront reseteable rare
-	elseif ((private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.dbglobal.rares_found[npcID] and private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.RESETABLE_WARFRONT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
+	elseif (RareScanner:IsWarfrontZone(npcID, zoneID)) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
-		private.dbchar.rares_killed[npcID] = RareScanner:GetWarFrontResetTime()
+		private.dbchar.rares_killed[npcID] = RareScanner:GetWeeklyResetTime(7) --next reset lockout + 1 week
 	-- If it wont ever be a rare anymore
-	elseif ((private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)))
-		or (private.dbglobal.rares_found[npcID] and private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID] and (RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[private.dbglobal.rares_found[npcID].mapID], C_Map.GetMapArtID(private.dbglobal.rares_found[npcID].mapID))))) then
+	elseif (RareScanner:IsPermamentZone(npcID, zoneID)) then
 		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente")
 		private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
 	-- If it respawns after a while we dont need to keep track of death
 	else
-		RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona donde permanece siendo rare")
+		-- Checks if it has an associated quest and if its completed
+		if (private.QUEST_IDS[npcID]) then
+			for i, questID in ipairs (private.QUEST_IDS[npcID]) do
+				if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+					private.dbchar.rares_killed[npcID] = ETERNAL_DEATH
+					RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado deja de ser rare eternamente (por su questID)")
+					break
+				end
+			end
+		else
+			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el rare matado con ID "..npcID.." pertenece a una zona donde permanece siendo rare")
+		end
 	end
 	
 	if (private.dbglobal.recentlySeen[npcID]) then
@@ -859,9 +876,11 @@ function RareScanner:ProcessKillByZone(npcID, zoneID)
 	end
 end
 
-function RareScanner:ProcessOpenContainer(npcID)
+function RareScanner:ProcessOpenContainer(npcID, forzed)
 	-- Mark as opened
-	if (npcID and private.dbglobal.rares_found[npcID]) then
+	if (npcID and forzed) then
+		private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED
+	elseif (npcID and private.dbglobal.rares_found[npcID]) then
 		local zoneID = private.dbglobal.rares_found[npcID].mapID
 			
 		-- if its part of an achievement it won't come back
@@ -890,11 +909,15 @@ function RareScanner:ProcessOpenContainer(npcID)
 				private.dbchar.containers_opened[npcID] = time() + private.CONTAINER_TIMER[npcID]
 			end
 		-- If its a container that belong to a place with reseteable rares/containers
-		elseif (private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)) or (private.dbglobal.containers_reseteable and private.dbglobal.containers_reseteable[npcID])) then
+		elseif (RareScanner:IsReseteableZone(npcID, zoneID, true) or (private.dbglobal.containers_reseteable and private.dbglobal.containers_reseteable[npcID])) then
 			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el contenedor abierto con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
 			private.dbchar.containers_opened[npcID] = time() + GetQuestResetTime()
+		-- If its a warfront reseteable rare
+		elseif (RareScanner:IsWarfrontZone(npcID, zoneID, true)) then
+			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el contenedor con ID "..npcID.." pertenece a una zona reseteable cada 2 semanas")
+			private.dbchar.containers_opened[npcID] = RareScanner:GetWeeklyResetTime(7) --next reset lockout + 1 week
 		-- If it disapears once its opened
-		elseif (private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID))) then
+		elseif (RareScanner:IsPermamentZone(npcID, zoneID, true)) then
 			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el contenedor abierto no se puede volver a abrir")
 			private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED
 		end
@@ -903,11 +926,11 @@ function RareScanner:ProcessOpenContainer(npcID)
 	elseif (npcID) then
 		-- If its a container that belong to a place with reseteable rares/containers
 		local zoneID = C_Map.GetBestMapForUnit("player")
-		if (private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID)) or (private.dbglobal.containers_reseteable and private.dbglobal.containers_reseteable[npcID])) then
+		if (RareScanner:IsReseteableZone(npcID, zoneID, true) or (private.dbglobal.containers_reseteable and private.dbglobal.containers_reseteable[npcID])) then
 			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el contenedor abierto con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
 			private.dbchar.containers_opened[npcID] = time() + GetQuestResetTime()
 		-- If it disapears once its opened
-		elseif (private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID))) then
+		elseif (RareScanner:IsPermamentZone(npcID, zoneID, true)) then
 			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el contenedor abierto no se puede volver a abrir")
 			private.dbchar.containers_opened[npcID] = ETERNAL_COLLECTED
 		end
@@ -917,22 +940,54 @@ function RareScanner:ProcessOpenContainer(npcID)
 	self:UpdateMinimap(true)
 end
 
-function RareScanner:ProcessCompletedEvent(npcID)
+function RareScanner:ProcessCompletedEvent(npcID, forzed)
 	if (npcID) then
-		-- If its a container that belong to a place with reseteable rares/containers
-		local zoneID = C_Map.GetBestMapForUnit("player")
-		if (private.RESETABLE_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.RESETABLE_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el evento completado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
-			private.dbchar.events_completed[npcID] = time() + GetQuestResetTime()
-		-- If it disapears once its opened
-		elseif (private.PERMANENT_KILLS_ZONE_IDS[zoneID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], "all") or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS[zoneID], C_Map.GetMapArtID(zoneID))) then
-			RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el evento completado no se puede completar otra vez")
+		if (forzed) then
 			private.dbchar.events_completed[npcID] = ETERNAL_COMPLETED
+		else
+			-- If its a container that belong to a place with reseteable rares/containers
+			local zoneID = C_Map.GetBestMapForUnit("player")
+			if (RareScanner:IsReseteableZone(npcID, zoneID)) then
+				RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el evento completado con ID "..npcID.." pertenece a una zona reseteable con las misiones del mundo")
+				private.dbchar.events_completed[npcID] = time() + GetQuestResetTime()
+			-- If it disapears once its opened
+			elseif (RareScanner:IsPermamentZone(npcID, zoneID)) then
+				RareScanner:PrintDebugMessage("DEBUG: Se ha detectado que el evento completado no se puede completar otra vez")
+				private.dbchar.events_completed[npcID] = ETERNAL_COMPLETED
+			end
 		end
 	end
 	
 	-- Refresh minimap
 	self:UpdateMinimap(true)
+end
+
+function RareScanner:IsReseteableZone(npcID, zoneID, alreadyChecked)
+	return RareScanner:BelongsToZone(npcID, zoneID, private.RESETABLE_KILLS_ZONE_IDS, alreadyChecked)
+end
+
+function RareScanner:IsWarfrontZone(npcID, zoneID, alreadyChecked)
+	return RareScanner:BelongsToZone(npcID, zoneID, private.RESETABLE_WARFRONT_KILLS_ZONE_IDS, alreadyChecked)
+end
+
+function RareScanner:IsPermamentZone(npcID, zoneID, alreadyChecked)
+	return RareScanner:BelongsToZone(npcID, zoneID, private.PERMANENT_KILLS_ZONE_IDS, alreadyChecked)
+end
+
+function RareScanner:BelongsToZone(npcID, zoneID, zoneIds, alreadyChecked)
+	local zone = zoneIds[zoneID]
+	if (zone) then
+		if (RS_tContains(zone, "all") or RS_tContains(zone, C_Map.GetMapArtID(zoneID))) then
+			return true
+		end
+	elseif (not alreadyChecked) then
+		local rareFound = private.dbglobal.rares_found[npcID]
+		if (rareFound) then
+			return RareScanner:BelongsToZone(npcID, rareFound.mapID, zoneIds, true)
+		end
+	end
+	
+	return false
 end
 
 -- Checks if the rare has been found already in the last 5 minutes
@@ -1765,6 +1820,13 @@ function RareScanner:DumpBrokenData()
 			if (not npcInfo.mapID or npcInfo.mapID == 0 or not npcInfo.coordY or not npcInfo.coordX) then
 				private.dbglobal.rares_found[npcID] = nil
 			end
+			
+			-- Clean non rare NPCs only for this CURRENT_LOOT_DB_VERSION version
+			if (CURRENT_LOOT_DB_VERSION <= 37) then
+				if (not private.ZONE_IDS[npcID] and npcInfo.atlasName and (npcInfo.atlasName == RareScanner.NPC_VIGNETTE or npcInfo.atlasName == RareScanner.NPC_VIGNETTE_ELITE or npcInfo.atlasName == RareScanner.NPC_LEGION_VIGNETTE)) then
+					private.dbglobal.rares_found[npcID] = nil
+				end
+			end
 		end
 	end
 	
@@ -2242,7 +2304,7 @@ function RareScanner:GetServerOffset()
 	return offset
 end
 
-function RareScanner:GetWarFrontResetTime()
+function RareScanner:GetWeeklyResetTime(days)
 	if (not self.resetDays) then
 		local regionID = GetCurrentRegion()
 		self.resetDays = {}  
@@ -2263,7 +2325,7 @@ function RareScanner:GetWarFrontResetTime()
 		nightlyReset = nightlyReset + 24 * 3600
 	end
 
-	return nightlyReset + (7 * 24 * 60 * 60) -- every 2 weeks
+	return nightlyReset + (days * 24 * 60 * 60)
 end
 
 -- Tomtom support

@@ -1,6 +1,6 @@
--------------------------------------------------------------------------------
--- AddOn namespace.
--------------------------------------------------------------------------------
+---------------------------------------------------- 
+--AddOn namespace.
+---------------------------------------------------- 
 
 local FOLDER_NAME, private = ...
 	
@@ -26,41 +26,6 @@ private.LOOT_QUEST_IDS = {
 	[114031] = 36096;
 	[113458] = 35817;
 	[113459] = 35818;
-	[167786] = 55426;
-	[168155] = 55602;
-	[168081] = 55531;
-	[170512] = 57086;
-	[168908] = 56087;
-	[168491] = 55070;
-	[169691] = 56518;
-	[167042] = 55030;
-	[167846] = 55061;
-	[169170] = 55078;
-	[169591] = 56421;
-	[169169] = 55077;
-	[169167] = 55075;
-	[167793] = 55457;
-	[169168] = 55076;
-	[167792] = 55452;
-	[167836] = 55057;
-	[169174] = 55082;
-	[167871] = 55063;
-	[169593] = 56423;
-	[167847] = 55062;
-	[169688] = 56515;
-	[168490] = 55069;
-	[168248] = 55068;
-	[167794] = 55454;
-	[169594] = 56424;
-	[169595] = 56425;
-	[168001] = 55517;
-	[169173] = 55081;
-	[168063] = 55065;
-	[169689] = 56516;
-	[169692] = 56519;
-	[169690] = 56517;
-	[168062] = 55064;
-	[169779] = 56566;
 	[167790] = 55451;
 	[169216] = 56240;
 	[170147] = 56908;
@@ -98,4 +63,46 @@ private.LOOT_QUEST_IDS = {
 	[128255] = 39363;
 	[124501] = 38802;
 	[124498] = 38797;
+	[157782] = 50393;
+	[167786] = 55426; --what will it grow;
+	[168155] = 55602; --what will it lure;
+	[168081] = 55531; --what will it mine;
+	[170512] = 57086; --legacy of the mad mage;
+	[168908] = 56087; --blueprint experimental adventurer augment;
+	[168491] = 55070; --blueprint personal time displacer;
+	[169691] = 56518; --vinyl depths of ulduar;
+	[167042] = 55030; --blueprint scrap trap;
+	[167846] = 55061; --blueprint mechano treat;
+	[169170] = 55078; --blueprint utility mechanoclaw;
+	[169591] = 56421; --cracked numeric cylinder;
+	[169169] = 55077; --blueprint blue spraybot;
+	[169167] = 55075; --blueprint orange spraybot;
+	[167793] = 55457; --paint vial overload orange;
+	[169168] = 55076; --blueprint green spraybot;
+	[167792] = 55452; --paint vial fel mint green;
+	[167836] = 55057; --blueprint canned minnows;
+	[169174] = 55082; --blueprint rustbolt pocket turret;
+	[167871] = 55063; --blueprint g99 99 landshark;
+	[169593] = 56423; --large storage fragment;
+	[167847] = 55062; --blueprint ultrasafe transporter mechagon;
+	[169173] = 55081; --blueprint anti gravity pack;
+	[169688] = 56515; --vinyl gnomeregan forever;
+	[168490] = 55069; --blueprint protocol transference device;
+	[168248] = 55068; --blueprint bawld 371;
+	[167794] = 55454; --paint vial lemonade steel;
+	[169594] = 56424; --rust covered disc;
+	[169595] = 56425; --scorched data disc;
+	[168001] = 55517; --paint vial big ol bronze;
+	[168063] = 55065; --blueprint rustbolt kegerator;
+	[169689] = 56516; --vinyl mimirons brainstorm;
+	[169692] = 56519; --vinyl triumph of gnomeregan;
+	[169690] = 56517; --vinyl battle of gnomeregan;
+	[168062] = 55064; --blueprint rustbolt gramophone;
+	[169779] = 56566; --hanging by a thread;
+	[169658] = 56091; --usurpers scent gland;
+	[169657] = 56092; --hivethiefs jelly stash;
+	[169659] = 56144; --old nashas paw;
+	[169655] = 56474; --hivekiller stinger;
+	[169656] = 56473; --envenomed spider fang;
+	[169654] = 56475; --spiral yeti horn;
 }
