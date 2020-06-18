@@ -414,9 +414,9 @@ if success and GetCVar("portal") == "CN" then
     CoreScheduleTimer(false, 2, function()
     SetOrHookScript(GameTooltip, "OnHide", function() tip:Hide() end)
     CharIcon:HookScript("OnEnter", function()
-        local round = floor((time()-firstTime)/interval)
-        round = round % 8 + 1 --0->1 7->8 8->1
-        local nextDate = date("%m月%d日 %H:%M", firstTime + round * interval)
+        local round0 = floor((time()-firstTime)/interval) + 1
+        local round = (round0 - 1) % 8 + 1 --0->1 7->8 8->1
+        local nextDate = date("%m月%d日 %H:%M", firstTime + round0 * interval)
 
         tip:SetOwner(GameTooltip, "ANCHOR_NONE")
         tip:ClearAllPoints()
@@ -426,7 +426,7 @@ if success and GetCVar("portal") == "CN" then
         GameTooltip_AddColoredLine(tip, "心之密室纯净圣母处可以用回响换腐蚀附魔，目前腐蚀兑换轮次已全部确定，每周四早7:00、每周日晚19:00随小突袭刷新。", NORMAL_FONT_COLOR);
 
         GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + round * interval), NORMAL_FONT_COLOR);
+        GameTooltip_AddColoredLine(tip, "当前 至 " .. date(timeFormat, firstTime + round0 * interval), NORMAL_FONT_COLOR);
         local list = vendors[round]
         if not list then
             GameTooltip_AddColoredLine(tip, "没有数据，请更新爱不易", HIGHLIGHT_FONT_COLOR)
@@ -435,7 +435,7 @@ if success and GetCVar("portal") == "CN" then
         end
 
         GameTooltip_AddBlankLineToTooltip(tip);
-        GameTooltip_AddColoredLine(tip, "" .. date(timeFormat, firstTime + round * interval) .. " 至 " .. date(timeFormat, firstTime + (round+1) * interval), NORMAL_FONT_COLOR, false);
+        GameTooltip_AddColoredLine(tip, "" .. date(timeFormat, firstTime + round0 * interval) .. " 至 " .. date(timeFormat, firstTime + (round0+1) * interval), NORMAL_FONT_COLOR, false);
         list = vendors[round % 8 + 1]
         if not list then
             local round2 = floor((time()+32*60*60-firstTime)/interval) --提前32小时
@@ -448,7 +448,7 @@ if success and GetCVar("portal") == "CN" then
         for i=2,7 do
             --GameTooltip_AddBlankLineToTooltip(tip);
             local round2 = (round + i - 1) % 8 + 1
-            GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round+i-1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round+i) * interval), NORMAL_FONT_COLOR);
+            GameTooltip_AddColoredLine(tip, date(timeFormat, firstTime + (round0+i-1) * interval) .. " 至 " .. date(timeFormat, firstTime + (round0+i) * interval), NORMAL_FONT_COLOR);
             local list = vendors[round2]
             if not list then
                 GameTooltip_AddColoredLine(tip, "尚未轮换", GRAY_FONT_COLOR)
