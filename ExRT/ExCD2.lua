@@ -1126,6 +1126,11 @@ if ExRT.isClassic then
 	module.db.spell_resetOtherSpells = {}
 	module.db.spell_reduceCdCast = {}
 end
+module.db.vars = {
+	ineffable = {},
+	ineffable_proc = {},
+	ineffable_active = {},
+}
 
 module.db.playerName = nil
 
@@ -3703,9 +3708,109 @@ do
 					UpdateAllData()
 					SortAllData()
 				end
+			elseif spellID == 316801 and destName then	--Ineffable Truth
+				local auraSpellID,_,power
+				for i=1,60 do
+					auraSpellID,_,_,_,_,_,power = select(10,UnitAura(destName,i))
+					if not auraSpellID then
+						break
+					elseif auraSpellID == 316801 then
+						power = (power or 50)/100
+						if module.db.vars.ineffable[destName] then
+							module.db.vars.ineffable[destName]:Cancel()
+						end
+						module.db.vars.ineffable_proc[destName] = GetTime()
+						module.db.vars.ineffable_active[destName] = power
+						module.db.vars.ineffable[destName] = C_Timer.NewTicker(1,function()
+							local line, updateReq
+							for j=1,#_C do
+								line = _C[j]
+								if line.fullName == destName then
+									line.cd = line.cd - power
+									if line.cd < 0 then 
+										line.cd = 0 
+									end
+									if line.bar and line.bar.data == line then
+										line.bar:UpdateStatus()
+									end
+									updateReq = true
+								end
+							end
+							if updateReq then
+								UpdateAllData()
+								SortAllData()
+							end
+						end, 10)
+						break
+					end
+				end
 			end
 		end
 	end
+	function module.main:SPELL_AURA_REFRESH(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+		if spellID == 316801 and destName then	--Ineffable Truth
+			local auraSpellID,_,power
+			for i=1,60 do
+				auraSpellID,_,_,_,_,_,power = select(10,UnitAura(destName,i))
+				if not auraSpellID then
+					break
+				elseif auraSpellID == 316801 then
+					power = (power or 50)/100
+					if module.db.vars.ineffable[destName] then
+						module.db.vars.ineffable[destName]:Cancel()
+					end
+
+					local now = GetTime()
+					if now - (module.db.vars.ineffable_proc[destName] or 0) < 10 then
+						local timeLeftFromPrevProc = ((now - (module.db.vars.ineffable_proc[destName] or 0)) % 1) * power
+
+						local line, updateReq
+						for j=1,#_C do
+							line = _C[j]
+							if line.fullName == destName then
+								line.cd = line.cd - timeLeftFromPrevProc
+								if line.cd < 0 then 
+									line.cd = 0 
+								end
+								if line.bar and line.bar.data == line then
+									line.bar:UpdateStatus()
+								end
+								updateReq = true
+							end
+						end
+						if updateReq then
+							UpdateAllData()
+							SortAllData()
+						end
+					end
+					module.db.vars.ineffable_proc[destName] = now
+
+					module.db.vars.ineffable[destName] = C_Timer.NewTicker(1,function()
+						local line, updateReq
+						for j=1,#_C do
+							line = _C[j]
+							if line.fullName == destName then
+								line.cd = line.cd - power
+								if line.cd < 0 then 
+									line.cd = 0 
+								end
+								if line.bar and line.bar.data == line then
+									line.bar:UpdateStatus()
+								end
+								updateReq = true
+							end
+						end
+						if updateReq then
+							UpdateAllData()
+							SortAllData()
+						end
+					end, 10)
+					break
+				end
+			end
+		end
+	end
+
 	function module.main:SPELL_AURA_REMOVED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if not sourceName then
 			return
@@ -3771,6 +3876,11 @@ do
 				end
 			end
 			UpdateAllData()
+		elseif spellID == 316801 and destName then	--Ineffable Truth
+			module.db.vars.ineffable_active[destName] = nil		--bug can happen if aura_removed event fires in out of range of player's CLEU. Imagine this not happens
+			if module.db.vars.ineffable[destName] and (GetTime() - (module.db.vars.ineffable_proc[destName] or 0) <= 9) then	--Cancel only for calcelaura or death
+				module.db.vars.ineffable[destName]:Cancel()
+			end
 		end
 		
 		if forceSortAllData then
@@ -3854,12 +3964,17 @@ do
 		
 		local modifData = spell_reduceCdCast[spellID]
 		if modifData then
+			local cdr_mod = 1
+			if module.db.vars.ineffable_active[sourceName] then
+				cdr_mod = cdr_mod + module.db.vars.ineffable_active[sourceName]
+			end
+
 			for i=1,#modifData,2 do
 				local reduceSpellID = modifData[i]
 				if type(reduceSpellID) ~= "table" then
 					local line = CDList[sourceName][reduceSpellID]
 					if line then
-						line.cd = line.cd + modifData[i+1]
+						line.cd = line.cd + modifData[i+1] * cdr_mod
 						if line.cd < 0 then 
 							line.cd = 0 
 						end
@@ -3875,7 +3990,7 @@ do
 					if session_gGUIDs[sourceName][ reduceSpellID[2] ] and (not specReduceCD or (specReduceCD < 0 and globalGUIDs[sourceName] ~= specReduceCD or globalGUIDs[sourceName] == specReduceCD)) and (not effectOnlyDuringBuffActive or IsAuraActive(sourceName,effectOnlyDuringBuffActive)) then
 						local line = CDList[sourceName][ reduceSpellID[1] ]
 						if line then
-							line.cd = line.cd + modifData[i+1]
+							line.cd = line.cd + modifData[i+1] * cdr_mod
 							if line.cd < 0 then 
 								line.cd = 0 
 							end
@@ -4105,6 +4220,7 @@ do
 		SPELL_AURA_REMOVED=module.main.SPELL_AURA_REMOVED,
 		SPELL_AURA_APPLIED=module.main.SPELL_AURA_APPLIED,
 		SPELL_CAST_SUCCESS=module.main.SPELL_CAST_SUCCESS,
+		SPELL_AURA_REFRESH=module.main.SPELL_AURA_REFRESH,
 		SPELL_DISPEL=module.main.SPELL_DISPEL,
 		--SPELL_DAMAGE=module.main.SPELL_DAMAGE,
 		--SPELL_HEAL=module.main.SPELL_HEAL,

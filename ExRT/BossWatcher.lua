@@ -1396,6 +1396,8 @@ local function GetCurrentZoneID()
 		zoneID = 2
 	elseif zoneType == 'scenario' and (difficulty == 38 or difficulty == 39 or difficulty == 40 or difficulty == 45) then	--islands
 		zoneID = 4
+	elseif mapID == 2274 or mapID == 2212 or mapID == 2213 or mapID == 2275 then	--horrific vision
+		zoneID = 5
 	end
 	return zoneID, zoneName
 end
@@ -1439,7 +1441,7 @@ module.main.CHALLENGE_MODE_COMPLETED = module.main.CHALLENGE_MODE_RESET
 do
 	local function ZoneCheck()
 		local zoneID, zoneName = GetCurrentZoneID()
-		if zoneID == 2 or zoneID == 4 then
+		if zoneID == 2 or zoneID == 4 or zoneID == 5 then
 			_BW_Start(nil,zoneName)
 		end
 	end

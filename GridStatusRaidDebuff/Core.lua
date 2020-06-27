@@ -701,17 +701,30 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
 	if not args[name] and k then
 		description = L["Enable %s"]:format(name)
 
+        --[[
 		tip:SetHyperlink("spell:"..k.debuffId)
 		if tip:NumLines() > 1 then
 			description = tip[tip:NumLines()]:GetText().. "\nID: " .. k.debuffId
 		end
+		--]]
+        local spellID = k.debuffId
+        if not GetSpellInfo(spellID) then spellID = nil end
 
 		menuName = fmt("|T%s:0|t%s", k.icon, name)
 
 		args[name] = {
 			type = "group",
 			name = menuName,
-			desc = description,
+            desc = function ()
+                if not spellID then return end
+                local tooltip = LibStub("AceConfigDialog-3.0").tooltip
+                tooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+                tooltip:SetHyperlink(GetSpellLink(spellID))
+                tooltip:AddLine(" ")
+                tooltip:AddLine("ID: " .. spellID)
+                tooltip:Show()
+                return tooltip --abyui modify AceConfigDialog-3.0 TreeOnButtonEnter
+            end,
 			order = order,
 			args = {
 				["enable"] = {

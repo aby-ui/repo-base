@@ -65,6 +65,8 @@ local StatScrollFrame = CreateFrame("ScrollFrame", nil, CharacterFrameInsetRight
 	char_ctats_pane.EnhancementsCategory:SetHeight(28)
 	char_ctats_pane.EnhancementsCategory.Background:SetHeight(28)
 
+	char_ctats_pane.ItemLevelFrame.Corruption:SetFrameStrata("TOOLTIP")
+
 local DefaultTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
 	{ statKey = "CorruptionCategory" },
@@ -119,6 +121,14 @@ local DefaultTankData = DCS_TableData:MergeTable({
 		{ statKey = "PARRY_RATING", hideAt = 0 },
 		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
 		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
+	{ statKey = "HonorCategory", hidden = true},
+		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
+		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
+	{ statKey = "ConquestCategory" },
+		{ statKey = "RATING_2V2", hideAt = 0 },
+		{ statKey = "RATING_3V3", hideAt = 0 },
+		{ statKey = "RATING_RBG", hideAt = 0 },
+		{ statKey = "CONQUEST_PROGRESS", hideAt = -1 },
 })
 local DefaultNonTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
@@ -174,12 +184,21 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
 		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
 		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
 		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
+    { statKey = "HonorCategory", hidden = true},
+   		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
+   		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
+	{ statKey = "ConquestCategory" },
+		{ statKey = "RATING_2V2", hideAt = 0 },
+		{ statKey = "RATING_3V3", hideAt = 0 },
+		{ statKey = "RATING_RBG", hideAt = 0 },
+		{ statKey = "CONQUEST_PROGRESS",  hideAt = -1 },
 })
 --for _, v in ipairs(DefaultTankTBL) do if v.statKey:find("_RATING$") then v.hidden = true end end
 --for _, v in ipairs(DefaultNonTankTBL) do if v.statKey:find("_RATING$") then v.hidden = true end end
 --local DefaultTankData = DCS_TableData:MergeTable(DefaultTankTBL)
 --local DefaultNonTankData = DCS_TableData:MergeTable(DefaultTankTBL)
 
+--[[
 local function DefaultDataForSpec(specID)
     local _, cls = UnitClass("PLAYER")
     local _, _, _, _, role, primaryStat = GetSpecializationInfo(GetSpecialization())
@@ -199,6 +218,7 @@ local function DefaultDataForSpec(specID)
     end
     return DCS_TableData:MergeTable(StatsTable)
 end
+--]]
 
 --local ShownData = DefaultData
 local ShownData = DefaultNonTankData --TODO: find a reason why error during login with "local ShownData". Most probably too early PaperDollFrame_UpdateStats() calls due to DCS_configButton:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -223,6 +243,12 @@ for k, v in pairs(DCS_TableData.StatData) do
 			end
 			if k == "RatingCategory" then
 				v.frame.Title:SetText(L["Ratings"])
+			end
+			if k == "HonorCategory" then
+				v.frame.Title:SetText(L["Honor Category"])
+			end
+			if k == "ConquestCategory" then
+				v.frame.Title:SetText(L["Conquest Category"])
 			end
 		else
 			v.frame = CreateFrame("FRAME", nil, StatFrame, "CharacterStatFrameTemplate")
@@ -437,10 +463,27 @@ local function DCS_Table_Relevant()
 	local role = GetSpecializationRole(spec)
 	--print(role)
 	local basecorruption = GetCorruption()
+	local hashonorlevel = UnitHonorLevel("player")
+	local hasconquestlevel,_,hasconquestquest = PVPGetConquestLevelInfo()
+
+
+
+
+
+
 
 	for _, v in ipairs(ShownData) do
 		if v.hidden then v.hidden = false end
-	end 
+	end
+
+    --abyui use default hidden
+    for _, v1 in ipairs(ShownData) do
+        for _, v2 in ipairs(role == "TANK" and DefaultTankData or DefaultNonTankData) do
+            if v1.statKey == v2.statKey then
+                if v2.hidden then v1.hidden = true end
+            end
+        end
+    end
 
 	local primaryStat = select(6, GetSpecializationInfo(spec, nil, nil, nil, UnitSex("player")));
 		--print(primaryStat)
@@ -480,7 +523,7 @@ local function DCS_Table_Relevant()
 			if v.statKey == "BLOCK" then v.hidden = true end
 		end
 		if v.roles then
-			hidden = true
+			local hidden = true
 			for _,j in pairs(v.roles) do
 				if j == role then
 					hidden = false
@@ -511,6 +554,21 @@ local function DCS_Table_Relevant()
 		--if v.statKey == "OffenseCategory" then v.hidden = true end
 		--if v.statKey == "DefenseCategory" then v.hidden = true end
 		if v.statKey == "RatingCategory" then v.hidden = true end --ratings are invisible, so the category is also hidden
+		--visiblity of pvp info is off by default
+		if (hashonorlevel < 1 ) then
+			--print(hashonorlevel)
+			if v.statKey == "HonorCategory" then v.hidden = true end
+			if v.statKey == "HONOR_PROGRESS" then v.hidden = true end
+			if v.statKey == "HONOR_LEVEL" then v.hidden = true end
+		end
+		if (hasconquestquest == nil ) then --abyui
+			--print(hasconquestlevel)
+			if v.statKey == "ConquestCategory" then v.hidden = true end
+			if v.statKey == "RATING_2V2" then v.hidden = true end
+			if v.statKey == "RATING_3V3" then v.hidden = true end
+			if v.statKey == "RATING_RBG" then v.hidden = true end
+			if v.statKey == "CONQUEST_PROGRESS" then v.hidden = true end
+		end
 	end
 	--gdbprivate.gdb.gdbdefaults.DCS_TableRelevantStatsChecked.RelevantStatsSetChecked = false
 	ShownData.uniqueKey = uniqueKey
@@ -527,7 +585,7 @@ local function DCS_Login_Initialization()
 	--print(uniqueKey)
 	if (DCS_ClassSpecDB[uniqueKey]) then
 		if (ShownData.uniqueKey ~= uniqueKey) then
-			ShownData = DCS_TableData:MergeTable(DCS_ClassSpecDB[uniqueKey]) --not so easy to understand when gets here. is it during change of specialisation?
+			ShownData = DCS_TableData:MergeTable(DCS_ClassSpecDB[uniqueKey], DefaultNonTankData) --not so easy to understand when gets here. is it during change of specialisation?
 			--print("Set saved variables.")
 			verify_sanity()
 		end
@@ -789,6 +847,45 @@ local function configButtonOnClose()
 	ShowCharacterStats("player")
 end
 
+
+--------------------------
+-- Toggle Expand Button --
+--------------------------
+
+local _, gdbprivate = ...
+	gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsConfigButtonChecked = {
+		ConfigButtonSetChecked = true,
+}
+local DCS_ConfigButtonCheck = CreateFrame("CheckButton", "DCS_ConfigButtonCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
+	DCS_ConfigButtonCheck:RegisterEvent("PLAYER_LOGIN")
+	DCS_ConfigButtonCheck:ClearAllPoints()
+	DCS_ConfigButtonCheck:SetPoint("LEFT", 130, -205)
+	DCS_ConfigButtonCheck:SetScale(1)
+	DCS_ConfigButtonCheck.tooltipText = L['Displays the configuration (lock) button for the character stats frame.'] --Creates a tooltip on mouseover.
+	_G[DCS_ConfigButtonCheck:GetName() .. "Text"]:SetText(L["Show Config"])
+	
+	DCS_ConfigButtonCheck:SetScript("OnEvent", function(self, event)
+		if event == "PLAYER_LOGIN" then
+			local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsConfigButtonChecked.ConfigButtonSetChecked
+			self:SetChecked(checked)
+			if checked then
+				DCS_configButton:Show()
+			else
+				DCS_configButton:Hide()
+			end
+		end
+	end)
+
+	DCS_ConfigButtonCheck:SetScript("OnClick", function(self)
+		local checked = self:GetChecked()
+		gdbprivate.gdb.gdbdefaults.dejacharacterstatsConfigButtonChecked.ConfigButtonSetChecked = checked
+		if checked then
+			DCS_configButton:Show()
+		else
+			DCS_configButton:Hide()
+		end
+	end)
+
 local function DCS_ClassCrestBGCheck()
 	if DCS_ClassBackgroundCheck:GetChecked(true) then
 		char_ctats_pane.ClassBackground:Show() 
@@ -833,6 +930,8 @@ local function DCS_DefaultStatsAnchors()
 	char_ctats_pane.ClassBackground:SetParent(StatScrollFrame)
 	char_ctats_pane.ClassBackground:SetPoint("TOP", StatScrollFrame, "TOP", -2.50, 3)
 	
+	char_ctats_pane.ItemLevelFrame.Corruption:SetFrameStrata("TOOLTIP")
+
 	configButtonOnClose()
 	DCS_ClassCrestBGCheck()
 	ShowCharacterStats("player")
@@ -869,6 +968,8 @@ local function DCS_InterfaceOptionsStatsAnchors()
 		char_ctats_pane.ClassBackground:SetPoint("TOPLEFT", DejaCharacterStatsPanel, "TOPLEFT", 377, -80)
 		char_ctats_pane.ClassBackground:SetPoint("BOTTOMRIGHT", DejaCharacterStatsPanel, "BOTTOMRIGHT", -48, 126)
 		char_ctats_pane.ClassBackground:Show()
+
+		char_ctats_pane.ItemLevelFrame.Corruption:SetFrameStrata("TOOLTIP")
 
 		DCS_ClassCrestBGCheck()
 		ShowCharacterStats("player")

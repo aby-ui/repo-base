@@ -188,7 +188,13 @@ do
             MethodDungeonTools.main_frame.LiveSessionButton:SetDisabled(not inGroup)
             if inGroup then
                 MethodDungeonTools.main_frame.LinkToChatButton.text:SetTextColor(1,0.8196,0)
-                MethodDungeonTools.main_frame.LiveSessionButton.text:SetTextColor(1,0.8196,0)
+                if MethodDungeonTools.liveSessionActive then
+                    MethodDungeonTools.main_frame.LiveSessionButton:SetText("*Live*")
+                    MethodDungeonTools.main_frame.LiveSessionButton.text:SetTextColor(0,1,0)
+                else
+                    MethodDungeonTools.main_frame.LiveSessionButton:SetText("Live")
+                    MethodDungeonTools.main_frame.LiveSessionButton.text:SetTextColor(1,0.8196,0)
+                end
             else
                 MethodDungeonTools.main_frame.LinkToChatButton.text:SetTextColor(0.5,0.5,0.5)
                 MethodDungeonTools.main_frame.LiveSessionButton.text:SetTextColor(0.5,0.5,0.5)
@@ -922,9 +928,11 @@ local bottomTips = {
     [9] = "Use /mdt reset to restore the default position and scale of MDT.",
     [10] = "Mouseover the Live button while in a group to learn more about Live mode.",
     [11] = "You are using MDT. You rock!",
-    [12] = "You can choose from different color schemes in the coloring settings menu.",
+    [12] = "You can choose from different color palettes in the automatic pull coloring settings menu.",
     [13] = "You can cycle through different floors by holding CTRL and using the mousewheel.",
     [14] = "You can cycle through dungeons by holding ALT and using the mousewheel.",
+    [15] = "Mouseover a patrolling enemy with a blue border to view the patrol path.",
+    [16] = "Expand the top toolbar to gain access to drawing and note features.",
 }
 
 function MethodDungeonTools:UpdateBottomText()
@@ -2668,6 +2676,13 @@ function MethodDungeonTools:EnsureDBTables()
     -- make sure, that at least 1 pull exists
     if #db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.pulls == 0 then
         db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.pulls[1] = {}
+    end
+
+    --detect gaps in pull list and delete invalid pulls
+    for k,v in pairs(preset.value.pulls) do
+        if k == 0 or k>#preset.value.pulls then
+            preset.value.pulls[k] = nil
+        end
     end
 
     -- Set current pull to last pull, if the actual current pull does not exists anymore

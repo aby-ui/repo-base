@@ -590,6 +590,7 @@
 			[152280] = "Defile",
 			[207167] = "blindingSleet",
 			[204160] = "chillStreak",
+			[305392] = "chillStreak",
 			[279302] = "sindragosaFury", -- Frostwyrm's Fury
 			[130736] = "soulReaper",
 			[275699] = "apocalypse",
@@ -746,7 +747,7 @@
 			[263165] = "voidTorrent",
 			[73325] = "leapOfFaith",
 			[215769] = "redeemer",
-			[209780] = "Premonition", -- Premonition
+			[305498] = "Premonition", -- Premonition
 			[289657] = "holywordconcentration",
 
 			-- Rogue (Cast Success)

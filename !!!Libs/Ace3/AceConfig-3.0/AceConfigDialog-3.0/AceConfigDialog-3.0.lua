@@ -1503,6 +1503,7 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 
 	local name = GetOptionsMemberValue("name", group, options, feedpath, appName)
 	local desc = GetOptionsMemberValue("desc", group, options, feedpath, appName)
+    if desc == tooltip then return end --abyui for GridStatusRD
 
 	tooltip:SetOwner(button, "ANCHOR_NONE")
 	tooltip:ClearAllPoints()

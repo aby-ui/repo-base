@@ -1,6 +1,10 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4170
+* Raid cooldowns: Added Ineffable Truth support
+* Raid check: added option to sort by class
+
 v.4160
 * Raid Inspect: added nzoth curve achievement
 * Saving log: fixed motherlode instance

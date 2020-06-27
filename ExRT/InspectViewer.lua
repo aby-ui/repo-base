@@ -953,7 +953,7 @@ function module.options:Load()
 						line.otherInfo:Show()
 						line.otherInfoTooltipFrame:Show()
 					elseif module.db.page == 4 then
-						for j=1,16 do
+						for j=1,18 do
 							line.items[j]:Show()
 							line.items[j].border:Hide()
 						end
@@ -963,7 +963,7 @@ function module.options:Load()
 						
 						local a4ivsData = module.db.inspectDBAch[name]
 						if a4ivsData then
-							for j=1,16 do
+							for j=1,18 do
 								local id = module.db.achievementsList[ module.db.achievementList ][j + 1]
 								if id then
 									local _,acivName,_,_,_,_,_,_,_,texture = GetAchievementInfo(id)
@@ -1006,7 +1006,7 @@ function module.options:Load()
 								end
 							end
 						else
-							for j=1,16 do
+							for j=1,18 do
 								line.items[j]:Hide()
 							end
 							line.otherInfo:SetText(L.BossWatcherDamageSwitchTabInfoNoInfo)

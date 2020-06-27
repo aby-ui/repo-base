@@ -102,12 +102,12 @@ L["|cffFFF569Rogue|r"] = "|cffFFF569潜行者|r"
 L["|cffC79C6EWarrior|r"] = "|cffC79C6E战士|r"
 L["|cffFFFFFFPriest|r"] = "|cffFFFFFF牧师|r"
 L["|cff0070daShaman|r"] = "|cff0070DE萨满|r"
-L["|cff0070daShaman (Totems)|r"] = true
+L["|cff0070daShaman (Totems)|r"] = "|cff0070DE萨满(图腾)|r"
 L["|cff69CCF0Mage|r"] = "|cff69CCF0法师|r"
 L["|cffC41F3BDeath Knight|r"] = "|cffC41F3B死亡骑士|r"
 L["|cffABD473Hunter|r"] = "|cffABD473猎人|r"
 L["|cFF00FF96Monk|r"] = "|cFF558A84武僧|r"
-L["|cffA330C9Demon Hunter|r"] = "|cffA330C9?|r"
+L["|cffA330C9Demon Hunter|r"] = "|cffA330C9恶魔猎手|r"
 L["Buff Down"] = "敌方增益结束"
 L["Spell Casting"] = "敌方读条技能"
 L["BigHeal"] = "大型治疗法术"
@@ -124,7 +124,7 @@ L["DisablePvPWorldQuests"] = true
 L["DisablePvPWorldQuestsDesc"] = true
 L["OperationMurlocFreedom"] = true
 
-L["EnemyInterrupts"] = true
+L["EnemyInterrupts"] = "敌方打断(包括日光术)"
 L["EnemyInterruptsDesc"] = true
 
 L["Default / Female voice"] = "默认 / 女声"
@@ -141,39 +141,42 @@ L["Select the menu voice pack alert"] = "选择菜单语音包警告"
 
 L["English(male)"] = true
 L["No sound selected for the Custom alert : |cffC41F4B"] = true
-L["Master Volume"] = true -- changed from L["Volume"] = true
-L["Change Output"] = true
-L["Unlock the output options"] = true
-L["Output"] = true
-L["Select the default output"] = true
-L["Master"] = true
-L["SFX"] = true
-L["Ambience"] = true
-L["Music"] = true
-L["Dialog"] = true
+L["Master Volume"] = "主音量" -- changed from L["Volume"] = true
+L["Change Output"] = "改变输出声道"
+L["Unlock the output options"] = "允许修改输出声道选项"
+L["Output"] = "输出声道"
+L["Select the default output"] = "选择默认输出声道"
+L["Master"] = "主声道"
+L["SFX"] = "音效声道"
+L["Ambience"] = "环境音声道"
+L["Music"] = "音乐声道"
+L["Dialog"] = "对话声道"
 
-L["DPSDispel"] = true
-L["DPSDispel_Desc"] = true
-L["HealerDispel"] = true
-L["HealerDispel_Desc"] = true
-L["CastingSuccess"] = true
-L["CastingSuccess_Desc"] = true
+L["DPSDispel"] = "非魔法驱散"
+L["DPSDispel_Desc"] = "通报混合职业的不会移除魔法效果的驱散.|n|nRemove Corruption (|cffFF7D0ADruid|r)|nRemove Curse (|cff69CCF0Mage|r)|nDetox (|cFF00FF96Monk|r)|nCleanse Toxins (|cffF58CBAPaladin|r)|nCleansing Light |cffF58CBAPaladin|r)|nPurify Disease (Priest)|nCleanse Spirit (|cff0070daShaman|r)"
+L["HealerDispel"] = "魔法驱散"
+L["HealerDispel_Desc"] = "通报治疗职业(及术士)的会移除魔法效果的驱散.|n|nNature's Cure (|cffFF7D0ADruid|r)|nDetox (|cFF00FF96Monk|r)|nCleanse (|cffF58CBAPaladin|r)|nPurify (Priest)|nPurify Spirit (|cff0070daShaman|r)|nSinge Magic (|cff9482C9Warlock|r)"
+L["CastingSuccess"] = "控制技能"
+L["CastingSuccess_Desc"] = "通报敌方重要控制技能的成功施放.|n|n注意，这个选项即使目标未受影响（例如控制递减或者免疫）也会通报.|n|n|cffC41F3B注意：如果此选项开启，则下面的所有技能都会通报，哪怕你在职业技能里取消勾选.|r|n|n旋风 (|cffFF7D0A德鲁伊|r)|n休眠 (|cffFF7D0A德鲁伊|r)|n变羊 (|cff69CCF0法师|r)|n冰环 (|cff69CCF0法师|r)|n忏悔 (|cffF58CBA骑士|r)|n心控 (牧师)|n妖术 (|cff0070da萨满|r)|n恐惧 (|cff9482C9术士|r)"
 
-L["DispelKickback"] = true
+L["DispelKickback"] = "驱散惩罚"
 
-L["Purge"] = true
-L["PurgeDesc"] = true
+L["Purge"] = "净化技能"
+L["PurgeDesc"] = "通报移除友方魔法效果的净化技能, 不包括奥术洪流.|n|n吞噬魔法 (|cffA330C9恶魔猎手|r)|n驱散魔法 (牧师)|n净化术 (|cff0070da萨满|r)|n吞噬魔法 (|cff9482C9术士|r)"
 
-L["FriendlyInterrupted"] = true
-L["FriendlyInterruptedDesc"] = true
+L["FriendlyInterrupted"] = "禁用友方技能被锁定提示"
+L["FriendlyInterruptedDesc"] = "勾选此选项以关闭友方被敌方打断后技能被锁定的提示.|n|n(播放暴雪的 '任务失败' 音效.)"
 
-L["epicbattleground"] = true
-L["epicbattlegroundDesc"] = true
+L["epicbattleground"] = "史诗战场"
+L["epicbattlegroundDesc"] = "在史诗战场中启用PVP语音提示"
 
-L["TankTauntsOFF"] = true
-L["TankTauntsOFF_Desc"] = true
-L["TankTauntsON"] = true
-L["TankTauntsON_Desc"] = true
+L["OnlyIfPvPFlagged"] = "Only in PvP"
+L["OnlyIfPvPFlaggedDesc"] = "If enabled, alerts will no longer play unless you are PvP flagged; such as in War Mode or in a PvP instance. Those areas still need to be enabled for GSA to function there, even if this option is enabled.|n|n|cffC41F3BWARNING: This also disables alerts while in a Duel, so remember to toggle it off!|r"
 
-L["Connected"] = true
-L["Connected_Desc"] = true
+L["TankTauntsOFF"] = "Intimidation"
+L["TankTauntsOFF_Desc"] = "Alerts the fading of Intimidation: a damage amplification effect originating from tank specializations."
+L["TankTauntsON"] = "Intimidation"
+L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage amplifcation effect originating from tank specializations."
+
+L["Connected"] = "强力伤害"
+L["Connected_Desc"] = "提示'施法成功', 当一些强力读条技能成功施放时.|n|n强效炎爆术 (|cff69CCF0法师|r)|n混乱箭 (|cff9482C9术士|r)"

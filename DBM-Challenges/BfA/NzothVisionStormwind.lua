@@ -1,7 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145548")
+mod:SetRevision("20200623215902")
 mod:SetZone()
 mod.onlyNormal = true
 
@@ -102,21 +102,27 @@ mod.vb.TherumCleared = false
 mod.vb.UlrokCleared = false
 mod.vb.ShawCleared = false
 mod.vb.UmbricCleared = false
-local CVAR1, CVAR2, CVAR3 = nil, nil, nil
 local warnedGUIDs = {}
 
 --If you have potions when run ends, the debuffs throw you in combat for about 6 seconds after run has ended
-local function DelayedNameplateFix()
+local function DelayedNameplateFix(self, once)
 	--Check if we changed users nameplate options and restore them
-	if CVAR1 or CVAR2 or CVAR3 then
+	if self.Options.CVAR1 or self.Options.CVAR2 or self.Options.CVAR3 then
 		if InCombatLockdown() then
+			if once then return end
 			--In combat, delay nameplate fix
-			DBM:Schedule(2, DelayedNameplateFix)
+			DBM:Schedule(2, DelayedNameplateFix, self)
 		else
-			SetCVar("nameplateShowFriends", CVAR1)
-			SetCVar("nameplateShowFriendlyNPCs", CVAR2)
-			SetCVar("nameplateShowOnlyNames", CVAR3)
-			CVAR1, CVAR2, CVAR3 = nil, nil, nil
+			if self.Options.CVAR1 then
+				SetCVar("nameplateShowFriends", self.Options.CVAR1)
+			end
+			if self.Options.CVAR2 then
+				SetCVar("nameplateShowFriendlyNPCs", self.Options.CVAR2)
+			end
+			if self.Options.CVAR3 then
+				SetCVar("nameplateShowOnlyNames", self.Options.CVAR3)
+			end
+			self.Options.CVAR1, self.Options.CVAR2, self.Options.CVAR3 = nil, nil, nil
 		end
 	end
 end
@@ -126,15 +132,19 @@ function mod:OnCombatStart(delay)
 	self.vb.UlrokCleared = false
 	self.vb.ShawCleared = false
 	self.vb.UmbricCleared = false
-	CVAR1, CVAR2, CVAR3 = nil, nil, nil
 	table.wipe(warnedGUIDs)
+	DelayedNameplateFix(self, true)--Repair settings from previous session if they didn't get repaired in last session
 	if self.Options.SpecWarn306545dodge4 then
 		--This warning requires friendly nameplates, because it's only way to detect it.
-		CVAR1, CVAR2, CVAR3 = tonumber(GetCVar("nameplateShowFriends") or 0), tonumber(GetCVar("nameplateShowFriendlyNPCs") or 0), tonumber(GetCVar("nameplateShowOnlyNames") or 0)
+		self.Options.CVAR1, self.Options.CVAR2, self.Options.CVAR3 = tonumber(GetCVar("nameplateShowFriends") or 0), tonumber(GetCVar("nameplateShowFriendlyNPCs") or 0), tonumber(GetCVar("nameplateShowOnlyNames") or 0)
 		--Check if they were disabled, if disabled, force enable them
-		if (CVAR1 == 0) or (CVAR2 == 0) or (CVAR3 == 0) then
+		if self.Options.CVAR1 == 0 then
 			SetCVar("nameplateShowFriends", 1)
+		end
+		if self.Options.CVAR2 == 0 then
 			SetCVar("nameplateShowFriendlyNPCs", 1)
+		end
+		if self.Options.CVAR3 == 0 then
 			SetCVar("nameplateShowOnlyNames", 1)
 		end
 		--Making this option rely on another option is kind of required because this won't work without nameplateShowFriendlyNPCs
@@ -157,20 +167,10 @@ function mod:OnCombatEnd()
 		DBM.InfoFrame:Hide()
 	end
 	if self.Options.NPAuraOnAbyss or self.Options.NPAuraOnHaunting2 or self.Options.NPAuraOnMorale then
-		DBM.Nameplate:Hide(true, nil, nil, nil, true, self.Options.NPAuraOnAbyss or self.Options.NPAuraOnMorale, CVAR1)--isGUID, unit, spellId, texture, force, isHostile, isFriendly
+		DBM.Nameplate:Hide(true, nil, nil, nil, true, self.Options.NPAuraOnAbyss or self.Options.NPAuraOnMorale, self.Options.CVAR1)--isGUID, unit, spellId, texture, force, isHostile, isFriendly
 	end
 	--Check if we changed users nameplate options and restore them
-	if CVAR1 or CVAR2 or CVAR3 then
-		if InCombatLockdown() then
-			--In combat, delay nameplate fix
-			DBM:Schedule(6, DelayedNameplateFix)
-		else
-			SetCVar("nameplateShowFriends", CVAR1)
-			SetCVar("nameplateShowFriendlyNPCs", CVAR2)
-			SetCVar("nameplateShowOnlyNames", CVAR3)
-			CVAR1, CVAR2, CVAR3 = nil, nil, nil
-		end
-	end
+	DelayedNameplateFix(self)
 end
 
 function mod:SPELL_CAST_START(args)

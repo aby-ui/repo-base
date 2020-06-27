@@ -805,7 +805,7 @@ function module.options:Load()
 	self.hsToChat = ELib:Button(self,L.raidcheckHSLastPullToChat):Size(230,20):Point("LEFT",self.hs,"RIGHT",71,0):OnClick(function() GetHs(1) end):Run(function(s,a) if a then s:Disable() end end,not VExRT.RaidCheck.PotionCheck)
 	
 	self.optReadyCheckFrame = CreateFrame("Frame",nil,self)
-	self.optReadyCheckFrame:SetSize(650,125)
+	self.optReadyCheckFrame:SetSize(650,145)
 	self.optReadyCheckFrame:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",edgeFile = ExRT.F.defBorder,tile = false,edgeSize = 8})
 	self.optReadyCheckFrame:SetBackdropColor(0,0,0,0.3)
 	self.optReadyCheckFrame:SetBackdropBorderColor(.24,.25,.30,0)
@@ -857,6 +857,14 @@ function module.options:Load()
 	end) 
 	
 	self.htmlReadyCheck1 = ELib:Text(self.optReadyCheckFrame,L.RaidCheckReadyCheckHelp,12):Size(583,100):Point(10,-90):Top()
+
+	self.chkReadyCheckFrameEnable = ELib:Check(self.optReadyCheckFrame,L.RaidCheckSortByClass,VExRT.RaidCheck.ReadyCheckSortClass):Point(15,-120):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.RaidCheck.ReadyCheckSortClass = true
+		else
+			VExRT.RaidCheck.ReadyCheckSortClass = nil
+		end
+	end)
 
 
 	if ExRT.isClassic then
@@ -1582,6 +1590,7 @@ function module.frame:UpdateRoster()
 		end
 		shuffle(testRandomNames)
 	end
+	local result = {}
 	for i=1,(self.isTest and (ExRT.isClassic and 40 or math.random(0,1)*10+20) or 40) do
 		local name,subgroup,_,class,unit
 		if self.isTest then
@@ -1604,32 +1613,48 @@ function module.frame:UpdateRoster()
 			unit = "raid"..i
 		end
 		if name and subgroup <= gMax then 
-			count = count + 1
-			local line = self.lines[count]
-			if line then
-				name = ExRT.F.delUnitNameServer(name)
-
-				line.name:SetText(name)
-				line.unit = unit
-				line.unit_name = name
-				line.name:SetTextColor(1,1,1,1)
-
-				line.mini.name:SetText(name)
-				line.mini.name:SetTextColor(1,1,1,1)
-
-				local classColor = classColorsTable[class]
-				local r,g,b = classColor and classColor.r or .7,classColor and classColor.g or .7,classColor and classColor.b or .7
-
-				line.classLeft:SetGradientAlpha("HORIZONTAL",r,g,b,.4,r,g,b,0)
-
-				line:Show()
-				line.mini:Show()
-
-				line.rc_status = 1
-	
-				RCW_UnitToLine[name] = line
-				RCW_UnitToLine[line.unit] = line
+			result[#result+1] = {
+				name = ExRT.F.delUnitNameServer(name),
+				unit = unit,
+				class = class,
+			}
+		end
+	end
+	if VExRT and VExRT.RaidCheck and VExRT.RaidCheck.ReadyCheckSortClass then
+		sort(result,function(a,b)
+			if a.class == b.class then
+				return a.name < b.name
+			else
+				return a.class < b.class
 			end
+		end)
+	end
+	for i=1,#result do
+		count = count + 1
+		local line = self.lines[count]
+		if line then
+			local data = result[i]
+
+			line.name:SetText(data.name)
+			line.unit = data.unit
+			line.unit_name = data.name
+			line.name:SetTextColor(1,1,1,1)
+	
+			line.mini.name:SetText(data.name)
+			line.mini.name:SetTextColor(1,1,1,1)
+	
+			local classColor = classColorsTable[data.class]
+			local r,g,b = classColor and classColor.r or .7,classColor and classColor.g or .7,classColor and classColor.b or .7
+	
+			line.classLeft:SetGradientAlpha("HORIZONTAL",r,g,b,.4,r,g,b,0)
+	
+			line:Show()
+			line.mini:Show()
+	
+			line.rc_status = 1
+	
+			RCW_UnitToLine[data.name] = line
+			RCW_UnitToLine[line.unit] = line
 		end
 	end
 	for i=count+1,#self.lines do 

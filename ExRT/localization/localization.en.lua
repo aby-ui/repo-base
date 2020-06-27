@@ -238,6 +238,7 @@ L.RaidCheckHeadFlask = "Flask"
 L.RaidCheckHeadRune = "Rune"
 L.RaidCheckHeadVantus = "Vantus"
 L.RaidCheckOnlyRL = "Only for raid leader"
+L.RaidCheckSortByClass = "Sort by class"
 
 L.marksbarstart = "Clear"
 L.marksbardel = "Delete"

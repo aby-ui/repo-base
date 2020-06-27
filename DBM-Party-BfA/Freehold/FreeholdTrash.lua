@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200602212246")
+mod:SetRevision("20200620220858")
 --mod:SetModelID(47785)
 mod:SetZone()
 
@@ -22,7 +22,7 @@ local warnRicochetingThrow				= mod:NewTargetAnnounce(272402, 2)
 local yellRicochetingThrow				= mod:NewYell(272402)
 local yellDuelistDash					= mod:NewYell(274400)
 local specWarnOiledBladeSelf			= mod:NewSpecialWarningDefensive(257908, nil, nil, nil, 1, 2)
-local specWarnBrutalBackhand			= mod:NewSpecialWarningDodge(257426, "Tank", nil, nil, 1, 2)
+local specWarnBrutalBackhand			= mod:NewSpecialWarningDodge(257426, nil, nil, nil, 1, 2)
 local specWarnShatteringToss			= mod:NewSpecialWarningSpell(274860, "Tank", nil, nil, 1, 2)
 local specWarnGoinBan					= mod:NewSpecialWarningRun(257756, "Melee", nil, nil, 4, 2)
 local specWarnBladeBarrage				= mod:NewSpecialWarningRun(257870, "Melee", nil, nil, 4, 2)

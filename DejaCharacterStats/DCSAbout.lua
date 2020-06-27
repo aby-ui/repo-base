@@ -99,10 +99,12 @@ local L = namespace.L 				--localization
 		DCSAboutDCS_FS:SetText(
 			"|cff0094c4Author:|r Dejoblue" .. "|n" .. 
 			"|cff0094c4Admins:|r Dejoblue, Kakjens" .. "|n" .. 
-			"|cff0094c4Contributers:|r Dejoblue, Kakjens, loudsoul" .. "|n" .. 
+			"|cff0094c4Contributers:|r Dejoblue, Kakjens," .. "|n" ..
+			"         loudsoul, Mudohir" .. "|n" ..															--(Contributors) Continued Contributors list
 			"|cff0094c4Localization Translators:|r" .. "|n" ..
-			"|cff0094c4    French:|r Lightuky, Medaleux, sv002, Darkcraft92," .. "|n" .. 						--(French)
-			"        Ymvej, Druidzor, napnapnapnapnap" .. "|n" ..										--(French) Continued French list
+			"|cff0094c4    French:|r Lightuky, Medaleux, sv002," .. "|n" .. 						--(French)
+			"         Darkcraft92, Ymvej, Druidzor," .. "|n" ..										--(French) Continued French list
+			"        napnapnapnapnap" .. "|n" ..													---(French) Continued French list
 			"|cff0094c4    German:|r pas06, flow0284, Markurion," .. "|n" .. 						--(German)
 			"        Branduril, NekoNyaaaa" .. "|n" ..													--(German) Continued German list
 			"|cff0094c4    Portuguese:|r Othra, Rhyrol" .. "|n" ..									--(Portuguese)
@@ -119,8 +121,8 @@ local L = namespace.L 				--localization
 			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
 			-- "|n" ..																					--(Spacer)
 			"|cff0094c4Special Thanks:|r" .. "|n" ..
-			"|cff0094c4    Communities:|r Blizzard, Curse, ElvUI," .. "|n" .. 
-			"        WoWInterface, and Reddit's /r/wow" .. "|n" ..
+			"|cff0094c4    Communities:|r Blizzard, Curse, Sloot(Twitch)," .. "|n" .. 
+			"        WoWInterface, ElvUI, and Reddit's /r/wow" .. "|n" ..
 			"|cff0094c4    Individuals:|r Baudzila, 10leej, wizardanim," .. "|n" ..
 			"        Phanx, Ro, Choonster, Zork, Lombra," .. "|n" ..
 			"        myrroddin, Darth_Predator, sirann," .. "|n" ..

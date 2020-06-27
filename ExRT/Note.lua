@@ -6,7 +6,7 @@ local module = ExRT:New("Note",ExRT.L.message,nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
 local GetTime, CombatLogGetCurrentEventInfo = GetTime, CombatLogGetCurrentEventInfo
-local string_gsub, strsplit, tonumber, format = string.gsub, strsplit, tonumber, format
+local string_gsub, strsplit, tonumber, format, string_match, floor, string_find, type = string.gsub, strsplit, tonumber, format, string.match, floor, string.find, type
 
 local GetSpecialization = GetSpecialization
 if ExRT.isClassic then
@@ -195,13 +195,13 @@ formats:
 ]]
 local function GSUB_Time(t,msg)
 	local lineTime
-	if t:find(":") then
-		lineTime = tonumber(t:match("(%d+):") or "0",nil) * 60 + tonumber(t:match(":(%d+)") or "0",nil)
+	if string_find(t,":") then
+		lineTime = tonumber(string_match(t,"(%d+):") or "0",nil) * 60 + tonumber(string_match(t,":(%d+)") or "0",nil)
 	else
-		lineTime = tonumber(t:match("^(%d+)") or "0",nil)
+		lineTime = tonumber(string_match(t,"^(%d+)") or "0",nil)
 	end
 
-	local phase = t:match(",p(%d+)")
+	local phase = string_match(t,",p(%d+)")
 
 	if not module.db.encounter_time then
 		return "|cffffed88"..(phase and "P"..phase.." " or "")..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
@@ -209,9 +209,9 @@ local function GSUB_Time(t,msg)
 
 	local currTime = GetTime() - module.db.encounter_time
 
-	local wa_event_uid = t:match(",[wW][aA]:([^,]+)")
+	local wa_event_uid = string_match(t,",[wW][aA]:([^,]+)")
 
-	local CLEU = t:match(",S")
+	local CLEU = string_match(t,",S")
 	if CLEU then
 		local _,lineMark = strsplit(",",t)
 		t = module.db.encounter_counters_time[lineMark or ""]
@@ -234,7 +234,7 @@ local function GSUB_Time(t,msg)
 	end
 
 	if type(t)=='string' then
-		local custom_event = t:match(",e,(.+)")
+		local custom_event = string_match(t,",e,(.+)")
 		if custom_event then
 			t = module.db.encounter_time_c[custom_event]
 			if not t then
@@ -310,6 +310,7 @@ local function txtWithIcons(t)
 	t = string_gsub(t,"{[Cc]:([^}]+)}(.-){/[Cc]}",GSUB_Class)
 
 	t = string_gsub(t.."\n","{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
+
 	t = string_gsub(t, "\n$", "")
 
 	t = string_gsub(t,"%b{}","")
@@ -1538,7 +1539,7 @@ function module.frame:Save(blackNoteID)
 
 	if ExRT.isClassic then
 		local MSG_LIMIT_COUNT = 10
-		local MSG_LIMIT_TIME = 4.2
+		local MSG_LIMIT_TIME = 6
 		if #arrtosand >= MSG_LIMIT_COUNT and module.options.buttonsend then
 			module.options.buttonsend:Disable()
 			C_Timer.After(floor((#arrtosand+1)/MSG_LIMIT_COUNT * MSG_LIMIT_TIME),function()
@@ -2035,7 +2036,9 @@ do
 		tmr = tmr + elapsed
 		if tmr > 1 then
 			tmr = 0
-			module.frame:UpdateText()
+			if module.frame:IsVisible() then
+				module.frame:UpdateText()
+			end
 		end
 	end
 
