@@ -2552,70 +2552,147 @@ function window:CreateFrame17()
 	
 		--anchor
 		g:NewLabel (frame17, _, "$parentHideInCombatAnchor", "hideInCombatAnchor", Loc ["STRING_OPTIONS_ALPHAMOD_ANCHOR"], "GameFontNormal")
+		frame17.hideInCombatAnchor:SetPoint("topleft", frame17, "topleft", window.right_start_at, window.top_start_at)
 		
 		--> hide in combat
 		g:NewLabel (frame17, _, "$parentCombatAlphaLabel", "combatAlphaLabel", Loc ["STRING_OPTIONS_COMBAT_ALPHA"], "GameFontHighlightLeft")
 		
-		local onSelectCombatAlpha = function (_, _, combat_alpha)
-			local instance = _G.DetailsOptionsWindow.instance
-			
-			instance:SetCombatAlpha (combat_alpha)
-			
-			if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
-				for _, this_instance in ipairs (instance:GetInstanceGroup()) do
-					if (this_instance ~= instance) then
-						this_instance:SetCombatAlpha (combat_alpha)
-					end
-				end
-			end
-			
-			_detalhes:SendOptionsModifiedEvent (DetailsOptionsWindow.instance)
-		end
 		local texCoords = {.9, 0.1, 0.1, .9}
 		local typeCombatAlpha = {
-			{value = 1, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_1"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_03", texcoord = texCoords, color = "gray"},
-			{value = 2, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_2"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
-			{value = 3, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
-			{value = 4, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_4"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
-			{value = 5, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_5"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
-			{value = 6, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
-			{value = 7, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_7"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords, desc = Loc ["STRING_OPTIONS_COMBAT_ALPHA_6"] .. " + " .. Loc ["STRING_OPTIONS_COMBAT_ALPHA_3"]},
-			{value = 8, label = Loc ["STRING_OPTIONS_COMBAT_ALPHA_8"], onclick = onSelectCombatAlpha, icon = "Interface\\Icons\\INV_Misc_Spyglass_02", texcoord = texCoords},
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_2"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_3"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_4"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_5"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_6"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_7"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_8"],
+			Loc["STRING_OPTIONS_COMBAT_ALPHA_9"],
 		}
-		local buildTypeCombatAlpha = function()
-			return typeCombatAlpha
-		end
-		
-		local d = g:NewDropDown (frame17, _, "$parentCombatAlphaDropdown", "combatAlphaDropdown", 160, dropdown_height, buildTypeCombatAlpha, nil, options_dropdown_template)
-		
-		frame17.combatAlphaDropdown:SetPoint ("left", frame17.combatAlphaLabel, "right", 2, 0)		
-		
-		window:CreateLineBackground2 (frame17, "combatAlphaDropdown", "combatAlphaLabel", Loc ["STRING_OPTIONS_COMBAT_ALPHA_DESC"])
 
-		g:NewLabel (frame17, _, "$parentHideOnCombatAlphaLabel", "hideOnCombatAlphaLabel", Loc ["STRING_ALPHA"], "GameFontHighlightLeft")
-		
-		local s = g:NewSlider (frame17, _, "$parentHideOnCombatAlphaSlider", "hideOnCombatAlphaSlider", SLIDER_WIDTH, SLIDER_HEIGHT, 0, 100, 1, _G.DetailsOptionsWindow.instance.hide_in_combat_alpha, nil, nil, nil, options_slider_template)
-		--config_slider (s)
-		
-		frame17.hideOnCombatAlphaSlider:SetPoint ("left", frame17.hideOnCombatAlphaLabel, "right", 2, 0)
-		frame17.hideOnCombatAlphaSlider:SetHook ("OnValueChange", function (self, instance, amount) --> slider, fixedValue, sliderValue
-			instance.hide_in_combat_alpha = amount
-			instance:SetCombatAlpha (nil, nil, true)
-			
+		local optionsOrder = {3, 4, 5, 6, 7, 8, 1, 2}
+
+		local header1Label = _G.DetailsFramework:CreateLabel(frame17, Loc["STRING_CONTEXT"])
+		local header2Label = _G.DetailsFramework:CreateLabel(frame17, Loc["STRING_ENABLED"])
+		local header3Label = _G.DetailsFramework:CreateLabel(frame17, Loc["STRING_INVERT_RULE"])
+		local header4Label = _G.DetailsFramework:CreateLabel(frame17, Loc["STRING_ALPHA"])
+
+		local yyy = window.top_start_at - 20
+		header1Label:SetPoint("topleft", frame17, "topleft", window.right_start_at, yyy)
+		header2Label:SetPoint("topleft", frame17, "topleft", window.right_start_at + 96, yyy)
+		header3Label:SetPoint("topleft", frame17, "topleft", window.right_start_at + 140, yyy)
+		header4Label:SetPoint("topleft", frame17, "topleft", window.right_start_at + 270, yyy)
+
+		local onEnableHideContext = function(self, contextId, value)
+			local instance = _G.DetailsOptionsWindow.instance
+
+			instance.hide_on_context[contextId].enabled = value
+			instance:AdjustAlphaByContext()
+			--instance:SetCombatAlpha(combat_alpha)
+
 			if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
 				for _, this_instance in ipairs (instance:GetInstanceGroup()) do
 					if (this_instance ~= instance) then
-						this_instance.hide_in_combat_alpha = amount
-						this_instance:SetCombatAlpha (nil, nil, true)
+						this_instance.hide_on_context[contextId].enabled = value
+						--this_instance:SetCombatAlpha (combat_alpha)
+						this_instance:AdjustAlphaByContext()
 					end
 				end
 			end
 			
-			_detalhes:SendOptionsModifiedEvent (DetailsOptionsWindow.instance)
-		end)
-		
-		window:CreateLineBackground2 (frame17, "hideOnCombatAlphaSlider", "hideOnCombatAlphaLabel", Loc ["STRING_OPTIONS_HIDECOMBATALPHA_DESC"])
-	
+			_detalhes:SendOptionsModifiedEvent (instance)
+		end
+
+		local onInverseValue = function(self, contextId, value)
+			local instance = _G.DetailsOptionsWindow.instance
+
+			instance.hide_on_context[contextId].inverse = value
+			--instance:SetCombatAlpha(combat_alpha)
+			instance:AdjustAlphaByContext()
+
+			if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
+				for _, this_instance in ipairs (instance:GetInstanceGroup()) do
+					if (this_instance ~= instance) then
+						this_instance.hide_on_context[contextId].inverse = value
+						--this_instance:SetCombatAlpha (combat_alpha)
+						this_instance:AdjustAlphaByContext()
+					end
+				end
+			end
+			
+			_detalhes:SendOptionsModifiedEvent (instance)
+		end
+
+		local onAlphaChanged = function(self, contextId, value)
+			value = floor(value)
+			local instance = _G.DetailsOptionsWindow.instance
+
+			instance.hide_on_context[contextId].value = value
+			--instance:SetCombatAlpha(combat_alpha)
+			instance:AdjustAlphaByContext()
+
+			if (_detalhes.options_group_edit and not DetailsOptionsWindow.loading_settings) then
+				for _, this_instance in ipairs (instance:GetInstanceGroup()) do
+					if (this_instance ~= instance) then
+						this_instance.hide_on_context[contextId].value = value
+						--this_instance:SetCombatAlpha (combat_alpha)
+						this_instance:AdjustAlphaByContext()
+					end
+				end
+			end
+			
+			_detalhes:SendOptionsModifiedEvent (instance)
+		end
+
+		frame17.AutoHideOptions = {}
+
+		for id, i in ipairs(optionsOrder) do
+			local line = _G.CreateFrame("frame", nil, frame17)
+			line:SetSize(300, 22)
+			line:SetPoint("topleft", frame17, "topleft", window.right_start_at, yyy + ((id) * -23) + 4)
+			_G.DetailsFramework:ApplyStandardBackdrop(line)
+
+			local contextLabel = _G.DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
+			contextLabel:SetPoint("left", line, "left", 2, 0)
+
+			local enabledCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			enabledCheckbox:SetPoint("left", line, "left", 118, 0)
+			enabledCheckbox:SetAsCheckBox()
+			enabledCheckbox.OnSwitch = onEnableHideContext
+			enabledCheckbox:SetFixedParameter(i)
+
+			local reverseCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			reverseCheckbox:SetPoint("left", line, "left", 140, 0)
+			reverseCheckbox:SetAsCheckBox()
+			reverseCheckbox.OnSwitch = onInverseValue
+			reverseCheckbox:SetFixedParameter(i)
+
+			local alphaSlider = _G.DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
+			alphaSlider:SetPoint("left", line, "left", 162, 0)
+			alphaSlider:SetHook("OnValueChanged", onAlphaChanged)
+			alphaSlider:SetFixedParameter(i)
+
+			line.contextLabel = contextLabel
+			line.enabledCheckbox = enabledCheckbox
+			line.reverseCheckbox = reverseCheckbox
+			line.alphaSlider = alphaSlider
+
+			--disable the invert checkbox for some options
+			if (i == 1 or i == 2 or i == 4 or i == 5 or i == 6) then
+				reverseCheckbox:Disable()
+			end
+
+			frame17.AutoHideOptions[i] = line
+		end
+
+		--hide_on_context
+
+		--old alpha handle only allowed 1 context to be operational
+		--the new allows all context to be active
+
+		--old instruction
+		--instance:SetCombatAlpha (combat_alpha_id, ?, alpha value)
+		--Loc ["STRING_OPTIONS_HIDECOMBATALPHA_DESC"]
+
 	--> auto transparency
 		--> alpha onenter onleave auto transparency
 		
@@ -3033,9 +3110,9 @@ function window:CreateFrame17()
 		window:arrange_menu (frame17, left_side, x, window.top_start_at)
 
 		local right_side = {
-			{"hideInCombatAnchor", 1, true},
-			{"combatAlphaLabel", 2},
-			{"hideOnCombatAlphaLabel", 3},
+			--{"hideInCombatAnchor", 1, true}, --deprecated
+			--{"combatAlphaLabel", 2},
+			--{"hideOnCombatAlphaLabel", 3},
 			
 			{"menuAlphaAnchorLabel", 4, true},
 			{"alphaSwitchLabel", 5},
@@ -3044,7 +3121,7 @@ function window:CreateFrame17()
 			{"menuOnLeaveLabel", 8},
 		}
 		
-		window:arrange_menu (frame17, right_side, window.right_start_at, window.top_start_at)
+		window:arrange_menu (frame17, right_side, window.right_start_at, window.top_start_at - 235)
 		
 		
 		
@@ -11930,10 +12007,20 @@ end --> if not window
 		--_G.DetailsOptionsWindow18AdvancedAnimationsSlider.MyObject:SetValue (_detalhes.streamer_config.use_animation_accel)
 		
 		--> window 17
-		_G.DetailsOptionsWindow17CombatAlphaDropdown.MyObject:Select (editing_instance.hide_in_combat_type, true)
-		_G.DetailsOptionsWindow17HideOnCombatAlphaSlider.MyObject:SetFixedParameter (editing_instance)
-		_G.DetailsOptionsWindow17HideOnCombatAlphaSlider.MyObject:SetValue (editing_instance.hide_in_combat_alpha)
-		
+--		_G.DetailsOptionsWindow17CombatAlphaDropdown.MyObject:Select (editing_instance.hide_in_combat_type, true) --deprecated, lines are now used
+--		_G.DetailsOptionsWindow17HideOnCombatAlphaSlider.MyObject:SetFixedParameter (editing_instance)
+--		_G.DetailsOptionsWindow17HideOnCombatAlphaSlider.MyObject:SetValue (editing_instance.hide_in_combat_alpha)
+
+		--hide_on_context
+		local autoHideLines = _G.DetailsOptionsWindow17.AutoHideOptions
+		--for id, i in ipairs(autoHideLines) do
+		for i = 1, #autoHideLines do
+			local line = autoHideLines[i]
+			line.enabledCheckbox:SetValue(editing_instance.hide_on_context[i].enabled)
+			line.reverseCheckbox:SetValue(editing_instance.hide_on_context[i].inverse)
+			line.alphaSlider:SetValue(editing_instance.hide_on_context[i].value)
+		end
+	
 		_G.DetailsOptionsWindow17MenuOnEnterLeaveAlphaSwitch.MyObject:SetFixedParameter (editing_instance)
 		_G.DetailsOptionsWindow17MenuOnEnterAlphaSlider.MyObject:SetFixedParameter (editing_instance)
 		_G.DetailsOptionsWindow17MenuOnLeaveAlphaSlider.MyObject:SetFixedParameter (editing_instance)

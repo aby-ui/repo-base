@@ -75,6 +75,7 @@ function RSMinimapPinMixin:ShowOverlay()
 				local x, y = strsplit("-", coordinates)
 				local pin = self.overlayFramesPool:Acquire()
 				pin.npcID = self.npcID
+				pin.name = self.name
 				RareScanner:SetUpOverlayPin(pin)
 				HBD_Pins:AddMinimapIconMap(self, pin, self.mapID, tonumber(x), tonumber(y), false, false)
 			end
@@ -84,6 +85,7 @@ function RSMinimapPinMixin:ShowOverlay()
 				local x, y = strsplit("-", coordinates)
 				local pin = self.overlayFramesPool:Acquire()
 				pin.npcID = self.npcID
+				pin.name = self.name
 				RareScanner:SetUpOverlayPin(pin)
 				HBD_Pins:AddMinimapIconMap(self, pin, self.mapID, tonumber(x), tonumber(y), false, false)
 			end

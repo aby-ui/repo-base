@@ -26,12 +26,28 @@ do
 		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
 
+		dversion = DF.dversion,
 	}
 
-	_G [DF.GlobalWidgetControlNames ["slider"]] = _G [DF.GlobalWidgetControlNames ["slider"]] or metaPrototype
+	--check if there's a metaPrototype already existing
+	if (_G[DF.GlobalWidgetControlNames["slider"]]) then
+		--get the already existing metaPrototype
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["slider"]]
+		--check if is older
+		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
+			--the version is older them the currently loading one
+			--copy the new values into the old metatable
+			for funcName, _ in pairs(metaPrototype) do
+				oldMetaPrototype[funcName] = metaPrototype[funcName]
+			end
+		end
+	else
+		--first time loading the framework
+		_G[DF.GlobalWidgetControlNames ["slider"]] = metaPrototype
+	end
 end
 
-local DFSliderMetaFunctions = _G [DF.GlobalWidgetControlNames ["slider"]]
+local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 
 ------------------------------------------------------------------------------------------------------------
 --> metatables
@@ -904,6 +920,7 @@ local set_switch_func = function (self, newFunction)
 end
 
 local set_as_checkbok = function (self)
+	if self.is_checkbox and self.checked_texture then return end
 	local checked = self:CreateTexture (self:GetName() .. "CheckTexture", "overlay")
 	checked:SetTexture ([[Interface\Buttons\UI-CheckBox-Check]])
 	checked:SetPoint ("center", self.button, "center", -1, -1)

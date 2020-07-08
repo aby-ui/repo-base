@@ -24,12 +24,29 @@ do
 		HasHook = DF.HasHook,
 		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
+
+		dversion = DF.dversion,
 	}
 
-	_G [DF.GlobalWidgetControlNames ["dropdown"]] = _G [DF.GlobalWidgetControlNames ["dropdown"]] or metaPrototype
+	--check if there's a metaPrototype already existing
+	if (_G[DF.GlobalWidgetControlNames["dropdown"]]) then
+		--get the already existing metaPrototype
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["dropdown"]]
+		--check if is older
+		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
+			--the version is older them the currently loading one
+			--copy the new values into the old metatable
+			for funcName, _ in pairs(metaPrototype) do
+				oldMetaPrototype[funcName] = metaPrototype[funcName]
+			end
+		end
+	else
+		--first time loading the framework
+		_G[DF.GlobalWidgetControlNames ["dropdown"]] = metaPrototype
+	end
 end
 
-local DropDownMetaFunctions = _G [DF.GlobalWidgetControlNames ["dropdown"]]
+local DropDownMetaFunctions = _G[DF.GlobalWidgetControlNames ["dropdown"]]
 
 ------------------------------------------------------------------------------------------------------------
 --> metatables

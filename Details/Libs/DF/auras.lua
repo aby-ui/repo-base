@@ -130,12 +130,29 @@ do
 		WidgetType = "aura_tracker",
 		SetHook = DF.SetHook,
 		RunHooksForWidget = DF.RunHooksForWidget,
+
+		dversion = DF.dversion,
 	}
 
-	_G [DF.GlobalWidgetControlNames ["aura_tracker"]] = _G [DF.GlobalWidgetControlNames ["aura_tracker"]] or metaPrototype
+	--check if there's a metaPrototype already existing
+	if (_G[DF.GlobalWidgetControlNames["aura_tracker"]]) then
+		--get the already existing metaPrototype
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["aura_tracker"]]
+		--check if is older
+		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
+			--the version is older them the currently loading one
+			--copy the new values into the old metatable
+			for funcName, _ in pairs(metaPrototype) do
+				oldMetaPrototype[funcName] = metaPrototype[funcName]
+			end
+		end
+	else
+		--first time loading the framework
+		_G[DF.GlobalWidgetControlNames ["aura_tracker"]] = metaPrototype
+	end
 end
 
-local AuraTrackerMetaFunctions = _G [DF.GlobalWidgetControlNames ["aura_tracker"]]
+local AuraTrackerMetaFunctions = _G[DF.GlobalWidgetControlNames ["aura_tracker"]]
 
 --create panels
 local on_profile_changed = function (self, newdb)

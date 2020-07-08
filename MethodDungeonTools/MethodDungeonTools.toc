@@ -1,31 +1,8 @@
 ## Interface: 80300
-## Title: Method Dungeon Tools
-## Author: Nnogga
-## Version: 3.0.8
-## Notes: Tool for planning and optimizing Mythic+ dungeon runs
-## OptionalDeps: ElvUI, LibStub, LibUIDropDownMenu, Ace3
+## Title: Method Dungeon Tools - DB STUB
+## Author: Nnoggie
+## Version: 3.0.9
+## Notes: Stubbed out MDT jsut for sake of getting original DB back. Will be deprecated soon
 ## SavedVariables: MethodDungeonToolsDB
 
-#@no-lib-strip@
-libs\load_libs.xml
-#@end-no-lib-strip@
-
-Locales.lua
-AceGUIWidget-MethodDungeonToolsPullButton.lua
-AceGUIWidget-MethodDungeonToolsNewPullButton.lua
-AceGUIWidget-MethodDungeonToolsSpellButton.lua
-Utility.lua
 MethodDungeonTools.lua
-DungeonEnemies.xml
-EnemyInfo.lua
-Pointsofinterest.lua
-Transmission.lua
-toolbar.lua
-devpanel.lua
-DataCollection.lua
-LiveSession.lua
-Legion\load_legion.xml
-BattleForAzeroth\load_bfa.xml
-
-## Title-zhCN: |cff880303[爱不易]|r Method 大秘路线工具
-## X-Vendor: AbyUI

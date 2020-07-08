@@ -725,10 +725,6 @@ function SlashCmdList.DETAILS (msg, editbox)
 		print (serial)
 		
 		--tonumber((UnitGUID("target")):sub(-12, -9), 16))
-		
-	elseif (command == "callfunction") then
-	
-		_detalhes:InstanceCall (_detalhes.SetCombatAlpha, nil, nil, true)
 	
 	elseif (command == "guid") then --> localize-me
 	

@@ -1134,7 +1134,7 @@ local default_profile = {
 			border_color = {0, 0, 0, 1},
 			border_size = 14,
 			
-			tooltip_max_abilities = 7,
+			tooltip_max_abilities = 6,
 			tooltip_max_targets = 2,
 			tooltip_max_pets = 2,
 			
@@ -1339,7 +1339,7 @@ local default_global_data = {
 	--> mythic plus config
 		mythic_plus = {
 			always_in_combat = false, --
-			merge_boss_trash = true, --
+			merge_boss_trash = false, --
 			delete_trash_after_merge = true, --
 			--merge_boss_with_trash = false, --this won't be used
 			boss_dedicated_segment = true, --

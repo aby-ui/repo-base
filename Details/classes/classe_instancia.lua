@@ -388,6 +388,7 @@ end
 		gump:Fade (self.baseframe.cabecalho.ball, 1)
 		gump:Fade (self.baseframe, 1)
 		gump:Fade (self.rowframe, 1)
+		gump:Fade (self.windowSwitchButton, 1)
 		
 		self:Desagrupar (-1)
 		
@@ -593,6 +594,7 @@ end
 		gump:Fade (self.baseframe.cabecalho.ball, 0)
 		gump:Fade (self.baseframe, 0)
 		gump:Fade (self.rowframe, 0)
+		gump:Fade (self.windowSwitchButton, 0)
 		
 		self:SetMenuAlpha()
 		
@@ -609,7 +611,7 @@ end
 			end
 		end
 		
-		if (type (self.hide_in_combat_type) == "number" and self.hide_in_combat_type > 1 and _detalhes.LastShowCommand and _detalhes.LastShowCommand+10 > GetTime()) then
+		if (_detalhes.LastShowCommand and _detalhes.LastShowCommand+10 > GetTime()) then
 			self:ToolbarMenuButtons()
 			self:ToolbarSide()
 			self:AttributeMenu()
@@ -621,16 +623,16 @@ end
 			_detalhes.WindowAutoHideTick [self.meu_id] = C_Timer.NewTicker (10, function()
 				if (self.last_interaction) then
 					if (self.last_interaction + 10 < _detalhes._tempo) then
-						self:SetCombatAlpha (nil, nil, true)
+						self:AdjustAlphaByContext(true)
 						_detalhes.WindowAutoHideTick [self.meu_id]:Cancel()
 					end
 				else
-					self:SetCombatAlpha (nil, nil, true)
+					self:AdjustAlphaByContext(true)
 					_detalhes.WindowAutoHideTick [self.meu_id]:Cancel()
 				end
 			end)
 		else
-			self:SetCombatAlpha (nil, nil, true)
+			self:AdjustAlphaByContext(true)
 		end
 		
 		self:DesaturateMenu()

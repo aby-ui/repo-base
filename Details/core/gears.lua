@@ -173,9 +173,14 @@ end
 					window1.baseframe:ClearAllPoints()
 					
 					window1.baseframe:SetParent (ChatFrame)
+
 					window1.rowframe:SetParent (window1.baseframe)
 					window1.rowframe:ClearAllPoints()
 					window1.rowframe:SetAllPoints()
+
+					window1.windowSwitchButton:SetParent (window1.baseframe)
+					window1.windowSwitchButton:ClearAllPoints()
+					window1.windowSwitchButton:SetAllPoints()
 					
 					local y_up = window1.toolbar_side == 1 and -20 or 0
 					local y_down = (window1.show_statusbar and 14 or 0) + (window1.toolbar_side == 2 and 20 or 0)
@@ -211,6 +216,13 @@ end
 					window2.baseframe:SetParent (ChatFrame)
 					window1.rowframe:SetParent (window1.baseframe)
 					window2.rowframe:SetParent (window2.baseframe)
+
+					window1.windowSwitchButton:SetParent (window1.baseframe)
+					window1.windowSwitchButton:ClearAllPoints()
+					window1.windowSwitchButton:SetAllPoints()
+					window2.windowSwitchButton:SetParent (window2.baseframe)
+					window2.windowSwitchButton:ClearAllPoints()
+					window2.windowSwitchButton:SetAllPoints()
 
 					window1:LockInstance (true)
 					window2:LockInstance (true)

@@ -2007,6 +2007,10 @@ function atributo_heal:MontaTooltipAlvos (esta_barra, index, instancia)
 		total = self.total
 	end
 
+	_detalhes:FormatCooltipForSpells()
+	GameCooltip:SetOwner(esta_barra, "bottom", "top", 4, -2)
+	GameCooltip:SetOption ("MinWidth", max(230, esta_barra:GetWidth()*0.98))
+
 	--> add spells
 	for spellid, tabela in _pairs (container) do
 		for target_name, amount in _pairs (tabela ["targets" .. targets_key]) do
@@ -2049,31 +2053,43 @@ function atributo_heal:MontaTooltipAlvos (esta_barra, index, instancia)
 	local is_hps = info.instancia.sub_atributo == 2
 	
 	if (is_hps) then
-		GameTooltip:AddLine (index..". "..inimigo)
-		GameTooltip:AddLine (Loc ["STRING_HEALING_HPS_FROM"] .. ":")
-		GameTooltip:AddLine (" ")
+		--GameTooltip:AddLine (index..". "..inimigo)
+		--GameTooltip:AddLine (Loc ["STRING_HEALING_HPS_FROM"] .. ":")
+		--GameTooltip:AddLine (" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_HPS_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
 	else
-		GameTooltip:AddLine (index..". "..inimigo)
-		GameTooltip:AddLine (Loc ["STRING_HEALING_FROM"] .. ":")
-		GameTooltip:AddLine (" ")
+		--GameTooltip:AddLine (index..". "..inimigo)
+		--GameTooltip:AddLine (Loc ["STRING_HEALING_FROM"] .. ":")
+		--GameTooltip:AddLine (" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
 	end
 	
-	for index, tabela in _ipairs (habilidades) do
-		local nome, icone = tabela[1], tabela [3]
-		if (index < 8) then
-			if (is_hps) then
-				GameTooltip:AddDoubleLine (index..". |T"..icone..":0|t "..nome, _detalhes:comma_value (_math_floor (tabela[2]/meu_tempo)).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
-			else
-				GameTooltip:AddDoubleLine (index..". |T"..icone..":0|t "..nome, SelectedToKFunction (_, tabela[2]).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)", 1, 1, 1, 1, 1, 1)
+	local icon_size = _detalhes.tooltip.icon_size
+	local icon_border = _detalhes.tooltip.icon_border_texcoord
+	local topSpellHeal = habilidades[1] and habilidades[1][2]
+
+	if (topSpellHeal) then
+		for index, tabela in _ipairs (habilidades) do
+			if (tabela [2] < 1) then
+				break
 			end
-		else
+
+			local spellName, spellIcon = tabela[1], tabela [3]
+
 			if (is_hps) then
-				GameTooltip:AddDoubleLine (index..". "..nome, _detalhes:comma_value (_math_floor (tabela[2]/meu_tempo)).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)", .65, .65, .65, .65, .65, .65)
+				GameCooltip:AddLine (spellName, _detalhes:comma_value (_math_floor (tabela[2]/meu_tempo)).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
 			else
-				GameTooltip:AddDoubleLine (index..". "..nome, SelectedToKFunction (_, tabela[2]).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)", .65, .65, .65, .65, .65, .65)
+				GameCooltip:AddLine (spellName, SelectedToKFunction (_, tabela[2]).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
 			end
+
+			GameCooltip:AddIcon (spellIcon, nil, nil, icon_size.W + 4, icon_size.H + 4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
+			_detalhes:AddTooltipBackgroundStatusbar (false, tabela[2] / topSpellHeal * 100)
 		end
 	end
+
+	GameCooltip:Show()
 	
 	return true
 	

@@ -115,7 +115,7 @@
     <Include file="..\..\Paku_Totems\CfgPaku_Totems.lua"/>
     <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
     <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
-    <Include file="..\..\MethodDungeonTools\CfgMethodDungeonTools.lua"/>
+    <Include file="..\..\MythicDungeonTools\CfgMythicDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>
     <Include file="..\..\RareScanner\CfgRareScanner.lua"/>
     <Include file="..\..\RECrystallize\CfgRECrystallize.lua"/>

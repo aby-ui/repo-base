@@ -1209,10 +1209,6 @@ end
 	
 	function gump:Fade (frame, tipo, velocidade, parametros)
 		
-		--if (frame.GetObjectType and frame:GetObjectType() == "Frame" and frame.GetName and type (frame:GetName()) == "string" and frame:GetName():find ("DetailsBaseFrame")) then
-		--	print (debugstack())
-		--end
-		
 		if (_type (frame) == "table") then 
 		
 			if (frame.meu_id) then --> ups, � uma inst�ncia
@@ -1281,6 +1277,7 @@ end
 			frame.fadeInfo.finishedArg1 = frame
 			
 		elseif (_upper (tipo) == "OUT") then --> aparecer
+
 			if (frame:GetAlpha() == 1 and not frame.hidden and not frame.fading_in) then --> ja esta na tela
 				return
 			elseif (frame.fading_out) then --> j� ta com fading out

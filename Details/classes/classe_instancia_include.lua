@@ -276,8 +276,88 @@ _detalhes.instance_defaults = {
 		hide_in_combat = false,
 		hide_out_of_combat = false,
 		
-		hide_in_combat_type = 1,
-		hide_in_combat_alpha = 0,
+		hide_in_combat_type = 1, --deprecated
+		hide_in_combat_alpha = 0, --deprecated
+
+	--hide or show the window by context
+		hide_on_context = {
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+			{
+				enabled = false,
+				inverse = false,
+				value = 100,
+			},
+		},
+
 	--switches
 		switch_all_roles_in_combat = false,
 		switch_all_roles_after_wipe = false,

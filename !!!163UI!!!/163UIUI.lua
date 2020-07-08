@@ -1436,7 +1436,7 @@ function UUI.Right.SetHTML(right, name)
 
         local text = "<HTML><BODY>%s%s%s"..format(UUI.Right.GetTitleFormat(), L["插件介绍"])..L["<P>　%s<br/></P>%s</BODY></HTML>"];
         local author, modifier, changes, tags = "", "", "", ""
-        if #info.tags > 0 then
+        if info.tags and #info.tags > 0 then
             for _, tag in ipairs(info.tags) do
                 if tag ~= TAG_GOOD then
                     tag = select(3, U1GetTagInfoByName(tag))

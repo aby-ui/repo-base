@@ -20,12 +20,29 @@ do
 		WidgetType = "split_bar",
 		SetHook = DF.SetHook,
 		RunHooksForWidget = DF.RunHooksForWidget,
+
+		dversion = DF.dversion,
 	}
 
-	_G [DF.GlobalWidgetControlNames ["split_bar"]] = _G [DF.GlobalWidgetControlNames ["split_bar"]] or metaPrototype
+	--check if there's a metaPrototype already existing
+	if (_G[DF.GlobalWidgetControlNames["split_bar"]]) then
+		--get the already existing metaPrototype
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["split_bar"]]
+		--check if is older
+		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
+			--the version is older them the currently loading one
+			--copy the new values into the old metatable
+			for funcName, _ in pairs(metaPrototype) do
+				oldMetaPrototype[funcName] = metaPrototype[funcName]
+			end
+		end
+	else
+		--first time loading the framework
+		_G[DF.GlobalWidgetControlNames ["split_bar"]] = metaPrototype
+	end
 end
 
-local SplitBarMetaFunctions = _G [DF.GlobalWidgetControlNames ["split_bar"]]
+local SplitBarMetaFunctions = _G[DF.GlobalWidgetControlNames ["split_bar"]]
 
 ------------------------------------------------------------------------------------------------------------
 --> metatables

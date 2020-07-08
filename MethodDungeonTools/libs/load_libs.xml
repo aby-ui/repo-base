@@ -1,5 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<!--<Script file='LibCompress\LibCompress.lua'/>-->
-	<Include file='LibUIDropDownMenu\LibUIDropDownMenu.xml'/>
-	<!--<Script file='LibDeflate\LibDeflate.lua'/>-->
-</Ui>

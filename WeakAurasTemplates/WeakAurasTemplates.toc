@@ -1,7 +1,7 @@
 ## Interface: 80300
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
-## Version: 2.17.8
+## Version: 2.17.9
 ## Notes: Templates for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras

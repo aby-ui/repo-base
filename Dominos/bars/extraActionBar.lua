@@ -1,160 +1,120 @@
-if not ExtraActionBarFrame then return end
+local ExtraActionBarFrame = _G.ExtraActionBarFrame
+if not ExtraActionBarFrame then
+	return
+end
 
 local _, Addon = ...
-local KeyBound = LibStub('LibKeyBound-1.0')
-local Tooltips = Addon:GetModule('Tooltips')
-local Bindings = Addon.BindingsController
 
---[[ buttons ]]--
+local ExtraBar = Addon:CreateClass("Frame", Addon.Frame)
 
-local ExtraActionButton = Addon:CreateClass('CheckButton', Addon.BindableButton)
+function ExtraBar:New()
+	local bar = ExtraBar.proto.New(self, "extra")
 
-do
-	local unused = {}
+	ExtraActionBarFrame.button:SetAttribute("showgrid", 1)
+	bar:UpdateShowBlizzardTexture()
+	bar:Layout()
 
-	function ExtraActionButton:New(id)
-		local button = self:Restore(id) or self:Create(id)
+	return bar
+end
 
-		Tooltips:Register(button)
-		Bindings:Register(button)
-
-		return button
+function ExtraBar:OnCreate()
+	local button = ExtraActionBarFrame.button
+	if not button then
+		return
 	end
 
-	function ExtraActionButton:Create(id)
-		local button = self:Bind(_G[('ExtraActionButton%d'):format(id)])
+	-- apply the bindable button mixin
+	setmetatable(button, { __index = Addon.BindableButton })
 
-		if button then
-			button.buttonType = 'EXTRAACTIONBUTTON'
-			button:HookScript('OnEnter', self.OnEnter)
-			Addon:GetModule('ButtonThemer'):Register(button, 'Extra Bar')
+	-- set the button type, so that we can reuse its current binding
+	button.buttonType = "EXTRAACTIONBUTTON"
 
-			return button
+	-- add hooks for keybound tooltips
+	button:HookScript(
+		"OnEnter",
+		function()
+			LibStub('LibKeyBound-1.0'):Set(button)
 		end
-	end
+	)
 
-	function ExtraActionButton:Restore(id)
-		local b = unused and unused[id]
+	-- add hooks for theming the button
+	Addon:GetModule("ButtonThemer"):Register(button, "Extra Bar")
+end
 
-		if b then
-			unused[id] = nil
-			b:Show()
+function ExtraBar:GetDefaults()
+	return {
+		point = "CENTER",
+		x = -244,
+		y = 0
+	}
+end
 
-			return b
+function ExtraBar:Layout()
+	ExtraActionBarFrame:ClearAllPoints()
+	ExtraActionBarFrame:SetPoint("CENTER", self)
+	ExtraActionBarFrame:SetParent(self)
+
+	local w, h = ExtraActionBarFrame:GetSize()
+	local pW, pH = self:GetPadding()
+
+	self:SetSize(w + pW, h + pH)
+end
+
+function ExtraBar:CreateMenu()
+	local menu = Addon:NewMenu()
+
+	self:AddLayoutPanel(menu)
+	menu:AddFadingPanel()
+
+	self.menu = menu
+end
+
+function ExtraBar:AddLayoutPanel(menu)
+	local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-Config")
+
+	local panel = menu:NewPanel(l.Layout)
+
+	panel:NewCheckButton {
+		name = l.ExtraBarShowBlizzardTexture,
+		get = function()
+			return panel.owner:ShowingBlizzardTexture()
+		end,
+		set = function(_, enable)
+			panel.owner:ShowBlizzardTexture(enable)
 		end
-	end
+	}
 
-	--saving them thar memories
-	function ExtraActionButton:Free()
-		unused[self:GetID()] = self
+	panel.scaleSlider = panel:NewScaleSlider()
+	panel.paddingSlider = panel:NewPaddingSlider()
+end
 
-		self:SetParent(nil)
-		self:Hide()
+function ExtraBar:ShowBlizzardTexture(show)
+	self.sets.hideBlizzardTeture = not show
 
-		Tooltips:Unregister(self)
-		Bindings:Unregister(self)
-	end
+	self:UpdateShowBlizzardTexture()
+end
 
-	--keybound support
-	function ExtraActionButton:OnEnter()
-		KeyBound:Set(self)
+function ExtraBar:ShowingBlizzardTexture()
+	return not self.sets.hideBlizzardTeture
+end
+
+function ExtraBar:UpdateShowBlizzardTexture()
+	local showTexture = self:ShowingBlizzardTexture()
+
+	if showTexture then
+		ExtraActionBarFrame.button.style:Show()
+	else
+		ExtraActionBarFrame.button.style:Hide()
 	end
 end
 
---[[ bar ]]--
+local ExtraBarController = Addon:NewModule("ExtraBar")
 
-local ExtraBar = Addon:CreateClass('Frame', Addon.ButtonBar)
-
-do
-	function ExtraBar:New()
-		local bar = ExtraBar.proto.New(self, 'extra')
-
-		bar:UpdateShowBlizzardTexture()
-
-		return bar
-	end
-
-	function ExtraBar:GetDefaults()
-		return {
-			point = 'CENTER',
-			x = -244,
-			y = 0,
-		}
-	end
-
-	function ExtraBar:GetShowStates()
-		return '[extrabar]show;hide'
-	end
-
-	function ExtraBar:NumButtons()
-		return 1
-	end
-
-	function ExtraBar:GetButton(index)
-		local button = ExtraActionButton:New(index)
-
-		button:SetAttribute('showgrid', 1)
-
-		return button
-	end
-
-	function ExtraBar:ShowBlizzardTexture(show)
-		self.sets.hideBlizzardTeture = not show
-
-		self:UpdateShowBlizzardTexture()
-	end
-
-	function ExtraBar:ShowingBlizzardTexture()
-		return not self.sets.hideBlizzardTeture
-	end
-
-	function ExtraBar:UpdateShowBlizzardTexture()
-		local showTexture = self:ShowingBlizzardTexture()
-
-		for _, button in pairs(self.buttons) do
-			if showTexture then
-				button.style:Show()
-			else
-				button.style:Hide()
-			end
-		end
-	end
-
-	function ExtraBar:CreateMenu()
-		local menu = Addon:NewMenu()
-
-		self:AddLayoutPanel(menu)
-		menu:AddAdvancedPanel()
-		menu:AddFadingPanel()
-
-		self.menu = menu
-	end
-
-	function ExtraBar:AddLayoutPanel(menu)
-		local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
-		local panel = menu:NewPanel(l.Layout)
-
-		panel:NewCheckButton{
-			name = l.ExtraBarShowBlizzardTexture,
-			get = function() return panel.owner:ShowingBlizzardTexture() end,
-			set = function(_, enable) panel.owner:ShowBlizzardTexture(enable) end
-		}
-
-		panel:AddLayoutOptions()
-	end
-end
-
---[[ module ]]--
-
-local ExtraBarController = Addon:NewModule('ExtraBar')
-
-function ExtraBarController:OnInitialize()
+function ExtraBarController:Load()
 	-- luacheck: push ignore 122
 	ExtraActionBarFrame.ignoreFramePositionManager = true
 	-- luacheck: pop
-end
 
-function ExtraBarController:Load()
 	self.frame = ExtraBar:New()
 end
 

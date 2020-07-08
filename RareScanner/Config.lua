@@ -337,19 +337,19 @@ local function GetGeneralOptions()
 						private.db.general.enableTomtomSupport = value
 					end,
 					width = "full",
+					disabled = function() return not TomTom end,
 				},
-				separatorMessages = {
+				autoTomtomWaypoints = {
 					order = 11,
-					type = "header",
-					name = "",
-				},
-				sync = {
-					order = 12,
-					name = AL["SYNCRONIZE"],
-					desc = AL["SYNCRONIZE_DESC"],
-					type = "execute",
-					func = function() RareScanner:MarkCompletedAchievements() end,
-					width = "double",
+					name = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS"],
+					desc = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS_DESC"],
+					type = "toggle",
+					get = function() return private.db.general.autoTomtomWaypoints end,
+					set = function(_, value)
+						private.db.general.autoTomtomWaypoints = value
+					end,
+					width = "full",
+					disabled = function() return not private.db.general.enableTomtomSupport end,
 				}
 			},
 		}
@@ -1414,8 +1414,25 @@ local function GetMapOptions()
 					width = "full",
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
 				},
-				displayNpcIcons = {
+				minimapscale = {
 					order = 2,
+					type = "range",
+					name = AL["MINIMAP_SCALE_ICONS"],
+					desc = AL["MINIMAP_SCALE_ICONS_DESC"],
+					min	= 0.3,
+					max	= 1.4,
+					step = 0.01,
+					bigStep = 0.05,
+					get = function() return private.db.map.minimapscale end,
+					set = function(_, value)
+						private.db.map.minimapscale = value
+						RareScanner:UpdateMinimap(true)
+					end,
+					width = "full",
+					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
+				},
+				displayNpcIcons = {
+					order = 3,
 					type = "toggle",
 					name = AL["DISPLAY_NPC_ICONS"],
 					desc = AL["DISPLAY_NPC_ICONS_DESC"],
@@ -1427,7 +1444,7 @@ local function GetMapOptions()
 					width = "full",
 				},
 				displayContainerIcons = {
-					order = 3,
+					order = 4,
 					type = "toggle",
 					name = AL["DISPLAY_CONTAINER_ICONS"],
 					desc = AL["DISPLAY_CONTAINER_ICONS_DESC"],
@@ -1439,7 +1456,7 @@ local function GetMapOptions()
 					width = "full",
 				},
 				displayEventIcons = {
-					order = 4,
+					order = 5,
 					type = "toggle",
 					name = AL["DISPLAY_EVENT_ICONS"],
 					desc = AL["DISPLAY_EVENT_ICONS_DESC"],
@@ -1451,12 +1468,12 @@ local function GetMapOptions()
 					width = "full",
 				},
 				separatorMainButton = {
-					order = 5,
+					order = 6,
 					type = "header",
 					name = AL["MAP_OPTIONS"],
 				},
 				displayFriendlyNpcIcons = {
-					order = 6,
+					order = 7,
 					type = "toggle",
 					name = AL["DISPLAY_FRIENDLY_NPC_ICONS"],
 					desc = AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"],
@@ -1469,7 +1486,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons) end,
 				},
 				displayNotDiscoveredMapIcons = {
-					order = 7,
+					order = 8,
 					type = "toggle",
 					name = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS"],
 					desc = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC"],
@@ -1482,7 +1499,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				displayOldNotDiscoveredMapIcons = {
-					order = 8,
+					order = 9,
 					type = "toggle",
 					name = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS"],
 					desc = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC"],
@@ -1495,7 +1512,7 @@ local function GetMapOptions()
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or not private.db.map.displayNotDiscoveredMapIcons) end,
 				},
 				keepShowingAfterDead = {
-					order = 9,
+					order = 10,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_DEAD"],
 					desc = AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"],
@@ -1509,7 +1526,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				keepShowingAfterDeadReseteable = {
-					order = 10,
+					order = 11,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"],
 					desc = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"],
@@ -1522,7 +1539,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.keepShowingAfterDead end,
 				},
 				keepShowingAfterCollected = {
-					order = 11,
+					order = 12,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_COLLECTED"],
 					desc = AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"],
@@ -1535,7 +1552,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				keepShowingAfterCompleted = {
-					order = 12,
+					order = 13,
 					type = "toggle",
 					name = AL["MAP_SHOW_ICON_AFTER_COMPLETED"],
 					desc = AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"],
@@ -1548,7 +1565,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,
 				},
 				maxSeenTime = {
-					order = 13,
+					order = 14,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
@@ -1566,7 +1583,7 @@ local function GetMapOptions()
 					disabled = function() return ((not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) or private.db.map.disableLastSeenFilter) end,	
 				},
 				maxSeenTimeContainer = {
-					order = 14,
+					order = 15,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"],
@@ -1583,7 +1600,7 @@ local function GetMapOptions()
 					disabled = function() return (not private.db.map.displayNpcIcons and not private.db.map.displayContainerIcons and not private.db.map.displayEventIcons) end,	
 				},
 				maxSeenTimeEvent = {
-					order = 15,
+					order = 16,
 					type = "range",
 					name = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"],
 					desc = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"],

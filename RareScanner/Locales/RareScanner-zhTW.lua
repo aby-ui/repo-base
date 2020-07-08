@@ -57,6 +57,8 @@ if AL then
 	AL["DISPLAY_CONTAINER_ICONS_DESC"] = "當停用時，寶箱的圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_EVENT_ICONS"] = "世界地圖顯示事件圖示開關"
 	AL["DISPLAY_EVENT_ICONS_DESC"] = "當停用時，事件圖示不會顯示在世界地圖上。"
+	AL["DISPLAY_FRIENDLY_NPC_ICONS"] = "切換是否顯示世界地圖上的友善稀有NPC圖示"
+	AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"] = "禁用時，友善稀有NPC的圖示不會顯示在世界地圖上。"
 	AL["DISPLAY_LOG_WINDOW"] = "切換是否顯示紀錄視窗"
 	AL["DISPLAY_LOG_WINDOW_DESC"] = "當停用紀錄視窗就不會再出現。"
 	AL["DISPLAY_LOOT_ON_MAP"] = "在地圖提示上顯示戰利品"
@@ -94,6 +96,7 @@ if AL then
 	AL["ENABLE_TOMTOM_SUPPORT_DESC"] = "啟用後會添加Tomtom插件的坐標點"
 	AL["ENABLED_SEARCHING_RARE"] = "已啟用通知的稀有NPC:"
 	AL["EVENT"] = "事件"
+	AL["EXPEDITION_ISLANDS"] = "海嶼探險"
 	AL["FILTER"] = "過濾NPC"
 	AL["FILTER_CONTINENT"] = "大陸/類別"
 	AL["FILTER_CONTINENT_DESC"] = "大陸或類別名稱"
@@ -196,6 +199,8 @@ if AL then
 	AL["MARKER_DESC"] = "點擊主按鈕，選擇目標頂部的標記。"
 	AL["MESSAGE_OPTIONS"] = "訊息選項"
 	AL["MIDDLE_BUTTON"] = "中鍵點擊"
+	AL["MINIMAP_SCALE_ICONS"] = "小地圖按鈕縮放"
+	AL["MINIMAP_SCALE_ICONS_DESC"] = "調整小地圖上的按鈕縮放，0.7表示原始尺寸。"
 	AL["NAVIGATION_ENABLE"] = "切換導航"
 	AL["NAVIGATION_ENABLE_DESC"] = "啟用後，導航箭頭將顯示在主按鈕旁邊，以允許您訪問找到的新舊單位"
 	AL["NAVIGATION_LOCK_ENTITY"] = "如果已經顯示新單位，則阻止顯示"
@@ -205,10 +210,16 @@ if AL then
 	AL["NAVIGATION_SHOW_PREVIOUS"] = "顯示找到的先前單位"
 	AL["NOT_TARGETEABLE"] = "無法設為目標"
 	AL["NOTE_10263"] = "“裂盾術士”打開傳送門有時會從中召喚稀有 NPC。"
+	AL["NOTE_129836"] = "它沒有微縮圖，所以無法獲得他的報警訊息。在建築的地下室中。"
 	AL["NOTE_130350"] = "你必須沿著這個位置右邊的路徑騎上稀有到此箱子。"
 	AL["NOTE_131453"] = "你必須騎上[春天守護者-暫譯]到這個位置，這匹馬是友善的稀有怪，通常可在箱子左邊的路徑找到。"
+	AL["NOTE_131735"] = "他是一個中立NPC。擊殺他之後會出現一只小豬，可以獲得一個小寵物[帕菲]"
+	AL["NOTE_135448"] = "僅在史詩難度下出現。你需要找到[被遺棄的監獄鑰匙]（刷新在附近家具頂部）來打開有骷髏的監舍。進入後穿過牆上的洞進入一個有桶的房間，點擊桶召喚稀有 NPC。"
 	AL["NOTE_135497"] = "僅在蜜露恩發放日常任務[來自諾達希爾的援助]時有效。該日常要求你在樹底下找蘑菇，當你點擊一個蘑菇時它會停滯，你需要在它消失前再點2個蘑菇，NPC才會出現"
+	AL["NOTE_140474"] = "你需要收集20個[深淵碎片]（世界掉落）。收集齊20個之後點擊合成[讓人厭惡的深淵精華]，在坐標73.23處（瀑布後面）使用它。它會指引你去一個可以召喚稀有 NPC 的礦洞（礦洞入口坐標46.36）"
 	AL["NOTE_149847"] = "你靠近他時他會告訴你一個他討厭的顏色，你要到坐標63.41被染成這個顏色，然後回來找他，他就會攻擊你。"
+	AL["NOTE_149886"] = "他只會在你剛進入皇家圖書館時出現一次。這是對漫威的斯坦·李的致敬。"
+	AL["NOTE_149887"] = "他只會在你剛進入這個房子時出現一次。這是對漫威的斯坦·李的致敬。"
 	AL["NOTE_150342"] = "在事件[鑽探機 DR-TR35]進行期間可用"
 	AL["NOTE_150394"] = "你需要把他帶到坐標63.38，那裡有一個藍色閃電裝置，當NPC觸碰到閃電時他會爆炸，然後你就可以拾取戰利品。"
 	AL["NOTE_151124"] = "你需要在事件[鑽探機 DR-JD99]進行期間（坐標59.67）從小怪身上拾取[砸壞的運輸繼電器]，然後在這個機器上使用"
@@ -295,9 +306,6 @@ if AL then
 	AL["SOUND_OPTIONS"] = "聲音選項"
 	AL["SOUND_VOLUME"] = "音量"
 	AL["SOUND_VOLUME_DESC"] = "設置音效的音量等級"
-	AL["SYNCRONIZATION_COMPLETED"] = "同步已完成"
-	AL["SYNCRONIZE"] = "同步數據"
-	AL["SYNCRONIZE_DESC"] = "這會分析哪些是成就要求的一部分的稀有NPC和寶箱已經被你擊殺或打開，他們會從你的地圖中移除。插件無法得知不在成就追蹤中的稀有NPC和寶箱的擊殺狀態，他們還會保留在地圖上。"
 	AL["TEST"] = "開始測試"
 	AL["TEST_DESC"] = "按下按鈕以顯示通知範例，將面板拖曳到你想要擺放的合適位置。"
 	AL["TOC_NOTES"] = "小地圖掃描器。當稀有NPC、寶藏/寶箱或事件出現在您的小地圖上時，使用一個按鈕與縮小的模型用視覺化的方式提醒您並播放聲音。"
@@ -310,12 +318,14 @@ if AL then
 	AL["TOOLTIP_TOP"] = "上方"
 	AL["UNKNOWN"] = "未知"
 	AL["UNKNOWN_TARGET"] = "未知目標"
+	AL["ZONE_1332"] = "%s（戰爭前線）"
 	AL["ZONE_1527"] = "%s（決戰艾澤拉斯突襲）"
 	AL["ZONE_1530"] = "%s（決戰艾澤拉斯突襲）"
 	AL["ZONE_1570"] = "%s（決戰艾澤拉斯恩若司的小幻象）"
 	AL["ZONE_1571"] = "%s（決戰艾澤拉斯恩若司的小幻象）"
 	AL["ZONE_317"] = "%s（人形區）"
 	AL["ZONE_318"] = "%s（不死區）"
+	AL["ZONE_943"] = "%s（戰爭前線）"
 	AL["ZONES_FILTER"] = "過濾區域"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "輸入區域名稱來過濾下方的清單"
 	
@@ -326,6 +336,6 @@ if AL then
 		[9997] = "地城/事件"; --Dungeons/Scenarios
 		[9996] = "團隊"; --Raids
 		[9995] = "未知"; --Unknown
-		[9994] = "Expedition islands"; --Expedition islands
+		[9994] = "海嶼探險"; --Expedition islands
 	}
 end

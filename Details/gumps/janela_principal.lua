@@ -18,6 +18,7 @@ local _math_floor = math.floor
 local _math_max = math.max
 local _ipairs = ipairs
 local _pairs = pairs
+local abs = _G.abs
 local _string_lower = string.lower
 local _unpack = unpack
 --api locals
@@ -35,6 +36,7 @@ local modo_raid = _detalhes._detalhes_props["MODO_RAID"]
 local modo_alone = _detalhes._detalhes_props["MODO_ALONE"]
 local modo_grupo = _detalhes._detalhes_props["MODO_GROUP"]
 local modo_all = _detalhes._detalhes_props["MODO_ALL"]
+local IsInInstance = _G.IsInInstance
 
 local tok_functions = _detalhes.ToKFunctions
 
@@ -1045,6 +1047,7 @@ local BGFrame_scripts_onleave = function (self)
 end
 
 local BGFrame_scripts_onmousedown = function (self, button)
+
 	-- /run Details.disable_stretch_from_toolbar = true
 	if (self.is_toolbar and self._instance.baseframe.isLocked and button == "LeftButton" and not _detalhes.disable_stretch_from_toolbar) then
 		return self._instance.baseframe.button_stretch:GetScript ("OnMouseDown") (self._instance.baseframe.button_stretch, "LeftButton")
@@ -3471,8 +3474,8 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 
 	--> background holds the wallpaper, alert strings ans textures, have setallpoints on baseframe
 	--> backgrounddisplay is a scrollschild of backgroundframe
-	local backgroundframe =  CreateFrame ("scrollframe", "Details_WindowFrame"..ID, baseframe)
-	local backgrounddisplay = CreateFrame ("frame", "Details_GumpFrame"..ID, backgroundframe)
+	local backgroundframe =  CreateFrame ("scrollframe", "Details_WindowFrame"..ID, baseframe) --window frame
+	local backgrounddisplay = CreateFrame ("frame", "Details_GumpFrame"..ID, backgroundframe) --gump frame
 	backgroundframe:SetFrameLevel (3)
 	backgrounddisplay:SetFrameLevel (3)
 	backgroundframe.instance = instancia
@@ -3480,20 +3483,18 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 	instancia.windowBackgroundDisplay = backgrounddisplay
 	
 	--> row frame is the parent of rows, it have setallpoints on baseframe
-	local rowframe = CreateFrame ("frame", "DetailsRowFrame"..ID, _UIParent)
+	local rowframe = CreateFrame ("frame", "DetailsRowFrame"..ID, _UIParent) --row frame
 	rowframe:SetAllPoints (baseframe)
 	rowframe:SetFrameStrata (baseframe_strata)
-	rowframe:SetFrameLevel (2)
+	rowframe:SetFrameLevel (3)
+	rowframe:EnableMouse(false)
 	instancia.rowframe = rowframe
 	
 	--> right click bookmark
-	local switchbutton = gump:NewDetailsButton (backgrounddisplay, baseframe, nil, function() end, nil, nil, 1, 1, "", "", "", "", 
-	{rightFunc = {func = function() _detalhes.switch:ShowMe (instancia) end, param1 = nil, param2 = nil}}, "Details_SwitchButtonFrame" ..  ID)
-	
-	switchbutton:SetPoint ("topleft", backgrounddisplay, "topleft")
-	switchbutton:SetPoint ("bottomright", backgrounddisplay, "bottomright")
-	switchbutton:SetFrameLevel (backgrounddisplay:GetFrameLevel()+1)
-	
+	local switchbutton = CreateFrame("button", "Details_SwitchButtonFrame" ..  ID, UIParent)
+	switchbutton:SetAllPoints (baseframe)
+	switchbutton:SetFrameStrata (baseframe_strata)
+	switchbutton:SetFrameLevel (4)
 	instancia.windowSwitchButton = switchbutton
 	
 	--> avoid mouse hover over a high window when the menu is open for a lower instance.
@@ -3744,9 +3745,8 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 
 -- scripts ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	BFrame_scripts (baseframe, instancia)
-
-	BGFrame_scripts (switchbutton, baseframe, instancia)
+	BFrame_scripts (baseframe, instancia) --baseframe
+	BGFrame_scripts (switchbutton, baseframe, instancia) --backgroundframe
 	BGFrame_scripts (backgrounddisplay, baseframe, instancia)
 	
 	iterate_scroll_scripts (backgrounddisplay, backgroundframe, baseframe, scrollbar, instancia)
@@ -4982,11 +4982,12 @@ function _detalhes:SetWindowAlphaForInteract (alpha)
 		end
 	else
 		--> saiu
-		if (self.combat_changes_alpha) then --> combat alpha
+		if (self.combat_changes_alpha and self.combat_changes_alpha ~= 1) then --> combat alpha
 			self:InstanceAlpha (self.combat_changes_alpha)
 			self:SetIconAlpha (self.combat_changes_alpha, nil, true)
 			self.rowframe:SetAlpha (self.combat_changes_alpha) --alpha do combate � absoluta
 			self.baseframe:SetAlpha (self.combat_changes_alpha) --alpha do combate � absoluta
+
 		else
 			self:InstanceAlpha (alpha)
 			self:SetIconAlpha (alpha, nil, true)
@@ -5008,13 +5009,15 @@ function _detalhes:SetWindowAlphaForInteract (alpha)
 end
 
 -- ~autohide �utohide
-function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide)
+function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide, alphaAmount)
+
+--print(entering_in_combat, "|", true_hide, "|", alphaAmount)
 
 	local amount, rowsamount, menuamount
 
 	--get the values
 	if (entering_in_combat) then
-		amount = self.hide_in_combat_alpha / 100
+		amount = alphaAmount / 100
 		self.combat_changes_alpha = amount
 		rowsamount = amount
 		menuamount = amount
@@ -5043,7 +5046,7 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide)
 				end
 			end
 		else
-			amount = self.color [4]
+			amount = self.color[4]
 			menuamount = 1
 			rowsamount = 1
 		end
@@ -5054,19 +5057,24 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide)
 	
 	--apply
 	if (true_hide and amount == 0) then
-		gump:Fade (self.baseframe, _unpack (_detalhes.windows_fade_in))
-		gump:Fade (self.rowframe, _unpack (_detalhes.windows_fade_in))
+		self.baseframe:Hide()
+		self.rowframe:Hide()
+		self.windowSwitchButton:Hide()
+		--gump:Fade (self.baseframe, _unpack (_detalhes.windows_fade_in))
+		--gump:Fade (self.rowframe, _unpack (_detalhes.windows_fade_in))
+		--gump:Fade (self.windowSwitchButton, _unpack (_detalhes.windows_fade_in))
 		self:SetIconAlpha (nil, true)
 		
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) hiding window SetWindowAlphaForCombat()", amount, rowsamount, menuamount)
 		end
+		--]]
 	else
-	
+	--
 		self.baseframe:Show()
 		self.baseframe:SetAlpha (1)
 		
-		self:InstanceAlpha (amount)
+		self:InstanceAlpha (min (amount, self.color[4]))
 		gump:Fade (self.rowframe, "ALPHAANIM", rowsamount)
 		gump:Fade (self.baseframe, "ALPHAANIM", rowsamount)
 		self:SetIconAlpha (menuamount)
@@ -5074,6 +5082,7 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide)
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) showing window SetWindowAlphaForCombat()", amount, rowsamount, menuamount)
 		end
+	--]]
 	end
 	
 	if (self.show_statusbar) then
@@ -7168,7 +7177,7 @@ function _detalhes:ChangeSkin (skin_name)
 		self:SetFrameStrata()
 	
 	--> update the combat alphas
-		self:SetCombatAlpha (nil, nil, true)
+		self:AdjustAlphaByContext()
 		
 	--> update icons
 		_detalhes.ToolBar:ReorganizeIcons (true) --call self:SetMenuAlpha()
@@ -7396,104 +7405,161 @@ function _detalhes:UpdateClickThrough()
 	end
 end
 
---endd
-
-function _detalhes:DelayedCheckCombatAlpha (instance)
-	if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-		instance:SetWindowAlphaForCombat (true, true) --> hida a janela
-	else
-		instance:SetWindowAlphaForCombat (false) --> deshida a janela
+function _detalhes:DelayedCheckCombatAlpha (instance, alpha)
+	if (UnitAffectingCombat("player") or InCombatLockdown()) then
+		instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
+		instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
 	end
 end
 
-function _detalhes:DelayedCheckOutOfCombatAlpha (instance)
-	if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-		instance:SetWindowAlphaForCombat (false) --> deshida a janela
-	else
-		instance:SetWindowAlphaForCombat (true, true) --> hida a janela
+function _detalhes:DelayedCheckOutOfCombatAlpha (instance, alpha)
+	if (not UnitAffectingCombat("player") and not InCombatLockdown()) then
+		instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
+		instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
 	end
 end
 
-function _detalhes:DelayedCheckOutOfCombatAndGroupAlpha (instance)
+function _detalhes:DelayedCheckOutOfCombatAndGroupAlpha (instance, alpha)
 	if ((_detalhes.zone_type == "raid" or _detalhes.zone_type == "party") and IsInInstance()) then
-		if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-			instance:SetWindowAlphaForCombat (true, true) --> hida a janela
+		if (UnitAffectingCombat("player") or InCombatLockdown()) then
+			instance:SetWindowAlphaForCombat (false, false, alpha) --> deshida a janela
 		else
-			instance:SetWindowAlphaForCombat (false) --> deshida a janela
+			instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
+			instance:SetWindowAlphaForCombat (true, true, alpha) --> hida a janela
 		end
-	else
-		instance:SetWindowAlphaForCombat (true, true) --> hida a janela
 	end
 end
 
-function _detalhes:SetCombatAlpha (modify_type, alpha_amount, interacting)
+local getAlphaByContext = function(instance, contextIndex, invert)
+	local alpha = instance.hide_on_context[contextIndex].value
+	if (invert) then
+		alpha = abs(alpha - 100)
+	end
+	return alpha
+end
 
-	if (interacting) then
-		if (self.hide_in_combat_type == 1) then --None
-			return
-			
-		elseif (self.hide_in_combat_type == 2) then --While In Combat
-			_detalhes:ScheduleTimer ("DelayedCheckCombatAlpha", 0.3, self)
-			
-		elseif (self.hide_in_combat_type == 3) then --"While Out of Combat"
-			_detalhes:ScheduleTimer ("DelayedCheckOutOfCombatAlpha", 0.3, self)
-			
-		elseif (self.hide_in_combat_type == 4) then --"While Out of a Group"
+function _detalhes:AdjustAlphaByContext(interacting)
+
+	--in combat
+	if (not self.meu_id) then
+		print("error Details! AdjustAlphaByContext()", debugstack())
+	end
+
+	local hasRuleEnabled = false
+
+	--not in group
+	if (self.hide_on_context[3].enabled) then
+		if (self.hide_on_context[3].inverse) then
+			--while in group
 			if (_detalhes.in_group) then
-				self:SetWindowAlphaForCombat (false) --> deshida a janela
-			else
-				self:SetWindowAlphaForCombat (true, true) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 3)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 3)) --> hida a janela
+				hasRuleEnabled = true
 			end
-		
-		elseif (self.hide_in_combat_type == 5) then --"While Not Inside Instance"
-			local isInInstance = IsInInstance()
-			if (isInInstance or _detalhes.zone_type == "raid" or _detalhes.zone_type == "party") then
-				self:SetWindowAlphaForCombat (false) --> deshida a janela
-			else
-				self:SetWindowAlphaForCombat (true, true) --> hida a janela
-			end
-		
-		elseif (self.hide_in_combat_type == 6) then --"While Inside Instance"
-			local isInInstance = IsInInstance()
-			if (isInInstance or _detalhes.zone_type == "raid" or _detalhes.zone_type == "party") then
-				self:SetWindowAlphaForCombat (true, true) --> hida a janela
-			else
-				self:SetWindowAlphaForCombat (false) --> deshida a janela
-			end
-			
-		elseif (self.hide_in_combat_type == 7) then --"Raid Debug" = Out of Combat and Inside Raid or Dungeon
-			_detalhes:ScheduleTimer ("DelayedCheckOutOfCombatAndGroupAlpha", 0.3, self)
-		
-		elseif (self.hide_in_combat_type == 8) then --"In Battlegrounds"
-			local isInInstance = IsInInstance()
-			if (isInInstance and _detalhes.zone_type == "pvp") then
-				self:SetWindowAlphaForCombat (true, true) --> hida a janela
-			else
-				self:SetWindowAlphaForCombat (false) --> deshida a janela
+		else
+			--while not in group
+			if (not _detalhes.in_group) then
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 3)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 3)) --> hida a janela
+				hasRuleEnabled = true
 			end
 		end
-		
-		return
 	end
 
-	if (not modify_type) then
-		modify_type = self.hide_in_combat_type
-	else
-		if (modify_type == 1) then --> changed to none
-			self:SetWindowAlphaForCombat (false)
+	--while not inside instance
+	if (self.hide_on_context[4].enabled) then
+		local isInInstance = IsInInstance()
+		if (not isInInstance or (not _detalhes.zone_type == "raid" and not _detalhes.zone_type == "party")) then
+			self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 4)) --> hida a janela
+			self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 4)) --> hida a janela
+			hasRuleEnabled = true
 		end
 	end
-	
-	if (not alpha_amount) then
-		alpha_amount = self.hide_in_combat_alpha
+
+	--while inside instance
+	if (self.hide_on_context[5].enabled) then
+		local isInInstance = IsInInstance()
+		if (isInInstance or _detalhes.zone_type == "raid" or _detalhes.zone_type == "party") then
+			self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 5)) --> hida a janela
+			self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 5)) --> hida a janela
+			hasRuleEnabled = true
+		end
 	end
-	
-	self.hide_in_combat_type = modify_type
-	self.hide_in_combat_alpha = alpha_amount
-	
-	self:SetCombatAlpha (nil, nil, true)
-	
+
+	--raid debug (inside instance + out of combat)
+	if (self.hide_on_context[6].enabled) then
+		if ((_detalhes.zone_type == "raid" or _detalhes.zone_type == "party") and IsInInstance()) then
+			_detalhes:ScheduleTimer ("DelayedCheckOutOfCombatAndGroupAlpha", 0.3, self, getAlphaByContext(self, 6))
+		end
+	end
+
+	--in battleground
+	if (self.hide_on_context[7].enabled) then
+		local isInInstance = IsInInstance()
+		if (isInInstance and _detalhes.zone_type == "pvp") then
+			--player is inside a battleground
+			if (not self.hide_on_context[7].inverse) then
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 7)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 7)) --> hida a janela
+			else
+				self:SetWindowAlphaForCombat (false, false, getAlphaByContext(self, 7)) --> deshida a janela
+			end
+			hasRuleEnabled = true
+
+		else
+			--player is not inside a battleground
+			if (not self.hide_on_context[7].inverse) then
+				--there's no inverse rule: do nothing
+				--self:SetWindowAlphaForCombat (false, false, getAlphaByContext(self, 7)) --> deshida a janela
+			else
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 7)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 7)) --> hida a janela
+				hasRuleEnabled = true
+			end
+		end
+	end
+
+	--mythic+
+	if (self.hide_on_context[8].enabled) then
+		if (_G.DetailsMythicPlusFrame and _G.DetailsMythicPlusFrame.IsDoingMythicDungeon) then
+			--player is inside a dungeon mythic+
+			if (not self.hide_on_context[8].inverse) then
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 8)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 8)) --> hida a janela
+			else
+				self:SetWindowAlphaForCombat (false, false, getAlphaByContext(self, 8)) --> deshida a janela
+			end
+			hasRuleEnabled = true
+
+		else
+			if (not self.hide_on_context[8].inverse) then
+				--there's no inverse rule: do nothing
+				--self:SetWindowAlphaForCombat (false, false, getAlphaByContext(self, 8)) --> deshida a janela
+			else
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 8)) --> hida a janela
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, 8)) --> hida a janela
+				hasRuleEnabled = true
+			end
+		end
+	end
+
+	--in combat
+	if (self.hide_on_context[1].enabled) then
+		_detalhes:ScheduleTimer ("DelayedCheckCombatAlpha", 0.3, self, getAlphaByContext(self, 1))
+	end
+
+	--out of combat
+	if (self.hide_on_context[2].enabled) then
+		_detalhes:ScheduleTimer ("DelayedCheckOutOfCombatAlpha", 0.3, self, getAlphaByContext(self, 2))
+	end
+
+	--if no rule is enabled, show the window
+	if (not hasRuleEnabled) then
+		self:SetWindowAlphaForCombat(false)
+		self:SetWindowAlphaForCombat(false)
+	end
 end
+
 
 function _detalhes:SetFrameStrata (strata)
 	
@@ -7504,6 +7570,7 @@ function _detalhes:SetFrameStrata (strata)
 	self.strata = strata
 	
 	self.rowframe:SetFrameStrata (strata)
+	self.windowSwitchButton:SetFrameStrata (strata)
 	self.baseframe:SetFrameStrata (strata)
 	
 	if (strata == "BACKGROUND") then
@@ -7535,11 +7602,9 @@ function _detalhes:SetFrameStrata (strata)
 		self.baseframe.resize_esquerda:SetFrameStrata ("FULLSCREEN")
 		self.baseframe.resize_direita:SetFrameStrata ("FULLSCREEN")
 		self.baseframe.lock_button:SetFrameStrata ("FULLSCREEN")
-		
 	end
 	
 	self:StretchButtonAlwaysOnTop()
-	
 end
 
 function _detalhes:LeftMenuAnchorSide (side)

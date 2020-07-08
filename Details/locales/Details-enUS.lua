@@ -86,6 +86,7 @@ L["STRING_CLICK_REPORT_LINE2"] = "|cFFFFCC22Shift+Click|r: |cFFFFEE00window mode
 L["STRING_CLOSEALL"] = "All windows are closed, you may type '/details show' to re-open."
 L["STRING_COLOR"] = "Color"
 L["STRING_COMMAND_LIST"] = "command list"
+L["STRING_CONTEXT"] = "Context"
 L["STRING_COOLTIP_NOOPTIONS"] = "no options"
 L["STRING_CREATEAURA"] = "Create Aura"
 L["STRING_CRITICAL_HITS"] = "Critical Hits"
@@ -290,6 +291,7 @@ L["STRING_INFO_TUTORIAL_COMPARISON1"] = "Click on |cFFFFDD00Compare|r tab to see
 L["STRING_INSTANCE_CHAT"] = "Instance Chat"
 L["STRING_INSTANCE_LIMIT"] = "max window amount has been reached, you can modify this limit on options panel. Also you can reopen closed windows from (#) window menu."
 L["STRING_INTERFACE_OPENOPTIONS"] = "Open Options Panel"
+L["STRING_INVERT_RULE"] = "Invert Rule"
 L["STRING_ISA_PET"] = "This Actor is a Pet"
 L["STRING_KEYBIND_BOOKMARK"] = "Bookmark"
 L["STRING_KEYBIND_BOOKMARK_NUMBER"] = "Bookmark #%s"
@@ -596,7 +598,6 @@ L["STRING_OPTIONS_CMISC_DESC"] = [=[Enable capture of:
 L["STRING_OPTIONS_COLORANDALPHA"] = "Color & Alpha"
 L["STRING_OPTIONS_COLORFIXED"] = "Fixed Color"
 L["STRING_OPTIONS_COMBAT_ALPHA"] = "When"
-L["STRING_OPTIONS_COMBAT_ALPHA_1"] = "None"
 L["STRING_OPTIONS_COMBAT_ALPHA_2"] = "While In Combat"
 L["STRING_OPTIONS_COMBAT_ALPHA_3"] = "While Out of Combat"
 L["STRING_OPTIONS_COMBAT_ALPHA_4"] = "While Not in a Group"
@@ -604,6 +605,7 @@ L["STRING_OPTIONS_COMBAT_ALPHA_5"] = "While Not Inside Instance"
 L["STRING_OPTIONS_COMBAT_ALPHA_6"] = "While Inside Instance"
 L["STRING_OPTIONS_COMBAT_ALPHA_7"] = "Raid Debug"
 L["STRING_OPTIONS_COMBAT_ALPHA_8"] = "In Battleground"
+L["STRING_OPTIONS_COMBAT_ALPHA_9"] = "In Mythic+"
 L["STRING_OPTIONS_COMBAT_ALPHA_DESC"] = [=[Select how combat affects the window transparency.
 
 |cFFFFFF00No Changes|r: Doesn't modify the alpha.

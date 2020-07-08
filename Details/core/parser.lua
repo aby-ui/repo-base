@@ -1639,10 +1639,13 @@
 		end
 		
 		--print ()
-
+		--petTable:Add
 		_detalhes.tabela_pets:Adicionar (alvo_serial, alvo_name, alvo_flags, who_serial, who_name, who_flags)
 		
 		--print ("SUMMON", alvo_name, _detalhes.tabela_pets.pets, _detalhes.tabela_pets.pets [alvo_serial], alvo_serial)
+
+		--debug summons:
+		--print("summon:", who_name, alvo_serial, alvo_name, alvo_flags, spellid, spellName)
 		
 		return
 	end
@@ -4379,8 +4382,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes.last_zone_type = zoneType
 			
 			for index, instancia in ipairs (_detalhes.tabela_instancias) do 
-				if (instancia.ativa and instancia.hide_in_combat_type ~= 1) then --> 1 = none, we doesn't need to call
-					instancia:SetCombatAlpha (nil, nil, true)
+				if (instancia.ativa) then
+					instancia:AdjustAlphaByContext(true)
 				end
 			end
 		end
@@ -4672,8 +4675,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 		for index, instancia in ipairs (_detalhes.tabela_instancias) do 
-			if (instancia.ativa and instancia.hide_in_combat_type ~= 1) then --> 1 = none, we doesn't need to call
-				instancia:SetCombatAlpha (nil, nil, true)
+			if (instancia.ativa) then --> 1 = none, we doesn't need to call
+				instancia:AdjustAlphaByContext(true)
 			end
 		end
 		
@@ -4757,8 +4760,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 		for index, instancia in ipairs (_detalhes.tabela_instancias) do 
-			if (instancia.ativa and instancia.hide_in_combat_type ~= 1) then --> 1 = none, we doesn't need to call
-				instancia:SetCombatAlpha (nil, nil, true)
+			if (instancia.ativa) then --> 1 = none, we doesn't need to call
+				instancia:AdjustAlphaByContext(true)
 			end
 		end
 		
@@ -5033,7 +5036,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_detalhes:IniciarColetaDeLixo (true)
 				_detalhes:WipePets()
 				_detalhes:SchedulePetUpdate (1)
-				_detalhes:InstanceCall (_detalhes.SetCombatAlpha, nil, nil, true)
+				_detalhes:InstanceCall (_detalhes.AdjustAlphaByContext)
+				
 				_detalhes:CheckSwitchOnLogon()
 				_detalhes:CheckVersion()
 				_detalhes:SendEvent ("GROUP_ONENTER")
@@ -5053,7 +5057,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_detalhes:WipePets()
 				_detalhes:SchedulePetUpdate (1)
 				_table_wipe (_detalhes.details_users)
-				_detalhes:InstanceCall (_detalhes.SetCombatAlpha, nil, nil, true)
+				_detalhes:InstanceCall (_detalhes.AdjustAlphaByContext)
 				_detalhes:CheckSwitchOnLogon()
 				_detalhes:SendEvent ("GROUP_ONLEAVE")
 				
@@ -5182,9 +5186,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		for index, instance in _ipairs (_detalhes.tabela_instancias) do
 			if (instance.ativa) then
 				if (_detalhes.debug) then
-					_detalhes:Msg ("(debug 1) hidding windows for Pet Battle.")
+					_detalhes:Msg ("(debug) hidding windows for Pet Battle.")
 				end
-				instance:SetWindowAlphaForCombat (true, true)
+				instance:SetWindowAlphaForCombat (true, true, 0)
 			end
 		end
 	end
@@ -5193,17 +5197,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes.pet_battle = false
 		for index, instance in _ipairs (_detalhes.tabela_instancias) do
 			if (instance.ativa) then
-				if (instance.hide_in_combat_type == 1) then
-					if (_detalhes.debug) then
-						_detalhes:Msg ("(debug 1) restoring windows after Pet Battle.")
-					end
-					instance:SetWindowAlphaForCombat()
-				else
-					if (_detalhes.debug) then
-						_detalhes:Msg ("(debug 2) restoring windows after Pet Battle.")
-					end
-					instance:SetCombatAlpha (nil, nil, true)
+				if (_detalhes.debug) then
+					_detalhes:Msg ("(debug) Pet Battle finished, calling AdjustAlphaByContext().")
 				end
+				instance:AdjustAlphaByContext(true)
 			end
 		end
 	end

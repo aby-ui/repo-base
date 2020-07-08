@@ -228,12 +228,20 @@ function notes:UndoButtonOnClick()
 	rematch:ShowNotes(notes.subjectType,notes.subject,true)
 end
 
--- when focus lost, the control buttons are hidden and the notes
--- are saved
+-- autofocus editboxes can lose focus now by clicking elsewhere
 function notes:OnFocusLost()
+	C_Timer.After(0.15,notes.OnFocusLostDelayed)
+end
+
+-- when focus lost, the control buttons are hidden and the notes are saved
+function notes:OnFocusLostDelayed()
+	-- if focus was immediately regained, then leave and do nothing
+	if notes.Content.ScrollFrame.EditBox:HasFocus() then
+		return
+	end
 	notes.Content:SetPoint("BOTTOMRIGHT",-4,2)
 	notes.Controls:Hide()
-	local text = (self:GetText() or ""):trim()
+	local text = (notes.Content.ScrollFrame.EditBox:GetText() or ""):trim()
 	local update -- becomes true if UI needs updating (notes gained/lost)
 	if notes.subjectType=="team" then
 		local team = RematchSaved[notes.subject]

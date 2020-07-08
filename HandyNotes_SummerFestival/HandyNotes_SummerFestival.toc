@@ -1,9 +1,10 @@
 ## Interface: 80300
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
-## Author: Ethan Centaurai
-## Version: v1.6.1
+## Author: Ravendwyr
+## Version: v1.6.2
 ## X-Category: Map & Minimap
+## X-Curse-Project-ID: 45903
 ## SavedVariables: HandyNotes_SummerFestivalDB
 ## RequiredDeps: HandyNotes
 

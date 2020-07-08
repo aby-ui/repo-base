@@ -185,7 +185,7 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 	
 	-- Completed quests
 	if (private.db.loot.filterItemsCompletedQuest and (itemClassID == 12 or (itemClassID == 0 and itemSubClassID == 8))) then --quest item
-		if (not private.LOOT_QUEST_IDS[itemID] or C_QuestLog.IsQuestFlaggedCompleted(private.LOOT_QUEST_IDS[itemID])) then
+		if (private.LOOT_QUEST_IDS[itemID] and (C_QuestLog.IsQuestFlaggedCompleted(private.LOOT_QUEST_IDS[itemID]) or not C_TaskQuest.IsActive(private.LOOT_QUEST_IDS[itemID]))) then
 			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por ser un objeto de mision que ya esta completada (C_QuestLog.IsQuestFlaggedCompleted)")
 			return false
 		end
@@ -244,7 +244,7 @@ function RareScanner:ApplyLootFilters(itemID, itemLink, itemRarity, itemEquipLoc
 	-- Collection pet filter
 	-- Unique pets
 	if (private.db.loot.filterCollectedItems and itemClassID == 15 and itemSubClassID == 2) then --pets
-		if (ScanToolTipFor(itemLink, format(ITEM_PET_KNOWN, "1", "1"))) then
+		if (ScanToolTipFor(itemLink, format(ITEM_PET_KNOWN, "1", "1")) or ScanToolTipFor(itemLink, format(ITEM_PET_KNOWN, "3", "3"))) then
 			--RareScanner:PrintDebugMessage("DEBUG: Filtrado el objeto "..itemID.." por tenerlo ya en la coleccion de mascotas (ToolTip)")
 			return false
 		end

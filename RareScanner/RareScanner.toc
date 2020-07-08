@@ -6,18 +6,18 @@
 ## Notes-ptBR: Scanner do minimapa. Avisa com uma mensagem, uma miniatura e produz um sinal sonoro cada vez que um NPC raro, tesouro ou evento aparece no seu minimapa.
 ## Notes-zhTW: 小地圖掃描器。 當每次稀有NPC、寶藏/寶箱或事件出現在您的小地圖上時，使用一個按鈕與縮小的模型視覺化提醒您並撥放聲音。
 ## Notes-zhCN: 小地图扫描器。 当每次稀有NPC、宝藏/宝箱或事件出现在您的小地图上时，使用一个按钮与缩小的模型视觉化提醒您并拨放声音。
-## Notes-deDE: Minimap scanner. Warns you visually with a button and a miniature and plays a sound everytime a rare NPC, treasure/chest or event shows up in your minimap.
+## Notes-deDE: Minikartenüberprüfung. Warnt dich visuell mit einer Schaltfläche und einer Miniaturansicht und spielt jedes Mal einen Ton ab, wenn ein seltener Gegner, ein Schatz/eine Kiste oder ein Ereignis auf deiner Minikarte entdeckt wird.
 ## Notes-ruRU: Сканер миникарты. Визуально оповещает вас с помощью кнопки и миниатюры, а также воспроизводит звук каждый раз, когда на миникарте появляется редкий НИП, сокровище/сундук или событие
 ## Notes-koKR: 미니맵 스캐너. 매번 희귀 NPC, 보물/상자 또는 이벤트를 소리와 함께 시각적으로 미니 맵에 표시하여 알립니다.
 ## Notes-itIT: Scanner Minimappa. Crea un avviso sonoro e grafico riportante una miniatura e un pulsante ogniqualvolta un PNG, tesoro, cassa o evento apparirà sulla minimappa
 ## Notes-frFR: Scanner Minimap. Vous avertit visuellement grâce à un bouton et une miniature et émet un son chaque fois qu'un PNJ, un trésor ou un événement rare apparaît dans votre minimap
 ## Author: maqjav, Maciza-Tyrande
-## Version: 8.5
+## Version: 8.5.2
 ## SavedVariables: RareScannerDB
 ## OptionalDeps: Ace3
 ## X-Category: Achievements, Map, Miscellaneous
 ## X-Credits: maqjav, Maciza-Tyrande
-## X-Date: Jun. 16, 2020
+## X-Date: Jul. 06, 2020
 ## X-Email: maqjav@gmail.com
 ## X-License: All Rights Reserved
 ## X-Localizations: enUS, enGB, deDE, esES, esMX, frFR, ruRU, itIT, ptBR, koKR, zhCN, zhTW
