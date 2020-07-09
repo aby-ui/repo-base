@@ -6,3 +6,6 @@
 ## SavedVariables: MethodDungeonToolsDB
 
 MethodDungeonTools.lua
+
+## Title-zhCN: |cff880303[爱不易]|r MDT 旧版本兼容
+## X-Vendor: AbyUI
