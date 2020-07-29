@@ -74,28 +74,34 @@ function WorldQuestTracker.IsQuestBeingTracked (questID)
 	return
 end
 
+function WorldQuestTracker.SetTomTomQuestToTrack(questID)
+	local uid = WorldQuestTracker.TomTomUIDs[questID]
+	if (uid) then
+		TomTom:SetCrazyArrow(uid, TomTom.profile.arrow.arrival, uid.title)
+		TomTom:ShowHideCrazyArrow()
+	end
+end
 
 function WorldQuestTracker.AddQuestTomTom (questID, mapID, noRemove)
 	local x, y = C_TaskQuest.GetQuestLocation (questID, mapID)
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
-	
-	--
-	
+
 	local alreadyExists = TomTom:WaypointExists (mapID, x, y, title)
-	
-	if (alreadyExists and WorldQuestTracker.db.profile.tomtom.uids [questID]) then
+
+	if (alreadyExists and WorldQuestTracker.TomTomUIDs [questID]) then
 		if (noRemove) then
 			return
 		end
-		TomTom:RemoveWaypoint (WorldQuestTracker.db.profile.tomtom.uids [questID])
-		WorldQuestTracker.db.profile.tomtom.uids [questID] = nil
+		TomTom:RemoveWaypoint (WorldQuestTracker.TomTomUIDs [questID])
+		WorldQuestTracker.TomTomUIDs [questID] = nil
 		return
 	end
 	
 	if (not alreadyExists) then
-		local uid = TomTom:AddWaypoint (mapID, x, y, {title = title, persistent=WorldQuestTracker.db.profile.tomtom.persistent})
-		WorldQuestTracker.db.profile.tomtom.uids [questID] = uid
+		local uid = TomTom:AddWaypoint (mapID, x, y, {title = title, persistent=false})
+		WorldQuestTracker.TomTomUIDs [questID] = uid
 	end
+
 	return
 end
 
@@ -109,13 +115,13 @@ function WorldQuestTracker.AddQuestToTracker (self, questID, mapID)
 		return
 	end
 	
-	if (WorldQuestTracker.db.profile.tomtom.enabled and TomTom and IsAddOnLoaded ("TomTom")) then
-		WorldQuestTracker.AddQuestTomTom (self.questID, self.mapID or mapID)
-		return true
-	end
-	
 	if (WorldQuestTracker.IsQuestBeingTracked (questID)) then
 		return
+	end
+
+	if (WorldQuestTracker.db.profile.tomtom.enabled and TomTom and IsAddOnLoaded ("TomTom")) then
+		WorldQuestTracker.AddQuestTomTom (self.questID, self.mapID or mapID)
+		--return true
 	end
 	
 	local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
@@ -229,7 +235,6 @@ function WorldQuestTracker.CheckTimeLeftOnQuestsFromTracker()
 		local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (quest.questID)
 		
 		if (quest.expireAt < now or not timeLeft or timeLeft <= 0) then -- or not allQuests [quest.questID]
-			--print ("removing", quest.expireAt, now, quest.expireAt < now, select (1, C_TaskQuest.GetQuestInfoByQuestID(quest.questID)))
 			WorldQuestTracker.RemoveQuestFromTracker (quest.questID, true)
 			gotRemoval = true
 		end
@@ -858,7 +863,25 @@ function WorldQuestTracker.GetOrCreateTrackerWidget (index)
 
 	f.ArrowDistance:SetDrawLayer ("overlay", 4)
 	f.Arrow:SetDrawLayer ("overlay", 5)
-	
+
+	f.TomTomTrackerIcon = CreateFrame("button", nil, f) --no need backdrop
+	f.TomTomTrackerIcon:SetPoint ("right", f.Arrow, "left", -6, 0)
+	f.TomTomTrackerIcon:SetSize (26, 26)
+	f.TomTomTrackerIcon:SetAlpha (.5)
+	f.TomTomTrackerIcon.Icon = f.TomTomTrackerIcon:CreateTexture (nil, "overlay")
+	f.TomTomTrackerIcon.Icon:SetAllPoints()
+	f.TomTomTrackerIcon.Icon:SetTexture ([[Interface\AddOns\TomTom\Images\StaticArrow]])
+	f.TomTomTrackerIcon:SetScript("OnClick", function()
+		WorldQuestTracker.AddQuestTomTom (f.questID, f.questMapID, true)
+		WorldQuestTracker.SetTomTomQuestToTrack(f.questID)
+	end)
+	f.TomTomTrackerIcon:SetScript("OnEnter", function()
+		f.TomTomTrackerIcon:SetAlpha (1)
+	end)
+	f.TomTomTrackerIcon:SetScript("OnLeave", function()
+		f.TomTomTrackerIcon:SetAlpha (.5)
+	end)
+
 	------------------------
 	
 	f.AnimationFrame = CreateFrame ("frame", "$parentAnimation", f)
@@ -1115,6 +1138,7 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 				widget:ClearAllPoints()
 				widget:SetPoint ("topleft", WorldQuestTrackerFrame, "topleft", 0, y)
 				widget.questID = quest.questID
+				widget.questMapID = quest.mapID
 				widget.info = quest
 				widget.numObjectives = quest.numObjectives
 
@@ -1146,6 +1170,12 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 					widget.RewardAmount:SetText (WorldQuestTracker.ToK (quest.rewardAmount))
 				else
 					widget.RewardAmount:SetText (quest.rewardAmount)
+				end
+
+				if (WorldQuestTracker.db.profile.tomtom.enabled) then
+					widget.TomTomTrackerIcon:Show()
+				else
+					widget.TomTomTrackerIcon:Hide()
 				end
 				
 				widget:Show()

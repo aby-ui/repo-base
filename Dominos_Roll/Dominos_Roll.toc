@@ -4,6 +4,7 @@
 ## Notes: Makes the set of frames for rolling on items when in a group movable
 ## Author: Tuller
 ## Dependencies: Dominos
+## DefaultState: disabled
 rollBar.lua
 
 

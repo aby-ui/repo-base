@@ -117,12 +117,20 @@ local matchDataByTrigger = {}
 local matchDataChanged = {}
 
 local nameplateExists = {}
+local unitVisible = {}
 
 local function UnitExistsFixed(unit)
   if #unit > 9 and unit:sub(1, 9) == "nameplate" then
     return nameplateExists[unit]
   end
   return UnitExists(unit)
+end
+
+local function UnitIsVisibleFixed(unit)
+  if unitVisible[unit] == nil then
+    unitVisible[unit] = UnitIsVisible(unit)
+  end
+  return unitVisible[unit]
 end
 
 local function UnitInSubgroupOrPlayer(unit)
@@ -911,6 +919,10 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.ignoreInvisible and not UnitIsVisibleFixed(unit) then
+    return false
+  end
+
   if triggerInfo.groupRole and triggerInfo.groupRole ~= UnitGroupRolesAssigned(unit) then
     return false
   end
@@ -944,6 +956,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   if triggerInfo.class and not triggerInfo.class[select(2, UnitClass(unit))] then
     return false
   end
+
+  if triggerInfo.nameChecker and not triggerInfo.nameChecker:Check(WeakAuras.UnitNameWithRealm(unit)) then
+    return false
+  end
+
   return true
 end
 
@@ -1061,8 +1078,8 @@ local function UpdateTriggerState(time, id, triggernum)
       useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
 
+    local cloneIds = {}
     if useMatches then
-
       table.sort(auraDatas, SortMatchDataByUnitIndex)
 
       local affected, unaffected
@@ -1071,7 +1088,6 @@ local function UpdateTriggerState(time, id, triggernum)
       end
 
       local usedCloneIds = {};
-
       for index, auraData in ipairs(auraDatas) do
         local cloneId = (auraData.GUID or auraData.unit or "unknown") .. " " .. auraData.spellId
         if usedCloneIds[cloneId] then
@@ -1082,15 +1098,17 @@ local function UpdateTriggerState(time, id, triggernum)
         end
 
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit[auraData.unit], totalStacks, affected, unaffected) or updated
+        cloneIds[cloneId] = true
       end
 
       if matchCount == 0 then
         updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", nil, 0, 0, maxUnitCount, 0, totalStacks, affected, unaffected) or updated
+        cloneIds[""] = true
       end
     end
 
     for cloneId, state in pairs(triggerStates) do
-      if state.show and state.time < time then
+      if not cloneIds[cloneId] then
         updated = RemoveState(triggerStates, cloneId) or updated
       end
     end
@@ -1118,6 +1136,7 @@ local function UpdateTriggerState(time, id, triggernum)
 
     local useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
 
+    local cloneIds = {}
     if useMatches then
       local affected, unaffected
       if triggerInfo.useAffected then
@@ -1128,6 +1147,7 @@ local function UpdateTriggerState(time, id, triggernum)
         for unit, bestMatch in pairs(matches) do
           if bestMatch then
             updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+            cloneIds[unit] = true
           end
         end
       else
@@ -1138,9 +1158,11 @@ local function UpdateTriggerState(time, id, triggernum)
             if bestMatch then
               if triggerInfo.perUnitMode == "all" then
                 updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+                cloneIds[unit] = true
               end
             else
               updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+              cloneIds[unit] = true
             end
           end
         end
@@ -1148,7 +1170,7 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     for cloneId, state in pairs(triggerStates) do
-      if state.show and state.time < time then
+      if not cloneIds[cloneId] then
         updated = RemoveState(triggerStates, cloneId) or updated
       end
     end
@@ -1205,11 +1227,12 @@ local function PrepareMatchData(unit, filter)
   end
 end
 
-local function CleanUpOutdatedMatchData(time, unit, filter)
+local function CleanUpOutdatedMatchData(removeIndex, unit, filter)
   -- Figure out if any matchData is outdated
   if matchData[unit] and matchData[unit][filter] then
-    for index, data in pairs(matchData[unit][filter]) do
-      if data.time < time or not UnitExistsFixed(unit) then
+    for index = removeIndex, #matchData[unit][filter] do
+      local data = matchData[unit][filter][index]
+      if data.index >= removeIndex or not UnitExistsFixed(unit) then
          matchData[unit][filter][index] = nil
          for id, triggerData in pairs(data.auras) do
            for triggernum in pairs(triggerData) do
@@ -1282,7 +1305,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     if matchDataUpToDate[unit] then
       matchDataUpToDate[unit][filter] = nil
     end
-    CleanUpOutdatedMatchData(time, unit, filter)
+    CleanUpOutdatedMatchData(1, unit, filter)
     return
   end
 
@@ -1317,7 +1340,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     end
   end
 
-  CleanUpOutdatedMatchData(time, unit, filter)
+  CleanUpOutdatedMatchData(index, unit, filter)
 
   matchDataUpToDate[unit] = matchDataUpToDate[unit] or {}
   matchDataUpToDate[unit][filter] = true
@@ -1575,11 +1598,14 @@ local function EventHandler(frame, event, arg1, arg2, ...)
         tinsert(unitsToRemove, unit)
       end
     end
-  elseif event == "UNIT_FLAGS" then
-    if WeakAuras.multiUnitUnits.group[arg1] then
-      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
+  elseif event == "UNIT_FLAGS" or event == "UNIT_NAME_UPDATE" or event == "PLAYER_FLAGS_CHANGED"
+      or event == "PARTY_MEMBER_ENABLE" or event == "PARTY_MEMBER_DISABLE"
+  then
+    if event == "PARTY_MEMBER_ENABLE" then
+      unitVisible[arg1] = true
+    elseif event == "PARTY_MEMBER_DISABLE" then
+      unitVisible[arg1] = false
     end
-  elseif event == "PLAYER_FLAGS_CHANGED" then
     if WeakAuras.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
@@ -1611,6 +1637,7 @@ end
 
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterEvent("UNIT_FACTION")
+frame:RegisterEvent("UNIT_NAME_UPDATE")
 frame:RegisterEvent("UNIT_FLAGS")
 frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
@@ -1632,6 +1659,8 @@ frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PARTY_MEMBER_DISABLE")
+frame:RegisterEvent("PARTY_MEMBER_ENABLE")
 frame:SetScript("OnEvent", EventHandler)
 
 frame:SetScript("OnUpdate", function()
@@ -1916,12 +1945,12 @@ local function createScanFunc(trigger)
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
   local use_total = not isSingleMissing and not isMulti and trigger.useTotal and trigger.total
-  local use_blacklist_name = not isSingleMissing and not isMulti and trigger.useBlackName and trigger.blackauranames
-  local use_blacklist_spellId = not isSingleMissing and not isMulti and trigger.useBlackExactSpellId and trigger.blackauraspellids
+  local use_ignore_name = not isSingleMissing and not isMulti and trigger.useIgnoreName and trigger.ignoreAuraNames
+  local use_ignore_spellId = not isSingleMissing and not isMulti and trigger.useIgnoreExactSpellId and trigger.ignoreAuraSpellids
 
   if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
        and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total
-       and not use_blacklist_name and not use_blacklist_spellId then
+       and not use_ignore_name and not use_ignore_spellId then
     return nil
   end
 
@@ -2046,29 +2075,29 @@ local function createScanFunc(trigger)
     end
   end
 
-  if use_blacklist_name then
+  if use_ignore_name then
     local names = {}
-    for index, spellName in ipairs(trigger.blackauranames) do
+    for index, spellName in ipairs(trigger.ignoreAuraNames) do
       local spellId = WeakAuras.SafeToNumber(spellName)
       local name = GetSpellInfo(spellId) or spellName
       tinsert(names, name)
     end
 
-    preamble = preamble .. "local blacklistNames = {\n"
+    preamble = preamble .. "local ignoreNames = {\n"
     for index, name in ipairs(names) do
       preamble = preamble .. string.format("  [%q] = true,\n", name)
     end
     preamble = preamble .. "}\n"
     ret = ret .. [[
-      if blacklistNames[matchData.name] then
+      if ignoreNames[matchData.name] then
         return false
       end
     ]]
   end
 
-  if use_blacklist_spellId then
-    preamble = preamble .. "local blacklistSpellId = {\n"
-    for index, spellId in ipairs(trigger.blackauraspellids) do
+  if use_ignore_spellId then
+    preamble = preamble .. "local ignoreSpellId = {\n"
+    for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
       local spell = WeakAuras.SafeToNumber(spellId)
       if spell then
         preamble = preamble .. string.format("  [%s]  = true,\n", spell)
@@ -2076,7 +2105,7 @@ local function createScanFunc(trigger)
     end
     preamble = preamble .. "}\n"
     ret = ret .. [[
-      if blacklistSpellId[matchData.spellId] then
+      if ignoreSpellId[matchData.spellId] then
         return false
       end
     ]]
@@ -2206,6 +2235,8 @@ function BuffTrigger.Add(data)
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
+      local effectiveIgnoreInvisible = groupTrigger and trigger.ignoreInvisible
+      local effectiveNameCheck = groupTrigger and trigger.useUnitName and trigger.unitName
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2258,6 +2289,7 @@ function BuffTrigger.Add(data)
         ignoreSelf = effectiveIgnoreSelf,
         ignoreDead = effectiveIgnoreDead,
         ignoreDisconnected = effectiveIgnoreDisconnected,
+        ignoreInvisible = effectiveIgnoreInvisible,
         groupRole = effectiveGroupRole,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
@@ -2266,6 +2298,7 @@ function BuffTrigger.Add(data)
         matchCountFunc = matchCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
+        nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName)
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation
@@ -2403,6 +2436,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
@@ -2466,7 +2500,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   result["spellId"] = {
     display = L["Spell Id"],
     type = "number",
-    operator_types_only_equal = true
+    operator_types = "only_equal"
   }
 
   result["matchCount"] = {

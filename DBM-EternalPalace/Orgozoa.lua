@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2351, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610150404")
+mod:SetRevision("20200611150542")
 mod:SetCreatureID(152128)
 mod:SetEncounterID(2303)
 mod:SetZone()

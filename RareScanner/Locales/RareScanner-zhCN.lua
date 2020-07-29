@@ -75,6 +75,8 @@ if AL then
 	AL["DISPLAY_NPC_ICONS_DESC"] = "禁用时，稀有 NPC 的图标不会显示在世界地图上"
 	AL["DISPLAY_OPTIONS"] = "显示选项"
 	AL["DUNGEONS_SCENARIOS"] = "副本/场景战役"
+	AL["ENABLE_AUTO_TOMTOM_WAYPOINTS"] = "启用自动替换路径点"
+	AL["ENABLE_AUTO_TOMTOM_WAYPOINTS_DESC"] = "当启用该插件后找到一个实体，该插件将用一个新的指向最近找到的实体替换现有的 Tomtom 路径点。 禁用时仅在单击主按钮时才会添路径点。"
 	AL["ENABLE_MARKER"] = "切换目标标记"
 	AL["ENABLE_MARKER_DESC"] = "此选项激活时，点击主按钮会在目标头顶显示一个标记"
 	AL["ENABLE_SCAN_CHAT"] = "NPC 喊话搜寻开关"

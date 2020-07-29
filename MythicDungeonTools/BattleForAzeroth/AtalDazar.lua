@@ -1,3 +1,5 @@
+local MDT = MDT
+local L = MDT.L
 local dungeonIndex = 15
 MDT.dungeonTotalCount[dungeonIndex] = {normal=198,teeming=237,teemingEnabled=true}
 MDT.mapPOIs[dungeonIndex] = {
@@ -28,7 +30,7 @@ MDT.mapPOIs[dungeonIndex] = {
                 [1] = true;
                 [8] = true;
             };
-            ["text"] = "Note on Teeming:\n\nG29 is not always present.\nTeeming enemies of G2 are not always present.\nG27 is not always present";
+            ["text"] = string.format(L["atalTeemingNote"],"\n","\n","\n","\n");
             ["type"] = "generalNote";
             ["scale"] = 2;
         };
@@ -40,7 +42,7 @@ MDT.mapPOIs[dungeonIndex] = {
                 [1] = true;
                 [8] = true;
             };
-            ["text"] = "Note on Teeming:\n\nG29 is not always present.\nTeeming enemies of G2 are not always present.\nG27 is not always present";
+            ["text"] = string.format(L["atalTeemingNote"],"\n","\n","\n","\n");
             ["type"] = "generalNote";
             ["scale"] = 2;
         };
@@ -64,7 +66,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -207.84478938144;
             ["x"] = 587.56733659681;
-            ["tooltipText"] = "Entropic Spire of Ny'alotha";
+            ["tooltipText"] = L["Entropic Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
         [6] = {
@@ -87,7 +89,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -257.18926210658;
             ["x"] = 462.89828402862;
-            ["tooltipText"] = "Brutal Spire of Ny'alotha";
+            ["tooltipText"] = L["Brutal Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
         [7] = {
@@ -104,7 +106,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -349.89286786923;
             ["x"] = 581.14504888138;
-            ["tooltipText"] = "Cursed Spire of Ny'alotha";
+            ["tooltipText"] = L["Cursed Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
         [8] = {
@@ -121,7 +123,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -139.59233583327;
             ["x"] = 417.6415060524;
-            ["tooltipText"] = "Defiled Spire of Ny'alotha";
+            ["tooltipText"] = L["Defiled Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
         [9] = {
@@ -138,7 +140,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -137.50463674291;
             ["x"] = 418.19472278238;
-            ["tooltipText"] = "Cursed Spire of Ny'alotha";
+            ["tooltipText"] = L["Cursed Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
         [10] = {
@@ -155,7 +157,7 @@ MDT.mapPOIs[dungeonIndex] = {
             };
             ["y"] = -349.61787819522;
             ["x"] = 580.99671668925;
-            ["tooltipText"] = "Defiled Spire of Ny'alotha";
+            ["tooltipText"] = L["Defiled Spire of Ny'alotha"];
             ["template"] = "VignettePinTemplate";
         };
     };
@@ -243,9 +245,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
         ["id"] = 127799;
         ["count"] = 4;
-        ["name"] = "Dazar'ai Honor Guard";
+        ["name"] = L["Dazar'ai Honor Guard"];
         ["displayId"] = 81326;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["health"] = 768495;
         ["characteristics"] = {
@@ -367,9 +369,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
         ["id"] = 122971;
         ["count"] = 4;
-        ["name"] = "Dazar'ai Juggernaut";
+        ["name"] = L["Dazar'ai Juggernaut"];
         ["displayId"] = 81325;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["health"] = 883769;
         ["characteristics"] = {
@@ -483,9 +485,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
             ["Fear"] = true;
         };
         ["count"] = 4;
-        ["name"] = "Dazar'ai Confessor";
+        ["name"] = L["Dazar'ai Confessor"];
         ["displayId"] = 81330;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["health"] = 768495;
         ["id"] = 122973;
@@ -574,9 +576,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
             ["Fear"] = true;
         };
         ["count"] = 4;
-        ["name"] = "Dazar'ai Augur";
+        ["name"] = L["Dazar'ai Augur"];
         ["displayId"] = 81336;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["health"] = 768495;
         ["id"] = 122972;
@@ -630,9 +632,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
             ["Taunt"] = true;
         };
         ["count"] = 6;
-        ["name"] = "Dazar'ai Colossus";
+        ["name"] = L["Dazar'ai Colossus"];
         ["displayId"] = 80338;
-        ["creatureType"] = "Mechanical";
+        ["creatureType"] = L["Mechanical"];
         ["level"] = 121;
         ["health"] = 1306442;
         ["id"] = 122984;
@@ -695,10 +697,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
             ["Silence"] = true;
             ["Fear"] = true;
         };
-        ["name"] = "Gilded Priestess";
+        ["name"] = L["Gilded Priestess"];
         ["health"] = 768495;
         ["displayId"] = 82238;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["count"] = 4;
         ["scale"] = 1;
@@ -732,9 +734,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["id"] = 122967;
         ["health"] = 6916455;
         ["displayId"] = 80293;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 122;
-        ["name"] = "Priestess Alun'za";
+        ["name"] = L["Priestess Alun'za"];
         ["count"] = 0;
     };
     [8] = {
@@ -866,12 +868,12 @@ MDT.dungeonEnemies[dungeonIndex] = {
             [252687] = {};
             [277242] = {};
         };
-        ["name"] = "Shadowblade Stalker";
+        ["name"] = L["Shadowblade Stalker"];
         ["health"] = 768495;
         ["level"] = 120;
         ["count"] = 4;
         ["displayId"] = 84712;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["stealth"] = true;
         ["scale"] = 1;
         ["characteristics"] = {
@@ -976,10 +978,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
             [255814] = {};
         };
         ["id"] = 127757;
-        ["name"] = "Reanimated Honor Guard";
+        ["name"] = L["Reanimated Honor Guard"];
         ["health"] = 845345;
         ["displayId"] = 80376;
-        ["creatureType"] = "Undead";
+        ["creatureType"] = L["Undead"];
         ["level"] = 120;
         ["count"] = 4;
         ["characteristics"] = {
@@ -1058,10 +1060,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
             [277242] = {};
         };
         ["id"] = 127315;
-        ["name"] = "Reanimation Totem";
+        ["name"] = L["Reanimation Totem"];
         ["health"] = 153699;
         ["displayId"] = 82388;
-        ["creatureType"] = "Not specified";
+        ["creatureType"] = L["Not specified"];
         ["level"] = 120;
         ["count"] = 0;
         ["characteristics"] = {
@@ -1148,10 +1150,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
             [209859] = {};
         };
         ["id"] = 122969;
-        ["name"] = "Zanchuli Witch-Doctor";
+        ["name"] = L["Zanchuli Witch-Doctor"];
         ["health"] = 768495;
         ["displayId"] = 80622;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["count"] = 4;
         ["characteristics"] = {
@@ -1272,10 +1274,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
         ["stealthDetect"] = true;
         ["scale"] = 1;
-        ["name"] = "Shieldbearer of Zul";
+        ["name"] = L["Shieldbearer of Zul"];
         ["health"] = 760810;
         ["displayId"] = 80904;
-        ["creatureType"] = "Undead";
+        ["creatureType"] = L["Undead"];
         ["level"] = 120;
         ["count"] = 4;
         ["characteristics"] = {
@@ -1316,9 +1318,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["encounterID"] = 2036;
         ["instanceID"] = 968;
         ["id"] = 122965;
-        ["name"] = "Vol'kaal";
+        ["name"] = L["Vol'kaal"];
         ["displayId"] = 79453;
-        ["creatureType"] = "Undead";
+        ["creatureType"] = L["Undead"];
         ["level"] = 122;
         ["count"] = 0;
         ["health"] = 4918368;
@@ -1584,9 +1586,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         };
         ["scale"] = 0.6;
         ["count"] = 1;
-        ["name"] = "Toxic Saurid";
+        ["name"] = L["Toxic Saurid"];
         ["displayId"] = 81323;
-        ["creatureType"] = "Beast";
+        ["creatureType"] = L["Beast"];
         ["level"] = 120;
         ["health"] = 153699;
         ["characteristics"] = {
@@ -1688,10 +1690,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
             [255041] = {};
         };
         ["id"] = 128434;
-        ["name"] = "Feasting Skyscreamer";
+        ["name"] = L["Feasting Skyscreamer"];
         ["health"] = 753125;
         ["displayId"] = 76913;
-        ["creatureType"] = "Beast";
+        ["creatureType"] = L["Beast"];
         ["level"] = 120;
         ["count"] = 4;
         ["characteristics"] = {
@@ -1771,9 +1773,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 5379465;
         ["count"] = 0;
         ["displayId"] = 78188;
-        ["creatureType"] = "Undead";
+        ["creatureType"] = L["Undead"];
         ["level"] = 122;
-        ["name"] = "Rezan";
+        ["name"] = L["Rezan"];
         ["id"] = 122963;
     };
     [17] = {
@@ -1800,10 +1802,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 1844388;
         ["count"] = 10;
         ["displayId"] = 80709;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 121;
         ["id"] = 129553;
-        ["name"] = "Dinomancer Kish'o";
+        ["name"] = L["Dinomancer Kish'o"];
     };
     [18] = {
         ["clones"] = {
@@ -1826,9 +1828,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 1536990;
         ["count"] = 6;
         ["displayId"] = 47659;
-        ["creatureType"] = "Beast";
+        ["creatureType"] = L["Beast"];
         ["level"] = 121;
-        ["name"] = "T'lonja";
+        ["name"] = L["T'lonja"];
         ["id"] = 128455;
     };
     [19] = {
@@ -1850,10 +1852,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 1567730;
         ["count"] = 6;
         ["displayId"] = 76483;
-        ["creatureType"] = "Beast";
+        ["creatureType"] = L["Beast"];
         ["level"] = 121;
         ["id"] = 129552;
-        ["name"] = "Monzumi";
+        ["name"] = L["Monzumi"];
     };
     [20] = {
         ["clones"] = {
@@ -1884,9 +1886,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["id"] = 122968;
         ["count"] = 0;
         ["displayId"] = 79568;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 122;
-        ["name"] = "Yazma";
+        ["name"] = L["Yazma"];
         ["health"] = 5994261;
     };
     [21] = {
@@ -2057,9 +2059,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 614795;
         ["count"] = 4;
         ["ignoreFortified"] = true;
-        ["name"] = "Emissary of the Tides";
+        ["name"] = L["Emissary of the Tides"];
         ["displayId"] = 39391;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 120;
         ["id"] = 155434;
         ["iconTexture"] = 132315;
@@ -2211,9 +2213,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 999042;
         ["count"] = 4;
         ["ignoreFortified"] = true;
-        ["name"] = "Void-Touched Emissary";
+        ["name"] = L["Void-Touched Emissary"];
         ["displayId"] = 39391;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 122;
         ["id"] = 155433;
         ["iconTexture"] = 132886;
@@ -2375,9 +2377,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["health"] = 15369884;
         ["count"] = 0;
         ["ignoreFortified"] = true;
-        ["name"] = "Enchanted Emissary";
+        ["name"] = L["Enchanted Emissary"];
         ["displayId"] = 39391;
-        ["creatureType"] = "Humanoid";
+        ["creatureType"] = L["Humanoid"];
         ["level"] = 121;
         ["id"] = 155432;
         ["iconTexture"] = 135735;
@@ -2425,9 +2427,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["scale"] = 1.4;
         ["level"] = 122;
         ["teemingCount"] = 6;
-        ["name"] = "Blood of the Corruptor";
+        ["name"] = L["Blood of the Corruptor"];
         ["displayId"] = 92229;
-        ["creatureType"] = "Aberration";
+        ["creatureType"] = L["Aberration"];
         ["corrupted"] = true;
         ["count"] = 4;
         ["health"] = 2151786;
@@ -2470,9 +2472,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["teemingCount"] = 6;
         ["health"] = 2151786;
         ["displayId"] = 90742;
-        ["creatureType"] = "Aberration";
+        ["creatureType"] = L["Aberration"];
         ["corrupted"] = true;
-        ["name"] = "Samh'rek, Beckoner of Chaos";
+        ["name"] = L["Samh'rek, Beckoner of Chaos"];
         ["id"] = 161243;
     };
     [26] = {
@@ -2513,10 +2515,10 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["teemingCount"] = 6;
         ["count"] = 4;
         ["displayId"] = 89415;
-        ["creatureType"] = "Aberration";
+        ["creatureType"] = L["Aberration"];
         ["level"] = 122;
         ["health"] = 2151786;
-        ["name"] = "Urg'roth, Breaker of Heroes";
+        ["name"] = L["Urg'roth, Breaker of Heroes"];
     };
     [27] = {
         ["clones"] = {
@@ -2547,7 +2549,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
         };
-        ["name"] = "Voidweaver Mal'thir";
+        ["name"] = L["Voidweaver Mal'thir"];
         ["scale"] = 1.4;
         ["spells"] = {
             [314463] = {};
@@ -2562,7 +2564,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["teemingCount"] = 6;
         ["health"] = 2151786;
         ["displayId"] = 91910;
-        ["creatureType"] = "Beast";
+        ["creatureType"] = L["Beast"];
         ["level"] = 122;
         ["id"] = 161241;
         ["characteristics"] = {

@@ -1262,10 +1262,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 								local mapID = quest.mapID
 								WorldQuestTracker.AddQuestTomTom (questID, mapID, true)
 							end
-							WorldQuestTracker.RemoveAllQuestsFromTracker()
+							--WorldQuestTracker.RemoveAllQuestsFromTracker()
 						else
 							--desligou o tracker do tomtom
-							for questID, t in pairs (WorldQuestTracker.db.profile.tomtom.uids) do
+							for questID, t in pairs (WorldQuestTracker.TomTomUIDs) do
 								if (type (questID) == "number" and QuestMapFrame_IsQuestWorldQuest (questID)) then
 									--procura o bot�o da quest
 									for _, widget in ipairs (WorldQuestTracker.WorldMapWidgets) do
@@ -1277,7 +1277,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 									end
 								end
 							end
-							wipe (WorldQuestTracker.db.profile.tomtom.uids)
+							wipe (WorldQuestTracker.TomTomUIDs)
 							
 							if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
 								WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, false, false, true)
@@ -1314,10 +1314,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					WorldQuestTracker.RemoveAllQuestsFromTracker()
 					
 					if (TomTom and IsAddOnLoaded ("TomTom")) then
-						for questID, t in pairs (WorldQuestTracker.db.profile.tomtom.uids) do
+						for questID, t in pairs (WorldQuestTracker.TomTomUIDs) do
 							TomTom:RemoveWaypoint (t)
 						end
-						wipe (WorldQuestTracker.db.profile.tomtom.uids)
+						wipe (WorldQuestTracker.TomTomUIDs)
 					end
 					
 					GameCooltip:Hide()

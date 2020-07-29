@@ -71,6 +71,9 @@ function RSNavigationMixin:AddNext(vignetteInfo)
 		
 		-- Refresh waypoint
 		RareScanner:AddTomtomWaypointFromVignette(vignetteInfo)
+	-- If the navigation cache only contains one item, adds Tomtom waypoint
+	elseif (table.getn(navigationCache) == 1) then
+		RareScanner:AddTomtomWaypointFromVignette(vignetteInfo)
 	end
 end
 

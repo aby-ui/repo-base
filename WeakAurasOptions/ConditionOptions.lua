@@ -331,7 +331,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       WeakAuras.ReloadTriggerOptions(data);
     end
 
-    setValueComplex = function(property)
+    setValueComplex = function(property, reloadOptions)
       return function(info, v)
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
@@ -346,7 +346,11 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
-        WeakAuras.ReloadTriggerOptions(data);
+        if reloadOptions then
+          WeakAuras.ReloadOptions2(data.id, data)
+        else
+          WeakAuras.ReloadTriggerOptions(data);
+        end
       end
     end
 
@@ -394,13 +398,16 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       WeakAuras.Add(data);
     end
 
-    setValueComplex = function(property)
+    setValueComplex = function(property, reloadOptions)
       return function(info, v)
         if (type (conditions[i].changes[j].value) ~= "table") then
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
         WeakAuras.Add(data);
+        if reloadOptions then
+          WeakAuras.ReloadOptions2(data.id, data)
+        end
       end
     end
 
@@ -684,18 +691,57 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       descMessage = L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
     end
 
+    local message_getter = function()
+      return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
+    end
+
     args["condition" .. i .. "value" .. j .. "message"] = {
       type = "input",
       width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Message"], L["Message"]),
       desc = descMessage,
       order = order,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
-      end,
-      set = setValueComplex("message")
+      get = message_getter,
+      set = setValueComplex("message", true)
     }
     order = order + 1;
+
+
+    local formatGet = function(key)
+      return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message_format_" .. key]
+    end
+
+    local usedKeys = {}
+    local function addOption(key, option)
+      if usedKeys[key] then
+        return
+      end
+      usedKeys[key] = true
+      option.order = order
+      order = order + 0.01
+      local fullKey = "condition" .. i .. "value" .. j .. "message_format_" .. key
+      option.get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message_format_" .. key];
+      end
+      local originalName = option.name
+      option.name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_format_" .. key, originalName, originalName)
+      option.desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_format_" .. key, nil, option.values)
+
+      option.set = setValueComplex("message_format_" .. key, option.reloadOptions)
+      option.reloadOptions = nil
+
+      args[fullKey] = option
+    end
+
+    if data.controlledChildren then
+      for id, reference in pairs(conditions[i].changes[j].references) do
+        local input = reference.value and reference.value.message
+        WeakAuras.AddTextFormatOption(input, false, formatGet, addOption)
+      end
+    else
+      local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]
+      WeakAuras.AddTextFormatOption(input, false, formatGet, addOption)
+    end
 
     local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
@@ -1448,9 +1494,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
     if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
       local opTypes = WeakAuras.operator_types
-      if currentConditionTemplate.operator_types_without_equal then
+      if currentConditionTemplate.operator_types == "without_equal" then
         opTypes = WeakAuras.operator_types_without_equal
-      elseif currentConditionTemplate.operator_types_only_equal then
+      elseif currentConditionTemplate.operator_types == "only_equal" then
         opTypes = WeakAuras.equality_operator_types
       end
 
@@ -1560,21 +1606,22 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       }
       order = order + 1;
     elseif (currentConditionTemplate.type == "string") then
-      args["condition" .. i .. tostring(path) .. "_op"] = {
-        name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
-        desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
-        type = "select",
-        width = WeakAuras.normalWidth,
-        order = order,
-        values = WeakAuras.string_operator_types,
-        get = function()
-          return check and check.op;
-        end,
-        set = setOp
-      }
-      order = order + 1;
-
-      order = addSpace(args, order);
+      if currentConditionTemplate.operator_types ~= "none" then
+        args["condition" .. i .. tostring(path) .. "_op"] = {
+          name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
+          desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
+          type = "select",
+          width = WeakAuras.normalWidth,
+          order = order,
+          values = WeakAuras.string_operator_types,
+          get = function()
+            return check and check.op;
+          end,
+          set = setOp
+        }
+        order = order + 1;
+        order = addSpace(args, order);
+      end
 
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
@@ -2099,18 +2146,34 @@ local function findMatchingProperty(all, change, id)
   return nil;
 end
 
-local propertyTypeToSubProperty = {
-  chat = { "message_type", "message_dest", "message_channel", "message", "custom" },
-  sound = { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"},
-  customcode = { "custom" },
-  glowexternal = {
-    "glow_action", "glow_frame_type", "glow_type",
-    "glow_frame", "choose_glow_frame",
-    "use_glow_color", "glow_color",
-    "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
-    "glow_scale", "glow_border"
-  }
-};
+local noop = function() end
+local function SubPropertiesForChange(change)
+  if change.property == "sound" then
+    return { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"}
+  elseif change.property == "customcode" then
+    return { "custom" }
+  elseif change.property == "glowexternal" then
+    return {
+      "glow_action", "glow_frame_type", "glow_type",
+      "glow_frame", "choose_glow_frame",
+      "use_glow_color", "glow_color",
+      "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
+      "glow_scale", "glow_border"
+    }
+  elseif change.property == "chat" then
+    local result = { "message_type", "message_dest", "message_channel", "message", "custom" }
+    local input = change.value and change.value.message
+    if input then
+      local getter = function(key)
+        return change.value["message_format_" .. key]
+      end
+      WeakAuras.AddTextFormatOption(input, false, getter, function(key)
+        tinsert(result, "message_format_" .. key)
+      end)
+    end
+    return result
+  end
+end
 
 local subPropertyToType = {
   glow_color = "color"
@@ -2129,8 +2192,12 @@ local function mergeConditionChange(all, change, id, changeIndex, allProperties)
           all.samevalue = false;
         end
       else
-        for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
-          if not compareValues(all.value[propertyName], change.value[propertyName], subPropertyToType[propertyName]) then
+        for _, propertyName in ipairs(SubPropertiesForChange(change)) do
+          if all.samevalue[propertyName] == nil then
+            -- NEW not yet seen property
+            all.value[propertyName] = change.value[propertyName]
+            all.samevalue[propertyName] = true
+          elseif not compareValues(all.value[propertyName], change.value[propertyName], subPropertyToType[propertyName]) then
             all.value[propertyName] = nil;
             if all.samevalue then
               all.samevalue[propertyName] = false;
@@ -2186,7 +2253,7 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
       if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
         copy.samevalue = {};
-        for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
+        for _, propertyName in ipairs(SubPropertiesForChange(change)) do
           copy.samevalue[propertyName] = true;
         end
       else
@@ -2234,7 +2301,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
           local propertyType = change.property and propertyTypes.propertyMap[change.property] and propertyTypes.propertyMap[change.property].type;
           if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
             change.samevalue = {};
-            for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
+            for _, propertyName in ipairs(SubPropertiesForChange(change)) do
               change.samevalue[propertyName] = true;
             end
           else

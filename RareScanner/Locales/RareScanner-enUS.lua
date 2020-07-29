@@ -330,6 +330,8 @@ if AL then
 	AL["ZONE_943"] = "%s (Warfront)"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
+	
+	AL["NOTE_154148"] = "You have to click on 4 [Undisturbed Specimen] (some short of void eggs that are attached to the columns in the area) to summon her."
 
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BCEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200605131836")
+mod:SetRevision("20200611150542")
 mod:SetCreatureID(17968, 21212, 19622)
 mod:SetEncounterID(2319)
 mod:SetModelID(20939)--Archimond

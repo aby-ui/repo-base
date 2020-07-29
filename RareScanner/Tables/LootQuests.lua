@@ -135,4 +135,9 @@ private.LOOT_QUEST_IDS = {
 	[171248] = 57326; --Prototypes for Profit
 	[174196] = 58461; --Tomes of Ancient Madness
 	[175016] = 58858; --More Fetid Filets
+	[175058] = 58865; --Armamentos sobrenaturales
+	[173956] = 58234; --Questionable Sourcing
+	[174356] = 58010; --More Bits, More Bits!
+	[175015] = 58812; --Meat Alternatives
+	
 }

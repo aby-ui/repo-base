@@ -30,7 +30,7 @@ local ETERNAL_COMPLETED = -1
 local DEBUG_MODE = false
 
 -- Config constants
-local CURRENT_DB_VERSION = 25
+local CURRENT_DB_VERSION = 26
 local CURRENT_LOOT_DB_VERSION = 37
 
 -- Hard reset versions
@@ -403,7 +403,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						end
 						self:CheckNotificationCache(self, vignetteInfo)
 						
-						-- And then in tries to find better coordinates
+						-- And then try to find better coordinates
 						local minRange, maxRange = rc:GetRange(nameplateid)
 						if (playerMapPosition and (minRange or maxRange)) then
 							C_Timer.NewTicker(RANGE_TIMER, function() 
@@ -1161,11 +1161,17 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 	
 	-- Check if we have found the NPC in the last 5 minutes
 	if (not isNavigating) then
-		-- FIX Blubbery Blobule/Unstable Glob (NPCID = 160841/161407) multipoping
-		if (already_notified[vignetteInfo.id] or already_notified["NPC"..npcID] or (npcID == 160841 and already_notified["NPC160841"]) or (npcID == 161407 and already_notified["NPC161407"])) then
+		if (already_notified[vignetteInfo.id] or already_notified["NPC"..npcID]) then
 			return
 		else
 			already_notified[vignetteInfo.id] = true
+			
+			-- FIX Blubbery Blobule/Unstable Glob (NPCID = 160841/161407) multipoping
+			if (npcID == 160841) then
+				already_notified["NPC160841"] = true
+			elseif (npcID == 161407) then
+				already_notified["NPC161407"] = true
+			end
 		end
 	end
 	
@@ -1246,7 +1252,7 @@ function scanner_button:CheckNotificationCache(self, vignetteInfo, isNavigating)
 	end
 	
 	-- If navigation disabled, control Tomtom waypoint externally
-	if (not private.db.display.enableNavigation) then
+	if (not private.db.display.displayButton or not private.db.display.enableNavigation) then
 		RareScanner:AddTomtomWaypointFromVignette(vignetteInfo)
 	end
 	
@@ -1503,8 +1509,13 @@ function scanner_button:ShowButton()
 	else
 		self.Description_text:SetText(AL["NOT_TARGETEABLE"])
 		
+		if (self.npcID and private.db.general.enableTomtomSupport and not private.db.general.autoTomtomWaypoints) then
+			self:SetAttribute("macrotext", "\n/rarescanner waypoint;"..self.npcID..";"..self.name)
+		else
+			self:SetAttribute("macrotext", private.macrotext)
+		end
+		
 		-- hide model if displayed
-		self:SetAttribute("macrotext", private.macrotext)
 		self.ModelView:ClearModel()
 		self.ModelView:Hide()
 		

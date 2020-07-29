@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20200707015254"),
-	DisplayVersion = "8.3.27 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 6, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20200725233142"),
+	DisplayVersion = "8.3.29 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 7, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -470,7 +470,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 184, "b79a38c"
+local fakeBWVersion, fakeBWHash = 184, "2219ff0"--184.3
 local bwVersionResponseString = "V^%d^%s"
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
 
@@ -535,8 +535,7 @@ local UnitIsGroupLeader, UnitIsGroupAssistant = UnitIsGroupLeader, UnitIsGroupAs
 local PlaySoundFile, PlaySound = PlaySoundFile, PlaySound
 local Ambiguate = Ambiguate
 local C_TimerNewTicker, C_TimerAfter = C_Timer.NewTicker, C_Timer.After
---Temp Upvalues for uncommon functions 8.2.5 changes
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
+local IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
 
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 
@@ -650,12 +649,12 @@ end
 -- automatically sends an addon message to the appropriate channel (INSTANCE_CHAT, RAID or PARTY)
 local function sendSync(prefix, msg)
 	msg = msg or ""
-	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+	if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
 		SendAddonMessage("D4", prefix .. "\t" .. msg, "INSTANCE_CHAT")
 	else
 		if IsInRaid() then
 			SendAddonMessage("D4", prefix .. "\t" .. msg, "RAID")
-		elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+		elseif IsInGroup(1) then
 			SendAddonMessage("D4", prefix .. "\t" .. msg, "PARTY")
 		else--for solo raid
 			handleSync("SOLO", playerName, prefix, strsplit("\t", msg))
@@ -666,12 +665,12 @@ end
 --Custom sync function that should only be used for user generated sync messages
 local function sendLoggedSync(prefix, msg)
 	msg = msg or ""
-	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+	if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
 		C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "INSTANCE_CHAT")
 	else
 		if IsInRaid() then
 			C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "RAID")
-		elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+		elseif IsInGroup(1) then
 			C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "PARTY")
 		else--for solo raid
 			C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "WHISPER", playerName)
@@ -684,7 +683,7 @@ local function SendWorldSync(self, prefix, msg, noBNet)
 	DBM:Debug("SendWorldSync running for "..prefix)
 	if IsInRaid() then
 		SendAddonMessage("D4", prefix.."\t"..msg, "RAID")
-	elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+	elseif IsInGroup(1) then
 		SendAddonMessage("D4", prefix.."\t"..msg, "PARTY")
 	end
 	if IsInGuild() then
@@ -732,6 +731,10 @@ local function strFromTime(time)
 	else
 		return L.TIMER_FORMAT:format(time/60, time % 60)
 	end
+end
+
+function DBM:strFromTime(time)
+	return strFromTime(time)
 end
 
 do
@@ -2749,7 +2752,7 @@ do
 
 		function dataBroker.OnClick(self, button)
 			if IsShiftKeyDown() then return end
-			if IsAltKeyDown() then
+			if IsAltKeyDown() and button == "RightButton" then
 				DBM.Options.SilentMode = DBM.Options.SilentMode == false and true or false
 				DBM:AddMsg(L.SILENTMODE_IS .. (DBM.Options.SilentMode and "ON" or "OFF"))
 			else
@@ -4240,7 +4243,7 @@ do
 	syncHandlers["NS"] = function(sender, modid, modvar, text, abilityName)
 		if sender == playerName then return end
 		if DBM.Options.BlockNoteShare or InCombatLockdown() or UnitAffectingCombat("player") or IsFalling() or DBM:GetRaidRank(sender) == 0 then return end
-		if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then return end
+		if IsInGroup(2) and IsInInstance() then return end
 		--^^You are in LFR, BG, or LFG. Block note syncs. They shouldn't be sendable, but in case someone edits DBM^^
 		local mod = DBM:GetModByName(modid or "")
 		local ability = abilityName or L.UNKNOWN
@@ -4529,7 +4532,7 @@ do
 		end
 	end
 
-	local function HandleVersion(revision, version, displayVersion, sender, noRaid)
+	local function HandleVersion(revision, version, displayVersion, sender)
 		if version > DBM.Revision then -- Update reminder
 			if false and #newerVersionPerson < 4 then
 				if not checkEntry(newerVersionPerson, sender) then
@@ -4559,21 +4562,19 @@ do
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("([^\n]*)"))
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, showRealDate(version)))
 					showConstantReminder = 1
-				elseif not noRaid and #newerVersionPerson == 3 and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
+				elseif #newerVersionPerson >= 3 and raid[newerVersionPerson[1]] and raid[newerVersionPerson[2]] and raid[newerVersionPerson[3]] and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
 					--Disable if revision grossly out of date even if not major patch.
-					if raid[newerVersionPerson[1]] and raid[newerVersionPerson[2]] and raid[newerVersionPerson[3]] then
-						local revDifference = mmin(((raid[newerVersionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[2]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[3]].revision or 0) - DBM.Revision))
-						if revDifference > 100000000 then--Approx 1 month old 20190416172622
-							if updateNotificationDisplayed < 3 then
-								updateNotificationDisplayed = 3
-								AddMsg(DBM, L.UPDATEREMINDER_DISABLE)
-								DBM:Disable(true)
-							end
+					local revDifference = mmin(((raid[newerVersionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[2]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[3]].revision or 0) - DBM.Revision))
+					if revDifference > 100000000 then--Approx 1 month old 20190416172622
+						if updateNotificationDisplayed < 3 then
+							updateNotificationDisplayed = 3
+							AddMsg(DBM, L.UPDATEREMINDER_DISABLE)
+							DBM:Disable(true)
 						end
 					--Disable if out of date and it's a major patch.
 					elseif not testBuild and dbmToc < wowTOC then
 						updateNotificationDisplayed = 3
-						AddMsg(DBM, L.UPDATEREMINDER_MAJORPATCH)
+						AddMsg(DBM, L.UPDATEREMINDER_MAJORPATCH)--Major patches will ALWAYS ignore ShowReminders being disabled
 						DBM:Disable(true)
 					end
 				end
@@ -4648,7 +4649,7 @@ do
 		revision, version = tonumber(revision), tonumber(version)
 		if revision and version and displayVersion then
 			DBM:Debug("Received G version info from "..sender.." : Rev - "..revision..", Ver - "..version..", Rev Diff - "..(revision - DBM.Revision), 3)
-			HandleVersion(revision, version, displayVersion, sender, true)
+			HandleVersion(revision, version, displayVersion, sender)
 		end
 	end
 
@@ -5420,7 +5421,7 @@ do
 			local syncText = editBox:GetText() or ""
 			if syncText == "" then
 				DBM:AddMsg(L.NOTESHAREERRORBLANK)
-			elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
+			elseif IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
 				DBM:AddMsg(L.NOTESHAREERRORGROUPFINDER)
 			else
 				local msg = modid.."\t"..modvar.."\t"..syncText.."\t"..abilityName
@@ -5431,7 +5432,7 @@ do
 						SendAddonMessage("D4", "NS\t" .. msg, "RAID")
 						DBM:AddMsg(L.NOTESHARED)
 					end
-				elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+				elseif IsInGroup(1) then
 					if DBM:GetRaidRank(playerName) == 0 then
 						DBM:AddMsg(L.ERROR_NO_PERMISSION)
 					else
@@ -6468,7 +6469,7 @@ do
 	local autoTLog = false
 
 	local function isCurrentContent()
-		if LastInstanceMapID == 1861 or LastInstanceMapID == 2070 or LastInstanceMapID == 2096 or LastInstanceMapID == 2164 or LastInstanceMapID == 2217 then--BfA
+		if LastInstanceMapID == 1861 or LastInstanceMapID == 2070 or LastInstanceMapID == 2096 or LastInstanceMapID == 2164 or LastInstanceMapID == 2217 or LastInstanceMapID == 2296 then--BfA/Shadowlands
 			return true
 		end
 		return false
@@ -8621,7 +8622,7 @@ function bossModPrototype:IsHealer(uId)
 	end
 end
 
-function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID)
+function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID, includeTarget)
 	if isName then--Passed combat log name, so pull unit ID
 		unit = DBM:GetRaidUnitId(unit)
 	end
@@ -8631,15 +8632,37 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID)
 	end
 	--Prefer threat target first
 	if boss then--Only checking one bossID as requested
+		--Check threat first
 		local tanking, status = UnitDetailedThreatSituation(unit, boss)
 		if tanking or (status == 3) then
 			return true
 		end
+		--Non threat fallback
+		if includeTarget and UnitExists(boss) then
+			local guid = UnitGUID(boss)
+			local _, targetuid = self:GetBossTarget(guid, true)
+			if UnitIsUnit(unit, targetuid) then
+				return true
+			end
+		end
 	else--Check all of them if one isn't defined
 		for i = 1, 5 do
-			local tanking, status = UnitDetailedThreatSituation(unit, "boss"..i)
-			if tanking or (status == 3) then
-				return true
+			local unitID = "boss"..i
+			local guid = UnitGUID(unitID)
+			--No GUID, any unit having threat returns true, GUID, only specific unit matching guid
+			if not bossGUID or (guid and guid == bossGUID) then
+				--Check threat first
+				local tanking, status = UnitDetailedThreatSituation(unit, unitID)
+				if tanking or (status == 3) then
+					return true
+				end
+				--Non threat fallback
+				if includeTarget and UnitExists(unitID) then
+					local _, targetuid = self:GetBossTarget(guid, true)
+					if UnitIsUnit(unit, targetuid) then
+						return true
+					end
+				end
 			end
 		end
 		--Check group targets if no boss unitIDs found and bossGUID passed.
@@ -8656,9 +8679,11 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID)
 						return true
 					end
 					--Non threat fallback
-					local _, targetuid = self:GetBossTarget(bossGUID, true)
-					if UnitIsUnit(unit, targetuid) then
-						return true
+					if includeTarget and UnitExists(unitID) then
+						local _, targetuid = self:GetBossTarget(guid, true)
+						if UnitIsUnit(unit, targetuid) then
+							return true
+						end
 					end
 				end
 			end
@@ -9983,7 +10008,7 @@ do
 		return unschedule(self.Play, self.mod, self, ...)
 	end
 
-	function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty)
+	function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty, texture)
 		if not text then
 			error("NewSpecialWarning: you must provide special warning text", 2)
 			return
@@ -10000,6 +10025,10 @@ do
 		if hasVoice == true then--if not a number, set it to 2, old mods that don't use new numbered system
 			hasVoice = 2
 		end
+		local seticon
+		if texture then
+			seticon = (type(texture) == "string" and texture:match("ej%d+") and select(4, DBM:EJ_GetSectionInfo(string.sub(texture, 3))) ~= "" and select(4, DBM:EJ_GetSectionInfo(string.sub(texture, 3)))) or (type(texture) == "number" and GetSpellTexture(texture)) or nil
+		end
 		local obj = setmetatable(
 			{
 				text = self.localization.warnings[text],
@@ -10010,6 +10039,7 @@ do
 				flash = runSound,--Set flash color to hard coded runsound (even if user sets custom sounds)
 				hasVoice = hasVoice,
 				difficulty = difficulty,
+				icon = seticon,
 			},
 			mt
 		)
@@ -11326,6 +11356,16 @@ function bossModPrototype:AddReadyCheckOption(questId, default, maxLevel)
 	self:SetOptionCategory("ReadyCheck", "misc")
 end
 
+function bossModPrototype:AddSpeedClearOption(name, default)
+	self.DefaultOptions["SpeedClearTimer"] = (default == nil) or default
+	if default and type(default) == "string" then
+		default = self:GetRoleFlagValue(default)
+	end
+	self.Options["SpeedClearTimer"] = (default == nil) or default
+	self:SetOptionCategory("SpeedClearTimer", "timer")
+	self.localization.options["SpeedClearTimer"] = L.AUTO_SPEEDCLEAR_OPTION_TEXT:format(name)
+end
+
 function bossModPrototype:AddSliderOption(name, minValue, maxValue, valueStep, default, cat, func)
 	cat = cat or "misc"
 	self.DefaultOptions[name] = {type = "slider", value = default or 0}
@@ -11680,7 +11720,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20200707015254" then
+	if not revision or revision == "20200725233142" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

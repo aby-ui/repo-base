@@ -1,8 +1,8 @@
 local MDT = MDT
+local L = MDT.L
 local AceGUI = LibStub("AceGUI-3.0")
 local db
 local tconcat, tremove, tinsert = table.concat, table.remove, table.insert
-local L = select(2, ...).L
 
 local function CreateDispatcher(argCount)
     local code = [[
@@ -70,7 +70,7 @@ local currentTab = "tab1"
 local function MakeEnemeyInfoFrame()
     --frame
     local f = AceGUI:Create("Frame")
-    f:SetTitle(L"Enemy Info")
+    f:SetTitle(L["Enemy Info"])
     f:EnableResize(false)
     f.frame:SetMovable(false)
     function f.frame:StartMoving() end
@@ -92,7 +92,7 @@ local function MakeEnemeyInfoFrame()
     local tabGroup = f.tabGroup
     tabGroup:SetTabs(
             {
-                {text=L"Enemy Info", value="tab1"},
+                {text=L["Enemy Info"], value="tab1"},
                 --{text="Damage Calc", value="tab2"},
             }
     )
@@ -172,7 +172,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:SetLayout("Flow")
 
         f.enemyDataContainer.nameEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.nameEditBox:SetLabel("Name")
+        f.enemyDataContainer.nameEditBox:SetLabel(L["Enemy Info NPC Name"])
         f.enemyDataContainer.nameEditBox:DisableButton(true)
         f.enemyDataContainer.nameEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -180,7 +180,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.nameEditBox)
 
         f.enemyDataContainer.idEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.idEditBox:SetLabel(L"NPC Id")
+        f.enemyDataContainer.idEditBox:SetLabel(L["Enemy Info NPC Id"])
         f.enemyDataContainer.idEditBox:DisableButton(true)
         f.enemyDataContainer.idEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -188,7 +188,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.idEditBox)
 
         f.enemyDataContainer.healthEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.healthEditBox:SetLabel(L"Health")
+        f.enemyDataContainer.healthEditBox:SetLabel(" ")--has to be non empty for proper spacing, we set this later
         f.enemyDataContainer.healthEditBox:DisableButton(true)
         f.enemyDataContainer.healthEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -196,7 +196,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.healthEditBox)
 
         f.enemyDataContainer.creatureTypeEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.creatureTypeEditBox:SetLabel(L"Creature Type")
+        f.enemyDataContainer.creatureTypeEditBox:SetLabel(L["Enemy Info NPC Creature Type"])
         f.enemyDataContainer.creatureTypeEditBox:DisableButton(true)
         f.enemyDataContainer.creatureTypeEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -204,7 +204,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.creatureTypeEditBox)
 
         f.enemyDataContainer.levelEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.levelEditBox:SetLabel(L"Level")
+        f.enemyDataContainer.levelEditBox:SetLabel(L["Enemy Info NPC Level"])
         f.enemyDataContainer.levelEditBox:DisableButton(true)
         f.enemyDataContainer.levelEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -212,7 +212,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.levelEditBox)
 
         f.enemyDataContainer.countEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.countEditBox:SetLabel(L"Enemy Forces")
+        f.enemyDataContainer.countEditBox:SetLabel(L["Enemy Info NPC Enemy Forces"])
         f.enemyDataContainer.countEditBox:DisableButton(true)
         f.enemyDataContainer.countEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -220,7 +220,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.countEditBox)
 
         f.enemyDataContainer.teemingCountEditBox = AceGUI:Create("EditBox")
-        f.enemyDataContainer.teemingCountEditBox:SetLabel("Enemy Forces (Teeming)")
+        f.enemyDataContainer.teemingCountEditBox:SetLabel(L["Enemy Info NPC Enemy Forces (Teeming)"])
         f.enemyDataContainer.teemingCountEditBox:DisableButton(true)
         f.enemyDataContainer.teemingCountEditBox:SetCallback("OnTextChanged", function(self)
             self:SetText(self.defaultText)
@@ -228,7 +228,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.teemingCountEditBox)
 
         f.enemyDataContainer.stealthCheckBox = AceGUI:Create("CheckBox")
-        f.enemyDataContainer.stealthCheckBox:SetLabel(L"Stealth")
+        f.enemyDataContainer.stealthCheckBox:SetLabel(L["Enemy Info NPC Stealth"])
         f.enemyDataContainer.stealthCheckBox:SetWidth((f.enemyDataContainer.frame:GetWidth()/2)-40)
         f.enemyDataContainer.stealthCheckBox:SetCallback("OnValueChanged", function(self)
             self:SetValue(self.defaultValue)
@@ -236,7 +236,7 @@ local function MakeEnemeyInfoFrame()
         f.enemyDataContainer:AddChild(f.enemyDataContainer.stealthCheckBox)
 
         f.enemyDataContainer.stealthDetectCheckBox = AceGUI:Create("CheckBox")
-        f.enemyDataContainer.stealthDetectCheckBox:SetLabel(L"Stealth Detect")
+        f.enemyDataContainer.stealthDetectCheckBox:SetLabel(L["Enemy Info NPC Stealth Detect"])
         f.enemyDataContainer.stealthDetectCheckBox:SetWidth((f.enemyDataContainer.frame:GetWidth()/2))
         f.enemyDataContainer.stealthDetectCheckBox:SetCallback("OnValueChanged", function(self)
             self:SetValue(self.defaultValue)
@@ -282,14 +282,14 @@ local function MakeEnemeyInfoFrame()
 
         local buttonWidth = 110
         local sendSpellsButton = AceGUI:Create("Button")
-        sendSpellsButton:SetText("Link Spells")
+        sendSpellsButton:SetText(L["Link Spells"])
         sendSpellsButton:SetWidth(buttonWidth)
         sendSpellsButton:SetCallback("OnClick",function()
             if#f.spellScroll.children<1 then return end
             local distribution = (UnitInRaid("player") and "RAID") or (IsInGroup() and "PARTY")
             if not distribution then return end
             local enemyName = f.enemyDropDown.text:GetText()
-            SendChatMessage("MDT: Spells for "..enemyName..":" ,distribution)
+            SendChatMessage(string.format(L["MDT: Spells for %s:"],enemyName),distribution)
             for i,child in pairs(f.spellScroll.children) do
                 local link = GetSpellLink(child.spellId)
                 SendChatMessage(i..". "..link ,distribution)
@@ -431,7 +431,7 @@ function MDT:UpdateEnemyInfoFrame(enemyIdx)
     f.characteristicsContainer:ReleaseChildren()
     local characteristicsText = AceGUI:Create("Label")
     characteristicsText:SetWidth(f.characteristicsContainer.frame:GetWidth())
-    characteristicsText:SetText(L"Affected by:")
+    characteristicsText:SetText(L["Affected by:"])
     f.characteristicsContainer:AddChild(characteristicsText)
     for text,iconPath in pairs(characteristics) do
         if data.characteristics and data.characteristics[text] then
@@ -513,8 +513,8 @@ function MDT:UpdateEnemyInfoData(enemyIdx)
     f.enemyDataContainer.stealthDetectCheckBox.defaultValue = data.stealthDetect
 
     local level = db.currentDifficulty
-    local fortifiedTyrannical = MDT:IsCurrentPresetFortified() and "Fortified" or "Tyrannical"
-    f.enemyDataContainer.healthEditBox:SetLabel("Health (+"..level.." "..fortifiedTyrannical..")")
+    local fortifiedTyrannical = MDT:IsCurrentPresetFortified() and L["Fortified"] or L["Tyrannical"]
+    f.enemyDataContainer.healthEditBox:SetLabel(string.format(L["Enemy Info NPC Health"],level,fortifiedTyrannical))
 end
 
 function MDT:ShowEnemyInfoFrame(blip)

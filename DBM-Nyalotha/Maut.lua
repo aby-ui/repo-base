@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2365, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200605131836")
+mod:SetRevision("20200719021708")
 mod:SetCreatureID(156523)
 mod:SetEncounterID(2327)--Obsidian Destroyer ID, but only one left after eliminating all others, should be correct
 mod:SetZone()
@@ -142,7 +142,7 @@ function mod:SPELL_CAST_START(args)
 			castsPerGUID[args.sourceGUID] = 0
 		end
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
-		local addnumber, count = #castsPerGUID, castsPerGUID[args.sourceGUID]
+		local addnumber, count = self.vb.darkManifestationCount, castsPerGUID[args.sourceGUID]
 		warnDarkOffering:Show(addnumber.."-"..count)
 		timerDarkOfferingCD:Start(12.1, count+1, args.sourceGUID)
 	elseif spellId == 314337 then

@@ -7,7 +7,7 @@
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145548")
+mod:SetRevision("20200712212530")
 mod:SetZone()
 mod.noStatistics = true
 
@@ -53,13 +53,13 @@ local specWarnAquaBomb		= mod:NewSpecialWarningTarget(145206, nil, nil, nil, 1, 
 
 --Tank
 local timerWindBlastCD		= mod:NewNextTimer(21, 144106, nil, nil, nil, 5)
-local timerPowerfulSlamCD	= mod:NewCDTimer(15, 144401, nil, nil, nil, 3)--15-17sec variation
+local timerPowerfulSlamCD	= mod:NewCDTimer(15, 144401, nil, nil, nil, 3)--15-17sec variation. Off by default do to timer spam
 --Damager
-local timerAmberGlobCD		= mod:NewNextTimer(10.5, 142189, nil, nil, nil, 5)
-local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerAmberGlobCD		= mod:NewNextTimer(10.5, 142189, nil, nil, nil, 5)--Now off by default do to spam
+local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--Off by default do to timer spam
 --Healer
 local timerAquaBombCD		= mod:NewCDTimer(12, 145206, nil, false, nil, 5)--12-22 second variation? off by default do to this
-local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation
+local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation, off by default because maybe spammy?
 
 local started = false
 
@@ -69,25 +69,29 @@ function mod:SPELL_CAST_START(args)
 		if self.Options.SpecWarn147601interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnPyroBlast:Show(args.sourceName)
 			specWarnPyroBlast:Play("kickcast")
-		else
+		elseif self:AntiSpam(1.5, 1) then
 			warnPyroBlast:Show()
 		end
-	elseif spellId == 144374 then
+	elseif spellId == 144374 and self:AntiSpam(1.5, 2) then
 		specWarnInvokeLava:Show()
 		specWarnInvokeLava:Play("watchstep")
-	elseif spellId == 144106 and self:AntiSpam(2.5, 2) then
-		specWarnWindBlast:Show()
-		specWarnWindBlast:Play("carefly")
+	elseif spellId == 144106 then
+		if self:AntiSpam(1.5, 3) then
+			specWarnWindBlast:Show()
+			specWarnWindBlast:Play("carefly")
+		end
 		timerWindBlastCD:Start(args.sourceGUID)
-	elseif spellId == 144401 and self:AntiSpam(2.5, 3) then
-		specWarnPowerfulSlam:Show()
-		specWarnPowerfulSlam:Play("shockwave")
+	elseif spellId == 144401 then
+		if self:AntiSpam(1.5, 4) then
+			specWarnPowerfulSlam:Show()
+			specWarnPowerfulSlam:Play("shockwave")
+		end
 		timerPowerfulSlamCD:Start(args.sourceGUID)
 	elseif spellId == 142189 then
 		if self.Options.SpecWarn142189spell then
 			specWarnAmberGlob:Show()
 			specWarnAmberGlob:Play("watchstep")
-		else
+		elseif self:AntiSpam(1.5, 5) then
 			warnAmberGlobule:Show()
 		end
 		timerAmberGlobCD:Start(args.sourceGUID)
@@ -96,14 +100,14 @@ function mod:SPELL_CAST_START(args)
 		if self.Options.SpecWarn142238interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnHealIllusion:Show(args.sourceName)
 			specWarnHealIllusion:Play("kickcast")
-		else
+		elseif self:AntiSpam(1.5, 6) then
 			warnHealIllusion:Show()
 		end
 	elseif spellId == 145200 then
 		if self.Options.SpecWarn145200interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnSonicBlast:Show(args.sourceName)
 			specWarnSonicBlast:Play("kickcast")
-		else
+		elseif self:AntiSpam(1.5, 7) then
 			warnSonicBlast:Show()
 		end
 		timerSonicBlastCD:Start(args.sourceGUID)
@@ -119,10 +123,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnEnrage:Show(args.destName)
 	elseif spellId == 145206 then
 		if self.Options.SpecWarn145206target then
-			specWarnAquaBomb:Show(args.destName)
-			specWarnAquaBomb:Play("targetchange")--Iffy, but meh
+			specWarnAquaBomb:CombinedShow(0.5, args.destName)
+			specWarnAquaBomb:ScheduleVoice(0.5, "targetchange")--Iffy, but meh
 		else
-			warnAquaBomb:Show(args.destName)
+			warnAquaBomb:CombinedShow(0.5, args.destName)
 		end
 		timerAquaBombCD:Start(args.sourceGUID)
 	end
@@ -146,21 +150,21 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 144084 and self:AntiSpam(2, 4) then
 		warnRipperTank:Show()
-	elseif spellId == 144091 and self:AntiSpam(2, 10) then
-		warnFlamecallerTank:Show()
-	elseif spellId == 144088 and self:AntiSpam(2, 5) then
+	elseif spellId == 144088 and self:AntiSpam(2, 8) then
 		warnConquerorTank:Show()
-	elseif spellId == 144086 and self:AntiSpam(2, 6) then
+	elseif spellId == 144086 and self:AntiSpam(2, 9) then
 		specWarnAmbusher:Show()
 		specWarnAmbusher:Play("targetchange")
-	elseif spellId == 144087 and self:AntiSpam(2, 7) then
+	elseif spellId == 144087 and self:AntiSpam(2, 10) then
 		warnWindGuard:Show()
-	elseif spellId == 145260 and self:AntiSpam(2, 8) then
+	elseif spellId == 145260 and self:AntiSpam(2, 11) then
 		warnBurrow:Show(args.destName)
-	elseif spellId == 142838 and self:AntiSpam(2, 9) then
+	elseif spellId == 142838 and self:AntiSpam(2, 12) then
 		specWarnBanshee:Show()
 		specWarnBanshee:Play("targetchange")
-	elseif spellId == 145198 and self:AntiSpam(2, 11) then
+	elseif spellId == 144091 and self:AntiSpam(2, 13) then
+		warnFlamecallerTank:Show()
+	elseif spellId == 145198 and self:AntiSpam(2, 14) then
 		if self.Options.SpecWarn145198switch then
 			specWarnStinger:Show()
 			specWarnStinger:Play("targetchange")
@@ -190,8 +194,8 @@ end
 function mod:SCENARIO_UPDATE(newStep)
 	local diffID, currWave, maxWave, duration = C_Scenario.GetProvingGroundsInfo()
 	if diffID > 0 then
-		started = true
-		if DBM.Options.AutoRespond then--Use global whisper option
+		if not started then
+			started = true
 			self:RegisterShortTermEvents(
 				"SPELL_CAST_START 147601 144374 144106 144401 142189 142238 145200",
 				"SPELL_AURA_APPLIED 144383 144404 145206",
@@ -215,14 +219,16 @@ do
 		[4] = L.Endless,
 	}
 	function mod:CHAT_MSG_WHISPER(msg, name, _, _, _, status)
-		if status ~= "GM" then--Filter GMs
-			name = Ambiguate(name, "none")
-			local diffID, currWave, maxWave, duration = C_Scenario.GetProvingGroundsInfo()
-			local message = L.ReplyWhisper:format(UnitName("player"), mode[diffID], currWave)
-			if msg == "status" then
-				SendChatMessage(message, "WHISPER", nil, name)
-			elseif self:AntiSpam(20, name) then--If not "status" then auto respond only once per 20 seconds per person.
-				SendChatMessage(message, "WHISPER", nil, name)
+		if DBM.Options.AutoRespond and started then
+			if status ~= "GM" then--Filter GMs
+				name = Ambiguate(name, "none")
+				local diffID, currWave, maxWave, duration = C_Scenario.GetProvingGroundsInfo()
+				local message = L.ReplyWhisper:format(UnitName("player"), mode[diffID], currWave)
+				if msg == "status" then
+					SendChatMessage(message, "WHISPER", nil, name)
+				elseif self:AntiSpam(20, name) then--If not "status" then auto respond only once per 20 seconds per person.
+					SendChatMessage(message, "WHISPER", nil, name)
+				end
 			end
 		end
 	end

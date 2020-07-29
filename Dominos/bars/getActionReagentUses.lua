@@ -169,6 +169,10 @@ local SPELL_REAGENTS = {
     [18869] = 6265,
     [18870] = 6265,
     [18871] = 6265,
+
+    -- Other stuff
+    -- Cultivate Packet of Seeds
+    [13399] = {11018, 2, 11022, 1}
 }
 
 -- Usage: requiresReagents, usesRemaining = GetActionReagentInfo(action)

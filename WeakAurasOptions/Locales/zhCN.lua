@@ -35,6 +35,8 @@ local L = WeakAuras.L
 	L["|cFFffcc00Extra Options:|r"] = "|cFFffcc00额外选项：|r"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s%s"
+	--[[Translation missing --]]
+	L["|cFFffcc00Format Options|r"] = "|cFFffcc00Format Options|r"
 	L["1 Match"] = "1个符合"
 	L["A 20x20 pixels icon"] = "20x20像素图标"
 	L["A 32x32 pixels icon"] = "32x32像素图标"
@@ -118,10 +120,6 @@ local L = WeakAuras.L
 	L["Bar Inner"] = "进度条内部"
 	L["Bar Texture"] = "进度条材质"
 	L["Big Icon"] = "大图标"
-	L["Blacklisted Aura Name"] = "忽略的光环名称"
-	L["Blacklisted Exact Spell ID(s)"] = "忽略的精确法术 ID"
-	L["Blacklisted Name(s)"] = "忽略的名称"
-	L["Blacklisted Spell ID"] = "忽略的法术ID"
 	L["Blend Mode"] = "混合模式"
 	L["Blue Rune"] = "蓝色符文"
 	L["Blue Sparkle Orb"] = "蓝色闪光球"
@@ -299,6 +297,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
 	L["Filter by Nameplate Type"] = "根据姓名版类型过滤"
+	L[ [=[Filter formats: 'Name', 'Name-Realm', '-Realm'.
+
+Supports multiple entries, separated by commas
+]=] ] = "过滤格式：'名称'，'名称-服务器'，'-服务器'。支持多个条目，由英文逗号分隔。"
 	L["Finish"] = "结束"
 	L["Fire Orb"] = "火焰宝珠"
 	L["Font"] = "字体"
@@ -306,6 +308,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Foreground"] = "前景"
 	L["Foreground Color"] = "前景色"
 	L["Foreground Texture"] = "前景材质"
+	--[[Translation missing --]]
+	L["Format"] = "Format"
+	--[[Translation missing --]]
+	L["Format for %s"] = "Format for %s"
 	L["Frame"] = "框体"
 	L["Frame Selector"] = "选择框体"
 	L["Frame Strata"] = "框架层级"
@@ -377,9 +383,19 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Ignore all Updates"] = "忽略所有更新"
 	L["Ignore Dead"] = "忽略已死亡"
 	L["Ignore Disconnected"] = "忽略已离线"
+	--[[Translation missing --]]
+	L["Ignore out of checking range"] = "Ignore out of checking range"
 	L["Ignore Self"] = "忽略自身"
 	L["Ignore self"] = "忽略自身"
 	L["Ignored"] = "被忽略"
+	--[[Translation missing --]]
+	L["Ignored Aura Name"] = "Ignored Aura Name"
+	--[[Translation missing --]]
+	L["Ignored Exact Spell ID(s)"] = "Ignored Exact Spell ID(s)"
+	--[[Translation missing --]]
+	L["Ignored Name(s)"] = "Ignored Name(s)"
+	--[[Translation missing --]]
+	L["Ignored Spell ID"] = "Ignored Spell ID"
 	L["Import"] = "导入"
 	L["Import a display from an encoded string"] = "从字串导入一个图示"
 	L["Inner"] = "内部"
@@ -511,10 +527,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Re-center X"] = "到中心 X 偏移"
 	L["Re-center Y"] = "到中心 Y 偏移"
 	L["Regions of type \"%s\" are not supported."] = "%s 区域类型不被支持。"
-	L[ [=[Relative mode positions the tick at the position relative to the total width of the progress bar.
-Absolute mode positions the tick at a fixed value.]=] ] = "进度指示的位置在相对模式下为对于整条进度条的相对位置，在绝对模式下为进度条上的确定值位置。"
 	L["Remaining Time"] = "剩余时间"
-	L["Remaining Time Precision"] = "剩余时间精度"
 	L["Remove"] = "移除"
 	L["Remove this display from its group"] = "从所在组中移除此显示内容"
 	L["Remove this property"] = "移除此属性"
@@ -666,7 +679,6 @@ Absolute mode positions the tick at a fixed value.]=] ] = "进度指示的位置
 	L["Top Left"] = "左上"
 	L["Top Right"] = "右上"
 	L["Total Time"] = "总时间"
-	L["Total Time Precision"] = "总时间精度"
 	L["Trigger"] = "触发"
 	L["Trigger %d"] = "触发器 %d"
 	L["Trigger %s"] = "触发器 %s"
@@ -678,6 +690,10 @@ Absolute mode positions the tick at a fixed value.]=] ] = "进度指示的位置
 	L["Unit Count"] = "单位计数"
 	L["Unit Frame"] = "单位框体"
 	L["Unit Frames"] = "单位框架"
+	--[[Translation missing --]]
+	L["Unit Name Filter"] = "Unit Name Filter"
+	--[[Translation missing --]]
+	L["UnitName Filter"] = "UnitName Filter"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Up"] = "上"
 	L["Update %s by %s"] = "更新%s，来自%s"
@@ -693,6 +709,7 @@ Absolute mode positions the tick at a fixed value.]=] ] = "进度指示的位置
 	L["Use Tooltip Information"] = "使用鼠标提示信息"
 	L["Used in Auras:"] = "在下列光环中被使用："
 	L["Used in auras:"] = "在下列光环中被使用："
+	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "使用UnitIsVisible()检查是否在范围内，每秒检查一次。"
 	L["Value %i"] = "值 %i"
 	L["Values are in normalized rgba format."] = "数值为标准化的 RGBA 格式"
 	L["Values:"] = "值："
