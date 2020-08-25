@@ -10,13 +10,9 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
---mod:DisableESCombatDetection()
-mod:SetZone()
---mod:SetBossHPInfoToHighest()
---mod:SetUsedIcons(1, 2, 8)
 mod:SetHotfixNoticeRev(18176)
 --mod:SetMinSyncRevision(16950)
 --mod.respawnTime = 35

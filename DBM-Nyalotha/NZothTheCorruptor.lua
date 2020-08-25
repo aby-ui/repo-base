@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200715040124")
+mod:SetRevision("20200815034941")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4)
 mod:SetHotfixNoticeRev(20200512000001)--2020, 5, 12
 mod:SetMinSyncRevision(20200311000001)
@@ -523,7 +522,7 @@ function mod:OnCombatStart(delay)
 	currentMapId = select(4, UnitPosition("player"))
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
-		DBM.InfoFrame:Show(self:IsMythic() and 20 or 8, "function", updateInfoFrame, false)
+		DBM.InfoFrame:Show(self:IsLFR() and 10 or 30, "function", updateInfoFrame, false)
 	end
 end
 
@@ -1120,7 +1119,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 				end
 			elseif cid == 162933 then--Thought Harvester
 				self.vb.harvestersAlive = self.vb.harvestersAlive + 1
-				if self:IsMythic() and self:AntiSpam(6, 1) or self:AntiSpam(3, 1) then
+				if self:IsMythic() and self:AntiSpam(6, 1) or not self:IsMythic() and self:AntiSpam(3, 1) then
 					self.vb.harvesterCount = self.vb.harvesterCount + 1
 					if self.Options.SpecWarnej21308switch then
 						specWarnThoughtHarvester:Show(self.vb.harvesterCount)

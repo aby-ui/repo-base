@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2166, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(134442)--135016 Plague Amalgam
 mod:SetEncounterID(2134)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4)
 --mod:SetHotfixNoticeRev(16950)
 --mod:SetMinSyncRevision(16950)

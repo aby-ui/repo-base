@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200621223503")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
-mod:SetZone()
 mod:SetUsedIcons(4, 3, 2, 1)
 mod:SetHotfixNoticeRev(20191118000000)--2019, 11, 18
 --mod:SetMinSyncRevision(16950)

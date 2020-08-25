@@ -173,14 +173,14 @@ L.VERSIONCHECK_ENTRY_TWO			= "%s: %s (%s) & %s (%s)"--Two Boss mods
 L.VERSIONCHECK_ENTRY_NO_DBM			= "%s: No boss mod installed"
 L.VERSIONCHECK_FOOTER				= "Found %d player(s) with " .. L.DBM .. " & %d player(s) with Bigwigs"
 L.VERSIONCHECK_OUTDATED				= "Following %d player(s) have outdated boss mod version: %s"
-L.YOUR_VERSION_OUTDATED				= "Your version of " .. L.DEADLY_BOSS_MODS.. " is out-of-date. Please visit http://www.deadlybossmods.com to get the latest version."
+L.YOUR_VERSION_OUTDATED     		= "Your version of " .. L.DEADLY_BOSS_MODS .. " is out-of-date. Please download the latest version through Curse/Twitch, WoWI, or from the GitHub Releases page."
 L.VOICE_PACK_OUTDATED				= "Your selected " .. L.DBM .. " voice pack is missing some sounds supported by " .. L.DBM .. ". Some warning sounds will still play default sounds. Please download a newer version of voice pack or pack contact author for an update that contains missing audio"
 L.VOICE_MISSING						= "You have a " .. L.DBM .. " voice pack selected that could not be found. If this is an error, make sure your voice pack is properly installed and enabled in addons."
 L.VOICE_DISABLED					= "You currently have at least one " .. L.DBM .. " voice pack installed but none enabled. If you intend to use a voice pack, make sure it's chosen in 'Spoken Alerts', else uninstall unused voice packs to hide this message"
 L.VOICE_COUNT_MISSING				= "Countdown voice %d is set to a voice/count pack that could not be found. It has be reset to default setting: %s."
 L.BIG_WIGS							= "BigWigs"
 
-L.UPDATEREMINDER_HEADER				= "Your version of " .. L.DEADLY_BOSS_MODS.. " is out-of-date.\n Version %s (%s) is available for download through Curse/Twitch, WoWI, or from GitHub project page"
+L.UPDATEREMINDER_HEADER				= "Your version of " .. L.DEADLY_BOSS_MODS.. " is out-of-date.\n Version %s (%s) is available for download through Curse/Twitch, WoWI, or from GitHub Releases page"
 L.UPDATEREMINDER_HEADER_ALPHA		= "Your ALPHA version of " .. L.DEADLY_BOSS_MODS.. " is out-of-date.\n You are at least %s test versions behind. It is recommended that " .. L.DBM .. " users that choose ALPHA versions run the latest ALPHA. Otherwise, they should run latest RELEASE version. Out of date ALPHAs have a stricter version check because they are development versions of " .. L.DBM .. "."
 L.UPDATEREMINDER_FOOTER				= "Press " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " to copy the download link to your clipboard."
 L.UPDATEREMINDER_FOOTER_GENERIC		= "Press " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " to copy the link to your clipboard."
@@ -237,8 +237,10 @@ L.RANGERADAR_IN_RANGE_TEXTONE		= "%s (%0.1fy)"--One target
 
 L.INFOFRAME_SHOW_SELF				= "Always show your power"		-- Always show your own power value even if you are below the threshold
 L.INFOFRAME_SETLINES				= "Set max lines"
+L.INFOFRAME_SETCOLS					= "Set max columns"
 L.INFOFRAME_LINESDEFAULT			= "Set by mod"
 L.INFOFRAME_LINES_TO				= "%d lines"
+L.INFOFRAME_COLS_TO					= "%d columns"
 L.INFOFRAME_POWER					= "Power"
 L.INFOFRAME_AGGRO					= "Aggro"
 L.INFOFRAME_MAIN					= "Main:"--Main power
@@ -317,6 +319,8 @@ L.NOTSAFE							= "Not Safe"
 L.SHIELD							= "Shield"
 L.PILLAR							= "Pillar"
 L.INCOMING							= "%s Incoming"
+L.BOSSTOGETHER						= "Bosses Together"
+L.BOSSAPART							= "Bosses Apart"
 --Common Locals end
 
 L.BREAK_USAGE						= "Break timer cannot be longer than 60 minutes. Make sure you're inputting time in minutes and not seconds."

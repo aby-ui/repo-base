@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 6, 7, 8)
 mod:SetHotfixNoticeRev(17776)
 --mod:SetMinSyncRevision(16950)

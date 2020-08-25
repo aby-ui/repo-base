@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(144755, 144754)--144755 Zaxasj, 144754 Fa'thuul
 mod:SetEncounterID(2269)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)--Refine when max number of doubt targets is known
 --mod:SetHotfixNoticeRev(17775)

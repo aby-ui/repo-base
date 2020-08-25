@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2093, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200705020335")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(126845, 126847, 126848)--Captain Jolly, Captain Raoul, Captain Eudora
 mod:SetEncounterID(2094)
-mod:SetZone()
 mod:DisableRegenDetection()
 mod:SetMinSyncRevision(20190806000000)--2019, 08, 06
 

@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod("BrawlChallenges", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 --mod:SetCreatureID(60491)
 --mod:SetModelID(48465)
-mod:SetZone()
 
 mod:RegisterEvents(
 	"CHAT_MSG_RAID_BOSS_EMOTE",

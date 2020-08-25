@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200816003541")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 mod:SetHotfixNoticeRev(20200126000000)--2020, 1, 26
 mod:SetMinSyncRevision(20191109000000)
@@ -563,7 +562,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			else
 				--Don't show taunt warning if you're 3 tanking and aren't near the boss (this means you are the add tank)
 				--Show taunt warning if you ARE near boss, or if number of alive tanks is less than 3
-				if (self:CheckNearby(8, args.destName) or self:GetNumAliveTanks() < 3) and not DBM:UnitDebuff("player", spellId) and not UnitIsDeadOrGhost("player") then--Can't taunt less you've dropped yours off, period.
+				local _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+				local remaining
+				if expireTime then
+					remaining = expireTime-GetTime()
+				end
+				if (self:CheckNearby(10, args.destName) or self:GetNumAliveTanks() < 3) and (not remaining or remaining and remaining < 15.8) and not UnitIsDeadOrGhost("player") then--Can't taunt less you've dropped yours off, period.
 					specWarnNullifyingStrikeTaunt:Show(args.destName)
 					specWarnNullifyingStrikeTaunt:Play("tauntboss")
 				else

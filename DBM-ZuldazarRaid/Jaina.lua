@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200623202309")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3)
 mod:SetHotfixNoticeRev(18363)
 --mod:SetMinSyncRevision(16950)

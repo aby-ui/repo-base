@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod("CataEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(52409, 41376, 43324)
 mod:SetEncounterID(2320)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 --mod:SetModelSound("Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_AGGRO.ogg", "Sound\\Creature\\RAGNAROS\\VO_FL_RAGNAROS_KILL_03.ogg")
 --Long: blah blah blah (didn't feel like transcribing it)

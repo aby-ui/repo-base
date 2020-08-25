@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
-mod:SetZone()
 --mod:SetHotfixNoticeRev(16950)
 --mod:SetMinSyncRevision(16950)
 mod.respawnTime = 29

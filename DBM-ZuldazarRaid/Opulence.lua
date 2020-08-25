@@ -1,13 +1,9 @@
 local mod	= DBM:NewMod(2342, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
+mod:SetRevision("20200803045206")
 mod:SetCreatureID(145261)
 mod:SetEncounterID(2271)
---mod:DisableESCombatDetection()
-mod:SetZone()
---mod:SetBossHPInfoToHighest()
---mod:SetUsedIcons(1, 2, 8)
 mod:SetHotfixNoticeRev(18355)
 mod:SetMinSyncRevision(18175)
 --mod.respawnTime = 35

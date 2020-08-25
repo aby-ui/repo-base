@@ -6,7 +6,7 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Translated by "
 L.TranslationBy 			= nil -- your name here, localizers!
-L.Website					= "Visit us on discord at |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Follow on twitter @deadlybossmods or @MysticalOS"
+L.Website					= "Visit us on discord at |cFF73C2FBhttps://discord.gg/DF5mffk|r. Follow on twitter @deadlybossmods or @MysticalOS"
 L.WebsiteButton				= "Website"
 
 L.OTabBosses	= "Bosses"--Deprecated and will be deleted once tabs no longer use this
@@ -366,7 +366,7 @@ L.Area_AutoLogging			= "Auto Logging Options"
 L.AutologBosses				= "Automatically record dungeons/raids using blizzard combat log"
 L.AdvancedAutologBosses		= "Automatically record dungeons/raids with Transcriptor"
 L.RecordOnlyBosses			= "Only record Bosses (Excludes all trash. Use '/dbm pull' before bosses to capture pre pull pots &amp; ENCOUNTER_START)"
-L.LogOnlyNonTrivial			= "Only record non trivial content (excludes Raid Finder/dungeons/scenarios/old content)"
+L.LogOnlyNonTrivial			= "Only record non trivial content (normal or harder current content raids & Mythic+ Dungeons)"
 --
 L.Area_3rdParty				= "3rd Party Addon Options"
 L.ShowBBOnCombatStart		= "Perform Big Brother buff check on combat start"

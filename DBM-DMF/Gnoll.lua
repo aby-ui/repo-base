@@ -1,8 +1,7 @@
 local mod	= DBM:NewMod("Gnoll", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200611150542")
-mod:SetZone()
+mod:SetRevision("20200803045206")
 
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED 101612",
