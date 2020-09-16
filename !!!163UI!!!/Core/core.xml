@@ -1,13 +1,27 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <!--This file is not used, deal_taint_options = false TODO:abyui9 -->
-
     <Include file="copy\copy.xml"/>
 
     <!--all for 236K-->
     <Script file="Core.lua"/><!--with below 64K-->
     <Include file="UI\UI.xml"/><!--79K-->
 
+    <Frame name="U1CallOut" hidden="true">
+        <Backdrop edgeFile="Interface\TutorialFrame\UI-TutorialFrame-CalloutGlow" alphaMode="ADD">
+            <EdgeSize>
+                <AbsValue val="16"/>
+            </EdgeSize>
+        </Backdrop>
+        <Scripts>
+            <OnShow>
+                UICoreFrameFlash(self, .8, .8, -1, nil, 0.5, 0, "U1CallOut")
+            </OnShow>
+            <OnHide>
+                UICoreFrameFlashStop(self)
+            </OnHide>
+        </Scripts>
+    </Frame>
+    
     <Button name="InterfaceOptionsListButtonTemplate2" inherits="OptionsListButtonTemplate" virtual="true">
         <Scripts>
             <OnLoad>

@@ -22,7 +22,7 @@ local BACKDROP = {
 GridFrame:RegisterIndicator("icon", L["Center Icon"],
 	-- New
 	function(frame)
-		local icon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+		local icon = CreateFrame("Frame", nil, frame)
 		icon:SetPoint("CENTER")
 		icon:SetBackdrop(BACKDROP)
 

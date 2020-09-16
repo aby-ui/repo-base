@@ -46,7 +46,7 @@
                     </OnLeave>
                 </Scripts>
             </Frame>
-            <EditBox name="$parentArg"  autoFocus="false" multiLine="true" letters="255" inherits="BackdropTemplate">
+            <EditBox name="$parentArg"  autoFocus="false" multiLine="true" letters="255">
                 <Anchors>
                     <Anchor point="LEFT">
                         <Offset> <AbsDimension x="50" y="0"/> </Offset>
@@ -64,12 +64,16 @@
                     <AbsInset left="6" right="6" top="6" bottom="6"/>
                 </TextInsets>
 
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16_5555" type="global"/>
-                </KeyValues>
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" bgFile = "" tile="true">
+                    <EdgeSize><AbsValue val="16"/></EdgeSize>
+                    <TileSize><AbsValue val="16"/></TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="3" right="3" top="3" bottom="3"/>
+                    </BackgroundInsets>
+                </Backdrop>
 
                 <Scripts>
-                    <OnLoad inherit="prepend">
+                    <OnLoad>
                         --self:SetBackdropColor(0,0,0)
                     </OnLoad>
                     <OnTabPressed></OnTabPressed>
@@ -108,16 +112,24 @@
         </Frames>
     </Frame>
 
-    <Frame name="GridClickSetsFrame" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH" inherits="BackdropTemplate">
+    <Frame name="GridClickSetsFrame" parent="UIParent" hidden="true" enableMouse="true" frameStrata="HIGH">
         <Size>
             <AbsDimension x="500" y="520"/>
         </Size>
         <Anchors>
             <Anchor point="CENTER"/>
         </Anchors>
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-        </KeyValues>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="11" top="12" bottom="10"/>
+            </BackgroundInsets>
+            <TileSize>
+                <AbsValue val="32"/>
+            </TileSize>
+            <EdgeSize>
+                <AbsValue val="32"/>
+            </EdgeSize>
+        </Backdrop>
         <Layers>
             <Layer level="ARTWORK">
                 <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
@@ -217,7 +229,7 @@
                 </Scripts>
             </Button>
 
-            <Frame name="$parentPanelContainer" inherits="BackdropTemplate">
+            <Frame name="$parentPanelContainer">
                 <Anchors>
                     <Anchor point="TOPLEFT">
                         <Offset>
@@ -230,13 +242,19 @@
                         </Offset>
                     </Anchor>
                 </Anchors>
-
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16_5555" type="global"/>
-                </KeyValues>
-
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize>
+                        <AbsValue val="16"/>
+                    </EdgeSize>
+                    <TileSize>
+                        <AbsValue val="16"/>
+                    </TileSize>
+                    <BackgroundInsets>
+                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                    </BackgroundInsets>
+                </Backdrop>
                 <Scripts>
-                    <OnLoad inherit="prepend">
+                    <OnLoad>
                         self:SetBackdropBorderColor(.6, .6, .6, 1);
                     </OnLoad>
                 </Scripts>
@@ -386,7 +404,7 @@
         </Frames>
 
         <Scripts>
-            <OnLoad function="GridClickSetsFrame_OnLoad" inherit="prepend"/>
+            <OnLoad function="GridClickSetsFrame_OnLoad"/>
             <OnEvent function="GridClickSetsFrame_OnEvent"/>
             <OnShow>
                 GridClickSetsFrameClose:SetText(self.lastFrame and PREVIOUS or CLOSE)

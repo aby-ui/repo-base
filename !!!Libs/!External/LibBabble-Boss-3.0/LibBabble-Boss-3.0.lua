@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Boss-3.0
-Revision: $Rev: 455 $
+Revision: $Rev: 452 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-boss-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Boss-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 455 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 452 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -11453,7 +11453,8 @@ elseif GAME_LOCALE == "ruRU" then
 	["The Windreaver"] = "Ветробой",
 	["Theka the Martyr"] = "Тека Мученик",
 	["Theralion"] = "Тералион",
-	["Theralion and Variona"] = "Валиона и Тералион",
+	--[[Translation missing --]]
+	--[[ ["Theralion and Variona"] = "Theralion and Variona",--]] 
 	["Thok the Bloodthirsty"] = "Ток Кровожадный",
 	["Thorim"] = "Торим",
 	["Thorngrin the Tender"] = "Скалезуб Скорбный",
@@ -11486,7 +11487,7 @@ elseif GAME_LOCALE == "ruRU" then
 	["Ursoc"] = "Урсок",
 	["Vaelastrasz the Corrupt"] = "Валестраз Порочный",
 	["Valiona"] = "Валиона",
-	["Valiona and Theralion"] = "Валиона и Тералион",
+	["Valiona and Theralion"] = "Тералион и Валиона",
 	["Valithria Dreamwalker"] = "Валитрия Сноходица",
 	["Val'kyr Shadowguard"] = "Валь'кира - страж Тьмы",
 	["Vanessa VanCleef"] = "Ванесса ван Клиф",
@@ -11520,7 +11521,8 @@ elseif GAME_LOCALE == "ruRU" then
 	["Warder Stilgiss"] = "Тюремщик Стилгисс",
 	["Warlord Kalithresh"] = "Полководец Калитреш",
 	["Warlord Parjesh"] = "Полководец Паржеш",
-	["Warlord Ramtusk"] = "Полководец Злоклык",
+	--[[Translation missing --]]
+	--[[ ["Warlord Ramtusk"] = "Warlord Ramtusk",--]] 
 	["Warlord Zaela"] = "Полководец Зела",
 	["Warlord Zon'ozz"] = "Полководец Зон'озз",
 	["Warmaster Blackhorn"] = "Воевода Черный Рог",
@@ -12665,7 +12667,8 @@ elseif GAME_LOCALE == "zhCN" then
 	["The Windreaver"] = "烈风掠夺者",
 	["Theka the Martyr"] = "殉教者塞卡",
 	["Theralion"] = "瑟纳利昂",
-	["Theralion and Variona"] = "瓦里昂娜与瑟纳利昂",
+	--[[Translation missing --]]
+	--[[ ["Theralion and Variona"] = "Theralion and Variona",--]] 
 	["Thok the Bloodthirsty"] = "嗜血的索克",
 	["Thorim"] = "托里姆",
 	["Thorngrin the Tender"] = "看管者索恩格林",
@@ -12732,7 +12735,8 @@ elseif GAME_LOCALE == "zhCN" then
 	["Warder Stilgiss"] = "典狱官斯迪尔基斯",
 	["Warlord Kalithresh"] = "督军卡利瑟里斯",
 	["Warlord Parjesh"] = "督军帕杰什",
-	["Warlord Ramtusk"] = "督军拉姆塔斯",
+	--[[Translation missing --]]
+	--[[ ["Warlord Ramtusk"] = "Warlord Ramtusk",--]] 
 	["Warlord Zaela"] = "督军扎伊拉",
 	["Warlord Zon'ozz"] = "督军佐诺兹",
 	["Warmaster Blackhorn"] = "战争大师黑角",
@@ -13843,7 +13847,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["The Windreaver"] = "烈風搶奪者",
 	["Theka the Martyr"] = "『殉教者』塞卡",
 	["Theralion"] = "瑟拉里恩",
-	["Theralion and Variona"] = "瑟拉里恩和瓦莉歐娜",
+	--[[Translation missing --]]
+	--[[ ["Theralion and Variona"] = "Theralion and Variona",--]] 
 	["Thok the Bloodthirsty"] = "『嗜血巨龍』梭克",
 	["Thorim"] = "索林姆",
 	["Thorngrin the Tender"] = "『看管者』索古林",
@@ -13910,7 +13915,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Warder Stilgiss"] = "護衛斯迪爾基斯",
 	["Warlord Kalithresh"] = "督軍卡利斯瑞",
 	["Warlord Parjesh"] = "督軍帕傑許",
-	["Warlord Ramtusk"] = "督軍拉姆塔斯",
+	--[[Translation missing --]]
+	--[[ ["Warlord Ramtusk"] = "Warlord Ramtusk",--]] 
 	["Warlord Zaela"] = "札伊拉酋長",
 	["Warlord Zon'ozz"] = "督軍松奧茲",
 	["Warmaster Blackhorn"] = "將領黑角",

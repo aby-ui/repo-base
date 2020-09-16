@@ -40,7 +40,7 @@ end
 
 local function dropShadow(old, frame, outset, parent)
     if not parent then parent = frame end
-    local shadow = old or CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
+    local shadow = old or CreateFrame("Frame", nil, parent)
     outset = outset or 0
     shadow:SetFrameStrata("BACKGROUND")
     shadow:SetFrameLevel(1)
@@ -65,7 +65,7 @@ local function addBorderFrame(old, relative, outset, parent)
     if not parent then parent = relative end
     local backdrop = Styles[style].Backdrop
     if old then old:Show() return old end
-    local f = old or CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
+    local f = old or CreateFrame("Frame", nil, parent)
     f:SetFrameStrata("LOW")
     f:SetFrameLevel(2)
     f:SetBackdrop(backdrop)

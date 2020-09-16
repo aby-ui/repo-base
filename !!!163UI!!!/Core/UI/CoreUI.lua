@@ -150,7 +150,7 @@ end
 ---创建一个包含标题框的对话框, 层次为DIALOG
 --@return wrapped, 具有title属性.
 function CoreUICreateDialog(name,parent,width,height)
-    local f = WW:Frame(name,parent,ABY_BD_TPL):Size(width,height)
+    local f = WW:Frame(name,parent):Size(width,height)
     f:SetFrameStrata("DIALOG");
     -- wrapped:Backdrop(bgFile, edgeFile, edgeSize, insets, tileSize)
     f:Backdrop("Interface\\DialogFrame\\UI-DialogBox-Background-Dark","Interface\\DialogFrame\\UI-DialogBox-Border",32,{11,11,12,10},32);

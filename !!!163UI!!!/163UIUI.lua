@@ -628,7 +628,7 @@ function UUI.Top.Create(main)
 
     do
         --音量调整按钮
-        main.setting.soundPanel = WW:Frame(nil, UIParent, ABY_BD_TPL):Size(60,175):TL(DropDownList1, "TR", -3, 0):SetFrameStrata("FULLSCREEN_DIALOG"):Hide()
+        main.setting.soundPanel = WW:Frame(nil, UIParent):Size(60,175):TL(DropDownList1, "TR", -3, 0):SetFrameStrata("FULLSCREEN_DIALOG"):Hide()
         :Backdrop("Interface\\Tooltips\\UI-Tooltip-Background", "Interface\\Tooltips\\UI-Tooltip-Border", 16, {5,5,5,4}, 16)
         :SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
         :SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
@@ -761,7 +761,7 @@ end
 中央区域
 ---------------------------------------------------------------]]
 function UUI.Center.Create(main)
-    local center = main:Frame(nil,ABY_BD_TPL,"center"):TL(UUI.LEFT_WIDTH+11, -(UUI.TOP_HEIGHT+10+24+10)):BR(-UUI.RIGHT_WIDTH-9, 12):Backdrop("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background")
+    local center = main:Frame():Key("center"):TL(UUI.LEFT_WIDTH+11, -(UUI.TOP_HEIGHT+10+24+10)):BR(-UUI.RIGHT_WIDTH-9, 12):Backdrop("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background")
     local tl = CoreUIDrawBorder(center, 1, "U1T_InnerBorder", 16, UUI.Tex'UI2-border-inner-corner', 16, true)
 
     local scroll = CoreUICreateHybridStep1(nil, center(), 9, nil, true, "LINE")
@@ -1233,7 +1233,7 @@ end
 右侧区域
 ---------------------------------------------------------------]]
 function UUI.Right.Create(main)
-    local right = main:Frame(nil,ABY_BD_TPL,"right"):TL(main,"TR", -UUI.RIGHT_WIDTH, -(UUI.TOP_HEIGHT+10+24+10)):BR(-12, 12):Backdrop("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background")
+    local right = main:Frame():Key("right"):TL(main,"TR", -UUI.RIGHT_WIDTH, -(UUI.TOP_HEIGHT+10+24+10)):BR(-12, 12):Backdrop("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background")
     local l = right:Texture(nil, "BORDER", UUI.Tex'UI2-chain-end'):Size(16,16):TL(-10,0)
     local r = right:Texture(nil, "BORDER", UUI.Tex'UI2-chain-end'):Size(16,16):BL(-10,0):SetTexRotate("V")
     right:CreateTexture(nil, "BORDER", 'U1T_ChainMid'):Size(16,1):TL(l, "BL"):BR(r, "TR"):up()
@@ -1309,9 +1309,9 @@ function UUI.Right.CreatePageDesc(right)
     :CreateTexture():Key("tex"):ALL():up()
     :CreateFontString():Key("caption"):SetFontObject(U1FTextTinyOUTLINE):SetTextColor(1,.96,.63,0.5):TL(0,-3):up()
     --边框
-    local border = WW:Frame(nil, pageDesc.pics, ABY_BD_TPL):Key("border"):TL(-2, 2):BR(2,-2):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3):un()
+    local border = WW:Frame(nil, pageDesc.pics):Key("border"):TL(-2, 2):BR(2,-2):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3):un()
     --外边框
-    local outset = -2 WW:Frame(nil, border, ABY_BD_TPL):TL(-3 - outset, 3 + outset):BR(3 + outset, -3 - outset):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3,.5):un()
+    local outset = -2 WW:Frame(nil, border):TL(-3 - outset, 3 + outset):BR(3 + outset, -3 - outset):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3,.5):un()
 
     --图片翻页按钮
     local function pageButtonOnClick(self)
@@ -1751,7 +1751,7 @@ end
 
 function UUI.CreateUI()
     table.insert(UISpecialFrames, U1_FRAME_NAME)
-    local main = WW:Frame(U1_FRAME_NAME, UIParent, ABY_BD_TPL):TR(-250, -160):Size(800,500) --TR(-350, -260)
+    local main = WW:Frame(U1_FRAME_NAME, UIParent):TR(-250, -160):Size(800,500) --TR(-350, -260)
     :Hide():SetToplevel(1)
     CoreUIMakeMovable(main)
     CoreHookScript(main, "OnMouseDown", UUI.Raise)

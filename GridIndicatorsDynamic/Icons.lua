@@ -10,7 +10,7 @@ local BACKDROP = {
 }
 
 local function New(frame)
-	local icon = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+	local icon = CreateFrame("Button", nil, frame)
 	icon:EnableMouse(false)
 	icon:SetBackdrop(BACKDROP)
 	

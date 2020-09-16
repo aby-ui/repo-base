@@ -285,7 +285,7 @@ end
 ---被CreateUI调用的创建函数
 function U1MMB_CreateContainer()
     --主界面上的区域
-    local ct = WW:Frame(nil, UUI(), ABY_BD_TPL):Key("mmbct"):TL("$parent", "TR", 13,8):Size(43,200):Backdrop("Interface\\DialogFrame\\UI-DialogBox-Background", nil, 5, 3):un();
+    local ct = WW:Frame(nil, UUI()):Key("mmbct"):TL("$parent", "TR", 13,8):Size(43,200):Backdrop("Interface\\DialogFrame\\UI-DialogBox-Background", nil, 5, 3):un();
     CoreUIDrawBorder(ct, 1, "U1T_InnerBorder", 16, UUI.Tex'UI2-border-inner-corner', 16, true)
     CoreUIDrawBG(ct, "U1T_OuterBG", 2, true)
     UUI.MakeMove(ct)
@@ -294,7 +294,7 @@ function U1MMB_CreateContainer()
     CoreHookScript(ct, "OnShow", U1_MMBOnFrameShow);
 
     --游戏菜单附着区域
-    local ct = WW:Frame(nil, GameMenuFrame, ABY_BD_TPL):Key("mmbct"):TL("$parent", "TR", -14, 0):Size(100,GameMenuFrame:GetHeight()):AddFrameLevel(-1, GameMenuFrame)
+    local ct = WW:Frame(nil, GameMenuFrame):Key("mmbct"):TL("$parent", "TR", -14, 0):Size(100,GameMenuFrame:GetHeight()):AddFrameLevel(-1, GameMenuFrame)
     :Backdrop("Interface\\DialogFrame\\UI-DialogBox-Background","Interface\\DialogFrame\\UI-DialogBox-Border", 32, 8, 32)
     :Frame():Key("btn"):TL(-22, 24):Size(60, 60):AddFrameLevel(2, GameMenuFrame):Hide()
     :Frame():Key("first"):up() --游戏菜单图标下的第一个位置的占位符
@@ -503,7 +503,7 @@ function U1MMB_MinimapZoom_Toggle(enable)
 end
 
 function U1_MMBCreateCoordsButton()
-    local btn = CreateFrame("Frame","MinimapCoordsButton",UIParent,ABY_BD_TPL)
+    local btn = CreateFrame("Frame","MinimapCoordsButton",UIParent)
     btn:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",edgeSize = 11,})
     btn:EnableMouse(true)
     btn:SetMovable(true)

@@ -1,11 +1,18 @@
 ﻿<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="WhoWhisperedMe.lua" />
-	<Frame name="WhoWhisperedMe" hidden="true" parent="UIParent" movable="true" enableMouse="true" inherits="BackdropTemplate">
+	<Frame name="WhoWhisperedMe" hidden="true" parent="UIParent" movable="true" enableMouse="true">
 
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
-        </KeyValues>
-
+	<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
 		<Size>
 			<AbsDimension x="1" y="1"/>
 		</Size>

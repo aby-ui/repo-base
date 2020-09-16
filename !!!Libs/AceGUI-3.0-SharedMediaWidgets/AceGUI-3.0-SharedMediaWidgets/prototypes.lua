@@ -1,5 +1,5 @@
 -- Widget created by Yssaril
-local DataVersion = 9004
+local DataVersion = 9003
 local AGSMW = LibStub:NewLibrary("AceGUISharedMediaWidgets-1.0", DataVersion)
 
 if not AGSMW then
@@ -51,6 +51,7 @@ do
 		local frame = CreateFrame("Frame", nil, UIParent)
 		frame:SetHeight(44)
 		frame:SetWidth(200)
+		frame:SetPoint("CENTER", UIParent, "CENTER")
 
 		local label = frame:CreateFontString(nil,"OVERLAY","GameFontNormalSmall")
 			label:SetPoint("TOPLEFT",frame,"TOPLEFT",0,0)
@@ -112,7 +113,7 @@ do
 	function AGSMW:GetBaseFrameWithWindow()
 		local frame = self:GetBaseFrame()
 
-		local displayButton = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+		local displayButton = CreateFrame("Button", nil, frame)
 			displayButton:SetHeight(42)
 			displayButton:SetWidth(42)
 			displayButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -2)
@@ -177,12 +178,14 @@ do
 			self:SetHeight(UIParent:GetHeight()*2/5)
 			self.slider:Show()
 			self:SetScript("OnMouseWheel", OnMouseWheel)
+			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, self.contentframe:GetHeight()-self.scrollframe:GetHeight())
 		else
 			self.scrollframe:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -14, 12)
 			self:SetHeight(self.contentframe:GetHeight()+25)
 			self.slider:Hide()
 			self:SetScript("OnMouseWheel", nil)
+			self.scrollframe:UpdateScrollChildRect()
 			self.slider:SetMinMaxValues(0, 0)
 		end
 		self.contentframe:SetWidth(self.scrollframe:GetWidth())
@@ -205,7 +208,7 @@ do
 		if next(DropDownCache) then
 			frame = table.remove(DropDownCache)
 		else
-			frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+			frame = CreateFrame("Frame", nil, UIParent)
 				frame:SetClampedToScreen(true)
 				frame:SetWidth(188)
 				frame:SetBackdrop(frameBackdrop)
@@ -235,7 +238,7 @@ do
 			frame.ClearFrames = ClearFrames
 			frame.contentRepo = {} -- store all our frames in here so we can get rid of them later
 
-			local slider = CreateFrame("Slider", nil, scrollframe, BackdropTemplateMixin and "BackdropTemplate")
+			local slider = CreateFrame("Slider", nil, scrollframe)
 				slider:SetOrientation("VERTICAL")
 				slider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -14, -10)
 				slider:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -14, 10)

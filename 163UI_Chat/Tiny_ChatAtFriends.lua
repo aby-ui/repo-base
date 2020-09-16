@@ -68,7 +68,7 @@ do
         button.level:SetSize(40, 40)
         button.level:SetTextColor(1, 0.82, 0)
     end
-    local frame = CreateFrame("Frame", "ChatAtFriendsFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+    local frame = CreateFrame("Frame", "ChatAtFriendsFrame", UIParent)
     frame:Hide()
     frame:SetClampedToScreen(true)
     frame:SetFrameStrata("DIALOG")

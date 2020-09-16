@@ -23,11 +23,15 @@
         </Scripts>
     </Button>
 
-    <Button name="BaudErrorFrame" toplevel="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent"  movable="true" hidden="true" inherits="BackdropTemplate">
+    <Button name="BaudErrorFrame" toplevel="true" frameStrata="DIALOG" enableMouse="true" parent="UIParent"  movable="true" hidden="true">
         <Size><AbsDimension x="600" y="500"/></Size>
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-        </KeyValues>
+        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+            <BackgroundInsets>
+                <AbsInset left="11" right="12" top="12" bottom="11"/>
+            </BackgroundInsets>
+            <TileSize><AbsValue val="32"/></TileSize>
+            <EdgeSize><AbsValue val="32"/></EdgeSize>
+        </Backdrop>
         <Layers>
             <Layer level="ARTWORK">
                 <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
@@ -48,11 +52,7 @@
             </Layer>
         </Layers>
         <Frames>
-            <Frame name="$parentListScrollBox" inherits="BackdropTemplate">
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16_5555" type="global"/>
-                    <KeyValue key="backdropBorderColor" value="DARKGRAY_COLOR" type="global"/>
-                </KeyValues>
+            <Frame name="$parentListScrollBox">
                 <Size><AbsDimension y="148"/></Size>
                 <Anchors>
                     <Anchor point="TOPLEFT">
@@ -62,6 +62,12 @@
                         <Offset><AbsDimension x="-40"/></Offset>
                     </Anchor>
                 </Anchors>
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize><AbsValue val="16"/></EdgeSize>
+                    <BackgroundInsets>
+                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                    </BackgroundInsets>
+                </Backdrop>
                 <Layers>
                     <Layer level="BACKGROUND">
                         <FontString name="$parentTitle" inherits="GameFontNormal" text="错误列表:">
@@ -114,7 +120,8 @@
                     </Frame>
                 </Frames>
                 <Scripts>
-                    <OnLoad inherit="prepend">
+                    <OnLoad>
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4);
                         self.Entries = 8;
                         for Index = 1, self.Entries do
                         CreateFrame("Button",self:GetName().."Entry"..Index,self,"BaudErrorFrameEntryTemplate"):SetPoint("TOP",0,6-16*Index);
@@ -122,11 +129,7 @@
                     </OnLoad>
                 </Scripts>
             </Frame>
-            <Frame name="$parentDetailScrollBox" inherits="BackdropTemplate">
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16_5555" type="global"/>
-                    <KeyValue key="backdropBorderColor" value="DARKGRAY_COLOR" type="global"/>
-                </KeyValues>
+            <Frame name="$parentDetailScrollBox">
                 <Anchors>
                     <Anchor point="BOTTOMLEFT">
                         <Offset><AbsDimension x="40" y="40"/></Offset>
@@ -138,6 +141,12 @@
                         <Offset><AbsDimension y="-20"/></Offset>
                     </Anchor>
                 </Anchors>
+                <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize><AbsValue val="16"/></EdgeSize>
+                    <BackgroundInsets>
+                        <AbsInset left="5" right="5" top="5" bottom="5"/>
+                    </BackgroundInsets>
+                </Backdrop>
                 <Layers>
                     <Layer level="BACKGROUND">
                         <FontString name="$parentTitle" inherits="GameFontNormal" text="详细信息:">
@@ -194,6 +203,9 @@
                     </ScrollFrame>
                 </Frames>
                 <Scripts>
+                    <OnLoad>
+                        self:SetBackdropBorderColor(0.4, 0.4, 0.4);
+                    </OnLoad>
                 </Scripts>
             </Frame>
             <Button name="$parentCloseButton" inherits="GameMenuButtonTemplate" text="CLOSE">
@@ -224,7 +236,7 @@
             </Button>
         </Frames>
         <Scripts>
-            <OnLoad inherit="prepend">
+            <OnLoad>
                 BaudErrorFrame_OnLoad(self);
             </OnLoad>
             <OnShow>
