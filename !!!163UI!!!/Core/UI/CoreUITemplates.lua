@@ -294,7 +294,7 @@ end
 function TplSlider(parent, name, title, vertical, valueFormat, min, max, step)
     --local btnClose = WW:Button(n.."CloseButton", UIParent):Hide():ALL():AddFrameLevel(-1):RegisterForClicks("LeftButtonDown", "RightButtonDown")
     valueFormat = valueFormat or "%d"
-    local slider = WW:Slider(name, parent):SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
+    local slider = WW:Slider(name, parent, ABY_BD_TPL):SetOrientation(vertical and "VERTICAL" or "HORIZONTAL")
     slider.format = valueFormat;
     min, max, step = min or 0, max or 100, step or 10
     return slider:SetMinMaxValues(min, max):SetValueStep(step):SetValue(min) --:Size(16,128):TOP(-10, -35)

@@ -1,5 +1,5 @@
 local MAJOR = "LibQTip-1.0"
-local MINOR = 46 -- Should be manually increased
+local MINOR = 47 -- Should be manually increased
 local LibStub = _G.LibStub
 
 assert(LibStub, MAJOR .. " requires LibStub")
@@ -37,7 +37,7 @@ local geterrorhandler = _G.geterrorhandler
 ------------------------------------------------------------------------------
 -- Tables and locals
 ------------------------------------------------------------------------------
-lib.frameMetatable = lib.frameMetatable or {__index = CreateFrame("Frame")}
+lib.frameMetatable = lib.frameMetatable or {__index = CreateFrame("Frame", nil, nil, BackdropTemplateMixin and "BackdropTemplate")}
 
 lib.tipPrototype = lib.tipPrototype or setmetatable({}, lib.frameMetatable)
 lib.tipMetatable = lib.tipMetatable or {__index = lib.tipPrototype}
@@ -52,6 +52,7 @@ lib.activeTooltips = lib.activeTooltips or {}
 
 lib.tooltipHeap = lib.tooltipHeap or {}
 lib.frameHeap = lib.frameHeap or {}
+lib.timerHeap = lib.timerHeap or {}
 lib.tableHeap = lib.tableHeap or {}
 
 lib.onReleaseHandlers = lib.onReleaseHandlers or {}
@@ -163,12 +164,12 @@ function lib:IterateTooltips()
 end
 
 ------------------------------------------------------------------------------
--- Frame cache
+-- Frame cache (for lines and columns)
 ------------------------------------------------------------------------------
 local frameHeap = lib.frameHeap
 
 local function AcquireFrame(parent)
-	local frame = tremove(frameHeap) or CreateFrame("Frame")
+	local frame = tremove(frameHeap) or CreateFrame("Frame", nil, nil, BackdropTemplateMixin and "BackdropTemplate")
 	frame:SetParent(parent)
 	--[===[@debug@
 	usedFrames = usedFrames + 1
@@ -188,6 +189,26 @@ local function ReleaseFrame(frame)
 	--[===[@debug@
 	usedFrames = usedFrames - 1
 	--@end-debug@]===]
+end
+
+------------------------------------------------------------------------------
+-- Timer cache
+------------------------------------------------------------------------------
+local timerHeap = lib.timerHeap
+
+local function AcquireTimer(parent)
+	local frame = tremove(timerHeap) or CreateFrame("Frame")
+	frame:SetParent(parent)
+	return frame
+end
+
+local function ReleaseTimer(frame)
+	frame:Hide()
+	frame:SetParent(nil)
+
+	ClearFrameScripts(frame)
+
+	tinsert(timerHeap, frame)
 end
 
 ------------------------------------------------------------------------------
@@ -669,19 +690,15 @@ end
 ------------------------------------------------------------------------------
 -- Scrollbar data and functions
 ------------------------------------------------------------------------------
-local sliderBackdrop = {
-	bgFile = [[Interface\Buttons\UI-SliderBar-Background]],
-	edgeFile = [[Interface\Buttons\UI-SliderBar-Border]],
+local BACKDROP_SLIDER_8_8 = {
+	bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+	edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
 	tile = true,
-	edgeSize = 8,
+	tileEdge = true,
 	tileSize = 8,
-	insets = {
-		left = 3,
-		right = 3,
-		top = 3,
-		bottom = 3
-	}
-}
+	edgeSize = 8,
+	insets = { left = 3, right = 3, top = 6, bottom = 6 },
+};
 
 local function slider_OnValueChanged(self)
 	self.scrollFrame:SetVerticalScroll(self:GetValue())
@@ -732,13 +749,13 @@ function tipPrototype:UpdateScrolling(maxheight)
 		self.scrollFrame:SetPoint("RIGHT", self, "RIGHT", -(TOOLTIP_PADDING + 20), 0)
 
 		if not self.slider then
-			local slider = CreateFrame("Slider", nil, self)
+			local slider = CreateFrame("Slider", nil, self, BackdropTemplateMixin and "BackdropTemplate")
 			slider.scrollFrame = self.scrollFrame
 
 			slider:SetOrientation("VERTICAL")
 			slider:SetPoint("TOPRIGHT", self, "TOPRIGHT", -TOOLTIP_PADDING, -TOOLTIP_PADDING)
 			slider:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -TOOLTIP_PADDING, TOOLTIP_PADDING)
-			slider:SetBackdrop(sliderBackdrop)
+			slider:SetBackdrop(BACKDROP_SLIDER_8_8)
 			slider:SetThumbTexture([[Interface\Buttons\UI-SliderBar-Button-Vertical]])
 			slider:SetMinMaxValues(0, 1)
 			slider:SetValueStep(1)
@@ -1452,7 +1469,7 @@ function tipPrototype:SetAutoHideDelay(delay, alternateFrame, releaseHandler)
 
 	if delay > 0 then
 		if not timerFrame then
-			timerFrame = AcquireFrame(self)
+			timerFrame = AcquireTimer(self)
 			timerFrame:SetScript("OnUpdate", AutoHideTimerFrame_OnUpdate)
 
 			self.autoHideTimerFrame = timerFrame
@@ -1470,7 +1487,7 @@ function tipPrototype:SetAutoHideDelay(delay, alternateFrame, releaseHandler)
 		timerFrame.alternateFrame = nil
 		timerFrame:SetScript("OnUpdate", nil)
 
-		ReleaseFrame(timerFrame)
+		ReleaseTimer(timerFrame)
 	end
 end
 

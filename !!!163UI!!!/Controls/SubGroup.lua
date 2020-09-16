@@ -65,7 +65,7 @@ function CtlSubGroupCheckOnClick(self)
 end
 
 local creator = function()
-    local group = WW:Frame()
+    local group = WW:Frame(nil,nil,ABY_BD_TPL)
     --group:Backdrop([[Interface\QUESTFRAME\UI-TextBackground-BackdropBackground]],[[Interface\AddOns\!!!163UI!!!\Textures\SubGroupBorder]],8,8);
     CtlExtend(group);
     CtlExtend(group, methods);
@@ -74,7 +74,7 @@ local creator = function()
     CoreUIEnableTooltip(check, nil, function(self, tip)
         UUI.SetAddonTooltip(self:GetParent()._cfg, tip);
     end)
-    group.border = group:Frame():TL(-1, 2-18-CTL_LINESPACE+2):BR(4,-2-CTL_LINESPACE+4):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3):un()
+    group.border = group:Frame(nil,ABY_BD_TPL):TL(-1, 2-18-CTL_LINESPACE+2):BR(4,-2-CTL_LINESPACE+4):Backdrop(nil,UUI.Tex'TuiBlank',1):SetBackdropBorderColor(.3,.3,.3):un()
     return group:un();
 end
 

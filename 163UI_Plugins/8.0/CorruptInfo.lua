@@ -335,6 +335,7 @@ local pattern1 = "^"..ITEM_CORRUPTION_BONUS_STAT:gsub("%+%%d", "%%+[0-9]+").."$"
 local pattern2 = "^\124cFFB686FF%d+[ ]*" .. ITEM_MOD_CORRUPTION .. "\124r$"
 local hookTooltipSetItem = function(self, link)
     link = select(2, self:GetItem())
+    if not link then return end
     local name, corrupt, level, key, levels
     local _, _, itemID = link:find("\124Hitem:([0-9]+):")
     if itemID and data.items[itemID] then

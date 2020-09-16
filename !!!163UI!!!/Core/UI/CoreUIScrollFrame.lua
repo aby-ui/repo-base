@@ -52,7 +52,7 @@ function CoreUICreateModernScrollBar(parent, offsetX, offsetY, hook, barWidth, t
     local bar = WW(parent):Slider():Key(parentKey):TR(offsetX, offsetY-backOffset):BR(offsetX, -(offsetY-backOffset)-1):SetWidth(barWidth):AddFrameLevel(1);
 
     --创建一个向上和向下各出backOffset个像素的背景
-    local back = bar:Frame():TL(-1,backOffset):BR(0,-backOffset):Key("back");
+    local back = bar:Frame(nil,ABY_BD_TPL,"back"):TL(-1,backOffset):BR(0,-backOffset);
     back:Backdrop([[Interface\QUESTFRAME\UI-TextBackground-BackdropBackground]], nil, 0, 0, nil)
     --Interface\DialogFrame\UI-DialogBox-Background
     back:SetBackdropColor(1,1,1,backAlpha);

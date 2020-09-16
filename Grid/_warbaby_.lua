@@ -816,7 +816,7 @@ do
         if not unit then return end
         local guid = UnitGUID(unit)
         if not GridRoster:IsGUIDInGroup(guid) then return end
-        if (UnitIsWarModePhased(unit) or not UnitInPhase(unit)) and UnitIsConnected(unit) then
+        if UnitPhaseReason(unit) and UnitIsConnected(unit) then
             local settings = self.db.profile.alert_phase
             self.core:SendStatusGained(guid, "alert_phase",
                 settings.priority,
