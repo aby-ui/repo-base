@@ -21,10 +21,12 @@ end
 local print = TMW.print
 local GetSpellInfo =
 	  GetSpellInfo
-local GetEventInfo = C_LossOfControl.GetEventInfo
-local GetNumEvents = C_LossOfControl.GetNumEvents
+local GetEventInfo = C_LossOfControl.GetEventInfo or C_LossOfControl.GetActiveLossOfControlData
+local GetNumEvents = C_LossOfControl.GetNumEvents or C_LossOfControl.GetActiveLossOfControlDataCount
 
 local strlowerCache = TMW.strlowerCache
+
+local wow_900 = select(4, GetBuildInfo()) >= 90000
 
 
 local Type = TMW.Classes.IconType:New("losecontrol")
@@ -86,6 +88,16 @@ local function LoseControl_OnUpdate(icon, time)
 
 	for eventIndex = 1, GetNumEvents() do 
 		local locType, spellID, text, texture, start, _, duration, lockoutSchool = GetEventInfo(eventIndex)
+		if wow_900 then
+			locType, spellID, text, texture, start, duration, lockoutSchool = 
+				locType.locType,
+				locType.spellID,
+				locType.displayText,
+				locType.iconTexture,
+				locType.startTime,
+				locType.duration,
+				locType.lockoutSchool
+		end
 		
 		local isValidType = LoseControlTypes[""]
 		if not isValidType then

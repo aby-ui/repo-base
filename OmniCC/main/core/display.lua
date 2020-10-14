@@ -3,7 +3,7 @@ local _, Addon = ...
 
 -- the expected size of an icon
 local ICON_SIZE = 36
-local DEFAULT_STATE = "seconds"
+local DEFAULT_STATE = 'seconds'
 
 local After = _G.C_Timer.After
 local GetTickTime = _G.GetTickTime
@@ -13,7 +13,7 @@ local UIParent = _G.UIParent
 
 local displays = {}
 
-local Display = Addon:CreateHiddenFrame("Frame")
+local Display = Addon:CreateHiddenFrame('Frame')
 
 Display.__index = Display
 
@@ -22,15 +22,17 @@ function Display:Get(owner)
 end
 
 function Display:GetOrCreate(owner)
-    if not owner then return end
+    if not owner then
+        return
+    end
 
     return displays[owner] or self:Create(owner)
 end
 
 function Display:Create(owner)
-    local display = setmetatable(Addon:CreateHiddenFrame("Frame", nil, owner), Display)
+    local display = setmetatable(Addon:CreateHiddenFrame('Frame', nil, owner), Display)
 
-    display.text = display:CreateFontString(nil, "OVERLAY")
+    display.text = display:CreateFontString(nil, 'OVERLAY')
     display.cooldowns = {}
 
     display.updateSize = function()
@@ -48,7 +50,7 @@ function Display:Create(owner)
     end
 
     display:UpdateSize()
-    display:SetScript("OnSizeChanged", self.UpdateSize)
+    display:SetScript('OnSizeChanged', self.UpdateSize)
 
     displays[owner] = display
     return display
@@ -57,7 +59,9 @@ end
 -- defer updating size until the next frame
 -- this is to work around SUF scaling auras after setting timers
 function Display:UpdateSize()
-    if self.updatingSize then return end
+    if self.updatingSize then
+        return
+    end
 
     self.updatingSize = true
     After(GetTickTime(), self.updateSize)
@@ -65,30 +69,23 @@ end
 
 -- update text when the timer notifies us of a change
 function Display:OnTimerTextUpdated(timer, text)
-    if timer ~= self.timer then return end
+    if timer ~= self.timer then
+        return
+    end
 
-    self.text:SetText(text or "")
+    self.text:SetText(text or '')
 end
 
 function Display:OnTimerStateUpdated(timer, state)
-    if timer ~= self.timer then return end
+    if timer ~= self.timer then
+        return
+    end
 
     state = state or DEFAULT_STATE
 
     if (self.state ~= state) then
         self.state = state
         self:UpdateCooldownTextPositionSizeAndColor()
-    end
-end
-
-function Display:OnTimerFinished(timer)
-    if self.timer == timer then
-        local cooldown = self.activeCooldown
-
-        local settings = cooldown._occ_settings
-        if settings and (settings.minEffectDuration or 0) <= cooldown._occ_duration then
-            Addon.FX:Run(self.activeCooldown, settings.effect or "none")
-        end
     end
 end
 
@@ -241,7 +238,6 @@ function Display:UpdateCooldownText()
     self:UpdateCooldownTextPositionSizeAndColor()
 end
 
-
 function Display:UpdateCooldownTextFont()
     local sets = self:GetSettings()
     local text = self.text
@@ -255,14 +251,16 @@ function Display:UpdateCooldownTextFont()
         text:SetShadowColor(shadow.r, shadow.g, shadow.b, shadow.a)
         text:SetShadowOffset(shadow.x, shadow.y)
     else
-        text:SetFont(STANDARD_TEXT_FONT, 8, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 8, 'OUTLINE')
     end
 end
 
 -- props:{size, scale, state, anchor, xOff, yOff}
 function Display:UpdateCooldownTextPositionSizeAndColor()
     local sets = self:GetSettings()
-    if not sets then return end
+    if not sets then
+        return
+    end
 
     local text = self.text
     local sizeRatio = self.sizeRatio or self:CalculateSizeRatio()
@@ -299,7 +297,7 @@ end
 function Display:ForAll(method, ...)
     for _, display in pairs(displays) do
         local func = display[method]
-        if type(func) == "function" then
+        if type(func) == 'function' then
             func(display, ...)
         end
     end
@@ -309,7 +307,7 @@ function Display:ForActive(method, ...)
     for _, display in pairs(displays) do
         if display.timer ~= nil then
             local func = display[method]
-            if type(func) == "function" then
+            if type(func) == 'function' then
                 func(display, ...)
             end
         end

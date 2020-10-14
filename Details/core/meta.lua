@@ -737,7 +737,7 @@
 			instancia.showing[instancia.atributo].need_refresh = true
 			instancia.v_barras = true
 			instancia:ResetaGump()
-			instancia:AtualizaGumpPrincipal (true)
+			instancia:RefreshMainWindow (true)
 		end
 	end
 
@@ -988,7 +988,7 @@
 		
 		if (limpados > 0) then
 			_detalhes:InstanciaCallFunction (_detalhes.ScheduleUpdate)
-			_detalhes:AtualizaGumpPrincipal (-1)
+			_detalhes:RefreshMainWindow (-1)
 		end
 
 		return limpados

@@ -53,7 +53,6 @@ GearHudSettings = {
 function GearHud_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("UNIT_HEALTH");
-    --self:RegisterEvent("UNIT_HEALTH_FREQUENT");
     self:RegisterEvent("PLAYER_UNGHOST");
 	self:RegisterEvent("UNIT_MAXHEALTH");
 	self:RegisterEvent("UNIT_COMBAT");

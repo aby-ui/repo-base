@@ -1,8 +1,12 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Details!: Streamer (plugin)
 ## Notes: Show which spells you are casting, viewers can see what are you doing and follow your steps.
 ## RequiredDeps: Details
 ## SavedVariables: Details_StreamerDB
+
+#@no-lib-strip@
+#embeds.xml
+#@end-no-lib-strip@
 
 Details_Streamer.lua
 

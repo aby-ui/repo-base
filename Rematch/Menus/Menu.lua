@@ -137,10 +137,10 @@ function rematch:ShowMenu(name,anchorPoint,relativeTo,relativePoint,anchorXoff,a
 	frame.Shadow:SetPoint("TOPLEFT",3,-3)
 
 	-- special case for a notable npcs menu when npcs are not yet cached; make an attempt and carry on
-	if name=="NotableNPCs" and not rematch:GetMenu("NotableNPCs") then
+	if name=="TargetMenu" and not rematch:GetMenu("TargetMenu") then
 		rematch:CacheNpcIDs()
 		rematch.notablesCached = true -- may not be really cached but need menu built NOW
-		rematch:CreateNpcMenus()
+		rematch:CreateTargetMenus()
 	end
 
 	local numItems = #menus[name]

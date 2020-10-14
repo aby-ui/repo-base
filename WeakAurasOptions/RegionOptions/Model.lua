@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L;
-if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 local function createOptions(id, data)
   local options = {
@@ -31,7 +31,7 @@ local function createOptions(id, data)
       name = L["Choose"],
       order = 2,
       func = function()
-        WeakAuras.OpenModelPicker(data);
+        OptionsPrivate.OpenModelPicker(data);
       end,
       hidden = function() return data.modelIsUnit end
     },
@@ -217,13 +217,13 @@ local function createOptions(id, data)
     }
   end
 
-  for k, v in pairs(WeakAuras.BorderOptions(id, data, nil, nil, 70)) do
+  for k, v in pairs(OptionsPrivate.commonOptions.BorderOptions(id, data, nil, nil, 70)) do
     options[k] = v
   end
 
   return {
     model = options,
-    position = WeakAuras.PositionOptions(id, data, nil, nil, nil),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, nil, nil),
   };
 end
 
@@ -281,7 +281,7 @@ end
 
 local function createIcon()
   local data = {
-    model_path = "Creature/Arthaslichking/arthaslichking.m2",
+    model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
     model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
     modelIsUnit = false,
     model_x = 0,

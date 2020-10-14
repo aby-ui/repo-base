@@ -226,6 +226,7 @@ U1RegisterAddon("Masque", {
             CoreUIShowOrHide(StatusTrackingBarManager, not v and not IsAddOnLoaded("Dominos"));
         end
     },
+    --[[ TODO aby9
     {
         text = "隐藏地区动作按钮材质",
         var = "hidezoneabil",
@@ -234,6 +235,7 @@ U1RegisterAddon("Masque", {
             CoreUIShowOrHide(ZoneAbilityFrame.SpellButton.Style, not v)
         end
     }
+    --]]
 
  });
 

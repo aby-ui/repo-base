@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Dark = LibStub('Sushi-3.1').Editable:NewSushi('DarkEdit', 1, 'EditBox', 'InputBoxScriptTemplate')
+local Dark = LibStub('Sushi-3.1').Editable:NewSushi('DarkEdit', 2, 'EditBox', 'InputBoxScriptTemplate')
 if not Dark then return end
 
 
@@ -25,7 +25,7 @@ if not Dark then return end
 
 function Dark:Construct()
   local f = self:Super(Dark):Construct()
-  local bg = CreateFrame('Frame', nil, f)
+  local bg = CreateFrame('Frame', nil, f, BackdropTemplateMixin and 'BackdropTemplate')
   bg:SetBackdrop(f.Backdrop)
   bg:SetBackdropColor(0,0,0, 0.25)
   bg:SetBackdropBorderColor(0,0,0, 0.3)

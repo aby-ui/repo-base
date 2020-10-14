@@ -435,9 +435,11 @@ local function AddAppearance(appearanceID)
     -- Adds all of the sources for this appearanceID to the database.
     -- returns early if the buffer is reached.
     local sources = C_TransmogCollection.GetAppearanceSources(appearanceID)
-    for i, source in pairs(sources) do
-        if source.isCollected then
-            AddSource(source, appearanceID)
+    if sources then
+        for i, source in pairs(sources) do
+            if source.isCollected then
+                AddSource(source, appearanceID)
+            end
         end
     end
 end
@@ -469,7 +471,7 @@ local function _GetAppearances()
             if not C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(sourceID) then
                 local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)
                 local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
-                CanIMogIt:DBRemoveItem(appearanceID, sourceID, itemLink)
+                CanIMogIt:DBRemoveItem(appearanceID, sourceID, itemLink, appearanceHash)
                 sourcesRemoved = sourcesRemoved + 1
             end
             buffer = buffer + 1
@@ -823,8 +825,23 @@ function CanIMogIt:GetItemQuality(itemID)
 end
 
 
-function CanIMogIt:GetItemMinLevel(itemLink)
-    return select(5, GetItemInfo(itemLink))
+function CanIMogIt:GetItemExpansion(itemID)
+    return select(15, GetItemInfo(itemID))
+end
+
+
+function CanIMogIt:GetItemMinTransmogLevel(itemID)
+    -- Returns the minimum level required to transmog the item.
+    -- This uses the expansion ID of the item to figure it out.
+    -- Expansions before Shadowlands are all opened at level 10
+    -- as of 9.0. Shadowlands is opened at level 48.
+    local expansion = CanIMogIt:GetItemExpansion(itemID)
+    if expansion == nil or expansion == 0 then return end
+    if expansion < CanIMogIt.Expansions.SHADOWLANDS then
+        return CanIMogIt.MIN_TRANSMOG_LEVEL
+    else
+        return CanIMogIt.MIN_TRANSMOG_LEVEL_SHADOWLANDS
+    end
 end
 
 
@@ -904,7 +921,23 @@ function CanIMogIt:IsArmorAppropriateForPlayer(itemLink)
 end
 
 
+local function IsHeirloomRedText(redText, itemLink)
+    local itemID = CanIMogIt:GetItemID(itemLink)
+    if redText == _G["ITEM_SPELL_KNOWN"] and C_Heirloom.IsItemHeirloom(itemID) then
+        return true
+    end
+end
+
+
+local function IsLevelRequirementRedText(redText)
+    if string.match(redText, _G["ITEM_MIN_LEVEL"]) then
+        return true
+    end
+end
+
+
 function CanIMogIt:CharacterCanEquipItem(itemLink)
+    -- Can the character equip this item eventually? (excluding level)
     if CanIMogIt:IsItemArmor(itemLink) and CanIMogIt:IsArmorCosmetic(itemLink) then
         return true
     end
@@ -912,9 +945,12 @@ function CanIMogIt:CharacterCanEquipItem(itemLink)
     if redText == "" or redText == nil then
         return true
     end
-    local itemID = CanIMogIt:GetItemID(itemLink)
-    if redText == _G["ITEM_SPELL_KNOWN"] and C_Heirloom.IsItemHeirloom(itemID) then
+    if IsHeirloomRedText(redText, itemLink) then
         -- Special case for heirloom items. They always have red text if it was learned.
+        return true
+    end
+    if IsLevelRequirementRedText(redText) then
+        -- We ignore the level, since it will be equipable eventually.
         return true
     end
     return false
@@ -922,6 +958,10 @@ end
 
 
 function CanIMogIt:IsValidAppearanceForCharacter(itemLink)
+    -- Can the character transmog this appearance right now?
+    if not CanIMogIt:CharacterIsHighEnoughLevelForTransmog(itemLink) then
+        return false
+    end
     if CanIMogIt:CharacterCanEquipItem(itemLink) then
         if CanIMogIt:IsItemArmor(itemLink) then
             return CanIMogIt:IsArmorAppropriateForPlayer(itemLink)
@@ -934,10 +974,10 @@ function CanIMogIt:IsValidAppearanceForCharacter(itemLink)
 end
 
 
-function CanIMogIt:CharacterIsTooLowLevelForItem(itemLink)
-    local minLevel = CanIMogIt:GetItemMinLevel(itemLink)
-    if minLevel == nil then return end
-    return UnitLevel("player") < minLevel
+function CanIMogIt:CharacterIsHighEnoughLevelForTransmog(itemLink)
+    local minLevel = CanIMogIt:GetItemMinTransmogLevel(itemLink)
+    if minLevel == nil then return true end
+    return UnitLevel("player") > minLevel
 end
 
 
@@ -1228,11 +1268,13 @@ function CanIMogIt:CalculateTooltipText(itemLink, bag, slot)
     local isTransmogable = CanIMogIt:IsTransmogable(itemLink)
     -- if isTransmogable == nil then return end
 
-    local playerKnowsTransmogFromItem, isValidAppearanceForCharacter, characterIsTooLowLevel,
-        playerKnowsTransmog, characterCanLearnTransmog, isItemSoulbound, text, unmodifiedText;
+    local playerKnowsTransmogFromItem, isValidAppearanceForCharacter,
+        characterIsHighEnoughLevelToTransmog, playerKnowsTransmog, characterCanLearnTransmog,
+        isItemSoulbound, text, unmodifiedText;
 
     local isItemSoulbound = CanIMogIt:IsItemSoulbound(itemLink, bag, slot)
 
+    -- Is the item transmogable?
     if isTransmogable then
         --Calculating the logic for each rule
 
@@ -1246,60 +1288,75 @@ function CanIMogIt:CalculateTooltipText(itemLink, bag, slot)
         isValidAppearanceForCharacter = CanIMogIt:IsValidAppearanceForCharacter(itemLink)
         if isValidAppearanceForCharacter == nil then return end
 
-        characterIsTooLowLevel = CanIMogIt:CharacterIsTooLowLevelForItem(itemLink)
-        if characterIsTooLowLevel == nil then return end
-
         playerKnowsTransmog = CanIMogIt:PlayerKnowsTransmog(itemLink)
         if playerKnowsTransmog == nil then return end
 
         characterCanLearnTransmog = CanIMogIt:CharacterCanLearnTransmog(itemLink)
         if characterCanLearnTransmog == nil then return end
 
+        -- Is the item transmogable?
         if playerKnowsTransmogFromItem then
+            -- Is this an appearance that the character can use now?
             if isValidAppearanceForCharacter then
-                -- Player knows appearance and can transmog it
+                -- The player knows the appearance from this item
+                -- and the character can transmog it.
                 text = CanIMogIt.KNOWN
                 unmodifiedText = CanIMogIt.KNOWN
             else
-                -- Player knows appearance but this character cannot transmog it
-                if characterCanLearnTransmog and characterIsTooLowLevel then
-                    -- If this character is too low level
+                -- Can the character use the appearance eventually?
+                if characterCanLearnTransmog then
+                    -- The player knows the appearance from this item, but
+                    -- the character is too low level to use the appearance.
                     text = CanIMogIt.KNOWN_BUT_TOO_LOW_LEVEL
                     unmodifiedText = CanIMogIt.KNOWN_BUT_TOO_LOW_LEVEL
                 else
-                    -- If this character cannot use the transmog
+                    -- The player knows the appearance from this item, but
+                    -- the character can never use it.
                     text = CanIMogIt.KNOWN_BY_ANOTHER_CHARACTER
                     unmodifiedText = CanIMogIt.KNOWN_BY_ANOTHER_CHARACTER
                 end
             end
+        -- Does the player know the appearance from a different item?
         elseif playerKnowsTransmog then
+            -- Is this an appearance that the character can use/learn now?
             if isValidAppearanceForCharacter then
-                -- Player knows appearance from another item
+                -- The player knows the appearance from another item, and
+                -- the character can use it.
                 text = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM
                 unmodifiedText = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM
             else
-                -- Player knows appearance from another item but cannot transmog it
-                if characterCanLearnTransmog and characterIsTooLowLevel then
+                -- Can the character use/learn the appearance from the item eventually?
+                if characterCanLearnTransmog then
+                    -- The player knows the appearance from another item, but
+                    -- the character is too low level to use/learn the appareance.
                     text = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM_BUT_TOO_LOW_LEVEL
                     unmodifiedText = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM_BUT_TOO_LOW_LEVEL
                 else
+                    -- The player knows the appearance from another item, but
+                    -- this charater can never use/learn the apperance.
                     text = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM_AND_CHARACTER
                     unmodifiedText = CanIMogIt.KNOWN_FROM_ANOTHER_ITEM_AND_CHARACTER
                 end
             end
         else
+            -- Can the character learn the appearance?
             if characterCanLearnTransmog then
-                -- Player does not know the appearance and can learn it on this character.
+                -- The player does not know the appearance and the character
+                -- can learn this appearance.
                 text = CanIMogIt.UNKNOWN
                 unmodifiedText = CanIMogIt.UNKNOWN
             else
+                -- Is the item Soulbound?
                 if isItemSoulbound then
-                    -- Cannot learn it because it is soulbound.
+                    -- The player does not know the appearance, the character
+                    -- cannot use the appearance, and the item cannot be mailed
+                    -- because it is soulbound.
                     text = CanIMogIt.UNKNOWABLE_SOULBOUND
                             .. BLIZZARD_RED .. CanIMogIt:GetReason(itemLink)
                     unmodifiedText = CanIMogIt.UNKNOWABLE_SOULBOUND
                 else
-                    -- Cannot learn it and it is Bind on Equip.
+                    -- The player does not know the apperance, and the character
+                    -- cannot use/learn the appearance.
                     text = CanIMogIt.UNKNOWABLE_BY_CHARACTER
                             .. BLIZZARD_RED .. CanIMogIt:GetReason(itemLink)
                     unmodifiedText = CanIMogIt.UNKNOWABLE_BY_CHARACTER
@@ -1307,6 +1364,7 @@ function CanIMogIt:CalculateTooltipText(itemLink, bag, slot)
             end
         end
     else
+        -- This item is never transmogable.
         text = CanIMogIt.NOT_TRANSMOGABLE
         unmodifiedText = CanIMogIt.NOT_TRANSMOGABLE
     end

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7.1-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-03-08T20:44:24Z
+    This file was last updated on 2020-08-30T16:27:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -91,6 +91,7 @@ local UnitInRange       = _G.UnitInRange;
 local debugprofilestop  = _G.debugprofilestop;
 local GetSpellInfo      = _G.GetSpellInfo;
 local GetItemInfo       = _G.GetItemInfo;
+local pcall             = _G.pcall;
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
@@ -178,16 +179,35 @@ function D:NumToHexStr(number)
     end
 end
 
+do
 
+    local PPrintAntiLoopActive = false
+    local printFailCount = 0
 
+    function D:PPrint( ... ) -- A protected print that doesn't interrupt the flow when it fails because of another add-on unsecure hook {{{
+
+        local ok, errorM = pcall(self.Print, self, ...)
+
+        if (not ok) and (not PPrintAntiLoopActive) and (printFailCount < 5) then
+            PPrintAntiLoopActive = true
+            D:AddDebugText(
+                "Decursive could not print a message to the chat. Another add-on is probably bugged, there is a good chance you can find its name in the following stack trace:",
+                errorM,
+                debugstack(2)
+            )
+            PPrintAntiLoopActive = false
+            printFailCount = printFailCount + 1
+        end
+    end -- }}}
+end
 
 function D:Println( ... ) --{{{
 
     if D.profile.Print_ChatFrame then
-        self:Print(D.Status.OutputWindow, UseFormatIfPresent(...));
+        self:PPrint(D.Status.OutputWindow, UseFormatIfPresent(...));
     end
     if D.profile.Print_CustomFrame then
-        self:Print(DecursiveTextFrame, UseFormatIfPresent(...));
+        self:PPrint(DecursiveTextFrame, UseFormatIfPresent(...));
     end
 end --}}}
 
@@ -201,15 +221,15 @@ function D:ColorPrint (r,g,b, ... )
     t_insert(datas, #datas + 1, "|r");
 
     if D.profile and D.profile.Print_ChatFrame then
-        self:Print(D.Status.OutputWindow, ColorHeader, unpack(datas));
+        self:PPrint(D.Status.OutputWindow, ColorHeader, unpack(datas));
     end
 
     if D.profile and D.profile.Print_CustomFrame then
-        self:Print(DecursiveTextFrame, ColorHeader, unpack(datas));
+        self:PPrint(DecursiveTextFrame, ColorHeader, unpack(datas));
     end
 
     if not self.db then
-        self:Print(ColorHeader, unpack(datas));
+        self:PPrint(ColorHeader, unpack(datas));
     end
 
 end
@@ -230,7 +250,7 @@ do
 
     function D:Debug(...)
         if self.debug then
-            self:Print(debugStyle(UseFormatIfPresent(...)));
+            self:PPrint(debugStyle(UseFormatIfPresent(...)));
         end
     end
 end
@@ -472,7 +492,7 @@ function D:NumToHexColor(ColorTable)
 end
 
 function D:HexColorToNum(hexColor)
-    t_color = {};
+    local t_color = {};
     for hex in (hexColor):gmatch("[0-9a-fA-F][0-9a-fA-F]") do
         t_color[#t_color + 1] = tonumber(hex, 16) / 255;
     end
@@ -547,7 +567,7 @@ do
                     D:GetClassHexColor(class, true);
                 elseif not (DC.WOWC and NON_CLASSIC_CLASSES[class]) then
                     D:AddDebugText("Strange class found in RAID_CLASS_COLORS:", class, 'maxClass:', CLASS_SORT_ORDER and #CLASS_SORT_ORDER or 'CLASS_SORT_ORDER unavailable...');
-                    print("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
+                    D:PPrint("Decursive: |cFFFF0000Unexpected value found in _G.RAID_CLASS_COLORS table|r\nThis may cause many issues, Decursive will display this message until the culprit add-on is fixed or removed, the unexpected value is: '", class, "'");
                 end
             end
         else
@@ -634,7 +654,7 @@ function D.GetSpellOrItemInfo(spellID)
 end
 
 local function BadLocalTest (localtest)
-    D:Print(L[localtest]);
+    D:PPrint(L[localtest]);
 end
 
 -- /run LibStub("AceAddon-3.0"):GetAddon("Decursive"):MakeError()
@@ -938,4 +958,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.7";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.7.1-beta_1";

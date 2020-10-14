@@ -1,13 +1,12 @@
 local mod	= DBM:NewMod(1500, "DBM-Party-Legion", 6, 726)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200220142801")
+mod.statTypes = "heroic,mythic,challenge"
+
+mod:SetRevision("20200912135206")
 mod:SetCreatureID(98207)
 mod:SetEncounterID(1826)
-mod:SetZone()
 mod:SetUsedIcons(2, 1)
-
-mod.noNormal = true
 
 mod:RegisterCombat("combat")
 

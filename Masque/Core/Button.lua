@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Core\Button.lua
 	* Author.: StormFX, JJSheets
@@ -23,7 +23,7 @@ local pairs, type = pairs, type
 ---
 
 -- @ Skins\Skins
-local Skins, __Empty = Core.Skins, Core.__Empty
+local Skins = Core.Skins
 
 -- @ Skins\Regions
 local RegTypes = Core.RegTypes
@@ -35,12 +35,14 @@ local GetScale = Core.GetScale
 local SkinMask, SkinBackdrop, SkinIcon = Core.SkinMask, Core.SkinBackdrop, Core.SkinIcon
 local SkinShadow, SkinNormal, SkinTexture = Core.SkinShadow, Core.SkinNormal, Core.SkinTexture
 local SkinGloss, SkinText, SkinIconBorder = Core.SkinGloss, Core.SkinText, Core.SkinIconBorder
-local SkinNewItem, SkinFrame, UpdateSpellAlert = Core.SkinNewItem, Core.SkinFrame, Core.UpdateSpellAlert
-local SkinCooldown = Core.SkinCooldown
+local SkinNewItem, SkinQuestBorder, SkinFrame = Core.SkinNewItem, Core.SkinQuestBorder, Core.SkinFrame
+local UpdateSpellAlert, SkinCooldown = Core.UpdateSpellAlert, Core.SkinCooldown
 
 ----------------------------------------
 -- Locals
 ---
+
+local __Empty = {}
 
 -- List of valid shapes.
 local Shapes = {
@@ -85,8 +87,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	local Mask = Skin.Mask
 
 	if Mask then
-		Mask = (bType and Mask[bType]) or Mask
-		SkinMask(Button, nil, Mask, xScale, yScale)
+		SkinMask(nil, Button, Mask, xScale, yScale)
 	end
 
 	-- Backdrop
@@ -150,6 +151,13 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 
 	if NewItem then
 		SkinNewItem(NewItem, Button, Skin.NewItem, xScale, yScale)
+	end
+
+	-- QuestBorder
+	local QuestBorder = Regions.QuestBorder
+
+	if QuestBorder then
+		SkinQuestBorder(QuestBorder, Button, Skin.QuestBorder, xScale, yScale)
 	end
 
 	-- Cooldown

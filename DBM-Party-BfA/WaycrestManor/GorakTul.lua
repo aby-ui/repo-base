@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2129, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201003222718")
 mod:SetCreatureID(131864)
 mod:SetEncounterID(2117)
 
@@ -29,8 +29,8 @@ local timerDreadEssenceCD			= mod:NewCDTimer(27.9, 266181, nil, nil, nil, 2)
 mod:AddRangeFrameOption(6, 266225)--Range guessed, can't find spell data for it
 
 function mod:OnCombatStart(delay)
-	timerDarkenedLightningCD:Start(8-delay)
-	timerSummonSlaverCD:Start(13-delay)
+	timerSummonSlaverCD:Start(2.5-delay)
+	timerDarkenedLightningCD:Start(6.1-delay)
 	timerDreadEssenceCD:Start(25-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(6)

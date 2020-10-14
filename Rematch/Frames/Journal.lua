@@ -258,7 +258,11 @@ function journal:ConfigureJournal(hide)
 		end
 	end
 
-	rematch:Reparent(rematch.LoadedTeamPanel,journal,"BOTTOMLEFT",rematch.LoadoutPanel.Loadouts[1],"TOPLEFT",0,2)
+	if rematch.LoadoutPanel.targetMode then
+		rematch.LoadedTeamPanel:Hide()
+	else
+		rematch:Reparent(rematch.LoadedTeamPanel,journal,"BOTTOMLEFT",rematch.LoadoutPanel.Loadouts[1],"TOPLEFT",0,2)
+	end
 	rematch.LoadedTeamPanel.maxWidth = 280
 
 	rematch:UpdatePanelTabs(journal.PanelTabs)
@@ -283,6 +287,7 @@ end
 
 -- one of the tabs (Teams, Queue, Options) clicked
 function journal:PanelTabOnClick()
+	rematch.LoadoutPanel.targetMode = false
 	settings.JournalPanel = self:GetID()
 	rematch:SelectPanelTab(journal.PanelTabs,settings.JournalPanel)
 	journal:ConfigureJournal()

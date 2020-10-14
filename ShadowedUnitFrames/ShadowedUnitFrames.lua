@@ -811,7 +811,7 @@ function ShadowUF:ShowInfoPanel()
 	ShadowUF.db.global.infoID = #(infoMessages)
 	if( infoID < 0 or infoID >= #(infoMessages) ) then return end
 
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	frame:SetClampedToScreen(true)
 	frame:SetFrameStrata("HIGH")
 	frame:SetToplevel(true)

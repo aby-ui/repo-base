@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Core\Regions\IconBorder.lua
 	* Author.: StormFX
@@ -35,8 +35,8 @@ local GetTexCoords = Core.GetTexCoords
 -- Locals
 ---
 
-local DEF_TEXTURE = Default.Texture
-local DEF_RELIC_TEXTURE = Default.RelicTexture
+local DEFAULT_TEXTURE = Default.Texture
+local RELIC_TEXTURE = Default.RelicTexture
 
 ----------------------------------------
 -- Hook
@@ -53,12 +53,12 @@ local function Hook_SetTexture(Region, Texture)
 	local Skin = Region.__MSQ_Skin
 	local SkinTexture = Skin.Texture
 
-	if Texture == DEF_RELIC_TEXTURE then
+	if Texture == RELIC_TEXTURE then
 		SkinTexture = Skin.RelicTexture or SkinTexture or Texture
 		Region.__MSQ_Texture = Texture
 	else
-		SkinTexture = SkinTexture or DEF_TEXTURE
-		Region.__MSQ_Texture = DEF_TEXTURE
+		SkinTexture = SkinTexture or DEFAULT_TEXTURE
+		Region.__MSQ_Texture = DEFAULT_TEXTURE
 	end
 
 	Region:SetTexture(SkinTexture)
@@ -72,24 +72,17 @@ end
 -- Skins the 'IconBorder' region of a button.
 function Core.SkinIconBorder(Region, Button, Skin, xScale, yScale)
 	local Texture = Region.__MSQ_Texture or Region:GetTexture()
-	local SkinTexture = Skin.Texture
-
-	if Texture == DEF_RELIC_TEXTURE then
-		SkinTexture = Skin.RelicTexture or SkinTexture or Texture
-	else
-		SkinTexture = SkinTexture or DEF_TEXTURE
-	end
 
 	if Button.__MSQ_Enabled then
 		Region.__MSQ_Skin = Skin
 		Region.__MSQ_Texture = Texture
 
-		Hook_SetTexture(Region, SkinTexture)
+		Hook_SetTexture(Region, Texture)
 	else
 		Region.__MSQ_Skin = nil
 		Region.__MSQ_Texture = nil
 
-		Region:SetTexture(SkinTexture)
+		Region:SetTexture(Texture)
 	end
 
 	Region:SetTexCoord(GetTexCoords(Skin.TexCoords))

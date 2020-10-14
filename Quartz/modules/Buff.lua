@@ -30,8 +30,6 @@ local TimeFmt = Quartz3.Util.TimeFormat
 local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
-local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-
 ----------------------------
 -- Upvalues
 -- GLOBALS: 
@@ -782,9 +780,7 @@ end
 function Buff:OnEnable()
 	self:RegisterBucketEvent("UNIT_AURA", 0.5)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", "UpdateBars")
-	if not WoWClassic then
-		self:RegisterEvent("PLAYER_FOCUS_CHANGED", "UpdateBars")
-	end
+	self:RegisterEvent("PLAYER_FOCUS_CHANGED", "UpdateBars")
 	media.RegisterCallback(self, "LibSharedMedia_SetGlobal", function(mtype, override)
 		if mtype == "statusbar" then
 			for i, v in pairs(targetbars) do

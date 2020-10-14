@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1987, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610151630")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(122477, 122135)--122477 F'harg, 122135 Shatug
 mod:SetEncounterID(2074)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
 mod:SetHotfixNoticeRev(16949)

@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local wipe = wipe
@@ -12,8 +13,68 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
-local getAll = WeakAuras.getAll
-local setAll = WeakAuras.setAll
+
+local function CompareValues(a, b)
+  if type(a) ~= type(b) then
+    return false
+  end
+  if type(a) == "table" then
+    for k, v in pairs(a) do
+      if v ~= b[k] then
+        return false
+      end
+    end
+
+    for k, v in pairs(b) do
+      if v ~= a[k] then
+        return false
+      end
+    end
+
+    return true
+  else
+    return a == b
+  end
+end
+
+local function GetAll(data, property, default)
+  if data.controlledChildren then
+    local result
+    local first = true
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      if childData[property] ~= nil then
+        if first then
+          result = childData[property]
+          first = false
+        else
+          if not CompareValues(result, childData[property]) then
+            return default
+          end
+        end
+      end
+    end
+    return result
+  else
+    if data[property] ~= nil then
+      return data[property]
+    end
+    return default
+  end
+
+end
+
+local function SetAll(data, property, value)
+  if data.controlledChildren then
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      childData[property] = value
+      WeakAuras.Add(childData)
+    end
+  else
+    data[property] = value
+  end
+end
 
 local texturePicker
 
@@ -100,23 +161,19 @@ local function ConstructTexturePicker(frame)
       pickedwidget:Pick();
     end
 
-    if(self.data.controlledChildren) then
-      setAll(self.data, {"region", self.field}, texturePath);
-    else
-      self.data[self.field] = texturePath;
-    end
-    if(type(self.data.id) == "string") then
-      WeakAuras.Add(self.data);
-      WeakAuras.SetIconNames(self.data);
-      WeakAuras.UpdateThumbnail(self.data);
+    SetAll(self.data, self.field, texturePath);
+    if(type(self.parentData.id) == "string") then
+      WeakAuras.Add(self.parentData);
+      WeakAuras.UpdateThumbnail(self.parentData);
     end
     group:UpdateList();
     local status = dropdown.status or dropdown.localstatus
     dropdown.dropdown:SetText(dropdown.list[status.selected]);
   end
 
-  function group.Open(self, data, field, textures, SetTextureFunc)
-    self.data = data;
+  function group.Open(self, data, parentData, field, textures, SetTextureFunc)
+    self.data = data
+    self.parentData = parentData
     self.field = field;
     self.textures = textures;
     self.SetTextureFunc = SetTextureFunc
@@ -128,17 +185,17 @@ local function ConstructTexturePicker(frame)
           self.givenPath[childId] = childData[field];
         end
       end
-      local colorAll = getAll(data, {"region", "color"}) or {1, 1, 1, 1};
+      local colorAll = GetAll(data, "color", {1, 1, 1, 1});
       self.textureData = {
         r = colorAll[1] or 1,
         g = colorAll[2] or 1,
         b = colorAll[3] or 1,
         a = colorAll[4] or 1,
-        rotate = getAll(data, {"region", "rotate"}),
-        discrete_rotation = getAll(data, {"region", "discrete_rotation"}) or 0,
-        rotation = getAll(data, {"region", "rotation"}) or 0,
-        mirror = getAll(data, {"region", "mirror"}),
-        blendMode = getAll(data, {"region", "blendMode"}) or "ADD"
+        rotate = GetAll(data, "rotate", false),
+        discrete_rotation = GetAll(data, "discrete_rotation", 0),
+        rotation = GetAll(data, "rotation", 0),
+        mirror = GetAll(data, "mirror", false),
+        blendMode = GetAll(data, "blendMode", "ADD")
       };
     else
       self.givenPath = data[field];
@@ -164,7 +221,6 @@ local function ConstructTexturePicker(frame)
     else
       _, givenPath = next(self.givenPath);
     end
-    WeakAuras.debug(givenPath, 3);
     for categoryName, category in pairs(self.textures) do
       if not(picked) then
         for texturePath, textureName in pairs(category) do
@@ -188,18 +244,17 @@ local function ConstructTexturePicker(frame)
   function group.Close()
     frame.window = "default";
     frame:UpdateFrameVisible()
-    AceConfigDialog:Open("WeakAuras", frame.container);
+    WeakAuras.FillOptions()
   end
 
   function group.CancelClose()
-    if(group.data.controlledChildren) then
-      for index, childId in pairs(group.data.controlledChildren) do
+    if(group.parentData.controlledChildren) then
+      for index, childId in pairs(group.parentData.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           childData[group.field] = group.givenPath[childId];
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else
@@ -223,7 +278,7 @@ local function ConstructTexturePicker(frame)
   return group
 end
 
-function WeakAuras.TexturePicker(frame)
+function OptionsPrivate.TexturePicker(frame)
   texturePicker = texturePicker or ConstructTexturePicker(frame)
   return texturePicker
 end

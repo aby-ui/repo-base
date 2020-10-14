@@ -59,7 +59,7 @@ local function checkRange(self)
 		spell = rangeSpells.hostile
 	end
 
-	if( not UnitIsConnected(frame.unit) or not UnitInPhase(frame.unit) or UnitIsWarModePhased(frame.unit) ) then
+	if( not UnitIsConnected(frame.unit) or UnitPhaseReason(frame.unit) ) then
 		frame:SetRangeAlpha(ShadowUF.db.profile.units[frame.unitType].range.oorAlpha)
 	elseif( spell ) then
 		frame:SetRangeAlpha(LSR.IsSpellInRange(spell, frame.unit) == 1 and ShadowUF.db.profile.units[frame.unitType].range.inAlpha or ShadowUF.db.profile.units[frame.unitType].range.oorAlpha)

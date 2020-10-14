@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1903, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(118523, 118374, 118518)--118523 Huntress kasparian, 118374 Captain Yathae Moonstrike, 118518 Prestess Lunaspyre
 mod:SetEncounterID(2050)
-mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 --mod:SetUsedIcons(1)
 mod:SetHotfixNoticeRev(16282)

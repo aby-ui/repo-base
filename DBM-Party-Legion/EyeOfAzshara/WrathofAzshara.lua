@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1492, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision((string.sub("20200524145746", 1, -5)):sub(12, -3))
+mod:SetRevision((string.sub("20200927225704", 1, -5)):sub(12, -3))
 mod:SetCreatureID(96028)
 mod:SetEncounterID(1814)
-mod:SetZone()
 
 mod:RegisterCombat("combat")
 
@@ -45,6 +44,8 @@ function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
 	end
+	if not serpMod then serpMod = DBM:GetModByName(1479) end
+	serpMod:UpdateWinds()--Defeating wrath should terminate all zonewide events
 end
 
 function mod:SPELL_AURA_APPLIED(args)

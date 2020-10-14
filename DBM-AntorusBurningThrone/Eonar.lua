@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2025, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610150440")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(124445)
 mod:SetEncounterID(2075)
-mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
 mod:SetHotfixNoticeRev(16960)

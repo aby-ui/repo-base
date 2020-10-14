@@ -177,7 +177,7 @@
 				if (self.rows_created < self.rows_fit_in_window) then
 					for i  = #self.barras+1, self.rows_fit_in_window do
 						local nova_barra = gump:CriaNovaBarra (self, i, 30) --> cria nova barra
-						nova_barra.texto_esquerdo:SetText (Loc ["STRING_NEWROW"])
+						nova_barra.lineText1:SetText (Loc ["STRING_NEWROW"])
 						nova_barra.statusbar:SetValue (100) 
 						self.barras [i] = nova_barra
 					end

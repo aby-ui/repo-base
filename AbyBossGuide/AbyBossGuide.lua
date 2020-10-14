@@ -369,7 +369,7 @@ end
 function BG:CreateUI(name)
     self.lines = {};
     self.numLines = 0;
-    local f = WW:Frame(name, UIParent):Size(100,22):SetToplevel(true):SetClampedToScreen(true):Backdrop(
+    local f = WW:Frame(name, UIParent, ABY_BD_TPL):Size(100,22):SetToplevel(true):SetClampedToScreen(true):Backdrop(
         [[Interface\GLUES\CHARACTERCREATE\UI-CHARACTERCREATE-BACKGROUND]],
         [[Interface\Tooltips\UI-Tooltip-Border]], 8, 2)
     CoreUIMakeMovable(f);

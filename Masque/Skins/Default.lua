@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Skins\Default.lua
 	* Author.: Blizzard Entertainment
@@ -24,7 +24,9 @@ local L = Core.Locale
 -- Default
 ---
 
-Core.AddSkin("Default", {
+Core.SkinList.Default = "Default"
+Core.Skins.Default = {
+	SkinID = "Default",
 	Shape = "Square",
 	Masque_Version = Core.API_VERSION,
 
@@ -63,7 +65,7 @@ Core.AddSkin("Default", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Shadow = {Hide = true},
+	Shadow = {Hide = true},
 	Normal = {
 		Texture = [[Interface\Buttons\UI-Quickslot2]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -121,7 +123,7 @@ Core.AddSkin("Default", {
 			-- SetAllPoints = nil,
 		},
 	},
-	-- Disabled = {Hide = true},
+	Disabled = {Hide = true},
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -315,15 +317,16 @@ Core.AddSkin("Default", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-	-- Gloss = {Hide = true},
-	IconOverlay = {
-		Atlas = "AzeriteIconFrame",
+	Gloss = {Hide = true},
+	AutoCastable = {
+		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
+		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
-		Width = 36,
-		Height = 36,
+		Width = 70,
+		Height = 70,
 		Point = "CENTER",
 		RelPoint = "CENTER",
 		OffsetX = 0,
@@ -358,17 +361,30 @@ Core.AddSkin("Default", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	AutoCastable = {
-		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
-		-- TexCoords = {0, 1, 0, 1},
+	IconOverlay = {
+		Atlas = "AzeriteIconFrame",
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
-		Width = 70,
-		Height = 70,
+		Width = 36,
+		Height = 36,
 		Point = "CENTER",
 		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 1,
+		Width = 20,
+		Height = 22,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
 		OffsetX = 0,
 		OffsetY = 0,
 		-- SetAllPoints = nil,
@@ -381,6 +397,21 @@ Core.AddSkin("Default", {
 		DrawLevel = 2,
 		Width = 38,
 		Height = 38,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
+		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
+		Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 36,
+		Height = 37,
 		Point = "CENTER",
 		RelPoint = "CENTER",
 		OffsetX = 0,
@@ -418,6 +449,20 @@ Core.AddSkin("Default", {
 		-- OffsetY = 0,
 		UseColor = true,
 		SetAllPoints = true,
+	},
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 20,
+		Height = 18,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 1,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
 	},
 	Name = {
 		JustifyH = "CENTER",
@@ -475,4 +520,4 @@ Core.AddSkin("Default", {
 		-- OffsetY = 0,
 		SetAllPoints = true,
 	},
-})
+}

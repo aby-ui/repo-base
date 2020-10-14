@@ -1,4 +1,4 @@
-local QuestPOIGetIconInfo, GetNumQuestWatches, GetSuperTrackedQuestID, GetDistanceSqToQuest, QuestHasPOIInfo = QuestPOIGetIconInfo, GetNumQuestWatches, GetSuperTrackedQuestID, GetDistanceSqToQuest, QuestHasPOIInfo
+local QuestPOIGetIconInfo, GetNumQuestWatches, GetSuperTrackedQuestID, GetDistanceSqToQuest, QuestHasPOIInfo = QuestPOIGetIconInfo, C_QuestLog.GetNumQuestWatches, C_SuperTrack.GetSuperTrackedQuestID, C_QuestLog.GetDistanceSqToQuest, QuestHasPOIInfo
 local questsDis, orderedIndexes, GetQuestWatchInfo_old = {}, {}, GetQuestWatchInfo
 
 local CONFIG = "!!!163ui!!!/questWatchSort"

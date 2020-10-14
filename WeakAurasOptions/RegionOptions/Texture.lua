@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
@@ -31,7 +32,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 7,
       func = function()
-        WeakAuras.OpenTexturePicker(data, "texture", WeakAuras.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, data, "texture", OptionsPrivate.Private.texture_types);
       end
     },
     color = {
@@ -46,7 +47,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
       order = 12,
-      values = WeakAuras.blend_types
+      values = OptionsPrivate.Private.blend_types
     },
     mirror = {
       type = "toggle",
@@ -91,6 +92,13 @@ local function createOptions(id, data)
       order = 35,
       hidden = function() return data.rotate end
     },
+    textureWrapMode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Texture Wrap"],
+      order = 36,
+      values = OptionsPrivate.Private.texture_wrap_types
+    },
     endHeader = {
       type = "header",
       order = 100,
@@ -100,7 +108,7 @@ local function createOptions(id, data)
 
   return {
     texture = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data),
   };
 end
 
@@ -134,7 +142,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     region.texture:SetHeight(scale * data.height);
   end
 
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture);
+  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
   region.texture:SetBlendMode(data.blendMode);
 
@@ -233,7 +241,7 @@ if WeakAuras.IsClassic() then
 end
 
 local function GetAnchors(data)
-  return WeakAuras.default_types_for_anchor
+  return OptionsPrivate.Private.default_types_for_anchor
 end
 
 WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates, GetAnchors);

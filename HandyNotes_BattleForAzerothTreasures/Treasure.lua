@@ -72,6 +72,7 @@ ns.points = {
         [71161767] = path{quest=50949},
         [56123806] = {quest=51338, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
         [52974719] = {quest=51624, achievement=12851, criteria=40997}, -- Riches of Tor'nowa
+        [54303440] = {quest=52269, item=161443, note="Pepe'jin is perched above the bar",}, -- A Tiny Voodoo Mask
         -- junk
         [50823158] = {quest=50711, junk=true, label=CHEST,},
         [65041636] = {quest=50715, junk=true, label=CHEST,},
@@ -91,7 +92,8 @@ ns.points = {
         [81203857] = {quest=50728, junk=true, label=CHEST,},
         [80135512] = {quest=51346, junk=true, label=CHEST,},
         [82465431] = {quest=51346, junk=true, label=CHEST,},
-        -- [71684127] = {quest=50308, junk=true, label="Mysterious trashpile", achievement="12482", note="Jani"},
+        [71684127] = {quest=50308, junk=true, label="Mysterious trashpile", achievement=12482, note="Jani"},
+        [63963171] = {quest=50720, junk=true, label="Mysterious trashpile", achievement=12482, note="Jani"},
     },
     [863] = { -- Nazmir
         [77903634] = {quest=49867, achievement=12771, criteria=40857,}, -- Lucky Horace's Lucky Chest
@@ -121,6 +123,8 @@ ns.points = {
         [41575046] = {quest=49916, junk=true, label=CHEST,},
         [41596574] = {quest=49916, junk=true, label=CHEST,},
         [28048187] = {quest=50895, junk=true, label=CHEST,},
+        [33957512] = {quest=50437, junk=true, label="Mysterious trashpile", achievement=12482, note="Jani"},
+        [68573280] = {quest=50441, junk=true, label="Mysterious trashpile", achievement=12482, note="Jani"},
     },
     [864] = { -- Vol'dun
         [46598801] = {quest=50237, achievement=12849, criteria=40966, note="Use mine cart",}, -- Ashvane Spoils
@@ -158,6 +162,7 @@ ns.points = {
         [62832267] = {quest=53145, minimap=true, atlas="VignetteLootElite", scale=1.2, achievement=13016, criteria=41355, note="Down from Tortaka Refuge",}, -- Kurt's Ornate Key
         -- junk
         [46984656] = {quest=50883, junk=true, label="Mysterious trashpile", achievement=12482, note="In alcove, Summon Jani, give her Charged Ranishu Antennae"},
+        [49398446] = {quest=50892, junk=true, label="Mysterious trashpile", achievement=12482, note="Under bridge, Summon Jani, give her Sturdy Redrock Jaw"},
         [59631517] = {quest=50914, junk=true, label=CHEST,},
         [61071734] = {quest=50914, junk=true, label=CHEST,},
         [53841481] = {quest=50915, junk=true, label=CHEST,},
@@ -317,6 +322,7 @@ ns.points = {
         [44472690] = {quest=51338, minimap=true, achievement=12851, criteria=40996, note="In cave behind waterfall",}, -- Cache of Secrets
         [38300716] = {quest=48938, minimap=true, achievement=12851, criteria=40988, note="On top of the Hall of the High Priests",}, -- Offerings of the Chosen
         [41141101] = path{quest=48938},
+        [39001580] = {quest=52269, item=161443, note="Pepe'jin is perched above the bar",}, -- A Tiny Voodoo Mask
         -- junk
         [48981013] = {quest=49142, junk=true, label=CHEST,},
     },

@@ -299,8 +299,8 @@ local function CF_LevelLogging(fullName, Level)
 end
 
 if (Config.IgnoreMore) then
-	hooksecurefunc("AddIgnore", CF_IgnoreMore)
-	hooksecurefunc("AddOrDelIgnore", CF_IgnoreMore)
+	hooksecurefunc(C_FriendList, "AddIgnore", CF_IgnoreMore)
+	hooksecurefunc(C_FriendList, "AddOrDelIgnore", CF_IgnoreMore)
 end
 if (Config.MouseScrollMultiLine) then
 	hooksecurefunc("FloatingChatFrame_OnMouseScroll", function(self, delta)

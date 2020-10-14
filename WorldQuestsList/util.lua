@@ -33,7 +33,7 @@ function ELib.Templates:Border(self,cR,cG,cB,cA,size,offsetX,offsetY)
 	self.BorderColor = {cR,cG,cB,cA}
 end
 function ELib:Shadow(parent,size,edgeSize)
-	local self = CreateFrame("Frame",nil,parent)
+	local self = CreateFrame("Frame",nil,parent,"BackdropTemplate")
 	self:SetPoint("LEFT",-size,0)
 	self:SetPoint("RIGHT",size,0)
 	self:SetPoint("TOP",0,size)
@@ -323,7 +323,7 @@ do
 			self:EnableMouse(true)
 			self:Hide()
 			
-			self.Backdrop = CreateFrame("Frame",nil,self)
+			self.Backdrop = CreateFrame("Frame",nil,self,"BackdropTemplate")
 			self.Backdrop:SetAllPoints()
 			self.Backdrop:SetBackdrop({
 				bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",

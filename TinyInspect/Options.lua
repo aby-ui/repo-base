@@ -150,7 +150,7 @@ end
 local function CreateSubtypeFrame(list, parent)
     if (not list) then return end
     if (not parent.SubtypeFrame) then
-        parent.SubtypeFrame = CreateFrame("Frame", nil, parent)
+        parent.SubtypeFrame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
         parent.SubtypeFrame:SetScale(0.92)
         parent.SubtypeFrame:SetPoint("TOPLEFT", 333, 0)
         parent.SubtypeFrame:SetBackdrop({
@@ -203,7 +203,7 @@ local function CreateAnchorFrame(anchorkey, parent)
         end)
         frame[anchorPoint] = button
     end
-    local frame = CreateFrame("Frame", nil, parent.SubtypeFrame or parent, "ThinBorderTemplate")
+    local frame = CreateFrame("Frame", nil, parent.SubtypeFrame or parent, BackdropTemplateMixin and "ThinBorderTemplate,BackdropTemplate" or "ThinBorderTemplate")
     frame.anchorkey = anchorkey
     frame:SetBackdrop(GameTooltip:GetBackdrop())
     frame:SetBackdropColor(GameTooltip:GetBackdropColor())

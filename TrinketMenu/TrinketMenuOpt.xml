@@ -82,16 +82,14 @@
 		<PushedTexture file = "Interface\AddOns\TrinketMenu\Textures\TrinketMenu-Icon-Down"/>
 		<HighlightTexture alphaMode = "ADD" file = "Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 	</Button>
-	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true">
+	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true" inherits="BackdropTemplate">
 		<Size x = "300" y = "336"/>
 		<Anchors>
 			<Anchor point = "CENTER"/>
 		</Anchors>
-		<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-			<EdgeSize>
-				<AbsValue val = "16" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+        </KeyValues>
 		<Layers>
 			<Layer level = "BACKGROUND">
 				<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -169,7 +167,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Frame name = "TrinketMenu_SubOptFrame" hidden = "true">
+			<Frame name = "TrinketMenu_SubOptFrame" hidden = "true" inherits="BackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -182,11 +180,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-					<EdgeSize>
-						<AbsValue val = "16" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+                </KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -400,7 +396,7 @@
 							</Anchor>
 						</Anchors>
 					</CheckButton>
-					<Slider name = "TrinketMenu_OptColumnsSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "1" maxValue = "30" defaultValue = "4" valueStep = "1">
+					<Slider name = "TrinketMenu_OptColumnsSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "1" maxValue = "30" defaultValue = "4" valueStep = "1" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -414,17 +410,9 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
-							<EdgeSize>
-								<AbsValue val = "8"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val = "8"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
-							</BackgroundInsets>
-						</Backdrop>
+                        <KeyValues>
+                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
+                        </KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptColumnsSliderText" inherits = "GameFontHighlightSmall" text = "5 trinkets">
@@ -452,7 +440,7 @@
 							</Size>
 						</ThumbTexture>
 					</Slider>
-					<Slider name = "TrinketMenu_OptMainScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01">
+					<Slider name = "TrinketMenu_OptMainScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -466,17 +454,10 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
-							<EdgeSize>
-								<AbsValue val = "8"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val = "8"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
-							</BackgroundInsets>
-						</Backdrop>
+
+                        <KeyValues>
+                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
+                        </KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptMainScaleSliderText" inherits = "GameFontHighlightSmall" text = "Main Scale: 1.0">
@@ -504,7 +485,7 @@
 							</Size>
 						</ThumbTexture>
 					</Slider>
-					<Slider name = "TrinketMenu_OptMenuScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01">
+					<Slider name = "TrinketMenu_OptMenuScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -518,17 +499,9 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-						<Backdrop bgFile = "Interface\Buttons\UI-SliderBar-Background" edgeFile = "Interface\Buttons\UI-SliderBar-Border" tile = "true">
-							<EdgeSize>
-								<AbsValue val = "8"/>
-							</EdgeSize>
-							<TileSize>
-								<AbsValue val = "8"/>
-							</TileSize>
-							<BackgroundInsets>
-								<AbsInset left = "3" right = "3" top = "6" bottom = "6"/>
-							</BackgroundInsets>
-						</Backdrop>
+                        <KeyValues>
+                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
+                        </KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptMenuScaleSliderText" inherits = "GameFontHighlightSmall" text = "Menu Scale: 1.0">

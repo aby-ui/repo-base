@@ -10,6 +10,9 @@ panel.workingList = {} -- working list of indexes to display
 rematch:InitModule(function()
 	rematch.OptionPanel = panel
 	settings = RematchSettings
+
+	panel.Top.SearchBox.Instructions:SetText(L["Search Options"])
+
 	-- set up growth buttons
 	for i,info in ipairs({
 		{"BOTTOMRIGHT",3,-3,0.5,1.2,1.2,0.5,-0.2,0.5,0.5,-0.2},
@@ -23,7 +26,11 @@ rematch:InitModule(function()
 		panel.Growth.Corners[i].Arrow:SetTexCoord(info[4],info[5],info[6],info[7],info[8],info[9],info[10],info[11])
 	end
 	panel.Growth.Label:SetText(L["Anchor"])
-	settings.CollapsedOptHeaders = settings.CollapsedOptHeaders or {}
+	settings.ExpandedOptHeaders = settings.ExpandedOptHeaders or {}
+	if not settings.RememberExpandedLists then
+		wipe(settings.ExpandedOptHeaders)
+	end
+
 	settings.PreferredMode = settings.PreferredMode or 1
 
 	settings.CustomScaleValue = settings.CustomScaleValue or 100
@@ -102,23 +109,28 @@ function panel:FillOptionListButton(index)
 		self.HeaderBack:Hide()
 		self.CheckButton:Hide()
 		self.Text:SetText("")
+        self.Text:SetFontObject((settings.SlimListButtons and settings.SlimListSmallText) and GameFontNormalSmall or GameFontNormal)
 
 		if self.optType=="header" then
 			self.headerIndex = opt[3]
 			self.CheckButton:SetPoint("LEFT")
 			self.CheckButton:SetTexture("Interface\\AddOns\\Rematch\\Textures\\expand_collapse")
-			local isCollapsed = settings.CollapsedOptHeaders[opt[3]]
-			local collapsedOffset = isCollapsed and 0.5 or 0
-			self.CheckButton:SetTexCoord(0,1,collapsedOffset,collapsedOffset+0.5)
+			local isExpanded = settings.ExpandedOptHeaders[opt[3]]
+			local expandedOffset = isExpanded and 0 or  0.5
+			self.CheckButton:SetTexCoord(0,1,expandedOffset,expandedOffset+0.5)
 			self.CheckButton:Show()
 			self.Text:SetPoint("LEFT",self.CheckButton,"RIGHT",2,0)
 			self.Text:SetText(opt[2])
 			self.Text:SetTextColor(1,0.82,0)
 			self.HeaderBack:Show()
+			-- if a search is happening, don't show the +/- buttons
+			if panel.searchPattern then
+				self.CheckButton:Hide()
+			end
 
 			-- special handling for "All Options" header with all headers collapsed
-			if self.headerIndex==0 and panel.allCollapsed then
-				self.CheckButton:SetTexCoord(0,1,0.5,1) -- change +/- to +
+			if self.headerIndex==0 and not panel.allCollapsed then
+				self.CheckButton:SetTexCoord(0,1,0,0.5) -- change +/- to +
 			end
 
 		elseif self.optType=="check" then
@@ -168,12 +180,19 @@ function panel:FillOptionListButton(index)
 			end
 		end
 
+		local focus = GetMouseFocus()
+		if focus==self and focus:GetScript("OnEnter") then
+			self:GetScript("OnEnter")(self)
+		end
+
 	end
 end
 
 function panel:ListButtonOnEnter()
 	if self.optType=="header" or ((self.optType=="check" or self.optType=="radio") and not self.isDisabled) then
-		rematch:ShowTextureHighlight(self.CheckButton)
+		if not panel.searchPattern then
+			rematch:ShowTextureHighlight(self.CheckButton)
+		end
 	end
 	local index = self.index
 	if self.optType~="header" and panel.opts[index][3] then
@@ -204,7 +223,9 @@ end
 function panel:ListButtonOnMouseUp()
 	if self.optType=="header" or ((self.optType=="check" or self.optType=="radio") and GetMouseFocus()==self and not self.isDisabled) then
 		-- if mouse goes up after it left button, don't "unpress" it
-		rematch:ShowTextureHighlight(self.CheckButton)
+		if not panel.searchPattern then
+			rematch:ShowTextureHighlight(self.CheckButton)
+		end
 	end
 end
 
@@ -236,6 +257,10 @@ function panel:RunOptionInits()
 end
 
 function panel:PopulateList()
+	if panel.searchPattern then -- if searching for an option, do an alternate populate
+		return panel:PopulateSearchedList(panel.searchPattern)
+	end
+	-- non-search list, but some headers may be collapsed
 	local list = panel.workingList
 	wipe(list)
 	local skipping
@@ -243,7 +268,7 @@ function panel:PopulateList()
 	for index,opt in ipairs(panel.opts) do
 		if opt[1]=="header" or opt[1]=="text" then
 			tinsert(list,index)
-			if settings.CollapsedOptHeaders[opt[3]] then
+			if not settings.ExpandedOptHeaders[opt[3]] then
 				skipping = true
 			else
 				skipping = nil
@@ -266,6 +291,8 @@ function panel:GrowthOnEnter()
 end
 
 function panel.Growth:Update()
+	panel.Growth.Label:SetFontObject((settings.SlimListButtons and settings.SlimListSmallText) and GameFontNormalSmall or GameFontNormal)
+
 	for i=1,4 do
 		panel.Growth.Corners[i]:SetChecked(settings.CornerPos==panel.Growth.Corners[i].corner)
 	end
@@ -410,6 +437,16 @@ panel.funcs.UseDefaultJournal = function()
 	end
 end
 
+panel.funcs.UseOldTargetMenu = function()
+	if settings.UseOldTargetMenu and rematch.LoadoutPanel.TargetPanel:IsVisible() then
+		rematch.LoadoutPanel.TargetPanel:CloseTargetPanel()
+	end
+	if rematch:IsMenuOpen("TargetMenu") then
+		rematch:HideMenu()
+	end
+	rematch.LoadoutPanel.Target.TargetButton.Arrow:SetShown(settings.UseOldTargetMenu and true)
+end
+
 -- this will pop up a dialog asking to reload due to the given name (ie "Compact List Format")
 local function showReloadPopup(name)
 	name = name or "<undefined>"
@@ -422,6 +459,7 @@ panel.funcs.SlimListButtons = function()
 	rematch.TeamPanel.List:ChangeTemplate(settings.SlimListButtons and "RematchCompactTeamListButtonTemplate" or "RematchTeamListButtonTemplate")
 	rematch.PetPanel.List:ChangeTemplate(settings.SlimListButtons and "RematchCompactPetListButtonTemplate" or "RematchNewPetListButtonTemplate")
 	rematch.QueuePanel.List:ChangeTemplate(settings.SlimListButtons and "RematchCompactPetListButtonTemplate" or "RematchNewPetListButtonTemplate")
+	rematch.LoadoutPanel.TargetPanel.List:ChangeTemplate(settings.SlimListButtons and "RematchCompactTargetListButtonTemplate" or "RematchTargetListButtonTemplate")
 	--showReloadPopup("Compact List Format")
 end
 panel.funcs.SlimListSmallText = function()
@@ -458,24 +496,30 @@ end
 
 panel.funcs.ShowInTeamsFootnotes = rematch.UpdateUI
 
+panel.funcs.CollapseListsOnESC = function()
+	panel.CollapseAllButton:SetShown(settings.CollapseListsOnESC and true)
+end
+
+panel.funcs.HideMenuHelp = rematch.UpdateUI
+
 -- collapses or expands an option header
 function panel:HeaderOnClick()
 	local headerIndex = self.headerIndex
-	local collapsed = settings.CollapsedOptHeaders
+	local expanded = settings.ExpandedOptHeaders
 	if headerIndex==0 then -- All Options header
-		wipe(collapsed)
-		if not panel.allCollapsed then
+		wipe(expanded)
+		if panel.allCollapsed then
 			for index,opt in ipairs(panel.opts) do
 				if opt[1]=="header" and opt[3]~=0 then
-					collapsed[opt[3]] = true
+					expanded[opt[3]] = true
 				end
 			end
 		end
 	else -- any other header, toggle the collapsed state
-		if collapsed[headerIndex] then
-			collapsed[headerIndex] = nil
+		if expanded[headerIndex] then
+			expanded[headerIndex] = nil
 		else
-			collapsed[headerIndex] = true
+			expanded[headerIndex] = true
 		end
 	end
 	panel:PopulateList()
@@ -496,7 +540,7 @@ function panel:ShowCustomScaleDialog()
 
 	dialog:SetContext("oldScale",settings.CustomScaleValue)
 
-	dialog.ScaleSlider:SetPoint("TOP",0,-106)
+	dialog.ScaleSlider:SetPoint("TOP",0,-102)
 	dialog.ScaleSlider.updating = true -- semaphore to prevent doing full scale update
 	dialog.ScaleSlider:SetValue(settings.CustomScaleValue or 100)
 	dialog.ScaleSlider.updating = false
@@ -535,3 +579,72 @@ function panel:RescaleFrame(value)
 end
 panel.funcs.CustomScale = panel.RescaleFrame
 
+--[[ search ]]
+
+function panel:SearchBoxOnTextChanged()
+	local oldPattern = panel.searchPattern
+	local text = self:GetText():trim()
+	panel.searchPattern = text:len()>0 and rematch:DesensitizeText(text) or nil
+	if panel.searchPattern~=oldPattern then
+		panel:PopulateList()
+		panel:Update()
+	end
+end
+
+function panel:PopulateSearchedList(searchPattern)
+	local list = panel.workingList
+	wipe(list)
+	local showAllForThisHeader = nil
+	for index,opt in ipairs(panel.opts) do
+		if opt[1]=="header" then -- adding all headers for now
+			tinsert(list,index)
+			showAllForThisHeader = opt[2]:match(searchPattern) and true
+		elseif showAllForThisHeader then -- header had a search hit, show all of header's options
+			tinsert(list,index)
+		elseif opt[1]=="spacer" or opt[1]=="widget" or opt[1]=="text" then
+			-- skip spacers, widget and text
+		elseif (opt[1]=="check" and (opt[3]:match(searchPattern) or opt[4]:match(searchPattern)) or panel:SubOptionsHavePattern(index,searchPattern)) then
+			tinsert(list,index)
+		elseif (opt[1]=="radio" and (opt[3]:match(searchPattern) or opt[4]:match(searchPattern))) then
+			tinsert(list,index)
+		end
+	end
+	-- remove headers with nothing shown
+	for i=#list,1,-1 do
+		if panel.opts[list[i]][1]=="header" and (#list==i or panel.opts[list[i+1]][1]=="header") then
+			tremove(list,i)
+		end
+	end
+end
+
+-- returns true if one of the checks immediately after index is a dependent of index and has the searchPattern
+-- (so when suboptions found in a search, the parent option also shows; in case it's unchecked and needs to be checked)
+function panel:SubOptionsHavePattern(index,searchPattern)
+	local parentOpt = panel.opts[index][2]
+	for i=index+1,#panel.opts do
+		local opt = panel.opts[i]
+		if opt and opt[1]=="check" and opt[5]==parentOpt and (opt[3]:match(searchPattern) or opt[4]:match(searchPattern)) then
+			return true
+		elseif opt[1]=="header" then -- ran into next header, can stop looking for dependant options
+			return false
+		end
+	end
+end
+
+function panel:CollapseAllButtonOnKeyDown(key)
+    if key==GetBindingKey("TOGGLEGAMEMENU") then
+        -- if "Close Lists On ESC" is checked, see if anything is expanded and close it if so rather than closing panel
+        if settings.CollapseListsOnESC then
+            for k,isExpanded in pairs(settings.ExpandedOptHeaders) do
+                if isExpanded then -- checking this way rather than next(setting.etc) because a value could be false
+					wipe(settings.ExpandedOptHeaders)
+					panel:PopulateList()
+                    panel:Update()
+                    self:SetPropagateKeyboardInput(false)
+                    return
+                end
+            end
+		end
+	end
+    self:SetPropagateKeyboardInput(true)
+end

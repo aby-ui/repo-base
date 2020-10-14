@@ -26,7 +26,7 @@ function TimerBar:OnUpdate(elapsed)
     end
 end
 
-function TimerBar:OnValueChanged(value)    
+function TimerBar:OnValueChanged(value)
     self.statusBar:SetValue(value)
     self.statusBar.spark:SetValue(value)
 
@@ -41,7 +41,7 @@ function TimerBar:OnValueChanged(value)
 
         if value >= self.tmax then
             self:Stop()
-        end        
+        end
     end
 end
 
@@ -136,7 +136,7 @@ TimerBar.latencyPadding = 0
 function TimerBar:SetLatencyPadding(padding)
     self.latencyPadding = padding or 0
 
-    self:UpdateLatencyPadding()  
+    self:UpdateLatencyPadding()
 end
 
 function TimerBar:UpdateLatencyPadding()
@@ -162,7 +162,7 @@ end
 TimerBar.countdown = true
 
 function TimerBar:SetCountdown(countdown)
-    self.countdown = countdown 
+    self.countdown = countdown
 end
 
 function TimerBar:Start(value, minValue, maxValue)
@@ -199,7 +199,7 @@ end
 function TimerBar:Resume()
     if self.paused then
         self:OnUpdate(GetTime() - self.paused)
-        
+
         self.paused = nil
         self:SetScript("OnUpdate", self.OnUpdate)
     end
@@ -246,7 +246,7 @@ function TimerBar:Layout()
     -- show/hide the border
 	if self.showBorder then
         self.border:Show()
-        margin = self.border:GetBackdrop().insets.left
+        margin = 5
     else
         self.border:Hide()
         margin = 0

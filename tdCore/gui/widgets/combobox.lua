@@ -21,7 +21,7 @@ local function OnDisable(self)
 end
 
 function ComboBox:New(parent)
-    local obj = self:Bind(CreateFrame('Button', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Button', nil, parent))
     if parent then
         obj:SetHeight(20)
         obj:SetBackdrop{

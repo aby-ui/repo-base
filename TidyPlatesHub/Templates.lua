@@ -85,7 +85,7 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 	local function CreateQuickEditbox(name, ...)
 		local columnFrame = ...
 		local frame = CreateFrame("ScrollFrame", name, columnFrame, "UIPanelScrollFrameTemplate")
-		frame.BorderFrame = CreateFrame("Frame", nil, frame )
+		frame.BorderFrame = CreateFrameAby("Frame", nil, frame )
 		local EditBox = CreateFrame("EditBox", nil, frame)
 		-- Margins	-- Bottom/Left are supposed to be negative
 		frame.Margins = {Left = 4, Right = 24, Top = 8, Bottom = 8, }
@@ -458,7 +458,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Panel
 	------------------------------
-	local panel = CreateFrame( "Frame", objectName.."_InterfaceOptionsPanel", UIParent);
+	local panel = CreateFrameAby( "Frame", objectName.."_InterfaceOptionsPanel", UIParent);
 	panel.objectName = objectName
 	panel:SetBackdrop({	bgFile = "Interface/Tooltips/UI-Tooltip-Background", --bgFile = "Interface/FrameGeneral/UI-Background-Marble",
 						edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -483,7 +483,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
         -- Warnings
         ------------------------------
-	panel.WarningFrame = CreateFrame("Frame", objectName.."WarningFrame", panel )
+	panel.WarningFrame = CreateFrameAby("Frame", objectName.."WarningFrame", panel )
 	panel.WarningFrame:SetPoint("LEFT", 16, 0 )
 	panel.WarningFrame:SetPoint("TOP", panel.MainLabel, "BOTTOM", 0, -8 )
         panel.WarningFrame:SetPoint("RIGHT", -16 , 16 )
@@ -524,7 +524,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Scroll Frame Border
 	------------------------------
-	panel.ScrollFrameBorder = CreateFrame("Frame", objectName.."ScrollFrameBorder", panel.ScrollFrame )
+	panel.ScrollFrameBorder = CreateFrameAby("Frame", objectName.."ScrollFrameBorder", panel.ScrollFrame )
 	panel.ScrollFrameBorder:SetPoint("TOPLEFT", -4, 5)
 	panel.ScrollFrameBorder:SetPoint("BOTTOMRIGHT", 3, -5)
 	panel.ScrollFrameBorder:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",

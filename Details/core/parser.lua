@@ -122,6 +122,7 @@
 			[216890] = true, --warrior spell reflection (pvp talent)
 			[213915] = true, --warrior mass spell reflection
 			[212295] = true, --warlock nether ward
+			--check pally legendary
 		}
 		local reflection_dispelid = {
 			--> some dispels also reflect, and we can track them
@@ -222,6 +223,7 @@
 
 		[32175] = 17364, -- shaman Stormstrike (from Turkar on github)
 		[32176] = 17364, -- shaman Stormstrike
+		[45284] = 188196, --shaman lightining bolt overloaded
 		
 	}
 	
@@ -551,75 +553,9 @@
 		end
 		
 		--rules of specific encounters
-		
-		if (_current_encounter_id == 2273) then --Uu'nat  --REMOVE ON 9.0 LAUNCH
-			if (spellname == SPELLANAME_STORM_OF_ANNIHILATION or spellid == 284601) then
-				--return --this is parsed as friendly fire
-			end
-		
-		elseif (_current_encounter_id == 2263 or _current_encounter_id == 2284) then --grong --REMOVE ON 9.0 LAUNCH
-			if (spellid == 285660 or spellname == SPELLNAME_GRONG_CORE or spellid == 286435 or spellname == SPELLNAME_GRONG_CORE_ALLIANCE) then
-				return
-			end
-		
-		elseif (_current_encounter_id == 2272) then --king rastakhan --REMOVE ON 9.0 LAUNCH
-			if (alvo_serial) then
-				local npcid = _select (6, _strsplit ("-", alvo_serial))
-				if (npcid == "145644") then --Bwonsamdi
-					--Bwonsamdi has two buffs: unliving and aura of death, checking the two first buff indexes
-					local hasUnlivingBuff1 = _UnitBuff ("boss2", 1)
-					local hasUnlivingBuff2 = _UnitBuff ("boss2", 2)
-					if (hasUnlivingBuff1 == SPELLNAME_UNLIVING or hasUnlivingBuff2 == SPELLNAME_UNLIVING) then
-						--> ignore the damage while Bwonsamdi is immune
-						return
-					end
-				end
-			end
-		
-		elseif (_current_encounter_id == 2087) then --Yazma - Atal'Dazar --REMOVE ON 9.0 LAUNCH
-			--rename the add created by the soulrend ability
-			if (alvo_serial) then
-				local npcid = _select (6, _strsplit ("-", alvo_serial))
-				if (npcid == "125828") then --soulrend add
-					alvo_name = "Soulrend Add"
-				end
-			end
-			
-			if (who_serial) then --which exp was this?
-				local npcid = _select (6, _strsplit ("-", who_serial))
-				if (npcid == "125828") then --soulrend add
-					who_name = "Soulrend Add"
-				end
-			end
-		
-		
-		elseif (_current_encounter_id == 2122 or _current_encounter_id == 2135) then --g'huun and mythrax --REMOVE ON 9.0 LAUNCH
-			--if (alvo_serial:match ("^Creature%-0%-%d+%-%d+%-%d+%-103679%-%w+$")) then --soul effigy (warlock) --50% more slow than the method below
-		
-			--check if the target is the amorphous cyst
-			--for some reason, mythrax fights has some sort of damage on amorphous cyst as well, dunno why
-			if (alvo_serial) then
-				local npcid = _select (6, _strsplit ("-", alvo_serial)) -- cost 3 / 1000000
-				if (npcid) then
-					if (ignored_npc_ids [npcid]) then
-						--print ("IGNORED:", alvo_name, npcid)
-						return
-					end
-					
-					if (_track_ghuun_bloodshield and npcid == "132998") then
-						local hasBloodShield = _UnitBuff ("boss1", 1)
-						if (not hasBloodShield or hasBloodShield ~= SPELLNAME_BLOODSHIELD) then
-							--print ("Details Shuting down damage filter on ghuun", hasBloodShield)
-							_track_ghuun_bloodshield = nil
-						else
-							--print ("Details Ghuun Has Blood Shield Damage Ignored", hasBloodShield)
-							return
-						end
-					end
-				end
-			end
-		end
 
+
+		
 		--> if the parser are allowed to replace spellIDs
 		if (is_using_spellId_override) then
 			spellid = override_spellId [spellid] or spellid
@@ -762,6 +698,12 @@
 		elseif (meu_dono) then
 			--> � um pet
 			who_name = who_name .. " <" .. meu_dono.nome .. ">"
+		end
+
+		if (not este_jogador) then
+			print ("no ente_jogador")
+			print (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount)
+			return
 		end
 		
 		--> his target
@@ -3480,12 +3422,38 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				if (not este_jogador) then
 					este_jogador = _current_damage_container:PegarCombatente (who_serial, who_name, who_flags, true)
 				end
-				--> actor spells table
-				local spell = este_jogador.spells._ActorTable [spellid]
-				if (not spell) then
-					spell = este_jogador.spells:PegaHabilidade (spellid, true, token)
+
+--[[
+Message: Interface\AddOns\Details\core\parser.lua:3418: attempt to index local 'este_jogador' (a nil value)
+Time: Sun Aug 30 15:43:58 2020
+Count: 39
+Stack: Interface\AddOns\Details\core\parser.lua:3418: attempt to index local 'este_jogador' (a nil value)
+[string "@Interface\AddOns\Details\core\parser.lua"]:3418: in function <Interface\AddOns\Details\core\parser.lua:3335>
+[string "=(tail call)"]: ?
+
+Locals: self = nil
+token = "SPELL_CAST_SUCCESS"
+time = 1598813037.261000
+who_serial = "Vehicle-0-2085-2296-4034-168406-000B4BF36E"
+who_name = "Waltzing Venthyr"
+who_flags = 2632
+alvo_serial = ""
+alvo_name = nil
+alvo_flags = -2147483648
+alvo_flags2 = -2147483648
+spellid = 335773
+spellname = "Waltzing Venthyr"
+spelltype = 1
+--]]
+
+				if (este_jogador) then 
+					--> actor spells table
+					local spell = este_jogador.spells._ActorTable [spellid] --line where the actor was nil
+					if (not spell) then
+						spell = este_jogador.spells:PegaHabilidade (spellid, true, token)
+					end
+					spell.successful_casted = spell.successful_casted + 1
 				end
-				spell.successful_casted = spell.successful_casted + 1
 			end
 			return
 		end
@@ -3788,11 +3756,59 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	------------------------------------------------------------------------------------------------
 	--> build dead
-		
+		--print("dead", alvo_flags, _bit_band (alvo_flags, 0x00000008) ~= 0, _current_encounter_id)
 		
 		if (_in_combat and alvo_flags and _bit_band (alvo_flags, 0x00000008) ~= 0) then -- and _in_combat --byte 1 = 8 (AFFILIATION_OUTSIDER)
 			--> outsider death while in combat
 			
+				--rules for specific encounters
+				if (_current_encounter_id == 2412) then --> The Council of Blood
+
+					if (not Details.exp90temp.delete_damage_TCOB) then
+						return
+					end
+
+					--what boss died
+					local bossDeadNpcId = Details:GetNpcIdFromGuid(alvo_serial)
+
+					print("Details: boss died:", bossDeadNpcId, alvo_name, alvo_serial)
+
+					if (bossDeadNpcId ~= 166969 and bossDeadNpcId ~= 166970 and bossDeadNpcId ~= 166971) then
+						return
+					end
+
+				--[[
+					local unitId_BaronessFrieda = alvo_serial:match("166969%-%w+$")
+					local unitId_LordStavros = alvo_serial:match("166970%-%w+$")
+					local unitId_CastellanNiklaus = alvo_serial:match("166971%-%w+$")
+				--]]
+
+					if (bossDeadNpcId) then
+						--iterate among boss targets
+						for i = 1, 5 do
+							local unitId = "boss" .. i
+
+							if (_G.UnitExists(unitId)) then
+								local bossHealth = _G.UnitHealth(unitId)
+								local bossName = _G.UnitName(unitId)
+								local bossSerial = _G.UnitGUID(unitId)
+
+								if (bossHealth and bossHealth > 100000) then 
+									if (bossSerial) then
+										local bossNpcId = Details:GetNpcIdFromGuid(bossSerial)
+										if (bossNpcId and bossNpcId ~= bossDeadNpcId) then
+											print("Details: deleting boss:", bossName)
+											--remove the damage done
+											local currentCombat = Details:GetCurrentCombat()
+											currentCombat:DeleteActor(DETAILS_ATTRIBUTE_DAMAGE, bossName, false)
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+
 			--> frags
 			
 				if (_detalhes.only_pvp_frags and (_bit_band (alvo_flags, 0x00000400) == 0 or (_bit_band (alvo_flags, 0x00000040) == 0 and _bit_band (alvo_flags, 0x00000020) == 0))) then --byte 2 = 4 (HOSTILE) byte 3 = 4 (OBJECT_TYPE_PLAYER)
@@ -4398,8 +4414,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		_detalhes.time_type = _detalhes.time_type_original
 		
-		_detalhes:CheckChatOnZoneChange (zoneType)
-		
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) zone change:", _detalhes.zone_name, "is a", _detalhes.zone_type, "zone.")
 		end
@@ -4640,7 +4654,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			if ((_detalhes.tabela_vigente:GetEndTime() or 0) + 2 >= _detalhes.encounter_table ["end"]) then
 				_detalhes.tabela_vigente:SetStartTime (_detalhes.encounter_table ["start"])
 				_detalhes.tabela_vigente:SetEndTime (_detalhes.encounter_table ["end"])
-				_detalhes:AtualizaGumpPrincipal (-1, true)
+				_detalhes:RefreshMainWindow (-1, true)
 			end
 		end
 
@@ -4741,13 +4755,22 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--store a boss encounter when out of combat since it might need to load the storage
 		if (_detalhes.schedule_store_boss_encounter) then
 			if (not _detalhes.logoff_saving_data) then
-				--_detalhes.StoreEncounter()
-				local successful, errortext = pcall (_detalhes.StoreEncounter)
+				local successful, errortext = pcall (Details.Database.StoreEncounter)
 				if (not successful) then
-					_detalhes:Msg ("error occurred on StoreEncounter():", errortext)
+					_detalhes:Msg ("error occurred on Details.Database.StoreEncounter():", errortext)
 				end
 			end
 			_detalhes.schedule_store_boss_encounter = nil
+		end
+
+		if (Details.schedule_store_boss_encounter_wipe) then
+			if (not _detalhes.logoff_saving_data) then
+				local successful, errortext = pcall (Details.Database.StoreWipe)
+				if (not successful) then
+					_detalhes:Msg ("error occurred on Details.Database.StoreWipe():", errortext)
+				end
+			end
+			Details.schedule_store_boss_encounter_wipe = nil
 		end
 		
 		--when a large amount of data has been removed and the player is in combat, schedule to run the hard garbage collector (the blizzard one, not the details! internal)
@@ -5165,7 +5188,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:LoadConfig()
 		
 		_detalhes:UpdateParserGears()
-		--_detalhes:Start()
+
+		--load auto run code
+		Details:StartAutoRun()
 	end
 	
 	function _detalhes.parser_functions:ADDON_LOADED (...)
@@ -5176,9 +5201,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end
 	
 	local playerLogin = CreateFrame ("frame")
-	playerLogin:RegisterEvent ("PLAYER_LOGIN")
-	playerLogin:SetScript ("OnEvent", function()
-		Details:Start()
+	playerLogin:RegisterEvent("PLAYER_LOGIN")
+	playerLogin:SetScript("OnEvent", function()
+		Details:StartMeUp()
 	end)
 	
 	function _detalhes.parser_functions:PET_BATTLE_OPENING_START (...)
@@ -5294,7 +5319,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	
 	--> end
 	
-	-- ~parserstart ~startparser
+	-- ~parserstart ~startparser ~cleu
 
 	function _detalhes.OnParserEvent()
 		-- 8.0 changed

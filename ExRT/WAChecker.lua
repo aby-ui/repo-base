@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT.mod:New("WAChecker",ExRT.L.WAChecker,nil,true)
+local module = ExRT.mod:New("WAChecker",ExRT.L.WAChecker)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.responces = {}
@@ -16,12 +16,16 @@ function module.options:Load()
 	local errorNoWA = ELib:Text(self,L.WACheckerWANotFound):Point("TOP",0,-30)
 	errorNoWA:Hide()
 	
-	local PAGE_HEIGHT,PAGE_WIDTH = 500,650
+	local PAGE_HEIGHT,PAGE_WIDTH = 520,680
 	local LINE_HEIGHT,LINE_NAME_WIDTH = 16,160
 	local VERTICALNAME_WIDTH = 20
-	local VERTICALNAME_COUNT = 22
+	local VERTICALNAME_COUNT = 24
 	
 	local mainScroll = ELib:ScrollFrame(self):Size(PAGE_WIDTH,PAGE_HEIGHT):Point("TOP",0,-80):Height(700)
+	ELib:Border(mainScroll,0)
+
+	ELib:DecorationLine(self):Point("BOTTOM",mainScroll,"TOP",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
+	ELib:DecorationLine(self):Point("TOP",mainScroll,"BOTTOM",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
 	
 	local prevTopLine = 0
 	local prevPlayerCol = 0
@@ -375,31 +379,11 @@ function module.options:Load()
 		mainScroll.ScrollBar:Range(0,max(0,#sortedTable * LINE_HEIGHT - 1 - PAGE_HEIGHT),nil,true)
 		
 		local namesList,namesList2 = {},{}
-		if not IsInRaid() then
-			for i=0,max(0,GetNumGroupMembers()-1) do
-				local unit = "party"..i
-				if i==0 then unit = "player" end
-				local name,realm = UnitName(unit)
-				if name and realm and realm ~= "" then
-					name = name.."-"..realm
-				end
-				if name then
-					namesList[#namesList + 1] = {
-						name = name,
-						class = select(2,UnitClass(unit)),
-					}
-				end
-			end
-		else
-			for i=1,GetNumGroupMembers() do
-				local name, _, _, _, _, class = GetRaidRosterInfo(i)
-				if name then
-					namesList[#namesList + 1] = {
-						name = name,
-						class = class,
-					}
-				end
-			end
+		for _,name,_,class in ExRT.F.IterateRoster do
+			namesList[#namesList + 1] = {
+				name = name,
+				class = class,
+			}
 		end
 		sort(namesList,sortByName)
 		
@@ -497,13 +481,11 @@ function module.options:Load()
 			lines[i]:Hide()
 		end
 	end
-	UpdatePage()
 	self.UpdatePage = UpdatePage
 	
-	self.OnShow_disableNil = true
-	self:SetScript("OnShow",function()
+	function self:OnShow()
 		UpdatePage()
-	end)
+	end
 end
 
 function module:SendReq()

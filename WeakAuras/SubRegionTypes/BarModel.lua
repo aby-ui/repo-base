@@ -1,9 +1,8 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
-
-if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 local default = function(parentType)
   return {
@@ -24,6 +23,7 @@ local default = function(parentType)
     model_st_us = 40,
 
     model_fileId = "235338",
+    model_path = "spells/arcanepower_state_chest.m2",
     bar_model_clip = true
   }
 end
@@ -70,7 +70,12 @@ local function AcquireModel(region, data)
   model:Show()
 
   -- Adjust model
-  local modelId = tonumber(data.model_fileId)
+  local modelId
+  if WeakAuras.IsClassic() then
+    modelId = data.model_path
+  else
+    modelId = tonumber(data.model_fileId)
+  end
   if modelId then
     model:SetModel(modelId)
   end
@@ -98,6 +103,14 @@ end
 local function create()
   local subRegion = CreateFrame("FRAME", nil, UIParent)
   subRegion:SetClipsChildren(true)
+  subRegion:SetScript("OnSizeChanged", function(self, w,h )
+    -- WORKAROUND clipping being broken on the SL beta with some setups with bars of zero width
+    if self:GetWidth() < 1 or self:GetHeight() < 1 then
+      self:Hide()
+    else
+      self:Show()
+    end
+  end)
 
   return subRegion
 end

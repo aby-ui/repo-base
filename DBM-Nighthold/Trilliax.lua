@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1731, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610155013")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(104288)
 mod:SetEncounterID(1867)
-mod:SetZone()
 mod:SetUsedIcons(1)
 mod:SetHotfixNoticeRev(15058)
 --mod:SetModelSound("Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg", "Sound\\Creature\\Trilliax\\VO_701_Trilliax_19.ogg")

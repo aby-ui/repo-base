@@ -227,7 +227,7 @@ end
 
 CoreUICreateHybridStep2(scroll, 0, 0, "TOPLEFT", "TOPLEFT", 0)
 
-local detailframe = WW:Frame('U1ProfileDetailFrame', f):Size(220, 170):TL("$parent", 'TR', -11, -14)
+local detailframe = WW:Frame('U1ProfileDetailFrame', f, ABY_BD_TPL):Size(220, 170):TL("$parent", 'TR', -11, -14)
 :Backdrop([[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
 [[Interface\DialogFrame\UI-DialogBox-Border]],
 32, { 11, 12, 12, 11, }, 32)

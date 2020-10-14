@@ -1,9 +1,9 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
 ## Author: Tuller
-## Version: 8.3.5
+## Version: 9.0.0
 ## SavedVariables: OmniCCDB, OmniCC4Config
 main\main.xml
 

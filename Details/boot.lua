@@ -4,15 +4,16 @@
 		_ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 7348
-		_detalhes.alpha_build_counter = 7348 --if this is higher than the regular counter, use it instead
-		_detalhes.game_version = "v8.3.0"
-		_detalhes.userversion = "v8.3.0." .. _detalhes.build_counter
-		_detalhes.realversion = 141 --core version, this is used to check API version for scripts and plugins (see alias below)
+		_detalhes.build_counter = 7896
+		_detalhes.alpha_build_counter = 7896 --if this is higher than the regular counter, use it instead
+		_detalhes.game_version = "v9.0.1"
+		_detalhes.userversion = "v9.0.1." .. _detalhes.build_counter
+		_detalhes.realversion = 142 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
 		
 		_detalhes.BFACORE = 131 --core version on BFA launch
+		_detalhes.SHADOWLANDSCORE = 142 --core version on BFA launch
 		
 		Details = _detalhes
 		
@@ -20,29 +21,60 @@
 --> initialization stuff
 
 do
-
-	--local f = CreateFrame("frame")
-	--f:SetSize(300, 300)
-	--f:SetPoint("center", UIParent, 0, 0)
-	--f.texture = f:CreateTexture(nil, "overlay")
-	--f.texture:SetAllPoints()
-	--f.texture:SetTexture(131817)
-
 	local _detalhes = _G._detalhes
 
 	_detalhes.resize_debug = {}
 
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
---[[
-|cFFFFFF00v8.3.0.7343.140 (|cFFFFCC00Jun 27th, 2020|r|cFFFFFF00)|r:\n\n
-|cFFFFFF00-|r Auto Hide options has been reworked, now there's options to select multiple options.\n\n
---]]
+	local news = {
+		{"v9.0.1.7739.142", "August 18th, 2020"},
+		"More development on the new plugin Cast Timeline.",
+		"More development on Details! Scroll Damage.",
+		"Added options to opt-out show pets on solo play.",
+		"Added back Profiles and Plugins into the options panel.",
+		"Many framework fixes from retail ported to shadowlands.",
+		{"v9.0.1.7721.142", "August 14th, 2020"},
+		"Encounter time in the title bar got new code and might work now for some people that had issues with it.",
+		"Fixed an error with the Welcome Window showing errors.",
+		"Statusbar got fixed, it should now show it's widgets normally.",
+		"Alignment for the title bar text also got fixed.",
+		{"v9.0.1.7707.142", "August 11th, 2020"},
+		"While in The Concil of Blood, Details! now deletes the damage done to alive bosses when one of them dies. This condition can be turned off with /run Details.exp90temp.delete_damage_TCOB = false",
+		"Many Important Npcs like Jaina and Thrall shows as group members of your group.",
+		"More progress on the options panel overhaul.",
+		"General bug fixes.",
+		{"v9.0.1.7590.142", "July 31th, 2020"},
+		"New options panel in progress",
+		"Added options for the 'Inline' right texts in the window",
+		"General round of fixes",
+		{"v9.0.1.7544.142", "July 25th, 2020"},
+		"Changed texts alignment to be parallel.",
+		"Changed icons to white color.",
+		"Added player list on the Player Breakdown Window.",
+		"Added a new plugin: 'Cast Timeline' available at the Player Breakdown Window.",
+		"Added macro '/Details me' to open your Breakdown Window.",
+	}
+	
+	local newsString = "|cFFF1F1F1"
 
-	Loc ["STRING_VERSION_LOG"] = "|cFFFFFF00v8.3.0.7343.140 (|cFFFFCC00Jun 27th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Auto Hide options has been reworked, now there's options to select multiple options.\n\n|cFFFFFF00v8.3.0.7335.140 (|cFFFFCC00Jun 07th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Player damage tooltips and breakdown now show reflected spells.\n\n|cFFFFFF00-|r Added spell reflection for debuffs (by m4tjz@github)\n\n|cFFFFFF00-|r Spells can now be ignored at '/details spells'.\n\n|cFFFFFF00-|r Added the option to Hide on Battlegrounds at Options > Window: Automation > Auto Hide.\n\n|cFFFFFF00v8.3.0.7325.140 (|cFFFFCC00May 10th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added spell reflection damage (by athei@github).\n\n|cFFFFFF00v8.3.0.7303.140 (|cFFFFCC00April 21th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added npcId ignore list, atm it is accessed by Details.npcid_ignored[npcid] = true.\n\n|cFFFFFF00v8.3.0.7281.140 (|cFFFFCC00February 27th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed an issue on Player Details Window where sometimes Death Strike healing done would blink the Rune Weapon healing done.\n\n|cFFFFFF00-|r Segments Locked featured won't work for Overall Data.\n\n|cFFFFFF00-|r Fixed an error while retriving data from the guild (statistics sync).\n\n|cFFFFFF00-|r Added Ny'alotha raid information (by jjholleman@github).\n\n|cFFFFFF00-|r Added Vanish to the list of defensive cooldowns for Rogues (by DylanMeador@github).\n\n|cFFFFFF00-|r Fixed a bug for healing done from unit to unit (by rubenvrolijk@github).\n\n|cFFFFFF00-|r Updated the ToC files for bundled plugins.\n\n|cFFFFFF00-|r Regular Details Framework updates.\n\n|cFFFFFF00v8.3.0.7255.140 (|cFFFFCC00January 20th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed Eye of Corruption and Grand Delusions.\n\n|cFFFFFF00v8.3.0.7239.140 (|cFFFFCC00January 06th, 2020|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Healers can now heal training dummies inside cities without being in combat.\n\n|cFFFFFF00-|r Added Shaman's Stormstrike ability to auto merge (consolidate skills feature).\n\n|cFFFFFF00v8.2.5.7224.140 (|cFFFFCC00October 20th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Total revamp on '/details users'.\n\n|cFFFFFF00-|r Rewrite on the 'Potion Used' script, it should get all potions from the framework now.\n\n|cFFFFFF00-|r Done a workaround on a rare bug where pet ability isn't found in the game database.\n\n|cFFFFFF00v8.2.0.7172.140 (|cFFFFCC00August 3rd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed player detail window showing a blank page after selecting another player when in the comparison tab.\n\n|cFFFFFF00-|r Added information about the Eternal Palace raid, this brings better boss icons, background textures and other things (by GyroJoe).\n\n|cFFFFFF00v8.2.0.7167.140 (|cFFFFCC00July 24th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed overkill amount (by nullKomplex).\n\n|cFFFFFF00v8.2.0.7166.140 (|cFFFFCC00July 18th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added new potions, food and flasks. (by nullKomplex).\n\n|cFFFFFF00v8.2.0.7165.140 (|cFFFFCC00July 14th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r More 8.2 bug fixes.\n\n|cFFFFFF00v8.2.0.7152.140 (|cFFFFCC00July 7th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed some issues with classes showing some wrong icons (by nullKomplex).\n\n|cFFFFFF00v8.2.0.7150.140 (|cFFFFCC00July 2nd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added click through options.\n\n|cFFFFFF00-|r More 8.2 fixes.\n\n|cFFFFFF00v8.1.5.7129.140 (|cFFFFCC00May 2nd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Energy redesign: track only the energy generated below the maximum energy amount.\nEnergy generated above the maximum energy now counts as energy 'overflow', this info is in the tooltip.\n\n|cFFFFFF00v8.1.5.7102.139 (|cFFFFCC00April 23rd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added API Details.SegmentPhases() and Details.UnitDamageByPhase() see '/details api' for the full API.\n\n|cFFFFFF00-|r Minor fixes for the mythic version of 'The Restless Cabal' encounter.\n\n|cFFFFFF00v8.1.5.7099.139 (|cFFFFCC00April 16rd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Damage and Healing API is ready to be used by scripters, use '/details api' for more information.\n\n|cFFFFFF00v8.1.5.7084.138 (|cFFFFCC00April 9rd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Replacing the old API with the new, see /details api.\n\n|cFFFFFF00v8.1.5.7053.138 (|cFFFFCC00April 3rd, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed the 'Event Tracker' not showing all cooldowns and crowdcontrol.\n\n|cFFFFFF00-|r Added new gradient wallpapers.\n\n|cFFFFFF00v8.1.5.7042.138 (|cFFFFCC00March 23th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added the first batch of functions call for Details API 2.0.\n\n|cFFFFFF00v8.1.0.6923.136 (|cFFFFCC00March 06th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed Vamguard plugin not showing debuffs on tanks.\n\n|cFFFFFF00-|r Attempt to fix some plugins loading after details! start and failing to install.\n\n|cFFFFFF00-|r Fixed a bug within Atal'Dazar dungeon where in some cases adds damage where considered friendly fire.\n\n|cFFFFFF00v8.1.0.6902.135 (|cFFFFCC00February 19th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed some window gliches with lock, snap and resize buttons.\n\n|cFFFFFF00-|r Fixed issue with the window unlocking after a /reload.\n\n|cFFFFFF00v8.1.0.6861.135 (|cFFFFCC00January 20th, 2019|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed rogue spec icons.\n\n|cFFFFFF00-|r Some visuals improvements.\n\n|cFFFFFF00-|r Added some buttons below the release death recap window, only show in raid after a boss.\n\n|cFFFFFF00v8.1.0.6702.135 (|cFFFFCC00December 31th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Streamers/Youtubers the Event Tracker tool has been fixed for 8.1, enjoy!\n\n|cFFFFFF00v8.0.1.6692.135 (|cFFFFCC00December 11th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed East Asian myriads showing a giganting non formated number in the total bar DPS.\n\n|cFFFFFF00-|r Added a reset nickname button in the right side of the nickname field.\n\n|cFFFFFF00-|r Framework and NickTag library updates.\n\n|cFFFFFF00v8.0.1.6691.135 (|cFFFFCC00November 23th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Experimental: added deaths to overall data during a mythic dungeon run.\n\n|cFFFFFF00-|r Report window revamp: removed report history.\n\n|cFFFFFF00-|r Fixed report tooltip not closing on report button click.\n\n|cFFFFFF00-|r Fixed copy/paste report window.\n\n|cFFFFFF00-|r Time Line (plugin) added enemy cast time line.\n\n|cFFFFFF00v8.0.1.6678.135 (|cFFFFCC00November 07th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r New Feature: import and export profiles.\n\n|cFFFFFF00-|r Major improvements on bar text scripts.\n\n|cFFFFFF00-|r Improved import and export custom skins.\n\n|cFFFFFF00-|r Fixed shaman's sundering spell not showing in crowd control.\n\n|cFFFFFF00-|r Fixed sharing guild statistics.\n\n|cFFFFFF00-|r More spells added to spell consolidation: Whirlwind, Fracture, Mutilate.\n\n|cFFFFFF00-|r Monk Mistweaver Blackout Kick now has a indicator when it comes from passive 'Teachings of the Monastery'.\n\n|cFFFFFF00-|r Added slash command '/details debugwindow' for cases when the window isn't shown or are anchored in the wrong place.\n\n|cFFFFFF00-|r Exposed spell ignore table, you can now add spells to be ignored using Details.SpellsToIgnore [spellID] = true.\n\n|cFFFFFF00v8.0.1.6599.135 (|cFFFFCC00October 19th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Fixed damage on low level training dummies where it was showing 1 damage for each ability.\n\n|cFFFFFF00-|r Added a line in the tooltip shown when hovering over the spec icon to show non-formated DPS, example: '12.0K' DPS shows '11,985.8'.\n\n|cFFFFFF00-|r Developers: command /run Details:DumpTable() should now show the correct table names with quotation marks if string.\n\n|cFFFFFF00v8.0.1.6553.135 (|cFFFFCC00October 06th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Added a 'Macros' section in the options panel.\n\n|cFFFFFF00-|r Updated to BFA 'Potion Used' and 'Health Potion and Stone' custom displays.\n\n|cFFFFFF00-|r Backfire damage from Light of the Martyr now shows on death logs as friendly fire.\n\n|cFFFFFF00-|r Deprecated rules for friendly fire has been removed, this might fix some random issues with mind controlled players in the Lord Stormsong encounter in the Shrine of the Storm dungeon.\n\n|cFFFFFF00-|r Fixed DBM/BigWigs aura creation from the Spell List panel.\n\n|cFFFFFF00-|r Chart scripts now receives the envTable, use local envTable = ... .\n\n|cFFFFFF00-|r Polymorth (Black Cat) and Between the Eyes got added to Crowd Control list.\n\n|cFFFFFF00-|r Fixed Timeline plugin not showing the cooldown panel.\n\n|cFFFFFF00-|r Overall data setting won't reset on every logout.\n\n|cFFFFFF00-|r Slash command '/details merge' won't flag the merged combat as a trash segment anymore.\n\n|cFFFFFF00-|r Added function to use on macros to open the Player Details Window: /script Details:OpenPlayerDetails(1).\n\n|cFFFFFF00-|r Done more improvements on the Death Recap window.\n\n|cFFFFFF00v8.0.1.6449.134 (|cFFFFCC00September 11th, 2018|r|cFFFFFF00)|r:\n\n|cFFFFFF00-|r Details! is ready for Uldir mythic raiding!.\n\n|cFFFFFF00-|r Several improvements on Encounter Details plugin.\n\n|cFFFFFF00-|r Details! Scroll Damage for training in dummies is now ready for more tests, access it |cFFFFFF00/details scrolldamage|r.\n\n|cFFFFFF00-|r Damage and Healing tooltips now show a statusbar indicating the percent done by the ability.\n\n|cFFFFFF00-|r Added a scale slider  to the options panel.\n\n|cFFFFFF00-|r Fixed tooltips not hiding when the cursor leaves the spell icon in the Damage Taken by Spell.\n\n|cFFFFFF00-|r Framework: fixed an issue with tooltips and menus where the division line wasn't hiding properly.\n\n|cFFFFFF00-|r Framework: fixed some buttons not showing its text in the options panel.\n\n|cFFFFFF00-|r Fixed an issue with Alliance or Horde icons showing at random in player bars.\n\n|cFFFFFF00-|r Small revamp in the Death Recap window.\n\n|cFFFFFF00-|r Fixed new segment creation when the option to use only one segment while in a battleground is disabled.\n\n|cFFFFFF00-|r Fixed east asian number format on several strings."
+	for i = 1, #news do
+		local line = news[i]
+		if (type(line) == "table")  then
+			local version = line[1]
+			local date = line[2]
+			newsString = newsString .. "|cFFFFFF00" .. version .. " (|cFFFF8800" .. date .. "|r):|r\n\n"
+		else
+			newsString = newsString .. "|cFFFFFF00-|r " .. line .. "\n\n"
+		end
+	end
+
+	Loc["STRING_VERSION_LOG"] = newsString
+
 	Loc ["STRING_DETAILS1"] = "|cffffaeaeDetails!:|r "
 
 	--> startup
+		_detalhes.max_windowline_columns = 11
 		_detalhes.initializing = true
 		_detalhes.enabled = true
 		_detalhes.__index = _detalhes
@@ -51,6 +83,9 @@ do
 		_detalhes.debug_chr = false
 		_detalhes.opened_windows = 0
 		_detalhes.last_combat_time = 0
+
+		--store functions to create options frame
+		Details.optionsSection = {}
 		
 	--> containers
 		--> armazenas as fun��es do parser - All parse functions 
@@ -68,9 +103,7 @@ do
 				{Name = "Change What the Window Shows", Desc = "Make a window show different data. SetDisplay uses (segment, displayGroup, displayID), the menu from the sword icon is in order (damage = group 1, overheal is: displayGroup 2 displayID 3.", MacroText = "/script Details:GetWindow(1):SetDisplay( DETAILS_SEGMENTID_CURRENT, 4, 5 )"},
 				{Name = "Toggle Window Height to Max Size", Desc = "Make a window be 450 pixel height, pressing the macro again toggle back to the original size. The number '1' if the window number. Hold a click in any window to show their number.", MacroText = "/script Details:GetWindow(1):ToggleMaxSize()"},
 			--	/script Details:OpenPlugin ('Advanced Death Logs'); local a = Details_DeathGraphsModeEnduranceButton and Details_DeathGraphsModeEnduranceButton.MyObject:Click()
-
 				{Name = "Report What is Shown In the Window", Desc = "Report the current data shown in the window, the number 1 is the window number, replace it to report another window.", MacroText = "/script Details:FastReportWindow(1)"},
-			
 			}
 			
 		--> quais raides devem ser guardadas no hist�rico
@@ -81,6 +114,8 @@ do
 				[2164] = true, --Eternal Palace
 
 				[2217] = true, --8.3
+
+				[2296] = true, --castle narnia
 			}
 			
 			--must fail in map and encounter id to not store data
@@ -291,13 +326,12 @@ do
 			
 		--> armazena instancias inativas
 			_detalhes.unused_instances = {}
-			--_detalhes.default_skin_to_use = "Minimalistic"
-			_detalhes.default_skin_to_use = "Minimalistic"
+			_detalhes.default_skin_to_use = "Dark Theme"
 			_detalhes.instance_title_text_timer = {}
 		--> player detail skin
 			_detalhes.playerdetailwindow_skins = {}
 
-		_detalhes.BitfieldSwapDebuffsIDs = {265646, 272407, 269691, 273401, 269131, 260900, 260926, 284995, 292826, 311367, 310567, 308996, 307832}
+		_detalhes.BitfieldSwapDebuffsIDs = {265646, 272407, 269691, 273401, 269131, 260900, 260926, 284995, 292826, 311367, 310567, 308996, 307832, 327414}
 		
 		--> auto run code
 		_detalhes.RunCodeTypes = {
@@ -564,7 +598,7 @@ do
 		
 		_detalhes.icones = {
 			--> report window
-			report = { 
+			report = {
 					up = "Interface\\FriendsFrame\\UI-Toast-FriendOnlineIcon",
 					down = "Interface\\ItemAnimations\\MINIMAP\\TRACKING\\Profession",
 					disabled = "Interface\\ItemAnimations\\MINIMAP\\TRACKING\\Profession",
@@ -581,8 +615,8 @@ do
 	local _UIParent = UIParent --api locals
 	
 	--> Info Window
-		_detalhes.janela_info = _CreateFrame ("Frame", "DetailsPlayerDetailsWindow", _UIParent)
-		_detalhes.PlayerDetailsWindow = _detalhes.janela_info
+		_detalhes.playerDetailWindow = _CreateFrame ("Frame", "DetailsPlayerDetailsWindow", _UIParent, "BackdropTemplate")
+		_detalhes.PlayerDetailsWindow = _detalhes.playerDetailWindow
 		
 	--> Event Frame
 		_detalhes.listener = _CreateFrame ("Frame", nil, _UIParent)
@@ -614,6 +648,43 @@ do
 	end
 
 
+------------------------------------------------------------------------------------------
+-->  welcome panel
+	function _detalhes:CreateWelcomePanel (name, parent, width, height, make_movable)
+		local f = CreateFrame ("frame", name, parent or UIParent, "BackdropTemplate")
+		
+		--f:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 128, insets = {left=3, right=3, top=3, bottom=3}, edgeFile = [[Interface\AddOns\Details\images\border_welcome]], edgeSize = 16})
+		f:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 128, insets = {left=0, right=0, top=0, bottom=0}, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+		f:SetBackdropColor (1, 1, 1, 0.75)
+		f:SetBackdropBorderColor (0, 0, 0, 1)
+
+		f:SetSize(width or 1, height or 1)
+		
+		if (make_movable) then
+			f:SetScript ("OnMouseDown", function(self, button)
+				if (self.isMoving) then
+					return
+				end
+				if (button == "RightButton") then
+					self:Hide()
+				else
+					self:StartMoving() 
+					self.isMoving = true
+				end
+			end)
+			f:SetScript ("OnMouseUp", function(self, button) 
+				if (self.isMoving and button == "LeftButton") then
+					self:StopMovingOrSizing()
+					self.isMoving = nil
+				end
+			end)
+			f:SetToplevel (true)
+			f:SetMovable (true)
+		end
+		
+		return f
+	end
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> functions
 	
@@ -633,6 +704,8 @@ do
 		SharedMedia:Register ("statusbar", "WorldState Score", [[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 		SharedMedia:Register ("statusbar", "DGround", [[Interface\AddOns\Details\images\bar_background]])
 		SharedMedia:Register ("statusbar", "Details Flat", [[Interface\AddOns\Details\images\bar_background]])
+
+		SharedMedia:Register ("statusbar", "Details2020", [[Interface\AddOns\Details\images\bar_textures\texture2020]])
 		
 		--window bg and bar border
 		SharedMedia:Register ("background", "Details Ground", [[Interface\AddOns\Details\images\background]])

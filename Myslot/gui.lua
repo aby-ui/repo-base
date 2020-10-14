@@ -4,7 +4,7 @@ local L = MySlot.L
 local RegEvent = MySlot.regevent
 
 
-local f = CreateFrame("Frame", "MYSLOT_ReportFrame", UIParent)
+local f = CreateFrame("Frame", "MYSLOT_ReportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 f:SetWidth(650)
 f:SetHeight(600)
 f:SetBackdrop({
@@ -173,7 +173,7 @@ end
 
 RegEvent("ADDON_LOADED", function()
     do
-        local t = CreateFrame("Frame", nil, f)
+        local t = CreateFrame("Frame", nil, f, BackdropTemplateMixin and "BackdropTemplate" or nil)
         t:SetWidth(600)
         t:SetHeight(400)
         t:SetPoint("TOPLEFT", f, 25, -75)

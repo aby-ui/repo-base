@@ -1,13 +1,15 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20200115020242"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20201009145551"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
 end
 
 local _G, setmetatable, getmetatable, pairs, GetTime = _G, setmetatable, getmetatable, pairs, GetTime
-local IsInGuild, GetNumGuildMembers, GetGuildRosterInfo, IsInGuild, GuildRoster, UnitName = 
-	  IsInGuild, GetNumGuildMembers, GetGuildRosterInfo, IsInGuild, GuildRoster, UnitName
+local IsInGuild, GetNumGuildMembers, GetGuildRosterInfo, UnitName = 
+	  IsInGuild, GetNumGuildMembers, GetGuildRosterInfo, UnitName
+
+local GuildRoster = C_GuildInfo and C_GuildInfo.GuildRoster or GuildRoster
 
 DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 

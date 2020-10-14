@@ -103,7 +103,7 @@ badboy:RegisterEvent("FRIENDLIST_UPDATE")
 badboy:RegisterEvent("CHAT_MSG_SYSTEM")
 badboy:SetScript("OnEvent", function(_, evt, msg)
 	if evt == "PLAYER_LOGIN" then
-		ShowFriends() --force a friends list update on login
+        C_FriendList.ShowFriends() --force a friends list update on login
 		good[UnitName("player")] = true --add ourself to safe list
 		if type(BADBOY_LEVEL) ~= "number" or BADBOY_LEVEL < 1 then
 			BADBOY_LEVEL = nil

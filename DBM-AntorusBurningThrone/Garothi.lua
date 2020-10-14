@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1992, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(122450)
 mod:SetEncounterID(2076)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
 mod.respawnTime = 29
 mod:DisableRegenDetection()--Prevent false combat when fighting trash

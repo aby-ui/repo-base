@@ -1,8 +1,8 @@
---	17.06.2020
+--	11.10.2020
 
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4170
+ExRT.V = 4330
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -21,7 +21,6 @@ ExRT.A = {}			--> ссылки на все модули
 
 ExRT.msg_prefix = {
 	["EXRTADD"] = true,
-	["MHADD"] = true,	--> Malkorok Helper (Curse client)
 }
 
 ExRT.L = {}			--> локализация
@@ -39,8 +38,8 @@ if ExRT.clientVersion < 20000 then
 	ExRT.isClassic = true
 	ExRT.T = "Classic"
 end
-if ExRT.clientVersion >= 80300 then
-	ExRT.is83 = true
+if ExRT.clientVersion >= 90000 then
+	ExRT.is90 = true
 end
 -------------> smart DB <-------------
 ExRT.SDB = {}
@@ -77,21 +76,16 @@ ExRT.mod.__index = ExRT.mod
 
 do
 	local function mod_LoadOptions(this)
-		if not InCombatLockdown() or this.enableLoadInCombat then
-			this:Load()
-			if not this.OnShow_disableNil then
-				this:SetScript("OnShow",nil)
-			end
-			ExRT.F.dprint(this.moduleName.."'s options loaded")
-			this.isLoaded = true
-		else
-			print(ExRT.L.SetErrorInCombat)
-		end
+		this:Load()
+		this:SetScript("OnShow",nil)
+		this.Load = nil
+		ExRT.F.dprint(this.moduleName.."'s options loaded")
+		this.isLoaded = true
 	end
 	local function mod_Options_CreateTitle(self)
-		self.title = ExRT.lib:Text(self,self.name,16):Point(5,-5):Top()
+		self.title = ExRT.lib:Text(self,self.name,20):Point(15,6):Top()
 	end
-	function ExRT.mod:New(moduleName,localizatedName,disableOptions,enableLoadInCombat)
+	function ExRT.mod:New(moduleName,localizatedName,disableOptions)
 		if ExRT.A[moduleName] then
 			return false
 		end
@@ -108,12 +102,7 @@ do
 			
 			self.options.CreateTilte = mod_Options_CreateTitle
 			
-			--if enableLoadInCombat then
-				self.options.enableLoadInCombat = true
-			--end
-			
 			ExRT.ModulesOptions[#ExRT.ModulesOptions + 1] = self.options
-			
 		end
 		
 		self.main = CreateFrame("Frame", nil)
@@ -529,6 +518,10 @@ ExRT.frame:SetScript("OnEvent",function (self, event, ...)
 			ExRT.ModulesLoaded[i] = true
 			
 			ExRT.F.dprint("ADDON_LOADED",i,ExRT.Modules[i].name)
+		end
+
+		if not VExRT.Addon.DisableHideESC then
+			tinsert(UISpecialFrames, "ExRTOptionsFrame")
 		end
 
 		VExRT.Addon.Version = ExRT.V

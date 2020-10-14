@@ -82,7 +82,7 @@
 			[53480] = "roarOfSacrifice", -- Pet Skill
 			[186257] = "cheetah",
 			[212640] = "mendingBandage",
-			[193526] = "trueShot",
+			--[193526] = "trueShot",
 			[193530] = "trueShot",	-- Aspect of the Wild
 			[266779] = "trueShot",	-- Coordinated Assault
 			--[186289] = "eagle",
@@ -108,7 +108,7 @@
 			[201318] = "fortifyingBrew", --Fortifying Brew (Windwalker PvP Talent)
 			[243435] = "fortifyingBrew", --Fortifying Brew (Mistweaver)
 			[115176] = "zenMeditation", -- Zen Meditation (Brewmaster)
-			[201325] = "zenMoment", --Zen Moment (PvP Talent)
+			--[201325] = "zenMoment", --Zen Moment (PvP Talent)
 			[116849] = "lifeCocoon",
 			--[122470] = "touchOfKarma",
 			--[125174] = "touchOfKarma", --Test
@@ -127,7 +127,7 @@
 			[231895] = "crusade",
 			--[224668] = "crusade", -- Crusade (Retribution Talent)
 			[105809] = "holyAvenger",
-			[204150] = "lightAegis",
+			--[204150] = "lightAegis",
 			[31850] = "ardentDefender",
 			[205191] = "eyeForAnEye",
 			[184662] = "vengeanceShield",
@@ -206,12 +206,12 @@
 			[262228] = "battleCry", -- Deadly Calm (Arms)
 			[118038] = "dieByTheSword", 
 			[107574] = "avatar",
-			[12292] = "bloodbath",
+			--[12292] = "bloodbath",
 			[198817] = "sharpenBlade",
 			[197690] = "defensestance",
 			--[218826] = "trialByCombat",
 			[23920] = "spellReflection", -- Protection
-			[216890] = "spellReflection", -- Arms/Fury
+			--[216890] = "spellReflection", -- Arms/Fury
 			[236273] = "duel",
 			[260708] = "sweepingStrikes", -- Sweeping Strikes
 			[202147] = "secondWind", -- Second Wind
@@ -273,7 +273,7 @@
 			[102558] = "incarnationDown",		--Incarnation (Bear)
 			[33891] = "incarnationDown",		--Incarnation (Tree)
 			[197690] = "damageStance",			--Defensive Stance (Falling off)
-			[193526] = "trueShotDown",			--Trueshot
+			--[193526] = "trueShotDown",			--Trueshot
 			[193530] = "trueShotDown",			--Aspect of the Wild
 			[266779] = "trueShotDown",			--Coordinated Assault
 			[199754] = "riposteDown",			--Riposte
@@ -287,7 +287,7 @@
 			[236696] = "thornsDown",			--Thorns (Feral)
 			[305497] = "thornsDown",			--Thorns 8.2
 			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
-			[216890] = "SpellreflectionDown", 		-- Arms/Fury
+			--[216890] = "SpellreflectionDown", 		-- Arms/Fury
 			[23920] = "SpellreflectionDown",			-- Protection
 			[152279] = "BreathOfSindragosaDown",--Breath of Sindragosa
 			[34709] = "shadowSightDown",		-- Shadow Sight Crystal in Arenas
@@ -354,7 +354,7 @@
 
 			-- Druid (Spell Casting)
 			[33786] = "cyclone",
-			[209753] = "cyclone", -- SCREAMS LOUDLY Balance Druid Cyclone
+			--[209753] = "cyclone", -- SCREAMS LOUDLY Balance Druid Cyclone
 			[339] = "entanglingRoots",
 			[235963] = "entanglingRoots", -- Feral Druid Honor Talent
 			--[202767] = "littleMoon", -- New Moon
@@ -511,7 +511,7 @@
 				--
 			[5782] = "success", -- Fear (Warlock)
 			[33786] = "success", -- Cyclone (Druid)
-			[209753] = "success", -- Cyclone (Druid)
+			--[209753] = "success", -- Cyclone (Druid)
 			[19386] = "success", --Wyvern Sting (Hunter)
 			[20066] = "success", -- Repentence (Paladin)
 			[605] = "success", -- Mind Control (Priest)
@@ -592,7 +592,7 @@
 			[204160] = "chillStreak",
 			[305392] = "chillStreak",
 			[279302] = "sindragosaFury", -- Frostwyrm's Fury
-			[130736] = "soulReaper",
+			--[130736] = "soulReaper",
 			[275699] = "apocalypse",
 			[212468] = "hook",
 			[49576] = "deathGrip",
@@ -725,7 +725,7 @@
 			[633] = "layOnHands",
 			[6940] = "sacrifice",				-- Blessing of Sacrifice
 			[199448] = "UltimateSacrifice",		-- Blessing of Sacrifice (Ultimate Sacrifice PvP Talent)
-			[267798] = "ExecutionSentence",  -- Execution Sentence
+			--[267798] = "ExecutionSentence",  -- Execution Sentence
 			
 			-- Priest (Cast Success)
 			[8122] = "fear4", 		-- Psychic Scream

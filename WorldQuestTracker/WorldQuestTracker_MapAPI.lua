@@ -29,7 +29,6 @@ local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 
 local triggerScheduledWidgetUpdate = function (timerObject)
@@ -274,10 +273,11 @@ function WorldQuestTracker.GetOrLoadQuestData (questID, canCache, dontCatchAP)
 		return unpack (data)
 	end
 
-	local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical = GetQuestTagInfo (questID)
-	local gold, goldFormated = WorldQuestTracker.GetQuestReward_Gold (questID)
-	local rewardName, rewardTexture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource (questID)
-	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
+	local gold, goldFormated = WorldQuestTracker.GetQuestReward_Gold(questID)
+
+	local rewardName, rewardTexture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource(questID)
+
+	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, arg1, arg2 = WorldQuestTracker.GetQuest_Info(questID)
 	
 	local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
 	if (not dontCatchAP) then
@@ -679,13 +679,13 @@ end
 	end
 
 	--resource amount
-	function WorldQuestTracker.GetQuestReward_Resource (questID)
-		local numQuestCurrencies = GetNumQuestLogRewardCurrencies (questID)
+	function WorldQuestTracker.GetQuestReward_Resource(questID)
+		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
 		if (numQuestCurrencies == 2) then
 			for i = 1, numQuestCurrencies do
-				local name, texture, numItems = GetQuestLogRewardCurrencyInfo (i, questID)
+				local name, texture, numItems = GetQuestLogRewardCurrencyInfo(i, questID)
 				--legion invasion quest
-				if (texture and 
+				if (texture and
 						(
 							(type (texture) == "number" and texture == 132775) or
 							(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
@@ -699,7 +699,7 @@ end
 			end
 		else
 			for i = 1, numQuestCurrencies do
-				local name, texture, numItems = GetQuestLogRewardCurrencyInfo (i, questID)
+				local name, texture, numItems = GetQuestLogRewardCurrencyInfo(i, questID)
 				return name, texture, numItems
 			end
 		end

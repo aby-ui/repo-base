@@ -3,7 +3,11 @@ if T.Mark ~= 50 then return end
 local EV, L = T.Evie, newproxy(true)
 getmetatable(L).__call = function(_,k) if T.L then L = T.L return L(k) end return k end
 local FOLLOWER_ITEM_LEVEL_CAP, MENTOR_FOLLOWER, INF = T.FOLLOWER_ITEM_LEVEL_CAP, T.MENTOR_FOLLOWER, math.huge
+local FOLLOWER_LEVEL_CAP, FOLLOWER_LEVEL_BASE = T.FOLLOWER_LEVEL_CAP, T.FOLLOWER_LEVEL_BASE
 local unfreeStatusOrder = {[GARRISON_FOLLOWER_WORKING]=2, [GARRISON_FOLLOWER_INACTIVE]=1}
+
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
 
 local function getShoppingTooltips(tip)
 	local GameTooltip = _G.GameTooltip
@@ -274,7 +278,7 @@ local dropFollowers, missionEndTime = {}, {} do -- Start/Available capture
 		end
 	end
 	local function pushStart(id, f1, f2, f3)
-		local mi, _, cgr = C_Garrison.GetBasicMissionInfo(id), GetCurrencyInfo(824)
+		local mi, _, cgr = C_Garrison.GetBasicMissionInfo(id), Nine.GetCurrencyInfo(824)
 		if not mi or (cgr or 0) < (mi.cost or 0) then
 			releaseQueued(id)
 			EV("MP_MISSION_REJECT", id, f1, f2, f3)
@@ -399,7 +403,7 @@ local function SetFollowerInfo(t)
 			end
 			v.counters, v.traits, v.traitCost, v.isCombat = counters, traits, tc, v.isCollected and not unfreeStatusOrder[v.status] or false
 			local tls = C_Garrison.GetFollowerMissionTimeLeftSeconds(fid)
-			if v.quality >= 4 and v.level == 100 then um = um + 1 end
+			if v.quality >= 4 and v.level == FOLLOWER_LEVEL_CAP then um = um + 1 end
 			ft[fid], v.missionEndTime, v.affinity = v, tls and (now + tls) or nil, T.Affinities[v.garrFollowerID or v.followerID]
 		end
 	end
@@ -590,7 +594,7 @@ do -- sortByFollowerLevels
 			end
 			if ac == bc then
 				ac, bc = af.level or 0, bf.level or 0
-				if ac == bc and ac == 100 then
+				if ac == bc and ac == FOLLOWER_LEVEL_CAP then
 					ac, bc = af.iLevel or 0, bf.iLevel or 0
 				end
 			end
@@ -609,7 +613,7 @@ do -- sortByFollowerLevels
 	end
 end
 function api.GetFMLevel(fmInfo, mentor)
-	return fmInfo and (mentor and mentor >= fmInfo.iLevel and mentor or fmInfo.level == 100 and fmInfo.iLevel > 600 and fmInfo.iLevel or fmInfo.level) or 0
+	return fmInfo and (mentor and mentor >= fmInfo.iLevel and mentor or fmInfo.level == FOLLOWER_LEVEL_CAP and fmInfo.iLevel > 600 and fmInfo.iLevel or fmInfo.level) or 0
 end
 function api.GetLevelEfficiency(fLevel, mLevel)
 	local ld, md = (mLevel or 0) - fLevel, mLevel and (mLevel > 600 and 15 or 3) or 0
@@ -635,10 +639,10 @@ function api.GetFollowerLevelDescription(fid, mlvl, fi, mentor, mid, gi)
 	else
 		away = ""
 	end
-	if fi.followerTypeID == 1 and fi.level == 100 and fi.quality >= 4 and tooLow then
+	if fi.followerTypeID == 1 and fi.level == FOLLOWER_LEVEL_CAP and fi.quality >= 4 and tooLow then
 		away = ITEM_QUALITY_COLORS[4].hex .. L"*" .. (away ~= "" and "|r " .. away or "|r")
 	end
-	if gi and mlvl and (fi.level < 100 or fi.quality < 4) then
+	if gi and mlvl and (fi.level < FOLLOWER_LEVEL_CAP or fi.quality < 4) then
 		local xpd, base, bonus = fi.levelXP - fi.xp, api.GetFollowerXPGain(fi, mlvl, gi[2], gi[8], mentor)
 		if gi[1] == 100 then base, bonus = base + bonus, 0 end
 		if xpd <= base then
@@ -650,7 +654,7 @@ function api.GetFollowerLevelDescription(fid, mlvl, fi, mentor, mid, gi)
 	if fi.followerTypeID == 2 then
 		return ('%s"%s"|r%s'):format(ITEM_QUALITY_COLORS[fi.quality].hex, fi.name, away)
 	end
-	return ("%s[%d]|r %s%s|r%s"):format(lc, fi.level < 100 and fi.level or fi.iLevel, HIGHLIGHT_FONT_COLOR_CODE, fi.name, away)
+	return ("%s[%d]|r %s%s|r%s"):format(lc, fi.level < FOLLOWER_LEVEL_CAP and fi.level or fi.iLevel, HIGHLIGHT_FONT_COLOR_CODE, fi.name, away)
 end
 function api.GetOtherCounterIcons(fi, mechanic)
 	local fid, reorder, firstID, ret = fi.followerID, mechanic == nil
@@ -741,7 +745,7 @@ do -- CompleteMissions/AbortCompleteMissions
 				if v.currencyID then
 					local rew, cur, tmax, _ = v.quantity * api.GetRewardMultiplier(mi, v.currencyID)
 					if v.currencyID > 0 then
-						_, cur, _, _, _, tmax = GetCurrencyInfo(v.currencyID)
+						_, cur, _, _, _, tmax = Nine.GetCurrencyInfo(v.currencyID)
 					else
 						cur, tmax = GetMoney(), 1e11-1
 					end
@@ -1129,16 +1133,16 @@ do -- api.GetBuffsXPMultiplier(buffs)
 	end
 end
 function api.GetFollowerXPGain(fi, mlvl, base, bonus, mentor)
-	if fi.quality >= 4 and fi.level == 100 then
+	if fi.quality >= 4 and fi.level == FOLLOWER_LEVEL_CAP then
 		base, bonus = 0, 0
 	elseif base > 0 or bonus > 0 then
 		mentor, fi = mentor or 0, fi.traits and fi or api.GetFollowerInfo()[fi.followerID] or fi
-		local flvl = fi.level == 100 and fi.iLevel or fi.level
+		local flvl = fi.level == FOLLOWER_LEVEL_CAP and fi.iLevel or fi.level
 		local tmul = fi.traits and fi.traits[29] and 1.50 or 1
 		local emul = api.GetLevelEfficiency(mentor > flvl and mentor or flvl, mlvl)
 		if base > 0 then
 			base = base * tmul * emul
-			if flvl < 100 and fi.xp + base > fi.levelXP then
+			if flvl < FOLLOWER_LEVEL_CAP and fi.xp + base > fi.levelXP then
 				emul = api.GetLevelEfficiency(mentor > (flvl+1) and mentor or (flvl == 99 and 600 or (flvl+1)), mlvl)
 			end
 		end
@@ -1187,7 +1191,7 @@ local timeHorizon, computeEquivXP, computeEarliestCompletion, flushGroupAnnotati
 				if base > 0 or bonus > 0 then
 					local ld = flvl - minfo.level - (flvl < 94 and 1 or 0) - (flvl < 98 and 1 or 0)
 					ld = decay^(ld < 0 and 0 or ld > 3 and 3 or ld)
-					if (flvl == 99 and fi.quality == 4) or (flvl == 100 and fi.quality == 3) then
+					if (flvl == 99 and fi.quality == 4) or (flvl == FOLLOWER_LEVEL_CAP and fi.quality == 3) then
 						local cap = fi.levelXP - fi.xp
 						balanced = balanced + (base + risk*max(0, min(bonus, cap + ecap - base))) * ld
 						expected = expected + max(0, min(base, cap)) + g[1]/100 * max(0, min(bonus, cap - base))
@@ -1304,7 +1308,7 @@ local timeHorizon, computeEquivXP, computeEarliestCompletion, flushGroupAnnotati
 
 			rank2, now, defValid = api.GroupRank.threats2, time(), not (f1 or f2 or f3)
 			useFocus = finfo[not (f2 or f3) and f1]
-			useFocus = useFocus and (useFocus.level < 100 or useFocus.quality < 4) and useFocus
+			useFocus = useFocus and (useFocus.level < FOLLOWER_LEVEL_CAP or useFocus.quality < 4) and useFocus
 		end
 		function getSuggestedGroups(mi, trustValid)
 			local mid, rank, rt = mi.missionID, api.GetMissionDefaultGroupRank(mi, order)
@@ -1615,7 +1619,7 @@ do -- api.GetSuggestedGroupsMenu(mi, f1, f2, f3)
 			elseif rt == 824 and rq > 0 then
 				res = floor(g[1]*rq/100) .. " |TInterface\\Garrison\\GarrisonCurrencyIcons:20:20:0:-2:128:128:12:52:12:52|t"
 			elseif rt == 823 and rq > 0 then
-				res = floor(g[1]*rq/100) .. " |T" .. select(3,GetCurrencyInfo(rt)) .. ":14:14:0:0:64:64:4:60:4:60|t"
+				res = floor(g[1]*rq/100) .. " |T" .. select(3,Nine.GetCurrencyInfo(rt)) .. ":14:14:0:0:64:64:4:60:4:60|t"
 			elseif rt == 0 and rq > 0 then
 				local r = g[1]*rq/100
 				res = GetMoneyString(r - r % 1e4)
@@ -1837,7 +1841,7 @@ function api.ExtendFollowerTooltipProjectedRewardXP(mi, fi)
 				elseif toDing <= floor(base + bonus) then
 					baseText = "|cff00bfff" .. baseText .. "|r"
 				end
-				baseText = (fi.level == 100 and GARRISON_FOLLOWER_TOOLTIP_UPGRADE_XP or GARRISON_FOLLOWER_TOOLTIP_XP):gsub("%%[%d$]*d", "%%s"):format(baseText)
+				baseText = (fi.level == FOLLOWER_LEVEL_CAP and GARRISON_FOLLOWER_TOOLTIP_UPGRADE_XP or GARRISON_FOLLOWER_TOOLTIP_XP):gsub("%%[%d$]*d", "%%s"):format(baseText)
 				tip.XP:SetText(baseText .. "|n" .. (L"Reward: %s XP"):format(xpt))
 			end
 		else
@@ -1894,7 +1898,7 @@ function FollowerEstimator.GetMemberPool(includeInactive, moreFollowers, forceIn
 	end
 	for i=1,#f do
 		local fi = f[i]
-		fi.cLevel = fi.level >= 100 and (fi.iLevel - 300) or ((fi.level-90)*30)
+		fi.cLevel = fi.level >= FOLLOWER_LEVEL_CAP and (fi.iLevel - 300) or ((fi.level-FOLLOWER_LEVEL_BASE)*30)
 		fi.active, fi.working = fi.status ~= GARRISON_FOLLOWER_INACTIVE and 1 or 0, fi.status == GARRISON_FOLLOWER_WORKING and 1 or 0
 	end
 	return f, ni-1, #f
@@ -1962,10 +1966,10 @@ function FollowerEstimator.EvaluateGroup(mi, counters, traits, fa, fb, fc, scrat
 
 	if nc < cap then
 		local la, lb, lc, lm, mx
-		if mlvl >= 100 then
-			la, lb, lc, lm, mx, mlvl = fa.iLevel, fb.iLevel, fc and fc.iLevel, 15, FOLLOWER_ITEM_LEVEL_CAP, mlvl == 100 and 600 or mlvl
+		if mlvl >= FOLLOWER_LEVEL_CAP then
+			la, lb, lc, lm, mx, mlvl = fa.iLevel, fb.iLevel, fc and fc.iLevel, 15, FOLLOWER_ITEM_LEVEL_CAP, mlvl == FOLLOWER_LEVEL_CAP and 600 or mlvl
 		else
-			la, lb, lc, lm, mx = fa.level, fb.level, fc and fc.level, 3, 100
+			la, lb, lc, lm, mx = fa.level, fb.level, fc and fc.level, 3, FOLLOWER_LEVEL_CAP
 		end
 		local ga, gb, gc, toCap = 1, 1, 1, mx-mlvl
 		for i=1,3 do
@@ -2043,7 +2047,7 @@ end
 function FollowerEstimator.SaveGroup(best, traits, fa, fb, fc, sc, amlvl, bmlvl, cmlvl, a, b, c)
 	local na, nw = (fa.active or 0) + (b and fb.active or 0) + (c and fc.active or 0), 3 - (fa.working or 0) - (b and fb.working or 0) - (c and fc.working or 0)
 	local la, lb, lc = fa.cLevel, fb.cLevel, c and fc.cLevel
-	local ga, gb, gc = amlvl > 100 and (amlvl - 300) or ((amlvl-90)*30), bmlvl > 100 and (bmlvl - 300) or ((bmlvl-90)*30), c and (cmlvl > 100 and (cmlvl - 300) or ((cmlvl-90)*30)) or 0
+	local ga, gb, gc = amlvl > FOLLOWER_LEVEL_CAP and (amlvl - 300) or ((amlvl-FOLLOWER_LEVEL_BASE)*30), bmlvl > FOLLOWER_LEVEL_CAP and (bmlvl - 300) or ((bmlvl-FOLLOWER_LEVEL_BASE)*30), c and (cmlvl > FOLLOWER_LEVEL_CAP and (cmlvl - 300) or ((cmlvl-FOLLOWER_LEVEL_BASE)*30)) or 0
 	local gap = (ga > la and (ga - la) or 0) + (b and gb > lb and (gb - lb) or 0) + (c and gc > lc and (gc - lc) or 0)
 	local hi, lo, ohi = sc + 65536 * (na * 4 + nw) + (32767-gap), traits[221], best[1]
 	if hi >= ohi then
@@ -2341,7 +2345,7 @@ do -- +api.GetSuggestedMissionUpgradeGroups(missions, ojob, f1, f2, f3)
 			end
 			local _, _, _, _, env, _, _, en = C_Garrison.GetMissionInfo(mid)
 			s = {
-				mi.level == 100 and mi.iLevel > 600 and mi.iLevel or mi.level,
+				mi.level == FOLLOWER_LEVEL_CAP and mi.iLevel > 600 and mi.iLevel or mi.level,
 				mi.numFollowers,
 				mi.durationSeconds,
 				rt or 1,
@@ -2413,7 +2417,7 @@ do -- +api.GetSuggestedMissionUpgradeGroups(missions, ojob, f1, f2, f3)
 		local noRoamers, oc, job = not (f1 or f2 or f3), coJobs[ojob]
 		for i=1,#missions do
 			local mi, rt, mid = missions[i]
-			rt, mid, mi.upgroup = noRoamers and mi.level == 100 and mi.numFollowers > 1 and mi.groups and mi.groups.rankType, mi.missionID
+			rt, mid, mi.upgroup = noRoamers and mi.level == FOLLOWER_LEVEL_CAP and mi.numFollowers > 1 and mi.groups and mi.groups.rankType, mi.missionID
 			if rt == "threats" or rt == "resources" then
 				local hasMaxed, curID, baseValue = hasMaxedGroup(mi, rt)
 				if hasMaxed then
@@ -2548,7 +2552,7 @@ function api.GetMoIRewardIcon(rid)
 	if rid == 0 then
 		return "|TInterface\\Icons\\INV_Misc_Coin_01:14:14:0:0:64:64:4:60:4:60|t"
 	elseif rid < 2000 then
-		return "|T" .. (select(3,GetCurrencyInfo(rid)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
+		return "|T" .. (select(3,Nine.GetCurrencyInfo(rid)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
 	else
 		return "|T" .. (GetItemIcon(rid) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
 	end
@@ -2775,7 +2779,9 @@ local prefixTip do
 	local function writePrefix(self)
 		local t = hooked[self]
 		GameTooltip_ClearMoney(self)
-		GameTooltip_ClearInsertedFrames(self)
+		if GameTooltip_ClearInsertedFrames then
+			GameTooltip_ClearInsertedFrames(self)
+		end
 		if t and t[1] then
 			self:AddLine(t[1],t[2],t[3],t[4])
 			t[1],t[2],t[3],t[4] = nil
@@ -2847,7 +2853,7 @@ function api.SetGroupTooltip(tip, g, mi)
 	elseif rt == 0 then
 		rl = GetMoneyString(rq - rq % 1e4)
 	elseif rt > 0 then
-		rl = rq .. " |T" .. (select(3,GetCurrencyInfo(rt)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
+		rl = rq .. " |T" .. (select(3,Nine.GetCurrencyInfo(rt)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
 	end
 	tip:AddDoubleLine(g[1] .. "% |cffc0c0c0(" .. SecondsToTime(g[4]) .. ")", rl)
 	local finfo, ml = api.GetFollowerInfo(), api.GetFMLevel(mi)
@@ -2875,7 +2881,7 @@ function api.SetUpGroupTooltip(tip, g, mi)
 		if cid == 0 then
 			cq = GetMoneyString(cq - cq % 1e4)
 		elseif cid > 0 then
-			cq = cq .. " |T" .. (select(3,GetCurrencyInfo(cid)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
+			cq = cq .. " |T" .. (select(3,Nine.GetCurrencyInfo(cid)) or "Interface/Icons/Temp") .. ":14:14:0:0:64:64:4:60:4:60|t"
 		else
 			cid = nil
 		end
@@ -2890,7 +2896,7 @@ function api.SetUpGroupTooltip(tip, g, mi)
 	local blvl, mentor = g[6], g.mentorLevel or 0
 	for i=1,mi.numFollowers do
 		local mlvl = blvl and blvl % 1e3 or mlvl
-		blvl, mlvl = blvl and (blvl - mlvl) / 1e3, mlvl == 600 and 100 or mlvl
+		blvl, mlvl = blvl and (blvl - mlvl) / 1e3, mlvl == 600 and FOLLOWER_LEVEL_CAP or mlvl
 		local fi = finfo[g[i]]
 		local fl = api.GetFMLevel(fi)
 		if fl >= mlvl or mentor >= mlvl then
@@ -3149,7 +3155,7 @@ function api.GetMissionPoolIdentity(mt)
 	end
 
 	local ls, mp = T.config.legendStep, T.InterestPool
-	local c2, c3 = ls > 0 or IsQuestFlaggedCompleted(35998), ls > 1 or IsQuestFlaggedCompleted(36013)
+	local c2, c3 = ls > 0 or Nine.IsQuestFlaggedCompleted(35998), ls > 1 or Nine.IsQuestFlaggedCompleted(36013)
 	T.config.legendStep = c3 and 2 or c2 and 1 or nil
 	local ng = not (C_Garrison.GetOwnedBuildingInfoAbbrev(25) == 36 or C_Garrison.GetOwnedBuildingInfoAbbrev(22) == 36)
 	

@@ -203,10 +203,14 @@ rematch:InitModule(function()
 				return C_PetJournal.PetIsSlotted(petID) and L["Slotted pets cannot be caged."] or L["Injured pets cannot be caged."]
 			end,
 			func=function(entry,petID)
-				local dialog = rematch:ShowDialog("Cage",300,140,BATTLE_PET_PUT_IN_CAGE,L["Cage this pet?"],YES,function() C_PetJournal.CagePetByID(petID) end,NO)
-				dialog.Pet:SetPoint("TOPRIGHT",-12,-28)
-				rematch:FillPetListButton(dialog.Pet,petID)
-				dialog.Pet:Show()
+				if settings.DontConfirmCaging then
+					C_PetJournal.CagePetByID(petID)
+				else
+					local dialog = rematch:ShowDialog("Cage",300,140,BATTLE_PET_PUT_IN_CAGE,L["Cage this pet?"],YES,function() C_PetJournal.CagePetByID(petID) end,NO)
+					dialog.Pet:SetPoint("TOPRIGHT",-12,-28)
+					rematch:FillPetListButton(dialog.Pet,petID)
+					dialog.Pet:Show()
+				end
 			end },
 		{ spacer=true, hidden=function(self,petID) return not rematch:PetCanLevel(petID) end },
 		{ text=L["Start Leveling"], -- only for pets not already in the queue
@@ -278,6 +282,7 @@ rematch:InitModule(function()
 		{ text=L["Strong Vs"], subMenu="PetStrong", group="Strong", highlight=rmf.GroupUsed  },
 		{ text=L["Tough Vs"], subMenu="PetTough", group="Tough", highlight=rmf.GroupUsed },
 		{ text=SOURCES, subMenu="PetSources", group="Sources", highlight=rmf.GroupUsed },
+		{ text=EXPANSION_FILTER_TEXT, subMenu="PetExpansion", group="Expansion", highlight=rmf.GroupUsed },
 		{ text=RARITY, subMenu="PetRarity", group="Rarity", highlight=rmf.GroupUsed },
 		{ text=LEVEL, subMenu="PetLevel", group="Level", highlight=rmf.GroupUsed },
 		{ text=L["Breed"], hidden=rmf.NotBreedable, subMenu="PetBreed", group="Breed", highlight=rmf.GroupUsed },
@@ -339,19 +344,33 @@ rematch:InitModule(function()
 	},rematch.UpdateRoster)
 
 	rematch:RegisterMenu("PetSources", { -- Filter->Sources
-		{ text=BATTLE_PET_SOURCE_1, check=true, group="Sources", size=10, var=1, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0,0.25} },
-		{ text=BATTLE_PET_SOURCE_2, check=true, group="Sources", size=10, var=2, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0,0.25} },
-		{ text=BATTLE_PET_SOURCE_3, check=true, group="Sources", size=10, var=3, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0,0.25} },
-		{ text=BATTLE_PET_SOURCE_4, check=true, group="Sources", size=10, var=4, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.75,1,0,0.25} },
-		{ text=BATTLE_PET_SOURCE_5, check=true, group="Sources", size=10, var=5, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0.25,0.5} },
-		{ text=BATTLE_PET_SOURCE_6, check=true, group="Sources", size=10, var=6, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0.25,0.5} },
-		{ text=BATTLE_PET_SOURCE_7, check=true, group="Sources", size=10, var=7, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0.25,0.5} },
-		{ text=BATTLE_PET_SOURCE_8, check=true, group="Sources", size=10, var=8, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.75,1,0.25,0.5} },
-		{ text=BATTLE_PET_SOURCE_9, check=true, group="Sources", size=10, var=9, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0.5,0.75} },
-		{ text=BATTLE_PET_SOURCE_10, check=true, group="Sources", size=10, var=10, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0.5,0.75} },
-		{ text=BATTLE_PET_SOURCE_11, check=true, group="Sources", size=10, var=11, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0.5,0.75} },
+		{ text=BATTLE_PET_SOURCE_1, check=true, group="Sources", size=11, var=1, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0,0.25} },
+		{ text=BATTLE_PET_SOURCE_2, check=true, group="Sources", size=11, var=2, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0,0.25} },
+		{ text=BATTLE_PET_SOURCE_3, check=true, group="Sources", size=11, var=3, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0,0.25} },
+		{ text=BATTLE_PET_SOURCE_4, check=true, group="Sources", size=11, var=4, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.75,1,0,0.25} },
+		{ text=BATTLE_PET_SOURCE_5, check=true, group="Sources", size=11, var=5, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0.25,0.5} },
+		{ text=BATTLE_PET_SOURCE_6, check=true, group="Sources", size=11, var=6, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0.25,0.5} },
+		{ text=BATTLE_PET_SOURCE_7, check=true, group="Sources", size=11, var=7, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0.25,0.5} },
+		{ text=BATTLE_PET_SOURCE_8, check=true, group="Sources", size=11, var=8, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.75,1,0.25,0.5} },
+		{ text=BATTLE_PET_SOURCE_9, check=true, group="Sources", size=11, var=9, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0,0.25,0.5,0.75} },
+		{ text=BATTLE_PET_SOURCE_10, check=true, group="Sources", size=11, var=10, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.25,0.5,0.5,0.75} },
+		{ text=BATTLE_PET_SOURCE_11, check=true, group="Sources", size=11, var=11, value=rmf.GetValue, func=rmf.ToggleValue, icon="Interface\\AddOns\\Rematch\\Textures\\sources", iconCoords={0.5,0.75,0.5,0.75} },
 		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Checkbox Groups"], tooltipBody=format(L["In filter menus, checkbox groups assume if nothing is checked you want to view all choices.\n\nYou can also:\n\n%s[Shift]+Click\124r to check all except the box clicked.\n\n%s[Alt]+Click\124r to uncheck all except the box clicked."],rematch.hexWhite,rematch.hexWhite) },
 		{ text=RESET, group="Sources", stay=true, func=rmf.ResetGroup },
+	},rematch.UpdateRoster)
+
+	rematch:RegisterMenu("PetExpansion", {
+		{ text=EXPANSION_NAME0, check=true, group="Expansion", size=9, var=0, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME1, check=true, group="Expansion", size=9, var=1, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME2, check=true, group="Expansion", size=9, var=2, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME3, check=true, group="Expansion", size=9, var=3, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME4, check=true, group="Expansion", size=9, var=4, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME5, check=true, group="Expansion", size=9, var=5, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME6, check=true, group="Expansion", size=9, var=6, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME7, check=true, group="Expansion", size=9, var=7, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME8, check=true, group="Expansion", size=9, var=8, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Checkbox Groups"], tooltipBody=format(L["In filter menus, checkbox groups assume if nothing is checked you want to view all choices.\n\nYou can also:\n\n%s[Shift]+Click\124r to check all except the box clicked.\n\n%s[Alt]+Click\124r to uncheck all except the box clicked."],rematch.hexWhite,rematch.hexWhite) },
+		{ text=RESET, group="Expansion", stay=true, func=rmf.ResetGroup },
 	},rematch.UpdateRoster)
 
 	rematch:RegisterMenu("PetRarity", { -- Filter->Rarity
@@ -377,17 +396,17 @@ rematch:InitModule(function()
 	},rematch.UpdateRoster)
 
 	rematch:RegisterMenu("PetBreed", { -- Filter->Breed
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=3, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=4, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=5, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=6, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=7, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=8, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=9, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=10, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=11, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=rmf.GetBreedName, check=true, group="Breed", var=12, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=NEW, check=true, group="Breed", var=0, size=11, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=3, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=4, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=5, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=6, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=7, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=8, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=9, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=10, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=11, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=rmf.GetBreedName, check=true, group="Breed", var=12, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=NEW, check=true, group="Breed", var=0, size=12, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Breed"], tooltipBody=function() return format(L["All breed data is pulled from your installed %s%s\124r addon.\n\nThe breed \"New\" categorizes pets with no breed data. Keep your breed addon up to date to see if they have new data."],rematch.hexWhite,GetAddOnMetadata(rematch:GetBreedSource(),"Title") or rematch:GetBreedSource()) end },
 		{ text=RESET, group="Breed", stay=true, func=rmf.ResetTypeGroup },
 	},rematch.UpdateRoster)
@@ -512,16 +531,23 @@ function rmf:ResetTypeGroup()
 end
 
 function rmf:ToggleValue(subject,checked)
+	local startIndex = (self.group=="Expansion" and 0 or self.group=="Breed" and 3 or 1)
 	if IsShiftKeyDown() then -- if shift is held, it will uncheck one being toggled and check all others in group
-		for i=1,self.size do
+		for i=startIndex,self.size do
 			roster:SetFilter(self.group,i,i~=self.var)
+		end
+		if self.group=="Breed" then
+			roster:SetFilter(self.group,0,self.var~=0)
 		end
 		if self.group=="Level" then -- special handling for level hybrid check/radio group
 			roster:ClearRadio("Level","Level")
 		end
 	elseif IsAltKeyDown() then -- if alt is held, check only one being clicked
-		for i=1,self.size do
+		for i=startIndex,self.size do
 			roster:SetFilter(self.group,i,i==self.var)
+		end
+		if self.group=="Breed" then
+			roster:SetFilter(self.group,0,self.var==0)
 		end
 	else
 		roster:SetFilter(self.group,self.var,not checked)

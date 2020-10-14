@@ -138,7 +138,7 @@ end
 
 -- Create Menu
 local function CreateMenu()
-	menu = CreateFrame("Frame",nil,nil);
+	menu = CreateFrame("Frame",nil,nil,BackdropTemplateMixin and "BackdropTemplate");
 	menu:SetBackdrop(backDrop);
 	menu:SetBackdropColor(0.1,0.1,0.1,1);
 	menu:SetBackdropBorderColor(0.4,0.4,0.4,1);
@@ -259,7 +259,7 @@ function AzDropDown.CreateDropDown(parent,width,isAutoSelect,initFunc,selectValu
 	if (not parent or not width) then
 		return;
 	end
-	local dd = CreateFrame("Frame",nil,parent);
+	local dd = CreateFrame("Frame",nil,parent,BackdropTemplateMixin and "BackdropTemplate");
 	dd:SetWidth(width);
 	dd:SetHeight(24);
 	dd:SetBackdrop(backDrop);

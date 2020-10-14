@@ -18,12 +18,13 @@ end
 
 local altColor = {}
 function AltPower:UpdateVisibility(frame)
-	local barType, minPower, _, _, _, hideFromOthers, showOnRaid = UnitAlternatePowerInfo(frame.unit)
+	local barID = UnitPowerBarID(frame.unit) or 0
+	local barInfo = GetUnitPowerBarInfoByID(barID)
 	local visible = false
-	if( barType ) then
-		if( ( frame.unitType == "player" or frame.unitType == "pet" ) or not hideFromOthers ) then
+	if( barInfo and barInfo.barType ) then
+		if( ( frame.unitType == "player" or frame.unitType == "pet" ) or not barInfo.hideFromOthers ) then
 			visible = true
-		elseif( showOnRaid and ( UnitInRaid(frame.unit) or UnitInParty(frame.unit) ) ) then
+		elseif( barInfo.showOnRaid and ( UnitInRaid(frame.unit) or UnitInParty(frame.unit) ) ) then
 			visible = true
 		end
 	end
@@ -45,7 +46,10 @@ end
 
 function AltPower:Update(frame, event, unit, type)
 	if( event and type ~= "ALTERNATE" ) then return end
+	local barID = UnitPowerBarID(frame.unit) or 0
+	local barInfo = GetUnitPowerBarInfoByID(barID)
+	local minPower = barInfo and barInfo.minPower or 0
 
-	frame.altPowerBar:SetMinMaxValues(select(2, UnitAlternatePowerInfo(frame.unit)) or 0, UnitPowerMax(frame.unit, ALTERNATE_POWER_INDEX) or 0)
+	frame.altPowerBar:SetMinMaxValues(minPower, UnitPowerMax(frame.unit, ALTERNATE_POWER_INDEX) or 0)
 	frame.altPowerBar:SetValue(UnitPower(frame.unit, ALTERNATE_POWER_INDEX) or 0)
 end

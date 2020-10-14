@@ -11,7 +11,7 @@ rematch:InitModule(function()
 		{ text=L["No Target"], npcID=nil, func=rematch.PickNpcID },
 		{ text=function() return rematch:GetNameFromNpcID(rematch.recentTarget) end, hidden=function() return not rematch.recentTarget end, npcID=function() return rematch.recentTarget end, func=rematch.PickNpcID },
 		{ text=function() return rematch:GetTeamTitle(settings.loadedTeam) end, hidden=function() return type(settings.loadedTeam)~="number" or settings.loadedTeam==rematch.recentTarget or settings.loadedTeam==1 end, npcID=function() return settings.loadedTeam end, func=rematch.PickNpcID },
-		{ text=L["Noteworthy Targets"], subMenu="NotableNPCs" }, -- defined in Npcs.lua
+		{ text=L["Noteworthy Targets"], subMenu="TargetMenu" }, -- defined in Npcs.lua
 	})
 	dialog.SaveAs.Target.tooltipTitle=L["Target For This Team"]
 	dialog.SaveAs.Target.tooltipBody=L["A target stored in a team is used to decide which team to load when you return to that target.\n\nYou can save an unlimited number of teams to fight a target, but a target can only be saved in one team."]

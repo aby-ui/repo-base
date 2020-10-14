@@ -11,7 +11,7 @@ local LDB = LibStub('LibDataBroker-1.1'):NewDataObject('Broker_Equipment', {
 	type = 'data source',
 })
 
-local Broker_Equipment = CreateFrame('Frame', addonName, UIParent)
+local Broker_Equipment = CreateFrameAby('Frame', addonName, UIParent)
 Broker_Equipment:RegisterEvent('PLAYER_LOGIN')
 Broker_Equipment:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
 Broker_Equipment:Hide()

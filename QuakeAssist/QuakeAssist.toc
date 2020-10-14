@@ -5,9 +5,9 @@
 ## X-Category: Combat
 ## SavedVariables: QuakeAssistDB
 
-Includes\LibAddonManager.lua
-Includes\InterfaceOptionPage-1.0.lua
-Includes\Pre80API.lua
+..\!!!Libs\!External\abin\LibAddonManager.lua
+..\!!!Libs\!External\abin\InterfaceOptionPage-1.0.lua
+..\!!!Libs\!External\abin\Pre80API.lua
 
 Localization.lua
 Core.lua

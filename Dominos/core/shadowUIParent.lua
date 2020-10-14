@@ -5,7 +5,7 @@
 
 local _, Addon = ...
 
-local ShadowUIParent = Addon:CreateHiddenFrame("Frame", nil, UIParent)
+local ShadowUIParent = Addon:CreateHiddenFrame('Frame', nil, UIParent)
 
 ShadowUIParent:SetAllPoints(UIParent)
 

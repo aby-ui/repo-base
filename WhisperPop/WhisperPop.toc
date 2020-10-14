@@ -9,9 +9,9 @@ Locales\enUS.lua
 Locales\zhCN.lua
 Locales\zhTW.lua
 
-Includes\LibAddonManager.lua
-Includes\InterfaceOptionPage-1.0.lua
-Includes\VirtualScrollList-1.0.lua
+..\!!!Libs\!External\abin\LibAddonManager.lua
+..\!!!Libs\!External\abin\InterfaceOptionPage-1.0.lua
+..\!!!Libs\!External\abin\VirtualScrollList-1.0.lua
 
 Core.lua
 Frames\Templates.lua

@@ -30,7 +30,7 @@ end
 
 function Bar:New(name, settings, database)
 	db = database
-	local frame = CreateFrame("Frame",name,UIParent)
+	local frame = CreateFrameAby("Frame",name,UIParent)
 	frame.chocolist = {} --create list of chocolate chocolist in the bar
 
 	-- add class methods to frame object

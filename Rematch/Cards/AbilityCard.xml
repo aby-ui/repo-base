@@ -1,11 +1,11 @@
 <Ui>
 	<!-- ability card has no frames/buttons with mouse enabled -->
-	<Frame name="RematchAbilityCard" frameStrata="FULLSCREEN_DIALOG" parent="UIParent" clampedToScreen="true" hidden="true">
+	<Frame name="RematchAbilityCard" frameStrata="FULLSCREEN_DIALOG" parent="UIParent" clampedToScreen="true" hidden="true" inherits="RematchBorderBackdropTemplate">
 		<Size x="260" y="200"/>
-		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<EdgeSize val="16"/>
 			<BorderColor r="0.5" g="0.5" b="0.5"/>
-		</Backdrop>
+		</Backdrop> -->
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>

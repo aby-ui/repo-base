@@ -95,15 +95,15 @@
 					</Button>
 				</Frames>
 			</Frame>
-			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true">
+			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true" inherits="RematchBorderBackdropTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="2" y="-22"/>
 					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize val="16"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 				<Layers>
 					<Layer level="BACKGROUND">
 						<!-- brown background to title area -->

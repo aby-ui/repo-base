@@ -85,7 +85,7 @@ local function UpdateTooltip()
 end
 
 local function CreateToolButton(id)
-    local button = CreateFrame("Button", frame:GetName().."Button"..id, frame, "SecureActionButtonTemplate")
+    local button = CreateFrameAby("Button", frame:GetName().."Button"..id, frame, "SecureActionButtonTemplate")
     button:SetID(id)
     button:SetSize(BUTTON_WIDTH, BUTTON_WIDTH)
     button:SetBackdrop({ edgeFile = "Interface\\LFGFRAME\\LFGBorder", edgeSize = 8, bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", insets = { top = 2, left = 2, bottom = 2, right = 2 } })
@@ -297,7 +297,7 @@ addon:RegisterCallback(UpdateButtonsChecked)
 -- A check button on char page
 --------------------------------------------------
 
-local checkFrame = CreateFrame("Frame", "GearManagerExToolBarCheckFrame", PaperDollEquipmentManagerPane)
+local checkFrame = CreateFrameAby("Frame", "GearManagerExToolBarCheckFrame", PaperDollEquipmentManagerPane)
 checkFrame:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
 checkFrame:SetPoint("TOPLEFT", PaperDollEquipmentManagerPane, "BOTTOMLEFT", -4, -7)
 checkFrame:SetSize(200, 40)

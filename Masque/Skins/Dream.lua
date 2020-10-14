@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Skins\Dream.lua
 	* Author.: StormFX, JJSheets
@@ -34,7 +34,7 @@ Core.AddSkin("Dream", {
 	Websites = Core.Websites,
 
 	-- Skin
-	-- Mask = nil,
+	-- Mask = Default.Mask,
 	Backdrop = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -63,9 +63,9 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Shadow = {Hide = true},
+	-- Shadow = Default.Shadow,
 	Normal = Core.__Hidden,
-	-- Disabled = {Hide = true},
+	-- Disabled = Default.Disabled,
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -237,19 +237,20 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-	-- Gloss = {Hide = true},
-	IconOverlay = {
-		Atlas = "AzeriteIconFrame",
+	-- Gloss = Default.Gloss,
+	AutoCastable = {
+		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
+		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
-		Width = 34,
-		Height = 34,
+		Width = 56,
+		Height = 56,
 		Point = "CENTER",
 		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
+		OffsetX = 0.5,
+		OffsetY = -0.5,
 		-- SetAllPoints = nil,
 	},
 	NewAction = {
@@ -280,19 +281,32 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	AutoCastable = {
-		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
-		-- TexCoords = {0, 1, 0, 1},
+	IconOverlay = {
+		Atlas = "AzeriteIconFrame",
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
-		Width = 56,
-		Height = 56,
+		Width = 34,
+		Height = 34,
 		Point = "CENTER",
 		RelPoint = "CENTER",
-		OffsetX = 0.5,
-		OffsetY = -0.5,
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 16,
+		Height = 17,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 1,
+		OffsetY = -2,
 		-- SetAllPoints = nil,
 	},
 	NewItem = {
@@ -303,6 +317,21 @@ Core.AddSkin("Dream", {
 		DrawLevel = 2,
 		Width = 30,
 		Height = 30,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
+		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
+		Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 32,
+		Height = 32,
 		Point = "CENTER",
 		RelPoint = "CENTER",
 		OffsetX = 0,
@@ -339,6 +368,20 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		UseColor = true,
 		-- SetAllPoints = true,
+	},
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 16,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 2,
+		OffsetY = -1,
+		-- SetAllPoints = nil,
 	},
 	-- Name = Default.Name,
 	Highlight = {

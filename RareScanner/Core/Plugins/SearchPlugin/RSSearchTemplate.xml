@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Script file="RSSearchMixin.lua"/>
+  
+  <Frame name="WorldMapRSSearchTemplate" frameStrata="HIGH" mixin="RSSearchMixin" virtual="true">
+    <Size x="175" y="32" />
+	<Frames>
+    	<EditBox parentKey="EditBox" mixin="RSSearchBoxMixin" letters="200">
+			<Size>
+				<AbsDimension x="175" y="32"></AbsDimension>
+			</Size>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+			<Layers>
+				<Layer level="BACKGROUND">
+					<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Left">
+						<Size>
+							<AbsDimension x="75" y="32"></AbsDimension>
+						</Size>
+						<Anchors>
+							<Anchor point="LEFT">
+								<Offset>
+									<AbsDimension x="-15" y="0"></AbsDimension>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<TexCoords left="0" right="0.2" top="0" bottom="1.0"></TexCoords>
+					</Texture>
+					<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Mid">
+						<Size>
+							<AbsDimension x="75" y="32"></AbsDimension>
+						</Size>
+						<Anchors>
+							<Anchor point="CENTER"/>
+						</Anchors>
+						<TexCoords left="0" right="0" top="0" bottom="1.0"></TexCoords>
+					</Texture>
+					<Texture file="Interface\ChatFrame\UI-ChatInputBorder-Right">
+						<Size>
+							<AbsDimension x="75" y="32"></AbsDimension>
+						</Size>
+						<Anchors>
+							<Anchor point="RIGHT">
+								<Offset>
+									<AbsDimension x="10" y="0"></AbsDimension>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<TexCoords left="0.7" right="1.0" top="0" bottom="1.0"></TexCoords>
+					</Texture>
+				</Layer>
+			</Layers>
+			<Scripts>
+      			<OnEnterPressed method="OnEnterPressed" />
+	  			<OnEnter method="OnMouseEnter"/>
+	  			<OnLeave method="OnMouseLeave"/>
+	  			<OnMouseDown method="OnMouseDown"/>
+			</Scripts>
+			<FontString inherits="ChatFontNormal"></FontString>
+		</EditBox>
+    </Frames>
+    <Scripts>
+      <OnLoad method="OnLoad" />
+      <OnShow method="OnShow"/>
+    </Scripts>
+  </Frame>
+  
+</Ui>

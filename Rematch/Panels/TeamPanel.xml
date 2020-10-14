@@ -8,7 +8,7 @@
 		<Size x="200" y="44"/> <!-- can be any width; 1px unused across top so 43px usable height -->
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
 				<!-- <Texture parentKey="Back" file="Interface\Buttons\ListButtons"> -->
 					<Anchors>
 						<Anchor point="TOPLEFT" x="88" y="0"/>
@@ -74,18 +74,18 @@
 				</Texture>
 				<!-- FontStrings -->
 				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name Here">
-					<Size x="0" y="36"/> <!-- y=36 when SubName not shown, 21 when shown -->
 					<Anchors>
-						<Anchor point="TOPLEFT" x="94" y="-4"/>
-						<Anchor point="TOPRIGHT" x="-8" y="-4"/> <!-- x=-8 when no footnotes shown, -44 when winrecord or both footnotes shown, -22 when just one footnote shown -->
+						<Anchor point="TOPLEFT" x="94" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="0"/> <!-- x=-8 when no footnotes shown, -44 when winrecord or both footnotes shown, -22 when just one footnote shown -->
 					</Anchors>
 				</FontString>
-				<FontString parentKey="SubName" inherits="GameFontNormalSmall" justifyH="LEFT" justifyV="TOP" text="">
+				<FontString parentKey="SubName" inherits="SystemFont_Tiny" justifyH="LEFT" justifyV="TOP" text="">
 					<Size x="0" y="12"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
 						<Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
 					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
 				</FontString>
 				<FontString parentKey="WinRecordText" inherits="GameFontHighlight" text="100%" hidden="true">
 					<Anchors>
@@ -94,7 +94,7 @@
 				</FontString>
 			</Layer>
 			<Layer level="OVERLAY">
-				<Texture parentKey="Border" file="Interface\AddOns\Rematch\Textures\slotborder.tga">
+				<Texture parentKey="Border" file="Interface\AddOns\Rematch\Textures\slotborder">
 					<Size x="90" y="44"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="0" y="0"/>
@@ -148,7 +148,7 @@
 		</KeyValues>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="76" y="0"/>
 						<Anchor point="BOTTOMRIGHT"/>

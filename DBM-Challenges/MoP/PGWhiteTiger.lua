@@ -7,8 +7,7 @@
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200712212530")
-mod:SetZone()
+mod:SetRevision("20200806141828")
 mod.noStatistics = true
 
 --mod:RegisterCombat("scenario", 1148)

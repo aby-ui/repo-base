@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 2.3.1 |r(|cFF00FF968.3 Battle for Azeroth|r)"
+ local GSA_VERSION = "|cffFF7D0A SLB 1 |r(|cff9482C99.0 Shadowlands|r)"
  local GSA_TEST_BRANCH = ""
  local GSA_AUTHOR = " "
  local gsadb
@@ -275,7 +275,7 @@ function GSA:CanTalkHere()
 	--Disable By Location
 	local _,currentZoneType = IsInInstance()
 	local _,_,_,_,_,_,_,instanceMapID = GetInstanceInfo()
-	local isPvP = UnitIsWarModeDesired("player")
+	--local isPvP = UnitIsWarModeDesired("player")
 	playerCurrentZone = currentZoneType
 	if (not ((currentZoneType == "none" and gsadb.field and not gsadb.onlyFlagged) or 												-- World
 		--(currentZoneType == "none" and gsadb.field and (gsadb.onlyFlagged and UnitIsWarModeDesired("player"))) or

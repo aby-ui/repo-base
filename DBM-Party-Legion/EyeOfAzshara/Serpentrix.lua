@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1479, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417010024")
+mod:SetRevision("20200927225704")
 mod:SetCreatureID(91808)
 mod:SetEncounterID(1813)
 mod:SetZone(1456)
@@ -46,6 +46,10 @@ function mod:OnCombatStart(delay)
 	timerToxicWoundCD:Start(5-delay)
 	timerWindsCD:Stop()
 	timerWindsCD:Start(33-delay)
+end
+
+function mod:OnCombatEnd()
+	timerWindsCD:Stop()--Does it nearly immediately upon death
 end
 
 function mod:SPELL_AURA_APPLIED(args)

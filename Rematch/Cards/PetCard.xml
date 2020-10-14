@@ -363,15 +363,15 @@
 			</Frame> <!-- Title -->
 			
 			<!-- front is border encompassing whole card inset -->
-			<Frame parentKey="Front" ignoreParentAlpha="true">
+			<Frame parentKey="Front" ignoreParentAlpha="true" inherits="RematchBorderBackdropTemplate">
 				<Anchors> <!-- 254 width -->
 					<Anchor point="TOPLEFT" x="2" y="-22"/>
 					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize val="16"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 
 				<Frames>
 
@@ -560,15 +560,15 @@
 							</StatusBar>
 
 							<!-- breed table that appears when mouseover PossibleBreeds -->
-							<Frame parentKey="BreedTable" hidden="true">
+							<Frame parentKey="BreedTable" hidden="true" inherits="RematchBorderBackdropTemplate">
 								<Size x="184" y="180"/>
 								<Anchors>
 									<Anchor point="BOTTOMRIGHT" relativeKey="$parent.PossibleBreeds" relativePoint="TOPRIGHT" x="12" y="0"/>
 								</Anchors>
-								<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+								<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 									<EdgeSize val="16"/>
 									<BorderColor r="0.5" g="0.5" b="0.5"/>
-								</Backdrop>
+								</Backdrop> -->
 								<Layers>
 									<Layer level="BACKGROUND" textureSubLevel="-1">
 										<Texture>
@@ -712,15 +712,11 @@
 			</Frame> <!-- Front -->
 
 			<!-- back of card -->
-			<Frame parentKey="Back" ignoreParentAlpha="true">
+			<Frame parentKey="Back" ignoreParentAlpha="true" inherits="RematchBorderBackdropTemplate">
 				<Anchors> <!-- 254 width -->
 					<Anchor point="TOPLEFT" x="2" y="-22"/>
 					<Anchor point="BOTTOMRIGHT" x="-4" y="2"/>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-					<EdgeSize val="16"/>
-					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
 				<Frames>
 					<Frame parentKey="Source" useParentLevel="true">
 						<Size x="248" y="80"/>

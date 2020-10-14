@@ -168,7 +168,7 @@ function frame:ConfigureDualPanel()
 		rematch:Reparent(rematch.LoadedTeamPanel,frame,"TOPLEFT",frame,"TOPLEFT",286,config.topOffset)
 		rematch.LoadedTeamPanel.maxWidth = config.panelWidth
 		rematch.QueuePanel:SetPoint("TOPLEFT",rematch.MiniPanel,"BOTTOMLEFT",0,-2)
-	else -- for the rest, move LoadedTeamPanel to the top of the Loadouts in the LoadoutPanel (too many Loads!)
+	elseif not rematch.LoadoutPanel.targetMode then -- for the rest, move LoadedTeamPanel to the top of the Loadouts in the LoadoutPanel (too many Loads!)
 		rematch:Reparent(rematch.LoadedTeamPanel,frame,"BOTTOMLEFT",rematch.LoadoutPanel.Loadouts[1],"TOPLEFT",0,2)
 		rematch.LoadedTeamPanel.maxWidth = config.panelWidth
 	end
@@ -185,7 +185,7 @@ function frame:PlaceMiniPanel()
 	rematch.LoadedTeamPanel.maxWidth = config.panelWidth
 end
 
--- used by both single panel views to place minimap at top of frame unless we're in options tab
+-- used by both single panel views to place minipanel at top of frame unless we're in options tab
 function frame:PlaceMiniPanelOrOptions()
 	if settings.ActivePanel~=4 then -- if not in options put MiniPanel at top
 		frame:PlaceMiniPanel()
@@ -228,3 +228,4 @@ function frame:PlaceToolbarAndBottomPanel(showSummon)
 		rematch:Reparent(rematch.Toolbar,frame,"BOTTOM",-1,4)
 	end
 end
+

@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque: Cirque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque_Cirque.
+	This file is part of 'Masque: Cirque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Cirque.
 
 	* File...: Skins.lua
 	* Author.: StormFX
@@ -27,7 +27,7 @@ local L = Core.Locale
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
 local Websites = {
-	"https://github.com/StormFX/Masque_Cirque",
+	"https://github.com/SFX-WoW/Masque_Cirque",
 	"https://www.wowace.com/projects/masque-cirque",
 	"https://www.curseforge.com/wow/addons/masque-cirque",
 	"https://www.wowinterface.com/downloads/info24410",
@@ -39,7 +39,7 @@ local Websites = {
 
 MSQ:AddSkin("Cirque", {
 	Shape = "Circle",
-	Masque_Version = 80200,
+	Masque_Version = 90000,
 	Group = "Cirque",
 	Order = 1,
 
@@ -124,7 +124,7 @@ MSQ:AddSkin("Cirque", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-	--Disabled = {Hide = true,},
+	-- Disabled = Default.Disabled,
 	Pushed = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -341,6 +341,20 @@ MSQ:AddSkin("Cirque", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 15,
+		Height = 16,
+		Point = "LEFT",
+		RelPoint = "LEFT",
+		OffsetX = 2,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
 		Texture = [[Interface\AddOns\Masque_Cirque\Textures\Glow]],
@@ -349,6 +363,21 @@ MSQ:AddSkin("Cirque", {
 		BlendMode = "ADD",
 		DrawLayer = "BORDER",
 		DrawLevel = 0,
+		Width = 40,
+		Height = 40,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\AddOns\Masque_Cirque\Textures\Indicator]],
+		Texture = [[Interface\AddOns\Masque_Cirque\Textures\Quest]],
+		Color = {1, 0.8, 0, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
 		Width = 40,
 		Height = 40,
 		Point = "CENTER",
@@ -388,6 +417,20 @@ MSQ:AddSkin("Cirque", {
 		OffsetY = 0,
 		UseColor = true,
 		-- SetAllPoints = true,
+	},
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 16,
+		Height = 16,
+		Point = "LEFT",
+		RelPoint = "LEFT",
+		OffsetX = 2,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
 	},
 	Name = {
 		JustifyH = "CENTER",

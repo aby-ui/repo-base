@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1896, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143337")
+mod:SetRevision("20200913142407")
 mod:SetCreatureID(118460, 118462, 119072)--118460 Engine of Souls, 118462 Soul Queen Dajahna, 119072 The Desolate Host
 mod:SetEncounterID(2054)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(3, 4)
 mod.respawnTime = 40
@@ -383,7 +382,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.soulboundCast = 0
 		--timerSoulbindCD:Start(12, 1)--5-14, too variable to start timer for first cast after souls
 		--timerWitherCD:Start(19.7)
-		timerWailingSoulsCD:Start(58, self.vb.wailingSoulsCast+1)
+		timerWailingSoulsCD:Start(50, 1)
 	elseif spellId == 235732 then
 		playersNotInSpirit[#playersNotInSpirit+1] = args.destName
 		tDeleteItem(playersInSpirit, args.destName)

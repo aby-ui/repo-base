@@ -5,7 +5,7 @@ local Widget = GUI:NewModule('Widget', CreateFrame('ScrollFrame'), 'UIObject', '
 Widget:SetPadding(10, -10, 10, 10)
 
 function Widget:New(parent, noScroll)
-    local obj = self:Bind(CreateFrame('ScrollFrame', nil, parent))
+    local obj = self:Bind(CreateFrameAby('ScrollFrame', nil, parent))
     if parent then
         obj.__children = {}
         obj.__childOffset = 0

@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Skins\Skins.lua
 	* Author.: StormFX, JJSheets
@@ -30,7 +30,7 @@ local Layers = Core.RegTypes.Legacy
 ---
 
 local Skins, SkinList = {}, {}
-local __Empty, Hidden = {}, {Hide = true}
+local Hidden = {Hide = true}
 
 ----------------------------------------
 -- Functions
@@ -39,6 +39,7 @@ local __Empty, Hidden = {}, {Hide = true}
 -- Adds data to the skin tables.
 local function AddSkin(SkinID, SkinData, Internal)
 	local Template = SkinData.Template
+	local Default = Skins.Default
 
 	if Template then
 		setmetatable(SkinData, {__index = Skins[Template]})
@@ -53,12 +54,8 @@ local function AddSkin(SkinID, SkinData, Internal)
 			Skin = Skin or SkinData.Cooldown
 		end
 
-		local CanHide = Info.CanHide
-
-		if type(Skin) ~= "table" then
-			Skin = (CanHide and Hidden) or __Empty
-		elseif not CanHide then
-			Skin.Hide = nil
+		if (type(Skin) ~= "table") or (Skin.Hide and not Info.CanHide) then
+			Skin = Default[Layer]
 		elseif Info.Hide then
 			Skin = Hidden
 		end
@@ -88,7 +85,6 @@ Core.Skins = setmetatable(Skins, {
 
 Core.SkinList = SkinList
 Core.AddSkin = AddSkin
-Core.__Empty = __Empty
 Core.__Hidden = Hidden
 
 ----------------------------------------

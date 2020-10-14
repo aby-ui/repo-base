@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7.1-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-03-19T23:14:08Z
+    This file was last updated on 2020-08-28T10:13:24Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1750,7 +1750,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.7", "John Wellesz", ("2020-05-09T09:52:35Z"):sub(1,10),
+                                    "2.7.7.1-beta_1", "John Wellesz", ("2020-09-27T17:51:28Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2024,7 +2024,10 @@ function D:SetCureOrder (ToChange)
     end
 
     -- Set the spells shortcut (former decurse key)
-    D:UpdateMacro();
+    D:AddDelayedFunctionCall(
+        "UpdateMacro", self.UpdateMacro,  -- dangerous call many add-ons hook APIs call there this should be delayed
+        self)
+
     D:Debug("Spell changed");
     D.Status.SpellsChanged = GetTime();
 
@@ -3252,6 +3255,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.7";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.7.1-beta_1";
 
 -- Closer

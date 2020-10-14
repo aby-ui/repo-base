@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1997, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(122369, 122333, 122367)--Chief Engineer Ishkar, General Erodus, Admiral Svirax
 mod:SetEncounterID(2070)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(7, 8)
 mod:SetHotfixNoticeRev(16939)

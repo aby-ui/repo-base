@@ -1,91 +1,95 @@
 local VehicleLeaveButton = _G.MainMenuBarVehicleLeaveButton
-if not VehicleLeaveButton then return end
+if not VehicleLeaveButton then
+    return
+end
 
 local _, Addon = ...
 
+local CanExitVehicle = _G.CanExitVehicle
+if not CanExitVehicle then
+    CanExitVehicle = function()
+        return UnitOnTaxi('player')
+    end
+end
+
+-- bar
 local VehicleBar = Addon:CreateClass('Frame', Addon.Frame)
 
-local CanExitVehicle = _G.CanExitVehicle or function() 
-	return UnitOnTaxi("player") 
-end
-
 function VehicleBar:New()
-	local bar = VehicleBar.proto.New(self, 'vehicle')
-
-	bar:Layout()
-
-	return bar
+    return VehicleBar.proto.New(self, 'vehicle')
 end
+
+VehicleBar:Extend('OnAcquire', function(self)
+	self:Layout()
+end)
 
 function VehicleBar:GetDefaults()
-	return {
-		point = 'CENTER',
-		x = -244,
-		y = 0,
-	}
+    return {
+        point = 'CENTER',
+        x = -244,
+        y = 0
+    }
 end
 
 function VehicleBar:Layout()
-	VehicleLeaveButton:ClearAllPoints()
-	VehicleLeaveButton:SetPoint('CENTER', self)
-	VehicleLeaveButton:SetParent(self)
+    VehicleLeaveButton:ClearAllPoints()
+    VehicleLeaveButton:SetPoint('CENTER', self)
+    VehicleLeaveButton:SetParent(self)
 
-	local w, h = VehicleLeaveButton:GetSize()
-	local pW, pH = self:GetPadding()
+    local w, h = VehicleLeaveButton:GetSize()
+    local pW, pH = self:GetPadding()
 
-	self:TrySetSize(w + pW, h + pH)
+    self:TrySetSize(w + pW, h + pH)
 end
 
-function VehicleBar:CreateMenu()
-	local menu = Addon:NewMenu()
+function VehicleBar:OnCreateMenu(menu)
+    self:AddLayoutPanel(menu)
 
-	self:AddLayoutPanel(menu)
-	menu:AddFadingPanel()
-
-	self.menu = menu
+    menu:AddFadingPanel()
 end
 
 function VehicleBar:AddLayoutPanel(menu)
-	local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
+    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
 
-	local panel = menu:NewPanel(l.Layout)
+    local panel = menu:NewPanel(l.Layout)
 
-	panel.scaleSlider = panel:NewScaleSlider()
-	panel.paddingSlider = panel:NewPaddingSlider()
+    panel.scaleSlider = panel:NewScaleSlider()
+    panel.paddingSlider = panel:NewPaddingSlider()
 end
 
+-- module
+local VehicleBarModule = Addon:NewModule('VehicleBar', 'AceEvent-3.0')
 
---[[ Controller ]]--
+function VehicleBarModule:OnInitialize()
+    -- MainMenuBarVehicleLeaveButton_Update can alter the position of the leave
+    -- button, so put it back on the vehicle bar whenever it is called
+    -- we also show it again, if possible, because it'll be hidden normally if
+    -- the Override UI is enabled.
+    hooksecurefunc(
+        'MainMenuBarVehicleLeaveButton_Update',
+        Addon:Defer(
+            function()
+                if self.frame then
+                    VehicleLeaveButton:ClearAllPoints()
+                    VehicleLeaveButton:SetPoint('CENTER', self.frame)
 
-local VehicleBarController = Addon:NewModule('VehicleBar', 'AceEvent-3.0')
-
-function VehicleBarController:OnInitialize()
-	-- MainMenuBarVehicleLeaveButton_Update can alter the position of the leave
-	-- button, so put it back on the vehicle bar whenever it is called
-	-- we also show it again, if possible, because it'll be hidden normally if 
-	-- the Override UI is enabled.
-	hooksecurefunc(
-		"MainMenuBarVehicleLeaveButton_Update",
-		Addon:Defer(function()
-			if self.frame then
-				VehicleLeaveButton:ClearAllPoints()
-				VehicleLeaveButton:SetPoint("CENTER", self.frame)
-				
-				if CanExitVehicle() then
-					VehicleLeaveButton:Show()
-				end
-			end
-		end, 0.01)
-	)
+                    if CanExitVehicle() then
+                        VehicleLeaveButton:Show()
+                    end
+                end
+            end,
+            0.01
+        )
+    )
 end
 
-function VehicleBarController:Load()
-	self.frame = VehicleBar:New()
+function VehicleBarModule:Load()
+    self.frame = VehicleBar:New()
 end
 
-function VehicleBarController:Unload()
-	if self.frame then
-		self.frame:Free()
-		self.frame = nil
-	end
+function VehicleBarModule:Unload()
+    if self.frame then
+        self.frame:Free()
+        self.frame = nil
+    end
 end

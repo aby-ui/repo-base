@@ -6,12 +6,13 @@
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.117
-## X-Version-Key: crystal
+## Version: 0.118
+## X-Version-Key: exarch
 Libs/Evie.lua
 Libs/Reframe.lua
 Locale.lua
 Mark-50.lua
+Nine.lua
 GarrisonAPI-Data.lua
 GarrisonAPI.lua
 MasterPlan.lua
@@ -22,6 +23,7 @@ FollowerSummary.lua
 ShipMoI.lua
 LandingCache.lua
 LandingAlts.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r MasterPlan 要塞任务大师
 ## Title-zhTW: |cff880303[爱不易]|r MasterPlan 要塞任務大師

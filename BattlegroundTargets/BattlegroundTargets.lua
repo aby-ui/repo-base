@@ -9840,7 +9840,6 @@ function BattlegroundTargets:EventRegister(showerror)
 	   BattlegroundTargets_Options.Enemy.ButtonHealthBarToggle[currentSize] or BattlegroundTargets_Options.Enemy.ButtonHealthTextToggle[currentSize]
 	then
 		BattlegroundTargets:RegisterEvent("UNIT_TARGET")
-		BattlegroundTargets:RegisterEvent("UNIT_HEALTH_FREQUENT")
 		BattlegroundTargets:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 	end
 
@@ -9932,7 +9931,6 @@ function BattlegroundTargets:EventRegister(showerror)
 				DATA[side].rangeMin = Min
 				DATA[side].rangeMax = Max
 				if isKnown and SpellName and Min and Min >= 0 and Max and Max > 0 then
-					BattlegroundTargets:RegisterEvent("UNIT_HEALTH_FREQUENT")
 					BattlegroundTargets:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 					BattlegroundTargets:RegisterEvent("PLAYER_TARGET_CHANGED")
 					BattlegroundTargets:RegisterEvent("UNIT_TARGET")
@@ -9969,7 +9967,6 @@ function BattlegroundTargets:EventUnregister()
 	BattlegroundTargets:UnregisterEvent("PLAYER_DEAD")
 	BattlegroundTargets:UnregisterEvent("PLAYER_UNGHOST")
 	BattlegroundTargets:UnregisterEvent("PLAYER_ALIVE")
-	BattlegroundTargets:UnregisterEvent("UNIT_HEALTH_FREQUENT")
 	BattlegroundTargets:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
 	BattlegroundTargets:UnregisterEvent("UNIT_TARGET")
 	BattlegroundTargets:UnregisterEvent("PLAYER_TARGET_CHANGED")
@@ -10048,9 +10045,6 @@ local function OnEvent(self, event, ...)
 		--]]
 		CombatLogRangeCheck(sourceName, destName, spellId)
 
-	elseif event == "UNIT_HEALTH_FREQUENT" then
-		local arg1 = ...
-		BattlegroundTargets:CheckUnitHealth(arg1)
 	elseif event == "UNIT_TARGET" then
 		local arg1 = ...
 		BattlegroundTargets:CheckUnitTarget(arg1, nil, 1)

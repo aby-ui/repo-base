@@ -1,8 +1,8 @@
 local AddonName, Addon = ...
-local ButtonThemer = LibStub("AceAddon-3.0"):GetAddon(AddonName):NewModule("ButtonThemer")
+local ButtonThemer = Addon:NewModule('ButtonThemer')
 
 local round = _G.Round
-local ActionButtonWidth = round(_G["ActionButton1"]:GetWidth())
+local ActionButtonWidth = round(_G['ActionButton1']:GetWidth())
 
 local function theme(button)
     if not Addon:ThemeButtons() then
@@ -22,11 +22,11 @@ local function theme(button)
 
     local nt = button:GetNormalTexture()
     nt:ClearAllPoints()
-    nt:SetPoint("TOPLEFT", -15 * r, 15 * r)
-    nt:SetPoint("BOTTOMRIGHT", 15 * r, -15 * r)
+    nt:SetPoint('TOPLEFT', -15 * r, 15 * r)
+    nt:SetPoint('BOTTOMRIGHT', 15 * r, -15 * r)
     nt:SetVertexColor(1, 1, 1, 0.5)
 
-    local floatingBG = _G[button:GetName() .. "FloatingBG"]
+    local floatingBG = _G[button:GetName() .. 'FloatingBG']
     if floatingBG then
         floatingBG:Hide()
     end
@@ -37,8 +37,11 @@ function ButtonThemer:Unload()
 end
 
 -- masque installed, use for theming
-local Masque, MasqueVersion = LibStub("Masque", true)
+local Masque, MasqueVersion = LibStub('Masque', true)
+
 if Masque then
+
+    -- masque not installed
     function ButtonThemer:Register(button, groupName, ...)
         local group = Masque:Group(AddonName, groupName)
 
@@ -90,18 +93,18 @@ if Masque then
             AddonName,
             {
                 -- Info
-                Description = ("The default skin for %s."):format(AddonName),
-                Author = "Tuller, StormFX",
+                Description = ('The default skin for %s.'):format(AddonName),
+                Author = 'Tuller, StormFX',
                 -- Skin
-                Template = "Default",
+                Template = 'Default',
                 --Disable = true, -- Hides the skin in the GUI.
                 Icon = {
                     TexCoords = {0.06, 0.94, 0.06, 0.94},
-                    DrawLayer = "BACKGROUND",
+                    DrawLayer = 'BACKGROUND',
                     DrawLevel = 0,
                     Width = 36,
                     Height = 36,
-                    Point = "CENTER",
+                    Point = 'CENTER',
                     OffsetX = 0,
                     OffsetY = 0
                 },
@@ -112,42 +115,42 @@ if Masque then
                     -- EmptyTexture = [[Interface\Buttons\UI-Quickslot2]],
                     -- EmptyCoords = {0, 1, 0, 1},
                     -- EmptyColor = {1, 1, 1, 0.5},
-                    BlendMode = "BLEND",
-                    DrawLayer = "ARTWORK",
+                    BlendMode = 'BLEND',
+                    DrawLayer = 'ARTWORK',
                     DrawLevel = 0,
                     Width = 66,
                     Height = 66,
-                    Point = "CENTER",
+                    Point = 'CENTER',
                     OffsetX = 0,
                     OffsetY = 0,
-                    UseStates = true,
+                    UseStates = true
                 },
                 IconBorder = {
                     Texture = [[Interface\Common\WhiteIconFrame]],
                     RelicTexture = [[Interface\Artifacts\RelicIconFrame]],
                     -- TexCoords = {0, 1, 0, 1},
                     -- Color = {1, 1, 1, 1},
-                    BlendMode = "BLEND",
-                    DrawLayer = "OVERLAY",
+                    BlendMode = 'BLEND',
+                    DrawLayer = 'OVERLAY',
                     DrawLevel = 0,
                     Width = 37,
                     Height = 37,
-                    Point = "CENTER",
+                    Point = 'CENTER',
                     OffsetX = 0,
-                    OffsetY = 0,
+                    OffsetY = 0
                 },
                 IconOverlay = {
-                    Atlas = "AzeriteIconFrame",
+                    Atlas = 'AzeriteIconFrame',
                     -- Color = {1, 1, 1, 1},
-                    BlendMode = "BLEND",
-                    DrawLayer = "OVERLAY",
+                    BlendMode = 'BLEND',
+                    DrawLayer = 'OVERLAY',
                     DrawLevel = 1,
                     Width = 37,
                     Height = 37,
-                    Point = "CENTER",
+                    Point = 'CENTER',
                     OffsetX = 0,
-                    OffsetY = 0,
-                },
+                    OffsetY = 0
+                }
             },
             true
         )
@@ -164,7 +167,6 @@ if Masque then
             end
         end
     end
--- masque not installed
 else
     function ButtonThemer:Register(button)
         theme(button)

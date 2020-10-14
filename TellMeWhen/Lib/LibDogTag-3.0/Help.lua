@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20200115020223"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20201009145516"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_MINOR_VERSION then
 	_G.DogTag_MINOR_VERSION = MINOR_VERSION
@@ -23,7 +23,7 @@ Example:
 	LibStub("LibDogTag-3.0"):OpenHelp()
 ]]
 function DogTag:OpenHelp()
-	helpFrame = CreateFrame("Frame", MAJOR_VERSION .. "_HelpFrame", UIParent)
+	helpFrame = CreateFrame("Frame", MAJOR_VERSION .. "_HelpFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	helpFrame:SetWidth(600)
 	helpFrame:SetHeight(300)
 	helpFrame:SetPoint("CENTER", UIParent, "CENTER")
@@ -148,7 +148,7 @@ function DogTag:OpenHelp()
 	local x = 0.1 * 8/17
 	line3:SetTexCoord(1/32 - x, 0.5, 1/32, 0.5 + x, 1/32, 0.5 - x, 1/32 + x, 0.5)
 	
-	local treeView = CreateFrame("Frame", helpFrame:GetName() .. "_TreeView", helpFrame)
+	local treeView = CreateFrame("Frame", helpFrame:GetName() .. "_TreeView", helpFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	helpFrame.treeView = treeView
 	local bg = newDict(
 		'bgFile', [[Interface\Buttons\WHITE8X8]],
@@ -442,7 +442,7 @@ function DogTag:OpenHelp()
 		return frame
 	end
 	
-	local mainPane = CreateFrame("Frame", helpFrame:GetName() .. "_MainPane", helpFrame)
+	local mainPane = CreateFrame("Frame", helpFrame:GetName() .. "_MainPane", helpFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	helpFrame.mainPane = mainPane
 	local bg = newDict(
 		'bgFile', [[Interface\Buttons\WHITE8X8]],

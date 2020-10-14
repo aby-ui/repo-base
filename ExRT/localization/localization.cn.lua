@@ -913,7 +913,7 @@ L.Export = "导出"
 PH.ExportInfo = "* 使用Google Docs或Excel"
 L.S_Strata = "显示级别"
 
-L.senable = "开启"
+L.Enable = "开启"
 
 L.minimaptooltiplmp = "左键-主窗口"
 L.minimaptooltiprmp = "右键-菜单"

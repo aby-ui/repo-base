@@ -808,15 +808,15 @@ do
         end
     end
 
-    local UnitGUID, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
-        = UnitGUID, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
+    local UnitGUID, UnitPhaseReason, UnitIsConnected
+        = UnitGUID, UnitPhaseReason, UnitIsConnected
 
     local TEX_COORD = { left = 0.15625, right = 0.84375, top = 0.15625, bottom = 0.84375 }
     function GridStatusPhase:UpdateUnit(event, unit)
         if not unit then return end
         local guid = UnitGUID(unit)
         if not GridRoster:IsGUIDInGroup(guid) then return end
-        if (UnitIsWarModePhased(unit) or not UnitInPhase(unit)) and UnitIsConnected(unit) then
+        if UnitPhaseReason(unit) and UnitIsConnected(unit) then
             local settings = self.db.profile.alert_phase
             self.core:SendStatusGained(guid, "alert_phase",
                 settings.priority,

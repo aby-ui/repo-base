@@ -95,7 +95,7 @@ GridFrame:RegisterIndicator("bar", L["Health Bar"],
 
 	-- SetStatus
 	function(self, color, text, value, maxValue, texture, texCoords, count, start, duration)
-		if not value or not maxValue then return end
+		if not value or not maxValue or maxValue == 0 then return end
 
 		local profile = GridFrame.db.profile
 		local frame = self.__owner

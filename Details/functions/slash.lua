@@ -196,10 +196,18 @@ function SlashCmdList.DETAILS (msg, editbox)
 		else
 			Details:Msg ("Window 1 not found.")
 		end
-	
+
+	elseif (command == "bosstimers" or command == "bosstimer" or command == "timer" or command == "timers") then
+		Details.OpenForge()
+		DetailsForgePanel.SelectModule (_, _, 4)
+
 	elseif (command == "spells") then
 		Details.OpenForge()
 		DetailsForgePanel.SelectModule (_, _, 1)
+		
+	elseif (msg == "WA" or msg == "wa" or msg == "Wa" or msg == "wA") then
+		_G.DetailsPluginContainerWindow.OpenPlugin(_G.DetailsAuraPanel)
+		_G.DetailsAuraPanel.RefreshWindow()
 	
 	elseif (command == "feedback") then
 		_detalhes.OpenFeedbackWindow()
@@ -379,7 +387,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos) -- atualiza o instancia.showing para as novas tabelas criadas
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset) -- verifica se precisa zerar as tabela da janela solo mode
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
-		_detalhes:AtualizaGumpPrincipal (-1, true) --atualiza todas as instancias
+		_detalhes:RefreshMainWindow (-1, true) --atualiza todas as instancias
 		
 		
 
@@ -622,29 +630,6 @@ function SlashCmdList.DETAILS (msg, editbox)
 			end
 		end
 	
-	elseif (msg == "comm") then
-		
-		local test_plugin = TESTPLUGIN
-		if (not test_plugin) then
-			local p = _detalhes:NewPluginObject ("DetailsTestPlugin", nil, "STATUSBAR")
-			_detalhes:InstallPlugin ("STATUSBAR", "Plugin Test", [[Interface\COMMON\StreamCircle]], p, "TESTPLUGIN", 1, "Details!", "v1.0")
-			test_plugin = TESTPLUGIN
-			
-			function test_plugin:ReceiveAA (a, b, c, d, e, f, g)
-				print ("working 1", a, b, c, d, e, f, g)
-			end
-			
-			function test_plugin:ReceiveAB (a, b, c, d, e, f, g)
-				print ("working 2", a, b, c, d, e, f, g)
-			end
-			
-			test_plugin:RegisterPluginComm ("PTAA", "ReceiveAA")
-			test_plugin:RegisterPluginComm ("PTAB", "ReceiveAB")
-		end
-		
-		test_plugin:SendPluginCommMessage ("PTAA", nil, "teste 1", "teste 2", "teste3")
-		
-
 	elseif (msg == "teste") then
 		
 		local a, b = _detalhes:GetEncounterEnd (1098, 3)
@@ -690,10 +675,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 	--> debug
 	elseif (command == "barra") then 
 	
-		local qual_barra = rest and tonumber (rest) or 1
+		local whichRowLine = rest and tonumber (rest) or 1
 	
 		local instancia = _detalhes.tabela_instancias [1]
-		local barra = instancia.barras [qual_barra]
+		local barra = instancia.barras [whichRowLine]
 		
 		for i = 1, barra:GetNumPoints() do 
 			local point, relativeTo, relativePoint, xOfs, yOfs = barra:GetPoint (i)
@@ -726,7 +711,65 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		--tonumber((UnitGUID("target")):sub(-12, -9), 16))
 	
-	elseif (command == "guid") then --> localize-me
+	elseif (command == "npcid") then
+		if (UnitExists("target")) then
+			local serial = UnitGUID("target")
+			if (serial) then
+				local npcId = _G.DetailsFramework:GetNpcIdFromGuid(serial)
+				if (npcId) then
+
+					if (not Details.id_frame) then
+						local backdrop = {
+							bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+							edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
+							tile = true, edgeSize = 1, tileSize = 5,
+						}
+					
+						Details.id_frame = CreateFrame ("Frame", "DetailsID", UIParent, "BackdropTemplate")
+						Details.id_frame:SetHeight(14)
+						Details.id_frame:SetWidth(120)
+						Details.id_frame:SetPoint ("center", UIParent, "center")
+						Details.id_frame:SetBackdrop(backdrop)
+						
+						tinsert(UISpecialFrames, "DetailsID")
+						
+						Details.id_frame.texto = CreateFrame ("editbox", nil, Details.id_frame, "BackdropTemplate")
+						Details.id_frame.texto:SetPoint ("topleft", Details.id_frame, "topleft")
+						Details.id_frame.texto:SetAutoFocus(false)
+						Details.id_frame.texto:SetFontObject (GameFontHighlightSmall)
+						Details.id_frame.texto:SetHeight(14)
+						Details.id_frame.texto:SetWidth(120)
+						Details.id_frame.texto:SetJustifyH("CENTER")
+						Details.id_frame.texto:EnableMouse(true)
+						Details.id_frame.texto:SetBackdropColor(0, 0, 0, 0.5)
+						Details.id_frame.texto:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
+						Details.id_frame.texto:SetText ("")
+						Details.id_frame.texto.perdeu_foco = nil
+						
+						Details.id_frame.texto:SetScript ("OnEnterPressed", function ()
+							Details.id_frame.texto:ClearFocus()
+							Details.id_frame:Hide()
+						end)
+						
+						Details.id_frame.texto:SetScript ("OnEscapePressed", function()
+							Details.id_frame.texto:ClearFocus()
+							Details.id_frame:Hide()
+						end)
+						
+					end
+					
+					C_Timer.After(0.1, function()
+						Details.id_frame:Show()
+						Details.id_frame.texto:SetFocus()
+						Details.id_frame.texto:SetText ("" .. npcId)
+						Details.id_frame.texto:HighlightText()
+					end)
+				end
+			end
+		end
+
+
+	elseif (command == "guid") then
 	
 		local pass_guid = rest:match("^(%S*)%s*(.-)$")
 	
@@ -1097,7 +1140,7 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 	
 		local instancia = _detalhes.tabela_instancias [1]
 		for _, barra in ipairs (instancia.barras) do 
-			local _, _, flags = barra.texto_esquerdo:GetFont()
+			local _, _, flags = barra.lineText1:GetFont()
 			print ("outline:",flags)
 		end
 	
@@ -1364,7 +1407,15 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 	
 	elseif (msg == "scroll" or msg == "scrolldamage" or msg == "scrolling") then
 		Details:ScrollDamage()
-	
+
+	elseif (msg == "me" or msg == "ME" or msg == "Me" or msg == "mE") then
+		local role = UnitGroupRolesAssigned("player")
+		if (role == "HEALER") then
+			Details:OpenPlayerDetails(2)
+		else
+			Details:OpenPlayerDetails(1)
+		end
+
 	elseif (msg == "spec") then
 	
 	local spec = DetailsFramework.GetSpecialization()
@@ -1374,7 +1425,6 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 			print ("Current SpecID: ", specID)
 		end
 	end
-		
 	
 	elseif (msg == "senditemlevel") then
 		_detalhes:SendCharacterData()
@@ -1478,7 +1528,7 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos)
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset)
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump)
-		_detalhes:AtualizaGumpPrincipal (-1, true)
+		_detalhes:RefreshMainWindow (-1, true)
 	
 	elseif (msg == "ej") then	
 	
@@ -1521,7 +1571,21 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 		
 		Details:DumpTable (result)
 	
-	elseif (msg == "record") then	
+	elseif (msg == "saveskin") then
+		local skin = Details.skins["Dark Theme"].instance_cprops
+		local instance1 = Details:GetInstance(1)
+		if (instance1) then
+			local exportedValues = {}
+			for key, _ in pairs (skin) do
+				local value = instance1[key]
+				if (value) then
+					exportedValues[key] = value
+				end
+			end
+			Details:Dump(exportedValues)
+		end
+
+	elseif (msg == "record") then
 			
 			
 			_detalhes.ScheduleLoadStorage()
@@ -1670,14 +1734,17 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 		--local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
 		--print (Loc ["STRING_DETAILS1"] .. "" .. v .. " [|cFFFFFF00CORE: " .. _detalhes.realversion .. "|r] " ..  Loc ["STRING_COMMAND_LIST"] .. ":")
 		
-		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_NEW"] .. "|r: " .. Loc ["STRING_SLASH_NEW_DESC"])
+		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_NEW"] .. "|r: " .. Loc ["STRING_SLASH_NEW_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_SHOW"] .. " " .. Loc ["STRING_SLASH_HIDE"] .. " " .. Loc ["STRING_SLASH_TOGGLE"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_SHOWHIDETOGGLE_DESC"])
-		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_ENABLE"] .. " " .. Loc ["STRING_SLASH_DISABLE"] .. "|r: " .. Loc ["STRING_SLASH_CAPTURE_DESC"])
+		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_ENABLE"] .. " " .. Loc ["STRING_SLASH_DISABLE"] .. "|r: " .. Loc ["STRING_SLASH_CAPTURE_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_RESET"] .. "|r: " .. Loc ["STRING_SLASH_RESET_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_OPTIONS"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_OPTIONS_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. "API" .. "|r: " .. Loc ["STRING_SLASH_API_DESC"])
-		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_CHANGES"] .. "|r: " .. Loc ["STRING_SLASH_CHANGES_DESC"])
-		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_WIPECONFIG"] .. "|r: " .. Loc ["STRING_SLASH_WIPECONFIG_DESC"])
+		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_CHANGES"] .. "|r: " .. Loc ["STRING_SLASH_CHANGES_DESC"])
+		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_WIPECONFIG"] .. "|r: " .. Loc ["STRING_SLASH_WIPECONFIG_DESC"])
+		print ("|cffffaeae/details|r |cffffff33" .. "me" .. "|r: open the player breakdown for you.") --localize-me
+		print ("|cffffaeae/details|r |cffffff33" .. "spells" .. "|r: list of spells already saw.") --localize-me
+		
 		
 		--print ("|cffffaeae/details " .. Loc ["STRING_SLASH_WORLDBOSS"] .. "|r: " .. Loc ["STRING_SLASH_WORLDBOSS_DESC"])
 		print (" ")
@@ -1800,7 +1867,7 @@ function Details:UpdateUserPanel (usersTable)
 		end
 		
 		local scroll_createline = function (self, index)
-			local line = CreateFrame ("button", "$parentLine" .. index, self)
+			local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
 			line:SetPoint ("topleft", self, "topleft", 3, -((index-1)*(scroll_line_height+1)) - 1)
 			line:SetSize (scroll_width - 2, scroll_line_height)
 			
@@ -1857,10 +1924,6 @@ function Details:UpdateUserPanel (usersTable)
 end
 
 function _detalhes:CreateListPanel()
-
-
-
-
 	_detalhes.ListPanel = _detalhes.gump:NewPanel (UIParent, nil, "DetailsActorsFrame", nil, 300, 600)
 	_detalhes.ListPanel:SetPoint ("center", UIParent, "center", 300, 0)
 	_detalhes.ListPanel.barras = {}
@@ -1926,6 +1989,3 @@ function _detalhes:CreateListPanel()
 	
 	return _detalhes.ListPanel
 end
-
---doe
---endd elsee

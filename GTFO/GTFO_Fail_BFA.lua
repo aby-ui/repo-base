@@ -516,6 +516,17 @@ GTFO.SpellID["309819"] = {
   sound = 3;
 };
 
+GTFO.SpellID["298770"] = {
+  --desc = "Chains of Servitude (Slavemaster Ul'rok)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["314306"] = {
+  --desc = "Song of the Empress (Grand Empress Shek'zara)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 -- ***********************
 -- * Shrine of the Storm *

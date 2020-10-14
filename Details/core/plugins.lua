@@ -283,7 +283,7 @@
 		PluginOptions = PluginOptions or 0x0
 		local NewPlugin = {__options = PluginOptions, __enabled = true, RegisterEvent = register_event_func, UnregisterEvent = unregister_event_func}
 		
-		local Frame = CreateFrame ("Frame", FrameName, UIParent)
+		local Frame = CreateFrame ("Frame", FrameName, UIParent,"BackdropTemplate")
 		Frame:RegisterEvent ("PLAYER_LOGIN")
 		Frame:RegisterEvent ("PLAYER_LOGOUT")
 		
@@ -333,7 +333,7 @@
 		template = template or 1
 	
 		if (template == 2) then
-			local options_frame = CreateFrame ("frame", name, UIParent, "ButtonFrameTemplate")
+			local options_frame = CreateFrame ("frame", name, UIParent, "ButtonFrameTemplate,BackdropTemplate")
 			tinsert (UISpecialFrames, name)
 			options_frame:SetSize (500, 200)
 			
@@ -371,7 +371,7 @@
 	
 		elseif (template == 1) then
 		
-			local options_frame = CreateFrame ("frame", name, UIParent)
+			local options_frame = CreateFrame ("frame", name, UIParent,"BackdropTemplate")
 			tinsert (UISpecialFrames, name)
 			options_frame:SetSize (500, 200)
 
@@ -422,7 +422,7 @@
 	
 	function _detalhes:CreatePluginWindowContainer()
 	
-		local f = CreateFrame ("frame", "DetailsPluginContainerWindow", UIParent)
+		local f = CreateFrame ("frame", "DetailsPluginContainerWindow", UIParent,"BackdropTemplate")
 		f:EnableMouse (true)
 		f:SetMovable (true)
 		f:SetPoint ("center", UIParent, "center")
@@ -454,11 +454,11 @@
 			LibWindow.SavePosition (f)
 			
 		--> menu background
-			local menuBackground = CreateFrame ("frame", "$parentMenuFrame", f)
+			local menuBackground = CreateFrame ("frame", "$parentMenuFrame", f,"BackdropTemplate")
 			_detalhes:FormatBackground (menuBackground)
 			
 		--> statusbar
-			local statusBar = CreateFrame ("frame", nil, menuBackground)
+			local statusBar = CreateFrame ("frame", nil, menuBackground,"BackdropTemplate")
 			statusBar:SetPoint ("topleft", menuBackground, "bottomleft", 0, 1)
 			statusBar:SetPoint ("topright", f, "bottomright", 0, 1)
 			statusBar:SetHeight (20)
@@ -488,7 +488,7 @@
 			
 			--
 		--> plugins menu title bar
-			local titlebar_plugins = CreateFrame ("frame", nil, menuBackground)
+			local titlebar_plugins = CreateFrame ("frame", nil, menuBackground,"BackdropTemplate")
 			PixelUtil.SetPoint (titlebar_plugins, "topleft", menuBackground, "topleft", 2, -3)
 			PixelUtil.SetPoint (titlebar_plugins, "topright", menuBackground, "topright", -2, -3)
 			titlebar_plugins:SetHeight (f.TitleHeight)
@@ -501,7 +501,7 @@
 			PixelUtil.SetPoint (titleLabel, "top", titlebar_plugins , "top", 0, -5)
 			
 		--> plugins menu title bar
-			local titlebar_tools = CreateFrame ("frame", nil, menuBackground)
+			local titlebar_tools = CreateFrame ("frame", nil, menuBackground,"BackdropTemplate")
 			titlebar_tools:SetHeight (f.TitleHeight)
 			titlebar_tools:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
 			titlebar_tools:SetBackdropColor (.5, .5, .5, 1)
@@ -560,9 +560,9 @@
 					return
 				end
 			end
-			
+
 			--> hide or show plugin windows
-			for index, plugin in ipairs (f.EmbedPlugins) do 
+			for index, plugin in ipairs (f.EmbedPlugins) do
 				if (plugin ~= pluginObject) then
 					--> hide this plugin
 					if (plugin.Frame:IsShown()) then
@@ -570,18 +570,18 @@
 					end
 				end
 			end
-			
+
 			--> re set the point of the frame within the main plugin window
 			f.RefreshFrame (pluginObject.__var_Frame)
 			C_Timer.After (0.016, function ()
 				f.RefreshFrame (pluginObject.__var_Frame)
 			end)
-			
+
 			--> show the plugin window
 			if (pluginObject.RefreshWindow and callRefresh) then
 				DetailsFramework:QuickDispatch (pluginObject.RefreshWindow)
 			end
-			
+
 			--> highlight the plugin button on the menu
 			for index, button in ipairs (f.MenuButtons) do
 				button:Show()
@@ -594,7 +594,7 @@
 					button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
 				end
 			end
-			
+
 			--> show the container
 			f:Show()
 			

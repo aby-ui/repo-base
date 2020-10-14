@@ -2,8 +2,7 @@ local _, Addon = ...
 local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
 local LSM = LibStub("LibSharedMedia-3.0")
 
-
--- local aliaes for some globals
+-- local aliases for some globals
 local GetSpellInfo = _G.GetSpellInfo
 local GetTime = _G.GetTime
 
@@ -35,7 +34,7 @@ local function GetSpellReaction(spellID)
 		if IsHelpfulSpell(name) then
 			return "help"
 		end
-	
+
 		if IsHarmfulSpell(name) then
 			return "harm"
 		end
@@ -57,24 +56,20 @@ function CastBar:New(id, units, ...)
 	return bar
 end
 
-function CastBar:OnCreate()
-	CastBar.proto.OnCreate(self)
-
+CastBar:Extend("OnCreate", function(self)
 	self:SetFrameStrata("HIGH")
 	self:SetScript("OnEvent", self.OnEvent)
 
 	self.props = {}
 	self.timer = CreateFrame("Frame", nil, self, "DominosTimerBarTemplate")
-end
+end)
 
-function CastBar:OnFree()
-	CastBar.proto.OnFree(self)
-
+CastBar:Extend("OnRelease", function(self)
 	self:UnregisterAllEvents()
 	LSM.UnregisterAllCallbacks(self)
-end
+end)
 
-function CastBar:OnLoadSettings()
+CastBar:Extend("OnLoadSettings", function(self)
 	if not self.sets.display then
 		self.sets.display = {
 			icon = false,
@@ -87,7 +82,7 @@ function CastBar:OnLoadSettings()
 	self:SetProperty("font", self:GetFontID())
 	self:SetProperty("texture", self:GetTextureID())
 	self:SetProperty("reaction", "neutral")
-end
+end)
 
 function CastBar:GetDefaults()
 	return {
@@ -100,7 +95,7 @@ function CastBar:GetDefaults()
 		padH = 1,
 		texture = "Minimalist",
 		font = "Friz Quadrata TT",
-		
+
 		useSpellReactionColors = true,
 
 		-- default to the spell queue window for latency padding
@@ -397,7 +392,7 @@ function CastBar:GetColorID()
 			return "spell"
 		end
 	end
-	
+
 	return "default"
 end
 
@@ -422,7 +417,7 @@ end
 function CastBar:SetupDemo()
 	local spellID = self:GetRandomSpellID()
 	local name, rank, icon, castTime = GetSpellInfo(spellID)
-	
+
 	-- use the spell cast time if we have it, otherwise set a default one
 	-- of a few seconds
 	if not (castTime and castTime > 0) then
@@ -439,11 +434,11 @@ function CastBar:SetupDemo()
 	self:SetProperty("uninterruptible", nil)
 
 	self.timer:SetCountdown(false)
-	self.timer:SetShowLatency(self:Displaying("latency"))	
+	self.timer:SetShowLatency(self:Displaying("latency"))
 	self.timer:Start(0, 0, castTime)
 
 	-- loop the demo if it is still visible
-	C_Timer.After(castTime, function() 
+	C_Timer.After(castTime, function()
 		if self.menuShown and self:GetProperty("state") == "demo" then
 			self:SetupDemo()
 		end
@@ -454,7 +449,7 @@ function CastBar:GetRandomSpellID()
 	local spells = {}
 
 	for i = 1, GetNumSpellTabs() do
-		local _, _, offset, numSpells = GetSpellTabInfo(i)		
+		local _, _, offset, numSpells = GetSpellTabInfo(i)
 
 		for j = offset, (offset + numSpells) - 1 do
 			local _, spellID = GetSpellBookItemInfo(j, "player")
@@ -552,9 +547,7 @@ end
 -- Cast Bar Right Click Menu
 --------------------------------------------------------------------------------
 
-function CastBar:CreateMenu()
-	local menu = Dominos:NewMenu(self.id)
-
+function CastBar:OnCreateMenu(menu)
 	self:AddLayoutPanel(menu)
 	self:AddTexturePanel(menu)
 	self:AddFontPanel(menu)
@@ -573,10 +566,7 @@ function CastBar:CreateMenu()
 		if self:GetProperty("state") == "demo" then
 			self:Stop()
 		end
-	end)	
-
-	self.menu = menu
-	return menu
+	end)
 end
 
 function CastBar:AddLayoutPanel(menu)
@@ -588,7 +578,7 @@ function CastBar:AddLayoutPanel(menu)
 		name = l["UseSpellReactionColors"],
 		get = function() return panel.owner:UseSpellReactionColors() end,
 		set = function(_, enable) panel.owner:SetUseSpellReactionColors(enable) end
-	}	
+	}
 
 	for _, part in ipairs{"border", "icon", "latency", "spark", "time"} do
 		panel:NewCheckButton{

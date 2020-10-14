@@ -144,12 +144,12 @@ local allQuestsComplete = function(quests)
     if type(quests) == 'table' then
         -- if it's a table, only count as complete if all quests are complete
         for _, quest in ipairs(quests) do
-            if not IsQuestFlaggedCompleted(quest) then
+            if not C_QuestLog.IsQuestFlaggedCompleted(quest) then
                 return false
             end
         end
         return true
-    elseif IsQuestFlaggedCompleted(quests) then
+    elseif C_QuestLog.IsQuestFlaggedCompleted(quests) then
         return true
     end
 end

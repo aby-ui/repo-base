@@ -306,7 +306,7 @@ end
 
 -- New Text Edit
 function AzOptionsFactory.makers:Text()
-	local f = CreateFrame("EditBox",nil,self.owner);
+	local f = CreateFrame("EditBox",nil,self.owner,BackdropTemplateMixin and "BackdropTemplate");
 	f:SetWidth(180);
 	f:SetHeight(24);
 	f:SetScript("OnTextChanged",TextEdit_OnTextChanged);

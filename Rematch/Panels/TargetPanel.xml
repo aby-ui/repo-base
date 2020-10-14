@@ -1,0 +1,260 @@
+<Ui>
+
+	<!-- default target list button template (the un-compact one) 
+		 .Border and .SubName are the only two elements that are in this but not the compact version -->
+	<RematchCompositeButton name="RematchTargetListButtonTemplate" virtual="true">
+		<Size x="200" y="44"/> <!-- can be any width; 1px unused across top so 43px usable height -->
+		<Layers>
+			<Layer level="BACKGROUND">
+				<!-- this back is shared between header and target list buttons -->
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Expand" file="Interface\AddOns\Rematch\Textures\expand_collapse" hidden="true">
+					<Size x="26" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HasTeam" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-2" y="-3"/>
+					</Anchors>
+					<TexCoords left="0.625" right="0.75" top="0.25" bottom="0.5"/>
+				</Texture>
+			</Layer>
+			<!-- Everything in ARTWORK will get promoted to a clickable pseudo-button -->
+			<Layer level="ARTWORK">
+				<Texture parentArray="Pets">
+					<Size x="28" y="40"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="2" y="-2"/>
+					</Anchors>
+					<TexCoords left="0.203125" right="0.796875" top="0.078125" bottom="0.921875"/>
+					<KeyValues>
+						<KeyValue key="petSlot" value="1"/>
+					</KeyValues>
+				</Texture>
+				<Texture parentArray="Pets">
+					<Size x="28" y="40"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="31" y="-2"/>
+					</Anchors>
+					<TexCoords left="0.203125" right="0.796875" top="0.078125" bottom="0.921875"/>
+					<KeyValues>
+						<KeyValue key="petSlot" value="2"/>
+					</KeyValues>
+				</Texture>
+				<Texture parentArray="Pets">
+					<Size x="28" y="40"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="60" y="-2"/>
+					</Anchors>
+					<TexCoords left="0.203125" right="0.796875" top="0.078125" bottom="0.921875"/>
+					<KeyValues>
+						<KeyValue key="petSlot" value="3"/>
+					</KeyValues>
+				</Texture>
+				<!-- Name of the target -->
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER" text="Pet Name Here">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="94" y="0"/>
+						<Anchor point="TOPRIGHT" x="-2" y="0"/> 
+					</Anchors>
+				</FontString>
+				<!-- SubName for targets is the quest related to the target -->
+				<FontString parentKey="SubName" inherits="SystemFont_Tiny" justifyH="LEFT" justifyV="TOP" text="">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+					<Color r="1" g="0.82" b="0"/>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<!-- thin grey border around the pet(s); needs width and texcoords changed depending on number of pets shown -->
+				<Texture parentKey="Border" file="Interface\AddOns\Rematch\Textures\slotborder">
+					<Size x="90" y="44"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="0"/>
+					</Anchors>
+					<Color r="0.5" g="0.5" b="0.5"/>
+					<TexCoords left="0" right="0.703125" top="0.5" bottom="0.84375"/>
+				</Texture>
+			</Layer>			
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnLoad(self)
+			</OnLoad>
+			<OnEnter>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnLeave(self)
+			</OnLeave>
+			<OnMouseDown>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnClick>
+				if self:HasFocus() then
+					RematchLoadoutPanel.TargetPanel.TargetListButtonOnClick(self,button)
+				end
+			</OnClick>
+		</Scripts>
+	</RematchCompositeButton>
+
+	<RematchCompositeButton name="RematchCompactTargetListButtonTemplate" virtual="true">
+		<Size x="200" y="26"/> <!-- can be any width -->
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="Expand" file="Interface\AddOns\Rematch\Textures\expand_collapse" hidden="true">
+					<Size x="26" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HasTeam" file="Interface\AddOns\Rematch\Textures\Footnotes" hidden="true">
+					<Size x="20" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-2" y="0"/>
+					</Anchors>
+					<TexCoords left="0.625" right="0.75" top="0.25" bottom="0.5"/>
+				</Texture>
+			</Layer>
+			<!-- Everything in ARTWORK will get promoted to a clickable pseudo-button -->
+			<Layer level="ARTWORK">
+				<Texture parentArray="Pets" hidden="true">
+					<Size x="25" y="25"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+				</Texture>
+				<Texture parentArray="Pets" hidden="true">
+					<Size x="25" y="25"/>
+					<Anchors>
+						<Anchor point="LEFT" x="26" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+				</Texture>
+				<Texture parentArray="Pets" hidden="true">
+					<Size x="25" y="25"/>
+					<Anchors>
+						<Anchor point="LEFT" x="52" y="0"/>
+					</Anchors>
+					<TexCoords left="0.078125" right="0.921875" top="0.078125" bottom="0.921875"/>
+				</Texture>
+				<!-- FontStrings -->
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT" justifyV="CENTER">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="0"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnLoad(self)
+			</OnLoad>
+			<OnEnter>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnLeave(self)
+			</OnLeave>
+			<OnMouseDown>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnMouseDown(self)
+			</OnMouseDown>
+			<OnMouseUp>
+				Rematch.LoadoutPanel.TargetPanel.TargetListButtonOnMouseUp(self)
+			</OnMouseUp>
+			<OnClick>
+				if self:HasFocus() then
+					RematchLoadoutPanel.TargetPanel.TargetListButtonOnClick(self,button)
+				end
+			</OnClick>
+		</Scripts>
+	</RematchCompositeButton>
+
+    <Frame parentKey="TargetPanel" parent="RematchLoadoutPanel" hidden="true">
+        <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+        <Frames>
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="29"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+                <Frames>
+					<Button parentKey="BackButton" inherits="RematchFilterButtonTemplate" text="BACK">
+						<Anchors>
+							<Anchor point="TOPRIGHT" x="-3" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+                                Rematch.LoadoutPanel.TargetPanel:Toggle()
+							</OnClick>
+                            <OnKeyDown>
+                                Rematch.LoadoutPanel.TargetPanel.OnBackButtonKeyDown(self,key)
+                            </OnKeyDown>
+						</Scripts>
+					</Button>             
+					<!-- search bar at top of panel -->
+					<EditBox parentKey="SearchBox" inherits="RematchSearchBoxTemplate">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="RIGHT" relativeKey="$parent.BackButton" relativePoint="LEFT" x="1" y="0"/>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>
+								Rematch.LoadoutPanel.TargetPanel.SearchBoxOnTextChanged(self)
+							</OnTextChanged>
+							<OnEnterPressed>
+								self:ClearFocus()
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+                </Frames>
+            </Frame>
+			<RematchAutoScrollFrame parentKey="List">
+				<Size x="280" y="503"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</RematchAutoScrollFrame>
+
+        </Frames>
+        <Scripts>
+            <OnHide>
+                Rematch.LoadoutPanel.targetMode = false
+            </OnHide>
+        </Scripts>
+    </Frame>
+
+</Ui>

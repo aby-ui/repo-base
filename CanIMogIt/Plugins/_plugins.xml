@@ -2,6 +2,8 @@
 ..\FrameXML\UI.xsd">
     <Script file="adibags.lua"/>
     <Script file="arkinventory.lua"/>
+    <Script file="auctionator.lua"/>
+    <Script file="cargbagsnivaya.lua"/>
     <Script file="elvui.lua"/>
     <Script file="litebag.lua"/>
     <Script file="bagnon.lua"/>

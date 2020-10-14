@@ -1,0 +1,106 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Frame name="ChartViewerWindowFrame" frameStrata="HIGH" movable="true" hidden="true" parent="UIParent">
+		<Size>
+			<AbsDimension x="838" y="414"/>
+		</Size>
+		
+		<Anchors>
+			<Anchor point="CENTER" relativeTo="$parent" relativePoint="CENTER" x="0" y="0"/>
+		</Anchors>
+		
+		<Scripts>
+			<OnLoad>
+				--self.TitleText:SetText ("Chart Viewer")
+				--self.portrait:SetTexture ([[Interface\SPELLBOOK\Spellbook-Icon]])
+				--self.portrait:SetVertexColor (1, 1, 1, 1)
+				tinsert (UISpecialFrames, "ChartViewerWindowFrame")
+			</OnLoad>
+			<OnMouseDown>
+				if (self.isMoving) then
+					return;
+				end
+				if (button == "LeftButton") then
+					self.isMoving = true;
+					self:StartMoving();
+				elseif (button == "RightButton") then
+					self:Hide()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if (self.isMoving and button == "LeftButton") then
+					self.isMoving = false;
+					self:StopMovingOrSizing();
+				end
+			</OnMouseUp>
+			<OnShow>
+				DETAILS_PLUGIN_CHART_VIEWER:OnDetailsEvent ("SHOW");
+			</OnShow>
+			<OnHide>
+				DETAILS_PLUGIN_CHART_VIEWER:OnDetailsEvent ("HIDE");
+			</OnHide>
+		</Scripts>
+
+	</Frame>
+	
+	<!-- tab frame is now deprecated, tab buttons has been move to details framework -->
+	<Frame name="ChartViewerTabFrameTemplate" frameStrata="HIGH" parent="ChartViewerWindowFrame" virtual="true" inherits="ChatTabTemplate">
+		<Size>
+			<Size x="96" y="32"/>
+		</Size>
+		<Scripts>
+			<OnMouseDown>
+				if (button == "RightButton") then
+					ChartViewerWindowFrame:Hide();
+				end
+			</OnMouseDown>
+			<OnClick>
+				if (self.lastclick and self.lastclick + 0.2 > GetTime()) then
+					DETAILS_PLUGIN_CHART_VIEWER:TabDoubleClick (self)
+					self.lastclick = nil
+					return
+				end
+				self.lastclick = GetTime()
+				if (button == "LeftButton") then
+					DETAILS_PLUGIN_CHART_VIEWER:TabClick (self)
+				end
+			</OnClick>
+			<OnLoad>
+				self:SetFrameLevel (self:GetParent():GetFrameLevel()+2)
+				self.middleTexture:SetSize (76, 32)
+				self.middleSelectedTexture:SetSize (76, 32)
+				self.middleHighlightTexture:SetSize (76, 32)
+				_G [self:GetName() .. "Text"]:SetSize (74, 8)
+				self:SetSize (96, 32)
+			</OnLoad>
+			<OnEnter>
+				DETAILS_PLUGIN_CHART_VIEWER:TabOnEnter (self)
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+				self.CloseButton:SetNormalTexture ("Interface\\Buttons\\UI-Panel-MinimizeButton-Disabled")
+			</OnLeave>
+		</Scripts>
+		<Frames>
+			<Button name="$parentCloseButton" parentKey="CloseButton">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT" x="8" y="-11"/>
+				</Anchors>
+				
+				<NormalTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
+				<PushedTexture file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Buttons\UI-Panel-MinimizeButton-Disabled"/>
+				
+				<Scripts>
+					<OnClick>
+						DETAILS_PLUGIN_CHART_VIEWER:TabErase (self:GetParent().index)
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+</Ui>

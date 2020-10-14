@@ -3,20 +3,20 @@ WQL_AreaPOIPinMixin = CreateFromMixins(AreaPOIPinMixin)
 function WQL_AreaPOIPinMixin:TryShowTooltip()
 	local description = self.description;
 
-	WorldMapTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
-	GameTooltip_SetTitle(WorldMapTooltip, self.name, HIGHLIGHT_FONT_COLOR);
+	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
+	GameTooltip_SetTitle(GameTooltip, self.name, HIGHLIGHT_FONT_COLOR);
 
 	if description then
-		GameTooltip_AddNormalLine(WorldMapTooltip, description);
+		GameTooltip_AddNormalLine(GameTooltip, description);
 	end
 
 	if type(self.itemID)=='number' then
-		EmbeddedItemTooltip_SetItemByID(WorldMapTooltip.ItemTooltip, self.itemID)
+		EmbeddedItemTooltip_SetItemByID(GameTooltip.ItemTooltip, self.itemID)
 	elseif type(self.itemID)=='table' then
-		EmbeddedItemTooltip_SetItemByID(WorldMapTooltip.ItemTooltip, self.itemID[1])
+		EmbeddedItemTooltip_SetItemByID(GameTooltip.ItemTooltip, self.itemID[1])
 	end
 
-	WorldMapTooltip:Show();
+	GameTooltip:Show();
 	return true;
 end
 
@@ -35,7 +35,7 @@ end
 function WQL_AreaPOIPinMixin:OnMouseLeave()
 	self:GetMap():TriggerEvent("ClearAreaLabel", MAP_AREA_LABEL_TYPE.POI);
 
-	WorldMapTooltip:Hide();
+	GameTooltip:Hide();
 end
 
 function WQL_AreaPOIPinMixin:OnAcquired(poiInfo) -- override

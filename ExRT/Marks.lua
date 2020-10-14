@@ -4,7 +4,7 @@ local UnitName, GetRaidTargetIndex, SetRaidTargetIcon = UnitName, GetRaidTargetI
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Marks",ExRT.L.Marks,nil,true)
+local module = ExRT.mod:New("Marks",ExRT.L.Marks)
 local ELib,L = ExRT.lib,ExRT.L
 
 function module.main:ADDON_LOADED()
@@ -78,12 +78,12 @@ function module.options:Load()
 		self.namesEditBox[i].icon = ELib:Icon(self.namesEditBox[i],"Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i,22):Point("RIGHT",self.namesEditBox[i],"LEFT",-5,0)
 	end
 
-	self.showButton = ELib:Button(self,L.senable):Size(632,20):Point("TOP",0,-35):Tooltip(L.MarksTooltip):OnClick(function (self)
+	self.showButton = ELib:Button(self,L.Enable):Size(632,20):Point("TOP",0,-35):Tooltip(L.MarksTooltip):OnClick(function (self)
 		if not module.Enabled then
 			self:SetText(L.MarksDisable)
 			module:Enable()
 		else
-			self:SetText(L.senable)
+			self:SetText(L.Enable)
 			module:Disable()
 		end
 	end)
@@ -94,7 +94,7 @@ function module.options:Load()
 		if module.Enabled then
 			self:SetText(L.MarksDisable)
 		else
-			self:SetText(L.senable)
+			self:SetText(L.Enable)
 		end
 	end)
 	

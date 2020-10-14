@@ -5,7 +5,7 @@ local MainFrame = GUI:NewModule('MainFrame', CreateFrame('Frame', 'tdCoreMainFra
 MainFrame:SetPadding(20, -50, -20, 20)
 
 function MainFrame:New()
-    local obj = self:Bind(CreateFrame('Frame', nil, UIParent))
+    local obj = self:Bind(CreateFrameAby('Frame', nil, UIParent))
     
     obj:SetBackdrop{
         bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]],

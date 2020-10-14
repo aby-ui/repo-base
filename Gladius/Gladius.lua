@@ -358,7 +358,7 @@ function Gladius:JoinedArena()
 	-- background
 	if self.db.groupButtons then
 		if not self.background then
-			local background = CreateFrame("Frame", "GladiusButtonBackground", UIParent)
+			local background = CreateFrameAby("Frame", "GladiusButtonBackground", UIParent)
 			background:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 			background:SetBackdropColor(self.db.backgroundColor.r, self.db.backgroundColor.g, self.db.backgroundColor.b, self.db.backgroundColor.a)
 			background:SetFrameStrata("BACKGROUND")
@@ -810,7 +810,7 @@ function Gladius:CreateButton(unit)
 	-- group background
 	if unit == "arena1" then
 		-- anchor
-		local anchor = CreateFrame("Frame", "GladiusButtonAnchor", UIParent)
+		local anchor = CreateFrameAby("Frame", "GladiusButtonAnchor", UIParent)
 		anchor:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 		anchor:SetBackdropColor(0, 0, 0, 1)
 		anchor:SetClampedToScreen(true)
@@ -833,7 +833,7 @@ function Gladius:CreateButton(unit)
 		anchor.text = anchor:CreateFontString("GladiusButtonAnchorText", "OVERLAY")
 		self.anchor = anchor
 		-- background
-		local background = CreateFrame("Frame", "GladiusButtonBackground", UIParent)
+		local background = CreateFrameAby("Frame", "GladiusButtonBackground", UIParent)
 		background:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 		background:SetBackdropColor(self.db.backgroundColor.r, self.db.backgroundColor.g, self.db.backgroundColor.b, self.db.backgroundColor.a)
 		background:SetFrameStrata("BACKGROUND")

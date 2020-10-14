@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Race-3.0
-Revision: $Rev: 101 $
+Revision: $Rev: 103 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-race-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Race-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 101 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 103 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -518,10 +518,8 @@ elseif GAME_LOCALE == "ruRU" then
 	["Human"] = "Человек",
 	["Humans"] = "Люди",
 	["Imp"] = "Бес",
-	--[[Translation missing --]]
-	--[[ ["Kul Tiran"] = "Kul Tiran",--]] 
-	--[[Translation missing --]]
-	--[[ ["Kul Tirans"] = "Kul Tirans",--]] 
+	["Kul Tiran"] = "Култирасец",
+	["Kul Tirans"] = "Култирасцы",
 	["Lightforged Draenei"] = "Озаренный дреней",
 	["Lightforged Draenei_PL"] = "Озаренные дренеи",
 	["Mag'har Orc"] = "Маг'хар",
@@ -624,10 +622,8 @@ elseif GAME_LOCALE == "zhTW" then
 	["Human"] = "人類",
 	["Humans"] = "人類",
 	["Imp"] = "小鬼",
-	--[[Translation missing --]]
-	--[[ ["Kul Tiran"] = "Kul Tiran",--]] 
-	--[[Translation missing --]]
-	--[[ ["Kul Tirans"] = "Kul Tirans",--]] 
+	["Kul Tiran"] = "庫爾提拉斯人",
+	["Kul Tirans"] = "庫爾提拉斯人",
 	["Lightforged Draenei"] = "光鑄德萊尼",
 	["Lightforged Draenei_PL"] = "光鑄德萊尼",
 	["Mag'har Orc"] = "瑪格哈獸人",

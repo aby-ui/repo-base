@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local L = WeakAuras.L;
 
@@ -12,6 +13,7 @@ local default = {
   height = 200,
   color = {1, 1, 1, 0.75},
   blendMode = "BLEND",
+  textureWrapMode = "CLAMPTOBLACKADDITIVE",
   rotation = 0,
   discrete_rotation = 0,
   mirror = false,
@@ -88,7 +90,7 @@ end
 
 local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture);
+  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);
@@ -184,7 +186,7 @@ local function modify(parent, region, data)
 
   function region:Update()
     if region.state.texture then
-      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture);
+      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode);
     end
   end
 

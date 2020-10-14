@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2331, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201013203549")
 mod:SetCreatureID(150396, 144249, 150397)
 mod:SetEncounterID(2260)
 mod:SetBossHPInfoToHighest()
@@ -43,7 +43,7 @@ local specWarnHardMode				= mod:NewSpecialWarningSpell(292750, nil, nil, nil, 3,
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --Stage One: Aerial Unit R-21/X
-local timerRecalibrateCD			= mod:NewCDTimer(13.4, 291865, nil, nil, nil, 3)
+local timerRecalibrateCD			= mod:NewCDCountTimer(13.4, 291865, nil, nil, nil, 3)
 local timerGigaZapCD				= mod:NewCDTimer(15.8, 292264, nil, nil, nil, 3)
 local timerTakeOffCD				= mod:NewCDTimer(35.2, 291613, nil, nil, nil, 6)
 local timerCuttingBeam				= mod:NewCastTimer(6, 291626, nil, nil, nil, 3)
@@ -56,7 +56,7 @@ local timerHardModeCD				= mod:NewCDTimer(42.5, 292750, nil, nil, nil, 5, nil, D
 mod.vb.phase = 1
 mod.vb.recalibrateCount = 0
 mod.vb.zapCount = 0
-local P1RecalibrateTimers = {5.9, 13.3, 27.9, 15.6, 19.4}
+local P1RecalibrateTimers = {5.9, 12, 27.9, 15.6, 19.4}
 --All hard mode timers, do they differ if hard mode isn't active?
 --5.9, 13.3, 27.9, 15.6, 20.7
 --5.9, 13.3, 28.8, 17.0, 19.4
@@ -77,7 +77,7 @@ function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.recalibrateCount = 0
 	self.vb.zapCount = 0
-	timerRecalibrateCD:Start(5.9-delay)
+	timerRecalibrateCD:Start(5.9-delay, 1)
 	timerGigaZapCD:Start(8.3-delay)
 	timerTakeOffCD:Start(30.2-delay)
 end
@@ -96,7 +96,7 @@ function mod:SPELL_CAST_START(args)
 		warnRecalibrate:Play("watchorb")
 		local timer = P1RecalibrateTimers[self.vb.recalibrateCount+1]
 		if timer then
-			timerRecalibrateCD:Start(timer)
+			timerRecalibrateCD:Start(timer, self.vb.recalibrateCount+1)
 		end
 	elseif spellId == 291928 or spellId == 292264 then--Stage 1, Stage 2
 		self.vb.zapCount = self.vb.zapCount + 1
@@ -106,7 +106,7 @@ function mod:SPELL_CAST_START(args)
 			if self.vb.zapCount % 3 == 0 then
 				--14.8, 3.5, 3.5, 28.6, 3.5, 3.5, 23.4, 3.5, 3.5, 23.3, 3.5, 3.5
 				--14.8, 3.5, 3.5, 28.2, 3.5, 3.5
-				timerGigaZapCD:Start(self.vb.zapCount == 3 and 28 or 23.3)
+				timerGigaZapCD:Start(self.vb.zapCount == 3 and 26.9 or 23.3)
 			else
 				timerGigaZapCD:Start(3.5)
 			end
@@ -160,11 +160,11 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
 		--Start P2 Timers
-		timerGigaZapCD:Start(13.6)
+		timerGigaZapCD:Start(11.4)
 		--timerRecalibrateCD:Start(2)--Cast start event hidden in P2, and not the most important mechanic of fight that it needs hacks to work around
 		timerMagnetoArmCD:Start(34)
 	elseif spellId == 292807 then--Cancel Skull Aura (Annihilo-tron 5000 activating on pull)
-		timerHardModeCD:Start(33.3)
+		timerHardModeCD:Start(32.2)
 	elseif spellId == 292750 then--H.A.R.D.M.O.D.E.
 		specWarnHardMode:Show()
 		specWarnHardMode:Play("stilldanger")

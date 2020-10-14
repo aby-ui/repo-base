@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Crucible of Storms|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0폭풍의 용광로|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0風暴邪淵|r
@@ -13,7 +13,7 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: BFA
-## X-DBM-Mod-Has-Mythic : 1
+## X-DBM-StatTypes: lfr,normal,heroic,mythic
 ## X-DBM-Mod-Sort: 406
 ## X-DBM-Mod-MapID: 2096
 ## X-DBM-Mod-MinCoreRevision: 17286

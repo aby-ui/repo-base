@@ -4,7 +4,7 @@ local GUI = tdCore('GUI')
 local ColorButton = GUI:NewModule('ColorButton', CreateFrame('Button'), 'UIObject')
 
 function ColorButton:New(parent)
-    local obj = self:Bind(CreateFrame('Button', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Button', nil, parent))
     if parent then
         obj:SetNormalTexture([[Interface\ChatFrame\ChatFrameColorSwatch]])
         obj:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]])

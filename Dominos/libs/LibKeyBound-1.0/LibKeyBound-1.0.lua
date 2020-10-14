@@ -1,6 +1,6 @@
 --[[
 Name: LibKeyBound-1.0
-Revision: $Rev: 115 $
+Revision: $Rev: 118 $
 Author(s): Gello, Maul, Toadkiller, Tuller
 Website: http://www.wowace.com/wiki/LibKeyBound-1.0
 Documentation: http://www.wowace.com/wiki/LibKeyBound-1.0
@@ -47,7 +47,7 @@ local SaveBindings = SaveBindings or AttemptToSaveBindings
 -- #NODOC
 function LibKeyBound:Initialize()
 	do
-		local f = CreateFrame('Frame', 'KeyboundDialog', UIParent)
+		local f = CreateFrame('Frame', 'KeyboundDialog', UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		f:SetFrameStrata('DIALOG')
 		f:SetToplevel(true)
 		f:EnableMouse(true)

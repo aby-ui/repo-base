@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1856, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610150440")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(116407)
 mod:SetEncounterID(2036)
-mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 --mod:SetUsedIcons(1)
 mod:SetHotfixNoticeRev(16282)

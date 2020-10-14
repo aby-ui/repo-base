@@ -194,7 +194,8 @@ CanIMogIt.NUM_BLACKMARKET_BUTTONS = 12  -- No Blizzard constant
 
 ---- Containers ----
 -- Bags = NUM_CONTAINER_FRAMES
--- Bag Items = MAX_CONTAINER_ITEMS
+-- Bag Items = MAX_CONTAINER_ITEMS  -- Blizzard removed this variable in 9.0 for some reason
+CanIMogIt.MAX_CONTAINER_ITEMS = MAX_CONTAINER_ITEMS or 36
 -- Bank = NUM_BANKGENERIC_SLOTS
 CanIMogIt.NUM_VOID_STORAGE_FRAMES = 80 -- Blizzard functions are locals
 -- Guild Bank
@@ -202,6 +203,17 @@ CanIMogIt.NUM_VOID_STORAGE_FRAMES = 80 -- Blizzard functions are locals
 -- referencing it here so we don't error when that happens.
 CanIMogIt.NUM_GUILDBANK_COLUMNS = 7 -- Columns
 CanIMogIt.NUM_SLOTS_PER_GUILDBANK_GROUP = 14 -- Buttons
+
+---- Expansions ----
+CanIMogIt.Expansions = {}
+CanIMogIt.Expansions.BC = 1
+CanIMogIt.Expansions.WRATH = 2
+CanIMogIt.Expansions.CATA = 3
+CanIMogIt.Expansions.MISTS = 4
+CanIMogIt.Expansions.WOD = 5
+CanIMogIt.Expansions.LEGION = 6
+CanIMogIt.Expansions.BFA = 7
+CanIMogIt.Expansions.SHADOWLANDS = 8
 
 ---- Others ----
 CanIMogIt.NUM_ENCOUNTER_JOURNAL_ENCOUNTER_LOOT_FRAMES = 10 -- Blizzard functions are locals
@@ -211,3 +223,7 @@ CanIMogIt.NUM_MAIL_INBOX_ITEMS = 7
 -- Merchant Items = MERCHANT_ITEMS_PER_PAGE
 CanIMogIt.NUM_WARDROBE_COLLECTION_BUTTONS = 12 -- Blizzard functions are locals
 -- Trade Skill = no constants
+
+-- Expansions before Shadowlands are all opened at level 10 as of 9.0. Shadowlands is opened at level 48.
+CanIMogIt.MIN_TRANSMOG_LEVEL = 10
+CanIMogIt.MIN_TRANSMOG_LEVEL_SHADOWLANDS = 48

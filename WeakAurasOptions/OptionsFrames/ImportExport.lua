@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local strtrim, strsub = strtrim, strsub
@@ -51,7 +52,7 @@ local function ConstructImportExport(frame)
         if(mode == "export") then
           displayStr = WeakAuras.DisplayToString(id, true);
         elseif(mode == "table") then
-          displayStr = WeakAuras.DataToString(id);
+          displayStr = OptionsPrivate.Private.DataToString(id);
         end
         input.editBox:SetMaxBytes(nil);
         input.editBox:SetScript("OnEscapePressed", function() group:Close(); end);
@@ -105,7 +106,7 @@ local function ConstructImportExport(frame)
   return group
 end
 
-function WeakAuras.ImportExport(frame)
+function OptionsPrivate.ImportExport(frame)
   importexport = importexport or ConstructImportExport(frame)
   return importexport
 end

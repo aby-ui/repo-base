@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: HandyNotes_SuramarTelemancy
 ## Notes: Teleporters in Suramar? Sure, why not?
 ## Author: Kemayo

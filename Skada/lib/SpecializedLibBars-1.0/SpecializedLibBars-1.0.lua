@@ -450,7 +450,7 @@ do
 		orientation = orientation == "LEFT" and lib.LEFT_TO_RIGHT or orientation
 		orientation = orientation == "RIGHT" and lib.RIGHT_TO_LEFT or orientation
 
-		local list = setmetatable(CreateFrame("Frame", frameName, UIParent), barListPrototype_mt)
+		local list = setmetatable(CreateFrameAby("Frame", frameName, UIParent), barListPrototype_mt)
 		list:SetMovable(true)
 		list:SetClampedToScreen(true)
 		list.enablemouse = true
@@ -472,7 +472,7 @@ do
 		local myfont = CreateFont("MyTitleFont")
 		myfont:CopyFontObject(ChatFontSmall)
 
-		list.button = CreateFrame("Button", nil, list)
+		list.button = CreateFrameAby("Button", nil, list)
 		list.button:SetText(name)
 		list.button:SetBackdrop(frame_defaults)
 		list.button:SetNormalFontObject(myfont)

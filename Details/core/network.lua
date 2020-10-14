@@ -594,51 +594,32 @@
 	end
 	--]]
 
-	function _detalhes:SendPluginCommMessage (prefix, channel, ...)
-	
-		if (not _detalhes:IsConnected()) then
-			return false
-		end
-	
-		if (not channel) then
-			channel = "Details"
-		end
-		
+	function _detalhes:SendPluginCommMessage(prefix, channel, ...)
 		if (channel == "RAID") then
-			if (IsInGroup (LE_PARTY_CATEGORY_INSTANCE) and IsInInstance()) then
+			if (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance()) then
 				_detalhes:SendCommMessage (prefix, _detalhes:Serialize (self.__version, ...), "INSTANCE_CHAT")
 			else
 				_detalhes:SendCommMessage (prefix, _detalhes:Serialize (self.__version, ...), "RAID")
 			end
 			
 		elseif (channel == "PARTY") then
-			if (IsInGroup (LE_PARTY_CATEGORY_INSTANCE) and IsInInstance()) then
-				_detalhes:SendCommMessage (prefix, _detalhes:Serialize (self.__version, ...), "INSTANCE_CHAT")
+			if (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance()) then
+				_detalhes:SendCommMessage(prefix, _detalhes:Serialize (self.__version, ...), "INSTANCE_CHAT")
 			else
-				_detalhes:SendCommMessage (prefix, _detalhes:Serialize (self.__version, ...), "PARTY")
-			end
-		
-		elseif (channel == "Details") then
-			local id = _detalhes:GetChannelId (channel)
-			if (id) then
-				if (not _detalhes.listener:IsEventRegistered ("CHAT_MSG_CHANNEL")) then
-					_detalhes.listener:RegisterEvent ("CHAT_MSG_CHANNEL")
-				end
-				SendChatMessage (prefix .. "_" .. _detalhes:Serialize (self.__version, ...), "CHANNEL", nil, id)
+				_detalhes:SendCommMessage(prefix, _detalhes:Serialize (self.__version, ...), "PARTY")
 			end
 		else
-			_detalhes:SendCommMessage (prefix, _detalhes:Serialize (self.__version, ...), channel)
+			_detalhes:SendCommMessage(prefix, _detalhes:Serialize (self.__version, ...), channel)
 		end
 		
 		return true
 	end
 	
-	
 	--> send as
-	function _detalhes:SendRaidDataAs (type, player, realm, ...)
+	function _detalhes:SendRaidDataAs(type, player, realm, ...)
 		if (not realm) then
 			--> check if realm is already inside player name
-			for _name, _realm in _string_gmatch (player, "(%w+)-(%w+)") do
+			for _name, _realm in _string_gmatch(player, "(%w+)-(%w+)") do
 				if (_realm) then
 					player = _name
 					realm = _realm
@@ -649,12 +630,12 @@
 			--> doesn't have realm at all, so we assume the actor is in same realm as player
 			realm = _GetRealmName()
 		end
-		_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, player, realm, _detalhes.realversion, ...), "RAID")
+		_detalhes:SendCommMessage(CONST_DETAILS_PREFIX, _detalhes:Serialize (type, player, realm, _detalhes.realversion, ...), "RAID")
 	end
 	
-	function _detalhes:SendHomeRaidData (type, ...)
-		if (IsInRaid (LE_PARTY_CATEGORY_HOME) and IsInInstance()) then
-			_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName ("player"), _GetRealmName(), _detalhes.realversion, ...), "RAID")
+	function _detalhes:SendHomeRaidData(type, ...)
+		if (IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInInstance()) then
+			_detalhes:SendCommMessage(CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName("player"), _GetRealmName(), _detalhes.realversion, ...), "RAID")
 		end
 	end
 	
@@ -663,12 +644,12 @@
 		local isInInstanceGroup = IsInRaid (LE_PARTY_CATEGORY_INSTANCE)
 	
 		if (isInInstanceGroup) then
-			_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName ("player"), _GetRealmName(), _detalhes.realversion, ...), "INSTANCE_CHAT")
+			_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName("player"), _GetRealmName(), _detalhes.realversion, ...), "INSTANCE_CHAT")
 			if (_detalhes.debug) then
 				_detalhes:Msg ("(debug) sent comm to INSTANCE raid group")
 			end
 		else
-			_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName ("player"), _GetRealmName(), _detalhes.realversion, ...), "RAID")
+			_detalhes:SendCommMessage (CONST_DETAILS_PREFIX, _detalhes:Serialize (type, _UnitName("player"), _GetRealmName(), _detalhes.realversion, ...), "RAID")
 			if (_detalhes.debug) then
 				_detalhes:Msg ("(debug) sent comm to LOCAL raid group")
 			end
@@ -760,175 +741,4 @@
 		if (send_to_guild) then
 			_detalhes:SendGuildData (_detalhes.network.ids.VERSION_CHECK, _detalhes.build_counter)
 		end
-	end
-	
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> sharer
-
-	local city_zones = {
-		["ShattrathCity"] = true,
-		["Dalaran"] = true,
-		
-		["AshranHordeFactionHub"] = true,
-		["AshranAllianceFactionHub"] = true,
-		
-		["Orgrimmar"] = true,
-		["Undercity"] = true,
-		["ThunderBluff"] = true,
-		["SilvermoonCity"] = true,
-		
-		["StormwindCity"] = true,
-		["Darnassus"] = true,
-		["Ironforge"] = true,
-		["TheExodar"] = true,
-		
-		["garrisonffhorde_tier1"] = true,
-		["garrisonffhorde_tier2"] = true,
-		["garrisonffhorde_tier3"] = true,
-		
-		["garrisonsmvalliance_tier1"] = true,
-		["garrisonsmvalliance_tier2"] = true,
-		["garrisonsmvalliance_tier3"] = true,
-		["garrisonsmvalliance_tier4"] = true,
-	}
-	
-	local sub_zones = {
-		["ShrineofTwoMoons"] = true,
-		["ShrineofSevenStars"] = true,
-	}
-
-	function _detalhes:IsInCity()
-		if (SetMapToCurrentZone and SetMapToCurrentZone()) then
-			local mapID = C_Map.GetBestMapForUnit ("player")
-			if (not mapID) then
-				--print ("Details! exeption handled: zone has no map")
-				return
-			end
-			local mapFileName, _, _, _, microDungeonMapName = C_Map.GetMapInfo (mapID)
-			
-			if (city_zones [mapFileName]) then
-				return true
-			elseif (microDungeonMapName and type (microDungeonMapName) == "string" and sub_zones [microDungeonMapName]) then
-				return true
-			end
-		end
-	end
-
-	--> entrar no canal ap�s logar no servidor
-	function _detalhes:EnterChatChannel()
-		if (not _detalhes.realm_sync or not CONST_REALM_SYNC_ENABLED) then
-			return
-		end
-		
-		if (not _detalhes:IsInCity()) then
-			return
-		end
-		
-		if (_detalhes.schedule_chat_leave) then
-			_detalhes:CancelTimer (_detalhes.schedule_chat_leave)
-			_detalhes.schedule_chat_leave = nil
-		end
-		_detalhes.schedule_chat_enter = nil
-	
-		local realm = GetRealmName()
-		realm = realm or ""
-	
-		--> room name
-		local room_name = "Details"
-
-		_detalhes.listener:RegisterEvent ("CHAT_MSG_CHANNEL")
-		
-		--> already in?
-		for room_index = 1, 10 do
-			local _, name = GetChannelName (room_index)
-			if (name == room_name) then
-				_detalhes.is_connected = true
-				return --> already in the room
-			end
-		end
-		
-		--> enter
-		JoinChannelByName (room_name)
-		_detalhes.is_connected = true
-		
-		_detalhes:SendEvent ("REALM_CHANNEL_ENTER")
-	end
-	
-	function _detalhes:LeaveChatChannel()
-		if (not _detalhes.realm_sync or not CONST_REALM_SYNC_ENABLED) then
-			return
-		end
-	
-		if (_detalhes.schedule_chat_enter) then
-			_detalhes:CancelTimer (_detalhes.schedule_chat_enter)
-			_detalhes.schedule_chat_enter  = nil
-		end
-		_detalhes.schedule_chat_leave = nil
-	
-		local realm = GetRealmName()
-		realm = realm or ""
-		
-		--> room name
-		local room_name = "Details"
-		local is_in = false
-		
-		--> already in?
-		for room_index = 1, 10 do
-			local _, name = GetChannelName (room_index)
-			if (name == room_name) then
-				is_in = true
-			end
-		end
-		
-		if (is_in) then
-			LeaveChannelByName (room_name)
-		end
-		
-		_detalhes.is_connected = false
-		
-		_detalhes.listener:UnregisterEvent ("CHAT_MSG_CHANNEL")
-		
-		_detalhes:SendEvent ("REALM_CHANNEL_LEAVE")
-	end
-	
-	function _detalhes:DoZoneCheck()
-		local in_city = _detalhes:IsInCity()
-		if (not in_city) then
-			if (_detalhes.schedule_chat_enter) then
-				_detalhes:CancelTimer (_detalhes.schedule_chat_enter)
-			end
-			if (not _detalhes.schedule_chat_leave) then
-				_detalhes.schedule_chat_leave = _detalhes:ScheduleTimer ("LeaveChatChannel", 5)
-			end
-		else
-			if (in_city) then
-			
-				local _, name = GetChannelName (2)
-				if (name) then
-					if (_detalhes.schedule_chat_leave) then
-						_detalhes:CancelTimer (_detalhes.schedule_chat_leave)
-					end
-					if (not _detalhes.schedule_chat_enter) then
-						_detalhes.schedule_chat_enter = _detalhes:ScheduleTimer ("EnterChatChannel", 5)
-					end
-				end
-			end
-		end
-	end
-	
-	function _detalhes:CheckChatOnZoneChange()
-		if (not _detalhes.realm_sync or not CONST_REALM_SYNC_ENABLED) then
-			return
-		end
-		_detalhes:ScheduleTimer ("DoZoneCheck", 2)
-	end
-	
-	function _detalhes:IsConnected()
-		if (not _detalhes.is_connected) then
-			local id = _detalhes:GetChannelId ("Details")
-			if (id) then
-				_detalhes.is_connected = true
-			end
-		end
-		return _detalhes.is_connected
 	end

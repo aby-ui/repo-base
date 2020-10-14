@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2093, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20200907150556")
 mod:SetCreatureID(126845, 126847, 126848)--Captain Jolly, Captain Raoul, Captain Eudora
 mod:SetEncounterID(2094)
 mod:DisableRegenDetection()
@@ -53,7 +53,7 @@ local timerTappedKegCD				= mod:NewNextTimer(22.3, 272884, nil, nil, nil, 5)
 ----Hostile
 local timerGrapeShotCD				= mod:NewNextTimer(30.3, 258381, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
 ----Friendly
-local timerChainShotCD				= mod:NewAITimer(29.1, 272902, nil, nil, nil, 5)
+local timerChainShotCD				= mod:NewNextTimer(15.8, 272902, nil, nil, nil, 5)
 --Jolly
 ----Hostile
 local timerCuttingSurgeCD			= mod:NewCDTimer(22.7, 267522, nil, nil, nil, 3)
@@ -97,7 +97,7 @@ local function scanCaptains(self, isPull, delay)
 					elseif cid == 126847 then--Raoul
 						timerTappedKegCD:Start(12.2-delay)
 					else--Eudora
-						timerChainShotCD:Start(1-delay)
+						timerChainShotCD:Start(4.2-delay)
 					end
 				end
 			end

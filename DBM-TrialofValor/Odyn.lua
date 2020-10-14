@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1819, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(114263, 114361, 114360)--114263 Odyn, 114361 Hymdall, 114360 Hyrja
 mod:SetEncounterID(1958)
-mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 mod:SetMainBossID(114263)
 mod:SetUsedIcons(1)

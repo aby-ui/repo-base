@@ -2,6 +2,9 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local G, L, EV = T.Garrison, T.L, T.Evie
 
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
+
 local summaryTab = CreateFrame("Frame", nil, GarrisonMissionFrame, "GarrisonMissionBaseFrameTemplate") do
 	summaryTab:Hide()
 	summaryTab:SetSize(580, 565)
@@ -40,8 +43,7 @@ local matrix = CreateFrame("Frame", nil, summaryTab) do
 	local rowHeaders, columnHeaders, grid = {}, {}, {}
 	matrix:SetSize(350, 452)
 	matrix:SetPoint("TOPLEFT", 16, -80)
-	matrix:SetBackdrop({edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}})
-	matrix:SetBackdropBorderColor(1, 0.75, 0.25)
+	T.CreateEdge(matrix, {edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}}, nil, 0xffbf3f)
 	local title = matrix:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("BOTTOM", matrix, "TOP", 0, 3)
 	title:SetText(L"Counter and Trait Combinations")
@@ -240,8 +242,7 @@ local affin = CreateFrame("Frame", nil, summaryTab) do
 	local rows = {}
 	affin:SetSize(192, #T.UsableAffinities*26+9)
 	affin:SetPoint("TOPLEFT", summaryTab.matrix, "TOPRIGHT", 6, 0)
-	affin:SetBackdrop({edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}})
-	affin:SetBackdropBorderColor(1, 0.75, 0.25)
+	T.CreateEdge(affin, {edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}}, nil, 0xffbf3f)
 	local title = affin:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("BOTTOM", affin, "TOP", 0, 3)
 	title:SetText(L"Races")
@@ -300,8 +301,7 @@ local stats = CreateFrame("Frame", nil, summaryTab) do
 	local rows = {}
 	stats:SetSize(192, 117)
 	stats:SetPoint("BOTTOMLEFT", summaryTab.matrix, "BOTTOMRIGHT", 6, 0)
-	stats:SetBackdrop({edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}})
-	stats:SetBackdropBorderColor(1, 0.75, 0.25)
+	T.CreateEdge(stats, {edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}}, nil, 0xffbf3f)
 	local title = stats:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	title:SetPoint("BOTTOM", stats, "TOP", 0, 3)
 	title:SetText(L"Statistics")
@@ -341,9 +341,9 @@ local stats = CreateFrame("Frame", nil, summaryTab) do
 		end
 	end
 	local function CountUpgradableFollowers()
-		local nuA, nuI, upW, upA = 0,0, G.GetUpgradeRange()
+		local nuA, nuI, lcap, upW, upA = 0,0, T.FOLLOWER_LEVEL_CAP, G.GetUpgradeRange()
 		for k,v in pairs(G.GetFollowerInfo()) do
-			if v.followerTypeID == 1 and v.level == 100 then
+			if v.followerTypeID == 1 and v.level == lcap then
 				local _weaponItemID, weaponItemLevel, _armorItemID, armorItemLevel = C_Garrison.GetFollowerItems(k)
 				if not (weaponItemLevel < upW or armorItemLevel < upA) then
 				elseif v.status == GARRISON_FOLLOWER_INACTIVE then
@@ -358,9 +358,9 @@ local stats = CreateFrame("Frame", nil, summaryTab) do
 	rows[2]:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
 		GameTooltip:SetText(L"Upgradable gear", 1,1,1)
-		local aA, aI, wA, wI, cap = 0,0, 0,0, T.FOLLOWER_ITEM_LEVEL_CAP
+		local aA, aI, wA, wI, cap, lcap = 0,0, 0,0, T.FOLLOWER_ITEM_LEVEL_CAP, T.FOLLOWER_LEVEL_CAP
 		for k,v in pairs(G.GetFollowerInfo()) do
-			if v.followerTypeID == 1 and v.level == 100 then
+			if v.followerTypeID == 1 and v.level == lcap then
 				local _weaponItemID, weaponItemLevel, _armorItemID, armorItemLevel = C_Garrison.GetFollowerItems(k)
 				if v.status == GARRISON_FOLLOWER_INACTIVE then
 					aI, wI = aI + cap - armorItemLevel, wI + cap - weaponItemLevel

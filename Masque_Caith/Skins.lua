@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque: Caith', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque_Caith.
+	This file is part of 'Masque: Caith', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Caith.
 
 	* File...: Skins.lua
 	* Author.: StormFX
@@ -27,7 +27,7 @@ local L = Core.Locale
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
 local Websites = {
-	"https://github.com/StormFX/Masque_Caith",
+	"https://github.com/SFX-WoW/Masque_Caith",
 	"https://www.wowace.com/projects/masque-caith",
 	"https://www.curseforge.com/wow/addons/masque-caith",
 	"https://www.wowinterface.com/downloads/info8869",
@@ -39,7 +39,7 @@ local Websites = {
 
 MSQ:AddSkin("Caith", {
 	Shape = "Square",
-	Masque_Version = 80200,
+	Masque_Version = 90000,
 
 	-- Info
 	Description = L["A larger version of Apathy inspired by Caith UI."],
@@ -77,7 +77,7 @@ MSQ:AddSkin("Caith", {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = true,
+			-- UseColor = nil,
 			-- SetAllPoints = nil,
 		},
 		Pet = {
@@ -93,7 +93,7 @@ MSQ:AddSkin("Caith", {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = true,
+			-- UseColor = nil,
 			-- SetAllPoints = nil,
 		},
 	},
@@ -143,7 +143,7 @@ MSQ:AddSkin("Caith", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-	-- Disabled = {Hide = true},
+	-- Disabled = Default.Disabled,
 	Pushed = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -358,12 +358,41 @@ MSQ:AddSkin("Caith", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 15,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 0,
+		OffsetY = -1,
+		-- SetAllPoints = nil,
+	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
 		Texture = [[Interface\AddOns\Masque_Caith\Textures\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 42,
+		Height = 42,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\AddOns\Masque_Caith\Textures\Border]],
+		Texture = [[Interface\AddOns\Masque_Caith\Textures\Quest]],
+		Color = {1, 0.8, 0, 1},
+		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 2,
 		Width = 42,
@@ -405,6 +434,20 @@ MSQ:AddSkin("Caith", {
 		OffsetY = 0,
 		UseColor = true,
 		-- SetAllPoints = true,
+	},
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 16,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 2,
+		OffsetY = -1,
+		-- SetAllPoints = nil,
 	},
 	Name = {
 		JustifyH = "CENTER",

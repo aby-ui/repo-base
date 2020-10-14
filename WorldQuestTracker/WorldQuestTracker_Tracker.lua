@@ -34,7 +34,6 @@ local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
@@ -285,7 +284,7 @@ end
 --esse frame � quem vai ser anexado ao tracker da blizzard
 --this is the main frame for the quest tracker, every thing on the tracker is parent of this frame
 -- ~trackerframe
-local WorldQuestTrackerFrame = CreateFrame ("frame", "WorldQuestTrackerScreenPanel", UIParent)
+local WorldQuestTrackerFrame = CreateFrame ("frame", "WorldQuestTrackerScreenPanel", UIParent, "BackdropTemplate")
 WorldQuestTrackerFrame:SetSize (235, 500)
 WorldQuestTrackerFrame:SetFrameStrata ("LOW") --thanks @p3lim on curseforge
 
@@ -293,7 +292,7 @@ WorldQuestTrackerFrame:SetFrameStrata ("LOW") --thanks @p3lim on curseforge
 --WorldQuestTrackerFrame:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 
 
-local WorldQuestTrackerFrame_QuestHolder = CreateFrame ("frame", "WorldQuestTrackerScreenPanel_QuestHolder", WorldQuestTrackerFrame)
+local WorldQuestTrackerFrame_QuestHolder = CreateFrame ("frame", "WorldQuestTrackerScreenPanel_QuestHolder", WorldQuestTrackerFrame, "BackdropTemplate")
 WorldQuestTrackerFrame_QuestHolder:SetAllPoints()
 WorldQuestTrackerFrame_QuestHolder:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 WorldQuestTrackerFrame_QuestHolder.MoveMeLabel = WorldQuestTracker:CreateLabel (WorldQuestTrackerFrame_QuestHolder, "== Move Me ==")
@@ -317,7 +316,7 @@ end
 --cria o header
 local WorldQuestTrackerHeader = CreateFrame ("frame", "WorldQuestTrackerQuestsHeader", WorldQuestTrackerFrame, "ObjectiveTrackerHeaderTemplate") -- "ObjectiveTrackerHeaderTemplate"
 WorldQuestTrackerHeader.Text:SetText (L["World Quest Tracker"])
-local minimizeButton = CreateFrame ("button", "WorldQuestTrackerQuestsHeaderMinimizeButton", WorldQuestTrackerFrame)
+local minimizeButton = CreateFrame ("button", "WorldQuestTrackerQuestsHeaderMinimizeButton", WorldQuestTrackerFrame, "BackdropTemplate")
 local minimizeButtonText = minimizeButton:CreateFontString (nil, "overlay", "GameFontNormal")
 minimizeButtonText:SetText (L["S_WORLDQUESTS"])
 minimizeButtonText:SetPoint ("right", minimizeButton, "left", -3, 1)
@@ -488,7 +487,7 @@ local buildTooltip = function (self)
 
 	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
 
-	local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = GetQuestTagInfo (questID)
+	local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = C_QuestLog.GetQuestTagInfo (questID)
 	local color = WORLD_QUEST_QUALITY_COLORS [rarity]
 	GameTooltip:SetText (title, color.r, color.g, color.b)
 
@@ -687,7 +686,7 @@ function QuestSuperTracking_IsSuperTrackedQuestValid()
 		return false;
 	end
 
-	if GetQuestLogIndexByID(trackedQuestID) == 0 then
+	if C_QuestLog.GetQuestLogIndexByID(trackedQuestID) == 0 then
 		-- Might be a tracked world quest that isn't in our log yet (blizzard)
 		-- adding here if the quest is tracked by World Quest Tracker (tercio)
 		if (QuestUtils_IsQuestWorldQuest(trackedQuestID) and WorldQuestTracker.SuperTracked == trackedQuestID) then
@@ -742,7 +741,7 @@ function WorldQuestTracker.GetOrCreateTrackerWidget (index)
 		return TrackerWidgetPool [index]
 	end
 	
-	local f = CreateFrame ("button", "WorldQuestTracker_Tracker" .. index, WorldQuestTrackerFrame_QuestHolder)
+	local f = CreateFrame ("button", "WorldQuestTracker_Tracker" .. index, WorldQuestTrackerFrame_QuestHolder, "BackdropTemplate")
 	--f:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
 	--f:SetBackdropColor (0, 0, 0, .2)
 	f:SetSize (235, 30)
@@ -796,7 +795,7 @@ function WorldQuestTracker.GetOrCreateTrackerWidget (index)
 	f.Icon:SetSize (16, 16)
 	f.Icon:SetMask ([[Interface\CharacterFrame\TempPortraitAlphaMask]])
 	
-	local IconButton = CreateFrame ("button", "$parentIconButton", f)
+	local IconButton = CreateFrame ("button", "$parentIconButton", f, "BackdropTemplate")
 	IconButton:SetSize (18, 18)
 	IconButton:SetPoint ("center", f.Icon, "center")
 	IconButton:SetScript ("OnEnter", TrackerIconButtonOnEnter)
@@ -884,7 +883,7 @@ function WorldQuestTracker.GetOrCreateTrackerWidget (index)
 
 	------------------------
 	
-	f.AnimationFrame = CreateFrame ("frame", "$parentAnimation", f)
+	f.AnimationFrame = CreateFrame ("frame", "$parentAnimation", f, "BackdropTemplate")
 	f.AnimationFrame:SetAllPoints()
 	f.AnimationFrame:SetFrameLevel (f:GetFrameLevel()-1)
 	f.AnimationFrame:Hide()
@@ -1158,7 +1157,7 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 				widget.Icon:SetTexture (quest.rewardTexture)
 				widget.IconButton.questID = quest.questID
 				
-				if (GetSuperTrackedQuestID() == quest.questID) then
+				if (WorldMap_IsWorldQuestEffectivelyTracked(quest.questID)) then
 					widget.SuperTracked:Show()
 					widget.Circle:SetDesaturated (false)
 				else
@@ -1184,7 +1183,7 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 
 				if (WorldQuestTracker.db.profile.TutorialTracker == 1) then
 					WorldQuestTracker.db.profile.TutorialTracker = WorldQuestTracker.db.profile.TutorialTracker + 1
-					local alert = CreateFrame ("frame", "WorldQuestTrackerTrackerTutorialAlert1", worldFramePOIs, "MicroButtonAlertTemplate")
+					local alert = CreateFrame ("frame", "WorldQuestTrackerTrackerTutorialAlert1", worldFramePOIs, "AlertContainerTemplate")
 					alert:SetFrameLevel (302)
 					alert.label = "Tracked quests are shown here!"
 					alert.Text:SetSpacing (4)
@@ -1294,7 +1293,7 @@ end
 
 
 
-local TrackerAnimation_OnAccept = CreateFrame ("frame", nil, UIParent)
+local TrackerAnimation_OnAccept = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
 TrackerAnimation_OnAccept:SetSize (235, 30)
 TrackerAnimation_OnAccept.Title = DF:CreateLabel (TrackerAnimation_OnAccept)
 TrackerAnimation_OnAccept.Title.textsize = TRACKER_TITLE_TEXT_SIZE_INMAP
@@ -1388,9 +1387,9 @@ end
 function WorldQuestTracker.UpdateQuestsInArea()
 	for index, quest in ipairs (WorldQuestTracker.QuestTrackList) do
 		if (HaveQuestData (quest.questID)) then
-			local questIndex = GetQuestLogIndexByID (quest.questID)
+			--local questIndex = C_QuestLog.GetQuestLogIndexByID (quest.questID)
 			local isInArea, isOnMap, numObjectives = GetTaskInfo (quest.questID)
-			if ((questIndex and questIndex ~= 0) or isInArea) then
+			if (isInArea) then --(questIndex and questIndex ~= 0) or 
 				--desativa pois o jogo ja deve estar mostrando a quest
 				if (not quest.isDisabled and not quest.enteringZone) then
 					local widget = get_widget_from_questID (quest.questID)

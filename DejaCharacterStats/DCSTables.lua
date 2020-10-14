@@ -822,20 +822,21 @@ DCS_TableData.StatData.MASTERY_RATING = {
 		local _, bonuscoeff = GetMasteryEffect();
 		local stat = CR_MASTERY
 		local rating = GetCombatRating(stat)
-		if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
-			if not namespace.configMode then
-				if namespace.hidemastery then
-					statFrame:Hide();
-					--print("hiding")
-					return;
-				end
-			end
-			color_rating1 = "|cff7f7f7f" .. color_rating1 .. "|r"
-			color_rating2 = "|cff7f7f7f" .. color_rating2 .. "|r"
-			color_format = "|cff7f7f7f" .. color_format .. "|r"
-			local requires = L["Requires Level "]
-			add_text = " |cffff0000(" .. requires .. SHOW_MASTERY_LEVEL ..")|r"
-		end
+		-- Mastery is always shown now in Shadowlands
+		-- if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
+		-- 	if not namespace.configMode then
+		-- 		if namespace.hidemastery then
+		-- 			statFrame:Hide();
+		-- 			--print("hiding")
+		-- 			return;
+		-- 		end
+		-- 	end
+		-- 	color_rating1 = "|cff7f7f7f" .. color_rating1 .. "|r"
+		-- 	color_rating2 = "|cff7f7f7f" .. color_rating2 .. "|r"
+		-- 	color_format = "|cff7f7f7f" .. color_format .. "|r"
+		-- 	local requires = L["Requires Level "]
+		-- 	add_text = " |cffff0000(" .. requires .. SHOW_MASTERY_LEVEL ..")|r"
+		-- end
 		local percentage = dcs_format("%.2f",GetCombatRatingBonus(stat)*bonuscoeff)
 		PaperDollFrame_SetLabelAndText(statFrame, "", dcs_format(color_format,rating), false, rating);
 		statFrame.Label:SetText(color_rating2)

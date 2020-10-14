@@ -319,8 +319,6 @@ function rematch:LoadTeam(key)
 			if levelingPick then -- if there is a pet from the queue
 				loadin[i][1] = rematch.topPicks[pickIndex]
 				pickIndex = pickIndex + 1
-			elseif settings.QueueRandomWhenEmpty then -- if not, and 'Use Random If Queue Empty' checked, pick a random pet
-				loadin[i][1] = "random:0"
 			end
 		elseif petID=="ignored" then
 			loadin[i][1] = C_PetJournal.GetPetLoadOutInfo(i) -- keep loaded pet here if ignored

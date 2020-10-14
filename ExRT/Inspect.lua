@@ -6,6 +6,7 @@ local UnitCombatlogname, RaidInCombat, ScheduleTimer, DelUnitNameServer = ExRT.F
 local CheckInteractDistance, CanInspect = CheckInteractDistance, CanInspect
 
 local GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local GetTalentInfoClassic = GetTalentInfo
 local C_SpecializationInfo_GetInspectSelectedPvpTalent
 if ExRT.isClassic then
 	GetInspectSpecialization = function () return 0 end
@@ -46,12 +47,12 @@ module.db.statsNames = {
 	mastery = {L.cd2InspectMastery,L.cd2InspectMasteryGem},
 	crit = {L.cd2InspectCrit,L.cd2InspectCritGem,L.cd2InspectCritGemLegendary},
 	spirit = {L.cd2InspectSpirit,L.cd2InspectAll},
-	
+
 	intellect = {L.cd2InspectInt,L.cd2InspectIntGem,L.cd2InspectAll},
 	agility = {L.cd2InspectAgi,L.cd2InspectAll},
 	strength = {L.cd2InspectStr,L.cd2InspectStrGem,L.cd2InspectAll},
 	spellpower = {L.cd2InspectSpd},
-	
+
 	versatility = {L.cd2InspectVersatility,L.cd2InspectVersatilityGem},
 	leech = {L.cd2InspectLeech},
 	armor = {L.cd2InspectBonusArmor},
@@ -84,6 +85,9 @@ module.db.itemsSlotTable = {
 	16,	--INVSLOT_MAINHAND
 	17,	--INVSLOT_OFFHAND
 }
+if ExRT.isClassic then
+	module.db.itemsSlotTable[#module.db.itemsSlotTable+1] = 18 	--INVSLOT_RANGED
+end
 
 local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
 inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -190,7 +194,7 @@ local function InspectNext()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
 		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) then
 			NotifyInspect(name)
-			
+
 			if (VExRT and VExRT.InspectViewer and VExRT.InspectViewer.EnableA4ivs) and not module.db.inspectDBAch[name] and not ExRT.isClassic then
 				if AchievementFrameComparison then
 					AchievementFrameComparison:UnregisterEvent("INSPECT_ACHIEVEMENT_READY")
@@ -199,7 +203,7 @@ local function InspectNext()
 				ClearAchievementComparisonUnit()
 				SetAchievementComparisonUnit(name)
 			end
-			
+
 			module.db.inspectQuery[name] = nil
 			ExRT.F.Timer(CheckForSuccesInspect,10,name)	--Try later if failed
 			return
@@ -248,16 +252,16 @@ do
 				for q,w in pairs(inspectData[dataName]) do inspectData[dataName][q] = nil end
 			else
 				inspectData[dataName] = {}
-			end		
+			end
 		end
 		for stateName,stateData in pairs(module.db.statsNames) do
 			inspectData[stateName] = 0
 		end
 
 		cooldownsModule:ClearSessionDataReason(name,"azerite","essence","tier","item")
-	
+
 		local ilvl_count = 0
-		
+
 		local isArtifactEqipped = 0
 		local ArtifactIlvlSlot1,ArtifactIlvlSlot2 = 0,0
 		local mainHandSlot, offHandSlot = 0,0
@@ -265,24 +269,24 @@ do
 			local itemSlotID = module.db.itemsSlotTable[i]
 			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
 			inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
-			
+
 			local _,itemLink = inspectScantip:GetItem()
 			if itemLink and (itemSlotID == 16 or itemSlotID == 17) and itemLink:find("item::") then
 				itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
 			end
-			
+
 			if itemLink then
 				inspectData['items'][itemSlotID] = itemLink
 				--inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
 				local itemID = itemLink:match("item:(%d+):")
-				
+
 				if itemSlotID == 16 or itemSlotID == 17 then
 					local _,_,quality = GetItemInfo(itemLink)
 					if quality == 6 then
 						isArtifactEqipped = isArtifactEqipped + 1
 					end
 				end
-				
+
 				local AzeritePowers = nil
 				if not ExRT.isClassic then
 					local isAzeriteItem = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink)
@@ -293,11 +297,11 @@ do
 							for j=1,#powers do
 								for k=1,#powers[j].azeritePowerIDs do
 									local powerID = powers[j].azeritePowerIDs[k]
-									
+
 									local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
 									if powerData then
 										local spellName,_,spellTexture = GetSpellInfo(powerData.spellID)
-										
+
 										if spellName then
 											AzeritePowers[#AzeritePowers+1] = {
 												name = spellName,
@@ -310,7 +314,7 @@ do
 												tier = j,
 											}
 										end
-										
+
 										cooldownsModule.db.spell_isAzeriteTalent[powerData.spellID] = true
 									end
 								end
@@ -326,7 +330,7 @@ do
 				if AzeritePowers then
 					inspectData.azerite["i"..itemSlotID] = AzeritePowers
 				end
-				
+
 				for j=2, inspectScantip:NumLines() do
 					local tooltipLine = _G["ExRTInspectScanningTooltipTextLeft"..j]
 					local text = tooltipLine:GetText()
@@ -348,15 +352,15 @@ do
 								end
 							end
 						end
-						
+
 						local ilvl = text:match(ITEM_LEVEL)
 						if ilvl then
 							ilvl = tonumber(ilvl)
 							inspectData['ilvl'] = inspectData['ilvl'] + ilvl
 							ilvl_count = ilvl_count + 1
-							
+
 							inspectData['items_ilvl'][itemSlotID] = ilvl
-							
+
 							if itemSlotID == 16 then
 								mainHandSlot = ilvl
 								ArtifactIlvlSlot1 = ilvl
@@ -371,7 +375,7 @@ do
 								]]
 							end
 						end
-						
+
 						if AzeritePowers then
 							for k=1,#AzeritePowers do
 								if text:find(AzeritePowers[k].name.."$") == 3 then
@@ -400,7 +404,7 @@ do
 									if isMajor then
 										local ess = EssencePowers[k][tier]
 										inspectData.essence[#inspectData.essence + 1] = ess
-	
+
 										cooldownsModule.db.session_gGUIDs[name] = {ess.spellID,"essence"}
 										for l=tier-1,1,-1 do
 											local ess = EssencePowers[k][l]
@@ -429,13 +433,13 @@ do
 					if ilvl then
 						inspectData['ilvl'] = inspectData['ilvl'] + ilvl
 						ilvl_count = ilvl_count + 1
-						
+
 						inspectData['items_ilvl'][itemSlotID] = ilvl
 					end
 				end
-				
+
 				itemID = tonumber(itemID or 0)
-				
+
 				--------> ExCD2
 				local tierSetID = cooldownsModule.db.tierSetsList[itemID]
 				if tierSetID then
@@ -445,15 +449,15 @@ do
 				if isTrinket then
 					cooldownsModule.db.session_gGUIDs[name] = {isTrinket,"item"}
 				end
-				
-				
+
+
 				--------> Relic
 				if (itemSlotID == 16 or itemSlotID == 17) and isArtifactEqipped > 0 then
 					--|cffe6cc80|Hitem:128935::140840:139250:140840::::110:262:16777472:9:1:744:113:1:3:3443:1472:3336:2:1806:1502:3:3443:1467:1813|h[Кулак Ра-дена]|h
 					--|cffe6cc80|Hitem:128908::140837:140841:140817::::110:65 :256     :9:1:751:660:3:3516:1502:3337:3:3516:1497:3336:3:3515:1477:1813|h[Боевые мечи валарьяров]|h|r
-					
+
 					local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",itemLink,15)
-										
+
 					if ((gem1 and gem1 ~= "") or (gem2 and gem2 ~= "") or (gem1 and gem3 ~= "")) and (numBonusIDs and numBonusIDs ~= "") then
 						numBonusIDs = tonumber(numBonusIDs)
 						for j=1,numBonusIDs do
@@ -465,15 +469,15 @@ do
 						end
 						if restLink then
 							restLink = restLink:gsub("|h.-$","")
-						
+
 							if upgradeType and (tonumber(upgradeType) or 0) < 1000 then
 								local _,newRestLink = strsplit(":",restLink,2)
 								restLink = newRestLink
 							else
 								local _,_,newRestLink = strsplit(":",restLink,3)
-								restLink = newRestLink							
+								restLink = newRestLink
 							end
-							
+
 							for relic=1,3 do
 								if not restLink then
 									break
@@ -481,11 +485,11 @@ do
 								local numBonusRelic,newRestLink = strsplit(":",restLink,2)
 								numBonusRelic = tonumber(numBonusRelic or "?") or 0
 								restLink = newRestLink
-								
+
 								if numBonusRelic > 10 then	--Got Error in parsing here
 									break
 								end
-								
+
 								local relicBonus = numBonusRelic
 								for j=1,numBonusRelic do
 									if not restLink then
@@ -493,9 +497,9 @@ do
 									end
 									local bonusID,newRestLink = strsplit(":",restLink,2)
 									restLink = newRestLink
-									relicBonus = relicBonus .. ":" .. bonusID					
+									relicBonus = relicBonus .. ":" .. bonusID
 								end
-								
+
 								local relicItemID = select(3+relic, strsplit(":",itemLink) )
 								if relicItemID and relicItemID ~= "" then
 									inspectData['items']['relic'..relic] = "item:"..relicItemID.."::::::::110:0::0:"..relicBonus..":::"
@@ -505,17 +509,17 @@ do
 					end
 				end
 			end
-			
+
 			inspectScantip:ClearLines()
 		end
 		if isArtifactEqipped > 0 then
 			inspectData['ilvl'] = inspectData['ilvl'] - ArtifactIlvlSlot1 - ArtifactIlvlSlot2 + max(ArtifactIlvlSlot1,ArtifactIlvlSlot2) * 2
-			
+
 		elseif mainHandSlot > 0 and offHandSlot == 0 then
 			inspectData['ilvl'] = inspectData['ilvl'] + mainHandSlot
 		end
 		inspectData['ilvl'] = inspectData['ilvl'] / 16
-		
+
 
 		--------> ExCD2
 		for tierUID,count in pairs(inspectData['tiersets']) do
@@ -579,9 +583,11 @@ function module:Enable()
 end
 function module:Disable()
 	module:UnregisterTimer()
-	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START')	
+	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START')
 	module:UnregisterAddonMessage()
 end
+
+local sessionSoulbindCheckLimit = false
 
 function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
@@ -589,6 +595,10 @@ function module.main:ADDON_LOADED()
 		module.db.inspectQuery[ExRT.SDB.charName] = GetTime()
 		module.db.inspectNotItemsOnly[ExRT.SDB.charName] = true
 	end
+
+	VExRT.Inspect = VExRT.Inspect or {}
+	VExRT.Inspect.Soulbinds = VExRT.Inspect.Soulbinds or {}
+
 	module:Enable()
 end
 
@@ -596,9 +606,9 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 	if arg and UnitName(arg) then
 		local name = UnitCombatlogname(arg)
 		module.db.inspectDB[name] = nil
-		
+
 		--------> ExCD2
-		VExRT.ExCD2.gnGUIDs[name] = nil		
+		VExRT.ExCD2.gnGUIDs[name] = nil
 
 		local _,class = UnitClass(name)
 		if cooldownsModule.db.spell_talentsList[class] then
@@ -612,10 +622,10 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 		end
 
 		cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
-		
+
 		cooldownsModule:UpdateAllData()
 		--------> / ExCD2
-		
+
 		module.db.inspectQuery[name] = GetTime()
 		module.db.inspectNotItemsOnly[name] = true
 	end
@@ -666,17 +676,19 @@ do
 	end
 	function module.main:ZONE_CHANGED_NEW_AREA()
 		ExRT.F.Timer(ZoneCheck,2)
-		
+
 		if not scheludedQueue then
 			scheludedQueue = ScheduleTimer(funcScheduledUpdate,4)
 		end
 	end
 	function module.main:CHALLENGE_MODE_START()
 		ExRT.F.Timer(ZoneCheck,2)
-		
+
 		if not scheludedQueue then
 			scheludedQueue = ScheduleTimer(funcScheduledUpdate,4)
 		end
+
+		module.main:ENCOUNTER_START()
 	end
 end
 
@@ -704,7 +716,7 @@ do
 				end
 				module:ResetTimer()
 				local _,class,classID = UnitClass(inspectedName)
-				
+
 				for i,slotID in pairs(module.db.itemsSlotTable) do
 					local link = GetInventoryItemLink(inspectedName, slotID)
 				end
@@ -712,21 +724,21 @@ do
 				if not inspectForce then
 					--ScheduleTimer(InspectItems, 2.3, name, inspectedName, module.db.inspectID)
 				end
-	
+
 				if module.db.inspectDB[name] and module.db.inspectItemsOnly[name] and not module.db.inspectNotItemsOnly[name] then
 					module.db.inspectItemsOnly[name] = nil
 					return
 				end
 				module.db.inspectItemsOnly[name] = nil
 				module.db.inspectNotItemsOnly[name] = nil
-				
+
 				if module.db.inspectDB[name] then
 					wipe(module.db.inspectDB[name])
 				else
 					module.db.inspectDB[name] = {}
 				end
 				local data = module.db.inspectDB[name]
-				
+
 				data.spec = floor( GetInspectSpecialization(inspectedName) + 0.5 )
 				if data.spec < 1000 then
 					VExRT.ExCD2.gnGUIDs[name] = data.spec
@@ -739,7 +751,7 @@ do
 				data.GUID = UnitGUID(inspectedName)
 				data.lastUpdate = currTime
 				data.lastUpdateTime = time()
-				
+
 				local specIndex = 1
 				for i=1,GetNumSpecializationsForClassID(classID) do
 					if GetSpecializationInfoForClassID(classID,i) == data.spec then
@@ -748,12 +760,12 @@ do
 					end
 				end
 				data.specIndex = specIndex
-				
+
 				for i=1,7 do
 					data[i] = 0
 				end
 				data.talentsIDs = {}
-				
+
 				local classTalents = cooldownsModule.db.spell_talentsList[class]
 				if classTalents then
 					for _,list in pairs(classTalents) do
@@ -769,16 +781,16 @@ do
 						cooldownsModule.db.session_gGUIDs[name] = {spellID,"autotalent"}
 					end
 				end
-				
+
 				for i=0,20 do
 					local row,col = (i-i%3)/3+1,i%3+1
-				
+
 					local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(row,col,specIndex,true,inspectedName)
 					if selected then
 						data[row] = col
 						data.talentsIDs[row] = talentID
 					end
-					
+
 					--------> ExCD2
 					if spellID then
 						local list = cooldownsModule.db.spell_talentsList[class]
@@ -786,14 +798,20 @@ do
 							list = {}
 							cooldownsModule.db.spell_talentsList[class] = list
 						end
-						
+
 						list[specIndex] = list[specIndex] or {}
-						
+
 						list[specIndex][i+1] = spellID
 						if selected or grantedByAura then
 							cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+
+							if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+								for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+									cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+								end
+							end
 						end
-						
+
 						cooldownsModule.db.spell_isTalent[spellID] = true
 					end
 					--------> /ExCD2
@@ -801,10 +819,10 @@ do
 
 				for i=1,4 do
 					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
-					if talentID then					
+					if talentID then
 						data[i+7] = 1
 						data.talentsIDs[i+7] = talentID
-						
+
 						local _, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetPvpTalentInfoByID(talentID)
 						if spellID then
 							local list = cooldownsModule.db.spell_talentsList[class]
@@ -812,20 +830,20 @@ do
 								list = {}
 								cooldownsModule.db.spell_talentsList[class] = list
 							end
-							
+
 							list[-1] = list[-1] or {}
-							
+
 							list[-1][spellID] = spellID
-							
+
 							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
-							
+
 							--cooldownsModule.db.spell_isTalent[spellID] = true
 							cooldownsModule.db.spell_isPvpTalent[spellID] = true
 						end
 					end
 				end
 				InspectItems(name, inspectedName, module.db.inspectID)
-				
+
 				cooldownsModule:UpdateAllData() 	--------> ExCD2
 			end
 		end
@@ -851,7 +869,7 @@ do
 		local _,_,_,_,_,name,realm = GetPlayerInfoByGUID(guid)
 		if name then
 			if realm and realm ~= "" then name = name.."-"..realm end
-			
+
 			if module.db.inspectDBAch[name] then
 				wipe(module.db.inspectDBAch[name])
 			else
@@ -859,6 +877,7 @@ do
 			end
 			local data = module.db.inspectDBAch[name]
 			data.guid = guid
+			data.points = GetComparisonAchievementPoints()
 			for _,id in pairs(module.db.acivementsIDs) do
 				if id > 0 then
 					local completed, month, day, year, unk1 = GetAchievementComparisonInfo(id)
@@ -899,6 +918,120 @@ function module.main:PLAYER_EQUIPMENT_CHANGED(arg)
 	module.db.inspectQuery[name] = GetTime()
 end
 
+local function sortSoulbindTree(a,b)
+	return a.row < b.row
+end
+function module:PrepCovenantData()
+	if not ExRT.is90 or ExRT.isClassic then
+		return
+	end
+
+	local covenantID = C_Covenants.GetActiveCovenantID()
+	if covenantID == 0 then
+		return
+	end
+
+	local soulbindID = C_Soulbinds.GetActiveSoulbindID()
+	if soulbindID == 0 then
+		return
+	end
+
+	local soulbindData = C_Soulbinds.GetSoulbindData(soulbindID)
+	local covenantData = C_Covenants.GetCovenantData(soulbindData.covenantID)
+
+	local soulbinds
+	if soulbindData and soulbindData.tree and soulbindData.tree.nodes then
+		soulbinds = "S:"..covenantID..":"..soulbindID
+		sort(soulbindData.tree.nodes,sortSoulbindTree)
+		for i=1,#soulbindData.tree.nodes do
+			local node = soulbindData.tree.nodes[i]
+			if node.state == Enum.SoulbindNodeState.Selected then
+				if node.conduitID ~= 0 then
+					soulbinds = soulbinds .. ":" .. node.conduitID .. "-".. node.conduitRank .. "-"..node.conduitType
+				else
+					soulbinds = soulbinds .. ":" .. node.spellID
+				end
+			end
+		end
+	end
+	return soulbinds
+end
+
+function module:SoulbindReq(unit)
+	ExRT.F.SendExMsg("inspect","REQ\tS\t"..unit)
+end
+
+if ExRT.isClassic then
+	module.TALENTDATA = {
+		WARRIOR = {
+			{12282,16462,12286,12285,12295,12287,12290,12296,12834,12163,16493,12700,12292,12284,12281,12165,12289,12294},
+			{12321,12320,12324,12322,12329,12323,16487,12318,23584,20502,12317,12862,12328,20504,20500,12319,23881},
+			{12298,12297,12301,12299,12300,12975,12945,12797,12303,12308,12313,12302,12312,12809,12311,16538,23922},
+		},
+		PALADIN = {
+			{20262,20257,20205,20224,20237,26573,20234,9453,20210,20244,20216,20359,5923,20473},
+			{20138,20127,20189,20174,20143,20217,20468,20148,20096,20487,20254,20911,20177,20196,20925},
+			{20042,20101,25956,20335,20060,9452,20117,20375,26022,9799,20091,20111,20218,20049,20066},
+		},
+		HUNTER = {
+			{19552,19583,19557,19549,19609,24443,19559,19596,19616,19572,19598,19578,19577,19590,19621,19574},
+			{19407,19416,19421,19426,19434,19454,19498,19464,19485,19503,19461,19491,19507,19506},
+			{24293,19151,19295,19184,19159,19228,19239,19255,19263,19376,19290,19286,19370,19306,19168,19386},
+		},
+		ROGUE = {
+			{14162,14144,14138,14156,14158,14165,14179,14168,14128,16513,14113,14177,14174,14186,14983},
+			{13741,13732,13712,13733,13713,13705,13742,14251,13743,13754,13706,13715,13709,13877,13960,13707,30919,18427,13750},
+			{13958,14057,30892,13981,13975,13976,14278,14079,13983,14076,14171,30894,14185,14082,16511,30902,14183},
+		},
+		PRIEST = {
+			{14522,14524,14523,14749,14748,14531,14751,14521,14747,14520,14750,18551,14752,18544,10060},
+			{14913,14908,14889,27900,18530,15237,27811,14892,27789,14912,14909,14911,20711,14901,14898,724},
+			{15270,15268,15318,15275,15260,15392,15273,15407,15274,17322,15257,15487,15286,27839,15259,15473},
+		},
+		SHAMAN = {
+			{16039,16035,16043,28996,16038,16164,16040,16041,16086,29062,30160,28999,16089,16578,16166},
+			{17485,16253,16258,16255,16262,16261,16259,16269,16254,16256,16252,29192,16266,16268,29082,17364},
+			{16182,16179,16184,16176,16173,16180,16181,16189,29187,16187,16194,29206,16188,16178,16190},
+		},
+		MAGE = {
+			{11210,11222,11237,6057,29441,11213,11247,11242,28574,11252,11255,18462,12043,11232,15058,12042},
+			{11069,11103,11119,11100,11078,18459,11108,11366,11083,11095,11094,29074,11115,11113,11124,11129},
+			{11189,11070,29438,11207,11071,11165,11175,11151,12472,11185,16757,11160,11170,11958,11190,11180,11426},
+		},
+		WARLOCK = {
+			{18174,17810,18179,18213,18182,17804,18827,17783,18288,18218,18094,17864,18265,18223,18310,18271,18220},
+			{18692,18694,18697,18703,18705,18731,18754,18708,18748,18709,18769,18821,18788,18767,23785,19028,18774},
+			{17793,17778,17788,18119,18126,18128,18130,17877,18135,17917,17927,18096,17815,17959,17954,17962},
+		},
+		DRUID = {
+			{16814,16689,17245,16918,16821,16902,16833,16836,16864,16819,16909,16850,16880,16845,16896,24858},
+			{16934,16858,16947,16940,16929,17002,16979,16942,16966,16972,16952,16958,16998,16857,17003,17007},
+			{17050,17056,17069,17063,17079,17106,5570,17118,24968,17111,17116,17104,17123,17074,18562},
+		},
+	}
+end
+function module:PrepTalentsClassicData()
+	if not ExRT.isClassic then
+		return
+	end
+	local class = select(2,UnitClass("player"))
+	local talents
+	for spec=1,3 do
+		for talPos=1,20 do
+			local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos, 1)
+			if name and maxRank > 0 and rank > 0 then
+				talents = (talents and talents..":" or "") .. module.TALENTDATA[class][spec][talPos] .. ":" .. rank .. maxRank
+			end
+		end
+	end
+	return talents
+end
+
+function module:TalentClassicReq(unit)
+	ExRT.F.SendExMsg("inspect","REQ\tTC\t"..unit)
+	module.db.TalentNoAddon = module.db.TalentNoAddon or {}
+	module.db.TalentNoAddon[unit] = GetTime()
+end
 
 function module.main:ENCOUNTER_START()
 	if ExRT.isClassic then
@@ -973,6 +1106,11 @@ function module.main:ENCOUNTER_START()
 		str = str .. (str ~= "" and "^" or "") .. "A" .. azerite
 	end
 
+	local soulbinds = module:PrepCovenantData()
+	if soulbinds then
+		str = str .. (str ~= "" and "^" or "") .. soulbinds
+	end
+
 	if str ~= "" then
 		ExRT.F.SendExMsg("inspect","R\t"..str)
 	end
@@ -987,16 +1125,16 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 			while str do
 				local main,next = strsplit("^",str,2)
 				str = next
-				
+
 				local key = main:sub(1,1)
 				if key == "E" then
 					cooldownsModule:ClearSessionDataReason(sender,"essence")
 					cooldownsModule:ClearSessionDataReason(senderFull,"essence")
-					
+
 					local essencePowers = module:GetEssenceDataByKey()
-					
+
 					local _,tiers,list = strsplit(":",main,3)
-					local count = 0					
+					local count = 0
 					while list do
 						local now,on = strsplit(":",list,2)
 						list = on
@@ -1037,7 +1175,7 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 							cooldownsModule.db.spell_isTalent[spellID] = true
 							--print(sender,'added talent',spellID)
 						end
-					end					
+					end
 				elseif key == "A" then
 					cooldownsModule:ClearSessionDataReason(sender,"azerite")
 					cooldownsModule:ClearSessionDataReason(senderFull,"azerite")
@@ -1058,6 +1196,109 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 								--print(sender,'added azerite',powerID)
 							end
 						end
+					end
+				elseif key == "S" then
+					cooldownsModule:ClearSessionDataReason(sender,"soulbind")
+					cooldownsModule:ClearSessionDataReason(senderFull,"soulbind")
+
+					local _,covenantID,soulbindID,tree = strsplit(":",main,4)
+					covenantID = tonumber(covenantID)
+					cooldownsModule:AddCovenant(sender,covenantID)
+					cooldownsModule:AddCovenant(senderFull,covenantID)
+					while tree do
+						local powerStr,on = strsplit(":",tree,2)
+						tree = on
+
+						local spellID = tonumber(powerStr)
+						if spellID then
+							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"soulbind"}
+						else
+							local conduitID,conduitRank,conduitType = strsplit("-",powerStr,3)
+
+							if conduitID and conduitRank then
+								conduitID = tonumber(conduitID) or 0
+								conduitRank = tonumber(conduitRank) or 0
+								spellID = C_Soulbinds.GetConduitSpellID(conduitID,conduitRank)
+
+								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+								cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"soulbind"}
+								cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
+								cooldownsModule:SetSoulbindRank(senderFull,spellID,conduitRank)
+							end
+						end
+					end
+
+					if not sessionSoulbindCheckLimit then
+						sessionSoulbindCheckLimit = true
+						local count = 0
+						for _ in pairs(VExRT.Inspect.Soulbinds) do count = count + 1 end
+						if count > 1500 then
+							wipe(VExRT.Inspect.Soulbinds)
+						end
+					end
+
+					VExRT.Inspect.Soulbinds[senderFull] = time()..main:sub(2)
+				elseif key == "t" and ExRT.isClassic then
+					cooldownsModule:ClearSessionDataReason(sender,"talent")
+					cooldownsModule:ClearSessionDataReason(senderFull,"talent")
+
+					local _,list = strsplit(":",main,2)
+					while list do
+						local spellID,ranks,on = strsplit(":",list,3)
+						list = on
+
+						spellID = tonumber(spellID or "?")
+						if spellID and spellID ~= 0 then
+							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"talent"}
+							--cooldownsModule.db.spell_isTalent[spellID] = true
+						end
+					end
+
+					VExRT.Inspect.TalentsClassic = VExRT.Inspect.TalentsClassic or {}
+					if not sessionSoulbindCheckLimit then
+						sessionSoulbindCheckLimit = true
+						local count = 0
+						for _ in pairs(VExRT.Inspect.TalentsClassic) do count = count + 1 end
+						if count > 1500 then
+							wipe(VExRT.Inspect.TalentsClassic)
+						end
+					end
+
+					VExRT.Inspect.TalentsClassic[senderFull] = time()..main:sub(2)
+				end
+			end
+		elseif subPrefix == "REQ" then
+			local arg1, unit = ...
+			if unit and (unit == UnitName'player' or strsplit("-",unit) == UnitName'player') then
+				local currTime = GetTime()
+				if module.db.reqantispam and (currTime - module.db.reqantispam < 5) then
+					return
+				end
+				module.db.reqantispam = currTime
+
+				if arg1 == "S" then
+					local soulbinds = module:PrepCovenantData()
+					local str = ""
+
+					if soulbinds then
+						str = str .. (str ~= "" and "^" or "") .. soulbinds
+					end
+
+					if str ~= "" then
+						ExRT.F.SendExMsg("inspect","R\t"..str)
+					end
+				elseif arg1 == "TC" and ExRT.isClassic then
+					local talents = module:PrepTalentsClassicData()
+					local str = ""
+
+					if talents then
+						str = str .. (str ~= "" and "^" or "") .. talents
+					end
+
+					if str ~= "" then
+						ExRT.F.SendExMsg("inspect","R\tt:"..str)
 					end
 				end
 			end

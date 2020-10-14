@@ -13,6 +13,20 @@ local error, tostring, type, pairs, ipairs, select, tonumber, tsort, twipe, mflo
 local NORMAL_FONT_COLOR, SPELL_FAILED_OUT_OF_RANGE = NORMAL_FONT_COLOR, SPELL_FAILED_OUT_OF_RANGE
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
+--Hard code STANDARD_TEXT_FONT since skinning mods like to taint it (or worse, set it to nil, wtf?)
+local standardFont
+if LOCALE_koKR then
+	standardFont = "Fonts\\2002.TTF"
+elseif LOCALE_zhCN then
+	standardFont = "Fonts\\ARKai_T.ttf"
+elseif LOCALE_zhTW then
+	standardFont = "Fonts\\blei00d.TTF"
+elseif LOCALE_ruRU then
+	standardFont = "Fonts\\FRIZQT___CYR.TTF"
+else
+	standardFont = "Fonts\\FRIZQT__.TTF"
+end
+
 --------------
 --  Locals  --
 --------------
@@ -148,6 +162,13 @@ do
 				info.arg1 = 20
 				info.checked = (DBM.Options.InfoFrameLines == 20)
 				UIDropDownMenu_AddButton(info, 2)
+
+				info = UIDropDownMenu_CreateInfo()
+				info.text = L.INFOFRAME_LINES_TO:format(30)
+				info.func = setLines
+				info.arg1 = 30
+				info.checked = (DBM.Options.InfoFrameLines == 30)
+				UIDropDownMenu_AddButton(info, 2)
 			elseif menu == "cols" then
 				info = UIDropDownMenu_CreateInfo()
 				info.text = L.INFOFRAME_LINESDEFAULT
@@ -190,6 +211,13 @@ do
 				info.arg1 = 5
 				info.checked = (DBM.Options.InfoFrameCols == 5)
 				UIDropDownMenu_AddButton(info, 2)
+
+				info = UIDropDownMenu_CreateInfo()
+				info.text = L.INFOFRAME_COLS_TO:format(6)
+				info.func = setCols
+				info.arg1 = 6
+				info.checked = (DBM.Options.InfoFrameCols == 6)
+				UIDropDownMenu_AddButton(info, 2)
 			end
 		end
 	end
@@ -199,7 +227,7 @@ end
 --  Create the frame  --
 ------------------------
 function createFrame()
-	frame = CreateFrame("Frame", "DBMInfoFrame", UIParent, DBM:IsAlpha() and "BackdropTemplate")
+	frame = CreateFrame("Frame", "DBMInfoFrame", UIParent, "BackdropTemplate")
 	frame:Hide()
 	frame:SetFrameStrata("DIALOG")
 	frame.backdropInfo = {
@@ -207,11 +235,7 @@ function createFrame()
 		tile		= true,
 		tileSize	= 16
 	}
-	if not DBM:IsAlpha() then
-		frame:SetBackdrop(frame.backdropInfo)
-	else
-		frame:ApplyBackdrop()
-	end
+	frame:ApplyBackdrop()
 	frame:SetPoint(DBM.Options.InfoFramePoint, UIParent, DBM.Options.InfoFramePoint, DBM.Options.InfoFrameX, DBM.Options.InfoFrameY)
 	frame:SetSize(10, 10)
 	frame:SetClampedToScreen(true)
@@ -840,7 +864,7 @@ local function onUpdate(frame, table)
 			frame:Hide()
 			return
 		elseif leftText and type(leftText) ~= "string" then
-			tostring(leftText)
+			leftText = tostring(leftText)
 		end
 		local rightText = lines[leftText]
 		local extra, extraName = ssplit("*", leftText) -- Find just unit name, if extra info had to be added to make unique
@@ -906,6 +930,7 @@ local function onUpdate(frame, table)
 				end
 			else
 				color = NORMAL_FONT_COLOR
+				leftText = extraName or leftText
 			end
 			if unitId2 then -- Check right text
 				local _, class = UnitClass(unitId2)
@@ -918,8 +943,10 @@ local function onUpdate(frame, table)
 			infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, color2.r, color2.g, color2.b)
 		end
 	end
-	local maxWidth1, maxWidth2 = {}, {}
-	local linesPerRow = mmin(maxLines, mfloor(linesShown / maxCols + 0.99))
+	local maxWidth1, maxWidth2, linesPerRow = {}, {}, 5
+	if linesShown > 5 then
+		linesPerRow = mmin(maxLines, mfloor(linesShown / maxCols + 0.99))
+	end
 	local shouldUpdate = prevLines ~= linesShown
 	for i = 1, linesShown do
 		if shouldUpdate then
@@ -932,23 +959,30 @@ local function onUpdate(frame, table)
 		maxWidth1[m] = mmax(maxWidth1[m] or 0, frame.lines[i * 2 - 1]:GetStringWidth())
 		maxWidth2[m] = mmax(maxWidth2[m] or 0, frame.lines[i * 2]:GetStringWidth())
 	end
+	local size = DBM.Options.InfoFrameFontSize
 	local width = 0
 	for i, _ in pairs(maxWidth1) do
 		local maxWid, maxWid2 = maxWidth1[i], maxWidth2[i]
-		width = width + maxWid + maxWid2 + 18
+		width = width + maxWid + maxWid2 + size + (size / 2)
 		for ii = 1, linesPerRow do
 			local m = ((i - 1) * linesPerRow * 2) + (ii * 2)
 			if not frame.lines[m] then
 				break
 			end
-			frame.lines[m - 1]:SetSize(maxWid, 12)
-			frame.lines[m]:SetSize(maxWid2, 12)
+			frame.lines[m - 1]:SetSize(maxWid, size)
+			frame.lines[m]:SetSize(maxWid2, size)
 		end
 	end
 	if width == 0 then
 		width = 105
 	end
-	frame:SetSize(width, (linesPerRow * 12) + 12)
+	local height = size
+	if linesShown > linesPerRow then
+		height = height + (linesPerRow * size)
+	else
+		height = height + (mmin(linesShown, maxLines) * size)
+	end
+	frame:SetSize(width, height)
 	frame:Show()
 	prevLines = linesShown
 end
@@ -959,7 +993,6 @@ end
 --Arg 1: spellName, health/powervalue, customfunction, table type. Arg 2: TankIgnore, Powertype, SortFunction, totalAbsorb, sortmethod (table/stacks). Arg 3: SpellFilter, UseIcon. Arg 4: disable onUpdate. Arg 5: sortmethod (playerpower)
 function infoFrame:Show(modMaxLines, event, ...)
 	if DBM.Options.DontShowInfoFrame and not (event or ""):find("test") then
-		error("Invalid event: " .. event or "nil")
 		return
 	end
 	prevLines = 0
@@ -1077,20 +1110,34 @@ function infoFrame:ClearLines()
 end
 
 function infoFrame:AlignLine(lineNum, linesPerRow)
+	local size = DBM.Options.InfoFrameFontSize
 	local line = frame.lines[lineNum]
 	line:SetJustifyH(lineNum % 2 == 0 and "RIGHT" or "LEFT")
 	if lineNum == 1 then -- 1st entry left
-		line:SetPoint("TOPLEFT", frame, "TOPLEFT", 6, -6)
+		line:SetPoint("TOPLEFT", frame, "TOPLEFT", size / 2, -(size / 2))
 	elseif lineNum == 2 then -- 1st entry right
-		line:SetPoint("TOPLEFT", frame.lines[1], "TOPRIGHT", 6, 0)
+		line:SetPoint("TOPLEFT", frame.lines[1], "TOPRIGHT", size / 2, 0)
 	else
 		if lineNum % linesPerRow == 1 then -- Column 2-x, 1st entry left
-			line:SetPoint("TOPLEFT", frame.lines[lineNum - linesPerRow + 1], "TOPRIGHT", 12, 0)
+			line:SetPoint("TOPLEFT", frame.lines[lineNum - linesPerRow + 1], "TOPRIGHT", size, 0)
 		elseif lineNum % 2 == 0 then -- Column 2-x, Right entry
-			line:SetPoint("TOPLEFT", frame.lines[lineNum - 1], "TOPRIGHT", 6, 0)
+			line:SetPoint("TOPLEFT", frame.lines[lineNum - 1], "TOPRIGHT", size / 2, 0)
 		else -- Column 2-x, Left entry
-			line:SetPoint("TOPLEFT", frame.lines[lineNum - 2], "LEFT", 0, -6)
+			line:SetPoint("TOPLEFT", frame.lines[lineNum - 2], "LEFT", 0, -(size / 2))
 		end
+	end
+end
+
+function infoFrame:UpdateStyle()
+	if not frame then
+		createFrame()
+	end
+	prevLines = 0
+	local font = DBM.Options.InfoFrameFont == "standardFont" and standardFont or DBM.Options.InfoFrameFont
+	local size = DBM.Options.InfoFrameFontSize
+	local style = DBM.Options.InfoFrameFontStyle == "none" and nil or DBM.Options.InfoFrameFontStyle
+	for i = 1, #frame.lines do
+		frame.lines[i]:SetFont(font, size, style)
 	end
 end
 
@@ -1100,8 +1147,14 @@ function infoFrame:SetLine(lineNum, leftText, rightText, colorR, colorG, colorB,
 	end
 	lineNum = lineNum * 2 - 1
 	if not frame.lines[lineNum] then
+		local font = DBM.Options.InfoFrameFont == "standardFont" and standardFont or DBM.Options.InfoFrameFont
+		local size = DBM.Options.InfoFrameFontSize
+		local style = DBM.Options.InfoFrameFontStyle == "none" and nil or DBM.Options.InfoFrameFontStyle
 		frame.lines[lineNum] = frame:CreateFontString("Line" .. lineNum, "OVERLAY", "GameFontNormal")
+		frame.lines[lineNum]:SetFont(font, size, style)
 		frame.lines[lineNum + 1] = frame:CreateFontString("Line" .. lineNum + 1, "OVERLAY", "GameFontNormal")
+		frame.lines[lineNum + 1]:SetFont(font, size, style)
+		frame.lines[lineNum + 1]:SetJustifyH("RIGHT")
 	end
 	frame.lines[lineNum]:SetText(leftText)
 	frame.lines[lineNum]:SetTextColor(colorR or 255, colorG or 255, colorB or 255)
@@ -1131,10 +1184,16 @@ end
 
 function infoFrame:SetLines(lines)
 	modLines = lines
+	if DBM.Options.InfoFrameLines == 0 then
+		maxLines = lines
+	end
 end
 
 function infoFrame:SetColumns(columns)
 	modCols = columns
+	if DBM.Options.InfoFrameCols == 0 then
+		maxCols = columns
+	end
 end
 
 function infoFrame:IsShown()

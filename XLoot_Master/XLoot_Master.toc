@@ -1,7 +1,7 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: XLoot Master
 ## Notes: Configurable Master Looter interface
-## Version: 8.2-1
+## Version: 9.0-2
 ## Author: Xuerian, Dridzt
 ## X-Category: Inventory
 
@@ -9,8 +9,7 @@
 
 load.xml
 
+
 ## Title: |cff880303[爱不易]|r XLoot 拾取分配模块
 ## Notes: XLoot配置拾取分配的界面
 ## X-Vendor: AbyUI
-
-

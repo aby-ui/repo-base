@@ -50,7 +50,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(2094)]      = 9.1,  -- Blind
 		[GetSpellInfo(202274)]    = 9.1,  -- Brew Breath
 		[GetSpellInfo(207167)]    = 9,    -- Blinding Sleet
-		[GetSpellInfo(209753)]    = 9.1,  -- Cyclone (boomy)
+		--[GetSpellInfo(209753)]    = 9.1,  -- Cyclone (boomy)
 		[GetSpellInfo(33786)]     = 9.1,  -- Cyclone (rdruid/feral)
 		["221527"]                = 9.1,  -- Imprison talented
 		[GetSpellInfo(605)]       = 9,    -- Mind Control
@@ -246,7 +246,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(207756)]    = 5,    -- Shadowy Duel
 		[GetSpellInfo(210294)]    = 5,    -- Divine Favor
 		[GetSpellInfo(198111)]    = 5,    -- Temporal Shield
-		[GetSpellInfo(216890)]    = 5.1,  -- Spell Reflection
+		--[GetSpellInfo(216890)]    = 5.1,  -- Spell Reflection
 		[GetSpellInfo(23920)]     = 5.1,  -- Spell Reflection prot
 		[GetSpellInfo(213915)]    = 5.1,  -- Mass Spell Reflection
 		[GetSpellInfo(147833)]    = 5.2,  -- Intercepted Spell Redirect
@@ -258,7 +258,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(206804)]    = 4,    -- Rain from Above
 		[GetSpellInfo(1044)]      = 4,    -- Blessing of Freedom
 		[GetSpellInfo(290500)]    = 4,    -- Wind Waker
-		[GetSpellInfo(216113)]    = 4,    -- Way of the crane
+		--[GetSpellInfo(216113)]    = 4,    -- Way of the crane
 		[GetSpellInfo(199545)]    = 4,    -- prot pala freedom
 		[GetSpellInfo(48265)]     = 4,    -- death's advance
 		[GetSpellInfo(201447)]    = 4,    -- Ride the Wind
@@ -292,7 +292,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(102558)]    = 3,    -- Incarnation: Son of Ursoc
 		[GetSpellInfo(19574)]     = 3,    -- Bestial Wrath
 		[GetSpellInfo(190319)]    = 3,    -- Combustion
-		[GetSpellInfo(193526)]    = 3,    -- Trueshot
+		--[GetSpellInfo(193526)]    = 3,    -- Trueshot
 		[GetSpellInfo(266779)]    = 3,    -- Coordinated Assault
 		[GetSpellInfo(1719)]      = 3,    -- Recklessness
 		[GetSpellInfo(194223)]    = 3,    -- Celestial Alignment

@@ -887,7 +887,7 @@ do
 		-- ----------------------------------------------------------------------------
 		-- Initialize the configuration options.
 		-- ----------------------------------------------------------------------------
-		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. select(3, _G.GetCurrencyInfo(CURRENCY_IDS_BY_NAME.CURIOUS_COIN)) .. DISPLAY_ICON_STRING2
+		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. C_CurrencyInfo.GetCurrencyInfo(CURRENCY_IDS_BY_NAME.CURIOUS_COIN).iconFileID .. DISPLAY_ICON_STRING2
 
 		-- Provide settings options for non-money currencies
 		local function SetOptions(brokerArgs, summaryArgs, idnum, index)

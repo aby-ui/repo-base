@@ -1,5 +1,6 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: WeakAuras Archive
+## Author: The WeakAuras Team
 ## LoadOnDemand: 1
 ## SavedVariables: WeakAurasArchive
 ## Dependencies: WeakAuras

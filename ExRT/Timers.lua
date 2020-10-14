@@ -4,7 +4,7 @@ local math_ceil, IsEncounterInProgress, abs, UnitHealth, UnitHealthMax, GetTime,
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local VExRT = nil
 
-local module = ExRT.mod:New("Timers",ExRT.L.timers,nil,true)
+local module = ExRT.mod:New("Timers",ExRT.L.timers)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.lasttimertopull = 0
@@ -77,13 +77,19 @@ local function CreateTimers(ctime,cname)
 	if cname == L.timerattack then
 		SendAddonMessage("BigWigs", "P^Pull^"..ctime, chat_type,playerName)
 		local _,_,_,_,_,_,_,mapID = GetInstanceInfo()
-		SendAddonMessage("D4", ("PT\t%d\t%d"):format(ctime,mapID or -1), chat_type,playerName)
+		SendAddonMessage("D4", ("PT\t%d\t%d"):format(ctime,mapID or 0), chat_type,playerName)
+		if ExRT.is90 and not ExRT.isClassic and VExRT.Timers.BlizzTimer then --currently is bugged, wait to fix
+			C_PartyInfo.DoCountdown(ctime)
+		end
+	elseif cname == L.timerafk then
+		SendAddonMessage("BigWigs", "P^Break^"..ctime, chat_type,playerName)
+		SendAddonMessage("D4", ("BT\t%d"):format(ctime), chat_type,playerName)
 	else
 		SendAddonMessage("BigWigs", "P^CBar^"..ctime.." "..cname, chat_type,playerName)
-		if ctime == 0 then
-			ctime = 1
-		end
 		SendAddonMessage("D4", ("U\t%d\t%s"):format(ctime,cname), chat_type,playerName)
+		if ExRT.is90 and not ExRT.isClassic and VExRT.Timers.BlizzTimer then
+			C_PartyInfo.DoCountdown(0)
+		end
 	end
 end
 
@@ -178,19 +184,19 @@ function module:slash(arg,msgDeformatted)
 		end
 		ExRT.F:DoPull(sec,true)
 	elseif arg:find("^afk ") then
-		local id = arg:match("%d+")
-		if id then
-			id = tonumber(id)
-			if id > 0 then
-				CreateTimers(id*60,L.timerafk)
-				ToRaid(L.timerafk.." "..math.ceil(id).." "..L.timermin)
+		local min = arg:match("[%d%.]+")
+		if min then
+			min = tonumber(min)
+			if min > 0 then
+				CreateTimers(min*60,L.timerafk)
+				ToRaid(L.timerafk.." "..min.." "..L.timermin)
 			else
 				CreateTimers(0,L.timerafk)
 				ToRaid(L.timerafkcancel)
 			end
 		end
 	elseif arg:find("^timer ") then
-		local timerName,timerTime = msgDeformatted:match("^[Tt][Ii][Mm][Ee][Rr] (.-) ([0-9%.]+)")
+		local timerName,timerTime = msgDeformatted:match("^[Tt][Ii][Mm][Ee][Rr] (.-) ([%d%.]+)")
 		if not timerName or not timerTime then
 			return
 		end
@@ -231,16 +237,24 @@ function module.options:Load()
 		GetSpecializationInfoByID = ExRT.Classic.GetSpecializationInfoByID
 	end
 
-	self.shtml1 = ELib:Text(self,L.timerstxt1,12):Size(650,200):Point(5,-30):Top()
-	self.shtml2 = ELib:Text(self,L.timerstxt2,12):Size(550,200):Point(105,-30):Top():Color()
+	self.shtml1 = ELib:Text(self,L.timerstxt1,12):Size(650,200):Point(15,-20):Top()
+	self.shtml2 = ELib:Text(self,L.timerstxt2,12):Size(550,200):Point(115,-20):Top():Color()
 	
-	self.chkDisableRW = ELib:Check(self,L.TimerDisableRWmessage,VExRT.Timers.DisableRW):Point(5,-160):OnClick(function(self) 
+	self.chkDisableRW = ELib:Check(self,L.TimerDisableRWmessage,VExRT.Timers.DisableRW):Point(15,-150):OnClick(function(self) 
 		VExRT.Timers.DisableRW = self:GetChecked()
 	end)
+
+	self.chkDisableRW = ELib:Check(self,L.TimerEnableBlizz,VExRT.Timers.BlizzTimer):Tooltip(L.TimerEnableBlizzTooltip):Point(15,-175):OnClick(function(self) 
+		VExRT.Timers.BlizzTimer = self:GetChecked()
+	end):Shown(not ExRT.isClassic)
 	
-	self.TabTimerFrame = ELib:OneTab(self):Size(650,110):Point("TOP",0,-190)
+	self.TabTimerFrame = ELib:OneTab(self):Size(678,155):Point("TOP",0,-205)
+	ELib:Border(self.TabTimerFrame,0)
+
+	ELib:DecorationLine(self):Point("BOTTOM",self.TabTimerFrame,"TOP",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
+	ELib:DecorationLine(self):Point("TOP",self.TabTimerFrame,"BOTTOM",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
 	
-	self.chkEnable = ELib:Check(self.TabTimerFrame,L.timerTimerFrame,VExRT.Timers.enabled):Point(10,-10):OnClick(function(self) 
+	self.chkEnable = ELib:Check(self.TabTimerFrame,L.timerTimerFrame,VExRT.Timers.enabled):Point(5,-5):AddColorState():OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.enabled = true
 			module.frame:Show()
@@ -258,7 +272,7 @@ function module.options:Load()
 		end
 	end)
 	
-	self.chkOnlyInCombat = ELib:Check(self.TabTimerFrame,L.TimerOnlyInCombat,VExRT.Timers.OnlyInCombat):Point(10,-35):OnClick(function(self) 
+	self.chkOnlyInCombat = ELib:Check(self.TabTimerFrame,L.TimerOnlyInCombat,VExRT.Timers.OnlyInCombat):Point(5,-30):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.OnlyInCombat = true
 			if not (module.frame.inCombat or module.frame.encounter) then
@@ -272,7 +286,7 @@ function module.options:Load()
 		end
 	end)
 	
-	self.chkFixate = ELib:Check(self.TabTimerFrame,L.cd2fix,VExRT.Timers.Lock):Point(338,-10):OnClick(function(self) 
+	self.chkFixate = ELib:Check(self.TabTimerFrame,L.cd2fix,VExRT.Timers.Lock):Point(339,-5):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.Lock = true
 			module.frame:SetMovable(false)
@@ -284,7 +298,7 @@ function module.options:Load()
 		end
 	end)
 	
-	self.chkTimeToKill = ELib:Check(self.TabTimerFrame,L.TimerTimeToKill,VExRT.Timers.timeToKill):Point(338,-35):Tooltip(L.TimerTimeToKillHelp):OnClick(function(self) 
+	self.chkTimeToKill = ELib:Check(self.TabTimerFrame,L.TimerTimeToKill,VExRT.Timers.timeToKill):Point(339,-30):Tooltip(L.TimerTimeToKillHelp):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.timeToKill = true
 			timeToKillEnabled = true
@@ -295,14 +309,14 @@ function module.options:Load()
 		end
 	end)
 	
-	self.sliderTimeToKill = ELib:Slider(self.TabTimerFrame,L.TimerTimeToKillTime):Size(100):Point("LEFT",self.chkTimeToKill,"LEFT",180,5):Range(5,40):SetTo(VExRT.Timers.timeToKillAnalyze):OnChange(function(self,event) 
+	self.sliderTimeToKill = ELib:Slider(self.TabTimerFrame,L.TimerTimeToKillTime):Size(100):Point("LEFT",self.chkTimeToKill,"LEFT",180,2):Range(5,40):SetTo(VExRT.Timers.timeToKillAnalyze):OnChange(function(self,event) 
 		event = event - event%1
 		VExRT.Timers.timeToKillAnalyze = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 	end)
 	
-	self.ButtonToCenter = ELib:Button(self.TabTimerFrame,L.TimerResetPos):Size(255,20):Point(10,-60):Tooltip(L.TimerResetPosTooltip):OnClick(function()
+	self.ButtonToCenter = ELib:Button(self.TabTimerFrame,L.TimerResetPos):Size(324,20):Point(5,-80):Tooltip(L.TimerResetPosTooltip):OnClick(function()
 		VExRT.Timers.Left = nil
 		VExRT.Timers.Top = nil
 
@@ -310,7 +324,7 @@ function module.options:Load()
 		module.frame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 	end) 
 	
-	self.TimerFrameStrataDropDown = ELib:DropDown(self.TabTimerFrame,275,8):Point(338,-60):Size(200):SetText(L.S_Strata)
+	self.TimerFrameStrataDropDown = ELib:DropDown(self.TabTimerFrame,275,8):Point(338,-60):Size(324):SetText(L.S_Strata)
 	local function TimerFrameStrataDropDown_SetVaule(_,arg)
 		VExRT.Timers.Strata = arg
 		ELib:DropDownClose()
@@ -329,7 +343,7 @@ function module.options:Load()
 		}
 	end
 
-	self.setTypeText = ELib:Text(self.TabTimerFrame,TYPE..":",11):Point(10,-85):Size(0,25)
+	self.setTypeText = ELib:Text(self.TabTimerFrame,TYPE..":",11):Point(5,-55):Size(0,25)
 	
 	self.setType1 = ELib:Radio(self.TabTimerFrame,"1",VExRT.Timers.Type == 1 or not VExRT.Timers.Type):Point("LEFT",self.setTypeText,"RIGHT", 15, 0):OnClick(function(self) 
 		self:SetChecked(true)
@@ -348,14 +362,32 @@ function module.options:Load()
 			module.frame:SetScript("OnUpdate", module.frame.OnUpdateFunc)
 		end
 	end)
+
+
+	self.SliderScale = ELib:Slider(self.TabTimerFrame,L.marksbarscale):Size(280):Point("TOP",-170,-120):Range(10,400):SetTo(VExRT.Timers.Scale or 100):OnChange(function(self,event) 
+		event = event - event%1
+		VExRT.Timers.Scale = event
+		ExRT.F.SetScaleFix(module.frame,event/100)
+		self.tooltipText = event
+		self:tooltipReload(self)
+	end)
 	
-	self.chkDPT = ELib:Check(self,L.TimerUseDptInstead,VExRT.Timers.useDPT):Point(5,-310):OnClick(function(self) 
+	self.SliderAlpha = ELib:Slider(self.TabTimerFrame,L.marksbaralpha):Size(280):Point("TOP",170,-120):Range(0,100):SetTo(VExRT.Timers.Alpha or 100):OnChange(function(self,event) 
+		event = event - event%1
+		VExRT.Timers.Alpha = event
+		module.frame:SetAlpha(event/100)
+		self.tooltipText = event
+		self:tooltipReload(self)
+	end)
+
+	
+	self.chkDPT = ELib:Check(self,L.TimerUseDptInstead,VExRT.Timers.useDPT):Point(15,-370):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Timers.useDPT = true
 		else
 			VExRT.Timers.useDPT = nil
 		end
-	end)
+	end):Shown(not ExRT.isClassic)
 	
 	local function SpecsEditBoxTextChanged(self,isUser)
 		if not isUser then
@@ -374,8 +406,9 @@ function module.options:Load()
 		VExRT.Timers.specTimes[spec] = val
 	end
 	
-	self.scrollFrame = ELib:ScrollFrame(self):Size(650,260):Point("TOP",0,-350):Height(600)
-	self.scrollFrameText = ELib:Text(self,L.TimerSpecTimerHeader,12):Size(620,30):Point("BOTTOMLEFT",self.scrollFrame,"TOPLEFT",5,5):Bottom()
+	self.scrollFrame = ELib:ScrollFrame(self):Size(678,220):Point("TOP",0,-413):Height(600):Shown(not ExRT.isClassic)
+	ELib:Border(self.scrollFrame,0)
+	self.scrollFrameText = ELib:Text(self,L.TimerSpecTimerHeader,12):Size(620,30):Point("BOTTOMLEFT",self.scrollFrame,"TOPLEFT",5,5):Bottom():Shown(not ExRT.isClassic)
 	self.scrollFrame.C.classTitles = {}
 	self.scrollFrame.C.classFrames = {}
 	for key, class in ipairs(module.db.classNames) do
@@ -460,6 +493,9 @@ function module.main:ADDON_LOADED()
 	
 	module:RegisterTimer()
 	module:RegisterSlash()
+
+	if VExRT.Timers.Alpha then module.frame:SetAlpha(VExRT.Timers.Alpha/100) end
+	if VExRT.Timers.Scale then module.frame:SetScale(VExRT.Timers.Scale/100) end
 end
 
 function module.main:PLAYER_REGEN_DISABLED()
@@ -481,7 +517,7 @@ function module.main:PLAYER_REGEN_ENABLED()
 	end
 end
 
-module.frame = CreateFrame("Frame",nil,UIParent)
+module.frame = CreateFrame("Frame",nil,UIParent,BackdropTemplateMixin and "BackdropTemplate")
 module.frame:Hide()
 module.frame:SetSize(77,27)
 module.frame:SetPoint("CENTER", 0, 0)
@@ -532,7 +568,7 @@ function module:UpdateView(t)
 		self.txt_s:SetText("00")
 		self.txt_ms:SetText(".0")
 		self.txt:Size(29+4,27):Point("LEFT",-4,0):Right():Font(ExRT.F.defFont,20):Color():Shadow():Outline()
-		self.txt_s:Size(25,27):Point("LEFT",25,0):Left():Font(ExRT.F.defFont,20):Color():Shadow():Outline()
+		self.txt_s:Size(27,27):Point("LEFT",25,0):Left():Font(ExRT.F.defFont,20):Color():Shadow():Outline()
 		self.txt_ms:Size(0,27):Point("LEFT",45,-3):Left():Font(ExRT.F.defFont,12):Color():Shadow():Outline()
 		self.killTime:Size(77,27):Point("TOP",self,"BOTTOM",0,3):Top():Center():Font(ExRT.F.defFont,14):Color():Shadow():Outline()
 		

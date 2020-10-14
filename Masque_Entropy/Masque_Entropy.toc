@@ -1,19 +1,20 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Masque: Entropy
 
 ## Notes: Entropy skins for Masque.
 ## Notes-deDE: Entropy-Skin für Masque.
-## Notes-esES: Skin Entropy para Masque.
-## Notes-esMX: Skin Entropy para Masque.
-## Notes-itIT: Skin Entropy per Masque.
+## Notes-esMX: Skins Entropy para Masque.
+## Notes-esES: Skins Entropy para Masque.
+## Notes-frFR: Skins de Entropy pour Masque.
+## Notes-itIT: Skins Entropy per Masque.
 ## Notes-ruRU: Скин Entropy для Masque.
 ## Notes-zhTW: Masque的Entropy皮膚。
 
-## Version: 8.2.5
+## Version: 9.0.0
 ## Author: StormFX
 ## Dependencies: Masque
 
-## X-Website: https://github.com/StormFX/Masque_Entropy
+## X-Website: https://github.com/SFX-WoW/Masque_Entropy
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal
 ## X-Curse-Project-ID: 13595

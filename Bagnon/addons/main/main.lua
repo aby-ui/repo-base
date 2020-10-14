@@ -5,4 +5,5 @@
 
 local ADDON, Addon = ...
 Addon.ItemSlot = Addon.Item -- deprecated behavior
+Addon.FrameTemplate = BackdropTemplateMixin and 'BackdropTemplate'
 Addon.Slash = 'bgn'

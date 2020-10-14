@@ -161,7 +161,7 @@ function _detalhes:ResetProfile (profile_name)
 				instance:AtivarInstancia()
 			end
 			instance.skin = ""
-			instance:ChangeSkin ("Minimalistic v2")
+			instance:ChangeSkin(_detalhes.default_skin_to_use)
 		end
 	
 	--> reset the profile
@@ -191,7 +191,7 @@ end
 	--> return the profile table requested
 
 function _detalhes:CreatePanicWarning()
-	_detalhes.instance_load_failed = CreateFrame ("frame", "DetailsPanicWarningFrame", UIParent)
+	_detalhes.instance_load_failed = CreateFrame ("frame", "DetailsPanicWarningFrame", UIParent,"BackdropTemplate")
 	_detalhes.instance_load_failed:SetHeight (80)
 	--tinsert (UISpecialFrames, "DetailsPanicWarningFrame")
 	_detalhes.instance_load_failed.text = _detalhes.instance_load_failed:CreateFontString (nil, "overlay", "GameFontNormal")
@@ -331,7 +331,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				end
 			end
 			
-		else	
+		else
 		
 			--> load skins
 			local instances_loaded = 0
@@ -340,41 +340,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				if (instance_limit < index) then
 					break
 				end
-				
-				--> fix for the old flat skin (10-10)
-					if (skin.skin == "Flat Color") then
-						skin.skin = "Serenity"
-					end
-					if (skin.skin == "Simply Gray") then
-						skin.skin = "Forced Square"
-					end					
-					if (skin.skin == "Default Skin") then
-						skin.skin = "WoW Interface"
-					end
-					if (skin.skin == "ElvUI Frame Style BW") then
-						skin.skin = "ElvUI Style II"
-					end
-				
-				--> fix for old left and right menus (15-10)
-					if (skin.menu_icons and type (skin.menu_icons[5]) ~= "boolean") then
-						skin.menu_icons[5] = true
-						skin.menu_icons[6] = true
-						
-						local skin_profile = _detalhes.skins [skin.skin] and _detalhes.skins [skin.skin].instance_cprops
-						if (skin_profile) then
-							skin.menu_icons_size = skin_profile.menu_icons_size
-							skin.menu_anchor = table_deepcopy (skin_profile.menu_anchor)
-							--print (skin.menu_anchor[1], skin.menu_anchor[2], skin.menu_anchor.side)
-							skin.menu_anchor_down = table_deepcopy (skin_profile.menu_anchor_down)
-						end
-					end
-					if (skin.menu_icons and not skin.menu_icons.space) then
-						skin.menu_icons.space = -4
-					end
-					if (skin.menu_icons and not skin.menu_icons.shadow) then
-						skin.menu_icons.shadow = false
-					end
-				
+
 				--> get the instance
 				local instance = _detalhes:GetInstance (index)
 				if (not instance) then
@@ -400,25 +366,12 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				instance.verticalSnap = nil
 				instance:LockInstance (false)
 				
-				--> fix for old versions
-				if (type (instance.segmento) ~= "number") then
-					instance.segmento = 0
-				end
-				if (type (instance.atributo) ~= "number") then
-					instance.atributo = 1
-				end
-				if (type (instance.sub_atributo) ~= "number") then
-					instance.sub_atributo = 1
-				end
-				
 				--> load data saved for this character only
 				instance:LoadLocalInstanceConfig()
-				if (skin.__was_opened) then	
-					
+				if (skin.__was_opened) then
 					if (not safe_load (_detalhes.AtivarInstancia, instance)) then
 						return
 					end
-					
 				else
 					instance.ativa = false
 				end
@@ -471,7 +424,6 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				end
 				
 				instances_loaded = instances_loaded + 1
-
 			end
 			
 			--> move unused instances for unused container
@@ -562,7 +514,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 		_detalhes.profile_loaded = true
 	end
 
-	return true	
+	return true
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1038,7 +990,7 @@ local default_profile = {
 	
 	--> skins
 		standard_skin = false,
-		skin = "WoW Interface",
+		skin = "Dark Theme",
 		profile_save_pos = true,
 		options_group_edit = true,
 		
@@ -1258,9 +1210,9 @@ local default_global_data = {
 	--> profile pool
 		__profiles = {},
 		latest_news_saw = "",
-		always_use_profile = false,
-		always_use_profile_name = "",
-		always_use_profile_exception = {},
+		always_use_profile = false, --deprecated on 9.0
+		always_use_profile_name = "", --deprecated on 9.0
+		always_use_profile_exception = {}, --deprecated on 9.0
 		custom = {},
 		savedStyles = {},
 		savedCustomSpells = {},
@@ -1268,9 +1220,16 @@ local default_global_data = {
 		lastUpdateWarning = 0,
 		update_warning_timeout = 10,
 		report_where = "SAY",
-		realm_sync = true,
+		realm_sync = true, --deprecated
 		spell_school_cache = {},
 		global_plugin_database = {},
+		last_changelog_size = 0,
+		auto_open_news_window = true,
+		immersion_special_units = true, --show a special unit as member of your group
+		immersion_unit_special_icons = true, --custom icons for specific units
+		immersion_pets_on_solo_play = false, --pets showing when solo play
+		damage_scroll_auto_open = true,
+		damage_scroll_position = {},
 		
 	--> death log
 		show_totalhitdamage_on_overkill = false,
@@ -1398,6 +1357,11 @@ local default_global_data = {
 		npcid_ignored = {},
 	--> store all spellids blacklisted by the user
 		spellid_ignored = {},
+
+	--> 9.0 exp (store data only used for the 9.0 expansion)
+		exp90temp = {
+			delete_damage_TCOB = true, --delete damage on the concil of blood encounter
+		},
 }
 
 _detalhes.default_global_data = default_global_data

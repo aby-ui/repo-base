@@ -1,7 +1,7 @@
-## Interface: 80300
-## Title: Can I Mog It?
+## Interface: 90001
+## Title: Can I Mog It? |TInterface\Addons\CanIMogIt\Icons\KNOWN:0|t
 ## Author: TorelTwiddler, Ami Yuy
-## Version: 8.3.0v1.25
+## Version: 9.0.1v1.26
 ## Notes: Adds tooltips to items showing if you have learned a transmog appearance.
 ## Notes-deDE: Fügt Gegenständen Tooltips hinzu, ob eine Transmogrifikationsvorlage bereits bekannt ist.
 ## Notes-esES: Añade a la descripción del objeto si se conoce la apariencia.
@@ -16,7 +16,7 @@
 ## X-Category: Transmogrify
 ## X-Website: http://mods.curse.com/addons/wow/can-i-mog-it
 ## SavedVariables: CanIMogItOptions, CanIMogItDatabase
-## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag, Bagnon
+## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag, Bagnon, cargBags_Nivaya, Auctionator
 #embeds.xml
 core.lua
 Locale\_locales.xml
@@ -31,7 +31,7 @@ tooltipScanner.lua
 Overlay\_overlays.xml
 Plugins\_plugins.xml
 
+
 ## Title: |cff880303[爱不易]|r CanIMogIt 幻化提示
 ## Notes-zhCN: 在物品的鼠标提示上添加一行，告知是否已经收集此物品的幻化，或者哪个角色可以收集此幻化。
 ## X-Vendor: AbyUI
-

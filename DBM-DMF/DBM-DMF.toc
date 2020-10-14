@@ -1,4 +1,4 @@
-﻿## Interface: 80300
+﻿## Interface: 90001
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Darkmoon Faire|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Feria de la Luna Negra|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0다크문 축제|r
@@ -16,7 +16,7 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: OTHER
 ## X-DBM-Mod-Category: OTHER
-## X-DBM-Mod-Has-Single-Format: 1
+## X-DBM-StatTypes: normal
 ## X-DBM-Mod-MapID: 974
 ## X-DBM-Mod-Sort: 1501
 ## X-DBM-Mod-MinCoreRevision: 12473

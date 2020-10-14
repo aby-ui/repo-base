@@ -6,7 +6,7 @@
 ## Notes: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
 ## Notes-frFR: Affichage et guérison des affections avec un système évolué de filtrage et de priorité.
 ## Notes-deDE: Anzeige und Reinigung von Gebrechen für Solo, Gruppe und Schlachtzug mit erweitertem Filter- und Prioritäten-System.
-## Notes-esES: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
+## Notes-esES: Visualización y limpieza de aflicciones en solitario, en grupo y en bandas con filtrado avanzado y sistema de prioridad.
 ## Notes-esMX: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
 ## Notes-koKR: 솔로, 그룹과 공격대를 위한 고급화된 필터링과 우선순위 시스템으로 피해들의 표시와 제거를 합니다.
 ## Notes-ruRU: Отображение и инструменты для развеивания дебаффов для одиночной игры, игры в группе и рейде, с развитой системой фильтрации и приоритетов.
@@ -18,7 +18,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.7
+## Version: 2.7.7.1-beta_1
 ## Author: John Wellesz
 
 ## X-License: GNU GPL V3
@@ -32,7 +32,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber
 
-## X-ReleaseDate: "2020-05-09T09:52:35Z"
+## X-ReleaseDate: "2020-09-27T17:51:28Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

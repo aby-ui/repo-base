@@ -258,7 +258,7 @@ end
 --                                          Initialize Frame                                          --
 --------------------------------------------------------------------------------------------------------
 
-local f = CreateFrame("Frame",modName.."Options",UIParent);
+local f = CreateFrame("Frame",modName.."Options",UIParent,BackdropTemplateMixin and "BackdropTemplate");
 
 f.options = options;
 
@@ -275,7 +275,7 @@ f:SetClampedToScreen(true);
 f:SetScript("OnShow",function() f:BuildCategoryPage(); end);
 f:Hide();
 
-f.outline = CreateFrame("Frame",nil,f);
+f.outline = CreateFrame("Frame",nil,f,BackdropTemplateMixin and "BackdropTemplate");
 f.outline:SetBackdrop({ bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = 1, tileSize = 16, edgeSize = 16, insets = { left = 4, right = 4, top = 4, bottom = 4 } });
 f.outline:SetBackdropColor(0.1,0.1,0.2,1);
 f.outline:SetBackdropBorderColor(0.8,0.8,0.9,0.4);

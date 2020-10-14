@@ -1,8 +1,8 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Shadowed Unit Frames
 ## Notes: Moooooooooooooooooo
 ## Author: Shadowed
-## Version: v4.2.9
+## Version: v4.3.1
 ## SavedVariables: ShadowedUFDB
 ## X-Website: https://www.wowace.com/addons/shadowed-unit-frames/
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDualSpec-1.0, LibSpellRange-1.0, Clique

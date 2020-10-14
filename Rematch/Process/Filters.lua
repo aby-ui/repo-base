@@ -36,7 +36,7 @@ roster.searchStatRanges = {} -- Level={1,24} Speed={300,305} Health={1400,nil} P
 roster.filterGroups = { Collected=COLLECTED, Favorite=L["Favorites"], Types=L["Types"],
 												Strong=L["Strong Vs"], Tough=L["Tough Vs"],	Sources=SOURCES, Rarity=RARITY,
 												Breed=L["Breed"], Level=LEVEL, Other=OTHER, Similar=L["Similar"], Script=L["Script"],
-                                    Moveset=L["Moveset"] }
+                                    Moveset=L["Moveset"], Expansion=EXPANSION_FILTER_TEXT }
 
 -- radio group definitions: variables that are mutually exclusive with each other
 roster.radioGroups = {
@@ -103,7 +103,8 @@ end
 
 -- returns true if a numerically-indexed filter is full
 function roster:IsFilterFull(group,size)
-	for i=1,size do
+	local startIndex = (group=="Expansion" and 0 or 1)
+	for i=startIndex,size do
 		if not settings.Filters[group][i] then
 			return false
 		end

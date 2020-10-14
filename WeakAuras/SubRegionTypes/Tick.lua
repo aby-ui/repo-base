@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
@@ -12,6 +13,14 @@ local default = function(parentType)
     automatic_length = true,
     tick_thickness = 2,
     tick_length = 30,
+    use_texture = false,
+    tick_texture = [[Interface\CastingBar\UI-CastingBar-Spark]],
+    tick_blend_mode = "ADD",
+    tick_desaturate = false,
+    tick_rotation = 0,
+    tick_xOffset = 0,
+    tick_yOffset = 0,
+    tick_mirror = false,
   }
 end
 
@@ -31,7 +40,7 @@ local properties = {
     display = L["Placement Mode"],
     setter = "SetTickPlacementMode",
     type = "list",
-    values = WeakAuras.tick_placement_modes,
+    values = Private.tick_placement_modes,
   },
   tick_placement = {
     display = L["Placement"],
@@ -60,6 +69,26 @@ local properties = {
     min = 0,
     bigStep = 1,
     default = 30,
+  },
+  tick_desaturate = {
+    display = L["Desaturate"],
+    setter = "SetTickDesaturated",
+    type = "bool",
+    default = true,
+  },
+  tick_rotation = {
+    display = L["Rotation"],
+    setter = "SetTickRotation",
+    type = "number",
+    min = 0,
+    max = 360,
+    default = 0,
+  },
+  tick_mirror = {
+    display = L["Mirror"],
+    setter = "SetTickMirror",
+    type = "bool",
+    default = true,
   },
 }
 
@@ -145,7 +174,12 @@ local funcs = {
   end,
   SetTickColor = function(self, r, g, b, a)
     self.tick_color[1], self.tick_color[2], self.tick_color[3], self.tick_color[4] = r, g, b, a or 1
-    self.texture:SetColorTexture(r, g, b, a or 1)
+    if self.use_texture then
+      self.texture:SetVertexColor(r, g, b, a or 1)
+      self:UpdateTickDesaturated()
+    else
+      self.texture:SetColorTexture(r, g, b, a or 1)
+    end
   end,
   SetTickPlacementMode = function(self, placement_mode)
     if self.tick_placement_mode ~= placement_mode then
@@ -181,60 +215,36 @@ local funcs = {
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentMajorSize
 
-    local hide = false
-    if self.tick_placement_mode == "AtValue" then
-      local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
+    local minValue, maxValue = self.parent:GetMinMax()
+    local valueRange = maxValue - minValue
 
-      if not self.trigger_total or percent and percent < 0 or percent > 1 then
-        hide = true
-        offset = 0
-      else
-        offset = percent * width
-      end
+    local tick_placement
+    if self.tick_placement_mode == "AtValue" then
+      tick_placement = self.tick_placement
     elseif self.tick_placement_mode == "AtMissingValue" then
-      local percent = self.trigger_total and self.trigger_total ~= 0 and 1 - (self.tick_placement / self.trigger_total)
-      if not self.trigger_total or percent and percent < 0 or percent > 1 then
-        hide = true
-        offset = 0
-      else
-        offset = percent * width
-      end
+      tick_placement = self.trigger_total and self.trigger_total - self.tick_placement
     elseif self.tick_placement_mode == "AtPercent" then
-      if self.tick_placement >= 0 and self.tick_placement <= 100 then
-        offset = (self.tick_placement / 100) * width
-      else
-        hide = true
-        offset = 0
+      if self.tick_placement >= 0 and self.tick_placement <= 100 and self.trigger_total then
+        tick_placement = self.tick_placement * self.trigger_total / 100
       end
     elseif self.tick_placement_mode == "ValueOffset" then
       if self.trigger_total and self.trigger_total ~= 0 then
-        local atValue
         if self.state.progressType == "timed" then
-          atValue = self.state.expirationTime - GetTime() + self.tick_placement
+          tick_placement = self.state.expirationTime - GetTime() + self.tick_placement
         else
-          atValue = self.state.value + self.tick_placement
+          tick_placement = self.state.value + self.tick_placement
         end
-
-        local percent = atValue / self.trigger_total
-        if not self.trigger_total or percent < 0 or percent > 1 then
-          hide = true
-          offset = 0
-        else
-          offset = percent * width
-        end
-      else
-        hide = true
-        offset = 0
       end
     end
 
-    if hide then
+    local percent = valueRange ~= 0 and tick_placement and (tick_placement - minValue) / valueRange
+    if not percent or (percent and percent < 0 or percent > 1) then
       self.texture:Hide()
+      offset = 0
     else
       self.texture:Show()
+      offset = percent * width
     end
-
-
 
     local inverse = self.inverse
     if self.trigger_inverse then
@@ -256,7 +266,7 @@ local funcs = {
     end
     local side = inverse and auraBarAnchorInverse or auraBarAnchor
     self:ClearAllPoints()
-    self:SetPoint("CENTER", self.parent.bar, side[self.orientation], offsetx, offsety)
+    self:SetPoint("CENTER", self.parent.bar, side[self.orientation], offsetx + self.tick_xOffset, offsety + self.tick_yOffset)
   end,
   SetAutomaticLength = function(self, automatic_length)
     if self.automatic_length ~= automatic_length then
@@ -289,7 +299,52 @@ local funcs = {
     else
       self:SetHeight(length)
     end
-  end
+  end,
+  SetTickDesaturated = function(self, desaturate)
+    if self.use_texture and self.tick_desaturate ~= desaturate then
+      self.tick_desaturate = desaturate
+      self:UpdateTickDesaturated()
+    end
+  end,
+  UpdateTickDesaturated = function(self)
+    self.texture:SetDesaturated(self.tick_desaturate)
+  end,
+  SetTickRotation = function(self, degrees)
+    if self.tick_rotation ~= degrees then
+      self.tick_rotation = degrees
+      self:UpdateTickRotation()
+    end
+  end,
+  UpdateTickRotation = function(self)
+      local rad = math.rad(self.tick_rotation)
+      self.texture:SetRotation(rad)
+  end,
+  SetTickMirror = function(self, mirror)
+    if self.mirror ~= mirror then
+      self.mirror = mirror
+      self:UpdateTickMirror()
+    end
+  end,
+  UpdateTickMirror = function(self)
+    if self.mirror then
+      self.texture:SetTexCoord(0,  1,  1,  1,  0,  0,  1,  0)
+    else
+      self.texture:SetTexCoord(0,  0,  1,  0,  0,  1,  1,  1)
+    end
+  end,
+  SetTickBlendMode = function(self, mode)
+    if self.tick_blend_mode ~= mode then
+      self.tick_blend_mode = mode
+      self:UpdateTickBlendMode()
+    end
+  end,
+  UpdateTickBlendMode = function(self)
+    if self.use_texture then
+      self.texture:SetBlendMode(self.tick_blend_mode)
+    else
+      self.texture:SetBlendMode("BLEND")
+    end
+  end,
 }
 
 local function modify(parent, region, parentData, data, first)
@@ -314,13 +369,26 @@ local function modify(parent, region, parentData, data, first)
   region.automatic_length = data.automatic_length
   region.tick_thickness = data.tick_thickness
   region.tick_length = data.tick_length
+  region.use_texture = data.use_texture
+  region.tick_texture = data.tick_texture
+
+  region.tick_xOffset = data.tick_xOffset
+  region.tick_yOffset = data.tick_yOffset
 
   for k, v in pairs(funcs) do
     region[k] = v
   end
 
+  if data.use_texture then
+    WeakAuras.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+  end
+
   region:SetVisible(data.tick_visible)
   region:SetTickColor(unpack(data.tick_color))
+  region:SetTickDesaturated(data.tick_desaturate)
+  region:SetTickBlendMode(data.tick_blend_mode)
+  region:SetTickRotation(data.tick_rotation)
+  region:SetTickMirror(data.tick_mirror)
 
   region:UpdateTickSize()
 

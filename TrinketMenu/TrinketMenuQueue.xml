@@ -176,7 +176,7 @@
 		</Anchors>
 	</CheckButton>
 
-	<Frame name = "TrinketMenu_SubQueueFrame" parent = "TrinketMenu_OptFrame" hidden = "true">
+	<Frame name = "TrinketMenu_SubQueueFrame" parent = "TrinketMenu_OptFrame" hidden = "true" inherits="BackdropTemplate">
 		<Anchors>
 			<Anchor point = "TOPLEFT">
 				<Offset>
@@ -189,11 +189,9 @@
 				</Offset>
 			</Anchor>
 		</Anchors>
-		<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-			<EdgeSize>
-				<AbsValue val = "16" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+        </KeyValues>
 		<Layers>
 			<Layer level = "BACKGROUND">
 				<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -439,7 +437,7 @@
 				</Scripts>
 			</CheckButton>
 
-			<Frame name = "TrinketMenu_SortListFrame">
+			<Frame name = "TrinketMenu_SortListFrame" inherits="BackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -452,11 +450,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-					<EdgeSize>
-						<AbsValue val = "16" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+                </KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -569,7 +565,7 @@
 				</Frames>
 			</Frame>
 
-			<Frame name = "TrinketMenu_ProfilesFrame" hidden = "true">
+			<Frame name = "TrinketMenu_ProfilesFrame" hidden = "true" inherits="BackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -582,11 +578,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-					<EdgeSize>
-						<AbsValue val = "16" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+                </KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -722,7 +716,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					<Frame name = "TrinketMenu_ProfilesListFrame">
+					<Frame name = "TrinketMenu_ProfilesListFrame" inherits="BackdropTemplate">
 						<Anchors>
 							<Anchor point = "TOPLEFT">
 								<Offset>
@@ -735,11 +729,9 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<Backdrop edgeFile = "Interface\Tooltips\UI-Tooltip-Border">
-							<EdgeSize>
-								<AbsValue val = "16" />
-							</EdgeSize>
-						</Backdrop>
+                        <KeyValues>
+                            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+                        </KeyValues>
 						<Layers>
 							<Layer level = "BACKGROUND">
 								<Texture file = "Interface\ChatFrame\ChatFrameBackground">

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank6", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201009195305")
 --mod:SetModelID(39166)
 
 mod:RegisterEvents(
@@ -19,7 +19,7 @@ local warnBetterStrongerFaster		= mod:NewSpellAnnounce(142795, 2)--Mecha-Bruce
 local warnStasisBeam				= mod:NewSpellAnnounce(142769, 3)--Mecha-Bruce
 
 local specWarnSpitAcid				= mod:NewSpecialWarningSpell(141013, nil, nil, nil, 1, 2)--Nibbleh
-local specWarnAuraofRot				= mod:NewSpecialWarningStack(236155, nil, 8, nil, nil, 1, 6)--Stiches
+local specWarnAuraofRot				= mod:NewSpecialWarningStack(236155, nil, 7, nil, nil, 1, 6)--Stiches
 local specWarnEightChomps			= mod:NewSpecialWarningDodge(142788, nil, nil, nil, 1, 2)--Mecha-Bruce
 local specWarnDisrobingStrike		= mod:NewSpecialWarningInterrupt(282081, nil, nil, nil, 1, 2)--Robe-Robber Robert
 
@@ -85,7 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if not brawlersMod.Options.SpectatorMode and not brawlersMod:PlayerFighting() then return end--Spectator mode is disabled, do nothing.
 	if args.spellId == 236155 and args:IsPlayer() then
 		local amount = args.amount or 1
-		if amount >= 8 then
+		if amount >= 7 then
 			specWarnAuraofRot:Show(amount)
 			specWarnAuraofRot:Play("stackhigh")
 		end

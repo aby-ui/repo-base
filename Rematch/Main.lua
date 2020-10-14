@@ -37,6 +37,7 @@ rematch.LMB = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:51
 rematch.RMB = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385\124t" -- right mouse button
 rematch.NMB = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:512:89:144:228:283\124t" -- no mouse button
 
+-- key bindings
 BINDING_HEADER_REMATCH = L["Rematch"]
 BINDING_NAME_REMATCH_WINDOW = L["Toggle Window"]
 BINDING_NAME_REMATCH_AUTOLOAD = L["Auto Load"]
@@ -44,6 +45,28 @@ BINDING_NAME_REMATCH_NOTES = L["Team Notes"]
 BINDING_NAME_REMATCH_PETS = L["Pets Tab"]
 BINDING_NAME_REMATCH_TEAMS = L["Teams Tab"]
 BINDING_NAME_REMATCH_QUEUE = L["Queue Tab"]
+
+-- backdrop definitions (used in templates.xml)
+REMATCH_BORDER_BACKGROUND_COLOR = CreateColor(0.5, 0.5, 0.5)
+REMATCH_SOLID_BACKDROP_COLOR = CreateColor(0.05,0.05,0.05)
+REMATCH_SOLID_BACKDROP_STYLE = {
+	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	tile = true,
+	tileEdge = true,
+	tileSize = 16,
+	edgeSize = 16,
+	insets = { left = 3, right = 3, top = 3, bottom = 3 },
+}
+REMATCH_SLIDER_BACKDROP_STYLE = {
+	bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+	edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+	tile = true,
+	tileSize = 8,
+	edgeSize = 8,
+	insets = { left = 3, right = 3, top = 6, bottom = 6 },
+
+}
 
 -- the following hint tables describe whether an attack is strong/weak vs a pet type
 -- 1=Humanoid 2=Dragonkin 3=Flying 4=Undead 5=Critter 6=Magic 7=Elemental 8=Beast 9=Aquatic 10=Mechanical
@@ -76,7 +99,7 @@ function rematch:UpdateUI()
 
 	rematch.petInfo:Reset() -- reset any petInfo from previous execution
 
-	-- some stuff is only done while the rematch is on screen
+	-- some stuff is only done while rematch is on screen
 	local isVisible = rematch.Frame:IsVisible() or rematch.Journal:IsVisible()
 
 	if isVisible then
@@ -152,9 +175,9 @@ function rematch:Start()
 
 	-- check for the existence of an object that's in a new file and shut down rematch if it's not accessible.
 	-- this is caused by new files added and user updates the addon while logged in to the game
-	if rematch:AddonDidntCompletelyLoad(rematch.ShowTextureHighlight) then
-		return
-	end
+	-- if rematch:AddonDidntCompletelyLoad(rematch.ShowTextureHighlight) then
+	-- 	return
+	-- end
 
 	rematch:InitSavedVars()
 

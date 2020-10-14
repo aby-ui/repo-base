@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
@@ -26,6 +27,7 @@ local default = {
   yOffset = 0,
   radius = 200,
   rotation = 0,
+  fullCircle = true,
   arcLength = 360,
   constantFactor = "RADIUS",
   frameStrata = 1,
@@ -93,7 +95,7 @@ local function releaseControlPoint(self, controlPoint)
   local regionData = controlPoint.regionData
   if regionData then
     if self.parent.anchorPerUnit == "UNITFRAME" then
-      WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+      Private.dyngroup_unitframe_monitor[regionData] = nil
     end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
@@ -107,7 +109,7 @@ local function create(parent)
   region.sortedChildren = {}
   region.controlledChildren = {}
   region.updatedChildren = {}
-  local background = CreateFrame("frame", nil, region)
+  local background = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
   region.controlPoints = CreateObjectPool(createControlPoint, releaseControlPoint)
@@ -309,9 +311,9 @@ local sorters = {
     local sortStr = data.customSort or ""
     local sortFunc = WeakAuras.LoadFunction("return " .. sortStr, data.id, "custom sort") or noop
     return function(a, b)
-      WeakAuras.ActivateAuraEnvironment(data.id)
+      Private.ActivateAuraEnvironment(data.id)
       local ok, result = xpcall(sortFunc, geterrorhandler(), a, b)
-      WeakAuras.ActivateAuraEnvironment()
+      Private.ActivateAuraEnvironment()
       if ok then
         return result
       end
@@ -352,12 +354,20 @@ local anchorers = {
     return function(frames, activeRegions)
       for _, regionData in ipairs(activeRegions) do
         local unit = regionData.region.state and regionData.region.state.unit
+        local found
         if unit then
           local frame = WeakAuras.GetUnitNameplate(unit)
           if frame then
             frames[frame] = frames[frame] or {}
             tinsert(frames[frame], regionData)
+            found = true
           end
+        end
+        if not found and WeakAuras.IsOptionsOpen() then
+          Private.ensurePRDFrame()
+          Private.personalRessourceDisplayFrame:anchorFrame(regionData.region.state.id, "NAMEPLATE")
+          frames[Private.personalRessourceDisplayFrame] = frames[Private.personalRessourceDisplayFrame] or {}
+          tinsert(frames[Private.personalRessourceDisplayFrame], regionData)
         end
       end
     end
@@ -380,9 +390,9 @@ local anchorers = {
     local anchorStr = data.customAnchorPerUnit or ""
     local anchorFunc = WeakAuras.LoadFunction("return " .. anchorStr, data.id, "custom frame anchor") or noop
     return function(frames, activeRegions)
-      WeakAuras.ActivateAuraEnvironment(data.id)
+      Private.ActivateAuraEnvironment(data.id)
       xpcall(anchorFunc, geterrorhandler(), frames, activeRegions)
-      WeakAuras.ActivateAuraEnvironment()
+      Private.ActivateAuraEnvironment()
     end
   end
 }
@@ -582,7 +592,7 @@ local growers = {
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
-    local arc = (data.arcLength or 0) * math.pi / 180
+    local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
       local frames = {}
@@ -604,7 +614,14 @@ local growers = {
           end
         end
         local theta = sAngle
-        local dAngle = arc / numVisible
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (numVisible - 1)
+        else
+          dAngle = arc / numVisible
+        end
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
@@ -623,7 +640,7 @@ local growers = {
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
-    local arc = (data.arcLength or 0) * math.pi / 180
+    local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
       local frames = {}
@@ -645,7 +662,14 @@ local growers = {
           end
         end
         local theta = sAngle
-        local dAngle = arc / -numVisible
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (1 - numVisible)
+        else
+          dAngle = arc / -numVisible
+        end
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
@@ -728,9 +752,9 @@ local growers = {
     local growStr = data.customGrow or ""
     local growFunc = WeakAuras.LoadFunction("return " .. growStr, data.id, "custom grow") or noop
     return function(newPositions, activeRegions)
-      WeakAuras.ActivateAuraEnvironment(data.id)
+      Private.ActivateAuraEnvironment(data.id)
       local ok = xpcall(growFunc, geterrorhandler(), newPositions, activeRegions)
-      WeakAuras.ActivateAuraEnvironment()
+      Private.ActivateAuraEnvironment()
       if not ok then
         wipe(newPositions)
       end
@@ -755,7 +779,7 @@ local function SafeGetPos(region, func)
 end
 
 local function modify(parent, region, data)
-  WeakAuras.FixGroupChildrenOrderForGroup(data)
+  Private.FixGroupChildrenOrderForGroup(data)
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
@@ -831,6 +855,7 @@ local function modify(parent, region, data)
       cloneId = cloneID,
       dataIndex = dataIndex,
       controlPoint = controlPoint,
+      parent = region
     }
 
     if childData.regionType == "text" then
@@ -847,7 +872,7 @@ local function modify(parent, region, data)
     if(childData.frameStrata == 1) then
       childRegion:SetFrameStrata(region:GetFrameStrata());
     else
-      childRegion:SetFrameStrata(WeakAuras.frame_strata_types[childData.frameStrata]);
+      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
     end
     return regionData
   end
@@ -870,8 +895,8 @@ local function modify(parent, region, data)
   function region:ReloadControlledChildren()
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
     if not self:IsSuspended() then
-      WeakAuras.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileAura(data.id)
       self.needToReload = false
       self.sortedChildren = {}
       self.controlledChildren = {}
@@ -896,8 +921,8 @@ local function modify(parent, region, data)
           end
         end
       end
-      WeakAuras.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileAura(data.id)
       self:SortUpdatedChildren()
     else
       self.needToReload = true
@@ -969,8 +994,8 @@ local function modify(parent, region, data)
     -- Called when the Group is Resume()d
     -- uses sort data to determine the correct spot
     if not self:IsSuspended() then
-      WeakAuras.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileAura(data.id)
       self.needToSort = false
       local i = 1
       while self.sortedChildren[i] do
@@ -999,8 +1024,8 @@ local function modify(parent, region, data)
         end
       end
       self.updatedChildren = {}
-      WeakAuras.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileAura(data.id)
       self:PositionChildren()
     else
       self.needToSort = true
@@ -1018,7 +1043,7 @@ local function modify(parent, region, data)
       self.needToPosition = false
       if #self.sortedChildren > 0 then
         if animate then
-          WeakAuras.RegisterGroupForPositioning(data.id, self)
+          Private.RegisterGroupForPositioning(data.uid, self)
         else
           self:DoPositionChildren()
         end
@@ -1032,6 +1057,9 @@ local function modify(parent, region, data)
 
   function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
     for regionData, pos in pairs(positions) do
+      if type(regionData) ~= "table" then
+        break;
+      end
       handledRegionData[regionData] = true
       local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
                           type(pos[2]) == "number" and pos[2] or 0,
@@ -1049,10 +1077,10 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
       if self.anchorPerUnit == "UNITFRAME" then
-        WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
+        Private.dyngroup_unitframe_monitor[regionData] = frame
       end
       if animate then
-        WeakAuras.CancelAnimation(regionData.controlPoint, true)
+        Private.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
         local yPrev = regionData.yOffset or y
         local xDelta = xPrev - x
@@ -1123,7 +1151,7 @@ local function modify(parent, region, data)
             }
           end
           -- update animated expand & collapse for this child
-          WeakAuras.Animate("controlPoint", data, "controlPoint", anim, regionData.controlPoint, true)
+          Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
         end
       end
       regionData.xOffset = x
@@ -1133,17 +1161,16 @@ local function modify(parent, region, data)
   end
 
   function region:DoPositionChildren()
-    WeakAuras.StartProfileSystem("dynamicgroup")
-    WeakAuras.StartProfileAura(data.id)
+    Private.StartProfileSystem("dynamicgroup")
+    Private.StartProfileAura(data.id)
 
     local handledRegionData = {}
 
     local newPositions = {}
     self.growFunc(newPositions, self.sortedChildren)
     if #newPositions > 0 then
-      local max = #newPositions
-      for index = 1, max do
-        if newPositions[index] then
+      for index = 1, #newPositions do
+        if type(newPositions[index]) == "table" then
           local data = self.sortedChildren[index]
           if data then
             newPositions[data] = newPositions[index]
@@ -1166,8 +1193,8 @@ local function modify(parent, region, data)
       end
     end
 
-    WeakAuras.StopProfileSystem("dynamicgroup")
-    WeakAuras.StopProfileAura(data.id)
+    Private.StopProfileSystem("dynamicgroup")
+    Private.StopProfileAura(data.id)
     self:Resize()
   end
 
@@ -1177,8 +1204,8 @@ local function modify(parent, region, data)
     if not self:IsSuspended() then
       self.needToResize = false
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
-      WeakAuras.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY, minLevel = 0
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
@@ -1218,8 +1245,8 @@ local function modify(parent, region, data)
       if WeakAuras.IsOptionsOpen() then
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
       end
-      WeakAuras.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileAura(data.id)
     else
       self.needToResize = true
     end

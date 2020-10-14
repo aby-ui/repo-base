@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1750, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610150440")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(104636)
 mod:SetEncounterID(1877)
-mod:SetZone()
 mod:SetUsedIcons(8, 7, 6, 5, 4)
 mod:SetHotfixNoticeRev(15557)
 mod.respawnTime = 30

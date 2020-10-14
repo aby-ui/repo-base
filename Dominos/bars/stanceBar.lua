@@ -1,130 +1,124 @@
--- stanceBar - a bar for displaying class specific buttons for things like stances/forms/etc
-
+--------------------------------------------------------------------------------
+-- Stance bar
+-- Lets you move around the bar for displaying forms/stances/etc
+--------------------------------------------------------------------------------
 local _, Addon = ...
-local playerClass = select(2, UnitClass('player'))
 
--- don't bother loading the module if the player is currently playing something without a stance
-if not (
-	playerClass == 'DRUID'
-	or playerClass == 'ROGUE'
-	or (not Addon:IsBuild("classic") and playerClass == 'PRIEST')
-	or (Addon:IsBuild("classic") and (playerClass == 'WARRIOR' or playerClass == 'PALADIN'))
-) then
-	return
+-- test to see if the player has a stance bar
+-- not the best looking, but I also don't need to keep it after I do the check
+if not ({
+    DEATHKNIGHT = false,
+    DEMONHUNTER = false,
+    DRUID = true,
+    HUNTER = false,
+    MAGE = false,
+    MONK = false,
+    PALADIN = true,
+    PRIEST = Addon:IsBuild('retail'),
+    ROGUE = true,
+    SHAMAN = false,
+    WARLOCK = false,
+    WARRIOR = Addon:IsBuild('classic')
+})[UnitClassBase('player')] then
+    return
 end
 
-local KeyBound = LibStub('LibKeyBound-1.0')
+--------------------------------------------------------------------------------
+-- Button setup
+--------------------------------------------------------------------------------
 
-
---[[ Button ]]--
-
-local StanceButton = Addon:CreateClass('CheckButton', Addon.BindableButton)
-
-do
-	local unused = {}
-
-	StanceButton.buttonType = 'SHAPESHIFTBUTTON'
-
-	function StanceButton:New(id)
-		local button = self:Restore(id) or self:Create(id)
-
-		Addon.BindingsController:Register(button)
-		Addon:GetModule('Tooltips'):Register(button)
-
-		return button
-	end
-
-	function StanceButton:Create(id)
-		local buttonName = ('StanceButton%d'):format(id)
-		local button = self:Bind(_G[buttonName])
-
-		if button then
-			button:HookScript('OnEnter', self.OnEnter)
-			Addon:GetModule('ButtonThemer'):Register(button, 'Class Bar')
-		end
-
-		return button
-	end
-
-	function StanceButton:Restore(id)
-		local button = unused[id]
-
-		if button then
-			unused[id] = nil
-			button:Show()
-
-			return button
-		end
-	end
-
-	--saving them thar memories
-	function StanceButton:Free()
-		unused[self:GetID()] = self
-
-		self:SetParent(nil)
-		self:Hide()
-
-		Addon.BindingsController:Unregister(self)
-		Addon:GetModule('Tooltips'):Unregister(self)
-	end
-
-	--keybound support
-	function StanceButton:OnEnter()
-		KeyBound:Set(self)
-	end
+local function getStanceButton(id)
+    return _G[('StanceButton%d'):format(id)]
 end
 
+for id = 1, NUM_STANCE_SLOTS do
+    local button = getStanceButton(id)
 
---[[ Bar ]]--
+    -- fix hotkey text extending outside of the button itself
+    -- and make it consistent with the button size
+    if button.HotKey:GetWidth() > button:GetWidth() then
+        button.HotKey:SetWidth(button:GetWidth())
+
+        local font, size, flags = button.HotKey:GetFont()
+        size = Round(size * button:GetWidth() / ActionButton1:GetWidth())
+
+        button.HotKey:SetFont(font, size, flags)
+    end
+
+    -- add quick binding support
+    Addon.BindableButton:AddQuickBindingSupport(button, ('SHAPESHIFTBUTTON%s'):format(id))
+end
+
+--------------------------------------------------------------------------------
+-- Bar setup
+--------------------------------------------------------------------------------
 
 local StanceBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
-do
-	function StanceBar:New()
-		return StanceBar.proto.New(self, 'class')
-	end
-
-	function StanceBar:GetDefaults()
-		return {
-			point = 'CENTER',
-			spacing = 2
-		}
-	end
-
-	function StanceBar:NumButtons()
-		return GetNumShapeshiftForms() or 0
-	end
-
-	function StanceBar:GetButton(index)
-		return StanceButton:New(index)
-	end
+function StanceBar:New()
+    return StanceBar.proto.New(self, 'class')
 end
 
+function StanceBar:GetDefaults()
+    return {
+        point = 'CENTER',
+        spacing = 2
+    }
+end
 
---[[ Module ]]--
+function StanceBar:NumButtons()
+    return GetNumShapeshiftForms() or 0
+end
 
-do
-	local StanceBarController = Addon:NewModule('StanceBar', 'AceEvent-3.0')
+function StanceBar:AcquireButton(index)
+    return getStanceButton(index)
+end
 
-	function StanceBarController:Load()
-		self.bar = StanceBar:New()
+function StanceBar:OnAttachButton(button)
+    button:UpdateHotkeys()
+    Addon:GetModule('ButtonThemer'):Register(button, 'Class Bar')
+    Addon:GetModule('Tooltips'):Register(button)
+end
 
-		self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS', 'UpdateNumForms')
-		self:RegisterEvent('PLAYER_REGEN_ENABLED', 'UpdateNumForms')
-		self:RegisterEvent('PLAYER_ENTERING_WORLD', 'UpdateNumForms')
-	end
+function StanceBar:OnDetachButton(button)
+    Addon:GetModule('ButtonThemer'):Unregister(button, 'Class Bar')
+    Addon:GetModule('Tooltips'):Unregister(button)
+end
 
-	function StanceBarController:Unload()
-		self:UnregisterAllEvents()
+-- export
+Addon.StanceBar = StanceBar
 
-		if self.bar then
-			self.bar:Free()
-		end
-	end
+--------------------------------------------------------------------------------
+-- Module
+--------------------------------------------------------------------------------
 
-	function StanceBarController:UpdateNumForms()
-		if InCombatLockdown() then return end
+local StanceBarModule = Addon:NewModule('StanceBar', 'AceEvent-3.0')
 
-		self.bar:UpdateNumButtons()
-	end
+function StanceBarModule:Load()
+    self.bar = StanceBar:New()
+
+    self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS', 'UpdateNumForms')
+    self:RegisterEvent('PLAYER_REGEN_ENABLED', 'UpdateNumForms')
+    self:RegisterEvent('PLAYER_ENTERING_WORLD', 'UpdateNumForms')
+    self:RegisterEvent('UPDATE_BINDINGS')
+end
+
+function StanceBarModule:Unload()
+    self:UnregisterAllEvents()
+
+    if self.bar then
+        self.bar:Free()
+    end
+end
+
+function StanceBarModule:UpdateNumForms()
+    if InCombatLockdown() then
+        return
+    end
+
+    self.bar:UpdateNumButtons()
+end
+
+function StanceBarModule:UPDATE_BINDINGS()
+    self.bar:ForButtons('UpdateHotkeys')
 end

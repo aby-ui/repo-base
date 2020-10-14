@@ -19,6 +19,7 @@
 local Quartz3 = LibStub("AceAddon-3.0"):GetAddon("Quartz3")
 local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 local media = LibStub("LibSharedMedia-3.0")
+local LibDualSpec = LibStub("LibDualSpec-1.0", true)
 
 ----------------------------
 -- Upvalues
@@ -204,9 +205,16 @@ function Quartz3:SetupOptions()
 	self.optFrames = {}
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Quartz3", getOptions)
 	self.optFrames.Quartz3 = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Quartz3", "Quartz 3", nil, "general")
-	self:RegisterModuleOptions("Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db), "Profiles")
 	self:RegisterChatCommand("quartz", "ChatCommand")
 	self:RegisterChatCommand("q3", "ChatCommand")
+
+	local profileOptions = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+	if LibDualSpec then
+		LibDualSpec:EnhanceDatabase(self.db, "Quartz3")
+		LibDualSpec:EnhanceOptions(profileOptions, self.db)
+	end
+
+	self:RegisterModuleOptions("Profiles", profileOptions, "Profiles")
 end
 
 function Quartz3:RegisterModuleOptions(name, optTable, displayName)

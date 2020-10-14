@@ -15,7 +15,6 @@ function EUF_HpMpXp_OnLoad(self)
 	self:RegisterEvent("UNIT_MANA");
 	self:RegisterEvent("UNIT_HEALTH");
     self:RegisterEvent("UNIT_MAXHEALTH")
-    self:RegisterEvent("UNIT_HEALTH_FREQUENT");
     self:RegisterEvent("UNIT_LEVEL");
     self:RegisterEvent("UNIT_POWER_UPDATE")
     self:RegisterEvent("UNIT_MAXPOWER")
@@ -65,7 +64,7 @@ function EUF_HpMpXp_OnLoad(self)
 end
 
 function EUF_HpMpXp_OnEvent(event, unit)
-	if event == "UNIT_HEALTH" or event == 'UNIT_MAXHEALTH' or event == 'UNIT_HEALTH_FREQUENT' then
+	if event == "UNIT_HEALTH" or event == 'UNIT_MAXHEALTH' then
 		EUF_HP_Update(unit);
     elseif (event == 'UNIT_POWER_UPDATE' or event == 'UNIT_MAXPOWER' ) then
 		EUF_MP_Update(unit);

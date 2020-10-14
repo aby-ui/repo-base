@@ -98,8 +98,8 @@ function OnUpdate(self)
 	local scale = GetScaleDistance()/SOS.dist*SOS.scale
 	if scale < .2 then -- clamp min and max scale
 		scale = .2
-	elseif scale > 1.5 then
-		scale = 1.5
+	elseif scale > 2 then
+		scale = 2
 	end
 	WorldMapFrame:SetScale(scale)
 

@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -75,7 +76,7 @@ local WA_ClassColorName = function(unit)
     if not class then
       return name
     else
-      local classData = RAID_CLASS_COLORS[class]
+      local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
       local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
       return coloredName
     end
@@ -89,6 +90,9 @@ WeakAuras.WA_ClassColorName = WA_ClassColorName
 -- UTF-8 Sub is pretty commonly needed
 local WA_Utf8Sub = function(input, size)
   local output = ""
+  if not input then
+    return output
+  end
   local i = 1
   while (size > 0) do
     local byte = input:byte(i)
@@ -126,15 +130,6 @@ end
 
 WeakAuras.WA_Utf8Sub = WA_Utf8Sub
 
-local helperFunctions = {
-  WA_GetUnitAura = WA_GetUnitAura,
-  WA_GetUnitBuff = WA_GetUnitBuff,
-  WA_GetUnitDebuff = WA_GetUnitDebuff,
-  WA_IterateGroupMembers = WA_IterateGroupMembers,
-  WA_ClassColorName = WA_ClassColorName,
-  WA_Utf8Sub = WA_Utf8Sub,
-}
-
 local LCG = LibStub("LibCustomGlow-1.0")
 WeakAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
 WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
@@ -142,13 +137,9 @@ WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 local LGF = LibStub("LibGetFrame-1.0")
 WeakAuras.GetUnitFrame = LGF.GetUnitFrame
 WeakAuras.GetUnitNameplate =  function(unit)
-  if WeakAuras.multiUnitUnits.nameplate[unit] then
+  if Private.multiUnitUnits.nameplate[unit] then
     return LGF.GetUnitNameplate(unit)
   end
-end
-
-local function forbidden()
-  prettyPrint(L["A WeakAura just tried to use a forbidden function but has been blocked from doing so. Please check your auras!"])
 end
 
 local blockedFunctions = {
@@ -171,7 +162,6 @@ local blockedFunctions = {
   AcceptTrade = true,
   SetSendMailMoney = true,
   EditMacro = true,
-  SlashCmdList = true,
   DevTools_DumpCommand = true,
   hash_SlashCmdList = true,
   CreateMacro = true,
@@ -181,9 +171,8 @@ local blockedFunctions = {
   securecall = true,
 }
 
-local overrideFunctions = {
-  ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
-  ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
+local blockedTables = {
+  SlashCmdList = true,
 }
 
 local aura_environments = {}
@@ -192,38 +181,50 @@ local aura_environments = {}
 -- 2 == fully initialized
 local environment_initialized = {}
 
-function WeakAuras.IsEnvironmentInitialized(id)
+function Private.IsEnvironmentInitialized(id)
   return environment_initialized[id] == 2
 end
 
-function WeakAuras.DeleteAuraEnvironment(id)
+function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
 end
 
-function WeakAuras.RenameAuraEnvironment(oldid, newid)
+function Private.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
 end
 
+local current_uid = nil
 local current_aura_env = nil
-local aura_env_stack = {} -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
+-- Stack of of aura environments/uids, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
+local aura_env_stack = {}
 
-function WeakAuras.ClearAuraEnvironment(id)
+function Private.ClearAuraEnvironment(id)
   environment_initialized[id] = nil;
 end
 
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
+function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
+  Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states, onlyConfig)
+end
+
+function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack)
-    current_aura_env = aura_env_stack[#aura_env_stack] or nil
+    if aura_env_stack[#aura_env_stack] then
+      current_aura_env, current_uid = unpack(aura_env_stack[#aura_env_stack])
+    else
+      current_aura_env = nil
+      current_uid = nil
+    end
   else
     -- Existing config is initialized to a high enough value
     if environment_initialized[id] == 2 or (onlyConfig and environment_initialized[id] == 1) then
       -- Point the current environment to the correct table
+      current_uid = data.uid
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
@@ -231,17 +232,18 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
       current_aura_env.states = states
       current_aura_env.region = region
       -- Push the new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env)
+      tinsert(aura_env_stack, {current_aura_env, data.uid})
     elseif onlyConfig then
       environment_initialized[id] = 1
       aura_environments[id] = {}
+      current_uid = data.uid
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.states = states
       current_aura_env.region = region
-      tinsert(aura_env_stack, current_aura_env)
+      tinsert(aura_env_stack, {current_aura_env, data.uid})
 
       if not data.controlledChildren then
         current_aura_env.config = CopyTable(data.config)
@@ -250,6 +252,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
       -- Either this aura environment has not yet been initialized, or it was reset via an edit in WeakaurasOptions
       environment_initialized[id] = 2
       aura_environments[id] = aura_environments[id] or {}
+      current_uid = data.uid
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
       current_aura_env.cloneId = cloneId
@@ -257,7 +260,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
       current_aura_env.states = states
       current_aura_env.region = region
       -- push new environment onto the stack
-      tinsert(aura_env_stack, current_aura_env)
+      tinsert(aura_env_stack, {current_aura_env, data.uid})
 
       if data.controlledChildren then
         current_aura_env.child_envs = {}
@@ -265,8 +268,8 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
           local childData = WeakAuras.GetData(childID)
           if childData then
             if not environment_initialized[childID] then
-              WeakAuras.ActivateAuraEnvironment(childID)
-              WeakAuras.ActivateAuraEnvironment()
+              Private.ActivateAuraEnvironment(childID)
+              Private.ActivateAuraEnvironment()
             end
             current_aura_env.child_envs[dataIndex] = aura_environments[childID]
           end
@@ -281,7 +284,7 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
       -- Finally, run the init function if supplied
       local actions = data.actions.init
       if(actions and actions.do_custom and actions.custom) then
-        local func = WeakAuras.customActionsFunctions[id]["init"]
+        local func = Private.customActionsFunctions[id]["init"]
         if func then
           xpcall(func, geterrorhandler())
         end
@@ -290,9 +293,130 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
   end
 end
 
+local function blocked(key)
+  Private.AuraWarnings.UpdateWarning(current_uid, "SandboxForbidden", "error",
+          string.format(L["Forbidden function or table: %s"], key))
+end
+
+local function MakeReadOnly(input, options)
+  return setmetatable({},
+  {
+    __index = function(t, k)
+       if options.blockedFunctions[k] then
+         options.blocked(k)
+         return function() end
+       elseif options.blockedTables[k] then
+         options.blocked(k)
+         return {}
+       elseif options.override[k] then
+         return options.override[k]
+       else
+         return input[k]
+       end
+     end,
+     __newindex = options.setBlocked,
+     __metatable = false
+  })
+end
+
+local FakeWeakAurasMixin = {
+  blockedFunctions = {
+    -- Other addons might use these, so before moving them to the Private space, we need
+    -- to discuss these. But Auras have no purpose for calling these
+    Add = true,
+    AddMany = true,
+    AddManyFromAddons = true,
+    Delete = true,
+    HideOptions = true,
+    Rename = true,
+    NewAura = true,
+    OptionsFrame = true,
+    RegisterAddon = true,
+    RegisterDisplay = true,
+    RegisterRegionOptions = true,
+    RegisterSubRegionOptions = true,
+    RegisterSubRegionType = true,
+    RegisterRegionType = true,
+    RegisterTriggerSystem = true,
+    RegisterTriggerSystemOptions = true,
+    ShowOptions = true,
+    -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
+    -- so for now just block them and clean them up later
+    CollisionResolved = true,
+    ClearAndUpdateOptions = true,
+    CloseCodeReview = true,
+    CloseImportExport = true,
+    CreateTemplateView = true,
+    DisplayToString = true,
+    FillOptions = true,
+    FindUnusedId = true,
+    GetMoverSizerId = true,
+    GetDisplayButton = true,
+    Import = true,
+    NewDisplayButton = true,
+    NewAura = true,
+    OpenTriggerTemplate = true,
+    OpenCodeReview = true,
+    PickDisplay = true,
+    SetMoverSizer = true,
+    SetImporting = true,
+    SortDisplayButtons = true,
+    ShowOptions = true,
+    ToggleOptions = true,
+    UpdateDisplayButton = true,
+    UpdateGroupOrders = true,
+    UpdateThumbnail = true,
+    validate = true,
+    getDefaultGlow = true,
+  },
+  blockedTables = {
+    AuraWarnings = true,
+    ModelPaths = true,
+    regionPrototype = true,
+    -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
+    -- so for now just block them and clean them up later
+    data_stub = true,
+    displayButtons = true,
+    regionTypes = true,
+    regionOptions = true,
+    spellCache = true,
+    triggerTemplates = true,
+    frames = true,
+    loadFrame = true,
+    unitLoadFrame = true,
+    importDisplayButtons = true,
+    loaded = true
+
+  },
+  override = {
+    me = GetUnitName("player", true),
+    myGUID = UnitGUID("player")
+  },
+  blocked = blocked,
+  setBlocked = function()
+    Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasSet", "error",
+                  L["Writing to the WeakAuras table is not allowed."], true)
+  end
+}
+
+local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
+
+local overridden = {
+  WA_GetUnitAura = WA_GetUnitAura,
+  WA_GetUnitBuff = WA_GetUnitBuff,
+  WA_GetUnitDebuff = WA_GetUnitDebuff,
+  WA_IterateGroupMembers = WA_IterateGroupMembers,
+  WA_ClassColorName = WA_ClassColorName,
+  WA_Utf8Sub = WA_Utf8Sub,
+  ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
+  ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
+  WeakAuras = FakeWeakAuras
+}
+
 local env_getglobal
-local exec_env = setmetatable({}, { __index =
-  function(t, k)
+local exec_env = setmetatable({},
+{
+  __index = function(t, k)
     if k == "_G" then
       return t
     elseif k == "getglobal" then
@@ -300,15 +424,23 @@ local exec_env = setmetatable({}, { __index =
     elseif k == "aura_env" then
       return current_aura_env
     elseif blockedFunctions[k] then
-      return forbidden
-    elseif overrideFunctions[k] then
-      return overrideFunctions[k]
-    elseif helperFunctions[k] then
-      return helperFunctions[k]
+      return blocked
+    elseif blockedTables[k] then
+      return blocked()
+    elseif overridden[k] then
+      return overridden[k]
     else
       return _G[k]
     end
-  end
+  end,
+  __newindex = function(table, key, value)
+    if _G[key] then
+      Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning",
+         string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
+    end
+    rawset(table, key, value)
+  end,
+  __metatable = false
 })
 
 function env_getglobal(k)
@@ -334,7 +466,7 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
   end
 end
 
-function WeakAuras.GetSanitizedGlobal(key)
+function Private.GetSanitizedGlobal(key)
   return exec_env[key]
 end
 

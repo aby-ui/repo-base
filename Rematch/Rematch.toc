@@ -1,8 +1,8 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.10.5
+## Version: 4.11.4
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua
@@ -41,7 +41,8 @@ Menus\Menu.xml
 Menus\Menu.lua
 Menus\TeamMenus.lua
 Menus\PetMenus.lua
-Menus\Npcs.lua
+Menus\TargetData.lua
+Menus\TargetMenus.lua
 
 Dialogs\Dialog.xml
 Dialogs\Dialog.lua
@@ -72,6 +73,8 @@ Panels\MiniPanel.lua
 Panels\OptionPanel.xml
 Panels\OptionPanel.lua
 Panels\OptionList.lua
+Panels\TargetPanel.xml
+Panels\TargetPanel.lua
 
 Widgets\BottomPanel.xml
 Widgets\BottomPanel.lua

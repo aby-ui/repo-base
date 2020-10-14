@@ -201,7 +201,7 @@
 		</Scripts>
 	</ScrollFrame>
 
-	<Frame name="TradeskillInfoFrame" toplevel="true" frameStrata="LOW" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true">
+	<Frame name="TradeskillInfoFrame" toplevel="true" frameStrata="LOW" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="712" y="345"/>
 		</Size>
@@ -216,14 +216,10 @@
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
-		<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground" tile="false">
-			<BackgroundInsets>
-				<AbsInset left="0" right="0" top="0" bottom="0" />
-			</BackgroundInsets>
-			<EdgeSize>
-				<AbsValue val="2" />
-			</EdgeSize>
-		</Backdrop>
+
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 
 		<!-- Window Title -->
 		<Layers>

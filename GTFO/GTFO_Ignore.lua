@@ -17,7 +17,7 @@ if (not GTFO.ClassicMode) then
 	GTFO.IgnoreSpellCategory["HagaraWateryEntrenchment"] = {
 		-- mobID = 55689; -- Hagara the Stormbinder
 		spellID = 110317,
-		desc = "Watery Entrenchment"
+		desc = "Watery Entrenchment (Hagara)"
 	}
 
 	GTFO.IgnoreSpellCategory["GarroshDesecrated"] = {
@@ -27,13 +27,13 @@ if (not GTFO.ClassicMode) then
 		tooltip = "Alert from the Desecrated Axe from Garrosh Hellscream (Phase 1 & 2)",
 		override = true
 	}
-	
-	GTFO.IgnoreSpellCategory["EyeOfCorruption"] = {
+
+	GTFO.IgnoreSpellCategory["EyeOfCorruption2"] = {
 		-- 8.3 Corruption
 		spellID = 315161,
-		desc = "Eye of Corruption"
+		desc = "Eye of Corruption (8.3 BFA)",
+		isDefault = true,
 	}
-
 end
 
 -- Scanner ignore list
@@ -69,3 +69,4 @@ GTFO.IgnoreScan["80354"] = true; -- Time Warp
 GTFO.IgnoreScan["258018"] = true; -- Sense of Dread
 GTFO.IgnoreScan["294856"] = true; -- Unstable Mixture
 GTFO.IgnoreScan["287769"] = true; -- N'Zoth's Awareness
+GTFO.IgnoreScan["306583"] = true; -- Leaden Foot

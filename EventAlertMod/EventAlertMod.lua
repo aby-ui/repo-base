@@ -1,4 +1,5 @@
-﻿-- Prevent tainting global _.
+﻿local CreateFrame = CreateFrameAby --TODO aby9
+-- Prevent tainting global _.
 local _
 local _G = _G
 -----------------------------------------------------------------
@@ -2126,7 +2127,7 @@ function EAFun_CreateVersionFrame_ScrollEditBox()
 	local frameheight = EA_Version_Frame:GetHeight()-70;
 	local panel3 = _G["EA_Version_ScrollFrame"];
 	if panel3 == nil then
-		panel3 = CreateFrame("ScrollFrame", "EA_Version_ScrollFrame", EA_Version_Frame, "UIPanelScrollFrameTemplate");
+		panel3 = CreateFrameAby("ScrollFrame", "EA_Version_ScrollFrame", EA_Version_Frame, "UIPanelScrollFrameTemplate");
 	end
 	local scc = _G["EA_Version_ScrollFrame_List"];
 	if scc == nil then

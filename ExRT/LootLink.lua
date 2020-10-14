@@ -25,7 +25,7 @@ if ExRT.isClassic then
 	function module.options:Load()
 		self:CreateTilte()
 	
-		self.enableChk = ELib:Check(self,L.LootLinkEnable,VExRT.LootLink.enabled):Point(5,-30):OnClick(function(self) 
+		self.enableChk = ELib:Check(self,L.LootLinkEnable,VExRT.LootLink.enabled):Point(10,-30):AddColorState():OnClick(function(self) 
 			if self:GetChecked() then
 				VExRT.LootLink.enabled = true
 				module:Enable()
@@ -35,7 +35,7 @@ if ExRT.isClassic then
 			end
 		end)
 		
-		self.ilvlChk = ELib:Check(self,SHOW_ITEM_LEVEL,VExRT.LootLink.ilvl):Point(5,-55):OnClick(function(self) 
+		self.ilvlChk = ELib:Check(self,SHOW_ITEM_LEVEL,VExRT.LootLink.ilvl):Point(10,-55):OnClick(function(self) 
 			if self:GetChecked() then
 				VExRT.LootLink.ilvl = true
 			else

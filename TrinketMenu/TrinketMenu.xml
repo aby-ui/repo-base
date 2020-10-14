@@ -69,7 +69,7 @@
 		</Layers>
 	</Frame>
 	<!-- MainFrame: Equipped Trinkets -->
-	<Frame name = "TrinketMenu_MainFrame" toplevel = "true" frameStrata = "BACKGROUND" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true">
+	<Frame name = "TrinketMenu_MainFrame" toplevel = "true" frameStrata = "BACKGROUND" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x = "91" y = "52" />
 		</Size>
@@ -81,17 +81,9 @@
 			</Anchor>
 		</Anchors>
 
-		<Backdrop bgFile = "Interface\DialogFrame\UI-DialogBox-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile = "true">
-			<BackgroundInsets>
-				<AbsInset left = "4" right = "4" top = "4" bottom = "4" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val = "16" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val = "16" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Layers>
 			<Layer level = "OVERLAY">
 				<Texture name = "TrinketMenu_MainDock_TOPRIGHT" file = "Interface\Tooltips\UI-Tooltip-Border" alphaMode = "ADD" hidden = "true">
@@ -182,25 +174,17 @@
 		</Scripts>
 	</Frame>
 	<!-- MenuFrame: Bagged Trinkets -->
-	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true">
+	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x = "52" y = "91" />
 		</Size>
 		<Anchors>
 			<Anchor point = "BOTTOMLEFT" relativeTo = "TrinketMenu_MainFrame" relativePoint = "BOTTOMRIGHT"/>
 		</Anchors>
-		<Backdrop bgFile = "Interface\DialogFrame\UI-DialogBox-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile = "true">
-			<BackgroundInsets>
-				<AbsInset left = "4" right = "4" top = "4" bottom = "4" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val = "16" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val = "16" />
-			</EdgeSize>
-		</Backdrop>
-		<Layers>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
+        <Layers>
 			<Layer level = "OVERLAY">
 				<Texture name = "TrinketMenu_MenuDock_TOPRIGHT" file = "Interface\Tooltips\UI-Tooltip-Border" alphaMode = "ADD" hidden = "true">
 					<Size>

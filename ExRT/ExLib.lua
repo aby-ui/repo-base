@@ -1,11 +1,9 @@
---[[
+--[=[
 version 1.0
 
 ExRT.lib.AddShadowComment(self,hide,moduleName,userComment,userFontSize,userOutline)
 ExRT.lib.CreateHoverHighlight(parent[,prefix,drawLayer])
 ExRT.lib.SetAlphas(alpha,...)
-ExRT.lib.SetPoint(self,...)
-ExRT.lib.ShowOrHide(self,bool)
 
 ExRT.lib.CreateColorPickButton(parent,width,height,relativePoint,x,y,cR,cG,cB,cA)
 ExRT.lib.CreateGraph(parent,width,height,relativePoint,x,y)
@@ -22,14 +20,17 @@ All functions:
 	:OnClick(func)		-> SetScript("OnClick",func)
 	:OnShow(func,disableFirst)  -> SetScript("OnShow",func) && run func if not disabled
 	:Run(func,...)		-> func(self,...)
+	:Shown(bool)		-> SetShown(bool)
+	:OnEnter(func)		-> SetScript("OnEnter",func)
+	:OnLeave(func)		-> SetScript("OnLeave",func)
 
 -> ELib:Shadow(parent,size,edgeSize)
--> ELib:Shadow2(parent,size,offsetX,offsetY,isBold)
 -> ELib:Slider(parent,text,isVertical,template)
 	:Range(min,max)		-> SetMinMaxValues(min,max)
 	:SetTo(value)		-> SetValue(value)
 	:OnChange(func)		-> SetScript("OnValueChanged",func)
 	:Size(width)		-> SetWidth(width)
+	:SetObey(bool)		-> SetObeyStepOnDrag(bool)
 -> ELib:ScrollBar(parent,isOld)
 	:Range(min,max)		-> SetMinMaxValues(min,max)
 	:SetTo(value)		-> SetValue(value)
@@ -55,6 +56,12 @@ All functions:
 	:Text(str)		-> SetText(str)
 	:Tooltip(str)		-> [add tooltip]
 	:OnChange(func)		-> SetScript("OnTextChanged",func)
+	:OnFocus(gained,lost)	-> SetScript("OnFocusGained",gained) SetScript("OnEditFocusLost",lost)
+	:InsideIcon(texture,[size,[offset]])
+	:LeftText(text)		-> Add text at left
+	:TopText(text)		-> Add text at top
+	:BackgroundText(text)	-> Add text inside edit while not in focus
+	:ColorBorder(bool) or :ColorBorder(cR,cG,cB,cA) -> Set colors for border; [true: red; false: default]
 -> ELib:ScrollFrame(parent,isOld)
 	:Height(px)		-> [set height]
 -> ELib:Button(parent,text,template)
@@ -64,7 +71,9 @@ All functions:
 -> ELib:Check(parent,text,state,template)
 	:Tooltip(str)		-> [add tooltip]
 	:Left([relativeX])	-> [move text to left side], relativeX default 2
--> ELib:Radio(parent,text,checked,template)	
+	:TextSize(size)
+	:AddColorState(isBorderInsteadText) -> Add red/green colors for [false: text; true: borders]
+-> ELib:Radio(parent,text,checked,template)
 -> ELib:Popup(title,template)
 -> ELib:OneTab(parent,text,isOld)
 -> ELib:DropDown(parent,width,lines,template)
@@ -80,7 +89,7 @@ All functions:
 	:Hyperlinks()		-> enable hyperlinks in text (spells,items,etc)
 	:ToTop()		-> set scroll vaule to min
 	:GetTextHighlight()	-> get highlight positions [start,end]
--> ELib:MultiEdit3(parent)
+	:SetSyntax(syntax)	-> add colored text
 -> ELib:Frame(parent,template)
 	:Texture(texture,layer)	-> create and/or set texture
 	:Texture(cR,cG,cB,cA,layer) -> create and/or set texture
@@ -105,6 +114,8 @@ All functions:
 -> ELib:Texture(parent,texture,layer) or ELib:Texture(parent,cR,cG,cB,cA,layer)
 	:Color(r,g,b,a)		-> SetVertexColor(r,g,b,a)
 	:TexCoord(...)		-> SetTexCoord(...)
+	:Gradient(...)		-> SetGradientAlpha(...)
+	:Atlas(...)		-> SetAtlas(...)
 -> ELib:ShadowInside(parent,enableBorder,enableLine)
 -> ELib:Border(parent,size,colorR,colorG,colorB,colorA,outside,layerCounter)
 
@@ -147,12 +158,12 @@ Button		ExRTButtonUpModernTemplate
 Button		ExRTUIChatDownButtonModernTemplate
 CheckButton	ExRTRadioButtonModernTemplate
 
-]]
+]=]
 
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 35
+local libVersion = 37
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -163,6 +174,9 @@ end
 ExRT.lib = ELib
 
 ELib.V = libVersion
+
+-- upvalues
+local type, CreateFrame, GameTooltip = type, CreateFrame, GameTooltip
 
 local Mod = nil
 do
@@ -212,6 +226,22 @@ do
 		func(self,...)
 		return self
 	end
+	local function Widget_Shown(self,bool)
+		if bool then
+			self:Show()
+		else
+			self:Hide()
+		end
+		return self
+	end
+	local function Widget_OnEnter(self,func)
+		self:SetScript("OnEnter",func)
+		return self
+	end
+	local function Widget_OnLeave(self,func)
+		self:SetScript("OnLeave",func)
+		return self
+	end
 	function Mod(self,...)
 		self.Point = Widget_SetPoint
 		self.Size = Widget_SetSize
@@ -220,9 +250,10 @@ do
 		self.OnClick = Widget_OnClick
 		self.OnShow = Widget_OnShow
 		self.Run = Widget_Run
-		
-		self.SetNewPoint = Widget_SetNewPoint
-		
+		self.Shown = Widget_Shown
+		self.OnEnter = Widget_OnEnter
+		self.OnLeave = Widget_OnLeave
+
 		for i=1,select("#", ...) do
 			if i % 2 == 1 then
 				local funcName,func = select(i, ...)
@@ -233,9 +264,7 @@ do
 end
 
 --=======================================================================
---=======================================================================
 --==============================  LOCALS ================================
---=======================================================================
 --=======================================================================
 
 local DEFAULT_FONT = ExRT.F and ExRT.F.defFont or "Fonts\\ARHei.ttf" --"Interface\\AddOns\\"..GlobalAddonName.."\\media\\skurri.ttf"
@@ -289,9 +318,7 @@ local UIDropDownMenu_StartCounting = UIDropDownMenu_StartCounting or ExRT.NULLfu
 local UIDropDownMenu_StopCounting = UIDropDownMenu_StopCounting or ExRT.NULLfunc or function()end
 
 --=======================================================================
---=======================================================================
 --============================  TEMPLATES ===============================
---=======================================================================
 --=======================================================================
 
 local Templates = {}
@@ -326,72 +353,84 @@ do
 		[2] = {{0.1875,0.25,0.5,0.625},{1,1,1,.7},{0.9,0.75,0,1}},		--home
 		[3] = {{0.25,0.3125,0.5,0.625},{1,1,1,.7},0,{1,1,1,1},{.3,.3,.3,.7}},	--arrow-down
 		[4] = {{0.3125,0.375,0.5,0.625},{1,1,1,.7},0,{1,1,1,1},{.3,.3,.3,.7}},	--arrow-up
+		["blocks"] = {{0.1875,0.25,0.875,1},{1,1,1,.7},{0.9,0.75,0,1}},
 	}
 	function Templates:GUIcons(id,parent)
 		local self = CreateFrame("Button",nil,parent)
+
+		local iconData = ICONS[id]
 
 		self.NormalTexture = self:CreateTexture(nil,"ARTWORK")
 		self.NormalTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 		self.NormalTexture:SetPoint("TOPLEFT")
 		self.NormalTexture:SetPoint("BOTTOMRIGHT")
-		self.NormalTexture:SetVertexColor(unpack(ICONS[id][2]))
-		self.NormalTexture:SetTexCoord(unpack(ICONS[id][1]))
+		self.NormalTexture:SetVertexColor(unpack(iconData[2]))
+		self.NormalTexture:SetTexCoord(unpack(iconData[1]))
 		self:SetNormalTexture(self.NormalTexture)
-		
-		if type(ICONS[id][3])=='table' then
+
+		if type(iconData[3])=='table' then
 			self.HighlightTexture = self:CreateTexture(nil,"ARTWORK")
 			self.HighlightTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 			self.HighlightTexture:SetPoint("TOPLEFT")
 			self.HighlightTexture:SetPoint("BOTTOMRIGHT")
-			self.HighlightTexture:SetVertexColor(unpack(ICONS[id][3]))
-			self.HighlightTexture:SetTexCoord(unpack(ICONS[id][1]))	
+			self.HighlightTexture:SetVertexColor(unpack(iconData[3]))
+			self.HighlightTexture:SetTexCoord(unpack(iconData[1]))
 			self:SetHighlightTexture(self.HighlightTexture)
 		end
-		if type(ICONS[id][4])=='table' then
+		if type(iconData[4])=='table' then
 			self.PushedTexture = self:CreateTexture(nil,"ARTWORK")
 			self.PushedTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 			self.PushedTexture:SetPoint("TOPLEFT")
 			self.PushedTexture:SetPoint("BOTTOMRIGHT")
-			self.PushedTexture:SetVertexColor(unpack(ICONS[id][4]))
-			self.PushedTexture:SetTexCoord(unpack(ICONS[id][1]))	
+			self.PushedTexture:SetVertexColor(unpack(iconData[4]))
+			self.PushedTexture:SetTexCoord(unpack(iconData[1]))
 			self:SetPushedTexture(self.PushedTexture)
 		end
-		if type(ICONS[id][5])=='table' then
+		if type(iconData[5])=='table' then
 			self.DisabledTexture = self:CreateTexture(nil,"ARTWORK")
 			self.DisabledTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
 			self.DisabledTexture:SetPoint("TOPLEFT")
 			self.DisabledTexture:SetPoint("BOTTOMRIGHT")
-			self.DisabledTexture:SetVertexColor(unpack(ICONS[id][5]))
-			self.DisabledTexture:SetTexCoord(unpack(ICONS[id][1]))	
+			self.DisabledTexture:SetVertexColor(unpack(iconData[5]))
+			self.DisabledTexture:SetTexCoord(unpack(iconData[1]))
 			self:SetDisabledTexture(self.DisabledTexture)
 		end
-		
+
 		return self
 	end
 	ELib.Templates_GUIcons = Templates.GUIcons
+
+	local function HideBorders(self)
+		self.BorderTop:Hide()
+		self.BorderLeft:Hide()
+		self.BorderBottom:Hide()
+		self.BorderRight:Hide()
+	end
 	function Templates:Border(self,cR,cG,cB,cA,size,offsetX,offsetY)
 		offsetX = offsetX or 0
 		offsetY = offsetY or 0
-	
-		self.BorderTop = self:CreateTexture(nil,"BACKGROUND")
+
+		self.BorderTop = self.BorderTop or self:CreateTexture(nil,"BACKGROUND")
 		self.BorderTop:SetColorTexture(cR,cG,cB,cA)
 		self.BorderTop:SetPoint("TOPLEFT",-size-offsetX,size+offsetY)
 		self.BorderTop:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",size+offsetX,offsetY)
 
-		self.BorderLeft = self:CreateTexture(nil,"BACKGROUND")
+		self.BorderLeft = self.BorderLeft or self:CreateTexture(nil,"BACKGROUND")
 		self.BorderLeft:SetColorTexture(cR,cG,cB,cA)
 		self.BorderLeft:SetPoint("TOPLEFT",-size-offsetX,offsetY)
 		self.BorderLeft:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY)
 
-		self.BorderBottom = self:CreateTexture(nil,"BACKGROUND")
+		self.BorderBottom = self.BorderBottom or self:CreateTexture(nil,"BACKGROUND")
 		self.BorderBottom:SetColorTexture(cR,cG,cB,cA)
 		self.BorderBottom:SetPoint("BOTTOMLEFT",-size-offsetX,-size-offsetY)
 		self.BorderBottom:SetPoint("TOPRIGHT",self,"BOTTOMRIGHT",size+offsetX,-offsetY)
 
-		self.BorderRight = self:CreateTexture(nil,"BACKGROUND")
+		self.BorderRight = self.BorderRight or self:CreateTexture(nil,"BACKGROUND")
 		self.BorderRight:SetColorTexture(cR,cG,cB,cA)
 		self.BorderRight:SetPoint("BOTTOMRIGHT",size+offsetX,offsetY)
 		self.BorderRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,-offsetY)
+
+		self.HideBorders = HideBorders
 	end
 	ELib.Templates_Border = Templates.Border
 end
@@ -418,31 +457,31 @@ do
 	function Templates:ExRTUIChatDownButtonTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
 		self:SetSize(24,24)
-		
+
 		self.NormalTexture = self:CreateTexture()
 		self.NormalTexture:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 		self.NormalTexture:SetSize(24,24)
 		self.NormalTexture:SetPoint("RIGHT")
 		self:SetNormalTexture(self.NormalTexture)
-		
+
 		self.PushedTexture = self:CreateTexture()
 		self.PushedTexture:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down")
 		self.PushedTexture:SetSize(24,24)
 		self.PushedTexture:SetPoint("RIGHT")
 		self:SetPushedTexture(self.PushedTexture)
-		
+
 		self.DisabledTexture = self:CreateTexture()
 		self.DisabledTexture:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Disabled")
 		self.DisabledTexture:SetSize(24,24)
 		self.DisabledTexture:SetPoint("RIGHT")
 		self:SetDisabledTexture(self.DisabledTexture)
-		
+
 		self.HighlightTexture = self:CreateTexture()
 		self.HighlightTexture:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight")
 		self.HighlightTexture:SetSize(24,24)
 		self.HighlightTexture:SetPoint("RIGHT")
 		self:SetHighlightTexture(self.HighlightTexture,"ADD")
-				
+
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
 		self:SetScript("OnClick",OnClick)
@@ -453,12 +492,12 @@ end
 function Templates:ExRTTranslucentFrameTemplate(parent)
 	local self = CreateFrame("Frame",nil,parent)
 	self:SetSize(338,424)
-	
+
 	self.Bg = self:CreateTexture(nil,"BACKGROUND",nil,-8)
 	self.Bg:SetPoint("TOPLEFT",10,-10)
 	self.Bg:SetPoint("BOTTOMRIGHT",-10,10)
 	self.Bg:SetColorTexture(0,0,0,0.8)
-	
+
 	local TopLeftCorner = self:CreateTexture(nil,"BORDER","Dialog-BorderTopLeft",-5)
 	TopLeftCorner:SetPoint("TOPLEFT")
 	local TopRightCorner = self:CreateTexture(nil,"BORDER","Dialog-BorderTopRight",-5)
@@ -483,7 +522,7 @@ function Templates:ExRTTranslucentFrameTemplate(parent)
 	local RightBorder = self:CreateTexture(nil,"BORDER","Dialog-BorderRight",-5)
 	RightBorder:SetPoint("TOPRIGHT",TopRightCorner,"BOTTOMRIGHT")
 	RightBorder:SetPoint("BOTTOMRIGHT",BottomRightCorner,"TOPRIGHT")
-		
+
 	return self
 end
 
@@ -523,39 +562,39 @@ do
 	function Templates:ExRTDropDownMenuButtonTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
 		self:SetSize(100,16)
-		
+
 		self.Highlight = self:CreateTexture(nil,"BACKGROUND")
 		self.Highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
 		self.Highlight:SetAllPoints()
 		self.Highlight:SetBlendMode("ADD")
 		self.Highlight:Hide()
-		
+
 		self.Texture = self:CreateTexture(nil,"BACKGROUND",nil,-8)
 		self.Texture:Hide()
 		self.Texture:SetAllPoints()
-		
+
 		self.Icon = self:CreateTexture(nil,"ARTWORK")
 		self.Icon:SetSize(16,16)
 		self.Icon:SetPoint("LEFT")
 		self.Icon:Hide()
-		
+
 		self.Arrow = self:CreateTexture(nil,"ARTWORK")
 		self.Arrow:SetTexture("Interface\\ChatFrame\\ChatFrameExpandArrow")
 		self.Arrow:SetSize(16,16)
 		self.Arrow:SetPoint("RIGHT")
 		self.Arrow:Hide()
-		
+
 		self.NormalText = self:CreateFontString()
 		self.NormalText:SetPoint("LEFT")
-		
+
 		self:SetFontString(self.NormalText)
-		
+
 		self:SetNormalFontObject("GameFontHighlightSmallLeft")
 		self:SetHighlightFontObject("GameFontHighlightSmallLeft")
 		self:SetDisabledFontObject("GameFontDisableSmallLeft")
 
 		self:SetPushedTextOffset(1,-1)
-		
+
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
 		self:SetScript("OnClick",OnClick)
@@ -591,8 +630,8 @@ do
 		self:SetFrameStrata("TOOLTIP")
 		self:EnableMouse(true)
 		self:Hide()
-		
-		self.Backdrop = CreateFrame("Frame",nil,self)
+
+		self.Backdrop = CreateFrame("Frame",nil,self, BackdropTemplateMixin and "BackdropTemplate")
 		self.Backdrop:SetAllPoints()
 		self.Backdrop:SetBackdrop({
 			bgFile="Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -607,7 +646,7 @@ do
 			tileSize = 32,
 			edgeSize = 32,
 		})
-		
+
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
 		self:SetScript("OnClick",OnClick)
@@ -615,20 +654,20 @@ do
 		self:SetScript("OnHide",OnHide)
 		self:SetScript("OnUpdate",OnUpdate)
 		return self
-	end	
+	end
 	function Templates:ExRTDropDownListModernTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
 		self:SetFrameStrata("TOOLTIP")
 		self:EnableMouse(true)
 		self:Hide()
-		
+
 		Templates:Border(self,0,0,0,1,1)
-		
+
 		self.Background = self:CreateTexture(nil,"BACKGROUND")
 		self.Background:SetColorTexture(0,0,0,.9)
 		self.Background:SetPoint("TOPLEFT")
 		self.Background:SetPoint("BOTTOMRIGHT")
-		
+
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
 		self:SetScript("OnClick",OnClick)
@@ -642,31 +681,31 @@ end
 function Templates:ExRTButtonTransparentTemplate(parent)
 	local self = CreateFrame("Button",nil,parent)
 	self:SetSize(40,18)
-	
+
 	self.HighlightTexture = self:CreateTexture()
 	self.HighlightTexture:SetColorTexture(1,1,1,.3)
 	self.HighlightTexture:SetPoint("TOPLEFT")
 	self.HighlightTexture:SetPoint("BOTTOMRIGHT")
 	self:SetHighlightTexture(self.HighlightTexture)
-	
+
 	self.PushedTexture = self:CreateTexture()
 	self.PushedTexture:SetColorTexture(.9,.8,.1,.3)
 	self.PushedTexture:SetPoint("TOPLEFT")
 	self.PushedTexture:SetPoint("BOTTOMRIGHT")
 	self:SetPushedTexture(self.PushedTexture)
-	
+
 	self:SetNormalFontObject("GameFontNormal")
 	self:SetHighlightFontObject("GameFontHighlight")
 	self:SetDisabledFontObject("GameFontDisable")
-	
+
 	return self
 end
 
 function Templates:ExRTButtonModernTemplate(parent)
 	local self = Templates:ExRTButtonTransparentTemplate(parent)
-	
+
 	Templates:Border(self,0,0,0,1,1)
-	
+
 	self.Texture = self:CreateTexture(nil,"BACKGROUND")
 	self.Texture:SetColorTexture(1,1,1,1)
 	self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
@@ -677,8 +716,8 @@ function Templates:ExRTButtonModernTemplate(parent)
 	self.DisabledTexture:SetColorTexture(0.20,0.21,0.25,0.5)
 	self.DisabledTexture:SetPoint("TOPLEFT")
 	self.DisabledTexture:SetPoint("BOTTOMRIGHT")
-	self:SetDisabledTexture(self.DisabledTexture)	
-	
+	self:SetDisabledTexture(self.DisabledTexture)
+
 	return self
 end
 
@@ -691,7 +730,7 @@ do
 		self:GetParent():Hide()
 	end
 	function Templates:ExRTBWInterfaceFrame(parent)
-		local self = CreateFrame("Frame",nil,parent)
+		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetSize(858,660)
 		self:SetFrameStrata("HIGH")
 		self:SetToplevel(true)
@@ -699,26 +738,26 @@ do
 		self:SetPoint("CENTER")
 		self:SetBackdrop({bgFile="Interface\\Addons\\"..GlobalAddonName.."\\media\\White"})
 		self:SetBackdropColor(0.05,0.05,0.07,0.9)
-		
+
 		self.HeaderText = self:CreateFontString(nil,"ARTWORK","GameFontNormal")
 		self.HeaderText:SetPoint("TOP",0,-3)
 		self.HeaderText:SetTextColor(1,.66,0,1)
-		
+
 		self.buttonClose = Templates:GUIcons(1,self)
 		self.buttonClose:SetSize(18,18)
 		self.buttonClose:SetPoint("TOPRIGHT",-1,0)
 		self.buttonClose:SetScript("OnClick",buttonClose_OnClick)
-		
+
 		self.backToInterface = Templates:GUIcons(2,self)
 		self.backToInterface:SetSize(16,16)
 		self.backToInterface:SetPoint("BOTTOMRIGHT",self.buttonClose,"BOTTOMLEFT",-1,1)
 		self.backToInterface:SetScript("OnClick",backToInterface_OnClick)
-	
+
 		self.bossButton = ELib:Template("ExRTButtonTransparentTemplate",self)
 		self.bossButton:SetSize(250,18)
 		self.bossButton:SetPoint("TOPLEFT",4,-18)
-		self.bossButton:SetScript("OnClick",buttonClose_OnClick)	
-		
+		self.bossButton:SetScript("OnClick",buttonClose_OnClick)
+
 		return self
 	end
 end
@@ -737,7 +776,7 @@ do
 	function Templates:ExRTTabButtonTransparentTemplate(parent)
 		local self = CreateFrame("Button",nil,parent)
 		self:SetSize(115,24)
-		
+
 		self.LeftDisabled = self:CreateTexture(nil,"BORDER")
 		self.LeftDisabled:SetPoint("BOTTOMLEFT",0,-3)
 		self.LeftDisabled:SetSize(12,24)
@@ -761,21 +800,21 @@ do
 		self.Right = self:CreateTexture(nil,"BORDER")
 		self.Right:SetPoint("LEFT",self.Middle,"RIGHT")
 		self.Right:SetSize(12,24)
-		
+
 		self.Text = self:CreateFontString()
 		self.Text:SetPoint("CENTER",0,-3)
-		
+
 		self:SetFontString(self.Text)
-		
+
 		self:SetNormalFontObject("ExRTFontGrayTemplate")
 		self:SetHighlightFontObject("GameFontHighlightSmall")
 		self:SetDisabledFontObject("GameFontNormalSmall")
-		
+
 		self.HighlightTexture = self:CreateTexture()
 		self.HighlightTexture:SetColorTexture(1,1,1,.3)
 		self.HighlightTexture:SetPoint("TOPLEFT",0,-4)
 		self.HighlightTexture:SetPoint("BOTTOMRIGHT")
-		self:SetHighlightTexture(self.HighlightTexture)		
+		self:SetHighlightTexture(self.HighlightTexture)
 
 		self:SetScript("OnShow",OnShow)
 		self:SetScript("OnLoad",OnLoad)
@@ -783,7 +822,7 @@ do
 	end
 	function Templates:ExRTTabButtonTemplate(parent)
 		local self = Templates:ExRTTabButtonTransparentTemplate(parent)
-		
+
 		self.LeftDisabled:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-ActiveTab")
 		self.LeftDisabled:SetSize(20,24)
 		self.LeftDisabled:SetTexCoord(0,0.15625,0,1)
@@ -805,14 +844,14 @@ do
 		self.Right:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-InActiveTab")
 		self.Right:SetSize(20,24)
 		self.Right:SetTexCoord(0.84375,1,0,1)
-		
+
 		self:SetNormalFontObject("GameFontNormalSmall")
-		
+
 		self.HighlightTexture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
 		self.HighlightTexture:ClearAllPoints()
 		self.HighlightTexture:SetPoint("LEFT",10,-4)
 		self.HighlightTexture:SetPoint("RIGHT",-10,-4)
-		self:SetHighlightTexture(self.HighlightTexture,"ADD")		
+		self:SetHighlightTexture(self.HighlightTexture,"ADD")
 
 		return self
 	end
@@ -820,7 +859,7 @@ end
 
 function Templates:ExRTDialogTemplate(parent)
 	local self = CreateFrame("Frame",nil,parent)
-	
+
 	self.TopLeft = self:CreateTexture(nil,"OVERLAY")
 	self.TopLeft:SetPoint("TOPLEFT")
 	self.TopLeft:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-Border")
@@ -865,14 +904,14 @@ function Templates:ExRTDialogTemplate(parent)
 	self.Left:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-Border")
 	self.Left:SetSize(64,0)
 	self.Left:SetTexCoord(0.001953125,0.125,0,1)
-	
+
 	self.Right = self:CreateTexture(nil,"OVERLAY")
 	self.Right:SetPoint("TOPRIGHT",self.TopRight,"BOTTOMRIGHT")
 	self.Right:SetPoint("BOTTOMRIGHT",self.BottomRight,"TOPRIGHT")
 	self.Right:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-Border")
 	self.Right:SetSize(64,0)
 	self.Right:SetTexCoord(0.1171875,0.2421875,0,1)
-	
+
 	self.TitleBG = self:CreateTexture(nil,"BACKGROUND")
 	self.TitleBG:SetPoint("TOPLEFT",8,-7)
 	self.TitleBG:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",-8,-24)
@@ -883,13 +922,13 @@ function Templates:ExRTDialogTemplate(parent)
 	self.DialogBG:SetPoint("BOTTOMRIGHT",-6,8)
 	self.DialogBG:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-CharacterTab-L1")
 	self.DialogBG:SetTexCoord(0.255,1,0.29,1)
-	
+
 	self.title = self:CreateFontString(nil,"OVERLAY","GameFontNormal")
 	self.title:SetPoint("TOPLEFT",12,-8)
 	self.title:SetPoint("TOPRIGHT",-32,-24)
-	
+
 	self.Close = CreateFrame("Button",nil,self,"UIPanelCloseButton")
-	self.Close:SetPoint("TOPRIGHT",2,1)	
+	self.Close:SetPoint("TOPRIGHT",2,1)
 
 	return self
 end
@@ -899,21 +938,21 @@ do
 		self:GetParent():Hide()
 	end
 	function Templates:ExRTDialogModernTemplate(parent)
-		local self = CreateFrame("Frame",nil,parent)
+		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetBackdrop({bgFile="Interface\\Addons\\"..GlobalAddonName.."\\media\\White"})
 		self:SetBackdropColor(0.05,0.05,0.07,0.98)
-			
+
 		self.title = self:CreateFontString(nil,"OVERLAY","GameFontNormal")
 		self.title:SetPoint("TOP",0,-3)
 		self.title:SetTextColor(1,0.66,0,1)
-		
+
 		self.Close = Templates:GUIcons(1)
 		self.Close:SetParent(self)
 		self.Close:SetPoint("TOPRIGHT",-1,0)
 		self.Close:SetSize(18,18)
-		
+
 		self.Close:SetScript("OnClick",buttonClose_OnClick)
-	
+
 		return self
 	end
 end
@@ -925,7 +964,7 @@ do
 	function Templates:ExRTDropDownMenuTemplate(parent)
 		local self = CreateFrame("Frame",nil,parent)
 		self:SetSize(40,32)
-			
+
 		self.Left = self:CreateTexture(nil,"ARTWORK")
 		self.Left:SetPoint("TOPLEFT",0,17)
 		self.Left:SetTexture("Interface\\Glues\\CharacterCreate\\CharacterCreate-LabelFrame")
@@ -949,17 +988,62 @@ do
 		self.Text:SetJustifyH("RIGHT")
 		self.Text:SetSize(0,10)
 		self.Text:SetPoint("RIGHT",self.Right,-43,2)
-		
+
 		self.Icon = self:CreateTexture(nil,"OVERLAY")
 		self.Icon:Hide()
 		self.Icon:SetPoint("LEFT",30,2)
 		self.Icon:SetSize(16,16)
-		
+
 		self.Button = ELib:Template("ExRTUIChatDownButtonTemplate",self)
 		self.Button:SetPoint("TOPRIGHT",self.Right,-16,-18)
 		self.Button:SetMotionScriptsWhileDisabled(true)
 
 		self:SetScript("OnHide",OnHide)
+
+		return self
+	end
+	function Templates:ExRTDropDownButtonModernTemplate(parent)
+		local self = ELib:Template("ExRTUIChatDownButtonTemplate",parent)
+		self:SetSize(16,16)
+		self:SetMotionScriptsWhileDisabled(true)
+
+		self.NormalTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
+		self.NormalTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
+		self.NormalTexture:SetVertexColor(1,1,1,.7)
+		self.NormalTexture:SetSize(0,0)
+		self.NormalTexture:ClearAllPoints()
+		self.NormalTexture:SetPoint("TOPLEFT",-5,2)
+		self.NormalTexture:SetPoint("BOTTOMRIGHT",5,-2)
+
+		self.PushedTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
+		self.PushedTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
+		self.PushedTexture:SetVertexColor(1,1,1,1)
+		self.PushedTexture:SetSize(0,0)
+		self.PushedTexture:ClearAllPoints()
+		self.PushedTexture:SetPoint("TOPLEFT",-5,1)
+		self.PushedTexture:SetPoint("BOTTOMRIGHT",5,-3)
+
+		self.DisabledTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
+		self.DisabledTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
+		self.DisabledTexture:SetVertexColor(.4,.4,.4,1)
+		self.DisabledTexture:SetSize(0,0)
+		self.DisabledTexture:ClearAllPoints()
+		self.DisabledTexture:SetPoint("TOPLEFT",-5,2)
+		self.DisabledTexture:SetPoint("BOTTOMRIGHT",5,-2)
+
+		self.HighlightTexture:SetColorTexture(1,1,1,.3)
+		self.HighlightTexture:SetSize(0,0)
+		self.HighlightTexture:ClearAllPoints()
+		self.HighlightTexture:SetPoint("TOPLEFT")
+		self.HighlightTexture:SetPoint("BOTTOMRIGHT")
+		self:SetHighlightTexture(self.HighlightTexture)
+
+		Templates:Border(self,0.24,0.25,0.30,1,1)
+
+		self.Background = self:CreateTexture(nil,"BACKGROUND")
+		self.Background:SetColorTexture(0,0,0,.3)
+		self.Background:SetPoint("TOPLEFT")
+		self.Background:SetPoint("BOTTOMRIGHT")
 
 		return self
 	end
@@ -974,56 +1058,16 @@ do
 		self.Text:SetSize(0,20)
 		self.Text:SetPoint("RIGHT",-24,0)
 		self.Text:SetPoint("LEFT",4,0)
-		
+
 		Templates:Border(self,0.24,0.25,0.30,1,1)
-		
+
 		self.Background = self:CreateTexture(nil,"BACKGROUND")
 		self.Background:SetColorTexture(0,0,0,.3)
 		self.Background:SetPoint("TOPLEFT")
 		self.Background:SetPoint("BOTTOMRIGHT")
-		
-		self.Button = ELib:Template("ExRTUIChatDownButtonTemplate",self)
-		self.Button:SetPoint("RIGHT",-2,0)
-		self.Button:SetSize(16,16)
-		self.Button:SetMotionScriptsWhileDisabled(true)
-		
-		self.Button.NormalTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
-		self.Button.NormalTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
-		self.Button.NormalTexture:SetVertexColor(1,1,1,.7)
-		self.Button.NormalTexture:SetSize(0,0)
-		self.Button.NormalTexture:ClearAllPoints()
-		self.Button.NormalTexture:SetPoint("TOPLEFT",-5,2)
-		self.Button.NormalTexture:SetPoint("BOTTOMRIGHT",5,-2)
-		
-		self.Button.PushedTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
-		self.Button.PushedTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
-		self.Button.PushedTexture:SetVertexColor(1,1,1,1)
-		self.Button.PushedTexture:SetSize(0,0)
-		self.Button.PushedTexture:ClearAllPoints()
-		self.Button.PushedTexture:SetPoint("TOPLEFT",-5,1)
-		self.Button.PushedTexture:SetPoint("BOTTOMRIGHT",5,-3)
 
-		self.Button.DisabledTexture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\DiesalGUIcons16x256x128")
-		self.Button.DisabledTexture:SetTexCoord(0.25,0.3125,0.5,0.625)
-		self.Button.DisabledTexture:SetVertexColor(.4,.4,.4,1)
-		self.Button.DisabledTexture:SetSize(0,0)
-		self.Button.DisabledTexture:ClearAllPoints()
-		self.Button.DisabledTexture:SetPoint("TOPLEFT",-5,2)
-		self.Button.DisabledTexture:SetPoint("BOTTOMRIGHT",5,-2)
-		
-		self.Button.HighlightTexture:SetColorTexture(1,1,1,.3)
-		self.Button.HighlightTexture:SetSize(0,0)
-		self.Button.HighlightTexture:ClearAllPoints()
-		self.Button.HighlightTexture:SetPoint("TOPLEFT")
-		self.Button.HighlightTexture:SetPoint("BOTTOMRIGHT")
-		self.Button:SetHighlightTexture(self.Button.HighlightTexture)
-		
-		Templates:Border(self.Button,0.24,0.25,0.30,1,1)
-		
-		self.Button.Background = self.Button:CreateTexture(nil,"BACKGROUND")
-		self.Button.Background:SetColorTexture(0,0,0,.3)
-		self.Button.Background:SetPoint("TOPLEFT")
-		self.Button.Background:SetPoint("BOTTOMRIGHT")
+		self.Button = ELib:Template("ExRTDropDownButtonModernTemplate",self)
+		self.Button:SetPoint("RIGHT",-2,0)
 
 		self:SetScript("OnHide",OnHide)
 
@@ -1033,13 +1077,13 @@ end
 
 do
 	local function OnEscapePressed(self)
-		EditBox_ClearFocus(self)
+		self:ClearFocus()
 	end
 	local function OnEditFocusLost(self)
-		EditBox_ClearHighlight(self)
+		self:HighlightText(0, 0)
 	end
 	local function OnEditFocusGained(self)
-		EditBox_HighlightText(self)
+		self:HighlightText()
 	end
 	function Templates:ExRTInputBoxTemplate(parent)
 		local self = CreateFrame("EditBox",nil,parent)
@@ -1069,30 +1113,30 @@ do
 		self:SetScript("OnEscapePressed",OnEscapePressed)
 		self:SetScript("OnEditFocusLost",OnEditFocusLost)
 		self:SetScript("OnEditFocusGained",OnEditFocusGained)
-		
+
 		return self
 	end
 	function Templates:ExRTInputBoxModernTemplate(parent)
-		local self = CreateFrame("EditBox",nil,parent)
+		local self = CreateFrame("EditBox",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:EnableMouse(true)
 
 		Templates:Border(self,0.24,0.25,0.3,1,1)
-		
+
 		self.Background = self:CreateTexture(nil,"BACKGROUND")
 		self.Background:SetColorTexture(0,0,0,.3)
 		self.Background:SetPoint("TOPLEFT")
 		self.Background:SetPoint("BOTTOMRIGHT")
 
 		self:SetFontObject("ChatFontNormal") 
-		
+
 		self:SetTextInsets(4, 4, 0, 0)
 
 		self:SetScript("OnEscapePressed",OnEscapePressed)
 		self:SetScript("OnEditFocusLost",OnEditFocusLost)
 		self:SetScript("OnEditFocusGained",OnEditFocusGained)
-		
+
 		return self
-	end	
+	end
 end
 
 do
@@ -1112,11 +1156,11 @@ do
 		GameTooltip:Hide()
 	end
 	function Templates:ExRTSliderTemplate(parent)
-		local self = CreateFrame("Slider",nil,parent)
+		local self = CreateFrame("Slider",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetOrientation("HORIZONTAL")
 		self:SetSize(144,17)
 		self:SetHitRectInsets(0, 0, -10, -10)
-		
+
 		self:SetBackdrop({
 			bgFile="Interface\\Buttons\\UI-SliderBar-Background",
 			edgeFile="Interface\\Buttons\\UI-SliderBar-Border",
@@ -1130,7 +1174,7 @@ do
 			tileSize = 8,
 			edgeSize = 8,
 		})
-		
+
 		self.Text = self:CreateFontString(nil,"ARTWORK","GameFontHighlight")
 		self.Text:SetPoint("BOTTOM",self,"TOP")
 
@@ -1147,14 +1191,14 @@ do
 
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
-		
+
 		return self
 	end
 	function Templates:ExRTSliderModernTemplate(parent)
 		local self = CreateFrame("Slider",nil,parent)
 		self:SetOrientation("HORIZONTAL")
 		self:SetSize(144,10)
-		
+
 		self.Text = self:CreateFontString(nil,"ARTWORK","GameFontHighlight")
 		self.Text:SetPoint("BOTTOM",self,"TOP",0,1)
 
@@ -1163,7 +1207,7 @@ do
 
 		self.High = self:CreateFontString(nil,"ARTWORK","GameFontHighlightSmall")
 		self.High:SetPoint("TOPRIGHT",self,"BOTTOMRIGHT",0,-1)
-		
+
 		Templates:Border(self,0.24,0.25,0.3,1,1,1,0)
 
 		self.Thumb = self:CreateTexture()
@@ -1173,14 +1217,14 @@ do
 
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
-		
+
 		return self
 	end
 	function Templates:ExRTSliderModernVerticalTemplate(parent)
 		local self = CreateFrame("Slider",nil,parent)
 		self:SetOrientation("VERTICAL")
 		self:SetSize(10,144)
-		
+
 		self.Text = self:CreateFontString(nil,"ARTWORK","GameFontHighlight")
 		self.Text:SetPoint("BOTTOM",self,"TOP",0,1)
 
@@ -1189,7 +1233,7 @@ do
 
 		self.High = self:CreateFontString(nil,"ARTWORK","GameFontHighlightSmall")
 		self.High:SetPoint("BOTTOMLEFT",self,"BOTTOMRIGHT",1,1)
-		
+
 		Templates:Border(self,0.24,0.25,0.3,1,1,0,1)
 
 		self.Thumb = self:CreateTexture()
@@ -1199,7 +1243,7 @@ do
 
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
-		
+
 		return self
 	end
 end
@@ -1219,27 +1263,27 @@ do
 		local self = CreateFrame("Frame",nil,parent)
 		self:SetSize(32,32)
 		self:SetHitRectInsets(0, 0, -10, -10)
-		
+
 		self.Icon = self:CreateTexture(nil,"ARTWORK")
 		self.Icon:SetPoint("TOPLEFT",6,-6)
 		self.Icon:SetTexture("Interface\\Minimap\\Tracking\\None")
 		self.Icon:SetSize(20,20)
-		
+
 		self.IconOverlay = self:CreateTexture(nil,"ARTWORK")
 		self.IconOverlay:SetPoint("TOPLEFT",self.Icon)
 		self.IconOverlay:SetPoint("BOTTOMRIGHT",self.Icon)
 		self.IconOverlay:SetColorTexture(0,0,0,0.5)
-		
+
 		self.Button = CreateFrame("Button",nil,self)
 		self.Button:SetSize(32,32)
 		self.Button:SetPoint("TOPLEFT")
-		
+
 		self.Button.Border = self.Button:CreateTexture(nil,"BORDER")
 		self.Button.Border:SetPoint("TOPLEFT")
 		self.Button.Border:SetTexture("Interface\\Addons\\"..GlobalAddonName.."\\media\\radioModern")
 		self.Button.Border:SetSize(32,32)
 		self.Button.Border:SetTexCoord(0,0.25,0,1)
-		
+
 		self.Button.Shine = self.Button:CreateTexture(nil,"OVERLAY")
 		self.Button.Shine:SetPoint("TOPLEFT",2,-2)
 		self.Button.Shine:SetTexture("Interface\\ComboFrame\\ComboPoint")
@@ -1247,12 +1291,12 @@ do
 		self.Button.Shine:Hide()
 		self.Button.Shine:SetSize(27,27)
 		self.Button.Shine:SetTexCoord(0.5625,1,0,1)
-		
+
 		self.Button:SetScript("OnMouseDown",OnMouseDown)
 		self.Button:SetScript("OnMouseUp",OnMouseUp)
-		
+
 		self.Button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight","ADD")
-		
+
 		return self
 	end
 end
@@ -1260,27 +1304,27 @@ end
 function Templates:ExRTCheckButtonModernTemplate(parent)
 	local self = CreateFrame("CheckButton",nil,parent)
 	self:SetSize(20,20)
-	
+
 	self.text = self:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
 	self.text:SetPoint("TOPLEFT",self,"TOPRIGHT",4,0)
 	self.text:SetPoint("BOTTOMLEFT",self,"BOTTOMRIGHT",4,0)
 	self.text:SetJustifyV("MIDDLE")
-	
+
 	self:SetFontString(self.text)
-	
+
 	Templates:Border(self,0.24,0.25,0.3,1,1)
-	
+
 	self.Texture = self:CreateTexture(nil,"BACKGROUND")
 	self.Texture:SetColorTexture(0,0,0,.3)
 	self.Texture:SetPoint("TOPLEFT")
 	self.Texture:SetPoint("BOTTOMRIGHT")
-	
+
 	self.CheckedTexture = self:CreateTexture()
 	self.CheckedTexture:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	self.CheckedTexture:SetPoint("TOPLEFT",-4,4)
 	self.CheckedTexture:SetPoint("BOTTOMRIGHT",4,-4)
 	self:SetCheckedTexture(self.CheckedTexture)
-	
+
 	self.PushedTexture = self:CreateTexture()
 	self.PushedTexture:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
 	self.PushedTexture:SetPoint("TOPLEFT",-4,4)
@@ -1294,13 +1338,13 @@ function Templates:ExRTCheckButtonModernTemplate(parent)
 	self.DisabledTexture:SetPoint("TOPLEFT",-4,4)
 	self.DisabledTexture:SetPoint("BOTTOMRIGHT",4,-4)
 	self:SetDisabledTexture(self.DisabledTexture)
-		
+
 	self.HighlightTexture = self:CreateTexture()
 	self.HighlightTexture:SetColorTexture(1,1,1,.3)
 	self.HighlightTexture:SetPoint("TOPLEFT")
 	self.HighlightTexture:SetPoint("BOTTOMRIGHT")
 	self:SetHighlightTexture(self.HighlightTexture)
-			
+
 	return self
 end
 
@@ -1308,39 +1352,39 @@ do
 	local function ExRTButtonModernTemplate(id,parent)
 		local self = Templates:GUIcons(id,parent)
 		self:SetSize(16,16)
-		
+
 		Templates:Border(self,0.24,0.25,0.3,1,1)
-		
+
 		self.Background = self:CreateTexture(nil,"BACKGROUND")
 		self.Background:SetColorTexture(0,0,0,.3)
 		self.Background:SetPoint("TOPLEFT")
 		self.Background:SetPoint("BOTTOMRIGHT")
-		
+
 		self.NormalTexture:SetPoint("TOPLEFT",-5,2)
 		self.NormalTexture:SetPoint("BOTTOMRIGHT",5,-2)
-	
+
 		self.PushedTexture:SetPoint("TOPLEFT",-5,1)
 		self.PushedTexture:SetPoint("BOTTOMRIGHT",5,-3)
-	
+
 		self.DisabledTexture:SetPoint("TOPLEFT",-5,2)
 		self.DisabledTexture:SetPoint("BOTTOMRIGHT",5,-2)
-			
+
 		self.HighlightTexture = self:CreateTexture()
 		self.HighlightTexture:SetColorTexture(1,1,1,.3)
 		self.HighlightTexture:SetPoint("TOPLEFT")
 		self.HighlightTexture:SetPoint("BOTTOMRIGHT")
 		self:SetHighlightTexture(self.HighlightTexture)
-				
+
 		return self
 	end
-	
+
 	function Templates:ExRTButtonDownModernTemplate(parent)
 		return ExRTButtonModernTemplate(3,parent)
 	end
 	function Templates:ExRTButtonUpModernTemplate(parent)
 		return ExRTButtonModernTemplate(4,parent)
 	end
-	
+
 	local function OnEnter(self)
 		local parent = self:GetParent()
 		local myscript = parent:GetScript("OnEnter")
@@ -1362,11 +1406,11 @@ do
 	function Templates:ExRTUIChatDownButtonModernTemplate(parent)
 		local self = ExRTButtonModernTemplate(3,parent)
 		self:SetSize(20,20)
-		
+
 		self:SetScript("OnEnter",OnEnter)
 		self:SetScript("OnLeave",OnLeave)
 		self:SetScript("OnClick",OnClick)
-				
+
 		return self
 	end
 end
@@ -1374,12 +1418,12 @@ end
 function Templates:ExRTRadioButtonModernTemplate(parent)
 	local self = CreateFrame("CheckButton",nil,parent)
 	self:SetSize(16,16)
-	
+
 	self.text = self:CreateFontString(nil,"BACKGROUND","GameFontNormalSmall")
 	self.text:SetPoint("LEFT",self,"RIGHT",5,0)
-	
+
 	self:SetFontString(self.text)
-	
+
 	self.NormalTexture = self:CreateTexture()
 	self.NormalTexture:SetTexture("Interface\\Addons\\"..GlobalAddonName.."\\media\\radioModern")
 	self.NormalTexture:SetAllPoints()
@@ -1391,20 +1435,18 @@ function Templates:ExRTRadioButtonModernTemplate(parent)
 	self.HighlightTexture:SetAllPoints()
 	self.HighlightTexture:SetTexCoord(0.5,0.75,0,1)
 	self:SetHighlightTexture(self.HighlightTexture)
-	
+
 	self.CheckedTexture = self:CreateTexture()
 	self.CheckedTexture:SetTexture("Interface\\Addons\\"..GlobalAddonName.."\\media\\radioModern")
 	self.CheckedTexture:SetAllPoints()
 	self.CheckedTexture:SetTexCoord(0.25,0.5,0,1)
 	self:SetCheckedTexture(self.CheckedTexture)
-			
+
 	return self
 end
 
 --=======================================================================
---=======================================================================
 --=============================  WIDGETS ================================
---=======================================================================
 --=======================================================================
 
 function ELib.AddShadowComment(self,hide,moduleName,userComment,userFontSize,userOutline)
@@ -1459,182 +1501,62 @@ do
 	local function Widget_Gradient(self,...)
 		self:SetGradientAlpha(...)
 		return self
-	end	
-	function ELib:Texture(parent,texture,...)
-		local layer,cR,cG,cB,cA = nil
-		if type(texture) == 'number' then
-			cG,cB,cA,layer = ...
-			cR = texture
-			texture = nil
+	end
+	local function Widget_Texture(self,texture,cG,cB,cA)
+		if cG then
+			self:SetColorTexture(texture,cG,cB,cA)
 		else
-			layer = ...
+			self:SetTexture(texture)
 		end
-	
-		local self = parent:CreateTexture(nil,layer or "BACKGROUND")
+		return self
+	end
+	local function Widget_Atlas(self,atlasName,...)
+		self:SetAtlas(atlasName)
+		return self
+	end
+	local function Widget_Layer(self,layer)
+		self:SetDrawLayer(layer)
+		return self
+	end
+
+	function ELib:Texture(parent,cR,cG,cB,cA,layer)
+		local texture = nil
+		if not cB then
+			texture,layer = cR,cG
+		end
+
+		local self = parent:CreateTexture(nil,layer or "ARTWORK")
 		Mod(self,
 			'Color',Widget_Color,
 			'TexCoord',Widget_TexCoord,
 			'BlendMode',Widget_BlendMode,
-			'Gradient',Widget_Gradient
+			'Gradient',Widget_Gradient,
+			'Texture',Widget_Texture,
+			'Atlas',Widget_Atlas,
+			'Layer',Widget_Layer
 		)
-		
+
 		if texture then
 			self:SetTexture(texture)
 		elseif cR then
 			self:SetColorTexture(cR,cG,cB,cA)
 		end
-		
+
 		return self
 	end
 end
 
 do
 	function ELib:Shadow(parent,size,edgeSize)
-		local self = CreateFrame("Frame",nil,parent)
+		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetPoint("LEFT",-size,0)
 		self:SetPoint("RIGHT",size,0)
 		self:SetPoint("TOP",0,size)
 		self:SetPoint("BOTTOM",0,-size)
 		self:SetBackdrop({edgeFile="Interface/AddOns/"..GlobalAddonName.."/media/shadow",edgeSize=edgeSize or 28,insets={left=size,right=size,top=size,bottom=size}})
 		self:SetBackdropBorderColor(0,0,0,.45)
-	
+
 		return self
-	end
-	function ELib:Shadow2(self,size,offsetX,offsetY,isBold)
-		offsetX = offsetX or 0
-		offsetY = offsetY or 0
-		isBold = true
-	
-		self.ShadowTop = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowTop:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowTop:SetPoint("TOPLEFT",10,size+offsetY)
-		self.ShadowTop:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",-10,offsetY)
-		self.ShadowTop:SetVertexColor(0,0,0,.45)
-		self.ShadowTop:SetTexCoord((128+31)/256,(128+32)/256,0,22/32)
-		
-		self.ShadowTopLeftInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowTopLeftInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowTopLeftInside:SetPoint("TOPLEFT",-offsetX,size+offsetY)
-		self.ShadowTopLeftInside:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX+10,offsetY)
-		self.ShadowTopLeftInside:SetVertexColor(0,0,0,.45)
-		self.ShadowTopLeftInside:SetTexCoord((128+22)/256,(128+32)/256,0,22/32)	
-		
-		self.ShadowTopLeft = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowTopLeft:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowTopLeft:SetPoint("TOPLEFT",-offsetX-size,size+offsetY)
-		self.ShadowTopLeft:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX,offsetY)
-		self.ShadowTopLeft:SetVertexColor(0,0,0,.45)
-		self.ShadowTopLeft:SetTexCoord((128+0)/256,(128+22)/256,0,22/32)	
-	
-		self.ShadowTopRightInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowTopRightInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowTopRightInside:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX-10,size+offsetY)
-		self.ShadowTopRightInside:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX,offsetY)
-		self.ShadowTopRightInside:SetVertexColor(0,0,0,.45)
-		self.ShadowTopRightInside:SetTexCoord((128+32)/256,(128+22)/256,0,22/32)	
-	
-		self.ShadowTopRight = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowTopRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowTopRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,size+offsetY)
-		self.ShadowTopRight:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX+size,offsetY)
-		self.ShadowTopRight:SetVertexColor(0,0,0,.45)
-		self.ShadowTopRight:SetTexCoord((128+22)/256,(128+0)/256,0,22/32)
-		
-		self.ShadowLeftTopInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowLeftTopInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowLeftTopInside:SetPoint("TOPLEFT",-offsetX-size,offsetY)
-		self.ShadowLeftTopInside:SetPoint("BOTTOMRIGHT",self,"TOPLEFT",-offsetX,offsetY-10)
-		self.ShadowLeftTopInside:SetVertexColor(0,0,0,.45)
-		self.ShadowLeftTopInside:SetTexCoord((128+0)/256,(128+22)/256,22/32,32/32)
-		
-		self.ShadowLeft = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowLeft:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowLeft:SetPoint("TOPLEFT",-offsetX-size,offsetY-10)
-		self.ShadowLeft:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY+10)
-		self.ShadowLeft:SetVertexColor(0,0,0,.45)
-		self.ShadowLeft:SetTexCoord((128+0)/256,(128+22)/256,31/32,32/32)		
-			
-		self.ShadowLeftBottomInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowLeftBottomInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowLeftBottomInside:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX-size,-offsetY+10)
-		self.ShadowLeftBottomInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY)
-		self.ShadowLeftBottomInside:SetVertexColor(0,0,0,.45)
-		self.ShadowLeftBottomInside:SetTexCoord((128+0)/256,(128+22)/256,32/32,22/32)
-		
-		self.ShadowLeftBottom = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowLeftBottom:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowLeftBottom:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX-size,-offsetY)
-		self.ShadowLeftBottom:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX,-offsetY-size)
-		self.ShadowLeftBottom:SetVertexColor(0,0,0,.45)
-		self.ShadowLeftBottom:SetTexCoord((128+0)/256,(128+22)/256,22/32,0)
-	
-		self.ShadowBottomLeftInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowBottomLeftInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowBottomLeftInside:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX,-offsetY)
-		self.ShadowBottomLeftInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",-offsetX+10,-offsetY-size)
-		self.ShadowBottomLeftInside:SetVertexColor(0,0,0,.45)
-		self.ShadowBottomLeftInside:SetTexCoord((128+22)/256,(128+32)/256,22/32,0)
-	
-		self.ShadowBottom = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowBottom:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowBottom:SetPoint("TOPLEFT",self,"BOTTOMLEFT",-offsetX+10,-offsetY)
-		self.ShadowBottom:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX-10,-offsetY-size)
-		self.ShadowBottom:SetVertexColor(0,0,0,.45)
-		self.ShadowBottom:SetTexCoord((128+31)/256,(128+32)/256,22/32,0)	
-	
-		self.ShadowBottomRightInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowBottomRightInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowBottomRightInside:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX-10,-offsetY)
-		self.ShadowBottomRightInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX,-offsetY-size)
-		self.ShadowBottomRightInside:SetVertexColor(0,0,0,.45)
-		self.ShadowBottomRightInside:SetTexCoord((128+32)/256,(128+22)/256,22/32,0)
-		
-		self.ShadowBottomRight = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowBottomRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowBottomRight:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX,-offsetY)
-		self.ShadowBottomRight:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY-size)
-		self.ShadowBottomRight:SetVertexColor(0,0,0,.45)
-		self.ShadowBottomRight:SetTexCoord((128+22)/256,(128+0)/256,22/32,0)
-		
-		self.ShadowRightBottomInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowRightBottomInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowRightBottomInside:SetPoint("TOPLEFT",self,"BOTTOMRIGHT",offsetX,-offsetY+10)
-		self.ShadowRightBottomInside:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY)
-		self.ShadowRightBottomInside:SetVertexColor(0,0,0,.45)
-		self.ShadowRightBottomInside:SetTexCoord((128+22)/256,(128+0)/256,32/32,22/32)
-		
-		self.ShadowRight = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowRight:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowRight:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,offsetY-10)
-		self.ShadowRight:SetPoint("BOTTOMRIGHT",self,"BOTTOMRIGHT",offsetX+size,-offsetY+10)
-		self.ShadowRight:SetVertexColor(0,0,0,.45)
-		self.ShadowRight:SetTexCoord((128+22)/256,(128+0)/256,31/32,32/32)
-		
-		self.ShadowRightTopInside = self:CreateTexture(nil,"BACKGROUND")
-		self.ShadowRightTopInside:SetTexture("Interface/AddOns/"..GlobalAddonName.."/media/shadow")
-		self.ShadowRightTopInside:SetPoint("TOPLEFT",self,"TOPRIGHT",offsetX,offsetY)
-		self.ShadowRightTopInside:SetPoint("BOTTOMRIGHT",self,"TOPRIGHT",offsetX+size,offsetY-10)
-		self.ShadowRightTopInside:SetVertexColor(0,0,0,.45)
-		self.ShadowRightTopInside:SetTexCoord((128+22)/256,(128+0)/256,22/32,32/32)
-		
-		if isBold then
-			self.ShadowTop:SetTexCoord((192+31)/256,(192+32)/256,1,10/32)
-			self.ShadowTopLeftInside:SetTexCoord((192+22)/256,(192+32)/256,1,10/32)	
-			self.ShadowTopLeft:SetTexCoord((192+0)/256,(192+22)/256,1,10/32)	
-			self.ShadowTopRightInside:SetTexCoord((192+32)/256,(192+22)/256,1,10/32)	
-			self.ShadowTopRight:SetTexCoord((192+22)/256,(192+0)/256,1,10/32)
-			self.ShadowLeftTopInside:SetTexCoord((192+0)/256,(192+22)/256,10/32,0)
-			self.ShadowLeft:SetTexCoord((192+0)/256,(192+22)/256,1/32,0)		
-			self.ShadowLeftBottomInside:SetTexCoord((192+0)/256,(192+22)/256,0,10/32)
-			self.ShadowLeftBottom:SetTexCoord((192+0)/256,(192+22)/256,10/32,1)
-			self.ShadowBottomLeftInside:SetTexCoord((192+22)/256,(192+32)/256,10/32,1)
-			self.ShadowBottom:SetTexCoord((192+31)/256,(192+32)/256,10/32,1)	
-			self.ShadowBottomRightInside:SetTexCoord((192+32)/256,(192+22)/256,10/32,1)
-			self.ShadowBottomRight:SetTexCoord((192+22)/256,(192+0)/256,10/32,1)
-			self.ShadowRightBottomInside:SetTexCoord((192+22)/256,(192+0)/256,0,10/32)
-			self.ShadowRight:SetTexCoord((192+22)/256,(192+0)/256,1/32,0)
-			self.ShadowRightTopInside:SetTexCoord((192+22)/256,(192+0)/256,10/32,0)
-		end
 	end
 	function ELib.CreateShadow(parent,size,edgeSize)
 		return ELib:Shadow(parent,size,edgeSize)
@@ -1647,101 +1569,101 @@ do
 			local OverlayShadowTopLeft = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowTopLeft:SetPoint("TOPLEFT",4,-4)
 			OverlayShadowTopLeft:SetAtlas("collections-background-shadow-small",true)
-		
+
 			local OverlayShadowTop = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowTop:SetPoint("TOPLEFT",17,-4)
 			OverlayShadowTop:SetPoint("TOPRIGHT",-17,-4)
 			OverlayShadowTop:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowTop:SetTexCoord(0.9999,1,0,1)
-			
+
 			local OverlayShadowTopRight = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowTopRight:SetPoint("TOPRIGHT",-4,-4)
 			OverlayShadowTopRight:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowTopRight:SetTexCoord(1,0,0,1)
-		
+
 			local OverlayShadowLeft = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowLeft:SetPoint("TOPLEFT",4,-17)
 			OverlayShadowLeft:SetPoint("BOTTOMLEFT",4,17)
 			OverlayShadowLeft:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowLeft:SetTexCoord(0,1,0.9999,1)
-			
+
 			local OverlayShadowBottomLeft = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowBottomLeft:SetPoint("BOTTOMLEFT",4,4)
 			OverlayShadowBottomLeft:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowBottomLeft:SetTexCoord(0,1,1,0)
-			
+
 			local OverlayShadowRight = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowRight:SetPoint("TOPRIGHT",-4,-17)
 			OverlayShadowRight:SetPoint("BOTTOMRIGHT",-4,17)
 			OverlayShadowRight:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowRight:SetTexCoord(1,0,0.9999,1)
-			
+
 			local OverlayShadowBottomRight = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowBottomRight:SetPoint("BOTTOMRIGHT",-4,4)
 			OverlayShadowBottomRight:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowBottomRight:SetTexCoord(1,0,1,0)
-			
+
 			local OverlayShadowBottom = mainFrame:CreateTexture(nil,"OVERLAY")
 			OverlayShadowBottom:SetPoint("BOTTOMLEFT",17,4)
 			OverlayShadowBottom:SetPoint("BOTTOMRIGHT",-17,4)
 			OverlayShadowBottom:SetAtlas("collections-background-shadow-small",true)
 			OverlayShadowBottom:SetTexCoord(0.9999,1,1,0)
 		end
-	
+
 		if enableLine then
 			local ShadowLineTop = mainFrame:CreateTexture(nil,"BORDER",nil,1)
 			ShadowLineTop:SetPoint("TOPLEFT",4,-13)
 			ShadowLineTop:SetPoint("BOTTOMRIGHT",mainFrame,"TOPRIGHT",-4,-17)
 			ShadowLineTop:SetAtlas("_collections-background-line",true)
 			ShadowLineTop:SetHorizTile(true)
-		
+
 			local ShadowLineBottom = mainFrame:CreateTexture(nil,"BORDER",nil,1)
 			ShadowLineBottom:SetPoint("TOPLEFT",mainFrame,"BOTTOMLEFT",4,17)
 			ShadowLineBottom:SetPoint("BOTTOMRIGHT",-4,13)
 			ShadowLineBottom:SetAtlas("_collections-background-line",true)
 			ShadowLineBottom:SetHorizTile(true)
 		end
-		
+
 		local offset = enableBorder and 4 or 0
 		local notOffset = enableBorder and 0 or 4
-		
+
 		local ShadowCornerTopLeft = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerTopLeft:SetPoint("TOPLEFT",offset,-offset)
 		ShadowCornerTopLeft:SetAtlas("collections-background-shadow-large",true)
-		
+
 		local ShadowCornerTopRight = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerTopRight:SetPoint("TOPRIGHT",-offset,-offset)
 		ShadowCornerTopRight:SetAtlas("collections-background-shadow-large",true)
 		ShadowCornerTopRight:SetTexCoord(1,0,0,1)
-		
+
 		local ShadowCornerBottomLeft = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerBottomLeft:SetPoint("BOTTOMLEFT",offset,offset)
 		ShadowCornerBottomLeft:SetAtlas("collections-background-shadow-large",true)
 		ShadowCornerBottomLeft:SetTexCoord(0,1,1,0)
-		
+
 		local ShadowCornerBottomRight = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerBottomRight:SetPoint("BOTTOMRIGHT",-offset,offset)
 		ShadowCornerBottomRight:SetAtlas("collections-background-shadow-large",true)
 		ShadowCornerBottomRight:SetTexCoord(1,0,1,0)
-	
+
 		local ShadowCornerTop = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerTop:SetPoint("TOPLEFT",149-notOffset,-offset)
 		ShadowCornerTop:SetPoint("TOPRIGHT",-149+notOffset,-offset)
 		ShadowCornerTop:SetAtlas("collections-background-shadow-large",true)
-		ShadowCornerTop:SetTexCoord(0.9999,1,0,1)	
-		
+		ShadowCornerTop:SetTexCoord(0.9999,1,0,1)
+
 		local ShadowCornerLeft = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerLeft:SetPoint("TOPLEFT",offset,-151+notOffset)
 		ShadowCornerLeft:SetPoint("BOTTOMLEFT",offset,151-notOffset)
 		ShadowCornerLeft:SetAtlas("collections-background-shadow-large",true)
 		ShadowCornerLeft:SetTexCoord(0,1,0.9999,1)
-	
+
 		local ShadowCornerRight = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerRight:SetPoint("TOPRIGHT",-offset,-151+notOffset)
 		ShadowCornerRight:SetPoint("BOTTOMRIGHT",-offset,151-notOffset)
 		ShadowCornerRight:SetAtlas("collections-background-shadow-large",true)
 		ShadowCornerRight:SetTexCoord(1,0,0.9999,1)
-	
+
 		local ShadowCornerBottom = mainFrame:CreateTexture(nil,"BORDER",nil,2)
 		ShadowCornerBottom:SetPoint("BOTTOMLEFT",149-notOffset,offset)
 		ShadowCornerBottom:SetPoint("BOTTOMRIGHT",-149+notOffset,offset)
@@ -1781,7 +1703,7 @@ do
 			self.Low:SetShown(not hideRange)
 			self.High:SetShown(not hideRange)
 		end
-		
+
 		return self
 	end
 	local function Widget_Size(self,size)
@@ -1804,12 +1726,16 @@ do
 	local function Widget_OnChange(self,func)
 		self:SetScript("OnValueChanged",func)
 		return self
-	end	
+	end
 	local function Widget_SetTooltip(self,tooltipText)
 		self.tooltipText = tooltipText
 		return self
 	end
-	
+	local function Widget_SetObey(self,bool)
+		self:SetObeyStepOnDrag(bool)
+		return self
+	end
+
 	function ELib:Slider(parent,text,isVertical,template)
 		if template == 0 then
 			template = "ExRTSliderTemplate"
@@ -1822,15 +1748,15 @@ do
 		if isVertical then
 			self.Low:Hide()
 			self.High:Hide()
-			self.text:Hide()			
+			self.text:Hide()
 			self.isVertical = true
 		end
 		self:SetOrientation(isVertical and "VERTICAL" or "HORIZONTAL")
 		self:SetValueStep(1)
 		--self:SetObeyStepOnDrag(true)
-		
+
 		self.isVertical = isVertical
-		
+
 		self:SetScript("OnMouseWheel", SliderOnMouseWheel)
 
 		self.tooltipShow = SliderTooltipShow
@@ -1838,17 +1764,18 @@ do
 		self.tooltipReload = SliderTooltipReload
 		self:SetScript("OnEnter", self.tooltipShow)
 		self:SetScript("OnLeave", self.tooltipHide)
-		
+
 		Mod(self)
 		self.Range = Widget_Range
 		self.SetTo = Widget_SetTo
 		self.OnChange = Widget_OnChange
 		self.Tooltip = Widget_SetTooltip
-		
+		self.SetObey = Widget_SetObey
+
 		if template and template:find("^ExRTSliderModern") then
 			self._Size = self.Size
 			self.Size = Widget_Size
-			
+
 			self.text:SetFont(self.text:GetFont(),10)
 			self.Low:SetFont(self.Low:GetFont(),10)
 			self.High:SetFont(self.High:GetFont(),10)
@@ -1914,16 +1841,25 @@ do
  			self.ticker:Cancel()
  		end
 	end
-	
+
 	local function Widget_Size(self, width, height)
 		self:SetSize(width, height)
-		self.thumb:SetWidth(width - 2)
-		if self.isOld then self.thumb:SetSize(width + 10,width + 10) end
-		self.slider:SetPoint("TOPLEFT",0,-width-2)
-		self.slider:SetPoint("BOTTOMRIGHT",0,width+2)
-		self.buttonUP:SetSize(width,width)
-		self.buttonDown:SetSize(width,width)
-		
+		if self.isHorizontal then
+			self.thumb:SetHeight(height - 2)
+			if self.isOld then self.thumb:SetSize(width + 10,width + 10) end
+			self.slider:SetPoint("TOPLEFT",height+2,0)
+			self.slider:SetPoint("BOTTOMRIGHT",-height-2,0)
+			self.buttonUP:SetSize(height,height)
+			self.buttonDown:SetSize(height,height)
+		else
+			self.thumb:SetWidth(width - 2)
+			if self.isOld then self.thumb:SetSize(width + 10,width + 10) end
+			self.slider:SetPoint("TOPLEFT",0,-width-2)
+			self.slider:SetPoint("BOTTOMRIGHT",0,width+2)
+			self.buttonUP:SetSize(width,width)
+			self.buttonDown:SetSize(width,width)
+		end
+
 		return self
 	end
 	local function Widget_Range(self,minVal,maxVal,clickRange,unchangedValue)
@@ -1932,7 +1868,7 @@ do
 		if not unchangedValue then
 			self.slider:SetValue(minVal)
 		end
-		
+
 		return self
 	end
 	local function Widget_SetValue(self,value)
@@ -1942,7 +1878,7 @@ do
 	end
 	local function Widget_GetValue(self)
 		return self.slider:GetValue()
-	end	
+	end
 	local function Widget_GetMinMaxValues(self)
 		return self.slider:GetMinMaxValues()
 	end
@@ -1982,10 +1918,46 @@ do
 		self.clickRange = value or 1
 		return self
 	end
-			
+
+	local function Widget_SetHorizontal(self)
+		self.slider:SetOrientation("HORIZONTAL")
+		self.buttonUP:ClearAllPoints() 
+		self.buttonUP:SetPoint("LEFT",0,0) 
+		self.buttonUP.NormalTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
+		self.buttonUP.HighlightTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
+		self.buttonUP.PushedTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
+		self.buttonUP.DisabledTexture:SetTexCoord(0.4375,0.5,0.5,0.625)
+
+		self.buttonDown:ClearAllPoints() 
+		self.buttonDown:SetPoint("RIGHT",0,0) 
+		self.buttonDown.NormalTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
+		self.buttonDown.HighlightTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
+		self.buttonDown.PushedTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
+		self.buttonDown.DisabledTexture:SetTexCoord(0.375,0.4375,0.5,0.625)
+
+		self.thumb:SetSize(30,14)
+
+		self.slider:SetPoint("TOPLEFT",18,0)
+		self.slider:SetPoint("BOTTOMRIGHT",-18,0)
+
+		self.borderLeft:ClearAllPoints()
+		self.borderLeft:SetSize(0,1)
+		self.borderLeft:SetPoint("BOTTOMLEFT",self.slider,"TOPLEFT",-1,0)
+		self.borderLeft:SetPoint("BOTTOMRIGHT",self.slider,"TOPRIGHT",1,0)
+
+		self.borderRight:ClearAllPoints()
+		self.borderRight:SetSize(0,1)
+		self.borderRight:SetPoint("TOPLEFT",self.slider,"BOTTOMLEFT",-1,0)
+		self.borderRight:SetPoint("TOPRIGHT",self.slider,"BOTTOMRIGHT",1,0)
+
+		self.isHorizontal = true
+
+ 		return self
+	end
+
 	function ELib:ScrollBar(parent,isOld)
 		local self = CreateFrame("Frame", nil, parent)
-	
+
 		self.slider = CreateFrame("Slider", nil, self)
 		self.slider:SetPoint("TOPLEFT",0,-18)
 		self.slider:SetPoint("BOTTOMRIGHT",0,18)
@@ -2006,38 +1978,38 @@ do
 		self.slider:SetThumbTexture(self.thumb)
 		self.slider:SetOrientation("VERTICAL")
 		self.slider:SetValue(2)
-		
+
 		if not isOld then
 			self.borderLeft = self.slider:CreateTexture(nil, "BACKGROUND")
 			self.borderLeft:SetPoint("TOPLEFT",-1,1)
 			self.borderLeft:SetPoint("BOTTOMLEFT",-1,-1)
 			self.borderLeft:SetWidth(1)
 			self.borderLeft:SetColorTexture(0.24,0.25,0.30,1)
-			
+
 			self.borderRight = self.slider:CreateTexture(nil, "BACKGROUND")
 			self.borderRight:SetPoint("TOPRIGHT",1,1)
 			self.borderRight:SetPoint("BOTTOMRIGHT",1,-1)
 			self.borderRight:SetWidth(1)
 			self.borderRight:SetColorTexture(0.24,0.25,0.30,1)
 		end
-		
+
 		self.buttonUP = ELib:Template(isOld and "UIPanelScrollUPButtonTemplate" or "ExRTButtonUpModernTemplate",self) or CreateFrame("Button",nil,self,isOld and "UIPanelScrollUPButtonTemplate" or "ExRTButtonUpModernTemplate")
 		self.buttonUP:SetSize(16,16)
 		self.buttonUP:SetPoint("TOP",0,0) 
 		self.buttonUP:SetScript("OnClick",ScrollBarButtonUpClick)
 		self.buttonUP:SetScript("OnMouseDown",ScrollBarButtonUpMouseHoldDown)
 		self.buttonUP:SetScript("OnMouseUp",ScrollBarButtonUpMouseHoldUp)
-	
+
 		self.buttonDown = ELib:Template(isOld and "UIPanelScrollDownButtonTemplate" or "ExRTButtonDownModernTemplate",self) or CreateFrame("Button",nil,self,isOld and "UIPanelScrollDownButtonTemplate" or "ExRTButtonDownModernTemplate")
 		self.buttonDown:SetPoint("BOTTOM",0,0) 
 		self.buttonDown:SetSize(16,16)
 		self.buttonDown:SetScript("OnClick",ScrollBarButtonDownClick)
 		self.buttonDown:SetScript("OnMouseDown",ScrollBarButtonDownMouseHoldDown)
 		self.buttonDown:SetScript("OnMouseUp",ScrollBarButtonDownMouseHoldUp)
-		
+
 		self.clickRange = 1
 		self.isOld = isOld
-		
+
 		self._SetScript = self.SetScript
 		Mod(self,
 			'Range',Widget_Range,
@@ -2049,11 +2021,12 @@ do
 			'SetScript',Widget_SetScript,
 			'OnChange',Widget_OnChange,
 			'UpdateButtons',Widget_UpdateButtons,
-			'ClickRange',Widget_ClickRange
+			'ClickRange',Widget_ClickRange,
+			'SetHorizontal',Widget_SetHorizontal
 		)
 		self.Size = Widget_Size
 		self.slider.UpdateButtons = Widget_Slider_UpdateButtons
-		
+
 		return self
 	end
 	function ELib.CreateScrollBarModern(parent,width,height,x,y,minVal,maxVal,relativePoint,clickRange)
@@ -2123,31 +2096,31 @@ do
 	function Tooltip:Edit_Click(linkData,link,button)
 		ExRT.F.LinkItem(nil,link)
 	end
-	
+
 	--- additional tooltips
-	
+
 	local additionalTooltips = {}
 	local additionalTooltipBackdrop = {bgFile="Interface/Buttons/WHITE8X8",edgeFile="Interface/Tooltips/UI-Tooltip-Border",tile=false,edgeSize=14,insets={left=2.5,right=2.5,top=2.5,bottom=2.5}}
 	local function CreateAdditionalTooltip()
 		local new = #additionalTooltips + 1
-		local tip = CreateFrame("GameTooltip", GlobalAddonName.."LibAdditionalTooltip"..new, UIParent, "GameTooltipTemplate")
+		local tip = CreateFrame("GameTooltip", GlobalAddonName.."LibAdditionalTooltip"..new, UIParent, "GameTooltipTemplate"..(BackdropTemplateMixin and ",BackdropTemplate" or ""))
 		additionalTooltips[new] = tip
-		
+
 		tip:SetScript("OnLoad",nil)
 		tip:SetScript("OnHide",nil)
-	
+
 		tip:SetBackdrop(additionalTooltipBackdrop)
 		tip:SetBackdropColor(0,0,0,1)
 		tip:SetBackdropBorderColor(0.3,0.3,0.4,1)
-		
+
 		tip.gradientTexture = tip:CreateTexture()
 		tip.gradientTexture:SetColorTexture(1,1,1,1)
 		tip.gradientTexture:SetGradientAlpha("VERTICAL",0,0,0,0,.8,.8,.8,.2)
 		tip.gradientTexture:SetPoint("TOPLEFT",2.5,-2.5)
 		tip.gradientTexture:SetPoint("BOTTOMRIGHT",-2.5,2.5)
-		
+
 		tip:Hide()
-		
+
 		return new
 	end
 	function Tooltip:Add(link,data,enableMultiline,disableTitle)
@@ -2220,7 +2193,7 @@ do
 			additionalTooltips[i]:ClearLines()
 		end
 	end
-	
+
 	-- Old
 	function ELib.AdditionalTooltip(...)
 		Tooltip:Add(...)
@@ -2257,15 +2230,6 @@ do
 	end
 end
 
-function ELib.ShowOrHide(self,bool)
-	if not self then return end
-	if bool then
-		self:Show()
-	else
-		self:Hide()
-	end
-end
-
 function ELib.SetAlphas(alpha,...)
 	for i=1,select("#", ...) do
 		local self = select(i, ...)
@@ -2282,11 +2246,11 @@ do
 		self:Enable()
 		local offsetX = self.Icon and 8 or 0
 		self.Text:SetPoint("CENTER", self, "CENTER", offsetX, -3)
-		
+
 		self.LeftDisabled:Hide()
 		self.MiddleDisabled:Hide()
 		self.RightDisabled:Hide()
-		
+
 		self.ButtonState = false
 	end
 	--PanelTemplates_SelectTab
@@ -2299,18 +2263,18 @@ do
 		local offsetX = self.Icon and 8 or 0
 		--self:SetDisabledFontObject(GameFontHighlightSmall)
 		self.Text:SetPoint("CENTER", self, "CENTER", offsetX, -2)
-		
+
 		self.LeftDisabled:Show()
 		self.MiddleDisabled:Show()
 		self.RightDisabled:Show()
-		
+
 		self.ButtonState = true
 	end
 	--PanelTemplates_DeselectTab
-	local function TabFrame_ResizeTab(self, padding, absoluteSize, minWidth, maxWidth, absoluteTextSize)	
+	local function TabFrame_ResizeTab(self, padding, absoluteSize, minWidth, maxWidth, absoluteTextSize)
 		local buttonMiddle = self.Middle
 		local buttonMiddleDisabled = self.MiddleDisabled
-		
+
 		if self.Icon then
 			if maxWidth then
 				maxWidth = maxWidth + 18
@@ -2319,7 +2283,7 @@ do
 				absoluteTextSize = absoluteTextSize + 18
 			end
 		end
-		
+
 		local sideWidths = 2 * self.Left:GetWidth()
 		local tabText = self.Text
 		local width, tabWidth
@@ -2363,20 +2327,20 @@ do
 			end
 			tabWidth = width + sideWidths
 		end
-		
+
 		do
 			local offsetX = self.Icon and 18 or 0
 			local offsetY = self.ButtonState and -2 or -3
 			self.Text:SetPoint("CENTER", self, "CENTER", offsetX, offsetY)
 		end
-		
+
 		if ( buttonMiddle ) then
 			buttonMiddle:SetWidth(width)
 		end
 		if ( buttonMiddleDisabled ) then
 			buttonMiddleDisabled:SetWidth(width)
 		end
-		
+
 		self:SetWidth(tabWidth)
 		local highlightTexture = self.HighlightTexture
 		if ( highlightTexture ) then
@@ -2411,7 +2375,7 @@ do
 				TabFrame_DeselectTab(self.tabs[i].button)
 			end
 			self.tabs[i]:Hide()
-			
+
 			if self.tabs[i].disabled then
 				PanelTemplates_SetDisabledTabState(self.tabs[i].button)
 			end
@@ -2431,7 +2395,7 @@ do
 		local tabFrame = self.mainFrame
 		tabFrame.selected = self.id
 		tabFrame.UpdateTabs(tabFrame)
-		
+
 		if tabFrame.buttonAdditionalFunc then
 			tabFrame:buttonAdditionalFunc()
 		end
@@ -2471,8 +2435,8 @@ do
 			end,
 		}
 		EasyMenu(dropDownList, self.dropDown, "cursor", 10 , -15, "MENU")
-	end	
-	
+	end
+
 	local function Widget_SetSize(self,width,height)
 		self:SetSize(width,height)
 		for i=1,self.tabCount do
@@ -2484,35 +2448,35 @@ do
 		TabFrameButtonClick(self.tabs[activeTabNum or 1].button)
 		return self
 	end
-	
+
 	function ELib:Tabs(parent,template,...)
 		template = template == 0 and "ExRTTabButtonTransparentTemplate" or template or "ExRTTabButtonTemplate"
-			
-		local self = CreateFrame("Frame",nil,parent)
+
+		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }})
 		self:SetBackdropColor(0,0,0,0.5)
-		
+
 		self.resizeFunc = TabFrame_ResizeTab
 		self.selectFunc = TabFrame_SelectTab
 		self.deselectFunc = TabFrame_DeselectTab
-		
+
 		self.tabs = {}
 		local tabCount = select('#', ...)
 		for i=1,tabCount do
 			self.tabs[i] = CreateFrame("Frame",nil,self)
 			self.tabs[i]:SetPoint("TOPLEFT", 0,0)
-	
+
 			self.tabs[i].button = ELib:Template(template, self) or CreateFrame("Button", nil, self, template)
 			self.tabs[i].button:SetText(select(i, ...) or i)
 			TabFrame_ResizeTab(self.tabs[i].button, 0, nil, nil, self.tabs[i].button:GetFontString():GetStringWidth(), self.tabs[i].button:GetFontString():GetStringWidth())
-			
+
 			self.tabs[i].button.id = i
 			self.tabs[i].button.mainFrame = self
 			self.tabs[i].button:SetScript("OnClick", TabFrameButtonClick)
-			
+
 			self.tabs[i].button:SetScript("OnEnter", TabFrameButtonOnEnter)
 			self.tabs[i].button:SetScript("OnLeave", TabFrameButtonOnLeave)
-	
+
 			if i == 1 then
 				self.tabs[i].button:SetPoint("TOPLEFT", 10, 24)
 			else
@@ -2520,24 +2484,24 @@ do
 				self.tabs[i]:Hide()
 			end
 			TabFrame_DeselectTab(self.tabs[i].button)
-			
+
 			self.tabs[i].button.Resize = TabFrame_ResizeTab
 			self.tabs[i].button.SetIcon = TabFrame_SetTabIcon
 			self.tabs[i].button.Select = TabFrame_SelectTab
 			self.tabs[i].button.Deselect = TabFrame_DeselectTab
 		end
 		TabFrame_SelectTab(self.tabs[1].button)
-	
+
 		self.tabCount = tabCount
 		self.selected = 1
 		self.UpdateTabs = TabFrameUpdateTabs
 		self.SelectTab = TabFrameSelectTab
-		
+
 		Mod(self,
 			'SetTo',Widget_SetTo
 		)
 		self._Size = self.Size	self.Size = Widget_SetSize
-	
+
 		return self
 	end
 	function ELib.CreateTabFrameTemplate(parent,width,height,x,y,template,tabNum,activeTabNum,...)
@@ -2578,9 +2542,13 @@ do
 		self:SetFont(filename,size,fontParam1,fontParam2,fontParam3)
 		return self
 	end
-	
+
 	local function OnTooltipEnter(self)
 		local text = self.t
+		if text.TooltipOverwrite then
+			ELib.Tooltip.Show(self,self.a,text.TooltipOverwrite)
+			return
+		end
 		if not text:IsTruncated() and not text.alwaysTooltip then
 			return
 		end
@@ -2593,13 +2561,18 @@ do
 		local f = CreateFrame(isButton and "Button" or "Frame",nil,self:GetParent())
 		f:SetAllPoints(self)
 		f.t = self
-		f.a = anchor
+		f.a = anchor or "ANCHOR_RIGHT"
 		f:SetScript("OnEnter",OnTooltipEnter)
 		f:SetScript("OnLeave",OnTooltipLeave)
 		self.TooltipFrame = f
 		return self
 	end
-	
+	local function Widget_MaxLines(self,num)
+		self:SetMaxLines(num)
+		return self
+	end
+
+
 	function ELib:Text(parent,text,size,template)
 		if template == 0 then 
 			template = nil 
@@ -2618,7 +2591,7 @@ do
 		if template then
 			self:SetText(text or "")
 		end
-		
+
 		Mod(self,
 			'Font',Widget_SetFont,
 			'Color',Widget_Color,
@@ -2631,12 +2604,13 @@ do
 			'Shadow',Widget_Shadow,
 			'Outline',Widget_Outline,
 			'FontSize',Widget_FontSize,
-			'Tooltip',Widget_Tooltip
+			'Tooltip',Widget_Tooltip,
+			'MaxLines',Widget_MaxLines
 		)
-		
+
 		return self
 	end
-	
+
 	function ELib.CreateText(parent,width,height,relativePoint,x,y,hor,ver,font,fontSize,text,tem,colR,colG,colB,shadow,outline,doNotUseTemplate)
 		if doNotUseTemplate then tem = 0 end
 		local self = ELib:Text(parent,text,fontSize,tem):Size(width,height):Point(relativePoint or "TOPLEFT", x,y)
@@ -2669,22 +2643,78 @@ do
 		self:SetScript("OnTextChanged",func)
 		return self
 	end
-	local function Widget_AddSearchIcon(self,size)
-		self.searchTexture = self:CreateTexture(nil, "BACKGROUND",nil,2)
-		self.searchTexture:SetPoint("RIGHT",-2,0)
-		self.searchTexture:SetTexture([[Interface\Common\UI-Searchbox-Icon]])
-		self.searchTexture:SetSize(size or 14,size or 14)	
+	local function Widget_OnFocus(self,gained,lost)
+		self:SetScript("OnEditFocusGained",gained)
+		self:SetScript("OnEditFocusLost",lost)
 		return self
 	end
+	local function Widget_InsideIcon(self,texture,size,offset)
+		self.insideIcon = self.insideIcon or self:CreateTexture(nil, "BACKGROUND",nil,2)
+		self.insideIcon:SetPoint("RIGHT",-(offset or 2),0)
+		self.insideIcon:SetSize(size or 14,size or 14)
+		self.insideIcon:SetTexture(texture or "")
+		return self
+	end
+	local function Widget_AddSearchIcon(self,size)
+		return self:InsideIcon([[Interface\Common\UI-Searchbox-Icon]],size)
+	end
 	local function Widget_AddLeftText(self,text,size)
-		self.leftText = ELib:Text(self,text,size or 11):Point("RIGHT",self,"LEFT",-5,0)
+		if self.leftText then
+			self.leftText:SetText(text)
+		else
+			self.leftText = ELib:Text(self,text,size or 11):Point("RIGHT",self,"LEFT",-5,0)
+		end
 		return self
 	end
 	local function Widget_AddLeftTop(self,text,size)
-		self.leftText = ELib:Text(self,text,size or 11):Point("BOTTOM",self,"TOP",0,2)
+		if self.leftText then
+			self.leftText:SetText(text)
+		else
+			self.leftText = ELib:Text(self,text,size or 11):Point("BOTTOM",self,"TOP",0,2)
+		end
 		return self
 	end
-	
+
+
+	local function BackgroundText_Check(self)
+		local text = self:GetText()
+		if (not text or text == "") and not self:HasFocus() then
+			self.backgroundText:SetText(self.backText)
+		else
+			self.backgroundText:SetText("")
+		end
+	end
+	local function BackgroundText_FocusGained(self)
+		self.backgroundText:SetText("")
+	end
+	local function BackgroundText_FocusLost(self)
+		local text = self:GetText()
+		if not text or text == "" then
+			self.backgroundText:SetText(self.backText)
+		end
+	end
+	local function Widget_AddBackgroundText(self,text)
+		if not self.backgroundText then
+			self.backgroundText = ELib:Text(self,"",12,"ChatFontNormal"):Point("LEFT",2,0):Point("RIGHT",-2,0):Color(.5,.5,.5)
+		end
+		self.backText = text
+		self:OnFocus(BackgroundText_FocusGained,BackgroundText_FocusLost)
+		self.BackgroundTextCheck = BackgroundText_Check
+		self:BackgroundTextCheck()
+		return self
+	end
+
+	local function Widget_ColorBorder(self,cR,cG,cB,cA)
+		if type(cR)=="number" then
+			ELib:Templates_Border(self,cR,cG,cB,cA,1)
+		elseif cR then
+			ELib:Templates_Border(self,0.74,0.25,0.3,1,1)
+		else
+			ELib:Templates_Border(self,0.24,0.25,0.3,1,1)
+		end
+		return self
+	end
+
 	function ELib:Edit(parent,maxLetters,onlyNum,template)
 		if template == 0 then
 			template = "ExRTInputBoxTemplate"
@@ -2693,7 +2723,7 @@ do
 		elseif not template then
 			template = "ExRTInputBoxModernTemplate"
 		end
-		local self = ELib:Template(template,parent) or CreateFrame("EditBox",nil,parent,template)
+		local self = ELib:Template(template,parent) or CreateFrame("EditBox",nil,parent,template or (BackdropTemplateMixin and "BackdropTemplate"))
 		if not template then
 			local GameFontNormal_Font = GameFontNormal:GetFont()
 			self:SetFont(GameFontNormal_Font,12)
@@ -2710,14 +2740,18 @@ do
 			self:SetNumeric(true)
 		end
 		self:SetScript("OnEscapePressed",EditBoxEscapePressed)
-		
+
 		Mod(self,
 			'Text',Widget_SetText,
 			'Tooltip',Widget_Tooltip,
 			'OnChange',Widget_OnChange,
+			'OnFocus',Widget_OnFocus,
+			'InsideIcon',Widget_InsideIcon,
 			'AddSearchIcon',Widget_AddSearchIcon,
 			'LeftText',Widget_AddLeftText,
-			'TopText',Widget_AddLeftTop
+			'TopText',Widget_AddLeftTop,
+			'BackgroundText',Widget_AddBackgroundText,
+			'ColorBorder',Widget_ColorBorder
 		)
 
 		return self
@@ -2735,7 +2769,7 @@ do
 		self:SetSize(width,height)
 		self.content:SetWidth(width-16-(self.isModern and 4 or 0))
 		--self.ScrollBar:Size(16,height)
-		
+
 		if self.isModern and height < 65 then
 			self.ScrollBar.IsThumbSmalled = true
 			self.ScrollBar.thumb:SetHeight(5)
@@ -2743,7 +2777,7 @@ do
 			self.ScrollBar.IsThumbSmalled = nil
 			self.ScrollBar.thumb:SetHeight(30)
 		end
-		
+
 		return self
 	end
 	local function ScrollFrameMouseWheel(self,delta)
@@ -2763,37 +2797,60 @@ do
 		parent:SetVerticalScroll(value) 
 		self:UpdateButtons()
 	end
+	local function ScrollFrameScrollBarValueChangedH(self,value)
+		local parent = self:GetParent():GetParent()
+		parent:SetHorizontalScroll(value) 
+		self:UpdateButtons()
+	end
 	local function ScrollFrameChangeHeight(self,newHeight)
 		self.content:SetHeight(newHeight)
 		self.ScrollBar:Range(0,max(newHeight-self:GetHeight(),0),nil,true)
 		self.ScrollBar:UpdateButtons()
-		
+
 		return self
 	end
-	local ScrollFrameBackdrop = {bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "",tile = true, tileSize = 0, edgeSize = 0, insets = { left = 0, right = 0, top = 0, bottom = 0 }}
+	local function ScrollFrameChangeWidth(self,newWidth)
+		self.content:SetWidth(newWidth)
+		self.ScrollBarHorizontal:Range(0,max(newWidth-self:GetWidth(),0),nil,true)
+		self.ScrollBarHorizontal:UpdateButtons()
+
+		return self
+	end
 	local ScrollFrameBackdropBorder = {bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }}
-	local ScrollFrameBackdropBorderModern = {edgeFile = "Interface/AddOns/"..GlobalAddonName.."/media/border", edgeSize = 16}
-	
+
+	local function Widget_AddHorizontal(self,outside)
+		self.ScrollBarHorizontal = ELib:ScrollBar(self):SetHorizontal():Size(0,16):Point("BOTTOMLEFT",3,3-(outside and 18 or 0)):Point("BOTTOMRIGHT",-3-18,3-(outside and 18 or 0)):Range(0,1):SetTo(0):ClickRange(20)
+		self.ScrollBarHorizontal.slider:SetScript("OnValueChanged", ScrollFrameScrollBarValueChangedH)
+		self.ScrollBarHorizontal:UpdateButtons()
+
+		self.ScrollBar:Point("BOTTOMRIGHT",-3,3+(outside and 0 or 18))
+
+		self.SetNewWidth = ScrollFrameChangeWidth
+		self.Width = ScrollFrameChangeWidth
+
+		return self
+	end
+
 	function ELib:ScrollFrame(parent,isOld)
 		local self = CreateFrame("ScrollFrame", nil, parent)
-		
+
 		if not isOld then
 			ELib:Border(self,2,.24,.25,.30,1)
 		else
-			self.backdrop = CreateFrame("Frame", nil, self)
+			self.backdrop = CreateFrame("Frame", nil, self, BackdropTemplateMixin and "BackdropTemplate")
 			self.backdrop:SetPoint("TOPLEFT",self,-5,5)
 			self.backdrop:SetPoint("BOTTOMRIGHT",self,5,-5)
 			self.backdrop:SetBackdrop(ScrollFrameBackdropBorder)
 			self.backdrop:SetBackdropColor(0,0,0,0)
 		end
-		
+
 		self.content = CreateFrame("Frame", nil, self) 
 		self:SetScrollChild(self.content)
-		
+
 		self.isModern = not isOld
-		
+
 		self.C = self.content
-		
+
 		if not isOld then
 			self.ScrollBar = ELib:ScrollBar(self):Size(16,0):Point("TOPRIGHT",-3,-3):Point("BOTTOMRIGHT",-3,3):Range(0,1):SetTo(0):ClickRange(20)
 		else
@@ -2801,16 +2858,18 @@ do
 		end
 		self.ScrollBar.slider:SetScript("OnValueChanged", ScrollFrameScrollBarValueChanged)
 		self.ScrollBar:UpdateButtons()
-		
+
 		self:SetScript("OnMouseWheel", ScrollFrameMouseWheel)
-		
+
 		self.SetNewHeight = ScrollFrameChangeHeight
 		self.Height = ScrollFrameChangeHeight
-		
+
+		self.AddHorizontal = Widget_AddHorizontal
+
 		Mod(self)
 		self._Size = self.Size
 		self.Size = Widget_SetSize
-		
+
 		return self
 	end
 	function ELib.CreateScrollFrame(parent,width,height,relativePoint,x,y,verticalHeight,isModern)
@@ -2831,13 +2890,13 @@ do
 			parent.selected = #list
 		end
 		parent:SetTo(parent.selected)
-		
+
 		if parent.func then
 			parent.func(parent)
 		end
 	end
 	local function SliderBoxCreateButton(parent,text,diff)
-		local self = CreateFrame("Button",nil,parent)
+		local self = CreateFrame("Button",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetBackdrop(SliderBackdropTable)
 		self:SetBackdropColor(0, 0, 0, 0.8) 
 		self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
@@ -2850,14 +2909,14 @@ do
 		self:SetScript("OnClick",SliderButtonClick)
 		self.diff = diff
 		self.parent = parent
-		
+
 		return self
 	end
 	local function Widget_SetSize(self,width,height)
 		self:SetSize(width,height)
 		self.left:SetSize(height,height)
 		self.right:SetSize(height,height)
-		
+
 		return self
 	end
 	local function Widget_SetTo(self,selected)
@@ -2874,33 +2933,33 @@ do
 	end
 	function ELib:SliderBox(parent,list)
 		local self = CreateFrame("Frame",nil,parent)
-		self.middle = CreateFrame("Frame",nil,self)
+		self.middle = CreateFrame("Frame",nil,self, BackdropTemplateMixin and "BackdropTemplate")
 		self.middle:SetBackdrop(SliderBackdropTable)
 		self.middle:SetBackdropColor(0, 0, 0, 0.8) 
 		self.middle:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
-	
+
 		self.middle:SetScript("OnEnter",ELib.Tooltip.Std)
 		self.middle:SetScript("OnLeave",ELib.Tooltip.Hide)
-	
+
 		list = list or {}
 		self.selected = 1
 		self.List = list
-	
+
 		self.text = ELib:Text(self.middle,nil,nil,"GameFontNormal"):Point('x'):Center():Color()
-	
+
 		self.left = SliderBoxCreateButton(self,"<",-1)
 		self.left:SetPoint("LEFT",0,0)
-		
+
 		self.right = SliderBoxCreateButton(self,">",1)
 		self.right:SetPoint("RIGHT",0,0)
-		
+
 		self.middle:SetPoint("TOPLEFT",self.left,"TOPRIGHT",0,0)
 		self.middle:SetPoint("BOTTOMRIGHT",self.right,"BOTTOMLEFT",0,0)
-		
+
 		Mod(self)
 		self.Size = Widget_SetSize
 		self.SetTo = Widget_SetTo
-			
+
 		return self
 	end
 	function ELib.CreateSliderBox(parent,width,height,x,y,list,selected)
@@ -2914,8 +2973,12 @@ do
 	end
 	local function Widget_Tooltip(self,text)
 		self.tooltip = self:GetText()
-		if self.tooltip == "" or not self.tooltip then self.tooltip = " " end
-		self.tooltipText = text
+		--if self.tooltip == "" or not self.tooltip then self.tooltip = " " end
+		if self.tooltip == "" or not self.tooltip then 
+			self.tooltip = text 
+		else
+			self.tooltipText = text
+		end
 		self:SetScript("OnEnter",ButtonOnEnter)
 		self:SetScript("OnLeave",ELib.Tooltip.Hide)
 		return self
@@ -2940,7 +3003,7 @@ do
 	end
 
 
-		
+
 	function ELib:Button(parent,text,template)
 		if template == 0 then
 			template = "UIPanelButtonTemplate"
@@ -2951,14 +3014,14 @@ do
 		end
 		local self = ELib:Template(template,parent) or CreateFrame("Button",nil,parent,template)
 		self:SetText(text)
-		
+
 		Mod(self,
 			'Tooltip',Widget_Tooltip
 		)
 		self._Disable = self.Disable	self.Disable = Widget_Disable
 		self.GetTextObj = Widget_GetTextObj
 		self.FontSize = Widget_SetFontSize
-		
+
 		return self
 	end
 	function ELib.CreateButton(parent,width,height,relativePoint,x,y,text,isDisabled,tooltip,template)
@@ -2988,16 +3051,16 @@ do
 	 		self:EnableMouse(true)
 			self:RegisterForClicks("LeftButtonDown")
 		end
-		
+
 		Mod(self,
 			'Icon',Widget_Icon
 		)
-		
+
 		return self
 	end
 	function ELib.CreateIcon(parent,size,relativePoint,x,y,textureIcon,isButton)
 		return ELib:Icon(parent,textureIcon,size,isButton):Point(relativePoint or "TOPLEFT", x,y)
-	end	
+	end
 end
 
 do
@@ -3023,7 +3086,46 @@ do
 		self.text:SetFont(self.text:GetFont(),size)
 		return self
 	end
-			
+
+	local function Widget_ColorState(self,isBorderInsteadText)
+		if isBorderInsteadText then
+			if self.disabled or not self:IsEnabled() then
+				cR,cG,cB = .5,.5,.5
+			elseif self:GetChecked() then
+				cR,cG,cB = .2,.8,.2
+			else
+				cR,cG,cB = .8,.2,.2
+			end
+			self.BorderTop:SetColorTexture(cR,cG,cB,1)
+			self.BorderLeft:SetColorTexture(cR,cG,cB,1)
+			self.BorderBottom:SetColorTexture(cR,cG,cB,1)
+			self.BorderRight:SetColorTexture(cR,cG,cB,1)
+		elseif self.disabled or not self:IsEnabled() then
+			self.text:SetTextColor(.5,.5,.5,1)
+		elseif self:GetChecked() then
+			self.text:SetTextColor(.3,1,.3,1)
+		else
+			self.text:SetTextColor(1,.4,.4,1)
+		end
+		return self
+	end
+
+	local function Widget_ColorState_SetCheckedHandler(self,...)
+		self:_SetChecked(...)
+		self:ColorState(self.colorStateIsBorderInsteadText)
+	end
+	local function Widget_PostClickHandler(self)
+		self:ColorState(self.colorStateIsBorderInsteadText)
+	end
+	local function Widget_AddColorState(self,isBorderInsteadText)
+		self.colorStateIsBorderInsteadText = isBorderInsteadText
+		self:SetScript("PostClick",Widget_PostClickHandler)
+		self:ColorState(isBorderInsteadText)
+		self._SetChecked = self.SetChecked
+		self.SetChecked = Widget_ColorState_SetCheckedHandler
+		return self
+	end
+
 	function ELib:Check(parent,text,state,template)
 		if template == 0 then
 			template = "UICheckButtonTemplate"
@@ -3036,19 +3138,21 @@ do
 		self:SetScript("OnEnter",CheckBoxOnEnter)
 		self:SetScript("OnLeave",ELib.Tooltip.Hide)
 		self.defSetSize = self.SetSize
-		
+
 		Mod(self)
 		self.Tooltip = Widget_Tooltip
 		self.Left = Widget_Left
 		self.TextSize = Widget_TextSize
-		
+		self.ColorState = Widget_ColorState
+		self.AddColorState = Widget_AddColorState
+
 		return self
 	end
 	function ELib.CreateCheckBox(parent,relativePoint,x,y,text,checked,tooltip,textLeft,template)
 		local self = ELib:Check(parent,text,checked,template or 0):Point(relativePoint or "TOPLEFT",x,y):Tooltip(tooltip)
 		if textLeft then self:Left() end
 		return self
-	end	
+	end
 end
 
 do
@@ -3076,14 +3180,14 @@ do
 		elseif not template then
 			template = "ExRTRadioButtonModernTemplate"
 		end
-		
+
 		local self = ELib:Template(template,parent) or CreateFrame("CheckButton",nil,parent,template)  
 		self.text:SetText(text or "")
 		self:SetChecked(checked and true or false)
-		
+
 		Mod(self)
 		self.AddButton = Widget_TextToButton
-		
+
 		return self
 	end
 	function ELib.CreateRadioButton(parent,relativePoint,x,y,text,checked,isModern)
@@ -3110,7 +3214,7 @@ do
 		local self = frame:CreateTexture(nil, "OVERLAY")
 		self:SetAllPoints(parent)
 		self:SetColorTexture(1, 0, 0, 0.3)
-		
+
 		return self
 	end
 	function ELib.CreateBackTextureForDebug(parent)
@@ -3127,7 +3231,7 @@ do
 		HelpPlate_Hide(isUser)
 		self:SetFrameStrata(self.strata)
 		self:SetFrameLevel(self.level)
-		
+
 		if self.shitInterface then
 			for i=1,#HELP_PLATE_BUTTONS do
 				if HELPstratas[i] then
@@ -3154,7 +3258,7 @@ do
 			HelpPlate_Show(helpPlate, self.parent, self, true)
 			self:SetFrameStrata( HelpPlate:GetFrameStrata() )
 			self:SetFrameLevel( HelpPlate:GetFrameLevel() + 1 )
-			
+
 			if self.shitInterface then
 				for i=1,#HELP_PLATE_BUTTONS do
 					HELPstratas[i] = HELP_PLATE_BUTTONS[i]:GetFrameStrata()
@@ -3195,34 +3299,135 @@ do
 			self.shitInterface = true
 			self.shitStrata = interfaceStrata
 		end
-		
+
 		self.helpPlateArray = helpPlateArray
 		self.isTab = isTab
 		self.parent = parent
-		
+
 		self:SetScript("OnClick",HelpButtonOnClick)
 		self:SetScript("OnHide",HelpButtonOnHide)
 		self.strata = self:GetFrameStrata()
 		self.level = self:GetFrameLevel()
-		
+
 		return self
 	end
 end
 
 do
-	local function ScrollListListEnter(self)
+	local function ScrollListLineEnter(self)
 		local mainFrame = self.mainFrame
 		if mainFrame.HoverListValue then
 			mainFrame:HoverListValue(true,self.index,self)
 			mainFrame.HoveredLine = self
 		end
+
+		if mainFrame.EnableHoverAnimation then
+			if not self.anim then
+				self.anim = self:CreateAnimationGroup()
+				self.anim:SetLooping("NONE")
+				self.anim.timer = self.anim:CreateAnimation()
+				self.anim.timer:SetDuration(.25)
+				self.anim.timer.line = self
+				self.anim.timer.main = mainFrame
+				self.anim.timer:SetScript("OnUpdate", function(self,elapsed) 
+					local p = self:GetProgress()
+					local cR,cG,cB,cA = self.fR + (self.tR - self.fR) * p, self.fG + (self.tG - self.fG) * p, self.fB + (self.tB - self.fB)* p, self.fA + (self.tA - self.fA) * p
+					self.cR, self.cG, self.cB, self.cA = cR,cG,cB,cA
+					self.line.AnimTexture:SetColorTexture(cR,cG,cB,cA)
+				end)
+				self.HighlightTexture:SetVertexColor(0,0,0,0)
+				self.anim.timer.cR, self.anim.timer.cG, self.anim.timer.cB, self.anim.timer.cA = .5, .5, .5, .2
+
+				self.anim:SetScript("OnFinished", function(self, requested)
+					if self.timer.HideOnEnd then
+						local t = self:GetParent().AnimTexture
+						t:Hide()
+						t:SetColorTexture(.5, .5, .5, .2)
+						self.timer.cR, self.timer.cG, self.timer.cB, self.timer.cA = .5, .5, .5, .2
+					end
+				end)
+
+				self.AnimTexture = self:CreateTexture()
+				self.AnimTexture:SetPoint("LEFT",0,0)
+				self.AnimTexture:SetPoint("RIGHT",0,0)
+				self.AnimTexture:SetHeight(mainFrame.LINE_TEXTURE_HEIGHT or 15)
+				self.AnimTexture:SetColorTexture(self.anim.timer.cR, self.anim.timer.cG, self.anim.timer.cB, self.anim.timer.cA)
+			end
+			if self.anim:IsPlaying() then
+				self.anim:Stop()
+			end
+			local t = self.anim.timer
+			t.fR, t.fG, t.fB, t.fA = t.cR, t.cG, t.cB, t.cA
+			if mainFrame.LINE_TEXTURE_COLOR_HL then
+				t.tR, t.tG, t.tB, t.tA = unpack(mainFrame.LINE_TEXTURE_COLOR_HL)
+			else
+				t.tR, t.tG, t.tB, t.tA = 1, 1, 1, 1
+			end
+			t.HideOnEnd = false
+			self.anim:Play()
+			self.AnimTexture:Show()
+		end
 	end
-	local function ScrollListListLeave(self)
+	local function ScrollListLineLeave(self)
 		local mainFrame = self.mainFrame
 		if mainFrame.HoverListValue then
 			mainFrame:HoverListValue(false,self.index,self)
 		end
 		mainFrame.HoveredLine = nil
+
+		if mainFrame.EnableHoverAnimation then
+			if self.anim:IsPlaying() then
+				self.anim:Stop()
+			end
+			local t = self.anim.timer
+			t.fR, t.fG, t.fB, t.fA = t.cR, t.cG, t.cB, t.cA
+			t.tR, t.tG, t.tB, t.tA = .5, .5, .5, 0
+			t.HideOnEnd = true
+			self.anim:Play()
+		end
+	end
+	local function ScrollListLineOnDragStart(self)
+		if self:IsMovable() then
+			if self.ignoreDrag then
+				return
+			end
+			self.poins = {}
+			for i=1,self:GetNumPoints() do
+				self.poins[i] = {self:GetPoint()}
+			end
+
+			GameTooltip_Hide()
+
+			self:StartMoving()
+		end
+	end
+	local function ScrollListLineOnDragStop(self)
+		self:StopMovingOrSizing()
+
+		if not self.poins then
+			return
+		end
+
+		local mainFrame = self.mainFrame
+		if mainFrame.OnDragFunction then
+			local swapLine
+			for i=1,#mainFrame.List do
+				local line = mainFrame.List[i]
+				if line ~= self and line:IsShown() and MouseIsOver(line) then
+					swapLine = line
+					break
+				end
+			end
+			if swapLine then
+				mainFrame:OnDragFunction(self,swapLine)
+			end
+		end
+
+		self:ClearAllPoints()
+		for i=1,#self.poins do
+			self:SetPoint(unpack(self.poins[i]))
+		end
+		self.poins = nil
 	end
 	local function ScrollListMouseWheel(self,delta)
 		-- This function isnt called, cuz wheel cause scrollframe wheel event
@@ -3236,7 +3441,7 @@ do
 		local mainFrame = self:GetParent().mainFrame
 		if mainFrame.HoverMultitableListValue then
 			mainFrame:HoverMultitableListValue(true,self.index,self)
-		end		
+		end
 	end
 	local function ScrollListListMultitableLeave(self)
 		local mainFrame = self:GetParent().mainFrame
@@ -3248,12 +3453,9 @@ do
 		local mainFrame = self:GetParent().mainFrame
 		if mainFrame.ClickMultitableListValue then
 			mainFrame:ClickMultitableListValue(self.index,self)
-		end		
-	end	
-	
-	local ScrollListBackdrop = {bgFile = "", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }}
-	local ScrollListBackdropModern = {edgeFile = "Interface/AddOns/"..GlobalAddonName.."/media/border", edgeSize = 16}
-	
+		end
+	end
+
 	local function ScrollList_Line_Click(self,button,...)
 		local parent = self.mainFrame
 		if not parent.isCheckList then
@@ -3293,11 +3495,11 @@ do
 	local function ScrollList_AddLine(self,i)
 		local line = CreateFrame("Button",nil,self.Frame.C)
 		self.List[i] = line
-		line:SetPoint("TOPLEFT",0,-(i-1)*16)
-		line:SetPoint("BOTTOMRIGHT",self.Frame.C,"TOPRIGHT",0,-i*16)
-		
+		line:SetPoint("TOPLEFT",0,-(i-1)*(self.LINE_HEIGHT or 16))
+		line:SetPoint("BOTTOMRIGHT",self.Frame.C,"TOPRIGHT",0,-i*(self.LINE_HEIGHT or 16))
+
 		if not self.T then
-			line.text = ELib:Text(line,"List"..tostring(i),self.fontSize or 12):Point("TOPLEFT",self.isCheckList and 24 or 3,0):Point("TOPRIGHT",-3,0):Size(0,16):Color():Shadow()
+			line.text = ELib:Text(line,"List"..tostring(i),self.fontSize or 12):Point("LEFT",(self.isCheckList and 24 or 3)+(self.LINE_PADDING_LEFT or 0),0):Point("RIGHT",-3,0):Size(0,self.LINE_HEIGHT or 16):Color():Shadow()
 			if self.fontName then
 				line.text:Font(self.fontName,self.fontSize or 12)
 			end
@@ -3307,7 +3509,7 @@ do
 			local zeroWidth = nil
 			for j=1,#self.T do
 				local width = self.T[j]
-				local textObj = ELib:Text(line,"List",self.fontSize or 12):Size(width,16):Color():Shadow():Left()
+				local textObj = ELib:Text(line,"List",self.fontSize or 12):Size(width,self.LINE_HEIGHT or 16):Color():Shadow():Left()
 				if self.fontName then
 					textObj:Font(self.fontName,self.fontSize or 12)
 				end
@@ -3315,7 +3517,7 @@ do
 				if width == 0 then
 					zeroWidth = j
 				end
-				
+
 				if self.additionalLineFunctions then
 					local hoverFrame = CreateFrame('Button',nil,line)
 					hoverFrame:SetScript("OnEnter",ScrollListListMultitableEnter)
@@ -3344,58 +3546,77 @@ do
 				end
 			end
 		end
-		
+
 		line.background = line:CreateTexture(nil, "BACKGROUND")
 		line.background:SetPoint("TOPLEFT")
 		line.background:SetPoint("BOTTOMRIGHT")
-		
+
 		line.HighlightTexture = line:CreateTexture()
-		line.HighlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
-		line.HighlightTexture:SetBlendMode("ADD")
+		line.HighlightTexture:SetTexture(self.LINE_TEXTURE or "Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
+		if not self.LINE_TEXTURE_IGNOREBLEND then
+			line.HighlightTexture:SetBlendMode("ADD")
+		end
 		line.HighlightTexture:SetPoint("LEFT",0,0)
 		line.HighlightTexture:SetPoint("RIGHT",0,0)
-		line.HighlightTexture:SetHeight(15)
-		line.HighlightTexture:SetVertexColor(1,1,1,1)		
+		line.HighlightTexture:SetHeight(self.LINE_TEXTURE_HEIGHT or 15)
+		if self.LINE_TEXTURE_COLOR_HL then
+			line.HighlightTexture:SetVertexColor(unpack(self.LINE_TEXTURE_COLOR_HL))
+		else
+			line.HighlightTexture:SetVertexColor(1,1,1,1)
+		end
 		line:SetHighlightTexture(line.HighlightTexture)
-		
+
 		line.PushedTexture = line:CreateTexture()
-		line.PushedTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
-		line.PushedTexture:SetBlendMode("ADD")
+		line.PushedTexture:SetTexture(self.LINE_TEXTURE or "Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
+		if not self.LINE_TEXTURE_IGNOREBLEND then
+			line.PushedTexture:SetBlendMode("ADD")
+		end
 		line.PushedTexture:SetPoint("LEFT",0,0)
 		line.PushedTexture:SetPoint("RIGHT",0,0)
-		line.PushedTexture:SetHeight(15)
-		line.PushedTexture:SetVertexColor(1,1,0,1)
+		line.PushedTexture:SetHeight(self.LINE_TEXTURE_HEIGHT or 15)
+		if self.LINE_TEXTURE_COLOR_P then
+			line.PushedTexture:SetVertexColor(unpack(self.LINE_TEXTURE_COLOR_P))
+		else
+			line.PushedTexture:SetVertexColor(1,1,0,1)
+		end
 		line:SetDisabledTexture(line.PushedTexture)
-		
+
 		line.iconRight = line:CreateTexture()
 		line.iconRight:SetPoint("RIGHT",-3,0)
-		line.iconRight:SetSize(16,16)
-		
+		line.iconRight:SetSize(self.LINE_HEIGHT or 16,self.LINE_HEIGHT or 16)
+
 		if self.isCheckList then
 			line.chk = ELib:Template("ExRTCheckButtonModernTemplate",line)  
 			line.chk:SetSize(14,14)
 			line.chk:SetPoint("LEFT",4,0)
 			line.chk:SetScript("OnClick", ScrollList_Check_Click)
 		end
-		
+
 		line.mainFrame = self
 		line.id = i
 		line:SetScript("OnClick",ScrollList_Line_Click)
-		line:SetScript("OnEnter",ScrollListListEnter)
-		line:SetScript("OnLeave",ScrollListListLeave)
+		line:SetScript("OnEnter",ScrollListLineEnter)
+		line:SetScript("OnLeave",ScrollListLineLeave)
 		line:RegisterForClicks("LeftButtonUp","RightButtonUp")
-		
+		line:SetScript("OnDragStart", ScrollListLineOnDragStart)
+		line:SetScript("OnDragStop", ScrollListLineOnDragStop)
+		if self.dragAdded then
+			line:SetMovable(true)
+			line:RegisterForDrag("LeftButton")
+		end
+
 		return line
 	end
+
 	local function ScrollList_ScrollBar_OnValueChanged(self,value)
 		local parent = self:GetParent():GetParent()
-		parent:SetVerticalScroll(value % 16) 
+		parent:SetVerticalScroll(value % (parent:GetParent().LINE_HEIGHT or 16)) 
 		self:UpdateButtons()
-		
+
 		parent:GetParent():Update()
 	end
 	local function Widget_Update(self)
-		local val = floor(self.Frame.ScrollBar:GetValue() / 16) + 1
+		local val = floor(self.Frame.ScrollBar:GetValue() / (self.LINE_HEIGHT or 16)) + 1
 		local j = 0
 		for i=val,#self.L do
 			j = j + 1
@@ -3404,7 +3625,11 @@ do
 				line = ScrollList_AddLine(self,j)
 			end
 			if not self.T then
-				line:SetText(self.L[i])
+				if type(self.L[i]) == "table" then
+					line:SetText(self.L[i][1])
+				else
+					line:SetText(self.L[i])
+				end
 			else
 				for k=1,#self.T do
 					line['text'..k]:SetText(self.L[i][k] or "")
@@ -3416,8 +3641,21 @@ do
 				if not self.dontDisable then
 					if i ~= self.selected then
 						line:SetEnabled(true)
+						line.ignoreDrag = false
 					else
 						line:SetEnabled(nil)
+						line.ignoreDrag = true
+					end
+				end
+				if self.LDisabled then
+					if self.LDisabled[i] then
+						line:SetEnabled(false)
+						line.ignoreDrag = true
+						line.text:Color(.5,.5,.5,1)
+						line.PushedTexture:SetAlpha(0)
+					else
+						line.text:Color()
+						line.PushedTexture:SetAlpha(1)
 					end
 				end
 			end
@@ -3428,10 +3666,10 @@ do
 					line.iconRight:SetSize(icon[2],icon[2])
 				elseif icon then
 					line.iconRight:SetTexture(icon)
-					line.iconRight:SetSize(16,16)
+					line.iconRight:SetSize(self.LINE_HEIGHT or 16,self.LINE_HEIGHT or 16)
 				else
 					line.iconRight:SetTexture("")
-				end			
+				end
 			end
 			if self.colors then
 				if self.colors[i] then
@@ -3450,36 +3688,36 @@ do
 		for i=(j+1),#self.List do
 			self.List[i]:Hide()
 		end
-		self.Frame.ScrollBar:Range(0,max(0,#self.L * 16 - 1 - self:GetHeight()),16,true):UpdateButtons()
-		
-		if (self:GetHeight() / 16 - #self.L) > 0 then
+		self.Frame.ScrollBar:Range(0,max(0,#self.L * (self.LINE_HEIGHT or 16) - 1 - self:GetHeight()),self.LINE_HEIGHT or 16,true):UpdateButtons()
+
+		if (self:GetHeight() / (self.LINE_HEIGHT or 16) - #self.L) > 0 then
 			self.Frame.ScrollBar:Hide()
 			self.Frame.C:SetWidth( self.Frame:GetWidth() )
 		else
 			self.Frame.ScrollBar:Show()
-			self.Frame.C:SetWidth( self.Frame:GetWidth() - 16 )
+			self.Frame.C:SetWidth( self.Frame:GetWidth() - (self.SCROLL_WIDTH or 16) )
 		end
-		
+
 		if self.UpdateAdditional then
 			self.UpdateAdditional(self,val)
 		end
-		
+
 		if self.HoveredLine then
 			local hovered = self.HoveredLine
-			ScrollListListLeave(hovered)
-			ScrollListListEnter(hovered)
+			ScrollListLineLeave(hovered)
+			ScrollListLineEnter(hovered)
 		end
-		
+
 		return self
 	end
 	local function Widget_SetSize(self,width,height)
 		self:_Size(width,height)
-		self.Frame:Size(width,height):Height(height+16)
-		self.linesPerPage = height / 16 + 1
-		
-		self.Frame.ScrollBar:Range(0,max(0,#self.L * 16 - 1 - height)):UpdateButtons()
+		self.Frame:Size(width,height):Height(height+(self.LINE_HEIGHT or 16))
+		self.linesPerPage = height / (self.LINE_HEIGHT or 16) + 1
+
+		self.Frame.ScrollBar:Range(0,max(0,#self.L * (self.LINE_HEIGHT or 16) - 1 - height)):UpdateButtons()
 		self:Update()
-		
+
 		return self
 	end
 	local function Widget_FontSize(self,size)
@@ -3502,35 +3740,71 @@ do
 		self.fontName = fontName
 		if not self.T then
 			for i=1,#self.List do
-				self.List[i].text:SetFont(fontName,size)
+				self.List[i].text:SetFont(fontName,fontSize)
 			end
 		else
 			for i=1,#self.List do
 				for j=1,#self.T do
-					self.List[i]['text'..j]:SetFont(fontName,size)
+					self.List[i]['text'..j]:SetFont(fontName,fontSize)
 				end
 			end
 		end
 		return self
 	end
+	local function Widget_SetLineHeight(self,height)
+		self.LINE_HEIGHT = height
+		return self
+	end
+	local function Widget_AddDrag(self)
+		self.dragAdded = true
+		for i=1,#self.List do
+			local line = self.List[i]
+			line:SetMovable(true)
+			line:RegisterForDrag("LeftButton")
+		end
+
+		return self
+	end
+	local function Widget_HideBorders(self)
+		ELib:Border(self.Frame,0)
+		ELib:Border(self,0)
+		ELib:Border(self,0,nil,nil,nil,nil,nil,1)
+		return self
+	end
+	local function Widget_SetTo(self,index)
+		self.selected = index
+		self:Update()
+		if self.SetListValue then
+			self:SetListValue(index)
+		end
+		if self.AdditionalLineClick then
+			self.AdditionalLineClick(self)
+		end
+		return self
+	end
+
 	local function CreateScrollList(parent,list)
 		local self = CreateFrame("Frame",nil,parent)
 		self.Frame = ELib:ScrollFrame(self):Point(0,0)
-		
+
 		ELib:Border(self,2,.24,.25,.30,1)
 		ELib:Border(self,1,0,0,0,1,2,1)
 
 		self.linesPerPage = 1
 		self.List = {}
 		self.L = list or {}
-		
+
 		Mod(self,
 			'Update',Widget_Update,
 			'FontSize',Widget_FontSize,
-			'Font',Widget_Font
+			'Font',Widget_Font,
+			'LineHeight',Widget_SetLineHeight,
+			'AddDrag',Widget_AddDrag,
+			'HideBorders',Widget_HideBorders,
+			'SetTo',Widget_SetTo
 		)
 		self._Size = self.Size	self.Size = Widget_SetSize
-		
+
 		self.Frame.ScrollBar:SetScript("OnValueChanged",ScrollList_ScrollBar_OnValueChanged)
 		self:SetScript("OnShow",self.Update)
 		self:SetScript("OnMouseWheel",ScrollListMouseWheel)
@@ -3540,7 +3814,7 @@ do
 	function ELib:ScrollList(parent,list)
 		local self = CreateScrollList(parent,list)
 		self:Update()
-		
+
 		return self
 	end
 	function ELib:ScrollTableList(parent,...)
@@ -3550,16 +3824,16 @@ do
 			self.T[i] = select(i,...)
 		end
 		self:Update()
-		
+
 		return self
 	end
 	function ELib:ScrollCheckList(parent,list)
 		local self = CreateScrollList(parent,list)
 		self.C = {}
 		self.isCheckList = true
-		
+
 		self:Update()
-		
+
 		return self
 	end
 
@@ -3570,6 +3844,7 @@ do
 		return ELib:ScrollCheckList(parent,nil,not isModern):Point(relativePoint or "TOPLEFT",x,y):Size(width,linesNum * 16 + 8)
 	end
 end
+
 
 do
 	local function PopupFrameShow(self,anchor,notResetPosIfShown)
@@ -3615,7 +3890,7 @@ do
 		end)
 		self:Hide()
 		self:SetScript("OnShow", PopupFrameOnShow)
-		
+
 		self.ShowClick = PopupFrameShow
 		if template == "ExRTDialogModernTemplate" then
 			self.border = ELib:Shadow(self,20)
@@ -3623,9 +3898,9 @@ do
 			self.title:SetTextColor(1,1,1,1)
 		end
 		self.title:SetText(title or "")
-						
+
 		Mod(self)
-		
+
 		return self
 	end
 	function ELib.CreatePopupFrame(width,height,title,isModern)
@@ -3635,7 +3910,7 @@ end
 
 do
 	function ELib:OneTab(parent,text,isOld)
-		local self = CreateFrame("Frame",nil,parent)
+		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		if isOld then
 			self:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }})
 			self:SetBackdropColor(0,0,0,0.5)
@@ -3643,12 +3918,12 @@ do
 			ELib:Border(self,2,.24,.25,.30,1)
 		end
 		self.name = ELib:Text(self,text,nil,"GameFontNormal"):Size(0,0):Point("BOTTOMLEFT",self,"TOPLEFT",10,4):Bottom():Left()
-		
+
 		Mod(self)
-		
+
 		return self
 	end
-	
+
 	function ELib.CreateOneTab(parent,width,height,relativePoint,x,y,text,isModern)
 		return ELib:OneTab(parent,text,not isModern):Size(width,height):Point(relativePoint or "TOPLEFT",x,y)
 	end
@@ -3656,22 +3931,22 @@ end
 
 do
 	function ELib.CreateColorPickButton(parent,width,height,relativePoint,x,y,cR,cG,cB,cA)
-		local self = CreateFrame("Button",nil,parent)
+		local self = CreateFrame("Button",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
 		self:SetPoint(relativePoint or "TOPLEFT",x,y)
 		self:SetSize(width,height)
 		self:SetBackdrop({edgeFile = DEFAULT_BORDER, edgeSize = 8})
-		
+
 		self:SetScript("OnEnter",function ()
 			self:SetBackdropBorderColor(0.5,1,0,5,1)
 		end)
 		self:SetScript("OnLeave",function ()
 		  	self:SetBackdropBorderColor(1,1,1,1)
 		end)
-		
+
 		self.color = self:CreateTexture(nil, "BACKGROUND")
 		self.color:SetColorTexture(cR or 0, cG or 0, cB or 0, cA or 1)
 		self.color:SetAllPoints()
-		
+
 		return self
 	end
 end
@@ -3695,19 +3970,19 @@ do
 			ELib:Border(self.tab[i],1,0,0,0,1,2,1)
 		end
 		self.list:Update()
-		
+
 		local this = self
 		function self.list:SetListValue(index)
 			for i=1,this.listCount do
-				ELib.ShowOrHide(this.tab[i],i == index)
+				this.tab[i]:SetShown(i == index)
 			end
 		end
 		self.list.selected = 1
 		self.list:SetListValue(1)
-		
+
 		Mod(self)
 		self._Size = self.Size	self.Size = Widget_SetSize
-	
+
 		return self
 	end
 	function ELib.CreateScrollTabsFrame(parent,relativePoint,x,y,width,height,noSelfBorder,isModern,...)
@@ -3749,22 +4024,22 @@ do
 		self.tooltip = text
 		self:SetScript("OnEnter",DropDown_OnEnter)
 		self:SetScript("OnLeave",DropDown_OnLeave)
-		
+
 		return self
 	end
 	local function Widget_AddText(self,text)
 		self.leftText = ELib:Text(self,text,12):Point("RIGHT",self,"LEFT",-5,0):Right():Middle():Color():Shadow()
-		
+
 		return self
-	end	
+	end
 	local function Widget_Disable(self)
 		self.Button:Disable()
-		
+
 		return self
 	end
 	local function Widget_Enable(self)
 		self.Button:Enable()
-		
+
 		return self
 	end
 	local function DropDown_OnClick(self,...)
@@ -3774,22 +4049,22 @@ do
 		end
 		ELib.ScrollDropDown.ClickButton(self,...)
 	end
-		
+
 	function ELib:DropDown(parent,width,lines,template)
 		template = template == 0 and "ExRTDropDownMenuTemplate" or template or "ExRTDropDownMenuModernTemplate"
 		local self = ELib:Template(template, parent) or CreateFrame("Frame", nil, parent, template)
 
 		self.Button:SetScript("OnClick",DropDown_OnClick)
 		self:SetScript("OnHide",ScrollDropDownOnHide)
-		
+
 		self.List = {}
 		self.Width = width
 		self.Lines = lines or 10
-		
+
 		if template == "ExRTDropDownMenuModernTemplate" then
 			self.isModern = true
 		end
-		
+
 		self.relativeTo = self.Left
 
 		Mod(self,
@@ -3799,13 +4074,13 @@ do
 			'Disable',Widget_Disable,
 			'Enable',Widget_Enable
 		)
-		
+
 		self._Size = self.Size
 		self.Size = Widget_SetSize
 
-		self._SetWidth = self.SetWidth		
+		self._SetWidth = self.SetWidth
 		self.SetWidth = Widget_SetSize
-		
+
 		return self
 	end
 	function ELib.CreateScrollDropDown(parent,relativePoint,x,y,width,dropDownWidth,lines,defText,tooltip,template)
@@ -3814,16 +4089,16 @@ do
 
 	function ELib:DropDownButton(parent,defText,dropDownWidth,lines,template)
 		local self = ELib:Button(parent,defText,template)
-		
+
 		self:SetScript("OnClick",ELib.ScrollDropDown.ClickButton)
 		self:SetScript("OnHide",ScrollDropDownOnHide)
-		
+
 		self.List = {}
 		self.Width = dropDownWidth
 		self.Lines = lines or 10
-		
+
 		self.isButton = true
-	
+
 		return self
 	end
 	function ELib.CreateScrollDropDownButton(parent,relativePoint,x,y,width,height,dropDownWidth,lines,defText,tooltip,template)
@@ -3865,7 +4140,7 @@ for i=1,2 do
 			parent.BorderRight:SetColorTexture(color,color,color,1)
 		end)
 	end
-	
+
 	ScrollDropDown_Modern[i].Slider = ELib.CreateSlider(ScrollDropDown_Modern[i],10,170,-8,-8,1,10,"Text",1,"TOPRIGHT",true,true)
 	ScrollDropDown_Modern[i].Slider:SetScript("OnValueChanged",function (self,value)
 		value = Round(value)
@@ -3874,7 +4149,7 @@ for i=1,2 do
 	end)
 	ScrollDropDown_Modern[i].Slider:SetScript("OnEnter",function(self) UIDropDownMenu_StopCounting(self:GetParent()) end)
 	ScrollDropDown_Modern[i].Slider:SetScript("OnLeave",function(self) UIDropDownMenu_StartCounting(self:GetParent()) end)
-	
+
 	ScrollDropDown_Modern[i]:SetScript("OnMouseWheel",function (self,delta)
 		local min,max = self.Slider:GetMinMaxValues()
 		local val = self.Slider:GetValue()
@@ -3893,7 +4168,7 @@ for i=1,2 do
 	_G[GlobalAddonName.."DropDownList"..i] = ScrollDropDown_Blizzard[i]
 	ScrollDropDown_Blizzard[i].Buttons = {}
 	ScrollDropDown_Blizzard[i].MaxLines = 0
-	
+
 	ScrollDropDown_Blizzard[i].Slider = ELib.CreateSlider(ScrollDropDown_Blizzard[i],10,170,-15,-11,1,10,"Text",1,"TOPRIGHT",true)
 	ScrollDropDown_Blizzard[i].Slider:SetScript("OnValueChanged",function (self,value)
 		value = Round(value)
@@ -3902,7 +4177,7 @@ for i=1,2 do
 	end)
 	ScrollDropDown_Blizzard[i].Slider:SetScript("OnEnter",function(self) UIDropDownMenu_StopCounting(self:GetParent()) end)
 	ScrollDropDown_Blizzard[i].Slider:SetScript("OnLeave",function(self) UIDropDownMenu_StartCounting(self:GetParent()) end)
-	
+
 	ScrollDropDown_Blizzard[i]:SetScript("OnMouseWheel",function (self,delta)
 		local min,max = self.Slider:GetMinMaxValues()
 		local val = self.Slider:GetValue()
@@ -3945,12 +4220,12 @@ do
 			dropDown.Buttons[i]:SetPoint("TOPLEFT",18,-16 - (i-1) * 16)
 		end
 		dropDown.Buttons[i].NormalText:SetMaxLines(1) 
-		
+
 		if dropDown.isModern then
 			dropDown.Buttons[i].checkButton = ELib:Template("ExRTCheckButtonModernTemplate",dropDown.Buttons[i])
 			dropDown.Buttons[i].checkButton:SetPoint("LEFT",1,0)
 			dropDown.Buttons[i].checkButton:SetSize(12,12)
-			
+
 			dropDown.Buttons[i].radioButton = ELib:Template("ExRTRadioButtonModernTemplate",dropDown.Buttons[i])
 			dropDown.Buttons[i].radioButton:SetPoint("LEFT",1,0)
 			dropDown.Buttons[i].radioButton:SetSize(12,12)
@@ -3959,7 +4234,7 @@ do
 			dropDown.Buttons[i].checkButton = CreateFrame("CheckButton",nil,dropDown.Buttons[i],"UICheckButtonTemplate")
 			dropDown.Buttons[i].checkButton:SetPoint("LEFT",-7,0)
 			dropDown.Buttons[i].checkButton:SetScale(.6)
-			
+
 			dropDown.Buttons[i].radioButton = CreateFrame("CheckButton",nil,dropDown.Buttons[i])	-- Do not used in blizzard style
 		end
 		dropDown.Buttons[i].checkButton:SetScript("OnClick",CheckButtonClick)
@@ -3967,7 +4242,7 @@ do
 		dropDown.Buttons[i].checkButton:SetScript("OnLeave",CheckButtonOnLeave)
 		dropDown.Buttons[i].checkButton:Hide()
 		dropDown.Buttons[i].radioButton:Hide()
-		
+
 		dropDown.Buttons[i].Level = level
 	end
 end
@@ -3999,14 +4274,14 @@ function ELib.ScrollDropDown:Reload(level)
 			local now = 0
 			for i=val,count do
 				local data = ELib.ScrollDropDown.DropDownList[j].List[i]
-				
+
 				if not data.isHidden then
 					now = now + 1
 					local button = ELib.ScrollDropDown.DropDownList[j].Buttons[now]
 					local text = button.NormalText
 					local icon = button.Icon
 					local paddingLeft = data.padding or 0
-					
+
 					if data.icon then
 						icon:SetTexture(data.icon)
 						paddingLeft = paddingLeft + 18
@@ -4014,7 +4289,7 @@ function ELib.ScrollDropDown:Reload(level)
 					else
 						icon:Hide()
 					end
-					
+
 					if data.font then
 						local font = _G[GlobalAddonName.."DropDownListFont"..now]
 						if not font then
@@ -4029,13 +4304,13 @@ function ELib.ScrollDropDown:Reload(level)
 						button:SetNormalFontObject(GameFontHighlightSmallLeft)
 						button:SetHighlightFontObject(GameFontHighlightSmallLeft)
 					end
-					
+
 					if data.colorCode then
 						text:SetText( data.colorCode .. (data.text or "") .. "|r" )
 					else
 						text:SetText( data.text or "" )
 					end
-					
+
 					text:ClearAllPoints()
 					if data.checkable or data.radio then
 						text:SetPoint("LEFT", paddingLeft + 16, 0)
@@ -4044,7 +4319,7 @@ function ELib.ScrollDropDown:Reload(level)
 					end
 					text:SetPoint("RIGHT", button, "RIGHT", 0, 0)
 					text:SetJustifyH(data.justifyH or "LEFT")
-					
+
 					if data.checkable then
 						button.checkButton:SetChecked(data.checkState)
 						button.checkButton:Show()
@@ -4057,7 +4332,7 @@ function ELib.ScrollDropDown:Reload(level)
 					else
 						button.radioButton:Hide()
 					end
-					
+
 					local texture = button.Texture
 					if data.texture then
 						texture:SetTexture(data.texture)
@@ -4065,19 +4340,19 @@ function ELib.ScrollDropDown:Reload(level)
 					else
 						texture:Hide()
 					end
-					
+
 					if data.subMenu then
 						button.Arrow:Show()
 					else
 						button.Arrow:Hide()
 					end
-					
+
 					if data.isTitle then
 						button:SetEnabled(false)
 					else
 						button:SetEnabled(true)
 					end
-					
+
 					button.id = i
 					button.arg1 = data.arg1
 					button.arg2 = data.arg2
@@ -4088,18 +4363,18 @@ function ELib.ScrollDropDown:Reload(level)
 					button.leaveFunc = data.leaveFunc
 					button.hoverArg = data.hoverArg
 					button.checkFunc = data.checkFunc
-					
+
 					if not data.checkFunc then
 						button.checkFunc = ScrollDropDown_DefaultCheckFunc
 					end
-					
+
 					button.subMenu = data.subMenu
 					button.Lines = data.Lines --Max lines for second level
-					
+
 					button.data = data
-				
+
 					button:Show()
-					
+
 					if now >= ELib.ScrollDropDown.DropDownList[j].LinesNow then
 						break
 					end
@@ -4168,7 +4443,7 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
 	if self.ToggleUpadte then
 		self:ToggleUpadte()
 	end
-	
+
 	if level == 1 then
 		if self.isModern then
 			ELib.ScrollDropDown.DropDownList = ScrollDropDown_Modern
@@ -4191,16 +4466,16 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
 
 
 	dropDown.List = self.subMenu or self.List
-	
+
 	local count = #dropDown.List
-	
+
 	local maxLinesNow = self.Lines or count
-	
+
 	for i=(dropDown.MaxLines+1),maxLinesNow do
 		ELib.ScrollDropDown.CreateButton(i,level)
 	end
 	dropDown.MaxLines = max(dropDown.MaxLines,maxLinesNow)
-	
+
 	local isSliderHidden = max(count-maxLinesNow+1,1) == 1
 	if isModern then 
 		for i=1,maxLinesNow do
@@ -4225,7 +4500,7 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
 		dropDown.Slider:SetHeight(maxLinesNow * 16)
 	else
 		dropDown:SetSize(dropDownWidth + 32,32 + 16 * maxLinesNow)
-		dropDown.Slider:SetHeight(maxLinesNow * 16 + 10)	
+		dropDown.Slider:SetHeight(maxLinesNow * 16 + 10)
 	end
 	if isSliderHidden then
 		dropDown.Slider:Hide()
@@ -4240,12 +4515,12 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
 		local toggleY = self.toggleY or 0
 		dropDown:SetPoint("TOPRIGHT",self,"BOTTOMRIGHT",toggleX,toggleY)
 	end
-	
+
 	dropDown.parent = self
-	
+
 	dropDown:Show()
 	dropDown:SetFrameLevel(0)
-	
+
 	ELib.ScrollDropDown:Reload()
 end
 
@@ -4286,7 +4561,7 @@ do
 	end
 	local function ListFrameOnHide(self)
 		ELib:DropDownClose()
-	end	
+	end
 	local function Widget_OnClick(self,func)
 		self.OnClick = func
 		return self
@@ -4310,25 +4585,20 @@ do
 		self.Lines = lines
 		self.Width = width
 		self.isModern = template == "ExRTUIChatDownButtonModernTemplate"
-		
+
 		Mod(self,
 			'Left',Widget_Left
 		)
 		self._OnClick = self.OnClick	self.OnClick = Widget_OnClick
-				
+
 		return self
 	end
-	
+
 	function ELib.CreateListFrame(parent,width,buttonsNum,buttonPos,relativePoint,x,y,buttonText,listClickFunc,isModern)
 		local self = ELib:ListButton(parent,buttonText,width,buttonsNum,not isModern and 0):Point(relativePoint or "TOPLEFT",x,y):OnClick(listClickFunc)
 		if buttonPos == "RIGHT" then self:Left() end
 		return self
 	end
-end
-
-function ELib.SetPoint(self,...)
-	self:ClearAllPoints()
-	self:SetPoint(...)
 end
 
 
@@ -4393,7 +4663,7 @@ do
 			local g3,g4 = RotateCoordPair(xT,yB,xC,yC,angle,aspect)
 			local g5,g6 = RotateCoordPair(xB,yT,xC,yC,angle,aspect)
 			local g7,g8 = RotateCoordPair(xB,yB,xC,yC,angle,aspect)
-		
+
 			self:SetTexCoord(g1,g2,g3,g4,g5,g6,g7,g8)
 		end
 		function GraphSetLine(self,i,fX,fY,tX,tY,texture)
@@ -4421,7 +4691,7 @@ do
 			end
 			self.lines[i]:SetSize(size,size)
 			RotateTexture(self.lines[i],(PI/180)*angle,min,min,max,max,.5,.5)
-			
+
 			self.lines[i]:SetPoint("CENTER",self,"BOTTOMLEFT",fX + (tX - fX)/2, fY + (tY - fY)/2)
 			self.lines[i]:SetTexture(texture or "Interface\\AddOns\\"..GlobalAddonName.."\\media\\line2px")
 			self.lines[i]:Show()
@@ -4445,7 +4715,7 @@ do
 		self.vlines[i]:SetPoint("BOTTOM",self,"BOTTOMLEFT",X, 0)
 		self.vlines[i]:Show()
 	end
-	
+
 	local function GraphReload_BuildNodes(self,minX,minY,maxX,maxY,axixXstep,enableNodes)
 		local nodeNow,Xnow,Ynow = 0,minX,minY
 		self.tooltipsData = {}
@@ -4467,7 +4737,7 @@ do
 				self.tooltipsData[graphs_count] = {
 					main = self.data[k],
 				}
-				
+
 				local colorR,colorG,colorB,colorA = self.data[k].r,self.data[k].g,self.data[k].b,self.data[k].a or 1
 				local lineTypeNum = 1
 				for i=k-1,1,-1 do
@@ -4487,7 +4757,7 @@ do
 					local defCount = k % #Graph_DefColors == 0 and #Graph_DefColors or k % #Graph_DefColors
 					local defLine = floor((k-1) / #Graph_DefColors) + 1
 					defLine = defLine > #Graph_LinesTextures and 1 or defLine
-					
+
 					local def = Graph_DefColors[defCount]
 					if def then
 						colorR,colorG,colorB,colorA = def.r,def.g,def.b,def.a
@@ -4495,14 +4765,14 @@ do
 						colorR,colorG,colorB,colorA = 1,1,1,.3
 					end
 					lineType = Graph_LinesTextures[defLine]
-					
+
 					self.data[k].color_count = defCount
 				end
 				local specialLine = self.data[k].specialLine
 				if specialLine then
 					lineType = Graph_LinesTextures_Special[type(specialLine)=='number' and specialLine or 1]
 				end
-				
+
 				for i=1,#self.data[k],self.step do
 					local x = self.data[k][i][1]
 					local steps = 1
@@ -4521,11 +4791,11 @@ do
 								node:SetPoint("BOTTOMLEFT",self,"BOTTOMLEFT",(Xnow - minX)/(maxX - minX)*self.width,(Ynow - minY)/(maxY - minY)*self.height)
 								node:SetSize( (x - Xnow)/(maxX - minX)*self.width , 2 )
 								node:Show()
-								
+
 								Xnow = x
 							end
 						end
-						
+
 						local y = self.data[k][i][2]
 						steps = 1
 						for j=1,(self.step-1) do
@@ -4544,7 +4814,7 @@ do
 								node:SetPoint(relativePoint,self,"BOTTOMLEFT",(Xnow - minX)/(maxX - minX)*self.width,(Ynow - minY)/(maxY - minY)*self.height + heightFix)
 								node:SetSize( 2, abs(y - Ynow)/(maxY - minY)*self.height )
 								node:Show()
-								
+
 								Ynow = y
 							end
 						end
@@ -4563,7 +4833,7 @@ do
 									GraphSetDot(self,nodeNow,X,Y)
 									lastX = X
 									lastY = Y
-									
+
 									if nodeNow > 10000 then
 										ExRT.F.dprint("Graph: Error: Too much nodes")
 										return
@@ -4572,7 +4842,7 @@ do
 							end
 							nodeNow = nodeNow + 1
 							GraphSetDot(self,nodeNow,tX,tY > self.height and self.height or tY)
-							
+
 							Xnow = x
 							Ynow = y
 						end
@@ -4580,10 +4850,10 @@ do
 							if x ~= Xnow or y ~= Ynow then
 								local fX,fY = (Xnow - minX)/(maxX - minX)*self.width,(Ynow - minY)/(maxY - minY)*self.height
 								local tX,tY = (x - minX)/(maxX - minX)*self.width,(y - minY)/(maxY - minY)*self.height
-								
+
 								tY = tY > self.height and self.height or tY
 								fY = fY > self.height and self.height or fY
-								
+
 								nodeNow = nodeNow + 1
 								GraphSetLine(self,nodeNow,fX,fY,tX,tY,lineType)
 								GraphSetColor(self,nodeNow,colorR,colorG,colorB,colorA)
@@ -4605,7 +4875,7 @@ do
 				local x = self.vertical_data[i]
 				if x >= minX and x <= maxX then
 					local X = (x - minX)/(maxX - minX)*self.width
-					
+
 					vlines_count = vlines_count + 1
 					GraphSetVLine(self,vlines_count,X)
 				end
@@ -4618,7 +4888,7 @@ do
 		if self.OnBeforeReload then
 			self:OnBeforeReload()
 		end
-	
+
 		local minX,maxX,minY,maxY = nil
 		local isZoom = self.ZoomMinX and self.ZoomMaxX
 		for k=1,#self.data do
@@ -4661,12 +4931,12 @@ do
 				end
 			end
 		end
-		
+
 		if self.isZeroMin then
 			minX = min(minX or 0,0)
 			minY = min(minY or 0,0)
 		end
-		
+
 		if minY == maxY then
 			maxY = minY + 1
 		end
@@ -4677,19 +4947,19 @@ do
 			minX = max(minX,self.ZoomMinX)
 			maxX = min(maxX,self.ZoomMaxX)
 		end
-		
+
 		if self.ZoomMaxY and maxY then
 			maxY = self.ZoomMaxY
 		end
-		
+
 		self.range = {
 			minX = minX,
 			maxX = maxX,
 			minY = minY,
-			maxY = maxY,		
+			maxY = maxY,
 		}
 		ExRT.F.dprint("Graph: minX,maxX,minY,maxY:",minX,maxX,minY,maxY)
-		
+
 		if maxY then
 			if not self.IsYIsTime then
 				self.MaxTextY:SetText(maxY < 1000 and (maxY % 1 == 0 and tostring(maxY) or format("%.1f",maxY)) or ExRT.F.shortNumber(maxY))
@@ -4702,7 +4972,7 @@ do
 			self.MaxTextY:SetText("")
 			self.MaxTextYButton:Hide()
 		end
-		
+
 		local result = GraphReload_BuildNodes(self,minX,minY,maxX,maxY,0.02)
 		if not result then
 			result = GraphReload_BuildNodes(self,minX,minY,maxX,maxY,0.04)			--Lower x step
@@ -4713,7 +4983,7 @@ do
 		if not result then
 			print("|cffff0000Exorsus Raid Tools:|r Graph probably shows incorrect")
 		end
-		
+
 		if self.ResetZoom then
 			if self.ZoomMinX and self.ZoomMaxX then
 				self.ResetZoom:Show()
@@ -4722,11 +4992,11 @@ do
 			end
 			self.ZoomMaxY = nil
 		end
-		
+
 		if self.AddedOordLines then
 			self:AddOordLines(self.AddedOordLines)
 		end
-		
+
 		if self.OnAfterReload then
 			self:OnAfterReload()
 		end
@@ -4790,15 +5060,15 @@ do
 								GameTooltip:AddLine(xText or Round(x))
 								isXadded = true
 							end
-							
+
 							GameTooltip:AddLine((main.name and main.name..": " or "")..(yText or Round(y))..(comment and " ("..comment..")" or ""),main.r or Graph_DefColors[main.color_count] and Graph_DefColors[main.color_count].r,main.g or Graph_DefColors[main.color_count] and Graph_DefColors[main.color_count].g,main.b or Graph_DefColors[main.color_count] and Graph_DefColors[main.color_count].b)
-							
+
 							lines = true
 							break
 						end
 					end
 				end
-				
+
 				if lines then
 					GameTooltip:Show()
 				else
@@ -4861,23 +5131,23 @@ do
 			return
 		end
 		self:SetScript("OnUpdate",nil)
-		
+
 		local x = GetCursorPos(self)
 		if x < self.mouseDowned then
 			x , self.mouseDowned = self.mouseDowned , x
 		end
 		local diff = abs(x - self.mouseDowned)
-		
+
 		local xLen = self.range.maxX - self.range.minX
 		local width = self:GetWidth()
 		local start = Round(self.mouseDowned / width * xLen + self.range.minX)
 		local ending = Round(x / width * xLen + self.range.minX)
-		
+
 		if self.selectingTexture then
 			self.selectingTexture:Hide()
 		end
 		self.mouseDowned = nil
-		
+
 		if self.Zoom and (not self.fixMissclickZoom or diff > 5) then
 			self:Zoom(start,ending)
 		end
@@ -4909,13 +5179,13 @@ do
 		self.selectingTexture:SetColorTexture(0, 0.65, 0.9, .7)
 		self.selectingTexture:SetHeight(self:GetHeight())
 		self.selectingTexture:Hide()
-		
+
 		self.ResetZoom = ELib.CreateButton(self,170,20,"TOPRIGHT",-2,-2,ExRT.L.BossWatcherGraphZoomReset,nil,nil,"ExRTButtonModernTemplate")
 		self.ResetZoom:SetScript("OnClick",GraphResetZoom)
 		self.ResetZoom:Hide()
-		
+
 		self.Zoom = GraphZoom
-		
+
 		self:SetScript("OnMouseDown",GraphOnMouseDown)
 		self:SetScript("OnMouseUp",GraphOnMouseUp)
 	end
@@ -4975,17 +5245,17 @@ do
 			if not lineFrame then
 				lineFrame = {}
 				self.axisYlines[i] = lineFrame
-				
+
 				lineFrame.text = ELib.CreateText(self,0,0,nil,0,0,"RIGHT","TOP",nil,10,"",nil,1,1,1)
 				lineFrame.line = self:CreateTexture(nil, "BACKGROUND",nil,-1)
 				lineFrame.line:SetSize(self.width,1)
 				lineFrame.line:SetColorTexture(0.6, 0.6, 1, 1)
-				
-				lineFrame.text:SetNewPoint("TOPRIGHT",lineFrame.line,"TOPLEFT",-2,-2)
+
+				lineFrame.text:NewPoint("TOPRIGHT",lineFrame.line,"TOPLEFT",-2,-2)
 			end
-			
+
 			local posY = diff * i / (maxY - minY) * self.height
-			
+
 			if not self.IsYIsTime then
 				lineFrame.text:SetText( floor(minY + diff * i + .5) )
 			else
@@ -4996,33 +5266,33 @@ do
 			lineFrame.text:Show()
 			lineFrame.line:Show()
 		end
-		
+
 		self.AddedOordLines = num
 	end
-	
+
 	function ELib.CreateGraph(parent,width,height,relativePoint,x,y,enableZoom)
 		local self = CreateFrame(enableZoom and "Button" or "Frame",nil,parent)
 		self:SetPoint(relativePoint or "TOPLEFT",parent, x, y)
 		self:SetSize(width,height)
-		
+
 		self.width = width
 		self.height = height
 		self.step = 1
 		self.isZeroMin = true
-		
+
 		self.axisX = self:CreateTexture(nil, "BACKGROUND")
 		self.axisX:SetSize(width,2)
 		self.axisX:SetPoint("TOPLEFT",self,"BOTTOMLEFT",0,0)
 		self.axisX:SetColorTexture(0.6, 0.6, 1, 1)
-		
+
 		self.axisY = self:CreateTexture(nil, "BACKGROUND")
 		self.axisY:SetSize(2,height)
 		self.axisY:SetPoint("BOTTOMLEFT",self,"BOTTOMLEFT",0,0)
 		self.axisY:SetColorTexture(0.6, 0.6, 1, 1)
-		
+
 		self.MaxTextY = ELib.CreateText(self,0,0,nil,0,0,"RIGHT","TOP",nil,10,"",nil,1,1,1)
-		self.MaxTextY:SetNewPoint("TOPRIGHT",self.axisY,"TOPLEFT",-2,-2)
-		
+		self.MaxTextY:NewPoint("TOPRIGHT",self.axisY,"TOPLEFT",-2,-2)
+
 		self.MaxTextYButton = CreateFrame("Button",nil,self)
 		self.MaxTextYButton:SetPoint("TOPRIGHT",self.axisY,"TOPLEFT",-2,-2)
 		self.MaxTextYButton:SetHeight(10)
@@ -5030,7 +5300,7 @@ do
 		self.MaxTextYButton:SetScript("OnEnter",GraphTextYButtonOnEnter)
 		self.MaxTextYButton:SetScript("OnLeave",GraphTextYButtonOnLeave)
 		self.MaxTextYButton:Hide()
-		
+
 		self.graph = {}
 		self.dots = {}
 		self.lines = {}
@@ -5042,13 +5312,13 @@ do
 		--self:SetScript("OnUpdate",GraphOnUpdate)
 		self:SetScript("OnEnter",GraphOnEnter)
 		self:SetScript("OnLeave",GraphOnLeave)
-		
+
 		if enableZoom then
 			GraphCreateZoom(self)
 		end
-		
+
 		self.AddOordLines = GraphAddOordLines
-			
+
 		return self
 	end
 end
@@ -5057,10 +5327,10 @@ do
 	local function MultilineEditBoxOnTextChanged(self,...)
 		local parent = self.Parent
 		local height = self:GetHeight()
-		
+
 		local prevMin,prevMax = parent.ScrollBar:GetMinMaxValues()
 		local changeToMax = parent.ScrollBar:GetValue() >= prevMax
-		
+
 		parent:SetNewHeight( max( height,parent:GetHeight() ) )
 		if changeToMax then
 			local min,max = parent.ScrollBar:GetMinMaxValues()
@@ -5070,6 +5340,10 @@ do
 			parent.OnTextChanged(self,...)
 		elseif self.OnTextChanged then
 			self:OnTextChanged(...)
+		end
+
+		if parent.SyntaxOnEdit then
+			parent:SyntaxOnEdit()
 		end
 	end
 	local function MultilineEditBoxGetTextHighlight(self)
@@ -5090,6 +5364,9 @@ do
 			font = self.EditBox:GetFont() or DEFAULT_FONT
 		end
 		self.EditBox:SetFont(font,size,...)
+		if self.EditBox.ColoredText then
+			self.EditBox.ColoredText:SetFont(font,size,...)
+		end
 		return self
 	end
 	local function Widget_OnChange(self,func)
@@ -5114,11 +5391,11 @@ do
 		else
 			self.ScrollBar:SetValue(val - delta)
 		end
-	end	
+	end
 	local function Widget_ToTop(self)
 		self.EditBox:SetCursorPosition(0)
 		return self
-	end	
+	end
 	local function Widget_SetText(self,text)
 		self.EditBox:SetText(text)
 		return self
@@ -5126,7 +5403,7 @@ do
 	local function Widget_GetTextHighlight(self)
 		return MultilineEditBoxGetTextHighlight(self.EditBox)
 	end
-	
+
 	local function MultilineEditBox_OnCursorChanged(self, x, y, width, height)
 		local parent = self.Parent
 		y = abs(y)
@@ -5138,82 +5415,234 @@ do
 			local _,scrollMax = parent.ScrollBar:GetMinMaxValues()
 			parent.ScrollBar:SetValue(min(ceil( y + height - heightNow ),scrollMax))
 		end
-		
+
 		if parent.Cursor730fix then
 			parent:Cursor730fix(height,y)
+		end
+
+		if parent.OnCursorChanged then
+			local _, obj = self:GetRegions()
+			parent.OnCursorChanged(self, obj, x, y)
+		end
+
+		if parent.OnPosText then
+			parent:OnPosText()
 		end
 	end
 	local function Widget_GetText(self)
 		return self.EditBox:GetText()
 	end
-	
-	local function Widget_Apply730fix(self)
-		if type(ExRT)=='table' and type(ExRT.clientVersion)=='number' and ExRT.clientVersion > 70300 then
-			return		--Fixed in 7.3.2
-		end
-		self.MirrorEditBox = ELib:Edit(self.C,nil,nil,1):Point("TOPLEFT",self.C,0,0):Point("TOPRIGHT",self.C,0,0)
 
-		self.MirrorEditBox:SetMultiLine(true) 
-		self.MirrorEditBox:SetBackdropColor(0, 0, 0, 0)
-		self.MirrorEditBox:SetBackdropBorderColor(0, 0, 0, 0)
-		self.MirrorEditBox:SetTextInsets(5,5,2,2)
-		
-		self.MirrorEditBox:EnableKeyboard(false)
-		self.MirrorEditBox:SetScript("OnKeyDown", function() end)
-		self.MirrorEditBox:SetAlpha(0)
+	local Widget_AddSyntax
+	do
+		local LUA_COLOR1 = "f92672" --lua
+		local LUA_COLOR2 = "e6db74" --string
+		local LUA_COLOR3 = "75715e" --comment
+		local LUA_COLOR4 = "5dffed" -- ()=.
+		local LUA_COLOR5 = "ae81ff" --numbers
 
-		for i=1,self.EditBox:GetNumRegions() do
-			local region = select(i,self.EditBox:GetRegions())
-			if region and region.GetTexture and region:GetTexture() == "Color-ffffffff" then
-				self.EditBox.cursor = region
-				local cursorHeigthHardcode = 12
-				local prevPosY,prevY = 0
-				local function UpdateVerticalPos()
-					local arg1,arg2,arg3,arg4,arg5 = region:GetPoint()
-					if not arg1 then
-						return
-					end
-					region:SetPoint(arg1,arg2,arg3,arg4,prevPosY)
-				end
-				self.Cursor730fix = function(_,cursorHeight,y)
-					local p = self.EditBox:GetCursorPosition()
-					cursorHeigthHardcode = cursorHeight
-					if prevY ~= y then
-						prevY = y
-						local textA = self.EditBox:GetText():sub(1,p)
-						local textB = self.EditBox:GetText():sub(p+1,-1):gsub("[ \n].*","")
-						self.MirrorEditBox:SetText(textA..textB)
-					else
-						UpdateVerticalPos()
-					end
-				end
-				self.MirrorEditBox:SetScript("OnSizeChanged", function(_,_,height) 
-					prevPosY = -(height - cursorHeigthHardcode - 4)
-					UpdateVerticalPos()
-				end)
-				break			
+		local lua_str = {
+			["function"] = true,
+			["end"] = true,
+			["if"] = true,
+			["elseif"] = true,
+			["else"] = true,
+			["then"] = true,
+			["false"] = true,
+			["do"] = true,
+			["and"] = true,
+			["break"] = true,
+			["for"] = true,
+			["local"] = true,
+			["nil"] = true,
+			["not"] = true,
+			["or"] = true,
+			["return"] = true,
+			["while"] = true,
+			["until"] = true,
+			["repeat"] = true,
+		}
+
+		local function LUA_ReplaceLua1(pre,str,fin)
+			if lua_str[str] then
+				return pre.."|cff"..LUA_COLOR1..str.."|r"..fin
 			end
 		end
-	end	
-	
+		local function LUA_ReplaceLua2(str,fin)
+			if lua_str[str] then
+				return "|cff"..LUA_COLOR1..str.."|r"..fin
+			end
+		end
+		local function LUA_ReplaceLua3(pre,str)
+			if lua_str[str] then
+				return pre.."|cff"..LUA_COLOR1..str.."|r"
+			end
+		end
+		local function LUA_ReplaceLua4(str)
+			if lua_str[str] then
+				return "|cff"..LUA_COLOR1..str.."|r"
+			end
+		end
+		local function LUA_ReplaceString(str)
+			str = str:gsub("|c........",""):gsub("|r","")
+			return "|cff"..LUA_COLOR2..str.."|r"
+		end
+		local function LUA_ReplaceComment(str)
+			str = str:gsub("|c........",""):gsub("|r","")
+			return "|cff"..LUA_COLOR3..str.."|r"
+		end
+
+		local function LUA_ModdedSetText(self)
+			if not self.EditBox.ColoredText:IsShown() then
+				return
+			end
+
+			local textObj = self.EditBox:GetRegions()
+
+			local left,top = textObj:GetLeft(),textObj:GetTop()
+			if not top then return end
+			local x = textObj:FindCharacterIndexAtCoordinate(left,top-self:GetVerticalScroll())
+			if not x then return end
+			local xMax = textObj:FindCharacterIndexAtCoordinate(left,top-self:GetVerticalScroll()-self:GetHeight()-40)
+
+			local res = textObj:GetParent():GetDisplayText()
+
+			local newStrPos = x
+			for i=x,1,-1 do
+				if res:sub(i,i) == "\n" then
+					newStrPos = i + 1
+					break
+				end
+			end
+
+			local text = res:sub(newStrPos or x,xMax)
+
+			text = text
+				:gsub("||c","||с")
+
+				:gsub("(%A)([%d]+)","%1|cff"..LUA_COLOR5.."%2|r")
+
+				:gsub("(%A?)(%l+)(%A)",LUA_ReplaceLua1):gsub("^(%l+)(%A)",LUA_ReplaceLua2):gsub("(%A)(%l+)$",LUA_ReplaceLua3):gsub("^(%l+)$",LUA_ReplaceLua4)
+
+				:gsub("[\\/]+","|cff"..LUA_COLOR1.."%1|r")
+
+				:gsub("([%(%)%.=,%[%]<>%+{}#]+)","|cff"..LUA_COLOR4.."%1|r")
+
+				:gsub('("[^"]*")',LUA_ReplaceString)
+
+				:gsub('(%-%-[^\n]*)',LUA_ReplaceComment)
+
+			res = res:sub(1,newStrPos):gsub("[^\n]*",self.EditBox.repFunc)..text
+
+			self.EditBox.ColoredText:SetText(res)
+		end
+
+		function Widget_AddSyntax(self,syntax)
+			syntax = syntax:lower()
+			if syntax == "lua" then
+				self.SyntaxLUA = true
+			else
+				self.SyntaxLUA = nil
+			end
+
+			local textObj = self.EditBox:GetRegions()
+			self.EditBox.textObj = textObj
+
+			local coloredText = self.EditBox:CreateFontString(nil,"ARTWORK")
+			self.EditBox.ColoredText = coloredText
+			coloredText:SetFont(textObj:GetFont())
+			coloredText:SetAllPoints(textObj)
+			coloredText:SetJustifyH("LEFT")
+			coloredText:SetJustifyV("TOP")
+			coloredText:SetMaxLines(0)
+			coloredText:SetNonSpaceWrap(false)
+			coloredText:SetWordWrap(true)
+
+
+			textObj:SetAlpha(0.2)
+
+			if syntax == "lua" then
+				self.SyntaxOnEdit = LUA_ModdedSetText
+			end
+
+			local specialCheck = self.EditBox:CreateFontString(nil,"ARTWORK")
+			specialCheck:SetFont(textObj:GetFont())
+			specialCheck:SetAllPoints(textObj)
+			specialCheck:SetJustifyH("LEFT")
+			specialCheck:SetJustifyV("TOP")
+			specialCheck:SetMaxLines(0)
+			specialCheck:SetNonSpaceWrap(false)
+			specialCheck:SetWordWrap(true)
+			specialCheck:SetAlpha(0)
+
+			self.EditBox.repFunc = function(a)
+				specialCheck:SetText(a)
+				if specialCheck:GetNumLines() > 1 then
+					return a
+				else
+					return ""
+				end
+			end
+
+			self.specialCheckObj = specialCheck
+
+			self:SetScript("OnVerticalScroll",function(self, offset)
+				LUA_ModdedSetText(self)
+			end)
+
+			return self
+		end
+	end
+
+	local function Widget_OnCursorChanged(self,func)
+		self.OnCursorChanged = func
+
+		return self
+	end
+	local function Widget_AddPosText(self)
+		self.posText = self.posText or self:CreateFontString(nil,"ARTWORK","GameFontWhite")
+		self.posText:SetJustifyH("RIGHT")
+		self.posText:SetJustifyV("BOTTOM")
+		self.posText:SetPoint("BOTTOMRIGHT",-22,2)
+		self.posText:SetFont(self.posText:GetFont(),8)
+		self.posText:SetAlpha(0.4)
+
+		self.OnPosText = function(self)
+			local cursor = self.EditBox:GetCursorPosition()
+			local text = self.EditBox:GetText():sub(1,cursor)
+			local line = 1
+			for w in string.gmatch(text, "\n") do
+				line = line + 1
+			end
+			local len = #(text:match("[^\n]*$") or "") + 1
+
+			--local hl_s,hl_e = self.EditBox:GetTextHighlight()
+			--local hl = hl_e - hl_s
+
+			--self.posText:SetText(line..":"..len..(hl > 0 and ":"..hl or ""))
+			self.posText:SetText(line..":"..len)
+		end
+
+		return self
+	end
+
 	function ELib:MultiEdit(parent)
 		local self = ELib:ScrollFrame(parent)
-		self:SetBackdropColor(0,0,0,.8)
-		
+
 		self.EditBox = ELib:Edit(self.C,nil,nil,1):Point("TOPLEFT",self.C,0,0):Point("TOPRIGHT",self.C,0,0):OnChange(MultilineEditBoxOnTextChanged)
-		
+
 		self.EditBox.Parent = self
 		self.EditBox:SetMultiLine(true) 
 		self.EditBox:SetBackdropColor(0, 0, 0, 0)
 		self.EditBox:SetBackdropBorderColor(0, 0, 0, 0)
 		self.EditBox:SetTextInsets(5,5,2,2)
 		self.EditBox:SetScript("OnCursorChanged",MultilineEditBox_OnCursorChanged)
-		
+
 		self.C:SetScript("OnMouseDown",MultilineEditBoxOnFrameClick)
 		self:SetScript("OnMouseWheel",Widget_MouseWheel)
-		
+
 		self.EditBox.GetTextHighlight = MultilineEditBoxGetTextHighlight
-		
+
 		self.Font = Widget_Font
 		self.OnChange = Widget_OnChange
 		self.Hyperlinks = Widget_Hyperlinks
@@ -5221,18 +5650,20 @@ do
 		self.SetText = Widget_SetText
 		self.GetTextHighlight = Widget_GetTextHighlight
 		self.GetText = Widget_GetText
-		self.Add730fix = Widget_Apply730fix
-		
+		self.SetSyntax = Widget_AddSyntax
+		self.OnCursorChanged = Widget_OnCursorChanged
+		self.AddPosText = Widget_AddPosText
+
 		return self
 	end
 	function ELib.CreateMultilineEditBox(parent,width,height,relativePoint,x,y)	--Old
 		return ELib:MultiEdit(parent):Size(width,height):Point(relativePoint or "TOPLEFT",x,y)
 	end
-	
+
 	local function MultilineEditBox2OnTextChanged(self,...)
 		local parent = self.Parent
 		local height = self:GetHeight()
-		
+
 		parent:SetNewHeight( max( height,parent:GetHeight() ) )
 		if parent.OnTextChanged then
 			parent.OnTextChanged(self,...)
@@ -5289,7 +5720,7 @@ end
 do
 	local function SetBorderColor(self,colorR,colorG,colorB,colorA,layerCounter)
 		layerCounter = layerCounter or ""
-		
+
 		self["border_top"..layerCounter]:SetColorTexture(colorR,colorG,colorB,colorA)
 		self["border_bottom"..layerCounter]:SetColorTexture(colorR,colorG,colorB,colorA)
 		self["border_left"..layerCounter]:SetColorTexture(colorR,colorG,colorB,colorA)
@@ -5307,9 +5738,9 @@ do
 			end
 			return
 		end
-		
+
 		local textureOwner = parent.CreateTexture and parent or parent:GetParent()
-		
+
 		local top = parent["border_top"..layerCounter] or textureOwner:CreateTexture(nil, "BORDER")
 		local bottom = parent["border_bottom"..layerCounter] or textureOwner:CreateTexture(nil, "BORDER")
 		local left = parent["border_left"..layerCounter] or textureOwner:CreateTexture(nil, "BORDER")
@@ -5319,908 +5750,35 @@ do
 		parent["border_bottom"..layerCounter] = bottom
 		parent["border_left"..layerCounter] = left
 		parent["border_right"..layerCounter] = right
-	
+
 		top:ClearAllPoints()
 		bottom:ClearAllPoints()
 		left:ClearAllPoints()
 		right:ClearAllPoints()
-		
+
 		top:SetPoint("TOPLEFT",parent,"TOPLEFT",-size-outside,size+outside)
 		top:SetPoint("BOTTOMRIGHT",parent,"TOPRIGHT",size+outside,outside)
-	
+
 		bottom:SetPoint("BOTTOMLEFT",parent,"BOTTOMLEFT",-size-outside,-size-outside)
 		bottom:SetPoint("TOPRIGHT",parent,"BOTTOMRIGHT",size+outside,-outside)
-	
+
 		left:SetPoint("TOPLEFT",parent,"TOPLEFT",-size-outside,outside)
 		left:SetPoint("BOTTOMRIGHT",parent,"BOTTOMLEFT",-outside,-outside)
-	
+
 		right:SetPoint("TOPLEFT",parent,"TOPRIGHT",outside,outside)
 		right:SetPoint("BOTTOMRIGHT",parent,"BOTTOMRIGHT",size+outside,-outside)
-	
+
 		top:SetColorTexture(colorR,colorG,colorB,colorA)
 		bottom:SetColorTexture(colorR,colorG,colorB,colorA)
 		left:SetColorTexture(colorR,colorG,colorB,colorA)
 		right:SetColorTexture(colorR,colorG,colorB,colorA)
-		
+
 		parent.SetBorderColor = SetBorderColor
-	
+
 		top:Show()
 		bottom:Show()
 		left:Show()
 		right:Show()
-	end
-end
-
-do
-	local function utf8charbytes(s, i)
-		-- argument defaults
-		i = i or 1
-	
-		-- argument checking
-		if type(s) ~= "string" then
-			error("bad argument #1 to 'utf8charbytes' (string expected, got ".. type(s).. ")")
-		end
-		if type(i) ~= "number" then
-			error("bad argument #2 to 'utf8charbytes' (number expected, got ".. type(i).. ")")
-		end
-	
-		local c = s:byte(i)
-	
-		-- determine bytes needed for character, based on RFC 3629
-		-- validate byte 1
-		if c > 0 and c <= 127 then
-			-- UTF8-1
-			return 1
-	
-		elseif c >= 194 and c <= 223 then
-			-- UTF8-2
-			local c2 = s:byte(i + 1)
-	
-			if not c2 then
-				error("UTF-8 string terminated early")
-			end
-	
-			-- validate byte 2
-			if c2 < 128 or c2 > 191 then
-				error("Invalid UTF-8 character")
-			end
-	
-			return 2
-	
-		elseif c >= 224 and c <= 239 then
-			-- UTF8-3
-			local c2 = s:byte(i + 1)
-			local c3 = s:byte(i + 2)
-	
-			if not c2 or not c3 then
-				error("UTF-8 string terminated early")
-			end
-	
-			-- validate byte 2
-			if c == 224 and (c2 < 160 or c2 > 191) then
-				error("Invalid UTF-8 character")
-			elseif c == 237 and (c2 < 128 or c2 > 159) then
-				error("Invalid UTF-8 character")
-			elseif c2 < 128 or c2 > 191 then
-				error("Invalid UTF-8 character")
-			end
-	
-			-- validate byte 3
-			if c3 < 128 or c3 > 191 then
-				error("Invalid UTF-8 character")
-			end
-	
-			return 3
-	
-		elseif c >= 240 and c <= 244 then
-			-- UTF8-4
-			local c2 = s:byte(i + 1)
-			local c3 = s:byte(i + 2)
-			local c4 = s:byte(i + 3)
-	
-			if not c2 or not c3 or not c4 then
-				error("UTF-8 string terminated early")
-			end
-	
-			-- validate byte 2
-			if c == 240 and (c2 < 144 or c2 > 191) then
-				error("Invalid UTF-8 character")
-			elseif c == 244 and (c2 < 128 or c2 > 143) then
-				error("Invalid UTF-8 character")
-			elseif c2 < 128 or c2 > 191 then
-				error("Invalid UTF-8 character")
-			end
-			
-			-- validate byte 3
-			if c3 < 128 or c3 > 191 then
-				error("Invalid UTF-8 character")
-			end
-	
-			-- validate byte 4
-			if c4 < 128 or c4 > 191 then
-				error("Invalid UTF-8 character")
-			end
-	
-			return 4
-	
-		else
-			error("Invalid UTF-8 character")
-		end
-	end
-	
-	
-	local function UpdateScroll(self)
-		local height = self:GetHeight()
-		
-		local prevMin,prevMax = self.ScrollBar:GetMinMaxValues()
-		local prevVal = self.ScrollBar:GetValue()
-		local changeToMax = prevVal >= prevMax
-	
-		local low = (self.TextLines[1]:GetTop() or 0) - (self.TextLines[#self.Lines]:GetBottom() or 0)
-		self:SetNewHeight(math.max(4+low,height))
-	
-		if not self.TextLines[self.cursorY] then
-			return
-		end
-	
-		local cursorPosBot = math.max((self.TextLines[1]:GetTop() or 0) - (self.TextLines[self.cursorY]:GetBottom() or 0) - height,0)
-		local cursorPosTop = math.max((self.TextLines[1]:GetTop() or 0) - (self.TextLines[self.cursorY]:GetTop() or 0),0)
-	
-		if (prevVal < cursorPosBot) then
-			self.ScrollBar:SetValue(cursorPosBot)
-		elseif prevVal < cursorPosBot + height then
-			--all is ok
-			self.ScrollBar:SetValue(prevVal)
-		elseif prevVal > cursorPosTop then
-			self.ScrollBar:SetValue(cursorPosTop)
-		else
-			self.ScrollBar:SetValue(prevVal)
-		end
-	end
-	
-	local COLOR1 = "f92672" --lua
-	local COLOR2 = "e6db74" --string
-	local COLOR3 = "75715e" --comment
-	local COLOR4 = "5dffed" -- ()=.
-	local COLOR5 = "ae81ff" --numbers
-
-	local lua_str = {
-		["function"] = true,
-		["end"] = true,
-		["if"] = true,
-		["elseif"] = true,
-		["else"] = true,
-		["then"] = true,
-		["false"] = true,
-		["do"] = true,
-		["and"] = true,
-		["break"] = true,
-		["for"] = true,
-		["local"] = true,
-		["nil"] = true,
-		["not"] = true,
-		["or"] = true,
-		["return"] = true,
-		["while"] = true,
-		["until"] = true,
-		["repeat"] = true,
-	}
-
-	local function ReplaceLua1(pre,str,fin)
-		if lua_str[str] then
-			return pre.."|cff"..COLOR1..str.."|r"..fin
-		end
-	end
-	local function ReplaceLua2(str,fin)
-		if lua_str[str] then
-			return "|cff"..COLOR1..str.."|r"..fin
-		end
-	end
-	local function ReplaceLua3(pre,str)
-		if lua_str[str] then
-			return pre.."|cff"..COLOR1..str.."|r"
-		end
-	end
-	local function ReplaceLua4(str)
-		if lua_str[str] then
-			return "|cff"..COLOR1..str.."|r"
-		end
-	end
-
-	local function ReplaceString(str)
-		str = str:gsub("|c........",""):gsub("|r","")
-		return "|cff"..COLOR2..str.."|r"
-	end
-
-	local function ReplaceComment(str)
-		str = str:gsub("|c........",""):gsub("|r","")
-		return "|cff"..COLOR3..str.."|r"
-	end
-	
-	local function ModdedSetText(self,text)
-		self:_SetText(text)
-	
-		if self.parent.SyntaxLUA then
-			text = text
-				:gsub("(%A)([%d]+)","%1|cff"..COLOR5.."%2|r")
-	
-				:gsub("(%A)(%l+)(%A)",ReplaceLua1):gsub("^(%l+)(%A)",ReplaceLua2):gsub("(%A)(%l+)$",ReplaceLua3):gsub("^(%l+)$",ReplaceLua4)
-	
-				:gsub("[\\/]+","|cff"..COLOR1.."%1|r")	
-		
-				:gsub("([%(%)%.=,%[%]<>%+{}#]+)","|cff"..COLOR4.."%1|r")
-	
-				:gsub('("[^"]+")',ReplaceString)
-	
-				:gsub('(%-%-.-)$',ReplaceComment)
-		end
-	
-		self.coloredLine:SetText(text)
-	end
-
-	local function Widget_SetSyntax(self,syntax)
-		syntax = syntax:lower()
-		if syntax == "lua" then
-			self.SyntaxLUA = true
-		else
-			self.SyntaxLUA = nil
-		end
-		self:UpdateText()
-
-		return self
-	end
-	
-	local function UpdateText(self)
-		for i=1,#self.Lines do
-			local tLine = self.TextLines[i]
-			if not tLine then
-				tLine = self.C:CreateFontString(nil,"ARTWORK","GameFontWhite")
-	
-				self.TextLines[i] = tLine
-	
-				tLine:SetJustifyH("LEFT")
-				tLine:SetJustifyV("TOP")
-			
-				--tLine:SetPoint("RIGHT",self.C,-2,0)
-				tLine:SetWidth((self.width or 400)-20-4)
-			
-				tLine:SetFont(GameFontWhite:GetFont(),12)
-				
-				tLine.parent = self
-
-				tLine._SetText = tLine.SetText
-				tLine.SetText = ModdedSetText
-	
-				local coloredLine = self.C:CreateFontString(nil,"ARTWORK","GameFontWhite")
-				coloredLine:SetJustifyH("LEFT")
-				coloredLine:SetJustifyV("TOP")
-				coloredLine:SetWidth((self.width or 400)-20-4)
-				coloredLine:SetFont(GameFontWhite:GetFont(),12)
-			
-				tLine.coloredLine = coloredLine
-				tLine:SetAlpha(0)
-	
-				if i==1 then
-					tLine:SetPoint("TOPLEFT",self.C,2,-2)
-				else
-					tLine:SetPoint("TOPLEFT",self.TextLines[i-1],"BOTTOMLEFT",0,-1)
-				end
-	
-				coloredLine:SetPoint("TOPLEFT",tLine)
-			end
-			
-			local text = self.Lines[i]
-			if text == "" then
-				text = " "
-			end
-	
-			tLine:SetText(text)
-		end
-		for i=#self.Lines+1,#self.TextLines do
-			self.TextLines[i]:SetText("")
-		end
-		self:UpdateScroll()
-		if self.OnChangeFunc then
-			self:OnChangeFunc()
-		end
-	end
-	
-	local function OnTextChanged(self,userInput)
-		text = self:GetText()
-		if not userInput then
-			if text ~= "" and not self.ctrl then
-				self:SetText("")
-			end
-			return
-		end
-		if self.parent:GetHighlight() and self.ctrl then
-			self:GetScript("OnKeyDown")(self,"BACKSPACE")
-		end
-		if text == "\n" then
-			self:SetText("")
-			return
-		end
-		local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-		if text:find("\n") then
-			local l = {strsplit("\n",text)}
-			local toend = lines[cursorY]:sub(cursorX)
-			lines[cursorY] = lines[cursorY]:sub(1,cursorX-1) .. l[1]
-			for i=2,#l-1 do
-				tinsert(lines,cursorY+i-1,l[i])
-			end
-			tinsert(lines,cursorY+#l-1,l[#l]..toend)
-			self.parent.cursorY = cursorY + #l
-			self.parent.cursorX = #l[#l]
-		else
-			lines[cursorY] = lines[cursorY] or ""
-			lines[cursorY] = lines[cursorY]:sub(1,cursorX-1) .. text .. lines[cursorY]:sub(cursorX)
-			self.parent.cursorX = cursorX + #text
-		end
-		self:SetText("")
-		self.parent:UpdateText()
-	end
-	
-	local function GetHighlightTexture(self,c)
-		if not self.HighlightsTextures[c] then
-			self.HighlightsTextures[c] = self:GetParent():CreateTexture()
-			self.HighlightsTextures[c]:SetColorTexture(1,1,1,.3)
-		end
-		self.HighlightsTextures[c]:ClearAllPoints()
-		self.HighlightsTextures[c]:Show()
-	
-		return self.HighlightsTextures[c]
-	end
-	
-	local function Highlight(self,sX,sY,fX,fY)
-		self.HighlightsTextures = self.HighlightsTextures or {}
-		if not sX then
-			for i=1,#self.HighlightsTextures do
-				self.HighlightsTextures[i]:Hide()
-			end
-			self.highlightSX = nil
-			self.highlightSY = nil
-			self.highlightFX = nil
-			self.highlightFY = nil
-			return
-		end
-		if sY == fY then
-			if sX > fX then
-				fX,sX = sX,fX
-			end
-		else
-			if sY > fY then
-				fX,sX = sX,fX
-				fY,sY = sY,fY
-			end
-		end
-		local c = 0
-		for i=sY+1,fY-1 do
-			c = c + 1
-			local t = GetHighlightTexture(self,c)
-			t:SetPoint("TOPLEFT",self.TextLines[i],0,0)
-			t:SetSize((self.parent.width or 400)-20-4,12)
-		end
-		if sY ~= fY then
-			c = c + 1
-		
-			local line = self.TextLines[sY]
-			if line then
-				local l,t = line:GetLeft(),line:GetTop()
-				for i=1,line:GetWidth() do
-					local x = line:FindCharacterIndexAtCoordinate(l+i,t)
-					if x == sX then
-						local t = GetHighlightTexture(self,c)
-						t:SetPoint("TOPLEFT",line,i,0)
-						t:SetSize((self.parent.width or 400)-20-4,12)
-	
-						break
-					end
-				end
-			end
-	
-			c = c + 1
-			local line = self.TextLines[fY]
-			if line then
-				local l,t = line:GetLeft(),line:GetTop()
-				for i=1,line:GetWidth() do
-					local x = line:FindCharacterIndexAtCoordinate(l+i,t)
-					if x == fX then
-						local t = GetHighlightTexture(self,c)
-						t:SetPoint("TOPLEFT",line,0,0)
-						t:SetSize(i,12)
-	
-						break
-					end
-				end
-			end
-	
-			local copyPaste = self.parent.Lines[sY]:sub(sX)
-			for i=sY+1,fY-1 do
-				copyPaste = copyPaste .. "\n" .. self.parent.Lines[i]
-			end
-			copyPaste = copyPaste .. "\n" .. self.parent.Lines[fY]:sub(1,fX-1)
-			self.copyPaste = copyPaste
-		else
-			c = c + 1
-		
-			local line = self.TextLines[sY]
-			if line then
-				local l,t = line:GetLeft(),line:GetTop()
-				local s
-				for i=1,line:GetWidth() do
-					local x = line:FindCharacterIndexAtCoordinate(l+i,t)
-					if x == sX and not s then
-						s = i
-					elseif x == fX then
-						local t = GetHighlightTexture(self,c)
-						t:SetPoint("TOPLEFT",line,s,0)
-						t:SetSize(i-s,12)
-	
-						break					
-					end
-				end
-			end
-	
-			local copyPaste = self.parent.Lines[sY]:sub(sX,fX-1)
-			self.copyPaste = copyPaste
-		end
-		self.highlightSX = sX
-		self.highlightSY = sY
-		self.highlightFX = fX
-		self.highlightFY = fY
-		for i=c+1,#self.HighlightsTextures do
-			self.HighlightsTextures[i]:Hide()
-		end
-	end
-
-	local function GetHighlight(self)
-		if self.EditBox.highlightSX then
-			local text = ""
-			if self.EditBox.highlightSY == self.EditBox.highlightFY then
-				text = self.Lines[self.EditBox.highlightSY]:sub(self.EditBox.highlightSX,self.EditBox.highlightFX)
-			else
-				text = self.Lines[self.EditBox.highlightSY]:sub(self.EditBox.highlightSX)
-				for i=self.EditBox.highlightSY+1,self.EditBox.highlightFY-1 do
-					text = text .. "\n" .. self.Lines[i]
-				end
-				text = text .. "\n" .. self.Lines[self.highlightFY]:sub(1,self.EditBox.highlightFX)
-			end
-			return text
-		end
-	end
-	
-	local function OnKeyDown(self,key)
-		if key == "BACKSPACE" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			if self.highlightSX then
-				self.parent.cursorX = self.highlightSX
-				self.parent.cursorY = self.highlightSY
-				lines[self.parent.cursorY] = lines[self.parent.cursorY]:sub(1,self.parent.cursorX-1) .. lines[self.highlightFY]:sub(self.highlightFX) 
-				for i=self.highlightFY,self.parent.cursorY+1,-1 do
-					tremove(lines,i)
-				end
-				Highlight(self)
-			elseif self.parent.cursorX == 1 then
-				if self.parent.cursorY == 1 then
-					return
-				end
-				
-				self.parent.cursorY = self.parent.cursorY - 1
-				self.parent.cursorX = math.max(#lines[self.parent.cursorY]+1,1)
-
-				lines[self.parent.cursorY] = lines[self.parent.cursorY] .. lines[self.parent.cursorY+1]
-				tremove(lines,self.parent.cursorY+1)
-			else
-				local s = lines[self.parent.cursorY]
-				local pos = 1
-				local last = 0
-			
-				while pos < self.parent.cursorX do
-					last = utf8charbytes(s, pos)
-					pos = pos + last
-				end
-		
-				lines[self.parent.cursorY] = lines[self.parent.cursorY] or ""
-				lines[self.parent.cursorY] = lines[self.parent.cursorY]:sub(1,self.parent.cursorX-last-1) .. lines[self.parent.cursorY]:sub(self.parent.cursorX)
-				self.parent.cursorX = self.parent.cursorX - last
-			end
-	
-			self.parent:UpdateText()	
-		elseif key == "DELETE" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			if self.highlightSX then
-				self.parent.cursorX = self.highlightSX
-				self.parent.cursorY = self.highlightSY
-				lines[self.parent.cursorY] = lines[self.parent.cursorY]:sub(1,self.parent.cursorX-1) .. lines[self.highlightFY]:sub(self.highlightFX) 
-				for i=self.highlightFY,self.parent.cursorY+1,-1 do
-					tremove(lines,i)
-				end
-				Highlight(self)
-			else
-				local s = lines[self.parent.cursorY]
-				local pos = 1
-				local last = 0
-				local bytes = s:len()
-			
-				while pos <= bytes and pos <= self.parent.cursorX do
-					last = utf8charbytes(s, pos)
-					pos = pos + last
-				end
-				if self.parent.cursorX <= bytes then
-					lines[self.parent.cursorY] = lines[self.parent.cursorY] or ""
-					lines[self.parent.cursorY] = lines[self.parent.cursorY]:sub(1,self.parent.cursorX-1) .. lines[self.parent.cursorY]:sub(self.parent.cursorX + last)
-				else
-					lines[self.parent.cursorY] = lines[self.parent.cursorY] or ""
-					lines[self.parent.cursorY] = lines[self.parent.cursorY] .. (lines[self.parent.cursorY+1] or "")
-					tremove(lines,self.parent.cursorY+1)
-				end
-			end
-	
-			self.parent:UpdateText()	
-		elseif key == "ENTER" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			local str = lines[self.parent.cursorY]:sub(self.parent.cursorX)
-			lines[self.parent.cursorY] = lines[self.parent.cursorY]:sub(1,self.parent.cursorX-1)
-	
-			tinsert(lines,self.parent.cursorY+1,str)
-	
-			self.parent.cursorY = self.parent.cursorY + 1
-			self.parent.cursorX = 1
-			lines[self.parent.cursorY] = lines[self.parent.cursorY] or ""
-	
-			self.parent:UpdateText()
-		elseif key == "LEFT" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			local s = lines[self.parent.cursorY]
-			local pos = 1
-			local last = 0
-			local bytes = s:len()
-		
-			while pos <= bytes and pos < self.parent.cursorX do
-				last = utf8charbytes(s, pos)
-				pos = pos + last
-			end
-	
-			local s = #lines[self.parent.cursorY]:sub(self.parent.cursorX-last,self.parent.cursorX-1)
-			self.parent.cursorX = self.parent.cursorX - s
-			if self.parent.cursorX <= 0 or s == 0 then
-				if self.parent.cursorY ~= 1 then
-					self.parent.cursorY = math.max(self.parent.cursorY - 1,1)
-					self.parent.cursorX = math.max(#lines[self.parent.cursorY]+1,1)
-				end
-			end
-	
-			Highlight(self)
-		elseif key == "RIGHT" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			local s = lines[self.parent.cursorY]
-			local pos = 1
-			local last = 0
-			local bytes = s:len()
-		
-			while pos <= bytes and pos <= self.parent.cursorX do
-				last = utf8charbytes(s, pos)
-				pos = pos + last
-			end
-	
-			local s = #lines[self.parent.cursorY]:sub(self.parent.cursorX,self.parent.cursorX+last-1)
-			self.parent.cursorX = self.parent.cursorX + s
-			if self.parent.cursorX > #lines[self.parent.cursorY] + 1 or s == 0 then
-				if not lines[self.parent.cursorY+1] then
-					return
-				end
-				self.parent.cursorY = cursorY + 1
-				self.parent.cursorX = 1
-			end
-	
-			Highlight(self)
-		elseif key == "UP" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			if self.parent.cursorY == 1 then
-				return
-			end
-			self.parent.cursorY = self.parent.cursorY - 1
-	
-			local s = lines[self.parent.cursorY]
-			local pos = 1
-			local last = 0
-			local last_len = 0
-			local bytes = s:len()
-		
-			while pos <= bytes and pos < self.parent.cursorX do
-				last = utf8charbytes(s, pos)
-				pos = pos + last
-			end
-			self.parent.cursorX = pos
-			self.parent.cursorX = math.min(self.parent.cursorX,#lines[self.parent.cursorY]+1)
-	
-			Highlight(self)
-		elseif key == "DOWN" then
-			local lines, cursorX, cursorY = self.parent.Lines, self.parent.cursorX, self.parent.cursorY
-			if self.parent.cursorY == #lines then
-				return
-			end
-			self.parent.cursorY = self.parent.cursorY + 1
-	
-			local s = lines[self.parent.cursorY]
-			local pos = 1
-			local last = 0
-			local last_len = 0
-			local bytes = s:len()
-		
-			while pos <= bytes and pos < self.parent.cursorX do
-				last = utf8charbytes(s, pos)
-				pos = pos + last
-			end
-			self.parent.cursorX = pos
-			self.parent.cursorX = math.min(self.parent.cursorX,#lines[self.parent.cursorY]+1)
-	
-			Highlight(self)
-		elseif key == "LCTRL" then
-			if self.copyPaste then
-				self.ctrl = true
-				self:SetText(self.copyPaste)
-				self:HighlightText()
-			end
-		end
-	end
-	  
-	
-	local function OnKeyUp(self,key)
-		if key == "LCTRL" then
-			self.ctrl = nil
-			self:SetText("")
-		end
-	end
-	
-	local function MouseToCursor(self)
-		local x,y = GetCursorPosition()
-		local s = self:GetEffectiveScale()
-		x, y = x/s, y/s
-	
-		local parent = self:GetParent()
-	
-		local hPosX,hPosY
-		for i=1,#parent.TextLines do
-			local line = parent.TextLines[i]
-			local pos,hover = line:FindCharacterIndexAtCoordinate(x,y)
-			if hover then
-				if line:GetText() == " " then
-					pos = 1
-				end
-				return pos, i
-			end
-		end
-	end
-	
-	local function OnMouseDown(self,button,...)
-		self.OldOnMouseDown(self,button,...)
-	
-		local parent = self:GetParent()
-		if parent.EditBox.LastFocus > GetTime() then
-			return
-		end
-	
-		local x,y = MouseToCursor(self)
-	
-		if x and not IsShiftKeyDown() then
-			parent.cursorY,parent.cursorX = y,x
-			parent.EditBox.blink = 0
-			Highlight(parent.EditBox)
-			self.isHighlight = true
-			self.highlightStartX = x
-			self.highlightStartY = y
-		elseif IsShiftKeyDown() and self.highlightStartX then
-			parent.cursorY,parent.cursorX = y,x
-			self.isHighlight = true
-		end
-	end
-	local function OnMouseUp(self,button)
-		if self.isHighlight then
-			self.isHighlight = nil
-			local x,y = MouseToCursor(self)
-	
-			if x then
-				local parent = self:GetParent()
-				parent.cursorY,parent.cursorX = y,x
-				parent.EditBox.blink = 0
-	
-				if x ~= self.highlightStartX or y ~= self.highlightStartY then
-					Highlight(parent.EditBox,self.highlightStartX,self.highlightStartY,x,y)
-				else
-					Highlight(parent.EditBox)
-				end
-			end
-		end
-	end
-	local function OnEditFocusGained(self)
-		self.IsFocus = true
-		self.blink = 0
-		--self.LastFocus = GetTime() + 0.1
-	end
-	local function OnEditFocusLost(self)
-		self.IsFocus = false
-	end
-	local function EditBoxOnUpdate(self,elapsed)
-		if not self.IsFocus then
-			self.Cursor:SetAlpha(0)
-			return
-		end
-		self.blink = self.blink + elapsed
-		if self.blink > 1 then
-			self.blink = self.blink % 1
-		end
-		self.Cursor:SetAlpha(self.blink >= 0.5 and 0 or 1)
-		local parent = self.parent
-		if parent.cursorX ~= self.prevX or parent.cursorY ~= self.prevY then
-			local line = self.TextLines[parent.cursorY]
-			if line then
-				local l,t = line:GetLeft(),line:GetTop()
-				local h = math.ceil(math.floor(line:GetHeight()+0.5)/12)
-				local BREAK
-				for i=0,line:GetWidth() do
-					for j=1,h do
-						local x = line:FindCharacterIndexAtCoordinate(l+i,t-(j-1)*12-2)
-						if x == parent.cursorX then
-							self.Cursor:ClearAllPoints()
-							self.Cursor:SetPoint("TOPLEFT",line,i,-(j-1)*12)
-							self.prevX = parent.cursorX
-							self.prevY = parent.cursorY
-							self.blink = 0
-							BREAK = true
-							self.parent:UpdateScroll()
-							if self.parent.OnCursorChanged then
-								self.parent:OnCursorChanged(self.Cursor, parent.cursorX, parent.cursorY)
-							end
-							parent.posText:SetText(parent.cursorY..":"..parent.cursorX)
-							break
-						end
-					end
-					if BREAK then
-						break
-					end
-				end
-			end
-		end
-		parent = self:GetParent()
-		if parent.isHighlight then
-			self.isHighlight = nil
-			local x,y = MouseToCursor(parent)
-
-			if x then
-				if x ~= parent.highlightStartX or y ~= parent.highlightStartY then
-					Highlight(self,parent.highlightStartX,parent.highlightStartY,x,y)
-				else
-					Highlight(self)
-				end
-			end
-		end
-	end
-	
-	local function Widget_SetSize(self,width,height)
-		self.width = width
-		self.height = height
-		self._Size(self,width,height)
-		for i=1,#self.TextLines do
-			self.TextLines[i]:SetWidth(width-24)
-			self.TextLines[i].coloredLine:SetWidth(width-24)
-		end
-		self:UpdateText()
-		return self
-	end
-	
-	local function Widget_GetText(self)
-		return table.concat(self.Lines,"\n")
-	end
-	local function Widget_SetText(self,text)
-		self.Lines = {strsplit("\n",text)}
-		self:UpdateText()
-	end
-	local function Widget_OnChange(self,func)
-		self.OnChangeFunc = func
-
-		return self
-	end
-	local function Widget_OnCursorChanged(self,func)
-		self.OnCursorChanged = func
-
-		return self
-	end
-	local function Widget_Highlight(self)
-		Highlight(self.EditBox,1,1,#self.Lines[#self.Lines],#self.Lines)
-	end
-
-	local function Widget_GetCursorPosition(self)
-		local lines, cursorX, cursorY = self.Lines, self.cursorX, self.cursorY
-		local pos = 0
-		for i=1,cursorY-1 do
-			pos = pos + #lines[i] + 1
-		end
-		pos = pos + cursorX
-
-		return pos
-	end
-	local function Widget_SetCursorPosition(self,x,y,scrollFromBottom)
-		self.cursorX, self.cursorY = x,y
-		if scrollFromBottom then
-			self.ScrollBar:SetValue(select(2,self.ScrollBar:GetMinMaxValues()))
-		end
-		self:UpdateScroll()
-	end
-	local function Widget_SetFocus(self)
-		self.EditBox:SetFocus()
-	end
-	local function Widget_Insert(self,text)
-		self.EditBox:Insert(text)
-	end
-		
-	
-	function ELib:MultiEdit3(parent)
-		local self = ELib:MultiEdit(parent)
-		self.cursorY = 1
-		self.cursorX = 1
-	
-		self.TextLines = {}
-		self.EditBox.TextLines = self.TextLines
-		
-		self.Lines = {""}
-	
-		self.UpdateScroll = UpdateScroll
-		self.UpdateText = UpdateText
-
-		self.posText = self:CreateFontString(nil,"ARTWORK","GameFontWhite")
-		self.posText:SetJustifyH("RIGHT")
-		self.posText:SetJustifyV("BOTTOM")
-		self.posText:SetPoint("BOTTOMRIGHT",-22,2)
-		self.posText:SetFont(self.posText:GetFont(),8)
-		self.posText:SetAlpha(0)
-	
-		self.EditBox.parent = self
-		self.EditBox:SetAlpha(0)
-		self.EditBox:EnableMouse(false)
-		
-		self.EditBox:SetScript("OnCursorChanged",nil)
-		self.EditBox:SetScript("OnTextChanged",OnTextChanged)
-	
-		self.EditBox:SetScript("OnKeyDown",OnKeyDown)
-		self.EditBox:SetScript("OnKeyUp",OnKeyUp)
-	
-		self.C.OldOnMouseDown = self.C:GetScript("OnMouseDown")
-		self.C:SetScript("OnMouseDown",OnMouseDown)
-		self.C:SetScript("OnMouseUp",OnMouseUp)
-		
-		self.EditBox.Cursor = self.C:CreateTexture(nil,"BACKGROUND")
-		self.EditBox.Cursor:SetSize(2,12)
-		self.EditBox.Cursor:SetColorTexture(1,1,1)
-		self.EditBox.Cursor:SetPoint("TOPLEFT",self.EditBox,2,-2)
-		
-		self.EditBox:SetScript("OnEditFocusGained",OnEditFocusGained)
-		self.EditBox:SetScript("OnEditFocusLost",OnEditFocusLost)
-		
-		self.EditBox.blink = 0
-		self.EditBox.LastFocus = 0
-		
-		self.EditBox:SetScript("OnUpdate",EditBoxOnUpdate)
-	
-		self._Size = self.Size
-		self.Size = Widget_SetSize
-	
-		self.SetText = Widget_SetText
-		self.GetText = Widget_GetText
-		self.OnChange = Widget_OnChange
-		self.OnCursorChanged = Widget_OnCursorChanged
-		self.Highlight = Widget_Highlight
-		self.GetHighlight = GetHighlight
-		self.SetFocus = Widget_SetFocus
-		self.Insert = Widget_Insert
-
-		self.GetCursorPosition = Widget_GetCursorPosition
-		self.SetCursorPosition = Widget_SetCursorPosition
-
-		self.SetSyntax = Widget_SetSyntax
-	
-		self:UpdateText()
-		return self
 	end
 end
 
@@ -6331,7 +5889,7 @@ do
 							media = self:CreateTexture()
 							self.media.cols[col_media_count] = media
 						end
-		
+
 						local height, heightFix = sub_d[k]/maxY*self.height, 0
 						if height < 1 then
 							height = 1
@@ -6363,7 +5921,7 @@ do
 					media = self:CreateFontString(nil,"ARTWORK","GameFontWhite")
 					self.media.textX[textX_media_count] = media
 				end
-	
+
 				media:SetPoint("TOP",self.axisX,"BOTTOMLEFT",(i-1)*per_col + per_col/2,-2)
 				local textX = self.TextX and self:TextX(i,d) or i 
 				media:SetText(textX)
@@ -6415,17 +5973,17 @@ do
 	end
 	function ELib:GraphCol(parent)
 		local self = CreateFrame("Frame",nil,parent)
-		
+
 		self.axisX = self:CreateTexture(nil, "BACKGROUND")
 		self.axisX:SetHeight(2)
 		self.axisX:SetPoint("TOPLEFT",self,"BOTTOMLEFT",10,20)
 		self.axisX:SetColorTexture(0.6, 0.6, 1, 1)
-		
+
 		self.axisY = self:CreateTexture(nil, "BACKGROUND")
 		self.axisY:SetWidth(2)
 		self.axisY:SetPoint("BOTTOMRIGHT",self,"BOTTOMLEFT",10,20-2)
 		self.axisY:SetColorTexture(0.6, 0.6, 1, 1)
-		
+
 		self.data = {}
 		self.media = {
 			cols = {},
@@ -6445,7 +6003,22 @@ do
 		self.Update = Widget_Update
 
 		self:SetScript("OnUpdate",Widget_OnUpdate)
-			
+
 		return self
 	end
+end
+
+function ELib:DecorationLine(parent,isGradient,layer,layerCounter)
+	local self = parent:CreateTexture(nil, layer or "BORDER", nil, layerCounter)
+
+	if isGradient then
+		self:SetColorTexture(1,1,1,1)
+		self:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+	else
+		self:SetColorTexture(.24,.25,.30,1)
+	end
+
+	Mod(self)
+
+	return self
 end

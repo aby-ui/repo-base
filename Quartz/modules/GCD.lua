@@ -84,7 +84,7 @@ function GCD:OnEnable()
 	self:RegisterEvent("UNIT_SPELLCAST_START","CheckGCD")
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED","CheckGCD")
 	if not gcdbar then
-		gcdbar = CreateFrame("Frame", "Quartz3GCDBar", UIParent)
+		gcdbar = CreateFrame("Frame", "Quartz3GCDBar", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		gcdbar:SetFrameStrata("HIGH")
 		gcdbar:SetScript("OnShow", OnShow)
 		gcdbar:SetScript("OnHide", OnHide)

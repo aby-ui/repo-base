@@ -1,58 +1,73 @@
---[[
-	TooltipsController.lua
-		Handle showing/hiding frame tooltips in a secure manner
---]]
+--------------------------------------------------------------------------------
+-- This manual handles securely overriding tooltips
+--------------------------------------------------------------------------------
 
 local _, Addon = ...
-local TooltipController = Addon:NewModule('Tooltips')
+local TooltipsModule = Addon:NewModule('Tooltips')
 
-function TooltipController:OnInitialize()
-	local header = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
-
-	RegisterStateDriver(header, 'combat', '[combat]1;nil')
-	header:Hide()
-
-	self.header = header
-
-	--keybound support
-	local kb = LibStub('LibKeyBound-1.0')
-
-	kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED', function()
-		self.header:SetAttribute('keybound-enabled', true)
-	end)
-
-	kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED', function ()
-		self.header:SetAttribute('keybound-enabled', false)
-	end)
+-- converts a truthy value to true/false
+local function tobool(value)
+	if value then
+		return true
+	end
+	return false
 end
 
-function TooltipController:OnEnable()
-	self:SetShowTooltips(Addon:ShowTooltips())
-	self:SetShowTooltipsInCombat(Addon:ShowCombatTooltips())
+local frame_OnEnter = [[
+	if control:GetAttribute('keybound-enabled') then
+		return true
+	end
+
+	if control:GetAttribute('tooltips-enabled') then
+		return control:GetAttribute('tooltips-enabled-combat')
+			or (not control:GetAttribute('state-combat'))
+	end
+
+	return false
+]]
+
+function TooltipsModule:OnInitialize()
+    self.header = Addon:CreateHiddenFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
+
+    RegisterStateDriver(self.header, 'combat', '[combat]1;nil')
+
+    -- keybound support
+    local kb = LibStub('LibKeyBound-1.0')
+
+    kb.RegisterCallback(
+        self,
+        'LIBKEYBOUND_ENABLED',
+        function()
+            self.header:SetAttribute('keybound-enabled', true)
+        end
+    )
+
+    kb.RegisterCallback(
+        self,
+        'LIBKEYBOUND_DISABLED',
+        function()
+            self.header:SetAttribute('keybound-enabled', false)
+        end
+    )
 end
 
-function TooltipController:Register(frame)
-	self.header:WrapScript(frame, 'OnEnter', [[
-		if control:GetAttribute('keybound-enabled') then
-			return true
-		end
-
-		if control:GetAttribute('tooltips-enabled') then
-			return control:GetAttribute('tooltips-enabled-combat') or (not control:GetAttribute('state-combat'))
-		end
-
-		return false
-	]])
+function TooltipsModule:OnEnable()
+    self:SetShowTooltips(Addon:ShowTooltips())
+    self:SetShowTooltipsInCombat(Addon:ShowCombatTooltips())
 end
 
-function TooltipController:Unregister(frame)
-	self.header:UnwrapScript(frame, 'OnEnter')
+function TooltipsModule:Register(frame)
+    self.header:WrapScript(frame, 'OnEnter', frame_OnEnter)
 end
 
-function TooltipController:SetShowTooltips(enable)
-	self.header:SetAttribute('tooltips-enabled', enable and true or false)
+function TooltipsModule:Unregister(frame)
+    self.header:UnwrapScript(frame, 'OnEnter')
 end
 
-function TooltipController:SetShowTooltipsInCombat(enable)
-	self.header:SetAttribute('tooltips-enabled-combat', enable and true or false)
+function TooltipsModule:SetShowTooltips(enable)
+    self.header:SetAttribute('tooltips-enabled', tobool(enable))
+end
+
+function TooltipsModule:SetShowTooltipsInCombat(enable)
+    self.header:SetAttribute('tooltips-enabled-combat', tobool(enable))
 end

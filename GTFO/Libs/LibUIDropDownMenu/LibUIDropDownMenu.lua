@@ -20,6 +20,8 @@ if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
 
+local betaMode = select(4, GetBuildInfo()) >= 90000;
+
 -- //////////////////////////////////////////////////////////////
 L_UIDROPDOWNMENU_MAXBUTTONS = 1;
 L_UIDROPDOWNMENU_MAXLEVELS = 2;
@@ -218,27 +220,38 @@ local function creatre_UIDropDownList(name, parent)
 	f:SetFrameStrata("DIALOG")
 	f:EnableMouse(true)
 	
-	f.Backdrop = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", f)
+	f.Backdrop = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", f, betaMode and "BackdropTemplate")
 	f.Backdrop:SetAllPoints()
-	f.Backdrop:SetBackdrop({
+	f.Backdrop.backdropInfo = {
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
 		tile = true,
 		tileSize = 32,
 		edgeSize = 32,
 		insets = { left = 11, right = 12, top = 12, bottom = 9, },
-	})
+	};
+	if not betaMode then
+		f.Backdrop:SetBackdrop(f.Backdrop.backdropInfo);
+	else
+		f.Backdrop:ApplyBackdrop();
+	end
 	
-	f.MenuBackdrop= _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f)
+	f.MenuBackdrop= _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, betaMode and "BackdropTemplate")
 	f.MenuBackdrop:SetAllPoints()
-	f.MenuBackdrop:SetBackdrop({
+	f.MenuBackdrop.backdropInfo = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 		tile = true,
 		tileSize = 16,
 		edgeSize = 16,
 		insets = { left = 5, right = 4, top = 4, bottom = 4, },
-	})
+	};
+	if not betaMode then
+		f.MenuBackdrop:SetBackdrop(f.MenuBackdrop.backdropInfo);
+	else
+		f.MenuBackdrop:ApplyBackdrop();
+	end
+	
 	f.MenuBackdrop:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
 	f.MenuBackdrop:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
 	

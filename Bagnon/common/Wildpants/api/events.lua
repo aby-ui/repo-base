@@ -27,7 +27,7 @@ function Events:OnEnable()
 	end
 
 	self:RegisterEvent('BAG_UPDATE')
-	self:RegisterEvent('BAG_UPDATE_DELAYED')
+	self:RegisterEvent('BAG_UPDATE_DELAYED', 'UpdateBags')
 	self:RegisterEvent('PLAYERBANKSLOTS_CHANGED')
 	self:RegisterMessage('CACHE_BANK_OPENED')
 	self:UpdateSize(BACKPACK_CONTAINER)
@@ -36,14 +36,6 @@ end
 
 function Events:BAG_UPDATE(event, bag)
 	self.queue[bag] = true
-end
-
-function Events:BAG_UPDATE_DELAYED()
-	self:UpdateBags()
-
-	if self.queue[BACKPACK_CONTAINER] then
-		self:UpdateContent(BACKPACK_CONTAINER)
-	end
 end
 
 function Events:PLAYERBANKSLOTS_CHANGED()
@@ -115,7 +107,6 @@ function Events:UpdateType(bag)
 	if old ~= new then
 		self.types[bag] = new
 		self:UpdateContent(bag)
-		return true
 	end
 end
 

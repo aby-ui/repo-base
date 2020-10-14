@@ -51,7 +51,7 @@
 	<Frame name="RematchWinRecordCardStatTemplate" virtual="true">
 		<Size x="200" y="30"/>
 		<Frames>
-			<EditBox parentKey="EditBox" numeric="true" autoFocus="false" justifyH="CENTER">
+			<EditBox parentKey="EditBox" numeric="true" autoFocus="false" justifyH="CENTER" inherits="RematchSolidBackdropTemplate">
 				<Size x="64" y="28"/>
 				<Anchors>
 					<Anchor point="CENTER"/>
@@ -59,12 +59,6 @@
 				<TextInsets>
 					<AbsInset left="6" right="6"/>
 				</TextInsets>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" bgFile="Interface\ChatFrame\ChatFrameBackground" tile="true">
-					<EdgeSize val="16"/>
-					<BorderColor r="0.5" g="0.5" b="0.5"/>
-					<Color r="0" g="0" b="0"/>
-					<BackgroundInsets left="3" right="3" top="3" bottom="3"/>
-				</Backdrop>
 				<FontString inherits="GameFontHighlightLarge" justifyH="CENTER"/>
 				<Scripts>
 					<OnEscapePressed>
@@ -194,15 +188,15 @@
 				</Frames>
 			</Frame>
 			<!-- this is the main visible portion that's shown even when rest is hidden -->
-			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true">
+			<Frame parentKey="Content" ignoreParentAlpha="true" useParentLevel="true" inherits="RematchBorderBackdropTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="2" y="-22"/>
 					<Anchor point="BOTTOMRIGHT" x="-4" y="25"/>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize val="16"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 				<Layers>
 					<Layer level="BACKGROUND">
 						<!-- brown background to title area -->

@@ -37,7 +37,7 @@ function Skada:GetGroupTypeAndCount()
 end
 
 do
-	popup = CreateFrame("Frame", nil, UIParent) -- Recycle the popup frame as an event handler.
+	popup = CreateFrameAby("Frame", nil, UIParent) -- Recycle the popup frame as an event handler.
 	popup:SetScript("OnEvent", function(frame, event, ...)
 		Skada[event](Skada, ...)
 	end)
@@ -2564,7 +2564,7 @@ end
 function Skada:ApplyBorder(frame, texture, color, thickness, padtop, padbottom, padleft, padright)
 	local borderbackdrop = {}
 	if not frame.borderFrame then
-		frame.borderFrame = CreateFrame("Frame", nil, frame)
+		frame.borderFrame = CreateFrameAby("Frame", nil, frame)
 		frame.borderFrame:SetFrameLevel(0)
 	end
 	frame.borderFrame:SetPoint("TOPLEFT", frame, -thickness - (padleft or 0), thickness + (padtop or 0))

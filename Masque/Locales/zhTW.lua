@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Locales\zhTW.lua
 
@@ -10,11 +10,9 @@
 	[ Notes ]
 
 	To help with translations, use the localization system on WoWAce (https://www.wowace.com/projects/masque/localization)
-	or contribute directly on GitHub (https://github.com/StormFX/Masque).
+	or contribute directly on GitHub (https://github.com/SFX-WoW/Masque).
 
 ]]
-
--- GLOBALS: GetLocale
 
 if GetLocale() ~= "zhTW" then return end
 
@@ -46,6 +44,7 @@ L["About"] = "關於"
 L["Click to load Masque's options."] = "點擊來載入Masque的選項。"
 L["Load Options"] = "載入選項"
 L["Masque's options are load on demand. Click the button below to load them."] = "Masque的選項是需求時才載入。點擊下面的按鈕來載入它。"
+L["This action will increase memory usage."] = "這個動作會增加記憶體的使用量。"
 L["This section will allow you to view information about Masque and any skins you have installed."] = "此部分允許您查看有關Masque和已安裝的任何外觀的訊息。"
 
 ----------------------------------------

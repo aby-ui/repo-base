@@ -2,6 +2,9 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local EV, G, L = T.Evie, T.Garrison, T.L
 
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
+
 local roamingParty, easyDrop = T.MissionsUI.roamingParty, T.MissionsUI.easyDrop
 local MISSION_PAGE_FRAME = GarrisonMissionFrame.MissionTab.MissionPage
 local SHIP_MISSION_PAGE = GarrisonShipyardFrame.MissionTab.MissionPage
@@ -289,7 +292,7 @@ local function GetRewardsDesc(mid)
 			elseif v.icon then
 				r = r .. " |T" .. v.icon .. ":0|t"
 			elseif v.currencyID then
-				local c = select(3, GetCurrencyInfo(v.currencyID))
+				local c = select(3, Nine.GetCurrencyInfo(v.currencyID))
 				r = r .. " |T" .. (c or "Interface/Icons/Temp") .. ":0|t"
 			elseif v.itemID then
 				r = r .. " |T" .. GetItemIcon(v.itemID) .. ":0|t"
@@ -361,7 +364,7 @@ function EV:FXUI_GARRISON_FOLLOWER_LIST_UPDATE(frame)
 			if ns then
 				b.Status:SetText(ns)
 			end
-			if fi.level == 100 then
+			if fi.level == T.FOLLOWER_LEVEL_CAP then
 				local _weaponItemID, weaponItemLevel, _armorItemID, armorItemLevel = C_Garrison.GetFollowerItems(fi.followerID)
 				local itext = ITEM_LEVEL_ABBR .. " " .. fi.iLevel
 				if weaponItemLevel < upW or armorItemLevel < upA then
@@ -756,7 +759,7 @@ do -- Mission page rewards
 					text = q .. text
 				end
 			elseif self.currencyID and self.currencyID > 0 and self.currencyQuantity then
-				text = self.currencyQuantity .. " " .. GetCurrencyLink(self.currencyID)
+				text = self.currencyQuantity .. " " .. Nine.GetCurrencyLink(self.currencyID, self.currencyQuantity)
 			elseif self.title then
 				text = q .. self.title
 			end
@@ -832,7 +835,7 @@ do -- Follower headcounts
 			elseif v.status == GARRISON_FOLLOWER_ON_MISSION then
 				nm = nm + 1
 			elseif (v.status or "") ~= "" and v.status ~= GARRISON_FOLLOWER_IN_PARTY then
-			elseif v.level == 100 and v.quality >= 4 then
+			elseif v.level == T.FOLLOWER_LEVEL_CAP and v.quality >= 4 then
 				nx = nx + 1
 			else
 				ni = ni + 1
@@ -844,7 +847,7 @@ do -- Follower headcounts
 		if nw > 0 then t = (t and t .. spacer or "") .. nw .. ico .. "255:208:0|t" end
 		if nm > 0 then t = (t and t .. spacer or "") .. nm .. ico .. "125:230:255|t" end
 		fs:SetText(t or "")
-		local _, nr = GetCurrencyInfo(824)
+		local _, nr = Nine.GetCurrencyInfo(824)
 		local low = nr and nr < 150 and 0 or 1
 		mf.Materials:SetTextColor(1, low, low)
 	end
@@ -874,7 +877,7 @@ do -- Garrison Resources in shipyard
 		end
 	end
 	local function sync()
-		local _, cur = GetCurrencyInfo(GARRISON_CURRENCY)
+		local _, cur = Nine.GetCurrencyInfo(GARRISON_CURRENCY)
 		fs:SetText(BreakUpLargeNumbers(cur or 0))
 	end
 	
@@ -901,8 +904,7 @@ do -- Reward item tooltips
 end
 do -- Ship re-fitting
 	local refit = CreateFrame("Frame", "MPShipRefitContainer") do
-		refit:SetBackdrop({edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}})
-		refit:SetBackdropBorderColor(1, 0.75, 0.25)
+		T.CreateEdge(refit, {edgeFile="Interface/Tooltips/UI-Tooltip-Border", bgFile="Interface/DialogFrame/UI-DialogBox-Background-Dark", tile=true, edgeSize=16, tileSize=16, insets={left=3,right=3,bottom=3,top=3}},  nil, 0xffffbf3f)
 		refit:SetSize(240, 90)
 		refit:EnableMouse(true)
 		local text = refit:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -1195,7 +1197,7 @@ do
 		ctlContainer.MaterialCount = t
 	end
 	local function sync()
-		ctlContainer.MaterialCount:SetText(BreakUpLargeNumbers(select(2, GetCurrencyInfo(1101)) or 0))
+		ctlContainer.MaterialCount:SetText(BreakUpLargeNumbers(select(2, Nine.GetCurrencyInfo(1101)) or 0))
 		ctlContainer:SetFrameLevel(GarrisonShipyardFrame.BorderFrame:GetFrameLevel()+1)
 		ctlContainer:SetWidth((ctlContainer.MaterialCount:GetStringWidth() or 50) + 52)
 		if ctlContainer:IsVisible() then
@@ -1210,7 +1212,7 @@ do
 		GameTooltip:SetText("!")
 		GameTooltipTextLeft1:SetText("")
 		for i=1, 2 do
-			local on, oc, oi = GetCurrencyInfo(i == 1 and 1101 or 824)
+			local on, oc, oi = Nine.GetCurrencyInfo(i == 1 and 1101 or 824)
 			GameTooltip:AddDoubleLine(("|T%s:0:0:0:0:64:64:6:58:6:58|t %s"):format(oi, on), NORMAL_FONT_COLOR_CODE .. BreakUpLargeNumbers(oc), 1,1,1)
 		end
 		local sid, name = C_Garrison.GetOwnedBuildingInfoAbbrev(98)

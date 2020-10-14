@@ -163,7 +163,7 @@ function EventFrame:QUEST_FINISHED()
     clearAutoName()
 end
 
-hooksecurefunc('AbandonQuest', clearAutoName)
+hooksecurefunc(C_QuestLog, 'AbandonQuest', clearAutoName)
 
 function EventFrame:QUEST_PROGRESS()
     local questName = GetTitleText()

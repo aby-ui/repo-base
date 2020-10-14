@@ -10,6 +10,9 @@ local typeModes = {"Types","Strong","Tough","Quality"}
 rematch:InitModule(function()
 	rematch.PetPanel = panel
 	settings = RematchSettings
+
+	panel.Top.SearchBox.Instructions:SetText(L["Search Pets"])
+
 	local typeBar = panel.Top.TypeBar
 	-- set icon and position typebar buttons
 	for i=1,10 do

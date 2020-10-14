@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\About.lua
 	* Author.: StormFX
@@ -9,8 +9,6 @@
 	'About Masque' Group/Panel
 
 ]]
-
--- GLOBALS:
 
 local _, Core = ...
 
@@ -36,9 +34,12 @@ function Setup.About(self)
 	-- @ Locales\enUS
 	local L = self.Locale
 
+	-- @ Masque
+	local CRLF = Core.CRLF
+
 	local Desc = L["Masque is a skinning engine for button-based add-ons."].." "..
-		L["You must have an add-on that supports Masque installed to use it."].."\n\n"..
-		L["For more information, please visit one of the sites listed below."].."\n"
+		L["You must have an add-on that supports Masque installed to use it."].." "..
+		L["For more information, please visit one of the sites listed below."]..CRLF
 
 	local Options = {
 		type = "group",
@@ -48,7 +49,7 @@ function Setup.About(self)
 		args = {
 			Head = {
 				type = "description",
-				name = "|cffffcc00"..L["About Masque"].."|r\n",
+				name = "|cffffcc00"..L["About Masque"].."|r"..CRLF,
 				fontSize = "medium",
 				order = 1,
 			},

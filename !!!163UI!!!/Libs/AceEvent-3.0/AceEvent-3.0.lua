@@ -99,7 +99,6 @@ local sp_events = {
     UNIT_POWER_UPDATE = true, --13044 --Gladius
     UNIT_HEAL_PREDICTION = true, --12316 --GridStatusHeals
     UNIT_POWER_FREQUENT = true,
-    UNIT_HEALTH_FREQUENT = true,
     --UNIT_HEALTH = true, --7389
     --UNIT_SPELLCAST_SUCCEEDED = true, --4550
 }

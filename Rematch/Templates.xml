@@ -1,5 +1,27 @@
 <!-- Templates.xml: common templates used across multiple modules -->
 <Ui>
+				 
+	<Frame name="RematchBorderBackdropTemplate" inherits="TooltipBorderBackdropTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="backdropBorderColor" value="REMATCH_BORDER_BACKGROUND_COLOR" type="global"/>
+		</KeyValues>
+	</Frame>
+
+	<Frame name="RematchSolidBackdropTemplate" inherits="BackdropTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="REMATCH_SOLID_BACKDROP_STYLE" type="global"/>
+			<KeyValue key="backdropColor" value="REMATCH_SOLID_BACKDROP_COLOR" type="global"/>
+			<KeyValue key="backdropBorderColor" value="REMATCH_BORDER_BACKGROUND_COLOR" type="global"/>
+		</KeyValues>
+	</Frame>
+
+	<Frame name="RematchSliderBackdropTemplate" inherits="BackdropTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="REMATCH_SLIDER_BACKDROP_STYLE" type="global"/>
+			<KeyValue key="backdropColor" value="REMATCH_SOLID_BACKDROP_COLOR" type="global"/>
+			<KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
+		</KeyValues>
+	</Frame>
 
 	<Frame name="RematchPanelTemplate" hidden="true" virtual="true">
 		<Size x="280" y="520"/>
@@ -66,7 +88,7 @@
 		<Size x="38" y="38"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus" hidden="true">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.Icon" x="1" y="-1"/>
 						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" x="-1" y="1"/>
@@ -202,15 +224,11 @@
 		</Scripts>
 	</Button>
 
-	<EditBox name="RematchInputBoxTemplate" enableMouse="true" autoFocus="false" virtual="true">
+	<EditBox name="RematchInputBoxTemplate" enableMouse="true" autoFocus="false" virtual="true" inherits="RematchBorderBackdropTemplate">
 		<Size x="0" y="24"/>
 		<TextInsets>
 			<AbsInset left="6" right="19"/>
 		</TextInsets>
-		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize val="16"/>
-			<BorderColor r="0.5" g="0.5" b="0.5"/>
-		</Backdrop>
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture>
@@ -628,12 +646,8 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="RematchComboBoxTemplate" virtual="true">
+	<Frame name="RematchComboBoxTemplate" inherits="RematchBorderBackdropTemplate" virtual="true">
 		<Size x="180" y="26"/>
-		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize val="16"/>
-			<BorderColor r="0.5" g="0.5" b="0.5"/>
-		</Backdrop>
 		<HitRectInsets>
 			<AbsInset left="-2" right="-2" top="-2" bottom="-2"/>
 		</HitRectInsets>
@@ -712,9 +726,9 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
+			<OnShow>
 				self.Text:SetPoint("TOPLEFT",24,-2)
-			</OnLoad>
+			</OnShow>
 		</Scripts>
 	</Frame>
 
@@ -1087,7 +1101,6 @@
 	<!-- these are for titlebar buttons such as close, minimize, lock, pin, etc -->
 	<Button name="RematchTitlebarButtonTemplate" virtual="true">
 		<Size x="32" y="32"/>
-		<Backdrop bgFile="Interface\Buttons\LockButton-Border"/>
 		<NormalTexture file="Interface\AddOns\Rematch\Textures\TitlebarButtons">
 			<TexCoords left="0" right="0.25" top="0" bottom="0.25"/>
 		</NormalTexture>

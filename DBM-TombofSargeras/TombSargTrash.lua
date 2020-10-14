@@ -1,9 +1,8 @@
 local mod	= DBM:NewMod("TombSargTrash", "DBM-TombofSargeras")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190417005925")
+mod:SetRevision("20200806141949")
 --mod:SetModelID(47785)
-mod:SetZone()
 mod.isTrashMod = true
 
 mod:RegisterEvents(

@@ -15,6 +15,10 @@
         </Animations>
         <Frames>
             <!-- we use a separate frame to contain the border so that it shows up over the status bars -->
+            <!--@retail@-->
+            <Frame parentKey="border" setAllPoints="true" inherits="TooltipBorderBackdropTemplate" />
+            <!--@end-retail@-->
+            <!--@non-retail@
             <Frame parentKey="border" setAllPoints="true">
                 <Backdrop edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
                     <EdgeSize val="16" />
@@ -22,6 +26,8 @@
                     <Color color="TOOLTIP_DEFAULT_COLOR" />
                 </Backdrop>
             </Frame>
+            @end-non-retail@-->
+
             <StatusBar parentKey="statusBar">
                 <Layers>
                     <Layer level="OVERLAY">

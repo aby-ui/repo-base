@@ -334,13 +334,19 @@ local OFFSET_SUFFIX_ID = 7
 local OFFSET_FLAGS = 11
 local OFFSET_CONTEXT = 12
 local OFFSET_BONUS_ID = 13
-local OFFSET_UPGRADE_ID = 14 -- Flags = 0x4
+
+local TYPE_DROP_LEVEL = 9
 
 local SocketInventoryItem   = _G.SocketInventoryItem
 local Timer                 = _G.C_Timer
 local AzeriteEmpoweredItem  = _G.C_AzeriteEmpoweredItem
 local AzeriteItem           = _G.C_AzeriteItem
 local AzeriteEssence        = _G.C_AzeriteEssence
+
+local Covenants             = _G.C_Covenants
+local Soulbinds             = _G.C_Soulbinds
+local CovenantSanctumUI     = _G.C_CovenantSanctumUI
+local WeeklyRewards         = _G.C_WeeklyRewards
 
 -- load stuff from extras.lua
 local upgradeTable        = Simulationcraft.upgradeTable
@@ -359,24 +365,33 @@ local essenceMajorSlots   = Simulationcraft.azeriteEssenceSlotsMajor
 -- coding mistakes regarding objects and namespaces.
 
 function Simulationcraft:OnInitialize()
-  --[[
   -- init databroker
-  self.db = LibStub("AceDB-3.0"):New("SimulationCraftDB", {
+  self.db = LibStub("AceDB-3.0"):New("SimulationcraftAbyUIDB", {
     profile = {
       minimap = {
         hide = false,
       },
+      frame = {
+        point = "CENTER",
+        relativeFrame = nil,
+        relativePoint = "CENTER",
+        ofsx = 0,
+        ofsy = 0,
+        width = 750,
+        height = 400,
+      },
     },
   });
+  --[[
   LibDBIcon:Register("SimulationCraft", SimcLDB, self.db.profile.minimap)
   Simulationcraft:UpdateMinimapButton()
-  --]]
 
   Simulationcraft:RegisterChatCommand('simc', 'HandleChatCommand')
+  --]]
 end
 
 function Simulationcraft:OnEnable()
-  SimulationcraftTooltip:SetOwner(_G["UIParent"],"ANCHOR_NONE")
+
 end
 
 function Simulationcraft:OnDisable()
@@ -623,8 +638,6 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
     simcItemOptions[#simcItemOptions + 1] = 'suffix=' .. itemSplit[OFFSET_SUFFIX_ID]
   end
 
-  local flags = itemSplit[OFFSET_FLAGS]
-
   local bonuses = {}
 
   for index=1, itemSplit[OFFSET_BONUS_ID] do
@@ -635,26 +648,20 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
     simcItemOptions[#simcItemOptions + 1] = 'bonus_id=' .. table.concat(bonuses, '/')
   end
 
+  -- Shadowlands looks like it changed the item string
+  -- There's now a variable list of additional data after bonus IDs, looks like some kind of type/value pairs
   local linkOffset = OFFSET_BONUS_ID + #bonuses + 1
 
-  -- Upgrade level
-  if bit.band(flags, 0x4) == 0x4 then
-    local upgradeId = itemSplit[linkOffset]
-    if upgradeTable and upgradeTable[upgradeId] ~= nil and upgradeTable[upgradeId] > 0 then
-      simcItemOptions[#simcItemOptions + 1] = 'upgrade=' .. upgradeTable[upgradeId]
+  local numPairs = itemSplit[linkOffset]
+  for index=1, numPairs do
+    local pairOffset = 1 + linkOffset + (2 * (index - 1))
+    local pairType = itemSplit[pairOffset]
+    local pairValue = itemSplit[pairOffset + 1]
+    if pairType == TYPE_DROP_LEVEL then
+      simcItemOptions[#simcItemOptions + 1] = 'drop_level=' .. pairValue
     end
-    linkOffset = linkOffset + 1
-  end
-
-  -- Some leveling quest items seem to use this, it'll include the drop level of the item
-  if bit.band(flags, 0x200) == 0x200 then
-    simcItemOptions[#simcItemOptions + 1] = 'drop_level=' .. itemSplit[linkOffset]
-    linkOffset = linkOffset + 1
-  end
-
-  -- Get item creation context. Can be used to determine unlock/availability of azerite tiers for 3rd parties
-  if itemSplit[OFFSET_CONTEXT] ~= 0 then
-    simcItemOptions[#simcItemOptions + 1] = 'context=' .. itemSplit[OFFSET_CONTEXT]
+    -- Unknown types:
+    -- 28
   end
 
   -- Azerite powers - only run in BfA client
@@ -682,7 +689,7 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
 
   local itemStr = ''
   if debugOutput then
-    itemStr = itemStr .. '# ' .. itemString .. '\n'
+    itemStr = itemStr .. '# ' .. gsub(itemLink, "\124", "\124\124") .. '\n'
   end
   itemStr = itemStr .. simcSlotNames[slotNum] .. "=" .. table.concat(simcItemOptions, ',')
 
@@ -699,7 +706,7 @@ function Simulationcraft:GetItemStrings(debugOutput)
     if itemLink then
       local itemLoc
       if ItemLocation then
-        itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)        
+        itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
       end
       items[slotNum] = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput)
 
@@ -859,12 +866,150 @@ function Simulationcraft:GetUnlockedAzeriteEssencesString()
   end
 end
 
+-- Shadowlands helpers: covenants, soulbinds, conduits
+function Simulationcraft:CovenantsAvailable()
+  if Covenants then
+    return true
+  else
+    return false
+  end
+end
+
+function Simulationcraft:GetActiveCovenantID()
+  return Covenants.GetActiveCovenantID()
+end
+function Simulationcraft:GetActiveCovenantData()
+  local activeCovenantID = Simulationcraft.GetActiveCovenantID()
+  if activeCovenantID > 0 then
+    return Covenants.GetCovenantData(Simulationcraft.GetActiveCovenantID())
+  end
+  return nil
+end
+function Simulationcraft:GetCovenantString()
+  local covenantData = Simulationcraft.GetActiveCovenantData()
+  if covenantData then
+    return 'covenant=' .. Tokenize(covenantData.name)
+  end
+  return nil
+end
+
+function sortByRow(a, b)
+  return a.row < b.row
+end
+
+function Simulationcraft:GetSoulbindString(id)
+  local soulbindStrings = {}
+  local soulbindData = Soulbinds.GetSoulbindData(id)
+  -- sort nodes by row order
+  local nodes = soulbindData.tree.nodes
+  table.sort(nodes, sortByRow)
+  for _, node in pairs(nodes) do
+    if node.state == Enum.SoulbindNodeState.Selected then
+      if node.spellID ~= 0 then
+        soulbindStrings[#soulbindStrings + 1] = node.spellID
+      elseif node.conduitID ~= 0 then
+        soulbindStrings[#soulbindStrings + 1] = node.conduitID .. ":" .. node.conduitRank
+      end
+    end
+  end
+  return "soulbind=" .. Tokenize(soulbindData.name) .. ',' .. table.concat(soulbindStrings, '/')
+end
+
+function Simulationcraft:GetMainFrame(text)
+  -- Frame code largely adapted from https://www.wowinterface.com/forums/showpost.php?p=323901&postcount=2
+  if not SimcFrame then
+    -- Main Frame
+    frameConfig = self.db.profile.frame
+    local f = CreateFrame("Frame", "SimcFrame", UIParent, "DialogBoxFrame")
+    f:ClearAllPoints()
+    -- load position from local DB
+    f:SetPoint(
+      frameConfig.point,
+      frameConfig.relativeFrame,
+      frameConfig.relativePoint,
+      frameConfig.ofsx,
+      frameConfig.ofsy
+    )
+    f:SetSize(frameConfig.width, frameConfig.height)
+    f:SetBackdrop({
+      bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+      edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight",
+      edgeSize = 16,
+      insets = { left = 8, right = 8, top = 8, bottom = 8 },
+    })
+    f:SetMovable(true)
+    f:SetClampedToScreen(true)
+    f:SetScript("OnMouseDown", function(self, button)
+      if button == "LeftButton" then
+        self:StartMoving()
+      end
+    end)
+    f:SetScript("OnMouseUp", function(self, button)
+      self:StopMovingOrSizing()
+      -- save position between sessions
+      point, relativeFrame, relativeTo, ofsx, ofsy = self:GetPoint()
+      frameConfig.point = point
+      frameConfig.relativeFrame = relativeFrame
+      frameConfig.relativePoint = relativeTo
+      frameConfig.ofsx = ofsx
+      frameConfig.ofsy = ofsy
+    end)
+
+    -- scroll frame
+    local sf = CreateFrame("ScrollFrame", "SimcScrollFrame", f, "UIPanelScrollFrameTemplate")
+    sf:SetPoint("LEFT", 16, 0)
+    sf:SetPoint("RIGHT", -32, 0)
+    sf:SetPoint("TOP", 0, -32)
+    sf:SetPoint("BOTTOM", SimcFrameButton, "TOP", 0, 0)
+
+    -- edit box
+    local eb = CreateFrame("EditBox", "SimcEditBox", SimcScrollFrame)
+    eb:SetSize(sf:GetSize())
+    eb:SetMultiLine(true)
+    eb:SetAutoFocus(true)
+    eb:SetFontObject("ChatFontNormal")
+    eb:SetScript("OnEscapePressed", function() f:Hide() end)
+    sf:SetScrollChild(eb)
+
+    -- resizing
+    f:SetResizable(true)
+    f:SetMinResize(150, 100)
+    local rb = CreateFrame("Button", "SimcResizeButton", f)
+    rb:SetPoint("BOTTOMRIGHT", -6, 7)
+    rb:SetSize(16, 16)
+
+    rb:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    rb:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    rb:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+
+    rb:SetScript("OnMouseDown", function(self, button)
+        if button == "LeftButton" then
+            f:StartSizing("BOTTOMRIGHT")
+            self:GetHighlightTexture():Hide() -- more noticeable
+        end
+    end)
+    rb:SetScript("OnMouseUp", function(self, button)
+        f:StopMovingOrSizing()
+        self:GetHighlightTexture():Show()
+        eb:SetWidth(sf:GetWidth())
+
+        -- save size between sessions
+        frameConfig.width = f:GetWidth()
+        frameConfig.height = f:GetHeight()
+    end)
+
+    SimcFrame = f
+  end
+  SimcEditBox:SetText(text)
+  SimcEditBox:HighlightText()
+  return SimcFrame
+end
 
 -- This is the workhorse function that constructs the profile
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --aby GetAddOnMetadata('Simulationcraft', 'Version')
-  local simcVersionWarning = '# Requires SimulationCraft 820-01 or newer'
+  local simcVersionWarning = '# Requires SimulationCraft 901-01 or newer'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --aby LibRealmInfo:GetRealmInfoByUnit('player')
@@ -972,6 +1117,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   simulationcraftProfile = simulationcraftProfile .. playerSpec .. '\n'
   simulationcraftProfile = simulationcraftProfile .. '\n'
 
+  -- BFA SYSTEMS
   -- gate all azerite essence stuff behind this check so addon will work in live and 8.2 PTR
   if Simulationcraft:AzeriteEssencesAvailable() then
     local essences = Simulationcraft:GetAzeriteEssencesString()
@@ -986,6 +1132,56 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     end
 
     if essences or unlockedEssences then
+      simulationcraftProfile = simulationcraftProfile .. '\n'
+    end
+  end
+
+  -- SHADOWLANDS SYSTEMS
+  -- gate covenant/soulbind code behind this check so addon will work in 8.3
+  if Simulationcraft:CovenantsAvailable() then
+    local covenantString = Simulationcraft:GetCovenantString()
+    if covenantString then
+      simulationcraftProfile = simulationcraftProfile .. covenantString .. '\n'
+
+      -- iterate over soulbinds, inactive soulbinds are commented out
+      local activeSoulbindID = Soulbinds:GetActiveSoulbindID()
+      if activeSoulbindID > 0 then
+        local covenantsData = Simulationcraft:GetActiveCovenantData().soulbindIDs
+        for _, soulbindID in pairs(covenantsData) do
+          local soulbindData = Soulbinds.GetSoulbindData(soulbindID)
+          if soulbindData.unlocked then
+            local soulbindString = Simulationcraft:GetSoulbindString(soulbindID)
+            if soulbindID == activeSoulbindID then
+              simulationcraftProfile = simulationcraftProfile .. soulbindString .. '\n'
+            else
+              simulationcraftProfile = simulationcraftProfile .. '# ' .. soulbindString .. '\n'
+            end
+          end
+        end
+      end
+
+      -- Export conduit collection
+      -- TODO: Figure out if addon needs to care about spec fields or if
+      -- there's any other deduping to do
+      local conduitsAvailable = {}
+      for _, conduitType in pairs(Enum.SoulbindConduitType) do
+        local conduits = Soulbinds.GetConduitCollection(conduitType)
+        for _, conduit in pairs(conduits) do
+          conduitsAvailable[#conduitsAvailable + 1] = conduit.conduitID .. ':' .. conduit.conduitRank
+        end
+      end
+
+      local conduitsAvailableStr = table.concat(conduitsAvailable, '/')
+      simulationcraftProfile = simulationcraftProfile .. '# conduits_available=' .. conduitsAvailableStr .. '\n'
+
+      -- Export renown level as a comment, useful to determine how much of a soulbind tree is currently usable
+      if CovenantSanctumUI then
+        local renown = CovenantSanctumUI.GetRenownLevel()
+        if renown > 0 then
+          simulationcraftProfile = simulationcraftProfile .. '# renown=' .. renown .. '\n'
+        end
+      end
+
       simulationcraftProfile = simulationcraftProfile .. '\n'
     end
   end
@@ -1014,6 +1210,28 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     end
   end
 
+  -- output weekly reward gear
+  if WeeklyRewards then
+    if WeeklyRewards:HasAvailableRewards() then
+      simulationcraftProfile = simulationcraftProfile .. '\n'
+      simulationcraftProfile = simulationcraftProfile .. '### Weekly Reward Choices\n'
+      local activities = WeeklyRewards.GetActivities()
+      for i, activityInfo in ipairs(activities) do
+        for j, rewardInfo in ipairs(activityInfo.rewards) do
+          local itemName, _, _, _, _, _, _, _, itemEquipLoc = GetItemInfo(rewardInfo.id);
+          if itemEquipLoc ~= "" then
+            local itemLink = WeeklyRewards.GetItemHyperlink(rewardInfo.itemDBID)
+            local slotNum = Simulationcraft.invTypeToSlotNum[itemEquipLoc]
+            simulationcraftProfile = simulationcraftProfile .. '#\n'
+            simulationcraftProfile = simulationcraftProfile .. '# ' .. itemName .. '\n'
+            simulationcraftProfile = simulationcraftProfile .. '# ' .. GetItemStringFromItemLink(slotNum, itemLink, nil, debugOutput) .. "\n"
+          end
+        end
+      end
+    end
+  end
+
+  -- output item links that were included in the /simc chat line
   if links and #links > 0 then
     simulationcraftProfile = simulationcraftProfile .. '\n### Linked gear\n'
     for i,v in pairs(links) do
@@ -1035,19 +1253,9 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     simcPrintError = "Error: You need to pick a spec!"
   end
 
-  -- show the appropriate frames
-  SimcCopyFrame:Show()
-  SimcCopyFrameScroll:Show()
-  SimcCopyFrameScrollText:Show()
-  SimcCopyFrameScrollText:SetText(simcPrintError or simulationcraftProfile)
-  SimcCopyFrameScrollText:HighlightText()
-  SimcCopyFrameScrollText:SetScript("OnEscapePressed", function(self)
-    SimcCopyFrame:Hide()
-  end)
-  SimcCopyFrameButton:SetScript("OnClick", function(self)
-    SimcCopyFrame:Hide()
-  end)
-end
 
+  local f = Simulationcraft:GetMainFrame(simcPrintError or simulationcraftProfile)
+  f:Show()
+end
 
 end

@@ -33,7 +33,7 @@
 		<Size x="0" y="26"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="HeaderBack" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+				<Texture parentKey="HeaderBack" file="Interface\AddOns\Rematch\Textures\backplate">
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
 						<Anchor point="BOTTOMRIGHT"/>
@@ -223,10 +223,36 @@
 	<Frame name="RematchOptionPanel" inherits="RematchPanelTemplate" hidden="true">
 		<Frames>
 
+			<Frame parentKey="Top" inherits="RematchInsetFrameTemplate">
+				<Size x="280" y="29"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPRIGHT"/>
+				</Anchors>
+				<Frames>
+					<!-- search bar at top of panel -->
+					<EditBox parentKey="SearchBox" inherits="RematchSearchBoxTemplate">
+						<Size x="0" y="24"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="4" y="-3"/>
+							<Anchor point="TOPRIGHT" x="-4" y="-3"/>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>
+								RematchOptionPanel.SearchBoxOnTextChanged(self)
+							</OnTextChanged>
+							<OnEnterPressed>
+								self:ClearFocus()
+							</OnEnterPressed>
+						</Scripts>
+					</EditBox>
+				</Frames>
+			</Frame>
+
 			<RematchAutoScrollFrame parentKey="List">
 				<Size x="280" y="503"/>
 				<Anchors>
-					<Anchor point="TOPLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Top" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
 					<Anchor point="BOTTOMRIGHT"/>
 				</Anchors>
 				<Frames>
@@ -235,37 +261,6 @@
 					</Frame>
 				</Frames>
 			</RematchAutoScrollFrame>
-
-			<!-- <Frame parentKey="List" inherits="RematchInsetFrameTemplate">
-				<Size x="280" y="503"/>
-				<Anchors>
-					<Anchor point="TOPLEFT"/>
-					<Anchor point="BOTTOMRIGHT"/>
-				</Anchors>
-				<Frames>
-					<ScrollFrame parentKey="ScrollFrame" name="RematchOptionListScrollFrame" inherits="HybridScrollFrameTemplate">
-						<Size x="248" y="503"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="4" y="-3"/>
-							<Anchor point="BOTTOMRIGHT" x="-6" y="3"/>
-						</Anchors>
-						<Frames>
-							<Slider name="RematchOptionListScrollBar" inherits="HybridScrollBarTrimTemplate" parentKey="ScrollBar">
-								<Anchors>
-									<Anchor point="TOPRIGHT" x="2" y="-14"/>
-									<Anchor point="BOTTOMRIGHT" x="2" y="13"/>
-								</Anchors>
-								<Scripts>
-									<OnLoad>
-										self.trackBG:Show()
-										self.trackBG:SetVertexColor(0, 0, 0, 0.75)
-									</OnLoad>
-								</Scripts>
-							</Slider>
-						</Frames>
-					</ScrollFrame>
-				</Frames>
-			</Frame> -->
 
 			<Frame parentKey="Growth">
 				<Size x="248" y="48"/>
@@ -324,42 +319,43 @@
 				</Scripts>
 			</Button>
 
+			<Button parentKey="CollapseAllButton" hidden="true">
+				<Scripts>
+					<OnKeyDown>
+						RematchOptionPanel.CollapseAllButtonOnKeyDown(self,key)
+					</OnKeyDown>
+				</Scripts>
+			</Button>
+
 		</Frames>
 	</Frame>
 
 	<!-- this slider widget is a child of RematchDialog for use in the custom scale dialog -->
-	<Slider parentKey="ScaleSlider" orientation="HORIZONTAL" minValue="50" maxValue="200" valuestep="5" obeyStepOnDrag="true" parent="RematchDialog" enableMouse="true" hidden="true">
+	<Slider parentKey="ScaleSlider" orientation="HORIZONTAL" minValue="50" maxValue="200" valuestep="5" obeyStepOnDrag="true" parent="RematchDialog" enableMouse="true" hidden="true" inherits="RematchSliderBackdropTemplate">
 		<Size x="220" y="17"/>
 		<HitRectInsets>
 			<AbsInset left="0" right="0" top="-10" bottom="-10"/>
 		</HitRectInsets>
-		<Backdrop bgFile="Interface\Buttons\UI-SliderBar-Background" edgeFile="Interface\Buttons\UI-SliderBar-Border" tile="true">
-			<EdgeSize val="8"/>
-			<TileSize val="8"/>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="6" bottom="6"/>
-			</BackgroundInsets>
-		</Backdrop>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString inherits="GameFontHighlightSmall" text="50%">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="3"/>
+						<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="-2"/>
 					</Anchors>
 				</FontString>
 				<FontString inherits="GameFontHighlightSmall" text="100%">
 					<Anchors>
-						<Anchor point="TOP" relativePoint="BOTTOMLEFT" x="82" y="3"/>
+						<Anchor point="TOP" relativePoint="BOTTOMLEFT" x="82" y="-2"/>
 					</Anchors>
 				</FontString>
 				<FontString inherits="GameFontHighlightSmall" text="200%">
 					<Anchors>
-						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
+						<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="-2"/>
 					</Anchors>
 				</FontString>
 				<FontString parentKey="Value" inherits="GameFontHighlightLarge">
 					<Anchors>
-						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="8"/>
+						<Anchor point="BOTTOM" relativePoint="TOP" x="0" y="6"/>
 					</Anchors>
 				</FontString>
 			</Layer>

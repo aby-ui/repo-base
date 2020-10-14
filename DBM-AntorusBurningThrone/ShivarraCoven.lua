@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1986, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(122468, 122467, 122469)--122468 Noura, 122467 Asara, 122469 Diima, 125436 Thu'raya (mythic only)
 mod:SetEncounterID(2073)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 2, 5, 6, 7, 8)
 mod:SetHotfixNoticeRev(16963)

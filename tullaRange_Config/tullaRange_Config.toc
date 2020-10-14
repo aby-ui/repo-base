@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Author: Tuller

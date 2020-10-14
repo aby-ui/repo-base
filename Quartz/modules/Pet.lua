@@ -19,8 +19,6 @@
 local Quartz3 = LibStub("AceAddon-3.0"):GetAddon("Quartz3")
 local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
-
 local MODNAME = "Pet"
 local Pet = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 

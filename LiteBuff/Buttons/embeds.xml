@@ -16,8 +16,8 @@
     <Script file="Mage\Portal.lua"/>
   	<Script file="Mage\ConjureRefreshment.lua"/>
 
-	<!--<Script file="Paladin\Seals.lua"/>-->
-	<Script file="Paladin\Blessings.lua"/>
+	<!--<Script file="Paladin\Seals.lua"/>-->wd
+	<!--<Script file="Paladin\Blessings.lua"/>-->
 	<Script file="Paladin\BeaconOfLight.lua"/>
 
 	<!--<Script file="Priest\ShadowForm.lua"/>-->

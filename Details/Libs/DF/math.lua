@@ -50,7 +50,7 @@ end
 
 --find the normalized percent of the value in the range. e.g range of 200-400 and a value of 250 result in 0.25
 function DF:GetRangePercent (minValue, maxValue, value)
-	return (value - minValue) / (maxValue - minValue)
+	return (value - minValue) / max((maxValue - minValue), SMALL_FLOAT)
 end
 
 --find the value in the range given from a normalized percent. e.g range of 200-400 and a percent of 0.8 result in 360

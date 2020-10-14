@@ -6,7 +6,7 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Translated by "
 L.TranslationBy 			= nil -- your name here, localizers!
-L.Website					= "Visit us on discord at |cFF73C2FBhttps://discord.gg/DF5mffk|r. Follow on twitter @deadlybossmods or @MysticalOS"
+L.Website					= "Visit us on discord at |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Follow on twitter @deadlybossmods or @MysticalOS"
 L.WebsiteButton				= "Website"
 
 L.OTabBosses	= "Bosses"--Deprecated and will be deleted once tabs no longer use this
@@ -16,8 +16,7 @@ L.OTabPlugins	= "Core Plugins"
 L.OTabOptions	= GAMEOPTIONS_MENU
 L.OTabAbout		= "About"
 
-L.TabCategory_Options	 	= "General Options"
-L.TabCategory_SHADOWLANDS	= EXPANSION_NAME8 or "Shadowlands"
+L.TabCategory_SHADOWLANDS	= EXPANSION_NAME8
 L.TabCategory_BFA	 		= EXPANSION_NAME7
 L.TabCategory_LEG	 		= EXPANSION_NAME6
 L.TabCategory_WOD	 		= EXPANSION_NAME5
@@ -59,7 +58,13 @@ L.Statistic_Incompletes		= "Incompletes:"--For scenarios, TODO, figure out a cle
 L.Statistic_BestKill		= "Best Victory:"
 L.Statistic_BestRank		= "Best Rank:"--Maybe not get used, not sure yet, localize anyways
 
--- Tab: General Core Options
+-- Tab: General Options
+L.TabCategory_Options	 	= "General Options"
+L.Area_BasicSetup			= "Initial DBM Setup Tips"
+L.Area_ModulesForYou		= "What DBM modules are right for you?"
+L.Area_ProfilesSetup		= "DBM Profiles usage guide"
+-- Panel: Core & GUI
+L.Core_GUI 					= "Core & GUI"
 L.General 					= "General DBM Core Options"
 L.EnableMiniMapIcon			= "Show minimap button"
 L.UseSoundChannel			= "Set audio channel used by DBM to play alert sounds"
@@ -84,7 +89,65 @@ L.Button_ResetWindowSize	= "Reset GUI window size"
 L.Editbox_WindowWidth		= "GUI window width"
 L.Editbox_WindowHeight		= "GUI window height"
 
--- Tab: Raidwarning
+-- Panel: Extra Features
+L.Panel_ExtraFeatures		= "Extra Features"
+
+L.Area_SoundAlerts			= "Sound/Flash Alert Options"
+L.LFDEnhance				= "Play ready check sound and flash application icon for role checks &amp; BG/LFG proposals in Master or Dialog audio channel (I.E. sounds work even if SFX are off and are generally louder)"
+L.WorldBossNearAlert		= "Play ready check sound and flash application icon when world bosses you are near to are pulled that you need"
+L.RLReadyCheckSound			= "When a ready check is performed, play sound through Master or Dialog audio channel and flash application icon."
+L.AFKHealthWarning			= "Play alert sound and flash application icon if you are losing health while AFK"
+L.AutoReplySound			= "Play alert sound and flash application icon when receiving DBM auto reply whisper"
+--
+L.TimerGeneral 				= "Timer Options"
+L.SKT_Enabled				= "Show record victory timer for current fight if available"
+L.ShowRespawn				= "Show boss respawn timer after a wipe"
+L.ShowQueuePop				= "Show time remaining to accept a queue pop (LFG,BG,etc)"
+--
+L.Area_AutoLogging			= "Auto Logging Options"
+L.AutologBosses				= "Automatically record dungeons/raids using blizzard combat log"
+L.AdvancedAutologBosses		= "Automatically record dungeons/raids with Transcriptor"
+L.RecordOnlyBosses			= "Only record Bosses (Excludes all trash. Use '/dbm pull' before bosses to capture pre pull pots &amp; ENCOUNTER_START)"
+L.LogOnlyNonTrivial			= "Only record non trivial content (normal or harder current content raids &amp; Mythic+ Dungeons)"
+--
+L.Area_3rdParty				= "3rd Party Addon Options"
+L.ShowBBOnCombatStart		= "Perform Big Brother buff check on combat start"
+L.BigBrotherAnnounceToRaid	= "Announce Big Brother results to raid"
+L.Area_Invite				= "Invite Options"
+L.AutoAcceptFriendInvite	= "Automatically accept group invites from friends"
+L.AutoAcceptGuildInvite		= "Automatically accept group invites from guild members"
+L.Area_Advanced				= "Advanced Options"
+L.FakeBW					= "Pretend to be BigWigs in version checks instead of DBM (Useful for guilds that force using BigWigs)"
+L.AITimer					= "Automatically generate timers for never before seen fights using DBM's built in timer AI (Useful for pulling a test boss for the very first time such as beta or PTR). Recommended to always leave this turned ON"
+
+-- Panel: Profiles
+L.Panel_Profile				= "Profiles"
+L.Area_CreateProfile		= "Profile Creation for DBM Core Options"
+L.EnterProfileName			= "Enter profile name"
+L.CreateProfile				= "Create new profile with default settings"
+L.Area_ApplyProfile			= "Set Active Profile for DBM Core Options"
+L.SelectProfileToApply		= "Select profile to apply"
+L.Area_CopyProfile			= "Copy profile for DBM Core Options"
+L.SelectProfileToCopy		= "Select profile to copy"
+L.Area_DeleteProfile		= "Remove Profile for DBM Core Options"
+L.SelectProfileToDelete		= "Select profile to delete"
+L.Area_DualProfile			= "Boss mod profile options"
+L.DualProfile				= "Enable support for different boss mod options per spec. (Managing of boss mod profiles is done from loaded boss mod stats screen)"
+
+L.Area_ModProfile			= "Copy mod settings from another char/spec or delete mod settings"
+L.ModAllReset				= "Reset all mod settings"
+L.ModAllStatReset			= "Reset all mod stats"
+L.SelectModProfileCopy		= "Copy all settings from"
+L.SelectModProfileCopySound	= "Copy just sound setting from"
+L.SelectModProfileCopyNote	= "Copy just note setting from"
+L.SelectModProfileDelete	= "Delete mod settings for"
+
+-- Tab: Alerts
+L.TabCategory_Alerts	 	= "Alerts"
+L.Area_SpecAnnounceConfig	= "Special Announce visuals and sound guide"
+L.Area_SpecAnnounceNotes	= "Special Announce Notes guide"
+L.Area_VoicePackInfo		= "Information on DBM Voice Packs"
+-- Panel: Raidwarning
 L.Tab_RaidWarning 			= "Announcements"
 L.RaidWarning_Header		= "Announce Options"
 L.RaidWarnColors 			= "Announce Colors"
@@ -100,10 +163,6 @@ L.WarningIconLeft 			= "Show icon on left side"
 L.WarningIconRight 			= "Show icon on right side"
 L.WarningIconChat 			= "Show icons in chat frame"
 L.WarningAlphabetical		= "Sort names alphabetically"
-L.Warn_FontType				= "Select font"
-L.Warn_FontStyle			= "Font flags"
-L.Warn_FontShadow			= "Shadow"
-L.Warn_FontSize				= "Font size: %d"
 L.Warn_Duration				= "Announcement duration: %0.1f sec"
 L.None						= "None"
 L.Random					= "Random"
@@ -113,7 +172,7 @@ L.MonochromeOutline			= "Monochrome outline"
 L.MonochromeThickOutline	= "Monochrome thick outline"
 L.RaidWarnSound				= "Play sound on raid announcement"
 
--- Tab: Spec Warn Frame
+-- Panel: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "Special Announcements"
 L.Area_SpecWarn				= "Special Announce Options"
 L.SpecWarn_ClassColor		= "Use class coloring for special announcements"
@@ -122,17 +181,12 @@ L.SWarnNameInNote			= "Use Type 5 options if a special announce note contains yo
 L.SpecialWarningIcon		= "Show icons on special announcements"
 L.ShortTextSpellname		= "Use shorter spellname text (when available)"
 L.SpecWarn_FlashFrameRepeat	= "Flash %d times(s)"
-L.SpecWarn_Font				= "Font used for special announcements"
-L.SpecWarn_FontSize			= "Font size: %d"
-L.SpecWarn_FontColor		= "Font color"
-L.SpecWarn_FontType			= "Select font"
 L.SpecWarn_Flash			= "Flash screen"
 L.SpecWarn_FlashRepeat		= "Repeat Flash"
 L.SpecWarn_FlashColor		= "Flash color %d"
 L.SpecWarn_FlashDur			= "Flash duration: %0.1f"
 L.SpecWarn_FlashAlpha		= "Flash alpha: %0.1f"
 L.SpecWarn_DemoButton		= "Show example"
-L.SpecWarn_MoveMe			= "Set position"
 L.SpecWarn_ResetMe			= "Reset to defaults"
 L.SpecialWarnSoundOption	= "Set default sound"
 L.SpecialWarnHeader1		= "Type 1: Set options for normal priority announcements affecting you or your actions"
@@ -141,7 +195,7 @@ L.SpecialWarnHeader3		= "Type 3: Set options for HIGH priority announcements"
 L.SpecialWarnHeader4		= "Type 4: Set options for HIGH priority run away special announcements"
 L.SpecialWarnHeader5		= "Type 5: Set options for announcements with notes containing your player name"
 
--- Tab: Generalwarnings
+-- Panel: Generalwarnings
 L.Tab_GeneralMessages 		= "Chatframe Messages"
 L.CoreMessages				= "Core Message Options"
 L.ShowPizzaMessage 			= "Show timer broadcast messages in chat frame"
@@ -159,16 +213,58 @@ L.RoleSpecAlert				= "Show alert message on raid join when your loot spec does n
 L.CheckGear					= "Show gear alert message during pull (when your equipped ilvl is much lower than bag ilvl (40+) or main weapon is not equipped)"
 L.WorldBossAlert			= "Show alert message when world bosses might have been engaged on your realm by guildies or friends (inaccurate if sender is CRZed)"
 
--- Tab: Barsetup
-L.BarSetup					= "Timers"
+L.Area_BugAlerts			= "Bug Reporting Alert Options"
+L.BadTimerAlert				= "Show chat message when DBM detects a bad timer with at least 1 second of incorrectness"
+L.BadIDAlert				= "Show chat message when DBM detects an invalid spell or journal ID in use"
+
+-- Panel: Spoken Alerts Frame
+L.Panel_SpokenAlerts		= "Spoken Alerts"
+L.Area_VoiceSelection		= "Voice Selections"
+L.CountdownVoice			= "Set primary voice for count sounds"
+L.CountdownVoice2			= "Set secondary voice for count sounds"
+L.CountdownVoice3			= "Set tertiary voice for count sounds"
+L.VoicePackChoice			= "Set voice pack for spoken alerts"
+L.Area_CountdownOptions		= "Countdown Options"
+L.Area_VoicePackOptions		= "Voice Pack Options (3rd party voice packs)"
+L.SpecWarn_NoSoundsWVoice	= "Filter special announce sounds for announcements that also have spoken alerts..."
+L.SWFNever					= "Never"
+L.SWFDefaultOnly			= "when special announcements use default sounds. (Allows custom sounds to still play)"
+L.SWFAll					= "when special announcements use any sound"
+L.SpecWarn_AlwaysVoice		= "Always play all spoken alerts (Even if Special Announce disabled. Useful for Raid Leader, not recommended otherwise)"
+--TODO, maybe add URLS right to GUI panel on where to acquire 3rd party voice packs?
+L.Area_GetVEM				= "Get VEM Voice Pack"
+L.VEMDownload				= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/dbm-voicepack-vem|r"
+L.Area_BrowseOtherVP		= "Browse other voice packs on curse"
+L.BrowseOtherVPs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+voice|r"
+L.Area_BrowseOtherCT		= "Browse countdown packs on curse"
+L.BrowseOtherCTs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
+
+-- Panel: Event Sounds
+L.Panel_EventSounds			= "Event Sounds"
+L.Area_SoundSelection		= "Sound Selections (scroll selection menus with mouse wheel)"
+L.EventVictorySound			= "Set sound played for encounter victory"
+L.EventWipeSound			= "Set sound played for encounter wipe"
+L.EventEngageSound			= "Set sound played for encounter engage"
+L.EventDungeonMusic			= "Set music played inside dungeons/raids"
+L.EventEngageMusic			= "Set music played during encounters"
+L.Area_EventSoundsExtras	= "Event Sound Options"
+L.EventMusicCombined		= "Allow all music choices in dungeon and encounter selections (changing this option requires UIReload to reflect changes)"
+L.Area_EventSoundsFilters	= "Event Sound Filter Conditions"
+L.EventFilterDungMythicMusic= "Do not play dungeon music on Mythic/Mythic+ difficulty"
+L.EventFilterMythicMusic	= "Do not play encounter music on Mythic/Mythic+ difficulty"
+
+-- Tab: Timers
+L.TabCategory_Timers		= "Timers"
+L.Area_ColorBytype			= "Color bars by type guide"
+-- Panel: Color by Type
+L.Panel_ColorByType	 		= "Color by Type"
+L.AreaTitle_BarColors		= "Bar Colors by timer type"
 L.BarTexture				= "Bar texture"
 L.BarStyle					= "Bar behavior"
 L.BarDBM					= "Classic (existing small bar slides to Enlarged anchor)"
 L.BarSimple					= "Simple (small bar disappears and new large bar created)"
 L.BarStartColor				= "Start color"
 L.BarEndColor 				= "End color"
-L.Bar_Font					= "Font used for bars"
-L.Bar_FontSize				= "Font size: %d"
 L.Bar_Height				= "Bar Height: %d"
 L.Slider_BarOffSetX 		= "Offset X: %d"
 L.Slider_BarOffSetY 		= "Offset Y: %d"
@@ -206,8 +302,9 @@ L.CVoiceOne					= "Count Voice 1"
 L.CVoiceTwo					= "Count Voice 2"
 L.CVoiceThree				= "Count Voice 3"
 
--- Tab: Timers
-L.AreaTitle_BarColors		= "Bar Colors by timer type"
+-- Panel: Timers
+L.Panel_Appearance	 		= "Bar Appearance"
+L.Panel_Behavior	 		= "Bar Behavior"
 L.AreaTitle_BarSetup		= "Bar Appearance Options"
 L.AreaTitle_Behavior		= "Bar Behavior Options"
 L.AreaTitle_BarSetupSmall 	= "Small Bar Options"
@@ -233,44 +330,12 @@ L.KeepBar					= "Keep timer active until ability cast"
 L.KeepBar2					= "(when supported by mod)"
 L.FadeBar					= "Fade timers for out of range abilities"
 
--- Tab: Spoken Alerts Frame
-L.Panel_SpokenAlerts		= "Spoken Alerts"
-L.Area_VoiceSelection		= "Voice Selections"
-L.CountdownVoice			= "Set primary voice for count sounds"
-L.CountdownVoice2			= "Set secondary voice for count sounds"
-L.CountdownVoice3			= "Set tertiary voice for count sounds"
-L.VoicePackChoice			= "Set voice pack for spoken alerts"
-L.Area_CountdownOptions		= "Countdown Options"
-L.Area_VoicePackOptions		= "Voice Pack Options (3rd party voice packs)"
-L.SpecWarn_NoSoundsWVoice	= "Filter special announce sounds for announcements that also have spoken alerts..."
-L.SWFNever					= "Never"
-L.SWFDefaultOnly			= "when special announcements use default sounds. (Allows custom sounds to still play)"
-L.SWFAll					= "when special announcements use any sound"
-L.SpecWarn_AlwaysVoice		= "Always play all spoken alerts (Even if Special Announce disabled. Useful for Raid Leader, not recommended otherwise)"
---TODO, maybe add URLS right to GUI panel on where to acquire 3rd party voice packs?
-L.Area_GetVEM				= "Get VEM Voice Pack"
-L.VEMDownload				= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/dbm-voicepack-vem|r"
-L.Area_BrowseOtherVP		= "Browse other voice packs on curse"
-L.BrowseOtherVPs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+voice|r"
-L.Area_BrowseOtherCT		= "Browse countdown packs on curse"
-L.BrowseOtherCTs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
-
--- Tab: Event Sounds
-L.Panel_EventSounds			= "Event Sounds"
-L.Area_SoundSelection		= "Sound Selections (scroll selection menus with mouse wheel)"
-L.EventVictorySound			= "Set sound played for encounter victory"
-L.EventWipeSound			= "Set sound played for encounter wipe"
-L.EventEngageSound			= "Set sound played for encounter engage"
-L.EventDungeonMusic			= "Set music played inside dungeons/raids"
-L.EventEngageMusic			= "Set music played during encounters"
-L.Area_EventSoundsExtras	= "Event Sound Options"
-L.EventMusicCombined		= "Allow all music choices in dungeon and encounter selections (changing this option requires UIReload to reflect changes)"
-L.Area_EventSoundsFilters	= "Event Sound Filter Conditions"
-L.EventFilterDungMythicMusic= "Do not play dungeon music on Mythic/Mythic+ difficulty"
-L.EventFilterMythicMusic	= "Do not play encounter music on Mythic/Mythic+ difficulty"
-
--- Tab: Global Filter
-L.Panel_SpamFilter			= "Global Disables & Filters"
+-- Tab: Global Disables & Filters
+L.TabCategory_Filters	 	= "Global Disables & Filters"
+L.Area_DBMFiltersSetup		= "DBM Filters guide"
+L.Area_BlizzFiltersSetup	= "Blizzard Filters guide"
+-- Panel: DBM Features
+L.Panel_SpamFilter			= "DBM Features"
 L.Area_SpamFilter_Anounces	= "Announce Global Disable & Filter Options"
 L.SpamBlockNoShowAnnounce	= "Do not show text or play sound for ANY general announcements"
 L.SpamBlockNoShowTgtAnnounce= "Do not show text or play sound for TARGET general announcements (above filter overrides this one)"
@@ -296,7 +361,6 @@ L.Area_Restore				= "DBM Restore Options (Whether DBM restores previous user sta
 L.SpamBlockNoIconRestore	= "Do not save icon states and restore them on combat end"
 L.SpamBlockNoRangeRestore	= "Do not restore range frame to previous state when mods call 'hide'"
 
--- Tab: Spam Filter
 L.Area_SpamFilter			= "Spam Filter Options"
 L.DontShowFarWarnings		= "Do not show announcements/timers for events that are far away"
 L.StripServerName			= "Strip realm name from announcements, timers, range check, and infoframe"
@@ -321,8 +385,8 @@ L.DontShowPTCountdownText	= "Do not show Pull countdown text"
 L.DontPlayPTCountdown		= "Do not play Pull/Break/Combat/Custom Timer countdown audio at all"
 L.PT_Threshold				= "Do not play Pull/Break/Combat/Custom Timer countdown audio above: %d"
 
--- Tab: Blizzard Disable & Hide
-L.Panel_HideBlizzard		= "Blizzard Disable & Hide"
+-- Panel: Blizzard Features
+L.Panel_HideBlizzard		= "Blizzard Features"
 L.Area_HideBlizzard			= "Blizzard Disable & Hide Options"
 L.HideBossEmoteFrame		= "Hide raid boss emote frame during boss fights"
 L.HideWatchFrame			= "Hide watch (objectives) frame during boss fights if no achievements are being tracked and if not in a Mythic+"
@@ -337,8 +401,8 @@ L.AfterFirst				= "In instance, after each movie has played once"
 L.CombatOnly				= "Disable in combat (any)"
 L.RaidCombat				= "Disable in combat (bosses only)"
 
--- Tab: Privacy
-L.Tab_Privacy 				= "Privacy"
+-- Panel: Privacy
+L.Tab_Privacy 				= "Privacy Controls"
 L.Area_WhisperMessages		= "Whisper Message Options"
 L.AutoRespond 				= "Auto-respond to whispers while fighting"
 L.WhisperStats 				= "Include kill/wipe stats in whisper responses"
@@ -347,58 +411,30 @@ L.Area_SyncMessages			= "Addon Sync Options"
 L.DisableGuildStatus 		= "Disable progression messages from being synced to guild. If group leader, this disables it for all DBM users in your group"
 L.EnableWBSharing 			= "Share when you pull/defeat a world boss with your guild and your battle.net friends that are on same realm."
 
--- Tab: Extra Features
-L.Panel_ExtraFeatures		= "Extra Features"
+-- Tab: Frames & Integrations
+L.TabCategory_Frames		= "Frames & Integrations"
+L.Area_NamelateInfo			= "DBM Nameplate Auras Info"
+-- Panel: InfoFrame
+L.Panel_InfoFrame			= "Infoframe"
 
-L.Area_SoundAlerts			= "Sound/Flash Alert Options"
-L.LFDEnhance				= "Play ready check sound and flash application icon for role checks &amp; BG/LFG proposals in Master or Dialog audio channel (I.E. sounds work even if SFX are off and are generally louder)"
-L.WorldBossNearAlert		= "Play ready check sound and flash application icon when world bosses you are near to are pulled that you need"
-L.RLReadyCheckSound			= "When a ready check is performed, play sound through Master or Dialog audio channel and flash application icon."
-L.AFKHealthWarning			= "Play alert sound and flash application icon if you are losing health while AFK"
-L.AutoReplySound			= "Play alert sound and flash application icon when receiving DBM auto reply whisper"
---
-L.TimerGeneral 				= "Timer Options"
-L.SKT_Enabled				= "Show record victory timer for current fight if available"
-L.ShowRespawn				= "Show boss respawn timer after a wipe"
-L.ShowQueuePop				= "Show time remaining to accept a queue pop (LFG,BG,etc)"
---
-L.Area_AutoLogging			= "Auto Logging Options"
-L.AutologBosses				= "Automatically record dungeons/raids using blizzard combat log"
-L.AdvancedAutologBosses		= "Automatically record dungeons/raids with Transcriptor"
-L.RecordOnlyBosses			= "Only record Bosses (Excludes all trash. Use '/dbm pull' before bosses to capture pre pull pots &amp; ENCOUNTER_START)"
-L.LogOnlyNonTrivial			= "Only record non trivial content (normal or harder current content raids & Mythic+ Dungeons)"
---
-L.Area_3rdParty				= "3rd Party Addon Options"
-L.ShowBBOnCombatStart		= "Perform Big Brother buff check on combat start"
-L.BigBrotherAnnounceToRaid	= "Announce Big Brother results to raid"
-L.Area_Invite				= "Invite Options"
-L.AutoAcceptFriendInvite	= "Automatically accept group invites from friends"
-L.AutoAcceptGuildInvite		= "Automatically accept group invites from guild members"
-L.Area_Advanced				= "Advanced Options"
-L.FakeBW					= "Pretend to be BigWigs in version checks instead of DBM (Useful for guilds that force using BigWigs)"
-L.AITimer					= "Automatically generate timers for never before seen fights using DBM's built in timer AI (Useful for pulling a test boss for the very first time such as beta or PTR). Recommended to always leave this turned ON"
+-- Panel: Range
+L.Panel_Range				= "Rangeframe"
 
--- Tab: Profiles
-L.Panel_Profile				= "Profiles"
-L.Area_CreateProfile		= "Profile Creation for DBM Core Options"
-L.EnterProfileName			= "Enter profile name"
-L.CreateProfile				= "Create new profile with default settings"
-L.Area_ApplyProfile			= "Set Active Profile for DBM Core Options"
-L.SelectProfileToApply		= "Select profile to apply"
-L.Area_CopyProfile			= "Copy profile for DBM Core Options"
-L.SelectProfileToCopy		= "Select profile to copy"
-L.Area_DeleteProfile		= "Remove Profile for DBM Core Options"
-L.SelectProfileToDelete		= "Select profile to delete"
-L.Area_DualProfile			= "Boss mod profile options"
-L.DualProfile				= "Enable support for different boss mod options per spec. (Managing of boss mod profiles is done from loaded boss mod stats screen)"
-
-L.Area_ModProfile			= "Copy mod settings from another char/spec or delete mod settings"
-L.ModAllReset				= "Reset all mod settings"
-L.ModAllStatReset			= "Reset all mod stats"
-L.SelectModProfileCopy		= "Copy all settings from"
-L.SelectModProfileCopySound	= "Copy just sound setting from"
-L.SelectModProfileCopyNote	= "Copy just note setting from"
-L.SelectModProfileDelete	= "Delete mod settings for"
+-- Panel: Nameplate
+L.Panel_Nameplates			= "Nameplates"
+L.UseNameplateHandoff		= "Hand off nameplate aura requests to supported nameplate addons (KuiNameplates, Threat Plates, Plater) instead of handling internally. This is recommended option as it allows more advanted features and configuration to be done via nameplate addon"
+L.Area_NPStyle				= "Style (Note: Only configures style when DBM is handling nameplates.)"
+L.NPAuraSize				= "Aura Pixel size (squared): %d"
 
 -- Misc
+L.Area_General				= "General"
+L.Area_Position				= "Position"
+L.Area_Style				= "Style"
+
+L.FontSize					= "Font size: %d"
+L.FontStyle					= "Font flags"
+L.FontColor					= "Font color"
+L.FontShadow				= "Font Shadow"
+L.FontType					= "Select font"
+
 L.FontHeight	= 16

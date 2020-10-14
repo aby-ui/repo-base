@@ -1,12 +1,11 @@
 local mod	= DBM:NewMod(1693, "DBM-Party-Legion", 9, 777)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20190625143517")
+mod.statTypes = "normal,heroic,mythic"
+
+mod:SetRevision("20200912135206")
 mod:SetCreatureID(101995)
 mod:SetEncounterID(1848)
-mod:SetZone()
-
-mod.imaspecialsnowflake = true
 
 mod:RegisterCombat("combat")
 

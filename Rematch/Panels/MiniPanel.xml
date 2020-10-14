@@ -306,9 +306,9 @@
 				</Scripts>
 			</Frame>				
 			<!-- this is the ability flyout, reparented to the ability it's swapping -->
-			<Frame parentKey="Flyout" enableMouse="true" hidden="true">
+			<Frame parentKey="Flyout" enableMouse="true" hidden="true" inherits="RematchSolidBackdropTemplate">
 				<Size x="63" y="36"/>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<BackgroundInsets>
 						<AbsInset left="3" right="3" top="3" bottom="3"/>
 					</BackgroundInsets>
@@ -316,7 +316,7 @@
 					<TileSize val="32"/>
 					<Color r="0" g="0" b="0"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 				<Layers>
 					<Layer level="ARTWORK">
 						<FontString parentArray="Numbers" inherits="GameFontHighlightSmall" text="1">

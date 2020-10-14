@@ -55,16 +55,10 @@ function EncounterBar:InitPlayerPowerBarAlt()
 	end
 end
 
-function EncounterBar:CreateMenu()
-	local menu = Dominos:NewMenu(self.id)
-
+function EncounterBar:OnCreateMenu(menu)
 	self:AddLayoutPanel(menu)
 	self:AddAdvancedPanel(menu)
 	menu:AddFadingPanel()
-
-	self.menu = menu
-
-	return menu
 end
 
 function EncounterBar:AddLayoutPanel(menu)

@@ -353,7 +353,11 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								Rematch:ToggleMenu("NotableNPCs","TOPLEFT",self,"TOPRIGHT")
+								if RematchSettings.UseOldTargetMenu then
+									Rematch:ToggleMenu("TargetMenu","TOPLEFT",self,"TOPRIGHT")
+								else
+									Rematch.LoadoutPanel.TargetPanel:Toggle()
+								end
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -370,44 +374,6 @@
 						<NormalFont style="GameFontNormal"/>
 						<HighlightFont style="GameFontHighlight"/>
 					</Button>
-					<!-- <PlayerModel parentKey="Model">
-						<Size x="48" y="0"/>
-						<Anchors>
-							<Anchor point="TOPLEFT" x="10" y="-32"/>
-							<Anchor point="BOTTOMLEFT" x="10" y="8"/>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								Model_OnLoad(self)
-								self:SetRotation(MODELFRAME_DEFAULT_ROTATION)
-								self:SetPortraitZoom(0.75)
-								self:SetPosition(0,0,-0.075)
-							</OnLoad>
-							<OnEvent function="Model_OnEvent"/>
-						</Scripts>
-					</PlayerModel> -->
-					<!-- border of model is separate so we don't need to make model a sub-frame -->
-					<!-- <Frame parentKey="ModelBorder" useParentLevel="true">
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-							<EdgeSize val="12"/>
-							<BorderColor r="0.5" g="0.5" b="0.5"/>
-						</Backdrop>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.Model" x="-5" y="5"/>
-							<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Model" x="5" y="-5"/>
-						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND" textureSubLevel="2">
-								<Texture file="Interface\Destiny\EndScreenBG">
-									<Anchors>
-										<Anchor point="TOPLEFT" x="3" y="-3"/>
-										<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
-									</Anchors>
-									<Color r="0.25" g="0.25" b="0.25"/>
-								</Texture>
-							</Layer>
-						</Layers>
-					</Frame> -->
 					<Button parentArray="Pets" parentKey="Pet1" inherits="RematchSlotTemplate,RematchPetClicks"/>
 					<Button parentArray="Pets" parentKey="Pet2" inherits="RematchSlotTemplate,RematchPetClicks">
 						<Anchors>
@@ -424,17 +390,8 @@
 			</Frame> <!-- Target -->
 
 			<!-- this is the ability flyout, reparented to the ability it's swapping -->
-			<Frame parentKey="Flyout" enableMouse="true" hidden="true">
+			<Frame parentKey="Flyout" enableMouse="true" hidden="true" inherits="RematchBorderBackdropTemplate">
 				<Size x="44" y="80"/>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-					<BackgroundInsets>
-						<AbsInset left="3" right="3" top="3" bottom="3"/>
-					</BackgroundInsets>
-					<EdgeSize val="16"/>
-					<TileSize val="32"/>
-					<Color r="0" g="0" b="0"/>
-					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
 				<Frames>
 					<CheckButton parentArray="Abilities" inherits="RematchFlyoutAbilityTemplate">
 						<Anchors>

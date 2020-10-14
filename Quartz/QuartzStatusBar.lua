@@ -30,7 +30,7 @@ QuartzStatusBar.__rotatesTexture = 1
 local DrawBar, UpdateBarValue
 
 function Quartz3:CreateStatusBar(name, parent)
-	local bar = setmetatable(CreateFrame("Frame", name, parent), MetaTable)
+	local bar = setmetatable(CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate" or nil), MetaTable)
 	bar.__texture = bar:CreateTexture(nil, "ARTWORK")
 	bar.__texture:SetTexture([[Interface\TargetingFrame\UI-StatusBar]])
 

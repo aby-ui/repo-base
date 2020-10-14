@@ -111,7 +111,7 @@ function wMarker:print(self, msg)
 	DEFAULT_CHAT_FRAME:AddMessage(string.format("%s:%s",wM,msg))
 end
 wMarker.other = {}
-local main = CreateFrame("Frame", "wMarkerMain", UIParent)
+local main = CreateFrameAby("Frame", "wMarkerMain", UIParent)
 main:SetBackdrop(borderlessBackdrop)
 main:SetBackdropColor(0,0,0,0)
 main:EnableMouse(true)
@@ -121,7 +121,7 @@ main:SetPoint("CENTER", UIParent, "CENTER")
 main:SetClampedToScreen(false)
 wMarker.main = main
 local function createMover(width,height,parent,pt,relPt)
-	local f = CreateFrame("Frame",nil,parent.main)
+	local f = CreateFrameAby("Frame",nil,parent.main)
 	f:SetBackdrop(defaultBackdrop)
 	f:SetBackdropColor(0.1,0.1,0.1,0.7)
 	f:EnableMouse(true)
@@ -146,7 +146,7 @@ wMarker.options = CreateFrame("Frame", "wMarkerOptions", UIParent)
 wMarker.options.name = "wMarker"
 InterfaceOptions_AddCategory(wMarker.options)
 
-wMarker.iconFrame = CreateFrame("Frame", "wMarker_iconFrame", wMarker.main)
+wMarker.iconFrame = CreateFrameAby("Frame", "wMarker_iconFrame", wMarker.main)
 wMarker.iconFrame:SetBackdrop(defaultBackdrop)
 wMarker.iconFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 wMarker.iconFrame:EnableMouse(true)
@@ -185,7 +185,7 @@ iconNew("Star",1)
 -- wMarker Control Frame
 -------------------------------------------------------
 
-local controlFrame = CreateFrame("Frame", "wMarker_controlFrame", wMarker.main)
+local controlFrame = CreateFrameAby("Frame", "wMarker_controlFrame", wMarker.main)
 controlFrame:SetBackdrop(defaultBackdrop)
 controlFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 controlFrame:EnableMouse(true)
@@ -219,7 +219,7 @@ wMarker.other.readyCheck = readyCheck
 -------------------------------------------------------
 
 wFlares = {}
-wFmain = CreateFrame("Frame", "wFlaresMain", UIParent)
+wFmain = CreateFrameAby("Frame", "wFlaresMain", UIParent)
 wFmain:SetBackdrop(defaultBackdrop)
 wFmain:SetBackdropColor(0.1,0.1,0.1,0.7)
 wFmain:EnableMouse(true)

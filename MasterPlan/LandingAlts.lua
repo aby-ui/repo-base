@@ -1,6 +1,8 @@
 local _, T = ...
 if T.Mark ~= 50 then return end
 local L, G, E, api = T.L, T.Garrison, T.Evie, T.MissionsUI
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
 
 local ui, core, handle = CreateFrame("Frame", "MPLandingPageAlts", GarrisonLandingPage) do
 	ui:Hide()

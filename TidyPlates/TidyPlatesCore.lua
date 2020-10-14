@@ -89,10 +89,11 @@ local OnNewNameplate
 local ForEachPlate
 
 -- UpdateReferences
+local empty_extended = {} --TODO aby9 防止报错
 local function UpdateReferences(plate)
 	nameplate = plate
 	extended = plate.extended
-    if(not extended)then return end
+    if(not extended)then extended = empty_extended return end
 
 	carrier = plate.carrier
 	bars = extended.bars
@@ -1003,13 +1004,6 @@ do
 	function CoreEvents:PLAYER_TARGET_CHANGED()
 		HasTarget = UnitExists("target") == true;
 		SetUpdateAll()
-	end
-
-	function CoreEvents:UNIT_HEALTH_FREQUENT(...)
-		local unitid = ...
-		local plate = PlatesByUnit[unitid]
-
-		if plate then OnHealthUpdate(plate) end
 	end
 
 	function CoreEvents:UNIT_HEALTH(...)

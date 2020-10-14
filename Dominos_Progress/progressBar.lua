@@ -40,43 +40,41 @@ function ProgressBar:New(id, modes, ...)
 	return bar
 end
 
-function ProgressBar:Create(...)
-	local bar = ProgressBar.proto.Create(self, ...)
+function ProgressBar:OnCreate(...)
+	ProgressBar.proto.OnCreate(self, ...)
 
-	bar:SetFrameStrata('BACKGROUND')
+	self:SetFrameStrata('BACKGROUND')
 
-	bar.colors = {
+	self.colors = {
 		base = {0, 0, 0},
 		bonus = {0, 0, 0, 0},
 		bg = {0, 0, 0, 1}
 	}
 
-	local bg = bar:CreateTexture(nil, 'BACKGROUND')
+	local bg = self:CreateTexture(nil, 'BACKGROUND')
 	bg:SetColorTexture(0, 0, 0, 1)
-	bg:SetAllPoints(bar)
-	bar.bg = bg
+	bg:SetAllPoints(self)
+	self.bg = bg
 
-	local click = CreateFrame('Button', nil, bar)
-	click:SetScript('OnClick', function(_, ...) bar:OnClick(...) end)
-	click:SetScript('OnEnter', function(_, ...) bar:OnEnter(...) end)
-	click:SetScript('OnLeave', function(_, ...) bar:OnLeave(...) end)
+	local click = CreateFrame('Button', nil, self)
+	click:SetScript('OnClick', function(_, ...) self:OnClick(...) end)
+	click:SetScript('OnEnter', function(_, ...) self:OnEnter(...) end)
+	click:SetScript('OnLeave', function(_, ...) self:OnLeave(...) end)
 	click:RegisterForClicks('anyUp')
-	click:SetAllPoints(bar)
+	click:SetAllPoints(self)
 	click:SetFrameStrata('LOW')
 
 	local text = click:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightSmall')
 	text:SetPoint('CENTER')
-	bar.text = text
-
-	return bar
+	self.text = text
 end
 
-function ProgressBar:Free(...)
+function ProgressBar:OnRelease(...)
+	ProgressBar.proto.OnRelease(self, ...)
+
 	self.value = nil
 	self.max = nil
 	self.bonus = nil
-
-	return ProgressBar.proto.Free(self, ...)
 end
 
 function ProgressBar:GetDefaults()
@@ -659,7 +657,7 @@ end
 do
 	local segmentPool = CreateFramePool('Frame')
 
-	function ProgressBar:GetButton(index)
+	function ProgressBar:AcquireButton()
 		local segment = segmentPool:Acquire()
 
 		if not segment.value then
@@ -696,24 +694,22 @@ do
 
 		return segment
 	end
+
+	function ProgressBar:ReleaseButton(button)
+		segmentPool:Release(button)
+	end
 end
 
 
 --[[ menu ]]--
 
 do
-	function ProgressBar:CreateMenu()
-		local menu = Dominos:NewMenu(self.id)
-
+	function ProgressBar:OnCreateMenu(menu)
 		self:AddLayoutPanel(menu)
 		self:AddTextPanel(menu)
 		self:AddTexturePanel(menu)
 		self:AddFontPanel(menu)
 		menu:AddFadingPanel()
-
-		self.menu = menu
-
-		return menu
 	end
 
 	function ProgressBar:AddLayoutPanel(menu)

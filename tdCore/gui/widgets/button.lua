@@ -1,11 +1,11 @@
 
 local GUI = tdCore('GUI')
 
-local Button = GUI:NewModule('Button', CreateFrame('Button'), 'UIObject')
+local Button = GUI:NewModule('Button', CreateFrameAby('Button'), 'UIObject')
 Button:SetVerticalArgs(40, -8, 0)
 
 function Button:New(parent)
-    local obj = self:Bind(CreateFrame('Button', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Button', nil, parent))
     if parent then
         obj:SetSize(100, 22)
 

@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
@@ -10,23 +11,23 @@ local function createOptions(parentData, data, index, subIndex)
     __title = L["Border %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subborder")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subborder")) then
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subborder")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subborder")) then
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __duplicate = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subtext")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subborder")) then
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __delete = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subborder")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subborder")) then
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     border_visible = {
@@ -64,7 +65,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Border Size"],
       order = 6,
-      softMin = 1,
+      min = 1,
       softMax = 64,
       bigStep = 1,
     },
@@ -73,7 +74,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Border Anchor"],
       order = 7,
-      values = WeakAuras.aurabar_anchor_areas,
+      values = OptionsPrivate.Private.aurabar_anchor_areas,
       hidden = function() return parentData.regionType ~= "aurabar" end
     }
   }

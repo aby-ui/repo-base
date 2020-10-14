@@ -207,7 +207,7 @@ function templates:CreateScrollFrame(name, parent, scrollRespondingFrame, create
 	frame.scrollBarFrame = _G[name.."ScrollBar"]
 	frame.scrollBarFrame:Hide()
 
-	local scrollBarBk = CreateFrame("Frame", nil, frame)
+	local scrollBarBk = CreateFrameAby("Frame", nil, frame)
 	scrollBarBk:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	scrollBarBk:SetBackdropBorderColor(0.75, 0.75, 0.75, 0.75)
 	scrollBarBk:SetPoint("TOPLEFT", _G[name.."ScrollBarScrollUpButton"], "TOPLEFT", -4, 4)
@@ -243,7 +243,7 @@ function templates:CreateScrollFrame(name, parent, scrollRespondingFrame, create
 	return frame, scrollChild
 end
 
-local editToolltip = CreateFrame("Button", "CompactRaidOptionPageTooltip", UIParent)
+local editToolltip = CreateFrameAby("Button", "CompactRaidOptionPageTooltip", UIParent)
 templates.editToolltip = editToolltip
 
 editToolltip:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }, })
@@ -453,7 +453,7 @@ local function SwatchFunc(restore)
 end
 
 function templates:CreateColorSwatch(name, parent)
-	local colorSwatch = CreateFrame("Button", name, parent)
+	local colorSwatch = CreateFrameAby("Button", name, parent)
 	colorSwatch[SWATCH_UNIQUE] = 1
 	colorSwatch:SetWidth(16)
 	colorSwatch:SetHeight(16)

@@ -39,7 +39,7 @@ end
 -- Create module
 local addon, L = XLoot:NewModule("Frame")
 -- Prepare frame/global
-local XLootFrame = CreateFrame("Frame", "XLootFrame", UIParent)
+local XLootFrame = CreateFrame("Frame", "XLootFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 XLootFrame.addon = addon
 -- Grab locals
 local mouse_focus, opt
@@ -265,7 +265,7 @@ function addon:OnOptionsShow(panel)
 	-- Create preview frame
 	local frame = XLootFakeFrame
 	if not frame then
-		frame = CreateFrame('Frame', 'XLootFakeFrame', panel)
+		frame = CreateFrame('Frame', 'XLootFakeFrame', panel, BackdropTemplateMixin and "BackdropTemplate")
 		frame.fake = true
 		frame.opt = XLootFrame.opt
 		self:BuildLootFrame(frame)
@@ -721,7 +721,7 @@ do
 	function BuildRow(frame, i)
 		local frame_name, opt, fake = frame:GetName()..'Button'..i, frame.opt, frame.fake
 		-- Create frames
-		local row = CreateFrame('Button', not fake and frame_name or nil, frame)
+		local row = CreateFrame('Button', not fake and frame_name or nil, frame, BackdropTemplateMixin and "BackdropTemplate")
 		local item = CreateFrame('Frame', nil, row)
 		local button_auto = CreateFrame('Button', nil, row)
 		local tex = item:CreateTexture(not fake and frame_name..'IconTexture' or nil, 'BACKGROUND')
@@ -1011,7 +1011,7 @@ do
 
 		
 		-- Use a secondary frame for backdrop/border to allow the "frame" opacity to be changed
-		local overlay = CreateFrame('Frame', nil, f)
+		local overlay = CreateFrame('Frame', nil, f, BackdropTemplateMixin and "BackdropTemplate")
 		overlay:SetFrameLevel(5)
 		overlay:SetAllPoints()
 		f:Skin(overlay)

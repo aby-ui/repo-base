@@ -40,7 +40,7 @@ end
 function Config:GetDefaults()
 	return {
 		profile = {
-			one_bar = false,
+			one_bar = true,
 			skip_inactive_modes = false,
 			colors = {
 				xp = {0.58, 0, 0.55, 1},

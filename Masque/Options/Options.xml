@@ -2,9 +2,6 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Core.lua"/>
 	<Script file="LDB.lua"/>
-
-	<Include file="Widgets\Widgets.xml"/>
-
 	<Script file="About.lua"/>
 	<Script file="Info.lua"/>
 	<Script file="Skins.lua"/>

@@ -3,6 +3,9 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v9.0.0
+* Initial Shadowlands/Patch 9.0 support. Please report bugs to https://github.com/ascott18/TellMeWhen/issues. Additional support for Shadowlands features (soulbinds, conduits, etc) will be added closer to the expansion's launch.
+
 ## v8.7.5
 * #1787 - Added Vulpera and Mechagnomes to Unit Race condition.
 * #1784 - Let OmniCC detect charge-type cooldowns 

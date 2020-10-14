@@ -72,7 +72,7 @@
 			instance:EsconderScrollBar (true) --> hida a scrollbar
 		end
 		_detalhes:ResetaGump (instance)
-		instance:AtualizaGumpPrincipal (true)
+		instance:RefreshMainWindow (true)
 		
 		--> get the plugin name
 		
@@ -241,14 +241,14 @@
 				BNSendWhisper (towho, msg)
 			
 			elseif (type (towho) == "string") then
-				local BnetFriends = BNGetNumFriends()
-				for i = 1, BnetFriends do 
-					local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, broadcastTime, canSoR = BNGetFriendInfo (i)
-					if ((presenceName == towho or toonName == towho) and isOnline) then
-						BNSendWhisper (presenceID, msg)
-						break
-					end
-				end
+				--local BnetFriends = BNGetNumFriends()
+				--for i = 1, BnetFriends do 
+				--	local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, broadcastTime, canSoR = BNGetFriendInfo (i)
+				--	if ((presenceName == towho or toonName == towho) and isOnline) then
+				--		BNSendWhisper (presenceID, msg)
+				--		break
+				--	end
+				--end
 			end
 		
 		elseif (channel == "CHANNEL") then

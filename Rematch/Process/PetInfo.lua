@@ -85,11 +85,13 @@
       numTeams: number of teams the pet belongs to (pet and species only) (integer)
       sourceID: the source index (1=Drop, 2=Quest, 3=Vendor, etc) of the pet (integer)
       moveset: the exact moveset of the pet ("123,456,etc") (string)
-	  speciesAt25: whether the pet has a version at level 25 (bool)
-	  hasNotes: whether the pet has notes
-	  notes: the text of the pet's notes
-	  isLeveling: whether the pet is in the queue
-     isSummoned: whether the pet is currently summoned (companion pet)
+      speciesAt25: whether the pet has a version at level 25 (bool)
+      hasNotes: whether the pet has notes (bool)
+      notes: the text of the pet's notes (string)
+      isLeveling: whether the pet is in the queue (bool)
+      isSummoned: whether the pet is currently summoned (bool)
+      expansionID: the numeric index of the expansion the pet is from: 0=classic, 1=BC, 2=WotLK, etc. (integer)
+      expansionName: the name of the expansion the pet is from (string)
       
    How it works:
 
@@ -144,6 +146,7 @@ local apiByStat = {
    owned="Valid", battleOwner="Battle", battleIndex="Battle", isSlotted="Slotted",
    inTeams="Teams", numTeams="Teams", sourceID="Source", moveset="Moveset", speciesAt25="SpeciesAt25",
    notes="Notes", hasNotes="Notes", isLeveling="IsLeveling", isSummoned="IsSummoned", 
+   expansionID="Expansion", expansionName="Expansion",
 }
 
 -- indexed by petInfo table reference, this will contain reused tables like fetchedAPI
@@ -154,6 +157,48 @@ local hiddenTables = {}
 local breedSource -- addon that's providing breed data: "BattlePetBreedID", "PetTracker_Breeds" or "LibPetBreedInfo-1.0"
 local breedLib -- for LibPetBreedInfo-1.0 only
 local breedNames = {nil,nil,"B/B","P/P","S/S","H/H","H/P","P/S","H/S","P/B","S/B","H/B"}
+
+-- in general, when a pet is added alongside others in an expansion they all clump to a range of speciesIDs
+-- (with some outliers listed below). this is a list of expansions and the range of speciesIDs in that
+-- epxansion: [expansionID] = {firstSpeciesID,lastSpeciesID}
+local expansionRanges = {
+   [0] = {39,128}, -- Classic
+   [1] = {130,186}, -- Burning Crusade
+   [2] = {187,258}, -- Wrath of the Lich King
+   [3] = {259,343}, -- Cataclysm
+   [4] = {346,1365}, -- Mists of Pandaria
+   [5] = {1384,1693}, -- Warlords of Draenor
+   [6] = {1699,2163}, -- Legion
+   [7] = {2165,2872}, -- Battle for Azeroth
+   [8] = {2878,9999}, -- Shadowlands (next expansion, get max speciesID for Shadowlands and change 9999 to that)
+}
+
+-- the majority of pets fall into a range for each expansion above, except for some outliers. these are the
+-- species ID and the expansionID they belong to
+local expansionOutliers = {
+   [1563] = 0, -- Bronze Whelpling
+   [191] = 1, -- Clockwork Rocket Bot
+   [1073] = 1, -- Terky
+   [1351] = 2, -- Macabre Marionette
+   [220] = 3, -- Withers
+   [255] = 3, -- Celestial Dragon
+   [231] = 4, -- Jade Tiger
+   [1386] = 4, -- Dread Hatchling
+   [1943] = 4, -- Noblegarden Bunny
+   [115] = 5, -- Land Shark
+   [1725] = 5, -- Grumpling
+   [1730] = 5, -- Spectral Spinner
+   [1740] = 5, -- Ghost Maggot
+   [1741] = 5, -- Ghastly Rat
+   [1761] = 5, -- Echo Batling
+   [1764] = 5, -- Energized Manafiend
+   [1765] = 5, -- Empyreal Manafiend
+   [1766] = 5, -- Empowered Manafiend
+   [1828] = 5, -- Baby Winston
+   [2143] = 7, -- Tottle
+   [2157] = 7, -- Dart
+   [2798] = 8, -- Plagueborn Slime
+}
 
 -- getIDType takes a petID and returns what type of id it is
 -- possible: "pet" "species" "leveling" "ignored" "link" "battle" "random" or "unknown"
@@ -202,6 +247,9 @@ local function fillInfoBySpeciesID(self,speciesID)
    self.speciesName = speciesName
    self.name = speciesName
    self.speciesID = speciesID
+   if not self.icon then
+      self.icon = "Interface\\Icons\\INV_Pet_BattlePetTraining"
+   end
 end
 
 -- indexed by API group ("Info", "Stats", etc) these are the functions that are called
@@ -481,6 +529,27 @@ local queryAPIs = {
    IsSummoned = function(self)
 		self.isSummoned = C_PetJournal.GetSummonedPetGUID() == self.petID
    end,
+   Expansion = function(self)
+      local speciesID = self.speciesID
+      local expansionID
+      -- first check if this is one of the species that doesn't fit into an expansion's range
+      if expansionOutliers[speciesID] then
+         expansionID = expansionOutliers[speciesID]
+         self.expansionID = expansionID
+         self.expansionName = _G["EXPANSION_NAME"..expansionID]
+         return
+      end
+      -- start at expansionID 0 and work upward, comparing speciesID to the expansion's range of speciesIDs
+      local expansionID = 0
+      while expansionRanges[expansionID] do
+         if speciesID >= expansionRanges[expansionID][1] and speciesID <= expansionRanges[expansionID][2] then
+            self.expansionID = expansionID
+            self.expansionName = _G["EXPANSION_NAME"..expansionID]
+            return
+         end
+         expansionID = expansionID + 1
+      end
+   end,
 }
 
 -- rematch:GetBreedSource() is used by the Breed and PossibleBreeds API
@@ -497,7 +566,7 @@ function rematch:GetBreedSource()
             breedSource = "PetTracker_Breeds"
             return "PetTracker_Breeds"
          end
-      elseif IsAddOnLoaded("PetTracker") and PetTracker.Pet and PetTracker.Pet.GetBreed then
+      elseif IsAddOnLoaded("PetTracker") and PetTracker and PetTracker.Pet and PetTracker.Pet.GetBreed then
          breedSource = "PetTracker"
          return "PetTracker"
       end

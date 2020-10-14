@@ -22,6 +22,8 @@ rematch:InitModule(function()
 	-- to avoid watching CURSOR_UPDATE all the time, only registering for event on a PickupPet
 	hooksecurefunc(C_PetJournal,"PickupPet",rematch.CURSOR_UPDATE)
 
+	panel.TargetPanel:Initialize()
+
 	-- only create models if the Debug: No Models setting is disabled
 	if not settings.DebugNoModels then
 		-- target panel model
@@ -36,7 +38,7 @@ rematch:InitModule(function()
 		model:SetPosition(0,0,-0.075)
 		model:SetScript("OnEvent",Model_OnEvent)
 		-- border frame here is a sibling to the above target model
-		panel.Target.ModelBorder = CreateFrame("Frame",nil,panel.Target,"RematchUseParentLevel")
+		panel.Target.ModelBorder = CreateFrame("Frame",nil,panel.Target,"RematchUseParentLevel,BackdropTemplate")
 		local border = panel.Target.ModelBorder
 		border:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border", tile=true, edgeSize=12})
 		border:SetBackdropBorderColor(0.5,0.5,0.5)
@@ -60,13 +62,22 @@ rematch:InitModule(function()
 			model.Shadows:SetAtlas("PetJournal-BattleSlot-Shadow")
 		end
 	end
-
 end)
 
 function panel:Update()
 	if panel:IsVisible() then
-		panel:UpdateLoadouts()
-		panel:UpdateTarget()
+		panel.Target.TargetButton.Arrow:SetShown(settings.UseOldTargetMenu and true)
+		panel.TargetPanel:SetShown(panel.targetMode)
+		panel.Target:SetShown(not panel.targetMode)
+		for i=1,3 do
+			panel.Loadouts[i]:SetShown(not panel.targetMode)
+		end
+		if panel.targetMode then
+			panel.TargetPanel:Update()
+		else
+			panel:UpdateLoadouts()
+			panel:UpdateTarget()
+		end
 	end
 end
 
@@ -376,17 +387,17 @@ function panel:UpdateTargetModelandPets(frame,unit,npcID,vs)
 	end
 	-- display notable pets (if any)
 	local hasPets -- becomes the index of the last notable pet displayed
-	if rematch.notableNames[npcID] then -- notable npcID targeted, display its team
+	if rematch.targetNames[npcID] then -- notable npcID targeted, display its team
 		local notableIndex
-		for index,info in pairs(rematch.notableNPCs) do
-			if info[1]==npcID then
+		for index,info in pairs(rematch.targetData) do
+			if info[3]==npcID then
 				notableIndex = index
 				break
 			end
 		end
 		if notableIndex then
 			for i=1,3 do
-				local petID = rematch.notableNPCs[notableIndex][i+2]
+				local petID = rematch.targetData[notableIndex][i+6]
 				if petID then
 					rematch:FillPetSlot(frame.Pets[i],petID,true)
 					hasPets = i

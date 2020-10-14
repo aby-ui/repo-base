@@ -3,6 +3,7 @@ local Display = GatherMate:NewModule("Display","AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2")
 
 local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+local WoW90 = select(4, GetBuildInfo()) >= 90000
 
 -- Current minimap pin set
 local minimapPins, minimapPinCount = {}, 0
@@ -577,12 +578,14 @@ end
 	Minimap zoom changed
 ]]
 function Display:UpdateMiniMapZoom()
-	local zoom = Minimap:GetZoom()
-	if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
-		Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)
+	if not WoW90 then
+		local zoom = Minimap:GetZoom()
+		if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
+			Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)
+		end
+		indoors = GetCVar("minimapZoom")+0 == Minimap:GetZoom() and "outdoor" or "indoor"
+		Minimap:SetZoom(zoom)
 	end
-	indoors = GetCVar("minimapZoom")+0 == Minimap:GetZoom() and "outdoor" or "indoor"
-	Minimap:SetZoom(zoom)
 end
 function Display:MinimapZoom()
 	self:UpdateMiniMapZoom()
@@ -650,7 +653,11 @@ function Display:UpdateIconPositions()
 	-- if the player moved, or changed the facing (rotating map) - update nodes
 	if x ~= lastXY or y ~= lastYY or facing ~= lastFacing or refresh then
 		-- update radius of the map
-		mapRadius = self.minimapSize[indoors][zoom] / 2
+		if WoW90 then
+			mapRadius = C_Minimap.GetViewRadius()
+		else
+			mapRadius = self.minimapSize[indoors][zoom] / 2
+		end
 		-- update upvalues for icon placement
 		lastXY, lastYY = x, y
 		lastFacing = facing
@@ -715,11 +722,15 @@ function Display:UpdateMiniMap(force)
 	if x ~= lastXY or y ~= lastYY or diffZoom or facing ~= lastFacing or force then
 		-- set upvalues to new settings
 		minimapShape = GetMinimapShape and self.minimapShapes[GetMinimapShape() or "ROUND"]
-		mapRadius = self.minimapSize[indoors][zoom] / 2
 		minimapWidth = Minimap:GetWidth() / 2
 		minimapHeight = Minimap:GetHeight() / 2
 		minimapStrata = Minimap:GetFrameStrata()
 		minimapFrameLevel = Minimap:GetFrameLevel() + 5
+		if WoW90 then
+			mapRadius = C_Minimap.GetViewRadius()
+		else
+			mapRadius = self.minimapSize[indoors][zoom] / 2
+		end
 
 		local x1, y1 = GatherMate.HBD:GetZoneCoordinatesFromWorld(x,y,zone)
 		if not x1 then

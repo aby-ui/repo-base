@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (Legion)|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruppe-Legion|r
@@ -15,8 +15,7 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: PARTY
 ## X-DBM-Mod-Category: LEG
-## X-DBM-Mod-Has-Challenge: 1
-## X-DBM-Mod-Has-Mythic : 1
+## X-DBM-StatTypes: normal,heroic,mythic,challenge
 ## X-DBM-Mod-SubCategoriesID: 1501, 1466, 1456, 1477, 1458, 1516, 1571, 1492, 1544, 1493, 1651, 1677, 1753
 ## X-DBM-Mod-Name: Dungeons (Legion)
 ## X-DBM-Mod-Name-deDE: Gruppe (Legion)
@@ -31,9 +30,10 @@
 ## X-DBM-Mod-Sort: 515
 ## X-DBM-Mod-MapID: 1501, 1466, 1456, 1477, 1458, 1516, 1571, 1492, 1544, 1493, 1651, 1677, 1753
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
+## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r17
+## Version: r20
 
 localization.en.lua
 localization.cn.lua

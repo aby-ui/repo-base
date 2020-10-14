@@ -2,7 +2,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight/Myzrael
-## Version: 4.55.2
+## Version: 4.56.1
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
@@ -26,6 +26,7 @@ GTFO_Spells_CAT.lua
 GTFO_Spells_MP.lua
 GTFO_Spells_LGN.lua
 GTFO_Spells_BFA.lua
+GTFO_Spells_SL.lua
 GTFO_Spells_Special.lua
 GTFO_Fail_GenericRetail.lua
 GTFO_Fail_GenericClassic.lua
@@ -37,12 +38,14 @@ GTFO_Fail_CAT.lua
 GTFO_Fail_MP.lua
 GTFO_Fail_LGN.lua
 GTFO_Fail_BFA.lua
+GTFO_Fail_SL.lua
 GTFO_FF_BC.lua
 GTFO_FF_LK.lua
 GTFO_FF_CAT.lua
 GTFO_FF_MP.lua
 GTFO_FF_LGN.lua
 GTFO_FF_BFA.lua
+GTFO_FF_SL.lua
 GTFO_Mobs.lua
 GTFO.xml
 

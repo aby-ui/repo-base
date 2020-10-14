@@ -165,17 +165,18 @@ local function DCS_Decimals()
 				color_mastery = STAT_MASTERY ..":"
 			end
 			local color_format = statformat
-			if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
-				if not namespace.configMode then
-					if hidemastery then
-						statFrame:Hide();
-						--print("hiding")
-						return;
-					end
-				end
-				color_mastery = "|cff7f7f7f" .. color_mastery .. "|r"
-				color_format = "|cff7f7f7f" .. color_format .. "|r"
-			end
+			-- Mastery is always shown now in Shadowlands
+			-- if (UnitLevel("player") < SHOW_MASTERY_LEVEL) then
+			-- 	if not namespace.configMode then
+			-- 		if hidemastery then
+			-- 			statFrame:Hide();
+			-- 			--print("hiding")
+			-- 			return;
+			-- 		end
+			-- 	end
+			-- 	color_mastery = "|cff7f7f7f" .. color_mastery .. "|r"
+			-- 	color_format = "|cff7f7f7f" .. color_format .. "|r"
+			-- end
 			local mastery = GetMasteryEffect();
 		-- PaperDollFrame_SetLabelAndText Format Change
     

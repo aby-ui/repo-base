@@ -2,6 +2,9 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local L, G, EV, api = T.L, T.Garrison, T.Evie, T.MissionsUI
 
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
+
 local function dismissTooltip(self)
 	if GameTooltip:IsOwned(self) then
 		GameTooltip:Hide()
@@ -174,7 +177,7 @@ local moiHandle do
 			local rq = d[3] * (1 + (best and best[4] or 0))
 			r.currencyID, r.itemID, r.tooltipTitle, r.tooltipText = rt
 			r.quantity:SetText(rq > 1 and rq or "")
-			r.icon:SetTexture((select(3,GetCurrencyInfo(rt))))
+			r.icon:SetTexture((select(3,Nine.GetCurrencyInfo(rt))))
 		else
 			r.itemID, r.currencyID, r.tooltipTitle, r.tooltipText = rt
 			r.quantity:SetText(d[3] > 1 and d[3] or "")

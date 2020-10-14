@@ -4,7 +4,7 @@ local UnitInGuild, IsInRaid = ExRT.F.UnitInGuild, IsInRaid
 
 local VExRT = nil
 
-local module = ExRT.mod:New("InviteTool",ExRT.L.invite,nil,true)
+local module = ExRT.mod:New("InviteTool",ExRT.L.invite)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.converttoraid = false
@@ -21,32 +21,24 @@ module.db.demotedPlayers = {}
 
 module.db.sessionInRaid = nil
 
-local GetNumFriends, GetFriendInfo
+local BNGetFriendInfo = function(friendIndex)
+	local accountInfo = C_BattleNet.GetFriendAccountInfo(friendIndex)
+	if accountInfo then
+		local wowProjectID = accountInfo.wowProjectID or 0
+		local clientProgram = accountInfo.clientProgram ~= "" and accountInfo.clientProgram or nil
 
-function GetNumFriends()
-	return C_FriendList.GetNumFriends(), C_FriendList.GetNumOnlineFriends()
-end
-function GetFriendInfo(friend)
-	local info = C_FriendList.GetFriendInfoByIndex(friend)
-	if info then
-		return info.name
+		return	accountInfo.bnetAccountID, accountInfo.accountName, accountInfo.battleTag, accountInfo.isBattleTagFriend,
+				accountInfo.characterName, accountInfo.gameAccountID, clientProgram,
+				accountInfo.isOnline, accountInfo.lastOnlineTime, accountInfo.isAFK, accountInfo.isDND, accountInfo.customMessage, accountInfo.note, true,
+				accountInfo.customMessageTime, wowProjectID, accountInfo.isRecruitAFriend, accountInfo.canSummon, accountInfo.isFavorite, accountInfo.isWowMobile
 	end
 end
 
-local BNGetFriendInfo = BNGetFriendInfo
-if not BNGetFriendInfo then	-- 8.3.0
-	BNGetFriendInfo = function(friendIndex)
-		local accountInfo = C_BattleNet.GetAccountInfoByFriendIndex(friendIndex);
-		if accountInfo then
-			local wowProjectID = accountInfo.wowProjectID or 0;
-			local clientProgram = accountInfo.clientProgram ~= "" and accountInfo.clientProgram or nil;
-
-			return	accountInfo.bnetAccountID, accountInfo.accountName, accountInfo.battleTag, accountInfo.isBattleTagFriend,
-					accountInfo.characterName, accountInfo.gameAccountID, clientProgram,
-					accountInfo.isOnline, accountInfo.lastOnlineTime, accountInfo.isAFK, accountInfo.isDND, accountInfo.customMessage, accountInfo.note, true,
-					accountInfo.customMessageTime, wowProjectID, accountInfo.isRecruitAFriend, accountInfo.canSummon, accountInfo.isFavorite, accountInfo.isWowMobile;
-		end
-	end
+if ExRT.isClassic then
+	C_GuildInfo.GuildRoster = GuildRoster
+	C_PartyInfo.InviteUnit = InviteUnit
+	C_PartyInfo.ConvertToRaid = ConvertToRaid
+	BNGetFriendInfo = _G.BNGetFriendInfo
 end
 
 hooksecurefunc("DemoteAssistant", function (unit)
@@ -60,7 +52,7 @@ hooksecurefunc("DemoteAssistant", function (unit)
 	end
 end)
 
-local _InviteUnit = InviteUnit
+local _InviteUnit = C_PartyInfo.InviteUnit
 local function InviteUnit(name)
 	if name and name:len() >= 45 then
 		local shortName = ExRT.F.delUnitNameServer(name)
@@ -191,11 +183,11 @@ local function ReinviteBut()
 		table.insert(module.db.reInvite,name)
 	end
 	DisbandBut()
-	
+
 	if not module.db.reInviteFrame then
 		module.db.reInviteFrame = CreateFrame("Frame")
 	end
-	
+
 	module.db.reInviteFrame.t = 0
 	module.db.reInviteFrame:SetScript("OnUpdate",function(self,e)
 		self.t = self.t + e
@@ -265,8 +257,8 @@ end
 function module.options:Load()
 	self:CreateTilte()
 
-	self.dropDown = ELib:DropDown(self,205,10):Point(5,-30):Size(220)
-	
+	self.dropDown = ELib:DropDown(self,205,10):Point(15,-30):Size(220)
+
 	function self.dropDown:SetValue(newValue)
 		VExRT.InviteTool.Ranks[newValue] = self.checkButton:GetChecked()
 		module.options.dropDown:SetText( L.inviterank )
@@ -288,31 +280,32 @@ function module.options:Load()
 		end
 		self.dropDown.Lines = #self.dropDown.List
 	end
-	
-	self.butInv = ELib:Button(self,L.inviteinv):Size(200,20):Point(235,-30):OnClick(function() InviteBut() end)
+
+	self.butInv = ELib:Button(self,L.inviteinv):Size(200,20):Point(245,-30):OnClick(function() InviteBut() end)
 	self.butInv.txt = ELib:Text(self,"/rt inv",11):Size(100,20):Point("LEFT",self.butInv,"RIGHT",5,0)
-	
-	self.butDisband = ELib:Button(self,L.invitedis):Size(430,20):Point(5,-55):OnClick(function() DisbandBut() end)
+
+	self.butDisband = ELib:Button(self,L.invitedis):Size(430,20):Point(15,-55):OnClick(function() DisbandBut() end)
 	self.butDisband.txt = ELib:Text(self,"/rt dis",11):Size(100,20):Point("LEFT",self.butDisband,"RIGHT",5,0)
 
-	self.butReinvite = ELib:Button(self,L.inviteReInv):Size(430,20):Point(5,-80):OnClick(function() ReinviteBut() end)
+	self.butReinvite = ELib:Button(self,L.inviteReInv):Size(430,20):Point(15,-80):OnClick(function() ReinviteBut() end)
 	self.butReinvite.txt = ELib:Text(self,"/rt reinv",11):Size(100,20):Point("LEFT",self.butReinvite,"RIGHT",5,0)
 
-	self.butListInv = ELib:Button(self,L.InviteListButton):Size(430,20):Point(5,-115):OnClick(function() self.listInvFrame:Show() end)
+	self.butListInv = ELib:Button(self,L.InviteListButton):Size(430,20):Point(15,-115):OnClick(function() self.listInvFrame:Show() end)
 	self.butListInv.txt = ELib:Text(self,"/rt invlist 1",11):Size(100,20):Point("LEFT",self.butListInv,"RIGHT",5,0)
 
-	
+
 	self.listInvFrame = ELib:Popup(L.InviteListButton):Size(400,400)
 	self.listInvFrame.edit = ELib:MultiEdit(self.listInvFrame):Point("TOP",0,-60):Size(386,314):OnChange(function(_,isUser)
 		if not isUser then return end
 		VExRT.InviteTool["ListInv"..(self.listInvFrame.currList)] = self.listInvFrame.edit:GetText()
 	end)
-	self.listInvFrame.tip = ELib:Text(self.listInvFrame,L.InviteListTip,12):Point(5,-45)
+	self.listInvFrame.tip = ELib:Text(self.listInvFrame,L.InviteListTip,12):Point(15,-45)
 	for i=1,4 do
 		self.listInvFrame["butList"..i] = ELib:Button(self.listInvFrame,i):Size(390/4,20):Point(5+(i-1)*(390/4),-20):OnClick(function(self) 
 			for j=1,4 do self:GetParent()["butList"..j]:Enable() end
 			self:Disable()
 
+			module.options.listInvFrame.currList = i
 			self:GetParent().edit:SetText(VExRT.InviteTool["ListInv"..i] or "")
 		end)
 	end
@@ -341,12 +334,23 @@ function module.options:Load()
 			VExRT.InviteTool.OnlyGuild = nil
 		end
 	end)
-	
-	self.wordsInput = ELib:Edit(self):Size(650,20):Point("TOPLEFT",self.chkOnlyGuild,"BOTTOMLEFT",0,-5):Tooltip(L.invitewordstooltip):Text(VExRT.InviteTool.Words):OnChange(function(self)
+
+	self.chkInvByChatSay = ELib:Check(self,L.invitewordssay,VExRT.InviteTool.InvByChatSay):Point("TOPLEFT",self.chkOnlyGuild,"BOTTOMLEFT",0,-5):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.InviteTool.InvByChatSay = true
+			module:RegisterEvents('CHAT_MSG_SAY','CHAT_MSG_YELL')
+		else
+			VExRT.InviteTool.InvByChatSay = nil
+			module:UnregisterEvents('CHAT_MSG_SAY','CHAT_MSG_YELL')
+		end
+	end)
+
+
+	self.wordsInput = ELib:Edit(self):Size(650,20):Point("TOPLEFT",self.chkInvByChatSay,"BOTTOMLEFT",0,-5):Tooltip(L.invitewordstooltip):Text(VExRT.InviteTool.Words):OnChange(function(self)
 		VExRT.InviteTool.Words = self:GetText()
 		createInvWordsArray()
-	end) 	
-	
+	end) 
+
 	self.chkAutoInvAccept = ELib:Check(self,L.inviteaccept,VExRT.InviteTool.AutoInvAccept):Point("TOPLEFT",self.wordsInput,"BOTTOMLEFT",0,-15):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.InviteTool.AutoInvAccept = true
@@ -356,7 +360,7 @@ function module.options:Load()
 			module:UnregisterEvents('PARTY_INVITE_REQUEST')
 		end
 	end)
-	
+
 	self.chkAutoPromote = ELib:Check(self,L.inviteAutoPromote,VExRT.InviteTool.AutoPromote):Point("TOPLEFT",self.chkAutoInvAccept,"BOTTOMLEFT",0,-15):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.InviteTool.AutoPromote = true
@@ -364,7 +368,7 @@ function module.options:Load()
 			VExRT.InviteTool.AutoPromote = nil
 		end
 	end)
-	
+
 	self.dropDownAutoPromote = ELib:DropDown(self,205,10):Point("TOPLEFT",self.chkAutoPromote,"BOTTOMLEFT",0,-5):Size(430)
 	function self.dropDownAutoPromote:SetValue(newValue)
 		VExRT.InviteTool.PromoteRank = newValue
@@ -393,17 +397,17 @@ function module.options:Load()
 		func = self.dropDownAutoPromote.SetValue,
 		arg1 = 0,
 	}
-	self.dropDownAutoPromote.Lines = #self.dropDownAutoPromote.List	
+	self.dropDownAutoPromote.Lines = #self.dropDownAutoPromote.List
 
-	
+
 	self.autoPromoteInput = ELib:Edit(self):Size(650,20):Point("TOPLEFT",self.dropDownAutoPromote,"BOTTOMLEFT",0,-5):Tooltip(L.inviteAutoPromoteTooltip):Text(VExRT.InviteTool.PromoteNames):OnChange(function(self)
 		VExRT.InviteTool.PromoteNames = self:GetText()
 		createPromoteArray()
 	end) 
-	
+
 	self.butRaidDemote = ELib:Button(self,L.inviteRaidDemote):Size(430,20):Point("TOPLEFT",self.autoPromoteInput,"BOTTOMLEFT",0,-5):OnClick(function() demoteRaid() end)
 
-	
+
 	self.chkRaidDiff = ELib:Check(self,L.InviteRaidDiffCheck,VExRT.InviteTool.AutoRaidDiff):Point("TOPLEFT",self.butRaidDemote,"BOTTOMLEFT",0,-15):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.InviteTool.AutoRaidDiff = true
@@ -411,7 +415,7 @@ function module.options:Load()
 			VExRT.InviteTool.AutoRaidDiff = nil
 		end
 	end)
-	
+
 	local RaidDiffsDropDown = {
 		{14,PLAYER_DIFFICULTY1},
 		{15,PLAYER_DIFFICULTY2},
@@ -446,22 +450,22 @@ function module.options:Load()
 		end
 		self.dropDownRaidDiff:SetText( diffName or "" )
 	end
-	
+
 	self.dropDownRaidDiffText = ELib:Text(self,L.InviteRaidDiff,11):Size(150,20):Point("TOPLEFT",self.dropDownRaidDiff,-180,0)
 
 	if ExRT.isClassic then
 		self.chkRaidDiff:Hide()
 		self.dropDownRaidDiff:Hide()
 		self.dropDownRaidDiffText:Hide()
-	end	
+	end
 
-	
+
 	self.HelpPlate = {
 		FramePos = { x = 0, y = 0 },FrameSize = { width = 660, height = 615 },
-		[1] = { ButtonPos = { x = 50,	y = -42 },  	HighLightBox = { x = 0, y = -25, width = 660, height = 80 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpRaid },
-		[2] = { ButtonPos = { x = 50,  y = -128 }, 	HighLightBox = { x = 0, y = -110, width = 660, height = 80 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoInv },
-		[3] = { ButtonPos = { x = 50,  y = -187 }, 	HighLightBox = { x = 0, y = -195, width = 660, height = 30 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoAccept },
-		[4] = { ButtonPos = { x = 50,  y = -255},  	HighLightBox = { x = 0, y = -230, width = 660, height = 105 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoPromote },
+		[1] = { ButtonPos = { x = 50,	y = -42 },  	HighLightBox = { x = 5, y = -25, width = 660, height = 80 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpRaid },
+		[2] = { ButtonPos = { x = 50,  y = -128 }, 	HighLightBox = { x = 5, y = -110, width = 660, height = 105 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoInv },
+		[3] = { ButtonPos = { x = 50,  y = -212 }, 	HighLightBox = { x = 5, y = -220, width = 660, height = 30 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoAccept },
+		[4] = { ButtonPos = { x = 50,  y = -280},  	HighLightBox = { x = 5, y = -255, width = 660, height = 135 },		ToolTipDir = "RIGHT",	ToolTipText = L.inviteHelpAutoPromote },
 	}
 	if not ExRT.isClassic then
 		self.HELPButton = ExRT.lib.CreateHelpButton(self,self.HelpPlate)
@@ -477,7 +481,7 @@ local promoteRosterUpdate
 do
 	local promotes,scheduledPromotes={},nil
 	local guildmembers = nil
-	
+
 	local function GuildReview()
 		guildmembers = {}
 		for j=1,GetNumGuildMembers() do
@@ -485,9 +489,9 @@ do
 			if guild_name then
 				guildmembers[ExRT.F.delUnitNameServer(guild_name)] = rankIndex
 			end
-		end		
+		end
 	end
-	
+
 	function promoteRosterUpdate()
 		for i = 1, GetNumGroupMembers() do
 			local name, rank = GetRaidRosterInfo(i)
@@ -532,20 +536,20 @@ function module.main:ADDON_LOADED()
 			end
 		end
 	end
-	
+
 	VExRT.InviteTool.Words = VExRT.InviteTool.Words or "инв inv byd штм 123"
 	createInvWordsArray()
-	
+
 	VExRT.InviteTool.PromoteNames = VExRT.InviteTool.PromoteNames or ""
 	VExRT.InviteTool.PromoteRank = VExRT.InviteTool.PromoteRank or 2
 	createPromoteArray()
-	
+
 	VExRT.InviteTool.RaidDiff = VExRT.InviteTool.RaidDiff or 16
 	VExRT.InviteTool.LootMethod = VExRT.InviteTool.LootMethod or "group"
 	VExRT.InviteTool.MasterLooters = VExRT.InviteTool.MasterLooters or ""
 	VExRT.InviteTool.LootThreshold = VExRT.InviteTool.LootThreshold or 2
 	createMastelootersArray()
-	
+
 	module:RegisterEvents('GROUP_ROSTER_UPDATE','GUILD_ROSTER_UPDATE')
 	if VExRT.InviteTool.InvByChat then
 		module:RegisterEvents('CHAT_MSG_WHISPER','CHAT_MSG_BN_WHISPER')
@@ -553,17 +557,23 @@ function module.main:ADDON_LOADED()
 	if VExRT.InviteTool.AutoInvAccept then
 		module:RegisterEvents('PARTY_INVITE_REQUEST','GROUP_INVITE_CONFIRMATION')
 	end
-	
+	if VExRT.InviteTool.InvByChatSay then
+		module:RegisterEvents('CHAT_MSG_SAY','CHAT_MSG_YELL')
+	end
+
 	module:RegisterSlash()
-	
+
 	module.db.playerFullName = ExRT.F.UnitCombatlogname("player")
 end
 
 function module.main:CHAT_MSG_WHISPER(msg, user, special)
+	if user == ExRT.SDB.charKey then
+		return
+	end
 	msg = string.lower(msg)
 	if (msg and module.db.invWordsArray[msg]) and (not VExRT.InviteTool.OnlyGuild or UnitInGuild(user)) then
 		if not IsInRaid() and GetNumGroupMembers() == 5 then 
-			ConvertToRaid()
+			C_PartyInfo.ConvertToRaid()
 		end
 		InviteUnit(user)
 	elseif (msg and module.db.invWordsArray[msg]) and VExRT.InviteTool.OnlyGuild and (GetNumGuildMembers() or 0) == 0 and special ~= -578 then
@@ -573,6 +583,9 @@ function module.main:CHAT_MSG_WHISPER(msg, user, special)
 		end)
 	end
 end
+module.main.CHAT_MSG_SAY = module.main.CHAT_MSG_WHISPER
+module.main.CHAT_MSG_YELL = module.main.CHAT_MSG_WHISPER
+
 
 function module.main:CHAT_MSG_BN_WHISPER(msg,sender,_,_,_,_,_,_,_,_,_,_,senderBnetIDAccount)
 	msg = string.lower(msg)
@@ -580,20 +593,36 @@ function module.main:CHAT_MSG_BN_WHISPER(msg,sender,_,_,_,_,_,_,_,_,_,_,senderBn
 		return
 	end
 	if not IsInRaid() and GetNumGroupMembers() == 5 then 
-		ConvertToRaid()
+		C_PartyInfo.ConvertToRaid()
 	end
 
-	local _,BNcount=BNGetNumFriends() 
-	for i=1,BNcount do 
-		if senderBnetIDAccount == BNGetFriendInfo(i) then
-			local numGameAccounts = BNGetNumFriendGameAccounts(i)
-			for j=1,numGameAccounts do
-				local hasFocus, characterName, client, realmName, realmID, faction, race, class, _, _, level, _, _, _, _, bnetIDGameAccount = BNGetFriendGameAccountInfo(i, j)
-				if client == BNET_CLIENT_WOW and faction == UnitFactionGroup('player') and (not VExRT.InviteTool.OnlyGuild or (characterName and UnitInGuild(characterName))) then
-					BNInviteFriend(bnetIDGameAccount)
+	if not ExRT.isClassic then
+		local _,BNcount=BNGetNumFriends() 
+		for friendIndex=1,BNcount do 
+			if senderBnetIDAccount == BNGetFriendInfo(friendIndex) then
+				local numGameAccounts = C_BattleNet.GetFriendNumGameAccounts(friendIndex)
+				for accountIndex=1,numGameAccounts do
+					local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(friendIndex, accountIndex)
+					if gameAccountInfo and gameAccountInfo.clientProgram == BNET_CLIENT_WOW and gameAccountInfo.factionName == UnitFactionGroup('player') and (not VExRT.InviteTool.OnlyGuild or (gameAccountInfo.characterName and UnitInGuild(gameAccountInfo.characterName))) then
+						BNInviteFriend(gameAccountInfo.gameAccountID)
+					end
 				end
+				break
 			end
-			break
+		end
+	else
+		local _,BNcount=BNGetNumFriends() 
+		for i=1,BNcount do 
+			if senderBnetIDAccount == BNGetFriendInfo(i) then
+				local numGameAccounts = BNGetNumFriendGameAccounts(i)
+				for j=1,numGameAccounts do
+					local hasFocus, characterName, client, realmName, realmID, faction, race, class, _, _, level, _, _, _, _, bnetIDGameAccount = BNGetFriendGameAccountInfo(i, j)
+					if client == BNET_CLIENT_WOW and faction == UnitFactionGroup('player') and (not VExRT.InviteTool.OnlyGuild or (characterName and UnitInGuild(characterName))) then
+						BNInviteFriend(bnetIDGameAccount)
+					end
+				end
+				break
+			end
 		end
 	end
 end
@@ -614,13 +643,13 @@ local function AutoRaidSetup()
 	local inRaid = IsInRaid()
 	local RaidLeader = inRaid and IsRaidLeader()
 	local _,zoneType = IsInInstance()
-	
+
 	if zoneType ~= "raid" then
 		if inRaid and not module.db.sessionInRaid then
 			if RaidLeader then
 				module.db.sessionInRaid = true
 				module.db.sessionInRaidLoot = true
-				
+
 				if not ExRT.isClassic then
 					SetRaidDifficultyID(VExRT.InviteTool.RaidDiff)
 					--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
@@ -638,9 +667,9 @@ local function AutoRaidSetup()
 				--SetLootMethod(VExRT.InviteTool.LootMethod,UnitName("player"),nil)
 				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VExRT.InviteTool.LootThreshold)
 			end
-		end	
+		end
 	end
-	
+
 	if inRaid and RaidLeader and VExRT.InviteTool.LootMethod == "master" then
 		local lootMethod,_,masterlooterRaidID = GetLootMethod()
 		if lootMethod == "master" then
@@ -664,7 +693,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 	if inRaid then
 		module.db.converttoraid = false
 	elseif module.db.converttoraid then
-		ConvertToRaid()
+		C_PartyInfo.ConvertToRaid()
 	end
 	if module.db.reInviteR and inRaid then
 		module.db.reInviteR = nil
@@ -682,7 +711,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 	if inRaid and UnitIsGroupLeader("player") then
 		promoteRosterUpdate()
 	end
-	
+
 	if VExRT.InviteTool.AutoRaidDiff then
 		if not scheludedRaidUpdate then
 			scheludedRaidUpdate = ExRT.F.ScheduleTimer(AutoRaidSetup, .5)
@@ -700,8 +729,18 @@ function module.main:GUILD_ROSTER_UPDATE()
 end
 
 do
+	local function GetFriendInfo(friend)
+		local info = C_FriendList.GetFriendInfoByIndex(friend)
+		if info then
+			return info.name
+		end
+	end
+	if ExRT.isClassic then
+		GetFriendInfo = _G.GetFriendInfo
+	end
+
 	local function IsFriend(name)
-		for i=1,GetNumFriends() do if(GetFriendInfo(i)==name) then return true end end
+		for i=1,C_FriendList.GetNumFriends() do if(GetFriendInfo(i)==name) then return true end end
 		if(IsInGuild()) then for i=1, GetNumGuildMembers() do if(ExRT.F.delUnitNameServer(GetGuildRosterInfo(i) or "?")==name) then return true end end end
 		local b,a=BNGetNumFriends() for i=1,a do local bName=select(5,BNGetFriendInfo(i)) if bName==name then return true end end
 	end

@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Script file="RSNavigationMixin.lua"/>
+  
+  <Frame name="RSRightNavTemplate" mixin="RSNavigationMixin" virtual="true">
+		<Size>
+			<AbsDimension x="32" y="32"/>
+		</Size>
+		<Anchors>
+			<Anchor point="RIGHT" x="35" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Texture" file="Interface\AddOns\RareScanner\Media\Icons\RightArrowYellow.blp">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="HighlightTexture" file="Interface\AddOns\RareScanner\Media\Icons\RightArrowBlue.blp">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Texture"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Texture"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="ShowAnim" setToFinalAlpha="true">
+				<Alpha duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnEnter method="OnNextEnter"/>
+			<OnLeave method="OnNextLeave"/>
+			<OnMouseDown method="OnNextMouseDown"/>
+		</Scripts>
+	</Frame>
+  
+	<Frame name="RSLeftNavTemplate" mixin="RSNavigationMixin" virtual="true">
+		<Size>
+			<AbsDimension x="32" y="32"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT" x="-35" y="0"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Texture" file="Interface\AddOns\RareScanner\Media\Icons\LeftArrowYellow.blp">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="HighlightTexture" file="Interface\AddOns\RareScanner\Media\Icons\LeftArrowBlue.blp">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Texture"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Texture"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="ShowAnim" setToFinalAlpha="true">
+				<Alpha duration="0.25" order="1" fromAlpha="0" toAlpha="1"/>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnEnter method="OnPreviousEnter"/>
+			<OnLeave method="OnPreviousLeave"/>
+			<OnMouseDown method="OnPreviousMouseDown"/>
+		</Scripts>
+	</Frame>
+  
+</Ui>

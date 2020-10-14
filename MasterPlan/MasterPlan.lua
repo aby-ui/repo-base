@@ -5,6 +5,9 @@ if T.Mark ~= 50 then
 	return print("|cffffffff[Master Plan]: |cffff8000" .. m)
 end
 
+local Nine = T.Nine or _G
+local C_Garrison = Nine.C_Garrison
+
 local L = newproxy(true) do
 	local LL = type(T.L) == "table" and T.L or {}
 	getmetatable(L).__call = function(_, k)
@@ -174,7 +177,7 @@ function api:IsMissionIgnored(minfo)
 	elseif type(minfo.rewards) ~= "table" then
 		return nil
 	end
-	local xpType, hasIgnore = minfo.level == 100 and "f:xp10" or (type(minfo.level) == "number" and minfo.level < 95 and "f:xp90") or "f:xp95", nil
+	local xpType, hasIgnore = minfo.level == T.FOLLOWER_LEVEL_CAP and "f:xp10" or (type(minfo.level) == "number" and minfo.level < (T.FOLLOWER_LEVEL_BASE+5) and "f:xp90") or "f:xp95", nil
 	for k,v in pairs(minfo.rewards) do
 		if v.currencyID then
 			k = api:IsRewardIgnored("c:" .. v.currencyID)

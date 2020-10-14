@@ -39,7 +39,7 @@ local IsCaching
 
 SpellCache.CONST = {
 	-- A rough estimate of the highest spellID in the game. Doesn't have to be accurate at all - visual only.
-	MAX_SPELLID_GUESS = 280000,
+	MAX_SPELLID_GUESS = 350000,
 	
 	-- Maximum number of non-existant spellIDs that will be checked before the cache is declared complete.
 	MAX_FAILED_SPELLS = 2000,
@@ -59,6 +59,7 @@ SpellCache.CONST = {
 	-- A list of spells that should be excluded from the cache
 	INVALID_SPELLS = {
 		[1852] = true, -- GM spell named silenced
+	  [250168] = true, -- Crashes the 9.0 PTR
 	},
 
 	BLACKLIST_TRADESKILL_TEXTURES = {

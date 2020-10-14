@@ -62,7 +62,7 @@
 				</Anchors>
 			</Button>
 
-			<EditBox parentKey="Name" autoFocus="false">
+			<EditBox parentKey="Name" autoFocus="false" inherits="RematchBorderBackdropTemplate">
 				<Size x="300" y="24"/>
 				<Anchors>
 					<Anchor point="TOP" x="0" y="-28"/>
@@ -70,10 +70,10 @@
 				<TextInsets>
 					<AbsInset left="6" right="6"/>
 				</TextInsets>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize val="16"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture>

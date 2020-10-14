@@ -1,0 +1,13 @@
+## Interface: 90001
+## Title: Details Target Caller
+## Notes: Plugin for Details
+## RequiredDeps: Details
+
+locales\enUS.lua
+locales\zhCN.lua
+locales\zhTW.lua
+
+Details_TargetCaller.lua
+
+
+## X-Vendor: AbyUI

@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT.mod:New("Profiles",ExRT.L.Profiles,nil,true)
+local module = ExRT.mod:New("Profiles",ExRT.L.Profiles)
 local ELib,L = ExRT.lib,ExRT.L
 
 local MAJOR_KEYS = {
@@ -103,14 +103,14 @@ function module.options:Load()
 
 	self:CreateTilte()
 
-	self.introText = ELib:Text(self,L.ProfilesIntro,11):Size(650,200):Point(5,-45):Top():Color()
+	self.introText = ELib:Text(self,L.ProfilesIntro,11):Size(650,200):Point(15,-45):Top():Color()
 	
-	self.currentText = ELib:Text(self,L.ProfilesCurrent,11):Size(650,200):Point(5,-90):Top():Color()
-	self.currentName = ELib:Text(self,GetCurrentProfileName(),11):Size(650,200):Point(200,-90):Top()
+	self.currentText = ELib:Text(self,L.ProfilesCurrent,11):Size(650,200):Point(15,-90):Top():Color()
+	self.currentName = ELib:Text(self,GetCurrentProfileName(),11):Size(650,200):Point(210,-90):Top()
 
-	self.choseText = ELib:Text(self,L.ProfilesChooseDesc,11):Size(650,200):Point(5,-130):Top():Color()
+	self.choseText = ELib:Text(self,L.ProfilesChooseDesc,11):Size(650,200):Point(15,-130):Top():Color()
 	
-	self.choseNewText = ELib:Text(self,L.ProfilesNew,11):Size(650,200):Point(5,-158):Top()
+	self.choseNewText = ELib:Text(self,L.ProfilesNew,11):Size(650,200):Point(15,-158):Top()
 	self.choseNew = ELib:Edit(self):Size(170,20):Point(10,-170)
 	
 	self.choseNewButton = ELib:Button(self,L.ProfilesAdd):Size(70,20):Point("LEFT",self.choseNew,"RIGHT",0,0):OnClick(function (self)
@@ -139,8 +139,8 @@ function module.options:Load()
 		StaticPopup_Show("EXRT_PROFILES_ACTIVATE")
 	end)
 	
-	self.choseSelectText = ELib:Text(self,L.ProfilesSelect,11):Size(605,200):Point(325,-158):Top()
-	self.choseSelectDropDown = ELib:DropDown(self,220,10):Point(320,-170):Size(235):SetText(GetCurrentProfileName())
+	self.choseSelectText = ELib:Text(self,L.ProfilesSelect,11):Size(605,200):Point(335,-158):Top()
+	self.choseSelectDropDown = ELib:DropDown(self,220,10):Point(330,-170):Size(235):SetText(GetCurrentProfileName())
 	
 	local function SelectProfile(_,name)
 		ELib:DropDownClose()

@@ -11,7 +11,7 @@ local DF = DetailsFramework
 local UnitGroupRolesAssigned = DF.UnitGroupRolesAssigned
 
 --> build the list of buffs to track
-local flask_list = DetailsFramework.FlaskIDs
+local flask_list = DF.FlaskIDs
 
 local is_drinking = 257428
 local localizedFoodDrink
@@ -22,22 +22,22 @@ local food_list = {
 	tier3 = {},
 }
 
-for spellID, power in pairs (DetailsFramework.FoodIDs) do
-	if (power == 41) then
+for spellID, power in pairs (DF.FoodIDs) do
+	if (power == 1) then
 		food_list.tier1 [spellID] = true
-		
-	elseif (power == 55) then
+
+	elseif (power == 2) then
 		food_list.tier2 [spellID] = true
-		
-	elseif (power >= 75) then
+
+	elseif (power == 3) then
 		food_list.tier3 [spellID] = true
-		
+
 	end
 end
 
-local runes_id = DetailsFramework.RuneIDs
+local runes_id = DF.RuneIDs
 
--- 
+--
 
 local get_unit_id = function (i)
 	local unitID
@@ -97,7 +97,7 @@ end
 			
 			if (event == "ZONE_TYPE_CHANGED") then
 			
-				DetailsRaidCheck:CheckZone (...)
+				DetailsRaidCheck:CheckCanShowIcon (...)
 
 			elseif (event == "COMBAT_PREPOTION_UPDATED") then
 
@@ -110,7 +110,7 @@ end
 			elseif (event == "DETAILS_STARTED") then
 
 				localizedFoodDrink = GetSpellInfo (is_drinking)
-				DetailsRaidCheck:CheckZone()
+				DetailsRaidCheck:CheckCanShowIcon()
 				
 			elseif (event == "PLUGIN_DISABLED") then
 			
@@ -123,13 +123,13 @@ end
 			
 			elseif (event == "PLUGIN_ENABLED") then
 
-				DetailsRaidCheck:CheckZone()
+				DetailsRaidCheck:CheckCanShowIcon()
 				
 			end
 			
 		end
 		
-		DetailsRaidCheck.ToolbarButton = _detalhes.ToolBar:NewPluginToolbarButton (DetailsRaidCheck.empty_function, [[Interface\AddOns\Details_RaidCheck\icon]], Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], "", 16, 16, "RAIDCHECK_PLUGIN_BUTTON")
+		DetailsRaidCheck.ToolbarButton = _detalhes.ToolBar:NewPluginToolbarButton (DetailsRaidCheck.empty_function, [[Interface\Buttons\UI-CheckBox-Check]], Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], "", 16, 16, "RAIDCHECK_PLUGIN_BUTTON")
 		DetailsRaidCheck.ToolbarButton.shadow = true --> loads icon_shadow.tga when the instance is showing icons with shadows
 		
 		function DetailsRaidCheck.GetPlayerAmount()
@@ -139,11 +139,6 @@ end
 			local _, _, difficulty = GetInstanceInfo()
 			if (difficulty == 16 and DetailsRaidCheck.db.mythic_1_4 and playerAmount > 20) then
 				playerAmount = 20
-			end
-			
-			--reduce in 1 if the player is only in party
-			if (not IsInRaid()) then
-				playerAmount = playerAmount - 1
 			end
 			
 			return playerAmount
@@ -157,15 +152,23 @@ end
 			local instance = _detalhes:GetInstance (lower_instance)
 			
 			if (instance.menu_icons.shadow) then
-				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\AddOns\Details_RaidCheck\icon_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\AddOns\Details_RaidCheck\icon_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\AddOns\Details_RaidCheck\icon_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\AddOns\Details_RaidCheck\icon_shadow]], "ADD")
+				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\Buttons\UI-CheckBox-Check]], "ADD")
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetHighlightTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetDisabledTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetPushedTexture():SetVertexColor(.2, 1, .2)
 			else
-				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\AddOns\Details_RaidCheck\icon]])
-				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\AddOns\Details_RaidCheck\icon]])
-				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\AddOns\Details_RaidCheck\icon]])
-				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\AddOns\Details_RaidCheck\icon]], "ADD")
+				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\Buttons\UI-CheckBox-Check]], "ADD")
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetHighlightTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetDisabledTexture():SetVertexColor(.2, 1, .2)
+				DetailsRaidCheck.ToolbarButton:GetPushedTexture():SetVertexColor(.2, 1, .2)
 			end
 		end
 		
@@ -177,19 +180,29 @@ end
 			local instance = _detalhes:GetInstance (lower_instance)
 			
 			if (instance.menu_icons.shadow) then
-				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\AddOns\Details_RaidCheck\icon_red_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\AddOns\Details_RaidCheck\icon_red_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\AddOns\Details_RaidCheck\icon_red_shadow]])
-				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\AddOns\Details_RaidCheck\icon_red_shadow]], "ADD")
+				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\Buttons\UI-CheckBox-Check]]) --RED
+				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\Buttons\UI-CheckBox-Check]], "ADD")
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetHighlightTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetDisabledTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetPushedTexture():SetVertexColor(1, .6, .1)
 			else
-				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\AddOns\Details_RaidCheck\icon_red]])
-				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\AddOns\Details_RaidCheck\icon_red]])
-				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\AddOns\Details_RaidCheck\icon_red]])
-				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\AddOns\Details_RaidCheck\icon_red]], "ADD")
+				DetailsRaidCheck.ToolbarButton:SetNormalTexture ([[Interface\Buttons\UI-CheckBox-Check]]) --RED
+				DetailsRaidCheck.ToolbarButton:SetPushedTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetDisabledTexture ([[Interface\Buttons\UI-CheckBox-Check]])
+				DetailsRaidCheck.ToolbarButton:SetHighlightTexture ([[Interface\Buttons\UI-CheckBox-Check]], "ADD")
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetNormalTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetHighlightTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetDisabledTexture():SetVertexColor(1, .6, .1)
+				DetailsRaidCheck.ToolbarButton:GetPushedTexture():SetVertexColor(1, .6, .1)
 			end
 		end
 
-		local show_panel = CreateFrame ("frame", nil, UIParent)
+		local show_panel = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
 		show_panel:SetPoint ("bottom", DetailsRaidCheck.ToolbarButton, "top", 0, 10)
 		show_panel:SetClampedToScreen (true)
 		show_panel:SetFrameStrata ("TOOLTIP")
@@ -218,17 +231,17 @@ end
 		report_string1:SetPoint ("bottomleft", show_panel, "bottomleft", 10, 8)
 		report_string1:SetText ("|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:225:307|t Report No Food/Flask  |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:328:409|t Report No Pre-Pot  |TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:12:12:0:1:512:512:8:70:126:204|t Report No Rune  |  |cFFFFFFFFShift+Click: Options|r") 
 
-		local using_details_string1 = show_panel:CreateFontString (nil, "overlay", "GameFontNormal")
-		using_details_string1:SetPoint ("bottomleft", show_panel, "bottomleft", 10, 22)
-		using_details_string1:SetText ("Receives dynamic updates from other Details! users when they change talents and gear")
+		--local using_details_string1 = show_panel:CreateFontString (nil, "overlay", "GameFontNormal")
+		--using_details_string1:SetPoint ("bottomleft", show_panel, "bottomleft", 10, 22)
+		--using_details_string1:SetText ("Receives dynamic updates from other Details! users when they change talents and gear")
 		
 		DetailsRaidCheck:SetFontSize (report_string1, 10)
 		DetailsRaidCheck:SetFontColor (report_string1, "white")
 		report_string1:SetAlpha (0.6)
 		
-		DetailsRaidCheck:SetFontSize (using_details_string1, 10)
-		DetailsRaidCheck:SetFontColor (using_details_string1, "white")
-		using_details_string1:SetAlpha (0.6)
+		--DetailsRaidCheck:SetFontSize (using_details_string1, 10)
+		--DetailsRaidCheck:SetFontColor (using_details_string1, "white")
+		--using_details_string1:SetAlpha (0.6)
 		
 		--
 		
@@ -240,7 +253,7 @@ end
 			{text = "Food", width = 50},
 			{text = "Flask", width = 50},
 			{text = "Rune", width = 50},
-			{text = "Pre-Pot Last Try", width = 100},
+			--{text = "Pre-Pot Last Try", width = 100},
 			{text = "Using Details!", width = 100},
 		}
 		local headerOptions = {
@@ -261,12 +274,16 @@ end
 		local headerY = y - 2
 		local scrollY = headerY - 20
 		
-		show_panel:SetSize (722 + 20, 580)
+		show_panel:SetSize (722 + 20, 565)
+
+		function show_panel:AdjustHeight(height)
+			show_panel:SetHeight (height or 565)
+		end
 		
 		--create line for the scroll
 		local scroll_createline = function (self, index)
 		
-			local line = CreateFrame ("button", "$parentLine" .. index, self)
+			local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
 			line:SetPoint ("topleft", self, "topleft", 1, -((index-1)*(scroll_line_height+1)) - 1)
 			line:SetSize (scroll_width - 2, scroll_line_height)
 			line:SetScript ("OnEnter", line_onenter)
@@ -290,8 +307,8 @@ end
 			
 			--talents
 			local talent_row_options = {
-				icon_width = 16, 
-				icon_height = 16, 
+				icon_width = 16,
+				icon_height = 16,
 				texcoord = {.1, .9, .1, .9},
 				show_text = false,
 				icon_padding = 2,
@@ -308,7 +325,7 @@ end
 			--no rune
 			local RuneIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 			--no pre pot
-			local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+			--local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 			--using details!
 			local DetailsIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 			
@@ -318,7 +335,7 @@ end
 			line:AddFrameToHeaderAlignment (FoodIndicator)
 			line:AddFrameToHeaderAlignment (FlaskIndicator)
 			line:AddFrameToHeaderAlignment (RuneIndicator)
-			line:AddFrameToHeaderAlignment (PrePotIndicator)
+			--line:AddFrameToHeaderAlignment (PrePotIndicator)
 			line:AddFrameToHeaderAlignment (DetailsIndicator)
 			
 			line:AlignWithHeader (DetailsRaidCheck.Header, "left")
@@ -331,11 +348,11 @@ end
 			line.FoodIndicator = FoodIndicator
 			line.FlaskIndicator = FlaskIndicator
 			line.RuneIndicator = RuneIndicator
-			line.PrePotIndicator = PrePotIndicator
+			--line.PrePotIndicator = PrePotIndicator
 			line.DetailsIndicator = DetailsIndicator
 			
 			return line
-		end		
+		end
 		
 		--refresh scroll
 		local has_food_icon = {texture = [[Interface\Scenarios\ScenarioIcon-Check]], coords = {0, 1, 0, 1}}
@@ -410,7 +427,7 @@ end
 						
 						line.FlaskIndicator.texture = playerTable.Flask and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
 						line.RuneIndicator.texture = playerTable.Rune and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
-						line.PrePotIndicator.texture = playerTable.PrePot and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
+						--line.PrePotIndicator.texture = playerTable.PrePot and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
 						line.DetailsIndicator.texture = playerTable.UseDetails and [[Interface\Scenarios\ScenarioIcon-Check]] or ""
 					end
 				end
@@ -419,10 +436,11 @@ end
 		end
 		
 		--create scroll
-		local mainScroll = DF:CreateScrollBox (show_panel, "$parentMainScroll", scroll_refresh, PlayerData, scroll_width, scroll_height, scroll_lines, scroll_line_height)
+		local mainScroll = DF:CreateScrollBox (show_panel, "$parentMainScroll", scroll_refresh, PlayerData, 1, 1, scroll_lines, scroll_line_height)
 		DF:ReskinSlider (mainScroll)
 		mainScroll.HideScrollBar = true
 		mainScroll:SetPoint ("topleft", show_panel, "topleft", 10, scrollY)
+		mainScroll:SetPoint ("bottomright", show_panel, "bottomright", -10, 20)
 		mainScroll:Refresh()
 		
 		--create lines
@@ -578,8 +596,12 @@ end
 			local groupTypeID = IsInRaid() and "raid" or "party"
 			
 			local playerAmount = DetailsRaidCheck.GetPlayerAmount()
+			local iterateAmount = playerAmount
+			if (not IsInRaid()) then
+				iterateAmount = iterateAmount - 1
+			end
 			
-			for i = 1, playerAmount do
+			for i = 1, iterateAmount do
 				local unitID = groupTypeID .. i
 				local unitName = UnitName (unitID)
 				local cleuName = _detalhes:GetCLName (unitID)
@@ -643,6 +665,10 @@ end
 			end
 
 			mainScroll:Refresh()
+
+			local height = (playerAmount * scroll_line_height) + 75
+			show_panel:AdjustHeight(height)
+
 		end
 		
 		DetailsRaidCheck.ToolbarButton:SetScript ("OnEnter", function (self)
@@ -659,21 +685,23 @@ end
 			show_panel:SetScript ("OnUpdate", nil)
 			show_panel:Hide()
 			DetailsRaidCheck:StopTrackBuffs()
+			DetailsRaidCheck:StartTrackBuffs(5.0)
 		end)
 		
-		function DetailsRaidCheck:CheckZone (...)
-			zone_type = select (1, ...)
+		function DetailsRaidCheck:CheckCanShowIcon(...)
+			local isInRaid = IsInRaid()
+			local isInGroup = IsInGroup()
 			
-			if (not zone_type) then
-				zone_type = select (2, GetInstanceInfo())
-			end
-			
-			if (zone_type == "raid" or zone_type == "party") then
+			if (isInRaid or isInGroup) then
 				DetailsRaidCheck:ShowToolbarIcon (DetailsRaidCheck.ToolbarButton, "star")
 				DetailsRaidCheck.on_raid = true
+				DetailsRaidCheck:StartTrackBuffs(5.0)
 			else
 				DetailsRaidCheck:HideToolbarIcon (DetailsRaidCheck.ToolbarButton)
 				DetailsRaidCheck.on_raid = false
+				if (DetailsRaidCheck.UpdateBuffsTick and not DetailsRaidCheck.UpdateBuffsTick._cancelled) then
+					DetailsRaidCheck.UpdateBuffsTick:Cancel()
+				end
 			end
 		end
 		
@@ -730,26 +758,27 @@ end
 			wipe (DetailsRaidCheck.havefocusaug_table)
 			wipe (DetailsRaidCheck.iseating_table)
 			
-			local playerAmount = DetailsRaidCheck.GetPlayerAmount()
-			
 			local hasConsumables = {
 				Flask = 0,
 				Food = 0,
 			}
 			
-			for i = 1, playerAmount do
-				local unitID = get_unit_id (i)
-				DetailsRaidCheck:CheckUnitBuffs (unitID, hasConsumables)
-			end
-			
-			if (not IsInRaid()) then
-				--> track buffs on the player it self
+			local playerAmount = DetailsRaidCheck.GetPlayerAmount()
+
+			if (IsInRaid()) then
+				for i = 1, playerAmount do
+					local unitId = "raid" .. i
+					DetailsRaidCheck:CheckUnitBuffs(unitId, hasConsumables)
+				end
+
+			elseif (IsInGroup()) then
+				for i = 1, playerAmount-1 do
+					local unitId = "party" .. i
+					DetailsRaidCheck:CheckUnitBuffs(unitId, hasConsumables)
+				end
 				DetailsRaidCheck:CheckUnitBuffs ("player", hasConsumables)
-				
-				--> increase the amount of players in 1 since DetailsRaidCheck.GetPlayerAmount() returns total - 1
-				playerAmount = playerAmount + 1
 			end
-			
+
 			if (hasConsumables.Food == playerAmount and hasConsumables.Flask == playerAmount) then
 				DetailsRaidCheck:SetGreenIcon()
 			else
@@ -757,7 +786,7 @@ end
 			end
 		end
 		
-		function DetailsRaidCheck:StartTrackBuffs()
+		function DetailsRaidCheck:StartTrackBuffs(customUpdateSpeed)
 			if (not DetailsRaidCheck.tracking_buffs) then
 				DetailsRaidCheck.tracking_buffs = true
 				
@@ -766,7 +795,12 @@ end
 				if (DetailsRaidCheck.UpdateBuffsTick and not DetailsRaidCheck.UpdateBuffsTick._cancelled) then
 					DetailsRaidCheck.UpdateBuffsTick:Cancel()
 				end
-				DetailsRaidCheck.UpdateBuffsTick = C_Timer.NewTicker (UpdateSpeed-0.01, DetailsRaidCheck.BuffTrackTick)
+
+				if (customUpdateSpeed) then
+					DetailsRaidCheck.UpdateBuffsTick = C_Timer.NewTicker (customUpdateSpeed-0.01, DetailsRaidCheck.BuffTrackTick)
+				else
+					DetailsRaidCheck.UpdateBuffsTick = C_Timer.NewTicker (UpdateSpeed-0.01, DetailsRaidCheck.BuffTrackTick)
+				end
 			end
 			
 		end
@@ -864,7 +898,13 @@ end
 	
 	function DetailsRaidCheck:OnEvent (_, event, ...)
 
-		if (event == "ADDON_LOADED") then
+		if (event == "GROUP_ROSTER_UPDATE") then
+			if (DetailsRaidCheck.RosterDelay < GetTime()) then
+				DetailsRaidCheck:CheckCanShowIcon()
+				DetailsRaidCheck.RosterDelay = GetTime()+2
+			end
+
+		elseif (event == "ADDON_LOADED") then
 			local AddonName = select (1, ...)
 			if (AddonName == "Details_RaidCheck") then
 				
@@ -890,20 +930,25 @@ end
 						food_tier2 = true,
 						food_tier3 = true,
 					}
+
+					DetailsRaidCheck.RosterDelay = GetTime()
 					
-					--> install
-					local install, saveddata, is_enabled = _G._detalhes:InstallPlugin ("TOOLBAR", Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\AddOns\Details_RaidCheck\icon]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", version, default_settings)
-					if (type (install) == "table" and install.error) then
-						return print (install.error)
-					end
-					
-					--> register needed events
-					
-					_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PLAYER_LEAVE")
-					_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PLAYER_ENTER")
-					_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PREPOTION_UPDATED")
-					_G._detalhes:RegisterEvent (DetailsRaidCheck, "ZONE_TYPE_CHANGED")
-					
+					--make it load after the other plugins
+					C_Timer.After(1, function()
+						--> install
+						local install, saveddata, is_enabled = _G._detalhes:InstallPlugin ("TOOLBAR", Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\Buttons\UI-CheckBox-Check]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", version, default_settings)
+						if (type (install) == "table" and install.error) then
+							return print (install.error)
+						end
+						
+						--> register needed events
+						_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PLAYER_LEAVE")
+						_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PLAYER_ENTER")
+						_G._detalhes:RegisterEvent (DetailsRaidCheck, "COMBAT_PREPOTION_UPDATED")
+						_G._detalhes:RegisterEvent (DetailsRaidCheck, "ZONE_TYPE_CHANGED")
+
+						DetailsRaidCheck.Frame:RegisterEvent ("GROUP_ROSTER_UPDATE")
+					end)
 				end
 			end
 		end

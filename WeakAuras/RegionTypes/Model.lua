@@ -1,12 +1,12 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
-if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 -- Default settings
 local default = {
-  model_path = "Creature/Arthaslichking/arthaslichking.m2",
+  model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
   model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
@@ -85,7 +85,7 @@ local function create(parent)
   region:SetMinResize(1, 1);
 
   -- Border region
-  local border = CreateFrame("frame", nil, region);
+  local border = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate");
   region.border = border;
 
   WeakAuras.regionPrototype.create(region);
@@ -132,23 +132,33 @@ local function AcquireModel(region, data)
 
   if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
-    if (data.model_fileId == "target") then
+
+    local unit
+    if WeakAuras.IsClassic() then
+      unit = data.model_path
+    else
+      unit = data.model_fileId
+    end
+
+    if (unit == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
-    elseif (data.model_fileId == "focus") then
+    elseif not WeakAuras.IsClassic() and unit == "focus" then
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
-      WeakAuras.StartProfileSystem("model");
-      if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, data.model_fileId)) then
+      Private.StartProfileSystem("model");
+      if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
         WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
-      WeakAuras.StopProfileSystem("model");
+      Private.StopProfileSystem("model");
     end
     );
   else
     model:UnregisterEvent("UNIT_MODEL_CHANGED");
     model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-    model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+    if not WeakAuras.IsClassic() then
+      model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+    end
     model:SetScript("OnEvent", nil);
   end
 
@@ -156,10 +166,10 @@ local function AcquireModel(region, data)
   if(data.advance) then
     local elapsed = 0;
     model:SetScript("OnUpdate", function(self, elaps)
-      WeakAuras.StartProfileSystem("model");
+      Private.StartProfileSystem("model");
       elapsed = elapsed + (elaps * 1000);
       model:SetSequenceTime(data.sequence, elapsed);
-      WeakAuras.StopProfileSystem("model");
+      Private.StopProfileSystem("model");
     end)
   else
     model:SetScript("OnUpdate", nil)
@@ -172,7 +182,9 @@ local function ReleaseModel(model)
   model:Hide()
   model:UnregisterEvent("UNIT_MODEL_CHANGED");
   model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-  model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+  if not WeakAuras.IsClassic() then
+    model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+  end
   model:SetScript("OnEvent", nil);
   local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
@@ -290,18 +302,18 @@ end
 
 -- Work around for movies and world map hiding all models
 do
-  function WeakAuras.PreShowModels(self, event)
-    WeakAuras.StartProfileSystem("model");
+  function Private.PreShowModels(self, event)
+    Private.StartProfileSystem("model");
     for id, data in pairs(WeakAuras.regions) do
-      WeakAuras.StartProfileAura(id);
+      Private.StartProfileAura(id);
       if data.region.toShow then
         if (data.regionType == "model") then
           data.region:PreShow();
         end
       end
-      WeakAuras.StopProfileAura(id);
+      Private.StopProfileAura(id);
     end
-    WeakAuras.StopProfileSystem("model");
+    Private.StopProfileSystem("model");
   end
  end
 

@@ -382,8 +382,8 @@ function TomTom:ShowHideCoordBlock()
     if self.profile.block.enable then
         -- Create the frame if it doesn't exist
         if not TomTomBlock then
-            -- Create the coordinate display
-            TomTomBlock = CreateFrame("Button", "TomTomBlock", UIParent)
+            -- Create the coordinate display, as of WoW 9.0, BackdropTemplate is needed.
+            TomTomBlock = CreateFrame("Button", "TomTomBlock", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
             TomTomBlock:SetWidth(120)
             TomTomBlock:SetHeight(32)
             TomTomBlock:SetToplevel(1)
@@ -415,8 +415,16 @@ function TomTom:ShowHideCoordBlock()
             TomTomBlock:SetScript("OnDragStop", Block_OnDragStop)
             TomTomBlock:SetScript("OnDragStart", Block_OnDragStart)
             TomTomBlock:RegisterEvent("PLAYER_ENTERING_WORLD")
+            if not self.CLASSIC then
+                TomTomBlock:RegisterEvent("PET_BATTLE_OPENING_START")
+                TomTomBlock:RegisterEvent("PET_BATTLE_CLOSE")
+            end
             TomTomBlock:SetScript("OnEvent", Block_OnEvent)
         end
+        if self.profile.arrow.hideDuringPetBattles and C_PetBattles and C_PetBattles.IsInBattle() then
+			TomTomBlock:Hide()
+			return
+		end
         -- Show the frame
         TomTomBlock:Show()
 
@@ -704,7 +712,7 @@ function TomTom:CHAT_MSG_ADDON(event, prefix, data, channel, sender)
     x = tonumber(x)
     y = tonumber(y)
 
-    local zoneName = hbd:GetLocalizedMap(m)
+    local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
     self:AddWaypoint(m, x, y, {title = title, from=("TomTom/"..sender)})
     local msg = string.format(L["|cffffff78TomTom|r: Added '%s' (sent from %s) to zone %s"], title, sender, zoneName)
     ChatFrame1:AddMessage(msg)
@@ -737,7 +745,7 @@ local function _both_tooltip_show(event, tooltip, uid, dist)
         tooltip:AddLine(L["Unknown distance"])
     end
     local m,x,y = unpack(data)
-    local zoneName = hbd:GetLocalizedMap(m)
+    local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
 
     tooltip:AddLine(string.format(L["%s (%.2f, %.2f)"], zoneName, x*100, y*100), 0.7, 0.7, 0.7)
     tooltip:AddLine(string.format(L["From: %s"], data.from or "?"))
@@ -910,7 +918,7 @@ function TomTom:AddWaypoint(m, x, y, opts)
 		opts.callbacks = TomTom:DefaultCallbacks(opts)
 	end
 
-    local zoneName = hbd:GetLocalizedMap(m)
+    local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
 
     -- Ensure there isn't already a waypoint at this location
     local key = self:GetKey({m, x, y, title = opts.title})
@@ -1013,17 +1021,17 @@ do
         local opt = TomTom.db.profile
 
         if not x or not y then
-            self.Player:SetText("Player: ---")
+            self.Player:SetText(L["Player: ---"])
         else
-            self.Player:SetFormattedText("Player: %s", RoundCoords(x, y, opt.mapcoords.playeraccuracy))
+            self.Player:SetFormattedText(L["Player: %s"], RoundCoords(x, y, opt.mapcoords.playeraccuracy))
         end
 
         local cX, cY = GetCurrentCursorPosition()
 
         if not cX or not cY then
-            self.Cursor:SetText("Cursor: ---")
+            self.Cursor:SetText(L["Cursor: ---"])
         else
-            self.Cursor:SetFormattedText("Cursor: %s", RoundCoords(cX, cY, opt.mapcoords.cursoraccuracy))
+            self.Cursor:SetFormattedText(L["Cursor: %s"], RoundCoords(cX, cY, opt.mapcoords.cursoraccuracy))
         end
     end
 end
@@ -1065,7 +1073,7 @@ do
     function Block_OnClick(self, button, down)
         local m,x,y = TomTom:GetCurrentPlayerPosition()
         if m and x and y then
-            local zoneName = hbd:GetLocalizedMap(m)
+            local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
             local desc = string.format("%s: %.2f, %.2f", zoneName, x*100, y*100)
             TomTom:AddWaypoint(m, x, y, {
                 title = desc,
@@ -1075,7 +1083,7 @@ do
     end
 
     function Block_OnEvent(self, event, ...)
-        if (event == "PLAYER_ENTERING_WORLD") then
+        if (event == "PLAYER_ENTERING_WORLD") or (event == "PET_BATTLE_OPENING_START") or (event == "PET_BATTLE_CLOSE") then
             TomTom:ShowHideCoordBlock()
         end
     end
@@ -1084,7 +1092,7 @@ end
 function TomTom:DebugListLocalWaypoints()
     local m,x,y = self:GetCurrentPlayerPosition()
     local ctxt = RoundCoords(x, y, 2)
-    local czone = hbd:GetLocalizedMap(m) or "UNKNOWN"
+    local czone = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
     self:Printf(L["You are at (%s) in '%s' (map: %s)"], ctxt, czone , tostring(m))
     if waypoints[m] then
         for key, wp in pairs(waypoints[m]) do
@@ -1102,12 +1110,12 @@ end
 function TomTom:DebugListAllWaypoints()
     local m,x,y = self:GetCurrentPlayerPosition()
     local ctxt = RoundCoords(x, y, 2)
-    local czone = hbd:GetLocalizedMap(m) or "UNKNOWN"
+    local czone = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
     self:Printf(L["You are at (%s) in '%s' (map: %s)"], ctxt, czone, tostring(m))
     for m in pairs(waypoints) do
         local c,z,w = TomTom:GetCZWFromMapID(m)
-        local zoneName = hbd:GetLocalizedMap(m) or "?"
-        self:Printf("%s: (map: %d, zone: %s, continent: %s, world: %s)", zoneName, m, tostring(z), tostring(c), tostring(w))
+        local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
+        self:Printf(L["%s: (map: %d, zone: %s, continent: %s, world: %s)"], zoneName, m, tostring(z), tostring(c), tostring(w))
         for key, wp in pairs(waypoints[m]) do
             local ctxt = RoundCoords(wp[2], wp[3], 2)
             local desc = wp.title and wp.title or L["Unknown waypoint"]
@@ -1239,7 +1247,7 @@ function TomTom:SetClosestWaypoint(verbose)
         local data = uid
         TomTom:SetCrazyArrow(uid, TomTom.profile.arrow.arrival, data.title)
         local m, x, y = unpack(data)
-        local zoneName = hbd:GetLocalizedMap(m)
+        local zoneName = hbd:GetLocalizedMap(m) or L["Unnamed Map"]
         local ctxt = RoundCoords(x, y, 2)
         local desc = data.title and data.title or ""
         local sep = data.title and " - " or ""
@@ -1388,7 +1396,7 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
                         TomTom:RemoveWaypoint(uid)
                         numRemoved = numRemoved + 1
                     end
-                    local zoneName = hbd:GetLocalizedMap(map)
+                    local zoneName = hbd:GetLocalizedMap(map) or L["Unnamed Map"]
                     if numRemoved > 0 then
                         ChatFrame1:AddMessage(L["Removed %d waypoints from %s"]:format(numRemoved, zoneName))
                     end
@@ -1446,7 +1454,7 @@ SlashCmdList["TOMTOM_WAY"] = function(msg)
                             TomTom:RemoveWaypoint(uid)
                             numRemoved = numRemoved + 1
                         end
-                        local zoneName = hbd:GetLocalizedMap(map)
+                        local zoneName = hbd:GetLocalizedMap(map) or L["Unnamed Map"]
                         if numRemoved > 0 then
                             ChatFrame1:AddMessage(L["Removed %d waypoints from %s"]:format(numRemoved, zoneName))
                         end

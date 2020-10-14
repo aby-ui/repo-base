@@ -24,5 +24,42 @@
 	<Frame name="WorldQuestTrackerPinMixin" inherits="WorldQuestTrackerPinProviderTemplate">
 	</Frame>
 
+	<Frame name="MicroButtonAlertTemplate_BFA" inherits="GlowBoxTemplate" parent="UIParent" enableMouse="true" hidden="true" frameStrata="DIALOG" frameLevel="2" toplevel="true" virtual="true">
+		<Size x="220" y="100"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString parentKey="Text" inherits="GameFontHighlightLeft" justifyV="TOP">
+					<Size x="188" y="0"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="16" y="-24"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button parentKey="CloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="6" y="6"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						MicroButtonAlert_OnAcknowledged2(self:GetParent());
+						self:GetParent():Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame parentKey="Arrow" inherits="GlowBoxArrowTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" y="4"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad function="MicroButtonAlert_OnLoad2"/>
+			<OnShow function="MicroButtonAlert_OnShow2"/>
+			<OnHide function="MicroButtonAlert_OnHide2"/>
+		</Scripts>
+	</Frame>	
+
 </Ui>
 

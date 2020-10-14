@@ -45,7 +45,7 @@ list:SetPoint("TOPLEFT", 5, -7)
 list:SetPoint("BOTTOMRIGHT", -7, 7)
 
 function list:OnButtonCreated(button)
-	local frame = CreateFrame("Frame", nil, button)
+	local frame = CreateFrameAby("Frame", nil, button)
 	button.frame = frame
 	frame:SetSize(180, 45)
 	frame:SetScale(0.4)

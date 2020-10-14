@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201001003131")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetUsedIcons(8)
@@ -47,13 +47,12 @@ local specWarnPearlofThunder		= mod:NewSpecialWarningRun(263365, nil, nil, nil, 
 local timerConductionCD				= mod:NewCDTimer(13, 263371, nil, nil, nil, 3)--NYI
 local timerStaticShockCD			= mod:NewCDTimer(13, 263257, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
 ----Wind
-local timerGaleForceCD				= mod:NewCDTimer(16.4, 263776, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerGaleForceCD				= mod:NewCDTimer(14.5, 263776, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
 --Adderis
 ----Wind
 local timerArcingBladeCD			= mod:NewCDTimer(13.4, 263234, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
 local timerCycloneStrikeCD			= mod:NewCDTimer(14.6, 263573, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
 ----Lighting
-local timerPearlofThunderCD			= mod:NewAITimer(13, 263365, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 local timerArcDashCD				= mod:NewCDTimer(23, 263424, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption("8")
@@ -108,7 +107,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if cid == 133379 then--Adderis
 			timerArcingBladeCD:Stop()
 			timerCycloneStrikeCD:Stop()
-			timerPearlofThunderCD:Start(2)
 			--timerArcDashCD:Start(11.2)
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(8)
@@ -119,7 +117,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if not self:IsNormal() then
 				--No Doubt wrong
 				timerGaleForceCD:Stop()
-				timerGaleForceCD:Start(26.7)
+				timerGaleForceCD:Start(26)
 			end
 		end
 	elseif spellId == 263371 then
@@ -144,7 +142,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		local cid = self:GetCIDFromGUID(args.destGUID)
 		--Start wind timers and stop lightning
 		if cid == 133379 then--Adderis
-			timerPearlofThunderCD:Stop()
 			--timerArcDashCD:Stop()
 			--timerCycloneStrikeCD:Start(2)
 			if not self:IsNormal() then
@@ -187,7 +184,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 263365 then
 		specWarnPearlofThunder:Show()
 		specWarnPearlofThunder:Play("justrun")
-		timerPearlofThunderCD:Start()
 	end
 end
 
@@ -203,7 +199,6 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 133379 then--Adderis
-		timerPearlofThunderCD:Stop()
 		timerArcDashCD:Stop()
 		timerCycloneStrikeCD:Stop()
 		timerArcingBladeCD:Stop()

@@ -13,7 +13,7 @@ function ListWidget:GetWheelStep()
 end
 
 function ListWidget:New(parent)
-    local obj = self:Bind(CreateFrame('Frame', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Frame', nil, parent))
     
     obj:SetBackdrop{
         bgFile = [[Interface\ChatFrame\ChatFrameBackground]],

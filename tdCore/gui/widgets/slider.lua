@@ -9,7 +9,7 @@ Slider:SetNormalColor(1, 1, 1, 1)
 Slider:SetDisabledColor(0.7, 0.7, 0.7, 0.7)
 
 function Slider:New(parent)
-    local obj = self:Bind(CreateFrame('Slider', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Slider', nil, parent))
     
     obj:SetBackdrop{
         bgFile = [[Interface\Buttons\UI-SliderBar-Background]],

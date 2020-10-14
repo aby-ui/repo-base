@@ -261,12 +261,12 @@
 				</ScrollChild>
 				<Frames>
 					<!-- this is a focus grabber for the editbox -->
-					<Button useParentLevel="true">
+					<Button useParentLevel="true" inherits="RematchSolidBackdropTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" x="-7" y="8"/>
 							<Anchor point="BOTTOMRIGHT" x="7" y="-8"/>
 						</Anchors>
-						<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+						<!-- <Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize val="16"/>
 							<TileSize val="16"/>
 							<BackgroundInsets>
@@ -274,7 +274,7 @@
 							</BackgroundInsets>
 							<Color r="0.05" g="0.05" b="0.05"/>
 							<BorderColor r="0.5" g="0.5" b="0.5"/>
-						</Backdrop>
+						</Backdrop> -->
 						<Scripts>
 							<OnClick>
 								-- if this is clicked at all, it's because notes don't take up whole editBox

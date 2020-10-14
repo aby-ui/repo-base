@@ -1,14 +1,14 @@
 local _, Addon = ...
-local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
-local LSM = LibStub("LibSharedMedia-3.0")
+local Dominos = LibStub('AceAddon-3.0'):GetAddon('Dominos')
+local LSM = LibStub('LibSharedMedia-3.0')
 local GetMirrorTimerProgress = _G.GetMirrorTimerProgress
 
-local MirrorTimer = Dominos:CreateClass("Frame", Dominos.Frame)
+local MirrorTimer = Dominos:CreateClass('Frame', Dominos.Frame)
 
 ---@param id number
 ---@return table mirrorTimer
 function MirrorTimer:New(id, ...)
-    local mirrorTimer = MirrorTimer.proto.New(self, "mirrorTimer" .. id, ...)
+    local mirrorTimer = MirrorTimer.proto.New(self, 'mirrorTimer' .. id, ...)
 
     mirrorTimer:Layout()
     mirrorTimer:RegisterEvents()
@@ -18,13 +18,15 @@ function MirrorTimer:New(id, ...)
 end
 
 function MirrorTimer:OnCreate()
-    self:SetFrameStrata("HIGH")
-    self:SetScript("OnEvent", self.OnEvent)
+    MirrorTimer.proto.OnCreate(self)
+
+    self:SetFrameStrata('HIGH')
+    self:SetScript('OnEvent', self.OnEvent)
 
     self.props = {}
-    self.timer = CreateFrame("Frame", nil, self, "DominosTimerBarTemplate")
+    self.timer = CreateFrame('Frame', nil, self, 'DominosTimerBarTemplate')
 
-    self.timer.OnUpdate = function(timer, elapsed)
+    self.timer.OnUpdate = function(timer)
         if self.timerName then
             local value = (GetMirrorTimerProgress(self.timerName) or 0) / 1000
             timer:SetValue(value)
@@ -34,21 +36,23 @@ function MirrorTimer:OnCreate()
     end
 end
 
-function MirrorTimer:OnFree()
+function MirrorTimer:OnRelease()
+    MirrorTimer.proto.OnRelease(self)
+
     LSM.UnregisterAllCallbacks(self)
 end
 
 function MirrorTimer:OnLoadSettings()
-    self:SetProperty("font", self:GetFontID())
-    self:SetProperty("texture", self:GetTextureID())
+    self:SetProperty('font', self:GetFontID())
+    self:SetProperty('texture', self:GetTextureID())
 end
 
 ---@return table defaults
 function MirrorTimer:GetDefaults()
     return {
-        point = "TOP",
+        point = 'TOP',
         x = 0,
-        y = -96 - ((tonumber(strmatch(self.id, "%d")) - 1) * 26),
+        y = -96 - ((tonumber(strmatch(self.id, '%d')) - 1) * 26),
         padW = 1,
         padH = 1,
         w = 206,
@@ -73,7 +77,7 @@ function MirrorTimer:OnEvent(event, ...)
 end
 
 function MirrorTimer:RegisterEvents()
-    LSM.RegisterCallback(self, "LibSharedMedia_Registered")
+    LSM.RegisterCallback(self, 'LibSharedMedia_Registered')
 end
 
 function MirrorTimer:LibSharedMedia_Registered(event, mediaType, key)
@@ -102,7 +106,7 @@ function MirrorTimer:SetProperty(key, value)
     if prev ~= value then
         self.props[key] = value
 
-        local func = self[key .. "_update"]
+        local func = self[key .. '_update']
         if func then
             func(self, value, prev)
         end
@@ -119,9 +123,9 @@ function MirrorTimer:Layout()
     self:TrySetSize(self:GetDesiredWidth(), self:GetDesiredHeight())
 
     self.timer:SetPadding(self:GetPadding())
-    self.timer:SetShowText(self:Displaying("time"))
-    self.timer:SetShowBorder(self:Displaying("border"))
-    self.timer:SetShowSpark(self:Displaying("spark"))
+    self.timer:SetShowText(self:Displaying('time'))
+    self.timer:SetShowBorder(self:Displaying('border'))
+    self.timer:SetShowSpark(self:Displaying('spark'))
     self.timer:SetShowLatency(false)
     self.timer:SetShowIcon(false)
 end
@@ -151,7 +155,7 @@ end
 ---@param fontID any
 function MirrorTimer:SetFontID(fontID)
     self.sets.font = fontID
-    self:SetProperty("font", self:GetFontID())
+    self:SetProperty('font', self:GetFontID())
 
     return self
 end
@@ -164,7 +168,7 @@ end
 ---@param textureID any
 function MirrorTimer:SetTextureID(textureID)
     self.sets.texture = textureID
-    self:SetProperty("texture", self:GetTextureID())
+    self:SetProperty('texture', self:GetTextureID())
 
     return self
 end
@@ -241,7 +245,7 @@ end
 function MirrorTimer:Update()
     local timerName, value, maxValue, scale, paused, timerLabel = GetMirrorTimerInfo(self.timerID)
 
-    if timerName == "UNKNOWN" then
+    if timerName == 'UNKNOWN' then
         self.timerName = nil
         self.timer:Stop()
         return
@@ -251,9 +255,7 @@ function MirrorTimer:Update()
     self:Start(timerName, value, maxValue, scale, paused, timerLabel)
 end
 
-function MirrorTimer:CreateMenu()
-    local menu = Dominos:NewMenu(self.id)
-
+function MirrorTimer:OnCreateMenu(menu)
     self:AddLayoutPanel(menu)
     self:AddTexturePanel(menu)
     self:AddFontPanel(menu)
@@ -261,32 +263,30 @@ function MirrorTimer:CreateMenu()
     self.menu = menu
 
     self.menu:HookScript(
-        "OnShow",
+        'OnShow',
         function()
-            self:Start("BREATH", random(20, 60) * 1000, 60000, -1, 1, BREATH_LABEL)
+            self:Start('BREATH', random(20, 60) * 1000, 60000, -1, 1, BREATH_LABEL)
         end
     )
 
     self.menu:HookScript(
-        "OnHide",
+        'OnHide',
         function()
             self:Update()
         end
     )
-
-    return menu
 end
 
 ---@param menu table
 function MirrorTimer:AddLayoutPanel(menu)
-    local panel = menu:NewPanel(LibStub("AceLocale-3.0"):GetLocale("Dominos-Config").Layout)
+    local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
 
-    local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
 
-    for i, part in pairs({"label", "time", "border"}) do
+    for i, part in pairs({'label', 'time', 'border'}) do
         panel:NewCheckButton(
             {
-                name = l["Display_" .. part],
+                name = l['Display_' .. part],
                 get = function()
                     return panel.owner:Displaying(part)
                 end,
@@ -339,7 +339,7 @@ end
 
 ---@param menu table
 function MirrorTimer:AddFontPanel(menu)
-    local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
     local panel = menu:NewPanel(l.Font)
 
     panel.fontSelector =
@@ -358,7 +358,7 @@ end
 
 ---@param menu table
 function MirrorTimer:AddTexturePanel(menu)
-    local l = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
     local panel = menu:NewPanel(l.Texture)
 
     panel.textureSelector =

@@ -195,20 +195,11 @@
 	</Frame>
 
 
-	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true">
+	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="3" bottom="3"/>
-			</BackgroundInsets>
-			<Color r="0" g="0" b="0"/>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        </KeyValues>
 		<Size>
 			<AbsDimension x="260" y="270"/>
 		</Size>
@@ -659,20 +650,11 @@
 		</HighlightTexture>
 	</Button>
 
-	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true">
+	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="3" right="3" top="3" bottom="3"/>
-			</BackgroundInsets>
-            <Color r="0" g="0" b="0"/>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        </KeyValues>
 		<Size>
 			<AbsDimension x="543" y="330"/>
 		</Size>
@@ -986,7 +968,7 @@
 				</Anchors>
 			</Button>
 
-			<ScrollFrame name="TradeListScrollFrame" inherits="FauxScrollFrameTemplate">
+			<ScrollFrame name="TradeListScrollFrame" inherits="FauxScrollFrameTemplate,BackdropTemplate">
 				<Size>
 					<AbsDimension x="40" y="50"/>
 				</Size>
@@ -1012,6 +994,8 @@
 					<OnLoad>
 						ScrollFrame_OnLoad(self);
 						local scrollBar = getglobal(self:GetName().."ScrollBar");
+                        Mixin(scrollBar, BackdropTemplateMixin);
+                        BackdropTemplateMixin.OnBackdropLoaded(scrollBar);
 						scrollBar:SetBackdrop( 
 						{
 							bgFile = "Interface\\ChatFrame\\ChatFrameBackground", 

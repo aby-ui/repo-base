@@ -498,7 +498,7 @@ end
 local function createFrame(ud)
     local unit = ud.unit
     ud.isMoving = false
-    ud.mainFrame = CreateFrame("Frame", "RangeDisplayMainFrame_" .. unit, UIParent)
+    ud.mainFrame = CreateFrameAby("Frame", "RangeDisplayMainFrame_" .. unit, UIParent)
     ud.mainFrame:SetFrameStrata(ud.db.strata)
     ud.mainFrame:EnableMouse(false)
     ud.mainFrame:SetClampedToScreen()
@@ -507,7 +507,7 @@ local function createFrame(ud)
     ud.mainFrame:SetHeight(ud.db.frameHeight)
     ud.mainFrame:SetPoint(ud.db.point, UIParent, ud.db.relPoint, ud.db.x, ud.db.y)
 
-    ud.rangeFrame = CreateFrame("Frame", "RangeDisplayFrame_" .. unit, ud.mainFrame)
+    ud.rangeFrame = CreateFrameAby("Frame", "RangeDisplayFrame_" .. unit, ud.mainFrame)
     ud.rangeFrame:SetPoint("CENTER", ud.mainFrame, "CENTER", 0, 0)
     ud.rangeFrame:SetAllPoints()
     ud.rangeFrame:Hide()

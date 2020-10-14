@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Skins\Classic.lua
 	* Author.: StormFX, Maul, Blizzard Entertainment
@@ -34,7 +34,7 @@ Core.AddSkin("Classic", {
 	Websites = Core.Websites,
 
 	-- Skin
-	-- Mask = nil,
+	-- Mask = Default.Mask,
 	Backdrop = {
 		Texture = [[Interface\Buttons\UI-Quickslot]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -63,7 +63,7 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Shadow = {Hide = true},
+	-- Shadow = Default.Shadow,
 	Normal = {
 		Texture = [[Interface\Buttons\UI-Quickslot2]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -102,7 +102,7 @@ Core.AddSkin("Classic", {
 			-- SetAllPoints = nil,
 		},
 	},
-	-- Disabled = {Hide = true},
+	-- Disabled = Default.Disabled,
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -259,10 +259,7 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-	-- Gloss = {Hide = true},
-	-- IconOverlay = Default.IconOverlay,
-	-- NewAction = Default.NewAction,
-	-- SpellHighlight = Default.SpellHighlight,
+	-- Gloss = Default.Gloss,
 	AutoCastable = {
 		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -276,6 +273,23 @@ Core.AddSkin("Classic", {
 		RelPoint = "CENTER",
 		OffsetX = 0.5,
 		OffsetY = -0.5,
+		-- SetAllPoints = nil,
+	},
+	-- NewAction = Default.NewAction,
+	-- SpellHighlight = Default.SpellHighlight,
+	-- IconOverlay = Default.IconOverlay,
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 16,
+		Height = 17,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 1,
+		OffsetY = -1,
 		-- SetAllPoints = nil,
 	},
 	NewItem = {
@@ -292,8 +306,37 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	QuestBorder = {
+		Border = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
+		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
+		Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 32,
+		Height = 32,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	-- SearchOverlay = Default.SearchOverlay,
 	-- ContextOverlay = Default.ContextOverlay,
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 16,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 1,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	-- Name = Default.Name,
 	Highlight = {
 		Texture = [[Interface\Buttons\ButtonHilight-Square]],

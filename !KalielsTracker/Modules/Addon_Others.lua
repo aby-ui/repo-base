@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.371", true) then
+    if KT:CheckAddOn("ElvUI", "11.49", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -59,16 +59,13 @@ local function ElvUI_SetSupport()
         end)
         hooksecurefunc(E, "ToggleOptionsUI", function(self)
             if E.Libs.AceConfigDialog.OpenFrames[self.name] then
-                local options = self.Options.args.general.args.blizzUIImprovements.args.objectiveFrameGroup.args
-                options.objectiveFrameAutoHide.disabled = true
-                options.objectiveFrameHeight.disabled = true
-                options.bonusObjectivePosition.disabled = true
-                options[addonName.."Warning"] = {
+                local options = self.Options.args.general.args.blizzUIImprovements.args.objectiveFrameGroup
+                options.disabled = true
+                options.args[addonName.."Warning"] = {
                     name = KTwarning,
                     type = "description",
-                    order = 0.5,
+                    order = 0.1,
                 }
-                self.Options.args.skins.args.blizzard.args.objectiveTracker.disabled = true
             end
         end)
     end
@@ -84,7 +81,7 @@ end
 
 -- RealUI
 local function RealUI_SetSupport()
-    if KT:CheckAddOn("nibRealUI", "2.1.4", true) then
+    if KT:CheckAddOn("nibRealUI", "2.2.1", true) then
         local R = _G.RealUI
         R:SetModuleEnabled("Objectives Adv.", false)
         -- Fade
@@ -103,7 +100,7 @@ end
 
 -- SyncUI
 local function SyncUI_SetSupport()
-    if KT:CheckAddOn("SyncUI", "8.2.5.2", true) then
+    if KT:CheckAddOn("SyncUI", "8.3.0.3", true) then
         SyncUI_ObjTracker.Show = function() end
         SyncUI_ObjTracker:Hide()
         SyncUI_ObjTracker:SetScript("OnLoad", nil)

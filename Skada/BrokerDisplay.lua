@@ -97,7 +97,7 @@ local ttactive = false
 function mod:Create(win, isnew)
     -- Optional internal frame
     if not win.frame then
-        win.frame = CreateFrame("Frame", win.db.name.."BrokerFrame", UIParent)
+        win.frame = CreateFrameAby("Frame", win.db.name.."BrokerFrame", UIParent)
         win.frame:SetHeight(win.db.height or 30)
         win.frame:SetWidth(win.db.width or 200)
         win.frame:SetPoint("CENTER", 0, 0)

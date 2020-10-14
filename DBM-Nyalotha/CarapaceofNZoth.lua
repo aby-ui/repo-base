@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200816003541")
+mod:SetRevision("20201013170546")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetUsedIcons(1, 2, 3)
@@ -52,7 +52,7 @@ local warnCystGenesis						= mod:NewSpellAnnounce(307064, 3)
 local specWarnGiftofNzoth					= mod:NewSpecialWarningYou(313334, nil, nil, nil, 1, 2)
 local specWarnServantofNzoth				= mod:NewSpecialWarningTargetChange(307832, false, nil, 2, 1, 2)
 local yellServantofNzoth					= mod:NewYell(307832)
-local specWarnBlackScar						= mod:NewSpecialWarningStack(315954, nil, 3, nil, nil, 1, 6)
+local specWarnBlackScar						= mod:NewSpecialWarningStack(315954, nil, 2, nil, nil, 1, 6)
 local specWarnBlackScarTaunt				= mod:NewSpecialWarningTaunt(315954, nil, nil, nil, 1, 2)
 local specwarnWillPower						= mod:NewSpecialWarningCount(307831, nil, nil, nil, 1, 10)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
@@ -157,7 +157,7 @@ function mod:OnCombatStart(delay)
 		self:Schedule(30, phaseOneTentacleLoop, self)--Only started on mythic for now
 		timerGazeofMadnessCD:Start(41.2-delay, 1)
 		self:RegisterShortTermEvents(
-			"UNIT_HEALTH_FREQUENT boss1"
+			"UNIT_HEALTH boss1"
 		)
 	elseif self:IsHeroic() then--Heroic confirmed, mythic assumed
 		timerMadnessBombCD:Start(5-delay, 1)--SUCCESS
@@ -266,8 +266,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			local timer
 			if self:IsMythic() then
 				timer = (self.vb.phase == 3) and 15.2 or (self.vb.phase == 2) and 18.4 or 20.8--Phase 3 not confirmed yet
-			elseif self:IsHard() then
-				timer = (self.vb.phase == 3) and 26.7 or (self.vb.phase == 2) and 22.2 or (self.vb.phase == 2.5) and 42.2 or 21
+			elseif self:IsHeroic() then
+				timer = (self.vb.phase == 3) and 26.7 or (self.vb.phase == 2) and 20.2 or (self.vb.phase == 2.5) and 42.2 or 21
 			elseif self:IsNormal() then
 				timer = (self.vb.phase == 3) and 33.7 or (self.vb.phase == 2) and 22.6 or (self.vb.phase == 2.5) and 47.5 or 26.2
 			else--LFR
@@ -289,8 +289,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 					timer = 4.3
 				end
 			end
-		elseif self:IsHard() then
-			timer = (self.vb.phase == 2.5) and 22.2 or (self.vb.phase == 2) and 33.3 or 24
+		elseif self:IsHeroic() then
+			timer = (self.vb.phase == 2.5) and 22.2 or (self.vb.phase == 2) and 32.1 or 24
 		elseif self:IsNormal() then
 			timer = (self.vb.phase == 2.5) and 24.9 or (self.vb.phase == 2) and 37.4 or 30
 		else--LFR
@@ -431,7 +431,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 315954 then
 		local amount = args.amount or 1
-		if amount >= 3 then
+		if amount >= 2 then
 			if args:IsPlayer() then
 				specWarnBlackScar:Show(amount)
 				specWarnBlackScar:Play("stackhigh")
@@ -682,7 +682,7 @@ function mod:UNIT_POWER_FREQUENT(uId)
 	end
 end
 
-function mod:UNIT_HEALTH_FREQUENT(uId)
+function mod:UNIT_HEALTH(uId)
 	local hp = UnitHealth(uId) / UnitHealthMax(uId)
 	if hp < 0.56 then
 		self:Unschedule(phaseOneTentacleLoop)

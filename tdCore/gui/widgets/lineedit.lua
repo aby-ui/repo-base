@@ -5,7 +5,7 @@ local LineEdit = GUI:NewModule('LineEdit', CreateFrame('EditBox'), 'UIObject', '
 LineEdit:SetVerticalArgs(40, -15, 0, 0)
 
 function LineEdit:New(parent)
-    local obj = self:Bind(CreateFrame('EditBox', nil, parent))
+    local obj = self:Bind(CreateFrameAby('EditBox', nil, parent))
     
     obj:SetAutoFocus(nil)
     obj:SetHeight(20)

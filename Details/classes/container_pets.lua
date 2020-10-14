@@ -1,15 +1,14 @@
 local _detalhes = 		_G._detalhes
 local gump = 			_detalhes.gump
-
 local container_pets =		_detalhes.container_pets
 
 -- api locals
-local _UnitGUID = UnitGUID
-local _UnitName = UnitName
-local _GetUnitName = GetUnitName
-local _IsInRaid = IsInRaid
-local _IsInGroup = IsInGroup
-local _GetNumGroupMembers = GetNumGroupMembers
+local _UnitGUID = _G.UnitGUID
+local _UnitName = _G.UnitName
+local _GetUnitName = _G.GetUnitName
+local _IsInRaid = _G.IsInRaid
+local _IsInGroup = _G.IsInGroup
+local _GetNumGroupMembers = _G.GetNumGroupMembers
 
 -- lua locals
 local _setmetatable = setmetatable
@@ -43,19 +42,17 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 	--> buscar pelo pet no container de pets
 	local busca = self.pets [pet_serial]
 	if (busca) then
-
-			--in merging operations, make sure to not add the owner name a second time in the name
+		--in merging operations, make sure to not add the owner name a second time in the name
+	
+		--check if the pet name already has the owner name in, if not, add it
+		if (not pet_nome:find ("<")) then
+			--get the owner name
+			local ownerName = busca[1]
+			--add the owner name to the pet name
+			pet_nome = pet_nome .. " <".. ownerName ..">"
+		end
 		
-			--check if the pet name already has the owner name in, if not, add it
-			if (not pet_nome:find ("<")) then
-				--get the owner name
-				local ownerName = busca[1]
-				--add the owner name to the pet name
-				pet_nome = pet_nome .. " <".. ownerName ..">"
-			end
-			
-			return pet_nome, busca[1], busca[2], busca[3] --> [1] dono nome [2] dono serial [3] dono flag
-
+		return pet_nome, busca[1], busca[2], busca[3] --> [1] dono nome [2] dono serial [3] dono flag
 	end
 	
 	--> buscar pelo pet na raide
@@ -122,9 +119,6 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 			is_ignored [pet_serial] = true
 		end
 	end
-	
-	--> n�o pode encontrar o dono do pet, coloca-lo na ignore
-	
 	return
 end
 
@@ -220,19 +214,11 @@ function container_pets:Remover (pet_serial)
 end
 
 function container_pets:Adicionar (pet_serial, pet_nome, pet_flags, dono_serial, dono_nome, dono_flags)
-
 	if (pet_flags and _bit_band (pet_flags, OBJECT_TYPE_PET) ~= 0 and _bit_band (pet_flags, EM_GRUPO) ~= 0) then
 		self.pets [pet_serial] = {dono_nome, dono_serial, dono_flags, _detalhes._tempo, true, pet_nome, pet_serial}
-		--if (pet_nome == "Guardian of Ancient Kings") then --remover
-		--	print ("SUMMON", "Adicionou ao container")
-		--end
 	else
 		self.pets [pet_serial] = {dono_nome, dono_serial, dono_flags, _detalhes._tempo, false, pet_nome, pet_serial}
-		--if (pet_nome == "Guardian of Ancient Kings") then --remover
-		--	print ("SUMMON", "Adicionou ao container")
-		--end
 	end
-	
 end
 
 function _detalhes:WipePets()
@@ -240,17 +226,15 @@ function _detalhes:WipePets()
 end
 
 function _detalhes:LimparPets()
-	--> elimina pets antigos
-	local _new_PetTable = {}
+	--> erase old pet table by creating a new one
+	local newPetTable = {}
 	--> minimum of 90 minutes to clean a pet from the pet table data
 	for PetSerial, PetTable in _pairs (_detalhes.tabela_pets.pets) do 
 		if ( (PetTable[4] + 5400 > _detalhes._tempo + 1) or (PetTable[5] and PetTable[4] + 43200 > _detalhes._tempo) ) then
-			_new_PetTable [PetSerial] = PetTable
+			newPetTable [PetSerial] = PetTable
 		end
 	end
-	--a tabela antiga ser� descartada pelo garbage collector.
-	--_table_wipe (_detalhes.tabela_pets.pets)
-	_detalhes.tabela_pets.pets = _new_PetTable
+	_detalhes.tabela_pets.pets = newPetTable
 	_detalhes:UpdateContainerCombatentes()
 	
 end
@@ -265,11 +249,12 @@ function _detalhes:SchedulePetUpdate (seconds)
 		return
 	end
 	have_schedule = true
-	_detalhes:ScheduleTimer ("UpdatePets", seconds or 5)
+
+	--_detalhes:ScheduleTimer ("UpdatePets", seconds or 5)
+	Details.Schedules.NewTimer(seconds or 5, Details.UpdatePets, Details)
 end
 
 function _detalhes.refresh:r_container_pets (container)
 	_setmetatable (container, container_pets)
-	--container.__index = container_pets
 end
 

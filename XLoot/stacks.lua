@@ -111,7 +111,7 @@ do
 	end
 
 	function lib:CreateAnchor(text, svdata)
-		local anchor = CreateFrame('Button', nil, UIParent)
+		local anchor = CreateFrame('Button', nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		AnchorPrototype:New(anchor)
 		anchor:SetBackdrop(backdrop)
 		anchor:SetBackdropColor(0, 0, 0, 0.7)

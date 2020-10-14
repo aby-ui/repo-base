@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200610151630")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
-mod:SetZone()
 mod:SetBossHPInfoToHighest()--Because of heal on mythic
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
 mod.respawnTime = 29

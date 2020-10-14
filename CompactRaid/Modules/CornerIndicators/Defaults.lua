@@ -45,9 +45,6 @@ module.DEFAULT_SPELLS = {
 
 	PALADIN = {
 		53563, -- Beacon of Light
-		203539, -- Blessing of wisdom
-		203528, -- Blessing of might
-		203538, -- Blessing of Kings
 		1038, -- Hand of Salvation
 		1044, -- Hand of Freedom
 		1022, -- Hand of Protection

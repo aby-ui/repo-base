@@ -22,6 +22,8 @@ local Env = CNDT.Env
 
 local _, pclass = UnitClass("Player")
 
+local wow_900 = select(4, GetBuildInfo()) >= 90000
+
 Env.UnitHealth = UnitHealth
 Env.UnitHealthMax = UnitHealthMax
 Env.UnitPower = UnitPower
@@ -41,6 +43,7 @@ TMW:RegisterUpgrade(62032, {
 
 local ConditionCategory = CNDT:GetCategory("RESOURCES", 1, L["CNDTCAT_RESOURCES"], false, false)
 
+local healthEvent = wow_900 and "UNIT_HEALTH" or "UNIT_HEALTH_FREQUENT"
 
 ConditionCategory:RegisterCondition(1.0, "HEALTH", {
 	text = HEALTH .. " - " .. L["CONDITIONPANEL_PERCENT"],
@@ -54,7 +57,7 @@ ConditionCategory:RegisterCondition(1.0, "HEALTH", {
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
-			ConditionObject:GenerateNormalEventString("UNIT_HEALTH_FREQUENT", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString(healthEvent, CNDT:GetUnit(c.Unit)),
 			ConditionObject:GenerateNormalEventString("UNIT_MAXHEALTH", CNDT:GetUnit(c.Unit))
 	end,
 })
@@ -69,7 +72,7 @@ ConditionCategory:RegisterCondition(1.1, "HEALTH_ABS", {
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
-			ConditionObject:GenerateNormalEventString("UNIT_HEALTH_FREQUENT", CNDT:GetUnit(c.Unit))
+			ConditionObject:GenerateNormalEventString(healthEvent, CNDT:GetUnit(c.Unit))
 	end,
 })
 ConditionCategory:RegisterCondition(1.2, "HEALTH_MAX", {
@@ -213,7 +216,7 @@ ConditionCategory:RegisterCondition(26.15, "STAGGER_CURPCT", {
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UNIT_ABSORB_AMOUNT_CHANGED", "player"),
-			ConditionObject:GenerateNormalEventString("UNIT_HEALTH_FREQUENT", "player")
+			ConditionObject:GenerateNormalEventString(healthEvent, "player")
 	end,
 	hidden = pclass ~= "MONK",
 })

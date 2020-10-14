@@ -5,14 +5,15 @@
 	English: Default language
 --]]
 
-local L = LibStub('AceLocale-3.0'):NewLocale('Dominos', 'enUS', true)
+local AddonName = ...
+local L = LibStub('AceLocale-3.0'):NewLocale(AddonName, 'enUS', true)
 
---system messages
+-- system messages
 L.NewPlayer = 'Created new profile for %s'
 L.Updated = 'Updated to v%s'
 L.WrongBuildWarning = "You're running a %s version for %s on a %s server. Things may not work"
 
---profiles
+-- profiles
 L.ProfileCreated = 'Created new profile "%s"'
 L.ProfileLoaded = 'Set profile to "%s"'
 L.ProfileDeleted = 'Deleted profile "%s"'
@@ -21,7 +22,7 @@ L.ProfileReset = 'Reset profile "%s"'
 L.CantDeleteCurrentProfile = 'Cannot delete the current profile'
 L.InvalidProfile = 'Invalid profile "%s"'
 
---slash command help
+-- slash command help
 L.ShowOptionsDesc = 'Shows the options menu'
 L.ConfigDesc = 'Toggles configuration mode'
 
@@ -37,7 +38,7 @@ L.ShowFramesDesc = 'Shows the given <frameList>'
 L.HideFramesDesc = 'Hides the given <frameList>'
 L.ToggleFramesDesc = 'Toggles the given <frameList>'
 
---slash commands for profiles
+-- slash commands for profiles
 L.SetDesc = 'Switches settings to <profile>'
 L.SaveDesc = 'Saves current settings and switches to <profile>'
 L.CopyDesc = 'Copies settings from <profile>'
@@ -47,27 +48,38 @@ L.ListDesc = 'Lists all profiles'
 L.AvailableProfiles = 'Available Profiles'
 L.PrintVersionDesc = 'Prints the current version'
 
---dragFrame tooltips
+-- dragFrame tooltips
 L.ShowConfig = 'Right Click to configure'
 L.HideBar = 'Middle Click or Shift-Right Click to hide'
 L.ShowBar = 'Middle Click or Shift-Right Click to show'
 L.SetAlpha = 'Mousewheel to set opacity (|cffffffff%d|r)'
 
---minimap button stuff
+-- minimap button stuff
 L.ConfigEnterTip = 'Left Click to enter configuration mode'
 L.ConfigExitTip = 'Left Click to exit configuration mode'
 L.BindingEnterTip = 'Shift-Left Click to enter binding mode'
 L.BindingExitTip = 'Shift-Left Click to exit binding mode'
 L.ShowOptionsTip = 'Right Click to show the options menu'
 
---helper dialog stuff
+-- helper dialog stuff
 L.ConfigMode = 'Configuration Mode'
 L.ConfigModeExit = 'Exit Config Mode'
 L.ConfigModeHelp = 'Drag any bar to move it. Right Click to configure. Middle Click or Shift-Right Click to toggle visibility.'
 
---bar tooltips
+-- bar tooltips
 L.TipRollBar = 'Displays frames for rolling on items, when in a group.'
 L.TipVehicleBar = [[Displays controls to aim and exit a vehicle.\nAll other vehicle actions are displayed on the possess bar.]]
 
 L.BarDisplayName = "%s Bar"
 L.ActionBarDisplayName = "Action Bar %s"
+
+-- binding names
+_G[('BINDING_CATEGORY_%s'):format(AddonName)] = AddonName
+
+for id = 1, 12 do
+    _G[('BINDING_HEADER_%sActionBar%d'):format(AddonName, id)] = ('%s Action Bar %d'):format(AddonName, id)
+end
+
+for id = 1, 60 do
+    _G[('BINDING_NAME_CLICK:%sActionButton%d:HOTKEY'):format(AddonName, id)] = ('%s Action Button %d'):format(AddonName, id)
+end

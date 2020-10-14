@@ -71,35 +71,22 @@
 		end
 		return nil
 	end
-
-	function _detalhes.StatusBar:AlignPluginText (child, default)
-		local side = child.options.textAlign
-		if (child.options.textAlign == 0) then
-			side = default
-		end
-		
-		child.text:ClearAllPoints()
-		if (side == 1) then
-			child.text:SetPoint ("left", child.frame, "left", child.options.textXMod, child.options.textYMod)
-		elseif (side == 2) then
-			child.text:SetPoint ("center", child.frame, "center", child.options.textXMod, child.options.textYMod)
-		elseif (side == 3) then
-			child.text:SetPoint ("right", child.frame, "right", child.options.textXMod, child.options.textYMod)
-		end
-	end
 	
 	--> functions to set the three statusbar places: left, center and right
 		function _detalhes.StatusBar:SetCenterPlugin (instance, childObject, fromStartup)
 			childObject.frame:Show()
 			childObject.frame:ClearAllPoints()
 			
+			childObject.options.textAlign = 2
+
 			if (instance.micro_displays_side == 2) then --> default - bottom
 				childObject.frame:SetPoint ("center", instance.baseframe.rodape.StatusBarCenterAnchor, "center")
 			elseif (instance.micro_displays_side == 1) then --> top side
 				childObject.frame:SetPoint ("center", instance.baseframe.cabecalho.StatusBarCenterAnchor, "center")
 			end
-			
-			_detalhes.StatusBar:AlignPluginText (childObject, 2)
+
+			childObject.text:ClearAllPoints()
+			childObject.text:SetPoint ("center", childObject.frame, "center", childObject.options.textXMod, childObject.options.textYMod)
 			
 			instance.StatusBar.center = childObject
 			childObject.anchor = "center"
@@ -126,6 +113,8 @@
 		
 			childObject.frame:Show()
 			childObject.frame:ClearAllPoints()
+
+			childObject.options.textAlign = 1
 			
 			if (instance.micro_displays_side == 2) then --> default - bottom
 				childObject.frame:SetPoint ("left", instance.baseframe.rodape.StatusBarLeftAnchor,  "left")
@@ -133,7 +122,8 @@
 				childObject.frame:SetPoint ("left", instance.baseframe.cabecalho.StatusBarLeftAnchor,  "left")
 			end
 			
-			_detalhes.StatusBar:AlignPluginText (childObject, 1)
+			childObject.text:ClearAllPoints()
+			childObject.text:SetPoint ("left", childObject.frame, "left", childObject.options.textXMod, childObject.options.textYMod)
 			
 			instance.StatusBar.left = childObject
 			childObject.anchor = "left"
@@ -156,13 +146,16 @@
 			childObject.frame:Show()
 			childObject.frame:ClearAllPoints()
 			
+			childObject.options.textAlign = 3
+
 			if (instance.micro_displays_side == 2) then --> default - bottom
 				childObject.frame:SetPoint ("right", instance.baseframe.rodape.direita, "right", -20, 10)
 			elseif (instance.micro_displays_side == 1) then --> top side
 				childObject.frame:SetPoint ("right", instance.baseframe.cabecalho.StatusBarRightAnchor, "right")
 			end
 			
-			_detalhes.StatusBar:AlignPluginText (childObject, 3)
+			childObject.text:ClearAllPoints()
+			childObject.text:SetPoint ("right", childObject.frame, "right", childObject.options.textXMod, childObject.options.textYMod)
 			
 			instance.StatusBar.right = childObject
 			childObject.anchor = "right"
@@ -573,7 +566,7 @@
 				value = child.options.textSize
 			end
 		
-			child.options.textSize = value
+			child.options.textSize = value or 9
 			child:SetFontSize (child.text, child.options.textSize)
 			
 		elseif (option == "textface") then
@@ -1479,22 +1472,21 @@ window.close_with_right = true
 window.child = nil
 window.instance = nil
 window:SetFrameStrata ("FULLSCREEN")
+DetailsFramework:ApplyStandardBackdrop(window)
 
-window:SetBackdrop ({bgFile =  [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16, edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize=12})
-window:SetBackdropColor (0, 0, 0, 0.9)
+--window:SetBackdrop ({bgFile =  [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16, edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize=12})
+--window:SetBackdropColor (0, 0, 0, 0.9)
 
 local extraWindow = _detalhes.gump:NewPanel (window, nil, "DetailsStatusBarOptions2", "extra", 300, 180)
 extraWindow:SetPoint ("left", window, "right")
 extraWindow.close_with_right = true
 extraWindow.locked = false
 extraWindow:Hide()
+DetailsFramework:ApplyStandardBackdrop(extraWindow)
 
 extraWindow:SetHook ("OnHide", function()
 	window:Hide()
 end)
-
-extraWindow:SetBackdrop ({bgFile =  [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16, edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize=12})
-extraWindow:SetBackdropColor (0, 0, 0, 0.9)
 
 --> text style
 	_detalhes.gump:NewLabel (window, _, "$parentTextStyleLabel", "textstyle", Loc ["STRING_PLUGINOPTIONS_TEXTSTYLE"])
@@ -1579,34 +1571,6 @@ extraWindow:SetBackdropColor (0, 0, 0, 0.9)
 		_detalhes.StatusBar:ApplyOptions (window.instance.StatusBar.right, "textsize", amount)
 	end)
 	
---> align
-	_detalhes.gump:NewLabel (window, _, "$parentTextAlignLabel", "textalign", Loc ["STRING_PLUGINOPTIONS_TEXTALIGN"])
-	window.textalign:SetPoint (10, -95)
-	--
-	_detalhes.gump:NewSlider (window, _, "$parentSliderAlign", "alignSlider", 180, 20, 0, 3, 1)
-	window.alignSlider:SetPoint ("left", window.textalign, "right")
-	window.alignSlider:SetThumbSize (75)
-	window.alignSlider:SetHook ("OnValueChange", function (self, child, side)
-		
-		side = _math_floor (side)
-		
-		child.options.textAlign = side
-		
-		if (side == 0) then
-			window.alignSlider.amt:SetText (Loc ["STRING_AUTO"])
-		elseif (side == 1) then
-			window.alignSlider.amt:SetText (Loc ["STRING_LEFT"])
-		elseif (side == 2) then
-			window.alignSlider.amt:SetText (Loc ["STRING_CENTER"])
-		elseif (side == 3) then
-			window.alignSlider.amt:SetText (Loc ["STRING_RIGHT"])
-		end
-		
-		_detalhes.StatusBar:ReloadAnchors (child.instance)
-		
-		return true
-	end)
-	
 --> text font
 	local onSelectFont = function (_, child, fontName)
 		--_detalhes.StatusBar:ApplyOptions (child, "textface", fontName)
@@ -1672,9 +1636,6 @@ extraWindow:SetBackdropColor (0, 0, 0, 0.9)
 
 		_G.DetailsStatusBarOptionsSliderFontSize.MyObject:SetFixedParameter (child)
 		_G.DetailsStatusBarOptionsSliderFontSize.MyObject:SetValue (child.options.textSize)
-		
-		_G.DetailsStatusBarOptionsSliderAlign.MyObject:SetFixedParameter (child)
-		_G.DetailsStatusBarOptionsSliderAlign.MyObject:SetValue (child.options.textAlign)
 
 		_G.DetailsStatusBarOptionsFontDropdown.MyObject:SetFixedParameter (child)
 		_G.DetailsStatusBarOptionsFontDropdown.MyObject:Select (child.options.textFace)

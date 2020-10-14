@@ -177,15 +177,15 @@
 					<Anchor point="TOP" x="0" y="-202"/>
 				</Anchors>
 			</Frame>
-			<Frame parentKey="Chart">
+			<Frame parentKey="Chart" inherits="RematchBorderBackdropTemplate">
 				<Size x="266" y="156"/>
 				<Anchors>
 					<Anchor point="TOP" relativeKey="$parent.ChartTypeComboBox" relativePoint="BOTTOM" x="0" y="0"/>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+				<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 					<EdgeSize val="16"/>
 					<BorderColor r="0.5" g="0.5" b="0.5"/>
-				</Backdrop>
+				</Backdrop> -->
 				<Layers>
 					<Layer level="BACKGROUND">
 						<Texture>

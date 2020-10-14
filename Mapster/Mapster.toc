@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Notes: Simple Map Mod
 ## Notes-zhCN: 简单实用的地图模块
 ## Notes-frFR: Simples modifications de la carte.
@@ -6,7 +6,7 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.8.5-1-g3e96752
+## Version: 1.9.0
 ## X-License: All rights reserved.
 ## X-Curse-Project-ID: 14376
 ## X-WoWI-ID: 8306
@@ -22,6 +22,7 @@ Config.lua
 Coords.lua
 # GroupIcons.lua
 # BattleMap.lua
+FogClearData.lua
 FogClear.lua
 Scaling.lua
 

@@ -116,19 +116,21 @@ end
 --設置物品等級
 local function SetItemLevel(self, link, category, BagID, SlotID)
     if (not self) then return end
+    if link == true or link == false then return end --TODO aby9
     local frame = GetItemLevelFrame(self, category)
     if (self.OrigItemLink == link) then
         SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link, self.OrigItemLevel)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else
         local level = ""
-        local _, count, quality, class, subclass, equipSlot
+        local _, count, quality, class, subclass, equipSlot, linklevel
         if (link and string.match(link, "item:(%d+):")) then
             if (BagID and SlotID and (category == "Bag" or category == "AltEquipment")) then
                 count, level = LibItemInfo:GetContainerItemLevel(BagID, SlotID)
-                local ilevel
-                _, _, quality, ilevel, _, class, subclass, _, equipSlot = GetItemInfo(link)
-                if level == 0 then level = ilevel end --使用离线银行的时候
+                _, _, quality, linklevel, _, class, subclass, _, equipSlot = GetItemInfo(link)
+                if (count == 0 and level == 0) then
+                    level = linklevel
+                end
             else
                 count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
             end
@@ -162,7 +164,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
 end
 
 --[[ All ]]
-hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink)
+hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, suppressOverlays)
     if (self.ItemLevelCategory or self.isBag) then return end
     local frame = GetItemLevelFrame(self)
     if (TinyInspectDB and not TinyInspectDB.EnableItemLevelOther) then
@@ -186,12 +188,15 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink)
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            --link = select(7, EJ_GetLootInfoByIndex(self.index))
+            --link = select(7, C_EncounterJournal.GetLootInfoByIndex(self.index))
             --SetItemLevel(self, link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())
             SetItemLevel(self, link)
+        else
+            SetItemLevelString(frame.levelString, "")
+            SetItemSlotString(frame.slotString)
         end
     else
         SetItemLevelString(frame.levelString, "")
@@ -337,13 +342,13 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
         end)
     end
     -- For Combuctor
-    if (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
-        hooksecurefunc(Combuctor.Item, "Update", function(self)
-            SetItemLevel(self, self.GetItem and self:GetItem(), "Bag", self.GetBag and self:GetBag(), self.GetID and self:GetID())
-        end)
-    elseif (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
+    if (Combuctor and Combuctor.ItemSlot and Combuctor.ItemSlot.Update) then
         hooksecurefunc(Combuctor.ItemSlot, "Update", function(self)
             SetItemLevel(self, self:GetItem(), "Bag", self:GetBag(), self:GetID())
+        end)
+    elseif (Combuctor and Combuctor.Item and Combuctor.Item.Update) then
+        hooksecurefunc(Combuctor.Item, "Update", function(self)
+            SetItemLevel(self, self.GetItem and self:GetItem() or self.hasItem, "Bag", self.GetBag and self:GetBag() or self.bag, self.GetID and self:GetID())
         end)
     end
     -- For LiteBag
@@ -591,20 +596,23 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_BATTLEGROUND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filter)
 
 -- 初次拾取钥石的信息 "\124cffa335ee\124Hitem:158923::::::::120:65:4063232:::248:9:9:11:2:::\124h[史诗钥石]\124h\124r",
-local function KeystoneLevel(Hyperlink)
-    local itemId, map, level = string.match(Hyperlink, "|Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):.-|h(.-)|h")
-    if itemId == "158923" then
+function firstLootKeystone(Hyperlink)
+    local map, level = string.match(Hyperlink, "|Hitem:158923::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):")
+    if (map and level) then
         local name = C_ChallengeMode.GetMapUIInfo(map)
-        if name then Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..format(CHALLENGE_MODE_KEYSTONE_HYPERLINK, name, level).."]|h") end
+        if name then
+            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..format(CHALLENGE_MODE_KEYSTONE_HYPERLINK, name, level).."]|h")
+        end
     end
     return Hyperlink
 end
 
-local filterLootKeyStone = function(self, event, msg, ...)
-    msg = msg:gsub("(\124Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:%d+:%d+:.-|h.-|h)", KeystoneLevel)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg, ...)
+    if (string.find(msg, "item:158923:")) then
+        msg = msg:gsub("(|Hitem:158923:.-|h.-|h)", firstLootKeystone)
+    end
     return false, msg, ...
-end
-ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filterLootKeyStone)
+end)
 
 -- 位置設置
 LibEvent:attachTrigger("ITEMLEVEL_FRAME_SHOWN", function(self, frame, parent, category)

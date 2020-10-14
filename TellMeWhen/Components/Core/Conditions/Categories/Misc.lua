@@ -247,7 +247,7 @@ ConditionCategory:RegisterCondition(21,	 "QUESTCOMPLETE", {
 	unit = false,
 	icon = "Interface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon",
 	Env = {
-		IsQuestFlaggedCompleted = IsQuestFlaggedCompleted,
+		IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted,
 		GetQuestResetTime = GetQuestResetTime,
 	},
 	funcstr = function(c)

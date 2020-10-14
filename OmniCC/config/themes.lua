@@ -1,6 +1,6 @@
 local _, Addon = ...
-local L = LibStub("AceLocale-3.0"):GetLocale("OmniCC", true)
-local LSM = LibStub("LibSharedMedia-3.0")
+local L = LibStub('AceLocale-3.0'):GetLocale('OmniCC', true)
+local LSM = LibStub('LibSharedMedia-3.0')
 local OmniCC = _G.OmniCC
 
 local function getEffectValues()
@@ -15,22 +15,22 @@ end
 
 local function createStateOptionsForTheme(theme, id, order)
     local group = {
-        type = "group",
+        type = 'group',
         name = L.ColorAndScale,
         desc = L.ColorAndScaleDesc,
         order = order,
         args = {}
     }
 
-    for i, state in ipairs {"soon", "seconds", "minutes", "hours", "charging", "controlled"} do
+    for i, state in ipairs {'soon', 'seconds', 'minutes', 'hours', 'charging', 'controlled'} do
         group.args[state] = {
-            type = "group",
-            name = L["State_" .. state],
+            type = 'group',
+            name = L['State_' .. state],
             inline = true,
             order = 100 + i,
             args = {
                 color = {
-                    type = "color",
+                    type = 'color',
                     name = L.TextColor,
                     order = 1,
                     hasAlpha = true,
@@ -46,12 +46,12 @@ local function createStateOptionsForTheme(theme, id, order)
                         style.b = b
                         style.a = a
 
-                        OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                        OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                     end
                 },
                 scale = {
                     order = 2,
-                    type = "range",
+                    type = 'range',
                     name = L.TextSize,
                     isPercent = true,
                     softMin = 0,
@@ -61,7 +61,7 @@ local function createStateOptionsForTheme(theme, id, order)
                     end,
                     set = function(_, val)
                         theme.textStyles[state].scale = val
-                        OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                        OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                     end
                 }
             }
@@ -73,41 +73,41 @@ end
 
 local function createTextOptionsForTheme(theme, id, order)
     return {
-        type = "group",
+        type = 'group',
         name = L.Typography,
         desc = L.TypographyDesc,
         order = order,
         args = {
             font = {
-                type = "group",
+                type = 'group',
                 name = L.TextFont,
                 order = 0,
                 inline = true,
                 args = {
                     face = {
-                        type = "select",
+                        type = 'select',
                         name = L.FontFace,
                         order = 1,
                         width = 1.5,
-                        dialogControl = "LSM30_Font", --Select your widget here
-                        values = LSM:HashTable("font"), -- pull in your font list from LSM
+                        dialogControl = 'LSM30_Font', --Select your widget here
+                        values = LSM:HashTable('font'), -- pull in your font list from LSM
                         get = function()
-                            for key, font in pairs(LSM:HashTable("font")) do
+                            for key, font in pairs(LSM:HashTable('font')) do
                                 if theme.fontFace == font then
                                     return key
                                 end
                             end
                         end,
                         set = function(_, key)
-                            theme.fontFace = LSM:Fetch("font", key)
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            theme.fontFace = LSM:Fetch('font', key)
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end
                     },
                     size = {
-                        type = "range",
+                        type = 'range',
                         name = L.FontSize,
                         order = 3,
-                        width = "full",
+                        width = 'full',
                         min = 8,
                         softMax = 36,
                         step = 1,
@@ -116,11 +116,11 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.fontSize = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end
                     },
                     outline = {
-                        type = "select",
+                        type = 'select',
                         name = L.FontOutline,
                         order = 2,
                         get = function()
@@ -128,7 +128,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.fontOutline = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end,
                         values = {
                             NONE = L.Outline_NONE,
@@ -140,13 +140,13 @@ local function createTextOptionsForTheme(theme, id, order)
                 }
             },
             shadow = {
-                type = "group",
+                type = 'group',
                 name = L.TextShadow,
                 inline = true,
                 order = 10,
                 args = {
                     color = {
-                        type = "color",
+                        type = 'color',
                         name = L.TextShadowColor,
                         order = 1,
                         width = 1.5,
@@ -163,12 +163,12 @@ local function createTextOptionsForTheme(theme, id, order)
                             shadow.b = b
                             shadow.a = a
 
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end
                     },
                     x = {
                         order = 2,
-                        type = "range",
+                        type = 'range',
                         name = L.HorizontalOffset,
                         softMin = -18,
                         softMax = 18,
@@ -178,12 +178,12 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.fontShadow.x = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end
                     },
                     y = {
                         order = 2,
-                        type = "range",
+                        type = 'range',
                         name = L.VerticalOffset,
                         softMin = -18,
                         softMax = 18,
@@ -193,19 +193,19 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.fontShadow.y = -val
-                            OmniCC.Display:ForAll("UpdateCooldownTextFont")
+                            OmniCC.Display:ForAll('UpdateCooldownTextFont')
                         end
                     }
                 }
             },
             position = {
-                type = "group",
+                type = 'group',
                 name = L.TextPosition,
                 inline = true,
                 order = 20,
                 args = {
                     anchor = {
-                        type = "select",
+                        type = 'select',
                         width = 1.5,
                         name = L.Anchor,
                         order = 0,
@@ -214,7 +214,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.anchor = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                            OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                         end,
                         values = {
                             TOPLEFT = L.Anchor_TOPLEFT,
@@ -230,7 +230,7 @@ local function createTextOptionsForTheme(theme, id, order)
                     },
                     x = {
                         order = 2,
-                        type = "range",
+                        type = 'range',
                         name = L.HorizontalOffset,
                         softMin = -18,
                         softMax = 18,
@@ -240,12 +240,12 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.xOff = val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                            OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                         end
                     },
                     y = {
                         order = 3,
-                        type = "range",
+                        type = 'range',
                         name = L.VerticalOffset,
                         softMin = -18,
                         softMax = 18,
@@ -255,7 +255,7 @@ local function createTextOptionsForTheme(theme, id, order)
                         end,
                         set = function(_, val)
                             theme.yOff = -val
-                            OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                            OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                         end
                     }
                 }
@@ -265,59 +265,59 @@ local function createTextOptionsForTheme(theme, id, order)
 end
 
 local function addThemeOptions(owner, theme, id)
-    local key = "theme_" .. id
+    local key = 'theme_' .. id
 
     owner.args[key] = {
-        type = "group",
+        type = 'group',
         name = theme.name or id,
         order = id == DEFAULT and 0 or 200,
-        childGroups = "tab",
+        childGroups = 'tab',
         args = {
             display = {
-                type = "group",
+                type = 'group',
                 name = L.Display,
                 desc = L.DisplayGroupDesc,
                 order = 100,
                 args = {
                     cooldownText = {
-                        type = "group",
+                        type = 'group',
                         name = L.CooldownText,
                         inline = true,
                         order = 100,
                         args = {
                             enable = {
-                                type = "toggle",
+                                type = 'toggle',
                                 name = L.EnableText,
                                 desc = L.EnableTextDesc,
                                 order = 10,
-                                width = "full",
+                                width = 'full',
                                 get = function()
                                     return theme.enableText
                                 end,
                                 set = function(_, enable)
                                     theme.enableText = enable
-                                    OmniCC.Cooldown:ForAll("Refresh", true)
+                                    OmniCC.Cooldown:ForAll('Refresh', true)
                                 end
                             },
                             scale = {
-                                type = "toggle",
+                                type = 'toggle',
                                 name = L.ScaleText,
                                 -- desc = L.ScaleTextDesc,
                                 order = 11,
-                                width = "full",
+                                width = 'full',
                                 get = function()
                                     return theme.scaleText
                                 end,
                                 set = function(_, scale)
                                     theme.scaleText = scale
-                                    OmniCC.Display:ForActive("UpdateSize")
+                                    OmniCC.Display:ForActive('UpdateSize')
                                 end
                             },
                             minSize = {
-                                type = "range",
+                                type = 'range',
                                 name = L.MinSize,
                                 desc = L.MinSizeDesc,
-                                width = "full",
+                                width = 'full',
                                 order = 30,
                                 min = 0,
                                 softMax = 200,
@@ -327,14 +327,14 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, val)
                                     theme.minSize = val / 100
-                                    OmniCC.Display:ForAll("UpdateCooldownTextPositionSizeAndColor")
+                                    OmniCC.Display:ForAll('UpdateCooldownTextPositionSizeAndColor')
                                 end
                             },
                             minDuration = {
-                                type = "range",
+                                type = 'range',
                                 name = L.MinDuration,
                                 desc = L.MinDurationDesc,
-                                width = "full",
+                                width = 'full',
                                 order = 30,
                                 min = 0,
                                 softMax = 60,
@@ -344,14 +344,14 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, val)
                                     theme.minDuration = val
-                                    OmniCC.Cooldown:ForAll("Refresh", true)
+                                    OmniCC.Cooldown:ForAll('Refresh', true)
                                 end
                             },
                             mmssThreshold = {
-                                type = "range",
+                                type = 'range',
                                 name = L.MMSSDuration,
                                 desc = L.MMSSDurationDesc,
-                                width = "full",
+                                width = 'full',
                                 order = 32,
                                 min = 0,
                                 softMax = 600,
@@ -361,14 +361,14 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, val)
                                     theme.mmSSDuration = val
-                                    OmniCC.Timer:ForActive("Update")
+                                    OmniCC.Timer:ForActive('Update')
                                 end
                             },
                             tenthsThreshold = {
-                                type = "range",
+                                type = 'range',
                                 name = L.TenthsDuration,
                                 desc = L.TenthsDurationDesc,
-                                width = "full",
+                                width = 'full',
                                 order = 33,
                                 min = 0,
                                 softMax = 60,
@@ -378,20 +378,36 @@ local function addThemeOptions(owner, theme, id)
                                 end,
                                 set = function(_, val)
                                     theme.tenthsDuration = val
-                                    OmniCC.Timer:ForActive("Update")
+                                    OmniCC.Timer:ForActive('Update')
+                                end
+                            },
+                            timerOffset = {
+                                type = 'range',
+                                name = L.TimerOffset,
+                                desc = L.TimerOffsetDesc,
+                                width = 'full',
+                                order = 40,
+                                min = 0,
+                                softMax = 3000,
+                                step = 100,
+                                get = function()
+                                    return theme.timerOffset
+                                end,
+                                set = function(_, val)
+                                    theme.timerOffset = val
+                                    OmniCC.Cooldown:ForAll('Refresh', true)
                                 end
                             }
-                        },
+                        }
                     },
-
                     finishEffect = {
-                        type = "group",
+                        type = 'group',
                         name = L.FinishEffects,
                         order = 200,
                         inline = true,
                         args = {
                             effect = {
-                                type = "select",
+                                type = 'select',
                                 name = L.FinishEffect,
                                 desc = L.FinishEffectDesc,
                                 order = 13,
@@ -404,10 +420,10 @@ local function addThemeOptions(owner, theme, id)
                                 values = getEffectValues
                             },
                             minDuration = {
-                                type = "range",
+                                type = 'range',
                                 name = L.MinEffectDuration,
                                 desc = L.MinEffectDurationDesc,
-                                width = "full",
+                                width = 'full',
                                 min = 0,
                                 softMax = 600,
                                 step = 5,
@@ -420,39 +436,34 @@ local function addThemeOptions(owner, theme, id)
                             }
                         }
                     },
-
                     drawSwipes = {
-                        type = "toggle",
+                        type = 'toggle',
                         name = L.EnableCooldownSwipes,
                         desc = L.EnableCooldownSwipesDesc,
                         order = 300,
-                        width = "full",
+                        width = 'full',
                         get = function()
                             return theme.drawSwipes
                         end,
                         set = function(_, enable)
                             theme.drawSwipes = enable
-                            OmniCC.Cooldown:ForAll("UpdateStyle")
+                            OmniCC.Cooldown:ForAll('UpdateStyle')
                         end
                     }
-                },
+                }
             },
-
             text = createTextOptionsForTheme(theme, id, 200),
-
             state = createStateOptionsForTheme(theme, id, 300),
-
             preview = {
-                type = "execute",
+                type = 'execute',
                 order = 9000,
-                name = "Preview",
+                name = 'Preview',
                 func = function()
                     Addon.PreviewDialog:SetTheme(theme)
                 end
             },
-
             remove = {
-                type = "execute",
+                type = 'execute',
                 order = 9001,
                 name = L.ThemeRemove,
                 desc = L.ThemeRemoveDesc,
@@ -470,11 +481,11 @@ local function addThemeOptions(owner, theme, id)
 end
 
 local ThemeOptions = {
-    type = "group",
+    type = 'group',
     name = L.Themes,
     args = {
         description = {
-            type = "description",
+            type = 'description',
             name = L.ThemesDesc,
             order = 0
         }
@@ -483,11 +494,11 @@ local ThemeOptions = {
 
 -- generate options
 ThemeOptions.args.add = {
-    type = "input",
+    type = 'input',
     order = 100,
     name = L.ThemeAdd,
     desc = L.ThemeAddDesc,
-    width = "double",
+    width = 'double',
     set = function(_, val)
         val = strtrim(val)
 
@@ -499,7 +510,7 @@ ThemeOptions.args.add = {
     validate = function(_, val)
         val = strtrim(val)
 
-        if val == "" then
+        if val == '' then
             return false
         end
 
@@ -509,7 +520,7 @@ ThemeOptions.args.add = {
 
 function Addon:RefreshThemeOptions()
     for key in pairs(ThemeOptions.args) do
-        if key:match("^theme_") then
+        if key:match('^theme_') then
             ThemeOptions.args[key] = nil
         end
     end

@@ -7,7 +7,7 @@
 		</KeyValues>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="27" y="0"/>
 						<Anchor point="BOTTOMRIGHT"/>
@@ -78,7 +78,7 @@
 					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
 				</Texture>				
 				<!-- either the dead or injured texture (maybe others in the future) -->
-				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus" hidden="true">
 					<Size x="24" y="24"/>
 					<Anchors>
 						<Anchor point="LEFT" x="2" y="-1"/>
@@ -137,7 +137,7 @@
 		<Size x="200" y="44"/> <!-- can be any width; 1px unused across top so 43px usable height -->
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate.tga">
+				<Texture parentKey="Back" file="Interface\AddOns\Rematch\Textures\backplate">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="48" y="0"/>
 						<Anchor point="BOTTOMRIGHT"/>
@@ -209,7 +209,7 @@
 					<TexCoords left="0.5" right="0.625" top="0.5" bottom="0.75"/>
 				</Texture>
 				<!-- border around the pet icon to the left -->
-				<Texture parentKey="Rarity" file="Interface\AddOns\Rematch\Textures\slotborder.tga">
+				<Texture parentKey="Rarity" file="Interface\AddOns\Rematch\Textures\slotborder">
 					<Size x="44" y="44"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.Pet" x="-2" y="2"/>
@@ -219,7 +219,7 @@
 					<TexCoords left="0" right="0.34375" top="0" bottom="0.34375"/>
 				</Texture>
 				<!-- either the dead or injured texture (maybe others in the future) -->
-				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus.tga" hidden="true">
+				<Texture parentKey="Status" file="Interface\AddOns\Rematch\Textures\petstatus" hidden="true">
 					<Size x="39" y="39"/>
 					<Anchors>
 						<Anchor point="LEFT" x="4" y="0"/>
@@ -355,15 +355,15 @@
 						</Scripts>
 					</EditBox>
 					<!-- the actual typebar -->
-					<Frame parentKey="TypeBar" hidden="true">
+					<Frame parentKey="TypeBar" hidden="true" inherits="RematchBorderBackdropTemplate">
 						<Size x="270" y="36"/>
 						<Anchors>
 							<Anchor point="BOTTOM" x="0" y="3"/>
 						</Anchors>
-						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+						<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize val="16"/>
 							<BorderColor r="0.6" g="0.6" b="0.6"/>
-						</Backdrop>
+						</Backdrop> -->
 						<Frames>
 							<!-- type tab -->
 							<Button parentArray="Tabs" inherits="RematchTypeBarTabTemplate" id="1">

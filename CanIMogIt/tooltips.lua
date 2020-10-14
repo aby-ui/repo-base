@@ -43,11 +43,12 @@ local function printDebug(tooltip, itemLink, bag, slot)
         addLine(tooltip, 'No ItemID found. Is this a Keystone or Battle Pet?')
         return
     end
-    local _, _, quality, _, _, itemClass, itemSubClass, _, equipSlot = GetItemInfo(itemID)
+    local _, _, quality, _, _, itemClass, itemSubClass, _, equipSlot, _, _, _, _, _, expansion = GetItemInfo(itemID)
     addDoubleLine(tooltip, "Item quality:", tostring(quality))
     addDoubleLine(tooltip, "Item class:", tostring(itemClass))
     addDoubleLine(tooltip, "Item subClass:", tostring(itemSubClass))
     addDoubleLine(tooltip, "Item equipSlot:", tostring(equipSlot))
+    addDoubleLine(tooltip, "Item expansion:", tostring(expansion or "nil"))
 
     local sourceID, sourceIDSource = CanIMogIt:GetSourceID(itemLink)
     addDoubleLine(tooltip, "Item sourceID:", tostring(sourceID))
@@ -113,7 +114,7 @@ local function printDebug(tooltip, itemLink, bag, slot)
     addDoubleLine(tooltip, "IsItemSoulbound:", tostring(CanIMogIt:IsItemSoulbound(itemLink, bag, slot)))
     addDoubleLine(tooltip, "CharacterCanEquipItem:", tostring(CanIMogIt:CharacterCanEquipItem(itemLink)))
     addDoubleLine(tooltip, "IsValidAppearanceForCharacter:", tostring(CanIMogIt:IsValidAppearanceForCharacter(itemLink)))
-    addDoubleLine(tooltip, "CharacterIsTooLowLevelForItem:", tostring(CanIMogIt:CharacterIsTooLowLevelForItem(itemLink)))
+    addDoubleLine(tooltip, "CharacterIsHighEnoughLevelForTransmog:", tostring(CanIMogIt:CharacterIsHighEnoughLevelForTransmog(itemLink)))
 
     addLine(tooltip, '--------')
 

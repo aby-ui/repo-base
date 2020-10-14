@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7.1-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -505,4 +505,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.7";
+T._LoadedFiles["enUS.lua"] = "2.7.7.1-beta_1";

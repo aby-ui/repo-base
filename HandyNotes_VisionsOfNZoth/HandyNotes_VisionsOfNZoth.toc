@@ -1,32 +1,15 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: HandyNotes: Visions Of N'Zoth
-## Version: 38
+## Version: 40
 ## Notes: Visions Of N'Zoth Notes
 ## OptionalDeps: Ace3
 ## RequiredDeps: HandyNotes
 ## X-Embeds: Ace3
 ## SavedVariables: HandyNotes_VisionsOfNZothDB
 
-localization\enUS.lua
-localization\zhCN.lua
-localization\zhTW.lua
-
-core\class.lua
-core\core.lua
-core\icons.lua
-core\options.lua
-core\dev.lua
-core\map.lua
-core\nodes.lua
-core\rewards.lua
-core\pois.lua
-core\util.lua
-
-pins.xml
-uldum.lua
-vale.lua
-visions.lua
-voldun.lua
+#embeds.xml
+core\core.xml
+plugin.xml
 
 
 ## Title-zhCN: |cff880303[爱不易]|r HandyNotes 恩佐斯的幻象

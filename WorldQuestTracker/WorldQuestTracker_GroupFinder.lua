@@ -39,7 +39,6 @@ local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 
@@ -75,7 +74,7 @@ ff.RightClickClose:SetPoint ("bottom", ff, "bottom", 0, 2)
 ff.RightClickClose.color = "gray"
 
 --tick frame
-ff.TickFrame = CreateFrame ("frame", nil, UIParent)
+ff.TickFrame = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
 
 ff.SetEnabledFunc = function (_, _, value)
 	WorldQuestTracker.db.profile.groupfinder.enabled = value
@@ -499,7 +498,7 @@ function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 	DF:CreateTitleBar (ff, "Title")
 	
 	--gear button
-	ff.Options = CreateFrame ("button", "$parentTopRightOptionsButton", ff)
+	ff.Options = CreateFrame ("button", "$parentTopRightOptionsButton", ff, "BackdropTemplate")
 	ff.Options:SetPoint ("right", ff.CloseButton, "left", -2, 0)
 	ff.Options:SetSize (16, 16)
 	ff.Options:SetNormalTexture (DF.folder .. "icons")
@@ -754,14 +753,16 @@ function WorldQuestTracker.PlayerIsInQuest (questName, questID)
 	
 	if (questName) then
 		for i = 1, numQuests do 
-			local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questID = GetQuestLogTitle (i)
+			local questTitle = C_QuestLog.GetTitleForLogIndex(i)
 			if (questName == questTitle) then
 				isInQuest = true
 			end
 		end
 	else
-		for i = 1, numQuests do 
-			local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, thisQuestID = GetQuestLogTitle (i)
+		for i = 1, numQuests do
+			local questInfo = C_QuestLog.GetInfo(i)
+			local thisQuestID = questInfo.questID
+
 			if (thisQuestID == questID) then
 				isInQuest = true
 			end
@@ -920,7 +921,10 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 	
 	elseif (event == "QUEST_ACCEPTED") then
 		--> get quest data
-		local isInArea, isOnMap, numObjectives = GetTaskInfo (questID)
+
+if (true) then return end
+
+		local isInArea, isOnMap, numObjectives = C_TaskQuest.GetTaskInfo (questID)
 		local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
 		
 		-->  do the regular checks
@@ -932,7 +936,7 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 				allAssaultQuests [questId] = true
 			end
 
-			local tagID, tagName, worldQuestType, rarity, isElite = GetQuestTagInfo (questID)
+			local tagID, tagName, worldQuestType, rarity, isElite = C_QuestLog.GetQuestTagInfo (questID)
 			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
 
 			if ((isWorldQuest and isInArea) or allAssaultQuests[questID] or tagID == 112 or (isElite and rarity == LE_WORLD_QUEST_QUALITY_EPIC)) then
@@ -1090,7 +1094,7 @@ end
 function ff.AddButtonToBBlock (block, questID)
 	local button = tremove (ff.BQuestTrackerFreeWidgets)
 	if (not button) then
-		button = CreateFrame ("button", nil, UIParent)
+		button = CreateFrame ("button", nil, UIParent, "BackdropTemplate")
 		button:SetFrameStrata ("FULLSCREEN")
 		button:SetSize (30, 30)
 		

@@ -5,7 +5,7 @@ PingPing.delay_time = 5 --sec
 --PingPing.fade_time = 1
 
 function PingPing:OnInitialize()
-    self.f = CreateFrame('Frame', '163UIMinimapPingFrame', UIParent)
+    self.f = CreateFrameAby('Frame', '163UIMinimapPingFrame', UIParent)
 
     self.f:SetSize(100, 20)
     self.f:SetFrameStrata'TOOLTIP'

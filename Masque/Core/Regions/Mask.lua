@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Core\Regions\Mask.lua
 	* Author.: StormFX
@@ -11,6 +11,12 @@
 ]]
 
 local _, Core = ...
+
+----------------------------------------
+-- Lua
+---
+
+local type = type
 
 ----------------------------------------
 -- Internal
@@ -24,13 +30,15 @@ local GetSize, SetPoints = Core.GetSize, Core.SetPoints
 ---
 
 -- Skins a button or region mask.
-function Core.SkinMask(Button, Region, Skin, xScale, yScale)
+function Core.SkinMask(Region, Button, Skin, xScale, yScale)
 	local ButtonMask = Button.__MSQ_Mask
 
 	-- Region
 	if Region then
+		local SkinMask = Skin.Mask
+
 		-- Button Mask
-		if Skin.UseMask and ButtonMask then
+		if Skin.UseMask and ButtonMask and not SkinMask then
 			if not Region.__MSQ_ButtonMask then
 				Region:AddMaskTexture(ButtonMask)
 				Region.__MSQ_ButtonMask = true
@@ -42,22 +50,27 @@ function Core.SkinMask(Button, Region, Skin, xScale, yScale)
 
 		-- Region Mask
 		local RegionMask = Region.__MSQ_Mask
-		local Texture = Skin.Mask
 
-		if Texture then
+		if SkinMask then
 			if not RegionMask then
 				RegionMask = Button:CreateMaskTexture()
 				Region.__MSQ_Mask = RegionMask
 			end
 
-			RegionMask:SetTexture(Texture)
-			RegionMask:SetAllPoints(Region)
+			if type(SkinMask) == "table" then
+				RegionMask:SetTexture(SkinMask.Texture)
+				RegionMask:SetSize(GetSize(SkinMask.Width, SkinMask.Height, xScale, yScale))
+				SetPoints(RegionMask, Region, Skin, nil, SkinMask.SetAllPoints)
+			else
+				RegionMask:SetTexture(SkinMask)
+				RegionMask:SetAllPoints(Region)
+			end
 
 			if not Region.__MSQ_RegionMask then
 				Region:AddMaskTexture(RegionMask)
 				Region.__MSQ_RegionMask = true
 			end
-		elseif RegionMask then
+		elseif Region.__MSQ_RegionMask then
 			Region:RemoveMaskTexture(RegionMask)
 			Region.__MSQ_RegionMask = nil
 		end
@@ -67,8 +80,13 @@ function Core.SkinMask(Button, Region, Skin, xScale, yScale)
 		ButtonMask = ButtonMask or Button:CreateMaskTexture()
 		Button.__MSQ_Mask = ButtonMask
 
-		ButtonMask:SetTexture(Skin.Texture)
-		ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale))
-		SetPoints(ButtonMask, Button, Skin, nil, Skin.SetAllPoints)
+		if type(Skin) == "table" then
+			ButtonMask:SetTexture(Skin.Texture)
+			ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale))
+			SetPoints(ButtonMask, Button, Skin, nil, Skin.SetAllPoints)
+		else
+			ButtonMask:SetTexture(Skin)
+			ButtonMask:SetAllPoints(Button)
+		end
 	end
 end

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Script file="RSGroupPinMixin.lua"/>
+  
+  <Frame name="RSGroupPinTemplate" mixin="RSGroupPinMixin" virtual="true">
+		<Size>
+			<AbsDimension x="18" y="18"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="TopTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="LeftTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture parentKey="RightTexture">
+					<Anchors>
+						<Anchor point="CENTER" x="0" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+	        <AnimationGroup parentKey="ShowPingAnim" setToFinalAlpha="false">
+	          <Alpha duration="0.1" order="1" fromAlpha="0" toAlpha="1"/>
+	          <Alpha startDelay="0.1" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+	          <Scale duration="0.25" order="1" fromScaleX="0.75" fromScaleY="0.75" toScaleX="1.75" toScaleY="1.75"/>
+	          <Alpha duration="0.5" order="1" fromAlpha="0" toAlpha="1"/>
+	          <Alpha startDelay="0.5" duration="0.5" order="1" fromAlpha="1" toAlpha="0"/>
+	          <Scale duration="0.75" order="1" fromScaleX="1" fromScaleY="1" toScaleX="1.5" toScaleY="1.5"/>
+	        </AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnMouseEnter method="OnMouseEnter"/>
+			<OnMouseLeave method="OnMouseLeave"/>
+			<OnMouseDown method="OnMouseDown"/>
+		</Scripts>
+	</Frame>
+  
+</Ui>

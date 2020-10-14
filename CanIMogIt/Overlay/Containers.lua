@@ -82,7 +82,7 @@ local function HookOverlayContainers(event)
 
     -- Add hook for each bag item.
     for i=1,NUM_CONTAINER_FRAMES do
-        for j=1,MAX_CONTAINER_ITEMS do
+        for j=1,CanIMogIt.MAX_CONTAINER_ITEMS do
             local frame = _G["ContainerFrame"..i.."Item"..j]
             if frame then
                 CIMI_AddToFrame(frame, ContainerFrameItemButton_CIMIUpdateIcon)

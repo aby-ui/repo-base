@@ -16,7 +16,7 @@ roster.petList = {} -- filtered list of petIDs/speciesIDs to list in the pet pan
 local activeFilters = {} -- list of filter groups that are active
 -- this is the order that filter groups are processed (simplest to most complex)
 local priority = { "Favorite", "Collected", "Types", "Rarity", "Sources", "Tough",
-						 "Level", "Other", "Breed", "Strong", "Similar", "Moveset", "Script" }
+						 "Level", "Other", "Expansion", "Breed", "Strong", "Similar", "Moveset", "Script" }
 
 local petInfo -- this will be rematch.petInfo as each new pet is looked at
 local filterFuncs = {} -- each filter group has a filterFuncs entry to process the petInfo
@@ -394,6 +394,11 @@ function filterFuncs.Script()
 	if not rematch:RunScriptFilter(petInfo.owned, petInfo.petID, petInfo.speciesID, petInfo.customName, petInfo.level, petInfo.xp, petInfo.maxXp, petInfo.displayID, petInfo.isFavorite, petInfo.name, petInfo.icon, petInfo.petType, petInfo.creatureID, petInfo.sourceText, petInfo.description, petInfo.isWild, petInfo.canBattle, petInfo.isTradable, petInfo.isUnique, petInfo.isObtainable, abilityList, levelList) then
 		return false
 	end
+end
+
+function filterFuncs.Expansion()
+	local expansionID = petInfo.expansionID
+	return GetFilter(self,"Expansion",expansionID) or false
 end
 
 --[[ Searches ]]

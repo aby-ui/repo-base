@@ -2,6 +2,13 @@ local GlobalAddonName, WQLdb = ...
 
 local ELib = WQLdb.ELib
 
+local GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
+
+local function GetQuestLogTitle(i)
+	local data = C_QuestLog.GetInfo(i)
+	return data.title, data.level, data.suggestedGroup, data.isHeader, data.isCollapsed, data.isComplete, data.frequency, data.questID
+end
+
 -- Enigma helper
 
 local KirinTorQuests = {
@@ -153,7 +160,7 @@ KirinTorHelper:RegisterEvent('QUEST_ACCEPTED')
 KirinTorHelper:RegisterEvent('QUEST_REMOVED')
 KirinTorHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 	if event == 'QUEST_ACCEPTED' then
-		if arg2 and KirinTorQuests[arg2] then
+		if arg1 and KirinTorQuests[arg1] then
 			if VWQL and not VWQL.EnableEnigma then
 				print('"|cff00ff00/enigmahelper|r" - to see all patterns')
 				return
@@ -207,7 +214,7 @@ BarrelsHelper:RegisterEvent('QUEST_REMOVED')
 BarrelsHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
 BarrelsHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 	if event == 'QUEST_ACCEPTED' then
-		if arg2 and BarrelsHelperQuests[arg2] then
+		if arg1 and BarrelsHelperQuests[arg1] then
 			if VWQL and VWQL.DisableBarrels then
 				return
 			end
@@ -608,7 +615,7 @@ do
 	ShellGameHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
 	ShellGameHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 		if event == 'QUEST_ACCEPTED' then
-			if arg2 and ShellGameQuests[arg2] then
+			if arg1 and ShellGameQuests[arg1] then
 				if VWQL and VWQL.DisableShellGame then
 					return
 				end
@@ -1056,7 +1063,7 @@ local CalligraphyHelperQuestIDs = {
 local CalligraphyHelper = CreateFrame("Frame")
 CalligraphyHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 	if event == 'QUEST_ACCEPTED' then
-		if arg2 and CalligraphyHelperQuestIDs[arg2] then
+		if arg1 and CalligraphyHelperQuestIDs[arg1] then
 			if VWQL and VWQL.DisableCalligraphy then
 				return
 			end

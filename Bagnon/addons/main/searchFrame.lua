@@ -5,7 +5,7 @@
 
 local ADDON, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
-local Search = Addon.Parented:NewClass('SearchFrame', 'EditBox')
+local Search = Addon.Parented:NewClass('SearchFrame', 'EditBox', BackdropTemplateMixin and 'BackdropTemplate')
 
 Search.Backdrop = {
 	edgeFile = 'Interface/Tooltips/UI-Tooltip-Border',

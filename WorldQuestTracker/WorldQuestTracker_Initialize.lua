@@ -250,8 +250,8 @@ do
 	local WorldQuestTracker = DF:CreateAddOn ("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
 
 	--create the group finder and rare finder frames
-	CreateFrame ("frame", "WorldQuestTrackerFinderFrame", UIParent)
-	CreateFrame ("frame", "WorldQuestTrackerRareFrame", UIParent)
+	CreateFrame ("frame", "WorldQuestTrackerFinderFrame", UIParent, "BackdropTemplate")
+	CreateFrame ("frame", "WorldQuestTrackerRareFrame", UIParent, "BackdropTemplate")
 
 	--create world quest tracker pin
 	WorldQuestTrackerPinMixin = CreateFromMixins (MapCanvasPinMixin)

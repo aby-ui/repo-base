@@ -20,6 +20,23 @@ local print = TMW.print
 local CNDT = TMW.CNDT
 local Env = CNDT.Env
 
+local GetCurrencyInfo = _G.GetCurrencyInfo or function(id)
+	local info = C_CurrencyInfo.GetCurrencyInfo(id)
+	if info then
+		return
+			info.name,
+			info.quantity,
+			info.iconFileID,
+			info.quantityEarnedThisWeek,
+			info.maxWeeklyQuantity,
+			info.maxQuantity,
+			info.discovered,
+			info.quality 
+	end
+	return nil
+end
+
+
 local currencies = {
 	-- currencies were extracted using the script in the /Scripts folder (source is wowhead)
 	-- make sure and order them here in a way that makes sense (most common first, etc)

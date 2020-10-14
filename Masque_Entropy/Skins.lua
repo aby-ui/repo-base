@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque: Entropy', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque_Entropy.
+	This file is part of 'Masque: Entropy', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Entropy.
 
 	* File...: Skins.lua
 	* Author.: StormFX
@@ -27,7 +27,7 @@ local L = Core.Locale
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
 local Websites = {
-	"https://github.com/StormFX/Masque_Entropy",
+	"https://github.com/SFX-WoW/Masque_Entropy",
 	"https://www.wowace.com/projects/masque-entropy",
 	"https://www.curseforge.com/wow/addons/masque-entropy",
 	"https://www.wowinterface.com/downloads/info8873",
@@ -42,7 +42,7 @@ local SKIN_DESC = L["A metallic version of Apathy in the color of %s ore."]
 
 MSQ:AddSkin("Entropy - Silver", {
 	Shape = "Square",
-	Masque_Version = 80200,
+	Masque_Version = 90000,
 	Group = "Entropy",
 	Title = "Silver",
 	Order = 11,
@@ -102,7 +102,7 @@ MSQ:AddSkin("Entropy - Silver", {
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Normal]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
-		-- EmptyTexture = [[Interface\AddOns\Masque_Caith\Textures\Normal]],
+		-- EmptyTexture = [[Interface\AddOns\Masque_Entropy\Textures\Normal]],
 		-- EmptyCoords = {0, 1, 0, 1},
 		-- EmptyColor = {1, 1, 1, 0.5},
 		BlendMode = "BLEND",
@@ -117,7 +117,7 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-	--Disabled = {Hide = true,},
+	-- Disabled = Default.Disabled,
 	Pushed = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -229,7 +229,7 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	IconBorder = {
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
-		-- RelicTexture = [[Interface\AddOns\Masque_Caith\Textures\Border]],
+		-- RelicTexture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
@@ -332,12 +332,41 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 15,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 3,
+		OffsetY = -4,
+		-- SetAllPoints = nil,
+	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 32,
+		Height = 32,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
+		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Quest]],
+		Color = {1, 0.8, 0, 1},
+		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 2,
 		Width = 32,
@@ -379,6 +408,20 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		UseColor = true,
 		-- SetAllPoints = true,
+	},
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 5,
+		Width = 16,
+		Height = 16,
+		Point = "TOPLEFT",
+		RelPoint = "TOPLEFT",
+		OffsetX = 5,
+		OffsetY = -4,
+		-- SetAllPoints = nil,
 	},
 	Name = {
 		JustifyH = "CENTER",

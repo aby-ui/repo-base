@@ -1,7 +1,7 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: XLoot Options
 ## Notes: Configuration interface for XLoot
-## Version: 8.2-1
+## Version: 9.0-2
 ## Author: Xuerian
 ## X-Category: Inventory
 
@@ -10,8 +10,7 @@
 
 load.xml
 
+
 ## Title: |cff880303[爱不易]|r XLoot 配置界面模块
 ## Notes: XLoot拾取界面增强的配置界面
 ## X-Vendor: AbyUI
-
-

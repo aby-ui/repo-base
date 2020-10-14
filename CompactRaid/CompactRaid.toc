@@ -11,15 +11,15 @@
 ## X-Curse-Project-ID: compactraid
 ## X-Curse-Repository-ID: wow/compactraid/mainline
 
-Includes\LibAddonManager.lua
-Includes\Pre80API.lua
+..\!!!Libs\!External\abin\LibAddonManager.lua
+..\!!!Libs\!External\abin\Pre80API.lua
 Includes\utf8.lua
-Includes\InterfaceOptionPage-1.0.lua
-Includes\VirtualScrollList-1.0.lua
-Includes\TabFrame-1.0.lua
-Includes\LibAuraGroups-1.0.lua
+..\!!!Libs\!External\abin\InterfaceOptionPage-1.0.lua
+..\!!!Libs\!External\abin\VirtualScrollList-1.0.lua
+..\!!!Libs\!External\abin\TabFrame-1.0.lua
+..\!!!Libs\!External\abin\LibAuraGroups-1.0.lua
 Includes\ModularOptionFrame.lua
-Includes\LibPlayerSpells-1.0.lua
+..\!!!Libs\!External\abin\LibPlayerSpells-1.0.lua
 Includes\UnitAuraEx.lua
 
 Locales\enUS.lua

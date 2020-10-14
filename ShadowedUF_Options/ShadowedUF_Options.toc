@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Shadowed UF (Options)
 ## Notes: Configuration for Shadowed Unit Frames.
 ## Author: Shadowed

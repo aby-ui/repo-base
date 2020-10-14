@@ -19,7 +19,7 @@ if (DetailsFramework.IsClassicWow()) then
 	LibGroupInSpecT = false
 end
 
-local storageDebug = false
+local storageDebug = true --remember to turn this to false!
 local store_instances = _detalhes.InstancesToStoreData
 
 function _detalhes:UpdateGears()
@@ -250,12 +250,6 @@ end
 					window2:SaveMainWindowPosition()
 					
 				--	/dump ChatFrame3Background:GetSize()
---[[
-					_detalhes.move_janela_func (window1.baseframe, true, window1)
-					_detalhes.move_janela_func (window1.baseframe, false, window1)
-					_detalhes.move_janela_func (window2.baseframe, true, window2)
-					_detalhes.move_janela_func (window2.baseframe, false, window2)
---]]
 				end
 			end
 		end
@@ -485,7 +479,7 @@ function _detalhes:ResetSpecCache (forced)
 	
 end
 
-function _detalhes:RefreshUpdater (suggested_interval)
+function _detalhes:RefreshUpdater(suggested_interval)
 	local updateInterval = suggested_interval or _detalhes.update_speed
 	
 	if (_detalhes.streamer_config.faster_updates) then
@@ -494,17 +488,19 @@ function _detalhes:RefreshUpdater (suggested_interval)
 	end
 	
 	if (_detalhes.atualizador) then
-		_detalhes:CancelTimer (_detalhes.atualizador)
+		--_detalhes:CancelTimer(_detalhes.atualizador)
+		Details.Schedules.Cancel(_detalhes.atualizador)
 	end
-	_detalhes.atualizador = _detalhes:ScheduleRepeatingTimer ("AtualizaGumpPrincipal", updateInterval, -1)
+	--_detalhes.atualizador = _detalhes:ScheduleRepeatingTimer("RefreshMainWindow", updateInterval, -1)
+	_detalhes.atualizador = Details.Schedules.NewTicker(updateInterval, Details.RefreshMainWindow, Details, -1)
 end
 
-function _detalhes:SetWindowUpdateSpeed (interval, nosave)
+function _detalhes:SetWindowUpdateSpeed(interval, nosave)
 	if (not interval) then
 		interval = _detalhes.update_speed
 	end
 
-	if (type (interval) ~= "number") then
+	if (type(interval) ~= "number") then
 		interval = _detalhes.update_speed or 0.3
 	end
 	
@@ -512,10 +508,10 @@ function _detalhes:SetWindowUpdateSpeed (interval, nosave)
 		_detalhes.update_speed = interval
 	end
 	
-	_detalhes:RefreshUpdater (interval)
+	_detalhes:RefreshUpdater(interval)
 end
 
-function _detalhes:SetUseAnimations (enabled, nosave)
+function _detalhes:SetUseAnimations(enabled, nosave)
 	if (enabled == nil) then
 		enabled = _detalhes.use_row_animations
 	end
@@ -549,13 +545,13 @@ function _detalhes:CheckForPerformanceProfile()
 	local profile = _detalhes.performance_profiles [type]
 	
 	if (profile and profile.enabled) then
-		_detalhes:SetWindowUpdateSpeed (profile.update_speed, true)
-		_detalhes:SetUseAnimations (profile.use_row_animations, true)
-		_detalhes:CaptureSet (profile.damage, "damage")
-		_detalhes:CaptureSet (profile.heal, "heal")
-		_detalhes:CaptureSet (profile.energy, "energy")
-		_detalhes:CaptureSet (profile.miscdata, "miscdata")
-		_detalhes:CaptureSet (profile.aura, "aura")
+		_detalhes:SetWindowUpdateSpeed(profile.update_speed, true)
+		_detalhes:SetUseAnimations(profile.use_row_animations, true)
+		_detalhes:CaptureSet(profile.damage, "damage")
+		_detalhes:CaptureSet(profile.heal, "heal")
+		_detalhes:CaptureSet(profile.energy, "energy")
+		_detalhes:CaptureSet(profile.miscdata, "miscdata")
+		_detalhes:CaptureSet(profile.aura, "aura")
 		
 		if (not _detalhes.performance_profile_lastenabled or _detalhes.performance_profile_lastenabled ~= type) then
 			_detalhes:InstanceAlert (Loc ["STRING_OPTIONS_PERFORMANCE_PROFILE_LOAD"] .. type, {_detalhes.PerformanceIcons [type].icon, 14, 14, false, 0, 1, 0, 1, unpack (_detalhes.PerformanceIcons [type].color)} , 5, {_detalhes.empty_function})
@@ -564,13 +560,13 @@ function _detalhes:CheckForPerformanceProfile()
 		_detalhes.performance_profile_enabled = type
 		_detalhes.performance_profile_lastenabled = type
 	else
-		_detalhes:SetWindowUpdateSpeed (_detalhes.update_speed)
-		_detalhes:SetUseAnimations (_detalhes.use_row_animations)
-		_detalhes:CaptureSet (_detalhes.capture_real ["damage"], "damage")
-		_detalhes:CaptureSet (_detalhes.capture_real ["heal"], "heal")
-		_detalhes:CaptureSet (_detalhes.capture_real ["energy"], "energy")
-		_detalhes:CaptureSet (_detalhes.capture_real ["miscdata"], "miscdata")
-		_detalhes:CaptureSet (_detalhes.capture_real ["aura"], "aura")
+		_detalhes:SetWindowUpdateSpeed(_detalhes.update_speed)
+		_detalhes:SetUseAnimations(_detalhes.use_row_animations)
+		_detalhes:CaptureSet(_detalhes.capture_real ["damage"], "damage")
+		_detalhes:CaptureSet(_detalhes.capture_real ["heal"], "heal")
+		_detalhes:CaptureSet(_detalhes.capture_real ["energy"], "energy")
+		_detalhes:CaptureSet(_detalhes.capture_real ["miscdata"], "miscdata")
+		_detalhes:CaptureSet(_detalhes.capture_real ["aura"], "aura")
 		_detalhes.performance_profile_enabled = nil
 	end
 	
@@ -921,6 +917,7 @@ function _detalhes.storage:GetBestFromPlayer (diff, encounter_id, role, playerna
 	local db = _detalhes.storage:OpenRaidStorage()
 	
 	if (not db) then
+		print("DB noot found on GetBestFromPlayer()")
 		return
 	end
 	
@@ -1456,7 +1453,121 @@ function _detalhes.OpenStorage()
 	end
 end
 
-function _detalhes:StoreEncounter (combat)
+Details.Database = {}
+
+function Details.Database.LoadDB()
+	--check if the storage is already loaded
+	if (not IsAddOnLoaded("Details_DataStorage")) then
+		local loaded, reason = LoadAddOn("Details_DataStorage")
+		if (not loaded) then
+			if (_detalhes.debug) then
+				print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
+			end
+			return
+		end
+	end
+
+	--> get the storage table
+	local db = _G.DetailsDataStorage
+	
+	if (not db and _detalhes.CreateStorageDB) then
+		db = _detalhes:CreateStorageDB()
+		if (not db) then
+			if (_detalhes.debug) then
+				print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
+			end
+			return
+		end
+	elseif (not db) then
+		if (_detalhes.debug) then
+			print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
+		end
+		return
+	end
+
+	return db
+end
+
+function Details.Database.GetBossKillsDB(db)
+	--total kills in a boss on raid or dungeon
+	local totalkills_database = db["totalkills"]
+	if (not totalkills_database) then
+		db["totalkills"] = {}
+		totalkills_database = db["totalkills"]
+	end
+
+	return totalkills_database
+end
+
+function Details.Database.StoreWipe(combat)
+
+	combat = combat or _detalhes.tabela_vigente
+
+	if (not combat) then
+		if (_detalhes.debug) then
+			print ("|cFFFFFF00Details! Storage|r: combat not found.")
+		end
+		return
+	end
+
+	local name, type, difficulty, difficultyName, maxPlayers, playerDifficulty, isDynamicInstance, mapID, instanceGroupSize = GetInstanceInfo()
+	
+	local bossCLEUID = combat.boss_info and combat.boss_info.id
+	
+	if (not store_instances [mapID] and not _detalhes.EncountersToStoreData [bossCLEUID]) then
+		if (_detalhes.debug) then
+			print ("|cFFFFFF00Details! Storage|r: instance not allowed.")
+		end
+		return
+	end
+
+	local boss_info = combat:GetBossInfo()
+	local encounter_id = boss_info and boss_info.id
+	
+	if (not encounter_id) then
+		if (_detalhes.debug) then
+			print ("|cFFFFFF00Details! Storage|r: encounter ID not found.")
+		end
+		return
+	end
+
+	--get the difficulty
+	local diff = combat:GetDifficulty()
+	
+	--database
+		local db = Details.Database.LoadDB()
+
+		local diff_storage = db [diff]
+		if (not diff_storage) then
+			db [diff] = {}
+			diff_storage = db [diff]
+		end
+		
+		local encounter_database = diff_storage [encounter_id]
+		if (not encounter_database) then
+			diff_storage [encounter_id] = {}
+			encounter_database = diff_storage [encounter_id]
+		end
+
+		--total kills in a boss on raid or dungeon
+		local totalkills_database = Details.Database.GetBossKillsDB(db)
+
+		if (IsInRaid()) then
+			totalkills_database[encounter_id] = totalkills_database[encounter_id] or {}
+			totalkills_database[encounter_id][diff] = totalkills_database[encounter_id][diff] or {kills = 0, wipes = 0, time_fasterkill = 0, time_fasterkill_when = 0, time_incombat = 0, dps_best = 0, dps_best_when = 0, dps_best_raid = 0, dps_best_raid_when = 0}
+
+			local bossData = totalkills_database[encounter_id][diff]
+
+			--wipes amount
+			bossData.wipes = bossData.wipes + 1
+
+			Details:Msg("Wipe stored, you have now " .. bossData.wipes .. " wipes on this boss.")
+		end
+end
+
+function Details.Database.StoreEncounter(combat)
+
+	--note: this only runs on boss kill
 	
 	combat = combat or _detalhes.tabela_vigente
 	
@@ -1487,67 +1598,13 @@ function _detalhes:StoreEncounter (combat)
 		end
 		return
 	end
-	
+
+	--get the difficulty
 	local diff = combat:GetDifficulty()
 	
-	--> check for heroic and mythic
-	if (storageDebug or (diff == 15 or diff == 16)) then --test on raid finder  ' or diff == 17' -- normal mode: diff == 14 or 
-	
-		--> check the guild name
-		local match = 0
-		local guildName = select (1, GetGuildInfo ("player"))
-		local raid_size = GetNumGroupMembers() or 0
-		
-		if (guildName) then
-			for i = 1, raid_size do
-				local gName = select (1, GetGuildInfo ("raid" .. i)) or ""
-				if (gName == guildName) then
-					match = match + 1
-				end
-			end
-			
-			if (match < raid_size * 0.75 and not storageDebug) then
-				if (_detalhes.debug) then
-					print ("|cFFFFFF00Details! Storage|r: can't save the encounter, need at least 75% of players be from your guild.")
-				end
-				return
-			end
-		else
-			if (_detalhes.debug) then
-				print ("|cFFFFFF00Details! Storage|r: player isn't in a guild.")
-			end
-			return
-		end
-		
-		--> check if the storage is already loaded
-		if (not IsAddOnLoaded ("Details_DataStorage")) then
-			local loaded, reason = LoadAddOn ("Details_DataStorage")
-			if (not loaded) then
-				if (_detalhes.debug) then
-					print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
-				end
-				return
-			end
-		end
-		
-		--> get the storage table
-		local db = DetailsDataStorage
-		
-		if (not db and _detalhes.CreateStorageDB) then
-			db = _detalhes:CreateStorageDB()
-			if (not db) then
-				if (_detalhes.debug) then
-					print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
-				end
-				return
-			end
-		elseif (not db) then
-			if (_detalhes.debug) then
-				print ("|cFFFFFF00Details! Storage|r: can't save the encounter, couldn't load DataStorage, may be the addon is disabled.")
-			end
-			return
-		end
-		
+	--database
+		local db = Details.Database.LoadDB()
+
 		local diff_storage = db [diff]
 		if (not diff_storage) then
 			db [diff] = {}
@@ -1558,6 +1615,85 @@ function _detalhes:StoreEncounter (combat)
 		if (not encounter_database) then
 			diff_storage [encounter_id] = {}
 			encounter_database = diff_storage [encounter_id]
+		end
+
+		--total kills in a boss on raid or dungeon
+		local totalkills_database = Details.Database.GetBossKillsDB(db)
+
+	--> store total kills on this boss
+		--if the player is facing a raid boss
+		if (IsInRaid()) then
+			totalkills_database[encounter_id] = totalkills_database[encounter_id] or {}
+			totalkills_database[encounter_id][diff] = totalkills_database[encounter_id][diff] or {kills = 0, wipes = 0, time_fasterkill = 0, time_fasterkill_when = 0, time_incombat = 0, dps_best = 0, dps_best_when = 0, dps_best_raid = 0, dps_best_raid_when = 0}
+
+			local bossData = totalkills_database[encounter_id][diff]
+			local encounterElapsedTime = combat:GetCombatTime()
+
+			--kills amount
+			bossData.kills = bossData.kills + 1
+
+			--best time
+			if (encounterElapsedTime > bossData.time_fasterkill) then
+				bossData.time_fasterkill = encounterElapsedTime
+				bossData.time_fasterkill_when = time()
+			end
+
+			--total time in combat
+			bossData.time_incombat = bossData.time_incombat + encounterElapsedTime
+
+			--player best dps
+			local player = combat(DETAILS_ATTRIBUTE_DAMAGE, UnitName("player"))
+			if (player) then
+				local playerDps = player.total / encounterElapsedTime
+				if (playerDps > bossData.dps_best) then
+					bossData.dps_best = playerDps
+					bossData.dps_best_when = time()
+				end
+			end
+
+			--raid best dps
+			local raidTotalDamage = combat:GetTotal(DETAILS_ATTRIBUTE_DAMAGE, false, true)
+			local raidDps = raidTotalDamage / encounterElapsedTime
+			if (raidDps > bossData.dps_best_raid) then
+				bossData.dps_best_raid = raidDps
+				bossData.dps_best_raid_when = time()
+			end
+
+		end
+
+
+
+	--> check for heroic and mythic
+	if (storageDebug or (diff == 15 or diff == 16 or diff == 17)) then --test on raid finder:  ' or diff == 17' -- normal mode: diff == 14 or 
+	
+		--> check the guild name
+		local match = 0
+		local guildName = select (1, GetGuildInfo ("player"))
+		local raid_size = GetNumGroupMembers() or 0
+		
+		if (not storageDebug) then
+			if (guildName) then
+				for i = 1, raid_size do
+					local gName = select (1, GetGuildInfo ("raid" .. i)) or ""
+					if (gName == guildName) then
+						match = match + 1
+					end
+				end
+				
+				if (match < raid_size * 0.75 and not storageDebug) then
+					if (_detalhes.debug) then
+						print ("|cFFFFFF00Details! Storage|r: can't save the encounter, need at least 75% of players be from your guild.")
+					end
+					return
+				end
+			else
+				if (_detalhes.debug) then
+					print ("|cFFFFFF00Details! Storage|r: player isn't in a guild.")
+				end
+				return
+			end
+		else
+			guildName = "Test Guild"
 		end
 		
 		local this_combat_data = {
@@ -1619,7 +1755,8 @@ function _detalhes:StoreEncounter (combat)
 
 		local myrole = UnitGroupRolesAssigned ("player")
 		local mybest, onencounter = _detalhes.storage:GetBestFromPlayer (diff, encounter_id, myrole, _detalhes.playername, true) --> get dps or hps
-		local myBestDps = mybest [1] / onencounter.elapsed
+		local mybest2 = mybest[1] or 0
+		local myBestDps = mybest2 / onencounter.elapsed
 
 		if (mybest) then
 			local d_one = 0

@@ -189,11 +189,12 @@ function GridLayout:CreateHeader(isPetGroup)
 		header[k] = v
 	end
 
+    local BDTPL = BackdropTemplateMixin and "BackdropTemplate" .. "," or ""
 	if Clique then
-		header:SetAttribute("template", "ClickCastUnitTemplate,SecureUnitButtonTemplate")
+		header:SetAttribute("template", BDTPL .. "ClickCastUnitTemplate,SecureUnitButtonTemplate")
 		SecureHandlerSetFrameRef(header, "clickcast_header", Clique.header)
 	else
-		header:SetAttribute("template", "SecureUnitButtonTemplate")
+		header:SetAttribute("template", BDTPL .. "SecureUnitButtonTemplate")
 	end
 
 	-- Fix for bug on the Blizz end when using SecureActionButtonTemplate with SecureGroupPetHeaderTemplate
@@ -853,7 +854,7 @@ function GridLayout:CreateFrames()
 	f:SetScript("OnHide", GridLayout_OnMouseUp)
 
 	-- create backdrop
-	f.backdrop = CreateFrame("Frame", "$parentBackdrop", f)
+	f.backdrop = CreateFrame("Frame", "$parentBackdrop", f, BackdropTemplateMixin and "BackdropTemplate")
 	f.backdrop:SetPoint("BOTTOMLEFT", -4, -4)
 	f.backdrop:SetPoint("TOPRIGHT", 4, 4)
 	f.backdrop:SetBackdrop({

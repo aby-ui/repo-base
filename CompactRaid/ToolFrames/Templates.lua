@@ -175,7 +175,7 @@ local function Menu_OnHide(self)
 end
 
 local function Frame_CreateSecureMenu(self, title, rightIcon)
-	local menu = CreateFrame("Button", nil, self, "SecureHandlerShowHideTemplate,SecureHandlerClickTemplate")
+	local menu = CreateFrameAby("Button", nil, self, "SecureHandlerShowHideTemplate,SecureHandlerClickTemplate")
 	menu:Hide()
 	menu.rightIcon = rightIcon
 	menu.buttons = {}

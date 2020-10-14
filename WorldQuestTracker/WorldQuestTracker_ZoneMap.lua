@@ -26,7 +26,6 @@ local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
@@ -98,7 +97,7 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	end
 	
 	--/dump WorldQuestTrackerZonePOIWidget5Anchor.Glow
-	local button = CreateFrame ("button", name .. index, parent)
+	local button = CreateFrame ("button", name .. index, parent, "BackdropTemplate")
 	button:SetPoint ("center", anchorFrame, "center", 0, 0)
 	button.AnchorFrame = anchorFrame
 	
@@ -114,7 +113,7 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	button.OnShowAlphaAnimation = DF:CreateAnimationHub (button, on_show_alpha_animation)
 	DF:CreateAnimation (button.OnShowAlphaAnimation, "ALPHA", 1, 0.075, 0, 1)
 	
-	local supportFrame = CreateFrame ("frame", nil, button)
+	local supportFrame = CreateFrame ("frame", nil, button, "BackdropTemplate")
 	supportFrame:SetPoint ("center")
 	supportFrame:SetSize (20, 20)
 	button.SupportFrame = supportFrame
@@ -125,7 +124,7 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	button.worldQuest = true
 	button.ClearWidget = clear_widget
 	
-	button.RareOverlay = CreateFrame ("button", button:GetName() .. "RareOverlay", button)
+	button.RareOverlay = CreateFrame ("button", button:GetName() .. "RareOverlay", button, "BackdropTemplate")
 	button.RareOverlay:SetAllPoints()
 	button.RareOverlay:SetScript ("OnEnter", WorldQuestTracker.RareWidgetOnEnter)
 	button.RareOverlay:SetScript ("OnLeave", WorldQuestTracker.RareWidgetOnLeave)
@@ -400,7 +399,7 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	button.flagText:SetPoint ("top", button.bgFlag, "top", 0, -2)
 	DF:SetFontSize (button.flagText, 8)
 	
-	local criteriaFrame = CreateFrame ("frame", nil, supportFrame)
+	local criteriaFrame = CreateFrame ("frame", nil, supportFrame, "BackdropTemplate")
 	local criteriaIndicator = criteriaFrame:CreateTexture (nil, "OVERLAY", 4)
 	criteriaIndicator:SetPoint ("bottomleft", button, "bottomleft", -2, -2)
 	criteriaIndicator:SetSize (23*.3, 34*.3)  --original sizes: 23 37
@@ -623,6 +622,10 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 						WorldQuestTracker.CurrentZoneQuests [questID] = true
 						
 						local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
+
+						--print (title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical)
+
+
 						local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
 						local passFilter = filters [filter]
 						
@@ -653,10 +656,8 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 							
 							if (widget.questID ~= questID or forceUpdate or not widget.Texture:GetTexture()) then
 							
-								local selected = questID == GetSuperTrackedQuestID()
-								
-								local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestId)
-								
+								local selected = WorldMap_IsWorldQuestEffectivelyTracked(questID)
+								local isCriteria = C_QuestLog.IsQuestCriteriaForBounty (questID, bountyQuestId)
 								local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget (questID)
 								
 								if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
@@ -1200,7 +1201,7 @@ end
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> zone summary  ~summaryframe
 
-local ZoneSumaryFrame = CreateFrame ("frame", "WorldQuestTrackerZoneSummaryFrame", worldFramePOIs)
+local ZoneSumaryFrame = CreateFrame ("frame", "WorldQuestTrackerZoneSummaryFrame", worldFramePOIs, "BackdropTemplate")
 ZoneSumaryFrame:SetPoint ("topleft", worldFramePOIs, "topleft", 2, -380)
 ZoneSumaryFrame:SetSize (200, 400)
 
@@ -1246,7 +1247,7 @@ local GetOrCreateZoneSummaryWidget = function (index)
 		return widget
 	end
 	
-	local button = CreateFrame ("button", "WorldQuestTrackerZoneSummaryFrame_Widget" .. index, ZoneSumaryFrame)
+	local button = CreateFrame ("button", "WorldQuestTrackerZoneSummaryFrame_Widget" .. index, ZoneSumaryFrame, "BackdropTemplate")
 	button:SetAlpha (WQT_ZONEWIDGET_ALPHA)
 	
 	--button:SetPoint ("bottomleft", ZoneSumaryFrame, "bottomleft", 0, ((index-1)* (ZoneSumaryFrame.WidgetHeight + 1)) -2) --grow bottom to top
@@ -1387,35 +1388,35 @@ end
 
 function WorldQuestTracker.SetupZoneSummaryButton (summaryWidget, zoneWidget)
 	local Icon = summaryWidget.Icon
-	
+
 	Icon.mapID = zoneWidget.mapID
 	Icon.questID = zoneWidget.questID
 	Icon.numObjectives = zoneWidget.numObjectives
-	
+
 	--setup the world quest button within the summary line
 	local widget = Icon
 	local isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon = zoneWidget.isCriteria, false, false, zoneWidget.TimeLeft, WorldQuestTracker.MapData.ItemIcons ["BFA_ARTIFACT"]
 	local questID, numObjectives, mapID = zoneWidget.questID, zoneWidget.numObjectives, zoneWidget.mapID
-	
+
 	--update the quest icon
 	local okay, gold, resource, apower = WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
 	widget.texture:SetTexCoord (.1, .9, .1, .9)
 	widget:SetAlpha (WQT_ZONEWIDGET_ALPHA)
-	
+
 	widget.background:Hide()
 	widget.factionBorder:Hide()
 	widget.commonBorder:Hide()
 	widget.amountText:Hide()
-	widget.amountBackground:Hide()	
+	widget.amountBackground:Hide()
 	widget.timeBlipRed:Hide()
 	widget.timeBlipOrange:Hide()
 	widget.timeBlipYellow:Hide()
 	widget.timeBlipGreen:Hide()
 	widget.trackingGlowBorder:Hide()
-	
+
 	--set the amount text
 	summaryWidget.Text:SetText (type (zoneWidget.IconText) == "number" and floor (zoneWidget.IconText) or zoneWidget.IconText)
-	
+
 	if (widget.criteriaIndicator:IsShown()) then
 		summaryWidget.timeLeftText:SetPoint ("left", widget, "right", 66, 0)
 		summaryWidget:SetWidth (ZoneSumaryFrame.WidgetWidth)
@@ -1477,7 +1478,7 @@ end
 function WorldQuestTracker.UpdateZoneSummaryToggleButton (canShow)
 
 	if (not WorldQuestTracker.ZoneSummaryToogleButton) then
-		local button = CreateFrame ("button", nil, ZoneSumaryFrame)
+		local button = CreateFrame ("button", nil, ZoneSumaryFrame, "BackdropTemplate")
 		button:SetSize (12, 12)
 		button:SetAlpha (.60)
 		button:SetPoint ("bottomleft", ZoneSumaryFrame, "topleft", 2, 2)
@@ -1705,12 +1706,16 @@ if (bountyBoard) then
 			
 			
 			local bountyQuestID = bounty.questID
-			if (bountyQuestID and HaveQuestData (bountyQuestID) and WorldQuestTracker.db.profile.show_emissary_info) then
-				local questIndex = GetQuestLogIndexByID (bountyQuestID)
-				local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle (questIndex)
-			
-				--attempt to get the time left on this quest
-				local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes (questID)
+			if (bountyQuestID and HaveQuestData(bountyQuestID) and WorldQuestTracker.db.profile.show_emissary_info) then
+				local questIndex = C_QuestLog.GetLogIndexForQuestID(bountyQuestID)
+				local questInfo = C_QuestLog.GetInfo(questIndex)
+				local questID = questInfo.questID
+
+				--local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = C_QuestLog.GetTitleForLogIndex(questIndex)
+				--Details:Dump(questInfo)
+				local timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(questID)
+
+				
 				if (timeLeftMinutes) then
 					local inHours = floor (timeLeftMinutes/60)
 					bountyButton.timeLeftText:SetText (inHours > 23 and floor (inHours / 24) .. "d" or inHours .. "h")

@@ -207,7 +207,7 @@ local function CreateDropDownList(name, parent)
     DropDownList:SetFrameStrata("DIALOG")
     DropDownList:EnableMouse(true)
 
-    local frame1 = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", DropDownList)
+    local frame1 = _G[name.."Backdrop"] or CreateFrameAby("Frame", name.."Backdrop", DropDownList)
     frame1:SetAllPoints()
     frame1:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",

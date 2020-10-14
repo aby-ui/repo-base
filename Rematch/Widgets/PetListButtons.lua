@@ -186,6 +186,11 @@ function rematch:HandlePetShiftClick(petID)
 	if IsModifiedClick("CHATLINK") then
 		if rematch:GetIDType(petID)=="pet" then
 			ChatEdit_InsertLink(C_PetJournal.GetBattlePetLink(petID))
+		elseif AuctionHouseFrame and AuctionHouseFrame.SearchBar.SearchBox:IsVisible() then
+			local petInfo = rematch.petInfo:Fetch(petID)
+			if petInfo.name then
+				AuctionHouseFrame.SearchBar.SearchBox:SetText(petInfo.name)
+			end
 		end
 		return true
 	end

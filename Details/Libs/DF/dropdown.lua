@@ -184,6 +184,19 @@ local DropDownMetaFunctions = _G[DF.GlobalWidgetControlNames ["dropdown"]]
 	end
 
 ------------------------------------------------------------------------------------------------------------
+
+function DropDownMetaFunctions:SetBackdrop(...)
+	return self.dropdown:SetBackdrop(...)
+end
+
+function DropDownMetaFunctions:SetBackdropColor(...)
+	return self.dropdown:SetBackdropColor(...)
+end
+
+function DropDownMetaFunctions:SetBackdropBorderColor(...)
+	return self.dropdown:SetBackdropBorderColor(...)
+end
+
 --> methods
 	function DropDownMetaFunctions:IsShown()
 		return self.dropdown:IsShown()
@@ -1109,7 +1122,7 @@ function DF:NewDropDown (parent, container, name, member, w, h, func, default, t
 	end
 
 	if (template) then
-		DropDownObject:SetTemplate (template)
+		DropDownObject:SetTemplate(template)
 	end
 	
 	return DropDownObject
@@ -1122,7 +1135,7 @@ local border_backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1
 local child_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 256, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 
 function DF:CreateNewDropdownFrame (parent, name)
-	local f = CreateFrame ("button", name, parent)
+	local f = CreateFrame ("button", name, parent,"BackdropTemplate")
 	f:SetBackdrop (default_backdrop)
 	f:SetSize (150, 20)
 	
@@ -1171,7 +1184,7 @@ function DF:CreateNewDropdownFrame (parent, name)
 	f.arrowTexture2:SetDrawLayer ("OVERLAY", 2)
 	
 	--dropdown
-	local border = CreateFrame ("frame", "$Parent_Border", f)
+	local border = CreateFrame ("frame", "$Parent_Border", f,"BackdropTemplate")
 	border:Hide()
 	border:SetFrameStrata ("FULLSCREEN")
 	border:SetSize (150, 150)
@@ -1182,14 +1195,14 @@ function DF:CreateNewDropdownFrame (parent, name)
 	border:SetBackdropBorderColor (0, 0, 0, 1)
 	f.dropdownborder = border
 	
-	local scroll = CreateFrame ("ScrollFrame", "$Parent_ScrollFrame", f)
+	local scroll = CreateFrame ("ScrollFrame", "$Parent_ScrollFrame", f,"BackdropTemplate")
 	scroll:Hide()
 	scroll:SetFrameStrata ("FULLSCREEN")
 	scroll:SetSize (150, 150)
 	scroll:SetPoint ("topleft", f, "bottomleft", 0, 0)
 	f.dropdownframe = scroll
 
-	local child = CreateFrame ("frame", "$Parent_ScrollChild", scroll)
+	local child = CreateFrame ("frame", "$Parent_ScrollChild", scroll,"BackdropTemplate")
 	child:SetSize (150, 150)
 	child:SetPoint ("topleft", scroll, "topleft", 0, 0)
 	child:SetBackdrop (child_backdrop)
@@ -1221,7 +1234,7 @@ end
 
 function DF:CreateDropdownButton (parent, name)
 
-	local f = CreateFrame ("button", name, parent)
+	local f = CreateFrame ("button", name, parent,"BackdropTemplate")
 	f:SetSize (150, 20)
 
 	local statusbar = f:CreateTexture ("$parent_StatusBarTexture", "ARTWORK")

@@ -1,11 +1,12 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  icon = true,
+  icon = false,
   desaturate = false,
   auto = true,
   texture = "Blizzard",
@@ -116,7 +117,7 @@ local properties = {
     display = L["Orientation"],
     setter = "SetOrientation",
     type = "list",
-    values = WeakAuras.orientation_types
+    values = Private.orientation_types
   },
   inverse = {
     display = L["Inverse"],
@@ -128,10 +129,9 @@ local properties = {
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
-  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  local overlayInfo = Private.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
-    local auraProperties = {};
-    WeakAuras.DeepCopy(properties, auraProperties);
+    local auraProperties = CopyTable(properties)
 
     for id, display in ipairs(overlayInfo) do
       auraProperties["overlays." .. id] = {
@@ -301,7 +301,7 @@ local barPrototype = {
   end,
 
   ["UpdateAdditionalBars"] = function(self)
-    if (self.additionalBars) then
+    if (type(self.additionalBars) == "table") then
       for index, additionalBar in ipairs(self.additionalBars) do
         if (not self.extraTextures[index]) then
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
@@ -322,7 +322,7 @@ local barPrototype = {
 
         if (additionalBar.min and additionalBar.max) then
           if (valueWidth ~= 0) then
-            startProgress = max( (additionalBar.min - valueStart) / valueWidth, 0);
+            startProgress = (additionalBar.min - valueStart) / valueWidth;
             endProgress = (additionalBar.max - valueStart) / valueWidth;
 
             if (self.additionalBarsInverse) then
@@ -353,6 +353,9 @@ local barPrototype = {
         if (self.additionalBarsClip) then
           startProgress = max(0, min(1, startProgress));
           endProgress = max(0, min(1, endProgress));
+        else
+          startProgress = max(-10, min(11, startProgress));
+          endProgress = max(-10, min(11, endProgress));
         end
 
         if ((endProgress - startProgress) == 0) then
@@ -453,8 +456,8 @@ local barPrototype = {
   ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse, overlayclip)
     self.additionalBars = additionalBars;
     self.additionalBarsColors = colors;
-    self.additionalBarsMin = min;
-    self.additionalBarsMax = max;
+    self.additionalBarsMin = min or 0;
+    self.additionalBarsMax = max or 0;
     self.additionalBarsInverse = inverse;
     self.additionalBarsClip = overlayclip;
     self:UpdateAdditionalBars();
@@ -756,11 +759,11 @@ local funcs = {
 
       selfPoint = selfPoint or "CENTER"
 
-      if not WeakAuras.point_types[selfPoint] then
+      if not Private.point_types[selfPoint] then
         selfPoint = "CENTER"
       end
 
-      if not WeakAuras.point_types[anchorPoint] then
+      if not Private.point_types[anchorPoint] then
         anchorPoint = "CENTER"
       end
 
@@ -1021,7 +1024,7 @@ local function modify(parent, region, data)
   -- Localize
   local bar, iconFrame, icon = region.bar, region.iconFrame, region.icon;
 
-  region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
+  region.useAuto = data.auto and Private.CanHaveAuto(data);
 
   -- Adjust region size
   region:SetWidth(data.width);
@@ -1045,9 +1048,10 @@ local function modify(parent, region, data)
   region.desaturateIcon = data.desaturate
   region.zoom = data.zoom
 
-  region.overlays = {};
   if (data.overlays) then
-    WeakAuras.DeepCopy(data.overlays, region.overlays);
+    region.overlays = CopyTable(data.overlays);
+  else
+    region.overlays = {}
   end
 
   -- Update texture settings
@@ -1121,16 +1125,16 @@ local function modify(parent, region, data)
   region:UpdateEffectiveOrientation()
 
   -- Update tooltip availability
-  local tooltipType = WeakAuras.CanHaveTooltip(data);
+  local tooltipType = Private.CanHaveTooltip(data);
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then
       region.tooltipFrame = CreateFrame("frame", nil, region);
       region.tooltipFrame:SetAllPoints(icon);
       region.tooltipFrame:SetScript("OnEnter", function()
-        WeakAuras.ShowMouseoverTooltip(region, region.tooltipFrame);
+        Private.ShowMouseoverTooltip(region, region.tooltipFrame);
       end);
-      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+      region.tooltipFrame:SetScript("OnLeave", Private.HideTooltip);
     end
 
     region.tooltipFrame:EnableMouse(true);
@@ -1139,18 +1143,17 @@ local function modify(parent, region, data)
     region.tooltipFrame:EnableMouse(false);
   end
 
-  function region:Update()
+  function region:UpdateMinMax()
     local state = region.state
+    local min
     local max
     if state.progressType == "timed" then
-      local expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
       local duration = state.duration or 0
-
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * duration
       end
 
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      min = region.adjustedMin or region.adjustedMinRel or 0;
 
       if duration == 0 then
         max = 0
@@ -1162,20 +1165,13 @@ local function modify(parent, region, data)
       else
         max = duration
       end
-
-      region:SetTime(max - adjustMin, expirationTime - adjustMin, state.inverse);
-      if not region.TimerTick then
-        region.TimerTick = TimerTick
-        region:UpdateRegionHasTimerTick()
-      end
     elseif state.progressType == "static" then
-      local value = state.value or 0;
       local total = state.total or 0;
-
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * total
       end
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      min = region.adjustedMin or region.adjustedMinRel or 0;
+
       if region.adjustedMax then
         max = region.adjustedMax
       elseif region.adjustedMaxRelPercent then
@@ -1184,7 +1180,31 @@ local function modify(parent, region, data)
       else
         max = total
       end
-      region:SetValue(value - adjustMin, max - adjustMin);
+    end
+    region.currentMin, region.currentMax = min, max
+  end
+
+  function region:GetMinMax()
+    return region.currentMin or 0, region.currentMax or 0
+  end
+
+  function region:Update()
+    local state = region.state
+    region:UpdateMinMax()
+    if state.progressType == "timed" then
+      local expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
+      local duration = state.duration or 0
+
+      region:SetTime(region.currentMax - region.currentMin, expirationTime - region.currentMin, state.inverse);
+      if not region.TimerTick then
+        region.TimerTick = TimerTick
+        region:UpdateRegionHasTimerTick()
+      end
+    elseif state.progressType == "static" then
+      local value = state.value or 0;
+      local total = state.total or 0;
+
+      region:SetValue(value - region.currentMin, region.currentMax - region.currentMin);
       if region.TimerTick then
         region.TimerTick = nil
         region:UpdateRegionHasTimerTick()
@@ -1197,8 +1217,6 @@ local function modify(parent, region, data)
       end
     end
 
-    max = max or 0
-
     local path = state.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
     local iconPath = (
       region.useAuto
@@ -1210,9 +1228,8 @@ local function modify(parent, region, data)
     self.icon:SetTexture(iconPath);
 
     local duration = state.duration or 0
-    local min = region.adjustMin or 0
     local effectiveInverse = (state.inverse and not region.inverseDirection) or (not state.inverse and region.inverseDirection);
-    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, min, max, effectiveInverse, region.overlayclip);
+    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, region.currentMin, region.currentMax, effectiveInverse, region.overlayclip);
   end
 
   -- Scale update function

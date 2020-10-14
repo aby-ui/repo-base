@@ -23,7 +23,7 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.55.2"; -- Version number (text format)
+	Version = "4.56.1"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
 	RetailVersionNumber = 45501; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 45500; -- Numeric version number for checking out-of-date clients (classic)
@@ -157,11 +157,26 @@ function GTFO_OnEvent(self, event, ...)
 			IgnoreOptions = { };
 			SoundOverrides = { };
 		};
+		
+		-- Load spell ignore options (player set)
 		if (GTFOData.IgnoreOptions) then
 			for key, option in pairs(GTFOData.IgnoreOptions) do
 				GTFO.Settings.IgnoreOptions[key] = GTFOData.IgnoreOptions[key];
 			end
 		end
+		
+		-- Load default spell ignore options
+		if (GTFO.IgnoreSpellCategory) then
+			for key, option in pairs(GTFO.IgnoreSpellCategory) do
+				if (GTFO.IgnoreSpellCategory[key].isDefault) then
+					GTFO.DefaultSettings.IgnoreOptions[key] = true;
+					if (GTFO.Settings.IgnoreOptions[key] == nil) then
+						GTFO.Settings.IgnoreOptions[key] = true;
+					end
+				end
+			end
+		end
+		
 		if (GTFOData.SoundOverrides) then
 			for key, option in pairs(GTFOData.SoundOverrides) do
 				GTFO.Settings.SoundOverrides[key] = GTFOData.SoundOverrides[key];
@@ -1072,7 +1087,7 @@ function GTFO_RenderOptions()
 			GTFO.Settings.TrivialMode = TrivialButton:GetChecked();
 			for key, option in pairs(GTFO.IgnoreSpellCategory) do
 				if (getglobal("GTFO_IgnoreAlertButton_"..key):GetChecked()) then
-					GTFO.Settings.IgnoreOptions[key] = nil;
+					GTFO.Settings.IgnoreOptions[key] = false;
 				else
 					-- Option unchecked, add to ignore list
 					GTFO.Settings.IgnoreOptions[key] = true;

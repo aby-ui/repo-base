@@ -51,7 +51,7 @@ function Indicators:OnLayoutApplied(frame)
 		-- Create indicator as needed
 		local indicator = frame.auraIndicators["indicator-" .. id]
 		if( not indicator ) then
-			indicator = CreateFrame("Frame", nil, frame.auraIndicators)
+			indicator = CreateFrame("Frame", nil, frame.auraIndicators, BackdropTemplateMixin and "BackdropTemplate" or nil)
 			indicator:SetFrameLevel(frame.topFrameLevel + 2)
 			indicator.texture = indicator:CreateTexture(nil, "OVERLAY")
 			indicator.texture:SetPoint("CENTER", indicator)

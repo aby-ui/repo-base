@@ -282,7 +282,7 @@ GTFO.SpellID["318391"] = {
 GTFO.SpellID["315161"] = {
   --desc = "Eye of Corruption";
   sound = 2;
-  category = "EyeOfCorruption";
+  category = "EyeOfCorruption2";
 };
 
 GTFO.SpellID["315197"] = {
@@ -373,6 +373,31 @@ GTFO.SpellID["314565"] = {
   sound = 1;
 };
 
+GTFO.SpellID["308807"] = {
+  --desc = "Rain of Fire (Zardeth of the Black Claw)";
+  sound = 1;
+};
+
+GTFO.SpellID["309665"] = {
+  --desc = "Empowered Forge Breath (Therum Deepforge)";
+  sound = 1;
+};
+
+GTFO.SpellID["312121"] = {
+  --desc = "Explosive Ordnance (Therum Deepforge)";
+  sound = 1;
+};
+
+GTFO.SpellID["311400"] = {
+  --desc = "Blade Flourish (Armsmaster Terenson)";
+  sound = 1;
+};
+
+GTFO.SpellID["314432"] = {
+  --desc = "Force and Verve (Grand Empress Shek'zara)";
+  negatingDebuffSpellID = 314332;  -- Sound Barrier
+  sound = 1;
+};
 
 -- ***********************
 -- * Shrine of the Storm *
@@ -1162,7 +1187,6 @@ GTFO.SpellID["298569"] = {
 -- *************
 
 -- TODO: Crackling Shard (Wrathion) -- Alert when NOT afflicated with Burning Madness
--- TODO: Acidic Blood (Ka'zir) -- Mythic only, avoidable?
 -- TODO: Infinite Void (Carapace of N'Zoth) 
 -- TODO: Paranoia (N'Zoth) -- FF, complicated mechanic to track?
 -- TODO: Devour Thoughts (N'Zoth) -- FF
@@ -1241,6 +1265,11 @@ GTFO.SpellID["308995"] = {
 
 GTFO.SpellID["307061"] = {
   --desc = "Mycelial Growth (Fury of N'Zoth)";
+  sound = 1;
+};
+
+GTFO.SpellID["313672"] = {
+  --desc = "Acid Pool (Ka'zir)";
   sound = 1;
 };
 

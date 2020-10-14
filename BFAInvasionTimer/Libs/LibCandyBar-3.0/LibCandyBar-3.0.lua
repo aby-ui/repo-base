@@ -20,7 +20,7 @@ local CreateFrame, error, setmetatable, UIParent = CreateFrame, error, setmetata
 if not LibStub then error("LibCandyBar-3.0 requires LibStub.") end
 local cbh = LibStub:GetLibrary("CallbackHandler-1.0")
 if not cbh then error("LibCandyBar-3.0 requires CallbackHandler-1.0") end
-local lib = LibStub:NewLibrary("LibCandyBar-3.0", 96) -- Bump minor on changes
+local lib = LibStub:NewLibrary("LibCandyBar-3.0", 97) -- Bump minor on changes
 if not lib then return end
 lib.callbacks = lib.callbacks or cbh:New(lib)
 local cb = lib.callbacks
@@ -432,11 +432,11 @@ function lib:New(texture, width, height)
 		bg:SetAllPoints()
 		bar.candyBarBackground = bg
 
-		local backdrop = CreateFrame("Frame", nil, bar) -- Used by bar stylers for backdrops
+		local backdrop = CreateFrame("Frame", nil, bar, BackdropTemplateMixin and "BackdropTemplate") -- Used by bar stylers for backdrops
 		backdrop:SetFrameLevel(0)
 		bar.candyBarBackdrop = backdrop
 
-		local iconBackdrop = CreateFrame("Frame", nil, bar) -- Used by bar stylers for backdrops
+		local iconBackdrop = CreateFrame("Frame", nil, bar, BackdropTemplateMixin and "BackdropTemplate") -- Used by bar stylers for backdrops
 		iconBackdrop:SetFrameLevel(0)
 		bar.candyBarIconFrameBackdrop = iconBackdrop
 

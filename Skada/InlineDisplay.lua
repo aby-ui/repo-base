@@ -95,7 +95,7 @@ end
 
 function mod:Create(window, isnew)
     if not window.frame then
-        window.frame = CreateFrame("Frame", window.db.name.."InlineFrame", UIParent)
+        window.frame = CreateFrameAby("Frame", window.db.name.."InlineFrame", UIParent)
         window.frame.win = window
         window.frame:SetFrameLevel(5)
         if window.db.height==15 then window.db.height = 23 end--TODO: Fix dirty hack
@@ -181,7 +181,7 @@ function mod:Create(window, isnew)
         }
     }
 
-    local menu = CreateFrame("Button", "InlineFrameMenuButton", window.frame)
+    local menu = CreateFrameAby("Button", "InlineFrameMenuButton", window.frame)
     menu:ClearAllPoints()
     menu:SetWidth(12)
     menu:SetHeight(12)

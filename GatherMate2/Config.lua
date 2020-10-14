@@ -1029,6 +1029,8 @@ ImportHelper.expac_data = {
 	["MISTS"] = L["Mists of Pandaria"],
 	["WOD"] = L["Warlords of Draenor"],
 	["LEGION"] = L["Legion"],
+	["BFA"] = L["Battle for Azeroth"],
+	["SL"] = L["Shadowlands"],
 }
 imported["GatherMate2_Data"] = false
 importOptions.args.GatherMateData = {

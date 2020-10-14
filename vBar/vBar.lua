@@ -483,7 +483,7 @@ function VB_DoLoad(self)
    SlashCmdList['VB'] = VB_DoSlash
    SLASH_VB1 = '/vb'
    SLASH_VB2 = '/vbar'
-   hooksecurefunc('ActionButton_UpdateHotkeys', VB_UpdateHotkeys)
+   --hooksecurefunc('ActionButton_UpdateHotkeys', VB_UpdateHotkeys) --TODO aby9
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -664,7 +664,7 @@ function VB_CreateNumpad(shape, ddt, dft, dst)
 
    ----------------------------------------------------------------------------------------------------
 
-   local numpad = CreateFrame('Frame', 'NumpadFrame', UIParent)
+   local numpad = CreateFrameAby('Frame', 'NumpadFrame', UIParent)
    if CoreHideOnPetBattle then CoreHideOnPetBattle(numpad) end
    numpad:SetMovable(1)
    numpad:EnableMouse(1)
@@ -718,7 +718,7 @@ function VB_CreateButton(numpad, keyname, keynum, col, row)
 
    function VB_OnDragStart(self, button)
       if UnitAffectingCombat('player') == 1 or (LOCK_ACTIONBAR == '1' and not IsModifiedClick("PICKUPACTION")) then return end
-      PickupAction(ActionButton_GetPagedID(self))
+      PickupAction(self:GetPagedID())
    end
 
    local button = CreateFrame('CheckButton', keyname, numpad, 'ActionBarButtonTemplate')
@@ -744,7 +744,7 @@ function VB_CreateButton(numpad, keyname, keynum, col, row)
    local left = VB_BUTTON_SIZE * (col - 1)
    local top = - (VB_BUTTON_SIZE * (row - 1) + VB_DRAG_HANDLE)
    button:SetAttribute('showgrid', U1GetCfgValue and U1GetCfgValue("vbar", "showGrid") and 1 or 0)
-   button:HookScript('OnAttributeChanged', ActionButton_UpdateFlash)
+   button:HookScript('OnAttributeChanged', function(self) self:UpdateFlash() end)
    button:SetWidth(VB_BUTTON_SIZE-2);
    button:SetHeight(VB_BUTTON_SIZE-2);
    button:SetScript('OnDragStart', VB_OnDragStart)

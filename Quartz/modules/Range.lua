@@ -29,19 +29,6 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 local UnitCastingInfo, UnitChannelInfo, UnitName, IsSpellInRange = UnitCastingInfo, UnitChannelInfo, UnitName, IsSpellInRange
 local unpack = unpack
 
-local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-if WoWClassic then
-	UnitCastingInfo = function(unit)
-		if unit ~= "player" then return end
-		return CastingInfo()
-	end
-
-	UnitChannelInfo = function(unit)
-		if unit ~= "player" then return end
-		return ChannelInfo()
-	end
-end
-
 local f, OnUpdate, db, getOptions, spell, target, modified, r, g, b, castBar
 
 local defaults ={ 

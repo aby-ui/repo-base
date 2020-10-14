@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Title: AutoTurnIn
-## Version: 7.0.9
+## Version: 7.4.3
 ## Author: Alexandr Shubert
 ## Notes: Quest handling automation
 ## Notes-ruRU: Автоматическая обработка заданий

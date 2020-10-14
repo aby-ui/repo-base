@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7) add-on for World of Warcraft UI
+    Decursive (v 2.7.7.1-beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-11-18T13:42:00Z
+    This file was last updated on 2020-08-30T18:56:51Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.7";
+local VERSION = "2.7.7.1-beta_1";
 
 T._LoadedFiles = {};
 T._LoadedFiles["Dcr_DIAG.lua"] = false; -- here for consistency but useless in this particular file
@@ -299,7 +299,7 @@ do
         _Debug(unpack(TIandBI));
 
 
-        DebugHeader = ("%s\n2.7.7  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.7.1-beta_1  %s(%s)  CT: %0.4f D: %s %s %s BDTHFAd: %s nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         tostring(T._BDT_HotFix1_applyed), -- BDTHFAd: %s
@@ -350,9 +350,9 @@ do
 
         T._DebugText = (headerSucess and DebugHeader or (HeaderFailOver .. 'Report header gen failed: ' .. (headerGenErrorm and headerGenErrorm or "")))
         .. table.concat(T._DebugTextTable, "")
-        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --"
+        .. "\n\n-- --\n" .. actionsConfiguration .. "\n-- --" -- (Spells assignments:)
         .. customSpellConfiguration .. "\n-- --"
-        .. spellTable .. "\n-- --"
+        .. spellTable .. "\n-- --" -- (Decursive known spells:)
         .. SRTOLErrors .. "\n-- --"
         .. "\n\nLoaded Addons:\n\n" .. loadedAddonList .. "\n-- --";
 
@@ -797,9 +797,9 @@ do
 
         for spellID, spellData in pairs(D.classprofile.UserSpells) do
             if not spellData.IsDefault then
-                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %d) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
+                 customSpellConfText[#customSpellConfText + 1] = ("    %s (id: %s) - %s - %s - %s - B: %d - Ts: %s - UF: %s - Macro: %s\n"):format(
                  --                                                                  3    4    5       6        7        8           9
-                 tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))), spellID,
+                 select (2, pcall(function () return tostring(spellData.IsItem and (GetItemInfo(spellID * -1)) or (GetSpellInfo(spellID))) end)), tostring(spellID),
                  spellData.Disabled and "OFF" or "ON", -- 3
                  spellData.Pet and "PET" or "PLAYER", -- 4
                  spellData.IsItem and "ITEM" or "SPELL", -- 5
@@ -1101,4 +1101,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.7";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.7.1-beta_1";

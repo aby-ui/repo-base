@@ -188,15 +188,15 @@ local function Filter_Quests(self, spec, idx)
 
 	if spec == "all" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden and not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				AddQuestWatch(i)
 			end
 		end
 	elseif spec == "group" then
 		for i=idx, 1, -1 do
-			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden and not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				AddQuestWatch(i)
 			else
 				break
@@ -213,17 +213,19 @@ local function Filter_Quests(self, spec, idx)
 			OpenQuestLog(mapInfo.parentMapID)
 		end
 		for i=1, numEntries do
-			local title, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty = GetQuestLogTitle(i)
-			if isHeader then
-				isInZone = (title == zoneName)
-			else
-				if not isTask and (not isBounty or IsQuestComplete(questID)) and (isOnMap or isInZone) then
-					if KT.inInstance then
-						if IsInstanceQuest(questID) then
+			local title, _, _, isHeader, _, _, _, questID, _, _, isOnMap, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden then
+				if isHeader then
+					isInZone = (title == zoneName)
+				else
+					if not isTask and (not isBounty or IsQuestComplete(questID)) and (isOnMap or isInZone) then
+						if KT.inInstance then
+							if IsInstanceQuest(questID) then
+								AddQuestWatch(i)
+							end
+						else
 							AddQuestWatch(i)
 						end
-					else
-						AddQuestWatch(i)
 					end
 				end
 			end
@@ -231,15 +233,15 @@ local function Filter_Quests(self, spec, idx)
 		HideUIPanel(WorldMapFrame)
 	elseif spec == "daily" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, frequency, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and frequency >= 2 then
+			local _, _, _, isHeader, _, _, frequency, questID, _, _, _, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden and not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and frequency >= 2 then
 				AddQuestWatch(i)
 			end
 		end
 	elseif spec == "instance" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden and not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) then
 				local tagID, _ = GetQuestTagInfo(questID)
 				if tagID == Enum.QuestTag.Dungeon or
 					tagID == Enum.QuestTag.Heroic or
@@ -252,8 +254,8 @@ local function Filter_Quests(self, spec, idx)
 		end
 	elseif spec == "complete" then
 		for i=numEntries, 1, -1 do
-			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty = GetQuestLogTitle(i)
-			if not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and IsQuestComplete(questID) then
+			local _, _, _, isHeader, _, _, _, questID, _, _, _, _, isTask, isBounty, _, isHidden = GetQuestLogTitle(i)
+			if not isHidden and not isHeader and not isTask and (not isBounty or IsQuestComplete(questID)) and IsQuestComplete(questID) then
 				AddQuestWatch(i)
 			end
 		end

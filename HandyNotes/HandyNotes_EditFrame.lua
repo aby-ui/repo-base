@@ -14,7 +14,7 @@ local backdrop2 = {
 
 -- Create the main frame
 -- For jncl (Skinner), this frame is accessed by LibStub("AceAddon-3.0"):GetAddon("HandyNotes"):GetModule("HandyNotes").HNEditFrame
-local HNEditFrame = CreateFrame("Frame", "HNEditFrame", UIParent)
+local HNEditFrame = CreateFrame("Frame", "HNEditFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 HN.HNEditFrame = HNEditFrame
 HNEditFrame:Hide()
 HNEditFrame:SetWidth(350)
@@ -69,7 +69,7 @@ HNEditFrame.titletext:SetPoint("TOPLEFT", 25, -28)
 HNEditFrame.titletext:SetText(L["Title"])
 
 -- Create the Title Input Box and position it below the text
-HNEditFrame.titleinputframe = CreateFrame("Frame", nil, HNEditFrame)
+HNEditFrame.titleinputframe = CreateFrame("Frame", nil, HNEditFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 HNEditFrame.titleinputframe:SetWidth(300)
 HNEditFrame.titleinputframe:SetHeight(24)
 HNEditFrame.titleinputframe:SetBackdrop(backdrop2)
@@ -91,7 +91,7 @@ HNEditFrame.desctext:SetPoint("TOPLEFT", HNEditFrame.titleinputframe, "BOTTOMLEF
 HNEditFrame.desctext:SetText(L["Description/Notes:"])
 
 -- Create the ScrollFrame for the Description Edit Box
-HNEditFrame.descframe = CreateFrame("Frame", nil, HNEditFrame)
+HNEditFrame.descframe = CreateFrame("Frame", nil, HNEditFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 HNEditFrame.descframe:SetWidth(300)
 HNEditFrame.descframe:SetHeight(67)
 HNEditFrame.descframe:SetBackdrop(backdrop2)

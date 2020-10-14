@@ -97,13 +97,13 @@ do
 	end
 end
 
-local IsSpellInRange, UnitInRange, UnitIsDead, UnitIsVisible, UnitIsUnit, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
-    = IsSpellInRange, UnitInRange, UnitIsDead, UnitIsVisible, UnitIsUnit, UnitInPhase, UnitIsWarModePhased, UnitIsConnected
+local IsSpellInRange, UnitInRange, UnitIsDead, UnitIsVisible, UnitIsUnit, UnitPhaseReason, UnitIsConnected
+    = IsSpellInRange, UnitInRange, UnitIsDead, UnitIsVisible, UnitIsUnit, UnitPhaseReason, UnitIsConnected
 
 local function GroupRangeCheck(self, unit)
 	if UnitIsUnit(unit, "player") then
 		return true
-    elseif (UnitIsWarModePhased(unit) or not UnitInPhase(unit)) and UnitIsConnected(unit) then
+    elseif UnitPhaseReason(unit) and UnitIsConnected(unit) then
         return false --abyui
 	elseif resSpell and UnitIsDead(unit) and not UnitIsDead("player") then
 		return IsSpellInRange(resSpell, unit) == 1

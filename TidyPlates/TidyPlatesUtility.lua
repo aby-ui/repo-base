@@ -305,7 +305,7 @@ end
 ------------------------------------------------------------------
 
 local function CreatePanelFrame(self, reference, listname, title)
-	local panelframe = CreateFrame( "Frame", reference, UIParent);
+	local panelframe = CreateFrameAby( "Frame", reference, UIParent );
 	panelframe.name = listname
 	panelframe.Label = panelframe:CreateFontString(nil, 'ARTWORK', 'GameFontNormalLarge')
 	panelframe.Label:SetPoint("TOPLEFT", panelframe, "TOPLEFT", 16, -16)
@@ -449,7 +449,7 @@ DropDownMenuFrame:SetSize(100, 100)
 DropDownMenuFrame:SetFrameStrata("TOOLTIP");
 DropDownMenuFrame:Hide()
 
-local Border = CreateFrame("Frame", nil, DropDownMenuFrame)
+local Border = CreateFrameAby("Frame", nil, DropDownMenuFrame)
 Border:SetBackdrop(
 		{	bgFile = "Interface/DialogFrame/UI-DialogBox-Background-Dark",
             edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -680,7 +680,7 @@ do
 	end
 
 	function CreateColorBox(self, reference, parent, label, r, g, b, a)
-		local colorbox = CreateFrame("Button", reference, parent)
+		local colorbox = CreateFrameAby("Button", reference, parent)
 		colorbox:SetWidth(24)
 		colorbox:SetHeight(24)
 		colorbox:SetBackdrop({bgFile = "Interface\\ChatFrame\\ChatFrameColorSwatch",

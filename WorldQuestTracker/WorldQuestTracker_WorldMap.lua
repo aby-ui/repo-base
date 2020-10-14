@@ -30,10 +30,10 @@ local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetQuestTagInfo = GetQuestTagInfo
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
+local IsQuestCriteriaForBounty = C_QuestLog.IsQuestCriteriaForBounty
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -334,7 +334,7 @@ local worldSquareBackdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize
 --cria uma square widget no world map ~world ~createworld ~createworldwidget
 --index and name are only for the glogal name
 local create_worldmap_square = function (mapName, index, parent)
-	local button = CreateFrame ("button", "WorldQuestTrackerWorldMapPOI" .. mapName .. "POI" .. index, parent or worldFramePOIs)
+	local button = CreateFrame ("button", "WorldQuestTrackerWorldMapPOI" .. mapName .. "POI" .. index, parent or worldFramePOIs, "BackdropTemplate")
 	button:SetSize (WorldQuestTracker.Constants.WorldMapSquareSize, WorldQuestTracker.Constants.WorldMapSquareSize)
 	button.IsWorldQuestButton = true
 	button:SetFrameLevel (302)
@@ -509,7 +509,7 @@ local create_worldmap_square = function (mapName, index, parent)
 	shadow:SetPoint ("bottomright", shadow_offset, -shadow_offset)
 	--]=]
 	
-	local criteriaFrame = CreateFrame ("frame", nil, button)
+	local criteriaFrame = CreateFrame ("frame", nil, button, "BackdropTemplate")
 	--local criteriaIndicator = criteriaFrame:CreateTexture (nil, "OVERLAY", 2)
 	local criteriaIndicator = criteriaFrame:CreateTexture (nil, "OVERLAY", 2)
 	--criteriaIndicator:SetPoint ("bottomleft", button, "bottomleft", 1, 2)
@@ -790,7 +790,7 @@ function WorldQuestTracker.InitializeWorldWidgets()
 	
 	--schedule cleanup: anchors isn`t used anymore in the new anchoring system
 	for mapId, configTable in pairs (WorldQuestTracker.mapTables) do
-		local anchor = CreateFrame ("frame", nil, worldFramePOIs)
+		local anchor = CreateFrame ("frame", nil, worldFramePOIs, "BackdropTemplate")
 		anchor:SetSize (1, 1)
 		
 		local anchorFrame = CreateFrame ("frame", nil, worldFramePOIs, WorldQuestTracker.DataProvider:GetPinTemplate())
@@ -812,7 +812,7 @@ function WorldQuestTracker.InitializeWorldWidgets()
 		anchorText:SetPoint ("bottomleft", anchor, "topleft", 0, 0)
 		anchor.Title = anchorText
 		
-		local factionFrame = CreateFrame ("frame", "WorldQuestTrackerFactionFrame" .. mapId, worldFramePOIs)
+		local factionFrame = CreateFrame ("frame", "WorldQuestTrackerFactionFrame" .. mapId, worldFramePOIs, "BackdropTemplate")
 		tinsert (faction_frames, factionFrame)
 		factionFrame:SetSize (20, 20)
 		configTable.factionFrame = factionFrame
@@ -1213,13 +1213,13 @@ end
 
 -- ~world -- ~update
 function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQuestFlaggedRecheck, forceCriteriaAnimation, questList)
-	if (UnitLevel ("player") < 110) then
+	if (UnitLevel ("player") < 50) then
 		WorldQuestTracker.HideWorldQuestsOnWorldMap()
 		
 		--> show a message telling why world quests aren't shown
 		if (WorldQuestTracker.db.profile and not WorldQuestTracker.db.profile.low_level_tutorial) then
 			WorldQuestTracker.db.profile.low_level_tutorial = true
-			WorldQuestTracker:Msg ("World quests aren't shown because you're below level 110.") --> localize-me
+			WorldQuestTracker:Msg ("World quests aren't shown because you're below level 50.") --> localize-me
 		end
 		return
 
@@ -1383,7 +1383,7 @@ function WorldQuestTracker.UpdateWorldQuestsOnWorldMap (noCache, showFade, isQue
 				end
 				
 				--is a bounty criteria
-				local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestID)
+				local isCriteria = C_QuestLog.IsQuestCriteriaForBounty (questID, bountyQuestID)
 				if (isCriteria) then
 					factionAmountForEachMap [mapId] = (factionAmountForEachMap [mapId] or 0) + 1
 				end

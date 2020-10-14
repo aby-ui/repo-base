@@ -9,6 +9,7 @@
 local srti = {};
 srti.version = GetAddOnMetadata("simpleraidtargeticons","version");
 
+local CreateFrame = CreateFrameAby --TODO aby9
 
 SRTI_HEADER = SRTI_TITLE .. " " .. srti.version;
 SRTI_MSG_HELP_TEXT = SRTI_TITLE .. SRTI_MSG_HELP_TEXT;
@@ -154,7 +155,7 @@ function srti.frame:Show()
 	srti.frame.Show = srti.frame.origShow;
 	srti.frame.origShow = nil;
 
-	srti.frame:SetScript("OnUpdate", 
+	srti.frame:SetScript("OnUpdate",
 		function(self, arg1)
 			local portrait = srti.frame.portrait;
 			srti.frame.portrait = nil;
@@ -430,7 +431,7 @@ function srti.Show(frombinding)
 			return
 		end
 	end
-	
+
 	srti.frame.showing = GetTime();
 	srti.frame.hiding = nil;
 	srti.frame.index = nil;
@@ -456,7 +457,7 @@ end
 --                    return;
 --                end;
         else
-	        return;	
+	        return;
 	end;
 	srti.frame.portrait = frombinding;
 	local x,y = GetCursorPosition();
@@ -487,7 +488,7 @@ function srti.IsNameplateUnderMouse()
 					end
 					if f.extended then -- TidyPlates
 						return 1;
-					end 
+					end
 					if f.done then -- caelNameplates + clones (shNameplates, ...)
 						return 1;
 					end
@@ -668,7 +669,7 @@ SlashCmdList["SRTI"] = function(msg)
 	msg = msg:lower();
 	local num = tonumber(msg);
 	if ( msg == "" ) then
-		
+
                 InterfaceOptionsFrame_OpenToCategory(srti.menu);
                 InterfaceOptionsFrame_OpenToCategory(srti.menu);
 	elseif ( num and num < 9 ) then
@@ -1016,7 +1017,7 @@ function srti.Options()
 		end
 	end
 	);
-	
+
 	-- prune addons that we support but are not actually loaded.
 	-- DEBUG: addons with spaces in the name will create problems.
 	-- revisit this part to add support for those at a later date.
@@ -1061,7 +1062,7 @@ function srti.Options()
 			srti.menu.thirdparty.addonname:SetScript("OnClick", srti.menu.Modifer3RDCB)
 		end
 	end
-	
+
 	srti.menu.UpdateCB = function()
 		if ( SRTISaved.ctrl or SRTISaved.alt or SRTISaved.shift ) then
 			srti.menu.singletext:SetFontObject("GameFontHighlightSmall");
@@ -1118,13 +1119,13 @@ function srti.Options()
 		SRTISaved[self.option] = self:GetValue();
 		srti.menu.UpdateSlider();
 	end;
-	
+
 	srti.menu.ScaleSlider = function(self)
 		SRTISaved[self.option] = self:GetValue()
 		srti.frame:SetScale(SRTISaved[self.option] or 1.0);
 		srti.menu.UpdateSlider();
 	end;
-	
+
 	srti.menu.ctrl:SetScript("OnClick",srti.menu.ModiferCB);
 	srti.menu.alt:SetScript("OnClick",srti.menu.ModiferCB);
 	srti.menu.shift:SetScript("OnClick",srti.menu.ModiferCB);
@@ -1169,7 +1170,7 @@ function srti.Options()
 		srti.menu.doublecb:SetChecked(SRTISaved.double);
 		srti.menu.doublehover:SetChecked(SRTISaved.doublehover);
                 srti.menu.bindinghover:SetChecked(SRTISaved.bindinghover);
-		
+
 		if next(thirdParty) then
 			for i,addonname in pairs(thirdParty) do
 				local checkbox = _G["SRTIcb"..addonname]

@@ -117,6 +117,7 @@ local EVENTS = {
     "PLAYER_LOGIN",
     "AUCTION_HOUSE_SHOW",
     "AUCTION_HOUSE_BROWSE_RESULTS_UPDATED",
+    "AUCTION_HOUSE_NEW_RESULTS_RECEIVED",
     "GET_ITEM_INFO_RECEIVED",
     "BLACK_MARKET_OPEN",
     "BLACK_MARKET_ITEM_UPDATE",
@@ -480,6 +481,26 @@ end
 CanIMogIt:RegisterChatCommand("cimi", "SlashCommands")
 CanIMogIt:RegisterChatCommand("canimogit", "SlashCommands")
 
+local function printHelp()
+    CanIMogIt:Print([[
+Can I Mog It? help:
+    Usage: /cimi <command>
+    e.g. /cimi help
+
+    help            Displays this help message.
+    debug           Toggles the debug tooltip.
+    verbose         Toggles verbose mode on tooltip.
+    overlay         Toggles the icon overlay.
+    refresh         Refreshes the overlay, forcing a redraw.
+    equiponly       Toggles showing overlay on non-equipable items.
+    transmogonly    Toggles showing overlay on non-transmogable items.
+    unknownonly     Toggles showing overlay on known items.
+    count           Shows how many appearances CIMI has recorded.
+    printdb         Toggles printing database debug messages when learning apperances.
+    PleaseDeleteMyDB    WARNING: Completely deletes the database (for all characters)!
+    ]])
+end
+
 function CanIMogIt:SlashCommands(input)
     -- Slash command router.
     if input == "" then
@@ -500,8 +521,6 @@ function CanIMogIt:SlashCommands(input)
         CanIMogIt.frame.showUnknownOnly:Click()
     elseif input == 'count' then
         self:Print(CanIMogIt.Utils.tablelength(CanIMogIt.db.global.appearances))
-    elseif input == 'test' then
-        CanIMogIt.Tests:RunTests()
     elseif input == 'PleaseDeleteMyDB' then
         self:DBReset()
     elseif input == 'dbprint' then
@@ -509,6 +528,8 @@ function CanIMogIt:SlashCommands(input)
         self:Print("Database prints: " .. tostring(CanIMogItOptions['databaseDebug']))
     elseif input == 'refresh' then
         self:ResetCache()
+    elseif input == 'help' then
+        printHelp()
     else
         self:Print("Unknown command!")
     end

@@ -1,6 +1,5 @@
-if not WeakAuras.IsCorrectVersion() then
-  return
-end
+if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
@@ -17,9 +16,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local textEditor
-
-local valueFromPath = WeakAuras.ValueFromPath
-local valueToPath = WeakAuras.ValueToPath
 
 local editor_themes = {
   ["Standard"] = {
@@ -150,36 +146,6 @@ end]=]
   },
 }
 
-local function settings_dropdown_initialize(frame, level, menu)
-  for k, v in pairs(editor_themes) do
-    local item = {
-      text = k,
-      isNotRadio = false,
-      checked = function()
-        return WeakAurasSaved.editor_theme == k
-      end,
-      func = function()
-        WeakAurasSaved.editor_theme = k
-        set_scheme()
-        WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
-      end
-    }
-    UIDropDownMenu_AddButton(item)
-  end
-  UIDropDownMenu_AddButton(
-    {
-      text = L["Bracket Matching"],
-      isNotRadio = true,
-      checked = function()
-        return WeakAurasSaved.editor_bracket_matching
-      end,
-      func = function()
-        WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
-      end
-    }
-  )
-end
-
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("InlineGroup")
   group.frame:SetParent(frame)
@@ -261,6 +227,36 @@ local function ConstructTextEditor(frame)
   urlText:SetPoint("RIGHT", settings_frame, "LEFT")
 
   local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
+
+  local function settings_dropdown_initialize(frame, level, menu)
+    for k, v in pairs(editor_themes) do
+      local item = {
+        text = k,
+        isNotRadio = false,
+        checked = function()
+          return WeakAurasSaved.editor_theme == k
+        end,
+        func = function()
+          WeakAurasSaved.editor_theme = k
+          set_scheme()
+          editor.editBox:SetText(editor.editBox:GetText())
+        end
+      }
+      UIDropDownMenu_AddButton(item)
+    end
+    UIDropDownMenu_AddButton(
+      {
+        text = L["Bracket Matching"],
+        isNotRadio = true,
+        checked = function()
+          return WeakAurasSaved.editor_bracket_matching
+        end,
+        func = function()
+          WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
+        end
+      }
+    )
+  end
   UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU")
 
   settings_frame:SetScript(
@@ -332,8 +328,8 @@ local function ConstructTextEditor(frame)
       button:SetCallback(
         "OnClick",
         function()
-          WeakAuras.editor.editBox:Insert(snippet.snippet)
-          WeakAuras.editor:SetFocus()
+          editor.editBox:Insert(snippet.snippet)
+          editor:SetFocus()
         end
       )
       button.deleteButton:SetScript(
@@ -367,7 +363,7 @@ local function ConstructTextEditor(frame)
   end
 
   -- Make sidebar for snippets
-  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame)
+  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame, BackdropTemplateMixin and "BackdropTemplate")
   snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
   snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)
@@ -643,7 +639,7 @@ local function ConstructTextEditor(frame)
       local combinedText = ""
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId)
-        local text = valueFromPath(childData, multipath and path[childId] or path)
+        local text = OptionsPrivate.Private.ValueFromPath(childData, multipath and path[childId] or path)
         if text then
           if not (singleText) then
             singleText = text
@@ -669,7 +665,7 @@ local function ConstructTextEditor(frame)
         editor.combinedText = true
       end
     else
-      editor:SetText(valueFromPath(data, path) or "")
+      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
     end
     editor:SetFocus()
   end
@@ -724,39 +720,37 @@ local function ConstructTextEditor(frame)
       for index, childId in pairs(self.data.controlledChildren) do
         local text = editor.combinedText and (textById[childId] or "") or editor:GetText()
         local childData = WeakAuras.GetData(childId)
-        valueToPath(childData, self.multipath and self.path[childId] or self.path, text)
+        OptionsPrivate.Private.ValueToPath(childData, self.multipath and self.path[childId] or self.path, text)
         WeakAuras.Add(childData)
       end
     else
-      valueToPath(self.data, self.path, editor:GetText())
+      OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
       WeakAuras.Add(self.data)
     end
     if (self.reloadOptions) then
       if (self.data.controlledChildren) then
         for index, childId in pairs(self.data.controlledChildren) do
-          WeakAuras.ScheduleReloadOptions(WeakAuras.GetData(childId))
+          WeakAuras.ClearAndUpdateOptions(childId)
         end
-        WeakAuras.ScheduleReloadOptions(self.data)
+        WeakAuras.ClearAndUpdateOptions(self.data.id)
       else
-        WeakAuras.ScheduleReloadOptions(self.data)
+        WeakAuras.ClearAndUpdateOptions(self.data.id)
       end
     else
-      WeakAuras.ScheduleReloadOptions(self.data)
+      WeakAuras.ClearAndUpdateOptions(self.data.id)
     end
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged)
     editor:ClearFocus()
     frame.window = "default"
     frame:UpdateFrameVisible()
-
-    frame:RefreshPick()
+    WeakAuras.FillOptions()
   end
-  WeakAuras.editor = editor
 
   return group
 end
 
-function WeakAuras.TextEditor(frame)
+function OptionsPrivate.TextEditor(frame)
   textEditor = textEditor or ConstructTextEditor(frame)
   return textEditor
 end

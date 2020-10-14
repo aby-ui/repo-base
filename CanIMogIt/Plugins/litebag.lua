@@ -2,7 +2,7 @@
 
 if IsAddOnLoaded("LiteBag") then
 
-    hooksecurefunc('LiteBagItemButton_Update', function (button)
+    LiteBagItemButton_RegisterHook('LiteBagItemButton_Update', function (button)
             CIMI_AddToFrame(button, ContainerFrameItemButton_CIMIUpdateIcon)
             ContainerFrameItemButton_CIMIUpdateIcon(button.CanIMogItOverlay)
         end)

@@ -457,7 +457,7 @@
 		_detalhes.atributo_energy:UpdateSelectedToKFunction()
 		_detalhes.atributo_misc:UpdateSelectedToKFunction()
 		_detalhes.atributo_custom:UpdateSelectedToKFunction()
-		_detalhes:AtualizaGumpPrincipal (-1, true)
+		Details:RefreshMainWindow(-1, true)
 	end
 	
 --------end of ToK functions----
@@ -1372,32 +1372,32 @@ end
 
 	function _detalhes:name_space (barra)
 		--if (barra.icone_secundario_ativo) then
-		--	local tamanho = barra:GetWidth()-barra.texto_direita:GetStringWidth()-16-barra:GetHeight()
-		--	barra.texto_esquerdo:SetSize (tamanho-2, 15)
+		--	local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16-barra:GetHeight()
+		--	barra.lineText1:SetSize (tamanho-2, 15)
 		--else
-			barra.texto_esquerdo:SetSize (barra:GetWidth()-barra.texto_direita:GetStringWidth()-18, 15)
+			barra.lineText1:SetSize (barra:GetWidth()-barra.lineText4:GetStringWidth()-18, 15)
 		--end
 	end
 
 	function _detalhes:name_space_info (barra)
 		if (barra.icone_secundario_ativo) then
-			local tamanho = barra:GetWidth()-barra.texto_direita:GetStringWidth()-16-barra:GetHeight()
-			barra.texto_esquerdo:SetSize (tamanho-10, 15)
+			local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16-barra:GetHeight()
+			barra.lineText1:SetSize (tamanho-10, 15)
 		else
-			local tamanho = barra:GetWidth()-barra.texto_direita:GetStringWidth()-16
-			barra.texto_esquerdo:SetSize (tamanho-10, 15)
+			local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16
+			barra.lineText1:SetSize (tamanho-10, 15)
 		end
 	end
 
 	function _detalhes:name_space_generic (barra, separador)
-		local texto_direita_tamanho = barra.texto_direita:GetStringWidth()
+		local texto_direita_tamanho = barra.lineText4:GetStringWidth()
 		local tamanho = barra:GetWidth()-texto_direita_tamanho-16
 		if (separador) then 
-			barra.texto_esquerdo:SetSize (tamanho+separador, 10)
-			barra.texto_direita:SetSize (texto_direita_tamanho+15, 10)
+			barra.lineText1:SetSize (tamanho+separador, 10)
+			barra.lineText4:SetSize (texto_direita_tamanho+15, 10)
 		else
-			barra.texto_esquerdo:SetSize (tamanho-10, 15)
-			barra.texto_direita:SetSize (texto_direita_tamanho+5, 15)
+			barra.lineText1:SetSize (tamanho-10, 15)
+			barra.lineText4:SetSize (texto_direita_tamanho+5, 15)
 		end
 	end
 

@@ -1,19 +1,20 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Masque: Caith
 
 ## Notes: Caith skin for Masque.
 ## Notes-deDE: Caith-Skin für Masque.
-## Notes-esES: Skin Caith para Masque.
 ## Notes-esMX: Skin Caith para Masque.
+## Notes-esES: Skin Caith para Masque.
+## Notes-frFR: Skin de Caith pour Masque.
 ## Notes-itIT: Skin Caith per Masque.
 ## Notes-ruRU: Скин Caith для Masque.
 ## Notes-zhTW: Masque的Caith皮膚。
 
-## Version: 8.2.6
+## Version: 9.0.0
 ## Author: StormFX
 ## Dependencies: Masque
 
-## X-Website: https://github.com/StormFX/Masque_Caith
+## X-Website: https://github.com/SFX-WoW/Masque_Caith
 ## X-Category: Interface Enhancements
 ## X-Credits: Zeal, Caith
 ## X-Curse-Project-ID: 13594

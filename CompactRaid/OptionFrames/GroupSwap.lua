@@ -105,7 +105,7 @@ for i = 1, 8 do
 	panel:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
 	panel:SetPoint("TOPLEFT", addon:GetRaidGroup(i), "TOPLEFT")
 
-	local border = CreateFrame("Frame", nil, panel)
+	local border = CreateFrameAby("Frame", nil, panel)
 	border:SetAllPoints(panel)
 	border:SetScale(0.5)
 	border:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
@@ -120,7 +120,7 @@ cursor:Hide()
 cursor:SetMovable(true)
 cursor:SetFrameStrata("HIGH")
 
-local border = CreateFrame("Frame", nil, cursor)
+local border = CreateFrameAby("Frame", nil, cursor)
 border:SetAllPoints(cursor)
 border:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
 border:SetScale(0.5)

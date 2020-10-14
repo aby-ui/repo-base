@@ -69,7 +69,7 @@ LibEvent:attachTrigger("INSPECT_FRAME_CREATED", function(this, frame, parent)
         itemframe.label:SetWidth(68)
         local j = 1
         for k, v in pairs(shown) do
-            itemframe[k] = CreateFrame("Frame", nil, itemframe)
+            itemframe[k] = CreateFrame("Frame", nil, itemframe, BackdropTemplateMixin and "BackdropTemplate" or nil)
             itemframe[k]:SetSize(16, 14)
             itemframe[k]:SetPoint("LEFT", (j-1)*17, 0)
             itemframe[k]:SetBackdrop(backdrop)

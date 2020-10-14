@@ -1,11 +1,11 @@
 
 local GUI = tdCore('GUI')
 
-local CheckBox = GUI:NewModule('CheckBox', CreateFrame('CheckButton'), 'UIObject', 'Control')
+local CheckBox = GUI:NewModule('CheckBox', CreateFrameAby('CheckButton'), 'UIObject', 'Control')
 CheckBox:SetVerticalArgs(40, 0, 0)
 
 function CheckBox:New(parent)
-    local obj = self:Bind(CreateFrame('CheckButton', nil, parent))
+    local obj = self:Bind(CreateFrameAby('CheckButton', nil, parent))
     
     obj.__depends = {}
     obj:SetSize(26, 26)

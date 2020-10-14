@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
@@ -6,18 +7,16 @@ local pairs = pairs
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local collisions = WeakAuras.collisions
 local displayButtons = WeakAuras.displayButtons
-local savedVars = WeakAuras.savedVars
 
 local importAddonButtons = {}
 local importDisplayButtons = {}
 WeakAuras.importDisplayButtons = importDisplayButtons
 
-function WeakAuras.CreateImportButtons()
+function OptionsPrivate.CreateImportButtons()
   wipe(importAddonButtons);
   wipe(importDisplayButtons);
-  for addonName, addonData in pairs(WeakAuras.addons) do
+  for addonName, addonData in pairs(OptionsPrivate.Private) do
     local addonButton = AceGUI:Create("WeakAurasImportButton");
     importAddonButtons[addonName] = addonButton;
     addonButton:SetTitle(addonData.displayName);
@@ -55,7 +54,7 @@ function WeakAuras.CreateImportButtons()
           end
         end
       end
-      WeakAuras.ResolveCollisions(function()
+      OptionsPrivate.Private.ResolveCollisions(function()
         for groupId, dataFromAddon in pairs(addonData.displays) do
           if(dataFromAddon.controlledChildren) then
             local data = WeakAuras.GetData(groupId);
@@ -69,12 +68,12 @@ function WeakAuras.CreateImportButtons()
               local button = WeakAuras.GetDisplayButton(groupId);
               button.callbacks.UpdateExpandButton();
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.ReloadGroupRegionOptions(data);
+              WeakAuras.ClearAndUpdateOptions(data.id);
             end
           end
         end
 
-        WeakAuras.ScanForLoads();
+        OptionsPrivate.Private.ScanForLoads();
         WeakAuras.SortDisplayButtons();
       end);
     end);
@@ -82,7 +81,7 @@ function WeakAuras.CreateImportButtons()
     local function UpdateAddonChecked()
       local shouldBeChecked = true;
       for id, data in pairs(addonData.displays) do
-        if not(WeakAuras.IsDefinedByAddon(id)) then
+        if not(OptionsPrivate.Private.IsDefinedByAddon(id)) then
           shouldBeChecked = false;
           break;
         end
@@ -105,7 +104,7 @@ function WeakAuras.CreateImportButtons()
         local function UpdateGroupChecked()
           local shouldBeChecked = true;
           for index, childId in pairs(data.controlledChildren) do
-            if not(WeakAuras.IsDefinedByAddon(childId)) then
+            if not(OptionsPrivate.Private.IsDefinedByAddon(childId)) then
               shouldBeChecked = false;
               break;
             end
@@ -120,7 +119,7 @@ function WeakAuras.CreateImportButtons()
           local childButton = AceGUI:Create("WeakAurasImportButton");
           importDisplayButtons[childId] = childButton;
 
-          local data = WeakAuras.addons[addonName].displays[childId];
+          local data = OptionsPrivate.Private[addonName].displays[childId];
 
           childButton:SetTitle(childId);
           childButton:SetDescription(data.desc);
@@ -133,14 +132,14 @@ function WeakAuras.CreateImportButtons()
             else
               WeakAuras.DisableAddonDisplay(childId);
             end
-            WeakAuras.ResolveCollisions(function()
-              WeakAuras.ScanForLoads();
+            OptionsPrivate.Private.ResolveCollisions(function()
+              OptionsPrivate.Private.ScanForLoads();
               WeakAuras.SortDisplayButtons();
               UpdateGroupChecked();
             end);
           end);
           childButton.updateChecked = UpdateGroupChecked;
-          childButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(childId));
+          childButton.checkbox:SetChecked(OptionsPrivate.Private.IsDefinedByAddon(childId));
         end
 
         groupButton:SetClick(function()
@@ -159,7 +158,7 @@ function WeakAuras.CreateImportButtons()
               WeakAuras.DisableAddonDisplay(childId);
             end
           end
-          WeakAuras.ResolveCollisions(function()
+          OptionsPrivate.Private.ResolveCollisions(function()
             local data = WeakAuras.GetData(id);
             if(data) then
               for index, childId in pairs(data.controlledChildren) do
@@ -171,10 +170,10 @@ function WeakAuras.CreateImportButtons()
               local button = WeakAuras.GetDisplayButton(id);
               button.callbacks.UpdateExpandButton();
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.ReloadGroupRegionOptions(data);
+              WeakAuras.ClearAndUpdateOptions(data.id);
             end
 
-            WeakAuras.ScanForLoads();
+            OptionsPrivate.Private.ScanForLoads();
             WeakAuras.SortDisplayButtons();
             UpdateAddonChecked();
           end);
@@ -203,13 +202,13 @@ function WeakAuras.CreateImportButtons()
           else
             WeakAuras.DisableAddonDisplay(id);
           end
-          WeakAuras.ResolveCollisions(function()
+          OptionsPrivate.Private.ResolveCollisions(function()
             WeakAuras.SortDisplayButtons()
             UpdateAddonChecked();
           end);
         end);
         displayButton.updateChecked = UpdateAddonChecked;
-        displayButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(id));
+        displayButton.checkbox:SetChecked(OptionsPrivate.Private.IsDefinedByAddon(id));
       end
     end
 
@@ -228,7 +227,7 @@ function WeakAuras.SortImportButtons(newContainer)
   container = newContainer or container;
   wipe(container.children);
   local toSort = {};
-  for addon, addonData in pairs(WeakAuras.addons) do
+  for addon, addonData in pairs(OptionsPrivate.Private) do
     container:AddChild(importAddonButtons[addon]);
     wipe(toSort);
     for id, data in pairs(addonData.displays) do
@@ -261,29 +260,28 @@ function WeakAuras.SortImportButtons(newContainer)
 end
 
 function WeakAuras.EnableAddonDisplay(id)
-  local db = savedVars.db
+  local db = OptionsPrivate.savedVars.db
   if not(db.registered[id]) then
     local addon, data;
-    for addonName, addonData in pairs(WeakAuras.addons) do
+    for addonName, addonData in pairs(OptionsPrivate.Private) do
       if(addonData.displays[id]) then
         addon = addonName;
-        data = {}
-        WeakAuras.DeepCopy(addonData.displays[id], data);
+        data = CopyTable(addonData.displays[id]);
         break;
       end
     end
 
     if(db.displays[id]) then
       -- ID collision
-      collisions[id] = {addon, data};
+      OptionsPrivate.Private.collisions[id] = {addon, data};
     else
       db.registered[id] = addon;
       if(data.controlledChildren) then
         wipe(data.controlledChildren);
       end
       WeakAuras.Add(data);
-      WeakAuras.SyncParentChildRelationships(true);
-      WeakAuras.AddDisplayButton(data);
+      OptionsPrivate.Private.SyncParentChildRelationships(true);
+      OptionsPrivate.AddDisplayButton(data);
     end
   end
 end
@@ -296,7 +294,7 @@ end
 
 function WeakAuras.DisableAddonDisplay(id)
   local frame = WeakAuras.OptionsFrame()
-  local db = savedVars.db
+  local db = OptionsPrivate.savedVars.db
   db.registered[id] = false;
   local data = WeakAuras.GetData(id);
   if(data) then
@@ -319,7 +317,7 @@ function WeakAuras.DisableAddonDisplay(id)
     end
 
     WeakAuras.Delete(data);
-    WeakAuras.SyncParentChildRelationships(true);
+    OptionsPrivate.Private.SyncParentChildRelationships(true);
     frame.buttonsScroll:DeleteChild(displayButtons[id]);
     displayButtons[id] = nil;
 
@@ -331,7 +329,7 @@ function WeakAuras.DisableAddonDisplay(id)
         end
       end
       WeakAuras.Add(parentData);
-      WeakAuras.ReloadGroupRegionOptions(parentData);
+      WeakAuras.ClearAndUpdateOptions(parentData.id);
       WeakAuras.UpdateDisplayButton(parentData);
     end
   end

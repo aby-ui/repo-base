@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201003203140")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetUsedIcons(1, 2, 3)
@@ -108,7 +108,7 @@ local timerIceBlockCD					= mod:NewTargetTimer(20, 287322, nil, nil, nil, 6)
 --Stage One: Burning Seas
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19557))
 local timerCorsairCD					= mod:NewCDTimer(60.4, "ej19690", nil, nil, nil, 1, "2261243")
---local timerBombardCD					= mod:NewAITimer(55, 285828, nil, nil, nil, 3)
+--local timerBombardCD					= mod:NewCDTimer(55, 285828, nil, nil, nil, 3)
 local timerAvalancheCD					= mod:NewCDTimer(60.7, 287565, nil, nil, 2, 5, nil, nil, true)
 local timerGraspofFrostCD				= mod:NewCDTimer(17.3, 287626, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON, true)
 local timerFreezingBlastCD				= mod:NewCDTimer(14, 285177, nil, "Tank", nil, 3, nil, nil, true)
@@ -246,7 +246,7 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		rangeThreshold = 1
 		timerFrozenSiegeCD:Start(3.3-delay, 1)
-		timerAvalancheCD:Start(13.4-delay)
+		timerAvalancheCD:Start(12.1-delay)
 		timerFreezingBlastCD:Start(8.6-delay)
 		timerGraspofFrostCD:Start(23.5-delay)
 		timerRingofIceCD:Start(60.7-delay, 1)
@@ -474,7 +474,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 287490 then
-		warnFrozenSolid:CombinedShow(1.5, args.destName)
+		warnFrozenSolid:CombinedShow(2, args.destName)
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) and not args:IsPlayer() then
 			specWarnIceBlockTaunt:Show(args.destName)
@@ -624,6 +624,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerIcefallCD:Start(30.2, 1)
 		timerSiegebreakerCD:Start(40.3, 1)
 		if self:IsMythic() and self:AntiSpam(10, 10) then--Antispam to ignore applied from howling winds right at end of 1.5
+			timerHowlingWindsCD:Stop()
 			timerHowlingWindsCD:Start(68.1, self.vb.howlingWindsCast+1)
 		end
 	elseif spellId == 288219 then

@@ -70,7 +70,7 @@ end
 
 local function Announce(msg, force)
 	if db.tomtomAnnounce or force then
-		ChatFrame1:AddMessage("|cff33ff99TomTom:|r "..msg)
+		ChatFrame1:AddMessage("|cff33ff99"..KT.title..":|r "..msg)
 	end
 end
 
@@ -133,14 +133,14 @@ local function AddWaypoint(questID, isSilent)
 	end
 
 	if completed then
-		title = "|TInterface\\GossipFrame\\ActiveQuestIcon:0:0:-2:0|t"..title
+		title = "|TInterface\\GossipFrame\\ActiveQuestIcon:0:0:0:0|t"..title
 	else
-		title = "|TInterface\\GossipFrame\\AvailableQuestIcon:0:0:-2:0|t"..title
+		title = "|TInterface\\GossipFrame\\AvailableQuestIcon:0:0:0:0|t"..title
 	end
 
 	if mapID == 0 or not x or not y then
 		if not isSilent then
-			Announce("|cffff0000No data for quest waypoint|r - "..title, true)
+			Announce("|cffff0000No data for quest waypoint|r ..."..title, true)
 		end
 		return false
 	end
@@ -156,7 +156,7 @@ local function AddWaypoint(questID, isSilent)
 	questWaypoints[questID] = uid
 
 	if not isSilent then
-		Announce("Added a quest waypoint - "..title)
+		Announce("Added a quest waypoint ..."..title)
 	end
 
 	return true
@@ -298,7 +298,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v80300-1.1.1") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v80300-1.1.3") and db.addonTomTom)
 
 	local defaults = KT:MergeTables({
 		profile = {

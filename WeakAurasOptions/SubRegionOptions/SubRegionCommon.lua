@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Magic constant
 local deleteCondition = {}
@@ -28,8 +29,6 @@ function WeakAuras.DeleteSubRegion(data, index, regionType)
   end
   if data.subRegions[index] and data.subRegions[index].type == regionType then
     tremove(data.subRegions, index)
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
 
     local replacements = {
       ["sub." .. index .. "."] = deleteCondition
@@ -40,17 +39,18 @@ function WeakAuras.DeleteSubRegion(data, index, regionType)
     end
 
     AdjustConditions(data, replacements);
+
+    WeakAuras.Add(data)
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 end
 
-function WeakAuras.MoveSubRegionUp(data, index, regionType)
+function OptionsPrivate.MoveSubRegionUp(data, index, regionType)
   if not data.subRegions or index <= 1 then
     return
   end
   if data.subRegions[index] and data.subRegions[index].type == regionType then
     data.subRegions[index - 1], data.subRegions[index] = data.subRegions[index], data.subRegions[index - 1]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
 
     local replacements = {
       ["sub." .. (index -1) .. "."] = "sub." .. index .. ".",
@@ -58,17 +58,18 @@ function WeakAuras.MoveSubRegionUp(data, index, regionType)
     }
 
     AdjustConditions(data, replacements);
+
+    WeakAuras.Add(data)
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 end
 
-function WeakAuras.MoveSubRegionDown(data, index, regionType)
+function OptionsPrivate.MoveSubRegionDown(data, index, regionType)
   if not data.subRegions then
     return
   end
   if data.subRegions[index] and data.subRegions[index].type == regionType and data.subRegions[index + 1] then
     data.subRegions[index], data.subRegions[index + 1] = data.subRegions[index + 1], data.subRegions[index]
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
 
     local replacements = {
       ["sub." .. index .. "."] = "sub." .. (index + 1) .. ".",
@@ -76,22 +77,27 @@ function WeakAuras.MoveSubRegionDown(data, index, regionType)
     }
 
     AdjustConditions(data, replacements);
+
+    WeakAuras.Add(data)
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 end
 
-function WeakAuras.DuplicateSubRegion(data, index, regionType)
+function OptionsPrivate.DuplicateSubRegion(data, index, regionType)
   if not data.subRegions then
     return
   end
   if data.subRegions[index] and data.subRegions[index].type == regionType then
     tinsert(data.subRegions, index, CopyTable(data.subRegions[index]))
-    WeakAuras.Add(data)
-    WeakAuras.ReloadOptions2(data.id, data)
+
 
     local replacements = {}
     for i = index + 1, #data.subRegions do
       replacements["sub." .. i .. "."] = "sub." .. (i + 1) .. "."
     end
     AdjustConditions(data, replacements);
+
+    WeakAuras.Add(data)
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 end

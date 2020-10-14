@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200524145614")
+mod:SetRevision("20200806141949")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
-mod:SetZone()
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 mod:SetHotfixNoticeRev(16150)
 mod.respawnTime = 30

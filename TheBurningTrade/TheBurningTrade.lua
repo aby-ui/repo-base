@@ -132,6 +132,7 @@ function TBTFrame_OnLoad(self)
     button:SetPoint("CENTER", "TradeFrame", "TOPLEFT", 210, -35);
 
     --for rightclick quick trade
+    local MAX_CONTAINER_ITEMS = 36;
     for i=1, NUM_CONTAINER_FRAMES do
         for j=1, MAX_CONTAINER_ITEMS do
             local f = getglobal("ContainerFrame"..i.."Item"..j);

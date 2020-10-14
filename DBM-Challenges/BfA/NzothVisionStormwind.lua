@@ -1,9 +1,7 @@
 ﻿local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200712190249")
-mod:SetZone()
-mod.onlyNormal = true
+mod:SetRevision("20200912132033")
 
 mod:RegisterCombat("scenario", 2213)--2212, 2213 (org, stormwind)
 
@@ -158,9 +156,6 @@ function mod:OnCombatStart(delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
 		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, 2)--Sorting lowest to highest
-	end
-	if UnitName("player") == "Asmongold" and GetRealmName() == "Kel'Thuzad" then
-		DBM:AddMsg("Hey, Asmongold, even DBM has a Mail Muncher")
 	end
 end
 

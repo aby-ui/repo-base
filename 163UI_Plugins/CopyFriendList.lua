@@ -25,7 +25,7 @@ local function copyfriends(_, name)
         end
     end
 
-    local cur_num = GetNumFriends()
+    local cur_num = C_FriendList.GetNumFriends()
     local fut_num = #waiting
 
     StaticPopupDialogs.U1_COPY_FRIEND_LIST_CONFIRM.text = '将要添加 <'..
@@ -132,7 +132,7 @@ local init = function()
     U1DBG.friendlist = U1DBG.friendlist or {}
 
     CoreOnEvent('FRIENDLIST_UPDATE', FRIENDLIST_UPDATE)
-    CoreScheduleTimer(nil, 10, ShowFriends)
+    CoreScheduleTimer(nil, 10, C_FriendList.ShowFriends)
     return true
 end
 

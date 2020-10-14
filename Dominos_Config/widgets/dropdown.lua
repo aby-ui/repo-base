@@ -1,4 +1,4 @@
-local Addon = (select(2, ...))
+local _, Addon = ...
 
 local Dropdown = Addon:CreateClass('Frame')
 do

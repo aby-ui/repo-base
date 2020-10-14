@@ -8,11 +8,12 @@ if Lib.gameExpansion == "retail" then
         [207167]  = "disorient",       -- Blinding Sleet
         [207685]  = "disorient",       -- Sigil of Misery
         [33786]   = "disorient",       -- Cyclone
-        [209753]  = "disorient",       -- Cyclone (Honor talent)
+        [1513]    = "disorient",       -- Scare Beast
         [31661]   = "disorient",       -- Dragon's Breath
         [198909]  = "disorient",       -- Song of Chi-ji
         [202274]  = "disorient",       -- Incendiary Brew
         [105421]  = "disorient",       -- Blinding Light
+        [10326]   = "disorient",       -- Turn Evil (For Lichborne?)
         [605]     = "disorient",       -- Mind Control
         [8122]    = "disorient",       -- Psychic Scream
         [226943]  = "disorient",       -- Mind Bomb
@@ -109,7 +110,6 @@ if Lib.gameExpansion == "retail" then
         [200200]  = "stun",            -- Holy Word: Chastise Censure
         [1833]    = "stun",            -- Cheap Shot
         [408]     = "stun",            -- Kidney Shot
-        [199804]  = "stun",            -- Between the Eyes
         [118905]  = "stun",            -- Static Charge (Capacitor Totem)
         [118345]  = "stun",            -- Pulverize (Primal Earth Elemental)
         [305485]  = "stun",            -- Lightning Lasso
@@ -147,6 +147,7 @@ if Lib.gameExpansion == "retail" then
         [33395]   = "root",            -- Freeze
         [198121]  = "root",            -- Frostbite
         [220107]  = "root",            -- Frostbite (Water Elemental? needs testing)
+        [342375]  = "root",            -- Tormenting Backlash (Torghast pve, needs confirmation)
         [233582]  = "root",            -- Entrenched in Flame
         [116706]  = "root",            -- Disable
         [64695]   = "root",            -- Earthgrab (Totem effect)
@@ -292,5 +293,5 @@ else
     }
 end
 
--- keep same API as DRData-1.0 for easier transitions
+-- Alias for DRData-1.0
 Lib.spells = Lib.spellList

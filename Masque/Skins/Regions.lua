@@ -1,9 +1,9 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
-	* File...: Core\Skins\Regions.lua
+	* File...: Skins\Regions.lua
 	* Author.: StormFX
 
 	Regions Settings
@@ -11,27 +11,29 @@
 ]]
 
 local _, Core = ...
+local WOW_RETAIL = Core.WOW_RETAIL
 
 ----------------------------------------
 -- Region Settings
 
--- * Key -> The button key that holds the region reference.
--- * Func -> The string suffix of the global key that holds the region reference.
--- * Name -> The string name of the button method that returns the region reference.
--- * Type -> Must match the game's internal type, for validation.
+-- * Key - The string button key that holds the region reference.
+-- * Func - The string name of the button method that returns the region reference.
+-- * Name - The string suffix of the global key that holds the region reference.
+-- * Type - Must match the game's internal type, for validation.
 
--- * UseColor -> Use :SetColorTexture() if the skin provides a color but no texture.
--- * Hide -> Region will be hidden if it exists.
--- * CanHide -> Allow the region to be hidden.
--- * CanMask -> Allow the region to be masked.
--- * NoColor -> Do not allow color changes.
--- * NoTexture -> Do not allow texture changes.
+-- * UseColor - Use :SetColorTexture() if the skin provides a color but no texture.
+-- * Hide - Region will be hidden if it exists.
+-- * CanHide - Allow the region to be hidden.
+-- * CanMask - Allow the region to be masked.
+-- * NoColor - Do not allow color changes.
+-- * NoTexture - Do not allow texture changes.
 
--- * Ignore -> Ignore when looking for regions. @ Core\Group
--- * Iterate -> Include in iteration. @ Core\Button
+-- * Ignore - Ignore when looking for regions. @ Core\Group
+-- * Iterate - Include in iteration. @ Core\Button
 ---
 
 local Legacy = {
+	-- [ BACKGROUND (-1) ]
 	Backdrop = {
 		Name = "FloatingBG",
 		Type = "Texture",
@@ -39,6 +41,7 @@ local Legacy = {
 		CanMask = true,
 		UseColor = true,
 	},
+	-- [ BACKGROUND (0) ]
 	Icon = {
 		Key = "icon",
 		Name = "Icon",
@@ -47,7 +50,7 @@ local Legacy = {
 		NoColor = true,
 		NoTexture = true,
 		Aura = {
-			Key = "Icon",
+			Key = (WOW_RETAIL and "Icon") or nil, -- Retail Only
 			Name = "Icon",
 			Type = "Texture",
 			CanMask = true,
@@ -63,10 +66,12 @@ local Legacy = {
 			NoTexture = true,
 		},
 	},
+	-- [ ARTWORK (-1) ]
 	Shadow = {
 		Ignore = true,
 		CanHide = true,
 	},
+	-- [ ARTWORK (0) ]
 	Normal = {
 		--Key = "NormalTexture", -- Conflicts with some add-ons.
 		Func = "GetNormalTexture",
@@ -94,6 +99,7 @@ local Legacy = {
 		Iterate = true,
 		UseColor = true,
 	},
+	-- [ ARTWORK (1) ]
 	Flash = {
 		-- Key = "Flash", -- Conflics with item buttons.
 		Name = "Flash",
@@ -102,6 +108,11 @@ local Legacy = {
 		Iterate = true,
 		UseColor = true,
 	},
+	-- FlyoutBorder = {}, -- Unsupported
+	-- FlyoutBorderShadow = {}, -- Unsupported
+	-- [ ARTWORK (2) ]
+	-- FlyoutArrow = {}, -- Unsupported
+	-- [ ARTWORK (*) ]
 	HotKey = {
 		Key = "HotKey",
 		Name = "HotKey",
@@ -137,6 +148,7 @@ local Legacy = {
 		Iterate = true,
 		NoColor = true,
 	},
+	-- [ OVERLAY (0) ]
 	Checked = {
 		Func = "GetCheckedTexture",
 		Type = "Texture",
@@ -154,8 +166,15 @@ local Legacy = {
 			Iterate = true,
 			NoColor = true,
 		},
+		Debuff = {
+			Key = (WOW_RETAIL and "Border") or nil, -- Retail Only
+			Name = "Border",
+			Type = "Texture",
+			Iterate = true,
+			NoColor = true,
+		},
 		Enchant = {
-			Key = "Border",
+			Key = (WOW_RETAIL and "Border") or nil, -- Retail Only
 			Name = "Border",
 			Type = "Texture",
 			Iterate = true,
@@ -175,12 +194,12 @@ local Legacy = {
 		Ignore = true,
 		CanHide = true,
 	},
-	IconOverlay = {
-		Key = "IconOverlay",
+	-- [ OVERLAY (1) ]
+	AutoCastable = { -- Only used by Pet buttons.
+		--Key = "AutoCastable", -- Causes issues with Pet bars.
+		Name = "AutoCastable",
 		Type = "Texture",
 		Iterate = true,
-		NoColor = true,
-		NoTexture = true,
 	},
 	NewAction = {
 		Key = "NewActionTexture",
@@ -192,17 +211,34 @@ local Legacy = {
 		Type = "Texture",
 		Iterate = true,
 	},
-	AutoCastable = { -- Only used by Pet buttons.
-		--Key = "AutoCastable", -- Causes issues with Pet bars.
-		Name = "AutoCastable",
+	IconOverlay = {
+		Key = "IconOverlay",
+		Type = "Texture",
+		Iterate = true,
+		NoColor = true,
+		NoTexture = true,
+	},
+	-- LevelLinkLockIcon = {}, -- Unsupported, no reason to.
+	UpgradeIcon = {
+		Key = "UpgradeIcon",
 		Type = "Texture",
 		Iterate = true,
 	},
+	-- [ OVERLAY (2) ]
+	-- IconOverlay2 = {}, -- 9.0
 	NewItem = {
 		Key = "NewItemTexture",
 		Type = "Texture",
 		NoColor = true,
 	},
+	QuestBorder = {
+		Name = "IconQuestTexture",
+		Type = "Texture",
+		--Iterate = true,
+		--NoColor = true,
+		--NoTexture = true,
+	},
+	-- [ OVERLAY (4) ]
 	SearchOverlay = {
 		Key = "searchOverlay",
 		Name = "SearchOverlay",
@@ -211,6 +247,13 @@ local Legacy = {
 		Iterate = true,
 		UseColor = true,
 	},
+	-- [ OVERLAY (5) ]
+	JunkIcon = {
+		Key = "JunkIcon",
+		Type = "Texture",
+		Iterate = true,
+	},
+	-- [ OVERLAY (*) ]
 	Name = {
 		Key = "Name",
 		Name = "Name",
@@ -218,6 +261,7 @@ local Legacy = {
 		Iterate = true,
 		NoColor = true,
 	},
+	-- [ HIGHLIGHT (0) ]
 	Highlight = {
 		Func = "GetHighlightTexture",
 		Type = "Texture",
@@ -225,6 +269,7 @@ local Legacy = {
 		Iterate = true,
 		UseColor = true,
 	},
+	-- [ FRAME ]
 	AutoCastShine = { -- Only used by Pet buttons.
 		--Key = "AutoCastShine", -- Causes issues with Pet bars.
 		Name = "Shine",
@@ -245,7 +290,8 @@ local Legacy = {
 -- Retail Only
 ---
 
-if Core.WOW_RETAIL then
+if WOW_RETAIL then
+	-- [ OVERLAY (4) ]
 	Legacy.ContextOverlay = {
 		Key = "ItemContextOverlay",
 		Type = "Texture",
@@ -266,13 +312,13 @@ local Action = {
 	Disabled = Legacy.Disabled, -- Unused
 	Pushed = Legacy.Pushed,
 	Flash = Legacy.Flash,
-	Checked = Legacy.Checked,
 	HotKey = Legacy.HotKey,
 	Count = Legacy.Count,
+	Checked = Legacy.Checked,
 	Border = Legacy.Border,
+	AutoCastable = Legacy.AutoCastable,
 	NewAction = Legacy.NewAction,
 	SpellHighlight = Legacy.SpellHighlight,
-	AutoCastable = Legacy.AutoCastable,
 	Name = Legacy.Name,
 	Highlight = Legacy.Highlight,
 	AutoCastShine = Legacy.AutoCastShine,
@@ -291,13 +337,13 @@ local Pet = {
 	Disabled = Legacy.Disabled, -- Unused
 	Pushed = Legacy.Pushed,
 	Flash = Legacy.Flash,
-	Checked = Legacy.Checked,
 	HotKey = Legacy.HotKey,
 	Count = Legacy.Count,
+	Checked = Legacy.Checked,
 	Border = Legacy.Border,
+	AutoCastable = Legacy.AutoCastable,
 	NewAction = Legacy.NewAction,
 	SpellHighlight = Legacy.SpellHighlight,
-	AutoCastable = Legacy.AutoCastable,
 	Name = Legacy.Name,
 	Highlight = Legacy.Highlight,
 	AutoCastShine = Legacy.AutoCastShine,
@@ -314,17 +360,18 @@ local Item = {
 	Normal = Legacy.Normal,
 	Disabled = Legacy.Disabled,
 	Pushed = Legacy.Pushed,
-	IconBorder = Legacy.IconBorder,
+	Count = Legacy.Count,
+	Checked = (not WOW_RETAIL and Legacy.Checked) or nil, -- Classic Only
 	Border = Legacy.Border, -- Backwards-Compatibility
-	SlotHighlight = Legacy.SlotHighlight,
+	IconBorder = Legacy.IconBorder,
+	SlotHighlight = (WOW_RETAIL and Legacy.SlotHighlight) or nil, -- Retail Only
 	IconOverlay = Legacy.IconOverlay,
-	-- JunkIcon = Legacy.JunkIcon,
-	-- UpgradeIcon = Legacy.UpgradeIcon,
-	-- QuestIcon = Legacy.QuestIcon,
+	UpgradeIcon = Legacy.UpgradeIcon,
+	QuestBorder = Legacy.QuestBorder,
 	NewItem = Legacy.NewItem,
 	SearchOverlay = Legacy.SearchOverlay,
 	ContextOverlay = Legacy.ContextOverlay,
-	Count = Legacy.Count,
+	JunkIcon = Legacy.JunkIcon,
 	Highlight = Legacy.Highlight,
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -339,9 +386,9 @@ local Aura = {
 	Normal = Legacy.Normal, -- Unused
 	Disabled = Legacy.Disabled, -- Unused
 	Pushed = Legacy.Pushed, -- Unused
-	Border = Legacy.Border.Aura,
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
+	Border = Legacy.Border.Aura,
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -356,9 +403,9 @@ local Debuff = {
 	Normal = Legacy.Normal, -- Unused
 	Disabled = Legacy.Disabled, -- Unused
 	Pushed = Legacy.Pushed, -- Unused
-	Border = Legacy.Border,
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
+	Border = Legacy.Border.Debuff,
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
@@ -373,9 +420,9 @@ local Enchant = {
 	Normal = Legacy.Normal, -- Unused
 	Disabled = Legacy.Disabled, -- Unused
 	Pushed = Legacy.Pushed, -- Unused
-	Border = Legacy.Border.Enchant,
 	Count = Legacy.Count.Aura,
 	Duration = Legacy.Duration,
+	Border = Legacy.Border.Enchant,
 	Highlight = Legacy.Highlight, -- Unused
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,

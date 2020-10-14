@@ -3,16 +3,12 @@
 
 -- local bindings!
 local AddonName, Addon = ...
-local L = LibStub("AceLocale-3.0"):GetLocale(AddonName)
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local After = _G.C_Timer.After
 local GetTime = _G.GetTime
-
 local max = math.max
 local min = math.min
-local next = next
-local strjoin = _G.strjoin
-local tostring = tostring
 
 -- time units in ms
 local DAY = 86400000
@@ -38,19 +34,21 @@ local SOON_THRESHOLD = 5500 -- 5.5 seconds
 -- internal state!
 local active = {}
 -- we use a weak table so that inactive timers are cleaned up on gc
-local inactive = setmetatable({}, {__mode = "k" })
+local inactive = setmetatable({}, {__mode = 'k'})
 
 local Timer = {}
 
 Timer.__index = Timer
 
 function Timer:GetOrCreate(cooldown)
-    if not cooldown then return end
+    if not cooldown then
+        return
+    end
 
     local endTime = cooldown._occ_start * 1000 + cooldown._occ_duration * 1000
     local kind = cooldown._occ_kind
     local settings = cooldown._occ_settings
-    local key = strjoin("-", endTime, kind, tostring(settings or "NONE"))
+    local key = strjoin('-', endTime, kind, tostring(settings or 'NONE'))
 
     local timer = active[key]
     if not timer then
@@ -82,13 +80,17 @@ end
 function Timer:Create()
     local timer = setmetatable({}, Timer)
 
-    timer.callback = function() timer:Update() end
+    timer.callback = function()
+        timer:Update()
+    end
 
     return timer
 end
 
 function Timer:Destroy()
-    if not self.key then return end
+    if not self.key then
+        return
+    end
 
     active[self.key] = nil
 
@@ -112,7 +114,9 @@ function Timer:Destroy()
 end
 
 function Timer:Update()
-    if not self.key then return end
+    if not self.key then
+        return
+    end
 
     local remain = self.endTime - (GetTime() * SECOND)
 
@@ -139,17 +143,14 @@ function Timer:Update()
         end
     elseif not self.finished then
         self.finished = true
-
-        for subscriber in pairs(self.subscribers) do
-            subscriber:OnTimerFinished(self)
-        end
-
         self:Destroy()
     end
 end
 
 function Timer:Subscribe(subscriber)
-    if not self.key then return end
+    if not self.key then
+        return
+    end
 
     if not self.subscribers[subscriber] then
         self.subscribers[subscriber] = true
@@ -157,7 +158,9 @@ function Timer:Subscribe(subscriber)
 end
 
 function Timer:Unsubscribe(subscriber)
-    if not self.key then return end
+    if not self.key then
+        return
+    end
 
     if self.subscribers[subscriber] then
         self.subscribers[subscriber] = nil
@@ -190,36 +193,31 @@ function Timer:GetTimerText(remain)
             return L.TenthsFormat:format(tenths / SECOND), sleep
         end
 
-        return "", sleep
+        return '', sleep
     elseif remain < SECONDS_THRESHOLD then
         -- seconds
         local seconds = (remain + HALF_SECOND) - (remain + HALF_SECOND) % SECOND
 
-        local sleep = remain - max(
-            seconds - HALF_SECOND,
-            tenthsThreshold
-        )
+        local sleep = remain - max(seconds - HALF_SECOND, tenthsThreshold)
 
         if seconds > 0 then
             return seconds / SECOND, sleep
         end
 
-        return "", sleep
+        return '', sleep
     elseif remain < mmSSThreshold then
         -- MM:SS
         local seconds = (remain + HALF_SECOND) - (remain + HALF_SECOND) % SECOND
 
-        local sleep = remain - max(
-            seconds - HALF_SECOND,
-            SECONDS_THRESHOLD
-        )
+        local sleep = remain - max(seconds - HALF_SECOND, SECONDS_THRESHOLD)
 
         return L.MMSSFormat:format(seconds / MINUTE, (seconds % MINUTE) / SECOND), sleep
     elseif remain < MINUTES_THRESHOLD then
         -- minutes
         local minutes = (remain + HALF_MINUTE) - (remain + HALF_MINUTE) % MINUTE
 
-        local sleep = remain - max(
+        local wait =
+            max(
             -- transition point of showing one minute versus another (29.5s, 89.5s, 149.5s, ...)
             minutes - HALF_MINUTE,
             -- transition point of displaying minutes to displaying seconds (59.5s)
@@ -228,53 +226,51 @@ function Timer:GetTimerText(remain)
             mmSSThreshold
         )
 
-        return L.MinuteFormat:format(minutes / MINUTE), sleep
+        local sleep = remain - wait
 
+        return L.MinuteFormat:format(minutes / MINUTE), sleep
     elseif remain < HOURS_THRESHOLD then
         -- hours
         local hours = (remain + HALF_HOUR) - (remain + HALF_HOUR) % HOUR
 
-        local sleep = remain - max(
-            hours - HALF_HOUR,
-            MINUTES_THRESHOLD
-        )
+        local sleep = remain - max(hours - HALF_HOUR, MINUTES_THRESHOLD)
 
         return L.HourFormat:format(hours / HOUR), sleep
     else
         -- days
         local days = (remain + HALF_DAY) - (remain + HALF_DAY) % DAY
 
-        local sleep = remain - max(
-            days - HALF_DAY,
-            HOURS_THRESHOLD
-        )
+        local sleep = remain - max(days - HALF_DAY, HOURS_THRESHOLD)
 
         return L.DayFormat:format(days / DAY), sleep
     end
 end
 
 function Timer:GetTimerState(remain)
-    if self.kind == "loc" then
-        return "controlled", math.huge
-    elseif self.kind == "charge" then
-        return "charging", math.huge
+    if self.kind == 'loc' then
+        return 'controlled', math.huge
+    elseif self.kind == 'charge' then
+        return 'charging', math.huge
     elseif remain < SOON_THRESHOLD then
-        return "soon", math.huge
+        return 'soon', math.huge
     elseif remain < SECONDS_THRESHOLD then
-        return "seconds", remain - SOON_THRESHOLD
+        return 'seconds', remain - SOON_THRESHOLD
     elseif remain < MINUTES_THRESHOLD then
-        return "minutes", remain - SECONDS_THRESHOLD
+        return 'minutes', remain - SECONDS_THRESHOLD
     else
-        return "hours", remain - MINUTES_THRESHOLD
+        return 'hours', remain - MINUTES_THRESHOLD
     end
 end
 
 function Timer:ForActive(method, ...)
+    local func = self[method]
+
+    if type(func) ~= 'function' then
+        return
+    end
+
     for _, timer in pairs(active) do
-        local func = timer[method]
-        if type(func) == "function" then
-            func(timer, ...)
-        end
+        func(timer, ...)
     end
 end
 

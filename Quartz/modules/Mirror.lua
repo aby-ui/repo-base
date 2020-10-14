@@ -30,8 +30,6 @@ local TimeFmt = Quartz3.Util.TimeFormat
 local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
-local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-
 ----------------------------
 -- Upvalues
 -- GLOBALS: MIRRORTIMER_NUMTIMERS
@@ -232,11 +230,9 @@ function Mirror:OnEnable()
 	self:RegisterEvent("PLAYER_ALIVE", "UpdateBars")
 	self:RegisterMessage("Quartz3Mirror_UpdateCustom", "UpdateBars")
 	self:RegisterEvent("CHAT_MSG_BG_SYSTEM_NEUTRAL")
-	if not WoWClassic then
-		self:RegisterEvent("LFG_PROPOSAL_SHOW")
-		self:RegisterEvent("LFG_PROPOSAL_FAILED", "LFG_PROPOSAL_End")
-		self:RegisterEvent("LFG_PROPOSAL_SUCCEEDED", "LFG_PROPOSAL_End")
-	end
+	self:RegisterEvent("LFG_PROPOSAL_SHOW")
+	self:RegisterEvent("LFG_PROPOSAL_FAILED", "LFG_PROPOSAL_End")
+	self:RegisterEvent("LFG_PROPOSAL_SUCCEEDED", "LFG_PROPOSAL_End")
 	self:RegisterEvent("READY_CHECK")
 	self:RegisterEvent("READY_CHECK_FINISHED")
 	self:SecureHook("StaticPopup_Show", "UpdateBars")

@@ -1,12 +1,13 @@
 ## Interface: 80300
 ## Title: |cff880303[爱不易]|r AbyUI 小功能集合
+## SavedVariables: SimulationcraftAbyUIDB
 ## X-Vendor: AbyUI
 
 163UI_Plugins.lua
 163UI_Quest.lua
 AlreadyKnown.lua
 BattleField.lua
-CopyFriendList.lua
+#CopyFriendList.lua
 ChatFrameAddMessage.lua
 ExtraActionButton.lua
 FriendsGuildTab.lua
@@ -16,7 +17,6 @@ PingPing.lua
 ProfessionTabs.lua
 QuestFont.lua
 SlashCommands.lua
-Simc.xml
 Simc.lua
 FiveCombo.lua
 8.0\ChallengesGuildBest.xml
@@ -33,7 +33,7 @@ yClassColors\who.lua
 7.0\CloudyTradeSkill.lua
 7.0\CompletedTip.lua
 7.0\FixArchievementUIFreeze.lua
-7.0\QuestWatchSort.lua
+#7.0\QuestWatchSort.lua
 7.0\SpecSwitchButtons.lua
 7.0\ReplaceTalentSpell.lua
 7.0\BattlePetCurrentStats.lua

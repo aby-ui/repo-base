@@ -1,12 +1,12 @@
-## Interface: 80300
+## Interface: 90001
 ## Version: 2.0
 ## Author: Abin
 ## Title: MerchantEx
 ## SavedVariables: MerchantExDB
 
-Includes\InterfaceOptionPage-1.0.lua
-Includes\VirtualScrollList-1.0.lua
-Includes\TabFrame-1.0.lua
+..\!!!Libs\!External\abin\InterfaceOptionPage-1.0.lua
+..\!!!Libs\!External\abin\VirtualScrollList-1.0.lua
+..\!!!Libs\!External\abin\TabFrame-1.0.lua
 
 Locales\enUS.lua
 Locales\zhCN.lua

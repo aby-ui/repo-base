@@ -1,10 +1,10 @@
-## Interface: 80300
+## Interface: 90002
 ## Title: Bagnon
 ## Author: Tuller & Jaliborc (João Cardoso)
 ## Notes: Single window displays for your inventory and bank
 ## OptionalDeps: BagBrother, WoWUnit, TestPoncho
 ## SavedVariables: Bagnon_Sets
-## Version: 8.3.8
+## Version: 9.0.1
 
 addons\main\main.xml
 Bagnon_ReagentBankButton\style.xml

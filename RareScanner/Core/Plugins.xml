@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+
+	<!-- Plugins -->
+	<Include file="Plugins\LootPlugin\RSLootTemplate.xml"/>
+	<!-- <Include file="Plugins\NavPlugin\RSNavigationTemplate.xml"/> -->
+	<Include file="Plugins\MapPlugin\RSEntityPinTemplate.xml"/>
+	<Include file="Plugins\MapPlugin\RSGroupPinTemplate.xml"/>
+	<Include file="Plugins\MapPlugin\RSOverlayTemplate.xml"/>
+	<Include file="Plugins\MapPlugin\RSMinimapPinTemplate.xml"/>
+	<Include file="Plugins\MapPlugin\RSGuideTemplate.xml"/>
+	<Include file="Plugins\SearchPlugin\RSSearchTemplate.xml"/>
+		
+	<!-- Internal libraries (with dependencies of the previous) -->
+	<Include file="SpecialEvents\ShadowlandsPrePatch.lua"/>
+	
+</Ui>

@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\Info.lua
 	* Author.: StormFX
@@ -9,8 +9,6 @@
 	'Installed Skins' Group/Panel
 
 ]]
-
--- GLOBALS: LibStub
 
 local MASQUE, Core = ...
 
@@ -35,6 +33,9 @@ local Setup = Core.Setup
 
 -- @ Locales\enUS
 local L = Core.Locale
+
+-- @ Masque
+local CRLF = Core.CRLF
 
 ----------------------------------------
 -- Utility
@@ -73,7 +74,7 @@ do
 	-- Reusable Header
 	local HDR = {
 		type = "description",
-		name = "|cffffcc00"..L["Description"].."|r\n",
+		name = "|cffffcc00"..L["Description"].."|r"..CRLF,
 		order = 1,
 		fontSize = "medium",
 	}
@@ -98,7 +99,7 @@ do
 				Head = HDR,
 				Desc = {
 					type = "description",
-					name = Description.."\n",
+					name = Description..CRLF,
 					order = 2,
 					fontSize = "medium",
 				},
@@ -111,7 +112,7 @@ do
 						Version = {
 							type = "input",
 							name = L["Version"],
-							arg = Version.."\n",
+							arg = Version..CRLF,
 							order = 1,
 							disabled = true,
 							dialogControl = "SFX-Info",
@@ -245,13 +246,13 @@ function Setup.Info(self)
 			args = {
 				Head = {
 					type = "description",
-					name = "|cffffcc00"..L["Installed Skins"].."|r\n",
+					name = "|cffffcc00"..L["Installed Skins"].."|r"..CRLF,
 					fontSize = "medium",
 					order = 0,
 				},
 				Desc = {
 					type = "description",
-					name = L["This section provides information on any skins you have installed."].."\n",
+					name = L["This section provides information on any skins you have installed."]..CRLF,
 					fontSize = "medium",
 					order = 1,
 				},

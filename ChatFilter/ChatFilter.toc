@@ -12,7 +12,7 @@ config-mine.lua
 config.lua
 core.lua
 
-BadBoy_Levels.lua
+#BadBoy_Levels.lua
 #NoGoldSeller.lua
 
 ## Title: |cff880303[爱不易]|r ChatFilter 聊天过滤

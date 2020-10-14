@@ -1,4 +1,4 @@
-local Lib = LibStub:NewLibrary('Poncho-2.0', 1)
+local Lib = LibStub:NewLibrary('Poncho-2.0', 2)
 if not Lib then return end
 
 local setmetatable, getmetatable, tinsert, tremove, type = setmetatable, getmetatable, tinsert, tremove, type
@@ -163,4 +163,5 @@ Lib.Types = Lib.Types or {
   Button = getmetatable(GameMenuButtonContinue).__index,
   CheckButton = getmetatable(AddonListForceLoad).__index,
   EditBox = getmetatable(ChatFrame1EditBox).__index,
+  GameTooltip = getmetatable(GameTooltip).__index,
 }

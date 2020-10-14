@@ -34,7 +34,7 @@ local methods = {
     if (GetAtlasInfo(texturePath)) then
       self.texture:SetAtlas(texturePath);
     else
-      self.texture:SetTexture(texturePath);
+      self.texture:SetTexture(texturePath, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE");
     end
     self.texture.path = texturePath;
     self.texture.name = name;
@@ -93,6 +93,9 @@ Constructor
 local function Constructor()
   local name = "WeakAurasTextureButton"..AceGUI:GetNextWidgetNum(Type);
   local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  if BackdropTemplateMixin then
+    Mixin(button, BackdropTemplateMixin)
+  end
   button:SetHeight(128);
   button:SetWidth(128);
   button:SetBackdrop({

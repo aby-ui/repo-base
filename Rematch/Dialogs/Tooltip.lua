@@ -4,7 +4,7 @@ local rematch = Rematch
 local tooltip = RematchTooltip
 
 function rematch:ShowTooltip(title,body,anchorPoint,relativeTo,relativePoint,xoff,yoff)
-	if rematch:UIJustChanged() or (RematchSettings.HideTooltips and not anchorPoint) then
+	if rematch:UIJustChanged() or (RematchSettings.HideTooltips) then -- (this had 'and not anchorPoint' too; which makes target menu tooltips persists but also journal option tooltips)
 		return -- don't show tooltip if ui just changed or HideTooltips enabled (with no given anchor)
 	end
 	if not title then -- grab tooltip from calling widget if one isn't passed

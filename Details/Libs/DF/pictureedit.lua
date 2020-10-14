@@ -1,7 +1,7 @@
 
 local DF = _G ["DetailsFramework"]
 if (not DF or not DetailsFrameworkCanLoad) then
-	return 
+	return
 end
 
 local _
@@ -30,7 +30,7 @@ local CreateImageEditorFrame = function()
 	edit_texture:SetAllPoints()
 	_G.DetailsFrameworkImageEdit_EditTexture = edit_texture
 	
-	local background_frame = CreateFrame ("frame", "DetailsFrameworkImageEditBackground", DetailsFrameworkImageEdit)
+	local background_frame = CreateFrame ("frame", "DetailsFrameworkImageEditBackground", DetailsFrameworkImageEdit, "BackdropTemplate")
 	background_frame:SetPoint ("topleft", DetailsFrameworkImageEdit, "topleft", -10, 30)
 	background_frame:SetFrameStrata ("TOOLTIP")
 	background_frame:SetFrameLevel (window:GetFrameLevel())
@@ -351,7 +351,7 @@ local CreateImageEditorFrame = function()
 			end
 		end)
 
-		local resizer = CreateFrame ("Button", nil, window.widget)
+		local resizer = CreateFrame ("Button", nil, window.widget, "BackdropTemplate")
 		resizer:SetNormalTexture ([[Interface\AddOns\Details\images\skins\default_skin]])
 		resizer:SetHighlightTexture ([[Interface\AddOns\Details\images\skins\default_skin]])
 		resizer:GetNormalTexture():SetTexCoord (0.00146484375, 0.01513671875, 0.24560546875, 0.25927734375)
@@ -419,7 +419,7 @@ local CreateImageEditorFrame = function()
 
 		
 	--> select area to crop
-		local DragFrame = CreateFrame ("frame", nil, background_frame)
+		local DragFrame = CreateFrame ("frame", nil, background_frame, "BackdropTemplate")
 		DragFrame:EnableMouse (false)
 		DragFrame:SetFrameStrata ("TOOLTIP")
 		DragFrame:SetPoint ("topleft", edit_texture.widget, "topleft")
@@ -473,8 +473,7 @@ local CreateImageEditorFrame = function()
 					
 					SelectionBox_Left:SetPoint ("topleft", UIParent, "bottomleft", x1, y1)
 					SelectionBox_Left:SetPoint ("bottomleft", UIParent, "bottomleft", x1, y2)
-					
-					print (1)
+
 				else
 					--bottom
 					

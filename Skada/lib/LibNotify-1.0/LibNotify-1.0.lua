@@ -147,7 +147,7 @@ local function popNotifications()
     
     if not frame then
         local style = lib.data.notice
-        frame = CreateFrame("Frame", nil, UIParent)
+        frame = CreateFrameAby("Frame", nil, UIParent)
         frame:SetBackdrop(style.backdrop)
         frame:SetBackdropColor(style.backdropcolor)
         frame:SetSize(style.size.width, style.size.height)
@@ -231,7 +231,7 @@ local function popNotifications()
                 end
                 if not messageframe then
                     style = lib.data.popup
-                    messageframe = CreateFrame("Frame", nil, UIParent)
+                    messageframe = CreateFrameAby("Frame", nil, UIParent)
                     messageframe:SetBackdrop(style.backdrop)
                     messageframe:SetBackdropColor(style.backdropcolor)
                     messageframe:SetSize(style.size.width, style.size.height)

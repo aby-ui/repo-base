@@ -90,7 +90,7 @@ local DWC_TABS={
 	{text=function() return L["GuildShort"] end, chatType="GUILD", show=function() return IsInGuild() end,  index=0},
 	{text=function() return L["YellShort"] end, chatType="YELL", show=function() return not IsInGroup() --[[GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0]] end,  index=0},
 	{text=function() return L["WhisperToShort"] end, chatType="WHISPER", show=function() return true end,  index=0},
-	{text=function() return L["OfficerShort"] end, chatType="OFFICER", show=function() return CanEditOfficerNote() end,  index=0}, 
+	{text=function() return L["OfficerShort"] end, chatType="OFFICER", show=function() return C_GuildInfo.CanEditOfficerNote() end,  index=0},
 } 
 
 

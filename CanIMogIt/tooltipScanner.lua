@@ -148,7 +148,7 @@ function CanIMogItTooltipScanner:GetRedText(itemLink)
             table.insert(red_texts, value)
         end
     end
-    return table.concat(red_texts, " ")
+    return string.sub(table.concat(red_texts, " "), 1, 80)
 end
 
 

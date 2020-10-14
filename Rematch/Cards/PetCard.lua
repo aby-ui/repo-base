@@ -412,6 +412,9 @@ function rematch:ShowPetCard(parent,petID,force)
 	local backHeight = 0 -- measuring height of back of card too in case lore needs more room
 	if not isSpecial then -- leveling pets have no back of card
 		local sourceText = petInfo.sourceText
+		if petInfo.expansionID then
+			sourceText = sourceText .. "\n\124cffffd200" .. EXPANSION_FILTER_TEXT .. ":\124r " .. petInfo.expansionName
+		end
 		-- shrink font if source text is very long (some pets like spiders list nearly every zone in the game!)
 		local sourceLength = (sourceText or ""):len()
 		if sourceLength>300 then

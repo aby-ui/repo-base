@@ -10,13 +10,10 @@ local GameTooltip = GameTooltip
 local HandyNotes = HandyNotes
 
 local function work_out_texture(atlas)
-    local texture, _, _, left, right, top, bottom = GetAtlasInfo(atlas)
+    atlas = C_Texture.GetAtlasInfo(atlas)
     return {
-        icon = texture,
-        tCoordLeft = left,
-        tCoordRight = right,
-        tCoordTop = top,
-        tCoordBottom = bottom,
+        icon = atlas.file,
+        tCoordLeft = atlas.leftTexCoord, tCoordRight = atlas.rightTexCoord, tCoordTop = atlas.topTexCoord, tCoordBottom = atlas.bottomTexCoord,
     }
 end
 local enabled_texture = work_out_texture("MagePortalAlliance")
@@ -33,7 +30,7 @@ disabled_entrance_texture.b = 0
 local get_point_info = function(point)
     if point then
         local texture
-        if IsQuestFlaggedCompleted(point.quest) then
+        if C_QuestLog.IsQuestFlaggedCompleted(point.quest) then
             texture = point.entrance and enabled_entrance_texture or enabled_texture
         else
             texture = point.entrance and disabled_entrance_texture or disabled_texture
@@ -48,7 +45,7 @@ end
 local function handle_tooltip(tooltip, point)
     if point then
         tooltip:AddLine(point.label)
-        if IsQuestFlaggedCompleted(point.quest) then
+        if C_QuestLog.IsQuestFlaggedCompleted(point.quest) then
             tooltip:AddLine(ACTIVE_PETS, 0, 1, 0) -- Active
 			tooltip:AddLine(point.note , 1, 1, 1) -- Active
         else
@@ -176,10 +173,10 @@ do
         if point.level and point.level ~= currentLevel then
             return false
         end
-        if point.hide_after and IsQuestFlaggedCompleted(point.hide_after) then
+        if point.hide_after and C_QuestLog.IsQuestFlaggedCompleted(point.hide_after) then
             return false
         end
-        if point.hide_before and not ns.db.upcoming and not IsQuestFlaggedCompleted(point.hide_before) then
+        if point.hide_before and not ns.db.upcoming and not C_QuestLog.IsQuestFlaggedCompleted(point.hide_before) then
             return false
         end
         return true

@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Core\Options.lua
 	* Author.: StormFX
@@ -9,8 +9,6 @@
 	'Skin Settings' Group/Panel
 
 ]]
-
--- GLOBALS: LibStub
 
 local MASQUE, Core = ...
 
@@ -38,6 +36,9 @@ local Setup = Core.Setup
 
 -- @ Locales\enUS
 local L = Core.Locale
+
+-- @ Masque
+local CRLF = Core.CRLF
 
 local GetOptions
 
@@ -163,17 +164,17 @@ do
 		if Group then
 			local Text = Addon..": "..Group
 			Name = Group
-			Title = "|cffffcc00"..Text.."|r\n"
+			Title = "|cffffcc00"..Text.."|r"..CRLF
 			Desc = L["This section will allow you to adjust the skin settings of all buttons registered to %s."]
 			Desc = Desc:format(Text)
 		elseif Addon then
 			Name = Addon
-			Title = "|cffffcc00"..Addon.."|r\n"
+			Title = "|cffffcc00"..Addon.."|r"..CRLF
 			Desc = L["This section will allow you to adjust the skin settings of all buttons registered to %s. This will overwrite any per-group settings."]
 			Desc = Desc:format(Addon)
 		else
 			Name = L["Global"]
-			Title = "|cffffcc00"..L["Global Settings"].."|r\n"
+			Title = "|cffffcc00"..L["Global Settings"].."|r"..CRLF
 			Desc = L["This section will allow you to adjust the skin settings of all registered buttons. This will overwrite any per-add-on settings."]
 		end
 
@@ -191,7 +192,7 @@ do
 				},
 				Desc = {
 					type = "description",
-					name = Desc.."\n",
+					name = Desc..CRLF,
 					fontSize = "medium",
 					order = 1,
 				},
@@ -406,14 +407,14 @@ function Setup.Skins(self)
 		args = {
 			Head = {
 				type = "description",
-				name = "|cffffcc00"..MASQUE.." - "..L["Skin Settings"].."|r\n",
+				name = "|cffffcc00"..MASQUE.." - "..L["Skin Settings"].."|r"..CRLF,
 				order = 0,
 				fontSize = "medium",
 				hidden = self.GetStandAlone,
 			},
 			Desc = {
 				type = "description",
-				name = L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."].."\n",
+				name = L["This section will allow you to skin the buttons of the add-ons and add-on groups registered with Masque."]..CRLF,
 				fontSize = "medium",
 				order = 1,
 			},

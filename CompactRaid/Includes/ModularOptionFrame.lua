@@ -483,7 +483,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 		return
 	end
 
-	local frame = CreateFrame("Frame", name, UIParent)
+	local frame = CreateFrameAby("Frame", name, UIParent)
 	frame:SetBackdrop({ bgFile = "Interface\\FrameGeneral\\UI-Background-Marble", edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 } })
 	frame:SetSize(800, 610)
 	frame:SetPoint("CENTER")
@@ -525,7 +525,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 	topClose:SetSize(24, 24)
 	topClose:SetPoint("TOPRIGHT", -5, -5)
 
-	local leftPanel = CreateFrame("Frame", name.."LeftPanel", frame)
+	local leftPanel = CreateFrameAby("Frame", name.."LeftPanel", frame)
 	frame.leftPanel = leftPanel
 	leftPanel:SetBackdrop({ tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	leftPanel:SetBackdropBorderColor(0.75, 0.75, 0.75)
@@ -556,7 +556,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 	texture:SetBlendMode("ADD")
 	texture:SetVertexColor(1, 1, 1, 0.8)
 
-	local rightPanel = CreateFrame("Frame", name.."RightPanel", frame)
+	local rightPanel = CreateFrameAby("Frame", name.."RightPanel", frame)
 	frame.rightPanel = rightPanel
 	rightPanel:SetBackdrop({ tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	rightPanel:SetBackdropBorderColor(0.75, 0.75, 0.75)

@@ -6,7 +6,7 @@ local GUI = tdCore('GUI')
 local ICON_SIZE, DIALOG_PADDING = 64, 10
 local BUTTON_WIDTH, BUTTON_HEIGHT = 100, 22
 
-local Dialog = GUI:NewModule('Dialog', CreateFrame('Frame'), 'UIObject', 'Update')
+local Dialog = GUI:NewModule('Dialog', CreateFrameAby('Frame'), 'UIObject', 'Update')
 Dialog:RegisterHandle('OnAccept', 'OnCancel')
 
 local function DialogButtonOnClick(self)
@@ -17,7 +17,7 @@ end
 local dialogs = {}
 
 function Dialog:New(parent)
-    local obj = self:Bind(CreateFrame('Frame', nil, parent))
+    local obj = self:Bind(CreateFrameAby('Frame', nil, parent))
     
     if parent then
         local label = obj:GetLabelFontString()

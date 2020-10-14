@@ -1,14 +1,13 @@
 local mod	= DBM:NewMod(1837, "DBM-Party-Legion", 11, 860)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200220142801")
+mod.statTypes = "heroic,mythic,challenge"
+
+mod:SetRevision("20200927225704")
 mod:SetCreatureID(114312)
 mod:SetEncounterID(1961)
-mod:SetZone()
 --mod:SetHotfixNoticeRev(14922)
 --mod.respawnTime = 30
-
-mod.noNormal = true
 
 mod:RegisterCombat("combat")
 
@@ -41,7 +40,7 @@ local specWarnWillBreaker			= mod:NewSpecialWarningSpell(227672, "Tank", nil, ni
 
 --Moroes
 local timerCoatCheckCD				= mod:NewNextTimer(33.8, 227832, nil, "Tank|Healer", nil, 5)
-local timerVanishCD					= mod:NewNextTimer(20.5, 227737, nil, nil, nil, 3)
+local timerVanishCD					= mod:NewCDTimer(19.3, 227737, nil, nil, nil, 3)
 --Lady Lady Catriona Von'Indi
 local timerHealingStreamCD			= mod:NewAITimer(40, 227578, nil, nil, nil, 0)--Interruptable via stun?
 --Lord Crispin Ference

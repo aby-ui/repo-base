@@ -29,12 +29,10 @@ local classToLetter = {
 local SaveRaidRoster,SaveCurrentRaidRoster
 
 local C_Calendar_GetDate
-if ExRT.clientVersion >= 80100 then
-	C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime
-elseif ExRT.isClassic then
+if ExRT.isClassic then
 	C_Calendar_GetDate = C_DateAndTime.GetTodaysDate
 else
-	C_Calendar_GetDate = C_Calendar.GetDate
+	C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime
 end
 
 function module.options:Load()
@@ -806,12 +804,9 @@ function module.options:Load()
 		UpdateData()
 	end
 	
-	self.OnShow_disableNil = true
-	self:SetScript("OnShow",function()
+	function self:OnShow()
 		UpdateData()
-	end)
-	
-	VExRT.Attendance.ModuleViewed3580 = true
+	end
 end
 
 function module.main:ADDON_LOADED()
@@ -825,10 +820,6 @@ function module.main:ADDON_LOADED()
 	module:RegisterAddonMessage()
 	
 	module.main:GROUP_ROSTER_UPDATE()
-	
-	if not VExRT.Attendance.ModuleViewed3580 then
-		ExRT.Options:AddIcon(L.Attendance,{"Interface\\common\\help-i",28})
-	end
 end
 
 local isInRaid,isFirstEncounterByRaid = nil
@@ -896,7 +887,7 @@ end
 local lastStartEvent,lastEndEvent = 0,0
 
 local function EncounterStartLog(encounterID, encounterName, difficultyID, groupSize)
-	if not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16) then
+	if (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148)) then
 		return
 	end
 	if (VExRT.Attendance.enabled == 1 and isFirstEncounterByRaid) or VExRT.Attendance.enabled == 3 or CheckSpecialConditions(encounterID,encounterName,difficultyID) then
@@ -905,7 +896,7 @@ local function EncounterStartLog(encounterID, encounterName, difficultyID, group
 	end
 end
 local function EncounterEndLog(encounterID, encounterName, difficultyID, groupSize, isKill)
-	if not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16) or not (isKill == 1) then
+	if not (isKill == 1) or (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148)) then
 		return
 	end
 	if (VExRT.Attendance.enabled == 2 and isFirstEncounterByRaid) or VExRT.Attendance.enabled == 4 or CheckSpecialConditions(encounterID,encounterName,difficultyID,isKill==1) then

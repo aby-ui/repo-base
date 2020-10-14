@@ -50,7 +50,7 @@ function DF:LoadAllSpells (hashMap, indexTable, allSpellsSameName)
 	--pre checking which tables to fill to avoid checking if the table exists during the gigantic loop for performance
 	
 	if (not DF.LoadingAuraAlertFrame) then
-		DF.LoadingAuraAlertFrame = CreateFrame ("frame", "DetailsFrameworkLoadingAurasAlert", UIParent)
+		DF.LoadingAuraAlertFrame = CreateFrame ("frame", "DetailsFrameworkLoadingAurasAlert", UIParent, "BackdropTemplate")
 		DF.LoadingAuraAlertFrame:SetSize (340, 75)
 		DF.LoadingAuraAlertFrame:SetPoint ("center")
 		DF.LoadingAuraAlertFrame:SetFrameStrata ("TOOLTIP")
@@ -137,7 +137,7 @@ do
 	--check if there's a metaPrototype already existing
 	if (_G[DF.GlobalWidgetControlNames["aura_tracker"]]) then
 		--get the already existing metaPrototype
-		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["aura_tracker"]]
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames["aura_tracker"]]
 		--check if is older
 		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
 			--the version is older them the currently loading one
@@ -148,11 +148,11 @@ do
 		end
 	else
 		--first time loading the framework
-		_G[DF.GlobalWidgetControlNames ["aura_tracker"]] = metaPrototype
+		_G[DF.GlobalWidgetControlNames["aura_tracker"]] = metaPrototype
 	end
 end
 
-local AuraTrackerMetaFunctions = _G[DF.GlobalWidgetControlNames ["aura_tracker"]]
+local AuraTrackerMetaFunctions = _G[DF.GlobalWidgetControlNames["aura_tracker"]]
 
 --create panels
 local on_profile_changed = function (self, newdb)
@@ -210,15 +210,15 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
 	local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
 	
-	local f = CreateFrame ("frame", name, parent)
+	local f = CreateFrame ("frame", name, parent, "BackdropTemplate")
 	f.db = db
 	f.OnProfileChanged = on_profile_changed
 	f.LocTexts = texts
 	options = options or {}
 	self.table.deploy (options, aura_panel_defaultoptions)
 	
-	local f_auto = CreateFrame ("frame", "$parent_Automatic", f)
-	local f_manual = CreateFrame ("frame", "$parent_Manual", f)
+	local f_auto = CreateFrame ("frame", "$parent_Automatic", f, "BackdropTemplate")
+	local f_manual = CreateFrame ("frame", "$parent_Manual", f, "BackdropTemplate")
 	f_auto:SetPoint ("topleft", f, "topleft", 0, -24)
 	f_manual:SetPoint ("topleft", f, "topleft", 0, -24)
 	f_auto:SetSize (600, 600)
@@ -256,7 +256,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		end
 	end
 	
-	local background_method_selection = CreateFrame ("frame", nil, f)
+	local background_method_selection = CreateFrame ("frame", nil, f, "BackdropTemplate")
 	background_method_selection:SetHeight (82)
 	background_method_selection:SetPoint ("topleft", f, "topleft", 0, 0)
 	background_method_selection:SetPoint ("topright", f, "topright", 0, 0)
@@ -342,12 +342,12 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	local textEntryWidth = 120
 
 	--create the background
-		local background_add_blacklist = CreateFrame ("frame", nil, f_auto)
+		local background_add_blacklist = CreateFrame ("frame", nil, f_auto, "BackdropTemplate")
 		background_add_blacklist:SetSize (textEntryWidth + 10, 135)
 		DF:ApplyStandardBackdrop (background_add_blacklist)
 		background_add_blacklist.__background:SetVertexColor (0.47, 0.27, 0.27)
 		
-		local background_add_tracklist = CreateFrame ("frame", nil, f_auto)
+		local background_add_tracklist = CreateFrame ("frame", nil, f_auto, "BackdropTemplate")
 		background_add_tracklist:SetSize (textEntryWidth + 10, 135)
 		DF:ApplyStandardBackdrop (background_add_tracklist)
 		background_add_tracklist.__background:SetVertexColor (0.27, 0.27, 0.47)
@@ -651,7 +651,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		end
 		
 		local createLineFunc = function (self, index)
-			local line = CreateFrame ("button", "$parentLine" .. index, self)
+			local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
 			line:SetPoint ("topleft", self, "topleft", 1, - ((index - 1) * (lineHeight + 1)) - 1)
 			line:SetSize (scrollWidth - 2, lineHeight)
 			line:SetScript ("OnEnter", autoTrackList_LineOnEnter)
@@ -815,7 +815,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 	end
 	
 	local scroll_createline = function (self, index)
-		local line = CreateFrame ("button", "$parentLine" .. index, self)
+		local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
 		line:SetPoint ("topleft", self, "topleft", 1, -((index-1)*(scroll_line_height+1)) - 1)
 		line:SetSize (scroll_width - 2, scroll_line_height)
 		line:SetScript ("OnEnter", line_onenter)

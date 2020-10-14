@@ -25,8 +25,8 @@ do
 		HasHook = DF.HasHook,
 		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
-
-		dversion = DF.dversion,
+		
+		dversion = DF.dversion
 	}
 
 	--check if there's a metaPrototype already existing
@@ -247,6 +247,18 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		return self.thumb:SetSize (w, h)
 	end	
 	
+	function DFSliderMetaFunctions:SetBackdrop(...)
+			return self.slider:SetBackdrop(...)
+	end
+
+	function DFSliderMetaFunctions:SetBackdropColor(...)
+		return self.slider:SetBackdropColor(...)
+	end
+
+	function DFSliderMetaFunctions:SetBackdropBorderColor(...)
+		return self.slider:SetBackdropBorderColor(...)
+	end
+
 	
 -- setpoint
 	function DFSliderMetaFunctions:SetPoint (v1, v2, v3, v4, v5)
@@ -424,7 +436,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	end
 	
 
-	local f = CreateFrame ("frame", "DetailsFrameworkSliderButtons1", UIParent)
+	local f = CreateFrame ("frame", "DetailsFrameworkSliderButtons1", UIParent, "BackdropTemplate")
 	f:Hide()
 	f:SetHeight (18)
 	
@@ -440,6 +452,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	end
 	
 	function f:ShowMe (host)
+		f:SetParent(host)
 		f:SetPoint ("bottomleft", host, "topleft", -3, -5)
 		f:SetPoint ("bottomright", host, "topright", 3, -5)
 		--f:SetFrameStrata (host:GetFrameStrata())
@@ -460,8 +473,8 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		f:SetScript ("OnUpdate", going_hide)
 	end
 	
-	local button_plus = CreateFrame ("button", "DetailsFrameworkSliderButtonsPlusButton", f)
-	local button_minor = CreateFrame ("button", "DetailsFrameworkSliderButtonsMinorButton", f)
+	local button_plus = CreateFrame ("button", "DetailsFrameworkSliderButtonsPlusButton", f, "BackdropTemplate")
+	local button_minor = CreateFrame ("button", "DetailsFrameworkSliderButtonsMinorButton", f, "BackdropTemplate")
 	button_plus:SetFrameStrata (f:GetFrameStrata())
 	button_minor:SetFrameStrata (f:GetFrameStrata())
 	
@@ -637,7 +650,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		
 			if (not DFSliderMetaFunctions.editbox_typevalue) then
 			
-				local editbox = CreateFrame ("EditBox", "DetailsFrameworkSliderEditBox", UIParent)
+				local editbox = CreateFrame ("EditBox", "DetailsFrameworkSliderEditBox", UIParent, "BackdropTemplate")
 				
 				editbox:SetSize (40, 20)
 				editbox:SetJustifyH ("center")
@@ -1159,7 +1172,7 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 		SliderObject.lockdown = false
 		SliderObject.container = container
 		
-	SliderObject.slider = CreateFrame ("slider", name, parent)
+	SliderObject.slider = CreateFrame ("slider", name, parent,"BackdropTemplate")
 	SliderObject.widget = SliderObject.slider
 
 	SliderObject.useDecimals = isDecemal or false

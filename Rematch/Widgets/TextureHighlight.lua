@@ -38,6 +38,8 @@ function rematch:ShowTextureHighlight(texture)
 		highlight:SetPoint("BOTTOMRIGHT",texture,"BOTTOMRIGHT")
 		highlight.Overlay:SetTexture(texture:GetTexture())
 		highlight.Overlay:SetTexCoord(texture:GetTexCoord())
+		highlight.Overlay:SetDesaturated(texture:IsDesaturated())
+		highlight.Overlay:SetVertexColor(texture:GetVertexColor())
 		highlight:Show()
 	else
 		currentTexture = nil

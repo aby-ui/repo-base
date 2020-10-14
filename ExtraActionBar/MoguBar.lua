@@ -190,7 +190,7 @@ function MOGUBar_ToggleShowGrid(switch)
                 for MOGUBar_5e57ab95c762a48d9a126b104db1056f = 1, MOGUBar_MAX_BUTTONS, 1 do
                     local MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5 = getglobal(MOGUBar_69072c73fde2ed407f863929fd1e7483:GetName() .. "AB" .. MOGUBar_5e57ab95c762a48d9a126b104db1056f);
                     MOGUActionButton_ShowGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5);
-                    ActionButton_Update(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5);
+                    MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:Update();
                 end
             end
         end

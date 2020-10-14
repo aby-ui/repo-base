@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Tomb of Sargeras|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0살게라스의 무덤|r
@@ -13,13 +13,14 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: LEG
-## X-DBM-Mod-Has-Mythic : 1
+## X-DBM-StatTypes: normal,heroic,mythic,lfr
 ## X-DBM-Mod-Sort: 503
 ## X-DBM-Mod-MapID: 1676
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
+## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r19-1-gd7cc0fa
+## Version: r21
 
 localization.en.lua
 localization.cn.lua

@@ -183,7 +183,7 @@ end
 function S:CreateAnchorFrame()
 	if (self.anchor) then return end
 
-	self.anchor = CreateFrame("Button", "SimpleInfoAnchorFrame", UIParent);
+	self.anchor = CreateFrameAby("Button", "SimpleInfoAnchorFrame", UIParent);
 	self.anchor:SetWidth(280);
 	self.anchor:SetHeight(80);
 	self.anchor:EnableMouse(true);
@@ -749,7 +749,7 @@ function S:ConstructCastingBar()
 	name.Border:SetAlpha(0);
 	name.BorderShield:SetAlpha(0);
 	name.Flash:SetTexture("");
-	self.castBar.bg = CreateFrame("Frame", nil, self.castBar);
+	self.castBar.bg = CreateFrameAby("Frame", nil, self.castBar);
 	self.castBar.bg:SetFrameStrata("BACKGROUND");
 	self.castBar.bg:SetPoint("TOPLEFT", self.castBar, "TOPLEFT", -5, 5);
 	self.castBar.bg:SetPoint("BOTTOMRIGHT", self.castBar, "BOTTOMRIGHT", 5, -5);
@@ -801,7 +801,7 @@ end
 function S:CreateHitAnchor()
 	if (self.HitAnchor) then return end
 
-	self.HitAnchor = CreateFrame("Button", "SimpleInfoHitPointAnchorFrameNew", UIParent);
+	self.HitAnchor = CreateFrameAby("Button", "SimpleInfoHitPointAnchorFrameNew", UIParent);
 	self.HitAnchor:SetSize(100, 80);
 	self.HitAnchor:EnableMouse(true);
 	self.HitAnchor:SetMovable(true);

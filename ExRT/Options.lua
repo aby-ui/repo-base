@@ -14,17 +14,20 @@ _G[OptionsFrameName] = Options
 
 ExRT.Options.Frame = Options
 
+Options.Width = 863
+Options.Height = 650
+Options.ListWidth = 165
+
 Options:Hide()
 Options:SetPoint("CENTER",0,0)
-Options:SetSize(863,650)
-Options.HeaderText:SetText("Exorsus Raid Tools")
+Options:SetSize(Options.Width,Options.Height)
+Options.HeaderText:SetText("")
 Options:SetMovable(true)
 Options:RegisterForDrag("LeftButton")
 Options:SetScript("OnDragStart", function(self) self:StartMoving() end)
 Options:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 Options:SetDontSavePosition(true)
 Options.border = ExRT.lib.CreateShadow(Options,20)
-Options.Width = 863
 
 ELib:ShadowInside(Options)
 
@@ -35,7 +38,25 @@ Options.backToInterface:SetScript("OnClick",function ()
 end)
 
 
-Options.modulesList = ELib:ScrollList(Options):Size(180-10,616-10):Point(10+5,-25-5):FontSize(11)
+Options.modulesList = ELib:ScrollList(Options):LineHeight(24):Size(Options.ListWidth - 1,Options.Height):Point(0,0):FontSize(11):HideBorders()
+Options.modulesList.SCROLL_WIDTH = 10
+Options.modulesList.LINE_PADDING_LEFT = 7
+Options.modulesList.LINE_TEXTURE = "Interface\\Addons\\"..GlobalAddonName.."\\media\\White"
+Options.modulesList.LINE_TEXTURE_IGNOREBLEND = true
+Options.modulesList.LINE_TEXTURE_HEIGHT = 24
+Options.modulesList.LINE_TEXTURE_COLOR_HL = {1,1,1,.5}
+Options.modulesList.LINE_TEXTURE_COLOR_P = {1,.82,0,.6}
+Options.modulesList.EnableHoverAnimation = true
+
+Options.modulesList.border_right = ELib:Texture(Options.modulesList,.24,.25,.30,1,"BORDER"):Point("TOPLEFT",Options.modulesList,"TOPRIGHT",0,0):Point("BOTTOMRIGHT",Options.modulesList,"BOTTOMRIGHT",1,0)
+
+Options.modulesList.Frame.ScrollBar:Size(8,0):Point("TOPRIGHT",0,0):Point("BOTTOMRIGHT",0,0)
+Options.modulesList.Frame.ScrollBar.thumb:SetHeight(100)
+Options.modulesList.Frame.ScrollBar.buttonUP:Hide()
+Options.modulesList.Frame.ScrollBar.buttonDown:Hide()
+
+Options.modulesList.Frame.ScrollBar.border_right = ELib:Texture(Options.modulesList.Frame.ScrollBar,.24,.25,.30,1,"BORDER"):Point("TOPLEFT",Options.modulesList.Frame.ScrollBar,"TOPLEFT",-1,0):Point("BOTTOMRIGHT",Options.modulesList.Frame.ScrollBar,"BOTTOMLEFT",0,0)
+
 Options.Frames = {}
 
 Options:SetScript("OnShow",function(self)
@@ -43,32 +64,52 @@ Options:SetScript("OnShow",function(self)
 	if Options.CurrentFrame and Options.CurrentFrame.AdditionalOnShow then
 		Options.CurrentFrame:AdditionalOnShow()
 	end
+
+	if type(Options.CurrentFrame.OnShow) == 'function' then
+		Options.CurrentFrame:OnShow()
+	end
 end)
 
-function Options.modulesList:SetListValue(index)
+function Options:SetPage(page)
 	if Options.CurrentFrame then
 		Options.CurrentFrame:Hide()
 	end
-	Options.CurrentFrame = Options.Frames[index]
+	Options.CurrentFrame = page
+
 	if Options.CurrentFrame.AdditionalOnShow then
 		Options.CurrentFrame:AdditionalOnShow()
 	end
+
 	Options.CurrentFrame:Show()
-end
-function Options.modulesList:UpdateAdditional()
-	if (self:GetHeight() / 16 - #self.L) > 0 then
-		self.Frame.ScrollBar:Hide()
-		self.Frame.C:SetWidth( self.Frame:GetWidth() )
-	else
-		self.Frame.ScrollBar:Show()
-		self.Frame.C:SetWidth( self.Frame:GetWidth() - 16 )
+
+	if Options.CurrentFrame.isWide and Options.nowWide ~= Options.CurrentFrame.isWide then
+		local frameWidth = type(Options.CurrentFrame.isWide)=='number' and Options.CurrentFrame.isWide or 850
+		Options:SetWidth(frameWidth+Options.ListWidth)
+		Options.nowWide = Options.CurrentFrame.isWide
+	elseif not Options.CurrentFrame.isWide and Options.nowWide then
+		Options:SetWidth(Options.Width)
+		Options.nowWide = nil
+	end
+
+	if Options.CurrentFrame.isWide then
+		Options.CurrentFrame:SetWidth(type(Options.CurrentFrame.isWide)=='number' and Options.CurrentFrame.isWide or 850)
+	end
+
+	if type(Options.CurrentFrame.OnShow) == 'function' then
+		Options.CurrentFrame:OnShow()
 	end
 end
 
+
+function Options.modulesList:SetListValue(index)
+	Options:SetPage(Options.Frames[index])
+end
+
+
 function ExRT.Options:Add(moduleName,frameName)
 	local self = CreateFrame("Frame",OptionsFrameName..moduleName,Options)
-	self:SetSize(660,615)
-	self:SetPoint("TOPLEFT",195,-25)
+	self:SetSize(Options.Width-Options.ListWidth,Options.Height-16)
+	self:SetPoint("TOPLEFT",Options.ListWidth,-16)
 	
 	local pos = #Options.Frames + 1
 	Options.modulesList.L[pos] = frameName or moduleName
@@ -93,7 +134,7 @@ function ExRT.Options:AddIcon(moduleName,icon)
 	end
 end
 
-local OptionsFrame = ExRT.Options:Add("Exorsus Raid Tools")
+local OptionsFrame = ExRT.Options:Add("Exorsus Raid Tools","|cffffa800Exorsus Raid Tools|r")
 Options.modulesList:SetListValue(1)
 Options.modulesList.selected = 1
 Options.modulesList:Update()
@@ -173,6 +214,11 @@ MiniMapIcon.icon = MiniMapIcon:CreateTexture(nil, "BACKGROUND")
 MiniMapIcon.icon:SetTexture("Interface\\AddOns\\ExRT\\media\\MiniMap")
 MiniMapIcon.icon:SetSize(32,32)
 MiniMapIcon.icon:SetPoint("CENTER", 0, 0)
+MiniMapIcon.iconMini = MiniMapIcon:CreateTexture(nil, "BACKGROUND")
+MiniMapIcon.iconMini:SetTexture("Interface\\AddOns\\ExRT\\media\\MiniMap")
+MiniMapIcon.iconMini:SetSize(18,18)
+MiniMapIcon.iconMini:SetPoint("CENTER", 0, 0)
+MiniMapIcon.iconMini:Hide()
 MiniMapIcon.border = MiniMapIcon:CreateTexture(nil, "ARTWORK")
 MiniMapIcon.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 MiniMapIcon.border:SetTexCoord(0,0.6,0,0.6)
@@ -184,9 +230,24 @@ MiniMapIcon:SetScript("OnEnter",function(self)
 	GameTooltip:AddLine(L.minimaptooltiplmp,1,1,1) 
 	GameTooltip:AddLine(L.minimaptooltiprmp,1,1,1) 
 	GameTooltip:Show() 
+	self.anim:Play()
+	self.iconMini:Show()
 end)
 MiniMapIcon:SetScript("OnLeave", function(self)    
 	GameTooltip:Hide()
+	self.anim:Stop()
+	self.iconMini:Hide()
+end)
+
+
+MiniMapIcon.anim = MiniMapIcon:CreateAnimationGroup()
+MiniMapIcon.anim:SetLooping("BOUNCE")
+MiniMapIcon.timer = MiniMapIcon.anim:CreateAnimation()
+MiniMapIcon.timer:SetDuration(1)
+local IconDiff = (1 - 18/32)/2
+MiniMapIcon.timer:SetScript("OnUpdate", function(self,elapsed) 
+	local diff = 0.1 * self:GetProgress()
+	MiniMapIcon.iconMini:SetTexCoord(IconDiff+diff,1-IconDiff-diff,IconDiff+diff,1-IconDiff-diff)
 end)
 
 local minimapShapes = {
@@ -315,11 +376,7 @@ function ExRT.Options:Open(PANEL)
 	CloseDropDownMenus()
 	Options:Show()
 	
-	if Options.CurrentFrame then
-		Options.CurrentFrame:Hide()
-	end
-	Options.CurrentFrame = PANEL or Options.Frames[Options.modulesList.selected or 1]
-	Options.CurrentFrame:Show()
+	Options:SetPage(PANEL or Options.Frames[Options.modulesList.selected or 1])
 	
 	if PANEL then
 		for i=1,#Options.Frames do
@@ -351,10 +408,10 @@ end
 
 ----> Options
 
-OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2"):Point("CENTER",OptionsFrame,"TOPLEFT",75,-60):Size(140,140):Color(.9,.9,.9,1):TexCoord(0,140/256,0,140/256)
-OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",22):Size(500,22):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
+OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
+OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",28):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
 
-OptionsFrame.chkIconMiniMap = ELib:Check(OptionsFrame,L.setminimap1):Point(25,-150):OnClick(function(self) 
+OptionsFrame.chkIconMiniMap = ELib:Check(OptionsFrame,L.setminimap1):Point(25,-155):OnClick(function(self) 
 	if self:GetChecked() then
 		VExRT.Addon.IconMiniMapHide = true
 		ExRT.MiniMapIcon:Hide()
@@ -367,66 +424,29 @@ OptionsFrame.chkIconMiniMap:SetScript("OnShow", function(self,event)
 	self:SetChecked(VExRT.Addon.IconMiniMapHide) 
 end)
 
-OptionsFrame.timerSlider = ELib:Slider(OptionsFrame,L.setEggTimerSlider):Size(550):Point("TOP",0,-125):Range(10,1000):SetTo(100):OnChange(function(self,event) 
-	event = event - event%1
-	self.tooltipText = event
-	self:tooltipReload(self)	
-	event = event / 1000	
-	VExRT.Addon.Timer = event
-end)
-OptionsFrame.timerSlider:Hide()
-
-OptionsFrame.eventsCountTextLeft = ELib:Text(OptionsFrame,"",12):Size(590,300):Point(15,-300):Color():Shadow()
-OptionsFrame.eventsCountTextRight = ELib:Text(OptionsFrame,"",12):Size(590,300):Point(85,-300):Color():Shadow()
-OptionsFrame.eventsCountTextFrame = CreateFrame("Frame",nil,OptionsFrame)
-OptionsFrame.eventsCountTextFrame:SetSize(1,1)
-OptionsFrame.eventsCountTextFrame:SetPoint("TOPLEFT")
-OptionsFrame.eventsCountTextFrame:Hide()
-OptionsFrame.eventsCountTextFrame:SetScript("OnShow",function()
-	local tmp = {}
-	for i=1,#ExRT.Modules do
-		if ExRT.Modules[i].main.eventsCounter then
-			for event,count in pairs(ExRT.Modules[i].main.eventsCounter) do
-				if not tmp[event] then
-					tmp[event] = count
-				else
-					tmp[event] = max(tmp[event],count)
-				end
+OptionsFrame.chkHideOnEsc = ELib:Check(OptionsFrame,L.SetHideOnESC):Point(350,-155):OnClick(function(self) 
+	if self:GetChecked() then
+		VExRT.Addon.DisableHideESC = true
+		for i=1,#UISpecialFrames do
+			if UISpecialFrames[i] == "ExRTOptionsFrame" then
+				tremove(UISpecialFrames, i)
+				break
 			end
 		end
+	else
+		VExRT.Addon.DisableHideESC = nil
+		tinsert(UISpecialFrames, "ExRTOptionsFrame")
 	end
-	tmp["COMBAT_LOG_EVENT_UNFILTERED"] = -1
-	local tmp2 = {}
-	local total = 0
-	for event,count in pairs(tmp) do
-		table.insert(tmp2,{event,count})
-		total = total + count
-	end
-	table.sort(tmp2,function(a,b) return a[2] > b[2] end)
-	local h = total.."\n"
-	local n = "Total\n"
-	for i=1,#tmp2 do
-		h = h .. tmp2[i][2].."\n"
-		n = n .. tmp2[i][1] .."\n"
-	end
-	OptionsFrame.eventsCountTextLeft:SetText(h)
-	OptionsFrame.eventsCountTextRight:SetText(n)
+end)
+OptionsFrame.chkHideOnEsc:SetScript("OnShow", function(self,event) 
+	self:SetChecked(VExRT.Addon.DisableHideESC) 
 end)
 
 OptionsFrame.eggBut = CreateFrame("Button",nil,OptionsFrame)  
 OptionsFrame.eggBut:SetSize(14,14) 
-OptionsFrame.eggBut:SetPoint("CENTER",OptionsFrame.image,0,12)
-OptionsFrame.eggBut:SetScript("OnClick",function(s) 
-	local superMode = nil
-	OptionsFrame.timerSlider:SetValue(VExRT.Addon.Timer*1000 or 100)
-	OptionsFrame.timerSlider:Show()
-	OptionsFrame.eventsCountTextFrame:Show()
-	if IsShiftKeyDown() then
-		return
-	end
-	if IsAltKeyDown() then
-		superMode = true
-	end
+OptionsFrame.eggBut:SetPoint("CENTER",OptionsFrame.image,0,0)
+OptionsFrame.eggBut:SetScript("OnClick",function(self) 
+
 end)
 
 OptionsFrame.authorLeft = ELib:Text(OptionsFrame,L.setauthor,12):Size(150,25):Point(15,-195):Shadow():Top()
@@ -439,28 +459,40 @@ OptionsFrame.contactLeft = ELib:Text(OptionsFrame,L.setcontact,12):Size(150,25):
 OptionsFrame.contactRight = ELib:Text(OptionsFrame,"e-mail: ykiigor@gmail.com",12):Size(520,25):Point(135,-235):Color():Shadow():Top()
 
 OptionsFrame.thanksLeft = ELib:Text(OptionsFrame,L.SetThanks,12):Size(150,25):Point(15,-255):Shadow():Top()
-OptionsFrame.thanksRight = ELib:Text(OptionsFrame,"Phanx, funkydude, Shurshik, Kemayo, Guillotine, Rabbit, fookah, diesal2010, Felix, yuk6196, martinkerth, Gyffes, Cubetrace, tigerlolol, Morana, SafeteeWoW, Dejablue, Wollie",12):Size(520,25):Point(135,-255):Color():Shadow():Top()
+OptionsFrame.thanksRight = ELib:Text(OptionsFrame,"Phanx, funkydude, Shurshik, Kemayo, Guillotine, Rabbit, fookah, diesal2010, Felix, yuk6196, martinkerth, Gyffes, Cubetrace, tigerlolol, Morana, SafeteeWoW, Dejablue, Wollie, eXochron",12):Size(540,25):Point(135,-255):Color():Shadow():Top()
 
 if L.TranslateBy ~= "" then
 	OptionsFrame.translateLeft = ELib:Text(OptionsFrame,L.SetTranslate,12):Size(150,25):Point("LEFT",OptionsFrame,15,0):Point("TOP",OptionsFrame.thanksRight,"BOTTOM",0,-8):Shadow():Top()
 	OptionsFrame.translateRight = ELib:Text(OptionsFrame,L.TranslateBy,12):Size(520,25):Point("LEFT",OptionsFrame.thanksRight,"LEFT",0,0):Point("TOP",OptionsFrame.translateLeft,0,0):Color():Shadow():Top()
 end
 
-OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(620,160):Point(15,-325):OnShow(function(self)
+OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(680,180):Point("TOP",0,-325):OnShow(function(self)
+	local text = ExRT.Options.Changelog or ""
+	text = text:gsub("(v%.%d+([^\n]*).-\n\n)",function(a,b)
+		if (b == "-Classic" and ExRT.isClassic) or (b ~= "-Classic" and not ExRT.isClassic) then
+			return a
+		else
+			return ""
+		end
+	end)
 	local isFind
-	local text = (ExRT.Options.Changelog or ""):gsub("^[ \t\n]*","|cff99ff99"):gsub("v%.(%d+)",function(ver)
+	text = text:gsub("^[ \t\n]*","|cff99ff99"):gsub("v%.(%d+)",function(ver)
 		if not isFind and ver ~= tostring(ExRT.V) then
 			isFind = true
 			return "|rv."..ver
 		end
 	end)
 	self.Text:SetText(text)
-	self:Height(self.Text:GetStringHeight()+30)
+	self:Height(self.Text:GetStringHeight()+50)
 	self:OnShow()
 end,true)
+ELib:Border(OptionsFrame.Changelog,0)
+
+ELib:DecorationLine(OptionsFrame):Point("BOTTOM",OptionsFrame.Changelog,"TOP",0,0):Point("LEFT",OptionsFrame):Point("RIGHT",OptionsFrame):Size(0,1)
+ELib:DecorationLine(OptionsFrame):Point("TOP",OptionsFrame.Changelog,"BOTTOM",0,0):Point("LEFT",OptionsFrame):Point("RIGHT",OptionsFrame):Size(0,1)
 
 OptionsFrame.Changelog.Text = ELib:Text(OptionsFrame.Changelog.C,"",12):Point("TOPLEFT",5,0):Point("TOPRIGHT",-5,0):Left():Color(1,1,1)
-OptionsFrame.Changelog.Header = ELib:Text(OptionsFrame.Changelog,"Changelog",12):Point("BOTTOMLEFT",OptionsFrame.Changelog,"TOPLEFT",0,4):Left()
+OptionsFrame.Changelog.Header = ELib:Text(OptionsFrame.Changelog,"Changelog",12):Point("BOTTOMLEFT",OptionsFrame.Changelog,"TOPLEFT",0,2):Left()
 
 local VersionCheckReqSended = {}
 local function UpdateVersionCheck()
@@ -468,33 +500,12 @@ local function UpdateVersionCheck()
 	local list = OptionsFrame.VersionCheck.L
 	wipe(list)
 	
-	if IsInRaid() then
-		for i=1,GetNumGroupMembers() do
-			local name,_,_,_,_,class = GetRaidRosterInfo(i)
-			if name then
-				list[#list + 1] = {
-					"|c"..ExRT.F.classColor(class or "?")..name,
-					0,
-					name,
-				}
-			end
-		end
-	else
-		for _,unit in pairs({"party1","party2","party3","party4","player"}) do
-			local name,realm = UnitName(unit)
-			if name then
-				if realm and realm ~= "" then
-					name = name .. "-" .. realm
-				end
-				local _,class = UnitClass(unit)
-				
-				list[#list + 1] = {
-					"|c"..ExRT.F.classColor(class or "?")..name,
-					0,
-					name,
-				}
-			end
-		end
+	for _, name, _, class in ExRT.F.IterateRoster do
+		list[#list + 1] = {
+			"|c"..ExRT.F.classColor(class or "?")..name,
+			0,
+			name,
+		}
 	end
 	
 	for i=1,#list do
@@ -511,7 +522,11 @@ local function UpdateVersionCheck()
 		end
 		if not ver then
 			if VersionCheckReqSended[name] then
-				ver = "|cffff8888no addon"
+				if not UnitIsConnected(name) then
+					ver = "|cff888888offline"
+				else
+					ver = "|cffff8888no addon"
+				end
 			else
 				ver = "???"
 			end
@@ -530,28 +545,13 @@ local function UpdateVersionCheck()
 	OptionsFrame.VersionCheck:Update()
 end
 
-OptionsFrame.VersionCheck = ELib:ScrollTableList(OptionsFrame,0,130):Point("TOPLEFT",15,-501):Size(350,110)
-OptionsFrame.VersionUpdateButton = ELib:Button(OptionsFrame,UPDATE):Point("TOPLEFT",OptionsFrame.VersionCheck,"TOPRIGHT",10,0):Size(100,20):OnClick(function()
+OptionsFrame.VersionCheck = ELib:ScrollTableList(OptionsFrame,0,130):Point("TOPLEFT",OptionsFrame.Changelog,"BOTTOMLEFT",0,-3):Size(350,125):HideBorders():OnShow(UpdateVersionCheck,true)
+OptionsFrame.VersionUpdateButton = ELib:Button(OptionsFrame,UPDATE):Point("BOTTOMLEFT",OptionsFrame.VersionCheck,"BOTTOMRIGHT",10,3):Size(100,20):Tooltip(L.OptionsUpdateVerTooltip):OnClick(function()
 	ExRT.F.SendExMsg("needversion","")
 	C_Timer.After(2,UpdateVersionCheck)
-	if IsInRaid() then
-		for i=1,GetNumGroupMembers() do
-			local name = GetRaidRosterInfo(i)
-			if name then
-				VersionCheckReqSended[name]=true
-			end
-		end
-	else
-		for _,unit in pairs({"party1","party2","party3","party4","player"}) do
-			local name,realm = UnitName(unit)
-			if name then
-				if realm and realm ~= "" then
-					name = name .. "-" .. realm
-				end
-				VersionCheckReqSended[name]=true
-			end
-		end
-	end	
+	for _, name in ExRT.F.IterateRoster do
+		VersionCheckReqSended[name]=true
+	end
 	local list = OptionsFrame.VersionCheck.L
 	for i=1,#list do
 		list[i][2] = "..."
@@ -559,8 +559,6 @@ OptionsFrame.VersionUpdateButton = ELib:Button(OptionsFrame,UPDATE):Point("TOPLE
 	OptionsFrame.VersionCheck:Update()
 	OptionsFrame.VersionUpdateButton:Disable()
 end)
-
-OptionsFrame.VersionCheck:SetScript("OnShow",UpdateVersionCheck)
 
 local function CreateDataBrokerPlugin()
 	local dataObject = LibStub:GetLibrary('LibDataBroker-1.1'):NewDataObject(GlobalAddonName, {

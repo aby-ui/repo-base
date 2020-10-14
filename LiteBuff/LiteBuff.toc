@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: LiteBuff
 ## Version: 4.60
 ## Author: Abin
@@ -12,10 +12,11 @@
 ## X-Curse-Project-ID: LiteBuff
 ## X-Curse-Repository-ID: wow/litebuff/mainline
 
-Includes\InterfaceOptionPage-1.0.lua
+..\!!!Libs\!External\abin\InterfaceOptionPage-1.0.lua
 Includes\LibScanTip.lua
-Includes\LibAuraGroups-1.0.lua
-Includes\LibPlayerSpells-1.0.lua
+..\!!!Libs\!External\abin\Pre80API.lua
+..\!!!Libs\!External\abin\LibAuraGroups-1.0.lua
+..\!!!Libs\!External\abin\LibPlayerSpells-1.0.lua
 Includes\LibItemQuery.lua
 
 Locales\enUS.lua

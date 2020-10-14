@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2156, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20201003222718")
 mod:SetCreatureID(134069)
 mod:SetEncounterID(2133)
 
@@ -37,10 +37,10 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 267444 then
+		timerYawningGateCD:Start(3)
 		if not self:IsNormal() then
 			timerCalltheAbyssCD:Start(5.5)
 		end
-		timerYawningGateCD:Start(16.3)
 		timerGraspCD:Start()
 	end
 end

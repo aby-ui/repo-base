@@ -10,7 +10,7 @@ end
 
 function DF:NewScrollBar (master, slave, x, y)
 
-	local new_slider = CreateFrame ("Slider", nil, master)
+	local new_slider = CreateFrame ("Slider", nil, master,"BackdropTemplate")
 	new_slider.scrollMax = 560 --default - tamanho da janela de fundo
 
 	-- ///// SLIDER /////
@@ -32,7 +32,7 @@ function DF:NewScrollBar (master, slave, x, y)
 	new_slider:SetValue(0)
 	new_slider.ultimo = 0
 
-	local botao_cima = CreateFrame ("Button", nil, master)
+	local botao_cima = CreateFrame ("Button", nil, master,"BackdropTemplate")
 	
 	botao_cima:SetPoint ("BOTTOM", new_slider, "TOP", 0, -12)
 	botao_cima.x = 0
@@ -46,7 +46,7 @@ function DF:NewScrollBar (master, slave, x, y)
 	botao_cima:Show()
 	botao_cima:Disable()
 	
-	local botao_baixo = CreateFrame ("Button", nil, master)
+	local botao_baixo = CreateFrame ("Button", nil, master,"BackdropTemplate")
 	botao_baixo:SetPoint ("TOP", new_slider, "BOTTOM", 0, 12)
 	botao_baixo.x = 0
 	botao_baixo.y = 12

@@ -3,38 +3,52 @@ local OmniCC = _G.OmniCC
 local OptionsFrame, OptionsFrameChildren
 
 local function showOptionsMenu()
-    if OptionsFrameChildren and OptionsFrameChildren[1] then
-        InterfaceOptionsFrame_Show()
-        InterfaceOptionsFrame_OpenToCategory(OptionsFrameChildren[1])
+    if not OptionsFrameChildren then
+        return
+    end
+
+    local _, child = next(OptionsFrameChildren)
+
+    if child then
+        InterfaceOptionsFrame_OpenToCategory(child)
     end
 end
 
--- register with omnicc
-OmniCC.ShowOptionsMenu = showOptionsMenu
-
 -- setup the options frame parent
-OptionsFrame = CreateFrame("Frame", nil, InterfaceOptionsFrame)
-OptionsFrame:Hide()
-OptionsFrame.name = "OmniCC"
-OptionsFrame:SetScript("OnShow", showOptionsMenu)
-InterfaceOptions_AddCategory(OptionsFrame)
+OptionsFrame = OmniCC.frame
+OptionsFrame:SetScript('OnShow', showOptionsMenu)
 
 -- create the options menu child frames
 local options = {
-    type = "group",
+    type = 'group',
     args = {
         themes = Addon.ThemeOptions,
         rules = Addon.RuleOptions,
-        profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(OmniCC.db, true)
+        profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(OmniCC.db, true)
     }
 }
 
-LibStub("AceConfig-3.0"):RegisterOptionsTable("OmniCC", options)
+LibStub('AceConfig-3.0'):RegisterOptionsTable(OptionsFrame.name, options)
 
 OptionsFrameChildren = {
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("OmniCC", options.args.themes.name, "OmniCC", "themes"),
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("OmniCC", options.args.rules.name, "OmniCC", "rules"),
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("OmniCC", options.args.profiles.name, "OmniCC", "profiles")
+    LibStub('AceConfigDialog-3.0'):AddToBlizOptions(
+        OptionsFrame.name,
+        options.args.themes.name,
+        OptionsFrame.name,
+        'themes'
+    ),
+    LibStub('AceConfigDialog-3.0'):AddToBlizOptions(
+        OptionsFrame.name,
+        options.args.rules.name,
+        OptionsFrame.name,
+        'rules'
+    ),
+    LibStub('AceConfigDialog-3.0'):AddToBlizOptions(
+        OptionsFrame.name,
+        options.args.profiles.name,
+        OptionsFrame.name,
+        'profiles'
+    )
 }
 
 function Addon:OnProfileChanged()
@@ -42,6 +56,11 @@ function Addon:OnProfileChanged()
     self:RefreshRuleOptions()
 end
 
-OmniCC.db.RegisterCallback(Addon, "OnProfileChanged", "OnProfileChanged")
-OmniCC.db.RegisterCallback(Addon, "OnProfileCopied", "OnProfileChanged")
-OmniCC.db.RegisterCallback(Addon, "OnProfileReset", "OnProfileChanged")
+OmniCC.db.RegisterCallback(Addon, 'OnProfileChanged', 'OnProfileChanged')
+OmniCC.db.RegisterCallback(Addon, 'OnProfileCopied', 'OnProfileChanged')
+OmniCC.db.RegisterCallback(Addon, 'OnProfileReset', 'OnProfileChanged')
+
+-- open to the main category if the options menu is already shown
+if OptionsFrame:IsShown() then
+    showOptionsMenu()
+end

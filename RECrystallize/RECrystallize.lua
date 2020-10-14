@@ -36,6 +36,7 @@ local PETCAGEID = 82800
 RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1}
 RE.GUIInitialized = false
 RE.RecipeLock = false
+RE.ScanFinished = false
 RE.BlockTooltip = 0
 RE.TooltipLink = ""
 RE.TooltipItemVariant = ""
@@ -43,13 +44,6 @@ RE.TooltipIcon = ""
 RE.TooltipItemID = 0
 RE.TooltipCount = 0
 RE.TooltipCustomCount = -1
-
-local function ElvUISwag(sender)
-	if sender == "Livarax-BurningLegion" then
-		return [[|TInterface\PvPRankBadges\PvPRank09:0|t ]]
-	end
-	return nil
-end
 
 local function tCount(table)
 	local count = 0
@@ -61,11 +55,11 @@ end
 
 local function GetPetMoneyString(money, size)
 	local goldString, silverString
-	local gold = floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD))
-	local silver = floor((money - (gold * COPPER_PER_SILVER * SILVER_PER_GOLD)) / COPPER_PER_SILVER)
+	local gold = floor(money / (_G.COPPER_PER_SILVER * _G.SILVER_PER_GOLD))
+	local silver = floor((money - (gold * _G.COPPER_PER_SILVER * _G.SILVER_PER_GOLD)) / _G.COPPER_PER_SILVER)
 
-    goldString = GOLD_AMOUNT_TEXTURE_STRING:format(FormatLargeNumber(gold), size, size)
-    silverString = SILVER_AMOUNT_TEXTURE:format(silver, size, size)
+    goldString = _G.GOLD_AMOUNT_TEXTURE_STRING:format(FormatLargeNumber(gold), size, size)
+    silverString = _G.SILVER_AMOUNT_TEXTURE:format(silver, size, size)
 
 	local moneyString = ""
 	local separator = ""
@@ -223,7 +217,7 @@ function RE:OnEvent(self, event, ...)
 				},
 				separator = {
 					type = "header",
-					name = STATISTICS,
+					name = _G.STATISTICS,
 					order = 4
 				},
 				description = {
@@ -277,7 +271,6 @@ function RE:OnEvent(self, event, ...)
 
 		if ElvUI then
 			RE.IsSkinned = ElvUI[1].private.skins.blizzard.auctionhouse
-			ElvUI[1]:GetModule("Chat"):AddPluginIcons(ElvUISwag)
 		else
 			RE.IsSkinned = false
 		end
@@ -292,7 +285,7 @@ function RE:TooltipAddPrice(self)
 	local _, link = self:GetItem()
 	if link and IsLinkType(link, "item") then
 		local itemTypeId, itemSubTypeId = select(12, GetItemInfo(link))
-		if not RE.RecipeLock and itemTypeId == LE_ITEM_CLASS_RECIPE and itemSubTypeId ~= LE_ITEM_RECIPE_BOOK then
+		if not RE.RecipeLock and itemTypeId == _G.LE_ITEM_CLASS_RECIPE and itemSubTypeId ~= _G.LE_ITEM_RECIPE_BOOK then
 			RE.RecipeLock = true
 			return
 		else
@@ -315,9 +308,9 @@ function RE:TooltipAddPrice(self)
 				local shiftPressed = IsShiftKeyDown()
 				if ((shiftPressed and not RE.Config.AlwaysShowAll) or (not shiftPressed and RE.Config.AlwaysShowAll)) and (RE.TooltipCount > 0 or RE.TooltipCustomCount > 0) then
 					local count = RE.TooltipCustomCount > 0 and RE.TooltipCustomCount or RE.TooltipCount
-					SetTooltipMoney(self, RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant].Price * count, nil, "|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r", " (x"..count..")"..RE.TooltipIcon)
+					SetTooltipMoney(self, RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant].Price * count, nil, "|cFF74D06C".._G.BUTTON_LAG_AUCTIONHOUSE..":|r", " (x"..count..")"..RE.TooltipIcon)
 				else
-					SetTooltipMoney(self, RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant].Price, nil, "|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r", RE.TooltipIcon)
+					SetTooltipMoney(self, RE.DB[RE.RealmString][RE.TooltipItemID][RE.TooltipItemVariant].Price, nil, "|cFF74D06C".._G.BUTTON_LAG_AUCTIONHOUSE..":|r", RE.TooltipIcon)
 				end
 			end
 		end
@@ -339,7 +332,7 @@ function RE:TooltipPetAddPrice(link)
 			RE.TooltipItemVariant = RE:GetPetString(link)
 		end
 		if RE.DB[RE.RealmString][PETCAGEID] ~= nil and RE.DB[RE.RealmString][PETCAGEID][RE.TooltipItemVariant] ~= nil then
-			tt:AddLine("|cFF74D06C"..BUTTON_LAG_AUCTIONHOUSE..":|r    |cFFFFFFFF"..GetPetMoneyString(RE.DB[RE.RealmString][PETCAGEID][RE.TooltipItemVariant].Price, tt.Name:GetStringHeight() * 0.65).."|r")
+			tt:AddLine("|cFF74D06C".._G.BUTTON_LAG_AUCTIONHOUSE..":|r    |cFFFFFFFF"..GetPetMoneyString(RE.DB[RE.RealmString][PETCAGEID][RE.TooltipItemVariant].Price, tt.Name:GetStringHeight() * 0.65).."|r")
 			tt:SetHeight((select(2, tt.Level:GetFont()) + 4.5) * ((tt.Owned:GetText() ~= nil and 7 or 6) + (tt == _G.FloatingBattlePetTooltip and 1.15 or 0) + tt.linePool:GetNumActive()))
 		end
 	end
@@ -365,6 +358,7 @@ function RE:StartScan()
 end
 
 function RE:Scan()
+	RE.ScanFinished = false
 	local num = GetNumReplicateItems()
 	local progress = 0
 	local inProgress = {}
@@ -409,6 +403,9 @@ function RE:Scan()
 end
 
 function RE:EndScan()
+	if RE.ScanFinished then return end
+	RE.ScanFinished = true
+
 	RE:ParseDatabase()
 	RE:SyncDatabase()
 	RE:CleanDatabase()
@@ -418,7 +415,7 @@ function RE:EndScan()
 
 	RE.AHButton:SetText(L["Scan finished!"])
 	PlaySound(_G.SOUNDKIT.AUCTION_WINDOW_CLOSE)
-	print("|cFF9D9D9D---|r |cFF74D06CRE|rCrystallize "..LANDING_PAGE_REPORT.." |cFF9D9D9D---|r")
+	print("|cFF9D9D9D---|r |cFF74D06CRE|rCrystallize ".._G.LANDING_PAGE_REPORT.." |cFF9D9D9D---|r")
 	print("|cFF74D06C"..L["Scan time"]..":|r "..SecondsToTime(time() - RE.Config.LastScan))
 	print("|cFF74D06C"..L["New items"]..":|r "..RE.ScanStats[1])
 	print("|cFF74D06C"..L["Updated items"]..":|r "..RE.ScanStats[2])

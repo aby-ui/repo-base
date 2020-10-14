@@ -32,7 +32,7 @@
 				  <Layers>
 					 <Layer level="ARTWORK">
 						<!-- top scrollbar background -->
-						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <Size x="26" y="42"/>
 						   <Anchors>
 							  <Anchor point="BOTTOM" relativePoint="TOP" x="-1.5" y="-9"/>
@@ -40,7 +40,7 @@
 						   <TexCoords left="0" right="0.453125" top="0" bottom="0.15625"/>
 						</Texture>
 						<!-- bottom scrollbar background -->
-						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <Size x="26" y="42"/>
 						   <Anchors>
 							  <Anchor point="TOP" relativePoint="BOTTOM" x="-1.5" y="11"/>
@@ -48,7 +48,7 @@
 						   <TexCoords left="0.515625" right="0.96875" top="0.26171875" bottom="0.41796875"/>
 						</Texture>
 						<!-- middle scrollbar background -->
-						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<Texture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <Size x="26" y="0"/>
 						   <Anchors>
 							  <Anchor point="TOP" x="-1.5" y="-9"/>
@@ -85,16 +85,16 @@
 						<Anchors>
 						   <Anchor point="TOPRIGHT" x="0.25" y="28"/>
 						</Anchors>
-						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.9" bottom="0.975"/>
 						</NormalTexture>
-						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.775" bottom="0.85"/>
 						</PushedTexture>
-						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.525" bottom="0.6"/>
 						</DisabledTexture>
-						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga" alphaMode="ADD" alpha="0.75">
+						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar" alphaMode="ADD" alpha="0.75">
 						   <TexCoords left="0.5" right="1" top="0.625" bottom="0.75"/>
 						</HighlightTexture>
 					 </Button>
@@ -106,16 +106,16 @@
 						<Anchors>
 						   <Anchor point="BOTTOMRIGHT" x="0.25" y="-28"/>
 						</Anchors>
-						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<NormalTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.9" bottom="0.975"/>
 						</NormalTexture>
-						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<PushedTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.775" bottom="0.85"/>
 						</PushedTexture>
-						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga">
+						<DisabledTexture file="Interface\AddOns\Rematch\Textures\scrollbar">
 						   <TexCoords left="0.6" right="0.9" top="0.525" bottom="0.6"/>
 						</DisabledTexture>
-						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar.tga" alphaMode="ADD" alpha="0.75">
+						<HighlightTexture file="Interface\AddOns\Rematch\Textures\scrollbar" alphaMode="ADD" alpha="0.75">
 						   <TexCoords left="0.5" right="1" top="0.625" bottom="0.75"/>
 						</HighlightTexture>
 					 </Button>

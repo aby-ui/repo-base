@@ -1,6 +1,5 @@
-
-
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 
@@ -19,14 +18,14 @@ local function loadMigrations()
   return migrationRepo
 end
 
-function WeakAuras.CleanArchive(historyCutoff, migrationCutoff)
+function Private.CleanArchive(historyCutoff, migrationCutoff)
   if type(historyCutoff) == "number" then
     local repo = loadHistory()
     local cutoffTime = time() - (historyCutoff * 86400)
     for uid, subStore in pairs(repo.stores) do
       -- Ideally we would just use Clean and not access the stores list directly,
       -- but that'd mean having Clean take a predicate which seems like overkill for the moment
-      if not WeakAuras.GetDataByUID(uid) and subStore.timestamp < cutoffTime then
+      if not Private.GetDataByUID(uid) and subStore.timestamp < cutoffTime then
         repo:Drop(uid)
       end
     end
@@ -38,7 +37,7 @@ function WeakAuras.CleanArchive(historyCutoff, migrationCutoff)
   end
 end
 
-function WeakAuras.SetHistory(uid, data, source, addon)
+function Private.SetHistory(uid, data, source, addon)
   if uid and data then
     local repo = loadHistory()
     data.source = source
@@ -48,29 +47,28 @@ function WeakAuras.SetHistory(uid, data, source, addon)
   end
 end
 
-function WeakAuras.GetHistory(uid, load)
+local function GetHistory(uid, load)
   return loadHistory():Get(uid, load)
 end
 
-function WeakAuras.RemoveHistory(uid)
+function Private.RemoveHistory(uid)
   return loadHistory():Drop(uid)
 end
 
-function WeakAuras.RestoreFromHistory(uid)
-  local _, histData = WeakAuras.GetHistory(uid, true)
+function Private.RestoreFromHistory(uid)
+  local _, histData = GetHistory(uid, true)
   if histData then
     WeakAuras.Add(histData)
   end
 end
 
-function WeakAuras.SetMigrationSnapshot(uid, oldData)
+function Private.SetMigrationSnapshot(uid, oldData)
   if type(oldData) == "table" then
     local repo = loadMigrations()
     repo:Set(uid, oldData)
   end
 end
 
-function WeakAuras.GetMigrationSnapshot(uid)
+function Private.GetMigrationSnapshot(uid)
   return loadMigrations():GetData(uid)
 end
-

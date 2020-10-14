@@ -23,7 +23,7 @@ local unpack = unpack;
 
 -- Addon
 local modName = ...;
-local tt = CreateFrame("Frame",modName,UIParent);
+local tt = CreateFrame("Frame",modName,UIParent,BackdropTemplateMixin and "BackdropTemplate");
 
 -- Global Chat Message Function
 function AzMsg(msg) DEFAULT_CHAT_FRAME:AddMessage(tostring(msg):gsub("|1","|cffffff80"):gsub("|2","|cffffffff"),0.5,0.75,1.0); end
@@ -270,7 +270,7 @@ tt.tipsToModify = TT_TipsToModify;
 
 --local tipBackdrop = { tile = false, insets = {} };
 -- Hi-jack the GTT backdrop table for our own evil needs
-local tipBackdrop = GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT;
+local tipBackdrop = GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT or TOOLTIP_BACKDROP_STYLE_DEFAULT;
 tipBackdrop.backdropColor = CreateColor(1,1,1);
 tipBackdrop.backdropBorderColor = CreateColor(1,1,1);
 
@@ -278,8 +278,8 @@ tipBackdrop.backdropBorderColor = CreateColor(1,1,1);
 tipBackdrop.backdropColor.GetRGB = ColorMixin.GetRGBA;
 tipBackdrop.backdropBorderColor.GetRGB = ColorMixin.GetRGBA;
 
--- blizzards "GameTooltip_SetBackdropStyle" function will set the backdrop color using just RGB and no alpha, this fixes that
---hooksecurefunc("GameTooltip_SetBackdropStyle",function(self,style)
+-- blizzards "SharedTooltip_SetBackdropStyle" function will set the backdrop color using just RGB and no alpha, this fixes that
+--hooksecurefunc("SharedTooltip_SetBackdropStyle",function(self,style)
 --	self:SetBackdropBorderColor((style.backdropBorderColor or TOOLTIP_DEFAULT_COLOR):GetRGBA());
 --	self:SetBackdropColor((style.backdropColor or TOOLTIP_DEFAULT_BACKGROUND_COLOR):GetRGBA());
 --end);
@@ -1489,7 +1489,7 @@ end
 
 -- Applies the backdrop, color and border color. The GTT will often reset these internally.
 function tt:ApplyBackdrop(tip)
-	GameTooltip_SetBackdropStyle(tip,tipBackdrop)
+    SharedTooltip_SetBackdropStyle(tip,tipBackdrop)
 end
 
 --------------------------------------------------------------------------------------------------------

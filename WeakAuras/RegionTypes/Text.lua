@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
@@ -74,7 +75,7 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
-  region.useAuto = WeakAuras.CanHaveAuto(data);
+  region.useAuto = Private.CanHaveAuto(data);
 
   local fontPath = SharedMedia:Fetch("font", data.font);
   text:SetFont(fontPath, data.fontSize, data.outline);
@@ -157,7 +158,7 @@ local function modify(parent, region, data)
   end
 
   local UpdateText
-  if WeakAuras.ContainsAnyPlaceHolders(data.displayText) then
+  if Private.ContainsAnyPlaceHolders(data.displayText) then
     local getter = function(key, default)
       local fullKey = "displayText_format_" .. key
       if (data[fullKey] == nil) then
@@ -165,10 +166,10 @@ local function modify(parent, region, data)
       end
       return data[fullKey]
     end
-    local formatters = WeakAuras.CreateFormatters(data.displayText, getter)
+    local formatters = Private.CreateFormatters(data.displayText, getter)
     UpdateText = function()
       local textStr = data.displayText;
-      textStr = WeakAuras.ReplacePlaceHolders(textStr, region, nil, false, formatters);
+      textStr = Private.ReplacePlaceHolders(textStr, region, nil, false, formatters);
       if (textStr == nil or textStr == "") then
         textStr = " ";
       end
@@ -178,7 +179,7 @@ local function modify(parent, region, data)
   end
 
   local customTextFunc = nil
-  if(WeakAuras.ContainsCustomPlaceHolder(data.displayText) and data.customText) then
+  if(Private.ContainsCustomPlaceHolder(data.displayText) and data.customText) then
     customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id, "custom text")
   end
 
@@ -186,7 +187,7 @@ local function modify(parent, region, data)
   if customTextFunc then
     if UpdateText then
       Update = function()
-        region.values.custom = WeakAuras.RunCustomTextFunc(region, customTextFunc)
+        region.values.custom = Private.RunCustomTextFunc(region, customTextFunc)
         UpdateText()
       end
     end
@@ -195,14 +196,14 @@ local function modify(parent, region, data)
   end
 
   local TimerTick
-  if WeakAuras.ContainsPlaceHolders(data.displayText, "p") then
+  if Private.ContainsPlaceHolders(data.displayText, "p") then
     TimerTick = UpdateText
   end
 
   local FrameTick
   if customTextFunc and data.customTextUpdate == "update" then
     FrameTick = function()
-      region.values.custom = WeakAuras.RunCustomTextFunc(region, customTextFunc)
+      region.values.custom = Private.RunCustomTextFunc(region, customTextFunc)
       UpdateText()
     end
   end

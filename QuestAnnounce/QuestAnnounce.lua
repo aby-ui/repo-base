@@ -199,7 +199,7 @@ end
 
 function QuestAnnounce:RefreshCompletedQuests(announce)
     self.completed = self.completed or {}
-    for i=1, GetNumQuestLogEntries(), 1 do
+    for i=1, C_QuestLog.GetNumQuestLogEntries(), 1 do
         local title, _, _, _, _, isComplete = GetQuestLogTitle(i);
         if title and isComplete then
             if not self.completed[title] and announce then
