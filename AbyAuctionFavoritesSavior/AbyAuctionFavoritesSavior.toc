@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: AbyAuctionFavoritesSavior
 ## Notes: Save auction favorites, so that you can load them while Blizzard cannot.
 ## LoadOnDemand: 1

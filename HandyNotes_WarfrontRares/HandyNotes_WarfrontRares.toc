@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: HandyNotes_WarfrontRares
 ## Version: 0.5.4
 ## Notes: Warfront Rares

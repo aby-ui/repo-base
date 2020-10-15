@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title:|cFFBF00FF[H]|r Something About Pet Battle
 ## Notes:Something About Pet Battle,Type /hpq to config
 ## Title-zhCN: |cFFBF00FF[H]|r 宠物对战增强

@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Grail |cff69ccf0NPCs |r|cff0000ffRetail|r|cff69ccf0 enUS|r
 ## Author: Scott M Harrison
 ## Notes: Provides localized enUS NPCs to Grail for Retail

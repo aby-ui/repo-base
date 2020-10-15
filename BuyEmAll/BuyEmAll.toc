@@ -1,5 +1,5 @@
 ## Author: Jordy141
-## Interface: 80300
+## Interface: 90001
 ## Notes: Enhances shift-click interface at vendors, making it easier to buy large amounts of items at once.
 ## Title: BuyEmAll
 ## Version: 3.5.7

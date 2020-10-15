@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: |cff880303[爱不易]|r AbyUI 小功能集合
 ## SavedVariables: SimulationcraftAbyUIDB
 ## X-Vendor: AbyUI

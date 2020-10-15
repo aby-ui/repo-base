@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
 ## Version: 3.2.3

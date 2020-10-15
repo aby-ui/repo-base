@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: Enigma Unit Frames
 ## Notes: Enhanced Unit Frames including HP/MP values, class, race, level tag, and more ...
 ## Version: 3.1.1

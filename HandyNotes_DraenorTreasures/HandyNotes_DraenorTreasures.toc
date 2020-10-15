@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: HandyNotes_DraenorTreasures
 ## Version: 1.21
 ## Notes: Shows location of treasures and rares in Draenor
