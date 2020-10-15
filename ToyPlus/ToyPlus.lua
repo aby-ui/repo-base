@@ -485,7 +485,7 @@ function ToyPlus:ShowList()
 	local toyFrame = _G["ToyPlusFrame"]
 	ToyPlus:RefreshToys()
 	if not toyPopout then
-		toyPopout = CreateFrame("Frame", "ToyPlus_Popout", UIParent)
+		toyPopout = CreateFrameAby("Frame", "ToyPlus_Popout", UIParent)
 		toyPopout:SetFrameStrata("HIGH")
 		toyPopout:EnableMouse(true)
 		toyPopout:RegisterForDrag("LeftButton")
@@ -761,7 +761,7 @@ function ToyPlus:RefreshIcons()
 end
 
 function ToyPlus:CreateFrame()
-	local toyFrame = CreateFrame("Frame", "ToyPlusFrame", UIParent)--Toy Icons Frame
+	local toyFrame = CreateFrameAby("Frame", "ToyPlusFrame", UIParent)--Toy Icons Frame
 	toyFrame:SetFrameStrata("BACKGROUND")
 	toyFrame:SetClampedToScreen(true)
 	toyFrame:SetMovable(true); toyFrame:EnableMouse(true)

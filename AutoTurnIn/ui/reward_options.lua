@@ -69,14 +69,14 @@ CreateCheckbox("Ranged", WeaponPanel, 10, -136, string.format("%s, %s, %s", C.we
 
 -- ARMOR 
 local ArmorPanel = CreatePanel("ArmorPanel", C.ARMORLABEL, 590, 70)
-local ArmorDropDown = CreateFrame("Frame", O.."ToggleKeyDropDown", ArmorPanel, "Lib_UIDropDownMenuTemplate")
+local ArmorDropDown = CreateFrame("Frame", O.."ToggleKeyDropDown", ArmorPanel, "UIDropDownMenuTemplate")
 local ARMORCONST = {NONE_KEY, C.armor[2], C.armor[3], C.armor[4], C.armor[5]}
-Lib_UIDropDownMenu_Initialize(ArmorDropDown, function (self, level)
+UIDropDownMenu_Initialize(ArmorDropDown, function (self, level)
     for k, v in ipairs(ARMORCONST) do
-        local info = Lib_UIDropDownMenu_CreateInfo()
+        local info = UIDropDownMenu_CreateInfo()
 		info.text, info.value = v, k
         info.func = function(self)			
-						Lib_UIDropDownMenu_SetSelectedID(ArmorDropDown, self:GetID())
+						UIDropDownMenu_SetSelectedID(ArmorDropDown, self:GetID())
 						if ArmorDropDown.value > 1 then
 							ptable.TempConfig.armor[ARMORCONST[ArmorDropDown.value]] = nil
 						end
@@ -85,11 +85,11 @@ Lib_UIDropDownMenu_Initialize(ArmorDropDown, function (self, level)
 							ptable.TempConfig.armor[self:GetText()] = true
 						end															
 					end
-        Lib_UIDropDownMenu_AddButton(info, level)
+        UIDropDownMenu_AddButton(info, level)
     end
 end)
-Lib_UIDropDownMenu_SetWidth(ArmorDropDown, 200);
-Lib_UIDropDownMenu_JustifyText(ArmorDropDown, "LEFT")
+UIDropDownMenu_SetWidth(ArmorDropDown, 200);
+UIDropDownMenu_JustifyText(ArmorDropDown, "LEFT")
 ArmorDropDown:SetPoint("TOPLEFT", ArmorPanel, 0, -8)
 CreateCheckbox(C.armor[7], ArmorPanel, 402, -8)
 	-- 2nd line 
@@ -169,8 +169,8 @@ RewardPanel.refresh = function()
 	end
 	
 	ArmorDropDown.value = ArmorDropDown.value and ArmorDropDown.value or 1
-	Lib_UIDropDownMenu_SetSelectedID(ArmorDropDown, ArmorDropDown.value)
-	Lib_UIDropDownMenu_SetText(ArmorDropDown, ARMORCONST[ArmorDropDown.value])
+	UIDropDownMenu_SetSelectedID(ArmorDropDown, ArmorDropDown.value)
+	UIDropDownMenu_SetText(ArmorDropDown, ARMORCONST[ArmorDropDown.value])
 end
 --RewardPanel.default = function() end
 --RewardPanel.okay = function()end

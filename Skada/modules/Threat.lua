@@ -1,4 +1,4 @@
-
+local _, Skada = ...
 Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Threat then return end
 
@@ -6,10 +6,6 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 
 	-- This mode is a bit special.
 	local mod = Skada:NewModule(L["Threat"])
-
-	local CLIENT_VERSION = tonumber((select(4, GetBuildInfo())))
-
-	local WoW5 = CLIENT_VERSION > 50000
 
 	local opts = {
 		options = {
@@ -116,13 +112,13 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 
 		-- Add our feed.
 		Skada:AddFeed(L["Threat: Personal Threat"], function()
-									if Skada.current and UnitExists("target") then
-										local isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation("player", "target")
-										if threatpct then
-											return ("%02.1f%%"):format(threatpct)
-										end
-									end
-								end)
+			if Skada.current and UnitExists("target") then
+				local isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation("player", "target")
+				if threatpct then
+					return ("%02.1f%%"):format(threatpct)
+				end
+			end
+		end)
 
 		-- Enable us
 		Skada:AddMode(self)
@@ -151,9 +147,9 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 					win.dataset[nr] = d
 					d.label = name
 					local _, class = UnitClass(name)
-                    local role = UnitGroupRolesAssigned(name)
+					local role = UnitGroupRolesAssigned(name)
 					d.class = class
-                    d.role = role
+					d.role = role
 					d.id = name
 					d.threat = threatvalue
 					d.isTanking = isTanking
@@ -175,9 +171,9 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 					win.dataset[nr] = d
 					d.label = name
 					local _, class = UnitClass(name)
-                    local role = UnitGroupRolesAssigned(name)
+					local role = UnitGroupRolesAssigned(name)
 					d.class = class
-                    d.role = role
+					d.role = role
 					d.id = name
 					d.value = threatpct
 					d.isTanking = isTanking
@@ -284,10 +280,10 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 						end
 
 						data.valuetext = Skada:FormatValueText(
-														format_threatvalue(data.threat), self.metadata.columns.Threat,
-														getTPS(data.threat), self.metadata.columns.TPS,
-														string.format("%02.1f%%", percent), self.metadata.columns.Percent
-													)
+							format_threatvalue(data.threat), self.metadata.columns.Threat,
+							getTPS(data.threat), self.metadata.columns.TPS,
+							string.format("%02.1f%%", percent), self.metadata.columns.Percent
+						)
 					else
 						data.id = nil
 					end
@@ -397,4 +393,3 @@ Skada:AddLoadableModule("Threat", nil, function(Skada, L)
 		shaker:Show()
 	end
 end)
-

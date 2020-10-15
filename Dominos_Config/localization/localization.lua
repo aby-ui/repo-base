@@ -80,6 +80,13 @@ L.State_ALTSHIFT = strjoin("-", ALT_KEY_TEXT, SHIFT_KEY_TEXT)
 L.State_CTRLALT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT)
 L.State_CTRLALTSHIFT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT, SHIFT_KEY_TEXT)
 L.State_CTRLSHIFT = strjoin("-", CTRL_KEY_TEXT, SHIFT_KEY_TEXT)
+
+if IsMacClient() then
+    L.State_META = 'Command Key'
+else
+    L.State_META = 'Meta Key'
+end
+
 L.State_HARM = "Harm"
 L.State_HELP = "Help"
 L.State_NOTARGET = "No Target"

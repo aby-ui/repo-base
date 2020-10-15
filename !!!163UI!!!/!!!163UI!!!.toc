@@ -24,6 +24,8 @@ Core\Core.lua
 Core\UI\UI.xml
 
 Deprecated_8.0.lua
+Deprecated_8_1_0.lua
+Deprecated_8_2_5.lua
 Deprecated_9.0.lua
 
 #4K

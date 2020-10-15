@@ -9,7 +9,7 @@
 	* Clear data when releasing spirit
 ----------------------------------------------------------------------]]
 
-local IS_WOW_8 = GetBuildInfo():match("^8")
+local IS_WOW_8 = select(4, GetBuildInfo()) >= 80000
 
 local MAJOR, MINOR = "LibResInfo-1.0", 27
 assert(LibStub, MAJOR.." requires LibStub")

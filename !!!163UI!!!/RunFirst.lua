@@ -105,16 +105,6 @@ local function checkActionBarButtonEventsFrame(test)
     end
 end
 
-local events = {}
-_G.DBG_events1 = events
-hooksecurefunc("ActionButton_OnEvent", function(self, event)
-    events[self] = events[self] or {}
-    table.insert(events[self], event)
-    if #events[self] > 10 then
-        table.remove(events[self], 11)
-    end
-end)
-
 local happened = false
 hooksecurefunc("StartChargeCooldown", function(self)
     if happened then return end

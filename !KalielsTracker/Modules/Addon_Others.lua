@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "11.49", true) then
+    if KT:CheckAddOn("ElvUI", "12.00", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -73,7 +73,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "18.28", true) then
+    if KT:CheckAddOn("Tukui", "20.00", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -183,26 +183,6 @@ local function DQE_SetCompatibility()
     end
 end
 
--- Dominos
-local function Dominos_SetCompatibility()
-    if IsAddOnLoaded("Dominos") then
-        local function ReanchorActiveButton()
-            local button = KT.frame.ActiveButton
-            if button and DominosFrameextra then
-                button:SetParent(DominosFrameextra)
-                button:ClearAllPoints()
-                button:SetPoint("CENTER", 0, 0.5)
-            end
-        end
-        hooksecurefunc(Dominos, "OnEnable", function(self)
-            ReanchorActiveButton()
-        end)
-        hooksecurefunc(KT.ActiveButton, "OnEnable", function(self)
-            ReanchorActiveButton()
-        end)
-    end
-end
-
 --------------
 -- External --
 --------------
@@ -224,7 +204,6 @@ function M:OnEnable()
     SVUI_SetSupport()
     Chinchilla_SetCompatibility()
     DQE_SetCompatibility()
-    Dominos_SetCompatibility()
 end
 
 -- Masque

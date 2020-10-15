@@ -98,10 +98,9 @@ U1RegisterAddon("DBM-EternalPalace", { title = "永恒王宫模块", });
 U1RegisterAddon("DBM-Nyalotha", { title = "尼奥罗萨模块", });
 
 --第三方开发的
+U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });
 U1RegisterAddon("DBM-PvP", { title = "PVP模块", });
 
---这两个会影响
---U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });
 --U1RegisterAddon("DBM-RaidLeadTools", { title = "团长工具箱", });
 
 CoreDependCall("DBM-GUI", function()

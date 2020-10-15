@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.DamageTaken then return end
 
@@ -79,7 +80,7 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 		dmg.glancing = sglancing
 		dmg.crushing = scrushing
 		dmg.offhand = soffhand
-        dmg.school = sschool
+		dmg.school = sschool
 
 		log_damage_taken(Skada.current, dmg)
 		log_damage_taken(Skada.total, dmg)
@@ -101,7 +102,7 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 		dmg.glancing = sglancing
 		dmg.crushing = scrushing
 		dmg.offhand = soffhand
-        dmg.school = 0x01
+		dmg.school = 0x01
 
 		log_damage_taken(Skada.current, dmg)
 		log_damage_taken(Skada.total, dmg)
@@ -135,10 +136,10 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 			d.id = name
 			local _, _, icon = GetSpellInfo(spell.id)
 			d.icon = icon
-            if spell.school then
-                d.spellschool = spell.school
-            end
-                
+			if spell.school then
+				d.spellschool = spell.school
+			end
+
 			d.spellid = spell.id
 
 			if spell.damage > max then
@@ -196,10 +197,10 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 				d.value = player.damagetaken
 
 				d.valuetext = Skada:FormatValueText(
-												Skada:FormatNumber(player.damagetaken), self.metadata.columns.Damage,
-												string.format("%02.1f", dtps), self.metadata.columns.DTPS,
-												string.format("%02.1f%%", player.damagetaken / set.damagetaken * 100), self.metadata.columns.Percent
-											)
+					Skada:FormatNumber(player.damagetaken), self.metadata.columns.Damage,
+					string.format("%02.1f", dtps), self.metadata.columns.DTPS,
+					string.format("%02.1f%%", player.damagetaken / set.damagetaken * 100), self.metadata.columns.Percent
+				)
 				d.id = player.id
 				d.class = player.class
 				d.role = player.role
@@ -240,9 +241,9 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 				d.id = spellname
 				d.spellid = spell.id
 				d.valuetext = Skada:FormatNumber(spell.damage)..(" (%02.1f%%)"):format(spell.damage / player.damagetaken * 100)
-                if spell.school then
-                    d.spellschool = spell.school
-                end
+				if spell.school then
+					d.spellschool = spell.school
+				end
 
 				max = math.max(max, spell.damage)
 				nr = nr + 1
@@ -260,13 +261,13 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 			local spell = player.damagetakenspells[label]
 			if spell then
 				tooltip:AddLine(player.name.." - "..label)
-                if spell.school then
-                    local c = _G.CombatLog_Color_ColorArrayBySchool(spell.school)
-                    if c then
-                        tooltip:AddLine(GetSchoolString(spell.school), c.r, c.g, c.b)
-                    end
-                end
-                    
+				if spell.school then
+					local c = CombatLog_Color_ColorArrayBySchool(spell.school)
+					if c then
+						tooltip:AddLine(GetSchoolString(spell.school), c.r, c.g, c.b)
+					end
+				end
+
 				tooltip:AddDoubleLine(L["Hit"]..":", spell.totalhits, 255,255,255,255,255,255)
 				if spell.critical > 0 then
 					tooltip:AddDoubleLine(L["Critical"]..":", spell.critical, 255,255,255,255,255,255)
@@ -297,9 +298,9 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 
 
 	function mod:OnEnable()
-		playermod.metadata 		= {tooltip = playerspell_tooltip}
-		mod.metadata 			= {click1 = playermod, showspots = true, columns = {Damage = true, DTPS = true, Percent = true}, icon = "Interface\\Icons\\Inv_shield_06"}
-		spelloverview.metadata	= {click1 = spellplayers, showspots = true, icon = "Interface\\Icons\\Inv_shield_07"}
+		playermod.metadata = {tooltip = playerspell_tooltip}
+		mod.metadata = {click1 = playermod, showspots = true, columns = {Damage = true, DTPS = true, Percent = true}, icon = "Interface\\Icons\\Inv_shield_06"}
+		spelloverview.metadata = {click1 = spellplayers, showspots = true, icon = "Interface\\Icons\\Inv_shield_07"}
 
 		Skada:RegisterForCL(SpellDamage, 'SPELL_DAMAGE', {dst_is_interesting_nopets = true})
 		Skada:RegisterForCL(SpellDamage, 'SPELL_PERIODIC_DAMAGE', {dst_is_interesting_nopets = true})
@@ -335,4 +336,3 @@ Skada:AddLoadableModule("DamageTaken", nil, function(Skada, L)
 		return Skada:FormatNumber(set.damagetaken)
 	end
 end)
-

@@ -1,8 +1,9 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Interrupts", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Interrupts then return end
 
 	local mod = Skada:NewModule(L["Interrupts"])
-    mod.metadata = {icon = "Interface\\Icons\\Ability_rogue_kidneyshot"}
+	mod.metadata = {icon = "Interface\\Icons\\Ability_rogue_kidneyshot"}
 
 	function mod:OnEnable()
 		Skada:AddMode(self)
@@ -60,4 +61,3 @@ Skada:AddLoadableModule("Interrupts", nil, function(Skada, L)
 		win.metadata.maxvalue = max
 	end
 end)
-

@@ -1,5 +1,3 @@
---WLK 绿 187 蓝 200 紫 200 - 284
---CTM 绿 272-333 蓝 308-359 紫 353-
 local slotWeight = {
     ["INVTYPE_RELIC"] = 0.3164,
     ["INVTYPE_TRINKET"] = 0.5625,
@@ -130,9 +128,13 @@ end
 
 -- /run for a=325, 400, 5 do ChatFrame1:AddMessage(a, U1GetInventoryLevelColor(a)) end
 function U1GetInventoryLevelColor(avgLevel, quality)
-    --STEP3 随机以下，普通M STEP4 大米H减5， STEP5 玩家能得到最高的，STEP6 橙色
-    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 430, 460, 481, 481
-    --local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
+    --STEP3 蓝色，随机团本 STEP4 紫色，英雄团本最高或M团本最低 STEP5 红色，M团本最高 STEP6 橙色
+    --STEP4 应该是低保或比低保低一点，这样大米最高装等不是标准紫色
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 50, 72, 95, 125, 145, 150
+    --8.0 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 430, 460, 481, 481
+    --7.0 local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
+    --CTM 绿 272-333 蓝 308-359 紫 353-
+    --WLK 绿 187 蓝 200 紫 200 - 284
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then
         return 1, 1, 1

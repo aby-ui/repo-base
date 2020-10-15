@@ -256,7 +256,7 @@ local function UpdateCurrentPosition(instanceCheck)
     -- try to override the instance if possible
     if instanceCheck then
         local _x, _y, instance = HereBeDragons:GetPlayerWorldPosition()
-        if instance and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not instanceIDOverrides[instance] and not instanceIDOverrides[mapData[uiMapID].instance] then
+        if instance and instance ~= -1 and mapData[uiMapID] and mapData[uiMapID].instance ~= instance and uiMapID ~= -1 and not instanceIDOverrides[instance] and not instanceIDOverrides[mapData[uiMapID].instance] then
             dynamicInstanceIDOverrides[instance] = mapData[uiMapID].instance
         end
     end

@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20200907202245")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(encounterID)
 
@@ -44,13 +44,13 @@ local specWarnCannonBarrage			= mod:NewSpecialWarningDodge(257540, nil, nil, nil
 --local specWarnAdds					= mod:NewSpecialWarningAdds(257649, "-Healer", nil, nil, 1, 2)
 
 --Chopper Redhook
---local timerOntheHookCD				= mod:NewAITimer(13, 257459, nil, nil, nil, 3)
---local timerGoreCrashCD				= mod:NewAITimer(13, 257326, nil, nil, nil, 3)--24.9, 43.3
---local timerHeavySlashCD				= mod:NewAITimer(13, 279761, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Shared
+--local timerOntheHookCD				= mod:NewCDTimer(13, 257459, nil, nil, nil, 3)
+--local timerGoreCrashCD				= mod:NewCDTimer(13, 257326, nil, nil, nil, 3)--24.9, 43.3
+--local timerHeavySlashCD				= mod:NewCDTimer(13, 279761, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Shared
 --Sergeant Bainbridge
---local timerIronGazeCD				= mod:NewAITimer(13, 260954, nil, nil, nil, 3)
---local timerSteelTempestCD			= mod:NewAITimer(13, 260924, nil, nil, nil, 3)
---local timerHangmansNooseCD			= mod:NewAITimer(13, 261428, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+--local timerIronGazeCD				= mod:NewCDTimer(13, 260954, nil, nil, nil, 3)
+--local timerSteelTempestCD			= mod:NewCDTimer(13, 260924, nil, nil, nil, 3)
+--local timerHangmansNooseCD			= mod:NewCDTimer(13, 261428, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
 
 --mod:AddRangeFrameOption(5, 194966)
 

@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Dispels", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Dispels then return end
 
@@ -126,4 +127,3 @@ Skada:AddLoadableModule("Dispels", nil, function(Skada, L)
 		return set.dispells
 	end
 end)
-

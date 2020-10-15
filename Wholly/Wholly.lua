@@ -403,6 +403,9 @@
 --			Updates getting NPC locations to newer API use in Grail.
 --		079	*** Requires Grail 110 or later ***
 --			Changes made to handle Grail's delayed loading of NPC names.
+--		080	*** Requires Grail 111 or later ***
+--			Changes to start supporting Shadowlands.
+--			Changes interface to 90001.
 --
 --	Known Issues
 --
@@ -459,7 +462,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 110
+local requiredGrailVersion = 111
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -2125,6 +2128,9 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					tinsert(t1.children, { displayName = EXPANSION_NAME5, index = -105 })
 					tinsert(t1.children, { displayName = EXPANSION_NAME6, index = -106 })
 					tinsert(t1.children, { displayName = EXPANSION_NAME7, index = -107 })
+					if EXPANSION_NAME8 then
+						tinsert(t1.children, { displayName = EXPANSION_NAME8, index = -108 })
+					end
 				end
 				tinsert(entries, t1)
 			end
@@ -3844,7 +3850,7 @@ end
 		_SetupSearchFrame = function(self)
 			if nil == com_mithrandir_whollySearchFrame then
 				local frameName = "com_mithrandir_whollySearchFrame"
-				local frame = CreateFrame("Frame", frameName, com_mithrandir_whollyFrame)
+				local frame = CreateFrame("Frame", frameName, com_mithrandir_whollyFrame, BackdropTemplateMixin and "BackdropTemplate")
 				frame:Hide()
 				frame:SetSize(288, 96)
 				frame:SetPoint("BOTTOMLEFT", com_mithrandir_whollyFrame, "TOPLEFT", 64, -14)

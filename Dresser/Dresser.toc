@@ -2,16 +2,17 @@
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator
-## Version: 8.3.0.200202b
+## Version: 9.0.0.200818
 ## SavedVariables: DresserDB
 ## X-Curse-Project-ID: 7296
 ## X-WoWI-ID: 9381
-#libs\!NoTaint_UIDropDownMenu\LibStub\LibStub.lua
-#libs\!NoTaint_UIDropDownMenu\UIDropDownMenu.xml
+#Libs\LibStub\LibStub.lua
+Libs\LibDropDown\embed.xml
 #db_creaturedisplays.lua
 #db_creaturemodels.lua
 locale.lua
 core.lua
+
 
 ## Title: |cff880303[爱不易]|r Dresser 试穿助手
 ## Notes-zhCN: 在试穿界面增加多个实用按钮：试穿目标装备、以目标为模特、一键脱光模特装备等。

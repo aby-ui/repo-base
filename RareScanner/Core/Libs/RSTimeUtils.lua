@@ -14,7 +14,7 @@ local RSTimeUtils = private.NewLib("RareScannerTimeUtils")
 ---============================================================================
 
 local function GetServerOffset()
-	local serverDate = C_Calendar.GetDate()
+	local serverDate = C_DateAndTime.GetCurrentCalendarTime()
 	local serverDay, serverWeekday, serverMonth, serverMinute, serverHour, serverYear = serverDate.monthDay, serverDate.weekday, serverDate.month, serverDate.minute, serverDate.hour, serverDate.year
 	local localDay = tonumber(date("%w")) -- 0-based starts on Sun
 	local localHour, localMinute = tonumber(date("%H")), tonumber(date("%M"))

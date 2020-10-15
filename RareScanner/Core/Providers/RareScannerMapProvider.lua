@@ -69,68 +69,70 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	local mapID = self:GetMap():GetMapID();
 	RSLogger:PrintDebugMessage(string.format("MAPID [%s], ARTID [%s]", mapID, C_Map.GetMapArtID(mapID)))
 	
-  -- Loads new pins
-  local POIs = RSMap.GetMapPOIs(mapID, true, false)
-  if (not POIs) then
-    return
-  end
+	-- Loads new pins
+	local POIs = RSMap.GetMapPOIs(mapID, true, false)
+	if (not POIs) then
+		return
+	end
   
 	-- Add tooltips to ingame vignettes
 	local ingamePOIs = {}
 	for pin in self:GetMap():EnumeratePinsByTemplate("VignettePinTemplate") do
-    local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
-    for _, POI in ipairs (POIs) do
-      local foundPOI = nil
-      if (POI.isContainer and POI.entityID == tonumber(vignetteObjectID)) then
-        foundPOI = POI
-      elseif (POI.isGroup) then
-        for _, subPOI in ipairs(POI.POIs) do
-          if (subPOI.isContainer and subPOI.entityID == tonumber(vignetteObjectID)) then
-            foundPOI = subPOI
-            break
-          end
-        end
-      end
-      
-      if (foundPOI) then
-        pin.POI = foundPOI
-        pin:HookScript("OnEnter", function(self)
-          self.hasTooltip = false
-          RSTooltip.ShowSimpleTooltip(self)
-        end)
-        pin:HookScript("OnLeave", function(self)
-          if (RSTooltip.HideTooltip(self.tooltip)) then
-            pin.tooltip = nil
-          end
-        end)
-        pin:HookScript("OnMouseDown", function(self, button)
-          if (self.POI) then
-            if (button == "RightButton") then
-              local guideEntityID = RSGeneralDB.GetGuideActive()
-              if (guideEntityID) then
-                self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
-                if (guideEntityID ~= self.POI.entityID) then
-                  ShowInGameVignetteGuide(self)
-                else
-                  RSGeneralDB.RemoveGuideActive()
-                end
-              else
-                ShowInGameVignetteGuide(self)
-              end
-    
-              -- Refresh minimap
-              RSMinimap.RefreshAllData(true)
-            end
-          end
-        end)
-    
-        -- Adds guide if active
-        if (RSGeneralDB.HasGuideActive(foundPOI.entityID)) then
-          ShowInGameVignetteGuide(pin)
-        end
-        tinsert(ingamePOIs, foundPOI.entityID)
-      end
-    end
+		if (pin:GetObjectGUID()) then
+			local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
+			for _, POI in ipairs (POIs) do
+				local foundPOI = nil
+				if (POI.isContainer and POI.entityID == tonumber(vignetteObjectID)) then
+					foundPOI = POI
+				elseif (POI.isGroup) then
+					for _, subPOI in ipairs(POI.POIs) do
+						if (subPOI.isContainer and subPOI.entityID == tonumber(vignetteObjectID)) then
+							foundPOI = subPOI
+							break
+						end
+					end
+				end
+		  
+				if (foundPOI) then
+					pin.POI = foundPOI
+					pin:HookScript("OnEnter", function(self)
+						self.hasTooltip = false
+						RSTooltip.ShowSimpleTooltip(self)
+					end)
+					pin:HookScript("OnLeave", function(self)
+						if (RSTooltip.HideTooltip(self.tooltip)) then
+							pin.tooltip = nil
+						end
+					end)
+					pin:HookScript("OnMouseDown", function(self, button)
+						if (self.POI) then
+							if (button == "RightButton") then
+								local guideEntityID = RSGeneralDB.GetGuideActive()
+								if (guideEntityID) then
+									self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
+									if (guideEntityID ~= self.POI.entityID) then
+										ShowInGameVignetteGuide(self)
+									else
+										RSGeneralDB.RemoveGuideActive()
+									end
+								else
+									ShowInGameVignetteGuide(self)
+								end
+				
+								-- Refresh minimap
+								RSMinimap.RefreshAllData(true)
+							end
+						end
+					end)
+			
+					-- Adds guide if active
+					if (RSGeneralDB.HasGuideActive(foundPOI.entityID)) then
+						ShowInGameVignetteGuide(pin)
+					end
+					tinsert(ingamePOIs, foundPOI.entityID)
+				end
+			end
+		end
 	end
 	
 	-- Adds all the POIs to the WorldMap

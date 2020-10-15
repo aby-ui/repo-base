@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Damage then return end
 
@@ -6,10 +7,10 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 	local playermod = Skada:NewModule(L["Damage spell list"])
 	local spellmod = Skada:NewModule(L["Damage spell details"])
 	local damagedmod = Skada:NewModule(L["Damaged mobs"])
-        
-    local pairs = pairs
-    local ipairs = ipairs
-        
+
+	local pairs = pairs
+	local ipairs = ipairs
+
 	local function getDPS(set, player)
 		local totaltime = Skada:PlayerActiveTime(set, player)
 
@@ -34,10 +35,10 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 		if player then
 
 			-- Subtract overkill
-	--		local amount = math.max(0,dmg.amount - dmg.overkill)
+			-- local amount = math.max(0,dmg.amount - dmg.overkill)
 			-- Or don't. Seems to be the way other meters do it.
 			local amount = dmg.amount
-	--		self:Print(player.name..": "..dmg.spellname.." for "..tostring(amount))
+			-- self:Print(player.name..": "..dmg.spellname.." for "..tostring(amount))
 
 			-- Also add to set total damage.
 			set.damage = set.damage + amount
@@ -53,27 +54,27 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 			-- Get the spell from player.
 			local spell = player.damagespells[dmg.spellname]
 
-            spell.totalhits = spell.totalhits + 1
+			spell.totalhits = spell.totalhits + 1
 
-            if spell.max == nil or amount > spell.max then
-                spell.max = amount
-            end
+			if spell.max == nil or amount > spell.max then
+				spell.max = amount
+			end
 
-            if (spell.min == nil or amount < spell.min) and not dmg.missed then
-                spell.min = amount
-            end
+			if (spell.min == nil or amount < spell.min) and not dmg.missed then
+				spell.min = amount
+			end
 
 			spell.damage = spell.damage + amount
 
 			if dmg.critical then
 				spell.critical = (spell.critical or 0) + 1
 				spell.criticalamount = (spell.criticalamount or 0) + amount
-                if not spell.criticalmax or amount > spell.criticalmax then
-                    spell.criticalmax = amount
-                end
-                if not spell.criticalmin or amount < spell.criticalmin then
-                    spell.criticalmin = amount
-                end
+				if not spell.criticalmax or amount > spell.criticalmax then
+					spell.criticalmax = amount
+				end
+				if not spell.criticalmin or amount < spell.criticalmin then
+					spell.criticalmin = amount
+				end
 			elseif dmg.missed ~= nil then
 				spell[dmg.missed] = (spell[dmg.missed] or 0) + 1
 			elseif dmg.glancing then
@@ -82,13 +83,13 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 				spell.crushing = (spell.crushing or 0) + 1
 			else
 				spell.hit = (spell.hit or 0) + 1
-                spell.hitamount = (spell.hitamount or 0) + amount
-                if not spell.hitmax or amount > spell.hitmax then
-                    spell.hitmax = amount
-                end
-                if not spell.hitmin or amount < spell.hitmin then
-                    spell.hitmin = amount
-                end
+				spell.hitamount = (spell.hitamount or 0) + amount
+				if not spell.hitmax or amount > spell.hitmax then
+					spell.hitmax = amount
+				end
+				if not spell.hitmin or amount < spell.hitmin then
+					spell.hitmin = amount
+				end
 			end
 
 			-- For now, only save damaged info to current set.
@@ -112,13 +113,6 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 	local function SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, samount, soverkill, sschool, sresisted, sblocked, sabsorbed, scritical, sglancing, scrushing, soffhand)
 		-- Spell damage.
 		if srcGUID ~= dstGUID then
-			-- XXX WoD quick fix for Mage's Prismatic Crystal talent
-			-- All damage done to the crystal is transferred, so ignore it
-            -- Now with extra Legion "quick fix" for Warlock's Soul Effigy!
-			if dstGUID:match("^Creature%-0%-%d+%-%d+%-%d+%-76933%-%w+$") or dstGUID:match("^Creature%-0%-%d+%-%d+%-%d+%-103679%-%w+$") then
-				return
-			end
-
 			dmg.playerid = srcGUID
 			dmg.playerflags = srcFlags
 			dmg.dstname = dstName
@@ -135,7 +129,7 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 			dmg.crushing = scrushing
 			dmg.offhand = soffhand
 			dmg.missed = nil
-            dmg.school = spellSchool
+			dmg.school = spellSchool
 
 			Skada:FixPets(dmg)
 			log_damage(Skada.current, dmg)
@@ -162,7 +156,7 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 			dmg.crushing = scrushing
 			dmg.offhand = soffhand
 			dmg.missed = nil
-            dmg.school = 0x01
+			dmg.school = 0x01
 
 			Skada:FixPets(dmg)
 			log_damage(Skada.current, dmg)
@@ -171,40 +165,25 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 	end
 
 	local function SpellAbsorbed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
-        local chk = ...
-        local spellId, spellName, spellSchool, aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount
+		local chk = ...
+		if type(chk) == "number" then
+			-- Spell event
+			local spellId, spellName, spellSchool, _, _, _, _, _, _, _, aAmount = ...
+			if aAmount then
+				SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, aAmount)
+			end
+		else
+			-- Swing event
+			local _, _, _, _, _, _, _, aAmount = ...
+			if aAmount then
+				SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, aAmount)
+			end
+		end
+	end
 
-        if type(chk) == "number" then
-            -- Spell event
-            spellId, spellName, spellSchool, aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount = ...
-            
-            -- Exclude Spirit Shift damage
-            if aspellId == 184553 then
-                return
-            end
-                
-            if aAmount then
-                SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, aAmount)
-            end
-        else
-            -- Swing event
-            aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount = ...
-
-            -- Exclude Spirit Shift damage
-            if aspellId == 184553 then
-                return
-            end
-                
-            if aAmount then
-                SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, aAmount)   
-            end
-        end
-    end
-        
 	local function SwingMissed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, missed)
+		-- Melee misses
 		if srcGUID ~= dstGUID then
-			-- Melee misses
-
 			dmg.playerid = srcGUID
 			dmg.playername = srcName
 			dmg.playerflags = srcFlags
@@ -293,14 +272,13 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 		local set = win:get_selected_set()
 		local player = Skada:find_player(set, id)
 		if player then
-            local activetime = Skada:PlayerActiveTime(set, player)
+			local activetime = Skada:PlayerActiveTime(set, player)
 			local totaltime = Skada:GetSetTime(set)
 			tooltip:AddLine(player.name.." - "..L["DPS"])
 			tooltip:AddDoubleLine(L["Segment time"], totaltime.."s", 255,255,255,255,255,255)
 			tooltip:AddDoubleLine(L["Active time"], activetime.."s", 255,255,255,255,255,255)
 			tooltip:AddDoubleLine(L["Damage done"], Skada:FormatNumber(player.damage), 255,255,255,255,255,255)
 			tooltip:AddDoubleLine(Skada:FormatNumber(player.damage) .. " / " .. activetime .. ":", ("%02.1f"):format(player.damage / math.max(1,activetime)), 255,255,255,255,255,255)
-
 		end
 	end
 
@@ -310,13 +288,13 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 		if player then
 			local spell = player.damagespells[label]
 			if spell then
-                tooltip:AddLine(player.name.." - "..label)
-                if spell.school then
-                    local c = _G.CombatLog_Color_ColorArrayBySchool(spell.school)
-                    if c then
-                        tooltip:AddLine(GetSchoolString(spell.school), c.r, c.g, c.b)
-                    end
-                end
+				tooltip:AddLine(player.name.." - "..label)
+				if spell.school then
+					local c = CombatLog_Color_ColorArrayBySchool(spell.school)
+					if c then
+						tooltip:AddLine(GetSchoolString(spell.school), c.r, c.g, c.b)
+					end
+				end
 				if spell.max and spell.min then
 					tooltip:AddDoubleLine(L["Minimum hit:"], Skada:FormatNumber(spell.min), 255,255,255,255,255,255)
 					tooltip:AddDoubleLine(L["Maximum hit:"], Skada:FormatNumber(spell.max), 255,255,255,255,255,255)
@@ -369,10 +347,10 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 					d.icon = icon
 					d.spellid = spell.id
 					d.value = spell.damage
-                    if spell.school then
-                        d.spellschool = spell.school
-                    end
-                        
+					if spell.school then
+						d.spellschool = spell.school
+					end
+
 					d.valuetext = Skada:FormatValueText(
 						Skada:FormatNumber(spell.damage), self.metadata.columns.Damage,
 						string.format("%02.1f%%", spell.damage / player.damage * 100), self.metadata.columns.Percent
@@ -445,11 +423,11 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 
 	function spellmod:Enter(win, id, label)
 		local player = Skada:find_player(win:get_selected_set(), playermod.playerid)
-        if player then
-            spellmod.spellname = label
-            spellmod.playerid = playermod.playerid
-            spellmod.title = player.name..L["'s "]..label
-        end
+		if player then
+			spellmod.spellname = label
+			spellmod.playerid = playermod.playerid
+			spellmod.title = player.name..L["'s "]..label
+		end
 	end
 
 	function spellmod:Update(win, set)
@@ -510,7 +488,7 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 		end
 
 	end
-        
+
 	-- Tooltip for a specific player spell.
 	local function spellmod_tooltip(win, id, label, tooltip)
 		local set = win:get_selected_set()
@@ -524,17 +502,17 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 				if label == L["Critical"] and spell.criticalamount then
 					tooltip:AddDoubleLine(L["Minimum"], Skada:FormatNumber(spell.criticalmin), 255,255,255,255,255,255)
 					tooltip:AddDoubleLine(L["Maximum"], Skada:FormatNumber(spell.criticalmax), 255,255,255,255,255,255)
-                    tooltip:AddDoubleLine(L["Average"], Skada:FormatNumber(spell.criticalamount / spell.critical), 255,255,255,255,255,255)
+					tooltip:AddDoubleLine(L["Average"], Skada:FormatNumber(spell.criticalamount / spell.critical), 255,255,255,255,255,255)
 				end
 				if label == L["Hit"] and spell.hitamount then
 					tooltip:AddDoubleLine(L["Minimum"], Skada:FormatNumber(spell.hitmin), 255,255,255,255,255,255)
 					tooltip:AddDoubleLine(L["Maximum"], Skada:FormatNumber(spell.hitmax), 255,255,255,255,255,255)
-                    tooltip:AddDoubleLine(L["Average"], Skada:FormatNumber(spell.hitamount / spell.hit), 255,255,255,255,255,255)
+					tooltip:AddDoubleLine(L["Average"], Skada:FormatNumber(spell.hitamount / spell.hit), 255,255,255,255,255,255)
 				end
-            end
+			end
 		end
 	end
-        
+
 
 	-- DPS-only view
 	function dpsmod:GetSetSummary(set)
@@ -569,11 +547,11 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 	end
 
 	function mod:OnEnable()
-		dpsmod.metadata = 		{showspots = true, tooltip = dps_tooltip, click1 = playermod, click2 = damagedmod, icon = "Interface\\Icons\\Inv_throwingaxe_02"}
-		playermod.metadata = 	{tooltip = player_tooltip, click1 = spellmod, columns = {Damage = true, Percent = true}}
-		mod.metadata = 			{post_tooltip = damage_tooltip, showspots = true, click1 = playermod, click2 = damagedmod, columns = {Damage = true, DPS = true, Percent = true}, icon = "Interface\\Icons\\Inv_throwingaxe_01"}
-		damagedmod.metadata = 	{columns = {Damage = true, Percent = true}}
-		spellmod.metadata =		{tooltip = spellmod_tooltip, columns = {Damage = true, Percent = true}}
+		dpsmod.metadata = {showspots = true, tooltip = dps_tooltip, click1 = playermod, click2 = damagedmod, icon = "Interface\\Icons\\Inv_throwingaxe_02"}
+		playermod.metadata = {tooltip = player_tooltip, click1 = spellmod, columns = {Damage = true, Percent = true}}
+		mod.metadata = {post_tooltip = damage_tooltip, showspots = true, click1 = playermod, click2 = damagedmod, columns = {Damage = true, DPS = true, Percent = true}, icon = "Interface\\Icons\\Inv_throwingaxe_01"}
+		damagedmod.metadata = {columns = {Damage = true, Percent = true}}
+		spellmod.metadata = {tooltip = spellmod_tooltip, columns = {Damage = true, Percent = true}}
 
 		Skada:RegisterForCL(SpellDamage, 'DAMAGE_SHIELD', {src_is_interesting = true, dst_is_not_interesting = true})
 		Skada:RegisterForCL(SpellDamage, 'SPELL_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
@@ -650,4 +628,3 @@ Skada:AddLoadableModule("Damage", nil, function(Skada, L)
 		end
 	end
 end)
-

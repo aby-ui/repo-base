@@ -7,21 +7,15 @@ local _G = _G 	--Rumors say that global _G is called by lookup in a super-global
 local _ 		--Sometimes blizzard exposes "_" variable as a global.
 local addonName, ptable = ...
 local L = ptable.L
-local IGNORED_NPC = ptable.IGNORED_NPC 
 local C = ptable.CONST
 local TOCVersion = GetAddOnMetadata(addonName, "Version")
 local Q_ALL, Q_DAILY, Q_EXCEPTDAILY = 1, 2, 3
+local questNPCName = nil
 
 
 AutoTurnIn = LibStub("AceAddon-3.0"):NewAddon("AutoTurnIn", "AceEvent-3.0", "AceConsole-3.0")
 AutoTurnIn.TOC = select(4, GetBuildInfo())
-AutoTurnIn.defaults = {enabled = false, all = 1, trivial = false, completeonly = false,
-                       lootreward = 1, tournament = 2,
-					   darkmoonteleport=true, todarkmoon=true, togglekey=4, darkmoonautostart=true, showrewardtext=true,
-					   version=TOCVersion, autoequip = false, debug=false,
-					   questlevel=true, watchlevel=true, questshare=false, acceptshare=false,
-					   armor = {}, weapon = {}, stat = {}, secondary = {},
-					   relictoggle=true, artifactpowertoggle=true, reviveBattlePet=false}
+AutoTurnIn.defaults = ptable.defaults
 
 AutoTurnIn.ldb, AutoTurnIn.allowed = nil, nil
 AutoTurnIn.funcList = {[1] = function() return false end, [2]=IsAltKeyDown, [3]=IsControlKeyDown, [4]=IsShiftKeyDown}
@@ -30,6 +24,7 @@ AutoTurnIn.autoEquipList={}
 AutoTurnIn.questCache={}	-- daily quest cache. Initially is built from player's quest log
 AutoTurnIn.knownGossips={}
 AutoTurnIn.ERRORVALUE = nil
+AutoTurnIn.IgnoreButton = {["quest"] = nil, ["gossip"] = nil}
 
 
 function AutoTurnIn:LibDataStructure()
@@ -80,6 +75,8 @@ end
 
 function AutoTurnIn:OnInitialize()
 	self:RegisterChatCommand("au", "ConsoleComand")
+	if (AutoTurnInCharacterDB and not AutoTurnInCharacterDB.IGNORED_NPC) then AutoTurnInCharacterDB.IGNORED_NPC = {} end
+
 end	
 
 function AutoTurnIn:SetEnabled(enabled)
@@ -91,7 +88,7 @@ end
 
 -- quest autocomplete handlers and functions
 function AutoTurnIn:OnEnable()
-	if (not AutoTurnInCharacterDB) or (not AutoTurnInCharacterDB.version or (AutoTurnInCharacterDB.version < TOCVersion)) then
+	if (not AutoTurnInCharacterDB) or (not AutoTurnInCharacterDB.IGNORED_NPC) or (not AutoTurnInCharacterDB.version or (AutoTurnInCharacterDB.version < TOCVersion)) then
         AutoTurnInCharacterDB = nil
 		--self:Print(L["reset"])
 	end
@@ -147,10 +144,24 @@ function AutoTurnIn:RegisterGossipEvents()
 	self:RegisterEvent("QUEST_ACCEPTED")
 	if AutoTurnInCharacterDB.reviveBattlePet and select(2, UnitClass("player")) == "HUNTER" then self:RegisterEvent("GOSSIP_CONFIRM") end
 	
-	local gossipFunc1 = function() AutoTurnIn:Print(L["ivechosen"]); SelectGossipOption(1) end
-	local gossipFunc2 = function() if (GetNumGossipOptions() == 2) then SelectGossipOption(1) end end
-	local gossipFunc3 = function() if AutoTurnInCharacterDB.todarkmoon and GetRealZoneText() ~= L["Darkmoon Island"] then SelectGossipOption(1); StaticPopup1Button1:Click() end end
-	local gossipFunc4 = function() if AutoTurnInCharacterDB.darkmoonteleport then SelectGossipOption(1); StaticPopup1Button1:Click() end end
+	local gossipFunc1 = function() AutoTurnIn:Print(L["ivechosen"]); C_GossipInfo.SelectOption(1) end
+	local gossipFunc2 = function() if (C_GossipInfo.GetNumOptions() == 2) then C_GossipInfo.SelectOption(1) end end
+	local gossipFunc3 = function() 
+		if (AutoTurnInCharacterDB.todarkmoon and GetRealZoneText() ~= L["Darkmoon Island"]
+			and C_GossipInfo.GetNumAvailableQuests() == 0) then
+			--accept available quest first, then teleport
+			AutoTurnIn:Print("Teleporting to " .. L["Darkmoon Island"])
+			C_GossipInfo.SelectOption(1)
+			StaticPopup1Button1:Click()
+		end 
+	end
+	local gossipFunc4 = function() 
+		if AutoTurnInCharacterDB.darkmoonteleport then
+			AutoTurnIn:Print("Teleporting to cannon")
+			C_GossipInfo.SelectOption(1)
+			StaticPopup1Button1:Click() 
+		end 
+	end
 	
 	AutoTurnIn.knownGossips = {
 		["93188"]=gossipFunc1, -- Mongar
@@ -166,15 +177,19 @@ function AutoTurnIn:RegisterGossipEvents()
 end
 
 function AutoTurnIn:QUEST_LOG_UPDATE()
-	if ( GetNumQuestLogEntries() > 0 ) then
-		for index=1, GetNumQuestLogEntries() do
-			local title, _, _, _, isHeader , _, _, isDaily = GetQuestLogTitle(index)
-			if not isHeader and isDaily then
-				self.questCache[title] = true
+	if ( C_QuestLog.GetNumQuestLogEntries() > 0 ) then
+		for index=1, C_QuestLog.GetNumQuestLogEntries() do
+			local questInfo = C_QuestLog.GetInfo(index)
+			if (questInfo and not questInfo.isHeader and self:_isDaily(questInfo.frequency)) then
+				self.questCache[questInfo.title] = true
 			end
 		end
 		self:UnregisterEvent("QUEST_LOG_UPDATE")
 	end
+end
+
+function AutoTurnIn:_isDaily(frequency) 
+	return frequency and (frequency == Enum.QuestFrequency.Daily or frequency == Enum.QuestFrequency.Weekly)
 end
 
 -- Available check requires cache
@@ -232,7 +247,7 @@ end
 
 -- returns specified item count on player character. It may be some sort of currency or present in inventory as real items.
 function AutoTurnIn:GetItemAmount(isCurrency, item)
-	local amount = isCurrency and select(2, GetCurrencyInfo(item)) or GetItemCount(item, nil, true)
+	local amount = isCurrency and C_CurrencyInfo.GetCurrencyInfo(item).quantity or GetItemCount(item, nil, true)
 	return amount and amount or 0
 end
 
@@ -246,8 +261,7 @@ function AutoTurnIn:AllowedToHandle(forcecheck)
 		-- it's a simple xor implementation (a ~= b)
 		self.allowed = (not not AutoTurnInCharacterDB.enabled) ~= (IsModifiedClick)
 	end
-	--return self.allowed and (not IGNORED_NPC[AutoTurnIn:GetNPCGUID()]) and (not QuestGetAutoAccept())
-	return self.allowed and (not IGNORED_NPC[AutoTurnIn:GetNPCGUID()])
+	return self.allowed and (not AutoTurnIn:IsIgnoredNPC())
 end
 
 -- Old 'Quest NPC' interaction system. See http://wowprogramming.com/docs/events/QUEST_GREETING
@@ -290,25 +304,19 @@ function AutoTurnIn:QUEST_GREETING()
     end
 end
 
--- (gaq[i+3]) equals "1" if quest is complete, "nil" otherwise
--- why not 	gaq={GetGossipAvailableQuests()}? Well, tables in lua are truncated for values
--- with ending `nil`. So: '#' for {1,nil, "b", nil} returns 1
-function AutoTurnIn:VarArgForActiveQuests(...)
-    local MOP_INDEX_CONST = 5 -- was '4' in Cataclysm
-
-	for i=1, select("#", ...), MOP_INDEX_CONST do
-		local isComplete = select(i+3, ...) -- complete status
-		if ( isComplete ) then
-			local questname = select(i, ...)
+function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
+	for index, gossipInfo in ipairs(gossipInfos) do
+		if (gossipInfo.isComplete) then
+			local questname = gossipInfo.title
 			if self:isAppropriate(questname, true) then
 				local quest = L.quests[questname]
 				if quest and quest.amount then
 					if self:GetItemAmount(quest.currency, quest.item) >= quest.amount then
-						SelectGossipActiveQuest(math.floor(i/MOP_INDEX_CONST)+1)
+						C_GossipInfo.SelectActiveQuest(index)
 						self.DarkmoonAllowToProceed = false
 					end
 				else
-					SelectGossipActiveQuest(math.floor(i/MOP_INDEX_CONST)+1)
+					C_GossipInfo.SelectActiveQuest(index)
 					self.DarkmoonAllowToProceed = false
 				end
 			end
@@ -316,26 +324,20 @@ function AutoTurnIn:VarArgForActiveQuests(...)
 	end
 end
 
--- like previous function this one works around `nil` values in a list.
-function AutoTurnIn:VarArgForAvailableQuests(...)
-	local MOP_INDEX_CONST = 6 -- was '5' in Cataclysm
-	for i=1, select("#", ...), MOP_INDEX_CONST do
-		local title = select(i, ...)
-		local isTrivial = select(i+2, ...)		
-		local isDaily  = select(i+3, ...)		
-		local triviaAndAllowedOrNotTrivia = (not isTrivial) or AutoTurnInCharacterDB.trivial
-		
-		local quest = L.quests[title] -- this quest exists in addons quest DB. There are mostly daily quests
-		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(title)))
-
+function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
+	for index, gossipInfo in ipairs(gossipInfos) do
+		local triviaAndAllowedOrNotTrivial = (not gossipInfo.isTrivial) or AutoTurnInCharacterDB.trivial
+		local quest = L.quests[gossipInfo.title] -- this quest exists in addons quest DB. There are mostly daily quests
+		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(gossipInfo.title)))
+		local isDaily = self:_isDaily(gossipInfo.frequency)
 		-- Quest is appropriate if: (it is trivial and trivial are accepted) and (any quest accepted or (it is daily quest that is not in ignore list))
-		if (triviaAndAllowedOrNotTrivia and notBlackListed and self:_isAppropriate(isDaily)) then
+		if (triviaAndAllowedOrNotTrivial and notBlackListed and self:_isAppropriate(isDaily)) then
 			if quest and quest.amount then
 				if self:GetItemAmount(quest.currency, quest.item) >= quest.amount then
-					SelectGossipAvailableQuest(math.floor(i/MOP_INDEX_CONST)+1)
+					C_GossipInfo.SelectAvailableQuest(index)
 				end
 			else
-				SelectGossipAvailableQuest(math.floor(i/MOP_INDEX_CONST)+1)
+				C_GossipInfo.SelectAvailableQuest(index)
 			end
 		end
 	end
@@ -370,19 +372,18 @@ function AutoTurnIn:GOSSIP_SHOW()
 	-- darkmoon fairy gossip sometime turns in quest too fast so I can't relay only on quest number count. It often lie.
 	-- this flag is set in VarArgForActiveQuests if any quest may be turned in
 	self.DarkmoonAllowToProceed = true	
-	local questCount = GetNumGossipActiveQuests() > 0
+	local questCount = C_GossipInfo.GetNumActiveQuests() > 0
 	
-	self:VarArgForActiveQuests(GetGossipActiveQuests())
+	self:VarArgForActiveQuests(C_GossipInfo.GetActiveQuests())
     if not AutoTurnInCharacterDB.completeonly then
-	    self:VarArgForAvailableQuests(GetGossipAvailableQuests())
-    end
-
+	    self:VarArgForAvailableQuests(C_GossipInfo.GetAvailableQuests())
+	end
+	
 	if self:isDarkmoonAndAllowed(questCount) then
-		local options = {GetGossipOptions()}
-		for k, v in pairs(options) do
-			if ((v ~= "gossip") and strfind(v, "|cFF0008E8%(")) then
-				local opcount = GetNumGossipOptions()
-				return SelectGossipOption((opcount == 1) and 1 or  math.floor(k / GetNumGossipOptions()) + 1)
+		local options = C_GossipInfo.GetOptions()
+		for index, gossipInfo in ipairs(options) do
+			if ((gossipInfo.type == "gossip") and strfind(gossipInfo.name, "|cFF0008E8%(")) then
+				return C_GossipInfo.SelectOption(index)
 			end
 		end
 	end
@@ -407,12 +408,13 @@ function AutoTurnIn:QUEST_DETAIL()
 	end
 end
 
+-- TODO: needs testing with another player
 function AutoTurnIn:QUEST_ACCEPTED(event, index)
-	if AutoTurnInCharacterDB.questshare and GetNumGroupMembers() >= 1 and not IsInRaid() then
-        SelectQuestLogEntry(index)
-        if GetQuestLogPushable() then
+	if AutoTurnInCharacterDB.questshare and GetNumGroupMembers() >= 1 and not IsInRaid() then --abyui 不Select的话，判断不准确
+        C_QuestLog.SetSelectedQuest(index);
+        if C_QuestLog.IsPushableQuest(index) then
             if U1Message then U1Message("已自动分享任务，可在<自动交接任务>的配置选项里关闭") end
-    		QuestLogPushQuest(index)
+    		QuestLogPushQuest();
         end
 	end
 end
@@ -431,10 +433,10 @@ function AutoTurnIn:HandleGossip()
 	else
 		-- https://www.wowinterface.com/forums/showthread.php?t=49210 adaptation
 		if AutoTurnInCharacterDB.reviveBattlePet then
-			for i = 1, GetNumGossipOptions() do
-				local gossipText, gossipType = select(i * 2 - 1, GetGossipOptions())
-				if gossipText == L["ReviveBattlePetQ"] then
-					return SelectGossipOption(i, "", true)
+			local options = C_GossipInfo.GetOptions()
+			for index, gossipInfo in ipairs(options) do
+				if gossipInfo.name == L["ReviveBattlePetQ"] then
+					return C_GossipInfo.SelectOption(index)
 				end
 			end
 		end 
@@ -635,7 +637,9 @@ function AutoTurnIn:isSuitableItem(link)
 		return false
 	end
 
-	local name, _, _, lootLevel, _, class, subclass, _, invType = GetItemInfo(link)
+	local name, _, _, _, _, class, subclass, _, invType = GetItemInfo(link)
+	--effective loot level
+	local lootLevel = GetDetailedItemLevelInfo(link)
 	-- non equippable items
 	if (invType == "") then
 		return nil
@@ -647,12 +651,17 @@ function AutoTurnIn:isSuitableItem(link)
 		return false
 	end
 	
-	local points = self:itemPoints(link)
 	-- User may not choose any options hence any item became 'ok'. That situation is undoubtedly incorrect.
 	local SettingsExists = (class == C.WEAPONLABEL and next(AutoTurnInCharacterDB.weapon) or next(AutoTurnInCharacterDB.armor))
 							or next(AutoTurnInCharacterDB.stat)
+	if (not SettingsExists) then
+		self:Print(L["norewardsettings"])
+		return nil
+	end
+	
+	local points = self:itemPoints(link)
 	-- points > 0 means that particular options section is empty or item meets requirements
-	if (points > 0 and SettingsExists) then
+	if (points > 0) then
 		-- comparing with currently equipped item
 		local slot = C.SLOTS[invType]
 		if (slot) then
@@ -709,7 +718,7 @@ function AutoTurnIn:isSuitableItem(link)
 			end
 
 			-- comparing lowest equipped item level with reward's item level and points
-			if (points >= invPoints and lootLevel > eqLevel) then
+			if (points >= invPoints and lootLevel >= eqLevel) then
 				if (AutoTurnInCharacterDB.debug) then
 					self:Print("New", link, "is more suitable than", invLink, "- can be equipped")
 				end
@@ -877,9 +886,59 @@ function AutoTurnIn:QUEST_COMPLETE()
     end
 end
 
+
+function AutoTurnIn:IsIgnoredNPC()
+	local guid = AutoTurnIn:GetNPCGUID()
+	return (AutoTurnInCharacterDB.IGNORED_NPC and AutoTurnInCharacterDB.IGNORED_NPC[guid]) 
+		or ptable.defaults.IGNORED_NPC[guid]
+end
+function AutoTurnIn:IsDefaultIgnoredNPC()
+	return ptable.defaults.IGNORED_NPC[AutoTurnIn:GetNPCGUID()]
+end
+
+function AutoTurnIn:ShowIgnoreButton(frame)
+	local GlobalFrame = nil
+	if (frame == "quest") then GlobalFrame = QuestFrame elseif (frame == "gossip") then GlobalFrame = GossipFrame end
+	if GlobalFrame == nil then return end
+	
+	--reusing existing button
+	if (not self.IgnoreButton[frame]) then self.IgnoreButton[frame] = CreateFrame("CheckButton", "NPCIgnoreButton" .. frame, GlobalFrame, "OptionsCheckButtonTemplate") end
+	
+	local IgnoreButton = self.IgnoreButton[frame]
+	IgnoreButton:SetPoint("TOPLEFT", 60, -30)
+	IgnoreButton:SetChecked(not not AutoTurnIn:IsIgnoredNPC())
+	IgnoreButton:SetScript("OnClick", function(self)
+		local guid = AutoTurnIn:GetNPCGUID()
+		AutoTurnInCharacterDB.IGNORED_NPC[guid] = self:GetChecked() and questNPCName or nil
+	end)
+	
+	if (AutoTurnIn:IsDefaultIgnoredNPC()) then
+		IgnoreButton:Disable()
+		GameTooltip:SetOwner(IgnoreButton, "ANCHOR_RIGHT");
+		GameTooltip:SetText(L["cantstopignore"]);
+		GameTooltip:Show()
+	else 
+		IgnoreButton:Enable()
+	end
+	--button text on global form
+	questNPCName = UnitName("target")
+	_G[IgnoreButton:GetName().."Text"]:SetText("AutoTurnIn: " .. L["ignorenpc"])
+end
+
 -- gossip and quest interaction goes through a sequence of windows: gossip [shows a list of available quests] - quest[describes specified quest]
 -- sometimes some parts of this chain is skipped. For example, priest in Honor Hold show quest window directly. This is a trick to handle 'toggle key'
-hooksecurefunc(QuestFrame, "Hide", function() AutoTurnIn.allowed = nil end)
+hooksecurefunc(QuestFrame, "Hide", function()
+	AutoTurnIn.allowed = nil 
+	GameTooltip:Hide()
+end)
+--GossipFrame sets allowed to true, after that 'toggle key' doesn't work
+hooksecurefunc(GossipFrame, "Hide", function()
+	AutoTurnIn.allowed = nil 
+	GameTooltip:Hide()
+end)
+--GossipFrame should show ignore button too
+hooksecurefunc(QuestFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("quest") end)
+hooksecurefunc(GossipFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("gossip") end)
 
 -- /run local a=UnitGUID("npc"); for word in a:gmatch("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-") do print(word) end
 -- https://www.townlong-yak.com/

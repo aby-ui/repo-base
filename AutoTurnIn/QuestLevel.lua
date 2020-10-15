@@ -25,12 +25,11 @@ function AutoTurnIn:ShowQuestLevelInLog()
 
 	for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
 		if (button and button.questLogIndex) then
-			local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
-				  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle(button.questLogIndex)
+			local questInfo = C_QuestLog.GetInfo(button.questLogIndex)
 			local text = button.Text:GetText()
-			if title and text and (not string.find(text, "^%[.*%].*")) then
+			if questInfo.title and text and (not string.find(text, "^%[.*%].*")) then
 				local prevHeight = button:GetHeight() - button.Text:GetHeight()
-				button.Text:SetText(AutoTurnIn.QuestLevelFormat:format(level, title))
+				button.Text:SetText(AutoTurnIn.QuestLevelFormat:format(questInfo.level, questInfo.title))
 				button:SetHeight(prevHeight + button.Text:GetHeight())
 				-- replacind checkbox image to the new position
 				button.Check:SetPoint("LEFT", button.Text, button.Text:GetWrappedWidth() + 2, 0);
@@ -44,29 +43,33 @@ function AutoTurnIn:ShowQuestLevelInWatchFrame()
 	if not AutoTurnInCharacterDB.watchlevel then 
 		return
 	end
-
+	
 	local tracker = ObjectiveTrackerFrame
 	if ( not tracker.initialized )then
 		return
 	end
-
+	
 	for i = 1, #tracker.MODULES do
-		for id,block in pairs( tracker.MODULES[i].Header.module.usedBlocks) do
-			if type(block.id)=="number" and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
-				local questLogIndex = GetQuestLogIndexByID(block.id)
-				local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID,
-					  startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle(questLogIndex)
-				-- update calls are async and data could not be (yet or already) exist in log
-				if ( questLogIndex ~= 0 and title and title ~= "" ) then 	  
-					local questTypeIndex = GetQuestLogQuestType(questLogIndex)
-					local tagString = AutoTurnIn.QuestTypesIndex[questTypeIndex] or ""
-					local dailyMod = (frequency == LE_QUEST_FREQUENCY_DAILY or frequency == LE_QUEST_FREQUENCY_WEEKLY) and "\*" or ""
+		--for id,block in pairs( tracker.MODULES[i].Header.module.usedBlocks) do
+		for blockTemplate, blockTable in pairs( tracker.MODULES[i].Header.module.usedBlocks) do
+			for id, block in pairs(blockTable) do
+				if type(block.id)=="number" and block.HeaderText and block.HeaderText:GetText() and (not string.find(block.HeaderText:GetText(), "^%[.*%].*")) then
+					local questLogIndex = C_QuestLog.GetLogIndexForQuestID(block.id)
+					if (questLogIndex) then
+						local questInfo = C_QuestLog.GetInfo(questLogIndex)
+						-- update calls are async and data could not be (yet or already) exist in log
+						if (questInfo.title and questInfo.title ~= "") then 	  
+							local questTypeIndex = GetQuestLogQuestType(questLogIndex)
+							local tagString = AutoTurnIn.QuestTypesIndex[questTypeIndex] or ""
+							local dailyMod = (questInfo.frequency == Enum.QuestFrequency.Daily or questInfo.frequency == Enum.QuestFrequency.Weekly) and "\*" or ""
 
-					--resizing the block if new line requires more spaces.
-					local h = block.height - block.HeaderText:GetHeight()
-					block.HeaderText:SetText(AutoTurnIn.WatchFrameLevelFormat:format(level, tagString, dailyMod, title))
-					block.height = h + block.HeaderText:GetHeight()
-					block:SetHeight(block.height)
+							--resizing the block if new line requires more spaces.
+							local h = block.height - block.HeaderText:GetHeight()
+							block.HeaderText:SetText(AutoTurnIn.WatchFrameLevelFormat:format(questInfo.level, tagString, dailyMod, questInfo.title))
+							block.height = h + block.HeaderText:GetHeight()
+							block:SetHeight(block.height)
+						end
+					end
 				end
 			end
 		end

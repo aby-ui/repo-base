@@ -10,7 +10,7 @@
 	<Script file="sideTab.lua"/>
 	<Script file="bottomTab.lua"/>
 	<Script file="ruleFilters.lua"/>
-	<Script file="itemFrame.lua"/>
+	<Script file="itemGroup.lua"/>
 	<Script file="frame.lua"/>
 
   <Script file="legacy.lua"/>

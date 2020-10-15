@@ -13,19 +13,11 @@
 		</Scripts>
 	</Frame>
 
-    <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent">
+    <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="8"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="8"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="2" right="2" top="2" bottom="2"/>
-			</BackgroundInsets>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
+        </KeyValues>
         <Layers>
             <Layer level="BACKGROUND">
                 <FontString name="GearStatsSummarySelfFrameTitle" inherits="GameTooltipHeaderText">
@@ -61,19 +53,11 @@
         </Frames>
     </Frame>
 
-    <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent">
+    <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background-Dark" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="8"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="8"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="2" right="2" top="2" bottom="2"/>
-			</BackgroundInsets>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
+        </KeyValues>
         <Layers>
             <Layer level="BACKGROUND">
                 <FontString name="GearStatsSummaryTargetFrameTitle" inherits="GameTooltipHeaderText">

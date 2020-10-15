@@ -2171,20 +2171,6 @@ CoreOnEvent("PLAYER_ENTERING_WORLD", function()
 end)
 ]]
 
-
---[[
-hook(nil, "GetGuildNewsInfo", function(index)
-    local isSticky, isHeader, newsType, text1, text2, id, data, data2, weekday, day, month, year = CoreGlobalHooks._origins.GetGuildNewsInfo(index);
-    if not newsType and index<=GetNumGuildNews() then
-        return isSticky, 1, newsType, text1, text2, id, data, data2, 1, 0, 6, 1984
-    else
-        return isSticky, isHeader, newsType, text1, text2, id, data, data2, weekday, day, month, year
-    end
-end)
-]]
-
---hooksecurefunc("print", function() ChatFrame1:AddMessage(debugstack()) end)
-
 if DEBUG_MODE and EclipseBarFrame then
     local function hookEclipseBarMarker() EclipseBarFrame.marker:SetSize(60,60) EclipseBarFrame.powerText:SetAlpha(.5) end
     if EclipseBarFrame:IsShown() then hookEclipseBarMarker() end

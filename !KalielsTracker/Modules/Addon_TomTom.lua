@@ -118,7 +118,7 @@ local function AddWaypoint(questID, isSilent)
 			x, y = WorldQuestPOIGetIconInfo(mapID, questID)
 		end
 	else
-		title = GetQuestLogTitle(GetQuestLogIndexByID(questID))
+		title = C_QuestLog.GetTitleForQuestID(questID)
 		mapID = GetQuestUiMapID(questID)
 		if mapID ~= 0 and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
 			local wasWorldMapShown = (WorldMapFrame:IsShown())
@@ -196,23 +196,22 @@ local function SetHooks()
 	end)
 	
 	-- Blizzard
-	hooksecurefunc("SetSuperTrackedQuestID", function(questID)
+	hooksecurefunc(C_SuperTrack, "SetSuperTrackedQuestID", function(questID)
 		if questID ~= superTrackedQuestID then
 			RemoveWaypoint(superTrackedQuestID)
-			if IsQuestWatched(GetQuestLogIndexByID(questID)) or IsWorldQuestWatched(questID) or KT.activeTasks[questID] then
+			if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
 				if AddWaypoint(questID) then
 					superTrackedQuestID = questID
 				end
 			end
 		end
 	end)
-	
-	hooksecurefunc("RemoveQuestWatch", function(questLogIndex)
-		local questID = select(8, GetQuestLogTitle(questLogIndex))
+
+	hooksecurefunc(C_QuestLog, "RemoveQuestWatch", function(questID)
 		RemoveWaypoint(questID)
 	end)
-	
-	hooksecurefunc("AbandonQuest", function()
+
+	hooksecurefunc(C_QuestLog, "AbandonQuest", function()
 		local questID = QuestMapFrame.DetailsFrame.questID or QuestLogPopupDetailFrame.questID or QuestMapFrame.questID
 		RemoveWaypoint(questID)
 	end)
@@ -227,6 +226,7 @@ local function SetHooks()
 		bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock(self, block)
 	end
 
+	-- TODO: 9.x.x - need update (removed)
 	local bck_GetQuestWatchInfo = GetQuestWatchInfo
 	GetQuestWatchInfo = function(idx)
 		local questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden, isWarCampaign = bck_GetQuestWatchInfo(idx)
@@ -267,8 +267,7 @@ local function SetFrames()
 		eventFrame:SetScript("OnEvent", function(_, event, ...)
 			_DBG("Event - "..event, true)
 			if event == "QUEST_WATCH_UPDATE" then
-				local questLogIndex = ...
-				local questID = select(8, GetQuestLogTitle(questLogIndex))
+				local questID = ...
 				if superTrackedQuestID == questID then
 					questChanged = true
 				end
@@ -279,8 +278,8 @@ local function SetFrames()
 					questChanged = false
 				end
 			elseif event == "ZONE_CHANGED_NEW_AREA" then
-				local questID = GetSuperTrackedQuestID()
-				if IsQuestWatched(GetQuestLogIndexByID(questID)) or IsWorldQuestWatched(questID) or KT.activeTasks[questID] then
+				local questID = C_SuperTrack.GetSuperTrackedQuestID()
+				if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
 					ReAddWaipoint(questID, true)
 				end
 			end
@@ -298,7 +297,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v80300-1.1.3") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v90001-1.1.5") and db.addonTomTom)
 
 	local defaults = KT:MergeTables({
 		profile = {

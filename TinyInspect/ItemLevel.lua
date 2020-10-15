@@ -66,9 +66,9 @@ local function SetItemLevelString(self, text, quality, link, ilvl)
         text = format("|c%s%s|r", hex, text)
     end
     --腐蚀的物品加个标记
-    if (TinyInspectDB and TinyInspectDB.ShowCorruptedMark and text and text ~= "" and link and IsCorruptedItem(link)) then
-        text = text .. "|cffFF3300◆|r"
-    end
+    --if (TinyInspectDB and TinyInspectDB.ShowCorruptedMark and text and text ~= "" and link and IsCorruptedItem(link)) then
+    --    text = text .. "|cffFF3300◆|r"
+    --end
     self:SetText(text)
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Brew", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200721202933")
+mod:SetRevision("20201014225755")
 --mod:SetCreatureID(15467)
 --mod:SetModelID(15879)
 --mod:SetReCombatTime(10)
@@ -17,7 +17,7 @@ mod:AddBoolOption("NormalizeVolume", true, "misc")
 
 local setActive = false
 local function CheckEventActive()
-	local date = C_Calendar.GetDate()
+	local date = C_DateAndTime.GetCurrentCalendarTime()
 	local month, day = date.month, date.monthDay
 	if month == 9 then
 		if day >= 20 then

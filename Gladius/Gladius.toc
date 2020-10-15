@@ -1,6 +1,6 @@
 ## Interface: 90001
 ## Title: Gladius
-## Version: 6.2.1
+## Version: 7.0.1
 ## Notes: Arena enemy unit frames.
 ## Author: Resike and Firebunny. Original author: Proditor
 ## SavedVariables: Gladius2DB
@@ -29,6 +29,7 @@ Modules\DRTracker.lua
 Modules\Timer.lua
 Modules\Layout.lua
 Modules\Dispel.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r Gladius 竞技场头像
 ## Notes-zhCN: 竞技场显示对方的头像框体

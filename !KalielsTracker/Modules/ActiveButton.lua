@@ -15,9 +15,10 @@ local InCombatLockdown = InCombatLockdown
 
 local db, dbChar
 local KTF = KT.frame
-local bar = ExtraActionBarFrame
 
 local eventFrame
+local activeFrame, abutton
+local point, relativeTo, relativePoint, xOfs, yOfs
 
 --------------
 -- Internal --
@@ -27,9 +28,12 @@ local function UpdateHotkey()
 	local key = GetBindingKey("EXTRAACTIONBUTTON1")
 	local button = KTF.ActiveButton
 	local hotkey = button.HotKey
+	local hotkeyExtra = ExtraActionButton1.HotKey
 	local text = db.qiActiveButtonBindingShow and GetBindingText(key, 1) or ""
 	ClearOverrideBindings(button)
 	if key then
+		hotkeyExtra:SetText(RANGE_INDICATOR)
+		hotkeyExtra:Hide()
 		SetOverrideBindingClick(button, false, key, button:GetName())
 	end
 	if text == "" then
@@ -39,6 +43,35 @@ local function UpdateHotkey()
 		hotkey:SetText(text)
 		hotkey:Show()
 	end
+end
+
+local function RemoveHotkey(button)
+	local key = GetBindingKey("EXTRAACTIONBUTTON1")
+	local hotkeyExtra = ExtraActionButton1.HotKey
+	if key then
+		hotkeyExtra:SetText(GetBindingText(key, 1))
+		hotkeyExtra:Show()
+		ClearOverrideBindings(button)
+	end
+end
+
+local function MoveExtraAbilityContainer()
+	local newXOfs
+	if not point then
+		point, relativeTo, relativePoint, xOfs, yOfs = ExtraAbilityContainer:GetPoint()
+	end
+	if #ExtraAbilityContainer.frames > 0 then
+		newXOfs = (activeFrame:IsShown()) and 128 - 15 + xOfs or xOfs
+		activeFrame:SetPoint("TOPRIGHT", ExtraAbilityContainer, "TOPLEFT", 30, 0)
+	else
+		newXOfs = xOfs
+		ExtraAbilityContainer:SetWidth(2)
+		ExtraAbilityContainer:Show()
+		activeFrame:ClearAllPoints()
+		activeFrame:SetPoint("TOP", ExtraAbilityContainer, "TOP", 0, 0)
+		--ExtraAbilityContainer:Hide()
+	end
+	ExtraAbilityContainer:SetPoint(point, relativeTo, relativePoint, newXOfs, yOfs)
 end
 
 local function restore()
@@ -69,27 +102,39 @@ local function SetFrames()
 
 			if event == "QUEST_WATCH_LIST_CHANGED" or
 					event == "ZONE_CHANGED" or
-					event == "QUEST_POI_UPDATE" or
-					event == "UPDATE_EXTRA_ACTIONBAR" then
+					event == "QUEST_POI_UPDATE" then
 				M:Update()
 			elseif event == "UPDATE_BINDINGS" then
-				UpdateHotkey()
+				if activeFrame:IsShown() then
+					UpdateHotkey()
+				end
 			end
 		end)
 	end
 	eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 	eventFrame:RegisterEvent("ZONE_CHANGED")
 	eventFrame:RegisterEvent("QUEST_POI_UPDATE")
-	eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
 	eventFrame:RegisterEvent("UPDATE_BINDINGS")
-    eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
-    	
+
+	-- Extra Ability Container (init)
+	ExtraAbilityContainer:Show()
+
+	-- Main frame
+	if not KTF.ActiveFrame then
+		activeFrame = CreateFrame("Frame", addonName.."ActiveFrame", UIParent)
+		activeFrame:SetSize(256, 128)
+		activeFrame:Hide()
+		KTF.ActiveFrame = activeFrame
+	else
+		activeFrame = KTF.ActiveFrame
+	end
+
 	-- Button frame
 	if not KTF.ActiveButton then
 		local name = addonName.."ActiveButton"
-		local button = CreateFrame("Button", name, bar, "SecureActionButtonTemplate")
+		local button = CreateFrame("Button", name, activeFrame, "SecureActionButtonTemplate")
 		button:SetSize(52, 52)
-		button:SetPoint("CENTER", 0, 0.5)
+		button:SetPoint("CENTER", 0, 0)
 		
 		button.icon = button:CreateTexture(name.."Icon", "BACKGROUND")
 		button.icon:SetPoint("TOPLEFT", 0, -1)
@@ -139,7 +184,6 @@ local function SetFrames()
 			tex:SetPoint("TOPLEFT", 0, -1)
 			tex:SetPoint("BOTTOMRIGHT", 0, -1)
 		end
-		button:Hide()
 		
 		KT:Masque_AddButton(button, 2)
 		KTF.ActiveButton = button
@@ -163,6 +207,13 @@ local function SetFrames()
             --CoreUIMakeMovable(button, DominosFrameextra)
         end)
 	end
+	abutton = KTF.ActiveButton
+
+	hooksecurefunc("ExtraActionBar_Update", function()
+		C_Timer.After(0.3, function()
+			M:Update()
+		end)
+	end)
 end
 
 --------------
@@ -174,6 +225,7 @@ function M:OnInitialize()
 	
 	self.timer = 0
 	self.timerID = nil
+	self.initialized = false
 	
 	db = KT.db.profile
 	dbChar = KT.db.char
@@ -181,28 +233,25 @@ end
 
 function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
+
 	SetFrames()
+	self.initialized = true
+
 	self:Update()
 end
 
 function M:OnDisable()
 	_DBG("|cffff0000Disable|r - "..self:GetName(), true)
 	eventFrame:UnregisterAllEvents()
-	bar.button:SetAlpha(1)
-	if not HasExtraActionBar() then
-		bar.intro:Stop()
-		bar:SetAlpha(0)
-		bar:Hide()
-	end
-	KTF.ActiveButton:Hide()
-	ClearOverrideBindings(KTF.ActiveButton)
+	activeFrame:Hide()
+	MoveExtraAbilityContainer()
+	RemoveHotkey(abutton)
 end
 
 function M:Update(id)
-	if not db.qiActiveButton or HasExtraActionBar() then return end
+	if not db.qiActiveButton or not self.initialized or HasExtraActionBar() then return end
 
 	local button
-	local abutton = KTF.ActiveButton
 	local autoShowTooltip = false
 
 	if id then
@@ -225,10 +274,10 @@ function M:Update(id)
 	local minDistSqr = 30625
 
 	if not dbChar.collapsed then
-		for questID, button in pairs(KT.fixedButtons) do
+		for questID, _ in pairs(KT.fixedButtons) do
 			if QuestHasPOIInfo(questID) then
-				local distSqr, onContinent = GetDistanceSqToQuest(button:GetID())
-				if onContinent and distSqr <= minDistSqr then
+				local distSqr, _ = C_QuestLog.GetDistanceSqToQuest(questID)
+				if distSqr and distSqr <= minDistSqr then
 					minDistSqr = distSqr
 					closestQuestID = questID
 				end
@@ -236,21 +285,14 @@ function M:Update(id)
 		end
 	end
 
-	if closestQuestID and not HasExtraActionBar() then
+	if closestQuestID then
 		button = KT:GetFixedButton(closestQuestID)
-		if abutton.questID ~= closestQuestID or not bar:IsShown() or not HasExtraActionBar() then
+		if abutton.questID ~= closestQuestID or not activeFrame:IsShown() then
 			if GameTooltip:IsShown() and GameTooltip:GetOwner() == abutton then
 				QuestObjectiveItem_OnLeave(abutton)
 				autoShowTooltip = true
 			end
 
-			bar.outro:Stop()
-			bar:SetAlpha(1)
-			bar:Show()
-			bar.button:SetAlpha(0)
-			bar.button:Hide()
-
-			abutton:Show()
 			abutton.block = button.block
 			abutton.questID = closestQuestID
 			abutton:SetID(button:GetID())
@@ -262,26 +304,18 @@ function M:Update(id)
 			abutton:SetAttribute("item", button.link)
 			UpdateHotkey()
 
-			UIParent_ManageFramePositions()
+			activeFrame:Show()
 
 			if autoShowTooltip then
 				QuestObjectiveItem_OnEnter(abutton)
 			end
 		end
+		MoveExtraAbilityContainer()
 		abutton.text:SetText(button.num)
-	elseif bar:IsShown() then
-		bar.intro:Stop()
-		if HasExtraActionBar() then
-			bar:SetAlpha(1)
-			bar.button:SetAlpha(1)
-			bar.button:Show()
-		else
-			bar:SetAlpha(0)
-			bar:Hide()
-		end
-
-		abutton:Hide()
-		ClearOverrideBindings(abutton)
+	elseif activeFrame:IsShown() then
+		activeFrame:Hide()
+		MoveExtraAbilityContainer()
+		RemoveHotkey(abutton)
 	end
 	self.timer = 0
 end

@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibNotify-1.0", "$Revision: 1 $"
+local MAJOR, MINOR = "LibNotify-1.0", 2
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -147,7 +147,7 @@ local function popNotifications()
     
     if not frame then
         local style = lib.data.notice
-        frame = CreateFrameAby("Frame", nil, UIParent)
+        frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
         frame:SetBackdrop(style.backdrop)
         frame:SetBackdropColor(style.backdropcolor)
         frame:SetSize(style.size.width, style.size.height)
@@ -231,7 +231,7 @@ local function popNotifications()
                 end
                 if not messageframe then
                     style = lib.data.popup
-                    messageframe = CreateFrameAby("Frame", nil, UIParent)
+                    messageframe = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
                     messageframe:SetBackdrop(style.backdrop)
                     messageframe:SetBackdropColor(style.backdropcolor)
                     messageframe:SetSize(style.size.width, style.size.height)

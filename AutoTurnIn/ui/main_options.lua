@@ -29,8 +29,13 @@ end)
 local function newCheckbox(name, caption, config)
     local cb = CreateFrame("CheckButton", "$parent"..name, OptionsPanel, "OptionsCheckButtonTemplate")
     _G[cb:GetName().."Text"]:SetText(caption and caption or name)
+	
     cb:SetScript("OnClick", function(self)
 		ptable.TempConfig[config] = self:GetChecked()
+		--open rewards preferences table if "equip reward" was chosen
+		if (name == "Equip" and self:GetChecked()) then
+			InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.RewardPanel)
+		end
     end)
     return cb
 end
@@ -39,20 +44,24 @@ local function newDropDown(caption, name, values, config)
     local label = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormal")
     label:SetText(caption)
 
-    local dropDown = CreateFrame("Frame", O..name, OptionsPanel, "Lib_UIDropDownMenuTemplate")
-    Lib_UIDropDownMenu_Initialize(dropDown, function (self, level)
+    local dropDown = CreateFrame("Frame", O..name, OptionsPanel, "UIDropDownMenuTemplate")
+    UIDropDownMenu_Initialize(dropDown, function (self, level)
         for k, v in ipairs(values) do
-            local info = Lib_UIDropDownMenu_CreateInfo()
+            local info = UIDropDownMenu_CreateInfo()
             info.text, info.value = v, k
             info.func = function(self)
-                Lib_UIDropDownMenu_SetSelectedID(dropDown, self:GetID())
+                UIDropDownMenu_SetSelectedID(dropDown, self:GetID())
                 ptable.TempConfig[config] = self:GetID()
+				--open rewards preferences table if "loop by params" was chosen
+				if (name == "LootDropDown" and k == 3) then
+					InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.RewardPanel)
+				end
             end
-            Lib_UIDropDownMenu_AddButton(info, level)
+            UIDropDownMenu_AddButton(info, level)
         end
     end)
-    Lib_UIDropDownMenu_SetWidth(dropDown, 200);
-    Lib_UIDropDownMenu_JustifyText(dropDown, "LEFT")
+    UIDropDownMenu_SetWidth(dropDown, 200);
+    UIDropDownMenu_JustifyText(dropDown, "LEFT")
     label:SetPoint("BOTTOMLEFT", dropDown, "TOPLEFT", 18, 0)
     return dropDown
 end
@@ -136,14 +145,14 @@ OptionsPanel.refresh = function()
 	end
 	Enable:SetChecked(ptable.TempConfig.enabled)
 
-	Lib_UIDropDownMenu_SetSelectedID(QuestDropDown, ptable.TempConfig.all)
-	Lib_UIDropDownMenu_SetText(QuestDropDown, QuestConst[ptable.TempConfig.all])
+	UIDropDownMenu_SetSelectedID(QuestDropDown, ptable.TempConfig.all)
+	UIDropDownMenu_SetText(QuestDropDown, QuestConst[ptable.TempConfig.all])
 
-	Lib_UIDropDownMenu_SetSelectedID(LootDropDown, ptable.TempConfig.lootreward)
-	Lib_UIDropDownMenu_SetText(LootDropDown, LootConst[ptable.TempConfig.lootreward])
+	UIDropDownMenu_SetSelectedID(LootDropDown, ptable.TempConfig.lootreward)
+	UIDropDownMenu_SetText(LootDropDown, LootConst[ptable.TempConfig.lootreward])
 	
-	Lib_UIDropDownMenu_SetSelectedID(TournamentDropDown, ptable.TempConfig.tournament)
-	Lib_UIDropDownMenu_SetText(TournamentDropDown, TournamentConst[ptable.TempConfig.tournament])
+	UIDropDownMenu_SetSelectedID(TournamentDropDown, ptable.TempConfig.tournament)
+	UIDropDownMenu_SetText(TournamentDropDown, TournamentConst[ptable.TempConfig.tournament])
 	ToDarkMoon:SetChecked(ptable.TempConfig.todarkmoon)
 	DarkMoonCannon:SetChecked(ptable.TempConfig.darkmoonteleport)
 	DarkMoonAutoStart:SetChecked(ptable.TempConfig.darkmoonautostart)
@@ -159,8 +168,8 @@ OptionsPanel.refresh = function()
 	RelicToggle:SetChecked(ptable.TempConfig.relictoggle)
 	ArtifactPowerToggle:SetChecked(ptable.TempConfig.artifactpowertoggle)	
 
-	Lib_UIDropDownMenu_SetSelectedID(ToggleKeyDropDown, ptable.TempConfig.togglekey)
-	Lib_UIDropDownMenu_SetText(ToggleKeyDropDown, ToggleKeyConst[ptable.TempConfig.togglekey])
+	UIDropDownMenu_SetSelectedID(ToggleKeyDropDown, ptable.TempConfig.togglekey)
+	UIDropDownMenu_SetText(ToggleKeyDropDown, ToggleKeyConst[ptable.TempConfig.togglekey])
 	MakeACopy = true
 end
 
@@ -184,19 +193,19 @@ OptionsPanel.okay = function()
 	end
 	]]--
 	-- and here goes the dirty hack!!! No direct update calls, hence, no global variable taints!!!
-	if GetNumQuestWatches() > 0 then
-		local inLog = GetQuestIndexForWatch(1);
-		if IsQuestWatched(inLog) then
-			RemoveQuestWatch (inLog);
-			AddQuestWatch(inLog);
+	if C_QuestLog.GetNumQuestWatches() > 0 then
+		local questId = C_QuestLog.GetQuestIDForQuestWatchIndex(1);
+		if IsQuestWatched(questId) then -- TODO: IsQuestWatched appears to be deprecated. I need to find out how to check if a given quest is being watched. Or maybe this check isn't needed?
+			C_QuestLog.RemoveQuestWatch(questId);
+			C_QuestLog.AddQuestWatch(questId);
 		else
-			AddQuestWatch(inLog);
-			RemoveQuestWatch (inLog);
+			C_QuestLog.AddQuestWatch(questId);
+			C_QuestLog.RemoveQuestWatch(questId);
 		end
 	else
-		if  (GetNumQuestLogEntries() > 0) then
-			AddQuestWatch(2);
-			RemoveQuestWatch (2);
+		if  (C_QuestLog.GetNumQuestLogEntries() > 0) then
+			C_QuestLog.AddQuestWatch(2);
+			C_QuestLog.RemoveQuestWatch(2);
 		end
 	end
 end

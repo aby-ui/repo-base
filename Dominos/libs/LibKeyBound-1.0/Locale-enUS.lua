@@ -3,7 +3,7 @@
 		English
 --]]
 
-local REVISION = 90000 + tonumber(("$Revision: 92 $"):match("%d+"))
+local REVISION = 90000 + tonumber(("$Revision: 119 $"):match("%d+"))
 if (LibKeyBoundBaseLocale10 and REVISION <= LibKeyBoundBaseLocale10.BASEREVISION) then
 	return
 end
@@ -28,6 +28,7 @@ LibKeyBoundBaseLocale10 = {
 	["Alt"] = "A",
 	["Ctrl"] = "C",
 	["Shift"] = "S",
+	["Command"] = "M", -- Blizzard uses 'm' for the command key (META key)
 	["NumPad"] = "N",
 
 	["Backspace"] = "BS",

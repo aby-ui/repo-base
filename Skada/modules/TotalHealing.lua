@@ -1,19 +1,20 @@
+local _, Skada = ...
 Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.TotalHealing then return end
 
 	local mod = Skada:NewModule(L["Total healing"])
-    local thspellsmod = Skada:NewModule(L["Total"].." "..L["Healing spell list"])
+	local thspellsmod = Skada:NewModule(L["Total"].." "..L["Healing spell list"])
 
-    local function getRawHeals(player)
-            return (player.healing+player.overhealing)
-    end
+	local function getRawHeals(player)
+		return (player.healing+player.overhealing)
+	end
 
-    local function getRawHPS(set, player)
-            local totaltime = Skada:PlayerActiveTime(set, player)
-            return getRawHeals(player) / math.max(1,totaltime)
-    end
-        
-        
+	local function getRawHPS(set, player)
+		local totaltime = Skada:PlayerActiveTime(set, player)
+		return getRawHeals(player) / math.max(1,totaltime)
+	end
+
+
 	-- Called by Skada when a new player is added to a set.
 	function mod:AddPlayerAttributes(player)
 	end
@@ -50,9 +51,9 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 
 				local mypercentoverhealed = (player.overhealing) / maxvalue
 				local mypercent = (player.healing + player.overhealing) / maxvalue
-                local percentformatted=(string.format("%02.1f%%", mypercent))
-                local totaltime = Skada:PlayerActiveTime(set, player)
-                local hps = (player.healing + player.overhealing) / math.max(1,totaltime)
+				local percentformatted=(string.format("%02.1f%%", mypercent))
+				local totaltime = Skada:PlayerActiveTime(set, player)
+				local hps = (player.healing + player.overhealing) / math.max(1,totaltime)
 
 				local d = win.dataset[nr] or {}
 				win.dataset[nr] = d
@@ -60,18 +61,18 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 				d.id = player.id
 				d.value = player.healing
 				d.label = player.name
---				d.valuetext = Skada:FormatNumber(player.healing).." / "..Skada:FormatNumber(player.overhealing)
+				-- d.valuetext = Skada:FormatNumber(player.healing).." / "..Skada:FormatNumber(player.overhealing)
 				d.valuetext = Skada:FormatValueText(
-                                        Skada:FormatNumber(player.healing), self.metadata.columns.Healing,
-                                        Skada:FormatNumber(player.healing + player.overhealing), self.metadata.columns.Total,
-                                        percentformatted, self.metadata.columns.Percent
-					)
-                    
-                d.color = green
+					Skada:FormatNumber(player.healing), self.metadata.columns.Healing,
+					Skada:FormatNumber(player.healing + player.overhealing), self.metadata.columns.Total,
+					percentformatted, self.metadata.columns.Percent
+				)
+
+				d.color = green
 				d.backgroundcolor = red
 				d.backgroundwidth = mypercent
 				d.class = player.class
-                d.role = player.role
+				d.role = player.role
 
 				nr = nr + 1
 			end
@@ -79,18 +80,18 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 
 		win.metadata.maxvalue = maxvalue
 	end
-        
-        local function thspell_tooltip(win, id, label, tooltip)
-                local player = Skada:find_player(win:get_selected_set(), thspellsmod.playerid)
-                if player then
-                        local spell = player. healingspells[label]
-                        if spell then
-                                tooltip:AddLine(player.name.." - "..label)
-                                if spell.max and spell.min then
-                                        tooltip:AddDoubleLine(L["Minimum hit:"], Skada:FormatNumber(spell.min), 255,255,255,255,255,255)
-                                        tooltip:AddDoubleLine(L["Maximum hit:"], Skada:FormatNumber(spell.max), 255,255,255,255,255,255)
-                                end
-                                tooltip:AddDoubleLine(L["Average hit:"], Skada:FormatNumber(spell.healing / spell.hits), 255,255,255,255,255,255)
+
+	local function thspell_tooltip(win, id, label, tooltip)
+		local player = Skada:find_player(win:get_selected_set(), thspellsmod.playerid)
+		if player then
+			local spell = player. healingspells[label]
+			if spell then
+				tooltip:AddLine(player.name.." - "..label)
+				if spell.max and spell.min then
+					tooltip:AddDoubleLine(L["Minimum hit:"], Skada:FormatNumber(spell.min), 255,255,255,255,255,255)
+					tooltip:AddDoubleLine(L["Maximum hit:"], Skada:FormatNumber(spell.max), 255,255,255,255,255,255)
+				end
+				tooltip:AddDoubleLine(L["Average hit:"], Skada:FormatNumber(spell.healing / spell.hits), 255,255,255,255,255,255)
 				if spell.hits then
 					tooltip:AddDoubleLine(L["Critical"]..":", ("%02.1f%%"):format(spell.critical / spell.hits * 100), 255,255,255,255,255,255)
 				end
@@ -110,7 +111,6 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 	end
 
 	function thspellsmod:Update(win, set)
-
 		local player = Skada:find_player(set, self.playerid)
 		local nr = 1
 		local max = 0
@@ -124,9 +124,9 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 				d.label = spell.name
 				d.value = srh
 				d.valuetext = Skada:FormatValueText(
-												Skada:FormatNumber(srh), self.metadata.columns.Healing,
-												string.format("%02.1f%%", srh / (player.healing+player.overhealing) * 100), self.metadata.columns.Percent
-											)
+					Skada:FormatNumber(srh), self.metadata.columns.Healing,
+					string.format("%02.1f%%", srh / (player.healing+player.overhealing) * 100), self.metadata.columns.Percent
+				)
 				local _, _, icon = GetSpellInfo(spell.id)
 				d.icon = icon
 				d.spellid = spell.id
@@ -141,7 +141,7 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 
 		win.metadata.hasicon = true
 		win.metadata.maxvalue = max
-	end        
+	end
 
 	function mod:OnEnable()
 		mod.metadata = {click1 = thspellsmod, showspots = true, columns = {Healing = true, Total = true, Percent = false}, icon = "Interface\\Icons\\Ability_priest_angelicbulwark"}
@@ -154,4 +154,3 @@ Skada:AddLoadableModule("TotalHealing", nil, function(Skada, L)
 		Skada:RemoveMode(self)
 	end
 end)
-

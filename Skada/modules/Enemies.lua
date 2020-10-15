@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Enemies then return end
 
@@ -15,7 +16,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 		local player = mob.players[name]
 		if player then return player end
 		local _, playerClass = UnitClass(name)
-        local playerRole = UnitGroupRolesAssigned(name)
+		local playerRole = UnitGroupRolesAssigned(name)
 		player = {done = 0, taken = 0, class = playerClass, role = playerRole}
 		mob.players[name] = player
 		return player
@@ -52,20 +53,20 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 	end
 
 	local function log_healspell(mob, entry, spellname, healing, overheal, crit)
-			local spell = mob[entry][spellname] or { hits = 0, crits = 0, healing = 0, overhealing = 0, min = nil, max = 0}
+		local spell = mob[entry][spellname] or { hits = 0, crits = 0, healing = 0, overhealing = 0, min = nil, max = 0}
 		mob[entry][spellname] = spell
 		spell.hits = spell.hits + 1
 		if crit then
-		  spell.crits = spell.crits + 1
+			spell.crits = spell.crits + 1
 		end
 		spell.healing = spell.healing + healing
 		spell.overhealing = spell.overhealing + overheal
-			if not spell.min or healing < spell.min then
-			   spell.min = healing
-			end
-			if not spell.max or healing > spell.max then
-			   spell.max = healing
-			end
+		if not spell.min or healing < spell.min then
+			spell.min = healing
+		end
+		if not spell.max or healing > spell.max then
+			spell.max = healing
+		end
 	end
 
 	local function log_healing(set, dmg, ...)
@@ -73,7 +74,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 		local healing = math.max(0,amount - overheal) -- omit absorbs, which players inflict to mitigate healing
 		set.mobhdone = set.mobhdone + healing
 
-		if dmg.srcName then -- some enemy HoT's omit the true src (eg Cauterizing Bolt) 
+		if dmg.srcName then -- some enemy HoT's omit the true src (eg Cauterizing Bolt)
 			local smob = find_mob(set,dmg.srcName)
 			smob.hdone = smob.hdone + healing
 			log_healspell(smob, "hdonespell", spellname, healing, overheal, crit)
@@ -145,36 +146,36 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 
 	-- Factored code for Enemy stat page - list mobs.
 	local function MobUpdate(stat)
-	return function (self, win, set)
-		local nr = 1
-		local max = 0
+		return function (self, win, set)
+			local nr = 1
+			local max = 0
 
-		for name, mob in pairs(set.mobs or _empty_table) do
-			if (mob[stat] or 0) > 0 then
-				local d = win.dataset[nr] or {}
-				win.dataset[nr] = d
+			for name, mob in pairs(set.mobs or _empty_table) do
+				if (mob[stat] or 0) > 0 then
+					local d = win.dataset[nr] or {}
+					win.dataset[nr] = d
 
-				d.value = mob[stat]
-				d.id = name
-				d.valuetext = Skada:FormatNumber(mob[stat])
-				d.label = name
+					d.value = mob[stat]
+					d.id = name
+					d.valuetext = Skada:FormatNumber(mob[stat])
+					d.label = name
 
-				if mob[stat] > max then
-					max = mob[stat]
+					if mob[stat] > max then
+						max = mob[stat]
+					end
+
+					nr = nr + 1
 				end
-
-				nr = nr + 1
 			end
-		end
 
-		win.metadata.maxvalue = max
-		  end
+			win.metadata.maxvalue = max
+		end
 	end
 
-	taken.Update =  MobUpdate("taken")
-	done.Update =   MobUpdate("done")
+	taken.Update = MobUpdate("taken")
+	done.Update = MobUpdate("done")
 	htaken.Update = MobUpdate("htaken")
-	hdone.Update =  MobUpdate("hdone")
+	hdone.Update = MobUpdate("hdone")
 
 
 	function doneplayers:Enter(win, id, label)
@@ -198,7 +199,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 					d.value = player.done
 					d.valuetext = Skada:FormatNumber(player.done)..(" (%02.1f%%)"):format(player.done / mob.done * 100)
 					d.class = player.class
-                    d.role = player.role
+					d.role = player.role
 
 					if player.done > max then
 						max = player.done
@@ -235,7 +236,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 					d.value = player.taken
 					d.valuetext = Skada:FormatNumber(player.taken)..(" (%02.1f%%)"):format(player.taken / mob.taken * 100)
 					d.class = player.class
-                    d.role = player.role
+					d.role = player.role
 
 					if player.taken > max then
 						max = player.taken
@@ -251,76 +252,76 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 
 	local ttmob, ttentry
 	function hdonespells:Enter(win, id, label)
-			self.title = L["Enemy healing done"]..": "..label
+		self.title = L["Enemy healing done"]..": "..label
 		self.mob = label
-			ttmob = label
+		ttmob = label
 		ttentry = "hdonespell"
 	end
 
 	function htakenspells:Enter(win, id, label)
-			self.title = L["Enemy healing taken"]..": "..label
+		self.title = L["Enemy healing taken"]..": "..label
 		self.mob = label
-			ttmob = label
+		ttmob = label
 		ttentry = "htakenspell"
 	end
 
 	local function SpellUpdate(entry)
-	  return function (self, win, set)
-		local mob = self.mob and set.mobs[self.mob]
-		if mob then
-			local nr = 1
-			local max = 0
+		return function(self, win, set)
+			local mob = self.mob and set.mobs[self.mob]
+			if mob then
+				local nr = 1
+				local max = 0
 
-			for name, info in pairs(mob[entry]) do
-				if info.hits > 0 then
+				for name, info in pairs(mob[entry]) do
+					if info.hits > 0 then
 
-					local d = win.dataset[nr] or {}
-					win.dataset[nr] = d
+						local d = win.dataset[nr] or {}
+						win.dataset[nr] = d
 
-					d.id = name
-					d.label = name
-					d.value = info.healing
-					d.valuetext = Skada:FormatNumber(info.healing)..(" (%02.1f%%)"):format(info.healing / mob.hdone * 100)
+						d.id = name
+						d.label = name
+						d.value = info.healing
+						d.valuetext = Skada:FormatNumber(info.healing)..(" (%02.1f%%)"):format(info.healing / mob.hdone * 100)
 
-					if info.healing > max then
-						max = info.healing
+						if info.healing > max then
+							max = info.healing
+						end
+
+						nr = nr + 1
 					end
-
-					nr = nr + 1
 				end
-			end
 
-			win.metadata.maxvalue = max
+				win.metadata.maxvalue = max
+			end
 		end
-	  end
 	end
 	hdonespells.Update = SpellUpdate("hdonespell")
 	htakenspells.Update = SpellUpdate("htakenspell")
 
 	local function spell_tooltip(win, id, label, tooltip)
-			local mob = find_mob(win:get_selected_set(), ttmob)
-			if mob and ttentry then
-					local spell = mob[ttentry][label]
-					if spell and (spell.hits or 0) > 0 then
-							tooltip:AddLine(ttmob.." - "..label)
-							tooltip:AddDoubleLine(L["Hit"]..":", spell.hits, 255,255,255,255,255,255)
-							if spell.max and spell.min then
-									tooltip:AddDoubleLine(L["Minimum hit:"], Skada:FormatNumber(spell.min), 255,255,255,255,255,255)
-									tooltip:AddDoubleLine(L["Maximum hit:"], Skada:FormatNumber(spell.max), 255,255,255,255,255,255)
-							end
-							tooltip:AddDoubleLine(L["Average hit:"], Skada:FormatNumber(spell.healing / spell.hits), 255,255,255,255,255,255)
-							tooltip:AddDoubleLine(L["Critical"]..":", ("%02.1f%%"):format(spell.crits / spell.hits * 100), 255,255,255,255,255,255)
-							tooltip:AddDoubleLine(L["Overhealing"]..":", ("%02.1f%%"):format(spell.overhealing / (spell.overhealing + spell.healing) * 100), 255,255,255,255,255,255)
-					end
+		local mob = find_mob(win:get_selected_set(), ttmob)
+		if mob and ttentry then
+			local spell = mob[ttentry][label]
+			if spell and (spell.hits or 0) > 0 then
+				tooltip:AddLine(ttmob.." - "..label)
+				tooltip:AddDoubleLine(L["Hit"]..":", spell.hits, 255,255,255,255,255,255)
+				if spell.max and spell.min then
+					tooltip:AddDoubleLine(L["Minimum hit:"], Skada:FormatNumber(spell.min), 255,255,255,255,255,255)
+					tooltip:AddDoubleLine(L["Maximum hit:"], Skada:FormatNumber(spell.max), 255,255,255,255,255,255)
+				end
+				tooltip:AddDoubleLine(L["Average hit:"], Skada:FormatNumber(spell.healing / spell.hits), 255,255,255,255,255,255)
+				tooltip:AddDoubleLine(L["Critical"]..":", ("%02.1f%%"):format(spell.crits / spell.hits * 100), 255,255,255,255,255,255)
+				tooltip:AddDoubleLine(L["Overhealing"]..":", ("%02.1f%%"):format(spell.overhealing / (spell.overhealing + spell.healing) * 100), 255,255,255,255,255,255)
 			end
+		end
 	end
 
 
 	function done:OnEnable()
-		takenplayers.metadata 	= {showspots = true}
-		doneplayers.metadata 	= {showspots = true}
-		done.metadata 			= {click1 = doneplayers, icon = "Interface\\Icons\\Inv_misc_monsterclaw_01"}
-		taken.metadata 			= {click1 = takenplayers, icon = "Interface\\Icons\\Inv_shield_08"}
+		takenplayers.metadata = {showspots = true}
+		doneplayers.metadata = {showspots = true}
+		done.metadata = {click1 = doneplayers, icon = "Interface\\Icons\\Inv_misc_monsterclaw_01"}
+		taken.metadata = {click1 = takenplayers, icon = "Interface\\Icons\\Inv_shield_08"}
 
 		Skada:RegisterForCL(SpellDamageTaken, 'SPELL_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
 		Skada:RegisterForCL(SpellDamageTaken, 'SPELL_PERIODIC_DAMAGE', {src_is_interesting = true, dst_is_not_interesting = true})
@@ -350,10 +351,10 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 	end
 
 	function hdone:OnEnable()
-		hdonespells.metadata 	= {showspots = true, tooltip = spell_tooltip}
-		htakenspells.metadata 	= {showspots = true, tooltip = spell_tooltip}
-		hdone.metadata		= {click1 = hdonespells, icon = "Interface\\Icons\\Inv_misc_bandage_12"}
-		htaken.metadata		= {click1 = htakenspells, icon = "Interface\\Icons\\Spell_misc_emotionhappy"}
+		hdonespells.metadata = {showspots = true, tooltip = spell_tooltip}
+		htakenspells.metadata = {showspots = true, tooltip = spell_tooltip}
+		hdone.metadata = {click1 = hdonespells, icon = "Interface\\Icons\\Inv_misc_bandage_12"}
+		htaken.metadata = {click1 = htakenspells, icon = "Interface\\Icons\\Spell_misc_emotionhappy"}
 
 		Skada:RegisterForCL(Healing, 'SPELL_HEAL', {dst_is_not_interesting = true})
 		Skada:RegisterForCL(Healing, 'SPELL_PERIODIC_HEAL', {dst_is_not_interesting = true})
@@ -402,4 +403,3 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 		end
 	end
 end)
-

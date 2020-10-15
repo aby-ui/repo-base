@@ -1374,6 +1374,7 @@ G[1327652]='War Supply Chest'
 G[1327673]='Stolen Oil'
 G[1329783]='Glowing Arcane Trunk'
 G[1330194]='Prismatic Crystal'
+G[1330627]='Danger Sign'
 G[1332623]='Christy Punchcog'
 G[1334215]='Black Empire Cache'
 G[1334227]='Mogu Plunder'
@@ -1383,7 +1384,19 @@ G[1334751]="Zanj'ir Weapon Rack"
 G[1335711]='Black Empire Cache'
 G[1335712]='Black Empire Cache'
 G[1335717]='Black Empire Cache'
+G[1336415]='Discarded Scroll'
 G[1339248]='Infested Cache'
+G[1344726]='Dark Sermon'
+G[1348558]='Notice'
+G[1348747]='Muddy Scroll'
+G[1349515]='Battered Journal'
+G[1351467]='Faded Epitaph'
+G[1352027]='Wanted Scroll'
+G[1352028]='Wanted Scroll'
+G[1353420]='Stone Altar'
+G[1353645]="Marileth's Journal"
+G[1355798]='Cage'
+G[1362489]='Elysian Decree'
 end
 
 --	End of localized NPC names

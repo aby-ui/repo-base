@@ -1,10 +1,10 @@
 --- MSA-DropDownMenu-1.0 - DropDown menu for non-Blizzard addons
---- Copyright (c) 2016-2018, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2016-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- https://www.curseforge.com/wow/addons/msa-dropdownmenu-10
 
-local name, version = "MSA-DropDownMenu-1.0", 7
+local name, version = "MSA-DropDownMenu-1.0", 10
 
 local lib = LibStub:NewLibrary(name, version)
 if not lib then return end
@@ -142,8 +142,6 @@ local function CreateDropDownMenuButton(name, parent)
                 GameTooltip:AddLine(parent.tooltipTitle, 1.0, 1.0, 1.0);
                 GameTooltip:AddLine(parent.tooltipText, nil, nil, nil, true);
                 GameTooltip:Show();
-            else
-                GameTooltip_AddNewbieTip(parent, parent.tooltipTitle, 1.0, 1.0, 1.0, parent.tooltipText, 1);
             end
         end
     end)
@@ -173,8 +171,6 @@ local function CreateDropDownMenuButton(name, parent)
                 GameTooltip:AddLine(self.tooltipTitle, 1.0, 1.0, 1.0);
                 GameTooltip:AddLine(self.tooltipText, nil, nil, nil, true);
                 GameTooltip:Show();
-            else
-                GameTooltip_AddNewbieTip(self, self.tooltipTitle, 1.0, 1.0, 1.0, self.tooltipText, 1);
             end
         end
     end)
@@ -207,7 +203,7 @@ local function CreateDropDownList(name, parent)
     DropDownList:SetFrameStrata("DIALOG")
     DropDownList:EnableMouse(true)
 
-    local frame1 = _G[name.."Backdrop"] or CreateFrameAby("Frame", name.."Backdrop", DropDownList)
+    local frame1 = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
     frame1:SetAllPoints()
     frame1:SetBackdrop({
         bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
@@ -223,7 +219,7 @@ local function CreateDropDownList(name, parent)
         },
     })
 
-    local frame2 = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", DropDownList)
+    local frame2 = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
     frame2:SetAllPoints()
     frame2:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -729,9 +725,17 @@ function MSA_DropDownMenu_AddButton(info, level)
         -- Set icon
         if ( info.icon ) then
             icon:SetSize(16,16);
-            icon:SetTexture(info.icon);
+            if ( info.iconAtlas ) then
+                icon:SetAtlas(info.icon, true);
+                info.tCoordLeft = nil
+                info.tCoordRight = nil
+                info.tCoordTop = nil
+                info.tCoordBottom = nil
+            else
+                icon:SetTexture(info.icon);
+            end
             icon:ClearAllPoints();
-            icon:SetPoint("RIGHT");
+            icon:SetPoint("RIGHT", -1, 0);
 
             if ( info.tCoordLeft ) then
                 icon:SetTexCoord(info.tCoordLeft, info.tCoordRight, info.tCoordTop, info.tCoordBottom);
@@ -1649,11 +1653,13 @@ local function LoadSkin_Tukui()
     local backdrop
     for i = 1, MSA_DROPDOWNMENU_MAXLEVELS do
         backdrop = _G["MSA_DropDownList"..i.."MenuBackdrop"]
-        backdrop:SetTemplate("Default")
+        backdrop:StripTextures()
+        backdrop:CreateBackdrop("Default")
         backdrop:CreateShadow()
         backdrop.IsSkinned = true
         backdrop = _G["MSA_DropDownList"..i.."Backdrop"]
-        backdrop:SetTemplate("Default")
+        backdrop:StripTextures()
+        backdrop:CreateBackdrop("Default")
         backdrop:CreateShadow()
         backdrop.IsSkinned = true
     end

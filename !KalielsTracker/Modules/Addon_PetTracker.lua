@@ -257,7 +257,7 @@ function M:OnInitialize()
 	end
 
 	SetFrames_Init()
-	SetHooks_Init()
+	--SetHooks_Init()
 end
 
 function M:OnEnable()

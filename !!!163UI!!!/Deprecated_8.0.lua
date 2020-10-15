@@ -243,10 +243,6 @@ end
 --[[------------------------------------------------------------
 8.1
 ---------------------------------------------------------------]]
-do
-    GetNumIgnores = GetNumIgnores or C_FriendList.GetNumIgnores
-end
-
 function C_LFGListGetSearchResultInfo(resultID)
     --local id, activityId, title, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leader, numMembers
     local info = C_LFGList.GetSearchResultInfo(resultID);
@@ -303,6 +299,10 @@ if LFGListUtil_GetQuestCategoryData then
     end)
 end
 
+--C_ChatInfo.ReportPlayer is no longer supported, addons must use C_ReportSystem.OpenReportPlayerDialog(complaintType, reportedPlayerName, reportedPlayerLocation) now
+C_ChatInfo.ReportPlayer = function(complaintType, playerLocation, comment)
+end
+
 --[[------------------------------------------------------------
 8.2.5
 ---------------------------------------------------------------]]
@@ -338,3 +338,28 @@ end
 ---------------------------------------------------------------]]
 if not UIDropDownMenu_StopCounting then UIDropDownMenu_StopCounting = noop end
 if not UIDropDownMenu_StartCounting then UIDropDownMenu_StartCounting = noop end
+
+if false then
+    MAX_CONTAINER_ITEMS = 36;
+    NUM_CONTAINER_COLUMNS = 4;
+    ROWS_IN_BG_TEXTURE = 6;
+    MAX_BG_TEXTURES = 2;
+    BG_TEXTURE_HEIGHT = 512;
+    CONTAINER_WIDTH = 192;
+    CONTAINER_SPACING = 0;
+    VISIBLE_CONTAINER_SPACING = 3;
+    MINIMUM_CONTAINER_OFFSET_X = 10;
+    CONTAINER_SCALE = 0.75;
+    BACKPACK_MONEY_OFFSET_DEFAULT = -231;
+    BACKPACK_MONEY_HEIGHT_OFFSET_PER_EXTRA_ROW = 41;
+    BACKPACK_BASE_HEIGHT = 255;
+    BACKPACK_HEIGHT_OFFSET_PER_EXTRA_ROW = 43;
+    BACKPACK_DEFAULT_TOPHEIGHT = 255;
+    BACKPACK_EXTENDED_TOPHEIGHT = 226;
+    BACKPACK_BASE_SIZE = 16;
+    FIRST_BACKPACK_BUTTON_OFFSET_BASE = -225;
+    FIRST_BACKPACK_BUTTON_OFFSET_PER_EXTRA_ROW = 41;
+    CONTAINER_BOTTOM_TEXTURE_DEFAULT_HEIGHT = 10;
+    CONTAINER_BOTTOM_TEXTURE_DEFAULT_TOP_COORD = 0.330078125;
+    CONTAINER_BOTTOM_TEXTURE_DEFAULT_BOTTOM_COORD = 0.349609375;
+end

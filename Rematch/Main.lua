@@ -209,29 +209,8 @@ function rematch:Start()
 	if ldb then
 	  ldb:NewDataObject("Rematch",{ type="launcher", icon="Interface\\Icons\\PetJournalPortrait", iconCoords={0.075,0.925,0.075,0.925}, tooltiptext=L["Toggle Rematch"], OnClick=rematch.Frame.Toggle	})
 	end
-	-- some partial reskinning if Aurora exists (TODO: do a proper reskin in a separate module like ElvUI, except the relationship between Aurora+RealUI and the optional nature of Aurora Missing Textures is a mess)
-	if type(Aurora)=="table" then
-		local F,C = unpack(Aurora)
-		if type(F)=="table" and F.CreateBD then
-			for k,v in pairs({rematch.Journal,rematch.Frame,rematch.PetCard,rematch.PetCard.Front.Middle,RematchAbilityCard,RematchWinRecordCard,rematch.Dialog,rematch.Notes}) do
-				F.CreateBD(v)
-			end
-			for k,v in pairs({rematch.Frame.TitleBar.MinimizeButton,rematch.Frame.TitleBar.SinglePanelButton,rematch.Frame.TitleBar.LockButton,rematch.Notes.LockButton,rematch.PetCard.PinButton}) do
-				v:SetBackdrop({})
-			end
-		end
-	end
-	if IsAddOnLoaded("miirGUI") then
-		for k,v in pairs({rematch.Frame.TitleBar.MinimizeButton,rematch.Frame.TitleBar.SinglePanelButton,rematch.Frame.TitleBar.LockButton,rematch.Notes.LockButton,rematch.PetCard.PinButton}) do
-			v:SetBackdrop({})
-		end
-		RematchJournalPortrait:SetTexture("Interface\\Icons\\PetJournalPortrait")
-		RematchJournalPortrait:SetTexCoord(0.1,0.9,0.1,0.9)
-		rematch.PetCard.Back.Middle.LoreBG:SetColorTexture(1,0.82,0.5)
-	end
 	-- watch for player forfeiting a match (playerForfeit is nil'ed during PET_BATTLE_OPENING_START)
 	hooksecurefunc(C_PetBattles,"ForfeitGame",function() rematch.playerForfeit=true end)
-
 end
 
 function rematch:InitSavedVars()

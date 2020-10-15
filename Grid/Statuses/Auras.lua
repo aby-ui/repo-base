@@ -13,7 +13,7 @@ local n2s,f2s,floor=n2s or tostring,f2s or function(time) return format("%.1f", 
 	Grid status module for tracking buffs/debuffs.
 ----------------------------------------------------------------------]]
 
-local IS_WOW_8 = GetBuildInfo():match("^8")
+local IS_WOW_8 = select(4, GetBuildInfo()) >= 80000
 
 local _, Grid = ...
 local L = Grid.L

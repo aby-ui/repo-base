@@ -1,5 +1,5 @@
 --[[
-	itemFrame.lua
+	itemGroup.lua
 		Modifies the item frame to always fit inside the panel
 --]]
 
@@ -16,7 +16,7 @@ function ItemGroup:LayoutTraits()
 
 	local r, r2 = h/w, w/h
 	local px = ceil(sqrt(n*r2))
-	local bestFit = ((floor(px*r) * px) < n) and h/ceil(px*r) or w/px
+	local bestFit = px > 0 and (((floor(px*r) * px) < n) and h/ceil(px*r) or w/px) or 1
 
 	local size = self:GetButtonSize()
 	local scale = min(bestFit / size, profile.itemScale)

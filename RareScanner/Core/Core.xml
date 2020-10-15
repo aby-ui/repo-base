@@ -28,6 +28,9 @@
 	<Include file="Service\POI\RSGroupPOI.lua"/>
 	<Include file="Service\POI\RSGuidePOI.lua"/>
 	
+	<!-- Integration with other addons -->
+	<Include file="Service\Addons\RSTomtom.lua"/>
+	
 	<!-- Services -->
 	<Include file="Service\RSMap.lua"/>
 	<Include file="Service\RSQuestTracker.lua"/>
@@ -37,9 +40,6 @@
 	<Include file="Service\RSLoot.lua"/>
 	<Include file="Service\RSWaypoints.lua"/>
 	<Include file="Service\RSCommandLine.lua"/>
-	
-	<!-- Integration with other addons -->
-	<Include file="Service\Addons\RSTomtom.lua"/>
 	
 	<!-- Tooltips -->
 	<Include file="Plugins\MapPlugin\Tooltips\RSTooltip.lua"/>

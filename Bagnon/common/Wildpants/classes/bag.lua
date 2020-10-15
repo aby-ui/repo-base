@@ -121,7 +121,6 @@ end
 
 function Bag:RegisterEvents()
 	self:Update()
-
 	self:UnregisterAll()
 	self:RegisterFrameSignal('OWNER_CHANGED', 'RegisterEvents')
 	self:RegisterFrameSignal('FILTERS_CHANGED', 'UpdateToggle')
@@ -133,15 +132,19 @@ function Bag:RegisterEvents()
 		self:RegisterMessage('CACHE_BANK_CLOSED', 'RegisterEvents')
 	end
 
-	if self:IsCustomSlot() then
-		if self:GetInfo().cached then
-			self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
-		else
+	if not self:GetInfo().cached then
+		if self:IsReagents() then
+			self:RegisterEvent('REAGENTBANK_PURCHASED', 'Update')
+		elseif self:IsCustomSlot() then
+			if self:IsBankBag() then
+				self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
+			end
+
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
 			self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
 		end
-	elseif self:IsReagents() then
-		self:RegisterEvent('REAGENTBANK_PURCHASED', 'Update')
+	elseif self:IsCustomSlot() then
+		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')
 	end
 end
 

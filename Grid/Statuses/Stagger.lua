@@ -12,7 +12,7 @@
 	Grid status module for Monk Stagger.
 ----------------------------------------------------------------------]]
 
-local IS_WOW_8 = GetBuildInfo():match("^8")
+local IS_WOW_8 = select(4, GetBuildInfo()) >= 80000
 
 local _, Grid = ...
 local L = Grid.L

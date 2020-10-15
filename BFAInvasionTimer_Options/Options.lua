@@ -368,7 +368,7 @@ local acOptions = {
 				},
 				tooltipHideMedals = {
 					type = "toggle",
-					name = L.hide:format((GetCurrencyInfo(UnitFactionGroup("player") == "Horde" and 1716 or 1717))),
+					name = L.hide:format((C_CurrencyInfo.GetCurrencyInfo(UnitFactionGroup("player") == "Horde" and 1716 or 1717).name)),
 					order = 25,
 					width = 2,
 				},

@@ -1,6 +1,6 @@
 --[[
 Name: LibKeyBound-1.0
-Revision: $Rev: 118 $
+Revision: $Rev: 119 $
 Author(s): Gello, Maul, Toadkiller, Tuller
 Website: http://www.wowace.com/wiki/LibKeyBound-1.0
 Documentation: http://www.wowace.com/wiki/LibKeyBound-1.0
@@ -10,7 +10,7 @@ Dependencies: CallbackHandler-1.0
 --]]
 
 local MAJOR = 'LibKeyBound-1.0'
-local MINOR = 100000 + 1
+local MINOR = 100000 + 2
 
 --[[
 	LibKeyBound-1.0
@@ -383,6 +383,7 @@ function LibKeyBound:ToShortKey(key)
 		key = key:gsub('ALT%-', L['Alt'])
 		key = key:gsub('CTRL%-', L['Ctrl'])
 		key = key:gsub('SHIFT%-', L['Shift'])
+		key = key:gsub('META%-', L['Command'])
 		key = key:gsub('NUMPAD', L['NumPad'])
 
 		key = key:gsub('PLUS', '%+')
@@ -465,7 +466,7 @@ function LibKeyBound.Binder:OnKeyDown(key)
 	if not button or not button:IsMouseOver()then return end
 
 	if (key == 'UNKNOWN' or key == 'LSHIFT' or key == 'RSHIFT' or
-		key == 'LCTRL' or key == 'RCTRL' or key == 'LALT' or key == 'RALT') then
+		key == 'LCTRL' or key == 'RCTRL' or key == 'LALT' or key == 'RALT' or key == 'LMETA' or key == 'RMETA') then
 		return
 	end
 
@@ -513,6 +514,9 @@ function LibKeyBound.Binder:OnKeyDown(key)
 		end
 		if IsAltKeyDown() then
 			key = 'ALT-' .. key
+		end
+		if IsMetaKeyDown and IsMetaKeyDown() then
+			key = 'META-' .. key
 		end
 	end
 

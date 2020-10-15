@@ -7,10 +7,8 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
-	--[[Translation missing --]]
-	L["<70% Mana"] = "<70% Mana"
-	--[[Translation missing --]]
-	L[">70% Mana"] = ">70% Mana"
+	L["<70% Mana"] = "<70% 法力"
+	L[">70% Mana"] = ">70% 法力"
 	L["Abilities"] = "技能"
 	L["Ability Charges"] = "技能可用次數"
 	L["Add Triggers"] = "新增觸發"
@@ -19,8 +17,7 @@ local L = WeakAuras.L
 	L["Always show the aura, highlight it if debuffed."] = "永遠顯示提醒效果，有減益作用時顯著標示。"
 	L["Always show the aura, turns grey if on cooldown."] = "永遠顯示提醒效果，冷卻中變成灰色。"
 	L["Always show the aura, turns grey if the debuff not active."] = "永遠顯示提醒效果，沒有減益作用時變成灰色。"
-	--[[Translation missing --]]
-	L["Always shows highlights if enchant missing."] = "Always shows highlights if enchant missing."
+	L["Always shows highlights if enchant missing."] = "缺少附魔時，永遠顯示顯著標示。"
 	L["Always shows the aura, grey if buff not active."] = "永遠顯示提醒效果，沒有增益作用時變成灰色。"
 	L["Always shows the aura, highlight it if buffed."] = "永遠顯示提醒效果，有增益作用時顯著標示。"
 	L["Always shows the aura, highlight when active, turns blue on insufficient resources."] = "永遠顯示提醒效果，作用時顯著標示，資源不足時變成藍色。"
@@ -39,8 +36,7 @@ local L = WeakAuras.L
 	L["Basic Show On Ready"] = "基本可用時顯示"
 	L["Bloodlust/Heroism"] = "嗜血/英勇"
 	L["buff"] = "種族特長"
-	--[[Translation missing --]]
-	L["Buff on Other"] = "Buff on Other"
+	L["Buff on Other"] = "他人的增益"
 	L["Buffs"] = "增益 BUFF"
 	L["Cancel"] = "取消"
 	L["Cast"] = "施放法術"
@@ -67,10 +63,8 @@ local L = WeakAuras.L
 	L["Next"] = "下一步"
 	L["Only show the aura if the target has the debuff."] = "只在選取目標有減益時才顯示提醒效果。"
 	L["Only show the aura when the item is on cooldown."] = "只有物品在冷卻中才顯示提醒效果。"
-	--[[Translation missing --]]
-	L["Only shows if the weapon is enchanted."] = "Only shows if the weapon is enchanted."
-	--[[Translation missing --]]
-	L["Only shows if the weapon is not enchanted."] = "Only shows if the weapon is not enchanted."
+	L["Only shows if the weapon is enchanted."] = "只有在武器有附魔時顯示。"
+	L["Only shows if the weapon is not enchanted."] = "只有在武器沒有附魔時顯示。"
 	L["Only shows the aura if the target has the buff."] = "只在選取目標有增益時才顯示提醒效果。"
 	L["Only shows the aura when the ability is on cooldown."] = "只有技能在冷卻中才顯示提醒效果。"
 	L["Only shows the aura when the ability is ready to use."] = "只有在技能準備好可以使用時才顯示提醒效果。"
@@ -83,8 +77,7 @@ local L = WeakAuras.L
 	L["Resources and Shapeshift Form"] = "職業特殊資源和變身形態"
 	L["Runes"] = "符文"
 	L["Shapeshift Form"] = "變身形態"
-	--[[Translation missing --]]
-	L["Show Always, Glow on Missing"] = "Show Always, Glow on Missing"
+	L["Show Always, Glow on Missing"] = "永遠顯示，缺少時發光"
 	L["Show Charges and Check Usable"] = "顯示次數和檢查是否可用"
 	L["Show Charges with Proc Tracking"] = "顯示包含機率觸發監控的次數"
 	L["Show Charges with Range Tracking"] = "顯示包含範圍監控的次數"
@@ -105,13 +98,11 @@ local L = WeakAuras.L
 	L["Show Cooldown and Duration and Check Usable"] = "顯示冷卻時間、持續時間和檢查是否可使用"
 	L["Show Cooldown and Proc Tracking"] = "顯示冷卻和機率觸發監控"
 	L["Show Cooldown and Totem Information"] = "顯示冷卻和圖騰資訊"
-	--[[Translation missing --]]
-	L["Show if Enchant Missing"] = "Show if Enchant Missing"
+	L["Show if Enchant Missing"] = "缺少附魔時顯示"
 	L["Show on Ready"] = "可用時顯示"
 	L["Show Only if Buffed"] = "只在有增益時顯示"
 	L["Show Only if Debuffed"] = "只在有減益時顯示"
-	--[[Translation missing --]]
-	L["Show Only if Enchanted"] = "Show Only if Enchanted"
+	L["Show Only if Enchanted"] = "有附魔時顯示"
 	L["Show Only if on Cooldown"] = "只有在冷卻中時顯示"
 	L["Show Totem and Charge Information"] = "顯示圖騰和次數資訊"
 	L["slow debuff"] = "緩速減益"

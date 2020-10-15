@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 2, 'Frame')
+local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 4, 'Frame')
 if not Drop then return end
 
 
@@ -25,7 +25,7 @@ if not Drop then return end
 
 function Drop:Construct()
   local f = self:Super(Drop):Construct()
-  local bg = CreateFrame('Frame', nil, f)
+  local bg = CreateFrame('Frame', nil, f, BackdropTemplateMixin and 'BackdropTemplate')
   bg:SetFrameLevel(f:GetFrameLevel())
   bg:EnableMouse(true)
 
@@ -154,7 +154,7 @@ end
 Drop.Size = 10
 Drop.ButtonClass = 'DropButton'
 Drop.Backdrops = {
-  TOOLTIP = GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT,
+  TOOLTIP = GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT or TOOLTIP_BACKDROP_STYLE_DEFAULT,
   AZERITE = GAME_TOOLTIP_BACKDROP_STYLE_AZERITE_ITEM,
   DIALOG = {
     bgFile = 'Interface/DialogFrame/UI-DialogBox-Background-Dark',

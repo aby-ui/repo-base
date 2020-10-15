@@ -1,5 +1,5 @@
 ## Interface: 90001
-## Version: 900b1
+## Version: 900r1
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.
@@ -8,8 +8,8 @@
 ## SavedVariablesPerCharacter: DejaCharacterStatsDBPC
 
 ## X-Category: Class
-## X-License: MIT License: Use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so on condition this MIT notice and attribution is included with distribution.
-## X-Website: https://github.com/dejoblue/DejaCharacterStats
+## X-License: All Rights Reserved 2016-2020
+## X-Website: https://dejoblue.com
 ## X-Curse-Project-ID: 99861
 ## X-WoWI-ID: 24060
 

@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Healing then return end
 
@@ -39,7 +40,7 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 					-- Create recipient if it does not exist.
 					if not healed then
 						local _, className = UnitClass(heal.dstName)
-                        local playerRole = UnitGroupRolesAssigned(heal.dstName)
+						local playerRole = UnitGroupRolesAssigned(heal.dstName)
 						healed = {name = heal.dstName, class = className, role = playerRole, amount = 0, shielding = 0}
 						player.healed[heal.dstGUID] = healed
 					end
@@ -87,7 +88,7 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 
 	local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 		-- Healing
-		local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical, _ = ...
+		local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical = ...
 
 		-- We want to avoid "heals" that are really drains from mobs
 		-- So check if a) the source is player-controlled
@@ -112,53 +113,50 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 		end
 	end
 
-    local function log_absorb(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
-		local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical, _ = ...
+	local function log_absorb(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+		local spellId, spellName, spellSchool, samount = ...
 
 		if bit.band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) ~= 0 and bit.band(srcFlags, dstFlags, COMBATLOG_OBJECT_REACTION_MASK) ~= 0 then
-            -- Spirit of Redemption - discount absorbs on priest.
-            -- Discount Monk's Stagger absorbs
-            if spellId == 20711 or spellId == 115069 or spellId == 157533 then
-                return
-            end
+			-- Ignores
+			if spellId == 20711 or -- Spirit of Redemption (Priest)
+				 spellId == 115069   -- Stagger (Monk)
+			then
+				return
+			end
 
-            heal.dstName = dstName
-            heal.dstGUID = dstGUID
-            heal.playerid = srcGUID
-            heal.playername = srcName
-            heal.spellid = spellId
-            heal.spellname = spellName
-            heal.amount = samount
-            heal.overhealing = soverhealing
-            heal.critical = scritical
-            heal.absorbed = absorbed
+			heal.dstName = dstName
+			heal.dstGUID = dstGUID
+			heal.playerid = srcGUID
+			heal.playername = srcName
+			heal.spellid = spellId
+			heal.spellname = spellName
+			heal.amount = samount
+			heal.overhealing = 0
+			heal.critical = false
+			heal.absorbed = 0
 
-            Skada:FixPets(heal)
-            log_heal(Skada.current, heal, true)
-            log_heal(Skada.total, heal, true)
-        end
-    end
+			Skada:FixPets(heal)
+			log_heal(Skada.current, heal, true)
+			log_heal(Skada.total, heal, true)
+		end
+	end
 
 	local function SpellAbsorbed(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
-        local chk = ...
-        local spellId, spellName, spellSchool, aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount
-
-        if type(chk) == "number" then
-            -- Spell event
-            spellId, spellName, spellSchool, aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount = ...
-
-            if aAmount then
-                log_absorb(timestamp, eventtype, aGUID, aName, aFlags, dstGUID, dstName, dstFlags, aspellId, aspellName, aspellSchool, aAmount, 0, 0)
-            end
-        else
-            -- Swing event
-            aGUID, aName, aFlags, aRaidFlags, aspellId, aspellName, aspellSchool, aAmount = ...
-
-            if aAmount then
-                log_absorb(timestamp, eventtype, aGUID, aName, aFlags, dstGUID, dstName, dstFlags, aspellId, aspellName, nil, aAmount, 0, 0)
-            end
-        end
-    end
+			local chk = ...
+			if type(chk) == "number" then
+				-- Spell event
+				local _, _, _, aGUID, aName, aFlags, _, aSpellId, aSpellName, aSpellSchool, aAmount = ...
+				if aAmount then
+					log_absorb(timestamp, eventtype, aGUID, aName, aFlags, dstGUID, dstName, dstFlags, aSpellId, aSpellName, aSpellSchool, aAmount)
+				end
+			else
+				-- Swing event
+				local aGUID, aName, aFlags, _, aSpellId, aSpellName, aSpellSchool, aAmount = ...
+				if aAmount then
+					log_absorb(timestamp, eventtype, aGUID, aName, aFlags, dstGUID, dstName, dstFlags, aSpellId, aSpellName, aSpellSchool, aAmount)
+				end
+			end
+	end
 
 	local shields = {}
 
@@ -197,21 +195,21 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 			if shields[dstName] and shields[dstName][spellId] and shields[dstName][spellId][srcName] then
 				local prev = shields[dstName][spellId][srcName]
 
-                -- Log a heal for the remaining amount as overheal.
-                heal.dstName = dstName
-                heal.dstGUID = dstGUID
-                heal.playerid = srcGUID
-                heal.playername = srcName
-                heal.spellid = spellId
-                heal.spellname = spellName
-                heal.amount = 0
-                heal.overhealing = prev
-                heal.critical = nil
-                heal.absorbed = 0
+				-- Log a heal for the remaining amount as overheal.
+				heal.dstName = dstName
+				heal.dstGUID = dstGUID
+				heal.playerid = srcGUID
+				heal.playername = srcName
+				heal.spellid = spellId
+				heal.spellname = spellName
+				heal.amount = 0
+				heal.overhealing = prev
+				heal.critical = nil
+				heal.absorbed = 0
 
-                Skada:FixPets(heal)
-                log_heal(Skada.current, heal, true)
-                log_heal(Skada.total, heal, true)
+				Skada:FixPets(heal)
+				log_heal(Skada.current, heal, true)
+				log_heal(Skada.total, heal, true)
 
 				shields[dstName][spellId][srcName] = amount
 			end
@@ -227,7 +225,7 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 				local prev = shields[dstName][spellId][srcName]
 				--if prev and prev > amount then
 				if prev then
-                    heal.dstName = dstName
+					heal.dstName = dstName
 					heal.dstGUID = dstGUID
 					heal.playerid = srcGUID
 					heal.playername = srcName
@@ -293,10 +291,10 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 				d.value = totalhealing
 
 				d.valuetext = Skada:FormatValueText(
-												Skada:FormatNumber(totalhealing), self.metadata.columns.Healing,
-												Skada:FormatNumber(getHPSByValue(set, player, totalhealing)), self.metadata.columns.HPS,
-												string.format("%02.1f%%", totalhealing / set.healing * 100), self.metadata.columns.Percent
-											)
+					Skada:FormatNumber(totalhealing), self.metadata.columns.Healing,
+					Skada:FormatNumber(getHPSByValue(set, player, totalhealing)), self.metadata.columns.HPS,
+					string.format("%02.1f%%", totalhealing / set.healing * 100), self.metadata.columns.Percent
+				)
 				d.class = player.class
 				d.role = player.role
 
@@ -327,10 +325,10 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 				d.value = player.healing
 
 				d.valuetext = Skada:FormatValueText(
-												Skada:FormatNumber(player.healing), self.metadata.columns.Healing,
-												Skada:FormatNumber(getHPS(set, player)), self.metadata.columns.HPS,
-												string.format("%02.1f%%", player.healing / set.healing * 100), self.metadata.columns.Percent
-											)
+					Skada:FormatNumber(player.healing), self.metadata.columns.Healing,
+					Skada:FormatNumber(getHPS(set, player)), self.metadata.columns.HPS,
+					string.format("%02.1f%%", player.healing / set.healing * 100), self.metadata.columns.Percent
+				)
 				d.class = player.class
 				d.role = player.role
 
@@ -391,9 +389,9 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 				d.label = spell.name
 				d.value = spell.healing
 				d.valuetext = Skada:FormatValueText(
-												Skada:FormatNumber(spell.healing), self.metadata.columns.Healing,
-												string.format("%02.1f%%", spell.healing / player.healing * 100), self.metadata.columns.Percent
-											)
+					Skada:FormatNumber(spell.healing), self.metadata.columns.Healing,
+					string.format("%02.1f%%", spell.healing / player.healing * 100), self.metadata.columns.Percent
+				)
 				local _, _, icon = GetSpellInfo(spell.id)
 				d.icon = icon
 				d.spellid = spell.id
@@ -432,11 +430,11 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 					d.label = heal.name or dstGUID -- second clause for legacy data upgrade
 					d.value = heal.amount
 					d.class = heal.class
-                    d.role = player.role
+					d.role = player.role
 					d.valuetext = Skada:FormatValueText(
-													Skada:FormatNumber(heal.amount), self.metadata.columns.Healing,
-													string.format("%02.1f%%", heal.amount / player.healing * 100), self.metadata.columns.Percent
-												)
+						Skada:FormatNumber(heal.amount), self.metadata.columns.Healing,
+						string.format("%02.1f%%", heal.amount / player.healing * 100), self.metadata.columns.Percent
+					)
 					if heal.amount > max then
 						max = heal.amount
 					end
@@ -451,9 +449,9 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 	end
 
 	function mod:OnEnable()
-		mod.metadata		= {showspots = true, click1 = spellsmod, click2 = healedmod, columns = {Healing = true, HPS = true, Percent = true}, icon = "Interface\\Icons\\Ability_priest_flashoflight"}
-		spellsmod.metadata	= {tooltip = spell_tooltip, columns = {Healing = true, Percent = true}}
-		healedmod.metadata 	= {showspots = true, columns = {Healing = true, Percent = true}}
+		mod.metadata = {showspots = true, click1 = spellsmod, click2 = healedmod, columns = {Healing = true, HPS = true, Percent = true}, icon = "Interface\\Icons\\Ability_priest_flashoflight"}
+		spellsmod.metadata = {tooltip = spell_tooltip, columns = {Healing = true, Percent = true}}
+		healedmod.metadata = {showspots = true, columns = {Healing = true, Percent = true}}
 		healingtaken.metadata = {showspots = true, columns = {Healing = true, HPS = true, Percent = true}, icon = "Interface\\Icons\\Ability_priest_cascade"}
 
 		-- handlers for Healing spells
@@ -468,7 +466,7 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 
 		Skada:AddMode(self, L["Healing"])
 		Skada:AddMode(healingtaken, L["Healing"])
-            
+
 		Skada:AddFeed(L["Healing: Personal HPS"], function()
 			if Skada.current then
 				local player = Skada:find_player(Skada.current, UnitGUID("player"))
@@ -482,7 +480,7 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 				return Skada:FormatNumber(getRaidHPS(Skada.current)).." "..L["RHPS"]
 			end
 		end)
-            
+
 	end
 
 	function mod:OnDisable()
@@ -536,4 +534,3 @@ Skada:AddLoadableModule("Healing", nil, function(Skada, L)
 		--wipe(shields)
 	end
 end)
-

@@ -57,11 +57,22 @@ function TooltipsModule:OnEnable()
 end
 
 function TooltipsModule:Register(frame)
+    -- track and reapply the IsMouseEnabled on the frame
+    -- for some reason, wrapping the OnEnter handler of the frame causes
+    -- the frame to have mouse support enabled (at least as of 9.0.1)
+    local mouseEnabled = frame:IsMouseEnabled()
+
     self.header:WrapScript(frame, 'OnEnter', frame_OnEnter)
+
+    frame:EnableMouse(mouseEnabled)
 end
 
 function TooltipsModule:Unregister(frame)
+    local mouseEnabled = frame:IsMouseEnabled()
+
     self.header:UnwrapScript(frame, 'OnEnter')
+
+    frame:EnableMouse(mouseEnabled)
 end
 
 function TooltipsModule:SetShowTooltips(enable)

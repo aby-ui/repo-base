@@ -99,6 +99,12 @@ function Item:GetBlizzard(id)
 end
 
 function Item:Bind(frame)
+	for k in pairs(frame) do
+		if self[k] then
+			frame[k] = nil
+		end
+	end
+
 	local class = self
 	while class do
 		for k,v in pairs(class) do
@@ -239,10 +245,8 @@ function Item:UpdateBorder()
 			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and Search:InSet(link) then
 	  	r,g,b = .1, 1, 1
-            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
-            local corruption = self.info.corruption if corruption and corruption > 0 then r,g,b = 1,0,0 end
 		end
 	end
 
@@ -416,6 +420,7 @@ function Item:CreateDummy()
 
 	return slot
 end
+
 
 --[[ Data ]]--
 

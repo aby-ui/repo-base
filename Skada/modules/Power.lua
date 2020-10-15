@@ -1,14 +1,15 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Power", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Power then return end
 
 	local mod = Skada:NewModule("power gains")
 
 	local MANA      = 0
-	local ENERGY    = 3
+	local RAGE      = 1
 	local FOCUS     = 2
-    local RAGE      = 1
-    local RUNIC     = 6
-    local HOLY      = 9
+	local ENERGY    = 3
+	local RUNIC     = 6
+	local HOLY      = 9
 
 	local function log_gain(set, gain)
 		-- Get the player from set.
@@ -58,41 +59,41 @@ Skada:AddLoadableModule("Power", nil, function(Skada, L)
 		log_gain(Skada.total, gain)
 	end
 
-    -- Prototypes for the modes
-    local basemod = {}
-    local basemod_mt = { __index = basemod }
+	-- Prototypes for the modes
+	local basemod = {}
+	local basemod_mt = { __index = basemod }
 
-    local playermod = {}
-    local playermod_mt = { __index = playermod }
+	local playermod = {}
+	local playermod_mt = { __index = playermod }
 
-    function basemod:Create(power, modename, playermodename, modeicon)
-        local pmode = {
-            metadata = {},
-            name = playermodename
-        }
-        setmetatable(pmode, playermod_mt)
+	function basemod:Create(power, modename, playermodename, modeicon)
+		local pmode = {
+			metadata = {},
+			name = playermodename
+		}
+		setmetatable(pmode, playermod_mt)
 
-        local instance = {
-            playermod = pmode,
-            metadata = {
-                showspots = true,
-                click1 = pmode,
-                icon = modeicon
-            },
-            name = modename
-        }
-        instance.power = power
-        pmode.power = power
+		local instance = {
+			playermod = pmode,
+			metadata = {
+				showspots = true,
+				click1 = pmode,
+				icon = modeicon
+			},
+			name = modename
+		}
+		instance.power = power
+		pmode.power = power
 
-        setmetatable(instance, basemod_mt)
-        return instance
-    end
+		setmetatable(instance, basemod_mt)
+		return instance
+	end
 
-    function basemod:GetName()
-        return self.name
-    end
+	function basemod:GetName()
+		return self.name
+	end
 
-    function basemod:Update(win, set)
+	function basemod:Update(win, set)
 		local nr = 1
 		local max = 0
 
@@ -105,11 +106,11 @@ Skada:AddLoadableModule("Power", nil, function(Skada, L)
 				d.id = player.id
 				d.label = player.name
 				d.value = player.power[self.power].amount
-                if self.power == MANA then
-                    d.valuetext = Skada:FormatNumber(player.power[self.power].amount)
-                else
-                    d.valuetext = player.power[self.power].amount
-                end
+				if self.power == MANA then
+					d.valuetext = Skada:FormatNumber(player.power[self.power].amount)
+				else
+					d.valuetext = player.power[self.power].amount
+				end
 				d.class = player.class
 				d.role = player.role
 
@@ -128,12 +129,12 @@ Skada:AddLoadableModule("Power", nil, function(Skada, L)
 	end
 
 	function basemod:GetSetSummary(set)
-        return Skada:FormatNumber(set.power[self.power] or 0)
+		return Skada:FormatNumber(set.power[self.power] or 0)
 	end
 
-    function playermod:GetName()
-        return self.name
-    end
+	function playermod:GetName()
+		return self.name
+	end
 
 	function playermod:Enter(win, id, label)
 		self.playerid = id
@@ -162,11 +163,11 @@ Skada:AddLoadableModule("Power", nil, function(Skada, L)
 				d.id = spellid
 				d.label = name
 				d.value = amount
-                if self.power == MANA then
-                    d.valuetext = Skada:FormatNumber(amount)..(" (%02.1f%%)"):format(amount / player.power[self.power].amount * 100)
-                else
-                    d.valuetext = amount..(" (%02.1f%%)"):format(amount / player.power[self.power].amount * 100)
-                end
+				if self.power == MANA then
+					d.valuetext = Skada:FormatNumber(amount)..(" (%02.1f%%)"):format(amount / player.power[self.power].amount * 100)
+				else
+					d.valuetext = amount..(" (%02.1f%%)"):format(amount / player.power[self.power].amount * 100)
+				end
 				d.icon = icon
 				d.spellid = spellid
 
@@ -182,12 +183,12 @@ Skada:AddLoadableModule("Power", nil, function(Skada, L)
 		win.metadata.maxvalue = max
 	end
 
-    local manamod = basemod:Create(MANA, L["Mana gained"], L["Mana gain spell list"], "Interface\\Icons\\Inv_misc_ancient_mana")
-    local energymod = basemod:Create(ENERGY, L["Energy gained"], L["Energy gain sources"], "Interface\\Icons\\Ability_rogue_sprint")
-    local runicmod = basemod:Create(RUNIC, L["Runic power gained"], L["Runic power gain sources"], "Interface\\Icons\\Ability_deathknight_runicimpowerment")
-    local ragemod = basemod:Create(RAGE, L["Rage gained"], L["Rage gain sources"], "Interface\\Icons\\Ability_warrior_rampage")
-    local holymod = basemod:Create(HOLY, L["Holy power gained"], L["Holy power gain sources"], "Interface\\Icons\\Ability_paladin_beaconoflight")
-    local focusmod = basemod:Create(FOCUS, L["Focus gained"], L["Focus gain sources"], "Interface\\Icons\\Ability_hunter_focusedaim")
+	local manamod = basemod:Create(MANA, L["Mana gained"], L["Mana gain spell list"], "Interface\\Icons\\Inv_misc_ancient_mana")
+	local energymod = basemod:Create(ENERGY, L["Energy gained"], L["Energy gain sources"], "Interface\\Icons\\Ability_rogue_sprint")
+	local runicmod = basemod:Create(RUNIC, L["Runic power gained"], L["Runic power gain sources"], "Interface\\Icons\\Ability_deathknight_runicimpowerment")
+	local ragemod = basemod:Create(RAGE, L["Rage gained"], L["Rage gain sources"], "Interface\\Icons\\Ability_warrior_rampage")
+	local holymod = basemod:Create(HOLY, L["Holy power gained"], L["Holy power gain sources"], "Interface\\Icons\\Ability_paladin_beaconoflight")
+	local focusmod = basemod:Create(FOCUS, L["Focus gained"], L["Focus gain sources"], "Interface\\Icons\\Ability_hunter_focusedaim")
 
 	function mod:OnEnable()
 		Skada:RegisterForCL(SpellEnergize, 'SPELL_ENERGIZE', {src_is_interesting = true})

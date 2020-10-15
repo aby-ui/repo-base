@@ -49,6 +49,7 @@ local ProcessGarrisonLandingPageMMB = function()
     hook_GLPMMB_UpdateIcon(glpmmb)
     hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", hook_GLPMMB_UpdateIcon)
 
+    glpmmb:ClearAllPoints()
     glpmmb:SetParent(dbicon)
     glpmmb:SetAllPoints()
     local update = function()
@@ -58,14 +59,14 @@ local ProcessGarrisonLandingPageMMB = function()
     update()
     hooksecurefunc(dbicon, "SetParent", update)
 
-    hooksecurefunc(glpmmb, "Show", function() dbicon:Show() end)
-    hooksecurefunc(glpmmb, "Hide", function() dbicon:Hide() end)
+    hooksecurefunc(glpmmb, "Show", function() glpmmb:ClearAllPoints() glpmmb:SetAllPoints(dbicon) dbicon:Show() end)
+    hooksecurefunc(glpmmb, "Hide", function() glpmmb:ClearAllPoints() glpmmb:SetAllPoints(dbicon) dbicon:Hide() end)
     if glpmmb:IsShown() then dbicon:Show() else dbicon:Hide() end
 
     --其他动画不用设置
     GarrisonLandingPageMinimapButton.LoopingGlow:SetSize(36,36)
-    --关闭教程位置漂移
-    --TODO aby9 SetOrHookScript(GarrisonLandingPageTutorialBox, "OnShow", function(self) self.CloseButton:Click() end)
+    --关闭教程位置漂移 9.0似乎没问题了，可重置教程然后 HelpTip:Show(GarrisonLandingPageMinimapButton, GarrisonFollowerMission:GenerateHelpTipInfo()) 测试
+    --SetOrHookScript(GarrisonLandingPageTutorialBox, "OnShow", function(self) self.CloseButton:Click() end)
 end
 
 local addonName = ...

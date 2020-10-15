@@ -1,3 +1,4 @@
+local _, Skada = ...
 Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.Deaths then return end
 
@@ -19,13 +20,13 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 				entry = {}
 				log[pos] = entry
 			end
-			entry.srcname =   srcname
-			entry.spellid =   spellid
+			entry.srcname = srcname
+			entry.spellid = spellid
 			entry.spellname = spellname
-			entry.amount =	  amount
-			entry.absorb =	  absorb
-			entry.ts = 	  timestamp
-			entry.hp = 	  healthoverride or UnitHealth(playername)
+			entry.amount = amount
+			entry.absorb = absorb
+			entry.ts = timestamp
+			entry.hp = healthoverride or UnitHealth(playername)
 
 			pos = pos + 1
 			if pos > 15 then pos = 1 end
@@ -384,8 +385,8 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 	end
 
 	function mod:OnEnable()
-		mod.metadata 		= {ordersort = true, click1 = deathlog, columns = {Deaths = true, Timestamp = true}, icon = "Interface\\Icons\\Ability_warlock_cremation"}
-		deathlog.metadata 	= {ordersort = true, columns = {Change = true, Health = false, Percent = true, Absorb = true}}
+		mod.metadata = {ordersort = true, click1 = deathlog, columns = {Deaths = true, Timestamp = true}, icon = "Interface\\Icons\\Ability_warlock_cremation"}
+		deathlog.metadata = {ordersort = true, columns = {Change = true, Health = false, Percent = true, Absorb = true}}
 
 		Skada:RegisterForCL(UnitDied, 'UNIT_DIED', {dst_is_interesting_nopets = true})
 
@@ -447,4 +448,3 @@ Skada:AddLoadableModule("Deaths", nil, function(Skada, L)
 		end
 	end
 end)
-

@@ -4,6 +4,7 @@ CoreUIRegisterSlash('SIMC_LOADER', '/sim', nil, function(...)
     if LoadSimcAddOn then
         LoadSimcAddOn(nil, Simulationcraft);
         LoadSimcAddOn = nil
+        Simulationcraft:OnInitialize()
     end
     Simulationcraft:HandleChatCommand(...)
 end)
@@ -426,11 +427,13 @@ function Simulationcraft:HandleChatCommand(input)
       debugOutput = true
     elseif arg == 'nobag' or arg == 'nobags' or arg == 'nb' then
       noBags = true
+--[[
     elseif arg == 'minimap' then
       self.db.profile.minimap.hide = not self.db.profile.minimap.hide
       DEFAULT_CHAT_FRAME:AddMessage("SimulationCraft: Minimap button is now " .. (self.db.profile.minimap.hide and "hidden" or "shown"))
       Simulationcraft:UpdateMinimapButton()
       return
+--]]
     end
   end
 

@@ -60,6 +60,7 @@ addState('modifier', 'ctrlShift', '[mod:ctrl,mod:shift]')
 addState('modifier', 'alt', '[mod:alt]', ALT_KEY)
 addState('modifier', 'ctrl', '[mod:ctrl]', CTRL_KEY)
 addState('modifier', 'shift', '[mod:shift]', SHIFT_KEY)
+addState('modifier', 'meta', '[mod:meta]')
 
 -- paging
 for i = 2, 6 do

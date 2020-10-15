@@ -1,32 +1,27 @@
-
+local _, Skada = ...
 Skada:AddLoadableModule("CC", nil, function(Skada, L)
 	if Skada.db.profile.modulesBlocked.CC then return end
 
 	local mod = Skada:NewModule(L["CC breakers"])
 
-	local CLIENT_VERSION = tonumber((select(4, GetBuildInfo())))
-
-	local WoW5 = CLIENT_VERSION > 50000
-	local IsInRaid = IsInRaid or function() return GetNumRaidMembers() > 0 end
-
 	-- CC spell IDs shamelessly stolen from Recount - thanks!
-	local CCId={
-		[118]=true, -- Polymorph
-		[28272]=true, -- Polymorph Pig
-		[28271]=true, -- Polymorph Turtle
-		[61305]=true, -- Polymorph Black Cat
-		[61721]=true, -- Polymorph Rabbit
-		[61780]=true, -- Polymorph Turkey
-		[9484]=true, -- Shackle Undead
-		[3355]=true, -- Freezing Trap
-		[19386]=true, -- Wyvern Sting
-		[339]=true, -- Entangling Roots
-		[2637]=true, -- Hibernate
-		[6770]=true, -- Sap
-		[6358]=true, -- Seduction (succubus)
-		[20066]=true, -- Repentance
-		[51514]=true, -- Hex
-		[76780]=true, -- Bind Elemental
+	local CCId = {
+		[118] = true, -- Polymorph
+		[28272] = true, -- Polymorph Pig
+		[28271] = true, -- Polymorph Turtle
+		[61305] = true, -- Polymorph Black Cat
+		[61721] = true, -- Polymorph Rabbit
+		[61780] = true, -- Polymorph Turkey
+		[9484] = true, -- Shackle Undead
+		[3355] = true, -- Freezing Trap
+		[19386] = true, -- Wyvern Sting
+		[339] = true, -- Entangling Roots
+		[2637] = true, -- Hibernate
+		[6770] = true, -- Sap
+		[6358] = true, -- Seduction (succubus)
+		[20066] = true, -- Repentance
+		[51514] = true, -- Hex
+		[76780] = true, -- Bind Elemental
 	}
 
 	local function log_ccbreak(set, srcGUID, srcName)
@@ -42,12 +37,12 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 	end
 
 	local function SpellAuraBroken(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
-		local spellId, spellName, spellSchool, auraType, extraSpellId, extraSpellName, extraSchool
+		local spellId, spellName, extraSpellId, extraSpellName
 
 		if eventtype == "SPELL_AURA_BROKEN" then
-			spellId, spellName, spellSchool, auraType = ...
+			spellId, spellName = ...
 		else
-			spellId, spellName, spellSchool, extraSpellId, extraSpellName, extraSchool, auraType = ...
+			spellId, spellName, _, extraSpellId, extraSpellName = ...
 		end
 
 		if CCId[spellId] then
@@ -69,7 +64,7 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 				if Skada.db.profile.modules.ccignoremaintanks then
 
 					-- Loop through our raid and return if src is a main tank.
-					for i = 1, MAX_RAID_MEMBERS do
+					for i = 1, 40 do
 						local name, _, _, _, _, class, _, _, _, role, _ = GetRaidRosterInfo(i)
 						if name == srcName and role == "maintank" then
 							return
@@ -110,7 +105,7 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 	end
 
 	function mod:AddToTooltip(set, tooltip)
-		GameTooltip:AddDoubleLine(L["CC breaks"], set.ccbreaks, 1,1,1)
+		GameTooltip:AddDoubleLine(L["CC breaks"], set.ccbreaks, 1, 1, 1)
 	end
 
 	function mod:GetSetSummary(set)
@@ -159,16 +154,16 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 
 	local opts = {
 		ccoptions = {
-			type="group",
-			name=L["CC"],
-			args={
+			type = "group",
+			name = L["CC"],
+			args = {
 
 				announce = {
 					type = "toggle",
 					name = L["Announce CC breaking to party"],
 					get = function() return Skada.db.profile.modules.ccannounce end,
 					set = function() Skada.db.profile.modules.ccannounce = not Skada.db.profile.modules.ccannounce end,
-					order=1,
+					order = 1,
 				},
 
 				ignoremaintanks = {
@@ -176,7 +171,7 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 					name = L["Ignore Main Tanks"],
 					get = function() return Skada.db.profile.modules.ccignoremaintanks end,
 					set = function() Skada.db.profile.modules.ccignoremaintanks = not Skada.db.profile.modules.ccignoremaintanks end,
-					order=2,
+					order = 2,
 				},
 
 			},
@@ -188,4 +183,3 @@ Skada:AddLoadableModule("CC", nil, function(Skada, L)
 		table.insert(Skada.options.plugins, opts)
 	end
 end)
-

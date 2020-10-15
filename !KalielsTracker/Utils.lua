@@ -22,14 +22,26 @@ local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
 -- Version
 function KT.IsHigherVersion(newVersion, oldVersion)
     local result = false
-    local _, _, nV1, nV2, nV3 = strfind(newVersion, "(%d+)%.(%d+)%.(%d+)")
-    local _, _, oV1, oV2, oV3 = strfind(oldVersion, "(%d+)%.(%d+)%.(%d+)")
-    nV1, nV2, nV3 = tonumber(nV1), tonumber(nV2), tonumber(nV3)
-    oV1, oV2, oV3 = tonumber(oV1), tonumber(oV2), tonumber(oV3)
+    local _, _, nV1, nV2, nV3, nBuild = strfind(newVersion, "(%d+)%.(%d+)%.(%d+)(.*)")
+    local _, _, oV1, oV2, oV3, oBuild = strfind(oldVersion, "(%d+)%.(%d+)%.(%d+)(.*)")
+    local _, _, nBuildType, nBuildNumber = strfind(nBuild, "%-(%w+)%.(%d+)")
+    local _, _, oBuildType, oBuildNumber = strfind(oBuild, "%-(%w+)%.(%d+)")
+    nV1, nV2, nV3, nBuildNumber = tonumber(nV1), tonumber(nV2), tonumber(nV3), tonumber(nBuildNumber)
+    oV1, oV2, oV3, oBuildNumber = tonumber(oV1), tonumber(oV2), tonumber(oV3), tonumber(oBuildNumber)
     if nV1 == oV1 then
         if nV2 == oV2 then
             if nV3 > oV3 then
                 result = true
+            else
+                if nBuildType == oBuildType then
+                    if nBuildNumber > oBuildNumber then
+                        result = true
+                    end
+                else
+                    if nBuildType == nil then
+                        result = true
+                    end
+                end
             end
         else
             if nV2 > oV2 then
@@ -112,9 +124,8 @@ end
 -- GameTooltip
 local colorNotUsable = { r = 1, g = 0, b = 0 }
 function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
-    local bckQuestLogSelection = GetQuestLogSelection()  -- backup Quest Log selection
-    local questLogIndex = GetQuestLogIndexByID(questID)
-    SelectQuestLogEntry(questLogIndex)	-- for num Choices
+    local bckSelectedQuestID = C_QuestLog.GetSelectedQuest()  -- backup selected Quest
+    C_QuestLog.SetSelectedQuest(questID)  -- for num Choices
 
     local xp = GetQuestLogRewardXP(questID)
     local money = GetQuestLogRewardMoney(questID)
@@ -122,7 +133,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
     local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
     local numQuestRewards = GetNumQuestLogRewards(questID)
     local numQuestSpellRewards = GetNumQuestLogRewardSpells(questID)
-    local numQuestChoices = GetNumQuestLogChoices()
+    local numQuestChoices = GetNumQuestLogChoices(questID)
     local honor = GetQuestLogRewardHonor(questID)
     if xp > 0 or
             money > 0 or
@@ -134,9 +145,27 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
             honor > 0 then
         local isQuestWorldQuest = QuestUtils_IsQuestWorldQuest(questID)
         local isWarModeDesired = C_PvP.IsWarModeDesired()
-        local questHasWarModeBonus = C_QuestLog.QuestHasWarModeBonus(questID)
+        local questHasWarModeBonus = C_QuestLog.QuestCanHaveWarModeBonus(questID)
         tooltip:AddLine(" ")
         tooltip:AddLine(REWARDS..":")
+        -- xp
+        if xp > 0 then
+            tooltip:AddLine(format(BONUS_OBJECTIVE_EXPERIENCE_FORMAT, FormatLargeNumber(xp).."|c0000ff00"), 1, 1, 1)
+            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
+                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_XP_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
+            end
+        end
+        -- honor
+        if honor > 0 then
+            tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, "Interface\\ICONS\\Achievement_LegionPVPTier4", honor, HONOR), 1, 1, 1)
+        end
+        -- money
+        if money > 0 then
+            tooltip:AddLine(GetCoinTextureString(money, 12), 1, 1, 1)
+            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
+                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
+            end
+        end
         if not isBonus then
             -- choices
             for i = 1, numQuestChoices do
@@ -174,20 +203,6 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
                 tooltip:AddLine(text, color.r, color.g, color.b)
             end
         end
-        -- xp
-        if xp > 0 then
-            tooltip:AddLine(format(BONUS_OBJECTIVE_EXPERIENCE_FORMAT, FormatLargeNumber(xp).."|c0000ff00"), 1, 1, 1)
-            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
-                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_XP_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
-            end
-        end
-        -- money
-        if money > 0 then
-            tooltip:AddLine(GetCoinTextureString(money, 12), 1, 1, 1)
-            if isWarModeDesired and isQuestWorldQuest and questHasWarModeBonus then
-                tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
-            end
-        end
         -- artifact power
         if artifactXP > 0 then
             tooltip:AddLine(format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(artifactXP)), 1, 1, 1)
@@ -196,17 +211,18 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
         if numQuestCurrencies > 0 then
             QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip)
         end
-        -- honor
-        if honor > 0 then
-            tooltip:AddLine(format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, "Interface\\ICONS\\Achievement_LegionPVPTier4", honor, HONOR), 1, 1, 1)
-        end
         -- war mode bonus (quest only)
         if isWarModeDesired and not isQuestWorldQuest and questHasWarModeBonus then
             tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(C_PvP.GetWarModeRewardBonus()))
         end
     end
 
-    SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
+    C_QuestLog.SetSelectedQuest(bckSelectedQuestID)  -- restore selected Quest
+end
+
+-- Quest
+function KT.GetQuestTagInfo(questID)
+    return C_QuestLog.GetQuestTagInfo(questID) or {}
 end
 
 -- =====================================================================================================================
