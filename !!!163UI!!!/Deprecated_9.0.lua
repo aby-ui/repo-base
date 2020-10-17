@@ -91,7 +91,13 @@ ActionButton_StartFlash = function(b) return b:StartFlash() end
 ActionButton_StopFlash = function(b) return b:StopFlash() end
 ActionButton_IsFlashing = function(b) return b:IsFlashing() end
 
-GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
+GetCurrencyInfo = function(ID)
+    local i = C_CurrencyInfo.GetCurrencyInfo(ID)
+    --sig: name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(824)
+    if i then
+        return i.name, i.quantity, i.iconFileID, i.quantityEarnedThisWeek, i.maxWeeklyQuantity, i.maxQuantity, i.discovered, i.quality
+    end
+end
 GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
 GetQuestLogTitle = C_QuestLog.GetTitleForLogIndex
 

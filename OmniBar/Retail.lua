@@ -65,7 +65,7 @@ addon.Cooldowns = {
         [49206] = { duration = 180, class = "DEATHKNIGHT", specID = { 252 } }, -- Summon Gargoyle
             [207349] = { parent = 49206 }, -- Dark Arbiter
         [91802] = { duration = 30, class = "DEATHKNIGHT", specID = { 252 } }, -- Shambling Rush (Ghoul)
-        [130736] = { duration = 45, class = "DEATHKNIGHT", specID = { 252 } }, -- Soul Reaper
+        --[130736] = { duration = 45, class = "DEATHKNIGHT", specID = { 252 } }, -- Soul Reaper
         [207289] = { duration = 120, class = "DEATHKNIGHT", specID = { 252 } }, -- Unholy Frenzy
         [207319] = { duration = 60, class = "DEATHKNIGHT", specID = { 252 } }, -- Corpse Shield
         [220143] = { duration = 90, class = "DEATHKNIGHT", specID = { 252 } }, -- Apocalypse
@@ -183,7 +183,7 @@ addon.Cooldowns = {
         [31821] = { duration = 180, class = "PALADIN", specID = { 65 } }, -- Aura Mastery
         [105809] = { duration = 90, class = "PALADIN", specID = { 65 } }, -- Holy Avenger
         [114158] = { duration = 60, class = "PALADIN", specID = { 65 } }, -- Light's Hammer
-        [183415] = { duration = 180, class = "PALADIN", specID = { 65 } }, -- Aura of Mercy
+        --[183415] = { duration = 180, class = "PALADIN", specID = { 65 } }, -- Aura of Mercy
         [200652] = { duration = 90, class = "PALADIN", specID = { 65 } }, -- Tyr's Deliverance
         [210294] = { duration = 25, class = "PALADIN", specID = { 65 } }, -- Divine Favor
         [214202] = { duration = 30, class = "PALADIN", specID = { 65 }, charges = 2 }, -- Rule of Law
@@ -197,8 +197,8 @@ addon.Cooldowns = {
         [96231] = { default = true, duration = 15, class = "PALADIN", specID = { 66, 70 } }, -- Rebuke
         [152262] = { duration = 30, class = "PALADIN", specID = { 66 } }, -- Seraphim
         [190784] = { duration = 45, class = "PALADIN", specID = { 66 } }, -- Divine Steed
-        [204035] = { duration = 180, class = "PALADIN", specID = { 66 } }, -- Bastion of Light
-        [204150] = { duration = 300, class = "PALADIN", specID = { 66 } }, -- Aegis of Light
+        --[204035] = { duration = 180, class = "PALADIN", specID = { 66 } }, -- Bastion of Light
+        --[204150] = { duration = 300, class = "PALADIN", specID = { 66 } }, -- Aegis of Light
         [209202] = { duration = 60, class = "PALADIN", specID = { 66 } }, -- Eye of Tyr
         [215652] = { duration = 25, class = "PALADIN", specID = { 66 } }, -- Shield of Virtue
 
@@ -208,7 +208,7 @@ addon.Cooldowns = {
         [204939] = { duration = 60, class = "PALADIN", specID = { 70 } }, -- Hammer of Reckoning
         [205191] = { duration = 60, class = "PALADIN", specID = { 70 } }, -- Eye for an Eye
         [205273] = { duration = 45, class = "PALADIN", specID = { 70 } }, -- Wake of Ashes
-        [210191] = { duration = 60, class = "PALADIN", specID = { 70 }, charges = 2 }, -- Word of Glory
+        --[210191] = { duration = 60, class = "PALADIN", specID = { 70 }, charges = 2 }, -- Word of Glory
         [210220] = { duration = 180, class = "PALADIN", specID = { 70 } }, -- Holy Wrath
         [210256] = { duration = 45, class = "PALADIN", specID = { 70 } }, -- Blessing of Sanctuary
 
@@ -474,7 +474,7 @@ addon.Cooldowns = {
 
         [34477] = { duration = 30, class = "HUNTER", specID = { 254 } }, -- Misdirection
         [186387] = { duration = 20, class = "HUNTER", specID = { 254 } }, -- Bursting Shot
-        [193526] = { duration = 140, class = "HUNTER", specID = { 254 } }, -- Trueshot
+        --[193526] = { duration = 140, class = "HUNTER", specID = { 254 } }, -- Trueshot
         [199483] = { duration = 60, class = "HUNTER", specID = { 254, 255 } }, -- Camouflage
         [204147] = { duration = 20, class = "HUNTER", specID = { 254 } }, -- Windburst
         [206817] = { duration = 30, class = "HUNTER", specID = { 254 } }, -- Sentinel
@@ -638,8 +638,8 @@ addon.Cooldowns = {
         [116849] = { duration = 120, class = "MONK", specID = { 270 } }, -- Life Cocoon
         [197908] = { duration = 90, class = "MONK", specID = { 270 } }, -- Mana Tea
         --[197945] = { duration = 20, class = "MONK", specID = { 270 }, charges = 2 }, -- Mistwalk
-        [198664] = { duration = 180, class = "MONK", specID = { 270 } }, -- Invoke Chi-Ji, the Red Crane
+        --[198664] = { duration = 180, class = "MONK", specID = { 270 } }, -- Invoke Chi-Ji, the Red Crane
         [198898] = { duration = 30, class = "MONK", specID = { 270 } }, -- Song of Chi-Ji
-        [216113] = { duration = 45, class = "MONK", specID = { 270 } }, -- Way of the Crane
+        --[216113] = { duration = 45, class = "MONK", specID = { 270 } }, -- Way of the Crane
 
 }

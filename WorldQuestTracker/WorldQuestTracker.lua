@@ -651,12 +651,12 @@ end
 		local title, factionID = GetQuestInfoByQuestID(questID)
 
 		local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
-		local tagID = tagInfo.tagID
-		local tagName = tagInfo.tagName
-		local worldQuestType = tagInfo.worldQuestType
-		local rarity = tagInfo.rarity
-		local isElite = tagInfo.isElite
-		--local quality = tagInfo.quality
+		local tagID = tagInfo and tagInfo.tagID
+		local tagName = tagInfo and tagInfo.tagName
+		local worldQuestType = tagInfo and tagInfo.worldQuestType
+		local rarity = tagInfo and tagInfo.rarity
+		local isElite = tagInfo and tagInfo.isElite
+		--local quality = tagInfo and tagInfo.quality
 
 		return title, factionID, tagID, tagName, worldQuestType, rarity, isElite
 	end

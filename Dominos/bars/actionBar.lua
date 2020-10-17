@@ -53,12 +53,13 @@ ActionBar.mainbarOffsets = {
             pages.shadowform = 6
         end
 
-        t[i] = pages
+        --t[i] = pages
         return pages
     end
 }
 
 ActionBar:Extend('OnLoadSettings', function(self, id)
+    id = id or self.id --abyui fix for default page change
     self.sets.pages = setmetatable(self.sets.pages, id == 1 and self.mainbarOffsets or self.defaultOffsets)
     self.pages = self.sets.pages[self.class]
 end)
