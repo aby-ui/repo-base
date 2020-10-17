@@ -288,7 +288,6 @@ local function BuildHubPanel(panel)
     panel.OpacityFilterInactiveOnlyInCombat = CreateQuickCheckbutton(objectName.."OpacityFilterInactiveOnlyInCombat", "仅当玩家在战斗时才过滤", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB + 20)
 	panel.OpacityFilterMini = CreateQuickCheckbutton(objectName.."OpacityFilterMini", "过滤杂兵", AlignmentColumn, panel.OpacityFilterInactiveOnlyInCombat, OffsetColumnB)
 
-
 	panel.OpacityCustomFilterLabel = CreateQuickItemLabel(nil, "过滤单位名字:", AlignmentColumn, F, 8, 4)
 	panel.OpacityFilterList, L = CreateQuickEditbox(objectName.."OpacityFilterList", AlignmentColumn, panel.OpacityCustomFilterLabel, 8)
 
@@ -340,8 +339,6 @@ local function BuildHubPanel(panel)
 	--[[
 	-- Warning Border Glow
 	--]]
-
-	--
 
     -- Column 2
 	panel.EnableOffTankHighlight = CreateQuickCheckbutton(objectName.."EnableOffTankHighlight", "高亮正在攻击副坦的", AlignmentColumn, panel.ThreatLabel, OffsetColumnB)
@@ -430,7 +427,7 @@ local function BuildHubPanel(panel)
 	--[[
 	theme.Default.name.size = 18
 	--]]
-	local ClearCacheButton = CreateFrame("Button", objectName.."ClearCacheButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate")
+	local ClearCacheButton = CreateFrame("Button", objectName.."ClearCacheButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	ClearCacheButton:SetPoint("TOPLEFT", F, "BOTTOMLEFT",-6, -18)
 	--ClearCacheButton:SetPoint("TOPLEFT", panel.AdvancedCustomCodeTextbox, "BOTTOMLEFT",-6, -18)
 	ClearCacheButton:SetWidth(300)
@@ -441,7 +438,7 @@ local function BuildHubPanel(panel)
 			print("Tidy Plates Hub: Cleared", count, "entries from cache.")
 		end)
 
-	local BlizzOptionsButton = CreateFrame("Button", objectName.."BlizzButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate")
+	local BlizzOptionsButton = CreateFrame("Button", objectName.."BlizzButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	BlizzOptionsButton:SetPoint("TOPLEFT", ClearCacheButton, "BOTTOMLEFT", 0, -16)
 	--BlizzOptionsButton:SetPoint("TOPLEFT", panel.AdvancedCustomCodeTextbox, "BOTTOMLEFT",-6, -18)
 	BlizzOptionsButton:SetWidth(300)
@@ -560,7 +557,7 @@ SlashCmdList['HUB'] = SlashCommandHub
 --]]
 --end
 
---local HubHandler = CreateFrame("Frame")
+--local HubHandler = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 --HubHandler:SetScript("OnEvent", OnLogin)
 --HubHandler:RegisterEvent("PLAYER_LOGIN")
 

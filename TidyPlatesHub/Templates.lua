@@ -2,7 +2,7 @@ local font = TidyPlatesHubLocalizedFont or "Interface\\Addons\\TidyPlates\\Media
 local divider = "Interface\\Addons\\TidyPlatesHub\\shared\\ThinBlackLine"
 
 local PanelHelpers = TidyPlatesUtility.PanelHelpers 		-- PanelTools
-local DropdownFrame = CreateFrame("Frame", "TidyPlatesHubCategoryFrame", UIParent, "UIDropDownMenuTemplate" )
+local DropdownFrame = CreateFrame("Frame", "TidyPlatesHubCategoryFrame", UIParent, "UIDropDownMenuTemplate" , "BackdropTemplate")
 local L = TidyPlatesHub_GetLocalizedString
 
 -- Menu Templates
@@ -84,9 +84,9 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 
 	local function CreateQuickEditbox(name, ...)
 		local columnFrame = ...
-		local frame = CreateFrame("ScrollFrame", name, columnFrame, "UIPanelScrollFrameTemplate")
-		frame.BorderFrame = CreateFrameAby("Frame", nil, frame )
-		local EditBox = CreateFrame("EditBox", nil, frame)
+		local frame = CreateFrame("ScrollFrame", name, columnFrame, "UIPanelScrollFrameTemplate", "BackdropTemplate")
+		frame.BorderFrame = CreateFrame("Frame", nil, frame , "BackdropTemplate")
+		local EditBox = CreateFrame("EditBox", nil, frame, "BackdropTemplate")
 		-- Margins	-- Bottom/Left are supposed to be negative
 		frame.Margins = {Left = 4, Right = 24, Top = 8, Bottom = 8, }
 
@@ -163,7 +163,7 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 
 	local function CreateQuickHeadingLabel(name, label, ...)
 		local columnFrame = ...
-		local frame = CreateFrame("Frame", name, columnFrame)
+		local frame = CreateFrame("Frame", name, columnFrame, "BackdropTemplate")
 		-- Heading Appearance
 		frame:SetHeight(26)
 		frame:SetWidth(500)
@@ -184,7 +184,7 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 		-- Set Positions
 		QuickSetPoints(frame, ...)
 		-- Bookmark
-		local bookmark = CreateFrame("Frame", nil, columnFrame)
+		local bookmark = CreateFrame("Frame", nil, columnFrame, "BackdropTemplate")
 		bookmark:SetPoint("TOPLEFT", columnFrame, "TOPLEFT")
 		bookmark:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT")
 		columnFrame.Headings = columnFrame.Headings or {}
@@ -197,8 +197,8 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 
 	local function CreateDrawer(name, label, ...)
 		local columnFrame = ...
-		local frame = CreateFrame("Frame", name, columnFrame)
-		frame.AnchorButton = CreateFrame("Button", name.."Button", columnFrame)
+		local frame = CreateFrame("Frame", name, columnFrame, "BackdropTemplate")
+		frame.AnchorButton = CreateFrame("Button", name.."Button", columnFrame, "BackdropTemplate")
 
 		-- Heading Appearance
 		frame:SetHeight(26)
@@ -215,9 +215,9 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 		frame.Text:SetJustifyH("LEFT")
 		frame.Text:SetJustifyV("BOTTOM")
 
-		--frame.Button = CreateFrame("Button", name.."Button", frame)
+		--frame.Button = CreateFrame("Button", name.."Button", frame, "BackdropTemplate")
 
-		--local frame = CreateFrame("ScrollFrame", name, columnFrame, "UIPanelScrollFrameTemplate")
+		--local frame = CreateFrame("ScrollFrame", name, columnFrame, "UIPanelScrollFrameTemplate", "BackdropTemplate")
 		--:SetScrollChild()
 
 		-- Margins
@@ -231,7 +231,7 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 
 	local function CreateQuickItemLabel(name, label, ...)
 		local columnFrame = ...
-		local frame = CreateFrame("Frame", name, columnFrame)
+		local frame = CreateFrame("Frame", name, columnFrame, "BackdropTemplate")
 		frame:SetHeight(15)
 		frame:SetWidth(500)
 		frame.Text = frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
@@ -458,7 +458,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Panel
 	------------------------------
-	local panel = CreateFrameAby( "Frame", objectName.."_InterfaceOptionsPanel", UIParent);
+	local panel = CreateFrame( "Frame", objectName.."_InterfaceOptionsPanel", UIParent, "BackdropTemplate");
 	panel.objectName = objectName
 	panel:SetBackdrop({	bgFile = "Interface/Tooltips/UI-Tooltip-Background", --bgFile = "Interface/FrameGeneral/UI-Background-Marble",
 						edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -483,7 +483,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
         -- Warnings
         ------------------------------
-	panel.WarningFrame = CreateFrameAby("Frame", objectName.."WarningFrame", panel )
+	panel.WarningFrame = CreateFrame("Frame", objectName.."WarningFrame", panel , "BackdropTemplate")
 	panel.WarningFrame:SetPoint("LEFT", 16, 0 )
 	panel.WarningFrame:SetPoint("TOP", panel.MainLabel, "BOTTOM", 0, -8 )
         panel.WarningFrame:SetPoint("RIGHT", -16 , 16 )
@@ -501,7 +501,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
         -- Description
         panel.Warnings = CreateQuickHeadingLabel(nil, "", panel.WarningFrame, nil, 8, -4)
         -- Button
-	local WarningFixButton = CreateFrame("Button", objectName.."WarningFixButton", panel.WarningFrame, "TidyPlatesPanelButtonTemplate")
+	local WarningFixButton = CreateFrame("Button", objectName.."WarningFixButton", panel.WarningFrame, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	WarningFixButton:SetPoint("RIGHT", -10, 0)
 	WarningFixButton:SetWidth(150)
         WarningFixButton:SetText("问题修复...")
@@ -509,13 +509,13 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Main Scrolled Frame
 	------------------------------
-	panel.MainFrame = CreateFrame("Frame")
+	panel.MainFrame = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 	panel.MainFrame:SetWidth(412)
 	panel.MainFrame:SetHeight(2760) 		-- This can be set VERY long since we've got it in a scrollable window.
 
 	-- Scrollable Panel Window
 	------------------------------
-	panel.ScrollFrame = CreateFrame("ScrollFrame",objectName.."_Scrollframe", panel, "UIPanelScrollFrameTemplate")
+	panel.ScrollFrame = CreateFrame("ScrollFrame",objectName.."_Scrollframe", panel, "UIPanelScrollFrameTemplate", "BackdropTemplate")
 	panel.ScrollFrame:SetPoint("LEFT", 16 )
 	panel.ScrollFrame:SetPoint("TOP", panel.MainLabel, "BOTTOM", 0, -8 )
 	panel.ScrollFrame:SetPoint("BOTTOMRIGHT", -32 , 16 )
@@ -524,7 +524,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Scroll Frame Border
 	------------------------------
-	panel.ScrollFrameBorder = CreateFrameAby("Frame", objectName.."ScrollFrameBorder", panel.ScrollFrame )
+	panel.ScrollFrameBorder = CreateFrame("Frame", objectName.."ScrollFrameBorder", panel.ScrollFrame , "BackdropTemplate")
 	panel.ScrollFrameBorder:SetPoint("TOPLEFT", -4, 5)
 	panel.ScrollFrameBorder:SetPoint("BOTTOMRIGHT", 3, -5)
 	panel.ScrollFrameBorder:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -538,7 +538,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 	-- Alignment Colum
 	------------------------------
-	panel.AlignmentColumn = CreateFrame("Frame", objectName.."_AlignmentColumn", panel.MainFrame)
+	panel.AlignmentColumn = CreateFrame("Frame", objectName.."_AlignmentColumn", panel.MainFrame, "BackdropTemplate")
 	panel.AlignmentColumn:SetPoint("TOPLEFT", 12,0)
 	panel.AlignmentColumn:SetPoint("BOTTOMRIGHT", panel.MainFrame, "BOTTOM")
 	panel.AlignmentColumn.Callback = function() OnPanelItemChange(panel) end
@@ -568,7 +568,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 
 	-- Paste
-	local PasteThemeDataButton = CreateFrame("Button", objectName.."PasteThemeDataButton", panel, "TidyPlatesPanelButtonTemplate")
+	local PasteThemeDataButton = CreateFrame("Button", objectName.."PasteThemeDataButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	PasteThemeDataButton.tooltipText = "从已存储的模板里加载配置"
 	PasteThemeDataButton:SetPoint("TOPRIGHT", -40, -22)
 	PasteThemeDataButton:SetWidth(110)
@@ -578,7 +578,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 	PasteThemeDataButton:SetScript("OnClick", function() PasteSettings(panel); end)
 
 	-- Copy
-	local CopyThemeDataButton = CreateFrame("Button", objectName.."CopyThemeDataButton", panel, "TidyPlatesPanelButtonTemplate")
+	local CopyThemeDataButton = CreateFrame("Button", objectName.."CopyThemeDataButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	CopyThemeDataButton.tooltipText = "使用当前设置作为模板"
 	---- This feature works between matching panel types (ie. Hub/Damage to Hub/Damage)
 	CopyThemeDataButton:SetPoint("TOPRIGHT", PasteThemeDataButton, "TOPLEFT", -4, 0)
@@ -589,7 +589,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 	CopyThemeDataButton:SetScript("OnClick", function() CopySettings(panel); end)
 
 	-- Reset
-	local ReloadThemeDataButton = CreateFrame("Button", objectName.."ReloadThemeDataButton", panel, "TidyPlatesPanelButtonTemplate")
+	local ReloadThemeDataButton = CreateFrame("Button", objectName.."ReloadThemeDataButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	ReloadThemeDataButton.tooltipText = "重置配置恢复默认.  按着'Shift'以便清空数据和重置UI."
 	ReloadThemeDataButton:SetPoint("TOPRIGHT", CopyThemeDataButton, "TOPLEFT", -4, 0)
 	ReloadThemeDataButton:SetWidth(60)
@@ -602,7 +602,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 
 -- [[
 	-- Bookmark/Table of Contents Button
-	local BookmarkButton = CreateFrame("Button", objectName.."BookmarkButton", panel, "TidyPlatesPanelButtonTemplate")
+	local BookmarkButton = CreateFrame("Button", objectName.."BookmarkButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	BookmarkButton:SetPoint("TOPRIGHT", ReloadThemeDataButton, "TOPLEFT", -4, 0)
 	BookmarkButton:SetWidth(110)
 	BookmarkButton:SetScale(.85)
@@ -645,7 +645,7 @@ local function CreateInterfacePanel( objectName, panelTitle, parentFrameName)
 	-- Unlink - Detach -
 	local ClosePanel, UnLinkPanel, EnableUnlink
 	local UnlinkButton
-	UnlinkButton = CreateFrame("Button", objectName.."UnlinkButton", panel, "UIPanelCloseButton")
+	UnlinkButton = CreateFrame("Button", objectName.."UnlinkButton", panel, "UIPanelCloseButton", "BackdropTemplate")
 	UnlinkButton:SetPoint("LEFT", PasteThemeDataButton, "RIGHT", 0, -0.5)
 	UnlinkButton:SetScale(.95)
 	SetMaximizeButtonTexture(UnlinkButton)

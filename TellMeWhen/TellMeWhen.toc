@@ -12,15 +12,15 @@
 
 
 # Also dont forget to bump both of these - X-Interface is used to get the interface version in-game to check that the user is using a current client.
-## Interface: 90000
+## Interface: 90001
 # DONT FORGET TO TOC BUMP TELLMEWHEN_OPTIONS TOO!!
-## X-Interface: 90000
-## X-Compatible-With: 90000
+## X-Interface: 90001
+## X-Compatible-With: 90001
 ## Title: TellMeWhen
 ## X-Curse-Project-ID: 8025
 ## X-WoWI-ID: 10855
 
-## Version: 9.0.0
+## Version: 9.0.1
 ## Author: Cybeloras of Aerie Peak
 
 ## Notes: Provides visual, auditory, and textual notifications about cooldowns, buffs, and pretty much every other element of combat.

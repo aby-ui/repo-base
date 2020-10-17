@@ -134,7 +134,7 @@ end
 
 function Quartz3:ShowUnlockDialog()
 	if not self.unlock_dialog then
-		local f = CreateFrame("Frame", "Quartz3UnlockDialog", UIParent)
+		local f = CreateFrame("Frame", "Quartz3UnlockDialog", UIParent, "BackdropTemplate")
 		f:SetFrameStrata("DIALOG")
 		f:SetToplevel(true)
 		f:EnableMouse(true)

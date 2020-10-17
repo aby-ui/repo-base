@@ -174,7 +174,7 @@ end
 
 
 function CreateTidyPlatesStatusbar(parent, name)
-	local frame = CreateFrame("Frame", name, parent)
+	local frame = CreateFrame("Frame", name, parent, "BackdropTemplate")
 	--frame.Dim = 1
 	frame:SetHeight(1)
 	frame:SetWidth(1)

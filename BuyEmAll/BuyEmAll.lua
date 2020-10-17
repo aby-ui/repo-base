@@ -196,7 +196,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
 
         -- Buying a currency with a currency! Thanks to recent changes, this should cover all cases.
         if ((strmatch(self.itemLink, "currency")) and (self.price == 0)) then
-            local totalMax = select(6, GetCurrencyInfo(self.itemLink));
+            local totalMax = select(6, C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).maxQuantity);
 			self.fit = (totalMax <= 0 and 10000000 or totalMax);
             self.stack = self.preset;
             self:AltCurrencyHandling(self.itemIndex, frame);
@@ -212,8 +212,8 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
             self.partialFit = self.fit % stack;
         elseif (strmatch(self.itemLink, "currency")) then -- Same for if the purchase is a currency.
             self.stack = self.preset;
-            local totalMax = select(6, GetCurrencyInfo(self.itemLink));
-			self.fit = (totalMax == 0 and 10000000 or select(2, GetCurrencyInfo(self.itemLink)))
+            local totalMax = C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).maxQuantity;
+			self.fit = (totalMax == 0 and 10000000 or totalMax - C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).quantity)
             self.partialFit = 0; -- Currencies don't have stacks, so there can't be a partial stack.
         end
 
@@ -276,7 +276,7 @@ function BuyEmAll:AltCurrencyHandling(itemIndex, frame)
         local Link = select(3, GetMerchantItemCostItem(itemIndex, i));
         if (strmatch(Link, "currency")) then -- Item/Currency link check
             self.AltCurrTex[i] = select(1, GetMerchantItemCostItem(itemIndex, i)); -- Get the currency texture for later display.
-            self.AltCurrAfford[i] = floor(select(2, GetCurrencyInfo(Link)) / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
+            self.AltCurrAfford[i] = floor(C_CurrencyInfo.GetCurrencyInfoFromLink(Link).quantity / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
         else
             self.AltCurrTex[i] = select(1, GetMerchantItemCostItem(itemIndex, i)); -- Get the currency texture for later display.
             self.AltCurrAfford[i] = floor((GetItemCount(tonumber(strmatch(Link, "item:(%d+):")), true)) / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.

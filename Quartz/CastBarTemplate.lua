@@ -156,7 +156,12 @@ local function ToggleCastNotInterruptible(self, notInterruptible, init)
 		r,g,b = unpack(Quartz3.db.profile.bordercolor)
 		a = Quartz3.db.profile.borderalpha
 	end
-	self:SetBackdrop(self.backdrop)
+
+	-- apply new backdrop
+	self.backdropInfo = self.backdrop
+	self:ApplyBackdrop()
+
+	-- setbackdrop colors
 	self:SetBackdropBorderColor(r, g, b, a)
 
 	r, g, b = unpack(Quartz3.db.profile.backgroundcolor)
@@ -1010,7 +1015,7 @@ Quartz3.CastBarTemplate.template = CastBarTemplate
 Quartz3.CastBarTemplate.bars = {}
 function Quartz3.CastBarTemplate:new(parent, unit, name, localizedName, config)
 	local frameName = "Quartz3CastBar" .. name
-	local bar = setmetatable(CreateFrame("Frame", frameName, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil), CastBarTemplate_MT)
+	local bar = setmetatable(CreateFrame("Frame", frameName, UIParent, "BackdropTemplate"), CastBarTemplate_MT)
 	bar.unit = unit
 	bar.parent = parent
 	bar.config = config

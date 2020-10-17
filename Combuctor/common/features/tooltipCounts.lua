@@ -142,13 +142,13 @@ end
 
 local function OnItem(tooltip)
 	local name, link = tooltip:GetItem()
-	if name ~= '' then -- Blizzard broke tooltip:GetItem() in 6.2
+	if name ~= '' then
 		AddOwners(tooltip, link)
 	end
 end
 
 local function OnTradeSkill(tooltip, recipe, reagent)
-    AddOwners(tooltip, reagent and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
+	AddOwners(tooltip, tonumber(reagent) and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
 end
 
 local function OnQuest(tooltip, type, quest)
@@ -179,7 +179,7 @@ function TooltipCounts:OnEnable()
 	if Addon.sets.tipCount then
 		if not ItemText then
 			ItemText, ItemCount = {}, {}
-			
+
 			HookTip(GameTooltip)
 			HookTip(ItemRefTooltip)
 		end

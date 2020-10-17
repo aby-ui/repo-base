@@ -285,11 +285,11 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			  local _, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
 				local npcID = id and tonumber(id) or nil
 				
-				-- If player in a zone with vignettes ignore it, at least that the NPC is expected to be found with a nameplate
-        local mapID = C_Map.GetBestMapForUnit("player")
-        if ((mapID and not RSMapDB.IsZoneWithoutVignette(mapID)) or (RSNpcDB.GetInternalNpcInfo(npcID) and not RSNpcDB.GetInternalNpcInfo(npcID).nameplate)) then
-          return
-        end
+				-- If player in a zone with vignettes ignore it
+				local mapID = C_Map.GetBestMapForUnit("player")
+				if (mapID and not RSMapDB.IsZoneWithoutVignette(mapID)) then
+				  return
+				end
         
 				-- If its a supported NPC and its not killed
 				if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not RSNpcDB.IsNpcKilled(npcID)) then
@@ -553,9 +553,13 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		if (mapID and mapID == RSConstants.MECHAGON_MAPID) then
 			local message, name = ...
 			if (name) then
-				local npcID = RSNpcDB.GetNpcId(name)
+				local npcID = RSNpcDB.GetNpcId(name, mapID)
+				if (not npcID) then
+					return
+				end
+				
 				-- Arachnoid Harvester fix
-				if (npcID and npcID == 154342) then
+				if (npcID == 154342) then
 					npcID = 151934
 				end
 				
@@ -1243,50 +1247,50 @@ function RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
 	local atlasName
 	
 	-- If its a NPC
-  local mapID = nil
+	local mapID = nil
 	if (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
 		atlasName = RSConstants.NPC_VIGNETTE
 		
 		-- MapID always try to get it first from the internal database
 		-- GetBestMapForUnit not always returns the expected value!
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
-    if (RSNpcDB.IsInternalNpcMonoZone(entityID) and npcInfo.zoneID ~= 0) then
-      mapID = npcInfo.zoneID
-    else
-      mapID = C_Map.GetBestMapForUnit("player")
-    end
+		if (RSNpcDB.IsInternalNpcMonoZone(entityID) and npcInfo.zoneID ~= 0) then
+			mapID = npcInfo.zoneID
+		else
+			mapID = C_Map.GetBestMapForUnit("player")
+		end
 	-- If its a container
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then 
 		atlasName = RSConstants.CONTAINER_VIGNETTE
 		
-    -- MapID always try to get it first from the internal database
-    -- GetBestMapForUnit not always returns the expected value!
-	  local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
-    if (RSContainerDB.IsInternalContainerMonoZone(entityID) and containerInfo.zoneID ~= 0) then
-      mapID = containerInfo.zoneID
-    else
-      mapID = C_Map.GetBestMapForUnit("player")
-    end
+		-- MapID always try to get it first from the internal database
+		-- GetBestMapForUnit not always returns the expected value!
+		local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
+		if (RSContainerDB.IsInternalContainerMonoZone(entityID) and containerInfo.zoneID ~= 0) then
+			mapID = containerInfo.zoneID
+		else
+			mapID = C_Map.GetBestMapForUnit("player")
+		end
 	-- If its an event
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName)) then 
 		atlasName = RSConstants.EVENT_VIGNETTE
 		
-    -- MapID always try to get it first from the internal database
-    -- GetBestMapForUnit not always returns the expected value!
+		-- MapID always try to get it first from the internal database
+		-- GetBestMapForUnit not always returns the expected value!
 		local eventInfo = RSEventDB.GetInternalEventInfo(entityID)
 		if (eventInfo and eventInfo.zoneID ~= 0) then
 			mapID = eventInfo.zoneID
 		else
-      mapID = C_Map.GetBestMapForUnit("player")
-    end
-  else
-    return
+			mapID = C_Map.GetBestMapForUnit("player")
+		end
+	else
+		return
 	end
 	
-  if (not mapID or mapID == 0) then
-    RSLogger:PrintDebugMessage(string.format("UpdateRareFound[%s]: Error! No se ha podido calcular el mapID para la entidad recien encontrada!", entityID))
-    return
-  end
+    if (not mapID or mapID == 0) then
+		RSLogger:PrintDebugMessage(string.format("UpdateRareFound[%s]: Error! No se ha podido calcular el mapID para la entidad recien encontrada!", entityID))
+		return
+	end
 
 	-- Extract the coordinates from the parameter if we are simulating a vignette, or from a real vignette info
 	local vignettePosition = nil

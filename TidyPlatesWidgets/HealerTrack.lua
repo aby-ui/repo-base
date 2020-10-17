@@ -75,7 +75,7 @@ end
 
 -- Widget Creation
 local function CreateWidgetFrame(parent)
-	local frame = CreateFrame("Frame", nil, parent)
+	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	frame:Hide()
 
 	-- Custom Code III
@@ -328,7 +328,7 @@ local function CombatEventHandler(frame, event, ...)
 	if handler then handler(...) end
 end
 
-local HealerTrackWatcher = CreateFrame("Frame")
+local HealerTrackWatcher = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 
 local function Enable()
 	--print("TidyPlatesWidgets.HealerTrack:Enable")

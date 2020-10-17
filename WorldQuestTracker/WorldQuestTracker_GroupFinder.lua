@@ -749,7 +749,7 @@ local asd = ff:CreateFontString (nil, "overlay", "GameFontNormal")
 
 function WorldQuestTracker.PlayerIsInQuest (questName, questID)
 	local isInQuest = false
-	local numQuests = GetNumQuestLogEntries() 
+	local numQuests = C_QuestLog.GetNumQuestLogEntries()
 	
 	if (questName) then
 		for i = 1, numQuests do 

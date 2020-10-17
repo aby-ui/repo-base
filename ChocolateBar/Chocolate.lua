@@ -382,7 +382,7 @@ function ChocolatePiece:New(name, obj, settings, database)
 	db = database
 
 	local icon = obj.icon
-	local chocolate = CreateFrame("Button", "Chocolate" .. name)
+	local chocolate = CreateFrameAby("Button", "Chocolate" .. name)
 	chocolate.highlight = highlightBackground
 
 	--set update function

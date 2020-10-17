@@ -556,7 +556,7 @@ Supports multiple entries, separated by commas
 	L["Rename"] = "重新命名"
 	L["Repeat After"] = "之後重複"
 	L["Repeat every"] = "每次重複"
-	L["Report bugs our our issue tracker."] = "在我們的問題追蹤網頁回報 bug。"
+	L["Report bugs on our issue tracker."] = "請在我們的問題追蹤網頁回報 bug。"
 	L["Require unit from trigger"] = "需要來自觸發的單位"
 	L["Required for Activation"] = "啟用需要"
 	L["Reset all options to their default values."] = "重置所有選項，恢復成預設值。"

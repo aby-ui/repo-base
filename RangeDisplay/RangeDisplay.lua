@@ -1,6 +1,6 @@
 --[[
 Name: RangeDisplay
-Revision: $Revision: 392 $
+Revision: $Revision: 397 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/range-display/
 SVN: svn://svn.wowace.com/wow/range-display/mainline/trunk
@@ -10,9 +10,9 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v4.9.3"
+local VERSION = AppName .. "-v4.9.4"
 --[===[@debug@
-local VERSION = AppName .. "-r" .. ("$Revision: 392 $"):match("%d+")
+local VERSION = AppName .. "-r" .. ("$Revision: 397 $"):match("%d+")
 --@end-debug@]===]
 
 local rc = LibStub("LibRangeCheck-2.0")
@@ -498,7 +498,7 @@ end
 local function createFrame(ud)
     local unit = ud.unit
     ud.isMoving = false
-    ud.mainFrame = CreateFrameAby("Frame", "RangeDisplayMainFrame_" .. unit, UIParent)
+    ud.mainFrame = CreateFrame("Frame", "RangeDisplayMainFrame_" .. unit, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     ud.mainFrame:SetFrameStrata(ud.db.strata)
     ud.mainFrame:EnableMouse(false)
     ud.mainFrame:SetClampedToScreen()
@@ -507,7 +507,7 @@ local function createFrame(ud)
     ud.mainFrame:SetHeight(ud.db.frameHeight)
     ud.mainFrame:SetPoint(ud.db.point, UIParent, ud.db.relPoint, ud.db.x, ud.db.y)
 
-    ud.rangeFrame = CreateFrameAby("Frame", "RangeDisplayFrame_" .. unit, ud.mainFrame)
+    ud.rangeFrame = CreateFrame("Frame", "RangeDisplayFrame_" .. unit, ud.mainFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
     ud.rangeFrame:SetPoint("CENTER", ud.mainFrame, "CENTER", 0, 0)
     ud.rangeFrame:SetAllPoints()
     ud.rangeFrame:Hide()

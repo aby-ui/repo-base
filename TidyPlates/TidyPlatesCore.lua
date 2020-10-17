@@ -1,12 +1,10 @@
 -- Tidy Plates - SMILE! :-D
 
-
-
 ---------------------------------------------------------------------------------------------------------------------
 -- Variables and References
 ---------------------------------------------------------------------------------------------------------------------
 local addonName, TidyPlatesInternal = ...
-local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame)
+local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame, "BackdropTemplate")
 
 TidyPlates = {}
 TidyPlatesDebug = false
@@ -181,8 +179,8 @@ do
 		local carrier
 		local frameName = "TidyPlatesCarrier"..numChildren
 
-		carrier = CreateFrame("Frame", frameName, WorldFrame)
-		local extended = CreateFrame("Frame", nil, carrier)
+		carrier = CreateFrame("Frame", frameName, WorldFrame, "BackdropTemplate")
+		local extended = CreateFrame("Frame", nil, carrier, "BackdropTemplate")
 
 		plate.carrier = carrier
 		plate.extended = extended
@@ -192,8 +190,8 @@ do
 		-- Status Bars
 		local healthbar = CreateTidyPlatesStatusbar(extended)
 		local castbar = CreateTidyPlatesStatusbar(extended)
-		local textFrame = CreateFrame("Frame", nil, healthbar)
-		local widgetParent = CreateFrame("Frame", nil, textFrame)
+		local textFrame = CreateFrame("Frame", nil, healthbar, "BackdropTemplate")
+		local widgetParent = CreateFrame("Frame", nil, textFrame, "BackdropTemplate")
 
 		textFrame:SetAllPoints()
 
@@ -977,9 +975,6 @@ do
 		OnNewNameplate(plate)
 	 end
 
-
-
-
 	function CoreEvents:NAME_PLATE_UNIT_ADDED(...)
 		local unitid = ...
 		local plate = GetNamePlateForUnit(unitid);
@@ -1000,7 +995,6 @@ do
 		OnHideNameplate(plate, unitid)
 	end
 
-
 	function CoreEvents:PLAYER_TARGET_CHANGED()
 		HasTarget = UnitExists("target") == true;
 		SetUpdateAll()
@@ -1019,7 +1013,6 @@ do
 
 		if plate then OnHealthUpdate(plate) end
 	end
-
 
 	function CoreEvents:PLAYER_REGEN_ENABLED()
 		InCombat = false
@@ -1060,9 +1053,6 @@ do
 			OnStopCasting(plate)
 		end
 	 end
-
-
-
 
 	function CoreEvents:UNIT_SPELLCAST_CHANNEL_START(...)
 		local unitid = ...

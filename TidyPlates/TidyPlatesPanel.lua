@@ -446,7 +446,7 @@ local function BuildInterfacePanel(panel)
 	-- Other Options
 	----------------------------------------------
 	-- Blizz Button
-	local BlizzOptionsButton = CreateFrame("Button", "TidyPlatesOptions_BlizzOptionsButton", panel, "TidyPlatesPanelButtonTemplate")
+	local BlizzOptionsButton = CreateFrame("Button", "TidyPlatesOptions_BlizzOptionsButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	--BlizzOptionsButton:SetPoint("TOPRIGHT", ResetButton, "TOPLEFT", -8, 0)
 	BlizzOptionsButton:SetPoint("TOPLEFT", panel.AutoShowEnemy, "TOPLEFT", 16, -55)
 	BlizzOptionsButton:SetWidth(260)
@@ -463,7 +463,7 @@ local function BuildInterfacePanel(panel)
 	panel.ForceBlizzardFont:SetScript("OnClick", function(self) TidyPlates.OverrideFonts( self:GetChecked()); end)
 
 	-- Reset
-	ResetButton = CreateFrame("Button", "TidyPlatesOptions_ResetButton", panel, "TidyPlatesPanelButtonTemplate")
+	ResetButton = CreateFrame("Button", "TidyPlatesOptions_ResetButton", panel, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
 	ResetButton:SetPoint("BOTTOMRIGHT", -16, 8)
 	ResetButton:SetWidth(155)
 	ResetButton:SetText("重置选项")

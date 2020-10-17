@@ -110,6 +110,10 @@ local trade_spells = {
   [251309] = "xmute", -- Transmute: Ore to Herbs
   [286547] = "xmute", -- Transmute: Herbs to Anchors
 
+  -- SL
+  [307142] = true, -- Shadowghast Ingot
+  [307143] = true, -- Shadestone
+
   -- Enchanting
   [28027]  = "sphere", -- Prismatic Sphere (2-day shared, 5.2.0 verified)
   [28028]  = "sphere", -- Void Sphere (2-day shared, 5.2.0 verified)

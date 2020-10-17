@@ -12,14 +12,14 @@ local GARRISON_FOLLOWER_ON_MISSION = GARRISON_FOLLOWER_ON_MISSION
 local GARRISON_FOLLOWER_ON_MISSION_WITH_DURATION = GARRISON_FOLLOWER_ON_MISSION_WITH_DURATION
 local GARRISON_SHIP_OIL_CURRENCY = GARRISON_SHIP_OIL_CURRENCY
 local GarrisonMissionFrame = GarrisonMissionFrame
-local GetCurrencyInfo = GetCurrencyInfo
+local GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
 local GetFollowerInfo = C_Garrison.GetFollowerInfo
 local GetFollowerMissionTimeLeft = C_Garrison.GetFollowerMissionTimeLeft
 local GetFollowerStatus = C_Garrison.GetFollowerStatus
 local GetItemInfoInstant = GetItemInfoInstant
 local GetTime = GetTime
 local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
-local LE_FOLLOWER_TYPE_GARRISON_6_0 = LE_FOLLOWER_TYPE_GARRISON_6_0
+local LE_FOLLOWER_TYPE_GARRISON_6_0 = Enum.GarrisonFollowerType.FollowerType_6_0
 local RED_FONT_COLOR_CODE = RED_FONT_COLOR_CODE
 local RemoveFollowerFromMission = C_Garrison.RemoveFollowerFromMission
 local dump = DevTools_Dump
@@ -50,7 +50,7 @@ addon_env.LocalIgnoredFollowers()
 
 local currency_texture = {}
 for _, currency in pairs({ GARRISON_CURRENCY, GARRISON_SHIP_OIL_CURRENCY, 823 --[[Apexis]] }) do
-   local _, _, texture = GetCurrencyInfo(currency)
+   local texture = GetCurrencyInfo(currency).iconFileID
    currency_texture[currency] = "|T" .. texture .. ":0|t"
 end
 
@@ -515,7 +515,7 @@ local function MissionList_Update_More(self, caller, frame_prefix, follower_type
 
    local filtered_followers = GetFilteredFollowers(follower_type)
    local more_missions_to_cache
-   local _, garrison_resources = GetCurrencyInfo(currency)
+   local garrison_resources = GetCurrencyInfo(currency).quantity
 
    local time = GetTime()
 

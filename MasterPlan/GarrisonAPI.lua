@@ -575,8 +575,9 @@ end
 function api.GetMissionThreats(missionID)
 	local ret, rn, en = {}, 1, select(8,C_Garrison.GetMissionInfo(missionID))
 	for i=1,#en do
-		for id in pairs(en[i].mechanics) do
-			ret[rn], rn = id, rn + 1
+		local mech = en[i].mechanics
+		for i=1,#mech do
+			ret[rn], rn = mech[i].mechanicTypeID, rn + 1
 		end
 	end
 	return ret
@@ -2352,8 +2353,9 @@ do -- +api.GetSuggestedMissionUpgradeGroups(missions, ojob, f1, f2, f3)
 				mi.followerTypeID == 2 and select(4,C_Garrison.GetPartyMissionInfo(mi.missionID)) or env and api.GetMechanicInfo(tostring(env)) or 0,
 			}
 			for i=1,#en do
-				for id in pairs(en[i].mechanics) do
-					tt[#tt+1] = id
+				local mech = en[i].mechanics
+				for i=1,#mech do
+					tt[#tt+1] = mech[i].mechanicTypeID
 				end
 			end
 			table.sort(tt)
@@ -2779,9 +2781,6 @@ local prefixTip do
 	local function writePrefix(self)
 		local t = hooked[self]
 		GameTooltip_ClearMoney(self)
-		if GameTooltip_ClearInsertedFrames then
-			GameTooltip_ClearInsertedFrames(self)
-		end
 		if t and t[1] then
 			self:AddLine(t[1],t[2],t[3],t[4])
 			t[1],t[2],t[3],t[4] = nil

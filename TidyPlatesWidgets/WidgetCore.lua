@@ -5,7 +5,7 @@ TidyPlatesWidgets = {}
 ----------------------
 do
 	local Framelist = {}			-- Key = Frame, Value = Expiration Time
-	local Watcherframe = CreateFrame("Frame")
+	local Watcherframe = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 	local WatcherframeActive = false
 	local select = select
 	local timeToUpdate = 0
@@ -44,7 +44,7 @@ do
 	local updateInterval = .5
 	local PolledHideIn
 	local Framelist = {}			-- Key = Frame, Value = Expiration Time
-	local Watcherframe = CreateFrame("Frame")
+	local Watcherframe = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 	local WatcherframeActive = false
 	local select = select
 	local timeToUpdate = 0

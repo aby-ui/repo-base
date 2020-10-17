@@ -224,15 +224,9 @@ local function DebuffFilter(aura)
 		return true, BasePriority, r, g, b end
 	end
 
-
-
 	if false and LocalVars.WidgetAuraTrackStealable and aura.stealable == true then --abyui
-
-		-- aura.type == "Magic" and aura.effect == "BUFF" instead
 		return true, BasePriority, .2, .6, 1
 	end
-
-
 
 	return SmartFilterMode(aura)
 end

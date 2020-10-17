@@ -11,7 +11,7 @@
 local GetGroupInfo = TidyPlatesUtility.GetGroupInfo
 local RangesCache = {}
 local Ranges = {}
-local RangeWatcher = CreateFrame("Frame")
+local RangeWatcher = CreateFrame("Frame", nil, nil, "BackdropTemplate")
 local nextRangeCheckup = 0
 local currentTime = 0
 local updateFreq = .5
@@ -99,7 +99,7 @@ end
 
 local function CreateRangeWidget(parent)
 	if not usingRangeWidget then usingRangeWidget = true; ActivateRangeWidget() end
-	local frame = CreateFrame("Frame", nil, parent)
+	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	frame:SetWidth(16); frame:SetHeight(16)
 	-- Image
 	frame.Texture = frame:CreateTexture(nil, "OVERLAY")

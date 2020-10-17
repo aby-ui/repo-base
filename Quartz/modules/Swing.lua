@@ -116,7 +116,7 @@ function Swing:OnEnable()
 	
 	self:RegisterEvent("UNIT_ATTACK")
 	if not swingbar then
-		swingbar = CreateFrame("Frame", "Quartz3SwingBar", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+		swingbar = CreateFrame("Frame", "Quartz3SwingBar", UIParent, "BackdropTemplate")
 		swingbar:SetFrameStrata("HIGH")
 		swingbar:SetScript("OnShow", OnShow)
 		swingbar:SetScript("OnHide", OnHide)

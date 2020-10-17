@@ -2,8 +2,8 @@ local addon_name, addon_env = ...
 
 -- [AUTOLOCAL START]
 local C_Garrison = C_Garrison
-local LE_FOLLOWER_TYPE_GARRISON_6_0 = LE_FOLLOWER_TYPE_GARRISON_6_0
-local LE_GARRISON_TYPE_6_0 = LE_GARRISON_TYPE_6_0
+local LE_FOLLOWER_TYPE_GARRISON_6_0 = Enum.GarrisonFollowerType.FollowerType_6_0
+local LE_GARRISON_TYPE_6_0 = Enum.GarrisonType.Type_6_0
 local wipe = wipe
 -- [AUTOLOCAL END]
 

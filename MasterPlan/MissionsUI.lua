@@ -2785,7 +2785,10 @@ do -- availMissionsHandle
 		end
 		local nt, tt, used = 1, self.threats, wipe(used) or used
 		for i=1,#enemies do
-			for id, minfo in pairs(enemies[i].mechanics) do
+			local mech = enemies[i].mechanics
+			for i=1,#mech do
+				local minfo = mech[i]
+				local id = minfo.mechanicTypeID
 				nt = nt + 1, SetThreat(tt[nt], minfo.icon, id, mlvl, cinfo[id], finfo, used)
 			end
 		end

@@ -144,7 +144,7 @@ function RSNpcDB.IsInternalNpcInMap(npcID, mapID, checkSubzones)
 				if (internalMapID == mapID and (not internalNpcInfo.artID or RSUtils.Contains(internalNpcInfo.artID, C_Map.GetMapArtID(mapID)))) then
 					return true;
 				elseif (checkSubzones and RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
-				  return true;
+					return true;
 				end
 			end
 		elseif (RSNpcDB.IsInternalNpcMonoZone(npcID)) then
@@ -152,8 +152,8 @@ function RSNpcDB.IsInternalNpcInMap(npcID, mapID, checkSubzones)
 			if (npcInfo.zoneID == mapID and (not npcInfo.artID or RSUtils.Contains(npcInfo.artID, C_Map.GetMapArtID(mapID)))) then
 				return true;
 			elseif (checkSubzones and RSMapDB.IsMapInParentMap(mapID, npcInfo.zoneID)) then
-        return true;
-      end
+				return true;
+			end
 		end
 	end
 	
@@ -321,9 +321,9 @@ function RSNpcDB.GetNpcName(npcID)
 	return nil
 end
 
-function RSNpcDB.GetNpcId(name)
+function RSNpcDB.GetNpcId(name, mapID)
 	for npcID, npcName in pairs(RSNpcDB.GetAllNpcNames()) do
-		if (RSUtils.Contains(npcName, name)) then
+		if (RSUtils.Contains(npcName, name) and RSNpcDB.IsInternalNpcInMap(npcID, mapID, true)) then
 			return npcID;
 		end
 	end

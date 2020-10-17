@@ -6,7 +6,7 @@ local addon_name, addon_env = ...
 
 -- [AUTOLOCAL START]
 local CreateFrame = CreateFrame
-local LE_FOLLOWER_TYPE_GARRISON_7_0 = LE_FOLLOWER_TYPE_GARRISON_7_0
+local LE_FOLLOWER_TYPE_GARRISON_7_0 = Enum.GarrisonFollowerType.FollowerType_7_0
 local GetLandingPageShipmentInfoByContainerID = C_Garrison.GetLandingPageShipmentInfoByContainerID
 local GetLooseShipments = C_Garrison.GetLooseShipments
 local After = C_Timer.After

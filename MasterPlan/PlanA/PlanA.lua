@@ -173,8 +173,8 @@ function E:SHOW_LOOT_TOAST(rt, rl, q, _4, _5, _6, source)
 end
 function E:PLAYER_LOGOUT()
 	if cdata.lastCacheTime then
-		local _, gr = GetCurrencyInfo(824)
-		local _, oil = GetCurrencyInfo(1101)
+		local _, gr = Nine.GetCurrencyInfo(824)
+		local _, oil = Nine.GetCurrencyInfo(1101)
 		cdata.curRes, cdata.curOil = gr and gr > 0 and gr or nil, oil and oil > 0 and oil or nil
 	elseif next(MasterPlanAG.IgnoreRewards) == nil then
 		MasterPlanAG.IgnoreRewards = nil

@@ -54,9 +54,13 @@ end
 local function ListToTable( ... )
 	local t = {}
 	local index, line
+	local i = 1
 	for index = 1, select("#", ...) do
 		line = select(index, ...)
-		if line ~= "" then t[index] = line end
+		if line ~= "" then
+			t[i] = line
+			i = i + 1
+		end
 	end
 	return t
 end
@@ -65,9 +69,11 @@ local function ConvertStringToTable(source, target )
 	local temp = ListToTable(strsplit("\n", source))
 	target = wipe(target)
 
-	for index = 1, #source do
+	for index = 1, #temp do
 		local str = temp[index]
-		if str then target[str] = true end
+		if str then
+			target[str] = true
+		end
 	end
 end
 

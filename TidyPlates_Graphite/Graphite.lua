@@ -181,7 +181,6 @@ StyleDefault.eliteicon = {
 	height = barheight*heightfactor,
 	x = 0,
 	y = 0,
-	show=false,
 }
 
 StyleDefault.raidicon = {

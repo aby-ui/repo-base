@@ -3,7 +3,7 @@
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
 ## Author: Tuller
-## Version: 9.0.0
+## Version: 9.0.1
 ## SavedVariables: OmniCCDB, OmniCC4Config
 main\main.xml
 

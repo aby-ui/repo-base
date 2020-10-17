@@ -26,10 +26,10 @@ local GetFollowerAbilities = C_Garrison.GetFollowerAbilities
 local GetFollowerInfo = C_Garrison.GetFollowerInfo
 local GetFollowers = C_Garrison.GetFollowers
 local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
-local LE_FOLLOWER_TYPE_GARRISON_6_0 = LE_FOLLOWER_TYPE_GARRISON_6_0
-local LE_FOLLOWER_TYPE_GARRISON_7_0 = LE_FOLLOWER_TYPE_GARRISON_7_0
-local LE_FOLLOWER_TYPE_SHIPYARD_6_2 = LE_FOLLOWER_TYPE_SHIPYARD_6_2
-local LE_GARRISON_TYPE_6_0 = LE_GARRISON_TYPE_6_0
+local LE_FOLLOWER_TYPE_GARRISON_6_0 = Enum.GarrisonFollowerType.FollowerType_6_0
+local LE_FOLLOWER_TYPE_GARRISON_7_0 = Enum.GarrisonFollowerType.FollowerType_7_0
+local LE_FOLLOWER_TYPE_SHIPYARD_6_2 = Enum.GarrisonFollowerType.FollowerType_6_2
+local LE_GARRISON_TYPE_6_0 = Enum.GarrisonType.Type_6_0
 local UnitGUID = UnitGUID
 local _G = _G
 local concat = table.concat
@@ -63,7 +63,7 @@ local top_for_mission = {}
 addon_env.top_for_mission = top_for_mission
 addon_env.top_for_mission_dirty = true
 
-local supported_follower_types = { LE_FOLLOWER_TYPE_GARRISON_6_0, LE_FOLLOWER_TYPE_SHIPYARD_6_2, LE_FOLLOWER_TYPE_GARRISON_7_0, LE_FOLLOWER_TYPE_GARRISON_8_0 }
+local supported_follower_types = {Enum.GarrisonFollowerType.FollowerType_6_0,Enum.GarrisonFollowerType.FollowerType_6_2,Enum.GarrisonFollowerType.FollowerType_7_0,Enum.GarrisonFollowerType.FollowerType_8_0}
 local filtered_followers = {}
 for _, type in pairs(supported_follower_types) do filtered_followers[type] = {} end
 local filtered_followers_dirty = true
@@ -464,7 +464,7 @@ hooksecurefunc(GarrisonMissionFrame.FollowerList, "UpdateData", GarrisonFollower
 GarrisonLandingPageMinimapButton:HookScript("OnClick", function(self, button, down)
    if not (button == "RightButton" and not down) then return end
    HideUIPanel(GarrisonLandingPage)
-   ShowGarrisonLandingPage(LE_GARRISON_TYPE_6_0)
+   ShowGarrisonLandingPage(LE_GARRISON_TYPE_7_0)  --LE_GARRISON_TYPE_6_0
 end)
 GarrisonLandingPageMinimapButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 

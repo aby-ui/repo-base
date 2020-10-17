@@ -7,11 +7,11 @@ local addon_name, addon_env = ...
 -- [AUTOLOCAL START]
 local After = C_Timer.After
 local GARRISON_SHIP_OIL_CURRENCY = GARRISON_SHIP_OIL_CURRENCY
-local GetCurrencyInfo = GetCurrencyInfo
+local GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
 local GetFollowerSoftCap = C_Garrison.GetFollowerSoftCap
 local GetItemInfoInstant = GetItemInfoInstant
 local GetNumActiveFollowers = C_Garrison.GetNumActiveFollowers
-local LE_FOLLOWER_TYPE_SHIPYARD_6_2 = LE_FOLLOWER_TYPE_SHIPYARD_6_2
+local LE_FOLLOWER_TYPE_SHIPYARD_6_2 = Enum.GarrisonFollowerType.FollowerType_6_2
 local UnitGUID = UnitGUID
 local dump = DevTools_Dump
 local match = string.match
@@ -65,7 +65,7 @@ local function GarrisonShipyardMap_UpdateMissions_More()
 
    local filtered_followers = GetFilteredFollowers(LE_FOLLOWER_TYPE_SHIPYARD_6_2)
    local more_missions_to_cache
-   local _, oil = GetCurrencyInfo(GARRISON_SHIP_OIL_CURRENCY)
+   local oil = GetCurrencyInfo(GARRISON_SHIP_OIL_CURRENCY).quantity
 
    for i = 1, #missions do
       local mission = missions[i]

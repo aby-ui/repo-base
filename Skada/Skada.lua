@@ -2330,17 +2330,41 @@ function Skada:PlayerActiveTime(set, player)
 end
 
 do
-	local ownerPattern = UNITNAME_TITLE_PET:gsub("%%s", "(.-)")
 	local tooltip = CreateFrame("GameTooltip", "SkadaTooltip", nil, "GameTooltipTemplate")
 	tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 
+	local function GetRussianOwnerID(owner)
+		if not _G.LOCALE_ruRU or not Skada.current then return end
+		for _, p in Skada.current.players do
+			local sex = UnitSex(p.name)
+			for set = 1, GetNumDeclensionSets(p.name, sex) do
+				local name = DeclineName(p.name, sex, set) -- first return is genitive
+				if owner == name then
+					return p.id
+				end
+			end
+		end
+	end
+
+	local ownerPatterns = {}
+	for i = 1, 44 do
+		local title = _G["UNITNAME_SUMMON_TITLE"..i]
+		if title and title ~= "%s" and title:find("%s", nil, true) then
+			local pattern = title:gsub("%%s", "(.-)")
+			tinsert(ownerPatterns, pattern)
+		end
+	end
 	local function GetPetOwner(guid)
 		tooltip:SetHyperlink("unit:" .. guid)
 		for i = 2, tooltip:NumLines() do
-			local text = _G["SkadaTooltipTextLeft"..i]:GetText() or ""
-			local owner = text:match(ownerPattern)
-			if owner then
-				return owner
+			local text = _G["SkadaTooltipTextLeft"..i]:GetText()
+			if text then
+				for _, pattern in next, ownerPatterns do
+					local owner = text:match(pattern)
+					if owner then
+						return owner
+					end
+				end
 			end
 		end
 	end
@@ -2361,12 +2385,10 @@ do
 				pets[action.playerid] = owner
 			else
 				local ownerName = GetPetOwner(action.playerid)
-				if ownerName then
-					local ownerGUID = UnitGUID(ownerName)
-					if players[ownerGUID] then
-						owner = { id = ownerGUID, name = ownerName }
-						pets[action.playerid] = owner
-					end
+				local id = UnitGUID(ownerName) or GetRussianOwnerID(ownerName)
+				if players[id] then
+					owner = { id = id, name = ownerName }
+					pets[action.playerid] = owner
 				end
 			end
 			if not owner then

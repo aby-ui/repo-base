@@ -55,6 +55,14 @@ local function RemoveBackdrop(Region, Button)
 		Region:Hide()
 
 		if Button.__MSQ_Backdrop then
+			-- Remove the button mask.
+			local ButtonMask = Button.__MSQ_Mask
+
+			if ButtonMask and Region.__MSQ_ButtonMask then
+				Region:RemoveMaskTexture(ButtonMask)
+				Region.__MSQ_ButtonMask = nil
+			end
+
 			Region:SetTexture()
 
 			Cache[#Cache + 1] = Region

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MechagonTrash", "DBM-Party-BfA", 11)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200907202245")
+mod:SetRevision("20200908144825")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true

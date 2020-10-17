@@ -9,14 +9,25 @@ local LEGACY_DB_NAME = 'OmniCC4Config'
 
 function Addon:InitializeDB()
     self.db = LibStub('AceDB-3.0'):New(DB_NAME, self:GetDBDefaults(), DEFAULT)
+    self.db.RegisterCallback(self, 'OnNewProfile', 'OnNewProfile')
     self.db.RegisterCallback(self, 'OnProfileChanged', 'OnProfileChanged')
     self.db.RegisterCallback(self, 'OnProfileCopied', 'OnProfileChanged')
-    self.db.RegisterCallback(self, 'OnProfileReset', 'OnProfileChanged')
+    self.db.RegisterCallback(self, 'OnProfileReset', 'OnProfileReset')
 
     self:UpgradeDB()
 end
 
-function Addon:OnProfileChanged(...)
+-- add default rules when a profile is created
+function Addon:OnNewProfile(_, db)
+    self:AddDefaultRulesets(db)
+end
+
+function Addon:OnProfileReset(_, db)
+    self:AddDefaultRulesets(db)
+    self:OnProfileChanged()
+end
+
+function Addon:OnProfileChanged()
     self.Cooldown:ForAll('UpdateSettings')
 end
 
@@ -34,32 +45,6 @@ function Addon:GetDBDefaults()
                     priority = 0,
                     -- lua patterns to check against frame names
                     patterns = {}
-                },
-                {
-                    id = 'auras',
-                    name = AURAS,
-                    enabled = false,
-                    patterns = {
-                        'Aura',
-                        'Buff',
-                        'Debuff'
-                    }
-                },
-                {
-                    id = 'plates',
-                    enabled = false,
-                    name = UNIT_NAMEPLATES,
-                    patterns = {
-                        'Plate'
-                    }
-                },
-                {
-                    id = 'actions',
-                    enabled = false,
-                    name = ACTIONBARS_LABEL,
-                    patterns = {
-                        'ActionButton'
-                    }
                 }
             },
             defaultTheme = DEFAULT,
@@ -170,6 +155,37 @@ function Addon:GetDBDefaults()
             }
         }
     }
+end
+
+function Addon:AddDefaultRulesets(db)
+    table.insert(db.profile.rules, {
+        id = 'auras',
+        name = AURAS,
+        enabled = false,
+        patterns = {
+            'Aura',
+            'Buff',
+            'Debuff'
+        }
+    })
+
+    table.insert(db.profile.rules, {
+        id = 'plates',
+        enabled = false,
+        name = UNIT_NAMEPLATES,
+        patterns = {
+            'Plate'
+        }
+    })
+
+    table.insert(db.profile.rules, {
+        id = 'actions',
+        enabled = false,
+        name = ACTIONBARS_LABEL,
+        patterns = {
+            'ActionButton'
+        }
+    })
 end
 
 function Addon:UpgradeDB()

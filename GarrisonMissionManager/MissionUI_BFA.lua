@@ -6,7 +6,7 @@ local addon_name, addon_env = ...
 
 -- [AUTOLOCAL START]
 local CreateFrame = CreateFrame
-local LE_FOLLOWER_TYPE_GARRISON_8_0 = LE_FOLLOWER_TYPE_GARRISON_8_0
+local LE_FOLLOWER_TYPE_GARRISON_8_0 = Enum.GarrisonFollowerType.FollowerType_8_0
 local After = C_Timer.After
 -- [AUTOLOCAL END]
 

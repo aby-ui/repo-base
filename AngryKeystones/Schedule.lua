@@ -86,11 +86,11 @@ local function UpdatePartyKeystones()
 	end
 	if e == 1 then
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", 30, 0)
+		Mod.AffixFrame:SetPoint("LEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "RIGHT", -20, 0)
 		Mod.PartyFrame:Hide()
 	else
 		Mod.AffixFrame:ClearAllPoints()
-		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
+		Mod.AffixFrame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", -20, 30)
 		Mod.PartyFrame:Show()
 	end
 	while e <= 4 do
@@ -105,14 +105,12 @@ local function UpdateFrame()
 	Mod.PartyFrame:Show()
 	Mod.KeystoneText:Show()
 
-	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:ClearAllPoints()
-	ChallengesFrame.WeeklyInfo.Child.WeeklyChest:SetPoint("LEFT", 50, -30)
-	if false and ChallengesFrame.WeeklyInfo.Child.WeeklyChest:IsShown() then
-		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetWidth(240)
+	if ChallengesFrame.WeeklyInfo.Child.Description:IsShown() then
+		ChallengesFrame.WeeklyInfo.Child.Description:SetWidth(240)
+		ChallengesFrame.WeeklyInfo.Child.Description:ClearAllPoints()
+		ChallengesFrame.WeeklyInfo.Child.Description:SetPoint("CENTER", -135, 0)
 	else
-		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetWidth(240)
-		ChallengesFrame.WeeklyInfo.Child.RunStatus:ClearAllPoints()
-		ChallengesFrame.WeeklyInfo.Child.RunStatus:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOP", -10, 35)
+
 	end
 
 	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
@@ -169,7 +167,7 @@ end
 function Mod:Blizzard_ChallengesUI()
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
 	frame:SetSize(246, 92)
-	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", 30, 30)
+	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", -20, 30)
 	Mod.AffixFrame = frame
 
 	local bg = frame:CreateTexture(nil, "BACKGROUND")
