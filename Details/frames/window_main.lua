@@ -2193,7 +2193,9 @@ local icon_frame_on_enter = function (self)
 			local spec_id, spec_name, spec_description, spec_icon, spec_role, spec_class = DetailsFramework.GetSpecializationInfoByID (spec or 0) --thanks pas06
 			local spec_L, spec_R, spec_T, spec_B 
 			if (spec_id) then
-				spec_L, spec_R, spec_T, spec_B  = unpack (_detalhes.class_specs_coords [spec])
+				if (_detalhes.class_specs_coords [spec_id]) then
+					spec_L, spec_R, spec_T, spec_B  = unpack (_detalhes.class_specs_coords [spec_id])
+				end
 			end
 			
 			GameCooltip:AddLine (name, spec_name)
@@ -5223,8 +5225,8 @@ function _detalhes:InstanceColor (red, green, blue, alpha, no_save, change_statu
 	if (not skin) then --the skin isn't available any more
 		Details:Msg ("Skin " .. (self.skin or "?") .. " not found, changing to 'Dark Theme'.")
 		Details:Msg ("Recommended to change the skin in the option panel > Skin Selection.")
-		skin = _detalhes.skins ["Dark Theme"]
-		self.skin = "Dark Theme"
+		skin = _detalhes.skins ["Minimalistic"]
+		self.skin = "Minimalistic"
 	end
 	
 	--[[
@@ -6904,57 +6906,6 @@ function _detalhes:RefreshMicroDisplays()
 	_detalhes.StatusBar:UpdateOptions (self)
 end
 
-
---from weakauras, list of functions to block on scripts
---source https://github.com/WeakAuras/WeakAuras2/blob/520951a4b49b64cb49d88c1a8542d02bbcdbe412/WeakAuras/AuraEnvironment.lua#L66
-local blockedFunctions = {
-	-- Lua functions that may allow breaking out of the environment
-	getfenv = true,
-	getfenv = true,
-	loadstring = true,
-	pcall = true,
-	xpcall = true,
-	getglobal = true,
-	
-	-- blocked WoW API
-	SendMail = true,
-	SetTradeMoney = true,
-	AddTradeMoney = true,
-	PickupTradeMoney = true,
-	PickupPlayerMoney = true,
-	TradeFrame = true,
-	MailFrame = true,
-	EnumerateFrames = true,
-	RunScript = true,
-	AcceptTrade = true,
-	SetSendMailMoney = true,
-	EditMacro = true,
-	SlashCmdList = true,
-	DevTools_DumpCommand = true,
-	hash_SlashCmdList = true,
-	CreateMacro = true,
-	SetBindingMacro = true,
-	GuildDisband = true,
-	GuildUninvite = true,
-	securecall = true,
-	
-	--additional
-	setmetatable = true,
-}
-
---function filter
-local functionFilter = setmetatable ({}, {__index = function (env, key)
-	if (key == "_G") then
-		return env
-		
-	elseif (blockedFunctions [key]) then
-		return nil
-		
-	else	
-		return _G [key]
-	end
-end})
-
 function _detalhes:ChangeSkin (skin_name)
 
 	if (not skin_name) then
@@ -7249,7 +7200,7 @@ function _detalhes:ChangeSkin (skin_name)
 	if (not just_updating or _detalhes.initializing) then
 		local callbackFunc = this_skin.callback
 		if (callbackFunc) then
-			setfenv (callbackFunc, functionFilter)
+			DetailsFramework:SetEnvironment(callbackFunc)
 			local okey, result = pcall (callbackFunc, this_skin, self, just_updating)
 			if (not okey) then
 				_detalhes:Msg ("|cFFFF9900error on skin callback function|r:", result)
@@ -7259,7 +7210,7 @@ function _detalhes:ChangeSkin (skin_name)
 		if (this_skin.control_script) then
 			local onStartScript = this_skin.control_script_on_start
 			if (onStartScript) then
-				setfenv (onStartScript, functionFilter)
+				DetailsFramework:SetEnvironment(onStartScript)
 				local okey, result = pcall (onStartScript, this_skin, self)
 				if (not okey) then
 					_detalhes:Msg ("|cFFFF9900error on skin control on start function|r:", result)
@@ -7267,7 +7218,7 @@ function _detalhes:ChangeSkin (skin_name)
 			end
 			
 			local controlFunc = this_skin.control_script
-			setfenv (controlFunc, functionFilter)
+			DetailsFramework:SetEnvironment(controlFunc)
 			self.bgframe:SetScript ("OnUpdate", controlFunc)
 			self.bgframe.skin_script = true
 			self.bgframe.skin = this_skin

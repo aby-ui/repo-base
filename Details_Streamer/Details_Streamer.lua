@@ -1927,7 +1927,7 @@ function StreamOverlay:OnEvent (_, event, ...)
 				StreamOverlay.DefaultConfigTable = default_options_table
 				
 				--> Install
-				local install, saveddata = _G._detalhes:InstallPlugin ("TOOLBAR", "Streamer", [[Interface\MINIMAP\MOVIERECORDINGICON]], StreamOverlay, "DETAILS_PLUGIN_STREAM_OVERLAY", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", StreamOverlay.CurrentVersion, default_options_table)
+				local install, saveddata = _G._detalhes:InstallPlugin ("TOOLBAR", "Action Tracker", [[Interface\MINIMAP\MOVIERECORDINGICON]], StreamOverlay, "DETAILS_PLUGIN_STREAM_OVERLAY", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", StreamOverlay.CurrentVersion, default_options_table)
 				if (type (install) == "table" and install.error) then
 					print (install.error)
 				end
@@ -1967,13 +1967,13 @@ function StreamOverlay:OnEvent (_, event, ...)
 						local icon = welcome_window:CreateTexture (nil, "overlay")
 						icon:SetTexture ([[Interface\MINIMAP\MOVIERECORDINGICON]])
 						local title = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						title:SetText ("Details!: Streamer (plugin)")
+						title:SetText ("Details!: Action Tracker (plugin)")
 						StreamOverlay:SetFontSize (title, 20)
 						
 						local text1 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						text1:SetText ("If you are a Streamer or Youtuber, you might want to take a look at the Details! Streamer plugin.")
+						text1:SetText ("If you are a Streamer or Youtuber, you might want to take a look at the Details! Action Tracker plugin.")
 						local text2 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						text2:SetText ("Go to Options Panel -> Plugin Management and enable the Streamer plugin.")
+						text2:SetText ("Go to Options Panel -> Plugin Management and enable the Action Tracker plugin.")
 						
 						icon:SetPoint ("topleft", welcome_window, "topleft", 10, -60)
 						
@@ -2053,7 +2053,7 @@ function StreamOverlay:CreateMinimapIcon()
 			end,
 			
 			OnTooltipShow = function (tooltip)
-				tooltip:AddLine ("Details!: Streamer", 1, 1, 1)
+				tooltip:AddLine ("Details!: Action Tracker", 1, 1, 1)
 				tooltip:AddLine ("|cFFFF7700Left Click|r: open options.")
 				tooltip:AddLine ("|cFFFF7700Right Click|r: hide this icon.")
 			end,

@@ -244,160 +244,240 @@ local text_interrupt_prototype = {
 
 local group_prototype_boss_mods = {
     ["grow"] = "DOWN",
-    ["controlledChildren"] = {},
-    ["animate"] = true,
+    ["controlledChildren"] = {
+    },
+    ["borderBackdrop"] = "Blizzard Tooltip",
     ["xOffset"] = 0,
-    ["border"] = "None",
-    ["yOffset"] = 370,
+    ["yOffset"] = 0,
     ["anchorPoint"] = "CENTER",
-    ["untrigger"] = {},
-    ["sort"] = "none",
-    ["actions"] = {
-        ["start"] = {},
-        ["finish"] = {},
-        ["init"] = {},
+    ["borderColor"] = {
+        0, -- [1]
+        0, -- [2]
+        0, -- [3]
+        1, -- [4]
     },
     ["space"] = 2,
-    ["background"] = "None",
-    ["expanded"] = true,
-    ["constantFactor"] = "RADIUS",
-    ["selfPoint"] = "TOP",
-    ["borderOffset"] = 16,
-    ["trigger"] = {
-        ["type"] = "aura",
-        ["spellIds"] = {
-        },
-        ["names"] = {},
-        ["debuffType"] = "HELPFUL",
-        ["unit"] = "player",
-    },
-    ["animation"] = {
+    ["actions"] = {
         ["start"] = {
-            ["duration_type"] = "seconds",
-            ["type"] = "none",
-        },
-        ["main"] = {
-            ["duration_type"] = "seconds",
-            ["type"] = "none",
         },
         ["finish"] = {
-            ["duration_type"] = "seconds",
-            ["type"] = "none",
+        },
+        ["init"] = {
         },
     },
-    ["id"] = "Details! Boss Mods Group",
-    ["backgroundInset"] = 0,
-    ["frameStrata"] = 1,
-    ["width"] = 359.096801757813,
-    ["rotation"] = 0,
+    ["triggers"] = {
+        {
+            ["trigger"] = {
+                ["debuffType"] = "HELPFUL",
+                ["type"] = "aura2",
+                ["spellIds"] = {
+                },
+                ["subeventSuffix"] = "_CAST_START",
+                ["unit"] = "player",
+                ["subeventPrefix"] = "SPELL",
+                ["event"] = "Health",
+                ["names"] = {
+                },
+            },
+            ["untrigger"] = {
+            },
+        }, -- [1]
+    },
+    ["columnSpace"] = 1,
     ["radius"] = 200,
-    ["numTriggers"] = 1,
-    ["stagger"] = 0,
-    ["height"] = 121.503601074219,
+    ["selfPoint"] = "TOP",
     ["align"] = "CENTER",
+    ["stagger"] = 0,
+    ["subRegions"] = {
+    },
     ["load"] = {
-        ["difficulty"] = {
-            ["multi"] = {
-            },
-        },
-        ["role"] = {
-            ["multi"] = {
-            },
-        },
-        ["use_class"] = false,
-        ["talent"] = {
-            ["multi"] = {
-            },
-        },
-        ["race"] = {
-            ["multi"] = {
-            },
-        },
         ["spec"] = {
             ["multi"] = {
             },
         },
         ["class"] = {
+            ["multi"] = {
+            },
         },
         ["size"] = {
             ["multi"] = {
             },
         },
     },
+    ["backdropColor"] = {
+        1, -- [1]
+        1, -- [2]
+        1, -- [3]
+        0.5, -- [4]
+    },
+    ["animate"] = false,
+    ["arcLength"] = 360,
+    ["scale"] = 1,
+    ["fullCircle"] = true,
+    ["border"] = false,
+    ["borderEdge"] = "Square Full White",
     ["regionType"] = "dynamicgroup",
+    ["borderSize"] = 2,
+    ["sort"] = "none",
+    ["internalVersion"] = 35,
+    ["rotation"] = 0,
+    ["constantFactor"] = "RADIUS",
+    ["useLimit"] = false,
+    ["borderOffset"] = 4,
+    ["limit"] = 5,
+    ["gridType"] = "RD",
+    ["id"] = "Details! Boss Mods Group",
+    ["borderInset"] = 1,
+    ["frameStrata"] = 1,
+    ["anchorFrameType"] = "SCREEN",
+    ["gridWidth"] = 5,
+    ["uid"] = "I7Y0mTf5KSP",
+    ["rowSpace"] = 1,
+    ["authorOptions"] = {
+    },
+    ["conditions"] = {
+    },
+    ["animation"] = {
+        ["start"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+        ["main"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+        ["finish"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+    },
+    ["config"] = {
+    },
 }
 
 local group_prototype = {
-    ["xOffset"] = -678.999450683594,
-    ["yOffset"] = 212.765991210938,
-    ["id"] = "Details! Aura Group",
-    ["grow"] = "RIGHT",
-    ["controlledChildren"] = {},
-    ["animate"] = true,
-    ["border"] = "None",
-    ["anchorPoint"] = "CENTER",
-    ["regionType"] = "dynamicgroup",
-    ["sort"] = "none",
-    ["actions"] = {},
-    ["space"] = 0,
-    ["background"] = "None",
-    ["expanded"] = true,
-    ["constantFactor"] = "RADIUS",
-    ["trigger"] = {
-        ["type"] = "aura",
-        ["spellIds"] = {},
-        ["unit"] = "player",
-        ["debuffType"] = "HELPFUL",
-        ["names"] = {},
+    ["grow"] = "DOWN",
+    ["controlledChildren"] = {
     },
-    ["borderOffset"] = 16,
-    
-    ["animation"] = {
+    ["borderBackdrop"] = "Blizzard Tooltip",
+    ["xOffset"] = 0,
+    ["yOffset"] = 0,
+    ["anchorPoint"] = "CENTER",
+    ["borderColor"] = {
+        0, -- [1]
+        0, -- [2]
+        0, -- [3]
+        1, -- [4]
+    },
+    ["space"] = 2,
+    ["actions"] = {
         ["start"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
-        },
-        ["main"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
         },
         ["finish"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
+        },
+        ["init"] = {
         },
     },
-    ["align"] = "CENTER",
-    ["rotation"] = 0,
-    ["frameStrata"] = 1,
-    ["width"] = 199.999969482422,
-    ["height"] = 20,
-    ["stagger"] = 0,
+    ["triggers"] = {
+        {
+            ["trigger"] = {
+                ["debuffType"] = "HELPFUL",
+                ["type"] = "aura2",
+                ["spellIds"] = {
+                },
+                ["subeventSuffix"] = "_CAST_START",
+                ["unit"] = "player",
+                ["subeventPrefix"] = "SPELL",
+                ["event"] = "Health",
+                ["names"] = {
+                },
+            },
+            ["untrigger"] = {
+            },
+        }, -- [1]
+    },
+    ["columnSpace"] = 1,
     ["radius"] = 200,
-    ["numTriggers"] = 1,
-    ["backgroundInset"] = 0,
-    ["selfPoint"] = "LEFT",
+    ["selfPoint"] = "TOP",
+    ["align"] = "CENTER",
+    ["stagger"] = 0,
+    ["subRegions"] = {
+    },
     ["load"] = {
-        ["use_combat"] = true,
-        ["race"] = {
-            ["multi"] = {},
-        },
-        ["talent"] = {
-            ["multi"] = {},
-        },
-        ["role"] = {
-            ["multi"] = {},
-        },
         ["spec"] = {
-            ["multi"] = {},
+            ["multi"] = {
+            },
         },
         ["class"] = {
-            ["multi"] = {},
+            ["multi"] = {
+            },
         },
         ["size"] = {
-            ["multi"] = {},
+            ["multi"] = {
+            },
         },
     },
-    ["untrigger"] = {},
+    ["backdropColor"] = {
+        1, -- [1]
+        1, -- [2]
+        1, -- [3]
+        0.5, -- [4]
+    },
+    ["animate"] = false,
+    ["arcLength"] = 360,
+    ["scale"] = 1,
+    ["fullCircle"] = true,
+    ["border"] = false,
+    ["borderEdge"] = "Square Full White",
+    ["regionType"] = "dynamicgroup",
+    ["borderSize"] = 2,
+    ["sort"] = "none",
+    ["internalVersion"] = 35,
+    ["rotation"] = 0,
+    ["constantFactor"] = "RADIUS",
+    ["useLimit"] = false,
+    ["borderOffset"] = 4,
+    ["limit"] = 5,
+    ["gridType"] = "RD",
+    ["id"] = "Details! Aura Group",
+    ["borderInset"] = 1,
+    ["frameStrata"] = 1,
+    ["anchorFrameType"] = "SCREEN",
+    ["gridWidth"] = 5,
+    ["uid"] = "I7Y0mTf5KSP",
+    ["rowSpace"] = 1,
+    ["authorOptions"] = {
+    },
+    ["conditions"] = {
+    },
+    ["animation"] = {
+        ["start"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+        ["main"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+        ["finish"] = {
+            ["easeStrength"] = 3,
+            ["type"] = "none",
+            ["duration_type"] = "seconds",
+            ["easeType"] = "none",
+        },
+    },
+    ["config"] = {
+    },
 }
 
 local bar_dbm_timerbar_prototype = {
@@ -1061,92 +1141,162 @@ local aurabar_prototype = {
 }
 
 local icon_prototype = {
-    ["yOffset"] = 202.07,
-    ["xOffset"] = -296.82,
-    ["fontSize"] = 14,
-    ["displayStacks"] = "%s",
-    ["parent"] = "Details! Aura Group",
-    ["color"] = {1, 1, 1, 1},
-    ["stacksPoint"] = "BOTTOMRIGHT",
-    ["regionType"] = "icon",
-    ["untrigger"] = {},
-    ["anchorPoint"] = "CENTER",
-    ["icon"] = true,
-    ["numTriggers"] = 1,
-    ["customTextUpdate"] = "update",
-    ["id"] = "UNNAMED",
-    ["actions"] = {},
-    ["fontFlags"] = "OUTLINE",
-    ["stacksContainment"] = "INSIDE",
-    ["zoom"] = 0,
-    ["auto"] = false,
-    ["animation"] = {
-        ["start"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
+    {
+        ["authorOptions"] = {
         },
-        ["main"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
-        },
-        ["finish"] = {
-            ["type"] = "none",
-            ["duration_type"] = "seconds",
-        },
-    },
-    ["trigger"] = {
-        ["type"] = "aura",
-        ["spellId"] = "0",
-        ["subeventSuffix"] = "_CAST_START",
-        ["custom_hide"] = "timed",
-        ["event"] = "Health",
-        ["subeventPrefix"] = "SPELL",
-        ["debuffClass"] = "magic",
-        ["use_spellId"] = true,
-        ["spellIds"] = {},
-        ["name_operator"] = "==",
-        ["fullscan"] = true,
-        ["unit"] = "player",
-        ["names"] = {},
-        ["debuffType"] = "HARMFUL",
-    },
-    ["desaturate"] = false,
-    ["frameStrata"] = 1,
-    ["stickyDuration"] = false,
-    ["width"] = 192,
-    ["font"] = "Friz Quadrata TT",
-    ["inverse"] = false,
-    ["selfPoint"] = "CENTER",
-    ["height"] = 192,
-    ["displayIcon"] = "Interface\\Icons\\Spell_Holiday_ToW_SpiceCloud",
-    ["load"] = {
-        ["use_combat"] = true,
-        ["race"] = {
-            ["multi"] = {
+        ["yOffset"] = 0,
+        ["anchorPoint"] = "CENTER",
+        ["cooldownSwipe"] = true,
+        ["cooldownEdge"] = false,
+        ["actions"] = {
+            ["start"] = {
+            },
+            ["finish"] = {
+            },
+            ["init"] = {
             },
         },
-        ["talent"] = {
-            ["multi"] = {
+        ["triggers"] = {
+            {
+                ["trigger"] = {
+                    ["type"] = "aura2",
+                    ["subeventSuffix"] = "_CAST_START",
+                    ["event"] = "Health",
+                    ["names"] = {
+                    },
+                    ["spellIds"] = {
+                    },
+                    ["auranames"] = {
+                        "Aspect of the Wild", -- [1]
+                    },
+                    ["useName"] = true,
+                    ["subeventPrefix"] = "SPELL",
+                    ["unit"] = "player",
+                    ["debuffType"] = "HELPFUL",
+                },
+                ["untrigger"] = {
+                },
+            }, -- [1]
+            ["activeTriggerMode"] = -10,
+        },
+        ["internalVersion"] = 35,
+        ["keepAspectRatio"] = false,
+        ["animation"] = {
+            ["start"] = {
+                ["easeStrength"] = 3,
+                ["type"] = "none",
+                ["duration_type"] = "seconds",
+                ["easeType"] = "none",
+            },
+            ["main"] = {
+                ["easeStrength"] = 3,
+                ["type"] = "none",
+                ["duration_type"] = "seconds",
+                ["easeType"] = "none",
+            },
+            ["finish"] = {
+                ["easeStrength"] = 3,
+                ["type"] = "none",
+                ["duration_type"] = "seconds",
+                ["easeType"] = "none",
             },
         },
-        ["role"] = {
-            ["multi"] = {
+        ["desaturate"] = false,
+        ["subRegions"] = {
+            {
+                ["text_shadowXOffset"] = 0,
+                ["text_text_format_s_format"] = "none",
+                ["text_text"] = "%s",
+                ["text_shadowColor"] = {
+                    0, -- [1]
+                    0, -- [2]
+                    0, -- [3]
+                    1, -- [4]
+                },
+                ["text_selfPoint"] = "AUTO",
+                ["text_automaticWidth"] = "Auto",
+                ["text_fixedWidth"] = 64,
+                ["anchorYOffset"] = 0,
+                ["text_justify"] = "CENTER",
+                ["rotateText"] = "NONE",
+                ["type"] = "subtext",
+                ["text_color"] = {
+                    1, -- [1]
+                    1, -- [2]
+                    1, -- [3]
+                    1, -- [4]
+                },
+                ["text_font"] = "Friz Quadrata TT",
+                ["text_shadowYOffset"] = 0,
+                ["text_wordWrap"] = "WordWrap",
+                ["text_visible"] = true,
+                ["text_anchorPoint"] = "INNER_BOTTOMRIGHT",
+                ["text_fontSize"] = 12,
+                ["anchorXOffset"] = 0,
+                ["text_fontType"] = "OUTLINE",
+            }, -- [1]
+            {
+                ["glowFrequency"] = 0.25,
+                ["type"] = "subglow",
+                ["useGlowColor"] = false,
+                ["glowType"] = "buttonOverlay",
+                ["glowLength"] = 10,
+                ["glowYOffset"] = 0,
+                ["glowColor"] = {
+                    1, -- [1]
+                    1, -- [2]
+                    1, -- [3]
+                    1, -- [4]
+                },
+                ["glowXOffset"] = 0,
+                ["glow"] = false,
+                ["glowScale"] = 1,
+                ["glowThickness"] = 1,
+                ["glowLines"] = 8,
+                ["glowBorder"] = false,
+            }, -- [2]
+        },
+        ["height"] = 64,
+        ["load"] = {
+            ["spec"] = {
+                ["multi"] = {
+                },
+            },
+            ["class"] = {
+                ["multi"] = {
+                },
+            },
+            ["size"] = {
+                ["multi"] = {
+                },
             },
         },
-        ["spec"] = {
-            ["multi"] = {
-            },
+        ["regionType"] = "icon",
+        ["selfPoint"] = "CENTER",
+        ["width"] = 64,
+        ["frameStrata"] = 1,
+        ["zoom"] = 0,
+        ["auto"] = true,
+        ["xOffset"] = 0,
+        ["id"] = "+++Buff+++",
+        ["color"] = {
+            1, -- [1]
+            1, -- [2]
+            1, -- [3]
+            1, -- [4]
         },
-        ["class"] = {
-            ["multi"] = {
-            },
+        ["alpha"] = 1,
+        ["anchorFrameType"] = "SCREEN",
+        ["icon"] = true,
+        ["uid"] = "he8Lr19gc64",
+        ["inverse"] = false,
+        ["cooldownTextDisabled"] = false,
+        ["conditions"] = {
         },
-        ["size"] = {
-            ["multi"] = {
-            },
+        ["cooldown"] = false,
+        ["config"] = {
         },
-    },
-    ["textColor"] = {1, 1, 1, 1},
+    }
 }
 
 local actions_prototype = {
@@ -1164,23 +1314,40 @@ local actions_prototype = {
 local debuff_prototype = {
     ["cooldown"] = false,
     ["trigger"] = {
-        ["spellId"] = "0",
-        ["unit"] = "",
+        ["type"] = "aura2",
+        ["subeventSuffix"] = "_CAST_START",
+        ["event"] = "Health",
+        ["names"] = {},
         ["spellIds"] = {},
+        ["subeventPrefix"] = "SPELL",
+        ["unit"] = "player",
         ["debuffType"] = "HARMFUL",
-        ["names"] = {},
+
+        ["auraspellids"] = {},
+        ["useExactSpellId"] = false,
+        ["auranames"] = {},
+        ["useName"] = true,
     },
 }
+
 local buff_prototype = {
-    ["cooldown"] = false,
     ["trigger"] = {
-        ["spellId"] = "0",
-        ["unit"] = "",
-        ["spellIds"] = {},
-        ["debuffType"] = "HELPFUL",
+        ["type"] = "aura2",
+        ["subeventSuffix"] = "_CAST_START",
+        ["event"] = "Health",
         ["names"] = {},
+        ["spellIds"] = {},
+        ["subeventPrefix"] = "SPELL",
+        ["unit"] = "player",
+        ["debuffType"] = "HELPFUL",
+
+        ["auraspellids"] = {},
+        ["useExactSpellId"] = false,
+        ["auranames"] = {},
+        ["useName"] = true,
     },
 }
+
 local cast_prototype = {
     ["trigger"] = {
         ["type"] = "event",
@@ -1260,6 +1427,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
     end
     
     --> check if there is a group for our auras
+--[=[
     if (not WeakAurasSaved.displays ["Details! Aura Group"]) then
         local group = _detalhes.table.copy ({}, group_prototype)
         WeakAuras.Add (group)
@@ -1268,6 +1436,11 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
     if (not WeakAurasSaved.displays ["Details! Boss Mods Group"]) then
         local group = _detalhes.table.copy ({}, group_prototype_boss_mods)
         WeakAuras.Add (group)
+    end
+--]=]
+
+    if (true) then
+        return Details:Msg("feature disabled due to 9.0 changes.")
     end
 
     --> create the icon table
@@ -1528,10 +1701,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
                 
             elseif (target == 11) then --Buff on Player
                 local add = _detalhes.table.copy ({}, buff_prototype)
-                add.trigger.spellId = tostring (spellid)
-                add.trigger.spellIds[1] = "" --spellid
                 add.trigger.names = nil --spellname
-                add.trigger.auranames = {tostring(spellid)}
                 add.trigger.unit = "player"
                 add.trigger.useName = true
                 add.trigger.type = "aura2"
@@ -1549,8 +1719,6 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
                 add.trigger.spellIds[1] = "" --spellid
                 add.trigger.names = nil --spellname
                 add.trigger.unit = "target"
-                add.trigger.auranames = {tostring(spellid)}
-                add.trigger.useName = true
                 add.trigger.type = "aura2"
                 add.trigger.matchesShowOn = "showOnActive"
                 add.trigger.unitExists = false
@@ -1602,22 +1770,27 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             
             --> combat only
             if (in_combat) then
+                new_aura.load = new_aura.load or {}
                 new_aura.load.use_combat = true
             else
                 new_aura.load.use_combat = nil
             end
+
         else
             new_aura.trigger.spellId = tostring (spellid)
             new_aura.trigger.name = spellname
             tinsert (new_aura.trigger.spellIds, spellid)
         end
         
-        --> if is a regular auras without using spells ids
+        --> if is a regular aura without using spells ids
         if (not use_spellid) then
-            new_aura.trigger.use_spellId = false
-            new_aura.trigger.fullscan = false
-            new_aura.trigger.spellId = nil
-            --new_aura.trigger.spellIds = {}
+            new_aura.trigger.useExactSpellId = false
+            new_aura.useName = true
+            new_aura.auranames = {spellname}
+        else
+            new_aura.trigger.useExactSpellId = true
+            new_aura.useName = false
+            new_aura.auraspellids = {tostring(spellid)}
         end
         
         --> check stack size
@@ -1656,6 +1829,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
 
     --> load by encounter id
     if (encounter_id) then
+        new_aura.load = new_aura.load or {}
         new_aura.load.use_encounterid = true
         new_aura.load.encounterid = tostring (encounter_id)
     end

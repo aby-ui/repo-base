@@ -55,11 +55,8 @@ frames\fw_mods.lua
 frames\toolbar_button.xml
 
 frames\window_copy.lua
-
-#frames\window_options.lua
 frames\window_options2.lua
 frames\window_options2_sections.lua
-
 frames\window_api.lua
 frames\window_playerbreakdown.lua
 frames\window_playerbreakdown_list.lua

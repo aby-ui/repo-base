@@ -219,7 +219,7 @@ local function createButtons(titleButton, questNotGossip)
 end
 
 hooksecurefunc("GossipFrameUpdate", function()
-    for i=1, NUMGOSSIPBUTTONS do
+    for i=1, NUMGOSSIPBUTTONS or 32 do
         local titleButton = _G["GossipTitleButton"..i]
         if not titleButton.btnComplete then createButtons(titleButton) end
         if titleButton:IsShown() then

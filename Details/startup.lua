@@ -461,6 +461,9 @@ function Details:StartMeUp() --I'll never stop!
 	
 	--enforce to show 6 abilities on the tooltip
 	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
+
+	--force the group edit be always enabled when Details! starts
+	_detalhes.options_group_edit = true
 	
 	--enforce to use the new animation code
 	if (_detalhes.streamer_config) then

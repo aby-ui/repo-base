@@ -990,7 +990,7 @@ local default_profile = {
 	
 	--> skins
 		standard_skin = false,
-		skin = "Dark Theme",
+		skin = "Minimalistic",
 		profile_save_pos = true,
 		options_group_edit = true,
 		
@@ -1210,9 +1210,9 @@ local default_global_data = {
 	--> profile pool
 		__profiles = {},
 		latest_news_saw = "",
-		always_use_profile = false, --deprecated on 9.0
-		always_use_profile_name = "", --deprecated on 9.0
-		always_use_profile_exception = {}, --deprecated on 9.0
+		always_use_profile = false,
+		always_use_profile_name = "",
+		always_use_profile_exception = {},
 		custom = {},
 		savedStyles = {},
 		savedCustomSpells = {},

@@ -89,5 +89,14 @@ local function myActionButton_OnUpdate(self, elapsed)
 	self.comboEventFrame:SetScript("OnEvent", comboEventFrame_OnEvent);
 end
 
-hooksecurefunc("ActionButton_OnUpdate", myActionButton_OnUpdate);
+    --abyui change for 9.0 hooksecurefunc("ActionButton_OnUpdate", myActionButton_OnUpdate);
+    hooksecurefunc(ActionBarButtonEventsFrame, "RegisterFrame", function(self, btn)
+        if not self.__abyFiveCombo then
+            self.__abyFiveCombo = true
+            for _, btn in ipairs(self.frames) do
+                myActionButton_OnUpdate(btn)
+            end
+        end
+        myActionButton_OnUpdate(btn)
+    end)
 end

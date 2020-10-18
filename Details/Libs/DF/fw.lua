@@ -1,5 +1,5 @@
 
-local dversion = 209
+local dversion = 211
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -1391,7 +1391,7 @@ end
 					local textentry = getMenuWidgetVolative(parent, "textentry", widgetIndexes)
 					widget_created = textentry
 
-					textentry:SetCommitFunction(widget_table.func)
+					textentry:SetCommitFunction(widget_table.func or widget_table.set)
 					textentry:SetTemplate(widget_table.template or widget_table.button_template or button_template)
 					textentry:SetSize(widget_table.width or 120, widget_table.height or 18)
 
@@ -1399,8 +1399,8 @@ end
 					textentry.text = widget_table.get()
 					textentry._get = widget_table.get
 					textentry.widget_type = "textentry"
-					textentry:SetHook ("OnEnterPressed", widget_table.set)
-					textentry:SetHook ("OnEditFocusLost", widget_table.set)
+					textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
+					textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
 
 					textentry.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
 					textentry.hasLabel:SetTemplate(widget_table.text_template or text_template)
@@ -1745,13 +1745,13 @@ end
 				line_widgets_created = line_widgets_created + 1
 				
 			elseif (widget_table.type == "textentry") then
-				local textentry = DF:CreateTextEntry (parent, widget_table.func, 120, 18, nil, "$parentWidget" .. index, nil, button_template)
+				local textentry = DF:CreateTextEntry (parent, widget_table.func or widget_table.set, 120, 18, nil, "$parentWidget" .. index, nil, button_template)
 				textentry.tooltip = widget_table.desc
 				textentry.text = widget_table.get()
 				textentry._get = widget_table.get
 				textentry.widget_type = "textentry"
-				textentry:SetHook ("OnEnterPressed", widget_table.set)
-				textentry:SetHook ("OnEditFocusLost", widget_table.set)
+				textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
+				textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
 
 				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
 				textentry:SetPoint ("left", label, "right", 2)
@@ -2304,8 +2304,9 @@ function DF:SetHook (hookType, func)
 			if (not isRemoval) then
 				tinsert (self.HookList [hookType], func)
 			end
-		else 
+		else
 			if (DF.debug) then
+				print (debugstack())
 				error ("Details! Framework: invalid function for widget " .. self.WidgetType .. ".")
 			end
 		end

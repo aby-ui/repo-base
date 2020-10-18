@@ -4,16 +4,16 @@
 		_ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 7896
-		_detalhes.alpha_build_counter = 7896 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 7908
+		_detalhes.alpha_build_counter = 7908 --if this is higher than the regular counter, use it instead
 		_detalhes.game_version = "v9.0.1"
 		_detalhes.userversion = "v9.0.1." .. _detalhes.build_counter
-		_detalhes.realversion = 142 --core version, this is used to check API version for scripts and plugins (see alias below)
+		_detalhes.realversion = 143 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
 		
 		_detalhes.BFACORE = 131 --core version on BFA launch
-		_detalhes.SHADOWLANDSCORE = 142 --core version on BFA launch
+		_detalhes.SHADOWLANDSCORE = 143 --core version on BFA launch
 		
 		Details = _detalhes
 		
@@ -326,7 +326,7 @@ do
 			
 		--> armazena instancias inativas
 			_detalhes.unused_instances = {}
-			_detalhes.default_skin_to_use = "Dark Theme"
+			_detalhes.default_skin_to_use = "Minimalistic"
 			_detalhes.instance_title_text_timer = {}
 		--> player detail skin
 			_detalhes.playerdetailwindow_skins = {}

@@ -331,7 +331,10 @@ end
 -- Equip a set by index
 function addon:EquipSetByIndex(id)
 	if not InCombatLockdown() and type(id) == "number" then
-        EquipmentManager_EquipSet(id)
+        local ids = C_EquipmentSet.GetEquipmentSetIDs()
+        if ids and ids[id] then
+            EquipmentManager_EquipSet(ids[id])
+        end
     end
 end
 

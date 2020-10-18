@@ -26,7 +26,10 @@ local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
 local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
 local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
 local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
+
 local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+local options_button_template_selected = DF.table.copy({}, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+options_button_template_selected.backdropbordercolor = {1, .8, .2}
 
 --options
 local section_menu_button_width = 120
@@ -199,29 +202,18 @@ function Details.options.InitializeOptionsWindow(instance)
         [8] = Loc ["STRING_OPTIONSMENU_PLUGINS"],
         [10] = Loc ["STRING_OPTIONSMENU_TOOLTIP"],
         [11] = Loc ["STRING_OPTIONSMENU_DATAFEED"],
-        
 
-        --[[
-        
-        
-        Loc ["STRING_OPTIONSMENU_ROWMODELS"],
-        
-        Loc ["STRING_OPTIONSMENU_TITLETEXT"],
-        Loc ["STRING_OPTIONSMENU_WINDOW"],
-        
-        "Streamer Settings",
-        Loc ["STRING_OPTIONSMENU_RAIDTOOLS"],
-        Loc ["STRING_OPTIONSMENU_PERFORMANCE"],
-        
-        Loc ["STRING_OPTIONSMENU_SPELLS"],
-        Loc ["STRING_OPTIONSMENU_DATACHART"],
-        --]]
+        [14] = Loc ["STRING_OPTIONSMENU_RAIDTOOLS"],
+        [15] = "Broadcaster Tools",
+        [16] = Loc ["STRING_OPTIONSMENU_SPELLS"],
+        [17] = Loc ["STRING_OPTIONSMENU_DATACHART"],
+
     }
 
     local optionsSectionsOrder = {
-        1, "", 3, 4, "", 5, 6, 7, 12, 13, "", 9, 2, 8, 10, 11, 14, 15, 16, 17, 18, 19
+        1, "", 3, 4, "", 5, 6, 7, 12, 13, "", 9, 2, 8, 10, 11, "", 14, 15, 16, 17--, 18, 19
     }
-    local maxSectionIds = 19
+    local maxSectionIds = 17
     Details.options.maxSectionIds = maxSectionIds
 
     local buttonYPosition = -40
@@ -229,8 +221,15 @@ function Details.options.InitializeOptionsWindow(instance)
     function Details.options.SelectOptionsSection(sectionId)
         for i = 1, maxSectionIds do
             f.sectionFramesContainer[i]:Hide()
+            if (f.sectionFramesContainer[i].sectionButton) then
+                f.sectionFramesContainer[i].sectionButton:SetTemplate(options_button_template)
+            end
         end
+
         f.sectionFramesContainer[sectionId]:Show()
+        
+        --hightlight the option button
+        f.sectionFramesContainer[sectionId].sectionButton:SetTemplate(options_button_template_selected)
     end
 
     Details.options.SetCurrentInstance(instance)
@@ -255,6 +254,7 @@ function Details.options.InitializeOptionsWindow(instance)
                 local sectionButton = DF:CreateButton(f, function() Details.options.SelectOptionsSection(sectionId) end, section_menu_button_width, section_menu_button_height, sectionsName[sectionId], sectionId, nil, nil, nil, "$parentButtonSection" .. sectionId, nil, options_button_template, options_text_template)
                 sectionButton:SetPoint("topleft", f, "topleft", 10, buttonYPosition)
                 buttonYPosition = buttonYPosition - (section_menu_button_height + 1)
+                sectionFrame.sectionButton = sectionButton
             end
         else
             buttonYPosition = buttonYPosition - 15

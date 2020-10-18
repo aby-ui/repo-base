@@ -2882,11 +2882,15 @@ end
 		texture:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 	else
 		if (instance and instance.row_info.use_spec_icons) then
-			if (self.spec) then
+			if (self.spec and Details.class_specs_coords[self.spec]) then
 				texture:SetTexture(instance.row_info.spec_file)
 				texture:SetTexCoord(_unpack (Details.class_specs_coords[self.spec]))
 				texture:SetVertexColor(1, 1, 1)
 			else
+				--if (self.spec and not Details.class_specs_coords[self.spec]) then
+				--	print("|cFFFFAA00Details!|r error 0x8525, report on discord", self.spec, self.classe)
+				--end
+				
 				texture:SetTexture(instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
 				texture:SetTexCoord(_unpack (Details.class_coords[classe]))
 				texture:SetVertexColor(1, 1, 1)

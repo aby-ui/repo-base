@@ -2545,7 +2545,11 @@ function _detalhes:MontaAtributosOption (instancia, func)
 		end
 		
 		local options = sub_atributos [i].lista
-		
+
+		if (not instancia.sub_atributo_last) then
+			instancia.sub_atributo_last = {1, 1, 1, 1, 1}
+		end
+
 		for o = 1, atributos [i] do
 			if (_detalhes:CaptureIsEnabled ( _detalhes.atributos_capture [gindex] )) then
 				CoolTip:AddMenu (2, func, true, i, o, options[o], nil, true)

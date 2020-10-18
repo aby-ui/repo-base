@@ -477,10 +477,10 @@ do
                 name = Loc ["STRING_OPTIONS_WC_UNSNAP"],
                 desc = Loc ["STRING_OPTIONS_WC_UNSNAP_DESC"],
             },
-            {--close instance
+            {--close instance close window
                 type = "execute",
                 func = function(self)
-                    currentInstance:CloseInstance()
+                    currentInstance:Shutdown()
                 end,
                 icontexture = [[Interface\Buttons\UI-Panel-MinimizeButton-Up]],
                 icontexcoords = {0.143125, 0.8653125, 0.1446875, 0.8653125},
@@ -3319,6 +3319,25 @@ do
    
     local buildSection = function(sectionFrame)
 
+        --build profile menu for "always use this profile" feature
+		local profile_selected_alwaysuse = function (_, instance, profile_name)
+			_detalhes.always_use_profile_name = profile_name
+			local unitname = UnitName ("player")
+			_detalhes.always_use_profile_exception [unitname] = nil
+			
+			_detalhes:ApplyProfile (profile_name)
+			
+			_detalhes:Msg (Loc ["STRING_OPTIONS_PROFILE_LOADED"], profile_name)
+			afterUpdate()
+		end
+		local buildProfileMenuForAlwaysUse = function()
+			local menu = {}
+			for index, profile_name in ipairs (_detalhes:GetProfileList()) do 
+				menu [#menu+1] = {value = profile_name, label = profile_name, onclick = profile_selected_alwaysuse, icon = "Interface\\MINIMAP\\Vehicle-HammerGold-3"}
+			end
+			return menu
+		end
+
         local selectProfile = function (_, _, profileName)
             _detalhes:ApplyProfile(profileName)
             _detalhes:Msg (Loc ["STRING_OPTIONS_PROFILE_LOADED"], profileName)
@@ -3477,6 +3496,52 @@ do
                 icontexture = [[Interface\BUTTONS\UI-GuildButton-OfficerNote-Up]],
                 icontexcoords = {0, 1, 0, 1},
             },
+
+            {type = "blank"},
+
+            {--use on all characters
+                type = "toggle",
+                get = function() return _detalhes.always_use_profile end,
+                set = function (self, fixedparam, value)
+                    _detalhes.always_use_profile = value
+                    
+                    if (value) then
+                        _detalhes.always_use_profile = true
+                        _detalhes.always_use_profile_name = sectionFrame.widget_list_by_type.dropdown[3]:GetValue()
+                        
+                        --enable the dropdown
+                        sectionFrame.widget_list_by_type.dropdown[3]:Enable()
+                        
+                        --set the dropdown value to the current profile selected
+                        sectionFrame.widget_list_by_type.dropdown[3]:Select(_detalhes.always_use_profile_name)
+                        
+                        --remove this character from the exception list
+                        local unitname = UnitName ("player")
+                        _detalhes.always_use_profile_exception [unitname] = nil
+                    else
+                        _detalhes.always_use_profile = false
+                        --disable the dropdown
+                        sectionFrame.widget_list_by_type.dropdown[3]:Disable()
+                        
+                        --remove this character from the exception list
+                        local unitname = UnitName ("player")
+                        _detalhes.always_use_profile_exception [unitname] = nil
+                    end
+
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_ALWAYS_USE"],
+                desc = Loc ["STRING_OPTIONS_ALWAYS_USE_DESC"],
+            },
+
+            {--select a profile to use on all characters
+                type = "select",
+                get = function() return _detalhes.always_use_profile_name end,
+                values = function() return buildProfileMenuForAlwaysUse() end,
+                name = "Select Profile",
+                desc = Loc ["STRING_OPTIONS_PROFILE_GLOBAL"],
+            },
+
 
         }
 
@@ -4736,12 +4801,10 @@ do
 
 	--> combat alpha modifier
         local right_start_at = 450
-        local top_start_at = -90
-        local mouse_interaction_start_at = -350
 
 		--anchor
 		DF:NewLabel (sectionFrame, _, "$parentHideInCombatAnchor", "hideInCombatAnchor", Loc ["STRING_OPTIONS_ALPHAMOD_ANCHOR"], "GameFontNormal")
-		sectionFrame.hideInCombatAnchor:SetPoint("topleft", sectionFrame, "topleft", right_start_at, -90)
+		sectionFrame.hideInCombatAnchor:SetPoint("topleft", sectionFrame, "topleft", right_start_at, startY - 20)
 		
 		--> hide in combat
 		DF:NewLabel (sectionFrame, _, "$parentCombatAlphaLabel", "combatAlphaLabel", Loc ["STRING_OPTIONS_COMBAT_ALPHA"], "GameFontHighlightLeft")
@@ -4765,7 +4828,7 @@ do
 		local header3Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_INVERT_RULE"])
 		local header4Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_ALPHA"])
 
-		local yyy = top_start_at - 20
+		local yyy = startY - 40
 		header1Label:SetPoint("topleft", sectionFrame, "topleft", right_start_at, yyy)
 		header2Label:SetPoint("topleft", sectionFrame, "topleft", right_start_at + 96, yyy)
 		header3Label:SetPoint("topleft", sectionFrame, "topleft", right_start_at + 140, yyy)
@@ -4837,6 +4900,1273 @@ do
     tinsert(Details.optionsSection, buildSection)
 end
 
+
+do --raid tools
+    local buildSection = function(sectionFrame)
+
+        --on select channel for interrip announcer
+		local on_select_channel = function (self, _, channel)
+            _detalhes.announce_interrupts.channel = channel
+            C_Timer.After(0, function()
+                if (channel == "WHISPER") then
+                    sectionFrame.widget_list_by_type.textentry[1]:Enable()
+                else
+                    sectionFrame.widget_list_by_type.textentry[1]:Disable()
+                end
+            end)
+			afterUpdate()
+        end
+		local channel_list = {
+			{value = "PRINT", icon = [[Interface\LFGFRAME\BattlenetWorking2]], iconsize = {14, 14}, iconcolor = {1, 1, 1, 1}, texcoord = {12/64, 53/64, 11/64, 53/64}, label = Loc ["STRING_CHANNEL_PRINT"], onclick = on_select_channel},
+			{value = "SAY", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconsize = {14, 14}, texcoord = {0.0390625, 0.203125, 0.09375, 0.375}, label = Loc ["STRING_CHANNEL_SAY"], onclick = on_select_channel},
+			{value = "YELL", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconsize = {14, 14}, texcoord = {0.0390625, 0.203125, 0.09375, 0.375}, iconcolor = {1, 0.3, 0, 1}, label = Loc ["STRING_CHANNEL_YELL"], onclick = on_select_channel},
+			{value = "RAID", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0.49, 0}, iconsize = {14, 14}, texcoord = {0.53125, 0.7265625, 0.078125, 0.40625}, label = Loc ["STRING_INSTANCE_CHAT"], onclick = on_select_channel},
+			{value = "WHISPER", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0.49, 1}, iconsize = {14, 14}, texcoord = {0.0546875, 0.1953125, 0.625, 0.890625}, label = Loc ["STRING_CHANNEL_WHISPER"], onclick = on_select_channel},
+		}
+		local buildInterruptChannelMenu = function() 
+			return channel_list
+        end
+        
+		--on select channel for cooldown announcer
+		local on_select_channel = function (self, _, channel)
+			_detalhes.announce_cooldowns.channel = channel
+			afterUpdate()
+		end
+		
+		local channel_list = {
+			{value = "PRINT", icon = [[Interface\LFGFRAME\BattlenetWorking2]], iconsize = {14, 14}, iconcolor = {1, 1, 1, 1}, texcoord = {12/64, 53/64, 11/64, 53/64}, label = Loc ["STRING_CHANNEL_PRINT"], onclick = on_select_channel},
+			{value = "SAY", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconsize = {14, 14}, texcoord = {0.0390625, 0.203125, 0.09375, 0.375}, label = Loc ["STRING_CHANNEL_SAY"], onclick = on_select_channel},
+			{value = "YELL", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconsize = {14, 14}, texcoord = {0.0390625, 0.203125, 0.09375, 0.375}, iconcolor = {1, 0.3, 0, 1}, label = Loc ["STRING_CHANNEL_YELL"], onclick = on_select_channel},
+			{value = "RAID", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0.49, 0}, iconsize = {14, 14}, texcoord = {0.53125, 0.7265625, 0.078125, 0.40625}, label = Loc ["STRING_INSTANCE_CHAT"], onclick = on_select_channel},
+			{value = "WHISPER", icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0.49, 1}, iconsize = {14, 14}, texcoord = {0.0546875, 0.1953125, 0.625, 0.890625}, label = Loc ["STRING_CHANNEL_WHISPER_TARGET_COOLDOWN"], onclick = on_select_channel},
+		}
+		local buildCooldownsChannelMenu = function() 
+			return channel_list
+        end
+
+        --on select channel for report deaths
+		local on_select_channel = function (self, _, channel)
+			_detalhes.announce_deaths.where = channel
+			afterUpdate()
+		end
+		
+		local officer = _detalhes.GetReportIconAndColor ("OFFICER")
+		
+		local channel_list = {
+			{value = 1, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0, 1}, iconsize = {14, 14}, texcoord = {0.53125, 0.7265625, 0.078125, 0.40625}, label = Loc ["STRING_OPTIONS_RT_DEATHS_WHERE1"], onclick = on_select_channel},
+			{value = 2, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {1, 0.49, 0}, iconsize = {14, 14}, texcoord = {0.53125, 0.7265625, 0.078125, 0.40625}, label = Loc ["STRING_OPTIONS_RT_DEATHS_WHERE2"], onclick = on_select_channel},
+			{value = 3, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], iconcolor = {0.66, 0.65, 1}, iconsize = {14, 14}, texcoord = {0.53125, 0.7265625, 0.078125, 0.40625}, label = Loc ["STRING_OPTIONS_RT_DEATHS_WHERE3"], onclick = on_select_channel},
+			{value = 4, icon = [[Interface\LFGFRAME\BattlenetWorking2]], iconsize = {14, 14}, iconcolor = {1, 1, 1, 1}, texcoord = {12/64, 53/64, 11/64, 53/64}, label = Loc ["STRING_CHANNEL_PRINT"], onclick = on_select_channel},
+			{value = 5, icon = officer.icon, iconsize = {14, 14}, iconcolor = officer.color, texcoord = officer.coords, label = officer.label, onclick = on_select_channel},
+		}
+		local buildDeathLogAnnouncerMenu = function()
+			return channel_list
+		end
+        
+        local openCooldownIgnoreWindow = function()
+			if (not DetailsAnnounceSelectCooldownIgnored) then
+				DetailsAnnounceSelectCooldownIgnored = CreateFrame("frame", "DetailsAnnounceSelectCooldownIgnored", UIParent, "BackdropTemplate")
+				local f = DetailsAnnounceSelectCooldownIgnored
+				f:SetSize (400, 500)
+				f:SetPoint ("center", UIParent, "center", 0, 0)
+
+                DF:ApplyStandardBackdrop(f)
+                DF:CreateTitleBar(f, Loc ["STRING_OPTIONS_RT_IGNORE_TITLE"])
+
+                f:SetFrameStrata ("FULLSCREEN")
+				f:EnableMouse()
+				f:SetMovable (true)
+				f:SetScript ("OnMouseDown", function (self, button)
+					if (button == "RightButton") then
+						if (f.IsMoving) then
+							f.IsMoving = false
+							f:StopMovingOrSizing()
+						end
+						f:Hide()
+						return
+					end
+					
+					f.IsMoving = true
+					f:StartMoving()
+                end)
+                
+				f:SetScript ("OnMouseUp", function (self, button)
+					if (f.IsMoving) then
+						f.IsMoving = false
+						f:StopMovingOrSizing()
+					end
+                end)
+
+				f.labels = {}
+                local on_switch_func = function (self, spellid, value)
+                    if (spellid) then
+                        if (not value) then
+                            _detalhes.announce_cooldowns.ignored_cooldowns [spellid] = nil
+                        else
+                            _detalhes.announce_cooldowns.ignored_cooldowns [spellid] = true
+                        end
+                    end
+				end
+				
+				f:SetScript ("OnHide", function (self)
+					self:Clear()
+				end)
+				
+				function f:Clear()
+					for _, label in ipairs (self.labels) do
+						label.icon:Hide()
+						label.text:Hide()
+						label.switch:Hide()
+					end
+				end
+				
+				function f:CreateLabel()
+					local L = {
+						icon = DF:CreateImage (f, nil, 16, 16, "overlay", {0.1, 0.9, 0.1, 0.9}),
+						text = DF:CreateLabel (f, "", 10, "white", "GameFontHighlightSmall"),
+                    }
+
+                    L.switch = DF:CreateSwitch (f, on_switch_func, false)
+
+                    L.switch:SetPoint ("topleft", f, "topleft", 10, ((#f.labels*20)*-1)-55)
+					L.icon:SetPoint ("left", L.switch, "right", 2, 0)
+					L.text:SetPoint ("left", L.icon, "right", 2, 0)
+                    
+                    L.switch:SetAsCheckBox()
+                    L.switch:SetTemplate(options_switch_template)
+                    L.switch:SetFixedParameter(1)
+                    L.switch:SetValue(false)
+
+					tinsert (f.labels, L)
+					return L
+				end
+				
+				function f:Open()
+					local _GetSpellInfo = _detalhes.getspellinfo --details api
+					
+					for index, spellid in ipairs (_detalhes:GetCooldownList()) do
+						local name, _, icon = _GetSpellInfo (spellid)
+						if (name) then
+							local label = f.labels [index] or f:CreateLabel()
+							label.icon.texture = icon
+                            label.text.text = name
+
+							label.switch:SetFixedParameter(spellid)
+							label.switch:SetValue(_detalhes.announce_cooldowns.ignored_cooldowns[spellid])
+							label.icon:Show()
+							label.text:Show()
+							label.switch:Show()
+						end
+					end
+					f:Show()
+				end
+			end
+			DetailsAnnounceSelectCooldownIgnored:Open()
+		end
+
+        local sectionOptions = {
+
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_RT_INTERRUPT_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {--auto current segment
+                type = "toggle",
+                get = function() return currentInstance.auto_current end,
+                set = function (self, fixedparam, value)
+                    if (value) then
+                        _detalhes:EnableInterruptAnnouncer()
+                    else
+                        _detalhes:DisableInterruptAnnouncer()
+                    end
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = Loc ["STRING_OPTIONS_RT_INTERRUPTS_ONOFF_DESC"],
+            },
+
+            {--channel to report
+                type = "select",
+                get = function() return _detalhes.announce_interrupts.channel end,
+                values = function() 
+                    return buildInterruptChannelMenu()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_INTERRUPTS_CHANNEL"],
+                desc = Loc ["STRING_OPTIONS_RT_INTERRUPTS_CHANNEL_DESC"],
+            },
+            
+            {--target player to whisper
+                type = "textentry",
+                get = function() 
+                    C_Timer.After(0, function()
+                        if (_detalhes.announce_interrupts.channel ~= "WHISPER") then
+                            sectionFrame.widget_list_by_type.textentry[1]:Disable()
+                        end
+                    end)
+                    return _detalhes.announce_interrupts.whisper 
+                end,
+                func = function(_, _, text)
+                    _detalhes.announce_interrupts.whisper = text or ""
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_INTERRUPTS_WHISPER"],
+                desc = Loc ["STRING_OPTIONS_RT_INTERRUPTS_WHISPER"],
+            },
+
+            {--next player to cut, whisper the person
+                type = "textentry",
+                get = function() 
+                    return _detalhes.announce_interrupts.next
+                end,
+                func = function(_, _, text)
+                    _detalhes.announce_interrupts.next = text or ""
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_INTERRUPTS_NEXT"],
+                desc = Loc ["STRING_OPTIONS_RT_INTERRUPTS_NEXT_DESC"],
+            },
+
+            {--custom text field
+                type = "textentry",
+                get = function() 
+                    return _detalhes.announce_interrupts.custom
+                end,
+                func = function(_, _, text)
+                    _detalhes.announce_interrupts.custom = text or ""
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_INTERRUPTS_CUSTOM"],
+                desc = Loc ["STRING_OPTIONS_RT_INTERRUPTS_CUSTOM_DESC"],
+            },
+            {--test custom text
+                type = "execute",
+                func = function(self)
+                    local text = sectionFrame.widget_list_by_type.textentry[3]:GetText()
+                    local channel = _detalhes.announce_interrupts.channel
+                    _detalhes.announce_interrupts.channel = "PRINT"
+                    _detalhes:interrupt_announcer (nil, nil, nil, _detalhes.playername, nil, nil, "A Monster", nil, 1766, "Kick", nil, 106523, "Cataclysm", nil)
+                    _detalhes.announce_interrupts.channel = channel
+                end,
+                icontexture = [[Interface\CHATFRAME\ChatFrameExpandArrow]],
+                name = "Test",
+                desc = "Click to test!", --localize-me
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_RT_COOLDOWNS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {--enable cooldown announcer
+                type = "toggle",
+                get = function() return _detalhes.announce_cooldowns.enabled end,
+                set = function (self, fixedparam, value)
+                    if (value) then
+                        _detalhes:EnableCooldownAnnouncer()
+                    else
+                        _detalhes:DisableCooldownAnnouncer()
+                    end
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = Loc ["STRING_OPTIONS_RT_COOLDOWNS_ONOFF_DESC"],
+            },
+
+            {--channel to report
+                type = "select",
+                get = function() return _detalhes.announce_cooldowns.channel end,
+                values = function() 
+                    return buildCooldownsChannelMenu()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_COOLDOWNS_CHANNEL"],
+                desc = Loc ["STRING_OPTIONS_RT_COOLDOWNS_CHANNEL_DESC"],
+            },
+
+            {--custom text field
+                type = "textentry",
+                get = function() 
+                    return _detalhes.announce_cooldowns.custom
+                end,
+                func = function(_, _, text)
+                    _detalhes.announce_cooldowns.custom = text or ""
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_COOLDOWNS_CUSTOM"],
+                desc = Loc ["STRING_OPTIONS_RT_COOLDOWNS_CUSTOM_DESC"],
+            },
+
+            {--test custom text
+                type = "execute",
+                func = function(self)
+                    local text = sectionFrame.widget_list_by_type.textentry[4]:GetText()
+                    local channel = _detalhes.announce_cooldowns.channel
+                    _detalhes.announce_cooldowns.channel = "PRINT"
+                    _detalhes:cooldown_announcer (nil, nil, nil, _detalhes.playername, nil, nil, "Tyrande Whisperwind", nil, 47788, "Guardian Spirit")
+                    _detalhes.announce_cooldowns.channel = channel
+                end,
+                icontexture = [[Interface\CHATFRAME\ChatFrameExpandArrow]],
+                name = "Test",
+                desc = "Click to test!", --localize-me
+            },
+
+            {--ignored cooldowns
+                type = "execute",
+                func = function(self)
+                    openCooldownIgnoreWindow()
+                end,
+                icontexture = [[Interface\COMMON\UI-DropDownRadioChecks]],
+                icontexcoords = {0, 0.5, 0, 0.5},
+                name = Loc ["STRING_OPTIONS_RT_IGNORE_TITLE"],
+                desc = Loc ["STRING_OPTIONS_RT_COOLDOWNS_SELECT_DESC"],
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_RT_DEATHS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {--enable death announcer
+                type = "toggle",
+                get = function() return _detalhes.announce_deaths.enabled end,
+                set = function (self, fixedparam, value)
+                    if (value) then
+                        _detalhes:EnableDeathAnnouncer()
+                    else
+                        _detalhes:DisableDeathAnnouncer()
+                    end
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = Loc ["STRING_OPTIONS_RT_DEATHS_ONOFF_DESC"],
+            },
+
+            {--max hits to show
+                type = "range",
+                get = function() return _detalhes.announce_deaths.last_hits end,
+                set = function (self, fixedparam, value)
+                    _detalhes.announce_deaths.last_hits = value
+                    afterUpdate()
+                end,
+                min = 1,
+                max = 5,
+                step = 1,
+                name = Loc ["STRING_OPTIONS_RT_DEATHS_HITS"],
+                desc = Loc ["STRING_OPTIONS_RT_DEATHS_HITS_DESC"],
+            },
+
+            {--max hits to show
+                type = "range",
+                get = function() return _detalhes.announce_deaths.only_first end,
+                set = function (self, fixedparam, value)
+                    _detalhes.announce_deaths.only_first = value
+                    afterUpdate()
+                end,
+                min = 1,
+                max = 30,
+                step = 1,
+                name = Loc ["STRING_OPTIONS_RT_DEATHS_FIRST"],
+                desc = Loc ["STRING_OPTIONS_RT_DEATHS_FIRST_DESC"],
+            },
+
+            {--death report channel
+                type = "select",
+                get = function() return _detalhes.announce_deaths.where end,
+                values = function() 
+                    return buildDeathLogAnnouncerMenu()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_DEATHS_WHERE"],
+                desc = Loc ["STRING_OPTIONS_RT_DEATHS_WHERE_DESC"],
+            },
+
+            {type = "breakline"},
+            {type = "label", get = function() return "Death Recap:" end, text_template = subSectionTitleTextTemplate}, --localize-me
+
+            {--enable death recap
+                type = "toggle",
+                get = function() return _detalhes.death_recap.enabled end,
+                set = function (self, fixedparam, value)
+                    _detalhes.death_recap.enabled = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = "Modify the Blizzard's Death Recap screen.", --localize-me
+            },
+
+            {--relevance time
+                type = "range",
+                get = function() return _detalhes.death_recap.relevance_time end,
+                set = function (self, fixedparam, value)
+                    _detalhes.death_recap.relevance_time = value
+                    afterUpdate()
+                end,
+                min = 1,
+                max = 12,
+                step = 1,
+                name = "Relevance Time", --localize-me
+                desc = "Attempt to fill the Death Recap with high damage (discart low hits) in the relevant time before death.", --localize-me
+            },
+
+            {--show life percent
+                type = "toggle",
+                get = function() return _detalhes.death_recap.show_life_percent end,
+                set = function (self, fixedparam, value)
+                    _detalhes.death_recap.show_life_percent = value
+                    afterUpdate()
+                end,
+                name = "Life Percent", --localize-me
+                desc = "Show the percent of life the player had when received the hit.", --localize-me
+            },
+
+            {--show segment list
+                type = "toggle",
+                get = function() return _detalhes.death_recap.show_segments end,
+                set = function (self, fixedparam, value)
+                    _detalhes.death_recap.show_segments = value
+                    afterUpdate()
+                end,
+                name = "Segment List", --localize-me
+                desc = "Show a list of the latest segments in case you want to see recaps from previous fights.", --localize-me
+            },
+            
+            {type = "blank"},
+            {type = "label", get = function() return Loc ["STRING_GERAL"] .. ":" end, text_template = subSectionTitleTextTemplate},
+
+            {--show first hit
+                type = "toggle",
+                get = function() return _detalhes.announce_firsthit.enabled end,
+                set = function (self, fixedparam, value)
+                    _detalhes.announce_firsthit.enabled = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_RT_FIRST_HIT"],
+                desc = Loc ["STRING_OPTIONS_RT_FIRST_HIT_DESC"],
+            },
+
+            {--show death menu
+                type = "toggle",
+                get = function() return _detalhes.on_death_menu end,
+                set = function (self, fixedparam, value)
+                    _detalhes.on_death_menu = value
+                    afterUpdate()
+                end,
+                name = "Show Death Menu", --localize-me
+                desc = "Show a panel below the Release / Death Recap panel with some shortcuts for Raid Leaders.", --localize-me
+            },
+        }
+
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
+
+
+do
+    local buildSection = function(sectionFrame)
+
+        local button_width = 160
+
+        --> streamer plugin - a.k.a. player spell tracker 
+			--> title anchor
+            DF:NewLabel (sectionFrame, _, "$parentStreamerPluginAnchor", "streamerPluginAnchor", "Action Tracker", "GameFontNormal")
+            sectionFrame.streamerPluginAnchor:SetPoint("topleft", sectionFrame, "topleft", startX, startY - 20)
+
+			local streamerTitleDesc = DF:NewLabel (sectionFrame, _, "$parentStreamerTitleDescText", "StreamerTitleDescTextLabel", "Show the spells you are casting, allowing the viewer to follow your decision making and learn your rotation.", "GameFontNormal", 10, "white")
+			streamerTitleDesc:SetSize (270, 40)
+			streamerTitleDesc:SetJustifyV ("top")
+			streamerTitleDesc:SetPoint ("topleft", sectionFrame.streamerPluginAnchor, "bottomleft", 0, -4)
+			
+			local streamerTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 256, 41, "overlay", {0.5, 1, 0.49, 0.57})
+			streamerTitleImage:SetPoint ("topleft", sectionFrame.streamerPluginAnchor, "bottomleft", 0, -40)
+			
+			--> get the plugin object
+			local StreamerPlugin = _detalhes:GetPlugin ("DETAILS_PLUGIN_STREAM_OVERLAY")
+			if (StreamerPlugin) then
+				--> get the plugin settings table
+				local tPluginSettings = _detalhes:GetPluginSavedTable ("DETAILS_PLUGIN_STREAM_OVERLAY")
+				if (tPluginSettings) then
+					local bIsPluginEnabled = tPluginSettings.enabled
+					--> plugin already enabled
+					if (bIsPluginEnabled) then
+						--> config button
+						local configure_streamer_plugin = function()
+							StreamerPlugin.OpenOptionsPanel (true)
+							C_Timer.After (0.2, function()
+								_G.DetailsOptionsWindow:Hide()
+							end)
+						end
+						local configurePluginButton = DF:NewButton (sectionFrame, _, "$parentConfigureStreamerPluginButton", "configureStreamerPlugin", 100, 20, configure_streamer_plugin, nil, nil, nil, "Action Tracker Options", nil, options_button_template)
+						configurePluginButton:SetWidth (button_width)
+						configurePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -7)
+						
+						--> text telling how to disable
+						local pluginAlreadyEnabled = DF:NewLabel (sectionFrame, _, "$parentStreamerAlreadyEnabledText", "StreamerAlreadyEnabledTextLabel", "Plugin is enabled. You may disable it on Plugin Management section.", "GameFontNormal", 10, "white")
+						pluginAlreadyEnabled:SetJustifyV ("top")
+						pluginAlreadyEnabled:SetSize (270, 40)
+						pluginAlreadyEnabled:SetPoint ("topleft", configurePluginButton, "bottomleft", 0, -7)
+					else
+						--> plugin isnt enabled, create the enable button
+						local enable_streamer_plugin = function()
+							tPluginSettings.enabled = true
+							StreamerPlugin.__enabled = true
+							_detalhes:SendEvent ("PLUGIN_ENABLED", StreamerPlugin)
+							
+							sectionFrame.enableStreamerPluginButton:Hide()
+							
+							--> config button
+							local configure_streamer_plugin = function()
+								StreamerPlugin.OpenOptionsPanel()
+							end
+							local configurePluginButton = DF:NewButton (sectionFrame, _, "$parentConfigureStreamerPluginButton", "configureStreamerPlugin", 100, 20, configure_streamer_plugin, nil, nil, nil, "Action Tracker Options", nil, options_button_template)
+							configurePluginButton:SetWidth (button_width)
+							configurePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -7)
+							
+							--> text telling how to disable
+							local pluginAlreadyEnabled = DF:NewLabel (sectionFrame, _, "$parentStreamerAlreadyEnabledText", "StreamerAlreadyEnabledTextLabel", "Plugin is enabled. You may disable it on Plugin Management section.", "GameFontNormal", 10, "white")
+							pluginAlreadyEnabled:SetJustifyV ("top")
+							pluginAlreadyEnabled:SetSize (270, 40)
+							pluginAlreadyEnabled:SetPoint ("topleft", configurePluginButton, "bottomleft", 0, -7)
+						end
+						
+						local enablePluginButton = DF:NewButton (sectionFrame, _, "$parentEnableStreamerPluginButton", "enableStreamerPluginButton", 100, 20, enable_streamer_plugin, nil, nil, nil, "Enable Plugin", nil, options_button_template)
+						enablePluginButton:SetWidth (button_width)
+						enablePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -5)
+					end
+				end
+			else
+				--> plugin is disabled at the addon control panel
+				local pluginDisabled = DF:NewLabel (sectionFrame, _, "$parentStreamerDisabledText", "StreamerDisabledTextLabel", "Details!: Streamer Plugin is disabled on the AddOns Control Panel.", "GameFontNormal", 10, "red")
+				pluginDisabled:SetSize (270, 40)
+				pluginDisabled:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -2)
+			end
+		
+		
+		--> event tracker
+            DF:NewLabel (sectionFrame, _, "$parentEventTrackerAnchor", "eventTrackerAnchor", "Event Tracker", "GameFontNormal")
+            sectionFrame.eventTrackerAnchor:SetPoint("topleft", sectionFrame, "topleft", startX, startY - 180)
+
+			local eventTrackerTitleDesc = DF:NewLabel (sectionFrame, _, "$parentEventTrackerTitleDescText", "EventTrackerTitleDescTextLabel", "Show what's happening near you so the viewer can follow what's going on. Show cooldowns, CC, spell interruption. Useful on any group content.", "GameFontNormal", 10, "white")
+			eventTrackerTitleDesc:SetJustifyV ("top")
+			eventTrackerTitleDesc:SetSize (270, 40)
+			eventTrackerTitleDesc:SetPoint ("topleft", sectionFrame.eventTrackerAnchor, "bottomleft", 0, -4)
+			
+			local eventTrackerTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 256, 50, "overlay", {0.5, 1, 134/512, 184/512})
+			eventTrackerTitleImage:SetPoint ("topleft", sectionFrame.eventTrackerAnchor, "bottomleft", 0, -40)
+			
+			--> enable feature checkbox
+				DF:NewLabel (sectionFrame, _, "$parentEnableEventTrackerLabel", "EventTrackerLabel", "Enable Event Tracker", "GameFontHighlightLeft")
+				DF:NewSwitch (sectionFrame, _, "$parentEventTrackerSlider", "EventTrackerSlider", 60, 20, _, _, _detalhes.event_tracker.enabled, nil, nil, nil, nil, options_switch_template)
+
+				sectionFrame.EventTrackerSlider:SetPoint ("left", sectionFrame.EventTrackerLabel, "right", 2)
+				sectionFrame.EventTrackerSlider:SetAsCheckBox()
+				sectionFrame.EventTrackerSlider.OnSwitch = function (_, _, value)
+					_detalhes.event_tracker.enabled = not _detalhes.event_tracker.enabled
+					Details:LoadFramesForBroadcastTools()
+					afterUpdate()
+				end
+				sectionFrame.EventTrackerLabel:SetPoint ("topleft", eventTrackerTitleImage, "bottomleft", 0, -20)
+				sectionFrame.EventTrackerSlider:SetPoint ("left", sectionFrame.EventTrackerLabel, "right", 2, 0)
+				
+			--> configure feature button
+				local configure_event_tracker = function()
+					_detalhes:OpenEventTrackerOptions (true)
+					C_Timer.After (0.2, function()
+						_G.DetailsOptionsWindow:Hide()
+					end)
+				end
+				local configureEventTrackerButton = DF:NewButton (sectionFrame, _, "$parentConfigureEventTrackerButton", "configureEventTracker", 100, 20, configure_event_tracker, nil, nil, nil, "Event Tracker Options", nil, options_button_template)
+				configureEventTrackerButton:SetWidth (button_width)
+				configureEventTrackerButton:SetPoint ("topleft", sectionFrame.EventTrackerLabel, "bottomleft", 0, -7)
+
+
+		--> current dps
+            DF:NewLabel (sectionFrame, _, "$parentCurrentDPSAnchor", "currentDPSAnchor", "The Real Current DPS", "GameFontNormal")
+            sectionFrame.currentDPSAnchor:SetPoint("topleft", sectionFrame, "topleft", startX + 350, startY - 20)
+
+			local currentDPSTitleDesc = DF:NewLabel (sectionFrame, _, "$parentCurrentDPSTitleDescText", "CurrentDPSTitleDescTextLabel", "Show a frame with DPS done only in the last 5 seconds. Useful for arena matches and mythic dungeons.", "GameFontNormal", 10, "white")
+			currentDPSTitleDesc:SetJustifyV ("top")
+			currentDPSTitleDesc:SetSize (270, 40)
+			currentDPSTitleDesc:SetPoint ("topleft", sectionFrame.currentDPSAnchor, "bottomleft", 0, -4)
+			
+			local currentDPSTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 250, 61, "overlay", {259/512, 509/512, 186/512, 247/512})
+			currentDPSTitleImage:SetPoint ("topleft", sectionFrame.currentDPSAnchor, "bottomleft", 0, -40)
+			
+			--> enable feature checkbox
+				DF:NewLabel (sectionFrame, _, "$parentEnableCurrentDPSLabel", "CurrentDPSLabel", "Enable The Real Current Dps", "GameFontHighlightLeft")
+				DF:NewSwitch (sectionFrame, _, "$parentCurrentDPSSlider", "CurrentDPSSlider", 60, 20, _, _, _detalhes.current_dps_meter.enabled, nil, nil, nil, nil, options_switch_template)
+
+				sectionFrame.CurrentDPSSlider:SetPoint ("left", sectionFrame.CurrentDPSLabel, "right", 2)
+				sectionFrame.CurrentDPSSlider:SetAsCheckBox()
+				sectionFrame.CurrentDPSSlider.OnSwitch = function (_, _, value)
+					_detalhes.current_dps_meter.enabled = not _detalhes.current_dps_meter.enabled
+					Details:LoadFramesForBroadcastTools()
+					afterUpdate()
+				end
+				
+				sectionFrame.CurrentDPSLabel:SetPoint ("topleft", currentDPSTitleImage, "bottomleft", 0, -10)
+				sectionFrame.CurrentDPSSlider:SetPoint ("left", sectionFrame.CurrentDPSLabel, "right", 2, 0)
+				
+			--> configure feature button
+				local configure_current_dps = function()
+					_detalhes:OpenCurrentRealDPSOptions (true)
+					C_Timer.After (0.2, function()
+						_G.DetailsOptionsWindow:Hide()
+					end)
+				end
+				local configureCurrentDPSButton = DF:NewButton (sectionFrame, _, "$parentConfigureCurrentDPSButton", "configureCurrentDPS", 100, 20, configure_current_dps, nil, nil, nil, "Current Real DPS Options", nil, options_button_template)
+				configureCurrentDPSButton:SetWidth (button_width)
+				configureCurrentDPSButton:SetPoint ("topleft", sectionFrame.CurrentDPSLabel, "bottomleft", 0, -7)
+
+
+
+        local sectionOptions = {
+            {type = "label", get = function() return Loc ["STRING_GERAL"] .. ":" end, text_template = subSectionTitleTextTemplate},
+
+            {--no window alerts
+                type = "toggle",
+                get = function() return _detalhes.streamer_config.no_alerts end,
+                set = function (self, fixedparam, value)
+                    _detalhes.streamer_config.no_alerts = value
+                    afterUpdate()
+                end,
+                name = "Suppress Alerts", --localize-me
+                desc = "Suppress Alerts",
+            },
+
+            {--60hz updates
+                type = "toggle",
+                get = function() return _detalhes.streamer_config.faster_updates end,
+                set = function (self, fixedparam, value)
+                    _detalhes.streamer_config.faster_updates = value
+                    _detalhes:RefreshUpdater()
+                    afterUpdate()
+                end,
+                name = "60 Updates per Second", --localize-me
+                desc = "60 Updates per Second",
+            },
+
+            {--quick player info
+                type = "toggle",
+                get = function() return _detalhes.streamer_config.quick_detection end,
+                set = function (self, fixedparam, value)
+                    _detalhes.streamer_config.quick_detection = value
+                    afterUpdate()
+                end,
+                name = "Quick Player Info Detection", --localize-me
+                desc = "Quick Player Info Detection",
+            },
+
+            {--disable M+ shenanigans
+                type = "toggle",
+                get = function() return _detalhes.streamer_config.disable_mythic_dungeon end,
+                set = function (self, fixedparam, value)
+                    _detalhes.streamer_config.disable_mythic_dungeon = value
+                    afterUpdate()
+                end,
+                name = "Disable Mythic+ Stuff", --localize-me
+                desc = "Disable Mythic+ Stuff",
+            },
+
+            {--disable M+ charts
+                type = "toggle",
+                get = function() return _detalhes.mythic_plus.show_damage_graphic end,
+                set = function (self, fixedparam, value)
+                    _detalhes.mythic_plus.show_damage_graphic = value
+                    afterUpdate()
+                end,
+                name = "Disable Mythic+ Chart", --localize-me
+                desc = "Disable Mythic+ Chart",
+            },
+
+            {--clear cache regurlary
+                type = "toggle",
+                get = function() return _detalhes.mythic_plus.show_damage_graphic end,
+                set = function (self, fixedparam, value)
+                    _detalhes.mythic_plus.show_damage_graphic = value
+                    afterUpdate()
+                end,
+                name = "Clear Cache Regularly", --localize-me
+                desc = "Clear Cache Regularly",
+            },
+
+        }
+
+        DF:BuildMenu(sectionFrame, sectionOptions, startX + 350, startY - 20 - 200, heightSize + 300, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
+
+
+do
+    local buildSection = function(sectionFrame)
+
+		local name_entry_func = function (index, text)
+			_detalhes:UserCustomSpellUpdate (index, text) 
+		end
+		local icon_func = function (index, icon)
+			_detalhes:UserCustomSpellUpdate (index, nil, icon)
+		end
+		local remove_func = function (index)
+			_detalhes:UserCustomSpellRemove (index)
+		end
+		local reset_func = function (index)
+			_detalhes:UserCustomSpellReset (index)
+		end
+	
+	--> custom spells panel
+		local header = {
+			{name = Loc ["STRING_OPTIONS_SPELL_INDEX"], width = 55, type = "text"}, 
+			{name = Loc ["STRING_OPTIONS_SPELL_NAME"], width = 310, type = "entry", func = name_entry_func}, 
+			{name = Loc ["STRING_OPTIONS_SPELL_ICON"], width = 50, type = "icon", func = icon_func},
+			{name = Loc ["STRING_OPTIONS_SPELL_SPELLID"], width = 100, type = "text"},
+			{name = Loc ["STRING_OPTIONS_SPELL_RESET"], width = 50, type = "button", func = reset_func, icon = [[Interface\Buttons\UI-RefreshButton]], notext = true, iconalign = "center"}, 
+			{name = Loc ["STRING_OPTIONS_SPELL_REMOVE"], width = 75, type = "button", func = remove_func, icon = [[Interface\Glues\LOGIN\Glues-CheckBox-Check]], notext = true, iconalign = "center"}, 
+		}
+
+		local total_lines = function()
+			return #_detalhes.savedCustomSpells
+		end
+		local fill_row = function (index)
+			local data = _detalhes.savedCustomSpells [index]
+			if (data) then
+				return {index, data [2], data [3], data [1], ""}
+			else
+				return {nil, nil, nil, nil, nil}
+			end
+		end
+		
+		local panel = DF:NewFillPanel (sectionFrame, header, "$parentCustomSpellsFillPanel", "customSpellsFillPanel", 640, 462, total_lines, fill_row, false)
+		panel:Refresh()
+	
+	--> add
+		--> add panel
+			local addframe = DF:NewPanel (sectionFrame, nil, "$parentCustomSpellsAddPanel", "customSpellsAddPanel", 644, 462)
+			addframe:SetPoint (startX, startY - 40)
+			addframe:SetFrameLevel (7)
+			DF:ApplyStandardBackdrop(addframe)
+			addframe:Hide()			
+
+			local spellid = DF:NewLabel (addframe, nil, "$parentSpellidLabel", "spellidLabel", Loc ["STRING_OPTIONS_SPELL_ADDSPELLID"])
+			local spellname = DF:NewLabel (addframe, nil, "$parentSpellnameLabel", "spellnameLabel", Loc ["STRING_OPTIONS_SPELL_ADDNAME"])
+			local spellicon = DF:NewLabel (addframe, nil, "$parentSpelliconLabel", "spelliconLabel", Loc ["STRING_OPTIONS_SPELL_ADDICON"])
+		
+			local spellname_entry_func = function() end
+			local spellname_entry = DF:NewTextEntry (addframe, nil, "$parentSpellnameEntry", "spellnameEntry", 160, 20, spellname_entry_func, nil, nil, nil, nil, options_dropdown_template)
+			spellname_entry:SetPoint ("left", spellname, "right", 2, 0)
+
+			local spellid_entry_func = function (arg1, arg2, spellid) 
+				local spellname, _, icon = GetSpellInfo (spellid)
+				if (spellname) then
+					spellname_entry:SetText (spellname) 
+					addframe.spellIconButton.icon.texture = icon
+				else
+					_detalhes:Msg (Loc ["STRING_OPTIONS_SPELL_NOTFOUND"])
+				end
+			end
+			local spellid_entry = DF:NewSpellEntry (addframe, spellid_entry_func, 160, 20, nil, nil, "spellidEntry", "$parentSpellidEntry")
+			spellid_entry:SetTemplate (options_dropdown_template)
+			spellid_entry:SetPoint ("left", spellid, "right", 2, 0)
+			
+			local icon_button_func = function (texture)
+				addframe.spellIconButton.icon.texture = texture
+			end
+			local icon_button = DF:NewButton (addframe, nil, "$parentSpellIconButton", "spellIconButton", 20, 20, function() DF:IconPick (icon_button_func, true) end)
+			local icon_button_icon = DF:NewImage (icon_button, [[Interface\ICONS\TEMP]], 19, 19, "background", nil, "icon", "$parentSpellIcon")
+			icon_button_icon:SetPoint (0, 0)
+			icon_button:InstallCustomTexture()
+			icon_button:SetPoint ("left", spellicon, "right", 2, 0)
+			
+		--> close button
+			local closebutton = DF:NewButton (addframe, nil, "$parentAddCloseButton", "addClosebutton", 120, 20, function() addframe:Hide() end, nil, nil, nil, Loc ["STRING_OPTIONS_SPELL_CLOSE"], nil, options_button_template)
+			
+		--> confirm add spell
+			local addspell = function()
+				local id = spellid_entry.text
+				if (id == "") then
+					return _detalhes:Msg (Loc ["STRING_OPTIONS_SPELL_IDERROR"])
+				end
+				local name = spellname_entry.text
+				if (name == "") then
+					return _detalhes:Msg (Loc ["STRING_OPTIONS_SPELL_NAMEERROR"])
+				end
+				local icon = addframe.spellIconButton.icon.texture
+				
+				id = tonumber (id)
+				if (not id) then
+					return _detalhes:Msg (Loc ["STRING_OPTIONS_SPELL_IDERROR"])
+				end
+				
+				_detalhes:UserCustomSpellAdd (id, name, icon)
+				
+				panel:Refresh()
+				
+				spellid_entry.text = ""
+				spellname_entry.text = ""
+				addframe.spellIconButton.icon.texture = [[Interface\ICONS\TEMP]]
+				
+				if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+					DetailsIconPickFrame:Hide()
+				end
+				addframe:Hide()
+			end
+			
+			local addspellbutton = DF:NewButton (addframe, nil, "$parentAddSpellButton", "addSpellbutton", 120, 20, addspell, nil, nil, nil, Loc ["STRING_OPTIONS_SPELL_ADD"], nil, options_button_template)
+
+			addspellbutton:SetIcon ([[Interface\Buttons\UI-CheckBox-Check]], 18, 18, nil, nil, nil, 4)
+			closebutton:SetIcon ([[Interface\PetBattles\DeadPetIcon]], 14, 14, nil, nil, nil, 4)
+			
+			addspellbutton:SetPoint ("bottomright", addframe, "bottomright", -5, 5)
+			closebutton:SetPoint ("right", addspellbutton, "left", -4, 0)
+
+			spellid:SetPoint (50, -10)
+			spellname:SetPoint (50, -35)
+			spellicon:SetPoint (50, -60)
+		
+		--> open add panel button
+			local add = function() 
+				addframe:Show()
+			end
+			local addbutton = DF:NewButton (sectionFrame, nil, "$parentAddButton", "addbutton", 120, 20, add, nil, nil, nil, Loc ["STRING_OPTIONS_SPELL_ADDSPELL"], nil, options_button_template)
+			addbutton:SetPoint ("bottomright", panel, "topright", -00, 1)
+			addbutton:SetIcon ([[Interface\PaperDollInfoFrame\Character-Plus]], 12, 12, nil, nil, nil, 4)
+
+		panel:SetPoint (startX, startY - 40)
+		
+	--> consilidade spells
+		DF:NewLabel (sectionFrame, _, "$parentConsolidadeSpellsLabel", "ConsolidadeSpellsLabel", Loc ["STRING_OPTIONSMENU_SPELLS_CONSOLIDATE"], "GameFontHighlightLeft")
+		DF:NewSwitch (sectionFrame, _, "$parentConsolidadeSpellsSwitch", "ConsolidadeSpellsSwitch", 60, 20, nil, nil, _detalhes.override_spellids, nil, nil, nil, nil, options_switch_template)
+		sectionFrame.ConsolidadeSpellsLabel:SetPoint ("left", sectionFrame.ConsolidadeSpellsSwitch, "right", 3)
+		sectionFrame.ConsolidadeSpellsSwitch:SetAsCheckBox()
+		sectionFrame.ConsolidadeSpellsSwitch.OnSwitch = function (self, instance, value)
+			_detalhes.override_spellids = value
+			_detalhes:UpdateParserGears()
+		end
+
+		sectionFrame.ConsolidadeSpellsSwitch:SetPoint (startX, startY - 20)
+        _detalhes:SetFontSize (sectionFrame.ConsolidadeSpellsLabel, 12)
+        
+        local sectionOptions = {
+
+        }
+
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
+
+
+do
+    local buildSection = function(sectionFrame)
+
+	--> title
+    local titulo_datacharts = DF:NewLabel (sectionFrame, _, "$parentTituloDataChartsText", "DataChartsLabel", Loc ["STRING_OPTIONS_DATACHARTTITLE"], "GameFontNormal", 16)
+    local titulo_datacharts_desc = DF:NewLabel (sectionFrame, _, "$parentDataChartsText2", "DataCharts2Label", Loc ["STRING_OPTIONS_DATACHARTTITLE_DESC"], "GameFontNormal", 10, "white")
+    titulo_datacharts_desc.width = 350
+
+--> warning
+    if (not _detalhes:GetPlugin ("DETAILS_PLUGIN_CHART_VIEWER")) then
+        local label = DF:NewLabel (sectionFrame, _, "$parentPluginWarningLabel", "PluginWarningLabel", Loc ["STRING_OPTIONS_CHART_PLUGINWARNING"], "GameFontNormal")
+        local image = DF:NewImage (sectionFrame, [[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
+        label:SetPoint ("topright", sectionFrame, "topright", -42, -10)
+        label:SetJustifyH ("left")
+        label:SetWidth (160)
+        image:SetPoint ("right", label, "left", -7, 0)	
+        image:SetSize (32, 32)
+    end
+
+--> panel
+    local edit_name = function (index, name)
+        _detalhes:TimeDataUpdate (index, name)
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    
+    local big_code_editor = DF:NewSpecialLuaEditorEntry (sectionFrame, 683, 422, "bigCodeEditor", "$parentBigCodeEditor")
+    big_code_editor:SetPoint ("topleft", sectionFrame, "topleft", startX, startY - 70)
+    big_code_editor:SetFrameLevel (sectionFrame:GetFrameLevel()+6)
+    big_code_editor:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,tile = 1, tileSize = 16})
+    DF:ReskinSlider (big_code_editor.scroll)
+    big_code_editor:SetBackdropColor (0.5, 0.5, 0.5, 0.95)
+    big_code_editor:SetBackdropBorderColor (0, 0, 0, 1)
+    big_code_editor:Hide()
+    
+    local accept = function()
+        big_code_editor:ClearFocus()
+        if (not big_code_editor.is_export) then
+            _detalhes:TimeDataUpdate (big_code_editor.index, nil, big_code_editor:GetText())
+        end
+        big_code_editor:Hide()
+    end
+    local cancel = function()
+        big_code_editor:ClearFocus()
+        big_code_editor:Hide()
+    end
+
+    local accept_changes = DF:NewButton (big_code_editor, nil, "$parentAccept", "acceptButton", 120, 20, accept, nil, nil)
+    accept_changes:SetPoint (0, 20)
+    accept_changes:SetIcon([[Interface\Buttons\UI-CheckBox-Check]])
+    accept_changes:SetTemplate(options_button_template)
+    accept_changes:SetText(Loc ["STRING_OPTIONS_CHART_SAVE"])
+    
+    local cancel_changes = DF:NewButton (big_code_editor, nil, "$parentCancel", "CancelButton", 120, 20, cancel, nil, nil)
+    cancel_changes:SetPoint ("left", accept_changes, "right", 2, 0)
+    cancel_changes:SetIcon([[Interface\PetBattles\DeadPetIcon]])
+    cancel_changes:SetTemplate(options_button_template)
+    cancel_changes:SetText(Loc ["STRING_OPTIONS_CHART_CANCEL"])
+
+    local edit_code = function (index)
+        local data = _detalhes.savedTimeCaptures [index]
+        if (data) then
+            local func = data [2]
+            
+            if (type (func) == "function") then
+                return _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_CODELOADED"])
+            end
+            
+            big_code_editor:SetText (func)
+            big_code_editor.original_code = func
+            big_code_editor.index = index
+            big_code_editor.is_export = nil
+            big_code_editor:Show()
+            
+            sectionFrame.userTimeCaptureAddPanel:Hide()
+            sectionFrame.importEditor:ClearFocus()
+            sectionFrame.importEditor:Hide()
+            if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+                DetailsIconPickFrame:Hide()
+            end
+        end
+    end
+    
+    local edit_icon = function (index, icon)
+        _detalhes:TimeDataUpdate (index, nil, nil, nil, nil, nil, icon)
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    local edit_author = function (index, author)
+        _detalhes:TimeDataUpdate (index, nil, nil, nil, author)
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    local edit_version = function (index, version)
+        _detalhes:TimeDataUpdate (index, nil, nil, nil, nil, version)
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    
+    local big_code_editor2 = DF:NewSpecialLuaEditorEntry (sectionFrame, 643, 402, "exportEditor", "$parentExportEditor", true)
+    big_code_editor2:SetPoint ("topleft", sectionFrame, "topleft", 7, -70)
+    big_code_editor2:SetFrameLevel (sectionFrame:GetFrameLevel()+6)
+    big_code_editor2:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,tile = 1, tileSize = 16})
+    DF:ReskinSlider (big_code_editor2.scroll)
+    big_code_editor2:SetBackdropColor (0.5, 0.5, 0.5, 0.95)
+    big_code_editor2:SetBackdropBorderColor (0, 0, 0, 1)
+    big_code_editor2:Hide()
+    
+    local close_export_box = function()
+        big_code_editor2:ClearFocus()
+        big_code_editor2:Hide()
+    end
+    
+    local close_export = DF:NewButton (big_code_editor2, nil, "$parentClose", "closeButton", 120, 20, close_export_box)
+    close_export:SetPoint (10, 18)
+    close_export:SetIcon ([[Interface\Buttons\UI-CheckBox-Check]])
+    close_export:SetText (Loc ["STRING_OPTIONS_CHART_CLOSE"])
+    close_export:SetTemplate (options_button_template)
+    
+    local export_function = function (index)
+        local data = _detalhes.savedTimeCaptures [index]
+        if (data) then
+            local encoded = Details:CompressData (data, "print")
+            if (encoded) then
+                big_code_editor2:SetText (encoded)
+                
+                big_code_editor2:Show()
+                big_code_editor2.editbox:HighlightText()
+                big_code_editor2.editbox:SetFocus (true)
+            else
+                Details:Msg ("error exporting the time capture.") --localize-me
+            end
+        end
+    end
+    
+    local remove_capture = function (index)
+        _detalhes:TimeDataUnregister (index)
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    
+    local edit_enabled = function (index, enabled, a, b)
+        if (enabled) then
+            _detalhes:TimeDataUpdate (index, nil, nil, nil, nil, nil, nil, false)
+        else
+            _detalhes:TimeDataUpdate (index, nil, nil, nil, nil, nil, nil, true)
+        end
+        
+        sectionFrame.userTimeCaptureFillPanel:Refresh()
+    end
+    
+    local header = {
+        {name = Loc ["STRING_OPTIONS_CHART_NAME"], width = 175, type = "entry", func = edit_name},
+        {name = Loc ["STRING_OPTIONS_CHART_EDIT"], width = 55, type = "button", func = edit_code, icon = [[Interface\Buttons\UI-GuildButton-OfficerNote-Disabled]], notext = true, iconalign = "center"},
+        {name = Loc ["STRING_OPTIONS_CHART_ICON"], width = 50, type = "icon", func = edit_icon},
+        {name = Loc ["STRING_OPTIONS_CHART_AUTHOR"], width = 125, type = "text", func = edit_author},
+        {name = Loc ["STRING_OPTIONS_CHART_VERSION"], width = 65, type = "entry", func = edit_version},
+        {name = Loc ["STRING_ENABLED"], width = 50, type = "button", func = edit_enabled, icon = [[Interface\COMMON\Indicator-Green]], notext = true, iconalign = "center"},
+        {name = Loc ["STRING_OPTIONS_CHART_EXPORT"], width = 50, type = "button", func = export_function, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], notext = true, iconalign = "center"},
+        {name = Loc ["STRING_OPTIONS_CHART_REMOVE"], width = 70, type = "button", func = remove_capture, icon = [[Interface\Glues\LOGIN\Glues-CheckBox-Check]], notext = true, iconalign = "center"},
+    }
+    
+    local total_lines = function()
+        return #_detalhes.savedTimeCaptures
+    end
+    local fill_row = function (index)
+        local data = _detalhes.savedTimeCaptures [index]
+        if (data) then
+        
+            local enabled_texture
+            if (data[7]) then
+                enabled_texture = [[Interface\COMMON\Indicator-Green]]
+            else
+                enabled_texture = [[Interface\COMMON\Indicator-Red]]
+            end
+
+            return {
+                data[1], --name
+                "", --func
+                data[6], --icon
+                data[4], -- author
+                data[5], --version
+                {func = edit_enabled, icon = enabled_texture, value = data[7]} --enabled
+            }
+        else
+            return {nil, nil, nil, nil, nil, nil}
+        end
+    end
+
+    --DetailsOptionsWindowtab17UserTimeCapturesFillPanel
+    local panel = DF:NewFillPanel (sectionFrame, header, "$parentUserTimeCapturesFillPanel", "userTimeCaptureFillPanel", 640, 382, total_lines, fill_row, false)
+
+    panel:SetHook ("OnMouseDown", function()
+        if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+            DetailsIconPickFrame:Hide()
+        end
+    end)
+    
+    panel:Refresh()
+    
+    --> add panel
+        local addframe = DF:NewPanel (sectionFrame, nil, "$parentUserTimeCapturesAddPanel", "userTimeCaptureAddPanel", 683, 422)
+        addframe:SetPoint ("topleft", sectionFrame, "topleft", startX, startY - 70)
+        addframe:SetFrameLevel (7)
+        addframe:Hide()
+
+        addframe:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,tile = 1, tileSize = 16})
+        addframe:SetBackdropColor (0.5, 0.5, 0.5, 0.95)
+        addframe:SetBackdropBorderColor (0, 0, 0, 1)
+
+        --> name
+            local capture_name = DF:NewLabel (addframe, nil, "$parentNameLabel", "nameLabel", Loc ["STRING_OPTIONS_CHART_ADDNAME"])
+            local capture_name_entry = DF:NewTextEntry (addframe, nil, "$parentNameEntry", "nameEntry", 160, 20, function() end, nil, nil, nil, nil, options_dropdown_template)
+            capture_name_entry:SetMaxLetters (16)
+            capture_name_entry:SetPoint ("left", capture_name, "right", 2, 0)
+        
+        --> function
+            local capture_func = DF:NewLabel (addframe, nil, "$parentFunctionLabel", "functionLabel", Loc ["STRING_OPTIONS_CHART_ADDCODE"])
+            local capture_func_entry = DF:NewSpecialLuaEditorEntry (addframe.widget, 300, 200, "funcEntry", "$parentFuncEntry")
+            capture_func_entry:SetPoint ("topleft", capture_func.widget, "topright", 2, 0)
+            capture_func_entry:SetSize (500, 220)
+            capture_func_entry:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+            capture_func_entry:SetBackdropBorderColor (0, 0, 0, 1)
+            capture_func_entry:SetBackdropColor (0, 0, 0, .5)
+            DF:ReskinSlider (capture_func_entry.scroll)
+            
+        --> icon
+            local capture_icon = DF:NewLabel (addframe, nil, "$parentIconLabel", "iconLabel", Loc ["STRING_OPTIONS_CHART_ADDICON"])
+            local icon_button_func = function (texture)
+                addframe.iconButton.iconTexture = texture
+                addframe.iconButton:SetIcon(texture)
+            end
+            local capture_icon_button = DF:NewButton (addframe, nil, "$parentIconButton", "iconButton", 20, 20, function() DF:IconPick (icon_button_func, true) end, nil, nil, nil, nil, nil, options_button_template)
+            capture_icon_button:SetIcon([[Interface\ICONS\TEMP]])
+            capture_icon_button:SetTemplate(options_button_template)
+            capture_icon_button:SetPoint ("left", capture_icon, "right", 2, 0)
+        
+        --> author
+            local capture_author = DF:NewLabel (addframe, nil, "$parentAuthorLabel", "authorLabel", Loc ["STRING_OPTIONS_CHART_ADDAUTHOR"])
+            local capture_author_entry = DF:NewTextEntry (addframe, nil, "$parentAuthorEntry", "authorEntry", 160, 20, function() end, nil, nil, nil, nil, options_dropdown_template)
+            capture_author_entry:SetPoint ("left", capture_author, "right", 2, 0)
+            
+        --> version
+            local capture_version = DF:NewLabel (addframe, nil, "$parentVersionLabel", "versionLabel", Loc ["STRING_OPTIONS_CHART_ADDVERSION"])
+            local capture_version_entry = DF:NewTextEntry (addframe, nil, "$parentVersionEntry", "versionEntry", 160, 20, function() end, nil, nil, nil, nil, options_dropdown_template)
+            capture_version_entry:SetPoint ("left", capture_version, "right", 2, 0)
+    
+    --> open add panel button
+        local add = function() 
+            addframe:Show()
+            sectionFrame.importEditor:ClearFocus()
+            sectionFrame.importEditor:Hide()
+            big_code_editor:ClearFocus()
+            big_code_editor:Hide()
+            big_code_editor2:ClearFocus()
+            big_code_editor2:Hide()
+            if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+                DetailsIconPickFrame:Hide()
+            end
+        end
+        
+        local addbutton = DF:NewButton (sectionFrame, nil, "$parentAddButton", "addbutton", 120, 20, add, nil, nil, nil, Loc ["STRING_OPTIONS_CHART_ADD"], nil, options_button_template)
+        addbutton:SetPoint ("bottomright", panel, "topright", -30, 0)
+        addbutton:SetIcon ([[Interface\PaperDollInfoFrame\Character-Plus]], 12, 12, nil, nil, nil, 4)
+        
+    --> open import panel button
+    
+        local importframe = DF:NewSpecialLuaEditorEntry (sectionFrame, 683, 422, "importEditor", "$parentImportEditor", true)
+        local font, size, flag = importframe.editbox:GetFont()
+        importframe.editbox:SetFont (font, 9, flag)
+        importframe:SetPoint ("topleft", sectionFrame, "topleft", startX, startY - 70)
+        importframe:SetFrameLevel (sectionFrame:GetFrameLevel()+6)
+        importframe:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,tile = 1, tileSize = 16})
+        DF:ReskinSlider(importframe.scroll)
+        importframe:SetBackdropColor (0.5, 0.5, 0.5, 0.95)
+        importframe:SetBackdropBorderColor (0, 0, 0, 1)
+        importframe:Hide()
+        
+        local doimport = function()
+            local text = importframe:GetText()
+            
+            text = DF:Trim (text)
+
+            local dataTable = Details:DecompressData (text, "print")
+            if (dataTable) then
+                local unserialize = dataTable
+                
+                if (type (unserialize) == "table") then
+                    if (unserialize[1] and unserialize[2] and unserialize[3] and unserialize[4] and unserialize[5]) then
+                        local register = _detalhes:TimeDataRegister (unpack (unserialize))
+                        if (type (register) == "string") then
+                            _detalhes:Msg (register)
+                        end
+                    else
+                        _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_IMPORTERROR"])
+                    end
+                else
+                    _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_IMPORTERROR"])
+                end
+                
+                importframe:Hide()
+                panel:Refresh()
+            else
+                _detalhes:Msg (Loc ["STRING_CUSTOM_IMPORT_ERROR"])
+                return
+            end
+        end
+
+        local accept_import = DF:NewButton (importframe, nil, "$parentAccept", "acceptButton", 120, 20, doimport)
+        accept_import:SetIcon ([[Interface\Buttons\UI-CheckBox-Check]])
+        accept_import:SetPoint (10, 18)
+        accept_import:SetText (Loc ["STRING_OPTIONS_CHART_IMPORT"])
+        accept_import:SetTemplate (options_button_template)
+        
+        local cancelimport = function()
+            importframe:ClearFocus()
+            importframe:Hide()
+        end
+        
+        local cancel_changes = DF:NewButton (importframe, nil, "$parentCancel", "CancelButton", 120, 20, cancelimport)
+        cancel_changes:SetIcon ([[Interface\PetBattles\DeadPetIcon]])
+        cancel_changes:SetText (Loc ["STRING_OPTIONS_CHART_CANCEL"])
+        cancel_changes:SetPoint (132, 18)
+        cancel_changes:SetTemplate (options_button_template)
+    
+        local import = function() 
+            importframe:Show()
+            importframe:SetText ("")
+            importframe:SetFocus (true)
+            addframe:Hide()
+            big_code_editor:ClearFocus()
+            big_code_editor:Hide()
+            big_code_editor2:ClearFocus()
+            big_code_editor2:Hide()
+            if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+                DetailsIconPickFrame:Hide()
+            end
+        end
+        
+        local importbutton = DF:NewButton (sectionFrame, nil, "$parentImportButton", "importbutton", 120, 20, import, nil, nil, nil, Loc ["STRING_OPTIONS_CHART_IMPORT"], nil, options_button_template)
+        importbutton:SetPoint ("right", addbutton, "left", -4, 0)
+        importbutton:SetIcon ([[Interface\Buttons\UI-GuildButton-PublicNote-Up]], 14, 14, nil, nil, nil, 4)
+
+    --> close button
+        local closebutton = DF:NewButton (addframe, nil, "$parentAddCloseButton", "addClosebutton", 120, 20, function() addframe:Hide() end, nil, nil, nil, Loc ["STRING_OPTIONS_CHART_CLOSE"], nil, options_button_template)
+        --closebutton:InstallCustomTexture()
+        
+    --> confirm add capture
+        local addcapture = function()
+            local name = capture_name_entry.text
+            if (name == "") then
+                return _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_NAMEERROR"])
+            end
+            
+            local author = capture_author_entry.text
+            if (author == "") then
+                return _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_AUTHORERROR"])
+            end
+            
+            local icon = addframe.iconButton.iconTexture
+            
+            local version = capture_version_entry.text
+            if (version == "") then
+                return _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_VERSIONERROR"])
+            end
+            
+            local func = capture_func_entry:GetText()
+            if (func == "") then
+                return _detalhes:Msg (Loc ["STRING_OPTIONS_CHART_FUNCERROR"])
+            end
+            
+            _detalhes:TimeDataRegister (name, func, nil, author, version, icon, true)
+            
+            panel:Refresh()
+            
+            capture_name_entry.text = ""
+            capture_author_entry.text = ""
+            capture_version_entry.text = ""
+            capture_func_entry:SetText ("")
+            addframe.iconButton:SetTexture([[Interface\ICONS\TEMP]])
+            
+            if (DetailsIconPickFrame and DetailsIconPickFrame:IsShown()) then
+                DetailsIconPickFrame:Hide()
+            end
+            addframe:Hide()
+
+        end
+        
+        local addcapturebutton = DF:NewButton (addframe, nil, "$parentAddCaptureButton", "addCapturebutton", 120, 21, addcapture, nil, nil, nil, Loc ["STRING_OPTIONS_CHART_ADD2"], nil, options_button_template)
+
+    --> anchors
+        local start = 25
+        capture_name:SetPoint (start, startY)
+        capture_icon:SetPoint (start, -55)
+        capture_author:SetPoint (start, -80)
+        capture_version:SetPoint (start, -105)
+        capture_func:SetPoint (start, -130)
+        
+        addcapturebutton:SetIcon ([[Interface\Buttons\UI-CheckBox-Check]], 18, 18, nil, nil, nil, 4)
+        closebutton:SetIcon ([[Interface\PetBattles\DeadPetIcon]], 14, 14, nil, nil, nil, 4)
+        
+        addcapturebutton:SetTemplate (options_button_template)
+        closebutton:SetTemplate (options_button_template)
+        
+        addcapturebutton:SetPoint ("bottomright", addframe, "bottomright", -5, 5)
+        closebutton:SetPoint ("right", addcapturebutton, "left", -4, 0)			
+
+--> anchors
+        titulo_datacharts:SetPoint (startX, startY)
+        titulo_datacharts_desc:SetPoint (startX, startY - 20)
+        panel:SetPoint (startX, startY - 70)
+
+        local sectionOptions = {
+
+        }
+
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
 
 --[[]
 do

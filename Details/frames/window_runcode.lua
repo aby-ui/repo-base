@@ -164,7 +164,6 @@ function Details.OpenRunCodeWindow()
             local func, errortext = loadstring (script, "Q")
             
             if (func) then
-                --setfenv (func, functionFilter)
                 DF:SetEnvironment(func)
                 DF:QuickDispatch (func)
             else

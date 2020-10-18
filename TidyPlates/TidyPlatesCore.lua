@@ -20,7 +20,7 @@ local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 -- Internal Data
 local Plates, PlatesVisible, PlatesFading, GUID = {}, {}, {}, {}	            	-- Plate Lists
 local PlatesByUnit = {}
-local nameplate, extended, bars, regions, visual, carrier, plateid			    	-- Temp/Local References
+local nameplate, extended, bars, regions, visual, carrier, plateid, threatborder    -- Temp/Local References
 local unit, unitcache, style, stylename, unitchanged				    			-- Temp/Local References
 local numChildren = -1                                                              -- Cache the current number of plates
 local activetheme = {}                                                              -- Table Placeholder
@@ -83,7 +83,6 @@ local OnNewNameplate
 
 -- Main Loop
 local OnUpdate
-local OnNewNameplate
 local ForEachPlate
 
 -- UpdateReferences
@@ -254,7 +253,7 @@ do
 		extended.unitcache,
 		extended.stylecache,
 		extended.widgets
-			= {}, {}, {}, {}, {}
+			= {}, { threatValue = 0, health = 0, healthmax = 0, absorbmax = 0, reaction = "FRIENDLY", type = "NPC" }, {}, {}, {} --abyui
 
 		extended.stylename = ""
 
@@ -344,6 +343,7 @@ do
 
 		-- or unitid = plate.namePlateUnitToken
 		UpdateReferences(plate)
+        if UnitIsUnit("player", unitid) then return end --abyui
 
 		carrier:Show()
 
@@ -681,7 +681,7 @@ do
 
 	-- UpdateIndicator_ThreatGlow: Updates the aggro glow
 	function UpdateIndicator_ThreatGlow()
-		if not style.threatborder.show then return end
+		if not style.threatborder or not style.threatborder.show then return end
 		threatborder = visual.threatborder
 		if activetheme.SetThreatColor then
 
@@ -974,7 +974,11 @@ do
 		local blizzardFrame = namePlateFrameBase:GetChildren()
 			if blizzardFrame and not blizzardFrame.tidyPlatesModified then
 				blizzardFrame.tidyPlatesModified = true
-				hooksecurefunc(blizzardFrame, "Show", blizzardFrame.Hide)
+				hooksecurefunc(blizzardFrame, "Show", function(self)
+                    local p = self:GetParent()
+                    if p and p.namePlateUnitToken and UnitIsUnit("player", p.namePlateUnitToken) then return end --abyui 个人资源有问题
+                    self:Hide()
+                end)
 			end
 		end
 	end)

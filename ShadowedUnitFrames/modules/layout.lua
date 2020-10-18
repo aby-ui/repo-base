@@ -318,7 +318,8 @@ end
 -- Setup the main frame
 function Layout:SetupFrame(frame, config)
 	local backdrop = ShadowUF.db.profile.backdrop
-	frame:SetBackdrop(backdropTbl)
+	frame.backdropInfo = backdropTbl
+	frame:ApplyBackdrop()
 	frame:SetBackdropColor(backdrop.backgroundColor.r, backdrop.backgroundColor.g, backdrop.backgroundColor.b, backdrop.backgroundColor.a)
 	frame:SetBackdropBorderColor(backdrop.borderColor.r, backdrop.borderColor.g, backdrop.borderColor.b, backdrop.borderColor.a)
 

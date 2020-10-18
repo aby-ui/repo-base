@@ -6,60 +6,12 @@ local C_Timer = _G.C_Timer
 Details.AutoRunCode = {}
 local codeTable
 
---from weakauras, list of functions to block on scripts
---source https://github.com/WeakAuras/WeakAuras2/blob/520951a4b49b64cb49d88c1a8542d02bbcdbe412/WeakAuras/AuraEnvironment.lua#L66
-local blockedFunctions = {
-    -- Lua functions that may allow breaking out of the environment
-    getfenv = true,
-    loadstring = true,
-    pcall = true,
-    xpcall = true,
-    getglobal = true,
-    
-    -- blocked WoW API
-    SendMail = true,
-    SetTradeMoney = true,
-    AddTradeMoney = true,
-    PickupTradeMoney = true,
-    PickupPlayerMoney = true,
-    TradeFrame = true,
-    MailFrame = true,
-    EnumerateFrames = true,
-    RunScript = true,
-    AcceptTrade = true,
-    SetSendMailMoney = true,
-    EditMacro = true,
-    SlashCmdList = true,
-    DevTools_DumpCommand = true,
-    hash_SlashCmdList = true,
-    CreateMacro = true,
-    SetBindingMacro = true,
-    GuildDisband = true,
-    GuildUninvite = true,
-    securecall = true,
-    
-    --additional
-    setmetatable = true,
-}
-
-local functionFilter = setmetatable({}, {__index = function(env, key)
-    if (key == "_G") then
-        return env
-        
-    elseif (blockedFunctions [key]) then
-        return nil
-
-    else
-        return _G [key]
-    end
-end})
-
 --compile and store code
 function Details:RecompileAutoRunCode()
     for codeKey, code in pairs(codeTable) do
         local func, errorText = _G.loadstring(code)
         if (func) then
-            _G.setfenv(func, functionFilter)
+            DetailsFramework:SetEnvironment(func)
             Details.AutoRunCode[codeKey] = func
         else
             --if the code didn't pass, create a dummy function for it without triggering errors

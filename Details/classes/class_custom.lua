@@ -63,55 +63,6 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> core
 
-	--from weakauras, list of functions to block on scripts
-	--source https://github.com/WeakAuras/WeakAuras2/blob/520951a4b49b64cb49d88c1a8542d02bbcdbe412/WeakAuras/AuraEnvironment.lua#L66
-	local blockedFunctions = {
-		-- Lua functions that may allow breaking out of the environment
-		getfenv = true,
-		getfenv = true,
-		loadstring = true,
-		pcall = true,
-		xpcall = true,
-		getglobal = true,
-		
-		-- blocked WoW API
-		SendMail = true,
-		SetTradeMoney = true,
-		AddTradeMoney = true,
-		PickupTradeMoney = true,
-		PickupPlayerMoney = true,
-		TradeFrame = true,
-		MailFrame = true,
-		EnumerateFrames = true,
-		RunScript = true,
-		AcceptTrade = true,
-		SetSendMailMoney = true,
-		EditMacro = true,
-		SlashCmdList = true,
-		DevTools_DumpCommand = true,
-		hash_SlashCmdList = true,
-		CreateMacro = true,
-		SetBindingMacro = true,
-		GuildDisband = true,
-		GuildUninvite = true,
-		securecall = true,
-		
-		--additional
-		setmetatable = true,
-	}
-	
-	local functionFilter = setmetatable ({}, {__index = function (env, key)
-		if (key == "_G") then
-			return env
-			
-		elseif (blockedFunctions [key]) then
-			return nil
-			
-		else	
-			return _G [key]
-		end
-	end})
-
 	function atributo_custom:GetCombatContainerIndex (attribute)
 		return combat_containers [attribute]
 	end
@@ -162,7 +113,7 @@
 				local errortext
 				func, errortext = loadstring (custom_object.script)
 				if (func) then
-					setfenv (func, functionFilter)
+					DetailsFramework:SetEnvironment(func)
 					_detalhes.custom_function_cache [instance.customName] = func
 				else
 					_detalhes:Msg ("|cFFFF9900error compiling code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
@@ -171,7 +122,7 @@
 				if (custom_object.tooltip) then
 					local tooltip_script, errortext = loadstring (custom_object.tooltip)
 					if (tooltip_script) then
-						setfenv (tooltip_script, functionFilter)
+						DetailsFramework:SetEnvironment(tooltip_script)
 						_detalhes.custom_function_cache [instance.customName .. "Tooltip"] = tooltip_script
 					else
 						_detalhes:Msg ("|cFFFF9900error compiling tooltip code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
@@ -181,7 +132,7 @@
 				if (custom_object.total_script) then
 					local total_script, errortext = loadstring (custom_object.total_script)
 					if (total_script) then
-						setfenv (total_script, functionFilter)
+						DetailsFramework:SetEnvironment(total_script)
 						_detalhes.custom_function_cache [instance.customName .. "Total"] = total_script
 					else
 						_detalhes:Msg ("|cFFFF9900error compiling total code for custom display " .. (instance.customName or "") ..  " |r:", errortext)
@@ -191,7 +142,7 @@
 				if (custom_object.percent_script) then
 					local percent_script, errortext = loadstring (custom_object.percent_script)
 					if (percent_script) then
-						setfenv (percent_script, functionFilter)
+						DetailsFramework:SetEnvironment(percent_script)
 						_detalhes.custom_function_cache [instance.customName .. "Percent"] = percent_script
 					else
 						_detalhes:Msg ("|cFFFF9900error compiling percent code for custom display " .. (instance.customName or "") ..  " |r:", errortext)

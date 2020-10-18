@@ -1572,7 +1572,7 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 		Details:DumpTable (result)
 	
 	elseif (msg == "saveskin") then
-		local skin = Details.skins["Dark Theme"].instance_cprops
+		local skin = Details.skins["Minimalistic"].instance_cprops
 		local instance1 = Details:GetInstance(1)
 		if (instance1) then
 			local exportedValues = {}
@@ -1584,6 +1584,13 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 			end
 			Details:Dump(exportedValues)
 		end
+
+	elseif (msg == "9") then
+		print ("skin:", Details.skin)
+		print ("current profile:", _detalhes:GetCurrentProfileName())
+		print ("always use profile:", _detalhes.always_use_profile)
+		print ("profile name:", _detalhes.always_use_profile_name)
+		print ("version:", _detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
 
 	elseif (msg == "record") then
 			

@@ -72,7 +72,7 @@
 		end
 		
 		if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
-			_G.DetailsOptionsWindow16UserTimeCapturesFillPanel.MyObject:Refresh()
+			DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 		end
 		
 		return true
@@ -127,7 +127,7 @@
 		tinsert (_detalhes.savedTimeCaptures, {name, func, matrix, author, version, icon, is_enabled, do_not_save = no_save})
 		
 		if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
-			_G.DetailsOptionsWindow16UserTimeCapturesFillPanel.MyObject:Refresh()
+			DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 		end
 		
 		return true
@@ -139,14 +139,14 @@
 		if (type (name) == "number") then
 			tremove (_detalhes.savedTimeCaptures, name)
 			if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
-				_G.DetailsOptionsWindow16UserTimeCapturesFillPanel.MyObject:Refresh()
+				DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 			end
 		else
 			for index, t in ipairs (_detalhes.savedTimeCaptures) do
 				if (t [INDEX_NAME] == name) then
 					tremove (_detalhes.savedTimeCaptures, index)
 					if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
-						_G.DetailsOptionsWindow16UserTimeCapturesFillPanel.MyObject:Refresh()
+						DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 					end
 					return true
 				end
@@ -167,55 +167,6 @@
 	end
 
 	local tick_time = 0
-	
-	--from weakauras, list of functions to block on scripts
-	--source https://github.com/WeakAuras/WeakAuras2/blob/520951a4b49b64cb49d88c1a8542d02bbcdbe412/WeakAuras/AuraEnvironment.lua#L66
-	local blockedFunctions = {
-		-- Lua functions that may allow breaking out of the environment
-		getfenv = true,
-		getfenv = true,
-		loadstring = true,
-		pcall = true,
-		xpcall = true,
-		getglobal = true,
-		
-		-- blocked WoW API
-		SendMail = true,
-		SetTradeMoney = true,
-		AddTradeMoney = true,
-		PickupTradeMoney = true,
-		PickupPlayerMoney = true,
-		TradeFrame = true,
-		MailFrame = true,
-		EnumerateFrames = true,
-		RunScript = true,
-		AcceptTrade = true,
-		SetSendMailMoney = true,
-		EditMacro = true,
-		SlashCmdList = true,
-		DevTools_DumpCommand = true,
-		hash_SlashCmdList = true,
-		CreateMacro = true,
-		SetBindingMacro = true,
-		GuildDisband = true,
-		GuildUninvite = true,
-		securecall = true,
-		
-		--additional
-		setmetatable = true,
-	}
-	
-	local functionFilter = setmetatable ({}, {__index = function (env, key)
-		if (key == "_G") then
-			return env
-			
-		elseif (blockedFunctions [key]) then
-			return nil
-			
-		else	
-			return _G [key]
-		end
-	end})
 	
 	--> starting a combat
 	function _detalhes:TimeDataCreateCombatTables()
@@ -240,7 +191,7 @@
 					--> user
 					local func, errortext = loadstring (t [INDEX_FUNCTION])
 					if (func) then
-						setfenv (func, functionFilter)
+						DetailsFramework:SetEnvironment(func)
 						tinsert (exec, { func = func, data = data, attributes = table_deepcopy (t [INDEX_MATRIX]), is_user = true })
 					else
 						_detalhes:Msg ("|cFFFF9900error compiling script for time data (charts)|r: ", errortext)
@@ -248,7 +199,7 @@
 				else
 					--> plugin
 					local func = t [INDEX_FUNCTION]
-					setfenv (func, functionFilter)
+					DetailsFramework:SetEnvironment(func)
 					tinsert (exec, { func = func, data = data, attributes = table_deepcopy (t [INDEX_MATRIX]) })
 				end
 			

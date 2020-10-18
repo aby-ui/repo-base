@@ -101,7 +101,10 @@ function _detalhes:LoadGlobalAndCharacterData()
 				end
 				
 			elseif (type (_detalhes_database [key]) == "table") then
-				for key2, value2 in pairs (_detalhes.default_player_data [key]) do 
+				if (type(_detalhes.default_player_data [key]) == "string") then
+					print("|cFFFFAA00Details!|r error 0x8538, report on discord", key, _detalhes_database [key], _detalhes.default_player_data [key])
+				end
+				for key2, value2 in pairs (_detalhes.default_player_data [key]) do
 					if (_detalhes_database [key] [key2] == nil) then
 						if (type (value2) == "table") then
 							_detalhes_database [key] [key2] = table_deepcopy (_detalhes.default_player_data [key] [key2])
@@ -137,12 +140,25 @@ function _detalhes:LoadGlobalAndCharacterData()
 				end
 				
 			elseif (type (_detalhes_global [key]) == "table") then
-				for key2, value2 in pairs (_detalhes.default_global_data [key]) do 
-					if (_detalhes_global [key] [key2] == nil) then
-						if (type (value2) == "table") then
-							_detalhes_global [key] [key2] = table_deepcopy (_detalhes.default_global_data [key] [key2])
-						else
-							_detalhes_global [key] [key2] = value2
+
+				if (type(_detalhes.default_global_data [key]) == "string") then
+					C_Timer.After(5, function()
+						print("|cFFFFAA00Details!|r error 0x8547, report on discord", key, _detalhes_global [key], _detalhes.default_global_data [key])
+					end)
+				end
+
+				if (key == "always_use_profile_name") then
+					_detalhes_global ["always_use_profile_name"] = ""
+				end
+
+				if (type (_detalhes_global [key]) == "table") then
+					for key2, value2 in pairs (_detalhes.default_global_data [key]) do
+						if (_detalhes_global [key] [key2] == nil) then
+							if (type (value2) == "table") then
+								_detalhes_global [key] [key2] = table_deepcopy (_detalhes.default_global_data [key] [key2])
+							else
+								_detalhes_global [key] [key2] = value2
+							end
 						end
 					end
 				end
@@ -326,14 +342,19 @@ function _detalhes:LoadConfig()
 	
 		--> fix for old versions
 		if (type (_detalhes.always_use_profile) == "string") then
-			_detalhes.always_use_profile_name = _detalhes.always_use_profile
-			_detalhes.always_use_profile = true
+			_detalhes.always_use_profile = false
+			_detalhes.always_use_profile_name = ""
+		end
+
+		if (type (_detalhes.always_use_profile_name) ~= "string") then
+			_detalhes.always_use_profile = false
+			_detalhes.always_use_profile_name = ""
 		end
 		
 		--> check for "always use this profile"
 			if (_detalhes.always_use_profile and not _detalhes.always_use_profile_exception [unitname]) then
 				local profile_name = _detalhes.always_use_profile_name
-				if (profile_name and _detalhes:GetProfile (profile_name)) then
+				if (profile_name and profile_name ~= "" and _detalhes:GetProfile (profile_name)) then
 					_detalhes_database.active_profile = profile_name
 				end
 			end
