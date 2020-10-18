@@ -965,15 +965,19 @@ do
 
 	function CoreEvents:NAME_PLATE_CREATED(...)
 		local plate = ...
-		local BlizzardFrame = plate:GetChildren()
-
-		-- hooksecurefunc([table,] "function", hookfunc)
-
-		--BlizzardFrame._Show = BlizzardFrame.Show	-- Store this for later
-		--BlizzardFrame.Show = BlizzardFrame.Hide			-- Try this to keep the plate from showing up
-		-- --BlizzardFrame.Show = BypassFunction			-- Try this to keep the plate from showing up
 		OnNewNameplate(plate)
-	 end
+	end
+
+	hooksecurefunc(NamePlateDriverFrame, "OnNamePlateAdded", function(self, namePlateUnitToken)
+		local namePlateFrameBase = C_NamePlate.GetNamePlateForUnit(namePlateUnitToken, false)
+		if namePlateFrameBase then
+		local blizzardFrame = namePlateFrameBase:GetChildren()
+			if blizzardFrame and not blizzardFrame.tidyPlatesModified then
+				blizzardFrame.tidyPlatesModified = true
+				hooksecurefunc(blizzardFrame, "Show", blizzardFrame.Hide)
+			end
+		end
+	end)
 
 	function CoreEvents:NAME_PLATE_UNIT_ADDED(...)
 		local unitid = ...

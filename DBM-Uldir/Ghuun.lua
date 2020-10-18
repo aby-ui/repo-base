@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201010001011")
+mod:SetRevision("20201017153235")
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -500,7 +500,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				yellDarkPurpose:Yell()
 			end
 			if self.Options.NPAuraOnFixate then
-				DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, nil, nil, true, {0.5, 0, 0.55, 0.75})
+				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
 			end
 		end
 	elseif spellId == 275204 then

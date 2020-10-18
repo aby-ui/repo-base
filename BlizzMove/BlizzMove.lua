@@ -462,7 +462,7 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith("GuildBankFrame", "Blizzard_GuildBankUI");
         BM_SetMoveHandlerWith("TradeSkillFrame", "Blizzard_TradeSkillUI");
         BM_SetMoveHandlerWith("ItemSocketingFrame", "Blizzard_ItemSocketingUI");
-        BM_SetMoveHandlerWith("BarberShopFrame", "Blizzard_BarbershopUI");
+        --BM_SetMoveHandlerWith("BarberShopFrame", "Blizzard_BarbershopUI");
         BM_SetMoveHandlerWith("MacroFrame", "Blizzard_MacroUI");
         BM_SetMoveHandlerWith("PlayerTalentFrame", "Blizzard_TalentUI");
         BM_SetMoveHandlerWith("CalendarFrame", "Blizzard_Calendar");

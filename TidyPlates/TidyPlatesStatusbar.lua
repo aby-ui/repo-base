@@ -7,7 +7,7 @@ local max, min = math.max, math.min
 
 local function UpdateBar(self)
 
-	local range = self.MaxVal - self.MinVal 
+	local range = self.MaxVal - self.MinVal
 	local value = self.Value - self.MinVal
 	local tailValue = self.tailValue
 
@@ -16,7 +16,7 @@ local function UpdateBar(self)
 	local barsize = self.Dim or 1
 
 	local barFraction, tailFraction = 1, 0
-	
+
 	if range > 0 then
 		barFraction = min(range, value) / range
 		tailFraction = min(range - value, tailValue) / range
@@ -24,7 +24,7 @@ local function UpdateBar(self)
 		barFraction = 0
 		tailFraction = 0
 	end
-	
+
 
 	if barFraction > 0 then self.Bar:Show() else self.Bar:Hide() end
 	if tailFraction > 0 then self.Tail:Show() else self.Tail:Hide() end
@@ -39,7 +39,7 @@ local function UpdateBar(self)
 		self.Bar:SetTexCoord(self.Left, self.Right, barCrop, self.Bottom)
 
 
-	else 
+	else
 
 		-- Standard Horizonal Bar
 		local texWidth = (self.Right - self.Left)
@@ -53,7 +53,7 @@ local function UpdateBar(self)
 			self.Tail:SetWidth(barsize * tailFraction)	-- tailFraction
 			self.Tail:SetTexCoord(barCrop, self.Right, self.Top, self.Bottom)
 		end
-		 
+
 
 	end
 
@@ -77,7 +77,7 @@ local function SetValue(self, value, tail)
 		end
 	end
 
-	UpdateBar(self) 
+	UpdateBar(self)
 end
 
 	
@@ -144,7 +144,7 @@ end
 
 local function SetMinMaxValues(self, minval, maxval)
 	if not (minval or maxval) then return end
-	
+
 	if maxval > minval then
 		self.MinVal = minval
 		self.MaxVal = maxval
@@ -152,10 +152,10 @@ local function SetMinMaxValues(self, minval, maxval)
 		self.MinVal = 0
 		self.MaxVal = 1
 	end
-	
+
 	if self.Value > self.MaxVal then self.Value = self.MaxVal
 	elseif self.Value < self.MinVal then self.Value = self.MinVal end
-	
+
 	UpdateBar(self) 
 end
 

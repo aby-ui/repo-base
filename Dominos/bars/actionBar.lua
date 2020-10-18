@@ -53,7 +53,7 @@ ActionBar.mainbarOffsets = {
             pages.shadowform = 6
         end
 
-        --t[i] = pages
+        t[i] = pages
         return pages
     end
 }

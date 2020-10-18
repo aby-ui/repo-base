@@ -12,7 +12,7 @@
 ## Notes-zhCN: 模块化伤害统计。
 ## Notes-zhTW: 模組化的傷害統計。
 ## Author: Zarnivoop
-## Version: 1.8.1
+## Version: 1.8.2
 ## SavedVariables: SkadaDB
 ## SavedVariablesPerCharacter: SkadaPerCharDB
 

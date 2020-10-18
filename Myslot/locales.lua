@@ -139,74 +139,42 @@ elseif locale == 'esES' then
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
---[[Translation missing --]]
---[[ L["All slots were restored"] = "All slots were restored"--]] 
---[[Translation missing --]]
---[[ L["Are you SURE to import ?"] = "Are you SURE to import ?"--]] 
---[[Translation missing --]]
---[[ L["Bad importing text [CRC32]"] = "Bad importing text [CRC32]"--]] 
---[[Translation missing --]]
---[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
---[[Translation missing --]]
---[[ L["Close"] = "Close"--]] 
---[[Translation missing --]]
---[[ L["DANGEROUS"] = "DANGEROUS"--]] 
---[[Translation missing --]]
---[[ L["Export"] = "Export"--]] 
---[[Translation missing --]]
---[[ L["Feedback"] = "Feedback"--]] 
---[[Translation missing --]]
---[[ L["Force Import"] = "Force Import"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Action"] = "Ignore Import/Export Action"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Key Binding"] = "Ignore Import/Export Key Binding"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Macro"] = "Ignore Import/Export Macro"--]] 
---[[Translation missing --]]
---[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
---[[Translation missing --]]
---[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
---[[Translation missing --]]
---[[ L["Import"] = "Import"--]] 
---[[Translation missing --]]
---[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
---[[Translation missing --]]
---[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
---[[Translation missing --]]
---[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
---[[Translation missing --]]
---[[ L["Myslot"] = "Myslot"--]] 
---[[Translation missing --]]
---[[ L["Name of exported text"] = "Name of exported text"--]] 
---[[Translation missing --]]
---[[ L["Open Myslot"] = "Open Myslot"--]] 
---[[Translation missing --]]
---[[ L["Please type %s to confirm"] = "Please type %s to confirm"--]] 
---[[Translation missing --]]
---[[ L["Remove all Key Bindings"] = "Remove all Key Bindings"--]] 
---[[Translation missing --]]
---[[ L["Remove all Macros"] = "Remove all Macros"--]] 
---[[Translation missing --]]
---[[ L["Remove everything in ActionBar"] = "Remove everything in ActionBar"--]] 
---[[Translation missing --]]
---[[ L["Rename"] = "Rename"--]] 
---[[Translation missing --]]
---[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
---[[Translation missing --]]
---[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
---[[Translation missing --]]
---[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
---[[Translation missing --]]
---[[ L["Time"] = "Time"--]] 
---[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Try force importing"] = "Try force importing"--]] 
---[[Translation missing --]]
---[[ L["Unsaved"] = "Unsaved"--]] 
---[[Translation missing --]]
---[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
+L["All slots were restored"] = "Se han restaurado todos los huecos"
+L["Are you SURE to import ?"] = "¿Seguro que quieres importarlo?"
+L["Bad importing text [CRC32]"] = "Texto de importación incorrecto [CRC32]"
+L["Bad importing text [TEXT]"] = "Texto de importación incorrecto [TEXT]"
+L["Close"] = "Cerrar"
+L["DANGEROUS"] = "PELIGROSO"
+L["Export"] = "Exportar"
+L["Feedback"] = "Comentarios"
+L["Force Import"] = "Importación forzosa"
+L["Ignore Import/Export Action"] = "Ignorar las barras de acción en la importación/exportación"
+L["Ignore Import/Export Key Binding"] = "Ignorar los atajos de teclado en la importación/exportación"
+L["Ignore Import/Export Macro"] = "Ignorar las macros en la importación/exportación"
+L["Ignore unattained pet[id=%s], %s"] = [=[Ignora la mascota no obtenida [id=%s], %s
+
+]=]
+L["Ignore unlearned skill [id=%s], %s"] = "Ignora la facultad no obtenida [id=%s], %s"
+L["Import"] = "Importar"
+L["Import is not allowed when you are in combat"] = "No se puede importar mientras estás en combate"
+L["Importing text [ver:%s] is not compatible with current version"] = "El texto de importación [ver:%s] no es compatible con la versión actual"
+L["Macro %s was ignored, check if there is enough space to create"] = "La macro %s se ha ignorado, comprueba si tienes suficiente espacio para crearla"
+L["Myslot"] = "Myslot"
+L["Name of exported text"] = "Nombre del texto exportado"
+L["Open Myslot"] = "Abrir Myslot"
+L["Please type %s to confirm"] = "Escribe %s para confirmar"
+L["Remove all Key Bindings"] = "Borrar todos los atajos de teclado"
+L["Remove all Macros"] = "Borrar todas las macros"
+L["Remove everything in ActionBar"] = "Borrar todo sobre las barras de acción"
+L["Rename"] = "Renombrar"
+L["Skip bad CRC32"] = "Se salta CRC32 maligno"
+L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Se salta CRC32, versión y cualquier otra validación antes de importar. Puede provocar comportamientos indeseados"
+L["Skip unsupported version"] = "Se salta la validación de versión no soportada"
+L["Time"] = "Hora"
+L["TOC_NOTES"] = "Myslot sirve para transferir opciones entre distintas cuentas. Comentarios a farmer1992@gmail.com"
+L["Try force importing"] = "Intentar importación forzosa"
+L["Unsaved"] = "No está guardado"
+L["Use random mount instead of an unattained mount"] = "Usa una montura aleatoria en vez de una no disponible"
 
 elseif locale == 'esMX' then
 --[[Translation missing --]]

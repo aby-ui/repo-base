@@ -9,7 +9,6 @@
 local srti = {};
 srti.version = GetAddOnMetadata("simpleraidtargeticons","version");
 
-local CreateFrame = CreateFrameAby --TODO aby9
 
 SRTI_HEADER = SRTI_TITLE .. " " .. srti.version;
 SRTI_MSG_HELP_TEXT = SRTI_TITLE .. SRTI_MSG_HELP_TEXT;
@@ -704,9 +703,9 @@ end
 
 
 function srti.Options()
-        srti.menu = CreateFrame("FRAME","SRTIMenu",UIParent);
-        srti.menu.name = SRTI_OPTIONS_BLZ_INTERFACE_PANEL_NAME;
-        InterfaceOptions_AddCategory(srti.menu);
+	srti.menu = CreateFrame("FRAME","SRTIMenu",UIParent, BackdropTemplateMixin and "BackdropTemplate");
+    srti.menu.name = SRTI_OPTIONS_BLZ_INTERFACE_PANEL_NAME;
+    InterfaceOptions_AddCategory(srti.menu);
 --	srti.menu:SetWidth(460);
 --	srti.menu:SetHeight(31);
 --	srti.menu:SetPoint("TOP",0,-100);
@@ -739,7 +738,7 @@ function srti.Options()
 --	srti.menu.close = CreateFrame("BUTTON",nil,srti.menu,"UIPanelCloseButton");
 --	srti.menu.close:SetPoint("TOPRIGHT",srti.menu,"TOPRIGHT");
 
-	srti.menu.options = CreateFrame("FRAME","SRTIMenuOptions",srti.menu);
+	srti.menu.options = CreateFrame("FRAME","SRTIMenuOptions",srti.menu, BackdropTemplateMixin and "BackdropTemplate");
 	srti.menu.options:SetWidth(292);
 	srti.menu.options:SetHeight(488);
 	srti.menu.options:SetPoint("TOPLEFT",srti.menu,"TOPLEFT",5,-30);
@@ -758,7 +757,7 @@ function srti.Options()
 	srti.menu.optionheader:SetPoint("TOPLEFT",srti.menu.options,"TOPLEFT",8,-8);
 
 
-	srti.menu.options.singleframe = CreateFrame("FRAME",nil,srti.menu.options);
+	srti.menu.options.singleframe = CreateFrame("FRAME",nil,srti.menu.options, BackdropTemplateMixin and "BackdropTemplate");
 	srti.menu.options.singleframe:SetPoint("TOPLEFT",srti.menu.options,"TOPLEFT", 8, -40);
 	srti.menu.options.singleframe:SetPoint("BOTTOMRIGHT",srti.menu.options,"TOPRIGHT", -8, -94);
 	srti.menu.options.singleframe:SetBackdrop({
@@ -803,7 +802,7 @@ function srti.Options()
 	SRTIcb4Text:SetText(SRTI_OPTIONS_HOVER);
 
 
-	srti.menu.options.doubleframe = CreateFrame("FRAME",nil,srti.menu.options);
+	srti.menu.options.doubleframe = CreateFrame("FRAME",nil,srti.menu.options, BackdropTemplateMixin and "BackdropTemplate");
 	srti.menu.options.doubleframe:SetPoint("TOPLEFT",srti.menu.options,"TOPLEFT", 8, -113);
 	srti.menu.options.doubleframe:SetPoint("BOTTOMRIGHT",srti.menu.options,"TOPRIGHT", -8, -194);
 	srti.menu.options.doubleframe:SetBackdrop({
@@ -840,7 +839,7 @@ function srti.Options()
 	SRTIslider1High:SetText(SRTI_OPTIONS_DOUBLE_SPEED_MAX);
 
 
-	srti.menu.options.bindingframe = CreateFrame("FRAME",nil,srti.menu.options);
+	srti.menu.options.bindingframe = CreateFrame("FRAME",nil,srti.menu.options, BackdropTemplateMixin and "BackdropTemplate");
 	srti.menu.options.bindingframe:SetPoint("TOPLEFT",srti.menu.options,"TOPLEFT", 8, -213);
 	srti.menu.options.bindingframe:SetPoint("BOTTOMRIGHT",srti.menu.options,"TOPRIGHT", -8, -296);
 	srti.menu.options.bindingframe:SetBackdrop({
@@ -907,7 +906,7 @@ function srti.Options()
 	SRTIcb7Text:SetText(SRTI_OPTIONS_HOVER);
 
 
-	srti.menu.options.hoverframe = CreateFrame("FRAME",nil,srti.menu.options);
+	srti.menu.options.hoverframe = CreateFrame("FRAME",nil,srti.menu.options, BackdropTemplateMixin and "BackdropTemplate");
 	srti.menu.options.hoverframe:SetPoint("TOPLEFT",srti.menu.options,"TOPLEFT", 8, -298);
 	srti.menu.options.hoverframe:SetPoint("BOTTOMRIGHT",srti.menu.options,"TOPRIGHT", -8, -372);
 	srti.menu.options.hoverframe:SetBackdrop({
@@ -937,7 +936,7 @@ function srti.Options()
 	SRTIsliderScaleLow:SetText(SRTI_OPTIONS_RADIAL_SCALE_MIN:format(0.5*100));
 	SRTIsliderScaleHigh:SetText(SRTI_OPTIONS_RADIAL_SCALE_MAX:format(2.5*100));
 
-	srti.menu.test = CreateFrame("FRAME",nil,srti.menu);
+	srti.menu.test = CreateFrame("FRAME",nil,srti.menu, BackdropTemplateMixin and "BackdropTemplate");
 --	srti.menu.test:EnableMouse(1);
 --	srti.menu.test:SetMovable(1);
 	srti.menu.test:SetBackdrop({
@@ -1031,7 +1030,7 @@ function srti.Options()
 		srti.menu.Modifer3RDCB = function(self)
 			SRTISaved[self.option] = self:GetChecked() == 1;
 		end;
-		srti.menu.thirdparty = CreateFrame("FRAME",nil,srti.menu)
+		srti.menu.thirdparty = CreateFrame("FRAME",nil,srti.menu, BackdropTemplateMixin and "BackdropTemplate")
 		srti.menu.thirdparty:EnableMouse(1);
 		srti.menu.thirdparty:SetMovable(1);
 		srti.menu.thirdparty:SetBackdrop({
@@ -1214,7 +1213,7 @@ function srti.SetKeyBinding(button,binding,index,mode)
 	srti.keybindings.bg:SetAlpha(0.75);
 	srti.keybindings.bg:SetAllPoints();
 
-	srti.keybindings.frame = CreateFrame("FRAME",nil,srti.keybindings);
+	srti.keybindings.frame = CreateFrame("FRAME",nil,srti.keybindings, BackdropTemplateMixin and "BackdropTemplate");
 	srti.keybindings.frame:SetPoint("CENTER",srti.keybindings,"CENTER", 0, 50);
 	srti.keybindings.frame:SetWidth(400);
 	srti.keybindings.frame:SetHeight(100);
@@ -1236,7 +1235,7 @@ function srti.SetKeyBinding(button,binding,index,mode)
 	srti.keybindings.warntext = srti.keybindings.frame:CreateFontString(nil,"ARTWORK","GameFontNormal");
 	srti.keybindings.warntext:SetPoint("BOTTOM",srti.keybindings.frame,"BOTTOM",0,4);
 
-	srti.keybindings.acceptframe = CreateFrame("FRAME",nil,srti.keybindings.frame);
+	srti.keybindings.acceptframe = CreateFrame("FRAME",nil,srti.keybindings.frame, BackdropTemplateMixin and "BackdropTemplate");
 	srti.keybindings.acceptframe:SetPoint("TOP",srti.keybindings.frame,"BOTTOM", 0, 0);
 	srti.keybindings.acceptframe:SetWidth(400);
 	srti.keybindings.acceptframe:SetHeight(28);

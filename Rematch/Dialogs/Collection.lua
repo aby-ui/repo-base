@@ -258,7 +258,7 @@ function collection:GenerateReportData()
 	-- 7 = All Pets In The Game (speciesIDs)
 	settings.CollectionChartType = settings.CollectionChartType or 1
 	local chartType = settings.CollectionChartType
-	for i=1,10 do
+	for i=1,11 do
 		report.chart[i] = 0
 	end
 	local data -- data set is either petIDs or speciesIDs depending on what's being charted (see above)

@@ -24,7 +24,7 @@ U1RegisterAddon("DejaCharacterStats", {
 
     {
         text = "配置选项",
-        callback = function() SlashCmdList["DejaCharacterStats"]("config") end
+        callback = function() SlashCmdList["DEJACHARACTERSTATS"]("config") end
     },
 
     {

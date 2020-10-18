@@ -399,9 +399,13 @@ function share:SendAccept()
 		-- first step is to figure out who to send this to: bnet or character
 		local bnetIDAccount = BNet_GetBNetIDAccount(recipient)
 		if bnetIDAccount then
-			local bnetIDGameAccount, client = select(6,BNGetFriendInfoByID(bnetIDAccount))
-			if bnetIDGameAccount and client=="WoW" then
-				rematch:SetSidelineContext("recipient",bnetIDGameAccount)
+			local bnInfo = C_BattleNet.GetAccountInfoByID(bnetIDAccount)
+			if bnInfo then
+				local bnetIDGameAccount = bnInfo.gameAccountInfo.gameAccountID
+				local client = bnInfo.gameAccountInfo.clientProgram
+				if bnetIDGameAccount and client=="WoW" then
+					rematch:SetSidelineContext("recipient",bnetIDGameAccount)
+				end
 			end
 		end
 		if not rematch:GetSidelineContext("recipient") then
@@ -551,7 +555,7 @@ function share:HandleReceivedMessage(message,sender)
 				share:SendMessage("ok",sender) -- message fully received
 				if rematch:ConvertStringToSideline(rxData) then
 					if type(sender)=="number" then -- for bnet-sent teams, sender is a numeric toonID
-						rematch:SetSidelineContext("sender",(select(2,BNGetGameAccountInfo(sender))))
+						rematch:SetSidelineContext("sender",(select(2,C_BattleNet.GetGameAccountInfoByID(sender))))
 					else -- for regularly sent teams, sender is the name
 						rematch:SetSidelineContext("sender",sender)
 					end

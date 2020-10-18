@@ -32,7 +32,12 @@
 <frames>
 
 
-<Frame name="icralistach" hidden="true" parent="ARmain1">
+<Frame name="icralistach" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
+    <KeyValues>
+        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
+        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
+    </KeyValues>
 
 <Size x="750" y="500"/>
 	<Anchors>
@@ -69,7 +74,12 @@
 
 	</Frame>
 
-<Frame name="icralistach2" hidden="true" parent="ARmain1">
+<Frame name="icralistach2" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
+    <KeyValues>
+        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
+        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
+    </KeyValues>
 
 <Size x="750" y="500"/>
 	<Anchors>
@@ -110,7 +120,12 @@
 
 	</Frame>
 
-<Frame name="icralistach3" hidden="true" parent="ARmain1">
+<Frame name="icralistach3" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
+    <KeyValues>
+        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
+        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
+    </KeyValues>
 
 <Size x="750" y="500"/>
 	<Anchors>
