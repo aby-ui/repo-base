@@ -19,7 +19,7 @@ function QSCalcDistance(questID)
     local d1 = ((px-x)*(px-x) + (py-y)*(py-y))
     local qI = GetQuestLogIndexByID(questID)
     local d2 = GetDistanceSqToQuest(qI)
-    print(GetQuestLogTitle(qI), d1, d2, x, y, px, py)
+    print(C_QuestLog.GetTitleForLogIndex(qI), d1, d2, x, y, px, py)
 end
 --]]
 
@@ -64,7 +64,7 @@ local function UpdateQuestsDistance()
         if (GetTime() > protectionTime and questID ~= GetSuperTrackedQuestID()) then
             --avoid frequent switching
             if WorldQuestTrackerAddon and WorldQuestTrackerAddon.SuperTracked and WorldQuestTrackerAddon.SuperTracked == GetSuperTrackedQuestID() then return end
-            local currDist = GetDistanceSqToQuest(GetQuestLogIndexByID(GetSuperTrackedQuestID()))
+            local currDist = GetDistanceSqToQuest(C_QuestLog.GetLogIndexForQuestID(GetSuperTrackedQuestID()))
             if currDist and currDist - nearest > nearest * 0.07 + 1000 then
                 SetSuperTrackedQuestID(questID)
                 PlaySound(31581) --"Sound\\Interface\\UI_BonusLootRoll_End_01.ogg"
@@ -159,7 +159,7 @@ hooksecurefunc(ObjectiveTrackerFrame.BlocksFrame, "poiOnCreateFunc", function(bu
         button._hooked = 1
         button:HookScript("OnClick", function(self)
             local questID = self.questID;
-            local questLogIndex = GetQuestLogIndexByID(questID);
+            local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
             if ( not IsShiftKeyDown() ) then
                 protectionTime = GetTime() + 5
             end

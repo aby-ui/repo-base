@@ -195,6 +195,7 @@ function ToyPlus:Broker(self)
 	LibQTip:Release(self.tooltip)
 	self.tooltip = nil
 	if InCombatLockdown() then return end
+	GameTooltip:Hide()
 
 	for i = 1, #ToyPlusToyDB.toyName do
 		local toyBtn = _G["ToyPlus_brokerBtn"..i]

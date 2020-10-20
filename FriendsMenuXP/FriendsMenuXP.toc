@@ -5,7 +5,7 @@
 localization.enUS.lua
 localization.zhCN.lua
 localization.zhTW.lua
-#FriendsMenuXP.xml
+FriendsMenuXP.xml
 
 
 ## Title: |cff880303[爱不易]|r FriendsM 玩家菜单增强

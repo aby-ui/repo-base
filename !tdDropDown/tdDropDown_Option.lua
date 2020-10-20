@@ -35,7 +35,11 @@ tdCreateDropDown(table)
 ------ create dropdown
 local mail = {}
 function tdHookSendMail(recipient, subject, body) tdInsertValueIfNotExist("SendMailNameEditBox", recipient); end
-mail.hook = function() hooksecurefunc("SendMail", function(...) tdHookSendMail(...) end) end
+mail.hook = function()
+    SendMailNameEditBoxButton:ClearAllPoints()
+    SendMailNameEditBoxButton:SetPoint("RIGHT", SendMailNameEditBox, "RIGHT", -76, 2)
+    hooksecurefunc("SendMail", function(...) tdHookSendMail(...) end)
+end
 mail.profile = "SendMailNameEditBox"
 mail.over = true
 

@@ -33,6 +33,8 @@ OverlayedSpellID["DRUID"] = {
 	22570,  --割碎
 };
 
+if not OverlayedSpellID[select(2, UnitClass("player"))] then return end
+
 local GlowSpells = {}
 for k,v in pairs(OverlayedSpellID) do
     for _, spell in ipairs(v) do

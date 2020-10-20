@@ -28,7 +28,9 @@ function Postal_BlackBook:OnEnable()
 		Postal_BlackBookButton = CreateFrame("Button", "Postal_BlackBookButton", SendMailFrame)
 		Postal_BlackBookButton:SetWidth(25)
 		Postal_BlackBookButton:SetHeight(25)
-		Postal_BlackBookButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", -2, 2)
+
+		Postal_BlackBookButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", -84, 2) --abyui origin is -2
+        Postal_BlackBookButton:SetFrameLevel(SendMailNameEditBox:GetFrameLevel()+1)
 		Postal_BlackBookButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 		Postal_BlackBookButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Round")
 		Postal_BlackBookButton:SetDisabledTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Disabled")

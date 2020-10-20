@@ -1,6 +1,6 @@
 U1RegisterAddon("XLoot", {
     title = "拾取界面增强",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "NORMAL",
 
     tags = { TAG_INTERFACE },

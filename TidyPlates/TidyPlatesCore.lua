@@ -86,7 +86,7 @@ local OnUpdate
 local ForEachPlate
 
 -- UpdateReferences
-local empty_extended = {} --TODO aby9 防止报错
+local empty_extended = {} --abyui 防止报错
 local function UpdateReferences(plate)
 	nameplate = plate
 	extended = plate.extended

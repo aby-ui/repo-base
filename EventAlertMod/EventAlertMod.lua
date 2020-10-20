@@ -1,4 +1,4 @@
-﻿local CreateFrame = CreateFrameAby --TODO aby9
+﻿local CreateFrame = CreateFrameAby
 -- Prevent tainting global _.
 local _
 local _G = _G

@@ -61,6 +61,10 @@ privateTable.L = setmetatable({
 	["stopitemfound"]="There is %s in rewards. Choose and equip an item yourself.",
 	["relictoggle"]="禁用神器奖励",
 	["artifactpowertoggle"]="禁用神器能量奖励的自动完成.",
+	["ivechosen"]="已经为你选择了第一个选项.",
+	["norewardsettings"]="没有设置，自动装备功能禁用.",
+	["ignorenpc"]="忽略这个NPC",
+	["cantstopignore"]="无法停止忽略这个NPC",
 	},
 	{__index = function(table, index) return index end})
 	

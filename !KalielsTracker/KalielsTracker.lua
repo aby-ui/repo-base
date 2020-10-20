@@ -1567,7 +1567,7 @@ local function SetHooks()
 
     local function AbyQuestLogPopupDetailFrame_Show(questLogIndex)
 
-    	local questID = select(8, GetQuestLogTitle(questLogIndex));
+    	local questID = C_QuestLog.GetInfo(questLogIndex).questID;
     	if ( QuestLogPopupDetailFrame.questID == questID and QuestLogPopupDetailFrame:IsShown() ) then
             QuestLogPopupDetailFrame:Hide(); --abyui
     		return;
@@ -1575,12 +1575,10 @@ local function SetHooks()
 
     	QuestLogPopupDetailFrame.questID = questID;
 
-    	local questLogIndex = GetQuestLogIndexByID(questID);
-
-    	SelectQuestLogEntry(questLogIndex);
+        C_QuestLog.SetSelectedQuest(questID)
     	StaticPopup_Hide("ABANDON_QUEST");
     	StaticPopup_Hide("ABANDON_QUEST_WITH_ITEMS");
-    	SetAbandonQuest();
+        C_QuestLog.SetAbandonQuest();
 
     	QuestMapFrame_UpdateQuestDetailsButtons();
 

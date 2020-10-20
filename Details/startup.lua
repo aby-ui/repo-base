@@ -483,7 +483,7 @@ function Details:StartMeUp() --I'll never stop!
 	end
 
 	if (math.random(10) == 1) then
-		Details:Msg("use '/details me' macro to open the player breakdown for you!")
+		--Details:Msg("use '/details me' macro to open the player breakdown for you!")
 	end
 
 	function Details:InstallOkey()

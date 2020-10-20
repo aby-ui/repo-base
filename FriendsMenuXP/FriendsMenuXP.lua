@@ -35,6 +35,7 @@ function FriendsMenuXP_ShowDropdown(buttonSet, closeOrigin, anchor, relative, of
     if not shown and closeOrigin == false then return end
     if closeOrigin then HideDropDownMenu(1) end
     local dropDown = InCombatLockdown() and FriendsMenuXP or FriendsMenuXPSecure
+    dropDown.originDropDown = _G["DropDownList1"]
     local appendBottom = relative and anchor and anchor:find("TOP") and relative:find("BOTTOM")
     FriendsMenuXP_Show(dropDown, buttonSet, appendBottom, ...)
     dropDown:ClearAllPoints();

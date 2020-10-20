@@ -1,12 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <!--This file is not used, deal_taint_options = false TODO:abyui9 -->
-
-    <Include file="copy\copy.xml"/>
-
-    <!--all for 236K-->
-    <Script file="Core.lua"/><!--with below 64K-->
-    <Include file="UI\UI.xml"/><!--79K-->
+    <!--This file is not used, deal_taint_options = false -->
 
     <Button name="InterfaceOptionsListButtonTemplate2" inherits="OptionsListButtonTemplate" virtual="true">
         <Scripts>

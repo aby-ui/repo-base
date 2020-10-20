@@ -65,7 +65,6 @@ function AbyBackdrop(frame)
     end
 end
 
---TODO aby9
 ActionButton_UpdateHighlightMark = function(b) return b:UpdateHighlightMark() end
 --hook ActionBarButtonEventsFrame_RegisterFrame
 ActionButton_OnLoad = function(b) return b:OnLoad() end
@@ -98,8 +97,30 @@ GetCurrencyInfo = function(ID)
         return i.name, i.quantity, i.iconFileID, i.quantityEarnedThisWeek, i.maxWeeklyQuantity, i.maxQuantity, i.discovered, i.quality
     end
 end
-GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
-GetQuestLogTitle = C_QuestLog.GetTitleForLogIndex
+
+--C_QuestLog.GetTitleForLogIndex(questLogIndex)  GetQuestLogTitle
+--C_QuestLog.IsComplete(questID) IsQuestComplete
+--[[
+AbyGetQuestLogTitle = function(questLogIndex)
+    local info = C_QuestLog.GetInfo(questLogIndex)
+    local title = info.title
+    local level = info.level
+    local suggestedGroup = info.suggestedGroup
+    local isHeader = info.isHeader
+    local isCollapsed = info.isCollapsed
+    local isComplete = C_QuestLog.IsComplete(info.questID)
+    local frequency = info.frequency
+    local questID = info.questID
+    local startEvent = info.startEvent
+    --local displayQuestID = info.displayQuestID
+    local isOnMap = info.isOnMap
+    local hasLocalPOI = info.hasLocalPOI
+    local isTask = info.isTask
+    local isStory = info.isStory
+    return title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, nil, isOnMap, hasLocalPOI, isTask, isStory
+end
+--]]
+
 AbyGetQuestsCompleted = function(tbl)
     tbl = tbl or {}
     local ids = C_QuestLog.GetAllCompletedQuestIDs()
@@ -108,5 +129,7 @@ AbyGetQuestsCompleted = function(tbl)
     end
     return tbl
 end
+
+--GetQuestLogIndexByID = C_QuestLog.GetLogIndexForQuestID
 
 --DEBUG_MODE = true

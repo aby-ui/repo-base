@@ -9,7 +9,7 @@
 ## X-Embeds: Ace3
 ## X-Category: Interface Enhancements
 
-embeds.xml 
+#embeds.xml
 
 Locales\Local_enUS.lua
 Locales\Local_zhCN.lua

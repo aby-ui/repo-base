@@ -403,6 +403,11 @@ end)
 RegEvent("ADDON_LOADED", function()
     local ldb = LibStub("LibDataBroker-1.1")
     local icon = LibStub("LibDBIcon-1.0")
+
+    MyslotSettings = MyslotSettings or {}
+    MyslotSettings.minimap = MyslotSettings.minimap or { hide = false }
+    local config = MyslotSettings.minimap
+
     icon:Register("Myslot", ldb:NewDataObject("Myslot", {
             icon = "Interface\\MacroFrame\\MacroFrame-Icon",
             OnClick = function()
@@ -411,7 +416,7 @@ RegEvent("ADDON_LOADED", function()
             OnTooltipShow = function(tooltip)
                 tooltip:AddLine(L["Myslot"])
             end,
-        }),  { hide = false })
+        }), config)
 end)
 
 SlashCmdList["MYSLOT"] = function(msg, editbox)

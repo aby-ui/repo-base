@@ -192,11 +192,13 @@ end
 local function titleButtonOnClick(self)
     local id = self:GetParent():GetID();
     if self.type=="available" then
-        autoName = select((id-1)*6+1, GetGossipAvailableQuests())
-        SelectGossipAvailableQuest(id)
+        local quests = C_GossipInfo.GetAvailableQuests()
+        autoName = quests[id].title
+        C_GossipInfo.SelectAvailableQuest(id)
     else
-        autoName = select((id-1)*6+1, GetGossipActiveQuests())
-        SelectGossipActiveQuest(id)
+        local quests = C_GossipInfo.GetActiveQuests()
+        autoName = quests[id].title
+        C_GossipInfo.SelectActiveQuest(id)
     end
 end
 
@@ -219,12 +221,11 @@ local function createButtons(titleButton, questNotGossip)
 end
 
 hooksecurefunc("GossipFrameUpdate", function()
-    for i=1, NUMGOSSIPBUTTONS or 32 do
-        local titleButton = _G["GossipTitleButton"..i]
+    for titleButton, _ in pairs(GossipFrame.titleButtonPool.activeObjects) do
         if not titleButton.btnComplete then createButtons(titleButton) end
         if titleButton:IsShown() then
             if titleButton.type == "Active" then
-                local titleButtonIcon = _G[titleButton:GetName() .. "GossipIcon"];
+                local titleButtonIcon = titleButton.Icon
                 if titleButtonIcon:GetTexture():find("Incomplete") then
                     titleButton.btnComplete:Hide()
                 else
@@ -245,25 +246,21 @@ end)
 QuestFrameGreetingPanel:HookScript("OnShow", function()
 	local numActiveQuests = GetNumActiveQuests();
 	local numAvailableQuests = GetNumAvailableQuests();
-    for i=1, numActiveQuests, 1 do
-        local titleButton = _G["QuestTitleButton"..i]
-        if titleButton then
-            if not titleButton.btnComplete then createButtons(titleButton, true) end
+
+    for titleButton, _ in pairs(QuestFrameGreetingPanel.titleButtonPool.activeObjects) do
+        if not titleButton.btnComplete then createButtons(titleButton, true) end
+        if titleButton.isActive == 1 then
             titleButton.btnAccept:Hide()
-            local title, isComplete = GetActiveTitle(i);
+            local title, isComplete = GetActiveTitle(titleButton:GetID())
             if isComplete then
                 titleButton.btnComplete:Show()
             else
                 titleButton.btnComplete:Hide()
             end
+        else
+            titleButton.btnAccept:Show()
+            titleButton.btnComplete:Hide()
         end
-    end
-    for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests), 1 do
-        local titleButton = _G["QuestTitleButton"..i]
-        if not titleButton then break end
-        if not titleButton.btnComplete then createButtons(titleButton, true) end
-        titleButton.btnComplete:Hide()
-        titleButton.btnAccept:Show()
     end
 end)
 

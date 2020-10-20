@@ -175,7 +175,7 @@ local function poi_OnClick(self, button)
 
     QuestPOIUpdateIcons()
 
-    local questIndex = GetQuestLogIndexByID(self.questID)
+    local questIndex = C_QuestLog.GetLogIndexForQuestID(self.questID)
     local title, completed, x, y
 
     if questIndex and questIndex ~= 0 then

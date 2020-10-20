@@ -10,24 +10,24 @@
 
 #embeds.xml
 
-#Locales\Local_enUS.lua
-#Locales\Local_zhCN.lua
-#Locales\Local_zhTW.lua
-#
-#Core.lua
-#Defaults.lua
-#
-#Anchor.lua
-#Overlays.lua
-#Aura.lua
-#Unit.lua
-#
-#AuraData.lua
-#Control.lua
-#
-#Cooldown.lua
-#
-#Notify.lua
+Locales\Local_enUS.lua
+Locales\Local_zhCN.lua
+Locales\Local_zhTW.lua
+
+Core.lua
+Defaults.lua
+
+Anchor.lua
+Overlays.lua
+Aura.lua
+Unit.lua
+
+AuraData.lua
+Control.lua
+
+Cooldown.lua
+
+Notify.lua
 
 ## Title: |cff880303[爱不易]|r Ellipsis 法术计时
 ## Notes-zhCN: 提供实用、多目标的法术计时

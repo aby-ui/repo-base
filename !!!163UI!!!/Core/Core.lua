@@ -18,19 +18,18 @@ function find_global(pattern)
     print("=========================")
 end
 
-function find_global_key(pattern)
+function find_global_key(patternOrObject)
     for k,v in pairs(_G) do
-        if type(k) == "string" and k:find(pattern) then
+        if type(k) == "string" and v == patternOrObject or (type(patternOrObject)=="string" and k:find(patternOrObject)) then
             print(k,v)
         end
     end
     print("=========================")
 end
 
-function GetMouseFocusParentKey()
-    local frame = GetMouseFocus();
+function FindParentKey(frame)
     if frame then
-        if frame:GetName() then
+        if frame.GetName and frame:GetName() then
             print(frame:GetName())
         else
             local parent = frame:GetParent();
@@ -55,6 +54,10 @@ function GetMouseFocusParentKey()
             print(path)
         end
     end
+end
+
+function GetMouseFocusParentKey()
+    return FindParentKey(GetMouseFocus())
 end
 
 SLASH_MOUSEFOCUSNAME1 = "/getmn"

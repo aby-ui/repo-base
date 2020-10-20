@@ -7,7 +7,7 @@
 163UI_Quest.lua
 AlreadyKnown.lua
 BattleField.lua
-#CopyFriendList.lua
+CopyFriendList.lua
 ChatFrameAddMessage.lua
 ExtraActionButton.lua
 FriendsGuildTab.lua
@@ -30,7 +30,7 @@ yClassColors\who.lua
 
 7.0\CloudyTradeSkill.lua
 7.0\CompletedTip.lua
-7.0\FixArchievementUIFreeze.lua
+#7.0\FixArchievementUIFreeze.lua
 #7.0\QuestWatchSort.lua
 7.0\SpecSwitchButtons.lua
 7.0\ReplaceTalentSpell.lua

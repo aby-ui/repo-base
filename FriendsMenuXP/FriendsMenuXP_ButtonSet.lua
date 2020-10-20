@@ -17,7 +17,7 @@
 	attributes,                                        --安全按钮的属性, 格式为"属性1:值1; 属性2:值2"
 ]]
 
---{ "WHISPER", "INVITE", "TARGET", "IGNORE", "REPORT_SPAM", "GUILD_PROMOTE", "GUILD_LEAVE", "CANCEL" };
+--{ "WHISPER", "INVITE", "TARGET", "IGNORE", "GUILD_PROMOTE", "GUILD_LEAVE", "CANCEL" };
 function NoSelfShow(name) return UnitName("player")~=name; end
 
 FriendsMenuXP_Buttons = {};
@@ -80,78 +80,94 @@ FriendsMenuXP_Buttons["CANCEL_IGNORE"] = {
 }
 
 --7.0 ["REPORT_PLAYER"] = { "REPORT_SPAM", "REPORT_BAD_LANGUAGE", "REPORT_BAD_NAME", "REPORT_CHEATING" },
+--9.0
+local function UnitPopup_GetGUID(menu)
+	if menu.guid then
+		return menu.guid;
+	elseif menu.unit then
+		return UnitGUID(menu.unit);
+	elseif type(menu.userData) == "table" and menu.userData.guid then
+		return menu.userData.guid;
+	elseif menu.accountInfo and menu.accountInfo.gameAccountInfo.playerGuid then
+		return menu.accountInfo.gameAccountInfo.playerGuid;
+	end
+end
+
+local function UnitPopup_TryCreatePlayerLocation(menu, guid)
+	if menu.battlefieldScoreIndex then
+		return PlayerLocation:CreateFromBattlefieldScoreIndex(menu.battlefieldScoreIndex);
+	elseif menu.communityClubID and menu.communityStreamID and menu.communityEpoch and menu.communityPosition then
+		return PlayerLocation:CreateFromCommunityChatData(menu.communityClubID, menu.communityStreamID, menu.communityEpoch, menu.communityPosition);
+	elseif menu.communityClubID and not menu.communityStreamID then
+		return PlayerLocation:CreateFromCommunityInvitation(menu.communityClubID, guid);
+	elseif C_ChatInfo.IsValidChatLine(menu.lineID) then
+		return PlayerLocation:CreateFromChatLineID(menu.lineID);
+	elseif guid then
+		return PlayerLocation:CreateFromGUID(guid);
+	elseif menu.unit then
+		return PlayerLocation:CreateFromUnit(menu.unit);
+	end
+
+	return nil;
+end
+
+local function UnitPopup_IsValidPlayerLocation(playerLocation)
+	return playerLocation and playerLocation:IsValid();
+end
+
 FriendsMenuXP_Buttons["REPORT_SPAM"] = {
     text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_SPAMMING,
     func = function(name, dropdown)
-        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_SPAM, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID));
+        local guid = UnitPopup_GetGUID(dropdown);
+       	local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdown, guid);
+        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_SPAM, name, playerLocation);
     end,
-    show = function(name, dropdown)
-        local location = dropdown.lineID and PlayerLocation:CreateFromChatLineID(dropdown.lineID)
-        return location and (location:IsChatLineID() or location:IsCommunityInvitation())
-    end,
+    show = function(name, dropdownMenu)
+        local guid = UnitPopup_GetGUID(dropdownMenu);
+       	local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdownMenu, guid);
+       	local isValidPlayerLocation = UnitPopup_IsValidPlayerLocation(playerLocation);
+        if not isValidPlayerLocation or not (playerLocation:IsChatLineID() or playerLocation:IsCommunityInvitation()) or not C_ReportSystem.CanReportPlayerForLanguage(playerLocation) then
+            return false;
+        end
+        return true
+    end
 }
 
 FriendsMenuXP_Buttons["REPORT_BAD_LANGUAGE"] = {
     text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_BAD_LANGUAGE,
     func = function(name, dropdown)
-        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_LANGUAGE, name, PlayerLocation:CreateFromChatLineID(dropdown.lineID));
+        local guid = UnitPopup_GetGUID(dropdown);
+       	local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdown, guid);
+        C_ReportSystem.OpenReportPlayerDialog(PLAYER_REPORT_TYPE_LANGUAGE, name, playerLocation);
     end,
-    show = function(name, dropdown)
-        local location = dropdown.lineID and PlayerLocation:CreateFromChatLineID(dropdown.lineID)
-        return location and (location:IsChatLineID() or location:IsCommunityInvitation())
-    end,
-}
-
-FriendsMenuXP_Buttons["REPORT_BAD_NAME"] = {
-    text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_BAD_NAME,
-    func = function(name, dropdownFrame)
-        if ( GMEuropaComplaintsEnabled() and not GMQuickTicketSystemThrottled() ) then
-            if (dropdownFrame.unit) then
-                HelpFrame_SetReportPlayerByUnitTag(ReportPlayerNameDialog, dropdownFrame.unit);
-            elseif (tonumber(dropdownFrame.lineID)) then
-                HelpFrame_SetReportPlayerByLineID(ReportPlayerNameDialog, tonumber(dropdownFrame.lineID));
-            elseif (dropdownFrame.battlefieldScoreIndex) then
-                HelpFrame_SetReportPlayerByBattlefieldScoreIndex(ReportPlayerNameDialog, dropdownFrame.battlefieldScoreIndex);
-            end
-
-            HelpFrame_ShowReportPlayerNameDialog();
-        else
-            UIErrorsFrame:AddMessage(ERR_REPORT_SUBMISSION_FAILED , 1.0, 0.1, 0.1, 1.0);
-            local info = ChatTypeInfo["SYSTEM"];
-            if ( dropdownFrame.chatFrame ) then
-                dropdownFrame.chatFrame:AddMessage(ERR_REPORT_SUBMISSION_FAILED, info.r, info.g, info.b);
-            else
-                DEFAULT_CHAT_FRAME:AddMessage(ERR_REPORT_SUBMISSION_FAILED, info.r, info.g, info.b);
-            end
+    show = function(name, dropdownMenu)
+        local guid = UnitPopup_GetGUID(dropdownMenu);
+        local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdownMenu, guid);
+        local isValidPlayerLocation = UnitPopup_IsValidPlayerLocation(playerLocation);
+        if not isValidPlayerLocation or not C_ReportSystem.CanReportPlayerForLanguage(playerLocation) then
+            return false
         end
+        return true
     end,
-    show = function(name, dropdown) return dropdown.lineID and CanComplainChat(dropdown.lineID) end,
 }
 
+--C_ReportSystem.InitiateReportPlayer只对暴雪API开放
 FriendsMenuXP_Buttons["REPORT_CHEATING"] = {
     text = FMXP_BUTTON_REPORT_PLAYER_FOR..REPORT_CHEATING,
     func = function(name, dropdownFrame)
-        if ( GMEuropaComplaintsEnabled() and not GMQuickTicketSystemThrottled() ) then
-            if (dropdownFrame.unit) then
-                HelpFrame_SetReportPlayerByUnitTag(ReportCheatingDialog, dropdownFrame.unit);
-            elseif (tonumber(dropdownFrame.lineID)) then
-                HelpFrame_SetReportPlayerByLineID(ReportCheatingDialog, tonumber(dropdownFrame.lineID));
-            elseif (dropdownFrame.battlefieldScoreIndex) then
-                HelpFrame_SetReportPlayerByBattlefieldScoreIndex(ReportCheatingDialog, dropdownFrame.battlefieldScoreIndex);
-            end
-
-            HelpFrame_ShowReportCheatingDialog();
-        else
-            UIErrorsFrame:AddMessage(ERR_REPORT_SUBMISSION_FAILED , 1.0, 0.1, 0.1, 1.0);
-            local info = ChatTypeInfo["SYSTEM"];
-            if ( dropdownFrame.chatFrame ) then
-                dropdownFrame.chatFrame:AddMessage(ERR_REPORT_SUBMISSION_FAILED, info.r, info.g, info.b);
-            else
-                DEFAULT_CHAT_FRAME:AddMessage(ERR_REPORT_SUBMISSION_FAILED, info.r, info.g, info.b);
-            end
-        end
+        local guid = UnitPopup_GetGUID(dropdownFrame);
+        local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdownFrame, guid);
+        HelpFrame_ShowReportCheatingDialog(playerLocation);
     end,
-    show = function(name, dropdown) return dropdown.lineID and CanComplainChat(dropdown.lineID) end,
+    show = function(name, dropdownMenu)
+        local guid = UnitPopup_GetGUID(dropdownMenu);
+        local playerLocation = UnitPopup_TryCreatePlayerLocation(dropdownMenu, guid);
+        local isValidPlayerLocation = UnitPopup_IsValidPlayerLocation(playerLocation);
+        if dropdownMenu.bnetIDAccount or not isValidPlayerLocation or playerLocation:IsBattleNetGUID() then
+            return false;
+        end
+        return true
+    end,
 }
 
 FriendsMenuXP_Buttons["CANCEL"] = {
@@ -207,6 +223,7 @@ FriendsMenuXP_Buttons["GUILD_LEAVE"] = {
     func = function (name) StaticPopup_Show("CONFIRM_GUILD_LEAVE", GetGuildInfo("player")); end,
     show = function(name)
         if name ~= UnitName("player") or (GuildFrame and not GuildFrame:IsShown()) then return end;
+        if GetGuildInfo("player") == 0 then return end
         return 1;
     end,
 }
@@ -362,6 +379,7 @@ end
 
 FriendsMenuXP_Buttons["ARMORY"] = {
     text = FMXP_BUTTON_ARMORY,
+    show = function() return end, --暂时屏蔽
     func = function(name)
         local n,r = name:match"(.*)-(.*)"
         n = n or name
@@ -424,12 +442,12 @@ FriendsMenuXP_ButtonSet["NORMAL"] = {
     "SET_NOTE",
     "REPORT_SPAM",
     "REPORT_BAD_LANGUAGE",
+    --"REPORT_BAD_NAME",
+    --"REPORT_CHEATING", --无法实现，接口被保护
     "IGNORE",
     "CANCEL_IGNORE",
     "PROMOTE",
     "LOOT_PROMOTE",
-    --"REPORT_BAD_NAME",
-    --"REPORT_CHEATING",
     "GUILD_LEAVE",
     "GUILD_PROMOTE",
     "PVP_REPORT_AFK",

@@ -922,7 +922,7 @@ function AutoTurnIn:ShowIgnoreButton(frame)
 	end
 	--button text on global form
 	questNPCName = UnitName("target")
-	_G[IgnoreButton:GetName().."Text"]:SetText("AutoTurnIn: " .. L["ignorenpc"])
+	_G[IgnoreButton:GetName().."Text"]:SetText((GetLocale()=="zhCN" and "自动交接: " or "AutoTurnIn: ") .. L["ignorenpc"])
 end
 
 -- gossip and quest interaction goes through a sequence of windows: gossip [shows a list of available quests] - quest[describes specified quest]

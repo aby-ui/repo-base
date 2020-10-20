@@ -2398,6 +2398,7 @@ function SI:OnInitialize()
     icon = "Interface\\Addons\\SavedInstances\\Media\\Icon.tga",
     OnEnter = function(frame)
       if not SI:IsDetached() and not db.Tooltip.DisableMouseover then
+        GameTooltip:Hide()
         SI:ShowTooltip(frame)
       end
     end,

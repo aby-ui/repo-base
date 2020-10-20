@@ -23,7 +23,6 @@
 <Include file="LibDialog-1.0\LibDialog-1.0.lua"/><!--Archy,AtlasLoot,Broker_Dura,MethodDungeonTools,NPCScan,Details-->
 <Include file="LibCompress\LibCompress.lua"/><!--WeakAuras,MDT,Details-->
 <Include file="LibDeflate\LibDeflate.lua"/><!--ExRT,WeakAuras,Details,MethodDungeonTools-->
-<!--TODO:abyui9<Include file="!NoTaint_UIDropDownMenu\UIDropDownMenu.xml"/>&lt;!&ndash;AutoTurnIn, Dresser&ndash;&gt;-->
 <Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/><!--Detail,ZenTracker-->
 
 <Include file="UTF8\utf8data.lua"/>
@@ -34,5 +33,4 @@
 <!--<Include file="Astrolabe\Load.xml"/>--><!--HandyNotes/Archy/TomTom-->
 <!--<Include file="LibGroupInSpecT-1.0\lib.xml"/>-->
 
-<Include file="NoTaint_UIDropDownMenu\UIDropDownMenu.xml"/>
 </Ui>

@@ -483,7 +483,7 @@ function VB_DoLoad(self)
    SlashCmdList['VB'] = VB_DoSlash
    SLASH_VB1 = '/vb'
    SLASH_VB2 = '/vbar'
-   --hooksecurefunc('ActionButton_UpdateHotkeys', VB_UpdateHotkeys) --TODO aby9
+   --hooksecurefunc('ActionButton_UpdateHotkeys', VB_UpdateHotkeys) --9.0不能这么写，虽然有办法，但这个功能没啥用，需要改lua修改binding才行的样子
 end
 
 ----------------------------------------------------------------------------------------------------

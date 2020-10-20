@@ -200,7 +200,9 @@ end
 function QuestAnnounce:RefreshCompletedQuests(announce)
     self.completed = self.completed or {}
     for i=1, C_QuestLog.GetNumQuestLogEntries(), 1 do
-        local title, _, _, _, _, isComplete = GetQuestLogTitle(i);
+        local info = C_QuestLog.GetInfo(i)
+        local title = info.title
+        local isComplete = C_QuestLog.IsComplete(info.questID)
         if title and isComplete then
             if not self.completed[title] and announce then
                 QuestAnnounce:SendMsg(L["Quest Done: "] .. title, true)
@@ -215,7 +217,11 @@ function QuestAnnounce:QUEST_LOG_UPDATE()
 end
 
 function QuestAnnounce:QUEST_ACCEPTED(event, questIndex)
-    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle(questIndex)
+    local info = C_QuestLog.GetInfo(questIndex)
+    if not info then return end
+    local title = info.title
+    local isComplete = C_QuestLog.IsComplete(info.questID)
+    local isTask = info.isTask
     if title and not isComplete and not isTask then
         QuestAnnounce:SendMsg(L["Accepted: "] .. title, true)
     end

@@ -122,7 +122,7 @@ end
 --設置物品等級
 local function SetItemLevel(self, link, category, BagID, SlotID)
     if (not self) then return end
-    if link == true or link == false then return end --TODO aby9
+    if link == true or link == false then return end --abyui
     local frame = GetItemLevelFrame(self, category)
     if (self.OrigItemLink == link) then
         SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link, self.OrigItemLevel)

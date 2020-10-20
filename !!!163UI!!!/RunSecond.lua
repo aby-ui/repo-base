@@ -3,6 +3,18 @@ EnableAddOn("!!!Libs") LoadAddOn("!!!Libs") --不能在CoreLibs之前，不能�
 --TODO aby8
 GuildControlUIRankSettingsFrameRosterLabel = GuildControlUIRankSettingsFrameRosterLabel or CreateFrame("Frame")
 
+--WIP: SavedInstance ToyPlus
+--[[
+hooksecurefunc(GameTooltip, "Show", function()
+    local qtip = LibStub("LibQTip-1.0", true)
+    if qtip then
+        for _, v in pairs(qtip.activeTooltips) do
+            qtip:Release(v)
+        end
+    end
+end)
+]]
+
 function U1RemovedAddOn(...)
     local removed = {}
     for i=1, select('#', ...) do
@@ -70,7 +82,7 @@ CoreDependCall("Blizzard_GarrisonUI", function()
     end
 end)
 
---- 给任务追踪里的任务物品和技能增加一个安全按钮
+--- 给任务追踪里的任务物品和技能增加一个安全按钮,包括普通任务,世界任务,以及场景战役的法术
 CoreDependCall("Blizzard_ObjectiveTracker", function()
     local hook_Scenario_AddSpells = function(self, objectiveBlock, spellInfo)
         objectiveBlock = objectiveBlock or ScenarioObjectiveBlock
@@ -113,9 +125,8 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
     CoreOnEvent("PLAYER_REGEN_ENABLED", hook_Scenario_AddSpells)
     CoreOnEvent("PLAYER_REGEN_DISABLED", hook_Scenario_AddSpells)
 
-    ---[=[
     local wqItems163 = {} --物品按钮定时刷新隐藏, 不能setparent，也不能SetAllPoints()
-    local function update_WorldQuestItemButtons()
+    local function update_QuestItemButtons()
         if InCombatLockdown() then return end
         for bliz, btn163 in pairs(wqItems163) do
             if type(btn163) == "string" then
@@ -142,7 +153,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
             end
         end
     end
-    local hook_WorldQuest_Update = function(module, isWorldQuests)
+    local hook_Quest_Update = function(module, isWorldQuests)
         return function(self)
             --if not IsAddOnLoaded("!KalielsTracker") then return end
             self = self or module
@@ -153,25 +164,26 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
             --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   UpdateTrackedWorldQuests(module)
             --- @see Blizzard_ObjectiveTracker\Blizzard_BonusObjectiveTracker.lua   AddBonusObjectiveQuest
             --- @see Blizzard_ObjectiveTracker\Blizzard_ObjectiveTracker.lua        DEFAULT_OBJECTIVE_TRACKER_MODULE:GetBlock(id)
-            for questID, block in pairs(module.usedBlocks) do
-                if block and block.itemButton and block.itemButton:IsShown() then
-                    local questLogIndex = GetQuestLogIndexByID(questID);
-                    local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex);
-                    if link then
-                        local blizBtn = block.itemButton
-                        if wqItems163[blizBtn] and type(wqItems163[blizBtn])=="table" then wqItems163[blizBtn].link = link else wqItems163[blizBtn] = link end
+            for template, ub in pairs(module.usedBlocks) do
+                for questID, block in pairs(ub) do
+                    if block and block.itemButton and block.itemButton:IsShown() then
+                        local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
+                        local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex);
+                        if link then
+                            local blizBtn = block.itemButton
+                            if wqItems163[blizBtn] and type(wqItems163[blizBtn])=="table" then wqItems163[blizBtn].link = link else wqItems163[blizBtn] = link end
+                        end
                     end
                 end
             end
-            update_WorldQuestItemButtons()
+            update_QuestItemButtons()
         end
     end
-    hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", hook_WorldQuest_Update(WORLD_QUEST_TRACKER_MODULE, true))
-    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", hook_WorldQuest_Update(QUEST_TRACKER_MODULE, false))
-    CoreOnEvent("PLAYER_REGEN_ENABLED", update_WorldQuestItemButtons)
-    CoreOnEvent("PLAYER_REGEN_DISABLED", update_WorldQuestItemButtons)
-    CoreScheduleTimer(true, 0.5, update_WorldQuestItemButtons)
-    --]=]
+    hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", hook_Quest_Update(WORLD_QUEST_TRACKER_MODULE, true))
+    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", hook_Quest_Update(QUEST_TRACKER_MODULE, false))
+    CoreOnEvent("PLAYER_REGEN_ENABLED", update_QuestItemButtons)
+    CoreOnEvent("PLAYER_REGEN_DISABLED", update_QuestItemButtons)
+    CoreScheduleTimer(true, 0.5, update_QuestItemButtons)
 end)
 
 CoreDependCall("Blizzard_InspectUI", function()
@@ -190,6 +202,7 @@ end)--]]
 
 --[[------------------------------------------------------------
 prevent blocking message, /dump WorldMapFrame:IsProtected()
+no use after 8.0
 ---------------------------------------------------------------]]
 if WorldMapFrame.UIElementsFrame and WorldMapFrame.UIElementsFrame.ActionButton then
     local offscreenFrame = CreateFrame("Frame", UIParent)

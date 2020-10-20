@@ -91,17 +91,6 @@ hooksecurefunc("LearnTalent", function(...)
     end
 end)
 
-local buttons = {}
-for i = 1, 12 do
-    buttons[_G["ActionButton"..i]] = true
-    buttons[_G["MultiBarBottomLeftButton"..i]] = true
-    buttons[_G["MultiBarBottomRightButton"..i]] = true
-    buttons[_G["MultiBarLeftButton"..i]] = true
-    buttons[_G["MultiBarRightButton"..i]]  = true
-end
-
---hooksecurefunc("ActionButton_OnLoad", function(self) buttons[self] = true end) --TODO aby9 不支持自己创建的按钮
-
 local replaced_actions = {}  --memory optimization. also we must highlight buttons after all replacement.
 CoreOnEvent("PLAYER_SPECIALIZATION_CHANGED", function(event, unit)
     if unit ~= "player" then return end
@@ -128,7 +117,7 @@ CoreOnEvent("PLAYER_SPECIALIZATION_CHANGED", function(event, unit)
     end
 
     --show highlight texture
-    for k, _ in pairs(buttons) do
+    for _, k in ipairs(ActionBarButtonEventsFrame.frames) do
         if replaced_actions[k.action or 0] and k:IsVisible() then
             if k.NewActionTexture then
                 k.NewActionTexture:Show()

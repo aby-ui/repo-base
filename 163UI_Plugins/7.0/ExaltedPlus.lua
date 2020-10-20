@@ -101,8 +101,8 @@ hooksecurefunc('ReputationFrame_Update',function()
 		if id and f[n] and f[id] then
 			v,m,_,f[i]=C_Reputation.GetFactionParagonInfo(id)
 			f[id].c=f[i] and math.modf(v/m)-1 or math.modf(v/m) v=f[i] and mod(v,m)+m or mod(v,m)
-			x=f[i] and CONTRIBUTION_REWARD_TOOLTIP_TITLE or GetText("FACTION_STANDING_LABEL"..r,(UnitSex('player')))..(f[id].c > 0 and "*"..f[id].c or "+")
-			f[n].Check:SetShown(false)f[n].Glow:SetShown(false)f[n].Highlight:SetShown(false)f[n].Icon:SetAlpha(f[i] and 1 or .6)
+			x=f[i] and CONTRIBUTION_REWARD_TOOLTIP_TITLE.." +"..mod(v,m).."" or GetText("FACTION_STANDING_LABEL"..r,(UnitSex('player')))..(f[id].c > 0 and "*"..f[id].c or "+")
+            --f[n].Check:SetShown(false)f[n].Glow:SetShown(false)f[n].Highlight:SetShown(false)f[n].Icon:SetAlpha(f[i] and 1 or .6)
 			row=_G['ReputationBar'..i] row.rolloverText=' '..format(REPUTATION_PROGRESS_FORMAT,v,m) row.standingText=x
 			bar=_G['ReputationBar'..i..'ReputationBar'] bar:SetMinMaxValues(0,m) bar:SetValue(v)
 			_G['ReputationBar'..i..'ReputationBarFactionStanding']:SetText(x)
