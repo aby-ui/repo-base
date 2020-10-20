@@ -375,6 +375,7 @@ do
         if slot_s == 0 or gem_s == 0 then
             res ="0"
         else
+            --[[
             if sec_s == 0 then
                 res = fmt('%d/%d (|cff00dd70%d|r)', gem_s, slot_s, oth_s)
             elseif oth_s == 0 then
@@ -382,6 +383,8 @@ do
             else
                 res = fmt('%d/%d (|cff0070dd%d|r+|cff00dd70%d|r)', gem_s, slot_s, sec_s, oth_s) --|cffa335ee%d|r top_s
             end
+            ]]
+            res = fmt('%d/%d', gem_s, slot_s)
         end
 
         return res, waist_extra_slot
@@ -464,8 +467,8 @@ local ATTRS = {
     [ITEM_MOD_STRENGTH_SHORT] = 5, --LE_UNIT_STAT_STRENGTH
     [ITEM_MOD_AGILITY_SHORT] = 6, --LE_UNIT_STAT_AGILITY
     [ITEM_MOD_INTELLECT_SHORT] = 8, --LE_UNIT_STAT_INTELLECT
-    [ITEM_MOD_CORRUPTION] = 9,
-    [ITEM_MOD_CORRUPTION_RESISTANCE] = 10,
+    --[ITEM_MOD_CORRUPTION] = 9,
+    --[ITEM_MOD_CORRUPTION_RESISTANCE] = 10,
 }
 U1ATTRSNAME = {} for k,v in pairs(ATTRS) do U1ATTRSNAME[v] = k end
 

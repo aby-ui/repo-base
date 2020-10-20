@@ -166,7 +166,6 @@ function TomTom:Initialize(event, addon)
 	end
 
     self:ReloadOptions()
-    self:ReloadWaypoints()
 
     if self.db.profile.feeds.coords then
         -- Create a data feed for coordinates
@@ -197,6 +196,13 @@ function TomTom:Initialize(event, addon)
             end
         end)
     end
+end
+
+function TomTom:Enable(addon)
+    if not TomTom.CLASSIC then
+        self:EnableDisablePOIIntegration()
+    end
+    self:ReloadWaypoints()
 end
 
 -- Some utility functions that can pack/unpack data from a waypoint
@@ -241,9 +247,6 @@ function TomTom:ReloadOptions()
     self:ShowHideWorldCoords()
     self:ShowHideCoordBlock()
     self:ShowHideCrazyArrow()
-    if not TomTom.CLASSIC then
-        self:EnableDisablePOIIntegration()
-    end
 end
 
 function TomTom:ClearAllWaypoints()

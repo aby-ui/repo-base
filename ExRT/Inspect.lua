@@ -367,8 +367,8 @@ do
 							elseif itemSlotID == 17 then
 								offHandSlot = ilvl
 								ArtifactIlvlSlot2 = ilvl
-							elseif itemSlotID == 2 and select(3,GetItemInfo(itemLink)) == 6 then
-								cooldownsModule.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - min((ilvl - 465) * 0.15 + 19.8, 25) / 100)
+							elseif itemSlotID == 2 and select(3,GetItemInfo(itemLink)) == 6 and itemLink:match("item:(%d+)") == "158075" then
+								cooldownsModule.db.spell_cdByTalent_scalable_data[296320][name] = "*"..(1 - max(min((ilvl - 120) * 0.3 + 19.8, 25),10) / 100)
 								--[[
 									63: 18.9
 									66: 19.8
@@ -922,7 +922,7 @@ local function sortSoulbindTree(a,b)
 	return a.row < b.row
 end
 function module:PrepCovenantData()
-	if not ExRT.is90 or ExRT.isClassic then
+	if ExRT.isClassic then
 		return
 	end
 

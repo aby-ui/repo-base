@@ -1,0 +1,34 @@
+## Interface: 90001
+## Title: BattleGroundEnemies
+## Version: v9.0.7.1-release
+## Author: Bullsei
+## SavedVariables: BattleGroundEnemiesDB
+## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRData-1.0, LibSharedMedia-3.0, LibPlayerSpells-1.0
+
+## X-Curse-Project-ID: 274066
+
+embeds.xml
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Data.lua
+Main.lua
+
+Objects\Auras.lua
+Objects\Buffs.lua
+Objects\Debuffs.lua
+Objects\DR.lua
+Objects\ObjectiveAndRespawn.lua
+Objects\Racial.lua
+Objects\Trinket.lua
+
+Testmode.lua
+Options.lua
+
+
+## Title: |cff880303[爱不易]|r Battle PVP战场框体
+## Notes-zhCN: 显示全部战场敌人。战场简洁敌对单位框体。
+## Notes-zhTW: 顯示全部戰場敵人。戰場簡潔敵對單位框體。
+## X-Vendor: AbyUI

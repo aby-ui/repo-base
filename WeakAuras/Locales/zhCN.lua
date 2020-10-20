@@ -887,6 +887,8 @@ L["Thickness"] = "粗细"
 L["Third"] = "第三"
 L["Third Value of Tooltip Text"] = "鼠标提示文本的第三项值"
 L["This aura contains custom Lua code."] = "这个光环包含自定义 Lua 代码"
+--[[Translation missing --]]
+L["This aura has legacy aura trigger(s), which are no longer supported."] = "This aura has legacy aura trigger(s), which are no longer supported."
 L["This aura was created with a newer version of WeakAuras."] = "这个光环是由更新版本的 WeakAuras 创建的"
 L["This aura was created with the Classic version of World of Warcraft."] = "此光环是在魔兽世界怀旧服中创建的"
 L["This aura was created with the retail version of World of Warcraft."] = "此光环是在魔兽世界正式服中创建的"

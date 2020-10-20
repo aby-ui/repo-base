@@ -336,7 +336,7 @@ end
 function ExRT.F.dtime(...)
 	return nil
 end
-if ExRT.T == "D" or ExRT.T == "DU" then	--debug or debug ultra
+if ExRT.isDev then	--debug or debug ultra
 	ExRT.F.dprint = function(...)
 		print(...)
 	end
@@ -503,6 +503,81 @@ do
 			local index = math_random(counter)
 			swap(array, index, counter)
 			counter = counter - 1
+		end
+	end
+end
+
+do
+	local printDiff = false
+	local printTable = nil
+	local function cmp(t1,t2,r,p)
+		local c,t = 0,0
+		p = p or "."
+		for k,v in pairs(t1) do
+			if type(v) == "table" then
+				if type(t2[k]) == "table" then
+					local c2,t2 = cmp(v,t2[k],false,p..k..".")
+					c = c + c2
+					t = t + t2
+				else
+					t = t + 1
+					if printTable then
+						printTable[p..k] = true
+					elseif printDiff then
+						print(p..k)
+					end
+				end
+			else
+				t = t + 1
+				if t1[k] == t2[k] then
+					c = c + 1
+				elseif type(v) == "number" and type(t2[k]) == "number" and tostring(v) == tostring(t2[k]) then
+					c = c + 1
+				elseif printTable then
+					printTable[p..k] = true
+				elseif printDiff then
+					print(p..k)
+				end
+			end
+		end
+		if not r then
+			local c2,t2 = cmp(t2,t1,true,p)
+			c = c + c2
+			t = t + t2
+		end
+		return c, t
+	end
+	function ExRT.F.table_compare(t1,t2,showDiff)
+		printDiff = showDiff
+		if type(printDiff) == "table" then
+			printTable = printDiff
+			printDiff = nil
+		else
+			printTable = nil
+		end
+		local c, t = cmp(t1,t2)
+	
+		return c / max(1,t), c, t
+	end
+end
+
+function ExRT.F.table_rewrite(t1,t2)
+	local toRemove = {}
+	for k,v in pairs(t1) do
+		if not t2[k] then
+			toRemove[k] = true
+		elseif type(v) == "table" and type(t2[k]) == "table" then
+			ExRT.F.table_rewrite(v,t2[k])
+		else
+			t1[k] = t2[k]
+		end
+	end
+	for k,v in pairs(toRemove) do
+		t1[k] = nil
+	end
+	for k,v in pairs(t2) do
+		if not t1[k] then
+			t1[k] = v
 		end
 	end
 end
@@ -855,7 +930,7 @@ do
 		end
 	end
 
-	function ExRT.F:utf8len(s)
+	function ExRT.F.utf8len(s)
 		local pos = 1
 		local bytes = strlen(s)
 		local len = 0
@@ -870,7 +945,7 @@ do
 
 	-- functions identically to string.sub except that i and j are UTF-8 characters
 	-- instead of bytes
-	function ExRT.F:utf8sub(s, i, j)
+	function ExRT.F.utf8sub(s, i, j)
 		-- argument defaults
 		j = j or -1
 
@@ -879,7 +954,7 @@ do
 		local len = 0
 
 		-- only set l if i or j is negative
-		local l = (i >= 0 and j >= 0) or ExRT.F:utf8len(s)
+		local l = (i >= 0 and j >= 0) or ExRT.F.utf8len(s)
 		local startChar = (i >= 0) and i or l + i + 1
 		local endChar   = (j >= 0) and j or l + j + 1
 
@@ -907,6 +982,73 @@ do
 		end
 
 		return strsub(s, startByte, endByte)
+	end
+end
+
+function ExRT.F.GetFirstTableInText(str)
+	local strlen = str:len()
+	local i = 1
+	local deep = 0
+	local start
+	local inStr
+	local inWideStr
+	local wideStrEqCount = 0
+	while i <= strlen do
+		local b = str:byte(i)
+		if not start and not inStr and b == 123 then
+			start = i
+		elseif start and not inStr and b == 123 then
+			deep = deep + 1
+		elseif start and not inStr and b == 125 then
+			if deep <= 0 then
+				return str:sub(start,i)
+			else
+				deep = deep - 1
+			end
+		elseif not inStr and b == 34 then	--"
+			inStr = i
+		elseif inStr and not inWideStr and b == 92 then	--\
+			i = i + 1
+		elseif inStr and not inWideStr and b == 34 then	--"
+			inStr = false
+		elseif not inStr and b == 91 then	-- [ = [
+			local k = i + 1
+			local eqc = 0
+			while k <= strlen do
+				local c1 = str:byte(k)
+				if c1 == 61 then
+					eqc = eqc + 1
+				elseif c1 == b then
+					inStr = i
+					inWideStr = i
+					wideStrEqCount = eqc
+					break
+				else
+					break
+				end
+				k = k + 1
+			end
+		elseif inStr and inWideStr and b == 93 then	-- ] = ]
+			local k = i + 1
+			local eqc = 0
+			while k <= strlen do
+				local c1 = str:byte(k)
+				if c1 == 61 then
+					eqc = eqc + 1
+				elseif c1 == b then
+					if eqc == wideStrEqCount then
+						i = k
+						inStr = false
+						inWideStr = false
+					end
+					break
+				else
+					break
+				end
+				k = k + 1
+			end
+		end
+		i = i + 1
 	end
 end
 
@@ -1145,7 +1287,7 @@ end
 ---------------> Export Window <---------------
 do
 	local exportWindow
-	function ExRT.F:Export(stringData)
+	function ExRT.F:Export(stringData,hideTextInfo,windowName,onChangeFunc)
 		if not exportWindow then
 			exportWindow = ELib:Popup(ExRT.L.Export):Size(650,615)
 			exportWindow.Edit = ELib:MultiEdit(exportWindow):Point("TOP",0,-20):Size(640,575)
@@ -1164,7 +1306,10 @@ do
 				end
 			end)
 		end
+		exportWindow.title:SetText(windowName or ExRT.L.Export)
+		exportWindow.Edit.OnTextChanged = onChangeFunc
 		exportWindow:NewPoint("CENTER",UIParent,0,0)
+		exportWindow.TextInfo:SetShown(not hideTextInfo)
 		exportWindow:Show()
 		if #stringData > 200000 then
 			exportWindow.hugeText = {}
@@ -1186,6 +1331,338 @@ do
 	end
 
 end
+
+---------------> Import/Export data <---------------
+do
+	local function StringToText(str)
+		if str:find("\n") then
+			local n = 0
+			if str:find("%]$") then
+				n = n + 1
+			end
+			while str:find("%["..string.rep("=",n).."%[") or str:find("%]"..string.rep("=",n).."%]") do
+				n = n + 1
+			end
+			return "["..string.rep("=",n).."["..str.."]"..string.rep("=",n).."]", true
+		else
+			return "\""..str:gsub("\\","\\\\"):gsub("\"","\\\"").."\""
+		end
+	end
+	
+	local function IterateTable(t)
+		local prev
+		local index = 1
+		local indexMax
+		local isIndexDone
+		local function it()
+			if not indexMax then
+				local v = t[index]
+				if v then
+					index = index + 1
+					return index-1, v, true
+				else
+					indexMax = index - 1
+				end
+			end
+			local k,v = next(t,prev)
+			prev = k
+			while k and type(k)=="number" and k >= 1 and k <= indexMax do
+				k,v = next(t,prev)
+				prev = k
+			end
+			return k, v, false
+		end
+		return it
+	end
+	
+	function ExRT.F.TableToText(t,e,b)
+		b = b or {}
+		b[t] = true
+		e = e or {"{"}
+		local ignoreIndex = false
+		for k,v,isIndex in IterateTable(t) do
+			local newline = ""
+			local ignore = true
+			if type(v) == "boolean" or type(v) == "number" or type(v) == "string" or type(v) == "table" then
+				ignore = false
+			end
+			if type(v) == "table" and b[v] then
+				ignore = true
+			end
+			if ignore then
+				ignoreIndex = true
+			elseif isIndex and not ignoreIndex then
+			elseif type(k)=="number" then
+				newline = newline .. "["..k.."]="
+			elseif type(k)=="string" then
+				if k:match("[A-Za-z_][A-Za-z_0-9]*") == k then
+					newline = newline .. k .. "="
+				else
+					local kstr, ismultiline = StringToText(k)
+					newline = newline .. "["..(ismultiline and " " or "")..kstr..(ismultiline and " " or "").."]="
+				end
+			elseif type(k)=="boolean" then
+				newline = newline .. "["..(k and "true" or "false").."]="
+			else
+				ignore = true
+			end
+			if not ignore then
+				local tableToExplore
+				if type(v)=="number" then
+					newline = newline .. v .. ","
+				elseif type(v)=="string" then
+					newline = newline .. StringToText(v)..","
+				elseif type(v)=="boolean" then
+					newline = newline ..(v and "true" or "false")..","
+				elseif type(v)=="table" then
+					newline = newline .."{"
+					tableToExplore = v
+				end
+				e[#e+1] = newline
+				if tableToExplore then
+					ExRT.F.TableToText(tableToExplore,e,b)
+					e[#e] = e[#e] .. ","
+				end
+			end
+		end
+		e[#e] = e[#e]:gsub(",$","")
+		e[#e+1] = "}"
+		return e
+	end
+
+	local string_byte = string.byte
+	function ExRT.F.TextToTable(str,map,offset)
+		if not map and string_byte(str, 1) == 123 then
+			str = str:sub(2,-2)	--Expect valid table here
+		end
+		local strlen = str:len()
+		local i = 1
+		local prev = 1
+		map = map or {}
+		offset = offset or 0
+	
+		local inTable, inString, inWideString
+		local startTable, wideStringEqCount = 1, 0
+	
+		while i <= strlen do
+			local b1 = string_byte(str, i)
+			if not inString and not inTable and b1 == 123 then
+				inTable = 0
+				startTable = i
+			elseif not inString and inTable and b1 == 123 then
+				inTable = inTable + 1
+			elseif not inString and inTable and b1 == 125 then
+				if inTable == 0 then
+					map[startTable+offset] = i + offset
+					map[startTable+0.5+offset] = 1
+					inTable = false
+				else
+					inTable = inTable - 1
+				end
+			elseif not inString and b1 == 34 then	--"
+				if map[i+offset+0.5] == 2 then
+					i = map[i+offset] - offset
+				else
+					inString = i
+				end
+			elseif inString and not inWideString and b1 == 92 then	--\
+				i = i + 1
+			elseif inString and not inWideString and b1 == 34 then	--"
+				map[inString+offset] = i + offset
+				map[inString+0.5+offset] = 2
+				inString = false
+			elseif not inString and b1 == 91 then	-- [ = [
+				if map[i+offset+0.5] == 3 then
+					i = map[i+offset] - offset
+				else
+					local k = i + 1
+					local eqc = 0
+					while k <= strlen do
+						local c1 = string_byte(str, k)
+						if c1 == 61 then
+							eqc = eqc + 1
+						elseif c1 == b1 then
+							inString = i
+							inWideString = i
+							i = k
+							wideStringEqCount = eqc
+							break
+						else
+							break
+						end
+						k = k + 1
+					end
+				end
+			elseif inString and inWideString and b1 == 93 then	-- ] = ]
+				local k = i + 1
+				local eqc = 0
+				while k <= strlen do
+					local c1 = string_byte(str, k)
+					if c1 == 61 then
+						eqc = eqc + 1
+					elseif c1 == b1 then
+						if eqc == wideStringEqCount then
+							i = k
+							map[inWideString+offset] = i + offset
+							map[inWideString+0.5+offset] = 3
+							inString = false
+							inWideString = false
+						end
+						break
+					else
+						break
+					end
+					k = k + 1
+				end
+			end
+			if not inString and not inTable and (b1 == 44 or i == strlen) then	--,
+				map[-prev-offset] = i - (b1 == 44 and 1 or 0) + offset
+				prev = i + 1
+			end
+			i = i + 1
+		end
+	
+		local res = {}
+		local numKey = 1
+		i = 1
+		while i <= strlen do
+			if map[-i-offset] then
+				local s, e = i, map[-i-offset] - offset
+				local k = s
+				local key, value
+				local isError
+				prev = k
+				while k <= e do
+					if map[k+offset] then
+						if map[k+0.5+offset] == 1 then
+							value = ExRT.F.TextToTable( str:sub(k+1,map[k+offset]-offset-1) ,map,k+offset)
+						elseif map[k+0.5+offset] == 2 then
+							value = str:sub(k + 1,map[k+offset]-offset-1):gsub("\\\"","\""):gsub("\\\\","\\")
+						elseif map[k+0.5+offset] == 3 then
+							value = str:sub(k,map[k+offset]-offset):gsub("^%[=*%[",""):gsub("%]=*%]$","")
+						end
+						k = map[k+offset] + 1 - offset
+					else
+						local b1 = string_byte(str, k)
+						if b1 == 61 then	--=
+							if value then
+								key = value
+								value = nil
+							else
+								key = str:sub(prev, k-1):trim()
+								if key:find("^%[") and key:find("%]$") then
+									key = key:gsub("^%[",""):gsub("%]$","")
+									if tonumber(key) then
+										key = tonumber(key)
+									end
+								elseif key == "true" then
+									key = true
+								elseif key == "false" then
+									key = false
+								elseif tonumber(key) then
+									key = tonumber(key)
+								else
+									key = key:match("[A-Za-z_][A-Za-z_0-9]*")
+								end
+								if not key then
+									isError = true
+									break
+								end
+							end
+							prev = k + 1
+						elseif k == e and not value then
+							value = str:sub(prev, k):trim()
+							if value == "true" then
+								value = true
+							elseif value == "false" then
+								value = false
+							else
+								value = tonumber(value)
+							end
+						end
+						k = k + 1
+					end
+				end
+				if not isError then
+					if not key then
+						key = numKey
+						numKey = numKey + 1
+					end
+					res[key] = value
+				end
+				i = map[-i-offset] - offset
+			end
+			i = i + 1
+		end
+		return res
+	end
+
+	function ExRT.F.CreateImportExportWindows()
+		local function ImportOnUpdate(self, elapsed)
+			self.tmr = self.tmr + elapsed
+			if self.tmr >= 0.1 then
+				self.tmr = 0
+				self:SetScript("OnUpdate",nil)
+				local str = table.concat(self.buff):trim()
+				self.parent:Hide()
+
+				self.buff = {}
+				self.buffPos = 0
+		
+				if self.parent.ImportFunc then
+					self.parent:ImportFunc(str)
+				end
+			end
+		end
+		
+		local importWindow = ELib:Popup(ExRT.L.Import.." "..ExRT.L.ImportHelp):Size(650,100)
+		importWindow.Edit = ELib:MultiEdit(importWindow):Point("TOP",0,-20):Size(640,75)
+		importWindow:SetScript("OnHide",function(self)
+			self.Edit:SetText("")	
+		end)
+		importWindow:SetScript("OnShow",function(self)
+			self.Edit.EditBox.buffPos = 0
+			self.Edit.EditBox.tmr = 0
+			self.Edit.EditBox.buff = {}
+			self.Edit.EditBox:SetFocus()
+		end)
+		importWindow.Edit.EditBox:SetMaxBytes(1)
+		importWindow.Edit.EditBox:SetScript("OnChar", function(self, c)
+			self.buffPos = self.buffPos + 1
+			self.buff[self.buffPos] = c
+			self:SetScript("OnUpdate",ImportOnUpdate)
+		end)
+		importWindow.Edit.EditBox.parent = importWindow
+		
+		
+		local exportWindow = ELib:Popup(ExRT.L.Export):Size(650,50)
+		exportWindow.Edit = ELib:Edit(exportWindow):Point("TOP",0,-20):Size(640,25)
+		exportWindow:SetScript("OnHide",function(self)
+			self.Edit:SetText("")	
+		end)
+		exportWindow.Edit:SetScript("OnEditFocusGained", function(self)
+			self:HighlightText()
+		end)
+		exportWindow.Edit:SetScript("OnMouseUp", function(self, button)
+			self:HighlightText()
+			if button == "RightButton" then
+				self:GetParent():Hide()
+			end
+		end)
+		exportWindow.Edit:SetScript("OnKeyUp", function(self, c)
+			if (c == "c" or c == "C") and IsControlKeyDown() then
+				self:GetParent():Hide()
+			end
+		end)
+		function exportWindow:OnShow()
+			self.Edit:SetFocus()
+		end
+
+		return importWindow, exportWindow
+	end
+end
+
+
 -------------------> Data <--------------------
 
 ExRT.GDB.ClassSpecializationIcons = {

@@ -22,8 +22,11 @@ local L = TomTomLocals
 local lastWaypoint
 local scanning          -- This function is not re-entrant, stop that
 
-local function getQIDFromIndex(questIndex)
-	return (select(8, GetQuestLogTitle(questIndex)))
+
+local function GetQuestIndexForWatch(questWatchIndex)
+    local questID = C_QuestLog.GetQuestIDForQuestWatchIndex(questWatchIndex)
+    local questIndex = questID and C_QuestLog.GetLogIndexForQuestID(questID)
+    return questIndex
 end
 
 local function ObjectivesChanged()
@@ -40,20 +43,7 @@ local function ObjectivesChanged()
         scanning = true
     end
 
-    local map = C_Map.GetBestMapForUnit("player")
-    if not map then
-        scanning = false
-        return
-    end
-
-    local player = C_Map.GetPlayerMapPosition(map, "player")
-    if not player then
-        scanning = false
-        return
-    end
-
-    local px, py = player:GetXY()
-
+    local px, py, map, mapType = hbd:GetPlayerZonePosition(true)
     -- Bail out if we can't get the player's position
     if not px or not py or px <= 0 or py <= 0 then
         scanning = false
@@ -80,11 +70,14 @@ local function ObjectivesChanged()
             break
         end
 
-        local qid = getQIDFromIndex(questIndex)
+        local qid = C_QuestLog.GetQuestIDForQuestWatchIndex(watchIndex)
+        C_QuestLog.SetSelectedQuest(qid)
+        C_QuestLog.GetNextWaypoint(qid)
         local completed, x, y, objective = QuestPOIGetIconInfo(qid)
+        local qmap = GetQuestUiMapID(qid)
 
         if x and y then
-            local dist = hbd:GetZoneDistance(map, px, py, map, x, y)
+            local dist = hbd:GetZoneDistance(map, px, py, qmap, x, y)
             if dist and (dist < closestdist) then
                 closest = watchIndex
                 closestdist = dist
@@ -95,9 +88,10 @@ local function ObjectivesChanged()
 
     if closest then
         local questIndex = GetQuestIndexForWatch(closest)
-        local title = GetQuestLogTitle(questIndex)
-        local qid = getQIDFromIndex(questIndex)
+        local title = C_QuestLog.GetTitleForLogIndex(questIndex)
+        local qid = C_QuestLog.GetQuestIDForQuestWatchIndex(closest)
         local completed, x, y, objective = QuestPOIGetIconInfo(qid)
+        local map = GetQuestUiMapID(qid)
 
         if completed then
             title = "完成: " .. title
@@ -185,20 +179,22 @@ local function poi_OnClick(self, button)
     local title, completed, x, y
 
     if questIndex and questIndex ~= 0 then
-        title = GetQuestLogTitle(questIndex)
+        title = C_QuestLog.GetTitleForLogIndex(questIndex)
         completed, x, y = QuestPOIGetIconInfo(self.questID)
-        -- If the WorldMap is open, use the map's MapID, else guess the current players' map
+        m = C_TaskQuest.GetQuestZoneID(self.questID)
+        -- If the WorldMap is open, maybe use the map's MapID, else maybe try the players' map
         if WorldMapFrame:IsShown() then
-            m = WorldMapFrame:GetMapID()
+            m = m or WorldMapFrame:GetMapID()
         else
-            m = C_Map.GetBestMapForUnit("player")
+            m = m or C_Map.GetBestMapForUnit("player")
         end
     else
         -- Must be a World Quest
         title = C_TaskQuest.GetQuestInfoByQuestID(self.questID)
         completed = false
         x, y = C_TaskQuest.GetQuestLocation(self.questID)
-        m = select(2, C_TaskQuest.GetQuestZoneID(self.questID)) or m
+        m = C_TaskQuest.GetQuestZoneID(self.questID)
+        m = m or C_Map.GetBestMapForUnit("player")
     end
 
     if completed then

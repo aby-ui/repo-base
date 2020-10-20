@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 37
+local internalVersion = 38
 
 -- Lua APIs
 local insert = table.insert
@@ -4396,6 +4396,11 @@ function Private.IsAuraActive(uid)
   local id = Private.UIDtoID(uid)
   local active = triggerState[id];
   return active and active.show;
+end
+
+function WeakAuras.IsAuraActive(id)
+  local active = triggerState[id]
+  return active and active.show
 end
 
 function Private.ActiveTrigger(uid)

@@ -136,3 +136,23 @@ L["STACKALPHA_DESC"] = L["STACKALPHA_DESC"]:format(L["ICONMENU_SHOWWHEN"])
 --L["CNDT_SLIDER_DESC_CLICKSWAP_TOMANUAL"] = L["CNDT_SLIDER_DESC_BASE"] .. "\r\n\r\n" .. L["CNDT_SLIDER_DESC_CLICKSWAP_TOMANUAL"]
 --L["CNDT_SLIDER_DESC_CLICKSWAP_TOSLIDER"] = L["CNDT_SLIDER_DESC_BASE"] .. "\r\n\r\n" .. L["CNDT_SLIDER_DESC_CLICKSWAP_TOSLIDER"]
 
+
+-- Wizard magic to make ICONMENU_CHOOSENAME_WPNENCH_DESC be locale-dynamic
+do
+	local FlametongueWeapon = GetSpellInfo(318038)
+	local FlametongueWeaponEnchant
+	for i = 1, select("#", strsplit("|", L["SUG_MATCH_WPNENCH_ENCH"])) do
+		local enchant = select(i, strsplit("|", L["SUG_MATCH_WPNENCH_ENCH"]))
+		enchant = FlametongueWeapon:match(enchant)
+		if enchant then
+			FlametongueWeaponEnchant = enchant
+			break
+		end
+	end
+	
+	if FlametongueWeaponEnchant then
+		L["ICONMENU_CHOOSENAME_WPNENCH_DESC"] 	= L["ICONMENU_CHOOSENAME_WPNENCH_DESC"]	 	:format(FlametongueWeaponEnchant, FlametongueWeapon) 
+	else
+		--- Uhh... I just noticed there is no code right here. Hopefully nothing breaks.
+	end
+end

@@ -516,11 +516,13 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     local total_corrupt = max(0, (stats_total[9] or 0) - corruption_resistence)
     local cccode = "|cff946cd0"
     local tccode = total_corrupt > 59 and "|cffff0000" or total_corrupt > 39 and "|cffFF6CD0" or cccode
+    --[[
     local i=9 if stats_total[i] then tiptext = tiptext .. "\n"..cccode.."合计腐蚀"..":".." +"..format("|r"..tccode.."%d|r"..cccode, total_corrupt)..format(" (+%d)", stats_total[i], corruption_resistence).."|r" end
     if U1GetAllCorruptionText then
         local corrupt_text, c_all, c_corrupt = U1GetAllCorruptionText(sum["ItemLink"])
         tiptext = tiptext .. format(" %d/%d", c_corrupt, c_all) .. "\n " .. U1GetAllCorruptionText(sum["ItemLink"]):gsub("\n", "\n ")
     end
+    --]]
 	GearStatsSummary_SetFrameText(frame, tiptitle, tiptext, unit);
 	frame:Show();
 end

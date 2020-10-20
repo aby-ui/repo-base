@@ -340,7 +340,9 @@ do
 			end
 			frame:SetScript('OnEvent', MainFrameWMOnEvent)
 		else
-			frame:SetScript("OnClick", ClearRaidMarker)
+			frame:SetScript("OnClick",  function()
+				ClearRaidMarker()
+			end)
 		end
 	
 		frame.t = frame:CreateTexture(nil, "BACKGROUND")
@@ -403,7 +405,9 @@ for i=1,9 do
 		end
 		frame:SetScript('OnEvent', MainFrameWMOnEvent)
 	else
-		frame:SetScript("OnClick", ClearRaidMarker)
+		frame:SetScript("OnClick", function()
+			ClearRaidMarker()
+		end)
 	end
 end
 

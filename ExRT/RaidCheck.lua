@@ -168,7 +168,7 @@ module.db.minFoodLevelToActual = {
 	[125] = 14,
 }
 
-if ExRT.is90 and UnitLevel'player' > 50 then
+if UnitLevel'player' > 50 then
 	module.db.tableFood = {
 	--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
 	[308488]=30,	[308506]=30,	[308434]=30,	[308514]=30,							[308525]=30,			[308637]=30,
@@ -348,7 +348,7 @@ local function GetRunes(checkType)
 	end
 
 	if not checkType or checkType == 1 then
-		for _,stats in ipairs({0,15,60}) do
+		for _,stats in ipairs({0,5,6}) do
 			f[stats] = f[stats] or {}
 			local result = format("|cff00ff00%d (%d):|r ",stats,#f[stats])
 			for i=1,#f[stats] do
@@ -366,23 +366,23 @@ local function GetRunes(checkType)
 		if checkType == 3 then
 			checkType = nil
 		end
-		f[15] = f[15] or {}
-		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0]+#f[15])
+		f[5] = f[5] or {}
+		local result = format("|cff00ff00%s (%d):|r ",L.RaidCheckNoRunes,#f[0]+#f[5])
 		for i=1,#f[0] do
 			result = result .. f[0][i]
 			if #result > 230 then
 				PublicResults(result,checkType)
 				result = ""
-			elseif i ~= #f[0] or #f[15] > 0 then
+			elseif i ~= #f[0] or #f[5] > 0 then
 				result = result .. ", "
 			end
 		end
-		for i=1,#f[15] do
-			result = result .. f[15][i] .. "(15)"
+		for i=1,#f[5] do
+			result = result .. f[5][i] .. "(5)"
 			if #result > 230 then
 				PublicResults(result,checkType)
 				result = ""
-			elseif i ~= #f[15] then
+			elseif i ~= #f[5] then
 				result = result .. ", "
 			end
 		end
@@ -684,7 +684,7 @@ local function GetRaidBuffs(checkType)
 			if f[k] > 0 and f[-k] then
 				isAnyBuff = false
 				result = result .. buffsList[k][1] .. " ("..f[k].."), "
-			elseif f[buffsListLen + k] > 0 and not f[-k] and ((not ExRT.is90 and UnitLevel'player' >= 120) or (ExRT.is90 and UnitLevel'player' == 50)) then	--check for minor buffs (7%), but only in BfA actually
+			elseif f[buffsListLen + k] > 0 and not f[-k] and UnitLevel'player' == 50 then	--check for minor buffs (7%), but only in BfA actually
 				isAnyBuff = false
 				result = result .. buffsList[k][1] .. " ("..f[buffsListLen + k].."), "
 			end
@@ -1222,7 +1222,7 @@ if ExRT.isClassic then
 end
 
 local RCW_liveToslDiff = 0
-if ExRT.is90 and UnitLevel'player' > 50 then
+if not ExRT.isClassic and UnitLevel'player' > 50 then
 	tremove(RCW_iconsList,3)
 	tremove(RCW_iconsListHeaders,3)
 	tremove(RCW_iconsListDebugIcons,3)
@@ -1891,7 +1891,7 @@ function module.frame:UpdateData(onlyLine)
 						line.food.texture:SetTexture(136000)
 						if type(val)~="number" then
 							val = ""
-						elseif val >= 30 then
+						elseif val >= 30 or (UnitLevel'player' < 60 and val >= 10) then
 							line.food.text:SetTextColor(0,1,0)
 						else
 							line.food.text:SetTextColor(1,0,0)
@@ -2163,7 +2163,7 @@ function module:ReadyCheckWindow(starter,isTest,manual)
 		for i=1,#self.frame.lines do 
 			self.frame.lines[i].rc_status = 4
 		end
-		if ((ExRT.is90 and UnitLevel'player' >= 50) or (not ExRT.is90 and UnitLevel'player' >= 120)) and not ExRT.isClassic then
+		if UnitLevel'player' >= 50 and not ExRT.isClassic then
 			ExRT.F.SendExMsg("raidcheckreq","REQ\t1")
 		end
 	end
@@ -2304,8 +2304,8 @@ do
 		end
 		if not isTest then
 			ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
-				(ExRT.is90 and not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
-				(ExRT.is90 and not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
+				(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
+				(not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
 			)
 		end
 	end
@@ -2417,8 +2417,8 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 				module.db.prevReqAntispam = currTime
 
 				ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
-					(ExRT.is90 and not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
-					(ExRT.is90 and not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
+					(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
+					(not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
 				)
 			end
 		end

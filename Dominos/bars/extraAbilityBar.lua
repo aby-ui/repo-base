@@ -19,9 +19,17 @@ function ExtraAbilityBar:New()
 end
 
 ExtraAbilityBar:Extend(
-    'OnAcquire',
-    function(self)
+    'OnAcquire', function(self)
+        local container = ExtraAbilityContainer
+
+        container:ClearAllPoints()
+        container:SetPoint('CENTER', self)
+        container:SetParent(self)
+
+        self.container = container
+
         self:Layout()
+        self:UpdateShowBlizzardTexture()
     end
 )
 
@@ -36,11 +44,10 @@ function ExtraAbilityBar:GetDefaults()
 end
 
 function ExtraAbilityBar:Layout()
-    ExtraAbilityContainer:ClearAllPoints()
-    ExtraAbilityContainer:SetPoint('CENTER', self)
-    ExtraAbilityContainer:SetParent(self)
+    local w, h = self.container:GetSize()
 
-    local w, h = ExtraAbilityContainer:GetSize()
+    w = math.floor(w or 0)
+    h = math.floor(h or 0)
 
     if w == 0 and h == 0 then
         w = 256
@@ -63,7 +70,7 @@ function ExtraAbilityBar:AddLayoutPanel(menu)
 
     local panel = menu:NewPanel(l.Layout)
 
-    panel:NewCheckButton {
+    panel:NewCheckButton{
         name = l.ExtraBarShowBlizzardTexture,
         get = function()
             return panel.owner:ShowingBlizzardTexture()
@@ -106,11 +113,9 @@ function ExtraAbilityBarModule:Load()
         -- setup the container watcher
         ExtraAbilityContainer.ignoreFramePositionManager = true
 
-        hooksecurefunc(
-            ExtraAbilityContainer,
-            'Layout',
-            function()
-                self:OnExtraAbilityContainerLayout()
+        ExtraAbilityContainer:HookScript(
+            'OnSizeChanged', function()
+                self:OnExtraAbilityContainerSizeChanged()
             end
         )
 
@@ -126,10 +131,13 @@ function ExtraAbilityBarModule:Unload()
     self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end
 
-function ExtraAbilityBarModule:OnExtraAbilityContainerLayout()
+function ExtraAbilityBarModule:OnExtraAbilityContainerSizeChanged()
     if InCombatLockdown() then
         self.dirty = true
-    elseif self.frame then
+        return
+    end
+
+    if self.frame then
         self.frame:Layout()
     end
 end
@@ -137,9 +145,10 @@ end
 function ExtraAbilityBarModule:PLAYER_REGEN_ENABLED()
     if self.dirty then
         self.dirty = nil
+        return
+    end
 
-        if self.frame then
-            self.frame:Layout()
-        end
+    if self.frame then
+        self.frame:Layout()
     end
 end

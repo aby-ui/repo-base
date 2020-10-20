@@ -180,3 +180,53 @@ L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage ampli
 
 L["Connected"] = "强力伤害"
 L["Connected_Desc"] = "提示'施法成功', 当一些强力读条技能成功施放时.|n|n强效炎爆术 (|cff69CCF0法师|r)|n混乱箭 (|cff9482C9术士|r)"
+
+L["CovenantAbilities"] = true
+
+L["FrostDK"] = true
+L["BloodDK"] = true
+L["UnholyDK"] = true
+
+L["HavocDH"] = true
+L["VengeanceDH"] = true
+
+L["FeralDR"] = true
+L["BalanceDR"] = true
+L["RestorationDR"] = true
+L["GuardianDR"] = true
+
+L["MarksmanshipHN"] = true
+L["SurvivalHN"] = true
+L["BeastMasteryHN"] = true
+
+L["FrostMG"] = true
+L["FireMG"] = true
+L["ArcaneMG"] = true
+
+L["MistweaverMN"] = true
+L["WindwalkerMN"] = true
+L["BrewmasterMN"] = true
+
+L["HolyPD"] = true
+L["RetributionPD"] = true
+L["ProtectionPD"] = true
+
+L["HolyPR"] = true
+L["DisciplinePR"] = true
+L["ShadowPR"] = true
+
+L["OutlawRG"] = true
+L["AssassinationRG"] = true
+L["SubtletyRG"] = true
+
+L["RestorationSH"] = true
+L["EnhancementSH"] = true
+L["ElementalSH"] = true
+
+L["DestructionWL"] = true
+L["DemonologyWL"] = true
+L["AfflictionWL"] = true
+
+L["ArmsWR"] = true
+L["FuryWR"] = true
+L["ProtectionWR"] = true

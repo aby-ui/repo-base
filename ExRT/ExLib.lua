@@ -1919,6 +1919,11 @@ do
 		return self
 	end
 
+	local function Widget_SetObey(self,bool)
+		self.slider:SetObeyStepOnDrag(bool)
+		return self
+	end
+
 	local function Widget_SetHorizontal(self)
 		self.slider:SetOrientation("HORIZONTAL")
 		self.buttonUP:ClearAllPoints() 
@@ -2022,7 +2027,8 @@ do
 			'OnChange',Widget_OnChange,
 			'UpdateButtons',Widget_UpdateButtons,
 			'ClickRange',Widget_ClickRange,
-			'SetHorizontal',Widget_SetHorizontal
+			'SetHorizontal',Widget_SetHorizontal,
+			'SetObey', Widget_SetObey
 		)
 		self.Size = Widget_Size
 		self.slider.UpdateButtons = Widget_Slider_UpdateButtons

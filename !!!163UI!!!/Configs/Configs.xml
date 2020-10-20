@@ -20,7 +20,7 @@
     <Include file="..\..\BGDefender\CfgBGDefender.lua"/>
     <Include file="..\..\BagBrother\CfgBagBrother.lua"/>
     <Include file="..\..\Bagnon\CfgBagnon.lua"/>
-    <Include file="..\..\BattlegroundTargets\CfgBattlegroundTargets.lua"/>
+    <Include file="..\..\BattleGroundEnemies\CfgBattleGroundEnemies.lua"/>
     <Include file="..\..\BigDebuffs\CfgBigDebuffs.lua"/>
     <Include file="..\..\BlinkHealthText\CfgBlinkHealthText.lua"/>
     <Include file="..\..\BlizzMove\CfgBlizzMove.lua"/>

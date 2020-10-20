@@ -188,24 +188,6 @@ local function SetFrames()
 		KT:Masque_AddButton(button, 2)
 		KTF.ActiveButton = button
 
-        --163ui move button
-        CoreDependCall("Dominos", function()
-            RunOnNextFrame(function()
-                if not InCombatLockdown() then
-                    button:SetParent(DominosFrameextra)
-                    button:SetPoint("CENTER", 0, 0.5)
-                end
-            end)
-            --[[
-            button:SetScript("OnMouseDown", function(self)
-                if IsModifierKeyDown() then
-                    self:GetParent():StartMoving()
-                end
-            end)
-            button:SetScript("OnMouseUp", function(self) self:GetParent():StopMovingOrSizing() end)
-            --]]
-            --CoreUIMakeMovable(button, DominosFrameextra)
-        end)
 	end
 	abutton = KTF.ActiveButton
 

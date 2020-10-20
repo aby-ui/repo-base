@@ -177,3 +177,53 @@ L["TankTauntsON_Desc"] = true
 
 L["Connected"] = true
 L["Connected_Desc"] = true
+
+L["CovenantAbilities"] = true
+
+L["FrostDK"] = true
+L["BloodDK"] = true
+L["UnholyDK"] = true
+
+L["HavocDH"] = true
+L["VengeanceDH"] = true
+
+L["FeralDR"] = true
+L["BalanceDR"] = true
+L["RestorationDR"] = true
+L["GuardianDR"] = true
+
+L["MarksmanshipHN"] = true
+L["SurvivalHN"] = true
+L["BeastMasteryHN"] = true
+
+L["FrostMG"] = true
+L["FireMG"] = true
+L["ArcaneMG"] = true
+
+L["MistweaverMN"] = true
+L["WindwalkerMN"] = true
+L["BrewmasterMN"] = true
+
+L["HolyPD"] = true
+L["RetributionPD"] = true
+L["ProtectionPD"] = true
+
+L["HolyPR"] = true
+L["DisciplinePR"] = true
+L["ShadowPR"] = true
+
+L["OutlawRG"] = true
+L["AssassinationRG"] = true
+L["SubtletyRG"] = true
+
+L["RestorationSH"] = true
+L["EnhancementSH"] = true
+L["ElementalSH"] = true
+
+L["DestructionWL"] = true
+L["DemonologyWL"] = true
+L["AfflictionWL"] = true
+
+L["ArmsWR"] = true
+L["FuryWR"] = true
+L["ProtectionWR"] = true

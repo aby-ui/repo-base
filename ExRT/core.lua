@@ -1,8 +1,8 @@
---	11.10.2020
+--	19.10.2020
 
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4330
+ExRT.V = 4360
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -31,10 +31,10 @@ do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
 	ExRT.clientUIinterface = uiVersion
-	local expansion,majorPatch,minorPatch = (version or "2.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
+	local expansion,majorPatch,minorPatch = (version or "3.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
 	ExRT.clientVersion = (expansion or 0) * 10000 + (majorPatch or 0) * 100 + (minorPatch or 0)
 end
-if ExRT.clientVersion < 20000 then
+if ExRT.clientVersion < 30000 then
 	ExRT.isClassic = true
 	ExRT.T = "Classic"
 end
@@ -62,6 +62,7 @@ local SendAddonMessage, strsplit = C_ChatInfo.SendAddonMessage, strsplit
 local C_Timer_NewTicker, debugprofilestop = C_Timer.NewTicker, debugprofilestop
 
 if ExRT.T == "D" then
+	ExRT.isDev = true
 	pcall = function(func,...)
 		func(...)
 		return true
@@ -76,8 +77,10 @@ ExRT.mod.__index = ExRT.mod
 
 do
 	local function mod_LoadOptions(this)
-		this:Load()
 		this:SetScript("OnShow",nil)
+		if this.Load then
+			this:Load()
+		end
 		this.Load = nil
 		ExRT.F.dprint(this.moduleName.."'s options loaded")
 		this.isLoaded = true

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.5
+Version 2.4.9.6
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.5";
+local VERSION = "2.4.9.6";
 
 local ADDON_NAME, T = ...;
 
@@ -294,25 +294,25 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
 
         -- Priests
         --      Discipline
-        [047540] = "PRIEST", -- Penance XXX strange error received from user on 2015-10-15 (this spell was cast by a hunter...)
+        [047540] = "PRIEST", -- Penance
         [109964] = "PRIEST", -- Spirit shell -- not seen in disc
-        [002060] = "PRIEST", -- Greater Heal
-        [014914] = "PRIEST", -- Holy Fire
         [033206] = "PRIEST", -- Pain Suppression
-        [000596] = "PRIEST", -- Prayer of Healing
         [000527] = "PRIEST", -- Purify
         [081749] = "PRIEST", -- Atonement
         [132157] = "PRIEST", -- Holy Nova
         --      Holy
+        [000596] = "PRIEST", -- Prayer of Healing
+        [014914] = "PRIEST", -- Holy Fire
+        [002060] = "PRIEST", -- Heal
         [034861] = "PRIEST", -- Circle of Healing
         [064843] = "PRIEST", -- Divine Hymn
         [047788] = "PRIEST", -- Guardian Spirit
         [032546] = "PRIEST", -- Binding Heal
         [077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
-        [077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
+        -- [077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
         [000139] = "PRIEST", -- Renew
 
-        -- Druids
+        -- Druids - Restauration
         --[018562] = "DRUID", -- Swiftmend -- (also available through restoration afinity talent)
         [102342] = "DRUID", -- Ironbark
         [033763] = "DRUID", -- Lifebloom
@@ -324,26 +324,25 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         -- [145108] = "DRUID", -- Ysera's Gift -- (also available through restoration afinity talent)
         -- [000774] = "DRUID", -- Rejuvination -- (also available through restoration afinity talent)
 
-        -- Shamans
+        -- Shamans - Restauration
         [061295] = "SHAMAN", -- Riptide
         [077472] = "SHAMAN", -- Healing Wave
         [098008] = "SHAMAN", -- Spirit link totem
-        [001064] = "SHAMAN", -- Chain Heal
         [073920] = "SHAMAN", -- Healing Rain
 
-        -- Paladins
+        -- Paladins - Holy
         [020473] = "PALADIN", -- Holy Shock
         [053563] = "PALADIN", -- Beacon of Light
         [082326] = "PALADIN", -- Holy Light
         [085222] = "PALADIN", -- Light of Dawn
 
-        -- Monks
+        -- Monks - Mistweaver
         [115175] = "MONK", -- Soothing Mist
         [115310] = "MONK", -- Revival
         --[116670] = "MONK", -- Vivify all monks have it in WoW8
         [116680] = "MONK", -- Thunder Focus Tea
         [116849] = "MONK", -- Life Cocoon
-        [119611] = "MONK", -- Renewing mist
+        -- [119611] = "MONK", -- Renewing mist
 
         --[===[@debug@
         -- test bad spell mitigation
@@ -367,6 +366,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
             -- Shaman Restoration
             [16178] = "SHAMAN", -- Purification
             [29206] = "SHAMAN", -- Healing way
+            [001064] = "SHAMAN", -- Chain Heal
         }
 
         -- OK, this feature makes no sense in WoW classic...
@@ -554,7 +554,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.5,', L["RELEASE_DATE"], '2020-02-27T20:43:20Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.6,', L["RELEASE_DATE"], '2020-10-18T22:18:16Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -572,7 +572,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.5 -- ' .. L["RELEASE_DATE"] .. ' 2020-02-27T20:43:20Z',
+                        name = L["VERSION"] .. ' 2.4.9.6 -- ' .. L["RELEASE_DATE"] .. ' 2020-10-18T22:18:16Z',
                         order = 1,
                     },
                     Pve = {

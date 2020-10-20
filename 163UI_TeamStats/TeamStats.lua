@@ -93,7 +93,7 @@ local function SaveGearScore(name, unit, isPlayer)
             local avgLevel, color, pvp, totalLevel, count, slotCount, itemLinks = U1GetInventoryLevel(unit, true)
             --debug("SaveGearScore", U1GetInventoryLevel(unit))
             if avgLevel and avgLevel > 0 then
-                -- 计算腐蚀值
+                --[[-- 计算腐蚀值
                 local slots = { Waist=6, Legs=7, Feet=8, Wrist=9, Hands=10, Finger0=11, Finger1=12, Back=15, MainHand=16, SecondaryHand=17, }
                 local c_text = U1GetAllCorruptionText(itemLinks)
                 local tmptable, c_resist, c_total = {}, 0, 0
@@ -106,6 +106,7 @@ local function SaveGearScore(name, unit, isPlayer)
                     end
                 end
                 player.c_text, player.c_resist, player.c_total = c_text, c_resist, c_total
+                --]]
 
                 --[[ --军团再临神器
                 player.legends = nil

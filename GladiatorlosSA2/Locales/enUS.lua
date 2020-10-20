@@ -151,7 +151,7 @@ L["DPSDispel_Desc"] = "Generic alert for hybrid class dispels that do not remove
 L["HealerDispel"] = "Magic Dispels"
 L["HealerDispel_Desc"] = "Generic alert for healing class (AND WARLOCKS. >:| ) dispels that remove Magic effects.|n|nNature's Cure (|cffFF7D0ADruid|r)|nDetox (|cFF00FF96Monk|r)|nCleanse (|cffF58CBAPaladin|r)|nPurify (Priest)|nPurify Spirit (|cff0070daShaman|r)|nSinge Magic (|cff9482C9Warlock|r)"
 L["CastingSuccess"] = "CC Cast Success"
-L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability successfully finishes a cast.|n|nBe aware that this will announce even if the victim is unaffected, such as a target that is in a full Diminishing Return cycle.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (|cffFF7D0ADruid|r)|nHibernate (|cffFF7D0ADruid|r)|nPolymorph (|cff69CCF0Mage|r)|nRing of Frost (|cff69CCF0Mage|r)|nRepentance (|cffF58CBAPaladin|r)|nMind Control (Priest)|nHex (|cff0070daShaman|r)|nFear (|cff9482C9Warlock|r)"
+L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability successfully finishes a cast.|n|nBe aware that this will announce even if the victim is unaffected, such as on a target that is in a full Diminishing Return cycle.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (|cffFF7D0ADruid|r)|nHibernate (|cffFF7D0ADruid|r)|nScare Beast (|cffABD473Hunter|r)|nPolymorph (|cff69CCF0Mage|r)|nRing of Frost (|cff69CCF0Mage|r)|nRepentance (|cffF58CBAPaladin|r)|nMind Control (Priest)|nHex (|cff0070daShaman|r)|nFear (|cff9482C9Warlock|r)"
 
 L["DispelKickback"] = "Dispel Penalties"
 
@@ -174,3 +174,53 @@ L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage ampli
 
 L["Connected"] = "Connected Alerts"
 L["Connected_Desc"] = "Plays a simple 'Connected' alert when certain very powerful cast-time abilities successfully complete their cast.|n|nGreater Pyroblast (|cff69CCF0Mage|r)|nChaos Bolt (|cff9482C9Warlock|r)"
+
+L["CovenantAbilities"] = "Covenant Abilities"
+
+L["FrostDK"] = "Frost"
+L["BloodDK"] = "Blood"
+L["UnholyDK"] = "Unholy"
+
+L["HavocDH"] = "Havoc"
+L["VengeanceDH"] = "Vengeance"
+
+L["FeralDR"] = "Feral"
+L["BalanceDR"] = "Balance"
+L["RestorationDR"] = "Restoration"
+L["GuardianDR"] = "Guardian"
+
+L["MarksmanshipHN"] = "Marksmanship"
+L["SurvivalHN"] = "Survival"
+L["BeastMasteryHN"] = "Beast Mastery"
+
+L["FrostMG"] = "Frost"
+L["FireMG"] = "Fire"
+L["ArcaneMG"] = "Arcane"
+
+L["MistweaverMN"] = "Mistweaver"
+L["WindwalkerMN"] = "Windwalker"
+L["BrewmasterMN"] = "Brewmaster"
+
+L["HolyPD"] = "Holy"
+L["RetributionPD"] = "Retribution"
+L["ProtectionPD"] = "Protection"
+
+L["HolyPR"] = "Holy"
+L["DisciplinePR"] = "Discipline"
+L["ShadowPR"] = "Shadow"
+
+L["OutlawRG"] = "Outlaw"
+L["AssassinationRG"] = "Assassination"
+L["SubtletyRG"] = "Subtlety"
+
+L["RestorationSH"] = "Restoration"
+L["EnhancementSH"] = "Enhancement"
+L["ElementalSH"] = "Elemental"
+
+L["DestructionWL"] = "Destruction"
+L["DemonologyWL"] = "Demonology"
+L["AfflictionWL"] = "Affliction"
+
+L["ArmsWR"] = "Arms"
+L["FuryWR"] = "Fury"
+L["ProtectionWR"] = "Protection"

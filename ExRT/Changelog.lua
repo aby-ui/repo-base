@@ -1,6 +1,35 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4360
+* Added import/export profiles
+* Visual Note: popup window now saves its state (size and position)
+* Raid Groups: added option for quick-list with guild roster
+* Raid cooldowns: Added import/export profiles just for cooldowns module
+* Raid cooldowns: Fixed cooldowns/durations for some spells during prepatch
+* Raid cooldowns: Fixed vision of perfection cdr
+* Raid cooldowns: Readded option to set column for general class abilities
+* Raid cooldowns: [options] Spells now sorted by spec for class categories
+* Raid cooldowns: Added glow options for icons with active cooldowns
+* Invite tools: fixed massinvite feature
+* Updated Traditional Chinese translation
+* Updated Chinese translation
+* Minor fixes
+* Bugfixes
+
+v.4360-Classic
+* Added import/export profiles
+* Visual Note: popup window now saves its state (size and position)
+* Raid Groups: added option for quick-list with guild roster
+* Raid cooldowns: Added import/export profiles just for cooldowns module
+* Raid cooldowns: Added glow options for icons with active cooldowns
+* Invite tools: fixed massinvite feature
+* Fixed error on autoaccept invite
+* Updated Traditional Chinese translation
+* Updated Chinese translation
+* Minor fixes
+* Bugfixes
+
 v.4330
 * Shadowlands update
 * Options: now can be closed on esc, also added option to disable this

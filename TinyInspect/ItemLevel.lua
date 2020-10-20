@@ -15,6 +15,12 @@ local RELICSLOT = RELICSLOT or "Relic"
 local ARTIFACT_POWER = ARTIFACT_POWER or "Artifact"
 if (GetLocale():sub(1,2) == "zh") then ARTIFACT_POWER = "能量" end
 
+--fixed for 8.x
+local GetLootInfoByIndex = EJ_GetLootInfoByIndex
+if (C_EncounterJournal and C_EncounterJournal.GetLootInfoByIndex) then
+    GetLootInfoByIndex = C_EncounterJournal.GetLootInfoByIndex
+end
+
 --框架 #category Bag|Bank|Merchant|Trade|GuildBank|Auction|AltEquipment|PaperDoll|Loot
 local function GetItemLevelFrame(self, category)
     if (not self.ItemLevelFrame) then
@@ -134,6 +140,10 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
             else
                 count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
             end
+            --背包不显示装等
+            if (equipSlot == "INVTYPE_BAG") then
+                level = ""
+            end
             --除了装备和圣物外,其它不显示装等
             if ((equipSlot and string.find(equipSlot, "INVTYPE_"))
                 or (subclass and string.find(subclass, RELICSLOT))) then else
@@ -188,8 +198,8 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            --link = select(7, C_EncounterJournal.GetLootInfoByIndex(self.index))
-            --SetItemLevel(self, link or self.link)
+            link = select(7, GetLootInfoByIndex(self.index))
+            SetItemLevel(self, link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())
@@ -269,43 +279,6 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     end
 end)
 
--- Auction
-LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
-    if (addonName == "Blizzard_AuctionUI") then
-        hooksecurefunc("AuctionFrameBrowse_Update", function()
-            local offset = FauxScrollFrame_GetOffset(BrowseScrollFrame)
-            local itemButton
-            for i = 1, NUM_BROWSE_TO_DISPLAY do
-                itemButton = _G["BrowseButton"..i.."Item"]
-                if (itemButton) then
-                    SetItemLevel(itemButton, GetAuctionItemLink("list", offset+i), "Auction")
-                end
-            end
-        end)
-        hooksecurefunc("AuctionFrameBid_Update", function()
-            local offset = FauxScrollFrame_GetOffset(BidScrollFrame)
-            local itemButton
-            for i = 1, NUM_BIDS_TO_DISPLAY do
-                itemButton = _G["BidButton"..i.."Item"]
-                if (itemButton) then
-                    SetItemLevel(itemButton, GetAuctionItemLink("bidder", offset+i), "Auction")
-                end
-            end
-        end)
-        hooksecurefunc("AuctionFrameAuctions_Update", function()
-            local offset = FauxScrollFrame_GetOffset(AuctionsScrollFrame)
-            local tokenCount = C_WowTokenPublic.GetNumListedAuctionableTokens()
-            local itemButton
-            for i = 1, NUM_AUCTIONS_TO_DISPLAY do
-                itemButton = _G["AuctionsButton"..i.."Item"]
-                if (itemButton) then
-                    SetItemLevel(itemButton, GetAuctionItemLink("owner", offset-tokenCount+i), "Auction")
-                end
-            end
-        end)
-    end
-end)
-
 -- ALT
 if (EquipmentFlyout_DisplayButton) then
     hooksecurefunc("EquipmentFlyout_DisplayButton", function(button, paperDollItemSlot)
@@ -352,7 +325,11 @@ LibEvent:attachEvent("PLAYER_LOGIN", function()
         end)
     end
     -- For LiteBag
-    if (LiteBagItemButton_UpdateItem) then
+    if (LiteBag_RegisterHook) then
+        LiteBag_RegisterHook("LiteBagItemButton_Update", function(self)
+            SetItemLevel(self, GetContainerItemLink(self:GetParent():GetID(), self:GetID()), "Bag", self:GetParent():GetID(), self:GetID())
+        end)
+    elseif (LiteBagItemButton_UpdateItem) then
         hooksecurefunc("LiteBagItemButton_UpdateItem", function(self)
             SetItemLevel(self, GetContainerItemLink(self:GetParent():GetID(), self:GetID()), "Bag", self:GetParent():GetID(), self:GetID())
         end)

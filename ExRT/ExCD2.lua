@@ -2,10 +2,11 @@ local GlobalAddonName, ExRT = ...
 
 local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, CombatLogGetCurrentEventInfo = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, CombatLogGetCurrentEventInfo
 local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort
-local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitIsWarModeActive = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitIsWarModeActive
+local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason
 
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
-local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, table_wipe2, dtime = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.table_wipe, ExRT.F.dtime
+local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, table_wipe2, dtime, utf8sub = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.table_wipe, ExRT.F.dtime, ExRT.F.utf8sub
+local C_PvP_IsWarModeDesired = C_PvP.IsWarModeDesired
 
 local GetSpellLevelLearned = GetSpellLevelLearned
 if ExRT.isClassic then
@@ -16,15 +17,17 @@ end
 ToDo:
 mage fae covenant
 ww monk mastery couduit
-add cdr support for fae paladin/priest
 pvp support
 fr charges during heart of the wild (druid)
+legendaries
 ]]
 
 local VExRT, VExRT_CDE = nil
 
 local module = ExRT:New("ExCD2",ExRT.L.cd2)
 local ELib,L = ExRT.lib,ExRT.L
+
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
 module._C = {}
 module.db.spellDB = {}
@@ -462,8 +465,8 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[47536] = {337790,2},
 	[109964] = {337790,2},
 	[47788] = {337811,2},
-	[324724] = {337979,5},
-	[323673] = {338315,3},
+	[324724] = {337979,2},
+	[323673] = {338315,2},
 	[198067] = {338303,{"*1.15","*1.16","*1.17","*1.18","*1.19","*1.20","*1.21","*1.23","*1.24","*1.25","*1.26","*1.27","*1.28","*1.29","*1.30"}},
 	[192249] = {338303,{"*1.15","*1.16","*1.17","*1.18","*1.19","*1.20","*1.21","*1.23","*1.24","*1.25","*1.26","*1.27","*1.28","*1.29","*1.30"}},
 	[1719] = {337162,{"*1.20","*1.23","*1.26","*1.29","*1.31","*1.34","*1.37","*1.40","*1.43","*1.46","*1.49","*1.51","*1.54","*1.57","*1.60"}},
@@ -641,6 +644,11 @@ module.db.spell_aura_list = {		--Спелы, время действия кот�
 	[110909] = 108978,
 	[342246] = 108978,
 	[6940] = 6940,
+	[324631] = 324631,
+	[64843] = 64843,
+	[64901] = 64901,
+	[198839] = 198838,
+	[323546] = 323546,
 }
 module.db.spell_speed_list = {		--Спелы, которым менять время действия на основании спелхасты
 	[740]=true,
@@ -730,6 +738,7 @@ module.db.spell_resetOtherSpells = {	--Заклинания, которые от
 	[195676]={195676},
 	[235219]={11426,122,120,45438},
 	[200183]={88625,34861,2050},
+	[191427]={198013,188499},
 }
 module.db.spell_sharingCD = {		--Заклинания, которые запускают кд на другие заклинания 	[spellID] = {[otherSpellID] = CD}
 	[90633] = {[90632]=120,[90631]=120},
@@ -772,6 +781,9 @@ do
 		{297108,298273,298277},	--Blood of the Enemy
 		{295337,299345,299347},	--Purification Protocol
 		{298452,299376,299378},	--The Unbound Force
+
+		{328282,328622,328620,328281},	--Blessing of Fae
+		{330325,5308},	--Execute
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -885,7 +897,7 @@ for _,spellID in pairs(module.db.spell_startCDbyAuraApplied) do module.db.spell_
 
 module.db.spell_reduceCdByAuraFade = {	--Заклинания, кд которых уменьшается при спадении ауры до окончания времени действия. !Важно обязательное время действия для таких заклинаний
 	[47788]={{47788,200209},-110},
-	[328305]={328305,60},
+	[328305]={328305,-60},
 }
 module.db.spell_battleRes = {		--Заклинания-воскрешения [WOD]
 	[20484]=true,
@@ -943,60 +955,11 @@ module.db.spell_isRacial = {		--Расовые заклинания
 	[291944]="ZandalariTroll",
 }
 
+module.db.aura_grant_talent = {		--Бафф, который дает талант	[buff_spell_id] = talent_spell_id
+	[108293] = 273048,
+}
+
 module.db.def_col = {			--Стандартные положения в колонках
-	["161642;1"]=2,
-	["97462;2"]=1,
-	["97462;3"]=1,
-	["46968;1"]=1,
-	["1022;1"]=2,
-	["204018;3"]=2,
-	["204013;3"]=2,
-	["1044;1"]=2,
-	["31821;2"]=1,
-	["633;1"]=2,
-	["31842;2"]=1,
-	["6940;2"]=2,
-	["6940;3"]=2,
-	["204150;3"]=1,
-	["64843;3"]=1,
-	["73325;2"]=2,
-	["73325;3"]=2,
-	["32375;1"]=1,
-	["47788;3"]=2,
-	["15286;4"]=1,
-	["33206;2"]=2,
-	["64901;3"]=1,
-	["62618;2"]=1,
-	["61999;1"]=2,
-	["108199;2"]=1,
-	["49576;2"]=3,
-	["49576;3"]=3,
-	["49576;4"]=3,
-	["2825;1"]=3,
-	["114052;4"]=1,
-	["20608;1"]=2,
-	["192077;1"]=1,
-	["98008;4"]=1,
-	["207399;4"]=1,
-	["108280;4"]=1,
-	["80353;1"]=3,
-	["20707;1"]=2,
-	["115310;4"]=1,
-	["116849;4"]=2,
-	["119381;1"]=1,
-	["20484;1"]=2,
-	["102342;5"]=2,
-	["29166;2"]=2,
-	["29166;5"]=2,
-	["740;5"]=1,
-	["106898;3"]=1,
-	["106898;4"]=1,
-	["179057;1"]=1,
-	["196718;1"]=1,
-	["265202;1"]=1,
-	["31884;2"]=1,
-	["31884;3"]=3,
-	["31884;4"]=3,
 }
 
 module.db.petsAbilities = {	--> PetTypes = HUNTERS[ Tenacity [1], Cunning = [2], Ferocity[3] ]
@@ -1236,11 +1199,23 @@ if ExRT.isClassic then
 	module.db.spell_reduceCdCast = {}
 end
 module.db.vars = {
-	ineffable = {},
-	ineffable_proc = {},
-	ineffable_active = {},
+	blessingcdr = {},
 	berserk = {},
-	berserk_proc = {},
+	faerie = {},
+	faerieSpells = {
+		[200174]=true,[123040]=true,[64843]=true,
+		[47568]=true,[42650]=true,[55233]=true,
+		[102558]=true,[106951]=true,[740]=true,[194223]=true,
+		[193530]=true,[288613]=true,[266779]=true,
+		[190319]=true,[12472]=true,[12042]=true,
+		[132578]=true,[115310]=true,[137639]=true,[152173]=true,
+		[31884]=true,
+		[121471]=true,[13750]=true,[79140]=true,
+		[108280]=true,[198067]=true,[192249]=true,[51533]=true,
+		[205180]=true,[265187]=true,[1122]=true,
+		[107574]=true,[1719]=true,[152277]=true,
+		[191427]=true,
+	},
 	isWarlock = {},
 	isRogue = {},
 	isPaladin = {},
@@ -1302,6 +1277,8 @@ module.db.colsDefaults = {
 	textTemplateLeft = "%name%",
 	textTemplateRight = "%time%",
 	textTemplateCenter = "",
+	
+	textIconNameChars = 50,
 
 	blacklistText = "",
 	whitelistText = "",
@@ -1310,6 +1287,8 @@ module.db.colsDefaults = {
 	ATFLines = 2,
 	ATFOffsetX = 0,
 	ATFOffsetY = 0,
+	ATFGrowth = 1,
+	iconGlowType = 4,
 }
 
 module.db.colsInit = {
@@ -1351,17 +1330,22 @@ local status_UnitsToCheck,status_UnitIsDead,status_UnitIsDisconnected,status_Uni
 function module:CreateSpellDB()
 	local spellDB, AllSpells, data = module.db.spellDB, module.db.AllSpells
 	local isTestMode = module.db.testMode
+	local spellInMainDB = {}
 	wipe(spellDB)
 	for i=1,#AllSpells do
 		data = AllSpells[i]
 		if VExRT.ExCD2.CDE[ data[1] ] or isTestMode then
 			spellDB[#spellDB+1] = data
+			spellInMainDB[ data[1] ] = true
 		end
 	end
 	for i=1,#VExRT.ExCD2.userDB do
 		data = VExRT.ExCD2.userDB[i]
 		if 	--Prevent any errors for userbased cds
 			VExRT.ExCD2.CDE[ data[1] ] and 
+			not spellInMainDB[ data[1] ] and
+			type(data[2]) == "string" and
+			type(data[3]) == "number" and
 			(data[4] or data[5] or data[6] or data[7] or data[8]) and
 			((data[4] and data[4][1] and data[4][2] ~= 0 and data[4][3]) or not data[4]) and
 			((data[5] and data[5][1] and data[5][2] ~= 0 and data[5][3]) or not data[5]) and
@@ -1494,7 +1478,7 @@ local function BarUpdateText(self)
 	self.textCenter:SetText(string_trim(textCenter))
 
 	if barParent.optionIconName then
-		self.textIcon:SetText(barData.name)
+		self.textIcon:SetText(utf8sub(barData.name,1,barParent.textIconNameChars))
 	end
 end
 
@@ -1675,7 +1659,7 @@ local function UpdateBarStatus(self,isTitle)
 			if data.charge <= currTime and (data.charge+data.cd) > currTime then
 				isCharge = true
 
-				isCooldown = false
+				isCooldown = isCooldown and false
 
 				self.curr_charges = 1
 			elseif data.charge > currTime and not isActive then
@@ -1932,18 +1916,31 @@ local function UpdateBarStatus(self,isTitle)
 		if isActive then
 			self.cooldown:Show()
 			self.cooldown:SetReverse(true)
+			self.cooldown:SetDrawSwipe(true)
 			self.cooldown:SetCooldown(self.curr_start,self.curr_end-self.curr_start)
+			self.glowStart(self.icon)
+		elseif isCharge then
+			self.cooldown:Show()
+			self.cooldown:SetReverse(false)
+			self.cooldown:SetDrawSwipe(false)
+			self.cooldown:SetCooldown(self.curr_start,self.curr_end-self.curr_start)
+			self.glowStop(self.icon)
 		elseif isCooldown then
 			self.cooldown:Show()
 			self.cooldown:SetReverse(false)
+			self.cooldown:SetDrawSwipe(true)
 			if isDisabled then
 				self.cooldown:SetCooldown(currTime,0)
 			else
 				self.cooldown:SetCooldown(self.curr_start,self.curr_dur)
 			end
+			self.glowStop(self.icon)
 		else
 			self.cooldown:Hide()
+			self.glowStop(self.icon)
 		end
+	else
+		self.glowStop(self.icon)
 	end
 
 	local alpha = 1
@@ -2131,14 +2128,17 @@ local function UpdateBarStyle(self)
 		self.textLeft:SetPoint("LEFT",self.statusbar,1,0)
 		self.textRight:SetPoint("RIGHT",self.statusbar,-1+fontOutlineFix,0)
 		self.textRight:SetPoint("LEFT",self.textLeft,"RIGHT",0,0)
+
+		self.textCenter:SetPoint("LEFT",self.textLeft,"RIGHT",0,0)
+		self.textCenter:SetPoint("RIGHT",self.statusbar,0,0)
 	else
 		self.textRight:SetPoint("RIGHT",self.statusbar,-1+fontOutlineFix,0)
 		self.textLeft:SetPoint("LEFT",self.statusbar,1,0)
 		self.textLeft:SetPoint("RIGHT",self.textRight,"LEFT",0,0)
-	end
 
-	self.textCenter:SetPoint("LEFT",self.statusbar,0,0)
-	self.textCenter:SetPoint("RIGHT",self.statusbar,0,0)
+		self.textCenter:SetPoint("LEFT",self.statusbar,0,0)
+		self.textCenter:SetPoint("RIGHT",self.textRight,"LEFT",0,0)
+	end
 
 	self.barWidth = width
 
@@ -2152,12 +2152,6 @@ local function UpdateBarStyle(self)
 
 	local isValidFont = nil
 
-	--[[
-	isValidFont = self.textLeft:SetFont(parent.fontLeftName,parent.fontLeftSize,parent.fontLeftOutline and "OUTLINE")	if not isValidFont then self.textLeft:SetFont(module.db.colsDefaults.fontName,parent.fontLeftSize,parent.fontLeftOutline and "OUTLINE") end
-	isValidFont = self.textRight:SetFont(parent.fontRightName,parent.fontRightSize,parent.fontRightOutline and "OUTLINE")	if not isValidFont then self.textRight:SetFont(module.db.colsDefaults.fontName,parent.fontRightSize,parent.fontRightOutline and "OUTLINE") end
-	isValidFont = self.textCenter:SetFont(parent.fontCenterName,parent.fontCenterSize,parent.fontCenterOutline and "OUTLINE")if not isValidFont then self.textCenter:SetFont(module.db.colsDefaults.fontName,parent.fontCenterSize,parent.fontCenterOutline and "OUTLINE") end
-	isValidFont = self.textIcon:SetFont(parent.fontIconName,parent.fontIconSize,parent.fontIconOutline and "OUTLINE")	if not isValidFont then self.textIcon:SetFont(module.db.colsDefaults.fontName,parent.fontIconSize,parent.fontIconOutline and "OUTLINE") end
-	]]
 	self.textLeft:SetFont(parent.fontLeftName,parent.fontLeftSize,parent.fontLeftOutline and "OUTLINE")
 	self.textRight:SetFont(parent.fontRightName,parent.fontRightSize,parent.fontRightOutline and "OUTLINE")
 	self.textCenter:SetFont(parent.fontCenterName,parent.fontCenterSize,parent.fontCenterOutline and "OUTLINE")
@@ -2181,6 +2175,12 @@ local function UpdateBarStyle(self)
 	self.cooldown:SetDrawEdge(parent.optionCooldownShowSwipe and true or false)
 
 	self.textIcon:SetText("")
+
+	if parent.glowStop ~= self.glowStop then
+		self.glowStop(self.icon)
+	end
+	self.glowStart = parent.glowStart or ExRT.NULLfunc
+	self.glowStop = parent.glowStop or ExRT.NULLfunc
 
 	if parent.optionAnimation then
 		if parent.optionStyleAnimation == 1 then
@@ -2320,45 +2320,15 @@ local function CreateBar(parent)
 	background:SetAllPoints()
 	self.background = background
 
-	self.textLeft = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(0,0):Point(1,0):Color()
+	self.textLeft = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Point(1,0):Color()
 	self.textRight = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(40,0):Point("TOPRIGHT",1,0):Right():Color()
-	self.textCenter = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Color()
-	self.textIcon = ELib:Text(icon,nil,nil,"GameFontNormal"):Size(0,0):Point(0,0):Center():Bottom():Color()
+	self.textCenter = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Point(0,0):Center():Color()
+	self.textIcon = ELib:Text(icon,nil,nil,"GameFontNormal"):Point(0,0):Center():Bottom():Color()
 
 	self.textIcon:SetDrawLayer("ARTWORK",3)
-	--[[
-	self.textLeft = self.statusbar:CreateFontString(nil,"ARTWORK")
-	self.textLeft:SetJustifyH("LEFT")
-	self.textLeft:SetJustifyV("MIDDLE")
-	self.textLeft:SetSize(0,0)
-	self.textLeft:SetPoint("TOPLEFT",1,0)
-	self.textLeft:SetFont(ExRT.F.defFont,12)
-	self.textLeft:SetTextColor(1,1,1,1)
 
-	self.textRight = self.statusbar:CreateFontString(nil,"ARTWORK")
-	self.textRight:SetJustifyH("RIGHT")
-	self.textRight:SetJustifyV("MIDDLE")
-	self.textRight:SetSize(40,0)
-	self.textRight:SetPoint("TOPRIGHT",1,0)
-	self.textRight:SetFont(ExRT.F.defFont,12)
-	self.textRight:SetTextColor(1,1,1,1)
-
-	self.textCenter = self.statusbar:CreateFontString(nil,"ARTWORK")
-	self.textCenter:SetJustifyH("CENTER")
-	self.textCenter:SetJustifyV("MIDDLE")
-	self.textCenter:SetSize(0,0)
-	self.textCenter:SetPoint("TOPLEFT",1,0)
-	self.textCenter:SetFont(ExRT.F.defFont,12)
-	self.textCenter:SetTextColor(1,1,1,1)
-
-	self.textIcon = icon:CreateFontString(nil,"ARTWORK")
-	self.textIcon:SetJustifyH("CENTER")
-	self.textIcon:SetJustifyV("BOTTOM")
-	self.textIcon:SetSize(0,0)
-	self.textIcon:SetPoint("TOPLEFT",1,0)
-	self.textIcon:SetFont(ExRT.F.defFont,12)
-	self.textIcon:SetTextColor(1,1,1,1)
-	]]
+	self.glowStart = ExRT.NULLfunc
+	self.glowStop = ExRT.NULLfunc
 
 	--6.1 multilinetext fix
 	self.textLeft:SetMaxLines(1)
@@ -2400,22 +2370,11 @@ local function FixFontsOnLoad(self)
 	return true
 end
 
-for i=1,module.db.maxColumns do
-	local columnFrame = CreateFrame("Frame",nil,module.frame)
-	module.frame.colFrame[i] = columnFrame
+function module:CreateColumn(parent)
+	local columnFrame = CreateFrame("Frame",nil,parent)
 	columnFrame:EnableMouse(false)
 	columnFrame:SetMovable(false)
-	columnFrame:RegisterForDrag("LeftButton")
-	columnFrame:SetScript("OnDragStart", function(self) 
-		if self:IsMovable() then 
-			self:StartMoving() 
-		end 
-	end)
-	columnFrame:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-		VExRT.ExCD2.colSet[i].posX = self:GetLeft()
-		VExRT.ExCD2.colSet[i].posY = self:GetTop()
-	end)
+
 	columnFrame.texture = columnFrame:CreateTexture(nil, "BACKGROUND")
 	columnFrame.texture:SetColorTexture(0,0,0,0)
 	columnFrame.texture:SetAllPoints()
@@ -2427,6 +2386,27 @@ for i=1,module.db.maxColumns do
 	columnFrame.lines = {}
 
 	columnFrame.BlackList = {}
+
+	return columnFrame
+end
+
+for i=1,module.db.maxColumns do
+	local columnFrame = module:CreateColumn(module.frame)
+	module.frame.colFrame[i] = columnFrame
+	columnFrame:RegisterForDrag("LeftButton")
+	columnFrame:SetScript("OnDragStart", function(self) 
+		if self:IsMovable() then 
+			self:StartMoving() 
+		end 
+	end)
+	columnFrame:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		if self.ATFenabled then
+			return
+		end
+		VExRT.ExCD2.colSet[i].posX = self:GetLeft()
+		VExRT.ExCD2.colSet[i].posY = self:GetTop()
+	end)
 
 	module:RegisterHideOnPetBattle(columnFrame)
 
@@ -2521,15 +2501,17 @@ do
 		if ((currTime - lastSaving) < 30 and not overwrite) or module.db.testMode then 
 			return 
 		end
-		wipe(VExRT.ExCD2.Save)
+		local VExRT_ExCD2_Save = VExRT.ExCD2.Save
+		wipe(VExRT_ExCD2_Save)
 		for i=1,#_C do
 			local unitSpellData = _C[i]
 			if unitSpellData.lastUse + unitSpellData.cd - currTime > 0 then
-				VExRT.ExCD2.Save[ (unitSpellData.fullName or "?")..(unitSpellData.db[1] or 0) ] = {unitSpellData.lastUse,unitSpellData.cd}
+				VExRT_ExCD2_Save[ (unitSpellData.fullName or "?")..(unitSpellData.db[1] or 0) ] = {unitSpellData.lastUse,unitSpellData.cd}
 			else
-				VExRT.ExCD2.Save[ (unitSpellData.fullName or "?")..(unitSpellData.db[1] or 0) ] = nil
+				VExRT_ExCD2_Save[ (unitSpellData.fullName or "?")..(unitSpellData.db[1] or 0) ] = nil
 			end
 		end
+		lastSaving = currTime
 	end
 end
 
@@ -2586,9 +2568,14 @@ function module.IsPvpTalentsOn(unit)
 	local _, zoneType = GetInstanceInfo()
 	if zoneType == 'arena' or zoneType == 'pvp' then
 		return true
-	elseif (zoneType == "none" or not zoneType) and UnitIsWarModeActive(unit) then
+	elseif (zoneType == "none" or not zoneType) and (C_PvP_IsWarModeDesired() and UnitPhaseReason(unit) ~= Enum.PhaseReason.WarMode) then
 		return true
 	else
+		return false
+	end
+end
+if ExRT.isClassic then
+	function module.IsPvpTalentsOn(unit)
 		return false
 	end
 end
@@ -2628,7 +2615,7 @@ do
 	local prevLineForGUID,prevLineForGUID_wiped = {}
 	local reviewID = 0
 
-	local LGF = LibStub("LibGetFrame-1.0")
+	local LGFReady, LGF = pcall(LibStub,"LibGetFrame-1.0")
 	local LGFNullOpt = {}
 
 	function SortAllData()
@@ -2720,23 +2707,30 @@ do
 			) then 
 				data.vis = true
 
-				local col = 1
-				if db[unitSpecID] then
-					col = VExRT.ExCD2.CDECol[db[unitSpecID][1]..";"..(unitSpecID-3)] or def_col[db[unitSpecID][1]..";"..(unitSpecID-3)] or db[3] or 1
-				elseif db[4] then
-					col = VExRT.ExCD2.CDECol[db[4][1]..";1"] or def_col[db[4][1]..";1"] or db[3] or 1
-				end
+				local col = CDECol[spellID..";"..(unitSpecID-3)] or CDECol[spellID..";1"] or def_col[spellID..";"..(unitSpecID-3)] or def_col[spellID..";1"] or db[3] or 1
 				data.column = col
+
+				local forceUpdate
 
 				local isCharge = spell_charge_fix[ spellID ]
 				if isCharge then
-					if session_gGUIDs[data.fullName][isCharge] then
+					if session_gGUIDs[name][isCharge] then
+						if not data.isCharge then
+							forceUpdate = true
+							data.charge = data.lastUse
+						end
 						data.isCharge = true
 						isCharge = true
 					else
+						if data.isCharge then
+							forceUpdate = true
+						end
 						data.isCharge = nil
 						isCharge = nil
 					end
+				elseif data.isCharge then
+					data.isCharge = nil
+					forceUpdate = true
 				end
 
 				local columnFrame = columnsTable[col]
@@ -2746,7 +2740,7 @@ do
 				if columnFrame.optionShownOnCD and not ((isCharge and data.charge and data.charge > currTime) or isOnCD) then
 					data.vis = nil
 				end
-				if columnFrame.methodsHideOwnSpells and data.fullName == playerName then
+				if columnFrame.methodsHideOwnSpells and name == playerName then
 					data.vis = nil
 				end
 
@@ -2812,7 +2806,7 @@ do
 				end
 
 				local bar = data.bar
-				if bar and bar.data == data and (data.disabled ~= prevDisabledStatus or data.outofrange ~= prevOutOfRange) then
+				if bar and bar.data == data and (data.disabled ~= prevDisabledStatus or data.outofrange ~= prevOutOfRange or forceUpdate) then
 					data.bar:UpdateStatus()
 				end
 
@@ -2995,9 +2989,10 @@ do
 		local ATFProcess
 		if timerATFRepos > 1 then
 			timerATFRepos = 0
-			ATFProcess = true
+			if LGFReady then
+				ATFProcess = true
+			end
 		end
-		prevLineForGUID_wiped = nil
 
 		for i=1,maxColumns do
 			local col = columnsTable[i]
@@ -3017,6 +3012,7 @@ do
 				col.NumberLastLinesActive = start
 
 				if ATFProcess and col.ATFenabled then
+					prevLineForGUID_wiped = nil
 					local bar, guid
 					for j=1,start do
 						bar = col.lines[j]
@@ -3144,6 +3140,78 @@ function RaidResurrectSpecialStatus()
 	end
 end
 
+local lineFuncs = {
+	ChangeCD = function(line,time,delayUpdate)
+		line.lastUse = line.lastUse + time
+		if line.charge then
+			line.charge = line.charge + time
+		end
+		if time < 0 then
+			line.dur = line.dur - time
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+	ReduceCD = function(line,time,delayUpdate)
+		line.cd = line.cd - time
+		if line.cd < 0 then 
+			line.cd = 0 
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+	SetCD = function(line,time,delayUpdate)
+		line.cd = time
+		if line.cd < 0 then 
+			line.cd = 0 
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+	ChangeDur = function(line,time,delayUpdate)
+		line.dur = line.dur + time
+		if line.dur < 0 then 
+			line.dur = 0 
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+	SetDur = function(line,time,delayUpdate)
+		line.dur = time
+		if line.dur < 0 then 
+			line.dur = 0 
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+}
+local lineMT = {__index = lineFuncs}
+
 local function UpdateRoster()
 	wipe(status_UnitsToCheck)
 	wipe(status_UnitIsDead)
@@ -3216,14 +3284,10 @@ local function UpdateRoster()
 						local alreadyInCds = nil
 						priorCounter = priorCounter + 1
 
-						local spellColumn = 1
 						local _specID = globalGUIDs[name] or 0
 						local uSpecID = _db.specInDBase[_specID] or 4
-						if spellData[uSpecID] then
-							spellColumn = VExRT.ExCD2.CDECol[spellData[uSpecID][1]..";"..(uSpecID-3)] or _db.def_col[spellData[uSpecID][1]..";"..(uSpecID-3)] or spellData[3] or 1
-						elseif spellData[4] then
-							spellColumn = VExRT.ExCD2.CDECol[spellData[4][1]..";1"] or _db.def_col[spellData[4][1]..";1"] or spellData[3] or 1
-						end
+						local spellColumn = VExRT.ExCD2.CDECol[SpellID..";"..(uSpecID-3)] or VExRT.ExCD2.CDECol[SpellID..";1"] or _db.def_col[SpellID..";"..(uSpecID-3)] or _db.def_col[SpellID..";1"] or spellData[3] or 1
+
 						local getSpellColumn = _mainFrame.colFrame[spellColumn]
 						local prior = nil
 						--[[
@@ -3410,6 +3474,7 @@ local function UpdateRoster()
 				tremove(_C,j)
 				j = j - 1
 			else
+				setmetatable(line, lineMT)
 				for l=4,8 do 
 					if line.db[l] then
 						cdsNav_set(line.fullName,line.db[l][1],line)
@@ -3447,13 +3512,7 @@ module.UpdateRoster = UpdateRoster
 do
 	local function DispellSchedule(data)
 		if not module.db.spell_dispellsFix[ data.fullName ] then
-			data.cd = 0
-			local bar = data.bar
-			if bar and bar.data == data then
-				data.bar:UpdateStatus()
-			end
-			UpdateAllData()
-			SortAllData()
+			data:SetCD(0)
 		end
 		module.db.spell_dispellsFix[ data.fullName ] = nil
 	end
@@ -3607,6 +3666,8 @@ function module:Enable()
 
 	module:CreateSpellDB()
 
+	module:ApplyHotfixes()
+
 	UpdateRoster()
 end
 
@@ -3630,42 +3691,6 @@ function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
 	VExRT.ExCD2 = VExRT.ExCD2 or {NoRaid = true}
 
-	if VExRT.Addon.Version < 2126 then
-		if VExRT.ExCD2.colSet then
-			for i=1,module.db.maxColumns+1 do
-				if VExRT.ExCD2.colSet[i] and not VExRT.ExCD2.colSet[i].fontOutline then
-					VExRT.ExCD2.colSet[i].fontShadow = true
-				end
-			end
-		end
-	end
-	if VExRT.Addon.Version < 2302 then
-		if VExRT.ExCD2.colSet then
-			for i=1,module.db.maxColumns+1 do
-				if VExRT.ExCD2.colSet[i] then
-					VExRT.ExCD2.colSet[i].textGeneral = true
-				end
-			end
-		end
-	end
-	if VExRT.Addon.Version < 3247 then
-		if VExRT.ExCD2.colSet then
-			for i=1,module.db.maxColumns+1 do
-				if VExRT.ExCD2.colSet[i] then
-					VExRT.ExCD2.colSet[i].blacklistGeneral = true
-				end
-			end
-		end
-	end
-	if VExRT.Addon.Version < 3755 then
-		if VExRT.ExCD2.colSet then
-			for i=1,module.db.maxColumns+1 do
-				if VExRT.ExCD2.colSet[i] then
-					VExRT.ExCD2.colSet[i].visibilityGeneral = true
-				end
-			end
-		end
-	end
 	if VExRT.Addon.Version < 4235 then
 		if VExRT.ExCD2.Priority then
 			for k,v in pairs(VExRT.ExCD2.Priority) do
@@ -3863,6 +3888,206 @@ function module.main:ENCOUNTER_END(encounterID, encounterName, difficultyID, gro
 	end
 end
 
+local hotfixTableNameToType = {
+	AllSpells = 1,
+	spell_charge_fix = 2,
+	spell_talentReplaceOther = 2,
+	spell_aura_list = 2,
+	spell_durationByTalent_fix = 3,
+	spell_cdByTalent_fix = 3,
+	spell_speed_list = 2,
+	spell_afterCombatReset = 2,
+	spell_afterCombatNotReset = 2,
+	spell_reduceCdByHaste = 2,
+	spell_resetOtherSpells = 3,
+	spell_sharingCD = 4,
+	spell_runningSameSpell = 3,
+	spell_reduceCdCast = 3,
+	spell_increaseDurationCast = 3,
+	spell_dispellsList = 2,
+	spell_startCDbyAuraFade = 2,
+	spell_startCDbyAuraApplied = 2,
+	spell_reduceCdByAuraFade = 3,
+	spell_battleRes = 2,
+	spell_isRacial = 2,
+	differentIcons = 2,
+	itemsToSpells = 2,
+	spell_autoTalent = 2,
+	spell_talentProvideAnotherTalents = 3,
+	spell_isTalent = 2,
+	spell_isPvpTalent = 2,
+	findspecspells = 2,
+	aura_grant_talent = 2,
+}
+
+function module:ApplyHotfixes()
+	local text, line = VExRT.ExCD2.Hotfixes or ""
+	if UnitLevel'player' <= 50 then		--prepatch stuff
+		text = [[
+AllSpells:55233:dur:10
+AllSpells:47568:cd:120
+spell_resetOtherSpells:191427:0
+AllSpells:204021:dur:8
+AllSpells:187650:cd:30
+AllSpells:187698:cd:30
+AllSpells:12042:dur:10
+AllSpells:190319:dur:10
+AllSpells:235219:cd:300
+AllSpells:12472:dur:20
+AllSpells:115078:cd:45
+AllSpells:101545:cd:25
+AllSpells:195457:cd:60
+AllSpells:108271:dur:8
+AllSpells:51514:cd:30
+AllSpells:108280:dur:10
+AllSpells:118038:cd:180
+AllSpells:260708:dur:12
+AllSpells:1719:dur:2
+		]] .. "\n" .. text
+	end
+	line, text = strsplit("\n",text,2)
+	while line do
+		line = line:trim()
+		local tableName = strsplit(":",line,2)
+		if not tableName then
+
+		elseif hotfixTableNameToType[tableName] == 1 or tonumber(tableName) then
+			if tonumber(tableName) then line = ":"..line end
+			local _,spellID,hotfixType,newData1,newData2 = strsplit(":",line)
+			if newData1 then
+				spellID = tonumber(spellID)
+				if spellID then
+					local data
+					for i=1,#module.db.AllSpells do
+						data = module.db.AllSpells[i]
+						if data[1] == spellID then
+							if hotfixType == "dur" then
+								newData1 = tonumber(newData1)
+								if newData1 then
+									for j=4,8 do
+										if data[j] then
+											data[j][3] = newData1
+										end
+									end
+								end
+							elseif hotfixType == "cd" then
+								newData1 = tonumber(newData1)
+								if newData1 then
+									for j=4,8 do
+										if data[j] then
+											data[j][2] = newData1
+										end
+									end
+								end
+							elseif hotfixType == "cleu" then
+								newData1 = tonumber(newData1)
+								if newData1 then
+									for j=4,8 do
+										if data[j] then
+											data[j][1] = newData1
+										end
+									end
+								end
+							elseif tonumber(hotfixType) then
+								if hotfixType < 4 then
+									data[hotfixType] = tonumber(newData1) or newData1
+								elseif data[hotfixType] then
+									newData1 = tonumber(newData1)
+									if newData1 and newData2 then
+										data[hotfixType][newData1] = tonumber(newData2) or newData2
+									end
+								end
+							end
+							break
+						end
+					end
+				end
+			end 
+		elseif tableName == "AllSpells2" then
+			local _,spellID,specNum,cleu,cd,dur = strsplit(":",line,4)
+			if dur then
+				specNum = tonumber(specNum)
+				spellID = tonumber(spellID)
+				cleu = tonumber(cleu)
+				cd = tonumber(cd)
+				dur = tonumber(dur)
+				if spellID and specNum and cleu and cd and dur then
+					local data
+					for i=1,#module.db.AllSpells do
+						data = module.db.AllSpells[i]
+						if data[1] == spellID then
+							data[specNum+4] = {cleu,cd,dur}
+							break
+						end
+					end
+				end
+			end
+		elseif hotfixTableNameToType[tableName] == 2 then
+			local _,key,var = strsplit(":",line)
+			key = tonumber(key or "")
+			if var == "true" then
+				var = true
+			elseif var == "false" then
+				var = false
+			else
+				var = tonumber(var or "") or var
+			end
+			if key and var then
+				module.db[tableName][key] = var
+			end
+		elseif hotfixTableNameToType[tableName] == 3 then
+			local _,key,var = strsplit(":",line,3)
+			key = tonumber(key or "")
+			if key and var then
+				local new = {}
+				local v1,v2 = strsplit(",",var,2)
+				while v1 do
+					if v1:find(";") then
+						local new2 = {}
+						local b1,b2 = strsplit(";",v1,2)
+						while b1 do
+							if b1 == "false" then b1 = false end
+							if b1 == "true" then b1 = true end
+							new2[#new2+1] = tonumber(b1) or b1
+							if not b2 then break end
+							b1,b2 = strsplit(";",b2,2)
+						end
+						v1 = new2
+					end
+					if v1 == "false" then v1 = false end
+					if v1 == "true" then v1 = true end
+					new[#new+1] = tonumber(v1) or v1
+					if not v2 then break end
+					v1,v2 = strsplit(",",v2,2)
+				end
+				module.db[tableName][key] = new
+			end
+		elseif hotfixTableNameToType[tableName] == 4 then
+			local _,key,var = strsplit(":",line,3)
+			key = tonumber(key or "")
+			if key and var then
+				local new = {}
+				local v1,v2 = strsplit(",",var,2)
+				while v1 do
+					local b1,b2 = strsplit(":",v1,2)
+					b1 = tonumber(b1) or b1
+					b2 = tonumber(b2) or b2
+					if b1 and b2 then
+						new[b1] = b2
+					end
+					if not v2 then break end
+					v1,v2 = strsplit(",",v2,2)
+				end
+				module.db[tableName][key] = new
+			end
+		end
+		if not text then
+			break
+		end
+		line, text = strsplit("\n",text,2)
+	end
+end
+
 
 
 do
@@ -3881,6 +4106,7 @@ do
 	local spell_increaseDurationCast = _db.spell_increaseDurationCast
 	local spell_runningSameSpell = _db.spell_runningSameSpell
 	local spell_dispellsList = _db.spell_dispellsList
+	local spell_aura_grant_talent = _db.aura_grant_talent
 
 	local findspecspells = _db.findspecspells
 	local spell_covenant = _db.spell_covenant
@@ -3940,6 +4166,21 @@ do
 					CLEUstartCD(line)
 				end
 			end
+
+			local talentFromAura = spell_aura_grant_talent[spellID]
+			if talentFromAura then
+				if type(talentFromAura) == "table" then
+					if not talentFromAura[1] or talentFromAura[1]==0 or session_gGUIDs[sourceName][ talentFromAura[1] ] then
+						for i=2,#talentFromAura do
+							session_gGUIDs[sourceName] = {talentFromAura[i],"aura"}
+						end
+					end
+				else
+					session_gGUIDs[sourceName] = {talentFromAura,"aura"}
+				end
+				UpdateAllData()
+				SortAllData()
+			end
  
 			if spellID == 118905 and sourceGUID and CapacitorMain[sourceGUID] then
 				sourceName = CapacitorMain[sourceGUID]
@@ -3953,138 +4194,65 @@ do
 					end
 					spell265046_var[2] = spell265046_var[2] + 1
 
-					line.cd = line.cd - (spell265046_var[2] <= 4 and 5 or 0)
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ChangeCD( -(spell265046_var[2] <= 4 and 5 or 0) )
 				end
-			elseif spellID == 316801 and destName then	--Ineffable Truth
+			elseif spellID == 328622 and destName and sourceName then	--Blessing of Autumn
+				if _db.vars.blessingcdr[sourceName] then
+					_db.vars.blessingcdr[sourceName]:Cancel()
+				end
 				local auraSpellID,_,power
 				for i=1,60 do
 					auraSpellID,_,_,_,_,_,power = select(10,UnitAura(destName,i))
 					if not auraSpellID then
 						break
-					elseif auraSpellID == 316801 then
-						power = (power or 50)/100
-						if module.db.vars.ineffable[destName] then
-							module.db.vars.ineffable[destName]:Cancel()
-						end
-						module.db.vars.ineffable_proc[destName] = GetTime()
-						module.db.vars.ineffable_active[destName] = power
-						module.db.vars.ineffable[destName] = C_Timer.NewTicker(1,function()
-							local line, updateReq
-							for j=1,#_C do
-								line = _C[j]
-								if line.fullName == destName then
-									line.cd = line.cd - power
-									if line.cd < 0 then 
-										line.cd = 0 
-									end
-									if line.bar and line.bar.data == line then
-										line.bar:UpdateStatus()
-									end
-									updateReq = true
-								end
-							end
-							if updateReq then
-								UpdateAllData()
-								SortAllData()
-							end
-						end, 10)
+					elseif auraSpellID == 328622 then
+						power = (power or 30)/100
 						break
 					end
 				end
-			elseif spellID == 50334 and destName then	--Berserk
-				if module.db.vars.berserk[destName] then
-					module.db.vars.berserk[destName]:Cancel()
-				end
-				module.db.vars.berserk_proc[destName] = GetTime()
-				module.db.vars.berserk[destName] = C_Timer.NewTicker(1,function()
-					local updateReq
-					local line = CDList[destName][22842]
-					if line and line.lastUse then
-						line.lastUse = line.lastUse - (3 + (UnitSpellHaste(destName) or 0)/100*3)
-						if line.charge then
-							line.charge = line.charge - (3 + (UnitSpellHaste(destName) or 0)/100*3)
+				_db.vars.blessingcdr[sourceName] = C_Timer.NewTicker(1,function()
+					local line, updateReq
+					for j=1,#_C do
+						line = _C[j]
+						if line.fullName == destName then
+							line:ReduceCD(power or 0.3,true)
+							updateReq = true
 						end
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
-						updateReq = true
 					end
 					if updateReq then
 						UpdateAllData()
 						SortAllData()
 					end
-				end, 15)
-			end
-		end
-	end
-	function module.main:SPELL_AURA_REFRESH(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
-		if spellID == 316801 and destName then	--Ineffable Truth
-			local auraSpellID,_,power
-			for i=1,60 do
-				auraSpellID,_,_,_,_,_,power = select(10,UnitAura(destName,i))
-				if not auraSpellID then
-					break
-				elseif auraSpellID == 316801 then
-					power = (power or 50)/100
-					if module.db.vars.ineffable[destName] then
-						module.db.vars.ineffable[destName]:Cancel()
-					end
-
-					local now = GetTime()
-					if now - (module.db.vars.ineffable_proc[destName] or 0) < 10 then
-						local timeLeftFromPrevProc = ((now - (module.db.vars.ineffable_proc[destName] or 0)) % 1) * power
-
-						local line, updateReq
-						for j=1,#_C do
-							line = _C[j]
-							if line.fullName == destName then
-								line.cd = line.cd - timeLeftFromPrevProc
-								if line.cd < 0 then 
-									line.cd = 0 
-								end
-								if line.bar and line.bar.data == line then
-									line.bar:UpdateStatus()
-								end
-								updateReq = true
-							end
-						end
-						if updateReq then
-							UpdateAllData()
-							SortAllData()
-						end
-					end
-					module.db.vars.ineffable_proc[destName] = now
-
-					module.db.vars.ineffable[destName] = C_Timer.NewTicker(1,function()
-						local line, updateReq
-						for j=1,#_C do
-							line = _C[j]
-							if line.fullName == destName then
-								line.cd = line.cd - power
-								if line.cd < 0 then 
-									line.cd = 0 
-								end
-								if line.bar and line.bar.data == line then
-									line.bar:UpdateStatus()
-								end
-								updateReq = true
-							end
-						end
-						if updateReq then
-							UpdateAllData()
-							SortAllData()
-						end
-					end, 10)
-					break
+				end, 30)
+			elseif spellID == 327710 and destName and sourceName then	--Benevolent Faerie
+				if _db.vars.faerie[sourceName..":"..destName] then
+					_db.vars.faerie[sourceName..":"..destName]:Cancel()
 				end
+				_db.vars.faerie[sourceName..":"..destName] = C_Timer.NewTicker(1,function()
+					local line, updateReq
+					for j=1,#_C do
+						line = _C[j]
+						if line.fullName == destName and line.db and _db.vars.faerieSpells[ line.db[1] ] then
+							line:ReduceCD(1,true)
+							updateReq = true
+						end
+					end
+					if updateReq then
+						UpdateAllData()
+						SortAllData()
+					end
+				end, 20)
+			elseif spellID == 50334 and destName then	--Berserk
+				if _db.vars.berserk[destName] then
+					_db.vars.berserk[destName]:Cancel()
+				end
+				_db.vars.berserk[destName] = C_Timer.NewTicker(1,function()
+					local updateReq
+					local line = CDList[destName][22842]
+					if line then
+						line:ReduceCD( (1 + (UnitSpellHaste(destName) or 0)/100)*3 )
+					end
+				end, 15)
 			end
 		end
 	end
@@ -4093,6 +4261,7 @@ do
 		if not sourceName then
 			return
 		end
+		local forceUpdateAllData = false
 		local forceSortAllData = false
 
 		local modifData = spell_reduceCdByAuraFade[spellID]
@@ -4101,20 +4270,16 @@ do
 			if type(CDspellID) ~= "table" then
 				local line = CDList[sourceName][CDspellID]
 				if line and (GetTime() - line.lastUse - line.duration) > -0.5 then
-					line.cd = line.cd + modifData[2]
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
+					line:ChangeCD(modifData[2],true)
+					forceUpdateAllData = true
 					forceSortAllData = true
 				end
 			else
 				if session_gGUIDs[sourceName][ CDspellID[2] ] then
 					local line = CDList[sourceName][ CDspellID[1] ]
 					if line and (GetTime() - line.lastUse - line.duration) > -0.5 then
-						line.cd = line.cd + modifData[2]
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
+						line:ChangeCD(modifData[2],true)
+						forceUpdateAllData = true
 						forceSortAllData = true
 					end
 				end
@@ -4123,12 +4288,13 @@ do
 
 		local CDspellID = spell_aura_list[spellID]
 		if CDspellID then
+			if CDspellID == 198839 then	--Earthen Wall
+				sourceName = ExRT.F.Pets:getOwnerNameByGUID(destGUID)
+			end
 			local line = CDList[sourceName][ CDspellID ]
 			if line then
-				line.duration = 0
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
+				line:SetDur(0,true)
+				forceUpdateAllData = true
 				forceSortAllData = true
 			end
 		end
@@ -4138,6 +4304,21 @@ do
 			if line then
 				CLEUstartCD(line)
 			end
+		end
+
+		local talentFromAura = spell_aura_grant_talent[spellID]
+		if talentFromAura then
+			if type(talentFromAura) == "table" then
+				if not talentFromAura[1] or talentFromAura[1]==0 or session_gGUIDs[sourceName][ talentFromAura[1] ] then
+					for i=2,#talentFromAura do
+						session_gGUIDs[sourceName] = -talentFromAura[i]
+					end
+				end
+			else
+				session_gGUIDs[sourceName] = -talentFromAura
+			end
+			forceUpdateAllData = true
+			forceSortAllData = true
 		end
 
 		if spellID == 206005 then	--Xavius: Dream Simulacrum
@@ -4154,19 +4335,29 @@ do
 				end
 			end
 			UpdateAllData()
-		elseif spellID == 316801 and destName then	--Ineffable Truth
-			module.db.vars.ineffable_active[destName] = nil		--bug can happen if aura_removed event fires in out of range of player's CLEU. Imagine this not happens
-			if module.db.vars.ineffable[destName] and (GetTime() - (module.db.vars.ineffable_proc[destName] or 0) <= 9) then	--Cancel only for calcelaura or death
-				module.db.vars.ineffable[destName]:Cancel()
-			end
+		elseif spellID == 328622 and destName and sourceName then	--Blessing of Autumn
+			C_Timer.After(.5,function()
+				if _db.vars.blessingcdr[sourceName] then
+					_db.vars.blessingcdr[sourceName]:Cancel()
+				end
+			end)
+		elseif spellID == 327710 and destName and sourceName then	--Benevolent Faerie
+			C_Timer.After(0.1,function()
+				if _db.vars.faerie[sourceName..":"..destName] then
+					_db.vars.faerie[sourceName..":"..destName]:Cancel()
+				end
+			end)
 		elseif spellID == 50334 and destName then	--Berserk
-			C_Timer.After(1,function()
-				if module.db.vars.berserk[destName] then
-					module.db.vars.berserk[destName]:Cancel()
+			C_Timer.After(.5,function()
+				if _db.vars.berserk[destName] then
+					_db.vars.berserk[destName]:Cancel()
 				end
 			end)
 		end
 
+		if forceUpdateAllData then
+			UpdateAllData()
+		end
 		if forceSortAllData then
 			SortAllData()
 		end
@@ -4217,10 +4408,8 @@ do
 					resetSpellID = type(resetSpellID)=='table' and resetSpellID[1] or resetSpellID
 					local line = CDList[sourceName][ resetSpellID ]
 					if line then
-						line.cd = 0
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
+						line:SetCD(0,true)
+
 						forceUpdateAllData = true
 						forceSortAllData = true
 					end
@@ -4252,23 +4441,13 @@ do
 		local modifData = spell_reduceCdCast[spellID]
 		if modifData then
 			local cdr_mod = 1
-			if module.db.vars.ineffable_active[sourceName] then
-				cdr_mod = cdr_mod + module.db.vars.ineffable_active[sourceName]
-			end
-
 			for i=1,#modifData,2 do
 				local reduceSpellID = modifData[i]
 				if type(reduceSpellID) ~= "table" then
 					local line = CDList[sourceName][reduceSpellID]
 					local reduceTime = modifData[i+1]
 					if line then
-						line.cd = line.cd + reduceTime * cdr_mod
-						if line.cd < 0 then 
-							line.cd = 0 
-						end
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
+						line:ReduceCD(-reduceTime * cdr_mod,true)
 						forceUpdateAllData = true
 						forceSortAllData = true
 					end
@@ -4281,17 +4460,11 @@ do
 						local reduceTime = modifData[i+1]
 						if type(reduceTime) == "table" then
 							local soulbind_rank = _db.soulbind_rank[sourceName][ reduceSpellID[2] ] or 5
-							timeReduce = timeReduce[soulbind_rank]
+							reduceTime = reduceTime[soulbind_rank]
 						end
 
 						if line then
-							line.cd = line.cd + timeReduce * cdr_mod
-							if line.cd < 0 then 
-								line.cd = 0 
-							end
-							if line.bar and line.bar.data == line then
-								line.bar:UpdateStatus()
-							end
+							line:ReduceCD(-reduceTime * cdr_mod,true)
 							forceUpdateAllData = true
 							forceSortAllData = true
 						end
@@ -4307,13 +4480,7 @@ do
 				if type(increaseSpellID) ~= "table" then
 					local line = CDList[sourceName][increaseSpellID]
 					if line and (GetTime() - line.lastUse) < line.duration  then
-						line.duration = line.duration + modifData[i+1]
-						if line.duration < 0 then 
-							line.duration = 0 
-						end
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
+						line:ChangeDur(modifData[i+1],true)
 						forceUpdateAllData = true
 						forceSortAllData = true
 					end
@@ -4327,14 +4494,8 @@ do
 							incTime = incTime[soulbind_rank]
 						end
 
-						if line and (GetTime() - line.lastUse) < line.duration  then
-							line.duration = line.duration + incTime
-							if line.duration < 0 then 
-								line.duration = 0 
-							end
-							if line.bar and line.bar.data == line then
-								line.bar:UpdateStatus()
-							end
+						if line and (GetTime() - line.lastUse) < line.duration then
+							line:ChangeDur(incTime,true)
 							forceUpdateAllData = true
 							forceSortAllData = true
 						end
@@ -4362,13 +4523,8 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][337762] or 5
 				local timeReduce = 5 + soulbind_rank - (soulbind_rank == 1 and 1 or 0)
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
+				line:ChangeCD(-timeReduce,true)
+
 				forceUpdateAllData = true
 				forceSortAllData = true
 			end
@@ -4402,7 +4558,6 @@ do
 		[108853] = true,
 		[257541] = true,
 		[320752] = true,
-		[1464] = true,
 		[7268] = true,
 		[83381] = true,
 	}
@@ -4411,9 +4566,6 @@ do
 		[51271] = true,
 		[190319] = true,
 		[320674] = true,
-		[228920] = true,
-		[227847] = true,
-		[152277] = true,
 		[104773] = true,
 		[642] = true,
 		[12042] = true,
@@ -4432,15 +4584,7 @@ do
 					spell339272_var[destGUID] = now + (31 - soulbind_rank)
 					local line = CDList[destName][104773]
 					if line then
-						line.cd = line.cd - 10
-						if line.cd < 0 then 
-							line.cd = 0 
-						end
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
-						UpdateAllData()
-						SortAllData()
+						line:ReduceCD(10)
 					end
 				end
 			end
@@ -4451,15 +4595,7 @@ do
 				spell338741_var[destGUID] = now + (30 - soulbind_rank + (soulbind_rank == 1 and 1 or 0))
 				local line = CDList[destName][642]
 				if line then
-					line.cd = line.cd - 5
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ReduceCD(5)
 				end
 			end
 		elseif critical and sourceGUID and isMage[sourceGUID] and sourceName and session_gGUIDs[sourceName][336522] and IsAuraActive(sourceName,12472) then
@@ -4468,15 +4604,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][336522] or 5
 				local timeReduce = 0.12 + (soulbind_rank == 1 and 1.5 or soulbind_rank) * 0.12
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end
 		end
 		if not spellDamage_trackedSpells[spellID] or not sourceName then
@@ -4496,73 +4624,23 @@ do
 			if sourceData[2] == 3 then
 				local line = CDList[sourceName][46968]
 				if line then
-					line.cd = line.cd - 15
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ReduceCD(15)
 				end
 			end
 		elseif (spellID == 49020 or spellID == 49143) and critical and session_gGUIDs[sourceName][207126] then
 			local line = CDList[sourceName][51271]
 			if line then
-				line.cd = line.cd - 4
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(4)
 			end
 		elseif (spellID == 11366 or spellID == 133 or spellID == 108853 or spellID == 257541) and critical and session_gGUIDs[sourceName][155148] then
 			local line = CDList[sourceName][190319]
 			if line then
-				line.cd = line.cd - 1.5
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(1.5)
 			end
 		elseif spellID == 320752 and critical then
 			local line = CDList[sourceName][320674]
 			if line then
-				line.cd = line.cd - 5
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
-			end
-		elseif spellID == 1464 and critical and session_gGUIDs[sourceName][335260] then
-			for _,tarSID in pairs({228920,227847,152277}) do
-				local line = CDList[sourceName][tarSID]
-				if line then
-					local soulbind_rank = _db.soulbind_rank[sourceName][335260] or 5
-					local timeReduce = 0.9 + soulbind_rank * 0.1
-	
-					line.cd = line.cd - timeReduce
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
-				end
+				line:ReduceCD(5)
 			end
 		elseif spellID == 7268 and session_gGUIDs[sourceName][336873] then
 			local line = CDList[sourceName][12042]
@@ -4570,15 +4648,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][336873] or 5
 				local timeReduce = soulbind_rank * 0.1
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end
 		elseif spellID == 83381 and critical then
 			local petOwner = ExRT.F.Pets:getOwnerNameByGUID(sourceGUID)
@@ -4588,15 +4658,7 @@ do
 					local soulbind_rank = _db.soulbind_rank[petOwner][339704] or 5
 					local timeReduce = 0.9 + soulbind_rank * 0.1
 	
-					line.cd = line.cd - timeReduce
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ReduceCD(timeReduce)
 				end
 			end
 		end
@@ -4638,12 +4700,7 @@ do
 					spell207778_var[2] = spell207778_var[2] + 1
 
 					C_Timer.After(0.3,function()	--Await for actual cast, selfhealing event fired first
-						line.cd = line.cd + (spell207778_var[2] <= 6 and 5 or 0)
-						if line.bar and line.bar.data == line then
-							line.bar:UpdateStatus()
-						end
-						UpdateAllData()
-						SortAllData()
+						line:ChangeCD(spell207778_var[2] <= 6 and 5 or 0)
 					end)
 				end
 			end
@@ -4651,30 +4708,14 @@ do
 			local line = CDList[sourceName][29166]
 			if line then
 				if (amount - overhealing) == 0 then
-					line.cd = line.cd - 1
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ReduceCD(1)
 				end
 			end
 		elseif spellID == 116670 and session_gGUIDs[sourceName][278576] then
 			local line = CDList[sourceName][115310]
 			if line then
 				if critical then
-					line.cd = line.cd - 1
-					if line.cd < 0 then 
-						line.cd = 0 
-					end
-					if line.bar and line.bar.data == line then
-						line.bar:UpdateStatus()
-					end
-					UpdateAllData()
-					SortAllData()
+					line:ReduceCD(1)
 				end
 			end
 		elseif spellID == 633 and session_gGUIDs[sourceName][326734] then
@@ -4690,41 +4731,17 @@ do
 				end
 				local val = 1 - hpB4 / maxHP
 
-				line.cd = (line.cd or 0) * (1 - val * 0.6)
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:SetCD((line.cd or 0) * (1 - val * 0.6))
 			end
 		elseif spellID == 320751 then
 			local line = CDList[sourceName][320674]
 			if line and critical then
-				line.cd = line.cd - 5
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(5)
 			end
 		elseif spellID == 325218 and session_gGUIDs[sourceName][337295] then
 			local line = CDList[sourceName][325216]
 			if line and critical then
-				line.cd = line.cd - 0.5
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(0.5)
 			end
 		end
 	end
@@ -4739,15 +4756,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[destName][341535] or 5
 				local timeReduce = 0.8 + (soulbind_rank == 15 and 16 or soulbind_rank) * 0.2
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end			
 		end
 	end
@@ -4766,15 +4775,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][341535] or 5
 				local timeReduce = 0.8 + (soulbind_rank == 15 and 16 or soulbind_rank) * 0.2
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end
 		elseif sourceName and session_gGUIDs[sourceName][336777] and spellID == 2139 then
 			local line = CDList[destName][2139]
@@ -4782,15 +4783,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][336777] or 5
 				local timeReduce = 0.5 + soulbind_rank * 0.5
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end
 		end
 	end
@@ -4805,15 +4798,7 @@ do
 				local soulbind_rank = _db.soulbind_rank[sourceName][341535] or 5
 				local timeReduce = 0.9 + (soulbind_rank == 15 and 16 or soulbind_rank) * 0.1
 
-				line.cd = line.cd - timeReduce
-				if line.cd < 0 then 
-					line.cd = 0 
-				end
-				if line.bar and line.bar.data == line then
-					line.bar:UpdateStatus()
-				end
-				UpdateAllData()
-				SortAllData()
+				line:ReduceCD(timeReduce)
 			end			
 		end
 	end
@@ -4822,7 +4807,7 @@ do
 		SPELL_AURA_REMOVED=module.main.SPELL_AURA_REMOVED,
 		SPELL_AURA_APPLIED=module.main.SPELL_AURA_APPLIED,
 		SPELL_CAST_SUCCESS=module.main.SPELL_CAST_SUCCESS,
-		SPELL_AURA_REFRESH=module.main.SPELL_AURA_REFRESH,
+		--SPELL_AURA_REFRESH=module.main.SPELL_AURA_REFRESH,
 		SPELL_DISPEL=module.main.SPELL_DISPEL,
 		SPELL_SUMMON=module.main.SPELL_SUMMON,
 	}
@@ -4918,11 +4903,10 @@ function module.options:Load()
 		["DEFTAR"] = {name = L.cd2CatSingleTar,icon = 135928, sort = 15, ignoreSubcats = true},
 		["RES"] = {name = L.cd2CatRes,icon = 136080, sort = 20, ignoreSubcats = true},
 		["RAIDSPEED"] = {name = L.cd2CatRaidMove,icon = 464343, sort = 25, ignoreSubcats = true},
-		["UTIL"] = {name = L.cd2CatUtil,icon = 458224, sort = 30, ignoreSubcats = true},
-		["AOECC"] = {name = L.cd2CatMassStun,icon = 136013, sort = 35, ignoreSubcats = true},
-		["HEALUTIL"] = {name = L.cd2CatHealUtil,icon = 136048, sort = 40, ignoreSubcats = true},
-
-		["KICK"] = {name = L.cd2CatKicks,icon = 132219, sort = 45, ignoreSubcats = true},
+		["KICK"] = {name = L.cd2CatKicks,icon = 132219, sort = 30, ignoreSubcats = true},
+		["UTIL"] = {name = L.cd2CatUtil,icon = 458224, sort = 35, ignoreSubcats = true},
+		["AOECC"] = {name = L.cd2CatMassStun,icon = 136013, sort = 40, ignoreSubcats = true},
+		["HEALUTIL"] = {name = L.cd2CatHealUtil,icon = 136048, sort = 45, ignoreSubcats = true},
 		["DISPEL"] = {name = L.cd2CatDispells,icon = 135894, sort = 50, ignoreSubcats = true},
 		["TAUNT"] = {name = L.cd2CatTaunts,icon = 132270, sort = 55, ignoreSubcats = true},
 
@@ -4933,18 +4917,18 @@ function module.options:Load()
 		["CC"] = {name = L.cd2CatCC,icon = 136175, sort = 80, ignoreSubcats = true},
 		["MOVE"] = {name = L.cd2CatMove,icon = 574574, sort = 85, ignoreSubcats = true},
 
-		["WARRIOR"] = {name = L.classLocalizate["WARRIOR"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["WARRIOR"], sort = 101},
-		["PALADIN"] = {name = L.classLocalizate["PALADIN"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["PALADIN"], sort = 102},
-		["HUNTER"] = {name = L.classLocalizate["HUNTER"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["HUNTER"], sort = 103},
-		["ROGUE"] = {name = L.classLocalizate["ROGUE"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["ROGUE"], sort = 104},
-		["PRIEST"] = {name = L.classLocalizate["PRIEST"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["PRIEST"], sort = 105},
-		["DEATHKNIGHT"] = {name = L.classLocalizate["DEATHKNIGHT"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DEATHKNIGHT"], sort = 106},
-		["SHAMAN"] = {name = L.classLocalizate["SHAMAN"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["SHAMAN"], sort = 107},
-		["MAGE"] = {name = L.classLocalizate["MAGE"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["MAGE"], sort = 108},
-		["WARLOCK"] = {name = L.classLocalizate["WARLOCK"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["WARLOCK"], sort = 109},
-		["MONK"] = {name = L.classLocalizate["MONK"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["MONK"], sort = 110},
-		["DRUID"] = {name = L.classLocalizate["DRUID"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DRUID"], sort = 111},
-		["DEMONHUNTER"] = {name = L.classLocalizate["DEMONHUNTER"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DEMONHUNTER"], sort = 112},
+		["WARRIOR"] = {name = L.classLocalizate["WARRIOR"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["WARRIOR"], sort = 101, isClassCategory = true},
+		["PALADIN"] = {name = L.classLocalizate["PALADIN"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["PALADIN"], sort = 102, isClassCategory = true},
+		["HUNTER"] = {name = L.classLocalizate["HUNTER"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["HUNTER"], sort = 103, isClassCategory = true},
+		["ROGUE"] = {name = L.classLocalizate["ROGUE"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["ROGUE"], sort = 104, isClassCategory = true},
+		["PRIEST"] = {name = L.classLocalizate["PRIEST"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["PRIEST"], sort = 105, isClassCategory = true},
+		["DEATHKNIGHT"] = {name = L.classLocalizate["DEATHKNIGHT"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DEATHKNIGHT"], sort = 106, isClassCategory = true},
+		["SHAMAN"] = {name = L.classLocalizate["SHAMAN"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["SHAMAN"], sort = 107, isClassCategory = true},
+		["MAGE"] = {name = L.classLocalizate["MAGE"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["MAGE"], sort = 108, isClassCategory = true},
+		["WARLOCK"] = {name = L.classLocalizate["WARLOCK"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["WARLOCK"], sort = 109, isClassCategory = true},
+		["MONK"] = {name = L.classLocalizate["MONK"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["MONK"], sort = 110, isClassCategory = true},
+		["DRUID"] = {name = L.classLocalizate["DRUID"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DRUID"], sort = 111, isClassCategory = true},
+		["DEMONHUNTER"] = {name = L.classLocalizate["DEMONHUNTER"],icon = "Interface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES", iconTcoord = CLASS_ICON_TCOORDS["DEMONHUNTER"], sort = 112, isClassCategory = true},
 
 		["ITEMS"] = {name = L.cd2CatItems,icon = 135918, sort = 140, ignoreSubcats = true},
 		["ESSENCES"] = {name = L.cd2CatEssences,icon = 2967111, sort = 150, ignoreSubcats = true},
@@ -4959,7 +4943,7 @@ function module.options:Load()
 		["OTHER"] = {name = L.cd2CatOther,icon = 136011, sort = 197, ignoreSubcats = true},
 		["USER"] = {name = L.cd2CatUser,icon = 133667, sort = 199, ignoreOwncat = true},
 
-		["ENABLED"] = {name = L.cd2CatEnabled,icon = ExRT.isClassic and 136170 or 236372, sort = 300, ignoreSubcats = true},
+		["ENABLED"] = {name = L.cd2CatEnabled,icon = ExRT.isClassic and 136170 or 236372, sort = 5, ignoreSubcats = true},
 		["FAV"] = {name = L.cd2Favorite,icon = [[Interface\AddOns\ExRT\media\star2]], iconTcoord = {0,.5,0,.5}, sort = 310, ignoreSubcats = true},
 
 	}
@@ -5021,17 +5005,20 @@ function module.options:Load()
 			end
 		end
 		for i=1,#VExRT.ExCD2.userDB do
-			new[#new+1] = VExRT.ExCD2.userDB[i]
-
-			local findUserCat = false
-			for cat in string.gmatch(new[#new][2], "[^,]+") do
-				if cat == "USER" then
-					findUserCat = true
-					break
+			local line = VExRT.ExCD2.userDB[i]
+			if type(line[2]) == "string" and type(line[3]) == "number" then
+				new[#new+1] = line
+	
+				local findUserCat = false
+				for cat in string.gmatch(line[2], "[^,]+") do
+					if cat == "USER" then
+						findUserCat = true
+						break
+					end
 				end
-			end
-			if not findUserCat then
-				new[#new][2] = new[#new][2] .. ",USER"
+				if not findUserCat then
+					line[2] = line[2] .. ",USER"
+				end
 			end
 		end
 
@@ -5083,6 +5070,13 @@ function module.options:Load()
 				button.text:SetJustifyH("CENTER")
 				button.text:SetJustifyV("TOP")
 
+				button.class = button:CreateTexture(nil, "BACKGROUND")
+				button.class:SetPoint("TOP")
+				button.class:SetPoint("BOTTOM")
+				button.class:SetPoint("LEFT",self,0,0)
+				button.class:SetPoint("RIGHT",self,0,0)
+				button.class:Hide()
+
 				button.background = button:CreateTexture(nil, "BACKGROUND")
 				button.background:SetPoint("TOP")
 				button.background:SetPoint("BOTTOM")
@@ -5117,6 +5111,13 @@ function module.options:Load()
 			if cat == "ALL" then 
 				button.category = nil 
 			end
+			if ExRT.GDB.ClassID[cat] then
+				local r,g,b = ExRT.F.classColorNum(cat)
+				button.class:SetColorTexture(r,g,b,.3)
+				button.class:Show()
+			else
+				button.class:Hide()
+			end
 			if not catData then
 				module.options.CATEGORIES_VIS[cat] = {sort = CATEGORIES_INDEX_COUNTER,ignoreSubcats = true}
 				CATEGORIES_INDEX_COUNTER = CATEGORIES_INDEX_COUNTER + 1
@@ -5140,14 +5141,14 @@ function module.options:Load()
 		if module.options.list.colBySpecFrame:IsShown() then
 			return
 		end
-		if MouseIsOver(self) and not ExRT.lib.ScrollDropDown.DropDownList[1]:IsShown() then
+		if self:IsMouseOver() and not ExRT.lib.ScrollDropDown.DropDownList[1]:IsShown() then
 			self.backClassColor:SetGradientAlpha("HORIZONTAL", self.backClassColorR, self.backClassColorG, self.backClassColorB, 0.8, self.backClassColorR, self.backClassColorG, self.backClassColorB, 0)
 		else
 			self.backClassColor:SetGradientAlpha("HORIZONTAL", self.backClassColorR, self.backClassColorG, self.backClassColorB, 0.4, self.backClassColorR, self.backClassColorG, self.backClassColorB, 0)
 		end
-		if MouseIsOver(self.colBack) and not self.colExpand:IsShown() and self.colBack:IsShown() then
+		if self:IsMouseOver() and not self.colExpand:IsShown() and self.colBack:IsShown() then
 			self.colExpand:Show()
-		elseif not MouseIsOver(self.colBack) and self.colExpand:IsShown() then
+		elseif not self:IsMouseOver() and self.colExpand:IsShown() then
 			self.colExpand:Hide()
 		end
 	end
@@ -5421,6 +5422,7 @@ function module.options:Load()
 		else
 			VExRT.ExCD2.CDECol[self.keystr] = value
 		end
+		module.options.list:Update()
 		module:UpdateSpellDB()
 	end
 	local function SpellsListPrioritySetValue(self,value)
@@ -5552,6 +5554,14 @@ function module.options:Load()
 		line.col.Text:SetFont(GameFontHighlight:GetFont(),10)
 		line.col.Text:SetTextColor(0.84,0.85,0.90,1)
 		line.col:SetScript("OnMouseWheel",nil)
+		line.col.ThumbBySpec = {}
+		for j=1,4 do
+			local Thumb = line.col:CreateTexture(nil,"ARTWORK",nil,1-j)
+			line.col.ThumbBySpec[j] = Thumb
+			Thumb:SetSize(14,14)
+			Thumb:SetMask("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+			Thumb:Hide()
+		end
 
 		line.colBack = CreateFrame("Frame",nil,line)
 		line.colBack:SetHeight(SPELL_LINE_HEIGHT)
@@ -5559,6 +5569,7 @@ function module.options:Load()
 		line.colBack:SetPoint("RIGHT",line.col)
 
 		line.colExpand = ELib:Button(line,L.cd2BySpec):Size(120,8):Point("LEFT",line.col,0,0):Point("BOTTOM",line,0,0):OnClick(SpellsListLineColExpand)
+		line.colExpand.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
 		local textObj = line.colExpand:GetTextObj()
 		textObj:SetFont(textObj:GetFont(),8)
 
@@ -5663,6 +5674,7 @@ function module.options:Load()
 				slider.backline:SetHeight(4)
 				slider.Text:SetFont(GameFontHighlight:GetFont(),10)
 				slider.Text:SetTextColor(0.44,0.45,0.50,1)
+				slider:SetScript("OnMouseWheel",nil)
 
 				slider.icon = slider:CreateTexture(nil,"ARTWORK")
 				slider.icon:SetPoint("RIGHT",slider,"LEFT",-5,0)
@@ -5671,8 +5683,9 @@ function module.options:Load()
 			slider.icon:SetTexture(ExRT.GDB.ClassSpecializationIcons[ specs[i] ])
 
 			local specPos = line.colExpand.specsPos[i]
-			local col = VExRT.ExCD2.CDECol[line.data[1]..";"..(specPos or 1)] or module.db.def_col[line.data[1]..";"..(specPos or 1)] or line.data[3]
-			slider.keystr = line.data[1]..";"..(specPos or 1)
+			local colStr = line.data[1]..";"..(specPos or 1)
+			local col = VExRT.ExCD2.CDECol[colStr] or module.db.def_col[colStr] or line.data[3]
+			slider.keystr = colStr
 			slider.lock = true
 			slider:SetTo(col)
 			slider.lock = false
@@ -5701,6 +5714,7 @@ function module.options:Load()
 	function self.list:UpdateDB(categoryNow)
 		self.current = categoryNow
 		local list,cats = {},{}
+		local extraData = {}
 		local AllSpells = module.options:GetAllSpells(categoryNow == "PVP")
 		for _,data in pairs(AllSpells) do
 			if not categoryNow then
@@ -5735,7 +5749,48 @@ function module.options:Load()
 			cats["PVP"] = nil
 		end
 		cats = SortCategories(cats)
-		if categoryNow and not module.options.CATEGORIES_VIS[categoryNow].ignoreSubcats then
+		if categoryNow and module.options.CATEGORIES_VIS[categoryNow].isClassCategory then
+			local class = categoryNow
+			local specList = not ExRT.isClassic and module.db.specByClass[class] or {0}
+
+			local newList = {}
+			local specsLen = #specList - 1
+			for i=1,#specList do
+				local specID = specList[i] or 0
+				local icon
+				if module.db.specIcons[specID] then
+					icon = "|T".. module.db.specIcons[specID] ..":20|t"
+				else
+					icon = ExRT.F.classIconInText(class,20) or ""
+				end
+				newList[#newList+1] = {cat = (icon or "").." |c"..ExRT.F.classColor(class)..L.specLocalizate[module.db.specInLocalizate[specID]], specID = specID, specPos = i, sortBut = i==1}
+				local count = 0
+				for j=1,#list do
+					local line = list[j]
+					for cat in string.gmatch(line[2], "[^,]+") do
+						if 
+							cat == categoryNow and
+							(
+								(i == 1 and line[4]) or
+								(i == 1 and not line[4] and ((specsLen == 1 and line[5]) or (specsLen == 2 and line[5] and line[6]) or (specsLen == 3 and line[5] and line[6] and line[7]) or (specsLen == 4 and line[5] and line[6] and line[7] and line[8]))) or
+								(i > 1 and line[4+i-1])
+							)
+						then
+							newList[#newList+1] = line
+							if i > 1 then
+								extraData[#newList] = {specID = i, specPos = i}
+							end
+							count = count + 1
+							break
+						end
+					end
+				end
+				if count == 0 then
+					tremove(newList,#newList)
+				end
+			end
+			list = newList
+		elseif categoryNow and not module.options.CATEGORIES_VIS[categoryNow].ignoreSubcats then
 			local newList = {}
 			for i=1,#cats do
 				if not module.options.CATEGORIES_VIS[categoryNow].ignoreOwncat or cats[i] ~= categoryNow then
@@ -5764,12 +5819,21 @@ function module.options:Load()
 				newList[#newList+1] = {cat = module.options.CATEGORIES_VIS[ cats[i] ] and module.options.CATEGORIES_VIS[ cats[i] ].name or cats[i]}
 				local count = 0
 				for j=1,#list do
+					for cat in string.gmatch(list[j][2], "[^,]+") do
+						if cat == cats[i] then
+							newList[#newList+1] = list[j]
+							count = count + 1
+							break
+						end
+					end
+					--[[
 					local cat1,cat2 = strsplit(",",list[j][2])
 					local cat = (not ExRT.GDB.ClassID[cat1] and cat1 ~= "NO") and cat1 or cat2 or cat1
 					if cat == cats[i] then
 						newList[#newList+1] = list[j]
 						count = count + 1
 					end
+					]]
 				end
 				if count == 0 then
 					tremove(newList,#newList)
@@ -5781,6 +5845,7 @@ function module.options:Load()
 			list = newList
 		end
 		self.list = list
+		self.extraData = extraData
 		if self.sortByCol then
 			self.sortByCol = nil
 			local p = 0
@@ -5789,7 +5854,9 @@ function module.options:Load()
 				local data = list[i]
 				if data[1] then
 					local col = VExRT.ExCD2.CDECol[data[1]..";1"] or module.db.def_col[data[1]..";1"] or data[3]
-					if not data[4] then
+					if extraData[i] and extraData[i].specPos then
+						col = VExRT.ExCD2.CDECol[data[1]..";"..(extraData[i].specPos)] or col
+					elseif not data[4] then
 						for j=5,8 do
 							if data[j] then
 								local newcol = VExRT.ExCD2.CDECol[data[1]..";"..(j-3)]
@@ -5800,13 +5867,21 @@ function module.options:Load()
 							end
 						end
 					end
-					colData[data] = p + col
+					colData[i] = {p + col,i}
 				else
 					p = p + 20
-					colData[data] = p
+					colData[i] = {p,i}
 				end
 			end
-			sort(list,function(a,b) return colData[a]<colData[b] end)
+			sort(colData,function(a,b) return a[1]<b[1] end)
+			local newList = {}
+			local newExtra = {}
+			for i=1,#colData do
+				newList[i] = list[ colData[i][2] ]
+				newExtra[i] = extraData[ colData[i][2] ]
+			end
+			self.list = newList
+			self.extraData = extraData
 		end
 	end
 	function self.list:Update()
@@ -5818,6 +5893,7 @@ function module.options:Load()
 		local lineCount = 1
 		for i=start,#list do
 			local data = list[i]
+			local extraData = self.extraData[i]
 			local line = self.lines[lineCount]
 			lineCount = lineCount + 1
 			if not line then
@@ -5910,16 +5986,18 @@ function module.options:Load()
 							specID = specs[j-4]
 						end
 					end
-					if dataSpecs > 1 then
-						line.colBack:Show()
-						line.colExpand.specs = {}
-						line.colExpand.specsPos = {}
-						local specIcon = 1
-						for j=5,4+#specs do
-							if data[j] then
-								line.colExpand.specs[#line.colExpand.specs+1] = specs[j-4]
-								line.colExpand.specsPos[#line.colExpand.specsPos+1] = j - 3
+					if data[4] and not ExRT.isClassic then
+						dataSpecs = #specs
+					end
+					line.colExpand.specs = {}
+					line.colExpand.specsPos = {}
+					local specIcon = 1
+					for j=5,4+#specs do
+						if data[j] or data[4] then
+							line.colExpand.specs[#line.colExpand.specs+1] = specs[j-4]
+							line.colExpand.specsPos[#line.colExpand.specsPos+1] = j - 3
 
+							if data[j] then
 								local icon = line["spec"..specIcon]
 								if icon then
 									icon:SetTexture(ExRT.GDB.ClassSpecializationIcons[ specs[j-4] ])
@@ -5928,19 +6006,23 @@ function module.options:Load()
 								end
 							end
 						end
+					end
+					if dataSpecs > 1 then
+						line.colBack:Show()
 					else
+						line.colBack:Hide()
 						if specID then
 							line.spec:SetTexture(ExRT.GDB.ClassSpecializationIcons[specID])
 							line.spec:Show()
+							line.spec1:Hide()
 						else
 							line.spec:Hide()
 						end
-						line.colBack:Hide()
-						for j=4,4+#specs do
-							if data[j] then
-								specPos = j - 3
-								break
-							end
+					end
+					for j=4,4+#specs do
+						if data[j] then
+							specPos = j - 3
+							break
 						end
 					end
 				else
@@ -5966,24 +6048,55 @@ function module.options:Load()
 					end
 				end
 
-				local col = VExRT.ExCD2.CDECol[data[1]..";"..(specPos or 1)] or module.db.def_col[data[1]..";"..(specPos or 1)] or data[3]
-				line.col.keystr = data[1]..";"..(specPos or 1)
-				if not data[4] and dataSpecs > 1 then
+				for j=1,4 do 
+					line.col.ThumbBySpec[j]:Hide()
+				end
+				local colDefStr = data[1]..";"..(specPos or 1)
+				local col = VExRT.ExCD2.CDECol[colDefStr] or module.db.def_col[colDefStr] or data[3]
+				if extraData and extraData.specPos then
+					local specPos = extraData.specPos
+					col = VExRT.ExCD2.CDECol[data[1]..";"..specPos] or col or data[3]
+				end
+				local defCol = col
+				line.col.keystr = colDefStr
+				if dataSpecs > 1 then
 					line.col.keystr = {}
-					local updateCol
+					local updateCol = data[4]
+					if updateCol then
+						line.col.keystr[#line.col.keystr+1] = colDefStr
+					end
+					local miniIcon = {}
 					for j=5,8 do
-						if data[j] then
-							line.col.keystr[#line.col.keystr+1] = data[1]..";"..(j-3)
-							if not updateCol and VExRT.ExCD2.CDECol[data[1]..";"..(j-3)] then
+						if data[j] or (data[4] and ExRT.GDB.ClassSpecializationList[class][j-4]) then
+							local str = data[1]..";"..(j-3)
+							line.col.keystr[#line.col.keystr+1] = str
+							if not updateCol and VExRT.ExCD2.CDECol[str] then
 								updateCol = true
-								col = VExRT.ExCD2.CDECol[data[1]..";"..(j-3)]
+								col = VExRT.ExCD2.CDECol[str]
+							end
+							local specs = ExRT.GDB.ClassSpecializationList[class]
+							if specs then
+								local p = VExRT.ExCD2.CDECol[str] or VExRT.ExCD2.CDECol[data[1]..";1"] or module.db.def_col[str] or module.db.def_col[data[1]..";1"] or data[3]
+								if p ~= defCol then
+									local t = line.col.ThumbBySpec[j-4]
+									t:SetPoint("CENTER",line.col,"LEFT",7 + (line.col:GetWidth() - 14) / 9 * (p-1),miniIcon[p] == 1 and -5 or miniIcon[p] == 2 and 5 or 0)
+									t:SetTexture(ExRT.GDB.ClassSpecializationIcons[ specs[j-4] ])
+									t:Show()
+									miniIcon[p] = (miniIcon[p] or 0) + 1
+								end
 							end
 						end
 					end
 				end
+				if extraData and extraData.specPos then
+					local specPos = extraData.specPos
+					col = VExRT.ExCD2.CDECol[data[1]..";"..specPos] or col or data[3]
+					line.col.keystr = data[1]..";"..specPos
+				end
 				line.col.lock = true
 				line.col:SetTo(col)
 				line.col.lock = false
+
 
 				line.prior.lock = true
 				line.prior:SetTo(VExRT.ExCD2.Priority[ data[1] ] or 50)
@@ -5996,10 +6109,15 @@ function module.options:Load()
 						break
 					end
 				end
-				line.cd:SetFormattedText("%d:%02d",first[2]/60,first[2]%60)
-				if first[3] > 0 then
-					line.dur:SetFormattedText("%d:%02d",first[3]/60,first[3]%60)
+				if first then
+					line.cd:SetFormattedText("%d:%02d",first[2]/60,first[2]%60)
+					if first[3] > 0 then
+						line.dur:SetFormattedText("%d:%02d",first[3]/60,first[3]%60)
+					else
+						line.dur:SetText("")
+					end
 				else
+					line.cd:SetFormattedText("")
 					line.dur:SetText("")
 				end
 
@@ -6368,6 +6486,8 @@ function module.options:Load()
 	--> OPTIONS TAB2: Customize
 	self.optColHeader = ELib:Text(self.tab.tabs[2],L.cd2ColSet):Size(560,20):Point(15+80,-8)
 
+	local currColOpt = {}
+
 	function self:selectColumnTab()
 		local i = self and self.colID or module.options.optColTabs.selected
 		module.options.optColTabs.selected = i
@@ -6379,7 +6499,10 @@ function module.options:Load()
 		local defOpt = module.db.colsDefaults
 		local VColOpt = VExRT.ExCD2.colSet[i]
 
+		optColSet.superTabFrame:Show()
+
 		optColSet.LOCK = true
+		currColOpt = {}
 
 		if isGeneralTab then
 			VColOpt.frameGeneral = nil
@@ -6416,6 +6539,9 @@ function module.options:Load()
 		do
 			local defIconPos = VColOpt.iconPosition or defOpt.iconPosition
 			optColSet.dropDownIconPos:SetText( optColSet.dropDownIconPos.PosNames[defIconPos])
+		end
+		if optColSet.dropDownCooldownGlowType.List[ VColOpt.iconGlowType or 1 ] then
+			optColSet.dropDownCooldownGlowType:SetText(optColSet.dropDownCooldownGlowType.List[ VColOpt.iconGlowType or 1 ].text)
 		end
 
 		optColSet.chkGeneralIcons:doAlphas()
@@ -6469,6 +6595,8 @@ function module.options:Load()
 		optColSet.textRightTemEdit:SetText(VColOpt.textTemplateRight or defOpt.textTemplateRight)
 		optColSet.textCenterTemEdit:SetText(VColOpt.textTemplateCenter or defOpt.textTemplateCenter)
 		optColSet.chkIconName:SetChecked(VColOpt.textIconName)
+		optColSet.sliderIconNameChars:SetValue(VColOpt.textIconNameChars or defOpt.textIconNameChars)
+
 		optColSet.chkGeneralText:SetChecked(VColOpt.textGeneral)
 
 		optColSet.chkGeneralText:doAlphas()
@@ -6526,6 +6654,8 @@ function module.options:Load()
 			optColSet.sliderATFOffsetX:SetValue(VColOpt.ATFOffsetX or defOpt.ATFOffsetX)
 			optColSet.sliderATFOffsetY:SetValue(VColOpt.ATFOffsetY or defOpt.ATFOffsetY)
 			optColSet.ATFRadiosCheck()
+			optColSet.ATFTypeGrowth1:SetChecked(VColOpt.ATFGrowth == 1 or not VColOpt.ATFGrowth)
+			optColSet.ATFTypeGrowth2:SetChecked(VColOpt.ATFGrowth == 2)
 		end
 
 
@@ -6555,6 +6685,15 @@ function module.options:Load()
 		end
 
 		optColSet.LOCK = nil
+		currColOpt = VExRT.ExCD2.colSet[module.options.optColTabs.selected]
+
+		if VColOpt.enabled and not isGeneralTab and VExRT.ExCD2.enabled and not VColOpt.ATF then
+			optColSet.NavLineF.f = module.frame.colFrame[i]
+			optColSet.FindFrameBut:Show()
+		else
+			optColSet.NavLineF.f = nil
+			optColSet.FindFrameBut:Hide()
+		end
 	end
 
 	self.optColSet = {}
@@ -6564,7 +6703,18 @@ function module.options:Load()
 			tmpArr[i] = tostring(i)
 		end
 		tmpArr[module.db.maxColumns+1] = L.cd2GeneralSet
+		tmpArr[#tmpArr+1] = ADVANCED_LABEL
 		self.optColTabs = ELib:Tabs(self.tab.tabs[2],0,unpack(tmpArr)):Size(660,417):Point("TOP",0,-48):SetTo(module.db.maxColumns+1)
+
+		local advColBut = self.optColTabs.tabs[module.db.maxColumns+2].button
+		advColBut.colID = module.db.maxColumns+2
+		advColBut:SetScript("OnClick", function(self)
+			module.options.optColTabs.selected = self.colID
+			module.options.optColTabs:UpdateTabs()
+			module.options.optColSet.superTabFrame:Hide()
+		end)
+		advColBut:ClearAllPoints()
+		advColBut:SetPoint("TOPRIGHT", -10, 24)
 	end
 	for i=1,module.db.maxColumns+1 do
 		self.optColTabs.tabs[i].button.colID = i
@@ -6597,20 +6747,64 @@ function module.options:Load()
 		end
 	end)
 
-	self.optColSet.chkEnable = ELib:Check(self.optColSet.superTabFrame.tab[1],"|cff00ff00 >>>"..L.Enable.."<<<"):Point(10,-10):OnClick(function(self) 
+	self.optColSet.NavLineF = ELib:Frame(self.optColTabs):Point("TOPLEFT",self.optColTabs,0,0):Size(1,1)
+	self.optColSet.NavLineF:Hide()
+
+	self.optColSet.NavLineF.line = self.optColSet.NavLineF:CreateLine(nil, "ARTWORK")
+	self.optColSet.NavLineF.line:SetTexture("Interface/AddOns/ExRT/media/lineGapped")
+	self.optColSet.NavLineF.line:SetVertexColor(.44,1,.50,1)
+	self.optColSet.NavLineF.line:SetThickness(10)
+
+	self.optColSet.NavLineF:SetScript("OnUpdate",function(self)
+		if not self.f then
+			return
+		end
+		local l1,t1 = self.f2:GetLeft(), self.f2:GetTop()
+		local s1 = self.f2:GetEffectiveScale()
+		local l2,t2 = self.f:GetLeft(), self.f:GetTop()
+		local s2 = self.f:GetEffectiveScale()
+		l1, t1 = l1*s1, t1*s1
+		l2, t2 = l2*s2, t2*s2
+
+		local s3 = UIParent:GetEffectiveScale()
+		l1, t1, l2, t2 = l1/s3, t1/s3, l2/s3, t2/s3
+		
+		self.line:SetStartPoint("BOTTOMLEFT", UIParent, l1, t1)
+		self.line:SetEndPoint("BOTTOMLEFT", UIParent, l2, t2)
+
+		local t = GetTime() % 1
+		local d = 40/1024
+		self.line:SetTexCoord(d * t,(1 - d)+ t*d,0,1)	
+	end)
+
+	self.optColSet.FindFrameBut = ELib:Button(self.optColTabs,L.cd2FindFrame):Point("TOPRIGHT",self.optColSet.superTabFrame,"TOPLEFT",-5,-1):Size(83,50):OnEnter(function()
+		local f = self.optColSet.NavLineF
+		if f.f and f.f.ATFenabled then return end
+		f:Show()
+	end):OnLeave(function ()
+		self.optColSet.NavLineF:Hide()
+	end)
+
+	self.optColSet.NavLineF.f2 = self.optColSet.FindFrameBut
+
+	self.optColSet.chkEnable = ELib:Check(self.optColSet.superTabFrame.tab[1],">>>"..L.Enable.."<<<"):Point(10,-10):AddColorState():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].enabled = true
+			currColOpt.enabled = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].enabled = nil
+			currColOpt.enabled = nil
 		end
 		module:ReloadAllSplits()
-	end)
+	end):OnShow(function(self)
+		C_Timer.After(.1,function()
+			self:ColorState()
+		end)
+	end,true)
 
 	self.optColSet.chkGeneral = ELib:Check(self.optColSet.superTabFrame.tab[1],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameGeneral = true
+			currColOpt.frameGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameGeneral = nil
+			currColOpt.frameGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
@@ -6621,7 +6815,7 @@ function module.options:Load()
 
 	self.optColSet.sliderLinesNum = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2lines):Size(400):Point("TOP",0,-50):Range(1,module.db.maxLinesInCol):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameLines = event
+		currColOpt.frameLines = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6629,7 +6823,7 @@ function module.options:Load()
 
 	self.optColSet.sliderWidth = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2width):Size(400):Point("TOP",0,-85):Range(1,400):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameWidth = event
+		currColOpt.frameWidth = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6637,7 +6831,7 @@ function module.options:Load()
 
 	self.optColSet.sliderAlpha = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2alpha):Size(400):Point("TOP",0,-120):Range(0,100):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameAlpha = event
+		currColOpt.frameAlpha = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6645,7 +6839,7 @@ function module.options:Load()
 
 	self.optColSet.sliderScale = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2scale):Size(400):Point("TOP",0,-155):Range(5,200):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameScale = event
+		currColOpt.frameScale = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits("ScaleFix")
@@ -6653,7 +6847,7 @@ function module.options:Load()
 
 	self.optColSet.sliderColsInCol = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2ColSetColsInCol):Size(400):Point("TOP",0,-190):Range(1,module.db.maxLinesInCol):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameColumns = event
+		currColOpt.frameColumns = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6661,7 +6855,7 @@ function module.options:Load()
 
 	self.optColSet.sliderBetweenLines = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2ColSetBetweenLines):Size(400):Point("TOP",0,-225):Range(0,20):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameBetweenLines = event
+		currColOpt.frameBetweenLines = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6669,7 +6863,7 @@ function module.options:Load()
 
 	self.optColSet.sliderBlackBack = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2BlackBack):Size(400):Point("TOP",0,-260):Range(0,100):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameBlackBack = event
+		currColOpt.frameBlackBack = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
@@ -6689,7 +6883,7 @@ function module.options:Load()
 
 	self.optColSet.sliderHeight = ELib:Slider(self.optColSet.superTabFrame.tab[2],L.cd2OtherSetIconSize):Size(400):Point("TOP",0,-50):Range(6,128):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconSize = event
+		currColOpt.iconSize = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -6697,9 +6891,9 @@ function module.options:Load()
 
 	self.optColSet.chkGray = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2graytooltip):Point(10,-110):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGray = true
+			currColOpt.iconGray = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGray = nil
+			currColOpt.iconGray = nil
 		end
 		module:ReloadAllSplits()
 	end)
@@ -6713,7 +6907,7 @@ function module.options:Load()
 			arg1 = i,
 			func = function (self,arg)
 				ELib:DropDownClose()
-				VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconPosition = arg
+				currColOpt.iconPosition = arg
 				module:ReloadAllSplits()
 				module.options.optColSet.dropDownIconPos:SetText(module.options.optColSet.dropDownIconPos.PosNames[arg])
 			end,
@@ -6722,67 +6916,82 @@ function module.options:Load()
 
 	self.optColSet.chkCooldown = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetMethodCooldown):Point(10,-135):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsCooldown = true
+			currColOpt.methodsCooldown = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsCooldown = nil
+			currColOpt.methodsCooldown = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkCooldownHideNumbers = ELib:Check(self.optColSet.superTabFrame.tab[2],L.BattleResHideTime):Point("TOPLEFT",self.optColSet.chkCooldown,25,-25):Tooltip(L.BattleResHideTimeTooltip):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = true
+			currColOpt.iconCooldownHideNumbers = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownHideNumbers = nil
+			currColOpt.iconCooldownHideNumbers = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkCooldownShowSwipe = ELib:Check(self.optColSet.superTabFrame.tab[2],"Show edge"):Point("TOPLEFT",self.optColSet.chkCooldownHideNumbers,0,-25):OnClick(function(self) 
+	self.optColSet.chkCooldownShowSwipe = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ShowEgde):Point("TOPLEFT",self.optColSet.chkCooldownHideNumbers,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = true
+			currColOpt.iconCooldownShowSwipe = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconCooldownShowSwipe = nil
+			currColOpt.iconCooldownShowSwipe = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-75):OnClick(function(self) 
+	self.optColSet.textGlowType = ELib:Text(self.optColSet.superTabFrame.tab[2],L.cd2GlowType):Point("TOPLEFT",self.optColSet.chkCooldownShowSwipe,0,-25):Size(0,25):Middle():Left()
+	self.optColSet.dropDownCooldownGlowType = ELib:DropDown(self.optColSet.superTabFrame.tab[2],160,4):Size(170):Point("LEFT",self.optColSet.textGlowType,"RIGHT",5,0):Tooltip(L.cd2GlowTypeTooltip)
+	for i=1,4 do
+		self.optColSet.dropDownCooldownGlowType.List[i] = {
+			text = i == 4 and L.NoText or i,
+			arg1 = i,
+			func = function (self,arg1)
+				ELib:DropDownClose()
+				currColOpt.iconGlowType = arg1
+				module:ReloadAllSplits()
+				module.options.optColSet.dropDownCooldownGlowType:SetText(module.options.optColSet.dropDownCooldownGlowType.List[arg1].text)
+			end,
+		}
+	end
+
+	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-100):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconTitles = true
+			currColOpt.iconTitles = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconTitles = nil
+			currColOpt.iconTitles = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkHideBlizzardEdges = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconHideBlizzardEdges):Point("TOPLEFT",self.optColSet.chkShowTitles,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconHideBlizzardEdges = true
+			currColOpt.iconHideBlizzardEdges = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconHideBlizzardEdges = nil
+			currColOpt.iconHideBlizzardEdges = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkGeneralIcons = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral = true
+			currColOpt.iconGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral = nil
+			currColOpt.iconGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralIcons:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers,module.options.optColSet.textIconPos, module.options.optColSet.textGlowType, module.options.optColSet.dropDownCooldownGlowType)
 	end
 
 	--> Texture and colors Options
 
 	local function dropDownTextureButtonClick(self,arg,name)
 		ELib:DropDownClose()
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureFile = arg
+		currColOpt.textureFile = arg
 		module:ReloadAllSplits()
 		module.options.optColSet.dropDownTexture:SetText(L.cd2OtherSetTexture.." ["..name.."]")
 	end
@@ -6814,14 +7023,14 @@ function module.options:Load()
 	self.optColSet.textDDBorder = ELib:Text(self.optColSet.superTabFrame.tab[3],L.cd2OtherSetBorder..":"):Size(200,20):Point(10,-65)
 	self.optColSet.sliderBorderSize = ELib:Slider(self.optColSet.superTabFrame.tab[3],""):Size(170):Point(180,-68):Range(0,20):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderSize = event
+		currColOpt.textureBorderSize = event
 		self.tooltipText = event
 		self:tooltipReload(self)
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.colorPickerBorder = ExRT.lib.CreateColorPickButton(self.optColSet.superTabFrame.tab[3],20,20,nil,361,-65)
 	self.optColSet.colorPickerBorder:SetScript("OnClick",function (self)
-		ColorPickerFrame.previousValues = {VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorR or module.db.colsDefaults.textureBorderColorR,VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorG or module.db.colsDefaults.textureBorderColorG,VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorB or module.db.colsDefaults.textureBorderColorB, VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorA or module.db.colsDefaults.textureBorderColorA}
+		ColorPickerFrame.previousValues = {currColOpt.textureBorderColorR or module.db.colsDefaults.textureBorderColorR,currColOpt.textureBorderColorG or module.db.colsDefaults.textureBorderColorG,currColOpt.textureBorderColorB or module.db.colsDefaults.textureBorderColorB, currColOpt.textureBorderColorA or module.db.colsDefaults.textureBorderColorA}
 		ColorPickerFrame.hasOpacity = true
 		local nilFunc = ExRT.NULLfunc
 		local function changedCallback(restore)
@@ -6831,51 +7040,51 @@ function module.options:Load()
 			else
 				newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 			end
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorR = newR
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorG = newG
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorB = newB
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorA = newA
+			currColOpt.textureBorderColorR = newR
+			currColOpt.textureBorderColorG = newG
+			currColOpt.textureBorderColorB = newB
+			currColOpt.textureBorderColorA = newA
 			module:ReloadAllSplits()
 
 			self.color:SetColorTexture(newR,newG,newB,newA)
 		end
 		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = nilFunc, nilFunc, nilFunc
-		ColorPickerFrame.opacity = VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorA or module.db.colsDefaults.textureBorderColorA
-		ColorPickerFrame:SetColorRGB(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorR or module.db.colsDefaults.textureBorderColorR,VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorG or module.db.colsDefaults.textureBorderColorG,VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureBorderColorB or module.db.colsDefaults.textureBorderColorB)
+		ColorPickerFrame.opacity = currColOpt.textureBorderColorA or module.db.colsDefaults.textureBorderColorA
+		ColorPickerFrame:SetColorRGB(currColOpt.textureBorderColorR or module.db.colsDefaults.textureBorderColorR,currColOpt.textureBorderColorG or module.db.colsDefaults.textureBorderColorG,currColOpt.textureBorderColorB or module.db.colsDefaults.textureBorderColorB)
 		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = changedCallback, changedCallback, changedCallback
 		ColorPickerFrame:Show()
 	end)
 
 	self.optColSet.chkAnimation = ELib:Check(self.optColSet.superTabFrame.tab[3],L.cd2OtherSetAnimation):Point(10,-97):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureAnimation = true
+			currColOpt.textureAnimation = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureAnimation = nil
+			currColOpt.textureAnimation = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkHideSpark = ELib:Check(self.optColSet.superTabFrame.tab[3],L.cd2OtherSetHideSpark):Point(200,-97):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureHideSpark = true
+			currColOpt.textureHideSpark = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureHideSpark = nil
+			currColOpt.textureHideSpark = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkSmoothAnimation = ELib:Check(self.optColSet.superTabFrame.tab[3],L.cd2TextureSmoothAnim):Point(10,-122):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureSmoothAnimation = true
+			currColOpt.textureSmoothAnimation = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureSmoothAnimation = nil
+			currColOpt.textureSmoothAnimation = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.sliderSmoothAnimationDuration = ELib:Slider(self.optColSet.superTabFrame.tab[3],""):Size(140):Point("TOP",self.optColSet.chkSmoothAnimation,0,-2):Point("LEFT",self.optColSet.chkSmoothAnimation.text,"RIGHT",20,0):Range(10,200):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureSmoothAnimationDuration = event
+		currColOpt.textureSmoothAnimationDuration = event
 		module:ReloadAllSplits()
 		self.tooltipText = event / 100
 		self:tooltipReload(self)
@@ -6896,7 +7105,7 @@ function module.options:Load()
 	self.colorSetupFrame.backCooldownAlpha.inOptName = "textureAlphaCooldown"
 
 	local function colorPickerButtonClick(self)
-		ColorPickerFrame.previousValues = {VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."R"] or module.db.colsDefaults[self.inOptName.."R"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."G"] or module.db.colsDefaults[self.inOptName.."G"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."B"] or module.db.colsDefaults[self.inOptName.."B"], 1}
+		ColorPickerFrame.previousValues = {currColOpt[self.inOptName.."R"] or module.db.colsDefaults[self.inOptName.."R"],currColOpt[self.inOptName.."G"] or module.db.colsDefaults[self.inOptName.."G"],currColOpt[self.inOptName.."B"] or module.db.colsDefaults[self.inOptName.."B"], 1}
 		local nilFunc = ExRT.NULLfunc
 		local function changedCallback(restore)
 			local newR, newG, newB, newA
@@ -6905,21 +7114,21 @@ function module.options:Load()
 			else
 				newA, newR, newG, newB = OpacitySliderFrame:GetValue(), ColorPickerFrame:GetColorRGB()
 			end
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."R"] = newR
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."G"] = newG
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."B"] = newB
+			currColOpt[self.inOptName.."R"] = newR
+			currColOpt[self.inOptName.."G"] = newG
+			currColOpt[self.inOptName.."B"] = newB
 			module:ReloadAllSplits()
 
 			self.color:SetColorTexture(newR,newG,newB,1)
 		end
 		ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = nilFunc, nilFunc, nilFunc
-		ColorPickerFrame:SetColorRGB(VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."R"] or module.db.colsDefaults[self.inOptName.."R"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."G"] or module.db.colsDefaults[self.inOptName.."G"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName.."B"] or module.db.colsDefaults[self.inOptName.."B"])
+		ColorPickerFrame:SetColorRGB(currColOpt[self.inOptName.."R"] or module.db.colsDefaults[self.inOptName.."R"],currColOpt[self.inOptName.."G"] or module.db.colsDefaults[self.inOptName.."G"],currColOpt[self.inOptName.."B"] or module.db.colsDefaults[self.inOptName.."B"])
 		ColorPickerFrame.func, ColorPickerFrame.cancelFunc = changedCallback, changedCallback
 		ColorPickerFrame:Show()
 	end
 
 	local function colorPickerSliderValue(self,newval)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName] = newval / 100
+		currColOpt[self.inOptName] = newval / 100
 		module:ReloadAllSplits()
 		self.tooltipText = ExRT.F.Round(newval)
 		self:tooltipReload(self)
@@ -6927,9 +7136,9 @@ function module.options:Load()
 
 	local function colorPickerCheckBoxClick(self)
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName] = true
+			currColOpt[self.inOptName] = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.inOptName] = nil
+			currColOpt[self.inOptName] = nil
 		end
 		module:ReloadAllSplits()
 	end
@@ -6942,17 +7151,18 @@ function module.options:Load()
 	local colorSetupFrameColorsNames_Text = {L.cd2OtherSetColorFrameText..":",L.cd2OtherSetColorFrameActive..":",L.cd2OtherSetColorFrameCooldown..":"}
 	for j=1,3 do
 		for i=1,3 do
-			self.colorSetupFrame["color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]] = ExRT.lib.CreateColorPickButton(self.colorSetupFrame,20,20,nil,240+(i-1)*40,-35-(j-1)*20)
-			self.colorSetupFrame["color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]].inOptName = "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]
-			self.colorSetupFrame["color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]]:SetScript("OnClick",colorPickerButtonClick)
+			local colorf = ExRT.lib.CreateColorPickButton(self.colorSetupFrame,20,20,nil,240+(i-1)*40,-35-(j-1)*20)
+			self.colorSetupFrame[ "color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j] ] = colorf
+			colorf.inOptName = "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]
+			colorf:SetScript("OnClick",colorPickerButtonClick)
 		end
-		self.colorSetupFrame["text"..colorSetupFrameColorsNames[j]] = ELib:Text(self.colorSetupFrame,colorSetupFrameColorsNames_Text[j],12):Size(210,20):Point(10,-35-(j-1)*20):Right():Color():Shadow()
+		self.colorSetupFrame[ "text"..colorSetupFrameColorsNames[j] ] = ELib:Text(self.colorSetupFrame,colorSetupFrameColorsNames_Text[j],12):Size(210,20):Point(10,-35-(j-1)*20):Right():Color():Shadow()
 	end
 
 	local checksInOptNames = {"textureClassText","textureClassBackground","textureClassTimeLine"}
 	for i=1,3 do
-		self.colorSetupFrame["colorClass"..colorSetupFrameColorsObjectsNames[i]] = ELib:Check(self.colorSetupFrame,""):Point(241+(i-1)*40,-117):Size(18,18):OnClick(colorPickerCheckBoxClick)
-		self.colorSetupFrame["colorClass"..colorSetupFrameColorsObjectsNames[i]].inOptName = checksInOptNames[i]
+		self.colorSetupFrame[ "colorClass"..colorSetupFrameColorsObjectsNames[i] ] = ELib:Check(self.colorSetupFrame,""):Point(241+(i-1)*40,-117):Size(18,18):OnClick(colorPickerCheckBoxClick)
+		self.colorSetupFrame[ "colorClass"..colorSetupFrameColorsObjectsNames[i] ].inOptName = checksInOptNames[i]
 	end
 	self.colorSetupFrame["textClass"] = ELib:Text(self.colorSetupFrame,L.cd2OtherSetColorFrameClass..":",12):Size(210,20):Point(10,-115):Right():Color():Shadow()
 
@@ -6969,13 +7179,13 @@ function module.options:Load()
 			for i=1,3 do
 				local maxColor = 0
 				for n=1,3 do
-					local color = VExRT.ExCD2.colSet[module.options.optColTabs.selected]["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]] or module.db.colsDefaults["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]]
+					local color = currColOpt[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ] or module.db.colsDefaults[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ]
 					maxColor = max(maxColor,color)
 				end
 				for n=1,3 do
-					local color = VExRT.ExCD2.colSet[module.options.optColTabs.selected]["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]] or module.db.colsDefaults["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]]
+					local color = currColOpt[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ] or module.db.colsDefaults[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ]
 					if color < maxColor then
-						VExRT.ExCD2.colSet[module.options.optColTabs.selected]["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]] = color + (maxColor - color) / 2
+						currColOpt[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ] = color + (maxColor - color) / 2
 					end
 				end
 			end
@@ -6989,15 +7199,15 @@ function module.options:Load()
 		for j=1,4 do
 			for i=1,3 do
 				for n=1,3 do
-					VExRT.ExCD2.colSet[module.options.optColTabs.selected]["textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n]] = nil
+					currColOpt[ "textureColor"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]..tmpColors[n] ] = nil
 				end
 			end
 		end
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureAlphaBackground = nil
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureAlphaTimeLine = nil
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureAlphaCooldown = nil
+		currColOpt.textureAlphaBackground = nil
+		currColOpt.textureAlphaTimeLine = nil
+		currColOpt.textureAlphaCooldown = nil
 		for i=1,3 do
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][ checksInOptNames[i] ] = nil
+			currColOpt[ checksInOptNames[i] ] = nil
 		end
 		module.options.showColorFrame(module.options.colorSetupFrame)
 		module:ReloadAllSplits()
@@ -7006,17 +7216,17 @@ function module.options:Load()
 	function self:showColorFrame()
 		for j=1,3 do
 			for i=1,3 do
-				local this = module.options.colorSetupFrame["color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j]]
-				this.color:SetColorTexture(VExRT.ExCD2.colSet[module.options.optColTabs.selected][this.inOptName.."R"] or module.db.colsDefaults[this.inOptName.."R"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][this.inOptName.."G"] or module.db.colsDefaults[this.inOptName.."G"],VExRT.ExCD2.colSet[module.options.optColTabs.selected][this.inOptName.."B"] or module.db.colsDefaults[this.inOptName.."B"],1)
+				local this = module.options.colorSetupFrame[ "color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j] ]
+				this.color:SetColorTexture(currColOpt[this.inOptName.."R"] or module.db.colsDefaults[this.inOptName.."R"],currColOpt[this.inOptName.."G"] or module.db.colsDefaults[this.inOptName.."G"],currColOpt[this.inOptName.."B"] or module.db.colsDefaults[this.inOptName.."B"],1)
 			end
 		end
 		for i=1,3 do
-			module.options.colorSetupFrame["colorClass"..colorSetupFrameColorsObjectsNames[i]]:SetChecked( VExRT.ExCD2.colSet[module.options.optColTabs.selected][ checksInOptNames[i] ] )
+			module.options.colorSetupFrame["colorClass"..colorSetupFrameColorsObjectsNames[i]]:SetChecked( currColOpt[ checksInOptNames[i] ] )
 		end
 
-		self.backAlpha:SetValue((VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.backAlpha.inOptName] or module.db.colsDefaults[self.backAlpha.inOptName])*100)
-		self.backCDAlpha:SetValue((VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.backCDAlpha.inOptName] or module.db.colsDefaults[self.backCDAlpha.inOptName])*100)
-		self.backCooldownAlpha:SetValue((VExRT.ExCD2.colSet[module.options.optColTabs.selected][self.backCooldownAlpha.inOptName] or module.db.colsDefaults[self.backCooldownAlpha.inOptName])*100)
+		self.backAlpha:SetValue((currColOpt[self.backAlpha.inOptName] or module.db.colsDefaults[self.backAlpha.inOptName])*100)
+		self.backCDAlpha:SetValue((currColOpt[self.backCDAlpha.inOptName] or module.db.colsDefaults[self.backCDAlpha.inOptName])*100)
+		self.backCooldownAlpha:SetValue((currColOpt[self.backCooldownAlpha.inOptName] or module.db.colsDefaults[self.backCooldownAlpha.inOptName])*100)
 	end
 
 	self.colorSetupFrame:SetScript("OnShow",self.showColorFrame)
@@ -7024,15 +7234,15 @@ function module.options:Load()
 
 	self.optColSet.chkGeneralColorize = ELib:Check(self.optColSet.superTabFrame.tab[3],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureGeneral = true
+			currColOpt.textureGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureGeneral = nil
+			currColOpt.textureGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralColorize:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.dropDownTexture,module.options.optColSet.chkAnimation,module.options.colorSetupFrame,module.options.optColSet.colorPickerBorder,module.options.optColSet.sliderBorderSize,module.options.optColSet.chkHideSpark)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.dropDownTexture,module.options.optColSet.chkAnimation,module.options.colorSetupFrame,module.options.optColSet.colorPickerBorder,module.options.optColSet.sliderBorderSize,module.options.optColSet.chkHideSpark,module.options.optColSet.textDDTexture, module.options.optColSet.textDDBorder, module.options.optColSet.chkSmoothAnimation, module.options.optColSet.sliderSmoothAnimationDuration)
 	end
 
 	--> Font Options
@@ -7085,9 +7295,9 @@ function module.options:Load()
 
 	self.optColSet.chkFontOtherAvailable = ELib:Check(self.optColSet.superTabFrame.tab[4],L.cd2ColSetFontOtherAvailable):Point(10,-220):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontOtherAvailable = true --fontOtherAvailable
+			currColOpt.fontOtherAvailable = true --fontOtherAvailable
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontOtherAvailable = nil
+			currColOpt.fontOtherAvailable = nil
 		end
 		module:ReloadAllSplits()
 		module.options.fontOtherAvailable( self:GetChecked() )
@@ -7095,7 +7305,7 @@ function module.options:Load()
 
 	self.optColSet.sliderFont = ELib:Slider(self.optColSet.fontsTab,L.cd2OtherSetFontSize):Size(400):Point("TOP",0,-60):Range(8,72):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Size"] = event --fontSize
+		currColOpt[module.options.optColSet.nowFont.."Size"] = event --fontSize
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -7105,7 +7315,7 @@ function module.options:Load()
 
 	local function dropDownFontButtonClick(self,arg1,arg2)
 		ELib:DropDownClose()
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Name"] = arg1 --fontName
+		currColOpt[module.options.optColSet.nowFont.."Name"] = arg1 --fontName
 		module:ReloadAllSplits()
 		local FontNameForDropDown = select(3,string.find(arg1,"\\([^\\]*)$"))
 		if arg2 then
@@ -7139,27 +7349,27 @@ function module.options:Load()
 
 	self.optColSet.chkFontOutline = ELib:Check(self.optColSet.fontsTab,L.cd2OtherSetOutline):Point(10,-95):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Outline"] = true --fontOutline
+			currColOpt[module.options.optColSet.nowFont.."Outline"] = true --fontOutline
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Outline"] = nil
+			currColOpt[module.options.optColSet.nowFont.."Outline"] = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkFontShadow = ELib:Check(self.optColSet.fontsTab,L.cd2OtherSetFontShadow):Point(10,-120):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Shadow"] = true -- fontShadow
+			currColOpt[module.options.optColSet.nowFont.."Shadow"] = true -- fontShadow
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected][module.options.optColSet.nowFont.."Shadow"] = nil
+			currColOpt[module.options.optColSet.nowFont.."Shadow"] = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkGeneralFont = ELib:Check(self.optColSet.superTabFrame.tab[4],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontGeneral = true
+			currColOpt.fontGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontGeneral = nil
+			currColOpt.fontGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
@@ -7173,7 +7383,7 @@ function module.options:Load()
 	self.optColSet.textLeftTemText = ELib:Text(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextLeft..":"):Size(200,20):Point(10,-40)
 	self.optColSet.textLeftTemEdit = ELib:Edit(self.optColSet.superTabFrame.tab[5]):Size(220,20):Point(180,-40):OnChange(function(self,isUser)
 		if isUser then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateLeft = self:GetText()
+			currColOpt.textTemplateLeft = self:GetText()
 			module:ReloadAllSplits()
 		end
 	end)
@@ -7181,7 +7391,7 @@ function module.options:Load()
 	self.optColSet.textRightTemText = ELib:Text(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextRight..":"):Size(200,20):Point(10,-65)
 	self.optColSet.textRightTemEdit = ELib:Edit(self.optColSet.superTabFrame.tab[5]):Size(220,20):Point(180,-65):OnChange(function(self,isUser)
 		if isUser then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateRight = self:GetText()
+			currColOpt.textTemplateRight = self:GetText()
 			module:ReloadAllSplits()
 		end
 	end)
@@ -7189,7 +7399,7 @@ function module.options:Load()
 	self.optColSet.textCenterTemText = ELib:Text(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextCenter..":"):Size(200,20):Point(10,-90)
 	self.optColSet.textCenterTemEdit = ELib:Edit(self.optColSet.superTabFrame.tab[5]):Size(220,20):Point(180,-90):OnChange(function(self,isUser)
 		if isUser then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateCenter = self:GetText()
+			currColOpt.textTemplateCenter = self:GetText()
 			module:ReloadAllSplits()
 		end
 	end)
@@ -7197,9 +7407,9 @@ function module.options:Load()
 	self.optColSet.textAllTemplates = ELib:Text(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextTooltip,11):Size(450,200):Point(10,-115):Top():Color()
 
 	self.optColSet.textResetButton = ELib:Button(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextReset):Size(340,20):Point("TOP",0,-225):OnClick(function(self)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateLeft = nil
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateRight = nil
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].textTemplateCenter = nil
+		currColOpt.textTemplateLeft = nil
+		currColOpt.textTemplateRight = nil
+		currColOpt.textTemplateCenter = nil
 		module:ReloadAllSplits()
 		module.options.optColSet.textLeftTemEdit:SetText(module.db.colsDefaults.textTemplateLeft)
 		module.options.optColSet.textRightTemEdit:SetText(module.db.colsDefaults.textTemplateRight)
@@ -7208,42 +7418,52 @@ function module.options:Load()
 
 	self.optColSet.chkIconName = ELib:Check(self.optColSet.superTabFrame.tab[5],L.cd2ColSetTextIconName):Point(10,-250):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textIconName = true
+			currColOpt.textIconName = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textIconName = nil
+			currColOpt.textIconName = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
+	self.optColSet.sliderIconNameChars = ELib:Slider(self.optColSet.superTabFrame.tab[5],"Максимальная длинна"):Size(140):Point("TOP",self.optColSet.chkIconName,0,-8):Point("LEFT",self.optColSet.chkIconName.text,"RIGHT",20,0):Range(1,50):OnChange(function(self,event) 
+		event = event - event%1
+		currColOpt.textIconNameChars = event
+		module:ReloadAllSplits()
+		self.tooltipText = event
+		self:tooltipReload(self)
+	end)
+	self.optColSet.sliderIconNameChars.Low:SetText("")
+	self.optColSet.sliderIconNameChars.High:SetText("")
+
 	self.optColSet.chkGeneralText = ELib:Check(self.optColSet.superTabFrame.tab[5],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral = true
+			currColOpt.textGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral = nil
+			currColOpt.textGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralText:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton,module.options.optColSet.sliderIconNameChars)
 	end
 
 	--> Method options
 
 	self.optColSet.chkShowOnlyOnCD = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetOnlyOnCD):Point(10,-30):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsShownOnCD = true
+			currColOpt.methodsShownOnCD = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsShownOnCD = nil
+			currColOpt.methodsShownOnCD = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkBotToTop = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetBotToTop):Point(10,-55):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameAnchorBottom = true
+			currColOpt.frameAnchorBottom = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameAnchorBottom = nil
+			currColOpt.frameAnchorBottom = nil
 		end
 		module:ReloadAllSplits()
 	end)
@@ -7257,7 +7477,7 @@ function module.options:Load()
 			arg1 = i,
 			func = function (self,arg)
 				ELib:DropDownClose()
-				VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsStyleAnimation = arg
+				currColOpt.methodsStyleAnimation = arg
 				module:ReloadAllSplits()
 				self:GetParent().parent:SetText(module.options.optColSet.dropDownStyleAnimation.Styles[arg])
 			end
@@ -7273,7 +7493,7 @@ function module.options:Load()
 			arg1 = i,
 			func = function (self,arg)
 				ELib:DropDownClose()
-				VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsTimeLineAnimation = arg
+				currColOpt.methodsTimeLineAnimation = arg
 				module:ReloadAllSplits()
 				self:GetParent().parent:SetText(module.options.optColSet.dropDownTimeLineAnimation.Styles[arg])
 			end
@@ -7282,36 +7502,36 @@ function module.options:Load()
 
 	self.optColSet.chkIconTooltip = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetIconToolip):Point(10,-130):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsIconTooltip = true
+			currColOpt.methodsIconTooltip = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsIconTooltip = nil
+			currColOpt.methodsIconTooltip = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkLineClick = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetLineClick):Point(10,-155):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsLineClick = true
+			currColOpt.methodsLineClick = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsLineClick = nil
+			currColOpt.methodsLineClick = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkLineClickWhisper = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetLineClickWhisper):Point(10,-180):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsLineClickWhisper = true
+			currColOpt.methodsLineClickWhisper = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsLineClickWhisper = nil
+			currColOpt.methodsLineClickWhisper = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkNewSpellNewLine = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2NewSpellNewLine):Point(10,-205):Tooltip(L.cd2NewSpellNewLineTooltip):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsNewSpellNewLine = true
+			currColOpt.methodsNewSpellNewLine = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsNewSpellNewLine = nil
+			currColOpt.methodsNewSpellNewLine = nil
 		end
 		module:ReloadAllSplits()
 	end)
@@ -7325,7 +7545,7 @@ function module.options:Load()
 			arg1 = i,
 			func = function (self,arg)
 				ELib:DropDownClose()
-				VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsSortingRules = arg
+				currColOpt.methodsSortingRules = arg
 				module:ReloadAllSplits()
 				module.main:GROUP_ROSTER_UPDATE()
 				self:GetParent().parent:SetText(module.options.optColSet.dropDownSortingRules.Rules[arg])
@@ -7335,25 +7555,25 @@ function module.options:Load()
 
 	self.optColSet.chkHideOwnSpells = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2MethodsDisableOwn):Point(10,-255):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsHideOwnSpells = true
+			currColOpt.methodsHideOwnSpells = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsHideOwnSpells = nil
+			currColOpt.methodsHideOwnSpells = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkAlphaNotInRange = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2MethodsAlphaNotInRange):Point(10,-280):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsAlphaNotInRange = true
+			currColOpt.methodsAlphaNotInRange = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsAlphaNotInRange = nil
+			currColOpt.methodsAlphaNotInRange = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.sliderAlphaNotInRange = ELib:Slider(self.optColSet.superTabFrame.tab[6],""):Size(140):Point("TOPLEFT",self.optColSet.chkAlphaNotInRange,270,-3):Range(0,100):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsAlphaNotInRangeNum = event
+		currColOpt.methodsAlphaNotInRangeNum = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -7361,27 +7581,27 @@ function module.options:Load()
 
 	self.optColSet.chkDisableActive = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetDisableActive):Point(10,-305):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsDisableActive = true
+			currColOpt.methodsDisableActive = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsDisableActive = nil
+			currColOpt.methodsDisableActive = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkOneSpellPerCol = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetOneSpellPerCol):Point(10,-330):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsOneSpellPerCol = true
+			currColOpt.methodsOneSpellPerCol = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsOneSpellPerCol = nil
+			currColOpt.methodsOneSpellPerCol = nil
 		end
 		module:ReloadAllSplits()
 	end):Tooltip(L.cd2ColSetOneSpellPerColTooltip)
 
 	self.optColSet.chkGeneralMethods = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral = true
+			currColOpt.methodsGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral = nil
+			currColOpt.methodsGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
@@ -7422,9 +7642,9 @@ function module.options:Load()
 
 	self.optColSet.chkOnlyInCombat = ELib:Check(self.optColSet.superTabFrame.tab[7],L.TimerOnlyInCombat):Point(10,-30):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsOnlyInCombat = true
+			currColOpt.methodsOnlyInCombat = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsOnlyInCombat = nil
+			currColOpt.methodsOnlyInCombat = nil
 		end
 		module:ReloadAllSplits()
 	end)
@@ -7435,21 +7655,21 @@ function module.options:Load()
 		module.options.optColSet.chkVisibilityPartyTypeAlways:SetChecked(true)
 		module.options.optColSet.chkVisibilityPartyTypeParty:SetChecked(false)
 		module.options.optColSet.chkVisibilityPartyTypeRaid:SetChecked(false)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityPartyType = nil
+		currColOpt.visibilityPartyType = nil
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.chkVisibilityPartyTypeParty = ELib:Radio(self.optColSet.superTabFrame.tab[7],AGGRO_WARNING_IN_PARTY):Point(10,-95):OnClick(function(self) 
 		module.options.optColSet.chkVisibilityPartyTypeAlways:SetChecked(false)
 		module.options.optColSet.chkVisibilityPartyTypeParty:SetChecked(true)
 		module.options.optColSet.chkVisibilityPartyTypeRaid:SetChecked(false)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityPartyType = 1
+		currColOpt.visibilityPartyType = 1
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.chkVisibilityPartyTypeRaid = ELib:Radio(self.optColSet.superTabFrame.tab[7],L.cd2OtherVisibilityPartyTypeRaid):Point(10,-115):OnClick(function(self) 
 		module.options.optColSet.chkVisibilityPartyTypeAlways:SetChecked(false)
 		module.options.optColSet.chkVisibilityPartyTypeParty:SetChecked(false)
 		module.options.optColSet.chkVisibilityPartyTypeRaid:SetChecked(true)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityPartyType = 2
+		currColOpt.visibilityPartyType = 2
 		module:ReloadAllSplits()
 	end)
 
@@ -7457,63 +7677,63 @@ function module.options:Load()
 
 	self.optColSet.chkVisibilityZoneArena = ELib:Check(self.optColSet.superTabFrame.tab[7],ARENA):Point(10,-155):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableArena = nil
+			currColOpt.visibilityDisableArena = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableArena = true
+			currColOpt.visibilityDisableArena = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkVisibilityZoneBG = ELib:Check(self.optColSet.superTabFrame.tab[7],BATTLEGROUND):Point(10,-180):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableBG = nil
+			currColOpt.visibilityDisableBG = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableBG = true
+			currColOpt.visibilityDisableBG = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkVisibilityZoneScenario = ELib:Check(self.optColSet.superTabFrame.tab[7],TRACKER_HEADER_SCENARIO):Point(10,-205):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisable3ppl = nil
+			currColOpt.visibilityDisable3ppl = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisable3ppl = true
+			currColOpt.visibilityDisable3ppl = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkVisibilityZone5ppl = ELib:Check(self.optColSet.superTabFrame.tab[7],CALENDAR_TYPE_DUNGEON):Point(10,-230):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisable5ppl = nil
+			currColOpt.visibilityDisable5ppl = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisable5ppl = true
+			currColOpt.visibilityDisable5ppl = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkVisibilityZoneRaid = ELib:Check(self.optColSet.superTabFrame.tab[7],RAID):Point(10,-255):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableRaid = nil
+			currColOpt.visibilityDisableRaid = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableRaid = true
+			currColOpt.visibilityDisableRaid = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkVisibilityZoneOutdoor = ELib:Check(self.optColSet.superTabFrame.tab[7],WORLD):Point(10,-280):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableWorld = nil
+			currColOpt.visibilityDisableWorld = nil
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityDisableWorld = true
+			currColOpt.visibilityDisableWorld = true
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.chkGeneralVisibility = ELib:Check(self.optColSet.superTabFrame.tab[7],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityGeneral = true
+			currColOpt.visibilityGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].visibilityGeneral = nil
+			currColOpt.visibilityGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
@@ -7537,7 +7757,7 @@ function module.options:Load()
 			if not isUser then
 				return
 			end
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].blacklistText = strtrim( self:GetText() )
+			currColOpt.blacklistText = strtrim( self:GetText() )
 			if not scheluded then
 				scheluded = ExRT.F.ScheduleTimer(ScheludeFunc, 1)
 			end
@@ -7557,7 +7777,7 @@ function module.options:Load()
 			if not isUser then
 				return
 			end
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].whitelistText = strtrim( self:GetText() )
+			currColOpt.whitelistText = strtrim( self:GetText() )
 			if not scheluded then
 				scheluded = ExRT.F.ScheduleTimer(ScheludeFunc, 1)
 			end
@@ -7566,9 +7786,9 @@ function module.options:Load()
 
 	self.optColSet.chkGeneralBlackList = ELib:Check(self.optColSet.superTabFrame.tab[8],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].blacklistGeneral = true
+			currColOpt.blacklistGeneral = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].blacklistGeneral = nil
+			currColOpt.blacklistGeneral = nil
 		end
 		module:ReloadAllSplits()
 		self:doAlphas()
@@ -7588,11 +7808,11 @@ function module.options:Load()
 		spellsClass = {"PALADIN","PRIEST","WARRIOR","DRUID","SHAMAN"},
 		[1] = {
 			iconSize = 16,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 1,
-			optionIconPosition = 1,
-			optionGray = true,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = true,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = true,
@@ -7604,20 +7824,22 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.8,
 			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%time%",
 			textTemplateCenter = "",
+			textureAnimation = true,
+			_heightType = 1,
 		},
 		[2] = {
 			iconSize = 14,
-			optionAnimation = false,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 1,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = false,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = true,
@@ -7629,72 +7851,22 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.8,
 			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "%time% %name%",
 			textTemplateRight = "",
 			textTemplateCenter = "",
+			_heightType = 1,
 		},
 		[3] = {
-			iconSize = 14,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
-			fontSize = 12,
-			fontName = ExRT.F.defFont,
-			fontOutline = false,
-			fontShadow = true,
-			textureFile = "Interface\\AddOns\\ExRT\\media\\bar26.tga",
-			colorsText = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
-			colorsBack = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
-			colorsTL = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
-			textureAlphaBackground = 0.15,
-			textureAlphaTimeLine = 0.8,
-			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
-			textTemplateLeft = "",
-			textTemplateRight = "%time%",
-			textTemplateCenter = "%name%: %spell%",
-		},
-		[4] = {
-			iconSize = 16,
-			optionAnimation = true,
-			optionStyleAnimation = 2,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
-			fontSize = 12,
-			fontName = ExRT.F.defFont,
-			fontOutline = false,
-			fontShadow = true,
-			textureFile = "Interface\\AddOns\\ExRT\\media\\bar19.tga",
-			colorsText = {1,1,1, 0.5,1,0.5, 1,1,1, 1,1,0.5},
-			colorsBack = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
-			colorsTL = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
-			textureAlphaBackground = 0.15,
-			textureAlphaTimeLine = 1,
-			textureAlphaCooldown = 0.85,
-			optionClassColorBackground = true,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
-			textTemplateLeft = "%name%",
-			textTemplateRight = "%time%",
-			textTemplateCenter = "",
-
-			frameBetweenLines = 1,
-		},
-		[5] = {
-			iconSize = 40,
-			optionAnimation = false,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 1,
-			optionIconPosition = 1,
-			optionGray = false,
+			iconSize = 24,
+			frameWidth = 24,
+			textureAnimation = false,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = true,
 			fontSize = 10,
 			fontName = ExRT.F.defFont,
 			fontOutline = true,
@@ -7706,25 +7878,118 @@ function module.options:Load()
 			textureAlphaBackground = 0,
 			textureAlphaTimeLine = 0,
 			textureAlphaCooldown = 0.7,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
+			textTemplateLeft = "",
+			textTemplateRight = "",
+			textTemplateCenter = "",
+			textIconName = false,
+			methodsCooldown = true,
+			iconCooldownShowSwipe = true,
+
+			ATFLines = 2,
+			ATFCol = 6,
+			ATFGrowth = 2,
+			ATF = true,
+			fontCDSize = 10,
+			iconGlowType = 3,
+
+			func = function(parent,templateFrame)
+				local f1 = ELib:Frame(parent):Point("BOTTOMRIGHT",parent,"RIGHT",-20,0):Size(80,48)
+				ELib:Texture(f1,.8,.8,.8,.8,"BACKGROUND"):Point('x')
+				ELib:Text(f1,UnitName"player",12):Point("CENTER",0,0):Color(0,0.44,0.866):Outline()
+				local i1=templateFrame.lines[1] i1:ClearAllPoints() i1:SetPoint("BOTTOMRIGHT",f1,"BOTTOMLEFT",0,0)
+				local i2=templateFrame.lines[2] i2:ClearAllPoints() i2:SetPoint("RIGHT",i1,"LEFT",0,0)
+				local i3=templateFrame.lines[3] i3:ClearAllPoints() i3:SetPoint("BOTTOM",i1,"TOP",0,0)
+
+				local f2 = ELib:Frame(parent):Point("TOPRIGHT",parent,"RIGHT",-20,-1):Size(80,48)
+				ELib:Texture(f2,.8,.8,.8,.8,"BACKGROUND"):Point("TOPLEFT",f2,0,0):Point("BOTTOMRIGHT",f2,-54,0)
+				ELib:Texture(f2,.2,.2,.2,.8,"BACKGROUND"):Point("TOPLEFT",f2,"TOPRIGHT",-54,0):Point("BOTTOMRIGHT",f2,0,0)
+				ELib:Text(f2,UnitName"player",12):Point("CENTER",0,0):Color(0.77,0.12,0.23):Outline()
+				local i1=templateFrame.lines[4] i1:ClearAllPoints() i1:SetPoint("BOTTOMRIGHT",f2,"BOTTOMLEFT",0,0)
+				local i2=templateFrame.lines[5] i2:ClearAllPoints() i2:SetPoint("RIGHT",i1,"LEFT",0,0)
+				local i3=templateFrame.lines[6] i3:ClearAllPoints() i3:SetPoint("RIGHT",i2,"LEFT",0,0)
+				local i4=templateFrame.lines[7] i4:ClearAllPoints() i4:SetPoint("BOTTOM",i1,"TOP",0,0)
+				local i5=templateFrame.lines[8] i5:ClearAllPoints() i5:SetPoint("RIGHT",i4,"LEFT",0,0)
+			end,
+			disableOnGeneral = true,
+			DiffSpellData = {
+				spells = 	{98008,	108280,	8143,	49576,	61999,	51052,	48707,	48792	},
+				spellsCD = 	{0,	90,	0,	10,	0,	0,	20,	25	},
+				spellsDuration ={0,	0,	10,	0,	0,	0,	5,	8	},
+				spellsDead = 	{nil,	nil,	nil,	nil,	true,	nil,	nil,	nil	},
+				spellsCharge = 	{nil,	nil,	nil,	true,	nil,	nil,	nil,	true	},
+				spellsClass = 	{"SHAMAN","SHAMAN","SHAMAN","DEATHKNIGHT","DEATHKNIGHT","DEATHKNIGHT","DEATHKNIGHT","DEATHKNIGHT"},
+			},
+		},
+		[4] = {
+			iconSize = 16,
+			textureAnimation = true,
+			methodsStyleAnimation = 2,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
+			fontSize = 12,
+			fontName = ExRT.F.defFont,
+			fontOutline = false,
+			fontShadow = true,
+			textureFile = "Interface\\AddOns\\ExRT\\media\\bar19.tga",
+			colorsText = {1,1,1, 0.5,1,0.5, 1,1,1, 1,1,0.5},
+			colorsBack = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			colorsTL = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			textureAlphaBackground = 0.15,
+			textureAlphaTimeLine = 1,
+			textureAlphaCooldown = 0.85,
+			textureClassBackground = true,
+			textureClassTimeLine = true,
+			textureClassText = false,
+			textTemplateLeft = "%name%",
+			textTemplateRight = "%time%",
+			textTemplateCenter = "",
+
+			frameBetweenLines = 1,
+			_heightType = 1,
+		},
+		[5] = {
+			iconSize = 40,
+			textureAnimation = false,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = true,
+			fontSize = 10,
+			fontName = ExRT.F.defFont,
+			fontOutline = true,
+			fontShadow = false,
+			textureFile = ExRT.F.barImg,
+			colorsText = {1,1,1, 0.5,1,0.5, 1,0.5,0.5, 1,1,0.5,},
+			colorsBack = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			colorsTL = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			textureAlphaBackground = 0,
+			textureAlphaTimeLine = 0,
+			textureAlphaCooldown = 0.7,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "",
 			textTemplateRight = "",
 			textTemplateCenter = "",
 			textIconName = true,
 			methodsCooldown = true,
+			textIconNameChars = 6,
 
 			frameWidth = 40,
 			frameColumns = 4,
+			_heightType = 1,
 		},
 		[6] = {
 			iconSize = 12,
-			optionAnimation = false,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 1,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = false,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7736,20 +8001,21 @@ function module.options:Load()
 			textureAlphaBackground = 0,
 			textureAlphaTimeLine = 0,
 			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "%time% %name%",
 			textTemplateRight = "",
 			textTemplateCenter = "",
+			_heightType = 1,
 		},
 		[7] = {
 			iconSize = 14,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 1,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 1,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7761,20 +8027,21 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.8,
 			textureAlphaCooldown = 0.5,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%stime%",
 			textTemplateCenter = "",
+			_heightType = 1,
 		},
 		[8] = {
 			iconSize = 16,
-			optionAnimation = true,
-			optionStyleAnimation = 2,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 2,
-			optionGray = true,
+			textureAnimation = true,
+			methodsStyleAnimation = 2,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 2,
+			iconGray = true,
 			fontSize = 13,
 			fontName = ExRT.F.defFont,
 			fontOutline = true,
@@ -7786,20 +8053,21 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.8,
 			textureAlphaCooldown = 0.5,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = true,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = true,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "",
 			textTemplateCenter = "",
+			_heightType = 1,
 		},
 		[9] = {
 			iconSize = 18,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7811,23 +8079,24 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.9,
 			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = false,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = false,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%stime%",
 			textTemplateCenter = "",
 			textureBorderSize = 1,
 			frameBetweenLines = 3,
 			textureBorderColorA = 1,
+			_heightType = 1,
 		},
 		[10] = {
 			iconSize = 18,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7839,26 +8108,27 @@ function module.options:Load()
 			textureAlphaBackground = 0.3,
 			textureAlphaTimeLine = 0.9,
 			textureAlphaCooldown = 1,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = true,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%stime%",
 			textTemplateCenter = "",
 			textureBorderSize = 1,
 			frameBetweenLines = 3,
 			textureBorderColorA = 1,
+			_heightType = 1,
 		},
 		[11] = {
 			_twoSized = true,
 			_Scaled = .8,
 
 			iconSize = 40,
-			optionAnimation = true,
-			optionStyleAnimation = 1,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = true,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = true,
 			fontSize = 14,
 			fontName = ExRT.F.defFont,
 			fontOutline = true,
@@ -7870,9 +8140,9 @@ function module.options:Load()
 			textureAlphaBackground = 0.8,
 			textureAlphaTimeLine = 1,
 			textureAlphaCooldown = .5,
-			optionClassColorBackground = false,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
+			textureClassBackground = false,
+			textureClassTimeLine = true,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "",
 			textTemplateCenter = "",
@@ -7895,11 +8165,11 @@ function module.options:Load()
 		[12] = {},
 		[13] = {
 			iconSize = 13,
-			optionAnimation = true,
-			optionStyleAnimation = 2,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 2,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 2,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 2,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7911,9 +8181,9 @@ function module.options:Load()
 			textureAlphaBackground = 0.15,
 			textureAlphaTimeLine = 1,
 			textureAlphaCooldown = 0.85,
-			optionClassColorBackground = true,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
+			textureClassBackground = true,
+			textureClassTimeLine = true,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%time%",
 			textTemplateCenter = "",
@@ -7929,14 +8199,15 @@ function module.options:Load()
 				spellsCharge = 	{nil,	nil,	nil,	nil,	nil,	nil,	nil,	true,	},
 				spellsClass = 	{"title","PALADIN","PALADIN","title","WARRIOR","title","DEATHKNIGHT","DEATHKNIGHT"},
 			},
+			_heightType = 1,
 		},
 		[14] = {
 			iconSize = 14,
-			optionAnimation = true,
-			optionStyleAnimation = 2,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 2,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7948,25 +8219,26 @@ function module.options:Load()
 			textureAlphaBackground = 0.15,
 			textureAlphaTimeLine = 1,
 			textureAlphaCooldown = 0.85,
-			optionClassColorBackground = true,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
+			textureClassBackground = true,
+			textureClassTimeLine = true,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%time%",
 			textTemplateCenter = "",
 
 			frameBetweenLines = 0,
+			_heightType = 1,
 		},
 		[15] = {
 			_twoSized = true,
-			_Scaled = .75,
+			_Scaled = .85,
 
 			iconSize = 13,
-			optionAnimation = true,
-			optionStyleAnimation = 2,
-			optionTimeLineAnimation = 2,
-			optionIconPosition = 1,
-			optionGray = false,
+			textureAnimation = true,
+			methodsStyleAnimation = 2,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
 			fontSize = 12,
 			fontName = ExRT.F.defFont,
 			fontOutline = false,
@@ -7978,9 +8250,9 @@ function module.options:Load()
 			textureAlphaBackground = 0.15,
 			textureAlphaTimeLine = 1,
 			textureAlphaCooldown = 0.85,
-			optionClassColorBackground = true,
-			optionClassColorTimeLine = true,
-			optionClassColorText = false,
+			textureClassBackground = true,
+			textureClassTimeLine = true,
+			textureClassText = false,
 			textTemplateLeft = "%name%",
 			textTemplateRight = "%time%",
 			textTemplateCenter = "",
@@ -7998,57 +8270,99 @@ function module.options:Load()
 				spellsCharge = 	{nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	nil,	true,	nil,	nil,	nil,	nil,	nil,},
 				spellsClass = 	{"title","PALADIN","PALADIN",nil,nil,"title","WARRIOR",nil,nil,nil,"title","DRUID","DRUID",nil,nil,"title","DEATHKNIGHT","DEATHKNIGHT",nil,nil,"title","PRIEST","PRIEST"},
 			},
+			_heightType = 1,
 		},
 		[16] = {},
+		[17] = {
+			iconSize = 14,
+			textureAnimation = true,
+			methodsStyleAnimation = 1,
+			methodsTimeLineAnimation = 2,
+			iconPosition = 1,
+			iconGray = false,
+			fontSize = 10,
+			fontName = ExRT.F.defFont,
+			fontOutline = false,
+			fontShadow = true,
+			textureFile = "Interface\\AddOns\\ExRT\\media\\bar26.tga",
+			colorsText = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			colorsBack = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			colorsTL = {1,1,1, 1,1,1, 1,1,1, 1,1,1},
+			textureAlphaBackground = 0.15,
+			textureAlphaTimeLine = 0.8,
+			textureAlphaCooldown = 1,
+			textureClassBackground = false,
+			textureClassTimeLine = true,
+			textureClassText = false,
+			textTemplateLeft = "",
+			textTemplateRight = "%time%",
+			textTemplateCenter = "%name%: %spell%",
+			_heightType = 1,
+		},
+		def = {
+			enabled = true,
+			iconGlowType = 4,
+			textureSmoothAnimation = true,
+		},
 		toOptions = {
-			iconSize = "iconSize",
-			optionAnimation = "textureAnimation",
-			optionStyleAnimation = "methodsStyleAnimation",
-			optionTimeLineAnimation = "methodsTimeLineAnimation",
-			optionIconPosition = "iconPosition",
-			optionGray = "iconGray",
-			fontSize = "fontSize",
-			fontName = "fontName",
-			fontOutline = "fontOutline",
-			fontShadow = "fontShadow",
-			textureFile = "textureFile",
-			colorsText = {"textureColorTextDefaultR","textureColorTextDefaultG","textureColorTextDefaultB","textureColorTextActiveR","textureColorTextActiveG","textureColorTextActiveB","textureColorTextCooldownR","textureColorTextCooldownG","textureColorTextCooldownB","textureColorTextCastR","textureColorTextCastG","textureColorTextCastB",},
-			colorsBack = {"textureColorBackgroundDefaultR","textureColorBackgroundDefaultG","textureColorBackgroundDefaultB","textureColorBackgroundActiveR","textureColorBackgroundActiveG","textureColorBackgroundActiveB","textureColorBackgroundCooldownR","textureColorBackgroundCooldownG","textureColorBackgroundCooldownB","textureColorBackgroundCastR","textureColorBackgroundCastG","textureColorBackgroundCastB",},
-			colorsTL = {"textureColorTimeLineDefaultR","textureColorTimeLineDefaultG","textureColorTimeLineDefaultB","textureColorTimeLineActiveR","textureColorTimeLineActiveG","textureColorTimeLineActiveB","textureColorTimeLineCooldownR","textureColorTimeLineCooldownG","textureColorTimeLineCooldownB","textureColorTimeLineCastR","textureColorTimeLineCastG","textureColorTimeLineCastB",},
-			textureAlphaBackground = "textureAlphaBackground",
-			textureAlphaTimeLine = "textureAlphaTimeLine",
-			textureAlphaCooldown = "textureAlphaCooldown",
-			optionClassColorBackground = "textureClassBackground",
-			optionClassColorTimeLine = "textureClassTimeLine",
-			optionClassColorText = "textureClassText",
-			textTemplateLeft = "textTemplateLeft",
-			textTemplateRight = "textTemplateRight",
-			textTemplateCenter = "textTemplateCenter",
-			methodsCooldown = "methodsCooldown",
-			textIconName = "textIconName",
-			fontOtherAvailable = "fontOtherAvailable",
-			frameBetweenLines = "frameBetweenLines",
-			textureBorderSize = "textureBorderSize",
-			textureBorderColorR = "textureBorderColorR",
-			textureBorderColorG = "textureBorderColorG",
-			textureBorderColorB = "textureBorderColorB",
-			textureBorderColorA = "textureBorderColorA",
-			methodsNewSpellNewLine = "methodsNewSpellNewLine",
-			methodsSortingRules = "methodsSortingRules",
-			iconTitles = "iconTitles",
-			iconHideBlizzardEdges = "iconHideBlizzardEdges",
+			iconSize = true,
+			textureAnimation = true,
+			methodsStyleAnimation = true,
+			methodsTimeLineAnimation = true,
+			iconPosition = true,
+			iconGray = true,
+			fontSize = true,
+			fontName = true,
+			fontOutline = true,
+			fontShadow = true,
+			textureFile = true,
+			textureAlphaBackground = true,
+			textureAlphaTimeLine = true,
+			textureAlphaCooldown = true,
+			textureClassBackground = true,
+			textureClassTimeLine = true,
+			textureClassText = true,
+			textTemplateLeft = true,
+			textTemplateRight = true,
+			textTemplateCenter = true,
+			methodsCooldown = true,
+			textIconName = true,
+			fontOtherAvailable = true,
+			frameBetweenLines = true,
+			textureBorderSize = true,
+			textureBorderColorR = true,
+			textureBorderColorG = true,
+			textureBorderColorB = true,
+			textureBorderColorA = true,
+			methodsNewSpellNewLine = true,
+			methodsSortingRules = true,
+			iconTitles = true,
+			iconHideBlizzardEdges = true,
+			iconCooldownShowSwipe = true,
+			textIconNameChars = true,
 
-			iconGeneral = "iconGeneral",
-			textureGeneral = "textureGeneral",
-			methodsGeneral = "methodsGeneral",
-			fontGeneral = "fontGeneral",
-			textGeneral = "textGeneral",
-			frameGeneral = "frameGeneral",
+			iconGeneral = true,
+			textureGeneral = true,
+			methodsGeneral = true,
+			fontGeneral = true,
+			textGeneral = true,
+			frameGeneral = true,
 
-			frameColumns = "frameColumns",
+			frameColumns = true,
 
-			ATF = "ATF",
-			fontCDSize = "fontCDSize",
+			textureSmoothAnimation = true,
+			textureSmoothAnimationDuration = true,
+			iconCooldownHideNumbers = true,
+			textureHideSpark = true,
+			iconGlowType = true,
+			methodsDisableActive = true,
+			methodsOneSpellPerCol = true,
+
+			fontCDSize = true,
+			ATF = true,
+			ATFLines = true,
+			ATFCol = true,
+			ATFGrowth = true,
 
 			_frameAlpha = "frameAlpha",
 			_frameWidth = "frameWidth",
@@ -8058,198 +8372,174 @@ function module.options:Load()
 	}
 	self.optColSet.templateSaveData = nil
 
-	self.optColSet.templatesScrollFrame = ELib:ScrollFrame(self.optColSet.superTabFrame.tab[9]):Size(430,380):Point("TOP",0,-50):Height( ceil(#self.optColSet.templateData/2) * 125 + 10 )
-	for i=1,#self.optColSet.templateData do if i==1 or not self.optColSet.templateData[i-1]._twoSized then
-		local templateFrame = CreateFrame("Button",nil,self.optColSet.templatesScrollFrame.C, BackdropTemplateMixin and "BackdropTemplate")
-		self.optColSet.templates[i] = templateFrame
-		templateFrame:SetPoint(self.optColSet.templateData[i]._twoSized and "TOP" or (i-1)%2 == 0 and "TOPRIGHT" or "TOPLEFT",self.optColSet.templatesScrollFrame.C,"TOP",0,-floor((i-1)/2) * 125 - 5)
-		templateFrame:SetSize(185,120)
-		if self.optColSet.templateData[i]._twoSized then
-			templateFrame:SetSize(370,120)
-		end
-		templateFrame:SetBackdrop({edgeFile = ExRT.F.defBorder, edgeSize = 8})
-		templateFrame:SetBackdropBorderColor(1,1,1,0)
-		templateFrame.backgTexture = templateFrame:CreateTexture(nil, "BACKGROUND")
-		templateFrame.backgTexture:SetAllPoints()
+	for i=1,#self.optColSet.templateData do
+		local t = self.optColSet.templateData[i]
+		if t.colorsText then for j=1,3 do for k=1,3 do
+			local key = "textureColorText"..(j == 1 and "Default" or j==2 and "Active" or "Cooldown")..(k==1 and "R" or k==2 and "G" or "B")
+			t[key] = t.colorsText[(j-1)*3+k]
+			self.optColSet.templateData.toOptions[key] = true
+		end end end
+		if t.colorsBack then for j=1,3 do for k=1,3 do
+			local key = "textureColorBackground"..(j == 1 and "Default" or j==2 and "Active" or "Cooldown")..(k==1 and "R" or k==2 and "G" or "B")
+			t[key] = t.colorsBack[(j-1)*3+k]
+			self.optColSet.templateData.toOptions[key] = true
+		end end end
+		if t.colorsTL then for j=1,3 do for k=1,3 do
+			local key = "textureColorTimeLine"..(j == 1 and "Default" or j==2 and "Active" or "Cooldown")..(k==1 and "R" or k==2 and "G" or "B")
+			t[key] = t.colorsTL[(j-1)*3+k]
+			self.optColSet.templateData.toOptions[key] = true
+		end end end
+		t.colorsText, t.colorsBack, t.colorsTL = nil
+	end
 
-		templateFrame:SetScript("OnEnter",function (self)
-			self:SetBackdropBorderColor(1,1,1,0.5)
+	local function TemplateButtonOnEnter(self)
+		if self.templateData.disableOnGeneral and module.options.optColTabs.selected == (module.db.maxColumns + 1) then
+			self.backgTexture:SetColorTexture(1,0,0,0.3)
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+			GameTooltip:AddLine(L.cd2ATFTooltipDisabled)
+			GameTooltip:Show()
+		else
 			self.backgTexture:SetColorTexture(1,1,1,0.3)
-		end)
-
-		templateFrame:SetScript("OnLeave",function (self)
-		  	self:SetBackdropBorderColor(1,1,1,0)
-			self.backgTexture:SetColorTexture(0,0,0,0)
-		end)
-
-		templateFrame:SetScript("OnClick",function (self)
-		  	module.options.optColSet.templateRestore:Show()
-		  	module.options.optColSet.templateSaveData = {}
-		  	ExRT.F.table_copy(VExRT.ExCD2.colSet[module.options.optColTabs.selected],module.options.optColSet.templateSaveData)
-		  	for key,val in pairs(module.options.optColSet.templateData.toOptions) do
-		  		if type(val) ~= "table" then
-		  			if string.find(key,"^_") then
-		  				local key2 = string.sub(key,2)
-		  				if module.options.optColSet.templateData[i][key2] then
-		  					VExRT.ExCD2.colSet[module.options.optColTabs.selected][val] = module.options.optColSet.templateData[i][key2]
-		  				elseif key2 == "frameWidth" then
-		  					VExRT.ExCD2.colSet[module.options.optColTabs.selected][val] = max(110,VExRT.ExCD2.colSet[module.options.optColTabs.selected][val] or 110)
-		  				end
-		  			elseif val:find("General") then
-		  				VExRT.ExCD2.colSet[module.options.optColTabs.selected][val] = nil
-		  			else
-		  				VExRT.ExCD2.colSet[module.options.optColTabs.selected][val] = module.options.optColSet.templateData[i][key]
-		  			end
-		  		else
-		  			for k=1,#val do
-		  				VExRT.ExCD2.colSet[module.options.optColTabs.selected][val[k]] = module.options.optColSet.templateData[i][key][k]
-		  			end
-		  		end
-		  	end
-		  	module:ReloadAllSplits()
-		  	module.options.selectColumnTab()
-		end)
-
-		local width,height = self.optColSet.templateData[i].frameWidth or 160, self.optColSet.templateData[i].iconSize
-		local betweenLines = self.optColSet.templateData[i].frameBetweenLines or 0
-
-		templateFrame.barWidth = width
-		templateFrame.iconSize = height
-
-		templateFrame.fontName = self.optColSet.templateData[i].fontName
-		templateFrame.fontSize = self.optColSet.templateData[i].fontSize
-		templateFrame.fontOutline = self.optColSet.templateData[i].fontOutline
-		templateFrame.fontShadow = self.optColSet.templateData[i].fontShadow
-		for _,pos in pairs({"Left","Right","Center","Icon"}) do
-			templateFrame["font"..pos.."Name"] = self.optColSet.templateData[i]["font"..pos.."Name"] or templateFrame.fontName
-			templateFrame["font"..pos.."Size"] = self.optColSet.templateData[i]["font"..pos.."Size"] or templateFrame.fontSize
-			templateFrame["font"..pos.."Outline"] = self.optColSet.templateData[i]["font"..pos.."Outline"] or templateFrame.fontOutline
-			templateFrame["font"..pos.."Shadow"] = self.optColSet.templateData[i]["font"..pos.."Shadow"] or templateFrame.fontShadow
 		end
-
-		templateFrame.textTemplateLeft = self.optColSet.templateData[i].textTemplateLeft
-		templateFrame.textTemplateRight = self.optColSet.templateData[i].textTemplateRight
-		templateFrame.textTemplateCenter = self.optColSet.templateData[i].textTemplateCenter
-		templateFrame.optionIconName = self.optColSet.templateData[i].textIconName
-		templateFrame.optionCooldown = self.optColSet.templateData[i].methodsCooldown
-		templateFrame.optionIconPosition = self.optColSet.templateData[i].optionIconPosition
-		templateFrame.optionAnimation = self.optColSet.templateData[i].optionAnimation
-		templateFrame.optionGray = self.optColSet.templateData[i].optionGray
-
-		templateFrame.textureFile = self.optColSet.templateData[i].textureFile
-		templateFrame.optionAlphaBackground = self.optColSet.templateData[i].textureAlphaBackground
-		templateFrame.optionAlphaTimeLine = self.optColSet.templateData[i].textureAlphaTimeLine
-		templateFrame.optionAlphaCooldown = self.optColSet.templateData[i].textureAlphaCooldown
-
-		templateFrame.optionTimeLineAnimation = self.optColSet.templateData[i].optionTimeLineAnimation
-		templateFrame.optionStyleAnimation = self.optColSet.templateData[i].optionStyleAnimation
-
-		templateFrame.optionClassColorBackground = self.optColSet.templateData[i].optionClassColorBackground
-		templateFrame.optionClassColorTimeLine = self.optColSet.templateData[i].optionClassColorTimeLine
-		templateFrame.optionClassColorText = self.optColSet.templateData[i].optionClassColorText
-
-		templateFrame.optionIconHideBlizzardEdges = self.optColSet.templateData[i].iconHideBlizzardEdges
-
-		templateFrame.textureBorderColorR = self.optColSet.templateData[i].textureBorderColorR or 0
-		templateFrame.textureBorderColorG = self.optColSet.templateData[i].textureBorderColorG or 0
-		templateFrame.textureBorderColorB = self.optColSet.templateData[i].textureBorderColorB or 0
-		templateFrame.textureBorderColorA = self.optColSet.templateData[i].textureBorderColorA or 0
-
-		templateFrame.optionIconTitles = self.optColSet.templateData[i].iconTitles
-
-		local templateDataColorsTablesNames = {"colorsText","colorsBack","colorsTL"}
-		for object_c=1,3 do
-			for state_c=1,3 do
-				templateFrame["optionColor".. colorSetupFrameColorsObjectsNames[object_c] .. colorSetupFrameColorsNames[state_c] ] = {
-					r = self.optColSet.templateData[i][ templateDataColorsTablesNames[object_c] ][ (state_c-1)*3+1 ],
-					g = self.optColSet.templateData[i][ templateDataColorsTablesNames[object_c] ][ (state_c-1)*3+2 ],
-					b = self.optColSet.templateData[i][ templateDataColorsTablesNames[object_c] ][ (state_c-1)*3+3 ],
-				}
+	end
+	local function TemplateButtonOnLeave(self)
+		self.backgTexture:SetColorTexture(0,0,0,0)
+		GameTooltip_Hide()
+	end
+	local function TemplateButtonOnClick(self)
+		local templateData = self.templateData
+		if templateData.disableOnGeneral and module.options.optColTabs.selected == (module.db.maxColumns + 1) then
+			return
+		end
+	  	module.options.optColSet.templateRestore:Show()
+	  	module.options.optColSet.templateSaveData = {}
+	  	ExRT.F.table_copy(currColOpt,module.options.optColSet.templateSaveData)
+	  	for key,val in pairs(module.options.optColSet.templateData.toOptions) do
+			if type(val) == "boolean" then
+				val = key
 			end
-		end
+  			if key:sub(1,1)=="_" then
+  				key = key:sub(2)
+  				if templateData[key] then
+  					currColOpt[val] = templateData[key]
+  				elseif key == "frameWidth" then
+  					currColOpt[val] = max(130,currColOpt[val] or 130)
+  				end
+  			elseif val:find("General") then
+  				currColOpt[val] = nil
+  			else
+  				currColOpt[val] = templateData[key]
+  			end
+	  	end
+	  	module:ReloadAllSplits()
+	  	module.options.selectColumnTab()
+	end
+	local TemplateMT = {__index = self.optColSet.templateData.def}
 
-		templateFrame.textureBorderSize = self.optColSet.templateData[i].textureBorderSize or 0
-
-		templateFrame.optionSmoothAnimationDuration = module.db.colsDefaults.textureSmoothAnimationDuration
-
-		local DiffSpellData = self.optColSet.templateData[i].DiffSpellData
-
-		local classColorsTable = type(CUSTOM_CLASS_COLORS)=="table" and CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
-
-		templateFrame.lines = {}
-		for j=1,DiffSpellData and #DiffSpellData.spells or 5 do if not DiffSpellData or DiffSpellData.spells[j] ~= 0 then
-			local bar = CreateBar(templateFrame)
-			templateFrame.lines[j] = bar
-
-			if not self.optColSet.templateData[i].frameColumns then
-				bar:SetPoint("TOP",0,-height*(j-1)-10 -betweenLines*(j-1))
+	self.optColSet.templatesScrollFrame = ELib:ScrollFrame(self.optColSet.superTabFrame.tab[9]):Size(430,380):Point("TOP",0,-50):Height( ceil(#self.optColSet.templateData/2) * 125 + 10 )
+	for i=1,#self.optColSet.templateData do 
+		local templateData = self.optColSet.templateData[i]
+		if ExRT.F.table_len(templateData) > 0 then
+			local buttonFrame = CreateFrame("Button",nil,self.optColSet.templatesScrollFrame.C)
+			if templateData._twoSized then
+				buttonFrame:SetSize(370,120)
 			else
-				local inLine = (j-1) % self.optColSet.templateData[i].frameColumns
-				local line = ExRT.F.Round( ((j-1) - inLine) / self.optColSet.templateData[i].frameColumns )
-				if self.optColSet.templateData[i]._twoSized then
-					bar:SetPoint("TOPLEFT", inLine*width + 10, -line*height -10 -betweenLines*line) 
-				else
-					local pos = inLine * width
-					local totalWidth = self.optColSet.templateData[i].frameColumns * width
-					pos = pos - totalWidth / 2
-					bar:SetPoint("TOPLEFT", templateFrame,"TOP",pos, -line*height -10 -betweenLines*line) 
+				buttonFrame:SetSize(185,120)
+			end
+			buttonFrame:SetPoint(templateData._twoSized and "TOP" or (i-1)%2 == 0 and "TOPRIGHT" or "TOPLEFT",self.optColSet.templatesScrollFrame.C,"TOP",0,-floor((i-1)/2) * 125 - 5)
+			buttonFrame.backgTexture = buttonFrame:CreateTexture(nil, "BACKGROUND")
+			buttonFrame.backgTexture:SetAllPoints()
+			buttonFrame.templateData = templateData
+	
+			buttonFrame:SetScript("OnEnter",TemplateButtonOnEnter)	
+			buttonFrame:SetScript("OnLeave",TemplateButtonOnLeave)
+			buttonFrame:SetScript("OnClick",TemplateButtonOnClick)
+
+			local templateFrame = module:CreateColumn(buttonFrame)
+			self.optColSet.templates[i] = templateFrame
+			setmetatable(templateData,TemplateMT)
+			module:ColApplyStyle(templateFrame,templateData,{},module.db.colsDefaults)
+			templateFrame:ClearAllPoints()
+			templateFrame:Show()
+			templateFrame:SetPoint("CENTER")
+			if templateData._heightType == 1 then
+				local l = #(templateData.DiffSpellData and templateData.DiffSpellData.spells or self.optColSet.templateData.spells)
+				l = ceil(l / (templateData.frameColumns or 1))
+				local height = templateData.iconSize * l + ((templateData.frameBetweenLines or 0) - 1) * l
+				templateFrame:SetSize(min(templateFrame:GetWidth(),templateData._twoSized and 370 or 185),min(height,120))
+			else
+				templateFrame:SetSize(min(templateFrame:GetWidth(),templateData._twoSized and 370 or 185),min(templateFrame:GetHeight(),120))
+			end
+	
+			if templateData._Scaled then
+				templateFrame:SetScale(templateData._Scaled)
+			end
+			if templateData.func then
+				templateData.func(buttonFrame,templateFrame)
+			end
+	
+			local spellData = templateData.DiffSpellData or self.optColSet.templateData
+	
+			local classColorsTable = type(CUSTOM_CLASS_COLORS)=="table" and CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
+	
+			local lineC = 0
+			for j=1,#spellData.spells do 
+				lineC = lineC + 1
+				local bar = templateFrame.lines[lineC]
+	
+				local spellClass = spellData.spellsClass[j]
+				if spellData.spells[j] ~= 0 then
+					local spellID = spellData.spells[j]
+					local spellName,_,spellTexture = GetSpellInfo(spellID or 0)
+					spellName = spellName or "unk"
+
+
+					bar.data = {
+						name = ExRT.SDB.charName,
+						fullName = ExRT.SDB.charName,
+						icon = spellTexture,
+						spellName = i == 3 and spellName:sub(1,spellName:find(' ')) or spellName,
+						db = {spellID,spellClass},
+						lastUse = GetTime(),
+						charge = GetTime(),
+						cd = spellData.spellsCD[j],
+						duration = spellData.spellsDuration[j],
+						classColor = classColorsTable[spellClass] or module.db.notAClass,
+
+						disabled = spellData.spellsDead[j],
+						isCharge = spellData.spellsCharge[j],
+
+						specialUpdateData = function(data)
+							local currTime = GetTime()
+							if data.isCharge then
+								if (data.charge + data.cd) < currTime then
+									data.charge = currTime
+									data.lastUse = currTime
+								end
+								return
+							end
+							if data.cd ~= 0 then
+								if (data.lastUse + data.cd) < currTime then
+									data.lastUse = currTime
+								end
+							elseif data.duration ~= 0 then
+								if (data.lastUse + data.duration) < currTime then
+									data.lastUse = currTime
+								end
+							end
+						end,
+					}
+				end
+
+				bar:UpdateStyle()
+				bar:Update()
+				bar:UpdateStatus()
+				if spellClass == "title" then
+					bar:CreateTitle()
 				end
 			end
-
-			if self.optColSet.templateData[i]._Scaled then
-				bar:SetScale(self.optColSet.templateData[i]._Scaled)
-			end
-
-			local spellID = DiffSpellData and DiffSpellData.spells[j] or self.optColSet.templateData.spells[j]
-			local spellName,_,spellTexture = GetSpellInfo(spellID or 0)
-			spellName = spellName or "unk"
-
-			local spellClass = DiffSpellData and DiffSpellData.spellsClass[j] or self.optColSet.templateData.spellsClass[j]
-
-			bar.data = {
-				name = ExRT.SDB.charName,
-				fullName = ExRT.SDB.charName,
-				icon = spellTexture,
-				spellName = i == 3 and spellName:sub(1,spellName:find(' ')) or spellName,
-				db = {spellID,spellClass},
-				lastUse = GetTime(),
-				charge = GetTime(),
-				cd = DiffSpellData and DiffSpellData.spellsCD[j] or self.optColSet.templateData.spellsCD[j],
-				duration = DiffSpellData and DiffSpellData.spellsDuration[j] or self.optColSet.templateData.spellsDuration[j],
-				classColor = classColorsTable[spellClass] or module.db.notAClass,
-
-				disabled = ((DiffSpellData and DiffSpellData.spellsDead[j]) or (not DiffSpellData and self.optColSet.templateData.spellsDead[j])) and 1,
-				isCharge = DiffSpellData and DiffSpellData.spellsCharge[j] or not DiffSpellData and self.optColSet.templateData.spellsCharge[j],
-
-				specialUpdateData = function(data)
-					local currTime = GetTime()
-					if data.isCharge then
-						if (data.charge + data.cd) < currTime then
-							data.charge = currTime
-							data.lastUse = currTime
-						end
-						return
-					end
-					if data.cd ~= 0 then
-						if (data.lastUse + data.cd) < currTime then
-							data.lastUse = currTime
-						end
-					elseif data.duration ~= 0 then
-						if (data.lastUse + data.duration) < currTime then
-							data.lastUse = currTime
-						end
-					end
-				end,
-			}
-
-			bar:UpdateStyle()
-			bar:Update()
-			bar:UpdateStatus()
-			if spellClass == "title" then
-				bar:CreateTitle()
-			end
-		end end
-	end end
+		end
+	end
 
 	self.optColSet.templateRestore = CreateFrame("Button",nil,self.optColSet.superTabFrame.tab[9], BackdropTemplateMixin and "BackdropTemplate")
 	self.optColSet.templateRestore:SetPoint("TOP",0,-10)
@@ -8264,8 +8554,8 @@ function module.options:Load()
 	  	self.text:SetTextColor(1,1,1,1)	  
 	end)
 	self.optColSet.templateRestore:SetScript("OnClick",function (self)
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected] = {}
-		ExRT.F.table_copy(module.options.optColSet.templateSaveData,VExRT.ExCD2.colSet[module.options.optColTabs.selected])
+		wipe(currColOpt)
+		ExRT.F.table_copy(module.options.optColSet.templateSaveData,currColOpt)
 		module:ReloadAllSplits()
 		module.options.selectColumnTab()
 		self:Hide()
@@ -8274,25 +8564,25 @@ function module.options:Load()
 
 	--> Attach to frame
 
-	self.optColSet.chkATF = ELib:Check(self.optColSet.superTabFrame.tab[10],"|cff00ff00 >>>"..L.Enable.."<<<"):Point(10,-10):OnClick(function(self) 
+	self.optColSet.chkATF = ELib:Check(self.optColSet.superTabFrame.tab[10],L.Enable):Point(10,-10):OnClick(function(self) 
 		if self:GetChecked() then
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATF = true
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textureGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontGeneral = false
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsCooldown = true
+			currColOpt.ATF = true
+			currColOpt.frameGeneral = false
+			currColOpt.textureGeneral = false
+			currColOpt.iconGeneral = false
+			currColOpt.methodsGeneral = false
+			currColOpt.textGeneral = false
+			currColOpt.fontGeneral = false
+			currColOpt.methodsCooldown = true
 		else
-			VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATF = nil
+			currColOpt.ATF = nil
 		end
 		module:ReloadAllSplits()
 	end)
 
 	self.optColSet.sliderATFHeight = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2OtherSetIconSize):Size(400):Point("TOP",0,-50):Range(6,128):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconSize = event
+		currColOpt.iconSize = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -8300,22 +8590,22 @@ function module.options:Load()
 
 	self.optColSet.sliderATFFont = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2OtherSetFontSize):Size(400):Point("TOP",0,-85):Range(8,72):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontCDSize = event
+		currColOpt.fontCDSize = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
 	end)
 
-	self.optColSet.ATFframePreview = ELib:Frame(self.optColSet.superTabFrame.tab[10]):Point("TOP",0,-140):Size(80,45)
+	self.optColSet.ATFframePreview = ELib:Frame(self.optColSet.superTabFrame.tab[10]):Point("TOPLEFT",140,-140):Size(80,45)
 	ELib:Texture(self.optColSet.ATFframePreview,.8,.8,.8,.8,"BACKGROUND"):Point('x')
 
-	ELib:Text(self.optColSet.superTabFrame.tab[10],L.cd2ATFPosition..":"):Point("RIGHT",self.optColSet.ATFframePreview,"LEFT",-50,0):Color()
+	ELib:Text(self.optColSet.superTabFrame.tab[10],L.cd2ATFPosition..":"):Point("RIGHT",self.optColSet.ATFframePreview,"LEFT",-30,0):Color()
 
 	function self.optColSet.ATFRadiosCheck()
 		for k,v in pairs(self.optColSet.ATFRadios) do
 			v:SetChecked(false)
 		end
-		local pos = VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos or 1
+		local pos = currColOpt.ATFPos or 1
 		local k = pos == 1 and "LB" or
 			pos == 2 and "LT" or
 			pos == 3 and "TL" or
@@ -8329,54 +8619,104 @@ function module.options:Load()
 	end
 	self.optColSet.ATFRadios = {}
 	self.optColSet.ATFRadios.LB = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("BOTTOMRIGHT",self.optColSet.ATFframePreview,"BOTTOMLEFT",-2,2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 1
+		currColOpt.ATFPos = 1
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.LT = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPRIGHT",self.optColSet.ATFframePreview,"TOPLEFT",-2,-2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 2
+		currColOpt.ATFPos = 2
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.TL = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("BOTTOMLEFT",self.optColSet.ATFframePreview,"TOPLEFT",2,2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 3
+		currColOpt.ATFPos = 3
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.TR = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("BOTTOMRIGHT",self.optColSet.ATFframePreview,"TOPRIGHT",-2,2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 4
+		currColOpt.ATFPos = 4
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.RT = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPLEFT",self.optColSet.ATFframePreview,"TOPRIGHT",2,-2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 5
+		currColOpt.ATFPos = 5
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.RB = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("BOTTOMLEFT",self.optColSet.ATFframePreview,"BOTTOMRIGHT",2,2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 6
+		currColOpt.ATFPos = 6
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.BR = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPRIGHT",self.optColSet.ATFframePreview,"BOTTOMRIGHT",-2,-2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 7
+		currColOpt.ATFPos = 7
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.BL = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPLEFT",self.optColSet.ATFframePreview,"BOTTOMLEFT",2,-2):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 8
+		currColOpt.ATFPos = 8
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 	self.optColSet.ATFRadios.C = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("CENTER",self.optColSet.ATFframePreview,"CENTER",0,0):OnClick(function(self) 
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFPos = 9
+		currColOpt.ATFPos = 9
 		module.options.optColSet.ATFRadiosCheck()
 		module:ReloadAllSplits()
 	end)
 
+	ELib:Text(self.optColSet.superTabFrame.tab[10],L.cd2ATFGrowth..":"):Point("TOPLEFT",320,-115):Color()
+
+	self.optColSet.ATFTypeGrowth1 = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPLEFT",280,-140):OnClick(function(self) 
+		currColOpt.ATFGrowth = 1
+		module.options.optColSet.ATFTypeGrowth2:SetChecked(false)
+		module:ReloadAllSplits()
+	end)
+
+	do
+		local p = self.optColSet.ATFTypeGrowth1
+		local x,y = 20, 5
+		for i=1,3 do
+			p["l"..i] = p:CreateLine(nil, "BACKGROUND", nil, -5)
+			p["l"..i]:SetTexture("Interface/AddOns/ExRT/media/line")
+			p["l"..i]:SetVertexColor(1,0,0,1)
+			p["l"..i]:SetThickness(8)
+
+			x, y = (i % 2) == 1 and 20 or 120, i < 3 and 10 or -10
+			p["l"..i]:SetStartPoint("CENTER",p, x, y)
+			x, y = (i % 2) == 1 and 120 or 20, i < 2 and 10 or -10
+			p["l"..i]:SetEndPoint("CENTER",p, x, y)
+		end
+	end
+
+	self.optColSet.ATFTypeGrowth2 = ELib:Radio(self.optColSet.superTabFrame.tab[10]):Point("TOPLEFT",280,-180):OnClick(function(self) 
+		currColOpt.ATFGrowth = 2
+		module.options.optColSet.ATFTypeGrowth1:SetChecked(false)
+		module:ReloadAllSplits()
+	end)
+
+	do
+		local p = self.optColSet.ATFTypeGrowth2
+		local x,y = 20, 10
+		for i=1,11 do
+			p["l"..i] = p:CreateLine(nil, "BACKGROUND", nil, -5)
+			p["l"..i]:SetTexture("Interface/AddOns/ExRT/media/line")
+			p["l"..i]:SetVertexColor(1,0,0,1)
+			p["l"..i]:SetThickness(8)
+
+			p["l"..i]:SetStartPoint("CENTER",p, x, y)
+			if (i % 2) == 0 then
+				x = x + 20
+				y = y + 20
+			else
+				y = y - 20
+			end
+			p["l"..i]:SetEndPoint("CENTER",p, x, y)
+		end
+	end
+
 	self.optColSet.sliderATFMaxCol = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2ATFMaxCol):Size(400):Point("TOP",0,-230):Range(1,20):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFCol = event
+		currColOpt.ATFCol = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -8384,7 +8724,7 @@ function module.options:Load()
 
 	self.optColSet.sliderATFMaxLine = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2ATFMaxLine):Size(400):Point("TOP",0,-265):Range(1,20):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFLines = event
+		currColOpt.ATFLines = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -8392,7 +8732,7 @@ function module.options:Load()
 
 	self.optColSet.sliderATFOffsetX = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2ATFOffsetX):Size(400):Point("TOP",0,-300):Range(-300,300):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFOffsetX = event
+		currColOpt.ATFOffsetX = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -8400,7 +8740,7 @@ function module.options:Load()
 
 	self.optColSet.sliderATFOffsetY = ELib:Slider(self.optColSet.superTabFrame.tab[10],L.cd2ATFOffsetY):Size(400):Point("TOP",0,-335):Range(-300,300):SetObey(true):OnChange(function(self,event) 
 		event = event - event%1
-		VExRT.ExCD2.colSet[module.options.optColTabs.selected].ATFOffsetY = event
+		currColOpt.ATFOffsetY = event
 		module:ReloadAllSplits()
 		self.tooltipText = event
 		self:tooltipReload(self)
@@ -8416,6 +8756,139 @@ function module.options:Load()
 			module.options.tab.tabs[2]:SetScript("OnShow",nil)
 		end)
 	end
+
+	--> Advanced
+
+	local advTab = self.optColTabs.tabs[module.db.maxColumns+2]
+	
+	advTab.hotfixEdit = ELib:MultiEdit(advTab):Size(650,200):Point("TOPLEFT",0,-30):SetText(VExRT.ExCD2.Hotfixes or ""):OnChange(function(self,isUser)
+		if not isUser then
+			return
+		end
+		VExRT.ExCD2.Hotfixes = self:GetText()
+		advTab.hotfixApplyBut:Show()
+	end)
+	advTab.hotfixEditText = ELib:Text(advTab,"Hotfixes: [?]"):Point("BOTTOMLEFT",advTab.hotfixEdit,"TOPLEFT",10,3):Color():Run(function(self) self.TooltipOverwrite = "Functionality to change predefined addons data for spells.\nExample to change spells cooldown: \"62618:cd:120\". (Change cooldown of spell 62618 to 2 mins)\nExample to change spells duration: \"1044:dur:15\". (Change duration of spell 1044 to 15 sec)" end):Tooltip()
+	advTab.hotfixApplyBut = ELib:Button(advTab,APPLY):Point("TOPLEFT",advTab.hotfixEdit,"TOPRIGHT",5,-2):Size(90,25):Shown(false):OnClick(function (self)
+		self:Hide()
+		module:ApplyHotfixes()
+	end)
+
+
+	advTab.importWindow, advTab.exportWindow = ExRT.F.CreateImportExportWindows()
+
+	function advTab.importWindow:ImportFunc(str)
+		local header = str:sub(1,8)
+		if header:sub(1,7) ~= "EXRTCDP" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
+			StaticPopupDialogs["EXRT_EXCD_IMPORT"] = {
+				text = "|cffff0000"..ERROR_CAPS.."|r "..L.ProfilesFail3,
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show("EXRT_EXCD_IMPORT")
+			return
+		end
+
+		advTab:TextToProfile(str:sub(9),header:sub(8,8)=="0")
+	end
+	
+	advTab.exportButton = ELib:Button(advTab,L.ProfilesExport):Size(235,25):Point("TOPLEFT",advTab.hotfixEdit,"BOTTOMLEFT",0,-30):OnClick(function (self)
+		advTab.exportWindow:NewPoint("CENTER",UIParent,0,0)
+		advTab:ProfileToText()
+	end)
+
+	advTab.importButton = ELib:Button(advTab,L.ProfilesImport):Size(235,25):Point("LEFT",advTab.exportButton,"RIGHT",85,0):OnClick(function (self)
+		advTab.importWindow:NewPoint("CENTER",UIParent,0,0)
+		advTab.importWindow:Show()
+	end)
+
+	function advTab:ProfileToText()
+		local new = {}
+		for key,val in pairs(VExRT.ExCD2) do
+			new[key] = val
+		end
+		local strlist = ExRT.F.TableToText(new)
+		strlist[1] = "0,"..strlist[1]
+		local str = table.concat(strlist)
+	
+		local compressed
+		if #str < 1000000 then
+			compressed = LibDeflate:CompressDeflate(str,{level = 5})
+		end
+		local encoded = "EXRTCDP"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+	
+		ExRT.F.dprint("Str len:",#str,"Encoded len:",#encoded)
+	
+		if ExRT.isDev then
+			module.db.exportTable = new
+		end
+		advTab.exportWindow.Edit:SetText(encoded)
+		advTab.exportWindow:Show()
+	end
+
+	function advTab:TextToProfile(str,uncompressed)
+		local decoded = LibDeflate:DecodeForPrint(str)
+		local decompressed
+		if uncompressed then
+			decompressed = decoded
+		else
+			decompressed = LibDeflate:DecompressDeflate(decoded)
+		end
+		decoded = nil
+
+		local _,tableData = strsplit(",",decompressed,2)
+		decompressed = nil
+	
+		local successful, res = pcall(ExRT.F.TextToTable,tableData)
+		if ExRT.isDev then
+			module.db.lastImportDB = res
+			if module.db.exportTable and type(res)=="table" then
+				module.db.diffTable = {}
+				print("Compare table",ExRT.F.table_compare(res,module.db.exportTable,module.db.diffTable))
+			end
+		end
+		if successful and res then
+			StaticPopupDialogs["EXRT_EXCD_IMPORT"] = {
+				text = L.cd2ProfileRewriteAlert,
+				button1 = APPLY,
+				button2 = CANCEL,
+				selectCallbackByIndex = true,
+				OnButton1 = function()
+					ExRT.F.table_rewrite(VExRT.ExCD2,res)
+					module.main:ADDON_LOADED()
+					module:ReloadAllSplits()
+					module.options.chkLock:SetChecked(VExRT.ExCD2.lock)
+					module.options.chkEnable:SetChecked(VExRT.ExCD2.enabled)
+					module.options.chkEnable:ColorState()
+					module.options.categories:Update()
+					module.options.categories.buttons[1]:Click()
+				end,
+				OnButton2 = function()
+					res = nil
+				end,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+		else
+			StaticPopupDialogs["EXRT_EXCD_IMPORT"] = {
+				text = L.ProfilesFail1..(res and "\nError code: "..res or ""),
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+		end
+	
+		StaticPopup_Show("EXRT_EXCD_IMPORT")
+	end
+
+
 
 	--> Other setts
 	self.optSetTab = ELib:OneTab(self.tab.tabs[2],L.cd2OtherSet):Size(652,34):Point("TOP",0,-532)
@@ -8572,6 +9045,390 @@ local function CreateWhiteList(text)
 	return whitelist
 end
 
+local function IconGlowNoLibStart(self)
+	local LCG = LibStub("LibCustomGlow-1.0",true)
+	if not LCG then
+		return
+	end
+	local iconGlowType = self:GetParent().parent.optionGlowType
+	if (not iconGlowType or iconGlowType == 1) then
+		return LCG.ButtonGlow_Start(self)
+	elseif iconGlowType == 2 then
+		return LCG.AutoCastGlow_Start(self)
+	elseif iconGlowType == 3 then
+		return LCG.PixelGlow_Start(self)
+	elseif iconGlowType == 4 then
+		return ExRT.NULLfunc(self)
+	end
+end
+
+local function IconGlowNoLibStop(self)
+	local LCG = LibStub("LibCustomGlow-1.0",true)
+	if not LCG then
+		return
+	end
+	local iconGlowType = self:GetParent().parent.optionGlowType
+	if (not iconGlowType or iconGlowType == 1) then
+		return LCG.ButtonGlow_Stop(self)
+	elseif iconGlowType == 2 then
+		return LCG.AutoCastGlow_Stop(self)
+	elseif iconGlowType == 3 then
+		return LCG.PixelGlow_Stop(self)
+	elseif iconGlowType == 4 then
+		return ExRT.NULLfunc(self)
+	end
+end
+
+function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth,argScaleFix)
+	local LCG = LibStub("LibCustomGlow-1.0",true)
+
+	if not columnFrame.LOADEDs then
+		columnFrame.LOADEDs = {}
+	end
+
+	columnFrame.iconSize = (not currColOpt.iconGeneral and currColOpt.iconSize) or (currColOpt.iconGeneral and generalOpt.iconSize) or defOpt.iconSize
+
+	local frameBetweenLines = (not currColOpt.frameGeneral and currColOpt.frameBetweenLines) or (currColOpt.frameGeneral and generalOpt.frameBetweenLines) or defOpt.frameBetweenLines
+	columnFrame.frameBetweenLines = frameBetweenLines
+
+	local frameColumns = (not currColOpt.frameGeneral and currColOpt.frameColumns) or (currColOpt.frameGeneral and generalOpt.frameColumns) or defOpt.frameColumns
+	columnFrame.frameColumns = frameColumns
+	local linesShown = (not currColOpt.frameGeneral and currColOpt.frameLines) or (currColOpt.frameGeneral and generalOpt.frameLines) or defOpt.frameLines
+	linesShown = ceil(linesShown / frameColumns)
+	columnFrame.GlinesShown = linesShown
+	local linesTotal = linesShown * frameColumns
+	if currColOpt.ATF then
+		linesTotal = 100
+	end
+	if VExRT.ExCD2.SplitOpt then 
+		columnFrame.Gheight = columnFrame.iconSize*linesShown+frameBetweenLines*(linesShown-1)
+		columnFrame:SetHeight(columnFrame.iconSize*linesShown+frameBetweenLines*(linesShown-1)) 
+	elseif not currColOpt.ATF then
+		columnFrame.Gheight = columnFrame.iconSize*linesShown
+		columnFrame:SetHeight(columnFrame.iconSize*linesShown)
+	end
+	columnFrame.NumberLastLinesActive = module.db.maxLinesInCol
+
+	if currColOpt.enabled then
+		for j=1,linesTotal do
+			if not columnFrame.LOADEDs[j] then
+				columnFrame.lines[j] = CreateBar(columnFrame)
+				columnFrame.lines[j]:Hide()
+				columnFrame.LOADEDs[j] = true
+			end
+		end
+		columnFrame.IsColumnEnabled = true
+	else
+		columnFrame.IsColumnEnabled = false
+	end
+
+	local frameAlpha = (not currColOpt.frameGeneral and currColOpt.frameAlpha) or (currColOpt.frameGeneral and generalOpt.frameAlpha) or defOpt.frameAlpha
+	columnFrame:SetAlpha(frameAlpha/100) 
+
+	local frameScale = (not currColOpt.frameGeneral and currColOpt.frameScale) or (currColOpt.frameGeneral and generalOpt.frameScale) or defOpt.frameScale
+	if VExRT.ExCD2.SplitOpt then 
+		if argScaleFix == "ScaleFix" then
+			ExRT.F.SetScaleFix(columnFrame,frameScale/100)
+		else
+			columnFrame:SetScale(frameScale/100) 
+		end
+	else
+		columnFrame:SetScale(1)
+	end
+
+	local blackBack = (not currColOpt.frameGeneral and currColOpt.frameBlackBack) or (currColOpt.frameGeneral and generalOpt.frameBlackBack) or defOpt.frameBlackBack
+	columnFrame.texture:SetColorTexture(0,0,0,blackBack / 100)
+
+	--> View options
+	columnFrame.optionClassColorBackground = (not currColOpt.textureGeneral and currColOpt.textureClassBackground) or (currColOpt.textureGeneral and generalOpt.textureClassBackground)
+	columnFrame.optionClassColorTimeLine = (not currColOpt.textureGeneral and currColOpt.textureClassTimeLine) or (currColOpt.textureGeneral and generalOpt.textureClassTimeLine)
+	columnFrame.optionClassColorText = (not currColOpt.textureGeneral and currColOpt.textureClassText) or (currColOpt.textureGeneral and generalOpt.textureClassText)
+
+	columnFrame.optionAnimation = (not currColOpt.textureGeneral and currColOpt.textureAnimation) or (currColOpt.textureGeneral and generalOpt.textureAnimation)
+	columnFrame.optionSmoothAnimation = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimation) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimation)
+	columnFrame.optionSmoothAnimationDuration = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimationDuration) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimationDuration) or defOpt.textureSmoothAnimationDuration
+		columnFrame.optionSmoothAnimationDuration = columnFrame.optionSmoothAnimationDuration / 200
+	columnFrame.optionLinesMax = min(linesShown*frameColumns,module.db.maxLinesInCol)
+	columnFrame.optionShownOnCD = (not currColOpt.methodsGeneral and currColOpt.methodsShownOnCD) or (currColOpt.methodsGeneral and generalOpt.methodsShownOnCD)
+	columnFrame.optionIconPosition = (not currColOpt.iconGeneral and currColOpt.iconPosition) or (currColOpt.iconGeneral and generalOpt.iconPosition) or defOpt.iconPosition
+	columnFrame.optionStyleAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsStyleAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsStyleAnimation) or defOpt.methodsStyleAnimation
+	columnFrame.optionTimeLineAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsTimeLineAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsTimeLineAnimation) or defOpt.methodsTimeLineAnimation
+	columnFrame.optionCooldown = (not currColOpt.iconGeneral and currColOpt.methodsCooldown) or (currColOpt.iconGeneral and generalOpt.methodsCooldown)
+	columnFrame.optionCooldownHideNumbers = (not currColOpt.iconGeneral and currColOpt.iconCooldownHideNumbers) or (currColOpt.iconGeneral and generalOpt.iconCooldownHideNumbers)
+	columnFrame.optionCooldownShowSwipe = (not currColOpt.iconGeneral and currColOpt.iconCooldownShowSwipe) or (currColOpt.iconGeneral and generalOpt.iconCooldownShowSwipe)
+	columnFrame.optionIconName = (not currColOpt.textGeneral and currColOpt.textIconName) or (currColOpt.textGeneral and generalOpt.textIconName)
+	columnFrame.optionHideSpark = (not currColOpt.textureGeneral and currColOpt.textureHideSpark) or (currColOpt.textureGeneral and generalOpt.textureHideSpark)
+	columnFrame.optionIconTitles = (not currColOpt.iconGeneral and currColOpt.iconTitles) or (currColOpt.iconGeneral and generalOpt.iconTitles)
+		columnFrame.optionIconTitles = columnFrame.optionIconTitles and not (columnFrame.optionIconPosition == 3)
+	columnFrame.optionIconHideBlizzardEdges = (not currColOpt.iconGeneral and currColOpt.iconHideBlizzardEdges) or (currColOpt.iconGeneral and generalOpt.iconHideBlizzardEdges)
+
+	local iconGlowType = (not currColOpt.iconGeneral and currColOpt.iconGlowType) or (currColOpt.iconGeneral and generalOpt.iconGlowType) or defOpt.iconGlowType
+	columnFrame.optionGlowType = iconGlowType
+	local glowStart, glowStop
+	if LCG and (not iconGlowType or iconGlowType == 1) then
+		glowStart, glowStop = LCG.ButtonGlow_Start, LCG.ButtonGlow_Stop
+	elseif LCG and iconGlowType == 2 then
+		glowStart, glowStop = LCG.AutoCastGlow_Start, LCG.AutoCastGlow_Stop
+	elseif LCG and iconGlowType == 3 then
+		glowStart, glowStop = LCG.PixelGlow_Start, LCG.PixelGlow_Stop
+	elseif LCG and iconGlowType == 4 then
+		glowStart, glowStop = ExRT.NULLfunc, ExRT.NULLfunc
+	elseif not LCG then
+		glowStart, glowStop = IconGlowNoLibStart, IconGlowNoLibStop
+	end
+	columnFrame.glowStart = glowStart or ExRT.NULLfunc
+	columnFrame.glowStop = glowStop or ExRT.NULLfunc
+
+	columnFrame.methodsIconTooltip = (not currColOpt.methodsGeneral and currColOpt.methodsIconTooltip) or (currColOpt.methodsGeneral and generalOpt.methodsIconTooltip) 
+	columnFrame.methodsLineClick = (not currColOpt.methodsGeneral and currColOpt.methodsLineClick) or (currColOpt.methodsGeneral and generalOpt.methodsLineClick)
+	columnFrame.methodsLineClickWhisper = (not currColOpt.methodsGeneral and currColOpt.methodsLineClickWhisper) or (currColOpt.methodsGeneral and generalOpt.methodsLineClickWhisper)
+	columnFrame.methodsNewSpellNewLine = (not currColOpt.methodsGeneral and currColOpt.methodsNewSpellNewLine) or (currColOpt.methodsGeneral and generalOpt.methodsNewSpellNewLine)
+	columnFrame.methodsSortingRules = (not currColOpt.methodsGeneral and currColOpt.methodsSortingRules) or (currColOpt.methodsGeneral and generalOpt.methodsSortingRules) or defOpt.methodsSortingRules
+	columnFrame.methodsHideOwnSpells = (not currColOpt.methodsGeneral and currColOpt.methodsHideOwnSpells) or (currColOpt.methodsGeneral and generalOpt.methodsHideOwnSpells)
+	columnFrame.methodsAlphaNotInRange = (not currColOpt.methodsGeneral and currColOpt.methodsAlphaNotInRange) or (currColOpt.methodsGeneral and generalOpt.methodsAlphaNotInRange)
+	columnFrame.methodsAlphaNotInRangeNum = (not currColOpt.methodsGeneral and currColOpt.methodsAlphaNotInRangeNum) or (currColOpt.methodsGeneral and generalOpt.methodsAlphaNotInRangeNum) or defOpt.methodsAlphaNotInRangeNum
+		columnFrame.methodsAlphaNotInRangeNum = columnFrame.methodsAlphaNotInRangeNum / 100
+	columnFrame.methodsDisableActive = (not currColOpt.methodsGeneral and currColOpt.methodsDisableActive) or (currColOpt.methodsGeneral and generalOpt.methodsDisableActive)
+	columnFrame.methodsOneSpellPerCol = (not currColOpt.methodsGeneral and currColOpt.methodsOneSpellPerCol) or (currColOpt.methodsGeneral and generalOpt.methodsOneSpellPerCol)
+
+	columnFrame.methodsOnlyInCombat = (not currColOpt.visibilityGeneral and currColOpt.methodsOnlyInCombat) or (currColOpt.visibilityGeneral and generalOpt.methodsOnlyInCombat)
+	columnFrame.visibilityPartyType = (not currColOpt.visibilityGeneral and currColOpt.visibilityPartyType) or (currColOpt.visibilityGeneral and generalOpt.visibilityPartyType)
+	columnFrame.visibilityArena = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableArena) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableArena) )
+	columnFrame.visibilityBG = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableBG) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableBG) )
+	columnFrame.visibility3ppl = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisable3ppl) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisable3ppl) )
+	columnFrame.visibility5ppl = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisable5ppl) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisable5ppl) )
+	columnFrame.visibilityRaid = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableRaid) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableRaid) )
+	columnFrame.visibilityWorld = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableWorld) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableWorld) )
+
+	columnFrame.textTemplateLeft = (not currColOpt.textGeneral and currColOpt.textTemplateLeft) or (currColOpt.textGeneral and generalOpt.textTemplateLeft) or defOpt.textTemplateLeft
+	columnFrame.textTemplateRight = (not currColOpt.textGeneral and currColOpt.textTemplateRight) or (currColOpt.textGeneral and generalOpt.textTemplateRight) or defOpt.textTemplateRight
+	columnFrame.textTemplateCenter = (not currColOpt.textGeneral and currColOpt.textTemplateCenter) or (currColOpt.textGeneral and generalOpt.textTemplateCenter) or defOpt.textTemplateCenter
+
+	columnFrame.textIconNameChars = (not currColOpt.textGeneral and currColOpt.textIconNameChars) or (currColOpt.textGeneral and generalOpt.textIconNameChars) or defOpt.textIconNameChars
+
+	local blacklistText = (not currColOpt.blacklistGeneral and currColOpt.blacklistText) or (currColOpt.blacklistGeneral and generalOpt.blacklistText) or defOpt.blacklistText
+	columnFrame.BlackList = CreateBlackList(blacklistText)
+	local whitelistText = (not currColOpt.blacklistGeneral and currColOpt.whitelistText) or (currColOpt.blacklistGeneral and generalOpt.whitelistText) or defOpt.whitelistText
+	columnFrame.WhiteList = CreateWhiteList(whitelistText)
+
+	local frameWidth = (not currColOpt.frameGeneral and currColOpt.frameWidth) or (currColOpt.frameGeneral and generalOpt.frameWidth) or defOpt.frameWidth
+	columnFrame:SetWidth(frameWidth*frameColumns)
+	columnFrame.barWidth = frameWidth
+
+	columnFrame.optionGray = (not currColOpt.iconGeneral and currColOpt.iconGray) or (currColOpt.iconGeneral and generalOpt.iconGray)
+	columnFrame.fontSize = (not currColOpt.fontGeneral and currColOpt.fontSize) or (currColOpt.fontGeneral and generalOpt.fontSize) or defOpt.fontSize
+	columnFrame.fontName = (not currColOpt.fontGeneral and currColOpt.fontName) or (currColOpt.fontGeneral and generalOpt.fontName) or defOpt.fontName
+	columnFrame.fontOutline = (not currColOpt.fontGeneral and currColOpt.fontOutline) or (currColOpt.fontGeneral and generalOpt.fontOutline)
+	columnFrame.fontShadow = (not currColOpt.fontGeneral and currColOpt.fontShadow) or (currColOpt.fontGeneral and generalOpt.fontShadow)
+	columnFrame.textureFile = (not currColOpt.textureGeneral and currColOpt.textureFile) or (currColOpt.textureGeneral and generalOpt.textureFile) or defOpt.textureFile
+	columnFrame.textureBorderSize = (not currColOpt.textureGeneral and currColOpt.textureBorderSize) or (currColOpt.textureGeneral and generalOpt.textureBorderSize) or defOpt.textureBorderSize
+
+	columnFrame.textureBorderColorR = (not currColOpt.textureGeneral and currColOpt.textureBorderColorR) or (currColOpt.textureGeneral and generalOpt.textureBorderColorR) or defOpt.textureBorderColorR
+	columnFrame.textureBorderColorG = (not currColOpt.textureGeneral and currColOpt.textureBorderColorG) or (currColOpt.textureGeneral and generalOpt.textureBorderColorG) or defOpt.textureBorderColorG
+	columnFrame.textureBorderColorB = (not currColOpt.textureGeneral and currColOpt.textureBorderColorB) or (currColOpt.textureGeneral and generalOpt.textureBorderColorB) or defOpt.textureBorderColorB
+	columnFrame.textureBorderColorA = (not currColOpt.textureGeneral and currColOpt.textureBorderColorA) or (currColOpt.textureGeneral and generalOpt.textureBorderColorA) or defOpt.textureBorderColorA
+
+	local fontOtherAvailable = (not currColOpt.fontGeneral and currColOpt.fontOtherAvailable) or (currColOpt.fontGeneral and generalOpt.fontOtherAvailable)
+
+	columnFrame.fontLeftSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontLeftSize) or (currColOpt.fontGeneral and generalOpt.fontLeftSize) or defOpt.fontSize
+	columnFrame.fontLeftName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontLeftName) or (currColOpt.fontGeneral and generalOpt.fontLeftName) or defOpt.fontName
+	columnFrame.fontLeftOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftOutline) or (currColOpt.fontGeneral and generalOpt.fontLeftOutline)))
+	columnFrame.fontLeftShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftShadow) or (currColOpt.fontGeneral and generalOpt.fontLeftShadow)))
+
+	columnFrame.fontRightSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontRightSize) or (currColOpt.fontGeneral and generalOpt.fontRightSize) or defOpt.fontSize
+	columnFrame.fontRightName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontRightName) or (currColOpt.fontGeneral and generalOpt.fontRightName) or defOpt.fontName
+	columnFrame.fontRightOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightOutline) or (currColOpt.fontGeneral and generalOpt.fontRightOutline)))
+	columnFrame.fontRightShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightShadow) or (currColOpt.fontGeneral and generalOpt.fontRightShadow)))
+
+	columnFrame.fontCenterSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontCenterSize) or (currColOpt.fontGeneral and generalOpt.fontCenterSize) or defOpt.fontSize
+	columnFrame.fontCenterName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontCenterName) or (currColOpt.fontGeneral and generalOpt.fontCenterName) or defOpt.fontName
+	columnFrame.fontCenterOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterOutline) or (currColOpt.fontGeneral and generalOpt.fontCenterOutline)))
+	columnFrame.fontCenterShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterShadow) or (currColOpt.fontGeneral and generalOpt.fontCenterShadow)))
+
+	columnFrame.fontIconSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontIconSize) or (currColOpt.fontGeneral and generalOpt.fontIconSize) or defOpt.fontSize
+	columnFrame.fontIconName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
+	columnFrame.fontIconOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
+	columnFrame.fontIconShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
+
+	columnFrame.fontCDSize = (not currColOpt.fontGeneral and currColOpt.fontCDSize) or (currColOpt.fontGeneral and generalOpt.fontCDSize) or defOpt.fontCDSize
+
+	for j=1,3 do
+		for n=1,3 do
+			local object = colorSetupFrameColorsObjectsNames[j]
+			local state = colorSetupFrameColorsNames[n]
+			if not columnFrame["optionColor"..object..state] then
+				columnFrame["optionColor"..object..state] = {}
+			end
+
+			columnFrame["optionColor"..object..state].r = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."R"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."R"]) or defOpt["textureColor"..object..state.."R"]
+			columnFrame["optionColor"..object..state].g = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."G"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."G"]) or defOpt["textureColor"..object..state.."G"]
+			columnFrame["optionColor"..object..state].b = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."B"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."B"]) or defOpt["textureColor"..object..state.."B"]
+		end
+	end
+
+	columnFrame.optionAlphaBackground = (not currColOpt.textureGeneral and currColOpt.textureAlphaBackground) or (currColOpt.textureGeneral and generalOpt.textureAlphaBackground) or defOpt.textureAlphaBackground
+	columnFrame.optionAlphaTimeLine = (not currColOpt.textureGeneral and currColOpt.textureAlphaTimeLine) or (currColOpt.textureGeneral and generalOpt.textureAlphaTimeLine) or defOpt.textureAlphaTimeLine
+	columnFrame.optionAlphaCooldown = (not currColOpt.textureGeneral and currColOpt.textureAlphaCooldown) or (currColOpt.textureGeneral and generalOpt.textureAlphaCooldown) or defOpt.textureAlphaCooldown
+
+	columnFrame.ATFenabled = currColOpt.ATF
+
+	if currColOpt.ATF then
+		local ATFPos = currColOpt.ATFPos
+		local ATFGrowth = currColOpt.ATFGrowth or defOpt.ATFGrowth
+		local ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "BOTTOMLEFT"
+		local ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+		local ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
+		local ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
+		if ATFPos == 1 then
+			ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "BOTTOMLEFT"
+			ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
+			ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
+		elseif ATFPos == 2 then
+			ATFPoint1,ATFPoint2 = "TOPRIGHT", "TOPLEFT"
+			ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, -frameBetweenLines
+		elseif ATFPos == 3 then
+			ATFPoint1,ATFPoint2 = "BOTTOMLEFT", "TOPLEFT"
+			ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+			ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
+		elseif ATFPos == 4 then
+			ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "TOPRIGHT"
+			ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
+			ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
+		elseif ATFPos == 5 then
+			ATFPoint1,ATFPoint2 = "TOPLEFT", "TOPRIGHT"
+			ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, -frameBetweenLines
+		elseif ATFPos == 6 then
+			ATFPoint1,ATFPoint2 = "BOTTOMLEFT", "BOTTOMRIGHT"
+			ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
+		elseif ATFPos == 7 then
+			ATFPoint1,ATFPoint2 = "TOPRIGHT", "BOTTOMRIGHT"
+			ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, -frameBetweenLines
+		elseif ATFPos == 8 then
+			ATFPoint1,ATFPoint2 = "TOPLEFT", "BOTTOMLEFT"
+			ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
+		elseif ATFPos == 9 then
+			ATFPoint1,ATFPoint2 = "CENTER", "CENTER"
+			ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
+			ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
+			ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, -frameBetweenLines
+		end
+		if ATFGrowth == 2 then
+			ATFPointCol1,ATFPointCol2,ATFPointLine1,ATFPointLine2 = ATFPointLine1,ATFPointLine2,ATFPointCol1,ATFPointCol2
+		end
+		columnFrame.ATFPoint1 = ATFPoint1
+		columnFrame.ATFPoint2 = ATFPoint2
+		columnFrame.ATFPointCol1 = ATFPointCol1
+		columnFrame.ATFPointCol2 = ATFPointCol2
+		columnFrame.ATFPointLine1 = ATFPointLine1
+		columnFrame.ATFPointLine2 = ATFPointLine2
+		columnFrame.ATFBetweenLinesCol = ATFBetweenLinesCol
+		columnFrame.ATFBetweenLinesLine = ATFBetweenLinesLine
+
+		columnFrame.ATFCol = ATFGrowth == 2 and (currColOpt.ATFLines or defOpt.ATFLines) or (currColOpt.ATFCol or defOpt.ATFCol)
+		columnFrame.ATFMax = (currColOpt.ATFLines or defOpt.ATFLines) * (currColOpt.ATFCol or defOpt.ATFCol)
+
+		columnFrame.ATFOffsetX = currColOpt.ATFOffsetX or defOpt.ATFOffsetX
+		columnFrame.ATFOffsetY = currColOpt.ATFOffsetY or defOpt.ATFOffsetY
+
+		columnFrame.ATFGrowth = ATFGrowth
+
+
+		--rewrite something for fix
+		columnFrame.optionCooldown = true
+		columnFrame.optionHideSpark = true
+		columnFrame.iconSize = currColOpt.iconSize or defOpt.iconSize
+		columnFrame.barWidth = columnFrame.iconSize + 0.001
+
+		columnFrame.textTemplateLeft = ""
+		columnFrame.textTemplateRight = ""
+		columnFrame.textTemplateCenter = ""
+
+		columnFrame.optionIconTitles = false
+		columnFrame.optionTimeLineAnimation = 1
+		columnFrame.methodsNewSpellNewLine = false
+
+		columnFrame.texture:SetColorTexture(0,0,0,0)
+	end
+
+	if currColOpt.enabled then
+		for n=1,#columnFrame.lines do
+			local line = columnFrame.lines[n]
+			line:UpdateStyle()
+			if line:IsVisible() then
+				line:UpdateStatus()
+			end
+		end
+
+		local frameAnchorBottom = (not currColOpt.methodsGeneral and currColOpt.frameAnchorBottom) or (currColOpt.methodsGeneral and generalOpt.frameAnchorBottom)
+
+		local lastLine = nil
+		for n=1,linesTotal do 
+			local line
+			local colLine = columnFrame.lines[n]
+			if columnFrame.ATFenabled then
+				line = 1
+			elseif frameAnchorBottom then
+				local inLine = (n-1) % frameColumns
+				line = ((n-1) - inLine) / frameColumns
+				colLine:ClearAllPoints()
+				colLine:SetPoint("BOTTOMLEFT", inLine*frameWidth, line*columnFrame.iconSize+line*frameBetweenLines) 
+				colLine.ATFanchored = nil
+			else
+				local inLine = (n-1) % frameColumns
+				line = ExRT.F.Round( ((n-1) - inLine) / frameColumns )
+				colLine:ClearAllPoints()
+				colLine:SetPoint("TOPLEFT", inLine*frameWidth, -line*columnFrame.iconSize-line*frameBetweenLines) 
+				colLine.ATFanchored = nil
+			end
+
+			if line ~= lastLine then
+				colLine.IsNewLine = true
+			else
+				colLine.IsNewLine = nil
+			end
+			lastLine = line
+		end
+	end
+
+	if currColOpt.enabled and VExRT.ExCD2.enabled then
+		columnFrame.optionIsEnabled = true
+		columnFrame:Show()
+	else
+		columnFrame.optionIsEnabled = nil
+		columnFrame:Hide()
+	end
+	if currColOpt.ATF then
+		columnFrame:ClearAllPoints()
+		columnFrame:SetPoint("LEFT",UIParent,"RIGHT",-2000, 0)
+	elseif not VExRT.ExCD2.SplitOpt and mainWidth then
+		columnFrame:ClearAllPoints()
+		columnFrame:SetPoint("TOPLEFT",module.frame,mainWidth, 0)
+	else
+		if currColOpt.posX and currColOpt.posY then
+			columnFrame:ClearAllPoints()
+			columnFrame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",currColOpt.posX,currColOpt.posY)
+		else
+			columnFrame:ClearAllPoints()
+			columnFrame:SetPoint("CENTER",UIParent,"CENTER",0,0)
+		end
+	end
+
+	columnFrame.Gwidth = frameWidth*frameColumns
+end
+
 local lastSplitsReload = 0
 function module:ReloadAllSplits(argScaleFix)
 	local _ctime = GetTime()
@@ -8582,349 +9439,24 @@ function module:ReloadAllSplits(argScaleFix)
 	local VExRT_ColumnOptions = VExRT.ExCD2.colSet
 	local Width = 0
 	local maxHeight = 0
-	local maxLine = VExRT_ColumnOptions[module.db.maxColumns+1].frameLines or module.db.colsDefaults.frameLines
-	local maxBetweenLines = 0
-	if VExRT_ColumnOptions[module.db.maxColumns+1].frameColumns then
-		maxLine = ceil(maxLine / VExRT_ColumnOptions[module.db.maxColumns+1].frameColumns)
-	end
 
 	for i=1,module.db.maxColumns do 
 		local columnFrame = module.frame.colFrame[i]
-		if not columnFrame.LOADEDs then
-			columnFrame.LOADEDs = {}
-		end
 		local currColOpt = VExRT_ColumnOptions[i]
 		local generalOpt = VExRT_ColumnOptions[module.db.maxColumns+1]
 		local defOpt = module.db.colsDefaults
 
-		columnFrame.iconSize = (not currColOpt.iconGeneral and currColOpt.iconSize) or (currColOpt.iconGeneral and generalOpt.iconSize) or defOpt.iconSize
-		if currColOpt.enabled and columnFrame.iconSize > maxHeight and not currColOpt.ATF then
-			maxHeight = columnFrame.iconSize
-		end
+		module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,Width,argScaleFix)
 
-		local frameBetweenLines = (not currColOpt.frameGeneral and currColOpt.frameBetweenLines) or (currColOpt.frameGeneral and generalOpt.frameBetweenLines) or defOpt.frameBetweenLines
-		columnFrame.frameBetweenLines = frameBetweenLines
-
-		local frameColumns = (not currColOpt.frameGeneral and currColOpt.frameColumns) or (currColOpt.frameGeneral and generalOpt.frameColumns) or defOpt.frameColumns
-		columnFrame.frameColumns = frameColumns
-		local linesShown = (not currColOpt.frameGeneral and currColOpt.frameLines) or (currColOpt.frameGeneral and generalOpt.frameLines) or defOpt.frameLines
-		linesShown = ceil(linesShown / frameColumns)
-		local linesTotal = linesShown * frameColumns
-		if currColOpt.ATF then
-			linesTotal = 100
-		end
-		if VExRT.ExCD2.SplitOpt then 
-			columnFrame:SetHeight(columnFrame.iconSize*linesShown+frameBetweenLines*(linesShown-1)) 
-		elseif not currColOpt.ATF then
-			columnFrame:SetHeight(columnFrame.iconSize*linesShown)
-			if currColOpt.enabled then
-				if linesShown > maxLine then
-					maxLine = linesShown
-				end
-				local nowBetweenLines = frameBetweenLines*(linesShown-1)
-				if nowBetweenLines > maxBetweenLines then
-					maxBetweenLines = nowBetweenLines
-				end
-			end
-		end
-		columnFrame.NumberLastLinesActive = module.db.maxLinesInCol
-
-		if currColOpt.enabled then
-			for j=1,linesTotal do
-				if not columnFrame.LOADEDs[j] then
-					columnFrame.lines[j] = CreateBar(columnFrame)
-					columnFrame.lines[j]:Hide()
-					columnFrame.LOADEDs[j] = true
-				end
-			end
-			columnFrame.IsColumnEnabled = true
-		else
-			columnFrame.IsColumnEnabled = false
-		end
-
-		local frameAlpha = (not currColOpt.frameGeneral and currColOpt.frameAlpha) or (currColOpt.frameGeneral and generalOpt.frameAlpha) or defOpt.frameAlpha
-		columnFrame:SetAlpha(frameAlpha/100) 
-
-		local frameScale = (not currColOpt.frameGeneral and currColOpt.frameScale) or (currColOpt.frameGeneral and generalOpt.frameScale) or defOpt.frameScale
-		if VExRT.ExCD2.SplitOpt then 
-			if argScaleFix == "ScaleFix" then
-				ExRT.F.SetScaleFix(columnFrame,frameScale/100)
-			else
-				columnFrame:SetScale(frameScale/100) 
-			end
-		else
-			columnFrame:SetScale(1)
-		end
-
-		local blackBack = (not currColOpt.frameGeneral and currColOpt.frameBlackBack) or (currColOpt.frameGeneral and generalOpt.frameBlackBack) or defOpt.frameBlackBack
-		columnFrame.texture:SetColorTexture(0,0,0,blackBack / 100)
-
-		--> View options
-		columnFrame.optionClassColorBackground = (not currColOpt.textureGeneral and currColOpt.textureClassBackground) or (currColOpt.textureGeneral and generalOpt.textureClassBackground)
-		columnFrame.optionClassColorTimeLine = (not currColOpt.textureGeneral and currColOpt.textureClassTimeLine) or (currColOpt.textureGeneral and generalOpt.textureClassTimeLine)
-		columnFrame.optionClassColorText = (not currColOpt.textureGeneral and currColOpt.textureClassText) or (currColOpt.textureGeneral and generalOpt.textureClassText)
-
-		columnFrame.optionAnimation = (not currColOpt.textureGeneral and currColOpt.textureAnimation) or (currColOpt.textureGeneral and generalOpt.textureAnimation)
-		columnFrame.optionSmoothAnimation = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimation) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimation)
-		columnFrame.optionSmoothAnimationDuration = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimationDuration) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimationDuration) or defOpt.textureSmoothAnimationDuration
-			columnFrame.optionSmoothAnimationDuration = columnFrame.optionSmoothAnimationDuration / 100
-		columnFrame.optionLinesMax = min(linesShown*frameColumns,module.db.maxLinesInCol)
-		columnFrame.optionShownOnCD = (not currColOpt.methodsGeneral and currColOpt.methodsShownOnCD) or (currColOpt.methodsGeneral and generalOpt.methodsShownOnCD)
-		columnFrame.optionIconPosition = (not currColOpt.iconGeneral and currColOpt.iconPosition) or (currColOpt.iconGeneral and generalOpt.iconPosition) or defOpt.iconPosition
-		columnFrame.optionStyleAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsStyleAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsStyleAnimation) or defOpt.methodsStyleAnimation
-		columnFrame.optionTimeLineAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsTimeLineAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsTimeLineAnimation) or defOpt.methodsTimeLineAnimation
-		columnFrame.optionCooldown = (not currColOpt.iconGeneral and currColOpt.methodsCooldown) or (currColOpt.iconGeneral and generalOpt.methodsCooldown)
-		columnFrame.optionCooldownHideNumbers = (not currColOpt.iconGeneral and currColOpt.iconCooldownHideNumbers) or (currColOpt.iconGeneral and generalOpt.iconCooldownHideNumbers)
-		columnFrame.optionCooldownShowSwipe = (not currColOpt.iconGeneral and currColOpt.iconCooldownShowSwipe) or (currColOpt.iconGeneral and generalOpt.iconCooldownShowSwipe)
-		columnFrame.optionIconName = (not currColOpt.textGeneral and currColOpt.textIconName) or (currColOpt.textGeneral and generalOpt.textIconName)
-		columnFrame.optionHideSpark = (not currColOpt.textureGeneral and currColOpt.textureHideSpark) or (currColOpt.textureGeneral and generalOpt.textureHideSpark)
-		columnFrame.optionIconTitles = (not currColOpt.iconGeneral and currColOpt.iconTitles) or (currColOpt.iconGeneral and generalOpt.iconTitles)
-			columnFrame.optionIconTitles = columnFrame.optionIconTitles and not (columnFrame.optionIconPosition == 3)
-		columnFrame.optionIconHideBlizzardEdges = (not currColOpt.iconGeneral and currColOpt.iconHideBlizzardEdges) or (currColOpt.iconGeneral and generalOpt.iconHideBlizzardEdges)
-
-		columnFrame.methodsIconTooltip = (not currColOpt.methodsGeneral and currColOpt.methodsIconTooltip) or (currColOpt.methodsGeneral and generalOpt.methodsIconTooltip) 
-		columnFrame.methodsLineClick = (not currColOpt.methodsGeneral and currColOpt.methodsLineClick) or (currColOpt.methodsGeneral and generalOpt.methodsLineClick)
-		columnFrame.methodsLineClickWhisper = (not currColOpt.methodsGeneral and currColOpt.methodsLineClickWhisper) or (currColOpt.methodsGeneral and generalOpt.methodsLineClickWhisper)
-		columnFrame.methodsNewSpellNewLine = (not currColOpt.methodsGeneral and currColOpt.methodsNewSpellNewLine) or (currColOpt.methodsGeneral and generalOpt.methodsNewSpellNewLine)
-		columnFrame.methodsSortingRules = (not currColOpt.methodsGeneral and currColOpt.methodsSortingRules) or (currColOpt.methodsGeneral and generalOpt.methodsSortingRules) or defOpt.methodsSortingRules
-		columnFrame.methodsHideOwnSpells = (not currColOpt.methodsGeneral and currColOpt.methodsHideOwnSpells) or (currColOpt.methodsGeneral and generalOpt.methodsHideOwnSpells)
-		columnFrame.methodsAlphaNotInRange = (not currColOpt.methodsGeneral and currColOpt.methodsAlphaNotInRange) or (currColOpt.methodsGeneral and generalOpt.methodsAlphaNotInRange)
-		columnFrame.methodsAlphaNotInRangeNum = (not currColOpt.methodsGeneral and currColOpt.methodsAlphaNotInRangeNum) or (currColOpt.methodsGeneral and generalOpt.methodsAlphaNotInRangeNum) or defOpt.methodsAlphaNotInRangeNum
-			columnFrame.methodsAlphaNotInRangeNum = columnFrame.methodsAlphaNotInRangeNum / 100
-		columnFrame.methodsDisableActive = (not currColOpt.methodsGeneral and currColOpt.methodsDisableActive) or (currColOpt.methodsGeneral and generalOpt.methodsDisableActive)
-		columnFrame.methodsOneSpellPerCol = (not currColOpt.methodsGeneral and currColOpt.methodsOneSpellPerCol) or (currColOpt.methodsGeneral and generalOpt.methodsOneSpellPerCol)
-
-		columnFrame.methodsOnlyInCombat = (not currColOpt.visibilityGeneral and currColOpt.methodsOnlyInCombat) or (currColOpt.visibilityGeneral and generalOpt.methodsOnlyInCombat)
-		columnFrame.visibilityPartyType = (not currColOpt.visibilityGeneral and currColOpt.visibilityPartyType) or (currColOpt.visibilityGeneral and generalOpt.visibilityPartyType)
-		columnFrame.visibilityArena = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableArena) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableArena) )
-		columnFrame.visibilityBG = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableBG) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableBG) )
-		columnFrame.visibility3ppl = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisable3ppl) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisable3ppl) )
-		columnFrame.visibility5ppl = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisable5ppl) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisable5ppl) )
-		columnFrame.visibilityRaid = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableRaid) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableRaid) )
-		columnFrame.visibilityWorld = not ( (not currColOpt.visibilityGeneral and currColOpt.visibilityDisableWorld) or (currColOpt.visibilityGeneral and generalOpt.visibilityDisableWorld) )
-
-		columnFrame.textTemplateLeft = (not currColOpt.textGeneral and currColOpt.textTemplateLeft) or (currColOpt.textGeneral and generalOpt.textTemplateLeft) or defOpt.textTemplateLeft
-		columnFrame.textTemplateRight = (not currColOpt.textGeneral and currColOpt.textTemplateRight) or (currColOpt.textGeneral and generalOpt.textTemplateRight) or defOpt.textTemplateRight
-		columnFrame.textTemplateCenter = (not currColOpt.textGeneral and currColOpt.textTemplateCenter) or (currColOpt.textGeneral and generalOpt.textTemplateCenter) or defOpt.textTemplateCenter
-
-		local blacklistText = (not currColOpt.blacklistGeneral and currColOpt.blacklistText) or (currColOpt.blacklistGeneral and generalOpt.blacklistText) or defOpt.blacklistText
-		columnFrame.BlackList = CreateBlackList(blacklistText)
-		local whitelistText = (not currColOpt.blacklistGeneral and currColOpt.whitelistText) or (currColOpt.blacklistGeneral and generalOpt.whitelistText) or defOpt.whitelistText
-		columnFrame.WhiteList = CreateWhiteList(whitelistText)
-
-		local frameWidth = (not currColOpt.frameGeneral and currColOpt.frameWidth) or (currColOpt.frameGeneral and generalOpt.frameWidth) or defOpt.frameWidth
-		columnFrame:SetWidth(frameWidth*frameColumns)
-		columnFrame.barWidth = frameWidth
-
-		columnFrame.optionGray = (not currColOpt.iconGeneral and currColOpt.iconGray) or (currColOpt.iconGeneral and generalOpt.iconGray)
-		columnFrame.fontSize = (not currColOpt.fontGeneral and currColOpt.fontSize) or (currColOpt.fontGeneral and generalOpt.fontSize) or defOpt.fontSize
-		columnFrame.fontName = (not currColOpt.fontGeneral and currColOpt.fontName) or (currColOpt.fontGeneral and generalOpt.fontName) or defOpt.fontName
-		columnFrame.fontOutline = (not currColOpt.fontGeneral and currColOpt.fontOutline) or (currColOpt.fontGeneral and generalOpt.fontOutline)
-		columnFrame.fontShadow = (not currColOpt.fontGeneral and currColOpt.fontShadow) or (currColOpt.fontGeneral and generalOpt.fontShadow)
-		columnFrame.textureFile = (not currColOpt.textureGeneral and currColOpt.textureFile) or (currColOpt.textureGeneral and generalOpt.textureFile) or defOpt.textureFile
-		columnFrame.textureBorderSize = (not currColOpt.textureGeneral and currColOpt.textureBorderSize) or (currColOpt.textureGeneral and generalOpt.textureBorderSize) or defOpt.textureBorderSize
-
-		columnFrame.textureBorderColorR = (not currColOpt.textureGeneral and currColOpt.textureBorderColorR) or (currColOpt.textureGeneral and generalOpt.textureBorderColorR) or defOpt.textureBorderColorR
-		columnFrame.textureBorderColorG = (not currColOpt.textureGeneral and currColOpt.textureBorderColorG) or (currColOpt.textureGeneral and generalOpt.textureBorderColorG) or defOpt.textureBorderColorG
-		columnFrame.textureBorderColorB = (not currColOpt.textureGeneral and currColOpt.textureBorderColorB) or (currColOpt.textureGeneral and generalOpt.textureBorderColorB) or defOpt.textureBorderColorB
-		columnFrame.textureBorderColorA = (not currColOpt.textureGeneral and currColOpt.textureBorderColorA) or (currColOpt.textureGeneral and generalOpt.textureBorderColorA) or defOpt.textureBorderColorA
-
-		local fontOtherAvailable = (not currColOpt.fontGeneral and currColOpt.fontOtherAvailable) or (currColOpt.fontGeneral and generalOpt.fontOtherAvailable)
-
-		columnFrame.fontLeftSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontLeftSize) or (currColOpt.fontGeneral and generalOpt.fontLeftSize) or defOpt.fontSize
-		columnFrame.fontLeftName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontLeftName) or (currColOpt.fontGeneral and generalOpt.fontLeftName) or defOpt.fontName
-		columnFrame.fontLeftOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftOutline) or (currColOpt.fontGeneral and generalOpt.fontLeftOutline)))
-		columnFrame.fontLeftShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftShadow) or (currColOpt.fontGeneral and generalOpt.fontLeftShadow)))
-
-		columnFrame.fontRightSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontRightSize) or (currColOpt.fontGeneral and generalOpt.fontRightSize) or defOpt.fontSize
-		columnFrame.fontRightName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontRightName) or (currColOpt.fontGeneral and generalOpt.fontRightName) or defOpt.fontName
-		columnFrame.fontRightOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightOutline) or (currColOpt.fontGeneral and generalOpt.fontRightOutline)))
-		columnFrame.fontRightShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightShadow) or (currColOpt.fontGeneral and generalOpt.fontRightShadow)))
-
-		columnFrame.fontCenterSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontCenterSize) or (currColOpt.fontGeneral and generalOpt.fontCenterSize) or defOpt.fontSize
-		columnFrame.fontCenterName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontCenterName) or (currColOpt.fontGeneral and generalOpt.fontCenterName) or defOpt.fontName
-		columnFrame.fontCenterOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterOutline) or (currColOpt.fontGeneral and generalOpt.fontCenterOutline)))
-		columnFrame.fontCenterShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterShadow) or (currColOpt.fontGeneral and generalOpt.fontCenterShadow)))
-
-		columnFrame.fontIconSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontIconSize) or (currColOpt.fontGeneral and generalOpt.fontIconSize) or defOpt.fontSize
-		columnFrame.fontIconName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
-		columnFrame.fontIconOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
-		columnFrame.fontIconShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
-
-		columnFrame.fontCDSize = (not currColOpt.fontGeneral and currColOpt.fontCDSize) or (currColOpt.fontGeneral and generalOpt.fontCDSize) or defOpt.fontCDSize
-
-		for j=1,3 do
-			for n=1,3 do
-				local object = colorSetupFrameColorsObjectsNames[j]
-				local state = colorSetupFrameColorsNames[n]
-				if not columnFrame["optionColor"..object..state] then
-					columnFrame["optionColor"..object..state] = {}
-				end
-
-				columnFrame["optionColor"..object..state].r = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."R"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."R"]) or defOpt["textureColor"..object..state.."R"]
-				columnFrame["optionColor"..object..state].g = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."G"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."G"]) or defOpt["textureColor"..object..state.."G"]
-				columnFrame["optionColor"..object..state].b = (not currColOpt.textureGeneral and currColOpt["textureColor"..object..state.."B"]) or (currColOpt.textureGeneral and generalOpt["textureColor"..object..state.."B"]) or defOpt["textureColor"..object..state.."B"]
-			end
-		end
-
-		columnFrame.optionAlphaBackground = (not currColOpt.textureGeneral and currColOpt.textureAlphaBackground) or (currColOpt.textureGeneral and generalOpt.textureAlphaBackground) or defOpt.textureAlphaBackground
-		columnFrame.optionAlphaTimeLine = (not currColOpt.textureGeneral and currColOpt.textureAlphaTimeLine) or (currColOpt.textureGeneral and generalOpt.textureAlphaTimeLine) or defOpt.textureAlphaTimeLine
-		columnFrame.optionAlphaCooldown = (not currColOpt.textureGeneral and currColOpt.textureAlphaCooldown) or (currColOpt.textureGeneral and generalOpt.textureAlphaCooldown) or defOpt.textureAlphaCooldown
-
-		columnFrame.ATFenabled = currColOpt.ATF
-
-		if currColOpt.ATF then
-			local ATFPos = currColOpt.ATFPos
-			local ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "BOTTOMLEFT"
-			local ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-			local ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
-			local ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
-			if ATFPos == 1 then
-				ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "BOTTOMLEFT"
-				ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
-				ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
-			elseif ATFPos == 2 then
-				ATFPoint1,ATFPoint2 = "TOPRIGHT", "TOPLEFT"
-				ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, -frameBetweenLines
-			elseif ATFPos == 3 then
-				ATFPoint1,ATFPoint2 = "BOTTOMLEFT", "TOPLEFT"
-				ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-				ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
-			elseif ATFPos == 4 then
-				ATFPoint1,ATFPoint2 = "BOTTOMRIGHT", "TOPRIGHT"
-				ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
-				ATFPointLine1,ATFPointLine2 = "BOTTOM", "TOP"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, frameBetweenLines
-			elseif ATFPos == 5 then
-				ATFPoint1,ATFPoint2 = "TOPLEFT", "TOPRIGHT"
-				ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, -frameBetweenLines
-			elseif ATFPos == 6 then
-				ATFPoint1,ATFPoint2 = "BOTTOMLEFT", "BOTTOMRIGHT"
-				ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
-			elseif ATFPos == 7 then
-				ATFPoint1,ATFPoint2 = "TOPRIGHT", "BOTTOMRIGHT"
-				ATFPointCol1,ATFPointCol2 = "RIGHT", "LEFT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = -frameBetweenLines, -frameBetweenLines
-			elseif ATFPos == 8 then
-				ATFPoint1,ATFPoint2 = "TOPLEFT", "BOTTOMLEFT"
-				ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, frameBetweenLines
-			elseif ATFPos == 9 then
-				ATFPoint1,ATFPoint2 = "CENTER", "CENTER"
-				ATFPointCol1,ATFPointCol2 = "LEFT", "RIGHT"
-				ATFPointLine1,ATFPointLine2 = "TOP", "BOTTOM"
-				ATFBetweenLinesCol, ATFBetweenLinesLine = frameBetweenLines, -frameBetweenLines
-			end
-			columnFrame.ATFPoint1 = ATFPoint1
-			columnFrame.ATFPoint2 = ATFPoint2
-			columnFrame.ATFPointCol1 = ATFPointCol1
-			columnFrame.ATFPointCol2 = ATFPointCol2
-			columnFrame.ATFPointLine1 = ATFPointLine1
-			columnFrame.ATFPointLine2 = ATFPointLine2
-			columnFrame.ATFBetweenLinesCol = ATFBetweenLinesCol
-			columnFrame.ATFBetweenLinesLine = ATFBetweenLinesLine
-
-			columnFrame.ATFCol = currColOpt.ATFCol or defOpt.ATFCol
-			columnFrame.ATFMax = (currColOpt.ATFLines or defOpt.ATFLines) * (currColOpt.ATFCol or defOpt.ATFCol)
-
-			columnFrame.ATFOffsetX = currColOpt.ATFOffsetX or defOpt.ATFOffsetX
-			columnFrame.ATFOffsetY = currColOpt.ATFOffsetY or defOpt.ATFOffsetY
-
-
-			--rewrite something for fix
-			columnFrame.optionCooldown = true
-			columnFrame.optionHideSpark = true
-			columnFrame.iconSize = currColOpt.iconSize or defOpt.iconSize
-			columnFrame.barWidth = columnFrame.iconSize + 0.001
-
-			columnFrame.textTemplateLeft = ""
-			columnFrame.textTemplateRight = ""
-			columnFrame.textTemplateCenter = ""
-
-			columnFrame.optionIconTitles = false
-			columnFrame.optionTimeLineAnimation = 1
-			columnFrame.methodsNewSpellNewLine = false
-
-			columnFrame.texture:SetColorTexture(0,0,0,0)
-		end
-
-		if currColOpt.enabled then
-			for n=1,#columnFrame.lines do
-				columnFrame.lines[n]:UpdateStyle()
-				if columnFrame.lines[n]:IsVisible() then
-					columnFrame.lines[n]:UpdateStatus()
-				end
-			end
-
-			local frameAnchorBottom = (not currColOpt.methodsGeneral and currColOpt.frameAnchorBottom) or (currColOpt.methodsGeneral and generalOpt.frameAnchorBottom)
-
-			local lastLine = nil
-			for n=1,linesTotal do 
-				local line
-				local colLine = columnFrame.lines[n]
-				if columnFrame.ATFenabled then
-					line = 1
-				elseif frameAnchorBottom then
-					local inLine = (n-1) % frameColumns
-					line = ((n-1) - inLine) / frameColumns
-					colLine:ClearAllPoints()
-					colLine:SetPoint("BOTTOMLEFT", inLine*frameWidth, line*columnFrame.iconSize+line*frameBetweenLines) 
-					colLine.ATFanchored = nil
-				else
-					local inLine = (n-1) % frameColumns
-					line = ExRT.F.Round( ((n-1) - inLine) / frameColumns )
-					colLine:ClearAllPoints()
-					colLine:SetPoint("TOPLEFT", inLine*frameWidth, -line*columnFrame.iconSize-line*frameBetweenLines) 
-					colLine.ATFanchored = nil
-				end
-
-				if line ~= lastLine then
-					colLine.IsNewLine = true
-				else
-					colLine.IsNewLine = nil
-				end
-				lastLine = line
-			end
-		end
-
-		if currColOpt.enabled and VExRT.ExCD2.enabled then
-			columnFrame.optionIsEnabled = true
-			columnFrame:Show()
-		else
-			columnFrame.optionIsEnabled = nil
-			columnFrame:Hide()
-		end
-		if currColOpt.ATF then
-			columnFrame:ClearAllPoints()
-			columnFrame:SetPoint("LEFT",UIParent,"RIGHT",-2000, 0)
-		elseif not VExRT.ExCD2.SplitOpt then
-			columnFrame:ClearAllPoints()
-			columnFrame:SetPoint("TOPLEFT",module.frame,Width, 0)
-		else
-			if currColOpt.posX and currColOpt.posY then
-				columnFrame:ClearAllPoints()
-				columnFrame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",currColOpt.posX,currColOpt.posY)
-			else
-				columnFrame:ClearAllPoints()
-				columnFrame:SetPoint("CENTER",UIParent,"CENTER",0,0)
-			end
-		end
 		if currColOpt.enabled and not currColOpt.ATF then
-			Width = Width + frameWidth*frameColumns
+			if columnFrame.Gheight > maxHeight then
+				maxHeight = columnFrame.Gheight
+			end
+			Width = Width + columnFrame.Gwidth
 		end
 	end
 	module.frame:SetWidth(Width)
-	module.frame:SetHeight(maxHeight*maxLine + maxBetweenLines)
+	module.frame:SetHeight(maxHeight)
 	module.frame:SetAlpha((VExRT_ColumnOptions[module.db.maxColumns+1].frameAlpha or module.db.colsDefaults.frameAlpha)/100)
 	if argScaleFix == "ScaleFix" then
 		ExRT.F.SetScaleFix(module.frame,(VExRT_ColumnOptions[module.db.maxColumns+1].frameScale or module.db.colsDefaults.frameScale)/100)
@@ -8979,7 +9511,7 @@ function module:slash(arg1,arg2)
 			sid = tonumber(sid)
 			local j = module.db.cdsNav[name][sid]
 			if j then
-				j[3] = 0
+				j:SetCD(0)
 			end
 		end
 	elseif arg1 == "cd" then
@@ -9062,7 +9594,7 @@ module.db.AllSpells = {
 	{853,	"PALADIN",		3,	{853,	60,	6},	nil,			nil,			nil,			},	--Hammer of Justice
 	{183218,"PALADIN",		3,	nil,			nil,			nil,			{183218,30,	10},	},	--Hand of Hindrance
 	{62124,	"PALADIN,TAUNT",	5,	{62124,	8,	0},	nil,			nil,			nil,			},	--Hand of Reckoning
-	{20473,	"PALADIN",		3,	nil,			{20473,	9,	0},	nil,			nil,			},	--Holy Shock
+	{20473,	"PALADIN",		3,	nil,			{20473,	7.5,	0},	nil,			nil,			},	--Holy Shock
 	{633,	"PALADIN,DEFTAR",	2,	{633,	600,	0},	nil,			nil,			nil,			},	--Lay on Hands
 	{96231,	"PALADIN,KICK",		5,	nil,			nil,			{96231,	15,	0},	{96231,	15,	0},	},	--Rebuke
 	{184662,"PALADIN,DEF",		4,	nil,			nil,			nil,			{184662,120,	15},	},	--Shield of Vengeance
@@ -9103,13 +9635,13 @@ module.db.AllSpells = {
 	{109304,"HUNTER,DEF",		3,	{109304,120,	0},	nil,			nil,			nil,			},	--Exhilaration
 	{5384,	"HUNTER,DEF",		3,	{5384,	30,	0},	nil,			nil,			nil,			},	--Feign Death
 	{1543,	"HUNTER",		3,	{1543,	20,	0},	nil,			nil,			nil,			},	--Flare
-	{187650,"HUNTER,CC",		3,	{187650,30,	0},	nil,			nil,			nil,			},	--Freezing Trap
+	{187650,"HUNTER,CC",		3,	{187650,25,	0},	nil,			nil,			nil,			},	--Freezing Trap
 	{190925,"HUNTER,MOVE",		3,	nil,			nil,			nil,			{190925,20,	0},	},	--Harpoon
 	{19577,	"HUNTER,CC",		3,	nil,			{19577,	60,	5},	nil,			{19577,	60,	5},	},	--Intimidation
 	{34477,	"HUNTER",		3,	{34477,	30,	0},	nil,			nil,			nil,			},	--Misdirection
 	{187707,"HUNTER,KICK",		3,	nil,			nil,			nil,			{187707,15,	0},	},	--Muzzle
 	{257044,"HUNTER",		3,	nil,			nil,			{257044,20,	0},	nil,			},	--Rapid Fire
-	{187698,"HUNTER",		3,	{187698,30,	0},	nil,			nil,			nil,			},	--Tar Trap
+	{187698,"HUNTER",		3,	{187698,25,	0},	nil,			nil,			nil,			},	--Tar Trap
 	{19801,	"HUNTER,UTIL",		3,	{19801,	10,	0},	nil,			nil,			nil,			},	--Tranquilizing Shot
 	{288613,"HUNTER,DPS",		3,	nil,			nil,			{288613,120,	15},	nil,			},	--Trueshot
 	{131894,"HUNTER",		3,	{131894,60,	15},	nil,			nil,			nil,			},	--A Murder of Crows
@@ -9200,7 +9732,7 @@ module.db.AllSpells = {
 	{47536,	"PRIEST,HEAL",		1,	nil,			{47536,	90,	8},	nil,			nil,			},	--Rapture
 	{32379,	"PRIEST",		3,	{32379,	20,	0},	nil,			nil,			nil,			},	--Shadow Word: Death
 	{34433,	"PRIEST,DPS,HEAL",	3,	nil,			{34433,	180,	15},	nil,			{34433,	180,	15},	},	--Shadowfiend
-	{15487,	"PRIEST,CC",		3,	nil,			nil,			nil,			{15487,	45,	4},	},	--Silence
+	{15487,	"PRIEST,CC,KICK",	3,	nil,			nil,			nil,			{15487,	45,	4},	},	--Silence
 	{64901,	"PRIEST,HEALUTIL",	1,	nil,			nil,			{64901,	300,	5},	nil,			},	--Symbol of Hope
 	{15286,	"PRIEST,RAID",		1,	nil,			nil,			nil,			{15286,	120,	15},	},	--Vampiric Embrace
 	{228260,"PRIEST,DPS",		3,	nil,			nil,			nil,			{228260,90,	0},	},	--Void Eruption
@@ -9252,7 +9784,7 @@ module.db.AllSpells = {
 	{48792,	"DEATHKNIGHT,DEFTANK,DEF",4,	{48792,	180,	8},	nil,			nil,			nil,			},	--Icebound Fortitude
 	{49039,	"DEATHKNIGHT",		3,	{49039,	120,	0},	nil,			nil,			nil,			},	--Lichborne
 	{47528,	"DEATHKNIGHT,KICK",	5,	{47528,	15,	0},	nil,			nil,			nil,			},	--Mind Freeze
-	{51271,	"DEATHKNIGHT,DPS,DEF",	3,	nil,			nil,			{51271,	45,	15},	nil,			},	--Pillar of Frost
+	{51271,	"DEATHKNIGHT,DPS,DEF",	3,	nil,			nil,			{51271,	60,	12},	nil,			},	--Pillar of Frost
 	{61999,	"DEATHKNIGHT,RES",	3,	{61999,	600,	0},	nil,			nil,			nil,			},	--Raise Ally
 	{46585,	"DEATHKNIGHT",		3,	{46585,	120,	0},	nil,			nil,			{46585,	120,	0},	},	--Raise Dead
 	{196770,"DEATHKNIGHT",		3,	nil,			nil,			{196770,20,	8},	nil,			},	--Remorseless Winter
@@ -9355,7 +9887,7 @@ module.db.AllSpells = {
 	{11426,	"MAGE,DEF",		3,	nil,			nil,			nil,			{11426,	25,	0},	},	--Ice Barrier
 	{45438,	"MAGE,DEF",		3,	{45438,	240,	10},	nil,			nil,			nil,			},	--Ice Block
 	{12472,	"MAGE,DPS",		3,	nil,			nil,			nil,			{12472,	180,	23},	},	--Icy Veins
-	{66,	"MAGE,DEF",		4,	{66,	300,	0},	{66,	300,	0},	nil,			nil,			},	--Invisibility
+	{66,	"MAGE,DEF",		4,	{66,	300,	20},	{110959,120,	20},	nil,			nil,			},	--Invisibility
 	{55342,	"MAGE,DEF",		3,	{55342,	120,	40},	nil,			nil,			nil,			},	--Mirror Image
 	{257541,"MAGE",			3,	nil,			nil,			{257541,25,	0},	nil,			},	--Phoenix Flames
 	{205025,"MAGE",			3,	nil,			{205025,60,	0},	nil,			nil,			},	--Presence of Mind
@@ -9437,14 +9969,14 @@ module.db.AllSpells = {
 	{322101,"MONK",			3,	{322101,15,	0},	nil,			nil,			nil,			},	--Expel Harm
 	{113656,"MONK",			3,	nil,			nil,			{113656,24,	0},	nil,			},	--Fists of Fury
 	{101545,"MONK,MOVE",		3,	nil,			nil,			{101545,20,	0},	nil,			},	--Flying Serpent Kick
-	{115203,"MONK,DEFTANK,DEF",	4,	nil,			{115203,420,	15},	{115203,120,	15},	{115203,120,	15},	},	--Fortifying Brew
+	{115203,"MONK,DEFTANK,DEF",	4,	nil,			{115203,420,	15},	{115203,180,	15},	{115203,180,	15},	},	--Fortifying Brew
 	{122281,"MONK",			3,	nil,			nil,			nil,			{122281,30,	0},	},	--Healing Elixir
 	{132578,"MONK",			3,	nil,			{132578,180,	0},	nil,			nil,			},	--Invoke Niuzao, the Black Ox
 	{123904,"MONK,DPS",		3,	nil,			nil,			{123904,120,	24},	nil,			},	--Invoke Xuen, the White Tiger
 	{322118,"MONK,HEAL",		3,	nil,			nil,			nil,			{322118,180,	25},	},	--Invoke Yu'lon, the Jade Serpent
 	{119381,"MONK,AOECC",		1,	{119381,60,	3},	nil,			nil,			nil,			},	--Leg Sweep
 	{116849,"MONK,DEFTAR",		2,	nil,			nil,			nil,			{116849,120,	12},	},	--Life Cocoon
-	{115078,"MONK,CC",		3,	{115078,45,	0},	nil,			nil,			nil,			},	--Paralysis
+	{115078,"MONK,CC",		3,	{115078,30,	0},	nil,			nil,			nil,			},	--Paralysis
 	{115546,"MONK,TAUNT",		5,	{115546,8,	0},	nil,			nil,			nil,			},	--Provoke
 	{119582,"MONK",			3,	nil,			{119582,20,	0},	nil,			nil,			},	--Purifying Brew
 	{115310,"MONK,RAID",		1,	nil,			nil,			nil,			{115310,180,	0},	},	--Revival
@@ -9541,7 +10073,7 @@ module.db.AllSpells = {
 	{198589,"DEMONHUNTER,DEF",	4,	nil,			{198589,60,	10},	nil,			},	--Blur
 	{179057,"DEMONHUNTER,AOECC",	3,	nil,			{179057,60,	2},	nil,			},	--Chaos Nova
 	{278326,"DEMONHUNTER",		5,	{278326,10,	0},	nil,			nil,			},	--Consume Magic
-	{196718,"DEMONHUNTER,RAID",	1,	nil,			{196718,300,	8},	nil,			},	--Darkness
+	{196718,"DEMONHUNTER,RAID",	1,	nil,			{196718,180,	8},	nil,			},	--Darkness
 	{203720,"DEMONHUNTER,DEFTANK",	3,	nil,			nil,			{203720,20,	0},	},	--Demon Spikes
 	{183752,"DEMONHUNTER,KICK",	5,	{183752,15,	0},	nil,			nil,			},	--Disrupt
 	{198013,"DEMONHUNTER",		3,	nil,			{198013,30,	0},	nil,			},	--Eye Beam
@@ -9721,13 +10253,13 @@ module.db.AllSpells = {
 	{317320,"COVENANTS,WARRIOR",	3,	{317320,0,	0},	},
 	{321792,"COVENANTS,WARLOCK",	3,	{321792,60,	0},	},
 	{320674,"COVENANTS,SHAMAN",	3,	{320674,90,	0},	},
-	{323654,"COVENANTS,ROGUE",	3,	{323654,5,	0},	},
+	{323654,"COVENANTS,ROGUE",	3,	{323654,0,	0},	},
 	{323673,"COVENANTS,PRIEST",	3,	{323673,45,	5},	},
 	{316958,"COVENANTS,PALADIN",	1,	{316958,240,	30},	},
 	{326860,"COVENANTS,MONK",	3,	{326860,180,	24},	},
 	{314793,"COVENANTS,MAGE",	3,	{314793,90,	25},	},
 	{324149,"COVENANTS,HUNTER",	3,	{324149,30,	0},	},
-	{323546,"COVENANTS,DRUID",	3,	{323546,180,	15},	},
+	{323546,"COVENANTS,DRUID",	3,	{323546,180,	20},	},
 	{317009,"COVENANTS,DEMONHUNTER",3,	{317009,60,	8},	},
 	{311648,"COVENANTS,DEATHKNIGHT",3,	{311648,60,	8},	},
 }

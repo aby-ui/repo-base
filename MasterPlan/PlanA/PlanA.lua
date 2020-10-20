@@ -54,6 +54,7 @@ local CheckCacheWarning do
 	GarrisonLandingPageMinimapButton:HookScript("OnClick", function()
 		mute = true
 		ag:Stop()
+        tex:SetAlpha(0)
 	end)
 	function CheckCacheWarning()
 		local lct = C_Garrison.IsOnGarrisonMap() and cdata and cdata.lastCacheTime

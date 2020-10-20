@@ -95,10 +95,10 @@ function MDTDungeonEnemyMixin:OnEnter()
     self:DisplayPatrol(true)
     MDT:DisplayBlipTooltip(self,true)
     if self.data.corrupted then
-        self.texture_DragDown:Show()
-        self.texture_DragLeft:Show()
-        self.texture_DragRight:Show()
-        self.texture_DragUp:Show()
+        --self.texture_DragDown:Show()
+        --self.texture_DragLeft:Show()
+        --self.texture_DragRight:Show()
+        --self.texture_DragUp:Show()
         if not self.selected then
             local _,active = MDT.poi_framePools:GetPool("VignettePinTemplate"):EnumerateActive()
             for poiFrame,_ in pairs(active) do
@@ -206,6 +206,7 @@ local function setUpMouseHandlers(self)
         self:SetScript("OnUpdate",nil)
         preset.value.pulls = tempPulls
         MDT:DungeonEnemies_UpdateSelected(MDT:GetCurrentPull(),tempPulls)
+        MDT:ReloadPullButtons()
         if MDT.liveSessionActive and MDT:GetCurrentPreset().uid == MDT.livePresetUID then
             MDT:LiveSession_SendPulls(MDT:GetPulls())
         end

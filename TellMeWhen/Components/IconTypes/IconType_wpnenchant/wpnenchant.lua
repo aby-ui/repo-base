@@ -35,7 +35,7 @@ local Type = TMW.Classes.IconType:New("wpnenchant")
 LibStub("AceTimer-3.0"):Embed(Type)
 Type.name = L["ICONMENU_WPNENCHANT"]
 Type.desc = L["ICONMENU_WPNENCHANT_DESC"]
-Type.menuIcon = "Interface\\Icons\\inv_fishingpole_02"
+Type.menuIcon = GetSpellTexture(8024)
 Type.AllowNoName = true
 Type.menuSpaceAfter = true
 
@@ -287,7 +287,7 @@ function Type:Setup(icon)
 	icon.Spells = TMW:GetSpells(icon.Name, false)
 
 
-	icon.SelectIndex = icon.WpnEnchantType == "SecondaryHandSlot" and 4 or 1
+	icon.SelectIndex = icon.WpnEnchantType == "SecondaryHandSlot" and 5 or 1
 	icon.Slot = GetInventorySlotInfo(icon.WpnEnchantType)
 
 

@@ -252,9 +252,9 @@ function TS.CreateButtons(f)
             tinsert(annLine, "装等")
             tinsert(annLine, player.gsGot and player.bad and "*" or "")
             tinsert(annLine, player.gsGot and player.gs or "未知")
-            tinsert(annLine, " 腐蚀")
-            local corrupt = tostring(math.max(0, (player.c_total or 0) - (player.c_resist or 0) - 10))
-            tinsert(annLine, player.c_total and corrupt or "未知")
+            --tinsert(annLine, " 腐蚀")
+            --local corrupt = tostring(math.max(0, (player.c_total or 0) - (player.c_resist or 0) - 10))
+            --tinsert(annLine, player.c_total and corrupt or "未知")
             --tinsert(annLine, " ");
             --tinsert(annLine, "橙装:")
             --local slot1, link1, slot2, link2 = strsplit("^", player.legends or "")
@@ -522,9 +522,9 @@ local function compare(n1, n2, prop)
     if prop == "realm" then
         v1 = select(3, n1:find("%-(.+)$"))
         v2 = select(3, n2:find("%-(.+)$"))
-    elseif prop == "corrupt" then
-        v1 = (p1["c_total"] or 0) - (p1["c_resist"] or 0)
-        v2 = (p2["c_total"] or 0) - (p2["c_resist"] or 0)
+    --elseif prop == "corrupt" then
+    --    v1 = (p1["c_total"] or 0) - (p1["c_resist"] or 0)
+    --    v2 = (p2["c_total"] or 0) - (p2["c_resist"] or 0)
     else
         v1, v2 = p1[prop], p2[prop]
     end
@@ -552,10 +552,12 @@ local sortFuncs = {
         local r, equal, force = compare(a, b, "gs")
         if currSort > 0 or force then return r else return not r end
     end,
+    --[[
     [5] = function(a,b)
         local r, equal, force = compare(a, b, "corrupt")
         if currSort > 0 or force then return r else return not r end
     end,
+    --]]
 }
 
 local function sortNames(self)
@@ -573,10 +575,10 @@ function TS.SetupColumns(f)
             if v == self.line.player then
                 self.tooltipLines = self.tooltipLines or {}
                 self.tooltipLines[1] = n
-                self.tooltipLines[2] = "披风抗性    (-" .. (v.c_resist or 0) .. ")"
-                self.tooltipLines[3] = v.c_text and "|cff946cd0" .. v.c_text .. "|r" or ""
-                local corrupt = tostring(math.max(0, (v.c_total or 0) - (v.c_resist or 0) - 10))
-                self.tooltipLines[4] = "腐蚀合计：" .. corrupt
+                --self.tooltipLines[2] = "披风抗性    (-" .. (v.c_resist or 0) .. ")"
+                --self.tooltipLines[3] = v.c_text and "|cff946cd0" .. v.c_text .. "|r" or ""
+                --local corrupt = tostring(math.max(0, (v.c_total or 0) - (v.c_resist or 0) - 10))
+                --self.tooltipLines[4] = "腐蚀合计：" .. corrupt
                 CoreUIShowTooltip(self, "ANCHOR_LEFT")
                 break
             end
@@ -754,6 +756,7 @@ function TS.SetupColumns(f)
             end
         },
         ]]
+        --[[
         {
             header = "腐蚀",
             headerSpan = 1,
@@ -780,6 +783,7 @@ function TS.SetupColumns(f)
                 end
             end
         },
+        --]]
         {
             header = "珠宝",
             headerSpan = 1,

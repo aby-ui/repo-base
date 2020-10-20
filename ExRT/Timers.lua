@@ -78,7 +78,7 @@ local function CreateTimers(ctime,cname)
 		SendAddonMessage("BigWigs", "P^Pull^"..ctime, chat_type,playerName)
 		local _,_,_,_,_,_,_,mapID = GetInstanceInfo()
 		SendAddonMessage("D4", ("PT\t%d\t%d"):format(ctime,mapID or 0), chat_type,playerName)
-		if ExRT.is90 and not ExRT.isClassic and VExRT.Timers.BlizzTimer then --currently is bugged, wait to fix
+		if not ExRT.isClassic and VExRT.Timers.BlizzTimer then --currently is bugged, wait to fix
 			C_PartyInfo.DoCountdown(ctime)
 		end
 	elseif cname == L.timerafk then
@@ -87,7 +87,7 @@ local function CreateTimers(ctime,cname)
 	else
 		SendAddonMessage("BigWigs", "P^CBar^"..ctime.." "..cname, chat_type,playerName)
 		SendAddonMessage("D4", ("U\t%d\t%s"):format(ctime,cname), chat_type,playerName)
-		if ExRT.is90 and not ExRT.isClassic and VExRT.Timers.BlizzTimer then
+		if not ExRT.isClassic and VExRT.Timers.BlizzTimer then
 			C_PartyInfo.DoCountdown(0)
 		end
 	end

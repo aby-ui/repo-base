@@ -683,11 +683,11 @@ ConditionCategory:RegisterCondition(22,	 "OFFHAND", {
 	formatter = TMW.C.Formatter.TIME_0ABSENT,
 	icon = function() return GetInventoryItemTexture("player", GetInventorySlotInfo("SecondaryHandSlot")) or "Interface\\Icons\\inv_weapon_shortblade_15" end,
 	tcoords = CNDT.COMMON.standardtcoords,
-	funcstr = [[(select(5, GetWeaponEnchantInfo()) or 0)/1000 c.Operator c.Level]],
+	funcstr = [[(select(6, GetWeaponEnchantInfo()) or 0)/1000 c.Operator c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UNIT_INVENTORY_CHANGED", "player")
 	end,
-	anticipate = [[local _, _, _, _, dur = GetWeaponEnchantInfo()
+	anticipate = [[local _, _, _, _, _, dur = GetWeaponEnchantInfo()
 		local VALUE = time + ((dur or 0)/1000) - c.Level]],
 })

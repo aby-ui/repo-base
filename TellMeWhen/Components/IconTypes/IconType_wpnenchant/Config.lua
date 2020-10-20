@@ -61,81 +61,103 @@ Module.ItemIDs = {
 	--43235,	--Wound Poison
 	--43231,	--Instant Poison
 
-	31535,	--Bloodboil Poison
-
-	3829,	--Frost Oil
-	3824,	--Shadow Oil -- good
-
-	36899,	--Exceptional Mana Oil
-	22521,	--Superior Mana Oil -- good
-	20748,	--Brilliant Mana Oil -- good
-	20747,	--Lesser Mana Oil -- good
-	20745,	--Minor Mana Oil -- good
-
-	22522,	--Superior Wizard Oil -- good
-	20749,	--Brilliant Wizard Oil -- good
-	20750,	--Wizard Oil -- good
-	20746,	--Lesser Wizard Oil -- good
-	20744,	--Minor Wizard Oil -- good
-
-
-	34539,	--Righteous Weapon Coating
-	34538,	--Blessed Weapon Coating
-
-	--23123,	--Blessed Wizard Oil
-
-	--23576,	--Greater Ward of Shielding
-	--23575,	--Lesser Ward of Shielding
-
-	--25521,	--Greater Rune of Warding
-	--23559,	--Lesser Rune of Warding
-
-	--7307,	--Flesh Eating Worm
-
-	--46006,	--Glow Worm
-	--6529,	--Shiny Bauble
-	--6532,	--Bright Baubles
-	--67404,	--Glass Fishing Bobber
-	--69907,	--Corpse Worm
-	--62673,	--Feathered Lure
-	--34861,	--Sharpened Fish Hook
-	--6533,	--Aquadynamic Fish Attractor
-	--6530,	--Nightcrawlers
-	--68049,	--Heat-Treated Spinning Lure
-	--6811,	--Aquadynamic Fish Lens
-
-	--12643,	--Dense Weightstone
-	--3241,	--Heavy Weightstone
-	--7965,	--Solid Weightstone
-	--3240,	--Coarse Weightstone
-	--28420,	--Fel Weightstone
-	--28421,	--Adamantite Weightstone
-	--3239,	--Rough Weightstone
-
-	--23529,	--Adamantite Sharpening Stone
-	--7964,	--Solid Sharpening Stone
-	--23122,	--Consecrated Sharpening Stone
-	--2871,	--Heavy Sharpening Stone
-	--23528,	--Fel Sharpening Stone
-	--2862,	--Rough Sharpening Stone
-	--2863,	--Coarse Sharpening Stone
-	--12404,	--Dense Sharpening Stone
-	--18262,	--Elemental Sharpening Stone
+	12404, -- Dense Sharpening Stone
+	12643, -- Dense Weightstone
+	171285, -- Shadowcore Oil
+	171286, -- Embalmer's Oil
+	171436, -- Porous Sharpening Stone
+	171437, -- Shaded Sharpening Stone
+	171438, -- Porous Weightstone
+	171439, -- Shaded Weightstone
+	172038, -- Grim Iron Shackles
+	18262, -- Elemental Sharpening Stone
+	20744, -- Minor Wizard Oil
+	20745, -- Minor Mana Oil
+	20746, -- Lesser Wizard Oil
+	20747, -- Lesser Mana Oil
+	20748, -- Brilliant Mana Oil
+	20749, -- Brilliant Wizard Oil
+	20750, -- Wizard Oil
+	22521, -- Superior Mana Oil
+	22522, -- Superior Wizard Oil
+	23122, -- Consecrated Sharpening Stone
+	23123, -- Blessed Wizard Oil
+	23528, -- Fel Sharpening Stone
+	23529, -- Adamantite Sharpening Stone
+	23559, -- Lesser Rune of Warding
+	23575, -- Lesser Ward of Shielding
+	23576, -- Greater Ward of Shielding
+	25521, -- Greater Rune of Warding
+	28420, -- Fel Weightstone
+	28421, -- Adamantite Weightstone
+	2862, -- Rough Sharpening Stone
+	2863, -- Coarse Sharpening Stone
+	2871, -- Heavy Sharpening Stone
+	31535, -- Bloodboil Poison
+	3239, -- Rough Weightstone
+	3240, -- Coarse Weightstone
+	3241, -- Heavy Weightstone
+	34538, -- Blessed Weapon Coating
+	34539, -- Righteous Weapon Coating
+	36899, -- Exceptional Mana Oil
+	3824, -- Shadow Oil
+	3829, -- Frost Oil
+	7964, -- Solid Sharpening Stone
+	7965, -- Solid Weightstone
 
 	-- ZHTW:
 	-- weightstone: ???
 	-- sharpening stone: ???
 	--25679,	--Comfortable Insoles
 }
+Module.SpellIDs = {
+	-- Shaman Enchants
+	318038,	--Flametongue Weapon
+	33757,	--Windfury Weapon
+}
 
 local CurrentItems
 function Module:OnInitialize()
 	self.Items = {}
+	self.Spells = {}
 	self.Table = {}
 	self.SpellLookup = {}
 
 
 	self:Etc_DoItemLookups()
+
+	for _, id in pairs(self.SpellIDs) do
+		local name = GetSpellInfo(id)
+		for _, enchant in TMW:Vararg(strsplit("|", L["SUG_MATCH_WPNENCH_ENCH"])) do
+			local dobreak
+			enchant = name:match(enchant)
+			if enchant then
+				for ench in pairs(TMW.db.locale.WpnEnchDurs) do
+					if ench:lower():find(enchant:gsub("([%%%[%]%-%+])", "%%%1"):lower()) then
+						-- the enchant was found in the list of known enchants, so add it
+						self.Spells[ench] = id
+						dobreak = 1
+						break
+					end
+				end
+				if dobreak then
+					break
+				elseif GetLocale() ~= "ruRU" or (GetLocale() == "koKR" and id ~= 51730) then
+					-- the enchant was not found in the list of known enchants, so take a guess and add it (but not for ruRU because it is just screwed up
+					-- koKR is screwed up for earthliving, so dont try it either
+					self.Spells[enchant] = id
+				end
+			end
+		end
+	end
+
+	for k, v in pairs(self.Spells) do
+		if self.Table[k] then
+			TMW:Error("Attempted to add spellID %d, but an item already has that id.", k)
+		else
+			self.Table[k] = v
+		end
+	end
 
 	for k, v in pairs(TMW.db.locale.WpnEnchDurs) do
 		if not self.Table[k] then
@@ -201,7 +223,16 @@ function Module:Table_Get()
 	return self.Table
 end
 function Module:Entry_AddToList_1(f, name)
-	if self.Items[name] then
+	if self.Spells[name] then
+		local id = self.Spells[name]
+		f.Name:SetText(name)
+		f.ID:SetText(nil)
+
+		f.tooltipmethod = "SetSpellByID"
+		f.tooltiparg = id
+
+		f.insert = name
+	elseif self.Items[name] then
 		local id = CurrentItems[strlowerCache[name]] or self.Items[name]
 		local name, link = GetItemInfo(id)
 
@@ -225,7 +256,9 @@ function Module:Entry_AddToList_1(f, name)
 end
 function Module:Etc_GetTexture(name)
 	local tex
-	if self.Items[name] then
+	if self.Spells[name] then
+		tex = TMW.GetSpellTexture(self.Spells[name])
+	elseif self.Items[name] then
 		tex = GetItemIcon(self.Items[name])
 	else
 		if name:match(L["SUG_PATTERNMATCH_FISHINGLURE"]) then
@@ -252,6 +285,16 @@ function Module:Table_GetSorter()
 	return self.Sorter
 end
 function Module.Sorter(a, b)
+	local haveA = Module.Spells[a] and PlayerSpells[Module.Spells[a]]
+	local haveB = Module.Spells[b] and PlayerSpells[Module.Spells[b]]
+
+	if haveA or haveB then
+		if haveA and haveB then
+			return a < b
+		else
+			return haveA
+		end
+	end
 
 	local haveA = Module.Items[a] and (CurrentItems[ strlowerCache[ a ]] )
 	local haveB = Module.Items[b] and (CurrentItems[ strlowerCache[ b ]] )
@@ -297,7 +340,7 @@ function Module:Table_GetNormalSuggestions(suggestions, tbl)
 	end
 end
 function Module:Entry_Colorize_1(f, name)
-	if CurrentItems[ strlowerCache[ name ]] then
+	if PlayerSpells[Module.Spells[name]] or (CurrentItems[ strlowerCache[ name ]]) then
 		f.Background:SetVertexColor(.41, .8, .94, 1) --color all spells and items that you have mage blue
 		
 	elseif rawget(TMW.db.locale.WpnEnchDurs, name) then

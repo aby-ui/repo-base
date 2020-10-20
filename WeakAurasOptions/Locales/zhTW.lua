@@ -537,6 +537,7 @@ Supports multiple entries, separated by commas
 	L["Premade Snippets"] = "預先寫好的程式碼片段"
 	L["Preset"] = "預設配置"
 	L["Press Ctrl+C to copy"] = "按下 Ctrl+C 複製"
+	L["Press Ctrl+C to copy the URL"] = "按 Ctrl+C 複製 URL"
 	L["Prevent Merging"] = "防止合併"
 	L["Processed %i chars"] = "處理進度 %i 個字元"
 	L["Progress Bar"] = "進度條"

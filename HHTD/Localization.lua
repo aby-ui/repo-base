@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.5
+Version 2.4.9.6
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -1808,24 +1808,21 @@ L["AUTO_RAID_PARTY_INSTANCE"] = "Автоматически: Рейд/Групп
 L["CHAT_POST_ANNOUNCE_FEATURE_NOT_CONFIGURED"] = "Рейдовые оповещения не сконфигурированы. Введите /HHTDG"
 L["CHAT_POST_ANNOUNCE_TOO_SOON_WAIT"] = "Слишком быстро. Проверьте установки скорости появления оповещений"
 L["CHAT_POST_NO_HEALERS"] = "Ни наших,ни вражеских лекарей не обнаружено :/ (Пока...)"
---[[Translation missing --]]
-L["CM"] = "Custom Marks"
---[[Translation missing --]]
-L["CM_DESC"] = "Enable this module to set permanent custom marks on NPC and Player units' nameplates."
+L["CM"] = "Пользовательские метки"
+L["CM_DESC"] = "Включите этот модуль для установки постоянных пользовательских меток на неймплейтах NPC и юнитов игрока."
 L["DESCRIPTION"] = "Мгновенно обнаружить этих чертовых лекарей и воздать им по заслугам! (PVP и PVE)."
 L["DISABLED"] = [=[HHTD выключен.
 Введите "/hhtd on" для включения.]=]
 L["ENABLED"] = [=[HHTD включен!
 Для просмотра возможных параметров введите команду /HHTDG]=]
 L["HEALER_UNDER_ATTACK"] = "наш лекарь %s атакован %s"
---[[Translation missing --]]
-L["HHTD_IS_NOW_KNOWN_AS_H.H.T.D."] = [=['%s' is now known as H.H.T.D. (see the change log for more information)
+L["HHTD_IS_NOW_KNOWN_AS_H.H.T.D."] = [=['% ' теперь известен как H.H.T.D. (см. журнал изменений для получения дополнительной информации)
 
-Your previous settings were successfully transferred and the old version turned off.
+Ваши предыдущие настройки были успешно перенесены, а старая версия отключена.
 
-If you had previously disabled HHTD for some of your characters, you must login to each one once before deleting or disabling globally the old '%s' add-on so that this preference can also be kept.
+Если вы ранее отключили HHTD для некоторых из ваших персонажей, вы должны войти в игру за каждого из них, прежде чем удалить или глобально отключить старую надстройку '%s', чтобы сохранить эту.
 
-This message will be displayed only once per character where HHTD's previous version was enabled.]=]
+Это сообщение будет отображаться только один раз для каждого персонажа, для которого была включена предыдущая версия HHTD.]=]
 L["HUMAN"] = "Человек"
 L["IDLE"] = "Находится в режиме ожидания"
 L["INSTANCE_CHAT"] = "Чат подземелья"
@@ -2011,8 +2008,7 @@ L["OPT_SET_FRIENDLY_HEALERS_ROLE"] = "установите роли наших �
 L["OPT_SET_FRIENDLY_HEALERS_ROLE_DESC"] = "если возможно, автоматически установит роль Лекарь Рейда для всех обнаруженных наших лекарей"
 --[[Translation missing --]]
 L["OPT_SHOW_CHAT_COMMAND_REMINDER"] = "Show /HHTDG chat command reminder"
---[[Translation missing --]]
-L["OPT_SHOW_CHAT_COMMAND_REMINDER_DESC"] = "Print a message in the chat every time HHTD is enabled."
+L["OPT_SHOW_CHAT_COMMAND_REMINDER_DESC"] = "При каждом включении HHTD выводить сообщение в чат."
 L["OPT_SOUNDS"] = "Звуковые оповещения"
 L["OPT_SOUNDS_DESC"] = "HHTD воспроизводит определенный звук при выборе лекаря в цель или наведении на него мышки"
 L["OPT_STRICTGUIDPVE"] = "Точность отслеживания в ПВЕ-режиме"

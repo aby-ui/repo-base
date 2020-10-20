@@ -379,7 +379,7 @@ function module.options:Load()
 	end)
 	self.warningText = ELib:Text(self,L.BossWatcherOptionsFightsWarning,12):Size(570,25):Point(15,-150):Top():Color():Shadow()
 
-	if ExRT.T == "Dev" then
+	if ExRT.isDev then
 		self.saveVariables = ELib:Check(self,L.BossWatcherSaveVariables):Point(260,-35):Tooltip(L.BossWatcherSaveVariablesWarring):OnClick(function(self) 
 			VExRT.BossWatcher.saveVariables = true
 			VExRT.BossWatcher.SAVED_DATA = module.db.data
@@ -2772,9 +2772,9 @@ function BWInterfaceFrameLoad()
 		return length
 	end
 	local function SubUTF8String(str,len)
-		local strlen = ExRT.F:utf8len(str)
+		local strlen = ExRT.F.utf8len(str)
 		if strlen > len then
-			str = ExRT.F:utf8sub(str,1,len) .. "..."
+			str = ExRT.F.utf8sub(str,1,len) .. "..."
 		end
 		return str
 	end
@@ -8219,7 +8219,7 @@ function BWInterfaceFrameLoad()
 
 	do
 		local broke = ACTION_SPELL_AURA_BROKEN
-		broke = (ExRT.F:utf8sub(broke,1,1):upper())..ExRT.F:utf8sub(broke,2,-1)
+		broke = (ExRT.F.utf8sub(broke,1,1):upper())..ExRT.F.utf8sub(broke,2,-1)
 		tab.tabs = ELib:Tabs(tab,0,
 			L.BossWatcherInterrupts,
 			L.BossWatcherDispels,

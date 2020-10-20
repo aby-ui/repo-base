@@ -776,6 +776,8 @@ function module.options:Load()
 	local mapsSorted = {
 		1,
 		{L.NoteColor,10,94,95,96,97,98,99},
+		{L.S_ZoneT26CastleNathria.." Ingame",100,93,91,92,90,89,88},
+		{L.S_ZoneT26CastleNathria,77,78,79,80,81,82,83,84,85,86,87},
 		{L.S_ZoneT25Nyalotha,45,46,47,48,49,50,51,52,53,54,55,56},
 		{L.S_ZoneT24Eternal,40,39,38,37,36,35,34,33},
 		{L.S_ZoneT23Storms,32,31},
@@ -783,10 +785,6 @@ function module.options:Load()
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
 		{DUNGEONS..": "..EXPANSION_NAME7,41,42,43,44,12,13,14,15,16,17,18,19},
 	}
-	if ExRT.is90 then
-		tinsert(mapsSorted,3,{L.S_ZoneT26CastleNathria,77,78,79,80,81,82,83,84,85,86,87})
-		tinsert(mapsSorted,3,{L.S_ZoneT26CastleNathria.." Ingame",100,93,91,92,90,89,88})
-	end
 	if ExRT.isClassic then
 		--[[
 		MC: 243
@@ -2363,7 +2361,15 @@ function module.options:Load()
 	local frame = ELib:Popup(L.message):Size(790*SCALE+6,535*SCALE+15+3):Point("LEFT",UIParent,"LEFT",100,0)
 	module.frame = frame
 	frame:Hide()
+	frame.defWidth = 790*SCALE+6
+	frame.defHeight = 535*SCALE+15+3
 
+	frame.Close:SetScript("OnClick",function (self)
+		module.db.PopupIsOn = false
+		self:GetParent():Hide()
+	end)
+
+	frame:SetResizable(true)
 	frame.buttonResize = CreateFrame("Frame",nil,frame)
 	frame.buttonResize:SetSize(15,15)
 	frame.buttonResize:SetPoint("BOTTOMRIGHT", 0, 0)
@@ -2373,35 +2379,77 @@ function module.options:Load()
 	frame.buttonResize.back:SetAllPoints()
 	frame.buttonResize.back:SetAlpha(.7)
 	frame.buttonResize:SetScript("OnMouseDown", function(self)
-		local x,y = ExRT.F.GetCursorPos(UIParent)
-		local oldScale = frame:GetScale() 
-		local left = frame:GetLeft() * oldScale
-		local top = frame:GetTop() * oldScale
-		frame:SetScript("OnUpdate",function()
-			local x1,y1 = ExRT.F.GetCursorPos(UIParent)
-			local X,Y = max(0,x1-x),max(0,y1-y)
-			local d = max(X / (790*SCALE+6), Y / (535*SCALE+15+3))
-			local scale = d+1
-			frame:SetScale(scale)
-			frame:ClearAllPoints()
-			frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",left / scale,top / scale)
-		end)
+		frame.Prop = frame:GetWidth() / frame:GetHeight()
+		frame:StartSizing()
 	end)
 	frame.buttonResize:SetScript("OnMouseUp", function(self)
-		frame:SetScript("OnUpdate",nil)
+		frame:StopMovingOrSizing()
+	end)
+	frame:SetScript("OnSizeChanged", function (self, width, height)
+		if self.lock or not self.Prop then 
+			return 
+		end
+		if width/height >= self.Prop then
+			width = height * self.Prop
+			self.lock = true
+			self:SetWidth(width)
+			self.lock = false
+		else
+			height = width / self.Prop
+			self.lock = true
+			self:SetHeight(height)
+			self.lock = false
+		end
+		local rate = width / frame.defWidth
+		VExRT.VisNote.PopupSizeRate = rate
+		VExRT.VisNote.PopupWidth = width
+		VExRT.VisNote.PopupHeight = height
+		module.options.main:SetScale(SCALE * rate)
+	end)
+	frame:SetScript("OnDragStart", function(self)
+		if self:IsMovable() then
+			self:StartMoving()
+		end
+	end)
+	frame:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		VExRT.VisNote.PopupLeft = self:GetLeft()
+		VExRT.VisNote.PopupTop = self:GetTop()
 	end)
 
-	self.showPopup = ELib:Button(self,""):Size(20,20):Point("TOPLEFT",self.main,0,0):OnClick(function()
+
+	function module.ShowPopup()
 		frame:Show()
-		self.main:SetScale(SCALE)
+		if VExRT.VisNote.PopupWidth and VExRT.VisNote.PopupHeight then
+			frame:SetSize(VExRT.VisNote.PopupWidth, VExRT.VisNote.PopupHeight)
+		end
+		self.main:SetScale(SCALE*(VExRT.VisNote.PopupSizeRate or 1))
 		self.main:SetParent(frame)
 		self.main:ClearAllPoints()
-		self.main:SetPoint("TOP",0,-15*(1/SCALE))
+		self.main:SetPoint("CENTER",0,-9)
 		self.main.C.popup = true
 
 		self.main.C:SetScript("OnUpdate",nil)
 
+		if VExRT.VisNote.PopupLeft and VExRT.VisNote.PopupTop then 
+			frame:ClearAllPoints()
+			frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VExRT.VisNote.PopupLeft,VExRT.VisNote.PopupTop)
+		end
+
 		self.showPopup:Hide()
+	end
+
+	self.showPopup = ELib:Button(self,""):Size(20,20):Point("TOPLEFT",self.main,0,0):Tooltip(L.VisualNotePopupButTooltip.."\n"..L.VisualNotePopupButTooltip2):OnClick(function()
+		if IsShiftKeyDown() then
+			VExRT.VisNote.PopupWidth = nil
+			VExRT.VisNote.PopupHeight = nil
+			VExRT.VisNote.PopupSizeRate = nil
+			VExRT.VisNote.PopupLeft = nil
+			VExRT.VisNote.PopupTop = nil
+			frame:Size(790*SCALE+6,535*SCALE+15+3):NewPoint("LEFT",UIParent,"LEFT",100,0)
+		end
+		module.db.PopupIsOn = true
+		module:ShowPopup()
 
 		ExRT.Options.Frame:Hide()
 	end)
@@ -2434,6 +2482,11 @@ function module.options:Load()
 
 		self:LoadNewest()	  
 	end
+	self:SetScript("OnHide",function()
+		if module.db.PopupIsOn then
+			module:ShowPopup()
+		end
+	end)
 end
 
 function module.main:ADDON_LOADED()

@@ -46,7 +46,7 @@ function module.options:Load()
 		for i=1,#module.options.edits do
 			local edit2 = module.options.edits[i]
 			if edit2:IsMouseOver() and edit2 ~= self then
-				local textSelf = self:GetText()
+				local textSelf = self.preName or self:GetText()
 				edit2:SetText(textSelf)
 				edit2:SetCursorPosition(1)
 				break
@@ -63,6 +63,10 @@ function module.options:Load()
 		local name = self:GetText()
 		if name and UnitName(name) then
 			local r,g,b = ExRT.F.classColorNum(select(2,UnitClass(name)))
+			self:SetTextColor(r,g,b,1)
+			self:ColorBorder()
+		elseif self.preclass then
+			local r,g,b = ExRT.F.classColorNum(self.preclass)
 			self:SetTextColor(r,g,b,1)
 			self:ColorBorder()
 		else
@@ -107,23 +111,60 @@ function module.options:Load()
 
 	ELib:Text(self,L.RaidGroupsTextMovable,8):Point("TOPLEFT",12,-547):Color():Shadow()
 
+	self.scrollNotInList = ELib:ScrollBar(self):Point("TOPLEFT",478,-40):Size(12,558):SetMinMaxValues(0,1):SetValue(0):SetObey(true):OnChange(function()
+		self:UpdateNotInList()
+	end)
+
 	self.edits_notinlist = {}
 	function self:UpdateNotInList()
 		local inList,notInList = {},{}
+		local scrollShow
 		for i=1,40 do 
 			local name = module.options.edits[i]:GetText()
 			if name then
 				inList[name] = true
 			end
 		end
-		for i=1,GetNumGroupMembers() do
-			local name = GetRaidRosterInfo(i)
-			if not inList[name] then
-				notInList[#notInList+1] = name
+		if self.isGuild then
+			local myLvl = UnitLevel("player")
+			local guildList = {}
+			for i=1, GetNumGuildMembers() do
+				local name, _, rankIndex, level, _, _, _, _, _, _, class = GetGuildRosterInfo(i)
+				if select(2,strsplit("-",name)) == ExRT.SDB.realmKey then
+					name = strsplit("-",name)
+				end
+				if not inList[name] and (level or 0) >= myLvl then
+					guildList[#guildList+1] = {name,class,rankIndex,"|cffbbbbbb["..rankIndex.."]|r "..name}
+				end
+			end
+			sort(guildList,function(a,b)
+				if a[3] == b[3] then
+					return a[1] < b[1]
+				else
+					return a[3] < b[3]
+				end
+			end)
+			local start = floor(self.scrollNotInList:GetValue()+0.5)
+			for i=start+1,#guildList do
+				notInList[#notInList+1] = guildList[i]
+			end
+			if #guildList > 40 then
+				scrollShow = #guildList - 40
+			end
+		else
+			for i=1,GetNumGroupMembers() do
+				local name = GetRaidRosterInfo(i)
+				if not inList[name] then
+					notInList[#notInList+1] = name
+				end
 			end
 		end
+		if scrollShow then
+			self.scrollNotInList:SetMinMaxValues(0,scrollShow)
+		end
+		self.scrollNotInList:SetShown(scrollShow and true or false)
 
-		for i=1,#notInList do
+		for i=1,min(#notInList,40) do
 			local edit = self.edits_notinlist[i]
 			if not edit then
 				edit = ELib:Edit(self):Size(120,12)
@@ -141,7 +182,15 @@ function module.options:Load()
 				edit:SetScript("OnDragStop", EditOnDragStopNotInList)
 
 			end
-			edit:SetText(notInList[i])
+			if type(notInList[i]) == "table" then
+				edit:SetText(notInList[i][4])
+				edit.preclass = notInList[i][2]
+				edit.preName = notInList[i][1]
+			else
+				edit:SetText(notInList[i])
+				edit.preclass = nil
+				edit.preName = nil
+			end
 			edit:SetCursorPosition(1)
 			edit:Show()
 		end
@@ -149,6 +198,23 @@ function module.options:Load()
 			self.edits_notinlist[i]:Hide()
 		end
 	end
+
+	self.chk_raid = ELib:Radio(self,RAID,true):Point("TOPLEFT",355,-20):OnClick(function(self)
+		module.options.isGuild = false
+		self:SetChecked(true)
+		module.options.chk_guild:SetChecked(false)
+		module.options:UpdateNotInList()
+	end)
+	self.chk_guild = ELib:Radio(self,GUILD):Point("BOTTOM",self.chk_raid,"TOP",0,-2):OnClick(function(self)
+		module.options.isGuild = true
+		self:SetChecked(true)
+		module.options.chk_raid:SetChecked(false)
+		C_GuildInfo.GuildRoster()
+		module.options:UpdateNotInList()
+		C_Timer.After(1,function()
+			module.options:UpdateNotInList()
+		end)
+	end)
 
 	self.updateRoster = ELib:Button(self,L.RaidGroupsCurrentRoster):Size(315,20):Point("TOPLEFT",10,-565):OnClick(function() 
 		local roster = {}

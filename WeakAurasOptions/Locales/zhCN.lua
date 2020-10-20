@@ -535,6 +535,8 @@ Supports multiple entries, separated by commas
 	L["Premade Snippets"] = "预设片段"
 	L["Preset"] = "预设"
 	L["Press Ctrl+C to copy"] = "按 Ctrl+C 复制"
+	--[[Translation missing --]]
+	L["Press Ctrl+C to copy the URL"] = "Press Ctrl+C to copy the URL"
 	L["Prevent Merging"] = "阻止合并"
 	L["Processed %i chars"] = "已处理%i个字符"
 	L["Progress Bar"] = "进度条"
@@ -554,8 +556,7 @@ Supports multiple entries, separated by commas
 	L["Rename"] = "重命名"
 	L["Repeat After"] = "每当此条件发生后重复"
 	L["Repeat every"] = "每当此条件满足时重复"
-	--[[Translation missing --]]
-	L["Report bugs on our issue tracker."] = "Report bugs on our issue tracker."
+	L["Report bugs on our issue tracker."] = "在我们的问题追踪器里回报故障。"
 	L["Require unit from trigger"] = "需要在触发器中指定单位"
 	L["Required for Activation"] = "激活需要的条件"
 	L["Reset all options to their default values."] = "重置所有选项为默认值"

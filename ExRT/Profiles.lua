@@ -3,6 +3,8 @@ local GlobalAddonName, ExRT = ...
 local module = ExRT.mod:New("Profiles",ExRT.L.Profiles)
 local ELib,L = ExRT.lib,ExRT.L
 
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 local MAJOR_KEYS = {
 	["Addon"]=true,
 	["Profiles"]=true,
@@ -212,6 +214,107 @@ function module.options:Load()
 		end
 	end
 
+	module.importWindow, module.exportWindow = ExRT.F.CreateImportExportWindows()
+
+	function module.importWindow:ImportFunc(str)
+		local header = str:sub(1,6)
+		if header:sub(1,5) ~= "EXRTP" or (header:sub(6,6) ~= "0" and header:sub(6,6) ~= "1") then
+			StaticPopupDialogs["EXRT_PROFILES_IMPORT"] = {
+				text = "|cffff0000"..ERROR_CAPS.."|r "..L.ProfilesFail3,
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show("EXRT_PROFILES_IMPORT")
+			return
+		end
+
+		module:TextToProfile(str:sub(7),header:sub(6,6)=="0")
+	end
+
+	self.exportButton = ELib:Button(self,L.ProfilesExport):Size(235,25):Point(10,-320):Tooltip(format(L.ProfilesExportTooltip,"|cffffff00"..L.sencounter..", "..L.LootHistory..", "..L.Attendance.."|r")):OnClick(function (self)
+		module.exportWindow:NewPoint("CENTER",UIParent,0,0)
+		module:ProfileToText(IsShiftKeyDown())
+	end)
+
+	self.importButton = ELib:Button(self,L.ProfilesImport):Size(235,25):Point("LEFT",self.exportButton,"RIGHT",85,0):OnClick(function (self)
+		module.importWindow:NewPoint("CENTER",UIParent,0,0)
+		module.importWindow:Show()
+	end)
+
+	self.selectReplaceWindow = ELib:Popup(L.ProfilesSelectModules):Size(300,350):Point("CENTER",UIParent,"CENTER",0,0)
+	self.selectReplaceWindow.clist = ELib:ScrollCheckList(self.selectReplaceWindow):Point("TOP",0,-20):Size(290,302)
+	function self.selectReplaceWindow.clist:UpdateAdditional()
+		for i=1,#self.List do
+			local line = self.List[i]
+			if line.index then
+				local key = self.L[line.index]
+				line:SetText(type(module.db.EXPORT_KEYS[key]) == "string" and module.db.EXPORT_KEYS[key] or type(module.db.EXPORT_FULL_KEYS[key]) == "string" and module.db.EXPORT_FULL_KEYS[key] or key)
+			end
+		end
+	end
+	self.selectReplaceWindow.rewriteButton = ELib:Button(self.selectReplaceWindow,L.ProfilesRewrite):Point("BOTTOMLEFT",6,5):Size(140,20):OnClick(function(self)
+		local keyToIndex = {}
+		local clist = self:GetParent().clist
+		for i=1,#clist.L do
+			if clist.C[i] then
+				keyToIndex[ clist.L[i] ] = true
+			end
+		end
+		for k,v in pairs(self:GetParent().data) do
+			if keyToIndex[k] then
+				VExRT[k] = v
+			end
+		end
+		ReloadUI()
+	end)
+	self.selectReplaceWindow.newButton = ELib:Button(self.selectReplaceWindow,L.ProfilesSaveAsNew):Point("BOTTOMRIGHT",-6,5):Size(140,20):OnClick(function(self)
+		local keyToIndex = {}
+		local clist = self:GetParent().clist
+		for i=1,#clist.L do
+			if clist.C[i] then
+				keyToIndex[ clist.L[i] ] = true
+			end
+		end
+		local new = {}
+		for k,v in pairs(self:GetParent().data) do
+			if keyToIndex[k] then
+				new[k] = v
+			end
+		end
+		local name = self:GetParent().name
+		while VExRT.Profiles[name] do
+			name = name .. "*"
+		end
+		print(L.ProfilesAddedText.." |cff00ff00"..name)
+		VExRT.Profiles[name] = new
+		self:GetParent():Hide()
+	end)
+	self.selectReplaceWindow:SetScript("OnHide",function(self)
+		self.data = nil
+		self.name = nil
+	end)
+
+	function module:SelectedReplace(dataTable,profileName)
+		local l,c = {},{}
+		for k,v in pairs(dataTable) do
+			l[#l+1] = k
+			c[#c+1] = true
+		end
+		sort(l,function(a,b) 
+			local a1 = type(module.db.EXPORT_KEYS[a]) == "string" and module.db.EXPORT_KEYS[a] or type(module.db.EXPORT_FULL_KEYS[a]) == "string" and module.db.EXPORT_FULL_KEYS[a] or a
+			local b1 = type(module.db.EXPORT_KEYS[b]) == "string" and module.db.EXPORT_KEYS[b] or type(module.db.EXPORT_FULL_KEYS[b]) == "string" and module.db.EXPORT_FULL_KEYS[b] or b
+			return a1 < b1
+		end)
+
+		module.options.selectReplaceWindow.data = dataTable
+		module.options.selectReplaceWindow.name = profileName
+		module.options.selectReplaceWindow.clist.L = l
+		module.options.selectReplaceWindow.clist.C = c
+		module.options.selectReplaceWindow:Show()
+	end
 end
 
 function module.main:ADDON_LOADED()
@@ -223,4 +326,145 @@ function module.main:ADDON_LOADED()
 	VExRT.Profile = VExRT.Profile or "default"
 	
 	VExRT.ProfileKeys[ ExRT.SDB.charKey ] = VExRT.Profile
+end
+
+
+module.db.EXPORT_KEYS = {
+	["BattleRes"] = L.BattleRes,
+	["BossWatcher"] = L.BossWatcher,
+	["ExCD2"] = L.cd2,
+	["InspectViewer"] = L.InspectViewer,
+	["Interrupts"] = true,
+	["InviteTool"] = L.invite,
+	["Logging"] = L.Logging,
+	["LootLink"] = L.LootLink,
+	["Marks"] = L.marks,
+	["MarksBar"] = L.marksbar,
+	["MarksSimple"] = true,
+	["Note"] = L.message,
+	["RaidCheck"] = L.raidcheck,
+	["RaidGroups"] = L.RaidGroups,
+	["Timers"] = L.timers,
+	["VisNote"] = L.VisualNote,
+	["WhoPulled"] = L.WhoPulled,
+}
+module.db.EXPORT_FULL_KEYS = {
+	["Encounter"] = L.sencounter,
+	["Attendance"] = L.Attendance,
+	["LootHistory"] = L.LootHistory,
+	["Reminder"] = true,
+}
+
+function module:ProfileToText(isFullExport)
+	local new = {}
+	for key,val in pairs(VExRT) do
+		if module.db.EXPORT_KEYS[key] or (isFullExport and module.db.EXPORT_FULL_KEYS[key]) then
+			new[key] = val
+		end
+	end
+	local strlist = ExRT.F.TableToText(new)
+	strlist[1] = (VExRT.Profile or "default"):gsub(",","")..","..(ExRT.isClassic and "1" or "0")..","..strlist[1]
+	local str = table.concat(strlist)
+
+	local compressed
+	if #str < 1000000 then
+		compressed = LibDeflate:CompressDeflate(str,{level = 5})
+	end
+	local encoded = "EXRTP"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+
+	ExRT.F.dprint("Str len:",#str,"Encoded len:",#encoded)
+
+	if ExRT.isDev then
+		module.db.exportTable = new
+	end
+	if not module.exportWindow then
+		module.options:Load()
+	end
+	module.exportWindow.Edit:SetText(encoded)
+	module.exportWindow:Show()
+end
+
+function module:TextToProfile(str,uncompressed)
+	local decoded = LibDeflate:DecodeForPrint(str)
+	local decompressed
+	if uncompressed then
+		decompressed = decoded
+	else
+		decompressed = LibDeflate:DecompressDeflate(decoded)
+	end
+	decoded = nil
+
+	local profileName,clientVersion,tableData = strsplit(",",decompressed,3)
+	decompressed = nil
+
+	if ((clientVersion == "0" and not ExRT.isClassic) or (clientVersion == "1" and ExRT.isClassic)) then
+		local successful, res = pcall(ExRT.F.TextToTable,tableData)
+		if ExRT.isDev then
+			module.db.lastImportDB = res
+			if module.db.exportTable and type(res)=="table" then
+				module.db.diffTable = {}
+				print("Compare table",ExRT.F.table_compare(res,module.db.exportTable,module.db.diffTable))
+			end
+		end
+		if successful and res then
+			StaticPopupDialogs["EXRT_PROFILES_IMPORT"] = {
+				text = L.ProfilesNewProfile.." \""..profileName.."\"",
+				button1 = L.ProfilesRewrite,
+				button2 = L.ProfilesSaveAsNew,
+				button3 = L.ProfilesSelectModules,
+				button4 = CANCEL,
+				selectCallbackByIndex = true,
+				OnButton1 = function()
+					for k,v in pairs(res) do
+						VExRT[k] = v
+					end
+					ReloadUI()
+				end,
+				OnShow = function(self, data)
+					self.button1:Disable()	--disable before some testing
+				end,
+				OnButton2 = function()
+					local name = profileName
+					while VExRT.Profiles[name] do
+						name = name .. "*"
+					end
+					print(L.ProfilesAddedText.." |cff00ff00"..name)
+					VExRT.Profiles[name] = res
+				end,
+				OnButton3 = function()
+					if not module.SelectedReplace then
+						module.options:Load()
+					end
+					module:SelectedReplace(res,profileName)
+				end,
+				OnButton4 = function()
+					res = nil
+				end,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+		else
+			StaticPopupDialogs["EXRT_PROFILES_IMPORT"] = {
+				text = L.ProfilesFail1..(res and "\nError code: "..res or ""),
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+		end
+	else
+		StaticPopupDialogs["EXRT_PROFILES_IMPORT"] = {
+			text = L.ProfilesFail2,
+			button1 = OKAY,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+			preferredIndex = 3,
+		}
+	end
+
+	StaticPopup_Show("EXRT_PROFILES_IMPORT")
 end

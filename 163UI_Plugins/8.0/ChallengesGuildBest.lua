@@ -76,7 +76,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local drops  = { nil, 435, 435, 440, 445, 445, 450, 455, 455, 455, 460, 460, 460, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465, 465 }
     local levels = { nil, 440, 445, 450, 450, 455, 460, 460, 460, 465, 465, 470, 470, 470, 475, 475, 475, 475, 475, 475, 475, 475, 475, 475, 475 }
     local titans = { nil, nil, nil, nil, nil,  75, 330, 365, 400, 1700, 1790, 1880, 1970, 2060, 2150, 2240, 2330, 2420, 2510, 2600, 2665,2730,2795,2860,2915}
-    ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
+    ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("钥石层数  掉落  周箱  奖励精华")
@@ -107,6 +107,14 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             GameTooltip:Show()
         end
     end)
+
+    local chest = ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest
+    if chest then
+        --local p1, rel, p2, x, y = chest:GetPoint(1)
+        --chest:SetPoint(p1, rel, p2, x, y)
+        ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest.RunStatus:SetWidth(200)
+        ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child, "CENTER", -125, -45)
+    end
 end)
 
 --[[------------------------------------------------------------

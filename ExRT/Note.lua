@@ -478,8 +478,9 @@ function module.options:Load()
 	end
 	--/run GExRT.A.Note.options:DebugGetIcons()
 
-
 	module.db.encountersList = ExRT.isClassic and {} or {
+		{1735,2398,2418,2402,2383,2405,2406,2412,2399,2417,2407},
+		{EXPANSION_NAME8..": "..DUNGEONS,-1182,-1183,-1184,-1185,-1186,-1187,-1188,-1189},
 		{1582,2329,2327,2334,2328,2336,2333,2331,2335,2343,2345,2337,2344}, 
 		{1512,2298,2305,2289,2304,2303,2311,2293,2299},
 		{L.S_ZoneT23Storms,2269,2273},
@@ -490,10 +491,6 @@ function module.options:Load()
 		{850,2032,2048,2036,2037,2050,2054,2052,2038,2051},
 		{764,1849,1865,1867,1871,1862,1886,1842,1863,1872,1866},
 	}
-	if ExRT.is90 then
-		tinsert(module.db.encountersList, 1, {EXPANSION_NAME8..": "..DUNGEONS,-1182,-1183,-1184,-1185,-1186,-1187,-1188,-1189})
-		tinsert(module.db.encountersList, 1, {1735,2398,2418,2402,2383,2405,2406,2412,2399,2417,2407})
-	end
 
 	module.db.mapToEncounter = {
 		--BfD
@@ -1276,8 +1273,8 @@ function module.options:Load()
 	local classNames = ExRT.GDB.ClassList
 	for i,class in ipairs(classNames) do
 		local colorTable = RAID_CLASS_COLORS[class]
-		if colorTable then
-			self.dropDownColor.list[#self.dropDownColor.list + 1] = {L.classLocalizate[class],"|c"..colorTable.colorStr}
+		if colorTable and type(colorTable)=="table" then
+			self.dropDownColor.list[#self.dropDownColor.list + 1] = {L.classLocalizate[class] or class,"|c"..(colorTable.colorStr or "ffaaaaaa")}
 		end
 	end
 	self.dropDownColor:SetScript("OnEnter",function (self)
@@ -1553,6 +1550,8 @@ function module.options:Load()
 		"|n|cffffff00{!c:|r|cff00ff00Mage,Hunter|r|cffffff00}|r...|cffffff00{/c}|r - "..L.NoteHelp8b..
 		"|n|cffffff00{g|r|cff00ff002|r|cffffff00}|r...|cffffff00{/g}|r - "..L.NoteHelp10..
 		"|n|cffffff00{!g|r|cff00ff0034|r|cffffff00}|r...|cffffff00{/g}|r - "..L.NoteHelp10b..
+		(ExRT.isClassic and "|n|cffffff00{race:|r|cff00ff00troll,orc|r|cffffff00}|r...|cffffff00{/race}|r - "..L.NoteHelp11 or "")..
+		(ExRT.isClassic and "|n|cffffff00{!race:|r|cff00ff00dwarf|r|cffffff00}|r...|cffffff00{/race}|r - "..L.NoteHelp11b or "")..
 		(not ExRT.isClassic and "|n|cffffff00{time:|r|cff00ff002:45|r|cffffff00}|r - "..L.NoteHelp7 or "")..
 		(not ExRT.isClassic and "|n|cffffff00{p|r|cff00ff002|r|cffffff00}|r...|cffffff00{/p}|r - "..L.NoteHelp9 or "")
 	):Point("TOPLEFT",10,-20):Point("TOPRIGHT",-10,-20):Color()

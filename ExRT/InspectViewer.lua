@@ -20,12 +20,7 @@ module.db.glyphsIDs = {8,9,10,11,12,13}
 module.db.statsList = {'intellect','agility','strength','haste','mastery','crit','spellpower','multistrike','versatility','armor','leech','avoidance','speed','corruption'}
 module.db.statsListName = {L.InspectViewerInt,L.InspectViewerAgi,L.InspectViewerStr,L.InspectViewerHaste,L.InspectViewerMastery,L.InspectViewerCrit,L.InspectViewerSpd, L.InspectViewerMS, L.InspectViewerVer, L.InspectViewerBonusArmor, L.InspectViewerLeech, L.InspectViewerAvoidance, L.InspectViewerSpeed,ITEM_MOD_CORRUPTION}
 
-module.db.baseStats = not ExRT.is90 and {	--By class IDs
-	strength =  {	1467,	1467,	0,	0,	0,	1467,	0,	0,	0,	0,	0,	0,	},
-	agility =   {	0,	0,	1467,	1467,	0,	0,	1467,	0,	0,	1467,	1467,	1467,	},
-	intellect = {	0,	1467,	0,	0,	1467,	0,	1467,	1467,	1467,	1467,	1467,	0,	},
-		--	WARRIOR,PALADIN,HUNTER,	ROGUE,	PRIEST,	DK,	SHAMAN,	MAGE,	WARLOCK,MONK,	DRUID,	DH,
-} or {	--By class IDs
+module.db.baseStats = {	--By class IDs
 	strength =  {	450,	450,	0,	0,	0,	450,	0,	0,	0,	0,	0,	0,	},
 	agility =   {	0,	0,	450,	450,	0,	0,	450,	0,	0,	450,	450,	450,	},
 	intellect = {	0,	450,	0,	0,	450,	0,	450,	450,	450,	450,	450,	0,	},
@@ -72,11 +67,11 @@ module.db.socketsBonusIDs = {
 	[3475]=true,
 }
 
-local IS_LOW = (ExRT.is90 and UnitLevel'player' < 50) or (not ExRT.is90 and UnitLevel'player' < 120)
-local IS_BFA = (ExRT.is90 and UnitLevel'player' < 60) or (not ExRT.is90 and UnitLevel'player' == 120)
-local IS_SL = (ExRT.is90 and UnitLevel'player' >= 60)
+local IS_LOW = UnitLevel'player' < 50
+local IS_BFA = UnitLevel'player' < 60
+local IS_SL = UnitLevel'player' >= 60
 
-module.db.topEnchGems = ExRT.is90 and IS_SL and {
+module.db.topEnchGems = IS_SL and {
 	[6202]="cloak:stamina:speed",
 	[6208]="cloak:stamina",
 	[6204]="cloak:stamina:leech",
@@ -475,15 +470,15 @@ function module.options:Load()
 
 		local extra_list = {}
 		local contentID
-		if (ExRT.is90 and UnitLevel'player' < 40) or (not ExRT.is90 and UnitLevel'player' < 100) then
+		if ExRT.isClassic or (UnitLevel'player' < 40) then
 			contentID = 0
-		elseif (ExRT.is90 and UnitLevel'player' < 50) or (not ExRT.is90 and UnitLevel'player' < 110) then
+		elseif UnitLevel'player' < 50 then
 			contentID = 1
 			extra_list[#extra_list+1] = text_relic
-		elseif (ExRT.is90 and UnitLevel'player' < 60) or (not ExRT.is90 and UnitLevel'player' >= 110) then
+		elseif UnitLevel'player' < 60 then
 			contentID = 2
 			extra_list[#extra_list+1] = text_az
-		elseif ExRT.is90 then
+		else
 			contentID = 3
 			extra_list[#extra_list+1] = LANDING_PAGE_SOULBIND_SECTION_HEADER
 		end
@@ -547,23 +542,15 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VExRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VExRT.InspectViewer.ColorizeNoValorUpgrade
 
-	local colorizeLowIlvl630 = 430
-	local colorizeLowIlvl685 = 460
+	local colorizeLowIlvl630 = 183
+	local colorizeLowIlvl685 = 213
 	if IS_LOW then
-		colorizeLowIlvl630 = 185
-		colorizeLowIlvl685 = 240
-	end
-	if IS_LOW and ExRT.is90 then
 		colorizeLowIlvl630 = 50
 		colorizeLowIlvl685 = 80
 	end
-	if IS_BFA and ExRT.is90 then
+	if IS_BFA then
 		colorizeLowIlvl630 = 100
 		colorizeLowIlvl685 = 120
-	end
-	if IS_SL then
-		colorizeLowIlvl630 = 183
-		colorizeLowIlvl685 = 213
 	end
 
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,6):Point(50,0):Size(50)

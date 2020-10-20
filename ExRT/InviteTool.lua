@@ -93,7 +93,7 @@ local function InviteBut()
 	for i=1,gplayers do
 		local name,_,rankIndex,level,_,_,_,_,online,_,_,_,_,isMobile = GetGuildRosterInfo(i)
 		local sName = ExRT.F.delUnitNameServer(name)
-		if name and rankIndex and VExRT.InviteTool.Ranks[rankIndex+1] and online and (ExRT.SDB.charLevel >= 120 and level >= 120 or ExRT.isClassic and level >= 60 or level >= 110) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
+		if name and rankIndex and VExRT.InviteTool.Ranks[rankIndex+1] and online and ((ExRT.SDB.charLevel >= 60 and level >= 60) or (ExRT.isClassic and level >= 60) or level >= 50) and not isMobile and not CheckUnitInRaid(name,sName) and sName ~= module.db.playerFullName then
 			if inRaid then
 				InviteUnit(name)
 			elseif nowinvnum < 5 then
@@ -265,6 +265,7 @@ function module.options:Load()
 		for i=1,#module.options.dropDown.List do
 			module.options.dropDown.List[i].checkState = VExRT.InviteTool.Ranks[ module.options.dropDown.List[i].arg1 ]
 		end
+		module.options.dropDown:UpdateText()
 	end
 
 	if IsInGuild() then
@@ -474,6 +475,19 @@ function module.options:Load()
 
 	self.dropDown:SetText( L.inviterank )
 	self.dropDownAutoPromote:SetText( L.inviterank.." " .. (VExRT.InviteTool.PromoteRank == 0 and L.inviteAutoPromoteDontUseGuild or GuildControlGetRankName(VExRT.InviteTool.PromoteRank) or ""))
+
+	function self.dropDown:UpdateText()
+		if IsInGuild() and VExRT.InviteTool.Ranks then
+			local r = ""
+			for rank,v in pairs(VExRT.InviteTool.Ranks) do
+				if v then
+					r = r .. (GuildControlGetRankName(rank) or "") .. ","
+				end
+			end
+			self:SetText( L.inviterank .. r:sub(1,-2) )
+		end
+	end
+	self.dropDown:UpdateText()
 end
 
 
@@ -734,9 +748,6 @@ do
 		if info then
 			return info.name
 		end
-	end
-	if ExRT.isClassic then
-		GetFriendInfo = _G.GetFriendInfo
 	end
 
 	local function IsFriend(name)

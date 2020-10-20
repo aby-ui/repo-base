@@ -213,7 +213,7 @@ function Private.InitializeEncounterAndZoneLists()
       encounter_list = encounter_list .. "\n"
     end
   else
-    EJ_SelectTier(EJ_GetNumTiers())
+    EJ_SelectTier(EJ_GetCurrentTier())
 
     for _, inRaid in ipairs({false, true}) do
       local instance_index = 1
@@ -1435,7 +1435,7 @@ Private.load_prototype = {
       name = "itemtypeequipped",
       display = L["Item Type Equipped"],
       type = "multiselect",
-      test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))",
+      test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
     },
@@ -5991,7 +5991,8 @@ Private.event_prototypes = {
         type = "select",
         values = "cooldown_progress_behavior_types",
         test = "true",
-        enable = function(trigger) return trigger.use_rune end
+        enable = function(trigger) return trigger.use_rune end,
+        required = true
       },
       {
         name = "runesCount",
@@ -6126,7 +6127,7 @@ Private.event_prototypes = {
         display = L["Item Type"],
         type = "multiselect",
         values = "item_weapon_types",
-        test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))"
+        test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))"
       },
     },
     automaticrequired = true
@@ -7189,13 +7190,13 @@ Private.event_prototypes = {
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
 
-      if trigger.use_instance_size then
+      if trigger.use_instance_size ~= nil then
         tinsert(events, "ZONE_CHANGED")
         tinsert(events, "ZONE_CHANGED_INDOORS")
         tinsert(events, "ZONE_CHANGED_NEW_AREA")
       end
 
-      if trigger.use_instance_difficulty then
+      if trigger.use_instance_difficulty ~= nil then
         tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
         tinsert(events, "ZONE_CHANGED")
         tinsert(events, "ZONE_CHANGED_INDOORS")
@@ -7302,7 +7303,6 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "group_types",
         init = "WeakAuras.GroupType()",
-        events = {"GROUP_ROSTER_UPDATE"}
       },
       {
         name = "instance_size",
@@ -7311,7 +7311,6 @@ Private.event_prototypes = {
         values = "instance_types",
         init = "WeakAuras.InstanceType()",
         control = "WeakAurasSortedDropdown",
-        events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
       },
       {
         name = "instance_difficulty",

@@ -58,7 +58,6 @@ local C_Timer_After = _G.C_Timer.After
 local GameTooltip = _G.GameTooltip
 local GetFactionInfoByID = _G.GetFactionInfoByID
 local GetGameTime = _G.GetGameTime
-local GetQuestsCompleted = _G.AbyGetQuestsCompleted
 local IsControlKeyDown = _G.IsControlKeyDown
 local LibStub = _G.LibStub
 local UIParent = _G.UIParent
@@ -225,7 +224,10 @@ local function CheckEventActive()
 	end
 
 	if setEnabled and not HallowsEnd.isEnabled then
-		completedQuests = GetQuestsCompleted(completedQuests)
+		local tmpPairs = C_QuestLog.GetAllCompletedQuestIDs()
+		for _, id in ipairs(tmpPairs) do 
+			completedQuests[id] = true
+		end
 
 		-- special treatment for Westfall
 		if UnitFactionGroup("player") == "Alliance" and completedQuests[26322] then

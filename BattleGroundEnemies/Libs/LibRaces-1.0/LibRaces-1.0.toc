@@ -1,0 +1,9 @@
+## Interface: 80205
+## Title: Lib: LibRaces-1.0
+## Notes: A library to easy translate localized race names to generic token like strings
+## Author: Hizuro
+## Version: 1.5.0-release
+## OptionalDeps: LibStub, CallbackHandler-1.0
+
+
+LibRaces-1.0.lua

@@ -64,19 +64,17 @@ end
 
 -- Global API
 function GetInspectSpec(unit)
-    if (UnitLevel(unit) > 10) then
-        local specID, specName
-        if (unit == "player") then
-            specID = GetSpecialization()
-            specName = select(2, GetSpecializationInfo(specID))
-        else
-            specID = GetInspectSpecialization(unit)
-            if (specID and specID > 0) then
-                specName = select(2, GetSpecializationInfoByID(specID))
-            end
+    local specID, specName
+    if (unit == "player") then
+        specID = GetSpecialization()
+        specName = select(2, GetSpecializationInfo(specID))
+    else
+        specID = GetInspectSpecialization(unit)
+        if (specID and specID > 0) then
+            specName = select(2, GetSpecializationInfoByID(specID))
         end
-        return specName
     end
+    return specName or ""
 end
 
 -- Clear
