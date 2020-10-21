@@ -184,11 +184,6 @@
 						<Offset x="2" y="-45" />
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="" edgeFile="">
-					<BackgroundInsets>
-						<AbsInset left="0" right="0" top="0" bottom="0" />
-					</BackgroundInsets>
-				</Backdrop>
 				<Layers>
 					<Layer>
 						<Texture name="BuyEmAllCurrency1" file="nil">

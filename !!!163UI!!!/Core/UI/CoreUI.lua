@@ -359,6 +359,7 @@ CoreDependCall("Blizzard_BindingUI", function()
     KeyBindingFrameScrollFrame:HookScript("OnVerticalScroll", CoreUIHideCallOut)
 end)
 
+--No use, can't find header
 function CoreUIShowKeyBindingFrame(scrollTo)
     if not IsAddOnLoaded("Blizzard_BindingUI") then KeyBindingFrame_LoadUI(); end
 

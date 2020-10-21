@@ -53,7 +53,11 @@ function SliderOnValueChanged(self, value)
     local _, _, name = string.find(self:GetName(),"ComergyOptSlider(.+)")
     Comergy_Settings[name] = self:GetValue()
     if (self.editBox) then
-        self.editBox:SetText(value)
+        if self.editBox:IsNumeric() then
+            self.editBox:SetText(floor(value+0.5))
+        else
+            self.editBox:SetText(value)
+        end
     end
     ComergyOnConfigChange()
 end

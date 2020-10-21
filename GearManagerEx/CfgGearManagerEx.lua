@@ -27,10 +27,10 @@ U1RegisterAddon("GearManagerEx", {
         text = "一键脱光/穿回",
         callback = function(cfg, v, loading) GearManagerEx:QuickStrip() end,
     },
-    {
+    --[[{
         text = "按键绑定",
         callback = function(cfg, v, loading) CoreUIShowKeyBindingFrame("HEADER_GEARMANAGEREX_TITLE") end,
-    },
+    },--]]
     {
         text = '重置快捷条',
         callback = function(cfg, v, loading)

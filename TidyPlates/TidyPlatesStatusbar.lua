@@ -30,6 +30,7 @@ local function UpdateBar(self)
 	if tailFraction > 0 then self.Tail:Show() else self.Tail:Hide() end
 
 
+
 	if self.Orientation == "VERTICAL" then 
 
 		-- Funky Vertical Bar

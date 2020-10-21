@@ -141,6 +141,7 @@ TidyPlatesHubDefaults = {
 	ColorThreatTransition = {r = 255/255, g = 160/255, b = 0},	-- Yellow
 	ColorThreatSafe = {r = 15/255, g = 150/255, b = 230/255},	-- Bright Blue
 	ColorAttackingOtherTank = {r = 15/255, g = 170/255, b = 200/255},	-- Bright Blue
+	CountPetAsOtherTank = true,
 	ColorShowPartyAggro = false,
 	ColorPartyAggro = {r = 255/255, g = 0, b = .4,},
 	ColorPartyAggroBar = false,
@@ -168,9 +169,15 @@ TidyPlatesHubDefaults = {
 
 	-- Casting
 	---------------------------------------
-	ColorNormalSpellCast = { r = 252/255, g = 140/255, b = 0, },
-	ColorUnIntpellCast = { r = 0.5137243866920471, g = 0.7529395222663879, b = 0.7647042274475098, },
+	ColorNormalSpellCast = {r = 252/255, g = 140/255, b = 0/255},
+	ColorUnIntpellCast = {r = 131/255, g = 192/255, b = 195/255},
 	SpellCastEnableFriendly = false,
+
+	SpellsCastAtPlayerEnable = false,
+	ColorNormalSpellsCastAtPlayer = {r = 255/255, g = 3/255, b = 194/255},
+	ColorUnIntSpellsCastAtPlayer = {r = 195/255, g = 90/255, b = 150/255},
+	SpellCastAtPlayerList = "",
+	SpellCastAtPlayerLookup = {},
 
 	-- Status Text
 	---------------------------------------

@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<!-- Main Class Events Frame -->
-	<Frame name="EA_Class_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Options_Frame" enableKeyboard="true">
+	<Frame name="EA_Class_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Options_Frame" enableKeyboard="true" inherits="BackdropTemplate">
 
 		<Size>
 			<AbsDimension x="325" y="470"/>
@@ -11,17 +11,9 @@
 			<Anchor point="LEFT" relativepoint="RIGHT"/>
 		</Anchors>
 
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11"/>
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32"/>
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 
 		<Layers>
 			<Layer level="ARTWORK">
@@ -172,21 +164,13 @@
 				</Scripts>
 			</Button>
 
-			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate,BackdropTemplate">
 				<Size>
 				    <AbsDimension x="280" y="300"/>
 				</Size>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="" tile="false">
-					<BackgroundInsets>
-						<AbsInset left="0" right="0" top="0" bottom="0" />
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="0" />
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="0" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                     <KeyValue key="backdropInfo" value="ABY_BACKDROP_GOLD_BGONLY" type="global"/>
+                </KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>
@@ -312,7 +296,7 @@
 		</Frames>
 
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				EA_Class_Events_Frame_HelpText1:SetText(EX_XCLSALERT_HELP1);
 				EA_Class_Events_Frame_HelpText2:SetText(EX_XCLSALERT_HELP2);
 				EA_Class_Events_Frame_HelpText3:SetText(EX_XCLSALERT_HELP3);
@@ -327,7 +311,7 @@
 
 
 	<!-- Alternative Class Events Frame -->
-	<Frame name="EA_ClassAlt_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Class_Events_Frame" enableKeyboard="true">
+	<Frame name="EA_ClassAlt_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Class_Events_Frame" enableKeyboard="true" inherits="BackdropTemplate">
 
 		<Size>
 			<AbsDimension x="325" y="500"/>
@@ -337,17 +321,9 @@
 			<Anchor point="LEFT" relativepoint="RIGHT"/>
 		</Anchors>
 
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11"/>
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32"/>
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 
 		<Layers>
 			<Layer level="ARTWORK">
@@ -496,21 +472,13 @@
 				</Scripts>
 			</Button>
 
-			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate,BackdropTemplate">
 				<Size>
 				    <AbsDimension x="280" y="300"/>
 				</Size>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="" tile="false">
-					<BackgroundInsets>
-						<AbsInset left="0" right="0" top="0" bottom="0" />
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="0" />
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="0" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                     <KeyValue key="backdropInfo" value="ABY_BACKDROP_GOLD_BGONLY" type="global"/>
+                </KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>
@@ -623,7 +591,7 @@
 		</Frames>
 
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				EA_ClassAlt_Events_Frame_HelpText1:SetText(EX_XCLSALERT_HELP4);
 				EA_ClassAlt_Events_Frame_HelpText2:SetText(EX_XCLSALERT_HELP5);
 				EA_ClassAlt_Events_Frame_HelpText3:SetText(EX_XCLSALERT_HELP6);

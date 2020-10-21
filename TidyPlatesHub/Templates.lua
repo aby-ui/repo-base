@@ -163,7 +163,7 @@ local function CreateQuickSlider(name, label, ... ) --, neighborFrame, xOffset, 
 
 	local function CreateQuickHeadingLabel(name, label, ...)
 		local columnFrame = ...
-		local frame = CreateFrame("Frame", name, columnFrame, "BackdropTemplate")
+		local frame = CreateFrame("Frame", name, columnFrame)
 		-- Heading Appearance
 		frame:SetHeight(26)
 		frame:SetWidth(500)

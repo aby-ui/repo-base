@@ -282,7 +282,7 @@ local function BuildHubPanel(panel)
 	panel.OpacityFilterFriendlyNPC, F = CreateQuickCheckbutton(objectName.."OpacityFilterFriendlyNPC", "过滤友方NPC", AlignmentColumn, F, 8)
 	panel.OpacityFilterUntitledFriendlyNPC, F = CreateQuickCheckbutton(objectName.."OpacityFilterUntitledFriendlyNPC", "过滤无头衔的友方NPC", AlignmentColumn, F, 8)	
 	--panel.OpacityFilterExcludeQuestMobs, F = CreateQuickCheckbutton(objectName.."OpacityFilterExcludeQuestMobs", "Bypass Filter for Quest Mobs", AlignmentColumn, F, 8)
-	
+
     panel.OpacityFilterPlayers = CreateQuickCheckbutton(objectName.."OpacityFilterPlayers", "过滤玩家", AlignmentColumn, panel.FilterScaleLock, OffsetColumnB, 4)
 	panel.OpacityFilterInactive = CreateQuickCheckbutton(objectName.."OpacityFilterInactive", "过滤未激活", AlignmentColumn, panel.OpacityFilterPlayers, OffsetColumnB)
     panel.OpacityFilterInactiveOnlyInCombat = CreateQuickCheckbutton(objectName.."OpacityFilterInactiveOnlyInCombat", "仅当玩家在战斗时才过滤", AlignmentColumn, panel.OpacityFilterInactive, OffsetColumnB + 20)
@@ -340,11 +340,14 @@ local function BuildHubPanel(panel)
 	-- Warning Border Glow
 	--]]
 
+	--
+
     -- Column 2
 	panel.EnableOffTankHighlight = CreateQuickCheckbutton(objectName.."EnableOffTankHighlight", "高亮正在攻击副坦的", AlignmentColumn, panel.ThreatLabel, OffsetColumnB)
-	panel.ColorAttackingOtherTank = CreateQuickColorbox(objectName.."ColorAttackingOtherTank", "正在攻击其他坦克", AlignmentColumn, panel.EnableOffTankHighlight , 16+OffsetColumnB)
+	panel.ColorAttackingOtherTank = CreateQuickColorbox(objectName.."ColorAttackingOtherTank", "正在攻击其他坦克", AlignmentColumn, panel.EnableOffTankHighlight , 14+OffsetColumnB)
+	panel.CountPetAsOtherTank = CreateQuickCheckbutton(objectName.."CountPetAsOtherTank", "将宠物视为副坦克", AlignmentColumn, panel.ColorAttackingOtherTank, 16+OffsetColumnB)
 
-	panel.ColorShowPartyAggro = CreateQuickCheckbutton(objectName.."ColorShowPartyAggro", "高亮团队成员的仇恨", AlignmentColumn, panel.ColorAttackingOtherTank, OffsetColumnB)
+	panel.ColorShowPartyAggro = CreateQuickCheckbutton(objectName.."ColorShowPartyAggro", "高亮团队成员的仇恨", AlignmentColumn, panel.CountPetAsOtherTank, OffsetColumnB)
 	panel.ColorPartyAggro = CreateQuickColorbox(objectName.."ColorPartyAggro", "团队成员的仇恨", AlignmentColumn, panel.ColorShowPartyAggro , 14+OffsetColumnB)
 	panel.ColorPartyAggroBar = CreateQuickCheckbutton(objectName.."ColorPartyAggroBar", "血条颜色", AlignmentColumn, panel.ColorPartyAggro, 16+OffsetColumnB)
 	panel.ColorPartyAggroGlow = CreateQuickCheckbutton(objectName.."ColorPartyAggroGlow", "边框或发光警告", AlignmentColumn, panel.ColorPartyAggroBar, 16+OffsetColumnB)
@@ -373,6 +376,19 @@ local function BuildHubPanel(panel)
 	panel.ColorNormalSpellCast, F = CreateQuickColorbox(objectName.."ColorNormalSpellCast", "可打断", AlignmentColumn, F , 16)
 	panel.ColorUnIntpellCast, F = CreateQuickColorbox(objectName.."ColorUnIntpellCast", "不可打断", AlignmentColumn, F , 16)
 
+	panel.SpellsCastAtPlayerLabel, F = CreateQuickItemLabel(nil, "Spells that target you:", AlignmentColumn, F, 0, 2)
+    panel.SpellsCastAtPlayerEnable, F = CreateQuickCheckbutton(objectName.."SpellsCastAtPlayerEnable", "Color spells cast at player", AlignmentColumn, F)
+	panel.ColorNormalSpellsCastAtPlayer, F = CreateQuickColorbox(objectName.."ColorNormalSpellsCastAtPlayer", "Normal", AlignmentColumn, F , 16)
+	panel.ColorUnIntSpellsCastAtPlayer, F = CreateQuickColorbox(objectName.."ColorUnIntSpellsCastAtPlayer", "Un-interruptible", AlignmentColumn, F , 16)
+	panel.SpellCastAtPlayerListLabel, F = CreateQuickItemLabel(nil, "Spells that will be checked:", AlignmentColumn, F, 0, 2)
+	panel.SpellCastAtPlayerList, F = CreateQuickEditbox(objectName.."SpellCastAtPlayerList", AlignmentColumn, F, 8)
+	panel.SpellCastAtPlayerList:SetWidth(250)
+
+	panel.SpellCastAtPlayerTip, F = CreateQuickItemLabel(nil, "Tip:|cffCCCCCC Not all spells are actually cast at the current target of a mob. TidyPlates only recolors spells listed here in order to make sure only spells where you know they get cast at the current target get recolored.\nSpells need to be listed with their exact spell ID or name. Each line needs to contain exactly one spell ID or name. Lines starting with # will be ignored. For example this would add Ice Lance (spell ID 30455), Frostbolt, but not Shadowbolt:\n\n30455\nFrostbolt\n# Shadowbolt", AlignmentColumn, panel.SpellsCastAtPlayerLabel, 300)
+	panel.SpellCastAtPlayerTip:SetHeight(300)
+	panel.SpellCastAtPlayerTip:SetWidth(200)
+	panel.SpellCastAtPlayerTip.Text:SetJustifyV("TOP")
+
 	--[[
 	------------------------------
 	-- Text
@@ -396,7 +412,7 @@ local function BuildHubPanel(panel)
 	------------------------------
 	--Widgets
 	------------------------------
-	panel.WidgetsLabel, F = CreateQuickHeadingLabel(nil, "其他部件", AlignmentColumn, F, 0, 5)
+	panel.WidgetsLabel, F = CreateQuickHeadingLabel(nil, "其他部件", AlignmentColumn, panel.SpellCastAtPlayerList, 0, 5)
 	panel.WidgetTargetHighlight = CreateQuickCheckbutton(objectName.."WidgetTargetHighlight", "目标高亮", AlignmentColumn, panel.WidgetsLabel)
 	panel.WidgetEliteIndicator = CreateQuickCheckbutton(objectName.."WidgetEliteIndicator", "显示精英图标", AlignmentColumn, panel.WidgetTargetHighlight)
 	panel.ClassEnemyIcon = CreateQuickCheckbutton(objectName.."ClassEnemyIcon", "显示敌对职业图标", AlignmentColumn, panel.WidgetEliteIndicator)
@@ -483,7 +499,8 @@ local function BuildHubPanel(panel)
 		ConvertDebuffListTable(LocalVars.WidgetsDebuffTrackList, LocalVars.WidgetsDebuffLookup, LocalVars.WidgetsDebuffPriority)
 		-- Convert Unit Filter Strings
 		ConvertStringToTable(LocalVars.OpacityFilterList, LocalVars.OpacityFilterLookup)
-		ConvertStringToTable(LocalVars.UnitSpotlightList, LocalVars.UnitSpotlightLookup)
+        ConvertStringToTable(LocalVars.UnitSpotlightList, LocalVars.UnitSpotlightLookup)
+		ConvertStringToTable(LocalVars.SpellCastAtPlayerList, LocalVars.SpellCastAtPlayerLookup)
 	end
 
 	--panel:Hide()

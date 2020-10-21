@@ -1,3 +1,12 @@
+BACKDROP_DWCHAT_GOLD_BGONLY = {
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Gold-Background",
+	edgeFile = "",
+	tile = true,
+	tileEdge = true,
+	tileSize = 32,
+	edgeSize = 7,
+	insets = { left = 4, right = 4, top = 4, bottom = 4 },
+};
 
 -- TODO
 -- use realm based player database

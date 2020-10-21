@@ -42,19 +42,19 @@ end
 function Mod:GOSSIP_SHOW()
 	local npcId = GossipNPCID()
 	if Addon.Config.autoGossip and IsInActiveChallengeMode() and not npcBlacklist[npcId] then
-		local options = {GetGossipOptions()}
-		for i = 1, GetNumGossipOptions() do
-			if options[i*2] == "gossip" then
+		local options = C_GossipInfo.GetOptions()
+		for i = 1, C_GossipInfo.GetNumOptions() do
+			if options[i]["type"] == "gossip" then
 				local popupWasShown = IsStaticPopupShown()
-				SelectGossipOption(i)
+				C_GossipInfo.SelectOption(i)
 				local popupIsShown = IsStaticPopupShown()
 				if popupIsShown then
 					if not popupWasShown then
 						StaticPopup1Button1:Click()
-						CloseGossip()
+						C_GossipInfo.CloseGossip()
 					end
 				else
-					CloseGossip()
+					C_GossipInfo.CloseGossip()
 				end
 				break
 			end

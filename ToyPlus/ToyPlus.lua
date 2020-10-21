@@ -61,6 +61,7 @@ function ToyPlus:OnInitialize()
 		end
 	end
 	if self.db.profile.shown then ToyPlus:CreateFrame() end
+
 	ToyPlus:RefreshToys()
 end
 
@@ -195,7 +196,6 @@ function ToyPlus:Broker(self)
 	LibQTip:Release(self.tooltip)
 	self.tooltip = nil
 	if InCombatLockdown() then return end
-	GameTooltip:Hide()
 
 	for i = 1, #ToyPlusToyDB.toyName do
 		local toyBtn = _G["ToyPlus_brokerBtn"..i]
@@ -209,7 +209,10 @@ function ToyPlus:Broker(self)
 	tooltip:AddLine(L'Left-click menu icon to toggle toy buttons.')
 	tooltip:AddLine(L'Right-click menu icon for configuration.')
 	tooltip:AddSeparator(1,0,0.5,1)
-	if not ToyPlusToyDB.itemID[1] or not C_ToyBox.GetIsFavorite(ToyPlusToyDB.itemID[1]) then
+	if not ToyPlusToyDB.itemID[1] then
+		ToyPlus:RefreshToys()
+	end
+	if not C_ToyBox.GetIsFavorite(ToyPlusToyDB.itemID[1]) then
 		tooltip:AddLine(L'No favourites found. Add some via the toy list.')
 	else
 		for i = 1, 40 do
@@ -423,7 +426,7 @@ function ToyPlus:RefreshToys() -- Add Toys to DB
 		wipe(ToyPlus.db.global.toyName); wipe(ToyPlus.db.global.itemID); wipe(ToyPlus.db.global.toyIcon)
 		for i = 1, toyTotal do
 			local itemNo = C_ToyBox.GetToyFromIndex(i)
-			if itemNo ~= -1 then
+			if itemNo > 0 then
 				local itemID, toyName, toyIcon, toyFave = C_ToyBox.GetToyInfo(itemNo)
 				if itemID and PlayerHasToy(itemID) then
 					ToyPlus.db.global.toyName[toyNum] = toyName
@@ -486,7 +489,7 @@ function ToyPlus:ShowList()
 	local toyFrame = _G["ToyPlusFrame"]
 	ToyPlus:RefreshToys()
 	if not toyPopout then
-		toyPopout = CreateFrameAby("Frame", "ToyPlus_Popout", UIParent)
+		toyPopout = CreateFrame("Frame", "ToyPlus_Popout", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		toyPopout:SetFrameStrata("HIGH")
 		toyPopout:EnableMouse(true)
 		toyPopout:RegisterForDrag("LeftButton")
@@ -762,7 +765,7 @@ function ToyPlus:RefreshIcons()
 end
 
 function ToyPlus:CreateFrame()
-	local toyFrame = CreateFrameAby("Frame", "ToyPlusFrame", UIParent)--Toy Icons Frame
+	local toyFrame = CreateFrame("Frame", "ToyPlusFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")--Toy Icons Frame
 	toyFrame:SetFrameStrata("BACKGROUND")
 	toyFrame:SetClampedToScreen(true)
 	toyFrame:SetMovable(true); toyFrame:EnableMouse(true)

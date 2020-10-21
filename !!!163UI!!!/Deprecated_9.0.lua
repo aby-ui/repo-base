@@ -37,7 +37,7 @@ Mixin(scrollBar, BackdropTemplateMixin);
 BackdropTemplateMixin.OnBackdropLoaded(scrollBar);
 
 脚本为空时不用写，写了反而有问题
-<OnLoad inherit="prepend">
+<OnLoad inherit="prepend"> append表示template的OnLoad后运行 hooksecurefunc(NineSliceUtil, "ApplyLayout", function(self) end)
 or self:OnBackdropLoaded()
 <OnSizeChanged inherit="prepend">
 or self:OnBackdropSizeChanged()

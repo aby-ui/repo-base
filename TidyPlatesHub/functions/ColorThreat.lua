@@ -261,20 +261,26 @@ end
 -- Cast Bar Color
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
-local function CastBarDelegate(unit)
+local function CastBarDelegate(unit, spellID, spellName)
 	local color, alpha
+    local isCastAtPlayer = LocalVars.SpellsCastAtPlayerEnable
+                           and ((spellID and LocalVars.SpellCastAtPlayerLookup[spellID])
+                                or (spellName and LocalVars.SpellCastAtPlayerLookup[spellName]))
+						   and unit.unitid
+						   and UnitIsUnit(unit.unitid.."target", "player")
+
 	if unit.spellInterruptible then
-		color = LocalVars.ColorNormalSpellCast
-	else color = LocalVars.ColorUnIntpellCast end
+		color = isCastAtPlayer and LocalVars.ColorNormalSpellsCastAtPlayer or LocalVars.ColorNormalSpellCast
+	else
+		color = isCastAtPlayer and LocalVars.ColorUnIntSpellsCastAtPlayer or LocalVars.ColorUnIntpellCast
+	end
 
-	if unit.reaction == "FRIENDLY" and (not LocalVars.SpellCastEnableFriendly) then
+	if unit.reaction == "FRIENDLY" and not LocalVars.SpellCastEnableFriendly then
 		alpha = 0
-	else alpha = 1 end
+	else
+		alpha = 1
+	end
 
-	--[[
-	if unit.reaction ~= "FRIENDLY" or LocalVars.SpellCastEnableFriendly then alpha = 1
-	else alpha = 0 end
---]]
 	return color.r, color.g, color.b, alpha
 end
 
@@ -349,6 +355,7 @@ local WarningBorderFunctionsUniversal = { DummyFunction, WarningBorderFunctionBy
 local function ThreatColorDelegate(unit)
 	local color
 
+
     if LocalVars.UnitSpotlightGlowEnable and LocalVars.UnitSpotlightLookup[unit.name] then
    		color = LocalVars.UnitSpotlightColor
 
@@ -364,6 +371,7 @@ local function ThreatColorDelegate(unit)
 			color = WarningBorderFunctionByThreat(unit)
 		end
 
+		--if color then print(color.r, color.g, color.b) end
 		-- Players
 		-- Check for Healer?  By Threat does this.
 	end
@@ -374,9 +382,13 @@ local function ThreatColorDelegate(unit)
 	end
 	--]]
 
+
+
+
 	if color then return color.r, color.g, color.b, 1
 	else return 0, 0, 0, 0 end
 end
+
 
 
 
@@ -397,14 +409,21 @@ end
 -- By Significance
 local function NameColorBySignificance(unit)
 	-- [[
+
 	if unit.reaction ~= "FRIENDLY" then
-		if (unit.isTarget or (LocalVars.FocusAsTarget and unit.isFocus)) then return White
-		elseif unit.isBoss or unit.isMarked then return BossGrey
-		elseif unit.isElite or (unit.levelcolorRed > .9 and unit.levelcolorGreen < .9) then return EliteGrey
+		if (unit.isTarget or (LocalVars.FocusAsTarget and unit.isFocus)) then 
+			return White
+		elseif unit.isBoss or unit.isMarked then 
+			return BossGrey
+		elseif unit.isElite or (unit.levelcolorRed > .9 and unit.levelcolorGreen < .9) then 
+			return EliteColor
 		else return NormalGrey end
 	else
 		return NameColorByReaction(unit)
 	end
+
+
+
 	--]]
 	--[[
 	if unit.reaction == "FRIENDLY" then return White
@@ -559,6 +578,7 @@ local function SetNameColorDelegate(unit)
 	--else
 		color = func(unit)
 	--end
+
 
 
 	if color then

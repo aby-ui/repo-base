@@ -1,24 +1,16 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="EventAlert_IconOptions.lua" />
-	<Frame name="EA_Icon_Options_Frame" hidden="true" parent="EA_Options_Frame" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
+	<Frame name="EA_Icon_Options_Frame" hidden="true" parent="EA_Options_Frame" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="370" y="600" />
 		</Size>
 		<Anchors>
 			<Anchor relativepoint="RIGHT" point="LEFT" />
 		</Anchors>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Frames>
 			<CheckButton name="$parent_LockFrame" inherits="OptionsCheckButtonTemplate">
 				<Anchors>
@@ -825,7 +817,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				self:RegisterForDrag("LeftButton");
 				EventAlert_Icon_Options_Frame_OnLoad();
 			</OnLoad>

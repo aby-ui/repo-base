@@ -95,6 +95,8 @@ end
 
 -- By Threat (Auto Detect)
 local function ScaleFunctionByThreat(unit)
+	--if UnitIsUnit(unit.unitid.."target", "player") then print("Targetted by,", unit.name) end
+
 	if unit.reaction == "NEUTRAL" and unit.threatValue < 2 then return ScaleFunctionByThreatHigh(unit) end
 
 	if (LocalVars.ThreatWarningMode == "Auto" and IsTankingAuraActive())

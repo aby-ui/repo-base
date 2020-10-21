@@ -16,24 +16,16 @@
 		</OnEvent>
 		</Scripts>
 	</Frame>
-	<Frame name="EA_Version_Frame" hidden="true" parent="UIParent" movable="true" frameStrata="HIGH">
+	<Frame name="EA_Version_Frame" hidden="true" parent="UIParent" movable="true" frameStrata="HIGH" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="450" y="350" />
 		</Size>
 		<Anchors>
 			<Anchor relativepoint="CENTER" point="CENTER" />
 		</Anchors>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Frames>
 			<Button name="$parent_Okay" inherits="OptionsButtonTemplate" text="Okay">
 				<Size>

@@ -56,19 +56,10 @@
 		</HighlightTexture>
 	</Button>
 
-	<Frame name="RecentTradeFrame" parent="TradeFrame" hidden="false">
-		<TitleRegion setAllPoints="true"/>
-		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
-			</BackgroundInsets>
-		</Backdrop>
+	<Frame name="RecentTradeFrame" parent="TradeFrame" hidden="false" inherits="BackdropTemplate">
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+        </KeyValues>
 		<Size>
 			<AbsDimension x="180" y="451"/>
 		</Size>
@@ -181,7 +172,7 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				self:RegisterEvent("TRADE_SHOW")
 			</OnLoad>
 			<OnEvent>

@@ -90,24 +90,16 @@
 		<FontString inherits="ChatFontNormal" />
 	</EditBox>
 	<!-- Options Setting Frames -->
-	<Frame name="EA_Options_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
+	<Frame name="EA_Options_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="300" y="600" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Frames>
 			<Button name="$parent_ToggleIconOptions" inherits="OptionsButtonTemplate" text="">
 				<Size>
@@ -578,7 +570,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				self:RegisterForDrag("LeftButton");
 				EventAlert_Options_OnLoad();
 			</OnLoad>
@@ -596,7 +588,7 @@
 
 
 	<!-- Spell Condition Setting Frames -->
-	<Frame name="EA_SpellCondition_Frame" hidden="true" parent="EA_Options_Frame" frameStrata="DIALOG">
+	<Frame name="EA_SpellCondition_Frame" hidden="true" parent="EA_Options_Frame" frameStrata="DIALOG" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="300" y="300" />
 		</Size>
@@ -605,17 +597,9 @@
 				<Offset x="-100" y="100" />
 			</Anchor>
 		</Anchors> -->
-		<Backdrop bgFile="Interface\AddOns\EventAlertMod\Images\UI-Panel-Backdrop" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Frames>
 			<Frame name="$parent_SpellIcon">
 				<Size>
@@ -1020,7 +1004,7 @@
 	</Frame>
 
 	<!-- GroupEvent Setting Frames -->
-	<Frame name="EA_GroupEventSetting_Frame" hidden="true" parent="EA_Options_Frame" frameStrata="DIALOG">
+	<Frame name="EA_GroupEventSetting_Frame" hidden="true" parent="EA_Options_Frame" frameStrata="DIALOG" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="725" y="480" />
 		</Size>
@@ -1029,18 +1013,9 @@
 				<Offset x="-100" y="100" />
 			</Anchor>
 		</Anchors> -->
-		<Backdrop bgFile="Interface\AddOns\EventAlertMod\Images\UI-Panel-Backdrop" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-		<!-- <Backdrop edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true"> -->
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11" />
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32" />
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32" />
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 		<Frames>
 			<Slider name="$parent_IconSize" inherits="OptionsSliderTemplate">
 				<Anchors>
@@ -1338,21 +1313,13 @@
 				</Scripts>
 			</CheckButton>
 
-			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate, BackdropTemplate">
 				<Size>
 				    <AbsDimension x="680" y="340"/>
 				</Size>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Gold-Background" edgeFile="" tile="false">
-					<BackgroundInsets>
-						<AbsInset left="0" right="0" top="0" bottom="0" />
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="0" />
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="0" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="ABY_BACKDROP_GOLD_BGONLY" type="global"/>
+                </KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>

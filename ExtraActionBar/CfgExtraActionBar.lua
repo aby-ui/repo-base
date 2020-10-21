@@ -32,10 +32,11 @@ U1RegisterAddon("ExtraActionBar", {
         text = "创建新的动作条",
         callback = function() U1BAR_CreateNewActionBar() end,
     },
-    {
+
+    --[[{
         text = "设置按键绑定",
         callback = function() CoreUIShowKeyBindingFrame("HEADER_MOGUBAR1") end,
-    },
+    },]]
     {
         var = "showgrid",
         text = "总是显示全部按钮",

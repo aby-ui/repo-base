@@ -36,7 +36,7 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
         </Scripts>
     </EditBox>
 
-    <Frame name="ComergyOptFrameTemplate" virtual="true">
+    <Frame name="ComergyOptFrameTemplate" virtual="true" inherits="BackdropTemplate">
         <Anchors>
             <Anchor point="TOPLEFT">
                 <Offset>
@@ -49,11 +49,9 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
                 </Offset>
             </Anchor>
         </Anchors>
-        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
-            <EdgeSize>
-                <AbsValue val="16" />
-            </EdgeSize>
-        </Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+        </KeyValues>
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture file="Interface\ChatFrame\ChatFrameBackground">
@@ -79,7 +77,7 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
     </Frame>
 
 
-    <Frame name="ComergyOptFrame" parent="UIParent" movable="true" toplevel="true" clampedToScreen="true" hidden="true">
+    <Frame name="ComergyOptFrame" parent="UIParent" movable="true" toplevel="true" clampedToScreen="true" hidden="true" inherits="BackdropTemplate">
         <Size x="310" y="475"/>
         <Anchors>
             <Anchor point="CENTER">
@@ -88,11 +86,9 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
                 </Offset>
             </Anchor>
         </Anchors>
-        <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border">
-            <EdgeSize>
-                <AbsValue val="16" />
-            </EdgeSize>
-        </Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
+        </KeyValues>
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture file="Interface\ChatFrame\ChatFrameBackground">

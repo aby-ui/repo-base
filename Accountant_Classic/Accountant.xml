@@ -59,7 +59,7 @@
 	</Frame>
 
 	<!-- Compact Money Frame -->
-	<Frame name="AccountantMoneyFrameTemplate" virtual="true">
+	<Frame name="AccountantMoneyFrameTemplate" virtual="true" inherits="BackdropTemplate">
 		<Frames>
 			<Frame name="$parentMoney"  inherits="SmallMoneyFrameTemplate">
 				<Size>
@@ -80,17 +80,9 @@
 				</Scripts>
 			</Frame>
 		</Frames>
-		<Backdrop bgFile="Interface\Tooltips\ChatBubble-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
-			</BackgroundInsets>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_CHAT_BUBBLE_16_16" type="global"/>
+        </KeyValues>
 	</Frame>
 
 	<!-- Main Window -->

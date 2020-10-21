@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201018030438"),
-	DisplayVersion = "9.0.2 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 10, 13, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20201020205835"),
+	DisplayVersion = "9.0.2", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 10, 20) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -1924,7 +1924,7 @@ do
 
 	function scheduleRepeat(time, spellId, func, mod, self, ...)
 		--Loops until debuff is gone
-		if DBM:UnitAura("player", spellId) then
+		if DBM:UnitAura("player", spellId) then--GetPlayerAuraBySpellID
 			func(...)--Probably not going to work, this is going to need to get a lot more hacky
 			schedule(time or 2, scheduleRepeat, time, spellId, func, mod, self, ...)
 		end
@@ -11912,7 +11912,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201018030438" then
+	if not revision or revision == "20201020205835" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

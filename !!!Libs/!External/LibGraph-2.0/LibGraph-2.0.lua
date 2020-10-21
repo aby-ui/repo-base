@@ -268,7 +268,7 @@ end
 function lib:CreateGraphLine(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame", name, parent)
+	graph = CreateFrame("Frame", name, parent, "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)

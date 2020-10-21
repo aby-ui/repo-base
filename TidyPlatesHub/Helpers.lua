@@ -51,12 +51,11 @@ local function MergeProfileValues(target, defaults)
 	end
 end
 
-local function ListToTable( ... )
+local function ListToTable(...)
 	local t = {}
-	local index, line
 	local i = 1
 	for index = 1, select("#", ...) do
-		line = select(index, ...)
+		local line = select(index, ...)
 		if line ~= "" then
 			t[i] = line
 			i = i + 1
@@ -65,18 +64,21 @@ local function ListToTable( ... )
 	return t
 end
 
-local function ConvertStringToTable(source, target )
+local function ConvertStringToTable(source, target)
 	local temp = ListToTable(strsplit("\n", source))
 	target = wipe(target)
 
 	for index = 1, #temp do
-		local str = temp[index]
-		if str then
-			target[str] = true
+		local line = temp[index]
+        if line and not line:find("^#") then
+            if tonumber(line) then
+                target[tonumber(line)] = true
+            else
+                target[line] = true
+            end
 		end
 	end
 end
-
 
 local function ConvertDebuffListTable(source, target, order)
 	local temp = ListToTable(strsplit("\n", source))

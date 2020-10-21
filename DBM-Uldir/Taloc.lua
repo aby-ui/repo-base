@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200908170540")
+mod:SetRevision("20200908175403")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 --mod:SetHotfixNoticeRev(16950)

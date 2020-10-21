@@ -176,21 +176,13 @@
 		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD"/>
 	</Button>
 
-	<Button name="DWCIconFrame" frameStrata="TOOLTIP" parent="UIParent" hidden="true" enableKeyBoard="true" enableMouse="true">
+	<Button name="DWCIconFrame" frameStrata="TOOLTIP" parent="UIParent" hidden="true" enableKeyBoard="true" enableMouse="true" inherits="BackdropTemplate">
 		<Size>
 			<AbsDimension x="260" y="160"/>
 		</Size>
-		<Backdrop  bgFile="Interface\DialogFrame\UI-DialogBox-Gold-Background" tile="true">
-			<EdgeSize>
-				<AbsValue val="7"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="4" right="4" top="4" bottom="4"/>
-			</BackgroundInsets>
-		</Backdrop>
+        <KeyValues>
+            <KeyValue key="backdropInfo" value="BACKDROP_DWCHAT_GOLD_BGONLY" type="global"/>
+        </KeyValues>
 		<Anchors>
 			<Anchor point="BOTTOMLEFT" relativeTo="DWCIconFrameCalloutButton" relativePoint="TOPRIGHT"/>
 		</Anchors>
@@ -213,17 +205,6 @@
 		<Size>
 			<AbsDimension x="500" y="400"/>
 		</Size>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="16"/>
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-		</Backdrop>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString name="$parentText" inherits="GameFontHighlight">

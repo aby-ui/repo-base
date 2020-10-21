@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-<Frame name="EA_Other_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Options_Frame" enableKeyboard="true">
+<Frame name="EA_Other_Events_Frame" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="EA_Options_Frame" enableKeyboard="true" inherits="BackdropTemplate">
 
 		<Size>
 			<AbsDimension x="325" y="470"/>
@@ -10,17 +10,9 @@
 			<Anchor point="LEFT" relativepoint="RIGHT"/>
 		</Anchors>
 
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-			<BackgroundInsets>
-				<AbsInset left="11" right="12" top="12" bottom="11"/>
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="32"/>
-			</EdgeSize>
-		</Backdrop>
+        <KeyValues>
+             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+        </KeyValues>
 
 		<Layers>
 			<Layer level="ARTWORK">
@@ -185,21 +177,13 @@
 				<FontString inherits="ChatFontNormal" />
 			</EditBox> -->
 
-			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate">
+			<ScrollFrame name="$parent_SpellScrollFrame" inherits="UIPanelScrollFrameTemplate,BackdropTemplate">
 				<Size>
 				    <AbsDimension x="280" y="375"/>
 				</Size>
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="" tile="false">
-					<BackgroundInsets>
-						<AbsInset left="0" right="0" top="0" bottom="0" />
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="0" />
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="0" />
-					</EdgeSize>
-				</Backdrop>
+                <KeyValues>
+                     <KeyValue key="backdropInfo" value="ABY_BACKDROP_GOLD_BGONLY" type="global"/>
+                </KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent">
 						<Offset>
@@ -313,7 +297,7 @@
 		</Frames>
 
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				EA_Other_Events_Frame_SpellText:SetText(EX_XCLSALERT_SPELL);
 				EA_Other_Events_Frame_SpellEditBox:SetFontObject(ChatFontNormal);
 				EA_Other_Events_Frame_SpellEditBox:SetText("");
