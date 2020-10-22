@@ -1226,7 +1226,7 @@ function ChiStatus()
     elseif (class == PALADIN) then
         chiType = SPELL_POWER_HOLY_POWER
     elseif (class == WARLOCK) then
-        chiType = SPELL_POWERw_SOUL_SHARDS
+        chiType = SPELL_POWER_SOUL_SHARDS
     elseif (class == MAGE) then
         chiType = GetSpecialization() == 1 and SPELL_POWER_ARCANE_CHARGES
     elseif (class == ROGUE) then

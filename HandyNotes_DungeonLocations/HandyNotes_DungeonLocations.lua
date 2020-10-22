@@ -112,7 +112,7 @@ do
 	end
 
 	local function iter(t, prestate)
-		if not t then return end
+		if true then return end
 		local data = t.data
 
 		local state, value = next(data, prestate)

@@ -21,8 +21,7 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
-        var = "AlwaysShowAltBarText", text = U1_NEW_ICON .. "始终显示特殊能量条的文字", default = true,
-        tip = "说明`在大小幻象里，始终显示能量条上面的文字，便于查看。",
+        var = "UnlimitedMapPinDistance", text = U1_NEW_ICON.."导航地图标记无限距离", default = true, callback = load, tip = "说明`9.0新增的游戏内导航，暴雪限制地图标记在1000码-100码之内才显示，可以取消这个限制"
     },
 
     {
@@ -76,7 +75,12 @@ U1RegisterAddon("163UI_Plugins", {
     },
 
     {
-        var = "ExaltedPlus", text = U1_NEW_ICON.."声望增强", default = true, callback = load,
+        var = "AlwaysShowAltBarText", text = "始终显示特殊能量条的文字", default = true,
+        tip = "说明`在大小幻象里，始终显示能量条上面的文字，便于查看。",
+    },
+
+    {
+        var = "ExaltedPlus", text = "声望增强", default = true, callback = load,
         tip = "说明`7.2版本新增功能`声望面板直接显示崇拜后的进度。`获得声望时会显示当前进度。`可以设置自动追踪刚获得的声望。",
         {
             var = "autotrace",

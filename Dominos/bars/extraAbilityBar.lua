@@ -110,6 +110,12 @@ function ExtraAbilityBarModule:Load()
     if not self.initialized then
         self.initialized = true
 
+        -- disable mouse interactions on the extra action bar
+        -- as it can sometimes block the UI from being interactive
+        if ExtraActionBarFrame:IsMouseEnabled() then
+            ExtraActionBarFrame:EnableMouse(false)
+        end
+
         -- setup the container watcher
         ExtraAbilityContainer.ignoreFramePositionManager = true
 

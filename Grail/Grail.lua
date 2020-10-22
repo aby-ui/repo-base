@@ -507,9 +507,15 @@
 --			Updates GetPlayerMapPosition() to handle when UnitPosition() returns nils.
 --			Delays NPC name lookup from startup.
 --		111 Updates some Quest/NPC information.
---			Adds basic support for Shadowlands beta.
+--			Adds basic support for Shadowlands beta P:58619.
 --			Changes the way treasures are looted to hopefully be faster.
 --			Changes interface to 90001.
+--		112	Updates from Quest/NPC information.
+--			Redefines LE_GARRISON_TYPE_6_0 because Blizzard removed it.
+--			Adds slash command "/grail treasures" which toggles the old method of LOOT_CLOSED to record information when looting.
+--			Adds GetCurrencyInfo() which works around issues for which Blizzard API to use.
+--			Ensures AzeriteLevelMeetsOrExceeds() checks to make sure API used are present.
+--			Reworks quest abandoning to use events instead of the old routines.
 --
 --	Known Issues
 --
@@ -1217,6 +1223,11 @@ experimental = false,	-- currently this implementation does not reduce memory si
 						self.retrievingString = "Unknown"
 					end
 
+					-- A quick and dirty workaround for Blizzard's change in how they deal with an old enum.
+					if nil == LE_GARRISON_TYPE_6_0 then
+						LE_GARRISON_TYPE_6_0 = Enum.GarrisonType.Type_6_0
+					end
+
 					--
 					--	Blizzard has changed the way one queries to determine what quests are complete.
 					--	Prior to Mists of Pandaria the architecture required a call to be made to the
@@ -1260,12 +1271,6 @@ experimental = false,	-- currently this implementation does not reduce memory si
 						self.origHookFunction = QuestFrameCompleteQuestButton:GetScript("OnClick")
 						QuestFrameCompleteQuestButton:SetScript("OnClick", function() self:_QuestRewardCompleteButton_OnClick() end);
 					end
-
-					self.origAbandonQuestFunction = SetAbandonQuest
-					SetAbandonQuest = function() self:_QuestAbandonStart() end
-
-					self.origConfirmAbandonQuestFunction = AbandonQuest
-					AbandonQuest = function() self:_QuestAbandonStop() end
 
 					--	For the choice of types of quest on Isle of Thunder the following function is eventually
 					--	called with anId which is associated with the button in the UI.
@@ -1514,6 +1519,10 @@ experimental = false,	-- currently this implementation does not reduce memory si
 						Grail.GDE.debug = not Grail.GDE.debug
 						print(strformat("Grail Debug now %s", Grail.GDE.debug and "ON" or "OFF"))
 					end)
+					self:RegisterSlashOption("treasures", "|cFF00FF00treasures|r => toggles treasures on and off, printing new value", function()
+						Grail.GDE.treasures = not Grail.GDE.treasures
+						print(strformat("Grail Debug Treasures now %s", Grail.GDE.treasures and "ON" or "OFF"))
+					end)
 					self:RegisterSlashOption("target", "|cFF00FF00target|r => gets target information (NPC ID and your current location)", function()
 						local targetName, npcId, coordinates = self:TargetInformation()
 						local message = strformat("%s (%d) %s", targetName and targetName or 'nil target', npcId and npcId or -1, coordinates and coordinates or 'no coords')
@@ -1598,6 +1607,8 @@ experimental = false,	-- currently this implementation does not reduce memory si
 					end
 					frame:RegisterEvent("LOOT_OPENED")		-- support for Timeless Isle chests
 					frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("GOSSIP_CONFIRM")	-- gossipIndex, text, cost
+frame:RegisterEvent("GOSSIP_ENTER_CODE")	-- gossipIndex
 
 -- ReloadUI in Classic same as startup
 -- Normal startup in Classic		startup in Retail		ReloadUI in Retail
@@ -1842,6 +1853,13 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 --				end
 			end,
 
+['GOSSIP_CONFIRM'] = function(self, frame, ...)
+if self.GDE.debug then print("*** GOSSIP_CONFIRM", ...) end
+end,
+['GOSSIP_ENTER_CODE'] = function(self, frame, ...)
+if self.GDE.debug then print("*** GOSSIP_ENTER_CODE", ...) end
+end,
+
 			['PLAYER_ENTERING_WORLD'] = function(self, frame)
 				if self.capabilities.usesArtifacts then
 					frame:RegisterEvent("ARTIFACT_XP_UPDATE")
@@ -1999,7 +2017,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 				-- this happens for both abandon and turn-in
 				-- and turn-in is first, so we can know we are abandoning or not
 				if nil == self.questTurningIn then
-					self:_StatusCodeInvalidate({ tonumber(questId) }, self.delayQuestRemoved)
+					self:_QuestAbandon(questId)
 				end
 				self.questTurningIn = nil
 			end,
@@ -2081,7 +2099,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 						spellId = realSpellId
 						--	Reading Artifact Research Notes raises the knowledge level, so we need to handle this
 						if tonumber(spellId) == 219978 then
-							local _, level = GetCurrencyInfo(1171)
+							local _, level = self:GetCurrencyInfo(1171)
 							self:ArtifactChange(level)
 						end
 					end
@@ -3237,6 +3255,26 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			return retval
 		end,
 
+		_HighestSupportedExpansion = function(self)
+			local retval = 0
+			-- As of 2020-10-15 Classic has EXPANSION_NAME 0..6 defined, while Retail has 0..8 defined.
+			-- It would be great if we could support what is defined in the system, but it seems we cannot
+			-- and therefor if in Classic we limit ourselves to EXPANSION_NAME0 only.
+			if not self.existsClassic then
+				for expansionIndex = 1, 100 do
+					if nil == self:_ExpansionName(expansionIndex) then
+						break
+					end
+					retval = expansionIndex
+				end
+			end
+			return retval
+		end,
+		
+		_ExpansionName = function(self, expansionIndex)
+			return _G["EXPANSION_NAME"..expansionIndex]
+		end,
+
 		_LoadContinentData = function(self)
 			--	Attempt to get all the Continents by starting wherever you are and getting the Cosmic
 			--	map and then asking it for all the Continents that are children of it, hoping the API
@@ -3313,6 +3351,8 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			local functionKey = "+"
 			if "Complete" == callbackType then
 				functionKey = "="
+			elseif "Abandon" == callbackType then
+				functionKey = "-"
 			end
 			local message = strformat("%s %s(%d)", functionKey, Grail:QuestName(questId) or "NO NAME", questId)
 			if "Accept" == callbackType or "Complete" == callbackType then
@@ -3846,6 +3886,20 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 			self:_StatusCodeInvalidate(self.invalidateControl[self.invalidateGroupArtifactKnowledge])
 		end,
 
+		GetCurrencyInfo = function(self, currencyIndex)
+			local currencyName, currencyAmount = nil, nil
+			if GetCurrencyInfo then
+				currencyName, currencyAmount = GetCurrencyInfo(currencyIndex)
+			elseif C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo then
+				local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyIndex)
+				if currencyInfo then
+					currencyName = currencyInfo.name
+					currencyAmount = currencyInfo.quantity
+				end
+			end
+			return currencyName, currencyAmount
+		end,
+
 		ArtifactKnowledgeLevel = function(self)
 --	In 7.1 the following API does not work unless the artifact UI is already open.
 --			return C_ArtifactUI.GetArtifactKnowledgeLevel()
@@ -3854,7 +3908,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 --			if self.LAD then
 --				self.artifactKnowledgeLevel = self.LAD:GetArtifactKnowledge()
 --			end
-			local _, artifactKnowledgeCurrency = GetCurrencyInfo(1171)
+			local _, artifactKnowledgeCurrency = self:GetCurrencyInfo(1171)
 			self.artifactKnowledgeLevel = artifactKnowledgeCurrency or 0
 			return self.artifactKnowledgeLevel
 		end,
@@ -3911,8 +3965,12 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 		end,
 
 		AzeriteLevelMeetsOrExceeds = function(self, soughtLevel)
-			local retval = false
-			local currentLevel = C_AzeriteItem.GetPowerLevel(C_AzeriteItem.FindActiveAzeriteItem())
+			local retval, currentLevel = false, nil
+			if C_AzeriteItem then
+				if C_AzeriteItem.GetPowerLevel and C_AzeriteItem.FindActiveAzeriteItem then
+					currentLevel = C_AzeriteItem.GetPowerLevel(C_AzeriteItem.FindActiveAzeriteItem())
+				end
+			end
 			if nil ~= currentLevel and currentLevel >= soughtLevel then
 				retval = true
 			end
@@ -4419,7 +4477,7 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 					npcId = tonumber(npcId)
 					-- Note that we are not checking to ensure the locale matches self.playerLocale because locations should be universal
 					if  nil ~= npcId then
-						if not self:_LocationKnown(npcId, npcLocation, aliasId) then
+						if npcLocation ~= "" and not self:_LocationKnown(npcId, npcLocation, aliasId) then
 							self:_AddNPCLocation(npcId, npcLocation, aliasId)
 						else
 							shouldAdd = false
@@ -4441,6 +4499,9 @@ if self.GDE.debug then print("GARRISON_BUILDING_UPDATE ", buildingId) end
 					local shouldAdd = true
 					local release, locale, objectId, objectName = strsplit('|', objectNameLine)
 					objectId = tonumber(objectId)
+					if objectId > 1000000 then
+						objectId = objectId - 1000000
+					end
 					if locale == self.playerLocale and nil ~= objectId then
 						local storedObjectName = self:ObjectName(objectId)
 						if nil == storedObjectName or storedObjectName ~= objectName then
@@ -6968,10 +7029,10 @@ end
 					else
 						isComplete = 0
 					end
-					isDaily = (1 == info.frequency)
+					isDaily = (Enum.QuestFrequency.Daily == info.frequency)
 					startEvent = info.startEvent
 					displayQuestID = nil
-					isWeekly = (2 == info.frequency)
+					isWeekly = (Enum.QuestFrequency.Weekly == info.frequency)
 					isTask = info.isTask
 					isBounty = info.isBounty
 					isStory = info.isStory
@@ -7051,17 +7112,22 @@ end
 -- The old way of doing this was to query all the quests that were completed and see how they differ from the currently completed
 -- list and then assume the newly completed one(s) are associated with the treasure.  However, that is a little expensive.  Thus,
 -- only the treasure quests associated with the current zone are queried to see if there is any change in their status.
---			QueryQuestsCompleted()
 			local newlyCompleted = {}
---			self:_ProcessServerCompare(newlyCompleted)
+			-- We now support a value that controls using the old code versus the new because getting the initial treasure values
+			-- is a lot easier with the old code.
+			if Grail.GDE.treasures then
+				QueryQuestsCompleted()
+				self:_ProcessServerCompare(newlyCompleted)
+			else
 -- This is the new code that handles only checking specific values...
-			local mapId = Grail.GetCurrentMapAreaID()
-			local listOfTreasureQuestsInThisMap = self.mapAreasWithTreasures[mapId]
-			if nil ~= listOfTreasureQuestsInThisMap then
-				for k,v in pairs(listOfTreasureQuestsInThisMap) do
-					-- the first is server call, and the second is Grail database
-					if self:IsQuestFlaggedCompleted(v) and not self:IsQuestCompleted(v) then
-						tinsert(newlyCompleted, v)
+				local mapId = Grail.GetCurrentMapAreaID()
+				local listOfTreasureQuestsInThisMap = self.mapAreasWithTreasures[mapId]
+				if nil ~= listOfTreasureQuestsInThisMap then
+					for k,v in pairs(listOfTreasureQuestsInThisMap) do
+						-- the first is server call, and the second is Grail database
+						if self:IsQuestFlaggedCompleted(v) and not self:IsQuestCompleted(v) then
+							tinsert(newlyCompleted, v)
+						end
 					end
 				end
 			end
@@ -7940,6 +8006,7 @@ end
 			local l2 = locationStructure2 or {}
 			if (l1.near or l2.near) and l1.mapArea == l2.mapArea then
 				retval = true
+				distance = 0.0	-- Assume that near is really really close :-)
 --			elseif l1.mapArea == l2.mapArea and l1.mapLevel == l2.mapLevel then
 			elseif l1.mapArea == l2.mapArea then
 				if l1.x and l2.x and l1.y and l2.y then
@@ -8674,7 +8741,7 @@ end
 							local npcLocation = self:_LocationStructure(npcLocationString)
 							for _, aliasLocation in pairs(aliasLocationStructures) do
 								local found, computedDistance = self:_LocationsCloseStructures(npcLocation, aliasLocation)
-								if found and computedDistance < bestDistanceValue then
+								if found and computedDistance and computedDistance < bestDistanceValue then
 									bestDistanceValue = computedDistance
 									bestNPCId = aliasId
 									retval = true
@@ -9525,19 +9592,10 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 		end,
 
 		--	Internal Use.
-		--	Routine used to hook the function for abandoning a quest.  This is needed because the events that Blizzard issues
-		--	are not adequate for our desired tasks.  One of three needed for abandoning.
-		_QuestAbandonStart = function(self)
-			self.abandoningQuestIndex = GetQuestLogSelection()
-			self.origAbandonQuestFunction()
-		end,
+		_QuestAbandon = function(self, questId)
+			questId = tonumber(questId)
+			if nil == questId then return end
 
-		--	Internal Use.
-		--	Routine used to hook the function for abandoning a quest.  This is needed because the events that Blizzard issues
-		--	are not adequate for our desired tasks.  One of three needed for abandoning.
-		_QuestAbandonStop = function(self)
-			local questTitle, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily, questId = self:GetQuestLogTitle(self.abandoningQuestIndex)
-			self.origConfirmAbandonQuestFunction()
 			if nil ~= self.quests[questId] then
 				self:_MarkQuestInDatabase(questId, GrailDatabasePlayer["abandonedQuests"])
 			end
@@ -9559,6 +9617,9 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 				end
 				self:_StatusCodeInvalidate(questsToInvalidate)
 			end
+
+			self:_StatusCodeInvalidate({ questId }, self.delayQuestRemoved)
+
 			self:_PostDelayedNotification("Abandon", questId, self.abandonPostNotificationDelay)
 		end,
 
@@ -10638,6 +10699,10 @@ if factionId == nil then print("Rep nil issue:", reputationName, reputationId, r
 			[2186] = 57042,	-- Choosing Nazjatar Alliance companion Inowari
 			[2214] = {55404, 57041},	-- Choosing Nazjatar Alliance companion Ori
 			[2215] = 57040, -- Choosing Nazjatar Alliance companion Akana
+			[4335] = { 62020, 62709, 62827, },	-- Choosing Venthyr covenant	[for a level 60 prebuild NE druid]
+			[4431] = { 62017, 62711, 62827, },	-- Choosing Necrolord covenant	[for a level 60 prebuild NE druid]
+			[4499] = { 62019, 62827, },	-- Choosing Night Fae covenant	[for a level 60 prebuild NE druid]
+			[4565] = { 62023, 62708, 62827, },	-- Choosing Kyrian covenant	[for a level 60 prebuild NE druid]
 --			[20920] = XXX, -- Choosing "Replay Storyline" in Choose Your Shadowlands Experience [note that there is no quest completed]
 			[20947] = {		 -- Choosing "The Threads of Fate"
 						56829, 56942, 56955, 56978, 57007, 57025, 57026, 57037, 57098, 57102, 57131, 57136, 57159, 57161, 57164, 57173,
@@ -10659,7 +10724,7 @@ if factionId == nil then print("Rep nil issue:", reputationName, reputationId, r
 						60647, 60648, 60661, 60671, 60709, 60724, 60733, 60735, 60737, 60738, 60763, 60764, 60778, 60831, 60839, 60856,
 						60857, 60859, 60881, 60886, 60901, 60905, 60972, 61096, 61107, 61190, 61715, 61716, 62654, 62706, 62713, 62744,
 						},
-			[21039] = {62019, 62710},	-- Choosing Night Fae covenant
+			[21039] = {62019, 62710},	-- Choosing Night Fae covenant [for a level 50 Zand druid having chosen threads of fate]
 			},
 		_ItemTextBeginList = {
 			[1292673] = 52134,
@@ -11120,6 +11185,14 @@ end
 		--	@param coordinates The zone coordinates of the player.
 		--	@param version A version string based on the current internal database versions.
 		_UpdateTargetDatabase = function(self, targetName, npcId, coordinates, version)
+			npcId = tonumber(npcId)
+			-- If the npcId is a world object and we do not already have its name we should learn it.
+			if nil ~= npcId and npcId >= 1000000 and npcId < 2000000 then
+				local storedNPCName = self:NPCName(npcId)
+				if nil == storedNPCName or storedNPCName ~= targetName then
+					self:_LearnObjectName(npcId, targetName)
+				end
+			end
 			return self:_NPCToUse(npcId, coordinates)
 		end,
 

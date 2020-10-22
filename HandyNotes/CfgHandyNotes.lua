@@ -13,6 +13,7 @@
         if justload then
             local function hook(overlayFrame)
                 local plugins = { "HandyNotes_MechagonAndNazjatar", "HandyNotesArgus", "HandyNotes_VisionsOfNZoth", "LegionRaresTreasures", "BattleForAzerothTreasures" }
+                if not overlayFrame or not overlayFrame.InitializeDropDown then return end
                 hooksecurefunc(overlayFrame, 'InitializeDropDown', function(self)
                     local function OnSelection(button)
                         self:OnSelection(button.value, button.checked);

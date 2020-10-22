@@ -276,3 +276,43 @@ do
     hooksecurefunc("UnitPowerBarAlt_SetUp", forceShowStatusFrame)
     hooksecurefunc("UnitPowerBarAlt_OnLeave", function(self) forceShowStatusFrame(self) end)
 end
+
+--[[------------------------------------------------------------
+9.0导航无限距离
+---------------------------------------------------------------]]
+U1PLUG["UnlimitedMapPinDistance"] = function()
+CoreDependCall("Blizzard_QuestNavigation", function()
+    --from UnlimitedMapPinDistance
+    if SuperTrackedFrame and SuperTrackedFrame.GetTargetAlphaBaseValue then
+        SuperTrackedFrame.abyGetTargetAlphaBaseValue = SuperTrackedFrame.GetTargetAlphaBaseValue
+        SuperTrackedFrame.GetTargetAlphaBaseValue = function(self, ...)
+            if not U1GetCfgValue(addonName, "UnlimitedMapPinDistance") then
+                return SuperTrackedFrame.abyGetTargetAlphaBaseValue(self, ...)
+            end
+
+            if self.isClamped then
+                return 1; -- Just to make the indicator easier to see
+            end
+            if C_Navigation.GetDistance() > 30 then
+                return 1
+            else
+                if C_Navigation.GetDistance() <= 1 then
+                    return 0.25
+                else
+                    return C_Navigation.GetDistance()*0.75/30 + 0.25
+                end
+            end
+        end
+    end
+
+    --[[ --from AutoTrackMapPin
+    CoreOnEvent("USER_WAYPOINT_UPDATED", function()
+        if C_Map.HasUserWaypoint() == true then
+           C_Timer.After(0, function()
+               C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+           end)
+        end
+    end)
+    --]]
+end)
+end

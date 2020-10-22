@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201003203140")
+mod:SetRevision("20201021135515")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetUsedIcons(1, 2, 3)
@@ -246,9 +246,9 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		rangeThreshold = 1
 		timerFrozenSiegeCD:Start(3.3-delay, 1)
-		timerAvalancheCD:Start(12.1-delay)
 		timerFreezingBlastCD:Start(8.6-delay)
-		timerGraspofFrostCD:Start(23.5-delay)
+		timerAvalancheCD:Start(8.7-delay)
+		timerGraspofFrostCD:Start(21.4-delay)
 		timerRingofIceCD:Start(60.7-delay, 1)
 		timerHowlingWindsCD:Start(66.9, 1)
 		berserkTimer:Start(720)
