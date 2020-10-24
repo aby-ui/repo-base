@@ -46,7 +46,7 @@ local function BonusRollShow()
       end
     end)
     BonusFrame:SetScript("OnClick", nil)
-    BonusFrame.text:Show()
+    SI:SkinFrame(BonusFrame, BonusFrame:GetName())
   end
   BonusFrame.text:SetText((bonus > 0 and "+" or "")..bonus)
   BonusFrame:Show()

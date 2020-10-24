@@ -89,7 +89,7 @@ end
 -- Add or removes a 'Shadow' region.
 function Core.SkinShadow(Enabled, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
-	Skin = (bType and Skin[bType]) or Skin
+	Skin =  Skin[bType] or Skin
 
 	if Enabled and not Skin.Hide and Skin.Texture then
 		SkinShadow(Button, Skin, Color, xScale, yScale)

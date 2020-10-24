@@ -89,7 +89,7 @@ end
 -- Skins or removes a 'Gloss' region.
 function Core.SkinGloss(Enabled, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
-	Skin = (bType and Skin[bType]) or Skin
+	Skin = Skin[bType] or Skin
 
 	if Enabled and not Skin.Hide and Skin.Texture then
 		SkinGloss(Button, Skin, Color, xScale, yScale)

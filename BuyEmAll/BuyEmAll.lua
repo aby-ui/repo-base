@@ -196,7 +196,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
 
         -- Buying a currency with a currency! Thanks to recent changes, this should cover all cases.
         if ((strmatch(self.itemLink, "currency")) and (self.price == 0)) then
-            local totalMax = select(6, C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).maxQuantity);
+            local totalMax = C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).maxQuantity;
 			self.fit = (totalMax <= 0 and 10000000 or totalMax);
             self.stack = self.preset;
             self:AltCurrencyHandling(self.itemIndex, frame);

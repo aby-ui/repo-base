@@ -913,7 +913,7 @@ local function SetLockedBar(info, value)
 	if not value then
 		--unlock
 		if not moveBarDummy then
-			moveBarDummy = _G.CreateFrame("Frame",bar)
+			moveBarDummy = _G.CreateFrame("Frame",bar, _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
 			moveBarDummy:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 												nil,
 												tile = true, tileSize = 16, edgeSize = 16,

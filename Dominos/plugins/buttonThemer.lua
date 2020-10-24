@@ -9,26 +9,38 @@ local function theme(button)
         return
     end
 
-    button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+    -- trim textures to remove some built in borders
+    if button.Icon then
+        button.Icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+    elseif button.icon then
+        button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+    end
 
     -- reposition the cooldown on the extra action button
     -- to handle the cooldown not properly covering the icon
     if button.buttonType == 'EXTRAACTIONBUTTON' then
         button.cooldown:ClearAllPoints()
-        button.cooldown:SetAllPoints(button.icon)
+        button.cooldown:SetAllPoints(button.icon or button.Icon)
     end
 
-    local r = round(button:GetWidth()) / ActionButtonWidth
+    -- resize normal texture for buttons of non action bar size
+    local normalTexture = button:GetNormalTexture()
+    if normalTexture then
+        local abRatio = round(button:GetWidth()) / ActionButtonWidth
 
-    local nt = button:GetNormalTexture()
-    nt:ClearAllPoints()
-    nt:SetPoint('TOPLEFT', -15 * r, 15 * r)
-    nt:SetPoint('BOTTOMRIGHT', 15 * r, -15 * r)
-    nt:SetVertexColor(1, 1, 1, 0.5)
+        normalTexture:ClearAllPoints()
+        normalTexture:SetPoint('TOPLEFT', -15 * abRatio, 15 * abRatio)
+        normalTexture:SetPoint('BOTTOMRIGHT', 15 * abRatio, -15 * abRatio)
+        normalTexture:SetVertexColor(1, 1, 1, 0.5)
+    end
 
-    local floatingBG = _G[button:GetName() .. 'FloatingBG']
-    if floatingBG then
-        floatingBG:Hide()
+    -- hide the dark background on multi action bar buttons
+    local name = button:GetName()
+    if name then
+        local floatingBG = _G[button:GetName() .. 'FloatingBG']
+        if floatingBG then
+            floatingBG:Hide()
+        end
     end
 end
 

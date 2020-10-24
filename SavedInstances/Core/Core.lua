@@ -405,26 +405,24 @@ SI.defaultDB = {
 -- skinning support
 -- skinning addons should hook this function, eg:
 --   hooksecurefunc(SavedInstances,"SkinFrame",function(self,frame,name) frame:SetWhatever() end)
-function SI:SkinFrame(frame,name)
+function SI:SkinFrame(frame, name)
   -- default behavior (ticket 81)
-  if frame.isSkinned then return end
-
   if IsAddOnLoaded("ElvUI") or IsAddOnLoaded("Tukui") then
     if frame.StripTextures then
       frame:StripTextures()
     end
-    if frame.SetTemplate then
-      frame:SetTemplate("Transparent")
+    if frame.CreateBackdrop then
+      frame:CreateBackdrop("Transparent")
     end
-    local close = _G[name.."CloseButton"] or frame.CloseButton
-    if close and close.SetAlpha then
+    local closeButton = _G[name .. "CloseButton"] or frame.CloseButton
+    if closeButton and closeButton.SetAlpha then
       if ElvUI then
-        ElvUI[1]:GetModule('Skins'):HandleCloseButton(close)
+        ElvUI[1]:GetModule('Skins'):HandleCloseButton(closeButton)
       end
       if Tukui and Tukui[1] and Tukui[1].SkinCloseButton then
-        Tukui[1].SkinCloseButton(close)
+        Tukui[1].SkinCloseButton(closeButton)
       end
-      close:SetAlpha(1)
+      closeButton:SetAlpha(1)
     end
   end
 end
@@ -1631,7 +1629,7 @@ hoverTooltip.ShowQuestTooltip = function (cell, arg, ...)
     local line = indicatortip:AddLine()
     local link = qi.Link
     if not link then -- sometimes missing the actual link due to races, fake it for display to prevent confusion
-      if qi.Title:find("("..LOOT..")") then
+      if qi.Title and qi.Title:find("("..LOOT..")") then
         link = qi.Title
       else
         link = "\124cffffff00["..(qi.Title or "???").."]\124r"
@@ -2326,7 +2324,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[===[@debug@
-  if versionString == "9.0.1" then
+  if versionString == "9.0.1-3-gdcb8b92" then
     versionString = "Dev"
   end
   --@end-debug@]===]

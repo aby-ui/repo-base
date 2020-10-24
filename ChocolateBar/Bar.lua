@@ -5,7 +5,7 @@ local Bar = ChocolateBar.Bar
 local chocolate = ChocolateBar.ChocolatePiece
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local jostle = ChocolateBar.Jostle
-local pairs, ipairs, table, math, mod = pairs, ipairs, table, math, mod
+local _G, pairs, ipairs, table, math, mod = _G, pairs, ipairs, table, math, mod
 local CreateFrame, UIParent = CreateFrame, UIParent
 local db
 
@@ -30,7 +30,7 @@ end
 
 function Bar:New(name, settings, database)
 	db = database
-	local frame = CreateFrameAby("Frame",name,UIParent)
+	local frame = CreateFrame("Frame",name, _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
 	frame.chocolist = {} --create list of chocolate chocolist in the bar
 
 	-- add class methods to frame object

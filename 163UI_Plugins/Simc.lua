@@ -915,7 +915,7 @@ function Simulationcraft:GetSoulbindString(id)
       end
     end
   end
-  return "soulbind=" .. Tokenize(soulbindData.name) .. ',' .. table.concat(soulbindStrings, '/')
+  return "soulbind=" .. Tokenize(soulbindData.name) .. ':' .. soulbindData.ID .. ',' .. table.concat(soulbindStrings, '/')
 end
 
 function Simulationcraft:GetMainFrame(text)

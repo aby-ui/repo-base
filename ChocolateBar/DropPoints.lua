@@ -1,11 +1,12 @@
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local dropPoints
+local _G = _G
 local Drag = ChocolateBar.Drag
 
 local function createDropPoint(name, dropfunc, offx, text, texture)
 	if not ChocolateBar.dropFrames then
-		local dropFrames = CreateFrameAby("Frame", nil, _G.UIParent)
+		local dropFrames = CreateFrame("Frame", nil, _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		dropFrames:SetWidth(420)
 		dropFrames:SetHeight(200)
 		ChocolateBar.dropFrames = dropFrames
@@ -19,7 +20,7 @@ local function createDropPoint(name, dropfunc, offx, text, texture)
     --infotitle:SetFormattedText("|T%s:%d|t%s", "Interface\\FriendsFrame\\InformationIcon", 16, L["Notes"])
 		dropFrames.text:SetFormattedText("|T%s:%d|t%s", "Interface\\FriendsFrame\\InformationIcon", 16, " " .. L["Drop a Plugin onto any of the icons above."])
 	end
-	local frame = CreateFrameAby("Frame", name, ChocolateBar.dropFrames)
+	local frame = CreateFrame("Frame", name, ChocolateBar.dropFrames, BackdropTemplateMixin and "BackdropTemplate")
 	frame:SetWidth(100)
 	frame:SetHeight(100)
 	frame:SetFrameStrata("DIALOG")

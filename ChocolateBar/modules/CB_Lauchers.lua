@@ -83,7 +83,7 @@ end
 
 local function getLauncherFrame()
 	if not launcherFrame then
-		local frame = CreateFrame("Frame", "CB_LaunchersFrame", _G.UIParent)
+		local frame = CreateFrame("Frame", "CB_LaunchersFrame", _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
 		frame:SetWidth(200)
 		frame:SetHeight(200)
 

@@ -1176,10 +1176,10 @@ La["Warning: You've entered about %i instances recently and are approaching the 
 La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
 La["WM"] = "УУ"
-La["WORK"] = "Операция «Мехагон» — мастерская"
+La["WORK"] = "ОМ:М"
 La["World Boss"] = "Мировой босс"
 La["World Bosses"] = "Мировые боcсы"
-La["YARD"] = "Операция «Мехагон» — свалка"
+La["YARD"] = "ОМ:С"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде где слово ICON будет найдено, вместо него будет ваш выбранный значок."
 
 elseif locale == "zhCN" then

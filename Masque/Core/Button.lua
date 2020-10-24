@@ -118,7 +118,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	end
 
 	-- FontStrings and Textures
-	local Layers = (bType and RegTypes[bType]) or RegTypes.Legacy
+	local Layers = RegTypes[bType] or RegTypes.Legacy
 
 	for Layer, Info in pairs(Layers) do
 		if Info.Iterate then

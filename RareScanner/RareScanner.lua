@@ -786,8 +786,10 @@ function RareScanner:ProcessOpenContainer(containerID, forzed)
       if (not containerInfo.questID and not RSContainerDB.GetContainerQuestIdFound(containerID)) then
         RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Buscando questID...", containerID))
         RSQuestTracker.FindCompletedHiddenQuestID(containerID, function(containerID, newQuestID) RSContainerDB.SetContainerQuestIdFound(containerID, newQuestID) end)
-      else
+      elseif (containerInfo.questID) then
         RSLogger:PrintDebugMessage(string.format("El Contenedor [%s] ya dispone de questID [%s]", containerID, unpack(containerInfo.questID)))
+	  else
+        RSLogger:PrintDebugMessage(string.format("El Contenedor [%s] ya dispone de questID [%s]", containerID, unpack(RSContainerDB.GetContainerQuestIdFound(containerID))))
       end
     end
   -- If we dont have this entity in our database we can ignore it
@@ -1359,6 +1361,10 @@ end
 
 -- Show action
 function scanner_button:ShowButton()
+	if (not self.npcID) then
+		return
+	end
+	
 	-- Resizes the button
 	self:SetScale(RSConfigDB.GetButtonScale())
 
@@ -1392,7 +1398,7 @@ function scanner_button:ShowButton()
 	end
 
 	-- Show button, model and loot panel
-	if (self.npcID and RSConstants.IsNpcAtlas(self.atlasName)) then
+	if (RSConstants.IsNpcAtlas(self.atlasName)) then
 		self.Description_text:SetText(AL["CLICK_TARGET"])
 		
 		local macrotext = "/cleartarget\n/targetexact "..self.name

@@ -44,9 +44,9 @@ local names = {
     ["Onyx Redux"] = false,
     Parabole = "双线边框",
     ["Serenity"] = false,
-    ["Serenity Redux"] = "圆形白边框",
+    ["Serenity - Redux"] = "圆形白边框",
     ["Serenity - Square"] = false,
-    ["Serenity Redux - Square"] = "方形白边框",
+    ["Serenity - Square Redux"] = "方形白边框",
     Zoomed = "无边框放大",
     kenzo = "圆角细黑边",
 }

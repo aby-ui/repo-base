@@ -14,15 +14,15 @@
         end
         ]]
         if justload then
+            --[[
             CoreDependCall("Blizzard_ChallengesUI", function()
                 local chest = ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest
                 if chest then
-                    --local p1, rel, p2, x, y = chest:GetPoint(1)
-                    --chest:SetPoint(p1, rel, p2, x, y)
                     ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest.RunStatus:SetWidth(200)
                     ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest:SetPoint("CENTER", ChallengesFrame.WeeklyInfo.Child, "CENTER", -125, -45)
                 end
             end)
+            --]]
         end
         return true
     end,

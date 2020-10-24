@@ -47,11 +47,9 @@ function Core.SkinTexture(Region, Button, Layer, Skin, Color, xScale, yScale)
 	local Config = Settings[Layer]
 	local Default = Defaults[Layer]
 
-	if bType then
-		Skin = Skin[bType] or Skin
-		Config = Config[bType] or Config
-		Default = Default[bType] or Default
-	end
+	Skin = Skin[bType] or Skin
+	Config = Config[bType] or Config
+	Default = Default[bType] or Default
 
 	if not Config.NoTexture then
 		local Texture = Skin.Texture

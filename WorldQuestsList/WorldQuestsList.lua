@@ -1,4 +1,4 @@
-local VERSION = 94
+local VERSION = 95
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -289,6 +289,9 @@ Fixed emissary highlights for Broken Isles map
 Shadowlands update
 
 Bugfixes
+
+Fixed Shift-clicks on quests
+Fixed TomTom arrow
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1553,6 +1556,10 @@ do
 				end
 			end
 	
+			do
+				local name = C_TaskQuest.GetQuestInfoByQuestID(self.questID) or ""
+				AddArrowNWC(x,y,mapID,self.questID,name)
+			end
 			if x and y then
 				local continentID, worldPos = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(x, y))
 				if worldPos then
@@ -1568,12 +1575,6 @@ do
 			if x and y then
 				local name = C_TaskQuest.GetQuestInfoByQuestID(self.questID) or ""
 				AddArrow(x,y,self.questID,name)
-			end
-			
-			local x,y,mapID = WorldQuestList:GetQuestCoord(self.questID)
-			if x and y then
-				local name = C_TaskQuest.GetQuestInfoByQuestID(self.questID) or ""
-				AddArrowNWC(x,y,mapID,self.questID,name)
 			end
 		end
 	end
@@ -1595,9 +1596,10 @@ do
 				local continentID, worldPos = C_Map.GetWorldPosFromMapPos(mapID, CreateVector2D(x, y))
 				if worldPos then
 					local wy,wx = worldPos:GetXY()
-					if wx and wy then
+					if wx and wy and VWQL and VWQL.EnableArrowQuest then
 						local name = C_TaskQuest.GetQuestInfoByQuestID(self.questID) or ""
 						AddArrow(wx,wy,self.questID,name)
+						AddArrowNWC(x,y,mapID,self.questID,name)
 						return
 					end
 				end
@@ -1616,8 +1618,9 @@ do
 			local x,y = self:GetPosition()
 			if x and y then
 				local wx,wy = WorldQuestList:GetMapCoordAdj(x,y,mapID)
-				if x and y then
+				if x and y and VWQL and VWQL.EnableArrowQuest then
 					AddArrow(wx,wy)
+					AddArrowNWC(x,y,mapID,nil,self.vignetteInfo.name)
 
 					C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(mapID, x, y))
 					C_SuperTrack.SetSuperTrackedUserWaypoint(true)
@@ -2529,18 +2532,19 @@ function WorldQuestList_LineName_OnClick(self,button)
 
 		if not line.isLeveling and questID then
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			local watchType = C_QuestLog.GetQuestWatchType(questID)
 		
 			if IsShiftKeyDown() then
-				if C_QuestLog.GetQuestWatchType(questID) ~= Enum.QuestWatchType.Manual or C_SuperTrack.GetSuperTrackedQuestID() == questID then
+				if watchType == Enum.QuestWatchType.Manual or (watchType == Enum.QuestWatchType.Automatic and C_SuperTrack.GetSuperTrackedQuestID() == questID) then
 					BonusObjectiveTracker_UntrackWorldQuest(questID)
 				else
-					BonusObjectiveTracker_TrackWorldQuest(questID, 1)
+					BonusObjectiveTracker_TrackWorldQuest(questID, Enum.QuestWatchType.Manual)
 				end
 			else
-				if C_QuestLog.GetQuestWatchType(questID) ~= Enum.QuestWatchType.Manual then
+				if watchType == Enum.QuestWatchType.Manual then
 					C_SuperTrack.SetSuperTrackedQuestID(questID)
 				else
-					BonusObjectiveTracker_TrackWorldQuest(questID, 1)
+					BonusObjectiveTracker_TrackWorldQuest(questID, Enum.QuestWatchType.Manual)
 				end
 			end
 		end
@@ -8355,7 +8359,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 						for memberIdx=1,applicantData.numMembers do
 							local name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
 							if name then
-								InviteUnit(name)
+								C_PartyInfo.InviteUnit(name)
 							end
 						end
 					end
@@ -9427,7 +9431,7 @@ WorldMapFrame:AddCanvasClickHandler(function(self)
 		if C_Map.CanSetUserWaypointOnMap(mapID) then
 			waypointShare:RegisterEvent("USER_WAYPOINT_UPDATED")
 		end
-	elseif IsShiftKeyDown() then
+	elseif IsShiftKeyDown() and false then
 		local cX, cY = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
 		if cX and cY then
 			slashfunc("way "..format("%.2f %.2f",cX * 100,cY * 100))

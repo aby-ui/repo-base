@@ -119,7 +119,7 @@ end
 -- Add or removes a 'Backdrop' region.
 function Core.SkinBackdrop(Enabled, Region, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
-	Skin = (bType and Skin[bType]) or Skin
+	Skin = Skin[bType] or Skin
 
 	if Enabled and not Skin.Hide then
 		SkinBackdrop(Region, Button, Skin, Color, xScale, yScale)

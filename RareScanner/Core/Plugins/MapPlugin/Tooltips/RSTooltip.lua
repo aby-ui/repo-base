@@ -204,11 +204,9 @@ end
 local function AddNotesTooltip(tooltip, pin)
   if (AL[string.format("NOTE_%s", pin.POI.entityID)] ~= string.format("NOTE_%s", pin.POI.entityID)) then
     local line = tooltip:AddLine()
-    line = tooltip:AddLine()
     tooltip:SetCell(line, 1, RSUtils.TextColor(AL[string.format("NOTE_%s", pin.POI.entityID)], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
   elseif (AL[string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)] ~= string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)) then
     local line = tooltip:AddLine()
-    line = tooltip:AddLine()
     tooltip:SetCell(line, 1, RSUtils.TextColor(AL[string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
   end
 end
@@ -236,8 +234,8 @@ local function AddLootTooltip(tooltip, pin)
     -- Add loot to the tooltip
     if (next(itemsIDsFiltered) ~= nil) then
       local line = tooltip:AddLine()
-      line = tooltip:AddSeparator(1, 1)
-      line = tooltip:AddLine()
+      tooltip:AddSeparator(1.11)
+	  line = tooltip:AddLine()
     
       local j
       for i, itemID in ipairs(itemsIDsFiltered) do
@@ -247,7 +245,7 @@ local function AddLootTooltip(tooltip, pin)
         end
       
         local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
-        tooltip:SetCell(line, j, "|T"..iconFileDataID..":24|t", nil, "CENTER", 1, nil, nil, nil, nil, 24)
+        tooltip:SetCell(line, j, "|T"..iconFileDataID..":24|t", nil, "CENTER", 1, nil, nil, nil, nil, 24, 24)
         tooltip:SetCellScript(line, j, "OnEnter", showItemToolTip, { itemLink, itemClassID, itemSubClassID });
         tooltip:SetCellScript(line, j, "OnKeyDown", showItemComparationTooltip);
         tooltip:SetCellScript(line, j, "OnKeyUp", hideItemComparationTooltip);
@@ -262,20 +260,21 @@ local function AddLootTooltip(tooltip, pin)
       -- fill with white spaces
       if (j < 9) then
         for k=j+1, 10 do
-          tooltip:SetCell(line, k, "", nil, "CENTER", 1, nil, nil, nil, nil, 24)
+          tooltip:SetCell(line, k, "", nil, "CENTER", 1, nil, nil, nil, nil, 24, 24)
         end
       end
+	  
+	  tooltip:AddSeparator(1.11)
     end
   end
 end
 
 local function AddStateTooltip(tooltip, pin)
+  -- Separator
   local line = tooltip:AddLine()
+  line = tooltip:AddLine()
+  
   if ((pin.POI.isNpc and not pin.POI.isDead) or (pin.POI.isContainer and not pin.POI.isOpened) or (pin.POI.isEvent and not pin.POI.isCompleted)) then
-    -- Separator
-    line = tooltip:AddSeparator(1, 1)
-    line = tooltip:AddLine()
-    
     local text
     if (pin.POI.isNpc) then
       text = AL["MAP_TOOLTIP_KILLED"]
@@ -287,11 +286,7 @@ local function AddStateTooltip(tooltip, pin)
     
     tooltip:SetCell(line, 1, RSUtils.TextColor(text, "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
   -- Otherwise text showing the time remaining to be available again
-  else
-    -- Separator
-    line = tooltip:AddSeparator(1, 1)
-    line = tooltip:AddLine()
-    
+  else    
     local rareKilledTime = RSNpcDB.GetNpcKilledRespawnTime(pin.POI.entityID)
     local containerOpenedTime = RSContainerDB.GetContainerOpenedRespawnTime(pin.POI.entityID)
     local eventCompletedTime = RSEventDB.GetEventCompletedRespawnTime(pin.POI.entityID)
@@ -334,9 +329,6 @@ local function AddGuideTooltip(tooltip, pin)
   
   if (guide) then
     local line = tooltip:AddLine()
-    line = tooltip:AddSeparator(1, 1)
-    line = tooltip:AddLine()
-    
     tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_GUIDE"], "05DFDC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
   end
 end
@@ -352,9 +344,6 @@ local function AddOverlayTooltip(tooltip, pin)
   
   if (overlay) then
     local line = tooltip:AddLine()
-    line = tooltip:AddSeparator(1, 1)
-    line = tooltip:AddLine()
-    
     tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_OVERLAY"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
   end
 end

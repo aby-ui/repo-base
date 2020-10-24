@@ -104,7 +104,7 @@ end
 -- Skins the 'Cooldown' or 'ChargeCooldown' frame of a button.
 local function SkinCooldown(Region, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
-	Skin = (bType and Skin[bType]) or Skin
+	Skin = Skin[bType] or Skin
 
 	local UseCircle = Button.__MSQ_Shape == "Circle"
 
