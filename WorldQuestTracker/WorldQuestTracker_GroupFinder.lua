@@ -501,12 +501,12 @@ function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
 	ff.Options = CreateFrame ("button", "$parentTopRightOptionsButton", ff, "BackdropTemplate")
 	ff.Options:SetPoint ("right", ff.CloseButton, "left", -2, 0)
 	ff.Options:SetSize (16, 16)
-	ff.Options:SetNormalTexture (DF.folder .. "icons")
-	ff.Options:SetHighlightTexture (DF.folder .. "icons")
-	ff.Options:SetPushedTexture (DF.folder .. "icons")
-	ff.Options:GetNormalTexture():SetTexCoord (48/128, 64/128, 0, 1)
-	ff.Options:GetHighlightTexture():SetTexCoord (48/128, 64/128, 0, 1)
-	ff.Options:GetPushedTexture():SetTexCoord (48/128, 64/128, 0, 1)
+	ff.Options:SetNormalTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	ff.Options:SetHighlightTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	ff.Options:SetPushedTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	ff.Options:GetNormalTexture():SetDesaturated (true)
+	ff.Options:GetHighlightTexture():SetDesaturated (true)
+	ff.Options:GetPushedTexture():SetDesaturated (true)
 	ff.Options:SetAlpha (0.7)
 	
 	ff.Options.CoolTip = {
@@ -887,8 +887,8 @@ function WorldQuestTracker.InviteFromGroupApply()
 	end
 end
 
-ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
-	
+ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
+
 	--is this feature enable?
 	if (not WorldQuestTracker.db.profile.groupfinder.enabled) then
 		return
@@ -922,11 +922,8 @@ ff:SetScript ("OnEvent", function (self, event, arg1, questID, arg3)
 	elseif (event == "QUEST_ACCEPTED") then
 		--> get quest data
 
-if (true) then return end
+		local isInArea, isOnMap = GetTaskInfo(questID)
 
-		local isInArea, isOnMap, numObjectives = C_TaskQuest.GetTaskInfo (questID)
-		local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
-		
 		-->  do the regular checks
 		if ((isInArea or isOnMap) and HaveQuestData (questID)) then
 			--get all quests from 8.3 assault stuff
@@ -936,7 +933,13 @@ if (true) then return end
 				allAssaultQuests [questId] = true
 			end
 
-			local tagID, tagName, worldQuestType, rarity, isElite = C_QuestLog.GetQuestTagInfo (questID)
+			local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+			local tagID = tagInfo.tagID
+			local rarity = tagInfo.rarity or 1
+			local isElite = tagInfo.isElite
+
+			print(rarity)
+			
 			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
 
 			if ((isWorldQuest and isInArea) or allAssaultQuests[questID] or tagID == 112 or (isElite and rarity == LE_WORLD_QUEST_QUALITY_EPIC)) then

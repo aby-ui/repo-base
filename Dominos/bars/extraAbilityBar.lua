@@ -53,9 +53,13 @@ function ExtraAbilityBar:ThemeBar(enable)
         for button in container:EnumerateActive() do
             if button then
                 if enable then
-                    Addon:GetModule('ButtonThemer'):Register(button, 'Extra Bar', { Icon = button.Icon })
+                    Addon:GetModule('ButtonThemer'):Register(
+                        button, 'Extra Bar', {Icon = button.Icon}
+                    )
                 else
-                    Addon:GetModule('ButtonThemer'):Unregister(button, 'Extra Bar', { Icon = button.Icon })
+                    Addon:GetModule('ButtonThemer'):Unregister(
+                        button, 'Extra Bar'
+                    )
                 end
             end
         end
@@ -73,16 +77,7 @@ function ExtraAbilityBar:GetDefaults()
 end
 
 function ExtraAbilityBar:Layout()
-    local w, h = self.container:GetSize()
-
-    w = math.floor(w or 0)
-    h = math.floor(h or 0)
-
-    if w == 0 and h == 0 then
-        w = 256
-        h = 120
-    end
-
+    local w, h = 256, 120
     local pW, pH = self:GetPadding()
 
     self:SetSize(w + pW, h + pH)
@@ -127,11 +122,13 @@ function ExtraAbilityBar:UpdateShowBlizzardTexture()
     if self:ShowingBlizzardTexture() then
         ExtraActionBarFrame.button.style:Show()
         ZoneAbilityFrame.Style:Show()
-        ExtraAbilityBar:ThemeBar(false)
+
+        self:ThemeBar(false)
     else
         ExtraActionBarFrame.button.style:Hide()
         ZoneAbilityFrame.Style:Hide()
-        ExtraAbilityBar:ThemeBar(true)
+
+        self:ThemeBar(true)
     end
 end
 
@@ -147,49 +144,27 @@ function ExtraAbilityBarModule:Load()
             ExtraActionBarFrame:EnableMouse(false)
         end
 
-        -- setup the container watcher
+        -- prevent the stock UI from messing with the extra ability bar position
         ExtraAbilityContainer.ignoreFramePositionManager = true
 
-        ExtraAbilityContainer:HookScript(
-            'OnSizeChanged', function()
-                self:OnExtraAbilityContainerSizeChanged()
+        -- watch for new frames to be added to the container as we will want to
+        -- possibly theme them later (if they're new buttons)
+        hooksecurefunc(
+            ExtraAbilityContainer, 'AddFrame', function()
+                if self.frame then
+                    self.frame:ThemeBar(not self.frame:ShowingBlizzardTexture())
+                end
             end
         )
 
-        hooksecurefunc(ExtraAbilityContainer, "AddFrame", function()
-            ExtraAbilityBar:ThemeBar(Addon.db.profile.frames[BAR_ID].hideBlizzardTeture)
-        end)
-
-        Addon.BindableButton:AddQuickBindingSupport(ExtraActionButton1)
+        Addon.BindableButton:AddQuickBindingSupport(_G.ExtraActionButton1)
     end
 
     self.frame = ExtraAbilityBar:New()
-    self:RegisterEvent('PLAYER_REGEN_ENABLED')
 end
 
 function ExtraAbilityBarModule:Unload()
-    self.frame:Free()
-    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-end
-
-function ExtraAbilityBarModule:OnExtraAbilityContainerSizeChanged()
-    if InCombatLockdown() then
-        self.dirty = true
-        return
-    end
-
     if self.frame then
-        self.frame:Layout()
-    end
-end
-
-function ExtraAbilityBarModule:PLAYER_REGEN_ENABLED()
-    if self.dirty then
-        self.dirty = nil
-        return
-    end
-
-    if self.frame then
-        self.frame:Layout()
+        self.frame:Free()
     end
 end

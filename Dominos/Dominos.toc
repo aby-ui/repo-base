@@ -1,8 +1,10 @@
 ## Interface: 90001
 ## Title: Dominos
+## Title-zhCN: |cFF0099FFDominos|r
 ## Notes: A main actionbar replacement
+## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 9.0.10
+## Version: 9.0.11
 ## X-Build: Retail
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper

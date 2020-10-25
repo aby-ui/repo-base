@@ -486,9 +486,8 @@ local buildTooltip = function (self)
 	end
 
 	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
-
-	local tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = C_QuestLog.GetQuestTagInfo (questID)
-	local color = WORLD_QUEST_QUALITY_COLORS [rarity] or WORLD_QUEST_QUALITY_COLORS[Enum.WorldQuestQuality.Common]
+	local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+	local color = WORLD_QUEST_QUALITY_COLORS [tagInfo.quality]
 	GameTooltip:SetText (title, color.r, color.g, color.b)
 
 	--belongs to what faction

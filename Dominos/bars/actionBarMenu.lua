@@ -93,6 +93,8 @@ function Addon.ActionBar:OnCreateMenu(menu)
             end,
             set = function(_, value)
                 panel.owner:SetNumButtons(value)
+
+                panel.colsSlider:UpdateRange()
                 panel.colsSlider:UpdateValue()
             end
         }

@@ -1,6 +1,8 @@
 ## Interface: 90001
 ## Title: Dominos Progress
+## Title-zhCN: |cFF0099FFDominos|r 进度条模块
 ## Notes: Progress bars of all sorts
+## Notes-zhCN: 各种进度条
 ## Author: Tuller
 ## Dependencies: Dominos
 localization.xml

@@ -822,10 +822,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				AllianceWorldQuestButton.Highlight:SetPoint ("center")
 				
 				AllianceWorldQuestButton:SetScript ("OnClick", function()
-					if (GetExpansionLevel() == 6 or UnitLevel ("player") == 50) then --legion
+					if (GetExpansionLevel() == 6 or UnitLevel ("player") <= 50) then --legion
 						WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.BROKENISLES)
 						
-					elseif (GetExpansionLevel() == 7) then --bfa
+					elseif (GetExpansionLevel() == 7 or UnitLevel ("player") <= 60) then --bfa
 						WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.KULTIRAS)
 						--WorldQuestTracker.DoAnimationsOnWorldMapWidgets = true
 						WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
@@ -855,10 +855,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				HordeWorldQuestButton.Highlight:SetPoint ("center")
 				
 				HordeWorldQuestButton:SetScript ("OnClick", function()
-					if (GetExpansionLevel() == 6 or UnitLevel ("player") == 50) then --legion
+					if (GetExpansionLevel() == 6 or UnitLevel ("player") <= 50) then --legion
 						WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.BROKENISLES)
 						
-					elseif (GetExpansionLevel() == 7) then --bfa
+					elseif (GetExpansionLevel() == 7 or UnitLevel ("player") <= 60) then --bfa
 						WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.ZANDALAR)
 						--WorldQuestTracker.DoAnimationsOnWorldMapWidgets = true
 						WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
@@ -2903,6 +2903,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							
 							local colorByRarity = ""
 
+							--[=[
 							if (rarity  == LE_WORLD_QUEST_QUALITY_EPIC) then
 								colorByRarity = "FFC845F9"
 							elseif (rarity  == LE_WORLD_QUEST_QUALITY_RARE) then
@@ -2910,6 +2911,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							else
 								colorByRarity = "FFFFFFFF"
 							end
+							--]=]
+
+							colorByRarity = "FFFFFFFF"
 							
 							local timeLeft = ((questInfo.expireAt - time()) / 60) --segundos / 60
 							local color

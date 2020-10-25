@@ -290,17 +290,25 @@ CoreDependCall("Blizzard_QuestNavigation", function()
                 return SuperTrackedFrame.abyGetTargetAlphaBaseValue(self, ...)
             end
 
-            if self.isClamped then
-                return 1; -- Just to make the indicator easier to see
-            end
-            if C_Navigation.GetDistance() > 30 then
-                return 1
-            else
-                if C_Navigation.GetDistance() <= 1 then
-                    return 0.25
+            if C_SuperTrack.IsSuperTrackingUserWaypoint() then
+                local distance = C_Navigation.GetDistance()
+                local FAR,NEAR=80,20
+                if distance > 1000 then
+                    return self.isClamped and 0.6 or 0.6
+
+                elseif distance > 140 then
+                    return self.isClamped and 1 or 0.6
+
                 else
-                    return C_Navigation.GetDistance()*0.75/30 + 0.25
+                    if self.isClamped then return 1 end
+                    if distance <= NEAR then
+                        return 0.4
+                    else
+                        return distance>FAR and 1 or (distance-NEAR)*0.6/(FAR-NEAR)+0.4
+                    end
                 end
+            else
+                return SuperTrackedFrame:abyGetTargetAlphaBaseValue()
             end
         end
     end

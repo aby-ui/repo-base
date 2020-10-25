@@ -4,44 +4,86 @@ local ButtonThemer = Addon:NewModule('ButtonThemer')
 local round = _G.Round
 local ActionButtonWidth = round(_G['ActionButton1']:GetWidth())
 
+local function getIconTexture(button)
+    if button.Icon and button.Icon.SetTexCoord then
+        return button.Icon
+    end
+
+    if button.icon and button.icon.SetTexCoord then
+        return button.icon
+    end
+end
+
+-- fix hotkey text extending outside of the button itself
+-- and make it consistent with the button size
+local function cleanupHotkeyText(button)
+    local hotkey = button.HotKey
+    if not hotkey then return end
+
+    if hotkey:GetWidth() > button:GetWidth() then
+        hotkey:SetWidth(button:GetWidth())
+
+        local font, size, flags = hotkey:GetFont()
+        size = round(size * button:GetWidth() / ActionButtonWidth)
+
+        hotkey:SetFont(font, size, flags)
+    end
+end
+
+-- trim textures to remove some built in borders
+local function trimIconEdges(button)
+    local icon = getIconTexture(button)
+    if not icon then return end
+
+    icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
+end
+
+-- reposition the cooldown on the extra action button
+-- to handle the cooldown not properly covering the icon
+local function fixCooldownPositions(button)
+    if button.buttonType ~= 'EXTRAACTIONBUTTON' then return end
+
+    button.cooldown:ClearAllPoints()
+    button.cooldown:SetAllPoints(button.icon)
+end
+
+-- resize normal texture for buttons of non action bar size
+local function resizeNormalTexture(button)
+    local normalTexture = button:GetNormalTexture()
+    if not normalTexture then return end
+
+    local abRatio = round(button:GetWidth()) / ActionButtonWidth
+
+    normalTexture:ClearAllPoints()
+    normalTexture:SetPoint('TOPLEFT', -15 * abRatio, 15 * abRatio)
+    normalTexture:SetPoint('BOTTOMRIGHT', 15 * abRatio, -15 * abRatio)
+
+    -- make the texture slightly transparent now to match its state when moving
+    -- empty buttons around
+    -- normalTexture:SetVertexColor(1, 1, 1, 0.5)
+end
+
+-- hide the dark background on multi action bar buttons
+local function hideFloatingBG(button)
+    local name = button:GetName()
+    if not name then return end
+
+    local floatingBG = _G[button:GetName() .. 'FloatingBG']
+    if floatingBG then
+        floatingBG:Hide()
+    end
+end
+
 local function theme(button)
     if not Addon:ThemeButtons() then
         return
     end
 
-    -- trim textures to remove some built in borders
-    if button.Icon then
-        button.Icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
-    elseif button.icon then
-        button.icon:SetTexCoord(0.06, 0.94, 0.06, 0.94)
-    end
-
-    -- reposition the cooldown on the extra action button
-    -- to handle the cooldown not properly covering the icon
-    if button.buttonType == 'EXTRAACTIONBUTTON' then
-        button.cooldown:ClearAllPoints()
-        button.cooldown:SetAllPoints(button.icon or button.Icon)
-    end
-
-    -- resize normal texture for buttons of non action bar size
-    local normalTexture = button:GetNormalTexture()
-    if normalTexture then
-        local abRatio = round(button:GetWidth()) / ActionButtonWidth
-
-        normalTexture:ClearAllPoints()
-        normalTexture:SetPoint('TOPLEFT', -15 * abRatio, 15 * abRatio)
-        normalTexture:SetPoint('BOTTOMRIGHT', 15 * abRatio, -15 * abRatio)
-        normalTexture:SetVertexColor(1, 1, 1, 0.5)
-    end
-
-    -- hide the dark background on multi action bar buttons
-    local name = button:GetName()
-    if name then
-        local floatingBG = _G[button:GetName() .. 'FloatingBG']
-        if floatingBG then
-            floatingBG:Hide()
-        end
-    end
+    cleanupHotkeyText(button)
+    trimIconEdges(button)
+    fixCooldownPositions(button)
+    resizeNormalTexture(button)
+    hideFloatingBG(button)
 end
 
 function ButtonThemer:Unload()
@@ -52,7 +94,6 @@ end
 local Masque, MasqueVersion = LibStub('Masque', true)
 
 if Masque then
-
     -- masque not installed
     function ButtonThemer:Register(button, groupName, ...)
         local group = Masque:Group(AddonName, groupName)

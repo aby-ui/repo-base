@@ -86,7 +86,8 @@ U1RegisterAddon("DBM-DefaultSkin", { title = "默认皮肤", load = "NORMAL" });
 U1RegisterAddon("DBM-Brawlers", { title = '搏击俱乐部', });
 U1RegisterAddon("DBM-DMF", { title = '暗月马戏团', });
 U1RegisterAddon("DBM-WorldEvents", { title = "世界事件模块", });
-U1RegisterAddon("DBM-Challenges", { title = "DBM:个人挑战", });
+U1RegisterAddon("DBM-Challenges", { title = "个人挑战模块", });
+U1RegisterAddon("DBM-TimelessIsle", { title = "永恒岛模块", });
 
 U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", protected = 1 });
 U1RegisterAddon("DBM-Azeroth-BfA", { title = "争霸艾泽拉斯世界BOSS", });
@@ -96,6 +97,10 @@ U1RegisterAddon("DBM-ZuldazarRaid", { title = "达萨罗之战模块", });
 U1RegisterAddon("DBM-CrucibleofStorms", { title = "风暴熔炉模块", });
 U1RegisterAddon("DBM-EternalPalace", { title = "永恒王宫模块", });
 U1RegisterAddon("DBM-Nyalotha", { title = "尼奥罗萨模块", });
+
+U1RegisterAddon("DBM-Party-Shadowlands", { title = "暗影国度5人副本", });
+U1RegisterAddon("DBM-Shadowlands", { title = "暗影国度世界BOSS", });
+U1RegisterAddon("DBM-CastleNathria", { title = "纳斯利亚堡模块", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });

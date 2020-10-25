@@ -576,6 +576,7 @@ function CastBar:AddLayoutPanel(menu)
 
 	panel:NewCheckButton{
 		name = l["UseSpellReactionColors"],
+		tooltip = l["UseSpellReactionColorsTip"],
 		get = function() return panel.owner:UseSpellReactionColors() end,
 		set = function(_, enable) panel.owner:SetUseSpellReactionColors(enable) end
 	}

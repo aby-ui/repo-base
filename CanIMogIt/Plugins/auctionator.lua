@@ -88,7 +88,9 @@ if IsAddOnLoaded("Auctionator") then
     ----------------------------
 
     local function HookOverlayAuctionator(event)
-        if event ~= "AUCTION_HOUSE_NEW_RESULTS_RECEIVED" then return end
+        if event ~= "AUCTION_HOUSE_SHOW" then return end
+        -- Some other addons *coughTSMcough* prevent this frame from loading.
+        if _G["AuctionatorShoppingListFrame"] == nil then return end
         -- Add hook for the Auction House frames.
         local buttons = _G["AuctionatorShoppingListFrame"].ResultsListing.ScrollFrame.buttons
         if buttons == nil then

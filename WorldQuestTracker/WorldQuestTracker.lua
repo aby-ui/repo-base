@@ -651,12 +651,16 @@ end
 		local title, factionID = GetQuestInfoByQuestID(questID)
 
 		local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
-		local tagID = tagInfo and tagInfo.tagID
-		local tagName = tagInfo and tagInfo.tagName
-		local worldQuestType = tagInfo and tagInfo.worldQuestType
-		local rarity = tagInfo and tagInfo.rarity
-		local isElite = tagInfo and tagInfo.isElite
-		--local quality = tagInfo and tagInfo.quality
+		if (not tagInfo) then
+			WorldQuestTracker:Msg("no tag info for quest:", questID, title)
+		end
+		
+		local tagID = tagInfo.tagID
+		local tagName = tagInfo.tagName
+		local worldQuestType = tagInfo.worldQuestType
+		local rarity = tagInfo.quality
+		local isElite = tagInfo.isElite
+		--local quality = tagInfo.quality
 
 		return title, factionID, tagID, tagName, worldQuestType, rarity, isElite
 	end
@@ -908,31 +912,26 @@ function WorldQuestTracker.ShowTutorialAlert()
 			WorldQuestTracker.TutorialAlertOnHold = true
 			return
 		end
-		
-		if (GetExpansionLevel() == 6 or UnitLevel ("player") == 110) then --legion
-			WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.BROKENISLES)
-		elseif (GetExpansionLevel() == 7 or UnitLevel ("player") == 120) then --bfa
-			WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.KULTIRAS)
-		end
-		
+
+		WorldMapFrame:SetMapID (WorldQuestTracker.MapData.ZoneIDs.KULTIRAS)
 		WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
 		
-		C_Timer.After (4, tutorial_one)
+		--C_Timer.After (4, tutorial_one)
 		return
 		
 	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 2) then
 	
-		C_Timer.After (.5, tutorial_two)
+		--C_Timer.After (.5, tutorial_two)
 		return
 
 	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 3) then
 	
-		C_Timer.After (.5, tutorial_three)
+		--C_Timer.After (.5, tutorial_three)
 		return
 		
 	elseif (WorldQuestTracker.db.profile.TutorialPopupID == 4) then
 	
-		C_Timer.After (.5, tutorial_four)
+		--C_Timer.After (.5, tutorial_four)
 		return
 		
 	end

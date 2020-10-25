@@ -15,18 +15,6 @@ end
 for id = 1, NUM_PET_ACTION_SLOTS do
     local button = getPetButton(id)
 
-    -- fix hotkey text extending outside of the button itself
-    -- and make it consistent with the button size
-    if button.HotKey:GetWidth() > button:GetWidth() then
-        button.HotKey:SetWidth(button:GetWidth())
-
-        local font, size, flags = button.HotKey:GetFont()
-
-        size = Round(size * button:GetWidth() / ActionButton1:GetWidth())
-
-        button.HotKey:SetFont(font, size, flags)
-    end
-
     Addon.BindableButton:AddQuickBindingSupport(button, ('BONUSACTIONBUTTON%d'):format(id))
 end
 

@@ -59,6 +59,21 @@ do
 	FILTER_TYPE_EQUIPMENT = "equipment"
 	FILTER_TYPE_TRADESKILL = "trade_skill"
 
+	--9.0.1 re-filling the French globals
+	local questTagType = _G.Enum.QuestTagType
+	LE_QUEST_TAG_TYPE_PET_BATTLE = questTagType.PetBattle
+	LE_QUEST_TAG_TYPE_PROFESSION = questTagType.Profession
+	LE_QUEST_TAG_TYPE_DUNGEON = questTagType.Dungeon
+	LE_QUEST_TAG_TYPE_RAID = questTagType.Raid
+	LE_QUEST_TAG_TYPE_INVASION = questTagType.Invasion
+	LE_QUEST_TAG_TYPE_FACTION_ASSAULT = questTagType.FactionAssault
+	LE_QUEST_TAG_TYPE_PVP = questTagType.PvP
+--
+	local questQualityType = _G.Enum.WorldQuestQuality --former known as rarity
+	LE_WORLD_QUEST_QUALITY_COMMON = questQualityType.Common
+	LE_WORLD_QUEST_QUALITY_RARE = questQualityType.Rare
+	LE_WORLD_QUEST_QUALITY_EPIC = questQualityType.Epic
+
 	local default_config = {
 		profile = {
 			filters = {

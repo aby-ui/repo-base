@@ -4,6 +4,7 @@
 --]]
 
 local L = LibStub('AceLocale-3.0'):NewLocale('Dominos-Progress', 'enUS', true)
+
 L.OneBarMode = 'One Bar Mode'
 L.Progress = 'Progress'
 L.Texture = 'Texture'

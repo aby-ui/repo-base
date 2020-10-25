@@ -44,7 +44,7 @@ end
 function ELP_RetrieveDone()
     ELP.frame:Hide()
     for k, _ in pairs(curr_encts) do
-        if EJ_GetSlotFilter() == ELP_RELIC_SLOT then
+        if C_EncounterJournal.GetSlotFilter() == ELP_RELIC_SLOT then
             tinsert(curr_items, k)
         elseif (db.attr1 == 0 or (db.attr1 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr1]))
             and (db.attr1 == 0 or db.attr2 == 0 or (db.attr2 ~= 0 and type(db.ITEMS[k])=="table" and db.ITEMS[k][db.attr2])) then
@@ -52,7 +52,7 @@ function ELP_RetrieveDone()
         end
     end
     -- sort according to attr1
-    if db.attr1 ~= 0 and EJ_GetSlotFilter() ~= ELP_RELIC_SLOT then
+    if db.attr1 ~= 0 and C_EncounterJournal.GetSlotFilter() ~= ELP_RELIC_SLOT then
         table.sort(curr_items, sortByAttr1)
     end
     EncounterJournal_LootUpdate()
@@ -74,8 +74,8 @@ function ELP_UpdateItemList()
     for _, v in ipairs(ELP.currs) do wipe(v) end
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
-    local forceSlot = db.range > 0 and db.range ~= 4 and EJ_GetSlotFilter() == 0
-    if forceSlot then EJ_SetSlotFilter(11) end
+    local forceSlot = db.range > 0 and db.range ~= 4 and C_EncounterJournal.GetSlotFilter() == 0
+    if forceSlot then C_EncounterJournal.SetSlotFilter(11) end
 
     local range, lastRaid = db.range, nil
     if range == 4 or range == 5 then
@@ -97,18 +97,19 @@ function ELP_UpdateItemList()
                 EJ_SetDifficulty(i==1 and 14 or 1)
             end
             for loot = 1, EJ_GetNumLoot() do
-                local itemID, encounterID, name, icon, slot, armorType, link = EJ_GetLootInfoByIndex(loot)
+                local info = C_EncounterJournal.GetLootInfoByIndex(loot)
+                local itemID = info.itemID
                 if not curr_encts[itemID] then
                     if not db.ITEMS[itemID] then curr_retrieving[itemID] = 1 end
-                    curr_encts[itemID] = encounterID
+                    curr_encts[itemID] = info.encounterID
                     curr_insts[itemID] = insID
-                    curr_links[itemID] = link
+                    curr_links[itemID] = info.link
                 end
             end
         end
     end
 
-    if forceSlot then EJ_SetSlotFilter(0) end
+    if forceSlot then C_EncounterJournal.SetSlotFilter(0) end
     EncounterJournal:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:RegisterEvent("EJ_DIFFICULTY_UPDATE")
 

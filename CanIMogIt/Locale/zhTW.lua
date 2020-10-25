@@ -17,9 +17,13 @@ L["Cannot determine status on other characters."] = "無法確定其他角色的
 L["Cannot learn:"] = "不能收藏:"
 L["Cannot learn: Soulbound"] = "不能收藏: 靈魂綁定"
 L["Center"] = "中間"
+--[[Translation missing --]]
+--[[ L["Changes saved!"] = ""--]] 
 L["Database migrated to:"] = "數據庫遷移至："
 L["Database Scanning chat messages"] = "數據庫掃描聊天訊息"
 L["Debug Tooltip"] = "除錯提示"
+--[[Translation missing --]]
+--[[ L["Default"] = ""--]] 
 L["Detailed information for debug purposes. Use this when sending bug reports."] = "用於除錯的詳細資訊。用來發送錯誤報告。"
 L["Does not affect Quests or Adventure Journal."] = "不會影響任務或冒險指南。"
 L["Equippable Items Only"] = "只限可裝備物品"
@@ -55,6 +59,8 @@ L["Shows the icon directly on the item in your bag."] = "直接在背包物品�
 L["Sorry! Your database has corrupted entries. This will cause errors and give incorrect results. Please click below to reset the database."] = "抱歉！您的數據庫有損壞的條目。這將導致錯誤，並得到不正確的結果。請點擊下方來重置數據庫。"
 L["Top"] = "上"
 L["Top Left"] = "左上"
+--[[Translation missing --]]
+--[[ L["Top Right"] = ""--]] 
 L["Top Right (default)"] = "右上(預設)"
 L["Transmoggable Items Only"] = "只限可塑形物品"
 L["Unknown Items Only"] = "只限未收藏物品"

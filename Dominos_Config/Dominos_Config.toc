@@ -1,8 +1,9 @@
 ## Interface: 90001
 ## Title: Dominos Config
-## Title-zhCN: Dominos 设置
-## Title-zhTW: Dominos 設置
+## Title-zhCN: |cFF0099FFDominos|r 设置
+## Title-zhTW: |cFF0099FFDominos|r 設置
 ## Notes: GUI based configuration for Dominos
+## Notes-zhCN: Dominos 图形设置界面
 ## Author: Tuller
 ## Dependencies: Dominos
 ## LoadOnDemand: 1

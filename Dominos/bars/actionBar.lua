@@ -115,7 +115,7 @@ function ActionBar:ReleaseButton(button)
 end
 
 function ActionBar:OnAttachButton(button)
-    button:SetActionOffsetInsecure(self:GetAttribute('state-offset'))
+    button:SetActionOffsetInsecure(self:GetAttribute('actionOffset') or 0)
 
     button:SetFlyoutDirection(self:GetFlyoutDirection())
     button:SetShowCountText(Addon:ShowCounts())
@@ -142,6 +142,7 @@ end
 function ActionBar:GetOffset(stateId)
     return self.pages[stateId]
 end
+
 
 function ActionBar:UpdateStateDriver()
     local conditions
@@ -197,6 +198,7 @@ function ActionBar:LoadStateController()
             offset = (page - 1) * self:GetAttribute('barLength')
         end
 
+        self:SetAttribute('actionOffset', offset)
         control:ChildUpdate('offset', offset)
     ]])
 

@@ -17,9 +17,13 @@ L["Cannot determine status on other characters."] = "无法确认其他角色状
 L["Cannot learn:"] = "无法解锁："
 L["Cannot learn: Soulbound"] = "无法解锁：已绑定"
 L["Center"] = "中间"
+--[[Translation missing --]]
+--[[ L["Changes saved!"] = ""--]] 
 L["Database migrated to:"] = "数据库迁移到:"
 L["Database Scanning chat messages"] = "数据库扫描聊天信息"
 L["Debug Tooltip"] = "调试工具提示"
+--[[Translation missing --]]
+--[[ L["Default"] = ""--]] 
 L["Detailed information for debug purposes. Use this when sending bug reports."] = "显示详细的装备提示"
 L["Does not affect Quests or Adventure Journal."] = "不修改任务及冒险手册"
 L["Equippable Items Only"] = "只提示可装备的物品"
@@ -55,6 +59,8 @@ L["Shows the icon directly on the item in your bag."] = "在背包物品上显�
 L["Sorry! Your database has corrupted entries. This will cause errors and give incorrect results. Please click below to reset the database."] = "抱歉！你的数据库条目已损坏。这将会输出错误的结果。请点击重置以便重建数据库。"
 L["Top"] = "顶部"
 L["Top Left"] = "顶部左侧"
+--[[Translation missing --]]
+--[[ L["Top Right"] = ""--]] 
 L["Top Right (default)"] = "顶部右侧（默认）"
 L["Transmoggable Items Only"] = "只提示可幻化物品"
 L["Unknown Items Only"] = "只提示未解锁的物品"

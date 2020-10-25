@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200909132510")
+mod:SetRevision("20200909134241")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2265)
 --mod:SetHotfixNoticeRev(17775)
