@@ -34,7 +34,7 @@ function KT.IsHigherVersion(newVersion, oldVersion)
                 result = true
             else
                 if nBuildType == oBuildType then
-                    if nBuildNumber > oBuildNumber then
+                    if nBuildNumber and nBuildNumber > oBuildNumber then
                         result = true
                     end
                 else
@@ -70,26 +70,28 @@ function KT.GetCurrentMapAreaID()
     return C_Map.GetBestMapForUnit("player")
 end
 
-function KT.GetCurrentMapContinent()
-    local mapID = C_Map.GetBestMapForUnit("player")
-    if mapID == 1355 then   -- Nazjatar
-        return C_Map.GetMapInfo(mapID) or {}
-    else
-        return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+function KT.GetMapContinent(mapID)
+    if mapID then
+        if mapID == 1355 then   -- Nazjatar
+            return C_Map.GetMapInfo(mapID) or {}
+        else
+            return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
+        end
     end
+    return {}
 end
 
-function KT.GetMapContinent(mapID)
-    if mapID == 1355 then   -- Nazjatar
-        return C_Map.GetMapInfo(mapID) or {}
-    else
-        return MapUtil.GetMapParentInfo(mapID, Enum.UIMapType.Continent, true) or {}
-    end
+function KT.GetCurrentMapContinent()
+    local mapID = C_Map.GetBestMapForUnit("player")
+    return KT.GetMapContinent(mapID)
 end
 
 function KT.GetMapNameByID(mapID)
-    local mapInfo = C_Map.GetMapInfo(mapID) or {}
-    return mapInfo.name
+    if mapID then
+        local mapInfo = C_Map.GetMapInfo(mapID) or {}
+        return mapInfo.name
+    end
+    return nil
 end
 
 function KT.SetMapToCurrentZone()
@@ -97,7 +99,11 @@ function KT.SetMapToCurrentZone()
     WorldMapFrame:SetMapID(mapID)
 end
 
-function KT.SetMapByID(mapID)
+function KT.GetMapID()
+    return WorldMapFrame:GetMapID()
+end
+
+function KT.SetMapID(mapID)
     WorldMapFrame:SetMapID(mapID)
 end
 
@@ -223,6 +229,32 @@ end
 -- Quest
 function KT.GetQuestTagInfo(questID)
     return C_QuestLog.GetQuestTagInfo(questID) or {}
+end
+
+function KT.GetNumQuests()
+    local numQuests = 0
+    local numEntries = C_QuestLog.GetNumQuestLogEntries()
+    for i = 1, numEntries do
+        local info = C_QuestLog.GetInfo(i)
+        if not info.isHidden and not info.isHeader then
+            numQuests = numQuests + 1
+        end
+    end
+    return numQuests
+end
+
+function KT.GetNumQuestWatches()
+    local numWatches = C_QuestLog.GetNumQuestWatches()
+    for i = 1, C_QuestLog.GetNumQuestWatches() do
+        local questID = C_QuestLog.GetQuestIDForQuestWatchIndex(i)
+        if questID then
+            local quest = QuestCache:Get(questID)
+            if quest:IsDisabledForSession() then
+                numWatches = numWatches - 1
+            end
+        end
+    end
+    return numWatches
 end
 
 -- =====================================================================================================================

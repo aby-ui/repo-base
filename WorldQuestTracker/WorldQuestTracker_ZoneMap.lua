@@ -29,6 +29,7 @@ local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
+local IsQuestCriteriaForBounty = C_QuestLog.IsQuestCriteriaForBounty
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation

@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 55 2020-10-18 07:39:25Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 57 2020-10-20 13:44:40Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ local GetBuildInfo = _G.GetBuildInfo
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 55 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 57 $"):match("%d+"))
 
 local LibStub = _G.LibStub
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
@@ -127,7 +127,7 @@ local function create_UIDropDownMenuButton(name, parent)
 	f.Icon:Hide()
 	
 	-- ColorSwatch
-	local fcw = CreateFrame("Button", name.."ColorSwatch", f, WoWRetail and "ColorSwatchTemplate" or nil)
+	local fcw = CreateFrame("Button", name.."ColorSwatch", f, BackdropTemplateMixin and "ColorSwatchTemplate" or nil)
 	fcw:SetPoint("RIGHT", f, -6, 0)
 	fcw:Hide()
 	if WoWClassic then
@@ -233,9 +233,10 @@ local function creatre_UIDropDownList(name, parent)
 	f:SetFrameStrata("DIALOG")
 	f:EnableMouse(true)
 	
-	f.Border = _G[name.."Border"] or CreateFrame("Frame", name.."Border", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
-	f.Border:SetAllPoints()
-	f.Border:SetBackdrop({
+	--local fbd = _G[name.."Border"] or CreateFrame("Frame", name.."Border", f, BackdropTemplateMixin and "DialogBorderDarkTemplate" or nil)
+	local fbd = _G[name.."Border"] or CreateFrame("Frame", name.."Border", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	fbd:SetAllPoints()
+	fbd:SetBackdrop({
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
 		tile = true,
@@ -243,10 +244,12 @@ local function creatre_UIDropDownList(name, parent)
 		edgeSize = 32,
 		insets = { left = 11, right = 12, top = 12, bottom = 9, },
 	})
+	f.Border = fbd
 	
-	f.MenuBackdrop= _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
-	f.MenuBackdrop:SetAllPoints()
-	f.MenuBackdrop:SetBackdrop({
+	--local fmb = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, BackdropTemplateMixin and "TooltipBackdropTemplate" or nil)
+	local fmb = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	fmb:SetAllPoints()
+	fmb:SetBackdrop({
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 		tile = true,
@@ -254,8 +257,9 @@ local function creatre_UIDropDownList(name, parent)
 		edgeSize = 16,
 		insets = { left = 5, right = 4, top = 4, bottom = 4, },
 	})
-	f.MenuBackdrop:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
-	f.MenuBackdrop:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
+	fmb:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
+	fmb:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
+	f.MenuBackdrop = fmb
 	
 	f.Button1 = _G[name.."Button1"] or create_UIDropDownMenuButton(name.."Button1", f)
 	f.Button1:SetID(1)

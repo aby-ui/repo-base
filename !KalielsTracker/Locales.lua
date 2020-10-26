@@ -6,6 +6,7 @@ local name, KT = ...
 KT.L = CoreBuildLocale()
 
 local cNote = "|cff00ffe3"
+local cBold = "|cff00ffe3"
 
 if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     --------------- Filters.lua -----------------
@@ -15,6 +16,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Quests"] = "任务"
     KT.L["All"] = "全部"
     KT.L["|cff00ff00Auto|r Zone"] = "|cff00ff00自动|r 当前地图"
+    KT.L["Favorites"] = "收藏"	
     KT.L["Zone"] = "当前地图"
     KT.L["Daily"] = "日常"
     KT.L["Instance"] = "副本"
@@ -71,7 +73,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Long texts shows on two lines or on one line with ellipsis (...)."] = "长文本多行显示或者单行在末尾显示省略号(...)"
     KT.L["Objective numbers at the beginning "] = "目标数字在前面"
     KT.L["Changing the position of objective numbers at the beginning of the line. "..
-            cNote.."Only for deDE, esES, frFR, ruRU locale."] = cNote.."中文已经是这样了"
+            cBold.."Only for deDE, esES, frFR, ruRU locale."] = cNote.."中文已经是这样了"
     KT.L["Headers"] = "标题栏"
     KT.L[" Texture"] = "材质"
     KT.L["Color"] = "颜色"
@@ -89,8 +91,8 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Show buttons block background and border"] = "显示物品按钮区的背景和边框"
     KT.L["Enable Active button "] = "启用自动按钮"
     KT.L["Key - Active button"] = "热键 - 自动按钮"
-    KT.L["Show Quest item button for CLOSEST quest as \"Extra Action Button\". "..
-            cNote.."Key bind is shared with EXTRAACTIONBUTTON1."] = "在'额外快捷键1'上显示最近任务的物品\n"..cNote.."与'额外快捷键1'共享热键"
+    KT.L["Show Quest item button for CLOSEST quest as \"Extra Action Button\".\n"..
+		   cBold.."Key bind is shared with EXTRAACTIONBUTTON1."] = "在'额外快捷键1'上显示最近任务的物品\n"..cBold.."与'额外快捷键1'共享热键"
     KT.L["Other options"] = "其他选项"
     KT.L["Show tooltips"] = "显示鼠标提示"
     KT.L["Show ID"] = "显示任务ID"

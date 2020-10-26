@@ -938,7 +938,7 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 			local rarity = tagInfo.rarity or 1
 			local isElite = tagInfo.isElite
 
-			print(rarity)
+			--print(rarity)
 			
 			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
 
@@ -970,7 +970,6 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 		end
 	
 	elseif (event == "QUEST_REMOVED") then
-		questID = arg1
 		if (questID == ff.CurrentWorldQuest) then
 			
 			ff.CurrentWorldQuest = nil
@@ -982,7 +981,6 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 		
 	
 	elseif (event == "QUEST_TURNED_IN") then
-		questID = arg1
 		local isWorldQuest = QuestMapFrame_IsQuestWorldQuest (questID)
 		if (isWorldQuest) then
 			ff.WorldQuestFinished (questID)

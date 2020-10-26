@@ -21,7 +21,7 @@ local filterButton
 
 OBJECTIVE_TRACKER_UPDATE_MODULE_PETTRACKER = 0x100000
 OBJECTIVE_TRACKER_UPDATE_PETTRACKER = 0x200000
-PETTRACKER_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable()
+PETTRACKER_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("PETTRACKER_TRACKER_MODULE")
 
 M.Texts = {
 	TrackPets = GetSpellInfo(122026),
@@ -55,7 +55,12 @@ local function SetHooks()
 		self:SetShown(PetTracker.sets.trackPets and self.Anchor:IsShown())
 		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_PETTRACKER)
 	end
-	
+
+	function PetTracker.Tracker:Update()  -- R
+		self:Clear()
+		self:AddSpecies()
+	end
+
 	function PetTracker.Tracker:AddSpecie(specie, quality, level)  -- R
 		local source = specie:GetSourceIcon()
 		if source then
@@ -155,7 +160,7 @@ local function SetFrames()
 
 	-- Content frame
 	content = CreateFrame("Frame", nil, OTF.BlocksFrame)
-	content:SetSize(232 - PETTRACKER_TRACKER_MODULE.blockOffsetX, 10)
+	content:SetSize(232 - PETTRACKER_TRACKER_MODULE.blockOffset[PETTRACKER_TRACKER_MODULE.blockTemplate][1], 10)
 	content:Hide()
 
 	-- Objectives
@@ -198,7 +203,7 @@ function PETTRACKER_TRACKER_MODULE:GetBlock()
 	block.module = self
 	block.used = true
 	block.height = 0
-	block.lineWidth = OBJECTIVE_TRACKER_TEXT_WIDTH - self.blockOffsetX
+	block.lineWidth = OBJECTIVE_TRACKER_TEXT_WIDTH - self.blockOffset[self.blockTemplate][1]
 	block.currentLine = nil
 	if block.lines then
 		for _, line in ipairs(block.lines) do
@@ -240,10 +245,10 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "8.3.8") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.1") and db.addonPetTracker)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("PetTracker", "8.3.1")
+		KT:Alert_IncompatibleAddon("PetTracker", "9.0.1")
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)
@@ -257,7 +262,7 @@ function M:OnInitialize()
 	end
 
 	SetFrames_Init()
-	--SetHooks_Init()
+	SetHooks_Init()
 end
 
 function M:OnEnable()
@@ -274,7 +279,8 @@ end
 
 function M:IsShown()
 	return (self.isLoaded and
-		(PetTracker.sets and PetTracker.sets.trackPets))
+			(PetTracker.sets and PetTracker.sets.trackPets) and
+			PetTracker.Objectives:IsShown())
 end
 
 function M:SetPetsHeaderText(reset)

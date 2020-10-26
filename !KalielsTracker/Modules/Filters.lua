@@ -54,6 +54,33 @@ local eventFrame
 -- Internal --
 --------------
 
+local function IsFavorite(type, id)
+	local result = false
+	for k, v in ipairs(dbChar[type].favorites) do
+		if v == id then
+			result = k
+			break
+		end
+	end
+	return result
+end
+
+local function ToggleFavorite(self, type, id)
+	local idx = IsFavorite(type, id)
+	if idx then
+		tremove(dbChar[type].favorites, idx)
+	else
+		tinsert(dbChar[type].favorites, id)
+	end
+end
+
+local function RemoveFavorite(type, id)
+	local idx = IsFavorite(type, id)
+	if idx then
+		tremove(dbChar[type].favorites, idx)
+	end
+end
+
 local function SetHooks()
 	local bck_ObjectiveTracker_OnEvent = OTF:GetScript("OnEvent")
 	OTF:SetScript("OnEvent", function(self, event, ...)
@@ -80,6 +107,24 @@ local function SetHooks()
 			bck_QuestMapQuestOptions_TrackQuest(questID)
 		end
 	end
+
+	hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
+		local block = self.activeFrame
+
+		local info = MSA_DropDownMenu_CreateInfo()
+		info.isNotRadio = true
+
+		MSA_DropDownMenu_AddSeparator(info)
+
+		info.text = "Favorite"
+		info.colorCode = "|cff009bff"
+		info.notCheckable = false
+		info.func = ToggleFavorite
+		info.arg1 = "quests"
+		info.arg2 = block.id
+		info.checked = (IsFavorite(info.arg1, info.arg2))
+		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL)
+	end)
 	
 	-- Achievements
 	local bck_AchievementObjectiveTracker_UntrackAchievement = AchievementObjectiveTracker_UntrackAchievement
@@ -88,7 +133,25 @@ local function SetHooks()
 			bck_AchievementObjectiveTracker_UntrackAchievement(dropDownButton, achievementID)
 		end
 	end
-	
+
+	hooksecurefunc("AchievementObjectiveTracker_OnOpenDropDown", function(self)
+		local block = self.activeFrame
+
+		local info = MSA_DropDownMenu_CreateInfo()
+		info.isNotRadio = true
+
+		MSA_DropDownMenu_AddSeparator(info)
+
+		info.text = "Favorite"
+		info.colorCode = "|cff009bff"
+		info.notCheckable = false
+		info.func = ToggleFavorite
+		info.arg1 = "achievements"
+		info.arg2 = block.id
+		info.checked = (IsFavorite(info.arg1, info.arg2))
+		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL)
+	end)
+
 	-- Quest Log
 	hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", function()
 		if db.filterAuto[1] then
@@ -207,12 +270,21 @@ local function Filter_Quests(self, spec, idx)
 			end
 		end
 		MSA_CloseDropDownMenus()
+	elseif spec == "favorites" then
+		for _, id in ipairs(dbChar.quests.favorites) do
+			C_QuestLog.AddQuestWatch(id)
+		end
 	elseif spec == "zone" then
+		local bckMapShown = WorldMapFrame:IsShown()
+		local bckMapID = KT.GetMapID()
 		local mapID = KT.GetCurrentMapAreaID()
 		local zoneName = GetRealZoneText() or ""
 		local isInZone = false
+		if bckMapShown then
+			KT.SetMapID(mapID)
+		end
 		if mapID == 1165 or  -- BfA - Dazar'alor
-				(C_Map.GetMapGroupID(mapID) and not KT.inInstance) then
+				(mapID and C_Map.GetMapGroupID(mapID) and not KT.inInstance) then
 			local mapInfo = C_Map.GetMapInfo(mapID)
 			OpenQuestLog(mapInfo.parentMapID)
 		elseif mapID == 1473 then  -- BfA - Chamber of Heart
@@ -236,11 +308,15 @@ local function Filter_Quests(self, spec, idx)
 				end
 			end
 		end
-		HideUIPanel(WorldMapFrame)
+		if bckMapShown then
+			KT.SetMapID(bckMapID)
+		else
+			HideUIPanel(WorldMapFrame)
+		end
 	elseif spec == "daily" then
 		for i = 1, numEntries do
 			local questInfo = C_QuestLog.GetInfo(i)
-			if not questInfo.isHidden and not questInfo.isHeader and not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and questInfo.frequency >= 2 then
+			if not questInfo.isHidden and not questInfo.isHeader and not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and questInfo.frequency >= Enum.QuestFrequency.Daily then
 				C_QuestLog.AddQuestWatch(questInfo.questID)
 			end
 		end
@@ -283,8 +359,15 @@ local function Filter_Achievements(self, spec)
 			RemoveTrackedAchievement(trackedAchievements[i])
 		end
 	end
-	
-	if spec == "zone" then
+
+	if spec == "favorites" then
+		for _, id in ipairs(dbChar.achievements.favorites) do
+			AddTrackedAchievement(id)
+			if GetNumTrackedAchievements() == MAX_TRACKED_ACHIEVEMENTS then
+				break
+			end
+		end
+	elseif spec == "zone" then
 		local continentName = KT.GetCurrentMapContinent().name
 		local zoneName = GetRealZoneText() or ""
 		local categoryName = continentName
@@ -489,7 +572,7 @@ local function GetInlineFactionIcon()
 end
 
 function DropDown_Initialize(self, level)
-	local numEntries, numQuests = C_QuestLog.GetNumQuestLogEntries()
+	local numEntries = C_QuestLog.GetNumQuestLogEntries()
 	local info = MSA_DropDownMenu_CreateInfo()
 	info.isNotRadio = true
 
@@ -505,7 +588,7 @@ function DropDown_Initialize(self, level)
 		info.disabled = (db.filterAuto[1])
 		info.func = Filter_Quests
 
-		info.text = L"All".." ("..numQuests..")"
+		info.text = L"All".." ("..dbChar.quests.num..")"
 		info.hasArrow = not (db.filterAuto[1])
 		info.value = 1
 		info.arg1 = "all"
@@ -513,6 +596,15 @@ function DropDown_Initialize(self, level)
 
 		info.hasArrow = false
 
+		info.text = L"Favorites"
+		info.colorCode = "|cff009bff"
+		info.arg1 = "favorites"
+		info.disabled = (db.filterAuto[1] or #dbChar.quests.favorites == 0)
+		MSA_DropDownMenu_AddButton(info)
+
+		info.colorCode = nil
+		info.disabled = (db.filterAuto[1])
+		
 		info.text = L"Zone"
 		info.arg1 = "zone"
 		MSA_DropDownMenu_AddButton(info)
@@ -562,8 +654,16 @@ function DropDown_Initialize(self, level)
 
 		info.keepShownOnClick = false
 		info.hasArrow = false
-		info.disabled = (db.filterAuto[2])
 		info.func = Filter_Achievements
+
+		info.text = L"Favorites"
+		info.colorCode = "|cff009bff"
+		info.arg1 = "favorites"
+		info.disabled = (db.filterAuto[2] or #dbChar.achievements.favorites == 0)
+		MSA_DropDownMenu_AddButton(info)
+
+		info.colorCode = nil
+		info.disabled = (db.filterAuto[2])
 
 		info.text = L"Zone"
 		info.arg1 = "zone"
@@ -693,11 +793,16 @@ local function SetFrames()
 				if not C_QuestLog.IsQuestTask(questID) and (not C_QuestLog.IsQuestBounty(questID) or C_QuestLog.IsComplete(questID)) and db.filterAuto[1] then
 					self:RegisterEvent("QUEST_POI_UPDATE")
 				end
+			elseif event == "QUEST_COMPLETE" then
+				local questID = GetQuestID()
+				RemoveFavorite("quests", questID)
 			elseif event == "QUEST_POI_UPDATE" then
 				KT.questStateStopUpdate = true
 				Filter_Quests(_, "zone")
 				KT.questStateStopUpdate = false
 				self:UnregisterEvent(event)
+			elseif event == "ACHIEVEMENT_EARNED" then
+				RemoveFavorite("achievements", arg1)
 			elseif event == "ZONE_CHANGED_NEW_AREA" then
 				C_Timer.After(0, function()
 					if db.filterAuto[1] == "zone" then
@@ -712,6 +817,8 @@ local function SetFrames()
 	end
 	eventFrame:RegisterEvent("ADDON_LOADED")
 	eventFrame:RegisterEvent("QUEST_ACCEPTED")
+	eventFrame:RegisterEvent("QUEST_COMPLETE")
+	eventFrame:RegisterEvent("ACHIEVEMENT_EARNED")
 	eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 	-- Filter button

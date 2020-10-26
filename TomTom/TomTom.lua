@@ -94,7 +94,7 @@ function TomTom:Initialize(event, addon)
                 otherzone = true,
                 clickcreate = true,
                 menu = true,
-                create_modifier = "C",
+                create_modifier = "A",
                 default_iconsize = 16,
                 default_icon = "Interface\\AddOns\\TomTom\\Images\\GoldGreenDot",
             },
@@ -115,7 +115,7 @@ function TomTom:Initialize(event, addon)
             },
             poi = {
                 enable = true,
-                modifier = "C",
+                modifier = "A",
                 setClosest = false,
                 arrival = 20,
             },

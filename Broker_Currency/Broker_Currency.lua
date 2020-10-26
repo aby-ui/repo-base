@@ -404,10 +404,10 @@ do
 					local size = char_db.iconSize
 
 					if count > 0 and char_db[key] then
---						local totalMax = CURRENCY_MAX_COUNT[currencyID]
+--						local maxQuantity = CURRENCY_MAX_COUNT[currencyID]
 
---						if totalMax then
---							concatList[#concatList + 1] = displayIcon:format(("%s/%s"):format(_G.BreakUpLargeNumbers(count), _G.BreakUpLargeNumbers(totalMax)), size, size)
+--						if maxQuantity then
+--							concatList[#concatList + 1] = displayIcon:format(("%s/%s"):format(_G.BreakUpLargeNumbers(count), _G.BreakUpLargeNumbers(maxQuantity)), size, size)
 --						else
 							concatList[#concatList + 1] = string.format(displayIcon, _G.BreakUpLargeNumbers(count), size, size)
 --						end
@@ -482,7 +482,7 @@ do
 			return 0
 		end
 
-		return ITEM_CURRENCY_NAMES_BY_ID[idnum] and _G.GetItemCount(idnum, true) or select(2, _G.GetCurrencyInfo(idnum))
+		return ITEM_CURRENCY_NAMES_BY_ID[idnum] and _G.GetItemCount(idnum, true) or _G.C_CurrencyInfo.GetCurrencyInfo(idnum).quantity
 	end
 end
 
@@ -887,7 +887,7 @@ do
 		-- ----------------------------------------------------------------------------
 		-- Initialize the configuration options.
 		-- ----------------------------------------------------------------------------
-		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. C_CurrencyInfo.GetCurrencyInfo(CURRENCY_IDS_BY_NAME.CURIOUS_COIN).iconFileID .. DISPLAY_ICON_STRING2
+		local ICON_TOKEN = DISPLAY_ICON_STRING1 .. _G.C_CurrencyInfo.GetCurrencyInfo(CURRENCY_IDS_BY_NAME.CURIOUS_COIN).iconFileID .. DISPLAY_ICON_STRING2
 
 		-- Provide settings options for non-money currencies
 		local function SetOptions(brokerArgs, summaryArgs, idnum, index)
@@ -1210,17 +1210,20 @@ do
 					BROKER_ICONS[currencyID] = DISPLAY_ICON_STRING1 .. iconFileDataID .. DISPLAY_ICON_STRING2
 				end
 			else
-				local currencyName, _, iconFileDataID, _, _, totalMax = _G.GetCurrencyInfo(currencyID)
+				local currencyInfo = _G.C_CurrencyInfo.GetCurrencyInfo(currencyID)
+				local currencyName = currencyInfo.name
+				local iconFileID = currencyInfo.iconFileID
+				local maxQuantity = currencyInfo.maxQuantity
 
-				if iconFileDataID and iconFileDataID ~= "" then
+				if iconFileID and iconFileID ~= "" then
 					CURRENCY_NAMES[currencyID] = currencyName
 
-					if totalMax > 0 then
-						CURRENCY_MAX_COUNT[currencyID] = totalMax
+					if maxQuantity > 0 then
+						CURRENCY_MAX_COUNT[currencyID] = maxQuantity
 					end
 
-					OPTION_ICONS[currencyID] = iconFileDataID
-					BROKER_ICONS[currencyID] = DISPLAY_ICON_STRING1 .. iconFileDataID .. DISPLAY_ICON_STRING2
+					OPTION_ICONS[currencyID] = iconFileID
+					BROKER_ICONS[currencyID] = DISPLAY_ICON_STRING1 .. iconFileID .. DISPLAY_ICON_STRING2
 				end
 			end
 		end

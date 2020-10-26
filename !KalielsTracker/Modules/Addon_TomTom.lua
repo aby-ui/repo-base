@@ -132,6 +132,10 @@ local function AddWaypoint(questID, isSilent)
 		end
 	end
 
+	if not title then
+		return false
+	end
+
 	if completed then
 		title = "|TInterface\\GossipFrame\\ActiveQuestIcon:0:0:0:0|t"..title
 	else

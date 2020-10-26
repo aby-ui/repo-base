@@ -55,23 +55,29 @@ local function RemoveHotkey(button)
 	end
 end
 
-local function MoveExtraAbilityContainer()
-	local newXOfs
-	if not point then
-		point, relativeTo, relativePoint, xOfs, yOfs = ExtraAbilityContainer:GetPoint()
+local function ExtraAbilityContainer_OnShow(self)
+	activeFrame:ClearAllPoints()
+	activeFrame:SetPoint("TOPRIGHT", self, "TOPLEFT", 30, 0)
+end
+
+local function ExtraAbilityContainer_OnHide(self)
+	activeFrame:ClearAllPoints()
+	activeFrame:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
+end
+
+local function ActiveFrame_OnShow(self)
+	ExtraAbilityContainer:SetPoint(point, relativeTo, relativePoint, 128 - 15 + xOfs, yOfs)
+end
+
+local function ActiveFrame_OnHide(self)
+	if point then
+		ExtraAbilityContainer:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
 	end
-	if #ExtraAbilityContainer.frames > 0 then
-		newXOfs = (activeFrame:IsShown()) and 128 - 15 + xOfs or xOfs
-		activeFrame:SetPoint("TOPRIGHT", ExtraAbilityContainer, "TOPLEFT", 30, 0)
-	else
-		newXOfs = xOfs
-		ExtraAbilityContainer:SetWidth(2)
-		ExtraAbilityContainer:Show()
-		activeFrame:ClearAllPoints()
-		activeFrame:SetPoint("TOP", ExtraAbilityContainer, "TOP", 0, 0)
-		--ExtraAbilityContainer:Hide()
-	end
-	ExtraAbilityContainer:SetPoint(point, relativeTo, relativePoint, newXOfs, yOfs)
+end
+
+local function ActiveFrame_Init()
+	point, relativeTo, relativePoint, xOfs, yOfs = ExtraAbilityContainer:GetPoint()
+	activeFrame:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
 end
 
 local function restore()
@@ -85,7 +91,7 @@ local function SetFrames()
 	-- Event frame
 	if not eventFrame then
 		eventFrame = CreateFrame("Frame")
-		eventFrame:SetScript("OnEvent", function(_, event, ...)
+		eventFrame:SetScript("OnEvent", function(self, event)
 			_DBG("Event - "..event, true)
             --if event == "UPDATE_EXTRA_ACTIONBAR" then
             if HasExtraActionBar() then
@@ -99,8 +105,10 @@ local function SetFrames()
                 bar:SetAlpha(1)
                 return
             end
-
-			if event == "QUEST_WATCH_LIST_CHANGED" or
+			if event == "PLAYER_ENTERING_WORLD" then
+				ActiveFrame_Init()
+				self:UnregisterEvent(event)
+			elseif event == "QUEST_WATCH_LIST_CHANGED" or
 					event == "ZONE_CHANGED" or
 					event == "QUEST_POI_UPDATE" then
 				M:Update()
@@ -111,18 +119,25 @@ local function SetFrames()
 			end
 		end)
 	end
+	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
 	eventFrame:RegisterEvent("ZONE_CHANGED")
 	eventFrame:RegisterEvent("QUEST_POI_UPDATE")
 	eventFrame:RegisterEvent("UPDATE_BINDINGS")
 
-	-- Extra Ability Container (init)
-	ExtraAbilityContainer:Show()
+	-- Extra Ability Container
+	ExtraAbilityContainer:ClearAllPoints()
+	ExtraAbilityContainer:SetPoint("TOP", MainMenuBar, "TOP", 0, 180)
+	ExtraAbilityContainer:SetScript("OnShow", ExtraAbilityContainer_OnShow)
+	ExtraAbilityContainer:SetScript("OnHide", ExtraAbilityContainer_OnHide)
+	ExtraAbilityContainer.ignoreFramePositionManager = true
 
 	-- Main frame
 	if not KTF.ActiveFrame then
 		activeFrame = CreateFrame("Frame", addonName.."ActiveFrame", UIParent)
 		activeFrame:SetSize(256, 128)
+		activeFrame:SetScript("OnShow", ActiveFrame_OnShow)
+		activeFrame:SetScript("OnHide", ActiveFrame_OnHide)
 		activeFrame:Hide()
 		KTF.ActiveFrame = activeFrame
 	else
@@ -187,15 +202,8 @@ local function SetFrames()
 		
 		KT:Masque_AddButton(button, 2)
 		KTF.ActiveButton = button
-
 	end
 	abutton = KTF.ActiveButton
-
-	hooksecurefunc("ExtraActionBar_Update", function()
-		C_Timer.After(0.3, function()
-			M:Update()
-		end)
-	end)
 end
 
 --------------
@@ -226,7 +234,6 @@ function M:OnDisable()
 	_DBG("|cffff0000Disable|r - "..self:GetName(), true)
 	eventFrame:UnregisterAllEvents()
 	activeFrame:Hide()
-	MoveExtraAbilityContainer()
 	RemoveHotkey(abutton)
 end
 
@@ -292,11 +299,9 @@ function M:Update(id)
 				QuestObjectiveItem_OnEnter(abutton)
 			end
 		end
-		MoveExtraAbilityContainer()
 		abutton.text:SetText(button.num)
 	elseif activeFrame:IsShown() then
 		activeFrame:Hide()
-		MoveExtraAbilityContainer()
 		RemoveHotkey(abutton)
 	end
 	self.timer = 0

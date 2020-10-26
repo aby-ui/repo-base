@@ -6,7 +6,7 @@
 ## SavedVariables: Broker_CurrencyDB
 ## SavedVariablesPerCharacter: Broker_CurrencyCharDB
 ## Title: Broker: Currency
-## Version:  8.1.0.1
+## Version:  9.0.1.2
 
 ## Notes: LDB display of currencies, gold totals and session / daily / weekly statistics for all characters on a server.
 ## Notes-deDE: LDB-Anzeige von Währungen, Summe des Goldes und Gold-Statistik pro Sitzung / Tag / Woche für alle Charaktere auf einem Server.
@@ -22,12 +22,12 @@
 ## X-LoadOn-Always: Delayed
 ## X-Website: http://www.wowace.com/projects/broker-currency
 
-#@no-lib-strip@
 # Libraries
-#@end-no-lib-strip@
+#embeds.xml
 
 Currencies.lua
 Broker_Currency.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r Broker 信息条货币模块
 ## X-Vendor: AbyUI

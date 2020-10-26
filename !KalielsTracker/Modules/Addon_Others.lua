@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "12.00", true) then
+    if KT:CheckAddOn("ElvUI", "12.06", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -73,7 +73,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.00", true) then
+    if KT:CheckAddOn("Tukui", "20.04", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -81,7 +81,7 @@ end
 
 -- RealUI
 local function RealUI_SetSupport()
-    if KT:CheckAddOn("nibRealUI", "2.2.1", true) then
+    if KT:CheckAddOn("nibRealUI", "2.2.3", true) then
         local R = _G.RealUI
         R:SetModuleEnabled("Objectives Adv.", false)
         -- Fade
@@ -95,6 +95,9 @@ local function RealUI_SetSupport()
             if frame ~= OTF then bck_UIFrameFadeOut(frame, ...) end
         end
         --]]
+        if not IsAddOnLoaded("Aurora_Extension") then
+            StaticPopup_Show(addonName.."_Info", nil, "Please install/activate addon |cff00ffe3Aurora - Extension|r\nand disable Objective Tracker skin.")
+        end
     end
 end
 
@@ -111,41 +114,32 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "5.3.0", true) then
-        local ACD = LibStub("AceConfigDialog-3.0")
-        SUI.DB.EnabledComponents.Objectives = false
+    if KT:CheckAddOn("SpartanUI", "6.0.10", true) then
+        SUI.DB.DisabledComponents.Objectives = true
         local module = SUI:GetModule("Component_Objectives")
         local bck_module_OnEnable = module.OnEnable
         function module:OnEnable()
-            if not SUI.DB.EnabledComponents.Objectives then
+            if SUI.DB.DisabledComponents.Objectives then
                 module:BuildOptions()
-                module:HideOptions()
+                local options = SUI.opt.args.ModSetting.args
+                options.Objectives.disabled = true
+                options.Components.args.Objectives.disabled = true
+                options.Components.args[addonName.."Warning"] = {
+                    name = "\n"..KTwarning,
+                    type = "description",
+                    order = 1000,
+                }
                 return
             end
             bck_module_OnEnable(self)
         end
-        local bck_ACD_Open = ACD.Open
-        function ACD:Open(name, ...)
-            if name == "SpartanUI" then
-                local options = SUI.opt.args.ModSetting.args.Components.args
-                options.Objectives.disabled = true
-                options[addonName.."Warning"] = {
-                    name = KTwarning,
-                    type = "description",
-                    order = 1000,
-                }
-            end
-            bck_ACD_Open(self, name, ...)
-        end
     end
 end
 
--- SuperVillain UI
-local function SVUI_SetSupport()
-    if KT:CheckAddOn("SVUI_!Core", "1.5.1", true) then
-        if IsAddOnLoaded("SVUI_QuestTracker") then
-            DisableAddOn("SVUI_QuestTracker")
-            StaticPopup_Show(addonName.."_ReloadUI", nil, "Addon |cff00ffe3SVUI_QuestTracker|r has been disabled.")
+local function Aurora_SetCompatibility()
+    if IsAddOnLoaded("Aurora") then
+        if not IsAddOnLoaded("Aurora_Extension") then
+            StaticPopup_Show(addonName.."_Info", nil, "Please install/activate addon |cff00ffe3Aurora - Extension|r\nand disable Objective Tracker skin.")
         end
     end
 end
@@ -190,7 +184,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    KT:CheckAddOn("Masque", "8.2.8")
+    KT:CheckAddOn("Masque", "9.0.2")
 end
 
 function M:OnEnable()
@@ -201,7 +195,7 @@ function M:OnEnable()
     RealUI_SetSupport()
     SyncUI_SetSupport()
     SpartanUI_SetSupport()
-    SVUI_SetSupport()
+    Aurora_SetCompatibility()
     Chinchilla_SetCompatibility()
     DQE_SetCompatibility()
 end

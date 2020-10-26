@@ -2,7 +2,7 @@
 ## Title: HandyNotes_HallowsEnd
 ## Notes: Displays the locations of Hallow's End candy buckets.
 ## Author: Ravendwyr
-## Version: v1.5-4-g1f8dcfa
+## Version: v1.5.1
 ## X-Category: Map & Minimap
 ## SavedVariables: HandyNotes_HallowsEndDB
 ## RequiredDeps: HandyNotes
