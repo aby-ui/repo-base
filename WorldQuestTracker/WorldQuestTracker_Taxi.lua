@@ -48,68 +48,8 @@ local taxyMapWidgets = {}
 --quando dar zoom mostrar o icone do reward no lugar da exclama��o
 
 function WorldQuestTracker:GetQuestFullInfo (questID)
-
-	--> attempt to get the quest information from the cache
-	--[=[
-	local can_cache = true
-	if (not HaveQuestRewardData (questID)) then
-		C_TaskQuest.RequestPreloadRewardData (questID)
-		can_cache = false
-	end
-	--]=]
-	
 	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, false, true)
-	--local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
-
 	return title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
-	
-	--[=[
-	
-	--info
-	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
-	--tempo restante
-	local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
-	--se � da faction selecionada
-	
-	local bountyQuestID = WorldQuestTracker.GetCurrentBountyQuest()
-	local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestID)
-	
-	local selected = questID == GetSuperTrackedQuestID()
-	local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget (questID)
-	
-	--gold
-	local gold, goldFormated = WorldQuestTracker.GetQuestReward_Gold (questID)
-	--class hall resource
-	local rewardName, rewardTexture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource (questID)
-	--item
-	local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker.GetQuestReward_Item (questID)
-	local questType = 0x0
-	local texture
-	
-	if (gold > 0) then
-		questType = QUESTTYPE_GOLD
-		texture = WorldQuestTracker.GetGoldIcon()
-	end
-	
-	if (rewardName) then
-		questType = QUESTTYPE_RESOURCE
-		texture = rewardTexture
-	end
-	
-	if (itemName) then
-		if (isArtifact) then
-			questType = QUESTTYPE_ARTIFACTPOWER
-			local artifactIcon = WorldQuestTracker.GetArtifactPowerIcon (artifactPower)
-			texture = artifactIcon .. "_round"
-		else
-			questType = QUESTTYPE_ITEM
-			texture = itemTexture
-		end
-	end
-	
-	return title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable
-	
-	--]=]
 end
 
 function WorldQuestTracker.TaxyFrameHasZoom()

@@ -429,7 +429,7 @@ Private.format_types = {
       if color == "class" then
         colorFunc = function(class, text)
           if class then
-            return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]:WrapTextInColorCode(text)
+            return WrapTextInColorCode(text, WA_GetClassColor(class))
           else
             return text
           end
@@ -775,6 +775,13 @@ do
   end
 end
 
+if not WeakAuras.IsClassic() then
+  Private.covenant_types = {}
+  for i = 1, 4 do
+    Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
+  end
+end
+
 Private.faction_group = {
   Alliance = L["Alliance"],
   Horde = L["Horde"],
@@ -856,7 +863,7 @@ Private.aurabar_anchor_areas = {
   icon = L["Icon"],
   fg = L["Foreground"],
   bg = L["Background"],
-  bar = L["Bar"],
+  bar = L["Full Bar"],
 }
 
 Private.inverse_point_types = {
@@ -1204,6 +1211,8 @@ Private.texture_types = {
     ["461878"] 	= "Dark Transformation",
     ["459313"] 	= "Daybreak",
     ["511469"] 	= "Denounce",
+    ["2851787"] = "Demonic Core",
+    ["2888300"] = "Demonic Core Vertical",
     ["1057288"]	= "Echo of the Elements",
     ["450914"] 	= "Eclipse Moon",
     ["450915"] 	= "Eclipse Sun",
@@ -1221,6 +1230,7 @@ Private.texture_types = {
     ["450924"] 	= "Generic Top 2",
     ["450925"] 	= "Grand Crusader",
     ["459314"] 	= "Hand of Light",
+    ["2851788"] = "High Tide",
     ["449490"] 	= "Hot Streak",
     ["801267"] 	= "Imp Empowerment Green",
     ["449491"] 	= "Imp Empowerment",
@@ -2828,11 +2838,13 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() then
+  skippedWeaponTypes[9] = true -- Glaives
+else
   skippedWeaponTypes[16] = true -- Thrown
 end
 
-for i = 1, 20 do
+for i = 0, 20 do
   if not skippedWeaponTypes[i] then
     Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
   end

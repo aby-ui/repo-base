@@ -1264,15 +1264,15 @@ function WeakAuras.UpdateThumbnail(data)
   button:UpdateThumbnail()
 end
 
-function OptionsPrivate.OpenTexturePicker(data, parentData, field, textures, stopMotion)
-  frame.texturePicker:Open(data, parentData, field, textures, stopMotion);
+function OptionsPrivate.OpenTexturePicker(baseObject, path, properties, textures, SetTextureFunc)
+  frame.texturePicker:Open(baseObject, path, properties, textures, SetTextureFunc)
 end
 
 function OptionsPrivate.OpenIconPicker(data, field, groupIcon)
   frame.iconPicker:Open(data, field, groupIcon);
 end
 
-function OptionsPrivate.OpenModelPicker(data, field, parentData)
+function OptionsPrivate.OpenModelPicker(baseObject, path)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
@@ -1282,7 +1282,7 @@ function OptionsPrivate.OpenModelPicker(data, field, parentData)
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
   end
-  frame.modelPicker:Open(data, field, parentData);
+  frame.modelPicker:Open(baseObject, path);
 end
 
 function WeakAuras.OpenCodeReview(data)

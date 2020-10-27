@@ -73,6 +73,7 @@ local function PreShow(self)
     self:SetPosition(data.model_z, data.model_x, data.model_y);
     self:SetFacing(0);
   end
+  self:SetModelAlpha(self.region.alpha)
 end
 
 local function CreateModel()
@@ -84,6 +85,7 @@ end
 -- Keep the two model apis separate
 local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
+
 
 local function AcquireModel(region, data)
   local pool = data.api and poolNewApi or poolOldApi
@@ -161,10 +163,24 @@ end
 local funcs = {
   SetVisible = function(self, visible)
     self.visible = visible
-    if visible then
+    self:UpdateVisible()
+  end,
+  SetAlpha = function(self, alpha)
+    if self.model then
+      self.model:SetModelAlpha(alpha)
+    end
+    self.alpha = alpha
+  end,
+  AlphaChanged = function(self)
+    self:SetAlpha(self.alpha)
+  end,
+  UpdateVisible = function(self)
+    local effectiveVisible = self.parent_visible and self.visible
+    if effectiveVisible then
       if not self.model then
         self.model = AcquireModel(self, self.data)
         self.model:SetModelAlpha(self.alpha)
+        self.model.region = self
       end
       self:Show()
     else
@@ -175,14 +191,13 @@ local funcs = {
       end
     end
   end,
-  SetAlpha = function(self, alpha)
-    if self.model then
-      self.model:SetModelAlpha(alpha)
-    end
-    self.alpha = alpha
+  PreShow = function(self)
+    self.parent_visible = true
+    self:UpdateVisible()
   end,
-  AlphaChanged = function(self)
-    self:SetAlpha(self.alpha)
+  PreHide = function(self)
+    self.parent_visible = false
+    self:UpdateVisible()
   end
 }
 
@@ -216,6 +231,8 @@ local function modify(parent, region, parentData, data, first)
   region:SetVisible(data.bar_model_visible)
 
   parent.subRegionEvents:AddSubscriber("AlphaChanged", region)
+  parent.subRegionEvents:AddSubscriber("PreShow", region)
+  parent.subRegionEvents:AddSubscriber("PreHide", region)
 end
 
 local function supports(regionType)

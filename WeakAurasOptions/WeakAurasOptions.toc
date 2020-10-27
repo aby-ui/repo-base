@@ -1,7 +1,7 @@
 ## Interface: 90001
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 3.0.4
+## Version: 3.0.5
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras

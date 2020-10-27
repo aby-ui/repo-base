@@ -32,17 +32,13 @@ if (true) then
 	--return - nah, not today
 end
 
-
 local WorldQuestTracker = WorldQuestTrackerAddon
 local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 
-
-
 -- 219978
 -- /run SetSuperTrackedQuestID(44033);
 -- TaskPOI_OnClick
- 
 
 
 local GameCooltip = GameCooltip2
@@ -66,13 +62,6 @@ local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
 local GetDistance_Point = DF.GetDistance_Point
-
---importing FindLookAtRotation
-if (not FindLookAtRotation) then
-	FindLookAtRotation = function (_, x1, y1, x2, y2)
-		return atan2 (y2 - y1, x2 - x1) + pi
-	end
-end
 
 local _
 
@@ -653,6 +642,7 @@ end
 		local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
 		if (not tagInfo) then
 			WorldQuestTracker:Msg("no tag info for quest:", questID, title)
+			return
 		end
 		
 		local tagID = tagInfo.tagID

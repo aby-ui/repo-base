@@ -1314,6 +1314,16 @@ Private.load_prototype = {
       showExactOption = true
     },
     {
+      name = "covenant",
+      display = WeakAuras.newFeatureString .. L["Player Covenant"],
+      type = "multiselect",
+      values = "covenant_types",
+      init = "arg",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
+      events = {"COVENANT_CHOSEN"}
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",
@@ -1433,7 +1443,7 @@ Private.load_prototype = {
     },
     {
       name = "itemtypeequipped",
-      display = L["Item Type Equipped"],
+      display = WeakAuras.newFeatureString .. L["Item Type Equipped"],
       type = "multiselect",
       test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
@@ -2385,7 +2395,7 @@ Private.event_prototypes = {
       },
       {
         name = "showChargedComboPoints",
-        display = L["Overlay Charged Combo Points"],
+        display = WeakAuras.newFeatureString .. L["Overlay Charged Combo Points"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
@@ -2397,7 +2407,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint",
         type = "number",
-        display = L["Charged Combo Point"],
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point"],
         store = true,
         conditionType = "number",
         enable = function(trigger)
@@ -3303,10 +3313,21 @@ Private.event_prototypes = {
     force_events = "WA_UPDATE_OVERLAY_GLOW",
     name = L["Spell Activation Overlay Glow"],
     loadFunc = function(trigger)
-      WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+      if (trigger.use_exact_spellName) then
+        WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+      else
+        WeakAuras.WatchSpellActivation(type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName);
+      end
     end,
     init = function(trigger)
-      return string.format("local spellName = tonumber(%q)", trigger.spellName or "");
+      local spellName
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName
+        return string.format("local spellName = %s\n", tonumber(spellName) or "nil");
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        return string.format("local spellName = %q\n", spellName or "");
+      end
     end,
     args = {
       {
@@ -3314,7 +3335,8 @@ Private.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true
       },
       {
         hidden = true,
@@ -3581,7 +3603,7 @@ Private.event_prototypes = {
       },
       {
         name = "charges",
-        display = L["Stacks"],
+        display = L["Charges"],
         type = "number",
         store = true,
         conditionType = "number"
@@ -5667,14 +5689,14 @@ Private.event_prototypes = {
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
 
+        if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
+          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
+        end
+
         if not found then
           expirationTime = nil
           duration = nil
           remaining = nil
-        end
-
-        if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
         end
       ]];
 
@@ -6795,7 +6817,7 @@ Private.event_prototypes = {
     end,
     init = function()
       local ret = [[
-        local main_stat
+        local main_stat, _
         if not WeakAuras.IsClassic() then
           _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
         end
@@ -7341,9 +7363,12 @@ Private.event_prototypes = {
     init = function(trigger)
       local spellName;
       if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName or "";
+        spellName = tonumber(trigger.spellName) or "nil";
+        if spellName == 0 then
+          spellName = "nil"
+        end
         local ret = [[
-          local spellName = tonumber(%q);
+          local spellName = %s;
           local usePet = %s;
         ]]
         return ret:format(spellName, trigger.use_petspell and "true" or "false");

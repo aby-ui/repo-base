@@ -646,7 +646,7 @@ local TrackerIconButtonOnClick = function (self, button)
 		end
 	end
 
-	if (self.questID == GetSuperTrackedQuestID()) then
+	if (self.questID == C_SuperTrack.GetSuperTrackedQuestID()) then
 		WorldQuestTracker.SuperTracked = nil
 		QuestSuperTracking_ChooseClosestQuest()
 		return
@@ -654,7 +654,6 @@ local TrackerIconButtonOnClick = function (self, button)
 	
 	if (HaveQuestData (self.questID)) then
 		WorldQuestTracker.SelectSingleQuestInBlizzardWQTracker (self.questID) --thanks @ilintar on CurseForge
-		--SetSuperTrackedQuestID (self.questID)
 		WorldQuestTracker.RefreshTrackerWidgets()
 		WorldQuestTracker.SuperTracked = self.questID
 	end
@@ -665,66 +664,16 @@ end
 --from the user @ilintar on CurseForge
 --Doing that instead of just SetSuperTrackedQuestID(questID) will make the arrow stay. The code also ensures that only the selected world quest is present in the Blizzard window, as to not make it cluttered.
 	function WorldQuestTracker.SelectSingleQuestInBlizzardWQTracker (questID)
-		for i = 1, GetNumWorldQuestWatches() do
-			local watchedWorldQuestID = GetWorldQuestWatchInfo(i);
-			if (watchedWorldQuestID) then
-				BonusObjectiveTracker_UntrackWorldQuest(watchedWorldQuestID)
-			end
-		end
-		BonusObjectiveTracker_TrackWorldQuest(questID, true)
-		SetSuperTrackedQuestID (questID)
+		--for i = 1, C_QuestLog.GetNumWorldQuestWatches() do --removed on 9.0, looks like doesn't need to remove super tracked before adding
+			--local watchedWorldQuestID = C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
+			--if (watchedWorldQuestID) then
+			--	BonusObjectiveTracker_UntrackWorldQuest(watchedWorldQuestID)
+			--end
+		--end
+		BonusObjectiveTracker_TrackWorldQuest(questID, 0)
+		C_SuperTrack.SetSuperTrackedQuestID (questID)
 	end
 --
-
---> overwriting this was causing taint issues	
---[=[
---rewrite QuestSuperTracking_IsSuperTrackedQuestValid to avoid conflict with World Quest Tracker
-function QuestSuperTracking_IsSuperTrackedQuestValid()
-	local trackedQuestID = GetSuperTrackedQuestID();
-	if trackedQuestID == 0 then
-		return false;
-	end
-
-	if C_QuestLog.GetQuestLogIndexByID(trackedQuestID) == 0 then
-		-- Might be a tracked world quest that isn't in our log yet (blizzard)
-		-- adding here if the quest is tracked by World Quest Tracker (tercio)
-		if (QuestUtils_IsQuestWorldQuest(trackedQuestID) and WorldQuestTracker.SuperTracked == trackedQuestID) then
-			return true
-		end
-		if QuestUtils_IsQuestWorldQuest(trackedQuestID) and IsWorldQuestWatched(trackedQuestID) then
-			return C_TaskQuest.IsActive(trackedQuestID);
-		end
-		return false;
-	end
-
-	return true;
-end
---]=]
-
---> thise functions isn't being used at the moment
---[=[
-local UpdateSuperQuestTracker = function()
-	if (WorldQuestTracker.SuperTracked and HaveQuestData (WorldQuestTracker.SuperTracked)) then
-		--verifica se a quest esta sendo mostrada no tracker
-		for i = 1, #TrackerWidgetPool do
-			if (TrackerWidgetPool[i]:IsShown() and TrackerWidgetPool[i].questID == WorldQuestTracker.SuperTracked) then
-				SetSuperTrackedQuestID (WorldQuestTracker.SuperTracked)
-				return
-			end
-		end
-		WorldQuestTracker.SuperTracked = nil
-	end
-end
---]=]
---[=[
-hooksecurefunc ("QuestSuperTracking_ChooseClosestQuest", function()
-	if (WorldQuestTracker.SuperTracked) then
-		--delay increased from 20ms to 200ms to avoid lag spikes
-		C_Timer.After (.2, UpdateSuperQuestTracker)
-	end
-end)
---]=]
-
 
 local TrackerIconButtonOnMouseDown = function (self, button)
 	self.Icon:SetPoint ("topleft", self:GetParent(), "topleft", -12, -3)
