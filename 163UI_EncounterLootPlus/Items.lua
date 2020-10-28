@@ -1,7 +1,7 @@
 local _, ELP = ...
 local db = ELP.db
 
-local ELP_CURRENT_TIER = 8 --BfA
+local ELP_CURRENT_TIER = GetServerExpansionLevel() + 1 --8
 local ELP_RELIC_SLOT = 30
 
 local curr_items = {}

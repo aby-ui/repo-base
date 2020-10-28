@@ -180,6 +180,10 @@ end
 
 local function Button_OnUpdateTimer(self, spell)
 	local expires = addon:GetUnitBuffTimer("player", spell)
+    if not expires and self.auraMap and self.auraMap[spell] then
+        --some spell have different BUFF id, see WeaponPoison
+        expires = addon:GetUnitBuffTimer("player", self.auraMap[spell])
+    end
 	return expires and "G" or "NONE", expires
 end
 

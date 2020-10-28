@@ -1,3 +1,17 @@
+CoreDependCall("Blizzard_EncounterJournal", function()
+    hooksecurefunc("EJTierDropDown_Initialize", function(self, level)
+        local listFrame = _G["DropDownList"..level];
+        local expId = 9
+        if listFrame.numButtons >= expId then return end
+        local info = UIDropDownMenu_CreateInfo();
+        info.text = EJ_GetTierInfo(expId);
+        info.func = EncounterJournal_TierDropDown_Select
+        info.checked = expId == EJ_GetCurrentTier;
+        info.arg1 = expId;
+        UIDropDownMenu_AddButton(info, 1)
+    end)
+end)
+
 --[[------------------------------------------------------------
 2017.06 warbaby
 ---------------------------------------------------------------]]

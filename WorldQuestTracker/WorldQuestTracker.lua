@@ -886,7 +886,12 @@ local tutorial_four = function()
 end
 
 function WorldQuestTracker.ShowTutorialAlert()
-	
+
+	if (true) then
+		--disabled tutorials for 9.0.1, due to "MicroButtonAlertTemplate" being nil, need to replace with the new animation
+		return
+	end
+
 	WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID or 1
 	
 	--WorldQuestTracker.db.profile.TutorialPopupID = 3
