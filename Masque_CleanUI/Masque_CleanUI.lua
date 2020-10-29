@@ -12,7 +12,7 @@ MASQUE:AddSkin("CleanUI", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Layer Settings
         Backdrop = {
@@ -123,7 +123,7 @@ MASQUE:AddSkin("CleanUI Edged", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -234,7 +234,7 @@ MASQUE:AddSkin("CleanUI Thin", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -346,7 +346,7 @@ MASQUE:AddSkin("CleanUI Gray", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -458,7 +458,7 @@ MASQUE:AddSkin("CleanUI Black", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -569,7 +569,7 @@ MASQUE:AddSkin("CleanUI White", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -680,7 +680,7 @@ MASQUE:AddSkin("CleanUI White and Black", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {
@@ -791,7 +791,7 @@ MASQUE:AddSkin("CleanUI Black and White", {
         Author = "Nirriti",
         Version = Version,
         Shape = "Square",
-        Masque_Version = 70200,
+        Masque_Version = 90000,
 
         -- Skin data start.
         Backdrop = {

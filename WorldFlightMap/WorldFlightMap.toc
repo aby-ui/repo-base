@@ -2,7 +2,7 @@
 ## Title: WorldFlightMap
 ## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar
-## Version: 8.3.0.1
+## Version: 9.0.0.0
 ## Dependencies: Blizzard_FlightMap
 
 LinePool.lua

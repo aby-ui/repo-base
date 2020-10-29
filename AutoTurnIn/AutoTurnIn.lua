@@ -287,6 +287,9 @@ function AutoTurnIn:QUEST_GREETING()
             local quest = L.quests[title]
             local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(title)))
 
+			-- isDaily was a boolean, but is a number now. but maybe it's still a boolean somewhere
+			if (type(isDaily) == "number" and isDaily ~= 0) then isDaily = true else isDaily = false end
+			
             if isDaily then
                 self:CacheAsDaily(GetAvailableTitle(index))
             end
@@ -397,14 +400,34 @@ function AutoTurnIn:QUEST_DETAIL()
 	end
 	if QuestGetAutoAccept() then
 		if AutoTurnInCharacterDB.enabled then CloseQuest() end
-	elseif self:AllowedToHandle() and self:isAppropriate() and (not AutoTurnInCharacterDB.completeonly) then
-		QuestInfoDescriptionText:SetAlphaGradient(0, -1)
-		QuestInfoDescriptionText:SetAlpha(1)
-		AcceptQuest()
+		
     elseif AutoTurnInCharacterDB.acceptshare and (UnitInParty("questnpc") or UnitInRaid("questnpc")) then
         QuestInfoDescriptionText:SetAlphaGradient(0, -1)
         QuestInfoDescriptionText:SetAlpha(1)
         AcceptQuest()
+
+	else
+		if self:AllowedToHandle() and self:isAppropriate() and (not AutoTurnInCharacterDB.completeonly) then
+			--ignore trivial quests 
+			if (not C_QuestLog.IsQuestTrivial(GetQuestID()) or AutoTurnInCharacterDB.trivial) then
+				QuestInfoDescriptionText:SetAlphaGradient(0, -1)
+				QuestInfoDescriptionText:SetAlpha(1)
+				AcceptQuest()
+				return
+			end
+		end
+		--quest level on detail frame
+		if AutoTurnInCharacterDB.questlevel then 
+			local level = C_QuestLog.GetQuestDifficultyLevel(GetQuestID())
+			--sometimes it returns 0, but that's wrong
+			if level and level > 0 then 
+				local levelFormat = "[%d] %s"
+				local text = QuestInfoTitleHeader:GetText()
+				--trivial display
+				if C_QuestLog.IsQuestTrivial(GetQuestID()) then text = TRIVIAL_QUEST_DISPLAY:format(text) end
+				QuestInfoTitleHeader:SetText(levelFormat:format(level, text))
+			end
+		end
 	end
 end
 

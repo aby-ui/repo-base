@@ -195,19 +195,10 @@ OptionsPanel.okay = function()
 	-- and here goes the dirty hack!!! No direct update calls, hence, no global variable taints!!!
 	if C_QuestLog.GetNumQuestWatches() > 0 then
 		local questId = C_QuestLog.GetQuestIDForQuestWatchIndex(1);
-		if IsQuestWatched(questId) then -- TODO: IsQuestWatched appears to be deprecated. I need to find out how to check if a given quest is being watched. Or maybe this check isn't needed?
-			C_QuestLog.RemoveQuestWatch(questId);
-			C_QuestLog.AddQuestWatch(questId);
-		else
-			C_QuestLog.AddQuestWatch(questId);
-			C_QuestLog.RemoveQuestWatch(questId);
-		end
-	else
-		if  (C_QuestLog.GetNumQuestLogEntries() > 0) then
-			C_QuestLog.AddQuestWatch(2);
-			C_QuestLog.RemoveQuestWatch(2);
-		end
+		C_QuestLog.RemoveQuestWatch(questId);
+		C_QuestLog.AddQuestWatch(questId);
 	end
+	--no need to update watch frame if no quests are being watched
 end
 
 InterfaceOptions_AddCategory(OptionsPanel)
