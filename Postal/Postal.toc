@@ -1,8 +1,8 @@
 ## Interface: 90001
 ## Title: Postal
-## Version: r424
-## X-Build: 424
-## X-ReleaseDate: 2020-10-25T2:47:51Z
+## Version: v3.6.4
+## X-Build: 425
+## X-ReleaseDate: 2020-10-29T20:02:38Z
 ## X-Revision: $Revision: 415 $
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot

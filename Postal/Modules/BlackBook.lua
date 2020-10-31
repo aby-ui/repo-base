@@ -30,7 +30,7 @@ function Postal_BlackBook:OnEnable()
 		Postal_BlackBookButton:SetHeight(25)
 
 		Postal_BlackBookButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", -84, 2) --abyui origin is -2
-        Postal_BlackBookButton:SetFrameLevel(SendMailNameEditBox:GetFrameLevel()+1)
+		Postal_BlackBookButton:SetFrameLevel(SendMailNameEditBox:GetFrameLevel()+1)
 		Postal_BlackBookButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 		Postal_BlackBookButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Round")
 		Postal_BlackBookButton:SetDisabledTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Disabled")
@@ -54,7 +54,7 @@ function Postal_BlackBook:OnEnable()
 		self:RawHookScript(SendMailNameEditBox, "OnChar")
 	end
 	self:HookScript(SendMailNameEditBox, "OnEditFocusGained")
-	--self:RawHook("AutoComplete_Update", true) --Community Invite failed
+--	self:RawHook("AutoComplete_Update", true) <-- Feature disabled to address issue #231
 	self:RegisterEvent("MAIL_SHOW")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "AddAlt")
 
@@ -213,11 +213,11 @@ function Postal_BlackBook:OnEditFocusGained(editbox, ...)
 	SendMailNameEditBox:HighlightText()
 end
 
-function Postal_BlackBook:AutoComplete_Update(editBox, editBoxText, utf8Position, ...)
-	if editBox ~= SendMailNameEditBox or not Postal.db.profile.BlackBook.DisableBlizzardAutoComplete then
-		self.hooks["AutoComplete_Update"](editBox, editBoxText, utf8Position, ...)
-	end
-end
+--function Postal_BlackBook:AutoComplete_Update(editBox, editBoxText, utf8Position, ...) <-- Feature disabled to address issue #231
+--	if editBox ~= SendMailNameEditBox or not Postal.db.profile.BlackBook.DisableBlizzardAutoComplete then
+--		self.hooks["AutoComplete_Update"](editBox, editBoxText, utf8Position, ...)
+--	end
+--end
 
 -- OnChar fires before OnTextChanged
 -- OnChar does not fire for Backspace, Delete keys that shorten the text
@@ -774,11 +774,11 @@ function Postal_BlackBook.ModuleMenu(self, level)
 			--info.checked = db.ExcludeRandoms
 			--UIDropDownMenu_AddButton(info, level)
 
-			info.text = L["Disable Blizzard's auto-completion popup menu"]
-			info.arg2 = "DisableBlizzardAutoComplete"
-			info.checked = db.DisableBlizzardAutoComplete
-			info.func = Postal.SaveOption
-			UIDropDownMenu_AddButton(info, level)
+--			info.text = L["Disable Blizzard's auto-completion popup menu"] <-- Feature disabled to address issue #231
+--			info.arg2 = "DisableBlizzardAutoComplete"
+--			info.checked = db.DisableBlizzardAutoComplete
+--			info.func = Postal.SaveOption
+--			UIDropDownMenu_AddButton(info, level)
 		end
 	end
 end

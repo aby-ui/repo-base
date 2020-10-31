@@ -132,7 +132,11 @@ function ExtraAbilityBar:UpdateShowBlizzardTexture()
     end
 end
 
-local ExtraAbilityBarModule = Addon:NewModule('ExtraAbilityBar', 'AceEvent-3.0')
+local ExtraAbilityBarModule = Addon:NewModule('ExtraAbilityBar')
+
+function ExtraAbilityBarModule:OnEnable()
+    self:ApplyTitanPanelWorkarounds()
+end
 
 function ExtraAbilityBarModule:Load()
     if not self.initialized then
@@ -146,6 +150,11 @@ function ExtraAbilityBarModule:Load()
 
         -- prevent the stock UI from messing with the extra ability bar position
         ExtraAbilityContainer.ignoreFramePositionManager = true
+
+        -- onshow/hide call UpdateManagedFramePositions on the blizzard end so
+        -- turn that bit off
+        ExtraAbilityContainer:SetScript("OnShow", nil)
+        ExtraAbilityContainer:SetScript("OnHide", nil)
 
         -- watch for new frames to be added to the container as we will want to
         -- possibly theme them later (if they're new buttons)
@@ -167,4 +176,19 @@ function ExtraAbilityBarModule:Unload()
     if self.frame then
         self.frame:Free()
     end
+end
+
+-- Titan panel will attempt to take control of the ExtraActionBarFrame and break
+-- its position and ability to be usable. This is because Titan Panel doesn't
+-- check to see if another addon has taken control of the bar
+--
+-- To resolve this, we call TitanMovable_AddonAdjust() for the extra ability bar
+-- frames to let titan panel know we are handling positions for the extra bar
+function ExtraAbilityBarModule:ApplyTitanPanelWorkarounds()
+    local adjust = _G.TitanMovable_AddonAdjust
+    if not adjust then return end
+
+    adjust('ExtraAbilityContainer', true)
+    adjust("ExtraActionBarFrame", true)
+    return true
 end

@@ -31,6 +31,8 @@ local function parsePatterns(text)
 end
 
 local function addRulesetOption(owner, rule)
+    if not rule.id then return end
+
     local key = "rule_" .. rule.id
 
     owner.args[key] = {

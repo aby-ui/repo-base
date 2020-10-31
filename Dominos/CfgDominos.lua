@@ -19,7 +19,7 @@
             UUI.OpenToAddon('dominos', true)
         end
 
-        Dominos.OWNER_NAME = {artifact="神器",exp="经验声望",page="翻\n页",vehicle="离开\n载具",pet="宠物技能",menu="菜单",bags="背包",roll="掷骰框",alerts="提示框",extra="特殊\n动作",encounter="战斗能量",cast="施法条",cast_new="美化施法条",zone="区域\n技能",class="职业", }
+        Dominos.OWNER_NAME = {artifact="神器",exp="经验声望",page="翻\n页",vehicle="离开\n载具",pet="宠物技能",menu="菜单",bags="背包",roll="掷骰框",alerts="提示框",extra="特殊\n动作",encounter="战斗能量",cast="施法条",cast_new="美化施法条",zone="区域\n技能",class="职业", talk="剧情对话"}
         --[[对DebuffCaster的支持
         Dominos.ActionButton.oriCreate = Dominos.ActionButton.Create;
         function Dominos.ActionButton:Create(id)
