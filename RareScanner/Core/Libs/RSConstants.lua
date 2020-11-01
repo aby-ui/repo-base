@@ -24,7 +24,7 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 27
+RSConstants.CURRENT_DB_VERSION = 28
 RSConstants.CURRENT_LOOT_DB_VERSION = 39
 
 ---============================================================================
@@ -188,7 +188,8 @@ RSConstants.DEATHTALON = 95053
 RSConstants.TERRORFIST = 95044
 RSConstants.VENGEANCE = 95054
 -- 156480 Next door entity inside Torghast
-RSConstants.INGNORED_VIGNETTES = { 156480 }
+-- 155660 Summons from the Depths
+RSConstants.INGNORED_VIGNETTES = { 156480, 155660 }
 
 ---============================================================================
 -- Garrison cache

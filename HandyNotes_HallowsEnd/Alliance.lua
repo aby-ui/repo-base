@@ -334,8 +334,8 @@ points[422] = { -- "DreadWastes"
 }
 
 points[418] = { -- "Krasarang"
-	[51437729] = 32034, -- Marista
-	[75930691] = 32036, -- Zhu's Watch
+	[53447649] = 32034, -- Marista
+	[79830072] = 32036, -- Zhu's Watch
 }
 
 points[379] = { -- "KunLaiSummit"

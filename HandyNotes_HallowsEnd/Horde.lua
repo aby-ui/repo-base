@@ -322,10 +322,10 @@ points[422] = { -- "DreadWastes"
 }
 
 points[418] = { -- "Krasarang"
-	[51407729] = 32034, -- Marista
-	[75920687] = 32036, -- Zhu's Watch
-	[61032514] = 32047, -- Thunder Cleft
-	[28255074] = 32020, -- Dawnchaser Retreat
+	[53447649] = 32034, -- Marista
+	[79830072] = 32036, -- Zhu's Watch
+	[63802039] = 32047, -- Thunder Cleft
+	[28524791] = 32020, -- Dawnchaser Retreat
 }
 
 points[379] = { -- "KunLaiSummit"

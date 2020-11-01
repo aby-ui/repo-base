@@ -93,7 +93,7 @@ if AL then
 	AL["ENABLE_SCAN_ON_TAXI_DESC"] = "When this is activated the addon will work as usual while you are using a transportation (flight, boat, etc.)"
 	AL["ENABLE_SCAN_RARES"] = "Toggle searching rare NPCs"
 	AL["ENABLE_SCAN_RARES_DESC"] = "When this is activated you will be warned visually and with a sound everytime a rare NPC shows up in your minimap"
-	AL["ENABLE_SCAN_WORLDMAP_VIGNETTES"] = "Toggle searching for entities though world map vignettes"
+	AL["ENABLE_SCAN_WORLDMAP_VIGNETTES"] = "Toggle searching for entities through world map vignettes"
 	AL["ENABLE_SCAN_WORLDMAP_VIGNETTES_DESC"] = "When this is activated you will be warned whenever an icon of a rare NPC, treasure or event appears on the world map. Be aware that this filter can be pretty annoying in places where the icons remain for a long time, so use it with caution."
 	AL["ENABLE_SEARCHING_RARE_TOOLTIP"] = "Enable alerts for this rare NPC"
 	AL["ENABLE_TOMTOM_SUPPORT"] = "Toggle Tomtom's support"

@@ -282,13 +282,17 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		if (nameplateid and not UnitIsUnit("player", nameplateid) and not UnitIsFriend("player", nameplateid)) then
 			local nameplateUnitGuid = UnitGUID(nameplateid)
 			if (nameplateUnitGuid) then
-			  local _, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
+				local _, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
 				local npcID = id and tonumber(id) or nil
 				
 				-- If player in a zone with vignettes ignore it
 				local mapID = C_Map.GetBestMapForUnit("player")
+				if (not mapID) then
+					return
+				end
+				
 				if (mapID and not RSMapDB.IsZoneWithoutVignette(mapID)) then
-				  return
+					return
 				end
         
 				-- If its a supported NPC and its not killed

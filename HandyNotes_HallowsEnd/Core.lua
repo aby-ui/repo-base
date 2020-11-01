@@ -53,16 +53,16 @@ local notes = {
 -- upvalues
 local C_Calendar = _G.C_Calendar
 local C_DateAndTime = _G.C_DateAndTime
+local C_QuestLog = _G.C_QuestLog
 local C_Map = _G.C_Map
 local C_Timer_After = _G.C_Timer.After
 local GameTooltip = _G.GameTooltip
 local GetFactionInfoByID = _G.GetFactionInfoByID
-local GetGameTime = _G.GetGameTime
 local IsControlKeyDown = _G.IsControlKeyDown
-local LibStub = _G.LibStub
 local UIParent = _G.UIParent
 local UnitFactionGroup = _G.UnitFactionGroup
 
+local LibStub = _G.LibStub
 local HandyNotes = _G.HandyNotes
 local TomTom = _G.TomTom
 
@@ -200,6 +200,7 @@ local setEnabled = false
 local function CheckEventActive()
 	local calendar = C_DateAndTime.GetCurrentCalendarTime()
 	local month, day, year = calendar.month, calendar.monthDay, calendar.year
+	local hour, minute = calendar.hour, calendar.minute
 
 	local monthInfo = C_Calendar.GetMonthInfo()
 	local curMonth, curYear = monthInfo.month, monthInfo.year
@@ -211,8 +212,6 @@ local function CheckEventActive()
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i)
 
 		if event.iconTexture == 235460 or event.iconTexture == 235461 or event.iconTexture == 235462 then
-			local hour, minute = GetGameTime()
-
 			setEnabled = event.sequenceType == "ONGOING" -- or event.sequenceType == "INFO"
 
 			if event.sequenceType == "START" then
@@ -224,8 +223,7 @@ local function CheckEventActive()
 	end
 
 	if setEnabled and not HallowsEnd.isEnabled then
-		local tmpPairs = C_QuestLog.GetAllCompletedQuestIDs()
-		for _, id in ipairs(tmpPairs) do 
+		for _, id in ipairs(C_QuestLog.GetAllCompletedQuestIDs()) do
 			completedQuests[id] = true
 		end
 

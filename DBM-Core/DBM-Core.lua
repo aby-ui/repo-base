@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201028220504"),
+	Revision = parseCurseDate("20201101003357"),
 	DisplayVersion = "9.0.3 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 10, 20) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -495,6 +495,7 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 	"DBM-Suramar",--Renamed to DBM-Nighthold
 	"DBM-KulTiras",--Merged to DBM-Azeroth-BfA
 	"DBM-Zandalar",--Merged to DBM-Azeroth-BfA
+	"DBM-Azeroth",--Merged into DBM-Core events mod.
 }
 
 
@@ -8331,6 +8332,14 @@ do
 			["HasImmunity"] = true,
 			["RemoveCurse"] = true,
 		},
+		[1449] = {	--Initial Mage (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Dps"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
+			["CasterDps"] = true,
+		},
 		[65] = {	--Holy Paladin
 			["Healer"] = true,
 			["Ranged"] = true,
@@ -8363,6 +8372,16 @@ do
 			["HasInterrupt"] = true,
 			["HasImmunity"] = true,
 		},
+		[1451] = {	--Initial Paladin (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Healer"] = true,
+			["Tank"] = true,
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["ManaUser"] = true,
+			["Physical"] = true,
+			["SpellCaster"] = true,
+		},
 		[71] = {	--Arms Warrior
 			["Dps"] = true,
 			["Melee"] = true,
@@ -8379,6 +8398,13 @@ do
 			["HasInterrupt"] = true,
 			["RaidCooldown"] = true,--Rallying Cry
 			["ImmunityDispeller"] = true,
+		},
+		[1446] = {	--Initial Warrior (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Tank"] = true,
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
 		},
 		[102] = {	--Balance Druid
 			["Dps"] = true,
@@ -8421,6 +8447,17 @@ do
 			["RemoveEnrage"] = true,
 			["RemoveMagic"] = true,
 		},
+		[1447] = {	-- Initial Druid (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Tank"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
+			["Healer"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
+		},
 		[250] = {	--Blood DK
 			["Tank"] = true,
 			["Melee"] = true,
@@ -8433,6 +8470,13 @@ do
 			["MeleeDps"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+		},
+		[1455] = {	--Initial DK (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Tank"] = true,
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
 		},
 		[253] = {	--Beastmaster Hunter
 			["Dps"] = true,
@@ -8458,6 +8502,12 @@ do
 			["HasInterrupt"] = true,
 			["RemoveEnrage"] = true,
 		},
+		[1448] = {	--Initial Hunter (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Dps"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["Physical"] = true,
+		},
 		[256] = {	--Discipline Priest
 			["Healer"] = true,
 			["Ranged"] = true,
@@ -8482,6 +8532,15 @@ do
 			["HasInterrupt"] = true,
 			["RemoveDisease"] = true,
 		},
+		[1452] = {	--Initial Priest (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Dps"] = true,
+			["Healer"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
+			["CasterDps"] = true,
+		},
 		[259] = {	--Assassination Rogue
 			["Dps"] = true,
 			["Melee"] = true,
@@ -8489,6 +8548,12 @@ do
 			["Physical"] = true,
 			["HasInterrupt"] = true,
 			["HasImmunity"] = true,
+		},
+		[1453] = {	--Initial Rogue (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
 		},
 		[262] = {	--Elemental Shaman
 			["Dps"] = true,
@@ -8523,6 +8588,17 @@ do
 			["MagicDispeller"] = true,
 			["HasInterrupt"] = true,
 		},
+		[1444] = {	--Initial Shaman (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Healer"] = true,
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
+			["Physical"] = true,
+		},
 		[265] = {	--Affliction Warlock
 			["Dps"] = true,
 			["Ranged"] = true,
@@ -8530,6 +8606,14 @@ do
 			["ManaUser"] = true,
 			["SpellCaster"] = true,
 			["RemoveMagic"] = true,--Singe Magic (Imp)
+			["CasterDps"] = true,
+		},
+		[1454] = {	--Initial Warlock (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Dps"] = true,
+			["Ranged"] = true,
+			["RangedDps"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
 			["CasterDps"] = true,
 		},
 		[268] = {	--Brewmaster Monk
@@ -8560,6 +8644,17 @@ do
 			["RemoveDisease"] = true,
 			["RemoveMagic"] = true,
 		},
+		[1450] = {	--Initial Monk (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Tank"] = true,
+			["Healer"] = true,
+			["Dps"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
+			["Ranged"] = true,
+			["ManaUser"] = true,
+			["SpellCaster"] = true,
+		},
 		[577] = {	--Havok Demon Hunter
 			["Dps"] = true,
 			["Melee"] = true,
@@ -8574,6 +8669,12 @@ do
 			["Physical"] = true,
 			["HasInterrupt"] = true,
 			["MagicDispeller"] = true,
+		},
+		[1456] = {	--Initial Demon Hunter (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
+			["Tank"] = true,
+			["Melee"] = true,
+			["MeleeDps"] = true,
+			["Physical"] = true,
 		},
 	}
 	specRoleTable[63] = specRoleTable[62]--Frost Mage same as arcane
@@ -11914,7 +12015,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201028220504" then
+	if not revision or revision == "20201101003357" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

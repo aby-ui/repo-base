@@ -5,6 +5,9 @@ local ADDON_NAME, private = ...
 
 local RSGeneralDB = private.NewLib("RareScannerGeneralDB")
 
+-- RareScanner database libraries
+local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+
 -- RareScanner libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -66,8 +69,8 @@ function RSGeneralDB.AddAlreadyFoundNpcWithoutVignette(npcID)
 	
 	-- If it couldnt get the position from player extract it from the internal database
 	-- If its a multizone NPC we cannot know what zone the player is at
-	if (RSGeneralDB.IsInternalNpcMonoZone(npcID)) then
-		local npcInfo = RSGeneralDB.GetInternalNpcInfo(npcID)
+	if (RSNpcDB.IsInternalNpcMonoZone(npcID)) then
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 		if (npcInfo.zoneID ~= RSConstants.UNKNOWN_ZONE_ID) then
 			RSLogger:PrintDebugMessage(string.format("AddAlreadyFoundNpcWithoutVignette[%s]. Usada la informacion interna", npcID))
 			return RSGeneralDB.AddAlreadyFoundEntity(npcID, npcInfo.zoneID, npcInfo.x, npcInfo.y, npcInfo.artID, RSConstants.NPC_VIGNETTE)
@@ -123,7 +126,7 @@ end
 
 local function PrintAlreadyFoundTable(raresFound)
 	if (raresFound) then
-		return string.format("mapID:%s,artID:%s,x:%s,y:%s,atlasName:%s,foundTime:%s", raresFound.mapID or "", (type(raresFound.artID) == "table" and unpack(raresFound.artID)) or raresFound.artID or "", raresFound.coordX or "", raresFound.coordY or "", raresFound.atlasName, raresFound.foundTime)
+		return string.format("mapID:%s,artID:%s,x:%s,y:%s,atlasName:%s,foundTime:%s", raresFound.mapID or "", ((type(raresFound.artID) == "table" and unpack(raresFound.artID)) or raresFound.artID or ""), raresFound.coordX or "", raresFound.coordY or "", raresFound.atlasName, raresFound.foundTime)
 	end
 	
 	return ""
@@ -159,7 +162,11 @@ function RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasNa
 	if (entityID and mapID and x and y and artID and atlasName) then
 		private.dbglobal.rares_found[entityID] = {};
 		private.dbglobal.rares_found[entityID].mapID = mapID;
-		private.dbglobal.rares_found[entityID].artID = { artID };
+		if (type(artID) == "table") then
+			private.dbglobal.rares_found[entityID].artID = artID;
+		else
+			private.dbglobal.rares_found[entityID].artID = { artID };
+		end
 		private.dbglobal.rares_found[entityID].coordX = x;
 		private.dbglobal.rares_found[entityID].coordY = y;
 		private.dbglobal.rares_found[entityID].atlasName = atlasName;
@@ -382,8 +389,23 @@ end
 
 function RSGeneralDB.AddDbVersion(newVersion)
 	if (newVersion and private.dbglobal.dbversion) then
-		tinsert(private.dbglobal.dbversion, { locale = GetLocale(), version = newVersion })
-		RSLogger:PrintDebugMessage(string.format("Idioma [%s]. Actualizando BD a version [%s]", GetLocale(), newVersion))
+		local localeExisting = false;
+		for i = #private.dbglobal.dbversion, 1, -1 do
+			if (not localeExisting and private.dbglobal.dbversion[i].locale == GetLocale()) then
+				localeExisting = true
+				private.dbglobal.dbversion[i].version = newVersion
+				private.dbglobal.dbversion[i].sync = nil
+				RSLogger:PrintDebugMessage(string.format("Idioma [%s]. Actualizando BD a version [%s]", GetLocale(), newVersion))
+			elseif (localeExisting and private.dbglobal.dbversion[i].locale == GetLocale()) then
+				-- Fix issue with versions multiplicating
+				tremove(private.dbglobal.dbversion, i)
+				RSLogger:PrintDebugMessage(string.format("Idioma [%s]. Eliminado por estar repetido", GetLocale()))
+			end
+		end
+		if (not localeExisting) then
+			tinsert(private.dbglobal.dbversion, { locale = GetLocale(), version = newVersion })
+			RSLogger:PrintDebugMessage(string.format("Idioma [%s]. Insertado version [%s] por primera vez para este idioma.", GetLocale(), newVersion))
+		end
 	end
 end
 

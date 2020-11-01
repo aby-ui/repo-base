@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2394, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200910231529")
+mod:SetRevision("20200910231607")
 mod:SetCreatureID(164407)
 mod:SetEncounterID(2399)
 mod:SetUsedIcons(1)
