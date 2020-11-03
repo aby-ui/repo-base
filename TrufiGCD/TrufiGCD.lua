@@ -669,7 +669,11 @@ function TrGCDLoadBlackList() -- загрузка черного списка
 	for i=1,60 do
 		if (TrGCDBL[i] ~= nil) then
 			local spellname = GetSpellInfo(TrGCDBL[i])
-			if (spellname == nil) then spellname = TrGCDBL[i] end
+            if (spellname == nil) then
+                spellname = TrGCDBL[i].."(未知或失效技能)"
+            elseif tonumber(TrGCDBL[i]) then
+                spellname = TrGCDBL[i].."(" ..spellname..")"
+            end
 			TrGCDGUI.BL.Spell[i]:Enable()
 			TrGCDGUI.BL.Spell[i].Text:SetText(spellname)
 		else
@@ -685,7 +689,11 @@ function TrGCDBLAddSpell(self)
 		if (#TrGCDBL < 60) then
 		--local spellicon = select(3, GetSpellInfo(TrGCDGUI.BL.AddEdit:GetText()))
 		--if (spellicon ~= nil) then
-			table.insert(TrGCDBL, spellname)
+			if tonumber(spellname) then
+				table.insert(TrGCDBL, tonumber(spellname))
+			else
+				table.insert(TrGCDBL, spellname)
+			end
 			TrGCDLoadBlackList()
 			--TrGCDGUI.BL.AddEdit:SetText("")
 			TrGCDGUI.BL.AddEdit:ClearFocus()
@@ -1086,7 +1094,7 @@ function TrGCDEventHandler(self, event, who, _, spellId)
 		local blt = true -- для открытого черного списка
 		local sblt = true -- для закрытого черного списка (внутри по ID)
 		TrGCDInsSp["time"][i] = GetTime()
-		for l=1, #TrGCDBL do if ((TrGCDBL[l] == spellname) or (GetSpellInfo(TrGCDBL[l]) == spellname)) then blt = false end end -- проверка на черный список
+		for l=1, #TrGCDBL do if ((TrGCDBL[l] == spellname) or (TrGCDBL[l] == spellId)) then blt = false end end -- проверка на черный список
 		for l=1, #InnerBL do if (InnerBL[l] == spellId) then sblt = false end end -- проверка на закрытый черный список
 		if ((spellicon ~= nil) and t and blt and sblt and (GetSpellLink(spellId) ~= nil)) then
 			if (spellId == 42292) then spellicon = trinket end --замена текстуры пвп тринкета				

@@ -1,9 +1,11 @@
 ## Interface: 90001
+## X-Max-Interface: 90001
+## X-Min-Interface: 90001
 ## Title: Postal
-## Version: v3.6.4
-## X-Build: 425
-## X-ReleaseDate: 2020-10-29T20:02:38Z
-## X-Revision: $Revision: 415 $
+## Version: r430
+## X-Build: 430
+## X-ReleaseDate: 2020-11-03T4:18:59Z
+## X-Revision: $Revision: 429 $
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail

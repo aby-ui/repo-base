@@ -327,6 +327,14 @@ function Postal.Menu(self, level)
 	elseif level == 2 then
 		if UIDROPDOWNMENU_MENU_VALUE == "OpenSpeed" then
 			local speed = Postal.db.profile.OpenSpeed
+			for i = 0, 0 do
+				local s = 0
+				info.text = format("%0.2f", s)
+				info.func = Postal.SetOpenSpeed
+				info.checked = s == speed
+				info.arg1 = s
+				UIDropDownMenu_AddButton(info, level)
+			end
 			for i = 0, 13 do
 				local s = 0.3 + i*0.05
 				info.text = format("%0.2f", s)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank1", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200910231607")
+mod:SetRevision("20201102223314")
 --mod:SetModelID(46327)--Last Boss of Rank 1
 
 mod:RegisterEvents(
@@ -22,7 +22,7 @@ local timerChompCD				= mod:NewCDTimer(8, 135342, nil, nil, nil, 3, nil, DBM_COR
 local timerDaFifHammerCD		= mod:NewCDTimer(22.6, 290486, nil, nil, nil, 3)--Thog Hammerspace
 --local timerCantataofFlootingCD	= mod:NewCDTimer(8, 140983, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 
-local brawlersMod = DBM:GetModByName("Brawlers")
+local brawlersMod = DBM:GetModByName("BrawlersGeneral")
 
 function mod:SPELL_CAST_START(args)
 	if not brawlersMod.Options.SpectatorMode and not brawlersMod:PlayerFighting() then return end--Spectator mode is disabled, do nothing.

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlLegacy", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201009011225")
+mod:SetRevision("20201102223314")
 mod:SetModelID(48465)--Blind Hero
 
 mod:RegisterEvents(
@@ -104,7 +104,7 @@ local timerRockets					= mod:NewBuffActiveTimer(9, 133212, nil, nil, nil, 3)--Ma
 
 mod:AddBoolOption("SpeakOutStrikes", true)--Blind Hero
 
-local brawlersMod = DBM:GetModByName("Brawlers")
+local brawlersMod = DBM:GetModByName("BrawlersGeneral")
 local remainingMines = 8
 local swiftStrike = 0
 function mod:SPELL_CAST_START(args)

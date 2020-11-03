@@ -118,6 +118,10 @@ function Postal_Express:ContainerFrameItemButton_OnModifiedClick(this, button, .
 		local itemq, _,_, itemc, itemsc, _, itemes = select(3,GetItemInfo(itemid))
 		itemes = itemes and #itemes > 0
 		if Postal.db.profile.Express.BulkSend and itemq and itemc then
+			local itemsinmail = 0
+			for iloop = 1, ATTACHMENTS_MAX_SEND do
+				if HasSendMailItem(iloop) then itemsinmail = itemsinmail + 1 end
+			end
 			-- itemc = itemq.."."..itemc
 			itemsc = itemc.."."..(itemsc or "")
 			local added = (itemlocked and 0) or -1
@@ -144,6 +148,11 @@ function Postal_Express:ContainerFrameItemButton_OnModifiedClick(this, button, .
 								ClickSendMailItemButton()
 								if select(3,GetContainerItemInfo(b,s)) then -- now locked => added
 									added = added + 1
+									itemsinmail = itemsinmail + 1
+									if itemsinmail >= ATTACHMENTS_MAX_SEND then
+										ClearCursor()
+										return
+									end
 								else -- failed
 									ClearCursor()
 								end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank2", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200910231607")
+mod:SetRevision("20201102223314")
 --mod:SetModelID(46712)
 
 mod:RegisterEvents(
@@ -25,7 +25,7 @@ local timerColdCrashCD			= mod:NewCDTimer(13.4, 283199, nil, nil, nil, 2, nil, D
 
 mod:AddBoolOption("SetIconOnBlat", true)--Blat
 
-local brawlersMod = DBM:GetModByName("Brawlers")
+local brawlersMod = DBM:GetModByName("BrawlersGeneral")
 local blatGUID = 0
 local GetRaidTargetIndex = GetRaidTargetIndex
 

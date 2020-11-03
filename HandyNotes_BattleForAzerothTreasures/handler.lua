@@ -411,19 +411,6 @@ do
         end
         return nil, nil, nil, nil
     end
-    local function UnitHasBuff(unit, spellid)
-        local buffname = GetSpellInfo(spellid)
-        for i = 1, 40 do
-            local name = UnitBuff(unit, i)
-            if not name then
-                -- reached the end, probably
-                return
-            end
-            if buffname == name then
-                return UnitBuff(unit, i)
-            end
-        end
-    end
     function HLHandler:GetNodes2(uiMapID, minimap)
         Debug("GetNodes2", uiMapID, minimap)
         currentZone = uiMapID
@@ -432,7 +419,7 @@ do
             if ns.map_spellids[uiMapID] == true then
                 return iter
             end
-            if UnitHasBuff("player", ns.map_spellids[uiMapID]) then
+            if GetPlayerAuraBySpellID(ns.map_spellids[uiMapID]) then
                 return iter
             end
         end

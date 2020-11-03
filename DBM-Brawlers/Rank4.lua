@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank4", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200910231607")
+mod:SetRevision("20201102223314")
 --mod:SetModelID(28115)
 mod:SetUsedIcons(8)
 
@@ -25,7 +25,7 @@ local specWarnDarkOutpour		= mod:NewSpecialWarningDodge(291394, nil, nil, nil, 2
 --local timerFirewallCD			= mod:NewCDTimer(17, 132666, nil, nil, nil, 3)--Sanoriak
 local timerDarkOutpourCD		= mod:NewCDTimer(43.5, 291394, nil, nil, nil, 3)--Ouroboros
 
-local brawlersMod = DBM:GetModByName("Brawlers")
+local brawlersMod = DBM:GetModByName("BrawlersGeneral")
 --local DominikaGUID = 0
 
 function mod:SPELL_CAST_START(args)
