@@ -74,7 +74,10 @@ local CurrentMapID --contains the map id of the current active battleground
 
 
 
-BattleGroundEnemies:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
+BattleGroundEnemies:SetScript("OnEvent", function(self, event, ...)
+	BattleGroundEnemies:Debug("BattleGroundEnemies OnEvent", event, ...)
+	self[event](self, ...) 
+end)
 BattleGroundEnemies:Hide()
 
 
@@ -91,13 +94,19 @@ BattleGroundEnemies.ArenaEnemyIDToPlayerButton = {} --key = arenaID: arenaX, val
 BattleGroundEnemies.Enemies = CreateFrame("Frame", nil, BattleGroundEnemies)
 BattleGroundEnemies.Enemies.OnUpdate = {} --key = number from 1 to x, value = enemyButton
 BattleGroundEnemies.Enemies:Hide()
-BattleGroundEnemies.Enemies:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
+BattleGroundEnemies.Enemies:SetScript("OnEvent", function(self, event, ...)
+	BattleGroundEnemies:Debug("Enemies OnEvent", event, ...)
+	self[event](self, ...)
+end)
 
 
 BattleGroundEnemies.Allies = CreateFrame("Frame", nil, BattleGroundEnemies) --index = name, value = table
 BattleGroundEnemies.Allies:Hide()
 BattleGroundEnemies.Allies.UnitIDToAllyButton = {} --index = unitID ("raid"..i) of raidmember, value = Allytable of that group member
-BattleGroundEnemies.Allies:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
+BattleGroundEnemies.Allies:SetScript("OnEvent", function(self, event, ...)
+	BattleGroundEnemies:Debug("Allies OnEvent", event, ...)
+	self[event](self, ...)
+end)
 
 
 
@@ -731,7 +740,7 @@ do
 	
 	function buttonFunctions:UpdateHealth(unitID)
 		if UnitIsDeadOrGhost(unitID) then
-			--BattleGroundEnemies:Debug("UpdateAll", UnitName(unitID), "UnitIsDead")
+			BattleGroundEnemies:Debug("UpdateHealth", UnitName(unitID), "UnitIsDead")
 			self.ObjectiveAndRespawn:PlayerDied()
 		elseif self.ObjectiveAndRespawn.ActiveRespawnTimer then --player is alive again
 			self.ObjectiveAndRespawn.Cooldown:Clear()
@@ -2668,13 +2677,13 @@ function BattleGroundEnemies:ProfileChanged()
 end
 
 function BattleGroundEnemies:Debug(...)
-	if self.db.profile.Debug then print("BGE:", ...) end
+	if self.db and self.db.profile.Debug then print("BGE:", ...) end
 end
 
 do
 	local TimeSinceLastOnUpdate = 0
 	local UpdatePeroid = 2 --update every second
-	function RequestTicker(self, elapsed) --OnUpdate runs if the frame RequestFrame is shown
+	local function RequestTicker(self, elapsed) --OnUpdate runs if the frame RequestFrame is shown
 		TimeSinceLastOnUpdate = TimeSinceLastOnUpdate + elapsed
 		if TimeSinceLastOnUpdate > UpdatePeroid then
 			RequestBattlefieldScoreData()
@@ -2986,7 +2995,6 @@ do
 				if not self then self = BattleGroundEnemies end
 
 				if not InCombatLockdown() then
-					--self:Debug("self.db.profile.DisableArenaFrames", self.db.profile.DisableArenaFrames)
 					if self.db.profile.DisableArenaFrames then
 						if CurrentMapID then
 							if not fakeParent then
@@ -3134,10 +3142,11 @@ do
 			local numScores = GetNumBattlefieldScores()
 			for i = 1, numScores do
 				local name,_,_,_,_,faction,race, _, classTag,_,_,_,_,_,_,specName = GetBattlefieldScore(i)
+				self:Debug("player", "name:", name, "faction:", faction, "race:", race, "classTag:", classTag, "specName:", specName)
 				--name = name-realm, faction = 0 or 1, race = localized race e.g. "Mensch",classTag = e.g. "PALADIN", spec = localized specname e.g. "holy"
 				--locale dependent are: race, specName
 				
-				if faction and name and race and classTag and specName then
+				if faction and name and race and classTag and specName and specName ~= "" then
 					--if name == PlayerDetails.PlayerName then EnemyFaction = EnemyFaction == 1 and 0 or 1 return end --support for the new brawl because GetBattlefieldArenaFaction() returns wrong data on that BG
 					 if name == PlayerDetails.PlayerName and faction == self.EnemyFaction then 
 						self.EnemyFaction = self.AllyFaction

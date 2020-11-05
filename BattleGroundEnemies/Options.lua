@@ -8,7 +8,12 @@ local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 local DRData = LibStub("DRData-1.0")
 
-
+local function copy(obj)
+	if type(obj) ~= 'table' then return obj end
+	local res = {}
+	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
+	return res
+end
 						
 local function addStaticPopupForPlayerTypeConfigImport(playerType, oppositePlayerType)
 	StaticPopupDialogs["CONFIRM_OVERRITE_"..addonName..playerType] = {
@@ -56,12 +61,7 @@ addStaticPopupBGTypeConfigImport("Enemies", "Allies", "40")
 addStaticPopupBGTypeConfigImport("Allies", "Enemies", "40")
 
 
-function copy(obj)
-	if type(obj) ~= 'table' then return obj end
-	local res = {}
-	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
-	return res
-end
+
 
 local function OptionsType(option)
 
@@ -230,12 +230,12 @@ local function applyMainfont(playerButton, value)
 
 	for identifier, debuffFrame in pairs(playerButton.DebuffContainer.Active) do
 		local conf = playerButton.bgSizeConfig
-		debuffFrame.Stacks:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Fontsize, Auras_Debuffs_Outline)
+		debuffFrame.Stacks:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Fontsize, conf.Auras_Debuffs_Outline)
 		debuffFrame.Cooldown.Text:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Cooldown_Fontsize, conf.Auras_Debuffs_Cooldown_Outline)
 	end
 	for identifier, debuffFrame in pairs(playerButton.DebuffContainer.Inactive) do
 		local conf = playerButton.bgSizeConfig
-		debuffFrame.Stacks:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Fontsize, Auras_Debuffs_Outline)
+		debuffFrame.Stacks:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Fontsize, conf.Auras_Debuffs_Outline)
 		debuffFrame.Cooldown.Text:SetFont(LSM:Fetch("font", value), conf.Auras_Debuffs_Cooldown_Fontsize, conf.Auras_Debuffs_Cooldown_Outline)
 	end
 	for identifier, buffFrame in pairs(playerButton.BuffContainer.Active) do

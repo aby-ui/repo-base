@@ -1,6 +1,6 @@
 ## Interface: 90001
 ## Title: BattleGroundEnemies
-## Version: v9.0.7.1-release
+## Version: v9.0.7.3.4
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
 ## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRData-1.0, LibSharedMedia-3.0, LibPlayerSpells-1.0

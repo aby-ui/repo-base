@@ -5,11 +5,11 @@ local addon_name, addon_env = ...
 -- Underscore are my own variables
 
 -- [AUTOLOCAL START]
+local C_Garrison = C_Garrison
 local CreateFrame = CreateFrame
+local GetFollowers = C_Garrison.GetFollowers
 local LE_FOLLOWER_TYPE_GARRISON_7_0 = Enum.GarrisonFollowerType.FollowerType_7_0
-local GetLandingPageShipmentInfoByContainerID = C_Garrison.GetLandingPageShipmentInfoByContainerID
-local GetLooseShipments = C_Garrison.GetLooseShipments
-local After = C_Timer.After
+local dump = DevTools_Dump
 -- [AUTOLOCAL END]
 
 local Widget = addon_env.Widget

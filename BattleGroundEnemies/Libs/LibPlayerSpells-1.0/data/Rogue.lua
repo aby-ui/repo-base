@@ -20,7 +20,7 @@ along with LibPlayerSpells-1.0. If not, see <http://www.gnu.org/licenses/>.
 
 local lib = LibStub('LibPlayerSpells-1.0')
 if not lib then return end
-lib:__RegisterSpells('ROGUE', 80000, 3, {
+lib:__RegisterSpells('ROGUE', 80000, 4, {
 	COOLDOWN = {
 		   1725, -- Distract
 		 195457, -- Grappling Hook (Outlaw)
@@ -46,7 +46,7 @@ lib:__RegisterSpells('ROGUE', 80000, 3, {
 					137619, -- Marked for Death (talent)
 				},
 				CROWD_CTRL = {
-					[1766] = 'INCAPACITATE', -- Gouge (Outlaw)
+					[1776] = 'INCAPACITATE', -- Gouge (Outlaw)
 					[2094] = 'DISORIENT', -- Blind
 					STUN = {
 						   408, -- Kidney Shot (Assassination/Subtlety)

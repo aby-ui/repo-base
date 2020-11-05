@@ -20,15 +20,16 @@ along with LibPlayerSpells-1.0. If not, see <http://www.gnu.org/licenses/>.
 
 local lib = LibStub('LibPlayerSpells-1.0')
 if not lib then return end
-lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
+lib:__RegisterSpells('DEATHKNIGHT', 80100, 2, {
 	COOLDOWN = {
-		  46584, -- Raise Dead (Unholy)
+		  46584, -- Raise Dead (Rank 2 - Unholy)
+		  46585, -- Raise Dead
 		  49206, -- Summon Gargoyle (Unholy talent)
 		  49576, -- Death Grip
 		  50977, -- Death Gate
 		  61999, -- Raise Ally
 		 194913, -- Glacial Advance (Frost talent)
-		 210764, -- Rune Strike (Blood talent)
+		 221699, -- Blood Tap (Blood talent)
 		 274156, -- Consumption (Blood talent)
 		 275699, -- Apocalypse (Unholy)
 		 288853, -- Raise Abomination (Unholy honor talent)
@@ -45,7 +46,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 				206891, -- Focused Assault (Blood honor talent)
 				206931, -- Blooddrinker (Blood talent)
 				206940, -- Mark of Blood (Blood talent)
-				211794, -- Winter is Comming (Frost talent)
+				211794, -- Winter is Coming (Frost talent)
 				212610, -- Walking Dead (Blood honor talent)
 				288849, -- Crypt Fever (Unholy honor talent)
 				CROWD_CTRL = {
@@ -74,7 +75,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 				},
 			},
 			HELPFUL = {
-				[145622] = 'SURVIVAL', -- Anti-Magic Zone (honor talent)
+				[145629] = 'SURVIVAL', -- Anti-Magic Zone
 			},
 			PERSONAL = {
 				  48265, -- Death's Advance
@@ -90,7 +91,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 				 219788, -- Ossuary (Blood talent)
 				 273947, -- Hemostasis (Blood talent)
 				 274009, -- Voracious (Blood talent)
-				[ 48743] = 'INVERT_AURA', -- Death Pact (Unholy talent)
+				[ 48743] = 'INVERT_AURA', -- Death Pact
 				BURST = {
 					 42650, -- Army of the Dead (Unholy)
 					 51271, -- Pillar of Frost (Frost)
@@ -105,10 +106,10 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 				SURVIVAL = {
 					 48707, -- Anti-Magic Shell
 					 48792, -- Icebound Fortitude
+					 49039, -- Lichborne
 					 55233, -- Vampiric Blood (Blood)
 					 81256, -- Dancing Rune Weapon (Blood)
-					194679, -- Rune Tap (Blood talent)
-					287081, -- Lichborne (Frost/Unholy honor talent)
+					194679, -- Rune Tap (Blood)
 				},
 			},
 			PET = {
@@ -140,7 +141,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 				},
 			},
 			SNARE = {
-				 45524, -- Chains of Ice (Frost/Unholy)
+				 45524, -- Chains of Ice
 			},
 		},
 		HELPFUL = {
@@ -183,8 +184,8 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 	[ 91837] =  63560, -- Putrid Bulwark (Ghoul) (Unholy) <- Dark Transformation
 	[ 91838] =  47484, -- Huddle (Ghoul) (Unholy)
 	[101568] = 178819, -- Dark Succor (Frost/Unholy)
-	[145622] =  51052, -- Anti-Magic Zone (honor talent)
 	[115994] = 115989, -- Unholy Blight (Unholy talent)
+	[145629] =  51052, -- Anti-Magic Zone
 	[188290] = { -- Death and Decay (Blood/Unholy)
 		 43265, -- Death and Decay (Blood/Unholy)
 		152280, -- Defile (Unholy talent)
@@ -201,7 +202,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 	[207165] = 207161, -- Abomination's Might (Frost talent)
 	[207203] = 207200, -- Frost Shield <- Permafrost (Frost talent)
 	[210141] = 210128, -- Zombie Explosion <- Reanimation (Unholy honor talent)
-	[211794] = 207170, -- Winter is Comming (Frost talent)
+	[211794] = 207170, -- Winter is Coming (Frost talent)
 	[212610] = 202731, -- Walking Dead (Blood honor talent)
 	[215711] = 130736, -- Soul Ripper (Unholy talent)
 	[219788] = 219786, -- Ossuary (Blood talent)
@@ -244,7 +245,7 @@ lib:__RegisterSpells('DEATHKNIGHT', 80100, 1, {
 		 45524, -- Chains of Ice
 		196770, -- Remorseless Winter
 	},
-	[211794] = 196170, -- Winter is Comming (Frost talent) -> Remorseless Winter
+	[211794] = 196170, -- Winter is Coming (Frost talent) -> Remorseless Winter
 	[212610] =  49576, -- Walking Dead (Blood honor talent) -> Death Grip
 	[219788] = 195182, -- Ossuary (Blood talent) -> Marrowrend
 	[233397] = { -- Delirium (Frost honor talent)

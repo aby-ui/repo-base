@@ -5,9 +5,11 @@ local addon_name, addon_env = ...
 -- Underscore are my own variables
 
 -- [AUTOLOCAL START]
+local C_Garrison = C_Garrison
 local CreateFrame = CreateFrame
+local GetFollowers = C_Garrison.GetFollowers
 local LE_FOLLOWER_TYPE_GARRISON_8_0 = Enum.GarrisonFollowerType.FollowerType_8_0
-local After = C_Timer.After
+local dump = DevTools_Dump
 -- [AUTOLOCAL END]
 
 addon_env.event_frame = addon_env.event_frame or CreateFrame("Frame")

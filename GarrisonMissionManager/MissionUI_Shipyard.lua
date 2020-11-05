@@ -13,7 +13,6 @@ local GetItemInfoInstant = GetItemInfoInstant
 local GetNumActiveFollowers = C_Garrison.GetNumActiveFollowers
 local LE_FOLLOWER_TYPE_SHIPYARD_6_2 = Enum.GarrisonFollowerType.FollowerType_6_2
 local UnitGUID = UnitGUID
-local dump = DevTools_Dump
 local match = string.match
 local pairs = pairs
 local print = print

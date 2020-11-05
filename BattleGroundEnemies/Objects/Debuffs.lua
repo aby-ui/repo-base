@@ -25,7 +25,7 @@ function BattleGroundEnemies.Objects.Debuffs.New(playerButton)
 		--self:ApplyBackdrop(conf.Auras_Debuffs_Container_BorderThickness)
 
 		for identifier, debuffFrame in pairs(self.Active) do
-			debuffFrame:ApplyDebuffFrameSettings(buffFrame)
+			debuffFrame:ApplyDebuffFrameSettings(debuffFrame)
 			debuffFrame:ChangeDisplayType()
 		end
 	

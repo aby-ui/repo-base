@@ -19,14 +19,17 @@ local GetFollowerStatus = C_Garrison.GetFollowerStatus
 local GetItemInfoInstant = GetItemInfoInstant
 local GetTime = GetTime
 local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
-local LE_FOLLOWER_TYPE_GARRISON_6_0 = Enum.GarrisonFollowerType.FollowerType_6_0
 local RED_FONT_COLOR_CODE = RED_FONT_COLOR_CODE
 local RemoveFollowerFromMission = C_Garrison.RemoveFollowerFromMission
+local _G = _G
 local dump = DevTools_Dump
 local format = string.format
+local gsub = string.gsub
 local pairs = pairs
 local print = print
+local setmetatable = setmetatable
 local tconcat = table.concat
+local type = type
 local wipe = wipe
 -- [AUTOLOCAL END]
 

@@ -2,10 +2,10 @@
 ## Title: Lib: PlayerSpells-1.0
 ## Notes: Additional information about player spells.
 ## Author: Adirelle
-## Version: 7715c89
+## Version: 7815ecf
 ## LoadOnDemand: 1
 ## OptionalDeps: AdiDebug
-## X-Date: 2020-10-14T13:10:01Z
+## X-Date: 2020-10-28T18:01:50Z
 ## X-Category: Library
 ## X-License: GPL v3
 ## X-eMail: adirelle@gmail.com
