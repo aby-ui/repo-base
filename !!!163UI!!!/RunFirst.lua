@@ -78,10 +78,6 @@ end
 --UI163_USE_X_CATEGORIES = 1 --- use X-Categories tag
 
 
-UnitIsTapped = function() end
-CLASS_BUTTONS = CLASS_ICON_TCOORDS
-CooldownFrame_SetTimer = CooldownFrame_Set
-
 --WithAllChatFrame(function(frame) frame:SetMaxLines(5000) end)
 
 if not oisv then return end

@@ -7,10 +7,13 @@
 	* No need to remember which index a certain field has
 	----------------------------------------------------
 	Creating an ItemString Instance - Examples:
-	* is = LibItemString:New(itemLink);
-	* if (is.enchant ~= 0) then print("item is enchanted"); end
-	* itemID = is[1]; itemID = is.itemID;
-	* itemStringLabel:SetText(tostring(is));
+		is = LibItemString:New(itemLink);
+		if (is.enchant ~= 0) then print("item is enchanted"); end
+		itemID = is[1]; itemID = is.itemID;
+		itemStringLabel:SetText(tostring(is));
+	----------------------------------------------------
+	LibItemString:GetFieldName(fieldindex)
+	* Returns the name of the ItemString field
 	----------------------------------------------------
 	LibItemString:GetTrueItemLevel(itemLink)
 	* Returns the true itemLevel, based on a tooltip scan
@@ -20,11 +23,15 @@
 	* Use LibItemString:GetTrueItemLevel(itemLink) instead
 	----------------------------------------------------
 	Changelog:
-	* REV-01 (16.08.30) Patch 7.0.3:	Replaces "GetUpgradedItemLevel.lua", but stays compatible
-]]------------------------------------------------------
+	## REV-01 (16.08.30) - Patch 7.0.3 ##
+	- Replaces "GetUpgradedItemLevel.lua", but stays compatible
+	## REV-02 (18.08.04) - 8.0/BfA ##
+	- Added LIS:GetFieldName() to get the field name from index
+	- Accessing the IS table using a negative index now works
+--]]----------------------------------------------------
 
 -- Abort if library has already loaded with the same or newer revision
-local REVISION = 1;
+local REVISION = 2;
 if (type(LibItemString) == "table") and (REVISION <= LibItemString.REVISION) then
 	return;
 end
@@ -35,7 +42,8 @@ LIS.REVISION = REVISION;
 LIS.ScanTip = LIS.ScanTip or CreateFrame("GameTooltip","LibItemStringScanTip",nil,"GameTooltipTemplate");
 LIS.ScanTip:SetOwner(UIParent,"ANCHOR_NONE");
 
-GET_UPGRADED_ITEM_LEVEL_REV = 12;	-- this replaces REV-11 of "GetUpgradedItemLevel.lua"
+-- this replaces REV-11 of "GetUpgradedItemLevel.lua"
+GET_UPGRADED_ITEM_LEVEL_REV = 12;
 
 --------------------------------------------------------------------------------------------------------
 --                                      Constants / Data Tables                                       --
@@ -48,7 +56,7 @@ LIS.TOOLTIP_MAXLINE_LEVEL = 5;
 LIS.ITEM_LEVEL_PATTERN = ITEM_LEVEL:gsub("%%d","(%%d+)");
 
 -- Extraction pattern for the exact itemString, including all its properties
-LIS.ITEMSTRING_PATTERN = "(item:[^|]+)";
+LIS.ITEMSTRING_PATTERN = "(item:[^|]+)";	-- replace with "(%w+:[^|]+)" to catch all hyperlinks
 
 -- Index of the named itemString property
 LIS.ITEMSTRING_PROPERTY_INDEX = {
@@ -73,6 +81,10 @@ LIS.ITEMSTRING_PROPERTY_INDEX = {
 	unknown1				= -2,
 	unknown2				= -3,
 	unknown3				= -4,
+
+--	relic1NumBonusIDs		= -10,
+--	relic1BonusID1			= -11,
+--	relic1BonusID2			= -12,
 }
 
 -- Table for adjustment of levels due to upgrade -- Source: http://www.wowinterface.com/forums/showthread.php?t=45388
@@ -202,6 +214,11 @@ LIS.__index = function(tbl,k)
 			local numBonusIDs = tbl.numBonusIDs;
 			return (numBonusIDs > 0) and (bonusIdIndex <= numBonusIDs) and tbl[propIndex + bonusIdIndex] or nil;
 		end
+	elseif (type(k) == "number") then
+		if (k < 0) then
+			local propIndex = LIS.ITEMSTRING_PROPERTY_INDEX.numBonusIDs + tbl.numBonusIDs + abs(k);
+			return tbl[propIndex];
+		end
 	end
 end
 
@@ -253,6 +270,21 @@ function LIS:Parse(itemString)
 	self[#self] = nil;	-- removes the last invalid capure we get from matching the optional ":"
 end
 
+-- returns the name of the itemString field at the given index
+function LIS:GetFieldName(fieldindex)
+	local fieldIndices = self.ITEMSTRING_PROPERTY_INDEX;
+	if (fieldindex > fieldIndices.numBonusIDs) then
+		local bonusIndex = (fieldindex - fieldIndices.numBonusIDs);
+		return format("bonusID%d",bonusIndex)
+	end
+	for name, index in next, fieldIndices do
+		if (fieldindex == index) then
+			return name;
+		end
+	end
+	return UNKNOWN;
+end
+
 -- Analyses the itemString and checks for upgrades that affects itemLevel -- Only itemLevel 450 and above will have this
 -- As new upgrades are added all the time, this function is rather unreliable, and its therefore not recommended to use
 -- WARNING: Use the LibItemString:GetTrueItemLevel() function instead, which scans the tooltip for a 100% correct itemLevel
@@ -276,7 +308,7 @@ function LIS:GetUpgradedItemLevel()
 end
 
 -- Scans the tooltip for the proper itemLevel as we cannot get it consistently any other way
--- No ItemString instance, that is calling LibItemString:New(), of LibItemString is needed to call this function
+-- No ItemString instance is needed to call this function, that is calling LibItemString:New()
 function LIS:GetTooltipItemLevel(itemLink)
 	LIS.ScanTip:ClearLines();
 	LIS.ScanTip:SetHyperlink(itemLink);

@@ -1,13 +1,9 @@
 ## Interface: 90001
-## Version: 18.07.19
+## Version: 19.03.31
 ## Title: TipTacTalents
 ## Author: Aezay (Earthen Ring EU)
-## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
 ## Notes: Adds Talent Spec to Player Tooltips
-## Dependencies: TipTac
-Local_enUS.lua
-Local_zhCN.lua
-Local_zhTW.lua
+## OptionalDeps: TipTac
 ttTalents.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 天赋模块

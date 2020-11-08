@@ -1,14 +1,14 @@
 ## Interface: 90001
-## Version: 18.07.24
+## Version: 20.10.31
 ## Title: TipTacOptions
 ## Author: Aezay (Earthen Ring EU)
-## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
 ## Notes: Option Dialog for TipTac
 ## Dependencies: TipTac
 ## LoadOnDemand: 1
 Libs\AzDropDown.lua
 Libs\AzOptionsFactory.lua
-DropDowns.lua
+abyLocales.lua
+ttLayouts.lua
 ttOptions.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 配置模块

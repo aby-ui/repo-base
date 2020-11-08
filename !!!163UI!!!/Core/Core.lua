@@ -142,10 +142,13 @@ function hex2rgba(hexColor)
     end
 end
 
-function CoreBuildLocale()
-    return setmeta({},{
-        __index = function(self, key) return key end,
-        __call = function(self, key) return rawg(self, key) or key  end
+function CoreBuildLocale(debug)
+    return setmeta({ _DEBUG = debug and {} or nil }, {
+        __index = function(self, key)
+            if(debug) then tinsert(self._DEBUG, key) end
+            return key
+        end,
+        __call = function(self, key) return self[key]  end
     })
 end
 

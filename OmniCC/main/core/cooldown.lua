@@ -6,16 +6,39 @@ local _, Addon = ...
 -- before a user rebooted
 local MAX_START_DELAY_MS = 86400
 local GCD_SPELL_ID = 61304
-local COOLDOWN_TYPE_LOSS_OF_CONTROL = _G.COOLDOWN_TYPE_LOSS_OF_CONTROL
-local GetSpellCooldown = _G.GetSpellCooldown
-local GetTime = _G.GetTime
 local cooldowns = {}
 
 local Cooldown = {}
 
 -- queries
+local function IsGlobalCooldown(start, duration)
+    if start == 0 or duration == 0 then
+        return false
+    end
+
+    local gcdStart, gcdDuration = GetSpellCooldown(GCD_SPELL_ID)
+
+    return start == gcdStart and duration == gcdDuration
+end
+
+local function GetGCDTimeRemaining(start, duration)
+    local start, duration = GetSpellCooldown(GCD_SPELL_ID)
+
+    if start == 0 or duration == 0 then
+        return 0
+    end
+
+    return (start + duration) - GetTime()
+end
+
+
 function Cooldown:CanShowText()
     if self.noCooldownCount then
+        return false
+    end
+
+    -- filter gcd
+    if self._occ_gcd then
         return false
     end
 
@@ -58,18 +81,24 @@ function Cooldown:CanShowText()
     end
 
     -- filter GCD
-    local gcdStart, gcdDuration = GetSpellCooldown(GCD_SPELL_ID)
-    if start == gcdStart and duration == gcdDuration then
-        return false
-    end
-
     return true
 end
 
 function Cooldown:CanShowFinishEffect()
+    -- filter gcd
+    if self._occ_gcd then
+        return false
+    end
+
+    -- filter inactive
+    if self._occ_start == 0 or self._occ_duration == 0 then
+        return false
+    end
+
+    -- settings checks
+    -- no config, do nothing
     local settings = self._occ_settings
 
-    -- no config, do nothing
     if not settings then
         return false
     end
@@ -85,16 +114,17 @@ function Cooldown:CanShowFinishEffect()
         return false
     end
 
-    -- cooldown just finished, return true
-    local remain = math.max((self._occ_start + self._occ_duration) - GetTime(), 0)
-    if remain == 0 then
+    -- calculate the time remaining on the cooldown
+    local remain = self._occ_start + self._occ_duration - GetTime()
+
+    -- just completed within a frame or so
+    if remain <= 0 and remain > -0.1 then
         return true, effect
     end
 
-    -- GCD active and cooldown will complete within GCD
-    local _, gcdDuration = GetSpellCooldown(GCD_SPELL_ID)
-
-    if gcdDuration ~= 0 and remain <= gcdDuration then
+    -- will complete before GCD is over
+    local gcdRemain = GetGCDTimeRemaining()
+    if gcdRemain > 0 and remain <= gcdRemain then
         return true, effect
     end
 
@@ -102,8 +132,14 @@ function Cooldown:CanShowFinishEffect()
 end
 
 function Cooldown:GetKind()
-    if self.currentCooldownType == COOLDOWN_TYPE_LOSS_OF_CONTROL then
+    local cdType = self.currentCooldownType
+
+    if cdType == COOLDOWN_TYPE_LOSS_OF_CONTROL then
         return 'loc'
+    end
+
+    if cdType == COOLDOWN_TYPE_NORMAL then
+        return "default"
     end
 
     local parent = self:GetParent()
@@ -249,9 +285,10 @@ function Cooldown:SetTimer(start, duration)
 
     self._occ_start = start
     self._occ_duration = duration
+    self._occ_gcd = IsGlobalCooldown(start, duration)
     self._occ_kind = Cooldown.GetKind(self)
-    self._occ_show = Cooldown.CanShowText(self)
     self._occ_priority = Cooldown.GetPriority(self)
+    self._occ_show = Cooldown.CanShowText(self)
     self._occ_draw_swipe = self:GetDrawSwipe()
 
     Cooldown.RequestUpdate(self)

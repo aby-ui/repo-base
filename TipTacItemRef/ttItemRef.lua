@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("TipTacItemRef") 
+local L = select(2, ...).L
 
 local format = string.format;
 local unpack = unpack;
@@ -7,17 +7,25 @@ local unpack = unpack;
 local modName = ...;
 local ttif = CreateFrame("Frame",modName);
 
--- Options without TipTac. If the basic TipTac addon is used, the global TipTac_Config table is used instead
+-- Register with TipTac core addon if available
+if (TipTac) then
+	TipTac:RegisterElement(ttif,"ItemRef");
+end
+
+-- Options without TipTac. If the base TipTac addon is used, the global TipTac_Config table is used instead
 local cfg = {
 	if_enable = true,
 	if_infoColor = { 0.2, 0.6, 1 },
 	if_itemQualityBorder = true,
 	if_showAuraCaster = true,
-	if_showItemLevelAndId = true,				-- Used to be true, but changed due to the itemLevel issues
+
+	if_showItemLevel = false,					-- Used to be true, but changed due to the itemLevel issues
+	if_showItemId = true,
 	if_showQuestLevelAndId = true,
-	if_showSpellIdAndRank = false,
+	if_showSpellIdAndRank = true,
 	if_showCurrencyId = true,					-- Az: no option for this added to TipTac/options yet!
-	if_showAchievementIdAndCategory = false,	-- Az: no option for this added to TipTac/options yet!
+	if_showAchievementIdAndCategory = true,	    -- Az: no option for this added to TipTac/options yet!
+
 	if_modifyAchievementTips = true,
 	if_showIcon = true,
 	if_smartIcons = true,
@@ -45,8 +53,8 @@ local tipDataAdded = {};	-- Sometimes, OnTooltipSetItem/Spell is called before t
 local COLOR_COMPLETE = { 0.25, 0.75, 0.25 };
 local COLOR_INCOMPLETE = { 0.5, 0.5, 0.5 };
 
--- Returns colored text string
-local function BoolCol(bool) return (bool and "|cff80ff80" or "|cffff8080"); end
+-- Colored text string (red/green)
+local BoolCol = { [false] = "|cffff8080", [true] = "|cff80ff80" };
 
 --------------------------------------------------------------------------------------------------------
 --                                         Create Tooltip Icon                                        --
@@ -116,21 +124,20 @@ ttif:SetScript("OnEvent",function(self,event,...)
 
 	-- Hook tips and apply settings
 	self:DoHooks();
-	self:ApplySettings();
+	self:OnApplyConfig();
 
 	-- Cleanup; we no longer need to receive any events
 	self:UnregisterAllEvents();
 	self:SetScript("OnEvent",nil);
 end);
 
--- Apply Settings -- It seems this may be called from TipTac:ApplySettings() before we have received our VARIABLES_LOADED, so ensure we have created the tip objects
-function ttif:ApplySettings()
+-- Apply Settings -- It seems this may be called from TipTac:OnApplyConfig() before we have received our VARIABLES_LOADED, so ensure we have created the tip objects
+function ttif:OnApplyConfig()
 	local gameFont = GameFontNormal:GetFont();
 	for index, tip in ipairs(tipsToModify) do
 		if (type(tip) == "table") and (tipsToAddIcon[tip:GetName()]) and (tip.ttIcon) then
 			if (cfg.if_showIcon) then
-				tip.ttIcon:SetWidth(cfg.if_iconSize);
-				tip.ttIcon:SetHeight(cfg.if_iconSize);
+				tip.ttIcon:SetSize(cfg.if_iconSize,cfg.if_iconSize);
 				tip.ttCount:SetFont(gameFont,(cfg.if_iconSize / 3),"OUTLINE");
 				tip.SetIconTextureAndText = SetIconTextureAndText;
 				if (cfg.if_borderlessIcons) then
@@ -163,6 +170,7 @@ local function SetHyperlink_Hook(self,hyperLink)
 	end
 end
 
+--abyui 施法者的职业颜色，修复Debuff的问题，AddDoubleLine方式
 local function GetUnitColorText(unit)
 	local ClassColor = RAID_CLASS_COLORS[select(2,UnitClass(unit))] or NORMAL_FONT_COLOR;
 	if (not UnitIsPlayer(unit)) then ClassColor = NORMAL_FONT_COLOR end;
@@ -191,60 +199,45 @@ local function GetCasterColorAndName(unit)
 	return text;
 end
 
-local function SetUnitBuff_Hook(self,unit,index,filter)
-	if (cfg.if_enable) and (cfg.if_showAuraCaster) then
-		local _, _, _, _, _, _, casterUnit, _, _, spellID = UnitBuff(unit,index,filter); --aby8
-		if spellID then
-			if (UnitExists(casterUnit)) then
-				r,g,b=unpack(cfg.if_infoColor)
-				self:AddDoubleLine(format(L["SpellID: %d"],spellID),format(L["Cast By: %s"],GetCasterColorAndName(casterUnit) or UNKNOWN),r,g,b,r,g,b);
-				self:Show();
-			else
-				self:AddLine(format(L["SpellID: %d"],spellID),unpack(cfg.if_infoColor));
-				self:Show();
-			end
-		end	
+-- HOOK: SetUnitAura -- Adds both name of "Caster" and "SpellID"
+local function GetAuraHookFunc(auraFunc)
+return function(self,unit,index,filter)
+	if (cfg.if_enable) and (cfg.if_showSpellIdAndRank or cfg.if_showAuraCaster) then
+		local _, _, _, _, _, _, casterUnit, _, _, spellId = auraFunc(unit,index,filter);	-- [18.07.19] 8.0/BfA: "dropped second parameter"
+		-- format the info line for spellID and caster -- pre-16.08.25 only caster was formatted as this: "<Applied by %s>"
+		local tipInfoLine = {};
+		if (cfg.if_showAuraCaster) and (UnitExists(casterUnit)) then
+			tipInfoLine[1] = format(L"Caster: %s",GetCasterColorAndName(casterUnit) or UNKNOWNOBJECT);
+		end
+		if (cfg.if_showSpellIdAndRank) and (spellId) and (spellId ~= 0) then
+			--if (tipInfoLine ~= "") then
+			--	tipInfoLine = tipInfoLine..", ";
+			--end
+			table.insert(tipInfoLine, 1, format(L"SpellID: %d",spellId));
+		end
+		-- add line to tooltip if it contains info
+		if (#tipInfoLine == 1) then
+			self:AddLine(tipInfoLine[1],unpack(cfg.if_infoColor));
+			self:Show();	-- call Show() to resize tip after adding lines
+        elseif (#tipInfoLine == 2) then
+            local r,g,b = unpack(cfg.if_infoColor)
+            self:AddDoubleLine(tipInfoLine[1],tipInfoLine[2],r,g,b,r,g,b);
+            self:Show();
+		end
 	end
 end
-local function SetUnitDebuff_Hook(self,unit,index,filter)
-	if (cfg.if_enable) and (cfg.if_showAuraCaster) then
-		local _, _, _, _, _, _, casterUnit, _, _, spellID = UnitDebuff(unit,index,filter); --aby8
-		if spellID then
-			if (UnitExists(casterUnit)) then
-				r,g,b=unpack(cfg.if_infoColor)
-				self:AddDoubleLine(format(L["SpellID: %d"],spellID),format(L["Cast By: %s"],GetCasterColorAndName(casterUnit) or UNKNOWN),r,g,b,r,g,b);
-				self:Show();
-			else
-				self:AddLine(format(L["SpellID: %d"],spellID),unpack(cfg.if_infoColor));
-				self:Show();
-			end
-		end	
-	end
 end
 
--- HOOK: SetUnitAura -- Adds both name of "Caster" and "SpellID"
-local function SetUnitAura_Hook(self,unit,index,filter)
-    if (cfg.if_enable) and (cfg.if_showAuraCaster) then
-   		local _, _, _, _, _, _, casterUnit, _, _, spellID = UnitAura(unit,index,filter); --aby8
-   		if spellID then
-   			if (UnitExists(casterUnit)) then
-   				local r,g,b=unpack(cfg.if_infoColor)
-   				self:AddLine(format(L["SpellID: %d"] .. ", " .. L["Cast By: %s"], spellID, GetCasterColorAndName(casterUnit) or UNKNOWN), r,g,b);
-   				self:Show();
-   			else
-   				self:AddLine(format(L["SpellID: %d"],spellID),unpack(cfg.if_infoColor));
-   				self:Show();	-- call Show() to resize tip after adding lines
-   			end
-   		end
-   	end
-end
+local SetUnitAura_Hook = GetAuraHookFunc(UnitAura)
+local SetUnitBuff_Hook = GetAuraHookFunc(UnitBuff)
+local SetUnitDebuff_Hook = GetAuraHookFunc(UnitDebuff) --abyui this is different with UnitAura
 
 -- OnTooltipSetItem
 local function OnTooltipSetItem(self,...)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
 		local _, link = self:GetItem();
 		if (link) then
-			local linkType, id = link:match("(%a+):(%d+)");
+			local linkType, id = link:match("H?(%a+):(%d+)");
 			if (id) then
 				tipDataAdded[self] = linkType;
 				LinkTypeFuncs.item(self,link,linkType,id);
@@ -310,6 +303,11 @@ local function SmartIconEvaluation(tip,linkType)
 		if (owner.action or owner.icon) then
 			return false;
 		end
+	-- Achievement
+--	elseif (linkType == "achievement") then
+--		if (owner.icon) then
+--			return false;
+--		end
 	end
 
 	-- IconTexture sub texture
@@ -340,18 +338,17 @@ end
 -- item
 function LinkTypeFuncs:item(link,linkType,id)
 	local _, _, itemRarity, itemLevel, _, _, _, itemStackCount, _, itemTexture = GetItemInfo(link);
-    local upgradeStatus --163ui show upgrading status like 1/2
     if U1GetRealItemLevel then
         itemLevel = U1GetRealItemLevel(link)
     else
-        itemLevel = LibItemString:GetTrueItemLevel(link);
+	itemLevel = LibItemString:GetTrueItemLevel(link);
     end
 
 	-- Icon
 	if (self.SetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
 		local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
 		self:SetIconTextureAndText(itemTexture,count);
-	end
+    end
 
 	-- Quality Border
 	if (cfg.if_itemQualityBorder) then
@@ -359,22 +356,33 @@ function LinkTypeFuncs:item(link,linkType,id)
 	end
 
 	-- level + id -- Only alter the tip if we got either a valid "itemLevel" or "id"
-	if (cfg.if_showItemLevelAndId) and (itemLevel or id) then
-		--[[ keep the origin item level text which shows 2/4
-		for i = 2, min(self:NumLines(),LibItemString.TOOLTIP_MAXLINE_LEVEL) do
-			local line = _G[self:GetName().."TextLeft"..i];
-			if (line and (line:GetText() or ""):match(ITEM_LEVEL_PLUS)) then
-				line:SetText(nil);
-				break;
+	local showLevel = (itemLevel and cfg.if_showItemLevel);
+	local showId = (id and cfg.if_showItemId);
+	if (showLevel or showId) then
+		if (showLevel) then
+			for i = 2, min(self:NumLines(),LibItemString.TOOLTIP_MAXLINE_LEVEL) do
+				local line = _G[self:GetName().."TextLeft"..i];
+				if (line and (line:GetText() or ""):match(ITEM_LEVEL_PLUS)) then
+					line:SetText(nil);
+					break;
+				end
 			end
 		end
-        ]]
-		if (itemLevel) and (itemLevel ~= 0) then
-			self:AddLine(format(L["ItemLevel: %d, ItemID: %d"],itemLevel,id),unpack(cfg.if_infoColor));
+		if (not showLevel) then
+            	-- StackSize
+            local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
+            if count ~= "" then
+                local r,g,b = unpack(cfg.if_infoColor)
+                self:AddDoubleLine(format(L"ItemID: %d",id),format(L"Stack: %d",count),r,g,b,r,g,b);
+            else
+			    self:AddLine(format(L"ItemID: %d",id),unpack(cfg.if_infoColor));
+            end
+		elseif (showId) then
+			self:AddLine(format(L"ItemLevel: %d, ItemID: %d",itemLevel,id),unpack(cfg.if_infoColor));
 		else
-			self:AddLine(format(L["ItemID: %d"],id),unpack(cfg.if_infoColor));
+			self:AddLine(format(L"ItemLevel: %d",itemLevel),unpack(cfg.if_infoColor));
 		end
-		self:Show();	-- call Show() to resize tip after adding lines
+--		self:Show();	-- call Show() to resize tip after adding lines
 	end
 end
 
@@ -389,7 +397,7 @@ function LinkTypeFuncs:spell(link,linkType,id)
 	-- Id + Rank
 	if (cfg.if_showSpellIdAndRank) then
 		rank = (rank and rank ~= "" and ", "..rank or "");
-		self:AddLine(L["SpellID: "]..id..rank,unpack(cfg.if_infoColor));
+		self:AddLine(L"SpellID: "..id..rank,unpack(cfg.if_infoColor));
 		self:Show();	-- call Show() to resize tip after adding lines
 	end
   	-- TipType Border Color -- Disable these 3 lines to color border. Az: Work into options?
@@ -401,7 +409,7 @@ end
 -- quest
 function LinkTypeFuncs:quest(link,linkType,id,level)
 	if (cfg.if_showQuestLevelAndId) then
-		self:AddLine(format(L["QuestLevel: %d, QuestID: %d"],level or 0,id or 0),unpack(cfg.if_infoColor));
+		self:AddLine(format(L"QuestLevel: %d, QuestID: %d",level or 0,id or 0),unpack(cfg.if_infoColor));
 		self:Show();	-- call Show() to resize tip after adding lines
 	end
   	-- TipType Border Color -- Disable these 3 lines to color border. Az: Work into options?
@@ -412,15 +420,19 @@ end
 
 -- currency -- Thanks to Vladinator for adding this!
 function LinkTypeFuncs:currency(link,linkType,id)
-	local _, currencyCount, currencyTexture = GetCurrencyInfo(id);
 	if (self.SetIconTextureAndText) then
-		self:SetIconTextureAndText(currencyTexture,currencyCount);
+		local info = C_CurrencyInfo.GetCurrencyInfo(id);
+		if (info) then 
+			self:SetIconTextureAndText(info.iconFileID,info.quantity);	-- As of 5.2 GetCurrencyInfo() now returns full texture path. Previously you had to prefix it with "Interface\\Icons\\"
+		end
 	end
+
 	-- ID
 	if (cfg.if_showCurrencyId) then
-		self:AddLine(format(L["CurrencyID: %d"],id),unpack(cfg.if_infoColor));
+		self:AddLine(format(L"CurrencyID: %d",id),unpack(cfg.if_infoColor));
 		self:Show();	-- call Show() to resize tip after adding lines
 	end
+
   	-- TipType Border Color -- Disable these 3 lines to color border. Az: Work into options?
 --	if (cfg.if_itemQualityBorder) then
 --		self:SetBackdropBorderColor(0, .67, 0, 1);
@@ -474,13 +486,12 @@ function LinkTypeFuncs:achievement(link,linkType,id,guid,completed,month,day,yea
 			self:AddLine(reward,unpack(cfg.if_infoColor));
 		end
 		self:AddLine(description,1,1,1,1);
-		self:AddLine(BoolCol(completed)..progressText);
+		self:AddLine(BoolCol[completed]..progressText);
 		if (#criteriaList > 0) then
 			self:AddLine(" ");
-			self:AddLine(L["Achievement Criteria |cffffffff"]..criteriaComplete.."|r of |cffffffff"..#criteriaList);
+			self:AddLine(format(L["Achievement Criteria |cff00ff00%d|r / |cffffffff%d|r"], criteriaComplete, #criteriaList));
 			local r1, g1, b1, r2, g2, b2;
 			local myDone1, myDone2;
-            
             if GetAchievementNumCriteria(id)>0 then
 			for i = 1, #criteriaList, 2 do
 				r1, g1, b1 = unpack(criteriaList[i].done and COLOR_COMPLETE or COLOR_INCOMPLETE);
@@ -497,18 +508,19 @@ function LinkTypeFuncs:achievement(link,linkType,id,guid,completed,month,day,yea
 						--myDone2 = select(3,GetAchievementCriteriaInfo(id,i + 1));
 					end
 				end
-				myDone1 = (isPlayer and "" or BoolCol(myDone1).."*|r")..criteriaList[i].label;
-				myDone2 = criteriaList[i + 1] and criteriaList[i + 1].label..(isPlayer and "" or BoolCol(myDone2).."*");
+				myDone1 = (isPlayer and "" or BoolCol[myDone1].."*|r")..criteriaList[i].label;
+				myDone2 = criteriaList[i + 1] and criteriaList[i + 1].label..(isPlayer and "" or BoolCol[myDone2].."*");
 				self:AddDoubleLine(myDone1,myDone2,r1,g1,b1,r2,g2,b2);
-			end
+            end
+            end
 		end
-        end
 		-- ID + Category
 		if (cfg.if_showAchievementIdAndCategory) then
-			self:AddLine(format(L["AchievementID: %d, CategoryID: %d"],id or 0,catId or 0),unpack(cfg.if_infoColor));
+			self:AddLine(format(L"AchievementID: %d, CategoryID: %d",id or 0,catId or 0),unpack(cfg.if_infoColor));
 		end
 		-- Icon
-		if (self.SetIconTextureAndText) then
+--		if (self.SetIconTextureAndText) then
+		if (self.SetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
 			self:SetIconTextureAndText(icon,points);
 		end
 		-- Show
@@ -522,7 +534,7 @@ function LinkTypeFuncs:achievement(link,linkType,id,guid,completed,month,day,yea
 		-- ID + Category
 		if (cfg.if_showAchievementIdAndCategory) then
 			local catId = GetAchievementCategory(id);
-			self:AddLine(format(L["AchievementID: %d, CategoryID: %d"],id or 0,catId or 0),unpack(cfg.if_infoColor));
+			self:AddLine(format("AchievementID: %d, CategoryID: %d",id or 0,catId or 0),unpack(cfg.if_infoColor));
 			self:Show();	-- call Show() to resize tip after adding lines
 		end
 	end

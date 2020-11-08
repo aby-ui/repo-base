@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201104222923"),
+	Revision = parseCurseDate("20201108033058"),
 	DisplayVersion = "9.0.4 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 11, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -3431,7 +3431,7 @@ function DBM:IsTrivial(customLevel)
 		--First, auto bail and return non trivial if it's an instancce not in table to prevent nil error
 		if not instanceDifficultyBylevel[LastInstanceMapID] then return false end
 		--Content is trivial if player level is 10 higher than content involved
-		if (playerLevel+10) >= instanceDifficultyBylevel[LastInstanceMapID][1] then
+		if playerLevel >= (instanceDifficultyBylevel[LastInstanceMapID][1]+10) then
 			return true
 		end
 	end
@@ -6925,11 +6925,15 @@ end
 function DBM:GetSpellInfo(spellId)
 	local name, rank, icon, castingTime, minRange, maxRange, returnedSpellId  = GetSpellInfo(spellId)
 	if not returnedSpellId then--Bad request all together
-		if spellId > 4 then
-			if self.Options.BadIDAlert then
-				self:AddMsg("|cffff0000Invalid call to GetSpellInfo for spellID: |r"..spellId..". Please report this bug")
-			else
-				self:Debug("|cffff0000Invalid call to GetSpellInfo for spellID: |r"..spellId)
+		if type(spellId) == "string" then
+			self:Debug("|cffff0000Invalid call to GetSpellInfo for spellID: |r"..spellId.." as a string!")
+		else
+			if spellId > 4 then
+				if self.Options.BadIDAlert then
+					self:AddMsg("|cffff0000Invalid call to GetSpellInfo for spellID: |r"..spellId..". Please report this bug")
+				else
+					self:Debug("|cffff0000Invalid call to GetSpellInfo for spellID: |r"..spellId)
+				end
 			end
 		end
 		return nil
@@ -7409,7 +7413,13 @@ function DBM:Debug(text, level)
 		local frame = _G[tostring(DBM.Options.ChatFrame)]
 		frame = frame and frame:IsShown() and frame or DEFAULT_CHAT_FRAME
 		frame:AddMessage("|cffff7d0aDBM Debug:|r "..text, 1, 1, 1)
+		--Debug mode is on, respect users debug logging level for callbacks
 		fireEvent("DBM_Debug", text, level)
+	else--Debug mode is off
+		--But we still want to generate callbacks for level 1 and 2 events
+		if (level or 1) < 3 then
+			fireEvent("DBM_Debug", text, level)
+		end
 	end
 end
 
@@ -12099,7 +12109,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201104222923" then
+	if not revision or revision == "20201108033058" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

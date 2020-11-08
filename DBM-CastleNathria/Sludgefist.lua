@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2394, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200913220928")
+mod:SetRevision("20201107005206")
 mod:SetCreatureID(164407)
 mod:SetEncounterID(2399)
 mod:SetUsedIcons(1)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 332318",
 	"SPELL_CAST_SUCCESS 332687",
-	"SPELL_AURA_APPLIED 331209 331314 342419 342420 335470 341294 340817",
+	"SPELL_AURA_APPLIED 331209 331314 342420 335470 340817",
 	"SPELL_AURA_REMOVED 331209 331314 342419 342420 340817",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
@@ -27,9 +27,9 @@ mod:RegisterEventsInCombat(
 --I'll return to perfecting timers if things don't change on live and can analylize dozens more logs to verify patterns
 local warnHatefulGaze							= mod:NewTargetNoFilterAnnounce(331209, 4)
 local warnStunnedImpact							= mod:NewTargetNoFilterAnnounce(331314, 1)
-local warnChainLink								= mod:NewTargetAnnounce(342419, 3)--Targetting debuff
+--local warnChainLink								= mod:NewTargetAnnounce(342419, 3)--Targetting debuff
 local warnChainSlam								= mod:NewTargetNoFilterAnnounce(164407, 3)
-local warnVengefulRage							= mod:NewTargetNoFilterAnnounce(341294, 4)
+--local warnVengefulRage							= mod:NewTargetNoFilterAnnounce(341294, 4)
 
 local specWarnHatefulGaze						= mod:NewSpecialWarningMoveTo(331209, nil, nil, nil, 3, 2)
 local specWarnHeedlessCharge					= mod:NewSpecialWarningSoon(331212, nil, nil, nil, 2, 2)
@@ -58,7 +58,7 @@ local timerSiesmicShiftCD						= mod:NewCDCountTimer(34, 340817, nil, nil, nil, 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddRangeFrameOption(5, 340817)
-mod:AddInfoFrameOption(342410, true)
+--mod:AddInfoFrameOption(342410, true)
 mod:AddSetIconOption("SetIconGaze", 331209, true, false, {1})
 
 mod.vb.gazeCount = 0
@@ -68,7 +68,7 @@ mod.vb.linkCount = 0
 mod.vb.chainSlaimCount = 0
 mod.vb.rubbleCount = 0
 mod.vb.shiftCount = 0
-local ChainLinkTargetOne, ChainLinkTargetTwo = {}, {}
+local ChainLinkTargets = {}
 local playerName = UnitName("player")
 local SiesmicTimers = {18.4, 25.9, 29.3, 12.9, 25.5, 30.5, 12.6, 25.9, 30.6}
 
@@ -87,8 +87,7 @@ function mod:OnCombatStart(delay)
 	self.vb.linkCount = 0
 	self.vb.chainSlaimCount = 0
 	self.vb.rubbleCount = 0
-	table.wipe(ChainLinkTargetOne)
-	table.wipe(ChainLinkTargetTwo)
+	table.wipe(ChainLinkTargets)
 	timerChainLinkCD:Start(4.7-delay, 1)
 	timerFallingRubbleCD:Start(13.2-delay, 1)
 	timerDestructiveStompCD:Start(18.3-delay, 1)
@@ -98,10 +97,10 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		self.vb.shiftCount = 0
 		timerSiesmicShiftCD:Start(18.4, 1)
-		if self.Options.InfoFrame then
-			DBM.InfoFrame:SetHeader(DBM_CORE_L.NO_DEBUFF:format(DBM:GetSpellInfo(342410)))
-			DBM.InfoFrame:Show(5, "playergooddebuff", 342410)--TODO, change number when columns work again
-		end
+--		if self.Options.InfoFrame then
+--			DBM.InfoFrame:SetHeader(DBM_CORE_L.NO_DEBUFF:format(DBM:GetSpellInfo(342410)))
+--			DBM.InfoFrame:Show(5, "playergooddebuff", 342410)--TODO, change number when columns work again
+--		end
 	end
 --	if self.Options.RangeFrame then
 --		DBM.RangeCheck:Show(4)
@@ -175,33 +174,33 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 331314 then
 		warnStunnedImpact:Show(args.destName)
 		timerStunnedImpact:Start(args.destName)
-	elseif spellId == 342419 or spellId == 342420 then
+	elseif spellId == 342420 then--spellId == 342419 or
 		--Combat log order is all 342419 first, then all 342420
-		if spellId == 342419 then
-			ChainLinkTargetOne[#ChainLinkTargetOne + 1] = args.destName
-		else
-			ChainLinkTargetTwo[#ChainLinkTargetTwo + 1] = args.destName
+		--Update, both spell Ids now have source and des names, so can just ignore one spell Id entirely and apply source/dest to check for pairs
+		ChainLinkTargets[#ChainLinkTargets + 1] = args.sourceName
+--		warnChainLink:CombinedShow(0.3, args.destName)
+		local icon = #ChainLinkTargets--Generate icon on the evens, because then we can divide it by 2 to assign raid icon to that pair
+		local playerIsInPair = false
+		if args.sourceName == playerName then
+			specWarnChainLink:Show(args.destName)
+			specWarnChainLink:Play("gather")
+			playerIsInPair = true
+		elseif args.destName == playerName then
+			specWarnChainLink:Show(args.sourceName)
+			specWarnChainLink:Play("gather")
+			playerIsInPair = true
 		end
-		warnChainLink:CombinedShow(0.3, args.destName)
-		local icon
-		if spellId == 342420 then
-			icon = #ChainLinkTargetTwo--Generate icon on the evens, because then we can divide it by 2 to assign raid icon to that pair
-			local playerIsInPair = false
-			if ChainLinkTargetOne[icon] == playerName then
-				specWarnChainLink:Show(ChainLinkTargetTwo[icon])
-				specWarnChainLink:Play("gather")
-				playerIsInPair = true
-			elseif ChainLinkTargetTwo[icon] == playerName then
-				specWarnChainLink:Show(ChainLinkTargetOne[icon])
-				specWarnChainLink:Play("gather")
-				playerIsInPair = true
+		if playerIsInPair then
+			--On mythic, two pairs won't have an icon available, so we just assign it SOMETHING
+			if icon == 9 then
+				icon = "(°,,°)"
+			elseif icon == 10 then
+				icon = "(•_•)"
 			end
-			if playerIsInPair then
-				self:Unschedule(ChainLinkYellRepeater)
-				if type(icon) == "number" then icon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(icon, "") end
-				self:Schedule(2, ChainLinkYellRepeater, self, icon, 0)
-				yellChainLink:Yell(icon)
-			end
+			self:Unschedule(ChainLinkYellRepeater)
+			if type(icon) == "number" then icon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(icon, "") end
+			self:Schedule(2, ChainLinkYellRepeater, self, icon, 0)
+			yellChainLink:Yell(icon)
 		end
 	elseif spellId == 335470 then
 		self.vb.chainSlaimCount = self.vb.chainSlaimCount + 1
@@ -214,8 +213,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnChainSlam:Show(args.destName)
 		end
-	elseif spellId == 341294 then
-		warnVengefulRage:Show(args.destName)
+--	elseif spellId == 341294 then
+--		warnVengefulRage:Show(args.destName)
 	elseif spellId == 340817 then
 		if self:AntiSpam(8, 9) then
 			self.vb.shiftCount = self.vb.shiftCount + 1
@@ -245,7 +244,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 331314 then
 		timerStunnedImpact:Stop(args.destName)
-	elseif spellId == 342419 or spellId == 342420 then
+	elseif spellId == 342419 or spellId == 342420 then--Both spellIds checked on purpose here for personal removal
 		if args:IsPlayer() then
 			self:Unschedule(ChainLinkYellRepeater)
 		end
@@ -270,8 +269,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 335300 then--Chain link
-		table.wipe(ChainLinkTargetOne)
-		table.wipe(ChainLinkTargetTwo)
+		table.wipe(ChainLinkTargets)
 		self.vb.linkCount = self.vb.linkCount + 1
 		timerChainLinkCD:Start(68.1, self.vb.linkCount+1)
 	elseif spellId == 341193 then--or spellId == 341103

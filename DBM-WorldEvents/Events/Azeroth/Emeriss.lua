@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Emeriss", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201031010726")
+mod:SetRevision("20201108033058")
 mod:SetCreatureID(121913)--121913 TW ID, 14889 classic ID
 --mod:SetModelID(17887)
 
@@ -21,7 +21,7 @@ local specWarnSleepingFog		= mod:NewSpecialWarningDodge(243399, nil, nil, nil, 2
 local specWarnMushroom			= mod:NewSpecialWarningYou(243451, nil, nil, nil, 1, 2)
 
 local timerNoxiousBreathCD		= mod:NewCDTimer(18.3, 243401, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Iffy
-local timerSleepingFogCD		= mod:NewCDTimer(15.8, 243399, nil, nil, nil, 3)
+local timerSleepingFogCD		= mod:NewCDTimer(12.8, 243399, nil, nil, nil, 3)
 
 --mod:AddReadyCheckOption(48620, false)
 

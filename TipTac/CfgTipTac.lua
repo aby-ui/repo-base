@@ -14,6 +14,14 @@ U1RegisterAddon("TipTac", {
         end,
     },
 
+    {
+        text = "重置所有设置",
+        confirm = "设置将无法恢复！\n确认重置并自动重载界面？",
+        callback = function()
+            TipTac_Config = nil
+            ReloadUI()
+        end
+    },
 
     {
         var="disableMouseFollowWhenCombat",
@@ -22,6 +30,20 @@ U1RegisterAddon("TipTac", {
         default=true,
     },
 
+    {
+        var="showAchvId",
+        text="成就链接中显示ID和分类ID",
+        getvalue = function() if TipTac_Config then return TipTac_Config.if_showAchievementIdAndCategory end end,
+        callback = function(cfg, v, loading)
+            if not loading and TipTac_Config then
+                TipTac_Config.if_showAchievementIdAndCategory = not not v
+            end
+        end
+    },
+
+    --TODO wanyi 选项
+
 });
 
-U1RegisterAddon("TipTacItemRef", { title = "TipTac物品提示模块", parent = "TipTac", defaultEnable = 1 })
+U1RegisterAddon("TipTacItemRef", { title = "TipTac 物品链接模块", parent = "TipTac", defaultEnable = 1 })
+U1RegisterAddon("TipTacTalents", { title = "TipTac 天赋专精模块", parent = "TipTac", defaultEnable = 1 })

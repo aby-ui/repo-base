@@ -2,116 +2,88 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("OmniCC", "zhCN")
 if not L then return end
 
-L.GeneralSettings = "显示"
-L.FontSettings = "文字风格"
-L.RuleSettings = "规则"
-L.PositionSettings = "文字位置"
-
-L.Font = "字体"
-L.FontSize = "默认字体大小"
-L.FontOutline = "字体轮廓"
-
-L.Outline_NONE = NONE
-L.Outline_OUTLINE = "细线"
-L.Outline_THICKOUTLINE = "粗线"
-
-L.MinDuration = "显示文字的最少时间"
-L.MinSize = "显示文字的最小字号"
-L.ScaleText = "使用自动缩放令文字保持在框架之内"
-L.EnableText = "启用冷却文字"
-
-L.Add = "新增"
-L.Remove = "移除"
-
-L.FinishEffect = "完成效果"
-L.MinEffectDuration = "完成效果的最少时间"
-
-L.MMSSDuration = "最少时间的文字以 MM:SS 格式来显示"
-L.TenthsDuration = "以十分之一秒为单位显示"
-
-L.ColorAndScale = "颜色 & 缩放"
-L.Color_soon = "即将到期"
-L.Color_seconds = "少于1分钟"
-L.Color_minutes = "少于1小时"
-L.Color_hours = "1小时或以上"
-L.Color_charging = "充能中(仍有层数)"
-L.Color_controlled = "昏迷计时"
-
--- 文字定位
-L.XOffset = "X 偏移"
-L.YOffset = "Y 偏移"
-
 L.Anchor = '锚点'
-L.Anchor_LEFT = '左'
-L.Anchor_CENTER = '中'
-L.Anchor_RIGHT = '右'
-L.Anchor_TOPLEFT = '左上'
-L.Anchor_TOP = '上'
-L.Anchor_TOPRIGHT = '右上'
-L.Anchor_BOTTOMLEFT = '左下'
 L.Anchor_BOTTOM = '下'
+L.Anchor_BOTTOMLEFT = '左下'
 L.Anchor_BOTTOMRIGHT = '右下'
-
---分组
-L.Groups = '分组'
-L.Group_default = '默认'
-L.Group_action = '动作'
-L.Group_aura = '光环'
-L.Group_pet = '宠物动作'
-L.AddGroup = '新增分组...'
-
---[[ 提示 ]]--
-
-L.ScaleTextTip =
-[[当启用时，此设置
-会令文字缩小来适应
-太小的框架]]
-
-L.MinDurationTip =
-[[确定多长的冷却时间才显示文字
-此设置主要用于筛选出GCD]]
-
-L.MinSizeTip =
-[[确定多大的框架能显示文字。
-该值越小，可以展示的东西越小。
-该值越大，可以展示的东西越大。
-
-一些基准:
-100 - 动作按钮的大小
-80  - 职业或宠物动作按钮的大小
-55  - 暴雪目标增益框架的大小]]
-
-L.MinEffectDurationTip =
-[[确定需要多长的冷却
-时间来显示一个完成的效果
-（例如，脉冲/闪亮）]]
-
-L.MMSSDurationTip =
-[[确定用于显示冷却时间的阈值
- 以 MM:SS 格式来显示]]
-
-L.TenthsDurationTip =
-[[确定用于显示冷却时间的阈值
-以十分之一秒格式来显示]]
-
-L.FontSizeTip =
-[[控制文字的大小]]
-
-L.FontOutlineTip =
-[[控制文字周围的轮廓厚度]]
-
-L.UseBlacklistTip =
-[[点击切换使用黑名单。
-当启用时，任何框架的名称
-与黑名单上的项目相同时
-将不会显示冷却时间。]]
-
-L.FrameStackTip =
-[[切换当鼠标悬停
-在框架时显示的名称]]
-
-L.XOffsetTip =
-[[控制文字的水平偏移]]
-
-L.YOffsetTip =
-[[控制文字的垂直偏移]]
+L.Anchor_CENTER = '中'
+L.Anchor_LEFT = '左'
+L.Anchor_RIGHT = '右'
+L.Anchor_TOP = '上'
+L.Anchor_TOPLEFT = '左上'
+L.Anchor_TOPRIGHT = '右上'
+L.ColorAndScale = '颜色和缩放'
+L.ColorAndScaleDesc = '调整颜色和缩放设置以调节不同的冷却状态'
+L.CooldownText = '冷却文字'
+L.CreateTheme = '创建主题'
+L.Display = '显示'
+L.DisplayGroupDesc = '调整冷却时显示哪些信息，以及何时显示'
+L.Duration = '持续时间'
+L.EnableCooldownSwipes = '描绘冷却刷新'
+L.EnableCooldownSwipesDesc = '冷却刷新的黑色背景来标识冷却的剩余时间'
+L.EnableText = '显示冷却文字'
+L.EnableTextDesc = '显示冷却的剩余时间文字'
+L.FinishEffect = '完成效果'
+L.FinishEffectDesc = '调整冷却结束时触发的效果'
+L.FinishEffects = '完成效果'
+L.FontFace = '字体风格'
+L.FontOutline = '字体轮廓'
+L.FontSize = '字体大小'
+L.HorizontalOffset = '水平偏移'
+L.MinDuration = '显示文字的最少时间'
+L.MinDurationDesc =	'确定多长的冷却时间才显示文字,此设置主要用于筛选出GCD'
+L.MinEffectDuration = '完成效果的最少时间'
+L.MinEffectDurationDesc = '确定需要多长的冷却时间来显示一个完成的效果'
+L.MinSize = '显示文字的最小字体'
+L.MinSizeDesc = [[确定多大的框架能显示文字:该值越小,可以展示的东西越小;该值越大,可以展示的东西越大.一些基准: 100--动作按钮的大小; 80--职业或宠物动作按钮的大小; 47--暴雪目标增益框架的大小]]
+L.MMSSDuration = 'MM:SS显示阈值'
+L.MMSSDurationDesc = '何时开始以MM:SS格式显示剩余冷却时间'
+L.Outline_NONE = '无'
+L.Outline_OUTLINE = '细边'
+L.Outline_OUTLINEMONOCHROME = '无抗锯齿'
+L.Outline_THICKOUTLINE = '粗边'
+L.Preview = '预览'
+L.RuleAdd = '新增规则'
+L.RuleAddDesc = '创建新规则'
+L.RuleEnable = '启用'
+L.RuleEnableDesc = '切换此规则.如果禁用了规则,则OmniCC将跳过对其进行检查.'
+L.RulePatterns = '模式'
+L.RulePatternsDesc = '此规则应该套用于的UI元素的名称或名称的一部分;每个模式应在单独的行中输入.'
+L.RulePriority = '优先级'
+L.RulePriorityDesc = '规则按升序计算;第一个匹配将应用于冷却时间.'
+L.RuleRemove = '移除'
+L.RuleRemoveDesc = '移除该规则'
+L.Rules = '规则'
+L.RulesDesc = '规则可用于将主题应用于UI的特定元素.如果没有与特定UI元素匹配的规则,那么它将使用默认主题.'
+L.Rulesets = '规则设置'
+L.RuleTheme = '主题'
+L.RuleThemeDesc = '要应用于匹配此规则的UI元素的主题'
+L.ScaleText = '使用自动缩放令文字保持在框架之内'
+L.ScaleTextDesc = '当启用时，此设定会令文字缩小来调节太小的框架'
+L.State_charging = '恢复充能'
+L.State_controlled = '失去控制'
+L.State_days = '至少剩余一天'
+L.State_hours = '剩余小时'
+L.State_minutes = '不到一小时'
+L.State_seconds = '不到一分钟'
+L.State_soon = '即将到期'
+L.TenthsDuration = '以十分之一秒为单位显示'
+L.TenthsDurationDesc = '确定用于显示冷却时间的阈值以十分之一秒格式来显示'
+L.TextColor = '字体颜色'
+L.TextFont = '字体'
+L.TextPosition = '文字位置'
+L.TextShadow = '文字阴影'
+L.TextShadowColor = '颜色'
+L.TextSize = '字体大小'
+L.Theme = '主题'
+L.ThemeAdd = '增加主题'
+L.ThemeAddDesc = '创建新主题'
+L.ThemeRemove = '移除'
+L.ThemeRemoveDesc = '移除此主题'
+L.Themes = '主题'
+L.ThemesDesc = "主题是OmniCC外观设置的集合;主题可以与规则结合使用,以更改UI特定部分上的OmniCC"
+L.Typography = '字体式样'
+L.TypographyDesc = '调整冷却文字的外观,例如使用哪种字体'
+L.VerticalOffset = '垂直偏移量'
+L.TimerOffset = '计时器偏移(毫秒)'
+L.TimerOffsetDesc = '从冷却计时器中减去一段时间来显示计时文字;例如可以使用此功能,在有排队的功能计时的情况下,提前结束计时器文本.'

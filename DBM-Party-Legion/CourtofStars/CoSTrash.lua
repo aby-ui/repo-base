@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201014225603")
+mod:SetRevision("20201105045819")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 
@@ -211,14 +211,16 @@ do
 		local cid = self:GetCIDFromGUID(guid)
 
 		if cid == 106468 then-- Disguise NPC
-			if select('#', C_GossipInfo.GetOptions()) > 0 then
+			local table = C_GossipInfo.GetOptions()
+			if table[1] and table[1].name then
 				C_GossipInfo.SelectOption(1)
 				C_GossipInfo.CloseGossip()
 			end
 		end
 
 		if cid == 107486 then-- Suspicious noble
-			if select('#', C_GossipInfo.GetOptions()) > 0 then
+			local table = C_GossipInfo.GetOptions()
+			if table[1] and table[1].name then
 				C_GossipInfo.SelectOption(1)
 			else
 				local clue = clues[C_GossipInfo.GetText()]

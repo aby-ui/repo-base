@@ -41,7 +41,7 @@ end
 function EUF_SetPortraitTexture(portrait, class)
 	-- Set 8 class icon
 	portrait:SetTexture("Interface\\WorldStateFrame\\Icons-Classes");
-	local Coord = CLASS_BUTTONS[class];	
+	local Coord = CLASS_ICON_TCOORDS[class];
 	portrait:SetTexCoord(Coord[1],Coord[2],Coord[3],Coord[4]);
 end
 

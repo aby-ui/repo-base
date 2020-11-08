@@ -16,7 +16,7 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-			</OnLoad>	
+			</OnLoad>
 			<OnClick>
 				TradeskillInfoUI:SkillButton_OnClick(self, button, down)
 			</OnClick>
@@ -201,7 +201,7 @@
 		</Scripts>
 	</ScrollFrame>
 
-	<Frame name="TradeskillInfoFrame" toplevel="true" frameStrata="LOW" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true" inherits="BackdropTemplate">
+	<Frame name="TradeskillInfoFrame" inherits="BackdropTemplate" toplevel="true" frameStrata="LOW" movable="true" resizable="true" parent="UIParent" enableMouse="true" hidden="true">
 		<Size>
 			<AbsDimension x="712" y="345"/>
 		</Size>
@@ -216,10 +216,6 @@
 		<Anchors>
 			<Anchor point="CENTER" />
 		</Anchors>
-
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-        </KeyValues>
 
 		<!-- Window Title -->
 		<Layers>
@@ -929,6 +925,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				self:SetBackdrop({
+					bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+					edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
+					insets = { left = 0, right = 0, top = 0, bottom = 0 },
+					edgeSize = 2,
+				})
 				self:SetBackdropColor(.05,.05,.05,.8)
 				self:SetBackdropBorderColor(.4,.4,.4,1)
 				tinsert(UISpecialFrames,self:GetName())

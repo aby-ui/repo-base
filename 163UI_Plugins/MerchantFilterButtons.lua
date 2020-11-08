@@ -41,7 +41,7 @@ local function BuildButtons()
 		["CLASS"] = {
 			text = select(1,UnitClass("player")),
 			texture = "Interface\\WorldStateFrame\\ICONS-CLASSES",
-			coord = CLASS_BUTTONS[select(2,UnitClass("player"))],
+			coord = CLASS_ICON_TCOORDS[select(2,UnitClass("player"))],
 			filter = LE_LOOT_FILTER_CLASS,
 			x = -(spacing*2) - 10
 		}

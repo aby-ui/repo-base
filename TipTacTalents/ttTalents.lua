@@ -1,82 +1,155 @@
-local L = LibStub("AceLocale-3.0"):GetLocale("TipTacTalents") 
-
 local gtt = GameTooltip;
+
+-- Addon
+local modName = ...;
+local ttt = CreateFrame("Frame",modName);
+ttt:Hide();
 
 -- String Constants
 local TALENTS_PREFIX = TALENTS..":|cffffffff ";	-- MoP: Could be changed from TALENTS to SPECIALIZATION
 local TALENTS_NA = NOT_APPLICABLE:lower();
 local TALENTS_NONE = NO.." "..TALENTS;
+local TALENTS_LOADING = SEARCH_LOADING_TEXT;
 
--- Option Constants
-local CACHE_SIZE = 25;		-- Change cache size here (Default 25)
-local INSPECT_DELAY = 0.2;	-- The time delay for the scheduled inspection
-local INSPECT_FREQ = 2;		-- How often after an inspection are we allowed to inspect again?
+-- Default Config -- NOTE: Only used when addon is stand-alone, together with TipTac, these are NOT used
+local TTT_DefConfig = {
+	showTalents = true,			-- "Main Switch", addon does nothing if false
+	talentOnlyInParty = false,	-- Only show talents for party/raid members
+	--talentFormat = 1,			-- (obsolete setting)
+	talentCacheSize = 25,		-- Change cache size here (Default 25)
+
+	inspectDelay = 0.2,			-- The time delay for the scheduled inspection (default = 0.2)
+	inspectFreq = 2,			-- How soon after an inspection are we allowed to inspect again? (default = 2)
+}
 
 -- Variables
-local ttt = CreateFrame("Frame","TipTacTalents");
 local cache = {};
 local current = {};
-
--- Time of the last inspect reuqest. Init this to zero, just to make sure. This is a global so other addons could use this variable as well
-lastInspectRequest = 0;
 
 -- Allow these to be accessed externally from other addons
 ttt.cache = cache;
 ttt.current = current;
 
-ttt:Hide();
+-- Time of the last inspect reuqest. Init this to zero, just to make sure.
+-- This is a global variable, so other addons can use this as well.
+lastInspectRequest = 0;
 
 -- Helper function to determine if an "Inspect Frame" is open. Native Inspect as well as Examiner is supported.
 local function IsInspectFrameOpen() return (InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()); end
 
 --------------------------------------------------------------------------------------------------------
---                                           Gather Talents                                           --
+--                                           Main Functions                                           --
 --------------------------------------------------------------------------------------------------------
 
-local function GatherTalents(isInspect)
-	-- New MoP Code
-	local spec = isInspect and GetInspectSpecialization(current.unit) or GetSpecialization();
+-- Perform the tasks needed, after we have valid inspect data available
+function ttt:InspectDataAvailable(record)
+	self:QuerySpecialization(record)
+	self:UpdateTooltip(record);
+	self:CacheUnit(record);
+end
+
+-- Queries the talent spec of the inspected unit, or player unit (MoP Code)
+function ttt:QuerySpecialization(record)
+	local spec = not record.isSelf and GetInspectSpecialization(record.unit) or GetSpecialization();
 	if (not spec or spec == 0) then
-		current.format = TALENTS_NONE;
-	elseif (isInspect) then
+		record.format = TALENTS_NONE;
+	elseif (not record.isSelf) then
 		local _, specName = GetSpecializationInfoByID(spec);
-		--local _, specName = GetSpecializationInfoForClassID(spec,current.classID);
-		current.format = specName or TALENTS_NA;
+		--local _, specName = GetSpecializationInfoForClassID(spec,record.classID);
+		record.format = specName or TALENTS_NA;
 	else
 		-- MoP Note: Is it no longer possible to query the different talent spec groups anymore?
 --		local group = GetActiveSpecGroup(isInspect) or 1;	-- Az: replaced with GetActiveSpecGroup(), but that does not support inspect?
 		local _, specName = GetSpecializationInfo(spec);
-		current.format = specName or TALENTS_NA;
+		record.format = specName or TALENTS_NA;
 	end
-	-- Set the tips line output, for inspect, only update if the tip is still showing a unit!
-	if (not isInspect) then
-		gtt:AddLine(TALENTS_PREFIX..current.format);
-	elseif (gtt:GetUnit()) then
-		for i = 2, gtt:NumLines() do
-			if ((_G["GameTooltipTextLeft"..i]:GetText() or ""):match("^"..TALENTS_PREFIX)) then
-				_G["GameTooltipTextLeft"..i]:SetFormattedText("%s%s",TALENTS_PREFIX,current.format);
-				-- Do not call Show() if the tip is fading out, this only works with TipTac, if TipTacTalents are used alone, it might still bug the fadeout
-				if (not gtt.fadeOut) then
-					gtt:Show();
-				end
-				break;
-			end
-		end
+end
+
+-- Update tooltip with the record format, but only if tooltip is still showing the unit of our record
+function ttt:UpdateTooltip(record)
+	local _, unit = gtt:GetUnit();
+	if (not unit) or (UnitGUID(unit) ~= record.guid) then
+		return;
+	elseif (self.tipLineIndex) then
+		_G["GameTooltipTextLeft"..self.tipLineIndex]:SetFormattedText("%s%s",TALENTS_PREFIX,record.format);
+	else
+		gtt:AddLine(TALENTS_PREFIX..record.format);
+		self.tipLineIndex = gtt:NumLines();
 	end
-	-- Organise Cache
-	local cacheSize = (TipTac_Config and TipTac_Config.talentCacheSize or CACHE_SIZE);
+
+	-- If GTT is visible and not fading out, call Show() to force the tooltip to resize.
+	-- We can only detect a fading out tooltip with TipTac, as that sets the .fadeOut field.
+	-- This means, when TipTacTalents is used on its own, it may bug out the size of the tooltip here.
+	if (gtt:IsVisible()) and (not gtt.fadeOut) then
+		gtt:Show();
+	end
+end
+
+-- caches the given unit record
+function ttt:CacheUnit(record)
+	local cfg = TipTac_Config or TTT_DefConfig;
+	local cacheSize = cfg.talentCacheSize;
+	-- remove previous entries of this unit
 	for i = #cache, 1, -1 do
-		if (current.name == cache[i].name) then
+		if (record.guid == cache[i].guid) then
 			tremove(cache,i);
 			break;
 		end
 	end
+	-- remove oldest entry if we are at the cache size limit
 	if (#cache > cacheSize) then
 		tremove(cache,1);
 	end
 	-- Cache the new entry
 	if (cacheSize > 0) then
-		cache[#cache + 1] = CopyTable(current);
+		cache[#cache + 1] = CopyTable(record);
+	end
+end
+
+-- starts an inspection request
+function ttt:InitiateInspectRequest(unit,record)
+	-- Wipe Current Record
+	wipe(record);
+	record.unit = unit;
+	record.name = UnitName(unit);
+	record.guid = UnitGUID(unit)
+
+	-- invalidate lineindex
+	self.tipLineIndex = nil;
+
+	-- No need for inspection on the player
+	if (UnitIsUnit(unit,"player")) then
+		record.isSelf = true;
+		self:InspectDataAvailable(record);
+		return;
+	end
+
+	-- Search cached record for this guid, and get the format from cache
+	for _, entry in ipairs(cache) do
+		if (record.guid == entry.guid) then
+			record.format = entry.format;
+			break;
+		end
+	end
+
+	-- Queue a delayed inspect request
+	if (CanInspect(unit)) and (not IsInspectFrameOpen()) then
+		local cfg = TipTac_Config or TTT_DefConfig;
+		local freq = (cfg.inspectFreq or TTT_DefConfig.inspectFreq);	-- Az: remove this extra fallback once a new main TipTac is released
+		local delay = (cfg.inspectDelay or TTT_DefConfig.inspectDelay);	-- Az: remove this extra fallback once a new main TipTac is released
+
+		local lastInspectTime = (GetTime() - lastInspectRequest);
+		self.nextUpdate = (lastInspectTime > freq) and delay or (freq - lastInspectTime + delay);
+		self:Show();
+
+		if (not record.format) then
+			record.format = TALENTS_LOADING;
+		end
+	end
+
+	-- if we have something to show already, cached format or loading text, update the tip
+	if (record.format) then
+		self:UpdateTooltip(record);
 	end
 end
 
@@ -84,21 +157,22 @@ end
 --                                           Event Handling                                           --
 --------------------------------------------------------------------------------------------------------
 
--- OnEvent
-ttt:SetScript("OnEvent",function(self,event,guid)
+-- OnEvent [INSPECT_READY] -- Inspect data ready
+ttt:SetScript("OnEvent",function(self,event,guid,...)
 	self:UnregisterEvent(event);
 	if (guid == current.guid) then
-		GatherTalents(1);
+		ttt:InspectDataAvailable(current);
 	end
 end);
 
--- OnUpdate
+-- OnUpdate -- Sends the inspect request after a delay
 ttt:SetScript("OnUpdate",function(self,elapsed)
 	self.nextUpdate = (self.nextUpdate - elapsed);
 	if (self.nextUpdate <= 0) then
 		self:Hide();
 		-- Make sure the mouseover unit is still our unit
-		-- Check IsInspectFrameOpen() again: Since if the user right-clicks a unit frame, and clicks inspect, it could cause TTT to schedule an inspect, while the inspection window is open
+		-- Check IsInspectFrameOpen() again: Since if the user right-clicks a unit frame, and clicks inspect,
+		-- it could cause TTT to schedule an inspect, while the inspection window is open
 		if (UnitGUID("mouseover") == current.guid) and (not IsInspectFrameOpen()) then
 			lastInspectRequest = GetTime();
 			self:RegisterEvent("INSPECT_READY");
@@ -107,14 +181,17 @@ ttt:SetScript("OnUpdate",function(self,elapsed)
 	end
 end);
 
--- HOOK: OnTooltipSetUnit
+-- HOOK: OnTooltipSetUnit -- Will schedule a delayed inspect request
 gtt:HookScript("OnTooltipSetUnit",function(self,...)
     if IsAddOnLoaded("TinyInspect") then return end
-	if (TipTac_Config) and (TipTac_Config.showTalents == false) then
+	local cfg = TipTac_Config or TTT_DefConfig;
+	if not (cfg.showTalents) then
 		return;
 	end
+
 	-- Abort any delayed inspect in progress
 	ttt:Hide();
+
 	-- Get the unit -- Check the UnitFrame unit if this tip is from a concated unit, such as "targettarget".
 	local _, unit = self:GetUnit();
 	if (not unit) then
@@ -123,45 +200,20 @@ gtt:HookScript("OnTooltipSetUnit",function(self,...)
 			unit = mFocus.unit;
 		end
 	end
+
 	-- No Unit or not a Player
 	if (not unit) or (not UnitIsPlayer(unit)) then
 		return;
 	end
+
 	-- Show only talents for people in your party/raid
-	if (TipTac_Config and TipTac_Config.talentOnlyInParty and not UnitInParty(unit) and not UnitInRaid(unit)) then
+	if (cfg.talentOnlyInParty and not UnitInParty(unit) and not UnitInRaid(unit)) then
 		return;
 	end
-	-- Only bother for players over level 9
+
+	-- No need to inspect players who has not yet gotten a specialization
 	local level = UnitLevel(unit);
-	if (level > 9 or level == -1) then
-		-- Wipe Current Record
-		wipe(current);
-		current.unit = unit;
-		current.name = UnitName(unit);
-		current.guid = UnitGUID(unit)
-		-- No need for inspection on the player
-		if (UnitIsUnit(unit,"player")) then
-			GatherTalents();
-			return;
-		end
-		-- Show Cached Talents, If Available
-		local cacheLoaded = false;
-		for _, entry in ipairs(cache) do
-			if (current.name == entry.name) then
-				self:AddLine(TALENTS_PREFIX..entry.format);
-				current.format = entry.format;
-				cacheLoaded = true;
-				break;
-			end
-		end
-		-- Queue an inspect request
-		if (CanInspect(unit)) and (not IsInspectFrameOpen()) then
-			local lastInspectTime = (GetTime() - lastInspectRequest);
-			ttt.nextUpdate = (lastInspectTime > INSPECT_FREQ) and INSPECT_DELAY or (INSPECT_FREQ - lastInspectTime + INSPECT_DELAY);
-			ttt:Show();
-			if (not cacheLoaded) then
-				self:AddLine(TALENTS_PREFIX..L["Loading..."]);
-			end
-		end
+	if (level >= 10 or level == -1) then
+		ttt:InitiateInspectRequest(unit,current);
 	end
 end);

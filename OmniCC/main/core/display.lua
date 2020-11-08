@@ -119,31 +119,26 @@ function Display:CalculateScaleRatio()
 end
 
 function Display:AddCooldown(cooldown)
-    local cooldowns = self.cooldowns
-    if not cooldowns[cooldown] then
-        cooldowns[cooldown] = true
-    end
-
-    self:UpdatePrimaryCooldown()
-    self:UpdateTimer()
+    self.cooldowns[cooldown] = true
+    self:UpdateActiveCooldown()
 end
 
 function Display:RemoveCooldown(cooldown)
     local cooldowns = self.cooldowns
+
     if cooldowns[cooldown] then
         cooldowns[cooldown] = nil
-
-        self:UpdatePrimaryCooldown()
-        self:UpdateTimer()
+        self:UpdateActiveCooldown()
     end
 end
 
-function Display:UpdatePrimaryCooldown()
+function Display:UpdateActiveCooldown()
     local cooldown = self:GetCooldownWithHighestPriority()
 
     if self.activeCooldown ~= cooldown then
         self.activeCooldown = cooldown
 
+        -- reposition the display to be above the cooldown
         if cooldown then
             self:SetAllPoints(cooldown)
             self:SetFrameLevel(cooldown:GetFrameLevel() + 7)
@@ -151,6 +146,10 @@ function Display:UpdatePrimaryCooldown()
             self:UpdateCooldownTextPositionSizeAndColor()
         end
     end
+
+    -- always try to update the timer here
+    -- as the active cooldown's duration may have changed
+    self:UpdateTimer()
 end
 
 function Display:UpdateTimer()

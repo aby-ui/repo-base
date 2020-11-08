@@ -1,7 +1,11 @@
-﻿local L = LibStub("AceLocale-3.0"):NewLocale("TipTac", "zhCN")
-if not L then return end 
--- TipTacOptions.lua
--- DropDown Lists		
+--[[------------------------------------------------------------
+zhCN locale by AbyUI
+---------------------------------------------------------------]]
+local name, private = ...
+local L = CoreBuildLocale()
+private.L = L
+
+if not (GetLocale() == "zhCN" or GetLocale() == "zhTW") then return end
 L["|cffffa0a0None"] = "|cffffa0a0无";
 L["Outline"] = "轮廓";
 L["Thick Outline"] = "粗轮廓";
@@ -17,14 +21,12 @@ L["Bottom Right"] = "右下";
 L["Left"] = "左侧";
 L["Right"] = "右侧";
 L["Center"] = "中间";
---L["|cffffa0a0None"] = "|cffffa0a0无";
 L["Percentage"] = "百分比";
 L["Current Only"] = "仅当前";
 L["Values"] = "数值";
 L["Values & Percent"] = "数值 & 百分比";
 L["Deficit"] = "损失";
--- Options		
--- General		
+-- General
 L["General"] = "常规";
 L["Enable TipTac Unit Tip Appearance"] = "启用 TipTac 单位提示外观";
 L["Will change the appearance of how unit tips look. Many options in TipTac only work with this setting enabled.\nNOTE: Using this options with a non English client may cause issues!"] = "改变单位提示的外观. 多数 TipTac 选项仅在此设置启用时起作用.\n注意: 在非英文客户端上使用此选项可能导致冲突!";
@@ -36,9 +38,9 @@ L["Show Who Targets the Unit"] = "看谁把该单位作为目标";
 L["When in a raid or party, the tip will show who from your group is targeting the unit"] = "在团队或小队中时, 提示信息将显示你团队中有谁把该单位作为目标";
 L["Show Player Gender"] = "显示玩家性别";
 L["This will show the gender of the player. E.g. \"85 Female Blood Elf Paladin\"."] = "这将显示玩家的性别. 如 \"85 女性 血精灵 圣骑士\".";
-L["Name Type"] = "姓名格式";
+L["Name & Title"] = "姓名与头衔"
 L["Name only"] = "仅名字";
-L["Use player titles"] = "使用玩家头衔";
+L["Name + title"] = "名字 + 头衔"
 L["Copy from original tip"] = "复制自原始提示信息";
 L["Mary Sue Protocol"] = "Mary Sue 协议";
 L["Show Unit Realm"] = "显示单位服务器";
@@ -53,10 +55,14 @@ L["Last line"] = "末行";
 L["Targeting You Text"] = "以你为目标时文本";
 -- Special		
 L["Special"] = "特殊";
+L["Enable Battle Pet Tips"] = "启用战斗宠物提示";
+L["Will show a special tip for both wild and companion battle pets. Might need to be disabled for certain non-English clients"] = "将为野生和伙伴战斗宠物显示一个特殊的鼠标提示。在非英语客户端中可能需要关闭此选项";
 L["Tooltip Scale"] = "游戏提示信息缩放";
 L["Tip Update Frequency"] = "提示刷新频率";
 L["Enable ChatFrame Hover Hyperlinks"] = "启用聊天框悬停显示提示信息";
 L["When hovering the mouse over a link in the chatframe, show the tooltip without having to click on it"] = "当鼠标悬停在聊天框中的链接上时, 显示提示信息而不用点击它";
+L["Hide PvP Text"] = "隐藏PvP文本"
+L["Strips the PvP line from the tooltip"] = "把PvP的信息从鼠标提示中抽掉"
 L["Hide Faction Text"] = "隐藏阵营文字";
 L["Strips the Alliance or Horde faction text from the tooltip"] = "从提示信息中去除 联盟 或者 部落 阵营文字";
 L["Hide Coalesced Realm Text"] = "隐藏 合并服务器 文字";
@@ -94,13 +100,13 @@ L["Color backdrop based on the unit's reaction"] = "背景基于单位反应着�
 L["If you want the tip's background color to be determined by the unit's reaction towards you, enable this. With the option off, the background color will be the one selected on the 'Backdrop' page"] = "如果你想提示信息的背景颜色由单位对你的反应来决定, 启用这个. 关闭选项时, 背景颜色将为'背景'页面选中的";
 L["Color border based on the unit's reaction"] = "边框基于单位反应着色";
 L["Same as the above option, just for the border\nNOTE: This option overrides class colored border"] = "与上一选项相同, 只对边框起作用\n注意: 此选项禁用职业着色边框";
--- L["Tapped Color"] = "已被接触颜色";
--- L["Hostile Color"] = "敌对颜色";
--- L["Caution Color"] = "警告颜色颜色";
--- L["Neutral Color"] = "中立颜色";
--- L["Friendly NPC or PvP Player Color"] = "友好 NPC 或 PVP 玩家颜色";
--- L["Friendly Player Color"] = "友好玩家颜色";
--- L["Dead Color"] = "死亡颜色";
+L["Tapped Color"] = "已被接触颜色";
+L["Hostile Color"] = "敌对颜色";
+L["Caution Color"] = "警告颜色颜色";
+L["Neutral Color"] = "中立颜色";
+L["Friendly NPC or PvP Player Color"] = "友好 NPC 或 PVP 玩家颜色";
+L["Friendly Player Color"] = "友好玩家颜色";
+L["Dead Color"] = "死亡颜色";
 -- Backdrop		
 L["Backdrop"] = "背景";
 L["Background Texture"] = "背景材质";
@@ -113,14 +119,15 @@ L["Show Gradient Tooltips"] = "显示渐变提示";
 L["Display a small gradient area at the top of the tip to add a minor 3D effect to it. If you have an addon like Skinner, you may wish to disable this to avoid conflicts"] = "在提示信息顶部显示一个小的渐变区域来增加些许3D效果. 如果你有类似 Skinner 的插件, 你可以禁用此选项以避免冲突";
 L["Gradient Color"] = "渐变颜色";
 L["Select the base color for the gradient"] = "选择渐变的基本颜色";
--- Font		
+-- Font
 L["Font"] = "字体";
 L["Modify the GameTooltip Font Templates"] = "修改提示信息字体模板";
 L["For TipTac to change the GameTooltip font templates, and thus all tooltips in the User Interface, you have to enable this option.\nNOTE: If you have an addon such as ClearFont, it might conflict with this option."] = "要使用 TipTac 改变游戏提示信息字体模板, 以及所有玩家界面的提示信息, 你需要启用此选项.\n注意: 如果你有类似 ClearFont 的插件, 也许会与此选项冲突.";
 L["Font Face"] = "字体名称";
 L["Font Flags"] = "字体标志";
 L["Font Size"] = "字体尺寸";
-L["Font Size Delta"] = "字体尺寸变化";
+L["Font Size Header Delta"] = "标题字体尺寸增量"
+L["Font Size Small Delta"] = "小字体尺寸增量"
 -- Classify		
 L["Classify"] = "分类";
 L["Minus"] = "负面";
@@ -140,9 +147,6 @@ L["Instantly Hide World Frame Tips"] = "立刻隐藏世界框体提示";
 L["This option will make most tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = "此选项将在你的鼠标离开世界单位后使来自该单位的提示立刻消失. 例如邮箱, 草药或箱子.\n注意: 不对所有世界单位起作用.";
 -- Bars		
 L["Bars"] = "状态条";
--- L["Font Face"] = "字体名称";
--- L["Font Flags"] = "字体标志";
--- L["Font Size"] = "字体尺寸";
 L["Bar Texture"] = "状态条材质";
 L["Bar Height"] = "状态条高度";
 -- Bar Types		
@@ -151,7 +155,7 @@ L["Hide the Default Health Bar"] = "隐藏默认生命条";
 L["Check this to hide the default health bar"] = "选中则隐藏默认生命条";
 L["Show Condensed Bar Values"] = "显示简化状态条数值";
 L["You can enable this option to condense values shown on the bars. It does this by showing 57254 as 57.3k as an example"] = "你可以启用此选项来简化显示在状态条上的数值. 例如它通过显示 57254 为 57.3k 来运作";
-L["Condense Type"] = "简化类型";
+L["Condense Type"] = "数值简写方式";
 L["k/m/g"] = "k/m/g";
 L["Wan/Yi"] = "万/亿";
 L["Show Health Bar"] = "显示生命条";
@@ -193,6 +197,8 @@ L["Show Faction Icon"] = "显示阵营图标";
 L["Shows the faction icon next to the tip"] = "在提示旁显示阵营图标";
 L["Show Combat Icon"] = "显示战斗图标";
 L["Shows a combat icon next to the tip, if the unit is in combat"] = "如果单位在战斗中, 则在提示旁显示战斗图标";
+L["Show Class Icon"] = "显示职业图标";
+L["For players, this will display the class icon next to the tooltip"] = "如果鼠标提示显示的是一个玩家，则在提示后面显示其职业图标";
 L["Icon Anchor"] = "图标锚点";
 L["Icon Dimension"] = "图标尺寸";
 -- Anchors		
@@ -226,20 +232,20 @@ L["Layouts"] = "布局";
 L["Layout Template"] = "布局模板";
 -- L["Save Layout"] = "保存布局";
 -- L["Delete Layout"] = "删除布局";
--- TipTacTalents Support		
+-- TipTacTalents Support
 L["Talents"] = "天赋";
-L["Enable TipTacTalents"] = "启用 TipTacTalents";
+L["Enable TipTacTalents"] = "启用天赋专精模块";
 L["This option makes the tip show the talent specialization of other players"] = "此选项将使提示显示其他玩家天赋";
-L["Only Show Talents for Players in Party or Raid"] = "仅显示小队或团队中玩家的天赋";
+L["Only Show Talents for Party and Raid Members"] = "仅显示小队或团队中玩家的天赋";
 L["When you enable this, only talents of players in your party or raid will be requested and shown"] = "当启用此选项, 只有你小队或团队中的玩家的天赋将被查询并显示";
 -- L["Talent Format"] = "天赋格式";
 -- L["Elemental (57/14/00)"] = "元素 (57/14/00)";
 -- L["Elemental"] = "元素";
 -- L["57/14/00"] = "57/14/00";
 L["Talent Cache Size"] = "天赋缓存大小";
--- TipTacItemRef Support		
-L["ItemRef"] = "物品信息";
-L["Enable ItemRefTooltip Modifications"] = "启用 ItemRefTooltip 调整";
+-- TipTacItemRef Support
+L["ItemRef"] = "链接与增益";
+L["Enable ItemRefTooltip Modifications"] = "启用聊天链接及增益信息模块";
 L["Turns on or off all features of the TipTacItemRef addon"] = "开启或关闭所有 TipTacItemRef 插件的功能";
 L["Information Color"] = "信息颜色";
 L["The color of the various tooltip lines added by these options"] = "通过这些选项添加的各种提示信息行的颜色";
@@ -247,8 +253,10 @@ L["Show Item Tips with Quality Colored Border"] = "显示按质量对边框进�
 L["When enabled and the tip is showing an item, the tip border will have the color of the item's quality"] = "当启用并且显示物品提示信息时, 提示边框将会有该物品品质的颜色";
 L["Show Aura Tooltip Caster"] = "光环提示信息显示施法者";
 L["When showing buff and debuff tooltips, it will add an extra line, showing who cast the specific aura"] = "当显示增益和减益提示信息, 将添加额外信息行, 显示谁施放了指定的光环";
-L["Show Item Level & ID"] = "显示物品等级 & 编号";
-L["For item tooltips, show their itemLevel and itemID"] = "对于物品提示信息, 显示它们的物品等级及物品编号";
+L["Show Item Level"] = "显示物品等级"
+L["For item tooltips, show their itemLevel (Combines with itemID).\nNOTE: This will remove the default itemLevel text shown in tooltips"] = "对于物品，鼠标信息中显示它们的物品等级(与物品ID一起).\n注意：这个选项会移除默认的物品等级信息"
+L["Show Item ID"] = "显示物品编号"
+L["For item tooltips, show their itemID (Combines with itemLevel)"] = "对于物品，鼠标提示中显示它们的物品ID(与物品等级一起)"
 L["Show Spell ID & Rank"] = "显示法术编号 & 等级";
 L["For spell and aura tooltips, show their spellID and spellRank"] = "对于法术和状态提示信息, 显示它们的法术编号及法术等级";
 -- L["Show Currency ID"] = "显示货币编号";
@@ -273,7 +281,7 @@ L["Anchor"] = "锚点";
 L["Defaults"] = "默认";
 L["Close"] = "关闭";
 
--- DropDowns.lua
+--layouts and drop down
 L["<<YOU>>"] = "<<你>>";
 L["-%s "] = "-%s ";
 L["~%s "] = "~%s ";
@@ -290,7 +298,7 @@ L["Level %s|cffffcc00 Elite"] = "等级 %s|cffffcc00 精英";
 L["Level %s|cffff0000 Boss"] = "等级 %s|cffff0000 首领";
 L["Level %s|cffff66ff Rare"] = "等级 %s|cffff66ff 稀有";
 L["Level %s|cffffaaff Rare Elite"] = "等级 %s|cffffaaff 稀有精英";
-L["|cffff0000<<YOU>>"] = "|cffff0000<<YOU>>";
+L["|cffff0000<<YOU>>"] = "|cffff0000<<你>>";
 L["|rLevel -%s"] = "|r等级 -%s";
 L["|rLevel ~%s"] = "|r等级 ~%s";
 L["|rLevel %s"] = "|r等级 %s";
@@ -298,33 +306,9 @@ L["|rLevel %s (Elite)"] = "|r等级 %s (精英)";
 L["|rLevel %s (Boss)"] = "|r等级 %s (首领)";
 L["|rLevel %s (Rare)"] = "|r等级 %s (稀有)";
 L["|rLevel %s (Rare Elite)"] = "|r等级 %s (稀有精英)";
+
 L["|cff80ff80Layout Loaded"] = "|cff80ff80布局已载入";
 L["|cffff8080Layout Deleted!"] = "|cffff8080布局已删除!";
+L["%d config variables will be applied"] = "将设置%d个参数"
 L["|cff00ff00Pick Layout..."] = "|cff00ff00选择布局...";
 L["|cff00ff00Delete Layout..."] = "|cff00ff00删除布局...";
-
--- AzDropDown.lua
-L["|cff00ff00Select Value..."] = "选择数值";
-
--- core.lua
-L["Not specified"] = "未指定";
-L["Tapped"] = "已被接触";
-L["TipTacAnchor"] = "TipTac锚点";
-L["Could not open TicTac Options: |1"] = "无法打开 TicTac 选项: |1";
-L["|r. Please make sure the addon is enabled from the character selection screen."] = "|r. 请确定插件已在角色选择界面启动.";
-L["The following |2parameters|r are valid for this addon:"] = "以下 |2parameters|r 可用于此插件:";
-L[" |2anchor|r = Shows the anchor where the tooltip appears"] = " |2anchor|r = 显示提示信息出现的锚点";
-L["Female"] = "女性";
-L["Male"] = "男性";
-L[" <DC>"] = " <离线>";
-L[" <AFK>"] = " <暂离>";
-L[" <DND>"] = " <请勿打扰>";
-L["\n|cffffd100Targeting: "] = "\n|cffffd100目标: ";
-L["Targeted By (|cffffffff%d|r): %s"] = "被以下选中 (|cffffffff%d|r): %s";
-L["%.1fWan"] = "%.1f万";
-L["%.2fYi"] = "%.2f亿";
-
-L["Enable Battle Pet Tips"] = "启用战斗宠物提示";
-L["Will show a special tip for both wild and companion battle pets. Might need to be disabled for certain non-English clients"] = "将为野生和伙伴战斗宠物显示一个特殊的鼠标提示。在非英语客户端中可能需要关闭此选项";
-L["Show Class Icon"] = "显示职业图标";
-L["For players, this will display the class icon next to the tooltip"] = "如果鼠标提示显示的是一个玩家，则在提示后面显示其职业图标";

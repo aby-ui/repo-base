@@ -1,15 +1,11 @@
 ## Interface: 90001
-## Version: 18.07.22
+## Version: 20.10.31
 ## Title: TipTacItemRef
 ## Author: Aezay (Earthen Ring EU)
-## Author-zhCN: Aezay (Earthen Ring EU), Localized by springsnow (Feathermoon CN)
 ## Notes: Improved ItemRefTooltip
 ## OptionalDeps: TipTac
-Local_enUS.lua
-Local_zhCN.lua
-Local_zhTW.lua
+abyLocales.lua
 LibItemString.lua
-
 ttItemRef.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 物品提示模块
