@@ -1,11 +1,11 @@
 local L = select(2, ...).L
 
 local function fixInCombat()
-    return InCombatLockdown() and U1GetCfgValue("tiptac/disableMouseFollowWhenCombat")
+    return InCombatLockdown() and U1GetCfgValue and U1GetCfgValue("tiptac/disableMouseFollowWhenCombat")
 end
 
 CoreOnEvent("PLAYER_REGEN_DISABLED", function()
-    if U1GetCfgValue("tiptac/disableMouseFollowWhenCombat") then GameTooltip:Hide() end
+    if U1GetCfgValue and U1GetCfgValue("tiptac/disableMouseFollowWhenCombat") then GameTooltip:Hide() end
 end)
 
 local _G = getfenv(0);
@@ -227,6 +227,8 @@ for k,v in pairs({
 
    	mouseOffsetX = 45,
    	mouseOffsetY = -110,
+    top = 200, --没有top和left就会显示锚点框体
+    left = (GetScreenWidth() or 2000) - 250,
 
    	-- Talents
    	showTalents = true,
@@ -388,7 +390,7 @@ tt:SetPoint("CENTER");
 tt:Hide();
 
 tt.text = tt:CreateFontString(nil,"ARTWORK","GameFontHighlight");
-tt.text:SetText("TipTacAnchor");
+tt.text:SetText(L"TipTacAnchor");
 tt.text:SetPoint("LEFT",6,0);
 
 tt.close = CreateFrame("Button",nil,tt,"UIPanelCloseButton");
@@ -963,9 +965,6 @@ local function GTT_SetDefaultAnchor(tooltip,parent)
 	if (not tooltip or not parent) then
 		return;
 	end
-    if fixInCombat() then
-        return
-    end
 
 	-- Get the current anchoring type and point based on the frame under the mouse and anchor settings
 	gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
@@ -974,7 +973,12 @@ local function GTT_SetDefaultAnchor(tooltip,parent)
 	-- we have to just set it here statically, as we wont have the OnUpdate hooked for that tooltip
 	if (tooltip ~= gtt) and (gtt_anchorType == "mouse") then
 		tooltip:SetOwner(parent,"ANCHOR_CURSOR_RIGHT",cfg.mouseOffsetX,cfg.mouseOffsetY);
-	else
+    else
+        if fixInCombat() then
+            if gtt_anchorType == "mouse" then
+                return
+            end
+        end
 		-- Since TipTac handles all the anchoring, we want to use "ANCHOR_NONE" here
 		tooltip:SetOwner(parent,"ANCHOR_NONE");
 		tooltip:ClearAllPoints();
@@ -983,21 +987,6 @@ local function GTT_SetDefaultAnchor(tooltip,parent)
 			-- Although we anchor the frame continuously in OnUpdate, we must anchor it initially here to avoid flicker on the first frame its being shown
 			tt:AnchorFrameToMouse(tooltip);
 		elseif (gtt_anchorType == "parent") and (parent ~= UIParent) then
-            -------------------------------------------------
-            -- 移除 默认位置
-            -- by alee
-            local points = {}
-            for i=1,tooltip:GetNumPoints() do
-                local point, relativeTo, relativePoint, xOfs, yOfs = tooltip:GetPoint(i)
-                if relativePoint~="BOTTOMRIGHT" and point~="BOTTOMRIGHT" and UIParent~=relativeTo then
-                    tinsert(points,{point, relativeTo, relativePoint, xOfs, yOfs})
-                end
-            end
-            tooltip:ClearAllPoints()
-            for i=1,#points do
-                tooltip:SetPoint(unpack(points[i]))
-            end
-            -- by alee
 			-- anchor to the opposite edge of the parent frame
 			tooltip:SetPoint(TT_MirrorAnchorsSmart[gtt_anchorPoint] or TT_MirrorAnchors[gtt_anchorPoint],parent,gtt_anchorPoint);
 		else
@@ -1059,3 +1048,8 @@ function tt:AddModifiedTip(tip,noHooks)
 		end
 	end
 end
+
+--abyui 鼠标提示闪烁, 延迟加载是因为要在其他hook之后(例如TipTacItemRef)
+C_Timer.After(1, function()
+    hooksecurefunc(GameTooltip, "SetUnitAura", function(self) gttScriptHooks.OnUpdate(self) end)
+end)

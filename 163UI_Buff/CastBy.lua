@@ -13,7 +13,7 @@ local co = setmetatable({}, {__index = function(t, cl)
 end })
 
 function CastByHook(auraFunc, ...)
-    if IsAddOnLoaded("TipTac") then return end
+    if IsAddOnLoaded("TipTacItemRef") then return end
 	local _, uid, id, f = ...
 	-- if o == SetUnitBuff then
 	-- 	f = "HELPFUL " .. (f or "")

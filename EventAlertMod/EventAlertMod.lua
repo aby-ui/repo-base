@@ -3093,7 +3093,7 @@ end
 -----------------------------------------------------------------
 function EAFun_HookTooltips()
 	hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
-        if IsAddOnLoaded("TipTac") then return end
+        if IsAddOnLoaded("TipTacItemRef") then return end
 		local id = select(11,UnitBuff(...))
 		if id then
 			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
@@ -3102,7 +3102,7 @@ function EAFun_HookTooltips()
 	end)
 
 	hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
-        if IsAddOnLoaded("TipTac") then return end
+        if IsAddOnLoaded("TipTacItemRef") then return end
 		local id = select(10,UnitDebuff(...)) --aby8
 		if id then
 			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
@@ -3111,7 +3111,7 @@ function EAFun_HookTooltips()
 	end)
 
 	hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
-        if IsAddOnLoaded("TipTac") then return end
+        if IsAddOnLoaded("TipTacItemRef") then return end
 		local id = select(10,UnitAura(...))
 		if id then
 			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
@@ -3120,7 +3120,7 @@ function EAFun_HookTooltips()
 	end)
 
 	hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
-        if IsAddOnLoaded("TipTac") then return end
+        if IsAddOnLoaded("TipTacItemRef") then return end
 		if string.find(link,"^spell:") then
 			local id = string.sub(link,7)
 			ItemRefTooltip:AddDoubleLine(EX_XCLSALERT_SPELL,id)
@@ -3129,7 +3129,7 @@ function EAFun_HookTooltips()
 	end)
 
 	GameTooltip:HookScript("OnTooltipSetSpell", function(self)
-        if IsAddOnLoaded("TipTac") then return end
+        if IsAddOnLoaded("TipTacItemRef") then return end
 		local id = select(2,self:GetSpell())
 		if id then
 			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)

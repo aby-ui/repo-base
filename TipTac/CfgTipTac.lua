@@ -1,5 +1,6 @@
 U1RegisterAddon("TipTac", {
     title = "鼠标提示增强",
+    load = "NORMAL",
     defaultEnable = 1,
 
     tags = { TAG_INTERFACE },
