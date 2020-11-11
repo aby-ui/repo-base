@@ -589,7 +589,7 @@ end
 function UUI.Top.Create(main)
     --左上角LOGO及文字
     main:CreateTexture():Key("logo"):SetTexture(UUI.Tex"UI2-logo"):TL(-18, 38):Size(87):un()
-    main:CreateTexture():Key("logof"):TL(-18, 38):Size(87):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):SetAlpha(0.5):up()
+    main:CreateTexture():Key("logof"):TL(-18-5, 38+1):Size(87):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):SetAlpha(0.5):up()
     main:Button():TL(-8, 48):Size(67):SetScript("OnClick", function() local f = U1DonatorsFrame or U1Donators:CreateFrame() CoreUIShowOrHide(f, not f:IsShown()) end):un()
     UICoreFrameFlash(main.logof, 1 , 1, -1, nil, 0, 0)
 
@@ -1904,7 +1904,7 @@ function UUI.CreateUI()
     :SetScript("OnEnter", function(self) UICoreFrameFlash(self:GetHighlightTexture(), 0.5 , 0.5, -1,nil, 0, 0) end)
     :SetScript("OnLeave", function(self) UICoreFrameFlashStop(self:GetHighlightTexture()) end)
     :CreateTexture():SetTexture(UUI.Tex"UI2-logo"):Size(87):TL(-14, 18):up()
-    :CreateTexture():TL(-20,20):BR(20, -20):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.8):ToTexture("Highlight"):up()
+    :CreateTexture():TL(-20-5,20+7):BR(20-5, -20+7):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.8):ToTexture("Highlight"):up()
     :un()
     CoreUIEnableTooltip(GameMenuFrame.btn163, L["爱不易"], L["点击爱不易标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"])
 
