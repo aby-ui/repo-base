@@ -1,0 +1,113 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  <Frame name="HandyNotes_ShadowlandsWorldMapPinTemplate" hidden="true" mixin="HandyNotes_ShadowlandsWorldMapPinMixin" virtual="true">
+    <Size x="30" y="30"/>
+    <Layers>
+      <Layer>
+        <Texture parentKey="texture" setAllPoints="true">
+        </Texture>
+      </Layer>
+    </Layers>
+  </Frame>
+
+  <Button name="HandyNotes_ShadowlandsMinimapPinTemplate" hidden="true" mixin="HandyNotes_ShadowlandsMinimapPinMixin" virtual="true">
+    <Size x="12" y="12"/>
+    <Layers>
+      <Layer level="OVERLAY">
+        <Texture parentKey="texture" setAllPoints="true" texelSnappingBias="0.0" snapToPixelGrid="false">
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
+
+  <DropDownToggleButton name="HandyNotes_ShadowlandsWorldMapOptionsButtonTemplate" frameStrata="HIGH" mixin="HandyNotes_ShadowlandsWorldMapOptionsButtonMixin" virtual="true">
+    <Size x="32" y="32"/>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="Background" file="Interface\Minimap\UI-Minimap-Background">
+          <Size x="25" y="25"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="2" y="-4"/>
+          </Anchors>
+          <Color r="1" g="1" b="1" a="1"/>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" file="Interface\Addons\HandyNotes_Shadowlands\core\artwork\icons\chest_gray.blp">
+          <Size x="20" y="20"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="6" y="-6"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY">
+        <Texture parentKey="IconOverlay" hidden="true">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent.Icon"/>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
+          </Anchors>
+          <Color r="0.0" g="0.0" b="0.0" a="0.5"/>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY" textureSubLevel="1">
+        <Texture parentKey="Border" file="Interface\Minimap\MiniMap-TrackingBorder">
+          <Size x="54" y="54"/>
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Frame parentKey="DropDown" inherits="UIDropDownMenuTemplate" clampedToScreen="true" hidden="true"/>
+    </Frames>
+    <HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnMouseDown method="OnMouseDown"/>
+      <OnMouseUp method="OnMouseUp"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave function="GameTooltip_Hide"/>
+    </Scripts>
+  </DropDownToggleButton>
+
+  <Frame name="HandyNotes_ShadowlandsTextMenuOptionTemplate" inherits="UIDropDownCustomMenuEntryTemplate" virtual="true">
+    <Size x="240" y="20"/>
+    <Layers>
+      <Layer>
+        <FontString parentKey="Text" inherits="GameFontHighlightSmallLeft" wordwrap="true" maxLines="2">
+          <Anchors>
+            <Anchor point="TOP"/>
+            <Anchor point="BOTTOM"/>
+            <Anchor point="LEFT"/>
+            <Anchor point="RIGHT"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+
+  <Frame name="HandyNotes_ShadowlandsSliderMenuOptionTemplate" inherits="UIDropDownCustomMenuEntryTemplate" virtual="true">
+    <Size x="240" y="20"/>
+    <Layers>
+      <Layer>
+        <FontString parentKey="Label" inherits="GameFontHighlightSmallLeft">
+          <Size x="65" y="20"/>
+          <Anchors><Anchor point="LEFT"/></Anchors>
+        </FontString>
+        <FontString parentKey="Value" inherits="GameFontNormalSmall">
+          <Size x="40" y="20"/>
+          <Anchors><Anchor point="RIGHT"/></Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Slider parentKey="Slider" defaultValue="1" obeyStepOnDrag="true" inherits="PropertySliderTemplate">
+        <Size x="0" y="20"/>
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.Label" relativePoint="RIGHT" x="5" y="0"/>
+          <Anchor point="RIGHT" relativeKey="$parent.Value" relativePoint="LEFT" x="-5" y="0"/>
+        </Anchors>
+      </Slider>
+    </Frames>
+  </Frame>
+</Ui>

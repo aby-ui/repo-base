@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  <Script file="colors.lua"/>
+  <Script file="util.lua"/>
+  <Include file="localization\locales.xml"/>
+  <Include file="..\localization\locales.xml"/>
+  <Script file="class.lua"/>
+  <Script file="core.lua"/>
+  <Script file="icons.lua"/>
+  <Script file="options.lua"/>
+  <Script file="dev.lua"/>
+  <Script file="map.lua"/>
+  <Script file="groups.lua"/>
+  <Script file="requirements.lua"/>
+  <Script file="nodes.lua"/>
+  <Script file="rewards.lua"/>
+  <Script file="templates.lua"/>
+  <Script file="pois.lua"/>
+
+  <!-- Must be outside of core/ for dev purposes -->
+  <Include file="..\templates.xml"/>
+</Ui>

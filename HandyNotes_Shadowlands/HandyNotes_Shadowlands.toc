@@ -1,0 +1,16 @@
+## Interface: 90001
+## Title: HandyNotes: Shadowlands
+## Version: 16
+## Notes: Shadowlands Notes
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: HandyNotes_ShadowlandsDB
+
+#embeds.xml
+core\core.xml
+plugin.xml
+
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 暗影国度宝箱
+## X-Vendor: AbyUI

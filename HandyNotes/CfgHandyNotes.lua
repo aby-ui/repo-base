@@ -89,6 +89,13 @@
     }
 });
 
+U1RegisterAddon("HandyNotes_Shadowlands", {
+    title = "暗影国度地图宝箱(9.0)",
+    defaultEnable = 1,
+    load = "LATER",
+    desc = "在9.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
+})
+
 U1RegisterAddon("HandyNotes_VisionsOfNZoth", {
     title = "恩佐斯幻象(8.3)",
     defaultEnable = 1,
