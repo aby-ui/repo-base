@@ -46,5 +46,5 @@ U1RegisterAddon("TipTac", {
 
 });
 
-U1RegisterAddon("TipTacItemRef", { title = "TipTac 物品链接模块", parent = "TipTac", defaultEnable = 1 })
+U1RegisterAddon("TipTacItemRef", { title = "TipTac 链接与增益模块", parent = "TipTac", defaultEnable = 1 })
 U1RegisterAddon("TipTacTalents", { title = "TipTac 天赋专精模块", parent = "TipTac", defaultEnable = 1 })

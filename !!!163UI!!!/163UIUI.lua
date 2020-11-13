@@ -1675,12 +1675,16 @@ function UUI.OnUpdate(self, elapsed)
         end
     end
 
+    --[[ --only update when change option or show
     self.timer = self.timer + elapsed;
     if(self.timer > 3) then
         self.timer = 0;
-        UpdateAddOnMemoryUsage()
-        UUI.Center.Refresh();
+        if not U1DB.sortByName then
+            UpdateAddOnMemoryUsage()
+            UUI.Center.Refresh();
+        end
     end
+    ]]
 end
 
 function UUI.OnSizeChanged(self)
@@ -1689,7 +1693,13 @@ end
 
 function UUI.OnShow(self)
     --self:SetSize(840, 465)
-    UpdateAddOnMemoryUsage();
+    --[[ --打开就清理内存太卡，还是切换选项后再排序吧
+    if not U1DB.sortByName then
+        UpdateAddOnMemoryUsage();
+    else
+        CoreScheduleTimer(false, 2, UpdateAddOnMemoryUsage);
+    end
+    --]]
     self.left:SetWidth(UUI.LEFT_WIDTH); --没有这句就会出问题！
 
     U1UpdateTags(); --为什么要在这里UpdateTags? 因为除此之外只有一个事件在Update了

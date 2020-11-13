@@ -143,7 +143,7 @@ L["Override Default GameTooltip Fade"] = "禁用默认提示信息渐隐";
 L["Overrides the default fadeout function of the GameTooltip. If you are seeing problems regarding fadeout, please disable."] = "禁用默认提示信息渐隐功能. 如果你发现渐隐的问题, 请禁用.";
 L["Prefade Time"] = "退色时间";
 L["Fadeout Time"] = "渐隐时间";
-L["Instantly Hide World Frame Tips"] = "立刻隐藏世界框体提示";
+L["Instantly Hide World Frame Tips"] = "立刻隐藏世界框体提示(鼠标锚点取消无效)";
 L["This option will make most tips which appear from objects in the world disappear instantly when you take the mouse off the object. Examples such as mailboxes, herbs or chests.\nNOTE: Does not work for all world objects."] = "此选项将在你的鼠标离开世界单位后使来自该单位的提示立刻消失. 例如邮箱, 草药或箱子.\n注意: 不对所有世界单位起作用.";
 -- Bars		
 L["Bars"] = "状态条";

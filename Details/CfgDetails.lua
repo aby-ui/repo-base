@@ -10,6 +10,10 @@ U1RegisterAddon("Details", {
     pics = 0,
 
     toggle = function(name, info, enable, justload)
+        if justload then
+            if GameCooltipFrame1 then GameCooltipFrame1:Hide() end
+            if GameCooltipFrame2 then GameCooltipFrame2:Hide() end
+        end
     end,
 
     {

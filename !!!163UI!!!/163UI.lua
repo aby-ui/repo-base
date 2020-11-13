@@ -24,23 +24,23 @@ CoreAddEvent("ADDON_SELECTED")
 CoreAddEvent("DB_LOADED")
 CoreAddEvent("INIT_COMPLETED")
 
-local addonToLoadSecure, addonToLoad = {}, {}
+local addonToLoad = {}, {}
 
 local function dbLoaded(db)
 
---[[
-    -- 2014082901 换回简约背包，确保该插件被激活，同时禁用分类背包（如果没有别卸载的话）
-    if (db.verison or 0) < 2014082901 then
-        U1LoadAddOn("Bagnon",true)
-        U1ToggleAddon("combuctor",nil,nil,true,true)
-    end
+    --[[
+        -- 2014082901 换回简约背包，确保该插件被激活，同时禁用分类背包（如果没有别卸载的话）
+        if (db.verison or 0) < 2014082901 then
+            U1LoadAddOn("Bagnon",true)
+            U1ToggleAddon("combuctor",nil,nil,true,true)
+        end
 
-    if (db.verison or 0) < 2014082904 then
-        tinsert(addonToLoad, "tdPack")
-    end
+        if (db.verison or 0) < 2014082904 then
+            tinsert(addonToLoad, "tdPack")
+        end
 
-    db.verison = tonumber(GetAddOnMetadata("!!!163UI!!!","X-163UI-Version")or"0")
-]]
+        db.verison = tonumber(GetAddOnMetadata("!!!163UI!!!","X-163UI-Version")or"0")
+    ]]
 end
 
 --[[ --fix7
@@ -390,7 +390,7 @@ function U1UpdateTags(onlyAffectLoaded, addonName)
         U1SortTag()
         CoreFireEvent("CURRENT_ADDONS_UPDATED") --更新数量，按钮等信息
     end
-	
+
     --这里屏蔽右侧的更新，但是如果是其他插件加载了插件，右侧不会更新
     if(not addonName or addonName==db.selectedAddon) then
         if(db.selectedAddon)then U1SelectAddon(db.selectedAddon) end;
@@ -416,7 +416,7 @@ local tagComparator = function(v1, v2)
     elseif o1 > 0 and o2 < 0 then
         return true
     elseif (o1 == o2) then
-            return v1 < v2
+        return v1 < v2
     else
         return o1 < o2;
     end
@@ -512,7 +512,7 @@ function U1RegisterAddon(name, infoReg)
             --如果是我们整合的插件则默认是LATER，否则默认是NORMAL
             infoReg.load = infoReg.load or (UI163_USER_MODE and not infoRaw.vendor and "NORMAL" or "LATER") --设置非LOD的默认的加载方式为LATER
         end
-       
+
         infoRaw.lod = (infoRaw.realLOD and infoReg.load==nil) or (infoReg.load=="DEMAND"); --reg.load可以覆盖LoadOnDemand，因为大脚魔盒之类的一些插件都加了标签
         --复制系统获取的addonInfo数据到注册的table中,因为注册的table大
         for k, v in pairs(infoRaw) do
@@ -759,7 +759,7 @@ function U1SearchAddon(text)
                     end
                 end
             end
-			-- 整合版不需要搜索插件介绍
+            -- 整合版不需要搜索插件介绍
             if false and v.filtered then
                 if searchAddonDesc(k, v, pattern) then
                     v.filtered = nil
@@ -771,17 +771,23 @@ function U1SearchAddon(text)
 end
 
 local outputOnce = {} --在全部插件加载完后才设置上值, 用来控制初始的显示
-function U1OutputAddonState(text, addon, force)
-    if force or (DEBUG_MODE or initComplete and not outputOnce[addon]) then
+function U1OutputAddonState(text, addon, duration, force)
+    local dtext = ""
+    duration = duration or 0
+    if duration > 0 then
+        local color = (duration > 250 and "ff0000") or ( duration > 100 and "ff7f00" ) or "7fff7f"
+        dtext = "，用时" .. format("|cff%s%.3f|r", color, duration/1000)
+    end
+    if duration > 100 or force or (DEBUG_MODE or initComplete and not outputOnce[addon]) then
         if not U1GetAddonInfo(addon).hide and (not U1GetAddonInfo(addon).parent or U1GetAddonInfo(U1GetAddonInfo(addon).parent).dummy) then
-            U1Message(format(text, format(L["插件-|cffffd100%s|r-"], U1GetAddonTitle(addon))));
+            U1Message(format(text .. dtext, format(L["插件-|cffffd100%s|r-"], U1GetAddonTitle(addon))));
         end
         outputOnce[addon] = 1;
     end
 end
-function U1OutputAddonLoaded(name, loaded, reason)
+function U1OutputAddonLoaded(name, loaded, reason, duration)
     if(loaded)then
-        U1OutputAddonState(L["%s加载成功"], name);
+        U1OutputAddonState(L["%s加载成功"], name, duration);
     else
         U1OutputAddonState(L["%s加载失败, 原因："]..(reason and _G["U1REASON_"..reason] or reason or L["未知"]), name);
     end
@@ -952,7 +958,7 @@ wowluacopy(qq)
 
 --- supported frameTypes (with RegisterEvent)
 local frameTypes = { "Frame", "GameTooltip", "ScrollFrame", "Cooldown", "StatusBar", "MessageFrame", "ScrollingMessageFrame", "Button", "Slider", "CheckButton", "EditBox", }
-    --"SimpleHTML", "QuestPOIFrame", "ColorSelect", "ArchaeologyDigSiteFrame", "MovieFrame", "Model", "DressUpModel", "TabardModel", "PlayerModel",
+--"SimpleHTML", "QuestPOIFrame", "ColorSelect", "ArchaeologyDigSiteFrame", "MovieFrame", "Model", "DressUpModel", "TabardModel", "PlayerModel",
 
 --只需要hook RegisterEvent. UnregisterEvent是在Simulate里用IsEventRegistered来等价实现
 local metaHooked = {}
@@ -1091,13 +1097,13 @@ end
 local loadPath = {} --用来保存当前加载的路径，递归optdeps防止死循环的
 --参数bundleSim是否直接模拟事件
 function U1LoadAddOn(name, bundleSim)
-    local before = time()
+    local before = u1debugprofilestop()
     wipe(loadPath)
     if not bundleSim then startCapturing(); end
     local result, reason = select(2, _G.pcall(U1LoadAddOnBackend, name))
     if not bundleSim then simEventsAndLoadCfgs(); end
-    if time()-before>1 then U1OutputAddonState(L["（%s加载时间较长）"], name, true) end
-    return result, reason
+    local duration = u1debugprofilestop() - before
+    return result, reason, duration
 end
 function U1LoadAddOnBackend(name)
     if IsAddOnLoaded(name) then return 1 end
@@ -1117,7 +1123,7 @@ function U1LoadAddOnBackend(name)
     if(ii.parent and not IsAddOnLoaded(ii.parent) and not iip.dummy and not loadPath[ii.parent]) then
         local loaded = U1LoadAddOnBackend(ii.parent);
         if(not loaded) then
-            U1OutputAddonState(L["%s加载失败，依赖插件["]..ii.parent..L["]无法加载。"], name, true);
+            U1OutputAddonState(L["%s加载失败，依赖插件["]..ii.parent..L["]无法加载。"], name, nil, true);
             return false, "DEP_CORRUPT";
         end
         U1GetAddonInfo(ii.parent).load = "NORMAL"; --防止其他时刻再加载的时候调用
@@ -1131,7 +1137,7 @@ function U1LoadAddOnBackend(name)
                 if GetAddOnEnableState(U1PlayerName,dep)<2 then EnableAddOn(dep) end --EnableAddOn会触发右侧显示面板，而右侧有连续显示的保护
                 local loaded = U1LoadAddOnBackend(dep);
                 if(not loaded) then
-                    U1OutputAddonState(L["%s加载失败，依赖插件["]..dep..L["]无法加载。"], ii.name, true);
+                    U1OutputAddonState(L["%s加载失败，依赖插件["]..dep..L["]无法加载。"], ii.name, nil, true);
                     return false, "DEP_CORRUPT";
                 end
             end
@@ -1204,11 +1210,12 @@ end
 function U1ToggleAddon(name, enabled, noset, deepToggleChildren, bundleSim)
 
     local info = addonInfo[name];
-    if not info then 
-        return 
+    if not info then
+        return
     end
     local reload = false;
     local status;
+    local before, realLoaded = u1debugprofilestop(), false; --因为bundleSim时，时间消耗在外面，所以要在外面统计
 
     if not bundleSim then startCapturing(name); end
 
@@ -1247,9 +1254,13 @@ function U1ToggleAddon(name, enabled, noset, deepToggleChildren, bundleSim)
         else
             if(enabled)then
                 if(not info.lod or info.loadWith and IsAddOnLoaded(info.loadWith))then
-                    local loaded, reason = U1LoadAddOn(name, true);
+                    local loaded, reason, duration = U1LoadAddOn(name, true);
                     --if(loaded) then collectgarbage() end
-                    if not noset then U1OutputAddonLoaded(name, loaded, reason); end
+                    if not loaded then
+                        U1OutputAddonLoaded(name, loaded, reason, duration);
+                    else
+                        realLoaded = true;
+                    end
                 else
                     --按需加载的
                     if not noset then U1OutputAddonState(L["%s已启用, 需要时会自动加载"], name); end
@@ -1262,6 +1273,8 @@ function U1ToggleAddon(name, enabled, noset, deepToggleChildren, bundleSim)
     local reloadChildren = U1ToggleChildren(name, enabled, noset, deepToggleChildren, true) --开启子插件的时候就会根据依赖开启了父插件, 放在前面是为了刷新右侧面板
 
     if not bundleSim then simEventsAndLoadCfgs(); end
+
+    if not noset and realLoaded then U1OutputAddonLoaded(name, true, "", u1debugprofilestop() - before); end
 
     return reload or reloadChildren;
 end
@@ -1396,8 +1409,8 @@ function U1:PLAYER_LOGIN()
 
     for name,info in pairs(addonInfo) do
         if(shouldLoadAddon(name, info, nil) or shouldLoadAddon(name, info, "LOGIN"))then
-            local loaded, reason = U1LoadAddOn(name, true);
-            U1OutputAddonLoaded(name, loaded, reason);
+            local loaded, reason, duration = U1LoadAddOn(name, true);
+            U1OutputAddonLoaded(name, loaded, reason, duration);
         end
     end
 
@@ -1480,14 +1493,6 @@ end
 
 local EnableOrLoadDependencies
 
---[[
-debugprofilestart()
-local last = 0
-if name == _ then U1DB.load_time = {} end
-local now = debugprofilestop()
-tinsert(U1DB.load_time or {}, { format("%10d", math.floor(now - last)), name, math.floor(now) , })
-last = now
---]]
 function U1:ADDON_LOADED(event, name)
     if name == _ then
 
@@ -1558,18 +1563,18 @@ function U1:ADDON_LOADED(event, name)
 
         -- Deal with info.defaultEnable property
         processDefaultEnable()
-		
-		--这里再打开
-		for name,info in pairs(addonInfo) do
-	        if(db.addons[name]==1 and not info.dummy) then
-    	        --增加这个条件是为了让所有插件都通过U1LoadAddOn加载，而不会被暴雪根据依赖关系自动加载。参见VARIABLES_LOADED里的说明。
+
+        --这里再打开
+        for name,info in pairs(addonInfo) do
+            if(db.addons[name]==1 and not info.dummy) then
+                --增加这个条件是为了让所有插件都通过U1LoadAddOn加载，而不会被暴雪根据依赖关系自动加载。参见VARIABLES_LOADED里的说明。
                 --一些插件的配置模块如果未开启则无法加载，此时可设置为protected，但不能自动设置，有一些LOD的模块还是看状态加载的
-        	    if info.realLOD or info.protected then
-            	    tinsert(addonsToEnable, name)
-	            end
-    	    end
-		end
-		
+                if info.realLOD or info.protected then
+                    tinsert(addonsToEnable, name)
+                end
+            end
+        end
+
         db.enteredWorld = nil;
 
         local saveState = function(name, value)
@@ -1761,81 +1766,73 @@ function U1:VARIABLES_LOADED(calledFromLogin)
 end
 
 --loadTimer是PLAYER_ENTERING_WORLD和REGEN_ENABLE共用的.
---local addonToLoadSecure, addonToLoad = {}, {}
-local loadTimer, loadTimerSecure
+local loadTimer, loadSpeed, loadCount = nil, 10, 0
 local secureLoadAnnounced = false
 local needSecureLoadAnnounced = false
-local messageInterval = random(11,18); local messageIntervalR = random(messageInterval-3, messageInterval-1); --用来显示剩余个数
-local loadSpeed2;
-local function loadAddon(secure)
-    if InCombatLockdown() and secure then return end
-    local addonList = secure and addonToLoadSecure or addonToLoad
-    local used = 0;
-    while (used < 0.2) do
-        if InCombatLockdown() and secure then return end
-        local name = tremove(addonList, 1);
-        if(not name) then
-            if not secure and #addonToLoadSecure>0 and not needSecureLoadAnnounced then
-                U1Message(format(L["延迟加载 - 还有 |cff00ff00%d|r 个插件将在战斗结束后加载。"], #addonToLoadSecure))
-                --simEventsAndLoadCfgs();
-                needSecureLoadAnnounced = true;
-            end
-            if #addonToLoadSecure==0 and #addonToLoad==0 and not initComplete then
-                if U1_ATD then
-                    local count = 0
-                    for k, v in pairs(U1_ATD) do
-                        count = count + 1
-                    end
-                    U1Message(L["还有至少["]..count..L["]个插件尚未更新完，请等待更新器全部完成后运行/reload重载界面。"], 1, 1, 0);
-                else
-                    U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or ""))
-                end
-                --simEventsAndLoadCfgs(); --因为先加载插件再注册事件的话，可能导致一些插件加载后先响应了其他事件，而DB却未创建
-                initComplete = true;
-                db.enteredWorld = true; --如果没加载完全部插件, 则下次还原db的设置, 而不是使用Enable/Disable状态
-                CoreFireEvent("INIT_COMPLETED")
-                SaveAddOns() --非常重要，如果这里不保存一下，ESC-插件 然后点击取消会调用ResetAddOns，就会重新开启所有插件，大概是因为加载时DisableAddOn不更新存储状态
-                wipe(loadedNormalAddons);
-                if ( UnitIsDead("player") and not StaticPopup_Visible("DEATH") ) then
-                    if ( GetReleaseTimeRemaining() == 0 ) then
-                        StaticPopup_Show("DEATH");
-                        local name = StaticPopup_Visible("DEATH")
-                        if name then _G[name].text:SetText(DEATH_RELEASE_NOTIMER) end
-                    end
-                end
-            end
-            if secure then
-                CoreCancelTimer(loadTimerSecure);
-            else
-                CoreCancelTimer(loadTimer);
-                --db.enteredWorld = true; --有时卡的不能进, 这时要还原状态, 但如果战斗插件没加载的时候reload, 这些插件就被关了, 所以要挪到initComplete处
-            end
-            break
+local startMillis, lastMillis = 0, nil
+local LOAD_INFO_INTERVAL = 3000 --表示3秒显示一次加载信息
+
+local function loadAddon()
+
+    if InCombatLockdown() then
+        if not needSecureLoadAnnounced then
+            U1Message(format(L["延迟加载 - 还有 |cff00ff00%d|r 个插件将在战斗结束后加载。"], #addonToLoad))
+            needSecureLoadAnnounced = true;
+        end
+        return --5.0之后战斗中必然无法加载插件，会导致script run too long
+    else
+        if needSecureLoadAnnounced and not secureLoadAnnounced then
+            U1Message(L["战斗结束，继续加载插件，请安心等待……"])
+            secureLoadAnnounced = true
+        end
+    end
+
+    local curr = u1debugprofilestop()
+    local used = curr - startMillis
+    if used < loadCount / loadSpeed * 1000 then
+        return
+    end
+
+    if #addonToLoad > 0 then
+        -- 离开战斗了，重置提示信息
+        if needSecureLoadAnnounced then
+            needSecureLoadAnnounced = false
+            secureLoadAnnounced = false
         end
 
+        local name = tremove(addonToLoad, 1);
         if(not IsAddOnLoaded(name)) then
             local info = U1GetAddonInfo(name)
-            if InCombatLockdown() then --and info.secure then --5.0 script ran too long
-                tinsert(addonToLoadSecure, name);
-            else
-                if not secureLoadAnnounced and secure then
-                    --下个周期再添加
-                    tinsert(addonToLoadSecure, name);
-                    U1Message(L["战斗结束，继续加载插件，请安心等待……"])
-                    secureLoadAnnounced = true
-                    used = 1
-                else
-                    if(#addonList % messageInterval == messageIntervalR)then
-                        U1Message(format("延迟加载 - 正在载入插件, 剩余 |cff00ff00%d|r", #addonList));
-                    end
-                    local loaded, reason = U1LoadAddOn(name); --later的还是不能后模拟事件，总之Toggle和Login的能模拟就好了
-                    U1OutputAddonLoaded(name, loaded, reason);
-                    local speed = loadSpeed2 or U1DB.loadSpeed or 20
-                    if speed == 0 then speed = 100 elseif speed==100 then speed = 0 else speed = 0.2/speed end
-                    used = used + speed;
-                end
+
+            -- 每3秒显示一次信息
+            if curr - (lastMillis or 0) > LOAD_INFO_INTERVAL then
+                lastMillis = curr
+                U1Message(format("延迟加载 - 正在载入插件, 剩余 |cff00ff00%d|r, 每秒 |cff00ff00%d|r", #addonToLoad, loadSpeed));
             end
+
+            local loaded, reason, duration
+            if info.bundleSim then
+                -- 因为子模块的事件模拟问题, U1ToggleAddon是父插件和所有子模块加载完后一起模拟事件。handynotes如果不处理，会显示不了路径 TODO: add a config
+                loaded, reason, duration = U1ToggleAddon(name, true, false, true, false) --later的还是不能后模拟事件，总之Toggle和Login的能模拟就好了
+            else
+                loaded, reason, duration = U1LoadAddOn(name)
+            end
+            if loaded then loadCount = loadCount + 1 end
+            U1OutputAddonLoaded(name, loaded, reason, duration);
         end
+
+    else
+        -- 全部插件加载完毕了
+        if #addonToLoad==0 and not initComplete then
+             U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or ""))
+            --simEventsAndLoadCfgs(); --因为先加载插件再注册事件的话，可能导致一些插件加载后先响应了其他事件，而DB却未创建
+            initComplete = true;
+            db.enteredWorld = true; --如果没加载完全部插件, 则下次还原db的设置, 而不是使用Enable/Disable状态
+            CoreFireEvent("INIT_COMPLETED")
+            SaveAddOns() --非常重要，如果这里不保存一下，ESC-插件 然后点击取消会调用ResetAddOns，就会重新开启所有插件，大概是因为加载时DisableAddOn不更新存储状态
+            wipe(loadedNormalAddons);
+        end
+        CoreCancelTimer(loadTimer)
     end
 
     RunOnNextFrameKey("U1MMB_CheckMinimapChildren", CoreCall)
@@ -1854,9 +1851,14 @@ function U1:PLAYER_ENTERING_WORLD(event)
     table.sort(addonToLoad)
 
     if DEBUG_MODE then U1Message(L["进入世界"]) end
-    loadSpeed2 = U1DB.loadSpeed2; U1DB.loadSpeed2 = nil;
-    loadTimer = CoreScheduleTimer(true, 0.01, loadAddon, false);
-    loadTimerSecure = CoreScheduleTimer(true, 0.01, loadAddon, true);
+
+    loadSpeed = U1DB.loadSpeed2 or U1DB.loadSpeed or 20  --loadSpeed2是/rl2临时设置的慢速加载
+    U1DB.loadSpeed2 = nil
+    if loadSpeed < 5 then loadSpeed = 5 elseif loadSpeed > 100 then loadSpeed = 100 end
+
+    --debugprofilestart()
+    startMillis = u1debugprofilestop()
+    loadTimer = CoreScheduleTimer(true, 0.01, loadAddon);
 
     f:UnregisterEvent("PLAYER_ENTERING_WORLD") U1.PLAYER_ENTERING_WORLD = nil;
 end

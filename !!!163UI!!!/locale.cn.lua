@@ -336,4 +336,4 @@ L["Change profile name: "] = "修改方案名称："
 
 
 L["爱不易客户端"] = true
-L["（%s加载时间较长）"] = true
+L["（%s加载较慢）"] = true

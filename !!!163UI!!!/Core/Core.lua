@@ -8,6 +8,9 @@ for i=0, 9 do for j=0, 9 do n2s_float[i+j/10] = format("%.1f", i+j/10) end end
 
 function noop() end
 function pdebug(...) print("params", ...); print(debugstack(2)) end
+local start_old, last_reset = debugprofilestart, 0
+debugprofilestart = function() last_reset = last_reset + debugprofilestop() return start_old() end
+u1debugprofilestop = function() return debugprofilestop() + last_reset end
 
 function find_global(pattern)
     for k,v in pairs(_G) do
@@ -821,6 +824,8 @@ protection area
 
 U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="爱不易开发者",
     ["心钥-凤凰之神"]="爱不易开发者",
+    ["白白的大白兔-艾露恩"]="爱不易图标制造者",
+    ["十三强盗-艾露恩"]="爱不易图标制造者",
     ["Zod-冰风岗"]="爱不易开发者的会长",
     ["Jah-冰风岗"]="爱不易开发者的会长",
     ["利爪-冰风岗"]="爱不易小狼狗",

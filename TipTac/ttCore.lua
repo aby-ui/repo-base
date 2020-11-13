@@ -543,7 +543,7 @@ end
 -- Apply Settings
 function tt:ApplySettings()
 	-- Hide World Tips Instantly
-	if (cfg.hideWorldTips) then
+	if (cfg.hideWorldTips or cfg.anchorWorldTipType == "mouse") then
 		self:RegisterEvent("CURSOR_UPDATE");
 	else
 		self:UnregisterEvent("CURSOR_UPDATE");
@@ -784,19 +784,21 @@ local function GetAnchorPosition()
 	local mouseFocus = GetMouseFocus();
 	local isUnit = UnitExists("mouseover") or (mouseFocus and mouseFocus.GetAttribute and mouseFocus:GetAttribute("unit"));	-- Az: GetAttribute("unit") here is bad, as that will find things like buff frames too
 	local var = "anchor"..(mouseFocus == WorldFrame and "World" or "Frame")..(isUnit and "Unit" or "Tip");
+    if fixInCombat() and cfg[var.."Type"] == "mouse" then return "normal", "BOTTOMRIGHT" end
 	return cfg[var.."Type"], cfg[var.."Point"];
 end
 
 -- EventHook: OnShow
 function gttScriptHooks:OnShow()
 	-- Anchor GTT to Mouse -- Az: Initial mouse anchoring is now being done in GTT_SetDefaultAnchor (remove if there are no issues)
---	gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
---	if (gtt_anchorType == "mouse") and (self.default) then
---		local gttAnchor = self:GetAnchorType();
---		if (gttAnchor ~= "ANCHOR_CURSOR") and (gttAnchor ~= "ANCHOR_CURSOR_RIGHT") then
---			tt:AnchorFrameToMouse(self);
---		end
---	end
+    --abyui 注释掉会导致gtt_anchorType局部变量混乱，可能使用的不是实际的配置，注意最后的Hook也是用这个函数
+	gtt_anchorType, gtt_anchorPoint = GetAnchorPosition();
+	if (gtt_anchorType == "mouse") and (self.default) then
+		local gttAnchor = self:GetAnchorType();
+		if (gttAnchor ~= "ANCHOR_CURSOR") and (gttAnchor ~= "ANCHOR_CURSOR_RIGHT") then
+			tt:AnchorFrameToMouse(self);
+		end
+	end
 
 	-- Ensures that default anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	-- Tooltips from world objects that change cursor seems to also require this. (Tested in 8.0/BfA)
@@ -815,9 +817,7 @@ function gttScriptHooks:OnUpdate(elapsed)
 		return;
 	-- Anchor GTT to Mouse
 	elseif (gtt_anchorType == "mouse") and (self.default) then
-        if not fixInCombat() then
 		tt:AnchorFrameToMouse(self);
-        end
 	end
 
 	-- WoD: This background color reset, from OnShow(), has been copied down here. It seems resetting the color in OnShow() wasn't enough, as the color changes after the tip is being shown
@@ -974,11 +974,6 @@ local function GTT_SetDefaultAnchor(tooltip,parent)
 	if (tooltip ~= gtt) and (gtt_anchorType == "mouse") then
 		tooltip:SetOwner(parent,"ANCHOR_CURSOR_RIGHT",cfg.mouseOffsetX,cfg.mouseOffsetY);
     else
-        if fixInCombat() then
-            if gtt_anchorType == "mouse" then
-                return
-            end
-        end
 		-- Since TipTac handles all the anchoring, we want to use "ANCHOR_NONE" here
 		tooltip:SetOwner(parent,"ANCHOR_NONE");
 		tooltip:ClearAllPoints();
@@ -1019,6 +1014,7 @@ function tt:HookTips()
 
 	-- Replace GameTooltip_SetDefaultAnchor (For Re-Anchoring) -- Patch 3.2 made this function secure
 	hooksecurefunc("GameTooltip_SetDefaultAnchor",GTT_SetDefaultAnchor);
+    C_Timer.After(0.1, function() GameTooltip_SetDefaultAnchor(GameTooltip, UIParent) end) --没有这句，鼠标直接放BUFF上不跟随
 
 	-- Clear this function as it's not needed anymore
 	self.HookTips = nil;
@@ -1050,6 +1046,7 @@ function tt:AddModifiedTip(tip,noHooks)
 end
 
 --abyui 鼠标提示闪烁, 延迟加载是因为要在其他hook之后(例如TipTacItemRef)
+hooksecurefunc(GameTooltip, "Show", gttScriptHooks.OnShow)
 C_Timer.After(1, function()
-    hooksecurefunc(GameTooltip, "SetUnitAura", function(self) gttScriptHooks.OnUpdate(self) end)
+    hooksecurefunc(GameTooltip, "SetUnitAura", gttScriptHooks.OnShow)
 end)

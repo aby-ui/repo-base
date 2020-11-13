@@ -2,6 +2,7 @@ U1RegisterAddon("$NAME$", {
     title = "$NAME$",
     defaultEnable = 0,
     parent = "", --parent = 0 / false / "" 可以强制设置为最上层插件, 一般这种情况下parent是隐藏的
+    bundleSim = true, --参见HandyNotes问题，如果为true，则加载完子插件后一起模拟登录事件
     --loadWith = "Blizzard_UI", --对应tco里的##LoadWith, GetAddOnMetadata读取不到这个属性
     --optionsAfterVar = 1, --对于在VARIABLES_LOADED事件里初始化并执行操作的插件来说，比如BlizzMove，没有办法在初始DB创建后，执行操作前进行拦截，只能用U1GetCfgValue
     --optionsAfterLogin = 1, --一些Ace插件是在LOGIN事件中OnEnable的，然后才有db，所以

@@ -198,10 +198,10 @@ U1RegisterAddon("!!!163UI!!!", {
             var = "speed",
             text = L["插件加载速度（个/秒）"],
             tip = L["说明`　控制进入游戏时插件加载的速度，如果数值大，则单次卡顿的时间长，但总的加载时间会短，比如设置成100就会大卡一下后插件就全部加载好了。而设置成5则是每秒只会小卡一下，但要很久才能加载完全部插件。` `　另外可以使用/rl2命令来强制最慢速度加载，适合副本战斗中界面出错后（比如上载具没出动作条）迅速重载界面。"],
-            default = 2,
+            default = 10,
             reload = 1,
             type = "spin",
-            range = {1, 10, 1},
+            range = {0, 100, 10},
             getvalue = function() return U1DB.loadSpeed end,
             callback = function(cfg, v, loading)
                 U1DB.loadSpeed = v

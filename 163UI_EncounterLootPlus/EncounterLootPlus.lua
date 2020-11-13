@@ -1,5 +1,6 @@
 CoreDependCall("Blizzard_EncounterJournal", function()
     hooksecurefunc("EJTierDropDown_Initialize", function(self, level)
+        if not level then return end
         local listFrame = _G["DropDownList"..level];
         local expId = 9
         if listFrame.numButtons >= expId then return end

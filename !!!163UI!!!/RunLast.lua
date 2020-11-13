@@ -39,3 +39,16 @@ CoreRegisterEvent("INIT_COMPLETED", {
         end
     end
 })
+
+--[[------------------------------------------------------------
+掉线后上线可能看不到释放框，好像是8.0奥迪尔
+---------------------------------------------------------------]]
+CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
+    if ( UnitIsDead("player") and not StaticPopup_Visible("DEATH") ) then
+        if ( GetReleaseTimeRemaining() == 0 ) then
+            StaticPopup_Show("DEATH");
+            local name = StaticPopup_Visible("DEATH")
+            if name then _G[name].text:SetText(DEATH_RELEASE_NOTIMER) end
+        end
+    end
+end})
