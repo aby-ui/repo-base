@@ -8,8 +8,9 @@ local ADDON_NAME, ns = ...
 -------------------------------- ICONS & GLOWS --------------------------------
 -------------------------------------------------------------------------------
 
-local ICONS = "Interface\\Addons\\"..ADDON_NAME.."\\core\\artwork\\icons"
-local GLOWS = "Interface\\Addons\\"..ADDON_NAME.."\\core\\artwork\\glows"
+local ADDON_NAME2 = "HandyNotes_Shadowlands"
+local ICONS = "Interface\\Addons\\"..ADDON_NAME2.."\\core\\artwork\\icons"
+local GLOWS = "Interface\\Addons\\"..ADDON_NAME2.."\\core\\artwork\\glows"
 
 local function Icon(name) return ICONS..'\\'..name..'.blp' end
 local function Glow(name) return GLOWS..'\\'..name..'.blp' end

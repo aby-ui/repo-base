@@ -6,8 +6,9 @@ local ADDON_NAME, ns = ...
 local Class = ns.Class
 local HBD = LibStub('HereBeDragons-2.0')
 
-local CIRCLE = "Interface\\AddOns\\"..ADDON_NAME.."\\core\\artwork\\circle"
-local LINE = "Interface\\AddOns\\"..ADDON_NAME.."\\core\\artwork\\line"
+local ADDON_NAME2 = "HandyNotes_Shadowlands"
+local CIRCLE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\circle"
+local LINE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\line"
 
 -------------------------------------------------------------------------------
 
