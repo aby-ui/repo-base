@@ -12,8 +12,8 @@ local RSLootDB = private.NewLib("RareScannerLootDB")
 
 function RSLootDB.GetAssociatedQuestIDs(itemID)
 	if (itemID) then
-    return private.LOOT_QUEST_IDS[itemID]
+		return private.LOOT_QUEST_IDS[itemID]
 	end
-	
+
 	return nil
 end

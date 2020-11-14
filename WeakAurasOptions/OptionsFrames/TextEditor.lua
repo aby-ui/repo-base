@@ -566,7 +566,7 @@ local function ConstructTextEditor(frame)
     end
   )
 
-  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url)
+  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url, validator)
     self.data = data
     self.path = path
     self.multipath = multipath
@@ -609,14 +609,17 @@ local function ConstructTextEditor(frame)
       "OnTextChanged",
       function(...)
         local str = editor.editBox:GetText()
-        if not (str) or editor.combinedText == true then
+        if not str or str:trim() == "" or editor.combinedText == true then
           editorError:SetText("")
         else
-          local _, errorString
+          local func, errorString
           if (enclose) then
-            _, errorString = loadstring("return function() " .. str .. "\n end")
+            func, errorString = loadstring("return function() " .. str .. "\n end")
           else
-            _, errorString = loadstring("return " .. str)
+            func, errorString = loadstring("return " .. str)
+          end
+          if not errorString and validator then
+            errorString = validator(func())
           end
           if errorString then
             urlText:Hide()
@@ -639,7 +642,12 @@ local function ConstructTextEditor(frame)
       local combinedText = ""
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId)
-        local text = OptionsPrivate.Private.ValueFromPath(childData, multipath and path[childId] or path)
+        local text
+        if multipath then
+          text = path[childId] and OptionsPrivate.Private.ValueFromPath(childData, path[childId])
+        else
+          text = OptionsPrivate.Private.ValueFromPath(childData, path)
+        end
         if text then
           if not (singleText) then
             singleText = text

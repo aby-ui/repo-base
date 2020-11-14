@@ -2,4 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Include file="Libs\MSA-Ace-3.0\MSA-Ace-3.0.xml"/>
 	<Include file="Libs\MSA-DropDownMenu-1.0\MSA-DropDownMenu-1.0.xml"/>
+	<Include file="Libs\MSA-ProtRouter-1.0\MSA-ProtRouter-1.0.xml"/>
 </Ui>

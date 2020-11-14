@@ -1927,7 +1927,6 @@ function U1_CreateMinimapButton()
         type = "launcher",
         label = L["爱不易"],
         icon = UUI.Tex'UI2-icon',
-        iconCoords = {0.04+0.05, 26/32-0.06+0.05, 0.06, 26/32-0.10},
         OnEnter = CoreUIShowTooltip,
         OnClick = function(self, button)
             GameTooltip:Hide();

@@ -404,7 +404,9 @@ local function importPendingData()
     thumbnailAnchor.currentThumbnail = nil
   end
   if imports and Private.LoadOptions() then
-    WeakAuras.ShowOptions()
+    if not WeakAuras.IsOptionsOpen() then
+      WeakAuras.OpenOptions()
+    end
   else
     return
   end
@@ -1210,7 +1212,6 @@ local function diff(ours, theirs)
 end
 
 local function findMatch(data, children)
-
   local function isParentMatch(old, new)
     if old.parent then return end
     if old.uid and new.uid then
@@ -1252,10 +1253,22 @@ local function findMatch(data, children)
   return oldParent
 end
 
-local function MatchInfo(data, children, target)
-  -- match the parent/single aura (if no children)
-  local oldParent = target or findMatch(data, children)
-  if not oldParent then return nil end
+local function MatchInfo(data, children, oldParent)
+  if oldParent then
+    -- Either both have children, or both don't have
+    if type(children) ~= type(oldParent.controlledChildren) then
+      return nil
+    end
+  else
+    -- match the parent/single aura (if no children)
+    oldParent = findMatch(data, children)
+  end
+
+  if not oldParent then
+    return nil
+  end
+
+
   -- setup
   local info = {
     mode = 1,
@@ -1625,7 +1638,7 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
   if regionOptions[regionType] then
     local ok, thumbnail = pcall(regionOptions[regionType].acquireThumbnail, thumbnailAnchor, data);
     if not ok then
-      error("Error creating thumbnail", 2)
+      error(string.format("Error creating thumbnail for %s %s", regionType, thumbnail), 2)
     end
     thumbnailAnchor.currentThumbnail = thumbnail
     thumbnailAnchor.currentThumbnailType = regionType
@@ -1702,6 +1715,9 @@ function WeakAuras.Import(inData, target)
   end
   tooltipLoading = nil;
   local matchInfo = MatchInfo(data, children, target)
+  if matchInfo == nil and target then
+    return false, "Import data did not match to target"
+  end
   ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
   return status, msg
 end

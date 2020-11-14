@@ -1144,7 +1144,7 @@ function TrGCDEventHandler(self, event, who, _, spellId)
 				TrGCDSpStopName[i] = spellname
 				TrGCDSpStopTime[i] = GetTime()
 			elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
-                lastSpellSent[i] = nil
+                if lastSpellSent[i] == spellId then lastSpellSent[i] = nil end --abyui cast spell when channelling: new spell's SPELL_SENT -> old spell's UNIT_SPELLCAST_CHANNEL_STOP -> new spell's SUCCEEDED
 				TrGCDCastSp[i] = 1
 				--print("channel stop " .. spellname .. " - " .. TrGCDCastSp[i])
 			end

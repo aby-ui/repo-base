@@ -16,8 +16,8 @@ local currentIndex = 1
 
 RSNavigationMixin = { };
 
-function RSNavigationMixin:OnLoad() 
-	-- Nothing to do
+function RSNavigationMixin:OnLoad()
+-- Nothing to do
 end
 
 function RSNavigationMixin:OnNextEnter()
@@ -26,7 +26,7 @@ function RSNavigationMixin:OnNextEnter()
 	GameTooltip:SetText(AL["NAVIGATION_SHOW_NEXT"])
 	GameTooltip:Show()
 end
- 
+
 function RSNavigationMixin:OnNextLeave()
 	self.ShowAnim:Stop();
 	GameTooltip:Hide()
@@ -38,7 +38,7 @@ function RSNavigationMixin:OnPreviousEnter()
 	GameTooltip:SetText(AL["NAVIGATION_SHOW_PREVIOUS"])
 	GameTooltip:Show()
 end
- 
+
 function RSNavigationMixin:OnPreviousLeave()
 	self.ShowAnim:Stop();
 	GameTooltip:Hide()
@@ -48,7 +48,7 @@ function RSNavigationMixin:EnableNextButton()
 	if (table.getn(navigationCache) > currentIndex) then
 		return true
 	end
-	
+
 	return false
 end
 
@@ -56,25 +56,25 @@ function RSNavigationMixin:EnablePreviousButton()
 	if (currentIndex > 1) then
 		return true
 	end
-	
+
 	return false
 end
 
 function RSNavigationMixin:AddNext(vignetteInfo)
 	table.insert(navigationCache, vignetteInfo)
 	self.ShowAnim:Play();
-	
+
 	-- If its not locking then we have to keep moving the index to the last position
 	if (not private.db.display.navigationLockEntity) then
 		currentIndex = table.getn(navigationCache)
-		
+
 		-- Refresh waypoint
 		RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
-    RSWaypoints.AddWaypointFromVignette(vignetteInfo)
-	-- If the navigation cache only contains one item, adds waypoint
+		RSWaypoints.AddWaypointFromVignette(vignetteInfo)
+		-- If the navigation cache only contains one item, adds waypoint
 	elseif (table.getn(navigationCache) == 1) then
 		RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
-    RSWaypoints.AddWaypointFromVignette(vignetteInfo)
+		RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 	end
 end
 
@@ -92,18 +92,18 @@ function RSNavigationMixin:OnPreviousMouseDown(button)
 	end
 end
 
-function RSNavigationMixin:Navigate() 
+function RSNavigationMixin:Navigate()
 	local vignetteInfo = navigationCache[currentIndex];
 	if (not vignetteInfo) then
 		return
 	end
-	
+
 	-- Refresh button
 	self:GetParent():DetectedNewVignette(self:GetParent(), vignetteInfo, true)
-	
+
 	-- Adds waypoint
-    RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
-    RSWaypoints.AddWaypointFromVignette(vignetteInfo)
+	RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
+	RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 end
 
 function RSNavigationMixin:Reset()

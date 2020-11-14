@@ -231,6 +231,14 @@ function KT.GetQuestTagInfo(questID)
     return C_QuestLog.GetQuestTagInfo(questID) or {}
 end
 
+function KT.GetQuestLogSpecialItemInfo(questLogIndex)
+    local link, item, charges, showItemWhenComplete = GetQuestLogSpecialItemInfo(questLogIndex)
+    if charges and charges <= 0 then
+        charges = GetItemCount(link)
+    end
+    return link, item, charges, showItemWhenComplete
+end
+
 function KT.GetNumQuests()
     local numQuests = 0
     local numEntries = C_QuestLog.GetNumQuestLogEntries()
@@ -296,11 +304,28 @@ StaticPopupDialogs[addonName.."_ReloadUI"] = {
     whileDead = 1
 }
 
+StaticPopupDialogs[addonName.."_LockUI"] = {
+    text = "|T"..mediaPath.."KT_logo:22:22:0:0|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r",
+    subText = "...",
+    button1 = LOCK,
+    OnShow = StatiPopup_OnShow,
+    OnAccept = function()
+        local overlay = KT.frame.ActiveFrame.overlay
+        overlay:Hide()
+    end,
+    timeout = 0,
+    whileDead = 1
+}
+
 StaticPopupDialogs[addonName.."_WowheadURL"] = {
     text = "|T"..mediaPath.."KT_logo:22:22:0:-1|t"..NORMAL_FONT_COLOR_CODE..KT.title.."|r - Wowhead URL",
     button2 = CLOSE,
     hasEditBox = 1,
     editBoxWidth = 300,
+    EditBoxOnTextChanged = function(self)
+        self:SetText(self.text)
+        self:HighlightText()
+    end,
     EditBoxOnEnterPressed = function(self)
         self:GetParent():Hide()
     end,
@@ -317,9 +342,9 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
         local www = KT.locale:sub(1, 2)
         if www == "zh" then www = "cn" end
         self.text:SetText(self.text:GetText().."\n|cffff7f00"..name.."|r")
-        self.editBox:SetText("http://"..www..".wowhead.com/"..self.text.text_arg1.."="..self.text.text_arg2)
+        self.editBox.text = "http://"..www..".wowhead.com/"..self.text.text_arg1.."="..self.text.text_arg2
+        self.editBox:SetText(self.editBox.text)
         self.editBox:SetFocus()
-        self.editBox:HighlightText()
     end,
     timeout = 0,
     whileDead = 1,

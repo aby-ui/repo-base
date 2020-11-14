@@ -16,7 +16,7 @@ RSConstants.DEBUG_MODE = false
 RSConstants.MAP_ENTITY_ID = nil
 
 -- Use this constant to logger information about an specific item whie
--- displaying on the loot bar under the main button or the map. This is handy to find bugs 
+-- displaying on the loot bar under the main button or the map. This is handy to find bugs
 -- with the loot filters
 RSConstants.LOOT_ITEM_ID = nil
 
@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 28
-RSConstants.CURRENT_LOOT_DB_VERSION = 39
+RSConstants.CURRENT_LOOT_DB_VERSION = 40
 
 ---============================================================================
 -- Special events
@@ -50,88 +50,91 @@ RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER = 1; -- 1 seconds
 ---============================================================================
 
 RSConstants.PROFILE_DEFAULTS = {
-  profile = {
-    general = {
-      scanRares = true,
-      scanContainers = true,
-      scanEvents = true,
-      scanChatAlerts = true,
-      scanGarrison = false,
-      scanInstances = true,
-      scanOnTaxi = true,
-      scanWorldmapVignette = true,
-      filteredRares = {},
-      filteredZones = {},
-      enableTomtomSupport = false,
-      autoTomtomWaypoints = false,
-      enableWaypointsSupport = false,
-      autoWaypoints = false,
-      showMaker = true,
-      marker = 8
-    },
-    sound = {
-      soundPlayed = "Horn",
-      soundObjectPlayed = "PVP Horde",
-      soundDisabled = false,
-      soundVolume = 4
-    },
-    display = {
-      displayButton = true,
-      displayMiniature = true,
-      displayButtonContainers = true,
-      scale = 0.8,
-      autoHideButton = 0,
-      displayRaidWarning = true,
-      displayChatMessage = true,
-      enableNavigation = true,
-      navigationLockEntity = false,
-      lockPosition = false
-    },
-    rareFilters = {
-      filtersToggled = true,
-      filterOnlyMap = false
-      
-    },
-    zoneFilters = {
-      filtersToggled = true,
-      filterOnlyMap = false
-    },
-    map = {
-      displayNpcIcons = false,
-      displayContainerIcons = false,
-      displayEventIcons = true,
-      disableLastSeenFilter = false,
-      displayFriendlyNpcIcons = false,
-      displayNotDiscoveredMapIcons = true,
-      displayOldNotDiscoveredMapIcons = false,
-      keepShowingAfterDead = false,
-      keepShowingAfterDeadReseteable = false,
-      keepShowingAfterCollected = false,
-      keepShowingAfterCompleted = false,
-      maxSeenTime = 0,
-      maxSeenTimeContainer = 5,
-      maxSeenTimeEvent = 5,
-      scale = 1.0,
-      minimapscale = 0.7,
-      showingWorldMapSearcher = true,
-      cleanWorldMapSearcherOnChange = true
-    },
-    loot = {
-      filteredLootCategories = {},
-      displayLoot = true,
-      displayLootOnMap = true,
-      lootTooltipPosition = "ANCHOR_LEFT",
-      lootMinQuality = 0,
-      filterNotEquipableItems = false,
-      showOnlyTransmogItems = false,
-      filterCollectedItems = true,
-      filterItemsCompletedQuest = true,
-      filterNotMatchingClass = false,
-      filterNotMatchingFaction = true,
-      numItems = 10,
-      numItemsPerRow = 10
-    }
-  }
+	profile = {
+		general = {
+			scanRares = true,
+			scanContainers = true,
+			scanEvents = true,
+			scanChatAlerts = true,
+			scanGarrison = false,
+			scanInstances = true,
+			scanOnTaxi = true,
+			scanWorldmapVignette = true,
+			filteredRares = {},
+			filteredZones = {},
+			enableTomtomSupport = false,
+			autoTomtomWaypoints = false,
+			enableWaypointsSupport = false,
+			autoWaypoints = false,
+			showMaker = true,
+			marker = 8
+		},
+		sound = {
+			soundPlayed = "Horn",
+			soundObjectPlayed = "PVP Horde",
+			soundDisabled = false,
+			soundVolume = 4
+		},
+		display = {
+			displayButton = true,
+			displayMiniature = true,
+			displayButtonContainers = true,
+			scale = 0.8,
+			autoHideButton = 0,
+			displayRaidWarning = true,
+			displayChatMessage = true,
+			enableNavigation = true,
+			navigationLockEntity = false,
+			lockPosition = false
+		},
+		rareFilters = {
+			filtersToggled = true,
+			filterOnlyMap = false
+
+		},
+		zoneFilters = {
+			filtersToggled = true,
+			filterOnlyMap = false
+		},
+		map = {
+			displayNpcIcons = false,
+			displayContainerIcons = false,
+			displayEventIcons = true,
+			disableLastSeenFilter = false,
+			displayFriendlyNpcIcons = false,
+			displayNotDiscoveredMapIcons = true,
+			displayOldNotDiscoveredMapIcons = false,
+			keepShowingAfterDead = false,
+			keepShowingAfterDeadReseteable = false,
+			keepShowingAfterCollected = false,
+			keepShowingAfterCompleted = false,
+			maxSeenTime = 0,
+			maxSeenTimeContainer = 5,
+			maxSeenTimeEvent = 5,
+			scale = 1.0,
+			minimapscale = 0.7,
+			showingWorldMapSearcher = true,
+			cleanWorldMapSearcherOnChange = true,
+			displayMinimapIcons = true,
+			waypointTomtom = false,
+			waypointIngame = true
+		},
+		loot = {
+			filteredLootCategories = {},
+			displayLoot = true,
+			displayLootOnMap = true,
+			lootTooltipPosition = "ANCHOR_LEFT",
+			lootMinQuality = 0,
+			filterNotEquipableItems = false,
+			showOnlyTransmogItems = false,
+			filterCollectedItems = true,
+			filterItemsCompletedQuest = true,
+			filterNotMatchingClass = false,
+			filterNotMatchingFaction = true,
+			numItems = 10,
+			numItemsPerRow = 10
+		}
+	}
 }
 
 ---============================================================================

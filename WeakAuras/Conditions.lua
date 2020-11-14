@@ -43,7 +43,19 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
   elseif(vType == "number") then
     return value and tostring(value) or "0";
   elseif (vType == "list") then
-    return type(value) == "string" and string.format("%q", value) or "nil";
+    if type(value) == "string" then
+      return string.format("%q", value)
+    elseif type(value) == "number" then
+      return tostring(value)
+    end
+    return "nil"
+  elseif (vType == "icon") then
+    if type(value) == "string" then
+      return string.format("%q", value)
+    elseif type(value) == "number" then
+      return tostring(value)
+    end
+    return "nil"
   elseif(vType == "color") then
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
@@ -97,7 +109,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
 end
 
 local function formatValueForCall(type, property)
-  if (type == "bool" or type == "number" or type == "list") then
+  if (type == "bool" or type == "number" or type == "list" or type == "icon") then
     return "propertyChanges['" .. property .. "']";
   elseif (type == "color") then
     local pcp = "propertyChanges['" .. property .. "']";
@@ -226,6 +238,12 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now" .. op .. value;
       end
+    elseif (cType == "elapsedTimer" and value and op) then
+      if (op == "==") then
+        check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now +" .. value .. ") < 0.05";
+      else
+        check = stateCheck .. stateVariableCheck .. "now - state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. value;
+      end
     elseif (cType == "select" and value and op) then
       if (tonumber(value)) then
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. tonumber(value);
@@ -244,9 +262,15 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. ":match([[" .. value .. "]], 1, true)";
       end
     end
+    -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
       recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " -" .. value .. ")\n";
+      recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
+      recheckCode = recheckCode .. "    recheckTime = nextTime\n";
+      recheckCode = recheckCode .. "  end\n"
+    elseif (cType == "elapsedTimer" and value) then
+      recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " +" .. value .. ")\n";
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
       recheckCode = recheckCode .. "  end\n"
@@ -595,7 +619,19 @@ local function ConstructConditionFunction(data)
   return ret;
 end
 
+local function CancelTimers(uid)
+  conditionChecksTimers.recheckTime[uid] = nil;
+  if (conditionChecksTimers.recheckHandle[uid]) then
+    for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
+      timer:CancelTimer(v);
+    end
+  end
+  conditionChecksTimers.recheckHandle[uid] = nil;
+end
+
 function Private.LoadConditionFunction(data)
+  CancelTimers(data.uid)
+
   local checkConditionsFuncStr = ConstructConditionFunction(data);
   local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, data.id, "condition checks");
 
@@ -627,8 +663,8 @@ local function runDynamicConditionFunctions(funcs)
   for uid in pairs(funcs) do
     local id = Private.UIDtoID(uid)
     if (Private.IsAuraActive(uid) and checkConditions[uid]) then
-      local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, Private.ActiveTrigger(uid));
-      for cloneId, state in pairs(activeTriggerState) do
+      local activeStates = WeakAuras.GetActiveStates(id)
+      for cloneId, state in pairs(activeStates) do
         local region = WeakAuras.GetRegion(id, cloneId);
         checkConditions[uid](region, false);
       end
@@ -757,12 +793,6 @@ function Private.UnloadAllConditions()
 end
 
 function Private.UnloadConditions(uid)
-  conditionChecksTimers.recheckTime[uid] = nil;
-  if (conditionChecksTimers.recheckHandle[uid]) then
-    for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
-      timer:CancelTimer(v);
-    end
-  end
-  conditionChecksTimers.recheckHandle[uid] = nil;
+  CancelTimers(uid)
   Private.UnregisterForGlobalConditions(uid);
 end

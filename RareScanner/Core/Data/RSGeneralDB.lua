@@ -39,7 +39,7 @@ function RSGeneralDB.GetAlreadyFoundEntity(entityID)
 	if (entityID) then
 		return private.dbglobal.rares_found[entityID]
 	end
-	
+
 	return nil
 end
 
@@ -50,7 +50,7 @@ function RSGeneralDB.IsAlreadyFoundEntityInZone(entityID, mapID)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -66,7 +66,7 @@ function RSGeneralDB.AddAlreadyFoundNpcWithoutVignette(npcID)
 			return RSGeneralDB.AddAlreadyFoundEntity(npcID, mapID, x, y, artID, RSConstants.NPC_VIGNETTE)
 		end
 	end
-	
+
 	-- If it couldnt get the position from player extract it from the internal database
 	-- If its a multizone NPC we cannot know what zone the player is at
 	if (RSNpcDB.IsInternalNpcMonoZone(npcID)) then
@@ -76,7 +76,7 @@ function RSGeneralDB.AddAlreadyFoundNpcWithoutVignette(npcID)
 			return RSGeneralDB.AddAlreadyFoundEntity(npcID, npcInfo.zoneID, npcInfo.x, npcInfo.y, npcInfo.artID, RSConstants.NPC_VIGNETTE)
 		end
 	end
-	
+
 	return nil
 end
 
@@ -92,14 +92,14 @@ function RSGeneralDB.AddAlreadyFoundContainerWithoutVignette(containerID)
 			return RSGeneralDB.AddAlreadyFoundEntity(containerID, mapID, x, y, artID, RSConstants.CONTAINER_VIGNETTE)
 		end
 	end
-	
+
 	-- If it couldnt get the position from player extract it from the internal database
 	local containerInfo = RSGeneralDB.GetInternalContainerInfo(containerID)
 	if (containerInfo and containerInfo.zoneID ~= RSConstants.UNKNOWN_ZONE_ID) then
 		RSLogger:PrintDebugMessage(string.format("AddAlreadyFoundContainerWithoutVignette[%s]. Usada la informacion interna", containerID))
 		return RSGeneralDB.AddAlreadyFoundEntity(containerID, containerInfo.zoneID, containerInfo.x, containerInfo.y, containerInfo.artID, RSConstants.CONTAINER_VIGNETTE)
 	end
-	
+
 	return nil
 end
 
@@ -128,7 +128,7 @@ local function PrintAlreadyFoundTable(raresFound)
 	if (raresFound) then
 		return string.format("mapID:%s,artID:%s,x:%s,y:%s,atlasName:%s,foundTime:%s", raresFound.mapID or "", ((type(raresFound.artID) == "table" and unpack(raresFound.artID)) or raresFound.artID or ""), raresFound.coordX or "", raresFound.coordY or "", raresFound.atlasName, raresFound.foundTime)
 	end
-	
+
 	return ""
 end
 
@@ -144,7 +144,7 @@ function RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID)
 			elseif (type(currentArtID) ~= "table" and currentArtID ~= artID) then
 				private.dbglobal.rares_found[entityID].artID = { artID };
 			end
-		-- Otherwise override
+			-- Otherwise override
 		else
 			private.dbglobal.rares_found[entityID].artID = { artID };
 		end
@@ -153,7 +153,7 @@ function RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID)
 		private.dbglobal.rares_found[entityID].coordX = x;
 		private.dbglobal.rares_found[entityID].coordY = y;
 		private.dbglobal.rares_found[entityID].foundTime = time();
-		
+
 		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntity[%s]: %s", entityID, PrintAlreadyFoundTable(RSGeneralDB.GetAlreadyFoundEntity(entityID))))
 	end
 end
@@ -175,7 +175,7 @@ function RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasNa
 		RSLogger:PrintDebugMessage(string.format("AddAlreadyFoundEntity[%s]: %s", entityID, PrintAlreadyFoundTable(RSGeneralDB.GetAlreadyFoundEntity(entityID))))
 		return RSGeneralDB.GetAlreadyFoundEntity(entityID)
 	end
-	
+
 	RSLogger:PrintDebugMessage(string.format("AddAlreadyFoundEntity[%s]: No añadido! faltaban parametros!", entityID))
 	return nil
 end
@@ -183,12 +183,12 @@ end
 
 ---============================================================================
 -- Not discovored entities
------ Stores entities not found. This lists are used to display non discovered 
+----- Stores entities not found. This lists are used to display non discovered
 ----- entities in the map in a faster way
 ---============================================================================
 
 function RSGeneralDB.InitNotDiscoveredListsDB()
-	
+
 end
 
 ---============================================================================
@@ -203,20 +203,20 @@ function RSGeneralDB.InitItemInfoDB()
 end
 
 function RSGeneralDB.GetItemName(itemID)
-  if (not itemID) then
-    return
-  end
-  
-  -- The first time request the server for the information
-  local retOk, itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = pcall(GetItemInfo, itemID)
-  return itemName
+	if (not itemID) then
+		return
+	end
+
+	-- The first time request the server for the information
+	local retOk, itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = pcall(GetItemInfo, itemID)
+	return itemName
 end
 
 function RSGeneralDB.GetItemInfo(itemID)
 	if (not itemID) then
 		return
 	end
-	
+
 	-- The first time request the server for the information
 	if (not private.dbglobal.loot_info[itemID]) then
 		local retOk, itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = pcall(GetItemInfo, itemID)
@@ -225,7 +225,7 @@ function RSGeneralDB.GetItemInfo(itemID)
 			return unpack(private.dbglobal.loot_info[itemID])
 		end
 		return itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID
-	-- Next time return cache
+			-- Next time return cache
 	else
 		return unpack(private.dbglobal.loot_info[itemID])
 	end
@@ -277,8 +277,8 @@ function RSGeneralDB.SetRecentlySeen(npcID)
 	if (npcID) then
 		private.dbglobal.recentlySeen[npcID] = true
 		RSLogger:PrintDebugMessage(string.format("SetRecentlySeen[%s]", npcID))
-		
-		C_Timer.After(RSConstants.RECENTLY_SEEN_ENTITIES_RESET_TIMER, function() 
+
+		C_Timer.After(RSConstants.RECENTLY_SEEN_ENTITIES_RESET_TIMER, function()
 			RSGeneralDB.DeleteRecentlySeen(npcID)
 		end)
 	end
@@ -288,7 +288,7 @@ function RSGeneralDB.IsRecentlySeen(npcID)
 	if (npcID and private.dbglobal.recentlySeen[npcID]) then
 		return true
 	end
-	
+
 	return false
 end
 
@@ -317,19 +317,19 @@ end
 ---============================================================================
 
 function RSGeneralDB.HasGuideActive(entityID)
-  return private.dbchar.guideActive and private.dbchar.guideActive == entityID
+	return private.dbchar.guideActive and private.dbchar.guideActive == entityID
 end
 
 function RSGeneralDB.SetGuideActive(entityID)
-  private.dbchar.guideActive = entityID
+	private.dbchar.guideActive = entityID
 end
 
 function RSGeneralDB.GetGuideActive()
-  return private.dbchar.guideActive
+	return private.dbchar.guideActive
 end
 
 function RSGeneralDB.RemoveGuideActive()
-  private.dbchar.guideActive = nil
+	private.dbchar.guideActive = nil
 end
 
 ---============================================================================
@@ -337,11 +337,11 @@ end
 ---============================================================================
 
 function RSGeneralDB.GetHelpActive()
-  return private.dbchar.helpActive
+	return private.dbchar.helpActive
 end
 
 function RSGeneralDB.RemoveHelpActive()
-  private.dbchar.helpActive = nil
+	private.dbchar.helpActive = nil
 end
 
 ---============================================================================
@@ -359,7 +359,7 @@ function RSGeneralDB.GetButtonPositionCoordinates()
 	if (private.dbchar.scannerXPos and private.dbchar.scannerYPos) then
 		return private.dbchar.scannerXPos, private.dbchar.scannerYPos
 	end
-	
+
 	return nil
 end
 
@@ -383,7 +383,7 @@ function RSGeneralDB.GetDbVersion()
 			return dbversion
 		end
 	end
-	
+
 	return nil
 end
 
@@ -422,17 +422,17 @@ end
 ---============================================================================
 
 function RSGeneralDB.ClearWorldMapTextFilter()
-  private.dbchar.worldMapTextFilter = nil
+	private.dbchar.worldMapTextFilter = nil
 end
 
 function RSGeneralDB.GetWorldMapTextFilter()
-  return private.dbchar.worldMapTextFilter
+	return private.dbchar.worldMapTextFilter
 end
 
 function RSGeneralDB.SetWorldMapTextFilter(text)
-  if (text == '') then
-    RSGeneralDB.ClearWorldMapTextFilter()
-  else
-    private.dbchar.worldMapTextFilter = text
-  end
+	if (text == '') then
+		RSGeneralDB.ClearWorldMapTextFilter()
+	else
+		private.dbchar.worldMapTextFilter = text
+	end
 end

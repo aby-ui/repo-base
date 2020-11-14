@@ -42,12 +42,15 @@ function Config:GetDefaults()
 		profile = {
 			one_bar = true,
 			skip_inactive_modes = false,
+                gold_goal = 0,
 			colors = {
 				xp = {0.58, 0, 0.55, 1},
 				xp_bonus = {0, 0.39, 0.88},
 				honor = {1.0, 0.24, 0, 1},
 				artifact = {1, 0.75, 0.45, 0.81},
-				azerite = {0.601, 0.8, 0.901, 1}
+				azerite = {0.601, 0.8, 0.901, 1},
+                     gold = {1, .8431, 0, 1},
+                     gold_realm = {1, .9451, .7294, 1}
 			}
 		},
 
@@ -96,6 +99,14 @@ end
 
 function Config:SkipInactiveModes()
 	return self.db.profile.skip_inactive_modes
+end
+
+function Config:GoldGoal()
+     return self.db.profile.gold_goal
+end
+
+function Config:SetGoldGoal(value)
+     self.db.profile.gold_goal = value or 0
 end
 
 function Config:SetColor(key, ...)

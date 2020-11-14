@@ -109,16 +109,18 @@ local L = WeakAuras.L
 	L["At a position a bit left of Left HUD position."] = "在左侧HUD偏左一点的位置。"
 	L["At a position a bit left of Right HUD position"] = "在右侧HUD偏左一点的位置。"
 	L["At the same position as Blizzard's spell alert"] = "与暴雪的法术警报在同一位置"
+	--[[Translation missing --]]
+	L[ [=[Aura is
+Off Screen]=] ] = [=[Aura is
+Off Screen]=]
 	L["Aura Name"] = "光环名称"
 	L["Aura Name Pattern"] = "光环名称规则匹配"
 	L["Aura Type"] = "光环类型"
 	L["Aura(s)"] = "光环"
 	L["Author Options"] = "作者选项"
-	L["Auto"] = "自动"
 	L["Auto-Clone (Show All Matches)"] = "自动克隆（显示所有符合项）"
 	L["Auto-cloning enabled"] = "自动克隆已启用"
 	L["Automatic"] = "自动"
-	L["Automatic Icon"] = "自动显示图标"
 	L["Automatic length"] = "自动长度"
 	L["Backdrop Color"] = "背景颜色"
 	L["Backdrop in Front"] = "背景在前"
@@ -161,7 +163,6 @@ local L = WeakAuras.L
 	L["Check out our wiki for a large collection of examples and snippets."] = "查看我们的Wiki，获取大量的例子与代码片段。"
 	L["Children:"] = "子项目："
 	L["Choose"] = "选择"
-	L["Choose whether the displayed icon is automatic or defined manually"] = "选择显示的图示是自动显示还是手动定义"
 	L["Class"] = "职业"
 	L["Clip Overlays"] = "裁剪覆盖层"
 	L["Clipped by Progress"] = "被进度条遮挡"
@@ -195,6 +196,8 @@ local L = WeakAuras.L
 	L["Copy"] = "拷贝"
 	L["Copy settings..."] = "拷贝设置"
 	L["Copy to all auras"] = "拷贝至所有的光环"
+	--[[Translation missing --]]
+	L["Could not parse '%s'. Expected a table."] = "Could not parse '%s'. Expected a table."
 	L["Count"] = "计数 "
 	L["Counts the number of matches over all units."] = "计算所有单位上匹配的数量"
 	L["Creating buttons: "] = "创建按钮:"
@@ -244,7 +247,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Disallow Entry Reordering"] = "不允许重新排列条目"
 	L["Discrete Rotation"] = "离散旋转"
 	L["Display"] = "图示"
-	L["Display Icon"] = "图示图标"
 	L["Display Name"] = "显示的名字"
 	L["Display Text"] = "图示文字"
 	L["Displays a text, works best in combination with other displays"] = "显示一条文本，最好与其他显示效果结合运用"
@@ -308,11 +310,16 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fade"] = "淡化"
 	L["Fade In"] = "渐入"
 	L["Fade Out"] = "渐出"
+	--[[Translation missing --]]
+	L["Fallback"] = "Fallback"
+	--[[Translation missing --]]
+	L["Fallback Icon"] = "Fallback Icon"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
 	L["Filter by Nameplate Type"] = "根据姓名版类型过滤"
+	L["Filter by Raid Role"] = "根据团队角色过滤"
 	L[ [=[Filter formats: 'Name', 'Name-Realm', '-Realm'.
 
 Supports multiple entries, separated by commas
@@ -392,6 +399,8 @@ Supports multiple entries, separated by commas
 	L["Icon Inset"] = "图标内嵌"
 	L["Icon Position"] = "图标位置"
 	L["Icon Settings"] = "图标设置"
+	--[[Translation missing --]]
+	L["Icon Source"] = "Icon Source"
 	L["If"] = "如果"
 	L["If checked, then the user will see a multi line edit box. This is useful for inputting large amounts of text."] = "勾选后，用户可以看见一个多行的输入框，在输入大量文本时很有用。"
 	L["If checked, then this option group can be temporarily collapsed by the user."] = "勾选后，选项组可以临时被用户折叠"
@@ -421,6 +430,10 @@ Supports multiple entries, separated by commas
 	L["Invalid Item Name/ID/Link"] = "无效的物品名称/ID/链接"
 	L["Invalid Spell ID"] = "无效的法术 ID"
 	L["Invalid Spell Name/ID/Link"] = "无效的法术名称/ID/链接"
+	--[[Translation missing --]]
+	L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."] = "Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."
+	--[[Translation missing --]]
+	L["Invalid type for property '%s' in 's'. Expected '%s'"] = "Invalid type for property '%s' in 's'. Expected '%s'"
 	L["Inverse"] = "反向"
 	L["Inverse Slant"] = "反向倾斜"
 	L["Is Stealable"] = "可偷取"
@@ -438,6 +451,8 @@ Supports multiple entries, separated by commas
 	L["Lines & Particles"] = "线条和粒子"
 	L["Load"] = "载入"
 	L["Loaded"] = "已载入"
+	--[[Translation missing --]]
+	L["Lock Positions"] = "Lock Positions"
 	L["Loop"] = "循环"
 	L["Low Mana"] = "低法力值"
 	L["Magnetically Align"] = "磁力对齐"
@@ -485,6 +500,8 @@ Supports multiple entries, separated by commas
 	L["New Value"] = "新值"
 	L["No Children"] = "没有子项目"
 	L["None"] = "无"
+	--[[Translation missing --]]
+	L["Not a table"] = "Not a table"
 	L["Not all children have the same value for this option"] = "并非所有子项目的此选项的值都一致"
 	L["Not Loaded"] = "未载入"
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：无法在副本外自动发送“说”与“大喊”信息。"
@@ -544,6 +561,7 @@ Supports multiple entries, separated by commas
 	L["Purple Rune"] = "紫色符文"
 	L["Put this display in a group"] = "将此显示内容放到组中"
 	L["Radius"] = "半径"
+	L["Raid Role"] = "团队角色"
 	L["Re-center X"] = "到中心 X 偏移"
 	L["Re-center Y"] = "到中心 Y 偏移"
 	L["Regions of type \"%s\" are not supported."] = "%s 区域类型不被支持。"
@@ -634,6 +652,8 @@ Supports multiple entries, separated by commas
 	L["Sound Channel"] = "声音频道"
 	L["Sound File Path"] = "声音文件路径"
 	L["Sound Kit ID"] = "音效 ID"
+	--[[Translation missing --]]
+	L["Source"] = "Source"
 	L["Space"] = "间隙"
 	L["Space Horizontally"] = "横向间隙"
 	L["Space Vertically"] = "纵向间隙"
@@ -709,6 +729,8 @@ Supports multiple entries, separated by commas
 	L["Trigger Combination"] = "触发器组合"
 	L["True"] = "真"
 	L["Type"] = "类型"
+	--[[Translation missing --]]
+	L["Type 'select' for '%s' requires a values member'"] = "Type 'select' for '%s' requires a values member'"
 	L["Ungroup"] = "不分组"
 	L["Unit"] = "单位"
 	L["Unit %s is not a valid unit for RegisterUnitEvent"] = "单位 %s 并不是 RegisterUnitEvent 的有效单位"
@@ -717,6 +739,8 @@ Supports multiple entries, separated by commas
 	L["Unit Frames"] = "单位框架"
 	L["Unit Name Filter"] = "单位名称过滤方式"
 	L["UnitName Filter"] = "单位名称过滤"
+	--[[Translation missing --]]
+	L["Unknown property '%s' found in '%s'"] = "Unknown property '%s' found in '%s'"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Update %s by %s"] = "更新%s，来自%s"
 	L["Update Auras"] = "更新光环"

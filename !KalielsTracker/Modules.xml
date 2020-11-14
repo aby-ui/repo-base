@@ -3,6 +3,7 @@
 	<Script file="Modules\QuestLog.lua"/>
 	<Script file="Modules\Filters.lua"/>
 	<Script file="Modules\ActiveButton.lua"/>
+	<Script file="Modules\IcecrownRares.lua"/>
 	<Script file="Modules\Addon_PetTracker.lua"/>
 	<Script file="Modules\Addon_TomTom.lua"/>
 	<Script file="Modules\Addon_Others.lua"/>

@@ -12,7 +12,7 @@ local RSUtils = private.NewLib("RareScannerUtils")
 function RSUtils.FilterRepeated(originTable, tableToCompate)
 	if (originTable and type(originTable) == "table") then
 		local notRepeatedValues = {}
-		
+
 		for _, value in ipairs(originTable) do
 			if (tableToCompate and type(tableToCompate) == "table" and not RSUtils.Contains(tableToCompate, value) and not RSUtils.Contains(notRepeatedValues, value)) then
 				table.insert(notRepeatedValues, value)
@@ -20,12 +20,12 @@ function RSUtils.FilterRepeated(originTable, tableToCompate)
 				table.insert(notRepeatedValues, value)
 			end
 		end
-		
+
 		if (next(notRepeatedValues) ~= nil) then
 			return notRepeatedValues
 		end
 	end
-	
+
 	return nil
 end
 
@@ -38,7 +38,7 @@ function RSUtils.JoinTables(table1, table2)
 			end
 		end
 	end
-	
+
 	if (table2 and type(table2) == "table") then
 		for _, value in ipairs (table2) do
 			if (not RSUtils.Contains(joinedTable, value)) then
@@ -46,11 +46,11 @@ function RSUtils.JoinTables(table1, table2)
 			end
 		end
 	end
-	
+
 	if (next(joinedTable) ~= nil) then
 		return joinedTable
 	end
-	
+
 	return nil
 end
 
@@ -80,21 +80,21 @@ function RSUtils.Contains(cTable, item)
 			return true;
 		end
 	end
-	
+
 	return false;
 end
 
 function RSUtils.Distance(POIa, POIb)
-  local dx = POIa.x - POIb.x
-  local dy = POIa.y - POIb.y
-  return math.sqrt ( (dx * dx) + (dy * dy) )
+	local dx = POIa.x - POIb.x
+	local dy = POIa.y - POIb.y
+	return math.sqrt ( (dx * dx) + (dy * dy) )
 end
 
---- 
+---
 -- @param #string text Text to add color
 -- @param #string color Color
 -- @return Text with color
 ---
 function RSUtils.TextColor(text, color)
-   return string.format("|cff%s%s|r", color, text)
+	return string.format("|cff%s%s|r", color, text)
 end

@@ -1,0 +1,17 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  <Script file="common.lua"/>
+  <Script file="zones\arathi_highlands.lua"/>
+  <Script file="zones\darkshore.lua"/>
+  <Script file="zones\drustvar.lua"/>
+  <Script file="zones\mechagon.lua"/>
+  <Script file="zones\nazjatar.lua"/>
+  <Script file="zones\nazmir.lua"/>
+  <Script file="zones\stormsong_valley.lua"/>
+  <Script file="zones\tiragarde_sound.lua"/>
+  <Script file="zones\uldum.lua"/>
+  <Script file="zones\vale.lua"/>
+  <Script file="zones\visions.lua"/>
+  <Script file="zones\voldun.lua"/>
+  <Script file="zones\zuldazar.lua"/>
+  <!-- <Script file="zones\operation_mechagon.lua"/> -->
+</Ui>

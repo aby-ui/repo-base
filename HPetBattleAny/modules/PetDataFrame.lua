@@ -529,7 +529,7 @@ end
 
 
 ---------------------------------------PetAllInfo.lua
-local HPetAllInfoFrame=CreateFrame("Frame","HPetAllInfoFrame",UIParent)
+local HPetAllInfoFrame=CreateFrameAby("Frame","HPetAllInfoFrame",UIParent)
 local backdrop={
 	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 	edgeSize = 16,
@@ -861,7 +861,7 @@ function HPetAllInfoFrame:CreateTable(name,useTABLE,width,height,point,relative,
 	end
 	rt.init=function()
 		for i = h and 0 or 1, 20 do
-			local tab=CreateFrame("Frame",name.."table"..i,self)
+			local tab=CreateFrameAby("Frame",name.."table"..i,self)
 			local index=rt.index
 			tab:SetSize(width,height)
 			tab:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background"})
@@ -1009,7 +1009,7 @@ end
 
 function HPetAllInfoFrame:initframe(frames)
 	for key,value in pairs(frames) do
-		self[value.name]=CreateFrame("Frame",self:GetName()..value.name,self,value.inherits or nil)
+		self[value.name]=CreateFrameAby("Frame",self:GetName()..value.name,self,value.inherits or nil)
 		self[value.name]:SetSize(value.width,value.height)
 		self[value.name]:SetBackdrop(backdrop);
 		if value.point then

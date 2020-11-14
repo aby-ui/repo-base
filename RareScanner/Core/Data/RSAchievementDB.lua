@@ -23,7 +23,7 @@ function RSAchievementDB.HasAchievement(entityID, mapID)
 			end
 		end
 	end
-	
+
 	return false
 end
 
@@ -40,6 +40,6 @@ function RSAchievementDB.GetNotCompletedAchievementLink(entityID, mapID)
 			end
 		end
 	end
-	
+
 	return nil
 end

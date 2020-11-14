@@ -464,6 +464,41 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
       end
     end
+  elseif (propertyType == "icon") then
+    args["condition" .. i .. "value" .. j] = {
+      type = "input",
+      width = WeakAuras.normalWidth - 0.15,
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
+      desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
+      order = order,
+      get = function()
+        local v = conditions[i].changes[j].value
+        return v and tostring(v)
+      end,
+      set = setValue
+    }
+    order = order + 1
+    args["condition" .. i .. "value_browse" .. j] = {
+      type = "execute",
+      width = 0.15,
+      name = "",
+      order = order,
+      func = function()
+        if data.controlledChildren then
+          local paths = {}
+          for id, reference in pairs(conditions[i].changes[j].references) do
+            paths[id] = {"conditions", conditions[i].check.references[id].conditionIndex, "changes", reference.changeIndex, "value"}
+          end
+          OptionsPrivate.OpenIconPicker(data, paths)
+        else
+          OptionsPrivate.OpenIconPicker(data, {[data.id] = { "conditions", i, "changes", j, "value" } })
+        end
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+    }
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {
       type = "color",
@@ -1403,11 +1438,14 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
           for id, reference in pairs(conditions[i].check.references) do
             local auraData = WeakAuras.GetData(id);
             removeSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
+            WeakAuras.Add(auraData)
+            WeakAuras.ClearAndUpdateOptions(auraData.id)
           end
         else
           removeSubCheck(conditions[i].check, path);
+          WeakAuras.Add(data)
+          WeakAuras.ClearAndUpdateOptions(data.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id, true)
         return;
       end
 
@@ -1521,7 +1559,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       end
     end
 
-    if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
+    if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer" or currentConditionTemplate.type == "elapsedTimer") then
       local opTypes = OptionsPrivate.Private.operator_types
       if currentConditionTemplate.operator_types == "without_equal" then
         opTypes = OptionsPrivate.Private.operator_types_without_equal
@@ -1704,7 +1742,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   local multipath = {};
                   for id, reference in pairs(conditions[i].check.references) do
                     local conditionIndex = conditions[i].check.references[id].conditionIndex;
-                    multipath[id] ={ "conditions", i, "check" }
+                    multipath[id] ={ "conditions", conditionIndex, "check" }
                     for i, v in ipairs(path) do
                       tinsert(multipath[id], "checks")
                       tinsert(multipath[id], v)
@@ -1713,10 +1751,6 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   end
                   OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 else
-                  for i, v in ipairs(path) do
-                    print(i, v)
-                  end
-
                   local fullPath = { "conditions", i, "check" }
                   for i, v in ipairs(path) do
                     tinsert(fullPath, "checks")
@@ -2286,7 +2320,7 @@ local function compareSubChecks(a, b, allConditionTemplates)
       end
 
       local type = currentConditionTemplate.type;
-      if (type == "number" or type == "timer" or type == "select" or type == "string" or type == "customcheck") then
+      if (type == "number" or type == "timer" or type == "elapsedTimer" or type == "select" or type == "string" or type == "customcheck") then
         if (a[i].op ~= b[i].op or a[i].value ~= b[i].value) then
           return false;
         end

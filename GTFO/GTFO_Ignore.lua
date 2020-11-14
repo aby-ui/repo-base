@@ -70,3 +70,5 @@ GTFO.IgnoreScan["258018"] = true; -- Sense of Dread
 GTFO.IgnoreScan["294856"] = true; -- Unstable Mixture
 GTFO.IgnoreScan["287769"] = true; -- N'Zoth's Awareness
 GTFO.IgnoreScan["306583"] = true; -- Leaden Foot
+GTFO.IgnoreScan["326788"] = true; -- Chilling Winds
+

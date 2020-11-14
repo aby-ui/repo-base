@@ -711,8 +711,18 @@ function WeakAuras.ShowOptions(msg)
   if (firstLoad) then
     frame = OptionsPrivate.CreateFrame();
     frame.buttonsScroll.frame:Show();
+
     LayoutDisplayButtons(msg);
   end
+
+  if (frame:GetWidth() > GetScreenWidth()) then
+    frame:SetWidth(GetScreenWidth())
+  end
+
+  if (frame:GetHeight() > GetScreenHeight() - 50) then
+    frame:SetHeight(GetScreenHeight() - 50)
+  end
+
   frame.buttonsScroll.frame:Show();
 
   if (frame.needsSort) then
@@ -1268,8 +1278,8 @@ function OptionsPrivate.OpenTexturePicker(baseObject, path, properties, textures
   frame.texturePicker:Open(baseObject, path, properties, textures, SetTextureFunc)
 end
 
-function OptionsPrivate.OpenIconPicker(data, field, groupIcon)
-  frame.iconPicker:Open(data, field, groupIcon);
+function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
+  frame.iconPicker:Open(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)

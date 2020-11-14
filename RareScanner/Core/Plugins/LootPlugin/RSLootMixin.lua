@@ -37,15 +37,15 @@ function RSLootMixin:OnEnter()
 		toolTip:SetParent(self)
 		toolTip:AddLine("RareScanner: "..AL["LOOT_TOGGLE_FILTER"]..self.itemID, 1,1,0)
 		toolTip:AddDoubleLine(GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID), 1, 1, 0, 1 ,1, 0);
-    if (RSConstants.DEBUG_MODE) then
-      toolTip:AddLine(self.itemID, 1,1,0)
-    end
+		if (RSConstants.DEBUG_MODE) then
+			toolTip:AddLine(self.itemID, 1,1,0)
+		end
 		toolTip:Show()
-		
+
 		self.Icon.Anim:Play();
 	end
 end
- 
+
 function RSLootMixin:OnLeave()
 	self:GetParent().LootBarToolTip:Hide()
 	self.Icon.Anim:Stop();
@@ -71,10 +71,10 @@ function RSLootMixin:OnMouseDown()
 		DressUpItemLink(self.itemLink)
 	elseif (IsAltKeyDown()) then
 		if (RSConfigDB.GetLootFilterByCategory(self.itemClassID, self.itemSubClassID)) then
-		  RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, false)
+			RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, false)
 			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
 		else
-      RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, true)
+			RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, true)
 			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_NOT_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
 		end
 	end
@@ -86,16 +86,16 @@ function RSLootMixin:AddItem(itemID, numActive)
 		self.itemID = itemID
 		-- It will be refired after recieving the item info
 		return true
-	-- If we have already more items than wanted
+			-- If we have already more items than wanted
 	elseif (numActive > RSConfigDB.GetMaxNumItemsToShow()) then
 		return false
 	end
-	
+
 	-- Apply filters
 	if (RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)) then
 		return false;
 	end
-	
+
 	-- Set item icon
 	self.Icon:SetTexture(iconFileDataID)
 	self.itemID = itemID
@@ -116,7 +116,7 @@ function RSLootMixin:AddItem(itemID, numActive)
 		colNum = numActive - (RSConfigDB.GetNumItemsPerRow() * rowNum)
 	end
 	self:SetPoint("TOPLEFT", (self:GetWidth() * (colNum - 1)), -(self:GetHeight() * rowNum))
-	
+
 	-- Recenter parent
 	local maxWidth
 	if (numActive < RSConfigDB.GetNumItemsPerRow()) then
@@ -124,9 +124,9 @@ function RSLootMixin:AddItem(itemID, numActive)
 	else
 		maxWidth = RSConfigDB.GetNumItemsPerRow()
 	end
-	
+
 	self:GetParent():SetSize(self:GetWidth() * maxWidth, 20 * (floor(numActive/RSConfigDB.GetNumItemsPerRow()) + 1))
 	self:GetParent():SetPoint("TOP", self:GetParent():GetParent(), "BOTTOM", 0, -3)
-	
+
 	return true
 end

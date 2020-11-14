@@ -132,7 +132,7 @@ private.CLASS_PROFICIENCIES = {
 	};
 	[2] = { --Paladin
 		[WEAPONS_ID] = { POLEARMS_ID, FISHPOLE_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, PLATE_ID, SHIELD_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID } 
+		[ARMOR_ID] = { CLOTH_ID, PLATE_ID, SHIELD_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
 	};
 	[3] = { --Hunter
 		[WEAPONS_ID] = { BOW_ID, POLEARMS_ID, GUNS_ID, FIST_ID, CROSSBOW_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, MISC_ID },
@@ -158,7 +158,7 @@ private.CLASS_PROFICIENCIES = {
 		[WEAPONS_ID] = { STAVES_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, MISC_ID, WANDS_ID },
 		[ARMOR_ID] = { CLOTH_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
 	};
-	[9] = { --Warlock	
+	[9] = { --Warlock
 		[WEAPONS_ID] = { STAVES_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, MISC_ID, WANDS_ID },
 		[ARMOR_ID] = { CLOTH_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
 	};
@@ -169,11 +169,11 @@ private.CLASS_PROFICIENCIES = {
 	[11] = { --Druid
 		[WEAPONS_ID] = { POLEARMS_ID, FIST_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, BEAR_PAWS_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
 		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
-	};		
+	};
 	[12] = { --Demon Hunter
 		[WEAPONS_ID] = { FIST_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, WAR_GLAIVES_ID, ONEH_AXES_ID, MISC_ID },
 		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
-	};	
+	};
 }
 
 private.CLOTH_CHARACTERES = { 4, 8, 9 }
@@ -185,8 +185,8 @@ local general_options
 
 local function RS_Set(list)
 	local set = {}
-	for k, _ in pairs(list) do 
-		set[k] = true 
+	for k, _ in pairs(list) do
+		set[k] = true
 	end
 	return set
 end
@@ -196,7 +196,7 @@ local function GetGeneralOptions()
 	for k, v in pairs(private.MARKERS) do
 		orderedMarkers[#orderedMarkers+1] = v
 	end
-			
+
 	table.sort(orderedMarkers, function(a,b) return string.upper(a) < string.upper(b) end)
 	local setMarker = function(value)
 		if (value) then
@@ -211,7 +211,7 @@ local function GetGeneralOptions()
 			end
 		end
 	end
-	
+
 	local getMarker = function()
 		for i, v in ipairs(orderedMarkers) do
 			if (i == private.db.general.marker) then
@@ -222,8 +222,8 @@ local function GetGeneralOptions()
 				end
 			end
 		end
-	end	
-	
+	end
+
 	if not general_options then
 		general_options = {
 			type = "group",
@@ -309,17 +309,17 @@ local function GetGeneralOptions()
 					end,
 					width = "full",
 				},
-        scanWorldMapVignettes = {
-          order = 7,
-          name = AL["ENABLE_SCAN_WORLDMAP_VIGNETTES"],
-          desc = AL["ENABLE_SCAN_WORLDMAP_VIGNETTES_DESC"],
-          type = "toggle",
-          get = function() return RSConfigDB.IsScanningWorldMapVignettes() end,
-          set = function(_, value)
-            RSConfigDB.SetScanningWorldMapVignettes(value)
-          end,
-          width = "full",
-        },
+				scanWorldMapVignettes = {
+					order = 7,
+					name = AL["ENABLE_SCAN_WORLDMAP_VIGNETTES"],
+					desc = AL["ENABLE_SCAN_WORLDMAP_VIGNETTES_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsScanningWorldMapVignettes() end,
+					set = function(_, value)
+						RSConfigDB.SetScanningWorldMapVignettes(value)
+					end,
+					width = "full",
+				},
 				showMaker = {
 					order = 8,
 					name = AL["ENABLE_MARKER"],
@@ -345,34 +345,34 @@ local function GetGeneralOptions()
 					width = "normal",
 					disabled = function() return not RSConfigDB.IsDisplayingMarkerOnTarget() end,
 				},
-        separatorIngameWaypoints = {
-          order = 10,
-          type = "header",
-          name = AL["INGAME_WAYPOINTS"],
-        },
-        enableIngameWaypoints = {
-          order = 11,
-          name = AL["ENABLE_WAYPOINTS_SUPPORT"],
-          desc = AL["ENABLE_WAYPOINTS_SUPPORT_DESC"],
-          type = "toggle",
-          get = function() return RSConfigDB.IsWaypointsSupportEnabled() end,
-          set = function(_, value)
-            RSConfigDB.SetWaypointsSupportEnabled(value)
-          end,
-          width = "full",
-        },
-        autoIngameWaypoints = {
-          order = 12,
-          name = AL["ENABLE_AUTO_WAYPOINTS"],
-          desc = AL["ENABLE_AUTO_WAYPOINTS_DESC"],
-          type = "toggle",
-          get = function() return RSConfigDB.IsAddingWaypointsAutomatically() end,
-          set = function(_, value)
-            RSConfigDB.SetAddingWaypointsAutomatically(value)
-          end,
-          width = "full",
-          disabled = function() return not RSConfigDB.IsWaypointsSupportEnabled() end,
-        },
+				separatorIngameWaypoints = {
+					order = 10,
+					type = "header",
+					name = AL["INGAME_WAYPOINTS"],
+				},
+				enableIngameWaypoints = {
+					order = 11,
+					name = AL["ENABLE_WAYPOINTS_SUPPORT"],
+					desc = AL["ENABLE_WAYPOINTS_SUPPORT_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsWaypointsSupportEnabled() end,
+					set = function(_, value)
+						RSConfigDB.SetWaypointsSupportEnabled(value)
+					end,
+					width = "full",
+				},
+				autoIngameWaypoints = {
+					order = 12,
+					name = AL["ENABLE_AUTO_WAYPOINTS"],
+					desc = AL["ENABLE_AUTO_WAYPOINTS_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsAddingWaypointsAutomatically() end,
+					set = function(_, value)
+						RSConfigDB.SetAddingWaypointsAutomatically(value)
+					end,
+					width = "full",
+					disabled = function() return not RSConfigDB.IsWaypointsSupportEnabled() end,
+				},
 				separatorTomtomWaypoints = {
 					order = 13,
 					type = "header",
@@ -405,7 +405,7 @@ local function GetGeneralOptions()
 			},
 		}
 	end
-	
+
 	return general_options
 end
 
@@ -478,7 +478,7 @@ local function GetSoundOptions()
 			},
 		}
 	end
-	
+
 	return sound_options
 end
 
@@ -568,7 +568,7 @@ local function GetDisplayOptions()
 						RSConfigDB.SetButtonScale(value)
 					end,
 					width = "double",
-					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,	
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
 				},
 				test = {
 					order = 6.2,
@@ -655,7 +655,7 @@ local function GetDisplayOptions()
 			},
 		}
 	end
-	
+
 	return display_options
 end
 
@@ -665,7 +665,7 @@ local sortValues = function(list)
 		tinsert(sortedValues, value)
 	end
 	table.sort(sortedValues)
-	
+
 	local sortedKeys = {}
 	for i, sortedValue in ipairs(sortedValues) do
 		for key, value in pairs (list) do
@@ -675,13 +675,13 @@ local sortValues = function(list)
 			end
 		end
 	end
-	
+
 	return sortedKeys
 end
 
 local getZoneName = function(zoneID)
 	local continentInfo = C_Map.GetMapInfo(zoneID)
-	if (continentInfo) then	
+	if (continentInfo) then
 		-- For those zones with the same name, add a comment
 		if (AL["ZONE_"..zoneID] ~= "ZONE_"..zoneID) then
 			return string.format(AL["ZONE_"..zoneID], continentInfo.name)
@@ -696,7 +696,7 @@ local filter_options
 local function GetFilterOptions()
 	if not filter_options then
 		-- load continent combo
-		local CONTINENT_MAP_IDS = {} 
+		local CONTINENT_MAP_IDS = {}
 		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
 			if (v.npcfilter) then
 				if (v.id) then
@@ -706,7 +706,7 @@ local function GetFilterOptions()
 				end
 			end
 		end
-	
+
 		local searchNpcByZoneID = function(zoneID, npcName)
 			if (zoneID) then
 				for npcID, name in pairs(RSNpcDB.GetAllNpcNames()) do
@@ -720,7 +720,7 @@ local function GetFilterOptions()
 								sameNPC = true
 								break;
 							end
-							
+
 							tempName = name..' ('..i..')'
 							i = i+1
 						end
@@ -731,21 +731,21 @@ local function GetFilterOptions()
 				end
 			end
 		end
-			
+
 		local searchNpcByContinentID = function(continentID, npcName)
 			if (continentID) then
-				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)							
+				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
 					-- filter checkboxes
 					searchNpcByZoneID(zoneID, npcName)
 				end)
 			end
 		end
-		
+
 		local loadSubmapsCombo = function(continentID)
 			if (continentID) then
 				filter_options.args.subzones.values = {}
 				private.filter_options_subzones = nil
-				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)	
+				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
 					local zoneName = getZoneName(zoneID)
 					if (zoneName) then
 						filter_options.args.subzones.values[zoneID] = zoneName
@@ -753,7 +753,7 @@ local function GetFilterOptions()
 				end)
 			end
 		end
-			
+
 		filter_options = {
 			type = "group",
 			order = 1,
@@ -798,29 +798,29 @@ local function GetFilterOptions()
 					desc = AL["FILTER_CONTINENT_DESC"],
 					values = CONTINENT_MAP_IDS,
 					sorting = sortValues(CONTINENT_MAP_IDS),
-					get = function(_, key) 
+					get = function(_, key)
 						-- initialize
 						if (not private.filter_options_continents) then
 							private.filter_options_continents = DEFAULT_CONTINENT_MAP_ID
-							
+
 							-- load submaps combo
 							loadSubmapsCombo(private.filter_options_continents)
-							
+
 							-- launch first search zone filters
 							searchNpcByContinentID(private.filter_options_continents)
 						end
-						
+
 						return private.filter_options_continents
 					end,
 					set = function(_, key, value)
 						private.filter_options_continents = key
-						
+
 						-- load subzones combo
 						loadSubmapsCombo(key)
-				
+
 						-- search
 						filter_options.args.rareFilters.values = {}
-						searchNpcByContinentID(key, private.filter_options_input)					
+						searchNpcByContinentID(key, private.filter_options_input)
 					end,
 					width = 1.0,
 				},
@@ -830,7 +830,7 @@ local function GetFilterOptions()
 					name = AL["FILTER_ZONE"],
 					desc = AL["FILTER_ZONE_DESC"],
 					values = {},
-					sorting = function() 
+					sorting = function()
 						if (next(filter_options.args.subzones.values)) then
 							return sortValues(filter_options.args.subzones.values)
 						end
@@ -839,7 +839,7 @@ local function GetFilterOptions()
 					get = function(_, key) return private.filter_options_subzones end,
 					set = function(_, key, value)
 						private.filter_options_subzones = key
-						
+
 						-- search
 						filter_options.args.rareFilters.values = {}
 						searchNpcByZoneID(key, private.filter_options_input)
@@ -852,7 +852,7 @@ local function GetFilterOptions()
 					name = AL["CLEAR_FILTERS_SEARCH"],
 					desc = AL["CLEAR_FILTERS_SEARCH_DESC"],
 					type = "execute",
-					func = function() 
+					func = function()
 						private.filter_options_input = nil
 						filter_options.args.subzones.values = {}
 						private.filter_options_subzones = nil
@@ -861,7 +861,7 @@ local function GetFilterOptions()
 						loadSubmapsCombo(DEFAULT_CONTINENT_MAP_ID)
 						-- search
 						filter_options.args.rareFilters.values = {}
-						searchNpcByContinentID(DEFAULT_CONTINENT_MAP_ID)	
+						searchNpcByContinentID(DEFAULT_CONTINENT_MAP_ID)
 					end,
 					width = 0.5,
 				},
@@ -875,14 +875,14 @@ local function GetFilterOptions()
 					name = AL["TOGGLE_FILTERS"],
 					desc = AL["TOGGLE_FILTERS_DESC"],
 					type = "execute",
-					func = function() 
+					func = function()
 						if (next(filter_options.args.rareFilters.values) ~= nil) then
 							if (private.db.rareFilters.filtersToggled) then
 								private.db.rareFilters.filtersToggled = false
 							else
 								private.db.rareFilters.filtersToggled = true
 							end
-							
+
 							for k, v in pairs(filter_options.args.rareFilters.values) do
 								private.db.general.filteredRares[v] = private.db.rareFilters.filtersToggled
 							end
@@ -906,16 +906,16 @@ local function GetFilterOptions()
 			},
 		}
 	end
-	
+
 	return filter_options
 end
 
 local zones_filter_options
 
 local function GetZonesFilterOptions()
-	if not zones_filter_options then		
+	if not zones_filter_options then
 		-- load continent combo
-		local CONTINENT_MAP_IDS = {} 
+		local CONTINENT_MAP_IDS = {}
 		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
 			if (v.zonefilter) then
 				if (v.id) then
@@ -925,7 +925,7 @@ local function GetZonesFilterOptions()
 				end
 			end
 		end
-		
+
 		local searchZoneByContinentID = function(continentID, zoneName)
 			if (continentID) then
 				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
@@ -938,7 +938,7 @@ local function GetZonesFilterOptions()
 					else
 						tempName = getZoneName(zoneID)
 					end
-					
+
 					if (tempName) then
 						local i = 2
 						local tempLoopName = tempName
@@ -946,13 +946,13 @@ local function GetZonesFilterOptions()
 							tempLoopName = tempName..' ('..i..')'
 							i = i+1
 						end
-						
+
 						zones_filter_options.args.zoneFilters.values[tempLoopName] = zoneID
 					end
 				end)
 			end
 		end
-		
+
 		zones_filter_options = {
 			type = "group",
 			order = 1,
@@ -993,23 +993,23 @@ local function GetZonesFilterOptions()
 					desc = AL["FILTER_CONTINENT_DESC"],
 					values = CONTINENT_MAP_IDS,
 					sorting = sortValues(CONTINENT_MAP_IDS),
-					get = function(_, key) 
+					get = function(_, key)
 						-- initialize
 						if (not private.zones_filter_options_continents) then
 							private.zones_filter_options_continents = DEFAULT_CONTINENT_MAP_ID
-							
+
 							-- launch first search zone filters
 							searchZoneByContinentID(private.zones_filter_options_continents)
 						end
-						
+
 						return private.zones_filter_options_continents
 					end,
 					set = function(_, key, value)
 						private.zones_filter_options_continents = key
-				
+
 						-- search
 						zones_filter_options.args.zoneFilters.values = {}
-						searchZoneByContinentID(key, private.zones_filter_input)					
+						searchZoneByContinentID(key, private.zones_filter_input)
 					end,
 					width = "normal",
 				},
@@ -1018,7 +1018,7 @@ local function GetZonesFilterOptions()
 					name = AL["CLEAR_FILTERS_SEARCH"],
 					desc = AL["CLEAR_FILTERS_SEARCH_DESC"],
 					type = "execute",
-					func = function() 
+					func = function()
 						private.zones_filter_input = nil
 						private.zones_filter_options_continents = DEFAULT_CONTINENT_MAP_ID
 						-- search
@@ -1037,14 +1037,14 @@ local function GetZonesFilterOptions()
 					name = AL["TOGGLE_FILTERS"],
 					desc = AL["TOGGLE_FILTERS_DESC"],
 					type = "execute",
-					func = function() 
+					func = function()
 						if (next(zones_filter_options.args.zoneFilters.values) ~= nil) then
 							if (private.db.zoneFilters.filtersToggled) then
 								private.db.zoneFilters.filtersToggled = false
 							else
 								private.db.zoneFilters.filtersToggled = true
 							end
-							
+
 							for _, mapID in pairs(zones_filter_options.args.zoneFilters.values) do
 								RSConfigDB:SetZoneFiltered(mapID, private.db.zoneFilters.filtersToggled)
 							end
@@ -1075,7 +1075,7 @@ local function GetZonesFilterOptions()
 			},
 		}
 	end
-	
+
 	return zones_filter_options
 end
 
@@ -1088,7 +1088,7 @@ local function GetLootFilterOptions()
 	end
 	local filter_loot_category
 	local toggleAll = true
-	
+
 	local loadSubCategory = function(mainClassID)
 		if (loot_filter_options) then
 			loot_filter_options.args.category_filters.args.lootFilters.values = {}
@@ -1097,8 +1097,8 @@ local function GetLootFilterOptions()
 			end
 		end
 	end
-	
-	if not loot_filter_options then	
+
+	if not loot_filter_options then
 		loot_filter_options = {
 			type = "group",
 			order = 1,
@@ -1196,22 +1196,22 @@ local function GetLootFilterOptions()
 							name = AL["LOOT_MAIN_CATEGORY"],
 							desc = AL["LOOT_MAIN_CATEGORY"],
 							values = MAIN_CATEGORIES,
-							get = function(_, key) 
+							get = function(_, key)
 								-- initialize
 								if (not filter_loot_category) then
 									filter_loot_category = DEFAULT_MAIN_CATEGORY
-									
+
 									-- load subcategory combo
 									loadSubCategory(filter_loot_category)
 								end
-								
+
 								return filter_loot_category
 							end,
 							set = function(_, key, value)
 								filter_loot_category = key
-								
+
 								-- load subcategory combo
-								loadSubCategory(key)					
+								loadSubCategory(key)
 							end,
 							width = "normal",
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
@@ -1226,13 +1226,13 @@ local function GetLootFilterOptions()
 							name = AL["TOGGLE_FILTERS"],
 							desc = AL["TOGGLE_FILTERS_DESC"],
 							type = "execute",
-							func = function() 
+							func = function()
 								if (toggleAll) then
 									toggleAll = false
 								else
 									toggleAll = true
 								end
-							
+
 								for _, v in pairs(loot_filter_options.args.category_filters.args.lootFilters.values) do
 									private.db.loot.filteredLootCategories[filter_loot_category][v] = toggleAll
 								end
@@ -1354,7 +1354,7 @@ local function GetLootFilterOptions()
 			},
 		}
 	end
-	
+
 	return loot_filter_options
 end
 
@@ -1369,8 +1369,20 @@ local function GetMapOptions()
 			handler = RareScanner,
 			desc = AL["MAP_OPTIONS"],
 			args = {
-				scale = {
+				minimap = {
 					order = 1,
+					type = "toggle",
+					name = AL["DISPLAY_MINIMAP_ICONS"],
+					desc = AL["DISPLAY_MINIMAP_ICONS_DESC"],
+					get = function() return RSConfigDB.IsShowingMinimapIcons() end,
+					set = function(_, value)
+						RSConfigDB.SetShowingMinimapIcons(value)
+						RSMinimap.RefreshAllData(true)
+					end,
+					width = "full",
+				},
+				scale = {
+					order = 2,
 					type = "range",
 					name = AL["MAP_SCALE_ICONS"],
 					desc = AL["MAP_SCALE_ICONS_DESC"],
@@ -1383,10 +1395,10 @@ local function GetMapOptions()
 						RSConfigDB.SetIconsWorldMapScale(value)
 					end,
 					width = "full",
-					disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,	
+					disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
 				},
 				minimapscale = {
-					order = 2,
+					order = 3,
 					type = "range",
 					name = AL["MINIMAP_SCALE_ICONS"],
 					desc = AL["MINIMAP_SCALE_ICONS_DESC"],
@@ -1400,260 +1412,291 @@ local function GetMapOptions()
 						RSMinimap.RefreshAllData(true)
 					end,
 					width = "full",
-					disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,	
+					disabled = function() return (not RSConfigDB.IsShowingMinimapIcons() or (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents())) end,
 				},
-        icons = {
-          type = "group",
-          order = 1,
-          name = AL["MAP_ICONS"],
-          handler = RareScanner,
-          desc = AL["MAP_ICONS_DESC"],
-          args = {
-            separatorNpcs = {
-              order = 1,
-              type = "header",
-              name = AL["MAP_NPCS_ICONS"],
-            },
-    				displayNpcIcons = {
-    					order = 2,
-    					type = "toggle",
-    					name = AL["DISPLAY_NPC_ICONS"],
-    					desc = AL["DISPLAY_NPC_ICONS_DESC"],
-    					get = function() return RSConfigDB.IsShowingNpcs() end,
-    					set = function(_, value)
-    						RSConfigDB.SetShowingNpcs(value)
-    						RSMinimap.RefreshAllData(true)
-    					end,
-    					width = "full",
-    				},
-            displayFriendlyNpcIcons = {
-              order = 3,
-              type = "toggle",
-              name = AL["DISPLAY_FRIENDLY_NPC_ICONS"],
-              desc = AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"],
-              get = function() return RSConfigDB.IsShowingFriendlyNpcs() end,
-              set = function(_, value)
-                RSConfigDB.SetShowingFriendlyNpcs(value)
-                RSMinimap.RefreshAllData(true)
-              end,
-              width = "full",
-              disabled = function() return (not RSConfigDB.IsShowingNpcs()) end,
-            },
-            keepShowingAfterDead = {
-              order = 4,
-              type = "toggle",
-              name = AL["MAP_SHOW_ICON_AFTER_DEAD"],
-              desc = AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"],
-              get = function() return RSConfigDB.IsShowingDeadNpcs() end,
-              set = function(_, value)
-                RSConfigDB.SetShowingDeadNpcs(value)
-                RSConfigDB.SetShowingDeadNpcsInReseteableZones(false)
-                RSMinimap.RefreshAllData(true)
-              end,
-              width = "full",
-              disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
-            },
-            keepShowingAfterDeadReseteable = {
-              order = 5,
-              type = "toggle",
-              name = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"],
-              desc = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"],
-              get = function() return RSConfigDB.IsShowingDeadNpcsInReseteableZones() end,
-              set = function(_, value)
-                RSConfigDB.SetShowingDeadNpcsInReseteableZones(value)
-                RSMinimap.RefreshAllData(true)
-              end,
-              width = "full",
-              disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) or private.db.map.keepShowingAfterDead end,
-            },
-            separatorContainers = {
-              order = 6,
-              type = "header",
-              name = AL["MAP_CONTAINERS_ICONS"],
-            },
-    				displayContainerIcons = {
-    					order = 7,
-    					type = "toggle",
-    					name = AL["DISPLAY_CONTAINER_ICONS"],
-    					desc = AL["DISPLAY_CONTAINER_ICONS_DESC"],
-    					get = function() return RSConfigDB.IsShowingContainers() end,
-    					set = function(_, value)
-    						RSConfigDB.SetShowingContainers(value)
-    						RSMinimap.RefreshAllData(true)
-    					end,
-    					width = "full",
-    				},
-            keepShowingAfterCollected = {
-              order = 8,
-              type = "toggle",
-              name = AL["MAP_SHOW_ICON_AFTER_COLLECTED"],
-              desc = AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"],
-              get = function() return RSConfigDB.IsShowingOpenedContainers() end,
-              set = function(_, value)
-                RSConfigDB.SetShowingOpenedContainers(value)
-                RSMinimap.RefreshAllData(true)
-              end,
-              width = "full",
-              disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
-            },
-            separatorEvents = {
-              order = 9,
-              type = "header",
-              name = AL["MAP_EVENTS_ICONS"],
-            },
-    				displayEventIcons = {
-    					order = 10,
-    					type = "toggle",
-    					name = AL["DISPLAY_EVENT_ICONS"],
-    					desc = AL["DISPLAY_EVENT_ICONS_DESC"],
-    					get = function() return RSConfigDB.IsShowingEvents() end,
-    					set = function(_, value)
-    					  RSConfigDB.SetShowingEvents(value)
-    						RSMinimap.RefreshAllData(true)
-    					end,
-    					width = "full",
-    				},
-            keepShowingAfterCompleted = {
-              order = 11,
-              type = "toggle",
-              name = AL["MAP_SHOW_ICON_AFTER_COMPLETED"],
-              desc = AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"],
-              get = function() return RSConfigDB.IsShowingCompletedEvents() end,
-              set = function(_, value)
-                RSConfigDB.SetShowingCompletedEvents(value)
-                RSMinimap.RefreshAllData(true)
-              end,
-              width = "full",
-              disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
-            },
-            separatorNotDiscovered = {
-              order = 12,
-              type = "header",
-              name = AL["MAP_NOT_DISCOVERED_ICONS"],
-            },
-    				displayNotDiscoveredMapIcons = {
-    					order = 13,
-    					type = "toggle",
-    					name = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS"],
-    					desc = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC"],
-    					get = function() return RSConfigDB.IsShowingNotDiscoveredMapIcons() end,
-    					set = function(_, value)
-    						RSConfigDB.SetShowingNotDiscoveredMapIcons(value)
-    						RSMinimap.RefreshAllData(true)
-    					end,
-    					width = "full",
-    					disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
-    				},
-    				displayOldNotDiscoveredMapIcons = {
-    					order = 14,
-    					type = "toggle",
-    					name = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS"],
-    					desc = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC"],
-    					get = function() return RSConfigDB.IsShowingOldNotDiscoveredMapIcons() end,
-    					set = function(_, value)
-    						RSConfigDB.SetShowingOldNotDiscoveredMapIcons(value)
-    						RSMinimap.RefreshAllData(true)
-    					end,
-    					width = "full",
-    					disabled = function() return ((not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) or not private.db.map.displayNotDiscoveredMapIcons) end,
-    				},
-          },
-        },
-        timers = {
-          type = "group",
-          order = 2,
-          name = AL["MAP_TIMERS"],
-          handler = RareScanner,
-          desc = AL["MAP_TIMERS_DESC"],
-          args = {
-      				maxSeenTime = {
-      					order = 1,
-      					type = "range",
-      					name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
-      					desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
-      					min	= 0,
-      					max	= 30,
-      					step = 1,
-      					bigStep = 1,
-      					get = function() return RSConfigDB.GetMaxSeenTimeFilter() end,
-      					set = function(_, value)
-      						RSConfigDB.SetMaxSeenTimeFilter(value, true)
-      						RSMinimap.RefreshAllData(true)
-      					end,
-      					width = "full",
-      					disabled = function() return (not RSConfigDB.IsShowingNpcs()) end,	
-      				},
-      				maxSeenTimeContainer = {
-      					order = 2,
-      					type = "range",
-      					name = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"],
-      					desc = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"],
-      					min	= 0,
-      					max	= 15,
-      					step = 1,
-      					bigStep = 1,
-      					get = function() return RSConfigDB.GetMaxSeenContainerTimeFilter() end,
-      					set = function(_, value)
-      						RSConfigDB.SetMaxSeenContainerTimeFilter(value, true)
-      						RSMinimap.RefreshAllData(true)
-      					end,
-      					width = "full",
-      					disabled = function() return (not RSConfigDB.IsShowingContainers()) end,	
-      				},
-      				maxSeenTimeEvent = {
-      					order = 3,
-      					type = "range",
-      					name = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"],
-      					desc = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"],
-      					min	= 0,
-      					max	= 15,
-      					step = 1,
-      					bigStep = 1,
-      					get = function() return RSConfigDB.GetMaxSeenEventTimeFilter() end,
-      					set = function(_, value)
-      						RSConfigDB.SetMaxSeenEventTimeFilter(value, true)
-      						RSMinimap.RefreshAllData(true)
-      					end,
-      					width = "full",
-      					disabled = function() return (not RSConfigDB.IsShowingEvents()) end,	
-      				}
-      		  }
-          },
-          searcher = {
-            type = "group",
-            order = 3,
-            name = AL["MAP_SEARCHER"],
-            handler = RareScanner,
-            desc = AL["MAP_SEARCHER_DESC"],
-            args = {
-              displaySearch = {
-                order = 1,
-                type = "toggle",
-                name = AL["MAP_SEARCHER_DISPLAY"],
-                desc = AL["MAP_SEARCHER_DISPLAY_DESC"],
-                get = function() return RSConfigDB.IsShowingWorldMapSearcher() end,
-                set = function(_, value)
-                  RSConfigDB.SetShowingWorldMapSearcher(value)
-                end,
-                width = "double",
-              },
-              clearValueOnChange = {
-                order = 2,
-                type = "toggle",
-                name = AL["MAP_SEARCHER_CLEAR"],
-                desc = AL["MAP_SEARCHER_CLEAR_DESC"],
-                get = function() return RSConfigDB.IsClearingWorldMapSearcher() end,
-                set = function(_, value)
-                  RSConfigDB.SetClearingWorldMapSearcher(value)
-                end,
-                width = "double",
-              },
-            }
-          }
-			 }
+				icons = {
+					type = "group",
+					order = 1,
+					name = AL["MAP_ICONS"],
+					handler = RareScanner,
+					desc = AL["MAP_ICONS_DESC"],
+					args = {
+						separatorNpcs = {
+							order = 1,
+							type = "header",
+							name = AL["MAP_NPCS_ICONS"],
+						},
+						displayNpcIcons = {
+							order = 2,
+							type = "toggle",
+							name = AL["DISPLAY_NPC_ICONS"],
+							desc = AL["DISPLAY_NPC_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingNpcs() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingNpcs(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+						},
+						displayFriendlyNpcIcons = {
+							order = 3,
+							type = "toggle",
+							name = AL["DISPLAY_FRIENDLY_NPC_ICONS"],
+							desc = AL["DISPLAY_FRIENDLY_NPC_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingFriendlyNpcs() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingFriendlyNpcs(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs()) end,
+						},
+						keepShowingAfterDead = {
+							order = 4,
+							type = "toggle",
+							name = AL["MAP_SHOW_ICON_AFTER_DEAD"],
+							desc = AL["MAP_SHOW_ICON_AFTER_DEAD_DESC"],
+							get = function() return RSConfigDB.IsShowingDeadNpcs() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingDeadNpcs(value)
+								RSConfigDB.SetShowingDeadNpcsInReseteableZones(false)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
+						},
+						keepShowingAfterDeadReseteable = {
+							order = 5,
+							type = "toggle",
+							name = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE"],
+							desc = AL["MAP_SHOW_ICON_AFTER_DEAD_RESETEABLE_DESC"],
+							get = function() return RSConfigDB.IsShowingDeadNpcsInReseteableZones() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingDeadNpcsInReseteableZones(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) or private.db.map.keepShowingAfterDead end,
+						},
+						separatorContainers = {
+							order = 6,
+							type = "header",
+							name = AL["MAP_CONTAINERS_ICONS"],
+						},
+						displayContainerIcons = {
+							order = 7,
+							type = "toggle",
+							name = AL["DISPLAY_CONTAINER_ICONS"],
+							desc = AL["DISPLAY_CONTAINER_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingContainers() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingContainers(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+						},
+						keepShowingAfterCollected = {
+							order = 8,
+							type = "toggle",
+							name = AL["MAP_SHOW_ICON_AFTER_COLLECTED"],
+							desc = AL["MAP_SHOW_ICON_AFTER_COLLECTED_DESC"],
+							get = function() return RSConfigDB.IsShowingOpenedContainers() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingOpenedContainers(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
+						},
+						separatorEvents = {
+							order = 9,
+							type = "header",
+							name = AL["MAP_EVENTS_ICONS"],
+						},
+						displayEventIcons = {
+							order = 10,
+							type = "toggle",
+							name = AL["DISPLAY_EVENT_ICONS"],
+							desc = AL["DISPLAY_EVENT_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingEvents() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingEvents(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+						},
+						keepShowingAfterCompleted = {
+							order = 11,
+							type = "toggle",
+							name = AL["MAP_SHOW_ICON_AFTER_COMPLETED"],
+							desc = AL["MAP_SHOW_ICON_AFTER_COMPLETED_DESC"],
+							get = function() return RSConfigDB.IsShowingCompletedEvents() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingCompletedEvents(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
+						},
+						separatorNotDiscovered = {
+							order = 12,
+							type = "header",
+							name = AL["MAP_NOT_DISCOVERED_ICONS"],
+						},
+						displayNotDiscoveredMapIcons = {
+							order = 13,
+							type = "toggle",
+							name = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS"],
+							desc = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingNotDiscoveredMapIcons() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingNotDiscoveredMapIcons(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
+						},
+						displayOldNotDiscoveredMapIcons = {
+							order = 14,
+							type = "toggle",
+							name = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS"],
+							desc = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingOldNotDiscoveredMapIcons() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingOldNotDiscoveredMapIcons(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return ((not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) or not private.db.map.displayNotDiscoveredMapIcons) end,
+						},
+					},
+				},
+				timers = {
+					type = "group",
+					order = 2,
+					name = AL["MAP_TIMERS"],
+					handler = RareScanner,
+					desc = AL["MAP_TIMERS_DESC"],
+					args = {
+						maxSeenTime = {
+							order = 1,
+							type = "range",
+							name = AL["MAP_SHOW_ICON_MAX_SEEN_TIME"],
+							desc = AL["MAP_SHOW_ICON_MAX_SEEN_TIME_DESC"],
+							min	= 0,
+							max	= 30,
+							step = 1,
+							bigStep = 1,
+							get = function() return RSConfigDB.GetMaxSeenTimeFilter() end,
+							set = function(_, value)
+								RSConfigDB.SetMaxSeenTimeFilter(value, true)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingNpcs()) end,
+						},
+						maxSeenTimeContainer = {
+							order = 2,
+							type = "range",
+							name = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME"],
+							desc = AL["MAP_SHOW_ICON_CONTAINER_MAX_SEEN_TIME_DESC"],
+							min	= 0,
+							max	= 15,
+							step = 1,
+							bigStep = 1,
+							get = function() return RSConfigDB.GetMaxSeenContainerTimeFilter() end,
+							set = function(_, value)
+								RSConfigDB.SetMaxSeenContainerTimeFilter(value, true)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingContainers()) end,
+						},
+						maxSeenTimeEvent = {
+							order = 3,
+							type = "range",
+							name = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME"],
+							desc = AL["MAP_SHOW_ICON_EVENT_MAX_SEEN_TIME_DESC"],
+							min	= 0,
+							max	= 15,
+							step = 1,
+							bigStep = 1,
+							get = function() return RSConfigDB.GetMaxSeenEventTimeFilter() end,
+							set = function(_, value)
+								RSConfigDB.SetMaxSeenEventTimeFilter(value, true)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsShowingEvents()) end,
+						}
+					}
+				},
+				searcher = {
+					type = "group",
+					order = 3,
+					name = AL["MAP_SEARCHER"],
+					handler = RareScanner,
+					desc = AL["MAP_SEARCHER_DESC"],
+					args = {
+						displaySearch = {
+							order = 1,
+							type = "toggle",
+							name = AL["MAP_SEARCHER_DISPLAY"],
+							desc = AL["MAP_SEARCHER_DISPLAY_DESC"],
+							get = function() return RSConfigDB.IsShowingWorldMapSearcher() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingWorldMapSearcher(value)
+							end,
+							width = "double",
+						},
+						clearValueOnChange = {
+							order = 2,
+							type = "toggle",
+							name = AL["MAP_SEARCHER_CLEAR"],
+							desc = AL["MAP_SEARCHER_CLEAR_DESC"],
+							get = function() return RSConfigDB.IsClearingWorldMapSearcher() end,
+							set = function(_, value)
+								RSConfigDB.SetClearingWorldMapSearcher(value)
+							end,
+							width = "double",
+						},
+					}
+				}, waypoints = {
+					type = "group",
+					order = 4,
+					name = AL["MAP_WAYPOINTS"],
+					handler = RareScanner,
+					desc = AL["MAP_WAYPOINTS_DESC"],
+					args = {
+						tomtom = {
+							order = 1,
+							type = "toggle",
+							name = AL["MAP_WAYPOINT_TOMTOM"],
+							desc = AL["MAP_WAYPOINT_TOMTOM_DESC"],
+							get = function() return RSConfigDB.IsAddingWorldMapTomtomWaypoints() end,
+							set = function(_, value)
+								RSConfigDB.SetAddingWorldMapTomtomWaypoints(value)
+							end,
+							width = "double",
+							disabled = function() return not TomTom end,
+						},
+						ingame = {
+							order = 2,
+							type = "toggle",
+							name = AL["MAP_WAYPOINT_INGAME"],
+							desc = AL["MAP_WAYPOINT_INGAME_DESC"],
+							get = function() return RSConfigDB.IsAddingWorldMapIngameWaypoints() end,
+							set = function(_, value)
+								RSConfigDB.SetAddingWorldMapIngameWaypoints(value)
+							end,
+							width = "double",
+						},
+					}
+				}
+			}
 		}
 	end
-	
+
 	return map_options
 end
 

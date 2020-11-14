@@ -697,7 +697,7 @@ end
 
 local options = {
     type = "group",
-    name = "军团再临财宝",
+    name = "07 军团再临",
     desc = "破碎群岛稀有和财宝位置",
     get = function(info) return LegionRaresTreasures.db.profile[info.arg] end,
     set = function(info, v) LegionRaresTreasures.db.profile[info.arg] = v; LegionRaresTreasures:Refresh() end,

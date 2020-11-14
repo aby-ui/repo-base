@@ -22,7 +22,7 @@ local function GetTooltipNameScanner()
 			return tip
 		end
 	end
-	
+
 	local tip = CreateFrame('GameTooltip', 'TooltipNpcName' .. (#tooltipNames + 1), UIParent, 'GameTooltipTemplate')
 	tip:Show()
 	tip:SetHyperlink('unit:')
@@ -35,11 +35,11 @@ function RSTooltipScanners.ScanNpcName(npcID)
 	local tip = GetTooltipNameScanner()
 	tip:SetOwner(UIParent, 'ANCHOR_NONE')
 	tip.npcID = npcID or 0
-	tip:SetScript('OnTooltipSetUnit', function(self) 
+	tip:SetScript('OnTooltipSetUnit', function(self)
 		local tipName = self:GetName()
 		local name, _ = _G[tipName .. 'TextLeft1']:GetText(), _G[tipName ..'TextLeft2']:GetText()
 		if (name) then
-			--Cannot use RSNpcDB.SetNpcName(self.npcID, name), cyclic import! 
+			--Cannot use RSNpcDB.SetNpcName(self.npcID, name), cyclic import!
 			private.dbglobal.rare_names[GetLocale()][npcID] = name
 		end
 		self:SetScript('OnTooltipSetUnit', nil)
@@ -55,17 +55,17 @@ end
 local lootTooltip = CreateFrame("GAMETOOLTIP", "RSToolTipScan", nil, "GameTooltipTemplate")
 
 function RSTooltipScanners.ScanLoot(itemLink, value)
-  lootTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-  lootTooltip:SetHyperlink(itemLink)
-      
-  local foundText = false
-  for i=1, lootTooltip:NumLines() do
-    local toolTipText = _G["RSToolTipScanTextLeft"..i]:GetText()
-    if (toolTipText and RSUtils.Contains(toolTipText, value)) then
-      foundText = true
-      break
-    end
-  end
-  
-  return foundText
+	lootTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+	lootTooltip:SetHyperlink(itemLink)
+
+	local foundText = false
+	for i=1, lootTooltip:NumLines() do
+		local toolTipText = _G["RSToolTipScanTextLeft"..i]:GetText()
+		if (toolTipText and RSUtils.Contains(toolTipText, value)) then
+			foundText = true
+			break
+		end
+	end
+
+	return foundText
 end

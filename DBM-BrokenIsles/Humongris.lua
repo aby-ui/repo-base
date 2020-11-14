@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod(1770, "DBM-BrokenIsles", nil, 822)
+local mod	= DBM:NewMod(1770, "DBM-BrokenIsles", 1, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20201111164513")
 mod:SetCreatureID(108879)
 mod:SetEncounterID(1917)
 mod:SetReCombatTime(20)

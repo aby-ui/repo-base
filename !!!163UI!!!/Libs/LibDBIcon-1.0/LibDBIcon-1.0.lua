@@ -254,6 +254,12 @@ local function createButton(name, object, db)
 	button.icon = icon
 	button.isMouseDown = false
 
+    if name == "U1MMB" then --abyui
+        overlay:SetTexture("Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-minimap-btn")
+        icon:SetSize(20, 20)
+        icon:SetPoint("TOPLEFT", 6, -5)
+    end
+
 	local r, g, b = icon:GetVertexColor()
 	icon:SetVertexColor(object.iconR or r, object.iconG or g, object.iconB or b)
 

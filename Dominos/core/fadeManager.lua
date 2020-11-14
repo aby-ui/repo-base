@@ -1,24 +1,32 @@
 --------------------------------------------------------------------------------
 -- Handles fading out frames when not moused over
--- Necessary since using the blizzard fading functions can cause issues in combat
 --------------------------------------------------------------------------------
 
 local _, Addon = ...
 
-local MouseOverWatcher = {}
+local FadeManager = Addon:NewModule('FadeManager', 'AceEvent-3.0')
 local watched = {}
 
-function MouseOverWatcher:Update()
-    for f in pairs(watched) do
-        if f:IsFocus() then
-            if not f.focused then
-                f.focused = true
-                f:FadeIn()
+function FadeManager:Load()
+    self:RequestUpdate()
+    self:RegisterEvent('PLAYER_ENTERING_WORLD', 'Update')
+end
+
+function FadeManager:Unload()
+    self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+end
+
+function FadeManager:Update()
+    for frame in pairs(watched) do
+        if frame:IsFocus() then
+            if not frame.focused then
+                frame.focused = true
+                frame:FadeIn()
             end
         else
-            if f.focused then
-                f.focused = nil
-                f:FadeOut()
+            if frame.focused then
+                frame.focused = nil
+                frame:FadeOut()
             end
         end
     end
@@ -28,39 +36,39 @@ function MouseOverWatcher:Update()
     end
 end
 
-function MouseOverWatcher:RequestUpdate()
-    if not self.__Update then
-        self.__Update = function()
-            self.__Waiting = false
+function FadeManager:RequestUpdate()
+    if not self._update then
+        self._update = function()
+            self._waiting = false
             self:Update()
         end
     end
 
-    if not self.__Waiting then
-        self.__Waiting = true
-        C_Timer.After(0.15, self.__Update)
+    if not self._waiting then
+        self._waiting = true
+        C_Timer.After(0.15, self._update)
     end
 end
 
-function MouseOverWatcher:Add(f)
-    if not watched[f] then
-        watched[f] = true
+function FadeManager:Add(frame)
+    if not watched[frame] then
+        watched[frame] = true
 
-        f.focused = f:IsFocus() and true or nil
-        f:UpdateAlpha()
+        frame.focused = frame:IsFocus() and true or nil
+        frame:UpdateAlpha()
 
         self:RequestUpdate()
     end
 end
 
-function MouseOverWatcher:Remove(f)
-    if watched[f] then
-        watched[f] = nil
+function FadeManager:Remove(frame)
+    if watched[frame] then
+        watched[frame] = nil
 
-        f.focused = nil
-        f:UpdateAlpha()
+        frame.focused = nil
+        frame:UpdateAlpha()
     end
 end
 
 -- exports
-Addon.MouseOverWatcher = MouseOverWatcher
+Addon.FadeManager = FadeManager

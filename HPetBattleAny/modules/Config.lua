@@ -23,7 +23,7 @@ local addonname,addon = ...
 local L = addon.L
 
 
-local HPetOption = CreateFrame("Frame","HPetOption",InterfaceOptionsFramePanelContainer)
+local HPetOption = CreateFrameAby("Frame","HPetOption",InterfaceOptionsFramePanelContainer)
 
 HPetOption:Hide()
 --~ tinsert(UISpecialFrames, "HPetOption")

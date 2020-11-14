@@ -28,7 +28,7 @@ function RSNpcDB.IsNpcKilled(npcID)
 	if (npcID and private.dbchar.rares_killed[npcID]) then
 		return true;
 	end
-	
+
 	return false
 end
 
@@ -40,7 +40,7 @@ function RSNpcDB.GetNpcKilledRespawnTime(npcID)
 	if (RSNpcDB.IsNpcKilled(npcID)) then
 		return private.dbchar.rares_killed[npcID]
 	end
-	
+
 	return 0
 end
 
@@ -73,7 +73,7 @@ function RSNpcDB.GetInternalNpcInfo(npcID)
 	if (npcID) then
 		return private.NPC_INFO[npcID]
 	end
-	
+
 	return nil
 end
 
@@ -90,7 +90,7 @@ local function GetInternalNpcInfoByMapID(npcID, mapID)
 			return npcInfo
 		end
 	end
-	
+
 	return nil
 end
 
@@ -101,7 +101,7 @@ function RSNpcDB.GetInternalNpcArtID(npcID, mapID)
 			return npcInfo.artID
 		end
 	end
-	
+
 	return nil
 end
 
@@ -112,7 +112,7 @@ function RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 			return npcInfo.x, npcInfo.y
 		end
 	end
-	
+
 	return nil
 end
 
@@ -123,7 +123,7 @@ function RSNpcDB.GetInternalNpcOverlay(npcID, mapID)
 			return npcInfo.overlay
 		end
 	end
-	
+
 	return nil
 end
 
@@ -156,7 +156,7 @@ function RSNpcDB.IsInternalNpcInMap(npcID, mapID, checkSubzones)
 			end
 		end
 	end
-	
+
 	return false;
 end
 
@@ -167,7 +167,7 @@ function RSNpcDB.IsInternalNpcFriendly(npcID)
 			return true
 		end
 	end
-	
+
 	return false
 end
 
@@ -180,7 +180,7 @@ function RSNpcDB.GetInteralNpcLoot(npcID)
 	if (npcID) then
 		return private.NPC_LOOT[npcID]
 	end
-	
+
 	return nil
 end
 
@@ -189,7 +189,7 @@ function RSNpcDB.GetNpcLoot(npcID)
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("NPC [%s]: Obeniendo su loot.", npcID))
 		return RSUtils.JoinTables(RSNpcDB.GetInteralNpcLoot(npcID), RSNpcDB.GetNpcLootFound(npcID))
 	end
-	
+
 	return nil
 end
 
@@ -212,7 +212,7 @@ function RSNpcDB.GetNpcLootFound(npcID)
 	if (npcID and private.dbglobal.rares_loot[containerID]) then
 		return private.dbglobal.rares_loot[npcID]
 	end
-	
+
 	return nil
 end
 
@@ -227,7 +227,7 @@ function RSNpcDB.AddItemToNpcLootFound(npcID, itemID)
 		if (not private.dbglobal.rares_loot[npcID]) then
 			private.dbglobal.rares_loot[npcID] = {}
 		end
-		
+
 		-- If its in the internal database ignore it
 		local internalLoot = RSNpcDB.GetInteralNpcLoot(npcID)
 		if (internalLoot and RSUtils.Contains(internalLoot, itemID)) then
@@ -293,7 +293,7 @@ function RSNpcDB.InitNpcNamesDB()
 	if (not private.dbglobal.rare_names) then
 		private.dbglobal.rare_names = {}
 	end
-	
+
 	if (not private.dbglobal.rare_names[GetLocale()]) then
 		private.dbglobal.rare_names[GetLocale()] = {}
 	end
@@ -317,7 +317,7 @@ function RSNpcDB.GetNpcName(npcID)
 			RSTooltipScanners.ScanNpcName(npcID)
 		end
 	end
-	
+
 	return nil
 end
 

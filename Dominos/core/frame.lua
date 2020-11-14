@@ -20,7 +20,7 @@ local function frame_OnSetScale(frame, scale)
 end
 
 local frame_UpdateShown =
-    [[
+[[
     if self:GetAttribute("state-hidden") then
         self:Hide()
         return
@@ -127,7 +127,7 @@ function Frame:Free(deleteSettings)
     active[self.id] = nil
 
     UnregisterStateDriver(self, 'display', 'show')
-    Addon.MouseOverWatcher:Remove(self)
+    Addon.FadeManager:Remove(self)
     Addon.OverrideController:Remove(self)
 
     self.docked = nil
@@ -463,10 +463,6 @@ function Frame:FadeOut()
 end
 
 function Frame:Fade(targetAlpha, delay, duration)
-    if floor(abs(targetAlpha * 100 - self:GetAlpha() * 100)) == 0 then
-        return
-    end
-
     Addon:Fade(self, targetAlpha, delay, duration)
 
     if Addon:IsLinkedOpacityEnabled() then
@@ -871,9 +867,9 @@ function Frame:UpdateWatched()
         not (Addon:IsLinkedOpacityEnabled() and self:GetAnchor())
 
     if shouldWatch then
-        Addon.MouseOverWatcher:Add(self)
+        Addon.FadeManager:Add(self)
     else
-        Addon.MouseOverWatcher:Remove(self)
+        Addon.FadeManager:Remove(self)
     end
 end
 

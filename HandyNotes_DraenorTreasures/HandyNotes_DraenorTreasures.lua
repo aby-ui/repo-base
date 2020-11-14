@@ -1007,7 +1007,7 @@ end
 
 local options = {
     type = "group",
-    name = "德拉诺财宝",
+    name = "06 德拉诺",
     desc = "德拉诺财宝位置。",
     get = function(info) return DraenorTreasures.db.profile[info.arg] end,
     set = function(info, v) DraenorTreasures.db.profile[info.arg] = v; DraenorTreasures:Refresh() end,

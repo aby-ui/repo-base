@@ -1,9 +1,13 @@
 ## Interface: 90001
 
 ## Title: Garrison Mission Manager
-## Version: v59
+## Version: v60
 ## Notes: Assists you with selecting best team for Battle for Azeroth mission table, Legion's Class Hall and WoD's Garrison/Shipyard missions and other followers management tasks
 ## Author: Oleg "Rowaa[SR13]" Volkov
+
+## X-License: All Rights Reserved.
+## X-Curse-Project-ID: 86844
+## X-WoWI-ID: 23375
 
 ## LoadOnDemand: 1
 ## LoadWith: Blizzard_GarrisonUI, Blizzard_OrderHallUI
@@ -20,10 +24,12 @@ FindBestFollowersForMission.lua
 GarrisonMissionManager.lua
 MissionUI_Shared.lua
 MissionUI_Shared_UpgradeItems.lua
+MissionUI_Shared_Init.lua
 MissionUI_Garrison.lua
 MissionUI_Shipyard.lua
 MissionUI_OrderHall.lua
 MissionUI_BFA.lua
+MissionUI_Covenant.lua
 GarrisonBuilding.lua
 Broker.lua
 

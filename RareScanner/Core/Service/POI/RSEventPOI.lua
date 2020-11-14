@@ -65,7 +65,7 @@ local function GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	POI.isCompleted = RSEventDB.IsEventCompleted(eventID)
 	POI.isDiscovered = POI.isCompleted or alreadyFoundInfo
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(eventID, mapID)
-	
+
 	-- Textures
 	if (POI.isCompleted) then
 		POI.Texture = RSConstants.BLUE_EVENT_TEXTURE
@@ -80,18 +80,18 @@ local function GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	else
 		POI.Texture = RSConstants.NORMAL_EVENT_TEXTURE
 	end
-	
+
 	return POI
 end
 
 local function IsEventPOIFiltered(eventID, mapID, zoneQuestID, vignetteGUIDs, onWorldMap, onMinimap)
-  local name = RSEventDB.GetEventName(eventID) or AL["EVENT"]
-  -- Skip if filtering by name in the world map search box
-  if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
-    RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento [%s]: Filtrado por nombre [%s][%s].", eventID, name, RSGeneralDB.GetWorldMapTextFilter()))
-    return true
-  end
-  
+	local name = RSEventDB.GetEventName(eventID) or AL["EVENT"]
+	-- Skip if filtering by name in the world map search box
+	if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
+		RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento [%s]: Filtrado por nombre [%s][%s].", eventID, name, RSGeneralDB.GetWorldMapTextFilter()))
+		return true
+	end
+
 	-- Skip if the entity appears only while a quest event is going on and it isnt active
 	if (zoneQuestID) then
 		local active = false
@@ -103,22 +103,22 @@ local function IsEventPOIFiltered(eventID, mapID, zoneQuestID, vignetteGUIDs, on
 				end
 			end
 		end
-			
+
 		if (not active) then
 			RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento [%s]: Evento asociado no esta activo.", eventID))
 			return true
 		end
 	end
-	
+
 	-- A 'not discovered' event will be setted as completed when the action is detected while loading the addon and its questID is completed
 	local eventCompleted = RSEventDB.IsEventCompleted(eventID)
-	
+
 	-- Skip if completed and not showing completed entities
 	if (eventCompleted and not RSConfigDB.IsShowingCompletedEvents()) then
 		RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento [%s]: Esta completado.", eventID))
 		return true
 	end
-	
+
 	-- Skip if an ingame vignette is already showing this entity (on Vignette)
 	for _, vignetteGUID in ipairs(vignetteGUIDs) do
 		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
@@ -134,7 +134,7 @@ local function IsEventPOIFiltered(eventID, mapID, zoneQuestID, vignetteGUIDs, on
 			end
 		end
 	end
-	
+
 	return false
 end
 
@@ -143,12 +143,12 @@ function RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMa
 	if (not RSConfigDB.IsShowingEvents()) then
 		return
 	end
-		
+
 	local POIs = {}
-	for _, eventID in ipairs(notDiscoveredEventIDs) do	
+	for _, eventID in ipairs(notDiscoveredEventIDs) do
 		local filtered = false
 		local eventInfo = RSEventDB.GetInternalEventInfo(eventID)
-		
+
 		-- Skip if it was discovered in this session
 		if (RSGeneralDB.GetAlreadyFoundEntity(eventID)) then
 			RemoveNotDiscoveredEvent(eventID)
@@ -160,14 +160,14 @@ function RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMa
 		if (not filtered and not RSEventDB.IsInternalEventInMap(eventID, mapID)) then
 			RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento N/D [%s]: En distinta zona.", eventID))
 			filtered = true
-		end	
-		
+		end
+
 		-- Skip if common filters
 		if (not filtered and not IsEventPOIFiltered(eventID, mapID, eventInfo.zoneQuestId, vignetteGUIDs, onWorldMap, onMinimap)) then
 			tinsert(POIs, GetEventPOI(eventID, mapID, eventInfo))
 		end
 	end
-	
+
 	return POIs
 end
 
@@ -177,10 +177,10 @@ function RSEventPOI.GetMapAlreadyFoundEventPOI(eventID, alreadyFoundInfo, mapID,
 		RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltado Evento [%s]: Iconos de eventos deshabilitado.", eventID))
 		return
 	end
-	
+
 	local eventInfo = RSEventDB.GetInternalEventInfo(eventID)
 	local eventCompleted = RSEventDB.IsEventCompleted(eventID)
-	
+
 	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
 	-- This filter doesnt apply to completed entities
 	if (not eventCompleted and RSConfigDB.IsMaxSeenTimeEventFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenEventTimeFilter())) then
@@ -194,20 +194,20 @@ function RSEventPOI.GetMapAlreadyFoundEventPOI(eventID, alreadyFoundInfo, mapID,
 	if (RSGeneralDB.IsAlreadyFoundEntityInZone(eventID, mapID)) then
 		correctMap = true
 	end
-	
+
 	-- Then checks with the internal found information just in case its a multizone
 	-- Its possible that the player is opening a map where this NPC can show up, but the last time seen was in a different map
 	if (not correctMap and (not eventInfo or not RSEventDB.IsInternalEventInMap(eventID, mapID))) then
 		RSLogger:PrintDebugMessageEntityID(eventID, string.format("Saltando Evento [%s]: En distinta zona.", eventID))
 		return
 	end
-	
+
 	-- Skip if common filters
 	local zoneQuestID
 	if (eventInfo) then
 		zoneQuestID = eventInfo.zoneQuestId
 	end
-	
+
 	if (not IsEventPOIFiltered(eventID, mapID, zoneQuestID, vignetteGUIDs, onWorldMap, onMinimap)) then
 		return GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	end

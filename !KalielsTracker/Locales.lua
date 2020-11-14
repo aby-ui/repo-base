@@ -48,9 +48,9 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["X offset"] = "横向位置"
     KT.L["Y offset"] = "纵向位置"
     KT.L["Max. height"] = "最大高度"
-    KT.L[" Max. height is related with value Y offset.\n"..
-            " Content is lesser ... tracker height is automatically increases.\n"..
-            " Content is greater ... tracker enables scrolling."] = " 最大高度与纵向位置相关：\n 如果条目少, 追踪窗口会自动适应高度\n 如果条目继续增多，则支持滚动"
+    KT.L["  Max. height is related with value Y offset.\n"..
+            "  Content is lesser ... tracker height is automatically increases.\n"..
+            "  Content is greater ... tracker enables scrolling."] = " 最大高度与纵向位置相关：\n 如果条目少, 追踪窗口会自动适应高度\n 如果条目继续增多，则支持滚动"
     KT.L["Show scroll indicator"] = "显示滚动条"
     KT.L["Strata"] = "滚动条优先级"
     KT.L["Background / Border"] = "背景 / 边框"
@@ -130,4 +130,21 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Current Order"] = "当前顺序"
     KT.L["Default Order"] = "默认排序"
     KT.L["Popup "] = "自动弹出的"
+
+    KT.L["Show Max. height overlay"] = "显示最大高度轮廓"
+    KT.L["Show Quest tags"] = "显示任务标签(等级/类型)"
+    KT.L["Show Active button Binding text"] = "显示自动按钮的按键绑定文本"
+
+    KT.L["Icecrown Rares"] = "冰冠冰川稀有"
+    KT.L["Next Rare:"] = "下一个稀有："
+    KT.L["Next Rare... %s at [%.1f, %.1f] %s"] = "下个稀有... %s at [%.1f, %.1f] %s"
+    KT.L["Icecrown Rare Monitor "] = "冰冠冰川稀有监控 "
+    KT.L["Shows Shadowlands Pre-Patch Rares, which are spawns. "] = "显示暗影国度前夕的精英"
+    KT.L["This feature has not been tested much!|r"] = "这个功能没有很全面的测试!|r"
+    KT.L["Timer Correction"] = "时间微调"
+    KT.L["Show only in Icecrown"] = "只在冰冠冰川显示"
+    KT.L["  Available actions:\n"] = "支持的操作:\n"
+    KT.L["Left Click|r - add waypoint (Blizzard or TomTom)\n"] = "左键点击|r - 添加路点\n"
+    KT.L["Right Click|r - remove waypoint (Blizzard or TomTom)\n"] = "右键点击|r - 移除路点\n"
+    KT.L["Shift + Left Click|r - send Rare info to General chat channel"] = "SHIFT+左键|r - 发送稀有信息到综合频道"
 end

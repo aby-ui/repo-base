@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201106220013")
+mod:SetRevision("20201112144349")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -334,7 +334,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnVolatileStoneShell:Play("targetchange")
 		end
 		if self.Options.NPAuraOnVolatileShell then
-			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 6)
+			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 4)
 		end
 	elseif spellId == 343273 then
 		warnRavenousFeast:CombinedShow(0.3, args.destName)--Combined in case it'll clobber everyone near them too

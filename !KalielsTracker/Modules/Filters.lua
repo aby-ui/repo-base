@@ -283,18 +283,24 @@ local function Filter_Quests(self, spec, idx)
 		if bckMapShown then
 			KT.SetMapID(mapID)
 		end
-		if mapID == 1165 or  -- BfA - Dazar'alor
-				(mapID and C_Map.GetMapGroupID(mapID) and not KT.inInstance) then
+		if (mapID and C_Map.GetMapGroupID(mapID) and not KT.inInstance) or
+				mapID == 1165 then  -- BfA - Dazar'alor
 			local mapInfo = C_Map.GetMapInfo(mapID)
 			OpenQuestLog(mapInfo.parentMapID)
-		elseif mapID == 1473 then  -- BfA - Chamber of Heart
-			zoneName = "Heart of Azeroth"  -- TODO: other languages
 		end
 		for i = 1, numEntries do
 			local questInfo = C_QuestLog.GetInfo(i)
 			if not questInfo.isHidden then
 				if questInfo.isHeader then
 					isInZone = (questInfo.isOnMap or questInfo.title == zoneName)
+					if mapID == 1473 then  -- BfA - Chamber of Heart
+						isInZone = (isInZone or
+								questInfo.title == "Heart of Azeroth" or  -- TODO: other languages
+								questInfo.title == "Visions of N'Zoth")   -- TODO: other languages
+					elseif mapID == 118 then  -- BfA - Icecrown (Shadowlands Pre-Patch)
+						isInZone = (isInZone or
+								questInfo.title == "Death Rising")  -- TODO: other languages
+					end
 				else
 					if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and (questInfo.isOnMap or isInZone) then
 						if KT.inInstance then

@@ -2351,27 +2351,27 @@ private.NPC_INFO = {
 	[153486] = { zoneID = 1462, artID = { 1276 }, x = 0.63, y = 0.57, overlay = { "0.62-0.56","0.63-0.57" }, displayID = 92483, questID = { 57389 } }; --Data Anomaly
 	
 	-- Rares Shadowlands
-	[174066] = { zoneID = 118, artID = { 123 }, x = 0.344, y = 0.685, overlay = { "0.34-0.68" }, resetTimer = 1200, displayID = 16174, questID = { 62344 } }; --Patchwerk
-	[174051] = { zoneID = 118, artID = { 123 }, x = 0.583, y = 0.394, overlay = { "0.58-0.39" }, resetTimer = 1200, displayID = 26352, questID = { 62329 } }; --Trollgore
-	[174060] = { zoneID = 118, artID = { 123 }, x = 0.54, y = 0.447, overlay = { "0.54-0.44" }, resetTimer = 1200, displayID = 30857, questID = { 62338 } }; --Prince Keleseth
-	[174055] = { zoneID = 118, artID = { 123 }, x = 0.582, y = 0.834, overlay = { "0.58-0.83" }, resetTimer = 1200, displayID = 30973, questID = { 62333 } }; --Marwyn
-	[174067] = { zoneID = 118, artID = { 123 }, x = 0.316, y = 0.705, overlay = { "0.31-0.70" }, resetTimer = 1200, displayID = 16590, questID = { 62345 } }; --Noth the Plaguebringer
-	[174065] = { zoneID = 118, artID = { 123 }, x = 0.497, y = 0.327, overlay = { "0.49-0.32" }, resetTimer = 1200, displayID = 31165, questID = { 62343 } }; --Blood Queen Lana'thel
+	[174066] = { zoneID = 118, artID = { 123 }, x = 0.3655242, y = 0.676658, overlay = { "0.34-0.68","0.36-0.67" }, displayID = 16174, resetTimer = 1200, questID = { 62344 } }; --Patchwerk
+	[174051] = { zoneID = 118, artID = { 123 }, x = 0.5831629, y = 0.39307454, overlay = { "0.58-0.39" }, displayID = 26352, resetTimer = 1200, questID = { 62329 } }; --Trollgore
+	[174060] = { zoneID = 118, artID = { 123 }, x = 0.5394308, y = 0.4467787, overlay = { "0.54-0.44","0.53-0.44" }, displayID = 30857, resetTimer = 1200, questID = { 62338 } }; --Prince Keleseth
+	[174055] = { zoneID = 118, artID = { 123 }, x = 0.58168465, y = 0.8347093, overlay = { "0.58-0.83" }, displayID = 30973, resetTimer = 1200, questID = { 62333 } }; --Marwyn
+	[174067] = { zoneID = 118, artID = { 123 }, x = 0.31540912, y = 0.70346075, overlay = { "0.31-0.70" }, displayID = 16590, resetTimer = 1200, questID = { 62345 } }; --Noth the Plaguebringer
+	[174065] = { zoneID = 118, artID = { 123 }, x = 0.49584413, y = 0.32262886, overlay = { "0.49-0.32" }, displayID = 31165, resetTimer = 1200, questID = { 62343 } }; --Blood Queen Lana'thel
 	[161530] = { zoneID = 0, displayID = 94633 }; --Cloudtail
-	[174063] = { zoneID = 118, artID = { 123 }, x = 0.511, y = 0.785, overlay = { "0.51-0.78" }, resetTimer = 1200, displayID = 30893, questID = { 62341 } }; --Lady Deathwhisper
-	[174064] = { zoneID = 118, artID = { 123 }, x = 0.571, y = 0.303, overlay = { "0.57-0.30" }, resetTimer = 1200, displayID = 30881, questID = { 62342 } }; --Professor Putricide
-	[174058] = { zoneID = 118, artID = { 123 }, x = 0.707, y = 0.384, overlay = { "0.70-0.38" }, resetTimer = 1200, displayID = 30226, questID = { 62336 } }; --Bronjahm <Godfather of Souls>
-	[174053] = { zoneID = 118, artID = { 123 }, x = 0.793, y = 0.606, overlay = { "0.79-0.60" }, resetTimer = 1200, displayID = 27072, questID = { 62331 } }; --The Prophet Tharon'ja
-	[174059] = { zoneID = 118, artID = { 123 }, x = 0.648, y = 0.221, overlay = { "0.64-0.22" }, resetTimer = 1200, displayID = 29837, questID = { 62337 } }; --The Black Knight
-	[174050] = { zoneID = 118, artID = { 123 }, x = 0.675, y = 0.58, overlay = { "0.67-0.58" }, resetTimer = 1200, displayID = 27394, questID = { 62328 } }; --Krik'thir the Gatewatcher
-	[174057] = { zoneID = 118, artID = { 123 }, x = 0.472, y = 0.661, overlay = { "0.47-0.66" }, resetTimer = 1200, displayID = 30277, questID = { 62335 } }; --Scourgelord Tyrannus
-	[174054] = { zoneID = 118, artID = { 123 }, x = 0.502, y = 0.879, overlay = { "0.50-0.87" }, resetTimer = 1200, displayID = 30972, questID = { 62332 } }; --Falric
-	[174049] = { zoneID = 118, artID = { 123 }, x = 0.296, y = 0.622, overlay = { "0.29-0.62" }, resetTimer = 1200, displayID = 30856, questID = { 62327 } }; --Prince Taldaram
-	[174052] = { zoneID = 118, artID = { 123 }, x = 0.778, y = 0.661, overlay = { "0.77-0.66" }, resetTimer = 1200, displayID = 26292, questID = { 62330 } }; --Novos the Summoner
-	[174061] = { zoneID = 118, artID = { 123 }, x = 0.524, y = 0.526, overlay = { "0.52-0.52" }, resetTimer = 1200, displayID = 26351, questID = { 62339 } }; --Ingvar the Plunderer
-	[174062] = { zoneID = 118, artID = { 123 }, x = 0.578, y = 0.561, overlay = { "0.57-0.56" }, resetTimer = 1200, displayID = 27418, questID = { 62340 } }; --Skadi the Ruthless
-	[174048] = { zoneID = 118, artID = { 123 }, x = 0.442, y = 0.491, overlay = { "0.44-0.49" }, resetTimer = 1200, displayID = 27407, questID = { 62326 } }; --Elder Nadox
-	[174056] = { zoneID = 118, artID = { 123 }, x = 0.586, y = 0.725, overlay = { "0.58-0.72" }, resetTimer = 1200, displayID = 30843, questID = { 62334 } }; --Forgemaster Garfrost
+	[174063] = { zoneID = 118, artID = { 123 }, x = 0.51173115, y = 0.7854619, overlay = { "0.51-0.78" }, displayID = 30893, resetTimer = 1200, questID = { 62341 } }; --Lady Deathwhisper
+	[174064] = { zoneID = 118, artID = { 123 }, x = 0.57089347, y = 0.3052526, overlay = { "0.57-0.30" }, displayID = 30881, resetTimer = 1200, questID = { 62342 } }; --Professor Putricide
+	[174058] = { zoneID = 118, artID = { 123 }, x = 0.7061919, y = 0.3854165, overlay = { "0.70-0.38" }, displayID = 30226, resetTimer = 1200, questID = { 62336 } }; --Bronjahm <Godfather of Souls>
+	[174053] = { zoneID = 118, artID = { 123 }, x = 0.8031386, y = 0.61346227, overlay = { "0.79-0.60","0.80-0.61" }, displayID = 27072, resetTimer = 1200, questID = { 62331 } }; --The Prophet Tharon'ja
+	[174059] = { zoneID = 118, artID = { 123 }, x = 0.6480345, y = 0.2210472, overlay = { "0.64-0.22" }, displayID = 29837, resetTimer = 1200, questID = { 62337 } }; --The Black Knight
+	[174050] = { zoneID = 118, artID = { 123 }, x = 0.67502165, y = 0.5816729, overlay = { "0.67-0.58" }, displayID = 27394, resetTimer = 1200, questID = { 62328 } }; --Krik'thir the Gatewatcher
+	[174057] = { zoneID = 118, artID = { 123 }, x = 0.4712406, y = 0.6592141, overlay = { "0.47-0.66","0.47-0.65" }, displayID = 30277, resetTimer = 1200, questID = { 62335 } }; --Scourgelord Tyrannus
+	[174054] = { zoneID = 118, artID = { 123 }, x = 0.5017176, y = 0.88094807, overlay = { "0.50-0.87","0.50-0.88" }, displayID = 30972, resetTimer = 1200, questID = { 62332 } }; --Falric
+	[174049] = { zoneID = 118, artID = { 123 }, x = 0.29510763, y = 0.62136525, overlay = { "0.29-0.62" }, displayID = 30856, resetTimer = 1200, questID = { 62327 } }; --Prince Taldaram
+	[174052] = { zoneID = 118, artID = { 123 }, x = 0.7788021, y = 0.6610173, overlay = { "0.77-0.66" }, displayID = 26292, resetTimer = 1200, questID = { 62330 } }; --Novos the Summoner
+	[174061] = { zoneID = 118, artID = { 123 }, x = 0.52309144, y = 0.52551395, overlay = { "0.52-0.52" }, displayID = 26351, resetTimer = 1200, questID = { 62339 } }; --Ingvar the Plunderer
+	[174062] = { zoneID = 118, artID = { 123 }, x = 0.57629585, y = 0.5593978, overlay = { "0.57-0.56","0.57-0.55" }, displayID = 27418, resetTimer = 1200, questID = { 62340 } }; --Skadi the Ruthless
+	[174048] = { zoneID = 118, artID = { 123 }, x = 0.44170904, y = 0.49160963, overlay = { "0.44-0.49" }, displayID = 27407, resetTimer = 1200, questID = { 62326 } }; --Elder Nadox
+	[174056] = { zoneID = 118, artID = { 123 }, x = 0.59104705, y = 0.723767, overlay = { "0.58-0.72","0.59-0.72" }, displayID = 30843, resetTimer = 1200, questID = { 62334 } }; --Forgemaster Garfrost
 	[158659] = { zoneID = 0, displayID = 92534 }; --Herculon <Aspirant Assessor>
 	[161528] = { zoneID = 0, displayID = 94632 }; --Aethon
 	[161529] = { zoneID = 0, displayID = 94634 }; --Nemaeus

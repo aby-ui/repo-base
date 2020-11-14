@@ -41,14 +41,14 @@ local TOOLTIP_MAX_WIDTH = 250
 
 
 RSRarePinMixin = CreateFromMixins(MapCanvasPinMixin);
- 
+
 function RSRarePinMixin:OnLoad()
 	self:SetScalingLimits(1, 0.75, 1.0);
 end
 
 function RSRarePinMixin:OnAcquired(POI)
 	self:UseFrameLevelType("PIN_FRAME_LEVEL_VIGNETTE", self:GetMap():GetNumActivePinsByTemplate("RSRarePinTemplate"));
-	
+
 	self.POI = POI
 	self.Texture:SetTexture(POI.Texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
@@ -105,7 +105,7 @@ local function showAchievementTooltip(cell, achievementLink)
 	ItemToolTip:SetHyperlink(achievementLink)
 	ItemToolTip:Show()
 end
- 
+
 function RSRarePinMixin:OnMouseEnter()
 	if (self.tooltip) then
 		RareScannerMapTooltip:Release(self.tooltip)
@@ -113,7 +113,7 @@ function RSRarePinMixin:OnMouseEnter()
 		self.tooltip = nil
 	end
 	local tooltip = RareScannerMapTooltip:Acquire("RsMapToolTip", 10, "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER", "CENTER")
-	self.tooltip = tooltip 
+	self.tooltip = tooltip
 	tooltip:SetFrameLevel(2000)
 	tooltip:ClearAllPoints()
 	tooltip:SetClampedToScreen(true)
@@ -125,17 +125,17 @@ function RSRarePinMixin:OnMouseEnter()
 		self.tooltip:Hide()
 		self.tooltip = nil
 	end)
-	
+
 	-- NPC name
 	local line = tooltip:AddLine()
 	tooltip:SetCell(line, 1, RSUtils.TextColor(self.POI.name, "3399FF"), nil, "LEFT", 10)
-	
+
 	-- Debug
 	if (RSConstants.DEBUG_MODE) then
-    line = tooltip:AddLine()
-    tooltip:SetCell(line, 1, RSUtils.TextColor(self.POI.entityID, "FFFFCC"), nil, "LEFT", 10)
+		line = tooltip:AddLine()
+		tooltip:SetCell(line, 1, RSUtils.TextColor(self.POI.entityID, "FFFFCC"), nil, "LEFT", 10)
 	end
-	
+
 	-- Last time seen
 	line = tooltip:AddLine()
 	if (self.POI.isDiscovered) then
@@ -143,10 +143,10 @@ function RSRarePinMixin:OnMouseEnter()
 	else
 		tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_NOT_FOUND"], "FF0000"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	end
-	
+
 	-- Adds lines for special events
 	RareScanner:AddSpecialEventsLines(self, tooltip)
-	
+
 	-- Achievement
 	if (self.POI.achievementLink) then
 		line = tooltip:AddLine()
@@ -154,13 +154,13 @@ function RSRarePinMixin:OnMouseEnter()
 		tooltip:SetCellScript(line, 1, "OnEnter", showAchievementTooltip, self.POI.achievementLink)
 		tooltip:SetCellScript(line, 1, "OnLeave", hideItemToolTip)
 	end
-	
+
 	-- Notes
 	if (AL[string.format("NOTE_%s", self.POI.entityID)] ~= string.format("NOTE_%s", self.POI.entityID)) then
 		line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, RSUtils.TextColor(AL[string.format("NOTE_%s", self.POI.entityID)], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	end
-	
+
 	-- Loot
 	if (RSConfigDB.IsShowingLootOnWorldMap()) then
 		local itemsIDs
@@ -176,23 +176,23 @@ function RSRarePinMixin:OnMouseEnter()
 			for i, itemID in ipairs(itemsIDs) do
 				local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
 				if (iconFileDataID and not RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)) then
-          tinsert(itemsIDsFiltered, itemID)
-        end
+					tinsert(itemsIDsFiltered, itemID)
+				end
 			end
 		end
-		
+
 		-- Add loot to the tooltip
 		if (next(itemsIDsFiltered) ~= nil) then
 			line = tooltip:AddSeparator(1, 1)
 			line = tooltip:AddLine()
-		
+
 			local j
 			for i, itemID in ipairs(itemsIDsFiltered) do
 				j = (i - floor(i/10) * 10)
 				if (j == 0) then
 					j = 10
 				end
-			
+
 				local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
 				tooltip:SetCell(line, j, "|T"..iconFileDataID..":24|t", nil, "CENTER", 1, nil, nil, nil, nil, 24)
 				tooltip:SetCellScript(line, j, "OnEnter", showItemToolTip, { itemLink, itemClassID, itemSubClassID });
@@ -200,12 +200,12 @@ function RSRarePinMixin:OnMouseEnter()
 				tooltip:SetCellScript(line, j, "OnKeyUp", hideItemComparationTooltip);
 				tooltip:SetCellScript(line, j, "OnLeave", hideItemToolTip)
 				tooltip:SetCellScript(line, j, "OnMouseDown", filterItem, { itemClassID, itemSubClassID, itemLink })
-				
+
 				if (floor(j%10) == 0) then
 					line = tooltip:AddLine()
 				end
 			end
-			
+
 			-- fill with white spaces
 			if (j < 9) then
 				for k=j+1, 10 do
@@ -220,7 +220,7 @@ function RSRarePinMixin:OnMouseEnter()
 		-- Separator
 		line = tooltip:AddSeparator(1, 1)
 		line = tooltip:AddLine()
-		
+
 		local text
 		if (self.POI.isNpc) then
 			text = AL["MAP_TOOLTIP_KILLED"]
@@ -229,18 +229,18 @@ function RSRarePinMixin:OnMouseEnter()
 		elseif (self.POI.isEvent) then
 			text = AL["MAP_TOOLTIP_EVENT_DONE"]
 		end
-		
+
 		tooltip:SetCell(line, 1, RSUtils.TextColor(text, "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
-	-- Otherwise text showing the time remaining to be available again
+		-- Otherwise text showing the time remaining to be available again
 	else
 		-- Separator
 		line = tooltip:AddSeparator(1, 1)
 		line = tooltip:AddLine()
-		
+
 		local rareKilledTime = RSNpcDB.GetNpcKilledRespawnTime(self.POI.entityID)
 		local containerOpenedTime = RSContainerDB.GetContainerOpenedRespawnTime(self.POI.entityID)
 		local eventCompletedTime = RSEventDB.GetEventCompletedRespawnTime(self.POI.entityID)
-		
+
 		if (rareKilledTime and self.POI.isNpc) then
 			local rareKilledTimeLeft = rareKilledTime - time()
 			if (rareKilledTimeLeft > 0) then
@@ -264,25 +264,25 @@ function RSRarePinMixin:OnMouseEnter()
 			end
 		end
 	end
-	
+
 	-- Overlay
 	local overlay = nil
-  if (self.POI.isNpc) then
-   overlay = RSNpcDB.GetInternalNpcOverlay(self.POI.entityID, self.POI.mapID)
-  elseif (self.POI.isContainer) then
-   overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
-  end 
-  
+	if (self.POI.isNpc) then
+		overlay = RSNpcDB.GetInternalNpcOverlay(self.POI.entityID, self.POI.mapID)
+	elseif (self.POI.isContainer) then
+		overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
+	end
+
 	if (overlay) then
 		line = tooltip:AddSeparator(1, 1)
 		line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_OVERLAY"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, TOOLTIP_MAX_WIDTH)
 	end
-	
+
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()
 end
- 
+
 function RSRarePinMixin:OnMouseLeave()
 	-- Release the tooltip if not checking items
 	if (MouseIsOver(self.tooltip)) then
@@ -307,7 +307,7 @@ function RSRarePinMixin:OnMouseDown(button)
 				RareScanner:ProcessCompletedEvent(self.POI.entityID, true)
 				self:Hide();
 			end
-		-- Toggle overlay
+			-- Toggle overlay
 		else
 			-- If overlay showing then hide it
 			local overlayEntityID = RSGeneralDB.GetOverlayActive()
@@ -322,21 +322,21 @@ function RSRarePinMixin:OnMouseDown(button)
 				self:ShowOverlay()
 			end
 		end
-		
+
 		-- Refresh minimap
 		RSMinimap.RefreshAllData(true)
 	end
 end
 
 function RSRarePinMixin:ShowOverlay()
-    -- Overlay
-  local overlay = nil
-  if (self.POI.isNpc) then
-   overlay = RSNpcDB.GetInternalNpcOverlay(self.POI.entityID, self.POI.mapID)
-  elseif (self.POI.isContainer) then
-   overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
-  end
-  
+	-- Overlay
+	local overlay = nil
+	if (self.POI.isNpc) then
+		overlay = RSNpcDB.GetInternalNpcOverlay(self.POI.entityID, self.POI.mapID)
+	elseif (self.POI.isContainer) then
+		overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
+	end
+
 	if (overlay) then
 		for _, coordinates in ipairs (overlay) do
 			local x, y = strsplit("-", coordinates)
@@ -359,5 +359,5 @@ end
 
 -- Auxiliar functions
 function RareScanner:AddSpecialEventsLines(self, tooltip)
-	-- Nothing to implement, this method will be hooked wherever its needed
+-- Nothing to implement, this method will be hooked wherever its needed
 end

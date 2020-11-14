@@ -1,6 +1,6 @@
 ﻿## Interface: 90001
 ## X-Min-Interface: 80000
-## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Broken Isles|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Legion)|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Verheerten Inseln|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0破碎群岛|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0破碎群島|r
@@ -15,15 +15,20 @@
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: LEG
 ## X-DBM-StatTypes: normal
+## X-DBM-Mod-SubCategoriesID: 1220,1779
+## X-DBM-Mod-Name: World Bosses (Legion)
 ## X-DBM-Mod-World-Boss: 1
 ## X-DBM-Mod-Sort: 507
-## X-DBM-Mod-MapID: 1220
-## X-DBM-Mod-LoadCID: 107023, 106981, 106984, 106982, 109943, 109331, 110378, 99929, 108879, 110321, 108678, 112350, 108829, 117239, 121124, 117470, 117303, 102075
+## X-DBM-Mod-MapID: 1220,1779
+## X-DBM-Mod-LoadCID: 107023,106981,106984,106982,109943,109331,110378,99929,108879,110321,108678,112350,108829,117239,121124,117470,117303,102075,124625,124555,124719,124592,124492,124514
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r21
+## Version: r21-3-g1aff5b7
+localization.en.lua
+localization.cn.lua
+localization.tw.lua
 AnaMouz.lua
 Apocron.lua
 Brutallus.lua
@@ -39,6 +44,12 @@ Sharthos.lua
 Sivash.lua
 Soultakers.lua
 WitheredJim.lua
+Meto.lua
+Occularus.lua
+Sotanathor.lua
+Alluradel.lua
+Folnuna.lua
+Vilemus.lua
 
 
 ## X-Vendor: AbyUI

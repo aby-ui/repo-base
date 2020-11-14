@@ -11,6 +11,16 @@ if (not GTFO.ClassicMode) then
 --- * Shadowlands (World) *
 --- ***********************
 
+GTFO.SpellID["330102"] = {
+  --desc = "Rain of Arrows (Nathanos Blightcaller)";
+  sound = 1;
+};
+
+GTFO.SpellID["330095"] = {
+  --desc = "Plague-Tipped Arrows (Nathanos Blightcaller)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

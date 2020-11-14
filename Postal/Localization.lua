@@ -579,7 +579,7 @@ end
 L = AL3:NewLocale("Postal", "ruRU")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+щелчок|r чтобы выслать предмет в адрес %s."
-L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fControl+щелчок|r чтобы прикрепить аналогичные предеметы."
+L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fControl+щелчок|r чтобы прикрепить аналогичные предметы."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+щелчок|r чтобы вернуть отправителю."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift+щелчок|r чтобы взять содержимое."
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
@@ -657,9 +657,9 @@ L["Open all Auction cancelled mail"] = "Открывать все письма �
 L["Open all Auction expired mail"] = "Открывать все письма с несостоявшихся аукционов"
 L["Open all Auction successful mail"] = "Открыть все письма с успешных аукционов"
 L["Open all Auction won mail"] = "Открывать все письма с выигранных аукционов"
-L["Open all mail with attachments"] = "Окрыть все письма с вложениями"
+L["Open all mail with attachments"] = "Открыть все письма с вложениями"
 L["Open all Outbid on mail"] = "Открыть все письма с перебитыми ставками"
-L["Open mail from the Postmaster"] = "Окрыть все письма Почтальон"
+L["Open mail from the Postmaster"] = "Открыть все письма Почтальон"
 L["OpenAll"] = "Открыть всё"
 L["Opening Speed"] = "Скорость открытия"
 L["Other options"] = "Прочие опции"

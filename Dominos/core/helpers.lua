@@ -63,13 +63,36 @@ end
 -- A functional way to fade a frame from one opacity to another without constantly
 -- creating new animation groups for the frame
 do
-    -- set alpha on finished even though we SetToFinalAlpha(true)
-    -- this is so that the action bars can react to the SetAlpha call and adjust
-    -- cooldown appearances when bars are invisible
-    local function animationGroup_OnFinished(self)
-        if self.toAlpha then
-            self:GetParent():SetAlpha(self.toAlpha)
+
+    local function clouseEnough(value1, value2)
+        return _G.Round(value1 * 100) == _G.Round(value2 * 100)
+    end
+
+    -- track the time the animation started playing
+    -- this is so that we can figure out how long we've been delaying for
+    local function animation_OnPlay(self)
+        self.start = _G.GetTime()
+    end
+
+    local function sequence_OnFinished(self)
+        if self.alpha then
+            self:GetParent():SetAlpha(self.alpha)
+            self.alpha = nil
         end
+    end
+
+    local function sequence_Create(frame)
+        local sequence = frame:CreateAnimationGroup()
+        sequence:SetLooping('NONE')
+        sequence:SetScript('OnFinished', sequence_OnFinished)
+        sequence.alpha = nil
+
+        local animation = sequence:CreateAnimation('Alpha')
+        animation:SetSmoothing('IN_OUT')
+        animation:SetOrder(0)
+        animation:SetScript('OnPlay', animation_OnPlay)
+
+        return sequence, animation
     end
 
     Addon.Fade =
@@ -79,37 +102,61 @@ do
             __call = function(self, addon, frame, toAlpha, delay, duration)
                 return self[frame](toAlpha, delay, duration)
             end,
+
             __index = function(self, frame)
-                local animationGroup = frame:CreateAnimationGroup()
-                animationGroup:SetLooping('NONE')
-                animationGroup:SetToFinalAlpha(true)
-                animationGroup:SetScript('OnFinished', animationGroup_OnFinished)
+                local sequence, animation
 
-                local fadeAnimation = animationGroup:CreateAnimation('Alpha')
-                fadeAnimation:SetSmoothing('IN_OUT')
-                fadeAnimation:SetOrder(0)
-
+                -- handle animation requests
                 local function func(toAlpha, delay, duration)
-                    local fromAlpha
-
-                    -- if we're not done animating, then figure out what alpha level
-                    -- we are at and pick up where we left off
-                    if not fadeAnimation:IsDone() then
-                        local start = fadeAnimation:GetFromAlpha()
-                        local delta = fadeAnimation:GetToAlpha() - start
-
-                        fromAlpha = start + delta * fadeAnimation:GetSmoothProgress()
-                    else
-                        fromAlpha = frame:GetAlpha()
+                    -- we're already at target alpha, stop
+                    if clouseEnough(frame:GetAlpha(), toAlpha) then
+                        if sequence and sequence:IsPlaying() then
+                            sequence:Stop()
+                            return
+                        end
                     end
 
-                    fadeAnimation:SetFromAlpha(fromAlpha)
-                    fadeAnimation:SetToAlpha(toAlpha)
-                    fadeAnimation:SetStartDelay(delay)
-                    fadeAnimation:SetDuration(duration)
+                    -- create the animation if we've not yet done so
+                    if not sequence then
+                        sequence, animation = sequence_Create(frame)
+                    end
 
-                    animationGroup.toAlpha = toAlpha
-                    animationGroup:Restart()
+                    local fromAlpha = frame:GetAlpha()
+
+                    -- animation already started, but is in the delay phase
+                    -- so shorten the delay by however much time has gone by
+                    if animation:IsDelaying() then
+                        delay = math.max(delay - (_G.GetTime() - animation.start), 0)
+                    -- we're already in the middle of a fade animation
+                    elseif animation:IsPlaying() then
+                        -- set delay to zero, as we don't want to pause in the
+                        -- middle of an animation
+                        delay = 0
+
+                        -- figure out what opacity we're currently at
+                        -- by using the animation progress
+                        local delta = animation:GetFromAlpha() - animation:GetToAlpha()
+                        fromAlpha = animation:GetFromAlpha() + (delta * animation:GetSmoothProgress())
+                    end
+
+                    -- check that value against our current one
+                    -- if so, quit early
+                    if clouseEnough(fromAlpha, toAlpha) then
+                        frame:SetAlpha(toAlpha)
+
+                        if sequence:IsPlaying() then
+                            sequence:Stop()
+                            return
+                        end
+                    end
+
+                    sequence.alpha = toAlpha
+                    animation:SetFromAlpha(frame:GetAlpha())
+                    animation:SetToAlpha(toAlpha)
+                    animation:SetStartDelay(delay)
+                    animation:SetDuration(duration)
+
+                    sequence:Restart()
                 end
 
                 self[frame] = func

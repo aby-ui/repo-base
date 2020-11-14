@@ -32,17 +32,17 @@ function RSWorldMapHooks.HookDropDownMenu()
 				local function OnSelection(button)
 					self:OnSelection(button.value, button.checked);
 				end
-  
+
 				UIDropDownMenu_AddSeparator();
 				local info = UIDropDownMenu_CreateInfo();
-				
+
 				info.isTitle = true;
 				info.notCheckable = true;
 				info.text = "RareScanner";
-				
+
 				UIDropDownMenu_AddButton(info);
 				info.text = nil;
-				 
+
 				info.isTitle = nil;
 				info.disabled = nil;
 				info.notCheckable = nil;
@@ -54,7 +54,7 @@ function RSWorldMapHooks.HookDropDownMenu()
 				info.value = SHOW_RARE_NPC_ICONS;
 				info.checked = RSConfigDB.IsShowingNpcs()
 				UIDropDownMenu_AddButton(info);
-				 
+
 				info.text = AL["MAP_MENU_SHOW_CONTAINERS"];
 				info.value = SHOW_CONTAINER_ICONS;
 				info.checked = RSConfigDB.IsShowingContainers()
@@ -79,18 +79,18 @@ function RSWorldMapHooks.HookDropDownMenu()
 				info.value = DISABLE_LAST_SEEN_EVENT_FILTER;
 				info.checked = not RSConfigDB.IsMaxSeenTimeEventFilterEnabled()
 				UIDropDownMenu_AddButton(info);
-				 
+
 				info.text = AL["MAP_MENU_SHOW_NOT_DISCOVERED"];
 				info.value = SHOW_NOT_DISCOVERED_ICONS;
 				info.checked = RSConfigDB.IsShowingNotDiscoveredMapIcons()
 				UIDropDownMenu_AddButton(info);
-				 
+
 				info.text = AL["MAP_MENU_SHOW_NOT_DISCOVERED_OLD"];
 				info.value = SHOW_NOT_DISCOVERED_ICONS_OLD;
 				info.checked = RSConfigDB.IsShowingOldNotDiscoveredMapIcons()
 				UIDropDownMenu_AddButton(info);
 			end)
-			
+
 			hooksecurefunc(overlayFrame, 'OnSelection', function(self, value, checked)
 				if (value == SHOW_RARE_NPC_ICONS) then
 					RSConfigDB.SetShowingNpcs(checked)
@@ -109,25 +109,25 @@ function RSWorldMapHooks.HookDropDownMenu()
 					RSMinimap.RefreshAllData(true)
 				elseif (value == DISABLE_LAST_SEEN_FILTER) then
 					if (checked) then
-            RSConfigDB.DisableMaxSeenTimeFilter()
+						RSConfigDB.DisableMaxSeenTimeFilter()
 					else
-            RSConfigDB.EnableMaxSeenTimeFilter()
+						RSConfigDB.EnableMaxSeenTimeFilter()
 					end
-          RSMinimap.RefreshAllData(true)
+					RSMinimap.RefreshAllData(true)
 				elseif (value == DISABLE_LAST_SEEN_CONTAINER_FILTER) then
-          if (checked) then
-            RSConfigDB.DisableMaxSeenContainerTimeFilter()
-          else
-            RSConfigDB.EnableMaxSeenContainerTimeFilter()
-          end
-          RSMinimap.RefreshAllData(true)
+					if (checked) then
+						RSConfigDB.DisableMaxSeenContainerTimeFilter()
+					else
+						RSConfigDB.EnableMaxSeenContainerTimeFilter()
+					end
+					RSMinimap.RefreshAllData(true)
 				elseif (value == DISABLE_LAST_SEEN_EVENT_FILTER) then
-          if (checked) then
-            RSConfigDB.DisableMaxSeenEventTimeFilter()
-          else
-            RSConfigDB.EnableMaxSeenEventTimeFilter()
-          end
-          RSMinimap.RefreshAllData(true)
+					if (checked) then
+						RSConfigDB.DisableMaxSeenEventTimeFilter()
+					else
+						RSConfigDB.EnableMaxSeenEventTimeFilter()
+					end
+					RSMinimap.RefreshAllData(true)
 				end
 				self:GetParent():RefreshAllDataProviders();
 			end)

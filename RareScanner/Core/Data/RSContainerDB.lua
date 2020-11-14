@@ -29,7 +29,7 @@ function RSContainerDB.IsContainerOpened(containerID)
 	if (containerID and private.dbchar.containers_opened[containerID]) then
 		return true;
 	end
-	
+
 	return false
 end
 
@@ -37,7 +37,7 @@ function RSContainerDB.GetContainerOpenedRespawnTime(containerID)
 	if (RSContainerDB.IsContainerOpened(containerID)) then
 		return private.dbchar.containers_opened[containerID]
 	end
-	
+
 	return 0
 end
 
@@ -70,89 +70,89 @@ function RSContainerDB.GetInternalContainerInfo(containerID)
 	if (containerID) then
 		return private.CONTAINER_INFO[containerID]
 	end
-	
+
 	return nil
 end
 
 
 
 local function GetInternalContainerInfoByMapID(containerID, mapID)
-  if (containerID and mapID) then
-    if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
-      for internalMapID, containerInfo in pairs (RSContainerDB.GetInternalContainerInfo(containerID).zoneID) do
-        if (internalMapID == mapID) then
-          return containerInfo
-        end
-      end
-    elseif (RSContainerDB.IsInternalContainerMonoZone(containerID)) then
-      local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-      return containerInfo
-    end
-  end
-  
-  return nil
+	if (containerID and mapID) then
+		if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
+			for internalMapID, containerInfo in pairs (RSContainerDB.GetInternalContainerInfo(containerID).zoneID) do
+				if (internalMapID == mapID) then
+					return containerInfo
+				end
+			end
+		elseif (RSContainerDB.IsInternalContainerMonoZone(containerID)) then
+			local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+			return containerInfo
+		end
+	end
+
+	return nil
 end
 
 function RSContainerDB.GetInternalContainerArtID(containerID, mapID)
-  if (containerID and mapID) then
-    local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
-    if (containerInfo) then
-      return containerInfo.artID
-    end
-  end
-  
-  return nil
+	if (containerID and mapID) then
+		local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
+		if (containerInfo) then
+			return containerInfo.artID
+		end
+	end
+
+	return nil
 end
 
 function RSContainerDB.GetInternalContainerCoordinates(containerID, mapID)
-  if (containerID and mapID) then
-    local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
-    if (containerInfo) then
-      return containerInfo.x, containerInfo.y
-    end
-  end
-  
-  return nil
+	if (containerID and mapID) then
+		local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
+		if (containerInfo) then
+			return containerInfo.x, containerInfo.y
+		end
+	end
+
+	return nil
 end
 
 function RSContainerDB.GetInternalContainerOverlay(containerID, mapID)
-  if (containerID and mapID) then
-    local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
-    if (containerInfo) then
-      return containerInfo.overlay
-    end
-  end
-  
-  return nil
+	if (containerID and mapID) then
+		local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
+		if (containerInfo) then
+			return containerInfo.overlay
+		end
+	end
+
+	return nil
 end
 
 function RSContainerDB.IsInternalContainerMultiZone(containerID)
-  local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-  return containerInfo and type(containerInfo.zoneID) == "table"
+	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+	return containerInfo and type(containerInfo.zoneID) == "table"
 end
 
 function RSContainerDB.IsInternalContainerMonoZone(containerID)
-  local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-  return containerInfo and type(containerInfo.zoneID) ~= "table"
+	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+	return containerInfo and type(containerInfo.zoneID) ~= "table"
 end
 
 function RSContainerDB.IsInternalContainerInMap(containerID, mapID)
-  if (containerID and mapID) then
-    if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
-      for internalMapID, internalContainerInfo in pairs(RSContainerDB.GetInternalContainerInfo(containerID).zoneID) do
-        if (internalMapID == mapID and (not internalContainerInfo.artID or RSUtils.Contains(internalContainerInfo.artID, C_Map.GetMapArtID(mapID)))) then
-          return true;
-        end
-      end
-    elseif (RSContainerDB.IsInternalContainerMonoZone(containerID)) then
-      local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-      if (containerInfo.zoneID == mapID and (not containerInfo.artID or RSUtils.Contains(containerInfo.artID, C_Map.GetMapArtID(mapID)))) then
-        return true;
-      end
-    end
-  end
-  
-  return false;
+	if (containerID and mapID) then
+		if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
+			for internalMapID, internalContainerInfo in pairs(RSContainerDB.GetInternalContainerInfo(containerID).zoneID) do
+				if (internalMapID == mapID and (not internalContainerInfo.artID or RSUtils.Contains(internalContainerInfo.artID, C_Map.GetMapArtID(mapID)))) then
+					return true;
+				end
+			end
+		elseif (RSContainerDB.IsInternalContainerMonoZone(containerID)) then
+			local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+			if (containerInfo.zoneID == mapID and (not containerInfo.artID or RSUtils.Contains(containerInfo.artID, C_Map.GetMapArtID(mapID)))) then
+				return true;
+			end
+		end
+	end
+
+	return false;
 end
 
 ---============================================================================
@@ -164,7 +164,7 @@ function RSContainerDB.GetContainerLoot(containerID)
 	if (containerID) then
 		return RSUtils.JoinTables(RSContainerDB.GetInteralContainerLoot(containerID), RSContainerDB.GetContainerLootFound(containerID))
 	end
-	
+
 	return nil
 end
 
@@ -172,7 +172,7 @@ function RSContainerDB.GetInteralContainerLoot(containerID)
 	if (containerID) then
 		return private.CONTAINER_LOOT[containerID]
 	end
-	
+
 	return nil
 end
 
@@ -195,7 +195,7 @@ function RSContainerDB.GetContainerLootFound(containerID)
 	if (containerID and private.dbglobal.containers_loot[containerID]) then
 		return private.dbglobal.containers_loot[containerID]
 	end
-	
+
 	return nil
 end
 
@@ -210,7 +210,7 @@ function RSContainerDB.AddItemToContainerLootFound(containerID, itemID)
 		if (not private.dbglobal.containers_loot[containerID]) then
 			private.dbglobal.containers_loot[containerID] = {}
 		end
-		
+
 		-- If its in the internal database ignore it
 		local internalLoot = RSContainerDB.GetInteralContainerLoot(containerID)
 		if (internalLoot and RSUtils.Contains(internalLoot, itemID)) then
@@ -276,7 +276,7 @@ function RSContainerDB.InitContainerNamesDB()
 	if (not private.dbglobal.object_names) then
 		private.dbglobal.object_names = {}
 	end
-	
+
 	if (not private.dbglobal.object_names[GetLocale()]) then
 		private.dbglobal.object_names[GetLocale()] = {}
 	end
@@ -292,13 +292,13 @@ function RSContainerDB.GetContainerName(containerID)
 	if (containerID and private.dbglobal.object_names[GetLocale()][containerID]) then
 		return private.dbglobal.object_names[GetLocale()][containerID]
 	end
-	
+
 	return nil
 end
 
 ---============================================================================
 -- Reseteable containers database
----- Stores containers that in theory cannot be opened again, but that they are 
+---- Stores containers that in theory cannot be opened again, but that they are
 ---- detected again
 ---============================================================================
 

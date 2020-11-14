@@ -97,42 +97,37 @@ local function GetSpells()
 		}
 
 		for spellID, spell in pairs(OmniBar.cooldowns) do
-
 			if spell.class and spell.class == CLASS_SORT_ORDER[i] then
-				local text = GetSpellInfo(spellID) or ""
-				local spellTexture = GetSpellTexture(spellID) or ""
-				if string.len(text) > 25 then
-					text = string.sub(text, 0, 22) .. "..."
-                end
-                if not C_Spell.DoesSpellExist(spellID) then
-                    print("OmniBar SpellID ", spellID, " not exists")
-                else
-				local s = Spell:CreateFromSpellID(spellID)
-				s:ContinueOnSpellLoad(function()
-					descriptions[spellID] = s:GetSpellDescription()
-				end)
-                end
+				local spellName = GetSpellInfo(spellID)
+				if spellName then
+					local spellTexture = GetSpellTexture(spellID) or ""
+					if string.len(spellName) > 25 then
+						spellName = string.sub(spellName, 0, 22) .. "..."
+					end
+					local s = Spell:CreateFromSpellID(spellID)
+					s:ContinueOnSpellLoad(function()
+						descriptions[spellID] = s:GetSpellDescription()
+					end)
 
-				spells[CLASS_SORT_ORDER[i]].args["spell"..spellID] = {
-					name = text,
-					type = "toggle",
-					get = IsSpellEnabled,
-					width = "full",
-					arg = spellID,
-					desc = function()
-						local duration = type(spell.duration) == "number" and spell.duration or spell.duration.default
-						local spellDesc = descriptions[spellID] or ""
-						local extra = "\n\n|cffffd700 "..L["Spell ID"].."|r "..spellID..
-							"\n\n|cffffd700 "..L["Cooldown"].."|r "..SecondsToTime(duration)
-						return spellDesc..extra
-					end,
-					name = function()
-						return format("|T%s:20|t %s", spellTexture, text)
-					end,
-				}
-
+					spells[CLASS_SORT_ORDER[i]].args["spell"..spellID] = {
+						name = spellName,
+						type = "toggle",
+						get = IsSpellEnabled,
+						width = "full",
+						arg = spellID,
+						desc = function()
+							local duration = type(spell.duration) == "number" and spell.duration or spell.duration.default
+							local spellDesc = descriptions[spellID] or ""
+							local extra = "\n\n|cffffd700 "..L["Spell ID"].."|r "..spellID..
+								"\n\n|cffffd700 "..L["Cooldown"].."|r "..SecondsToTime(duration)
+							return spellDesc..extra
+						end,
+						name = function()
+							return format("|T%s:20|t %s", spellTexture, spellName)
+						end,
+					}
+				end
 			end
-
 		end
 	end
 	return spells

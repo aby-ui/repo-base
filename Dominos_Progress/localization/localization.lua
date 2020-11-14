@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Localization.lua
 		Translations for Dominos XP (English - Default Version)
 --]]
@@ -28,7 +28,10 @@ L.Color_honor = 'Honor Color'
 L.Color_honor_bonus = 'Bonus Honor Color'
 L.Color_artifact = 'Artifact Color'
 L.Color_azerite = 'Azerite Color'
+L.Color_gold = 'Gold Color'
+L.Color_gold_realm = 'Gold Realm Color'
 
 L.Paragon = 'Paragon'
 L.Azerite = 'Azerite Power'
 L.SkipInactiveModes = "Skip Inactive Modes"
+L.GoldGoal = "Gold Goal Amount"

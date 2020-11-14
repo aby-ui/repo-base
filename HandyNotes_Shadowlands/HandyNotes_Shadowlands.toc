@@ -12,5 +12,5 @@ core\core.xml
 plugin.xml
 
 
-## Title-zhCN: |cff880303[爱不易]|r HandyNotes 暗影国度宝箱
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 暗影国度
 ## X-Vendor: AbyUI

@@ -21,7 +21,7 @@ function RSQuestTracker.CacheAllCompletedQuestIDs()
 	for _, questID in ipairs (C_QuestLog.GetAllCompletedQuestIDs()) do
 		RSGeneralDB.SetCompletedQuest(questID)
 	end
-	C_Timer.After(RSConstants.CACHE_ALL_COMPLETED_QUEST_IDS_TIMER , function() 
+	C_Timer.After(RSConstants.CACHE_ALL_COMPLETED_QUEST_IDS_TIMER , function()
 		RSQuestTracker.CacheAllCompletedQuestIDs()
 	end)
 end
@@ -31,7 +31,7 @@ end
 ---============================================================================
 
 function RSQuestTracker.FindCompletedHiddenQuestID(entityID, callbackOnFound)
-	C_Timer.After(RSConstants.FIND_HIDDEN_QUESTS_TIMER, function() 
+	C_Timer.After(RSConstants.FIND_HIDDEN_QUESTS_TIMER, function()
 		local newQuestID
 		for i, questID in ipairs (C_QuestLog.GetAllCompletedQuestIDs()) do
 			if (not RSGeneralDB.IsCompletedQuestInCache(questID)) then
@@ -45,7 +45,7 @@ function RSQuestTracker.FindCompletedHiddenQuestID(entityID, callbackOnFound)
 				end
 			end
 		end
-		
+
 		if (newQuestID) then
 			callbackOnFound(entityID, newQuestID)
 		else

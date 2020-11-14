@@ -61,11 +61,11 @@ SlashCmdList["RARESCANNER_CMD"] = function(command, ...)
 	elseif (RSUtils.Contains(command, RSConstants.CMD_TOMTOM_WAYPOINT)) then
 		local _, npcID, name = strsplit(";", command)
 		if (RSConfigDB.IsTomtomSupportEnabled() and not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
-		  RSTomtom.AddTomtomWaypoint(tonumber(npcID), name)
+			RSTomtom.AddTomtomWaypoint(tonumber(npcID), name)
 		end
 		if (RSConfigDB.IsWaypointsSupportEnabled() and not RSConfigDB.IsAddingWaypointsAutomatically()) then
-      RSWaypoints.AddWaypoint(tonumber(npcID))
-    end
+			RSWaypoints.AddWaypoint(tonumber(npcID))
+		end
 	else
 		print("|cFFFBFF00"..AL["CMD_HELP1"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
@@ -90,7 +90,7 @@ function RSCommandLine.CmdShow()
 	private.db.map.displayNpcIcons = true
 	private.db.map.displayContainerIcons = true
 	private.db.map.displayEventIcons = true
-	RSLogger:PrintMessage(AL["CMD_SHOW"])	
+	RSLogger:PrintMessage(AL["CMD_SHOW"])
 end
 
 function RSCommandLine.CmdDisableAlerts()
@@ -104,7 +104,7 @@ function RSCommandLine.CmdEnableAlerts()
 	private.db.general.scanRares = true
 	private.db.general.scanEvents = true
 	private.db.general.scanContainers = true
-	RSLogger:PrintMessage(AL["CMD_ENABLE_ALERTS"])	
+	RSLogger:PrintMessage(AL["CMD_ENABLE_ALERTS"])
 end
 
 function RSCommandLine.CmdToggleRares()

@@ -10,6 +10,7 @@ local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSAchievementDB = private.ImportLib("RareScannerAchievementDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
+local RSMapDB = private.ImportLib("RareScannerMapDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -54,14 +55,14 @@ local function GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 		POI.x = alreadyFoundInfo.coordX
 		POI.y = alreadyFoundInfo.coordY
 	else
-	  POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+		POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
 	POI.isDiscovered = POI.isDead or alreadyFoundInfo
 	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(npcID, mapID)
-	
+
 	-- Textures
 	if (POI.isDead) then
 		POI.Texture = RSConstants.BLUE_NPC_TEXTURE
@@ -78,30 +79,30 @@ local function GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	else
 		POI.Texture = RSConstants.NORMAL_NPC_TEXTURE
 	end
-	
+
 	return POI
 end
 
 local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, vignetteGUIDs, onWorldMap, onMinimap)
-  local name = RSNpcDB.GetNpcName(npcID)
-  -- Skip if filtering by name in the world map search box
-  if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
-    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado por nombre [%s][%s].", npcID, name, RSGeneralDB.GetWorldMapTextFilter()))
-    return true
-  end
-  
+	local name = RSNpcDB.GetNpcName(npcID)
+	-- Skip if filtering by name in the world map search box
+	if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado por nombre [%s][%s].", npcID, name, RSGeneralDB.GetWorldMapTextFilter()))
+		return true
+	end
+
 	-- Skip if the entity is filtered
 	if (RSConfigDB.IsNpcFiltered(npcID)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado en opciones.", npcID))
 		return true
 	end
-	
+
 	-- Skip if not showing friendly NPCs and this one is friendly
 	if (not RSConfigDB.IsShowingFriendlyNpcs() and RSNpcDB.IsInternalNpcFriendly(npcID)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Es amistoso.", npcID))
 		return true
 	end
-	
+
 	-- Skip if the entity appears only while a quest event is going on and it isnt active
 	if (zoneQuestID) then
 		local active = false
@@ -113,42 +114,43 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 				end
 			end
 		end
-			
+
 		if (not active) then
 			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Evento asociado no esta activo.", npcID))
 			return true
 		end
 	end
-			
+
 	-- Skip if for whatever reason we don't have its name (this shouldnt happend)
 	local npcName = RSNpcDB.GetNpcName(npcID)
 	if (not npcName) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Le falta el nombre!.", npcID))
 		return true
 	end
-	
+
 	-- Skip if this NPC has a world quest active right now
 	-- We don't want to show our icon on top of the quest one
 	if (RSUtils.Contains(questTitles, npcName)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Tiene misión del mundo activa.", npcID))
 		return true
 	end
-	
+
 	-- A 'not discovered' NPC will be setted as killed when the kill is detected while loading the addon and its questID is completed
 	local npcDead = RSNpcDB.IsNpcKilled(npcID)
-	
-	-- Skip if dead and not showing dead entities
-	if (npcDead and not RSConfigDB.IsShowingDeadNpcs()) then
-		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto.", npcID))
-		return true
+
+	-- Skip if dead 
+	if (npcDead) then
+		-- and not showing dead entities in 'not reseteable' maps
+		if (RSConfigDB.IsShowingDeadNpcsInReseteableZones() and not RSMapDB.IsReseteableKillMapID(mapID, artID)) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto (zona no reseteable).", npcID))
+			return true
+		--  and not showing dead entities
+		elseif (not RSConfigDB.IsShowingDeadNpcsInReseteableZones() and not RSConfigDB.IsShowingDeadNpcs()) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto.", npcID))
+			return true
+		end
 	end
-	
-	-- Skip if dead and not showing dead entities in 'not reseteable' maps
-	if (npcDead and RSConfigDB.IsShowingDeadNpcsInReseteableZones() and not RSMapDB.IsReseteableKillMapID(mapID, artID)) then
-		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto (zona no reseteable).", npcID))
-		return true
-	end
-	
+
 	-- Skip if an ingame vignette is already showing this entity (on Vignette)
 	for _, vignetteGUID in ipairs(vignetteGUIDs) do
 		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
@@ -164,7 +166,7 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 			end
 		end
 	end
-	
+
 	return false
 end
 
@@ -173,12 +175,12 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 	if (not RSConfigDB.IsShowingNpcs()) then
 		return
 	end
-		
+
 	local POIs = {}
-	for _, npcID in ipairs(notDiscoveredNpcIDs) do		
+	for _, npcID in ipairs(notDiscoveredNpcIDs) do
 		local filtered = false
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
-		
+
 		-- Skip if it was discovered in this session
 		if (RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
 			RemoveNotDiscoveredNpc(npcID)
@@ -190,14 +192,14 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 		if (not filtered and not RSNpcDB.IsInternalNpcInMap(npcID, mapID)) then
 			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC N/D [%s]: En distinta zona.", npcID))
 			filtered = true
-		end	
-		
+		end
+
 		-- Skip if common filters
 		if (not filtered and not IsNpcPOIFiltered(npcID, mapID, RSNpcDB.GetInternalNpcArtID(npcID, mapID), npcInfo.zoneQuestId, questTitles, vignetteGUIDs, onWorldMap, onMinimap)) then
 			tinsert(POIs, GetNpcPOI(npcID, mapID, npcInfo))
 		end
 	end
-	
+
 	return POIs
 end
 
@@ -207,10 +209,10 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, quest
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Iconos de NPCs deshabilitado.", npcID))
 		return
 	end
-	
+
 	local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 	local npcDead = RSNpcDB.IsNpcKilled(npcID)
-	
+
 	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
 	-- This filter doesnt apply to dead entities
 	if (not npcDead and RSConfigDB.IsMaxSeenTimeFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenTimeFilter())) then
@@ -222,23 +224,23 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, quest
 	-- First checks with the already found information
 	local correctMap = false
 	if (RSGeneralDB.IsAlreadyFoundEntityInZone(npcID, mapID)) then
-    RSLogger:PrintDebugMessageEntityID(npcID, string.format("GetMapAlreadyFoundNpcPOI. NPC [%s] en zona correcta [alreadyFound].", npcID))
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("GetMapAlreadyFoundNpcPOI. NPC [%s] en zona correcta [alreadyFound].", npcID))
 		correctMap = true
 	end
-	
+
 	-- Then checks with the internal found information just in case its a multizone
 	-- Its possible that the player is opening a map where this NPC can show up, but the last time seen was in a different map
 	if (not correctMap and (not npcInfo or not RSNpcDB.IsInternalNpcInMap(npcID, mapID))) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltando NPC [%s]: En distinta zona.", npcID))
 		return
 	end
-	
+
 	-- Skip if common filters
 	local zoneQuestID
 	if (npcInfo) then
 		zoneQuestID = npcInfo.zoneQuestId
 	end
-	
+
 	if (not IsNpcPOIFiltered(npcID, mapID, alreadyFoundInfo.artID, zoneQuestID, questTitles, vignetteGUIDs, onWorldMap, onMinimap)) then
 		return GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	end

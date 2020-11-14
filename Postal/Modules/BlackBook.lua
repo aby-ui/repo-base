@@ -250,21 +250,22 @@ function Postal_BlackBook:OnChar(editbox, ...)
 
 	-- Check alt list
 	if db.AutoCompleteAlts then
-	   for pass = 1,2 do
+--	   for pass = 1,2 do
 		local db = Postal.db.global.BlackBook.alts
 		for i = 1, #db do
 			local p, r, f = strsplit("|", db[i])
-			if r == realm and p ~= player and
-			( (pass == 1 and f ~= faction) or
-			  (pass == 2 and f == faction) ) -- prefer same faction, but don't require for alts
-			then
+			if r == realm and f == faction and p ~= player then
+--			if r == realm and p ~= player and
+--			( (pass == 1 and f ~= faction) or
+--			  (pass == 2 and f == faction) ) -- prefer same faction, but don't require for alts
+--			then
 				if strfind(strupper(p), text, 1, 1) == 1 then
 					newname = p
 					break
 				end
 			end
 		end
-	   end
+--	   end
 	end
 
 
@@ -495,7 +496,7 @@ function Postal_BlackBook.BlackBookMenu(self, level)
 			info.notCheckable = 1
 			for i = 1, #db do
 				local p, r, f, l, c = strsplit("|", db[i])
-				if r == realm and p ~= player then
+				if r == realm and f == faction and p ~= player then
 					if l and c then
 						local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
 						info.text = format("%s |cff%.2x%.2x%.2x(%d %s)|r", p, clr.r*255, clr.g*255, clr.b*255, l, LOCALIZED_CLASS_NAMES_MALE[c])
@@ -631,7 +632,7 @@ elseif UIDROPDOWNMENU_MENU_VALUE == "allalt" then
 			local player = UnitName("player")
 			for i = 1, #db do
 				local p, r, f, l, c = strsplit("|", db[i])
-				if p ~= player and ( r == realm or all ) then
+				if p ~= player and ( (r == realm and f == faction) or all ) then
 					p = all and p.."-"..r or p
 					if l and c then
 						local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
@@ -784,4 +785,3 @@ function Postal_BlackBook.ModuleMenu(self, level)
 		end
 	end
 end
-

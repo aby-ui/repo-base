@@ -20,9 +20,9 @@ end
 ---============================================================================
 
 function RSGuideDB.GetContainerGuide(containerID)
-  if (containerID) then
-    return private.CONTAINER_GUIDE[containerID]
-  end
+	if (containerID) then
+		return private.CONTAINER_GUIDE[containerID]
+	end
 end
 
 ---============================================================================
@@ -30,7 +30,7 @@ end
 ---============================================================================
 
 function RSGuideDB.GetEventGuide(eventID)
-  if (eventID) then
-    return private.EVENT_GUIDE[eventID]
-  end
+	if (eventID) then
+		return private.EVENT_GUIDE[eventID]
+	end
 end
