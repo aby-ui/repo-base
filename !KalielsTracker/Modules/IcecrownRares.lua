@@ -41,7 +41,7 @@ ICECROWN_RARES_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("ICECROWN_RA
 local realmZones = {
     EU = { timeZero = time({ year=2020, month=11, day=11, hour=9 }), utcOffset = 1, rareOffset = 0 },
     NA = { timeZero = time({ year=2020, month=11, day=10, hour=8 }), utcOffset = -8, rareOffset = 8 },
-    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 0 },
+    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 8 },
 }
 local rares = {
     { "Prince Keleseth", { 54.0, 44.7 } },
