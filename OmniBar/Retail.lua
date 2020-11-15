@@ -19,7 +19,7 @@ addon.Cooldowns = {
     [49576] = { duration = 25, class = "DEATHKNIGHT", charges = 2 }, -- Death Grip
     [51052] = { duration = 120, class = "DEATHKNIGHT" }, -- Anti-Magic Zone
     [61999] = { duration = 600, class = "DEATHKNIGHT" }, -- Raise Ally
-    [77606] = { duration = 25, class = "DEATHKNIGHT" }, -- Dark Simulacrum
+    [77606] = { duration = 20, class = "DEATHKNIGHT" }, -- Dark Simulacrum
     [212552] = { duration = 60, class = "DEATHKNIGHT" }, -- Wraith Walk
 
         -- Blood
@@ -131,8 +131,7 @@ addon.Cooldowns = {
         [197862] = { duration = 60, class = "PRIEST", specID = { 256 } }, -- Archangel
         [197871] = { duration = 60, class = "PRIEST", specID = { 256 } }, -- Dark Archangel
         [204263] = { duration = 45, class = "PRIEST", specID = { 256, 257 } }, -- Shining Force
-        [209780] = { duration = 12, class = "PRIEST", specID = { 256} }, -- Premonition
-          [209885] = { parent = 209780 },
+        [305498] = { duration = 12, class = "PRIEST", specID = { 256} }, -- Premonition
 
         -- Holy
 

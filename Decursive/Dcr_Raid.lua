@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -658,20 +658,20 @@ do
 
         self:Debug ("|cFFFF44FF-->|r Update complete!", Status.UnitNum);
 
-        --[===[@debug@
+        --[==[@debug@
         D:Debug("Current group:", CurrentGroup, D:tAsString(IPL));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
             D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
         end
-        --@end-debug@]===]
+        --@end-debug@]==]
     end
 
 end
 
 
 -------------------------------------------------------------------------------
-T._LoadedFiles["Dcr_Raid.lua"] = "2.7.7.1";
+T._LoadedFiles["Dcr_Raid.lua"] = "2.7.8_beta_1";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

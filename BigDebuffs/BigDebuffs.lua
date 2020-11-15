@@ -156,7 +156,8 @@ if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
             Magic = function() return IsUsableSpell(GetSpellInfo(19736)) or IsUsableSpell(GetSpellInfo(19476)) end,
         },
     }
-    BigDebuffs.dispelTypes = classDispel[select(2, UnitClass("player"))] or {}
+    local _, class = UnitClass(PLAYER)
+    BigDebuffs.dispelTypes = classDispel[class]
 else
     defaults.profile.unitFrames.focus = {
         enabled = true,
@@ -326,6 +327,20 @@ local GetNameplateAnchor = {
             return frame.extended.bars.healthbar, frame.extended
         end
     end,
+  ThreatPlates = function(frame)
+    local tp_frame = frame.TPFrame
+    if tp_frame then
+      local visual = tp_frame.visual
+      -- healthbar and name are always defined, so checks are not really needed here.
+      if visual.healthbar and visual.healthbar:IsShown() then
+        return visual.healthbar, tp_frame
+      elseif visual.name and visual.name:IsShown() then
+        return visual.name, tp_frame
+      else
+        return tp_frame, tp_frame
+      end
+    end
+  end,
 	Blizzard = function(frame)
         if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
             return frame.UnitFrame, frame.UnitFrame
@@ -365,10 +380,17 @@ local nameplatesAnchors = {
         end,
         func = GetNameplateAnchor.NeatPlates,
     },
-	[5] = {
-        used = function(frame) return frame.UnitFrame ~= nil end,
-        func = GetNameplateAnchor.Blizzard,
+  [5] = {
+      used = function()
+          -- IsAddOnLoaded("TidyPlates_ThreatPlates") should be better
+          return TidyPlatesThreat ~= nil
+      end,
+      func = GetNameplateAnchor.ThreatPlates,
     },
+  [6] = {
+      used = function(frame) return frame.UnitFrame ~= nil end,
+      func = GetNameplateAnchor.Blizzard,
+  },
 }
 
 local anchors = {
@@ -889,7 +911,7 @@ hooksecurefunc("CompactUnitFrame_HideAllDebuffs", HideBigDebuffs)
 function BigDebuffs:IsDispellable(unit, dispelType)
     if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
         -- if stoneform is usable and it's on player
-        if not dispelType then return end
+        if (not dispelType) or (not self.dispelTypes) then return end
         if type(self.dispelTypes[dispelType]) == "function" then return self.dispelTypes[dispelType]() end
 
         -- dwarves can use Stoneform to remove diseases and poisons

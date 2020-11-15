@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-08-30T16:27:58Z
+    This file was last updated on 2020-11-12T11:34:16Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -100,9 +100,9 @@ D.IsSpellInRange = function (spellName, unit)
     if range ~= nil then
         return range;
     else
-        --[===[@debug@
+        --[==[@debug@
         D:Debug('IsSpellInRange() returned nil for', spellName, unit);
-        --@end-debug@]===]
+        --@end-debug@]==]
         if unit == 'player' or unit == 'pet' then
             return 1;
         else
@@ -596,13 +596,15 @@ function D:GetSpellFromLink(link)
             return nil;
         end
 
+       local isPetAbility = (GetSpellBookItemInfo(spellName)) == "PETACTION" and true or false;
+
         if spellRank and spellRank ~= "" then
             spellName = ("%s(%s)"):format(spellName, spellRank);
         end
         D:Debug('Spell link detected:', spellID, spellName, spellRank);
 
         --return spellName;
-        return spellID;
+        return spellID, isPetAbility;
     end
 
     return nil;
@@ -618,6 +620,27 @@ function D:isItemUsable(itemIDorName)
     end
 
     return IsUsableItem(itemIDorName);
+end
+
+
+function D:isSpellReady(spellID, isPetAbility)
+
+    if DC.WOWC and isPetAbility then
+        -- Former ranks of known pet spell abilities are lost in WoW classic
+        -- so we need to get back to the corresponding current spell id using
+        -- the name of the spell.
+
+        local spellName = (GetSpellInfo(spellID));
+        local spellType, id = GetSpellBookItemInfo(spellName);
+
+        if spellType == "PETACTION" then
+            spellID = bit.band(0xffffff, id);
+        elseif spellType then
+           D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
+        end
+    end
+
+    return IsSpellKnown(spellID, isPetAbility);
 end
 
 function D:GetItemFromLink(link)
@@ -774,23 +797,23 @@ do
 
 
     function D:ScheduleDelayedCall(RefName, FunctionRef, Delay, arg1, ...)
-        --[===[@debug@
+        --[==[@debug@
     --  D:Debug('|cFFFF0000SDC:|r|cFF00FFAA', RefName, Delay, arg1, unpack({...}));
-        --@end-debug@]===]
+        --@end-debug@]==]
 
         argCount = select('#', ...);
 
         if DcrTimers[RefName] and DcrTimers[RefName][1] then -- a timer with the same refname still exists
             -- we test up to two arguments to avoid the cancellation->re-creation of the timer (AceTimers doesn't remove them right away)
             if (argCount == 0 or argCount == 1 and  select(1, ...) == DcrTimers[RefName][2][2]) and arg1 == DcrTimers[RefName][2][1] then
-                --[===[@debug@
+                --[==[@debug@
                 D:Debug("Timer |cFF0000DDcancellation-creation canceled|r for", RefName, "Arg:", arg1, "indargcount:", argCount);
-                --@end-debug@]===]
+                --@end-debug@]==]
                 return;
-                --[===[@debug@
+                --[==[@debug@
             else
                 D:Debug("Timer |cFF0066DD-replaced-|r for", RefName, "argcount:", argCount);
-                --@end-debug@]===]
+                --@end-debug@]==]
             end
             if not self:CancelTimer(DcrTimers[RefName][1]) then
                 self:AddDebugText("Timer cancellation failed in ScheduleDelayedCall() for", RefName);
@@ -849,9 +872,9 @@ do
             );
         end
 
-        --[===[@debug@
+        --[==[@debug@
     --  D:Debug('|cFFFF0000SDC:|r ACEID:|cFF00FFAA', DcrTimers[RefName][1]);
-        --@end-debug@]===]
+        --@end-debug@]==]
         return DcrTimers[RefName][1];
     end
 
@@ -901,18 +924,18 @@ do
         for RefName, timer in pairs(DcrTimers) do
             if timer[1] then
                 dcrCount = dcrCount + 1;
-                --[===[@debug@
+                --[==[@debug@
                 self:Debug("|cff00AA00TimerRef:|r ", RefName, "ARGS:",timer[2] and unpack (timer[2]) or 'NONE', 'ACEID: |cffaa8833', timer[1], '|r', AceTimer.activeTimers[timer[1]] and 'active' or 'UNKNOWN');
-                --@end-debug@]===]
+                --@end-debug@]==]
             end
         end
         local libTimerCount = 0;
         for id,timer in pairs(AceTimer.activeTimers) do
             if timer.object == D then
                 libTimerCount = libTimerCount + 1;
-                --[===[@debug@
+                --[==[@debug@
                 self:Debug("|cff00AA00AceRef:", id,'|r');
-                --@end-debug@]===]
+                --@end-debug@]==]
             end
         end
         return dcrCount, libTimerCount, Yields, LongestExecBesidesYields, LargestBatch, TimersTotalExecs;
@@ -958,4 +981,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.7.1";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.8_beta_1";

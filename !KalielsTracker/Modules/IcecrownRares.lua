@@ -25,6 +25,8 @@ local timer = 0
 local timerDuration = 5
 local eventMapID = 118  -- Icecrown
 local mapPoint
+local userUtcOffset = 0
+local test = 0
 
 local eventFrame
 local header, content
@@ -36,7 +38,11 @@ ICECROWN_RARES_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("ICECROWN_RA
 -- Internal --
 --------------
 
-local timeZero = time({ year=2020, month=11, day=11, hour=9 })
+local realmZones = {
+    EU = { timeZero = time({ year=2020, month=11, day=11, hour=9 }), utcOffset = 1, rareOffset = 0 },
+    NA = { timeZero = time({ year=2020, month=11, day=10, hour=8 }), utcOffset = -8, rareOffset = 8 },
+    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 0 },
+}
 local rares = {
     { "Prince Keleseth", { 54.0, 44.7 } },
     { "The Black Knight", { 64.8, 22.1 } },
@@ -59,6 +65,7 @@ local rares = {
     { "Skadi the Ruthless", { 57.8, 56.1 }, "(Mount)" },
     { "Ingvar the Plunderer", { 52.4, 52.6 } },
 }
+for _, v in ipairs(rares) do v[1] = L[v[1]] if v[3] then v[3] = L[v[3]] end end
 local numRares = #rares
 
 local function IcecrownRaresTrackerModule_OnUpdate(self, elapsed)
@@ -229,10 +236,11 @@ function ICECROWN_RARES_TRACKER_MODULE:Update()
     end
 
     local block = self:GetBlock()
-    local secDiff = difftime(time(), timeZero) - db.sIcecrownRaresTimerCorrection
+    local secDiff = difftime(time() + (test * 3600) + userUtcOffset, realmZones[db.sIcecrownRaresRealmZone].timeZero) - db.sIcecrownRaresTimerCorrection
     local minDiff = secDiff / 60
     local numPastRares = floor(minDiff / 20) + 1
-    local nextRareIndex = fmod(numPastRares, numRares) + 1
+    local nextRareIndex = fmod(numPastRares, numRares) + 1 + realmZones[db.sIcecrownRaresRealmZone].rareOffset
+    nextRareIndex = nextRareIndex > numRares and nextRareIndex-numRares or nextRareIndex
     local nextRareRemainTimeSec = 1200 - fmod(secDiff, 1200)
     local nextRareRemainTime = SecondsToTime(nextRareRemainTimeSec)
     local nextRareInfo = rares[nextRareIndex][3] and " |cff00ff00"..rares[nextRareIndex][3] or ""
@@ -289,6 +297,12 @@ function M:OnEnable()
     ICECROWN_RARES_TRACKER_MODULE.updateReasonModule = OBJECTIVE_TRACKER_UPDATE_ALL
     ICECROWN_RARES_TRACKER_MODULE.updateReasonEvents = OBJECTIVE_TRACKER_UPDATE_ALL
     ICECROWN_RARES_TRACKER_MODULE:SetHeader(header, L"Icecrown Rares")
+
+    self:SetUserUtcOffset()
+end
+
+function M:SetUserUtcOffset()
+    userUtcOffset = (date("!%H") - (date("%H") + test) + realmZones[db.sIcecrownRaresRealmZone].utcOffset) * 3600
 end
 
 function M:SetUsed()

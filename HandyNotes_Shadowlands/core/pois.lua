@@ -210,11 +210,11 @@ function Arrow:Render(map, template)
     Line.Render(self, map, template)
 
     -- draw the head of the arrow
-    map:AcquirePin(template, self, CIRCLE, self.corner1)
-    map:AcquirePin(template, self, CIRCLE, self.corner2)
+    --map:AcquirePin(template, self, CIRCLE, self.corner1) --abyui
+    --map:AcquirePin(template, self, CIRCLE, self.corner2)
     map:AcquirePin(template, self, LINE, self.corner1, self.path[#self.path])
     map:AcquirePin(template, self, LINE, self.corner2, self.path[#self.path])
-    map:AcquirePin(template, self, LINE, self.corner1, self.corner2)
+    --map:AcquirePin(template, self, LINE, self.corner1, self.corner2)
 end
 
 -------------------------------------------------------------------------------

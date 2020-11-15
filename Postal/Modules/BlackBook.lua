@@ -375,6 +375,13 @@ function Postal_BlackBook:SortAndCountNumFriends()
 	return numFriends
 end
 
+function Postal_BlackBook:NumAllAlts()
+	local db = Postal.db.global.BlackBook.alts
+	local count = 0
+	for _ in pairs(db) do count = count + 1 end
+	return count
+end
+
 function Postal_BlackBook.BlackBookMenu(self, level)
 	if not level then return end
 	local info = self.info
@@ -530,40 +537,51 @@ elseif UIDROPDOWNMENU_MENU_VALUE == "allalt" then
 			local faction = UnitFactionGroup("player")
 			local player = UnitName("player")
 			local plre = player.."-"..realm
+			local NumAllAlts = Postal_BlackBook:NumAllAlts()
 			info.notCheckable = 1
-			for i = 1, #db do
-				local p, r, f, l, c = strsplit("|", db[i])
-				local pr = p.."-"..r
-				if (pr ~= plre ) then
-					if l and c then
-						local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
-						info.text = format("%s-%s |cff%.2x%.2x%.2x(%d %s)|r", p, r, clr.r*255, clr.g*255, clr.b*255, l, LOCALIZED_CLASS_NAMES_MALE[c])
-					else
-						info.text = ("%s-%s"):format(p, r)
+			if NumAllAlts > 0 and NumAllAlts <= 25 then
+				for i = 1, #db do
+					local p, r, f, l, c = strsplit("|", db[i])
+					local pr = p.."-"..r
+					if (pr ~= plre ) then
+						if l and c then
+							local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
+							info.text = format("%s-%s |cff%.2x%.2x%.2x(%d %s)|r", p, r, clr.r*255, clr.g*255, clr.b*255, l, LOCALIZED_CLASS_NAMES_MALE[c])
+						else
+							info.text = ("%s-%s"):format(p, r)
+						end
+						info.func = Postal_BlackBook.SetSendMailName
+						info.arg1 = ("%s-%s"):format(p, r)
+						UIDropDownMenu_AddButton(info, level)
 					end
-					info.func = Postal_BlackBook.SetSendMailName
-					info.arg1 = ("%s-%s"):format(p, r)
+				end
+				info.disabled = 1
+				info.text = nil
+				info.func = nil
+				info.arg1 = nil
+				UIDropDownMenu_AddButton(info, level)
+				info.disabled = nil
+
+				info.text = L["Delete"]
+				info.hasArrow = 1
+				info.keepShownOnClick = 1
+				info.func = self.UncheckHack
+				info.value = "deleteallalt"
+				UIDropDownMenu_AddButton(info, level)
+			elseif NumAllAlts > 25 then
+				info.hasArrow = 1
+				info.keepShownOnClick = 1
+				info.func = self.UncheckHack
+				for i = 1, math.ceil(NumAllAlts/25) do
+					info.text  = L["Part %d"]:format(i)
+					info.value = "apart"..i
 					UIDropDownMenu_AddButton(info, level)
 				end
 			end
-
-			info.disabled = 1
-			info.text = nil
-			info.func = nil
-			info.arg1 = nil
-			UIDropDownMenu_AddButton(info, level)
-			info.disabled = nil
-
-			info.text = L["Delete"]
-			info.hasArrow = 1
-			info.keepShownOnClick = 1
-			info.func = self.UncheckHack
-			info.value = "deleteallalt"
-			UIDropDownMenu_AddButton(info, level)
-
-			if DropDownList2 then -- ensure long lists stay on screen
-				DropDownList2:SetClampedToScreen(true)
-			end
+			-- ensure long lists stay on screen
+			if DropDownList2 then DropDownList2:SetClampedToScreen(true) end
+			if DropDownList3 then DropDownList3:SetClampedToScreen(true) end
+			if DropDownList4 then DropDownList4:SetClampedToScreen(true) end
 
 		elseif UIDROPDOWNMENU_MENU_VALUE == "friend" then
 			-- Friends list
@@ -645,6 +663,64 @@ elseif UIDROPDOWNMENU_MENU_VALUE == "allalt" then
 					UIDropDownMenu_AddButton(info, level)
 				end
 			end
+
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "delpart") then
+			local all = strfind(UIDROPDOWNMENU_MENU_VALUE, "deleteallaltdelpart")
+			local db = Postal.db.global.BlackBook.alts
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "delpart(%d+)")) * 25 - 24
+			local endIndex = math.min(startIndex+24, Postal_BlackBook:NumAllAlts())
+			local realm = GetRealmName()
+			local faction = UnitFactionGroup("player")
+			local player = UnitName("player")
+			for i = startIndex, endIndex do
+				local p, r, f, l, c = strsplit("|", db[i])
+				if p ~= player and ( (r == realm and f == faction) or all ) then
+					p = all and p.."-"..r or p
+					if l and c then
+						local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
+						info.text = format("%s |cff%.2x%.2x%.2x(%d %s)|r", p, clr.r*255, clr.g*255, clr.b*255, l, LOCALIZED_CLASS_NAMES_MALE[c])
+					else
+						info.text = p
+					end
+					info.func = Postal_BlackBook.DeleteAlt
+					info.arg1 = db[i]
+					UIDropDownMenu_AddButton(info, level)
+				end
+			end
+
+		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "apart") then
+			local db = Postal.db.global.BlackBook.alts
+			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "apart(%d+)")) * 25 - 24
+			local endIndex = math.min(startIndex+24, Postal_BlackBook:NumAllAlts())
+			for i = startIndex, endIndex do
+				local name = sorttable[i]
+				local p, r, f, l, c = strsplit("|", db[i])
+				local pr = p.."-"..r
+				if (pr ~= plre ) then
+					if l and c then
+						local clr = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[c] or RAID_CLASS_COLORS[c]
+						info.text = format("%s-%s |cff%.2x%.2x%.2x(%d %s)|r", p, r, clr.r*255, clr.g*255, clr.b*255, l, LOCALIZED_CLASS_NAMES_MALE[c])
+					else
+						info.text = ("%s-%s"):format(p, r)
+					end
+					info.func = Postal_BlackBook.SetSendMailName
+					info.arg1 = ("%s-%s"):format(p, r)
+					UIDropDownMenu_AddButton(info, level)
+				end
+			end
+			info.disabled = 1
+			info.text = nil
+			info.func = nil
+			info.arg1 = nil
+			UIDropDownMenu_AddButton(info, level)
+			info.disabled = nil
+
+			info.text = L["Delete"]
+			info.hasArrow = 1
+			info.keepShownOnClick = 1
+			info.func = self.UncheckHack
+			info.value = "deleteallaltdelpart"..tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "apart(%d+)"))
+			UIDropDownMenu_AddButton(info, level)
 
 		elseif strfind(UIDROPDOWNMENU_MENU_VALUE, "fpart") then
 			local startIndex = tonumber(strmatch(UIDROPDOWNMENU_MENU_VALUE, "fpart(%d+)")) * 25 - 24

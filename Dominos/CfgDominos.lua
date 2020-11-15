@@ -173,6 +173,7 @@ local function dominoModuleToggle(name, info, enable, justload)
         if IsLoggedIn() then
             local module = Dominos:GetModule(info.dominoModule, true) --EncounterBar 在开启BlizzMove的时候不加载
             if module then
+                pcall(module.Unload, module) --没有统一的是否加载机制，所以只能强制Unload一下试试了
                 module:Load()
                 Dominos.Frame:ForAll('Reanchor')
             end

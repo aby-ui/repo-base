@@ -247,3 +247,4 @@ ns.NewLocale = NewLocale
 ns.PlayerHasItem = PlayerHasItem
 ns.PrepareLinks = PrepareLinks
 ns.RenderLinks = RenderLinks
+_G.U1NameResolver = NameResolver

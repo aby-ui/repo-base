@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.7.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -997,10 +997,10 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
             D:errln(L["HLP_WRONGMBUTTON"]);
             if NeededPrio and MF_colors[NeededPrio] then
                 D:Println(L["HLP_USEXBUTTONTOCURE"], D:ColorText(DC.MouseButtonsReadable[ D.db.global.MouseButtons[NeededPrio] ], D:NumToHexColor(MF_colors[NeededPrio])));
-                --[===[@debug@
+                --[==[@debug@
             else
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
-                --@end-debug@]===]
+                --@end-debug@]==]
             end
         elseif RequestedPrio and D.Status.HasSpell then
             D.Status.ClickCastingWIP = true;
@@ -1157,9 +1157,9 @@ function MicroUnitF.prototype:Update(SkipSetColor, SkipDebuffs, CheckStealth)
         end
         -- if the guid changed we really need to rescan the unit!
         SkipSetColor = false; SkipDebuffs = false; CheckStealth = true;
-        --[===[@debug@
+        --[==[@debug@
         D:Debug("|cFF00CC00MUF:Update(): Guid change rescanning", Unit, "|r");
-        --@end-debug@]===]
+        --@end-debug@]==]
     end
 
     -- Update the frame attributes if necessary (Spells priority or unit id changes)
@@ -1630,15 +1630,15 @@ do
 
             if PrioChanged then PrioChanged = false; end
 
-            --[===[@debug@
+            --[==[@debug@
             D:Debug('Setting MUF texture color...');
-            --@end-debug@]===]
+            --@end-debug@]==]
             -- Set the main texture
             self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25 and 2016-12-30
             --self.Texture:SetAlpha(Alpha);
-            --[===[@debug@
+            --[==[@debug@
             D:Debug('Setting MUF texture color... done');
-            --@end-debug@]===]
+            --@end-debug@]==]
 
 
 
@@ -1785,9 +1785,9 @@ do
                 -- test for GUID change and force a debuff update in this case
                 if UnitToGUID[MF.CurrUnit] ~= MF.UnitGUID then
                     MF.UpdateCountDown = 0; -- will force MF:Update() to be called
-                    --[===[@debug@
+                    --[==[@debug@
                     --D:Println("|cFFFFAA55GUID change detected while placing for |r", MicroFrameUpdateIndex, UnitToGUID[MF.CurrUnit], MF.UnitGUID );
-                    --@end-debug@]===]
+                    --@end-debug@]==]
                 end
 
                 ActionsDone = ActionsDone + 1;
@@ -1865,6 +1865,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.7.1";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.8_beta_1";
 
 -- Heresy

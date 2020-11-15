@@ -10,6 +10,7 @@ function GoldBar:Init()
 end
 
 function GoldBar:Update()
+    local realm
 	local gold = GetMoney("player")
 	local max = Addon.Config:GoldGoal()
 
@@ -28,7 +29,7 @@ function GoldBar:Update()
      end
 
 	self:SetValues(gold, max*10000, realm)
-	self:UpdateText(_G.MONEY, gold/10000, max, realm/10000)
+	self:UpdateText(_G.MONEY, floor(gold/10000+0.5), floor(max+0.5), realm/10000)
 end
 
 function GoldBar:IsModeActive()

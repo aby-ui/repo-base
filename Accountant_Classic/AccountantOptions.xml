@@ -127,7 +127,7 @@ $Id: AccountantOptions.xml 69 2012-09-26 09:54:33Z arith $
 				AccountantOptions_OnShow(self);
 			</OnShow>
 			<OnHide>
-				AccountantOptions_OnHide(self);
+				--AccountantOptions_OnHide(self);
 			</OnHide>
 		</Scripts>
 	</Frame>

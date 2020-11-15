@@ -531,7 +531,7 @@
 				Accountant_OnShow(self);
 			</OnShow>
 			<OnHide>
-				Accountant_OnHide(self);
+				--Accountant_OnHide(self);
 			</OnHide>
 			<OnEvent>
 				Accountant_OnEvent(self, event, ...);

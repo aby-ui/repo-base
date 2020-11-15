@@ -3,9 +3,9 @@
 -- http://www.wowace.com/projects/mapster/localization/ ;¶
 
 local debug = false
---[===[@debug@
+--[==[@debug@
 debug = true
---@end-debug@]===]
+--@end-debug@]==]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Mapster", "enUS", true, debug)
 

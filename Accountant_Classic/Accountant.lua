@@ -577,7 +577,7 @@ end
 
 function Accountant_OnHide()
 	if MYADDONS_ACTIVE_OPTIONSFRAME == self then
-		myAddOnsFrame:Show();
+        myAddOnsFrame:Show();
 	end
 end
 

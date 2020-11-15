@@ -672,7 +672,7 @@ rf:SetScript ("OnEvent", function (self, event, ...)
 					if (objectIcon == "nazjatar-nagaevent") then
 						WorldQuestTracker.NagaEventCooldown = WorldQuestTracker.NagaEventCooldown or 0
 						if (WorldQuestTracker.NagaEventCooldown < time()) then
-							WorldQuestTracker:Msg("a naga event is happening, open the map for location.|r")
+							WorldQuestTracker:Msg("一个地图事件开始了，打开地图查看位置|r")
 							WorldQuestTracker.NagaEventCooldown = time() + 360 --6min
 						end
 					end

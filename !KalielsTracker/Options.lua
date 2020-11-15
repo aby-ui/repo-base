@@ -31,6 +31,7 @@ local strata = { "LOW", "MEDIUM", "HIGH" }
 local flags = { [""] = "None", ["OUTLINE"] = "Outline", ["OUTLINE, MONOCHROME"] = "Outline Monochrome" }
 local textures = { "None", "Default (Blizzard)", "One line", "Two lines" }
 local modifiers = { [""] = "None", ["ALT"] = "Alt", ["CTRL"] = "Ctrl", ["ALT-CTRL"] = "Alt + Ctrl" }
+local realmZones = { ["EU"] = L"Europe", ["NA"] = L"North America", ["CN"] = L"China" }
 
 local cTitle = " "..NORMAL_FONT_COLOR_CODE
 local cBold = "|cff00ffe3"
@@ -110,6 +111,7 @@ local defaults = {
 		soundQuestComplete = "KT - Default",
 
 		sIcecrownRares = true,
+		sIcecrownRaresRealmZone = "CN",
 		sIcecrownRaresTimerCorrection = 0,
 		sIcecrownRaresOnlyInZone = false,
 
@@ -1190,10 +1192,10 @@ local options = {
 							imageCoords = { 0.61328125, 0.728515625, 0.28125, 0.40234375 },
 							imageWidth = 39,
 							imageHeight = 42,
-							order = 9.1,
+							order = 9.11,
 						},
 						sIcecrownRares = {
-							name = "Icecrown Rare Monitor "..beta,
+							name = L"Icecrown Rare Monitor "..beta,
 							desc = L"Shows Shadowlands Pre-Patch Rares, which are spawns. "..cWarning..L"This feature has not been tested much!|r",
 							descStyle = "inline",
 							type = "toggle",
@@ -1207,13 +1209,48 @@ local options = {
 								end
 								ReloadUI()
 							end,
-							order = 9.2,
+							order = 9.12,
+						},
+						sIcecrownRaresSpacer2 = {
+							name = " ",
+							type = "description",
+							width = 0.6,
+							order = 9.13,
+						},
+						sIcecrownRaresSpacer1 = {
+							name = " ",
+							type = "description",
+							width = 0.3,
+							order = 9.21,
+						},
+						sIcecrownRaresRealmZone = {
+							name = L"Realm Zone",
+							desc = "Select the Realm Zone where you are connecting for the correct Rares order.",
+							type = "select",
+							width = 0.8,
+							values = realmZones,
+							disabled = function()
+								return not db.sIcecrownRares
+							end,
+							get = function()
+								for k, v in pairs(realmZones) do
+									if db.sIcecrownRaresRealmZone == k then
+										return k
+									end
+								end
+							end,
+							set = function(_, value)
+								db.sIcecrownRaresRealmZone = value
+								KT.IcecrownRares:SetUserUtcOffset()
+								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
+							end,
+							order = 9.22,
 						},
 						sIcecrownRaresTimerCorrection = {
 							name = L"Timer Correction",
 							desc = L"Rare timer correction in seconds. Positive and negative numbers are allowed.\n"..cWarning..L"Use it when Rare spawns sooner or later than the timer shows.",
 							type = "input",
-							width = 0.6,
+							width = 0.8,
 							disabled = function()
 								return not db.sIcecrownRares
 							end,
@@ -1224,13 +1261,7 @@ local options = {
 								db.sIcecrownRaresTimerCorrection = tonumber(value) or 0
 								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
 							end,
-							order = 9.3,
-						},
-						sIcecrownRaresSpacer1 = {
-							name = " ",
-							type = "description",
-							width = 0.3,
-							order = 9.41,
+							order = 9.23,
 						},
 						sIcecrownRaresOnlyInZone = {
 							name = L"Show only in Icecrown",
@@ -1245,19 +1276,13 @@ local options = {
 								KT.IcecrownRares:SetUsed()
 								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
 							end,
-							order = 9.42,
-						},
-						sIcecrownRaresSpacer2 = {
-							name = " ",
-							type = "description",
-							width = 1.6,
-							order = 9.43,
+							order = 9.24,
 						},
 						sIcecrownRaresSpacer3 = {
 							name = " ",
 							type = "description",
 							width = 0.3,
-							order = 9.51,
+							order = 9.31,
 						},
 						sIcecrownRaresDesc = {
 							name = L"  Available actions:\n"..
@@ -1266,7 +1291,7 @@ local options = {
 									"  - "..cBold..L"Shift + Left Click|r - send Rare info to General chat channel",
 							type = "description",
 							width = "double",
-							order = 9.52,
+							order = 9.32,
 						},
 					},
 				},

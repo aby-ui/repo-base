@@ -137,7 +137,7 @@ do
 		buffer = buffer or {}
 		twipe(buffer)
 
-		local fn = self:CompressValues() and _G.AbbreviateLargeNumbers163 or _G.AbbreviateLargeNumbers or _G.BreakUpLargeNumbers
+		local fn = (self:CompressValues() and _G.AbbreviateLargeNumbers163 or _G.AbbreviateLargeNumbers) or _G.BreakUpLargeNumbers
 
 		if label and self:Displaying('label') then
 			tinsert(buffer, ('%s:'):format(label))

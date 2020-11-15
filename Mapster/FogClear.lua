@@ -107,7 +107,7 @@ function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 	local exploredMapTextures = C_MapExplorationInfo.GetExploredMapTextures(mapID)
 	if exploredMapTextures then
 		for _i, exploredTextureInfo in ipairs(exploredMapTextures) do
-			local key = exploredTextureInfo.textureWidth * 2^36 + exploredTextureInfo.textureHeight * 2^24 + exploredTextureInfo.offsetX * 2^12 + exploredTextureInfo.offsetY
+			local key = exploredTextureInfo.textureWidth * 2^39 + exploredTextureInfo.textureHeight * 2^26 + exploredTextureInfo.offsetX * 2^13 + exploredTextureInfo.offsetY
 			exploredTilesKeyed[key] = true
 		end
 	end
@@ -123,7 +123,7 @@ function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 
 	for key, files in pairs(data) do
 		if not exploredTilesKeyed[key] then
-			local width, height, offsetX, offsetY = mod(floor(key / 2^36), 2^12), mod(floor(key / 2^24), 2^12), mod(floor(key / 2^12), 2^12), mod(key, 2^12)
+			local width, height, offsetX, offsetY = mod(floor(key / 2^39), 2^13), mod(floor(key / 2^26), 2^13), mod(floor(key / 2^13), 2^13), mod(key, 2^13)
 			local fileDataIDs = { strsplit(",", files) }
 			local numTexturesWide = ceil(width/TILE_SIZE_WIDTH)
 			local numTexturesTall = ceil(height/TILE_SIZE_HEIGHT)
