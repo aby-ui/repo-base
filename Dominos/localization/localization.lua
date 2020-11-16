@@ -81,5 +81,5 @@ for id = 1, 12 do
 end
 
 for id = 1, 60 do
-    _G[('BINDING_NAME_CLICK:%sActionButton%d:HOTKEY'):format(AddonName, id)] = ('%s Action Button %d'):format(AddonName, id)
+    _G[('BINDING_NAME_CLICK %sActionButton%d:HOTKEY'):format(AddonName, id)] = ('%s Action Button %d'):format(AddonName, id)
 end

@@ -119,6 +119,8 @@ L["options_toggle_maximized_enlarged"] = "Enlarge icons on maximized world map"
 L["options_toggle_maximized_enlarged_desc"] = "When the world map is maximized, enlarge all icons."
 L["options_toggle_use_char_achieves"] = "Use character achievements"
 L["options_toggle_use_char_achieves_desc"] = "Display achievement progress for this character instead of the overall account."
+L["options_poi_refresh_rate"] = "Minimap Refresh Rate"
+L["options_poi_refresh_rate_desc"] = "How often (in seconds) to refresh minimap POIs when 'Rotate Minimap' is enabled."
 L["options_restore_hidden_nodes"] = "Restore hidden nodes"
 L["options_restore_hidden_nodes_desc"] = "Restore all nodes hidden using the right-click context menu."
 

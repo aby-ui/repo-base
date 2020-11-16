@@ -145,26 +145,12 @@ U1RegisterAddon("HandyNotes_DraenorTreasures", {
     modifier = "Vincero@NGA汉化",
 })
 
-U1RegisterAddon("HandyNotes_HallowsEnd", {
-    title = "万圣节糖罐位置",
-    defaultEnable = 1,
-    load = "LATER",
-})
-
-U1RegisterAddon("HandyNotes_SummerFestival", {
-    title = "仲夏节篝火位置",
-    defaultEnable = 1,
-    load = "LATER",
-})
-
-U1RegisterAddon("HandyNotes_LunarFestival", {
-    title = "春节长者位置",
-    defaultEnable = 1,
-    load = "LATER",
-})
+U1RegisterAddon("HandyNotes_HallowsEnd", { title = "万圣节糖罐位置", defaultEnable = 1, load = "LATER", })
+U1RegisterAddon("HandyNotes_SummerFestival", { title = "仲夏节篝火位置", defaultEnable = 1, load = "LATER", })
+U1RegisterAddon("HandyNotes_LunarFestival", { title = "春节长者位置", defaultEnable = 1, load = "LATER", })
+U1RegisterAddon("HandyNotes_DungeonLocations", { title = "老地图副本入口", defaultEnable = 1, load = "LATER",})
 
 --[[
-U1RegisterAddon("HandyNotes_DungeonLocations", { title = "老地图副本入口", defaultEnable = 1, load = "LATER",})
 U1RegisterAddon("HandyNotes_VisionsOfNZoth", { title = "恩佐斯幻象(8.3)", defaultEnable = 1, load = "LATER", });
 U1RegisterAddon("HandyNotes_MechagonAndNazjatar", { title = "麦卡贡和纳沙塔尔(8.2)", defaultEnable = 1, load = "LATER", });
 U1RegisterAddon("HandyNotes_WarfrontRares", { title = "战争前线稀有位置(8.1)", defaultEnable = 1, load = "LATER", })

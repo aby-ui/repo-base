@@ -180,7 +180,7 @@ function U1MMB_CheckMinimapChildren()
             --continue --如果不增加安全按钮保护判断，则会报 Interface\FrameXML\RestrictedExecution.lua:375: Cannot declare closure factories from insecure code
         else
             local name = btn:GetName();
-            if(name and name:sub(1,13)=="HandyNotesPin") then
+            if(name and name:sub(1,10)=="HandyNotes") and name:find("Pin", 11, true) then
                 --HandyNotes卡顿
             elseif(not hookedList[btn]) then
                 btn.__u1mmbchecked = 1

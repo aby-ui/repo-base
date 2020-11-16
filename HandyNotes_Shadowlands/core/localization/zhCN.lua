@@ -119,6 +119,8 @@ L["options_toggle_maximized_enlarged"] = "世界地图最大化时图标放大"
 L["options_toggle_maximized_enlarged_desc"] = "当世界地图最大化，放大全部图标。"
 L["options_toggle_use_char_achieves"] = "使用角色成就"
 L["options_toggle_use_char_achieves_desc"] = "显示成就进度为此角色而不是全部账号。"
+L["options_poi_refresh_rate"] = nil
+L["options_poi_refresh_rate_desc"] = nil
 L["options_restore_hidden_nodes"] = "恢复隐藏项"
 L["options_restore_hidden_nodes_desc"] = "使用右击菜单恢复全部隐藏项。"
 

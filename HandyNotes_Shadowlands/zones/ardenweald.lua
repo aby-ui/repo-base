@@ -94,6 +94,7 @@ map.nodes[54067601] = Rare({
 map.nodes[27885248] = Rare({
     id=164107,
     quest=59145,
+    note=L["gormtamer_tizo_note"],
     rewards={
         Achievement({id=14309, criteria=48781}),
         Mount({item=180725, id=1362}) -- Spinemaw Gladechewer
@@ -135,7 +136,8 @@ map.nodes[67465147] = Rare({
 
 map.nodes[62102470] = Rare({
     id=165053,
-    quest=nil,
+    quest=59431,
+    note=L["mymaen_note"],
     rewards={
         Achievement({id=14309, criteria=48788})
     }
@@ -277,7 +279,7 @@ map.nodes[58306180] = Rare({
 
 map.nodes[41254443] = Rare({
     id=171743,
-    quest=61633,
+    quest=61633, -- 61205 ??
     covenant=NIGHTFAE,
     requires=ns.requirement.GarrisonTalent(1244, L["anima_channeled"]),
     label=L["star_lake"],
@@ -331,6 +333,7 @@ map.nodes[36236527] = Treasure({
     note=L["cache_of_the_night"],
     rewards={
         Achievement({id=14313, criteria=50044}),
+        Transmog({item=179549, slot=L["1h_mace"]}), -- Nightwillow Cudgel
         Pet({item=180637, id=2914}) -- Starry Dreamfoal
     }, pois={
         POI({
@@ -362,11 +365,11 @@ map.nodes[41953253] = Treasure({
     },
     pois={
         POI({41413161}), -- Bounding Shroom
-        POI({31763247}) -- Aromatic Flowers
+        POI({31763247, 36445960}) -- Aromatic Flowers
     }
 }) -- Desiccated Moth
 
-map.nodes[37683688] = Treasure({
+map.nodes[37643706] = Treasure({
     quest=61070,
     note=L["dreamsong_heart"],
     rewards={
@@ -383,9 +386,11 @@ map.nodes[44827587] = Treasure({
     note=L["elusive_faerie_cache"],
     rewards={
         Achievement({id=14313, criteria=50043}),
-        Transmog({item=179512, slot=L["1h_sword"]}) -- Dreamsong Saber
+        Transmog({item=179512, slot=L["1h_sword"]}), -- Dreamsong Saber
+        Toy({item=184490}) -- Fae Pipes
     },
     pois={
+        POI({46497011}), -- Faerie Lamp
         Path({
             44827587, 44477530, 44417436, 44647334, 44877246, 45057161,
             45417087, 45837033, 46497011
@@ -415,7 +420,9 @@ map.nodes[67803462] = Treasure({
     quest=61165,
     note=L["harmonic_chest"],
     rewards={
-        Achievement({id=14313, criteria=50036})
+        Achievement({id=14313, criteria=50036}),
+        Transmog({item=179565, slot=L["offhand"]}), -- Songwood Stem
+        Toy({item=184489}) -- Fae Harp
     }
 }) -- Harmonic Chest
 
@@ -493,6 +500,29 @@ map.nodes[52943729] = Treasure({
 --------------------------------- BATTLE PETS ---------------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[34224452] = PetBattle({
+    id=175778,
+    rewards={
+        Achievement({id=14881, criteria=51048})
+    }
+}) -- Briarpaw
+
+map.nodes[26546222] = PetBattle({
+    id=175779,
+    note=L["in_small_cave"],
+    rewards={
+        Achievement({id=14881, criteria=51049})
+    }
+}) -- Chittermaw
+
+map.nodes[49884175] = PetBattle({
+    id=175780,
+    note=L["in_small_cave"],
+    rewards={
+        Achievement({id=14881, criteria=51050})
+    }
+}) -- Mistwing
+
 map.nodes[39956449] = PetBattle({
     id=173376,
     rewards={
@@ -509,14 +539,38 @@ map.nodes[40192880] = PetBattle({
 
 map.nodes[51274406] = PetBattle({
     id=173377,
+    note=L["faryl_note"],
     rewards={
-        Achievement({id=14625, criteria=49403})
+        Achievement({id=14625, criteria=49403}),
+        ns.reward.Spacer(),
+        Achievement({id=14868, criteria=11, oneline=true}), -- Aquatic
+        Achievement({id=14869, criteria=11, oneline=true}), -- Beast
+        Achievement({id=14870, criteria=11, oneline=true}), -- Critter
+        Achievement({id=14871, criteria=11, oneline=true}), -- Dragon
+        Achievement({id=14872, criteria=11, oneline=true}), -- Elemental
+        Achievement({id=14873, criteria=11, oneline=true}), -- Flying
+        Achievement({id=14874, criteria=11, oneline=true}), -- Humanoid
+        Achievement({id=14875, criteria=11, oneline=true}), -- Magic
+        Achievement({id=14876, criteria=11, oneline=true}), -- Mechanical
+        Achievement({id=14877, criteria=11, oneline=true}), -- Undead
     }
 }) -- Faryl
 
 map.nodes[58205690] = PetBattle({
     id=173372,
+    note=L["glitterdust_note"],
     rewards={
-        Achievement({id=14625, criteria=49405})
+        Achievement({id=14625, criteria=49405}),
+        ns.reward.Spacer(),
+        Achievement({id=14868, criteria=10, oneline=true}), -- Aquatic
+        Achievement({id=14869, criteria=10, oneline=true}), -- Beast
+        Achievement({id=14870, criteria=10, oneline=true}), -- Critter
+        Achievement({id=14871, criteria=10, oneline=true}), -- Dragon
+        Achievement({id=14872, criteria=10, oneline=true}), -- Elemental
+        Achievement({id=14873, criteria=10, oneline=true}), -- Flying
+        Achievement({id=14874, criteria=10, oneline=true}), -- Humanoid
+        Achievement({id=14875, criteria=10, oneline=true}), -- Magic
+        Achievement({id=14876, criteria=10, oneline=true}), -- Mechanical
+        Achievement({id=14877, criteria=10, oneline=true}), -- Undead
     }
 }) -- Glitterdust

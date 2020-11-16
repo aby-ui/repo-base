@@ -4,7 +4,7 @@
 ---
 --- https://www.curseforge.com/wow/addons/msa-protrouter-10
 
-local name, version = "MSA-ProtRouter-1.0", 0
+local name, version = "MSA-ProtRouter-1.0", 1
 
 local lib, oldVersion = LibStub:NewLibrary(name, version)
 if not lib then return end
@@ -26,6 +26,7 @@ lib.protectedActions = {}
 
 local function protRunStoredActions()
     while #lib.protectedActions > 0 do
+        if lib.combatLockdown then break end
         local func, params = unpack(lib.protectedActions[1])
         func(unpack(params))
         tremove(lib.protectedActions, 1)

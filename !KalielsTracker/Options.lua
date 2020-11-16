@@ -1207,6 +1207,7 @@ local options = {
 								if db.sIcecrownRares then
 									db.collapsed = false
 								end
+								db.modulesOrder = nil
 								ReloadUI()
 							end,
 							order = 9.12,
@@ -1365,6 +1366,7 @@ local options = {
 								if PetTracker.sets then
 									PetTracker.sets.trackPets = db.addonPetTracker
 								end
+								db.modulesOrder = nil
 								ReloadUI()
 							end,
 							order = 1.21,

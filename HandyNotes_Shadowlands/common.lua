@@ -71,8 +71,11 @@ end
 ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b', {defaults=ns.GROUP_HIDDEN})
 ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_wr')
 ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_wy')
-ns.groups.CARRIAGE = Group('carriages', 'horseshoe')
-ns.groups.RIFTSTONE = Group('riftstone', 'portal_b')
+ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
+ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
+ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
+ns.groups.RIFTSTONE = Group('riftstone', 'portal_b', {defaults=ns.GROUP_HIDDEN})
+ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
 
 -------------------------------------------------------------------------------

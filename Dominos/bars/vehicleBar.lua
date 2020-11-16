@@ -16,7 +16,14 @@ end
 local VehicleBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function VehicleBar:New()
-    return VehicleBar.proto.New(self, 'vehicle')
+    local bar = VehicleBar.proto.New(self, "vehicle")
+
+    -- drop need for showstates for this case
+    if bar:GetShowStates() == '[@vehicle,exists]show;hide' then
+        bar:SetShowStates(nil)
+    end
+
+    return bar
 end
 
 VehicleBar:Extend('OnAcquire', function(self)

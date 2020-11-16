@@ -134,11 +134,11 @@ local function SetFrames()
 	eventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
 	eventFrame:RegisterEvent("PET_BATTLE_CLOSE")
 
-	-- Player Alternative Power Bar
-	PlayerPowerBarAlt:ClearAllPoints()
-	PlayerPowerBarAlt:SetPoint("TOP", UIParent, "TOP", 0, -40)
-	PlayerPowerBarAlt:SetMovable(true)
-	PlayerPowerBarAlt:SetUserPlaced(true)
+	-- Player Alternative Power Bar --abyui we have blizmove and dominos
+	--PlayerPowerBarAlt:ClearAllPoints()
+	--PlayerPowerBarAlt:SetPoint("TOP", UIParent, "TOP", 0, -40)
+	--PlayerPowerBarAlt:SetMovable(true)
+	--PlayerPowerBarAlt:SetUserPlaced(true)
 
 	-- Main frame
 	if not KTF.ActiveFrame then

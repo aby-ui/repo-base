@@ -5,6 +5,7 @@
 --- This file is part of addon Kaliel's Tracker.
 
 local addonName, KT = ...
+local L = KT.L
 KT.title = GetAddOnMetadata(addonName, "Title")
 
 -- Lua API
@@ -263,6 +264,58 @@ function KT.GetNumQuestWatches()
         end
     end
     return numWatches
+end
+
+-- Time
+function KT.SecondsToTime(seconds, noSeconds, maxCount, roundUp)
+    local time = "";
+    local count = 0;
+    local tempTime;
+    seconds = roundUp and ceil(seconds) or floor(seconds);
+    maxCount = maxCount or 2;
+    if ( seconds >= 86400  ) then
+        count = count + 1;
+        if ( count == maxCount and roundUp ) then
+            tempTime = ceil(seconds / 86400);
+        else
+            tempTime = floor(seconds / 86400);
+        end
+        time = tempTime..L" Day";
+        seconds = mod(seconds, 86400);
+    end
+    if ( count < maxCount and seconds >= 3600  ) then
+        count = count + 1;
+        if ( time ~= "" ) then
+            time = time..TIME_UNIT_DELIMITER;
+        end
+        if ( count == maxCount and roundUp ) then
+            tempTime = ceil(seconds / 3600);
+        else
+            tempTime = floor(seconds / 3600);
+        end
+        time = time..tempTime..L" Hr";
+        seconds = mod(seconds, 3600);
+    end
+    if ( count < maxCount and seconds >= 60  ) then
+        count = count + 1;
+        if ( time ~= "" ) then
+            time = time..TIME_UNIT_DELIMITER;
+        end
+        if ( count == maxCount and roundUp ) then
+            tempTime = ceil(seconds / 60);
+        else
+            tempTime = floor(seconds / 60);
+        end
+        time = time..tempTime..L" Min";
+        seconds = mod(seconds, 60);
+    end
+    if ( count < maxCount and seconds > 0 and not noSeconds ) then
+        if ( time ~= "" ) then
+            time = time..TIME_UNIT_DELIMITER;
+        end
+        time = time..seconds..L" Sec";
+    end
+    return time;
 end
 
 -- =====================================================================================================================

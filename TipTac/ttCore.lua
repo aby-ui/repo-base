@@ -430,8 +430,13 @@ function tt:VARIABLES_LOADED(event)
 	-- Init Config
 	if (not TipTac_Config) then
 		TipTac_Config = {};
-	end
+    end
 	cfg = setmetatable(TipTac_Config,{ __index = TT_DefaultConfig });
+    if TipTac_Config.top == 0 and TipTac_Config.left == 0 then
+        TipTac_Config.top = nil
+        TipTac_Config.left = nil
+        self:Show()
+    end
 
 	-- Default the bar texture if it no longer exists
 	GameTooltipStatusBar:SetStatusBarTexture(cfg.barTexture);

@@ -172,6 +172,7 @@ MinimapDataProvider.facing = GetPlayerFacing()
 MinimapDataProvider.pins = {}
 MinimapDataProvider.pool = {}
 MinimapDataProvider.minimap = true
+MinimapDataProvider.updateTimer = 0
 
 function MinimapDataProvider:ReleaseAllPins()
     for i, pin in ipairs(self.pins) do
@@ -224,13 +225,13 @@ function MinimapDataProvider:RefreshAllData()
     end
 end
 
-function MinimapDataProvider:OnUpdate()
+function MinimapDataProvider:OnUpdate(elapsed)
+    self.updateTimer = self.updateTimer + elapsed
     local facing = GetPlayerFacing()
-    if facing ~= self.facing then
-        if GetCVar('rotateMinimap') == '1' then
-            self:RefreshAllData()
-        end
+    if facing ~= self.facing and self.updateTimer > ns:GetOpt('poi_refresh_rate') then
         self.facing = facing
+        self:RefreshAllData()
+        self.updateTimer = 0
     end
 end
 
@@ -256,8 +257,10 @@ function MinimapPinMixin:OnReleased()
     end
 end
 
-MinimapDataProvider:SetScript('OnUpdate', function ()
-    MinimapDataProvider:OnUpdate()
+MinimapDataProvider:SetScript('OnUpdate', function (_, elapsed)
+    if GetCVar('rotateMinimap') == '1' then
+        MinimapDataProvider:OnUpdate(elapsed)
+    end
 end)
 
 ns.addon:RegisterEvent('MINIMAP_UPDATE_ZOOM', function (...)

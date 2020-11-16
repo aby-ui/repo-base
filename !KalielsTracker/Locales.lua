@@ -135,9 +135,14 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Show Quest tags"] = "显示任务标签(等级/类型)"
     KT.L["Show Active button Binding text"] = "显示自动按钮的按键绑定文本"
 
+    KT.L[" Day"] = " 天"
+    KT.L[" Hr"] = " 时"
+    KT.L[" Min"] = " 分"
+    KT.L[" Sec"] = " 秒"
+
     KT.L["Icecrown Rares"] = "冰冠冰川稀有"
     KT.L["Next Rare:"] = "下一个稀有："
-    KT.L["Next Rare... %s at [%.1f, %.1f] %s"] = "下个稀有... %s at [%.1f, %.1f] %s"
+    KT.L["Next Rare: %s in %s at %s"] = "下个稀有: %s in %s at %s"
     KT.L["Icecrown Rare Monitor "] = "冰冠冰川稀有监控 "
     KT.L["Shows Shadowlands Pre-Patch Rares, which are spawns. "] = "显示暗影国度前夕的精英"
     KT.L["This feature has not been tested much!|r"] = "这个功能没有很全面的测试!|r"
@@ -147,6 +152,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Left Click|r - add waypoint (Blizzard or TomTom)\n"] = "左键点击|r - 添加路点\n"
     KT.L["Right Click|r - remove waypoint (Blizzard or TomTom)\n"] = "右键点击|r - 移除路点\n"
     KT.L["Shift + Left Click|r - send Rare info to General chat channel"] = "SHIFT+左键|r - 发送稀有信息到综合频道"
+    KT.L[" (unattackable now)"] = "(现在无法攻击)"
     KT.L["Realm Zone"] = "服务器"
     KT.L["Europe"] = "欧服"
     KT.L["North America"] = "美服"

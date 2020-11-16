@@ -7,6 +7,7 @@ local L = ns.locale
 local Class = ns.Class
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
 local NPC = ns.node.NPC
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
@@ -19,6 +20,7 @@ local Pet = ns.reward.Pet
 local Transmog = ns.reward.Transmog
 local Toy = ns.reward.Toy
 
+local Arrow = ns.poi.Arrow
 local Path = ns.poi.Path
 local POI = ns.poi.POI
 
@@ -347,7 +349,8 @@ map.nodes[47335536] = Treasure({
     quest=62243,
     note=L["forbidden_chamber_note"],
     rewards={
-        Achievement({id=14314, criteria=50084})
+        Achievement({id=14314, criteria=50084}),
+        Toy({item=184075}) -- Stonewrought Sentry
     }
 }) -- Forbidden Chamber
 
@@ -399,6 +402,7 @@ map.nodes[61525864] = Treasure({
 
 map.nodes[31055506] = Treasure({
     quest=59889,
+    note=L["smuggled_cache_note"],
     rewards={
         Achievement({id=14314, criteria=50895}),
         Item({item=182738, quest=62189}) -- Bundle of Smuggled Parasol Components
@@ -480,33 +484,83 @@ map.nodes[25263799] = PetBattle({
     }
 }) -- Scorch
 
+map.nodes[25662361] = PetBattle({
+    id=175781,
+    rewards={
+        Achievement({id=14881, criteria=51051})
+    }
+}) -- Sewer Creeper
+
+map.nodes[53004149] = PetBattle({
+    id=175782,
+    rewards={
+        Achievement({id=14881, criteria=51052})
+    }
+}) -- The Countess
+
 map.nodes[39945249] = PetBattle({
     id=173315,
+    note=L["sylla_note"],
     rewards={
-        Achievement({id=14625, criteria=49408})
+        Achievement({id=14625, criteria=49408}),
+        ns.reward.Spacer(),
+        Achievement({id=14868, criteria=1, oneline=true}), -- Aquatic
+        Achievement({id=14869, criteria=1, oneline=true}), -- Beast
+        Achievement({id=14870, criteria=1, oneline=true}), -- Critter
+        Achievement({id=14871, criteria=1, oneline=true}), -- Dragon
+        Achievement({id=14872, criteria=1, oneline=true}), -- Elemental
+        Achievement({id=14873, criteria=1, oneline=true}), -- Flying
+        Achievement({id=14874, criteria=1, oneline=true}), -- Humanoid
+        Achievement({id=14875, criteria=1, oneline=true}), -- Magic
+        Achievement({id=14876, criteria=1, oneline=true}), -- Mechanical
+        Achievement({id=14877, criteria=1, oneline=true}), -- Undead
     }
 }) -- Sylla
 
 map.nodes[61354121] = PetBattle({
     id=173331,
+    note=L["addius_note"],
     rewards={
-        Achievement({id=14625, criteria=49406})
+        Achievement({id=14625, criteria=49406}),
+        ns.reward.Spacer(),
+        Achievement({id=14868, criteria=3, oneline=true}), -- Aquatic
+        Achievement({id=14869, criteria=3, oneline=true}), -- Beast
+        Achievement({id=14870, criteria=3, oneline=true}), -- Critter
+        Achievement({id=14871, criteria=3, oneline=true}), -- Dragon
+        Achievement({id=14872, criteria=3, oneline=true}), -- Elemental
+        Achievement({id=14873, criteria=3, oneline=true}), -- Flying
+        Achievement({id=14874, criteria=3, oneline=true}), -- Humanoid
+        Achievement({id=14875, criteria=3, oneline=true}), -- Magic
+        Achievement({id=14876, criteria=3, oneline=true}), -- Mechanical
+        Achievement({id=14877, criteria=3, oneline=true}), -- Undead
     }
 }) -- Addius the Tormentor
 
 map.nodes[67626608] = PetBattle({
     id=173324,
+    note=L["eyegor_note"],
     rewards={
-        Achievement({id=14625, criteria=49407})
+        Achievement({id=14625, criteria=49407}),
+        ns.reward.Spacer(),
+        Achievement({id=14868, criteria=2, oneline=true}), -- Aquatic
+        Achievement({id=14869, criteria=2, oneline=true}), -- Beast
+        Achievement({id=14870, criteria=2, oneline=true}), -- Critter
+        Achievement({id=14871, criteria=2, oneline=true}), -- Dragon
+        Achievement({id=14872, criteria=2, oneline=true}), -- Elemental
+        Achievement({id=14873, criteria=2, oneline=true}), -- Flying
+        Achievement({id=14874, criteria=2, oneline=true}), -- Humanoid
+        Achievement({id=14875, criteria=2, oneline=true}), -- Magic
+        Achievement({id=14876, criteria=2, oneline=true}), -- Mechanical
+        Achievement({id=14877, criteria=2, oneline=true}), -- Undead
     }
 }) -- Eyegor
 
 -------------------------------------------------------------------------------
----------------------------- THE AFTERLIFE EXPRESS ----------------------------
+---------------------------------- CARRIAGES ----------------------------------
 -------------------------------------------------------------------------------
 
 local Carriage = Class('Carriage', NPC, {
-    icon = 'horseshoe',
+    icon = 'horseshoe_g',
     scale = 1.2,
     group = ns.groups.CARRIAGE
 })
@@ -585,7 +639,7 @@ map.nodes[66727652] = Carriage({
     }
 }) -- Pridefall Carriage
 
-map.nodes[52634155] = Carriage({
+map.nodes[47694787] = Carriage({
     id=174754,
     rewards={ Achievement({id=14771, criteria=50173}) },
     pois={
@@ -599,6 +653,326 @@ map.nodes[52634155] = Carriage({
         })
     }
 }) -- The Castle Carriage
+
+-------------------------------------------------------------------------------
+------------------------------ CASTLE SINRUNNERS ------------------------------
+-------------------------------------------------------------------------------
+
+local Sinrunner = Class('Sinrunner', NPC, {
+    icon = 'horseshoe_o',
+    scale = 1.2,
+    group = ns.groups.SINRUNNER
+})
+
+map.nodes[41304731] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria={50175,50176}}) },
+    pois={
+        Path({
+            41304731, 41464669, 42054607, 41874510, 41124495, 40244475,
+            39414432, 39064339, 39064170, 39054014, 39093895, 39633808,
+            39973739, 39483657, 39063587, 39043502, 39513412, 40053319,
+            40363272, 40853196, 41433106, 41833043, 42202985, 42732902,
+            43232849, 43872849, 44512868, 45022906, 45063013, 45063112,
+            45063208, 45053252, 45383261, 45343344, 45043348, 45053397,
+            44853458, 44343536, 44153626, 43983713, 43883809, 43743902,
+            44153988, 44034071, 43304079, 42684134, 42354225, 42034311,
+            42044416, 42084502, 42054607
+        })
+    }
+}) -- Hole in the Wall => Ramparts => Hole in the Wall
+
+map.nodes[39464455] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria={50175,50176}}) },
+    pois={
+        Path({
+            39464455, 39064339, 39064170, 39054014, 39093895, 39633808,
+            39973739, 39483657, 39063587, 39043502, 39513412, 40053319,
+            40363272, 40853196, 41433106, 41833043, 42202985, 42732902,
+            43232849, 43872849, 44512868, 45022906, 45063013, 45063112,
+            45063208, 45053252, 45383261, 45343344, 45043348, 45053397,
+            44853458, 44343536, 44153626, 43983713, 43883809, 43743902,
+            44153988, 44034071, 43304079, 42684134, 42354225, 42034311,
+            42044416, 42084502, 42054607, 41464669, 41304731
+        })
+    }
+}) -- The Abandoned Purlieu => Hole in the Wall
+
+map.nodes[40153776] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria={50175,50176}}) },
+    pois={
+        Path({
+            40153776, 39973739, 39483657, 39063587, 39043502, 39513412,
+            40053319, 40363272, 40853196, 41433106, 41833043, 42202985,
+            42732902, 43232849, 43872849, 44512868, 45022906, 45063013,
+            45063112, 45063208, 45053252, 45383261, 45343344, 45043348,
+            45053397, 44853458, 44343536, 44153626, 43983713, 43883809,
+            43743902, 44153988, 44034071, 43304079, 42684134, 42354225,
+            42034311, 42044416, 42084502, 42054607, 41464669, 41304731
+        })
+    }
+}) -- Dominance Gate => Hole in the Wall
+
+map.nodes[60346271] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50174}) },
+    pois={
+        Path({
+            60346271, 59926265, 59296277, 58786286, 58176293, 57536310,
+            56776328, 56156337, 55596351, 55246340, 55096242, 54966141,
+            54826032, 54665928, 54485856, 54365781, 54255677, 54525588,
+            54895519, 55475485, 56195445, 56775395, 57395347, 57945307,
+            58375248, 58805183, 59025103, 58945013, 59014930, 59194847,
+            59194760, 59194686, 59124605, 58964517, 58884437, 58824343,
+            58794245, 58754166, 58804094, 59234033, 59433974, 59763915,
+            60183876, 60633892, 60763966
+        })
+    }
+}) -- Darkhaven => Old Gate
+
+map.nodes[55246221] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50174}) },
+    pois={
+        Path({
+            55246221, 54966141, 54826032, 54665928, 54485856, 54365781,
+            54255677, 54525588, 54895519, 55475485, 56195445, 56775395,
+            57395347, 57945307, 58375248, 58805183, 59025103, 58945013,
+            59014930, 59194847, 59194760, 59194686, 59124605, 58964517,
+            58884437, 58824343, 58794245, 58754166, 58804094, 59234033,
+            59433974, 59763915, 60183876, 60633892, 60763966
+        })
+    }
+}) -- Wildwall => Old Gate
+
+map.nodes[71624105] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50177}) },
+    pois={
+        Path({
+            71624105, 72164110, 72834061, 73464009, 73894112, 74404207,
+            74984302, 75614371, 76374405, 76824489, 77044604, 77064722,
+            77454830, 77504953, 77635068, 77265175, 76855266, 76435372,
+            76045451, 75505532, 75165648, 74705738, 74095803, 73315796,
+            72455795, 71685792, 70935796, 70305858, 69645824, 68525724,
+            67825686, 67025699, 66165737, 65455787, 64735861, 64005885,
+            63235874, 62585910, 62446025, 62436123, 62936212, 63396186
+        })
+    }
+}) -- Absolution Crypt => Darkhaven
+
+map.nodes[77394882] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50177}) },
+    pois={
+        Path({
+            77394882, 77504953, 77635068, 77265175, 76855266, 76435372,
+            76045451, 75505532, 75165648, 74705738, 74095803, 73315796,
+            72455795, 71685792, 70935796, 70305858, 69645824, 68525724,
+            67825686, 67025699, 66165737, 65455787, 64735861, 64005885,
+            63235874, 62585910, 62446025, 62436123, 62936212, 63396186
+        })
+    }
+}) -- Edge of Sin => Darkhaven
+
+map.nodes[76365372] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50177}) },
+    pois={
+        Path({
+            76365372, 76045451, 75505532, 75165648, 74705738, 74095803,
+            73315796, 72455795, 71685792, 70935796, 70305858, 69645824,
+            68525724, 67825686, 67025699, 66165737, 65455787, 64735861,
+            64005885, 63235874, 62585910, 62446025, 62436123, 62936212,
+            63396186
+        })
+    }
+}) -- Edge of Sin => Darkhaven
+
+map.nodes[69635800] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50177}) },
+    pois={
+        Path({
+            69635800, 69115793, 68525724, 67825686, 67025699, 66165737,
+            65455787, 64735861, 64005885, 63235874, 62585910, 62446025,
+            62436123, 62936212, 63396186
+        })
+    }
+}) -- Edge of Sin => Darkhaven
+
+map.nodes[54926234] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50175}) },
+    pois={
+        Path({
+            54926234, 54846142, 54676026, 54505916, 54355828, 54195723,
+            53835626, 53355546, 52575540, 51845510, 51225437, 50725358,
+            50225280, 49595233, 48905194, 48365134, 47715199, 47205278,
+            46625368, 46115446, 45655519, 45155587, 44515616, 43715627,
+            42995614, 42295630, 41675639, 41035649, 40575560, 40125460,
+            39955357, 39485259, 39245155, 39335039, 39724939, 40174839,
+            40564749, 40844697
+        })
+    }
+}) -- Wildwall => Hole in the Wall
+
+map.nodes[53535504] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50175}) },
+    pois={
+        Path({
+            53535504, 52575540, 51845510, 51225437, 50725358, 50225280,
+            49595233, 48905194, 48365134, 47715199, 47205278, 46625368,
+            46115446, 45655519, 45155587, 44515616, 43715627, 42995614,
+            42295630, 41675639, 41035649, 40575560, 40125460, 39955357,
+            39485259, 39245155, 39335039, 39724939, 40174839, 40564749,
+            40844697
+        })
+    }
+}) -- Briar Gate => Hole in the Wall
+
+map.nodes[44035641] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50175}) },
+    pois={
+        Path({
+            44035641, 43715627, 42995614, 42295630, 41675639, 41035649,
+            40575560, 40125460, 39955357, 39485259, 39245155, 39335039,
+            39724939, 40174839, 40564749, 40844697
+        })
+    }
+}) -- Charred Ramparts => Hole in the Wall
+
+-------------------------------------------------------------------------------
+------------------------------- DREDBAT STATUES -------------------------------
+-------------------------------------------------------------------------------
+
+local Dredbat = Class('Dredbat', NPC, {
+    id=161015,
+    icon='flight_point_g',
+    group=ns.groups.DREDBATS,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14769, criteria={id=1, qty=true}}) }
+})
+
+map.nodes[57246125] = Dredbat({ pois={ Arrow({57246125, 60286116}) } })
+map.nodes[60396117] = Dredbat({ pois={ Arrow({60396117, 57495549}) } })
+map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
+
+-------------------------------------------------------------------------------
+------------------------ ITS ALWAYS SINNY IN REVENDRETH -----------------------
+-------------------------------------------------------------------------------
+
+local Inquisitor = Class('Inquisitor', Collectible, {
+    icon=3528307,
+    group=ns.groups.INQUISITORS,
+    pois={ POI({72995199}) } -- Archivist Fane
+})
+
+map.nodes[76205210] = Inquisitor({
+    id=159151,
+    note=L["inquisitor_note"],
+    requires=ns.requirement.Item(172999),
+    rewards={
+        Achievement({id=14276, criteria=48136})
+    }
+}) -- Inquisitor Traian
+
+map.nodes[64704640] = Inquisitor({
+    id=156918,
+    note=L["inquisitor_note"],
+    requires=ns.requirement.Item(172998),
+    rewards={
+        Achievement({id=14276, criteria=48135})
+    }
+}) -- Inquisitor Otilia
+
+map.nodes[67304340] = Inquisitor({
+    id=156919,
+    note=L["inquisitor_note"],
+    requires=ns.requirement.Item(172997),
+    rewards={
+        Achievement({id=14276, criteria=48134})
+    }
+}) -- Inquisitor Petre
+
+map.nodes[69804720] = Inquisitor({
+    id=156916,
+    note=L["inquisitor_note"],
+    requires=ns.requirement.Item(172996),
+    rewards={
+        Achievement({id=14276, criteria=48133})
+    }
+}) -- Inquisitor Sorin
+
+map.nodes[75304420] = Inquisitor({
+    id=159152,
+    note=L["high_inquisitor_note"],
+    requires=ns.requirement.Item(173000),
+    rewards={
+        Achievement({id=14276, criteria=48137})
+    }
+}) -- High Inquisitor Gabi
+
+map.nodes[71204240] = Inquisitor({
+    id=159153,
+    note=L["high_inquisitor_note"],
+    requires=ns.requirement.Item(173001),
+    rewards={
+        Achievement({id=14276, criteria=48138})
+    }
+}) -- High Inquisitor Radu
+
+map.nodes[72105320] = Inquisitor({
+    id=159155,
+    note=L["high_inquisitor_note"],
+    requires=ns.requirement.Item(173006),
+    rewards={
+        Achievement({id=14276, criteria=48140})
+    }
+}) -- High Inquisitor Dacian
+
+map.nodes[69805230] = Inquisitor({
+    id=159154,
+    note=L["high_inquisitor_note"],
+    requires=ns.requirement.Item(173005),
+    rewards={
+        Achievement({id=14276, criteria=48139})
+    }
+}) -- High Inquisitor Magda
+
+map.nodes[69704540] = Inquisitor({
+    id=159157,
+    note=L["grand_inquisitor_note"],
+    requires=ns.requirement.Item(173008),
+    rewards={
+        Achievement({id=14276, criteria=48142})
+    }
+}) -- Grand Inquisitor Aurica
+
+map.nodes[64505270] = Inquisitor({
+    id=159156,
+    note=L["grand_inquisitor_note"],
+    requires=ns.requirement.Item(173007),
+    rewards={
+        Achievement({id=14276, criteria=48141})
+    }
+}) -- Grand Inquisitor Nicu
 
 -------------------------------------------------------------------------------
 -------------------------------- LOYAL GORGER ---------------------------------

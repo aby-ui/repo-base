@@ -107,7 +107,7 @@ function Path:Draw(pin, type, xy1, xy2)
     t:SetTexture(type)
 
     -- constant size for minimaps, variable size for world maps
-    local size = pin.minimap and 5 or (pin.parentHeight * 0.005)
+    local size = pin.minimap and 4 or (pin.parentHeight * 0.003)
     local line_width = pin.minimap and 60 or (pin.parentHeight * 0.05)
 
     -- apply user scaling

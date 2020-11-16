@@ -252,13 +252,6 @@ function M:OnInitialize()
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)
-	else
-		for i, module in ipairs(db.modulesOrder) do
-			if module == "PETTRACKER_TRACKER_MODULE" then
-				tremove(db.modulesOrder, i)
-				break
-			end
-		end
 	end
 
 	SetFrames_Init()

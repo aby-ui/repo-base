@@ -6,7 +6,7 @@
 local AddonName, Addon = ...
 local Frame = Addon:CreateClass('Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local FlyPaper = LibStub('LibFlyPaper-1.0')
+local FlyPaper = LibStub('LibFlyPaper-1.1')
 
 local active = {}
 local unused = {}
@@ -71,6 +71,7 @@ function Frame:New(id, tooltipText)
     Addon.OverrideController:Add(frame)
 
     frame:OnAcquire(id)
+    FlyPaper.AddFrame(AddonName, id, frame)
     active[id] = frame
 
     return frame
@@ -129,6 +130,7 @@ function Frame:Free(deleteSettings)
     UnregisterStateDriver(self, 'display', 'show')
     Addon.FadeManager:Remove(self)
     Addon.OverrideController:Remove(self)
+    FlyPaper.RemoveFrame(AddonName, self.id, self)
 
     self.docked = nil
 
@@ -137,6 +139,7 @@ function Frame:Free(deleteSettings)
     self:Hide()
 
     self:OnRelease(self.id, deleteSettings)
+
 
     unused[self.id] = self
 end
@@ -604,12 +607,12 @@ function Frame:StickToEdge()
     local rTolerance = self.stickyTolerance / self:GetFrameScale()
     local changed = false
 
-    if abs(x) <= rTolerance then
+    if math.abs(x) <= rTolerance then
         x = 0
         changed = true
     end
 
-    if abs(y) <= rTolerance then
+    if math.abs(y) <= rTolerance then
         y = 0
         changed = true
     end
@@ -622,24 +625,15 @@ end
 
 -- bar anchoring
 function Frame:Stick()
-    local rTolerance = self.stickyTolerance / self:GetFrameScale()
-
     self:ClearAnchor()
 
     -- only do sticky code if the alt key is not currently down
     if Addon:Sticky() and not IsAltKeyDown() then
-        -- try to stick to a bar, then try to stick to a screen edge
-        for _, f in self:GetAll() do
-            if f ~= self then
-                local point = FlyPaper.Stick(self, f, rTolerance)
-                if point then
-                    self:SetAnchor(f, point)
-                    break
-                end
-            end
-        end
+        local anchor, id = FlyPaper.StickToClosestFrameInGroup(self, AddonName)
 
-        if not self:GetAnchor() then
+        if anchor then
+            self:SetAnchor(active[id], anchor)
+        else
             self:StickToEdge()
         end
     end
@@ -648,35 +642,35 @@ function Frame:Stick()
 end
 
 function Frame:Reanchor()
-    local f, point = self:GetAnchor()
+    local frame, anchor = self:GetAnchor()
 
-    if not (f and FlyPaper.StickToPoint(self, f, point)) then
+    if not (frame and FlyPaper.StickToPoint(self, frame, anchor)) then
         self:ClearAnchor()
         self:Reposition()
     else
-        self:SetAnchor(f, point)
+        self:SetAnchor(frame, anchor)
     end
 end
 
-function Frame:SetAnchor(anchor, point)
+function Frame:SetAnchor(frame, anchor)
     self:ClearAnchor()
 
-    if anchor.docked then
+    if frame.docked then
         local found = false
-        for i, f in pairs(anchor.docked) do
+        for i, f in pairs(frame.docked) do
             if f == self then
                 found = i
                 break
             end
         end
         if not found then
-            tinsert(anchor.docked, self)
+            table.insert(frame.docked, self)
         end
     else
-        anchor.docked = {self}
+        frame.docked = {self}
     end
 
-    self.sets.anchor = anchor.id .. point
+    self.sets.anchor = frame.id .. anchor
     self:UpdateWatched()
     self:UpdateAlpha()
 end
@@ -734,15 +728,15 @@ function Frame:GetRelativeFramePosition()
     local right = self:GetRight() or 0
     local bottom = self:GetBottom() or 0
 
-    local parent = self:GetParent() or UIParent
+    local parent = self:GetParent() or _G.UIParent
     local pwidth = parent:GetWidth() / scale
     local pheight = parent:GetHeight() / scale
 
     local x, y, point
-    if left < (pwidth - right) and left < abs((left + right) / 2 - pwidth / 2) then
+    if left < (pwidth - right) and left < math.abs((left + right) / 2 - pwidth / 2) then
         x = left
         point = 'LEFT'
-    elseif (pwidth - right) < abs((left + right) / 2 - pwidth / 2) then
+    elseif (pwidth - right) < math.abs((left + right) / 2 - pwidth / 2) then
         x = right - pwidth
         point = 'RIGHT'
     else
@@ -750,10 +744,10 @@ function Frame:GetRelativeFramePosition()
         point = ''
     end
 
-    if bottom < (pheight - top) and bottom < abs((bottom + top) / 2 - pheight / 2) then
+    if bottom < (pheight - top) and bottom < math.abs((bottom + top) / 2 - pheight / 2) then
         y = bottom
         point = 'BOTTOM' .. point
-    elseif (pheight - top) < abs((bottom + top) / 2 - pheight / 2) then
+    elseif (pheight - top) < math.abs((bottom + top) / 2 - pheight / 2) then
         y = top - pheight
         point = 'TOP' .. point
     else

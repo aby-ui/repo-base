@@ -2395,11 +2395,11 @@ function KT:OnEnable()
 
 	self.QuestLog:Enable()
 	self.Filters:Enable()
+	if db.qiActiveButton then self.ActiveButton:Enable() end
+	if db.sIcecrownRares then self.IcecrownRares:Enable() end
 	if self.AddonPetTracker.isLoaded then self.AddonPetTracker:Enable() end
 	if self.AddonTomTom.isLoaded then self.AddonTomTom:Enable() end
 	self.AddonOthers:Enable()
-	if db.qiActiveButton then self.ActiveButton:Enable() end
-	if db.sIcecrownRares then self.IcecrownRares:Enable() end
 	--self.Help:Enable()
 
 	if self.db.global.version ~= self.version then

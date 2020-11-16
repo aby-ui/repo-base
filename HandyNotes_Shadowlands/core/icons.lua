@@ -35,6 +35,13 @@ ns.icons = { -- name => path
     crystal_b = {Icon('crystal_blue'), Glow('crystal')},
     crystal_o = {Icon('crystal_orange'), Glow('crystal')},
 
+    flight_point_g = {Icon('flight_point_gray'), Glow('flight_point')},
+    flight_point_y = {Icon('flight_point_yellow'), Glow('flight_point')},
+
+    horseshoe_b = {Icon('horseshoe_black'), Glow('horseshoe')},
+    horseshoe_g = {Icon('horseshoe_gray'), Glow('horseshoe')},
+    horseshoe_o = {Icon('horseshoe_orange'), Glow('horseshoe')},
+
     paw_g = {Icon('paw_green'), Glow('paw')},
     paw_y = {Icon('paw_yellow'), Glow('paw')},
 
@@ -72,8 +79,6 @@ ns.icons = { -- name => path
     achievement = {Icon('achievement'), nil},
     door_down = {Icon('door_down'), Glow('door_down')},
     envelope = {Icon('envelope'), Glow('envelope')},
-    flight_point = {Icon('flight_point'), Glow('flight_point')},
-    horseshoe = {Icon('horseshoe'), Glow('horseshoe')},
     left_mouse = {Icon('left_mouse'), nil},
     scroll = {Icon('scroll'), Glow('scroll')},
     world_quest = {Icon('world_quest'), Glow('world_quest')},

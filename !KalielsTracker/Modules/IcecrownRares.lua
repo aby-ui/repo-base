@@ -15,6 +15,7 @@ local _DBG = function(...) if _DBG then _DBG("KT", ...) end end
 local difftime = difftime
 local floor = math.floor
 local fmod = math.fmod
+local format = string.format
 local ipairs = ipairs
 local tinsert = table.insert
 
@@ -41,7 +42,7 @@ ICECROWN_RARES_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("ICECROWN_RA
 local realmZones = {
     EU = { timeZero = time({ year=2020, month=11, day=11, hour=9 }), utcOffset = 1, rareOffset = 0 },
     NA = { timeZero = time({ year=2020, month=11, day=10, hour=8 }), utcOffset = -8, rareOffset = 8 },
-    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 8 },
+    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 0 },
 }
 local rares = {
     { "Prince Keleseth", { 54.0, 44.7 } },
@@ -77,19 +78,19 @@ local function IcecrownRaresTrackerModule_OnUpdate(self, elapsed)
     end
 end
 
-local function SendRareInfo(name, x, y)
-    SendChatMessage(format(L"Next Rare... %s at [%.1f, %.1f] %s", name, x, y, C_Map.GetUserWaypointHyperlink()), "CHANNEL", nil, 1)
+local function SendRareInfo(name, time)
+    SendChatMessage(format(L"Next Rare: %s in %s at %s", name, time, C_Map.GetUserWaypointHyperlink()), "CHANNEL", nil, 1)
 end
 
 local SetWaypoint = function(self, button)
     if button == "LeftButton" then
-        local x, y = unpack(rares[self.id][2])
+        local x, y = unpack(rares[self.rareIdx][2])
         if IsModifiedClick("CHATLINK") then
             if not mapPoint then
                 local point = UiMapPoint.CreateFromCoordinates(eventMapID, x/100, y/100)
                 C_Map.SetUserWaypoint(point)
             end
-            SendRareInfo(rares[self.id][1], x, y)
+            SendRareInfo(rares[self.rareIdx][1], self.rareTime)
             if not mapPoint then
                 C_Map.ClearUserWaypoint()
             end
@@ -111,11 +112,11 @@ end
 if IsAddOnLoaded("TomTom") then
     SetWaypoint = function(self, button)
         if button == "LeftButton" then
-            local x, y = unpack(rares[self.id][2])
+            local x, y = unpack(rares[self.rareIdx][2])
             if IsModifiedClick("CHATLINK") then
                 local point = UiMapPoint.CreateFromCoordinates(eventMapID, x/100, y/100)
                 C_Map.SetUserWaypoint(point)
-                SendRareInfo(rares[self.id][1], x, y)
+                SendRareInfo(rares[self.rareIdx][1], self.rareTime)
                 C_Map.ClearUserWaypoint()
                 PlaySound(SOUNDKIT.UI_MAP_WAYPOINT_CHAT_SHARE)
             else
@@ -124,7 +125,7 @@ if IsAddOnLoaded("TomTom") then
                 if mapID == eventMapID then
                     if mapID and x and y then
                         mapPoint = TomTom:AddWaypoint(mapID, x/100, y/100, {
-                            title = rares[self.id][1],
+                            title = rares[self.rareIdx][1],
                             from = KT.title,
                         })
                     end
@@ -235,19 +236,27 @@ function ICECROWN_RARES_TRACKER_MODULE:Update()
         return
     end
 
+    --local time = function() return _G.time() + 12*20*60 end
     local block = self:GetBlock()
-    local secDiff = difftime(time() + (test * 3600) + userUtcOffset, realmZones[db.sIcecrownRaresRealmZone].timeZero) - db.sIcecrownRaresTimerCorrection
+    local secDiff = difftime(time() + test + userUtcOffset, realmZones[db.sIcecrownRaresRealmZone].timeZero) - db.sIcecrownRaresTimerCorrection
     local minDiff = secDiff / 60
     local numPastRares = floor(minDiff / 20) + 1
     local nextRareIndex = fmod(numPastRares, numRares) + 1 + realmZones[db.sIcecrownRaresRealmZone].rareOffset
     nextRareIndex = nextRareIndex > numRares and nextRareIndex-numRares or nextRareIndex
     local nextRareRemainTimeSec = 1200 - fmod(secDiff, 1200)
-    local nextRareRemainTime = SecondsToTime(nextRareRemainTimeSec)
+
+    local nextRareRemainTime = KT.SecondsToTime(nextRareRemainTimeSec)
+    local timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft2"]
+    if nextRareRemainTimeSec > 1080 then
+        nextRareIndex = nextRareIndex == 1 and numRares or nextRareIndex - 1
+        nextRareRemainTime = KT.SecondsToTime(nextRareRemainTimeSec - 1080)..L" (unattackable now)"
+        timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft"]
+    end
     local nextRareInfo = rares[nextRareIndex][3] and " |cff00ff00"..rares[nextRareIndex][3] or ""
 
     self:AddObjective(block, 0, L"Next Rare:", nil, nil, OBJECTIVE_DASH_STYLE_HIDE_AND_COLLAPSE, OBJECTIVE_TRACKER_COLOR["Label"])
     self:AddObjective(block, 1, rares[nextRareIndex][1]..nextRareInfo, nil, nil, OBJECTIVE_DASH_STYLE_HIDE_AND_COLLAPSE)
-    self:AddObjective(block, 2, nextRareRemainTime, nil, nil, OBJECTIVE_DASH_STYLE_HIDE_AND_COLLAPSE, OBJECTIVE_TRACKER_COLOR["TimeLeft2"])
+    self:AddObjective(block, 2, nextRareRemainTime, nil, nil, OBJECTIVE_DASH_STYLE_HIDE_AND_COLLAPSE, timeColor)
 
     if block.height < 38 then
         block.height = 38
@@ -260,9 +269,10 @@ function ICECROWN_RARES_TRACKER_MODULE:Update()
     else
         block.used = false
     end
-    content.id = nextRareIndex
+    content.rareIdx = nextRareIndex
+    content.rareTime = nextRareRemainTime
 
-    timerDuration = nextRareRemainTimeSec <= 60 and 1 or 5
+    timerDuration = (nextRareRemainTimeSec > 1080 or nextRareRemainTimeSec <= 60) and 1 or 5
 
     self:EndLayout()
 end
@@ -277,13 +287,6 @@ function M:OnInitialize()
     if self.isLoaded then
         tinsert(KT.db.defaults.profile.modulesOrder, "ICECROWN_RARES_TRACKER_MODULE")
         KT.db:RegisterDefaults(KT.db.defaults)
-    else
-        for i, module in ipairs(db.modulesOrder) do
-            if module == "ICECROWN_RARES_TRACKER_MODULE" then
-                tremove(db.modulesOrder, i)
-                break
-            end
-        end
     end
 end
 
@@ -302,7 +305,7 @@ function M:OnEnable()
 end
 
 function M:SetUserUtcOffset()
-    userUtcOffset = (date("!%H") - (date("%H") + test) + realmZones[db.sIcecrownRaresRealmZone].utcOffset) * 3600
+    userUtcOffset = time(date("!*t")) - (time() + test) + (realmZones[db.sIcecrownRaresRealmZone].utcOffset * 3600)
 end
 
 function M:SetUsed()

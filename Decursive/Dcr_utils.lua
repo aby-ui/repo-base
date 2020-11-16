@@ -640,6 +640,11 @@ function D:isSpellReady(spellID, isPetAbility)
         end
     end
 
+    if spellID == 115450 and IsSpellKnown(218164) then
+        --abyui Monk 9.0 清创生血 织雾是115450，其他是218164
+        return GetSpecialization() == 2
+    end
+
     return IsSpellKnown(spellID, isPetAbility);
 end
 

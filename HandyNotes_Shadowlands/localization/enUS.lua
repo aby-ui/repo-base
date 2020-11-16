@@ -15,8 +15,10 @@ L["anima_channeled"] = "anima channeled to %s."
 
 L["deifir_note"] = "Ride the rare around in a circle and use {spell:319566} and {spell:319575} to slow and stun him."
 L["faeflayer_note"] = "In a small cave hidden behind a waterfall."
+L["gormtamer_tizo_note"] = "Kill {npc:166735s} and the {npc:166736s} that are riding them until {npc:164110} spawns."
 L["humongozz_note"] = "Plant an {item:175247} in the Damp Loam to spawn a {npc:164122}. After a minute of {spell:319367}, the rare will spawn. The mushroom drops from numerous mobs in the zone."
 L["lehgo_note"] = "Destroy Quivering Gorm Eggs and kill {npc:171827} until he spawns. In a cave (entrance to the south-east in the Dusty Burrows)."
+L["mymaen_note"] = "Kill Rotbriar sprites in the area until he emotes and spawns."
 L["rainbowhorn_note"] = "\n|cffff5400T|r|cffffaa00A|r|cffffff00S|r|cffaaff00T|r|cff54ff00E|r |cff00ff55T|r|cff00ffa9H|r|cff00ffffE|r |cff0055ffR|r|cff0000ffA|r|cff5400ffI|r|cffaa00ffN|r|cffff00ffB|r|cffff00aaO|r|cffff0054W|r|cffff0000!|r"
 L["rootwrithe_note"] = "Poke the {npc:167928s} until the rare appears."
 L["rotbriar_note"] = "Talk to {npc:171684} nearby to summon the rare after some dialog."
@@ -66,21 +68,21 @@ Read the "Tale of the Tangle" and then follow the blue lamps through the path un
 If you take a wrong path and {npc:171699} disappears when you reach the end, go back to the start and read "Tale of the Tangle" once more before trying again. If {npc:171767} is not there, you will have to wait for him to respawn.
 ]]
 
+L["faryl_note"] = "Let Ardenweald's defense be lead by the creatures in the sky."
+L["glitterdust_note"] = "The creatures of Ardenweald may look docile, but they will defend their territory with the strength and courage of the mightiest champions ever known. Do you have what it takes?"
+
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
 
+L["ascended_council_note"] = "With four other players, click the five Vespers of Purity, Courage, Humility, Wisdom and Loyalty at the same time to summon the council."
 L["aspirant_eolis_note"] = "Loot a nearby {item:180613} and read it with the NPC targeted to activate him."
 L["baedos_note"] = "Carry casks of Fermenting Purian Fruit from the surrounding area to {npc:161536} until he activates."
 L["basilofos_note"] = "Move around the rock until a purple fixate marker appears over your head. Stand still and wait for four emotes to appear, then he will spawn."
 L["beasts_of_bastion"] = "Beasts of Bastion"
-L["beasts_of_bastion_note"] = [[
-Talk to {npc:161441} to summon one of the four beasts.
-
-|cFFFF0000NOTE|r: The NPC is often bugged and will not talk to you.
-]]
+L["beasts_of_bastion_note"] = "Talk to {npc:161441} to summon one of the four beasts."
 L["bookkeeper_mnemis_note"] = "Has a chance to spawn in place of the {npc:166867} units in the area."
-L["cloudfeather_patriarch_note"] = "Kill {npc:158110} in the area until the rare emotes and spawns."
+L["cloudfeather_patriarch_note"] = "Kill {npc:158110s} in the area until the guardian engages you."
 L["collector_astor_note"] = "Read all six chapters of Mercia's Legacy scattered around the room, after which you will receive a whisper from {npc:157979}. Talk to her to receive {spell:333779}, allowing you to find the hidden {item:180569} to the northwest. Returning the chapter will spawn the rare."
 L["corrupted_clawguard_note"] = "Loot a {item:180651} in Forgefire Outpost up the hill and use it to repair the {npc:171300}."
 L["dark_watcher_note"] = "Can only be seen while dead. Talk to her and she will cast {spell:332830} on you before attacking."
@@ -101,11 +103,14 @@ L["unstable_memory_note"] = "Can be spawned when {npc:171018s} are present. Drag
 L["wingflayer_note"] = "To summon, click the Horn of Courage on the nearby table (southeast, up the stairs)."
 
 L["broken_flute"] = "Kill nearby {npc:170009} until they drop the {item:180536}, then use the tools to repair it."
+L["cloudwalkers_coffer"] = "Cloudwalker's Coffer"
+L["cloudwalkers_coffer_note"] = "Use the large purple flowers to bounce up to the platform."
 L["experimental_construct_part"] = "Loot a nearby {item:180534} and use it to repair the part. The anima has multiple spawn locations."
 L["larion_harness"] = "Located inside the Hall of Beasts."
-L["memorial_offering"] = "Purchase a {item:180788} from {npc:171526} in Aspirant's Rest. Place it in the drink tray near the chest to obtain the {item:180797}."
+L["memorial_offering"] = "Find {npc:171526} at one of his locations across Bastion and purchase a {item:180788}. Place it in the drink tray near the chest to obtain the {item:180797}."
 L["scroll_of_aeons"] = "Loot 2 {item:173973} in the center area and place them on the nearby tribute platters to reveal the treasure."
-L["vesper_of_silver_wind"] = "Complete the {achievement:14339} achievement and then talk to {npc:171732} near the entrance to Spires of Ascension to forge a {item:180858}."
+L["vesper_of_silver_wind"] = "Vesper of the Silver Wind"
+L["vesper_of_silver_wind_note"] = "Complete the {achievement:14339} achievement and then talk to {npc:171732} near the entrance to Spires of Ascension to forge a {item:180858}."
 
 L["gift_of_agthia"] = "Click the lit torch near the broken bridge to the northwest and carry {spell:333320} from torch to torch until you reach the chest. Lighting the final torch will grant you {spell:333063}."
 L["gift_of_chyrus"] = "Kneel in front of the chest to be granted {spell:333045}."
@@ -127,9 +132,6 @@ Commune with them in the order Patience => Knowledge => Insight. On the Judgemen
 The orb will take you to the true Incense of Judgment. Commune with it and the final flight pad will grant you {spell:333068} to open the chest.
 ]]
 L["gift_of_vesiphone"] = "Ring one of the bells to spawn a {npc:170849} and kill it to receive the {spell:333239} debuff. The falling water opposite the chest will cleanse this debuff and grant you {spell:332785}."
-
-L["cache_of_the_ascended"] = "Cache of the Ascended"
-L["cache_of_the_ascended_note"] = "With four other players, click the five Vespers of Purity, Courage, Humility, Wisdom and Loyalty at the same time. Afterwards, head to Aspirant's Crucible to defeat the Ascended Council and reveal the cache."
 
 L["anima_shard"] = "Lost Anima Shard"
 L["anima_shard_61225"] = "On a lower platform below the bridge."
@@ -163,7 +165,7 @@ L["anima_shard_61278"] = "Underneath the bridge on a rock."
 L["anima_shard_61279"] = "On top of a thin stone column."
 L["anima_shard_61280"] = "On the corner of the table."
 L["anima_shard_61281"] = "On a ledge above the Memorial Offerings treasure."
-L["anima_shard_61282"] = "On a ledge way below the cliff top. Jump on the rock next to it or you will be ported back up."
+L["anima_shard_61282"] = "On a ledge below the cliff top."
 L["anima_shard_61283"] = "In a cave under Miri's Chapel, behind some barrels."
 L["anima_shard_61284"] = "On a ledge under a rocky overhang, path to the south."
 L["anima_shard_61285"] = "At the end of a small rock ledge."
@@ -195,6 +197,10 @@ L["temple_of_humility"] = "Temple of Humility"
 L["temple_of_purity"] = "Temple of Purity"
 L["xandrias_vigil"] = "Xandria's Vigil"
 
+L["stratios_note"] = "Even the smallest battles should be fought with honor and care. Present your team when you are ready."
+L["thenia_note"] = "Such magnificent open plains here. A glorious place to battle. Are you prepared?"
+L["zolla_note"] = "We take our defenses very seriously. Whether small or large, we are fully committed to maintain and train the resources that keep Bastion strong."
+
 -------------------------------------------------------------------------------
 --------------------------------- MALDRAXXUS ----------------------------------
 -------------------------------------------------------------------------------
@@ -205,7 +211,6 @@ L["forgotten_mementos"] = "Pull the Vault Portcullis Chain in the chamber west o
 L["gieger_note"] = "Pull the {npc:162815} to activate the rare."
 L["gristlebeak_note"] = "Break all nearby {npc:162761} to engage the rare."
 L["leeda_note"] = "Kill the two {npc:162220s} until the rare spawns."
-L["malkorak_note"] = "At the top of the tower (lots of stairs)."
 L["sabriel_note"] = "Can appear as one of the champions in the Theater of Pain."
 L["schmitd_note"] = "Use nearby {spell:313451} to break his shield."
 L["taskmaster_xox_note"] = "Shares a spawn with {npc:160204}, {npc:160230} and {npc:160226}."
@@ -236,9 +241,9 @@ Stand in the green slime (requires healing!) to get 10 stacks of {spell:330069} 
 
 Once transformed, visit the cave underneath {npc:158406}'s platform (entrance on the east side) and click the pipe to transport to the chest.
 ]]
-L["ritualists_cache_note"] = "Loot the {item:181558} from a bone pile (multiple spawn locations). Use them to complete the Book of Binding Rituals on the stand behind {npc:174386} and gain the {spell:337041} buff."
+L["ritualists_cache_note"] = "Pick up the {item:181558} on the floor and use them to complete the Book of Binding Rituals."
 L["runespeakers_trove_note"] = "Find {npc:170563} to the east and kill him to obtain the {item:181777}."
-L["stolen_jar_note"] = "In a cave underneath the giant mushroom."
+L["stolen_jar_note"] = "Spawns in multiple different caves."
 L["strange_growth_note"] = "Pull on the {npc:165037} to reveal the treasure."
 L["vat_of_slime_note"] = "Click the bottle on the table and then click on the vat of slime."
 
@@ -282,6 +287,10 @@ L["overlook_primus"] = "Overlook, Seat of the Primus"
 L["zerekriss"] = "Zerekriss, Maldraxxus"
 L["zerekriss_note"] = "Once activated, the necropolis will fly around the zone. Grab hold of {npc:165822} to glide down to the surface."
 
+L["dundley_note"] = "I'll battle my way to victory and gain the respect I finally deserve. The only downside is everything I own is now sticky. Everything."
+L["maximillian_note"] = "I have waited dozens of years for a worthy opponent. To the victor go the spoils!"
+L["rotgut_note"] = "Rotgut. Leftovers. Extra pieces. You fight."
+
 -------------------------------------------------------------------------------
 --------------------------------- REVENDRETH ----------------------------------
 -------------------------------------------------------------------------------
@@ -318,9 +327,10 @@ Has a chance to drop an {item:180583}, which begins a 7 day quest line to obtain
 L["dredglaive_note"] = "Under the bridge in the {npc:173671} corpse."
 L["forbidden_chamber_note"] = "Loot a Discarded Anima Canister in front of the locked door and learn {spell:340701}. Use it to drain five of the nearby {npc:173838s}, then use {spell:340866} in front of the {npc:173786}."
 L["gilded_plum_chest_note"] = "Kill the {npc:166680} wandering up and down the road."
-L["lost_quill_note"] = "Loot {item:182475} from the bottle on the table in the Forbidden Library."
+L["lost_quill_note"] = "Loot the {item:182475} from the bottle on the table in the Forbidden Library, then give it to the {npc:173449} on top of the archway outside."
 L["rapier_fearless_note"] = "Click the rapier on the ground, then defeat {npc:173603}."
 L["remlates_cache_note"] = "On the outer wall of Darkhaven behind the crypt."
+L["smuggled_cache_note"] = ns.color.Red("BEFORE YOU LOOT: ").."Make sure you have completed {quest:60480} side quest or you will miss out on 40 {currency:1820} from the treasure and quest."
 L["taskmaster_trove_note"] = "Read the Ingress and Egress Rites then carefully make your way to the chest."
 L["the_count_note"] = "Farm 99 {currency:1820} in the Endmire and then bring them to {npc:173488}."
 
@@ -339,6 +349,10 @@ L["sinrunner_note_day6"] = "Feed Blanchy 3 {item:179271}, sold by {npc:167815} b
 
 L["options_icons_carriages"] = "Carriages"
 L["options_icons_carriages_desc"] = "Display locations and paths of rideable carriages."
+L["options_icons_dredbats"] = "{npc:161015s}"
+L["options_icons_dredbats_desc"] = "Display locations and paths of {npc:161015s}."
+L["options_icons_sinrunners"] = "{npc:174032s}"
+L["options_icons_sinrunners_desc"] = "Display locations and paths of {npc:174032s}."
 
 L["dominance_keep"] = "Dominance Keep"
 L["eternal_terrace"] = "The Eternal Terrace"
@@ -346,6 +360,16 @@ L["feeders_thicket"] = "Feeders' Thicket"
 L["halls_of_atonement"] = "Halls of Atonement"
 L["pridefall_hamlet"] = "Pridefall Hamlet"
 L["the_banewood"] = "The Banewood"
+
+L["addius_note"] = "Weak minded beings should not waste my time, but if you insist, I will show you real pain."
+L["eyegor_note"] = "Eyegor ready for battle!"
+L["sylla_note"] = "One can never expect to have a distinguished battle out here in this awful area, but alas here we are. Do not waste my time."
+
+L["grand_inquisitor_note"] = "Turn in 10 {item:180451} to {npc:160248} for a chance at this sinstone."
+L["high_inquisitor_note"] = "Turn in 250 {currency:1816} to {npc:160248} for a chance at this sinstone."
+L["inquisitor_note"] = "Turn in 100 {currency:1816} to {npc:160248} for a chance at this sinstone."
+L["options_icons_inquisitors"] = "{achievement:14276}"
+L["options_icons_inquisitors_desc"] = "Display inquisitor locations for the {achievement:14276} achievement."
 
 -------------------------------------------------------------------------------
 ----------------------------------- THE MAW -----------------------------------
@@ -355,7 +379,9 @@ L["return_to_the_maw"] = "Return to the Maw"
 L["maw_intro_note"] = "Begin the introductory quest chain from {npc:162804} to unlock rares and events in the maw."
 
 L["apholeias_note"] = "With 3 other players, stand on the corners of the platform and cast {spell:331783} to summon the rare."
+L["dekaris_note"] = "On top of a large jutting rock."
 L["ekphoras_note"] = "With 3 other players, stand on the corners of the platform and cast {spell:330650} to summon the rare."
+L["ikras_note"] = "Flies around Perdition Hold. This is a good place to pull him."
 L["orophea_note"] = "Pick up {spell:337143} to the southeast and offer it to {npc:172577} to activate."
 L["sanngror_note"] = "If he is not attackable, wait until he is not experimenting on souls."
 L["talaporas_note"] = "With 3 other players, stand on the corners of the platform and cast {spell:331800} to summon the rare."
@@ -380,6 +406,7 @@ Activate to {spell:344157} quickly across the Maw.
 
 Requires the {item:184613} upgrade from {npc:162804}.
 ]]
+L["venari_note"] = "Use {currency:1767} to purchase Maw and Torghast upgrades."
 L["venari_upgrade"] = "{npc:162804} Upgrade"
 
 L["options_icons_bonus_boss"] = "Bonus Elites"
