@@ -72,11 +72,21 @@ function WithAllChatFrame(func, ...)
     end
 end
 
+-- old addons's sound config is changed to number, but still use PlaySoundFile API
+local playSoundFileOrigin = PlaySoundFile
+PlaySoundFile = function(file, channel, ...)
+    if not file then return end
+    if type(file) == "number" and file < 500000 then --bigwigs 569200 只能用 PlaySoundFile
+        return PlaySound(file, channel, false) --soundKitID [, channel, forceNoDuplicates, runFinishCallback]
+    else
+        playSoundFileOrigin(file, channel, ...)
+    end
+end
+
 --U1.removedAddOns = {"Fizzle", }
 
 --UI163_USER_MODE = 1 --- alwaysRegister=1 and not checkVendor
 --UI163_USE_X_CATEGORIES = 1 --- use X-Categories tag
-
 
 --WithAllChatFrame(function(frame) frame:SetMaxLines(5000) end)
 

@@ -31,8 +31,8 @@ checkbox:SetParent(ObjectiveTrackerBlocksFrame.QuestHeader)
 checkbox:RegisterForClicks("AnyUp")
 checkbox:SetWidth(22);
 checkbox:SetHeight(22);
-checkbox.text:SetText("进度通报")
-checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -170, 2);
+checkbox.text:SetText("通报")
+checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -155, 2);
 CoreDependCall("!KalielsTracker", function()
     checkbox.text:SetText("报")
     checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -125, 2);

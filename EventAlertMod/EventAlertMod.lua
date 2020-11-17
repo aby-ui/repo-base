@@ -318,7 +318,7 @@ function EventAlert_InitArrayConfig()
 		end
 	end	
 
-	if EA_Config.AlertSound == nil then EA_Config.AlertSound = "Sound\\Spells\\ShaysBell.ogg" end;
+	if EA_Config.AlertSound == nil then EA_Config.AlertSound = 6555 end; --"Sound\\Spells\\ShaysBell.ogg"
 	if EA_Config.AlertSoundValue == nil then EA_Config.AlertSoundValue = 1 end;
 	if EA_Config.DoAlertSound == nil then EA_Config.DoAlertSound = true end;
 	if EA_Config.LockFrame == nil then EA_Config.LockFrame = false end;

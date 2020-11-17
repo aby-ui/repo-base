@@ -29,7 +29,7 @@ function CheckBox:New(parent)
 end
 
 function CheckBox:OnClick()
-    PlaySound163(self:GetChecked() and 'igMainMenuOptionCheckBoxOff' or 'igMainMenuOptionCheckBoxOn')
+    PlaySound(self:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
     self:SetProfileValue(self:GetChecked() and true or false)
     self:UpdateDepends()
 end

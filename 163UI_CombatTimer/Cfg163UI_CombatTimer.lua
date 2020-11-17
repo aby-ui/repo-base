@@ -96,9 +96,9 @@ U1RegisterAddon("163UI_CombatTimer", {
             var = "ogg",
             type = "drop",
             options = {
-                "女声开火", "Sound\\Character\\BloodElf\\BloodElfFemaleOpenFire01.ogg",
-                "哐", "Sound\\Interface\\LFG_RoleCheck.ogg",
-                "嘭", "Sound\\Interface\\Aggro_Pulled_Aggro.ogg",
+                "女声开火", 9633, --"Sound\\Character\\BloodElf\\BloodElfFemaleOpenFire01.ogg",
+                "哐", 17317, --"Sound\\Interface\\LFG_RoleCheck.ogg",
+                "嘭", 15263, --"Sound\\Interface\\Aggro_Pulled_Aggro.ogg",
                 "咯噔", "Interface/AddOns/163UI_CombatTimer/interface_ui_70_artifact_forge_colorchange_03.ogg",
             },
             default = "Interface/AddOns/163UI_CombatTimer/interface_ui_70_artifact_forge_colorchange_03.ogg",

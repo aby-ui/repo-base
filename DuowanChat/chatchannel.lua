@@ -70,7 +70,7 @@ local function FlashChannel(chatFrame, event, message, ...)
 	local channelid;
 	channelid = ChannelType[tab:GetText()];
 	if(channelid)then
-		chatFrame.tellTimer = GetTime() + CHAT_TELL_ALERT_TIME; --tellTimer is only to control a PlaySound163("TellMessage");
+		chatFrame.tellTimer = GetTime() + CHAT_TELL_ALERT_TIME; --tellTimer is only to control a PlaySound(SOUNDKIT.TELL_MESSAGE);
 		FCF_FlashTab(chatFrame); --调用了Flash
 	end
 end

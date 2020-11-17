@@ -764,7 +764,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XICON_TOGGLE_ALERTFRAME);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Icon_Options_Frame_ToggleAlertFrame();
 					</OnClick>
 				</Scripts>
@@ -785,7 +785,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XICON_RESET_FRAMEPOS);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Icon_Options_Frame_ResetFrame();
 					</OnClick>
 				</Scripts>

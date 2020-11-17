@@ -18,7 +18,7 @@ U1RegisterAddon("TrinketMenu", {
                     frame:Hide()
                 else
                     frame:Show()
-                    PlaySound163("GAMEGENERICBUTTONPRESS")
+                    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
                 end
             end
         end

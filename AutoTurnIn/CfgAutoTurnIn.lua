@@ -30,10 +30,10 @@ checkbox:SetParent(ObjectiveTrackerBlocksFrame.QuestHeader)
 checkbox:RegisterForClicks("AnyUp")
 checkbox:SetWidth(22);
 checkbox:SetHeight(22);
-checkbox.text:SetText("自动交接")
-checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -80, 2);
+checkbox.text:SetText("交接")
+checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -90, 2);
 CoreDependCall("!KalielsTracker", function()
-    checkbox.text:SetText("自")
+    checkbox.text:SetText("接")
     checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -85, 2)
 end)
 checkbox:SetScript("OnClick", function(self, button)

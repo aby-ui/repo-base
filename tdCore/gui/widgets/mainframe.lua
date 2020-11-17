@@ -47,7 +47,7 @@ function MainFrame:SetAllowEscape(enable)
 end
 
 function MainFrame:OnHide()
-    PlaySound163("gsTitleOptionExit")
+    PlaySound(SOUNDKIT.GS_TITLE_OPTION_EXIT)
     for frame in pairs(frames) do
         if frame:IsShown() then
             return
@@ -58,7 +58,7 @@ function MainFrame:OnHide()
 end
 
 function MainFrame:OnShow()
-    PlaySound163('igMainMenuOption')
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
     if frames[self] then
         MainFrame:Show()
     end

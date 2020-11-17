@@ -92,7 +92,7 @@ function FriendsMenuXPButton_OnClick(self)
 
     self:GetParent():Hide();
     if(DropDownList1) then DropDownList1:Hide(); end;
-    PlaySound163("UChatScrollButton");
+    PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 end
 
 function FriendsMenuXP_ChatFrame_OnHyperlinkShow(self, playerString, text, button)
@@ -280,7 +280,7 @@ function FriendsMenuXP_Show(listFrame, arg2, appendBottom, name, connected, line
     end
     listFrame.buttonSet = buttonSet;
     FriendsMenu_Initialize(listFrame, buttonSet, appendBottom); --TODO: OFFLINE
-    if(not relativeFrame) then PlaySound163("igMainMenuOpen"); end --open at last place should not play sound.
+    if(not relativeFrame) then PlaySound(SOUNDKIT.IG_MAINMENU_OPEN); end --open at last place should not play sound.
 
     -- Hide the listframe anyways since it is redrawn OnShow()
     listFrame:Hide();

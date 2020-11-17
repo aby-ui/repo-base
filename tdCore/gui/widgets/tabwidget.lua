@@ -5,7 +5,7 @@ local TabWidget = GUI:NewModule('TabWidget', CreateFrame('Frame'), 'UIObject', '
 local TabButton = GUI:NewModule('TabButton', CreateFrame('Button'), 'UIObject')
 
 local function PageOnClick(self)
-    PlaySound163("UChatScrollButton")
+    PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
     self:GetParent():UpdateTabIndex(self.y)
 end
 
@@ -401,7 +401,7 @@ function TabButton:IsDisabled()
 end
 
 function TabButton:OnClick()
-    PlaySound163('igCharacterInfoTab')
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
     self:GetParent():UpdateTabs(self)
 end
 

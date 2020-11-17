@@ -117,7 +117,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_ICONPOSOPT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleIconOptionsFrame();
 					</OnClick>
 				</Scripts>
@@ -394,7 +394,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_SHOW_CLASSALERT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleClassEventsFrame();
 					</OnClick>
 				</Scripts>
@@ -415,7 +415,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_SHOW_OTHERALERT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleOtherEventsFrame();
 					</OnClick>
 				</Scripts>
@@ -436,7 +436,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_SHOW_TARGETALERT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleTargetEventsFrame();
 					</OnClick>
 				</Scripts>
@@ -457,7 +457,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_SHOW_SCDALERT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleSCDEventsFrame();
 					</OnClick>
 				</Scripts>
@@ -478,7 +478,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_SHOW_GROUPALERT);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EventAlert_Options_ToggleGroupEventsFrame();
 					</OnClick>
 				</Scripts>
@@ -499,7 +499,7 @@
 						_G[self:GetName().."Text"]:SetText(EA_XOPT_OKAY);
 					</OnLoad>
 					<OnClick>
-						PlaySound163("gsTitleOptionOK");
+						PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 						EA_Options_Frame:Hide();
 						EventAlert_Options_CloseAnchorFrames();
 					</OnClick>

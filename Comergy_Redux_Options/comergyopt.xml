@@ -562,10 +562,10 @@ xsi:schemaLocation="http://www.blizzard.com/wow/ui/
                 self:StopMovingOrSizing()
             </OnMouseUp>
             <OnShow>
-                PlaySound163("GAMEDIALOGOPEN")
+                PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
             </OnShow>
             <OnHide>
-                PlaySound163("GAMEDIALOGCLOSE")
+                PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
             </OnHide>
         </Scripts>
     </Frame>

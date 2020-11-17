@@ -251,7 +251,7 @@ end
 
 local function checkboxOnClick(self)
     local checked = self:GetChecked()
-    PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     self:SetValue(checked)
     showChangesSaved()
     -- Reset the cache when an option changes.
@@ -263,7 +263,7 @@ end
 
 local function debugCheckboxOnClick(self)
     local checked = self:GetChecked()
-    PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     self:SetValue(checked)
     showChangesSaved()
     CanIMogIt:SendMessage("OptionUpdate")
@@ -368,7 +368,7 @@ local function newRadioGrid(parent, variableName)
     local function createOnRadioClicked (location)
         local function onRadioClicked (self, a, b, c)
             local checked = self:GetChecked()
-            PlaySound(PlaySoundKitID and "igMainMenuOptionCheckBoxOn" or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
             CanIMogItOptions[variableName] = location
 
             local anyChecked = false

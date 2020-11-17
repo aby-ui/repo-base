@@ -66,7 +66,7 @@ function CheckButtonOnClick(button)
     local _, _, name = string.find(button:GetName(),"ComergyOptCheckButton(.+)")
     
     Comergy_Settings[name] = (button:GetChecked() and true or false)
-    PlaySound163(button:GetChecked() and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff")
+    PlaySound(button:GetChecked() and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
     SetCheckBox()
     ComergyOnConfigChange()
 
@@ -839,7 +839,7 @@ function ComergyOptToggle()
 end
 
 function ComergyOptTabOnClick(id)
-    PlaySound163("GAMEGENERICBUTTONPRESS")
+    PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
     local tab
     for i = 1, 5 do
         tab = getglobal("ComergyOptTab"..i)

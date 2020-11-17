@@ -86,7 +86,7 @@ function Dialog:RefreshAll()
 end
 
 function Dialog:OnHide()
-    PlaySound163("igMainMenuClose")
+    PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
     self:RunHandle(self:GetResultHandle(), self:GetResultValue())
     self:SetHandle('OnAccept', nil)
     self:SetHandle('OnCancel', nil)
@@ -95,7 +95,7 @@ function Dialog:OnHide()
 end
 
 function Dialog:OnShow()
-    PlaySound163("igMainMenuOpen")
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
     self:SetHeight(self:GetShowHeight())
     self:RefreshAll()
 end

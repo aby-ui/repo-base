@@ -33,14 +33,14 @@ end
 
 function Menu:OnShow()
     if not self:GetSilent() then
-        PlaySound163('igMainMenuOpen')
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
     end
     self.__hideTimer = self:GetHoldTime()
 end
 
 function Menu:OnHide()
     if not self:GetSilent() then
-        PlaySound163('igMainMenuClose')
+        PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
     end
     self:SetCaller(nil)
     self.__hideTimer = self:GetHoldTime()

@@ -1,13 +1,13 @@
 --[[
-	———————————————— Rev 09 ———
+	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Rev 09 ï¿½ï¿½ï¿½
 	- Fixed GetChecked() now returning a boolean instead of nil/1
-	——— 16.07.23 ——— Rev 10 ——— 7.0.3/Legion ———
+	ï¿½ï¿½ï¿½ 16.07.23 ï¿½ï¿½ï¿½ Rev 10 ï¿½ï¿½ï¿½ 7.0.3/Legion ï¿½ï¿½ï¿½
 	- Changed SetTexture(r,g,b,a) -> SetColorTexture(r,g,b,a)
-	——— 18.08.12 ——— Rev 11 ——— 8.0/BfA ———
+	ï¿½ï¿½ï¿½ 18.08.12 ï¿½ï¿½ï¿½ Rev 11 ï¿½ï¿½ï¿½ 8.0/BfA ï¿½ï¿½ï¿½
 	- Added native LSM support to the dropdown
 	- The building of the options page is now done internally, instead of in the client addon.
 	- Some code restructure.
-	——— 20.10.31 ——— Rev 12 ——— 9.0.1/Shadowlands ———
+	ï¿½ï¿½ï¿½ 20.10.31 ï¿½ï¿½ï¿½ Rev 12 ï¿½ï¿½ï¿½ 9.0.1/Shadowlands ï¿½ï¿½ï¿½
 	- CreateFrame() now uses the "BackdropTemplate"
 --]]
 
@@ -450,27 +450,28 @@ azof.LibSharedMediaSubstitute = {
 		["Blizzard Character Skills Bar"] = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar",
 	},
 	sound = {
-		["Bell"] = "Sound\\Doodad\\BellTollHorde.ogg",
-		["Murmur"] = "Sound\\Creature\\Murmur\\MurmurWoundA.ogg",
-		["Alarm Warning 1"] = "Sound\\Interface\\AlarmClockWarning1.ogg",
-		["Alarm Warning 2"] = "Sound\\Interface\\AlarmClockWarning2.ogg",
-		["Alarm Warning 3"] = "Sound\\Interface\\AlarmClockWarning3.ogg",
-		["Raid Warning"] = "Sound\\Interface\\RaidWarning.ogg",
-		["Ready Check 1"] = "Sound\\Interface\\levelup2.ogg",
-		["Ready Check 2"] = "Sound\\Interface\\ReadyCheck.ogg",
-		["Takeoff"] = "Sound\\Universal\\FM_Takeoff.ogg",
-		["Map Ping"] = "Sound\\Interface\\MapPing.ogg",
-		["Auction Close"] = "Sound\\Interface\\AuctionWindowClose.ogg",
-		["Auction Open"] = "Sound\\Interface\\AuctionWindowOpen.ogg",
-		["Gnome Exploration"] = "Sound\\Interface\\GnomeExploration.ogg",
-		["Flag Capture Horde"] = "Sound\\Interface\\PVPFlagCapturedHordeMono.ogg",
-		["Flag Capture Alliance"] = "Sound\\Interface\\PVPFlagCapturedmono.ogg",
-		["Flag Taken Alliance"] = "Sound\\Interface\\PVPFlagTakenHordeMono.ogg",
-		["Flag Taken Horde"] = "Sound\\Interface\\PVPFlagTakenMono.ogg",
-		["PvP Warning"] = "Sound\\Interface\\PVPWARNING.ogg",
-		["PvP Warning Alliance"] = "Sound\\Interface\\PVPWarningAllianceMono.ogg",
-		["PvP Warning Horde"] = "Sound\\Interface\\PVPWarningHordeMono.ogg",
-		["LFG Denied"] = SOUNDKIT.LFG_DENIED,
+        --abyui after 8.2 only number value can be registered
+--		["Bell"] = "Sound\\Doodad\\BellTollHorde.ogg",
+--		["Murmur"] = "Sound\\Creature\\Murmur\\MurmurWoundA.ogg",
+--		["Alarm Warning 1"] = "Sound\\Interface\\AlarmClockWarning1.ogg",
+--		["Alarm Warning 2"] = "Sound\\Interface\\AlarmClockWarning2.ogg",
+--		["Alarm Warning 3"] = "Sound\\Interface\\AlarmClockWarning3.ogg",
+--		["Raid Warning"] = "Sound\\Interface\\RaidWarning.ogg",
+--		["Ready Check 1"] = "Sound\\Interface\\levelup2.ogg",
+--		["Ready Check 2"] = "Sound\\Interface\\ReadyCheck.ogg",
+--		["Takeoff"] = "Sound\\Universal\\FM_Takeoff.ogg",
+--		["Map Ping"] = "Sound\\Interface\\MapPing.ogg",
+--		["Auction Close"] = "Sound\\Interface\\AuctionWindowClose.ogg",
+--		["Auction Open"] = "Sound\\Interface\\AuctionWindowOpen.ogg",
+--		["Gnome Exploration"] = "Sound\\Interface\\GnomeExploration.ogg",
+--		["Flag Capture Horde"] = "Sound\\Interface\\PVPFlagCapturedHordeMono.ogg",
+--		["Flag Capture Alliance"] = "Sound\\Interface\\PVPFlagCapturedmono.ogg",
+--		["Flag Taken Alliance"] = "Sound\\Interface\\PVPFlagTakenHordeMono.ogg",
+--		["Flag Taken Horde"] = "Sound\\Interface\\PVPFlagTakenMono.ogg",
+--		["PvP Warning"] = "Sound\\Interface\\PVPWARNING.ogg",
+--		["PvP Warning Alliance"] = "Sound\\Interface\\PVPWarningAllianceMono.ogg",
+--		["PvP Warning Horde"] = "Sound\\Interface\\PVPWarningHordeMono.ogg",
+--		["LFG Denied"] = SOUNDKIT.LFG_DENIED,
 	},
 };
 

@@ -545,7 +545,7 @@ end
 
 do
     local function reminderOnClick(self) 
-        PlaySound163("igChatBottom");
+        PlaySound(SOUNDKIT.IG_CHAT_BOTTOM);
         DuowanChat:CopyChat();		
     end
     local function reminderOnEnter(self, motion) self:SetAlpha(0.9) end

@@ -6,7 +6,7 @@ local ListWidgetItem = GUI:NewModule('ListWidgetItem', CreateFrame('CheckButton'
 ListWidgetItem:RegisterHandle('OnSetValue')
 
 local function OnClick(self, button)
-    PlaySound163('igMainMenuOptionCheckBoxOn')
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
     if type(self.__onClick) == 'function' then
         self:__onClick()
     end

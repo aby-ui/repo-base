@@ -199,7 +199,7 @@ function addon:HandleAction(name, action)
 	end
 end
 
-function addon:PlaySound163()
+function addon:PlaySound()
 	PlaySoundFile(self.SOUND_FILE, "Master") -- Sound alert
 end
 
@@ -354,7 +354,7 @@ function addon:ProcessChatMsg(name, class, text, inform, bnid)
 
 	-- It's a new message
 	if not inform and self.db.sound then
-		self:PlaySound163()
+		self:PlaySound()
 	end
 
 	self:BroadcastEvent("OnNewMessage", name, class, text, inform, timeStamp)

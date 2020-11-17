@@ -76,7 +76,7 @@ function generalGroup:OnCheckChanged(value, checked)
 	addon:BroadcastOptionEvent(value, checked)
 
 	if value == "sound" and checked then
-		addon:PlaySound163()
+		addon:PlaySound()
 	end
 end
 

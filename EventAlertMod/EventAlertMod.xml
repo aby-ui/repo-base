@@ -40,7 +40,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-					PlaySound163("gsTitleOptionOK");
+					PlaySound(SOUNDKIT.GS_TITLE_OPTION_OK);
 					EA_Version_Frame:Hide();
 				</OnClick>
 				</Scripts>

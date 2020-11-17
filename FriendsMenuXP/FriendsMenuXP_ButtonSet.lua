@@ -206,7 +206,7 @@ FriendsMenuXP_Buttons["SET_NOTE"] = {
     func = function (name)
         FriendsFrame.NotesID = name;
         StaticPopup_Show("SET_FRIENDNOTE", name);
-        PlaySound163("igCharacterInfoClose");
+        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE);
     end,
     show = function(name)
         if(name == UnitName("player")) then return end;

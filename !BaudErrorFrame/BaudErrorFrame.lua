@@ -12,7 +12,7 @@ ClearFocus:SetScript("OnEditFocusGained", function(self)
 end);
 
 
-local DefaultSound = "sound\\doodad\\belltolltribal.ogg";
+local DefaultSound = 6675 --"sound\\doodad\\belltolltribal.ogg";
 
 local CheckButtons = {
     {Text="在聊天窗中显示错误信息", SavedVar="Messages", Default=false},

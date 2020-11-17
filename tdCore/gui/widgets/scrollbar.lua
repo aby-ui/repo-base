@@ -4,7 +4,7 @@ local GUI = tdCore('GUI')
 local ScrollBar = GUI:NewModule('ScrollBar', CreateFrame('Slider'))
 
 local function PageOnClick(self)
-    PlaySound163("UChatScrollButton")
+    PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
     local parent = self:GetParent()
     parent:SetValue(parent:GetValue() + self.y)
 end

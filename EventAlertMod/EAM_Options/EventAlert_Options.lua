@@ -1809,27 +1809,27 @@ function EventAlert_Options_AlertSoundSelect_OnClick(self)
 	UIDropDownMenu_SetSelectedValue(EA_Options_Frame_AlertSoundSelect, SelValue);
 
 	if (SelValue == 1) then
-		EA_Config.AlertSound = "Sound\\Spells\\ShaysBell.ogg";
+		EA_Config.AlertSound = 6555; --"Sound\\Spells\\ShaysBell.ogg";
 	elseif (SelValue == 2) then
-		EA_Config.AlertSound = "Sound\\Spells\\FluteRun.ogg";
+		EA_Config.AlertSound = 7734; --"Sound\\Spells\\FluteRun.ogg";
 	elseif (SelValue == 3) then
-		EA_Config.AlertSound = "Sound\\Spells\\NetherwindFocusImpact.ogg";
+		EA_Config.AlertSound = 8701; --"Sound\\Spells\\NetherwindFocusImpact.ogg";
 	elseif (SelValue == 4) then
-		EA_Config.AlertSound = "Sound\\Spells\\PolyMorphCow.ogg";
+		EA_Config.AlertSound = 8943; --"Sound\\Spells\\PolyMorphCow.ogg";
 	elseif (SelValue == 5) then
-		EA_Config.AlertSound = "Sound\\Spells\\RockBiterImpact.ogg";
+		EA_Config.AlertSound = 3620; --"Sound\\Spells\\RockBiterImpact.ogg";
 	elseif (SelValue == 6) then
-		EA_Config.AlertSound = "Sound\\Spells\\YarrrrImpact.ogg";
+		EA_Config.AlertSound = 5754; --"Sound\\Spells\\YarrrrImpact.ogg";
 	elseif (SelValue == 7) then
-		EA_Config.AlertSound = "Sound\\Spells\\valentines_brokenheart.ogg";
+		EA_Config.AlertSound = 8693; --"Sound\\Spells\\valentines_brokenheart.ogg";
 	elseif (SelValue == 8) then
-		EA_Config.AlertSound = "Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Ready01.ogg";
+		EA_Config.AlertSound = 11176; --"Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Ready01.ogg";
 	elseif (SelValue == 9) then
-		EA_Config.AlertSound = "Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Pyro01.ogg";
+		EA_Config.AlertSound = 11179; --"Sound\\Creature\\MillhouseManastorm\\TEMPEST_Millhouse_Pyro01.ogg";
 	elseif (SelValue == 10) then
-		EA_Config.AlertSound = "Sound\\Creature\\Satyre\\SatyrePissed4.ogg";
+		EA_Config.AlertSound = 6332; --"Sound\\Creature\\Satyre\\SatyrePissed4.ogg";
 	elseif (SelValue == 11) then
-		EA_Config.AlertSound = "Sound\\Creature\\Mortar Team\\MortarTeamPissed9.ogg";
+		EA_Config.AlertSound = 6255; --"Sound\\Creature\\Mortar Team\\MortarTeamPissed9.ogg";
 	end
 	EA_Config.AlertSoundValue = SelValue;
 	PlaySoundFile(EA_Config.AlertSound);

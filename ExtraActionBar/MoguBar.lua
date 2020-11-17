@@ -301,7 +301,7 @@ function MOGUBarTab_OnClick(self, button)
         if (GetScreenWidth() - self:GetRight() < MOGUBar_72be2d2fba590211fe0f29e1a9832788 - 40) then
             ToggleDropDownMenu(1, nil, getglobal(self:GetName() .. "DropDown"), self:GetName(), 10 - MOGUBar_72be2d2fba590211fe0f29e1a9832788, 3); else ToggleDropDownMenu(1, nil, getglobal(self:GetName() .. "DropDown"), self:GetName(), 10, 3);
         end
-        PlaySound163("UChatScrollButton");
+        PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
         return;
     elseif(button == "LeftButton" and not InCombatLockdown()) then
         if IsModifierKeyDown() then
