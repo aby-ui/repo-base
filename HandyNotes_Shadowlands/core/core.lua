@@ -88,7 +88,6 @@ end
 ---------------------------------- CALLBACKS ----------------------------------
 -------------------------------------------------------------------------------
 
-local lastShown, lastOwner
 function Addon:OnEnter(mapID, coord)
     local map = ns.maps[mapID]
     local node = map.nodes[coord]
@@ -100,12 +99,9 @@ function Addon:OnEnter(mapID, coord)
     end
 
     node:Render(GameTooltip, map:HasPOIs(node))
-    if not (lastOwner == self and GetTime() - (lastShown or 0) < 0.05) then --abyui finally it stops
-        map:SetFocus(node, true, true)
-        ns.MinimapDataProvider:RefreshAllData()
-        ns.WorldMapDataProvider:RefreshAllData()
-    end
-    lastShown, lastOwner = GetTime(), self
+    map:SetFocus(node, true, true)
+    ns.MinimapDataProvider:RefreshAllData()
+    ns.WorldMapDataProvider:RefreshAllData()
     GameTooltip:Show()
 end
 

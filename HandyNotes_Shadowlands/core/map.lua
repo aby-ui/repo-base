@@ -176,9 +176,12 @@ MinimapDataProvider.updateTimer = 0
 
 function MinimapDataProvider:ReleaseAllPins()
     for i, pin in ipairs(self.pins) do
-        self.pool[pin] = true
-        pin:OnReleased()
-        pin:Hide()
+        if pin.acquired then
+            self.pool[pin] = true
+            pin.acquired = false
+            pin:OnReleased()
+            pin:Hide()
+        end
     end
 end
 
@@ -193,6 +196,7 @@ function MinimapDataProvider:AcquirePin(template, ...)
         pin:Hide()
         self.pins[#self.pins + 1] = pin
     end
+    pin.acquired = true
     pin:OnAcquired(...)
 end
 
@@ -225,12 +229,17 @@ function MinimapDataProvider:RefreshAllData()
     end
 end
 
-function MinimapDataProvider:OnUpdate(elapsed)
-    self.updateTimer = self.updateTimer + elapsed
+function MinimapDataProvider:RefreshAllRotations()
+    for i, pin in ipairs(self.pins) do
+        if pin.acquired then pin:UpdateRotation() end
+    end
+end
+
+function MinimapDataProvider:OnUpdate()
     local facing = GetPlayerFacing()
-    if facing ~= self.facing and self.updateTimer > ns:GetOpt('poi_refresh_rate') then
+    if facing ~= self.facing then
         self.facing = facing
-        self:RefreshAllData()
+        self:RefreshAllRotations()
         self.updateTimer = 0
     end
 end
@@ -244,9 +253,7 @@ end
 function MinimapPinMixin:OnAcquired(poi, ...)
     local mapID = HBD:GetPlayerZone()
     local x, y = poi:Draw(self, ...)
-    if GetCVar('rotateMinimap') == '1' then
-        self.texture:SetRotation(self.texture:GetRotation() + math.pi*2 - self.provider.facing)
-    end
+    if GetCVar('rotateMinimap') == '1' then self:UpdateRotation() end
     HBDPins:AddMinimapIconMap(MinimapPinsKey, self, mapID, x, y, true)
 end
 
@@ -257,9 +264,16 @@ function MinimapPinMixin:OnReleased()
     end
 end
 
-MinimapDataProvider:SetScript('OnUpdate', function (_, elapsed)
+function MinimapPinMixin:UpdateRotation()
+    -- If the pin has a rotation, its original value will be stored in the
+    -- `rotation` attribute. Update to accommodate player facing.
+    if self.rotation == nil then return end
+    self.texture:SetRotation(self.rotation + math.pi*2 - self.provider.facing)
+end
+
+MinimapDataProvider:SetScript('OnUpdate', function ()
     if GetCVar('rotateMinimap') == '1' then
-        MinimapDataProvider:OnUpdate(elapsed)
+        MinimapDataProvider:OnUpdate()
     end
 end)
 

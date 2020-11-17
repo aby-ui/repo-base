@@ -30,7 +30,6 @@ ns.optionDefaults = {
 
         -- poi/path scale
         poi_scale = 1,
-        poi_refresh_rate = 0.05,
 
         -- poi color
         poi_color_R = 0,
@@ -142,16 +141,6 @@ ns.options = {
                     name = L["options_focus_settings"],
                     order = 20,
                 },
-                POI_refresh_rate = {
-                    type = "range",
-                    name = L["options_poi_refresh_rate"],
-                    desc = L["options_poi_refresh_rate_desc"],
-                    min = 0.01, max = 0.5, step = 0.01,
-                    arg = "poi_refresh_rate",
-                    width = "full",
-                    disabled = function () return GetCVar('rotateMinimap') ~= '1' end,
-                    order = 21,
-                },
                 POI_scale = {
                     type = "range",
                     name = L["options_scale"],
@@ -159,7 +148,7 @@ ns.options = {
                     min = 1, max = 3, step = 0.01,
                     arg = "poi_scale",
                     width = "full",
-                    order = 22,
+                    order = 21,
                 },
                 POI_color = {
                     type = "color",
@@ -168,7 +157,7 @@ ns.options = {
                     hasAlpha = true,
                     set = function(_, ...) ns:SetColorOpt('poi_color', ...) end,
                     get = function() return ns:GetColorOpt('poi_color') end,
-                    order = 23,
+                    order = 22,
                 },
                 PATH_color = {
                     type = "color",
@@ -177,13 +166,13 @@ ns.options = {
                     hasAlpha = true,
                     set = function(_, ...) ns:SetColorOpt('path_color', ...) end,
                     get = function() return ns:GetColorOpt('path_color') end,
-                    order = 24,
+                    order = 23,
                 },
                 restore_poi_colors = {
                     type = "execute",
                     name = L["options_reset_poi_colors"],
                     desc = L["options_reset_poi_colors_desc"],
-                    order = 25,
+                    order = 24,
                     width = "full",
                     func = function ()
                         local df = ns.optionDefaults.profile

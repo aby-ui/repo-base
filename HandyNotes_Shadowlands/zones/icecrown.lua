@@ -76,11 +76,11 @@ hooksecurefunc(ns.addon, 'OnInitialize', function ()
     end
 
     local function UpdateSpawnTimes(startNPC, time)
-        EXPECTED[startNPC] = time + 24000 -- 6h40m
+        EXPECTED[startNPC] = time + 12000 -- 3h20m
         local next = function (id) return (id == 174048) and 174067 or (id - 1) end
         local npc = next(startNPC)
         while npc ~= startNPC do
-            time = time + 1200 -- 20 minutes
+            time = time + 600 -- 10 minutes
             EXPECTED[npc] = time
             npc = next(npc)
         end
@@ -118,7 +118,7 @@ end
 
 function ICCRare:GetGlow(minimap)
     local expected = EXPECTED[self.id] or 0
-    if expected > time() and expected - time() < 1080 then
+    if expected > time() and expected - time() < 540 then
         local _, scale, alpha = self:GetDisplayInfo(minimap)
         self.glow.alpha = alpha
         self.glow.scale = scale * 1.1

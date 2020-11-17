@@ -2,9 +2,6 @@ local GatherMate = LibStub("AceAddon-3.0"):GetAddon("GatherMate2")
 local Display = GatherMate:NewModule("Display","AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2")
 
-local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-local WoW90 = select(4, GetBuildInfo()) >= 90000
-
 -- Current minimap pin set
 local minimapPins, minimapPinCount = {}, 0
 -- Current worldmap pin set
@@ -248,11 +245,7 @@ function Display:OnEnable()
 	self:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","UpdateMaps")
 	GatherMate.HBD.RegisterCallback(self, "PlayerZoneChanged")
-	if WoWClassic then
-		ExpandSkillHeader(0)
-	else
-		self:SKILL_LINES_CHANGED()
-	end
+	self:SKILL_LINES_CHANGED()
 	self:MINIMAP_UPDATE_TRACKING()
 	self:PlayerZoneChanged()
 	self:DigsitesChanged()
@@ -310,43 +303,25 @@ function Display:SKILL_LINES_CHANGED()
 		have_prof_skill[k] = nil
 	end
 
-	if WoWClassic then
-		local numSkills = GetNumSkillLines()
-		for i = 1, numSkills do
-			local skillName, header = GetSkillLineInfo(i)
-				if profession_to_skill[skillName] then
-					have_prof_skill[profession_to_skill[skillName]] = true
-				end
-		end
-	else
-		for index, key in pairs({GetProfessions()}) do
-			local name, icon, rank, maxrank, numspells, spelloffset, skillline = GetProfessionInfo(key)
-			if profession_to_skill[name] then
-				have_prof_skill[profession_to_skill[name]] = true
-			end
+	for index, key in pairs({GetProfessions()}) do
+		local name, icon, rank, maxrank, numspells, spelloffset, skillline = GetProfessionInfo(key)
+		if profession_to_skill[name] then
+			have_prof_skill[profession_to_skill[name]] = true
 		end
 	end
 	self:UpdateMaps()
 end
 
 function Display:MINIMAP_UPDATE_TRACKING()
-	if WoWClassic then
-		table.wipe(active_tracking)
-		local texture = GetTrackingTexture()
-		if tracking_spells[texture] then
-			active_tracking[tracking_spells[texture]] = true
-		end
-	else
-		local count = GetNumTrackingTypes();
-		local info;
-		for id=1, count do
-			local name, texture, active, category  = GetTrackingInfo(id);
-			if tracking_spells[name] and active then
-				active_tracking[tracking_spells[name]] = true
-			else
-				if tracking_spells[name] and not active then
-					active_tracking[tracking_spells[name]] = false
-				end
+	local count = GetNumTrackingTypes();
+	local info;
+	for id=1, count do
+		local name, texture, active, category  = GetTrackingInfo(id);
+		if tracking_spells[name] and active then
+			active_tracking[tracking_spells[name]] = true
+		else
+			if tracking_spells[name] and not active then
+				active_tracking[tracking_spells[name]] = false
 			end
 		end
 	end
@@ -356,7 +331,6 @@ end
 local digSites = {}
 
 function Display:DigsitesChanged()
-	if WoWClassic then return end
 	table.wipe(digSites)
 	for continent in pairs(continentZoneList) do
 		local digSites = C_ResearchInfo.GetDigSitesForMap(continent)
@@ -385,7 +359,7 @@ function Display:UpdateVisibility()
 			visible = have_prof_skill[v]
 		elseif state == "active" then
 			visible = active_tracking[v] == true
-			if not WoWClassic and v == "Archaeology" then
+			if v == "Archaeology" then
 				visible = IsActiveDigSite()
 			end
 		end
@@ -400,7 +374,7 @@ function Display:UpdateVisibility()
 			visible = have_prof_skill[v]
 		elseif state == "active" then
 			visible = (active_tracking[v] == true)
-			if not WoWClassic and v == "Archaeology" then
+			if v == "Archaeology" then
 				visible = IsActiveDigSite()
 			end
 		end
@@ -411,11 +385,7 @@ end
 function Display:SetTrackingSpell(skill,spell)
 	local spellName, _, texture = GetSpellInfo(spell)
 	if not spellName then return end
-	if WoWClassic then
-		tracking_spells[texture] = skill
-	else
-		tracking_spells[spellName] = skill
-	end
+	tracking_spells[spellName] = skill
 	if fullInit then self:MINIMAP_UPDATE_TRACKING() end
 end
 
@@ -577,18 +547,7 @@ end
 --[[
 	Minimap zoom changed
 ]]
-function Display:UpdateMiniMapZoom()
-	if not WoW90 then
-		local zoom = Minimap:GetZoom()
-		if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
-			Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)
-		end
-		indoors = GetCVar("minimapZoom")+0 == Minimap:GetZoom() and "outdoor" or "indoor"
-		Minimap:SetZoom(zoom)
-	end
-end
 function Display:MinimapZoom()
-	self:UpdateMiniMapZoom()
 	self:UpdateMiniMap()
 end
 --[[
@@ -603,8 +562,6 @@ end
 
 function Display:UpdateMaps()
 	clearpins(minimapPins)
-	-- recheck zoom on map update, as it seems on load you dont get the map zoom changed event
-	self:UpdateMiniMapZoom()
 	-- Ask to update the visiblity for archaeology updates to blobs
 	self:UpdateVisibility()
 	self:UpdateMiniMap(true)
@@ -653,11 +610,7 @@ function Display:UpdateIconPositions()
 	-- if the player moved, or changed the facing (rotating map) - update nodes
 	if x ~= lastXY or y ~= lastYY or facing ~= lastFacing or refresh then
 		-- update radius of the map
-		if WoW90 then
-			mapRadius = C_Minimap.GetViewRadius()
-		else
-			mapRadius = self.minimapSize[indoors][zoom] / 2
-		end
+		mapRadius = C_Minimap.GetViewRadius()
 		-- update upvalues for icon placement
 		lastXY, lastYY = x, y
 		lastFacing = facing
@@ -726,11 +679,7 @@ function Display:UpdateMiniMap(force)
 		minimapHeight = Minimap:GetHeight() / 2
 		minimapStrata = Minimap:GetFrameStrata()
 		minimapFrameLevel = Minimap:GetFrameLevel() + 5
-		if WoW90 then
-			mapRadius = C_Minimap.GetViewRadius()
-		else
-			mapRadius = self.minimapSize[indoors][zoom] / 2
-		end
+		mapRadius = C_Minimap.GetViewRadius()
 
 		local x1, y1 = GatherMate.HBD:GetZoneCoordinatesFromWorld(x,y,zone)
 		if not x1 then

@@ -6,7 +6,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2", false)
 -- Databroker support
 local DataBroker = LibStub:GetLibrary("LibDataBroker-1.1",true)
 
-local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 --[[
@@ -106,7 +105,6 @@ local generalOptions = {
 			type = "select",
 			values = prof_options2,
 			arg = "Extract Gas",
-			hidden = WoWClassic,
 		},
 		showTreasure = {
 			order = 5,
@@ -123,7 +121,6 @@ local generalOptions = {
 			type = "select",
 			values = prof_options4,
 			arg = "Archaeology",
-			hidden = WoWClassic,
 		},
 		showTimber = {
 			order = 7,
@@ -132,7 +129,6 @@ local generalOptions = {
 			type = "select",
 			values = prof_options3,
 			arg = "Logging",
-			hidden = WoWClassic,
 		},
 	},
 }
@@ -324,7 +320,6 @@ local minimapOptions = {
 					type = "color",
 					hasAlpha = true,
 					arg = "Extract Gas",
-					hidden = WoWClassic,
 				},
 				trackingColorTreasure = {
 					order = 6,
@@ -341,7 +336,6 @@ local minimapOptions = {
 					type = "color",
 					hasAlpha = true,
 					arg = "Archaeology",
-					hidden = WoWClassic,
 				},
 				space = {
 					order = 10,
@@ -391,12 +385,8 @@ local sortedFilter = setmetatable({}, {__index = function(t, k)
 		local expansion = GatherMate.nodeExpansion[k]
 		local map = GatherMate.nodeIDs[k]
 		for name in pairs(map) do
-			if WoWClassic and expansion and expansion[map[name]] > 1 then
-				-- skip
-			else
-				local idx = #new+1
-				new[idx] = name
-			end
+			local idx = #new+1
+			new[idx] = name
 			denormalizedNames[name] = name
 		end
 		if expansion then
@@ -599,7 +589,6 @@ filterOptions.args.fish = {
 filterOptions.args.gas = {
 	type = "group",
 	name = L["Gas Clouds"],
-	hidden = WoWClassic,
 	args = {
 		select_all = {
 			order = 1,
@@ -664,7 +653,6 @@ filterOptions.args.treasure = {
 filterOptions.args.archaeology = {
 	type = "group",
 	name = L["Archaeology"],
-	hidden = WoWClassic,
 	args = {
 		select_all = {
 			order = 1,
@@ -766,7 +754,6 @@ local maintenanceOptions = {
 					type = "range",
 					min = 0, max = 100, step = 1,
 					arg = "Extract Gas",
-					hidden = WoWClassic,
 				},
 				Treasure = {
 					order = 5,
@@ -783,7 +770,6 @@ local maintenanceOptions = {
 					type = "range",
 					min = 0, max = 30, step = 1,
 					arg = "Archaeology",
-					hidden = WoWClassic,
 				}
 			},
 		},
@@ -904,7 +890,6 @@ local maintenanceOptions = {
 					arg = "Extract Gas",
 					confirm = true,
 					confirmText = L["Are you sure you want to delete all nodes from this database?"],
-					hidden = WoWClassic,
 				},
 				Treasure = {
 					order = 5,
@@ -923,7 +908,6 @@ local maintenanceOptions = {
 					arg = "Archaeology",
 					confirm = true,
 					confirmText = L["Are you sure you want to delete all nodes from this database?"],
-					hidden = WoWClassic,
 				},
 			},
 		},
@@ -970,7 +954,6 @@ local maintenanceOptions = {
 					desc = L["Database locking"],
 					type = "toggle",
 					arg = "Extract Gas",
-					hidden = WoWClassic,
 				},
 				Treasure = {
 					order = 5,
@@ -985,7 +968,6 @@ local maintenanceOptions = {
 					desc = L["Database locking"],
 					type = "toggle",
 					arg = "Archaeology",
-					hidden = WoWClassic,
 				}
 			}
 		},
@@ -1007,13 +989,7 @@ ImportHelper.db_options = {
 	["Merge"] = L["Merge"],
 	["Overwrite"] = L["Overwrite"]
 }
-ImportHelper.db_tables = WoWClassic and {
-	["Herbs"] = L["Herbalism"],
-	["Mines"] = L["Mining"],
-	["Fish"] = L["Fishing"],
-	["Treasure"] = L["Treasure"],
-}
-or
+ImportHelper.db_tables =
 {
 	["Herbs"] = L["Herbalism"],
 	["Mines"] = L["Mining"],
@@ -1135,11 +1111,9 @@ importOptions.args.GatherMateData = {
 				if db["importers"]["GatherMate2_Data"].Databases["Mines"] then cm = 1 end
 				if db["importers"]["GatherMate2_Data"].Databases["Herbs"] then cm = 1 end
 				if db["importers"]["GatherMate2_Data"].Databases["Fish"] then cm = 1 end
-				if not WoWClassic then
-					if db["importers"]["GatherMate2_Data"].Databases["Gases"] then cm = 1 end
-					if db["importers"]["GatherMate2_Data"].Databases["Treasure"] then cm = 1 end
-					if db["importers"]["GatherMate2_Data"].Databases["Archaeology"] then cm = 1 end
-				end
+				if db["importers"]["GatherMate2_Data"].Databases["Gases"] then cm = 1 end
+				if db["importers"]["GatherMate2_Data"].Databases["Treasure"] then cm = 1 end
+				if db["importers"]["GatherMate2_Data"].Databases["Archaeology"] then cm = 1 end
 				return imported["GatherMate2_Data"] or (cm == 0 and not imported["GatherMate2_Data"])
 			end,
 		}

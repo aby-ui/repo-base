@@ -137,6 +137,19 @@ L["gift_of_thenios"] = [[
 ]]
 L["gift_of_vesiphone"] = "敲鐘刷新一個 {npc:170849} 擊殺後獲得 {spell:333239} 負面效果。寶箱正對面的流水將清潔此負面效果，並獲得 {spell:332785}。"
 
+L["count_your_blessings_note"] = nil
+L["options_icons_blessings"] = "{achievement:14767}"
+L["options_icons_blessings_desc"] = nil
+
+L["vesper_of_courage"] = nil
+L["vesper_of_humility"] = nil
+L["vesper_of_loyalty"] = nil
+L["vesper_of_purity"] = nil
+L["vesper_of_wisdom"] = nil
+L["vespers_ascended_note"] = nil
+L["options_icons_vespers"] = "{achievement:14734}"
+L["options_icons_vespers_desc"] = nil
+
 L["anima_shard"] = "失落的靈魄碎片"
 L["anima_shard_61225"] = "在橋下的較低平臺上。"
 L["anima_shard_61235"] = "在瀑布上方的壁架上。"
@@ -190,16 +203,6 @@ L["anima_shard_61299"] = "隱藏在大火炬的後面。"
 L["anima_shard_61300"] = "掛在中央字體的壁架上。"
 L["options_icons_anima_shard"] = "{achievement:14339}"
 L["options_icons_anima_shard_desc"] = "顯示 {achievement:14339} 成就中全部50個失落的靈魄碎片的位置。"
-
-L["aspirants_rest"] = "志士之墓"
-L["eternal_gateway"] = "永恆之門"
-L["exaltations_rise"] = "晉升高地"
-L["heros_rest"] = "英雄之眠"
-L["sagehaven"] = "賢者集所"
-L["seat_of_eternal_hymns"] = "永恆頌歌之座"
-L["temple_of_humility"] = "謙遜神殿"
-L["temple_of_purity"] = "純潔神殿"
-L["xandrias_vigil"] = "珊卓亞的守望"
 
 L["stratios_note"] = nil
 L["thenia_note"] = nil
@@ -285,12 +288,6 @@ L["pus_in_boots"] = "在橋的下面。"
 L["options_icons_slime_cat"] = "{achievement:14634}"
 L["options_icons_slime_cat_desc"] = "顯示 {achievement:14634} 成就中貓咪的位置。"
 
-L["exoramas"] = "艾克索拉馬斯，祭儀家族"
-L["nurakkir"] = "努拉齊爾，蛛眼家族"
-L["overlook_primus"] = "瞭望台，統御者之座"
-L["zerekriss"] = "澤瑞奎斯，瑪卓薩斯"
-L["zerekriss_note"] = "啟動後，浮空城將在該區域飛行。抓住 {npc:165822} 來滑行到地面。"
-
 L["dundley_note"] = nil
 L["maximillian_note"] = nil
 L["rotgut_note"] = nil
@@ -358,13 +355,6 @@ L["options_icons_dredbats_desc"] = nil
 L["options_icons_sinrunners"] = nil
 L["options_icons_sinrunners_desc"] = nil
 
-L["dominance_keep"] = "威權要塞"
-L["eternal_terrace"] = "永恆露臺"
-L["feeders_thicket"] = "進食者的灌木林"
-L["halls_of_atonement"] = "贖罪之殿"
-L["pridefall_hamlet"] = "尊殞村"
-L["the_banewood"] = "禍孽森林"
-
 L["addius_note"] = nil
 L["eyegor_note"] = nil
 L["sylla_note"] = nil
@@ -425,10 +415,8 @@ L["options_icons_riftstone_desc"] = "顯示混亂裂隙石傳送者位置。"
 -------------------------------------------------------------------------------
 
 L["prepatch_intro"] = "完成暗影之境前夕事件前置任務來解鎖此區域的首領"
-L["icecrown_rares"] = "所有首領以固定順序每20分鐘刷新一個.每個首領一天可以拾取多次"
+L["icecrown_rares"] = "所有首領以固定順序每10分鐘刷新一個.每個首領一天可以拾取多次"
 L["next_spawn"] = "下次刷新時間為本地時間 %s "
-L["shared_loot"] = "共享掉寶"
-L["unique_loot"] = "獨立掉寶"
 
 local ORIG = ns.color.Orange("原本位於 %s")
 

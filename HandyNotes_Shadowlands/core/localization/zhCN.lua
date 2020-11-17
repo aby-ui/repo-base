@@ -66,8 +66,6 @@ L["known"] = "已获得"
 L["missing"] = "未获得"
 L["unobtainable"] = "无法获得"
 L["unlearnable"] = "无法解锁"
-L["A"] = "生" -- available/alive
-L["D"] = "死" -- dead/defeated
 L["defeated"] = "已击杀"
 L["undefeated"] = "未击杀"
 
@@ -119,8 +117,6 @@ L["options_toggle_maximized_enlarged"] = "世界地图最大化时图标放大"
 L["options_toggle_maximized_enlarged_desc"] = "当世界地图最大化，放大全部图标。"
 L["options_toggle_use_char_achieves"] = "使用角色成就"
 L["options_toggle_use_char_achieves_desc"] = "显示成就进度为此角色而不是全部账号。"
-L["options_poi_refresh_rate"] = nil
-L["options_poi_refresh_rate_desc"] = nil
 L["options_restore_hidden_nodes"] = "恢复隐藏项"
 L["options_restore_hidden_nodes_desc"] = "使用右击菜单恢复全部隐藏项。"
 
@@ -146,7 +142,6 @@ L["options_reset_poi_colors_desc"] = "重置上面的颜色为预设。"
 ----------------------------------- TOOLTIP -----------------------------------
 
 L["options_tooltip_settings"] = "提示"
-L["options_tooltip_settings_desc"] = "提示"
 L["options_toggle_show_loot"] = "显示拾取"
 L["options_toggle_show_loot_desc"] = "在提示中加入拾取信息"
 L["options_toggle_show_notes"] = "显示注释"
@@ -155,7 +150,6 @@ L["options_toggle_show_notes_desc"] = "在提示中添加注释"
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L["options_dev_settings"] = "开发"
-L["options_dev_settings_desc"] = "开发者选项"
 L["options_toggle_show_debug_map"] = "除错地图 ID"
 L["options_toggle_show_debug_map_desc"] = "显示地图除错信息"
 L["options_toggle_show_debug_quest"] = "除错任务 ID"

@@ -7,6 +7,7 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
 local Node = ns.node.Node
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
@@ -641,7 +642,95 @@ map.nodes[54555609] = PetBattle({
 }) -- Thenia
 
 -------------------------------------------------------------------------------
------------------------------ ANIMA CRYSTAL SHARDS ----------------------------
+----------------------------- COUNT YOUR BLESSINGS ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[34753001] = Collectible({
+    icon=1022951,
+    group=ns.groups.BLESSINGS,
+    label='{spell:327976}',
+    note=L["count_your_blessings_note"],
+    rewards={
+        Achievement({id=14767, criteria=49946})
+    }
+}) -- Purified Blessing of Fortitude
+
+map.nodes[53832886] = Collectible({
+    icon=1022951,
+    group=ns.groups.BLESSINGS,
+    label='{spell:327974}',
+    note=L["count_your_blessings_note"],
+    rewards={
+        Achievement({id=14767, criteria=49944})
+    }
+}) -- Purified Blessing of Grace
+
+map.nodes[45285979] = Collectible({
+    icon=1022951,
+    group=ns.groups.BLESSINGS,
+    label='{spell:327975}',
+    note=L["count_your_blessings_note"],
+    rewards={
+        Achievement({id=14767, criteria=49945})
+    }
+}) -- Purified Blessing of Power
+
+-------------------------------------------------------------------------------
+------------------------- RALLYING CRY OF THE ASCENDED ------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[32171776] = Collectible({
+    icon=3536181,
+    group=ns.groups.VESPERS,
+    label=L["vesper_of_loyalty"],
+    note=L["vespers_ascended_note"],
+    rewards={
+        Achievement({id=14734, criteria=49817})
+    }
+}) -- Vesper of Loyalty
+
+map.nodes[33325980] = Collectible({
+    icon=3536181,
+    group=ns.groups.VESPERS,
+    label=L["vesper_of_courage"],
+    note=L["vespers_ascended_note"],
+    rewards={
+        Achievement({id=14734, criteria=49815})
+    }
+}) -- Vesper of Courage
+
+map.nodes[39132038] = Collectible({
+    icon=3536181,
+    group=ns.groups.VESPERS,
+    label=L["vesper_of_wisdom"],
+    note=L["vespers_ascended_note"],
+    rewards={
+        Achievement({id=14734, criteria=49819})
+    }
+}) -- Vesper of Wisdom
+
+map.nodes[64326980] = Collectible({
+    icon=3536181,
+    group=ns.groups.VESPERS,
+    label=L["vesper_of_purity"],
+    note=L["vespers_ascended_note"],
+    rewards={
+        Achievement({id=14734, criteria=49818})
+    }
+}) -- Vesper of Purity
+
+map.nodes[71933896] = Collectible({
+    icon=3536181,
+    group=ns.groups.VESPERS,
+    label=L["vesper_of_humility"],
+    note=L["vespers_ascended_note"],
+    rewards={
+        Achievement({id=14734, criteria=49816})
+    }
+}) -- Vesper of Humility
+
+-------------------------------------------------------------------------------
+--------------------------------- SHARD LABOR ---------------------------------
 -------------------------------------------------------------------------------
 
 local AnimaShard = Class('AnimaShard', Node, {

@@ -427,7 +427,7 @@ map.nodes[63367398] = Treasure({
 }) -- Taskmaster's Trove
 
 map.nodes[57374337] = Treasure({
-    quest=nil,
+    quest=62063,
     requires=ns.requirement.Currency(1820, 99),
     note=L["the_count_note"],
     rewards={
@@ -812,6 +812,27 @@ map.nodes[69635800] = Sinrunner({
     }
 }) -- Edge of Sin => Darkhaven
 
+map.nodes[48836885] = Sinrunner({
+    id=174032,
+    requires=ns.requirement.Currency(1820, 5),
+    rewards={ Achievement({id=14770, criteria=50175}) },
+    pois={
+        Path({
+            48836885, 48776937, 49306972, 49847016, 50256959, 50726915,
+            51176855, 51566801, 52106783, 52626798, 53026849, 53466892,
+            53926909, 54236859, 54266781, 54156698, 54036627, 53986562,
+            53936490, 53986407, 54476370, 55086352, 55066266, 54916179,
+            54846142, 54676026, 54505916, 54355828, 54195723, 53835626,
+            53355546, 52575540, 51845510, 51225437, 50725358, 50225280,
+            49595233, 48905194, 48365134, 47715199, 47205278, 46625368,
+            46115446, 45655519, 45155587, 44515616, 43715627, 42995614,
+            42295630, 41675639, 41035649, 40575560, 40125460, 39955357,
+            39485259, 39245155, 39335039, 39724939, 40174839, 40564749,
+            40844697
+        })
+    }
+}) -- Wanecrypt Hill => Hole in the Wall
+
 map.nodes[54926234] = Sinrunner({
     id=174032,
     requires=ns.requirement.Currency(1820, 5),
@@ -869,7 +890,9 @@ local Dredbat = Class('Dredbat', NPC, {
     requires=ns.requirement.Currency(1820, 5),
     rewards={ Achievement({id=14769, criteria={id=1, qty=true}}) }
 })
-
+map.nodes[25103757] = Dredbat({ pois={ Arrow({25103757, 30024700}) } })
+map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
+map.nodes[56236226] = Dredbat({ pois={ Arrow({56236226, 57485549}) } })
 map.nodes[57246125] = Dredbat({ pois={ Arrow({57246125, 60286116}) } })
 map.nodes[60396117] = Dredbat({ pois={ Arrow({60396117, 57495549}) } })
 map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
@@ -1017,16 +1040,21 @@ local Blanchy = Class('Blanchy', NPC, {
 })
 
 function Blanchy.getters:note ()
-    local note = L["sinrunner_note"]
-    local status
-    for i, quest in ipairs(self.quest) do
-        if C_QuestLog.IsQuestFlaggedCompleted(quest) then
-            status = ns.status.Green(i)
+    local function status(i)
+        if C_QuestLog.IsQuestFlaggedCompleted(self.quest[i]) then
+            return ns.status.Green(i)
         else
-            status = ns.status.Red(i)
+            return ns.status.Red(i)
         end
-        note = note..'\n\n'..status..' '..L["sinrunner_note_day"..i]
     end
+
+    local note = L["sinrunner_note"]
+    note = note..'\n\n'..status(1)..' '..L["sinrunner_note_day1"]
+    note = note..'\n\n'..status(2)..' '..L["sinrunner_note_day2"]
+    note = note..'\n\n'..status(3)..' '..L["sinrunner_note_day3"]
+    note = note..'\n\n'..status(4)..' '..L["sinrunner_note_day4"]
+    note = note..'\n\n'..status(5)..' '..L["sinrunner_note_day5"]
+    note = note..'\n\n'..status(6)..' '..L["sinrunner_note_day6"]
     return note
 end
 

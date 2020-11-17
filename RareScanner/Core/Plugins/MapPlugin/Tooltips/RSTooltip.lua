@@ -226,10 +226,20 @@ local function AddLootTooltip(tooltip, pin)
 			for i, itemID in ipairs(itemsIDs) do
 				local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
 				if (iconFileDataID and not RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)) then
-					tinsert(itemsIDsFiltered, itemID)
+					local itemInfo = { itemID, itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID }
+					tinsert(itemsIDsFiltered, itemInfo)
 				end
 			end
 		end
+			
+		-- Sort loot by Class and SubClass
+		table.sort(itemsIDsFiltered, function(a, b) 
+			if a[6] == b[6] then
+				return a[7] < b[7]
+			else
+				return a[6] < b[6] 
+			end
+		end)
 
 		-- Add loot to the tooltip
 		if (next(itemsIDsFiltered) ~= nil) then
@@ -238,13 +248,14 @@ local function AddLootTooltip(tooltip, pin)
 			line = tooltip:AddLine()
 
 			local j
-			for i, itemID in ipairs(itemsIDsFiltered) do
+			for i, itemInfo in ipairs(itemsIDsFiltered) do
+				local itemID, itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = itemInfo[1], itemInfo[2], itemInfo[3], itemInfo[4], itemInfo[5], itemInfo[6], itemInfo[7]
+			
 				j = (i - floor(i/10) * 10)
 				if (j == 0) then
 					j = 10
 				end
 
-				local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
 				tooltip:SetCell(line, j, "|T"..iconFileDataID..":24|t", nil, "CENTER", 1, nil, nil, nil, nil, 24, 24)
 				tooltip:SetCellScript(line, j, "OnEnter", showItemToolTip, { itemLink, itemClassID, itemSubClassID });
 				tooltip:SetCellScript(line, j, "OnKeyDown", showItemComparationTooltip);

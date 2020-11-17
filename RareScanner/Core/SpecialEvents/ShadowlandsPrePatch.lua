@@ -24,7 +24,7 @@ local RSTooltip = private.ImportLib("RareScannerTooltip")
 local SHADOWLANDS_PRE_PATCH_EVENT = true
 
 -- Next spawn timer
-local NEXT_RESPAWN = 1200 --20 minutes
+local NEXT_RESPAWN = 600 --10 minutes
 
 -- Icecrown rares order (pre-patch 9.0.1)
 local SHADOWLANDS_RARES_SPAWNING_ORDER = {174065,174064,174063,174062,174061,174060,174059,174058,174057,174056,174055,174054,174053,174052,174051,174050,174049,174048,174067,174066};

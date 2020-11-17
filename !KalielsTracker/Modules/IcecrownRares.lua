@@ -22,6 +22,8 @@ local tinsert = table.insert
 local db, dbChar
 local OTF = ObjectiveTrackerFrame
 
+local rareStep = 600
+local rareStepWoUnattack = rareStep - 120
 local timer = 0
 local timerDuration = 5
 local eventMapID = 118  -- Icecrown
@@ -40,9 +42,9 @@ ICECROWN_RARES_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("ICECROWN_RA
 --------------
 
 local realmZones = {
-    EU = { timeZero = time({ year=2020, month=11, day=11, hour=9 }), utcOffset = 1, rareOffset = 0 },
-    NA = { timeZero = time({ year=2020, month=11, day=10, hour=8 }), utcOffset = -8, rareOffset = 8 },
-    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8 }), utcOffset = 8, rareOffset = 0 },
+    CN = { timeZero = time({ year=2020, month=11, day=12, hour=8, min=20 }), utcOffset = 8, rareOffset = 9 },
+	EU = { timeZero = time({ year=2020, month=11, day=16, hour=21, min=20 }), utcOffset = 1, rareOffset = 1 },
+    NA = { timeZero = time({ year=2020, month=11, day=16, hour=12, min=20 }), utcOffset = -8, rareOffset = 13 }
 }
 local rares = {
     { "Prince Keleseth", { 54.0, 44.7 } },
@@ -141,11 +143,11 @@ if IsAddOnLoaded("TomTom") then
     end
 end
 
-local function IcecrownRaresTrackerModule_OnMouseUp(self, button)
+local function TrackerBlock_OnMouseUp(self, button)
     SetWaypoint(self, button)
 end
 
-local function IcecrownRaresTrackerModule_SetUsed()
+local function TrackerBlock_SetUsed()
     M.used = true
     if KT.inInstance then
         M.used = false
@@ -164,10 +166,10 @@ local function SetFrames()
     eventFrame:SetScript("OnEvent", function(self, event)
         _DBG("Event - "..event, true)
         if event == "PLAYER_ENTERING_WORLD" then
-            IcecrownRaresTrackerModule_SetUsed()
+            TrackerBlock_SetUsed()
             self:UnregisterEvent(event)
         elseif event == "ZONE_CHANGED_NEW_AREA" then
-            IcecrownRaresTrackerModule_SetUsed()
+            TrackerBlock_SetUsed()
         end
     end)
     eventFrame:SetScript("OnUpdate", IcecrownRaresTrackerModule_OnUpdate)
@@ -186,7 +188,9 @@ local function SetFrames()
     content.texture:SetAtlas("legioninvasion-map-icon-portal-large")
     content.texture:SetSize(35, 37)
     content.texture:SetPoint("TOPLEFT", -40, 0)
-    content:SetScript("OnMouseUp", IcecrownRaresTrackerModule_OnMouseUp)
+    content:SetScript("OnMouseUp", TrackerBlock_OnMouseUp)
+    content:SetScript("OnEnter", KT_ObjectiveTrackerBlock_OnEnter)
+    content:SetScript("OnLeave", KT_ObjectiveTrackerBlock_OnLeave)
 end
 
 local function SetHooks()
@@ -239,17 +243,16 @@ function ICECROWN_RARES_TRACKER_MODULE:Update()
     --local time = function() return _G.time() + 12*20*60 end
     local block = self:GetBlock()
     local secDiff = difftime(time() + test + userUtcOffset, realmZones[db.sIcecrownRaresRealmZone].timeZero) - db.sIcecrownRaresTimerCorrection
-    local minDiff = secDiff / 60
-    local numPastRares = floor(minDiff / 20) + 1
+    local numPastRares = floor(secDiff / rareStep) + 1
     local nextRareIndex = fmod(numPastRares, numRares) + 1 + realmZones[db.sIcecrownRaresRealmZone].rareOffset
     nextRareIndex = nextRareIndex > numRares and nextRareIndex-numRares or nextRareIndex
-    local nextRareRemainTimeSec = 1200 - fmod(secDiff, 1200)
+    local nextRareRemainTimeSec = rareStep - fmod(secDiff, rareStep)
 
     local nextRareRemainTime = KT.SecondsToTime(nextRareRemainTimeSec)
     local timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft2"]
-    if nextRareRemainTimeSec > 1080 then
+    if nextRareRemainTimeSec > rareStepWoUnattack then
         nextRareIndex = nextRareIndex == 1 and numRares or nextRareIndex - 1
-        nextRareRemainTime = KT.SecondsToTime(nextRareRemainTimeSec - 1080)..L" (unattackable now)"
+        nextRareRemainTime = KT.SecondsToTime(nextRareRemainTimeSec - rareStepWoUnattack)..L" (unattackable now)"
         timeColor = OBJECTIVE_TRACKER_COLOR["TimeLeft"]
     end
     local nextRareInfo = rares[nextRareIndex][3] and " |cff00ff00"..rares[nextRareIndex][3] or ""
@@ -272,7 +275,7 @@ function ICECROWN_RARES_TRACKER_MODULE:Update()
     content.rareIdx = nextRareIndex
     content.rareTime = nextRareRemainTime
 
-    timerDuration = (nextRareRemainTimeSec > 1080 or nextRareRemainTimeSec <= 60) and 1 or 5
+    timerDuration = (nextRareRemainTimeSec > rareStepWoUnattack or nextRareRemainTimeSec <= 60) and 1 or 5
 
     self:EndLayout()
 end
@@ -309,7 +312,7 @@ function M:SetUserUtcOffset()
 end
 
 function M:SetUsed()
-    IcecrownRaresTrackerModule_SetUsed()
+    TrackerBlock_SetUsed()
 end
 
 function M:IsShown()
