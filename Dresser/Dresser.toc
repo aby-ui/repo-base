@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator

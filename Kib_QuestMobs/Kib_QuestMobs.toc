@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Kib: Quest Mobs
 ## Author: Tosaido
 ## Version: 1.15

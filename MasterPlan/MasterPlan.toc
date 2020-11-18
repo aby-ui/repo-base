@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Master Plan
 ## Notes: Garrison missions UI tweaks.
 ## Author: foxlit

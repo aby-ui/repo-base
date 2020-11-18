@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Shadowed UF (Options)
 ## Notes: Configuration for Shadowed Unit Frames.
 ## Author: Shadowed

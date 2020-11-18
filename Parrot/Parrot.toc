@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Parrot
 ## Notes: Floating Combat Text of awesomeness. Caw. It'll eat your crackers.
 ## Notes-zhCN: 绝妙的浮动战斗记录指示器。

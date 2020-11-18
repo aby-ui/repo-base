@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Details!: Advanced Death Logs (plugin)
 ## Notes: Show player endurance info (who is dying with more frequency), show deaths time line with enemy abilities to know what is causing wipes, show standard player deaths log as well.
 ## RequiredDeps: Details

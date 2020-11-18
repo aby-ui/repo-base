@@ -400,9 +400,9 @@ local function OnEvent(self, event, arg1, arg2)
 
         WW(ObjectiveTrackerFrame.HeaderMenu):Button("OTFMover"):Size(36,24):RIGHT(ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, "LEFT", 0,0):up():un()
         CoreUIEnableTooltip(OTFMover, "面板移动","按住SHIFT拖动\nCtrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
-        OTFMover:SetFrameStrata("BACKGROUND")
         local bg = BM_CreateBackground(ObjectiveTrackerFrame, "ObjectiveTrackerFrame_abyuiBG", "TOPLEFT", "BOTTOMRIGHT")
         BM_SetMoveHandler(bg,OTFMover)
+        OTFMover:SetFrameStrata("LOW")
         --BM_SetMoveHandler(bg,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
 
         BM_SetMoveHandler(GameMenuFrame)

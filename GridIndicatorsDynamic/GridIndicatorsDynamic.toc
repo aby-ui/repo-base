@@ -1,4 +1,4 @@
-﻿## Interface: 90001
+﻿## Interface: 90002
 ## Title: GridIndicatorsDynamic
 ## Notes: Additional indicators for Grid
 ## Dependencies: Grid

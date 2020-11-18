@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Details Raid Power Bars (plugin)
 ## Notes: Plugin for Details
 ## SavedVariablesPerCharacter: _detalhes_databaseRaidPowerBar

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: TrufiGCD
 ## Notes: View queue of last spells
 ## SavedVariables: TrufiGCDGlSave

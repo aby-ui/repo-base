@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Version: v9.0.0
 ## Title: GridStatusRaidDebuff(Legion)
 ## Notes: Debuff List for Legion

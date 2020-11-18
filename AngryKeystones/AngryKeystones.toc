@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Angry Keystones
 ## Notes: Displays additional information for Mythic Keystone dungeons
 ## Author: Ermad

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: !!!|cff880303[爱不易]|r 控制台和基本库
 ## Author: AbyUI (warbaby & yleaf)
 

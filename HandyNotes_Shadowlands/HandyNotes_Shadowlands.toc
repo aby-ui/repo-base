@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: HandyNotes: Shadowlands
 ## Version: 19
 ## Notes: Shadowlands Notes

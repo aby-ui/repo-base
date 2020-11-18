@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight/Myzrael

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
 ## Version: 4.2.4

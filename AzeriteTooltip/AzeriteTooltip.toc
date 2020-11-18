@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: AzeriteTooltip
 ## Version: 1.92
 ## Author: jokair9

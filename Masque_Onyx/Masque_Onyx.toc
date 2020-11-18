@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Masque: |cffff8000Onyx|r
 ## Version: 8.0.0
 ## Author: StormFX

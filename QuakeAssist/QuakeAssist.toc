@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: QuakeAssist
 ## Version: 1.10
 ## Author: Abin

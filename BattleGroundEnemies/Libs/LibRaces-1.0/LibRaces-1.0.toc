@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Lib: LibRaces-1.0
 ## Notes: A library to easy translate localized race names to generic token like strings
 ## Author: Hizuro

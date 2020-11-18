@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Version: 900r1
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul

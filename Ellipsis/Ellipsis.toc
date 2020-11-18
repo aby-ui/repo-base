@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Ellipsis (|cff67b1e9K|cff4779ceith|cff67b1e9M|cff4779ceod|r)
 ## Notes: A full-featured, multi-target Aura (DoTs and HoTs) tracker.
 ## Author: Kith

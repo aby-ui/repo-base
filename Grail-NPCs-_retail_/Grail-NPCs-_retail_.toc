@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Grail |cff69ccf0NPCs |r|cff0000ffRetail|r
 ## Author: Scott M Harrison
 ## Notes: Provides NPCs to Grail for Retail

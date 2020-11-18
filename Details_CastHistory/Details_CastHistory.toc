@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Details! Cast History (plugin)
 ## Notes: Record the history of casts for each player in the group
 ## RequiredDeps: Details

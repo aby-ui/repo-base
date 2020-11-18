@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Notes: Collects Herbs, Mines, Gas Clouds, Archaeology, Treasure and Fishing locations and adds them to the worldmap and minimap
 ## Notes-frFR: Enregistre les positions des herbes, mines, nuages de gaz et poissons et les ajoute sur la carte du monde et la minicarte.
 ## Notes-ruRU: Собирает информацию о расположении трав, руды, газовых облаков и рыбных мест и показывает её на карте и миникарте

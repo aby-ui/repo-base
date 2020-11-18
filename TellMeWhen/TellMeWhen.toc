@@ -12,7 +12,7 @@
 
 
 # Also dont forget to bump both of these - X-Interface is used to get the interface version in-game to check that the user is using a current client.
-## Interface: 90001
+## Interface: 90002
 # DONT FORGET TO TOC BUMP TELLMEWHEN_OPTIONS TOO!!
 ## X-Interface: 90001
 ## X-Compatible-With: 90001

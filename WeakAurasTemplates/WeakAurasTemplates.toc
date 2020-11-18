@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: 3.0.6

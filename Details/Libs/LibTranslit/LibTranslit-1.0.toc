@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 90002
 ## Title: Lib: Translit
 ## Notes: Transliterate string
 ## Author: Vardex

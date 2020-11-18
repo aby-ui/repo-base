@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: AtlasLootReverse
 ## Notes: Does a reverse lookup of AtlasLoot for an item's drop info.
 ## Version: 1.14_163_20121126

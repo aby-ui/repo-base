@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
 ## Author: Ravendwyr

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## LoadOnDemand: 0
 ## Title: TheBurningTrade
 ## Author: Warbaby@163.com

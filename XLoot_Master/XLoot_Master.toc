@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: XLoot Master
 ## Notes: Configurable Master Looter interface
 ## Version: 9.0-2

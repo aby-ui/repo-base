@@ -1,4 +1,4 @@
-﻿## Interface: 90001
+﻿## Interface: 90002
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Challenges|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Herausforderungen|r

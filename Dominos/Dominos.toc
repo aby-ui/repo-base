@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Dominos
 ## Title-zhCN: |cFF0099FFDominos|r
 ## Notes: A main actionbar replacement

@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: Meeting Stone
 ## Title-zhCN: |cffff565e[网易]|r 集合石
 ## Notes-zhCN: 帮助您更好的组建队伍

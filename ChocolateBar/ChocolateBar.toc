@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: ChocolateBar
 ## Notes: A display for LibDataBroker-1.1
 ## Author: yess
