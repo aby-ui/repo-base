@@ -510,7 +510,7 @@ frame:SetScript("OnEvent", function(f)
 			tooltip12hr = true,
 			tooltipHideAchiev = false,
 			tooltipHideMedals = false,
-			zoneWarnings = true,
+			zoneWarnings = false,
 			hideInRaid = false,
 			mode = 2,
 		},

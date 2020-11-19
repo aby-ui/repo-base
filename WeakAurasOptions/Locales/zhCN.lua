@@ -109,10 +109,8 @@ local L = WeakAuras.L
 	L["At a position a bit left of Left HUD position."] = "在左侧HUD偏左一点的位置。"
 	L["At a position a bit left of Right HUD position"] = "在右侧HUD偏左一点的位置。"
 	L["At the same position as Blizzard's spell alert"] = "与暴雪的法术警报在同一位置"
-	--[[Translation missing --]]
 	L[ [=[Aura is
-Off Screen]=] ] = [=[Aura is
-Off Screen]=]
+Off Screen]=] ] = "光环在屏幕外"
 	L["Aura Name"] = "光环名称"
 	L["Aura Name Pattern"] = "光环名称规则匹配"
 	L["Aura Type"] = "光环类型"
@@ -156,6 +154,10 @@ Off Screen]=]
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在群组中的友方玩家名字是有效的。"
 	L["Can be a UID (e.g., party1)."] = "可以是单位 ID（例如：party1）。"
 	L["Cancel"] = "取消"
+	--[[Translation missing --]]
+	L["Cast by Player Character"] = "Cast by Player Character"
+	--[[Translation missing --]]
+	L["Cast by Players"] = "Cast by Players"
 	L["Center"] = "中间"
 	L["Chat Message"] = "聊天信息"
 	L["Chat with WeakAuras experts on our Discord server."] = "在我们的Discord服务器上与WeakAuras专家聊天。"
@@ -196,8 +198,7 @@ Off Screen]=]
 	L["Copy"] = "拷贝"
 	L["Copy settings..."] = "拷贝设置"
 	L["Copy to all auras"] = "拷贝至所有的光环"
-	--[[Translation missing --]]
-	L["Could not parse '%s'. Expected a table."] = "Could not parse '%s'. Expected a table."
+	L["Could not parse '%s'. Expected a table."] = "无法解析'%s'，需要 table。"
 	L["Count"] = "计数 "
 	L["Counts the number of matches over all units."] = "计算所有单位上匹配的数量"
 	L["Creating buttons: "] = "创建按钮:"
@@ -310,10 +311,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fade"] = "淡化"
 	L["Fade In"] = "渐入"
 	L["Fade Out"] = "渐出"
-	--[[Translation missing --]]
-	L["Fallback"] = "Fallback"
-	--[[Translation missing --]]
-	L["Fallback Icon"] = "Fallback Icon"
+	L["Fallback"] = "后备"
+	L["Fallback Icon"] = "后备图标"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
 	L["Filter by Class"] = "根据职业过滤"
@@ -399,8 +398,7 @@ Supports multiple entries, separated by commas
 	L["Icon Inset"] = "图标内嵌"
 	L["Icon Position"] = "图标位置"
 	L["Icon Settings"] = "图标设置"
-	--[[Translation missing --]]
-	L["Icon Source"] = "Icon Source"
+	L["Icon Source"] = "图标来源"
 	L["If"] = "如果"
 	L["If checked, then the user will see a multi line edit box. This is useful for inputting large amounts of text."] = "勾选后，用户可以看见一个多行的输入框，在输入大量文本时很有用。"
 	L["If checked, then this option group can be temporarily collapsed by the user."] = "勾选后，选项组可以临时被用户折叠"
@@ -430,12 +428,12 @@ Supports multiple entries, separated by commas
 	L["Invalid Item Name/ID/Link"] = "无效的物品名称/ID/链接"
 	L["Invalid Spell ID"] = "无效的法术 ID"
 	L["Invalid Spell Name/ID/Link"] = "无效的法术名称/ID/链接"
-	--[[Translation missing --]]
-	L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."] = "Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."
-	--[[Translation missing --]]
-	L["Invalid type for property '%s' in 's'. Expected '%s'"] = "Invalid type for property '%s' in 's'. Expected '%s'"
+	L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."] = "'%s'的类型无效，需要'bool'、'number'、'select'、'string'、'timer'或'elapsedTimer'。"
+	L["Invalid type for property '%s' in '%s'. Expected '%s'"] = "'%2$s'的属性'%1$s'类型非法，需要'%3$s'"
 	L["Inverse"] = "反向"
 	L["Inverse Slant"] = "反向倾斜"
+	--[[Translation missing --]]
+	L["Is Boss Debuff"] = "Is Boss Debuff"
 	L["Is Stealable"] = "可偷取"
 	L["Justify"] = "对齐"
 	L["Keep Aspect Ratio"] = "保持比例不变"
@@ -451,8 +449,7 @@ Supports multiple entries, separated by commas
 	L["Lines & Particles"] = "线条和粒子"
 	L["Load"] = "载入"
 	L["Loaded"] = "已载入"
-	--[[Translation missing --]]
-	L["Lock Positions"] = "Lock Positions"
+	L["Lock Positions"] = "锁定位置"
 	L["Loop"] = "循环"
 	L["Low Mana"] = "低法力值"
 	L["Magnetically Align"] = "磁力对齐"
@@ -500,8 +497,7 @@ Supports multiple entries, separated by commas
 	L["New Value"] = "新值"
 	L["No Children"] = "没有子项目"
 	L["None"] = "无"
-	--[[Translation missing --]]
-	L["Not a table"] = "Not a table"
+	L["Not a table"] = "不是 table"
 	L["Not all children have the same value for this option"] = "并非所有子项目的此选项的值都一致"
 	L["Not Loaded"] = "未载入"
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：无法在副本外自动发送“说”与“大喊”信息。"
@@ -509,10 +505,13 @@ Supports multiple entries, separated by commas
 	L["Number of Entries"] = "条目数"
 	L["Offer a guided way to create auras for your character"] = "提供为角色创建光环的指导"
 	L["Offset by |cFFFF0000%s|r/|cFFFF0000%s|r"] = "偏移|cFFFF0000%s|r/|cFFFF0000%s|r"
+	L["Offset by 1px"] = "偏移1px"
 	L["Okay"] = "好"
 	L["On Hide"] = "图示隐藏时"
 	L["On Init"] = "初始化时"
 	L["On Show"] = "图示显示时"
+	--[[Translation missing --]]
+	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
 	L["Only match auras cast by people other than the player"] = "只匹配其它玩家施放的光环"
 	L["Only match auras cast by people other than the player or his pet"] = "只匹配由不是玩家和玩家宠物施放的光环"
 	L["Only match auras cast by the player"] = "只匹配玩家自己施放的光环"
@@ -652,14 +651,13 @@ Supports multiple entries, separated by commas
 	L["Sound Channel"] = "声音频道"
 	L["Sound File Path"] = "声音文件路径"
 	L["Sound Kit ID"] = "音效 ID"
-	--[[Translation missing --]]
-	L["Source"] = "Source"
+	L["Source"] = "来源"
 	L["Space"] = "间隙"
 	L["Space Horizontally"] = "横向间隙"
 	L["Space Vertically"] = "纵向间隙"
-	L["Spark"] = "高光"
-	L["Spark Settings"] = "高光设置"
-	L["Spark Texture"] = "高光材质"
+	L["Spark"] = "闪光"
+	L["Spark Settings"] = "闪光设置"
+	L["Spark Texture"] = "闪光材质"
 	L["Specific Unit"] = "指定单位"
 	L["Spell ID"] = "法术ID"
 	L["Stack Count"] = "层数"
@@ -729,8 +727,7 @@ Supports multiple entries, separated by commas
 	L["Trigger Combination"] = "触发器组合"
 	L["True"] = "真"
 	L["Type"] = "类型"
-	--[[Translation missing --]]
-	L["Type 'select' for '%s' requires a values member'"] = "Type 'select' for '%s' requires a values member'"
+	L["Type 'select' for '%s' requires a values member'"] = "'%s'的类型'select'需要至少一个'values'成员。"
 	L["Ungroup"] = "不分组"
 	L["Unit"] = "单位"
 	L["Unit %s is not a valid unit for RegisterUnitEvent"] = "单位 %s 并不是 RegisterUnitEvent 的有效单位"
@@ -739,8 +736,7 @@ Supports multiple entries, separated by commas
 	L["Unit Frames"] = "单位框架"
 	L["Unit Name Filter"] = "单位名称过滤方式"
 	L["UnitName Filter"] = "单位名称过滤"
-	--[[Translation missing --]]
-	L["Unknown property '%s' found in '%s'"] = "Unknown property '%s' found in '%s'"
+	L["Unknown property '%s' found in '%s'"] = "发现'%2$s'的未知属性'%1$s'"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
 	L["Update %s by %s"] = "更新%s，来自%s"
 	L["Update Auras"] = "更新光环"

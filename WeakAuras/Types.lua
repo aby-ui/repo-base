@@ -145,7 +145,7 @@ Private.format_types = {
         name = L["Max Char "],
         width = WeakAuras.normalWidth,
         min = 1,
-        max = 20,
+        softMax = 20,
         hidden = hidden,
         step = 1,
         disabled = function()
@@ -2528,6 +2528,7 @@ WeakAuras.data_stub = {
   conditions = {},
   config = {},
   authorOptions = {},
+  information = {},
 }
 
 Private.author_option_classes = {

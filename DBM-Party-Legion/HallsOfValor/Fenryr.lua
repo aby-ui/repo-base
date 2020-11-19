@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1487, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20201116014239")
 mod:SetCreatureID(95674, 99868)
 mod:SetEncounterID(1807)
 mod:DisableEEKillDetection()
@@ -114,7 +114,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 196567 then--Stealth (boss retreat)
 		--Stop all timers but not combat
-		for i, v in ipairs(self.timers) do
+		for _, v in ipairs(self.timers) do
 			v:Stop()
 		end
 		--Artificially set no wipe to 10 minutes

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200924002723")
+mod:SetRevision("20201116014239")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 
@@ -84,7 +84,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(unitTracked)
 	if self.Options.NPAuraOnWalkieShockie then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
-		self:RegisterOnUpdateHandler(function(self)
+		self:RegisterOnUpdateHandler(function()
 			for i = 1, 40 do
 				local UnitID = "nameplate"..i
 				local GUID = UnitGUID(UnitID)

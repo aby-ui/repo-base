@@ -42,6 +42,7 @@
 	<Include file="Service\RSCommandLine.lua"/>
 	
 	<!-- Tooltips -->
+	<Include file="Plugins\MapPlugin\Tooltips\RSNotes.lua"/>
 	<Include file="Plugins\MapPlugin\Tooltips\RSTooltip.lua"/>
 	
 	<!-- Providers -->

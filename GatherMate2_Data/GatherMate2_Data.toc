@@ -8,9 +8,9 @@
 ## Author: kagaro, Xinhuan
 ## X-Category: Map
 ## X-Email: sal.scotto@gmail.com
-## Version: v33.0
+## Version: r474
 ## LoadOnDemand: 1
-## X-Generated-Version: $Revision: 472 $
+## X-Generated-Version: $Revision: 474 $
 ## Dependencies: GatherMate2
 
 MiningData.lua
@@ -20,8 +20,7 @@ FishData.lua
 TreasureData.lua
 ArchaeologyData.lua
 GatherMateData.lua
-#Data_Legion.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r GatherMate2 采集数据库
 ## X-Vendor: AbyUI
-

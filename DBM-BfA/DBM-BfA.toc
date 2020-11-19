@@ -1,6 +1,6 @@
 ## Interface: 90002
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (BfA)|r
-## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Azeroth (BfA)|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (BfA)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0아제로스 (격아)|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0艾澤拉斯 (決戰艾澤拉斯)|r
 ## Author: MysticalOS
@@ -23,6 +23,9 @@
 ## X-DBM-Mod-LoadCID: 132701,132253,136385,140163,140252,138794,138122,137374,148295,144946,152697,152671,152736,152729,155702,137702,154638,160970
 ## X-DBM-Mod-MinCoreRevision: 17286
 ## X-DBM-Mod-MinExpansion: 7
+## X-Curse-Project-ID: 420275
+## X-WoWI-ID: 25779
+## Version: r1-1-g16a3b27
 localization.en.lua
 localization.cn.lua
 localization.tw.lua

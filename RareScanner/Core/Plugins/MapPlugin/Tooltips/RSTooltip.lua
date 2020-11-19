@@ -27,6 +27,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 
 -- RareScanner service libraries
+local RSNotes = private.ImportLib("RareScannerNotes")
 local RSLoot = private.ImportLib("RareScannerLoot")
 
 --=====================================================
@@ -202,12 +203,10 @@ local function AddAchievementTooltip(tooltip, pin)
 end
 
 local function AddNotesTooltip(tooltip, pin)
-	if (AL[string.format("NOTE_%s", pin.POI.entityID)] ~= string.format("NOTE_%s", pin.POI.entityID)) then
+	local note = RSNotes.GetNote(pin.POI.entityID, pin.POI.mapID)
+	if (note) then
 		local line = tooltip:AddLine()
-		tooltip:SetCell(line, 1, RSUtils.TextColor(AL[string.format("NOTE_%s", pin.POI.entityID)], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
-	elseif (AL[string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)] ~= string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)) then
-		local line = tooltip:AddLine()
-		tooltip:SetCell(line, 1, RSUtils.TextColor(AL[string.format("NOTE_%s_%s", pin.POI.entityID, pin.POI.mapID)], "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(note, "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
 	end
 end
 
@@ -436,6 +435,19 @@ function RSTooltip.ShowSimpleTooltip(pin, parentTooltip)
 	if (RSConstants.DEBUG_MODE) then
 		line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.entityID, "FFFFCC"), nil, "LEFT", 10)
+		local hasQuestID = false
+		if (pin.POI.isNpc and RSNpcDB.GetNpcQuestIdFound(pin.POI.entityID) or (RSNpcDB.GetInternalNpcInfo(pin.POI.entityID) and RSNpcDB.GetInternalNpcInfo(pin.POI.entityID).questID)) then
+			hasQuestID = true
+		elseif (pin.POI.isContainer and RSContainerDB.GetContainerQuestIdFound(pin.POI.entityID) or (RSContainerDB.GetInternalContainerInfo(pin.POI.entityID) and RSContainerDB.GetInternalContainerInfo(pin.POI.entityID).questID)) then
+			hasQuestID = true
+		elseif (RSEventDB.GetEventQuestIdFound(pin.POI.entityID) or (RSEventDB.GetInternalEventInfo(pin.POI.entityID) and RSEventDB.GetInternalEventInfo(pin.POI.entityID).questID)) then
+			hasQuestID = true
+		end
+		
+		if (not hasQuestID) then
+			line = tooltip:AddLine()
+			tooltip:SetCell(line, 1, RSUtils.TextColor("No tiene QUESTID", "FF0000"), nil, "LEFT", 10)
+		end
 	end
 
 	-- Last time seen

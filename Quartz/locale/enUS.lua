@@ -3,9 +3,9 @@
 -- http://www.wowace.com/projects/quartz/localization/ ;¶
 
 local debug = false
---[===[@debug@
+--[==[@debug@
 debug = true
---@end-debug@]===]
+--@end-debug@]==]
 
 local L = LibStub("AceLocale-3.0"):NewLocale("Quartz3", "enUS", true, debug)
 
@@ -23,6 +23,7 @@ L["Adjust the Y position of the name text"] = true
 L["Adjust the Y position of the time text"] = true
 L["Alpha"] = true
 L["Anchor Frame"] = true
+L["Anchor point"] = true
 L["AOE Rez"] = true
 L["Background"] = true
 L["Background Alpha"] = true

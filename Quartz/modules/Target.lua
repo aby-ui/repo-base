@@ -22,7 +22,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
 
 local MODNAME = "Target"
-local Target = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
+local Target = Quartz3:NewModule(MODNAME, "AceEvent-3.0", "AceHook-3.0")
 
 ----------------------------
 -- Upvalues
@@ -42,14 +42,28 @@ local defaults = {
 		
 		showfriendly = true,
 		showhostile = true,
+
+		hideblizz = true,
 	})
 }
 
 do
+	local function setOpt(info, value)
+		db[info[#info]] = value
+		Target:ApplySettings()
+	end
+
 	local options
 	function getOptions()
 		if not options then
 			options = Target.Bar:CreateOptions()
+			options.args.hideblizz = {
+				type = "toggle",
+				name = L["Disable Blizzard Cast Bar"],
+				desc = L["Disable and hide the default UI's casting bar"],
+				set = setOpt,
+				order = 101,
+			}
 			options.args.showfriendly = {
 				type = "toggle",
 				name = L["Show for Friends"],
@@ -80,6 +94,7 @@ end
 function Target:OnEnable()
 	self.Bar:RegisterEvents()
 	self.Bar:RegisterEvent("PLAYER_TARGET_CHANGED")
+	self:SecureHook("Target_Spellbar_OnEvent")
 	self.Bar.PLAYER_TARGET_CHANGED = self.Bar.UpdateUnit
 	self.lastNotInterruptible = false
 	self:ApplySettings()
@@ -100,9 +115,40 @@ end
 function Target:ApplySettings()
 	db = self.db.profile
 
+	-- obey the hideblizz setting no matter if disabled or not
+	if db.hideblizz then
+		TargetFrameSpellBar.RegisterEvent = function() end
+		TargetFrameSpellBar:UnregisterAllEvents()
+		TargetFrameSpellBar:Hide()
+	else
+		TargetFrameSpellBar.RegisterEvent = nil
+		TargetFrameSpellBar:UnregisterAllEvents()
+		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_START", "target")
+		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target")
+		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "target")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		TargetFrameSpellBar:RegisterEvent("PLAYER_ENTERING_WORLD")
+		TargetFrameSpellBar:RegisterEvent("PLAYER_TARGET_CHANGED")
+		TargetFrameSpellBar:RegisterEvent("CVAR_UPDATE")
+		TargetFrameSpellBar:RegisterEvent("VARIABLES_LOADED")
+	end
+
 	self.Bar:SetConfig(db)
 	if self:IsEnabled() then
 		self.Bar:ApplySettings()
+	end
+end
+
+function Target:Target_Spellbar_OnEvent()
+	if db.hideblizz then
+		TargetFrameSpellBar.showCastbar = false
+		TargetFrameSpellBar:Hide()
 	end
 end
 

@@ -115,6 +115,11 @@ function RSEntityPinMixin:OnMouseDown(button)
 
 		-- Refresh minimap
 		RSMinimap.RefreshAllData(true)
+		
+		-- Hide the tooltip
+		if (RSTooltip.HideTooltip(self.tooltip)) then
+			self.tooltip = nil
+		end
 	end
 end
 

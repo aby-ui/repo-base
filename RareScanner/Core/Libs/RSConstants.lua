@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 28
-RSConstants.CURRENT_LOOT_DB_VERSION = 40
+RSConstants.CURRENT_DB_VERSION = 29
+RSConstants.CURRENT_LOOT_DB_VERSION = 41
 
 ---============================================================================
 -- Special events
@@ -160,7 +160,7 @@ RSConstants.NPC_VIGNETTE = "VignetteKill"
 RSConstants.NPC_VIGNETTE_ELITE = "VignetteKillElite"
 RSConstants.NPC_LEGION_VIGNETTE = "DemonInvasion5"
 RSConstants.NPC_NAZJATAR_VIGNETTE = "nazjatar-nagaevent"
---RSConstants.NPC_ISLANDS = "Islands-AzeriteBoss"
+RSConstants.NPC_WARFRONT_NEUTRAL_HERO_VIGNETTE = "Warfront-NeutralHero"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
@@ -182,17 +182,38 @@ RSConstants.ULDUM_MAPID = 1527
 -- NpcIDS
 ---============================================================================
 
-RSConstants.MYSTIC_RAINBOWHORN = 164547
-RSConstants.DEATHBINDER_HROTH = 164477
-RSConstants.BAEDOS = 160629
 RSConstants.CATACOMBS_CACHE = 358040
 RSConstants.DOOMROLLER_ID = 95056
 RSConstants.DEATHTALON = 95053
 RSConstants.TERRORFIST = 95044
 RSConstants.VENGEANCE = 95054
+RSConstants.WINGFLAYER_CRUEL = 167078
+RSConstants.GIEGER = 162741
+RSConstants.FORGEMASTER_MADALAV = 159496
+RSConstants.HARIKA_HORRID = 165290
+RSConstants.VALFIR_UNRELENTING = 168647
+RSConstants.ORATOR_KLOE_NPCS = { 161527, 161528, 161529, 161530 }
+RSConstants.CRAFTING_NPCS = { 157294, 157308, 157307, 157312, 157309, 157310, 157311 }
+RSConstants.DAFFODIL_NPCS = { 171690, 167724 }
+RSConstants.ABUSE_POWER_GI_NPCS = { 159156, 159157 }
+RSConstants.ABUSE_POWER_I_NPCS = { 159151, 156919, 156916, 156918 }
+RSConstants.ABUSE_POWER_HI_NPCS = { 159153, 159152, 159155, 159154 }
+RSConstants.RUNE_CONSTRUCTS_CONTAINERS = { 355037, 355036 }
+RSConstants.GRAPPLING_GROWTH_CONTAINERS = { 352596, 354852, 354853 }
+RSConstants.GREEDSTONE_CONTAINERS = { 354211, 354206 }
+RSConstants.LUNARLIGHT_CONTAINERS = { 353771, 353770 }
+RSConstants.CITADEL_LOYALTY_NPCS = { 156339, 156340 }
+RSConstants.SWELLING_TEAR_NPCS = { 171040, 171013, 171041 }
+RSConstants.VESPER_REPAIR_NPCS = { 160882, 160985 }
+RSConstants.THEATER_PAIN_NPCS = { 168147, 168148 }
+RSConstants.DAPPERDEW_NPCS = { 168135, 164415, 166135, 166138, 166139, 166140, 166142, 166145, 166146 }
+RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
+RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
+	
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths
-RSConstants.INGNORED_VIGNETTES = { 156480, 155660 }
+RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373 }
+RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 164547, 164477, 160629, 175012, 157833, 166398 }
 
 ---============================================================================
 -- Garrison cache
@@ -379,7 +400,7 @@ function RSConstants.IsEventAtlas(atlasName)
 end
 
 function RSConstants.IsNpcAtlas(atlasName)
-	return atlasName == RSConstants.NPC_VIGNETTE or atlasName == RSConstants.NPC_LEGION_VIGNETTE or atlasName == RSConstants.NPC_VIGNETTE_ELITE or atlasName == RSConstants.NPC_NAZJATAR_VIGNETTE-- or atlasName == RSConstants.NPC_ISLANDS
+	return atlasName == RSConstants.NPC_VIGNETTE or atlasName == RSConstants.NPC_LEGION_VIGNETTE or atlasName == RSConstants.NPC_VIGNETTE_ELITE or atlasName == RSConstants.NPC_NAZJATAR_VIGNETTE or atlasName == RSConstants.NPC_WARFRONT_NEUTRAL_HERO_VIGNETTE
 end
 
 function RSConstants.IsContainerAtlas(atlasName)

@@ -1007,7 +1007,7 @@ local function CreateExecuteAll(subOption)
   end
 end
 
-local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
+local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, group)
   local metaOrder = 99
   local function IsParentDynamicGroup()
     if data.parent then
@@ -1212,7 +1212,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
   };
 
   OptionsPrivate.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
-                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false)
+                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false, { setOnParent = group })
   return positionOptions;
 end
 
@@ -1321,6 +1321,9 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
   return borderOptions;
 end
 
+local function noop()
+end
+
 local function GetCustomCode(data, path)
   for _, key in ipairs(path) do
     if (not data or not data[key]) then
@@ -1397,7 +1400,10 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       if not errorString then
         if options.validator then
-          errorString = options.validator(loadedFunction())
+          local ok, validate = xpcall(loadedFunction, function(err) errorString = err end)
+          if ok then
+            errorString = options.validator(validate)
+          end
         end
       end
       return errorString and "|cFFFF0000"..errorString or "";
@@ -1425,10 +1431,11 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
         return false;
       else
         if options.validator then
-          errorString = options.validator(loadedFunction())
-          if errorString then
-            return false
+          local ok, validate = xpcall(loadedFunction, noop)
+          if ok then
+            return options.validator(validate)
           end
+          return false
         end
         return true;
       end

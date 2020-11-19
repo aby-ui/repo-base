@@ -72,7 +72,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable.", itemID))
 			return true;
-	end
+		end
 	end
 
 	-- Character class filter
@@ -98,15 +98,15 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable (Transmog check).", itemID))
 			return true
-	elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
-		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ya tenerlo (Transmog check).", itemID))
-		return true
-	else
-		if (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Transmog check).", itemID))
+		elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
+			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ya tenerlo (Transmog check).", itemID))
 			return true
+		else
+			if (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
+				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Transmog check).", itemID))
+				return true
+			end
 		end
-	end
 	end
 
 	-- Collection mount filter
@@ -114,7 +114,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		if (RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (montura).", itemID))
 			return true
-	end
+		end
 	end
 
 	-- Collection pet filter
@@ -123,7 +123,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		if (RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "1", "1")) or RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "3", "3"))) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (mascota).", itemID))
 			return true
-	end
+		end
 	end
 
 	-- Collection toy filter
@@ -132,7 +132,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		if (RSTooltipScanners.ScanLoot(itemLink, TOY) and RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (juguete).", itemID))
 			return true
-	end
+		end
 	end
 
 	return false

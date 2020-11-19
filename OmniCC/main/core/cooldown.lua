@@ -6,6 +6,10 @@ local _, Addon = ...
 -- before a user rebooted
 local MAX_START_DELAY_MS = 86400
 local GCD_SPELL_ID = 61304
+
+-- how much of a buffer we give finish effets (in seconds)
+local FINISH_EFFECT_BUFFER = -0.15
+
 local cooldowns = {}
 
 local Cooldown = {}
@@ -21,7 +25,7 @@ local function IsGlobalCooldown(start, duration)
     return start == gcdStart and duration == gcdDuration
 end
 
-local function GetGCDTimeRemaining(start, duration)
+local function GetGCDTimeRemaining()
     local start, duration = GetSpellCooldown(GCD_SPELL_ID)
 
     if start == 0 or duration == 0 then
@@ -90,16 +94,36 @@ function Cooldown:CanShowFinishEffect()
         return false
     end
 
-    -- filter inactive
-    if self._occ_start == 0 or self._occ_duration == 0 then
+    local start = self._occ_start or 0
+    local duration = self._occ_duration or 0
+
+    -- invalid cooldown
+    if start == 0 or duration == 0 then
+        return false
+    end
+
+    local remain = (start + duration) - GetTime()
+
+    -- cooldown expired too long ago
+    if remain < FINISH_EFFECT_BUFFER then
+        return false
+    end
+
+    -- cooldown outside of GCD bounds
+    -- or has time remaining if we're outside of GCD
+    if remain > GetGCDTimeRemaining() then
         return false
     end
 
     -- settings checks
     -- no config, do nothing
     local settings = self._occ_settings
-
     if not settings then
+        return false
+    end
+
+    -- not long enough, do nothing
+    if duration < (settings.minEffectDuration or math.huge) then
         return false
     end
 
@@ -109,26 +133,10 @@ function Cooldown:CanShowFinishEffect()
         return false
     end
 
-    -- not long enough, do nothing
-    if (self._occ_duration or 0) < (settings.minEffectDuration or math.huge) then
-        return false
-    end
 
-    -- calculate the time remaining on the cooldown
-    local remain = self._occ_start + self._occ_duration - GetTime()
 
-    -- just completed within a frame or so
-    if remain <= 0 and remain > -0.1 then
-        return true, effect
-    end
+    return true, effect
 
-    -- will complete before GCD is over
-    local gcdRemain = GetGCDTimeRemaining()
-    if gcdRemain > 0 and remain <= gcdRemain then
-        return true, effect
-    end
-
-    return false
 end
 
 function Cooldown:GetKind()

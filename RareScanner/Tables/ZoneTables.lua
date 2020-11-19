@@ -7,15 +7,16 @@ private.CONTINENT_ZONE_IDS = {
 	[905] = { zonefilter = true, npcfilter = true, id = 9, zones = {830,882,885} }; --Argus
 	[619] = { zonefilter = true, npcfilter = true, id = 8, zones = {630,646,625,790,650,634,680,641,649,652} }; --Broken Isles
 	[572] = { zonefilter = true, npcfilter = true, id = 7, zones = {525,534,535,539,542,543,550,582,588,590} }; --Draenor
-	[13] = { zonefilter = true, npcfilter = true, id = 2, zones = {14,15,17,18,21,22,23,25,26,27,32,36,37,47,48,49,50,51,52,56,70,76,84,201,203,204,205,210,241,425,465,469,943,1470}, current = { 14,943,1470 } }; --Eastern Kingdoms
-	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,71,76,77,78,80,81,83,103,198,199,249,327,338,1332,1469,1527,1571}, current = { 62,1332,1469,1527,1571, } }; --Kalimdor
+	[13] = { zonefilter = true, npcfilter = true, id = 2, zones = {14,15,17,18,21,22,23,25,26,27,32,36,37,47,48,49,50,51,52,56,70,76,84,201,203,204,205,210,241,425,465,469,943,1470} }; --Eastern Kingdoms
+	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,71,76,77,78,80,81,83,103,198,199,249,327,338,1332,1469,1527,1571} }; --Kalimdor
 	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126}, current = { 118 }  }; --Northrend
-	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554,1530,1570}, current = { 1530,1570 } }; --Pandaria
+	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554,1530,1570} }; --Pandaria
 	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {94,95,100,102,104,105,106,107,108,109} }; --Outland
 	[948] = { zonefilter = true, npcfilter = true, id = 5, zones = {207} }; --The Maelstrom
-	[876] = { zonefilter = true, npcfilter = true, id = 10, zones = {895,896,942,1161,1462}, current = { "all" } }; --Kul Tiras
-	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165}, current = { "all" } }; --Zandalar
-	[1355] = { zonefilter = true, npcfilter = true, id = 12, zones = {1355}, current = { "all" } }; --Nazjatar
+	[876] = { zonefilter = true, npcfilter = true, id = 10, zones = {895,896,942,1161,1462} }; --Kul Tiras
+	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165} }; --Zandalar
+	[1355] = { zonefilter = true, npcfilter = true, id = 12, zones = {1355} }; --Nazjatar
+	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618}, current = { "all" } }; --Shadowlands
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, npcfilter = true, zones = {11,35,219,229,237,243,251,274,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041} }; --Dungeons or scenarios
@@ -63,10 +64,13 @@ private.SUBZONES_IDS = {
 	[1015] = {1016,1017,1018,1019}; --Waycrest manor
 	[974] = {975,976,977,978,979,980}; --Tol Dagor
 	[1041] = {1042}; --The underrot
+	[1525] = {1644}; --The ember court
+	[1536] = {1649}; --Vault in Maldraxxus
+	[1618] = {1619,1620,1621,1623,1624,1627,1628,1629,1630,1631,1632,1635,1636,1641,1645,1656,1705,1712,1716,1720,1721,1736,1749,1751,1752,1753,1754,1757,1758,1759,1760,1761,1762,1763,1764,1765,1766,1767,1768,1769,1770,1771,1772,1773,1774,1775,1776,1777,1778,1779,1780,1781,1782,1783,1784,1785,1786,1787,1788,1789,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1805,1806,1807,1808,1809,1810,1811,1812}; --Torghast
 }
 
 private.ZONES_WITHOUT_VIGNETTE = {
-----[zoneId] = { artID };
+	----[zoneId] = { artID };
 	[77] = { 82 }; --Felwood
 	[10] = { 11 }; --Northern barrens
 	[69] = { 74 }; --Feralas
@@ -171,7 +175,7 @@ private.ZONES_WITHOUT_VIGNETTE = {
 }
 
 private.RESETABLE_KILLS_ZONE_IDS = {
-----[zoneId] = { artID or "all"};
+	----[zoneId] = { artID or "all"};
 	[539] = { "all" }; --Shadowmoon Valley (WOD)
 	[550] = { "all" }; --Nagrand (WOD)
 	[535] = { "all" }; --Talador (WOD)
@@ -189,6 +193,10 @@ private.RESETABLE_KILLS_ZONE_IDS = {
 	[1527] = { "all" }; --Uldum 8.3.0 invassion (BFA)
 	[1570] = { "all" }; --Valley of eternal blossoms 8.3.0 horror vision (BFA)
 	[1571] = { "all" }; --Uldum 8.3.0 horror vision (BFA)
+	[1533] = { "all" }; --Bastion (Shadowlands)
+	[1536] = { "all" }; --Maldraxxus (Shadowlands)
+	[1565] = { "all" }; --Ardenweald (Shadowlands)
+	[1525] = { "all" }; --Ravendreth (Shadowlands)
 }
 
 private.RESETABLE_WARFRONT_KILLS_ZONE_IDS = {
@@ -220,6 +228,7 @@ private.PERMANENT_KILLS_ZONE_IDS = {
 	[863] = { "all" };
 	[862] = { "all" };
 	[1165] = { "all" };
+	[1618] = { "all" };
 }
 
 -- Mechagon construction projects

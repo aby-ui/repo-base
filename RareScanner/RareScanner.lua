@@ -945,7 +945,7 @@ function RareScanner:ProcessCompletedEvent(eventID, forzed)
 	-- Extracts quest id if we don't have it
 	-- Avoids shift-left-click events
 	if (not forzed) then
-		if ((not eventInternalInfo or not eventInternalInfo.questID) and not RSEventDB.GetEventQuestIdFound(containerID)) then
+		if ((not eventInternalInfo or not eventInternalInfo.questID) and not RSEventDB.GetEventQuestIdFound(eventID)) then
 			RSLogger:PrintDebugMessage(string.format("Evento [%s]. Buscando questID...", eventID))
 			RSQuestTracker.FindCompletedHiddenQuestID(eventID, function(eventID, newQuestID) RSEventDB.SetEventQuestIdFound(eventID, newQuestID) end)
 		else
@@ -953,7 +953,7 @@ function RareScanner:ProcessCompletedEvent(eventID, forzed)
 		end
 	end
 
-	RSGeneralDB.DeleteRecentlySeen(containerID)
+	RSGeneralDB.DeleteRecentlySeen(eventID)
 
 	-- Refresh minimap
 	if (not forzed) then
@@ -965,6 +965,10 @@ end
 function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	local _, _, _, _, _, id, _ = strsplit("-", vignetteInfo.objectGUID);
 	local npcID = tonumber(id)
+	
+	if (not npcID) then
+		return
+	end
 
 	-- Check it it is an entity that use a vignette but it isn't a rare, event or treasure
 	if (RSUtils.Contains(RSConstants.INGNORED_VIGNETTES, npcID)) then
@@ -990,7 +994,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	end
 
 	-- These NPCs are tagged with events
-	if (npcID == RSConstants.MYSTIC_RAINBOWHORN or npcID == RSConstants.DEATHBINDER_HROTH or npcID == RSConstants.BAEDOS) then
+	if (RSUtils.Contains(RSConstants.NPCS_WITH_EVENT_VIGNETTE, npcID)) then
 		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
 	end
 

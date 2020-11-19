@@ -19,6 +19,7 @@
 local Quartz3 = LibStub("AceAddon-3.0"):GetAddon("Quartz3")
 local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 
+local LibWindow = LibStub("LibWindow-1.1")
 local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
@@ -366,6 +367,7 @@ end
 
 function CastBarTemplate:SetConfig(config)
 	self.config = config
+	LibWindow.RegisterConfig(self, self.config)
 end
 
 function CastBarTemplate:ApplySettings()
@@ -375,11 +377,12 @@ function CastBarTemplate:ApplySettings()
 	if not db.x then
 		db.x = (UIParent:GetWidth() / 2 - (db.w * db.scale) / 2) / db.scale
 	end
-	self:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", db.x, db.y)
+
 	self:SetWidth(db.w + 10)
 	self:SetHeight(db.h + 10)
 	self:SetAlpha(db.alpha)
-	self:SetScale(db.scale)
+
+	LibWindow.RestorePosition(self)
 
 	ToggleCastNotInterruptible(self, self.lastNotInterruptible, true)
 
@@ -540,9 +543,8 @@ do
 	end
 
 	local function dragstop(self)
-		self.config.x = self:GetLeft()-UIParent:GetLeft()
-		self.config.y = self:GetBottom()-UIParent:GetBottom()
 		self:StopMovingOrSizing()
+		LibWindow.SavePosition(self)
 	end
 
 	local function nothing(self)
@@ -619,9 +621,13 @@ do
 		local bar = getBar(info)
 		local scale = bar.config.scale
 		if v == "horizontal" then
-			bar.config.x = (UIParent:GetWidth() / 2 - (bar.config.w * scale) / 2) / scale
+			bar.config.point = bar.config.point:gsub("LEFT", ""):gsub("RIGHT", "")
+			if bar.config.point == "" then bar.config.point = "CENTER" end
+			bar.config.x = 0
 		else -- L["Vertical"]
-			bar.config.y = (UIParent:GetHeight() / 2 - (bar.config.h * scale) / 2) / scale
+			bar.config.point = bar.config.point:gsub("TOP", ""):gsub("BOTTOM", "")
+			if bar.config.point == "" then bar.config.point = "CENTER" end
+			bar.config.y = 0
 		end
 		bar:ApplySettings()
 	end
@@ -692,20 +698,6 @@ do
 					min = 50, max = 1500, bigStep = 5,
 					order = 200,
 				},
-				x = {
-					type = "range",
-					name = L["X"],
-					desc = L["Set an exact X value for this bar's position."],
-					min = -2560, max = 2560, bigStep = 1,
-					order = 200,
-				},
-				y = {
-					type = "range",
-					name = L["Y"],
-					desc = L["Set an exact Y value for this bar's position."],
-					min = -1600, max = 1600, bigStep = 1,
-					order = 200,
-				},
 				scale = {
 					type = "range",
 					name = L["Scale"],
@@ -720,6 +712,36 @@ do
 					isPercent = true,
 					min = 0.1, max = 1, bigStep = 0.025,
 					order = 202,
+				},
+				x = {
+					type = "range",
+					name = L["X"],
+					desc = L["Set an exact X value for this bar's position."],
+					min = -2560, max = 2560, bigStep = 1,
+					order = 203,
+				},
+				y = {
+					type = "range",
+					name = L["Y"],
+					desc = L["Set an exact Y value for this bar's position."],
+					min = -1600, max = 1600, bigStep = 1,
+					order = 204,
+				},
+				point = {
+					type = "select",
+					name = L["Anchor point"],
+					values = {
+						["TOP"] = L["Top"],
+						["RIGHT"] = L["Right"],
+						["BOTTOM"] = L["Bottom"],
+						["LEFT"] = L["Left"],
+						["TOPRIGHT"] = L["Top Right"],
+						["TOPLEFT"] = L["Top Left"],
+						["BOTTOMLEFT"] = L["Bottom Left"],
+						["BOTTOMRIGHT"] = L["Bottom Right"],
+						["CENTER"] = L["Center"]
+					},
+					order = 205,
 				},
 				icon = {
 					type = "header",
@@ -979,6 +1001,7 @@ Quartz3.CastBarTemplate = {}
 Quartz3.CastBarTemplate.defaults = {
 	--x =  -- applied automatically in applySettings()
 	y = 180,
+	point = "BOTTOMLEFT",
 	h = 25,
 	w = 250,
 	scale = 1,
@@ -1018,10 +1041,11 @@ function Quartz3.CastBarTemplate:new(parent, unit, name, localizedName, config)
 	local bar = setmetatable(CreateFrame("Frame", frameName, UIParent, "BackdropTemplate"), CastBarTemplate_MT)
 	bar.unit = unit
 	bar.parent = parent
-	bar.config = config
 	bar.modName = name
 	bar.localizedName = localizedName
 	bar.locked = true
+
+	bar:SetConfig(config)
 
 	Quartz3.CastBarTemplate.bars[name] = bar
 

@@ -7,10 +7,10 @@ else--Horde
 	dungeonID, creatureID = 2329, 144946--Ivus the Forest Lord
 	breathId, strikeId, gtfoId = 282404, 282489, 282414
 end
-local mod	= DBM:NewMod(dungeonID, "DBM-Azeroth-BfA", 4, 1028)
+local mod	= DBM:NewMod(dungeonID, "DBM-BfA", 4, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200924002723")
+mod:SetRevision("20201116012055")
 mod:SetCreatureID(creatureID)
 --mod:SetEncounterID(2263)
 --mod:DisableESCombatDetection()

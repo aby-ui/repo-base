@@ -30,8 +30,8 @@ private.NPC_GUIDE = {
 		[RSConstants.STEP2] = { x = 0.1897, y = 0.6345, comment = AL["NOTE_168135_2"] };
 		[RSConstants.STEP3] = { x = 0.1967, y = 0.6347, comment = AL["NOTE_168135_3"] };
 		[RSConstants.STEP4] = { x = 0.510, y = 0.338, comment = AL["NOTE_168135_4"] };
-		[RSConstants.STEP5] = { x = 0.5044, y = 0.3306, comment = AL["NOTE_168135_5"]  };
-		[RSConstants.STEP6] = { x = 0.4530, y = 0.5113, comment = AL["NOTE_168135_6"]  };
+		[RSConstants.STEP5] = { x = 0.5044, y = 0.3306, comment = AL["NOTE_168135_5"] };
+		[RSConstants.STEP6] = { x = 0.4530, y = 0.5113, comment = AL["NOTE_168135_6"] };
 	}; --Faeflayer
 	[162588] = { [RSConstants.FLAG] = { x = 0.5775, y = 0.5153, comment = AL["NOTE_162588_1"] } }; --Gristlebeak
 	[170439] = {
@@ -46,7 +46,41 @@ private.NPC_GUIDE = {
 		[RSConstants.DOT..3] = { x = 0.5726, y = 0.4792, comment = AL["NOTE_171010_1"] };
 	}; --Corrupted Clawguard
 	[163460] = { [RSConstants.ENTRANCE] = { x = 0.4091, y = 0.4724 } }; --Dionae
-	[167078] = { [RSConstants.FLAG] = { x = 0.4165, y = 0.5453, comment = AL["NOTE_167078_1"] } }; --Wingflayer the Cruel
+	[167078] = { 
+		[RSConstants.FLAG] = { x = 0.6422, y = 0.199, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+		[RSConstants.STEP1] = { x = 0.4165, y = 0.5453, comment = AL["NOTE_167078_1"] } 
+	}; --Wingflayer the Cruel
+	[156339] = { 
+		[RSConstants.FLAG] = { x = 0.6422, y = 0.199, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+		[RSConstants.TRANSPORT..1] = { x = 0.2456, y = 0.225 };
+	}; --Eliminator Sotiros
+	[156340] = { 
+		[RSConstants.FLAG] = { x = 0.6422, y = 0.199, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+		[RSConstants.TRANSPORT..1] = { x = 0.2456, y = 0.225 };
+	}; --Larionrider Orstus
+	[162741] = { 
+		[RSConstants.FLAG] = { x = 0.5017, y = 0.6957, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+	}; --Gieger <Experimental Construct>
+	[168147] = { 
+		[RSConstants.FLAG] = { x = 0.5017, y = 0.6957, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+	}; --Sabreil the Bonecleaver
+	[168148] = { 
+		[RSConstants.FLAG] = { x = 0.5017, y = 0.6957, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+	}; --Drolkrad
+	[159496] = { 
+		[RSConstants.FLAG] = { x = 0.2537, y = 0.2869, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+	}; --Forgemaster Madalav
+	[168647] = { 
+		[RSConstants.FLAG] = { x = 0.4594, y = 0.5366, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+	}; --Valfir the Unrelenting
+	[165290] = {
+		[RSConstants.FLAG] = { x = 0.2537, y = 0.2869, comment = AL["GUIDE_ANIMA_CONDUCTOR"] };
+		[RSConstants.STEP1] = { x = 0.4077, y = 0.7270, comment = AL["NOTE_165290_1"] };
+		[RSConstants.STEP2] = { x = 0.4118, y = 0.7467, comment = AL["NOTE_165290_1"] };
+		[RSConstants.STEP3] = { x = 0.46, y = 0.79, comment = AL["NOTE_165290_2"] };
+		[RSConstants.STEP4] = { x = 0.4323, y = 0.7762, comment = AL["NOTE_165290_3"] };
+		[RSConstants.STEP5] = { x = 0.463, y = 0.7786, comment = AL["NOTE_165290_4"] };
+	}; --Harika the Horrid
 	[171211] = {
 		[RSConstants.DOT..1] = { x = 0.3141, y = 0.2295, comment = AL["NOTE_171211_1"] };
 		[RSConstants.DOT..2] = { x = 0.3317, y = 0.2386, comment = AL["NOTE_171211_1"] };
@@ -154,14 +188,14 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..2] = { x = 0.76, y = 0.518, comment = AL["GUIDE_SINSTONE_QUEST"] };
 	}; --High Inquisitor Magda
 	[165206] = { [RSConstants.FLAG] = { x = 0.654, y = 0.6008, comment = AL["NOTE_165206_1"] } }; --Endlurker
-	[165290] = {
-		[RSConstants.STEP1] = { x = 0.4077, y = 0.7270, comment = AL["NOTE_165290_1"] };
-		[RSConstants.STEP2] = { x = 0.4118, y = 0.7467, comment = AL["NOTE_165290_1"] };
-		[RSConstants.STEP3] = { x = 0.46, y = 0.79, comment = AL["NOTE_165290_2"] };
-		[RSConstants.STEP4] = { x = 0.4323, y = 0.7762, comment = AL["NOTE_165290_3"] };
-		[RSConstants.STEP5] = { x = 0.463, y = 0.7786, comment = AL["NOTE_165290_4"] };
-	}; --Harika the Horrid
 	[170048] = { [RSConstants.FLAG] = { x = 0.49, y = 0.348, comment = AL["NOTE_170048_1"] } }; --Manifestation of Wrath
+	[157964] = { [RSConstants.PATH_START] = { x = 0.235, y = 0.347 } }; --Adjutant Dekaris
+	[172577] = { [RSConstants.FLAG] = { x = 0.268, y = 0.293, comment = AL["NOTE_172577_1"] } }; --Adjutant Dekaris
+	[172521] = { [RSConstants.ENTRANCE] = { x = 0.558, y = 0.675 } }; --Sanngror the Torturer
+	[175821] = { [RSConstants.ENTRANCE] = { x = 0.2081, y = 0.394 } }; --Ratgusher <10,000 Mawrats in a Suit of Armor>
+	[172524] = { [RSConstants.ENTRANCE] = { x = 0.593, y = 0.8 } }; --Skittering Broodmother
+	[165152] = { [RSConstants.ENTRANCE] = { x = 0.6728, y = 0.8234 } }; --Leeched Soul
+	[165175] = { [RSConstants.ENTRANCE] = { x = 0.6728, y = 0.8234 } }; --Prideful Hulk
 }
 
 ---============================================================================

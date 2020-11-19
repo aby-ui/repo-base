@@ -823,7 +823,7 @@ L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by 
 |cFFFFCC00*|r 您可以按Ctrl-點擊一個複選框來選定或取消選定一切來自該發件人的信件。
 |cFFFFCC00*|r 選擇 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
 |cFFFFCC00*|r 選擇 將跳過CoD信件和暴雪的信件。
-|cFFFFCC00*|r 關閉 消息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
+|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
 L[ [=[|cFFFFCC00*|r Shift-Click to take item/money from mail.
 |cFFFFCC00*|r Ctrl-Click to return mail.
 |cFFFFCC00*|r Alt-Click to move an item from your inventory to the current outgoing mail (same as right click in default UI).]=] ] = [=[|cFFFFCC00*|r Shift-點擊將從郵件拿取物品/金錢。
@@ -837,8 +837,8 @@ L[ [=[|cFFFFCC00*|r Simple filters are available for various mail types.
 |cFFFFCC00*|r Disable the Verbose option to stop the chat spam while opening mail.]=] ] = [=[|cFFFFCC00*|r 簡單的篩選器可用於篩選各種信件類型。
 |cFFFFCC00*|r Shift-點擊 收取全部 按鈕將覆蓋所有的篩選器，並提取所有的信件。
 |cFFFFCC00*|r 收取全部 永遠不會刪除任何信件(當所有附在信件的物品和金錢被提取後，遊戲會自動刪除郵箱裡沒有文字的信件) 。
-|cFFFFCC00*|r 收取全部 將跳過CoD信件和暴雪的信件。
-|cFFFFCC00*|r 關閉 消息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
+|cFFFFCC00*|r 收取全部 將跳過付款取件信件和暴雪的信件。
+|cFFFFCC00*|r 關閉 訊息模式 選項來停止當開啟信件時在聊天框的洗頻。]=]
 L[ [=[|cFFFFCC00*|r This module will list your contacts, friends, guild mates, alts and track the last 10 people you mailed.
 |cFFFFCC00*|r It will also autocomplete all names in your BlackBook.]=] ] = [=[|cFFFFCC00*|r 此模組將您的聯絡人名單，朋友，公會隊友，分身，並追踪過去您曾郵寄的10人。
 |cFFFFCC00*|r 它也將自動填寫已在您的黑名單內所有的名字。]=]
@@ -906,18 +906,18 @@ L["Remove Contact"] = "移除聯絡人"
 L["Reset Profile"] = "重置設定檔"
 L["Return"] = "返回"
 L["Select"] = "選擇"
-L["Set subject field to value of coins sent if subject is blank."] = "在「主題:」欄位自動填寫寄件金額。"
+L["Set subject field to value of coins sent if subject is blank."] = "如果「主題:」空白，則欄位自動填寫寄件金額。"
 L["Shows a clickable visual icon as to whether a mail will be returned or deleted on expiry."] = "視覺顯示點擊圖示是否郵件將被退回或刪除期滿。"
 L["Skipping"] = "略過"
 L["Some Messages May Have Been Skipped."] = "部份訊息可能會被略過。"
-L["Thaumaturge Vashreen"] = "魔术师瓦西里恩"
-L["The Postmaster"] = "邮政长"
+L["Thaumaturge Vashreen"] = "魔術師瓦西里恩"
+L["The Postmaster"] = "郵政長"
 L["There are %i more messages not currently shown."] = "有%i更多訊息沒有在目前顯示。"
 L["There are %i more messages not currently shown. More should become available in %i seconds."] = "有%i更多訊息沒有在目前顯示。在%i秒內將會顯示更多。"
 L["TradeBlock"] = "拒絕交易"
 L["Use Mr.Plow after opening"] = "在開啟郵件之後使用Mr.Plow 整理背包"
 L["Use Postal's auto-complete"] = "使用Postal的自動完成"
-L["Verbose mode"] = "消息模式"
+L["Verbose mode"] = "訊息模式"
 L["Wire"] = "自動填寫金額"
 
     return
