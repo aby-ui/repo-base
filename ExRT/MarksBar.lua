@@ -54,7 +54,7 @@ module.db.wm_color_hover ={
 	{ r = 1.0, g = 1.0, b = 1.0 },
 }
 
-module.frame = CreateFrame("Frame",nil,UIParent, BackdropTemplateMixin and "BackdropTemplate")
+module.frame = CreateFrame("Frame","ExRTMarksBar",UIParent, BackdropTemplateMixin and "BackdropTemplate")
 local mainFrame = module.frame
 mainFrame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 mainFrame:EnableMouse(true)
@@ -334,7 +334,7 @@ do
 			frame:SetAttribute("type", "macro")
 			frame:SetAttribute("macrotext1", format("/wm %d", i))
 			frame:SetAttribute("macrotext2", format("/cwm %d", i))
-			if ExRT.locale == "ptBR" then
+			if ExRT.locale == "ptBR" or ExRT.locale == "esES" or ExRT.locale == "esMX" or ExRT.locale == "ptPT" then
 				frame:SetAttribute("macrotext1", format(SLASH_WORLD_MARKER1.." %d", i))
 				frame:SetAttribute("macrotext2", format(SLASH_CLEAR_WORLD_MARKER1.." %d", i))
 			end
@@ -399,7 +399,7 @@ for i=1,9 do
 		frame:SetAttribute("type", "macro")
 		frame:SetAttribute("macrotext1", format("/wm %d", i))
 		frame:SetAttribute("macrotext2", format("/cwm %d", i))
-		if ExRT.locale == "ptBR" then
+		if ExRT.locale == "ptBR" or ExRT.locale == "esES" or ExRT.locale == "esMX" or ExRT.locale == "ptPT" then
 			frame:SetAttribute("macrotext1", format(SLASH_WORLD_MARKER1.." %d", i))
 			frame:SetAttribute("macrotext2", format(SLASH_CLEAR_WORLD_MARKER1.." %d", i))
 		end
@@ -754,7 +754,7 @@ local function modifymarkbars()
 end
 module.modifymarkbars = modifymarkbars
 
-local function EnableMarksBar()
+function module:Enable()
 	VExRT.MarksBar.enabled = true
 	module.frame:Show()
 	module:RegisterEvents('RAID_TARGET_UPDATE')
@@ -763,10 +763,19 @@ local function EnableMarksBar()
 		module:GroupRosterUpdate()
 	end
 end
-local function DisableMarksBar()
+function module:Disable()
 	VExRT.MarksBar.enabled = nil
 	module.frame:Hide()
 	module:UnregisterEvents('RAID_TARGET_UPDATE','GROUP_ROSTER_UPDATE')
+end
+
+function module:Lock()
+	VExRT.MarksBar.Fix = true
+	module.frame:SetMovable(true)
+end
+function module:Unlock()
+	VExRT.MarksBar.Fix = nil
+	module.frame:SetMovable(false)
 end
 
 function module.options:Load()
@@ -774,19 +783,17 @@ function module.options:Load()
 
 	self.chkEnable = ELib:Check(self,L.Enable,VExRT.MarksBar.enabled):Point(15,-30):Tooltip("/rt mb\n/rt mm"):AddColorState():OnClick(function(self)
 		if self:GetChecked() then
-			EnableMarksBar()
+			module:Enable()
 		else
-			DisableMarksBar()
+			module:Disable()
 		end
 	end)
 	
 	self.chkFix = ELib:Check(self,L.messagebutfix,VExRT.MarksBar.Fix):Point(15,-55):OnClick(function(self)
 		if self:GetChecked() then
-			VExRT.MarksBar.Fix = true
-			ExRT.F.LockMove(module.frame,nil,nil,1)
+			module:Lock()
 		else
-			VExRT.MarksBar.Fix = nil
-			ExRT.F.LockMove(module.frame,true,nil,1)
+			module:Unlock()
 		end
 	end)
 	
@@ -1008,13 +1015,15 @@ function module.main:ADDON_LOADED()
 	modifymarkbars()
 
 	if VExRT.MarksBar.enabled then
-		EnableMarksBar()
+		module:Enable()
 	end
 
 	VExRT.MarksBar.pulltimer = VExRT.MarksBar.pulltimer or 10
 	VExRT.MarksBar.pulltimer_right = VExRT.MarksBar.pulltimer_right or VExRT.MarksBar.pulltimer
 
-	if VExRT.MarksBar.Fix then ExRT.F.LockMove(module.frame,nil,nil,1) end
+	if VExRT.MarksBar.Fix then 
+		module:Lock()
+	end
 
 	if VExRT.MarksBar.Alpha then module.frame:SetAlpha(VExRT.MarksBar.Alpha/100) end
 	if VExRT.MarksBar.Scale then module.frame:SetScale(VExRT.MarksBar.Scale/100) end
@@ -1076,9 +1085,9 @@ end
 function module:slash(arg)
 	if arg == "mm" or arg == "mb" then
 		if not VExRT.MarksBar.enabled then
-			EnableMarksBar()
+			module:Enable()
 		else
-			DisableMarksBar()
+			module:Disable()
 		end
 		if module.options.chkEnable then
 			module.options.chkEnable:SetChecked(VExRT.MarksBar.enabled)

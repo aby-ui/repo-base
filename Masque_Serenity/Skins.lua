@@ -39,7 +39,7 @@ local Websites = {
 ---
 
 MSQ:AddSkin("Serenity", {
-	Masque_Version = 90000,
+	API_VERSION = 90002,
 	Shape = "Circle",
 
 	-- Info
@@ -508,7 +508,7 @@ MSQ:AddSkin("Serenity", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Serenity - Redux
@@ -600,7 +600,7 @@ MSQ:AddSkin("Serenity - Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Serenity - Square
@@ -1077,7 +1077,7 @@ MSQ:AddSkin("Serenity - Square", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Serenity - Square Redux
@@ -1169,4 +1169,4 @@ MSQ:AddSkin("Serenity - Square Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})

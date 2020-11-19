@@ -24,8 +24,8 @@ local L = Core.Locale
 
 Core.AddSkin("Dream", {
 	Template = "Default",
+	-- API_VERSION = Default.API_VERSION,
 	-- Shape = Default.Shape,
-	-- Masque_Version = Default.Masque_Version,
 
 	-- Info
 	Description = L["A square skin with trimmed icons and a semi-transparent background."],
@@ -436,6 +436,8 @@ Core.AddSkin("Dream", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\Cooldown\edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.8},
 		Width = 30,
 		Height = 30,
@@ -446,6 +448,8 @@ Core.AddSkin("Dream", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\Cooldown\edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 30,
 		Height = 30,
 		Point = "CENTER",

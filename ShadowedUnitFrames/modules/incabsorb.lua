@@ -6,7 +6,6 @@ function IncAbsorb:OnEnable(frame)
 
 	frame:RegisterUnitEvent("UNIT_MAXHEALTH", self, "UpdateFrame")
 	frame:RegisterUnitEvent("UNIT_HEALTH", self, "UpdateFrame")
-	frame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", self, "UpdateFrame")
 	frame:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", self, "UpdateFrame")
 
 	frame:RegisterUpdateFunc(self, "UpdateFrame")

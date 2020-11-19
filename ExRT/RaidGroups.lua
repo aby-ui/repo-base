@@ -3,6 +3,8 @@ local GlobalAddonName, ExRT = ...
 local module = ExRT.mod:New("RaidGroups",ExRT.L.RaidGroups)
 local ELib,L = ExRT.lib,ExRT.L
 
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 local VExRT = nil
 
 function module.main:ADDON_LOADED()
@@ -291,7 +293,7 @@ function module.options:Load()
 		module:ProcessRoster()
 	end) 
 
-	self.presetList = ELib:ScrollList(self):Size(190,554):Point("TOPRIGHT",-10,-40):AddDrag()
+	self.presetList = ELib:ScrollList(self):Size(190,505):Point("TOPRIGHT",-10,-40):AddDrag()
 	ELib:Text(self,L.RaidGroupsQuickLoad..":"):Point("BOTTOMLEFT",self.presetList,"TOPLEFT",5,3):Color():Shadow()
 
 	self.presetList.ButtonRemove = CreateFrame("Button",nil,self.presetList)
@@ -435,6 +437,111 @@ function module.options:Load()
 	self.presetListSave = ELib:Button(self,L.RaidGroupsSave):Size(192,20):Point("TOP",self.presetList,"BOTTOM",0,-5):OnClick(function(self) 
 		ExRT.F.ShowInput(L.RaidGroupsEnterName,SaveData,nil,nil,nil,SaveInputOnEdit)		
 	end)
+
+	self.importWindow, self.exportWindow = ExRT.F.CreateImportExportWindows()
+
+	local function SaveDataFromTable(rec,name)
+		if not name or string.trim(name) == "" then
+			return
+		end
+		rec.name = name
+		rec.time = time()
+
+		VExRT.RaidGroups.profiles[#VExRT.RaidGroups.profiles+1] = rec
+
+		module.options:UpdateList()
+	end
+
+	function self.importWindow:ImportFunc(str)
+		local header = str:sub(1,8)
+		if header:sub(1,7) ~= "EXRTRGR" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
+			StaticPopupDialogs["EXRT_RAIDGROUP_IMPORT"] = {
+				text = "|cffff0000"..ERROR_CAPS.."|r "..L.ProfilesFail3,
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show("EXRT_RAIDGROUP_IMPORT")
+			return
+		end
+
+		module.options:TextToRecord(str:sub(9),header:sub(8,8)=="0")
+	end
+
+
+	function self:TextToRecord(str,uncompressed)
+		local decoded = LibDeflate:DecodeForPrint(str)
+		local decompressed
+		if uncompressed then
+			decompressed = decoded
+		else
+			decompressed = LibDeflate:DecompressDeflate(decoded)
+		end
+		decoded = nil
+
+		local _,tableData = strsplit(",",decompressed,2)
+		decompressed = nil
+	
+		local successful, res = pcall(ExRT.F.TextToTable,tableData)
+		if ExRT.isDev then
+			module.db.lastImportDB = res
+			if module.db.exportTable and type(res)=="table" then
+				module.db.diffTable = {}
+				print("Compare table",ExRT.F.table_compare(res,module.db.exportTable,module.db.diffTable))
+			end
+		end
+		if successful and res then
+			ExRT.F.ShowInput(L.RaidGroupsEnterName,SaveDataFromTable,res,nil,nil,SaveInputOnEdit)
+		else
+			StaticPopupDialogs["EXRT_RAIDGROUP_IMPORT"] = {
+				text = L.ProfilesFail1..(res and "\nError code: "..res or ""),
+				button1 = OKAY,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,
+			}
+			StaticPopup_Show("EXRT_RAIDGROUP_IMPORT")
+		end
+	end
+
+	function self:RecordToText()
+		local new = {}
+		for i=1,40 do 
+			local text = module.options.edits[i]:GetText()
+			if text and string.trim(text) ~= "" then
+				new[i] = text
+			end
+		end
+		local strlist = ExRT.F.TableToText(new)
+		strlist[1] = "0,"..strlist[1]
+		local str = table.concat(strlist)
+
+		local compressed
+		if #str < 1000000 then
+			compressed = LibDeflate:CompressDeflate(str,{level = 5})
+		end
+		local encoded = "EXRTRGR"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+	
+		ExRT.F.dprint("Str len:",#str,"Encoded len:",#encoded)
+	
+		if ExRT.isDev then
+			module.db.exportTable = new
+		end
+		module.options.exportWindow.Edit:SetText(encoded)
+		module.options.exportWindow:Show()
+	end
+
+	self.butExport = ELib:Button(self,L.RaidGroupsExport):Size(192,20):Point("TOP",self.presetListSave,"BOTTOM",0,-5):OnClick(function(self) 
+		module.options:RecordToText()
+	end)
+	self.butImport = ELib:Button(self,L.Import):Size(192,20):Point("TOP",self.butExport,"BOTTOM",0,-5):OnClick(function(self) 
+		module.options.importWindow:NewPoint("CENTER",UIParent,0,0)
+		module.options.importWindow:Show()			
+	end)
+
 
 	self:UpdateList()
 	self.updateRoster:Click()

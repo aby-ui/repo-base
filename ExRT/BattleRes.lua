@@ -102,9 +102,6 @@ function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
 	VExRT.BattleRes = VExRT.BattleRes or {}
 
-	VExRT.BattleRes.Strata = VExRT.BattleRes.Strata or "HIGH"
-	module.frame:SetFrameStrata(VExRT.BattleRes.Strata)
-
 	if VExRT.BattleRes.Left and VExRT.BattleRes.Top then
 		module.frame:ClearAllPoints()
 		module.frame:SetPoint("TOPLEFT",UIParent,"BOTTOMLEFT",VExRT.BattleRes.Left,VExRT.BattleRes.Top)
@@ -119,6 +116,9 @@ function module.main:ADDON_LOADED()
 	if VExRT.BattleRes.enabled then
 		module:Enable()
 	end
+
+	VExRT.BattleRes.Strata = VExRT.BattleRes.Strata or "HIGH"
+	module.frame:SetFrameStrata(VExRT.BattleRes.Strata)
 end
 
 function module:timer(elapsed)
@@ -162,7 +162,7 @@ function module:timer(elapsed)
 end
 
 do
-	local frame = CreateFrame("Frame",nil,UIParent)
+	local frame = CreateFrame("Frame","ExRTBattleRes",UIParent)
 	module.frame = frame
 	frame:SetSize(64,64)
 	frame:SetPoint("TOP", 0,-200)

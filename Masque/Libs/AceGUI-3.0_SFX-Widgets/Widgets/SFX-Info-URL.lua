@@ -51,10 +51,17 @@ local Locale = GetLocale()
 --if Locale == "deDE" then
 --elseif Locale == "esMX" or Locale == "esES" then
 --elseif Locale == "frFR" then
---elseif Locale == "itIT" then
+if Locale == "itIT" then
+	L["Click to select this text."] = "Clicca per selezionare questo testo."
+	L["Copy"] = "Copia"
+	L["CTRL+C"] = "CTRL+C"
+	L["ESC"] = "ESC"
+	L["Press %s to cancel."] = "Premi %s per cancellare."
+	L["Press %s to copy."] = "Premi %s per copiare."
+	L["Select"] = "Seleziona"
 --elseif Locale == "koKR" then
 --elseif Locale == "ptBR" then
-if Locale == "ruRU" then
+elseif Locale == "ruRU" then
 	L["Click to select this text."] = "Щелкните, чтобы выделить этот текст."
 	L["Copy"] = "Копировать"
 	L["CTRL+C"] = "CTRL+C"
@@ -64,12 +71,12 @@ if Locale == "ruRU" then
 	L["Select"] = "Выбор"
 --elseif Locale == "zhCN" then
 elseif Locale == "zhTW" then
-	L["Click to select this text."] = "點擊來選擇此文字。"
+	L["Click to select this text."] = "點一下選擇此文字。"
 	L["Copy"] = "複製"
 	L["CTRL+C"] = "CTRL+C"
-	L["ESC"] = "離開"
-	L["Press %s to cancel."] = "按％s取消。"
-	L["Press %s to copy."] = "按％s複製。"
+	L["ESC"] = "ESC"
+	L["Press %s to cancel."] = "按 %s 取消。"
+	L["Press %s to copy."] = "按 %s 複製。"
 	L["Select"] = "選擇"
 end
 

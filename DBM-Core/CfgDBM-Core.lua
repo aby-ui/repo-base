@@ -90,13 +90,6 @@ U1RegisterAddon("DBM-Challenges", { title = "个人挑战模块", });
 U1RegisterAddon("DBM-TimelessIsle", { title = "永恒岛模块", });
 
 U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", protected = 1 });
-U1RegisterAddon("DBM-BfA", { title = "争霸艾泽拉斯世界BOSS", });
-U1RegisterAddon("DBM-Party-BfA", { title = "争霸艾泽拉斯5人副本", });
-U1RegisterAddon("DBM-Uldir", { title = "奥迪尔副本模块", });
-U1RegisterAddon("DBM-ZuldazarRaid", { title = "达萨罗之战模块", });
-U1RegisterAddon("DBM-CrucibleofStorms", { title = "风暴熔炉模块", });
-U1RegisterAddon("DBM-EternalPalace", { title = "永恒王宫模块", });
-U1RegisterAddon("DBM-Nyalotha", { title = "尼奥罗萨模块", });
 
 U1RegisterAddon("DBM-Party-Shadowlands", { title = "暗影国度5人副本", });
 U1RegisterAddon("DBM-Shadowlands", { title = "暗影国度世界BOSS", });

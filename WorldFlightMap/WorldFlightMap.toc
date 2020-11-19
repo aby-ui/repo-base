@@ -2,11 +2,11 @@
 ## Title: WorldFlightMap
 ## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar
-## Version: 9.0.0.0
+## Version: 9.0.0.1
 ## Dependencies: Blizzard_FlightMap
 
-#LinePool.lua
-#WorldFlightMap.lua
+LinePool.lua
+WorldFlightMap.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r World 世界飞行地图
 ## X-Vendor: AbyUI

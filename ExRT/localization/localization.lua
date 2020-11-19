@@ -11,12 +11,14 @@ end})
 deDE +
 enGB +
 enUS +
+enCN
 esES
 esMX
 frFR
 itIT
 koKR +
 ptBR
+ptPT
 ruRU +
 zhCN +
 zhTW +
@@ -166,6 +168,25 @@ L.raidtargeticon6_ru = "{квадрат}"
 L.raidtargeticon7_ru = "{крест}"
 L.raidtargeticon8_ru = "{череп}"
 
+--- Raid Target Icon [ES]
+L.raidtargeticon1_es = "{dorado}"
+L.raidtargeticon2_es = "{naranja}"
+L.raidtargeticon3_es = "{morado}"
+L.raidtargeticon4_es = "{verde}"
+L.raidtargeticon5_es = "{plateado}"
+L.raidtargeticon6_es = "{azul}"
+L.raidtargeticon7_es = "{rojo}"
+L.raidtargeticon8_es = "{blanco}"
+
+--- Raid Target Icon [PT]
+L.raidtargeticon1_pt = "{dourado}"
+L.raidtargeticon2_pt = "{laranja}"
+L.raidtargeticon3_pt = "{roxo}"
+L.raidtargeticon4_pt = "{verde}"
+L.raidtargeticon5_pt = "{prateado}"
+L.raidtargeticon6_pt = "{azul}"
+L.raidtargeticon7_pt = "{vermelho}"
+L.raidtargeticon8_pt = "{branco}"
 
 --- Random strings
 L.YesText = YES

@@ -1039,10 +1039,16 @@ function module.options:Load()
 							local t = data[j]
 							local icon = line.items[j]
 							if t and t ~= 0 then
-								t = (j-1)*3+t
-								local _,_,spellTexture = GetTalentInfoByID( data.talentsIDs[j] )
-								icon.texture:SetTexture(spellTexture)
-								icon.link = GetTalentLink( data.talentsIDs[j] )
+								if t < 10 then
+									t = (j-1)*3+t
+									local _,_,spellTexture = GetTalentInfoByID( data.talentsIDs[j] )
+									icon.texture:SetTexture(spellTexture)
+									icon.link = GetTalentLink( data.talentsIDs[j] )
+								else
+									local _,_,spellTexture = GetSpellInfo(t)
+									icon.texture:SetTexture(spellTexture)
+									icon.link = GetSpellLink(t)
+								end
 								icon.sid = nil
 								icon:Show()
 							end
@@ -1248,6 +1254,9 @@ function module.options:Load()
 						end
 					elseif module.db.page == 7 then
 						local data = VExRT.Inspect and VExRT.Inspect.Soulbinds and VExRT.Inspect.Soulbinds[name]
+						if not data then
+							data = VExRT.Inspect and VExRT.Inspect.Soulbinds and VExRT.Inspect.Soulbinds[name.."-"..ExRT.SDB.realmKey]
+						end
 
 						line.refreshSoulbind:Show()
 
@@ -1314,7 +1323,11 @@ function module.options:Load()
 										local texture = select(3,GetSpellInfo(spellID))
 
 										icon.texture:SetTexture(texture)
-										icon.link = "spell:"..spellID
+										--icon.link = "spell:"..spellID
+										icon.link = C_Soulbinds.GetConduitHyperlink(conduitID, conduitRank)
+										if icon.link == "" or not icon.link then
+											icon.link = "spell:"..spellID
+										end
 										icon.sid = nil
 										icon.text:SetText(conduitRank)
 										icon:Show()

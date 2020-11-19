@@ -56,7 +56,7 @@ end
 module.db.iconsLocalizatedNames = {
 	L.raidtargeticon1,L.raidtargeticon2,L.raidtargeticon3,L.raidtargeticon4,L.raidtargeticon5,L.raidtargeticon6,L.raidtargeticon7,L.raidtargeticon8,
 }
-local iconsLangs = {"eng","de","it","fr","ru"}
+local iconsLangs = {"eng","de","it","fr","ru","es","pt"}
 for _,lang in pairs(iconsLangs) do
 	local new = {}
 	module.db["icons"..lang.."Names"] = new
@@ -760,7 +760,7 @@ function module.options:Load()
 		else
 			index = index - 2
 			if IsShiftKeyDown() then
-				VExRT.Note.Black[index] = VExRT.Note.Text1
+			--	VExRT.Note.Black[index] = VExRT.Note.Text1
 			end
 			module.options.NoteEditBox.EditBox:SetText(VExRT.Note.Black[index] or "")
 
@@ -1577,7 +1577,7 @@ function module.options:Load()
 end
 
 
-module.frame = CreateFrame("Frame",nil,UIParent)
+module.frame = CreateFrame("Frame","ExRTNote",UIParent)
 module.frame:SetSize(200,100)
 module.frame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 module.frame:EnableMouse(true)

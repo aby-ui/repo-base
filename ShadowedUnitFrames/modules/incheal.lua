@@ -7,7 +7,6 @@ function IncHeal:OnEnable(frame)
 
 	frame:RegisterUnitEvent("UNIT_MAXHEALTH", self, "UpdateFrame")
 	frame:RegisterUnitEvent("UNIT_HEALTH", self, "UpdateFrame")
-	frame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", self, "UpdateFrame")
 	frame:RegisterUnitEvent("UNIT_HEAL_PREDICTION", self, "UpdateFrame")
 
 	frame:RegisterUpdateFunc(self, "UpdateFrame")

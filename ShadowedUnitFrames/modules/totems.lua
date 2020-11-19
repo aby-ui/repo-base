@@ -4,18 +4,15 @@ local MAX_TOTEMS = MAX_TOTEMS
 
 -- Death Knights untalented ghouls are guardians and are considered totems........... so set it up for them
 local playerClass = select(2, UnitClass("player"))
-if( playerClass == "PALADIN" ) then
+if( playerClass == "DRUID" ) then
 	MAX_TOTEMS = 1
-	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Ancient Kings bar"], true, "PALADIN", nil, 70)
-elseif( playerClass == "DRUID" ) then
-	MAX_TOTEMS = 1
-	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Mushroom bar"], true, "DRUID", 4, 70)
+	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Mushroom bar"], true, "DRUID", 4, 39)
 elseif( playerClass == "MONK" ) then
 	MAX_TOTEMS = 1
-	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Statue bar"], true, "MONK", {1, 2}, 70)
+	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Statue bar"], true, "MONK", {1, 2}, 35)
 elseif( playerClass == "MAGE" ) then
 	MAX_TOTEMS = 1
-	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Rune of Power bar"], true, "MAGE", {1, 2, 3}, 45)
+	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Rune of Power bar"], true, "MAGE", {1, 2, 3}, 30)
 elseif( playerClass == "WARLOCK" ) then
 	MAX_TOTEMS = 2
 	ShadowUF:RegisterModule(Totems, "totemBar", ShadowUF.L["Imp & Dreadstalker bar"], true, "WARLOCK", 2)

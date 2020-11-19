@@ -19,18 +19,27 @@ local _, Core = ...
 local type = type
 
 ----------------------------------------
--- Size
+-- Color
 ---
 
--- Returns a height and width.
-function Core.GetSize(Width, Height, xScale, yScale)
-	local w = (Width or 36) * xScale
-	local h = (Height or 36) * yScale
-	return w, h
+-- Returns a set of color values.
+function Core.GetColor(Color, Alpha)
+	if type(Color) == "table" then
+		return Color[1] or 1, Color[2] or 1, Color[3] or 1, Alpha or Color[4] or 1
+	else
+		return 1, 1, 1, Alpha or 1
+	end
 end
 
 ----------------------------------------
--- Point
+-- NoOp
+---
+
+-- An empty function.
+function Core.NoOp() end
+
+----------------------------------------
+-- Points
 ---
 
 -- Clears and sets the points for a region.
@@ -67,20 +76,29 @@ function Core.SetPoints(Region, Button, Skin, Default, SetAllPoints)
 end
 
 ----------------------------------------
--- Color
+-- Scale
 ---
 
--- Returns a set of color values.
-function Core.GetColor(Color, Alpha)
-	if type(Color) == "table" then
-		return Color[1] or 1, Color[2] or 1, Color[3] or 1, Alpha or Color[4] or 1
-	else
-		return 1, 1, 1, Alpha or 1
-	end
+-- Returns the x and y scale of a button.
+function Core.GetScale(Button)
+	local x = (Button:GetWidth() or 36) / 36
+	local y = (Button:GetHeight() or 36) / 36
+	return x, y
 end
 
 ----------------------------------------
--- Coords
+-- Size
+---
+
+-- Returns a height and width.
+function Core.GetSize(Width, Height, xScale, yScale)
+	local w = (Width or 36) * xScale
+	local h = (Height or 36) * yScale
+	return w, h
+end
+
+----------------------------------------
+-- TexCoords
 ---
 
 -- Returns a set of texture coordinates.
@@ -90,15 +108,4 @@ function Core.GetTexCoords(Coords)
 	else
 		return 0, 1, 0, 1
 	end
-end
-
-----------------------------------------
--- Scale
----
-
--- Returns the x and y scale of a button.
-function Core.GetScale(Button)
-	local x = (Button:GetWidth() or 36) / 36
-	local y = (Button:GetHeight() or 36) / 36
-	return x, y
 end

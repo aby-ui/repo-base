@@ -1,5 +1,6 @@
 local Type, Version = "MDTPullButton", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 local MDT = MDT
 local L = MDT.L
 
@@ -195,12 +196,12 @@ local methods = {
                     end
 
                     if #MDT:GetSelection() > 1 then
-                        L_EasyMenu(self.multiselectMenu, MDT.main_frame.sidePanel.optionsDropDown, "cursor", 0 , -15, "MENU")
+                        LibDD:EasyMenu(self.multiselectMenu, MDT.main_frame.sidePanel.optionsDropDown, "cursor", 0 , -15, "MENU")
                     else
                         MDT:SetMapSublevel(self.index)
                         MDT:SetSelectionToPull(self.index)
 
-                        L_EasyMenu(self.menu, MDT.main_frame.sidePanel.optionsDropDown, "cursor", 0 , -15, "MENU")
+                        LibDD:EasyMenu(self.menu, MDT.main_frame.sidePanel.optionsDropDown, "cursor", 0 , -15, "MENU")
                     end
 
                 else
@@ -1222,6 +1223,37 @@ local methods = {
             self.percentageFontString:Hide()
         end
     end,
+    ["ShowPridefulIcon"] = function(self,show,currentPercent,oldPercent)
+        --set percentage here
+        self.percentageFontString:Show()
+        local perc = string.format("%.1f%%",currentPercent*100)
+        if show  then
+            self.pridefulIcon:Show()
+            perc = "|cFFFFFFFF"..perc
+
+            local currentPrides = math.floor(currentPercent/0.2)
+            local oldPrides = math.floor(oldPercent/0.2)
+            local pridefuls = math.min(5,currentPrides-oldPrides)
+
+            if pridefuls>1 then
+                self.multiPridefulFontString:SetText(pridefuls.."x")
+                self.multiPridefulFontString:Show()
+            else
+                self.multiPridefulFontString:Hide()
+            end
+        else
+            self.pridefulIcon:Hide()
+            self.multiPridefulFontString:Hide()
+            perc = "|cFFFFFFFF"..perc
+        end
+        local pullForces = MDT:CountForces(self.index,true)
+        if pullForces>0 then
+            self.percentageFontString:SetText(perc)
+            self.percentageFontString:Show()
+        else
+            self.percentageFontString:Hide()
+        end
+    end,
     ["UpdateColor"] = function(self)
         local colorHex = MDT:RGBToHex(self.color.r,self.color.g,self.color.b)
         local db = MDT:GetDB()
@@ -1336,7 +1368,7 @@ local function Constructor()
 
     --pull percentage
     local percentageFontString = button:CreateFontString(nil,"BACKGROUND",nil)
-    percentageFontString:SetFont(MDT.tooltip.String:GetFont(),12)
+    percentageFontString:SetFont("Fonts\\FRIZQT__.TTF", 10,"OUTLINE")
     percentageFontString:SetTextColor(1, 1, 1, 1);
     percentageFontString:SetWidth(50)
     percentageFontString:SetHeight(10)
@@ -1352,6 +1384,24 @@ local function Constructor()
     multiReapingFontString:SetPoint("RIGHT", button, "RIGHT",1,-12)
     multiReapingFontString:Hide()
 
+    --prideful icon
+    local pridefulIcon = button:CreateTexture(nil, "BACKGROUND", nil, 2)
+    pridefulIcon:SetSize(height-5,height-5)
+    pridefulIcon:SetPoint("RIGHT", button, "RIGHT",-10,0)
+    pridefulIcon:SetAlpha(1)
+    SetPortraitToTexture(pridefulIcon,"Interface\\Icons\\spell_animarevendreth_buff")
+    pridefulIcon:Hide()
+
+    --multiple prideful wave indicator
+    local multiPridefulFontString = button:CreateFontString(nil,"BACKGROUND",nil)
+    multiPridefulFontString:SetFont("Fonts\\FRIZQT__.TTF", 10,"OUTLINE")
+    multiPridefulFontString:SetTextColor(1, 1, 1, 1);
+    multiPridefulFontString:SetWidth(50)
+    multiPridefulFontString:SetHeight(10)
+    multiPridefulFontString:SetPoint("RIGHT", button, "RIGHT",1,-12)
+    multiPridefulFontString:Hide()
+
+
     --custom colors
     local color = {}
 
@@ -1363,6 +1413,8 @@ local function Constructor()
         reapingIcon = reapingIcon,
         percentageFontString = percentageFontString,
         multiReapingFontString = multiReapingFontString,
+        pridefulIcon = pridefulIcon,
+        multiPridefulFontString = multiPridefulFontString,
         color = color,
         type = Type
     }

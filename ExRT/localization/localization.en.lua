@@ -539,6 +539,7 @@ L.cd2ShowEgde = "Show Egde"
 L.cd2ATFGrowth = "Growth"
 PH.cd2ProfileRewriteAlert = "All current data for this module will be overwritten"
 L.cd2FindFrame = "Find\ncolumn"
+L.cd2ImportOnlyVisual = "Only visual"
 
 L.sallspellsEggClear = "Clear"
 L.sallspellsEgg = "Combat log"
@@ -856,6 +857,7 @@ L.BossWatcherOverhealing = "Overhealing"
 L.BossWatcherTimelineText = "Timeline"
 L.BossWatcherFrames = "Frames"
 L.BossWatcherDamageTaken = "Damage Taken"
+L.BossWatcherInstaKill = "instantly kills"
 
 L.InspectViewerTalents = "Talents and glyps"
 L.InspectViewerInfo = "Other info"
@@ -1047,6 +1049,9 @@ L.RaidGroupsSave = "Save current roster as new"
 L.RaidGroupsEnterName = "Enter preset name"
 L.RaidGroupsQuickLoad = "Quick Load"
 L.RaidGroupsTextMovable = "* name are movable"
+L.RaidGroupsExport = "Export current groups"
+
+L.OtherCovHelper = "Help me with choice"
 
 L.WaringToRemoveExport = "Attention! This module is planned to be removed in future updates. Export data if you need to keep it."
 

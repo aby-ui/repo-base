@@ -1,13 +1,13 @@
 --[[
-	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Rev 09 ï¿½ï¿½ï¿½
+	———————————————— Rev 09 ———
 	- Fixed GetChecked() now returning a boolean instead of nil/1
-	ï¿½ï¿½ï¿½ 16.07.23 ï¿½ï¿½ï¿½ Rev 10 ï¿½ï¿½ï¿½ 7.0.3/Legion ï¿½ï¿½ï¿½
+	——— 16.07.23 ——— Rev 10 ——— 7.0.3/Legion ———
 	- Changed SetTexture(r,g,b,a) -> SetColorTexture(r,g,b,a)
-	ï¿½ï¿½ï¿½ 18.08.12 ï¿½ï¿½ï¿½ Rev 11 ï¿½ï¿½ï¿½ 8.0/BfA ï¿½ï¿½ï¿½
+	——— 18.08.12 ——— Rev 11 ——— 8.0/BfA ———
 	- Added native LSM support to the dropdown
 	- The building of the options page is now done internally, instead of in the client addon.
 	- Some code restructure.
-	ï¿½ï¿½ï¿½ 20.10.31 ï¿½ï¿½ï¿½ Rev 12 ï¿½ï¿½ï¿½ 9.0.1/Shadowlands ï¿½ï¿½ï¿½
+	——— 20.10.31 ——— Rev 12 ——— 9.0.1/Shadowlands ———
 	- CreateFrame() now uses the "BackdropTemplate"
 --]]
 

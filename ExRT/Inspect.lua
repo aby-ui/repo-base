@@ -6,6 +6,7 @@ local UnitCombatlogname, RaidInCombat, ScheduleTimer, DelUnitNameServer = ExRT.F
 local CheckInteractDistance, CanInspect = CheckInteractDistance, CanInspect
 
 local GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local GetInventoryItemQuality, GetInventoryItemID = GetInventoryItemQuality, GetInventoryItemID
 local GetTalentInfoClassic = GetTalentInfo
 local C_SpecializationInfo_GetInspectSelectedPvpTalent
 if ExRT.isClassic then
@@ -258,7 +259,7 @@ do
 			inspectData[stateName] = 0
 		end
 
-		cooldownsModule:ClearSessionDataReason(name,"azerite","essence","tier","item")
+		cooldownsModule:ClearSessionDataReason(name,"azerite","essence","tier","item","legendary")
 
 		local ilvl_count = 0
 
@@ -451,6 +452,24 @@ do
 				end
 
 
+				if GetInventoryItemQuality(inspectedName, itemSlotID) == 5 then	--legendary
+					local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",itemLink,15)
+
+					if numBonusIDs and numBonusIDs ~= "" and restLink then
+						for j=1,tonumber(numBonusIDs) do
+							local bonusID = select(j,strsplit(":",restLink))
+							if bonusID then
+								bonusID = tonumber(bonusID) or 0
+								local spellID = cooldownsModule.db.itemsBonusToSpell[bonusID]
+								if spellID then
+									cooldownsModule.db.session_gGUIDs[name] = {spellID,"legendary"}
+								end
+							end
+						end
+					end
+				end
+
+
 				--------> Relic
 				if (itemSlotID == 16 or itemSlotID == 17) and isArtifactEqipped > 0 then
 					--|cffe6cc80|Hitem:128935::140840:139250:140840::::110:262:16777472:9:1:744:113:1:3:3443:1472:3336:2:1806:1502:3:3443:1467:1813|h[Кулак Ра-дена]|h
@@ -600,6 +619,14 @@ function module.main:ADDON_LOADED()
 	VExRT.Inspect.Soulbinds = VExRT.Inspect.Soulbinds or {}
 
 	module:Enable()
+
+	for senderFull,str in pairs(VExRT.Inspect.Soulbinds) do
+		local sender
+		if select(2,strsplit("-",senderFull)) == ExRT.SDB.realmKey then
+			sender = strsplit("-",senderFull)
+		end
+		module:ParseSoulbind(sender or senderFull,str)
+	end
 end
 
 function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
@@ -1033,36 +1060,78 @@ function module:TalentClassicReq(unit)
 	module.db.TalentNoAddon[unit] = GetTime()
 end
 
+function module:IsAzeriteItemEnabled()
+	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+	if azeriteItemLocation then
+		if azeriteItemLocation:GetEquipmentSlot() == 2 then
+			local isAzeriteItemEnabled = C_AzeriteItem.IsAzeriteItemEnabled(azeriteItemLocation) or false
+			return isAzeriteItemEnabled
+		end
+	end
+	return false
+end
+
 function module.main:ENCOUNTER_START()
 	if ExRT.isClassic then
 		return
 	end
 	local str = ""
 
-	local essTiers,essList = "",""
-	local milestones,milestone = C_AzeriteEssence.GetMilestones()
-	if milestones then
-		for i,milestone in ipairs(milestones) do
-			local eID = C_AzeriteEssence.GetMilestoneEssence(milestone.ID)
-			if eID then
-				local ess = C_AzeriteEssence.GetEssenceInfo(eID)
-				if milestone.ID == 115 then	--Major
-					essTiers =  ess.rank .. essTiers
-					essList = eID .. essList
-				else
-					essTiers = essTiers .. ess.rank
-					essList = essList .. ":" .. eID
+	local isAzeriteItemEnabled = module:IsAzeriteItemEnabled()
+
+	if isAzeriteItemEnabled then
+		local essTiers,essList = "",""
+		local milestones,milestone = C_AzeriteEssence.GetMilestones()
+		if milestones then
+			for i,milestone in ipairs(milestones) do
+				local eID = C_AzeriteEssence.GetMilestoneEssence(milestone.ID)
+				if eID then
+					local ess = C_AzeriteEssence.GetEssenceInfo(eID)
+					if milestone.ID == 115 then	--Major
+						essTiers =  ess.rank .. essTiers
+						essList = eID .. essList
+					else
+						essTiers = essTiers .. ess.rank
+						essList = essList .. ":" .. eID
+					end
+				end
+			end
+		end
+		if essTiers ~= "" then
+			if essList:find("^:") then
+				essList = "0"..essList
+				essTiers = "0"..essTiers
+			end
+			str = str .. (str ~= "" and "^" or "") .. "E:" .. essTiers ..":" .. essList
+		end
+	end
+	
+	local legendaries = ""
+	for _,itemSlotID in pairs(module.db.itemsSlotTable) do
+		if GetInventoryItemQuality("player", itemSlotID) == 5 then
+			local itemLink = GetInventoryItemLink("player", itemSlotID)
+			if itemLink then
+				local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,restLink = strsplit(":",itemLink,15)
+	
+				if numBonusIDs and numBonusIDs ~= "" and restLink then
+					for j=1,tonumber(numBonusIDs) do
+						local bonusID = select(j,strsplit(":",restLink))
+						if bonusID then
+							bonusID = tonumber(bonusID) or 0
+							local spellID = cooldownsModule.db.itemsBonusToSpell[bonusID]
+							if spellID then
+								legendaries = legendaries .. ":" .. spellID
+							end
+						end
+					end
 				end
 			end
 		end
 	end
-	if essTiers ~= "" then
-		if essList:find("^:") then
-			essList = "0"..essList
-			essTiers = "0"..essTiers
-		end
-		str = str .. (str ~= "" and "^" or "") .. "E:" .. essTiers ..":" .. essList
+	if legendaries ~= "" then
+		str = str .. (str ~= "" and "^" or "") .. "L" .. legendaries
 	end
+
 
 	local tal = ""
 	for tier=1,7 do
@@ -1081,29 +1150,31 @@ function module.main:ENCOUNTER_START()
 		str = str .. (str ~= "" and "^" or "") .. "T" .. tal
 	end
 
-	local azerite = ""
-	local powerID
-	local itemLocation = ItemLocation:CreateEmpty()
-	local equipSlotIndex = EQUIPPED_FIRST
-	while equipSlotIndex <= EQUIPPED_LAST do
-		itemLocation:SetEquipmentSlot(equipSlotIndex)
-
-		if C_Item.DoesItemExist(itemLocation) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
-			local powers = C_AzeriteEmpoweredItem.GetAllTierInfo(itemLocation)
-			for i,tier in ipairs(powers) do
-				for j=1,#tier.azeritePowerIDs do
-					powerID = tier.azeritePowerIDs[j]
-					if C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation,powerID) and powerID ~= 13 then
-						azerite = azerite .. ":" .. powerID
+	if isAzeriteItemEnabled then
+		local azerite = ""
+		local powerID
+		local itemLocation = ItemLocation:CreateEmpty()
+		local equipSlotIndex = EQUIPPED_FIRST
+		while equipSlotIndex <= EQUIPPED_LAST do
+			itemLocation:SetEquipmentSlot(equipSlotIndex)
+	
+			if C_Item.DoesItemExist(itemLocation) and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItem(itemLocation) then
+				local powers = C_AzeriteEmpoweredItem.GetAllTierInfo(itemLocation)
+				for i,tier in ipairs(powers) do
+					for j=1,#tier.azeritePowerIDs do
+						powerID = tier.azeritePowerIDs[j]
+						if C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation,powerID) and powerID ~= 13 then
+							azerite = azerite .. ":" .. powerID
+						end
 					end
 				end
 			end
+	
+			equipSlotIndex = equipSlotIndex + 1;
 		end
-
-		equipSlotIndex = equipSlotIndex + 1;
-	end
-	if azerite ~= "" then
-		str = str .. (str ~= "" and "^" or "") .. "A" .. azerite
+		if azerite ~= "" then
+			str = str .. (str ~= "" and "^" or "") .. "A" .. azerite
+		end
 	end
 
 	local soulbinds = module:PrepCovenantData()
@@ -1116,12 +1187,62 @@ function module.main:ENCOUNTER_START()
 	end
 end
 
+function module.main:ENCOUNTER_START_SIM()
+	local f = ExRT.F.SendExMsg
+	ExRT.F.SendExMsg = print
+	module.main:ENCOUNTER_START()
+	ExRT.F.SendExMsg = f
+end
+
+function module:ParseSoulbind(sender,main)
+	cooldownsModule:ClearSessionDataReason(sender,"soulbind")
+
+	local inspectData = module.db.inspectDB[sender]
+	if inspectData then
+		inspectData.soulbinds = inspectData.soulbinds or {}	
+		inspectData = inspectData.soulbinds
+		wipe(inspectData)
+	end
+
+	local _,covenantID,soulbindID,tree = strsplit(":",main,4)
+	covenantID = tonumber(covenantID)
+	cooldownsModule:AddCovenant(sender,covenantID)
+	while tree do
+		local powerStr,on = strsplit(":",tree,2)
+		tree = on
+
+		local spellID = tonumber(powerStr)
+		if spellID then
+			cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+			if inspectData then
+				inspectData[spellID] = 1
+			end
+		else
+			local conduitID,conduitRank,conduitType = strsplit("-",powerStr,3)
+
+			if conduitID and conduitRank then
+				conduitID = tonumber(conduitID) or 0
+				conduitRank = tonumber(conduitRank) or 0
+				spellID = C_Soulbinds.GetConduitSpellID(conduitID,conduitRank)
+
+				cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+				cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
+				if inspectData then
+					inspectData[spellID] = conduitRank
+				end
+			end
+		end
+	end
+end
+
 function module:addonMessage(sender, prefix, subPrefix, ...)
 	if prefix == "inspect" then
 		if subPrefix == "R" then
 			local str = ...
 			local senderFull = sender
-			sender = strsplit("-",sender)
+			if select(2,strsplit("-",sender)) == ExRT.SDB.realmKey then
+				sender = strsplit("-",sender)
+			end
 			while str do
 				local main,next = strsplit("^",str,2)
 				str = next
@@ -1129,7 +1250,6 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 				local key = main:sub(1,1)
 				if key == "E" then
 					cooldownsModule:ClearSessionDataReason(sender,"essence")
-					cooldownsModule:ClearSessionDataReason(senderFull,"essence")
 
 					local essencePowers = module:GetEssenceDataByKey()
 
@@ -1148,20 +1268,20 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 								for l=tier,1,-1 do
 									local ess = e[l]
 									cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
-									cooldownsModule.db.session_gGUIDs[senderFull] = {ess.spellID,"essence"}
 								end
 							end
 							for l=tier,1,-1 do
 								local ess = e[l*(-1)]
 								cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
-								cooldownsModule.db.session_gGUIDs[senderFull] = {ess.spellID,"essence"}
 							end
 							--print(sender,'added essence',e.id,e.name)
 						end
 					end
 				elseif key == "T" then
 					cooldownsModule:ClearSessionDataReason(sender,"talent")
-					cooldownsModule:ClearSessionDataReason(senderFull,"talent")
+
+					local inspectData = module.db.inspectDB[sender]
+					local row = 0
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1169,16 +1289,23 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						list = on
 
 						spellID = tonumber(spellID or "?")
-						if spellID and spellID ~= 0 then
-							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
-							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"talent"}
-							cooldownsModule.db.spell_isTalent[spellID] = true
-							--print(sender,'added talent',spellID)
+						if spellID then
+							if spellID ~= 0 then
+								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+								cooldownsModule.db.spell_isTalent[spellID] = true
+								--print(sender,'added talent',spellID)
+							end
+							row = row + 1
+							if inspectData then
+								if spellID == 0 then
+									spellID = nil
+								end
+								inspectData[row] = spellID
+							end
 						end
 					end
 				elseif key == "A" then
 					cooldownsModule:ClearSessionDataReason(sender,"azerite")
-					cooldownsModule:ClearSessionDataReason(senderFull,"azerite")
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1191,43 +1318,26 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 							if powerData then
 								local spellID = powerData.spellID
 								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"azerite"}
-								cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"azerite"}
 								cooldownsModule.db.spell_isAzeriteTalent[spellID] = true
 								--print(sender,'added azerite',powerID)
 							end
 						end
 					end
-				elseif key == "S" then
-					cooldownsModule:ClearSessionDataReason(sender,"soulbind")
-					cooldownsModule:ClearSessionDataReason(senderFull,"soulbind")
+				elseif key == "L" then
+					cooldownsModule:ClearSessionDataReason(sender,"legendary")
 
-					local _,covenantID,soulbindID,tree = strsplit(":",main,4)
-					covenantID = tonumber(covenantID)
-					cooldownsModule:AddCovenant(sender,covenantID)
-					cooldownsModule:AddCovenant(senderFull,covenantID)
-					while tree do
-						local powerStr,on = strsplit(":",tree,2)
-						tree = on
+					local _,list = strsplit(":",main,2)
+					while list do
+						local spellID,on = strsplit(":",list,2)
+						list = on
 
-						local spellID = tonumber(powerStr)
-						if spellID then
-							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
-							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"soulbind"}
-						else
-							local conduitID,conduitRank,conduitType = strsplit("-",powerStr,3)
-
-							if conduitID and conduitRank then
-								conduitID = tonumber(conduitID) or 0
-								conduitRank = tonumber(conduitRank) or 0
-								spellID = C_Soulbinds.GetConduitSpellID(conduitID,conduitRank)
-
-								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
-								cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"soulbind"}
-								cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
-								cooldownsModule:SetSoulbindRank(senderFull,spellID,conduitRank)
-							end
+						spellID = tonumber(spellID or "?")
+						if spellID and spellID ~= 0 then
+							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"legendary"}
 						end
 					end
+				elseif key == "S" then
+					module:ParseSoulbind(sender,main)
 
 					if not sessionSoulbindCheckLimit then
 						sessionSoulbindCheckLimit = true
@@ -1241,7 +1351,6 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 					VExRT.Inspect.Soulbinds[senderFull] = time()..main:sub(2)
 				elseif key == "t" and ExRT.isClassic then
 					cooldownsModule:ClearSessionDataReason(sender,"talent")
-					cooldownsModule:ClearSessionDataReason(senderFull,"talent")
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1251,7 +1360,6 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						spellID = tonumber(spellID or "?")
 						if spellID and spellID ~= 0 then
 							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
-							cooldownsModule.db.session_gGUIDs[senderFull] = {spellID,"talent"}
 							--cooldownsModule.db.spell_isTalent[spellID] = true
 						end
 					end

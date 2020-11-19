@@ -952,9 +952,10 @@ function _BW_End(encounterID)
 
 	local maxFights = (VExRT.BossWatcher.fightsNum or 5)
 	for i=25,1,-1 do
-		if module.db.data[i] and module.db.data[i].encounterStart and module.db.data[i].encounterEnd and module.db.data[i].encounterID and (module.db.data[i].encounterEnd - module.db.data[i].encounterStart) < 20 then
+		local data = module.db.data[i]
+		if data and data.encounterStart and data.encounterEnd and data.encounterID and (data.encounterEnd - data.encounterStart) < 20 then
 			local c = 0
-			for k,v in pairs(module.db.data[i].raidguids) do 
+			for k,v in pairs(data.raidguids) do 
 				c = c + 1 
 				if c > 1 then
 					break
@@ -995,16 +996,15 @@ do
 			_graphSectionTimerRounded = nowTimer
 			local data = {}
 			graphData[_graphSectionTimerRounded] = data
-			local name, _name, health, hpmax, absorbs, power, powerMax, energy, powerID
 			for i=1,#_graphRaidSnapshot do
-				name = _graphRaidSnapshot[i]
-				_name = i <= 7 and UnitCombatlogname(name)
+				local name = _graphRaidSnapshot[i]
+				local _name = i <= 7 and UnitCombatlogname(name)
 				if i > 7 or _name then
-					health = UnitHealth(name)
-					hpmax = UnitHealthMax(name)
-					absorbs = UnitGetTotalAbsorbs(name)
-					power = UnitPower(name)
-					powerMax = UnitPowerMax(name)
+					local health = UnitHealth(name)
+					local hpmax = UnitHealthMax(name)
+					local absorbs = UnitGetTotalAbsorbs(name)
+					local power = UnitPower(name)
+					local powerMax = UnitPowerMax(name)
 
 					local currData = {
 						name = _name or nil,
@@ -1016,10 +1016,10 @@ do
 					}
 					data[name] = currData
 
-					energy = _graphRaidEnergy[i]
+					local energy = _graphRaidEnergy[i]
 					for j=1,#energy do
-						powerID = energy[j]
-						power = UnitPower(name,powerID)
+						local powerID = energy[j]
+						local power = UnitPower(name,powerID)
 						if power ~= 0 then
 							currData[powerID] = power
 						end
@@ -1055,7 +1055,9 @@ local function GetCurrentZoneID()
 	elseif zoneType == 'scenario' and (difficulty == 38 or difficulty == 39 or difficulty == 40 or difficulty == 45) then	--islands
 		zoneID = 4
 	elseif mapID == 2274 or mapID == 2212 or mapID == 2213 or mapID == 2275 then	--horrific vision
-		zoneID = 5
+		zoneID = 4
+	elseif difficulty == 167 then	--torghast
+		zoneID = 4
 	end
 	return zoneID, zoneName
 end
@@ -1099,7 +1101,7 @@ module.main.CHALLENGE_MODE_COMPLETED = module.main.CHALLENGE_MODE_RESET
 do
 	local function ZoneCheck()
 		local zoneID, zoneName = GetCurrentZoneID()
-		if zoneID == 2 or zoneID == 4 or zoneID == 5 then
+		if zoneID == 2 or zoneID == 4 then
 			_BW_Start(nil,zoneName)
 		end
 	end
@@ -1114,11 +1116,7 @@ end
 local function AddNotRealDeath(destGUID,timestamp,spellID)
 	local destData = deathLog[destGUID]
 	if not destData then
-		destData = {}
-		for i=1,deathMaxEvents do
-			destData[i] = {}
-		end
-		destData.c = 0
+		destData = {c = 0}
 		deathLog[destGUID] = destData
 	end
 	local destTable = {
@@ -1130,7 +1128,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 	local c = destData.c
 	for i=c,1,-1 do
 		local copyTable = destData[i]
-		if copyTable.t then
+		if copyTable and copyTable.t then
 			destTableLen = destTableLen + 1
 			destTable[destTableLen] = {
 				copyTable.t,
@@ -1154,7 +1152,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 	end
 	for i=deathMaxEvents,c+1,-1 do
 		local copyTable = destData[i]
-		if copyTable.t then
+		if copyTable and copyTable.t then
 			destTableLen = destTableLen + 1
 			destTable[destTableLen] = {
 				copyTable.t,
@@ -1183,7 +1181,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 			if destData.c < c then
 				for i=destData.c,1,-1 do
 					local copyTable = destData[i]
-					if copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
+					if copyTable and copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
 						d[#d+1] = {
 							copyTable.t,
 							copyTable.s,
@@ -1206,7 +1204,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 				end
 				for i=deathMaxEvents,c+1,-1 do
 					local copyTable = destData[i]
-					if copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
+					if copyTable and copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
 						d[#d+1] = {
 							copyTable.t,
 							copyTable.s,
@@ -1233,7 +1231,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 			else
 				for i=destData.c,c+1,-1 do
 					local copyTable = destData[i]
-					if copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
+					if copyTable and copyTable.t and (copyTable.ti - timestamp) <= 0.25 then
 						d[#d+1] = {
 							copyTable.t,
 							copyTable.s,
@@ -1298,11 +1296,13 @@ if ExRT.isClassic then
 	end
 end
 
-local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
-	if not timestamp then
-		timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+local function CLEUParser(self,_,ptimestamp,...)
+	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
 		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
 				= CombatLogGetCurrentEventInfo()
+	if ptimestamp then
+		timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14 = ptimestamp, ...
 	end
 
 	if not guidData[sourceGUID] then guidData[sourceGUID] = sourceName or "nil" end
@@ -1406,11 +1406,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		if not DeathLogBlackList[mobID] then
 			activeTable2 = deathLog[destGUID]	--destData
 			if not activeTable2 then
-				activeTable2 = {}
-				for i=1,deathMaxEvents do
-					activeTable2[i] = {}
-				end
-				activeTable2.c = 0
+				activeTable2 = {c=0}
 				deathLog[destGUID] = activeTable2
 			end
 			local tmpVar = activeTable2.c + 1
@@ -1419,6 +1415,10 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			end
 			activeTable2.c = tmpVar
 			activeTable = activeTable2[tmpVar]
+			if not activeTable then
+				activeTable = {}
+				activeTable2[tmpVar] = activeTable
+			end
 			activeTable.t = 1
 			activeTable.s = sourceGUID
 			activeTable.ti = timestamp
@@ -1646,19 +1646,19 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		--------------> Add death
 		activeTable2 = deathLog[destGUID]
 		if not activeTable2 then
-			activeTable2 = {}
-			for i=1,deathMaxEvents do
-				activeTable2[i] = {}
-			end
-			activeTable2.c = 0
+			activeTable2 = {c=0}
 			deathLog[destGUID] = activeTable2
 		end
-		activeTable = activeTable2.c + 1
-		if activeTable > deathMaxEvents then
-			activeTable = 1
+		local tmpVar = activeTable2.c + 1
+		if tmpVar > deathMaxEvents then
+			tmpVar = 1
 		end
-		activeTable2.c = activeTable
-		activeTable = activeTable2[activeTable]
+		activeTable2.c = tmpVar
+		activeTable = activeTable2[tmpVar]
+		if not activeTable then
+			activeTable = {}
+			activeTable2[tmpVar] = activeTable
+		end
 		activeTable.t = 2
 		activeTable.s = sourceGUID
 		activeTable.ti = timestamp
@@ -2119,11 +2119,7 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		--------------> Add death
 		local destData = deathLog[destGUID]
 		if not destData then
-			destData = {}
-			for i=1,deathMaxEvents do
-				destData[i] = {}
-			end
-			destData.c = 0
+			destData = {c=0}
 			deathLog[destGUID] = destData
 		end
 		local pos = destData.c + 1
@@ -2131,6 +2127,10 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 			pos = 1
 		end
 		local deathLine = destData[pos]
+		if not deathLine then
+			deathLine = {}
+			destData[pos] = deathLine
+		end
 		deathLine.t = 2
 		deathLine.s = sourceGUID
 		deathLine.ti = timestamp
@@ -2209,109 +2209,30 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		1: damage
 		2: heal
 		3: death
+		4: insta kill
 		5: death simulation (fd, sor proc)
 		]]
 
 		local destData = deathLog[destGUID]
 		if not destData then
-			destData = {}
-			for i=1,deathMaxEvents do
-				destData[i] = {}
-			end
-			destData.c = 0
+			destData = {c=0}
 			deathLog[destGUID] = destData
 		end
-		local destTable = {
-			{3,destGUID,timestamp,active_segment},
-		}
-		local destTableLen = 1
-		fightData_deathLog[#fightData_deathLog + 1] = destTable
 
 		if destData.sch then
 			destData.sch:Cancel()
 			destData.schFunc()
+
+			destData.sch = nil
+			destData.schFunc = nil
 		end
 
-		local copyTable
-		for i=destData.c,1,-1 do
-			copyTable = destData[i]
-			if copyTable.t then
-				destTableLen = destTableLen + 1
-				destTable[destTableLen] = {
-					copyTable.t,
-					copyTable.s,
-					copyTable.ti,
-					copyTable.sp,
-					copyTable.a,
-					copyTable.o,
-					copyTable.sc,
-					copyTable.b,
-					copyTable.ab,
-					copyTable.c,
-					false,
-					copyTable.h,
-					copyTable.hm,
-					copyTable.ia,
-					copyTable.sm,
-					copyTable.dm,
-				}
-				copyTable.t = nil
-				copyTable.s = nil
-				copyTable.ti = nil
-				copyTable.sp = nil
-				copyTable.a = nil
-				copyTable.o = nil
-				copyTable.sc = nil
-				copyTable.b = nil
-				copyTable.ab = nil
-				copyTable.c = nil
-				copyTable.h = nil
-				copyTable.hm = nil
-				copyTable.ia = nil
-				copyTable.sm = nil
-				copyTable.dm = nil
-			end
-		end
-		for i=deathMaxEvents,destData.c+1,-1 do
-			copyTable = destData[i]
-			if copyTable.t then
-				destTableLen = destTableLen + 1
-				destTable[destTableLen] = {
-					copyTable.t,
-					copyTable.s,
-					copyTable.ti,
-					copyTable.sp,
-					copyTable.a,
-					copyTable.o,
-					copyTable.sc,
-					copyTable.b,
-					copyTable.ab,
-					copyTable.c,
-					false,
-					copyTable.h,
-					copyTable.hm,
-					copyTable.ia,
-					copyTable.sm,
-					copyTable.dm,
-				}
-				copyTable.t = nil
-				copyTable.s = nil
-				copyTable.ti = nil
-				copyTable.sp = nil
-				copyTable.a = nil
-				copyTable.o = nil
-				copyTable.sc = nil
-				copyTable.b = nil
-				copyTable.ab = nil
-				copyTable.c = nil
-				copyTable.h = nil
-				copyTable.hm = nil
-				copyTable.ia = nil
-				copyTable.sm = nil
-				copyTable.dm = nil
-			end
-		end
-		destData.c = 0
+		fightData_deathLog[#fightData_deathLog + 1] = destData
+		deathLog[destGUID] = nil
+
+		destData.h = {3,destGUID,timestamp,active_segment}
+
+		return destData
 	---------------------------------
 	------ summons
 	---------------------------------
@@ -2372,7 +2293,35 @@ local function CLEUParser(self,_,timestamp,event,hideCaster,sourceGUID,sourceNam
 		return CLEUParser(self,nil,timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,-amount,powerType)
 	elseif event == "SPELL_INSTAKILL" then
 		local spellID,_,school = val1,val2,val3
-		return CLEUParser(self,nil,timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,9999999,9999999,school)
+
+		local destData = deathLog[destGUID]	--destData
+		if not destData then
+			destData = {c=0}
+			deathLog[destGUID] = destData
+		end
+		local tmpVar = destData.c + 1
+		if tmpVar > deathMaxEvents then
+			tmpVar = 1
+		end
+		destData.c = tmpVar
+		local destLine = destData[tmpVar]
+		if not destLine then
+			destLine = {}
+			destData[tmpVar] = destLine
+		end
+		destLine.t = 4
+		destLine.s = sourceGUID
+		destLine.ti = timestamp
+		destLine.sp = spellID
+		destLine.a = nil
+		destLine.o = nil
+		destLine.sc = nil
+		destLine.b = nil
+		destLine.ab = nil
+		destLine.c = nil
+		destLine.ia = nil
+		destLine.sm = sourceFlags2
+		destLine.dm = destFlags2
 	end
 
 	-- DAMAGE_SHIELD
@@ -2388,7 +2337,7 @@ function module.main:COMBAT_LOG_EVENT_UNFILTERED(_,timestamp,...)
 		module.db.timeFix = {GetTime(),timestamp}
 	end
 	module.main.COMBAT_LOG_EVENT_UNFILTERED = CLEUParser
-	CLEUParser(self,nil,CombatLogGetCurrentEventInfo())
+	CLEUParser(self)
 	module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 end
 
@@ -6624,6 +6573,7 @@ function BWInterfaceFrameLoad()
 			[203795] = true,	--Soul Fragment
 		},
 	}
+	tab.SpellsTab_Variables = SpellsTab_Variables
 
 	tab.DecorationLine = ELib:DecorationLine(tab,true):Point("TOPLEFT",tab,"TOPLEFT",3,-8):Point("RIGHT",tab,-3,0):Size(0,20)
 
@@ -7104,7 +7054,7 @@ function BWInterfaceFrameLoad()
 
 	do
 		local scheduledUpdate
-		tab.filterEditBox = ELib:Edit(tab.page.tabs[2]):Point("TOPLEFT",130,-46):Size(200,18):AddSearchIcon():Tooltip(FILTER.."\nplayer1,player2,55342,30451,s:innervate,s:hymn"):OnChange(function (self,isUser)
+		tab.filterEditBox = ELib:Edit(tab.page.tabs[2]):Point("TOPLEFT",130,-46):Size(200,18):AddSearchIcon():Tooltip(FILTER.."\nplayer1,player2,55342,30451,s:innervate,s:hymn\nt:targetname\nft:targetname"):OnChange(function (self,isUser)
 			if not isUser then
 				return
 			end
@@ -7112,6 +7062,7 @@ function BWInterfaceFrameLoad()
 			if text == "" then 
 				text = nil 
 			end
+			SpellsTab_Variables.TLTargetFilter = nil
 			if not text then
 				SpellsTab_Variables.TLFilter = nil
 				if scheduledUpdate then
@@ -7127,10 +7078,20 @@ function BWInterfaceFrameLoad()
 			for i=#SpellsTab_Variables.TLFilter,1,-1 do
 				if strtrim(SpellsTab_Variables.TLFilter[i]) == "" then
 					tremove(SpellsTab_Variables.TLFilter,i)
+				elseif SpellsTab_Variables.TLFilter[i]:find("^[tT]:") then
+					local t = strtrim(SpellsTab_Variables.TLFilter[i]:sub(3)):lower()
+					if t ~= "" then
+						SpellsTab_Variables.TLTargetFilter = SpellsTab_Variables.TLTargetFilter or {}
+						SpellsTab_Variables.TLTargetFilter[#SpellsTab_Variables.TLTargetFilter+1] = t
+					end
+					tremove(SpellsTab_Variables.TLFilter,i)
 				end
 			end
 			for i=1,#SpellsTab_Variables.TLFilter do
 				SpellsTab_Variables.TLFilter[i] = tonumber(SpellsTab_Variables.TLFilter[i]) or SpellsTab_Variables.TLFilter[i]
+			end
+			if #SpellsTab_Variables.TLFilter == 0 then
+				SpellsTab_Variables.TLFilter = nil
 			end
 
 			if not scheduledUpdate then
@@ -7271,6 +7232,23 @@ function BWInterfaceFrameLoad()
 
 		return icon
 	end
+	function tab.timelineFrame:DBRecordSetTargetFilter(db)
+		if SpellsTab_Variables.TLTargetFilter then
+			local filterNotTarget
+			for j=1,#SpellsTab_Variables.TLTargetFilter do
+				local name = GetGUID(db.target)..GUIDtoText(" <%s>",db.target)
+				if name:lower():find(SpellsTab_Variables.TLTargetFilter[j]) then
+					filterNotTarget = true
+					break
+				end
+			end
+			if not filterNotTarget then
+				db.filterNotTarget = true
+			else
+				db.filterNotTarget = false
+			end
+		end
+	end
 	function tab.timelineFrame:UpdateDB()
 		local data = {}
 
@@ -7314,6 +7292,15 @@ function BWInterfaceFrameLoad()
 								if #f > 0 and GetSpellInfo(spellID):lower():find(f) then
 									toAdd = true
 								end
+							elseif f:find("^[fF][tT]:") then
+								local targetGUID = cast[4]
+								if targetGUID then
+									local tarName = GetGUID(targetGUID)..GUIDtoText(" <%s>",targetGUID)
+									f = f:sub(4)
+									if #f > 0 and tarName:lower():find(f) then
+										toAdd = true
+									end
+								end
 							else
 								if #f > 0 and guidData.nameUnmod:find(f) then
 									toAdd = true
@@ -7334,12 +7321,14 @@ function BWInterfaceFrameLoad()
 							castStarted.time_end = timestampToFightTime(cast[1])
 							castStarted.end_data = cast
 							castStarted.target = cast[4]
+							self:DBRecordSetTargetFilter(castStarted)
 							prevTime = castStarted.time_end
 						elseif cast[3] == 1 and castStartedPrev and castStartedPrev.spellID == spellID then
 							castStartedPrev.time_end = timestampToFightTime(cast[1])
 							castStartedPrev.end_data = cast
 							castStartedPrev.target = cast[4]
 							castStartedPrev.failed = nil
+							self:DBRecordSetTargetFilter(castStartedPrev)
 							prevTime = castStartedPrev.time_end
 						else
 							if castStarted then
@@ -7352,6 +7341,7 @@ function BWInterfaceFrameLoad()
 								prevTime = prevTime,
 								target = cast[4],
 							}
+							self:DBRecordSetTargetFilter(new)
 							guidData[#guidData+1] = new
 							prevTime = new.time
 						end
@@ -7456,6 +7446,9 @@ function BWInterfaceFrameLoad()
 		if school == -1 then
 			self:Color(1,.3,.3,1)
 			return
+		elseif school == -2 then
+			self:Color(.3,.3,1,1)
+			return
 		end
 		local isNotGradient = ExRT.F.table_find(module.db.schoolsDefault,school) or school == 0 or module.db.schoolsColors[school or -1]
 		local isConfirmedGradient = module.db.schoolsColorsGradient[ school or -1 ]
@@ -7536,12 +7529,17 @@ function BWInterfaceFrameLoad()
 							icon.t:Texture(spellTexture or 134400)
 							if tdata.failed then
 								icon.t:Color(1,.3,.3,1)
+							elseif tdata.filterNotTarget then
+								icon.t:Color(.3,.3,1,1)
 							else
 								icon.t:Color(1,1,1,1)
 							end
 							if tdata.time_end then
 								local school = module.db.spellsSchool[ tdata.spellID ] or 0
 								SetSchoolColorToTexture(icon.l,school)
+								if tdata.filterNotTarget then
+									SetSchoolColorToTexture(icon.l,-2)
+								end
 
 								local w = (tdata.time_end - tdata.time) * self.PIX_PER_SEC
 								icon.l:SetWidth(w)
@@ -10397,6 +10395,65 @@ function BWInterfaceFrameLoad()
 
 	local DeathTab_SetLine = nil
 
+	function DeathTab_Variables:ConvertDataToOld(data)
+		if not data.c then
+			return data
+		end
+		local destTable = {data.h}
+		local destTableLen = 1
+
+		for i=data.c,1,-1 do
+			local copyTable = data[i]
+			if copyTable and copyTable.t then
+				destTableLen = destTableLen + 1
+				destTable[destTableLen] = {
+					copyTable.t,
+					copyTable.s,
+					copyTable.ti,
+					copyTable.sp,
+					copyTable.a,
+					copyTable.o,
+					copyTable.sc,
+					copyTable.b,
+					copyTable.ab,
+					copyTable.c,
+					false,
+					copyTable.h,
+					copyTable.hm,
+					copyTable.ia,
+					copyTable.sm,
+					copyTable.dm,
+				}
+			end
+		end
+		for i=deathMaxEvents,data.c+1,-1 do
+			local copyTable = data[i]
+			if copyTable and copyTable.t then
+				destTableLen = destTableLen + 1
+				destTable[destTableLen] = {
+					copyTable.t,
+					copyTable.s,
+					copyTable.ti,
+					copyTable.sp,
+					copyTable.a,
+					copyTable.o,
+					copyTable.sc,
+					copyTable.b,
+					copyTable.ab,
+					copyTable.c,
+					false,
+					copyTable.h,
+					copyTable.hm,
+					copyTable.ia,
+					copyTable.sm,
+					copyTable.dm,
+				}
+			end
+		end
+
+		return destTable
+	end
+
 	local function DeathTab_ClearPage()
 		for i=1,#deathTab.lines do
 			deathTab.lines[i]:Hide()
@@ -10412,6 +10469,7 @@ function BWInterfaceFrameLoad()
 		DeathTab_ClearPage()
 		deathTab.sourceDropDown:SetText( arg2 )
 		local _data = CurrentFight.deathLog[arg]
+		_data = DeathTab_Variables:ConvertDataToOld(_data)
 		local data = {}
 		local minTime,maxTime = _data[1][3]-20,_data[1][3]
 		local GUID = _data[1][2]
@@ -10429,7 +10487,7 @@ function BWInterfaceFrameLoad()
 			local DataDefLen = #_data
 			for i,auraData in ipairs(CurrentFight.auras) do
 				if auraData[3] == GUID and auraData[1] >= minTime and auraData[1] <= maxTime and ((DeathTab_Variables.isBuffs and auraData[7]=='BUFF') or (DeathTab_Variables.isDebuffs and auraData[7]=='DEBUFF')) and (not DeathTab_Variables.isBlack or not DeathTab_Variables.aurasBlackList[ auraData[6] ]) then
-					data[#data + 1] = {4,auraData[2],auraData[1],auraData[6],auraData[8],P=(DataDefLen + i)}
+					data[#data + 1] = {6,auraData[2],auraData[1],auraData[6],auraData[8],P=(DataDefLen + i)}
 				end
 			end
 			sort(data,function(a,b) if a[3]==b[3] then return a.P<b.P else return a[3]>b[3] end end)
@@ -10446,6 +10504,16 @@ function BWInterfaceFrameLoad()
 					DeathTab_SetLine(i,timeText,text,0,0,0)
 
 					reportData[8][#reportData[8] + 1] = "-0.0s "..L.BossWatcherDeathDeath
+
+					deathTime = _time
+				elseif data[i][1] == 4 then
+					local spellName,_,spellTexture = GetSpellInfo(data[i][4])
+					local sourceMarker = module.db.raidTargets[ data[i][15] or 0 ]
+					local text = (sourceMarker and GetTargetIconText(sourceMarker) or "")..GetGUID(data[i][2])..GUIDtoText(" [%s]",data[i][2]).." "..L.BossWatcherInstaKill.." ".. L.BossWatcherByText .. " |T"..spellTexture..":0|t"..spellName
+
+					DeathTab_SetLine(i,timeText,text,0,0,0,data[i][4])
+
+					reportData[8][#reportData[8] + 1] = "-0.0s instakill "..GetSpellLink(data[i][4])
 
 					deathTime = _time
 				elseif data[i][1] == 5 then
@@ -10509,7 +10577,7 @@ function BWInterfaceFrameLoad()
 					DeathTab_SetLine(i,timeText,text,0,1,0,data[i][4])
 
 					reportData[8][#reportData[8] + 1] = diffTime.."s."..HP.." +"..isCrit..amount..isCrit .. absorbed .. overheal .." ["..GetGUID(data[i][2]).." - "..GetSpellLink(data[i][4]).."]"
-				elseif data[i][1] == 4 then
+				elseif data[i][1] == 6 then
 					local spellName,_,spellTexture = GetSpellInfo(data[i][4])
 					local name = GetGUID(data[i][2])..GUIDtoText(" [%s]",data[i][2])
 					local isApplied = (data[i][5]==1 or data[i][5]==3)
@@ -10535,6 +10603,7 @@ function BWInterfaceFrameLoad()
 	local function DeathTab_SetDeathList()
 		local counter = 0
 		for i,deathData in ipairs(CurrentFight.deathLog) do
+			deathData = DeathTab_Variables:ConvertDataToOld(deathData)
 			local header = deathData.header or deathData[1]
 			local GUID = header[2]
 			local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[GUID])
@@ -10548,7 +10617,7 @@ function BWInterfaceFrameLoad()
 				local text = classColor..GetGUID(GUID)..GUIDtoText(" [%s]",GUID).."|r"
 				local spellID = nil
 				for j=1,#deathData do
-					if deathData[j] ~= header and deathData[j][1] == 1 and deathData[j][6] > 0 then
+					if deathData[j] ~= header and ((deathData[j][1] == 1 and deathData[j][6] > 0) or (deathData[j][1] == 4)) then
 						local sourceColor = "|cffbbbbbb"
 						if ExRT.F.GetUnitTypeByGUID(deathData[j][2]) == 0 then
 							sourceColor = "|c"..ExRT.F.classColorByGUID(deathData[j][2])
@@ -10583,6 +10652,7 @@ function BWInterfaceFrameLoad()
 		local list = deathTab.sourceDropDown.List
 		wipe(list)
 		for i,deathData in ipairs(CurrentFight.deathLog) do
+			deathData = DeathTab_Variables:ConvertDataToOld(deathData)
 			local header = deathData.header or deathData[1]
 			local GUID = header[2]
 			local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[GUID])

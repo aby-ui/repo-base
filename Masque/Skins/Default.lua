@@ -27,8 +27,8 @@ local L = Core.Locale
 Core.SkinList.Default = "Default"
 Core.Skins.Default = {
 	SkinID = "Default",
+	API_VERSION = Core.API_VERSION,
 	Shape = "Square",
-	Masque_Version = Core.API_VERSION,
 
 	-- Info
 	Description = L["The default button style."],
@@ -72,7 +72,7 @@ Core.Skins.Default = {
 		Color = {1, 1, 1, 1},
 		-- EmptyTexture = [[Interface\Buttons\UI-Quickslot2]],
 		-- EmptyCoords = {0, 1, 0, 1},
-		-- EmptyColor = {1, 1, 1, 0.5},
+		EmptyColor = {1, 1, 1, 0.5},
 		BlendMode = "BLEND",
 		DrawLayer = "ARTWORK",
 		DrawLevel = 0,
@@ -90,7 +90,7 @@ Core.Skins.Default = {
 			Color = {1, 1, 1, 1},
 			-- EmptyTexture = [[Interface\Buttons\UI-Quickslot2]],
 			-- EmptyCoords = {0, 1, 0, 1},
-			-- EmptyColor = {1, 1, 1, 0.5},
+			EmptyColor = {1, 1, 1, 0.5},
 			BlendMode = "BLEND",
 			DrawLayer = "ARTWORK",
 			DrawLevel = 0,
@@ -516,6 +516,8 @@ Core.Skins.Default = {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		EdgeTexture = [[Interface\Cooldown\edge]],
+		PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.8},
 		Width = 36,
 		Height = 36,
@@ -526,6 +528,8 @@ Core.Skins.Default = {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		EdgeTexture = [[Interface\Cooldown\edge]],
+		PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 36,
 		Height = 36,
 		-- Point = "CENTER",

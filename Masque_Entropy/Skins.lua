@@ -41,8 +41,8 @@ local SKIN_DESC = L["A metallic version of Apathy in the color of %s ore."]
 ---
 
 MSQ:AddSkin("Entropy - Silver", {
+	API_VERSION = 90002,
 	Shape = "Square",
-	Masque_Version = 90000,
 	Group = "Entropy",
 	Title = "Silver",
 	Order = 11,
@@ -479,7 +479,7 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- OffsetY = 0,
 		SetAllPoints = true,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Adamantite
@@ -513,7 +513,7 @@ MSQ:AddSkin("Entropy - Adamantite", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Bronze
@@ -547,7 +547,7 @@ MSQ:AddSkin("Entropy - Bronze", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Cobalt
@@ -581,7 +581,7 @@ MSQ:AddSkin("Entropy - Cobalt", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Copper
@@ -615,7 +615,7 @@ MSQ:AddSkin("Entropy - Copper", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Fel Iron
@@ -649,7 +649,7 @@ MSQ:AddSkin("Entropy - Fel Iron", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Gold
@@ -683,7 +683,7 @@ MSQ:AddSkin("Entropy - Gold", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Iron
@@ -717,7 +717,7 @@ MSQ:AddSkin("Entropy - Iron", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Khorium
@@ -751,7 +751,7 @@ MSQ:AddSkin("Entropy - Khorium", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Obsidium
@@ -785,7 +785,7 @@ MSQ:AddSkin("Entropy - Obsidium", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Saronite
@@ -819,7 +819,7 @@ MSQ:AddSkin("Entropy - Saronite", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})
 
 ----------------------------------------
 -- Titanium
@@ -853,4 +853,4 @@ MSQ:AddSkin("Entropy - Titanium", {
 		-- UseStates = nil,
 		-- SetAllPoints = nil,
 	},
-}, true)
+})

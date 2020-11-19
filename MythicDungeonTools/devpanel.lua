@@ -508,7 +508,7 @@ function MDT:CreateDevPanel(frame)
                 if not data.clones[currentBlip.cloneIdx].patrol then
                     currentBlip.patrolActive = false
                 end
-                MDT:ShowBlipPatrol(currentBlip,false)
+                currentBlip:ShowBlipPatrol(false)
                 MDT:UpdateMap()
             end
         end)
@@ -624,7 +624,7 @@ function MDT:CreateDevPanel(frame)
             inspiringCheckbox:SetValue(currentBlip.clone.inspiring)
             currentTeeming = currentBlip.clone.teeming
             currentPatrol = currentBlip.patrol and true or nil
-            patrolCheckbox:SetValue(currentPatrol and currentBlip.patrolActive)
+            patrolCheckbox:SetValue(currentBlip.clone.patrol)
             stealthDetectCheckbox:SetValue(currentBlip.data.stealthDetect)
             stealthCheckbox:SetValue(currentBlip.data.stealth)
             neutralCheckbox:SetValue(currentBlip.data.neutral)

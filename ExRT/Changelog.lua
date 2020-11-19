@@ -1,6 +1,34 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4390
+* Raid cooldowns: added avenger's shield reset support
+* Raid cooldowns: added "only visual" option for import
+* Raid cooldowns: added pvp talents support
+* Raid cooldowns: options "Sort By Availability" and "Reverse Sorting" now can be different for each column
+* Visual Note: added "custom image" object
+* Visual Note: added new type of lines
+* Visual Note: added option to lock/unlock objects for moving/removing
+* Raid Groups: added import/export current roster buttons
+* Added global names for major frames (note, cooldowns columns, battle res, marks bar)
+* Updated localizations
+* Minor fixes
+
+v.4390-Classic
+* Raid cooldowns: added "only visual" option for import
+* Raid cooldowns: options "Sort By Availability" and "Reverse Sorting" now can be different for each column
+* Visual Note: added "custom image" object
+* Visual Note: added new type of lines
+* Visual Note: added option to lock/unlock objects for moving/removing
+* Raid Groups: added import/export current roster buttons
+* Added global names for major frames (note, cooldowns columns, battle res, marks bar)
+* Updated localizations
+* Minor fixes
+
+v.4370-Classic
+* Fixed consumables check for raid check windows
+* Minor fixes
+
 v.4360
 * Added import/export profiles
 * Visual Note: popup window now saves its state (size and position)

@@ -8,7 +8,7 @@
 ## Author: kagaro, Xinhuan
 ## X-Category: Map
 ## X-Email: sal.scotto@gmail.com
-## Version: r474
+## Version: v34.1
 ## LoadOnDemand: 1
 ## X-Generated-Version: $Revision: 474 $
 ## Dependencies: GatherMate2

@@ -11,8 +11,6 @@ local unitFrames, headerFrames, frameList, unitEvents, childUnits, headerUnits, 
 local remappedUnits = Units.remappedUnits
 local _G = getfenv(0)
 
-local WoW90 = select(4, GetBuildInfo()) >= 90000
-
 ShadowUF.Units = Units
 ShadowUF:RegisterModule(Units, "units")
 
@@ -69,7 +67,7 @@ local function RegisterNormalEvent(self, event, handler, func, unitOverride)
 	end
 
 	-- XXX: replace once 9.0 goes live, and we can cleanly remove events from tags and all modules
-	if WoW90 and event == "UNIT_HEALTH_FREQUENT" then
+	if event == "UNIT_HEALTH_FREQUENT" then
 		event = "UNIT_HEALTH"
 	end
 
@@ -1488,9 +1486,10 @@ local curableSpells = {
 	["SHAMAN"] = {[77130] = {"Curse", "Magic"}, [51886] = {"Curse"}},
 	["MONK"] = {[115450] = {"Poison", "Disease", "Magic"}, [218164] = {"Poison", "Disease"}},
 	["MAGE"] = {[475] = {"Curse"}},
+	["WARLOCK"] = {[89808] = {"Magic"}},
 }
 
-curableSpells = curableSpells[select(2, UnitClass("player"))]
+curableSpells = curableSpells[playerClass]
 
 local function checkCurableSpells()
 	if( not curableSpells ) then return end
@@ -1498,7 +1497,7 @@ local function checkCurableSpells()
 	table.wipe(Units.canCure)
 
 	for spellID, cures in pairs(curableSpells) do
-		if( IsPlayerSpell(spellID) ) then
+		if( IsPlayerSpell(spellID) or IsSpellKnown(spellID, true) ) then
 			for _, auraType in pairs(cures) do
 				Units.canCure[auraType] = true
 			end
@@ -1542,7 +1541,7 @@ centralFrame:SetScript("OnEvent", function(self, event, unit)
 		end
 
 	-- Monitor talent changes for curable changes
-	elseif( event == "PLAYER_SPECIALIZATION_CHANGED" ) then
+	elseif( event == "PLAYER_SPECIALIZATION_CHANGED" or event == "UNIT_PET" ) then
 		checkCurableSpells()
 
 		for frame in pairs(ShadowUF.Units.frameList) do
@@ -1558,6 +1557,9 @@ centralFrame:SetScript("OnEvent", function(self, event, unit)
 	elseif( event == "PLAYER_LOGIN" ) then
 		checkCurableSpells()
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+		if( playerClass == "WARLOCK" ) then
+			self:RegisterUnitEvent("UNIT_PET", "player", nil)
+		end
 
 	-- This is slightly hackish, but it suits the purpose just fine for somthing thats rarely called.
 	elseif( event == "PLAYER_REGEN_ENABLED" ) then

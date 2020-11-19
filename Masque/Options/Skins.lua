@@ -88,10 +88,10 @@ do
 		local Layer = Info[#Info]
 
 		if Layer == "Color" then
-			Layer = Info[#Info-1]
+			Layer = Info[#Info - 1]
 		end
 
-		Info.arg:SetColor(Layer, r, g, b, a)
+		Info.arg:__SetColor(Layer, r, g, b, a)
 	end
 
 	----------------------------------------
@@ -115,9 +115,9 @@ do
 	-- Sets the disabled state of a group.
 	local function SetDisabled(Info, Value)
 		if Value then
-			Info.arg:Disable()
+			Info.arg:__Disable()
 		else
-			Info.arg:Enable()
+			Info.arg:__Enable()
 		end
 	end
 
@@ -317,6 +317,36 @@ do
 						},
 					},
 				},
+				Cooldown = {
+					type = "group",
+					name = L["Cooldown"],
+					arg = obj,
+					inline = true,
+					disabled = GetDisabled,
+					order = 8,
+					args = {
+						Color = {
+							type = "color",
+							name = L["Color"],
+							desc = L["Set the color of the Cooldown animation."],
+							get = GetColor,
+							set = SetColor,
+							arg = obj,
+							hasAlpha = true,
+							order = 1,
+						},
+						Pulse = {
+							type = "toggle",
+							name = L["Pulse"],
+							desc = L["Show the pulse effect when a cooldown finishes."],
+							get = GetOption,
+							set = SetOption,
+							arg = obj,
+							disabled = GetDisabled,
+							order = 2,
+						},
+					},
+				},
 				Colors = {
 					type = "group",
 					name = L["Colors"],
@@ -324,7 +354,7 @@ do
 					set = SetColor,
 					inline = true,
 					disabled = GetDisabled,
-					order = 8,
+					order = 9,
 					args = {
 						Normal = {
 							type = "color",
@@ -366,14 +396,6 @@ do
 							arg = obj,
 							hasAlpha = true,
 							order = 5,
-						},
-						Cooldown = {
-							type = "color",
-							name = L["Cooldown"],
-							desc = L["Set the color of the Cooldown animation."],
-							arg = obj,
-							hasAlpha = true,
-							order = 7,
 						},
 					},
 				},

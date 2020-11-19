@@ -17,6 +17,7 @@ MDT.BackdropColor = { 0.058823399245739, 0.058823399245739, 0.058823399245739, 0
 local AceGUI = LibStub("AceGUI-3.0")
 local db
 local icon = LibStub("LibDBIcon-1.0")
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("MythicDungeonTools", {
 	type = "data source",
 	text = L["Mythic Dungeon Tools"],
@@ -149,7 +150,7 @@ do
 				icon:Show("MythicDungeonTools")
 			end
 
-            if db.dataCollectionActive then MDT.DataCollection:Init() end
+            if --[[db.dataCollectionActive ]] true then MDT.DataCollection:Init() end
             --fix db corruption
             do
                 for _,presets in pairs(db.presets) do
@@ -222,20 +223,21 @@ end
 MDT.mapInfo = {}
 MDT.dungeonTotalCount = {}
 MDT.scaleMultiplier = {}
-
-local affixWeeks = { --affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
-    [1] = {[1]=5,[2]=3,[3]=9,[4]=120},
-    [2] = {[1]=7,[2]=2,[3]=10,[4]=120},
-    [3] = {[1]=11,[2]=4,[3]=9,[4]=120},
-    [4] = {[1]=8,[2]=14,[3]=10,[4]=120},
-    [5] = {[1]=7,[2]=13,[3]=9,[4]=120},
-    [6] = {[1]=11,[2]=3,[3]=10,[4]=120},
-    [7] = {[1]=6,[2]=4,[3]=9,[4]=120},
-    [8] = {[1]=5,[2]=14,[3]=10,[4]=120},
-    [9] = {[1]=11,[2]=2,[3]=9,[4]=120},
-    [10] = {[1]=7,[2]=12,[3]=10,[4]=120},
-    [11] = {[1]=6,[2]=13,[3]=9,[4]=120},
-    [12] = {[1]=8,[2]=12,[3]=10,[4]=120},
+--IDs: https://dl.dropboxusercontent.com/s/eknkfgkq6oc8uvc/chrome_Np07WrFii4.png
+--affixID as used in C_ChallengeMode.GetAffixInfo(affixID)
+local affixWeeks = {
+    [1] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [2] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [3] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [4] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [5] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [6] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [7] =  {[1]=0,[2]=0,[3]=0,[4]=0},
+    [8] =  {[1]=0,[2]=0,[3]=0,[4]=0},  -->>Bolstering, Necrotic, Tyrannical
+    [9] =  {[1]=0,[2]=0,[3]=0,[4]=0},   -->>Storming, Inspiring, Fortified
+    [10] = {[1]=11,[2]=2,[3]=9,[4]=120},  -->>Bursting, Explosive, Tyrannical
+    [11] = {[1]=0,[2]=0,[3]=0,[4]=0},
+    [12] = {[1]=0,[2]=0,[3]=0,[4]=0},
 }
 
 local dungeonList = {
@@ -429,7 +431,7 @@ local dungeonSubLevels = {
     [34] = {
         [1] = L["Honor's Ascent"],
         [2] = L["Gardens of Repose"],
-        [3] = L["Spire of the Firstborne"],
+        [3] = L["Font of Fealty"],
         [4] = L["Seat of the Archon"],
     },
     [35] = {
@@ -1041,6 +1043,7 @@ local bottomTips = {
     [14] = L["You can cycle through dungeons by holding ALT and using the mousewheel."],
     [15] = L["Mouseover a patrolling enemy with a blue border to view the patrol path."],
     [16] = L["Expand the top toolbar to gain access to drawing and note features."],
+    [17] = L["ConnectedTip"],
 }
 
 function MDT:UpdateBottomText()
@@ -2437,6 +2440,12 @@ function MDT:IsWeekTeeming(week)
     return affixWeeks[week][1] == 5
 end
 
+---Returns if the current week has an affix weeks set that includes the inspiring affix
+function MDT:IsWeekInspiring(week)
+    if not week then week = MDT:GetCurrentAffixWeek() or 1 end
+    return affixWeeks[week][1] == 122 or affixWeeks[week][2] == 122
+end
+
 ---IsPresetTeeming
 ---Returns if the preset is set to a week which contains the teeming affix
 function MDT:IsPresetTeeming(preset)
@@ -2922,6 +2931,7 @@ function MDT:UpdateMap(ignoreSetSelection, ignoreReloadPullButtons, ignoreUpdate
 	MDT:UpdateDungeonEnemies()
     MDT:DungeonEnemies_UpdateTeeming()
     MDT:DungeonEnemies_UpdateSeasonalAffix()
+    MDT:DungeonEnemies_UpdateInspiring()
 
 	if not ignoreReloadPullButtons then
 		MDT:ReloadPullButtons()
@@ -3741,7 +3751,7 @@ function MDT:MakePullSelectionButtons(frame)
 
     frame.newPullButtons = {}
 	--rightclick context menu
-    frame.optionsDropDown = L_Create_UIDropDownMenu("PullButtonsOptionsDropDown", nil)
+    frame.optionsDropDown = LibDD:Create_UIDropDownMenu("PullButtonsOptionsDropDown", nil)
 end
 
 
@@ -3976,6 +3986,12 @@ function MDT:UpdatePullButtonNPCData(idx)
         frame.newPullButtons[idx]:ShowReapingIcon(true,currentPercent,oldPercent)
     else
         frame.newPullButtons[idx]:ShowReapingIcon(false,currentPercent,oldPercent)
+    end
+    --prideful icon
+    if (math.floor(currentPercent/0.2)>math.floor(oldPercent/0.2)) and oldPercent<1 and db.currentSeason == 5 then
+        frame.newPullButtons[idx]:ShowPridefulIcon(true,currentPercent,oldPercent)
+    else
+        frame.newPullButtons[idx]:ShowPridefulIcon(false,currentPercent,oldPercent)
     end
 end
 
@@ -5006,7 +5022,7 @@ function initFrames()
 	-- Set frame position
 	main_frame:ClearAllPoints()
 	main_frame:SetPoint(db.anchorTo, UIParent,db.anchorFrom, db.xoffset, db.yoffset)
-    main_frame.contextDropdown = L_Create_UIDropDownMenu("MDTContextDropDown", nil)
+    main_frame.contextDropdown = LibDD:Create_UIDropDownMenu("MDTContextDropDown", nil)
 
     MDT:CheckCurrentZone(true)
     MDT:EnsureDBTables()

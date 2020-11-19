@@ -16,71 +16,10 @@ local _, Core = ...
 -- Lua
 ---
 
-local _G, setmetatable, type = _G, setmetatable, type
+local _G, type = _G, type
 
 ----------------------------------------
--- Locals
----
-
--- Valid Types
-local oTypes = {
-	Button = true,
-	CheckButton = true,
-	Frame = true,
-}
-
-----------------------------------------
--- Type Validator
----
-
--- Returns a button's object or internal type.
-function Core.GetType(Button, oType)
-	local Type
-
-	if not oType then
-		if type(Button) == "table" then
-			Type = Button.GetObjectType and Button:GetObjectType()
-
-			if not Type or not oTypes[Type] then
-				Type = nil
-			end
-
-			Button.__MSQ_oType = Type
-		end
-	else
-		Type = "Legacy"
-
-		if oType == "CheckButton" then
-			if Button.HotKey then
-				Type = "Action"
-
-				local bName = Button.GetName and Button:GetName()
-
-				if bName and bName:find("Pet") then
-					Type = "Pet"
-				end
-			end
-		elseif oType == "Button" then
-			if Button.IconBorder then
-				Type = "Item"
-			elseif Button.duration then
-				Type = "Aura"
-
-				local bName = Button.GetName and Button:GetName()
-				local Border = bName and _G[bName.."Border"]
-
-				if Border then
-					Type = (Button.symbol and "Debuff") or "Enchant"
-				end
-			end
-		end
-	end
-
-	return Type
-end
-
-----------------------------------------
--- Region Retriever
+-- Region Finder
 ---
 
 -- Gets a button region.
@@ -112,6 +51,65 @@ function Core.GetRegion(Button, Info)
 	end
 
 	return Region
+end
+
+----------------------------------------
+-- Type Validator
+---
+
+do
+	-- Valid Types
+	local oTypes = {
+		Button = true,
+		CheckButton = true,
+		Frame = true,
+	}
+
+	-- Returns a button's object or internal type.
+	function Core.GetType(Button, oType)
+		local Type
+
+		if not oType then
+			if type(Button) == "table" then
+				Type = Button.GetObjectType and Button:GetObjectType()
+
+				if not Type or not oTypes[Type] then
+					Type = nil
+				end
+
+				Button.__MSQ_oType = Type
+			end
+		else
+			Type = "Legacy"
+
+			if oType == "CheckButton" then
+				if Button.HotKey then
+					Type = "Action"
+
+					local bName = Button.GetName and Button:GetName()
+
+					if bName and bName:find("Pet") then
+						Type = "Pet"
+					end
+				end
+			elseif oType == "Button" then
+				if Button.IconBorder then
+					Type = "Item"
+				elseif Button.duration then
+					Type = "Aura"
+
+					local bName = Button.GetName and Button:GetName()
+					local Border = bName and _G[bName.."Border"]
+
+					if Border then
+						Type = (Button.symbol and "Debuff") or "Enchant"
+					end
+				end
+			end
+		end
+
+		return Type
+	end
 end
 
 ----------------------------------------

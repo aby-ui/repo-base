@@ -420,8 +420,8 @@ function module:TextToProfile(str,uncompressed)
 					end
 					ReloadUI()
 				end,
-				OnShow = function(self, data)
-					self.button1:Disable()	--disable before some testing
+				OnShow = function(self)
+					--self.button1:Disable()	--disable before some testing
 				end,
 				OnButton2 = function()
 					local name = profileName

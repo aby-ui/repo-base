@@ -408,8 +408,224 @@ end
 
 ----> Options
 
+function OptionsFrame:AddSnowStorm(maxSnowflake)
+	local sf = OptionsFrame.SnowStorm or CreateFrame("ScrollFrame", nil, Options)
+	OptionsFrame.SnowStorm = sf
+	sf:SetPoint("TOPLEFT")
+	sf:SetPoint("BOTTOMRIGHT")
+	
+	sf.C = sf.C or CreateFrame("Frame", nil, sf) 
+	sf:SetScrollChild(sf.C)
+	sf.C:SetSize(Options:GetWidth(),Options:GetHeight())
+
+	maxSnowflake = maxSnowflake or 200
+
+	if not OptionsFrame.hatBut then
+		local hat = CreateFrame("Button",nil,OptionsFrame)  
+		OptionsFrame.hatBut = hat
+		hat:SetSize(40,30) 
+		hat:SetPoint("CENTER",OptionsFrame.image,-15,45)
+		hat.maxSnowflake = maxSnowflake
+		hat:RegisterForClicks("LeftButtonDown","RightButtonDown")
+		hat:SetScript("OnClick",function(self,button) 
+			if button == "RightButton" then
+				self.maxSnowflake = 0
+			else
+				self.maxSnowflake = self.maxSnowflake + 100
+			end
+			OptionsFrame:AddSnowStorm(self.maxSnowflake)
+		end)
+		hat:SetScript("OnEnter",function()
+			OptionsFrame.imagehat:SetVertexColor(1,.8,.8)
+		end)
+		hat:SetScript("OnLeave",function()
+			OptionsFrame.imagehat:SetVertexColor(1,1,1)
+		end)
+
+		hat.g = hat:CreateAnimationGroup()
+		hat.g:SetScript('OnFinished', function(self) 
+			self.a:SetStartDelay(math.random(10,30))
+			self:Play()
+		end)
+		hat.g.a = hat.g:CreateAnimation()
+		hat.g.a:SetDuration(1)
+		hat.g.a:SetScript("OnUpdate",function(self)
+			local p = self:GetProgress()
+			p = p % 0.333
+			if p > 0.1665 then 
+				p = p 
+				if p > 0.24975 then 
+					p = (0.333 - p)
+				else
+					p = p - 0.1665
+				end
+			else
+				if p > 0.08325 then 
+					p = -(0.1665 - p)
+				else
+					p = 0 - p
+				end
+			end
+			OptionsFrame.imagehat:SetPoint("CENTER",OptionsFrame.image,"CENTER",p*12*3,0)
+		end)
+		hat.g.a:SetStartDelay(10)
+		hat.g:Play()
+	end
+
+	sf.snow = sf.snow or {}
+	sf.snowlast = sf.snowlast or 0
+	if sf.snowlast > maxSnowflake then
+		for i=maxSnowflake+1,#sf.snow do
+			local f = sf.snow[i]
+			f:Hide()
+		end
+		sf.snowlast = 0
+		return
+	end
+
+	local function AnimOnFinished(self)
+		local f = self.p
+		f.img:Hide()
+		f:Update()
+	end
+	local function AnimOnUpdate(self)
+		local f = self.p
+		local p = self:GetProgress()
+		if p == 0 then
+			return
+		end
+		if p > 0 and not f.img.on then
+			f.img.on = true
+			f.img:Show()
+		end
+		if p > self.wayu then
+			self.wayu = p + 0.15
+			local way = math.random(1,3)
+			self.way = way - 2
+			self.wayF, self.wayT = 0, 40
+			if self.way == 0 then
+				self.wayF, self.wayT = -20, 20
+				self.way = 1
+			end
+		end
+		f.x = f.x + math.random(self.wayF, self.wayT) / 100 * self.way
+		local posy = -self.H*p+20+self.Hfix
+		f.img:SetPoint("CENTER",sf.C,"TOPLEFT",f.x,posy)
+		if self.Hfix ~= 0 and posy < (-self.H+20) then
+			self:Stop()
+			f:Update()
+		end
+	end
+	local function Update(self,isFirstTime)
+		local size = math.random(1,20)
+		if size >= 10 then
+			if math.random(0,100) < 80 then
+				size = math.random(1,10)
+			end
+		end
+		self.img:SetSize(size,size)
+		self.img.on = nil
+		self.g.a.wayu = 0
+		self.x = math.random(0,Options:GetWidth())
+		self.g.a:SetStartDelay(1+math.random(0,1000)/100)
+		self.g.a:SetDuration(math.random(5,14)*(size < 10 and 0.75 or 1))
+		self.g.a.H = Options:GetHeight()+40
+		self.g.a.Hfix = 0
+		if isFirstTime then
+			self.g.a.Hfix = -math.random(0,self.g.a.H)
+			self.g.a:SetStartDelay(0)
+		end
+		self.g:Play()
+	end
+
+	for i=1,maxSnowflake do
+		if not sf.snow[i] then
+			local f = CreateFrame("Frame",nil,sf.C)
+			sf.snow[i] = f
+		
+			f.Update = Update
+
+			f.img = f:CreateTexture(nil,"BACKGROUND")
+			f.img:SetTexture([[Interface\AddOns\ExRT\media\snowflake]])
+			f.img:SetAlpha(.5)
+			f.img:Hide()
+			
+			f.g = f:CreateAnimationGroup()
+			f.g.p = f
+			f.g:SetScript('OnFinished', AnimOnFinished)
+			f.g.a = f.g:CreateAnimation()
+			f.g.a.p = f
+			f.g.a:SetScript("OnUpdate",AnimOnUpdate)
+		
+			f:Update(true)
+		end
+		sf.snow[i]:Show()
+	end
+	sf.snowlast = maxSnowflake
+end
+
 OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
+OptionsFrame.image2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2b","BORDER"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140*2,140*2):Color(.9,.9,.45,1)
+OptionsFrame.image2:SetAlpha(0)
 OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",28):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
+
+OptionsFrame.animLogo = CreateFrame("Frame",nil,OptionsFrame)
+OptionsFrame.animLogo.g = OptionsFrame.animLogo:CreateAnimationGroup()
+OptionsFrame.animLogo.g:SetLooping("BOUNCE")
+OptionsFrame.animLogo.g:SetScript('OnFinished', function(self) 
+	self.a:SetStartDelay(math.random(4,15))
+	self:Play()
+end)
+OptionsFrame.animLogo.g.a = OptionsFrame.animLogo.g:CreateAnimation()
+OptionsFrame.animLogo.g.a:SetDuration(2)
+OptionsFrame.animLogo.g.a:SetScript("OnUpdate",function(self)
+	local p = self:GetProgress()
+	OptionsFrame.image2:SetAlpha(p*0.75)
+end)
+OptionsFrame.animLogo.g.a:SetStartDelay(4)
+OptionsFrame.animLogo.g:Play()
+
+OptionsFrame.imagehat = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogoHat","OVERLAY"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140,140):Shown(false)
+
+OptionsFrame.dateChecks = CreateFrame("Frame",nil,OptionsFrame)
+OptionsFrame.dateChecks:SetPoint("TOPLEFT")
+OptionsFrame.dateChecks:SetSize(1,1)
+OptionsFrame.dateChecks:SetScript("OnShow",function(self)
+	self:SetScript("OnShow",nil)
+	local today = date("*t",time())
+	local isChristmas, isSnowDay
+	if ExRT.locale == "ruRU" then
+		if (today.month == 12 and today.day >= 23) or (today.month == 1 and today.day <= 4) then
+			isChristmas = true
+		end
+		if (today.month == 12 and today.day >= 30) or (today.month == 1 and today.day <= 2) then
+			isSnowDay = true
+		end
+	elseif ExRT.locale == "deDE" or ExRT.locale == "enGB" or ExRT.locale == "enUS" or ExRT.locale == "esES" or ExRT.locale == "esMX" or ExRT.locale == "frFR" or ExRT.locale == "itIT" or ExRT.locale == "ptBR" or ExRT.locale == "ptPT" then
+		if (today.month == 12 and today.day >= 15) or (today.month == 1 and today.day <= 2) then
+			isChristmas = true
+		end
+		if (today.month == 12 and today.day >= 24 and today.day <= 25) or ((today.month == 12 and today.day >= 31) or (today.month == 1 and today.day <= 1)) then
+			isSnowDay = true
+		end
+	elseif ExRT.locale == "koKR" then
+		if (today.month == 12 and today.day >= 30) or (today.month == 1 and today.day <= 2) then
+			isChristmas = true
+		end
+		if (today.month == 12 and today.day >= 31) or (today.month == 1 and today.day <= 1) then
+			isSnowDay = true
+		end
+	end
+
+	if isChristmas then
+		OptionsFrame.imagehat:Show()
+		if isSnowDay then
+			OptionsFrame:AddSnowStorm()
+		else
+			OptionsFrame:AddSnowStorm(0)
+		end
+	end
+end)
 
 OptionsFrame.chkIconMiniMap = ELib:Check(OptionsFrame,L.setminimap1):Point(25,-155):OnClick(function(self) 
 	if self:GetChecked() then

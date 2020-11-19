@@ -574,6 +574,13 @@ local function blipDevModeSetup(blip)
         MDT.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].x = x
         MDT.dungeonEnemies[db.currentDungeonIdx][blip.enemyIdx].clones[blip.cloneIdx].y = y
     end)
+    local groupColors = {
+        [1] = {1,0,0,1},
+        [2] = {0,1,0,1},
+        [3] = {0,0,1,1},
+        [4] = {1,0,1,1},
+        [5] = {0,1,1,1},
+    }
     blip:SetScript("OnMouseWheel", function(self, delta)
         if not blip.clone.g then
             local maxGroup = 0
@@ -590,9 +597,11 @@ local function blipDevModeSetup(blip)
             blip.clone.g = blip.clone.g + delta
         end
         blip.fontstring_Text1:SetText(blip.clone.g)
+        if blip.clone.g then blip.fontstring_Text1:SetTextColor(unpack(groupColors[blip.clone.g%5+1])) end
     end)
     blip.fontstring_Text1:Show()
     blip.fontstring_Text1:SetText(blip.clone.g)
+    if blip.clone.g then blip.fontstring_Text1:SetTextColor(unpack(groupColors[blip.clone.g%5+1])) end
 end
 
 local emissaryIds = {[155432]=true,[155433]=true,[155434]=true}
@@ -1033,6 +1042,22 @@ function MDT:DungeonEnemies_UpdateInfested(week)
     if week == 0 then week = 3 end
     for _,blip in pairs(blips) do
         if blip.clone.infested and blip.clone.infested[week] then
+            blip.texture_Indicator:Show()
+        else
+            blip.texture_Indicator:Hide()
+        end
+    end
+end
+
+---DungeonEnemies_UpdateInspiring
+---Updates which blips should display inspiring state based on preset.week
+function MDT:DungeonEnemies_UpdateInspiring(week)
+    week = week or preset.week
+    local isInspiring = MDT:IsWeekInspiring(week)
+    for _,blip in pairs(blips) do
+        if blip.clone.inspiring and isInspiring then
+            blip.texture_Indicator:SetVertexColor(1,1,0,1)
+            blip.texture_Indicator:SetScale(1.15)
             blip.texture_Indicator:Show()
         else
             blip.texture_Indicator:Hide()

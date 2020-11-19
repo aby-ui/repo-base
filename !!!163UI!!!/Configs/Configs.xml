@@ -33,6 +33,7 @@
     <Include file="..\..\CompactRaid\CfgCompactRaid.lua"/>
     <Include file="..\..\DBM-Core\CfgDBM-Core.lua"/>
     <Include file="..\..\DBM_Mods_Legion\CfgDBM_Mods_Legion.lua"/>
+    <Include file="..\..\DBM_Mods_BfA\CfgDBM_Mods_BfA.lua"/>
     <Include file="..\..\DeathAnnounce\CfgDeathAnnounce.lua"/>
     <Include file="..\..\Decursive\CfgDecursive.lua"/>
     <Include file="..\..\DejaCharacterStats\CfgDejaCharacterStats.lua"/>

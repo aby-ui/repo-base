@@ -28,8 +28,7 @@ local hooksecurefunc = hooksecurefunc
 local Default = Core.Skins.Default.IconBorder
 
 -- @ Core\Utility
-local GetSize, SetPoints = Core.GetSize, Core.SetPoints
-local GetTexCoords = Core.GetTexCoords
+local GetSize, GetTexCoords, SetPoints = Core.GetSize, Core.GetTexCoords, Core.SetPoints
 
 ----------------------------------------
 -- Locals

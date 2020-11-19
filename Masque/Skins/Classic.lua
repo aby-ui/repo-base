@@ -24,8 +24,8 @@ local L = Core.Locale
 
 Core.AddSkin("Classic", {
 	Template = "Default",
+	-- API_VERSION = Default.API_VERSION,
 	-- Shape = Default.Shape,
-	-- Masque_Version = Default.Masque_Version,
 
 	-- Info
 	Description = L["An improved version of the game's default button style."],
@@ -377,6 +377,8 @@ Core.AddSkin("Classic", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\Cooldown\edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.8},
 		Width = 32,
 		Height = 32,
@@ -387,6 +389,8 @@ Core.AddSkin("Classic", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\Cooldown\edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 32,
 		Height = 32,
 		Point = "CENTER",

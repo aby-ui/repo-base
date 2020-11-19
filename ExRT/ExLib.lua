@@ -553,7 +553,7 @@ do
 		GameTooltip:Hide()
 		ELib.ScrollDropDown.OnButtonLeave(self)
 	end
-	local function OnClick(self)
+	local function OnClick(self, button, down)
 		ELib.ScrollDropDown.OnClick(self, button, down)
 	end
 	local function OnLoad(self)
@@ -2052,7 +2052,7 @@ do
 	end
 	function Tooltip:Std(anchorUser)
 		GameTooltip:SetOwner(self,anchorUser or "ANCHOR_RIGHT")
-		GameTooltip:SetText(self.tooltipText or "", nil, nil, nil, nil, true)
+		GameTooltip:SetText(self.tooltipText or "")
 		GameTooltip:Show()
 	end
 	function Tooltip:Link(data,...)
@@ -3047,6 +3047,12 @@ do
 		end
 		return self
 	end
+	local function Widget_Tooltip(self,text)
+		self:SetScript("OnEnter",ELib.Tooltip.Std)
+		self:SetScript("OnLeave",ELib.Tooltip.Hide)
+		self.tooltipText = text
+		return self
+	end
 	function ELib:Icon(parent,textureIcon,size,isButton)
 		local self = CreateFrame(isButton and "Button" or "Frame",nil,parent)
 		self:SetSize(size,size)
@@ -3059,7 +3065,8 @@ do
 		end
 
 		Mod(self,
-			'Icon',Widget_Icon
+			'Icon',Widget_Icon,
+			'Tooltip',Widget_Tooltip
 		)
 
 		return self
@@ -3095,6 +3102,7 @@ do
 
 	local function Widget_ColorState(self,isBorderInsteadText)
 		if isBorderInsteadText then
+			local cR,cG,cB
 			if self.disabled or not self:IsEnabled() then
 				cR,cG,cB = .5,.5,.5
 			elseif self:GetChecked() then

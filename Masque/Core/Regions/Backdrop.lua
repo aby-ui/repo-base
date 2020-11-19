@@ -28,8 +28,8 @@ local error, type = error, type
 local Default = Core.Skins.Default.Backdrop
 
 -- @ Core\Utility
-local GetSize, SetPoints = Core.GetSize, Core.SetPoints
-local GetColor, GetTexCoords = Core.GetColor, Core.GetTexCoords
+local GetColor, GetSize = Core.GetColor, Core.GetSize
+local GetTexCoords, SetPoints = Core.GetTexCoords, Core.SetPoints
 
 -- @ Core\Regions\Mask
 local SkinMask = Core.SkinMask
@@ -72,7 +72,7 @@ local function RemoveBackdrop(Region, Button)
 end
 
 -- Skins or creates the 'Backdrop' region of a button.
-local function SkinBackdrop(Region, Button, Skin, Color, xScale, yScale)
+local function AddBackdrop(Region, Button, Skin, Color, xScale, yScale)
 	Button.FloatingBG = Region
 	Region = Region or Button.__MSQ_Backdrop
 
@@ -116,13 +116,31 @@ end
 -- Core
 ---
 
+-- Sets the color of the 'Backdrop' region.
+function Core.SetBackdropColor(Region, Button, Skin, Color)
+	Region = Region or Button.__MSQ_Backdrop
+
+	if Region then
+		local bType = Button.__MSQ_bType
+		Skin = Skin[bType] or Skin
+
+		Color = Color or Skin.Color
+
+		if Skin.UseColor then
+			Region:SetColorTexture(GetColor(Color or DEF_COLOR))
+		else
+			Region:SetVertexColor(GetColor(Color or DEF_COLOR))
+		end
+	end
+end
+
 -- Add or removes a 'Backdrop' region.
 function Core.SkinBackdrop(Enabled, Region, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
 	Skin = Skin[bType] or Skin
 
 	if Enabled and not Skin.Hide then
-		SkinBackdrop(Region, Button, Skin, Color, xScale, yScale)
+		AddBackdrop(Region, Button, Skin, Color, xScale, yScale)
 	else
 		RemoveBackdrop(Region, Button)
 	end

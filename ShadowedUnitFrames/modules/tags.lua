@@ -1065,7 +1065,7 @@ Tags.defaultTags = {
 Tags.defaultEvents = {
 	["totem:timer"]				= "SUF_TOTEM_TIMER",
 	["rune:timer"]				= "SUF_RUNE_TIMER",
-	["hp:color"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH",
+	["hp:color"]				= "UNIT_HEALTH UNIT_MAXHEALTH",
 	["short:druidform"]			= "UNIT_AURA",
 	["druidform"]				= "UNIT_AURA",
 	["guild"]					= "UNIT_NAME_UPDATE",
@@ -1085,11 +1085,11 @@ Tags.defaultEvents = {
 	["afk:time"]				= "PLAYER_FLAGS_CHANGED UNIT_CONNECTION",
 	["status:time"]				= "UNIT_POWER_FREQUENT UNIT_CONNECTION",
 	["pvp:time"]				= "PLAYER_FLAGS_CHANGED",
-	["curhp"]               	= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_CONNECTION",
-	["abscurhp"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_CONNECTION",
-	["curmaxhp"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_CONNECTION",
-	["absolutehp"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_CONNECTION",
-	["smart:curmaxhp"]			= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_CONNECTION",
+	["curhp"]               	= "UNIT_HEALTH UNIT_CONNECTION",
+	["abscurhp"]				= "UNIT_HEALTH UNIT_CONNECTION",
+	["curmaxhp"]				= "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION",
+	["absolutehp"]				= "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION",
+	["smart:curmaxhp"]			= "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION",
 	["curpp"]               	= "SUF_POWERTYPE:CURRENT UNIT_POWER_FREQUENT",
 	["abscurpp"]            	= "SUF_POWERTYPE:CURRENT UNIT_POWER_FREQUENT UNIT_MAXPOWER",
 	["curmaxpp"]				= "SUF_POWERTYPE:CURRENT UNIT_POWER_FREQUENT UNIT_MAXPOWER",
@@ -1108,25 +1108,25 @@ Tags.defaultEvents = {
 	["level"]               	= "UNIT_LEVEL UNIT_FACTION PLAYER_LEVEL_UP",
 	["levelcolor"]				= "UNIT_LEVEL UNIT_FACTION PLAYER_LEVEL_UP",
 	["maxhp"]               	= "UNIT_MAXHEALTH",
-	["def:name"]				= "UNIT_NAME_UPDATE UNIT_MAXHEALTH UNIT_HEALTH UNIT_HEALTH_FREQUENT",
+	["def:name"]				= "UNIT_NAME_UPDATE UNIT_MAXHEALTH UNIT_HEALTH",
 	["absmaxhp"]				= "UNIT_MAXHEALTH",
 	["maxpp"]               	= "SUF_POWERTYPE:CURRENT UNIT_MAXPOWER",
 	["absmaxpp"]				= "SUF_POWERTYPE:CURRENT UNIT_MAXPOWER",
-	["missinghp"]           	= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_CONNECTION",
+	["missinghp"]           	= "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION",
 	["missingpp"]           	= "SUF_POWERTYPE:CURRENT UNIT_POWER_FREQUENT UNIT_MAXPOWER",
 	["name"]                	= "UNIT_NAME_UPDATE",
 	["abbrev:name"]				= "UNIT_NAME_UPDATE",
 	["server"]					= "UNIT_NAME_UPDATE",
 	["colorname"]				= "UNIT_NAME_UPDATE",
-	["perhp"]               	= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH UNIT_CONNECTION",
+	["perhp"]               	= "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION",
 	["perpp"]               	= "SUF_POWERTYPE:CURRENT UNIT_POWER_FREQUENT UNIT_MAXPOWER UNIT_CONNECTION",
-	["status"]              	= "UNIT_HEALTH UNIT_HEALTH_FREQUENT PLAYER_UPDATE_RESTING UNIT_CONNECTION",
+	["status"]              	= "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION",
 	["smartlevel"]          	= "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED",
 	["cpoints"]             	= "UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED",
 	["rare"]                	= "UNIT_CLASSIFICATION_CHANGED",
 	["classification"]      	= "UNIT_CLASSIFICATION_CHANGED",
 	["shortclassification"] 	= "UNIT_CLASSIFICATION_CHANGED",
-	["dechp"]					= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH",
+	["dechp"]					= "UNIT_HEALTH UNIT_MAXHEALTH",
 	["group"]					= "GROUP_ROSTER_UPDATE",
 	["unit:color:aggro"]		= "UNIT_THREAT_SITUATION_UPDATE",
 	["color:aggro"]				= "UNIT_THREAT_SITUATION_UPDATE",
@@ -1434,7 +1434,6 @@ Tags.eventType = {
 	["UNIT_POWER_FREQUENT"] = "power",
 	["UNIT_MAXPOWER"] = "power",
 	["UNIT_ABSORB_AMOUNT_CHANGED"] = "health",
-	["UNIT_HEALTH_FREQUENT"] = "health",
 	["UNIT_HEALTH"] = "health",
 	["UNIT_MAXHEALTH"] = "health",
 	["GROUP_ROSTER_UPDATE"] = "unitless",
@@ -1485,14 +1484,14 @@ local function loadAPIEvents()
 		["UnitName"]				= "UNIT_NAME_UPDATE",
 		["UnitClassification"]		= "UNIT_CLASSIFICATION_CHANGED",
 		["UnitFactionGroup"]		= "UNIT_FACTION PLAYER_FLAGS_CHANGED",
-		["UnitHealth%("]			= "UNIT_HEALTH UNIT_HEALTH_FREQUENT",
+		["UnitHealth%("]			= "UNIT_HEALTH",
 		["UnitHealthMax"]			= "UNIT_MAXHEALTH",
 		["UnitPower%("]				= "UNIT_POWER_FREQUENT",
 		["UnitPowerMax"]			= "UNIT_MAXPOWER",
 		["UnitPowerType"]			= "UNIT_DISPLAYPOWER",
-		["UnitIsDead"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT",
-		["UnitIsGhost"]				= "UNIT_HEALTH UNIT_HEALTH_FREQUENT",
-		["UnitIsConnected"]			= "UNIT_HEALTH UNIT_HEALTH_FREQUENT UNIT_CONNECTION",
+		["UnitIsDead"]				= "UNIT_HEALTH",
+		["UnitIsGhost"]				= "UNIT_HEALTH",
+		["UnitIsConnected"]			= "UNIT_HEALTH UNIT_CONNECTION",
 		["UnitIsAFK"]				= "PLAYER_FLAGS_CHANGED",
 		["UnitIsDND"]				= "PLAYER_FLAGS_CHANGED",
 		["UnitIsPVP"]				= "PLAYER_FLAGS_CHANGED UNIT_FACTION",
@@ -1571,7 +1570,7 @@ end
 
 
 -- Checker function, makes sure tags are all happy
---[===[@debug@
+--[==[@debug@
 function Tags:Verify()
 	local fine = true
 	for tag, events in pairs(self.defaultEvents) do
@@ -1616,4 +1615,4 @@ function Tags:Verify()
 		print("Verified tags, everything is fine.")
 	end
 end
---@end-debug@]===]
+--@end-debug@]==]

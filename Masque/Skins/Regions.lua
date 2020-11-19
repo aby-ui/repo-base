@@ -68,8 +68,8 @@ local Legacy = {
 	},
 	-- [ ARTWORK (-1) ]
 	Shadow = {
-		Ignore = true,
 		CanHide = true,
+		Ignore = true,
 	},
 	-- [ ARTWORK (0) ]
 	Normal = {
@@ -89,8 +89,9 @@ local Legacy = {
 	Disabled = {
 		Func = "GetDisabledTexture",
 		Type = "Texture",
-		Iterate = true,
+		CanHide = true,
 		Hide = true,
+		Iterate = true,
 	},
 	Pushed = {
 		Func = "GetPushedTexture",
@@ -239,9 +240,6 @@ local Legacy = {
 	QuestBorder = {
 		Name = "IconQuestTexture",
 		Type = "Texture",
-		--Iterate = true,
-		--NoColor = true,
-		--NoTexture = true,
 	},
 	-- LevelLinkLockIcon = {}, -- Unsupported, no reason to.
 	-- [ OVERLAY (4) ]
@@ -333,58 +331,6 @@ local Action = {
 }
 
 ----------------------------------------
--- "Pet" Type
----
-
-local Pet = {
-	Backdrop = Legacy.Backdrop,
-	Icon = Legacy.Icon,
-	Normal = Legacy.Normal.Pet,
-	Disabled = Legacy.Disabled, -- Unused
-	Pushed = Legacy.Pushed,
-	Flash = Legacy.Flash,
-	HotKey = Legacy.HotKey,
-	Count = Legacy.Count,
-	Checked = Legacy.Checked,
-	Border = Legacy.Border,
-	AutoCastable = Legacy.AutoCastable,
-	NewAction = Legacy.NewAction,
-	SpellHighlight = Legacy.SpellHighlight,
-	Name = Legacy.Name,
-	Highlight = Legacy.Highlight,
-	AutoCastShine = Legacy.AutoCastShine,
-	Cooldown = Legacy.Cooldown,
-	ChargeCooldown = Legacy.ChargeCooldown,
-}
-
-----------------------------------------
--- "Item" Type
----
-
-local Item = {
-	Icon = Legacy.Icon,
-	Normal = Legacy.Normal,
-	Disabled = Legacy.Disabled,
-	Pushed = Legacy.Pushed,
-	Count = Legacy.Count,
-	Checked = (not WOW_RETAIL and Legacy.Checked) or nil, -- Classic Only
-	Border = Legacy.Border, -- Backwards-Compatibility
-	IconBorder = Legacy.IconBorder,
-	SlotHighlight = (WOW_RETAIL and Legacy.SlotHighlight) or nil, -- Retail Only
-	UpgradeIcon = Legacy.UpgradeIcon,
-	IconOverlay = Legacy.IconOverlay,
-	IconOverlay2 = Legacy.IconOverlay2,
-	QuestBorder = Legacy.QuestBorder,
-	NewItem = Legacy.NewItem,
-	SearchOverlay = Legacy.SearchOverlay,
-	ContextOverlay = Legacy.ContextOverlay,
-	JunkIcon = Legacy.JunkIcon,
-	Highlight = Legacy.Highlight,
-	Cooldown = Legacy.Cooldown,
-	ChargeCooldown = Legacy.ChargeCooldown,
-}
-
-----------------------------------------
 -- "Aura" Type
 ---
 
@@ -431,6 +377,58 @@ local Enchant = {
 	Duration = Legacy.Duration,
 	Border = Legacy.Border.Enchant,
 	Highlight = Legacy.Highlight, -- Unused
+	Cooldown = Legacy.Cooldown,
+	ChargeCooldown = Legacy.ChargeCooldown,
+}
+
+----------------------------------------
+-- "Item" Type
+---
+
+local Item = {
+	Icon = Legacy.Icon,
+	Normal = Legacy.Normal,
+	Disabled = Legacy.Disabled,
+	Pushed = Legacy.Pushed,
+	Count = Legacy.Count,
+	Checked = (not WOW_RETAIL and Legacy.Checked) or nil, -- Classic Only
+	Border = Legacy.Border, -- Backwards-Compatibility
+	IconBorder = Legacy.IconBorder,
+	SlotHighlight = (WOW_RETAIL and Legacy.SlotHighlight) or nil, -- Retail Only
+	UpgradeIcon = Legacy.UpgradeIcon,
+	IconOverlay = Legacy.IconOverlay,
+	IconOverlay2 = Legacy.IconOverlay2,
+	QuestBorder = Legacy.QuestBorder,
+	NewItem = Legacy.NewItem,
+	SearchOverlay = Legacy.SearchOverlay,
+	ContextOverlay = Legacy.ContextOverlay,
+	JunkIcon = Legacy.JunkIcon,
+	Highlight = Legacy.Highlight,
+	Cooldown = Legacy.Cooldown,
+	ChargeCooldown = Legacy.ChargeCooldown,
+}
+
+----------------------------------------
+-- "Pet" Type
+---
+
+local Pet = {
+	Backdrop = Legacy.Backdrop,
+	Icon = Legacy.Icon,
+	Normal = Legacy.Normal.Pet,
+	Disabled = Legacy.Disabled, -- Unused
+	Pushed = Legacy.Pushed,
+	Flash = Legacy.Flash,
+	HotKey = Legacy.HotKey,
+	Count = Legacy.Count,
+	Checked = Legacy.Checked,
+	Border = Legacy.Border,
+	AutoCastable = Legacy.AutoCastable,
+	NewAction = Legacy.NewAction,
+	SpellHighlight = Legacy.SpellHighlight,
+	Name = Legacy.Name,
+	Highlight = Legacy.Highlight,
+	AutoCastShine = Legacy.AutoCastShine,
 	Cooldown = Legacy.Cooldown,
 	ChargeCooldown = Legacy.ChargeCooldown,
 }

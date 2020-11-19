@@ -31,8 +31,7 @@ local hooksecurefunc = hooksecurefunc
 ---
 
 -- @ Core\Utility
-local GetSize, SetPoints = Core.GetSize, Core.SetPoints
-local GetTexCoords = Core.GetTexCoords
+local GetSize, GetTexCoords, SetPoints = Core.GetSize, Core.GetTexCoords, Core.SetPoints
 
 -- @ Core\Regions\Mask
 local SkinMask = Core.SkinMask
@@ -126,10 +125,8 @@ end
 -- API
 ---
 
-local API = Core.API
-
 -- Sets the button's empty status.
-function API:SetEmpty(Button, IsEmpty)
+function Core.API:SetEmpty(Button, IsEmpty)
 	if type(Button) ~= "table" then
 		if Core.db.profile.Debug then
 			error("Bad argument to API method 'SetEmpty'. 'Button' must be a button object.", 2)

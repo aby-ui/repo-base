@@ -54,7 +54,7 @@ do
 	-- local API = Core.API_VERSION
 	local OLD = Core.OLD_VERSION
 
-	-- Returns the Status text and tooltip for a skin based on its Masque_Version setting.
+	-- Returns the Status text and tooltip for a skin based on its API_VERSION setting.
 	local function GetStatus(Version)
 		if not Version then
 			return UNKNOWN, L["The status of this skin is unknown."]
@@ -86,7 +86,7 @@ do
 		local Version = (Skin.Version and tostring(Skin.Version)) or UNKNOWN
 		local Authors = Skin.Authors or Skin.Author or UNKNOWN
 		local Websites = Skin.Websites or Skin.Website
-		local Status, Tooltip = GetStatus(Skin.Masque_Version)
+		local Status, Tooltip = GetStatus(Skin.API_VERSION)
 
 		-- Options Group
 		local Info = {

@@ -180,6 +180,3 @@ end
 function Core.GetArg(Info, ...)
 	return Info.arg
 end
-
--- NoOp
-function Core.NoOp() end

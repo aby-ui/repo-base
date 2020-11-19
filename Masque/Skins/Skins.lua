@@ -36,8 +36,16 @@ local Hidden = {Hide = true}
 -- Functions
 ---
 
+-- Returns a valid shape.
+local function GetShape(Shape)
+	if type(Shape) ~= "string" then
+		Shape = "Square"
+	end
+	return Shape
+end
+
 -- Adds data to the skin tables.
-local function AddSkin(SkinID, SkinData, Internal)
+local function AddSkin(SkinID, SkinData)
 	local Template = SkinData.Template
 	local Default = Skins.Default
 
@@ -64,6 +72,11 @@ local function AddSkin(SkinID, SkinData, Internal)
 	end
 
 	SkinData.SkinID = SkinID
+	SkinData.API_VERSION = SkinData.API_VERSION or SkinData.Masque_Version
+
+	local Shape = SkinData.Shape
+	SkinData.Shape = GetShape(Shape)
+
 	Skins[SkinID] = SkinData
 
 	if not SkinData.Disable then
@@ -75,6 +88,9 @@ end
 -- Core
 ---
 
+Core.__Hidden = Hidden
+Core.AddSkin = AddSkin
+
 Core.Skins = setmetatable(Skins, {
 	__index = function(self, id)
 		if id == "Blizzard" then
@@ -84,8 +100,6 @@ Core.Skins = setmetatable(Skins, {
 })
 
 Core.SkinList = SkinList
-Core.AddSkin = AddSkin
-Core.__Hidden = Hidden
 
 ----------------------------------------
 -- API
@@ -104,9 +118,7 @@ function API:AddSkin(SkinID, SkinData, Replace)
 		return
 	end
 
-	if Skins[SkinID] and not Replace then
-		return
-	end
+	if Skins[SkinID] then return end
 
 	if type(SkinData) ~= "table" then
 		if Debug then

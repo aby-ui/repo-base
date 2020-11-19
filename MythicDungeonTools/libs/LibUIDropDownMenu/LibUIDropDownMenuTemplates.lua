@@ -1,11 +1,11 @@
--- $Id: LibUIDropDownMenuTemplates.lua 49 2020-08-18 17:17:08Z arithmandar $
+-- $Id: LibUIDropDownMenuTemplates.lua 64 2020-11-18 13:13:15Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
-local _G = getfenv(0)
+--[[local _G = getfenv(0)
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenuTemplates-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 49 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 64 $"):match("%d+"))
 
 local LibStub = _G.LibStub
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
@@ -123,3 +123,4 @@ function L_Create_UIDropDownCustomMenuEntry(name, parent)
 	
 	return f
 end
+]]

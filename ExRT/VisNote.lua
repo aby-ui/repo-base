@@ -5,6 +5,8 @@ local module = ExRT:New("VisNote",L.VisualNote)
 
 local VExRT = nil
 
+local wipe, pairs, type, max, min, unpack, abs, select, sqrt, tremove, string, floor, math, PI = wipe, pairs, type, max, min, unpack, abs, select, sqrt, tremove, string, floor, math, PI
+
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
 module.db.await = {}
@@ -55,6 +57,19 @@ function module.options:Load()
 	local object_SIZE,object_GROUP,object_COLOR,object_TYPE = {},{},{},{}
 	local object_DATA1,object_DATA2,object_SYNC = {},{},{}
 
+	local images = {}
+	local image_pos_X,image_pos_Y = {},{}
+	local image_pos_X2,image_pos_Y2 = {},{}
+	local image_path,image_alpha = {},{}
+	local image_GROUP = {}
+	local image_OBJ,image_SYNC = {},{}
+
+	local lines = {}
+
+	local locked_img = {}
+
+	local lockedGroups = {}
+
 	local backgrounds = {}
 	local curr_group = 0
 	local curr_color = 4
@@ -62,6 +77,7 @@ function module.options:Load()
 	local curr_data = {}
 	local curr_icon = 1
 	local curr_text = ""
+	local curr_imgpath = ExRT.isClassic and "interface/icons/ability_hunter_snipershot" or "interface/icons/achievement_boss_archaedas"
 	local curr_object = 1
 	local curr_trans = 100
 
@@ -106,6 +122,21 @@ function module.options:Load()
 		object_DATA1 = object_DATA1,
 		object_DATA2 = object_DATA2,
 		object_SYNC = object_SYNC,
+
+		lines = lines,
+
+		images = images,
+		image_pos_X = image_pos_X,
+		image_pos_Y = image_pos_Y,
+		image_pos_X2 = image_pos_X2,
+		image_pos_Y2 = image_pos_Y2,
+		image_path = image_path,
+		image_alpha = image_alpha,
+		image_GROUP = image_GROUP,
+		image_OBJ = image_OBJ,
+		image_SYNC = image_SYNC,
+
+		locked_img = locked_img,
 
 		backgrounds = backgrounds,
 	}
@@ -167,6 +198,7 @@ function module.options:Load()
 	}
 
 	local IsDotIn
+	local LockedImgHideAll
 
 	function self:Clear()
 		for d,_ in pairs(dots) do
@@ -215,77 +247,140 @@ function module.options:Load()
 		wipe(object_DATA1)
 		wipe(object_DATA2)
 		wipe(object_SYNC)
+
+		for d,_ in pairs(lines) do
+			d:Hide()
+		end
+
+		wipe(image_pos_X)
+		wipe(image_pos_Y)
+		wipe(image_pos_X2)
+		wipe(image_pos_Y2)
+		wipe(image_path)
+		wipe(image_alpha)
+		wipe(image_GROUP)
+		wipe(image_OBJ)
+		wipe(image_SYNC)
+
+		for d,_ in pairs(images) do
+			d:Hide()
+		end
 	end
 
 
 	self.main = ELib:ScrollFrame(self):Size(790,535):Point("TOP",0,-81):Height(535)
+	self.main.C:SetWidth(790-2)
 	self.main.ScrollBar:Hide()
 
 	-----------------------
 	--- Select tools ------
 	-----------------------
 
-	self.tool_select_brush = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",10,-20):OnClick(function()
-		tool_selected = 1
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Show()
-		self.size:SetTo(dot_size)
-		self.trans:Hide()
-		self.textAddData:Hide()
+	function self:SetTool(data)
+		if tool_selected == 7 then	--Hard fix
+			LockedImgHideAll()
+		end
+
+		tool_selected = data.tool
+		curr_object = data.object
+
+		self.curr_color_texture:SetShown((data.color or data.icon or data.imgpath) and true or false)
+		if data.color then
+			self.curr_color_texture:SetColorTexture(unpack(data.color))
+			if data.colorMini then
+				for i=1,#self.color_selector_mini do self.color_selector_mini[i]:Show() end
+				for i=1,#self.color_selector do self.color_selector[i]:Hide() end
+			else
+				for i=1,#self.color_selector do self.color_selector[i]:Show() end
+				for i=1,#self.color_selector_mini do self.color_selector_mini[i]:Hide() end
+			end
+		else
+			for i=1,#self.color_selector do self.color_selector[i]:Hide() end
+			for i=1,#self.color_selector_mini do self.color_selector_mini[i]:Hide() end
+		end
+
+		if tool_selected == 4 and (curr_object == 3 or curr_object == 5 or curr_object == 6) then
+			for i=1,#self.line_selector do 
+				ELib:Border(self.line_selector[i],2,.24,.25,.30,1)
+				self.line_selector[i]:Show() 
+			end
+			ELib:Border(curr_object == 3 and self.line_selector[1] or curr_object == 5 and self.line_selector[2] or curr_object == 6 and self.line_selector[3],2,.24,.7,.30,1)	
+		else
+			for i=1,#self.line_selector do self.line_selector[i]:Hide() end
+		end
+
+		if data.icon then
+			self.curr_color_texture:SetTexture(data.icon)
+			for i=1,#self.icon_selector do self.icon_selector[i]:Show() end
+		else
+			for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
+		end
+		
+		if data.size then
+			self.size:Show()
+			self.size:SetTo(data.size)
+		else
+			self.size:Hide()
+		end
+
+		if data.transparent then
+			self.trans:Show()
+			self.trans:SetTo(data.transparent)			
+		else
+			self.trans:Hide()
+		end
+
+		if data.imgpath then
+			self.imgpath:Show()
+			self.imgpath:SetText(curr_imgpath)
+			self.imgpath:SetCursorPosition(1)
+			self.curr_color_texture:SetTexture(curr_imgpath)
+		else
+			self.imgpath:Hide()
+		end
+
+		self.textAddData:SetShown(data.text)
 
 		for k,v in pairs(self) do
 			if type(k)=='string' and k:find("^tool_select_") then
 				ELib:Border(v,2,.24,.25,.30,1)
 			end
 		end
-		ELib:Border(self.tool_select_brush,2,.24,.7,.30,1)
+		ELib:Border(data.button,2,.24,.7,.30,1)		
+	end
+
+	self.tool_select_brush = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",10,-20):OnClick(function(self)
+		module.options:SetTool{
+			tool = 1,
+			color = colors[curr_color],
+			size = dot_size,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_brush,2,.24,.25,.30,1)
 	self.tool_select_brush.texture:ClearAllPoints()
 	self.tool_select_brush.texture:SetPoint("CENTER")
 	self.tool_select_brush.texture:SetSize(8,8)
 
-	self.tool_select_icons = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",25,true):Point("LEFT",self.tool_select_brush,"RIGHT",5,0):OnClick(function()
-		tool_selected = 2
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetTexture(icons_list[curr_icon])
-		for i=1,#self.color_selector do self.color_selector[i]:Hide() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Show() end
-		self.size:Hide()
-		self.trans:Hide()
-		self.textAddData:Hide()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_icons,2,.24,.7,.30,1)
+	self.tool_select_icons = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",25,true):Point("LEFT",self.tool_select_brush,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 2,
+			icon = icons_list[curr_icon],
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_icons,2,.24,.25,.30,1)
 	self.tool_select_icons.texture:ClearAllPoints()
 	self.tool_select_icons.texture:SetPoint("CENTER")
 	self.tool_select_icons.texture:SetSize(20,20)
 
-	self.tool_select_text = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_icons,"RIGHT",5,0):OnClick(function()
-		tool_selected = 3
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Hide()
-		self.trans:Hide()
-		self.textAddData:Show()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_text,2,.24,.7,.30,1)
+	self.tool_select_text = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_icons,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 3,
+			color = colors[curr_color],
+			text = true,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_text,2,.24,.25,.30,1)
 	self.tool_select_text.texture:Hide()
@@ -295,24 +390,14 @@ function module.options:Load()
 	self.tool_select_text.text:SetText("TEXT")
 
 
-	self.tool_select_objects = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",25,true):Point("LEFT",self.tool_select_text,"RIGHT",5,0):OnClick(function()
-		tool_selected = 4
-		curr_object = 1
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Show()
-		self.size:SetTo(dot_size)
-		self.trans:Hide()
-		self.textAddData:Hide()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_objects,2,.24,.7,.30,1)
+	self.tool_select_objects = ELib:Icon(self,"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",25,true):Point("LEFT",self.tool_select_text,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 4,
+			object = 1,
+			color = colors[curr_color],
+			size = dot_size,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_objects,2,.24,.25,.30,1)
 	self.tool_select_objects.texture:Hide()
@@ -333,24 +418,14 @@ function module.options:Load()
 	end
 
 
-	self.tool_select_objects_fullcircle = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",self.tool_select_brush,"BOTTOMLEFT",0,-5):OnClick(function()
-		tool_selected = 4
-		curr_object = 2
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Hide()
-		self.trans:Show()
-		self.trans:SetTo(curr_trans/2)
-		self.textAddData:Hide()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_objects_fullcircle,2,.24,.7,.30,1)
+	self.tool_select_objects_fullcircle = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("TOPLEFT",self.tool_select_brush,"BOTTOMLEFT",0,-5):OnClick(function(self)
+		module.options:SetTool{
+			tool = 4,
+			object = 2,
+			color = colors[curr_color],
+			transparent = curr_trans/2,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_objects_fullcircle,2,.24,.25,.30,1)
 	self.tool_select_objects_fullcircle.texture:ClearAllPoints()
@@ -360,63 +435,84 @@ function module.options:Load()
 
 
 
-	self.tool_select_objects_line = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("LEFT",self.tool_select_objects_fullcircle,"RIGHT",5,0):OnClick(function()
-		tool_selected = 4
-		curr_object = 3
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Show()
-		self.size:SetTo(dot_size)
-		self.trans:Hide()
-		self.textAddData:Hide()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_objects_line,2,.24,.7,.30,1)
+	self.tool_select_objects_line = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",25,true):Point("LEFT",self.tool_select_objects_fullcircle,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 4,
+			object = 3,
+			color = colors[curr_color],
+			colorMini = true,
+			size = dot_size,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_objects_line,2,.24,.25,.30,1)
 	self.tool_select_objects_line.texture:Hide()
 	do
-		local dX = (5 - 20)
-		local dY = (20 - 5)
-		local dist = sqrt(dX * dX + dY * dY)
+		local l = self.tool_select_objects_line:CreateLine()
+		
+		l:SetStartPoint("CENTER",-8,-8)
+		l:SetEndPoint("CENTER",8,8)
 
-		local len = ceil(dist / (2 / 2))
-		for i=0,len do
-			local x = 5 + (20 - 5) * (i/len)
-			local y = 20 + (5 - 20) * (i/len)
+		l:SetColorTexture(1,1,1,1)
+		l:SetThickness(2)
+	end
 
-			local o = self.tool_select_objects_line:CreateTexture()
-			o:SetTexture("Interface\\AddOns\\ExRT\\media\\circle256")
-			o:SetPoint("CENTER",self.tool_select_objects_line,"TOPLEFT",x,-y)
+	do
+		self.line_selector = {}
+		for i=1,3 do
+			self.line_selector[i] = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\circle256",30,true):Point("TOPLEFT",420 + 33 * (i-1),-35):OnClick(function(self)
+				module.options:SetTool{
+					tool = 4,
+					object = (i == 1 and 3) or (i == 2 and 5) or (i == 3 and 6),
+					color = colors[curr_color],
+					colorMini = true,
+					size = dot_size,
+					button = self,
+				}
+			end)
+			ELib:Border(self.line_selector[i],2,.24,.25,.30,1)
+			self.line_selector[i].texture:Hide()
+			do
+				local l = self.line_selector[i]:CreateLine()
+				
+				l:SetStartPoint("CENTER",-8,-8)
+				l:SetEndPoint("CENTER",8,8)
+		
+				l:SetColorTexture(1,1,1,1)
+				l:SetThickness(2)
 
-			o:SetSize(2,2)
+				if i == 3 then
+					l:SetTexture("Interface/AddOns/ExRT/media/lineGapped","REPEAT")
+					l:SetTexCoord(0,.15,0,1)
+					l:SetThickness(4)
+				elseif i == 2 then
+					local lr = self.line_selector[i]:CreateLine()
+					lr:SetStartPoint("CENTER",0,8)
+					lr:SetEndPoint("CENTER",8,8)
+			
+					lr:SetColorTexture(1,1,1,1)
+					lr:SetThickness(2)
+
+					local ll = self.line_selector[i]:CreateLine()
+					ll:SetStartPoint("CENTER",8,0)
+					ll:SetEndPoint("CENTER",8,8)
+			
+					ll:SetColorTexture(1,1,1,1)
+					ll:SetThickness(2)
+				end
+			end
 		end
 	end
 
-	self.tool_select_objects_rectangle = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_objects_line,"RIGHT",5,0):OnClick(function()
-		tool_selected = 4
-		curr_object = 4
-		self.curr_color_texture:Show()
-		self.curr_color_texture:SetColorTexture(unpack(colors[curr_color]))
-		for i=1,#self.color_selector do self.color_selector[i]:Show() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Hide()
-		self.trans:Show()
-		self.trans:SetTo(curr_trans/2)
-		self.textAddData:Hide()
 
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_objects_rectangle,2,.24,.7,.30,1)
+	self.tool_select_objects_rectangle = ELib:Icon(self,nil,25,true):Point("LEFT",self.tool_select_objects_line,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 4,
+			object = 4,
+			color = colors[curr_color],
+			transparent = curr_trans/2,
+			button = self,
+		}
 	end):Icon(1,1,1,1)
 	ELib:Border(self.tool_select_objects_rectangle,2,.24,.25,.30,1)
 	self.tool_select_objects_rectangle.texture:ClearAllPoints()
@@ -425,21 +521,11 @@ function module.options:Load()
 	self.tool_select_objects_rectangle.texture:SetAlpha(.75)
 
 
-	self.tool_select_move = ELib:Icon(self,"interface\\cursor\\ui-cursor-move",25,true):Point("LEFT",self.tool_select_objects_rectangle,"RIGHT",5,0):OnClick(function()
-		tool_selected = 5
-		self.curr_color_texture:Hide()
-		for i=1,#self.color_selector do self.color_selector[i]:Hide() end
-		for i=1,#self.icon_selector do self.icon_selector[i]:Hide() end
-		self.size:Hide()
-		self.trans:Hide()
-		self.textAddData:Hide()
-
-		for k,v in pairs(self) do
-			if type(k)=='string' and k:find("^tool_select_") then
-				ELib:Border(v,2,.24,.25,.30,1)
-			end
-		end
-		ELib:Border(self.tool_select_move,2,.24,.7,.30,1)
+	self.tool_select_move = ELib:Icon(self,"interface\\cursor\\ui-cursor-move",25,true):Point("LEFT",self.tool_select_objects_rectangle,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 5,
+			button = self,
+		}
 	end)
 	ELib:Border(self.tool_select_move,2,.24,.25,.30,1)
 	self.tool_select_move.texture:ClearAllPoints()
@@ -448,10 +534,38 @@ function module.options:Load()
 	self.tool_select_move.texture:SetAlpha(.75)
 
 
+	self.tool_select_objects_image = ELib:Icon(self,curr_imgpath,25,true):Point("LEFT",self.tool_select_objects,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 6,
+			imgpath = curr_imgpath,
+			transparent = curr_trans/2,
+			button = self,
+		}
+	end)
+	ELib:Border(self.tool_select_objects_image,2,.24,.25,.30,1)
+	self.tool_select_objects_image.texture:ClearAllPoints()
+	self.tool_select_objects_image.texture:SetPoint("CENTER")
+	self.tool_select_objects_image.texture:SetSize(20,20)
+	self.tool_select_objects_image.texture:SetTexCoord(.1,.9,.1,.9)
+
+
+	self.tool_select_objects_locker = ELib:Icon(self,"Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128",25,true):Point("LEFT",self.tool_select_move,"RIGHT",5,0):OnClick(function(self)
+		module.options:SetTool{
+			tool = 7,
+			button = self,
+		}
+	end):Tooltip("Left click on note - Lock/unlock objects for moving/removing\nRight click on note - select specific object from all objects under cursor")
+	ELib:Border(self.tool_select_objects_locker,2,.24,.25,.30,1)
+	self.tool_select_objects_locker.texture:ClearAllPoints()
+	self.tool_select_objects_locker.texture:SetPoint("CENTER")
+	self.tool_select_objects_locker.texture:SetSize(20,20)
+	self.tool_select_objects_locker.texture:SetTexCoord(.625,.6875,.5,.625)
+
+
 
 	local COLOR_SIZE = 45
 	self.curr_color_texture = self:CreateTexture()
-	self.curr_color_texture:SetPoint("TOPLEFT",270,-31)
+	self.curr_color_texture:SetPoint("TOPLEFT",290,-31)
 	self.curr_color_texture:SetSize(COLOR_SIZE,COLOR_SIZE)
 	self.curr_color_texture:SetColorTexture(0,0,0)
 	self.curr_color_texture._SetTexture = self.curr_color_texture.SetTexture
@@ -484,6 +598,28 @@ function module.options:Load()
 		end
 	end
 
+	self.color_selector_mini = {}
+	for i=1,#colors do
+		local colorNum = i
+		if i > 10 and i <= 12 then
+			colorNum = i + 10
+		elseif i > 12 and i <= 22 then
+			colorNum = i - 2
+		end
+
+		self.color_selector_mini[i] = ELib:Icon(self,nil,floor((COLOR_SIZE - 3) / 4),true):Icon(unpack(colors[colorNum])):OnClick(function()
+			curr_color = colorNum
+			self.curr_color_texture:SetColorTexture(unpack(colors[colorNum]))
+		end)
+		if i == 1 then
+			self.color_selector_mini[i]:NewPoint("TOPLEFT",self.curr_color_texture,"TOPRIGHT",1,-1)
+		elseif (i - 1) % 6 == 0 then
+			self.color_selector_mini[i]:NewPoint("TOP",self.color_selector_mini[i-6],"BOTTOM",0,-1)
+		else
+			self.color_selector_mini[i]:NewPoint("LEFT",self.color_selector_mini[i-1],"RIGHT",1,0)
+		end
+	end
+
 	self.icon_selector = {}
 	for i=1,#icons_list do
 		local t = icons_list[i]
@@ -503,14 +639,14 @@ function module.options:Load()
 		end
 	end
 
-	self.size = ELib:Slider(self,L.VisualNoteSize):Size(100):Point("TOPLEFT",150,-50):Range(3,36):SetTo(8):OnChange(function(self,val)
+	self.size = ELib:Slider(self,L.VisualNoteSize):Size(100):Point("TOPLEFT",170,-50):Range(3,36):SetTo(8):OnChange(function(self,val)
 		dot_size = floor(val+0.5)
 		half_dot_size_sq = (dot_size / 3) ^ 2
 		self.tooltipText = dot_size
 		self:tooltipReload()
 	end)
 
-	self.trans = ELib:Slider(self,L.bossmodsalpha):Size(100):Point("TOPLEFT",150,-50):Range(1,50):SetTo(50):OnChange(function(self,val)
+	self.trans = ELib:Slider(self,L.bossmodsalpha):Size(100):Point("TOPLEFT",170,-50):Range(1,50):SetTo(50):OnChange(function(self,val)
 		curr_trans = floor(val+0.5) * 2
 		self.tooltipText = curr_trans
 		self:tooltipReload()
@@ -520,7 +656,7 @@ function module.options:Load()
 	self.trans.Low.SetText = function() end
 	self.trans.High.SetText = function() end
 
-	self.textAddData = ELib:Edit(self):Size(100,20):Point("TOPLEFT",140,-50):TopText(L.VisualNoteTextToAdd):OnChange(function(self)
+	self.textAddData = ELib:Edit(self):Size(100,20):Point("TOPLEFT",160,-50):TopText(L.VisualNoteTextToAdd):OnChange(function(self)
 		curr_text = self:GetText()
 	end)
 	self.textAddData:SetMaxBytes(100)
@@ -573,6 +709,13 @@ function module.options:Load()
 	self.textAddData.Button.Lines = 20
 	self.textAddData.Button.isButton = true
 	self.textAddData.Button.isModern = true
+
+	self.imgpath = ELib:Edit(self,curr_imgpath):Size(250,20):Point("LEFT",self.curr_color_texture,"RIGHT",10,0):TopText("Image path:"):OnChange(function(self)
+		curr_imgpath = self:GetText():trim()
+		curr_imgpath = tonumber(curr_imgpath) or curr_imgpath
+		module.options.curr_color_texture:SetTexture(curr_imgpath)
+	end)
+
 
 	self.tool_select_brush:Click()
 
@@ -642,7 +785,7 @@ function module.options:Load()
 	end
 	self.SetBackground = SetBackground
 
-	self.SelectMapDropDown = ELib:DropDown(self,260,11):Size(100):Point("TOPLEFT",595,-55):SetText(L.VisualNoteSelectMap.."...")
+	self.SelectMapDropDown = ELib:DropDown(self,260,11):Size(90):Point("TOPLEFT",615,-55):SetText(L.VisualNoteSelectMap.."...")
 	self.SelectMapDropDown.Lines = nil
 	local function SelectMapDropDown_SetValue(_,arg1,arg2)
 		ELib:DropDownClose()
@@ -650,6 +793,7 @@ function module.options:Load()
 		curr_map = arg2
 		curr_data[2] = arg2
 	end
+	self.SelectMapDropDown.Text:SetFont(self.SelectMapDropDown.Text:GetFont(),8)
 
 	local maps = {
 		--1-10
@@ -951,6 +1095,96 @@ function module.options:Load()
 
 
 	---------------------
+	------- LINE --------
+	---------------------
+
+	local function GetLine()
+		local line
+		for l,_ in pairs(lines) do
+			if not l:IsShown() then
+				line = l
+				break
+			end
+		end
+		if not line then
+			line = self.main.C:CreateLine(nil,"ARTWORK",nil,2)
+			line:SetTexture("interface/buttons/white8x8")
+			lines[line] = true
+		end
+		line:Show()
+		return line
+	end
+
+
+	---------------------
+	---- LOCKED IMG -----
+	---------------------
+
+	local function LockedImgSetState(self,state)
+		if state then
+			self:SetTexCoord(.625,.6875,.5,.625)
+			self:SetVertexColor(1,.5,.5,1)
+		else
+			self:SetTexCoord(.6875,.75,.5,.625)
+			self:SetVertexColor(.5,1,.5,1)
+		end
+	end
+
+	local function SetLockedImg(obj,group,isHide)
+		local img
+		for l,_ in pairs(locked_img) do
+			if l.g == group then
+				img = l
+				break
+			end
+		end
+		if isHide then
+			if img then
+				img:Hide()
+				img.g = nil
+			end
+			return
+		end
+		if not img then
+			for l,_ in pairs(locked_img) do
+				if not l:IsShown() then
+					img = l
+					break
+				end
+			end
+		end
+		if not img then
+			img = self.main.C:CreateTexture(nil,"ARTWORK",nil,7)
+			img:SetTexture("Interface\\AddOns\\ExRT\\media\\DiesalGUIcons16x256x128")
+			img.SetState = LockedImgSetState
+			locked_img[img] = true
+		end
+		img:ClearAllPoints()
+		img:SetPoint("CENTER",obj,0,0)
+		img:SetSize(30,30)
+		img.o = obj
+		img.g = group
+		img:SetState(lockedGroups[group])
+		img:Show()
+		return img
+	end
+	local function UpdateLockedImg(group)
+		for l,_ in pairs(locked_img) do
+			if l.g == group then
+				l:SetState(lockedGroups[group])
+			end
+		end
+	end
+	function LockedImgHideAll()
+		for l,_ in pairs(locked_img) do
+			if l:IsShown() then
+				l:Hide()
+			end
+			l.g = nil
+		end
+	end
+
+	---------------------
 	--- ICONS -----------
 	---------------------
 
@@ -1146,12 +1380,17 @@ function module.options:Load()
 				o:Hide()
 			end
 		end
+		for l,_ in pairs(lines) do
+			if l.g == curr_group then
+				l:Hide()
+			end
+		end
 		local size
 		if curr_object == 1 then
 			size = min(max(10,toX - fromX),max(10,toY - fromY)) * 2
 			local circleLen = 2*PI*size
 			local len = ceil(circleLen / (dot_size / 2))
-			for i=0,len do
+			for i=0,len-1 do
 				local x = fromX + size * math.cos(2*PI/len*i)
 				local y = fromY + size * math.sin(2*PI/len*i)
 
@@ -1175,25 +1414,70 @@ function module.options:Load()
 			o:SetSize(size,size)
 			o:SetVertexColor(unpack(colors[curr_color]))
 			o:SetAlpha(curr_trans / 100)
-		elseif curr_object == 3 then
+		elseif curr_object == 3 or curr_object == 5 or curr_object == 6 then
+			fromX,fromY = max(0,min(800,fromX)), max(0,min(550,fromY))
+			toX,toY = max(0,min(800,toX)), max(0,min(550,toY))
+
 			size = dot_size
-			local dX = (fromX - toX)
-			local dY = (fromY - toY)
-			local dist = sqrt(dX * dX + dY * dY)
 
-			local len = ceil(dist / (dot_size / 2.5))
-			for i=0,max(len,1) do
-				local x = fromX + (toX - fromX) * (i/len)
-				local y = fromY + (toY - fromY) * (i/len)
+			local l = GetLine()
 
-				local o = GetDotObj()
-				o:SetPoint("CENTER",self.main.C,"TOPLEFT",x,-y)
-				o.g = curr_group
-				o.t = nil
+			l:SetStartPoint("TOPLEFT",self.main.C,fromX,-fromY)
+			l:SetEndPoint("TOPLEFT",self.main.C,toX,-toY)
 
-				o:SetSize(dot_size,dot_size)
-				o:SetAlpha(1)
-				o:SetVertexColor(unpack(colors[curr_color]))
+			l.g = curr_group
+			l.t = nil
+
+			l:SetThickness(size)
+			l:SetAlpha(1)
+
+			if curr_object == 3 or curr_object == 5 then
+				l:SetColorTexture(unpack(colors[curr_color]))
+				l:SetVertexColor(1,1,1,1)
+
+				if curr_object == 5 then
+					local ll,lr = GetLine(), GetLine()
+					
+					ll:SetColorTexture(unpack(colors[curr_color]))
+					ll:SetVertexColor(1,1,1,1)
+					lr:SetColorTexture(unpack(colors[curr_color]))
+					lr:SetVertexColor(1,1,1,1)
+					
+					ll.g = curr_group
+					lr.g = curr_group
+					
+					ll:SetThickness(size)
+					ll:SetAlpha(1)
+					lr:SetThickness(size)
+					lr:SetAlpha(1)
+					
+					ll:SetEndPoint("TOPLEFT",self.main.C,toX,-toY)
+					lr:SetEndPoint("TOPLEFT",self.main.C,toX,-toY)
+
+					local angle = 20 * (PI/180)
+					local rotatedX = math.cos(angle) * (fromX - toX) * 0.2 - math.sin(angle) * (fromY - toY) * 0.2 + toX
+					local rotatedY = math.sin(angle) * (fromX - toX) * 0.2 + math.cos(angle) * (fromY - toY) * 0.2 + toY
+
+					ll:SetStartPoint("TOPLEFT",self.main.C,rotatedX,-rotatedY)
+
+					local angle = -20 * (PI/180)
+					local rotatedX = math.cos(angle) * (fromX - toX) * 0.2 - math.sin(angle) * (fromY - toY) * 0.2 + toX
+					local rotatedY = math.sin(angle) * (fromX - toX) * 0.2 + math.cos(angle) * (fromY - toY) * 0.2 + toY
+
+					lr:SetStartPoint("TOPLEFT",self.main.C,rotatedX,-rotatedY)
+				end
+			elseif curr_object == 6 then
+				--l:SetHorizTile(true)
+				l:SetTexture("Interface/AddOns/ExRT/media/lineGapped","REPEAT")
+				l:SetVertexColor(unpack(colors[curr_color]))
+
+				local dX = (fromX - toX)
+				local dY = (fromY - toY)
+				local dist = sqrt(dX * dX + dY * dY)
+
+				local c = dist / 1024 * 4
+
+				l:SetTexCoord(0,c,0,1)
 			end
 		elseif curr_object == 4 then
 			size = curr_trans
@@ -1243,7 +1527,7 @@ function module.options:Load()
 		elseif curr_object == 2 then
 			object_DATA1[p] = curr_trans
 			object_DATA2[p] = 0
-		elseif curr_object == 3 then
+		elseif curr_object == 3 or curr_object == 5 or curr_object == 6 then
 			object_DATA1[p] = toX
 			object_DATA2[p] = toY
 		elseif curr_object == 4 then
@@ -1262,7 +1546,7 @@ function module.options:Load()
 		curr_trans = type == 4 and size or data1
 
 		local p 
-		if type == 3 then
+		if type == 3 or type == 5 or type == 6 then
 			p = ProcessObject(x,y,data1,data2)
 		elseif type == 4 then
 			p = ProcessObject(x,y,data1,data2)
@@ -1275,6 +1559,161 @@ function module.options:Load()
 		dot_size = b
 		curr_color = c
 		curr_trans = d
+	end
+
+	---------------------
+	------ IMAGES -------
+	---------------------
+
+	local function GetImage()
+		local image
+		for i,_ in pairs(images) do
+			if not i:IsShown() then
+				image = i
+				break
+			end
+		end
+		if not image then
+			image = self.main.C:CreateTexture(nil,"ARTWORK",nil,-2)
+			images[image] = true
+		end
+		image:SetAlpha(curr_trans / 100)
+		image:SetTexture(curr_imgpath)
+		image:Show()
+		return image
+	end
+
+	local function ProcessImage(fromX,fromY,toX,toY)
+		local I = nil
+		local p = nil
+		for i=#image_pos_X,1,-1 do
+			if image_GROUP[i] == curr_group then
+				I = image_OBJ[i]
+				p = i
+				break
+			elseif image_GROUP[i] < curr_group then
+				break
+			end
+		end
+
+		if not I then
+			I = GetImage()
+		end
+
+		local revHor,revVer
+		local width = max(2,abs(toX - fromX))
+		local height = max(2,abs(toY - fromY))
+		if toX < fromX then
+			revHor = true
+		end
+		if toY < fromY then
+			revVer = true
+		end
+		if abs(fromX - toX) < 2 then
+			toX = fromX + (revHor and -2 or 2)
+		end
+		if abs(fromY - toY) < 2 then
+			toY = fromY + (revVer and -2 or 2)
+		end
+		if IsShiftKeyDown() then
+			if width == height then
+				--nothing
+			elseif width < height then
+				toY = fromY + (revVer and -1 or 1)*abs(toX - fromX)
+				height = max(2,abs(fromY - toY))
+			else
+				toX = fromX + (revHor and -1 or 1)*abs(toY - fromY)
+				width = max(2,abs(toX - fromX))
+			end
+		end
+
+		local layer = -2
+		local sq = abs(toX - fromX)*abs(fromY - toY)
+		if sq > 350000 then
+			layer = -6
+		elseif sq > 100000 then
+			layer = -5
+		elseif sq > 50000 then
+			layer = -4
+		elseif sq > 20000 then
+			layer = -3
+		end
+
+		I:SetPoint("TOPLEFT",self.main.C,"TOPLEFT",revHor and toX or fromX,-(revVer and toY or fromY))
+		I:SetSize(width,height)
+		I:SetTexCoord(revHor and 1 or 0,revHor and 0 or 1,revVer and 1 or 0,revVer and 0 or 1)
+		I:SetDrawLayer("ARTWORK",layer)
+		I.t = curr_trans / 100
+
+		if not p then
+			p = #image_pos_X+1
+		end
+		image_pos_X[p] = fromX
+		image_pos_Y[p] = fromY
+		image_pos_X2[p] = toX
+		image_pos_Y2[p] = toY
+		image_path[p] = curr_imgpath
+		image_alpha[p] = curr_trans
+		image_OBJ[p] = I
+		image_GROUP[p] = curr_group
+	end
+
+	function self:AddImage(x,y,x2,y2,path,alpha)
+		local a,b = curr_imgpath,curr_trans
+		curr_imgpath = path
+		curr_trans = alpha
+
+		local I = GetImage()
+
+		local revHor,revVer
+		local width = max(2,x2 - x)
+		local height = max(2,y2 - y)
+		if x2 < x then
+			revHor = true
+			width = max(2,x - x2)
+		end
+		if y2 < y then
+			revVer = true
+			height = max(2,y - y2)
+		end
+		if abs(x - x2) < 2 then
+			x2 = x + (revHor and -2 or 2)
+		end
+		if abs(y - y2) < 2 then
+			y2 = y + (revVer and -2 or 2)
+		end
+
+		local layer = -2
+		local sq = abs(x - x2)*abs(y - y2)
+		if sq > 350000 then
+			layer = -6
+		elseif sq > 100000 then
+			layer = -5
+		elseif sq > 50000 then
+			layer = -4
+		elseif sq > 20000 then
+			layer = -3
+		end
+
+		I:SetPoint("TOPLEFT",self.main.C,"TOPLEFT",revHor and x2 or x,-(revVer and y2 or y))
+		I:SetSize(width,height)
+		I:SetTexCoord(revHor and 1 or 0,revHor and 0 or 1,revVer and 1 or 0,revVer and 0 or 1)
+		I:SetDrawLayer("ARTWORK",layer)
+		I.t = curr_trans / 100
+
+		local p = #image_pos_X+1
+
+		image_pos_X[p] = x
+		image_pos_Y[p] = y
+		image_pos_X2[p] = x2
+		image_pos_Y2[p] = y2
+		image_path[p] = curr_imgpath
+		image_alpha[p] = curr_trans
+		image_OBJ[p] = I
+		image_GROUP[p] = curr_group
+
+		curr_imgpath = a
+		curr_trans = b
 	end
 
 	---------------------
@@ -1390,7 +1829,7 @@ function module.options:Load()
 							end
 						end
 					end
-				elseif object_TYPE[i] == 3 then
+				elseif object_TYPE[i] == 3 or object_TYPE[i] == 5 or object_TYPE[i] == 6 then
 					if IsDotIn(fromX,fromY,x2,object_DATA1[i],object_DATA1[i],x2,y2-object_SIZE[i],object_DATA2[i]-object_SIZE[i],object_DATA2[i]+object_SIZE[i],y2+object_SIZE[i]) or
 					IsDotIn(fromX,fromY,x2-object_SIZE[i],x2+object_SIZE[i],object_DATA1[i]+object_SIZE[i],object_DATA1[i]-object_SIZE[i],y2,y2,object_DATA2[i],object_DATA2[i]) then
 						moveObjects[ object_GROUP[i] ] = {
@@ -1406,12 +1845,10 @@ function module.options:Load()
 							y2 = object_DATA2[i],
 						}
 						local all_obj = moveObjects[ object_GROUP[i] ]
-						for d,_ in pairs(objects) do
+						for d,_ in pairs(lines) do
 							if d.g == object_GROUP[i] then
 								all_obj[#all_obj+1] = {
 									obj = d,
-									x = select(4,d:GetPoint()),
-									y = -select(5,d:GetPoint()),
 								}
 							end
 						end
@@ -1439,11 +1876,45 @@ function module.options:Load()
 					end
 				end
 			end
+			for i=1,#image_pos_X do
+				local xg1,yg1 = image_pos_X, image_pos_Y
+				local xg2,yg2 = image_pos_X2, image_pos_Y2
+
+				local x2,y2 = image_pos_X[i],image_pos_Y[i]
+				local x3,y3 = image_pos_X2[i],image_pos_Y2[i]
+	
+				if x3 < x2 then 
+					x2,x3 = x3,x2 
+					xg1,xg2 = xg2,xg1
+				end
+				if y3 < y2 then 
+					y2,y3 = y3,y2 
+					yg1,yg2 = yg2,yg1
+				end
+	
+				if fromX >= x2 and fromX <= x3 and fromY >= y2 and fromY <= y3 then
+					moveObjects[ image_GROUP[i] ] = {
+						type = 8,
+						index = i,
+						x_table1 = xg1,
+						y_table1 = yg1,
+						x_table2 = xg2,
+						y_table2 = yg2,
+						obj = image_OBJ[i],
+						x1 = x2,
+						y1 = y2,
+						x2 = x3,
+						y2 = y3,
+					}
+				end
+			end
 		end
 
 		local diffX,diffY = toX - fromX, toY - fromY
 		for group,data in pairs(moveObjects) do
-			if data.type == 1 then
+			if lockedGroups[group] then
+				--do nothing
+			elseif data.type == 1 then
 				local a_data = data
 				for i=1,#a_data do
 					local data = a_data[i]
@@ -1465,15 +1936,19 @@ function module.options:Load()
 					data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x + diffX,-(data.y + diffY))
 				end
 			elseif data.type == 6 then
-				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
-				data.y_table[ data.index ] = max(0,min(550,data.y + diffY))
-				data.x2_table[ data.index ] = max(0,min(800,data.x2 + diffX))
-				data.y2_table[ data.index ] = max(0,min(550,data.y2 + diffY))
+				local x1,y1 = max(0,min(800,data.x + diffX)), max(0,min(550,data.y + diffY))
+				local x2,y2 = max(0,min(800,data.x2 + diffX)), max(0,min(550,data.y2 + diffY))
+
+				data.x_table[ data.index ] = x1
+				data.y_table[ data.index ] = y1
+				data.x2_table[ data.index ] = x2
+				data.y2_table[ data.index ] = y2
 
 				local a_data = data
 				for i=1,#a_data do
-					local data = a_data[i]
-					data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x + diffX,-(data.y + diffY))
+					local obj_data = a_data[i]
+					obj_data.obj:SetStartPoint("TOPLEFT",self.main.C,x1,-y1)
+					obj_data.obj:SetEndPoint("TOPLEFT",self.main.C,x2,-y2)
 				end
 			elseif data.type == 7 then
 				data.x_table[ data.index ] = max(0,min(800,data.x + diffX))
@@ -1483,6 +1958,15 @@ function module.options:Load()
 
 				local width,height = max(5,data.x2_table[ data.index ]-data.x_table[ data.index ]),max(5,data.y2_table[ data.index ]-data.y_table[ data.index ])
 				data.obj:SetPoint("CENTER",self.main.C,"TOPLEFT",data.x_table[ data.index ]+width/2,-data.y_table[ data.index ]-height/2)
+				data.obj:SetSize(width,height)
+			elseif data.type == 8 then
+				data.x_table1[ data.index ] = data.x1 + diffX
+				data.y_table1[ data.index ] = data.y1 + diffY
+				data.x_table2[ data.index ] = data.x2 + diffX
+				data.y_table2[ data.index ] = data.y2 + diffY
+
+				local width,height = max(2,data.x_table2[ data.index ]-data.x_table1[ data.index ]),max(2,data.y_table2[ data.index ]-data.y_table1[ data.index ])
+				data.obj:SetPoint("TOPLEFT",self.main.C,"TOPLEFT",data.x_table1[ data.index ],-data.y_table1[ data.index ])
 				data.obj:SetSize(width,height)
 			end
 		end
@@ -1553,6 +2037,18 @@ function module.options:Load()
 		ProcessMove(prevX,prevY,x,y)
 	end
 
+	local function ImageUpdate(self,elapsed)
+		if not IsMouseButtonDown("LeftButton") then
+			self:SetScript("OnUpdate",CheckAlpha)
+			return
+		end
+		local x,y = ExRT.F.GetCursorPos(self)
+		if not prevX then
+			prevX,prevY = x,y
+		end
+		ProcessImage(prevX,prevY,x,y)
+	end
+
 	local groups_alpha_now,groups_alpha_pending = {},{}
 
 	function IsDotIn(pX,pY,point1x,point2x,point3x,point4x,point1y,point2y,point3y,point4y)
@@ -1564,15 +2060,19 @@ function module.options:Load()
 		return (D1 < 0 and D2 < 0 and D3 < 0 and D4 < 0) or (D1 > 0 and D2 > 0 and D3 > 0 and D4 > 0)
 	end
 
-	function CheckAlpha(self,elapsed)
-		local x,y = ExRT.F.GetCursorPos(self)
+	local groupsUnderCursor = {}
+	local function UpdateGroupsUnderCursor(x,y)
+		for k,v in pairs(groupsUnderCursor) do
+			groupsUnderCursor[k] = nil
+		end
+
 		for i=1,#dots_pos_X do
 			local x2,y2 = dots_pos_X[i],dots_pos_Y[i]
 
 			local dX = (x - x2)
 			local dY = (y - y2)
 			if sqrt(dX * dX + dY * dY) <= (dots_SIZE[i]/2) then
-				groups_alpha_pending[ dots_GROUP[i] ] = true
+				groupsUnderCursor[ dots_GROUP[i] ] = true
 			end
 		end
 		for i=1,#icon_pos_X do
@@ -1581,13 +2081,13 @@ function module.options:Load()
 			local dX = (x - x2)
 			local dY = (y - y2)
 			if sqrt(dX * dX + dY * dY) <= (icon_SIZE[i]/2) then
-				groups_alpha_pending[ icon_GROUP[i] ] = true
+				groupsUnderCursor[ icon_GROUP[i] ] = true
 			end
 		end
 		for i=1,#text_pos_X do
 			local obj = text_OBJ[i]
 			if MouseIsOver(obj) then
-				groups_alpha_pending[ text_GROUP[i] ] = true
+				groupsUnderCursor[ text_GROUP[i] ] = true
 			end
 		end
 		for i=1,#object_pos_X do
@@ -1598,42 +2098,86 @@ function module.options:Load()
 				local dY = (y - y2)
 				local d = sqrt(dX * dX + dY * dY)
 				if d <= (object_SIZE[i] + object_DATA1[i] / 2) and d >= (object_SIZE[i] - object_DATA1[i] / 2) then
-					groups_alpha_pending[ object_GROUP[i] ] = true
+					groupsUnderCursor[ object_GROUP[i] ] = true
 				end
 			elseif object_TYPE[i] == 2 then
 				local dX = (x - x2)
 				local dY = (y - y2)
 				if sqrt(dX * dX + dY * dY) <= (object_SIZE[i] / 2) then
-					groups_alpha_pending[ object_GROUP[i] ] = true
+					groupsUnderCursor[ object_GROUP[i] ] = true
 				end
-			elseif object_TYPE[i] == 3 then
+			elseif object_TYPE[i] == 3 or object_TYPE[i] == 5 or object_TYPE[i] == 6 then
 				if IsDotIn(x,y,x2,object_DATA1[i],object_DATA1[i],x2,y2-object_SIZE[i],object_DATA2[i]-object_SIZE[i],object_DATA2[i]+object_SIZE[i],y2+object_SIZE[i]) then
-					groups_alpha_pending[ object_GROUP[i] ] = true
+					groupsUnderCursor[ object_GROUP[i] ] = true
 				elseif IsDotIn(x,y,x2-object_SIZE[i],x2+object_SIZE[i],object_DATA1[i]+object_SIZE[i],object_DATA1[i]-object_SIZE[i],y2,y2,object_DATA2[i],object_DATA2[i]) then
-					groups_alpha_pending[ object_GROUP[i] ] = true
+					groupsUnderCursor[ object_GROUP[i] ] = true
 				end
 			elseif object_TYPE[i] == 4 then
 				if x >= x2 and x <= object_DATA1[i] and y >= y2 and y <= object_DATA2[i] then
-					groups_alpha_pending[ object_GROUP[i] ] = true
+					groupsUnderCursor[ object_GROUP[i] ] = true
 				end
 			end
 		end
+		for i=1,#image_pos_X do
+			local x2,y2 = image_pos_X[i],image_pos_Y[i]
+			local x3,y3 = image_pos_X2[i],image_pos_Y2[i]
+
+			if x3 < x2 then x2,x3 = x3,x2 end
+			if y3 < y2 then y2,y3 = y3,y2 end
+
+			if x >= x2 and x <= x3 and y >= y2 and y <= y3 then
+				groupsUnderCursor[ image_GROUP[i] ] = true
+			end
+		end
+	end
+
+	local alphaTabPos = nil
+	local alphaTabNow = nil
+	function CheckAlpha(self,elapsed)
+		local x,y = ExRT.F.GetCursorPos(self)
+		UpdateGroupsUnderCursor(x,y)
+		if (alphaTabNow and not groupsUnderCursor[alphaTabNow]) or tool_selected ~= 7 then
+			alphaTabNow = nil
+			alphaTabPos = nil
+		end
+		if not alphaTabNow then
+			for k,v in pairs(groupsUnderCursor) do
+				if tool_selected == 7 or not lockedGroups[k] then
+					groups_alpha_pending[ k ] = true
+				end
+			end
+		else
+			groups_alpha_pending[ alphaTabNow ] = true
+		end
+
 		for g,_ in pairs(groups_alpha_pending) do
 			if not groups_alpha_now[g] then
 				groups_alpha_now[g] = true
 				for i=1,#dots_pos_X do
 					if dots_GROUP[i] == g then
 						dots_OBJ[i]:SetAlpha(.5)
+
+						if tool_selected == 7 then
+							SetLockedImg(dots_OBJ[i],g)
+						end
 					end
 				end
 				for i=1,#icon_pos_X do
 					if icon_GROUP[i] == g then
 						icon_OBJ[i]:SetAlpha(.5)
+
+						if tool_selected == 7 then
+							SetLockedImg(icon_OBJ[i],g)
+						end
 					end
 				end
 				for i=1,#text_pos_X do
 					if text_GROUP[i] == g then
 						text_OBJ[i]:SetAlpha(.5)
+
+						if tool_selected == 7 then
+							SetLockedImg(text_OBJ[i],g)
+						end
 					end
 				end
 				for o,_ in pairs(objects) do
@@ -1642,6 +2186,28 @@ function module.options:Load()
 							o:SetAlpha(o.t >= .5 and o.t / 2 or o.t + .5)
 						else
 							o:SetAlpha(.5)
+						end
+
+						if tool_selected == 7 then
+							SetLockedImg(o,g)
+						end
+					end
+				end
+				for l,_ in pairs(lines) do
+					if l.g == g then
+						l:SetAlpha(.5)
+
+						if tool_selected == 7 then
+							SetLockedImg(l,g)
+						end
+					end
+				end
+				for i=1,#image_pos_X do
+					if image_GROUP[i] == g then
+						image_OBJ[i]:SetAlpha(image_OBJ[i].t >= .5 and image_OBJ[i].t / 2 or image_OBJ[i].t + .5)
+
+						if tool_selected == 7 then
+							SetLockedImg(image_OBJ[i],g)
 						end
 					end
 				end
@@ -1653,21 +2219,55 @@ function module.options:Load()
 				for i=1,#dots_pos_X do
 					if dots_GROUP[i] == g then
 						dots_OBJ[i]:SetAlpha(1)
+
+						if tool_selected == 7 then
+							SetLockedImg(dots_OBJ[i],g,true)
+						end
 					end
 				end
 				for i=1,#icon_pos_X do
 					if icon_GROUP[i] == g then
 						icon_OBJ[i]:SetAlpha(1)
+
+						if tool_selected == 7 then
+							SetLockedImg(icon_OBJ[i],g,true)
+						end
 					end
 				end
 				for i=1,#text_pos_X do
 					if text_GROUP[i] == g then
 						text_OBJ[i]:SetAlpha(1)
+
+						if tool_selected == 7 then
+							SetLockedImg(text_OBJ[i],g,true)
+						end
 					end
 				end
 				for o,_ in pairs(objects) do
 					if o.g == g then
 						o:SetAlpha(o.t or 1)
+
+						if tool_selected == 7 then
+							SetLockedImg(o,g,true)
+						end
+					end
+				end
+				for l,_ in pairs(lines) do
+					if l.g == g then
+						l:SetAlpha(1)
+
+						if tool_selected == 7 then
+							SetLockedImg(l,g,true)
+						end
+					end
+				end
+				for i=1,#image_pos_X do
+					if image_GROUP[i] == g then
+						image_OBJ[i]:SetAlpha(image_OBJ[i].t)
+
+						if tool_selected == 7 then
+							SetLockedImg(image_OBJ[i],g,true)
+						end
 					end
 				end
 			end
@@ -1677,17 +2277,32 @@ function module.options:Load()
 		end
 	end
 
+	local function CheckAlphaTab(self)
+		local list = {}
+		for k,v in pairs(groupsUnderCursor) do
+			list[#list+1] = {tostring(k),k}
+		end
+		sort(list,function(a,b)return a[1]<b[1] end)
+		alphaTabPos = (alphaTabPos or 0) + 1
+		if alphaTabPos > #list then
+			alphaTabPos = nil
+		end
+		if alphaTabPos and #list > 1 then
+			alphaTabNow = list[alphaTabPos][2]
+		else
+			alphaTabNow = nil
+		end
+	end
+
 	local function ClearSomething(self)
 		local x,y = ExRT.F.GetCursorPos(self)
+		UpdateGroupsUnderCursor(x,y)
+
 		local groups_to_remove = {}
 		local isSomethingRemoved = false
-		for i=1,#dots_pos_X do
-			local x2,y2 = dots_pos_X[i],dots_pos_Y[i]
-
-			local dX = (x - x2)
-			local dY = (y - y2)
-			if sqrt(dX * dX + dY * dY) <= (dots_SIZE[i]/2) then
-				groups_to_remove[ dots_GROUP[i] ] = true
+		for k,v in pairs(groupsUnderCursor) do
+			if not lockedGroups[k] then
+				groups_to_remove[ k ] = true
 				isSomethingRemoved = true
 			end
 		end
@@ -1701,17 +2316,7 @@ function module.options:Load()
 				tremove(dots_COLOR,i)
 				tremove(dots_GROUP,i)
 				tremove(dots_OBJ,i)
-			end
-		end
-
-		for i=1,#icon_pos_X do
-			local x2,y2 = icon_pos_X[i],icon_pos_Y[i]
-
-			local dX = (x - x2)
-			local dY = (y - y2)
-			if sqrt(dX * dX + dY * dY) <= (icon_SIZE[i]/2) then
-				groups_to_remove[ icon_GROUP[i] ] = true
-				isSomethingRemoved = true
+				tremove(dots_SYNC,i)
 			end
 		end
 		for i=#icon_pos_X,1,-1 do
@@ -1723,15 +2328,7 @@ function module.options:Load()
 				tremove(icon_GROUP,i)
 				tremove(icon_OBJ,i)
 				tremove(icon_TYPE,i)
-			end
-		end
-
-		for i=1,#text_pos_X do
-			local obj = text_OBJ[i]
-
-			if MouseIsOver(obj) then
-				groups_to_remove[ text_GROUP[i] ] = true
-				isSomethingRemoved = true
+				tremove(icon_SYNC,i)
 			end
 		end
 		for i=#text_pos_X,1,-1 do
@@ -1744,40 +2341,7 @@ function module.options:Load()
 				tremove(text_OBJ,i)
 				tremove(text_DATA,i)
 				tremove(text_COLOR,i)
-			end
-		end
-
-		for i=1,#object_pos_X do
-			local x2,y2 = object_pos_X[i],object_pos_Y[i]
-
-			if object_TYPE[i] == 1 then
-				local dX = (x - x2)
-				local dY = (y - y2)
-				local d = sqrt(dX * dX + dY * dY)
-				if d <= (object_SIZE[i] + object_DATA1[i] / 2) and d >= (object_SIZE[i] - object_DATA1[i] / 2) then
-					groups_to_remove[ object_GROUP[i] ] = true
-					isSomethingRemoved = true
-				end
-			elseif object_TYPE[i] == 2 then
-				local dX = (x - x2)
-				local dY = (y - y2)
-				if sqrt(dX * dX + dY * dY) <= (object_SIZE[i] / 2) then
-					groups_to_remove[ object_GROUP[i] ] = true
-					isSomethingRemoved = true
-				end
-			elseif object_TYPE[i] == 3 then
-				if IsDotIn(x,y,x2,object_DATA1[i],object_DATA1[i],x2,y2-object_SIZE[i],object_DATA2[i]-object_SIZE[i],object_DATA2[i]+object_SIZE[i],y2+object_SIZE[i]) then
-					groups_to_remove[ object_GROUP[i] ] = true
-					isSomethingRemoved = true
-				elseif IsDotIn(x,y,x2-object_SIZE[i],x2+object_SIZE[i],object_DATA1[i]+object_SIZE[i],object_DATA1[i]-object_SIZE[i],y2,y2,object_DATA2[i],object_DATA2[i]) then
-					groups_to_remove[ object_GROUP[i] ] = true
-					isSomethingRemoved = true
-				end
-			elseif object_TYPE[i] == 4 then
-				if x >= x2 and x <= object_DATA1[i] and y >= y2 and y <= object_DATA2[i] then
-					groups_to_remove[ object_GROUP[i] ] = true
-					isSomethingRemoved = true
-				end
+				tremove(text_SYNC,i)
 			end
 		end
 		for i=#object_pos_X,1,-1 do
@@ -1785,6 +2349,11 @@ function module.options:Load()
 				for o,_ in pairs(objects) do
 					if o.g == object_GROUP[i] then
 						o:Hide()
+					end
+				end
+				for l,_ in pairs(lines) do
+					if l.g == object_GROUP[i] then
+						l:Hide()
 					end
 				end
 				tremove(object_pos_X,i)
@@ -1798,11 +2367,40 @@ function module.options:Load()
 				tremove(object_SYNC,i)
 			end
 		end
+		for i=#image_pos_X,1,-1 do
+			if groups_to_remove[ image_GROUP[i] ] then
+				image_OBJ[i]:Hide()
+				tremove(image_pos_X,i)
+				tremove(image_pos_Y,i)
+				tremove(image_pos_X2,i)
+				tremove(image_pos_Y2,i)
+				tremove(image_OBJ,i)
+				tremove(image_GROUP,i)
+				tremove(image_path,i)
+				tremove(image_alpha,i)
+				tremove(image_SYNC,i)
+			end
+		end
 
 		if isSomethingRemoved and isLiveSession then
 			module.options:GenerateString()
 		elseif isSomethingRemoved then
 			module.options:SaveData()
+		end
+	end
+
+	local function LockUnlockSomething(self)
+		local x,y = ExRT.F.GetCursorPos(self)
+		UpdateGroupsUnderCursor(x,y)
+
+		if alphaTabNow then
+			lockedGroups[alphaTabNow] = not lockedGroups[alphaTabNow]
+			UpdateLockedImg(alphaTabNow)
+		else
+			for k,v in pairs(groupsUnderCursor) do
+				lockedGroups[k] = not lockedGroups[k]
+				UpdateLockedImg(k)
+			end
 		end
 	end
 
@@ -1823,9 +2421,18 @@ function module.options:Load()
 				self:SetScript("OnUpdate",ObjectsUpdate)
 			elseif tool_selected == 5 then
 				self:SetScript("OnUpdate",MoveUpdate)
+			elseif tool_selected == 6 then
+				if curr_imgpath == "" then return end
+				self:SetScript("OnUpdate",ImageUpdate)
+			elseif tool_selected == 7 then
+				LockUnlockSomething(self)
 			end
 		elseif button == "RightButton" then
-			ClearSomething(self)
+			if tool_selected == 7 then
+				CheckAlphaTab(self)
+			else
+				ClearSomething(self)
+			end
 		end
 	end)
 	self.main.C:SetScript("OnMouseUp",function(self,button)
@@ -2009,8 +2616,8 @@ function module.options:Load()
 
 					local p3 = object_SIZE[i]
 					str = str .. string.char(floor(p3 / 250) + 1) .. string.char(p3 % 250 + 1)
-				elseif object_TYPE[i] == 3 then
-					str = str .. string.char(255) .. string.char(251) .. string.char(5)
+				elseif object_TYPE[i] == 3 or object_TYPE[i] == 5 or object_TYPE[i] == 6 then
+					str = str .. string.char(255) .. string.char(251) .. string.char((object_TYPE[i] == 3 and 5) or (object_TYPE[i] == 5 and 7) or (object_TYPE[i] == 6 and 8))
 
 					local p1 = object_COLOR[i] * 1000 + object_pos_X[i]
 					local p2 = object_SIZE[i] * 1000 + object_pos_Y[i]
@@ -2034,6 +2641,48 @@ function module.options:Load()
 				end
 
 				object_SYNC[i] = true
+			end
+		end
+
+		for i=1,#image_pos_X do
+			if not live or not image_SYNC[i] then
+				str = str .. string.char(255) .. string.char(251) .. string.char(9)
+
+				local p1 = (image_pos_X[i] < 0 and 20000 or 0) + abs(image_pos_X[i])
+				local p2 = (image_pos_Y[i] < 0 and 20000 or 0) + abs(image_pos_Y[i])
+
+				str = str .. string.char(floor(p1 / 250) + 1) .. string.char(p1 % 250 + 1) .. string.char(floor(p2 / 250) + 1) .. string.char(p2 % 250 + 1)
+
+				local p3 = (image_pos_X2[i] < 0 and 20000 or 0) + abs(image_pos_X2[i])
+				local p4 = (image_pos_Y2[i] < 0 and 20000 or 0) + abs(image_pos_Y2[i])
+
+				str = str .. string.char(floor(p3 / 250) + 1) .. string.char(p3 % 250 + 1) .. string.char(floor(p4 / 250) + 1) .. string.char(p4 % 250 + 1)
+
+				local p5 = image_alpha[i]
+
+				str = str .. string.char(floor(p5 / 250) + 1) .. string.char(p5 % 250 + 1)
+
+				local map = {}
+				local path = tostring(image_path[i]):sub(1,10000)
+				for j=1,#path do
+					local b = path:sub(j,j):byte()
+					if b > 250 then
+						map[#map+1] = j
+						path = path:sub(1,j-1)..string.char(b - 250)..path:sub(j+1)
+					end
+				end
+
+				local str_len = #path
+				str = str .. string.char(floor(str_len / 250) + 1) .. string.char(str_len % 250 + 1) .. path
+				
+				local map_len = #map				
+				str = str .. string.char(floor(map_len / 250) + 1) .. string.char(map_len % 250 + 1)
+
+				for j=1,map_len do
+					str = str .. string.char(floor(map[j] / 250) + 1) .. string.char(map[j] % 250 + 1)
+				end				
+
+				image_SYNC[i] = true
 			end
 		end
 
@@ -2123,6 +2772,15 @@ function module.options:Load()
 			data[#data + 1] = object_DATA2[i]
 			data[#data + 1] = object_TYPE[i]
 		end
+		for i=1,#image_pos_X do
+			data[#data + 1] = "G"
+			data[#data + 1] = image_pos_X[i]
+			data[#data + 1] = image_pos_Y[i]
+			data[#data + 1] = image_pos_X2[i]
+			data[#data + 1] = image_pos_Y2[i]
+			data[#data + 1] = image_alpha[i]
+			data[#data + 1] = image_path[i]
+		end
 
 		return data
 	end
@@ -2180,6 +2838,15 @@ function module.options:Load()
 				module.options:AddObject(X,Y,type,size,color,data1,data2)
 
 				pos = pos + 8
+			elseif data[pos] == "G" then
+				module.options:NextGroup()
+				local x,y = data[pos+1],data[pos+2]
+				local x2,y2 = data[pos+3],data[pos+4]
+				local alpha,path = data[pos+5],data[pos+6]
+
+				module.options:AddImage(x,y,x2,y2,path,alpha)
+
+				pos = pos + 7
 			else
 				pos = pos + 1
 			end
@@ -2249,16 +2916,16 @@ function module.options:Load()
 		return curr_data
 	end
 
-	self.clearAll = ELib:Button(self,L.messagebutclear):Size(100,20):Point("TOPLEFT",595,-30):OnClick(function(self)
+	self.clearAll = ELib:Button(self,L.messagebutclear):Size(90,20):Point("TOPLEFT",615,-30):OnClick(function(self)
 		module.options:Clear()
 		module.options:SaveData()
 	end)
 
-	self.sendButton = ELib:Button(self,L.messagebutsend):Size(100,20):Point("TOPLEFT",700,-30):OnClick(function(self)
+	self.sendButton = ELib:Button(self,L.messagebutsend):Size(90,20):Point("TOPLEFT",710,-30):OnClick(function(self)
 		module.options:GenerateString()
 	end)
 
-	self.liveButton = ELib:Button(self,L.VisualNoteLiveSession):Size(100,20):Point("TOPLEFT",700,-55):OnClick(function(self)
+	self.liveButton = ELib:Button(self,L.VisualNoteLiveSession):Size(90,20):Point("TOPLEFT",710,-55):OnClick(function(self)
 		if not isLiveSession then
 			module.options:GenerateString()
 			self.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
@@ -2268,7 +2935,7 @@ function module.options:Load()
 		isLiveSession = not isLiveSession
 	end)
 
-	self.SelectNote = ELib:DropDown(self,205,10):Size(135):Point("TOPLEFT",175,-5):SetText(L.VisualNoteSelectNote.."...")
+	self.SelectNote = ELib:DropDown(self,205,10):Size(135):Point("TOPLEFT",195,-5):SetText(L.VisualNoteSelectNote.."...")
 	local function SelectNote_SetValue(_,arg)
 		ELib:DropDownClose()
 		module.options:LoadData(arg)
@@ -2300,13 +2967,13 @@ function module.options:Load()
 		end
 	end
 
-	self.NoteName = ELib:Edit(self):Size(200,20):Point(390,-5):LeftText(LFG_LIST_TITLE..":"):OnChange(function(self,isUser)
+	self.NoteName = ELib:Edit(self):Size(200,20):Point(410,-5):LeftText(LFG_LIST_TITLE..":"):OnChange(function(self,isUser)
 		if not isUser then return end
 		curr_data.name = self:GetText()
 	end)
 	self.NoteName:SetMaxBytes(50)
 
-	self.removeButton = ELib:Button(self,L.cd2RemoveButton):Size(100,20):Point("TOPLEFT",595,-5):OnClick(function(self)
+	self.removeButton = ELib:Button(self,L.cd2RemoveButton):Size(90,20):Point("TOPLEFT",615,-5):OnClick(function(self)
 		StaticPopupDialogs["EXRT_VISNOTE_REMOVE"] = {
 			text = L.cd2RemoveButton,
 			button1 = L.YesText,
@@ -2345,7 +3012,7 @@ function module.options:Load()
 		curr_data.disableUpdate = self:GetChecked()
 	end) 
 
-	self.copyButton = ELib:Button(self,L.BossmodsKormrokCopy):Size(100,20):Point("TOPLEFT",700,-5):OnClick(function()
+	self.copyButton = ELib:Button(self,L.BossmodsKormrokCopy):Size(90,20):Point("TOPLEFT",710,-5):OnClick(function()
 		self:SaveData()
 		local new = self:CreateNew()
 		for i=2,#curr_data do
@@ -2666,7 +3333,7 @@ function module:UnpackString(str,sender)
 				module.db.await[#module.db.await + 1] = think * 2
 				module.db.await[#module.db.await + 1] = 0
 				module.db.await[#module.db.await + 1] = 2
-			elseif c == 5 then
+			elseif c == 5 or c == 7 or c == 8 then
 				local p1 = (data[i]:sub(3,3):byte() - 1) * 250 + (data[i]:sub(4,4):byte() - 1)
 				local p2 = (data[i]:sub(5,5):byte() - 1) * 250 + (data[i]:sub(6,6):byte() - 1)
 				local p3 = (data[i]:sub(7,7):byte() - 1) * 250 + (data[i]:sub(8,8):byte() - 1)
@@ -2682,7 +3349,7 @@ function module:UnpackString(str,sender)
 				module.db.await[#module.db.await + 1] = size
 				module.db.await[#module.db.await + 1] = p3
 				module.db.await[#module.db.await + 1] = p4
-				module.db.await[#module.db.await + 1] = 3
+				module.db.await[#module.db.await + 1] = (c == 5 and 3) or (c == 7 and 5) or (c == 8 and 6) or 3
 			elseif c == 6 then
 				local p1 = (data[i]:sub(3,3):byte() - 1) * 250 + (data[i]:sub(4,4):byte() - 1)
 				local p2 = (data[i]:sub(5,5):byte() - 1) * 250 + (data[i]:sub(6,6):byte() - 1)
@@ -2700,6 +3367,37 @@ function module:UnpackString(str,sender)
 				module.db.await[#module.db.await + 1] = p3
 				module.db.await[#module.db.await + 1] = p4
 				module.db.await[#module.db.await + 1] = 4
+			elseif c == 9 then
+				local p1 = (data[i]:sub(3,3):byte() - 1) * 250 + (data[i]:sub(4,4):byte() - 1)
+				local p2 = (data[i]:sub(5,5):byte() - 1) * 250 + (data[i]:sub(6,6):byte() - 1)
+				local p3 = (data[i]:sub(7,7):byte() - 1) * 250 + (data[i]:sub(8,8):byte() - 1)
+				local p4 = (data[i]:sub(9,9):byte() - 1) * 250 + (data[i]:sub(10,10):byte() - 1)
+				local p5 = (data[i]:sub(11,11):byte() - 1) * 250 + (data[i]:sub(12,12):byte() - 1)
+
+				local x,y = p1 > 20000 and -(p1-20000) or p1,p2 > 20000 and -(p2-20000) or p2
+				local x2,y2 = p3 > 20000 and -(p3-20000) or p3,p4 > 20000 and -(p4-20000) or p4
+				local alpha = p5
+
+				local str_len = (data[i]:sub(13,13):byte() - 1) * 250 + (data[i]:sub(14,14):byte() - 1)
+
+				local path = data[i]:sub(15,14+str_len)
+
+				local map_len = (data[i]:sub(15+str_len,15+str_len):byte() - 1) * 250 + (data[i]:sub(16+str_len,16+str_len):byte() - 1)
+				for j=1,map_len do
+					local pos = (data[i]:sub(16+str_len+j*2-1,16+str_len+j*2-1):byte() - 1) * 250 + (data[i]:sub(16+str_len+j*2,16+str_len+j*2):byte() - 1)
+
+					path = path:sub(1,pos-1)..string.char(path:sub(pos,pos):byte() + 250)..path:sub(pos+1)
+				end
+
+				path = tonumber(path) or path
+
+				module.db.await[#module.db.await + 1] = "G"
+				module.db.await[#module.db.await + 1] = x
+				module.db.await[#module.db.await + 1] = y
+				module.db.await[#module.db.await + 1] = x2
+				module.db.await[#module.db.await + 1] = y2
+				module.db.await[#module.db.await + 1] = alpha
+				module.db.await[#module.db.await + 1] = path
 			end
 		end
 	end
