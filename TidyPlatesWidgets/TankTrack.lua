@@ -74,7 +74,7 @@ local function UpdatePlayerRole()
 
 	-- Check Auras
 	for i = 1, 40 do
-		name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)	-- 10th --aby8
+		name, _, _, _, _, _, _, _, _, spellID = UnitBuff("player", i)	-- 10th --abyui8
 		if TankAuras[tostring(spellID)] then
 			playerTankAura = true
 		end

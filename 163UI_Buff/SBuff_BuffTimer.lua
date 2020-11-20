@@ -89,7 +89,7 @@ local function SBuff_AuraButton_Update(buttonName, index, filter)
     if not buffDuration then return end
 
     local unit = PlayerFrame.unit;
-	local name, _, _, _, _, expirationTime = UnitAura(unit, index, filter); --aby8
+	local name, _, _, _, _, expirationTime = UnitAura(unit, index, filter); --abyui8
 
 	if (name) and (expirationTime == 0) then
         if SHOW_BUFF_DURATIONS == "1" and private.cfg_showna then

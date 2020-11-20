@@ -380,6 +380,21 @@ U1RegisterAddon("!!!163UI!!!", {
             tip = L["说明`隐藏后用鼠标滚轮缩放小地图"],
             callback = function(cfg, v, loading) CoreCall("U1MMB_MinimapZoom_Toggle", v) end,
         },
+        {
+            var = "mmp_elite",
+            default = 1,
+            text = "爱不易图标用精英边框",
+            callback = function(cfg, v, loading)
+                local function change(on)
+                    LibDBIcon10_U1MMB.overlay:SetTexture(on and "Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-minimap-btn" or 136430)
+                end
+                if loading and U1_CreateMinimapButton then
+                    hooksecurefunc("U1_CreateMinimapButton", function() change(v) end)
+                else
+                    change(v)
+                end
+            end,
+        },
 
     },
     {

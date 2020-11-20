@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibItemUpgradeInfo-1.0", 30
+local MAJOR, MINOR = "LibItemUpgradeInfo-1.0", 31
 local type,tonumber,select,strsplit,GetItemInfoFromHyperlink=type,tonumber,select,strsplit,GetItemInfoFromHyperlink
 local unpack,GetDetailedItemLevelInfo=unpack,GetDetailedItemLevelInfo
 local library,previous = _G.LibStub:NewLibrary(MAJOR, MINOR)
@@ -52,8 +52,8 @@ local i_unk1=14
 local i_unk2=15
 local i_unk3=16
 local i_unk4=17
-
-
+local LE_ITEM_QUALITY_ARTIFACT=Enum.ItemQuality.Artifact
+local LE_ITEM_QUALITY_HEIRLOOM=Enum.ItemQuality.Heirloom
 do
 local oGetItemInfo=GetItemInfo
 lib.itemcache=lib.itemcache or
@@ -69,7 +69,7 @@ lib.itemcache=lib.itemcache or
 			local itemID=lib:GetItemID(itemLink)
 			local quality=cached[3]
 			local cacheIt=true
-			if quality==LE_ITEM_QUALITY_ARTIFACT then 
+			if quality==LE_ITEM_QUALITY_ARTIFACT then
 				local relic1, relic2, relic3 = select(4,strsplit(':', itemLink))
 				if relic1 and relic1 ~= '' and not oGetItemInfo(relic1) then cacheIt = false end
 				if relic2 and relic2 ~= '' and not oGetItemInfo(relic2) then cacheIt = false end
@@ -202,27 +202,27 @@ local function ScanTip(itemLink,itemLevel,show)
 		end
 		scanningTooltip:Show()
 		local quality,_,_,class,subclass,_,_,_,_,classIndex,subclassIndex=CachedGetItemInfo(itemLink,3)
-		
+
 		-- line 1 is the item name
 		-- line 2 may be the item level, or it may be a modifier like "Heroic"
 		-- check up to line 6 just in case
 		local ilevel,soulbound,bop,boe,boa,heirloom
-		if quality==LE_ITEM_QUALITY_ARTIFACT and itemLevel then 
+		if quality==LE_ITEM_QUALITY_ARTIFACT and itemLevel then
 			local relic1, relic2, relic3 = select(4,strsplit(':', itemLink))
 			if relic1 and relic1 ~= '' and not CachedGetItemInfo(relic1) then cacheIt = false end
 			if relic2 and relic2 ~= '' and not CachedGetItemInfo(relic2) then cacheIt = false end
 			if relic3 and relic3 ~= '' and not CachedGetItemInfo(relic3) then cacheIt = false end
-			ilevel=itemLevel 
+			ilevel=itemLevel
 		end
 		if show then
 			for i=1,12 do
-				local l, ltext = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil		
+				local l, ltext = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil
 				local r, rtext  = _G["LibItemUpgradeInfoTooltipTextRight"..i], nil
 				if l then
   				ltext=l:GetText()
   				rtext=r:GetText()
   				_G.print(i,ltext,' - ',rtext)
-				end		
+				end
 			end
 		end
     tipCache[itemLink]={
@@ -257,7 +257,7 @@ local function ScanTip(itemLink,itemLevel,show)
 		else
 		  c.ilevel=itemLevel
 	  end
-		
+
 		scanningTooltip:Hide()
 	end
 	return tipCache[itemLink]

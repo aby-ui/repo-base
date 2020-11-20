@@ -1481,7 +1481,7 @@ function ComergyOnLoad(self)
 
     --self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
     self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-    --self:RegisterEvent("RUNE_TYPE_UPDATE") --aby8
+    --self:RegisterEvent("RUNE_TYPE_UPDATE") --abyui8
     self:RegisterEvent("RUNE_POWER_UPDATE")
 end
 

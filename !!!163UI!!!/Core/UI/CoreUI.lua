@@ -343,18 +343,6 @@ function CoreUICreateFlash(frame, texture, ...)
     return frame.__flash;
 end
 
-function CoreUISetEditText(text, insert)
-    local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-    if insert then
-        chatFrame.editBox:Insert(text);
-    else
-        chatFrame.editBox:SetText(text);
-    end
-    chatFrame.editBox:Show();
-    chatFrame.editBox:HighlightText()
-    chatFrame.editBox:SetFocus()
-end
-
 CoreDependCall("Blizzard_BindingUI", function()
     KeyBindingFrameScrollFrame:HookScript("OnVerticalScroll", CoreUIHideCallOut)
 end)
@@ -443,4 +431,24 @@ function CoreUIShowCallOut(parent, relative1, relative2, x1, y1, x2, y2)
 end
 function CoreUIHideCallOut()
     if U1CallOut then U1CallOut:Hide() end
+end
+
+function CoreUIChatEdit_Insert(text, clear, no_highlight)
+    -- see ChatEdit_InsertLink
+    local eb = ChatEdit_GetActiveWindow();
+    if not eb then
+        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
+        eb = chatFrame and chatFrame.editBox
+        if eb then
+            eb:Show()
+        end
+    end
+    if clear then
+        eb:SetText(text);
+    else
+        eb:Insert(text)
+    end
+    if not no_highlight then eb:HighlightText() end
+    eb:SetFocus()
+    return eb
 end

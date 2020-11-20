@@ -2804,7 +2804,7 @@ function EventAlert_UpdateLifeBloom(EA_Unit)
 				local SfontName, SfontSize = "", 0;
 
 				for i=1,40 do
-					local _, _, count, _, _, expirationTime, unitCaster, _, _, spellID = UnitBuff(EA_Unit, i) --aby8
+					local _, _, count, _, _, expirationTime, unitCaster, _, _, spellID = UnitBuff(EA_Unit, i) --abyui8
 					if (not spellID) then
 						break;
 					end
@@ -3103,7 +3103,7 @@ function EAFun_HookTooltips()
 
 	hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
         if IsAddOnLoaded("TipTacItemRef") then return end
-		local id = select(10,UnitDebuff(...)) --aby8
+		local id = select(10,UnitDebuff(...)) --abyui8
 		if id then
 			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
 			self:Show()
@@ -3992,7 +3992,7 @@ EA_EventList={
 		["UNIT_DISPLAYPOWER"]			=EventAlert_DISPLAYPOWER,
 		["UNIT_HEALTH"]					=EventAlert_UNIT_HEALTH	,
 		["UNIT_POWER_UPDATE"]			=EventAlert_UNIT_POWER,
-		--["RUNE_TYPE_UPDATE"]			=EventAlert_UpdateRunes, --aby8
+		--["RUNE_TYPE_UPDATE"]			=EventAlert_UpdateRunes, --abyui8
 		["RUNE_POWER_UPDATE"]			=EventAlert_UpdateRunes,
 		["UNIT_SPELLCAST_SUCCEEDED"]	=EventAlert_UNIT_SPELLCAST_SUCCEEDED,
 		--["UNIT_SPELLCAST_CAST"]			=EventAlert_UNIT_SPELLCAST_CAST	,

@@ -1,6 +1,6 @@
 --[[
 Name: LibGraph-2.0
-Revision: $Rev: 55 $
+Revision: $Rev: 58 $
 Author(s): Cryect (cryect@gmail.com), Xinhuan
 Website: http://www.wowace.com/
 Documentation: http://www.wowace.com/wiki/GraphLib
@@ -11,7 +11,7 @@ Description: Allows for easy creation of graphs
 --Thanks to Nelson Minar for catching several errors where width was being used instead of height (damn copy and paste >_>)
 
 local major = "LibGraph-2.0"
-local minor = 90000 + tonumber(("$Revision: 55 $"):match("(%d+)"))
+local minor = 90000 + tonumber(("$Revision: 58 $"):match("(%d+)"))
 
 
 --Search for just Addon\\ at the front since the interface part often gets trimmed
@@ -136,7 +136,7 @@ end
 function lib:CreateGraphRealtime(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame", name, parent)
+	graph = CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 	Width = math_floor(Width)
 
@@ -153,7 +153,7 @@ function lib:CreateGraphRealtime(name, parent, relative, relativeTo, offsetX, of
 	graph.Height = Height
 	for i = 1, Width do
 		local bar
-		bar = CreateFrame("StatusBar", name.."Bar"..i, graph)--graph:CreateTexture(nil, "ARTWORK")
+		bar = CreateFrame("StatusBar", name.."Bar"..i, graph, BackdropTemplateMixin and "BackdropTemplate")--graph:CreateTexture(nil, "ARTWORK")
 		bar:SetPoint("BOTTOMLEFT", graph, "BOTTOMLEFT", i - 1, 0)
 		bar:SetHeight(Height)
 		bar:SetWidth(1)
@@ -268,7 +268,7 @@ end
 function lib:CreateGraphLine(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame", name, parent, "BackdropTemplate")
+	graph = CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)
@@ -358,7 +358,7 @@ end
 function lib:CreateGraphScatterPlot(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame",name, parent)
+	graph = CreateFrame("Frame",name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)
@@ -426,7 +426,7 @@ end
 function lib:CreateGraphPieChart(name, parent, relative, relativeTo, offsetX, offsetY, Width, Height)
 	local graph
 	local i
-	graph = CreateFrame("Frame",name, parent)
+	graph = CreateFrame("Frame",name, parent, BackdropTemplateMixin and "BackdropTemplate")
 
 
 	graph:SetPoint(relative, parent, relativeTo, offsetX, offsetY)

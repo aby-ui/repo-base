@@ -32,7 +32,7 @@ function Addon:OnInitialize()
     kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
     kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
 
-    --aby8 force azerite
+    --abyui8 force azerite
     if self.db.profile and self.db.profile.frames and self.db.profile.frames.artifact then
         if not self.db.profile.update801 then
             self.db.profile.frames.artifact.mode = 'azerite';

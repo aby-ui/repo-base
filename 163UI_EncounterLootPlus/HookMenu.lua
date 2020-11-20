@@ -13,14 +13,6 @@ local function makeSubInfo(info, text, arg, var, level)
     UIDropDownMenu_AddButton(info, level)
 end
 
-if not ELP_LAST_RAID_IDX then
-    for i=1,20 do
-        local _, name = EJ_GetInstanceByIndex(i, true)
-        if not name then break end
-        ELP_LAST_RAID_IDX, ELP_LAST_RAID_NAME = i, name
-    end
-end
-
 local function EncounterJournal_InitLootFilter_Mine(self, level)
     local info = UIDropDownMenu_CreateInfo();
     if (level == 1) then

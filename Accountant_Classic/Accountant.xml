@@ -58,7 +58,7 @@
 		</Layers>
 	</Frame>
 
-	<!-- Compact Money Frame -->
+	<!-- Compact Money Frame
 	<Frame name="AccountantMoneyFrameTemplate" virtual="true" inherits="BackdropTemplate">
 		<Frames>
 			<Frame name="$parentMoney"  inherits="SmallMoneyFrameTemplate">
@@ -84,6 +84,7 @@
             <KeyValue key="backdropInfo" value="BACKDROP_CHAT_BUBBLE_16_16" type="global"/>
         </KeyValues>
 	</Frame>
+	 -->
 
 	<!-- Main Window -->
 	<Frame name="AccountantFrame" toplevel="true" enableMouse="true" frameStrata="HIGH" movable="true" parent="UIParent" hidden="true">

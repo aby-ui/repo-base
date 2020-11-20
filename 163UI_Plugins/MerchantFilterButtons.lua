@@ -81,7 +81,7 @@ local function BuildButtons()
 	for k,v in pairs(Buttons) do
 		local button = CreateFrame("Button","MFB_"..k,MerchantFrame,"MainMenuBarMicroButton")
 		button.text = v.text
-        button:SetSize(28,58) button.Flash:SetPoint("TOPLEFT", -2, -18) --aby8
+        button:SetSize(28,58) button.Flash:SetPoint("TOPLEFT", -2, -18) --abyui8
 		button:SetPoint("TOPRIGHT",MerchantFrame,"TOPRIGHT",v.x,-4)
 		button:SetScript("OnEnter",function()
 			GameTooltip:SetOwner(button, "ANCHOR_RIGHT")

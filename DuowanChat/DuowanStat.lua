@@ -433,12 +433,7 @@ end
 
 function D:InsertStat(detail)
 	local text = self:GenerateStatText(detail);
-    local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-
-    chatFrame.editBox:Show();
-    chatFrame.editBox:Insert(text);
-    --chatFrame.editBox:HighlightText()
-    chatFrame.editBox:SetFocus()
+    CoreUIChatEdit_Insert(text, true, true)
 end
 
 function D:ReplyStat(name)

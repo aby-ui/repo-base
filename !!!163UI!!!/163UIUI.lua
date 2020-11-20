@@ -595,7 +595,7 @@ function UUI.Top.Create(main)
 
     main:Texture(nil, nil, UUI.Tex'UI2-text', 0,1,0,0.5):TL(74, -7):Size(256,32):un()
     local url = main:Button():Size(180, 32):TL(180, -11):Texture(nil, nil, UUI.Tex'UI2-text', 0,180/256,0.5,1):ALL():ToTexture("Normal"):up():un()
-    url:SetScript("OnClick", function() CoreUISetEditText(UUI.URL) end)
+    url:SetScript("OnClick", function() CoreUIChatEdit_Insert(UUI.URL, true) end)
     UUI.MakeMove(url)
 
     --右上角关闭按钮
@@ -1948,6 +1948,13 @@ function U1_CreateMinimapButton()
     U1DB.minimapPos = U1DB.minimapPos or 191
     LibStub("LibDBIcon-1.0"):Register("U1MMB", ldb, U1DB);
     CoreUICreateFlash(LibDBIcon10_U1MMB, "Interface\\UnitPowerBarAlt\\Generic1Party_Circular_Flash");
+
+    LibDBIcon10_U1MMB.icon:SetSize(20, 20)
+    LibDBIcon10_U1MMB.icon:SetPoint("TOPLEFT", 6, -5)
+    WW(LibDBIcon10_U1MMB):SetFixedFrameLevel(false):AddFrameLevel(1):SetFixedFrameLevel(true):un()
+    if LibDBIcon10_U1MMB.overlay then
+        LibDBIcon10_U1MMB.overlay:SetTexture("Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-minimap-btn")
+    end
     U1_CreateMinimapButton = nil
 end
 

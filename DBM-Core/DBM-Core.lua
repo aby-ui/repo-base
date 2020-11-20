@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201118000832"),
+	Revision = parseCurseDate("20201120022818"),
 	DisplayVersion = "9.0.5 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 11, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -718,7 +718,7 @@ local function sendLoggedSync(prefix, msg)
 		elseif IsInGroup(1) then
 			C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "PARTY")
 		else--for solo raid
-			C_ChatInfo.SendAddonMessageLogged("D4", prefix .. "\t" .. msg, "WHISPER", playerName)
+			handleSync("SOLO", playerName, prefix, strsplit("\t", msg))
 		end
 	end
 end
@@ -730,6 +730,8 @@ local function SendWorldSync(self, prefix, msg, noBNet)
 		SendAddonMessage("D4", prefix.."\t"..msg, "RAID")
 	elseif IsInGroup(1) then
 		SendAddonMessage("D4", prefix.."\t"..msg, "PARTY")
+	else--for solo raid
+		handleSync("SOLO", playerName, prefix, strsplit("\t", msg))
 	end
 	if IsInGuild() then
 		SendAddonMessage("D4", prefix.."\t"..msg, "GUILD")--Even guild syncs send realm so we can keep antispam the same across realid as well.
@@ -12112,7 +12114,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201118000832" then
+	if not revision or revision == "20201120022818" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

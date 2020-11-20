@@ -1,8 +1,19 @@
+ELP_CURRENT_TIER = 9 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
+
+if not ELP_LAST_RAID_IDX then
+    EJ_SelectTier(ELP_CURRENT_TIER)
+    for i=1,20 do
+        local _, name = EJ_GetInstanceByIndex(i, true)
+        if not name then break end
+        ELP_LAST_RAID_IDX, ELP_LAST_RAID_NAME = i, name
+    end
+end
+
 CoreDependCall("Blizzard_EncounterJournal", function()
     hooksecurefunc("EJTierDropDown_Initialize", function(self, level)
         if not level then return end
         local listFrame = _G["DropDownList"..level];
-        local expId = 9
+        local expId = ELP_CURRENT_TIER
         if listFrame.numButtons >= expId then return end
         local info = UIDropDownMenu_CreateInfo();
         info.text = EJ_GetTierInfo(expId);

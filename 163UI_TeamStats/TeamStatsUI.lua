@@ -78,10 +78,11 @@ function TS.SetTab(index)
     local left = 2
     local header_id = 0
     for i, col in ipairs(TS.cols) do
+        local hide = index ~= 1 and col.onlyTab1 --需要隐藏，且header不记录col宽度
         if col.header then
             header_id = header_id + 1
             local btn = f.headers[header_id]
-            if header_id > #tab.ids + TS.NUM_FIX_HEADERS then
+            if hide or header_id > #tab.ids + TS.NUM_FIX_HEADERS then
                 btn:Hide()
             else
                 if header_id > TS.NUM_FIX_HEADERS then
@@ -95,29 +96,42 @@ function TS.SetTab(index)
                             or "显示成就达成的天数,或者副本的进度和总击杀次数"
 
                     col.width = tab.widths and tab.widths[bossId] or TS.DEFAULT_COL_WIDTH
+                else
+                    btn:Show()
+                    if type(col.header)=="string" then
+                        btn:SetText(col.header) --是字符串则设置上不动了
+                    elseif type(col.header)=="function" then
+                        col.header(btn, col)
+                    end
                 end
-            end
 
-             --一个表头可以跨多个元素, 要计算其宽度
-            local width = 0
-            for j=1,col.headerSpan or 1 do
-                local includeCol = TS.cols[i+j-1]
-                width = width + includeCol.width + includeCol.offset[1]
-                --includeCol.headerIdx = #f.cols
+                 --一个表头可以跨多个元素, 要计算其宽度
+                local width = 0
+                for j=1,col.headerSpan or 1 do
+                    local includeCol = TS.cols[i+j-1]
+                    width = width + includeCol.width + includeCol.offset[1]
+                end
+                --todo: 这里需要考虑最左侧没有的情况
+                WW(btn):BL("$parentInset","TL", left, 1-22):un()
+                btn.width = width - TAB_OFFSET --跨多个表头只减去一次
+                btn:SetWidth(btn.width)
             end
-            WW(btn):BL("$parentInset","TL", left, 1-22):un()
-            btn.width = width - TAB_OFFSET --跨多个表头只减去一次
-            btn:SetWidth(btn.width)
         end
-        left = left+col.offset[1]+col.width
+        if not hide then
+            left = left+col.offset[1]+col.width
+        end
     end
 
     local minWidth
     for i=1, #f.scroll.buttons do
         local btn = f.scroll.buttons[i]
         local left = 0
+        local onlyTab1 = 0
         for j, col in ipairs(TS.cols) do
-            if j > TS.NUM_FIX_COLUMNS + #tab.ids then
+            if index ~= 1 and col.onlyTab1 then
+                btn.widgets[j]:Hide()
+                onlyTab1 = onlyTab1 + 1
+            elseif j > TS.NUM_FIX_COLUMNS + #tab.ids then
                 btn.widgets[j]:Hide()
                 btn.widgets[j].ids = nil
             elseif j > TS.NUM_FIX_COLUMNS then
@@ -131,7 +145,8 @@ function TS.SetTab(index)
                 btn.widgets[j]:Show()
                 minWidth = btn.widgets[j].right
                 btn.widgets[j].ids = TS.TABS[f.tabIdx].ids[j-TS.NUM_FIX_COLUMNS]
-            else
+            else -- fix columns
+                btn.widgets[j]:Show()
                 left = left + col.offset[1] + col.width
             end
         end
@@ -340,21 +355,17 @@ function TS.CreateButtons(f)
         end
 
         --只选中一个的时候复制到输入框，打开聊天输入框时，使用相关的方式
-        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-        local eb = chatFrame and chatFrame.editBox
-        if eb and count == 1 then
+        if count == 1 then
             for i=1,#names do
                 local line = GetPlayerAnnText(names[i])
                 if line then
-                    eb:Insert(GetPlayerAnnText(names[i]));
-                    break;
+                    CoreUIChatEdit_Insert(line)
+                    return
                 end
             end
-            eb:Show();
-            eb:HighlightText()
-            eb:SetFocus()
-            return
-        elseif eb then
+        else
+            local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
+            local eb = chatFrame and chatFrame.editBox
             local chatType = eb:GetAttribute("chatType")
             if (chatType == "RAID" or chatType == "PARTY" or chatType == "SAY" or chatType == "INSTANCE") then
                 channel = chatType
@@ -787,6 +798,7 @@ function TS.SetupColumns(f)
         {
             header = "珠宝",
             headerSpan = 1,
+            onlyTab1 = 1,
             width = 55,
             tip = "已插宝石数/总宝石孔数 顶级宝石数+高级宝石数+其他宝石数\n \n已附魔装备数/总附魔装备数 缺失部位\n\n腰带打孔算一个附魔",
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
@@ -842,6 +854,7 @@ function TS.SetupColumns(f)
         {
             header = "引领潮流",
             headerSpan = 1,
+            onlyTab1 = 1,
             width = 64,
             tip = "当前版本相关的副本成就，同战网共享，跨角色。绿色为有，红色为没有",
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
@@ -867,6 +880,7 @@ function TS.SetupColumns(f)
     }
 
     TS.NUM_FIX_COLUMNS = #TS.cols
+    TS.NUM_TAB1_COLUMNS = 0 for _, col in ipairs(TS.cols) do if col.onlyTab1 then TS.NUM_TAB1_COLUMNS = TS.NUM_TAB1_COLUMNS + 1 end end --部分非成就信息只在第一页显示,TS.SetTab
 
     --根据最大boss数量创建按钮
     local MAX_INFOS = 0 for _, v in next, TS.TABS do MAX_INFOS = max(MAX_INFOS, #v.ids) end
@@ -891,23 +905,6 @@ function TS.SetupColumns(f)
             WW(btn:GetFontString()):SetFontHeight(14):un()
             btn.id = id
             table.insert(f.headers, btn)
-            --一个表头可以跨多个元素, 要计算其宽度
-            local width = 0
-            for j=1,col.headerSpan or 1 do
-                local includeCol = TS.cols[i+j-1]
-                width = width + includeCol.width + includeCol.offset[1]
-                --includeCol.headerIdx = #f.cols
-            end
-            --todo: 这里需要考虑最左侧没有的情况
-            WW(btn):BL("$parentInset","TL", left, 1-22):un()
-            if type(col.header)=="string" then
-                btn:SetText(col.header) --是字符串则设置上不动了
-            elseif type(col.header)=="function" then
-                col.header(btn, col)
-            end
-            btn.width = width - TAB_OFFSET --跨多个表头只减去一次
-
-            btn:SetWidth(btn.width)
 
             if i > TS.NUM_FIX_COLUMNS then
                 CoreUIEnableTooltip(btn)

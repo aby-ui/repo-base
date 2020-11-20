@@ -685,7 +685,7 @@ function S:EnableRune()
 	end
 
 	self:RegisterEvent("RUNE_POWER_UPDATE", "UpdateRune");
-	--self:RegisterEvent("RUNE_TYPE_UPDATE", "UpdateRuneType"); --aby8
+	--self:RegisterEvent("RUNE_TYPE_UPDATE", "UpdateRuneType"); --abyui8
 
 	runes:Show();
 end
@@ -694,7 +694,7 @@ function S:DisableRune()
 	self.Runes:Hide();
 
 	self:UnregisterEvent("RUNE_POWER_UPDATE");
-	--self:UnregisterEvent("RUNE_TYPE_UPDATE"); --aby8
+	--self:UnregisterEvent("RUNE_TYPE_UPDATE"); --abyui8
 end
 end
 ----------------------

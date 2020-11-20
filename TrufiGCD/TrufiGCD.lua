@@ -1022,7 +1022,7 @@ function TrGCDEventBuffHandler(self,event, ...) --запущена эвенто�
 		local tt = true
 		if (t) then
 			for k=1,16 do
-				local k = select(10,UnitBuff(who, k)) --aby8
+				local k = select(10,UnitBuff(who, k)) --abyui8
 				if (k == 48108) then TrGCDInsSp["spell"][i] = 48108 tt = false
 				elseif (k == 34936) then TrGCDInsSp["spell"][i] = 34936 tt = false
 				elseif (k == 93400) then TrGCDInsSp["spell"][i] = 93400 tt = false

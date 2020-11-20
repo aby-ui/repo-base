@@ -160,7 +160,7 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
     print("添加手册物品完成...")
 end
 
---- 仅开发人员调用, 生成文件暂存在U1DBG里, 完事删掉, 不要用IDEA编辑 DEBUG_MODE = true GetLocale = function() return "zhTW" end
+--- 仅开发人员调用, 生成文件暂存在U1DBG里, 完事删掉, 不要用IDEA编辑 DEBUG_MODE = true GetLocale = function() return "zhTW" end --abyuiPW
 function AtlasLootReverse:RebuildDatabase()
     -- Sanity check for v6 of ALE
     -- assert(ATLASLOOT_VERSION_NUM, "Your AtlasLoot is either too old or broken!")

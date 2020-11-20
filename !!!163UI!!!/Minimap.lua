@@ -503,21 +503,22 @@ function U1MMB_MinimapZoom_Toggle(enable)
 end
 
 function U1_MMBCreateCoordsButton()
-    local btn = CreateFrameAby("Frame","MinimapCoordsButton",UIParent)
-    btn:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",edgeSize = 11,})
+    local btn = CreateFrameAby("Button","MinimapCoordsButton",UIParent)
+    btn:SetBackdrop({edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",edgeSize = 10,insets = { left = 2, right = 2, top = 2, bottom = 2 }})
     btn:EnableMouse(true)
+    btn:RegisterForClicks("AnyUp")
     btn:SetMovable(true)
-    btn:SetSize(55, 20)
+    btn:SetSize(68, 20)
     btn:SetPoint("TOPRIGHT",Minimap,"BOTTOMRIGHT",15,6)
     CoreUIMakeMovable(btn);
     local tex= btn:CreateTexture(nil,"ARTWORK")
     tex:SetTexture(0,0,0,0.5)
     tex:SetAllPoints(btn)
-    local fot= btn:CreateFontString(nil,"ARTWORK","GameFontNormal")
-    fot:SetPoint("CENTER")
+    local fot= btn:CreateFontString(nil,"ARTWORK","NumberFontNormalYellow")
+    fot:SetPoint("CENTER", 0, 0.5)
     local HBD = LibStub("HereBeDragons-2.0")
     local function MinimapCoordsButton_OnUpdate()
-        local px, py = HBD:GetPlayerZonePosition(false)
+        local px, py, mapId = HBD:GetPlayerZonePosition(false)
         if not px or not py then
             if btn:IsShown() then btn.originShown = true; btn:Hide() end
             return
@@ -526,9 +527,30 @@ function U1_MMBCreateCoordsButton()
         if(px == 0 and py == 0) then
             fot:SetText("无坐标");
         else
-            fot:SetFormattedText("%d, %d", px * 100, py * 100);
+            fot:SetFormattedText("%.1f-%.1f", px * 100, py * 100);
         end
     end
+    CoreUIEnableTooltip(btn, "当前坐标", "点击左键发送到聊天框")
+    btn:SetScript("OnClick", function(self)
+        local px, py, mapID = HBD:GetPlayerZonePosition(false)
+        if not px or not py or not mapID then return end
+        local info = C_Map.GetMapInfo(mapID)
+        local name = info and info.name or UNKNOWN
+        local text = format("%.1f, %.1f ", px * 100, py * 100)
+        local oldPoint = C_Map.GetUserWaypoint()
+        local oldTracking = C_SuperTrack.IsSuperTrackingUserWaypoint()
+        if C_Map.CanSetUserWaypointOnMap(mapID) then
+            local uiMapPoint = UiMapPoint.CreateFromCoordinates(mapID, px, py);
+            C_Map.SetUserWaypoint(uiMapPoint);
+            text = text .. C_Map.GetUserWaypointHyperlink() .. " "
+        end
+        text = text .. name
+        CoreUIChatEdit_Insert(text)
+        if oldPoint then
+            C_Map.SetUserWaypoint(oldPoint)
+            C_SuperTrack.SetSuperTrackedUserWaypoint(oldTracking)
+        end
+    end)
     CoreScheduleTimer(true, 0.1, MinimapCoordsButton_OnUpdate)
     btn:Show()
     CoreHideOnPetBattle(btn)

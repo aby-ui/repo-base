@@ -481,7 +481,7 @@ end
 -- ------------------------
 function Ellipsis:UNIT_AURA(unitTag)
 	local filter = UnitCanAttack('player', unitTag) and 'HARMFUL|PLAYER' or 'HELPFUL|PLAYER'
-	local spellName, _, stackCount, _, duration, expireTime, unitCaster, _, _, spellID = UnitAura(unitTag, 1, filter) --aby8
+	local spellName, _, stackCount, _, duration, expireTime, unitCaster, _, _, spellID = UnitAura(unitTag, 1, filter) --abyui8
 
 	local guid	= UnitGUID(unitTag)
 	local unit	= activeUnits[guid]
@@ -561,7 +561,7 @@ function Ellipsis:UNIT_AURA(unitTag)
 		end
 
 		index = index + 1
-		spellName, _, stackCount, _, duration, expireTime, unitCaster, _, _, spellID = UnitAura(unitTag, index, filter) --aby8
+		spellName, _, stackCount, _, duration, expireTime, unitCaster, _, _, spellID = UnitAura(unitTag, index, filter) --abyui8
 	end
 
 	if (not unit) then return end -- no auras (and thus no units) passed the filters, we're done here

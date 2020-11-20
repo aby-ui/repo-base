@@ -13,7 +13,7 @@
     toggle = function(name, info, enable, justload)
         if justload then
             local function hook(overlayFrame)
-                --aby-patch-work search for HandyNotes:RegisterPluginDB(
+                --abyuiPW search for HandyNotes:RegisterPluginDB(
                 local plugins = {
                     "HandyNotes_Shadowlands",
                     "HandyNotes_BattleForAzeroth",

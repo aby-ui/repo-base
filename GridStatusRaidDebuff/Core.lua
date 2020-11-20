@@ -403,7 +403,7 @@ function GridStatusRaidDebuff:ScanNewDebuff(unitid, guid)
 			-- No reason to detect buffs too
 			local unitid, debuff
 			unitid = GridRoster:GetUnitidByGUID(destGUID)
-			debuff = true --aby8 already checked auraType
+			debuff = true --abyui8 already checked auraType
 --[[
             for i=1,40 do
                 local spellname = UnitDebuff(unitid, i)
@@ -888,14 +888,7 @@ function GridStatusRaidDebuff:LoadZoneDebuff(zone, name)
                         end
                         --]]
                         --abyui
-                        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-                        local eb = chatFrame and chatFrame.editBox
-                        if(eb) then
-                            eb:Insert(GetSpellLink(k.debuffId))
-                            eb:Show();
-                            eb:HighlightText()
-                            eb:SetFocus()
-                        end
+                        CoreUIChatEdit_Insert(GetSpellLink(k.debuffId))
                     end,
                 },
 			},

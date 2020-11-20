@@ -1011,11 +1011,11 @@ end
 -- This is the workhorse function that constructs the profile
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
   -- addon metadata
-  local versionComment = '# SimC Addon ' .. 'in AbyUI' --aby GetAddOnMetadata('Simulationcraft', 'Version')
+  local versionComment = '# SimC Addon ' .. 'in AbyUI' --abyui GetAddOnMetadata('Simulationcraft', 'Version')
   local simcVersionWarning = '# Requires SimulationCraft 901-01 or newer'
 
   -- Basic player info
-  local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --aby LibRealmInfo:GetRealmInfoByUnit('player')
+  local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --abyui LibRealmInfo:GetRealmInfoByUnit('player')
 
   local playerName = UnitName('player')
   local _, playerClass = UnitClass('player')
@@ -1127,7 +1127,13 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
     local unlockedEssences = Simulationcraft:GetUnlockedAzeriteEssencesString()
 
     if essences then
-      simulationcraftProfile = simulationcraftProfile .. essences .. '\n'
+      if UnitLevel('player') > 50 then
+        -- Essences generally have no effect in Shadowlands content so export as a comment.
+        -- Otherwise, SimC will sim the essences for level 60 characters
+        simulationcraftProfile = simulationcraftProfile .. '# ' .. essences .. '\n'
+      else
+        simulationcraftProfile = simulationcraftProfile .. essences .. '\n'
+      end
     end
     if unlockedEssences then
       -- output as a comment, SimC doesn't care about unlocked powers but users might

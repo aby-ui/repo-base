@@ -77,15 +77,7 @@ local newSetItemRef = function(link, text, button, ...)
         text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1')
         text = text:gsub('|H.-|h(.-)|h', '%1')
 		text = text:gsub('|T.-|t', '')
-
-        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-        local eb = chatFrame and chatFrame.editBox
-        if(eb) then
-            eb:Insert(text)
-            eb:Show();
-            eb:HighlightText()
-            eb:SetFocus()
-        end
+        CoreUIChatEdit_Insert(text)
     end
 end
 

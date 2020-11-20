@@ -6,7 +6,7 @@
 --
 
 local DBICON10 = "LibDBIcon-1.0"
-local DBICON10_MINOR = 43 -- Bump on changes
+local DBICON10_MINOR = 44 -- Bump on changes
 DBICON10_MINOR = DBICON10_MINOR + 90000
 if not LibStub then error(DBICON10 .. " requires LibStub.") end
 local ldb = LibStub("LibDataBroker-1.1", true)
@@ -19,8 +19,8 @@ lib.callbackRegistered = lib.callbackRegistered or nil
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.notCreated = lib.notCreated or {}
 lib.radius = lib.radius or 11
+local next, Minimap, CreateFrame = next, Minimap, CreateFrame
 lib.tooltip = lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
-local next, Minimap = next, Minimap
 local isDraggingButton = false
 
 function lib:IconCallback(event, name, key, value)
@@ -233,9 +233,14 @@ local function createButton(name, object, db)
 	button.dataObject = object
 	button.db = db
 	button:SetFrameStrata("MEDIUM")
-	button:SetToplevel(true) --XXX 163
-	button:SetSize(31, 31)
+	if button.SetFixedFrameStrata then -- Classic support
+		button:SetFixedFrameStrata(true)
+	end
 	button:SetFrameLevel(8)
+	if button.SetFixedFrameLevel then -- Classic support
+		button:SetFixedFrameLevel(true)
+	end
+	button:SetSize(31, 31)
 	button:RegisterForClicks("anyUp")
 	button:RegisterForDrag("LeftButton")
 	button:SetHighlightTexture(136477) --"Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight"
@@ -254,11 +259,8 @@ local function createButton(name, object, db)
 	button.icon = icon
 	button.isMouseDown = false
 
-    if name == "U1MMB" then --abyui
-        overlay:SetTexture("Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-minimap-btn")
-        icon:SetSize(20, 20)
-        icon:SetPoint("TOPLEFT", 6, -5)
-    end
+    button:SetToplevel(true) --XXX 163
+    button.overlay = overlay
 
 	local r, g, b = icon:GetVertexColor()
 	icon:SetVertexColor(object.iconR or r, object.iconG or g, object.iconB or b)

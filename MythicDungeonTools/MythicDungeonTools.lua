@@ -3274,14 +3274,7 @@ function MDT:MakePresetImportFrame(frame)
             return U1Message("暂时没有副本-" .. dungeonList[idx] .. "-对应的网址")
         end
         local url = prefix .. lmap[dungeonList[idx]]
-        local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-        local eb = chatFrame and chatFrame.editBox
-        if(eb) then
-            eb:Insert(url)
-            eb:Show();
-            eb:HighlightText()
-            eb:SetFocus()
-        end
+        CoreUIChatEdit_Insert(url)
     end)
     frame.presetImportFrame:AddChild(frame.wagoLabel)
 

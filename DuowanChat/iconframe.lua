@@ -138,16 +138,10 @@ local getOptions=function()
 end 
 
 function DWCIconButton_OnClick(self, button)
-    local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-    local editBox = chatFrame.editBox or ChatEdit_ChooseBoxForSend() or ChatFrame1EditBox or ChatFrameEditBox
-	if (not editBox:IsShown()) then
-		editBox:Show();
-	end
-	editBox:SetFocus();
-	local _,font=SELECTED_CHAT_FRAME:GetFont()
-	font=floor(font)
+	--local _,font=SELECTED_CHAT_FRAME:GetFont()
+	--font=floor(font)
 	--editBox:Insert("|T"..self.texture..":"..font.."|t")
-    editBox:Insert(self.text)
+    CoreUIChatEdit_Insert(self.text, false, true)
 	DWCIconFrame:Hide()
 end
 
