@@ -676,59 +676,38 @@ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Plea
 L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] 忽略不支援的按鍵設置：K = [ %s ] ，請通知作者 %s"
 L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] 忽略不支援的欄位設置：K = [ %s ] ，請通知作者 %s"
 L["All slots were restored"] = "所有按鍵設定都已恢復完畢"
---[[Translation missing --]]
---[[ L["Are you SURE to import ?"] = "Are you SURE to import ?"--]] 
+L["Are you SURE to import ?"] = "你確定要導入麼?"
 L["Bad importing text [CRC32]"] = "錯誤的導入字串[CRC32]"
 L["Bad importing text [TEXT]"] = "錯誤的導入字串[TEXT]"
---[[Translation missing --]]
---[[ L["Close"] = "Close"--]] 
---[[Translation missing --]]
---[[ L["DANGEROUS"] = "DANGEROUS"--]] 
---[[Translation missing --]]
---[[ L["Export"] = "Export"--]] 
+L["Close"] = "關閉"
+L["DANGEROUS"] = "危險"
+L["Export"] = "導出"
 L["Feedback"] = "反饋"
---[[Translation missing --]]
---[[ L["Force Import"] = "Force Import"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Action"] = "Ignore Import/Export Action"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Key Binding"] = "Ignore Import/Export Key Binding"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Macro"] = "Ignore Import/Export Macro"--]] 
+L["Force Import"] = "強制導入"
+L["Ignore Import/Export Action"] = "忽略導入/導出技能"
+L["Ignore Import/Export Key Binding"] = "忽略導入/導出按鍵綁定"
+L["Ignore Import/Export Macro"] = "忽略導入/導出巨集"
 L["Ignore unattained pet[id=%s], %s"] = "忽略沒有的寵物 [id=%s]：%s"
 L["Ignore unlearned skill [id=%s], %s"] = "忽略未習得技能 [id=%s], %s"
---[[Translation missing --]]
---[[ L["Import"] = "Import"--]] 
+L["Import"] = "導入"
 L["Import is not allowed when you are in combat"] = "請在非戰鬥狀態時使用導入功能"
 L["Importing text [ver:%s] is not compatible with current version"] = "導入的字串版本與當前版本不相容。(字串版本號：%s)"
 L["Macro %s was ignored, check if there is enough space to create"] = "忽略巨集 [%s] ，請檢查是否有足夠的欄位創建新巨集"
---[[Translation missing --]]
---[[ L["Myslot"] = "Myslot"--]] 
---[[Translation missing --]]
---[[ L["Name of exported text"] = "Name of exported text"--]] 
---[[Translation missing --]]
---[[ L["Open Myslot"] = "Open Myslot"--]] 
---[[Translation missing --]]
---[[ L["Please type %s to confirm"] = "Please type %s to confirm"--]] 
---[[Translation missing --]]
---[[ L["Remove all Key Bindings"] = "Remove all Key Bindings"--]] 
---[[Translation missing --]]
---[[ L["Remove all Macros"] = "Remove all Macros"--]] 
---[[Translation missing --]]
---[[ L["Remove everything in ActionBar"] = "Remove everything in ActionBar"--]] 
---[[Translation missing --]]
---[[ L["Rename"] = "Rename"--]] 
---[[Translation missing --]]
---[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
---[[Translation missing --]]
---[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
+L["Myslot"] = "Myslot "
+L["Name of exported text"] = "導出文本名"
+L["Open Myslot"] = "開啟Myslot"
+L["Please type %s to confirm"] = "請輸入 %s 以進行確認"
+L["Remove all Key Bindings"] = "移除全部按鍵綁定"
+L["Remove all Macros"] = "移除全部巨集"
+L["Remove everything in ActionBar"] = "清除全部快捷列"
+L["Rename"] = "重新命名"
+L["Skip bad CRC32"] = "略過CRC32錯誤"
+L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "在導入前略過CRC32, 版本等驗證. 這將可能會導致未知錯誤"
 L["Skip unsupported version"] = "忽略不相容的版本"
 L["Time"] = "時間"
 L["TOC_NOTES"] = "Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com"
---[[Translation missing --]]
---[[ L["Try force importing"] = "Try force importing"--]] 
---[[Translation missing --]]
---[[ L["Unsaved"] = "Unsaved"--]] 
+L["Try force importing"] = "嘗試強制導入"
+L["Unsaved"] = "未保存"
 L["Use random mount instead of an unattained mount"] = "使用隨機座騎代替沒有獲得的座騎"
 
 end

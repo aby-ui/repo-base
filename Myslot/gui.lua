@@ -417,6 +417,14 @@ RegEvent("ADDON_LOADED", function()
                 tooltip:AddLine(L["Myslot"])
             end,
         }), config)
+    
+
+    local lib = LibStub:NewLibrary("Myslot-5.0", 1)
+
+    if lib then
+        lib.MainFrame = MySlot.MainFrame
+    end
+
 end)
 
 SlashCmdList["MYSLOT"] = function(msg, editbox)

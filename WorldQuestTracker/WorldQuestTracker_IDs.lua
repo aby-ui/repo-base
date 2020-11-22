@@ -13,6 +13,7 @@ if (not L) then
 	return
 end
 
+local GetFactionInfoByID = _G.GetFactionInfoByID
 
 --convert a filter type to a quest type
 WorldQuestTracker.FilterToQuestType = {
@@ -141,6 +142,15 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		[zoneQuests.MCCAREE] = 		true,
 }
 
+--quest hub by expansion
+WorldQuestTracker.MapData.ExpMaps = {
+	[zoneQuests.THESHADOWLANDS] = 9,
+	[zoneQuests.ZANDALAR] = 8,
+	[zoneQuests.KULTIRAS] = 8,
+	[zoneQuests.AZEROTH] = 8,
+	[zoneQuests.BROKENISLES] = 7,
+}
+
 --list of map ids for world quest hubs
 WorldQuestTracker.MapData.QuestHubs = {
 	[zoneQuests.THESHADOWLANDS] = true, --shadowlands hub
@@ -157,7 +167,7 @@ WorldQuestTracker.mapTables = {
 		[zoneQuests.MALDRAXXUS] =	{
 			widgets = {},
 			Anchor_X = 0.995,
-			Anchor_Y = 0.21,
+			Anchor_Y = 0.28,
 			GrowRight = false,
 			show_on_map = {
 				[zoneQuests.THESHADOWLANDS] = true,
@@ -167,7 +177,7 @@ WorldQuestTracker.mapTables = {
 		[zoneQuests.BASTION] = 		{
 			widgets = {},
 			Anchor_X = 0.995,
-			Anchor_Y = 0.62,
+			Anchor_Y = 0.46,
 			GrowRight = false,
 			show_on_map = {
 				[zoneQuests.THESHADOWLANDS] = true,
@@ -176,8 +186,8 @@ WorldQuestTracker.mapTables = {
 
 		[zoneQuests.ARDENWEALD] =	{
 			widgets = {},
-			Anchor_X = 0.59,
-			Anchor_Y = 0.80,
+			Anchor_X = 0.002,
+			Anchor_Y = 0.70,
 			GrowRight = true,
 			show_on_map = {
 				[zoneQuests.THESHADOWLANDS] = true,
@@ -186,8 +196,8 @@ WorldQuestTracker.mapTables = {
 
 		[zoneQuests.REVENDRETH] =	{
 			widgets = {},
-			Anchor_X = 0.01,
-			Anchor_Y = 0.40,
+			Anchor_X = 0.002,
+			Anchor_Y = 0.34,
 			GrowRight = true,
 			show_on_map = {
 				[zoneQuests.THESHADOWLANDS] = true,
@@ -460,11 +470,17 @@ WorldQuestTracker.MapData.EquipmentIcons = {
 }
 
 WorldQuestTracker.MapData.ItemIcons = {
-	--["BFA_RESOURCE"] = [[Interface\ICONS\INV_Crate_02]],
+	["LEGION_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifactpower_redT]],
 	["BFA_RESOURCE"] = [[Interface\AddOns\WorldQuestTracker\media\icon_resource]],
-	--["BFA_ARTIFACT"] = [[Interface\ICONS\INV_SmallAzeriteShard]],
 	["BFA_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power]],
-	["SHADOWLANDS_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power]],
+	["SHADOWLANDS_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_mana]],
+}
+
+WorldQuestTracker.MapData.ArtifactPowerSummaryIcons = {
+	["LEGION_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power_legion]],
+	["BFA_RESOURCE"] = [[Interface\AddOns\WorldQuestTracker\media\icon_resource]],
+	["BFA_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power_bfa]],
+	["SHADOWLANDS_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power_shadowlands]],
 }
 
 WorldQuestTracker.MapData.ResourceIcons = {
@@ -474,6 +490,7 @@ WorldQuestTracker.MapData.ResourceIcons = {
 }
 
 --which faction set to be used by the map id
+--this table isn't being in use at the moment
 WorldQuestTracker.MapData.FactionByMapID = { --not in use
 	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = "BFA",
 	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = "BFA",
@@ -509,13 +526,18 @@ WorldQuestTracker.MapData.ReputationIcons = {
 	--[0] = true, --The Unshackled | 8.2
 	--[0] = true, --Rajani | 8.3
 	--[0] = true, --Uldum Accord | 8.3
+
+	[3257748] = true, --Ascended
+	[3575389] = true, --Wild Hunt
+	[3492310] = true, --Undying Army
+	[3514227] = true, --Court of Harvesters
 }
 
 WorldQuestTracker.MapData.AllFactionIds = {
 	--Shadowlands Factions
 	[2410] = true, --The Undying Army
 	[2407] = true, --The Ascended
-	[2422] = true, --The Wild Hunt
+	[2465] = true, --The Wild Hunt
 	[2413] = true, --Court of Harvesters
 
 	--BFA Factions
@@ -546,12 +568,20 @@ WorldQuestTracker.MapData.AllFactionIds = {
 	[1948] = true, --Valarjar
 }
 
+WorldQuestTracker.MapData.FactionMapId = {
+	--Shadowlands
+	[2410] = 1536, --The Undying Army | MALDRAXXUS
+	[2407] = 1533, --The Ascended | BASTION
+	[2465] = 1565, --The Wild Hunt | ARDENWEALD
+	[2413] = 1525, --Court of Harvesters | REVENDRETH
+}
+
 WorldQuestTracker.MapData.FactionIcons = {
 	--Shadowlands
-	[2410] = "Interface\\ICONS\\inv__faction_alliancewareffort", --The Undying Army
-	[2407] = "Interface\\ICONS\\inv__faction_alliancewareffort", --The Ascended
-	[2422] = "Interface\\ICONS\\inv__faction_alliancewareffort", --The Wild Hunt
-	[2413] = "Interface\\ICONS\\inv__faction_alliancewareffort", --Court of Harvesters
+	[2410] = 3492310, --The Undying Army
+	[2407] = 3257748, --The Ascended
+	[2465] = 3575389, --The Wild Hunt
+	[2413] = 3514227, --Court of Harvesters
 
 	--BFA
 	[2159] = "Interface\\ICONS\\inv__faction_alliancewareffort", --7th Legion
@@ -585,7 +615,7 @@ WorldQuestTracker.MapData.FactionIcons = {
 local ShadowlandsFactions = {
 	[2410] = true, --The Undying Army
 	[2407] = true, --The Ascended
-	[2422] = true, --The Wild Hunt
+	[2465] = true, --The Wild Hunt
 	[2413] = true, --Court of Harvesters
 }
 
@@ -611,7 +641,6 @@ local BFAFactions = {
 		[2157] = true, --The Honorbound
 		[2158] = true, --Voldunai
 		[2373] = true, --The Unshackled
-
 		[2163] = true, --Tortollan Seekers
 		[2164] = true, --Champions of Azeroth
 		[2417] = true, --Uldum Accord
@@ -640,6 +669,7 @@ WorldQuestTracker.MapData.ReputationByMap = {
 	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = BFAFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = BFAFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = BFAFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.THESHADOWLANDS] = ShadowlandsFactions,
 
 	--zones
 	[WorldQuestTracker.MapData.ZoneIDs.ZULDAZAAR] = 	BFAFactions,
@@ -648,6 +678,11 @@ WorldQuestTracker.MapData.ReputationByMap = {
 	[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	BFAFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	BFAFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		BFAFactions,
+
+	[WorldQuestTracker.MapData.ZoneIDs.BASTION] = 		ShadowlandsFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.MALDRAXXUS] = 	ShadowlandsFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.ARDENWEALD] = 	ShadowlandsFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.REVENDRETH] = 	ShadowlandsFactions,
 }
 
 function WorldQuestTracker.GetFactionsAllowedOnMap(mapId)
@@ -673,7 +708,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		--Shadowlands
 		[2410] = GetFactionInfoByID(2410), --The Undying Army
 		[2407] = GetFactionInfoByID(2407), --The Ascended
-		[2422] = GetFactionInfoByID(2422), --The Wild Hunt
+		[2465] = GetFactionInfoByID(2465), --The Wild Hunt
 		[2413] = GetFactionInfoByID(2413), --Court of Harvesters
 
 		--BFA
@@ -718,7 +753,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		--Shadowlands
 		[2410] = GetFactionInfoByID(2410), --The Undying Army
 		[2407] = GetFactionInfoByID(2407), --The Ascended
-		[2422] = GetFactionInfoByID(2422), --The Wild Hunt
+		[2465] = GetFactionInfoByID(2465), --The Wild Hunt
 		[2413] = GetFactionInfoByID(2413), --Court of Harvesters
 		
 		--BFA
@@ -772,7 +807,6 @@ WorldQuestTracker.MapData.ReplaceIcon = {
 WorldQuestTracker.MapData.IgnoredRewardTexures = {
 	[2565244] = true, --BFA honorbound service medal
 	[2565243] = true, --BFA 7th legion service medal
-	
 }
 
 WorldQuestTracker.MapData.QuestTypeIcons = {

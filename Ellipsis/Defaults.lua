@@ -104,7 +104,7 @@ function Ellipsis:GetDefaults()
 				colourHostile		= {1, 0, 0, 1},
 			},
 			cooldowns = {
-				enabled				= true,
+				enabled				= false,
 				onlyWhenTracking	= false,
 				interactive			= true,			-- control ability to cancel/announce cooldowns with mouse-clicks
 				tooltips			= 'FULL',		-- FULL|HELPER|OFF

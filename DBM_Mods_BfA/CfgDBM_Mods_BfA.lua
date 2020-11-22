@@ -1,7 +1,7 @@
 U1RegisterAddon("DBM_Mods_BfA", {
     title = "DBM争霸艾泽拉斯",
     desc = "DBM首领模块, 8.0争霸艾泽拉斯",
-    icon = "Interface\\Icons\\inv_eyeofnzothpet",
+    icon = "Interface\\Icons\\inv_heartofazeroth",
     nopic = 1,
     tags = { TAG_RAID },
     defaultEnable = 1,

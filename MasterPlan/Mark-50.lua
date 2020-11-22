@@ -4,7 +4,7 @@ T.Mark = 50
 function GarrisonMissionFrame_SelectTab() end
 
 hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(fr, data)
-	if fr and data and data.level == T.FOLLOWER_LEVEL_CAP then
+	if fr and data and data.level == T.FOLLOWER_LEVEL_CAP and data.quality > 3 then
 		fr.XP:Hide()
 		fr.XPBar:Hide()
 		fr.XPBarBackground:Hide()

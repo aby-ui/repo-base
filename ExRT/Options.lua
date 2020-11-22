@@ -564,8 +564,8 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 	sf.snowlast = maxSnowflake
 end
 
-OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
-OptionsFrame.image2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogo2b","BORDER"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140*2,140*2):Color(.9,.9,.45,1)
+OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\MiniMap"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
+OptionsFrame.image2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\Aura73","BORDER"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140*2,140*2):Color(.9,.9,.45,1)
 OptionsFrame.image2:SetAlpha(0)
 OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",28):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
 
@@ -585,7 +585,7 @@ end)
 OptionsFrame.animLogo.g.a:SetStartDelay(4)
 OptionsFrame.animLogo.g:Play()
 
-OptionsFrame.imagehat = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\OptionLogoHat","OVERLAY"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140,140):Shown(false)
+OptionsFrame.imagehat = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\MiniMap","OVERLAY"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140,140):Shown(false)
 
 OptionsFrame.dateChecks = CreateFrame("Frame",nil,OptionsFrame)
 OptionsFrame.dateChecks:SetPoint("TOPLEFT")

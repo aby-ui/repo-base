@@ -75,6 +75,7 @@ WorldQuestTracker.WorldMapSupportWidgets = {}
 WorldQuestTracker.PartyQuestsPool = {}
 WorldQuestTracker.CurrentZoneQuests = {}
 WorldQuestTracker.CachedQuestData = {}
+WorldQuestTracker.CachedConduitData = {}
 WorldQuestTracker.CurrentMapID = 0
 WorldQuestTracker.LastWorldMapClick = 0
 WorldQuestTracker.MapSeason = 0
@@ -414,7 +415,6 @@ function WorldQuestTracker:OnInit()
 			FlashClientIcon()
 			
 			if (QuestMapFrame_IsQuestWorldQuest (questID)) then --wait, is this inception?
-				--local title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker:GetQuestFullInfo (questID)
 				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID)
 				
 				--print (title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex)
@@ -606,8 +606,8 @@ end
 	--formata o tempo restante que a quest tem
 	local D_HOURS = "%dH"
 	local D_DAYS = "%dD"
-	function WorldQuestTracker.GetQuest_TimeLeft (questID, formated)
-		local timeLeftMinutes = GetQuestTimeLeftMinutes (questID)
+	function WorldQuestTracker.GetQuest_TimeLeft(questID, formated)
+		local timeLeftMinutes = GetQuestTimeLeftMinutes(questID)
 		if (timeLeftMinutes) then
 			if (formated) then
 				local timeString
@@ -627,7 +627,7 @@ end
 			end
 		else
 			--since 20/12/2018 time left sometimes is returning nil
-			return 1
+			return 60
 		end
 	end
 
@@ -644,7 +644,7 @@ end
 			WorldQuestTracker:Msg("no tag info for quest:", questID, title)
 			return
 		end
-		
+
 		local tagID = tagInfo.tagID
 		local tagName = tagInfo.tagName
 		local worldQuestType = tagInfo.worldQuestType

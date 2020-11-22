@@ -19,7 +19,6 @@ if (not L) then
 	return
 end
 
-
 local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 
@@ -31,566 +30,685 @@ ff.PlayersInvited = {}
 
 local GameCooltip = GameCooltip2
 
-local C_TaskQuest = _G.C_TaskQuest
-
 local _
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
-local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardInfo = GetQuestLogRewardInfo
-local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
+local C_TaskQuest = _G.C_TaskQuest
+local QuestMapFrame_IsQuestWorldQuest = _G.QuestMapFrame_IsQuestWorldQuest or _G.QuestUtils_IsQuestWorldQuest
+local GetNumQuestLogRewardCurrencies = _G.GetNumQuestLogRewardCurrencies
+local GetQuestLogRewardInfo = _G.GetQuestLogRewardInfo
+local GetQuestLogRewardCurrencyInfo = _G.GetQuestLogRewardCurrencyInfo
+local GetQuestLogRewardMoney = _G.GetQuestLogRewardMoney
+local GetNumQuestLogRewards = _G.GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
 local GetDistance_Point = DF.GetDistance_Point
 
-local LibWindow = LibStub ("LibWindow-1.1")
-if (not LibWindow) then
-	print ("|cFFFFAA00World Quest Tracker|r: libwindow not found, did you just updated the addon? try reopening the client.|r")
-end
+--create tick frame
+	ff.TickFrame = CreateFrame("frame", nil, UIParent, "BackdropTemplate")
 
---finder frame
+--finder frame setup
+	ff.Width = 240
+	ff.Height = 116
+	ff.ButtonWidth = 236
+	ff.ButtonHeight = 20
+	ff.ButtonVerticalPadding = 4
+	ff.TitleHeight = 20 + (ff.ButtonVerticalPadding*2)
+	ff.divBarY = -55
+	ff.topLevelY = -28
+	ff.buttonRowY = -8 --from the div bar
 
-ff.Width = 240
-ff.Height = 170
-ff.ButtonWidth = 236
-ff.ButtonHeight = 20
-ff.ButtonVerticalPadding = 4
-ff.TitleHeight = 20 + (ff.ButtonVerticalPadding*2)
+	ff:SetSize (ff.Width, ff.Height)
+	DF:ApplyStandardBackdrop(ff)
+	ff:SetPoint ("center")
+	ff:EnableMouse (true)
+	ff:SetMovable (true)
+	ff:Hide()
 
-ff:SetSize (ff.Width, ff.Height)
-ff:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-ff:SetBackdropColor (0, 0, 0, 1)
-ff:SetBackdropBorderColor (0, 0, 0, 1)
-ff:SetPoint ("center")
-ff:EnableMouse (true)
-ff:SetMovable (true)
-ff:Hide()
+	--right click to close label
+		ff.RightClickClose = DF:CreateLabel (ff, L["right click to close this window"])
+		ff.RightClickClose:SetPoint ("bottom", ff, "bottom", 0, 2)
+		ff.RightClickClose.color = "gray"
 
-ff.RightClickClose = DF:CreateLabel (ff, L["right click to close this window"])
-ff.RightClickClose:SetPoint ("bottom", ff, "bottom", 0, 2)
-ff.RightClickClose.color = "gray"
-
---tick frame
-ff.TickFrame = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
-
-ff.SetEnabledFunc = function (_, _, value)
-	WorldQuestTracker.db.profile.groupfinder.enabled = value
-	GameCooltip:Hide()
-end
-
-ff.SetFindGroupForRares = function (_, _, value)
-	WorldQuestTracker.db.profile.rarescan.search_group = value
-	GameCooltip:Hide()
-end
-
-ff.SetOTButtonsFunc = function (_, _, value)
-	WorldQuestTracker.db.profile.groupfinder.tracker_buttons = value
-	if (value) then
-		--enabled
-		WorldQuestTracker:FullTrackerUpdate()
-	else
-		--disabled
-		if (ff.BQuestTrackerUsedWidgets) then
-			for block, button in pairs (ff.BQuestTrackerUsedWidgets) do
-				if (ff.RemoveButtonFromBBlock) then
-					ff.RemoveButtonFromBBlock (block)
-				end
-			end
-		end
-	end
-	GameCooltip:Hide()
-end
-
-ff.AlreadyInGroupFunc = function (_, _, value)
-	WorldQuestTracker.db.profile.groupfinder.dont_open_in_group = value
-	GameCooltip:Hide()
-end
-
-ff.SetAutoGroupLeaveFunc = function (_, _, value, key)
-	WorldQuestTracker.db.profile.groupfinder.autoleave = false
-	WorldQuestTracker.db.profile.groupfinder.autoleave_delayed = false
-	WorldQuestTracker.db.profile.groupfinder.askleave_delayed = false
-	WorldQuestTracker.db.profile.groupfinder.noleave = false
-	
-	WorldQuestTracker.db.profile.groupfinder [key] = true
-	
-	GameCooltip:Hide()
-end
-ff.SetGroupLeaveTimeoutFunc = function (_, _, value)
-	WorldQuestTracker.db.profile.groupfinder.leavetimer = value
-	if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
-		WorldQuestTracker.db.profile.groupfinder.autoleave = false
-		WorldQuestTracker.db.profile.groupfinder.askleave_delayed = true
-	end
-	GameCooltip:Hide()
-end
-
-ff.BuildMenuFunc = function()
-	GameCooltip:Preset (2)
-	GameCooltip:SetOption ("TextSize", 10)
-	GameCooltip:SetOption ("FixedWidth", 180)
-	
-	--enabled
-	GameCooltip:AddLine (L["S_GROUPFINDER_ENABLED"])
-	if (WorldQuestTracker.db.profile.groupfinder.enabled) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (1, ff.SetEnabledFunc, not WorldQuestTracker.db.profile.groupfinder.enabled)
-	
-	--find group for rares
-	GameCooltip:AddLine (L["S_GROUPFINDER_AUTOOPEN_RARENPC_TARGETED"])
-	if (WorldQuestTracker.db.profile.rarescan.search_group) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (1, ff.SetFindGroupForRares, not WorldQuestTracker.db.profile.rarescan.search_group)		
-	
-	--uses buttons on the quest tracker
-	GameCooltip:AddLine (L["S_GROUPFINDER_OT_ENABLED"])
-	if (WorldQuestTracker.db.profile.groupfinder.tracker_buttons) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (1, ff.SetOTButtonsFunc, not WorldQuestTracker.db.profile.groupfinder.tracker_buttons)
-
-	--
-	GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
-	--
-	
-	GameCooltip:AddLine ("Don't Show if Already in Group")
-	if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (1, ff.AlreadyInGroupFunc, not WorldQuestTracker.db.profile.groupfinder.dont_open_in_group)
-
-	--
-	GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
-	--
-	
-	GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS"])
-	GameCooltip:AddIcon ([[Interface\BUTTONS\UI-GROUPLOOT-PASS-DOWN]], 1, 1, IconSize, IconSize)
-	
-	--leave group
-	GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave, "autoleave")
-	
-	GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.autoleave_delayed) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave_delayed, "autoleave_delayed")
-	
-	GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.askleave_delayed) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.askleave_delayed, "askleave_delayed")
-	
-	GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.noleave) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.noleave, "noleave")
-	
-	--
-	GameCooltip:AddLine ("$div", nil, 2, nil, -5, -11)
-	--ask to leave with timeout
-	GameCooltip:AddLine ("10 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 10) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 10)
-	
-	GameCooltip:AddLine ("15 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 15) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 15)
-	
-	GameCooltip:AddLine ("20 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 20) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 20)
-	
-	GameCooltip:AddLine ("30 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 30) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 30)
-	
-	GameCooltip:AddLine ("60 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
-	if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 60) then
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
-	else
-		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-	end
-	GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 60)
-end
-
-function WorldQuestTracker.OpenGroupFinderForQuest()
-
-	--check if the quest is elite
-	
-	local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (ff.CurrentWorldQuest)
-	--> check if player is in quest, otherwise it'll be a ghost button
-	if (ff:IsShown() and isElite and WorldQuestTracker.PlayerIsInQuest (title)) then
-		local success = WorldQuestTracker.TrackEliteQuest (ff.CurrentWorldQuest)
-		if (not success) then
-			
-		end
-		return
-	end
-
-	--get the quest information
-	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (ff.CurrentWorldQuest)
-	
-	if (not LFGListFrame.SearchPanel.SearchBox.Instructions2) then
-		LFGListFrame.SearchPanel.SearchBox.Instructions2 = WorldQuestTracker:CreateLabel (LFGListFrame.SearchPanel.SearchBox)
-		LFGListFrame.SearchPanel.SearchBox.Instructions2:SetPoint ("right", -21, 0)
-		LFGListFrame.SearchPanel.SearchBox.Instructions2.color = "gray"
-		LFGListFrame.SearchPanel.SearchBox.Instructions2.alpha = 0.3
-		LFGListFrame.SearchPanel.SearchBox.Instructions2.align = ">"
-		
-		--ballon popup
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon = CreateFrame ("frame", "WorldQuestTrackerGroupFinderPopup", LFGListFrame.EntryCreation.Name, "MicroButtonAlertTemplate")
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetFrameLevel (2000)
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.Text:SetSpacing (4)
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.SearchPanel.SearchBox, "topleft", 0, 20)
-		
-		LFGListFrame.SearchPanel.SearchBox:HookScript ("OnHide", function()
-			LFGListFrame.SearchPanel.SearchBox.Instructions2.text = ""
-			LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
-		end)
-		
-		LFGListFrame.SearchPanel.SearchBox:HookScript ("OnTextChanged", function()
-			local text = LFGListFrame.SearchPanel.SearchBox:GetText()
-			if (tonumber (text) == ff.CurrentWorldQuest) then
-				LFGListFrame.SearchPanel.SearchBox.Instructions2.text = ""
-				LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
+		ff:SetScript("OnMouseDown", function(self, button)
+			if (button == "RightButton") then
+				ff:HideFrame(true)
 			end
 		end)
-		
-		LFGListFrame.EntryCreation.Name:HookScript ("OnEnterPressed", function()
-			LFGListFrame.EntryCreation.ListGroupButton:Click()
-		end)
-		
-		LFGListSearchPanelScrollFrame.StartGroupButton:HookScript ("OnClick", function()
-			C_Timer.After (0.1, function()
-				if (not LFGListFrame.EntryCreation.Name.Instructions2) then
-					LFGListFrame.EntryCreation.Name.Instructions2 = WorldQuestTracker:CreateLabel (LFGListFrame.EntryCreation.Name)
-					LFGListFrame.EntryCreation.Name.Instructions2:SetPoint ("right", -21, 0)
-					LFGListFrame.EntryCreation.Name.Instructions2.color = "gray"
-					LFGListFrame.EntryCreation.Name.Instructions2.alpha = 0.3
-					LFGListFrame.EntryCreation.Name.Instructions2.align = ">"
-					
-					LFGListFrame.EntryCreation.Name:HookScript ("OnHide", function()
-						LFGListFrame.EntryCreation.Name.Instructions2.text = ""
-						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
-					end)
-				end
 
-				if (WorldQuestTracker.OpenSearchTime and WorldQuestTracker.OpenSearchTime+30 > GetTime()) then
-					LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.EntryCreation.Name, "topleft", 0, 20)
-					LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Show()
-					LFGListFrame.EntryCreation.Name.Instructions2.text = "Enter the QuestID: " .. ff.CurrentWorldQuest
-					LFGListFrame.EntryCreation.Name.Instructions:SetText("")
+	--captcha text input
+		function ff.OnCaptchaEnterPressed(textEntryBox, _, text)
+			--print("text entered:", text)
+		end
+
+		local captchaTextInstruction = ff:CreateFontString(nil, "overlay", "GameFontNormal")
+		captchaTextInstruction:SetText("For group search, enter questId:")
+		--captchaTextInstruction:SetPoint("topleft", ff, "topleft", 2, -26)
+		captchaTextInstruction:SetPoint("topleft", ff, "topleft", 2, ff.divBarY - 7)
+		DF:SetFontSize(captchaTextInstruction, 10)
+
+		local captchaText = ff:CreateFontString(nil, "overlay", "GameFontNormal")
+		captchaText:SetPoint("topleft", captchaTextInstruction, "bottomleft", 0, -5)
+		DF:SetFontSize(captchaText, 18)
+		ff.CaptchaText = captchaText
+
+		local captchaEntry = DF:CreateTextEntry (ff, ff.OnCaptchaEnterPressed, 80, 22, "CaptchaEntry", "$parentCaptchaEntry", nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+		captchaEntry:SetPoint("left", captchaText, "right", 8, 0)
+		captchaEntry:SetJustifyH("left")
+		captchaEntry:SetTextInsets(10, -10, 0, 0)
+
+		captchaEntry:SetHook("OnEnterPressed", function(editBox)
+			_G.WorldQuestTrackerFinderFrameAcceptButton:Click()
+		end)
+
+		captchaEntry:SetHook("OnChar", function(editBox)
+
+		end)
+
+		--create group button
+		local createGroupFrame = CreateFrame("frame", "WorldQuestTrackerCreateQuestGroupFrame", UIParent)
+		createGroupFrame:Hide()
+		createGroupFrame:SetSize(200, 20)
+		createGroupFrame.questName = createGroupFrame:CreateFontString(nil, "overlay", "GameFontNormal")
+
+		--create small lines for each number
+		local supportCaptchaFrame = CreateFrame("frame", nil, captchaEntry.widget)
+		supportCaptchaFrame:SetAllPoints()
+		for i = 1, 5 do
+			local line = supportCaptchaFrame:CreateTexture(nil, "overlay", nil, 7)
+			line:SetColorTexture(1, 1, 1, 0.5)
+			line:SetSize(10, 1)
+			line:SetPoint("left", supportCaptchaFrame, "left", i*12, -8)
+		end
+
+		supportCaptchaFrame:SetScript("OnEvent", function(self, event, ...)
+			if (event == "LFG_LIST_SEARCH_RESULT_UPDATED") then
+				--search results are ready
+				supportCaptchaFrame.searchId = select(1, ...)
+				--print(supportCaptchaFrame.searchId)
+				--local searchResultInfo = C_LFGList.GetSearchResultInfo(supportCaptchaFrame.searchId);
+
+			elseif (event == "LFG_LIST_SEARCH_RESULTS_RECEIVED") then
+				local results = LFGListFrame.SearchPanel.results
+				--no results?
+				if (#results == 0) then
+					--show the create group button if in quest category
+					local selectedCategory = LFGListFrame.SearchPanel.categoryID
+					if (selectedCategory ~= 1) then
+						return
+					end
+
+					createGroupFrame:SetParent(LFGListFrame.SearchPanel)
+					createGroupFrame:SetPoint("top", LFGListSearchPanelScrollFrame.StartGroupButton, "bottom", 0, -5)
+					createGroupFrame:Show()
+
+				else
+					createGroupFrame:Hide()
+				end
+			end
+		end)
+
+		--hook search result lines to auto signup when clicking on them
+		C_Timer.After(1, function()
+			--hook onclick from buttons in the result frame
+			for i = 1, #LFGListFrame.SearchPanel.ScrollFrame.buttons do
+				local button = LFGListFrame.SearchPanel.ScrollFrame.buttons[i]
+				button:HookScript("OnClick", function(self)
+					--print("clicked on me!")
+					--if already applied to a group, reclicking should cancel the apply
+
+					--check if the entry is valid
+					if (LFGListFrame.SearchPanel.selectedResult) then
+						_G.LFGListSearchPanel_SignUp(LFGListFrame.SearchPanel)
+
+						--this should only work on questing and custom, player may want to select the role on other categories
+						local selectedCategory = LFGListFrame.SearchPanel.categoryID
+						if (selectedCategory ~= 1 and selectedCategory ~= 6) then
+							return
+						end
+
+						_G.LFGListApplicationDialog.TankButton.CheckButton:SetChecked(true)
+						_G.LFGListApplicationDialog.HealerButton.CheckButton:SetChecked(true)
+						_G.LFGListApplicationDialog.DamagerButton.CheckButton:SetChecked(true)
+						_G.LFGListApplicationDialog.Description:SetText("World Quest Tracker.")
+
+						_G.LFGListApplicationDialogSignUpButton_OnClick(_G.LFGListApplicationDialog.SignUpButton)
+					end
+				end)
+			end
+
+			--hook onclick from the start group button
+			LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnClick", function(self)
+				--only work for category quest
+				local selectedCategory = LFGListFrame.SearchPanel.categoryID
+				if (selectedCategory ~= 1 and selectedCategory ~= 6) then
+					return
 				end
 			end)
 		end)
-		
-		--/dump LFGListFrame.EntryCreation.Name
-	end
-	
-	if (title or ff.NpcID) then
-		LFGListUtil_OpenBestWindow()
-		LFGListCategorySelection_SelectCategory (LFGListFrame.CategorySelection, 1, 0)
-		LFGListCategorySelection_StartFindGroup (LFGListFrame.CategorySelection)
-		
-		LFGListFrame.SearchPanel.SearchBox.Instructions:SetText ("")
-		LFGListFrame.SearchPanel.SearchBox:SetFocus (true)
-		
-		LFGListFrame.SearchPanel.SearchBox.Instructions2.text = "Enter the QuestID: " .. ff.CurrentWorldQuest
-		WorldQuestTracker.OpenSearchTime = GetTime()
-		
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label = "Enter the QuestID: " .. ff.CurrentWorldQuest
-		MicroButtonAlert_SetText (LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon, LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label)
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Show()
-		LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.SearchPanel.SearchBox, "topleft", 0, 20)
-	end
-end
 
---> TEXT quest name
-ff.QuestNameText = WorldQuestTracker:CreateLabel (ff, L["Quest Name:"])
-ff.QuestName2Text = WorldQuestTracker:CreateLabel (ff, "")
-ff.QuestNameText:SetPoint ("topleft", ff, "topleft", 2, -ff.ButtonVerticalPadding - ff.TitleHeight)
-ff.QuestName2Text:SetPoint ("left", ff.QuestNameText, "right", 2, 0)
+		--hiddenSearchButton
+		ff.hiddenSearchButton = CreateFrame("button", "$parentHiddenSearchButton", ff, "BackdropTemplate")
+		ff.hiddenSearchButton:RegisterForClicks("LeftButtonDown", "RightButtonDown")
+		ff.hiddenSearchButton:SetScript("OnClick", function(self, mouseButton)
+			if (mouseButton == "RightButton") then
+				ff:HideFrame(true)
+				return
+			end
 
---> TEXT quest ID
-ff.QuestIDText = WorldQuestTracker:CreateLabel (ff, L["Quest ID:"])
-ff.QuestID2Text = WorldQuestTracker:CreateLabel (ff, "")
-ff.QuestIDText:SetPoint ("topleft", ff.QuestNameText, "bottomleft", 0, -ff.ButtonVerticalPadding)
-ff.QuestID2Text:SetPoint ("left", ff.QuestIDText, "right", 2, 0)
+			ff.WasLFGWindowOpened = _G.PVEFrame:IsShown()
 
---> BUTTON open group finder window
-ff.OpenGroupFinderButton = WorldQuestTracker:CreateButton (ff, WorldQuestTracker.OpenGroupFinderForQuest, ff.ButtonWidth, ff.ButtonHeight, L["Search for a Group in Group Finder"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-ff.OpenGroupFinderButton:SetPoint ("topleft", ff.QuestIDText, "bottomleft", 0, -ff.ButtonVerticalPadding)
-ff.OpenGroupFinderButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
+			if (not ff.WasLFGWindowOpened) then
+				_G.PVEFrame_ToggleFrame()
+			end
 
-ff.OpenGroupFinderButton.FlashTexture = ff.OpenGroupFinderButton:CreateTexture (nil, "overlay")
-ff.OpenGroupFinderButton.FlashTexture:SetColorTexture (1, 1, 1)
-ff.OpenGroupFinderButton.FlashTexture:SetAllPoints()
-ff.OpenGroupFinderButton.FlashTexture:Hide()
-ff.OpenGroupFinderButton.FlashAnimation = DF:CreateAnimationHub (ff.OpenGroupFinderButton.FlashTexture, function() ff.OpenGroupFinderButton.FlashTexture:Show() end, function() ff.OpenGroupFinderButton.FlashTexture:Hide() end)
-DF:CreateAnimation (ff.OpenGroupFinderButton.FlashAnimation, "ALPHA", 1, 0.1, 0, 0.4)
-DF:CreateAnimation (ff.OpenGroupFinderButton.FlashAnimation, "ALPHA", 2, 0.1, 0.6, 0)
+			_G.LFGListUtil_OpenBestWindow()
+			_G.LFGListCategorySelection_SelectCategory(LFGListFrame.CategorySelection, 1, 0)
 
+			--make the quest
+			LFGListFrame.CategorySelection.FindGroupButton:Click()
 
-ff:SetScript ("OnMouseDown", function (self, button)
-	if (button == "RightButton") then
-		ff:HideFrame (true)
-	end
-end)
+			--literally take the search box from the group finder window and put it in the wqt window
+			local stolenSearchBox = LFGListFrame.SearchPanel.SearchBox
+			stolenSearchBox:ClearAllPoints()
+			stolenSearchBox:SetPoint("left", captchaText, "right", 10, 0)
+			stolenSearchBox:SetIgnoreParentAlpha(true)
+			_G.PVEFrame:SetAlpha(0)
+			stolenSearchBox:SetFrameLevel(captchaEntry:GetFrameLevel() + 2)
+			stolenSearchBox:Show()
+			stolenSearchBox:SetFocus(true)
+			stolenSearchBox:SetAlpha(0)
 
---> BUTTON onvite nearby players
-local InvitePlayersOnClick = function()
-	GameCooltip:Hide()
-	C_Timer.After (0.15, function()
-		GameCooltip:ExecFunc (ff.InvitePlayersButton.widget)
-	end)
-end
+			ff.hiddenSearchButton.fakeInputMarkTexture:SetPoint("left", captchaEntry.widget, "left", 12, 0)
+			ff.hiddenSearchButton.fakeInputMarkAnim:Play()
+		end)
 
-ff.InvitePlayersButton = WorldQuestTracker:CreateButton (ff, InvitePlayersOnClick, ff.ButtonWidth, ff.ButtonHeight, "Invite Nearby Players", -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-ff.InvitePlayersButton:SetPoint ("top", ff.OpenGroupFinderButton, "bottom", 0, -ff.ButtonVerticalPadding)
-ff.InvitePlayersButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
+		ff.hiddenSearchButton:SetPoint("topleft", captchaEntry.widget, "topleft", -100, 10)
+		ff.hiddenSearchButton:SetPoint("bottomright", captchaEntry.widget, "bottomright", 235, -10)
+		ff.hiddenSearchButton:SetFrameLevel(captchaEntry:GetFrameLevel() + 1)
 
-local playerSelectedToInvite = function (self, fixedValue, value)
-	GameCooltip2:Hide()
-	ff.PlayersNearby [value] = nil
-	ff.PlayersInvited [value] = true
-	InviteUnit (value)
-	
-	C_Timer.After (0.15, function()
-		GameCooltip:ExecFunc (ff.InvitePlayersButton.widget)
-	end)
-end
+		local fakeInputMark = ff.hiddenSearchButton:CreateTexture(nil, "overlay", nil, 7)
+		fakeInputMark:SetColorTexture(1, 1, 1, 1)
+		fakeInputMark:SetSize(2, 18)
+		fakeInputMark.animHub = DF:CreateAnimationHub(fakeInputMark, function()fakeInputMark:Show();fakeInputMark:SetAlpha(1)end, function()fakeInputMark:Hide();fakeInputMark:SetAlpha(1)end)
+		fakeInputMark.animHub:SetLooping("REPEAT")
+		ff.hiddenSearchButton.fakeInputMarkTexture = fakeInputMark
+		ff.hiddenSearchButton.fakeInputMarkAnim = fakeInputMark.animHub
 
-local BuildInviteMenu = function()
-	GameCooltip2:Preset (2)
-	local playerName = next (ff.PlayersNearby)
-	if (playerName) then
-		local added = false
-		
-		for playerName, playerInfo in pairs (ff.PlayersNearby) do
-			local spottedAt, guid = unpack (playerInfo)
-			if (spottedAt + 20 > GetTime()) then
-				local className, classId, raceName, raceId, gender, name, realm = GetPlayerInfoByGUID (guid)
-				
-				if (classId) then
-					GameCooltip:AddLine (playerName, "", 1, classId)
-				else
-					GameCooltip:AddLine (playerName)
+		fakeInputMark.Alpha1 = DF:CreateAnimation(fakeInputMark.animHub, "ALPHA", 1, 0, 0, 1)
+		fakeInputMark.Alpha1:SetEndDelay(0.55)
+		fakeInputMark.Alpha2 = DF:CreateAnimation(fakeInputMark.animHub, "ALPHA", 2, 0, 1, 0)
+		fakeInputMark.Alpha2:SetEndDelay(0.55)
+
+		local givebackStolenSearchBox = function()
+			--restore search box point
+			local stolenSearchBox = LFGListFrame.SearchPanel.SearchBox
+			stolenSearchBox:ClearAllPoints()
+			stolenSearchBox:SetPoint("topleft", LFGListFrame.SearchPanel.CategoryName, "bottomleft", 4, -7)
+
+			stolenSearchBox:ClearFocus()
+			stolenSearchBox:SetIgnoreParentAlpha(false)
+			stolenSearchBox:SetAlpha(1)
+		end
+
+		local restoreFrames = function()
+			--restore search box point
+			givebackStolenSearchBox()
+
+			_G.PVEFrame:SetAlpha(1)
+
+			ff.hiddenSearchButton.fakeInputMarkAnim:Stop()
+			ff.hiddenSearchButton.fakeInputMarkTexture:Hide()
+
+			if (ff.WasLFGWindowOpened) then
+				if (not _G.PVEFrame:IsShown()) then
+					_G.PVEFrame_ToggleFrame()
 				end
-				
-				GameCooltip:AddMenu (1, playerSelectedToInvite, playerName)
-				added = true
+
+			elseif (_G.PVEFrame:IsShown()) then
+				_G.PVEFrame_ToggleFrame()
 			end
 		end
-		
-		if (not added) then
-			GameCooltip2:AddLine ("No other players nearby.")
-		end
-	else
-		GameCooltip2:AddLine ("No other players nearby.")
-	end
-end
 
-ff.InvitePlayersButton.widget.CoolTip = {
-	Type = "menu",
-	BuildFunc = BuildInviteMenu,
-	OnEnterFunc = function (self) 
-		ff.InvitePlayersButton.widget.button_mouse_over = true
-	end,
-	OnLeaveFunc = function (self) 
-		ff.InvitePlayersButton.widget.button_mouse_over = false
-	end,
-	FixedValue = "none",
-	ShowSpeed = 0.02,
-	Options = function()
-		GameCooltip:SetOption ("MyAnchor", "left")
-		GameCooltip:SetOption ("RelativeAnchor", "right")
-		GameCooltip:SetOption ("WidthAnchorMod", -2)
-		GameCooltip:SetOption ("HeightAnchorMod", 0)
-		GameCooltip:SetOption ("LineHeightSizeOffset", 4)
-		GameCooltip:SetOption ("VerticalPadding", -4)
-		GameCooltip:SetOption ("FrameHeightSizeOffset", 4)
-	end
-}
+		do
+			local stolenSearchBox = LFGListFrame.SearchPanel.SearchBox
 
-GameCooltip2:CoolTipInject (ff.InvitePlayersButton.widget)
+			stolenSearchBox:HookScript("OnTextChanged", function(self)
+				local text = self:GetText()
+				captchaEntry:SetText(text)
+				ff.hiddenSearchButton.fakeInputMarkTexture:SetPoint("left", captchaEntry.widget, "left", 12 + (#text * 12), 0)
+			end)
 
-local leave_func = function()
-	if (ff.QuestCompletedHidingTimer and not ff.QuestCompletedHidingTimer._cancelled) then
-		ff.QuestCompletedHidingTimer:Cancel()
-		
-	elseif (ff.QuestCancelledHidingTimer and not ff.QuestCancelledHidingTimer._cancelled) then
-		ff.QuestCancelledHidingTimer:Cancel()
-		
-	end
+			stolenSearchBox:HookScript("OnEditFocusLost", function(self)
+				if (ff:IsShown()) then
+					ff.hiddenSearchButton.fakeInputMarkAnim:Stop()
+					ff.hiddenSearchButton.fakeInputMarkTexture:Hide()
+				end
+			end)
+
+			stolenSearchBox:HookScript("OnEditFocusGained", function(self)
+				if (ff:IsShown()) then
+					ff.hiddenSearchButton.fakeInputMarkAnim:Play()
+					ff.hiddenSearchButton.fakeInputMarkTexture:Show()
+				end
+			end)
+
+			stolenSearchBox:HookScript("OnEnterPressed", function(self)
+				if (ff:IsShown()) then
+					ff.EnterPressedTime = GetTime()
+					_G.PVEFrame:SetAlpha(1)
+					givebackStolenSearchBox()
+					ff.SearchTime = GetTime()
+				end
+			end)
+
+			ff:SetScript ("OnShow", function()
+				ff.hiddenSearchButton:Show()
+				ff.GroupButtonsFrame:Show()
+				ff.GroupButtonsFrame:SetPoint("top", ff, "top", 0, ff.topLevelY)
+
+				local children = {ff.GroupButtonsFrame:GetChildren()}
+				local firstChild = children[1]
+				firstChild:SetPoint("left", ff.GroupButtonsFrame, "left", 0, 0)
+				local padding = 2
+
+				for i = 2, #children do
+					local child = children[i]
+					child:SetPoint("left", children[i-1], "right", padding, 0)
+				end
+
+				local width = #children * firstChild:GetWidth() + ((#children-2) * padding)
+				ff.GroupButtonsFrame:SetSize(width, firstChild:GetHeight())
+			end)
+
+			ff:SetScript ("OnHide", function()
+				ff.hiddenSearchButton:Hide()
+				restoreFrames()
+			end)
+
+			LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnClick", function()
+
+				--hide the ff
+				ff.WasLFGWindowOpened = true
+				ff:Hide()
+
+				C_Timer.After(0.05, function()
+					if (not LFGListFrame.EntryCreation.Name.Instructions2) then
+						LFGListFrame.EntryCreation.Name.Instructions2 = WorldQuestTracker:CreateLabel(LFGListFrame.EntryCreation.Name)
+						LFGListFrame.EntryCreation.Name.Instructions2:SetPoint ("right", -21, 0)
+						LFGListFrame.EntryCreation.Name.Instructions2.color = "gray"
+						LFGListFrame.EntryCreation.Name.Instructions2.alpha = 0.3
+						LFGListFrame.EntryCreation.Name.Instructions2.align = ">"
+
+						LFGListFrame.SearchPanel.SearchBox.Instructions2 = WorldQuestTracker:CreateLabel (LFGListFrame.SearchPanel.SearchBox)
+						LFGListFrame.SearchPanel.SearchBox.Instructions2:SetPoint ("right", -21, 0)
+						LFGListFrame.SearchPanel.SearchBox.Instructions2.color = "gray"
+						LFGListFrame.SearchPanel.SearchBox.Instructions2.alpha = 0.3
+						LFGListFrame.SearchPanel.SearchBox.Instructions2.align = ">"
+
+						--ballon popup
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon = CreateFrame("frame", "WorldQuestTrackerGroupFinderPopup", LFGListFrame.EntryCreation.Name, "MicroButtonAlertTemplate_BFA")
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetFrameLevel(2000)
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.Text:SetSpacing(4)
+						DF:SetFontSize(LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.Text, 20)
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint("bottomleft", LFGListFrame.SearchPanel.SearchBox, "topleft", 0, 20)
+				
+						LFGListFrame.EntryCreation.Name:HookScript("OnEnterPressed", function()
+							LFGListFrame.EntryCreation.ListGroupButton:Click()
+						end)
+
+						LFGListFrame.EntryCreation.Name:HookScript("OnHide", function()
+							LFGListFrame.EntryCreation.Name.Instructions2.text = ""
+							LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Hide()
+						end)
+					end
 	
-	ff:HideFrame (true)
-	LeaveParty()
-end
+					if (ff.SearchTime and ff.SearchTime+30 > GetTime()) then
+						LFGListFrame.EntryCreation.Name.Instructions2.text = "Enter questID: " .. ff.CurrentWorldQuest
+						LFGListFrame.EntryCreation.Name.Instructions:SetText("")
 
-ff.LeaveButton = WorldQuestTracker:CreateButton (ff, leave_func, ff.ButtonWidth, ff.ButtonHeight, L["LeaveGroup"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-ff.LeaveButton:SetPoint ("top", ff.InvitePlayersButton, "bottom", 0, -ff.ButtonVerticalPadding)
-ff.LeaveButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
+						LFGListFrame.SearchPanel.SearchBox.Instructions:SetText("")
+						LFGListFrame.SearchPanel.SearchBox:SetFocus(true)
+						
+						LFGListFrame.SearchPanel.SearchBox.Instructions2.text = "Enter questID: " .. ff.CurrentWorldQuest
+						ff.SearchTime = GetTime()
+						
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label = ff.CurrentWorldQuest
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.Text:SetText(LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon.label)
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:SetPoint ("bottomleft", LFGListFrame.EntryCreation.Name, "topleft", 0, 20)
+						LFGListFrame.SearchPanel.SearchBox.QuestIDBalloon:Show()
 
---> BUTTON open group finder window
-local ignore_current_quest = function()
-	DF:ShowPromptPanel ("Don't Show Popups for the Quest: " .. (ff.QuestName2Text:GetText() or "-") .. "?", function() 
-		if (ff.CurrentWorldQuest) then
-			WorldQuestTracker.db.profile.groupfinder.ignored_quests [ff.CurrentWorldQuest] = true
-			WorldQuestTracker:Msg ("Quest " .. (ff.QuestName2Text:GetText() or "-") .. " added to ignore list.")
+					end
+				end)
+			end)
 		end
-		ff:HideFrame (true)
-	end, function() end)
-end
 
-ff.IgnoreQuestButton = WorldQuestTracker:CreateButton (ff, ignore_current_quest, ff.ButtonWidth, ff.ButtonHeight, L["Ignore Quest"], -1, nil, nil, nil, nil, nil, WorldQuestTracker:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-ff.IgnoreQuestButton:SetPoint ("top", ff.LeaveButton, "bottom", 0, -ff.ButtonVerticalPadding)
-ff.IgnoreQuestButton:SetClickFunction (function() ff:HideFrame (true) end, false, false, "right")
+		supportCaptchaFrame:RegisterEvent("LFG_LIST_SEARCH_RESULT_UPDATED")
+		supportCaptchaFrame:RegisterEvent("LFG_LIST_SEARCH_RESULTS_RECEIVED")
+
+		--search for a group in group finder button, create with bliz api
+		local acceptButton = CreateFrame("button", "$parentAcceptButton", ff, "BackdropTemplate")
+		acceptButton:SetSize(80, 22)
+		acceptButton:SetPoint("left", supportCaptchaFrame, "right", 5, 0)
+		acceptButton:SetFrameStrata("HIGH")
+		acceptButton:SetFrameLevel(LFGListFrame.SearchPanel.SearchBox:GetFrameLevel() + 5)
+		DF:ApplyStandardBackdrop(acceptButton)
+		acceptButton:SetNormalFontObject("GameFontNormal")
+		acceptButton:SetText(_G.SEARCH)
+
+		acceptButton:SetScript("OnClick", function(self, button)
+			local captcha = tonumber(captchaEntry:GetText())
+			if (captcha == ff.CurrentWorldQuest) then
+				LFGListFrame.CategorySelection.FindGroupButton:Click()
+				_G.PVEFrame:SetAlpha(1)
+				givebackStolenSearchBox()
+				ff.SearchTime = GetTime()
+			else
+				captchaEntry:SetTextColor(1, .2, 0, 1)
+				C_Timer.After(0.15, function() captchaEntry:SetTextColor(1, 1, 1, 1) end)
+				C_Timer.After(0.3, function() captchaEntry:SetTextColor(1, .2, 0, 1) end)
+				C_Timer.After(0.45, function() captchaEntry:SetTextColor(1, 1, 1, 1) end)
+				C_Timer.After(0.6, function() captchaEntry:SetTextColor(1, .2, 0, 1) end)
+				C_Timer.After(0.75, function() captchaEntry:SetTextColor(1, 1, 1, 1) end)
+			end
+		end)
+
+		do
+			local file, size, flags = captchaEntry:GetFont()
+			captchaEntry:SetFont (file, 18, flags)
+		end
+
+	--create a divisor
+	ff.divbar = ff:CreateTexture(nil, "overlay")
+	ff.divbar:SetTexture([[Interface\QUESTFRAME\AutoQuest-Parts]])
+	ff.divbar:SetTexCoord(238/512, 445/512, 0/64, 4/64)
+	ff.divbar:SetHeight(3)
+	ff.divbar:SetDesaturated(true)
+	ff.divbar:SetAlpha(0.5)
+	ff.divbar:SetVertexColor(0.5, 0.5, 0.5, 1)
+	ff.divbar:SetPoint("topleft", ff, "topleft", 3, ff.divBarY)
+	ff.divbar:SetPoint("topright", ff, "topright", -3, ff.divBarY)
+
+	ff.GroupButtonsFrame = CreateFrame("frame", nil, ff)
+
+	--button settings
+	local groupButtonOnEnter = function(self)
+		if (not self.tooltip or self.tooltip == "") then
+			return
+		end
+
+		GameCooltip:Preset(2)
+		GameCooltip:AddLine(self.tooltip)
+		GameCooltip:ShowCooltip(self)
+	end
+
+	local groupButtonOnLeave = function(self)
+		GameCooltip:Hide()
+	end
+	local setupGroupButton = function(button, index, iconTexture, iconTexCoord, func, tooltip)
+		local buttonIndex = index
+		local width = 40 * 0.9
+		local height = 25 * 0.9
+
+		button:SetSize(width, height)
+		DF:ApplyStandardBackdrop(button)
+
+		local icon = button:CreateTexture(nil, "artwork", nil, 2)
+		icon:SetPoint("center", 0, 0)
+		icon:SetSize(width-2, height-2)
+		icon:SetTexture(iconTexture)
+		icon:SetDesaturated(true)
+		if (iconTexCoord) then
+			icon:SetTexCoord(unpack(iconTexCoord))
+		end
+
+		button:SetScript("OnClick", func)
+		if (tooltip) then
+			button:SetScript("OnEnter", groupButtonOnEnter)
+			button:SetScript("OnLeave", groupButtonOnLeave)
+			button.tooltip = tooltip
+		end
+
+		local highlight = button:CreateTexture(nil, "highlight")
+		highlight:SetColorTexture(1, 1, 1, .3)
+		highlight:SetPoint("center", 0, 0)
+		highlight:SetSize(width-2, height-2)
+	end
+
+	--invite nearby players
+		local groupButtons_InviteNearbyPlayers = CreateFrame("button", "$parentInviteNearbyPlayersButton", ff.GroupButtonsFrame, "BackdropTemplate")
+		local invitePlayersOnClick = function()
+			GameCooltip:Hide()
+			GameCooltip:ExecFunc(groupButtons_InviteNearbyPlayers)
+		end
+		local playerSelectedToInvite = function(self, fixedValue, value)
+			GameCooltip2:Hide()
+			ff.PlayersNearby [value] = nil
+			ff.PlayersInvited [value] = true
+			_G.C_PartyInfo.InviteUnit(value)
+			
+			C_Timer.After (0.006, function()
+				GameCooltip:ExecFunc(groupButtons_InviteNearbyPlayers)
+			end)
+		end
+		local buildInviteMenu = function()
+			GameCooltip2:Preset(2)
+			local playerName = next(ff.PlayersNearby)
+			if (playerName) then
+				local added = false
+				
+				for playerName, playerInfo in pairs(ff.PlayersNearby) do
+					local spottedAt, guid = unpack(playerInfo)
+					if (spottedAt + 20 > GetTime()) then
+						local className, classId = GetPlayerInfoByGUID(guid)
+						
+						if (classId) then
+							GameCooltip:AddLine(playerName, "", 1, classId)
+						else
+							GameCooltip:AddLine(playerName)
+						end
+						
+						GameCooltip:AddMenu(1, playerSelectedToInvite, playerName)
+						added = true
+					end
+				end
+				
+				if (not added) then
+					GameCooltip2:AddLine ("No other players nearby.")
+				end
+			else
+				GameCooltip2:AddLine ("No other players nearby.")
+			end
+		end
+
+		groupButtons_InviteNearbyPlayers.CoolTip = {
+			Type = "menu",
+			BuildFunc = buildInviteMenu,
+			OnEnterFunc = function (self)
+				groupButtons_InviteNearbyPlayers.button_mouse_over = true
+			end,
+			OnLeaveFunc = function (self)
+				groupButtons_InviteNearbyPlayers.button_mouse_over = false
+			end,
+			FixedValue = "none",
+			ShowSpeed = 0.006,
+			Options = function()
+				GameCooltip:SetOption("MyAnchor", "bottom")
+				GameCooltip:SetOption("RelativeAnchor", "top")
+				GameCooltip:SetOption("WidthAnchorMod", 0)
+				GameCooltip:SetOption("HeightAnchorMod", 4)
+				GameCooltip:SetOption("LineHeightSizeOffset", 4)
+				GameCooltip:SetOption("VerticalPadding", -4)
+				GameCooltip:SetOption("FrameHeightSizeOffset", -4)
+			end
+		}
+		GameCooltip2:CoolTipInject (groupButtons_InviteNearbyPlayers)
+
+		setupGroupButton(groupButtons_InviteNearbyPlayers, 1, [[Interface\FriendsFrame\PlusManz-PlusManz]], {0, 1, 11/64, 58/64}, function()
+			invitePlayersOnClick()
+		end)
+
+	--open group finder window
+		local groupButtons_OpenGroupFinder = CreateFrame("button", "$parentOpenGroupFinderButton", ff.GroupButtonsFrame, "BackdropTemplate")
+		setupGroupButton(groupButtons_OpenGroupFinder, 2, [[Interface\Icons\Achievement_General_StayClassy]], {.10, .90, .20, .80}, function()
+			restoreFrames()
+
+			ff:HideFrame(true)
+
+			if (not _G.PVEFrame:IsShown()) then
+				_G.PVEFrame_ToggleFrame()
+			end
+		
+			_G.LFGListUtil_OpenBestWindow()
+			_G.LFGListCategorySelection_SelectCategory(LFGListFrame.CategorySelection, 1, 0)
+			_G.LFGListCategorySelection_StartFindGroup(LFGListFrame.CategorySelection, 0)
+		end, "Open Premade Groups")
+
+	--ignore quest
+		local groupButtons_IgnoreQuest = CreateFrame("button", "$parentIgnoreQuestButton", ff.GroupButtonsFrame, "BackdropTemplate")
+		setupGroupButton(groupButtons_IgnoreQuest, 3, [[Interface\COMMON\icon-noloot]], {0, 1, .1, .9}, function()
+			DF:ShowPromptPanel ("Don't Show Popups for the Quest: " .. (ff.CurrentQuestName or "-") .. "?", function()
+				if (ff.CurrentWorldQuest) then
+					WorldQuestTracker.db.profile.groupfinder.ignored_quests [ff.CurrentWorldQuest] = true
+					WorldQuestTracker:Msg ("Quest " .. (ff.CurrentQuestName or "-") .. " added to ignore list.")
+				end
+				ff:HideFrame (true)
+			end, function() end)
+		end, "Ignore this quest (won't popup next time)")
+
+	--leave group
+		local groupButtons_LeaveGroup = CreateFrame("button", "$parentLeaveGroupButton", ff.GroupButtonsFrame, "BackdropTemplate")
+		setupGroupButton(groupButtons_LeaveGroup, 4, [[Interface\COMMON\CommonIcons]], {92/256, 137/256, 6/128, 36/128}, function()
+			if (not IsInGroup()) then
+				return
+			end
+
+			if (ff.QuestCompletedHidingTimer and not ff.QuestCompletedHidingTimer._cancelled) then
+				ff.QuestCompletedHidingTimer:Cancel()
+
+			elseif (ff.QuestCancelledHidingTimer and not ff.QuestCancelledHidingTimer._cancelled) then
+				ff.QuestCancelledHidingTimer:Cancel()
+			end
+
+			ff:HideFrame(true)
+			C_PartyInfo.LeaveParty()
+		end, "Leave Group")
+
+	--place holder
+	--[=[
+		local groupButtons_PlaceHolder = CreateFrame("button", "$parentPlaceHolderButton", ff, "BackdropTemplate")
+		setupGroupButton(groupButtons_PlaceHolder, 5, [[Interface\Calendar\MeetingIcon]], nil, function()
+			_G.PVEFrame_ToggleFrame()
+			_G.LFGListUtil_OpenBestWindow()
+			_G.LFGListCategorySelection_SelectCategory(LFGListFrame.CategorySelection, 1, 0)
+		end)
+	--]=]
+
+	--create a title bar
+		DF:CreateTitleBar(ff, "Title")
+
+	--create the options button
+		ff.Options = CreateFrame ("button", "$parentTopRightOptionsButton", ff, "BackdropTemplate")
+		ff.Options:SetPoint ("right", ff.CloseButton, "left", -2, 0)
+		ff.Options:SetSize (16, 16)
+		ff.Options:SetNormalTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+		ff.Options:SetHighlightTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+		ff.Options:SetPushedTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+		ff.Options:GetNormalTexture():SetDesaturated (true)
+		ff.Options:GetHighlightTexture():SetDesaturated (true)
+		ff.Options:GetPushedTexture():SetDesaturated (true)
+		ff.Options:SetAlpha (0.7)
+
+		--require full load before run
+		C_Timer.After(0.5, function()
+			ff.Options.CoolTip = {
+				Type = "menu",
+				BuildFunc = ff.BuildOptionsMenuFunc,
+				OnEnterFunc = function (self) end,
+				OnLeaveFunc = function (self) end,
+				FixedValue = "none",
+				ShowSpeed = 0.05,
+				Options = {
+					["FixedWidth"] = 300,
+				},
+			}
+			GameCooltip:CoolTipInject (ff.Options)
+
+			--create the quest icon
+			ff.QuestIcon = WorldQuestTracker.CreateZoneWidget(1, "GroupFinderIcon", ff)
+			ff.QuestIcon:SetPoint("left", ff.TitleBar, "left", 2, 0)
+
+			ff.QuestIcon.Animation = DF:CreateAnimationHub(ff.QuestIcon)
+			DF:CreateAnimation(ff.QuestIcon.Animation, "scale", 1, 0.2, 1, 1, 1.2, 1.2)
+			DF:CreateAnimation(ff.QuestIcon.Animation, "scale", 2, 0.2, 1.2, 1.2, 1, 1)
+		end)
+
+		--animations
+			local onShowAnimationHub = DF:CreateAnimationHub (ff, function()ff:Show()end)
+			DF:CreateAnimation (onShowAnimationHub, "ALPHA", 1, 1/14, 0, 1)
+			ff.AnimationShow = onShowAnimationHub
+
+			local onHideAnimationHub = DF:CreateAnimationHub (ff, function()end, function()ff:Hide()end)
+			DF:CreateAnimation (onHideAnimationHub, "ALPHA", 1, 0.5, 1, 0)
+			ff.AnimationHide = onHideAnimationHub
+
 
 function WorldQuestTracker.RegisterGroupFinderFrameOnLibWindow()
-	LibWindow.RegisterConfig  (ff, WorldQuestTracker.db.profile.groupfinder.frame)
-	LibWindow.MakeDraggable (ff)
-	LibWindow.RestorePosition (ff)
+	local LibWindow = LibStub("LibWindow-1.1")
+	LibWindow.RegisterConfig(ff, WorldQuestTracker.db.profile.groupfinder.frame)
+	LibWindow.MakeDraggable(ff)
+	LibWindow.RestorePosition(ff)
 	ff.IsRegistered = true
-	
-	DF:CreateTitleBar (ff, "Title")
-	
-	--gear button
-	ff.Options = CreateFrame ("button", "$parentTopRightOptionsButton", ff, "BackdropTemplate")
-	ff.Options:SetPoint ("right", ff.CloseButton, "left", -2, 0)
-	ff.Options:SetSize (16, 16)
-	ff.Options:SetNormalTexture ([[Interface\GossipFrame\BinderGossipIcon]])
-	ff.Options:SetHighlightTexture ([[Interface\GossipFrame\BinderGossipIcon]])
-	ff.Options:SetPushedTexture ([[Interface\GossipFrame\BinderGossipIcon]])
-	ff.Options:GetNormalTexture():SetDesaturated (true)
-	ff.Options:GetHighlightTexture():SetDesaturated (true)
-	ff.Options:GetPushedTexture():SetDesaturated (true)
-	ff.Options:SetAlpha (0.7)
-	
-	ff.Options.CoolTip = {
-		Type = "menu",
-		BuildFunc = ff.BuildMenuFunc,
-		OnEnterFunc = function (self) end,
-		OnLeaveFunc = function (self) end,
-		FixedValue = "none",
-		ShowSpeed = 0.05,
-		Options = {
-			["FixedWidth"] = 300,
-		},
-	}
 
-	GameCooltip:CoolTipInject (ff.Options)
-	
-	--> on show animations
-	local onShowAnimationHub = DF:CreateAnimationHub (ff, function()ff:Show()end)
-	DF:CreateAnimation (onShowAnimationHub, "ALPHA", 1, 1/14, 0, 1)
-	ff.AnimationShow = onShowAnimationHub
-	
-	--> on hide animations
-	local onHideAnimationHub = DF:CreateAnimationHub (ff, function()end, function()ff:Hide()end)
-	DF:CreateAnimation (onHideAnimationHub, "ALPHA", 1, 0.5, 1, 0)
-	ff.AnimationHide = onHideAnimationHub
-	
 	function ff:ShowFrame()
 		ff.AnimationHide:Stop()
 		ff.AnimationShow:Play()
 		ff.Options:Show()
-		
-		ff.LeaveButton:Disable()
-		
+
+		groupButtons_LeaveGroup:Disable()
 		if (IsInGroup()) then
-			ff.LeaveButton:Enable()
+			groupButtons_LeaveGroup:Enable()
 		else
-			ff.LeaveButton:Disable()
+			groupButtons_LeaveGroup:Disable()
 		end
 	end
 
 	function ff:HideFrame (noAnimation)
 		ff:SetScript ("OnUpdate", nil)
 		ff.AnimationShow:Stop()
-		
+
 		if (noAnimation) then
 			ff:Hide()
 		else
 			ff.AnimationHide:Play()
 		end
 	end
-	
-	ff:SetScript ("OnShow", function()
-		
-	end)
-	
-	ff:SetScript ("OnHide", function()
-		
-	end)
-	
 end
 
-ff:RegisterEvent ("QUEST_TURNED_IN")
-ff:RegisterEvent ("QUEST_ACCEPTED")
-ff:RegisterEvent ("QUEST_REMOVED")
-ff:RegisterEvent ("GROUP_ROSTER_UPDATE")
-ff:RegisterEvent ("GROUP_INVITE_CONFIRMATION")
-ff:RegisterEvent ("LFG_LIST_APPLICANT_LIST_UPDATED")
-ff:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
-ff:RegisterEvent ("PLAYER_ENTERING_WORLD")
+--events
+	ff:RegisterEvent ("QUEST_TURNED_IN")
+	ff:RegisterEvent ("QUEST_ACCEPTED")
+	ff:RegisterEvent ("QUEST_REMOVED")
+	ff:RegisterEvent ("GROUP_ROSTER_UPDATE")
+	ff:RegisterEvent ("GROUP_INVITE_CONFIRMATION")
+	ff:RegisterEvent ("LFG_LIST_APPLICANT_LIST_UPDATED")
+	ff:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
+	ff:RegisterEvent ("PLAYER_ENTERING_WORLD")
 
-ChatFrame_AddMessageEventFilter ("CHAT_MSG_WHISPER", function (_, _, msg)
-	if (not WorldQuestTracker.db.profile.groupfinder.send_whispers) then
-		if (msg:find ("World Quest Tracker")) then
-			if (msg:find ("Invite for World Quest")) then
-				return true
+	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function (_, _, msg)
+		if (not WorldQuestTracker.db.profile.groupfinder.send_whispers) then
+			if (msg:find ("World Quest Tracker")) then
+				if (msg:find ("Invite for World Quest")) then
+					return true
+				end
 			end
 		end
-	end
-end)
+	end)
 
-function ff:PlayerEnteredWorldQuestZone (questID, npcID, npcName)
+function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
 	--> update the frame
 
-	local title, isNpc
+	local title, isNpc, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex
 	if (npcID) then
 		--> check if the group finder can search for rares
 		if (WorldQuestTracker.db.profile.rarescan.search_group) then
@@ -619,38 +737,81 @@ function ff:PlayerEnteredWorldQuestZone (questID, npcID, npcName)
 		ff.NpcID = isNpc and questID
 		
 		--> toggle buttons
-		ff.OpenGroupFinderButton:Enable()
-		ff.IgnoreQuestButton:Enable()
+		groupButtons_OpenGroupFinder:Enable()
+		groupButtons_IgnoreQuest:Enable()
 		
 		if (not IsInGroup()) then
-			ff.LeaveButton:Disable()
+			groupButtons_LeaveGroup:Disable()
 		else
-			ff.LeaveButton:Enable()
+			groupButtons_LeaveGroup:Enable()
 		end
 		
 		ff:ShowFrame()
 		
 		if (type (questID) == "number") then
-			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
+			title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 			if (isElite) then
-				ff.OpenGroupFinderButton:Disable()
-				C_Timer.After (3, function() 
-					ff.OpenGroupFinderButton:Enable()
-					ff.OpenGroupFinderButton.FlashAnimation:Play()
+				groupButtons_OpenGroupFinder:Disable()
+				C_Timer.After (3, function()
+					groupButtons_OpenGroupFinder:Enable()
 				end)
 			end
 		end
+
+		ff.CurrentQuestName = title
+
+		ff:SetTitle(title)
+		ff.QuestIcon.mapID = WorldQuestTracker.GetCurrentStandingMapAreaID()
+		ff.QuestIcon.questID = questID
+		ff.QuestIcon.numObjectives = 1
+		ff.QuestIcon.questName = title
+		ff.QuestIcon.Order = 1
+		ff.QuestIcon.Currency_Gold = 0
+		ff.QuestIcon.Currency_ArtifactPower = 0
+		ff.QuestIcon.Currency_Resources = 0
+		ff.QuestIcon.worldQuestType = worldQuestType
+		ff.QuestIcon.rarity = rarity
+		ff.QuestIcon.isElite = isElite
+		ff.QuestIcon.tradeskillLineIndex = tradeskillLineIndex
+		ff.QuestIcon.inProgress = false
+		ff.QuestIcon.selected = false
+		ff.QuestIcon.isSelected = false
+		ff.QuestIcon.isCriteria = false
+		ff.QuestIcon.isSpellTarget = false
+
+		WorldQuestTracker.SetupWorldQuestButton(ff.QuestIcon, worldQuestType, rarity, isElite, tradeskillLineIndex)
+
+		--update a second time
+		C_Timer.After(1.5, function()
+			WorldQuestTracker.SetupWorldQuestButton(ff.QuestIcon, worldQuestType, rarity, isElite, tradeskillLineIndex)
+
+			ff.QuestIcon:SetParent(ff)
+			ff.QuestIcon:SetPoint("left", ff.TitleBar, "left", 2, 0)
+			ff.QuestIcon.AnchorFrame:SetParent(ff)
+			ff.QuestIcon.AnchorFrame:SetPoint("left", ff.TitleBar, "left", 2, 0)
+			ff.QuestIcon.flagText:SetText("")
+			ff.QuestIcon.bgFlag:Hide()
+			ff.QuestIcon.blackGradient:Hide()
+
+			ff.QuestIcon.Animation:Play()
+		end)
+
+		ff.QuestIcon:SetParent(ff)
+		ff.QuestIcon:SetPoint("left", ff.TitleBar, "left", 2, 0)
+		ff.QuestIcon.AnchorFrame:SetParent(ff)
+		ff.QuestIcon.AnchorFrame:SetPoint("left", ff.TitleBar, "left", 2, 0)
+		ff.QuestIcon.flagText:SetText("")
+		ff.QuestIcon.bgFlag:Hide()
+		ff.QuestIcon.blackGradient:Hide()
+
+		ff.CaptchaText:SetText(questID)
+		ff.CaptchaEntry:SetText("")
+		--ff.CaptchaEntry:SetText("59599") --debug
+
+		wipe(ff.PlayersNearby)
+		wipe(ff.PlayersInvited)
 		
-		
-		ff:SetTitle (L["World Quest Tracker"])
-		
-		ff.QuestName2Text.text = title
-		ff.QuestID2Text.text = questID
-		
-		wipe (ff.PlayersNearby)
-		wipe (ff.PlayersInvited)
-		
-		ff:RegisterEvent ("COMBAT_LOG_EVENT_UNFILTERED")
+		ff:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		
 		--> check for active timers and disable them
 		if (ff.QuestCompletedHidingTimer and not ff.QuestCompletedHidingTimer._cancelled) then
@@ -684,10 +845,10 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 		if (IsInGroup() and not isInInstance) then
 		
 			--> disable buttons
-			ff.OpenGroupFinderButton:Disable()
-			ff.IgnoreQuestButton:Disable()
+			groupButtons_OpenGroupFinder:Disable()
+			groupButtons_IgnoreQuest:Disable()
 			--> enable button
-			ff.LeaveButton:Enable()
+			groupButtons_LeaveGroup:Enable()
 			
 			--> show the frame if isn't shown
 			if (not ff:IsShown()) then
@@ -701,10 +862,10 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 			
 			if (active) then
 				--> disable buttons
-				ff.OpenGroupFinderButton:Disable()
-				ff.IgnoreQuestButton:Disable()
+				groupButtons_OpenGroupFinder:Disable()
+				groupButtons_IgnoreQuest:Disable()
 				--> enable button
-				ff.LeaveButton:Enable()
+				groupButtons_LeaveGroup:Enable()
 				
 				--> show the frame if isn't shown
 				if (not ff:IsShown()) then
@@ -798,17 +959,7 @@ function WorldQuestTracker.InviteFromGroupApply()
 	if (not ff.CurrentWorldQuest) then
 		return
 	end
-	
---[=[
---		/dump select (5, C_LFGList.GetActiveEntryInfo()):find("k00000|")
-	
-	print ("=============")
-	for k, v in pairs (a) do
-		print (k,v)
-	end
-	print ("=============")
-	--]=]
-	
+
 	local a = C_LFGList.GetActiveEntryInfo()
 	if (not a) then
 		return
@@ -870,7 +1021,7 @@ function WorldQuestTracker.InviteFromGroupApply()
 							
 							--print (name, class, localizedClass, level, itemLevel, honorLevel, tank, healer, damage, assignedRole, relationship)
 							if (name) then
-								InviteUnit (name)
+								C_PartyInfo.InviteUnit(name)
 								WorldQuestTracker:Msg ("Auto Inviting " .. name .. " from the LFG apply.")
 							end
 						end
@@ -937,8 +1088,6 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 			local tagID = tagInfo.tagID
 			local rarity = tagInfo.rarity or 1
 			local isElite = tagInfo.isElite
-
-			--print(rarity)
 			
 			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
 
@@ -1016,9 +1165,9 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 		end
 		
 		if (IsInGroup()) then
-			ff.LeaveButton:Enable()
+			groupButtons_LeaveGroup:Enable()
 		else
-			ff.LeaveButton:Disable()
+			groupButtons_LeaveGroup:Disable()
 		end
 		
 	elseif (event == "GROUP_INVITE_CONFIRMATION") then
@@ -1162,7 +1311,7 @@ function ff.GroupDone()
 	--> leave the group
 	if (IsInGroup()) then
 		if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
-			LeaveParty()
+			C_PartyInfo.LeaveParty()
 		else
 			--> show timer to leave the group
 			---ff.SetAction (ff.actions.ACTIONTYPE_GROUP_LEAVE)
@@ -1174,4 +1323,186 @@ function ff.WorldQuestFinished (questID, fromCustomSeearch)
 	ff.GroupDone()
 end
 
-ff.InvitePlayersButton.button.text:SetText(L["Invite Nearby Players"]) --abyui
+
+--options
+	ff.SetEnabledFunc = function (_, _, value)
+		WorldQuestTracker.db.profile.groupfinder.enabled = value
+		GameCooltip:Hide()
+	end
+
+	ff.SetFindGroupForRares = function (_, _, value)
+		WorldQuestTracker.db.profile.rarescan.search_group = value
+		GameCooltip:Hide()
+	end
+
+	ff.SetOTButtonsFunc = function (_, _, value)
+		WorldQuestTracker.db.profile.groupfinder.tracker_buttons = value
+		if (value) then
+			--enabled
+			WorldQuestTracker:FullTrackerUpdate()
+		else
+			--disabled
+			if (ff.BQuestTrackerUsedWidgets) then
+				for block, button in pairs (ff.BQuestTrackerUsedWidgets) do
+					if (ff.RemoveButtonFromBBlock) then
+						ff.RemoveButtonFromBBlock (block)
+					end
+				end
+			end
+		end
+		GameCooltip:Hide()
+	end
+
+	ff.AlreadyInGroupFunc = function (_, _, value)
+		WorldQuestTracker.db.profile.groupfinder.dont_open_in_group = value
+		GameCooltip:Hide()
+	end
+	
+	ff.SetAutoGroupLeaveFunc = function (_, _, value, key)
+		WorldQuestTracker.db.profile.groupfinder.autoleave = false
+		WorldQuestTracker.db.profile.groupfinder.autoleave_delayed = false
+		WorldQuestTracker.db.profile.groupfinder.askleave_delayed = false
+		WorldQuestTracker.db.profile.groupfinder.noleave = false
+		
+		WorldQuestTracker.db.profile.groupfinder [key] = true
+		
+		GameCooltip:Hide()
+	end
+
+	ff.SetGroupLeaveTimeoutFunc = function (_, _, value)
+		WorldQuestTracker.db.profile.groupfinder.leavetimer = value
+		if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
+			WorldQuestTracker.db.profile.groupfinder.autoleave = false
+			WorldQuestTracker.db.profile.groupfinder.askleave_delayed = true
+		end
+		GameCooltip:Hide()
+	end
+
+	--build the option menu
+	ff.BuildOptionsMenuFunc = function()
+		GameCooltip:Preset (2)
+		GameCooltip:SetOption ("TextSize", 10)
+		GameCooltip:SetOption ("FixedWidth", 180)
+		
+		--enabled
+		GameCooltip:AddLine (L["S_GROUPFINDER_ENABLED"])
+		if (WorldQuestTracker.db.profile.groupfinder.enabled) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (1, ff.SetEnabledFunc, not WorldQuestTracker.db.profile.groupfinder.enabled)
+		
+		--find group for rares
+		GameCooltip:AddLine (L["S_GROUPFINDER_AUTOOPEN_RARENPC_TARGETED"])
+		if (WorldQuestTracker.db.profile.rarescan.search_group) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (1, ff.SetFindGroupForRares, not WorldQuestTracker.db.profile.rarescan.search_group)		
+		
+		--uses buttons on the quest tracker
+		GameCooltip:AddLine (L["S_GROUPFINDER_OT_ENABLED"])
+		if (WorldQuestTracker.db.profile.groupfinder.tracker_buttons) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (1, ff.SetOTButtonsFunc, not WorldQuestTracker.db.profile.groupfinder.tracker_buttons)
+
+		--
+		GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
+		--
+		
+		GameCooltip:AddLine ("Don't Show if Already in Group")
+		if (WorldQuestTracker.db.profile.groupfinder.dont_open_in_group) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 1, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (1, ff.AlreadyInGroupFunc, not WorldQuestTracker.db.profile.groupfinder.dont_open_in_group)
+
+		--
+		GameCooltip:AddLine ("$div", nil, 1, nil, -5, -11)
+		--
+		
+		GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS"])
+		GameCooltip:AddIcon ([[Interface\BUTTONS\UI-GROUPLOOT-PASS-DOWN]], 1, 1, IconSize, IconSize)
+		
+		--leave group
+		GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_IMMEDIATELY"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave, "autoleave")
+		
+		GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_AFTERX"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.autoleave_delayed) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.autoleave_delayed, "autoleave_delayed")
+		
+		GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_ASKX"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.askleave_delayed) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.askleave_delayed, "askleave_delayed")
+		
+		GameCooltip:AddLine (L["S_GROUPFINDER_LEAVEOPTIONS_DONTLEAVE"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.noleave) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetAutoGroupLeaveFunc, not WorldQuestTracker.db.profile.groupfinder.noleave, "noleave")
+		
+		--
+		GameCooltip:AddLine ("$div", nil, 2, nil, -5, -11)
+		--ask to leave with timeout
+		GameCooltip:AddLine ("10 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 10) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 10)
+		
+		GameCooltip:AddLine ("15 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 15) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 15)
+		
+		GameCooltip:AddLine ("20 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 20) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 20)
+		
+		GameCooltip:AddLine ("30 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 30) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 30)
+		
+		GameCooltip:AddLine ("60 " .. L["S_GROUPFINDER_SECONDS"], "", 2)
+		if (WorldQuestTracker.db.profile.groupfinder.leavetimer == 60) then
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
+		else
+			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
+		end
+		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 60)
+	end

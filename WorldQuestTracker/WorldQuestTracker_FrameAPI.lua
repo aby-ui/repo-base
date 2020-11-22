@@ -20,7 +20,6 @@ if (not L) then
 end
 
 local ff = WorldQuestTrackerFinderFrame
-local rf = WorldQuestTrackerRareFrame
 
 local _
 local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
@@ -181,7 +180,15 @@ end
 function WorldQuestTracker.GetArtifactPowerIcon (artifactPower, rounded, questID)
 
 	if (questID) then
-		return WorldQuestTracker.MapData.ItemIcons ["BFA_ARTIFACT"]
+		if (artifactPower <= 7) then
+			return WorldQuestTracker.MapData.ItemIcons ["LEGION_ARTIFACT"]
+
+		elseif (artifactPower == 8) then
+			return WorldQuestTracker.MapData.ItemIcons ["BFA_ARTIFACT"]
+
+		elseif (artifactPower == 9) then
+			return WorldQuestTracker.MapData.ItemIcons ["SHADOWLANDS_ARTIFACT"]
+		end
 	end
 
 	if (true or artifactPower >= 250) then --for�ando sempre o mesmo icone
@@ -281,11 +288,11 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 		if (WorldMapFrame.isMaximized) then
 			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 3)
 			--WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToAllianceButton, "bottomleft", -10, 3) --now is anchored to horde (horde and alliance button got swapped)
-			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToHordeButton, "bottomleft", -10, 3)
+			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToShadowlandsButton, "bottomleft", -10, 3)
 		else
 			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
 			--WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToAllianceButton, "bottomleft", -10, 2)
-			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToHordeButton, "bottomleft", -10, 2)
+			WorldQuestTracker.IndicatorsAnchor:SetPoint ("bottomright", WorldQuestTrackerGoToShadowlandsButton, "bottomleft", -10, 2)
 		end
 		
 	elseif (anchor == "top") then
@@ -312,7 +319,7 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 end
 
 --atualiza a borda nas squares do world map e no mapa da zona ~border
-function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, isCriteria, isElite)
+function WorldQuestTracker.UpdateBorder(self, rarity, worldQuestType, mapID, isCriteria, isElite, conduitType, borderTexture, borderColor, itemLink)
 
 	if (self.isWorldMapWidget) then
 	
@@ -325,6 +332,15 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 		self.rareBorder:Hide()
 		self.epicBorder:Hide()
 		self.invasionBorder:Hide()
+
+		self.overlayBorder:Hide()
+		self.overlayBorder2:Hide()
+
+		if (conduitType) then
+			self.overlayBorder:Show()
+			self.overlayBorder2:Show()
+			self.overlayBorder:SetVertexColor(unpack(borderColor))
+		end
 
 		if (WorldQuestTracker.IsQuestBeingTracked (self.questID)) then
 			self.borderAnimation:Show()
@@ -397,9 +413,9 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			elseif (UnitFactionGroup("player") == "Horde") then
 			--	self.invasionBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\border_horde]])
 			end
-			
+
 		end
-		
+
 		self:SetBackdropColor (.3, .3, .3, 1)
 		self.commonBorder:Hide()
 
@@ -412,10 +428,17 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			local borderTextureFile = WorldQuestTracker.GetBorderByQuestType (self, rarity, worldQuestType)
 			self.circleBorder:Show()
 			self.circleBorder:SetTexture ("Interface\\AddOns\\WorldQuestTracker\\media\\" .. borderTextureFile)
-			
-			--self.BountyRing:Show()
 		end
-		
+
+		self.overlayBorder:Hide()
+		self.overlayBorder2:Hide()
+
+		if (conduitType) then
+			self.overlayBorder:Show()
+			self.overlayBorder2:Show()
+			self.overlayBorder:SetVertexColor(unpack(borderColor))
+		end
+
 		if (isElite) then
 			self.rareSerpent:Show()
 			self.rareSerpent:SetSize (48, 52)
@@ -424,16 +447,16 @@ function WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, is
 			self.rareGlow:Show()
 			self.rareGlow:SetVertexColor (0, 0.36863, 0.74902)
 			self.rareGlow:SetSize (48*0.75, 52*0.75)
-			
+
 			self.flagText:SetPoint ("top", self.bgFlag, "top", 0, -3)
-			
+
 			if (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then
 				self.rareSerpent:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragon_curve_red]])
 			else
 				self.rareSerpent:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\rare_dragon_curveT]])
 			end
 		end
-		
+
 		if (rarity == LE_WORLD_QUEST_QUALITY_COMMON) then
 			self.bgFlag:Hide()
 			self.blackGradient:SetWidth (40)

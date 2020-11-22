@@ -19,9 +19,6 @@ if (not L) then
 	return
 end
 
-local ff = WorldQuestTrackerFinderFrame
-local rf = WorldQuestTrackerRareFrame
-
 local _
 local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
 local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies

@@ -178,7 +178,7 @@ end
 -- OVERLAY CREATION
 -- ------------------------
 local function CreateOverlay(owner)
-	local f = CreateFrame('Button', nil, owner)
+	local f = CreateFrameAby('Button', nil, owner)
 	f.owner = owner
 
 	f:EnableMouseWheel(true)
@@ -205,7 +205,7 @@ local function CreateOverlay(owner)
 end
 
 local function CreateHelpDialog()
-	local f = CreateFrame('Frame', nil, UIParent)
+	local f = CreateFrameAby('Frame', nil, UIParent)
 	f:SetToplevel(true)
 	f:EnableMouse(true)
 	f:SetClampedToScreen(true)

@@ -63,7 +63,7 @@ local function printTooMuchMail()
 	local cur,tot = GetInboxNumItems()
 
 	local timeLeft = lastRefill+60-GetTime()
-	if cur>=50 or -- if inbox is full, no more will arrive
+	if cur>=100 or -- if inbox is full, no more will arrive
 	   timeLeft<0 then	-- if someone waited more than 60 seconds to take a mail out....
 		Postal:Print(format(L["There are %i more messages not currently shown."], tot-cur))
 	else
@@ -443,7 +443,7 @@ function Postal_Select:MAIL_INBOX_UPDATE()
 	--Postal:Print("update")
 	-- We need this because MAIL_INBOX_UPDATEs can now potentially
 	-- include mailbox refreshes since patch 4.0.3 (that is mail can
-	-- get inserted both at the back (old mail past 50) and at the front
+	-- get inserted both at the back (old mail past 100) and at the front
 	-- (new mail received in the last 60 seconds))
 	local currentFirstMailDaysLeft = select(7, GetInboxHeaderInfo(1))
 	if currentFirstMailDaysLeft ~= firstMailDaysLeft then
@@ -476,7 +476,7 @@ function Postal_Select:MAIL_INBOX_UPDATE()
 			if mailIndex then
 				mailIndex = mailIndex + numNewMailsAtFront
 			end
-			for i = 50 - numNewMailsAtFront, 1, -1 do
+			for i = 100 - numNewMailsAtFront, 1, -1 do
 				selectedMail[i + numNewMailsAtFront] = selectedMail[i]
 			end
 			for i = 1, numNewMailsAtFront do

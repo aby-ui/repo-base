@@ -167,7 +167,7 @@ function Postal:OnModuleEnable_Common()
 end
 
 -- Hides the minimap unread mail button if there are no unread mail on closing the mailbox.
--- Does not scan past the first 50 items since only the first 50 are viewable.
+-- Does not scan past the first 100 items since only the first 100 are viewable.
 function Postal:MAIL_CLOSED()
 	for i = 1, GetInboxNumItems() do
 		if not select(9, GetInboxHeaderInfo(i)) then return end

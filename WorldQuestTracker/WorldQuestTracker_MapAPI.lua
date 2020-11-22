@@ -19,9 +19,6 @@ if (not L) then
 	return
 end
 
-local ff = WorldQuestTrackerFinderFrame
-local rf = WorldQuestTrackerRareFrame
-
 local _
 local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
@@ -239,58 +236,42 @@ function WorldQuestTracker.GetZoneName (mapID)
 	return mapInfo and mapInfo.name or ""
 end
 
---8.0 doesnt work
-function WorldQuestTracker.IsASubLevel()
-	--local level, x1 = GetCurrentMapDungeonLevel()
-	--[[
-	if (level and level >  0 and x1) then
-		x1 = floor (x1)
-		--vindicar antoran
-		if (level == 5 and floor (x1) == 8479) then
-			return true
-		end
-		
-		--vindicar krokuun
-		if (level == 1 and floor (x1) == 1302) then
-			return true
-		end
-		
-		--vindicar mccree
-		if (level == 3 and floor (x1) == 9689) then
-			return true
-		end
+function WorldQuestTracker.GetConduitQuestData(questID)
+	local data = WorldQuestTracker.CachedConduitData[questID]
+	if (data) then
+		return unpack(data)
 	end
-	--]]
-	
-	--if (level and level > 0 and x1 and level < 8) then
-	--	return true
-	--end
 end
 
-function WorldQuestTracker.GetOrLoadQuestData (questID, canCache, dontCatchAP)
-	local data = WorldQuestTracker.CachedQuestData [questID]
+function WorldQuestTracker.HasCachedQuestData(questID)
+	if (WorldQuestTracker.CachedQuestData[questID]) then
+		return true
+	end
+end
+
+
+function WorldQuestTracker.GetOrLoadQuestData(questID, canCache, dontCatchAP)
+	local data = WorldQuestTracker.CachedQuestData[questID]
 	if (data) then
-		return unpack (data)
+		return unpack(data)
 	end
 
 	local gold, goldFormated = WorldQuestTracker.GetQuestReward_Gold(questID)
-
 	local rewardName, rewardTexture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource(questID)
-
 	local title, factionID, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, arg1, arg2 = WorldQuestTracker.GetQuest_Info(questID)
-	
-	local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
+
+	local itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount, conduitType, borderTexture, borderColor, itemLink
 	if (not dontCatchAP) then
-		itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetQuestReward_Item (questID)
+		itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount, conduitType, borderTexture, borderColor, itemLink = WorldQuestTracker.GetQuestReward_Item (questID)
 	end
 
 	local allowDisplayPastCritical = false
-	
+
 	if (WorldQuestTracker.CanCacheQuestData and canCache) then
-		WorldQuestTracker.CachedQuestData [questID] = {title, factionID, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount}
+		WorldQuestTracker.CachedQuestData[questID] = {title, factionID, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount} --31 indexes
 	end
-	
-	return title, factionID, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount
+
+	return title, factionID, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, questQuality, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount, conduitType, borderTexture, borderColor
 end
 
 function WorldQuestTracker.GetCurrentStandingMapAreaID()
@@ -470,7 +451,7 @@ end
 				elseif (power:find (FOURTH_NUMBER)) then
 					n = n * 1000000000000
 				end
-				return true, n or 0
+				return 7, n or 0
 			end
 		end
 
@@ -486,7 +467,7 @@ end
 				elseif (power:find (FOURTH_NUMBER)) then
 						n = n * 1000000000000
 					end
-					return true, n or 0
+					return 7, n or 0
 				end
 			end
 		end
@@ -529,7 +510,7 @@ end
 						
 						if (n) then
 							n = n * 1000000
-							return true, n or 0
+							return 7, n or 0
 						end
 					end
 					
@@ -540,7 +521,7 @@ end
 					end
 					
 					power = tonumber (power)
-					return true, power or 0
+					return 7, power or 0
 				end
 			end
 			
@@ -565,7 +546,7 @@ end
 						
 						if (n) then
 							n = n * 1000000
-							return true, n or 0
+							return 7, n or 0
 						end
 					end
 					
@@ -576,7 +557,7 @@ end
 					end
 					
 					power = tonumber (power)
-					return true, power or 0
+					return 7, power or 0
 				end
 			end
 		end
@@ -599,7 +580,10 @@ end
 			local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
 			local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
 			
-			if ((text and text:match ("|cFFE6CC80")) or (power and power:match (ARTIFACT_POWER))) then
+			if (
+				((text and text:match("|cFFE6CC80")) or (power and power:match(ARTIFACT_POWER)))-- or
+				--((text and text:match()))
+			) then --bfa legion
 			
 				if (power) then
 					if (power:find (SECOND_NUMBER)) then
@@ -611,7 +595,7 @@ end
 						end
 						if (n) then
 							n = n * 1000000
-							return true, n or 0
+							return 7, n or 0
 						end
 						
 					elseif (power:find (THIRD_NUMBER)) then
@@ -623,7 +607,7 @@ end
 						end
 						if (n) then
 							n = n * 1000000000
-							return true, n or 0
+							return 7, n or 0
 						end
 					end
 
@@ -634,7 +618,7 @@ end
 					end
 					
 					power = tonumber (power)
-					return true, power or 0
+					return 7, power or 0
 				end
 			end
 
@@ -691,7 +675,7 @@ end
 						(
 							(type (texture) == "number" and texture == 132775) or
 							(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
-						)   
+						)
 					) then -- [[Interface\Icons\inv_datacrystal01]]
 					
 				--BFA invasion quest (this check will force it to get the second reward
@@ -712,61 +696,72 @@ end
 	ItemTooltipScan.patern = ITEM_LEVEL:gsub ("%%d", "(%%d+)") --from LibItemUpgradeInfo-1.0
 	
 	--pega o premio item da quest
-	function WorldQuestTracker.GetQuestReward_Item (questID)
+	function WorldQuestTracker.GetQuestReward_Item(questID)
 		if (not HaveQuestData (questID)) then
 			return
 		end
 		
-		--artifact power - 8.0 version
-		local numQuestCurrencies = GetNumQuestLogRewardCurrencies (questID)
+		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
 		if (numQuestCurrencies == 1) then
-			--is artifact power?
-			local name, texture, numItems = GetQuestLogRewardCurrencyInfo (1, questID)
-			
+
+			--is artifact power? bfa
+			local name, texture, numItems = GetQuestLogRewardCurrencyInfo(1, questID)
+
+			--rep | item name, texture, amount of rep
+			--Ascended 3257748 175
+			--Wild Hunt 3575389 175
+			--Undying Army 3492310 175
+			--Court of Harvesters 3514227 175
+			--print (name, texture, numItems) --debug
+
 			if (texture == 1830317 or texture == 2065624) then
-			
-				--[=[
-					--the taxi map tooltip is adding the reward to the world map quest tooltip
-					GameTooltip_AddQuestRewardsToTooltip (WorldMapTooltip, questID)
-					
-					local amount
-					local t2 = WorldMapTooltipTooltipTextLeft2 and WorldMapTooltipTooltipTextLeft2:GetText()
-					if (t2) then
-						amount = tonumber (t2:match (" %d+ "))
-					end
-					
-					if (WorldMapTooltip:IsShown()) then
-						local owner = WorldMapTooltip:GetOwner()
-						if (owner and owner.UpdateTooltip) then
-							owner:UpdateTooltip()
-						end
-					end
-					--]=]
-				--return name, texture, 0, 1, 1, false, 0, true, amount or 0, false, 1
-				
 				--numItems are now given the amount of azerite (BFA 17-09-2018), no more tooltip scan required
-				return name, texture, 0, 1, 1, false, 0, true, numItems or 0, false, 1
+				return name, texture, 0, 1, 1, false, 0, 8, numItems or 0, false, 1
 			end
 		end
 		
-		local numQuestRewards = GetNumQuestLogRewards (questID)
+		local numQuestRewards = GetNumQuestLogRewards(questID)
 		if (numQuestRewards > 0) then
-			local itemName, itemTexture, quantity, quality, isUsable, itemID = GetQuestLogRewardInfo (1, questID)
+			local itemName, itemTexture, quantity, itemQuality, isUsable, itemID = GetQuestLogRewardInfo(1, questID)
 			if (itemID) then
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, itemClassID, itemSubClassID = GetItemInfo (itemID)
+				local conduitType
+				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, itemClassID, itemSubClassID = GetItemInfo(itemID)
+				local borderTexture
+				local borderColor
 
 				if (itemName) then
-					EmbeddedItemTooltip_SetItemByQuestReward (ItemTooltipScan, 1, questID)
+					EmbeddedItemTooltip_SetItemByQuestReward(ItemTooltipScan, 1, questID)
+					
+					borderTexture = ItemTooltipScan.IconOverlay:IsShown() and ItemTooltipScan.IconOverlay:GetTexture() == 3735314 and 3735314
+					if (borderTexture) then
+						borderColor = {ItemTooltipScan.IconOverlay:GetVertexColor()}
+					end
+
 					for i = 1, 4 do
 						local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
 						local text = textString and textString:GetText()
 						if (text and text ~= "") then
+
+							if (text == CONDUIT_TYPE_POTENCY) then
+								conduitType = CONDUIT_TYPE_POTENCY
+
+							elseif (text == CONDUIT_TYPE_FINESSE) then
+								conduitType = CONDUIT_TYPE_FINESSE
+
+							elseif (text == CONDUIT_TYPE_ENDURANCE) then
+								conduitType = CONDUIT_TYPE_ENDURANCE
+							end
+
 							local ilvl = tonumber (text:match (ItemTooltipScan.patern))
 							if (ilvl) then
 								itemLevel = ilvl
 								break
 							end
 						end
+					end
+
+					if (conduitType) then
+						WorldQuestTracker.CachedConduitData[questID] = {conduitType, borderTexture, borderColor, itemLink}
 					end
 				
 					local icon = WorldQuestTracker.MapData.EquipmentIcons [itemEquipLoc]
@@ -778,16 +773,34 @@ end
 						itemTexture = icon
 					end
 				
-					local isArtifact, artifactPower = WorldQuestTracker.RewardIsArtifactPower (itemLink)
+					local isArtifact, artifactPower = WorldQuestTracker.RewardIsArtifactPower(itemLink)
 
-					local hasUpgrade = WorldQuestTracker.RewardRealItemLevel (questID)
+					if (not isArtifact) then
+						for i = 1, 4 do
+							local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
+							local text = textString and textString:GetText()
+							if (text and text ~= "") then
+								text = text:gsub("(|c).*(|r)", "")
+								if (text:find(_G.ANIMA) or text:find(_G.ANIMA:lower()) or text:find("анимы")) then
+									local animaAmount = tonumber(text:match("%d+"))
+									if (animaAmount) then
+										isArtifact = 9
+										artifactPower = animaAmount * quantity
+										break
+									end
+								end
+							end
+						end
+					end
+
+					local hasUpgrade = WorldQuestTracker.RewardRealItemLevel(questID)
 					itemLevel = itemLevel > hasUpgrade and itemLevel or hasUpgrade
-					
+
 					if (isArtifact) then
-						return itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, true, artifactPower, itemStackCount > 1, itemStackCount
+						return itemName, itemTexture, itemLevel, quantity, itemQuality, isUsable, itemID, 9, artifactPower, itemStackCount > 1, itemStackCount, conduitType or false, borderTexture or "", borderColor or {1, 1, 1, 1}, itemLink
 					else
 						--Returning an equipment
-						return itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, false, 0, itemStackCount > 1, itemStackCount
+						return itemName, itemTexture, itemLevel, quantity, itemQuality, isUsable, itemID, false, 0, itemStackCount > 1, itemStackCount, conduitType or false, borderTexture or "", borderColor or {1, 1, 1, 1}, itemLink
 					end
 				else
 					--ainda n�o possui info do item

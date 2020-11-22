@@ -215,7 +215,7 @@ end
 local dropFollowers, missionEndTime = {}, {} do -- Start/Available capture
 	local complete, startQueue, startQueueSize, it = {}, {}, 0, 1
 	function api.GetAvailableMissions(mt)
-		local t = C_Garrison.GetAvailableMissions(mt or 1)
+		local t = C_Garrison.GetAvailableMissions(mt or 1) or {}
 		securecall(api.ObserveMissions, t, 1)
 		local i, n, nit, dropCost = 1, #t, it % 2 + 1, 0
 		while i <= n do
@@ -860,7 +860,7 @@ do -- GetMissionSeen
 	function api.ObserveMissions(missions, mtype)
 		local dnow = GetServerTime() - GetTime()
 		if not missions then
-			missions, mtype = C_Garrison.GetAvailableMissions(), "*"
+			missions, mtype = C_Garrison.GetAvailableMissions() or {}, "*"
 		end
 		for i=1,#missions do
 			local mi = missions[i]
@@ -924,7 +924,7 @@ do -- PrepareAllMissionGroups/GetMissionGroups {sc xp gr ti p1 p2 p3 xp pb}
 				for i=1,#frames do
 					frames[i]:UnregisterEvent("GARRISON_FOLLOWER_LIST_UPDATE")
 				end
-				local mmi = C_Garrison.GetAvailableMissions(mt)
+				local mmi = C_Garrison.GetAvailableMissions(mt) or {}
 				for i=1,#mmi do
 					for k,v in pairs(mmi[i].followers) do
 						C_Garrison.RemoveFollowerFromMission(mmi[i].missionID, v)
@@ -941,7 +941,7 @@ do -- PrepareAllMissionGroups/GetMissionGroups {sc xp gr ti p1 p2 p3 xp pb}
 			if level == 0 then
 				for i=1,(not mt) and 2 or 1 do
 					local mt = not mt and i or mt
-					local mmi = C_Garrison.GetAvailableMissions(mt)
+					local mmi = C_Garrison.GetAvailableMissions(mt) or {}
 					for i=1,#mmi do
 						for k,v in pairs(mmi[i].followers) do
 							C_Garrison.RemoveFollowerFromMission(mmi[i].missionID, v)
@@ -970,7 +970,7 @@ do -- PrepareAllMissionGroups/GetMissionGroups {sc xp gr ti p1 p2 p3 xp pb}
 	end
 	function api.PrepareAllMissionGroups(mtype)
 		suppressFollowerEvents(mtype)
-		local mmi = C_Garrison.GetAvailableMissions(mtype or 1)
+		local mmi = C_Garrison.GetAvailableMissions(mtype or 1) or {}
 		securecall(api.ObserveMissions, mmi, mtype or 1)
 		securecall(doPrepareMissionGroups, mmi)
 		releaseFollowerEvents(mtype)

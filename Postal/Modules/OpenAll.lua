@@ -10,7 +10,7 @@ Postal_OpenAll.description2 = L[ [[|cFFFFCC00*|r Simple filters are available fo
 
 -- luacheck: globals InboxFrame
 
-local MAX_MAIL_SHOWN = 50
+local MAX_MAIL_SHOWN = 100
 local mailIndex, attachIndex
 local numUnshownItems
 local lastItem, lastNumAttach, lastNumGold

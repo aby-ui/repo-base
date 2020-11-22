@@ -38,9 +38,6 @@ local GetDistance_Point = DF.GetDistance_Point
 local worldFramePOIs = WorldQuestTrackerWorldMapPOI
 local worldFramePOIs = WorldMapFrame.BorderFrame
 
-local ff = WorldQuestTrackerFinderFrame
-local rf = WorldQuestTrackerRareFrame
-
 local UpdateDebug = false
 
 local ZoneWidgetPool = WorldQuestTracker.ZoneWidgetPool
@@ -78,38 +75,35 @@ end
 
 -- ~zoneicon ~create
 function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) --~zone
-
 	local anchorFrame
-	
+
 	if (pinTemplate) then
 		anchorFrame = CreateFrame ("frame", name .. index .. "Anchor", parent, pinTemplate)
 		anchorFrame.dataProvider = WorldQuestTracker.DataProvider
 		anchorFrame.worldQuest = true
 		anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
+
 	else
 		anchorFrame = CreateFrame ("frame", name .. index .. "Anchor", parent, WorldQuestTracker.DataProvider:GetPinTemplate())
 		anchorFrame.dataProvider = WorldQuestTracker.DataProvider
 		anchorFrame.worldQuest = true
 		anchorFrame.owningMap = WorldQuestTracker.DataProvider:GetMap()
 	end
-	
+
 	if (anchorFrame.Glow) then
 		anchorFrame.Glow:Hide()
 	end
-	
-	--/dump WorldQuestTrackerZonePOIWidget5Anchor.Glow
+
 	local button = CreateFrame ("button", name .. index, parent, "BackdropTemplate")
 	button:SetPoint ("center", anchorFrame, "center", 0, 0)
 	button.AnchorFrame = anchorFrame
-	
 	button:SetSize (20, 20)
-	
 	button:SetScript ("OnEnter", function() TaskPOI_OnEnter(button) end)
 	button:SetScript ("OnLeave", function() TaskPOI_OnLeave(button) end)
 	button:SetScript ("OnClick", WorldQuestTracker.OnQuestButtonClick)
-	
+
 	button:RegisterForClicks ("LeftButtonDown", "MiddleButtonDown", "RightButtonDown")
-	
+
 	--show animation
 	button.OnShowAlphaAnimation = DF:CreateAnimationHub (button, on_show_alpha_animation)
 	DF:CreateAnimation (button.OnShowAlphaAnimation, "ALPHA", 1, 0.075, 0, 1)
@@ -191,7 +185,6 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 		end
 	
 		button:HookScript ("OnEnter", function (self)
-		
 			button.OriginalFrameLevel = button:GetFrameLevel()
 			button:SetFrameLevel (button.OriginalFrameLevel + 50)
 		
@@ -440,7 +433,27 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 	colorBlindTrackerIcon:SetVertexColor (1, .2, .2)
 	colorBlindTrackerIcon:Hide()
 	button.colorBlindTrackerIcon = colorBlindTrackerIcon
-	
+
+	local overlayBorder = supportFrame:CreateTexture(nil, "overlay", nil, 5)
+	local overlayBorder2 = supportFrame:CreateTexture(nil, "overlay", nil, 6)
+	overlayBorder:SetDrawLayer("overlay", 5)
+	overlayBorder2:SetDrawLayer("overlay", 6)
+	overlayBorder:SetTexture([[Interface\Soulbinds\SoulbindsConduitIconBorder]])
+	overlayBorder2:SetTexture([[Interface\Soulbinds\SoulbindsConduitIconBorder]])
+	overlayBorder:SetTexCoord (0/256, 66/256, 0, 0.5)
+	overlayBorder2:SetTexCoord (67/256, 132/256, 0, 0.5)
+	overlayBorder:SetPoint("topleft", 0, 0)
+	overlayBorder:SetPoint("bottomright", 0, 0)
+	overlayBorder2:SetPoint("topleft", 0, 0)
+	overlayBorder2:SetPoint("bottomright", 0, 0)
+	overlayBorder:Hide()
+	overlayBorder2:Hide()
+
+	supportFrame.overlayBorder = overlayBorder
+	supportFrame.overlayBorder2 = overlayBorder2
+	button.overlayBorder = overlayBorder
+	button.overlayBorder2 = overlayBorder2
+
 	button.Shadow:SetDrawLayer ("BACKGROUND", -8)
 	button.blackBackground:SetDrawLayer ("BACKGROUND", -7)
 	button.IsTrackingGlow:SetDrawLayer ("BACKGROUND", -6)
@@ -479,7 +492,7 @@ function WorldQuestTracker.GetOrCreateZoneWidget (index)
 	local taskPOI = ZoneWidgetPool [index]
 	
 	if (not taskPOI) then
-		taskPOI = WorldQuestTracker.CreateZoneWidget (index, "WorldQuestTrackerZonePOIWidget", WorldQuestTracker.AnchoringFrame)
+		taskPOI = WorldQuestTracker.CreateZoneWidget(index, "WorldQuestTrackerZonePOIWidget", WorldQuestTracker.AnchoringFrame)
 		taskPOI.IsZoneQuestButton = true
 		ZoneWidgetPool [index] = taskPOI
 	end
@@ -527,10 +540,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 	
 	elseif (not WorldQuestTracker.ZoneHaveWorldQuest (mapID)) then
 		--print (2)
-		return WorldQuestTracker.HideZoneWidgets()
-	
-	elseif (WorldQuestTracker.IsASubLevel()) then
-		--print (3)
 		return WorldQuestTracker.HideZoneWidgets()
 	end
 	
@@ -596,37 +605,31 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 		for i, info  in ipairs (taskInfo) do
 			local questID = info.questId
 
-			if (HaveQuestData (questID)) then
+			if (HaveQuestData(questID)) then
 			
-				local isWorldQuest = QuestMapFrame_IsQuestWorldQuest (questID)
-				local isNotBanned = not bannedQuests [questID]
+				local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
+				local isNotBanned = not bannedQuests[questID]
 				
-				if (isWorldQuest and isNotBanned and WorldQuestTracker.CanShowQuest (info)) then
+				if (isWorldQuest and isNotBanned and WorldQuestTracker.CanShowQuest(info)) then
 
-					local isSuppressed = WorldQuestTracker.DataProvider:IsQuestSuppressed (questID)
-					local passFilters = WorldQuestTracker.DataProvider:DoesWorldQuestInfoPassFilters (info)
+					local isSuppressed = WorldQuestTracker.DataProvider:IsQuestSuppressed(questID)
+					local passFilters = WorldQuestTracker.DataProvider:DoesWorldQuestInfoPassFilters(info)
 
-					local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
-					
+					local timeLeft = WorldQuestTracker.GetQuest_TimeLeft(questID)
 					if (not timeLeft or timeLeft == 0) then
 						timeLeft = 1
 					end
 					
-					if (timeLeft > 0) then --not isSuppressed and passFilters and timeLeft and 
-						
+					if (timeLeft > 0) then --not isSuppressed and passFilters and timeLeft
 						local can_cache = true
-						if (not HaveQuestRewardData (questID)) then
-							C_TaskQuest.RequestPreloadRewardData (questID)
+						if (not HaveQuestRewardData(questID)) then
+							C_TaskQuest.RequestPreloadRewardData(questID)
 							can_cache = false
 							needAnotherUpdate = true
 						end
 						WorldQuestTracker.CurrentZoneQuests [questID] = true
 						
-						local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
-
-						--print (title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical)
-
-
+						local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
 						local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
 						local passFilter = filters [filter]
 						
@@ -638,7 +641,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 								passFilter = true
 								
 							elseif (WorldQuestTracker.db.profile.filter_always_show_faction_objectives) then
-								local isCriteria = IsQuestCriteriaForBounty (questID, bountyQuestId)
+								local isCriteria = IsQuestCriteriaForBounty(questID, bountyQuestId)
 
 								if (isCriteria) then
 									passFilter = true
@@ -646,20 +649,19 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 							end
 							
 						elseif (WorldQuestTracker.db.profile.zone_only_tracked) then
-							if (not WorldQuestTracker.IsQuestBeingTracked (questID)) then
+							if (not WorldQuestTracker.IsQuestBeingTracked(questID)) then
 								passFilter = false
 							end
 						end
 
 						--todo: broken shore is outdated, as well as argus
-						if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsNewEXPZone (mapID))) then
-							local widget = WorldQuestTracker.GetOrCreateZoneWidget (index)
+						if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsNewEXPZone(mapID))) then
+							local widget = WorldQuestTracker.GetOrCreateZoneWidget(index)
 							
 							if (widget.questID ~= questID or forceUpdate or not widget.Texture:GetTexture()) then
-							
 								local selected = WorldMap_IsWorldQuestEffectivelyTracked(questID)
-								local isCriteria = C_QuestLog.IsQuestCriteriaForBounty (questID, bountyQuestId)
-								local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget (questID)
+								local isCriteria = C_QuestLog.IsQuestCriteriaForBounty(questID, bountyQuestId)
+								local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget(questID)
 								
 								if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
 									total_Pet = total_Pet + 1
@@ -701,23 +703,23 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 								end
 
 								local inProgress
-								
-								WorldQuestTracker.SetupWorldQuestButton (widget, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
-								
+
+								WorldQuestTracker.SetupWorldQuestButton(widget, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
+
 								widget.AnchorFrame.questID = questID
 								widget.AnchorFrame.numObjectives = widget.numObjectives
-								
-								WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition (widget.AnchorFrame, widget.PosX, widget.PosY)
-								
+
+								WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition(widget.AnchorFrame, widget.PosX, widget.PosY)
+
 								widget.AnchorFrame:Show()
 								widget:SetFrameLevel (WorldQuestTracker.DefaultFrameLevel + floor (random (1, 30)))
-								
+
 								widget:Show()
 
 								tinsert (WorldQuestTracker.Cache_ShownQuestOnZoneMap, questID)
 								tinsert (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap, widget)
-								
-								widget:SetScale (scale)
+
+								widget:SetScale(scale) --affect only zones (not the world map)
 
 								if (gold) then
 									total_Gold = total_Gold + gold
@@ -738,15 +740,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 									end
 								else
 									widget:Show()
-									--[=[
-									widget:Hide()
-									for _, button in WorldQuestTracker.GetDefaultPinIT() do
-									print (button)
-										if (button.questID == questID) then
-											button:Show()
-										end
-									end
-									--]=]
 								end
 								
 								if (timeLeft == 1) then
@@ -801,7 +794,7 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 				
 			else --have quest data
 			
-				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
+				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info(questID)
 				if (title) then
 					if (UpdateDebug) then print ("NeedUpdate 1") end
 					quest_bugged [questID] = (quest_bugged [questID] or 0) + 1
@@ -859,6 +852,30 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 		else
 			WorldQuestTracker.WorldMap_APowerIndicator.text = total_APower
 		end
+
+		--adjust the artifact power icon for each region
+		local mapTable = WorldQuestTracker.mapTables[mapID]
+		if (mapTable) then
+			local mainHub = mapTable.show_on_map
+			if (mainHub) then
+				local texture
+				if (mainHub[WorldQuestTracker.MapData.ZoneIDs.THESHADOWLANDS]) then
+					texture = WorldQuestTracker.MapData.ArtifactPowerSummaryIcons.SHADOWLANDS_ARTIFACT
+				
+				elseif (mainHub[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] or mainHub[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR]) then --bfa
+					texture = WorldQuestTracker.MapData.ArtifactPowerSummaryIcons.BFA_ARTIFACT
+
+				elseif (mainHub[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] or mainHub[WorldQuestTracker.MapData.ZoneIDs.ARGUS]) then --legion
+					texture = WorldQuestTracker.MapData.ArtifactPowerSummaryIcons.LEGION_ARTIFACT
+				end
+
+				if (texture) then
+					WorldQuestTracker.WorldMap_APowerIndicatorTexture:SetTexture(texture)
+					WorldQuestTracker.WorldMap_APowerIndicatorTexture:SetSize(16, 16)
+					WorldQuestTracker.WorldMap_APowerIndicatorTexture:SetTexCoord(0, 1, 0, 1)
+				end
+			end
+		end
 		
 		WorldQuestTracker.WorldMap_APowerIndicator.Amount = total_APower
 		
@@ -906,7 +923,7 @@ function WorldQuestTracker.ResetWorldQuestZoneButton (self)
 	
 	self.IsRare = nil
 	self.RareName = nil
-	self.RareSerial = nil	
+	self.RareSerial = nil
 	self.RareTime = nil
 	self.RareOwner = nil
 	self.QuestType = nil
@@ -914,7 +931,7 @@ function WorldQuestTracker.ResetWorldQuestZoneButton (self)
 end
 
 --this function does not check if the quest reward is in the client cache
-function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
+function WorldQuestTracker.SetupWorldQuestButton(self, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
 
 	if (type (worldQuestType) == "boolean" and worldQuestType) then
 		--quick refresh
@@ -1006,7 +1023,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 					self.colorBlindTrackerIcon:Show()
 				end
 			end
-		end		
+		end
 
 		if (worldQuestType == LE_QUEST_TAG_TYPE_PVP or worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then
 			self.questTypeBlip:Show()
@@ -1030,7 +1047,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 		end
 
 		-- tempo restante
-		local timeLeft = WorldQuestTracker.GetQuest_TimeLeft (questID)
+		local timeLeft = WorldQuestTracker.GetQuest_TimeLeft(questID)
 		if (timeLeft < 1) then
 			timeLeft = 1
 		end
@@ -1043,11 +1060,11 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 			local okay = false
 			
 			-- gold
-			local goldReward, goldFormated = WorldQuestTracker.GetQuestReward_Gold (questID)
+			local goldReward, goldFormated = WorldQuestTracker.GetQuestReward_Gold(questID)
 			if (goldReward > 0) then
 				local texture = WorldQuestTracker.GetGoldIcon()
 				
-				WorldQuestTracker.SetIconTexture (self.Texture, texture, false, false)
+				WorldQuestTracker.SetIconTexture(self.Texture, texture, false, false)
 				
 				--self.Texture:SetTexCoord (0, 1, 0, 1)
 				self.Texture:SetSize (16, 16)
@@ -1058,7 +1075,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 				self.QuestType = QUESTTYPE_GOLD
 				self.Amount = goldReward
 				
-				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
+				WorldQuestTracker.UpdateBorder(self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
 				okay = true
 			end
 			
@@ -1070,7 +1087,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 			end
 			
 			-- resource
-			local name, texture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource (questID)
+			local name, texture, numRewardItems = WorldQuestTracker.GetQuestReward_Resource(questID)
 			if (name and not okay) then
 				if (texture) then
 				
@@ -1104,32 +1121,33 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 			end
 
 			-- items
-			local itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker.GetQuestReward_Item (questID)
+			local itemName, itemTexture, itemLevel, itemQuantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker.GetQuestReward_Item(questID)
 		
 			if (itemName) then
 			
 				if (isArtifact) then
-					local texture = WorldQuestTracker.GetArtifactPowerIcon (artifactPower, true, questID)
-					self.Texture:SetSize (16, 16)
-					self.Texture:SetTexture (texture)
+					local texture = WorldQuestTracker.GetArtifactPowerIcon(isArtifact, true, questID)
+					self.Texture:SetTexture(texture)
+					self.Texture:SetSize(16, 16)
 					
 					if (artifactPower >= 1000) then
 						if (artifactPower > 999999999) then -- 1B
 							self.flagText:SetText (WorldQuestTracker.ToK_FormatBigger (artifactPower))
 							
 						elseif (artifactPower > 999999) then -- 1M
-							--self.flagText:SetText (WorldQuestTracker.ToK (artifactPower))
 							self.flagText:SetText (WorldQuestTracker.ToK_FormatBigger (artifactPower))
+
 						elseif (artifactPower > 9999) then
 							self.flagText:SetText (WorldQuestTracker.ToK (artifactPower))
+
 						else
 							self.flagText:SetText (format ("%.1fK", artifactPower/1000))
 						end
 					else
 						self.flagText:SetText (artifactPower)
-					end					
+					end
 					
-					self.isArtifact = true
+					self.isArtifact = isArtifact
 					self.IconTexture = texture
 					self.IconText = artifactPower
 					self.QuestType = QUESTTYPE_ARTIFACTPOWER
@@ -1143,7 +1161,7 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 						color =  WorldQuestTracker.RarityColors [quality]
 					end
 					
-					self.flagText:SetText ((isStackable and quantity and quantity >= 1 and quantity or false) or (itemLevel and itemLevel > 5 and (color) .. itemLevel) or "")
+					self.flagText:SetText ((isStackable and itemQuantity and itemQuantity >= 1 and itemQuantity or false) or (itemLevel and itemLevel > 5 and (color) .. itemLevel) or "")
 					self.IconTexture = itemTexture
 					self.IconText = self.flagText:GetText()
 					self.QuestType = QUESTTYPE_ITEM
@@ -1153,10 +1171,9 @@ function WorldQuestTracker.SetupWorldQuestButton (self, worldQuestType, rarity, 
 					self:GetHighlightTexture():SetTexture ([[Interface\Store\store-item-highlight]])
 					self:GetHighlightTexture():SetTexCoord (0, 1, 0, 1)
 				end
-
-				--self.circleBorder:Show()
 				
-				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite)
+				local conduitType, borderTexture, borderColor, itemLink = WorldQuestTracker.GetConduitQuestData(questID)
+				WorldQuestTracker.UpdateBorder (self, rarity, worldQuestType, mapID, self.isCriteria, isElite, conduitType, borderTexture, borderColor, itemLink)
 				okay = true
 			end
 			
@@ -1399,6 +1416,10 @@ function WorldQuestTracker.SetupZoneSummaryButton (summaryWidget, zoneWidget)
 	local isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon = zoneWidget.isCriteria, false, false, zoneWidget.TimeLeft, WorldQuestTracker.MapData.ItemIcons ["BFA_ARTIFACT"]
 	local questID, numObjectives, mapID = zoneWidget.questID, zoneWidget.numObjectives, zoneWidget.mapID
 
+	if (zoneWidget.isArtifact) then
+		artifactPowerIcon = WorldQuestTracker.GetArtifactPowerIcon(zoneWidget.isArtifact, true, questID)
+	end
+
 	--update the quest icon
 	local okay, gold, resource, apower = WorldQuestTracker.UpdateWorldWidget (widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
 	widget.texture:SetTexCoord (.1, .9, .1, .9)
@@ -1468,8 +1489,8 @@ function WorldQuestTracker.SetupZoneSummaryButton (summaryWidget, zoneWidget)
 	summaryWidget.timeLeftText:SetText (timeLeft > 1440 and floor (timeLeft/1440) .. "d" or timeLeft > 60 and floor (timeLeft/60) .. "h" or timeLeft .. "m")
 	summaryWidget.timeLeftText:SetJustifyH ("center")
 	summaryWidget.timeLeftText:Show()
-	
-	summaryWidget.factionIcon:SetTexture (WorldQuestTracker.MapData.FactionIcons [widget.FactionID])
+
+	summaryWidget.factionIcon:SetTexture (WorldQuestTracker.MapData.FactionIcons [widget.FactionID]) --faction texture
 
 	summaryWidget:Show()
 end
@@ -1527,14 +1548,11 @@ function WorldQuestTracker.UpdateZoneSummaryToggleButton (canShow)
 	
 	if (not canShow) then
 		button:Hide()
-		
 	elseif (canShow and not isZoneMap) then
 		button:Hide()
-		
 	else
 		button:Show()
 	end
-	
 end
 
 function WorldQuestTracker.CanShowZoneSummaryFrame()
@@ -1549,7 +1567,6 @@ function WorldQuestTracker.CanShowZoneSummaryFrame()
 	end
 
 	WorldQuestTracker.UpdateZoneSummaryToggleButton (canShow)
-	
 	return canShow
 end
 
@@ -1616,7 +1633,7 @@ if (bountyBoard) then
 			--the bounty board in argus is above the world quest tracker widgets
 			C_Timer.After (0.5, function()
 				bountyBoard:ClearAllPoints()
-				bountyBoard:SetPoint ("bottomright", WorldQuestTrackerToggleQuestsButton, "bottomright", 0, 45)
+				bountyBoard:SetPoint ("bottomright", WorldQuestTrackerToggleQuestsSummaryButton, "bottomright", 0, 45)
 			end)
 		end
 		

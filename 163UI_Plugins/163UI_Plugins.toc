@@ -7,18 +7,18 @@
 163UI_Quest.lua
 AlreadyKnown.lua
 BattleField.lua
-CopyFriendList.lua
 ChatFrameAddMessage.lua
+CopyFriendList.lua
 ExtraActionButton.lua
+FiveCombo.lua
 FriendsGuildTab.lua
 GuildRosterButtons.lua
 MerchantFilterButtons.lua
 PingPing.lua
 ProfessionTabs.lua
 QuestFont.lua
-SlashCommands.lua
 Simc.lua
-FiveCombo.lua
+SlashCommands.lua
 8.0\ChallengesGuildBest.xml
 
 yClassColors\core.lua
@@ -28,14 +28,13 @@ yClassColors\friends.lua
 yClassColors\lfr.lua
 yClassColors\who.lua
 
+7.0\BattlePetCurrentStats.lua
 7.0\CloudyTradeSkill.lua
 7.0\CompletedTip.lua
-#7.0\FixArchievementUIFreeze.lua
-#7.0\QuestWatchSort.lua
-7.0\SpecSwitchButtons.lua
-7.0\ReplaceTalentSpell.lua
-7.0\BattlePetCurrentStats.lua
-7.0\GarrisonMinimapButton.lua
 7.0\EncounterJournalPlus_InstanceInfo.lua
-7.0\HideQuickJoin.lua
 7.0\ExaltedPlus.lua
+7.0\GarrisonMinimapButton.lua
+7.0\HideQuickJoin.lua
+#7.0\QuestWatchSort.lua
+7.0\ReplaceTalentSpell.lua
+7.0\SpecSwitchButtons.lua

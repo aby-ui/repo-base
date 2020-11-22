@@ -332,8 +332,9 @@ local function VerifySpell(id, bookType)
 end
 
 local function UpdateTabSpells(tab)
-	local _, _, offset, count = GetSpellTabInfo(tab)
-	if offset and count then
+	local _, _, offset, count, _, offSpecID, shouldHide, specID = GetSpellTabInfo(tab)
+    local isOffSpec = (offSpecID ~= 0) -- and (SpellBookFrame.bookType == BOOKTYPE_SPELL);
+	if offset and count and not isOffSpec then
 		local i
 		for i = 1, count do
 			VerifySpell(offset + i, BOOKTYPE_SPELL)

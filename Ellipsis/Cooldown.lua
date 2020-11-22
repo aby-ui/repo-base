@@ -1,7 +1,7 @@
 local Ellipsis		= _G['Ellipsis']
 local L				= LibStub('AceLocale-3.0'):GetLocale('Ellipsis')
 local LSM			= LibStub('LibSharedMedia-3.0')
-local Cooldown		= CreateFrame('Frame', nil, UIParent)
+local Cooldown		= CreateFrameAby('Frame', nil, UIParent)
 local CooldownTimer	= {}
 
 local timerPool			= {}

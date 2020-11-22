@@ -36,7 +36,7 @@ do
 	--helps blend the icons within the map texture
 	WQT_ZONEWIDGET_ALPHA =		0.83
 	WQT_WORLDWIDGET_ALPHA =	0.845
-	WQT_WORLDWIDGET_BLENDED =	ALPHA_BLEND_AMOUNT - 0.16
+	WQT_WORLDWIDGET_BLENDED =	ALPHA_BLEND_AMOUNT - 0.11
 	
 	WQT_ANIMATION_SPEED = 0.05
 	
@@ -90,16 +90,16 @@ do
 			},
 			
 			sort_order = {
-				[WQT_QUESTTYPE_REPUTATION] = 10,
-				[WQT_QUESTTYPE_TRADE] = 9,
-				[WQT_QUESTTYPE_APOWER] = 8,
-				[WQT_QUESTTYPE_GOLD] = 6,
-				[WQT_QUESTTYPE_RESOURCE] = 7,
-				[WQT_QUESTTYPE_EQUIPMENT] = 5,
+				[WQT_QUESTTYPE_REPUTATION] = 8,
+				[WQT_QUESTTYPE_TRADE] = 5,
+				[WQT_QUESTTYPE_APOWER] = 10,
+				[WQT_QUESTTYPE_GOLD] = 7,
+				[WQT_QUESTTYPE_RESOURCE] = 5,
+				[WQT_QUESTTYPE_EQUIPMENT] = 9,
 				[WQT_QUESTTYPE_DUNGEON] = 4,
 				[WQT_QUESTTYPE_PROFESSION] = 3,
 				[WQT_QUESTTYPE_PVP] = 2,
-				[WQT_QUESTTYPE_PETBATTLE] = 1,
+				[WQT_QUESTTYPE_PETBATTLE] = 6,
 			},
 			
 			groupfinder = {
@@ -141,7 +141,7 @@ do
 				autosearch_cooldown = 600,
 				autosearch_share = false,
 			},
-			
+
 			raredetected = {},
 
 			world_map_config = {
@@ -149,9 +149,9 @@ do
 				onmap_scale_offset = 0,
 				summary_show = true,
 				summary_scale = 1,
-				summary_showbyzone = true,
+				summary_showbyzone = false,
 				summary_anchor = "left",
-				summary_widgets_per_row = 7,
+				summary_widgets_per_row = 10,
 			},
 			
 			disable_world_map_widgets = false,
@@ -262,14 +262,14 @@ do
 	end
 	
 	--create the addon object
-	local WorldQuestTracker = DF:CreateAddOn ("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
+	local WorldQuestTracker = DF:CreateAddOn("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
 
 	--create the group finder and rare finder frames
-	CreateFrame ("frame", "WorldQuestTrackerFinderFrame", UIParent, "BackdropTemplate")
-	CreateFrame ("frame", "WorldQuestTrackerRareFrame", UIParent, "BackdropTemplate")
+	CreateFrame("frame", "WorldQuestTrackerFinderFrame", UIParent, "BackdropTemplate")
+	CreateFrame("frame", "WorldQuestTrackerRareFrame", UIParent, "BackdropTemplate")
 
 	--create world quest tracker pin
-	WorldQuestTrackerPinMixin = CreateFromMixins (MapCanvasPinMixin)
+	WorldQuestTrackerPinMixin = CreateFromMixins(MapCanvasPinMixin)
 	
 	--data providers are stored inside .dataProviders folder
 	--catch the blizzard quest provider
@@ -293,10 +293,10 @@ do
 	WorldQuestTrackerAddon.CatchMapProvider()
 
 	--store zone widgets
-	WorldQuestTracker.ZoneWidgetPool = {} 
+	WorldQuestTracker.ZoneWidgetPool = {}
 	--default world quest pins
-	WorldQuestTracker.DefaultWorldQuestPin = {} 
-	WorldQuestTracker.ShowDefaultWorldQuestPin = {} 
+	WorldQuestTracker.DefaultWorldQuestPin = {}
+	WorldQuestTracker.ShowDefaultWorldQuestPin = {}
 	--frame where things will be parented to
 	WorldQuestTracker.AnchoringFrame = WorldMapFrame.BorderFrame
 	--frame level for things attached to the world map
@@ -378,7 +378,6 @@ do
 		{1544645786, "Anchor Changes", "December 13, 2018", "Hover over the zone name in the quest summary for a zone to show options for that anchor."},
 		{1544477110, "World Map Changes", "December 13, 2018", "World map is now aligned in the center of the screen. " .. L["S_MAPBAR_OPTIONS"] .. " > '" .. L["S_OPTIONS_MAPFRAME_ALIGN"] .. "' to disable this."},
 		{1544477110, "World Map Changes", "December 13, 2018", "Quest list is now default to quest type, click '" .. L["S_WORLDBUTTONS_SHOW_ZONE"] .. "' to swap."},
-		{1544477110, "World Map Changes", "December 13, 2018", "Added quest locations to world map, click '" .. L["S_WORLDBUTTONS_TOGGLE_QUESTS"] .. "' to hide."},
 		{1544477110, "World Map Changes", "December 13, 2018", "Added an arrow button in the quest list to start tracking all quests in that list."},
 		{1544477110, "World Map Changes", "December 13, 2018", "Added faction indicators, SHIFT + Left Click to track all quests for that faction."},
 		{1544477110, "Zone Map Changes", "December 13, 2018", "The fullscreen quest summary is now available in windowed mode."},

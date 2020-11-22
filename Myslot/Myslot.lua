@@ -119,7 +119,8 @@ function MySlot:GetActionInfo(slotId)
     -- { slotId, slotType and high 16 ,high 8 , low 8, }
     local slotType, index = GetActionInfo(slotId)
     if MySlot.SLOT_TYPE[slotType] == MYSLOT_EQUIPMENTSET then
-        for i = 1, C_EquipmentSet.GetNumEquipmentSets() do
+        -- i starts from 0 https://github.com/tg123/myslot/issues/10 weird blz
+        for i = 0, C_EquipmentSet.GetNumEquipmentSets() do
             if C_EquipmentSet.GetEquipmentSetInfo(i) == index then
                 index = i
                 break
