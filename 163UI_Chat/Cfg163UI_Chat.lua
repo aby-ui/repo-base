@@ -1,4 +1,8 @@
 U1_CHAT_WORLD_CHANNEL = "大脚世界频道";
+local exampleTime = time({ year = 2010, month = 12, day = 15, hour = 15, min = 27, sec = 32, })
+local tsFormat = { TIMESTAMP_FORMAT_HHMM, TIMESTAMP_FORMAT_HHMMSS, TIMESTAMP_FORMAT_HHMM_AMPM, TIMESTAMP_FORMAT_HHMMSS_AMPM, TIMESTAMP_FORMAT_HHMM_24HR, TIMESTAMP_FORMAT_HHMMSS_24HR }
+local tsOptions = { "不改变暴雪样式", "", "无", "none", } for _, v in ipairs(tsFormat) do tinsert(tsOptions, BetterDate(v, exampleTime)); tinsert(tsOptions, v) end
+
 U1RegisterAddon("163UI_Chat", {
     title = "聊天增强",
     defaultEnable = 1,
@@ -116,28 +120,34 @@ U1RegisterAddon("163UI_Chat", {
         }
     },
     {
-        var = "format",
-        default = "%H:%M:%S",
+        var = "format2",
+        default = TIMESTAMP_FORMAT_HHMMSS_24HR,
         type = "drop",
-        text = "聊天信息时间标签格式",
-        tip = "说明`虽然暴雪也提供了同样的功能，但它没有颜色区分。而且可以点击我们添加的时间标签复制这一行聊天文本。",
-        options = {"无", nil, "分:秒", "%M:%S", "时:分", "%H:%M", "时分秒", "%H:%M:%S"},
-        cols = 2,
+        text = "聊天时间戳格式",
+        tip = "说明`修改系统设置，美化颜色，并且可以点击时间戳复制这一行聊天文本。",
+        options = tsOptions,
+        confirm = "需要重载页面才能生效，是否确定",
+        reload = true,
         callback = function(cfg, v, loading)
-            if v then
-                local old = GetCVar("showTimestamps");
-                if old ~= "none" then U1DB.showTimestamps = old end
-                SetCVar("showTimestamps", "none");
-            else
-                if U1DB.showTimestamps then
-                    SetCVar("showTimestamps", U1DB.showTimestamps)
-                    U1DB.showTimestamps = nil;
-                end
+            --初始兼容
+            local old = U1DB.configs["163ui_chat/format"]
+            if GetCVar("showTimestamps") == "none" and old and old ~= "" then
+                if old == "%M:%S" then old = TIMESTAMP_FORMAT_HHMMSS_24HR end
+                U1DB.configs["163ui_chat/format"] = nil
+                SetCVar("showTimestamps", old)
+                CHAT_TIMESTAMP_FORMAT = old -- maybe taint, only set once.
             end
-            if(v == '无' or v == '') then
-                U1Chat_TimeStampFormat = nil
+            --如果v为""，则加载我们的配置。如果v为格式值，则以cvar为准，手工修改时重载界面
+            if v ~= nil and v ~= "" then
+                if loading then
+                    U1SaveDBValue(cfg, GetCVar("showTimestamps"))
+                    U1Chat_TimeStampFormat = GetCVar("showTimestamps")
+                else
+                    SetCVar("showTimestamps", v);
+                    ReloadUI()
+                end
             else
-                U1Chat_TimeStampFormat = v
+                U1Chat_TimeStampFormat = nil
             end
         end,
     },

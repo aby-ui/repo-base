@@ -36,37 +36,12 @@ U1RegisterAddon("163UI_MoreOptions", {
         reload = 1,
     }),--]]
 
-    --[[ 现在固定为60码，调不了
     U1CfgMakeCVarOption("姓名板的最大显示距离", "nameplateMaxDistance", 60, {
-        tip = "说明`7.0之后默认显示距离是60码，会导致另一个楼层的怪物都会被显示出来，可以修改此选项进行设置。建议设置为40或30",
+        tip = "说明`8.2后已被固定为60码，无法修改",
+        disableOnLoad = true,
         type = "spin",
-        range = {20, 80, 5},
+        range = {59, 60, 5},
     }),
-    ]]
-
-    {
-        text = "反向整理背包",
-        var = "SetSortBagsRightToLeft",
-        tip = "说明`设置默认背包整理(不是tdPack背包整理)的顺序。`7.0以后暴雪将此选项精简掉了",
-        default = function() return GetSortBagsRightToLeft() end,
-        getvalue = function() return GetSortBagsRightToLeft() end,
-        callback = function(cfg, v, loading)
-            if loading then return end
-            SetSortBagsRightToLeft(v)
-        end,
-    },
-
-    {
-        text = "新物品优先放入行囊",
-        var = "SetInsertItemsLeftToRight",
-        tip = "说明`拾取/购买新物品时，优先放入行囊，也就是先放入靠右的背包。`7.0以后暴雪将此选项精简掉了",
-        default = function() return not GetInsertItemsLeftToRight() end,
-        getvalue = function() return not GetInsertItemsLeftToRight() end,
-        callback = function(cfg, v, loading)
-            if loading then return end
-            SetInsertItemsLeftToRight(not v)
-        end,
-    },
 
     U1CfgMakeCVarOption("显示目标施法条", "showTargetCastbar", 1, {
         tip = "说明`是否在目标头像下方显示施法条`7.0以后暴雪将此选项精简掉了",
@@ -236,7 +211,9 @@ U1RegisterAddon("163UI_MoreOptions", {
             if loading then
                 hooksecurefunc(NamePlateDriverFrame, "UpdateNamePlateOptions", function()
                     -- call in InterfaceOptionsPanel_Cancel -> InterfaceOptionsLargerNamePlate_OnLoad setFunc
-                    U1CfgCallBack(cfg)
+                    if not InCombatLockdown() then
+                        U1CfgCallBack(cfg)
+                    end
                 end)
             end
         end,

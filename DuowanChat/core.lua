@@ -141,13 +141,12 @@ local joinChannelFunc = function(channel)
     return true
 end
 
-local OriginReloadUI = ReloadUI
 local addonName = ...
 local function BeforeReload()
     local enabled = GetAddOnEnableState(UnitName("player"), addonName)>=2
     if not enabled then leaveChannelFunc(L["BigFootChannel"]) end
 end
-function ReloadUI() BeforeReload(); OriginReloadUI(); end
+hooksecurefunc("ReloadUI", BeforeReload)
 
 local OriginConsoleExec = ConsoleExec
 function ConsoleExec(cmd, ...)
@@ -522,19 +521,15 @@ do
     end
 end
 
-function DuowanChat:AddLines(lines, ...)
-    for i=select("#", ...), 1, -1 do
-        local x = select(i, ...);
-        if x:GetObjectType() == "FontString" and not x:GetName() then
-            table.insert(lines, x:GetText());
-        end
-    end
-end
-
 function DuowanChat:CopyChat()
     local frame = SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME;
     wipe(self.lines);
-    self:AddLines(self.lines, frame.FontStringContainer:GetRegions());
+    local buf = frame.historyBuffer
+    local head = buf.headIndex
+    for i = 1, min(#buf.elements or 0, 1024) do -- maxElements = 128
+        local e = buf.elements[(i + head - 1) % #buf.elements + 1]
+        self.lines[#self.lines+1] = e.message
+    end
     self.str = table.concat(self.lines, "\n");
     wipe(self.lines);
 

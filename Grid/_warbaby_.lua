@@ -651,7 +651,7 @@ if not DependCall then
     end
 end
 
-DependCall("GridStatusRaidDebuff", function()
+DependCall("PlexusStatusRaidDebuff", function()
     paths["alert_RaidDebuff"] = "GridStatusRaidDebuff"
     local options = GridStatusRaidDebuff.options
     options.order = 90

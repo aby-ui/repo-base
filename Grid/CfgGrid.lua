@@ -93,13 +93,12 @@ U1RegisterAddon("GridStatusHots", {title = "状态：HoTs(持续治疗)", protec
 U1RegisterAddon("GridStatusTankCooldown", {title = "状态：坦克救命技能", protected = nil, hide = nil, load = "NORMAL",
     desc = "提供一些救场技能的提示，例如盾墙、破釜沉舟等。默认显示在右侧图标中。"
 });
-U1RegisterAddon("GridStatusRaidDebuff", {title = "状态：团队减益", protected = nil, hide = false, load="NORMAL", parent="Grid", defaultEnable=1,
+
+U1RegisterAddon("PlexusStatusRaidDebuff", {title = "状态：团队减益", protected = nil, hide = false, load="NORMAL", parent="Grid", defaultEnable=1,
     desc = "提供副本Boss的主要Debuff技能的提示。"
 });
-U1RegisterAddon("GridStatusRD_BfA", {title = "争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
-U1RegisterAddon("GridStatusRD_Legion", {title = "军团再临", protected = nil, hide = nil, load="NORMAL",});
---U1RegisterAddon("GridStatusRD_WoD", {title = "德拉诺之王", protected = nil, hide = nil, load="NORMAL",});
---U1RegisterAddon("GridStatusRD_MoP", {title = "熊猫人之谜", defaultEnable = 0, protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_BfA", {title = "争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_Legion", {title = "军团再临", protected = nil, hide = nil, load="NORMAL",});
 
 
 

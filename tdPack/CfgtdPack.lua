@@ -23,12 +23,11 @@ U1RegisterAddon('tdPack', {
                 tdCore('tdPack'):ToggleOption()
             end
         end,
-
     },
 
     {
-        text = "恢复默认整理顺序",
-        tip = "说明`有时会调整默认的整理顺序，使其更适应当前版本，使用此按钮会覆盖当前设置，且无法恢复。",
+        text = "恢复默认排列方案",
+        tip = "说明`有时开发者会调整默认的物品排列顺序，使其更适应当前版本，使用此按钮会覆盖当前设置，且无法恢复。",
         confirm = "会清除当前设置并重新加载界面\n是否确定？",
         callback = function(cfg, v, loading)
             for k,v in pairs(TDDB_TDPACK) do
@@ -39,6 +38,54 @@ U1RegisterAddon('tdPack', {
             end
             ReloadUI()
         end,
+    },
+
+    {
+        text = "设置整合背包排列和整理方案", type = "text", alwaysEnable = true,
+        --正背包 正物品 暴雪正，先行囊 -> 从上到下，贴（td正），td逆，则下到上，离
+        --正背包 反物品 暴雪反，后行囊 -> 从下到上，贴（td无办法）
+        --反背包 反物品 暴雪正，先行囊 -> 从下到上，贴（td正），td逆，则上到下，离
+
+        {
+            text = "从上向下放置物品",
+            tip = "说明`暴雪有两个决定物品拾取和整理的设置，整合背包有排列顺序的设置，配置错误会导致背包整理后不连续。` `爱不易归纳了两种方案，统一修改这些设置，方便大家使用。` `从上向下的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - 插件正向排列背包` - 插件正向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从下向上放置，且新物品从前面单放）",
+            confirm = "是否确定？（不修改整合银行的排列方式，请自行在整合背包插件里调整）",
+            callback = function(cfg, v, loading)
+                SetSortBagsRightToLeft(true)
+                SetInsertItemsLeftToRight(false)
+                if Bagnon and Bagnon.profile and Bagnon.profile.inventory then
+                    Bagnon.profile.inventory.reverseBags = false
+                    Bagnon.profile.inventory.reverseSlots = false
+                end
+                if Combuctor and Combuctor.profile and Combuctor.profile.inventory then
+                    Combuctor.profile.inventory.reverseBags = false
+                    Combuctor.profile.inventory.reverseSlots = false
+                end
+                if tdCore and tdCore('tdPack') then
+                    tdCore('tdPack'):SetReversePack(false)
+                end
+            end
+        },
+        {
+            text = "从下向上放置物品",
+            tip = "说明`从下向上的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - 插件反向排列背包` - 插件反向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从上向下放置，且新物品从后面单放）",
+            confirm = "是否确定？（不修改整合银行的排列方式，请自行在整合背包插件里调整）",
+            callback = function(cfg, v, loading)
+                SetSortBagsRightToLeft(true)
+                SetInsertItemsLeftToRight(false)
+                if Bagnon and Bagnon.profile and Bagnon.profile.inventory then
+                    Bagnon.profile.inventory.reverseBags = true
+                    Bagnon.profile.inventory.reverseSlots = true
+                end
+                if Combuctor and Combuctor.profile and Combuctor.profile.inventory then
+                    Combuctor.profile.inventory.reverseBags = true
+                    Combuctor.profile.inventory.reverseSlots = true
+                end
+                if tdCore and tdCore('tdPack') then
+                    tdCore('tdPack'):SetReversePack(false)
+                end
+            end
+        }
     },
 
     {

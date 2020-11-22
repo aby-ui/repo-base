@@ -273,7 +273,7 @@ function BM_SetMoveHandlerWith(frameNameToMove, loadWith, callback)
     end
 end
 function BM_SetMoveHandler(frameToMove, handler)
-    if not frameToMove then
+    if not frameToMove or frameToMove.settings then
         return
     end
     if not handler then
@@ -411,7 +411,6 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(QuestFrame)
         BM_SetMoveHandler(MerchantFrame)
         BM_SetMoveHandler(HelpFrame)
-        BM_SetMoveHandler(PlayerTalentFrame)
         BM_SetMoveHandler(ClassTrainerFrame)
         BM_SetMoveHandler(MailFrame)
         BM_SetMoveHandler(BankFrame)

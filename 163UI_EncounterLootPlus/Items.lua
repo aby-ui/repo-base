@@ -74,7 +74,7 @@ function ELP_UpdateItemList()
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
     local forceSlot = db.range > 0 and db.range ~= 4 and C_EncounterJournal.GetSlotFilter() == 0
-    if forceSlot then C_EncounterJournal.SetSlotFilter(11) end
+    if forceSlot then C_EncounterJournal.SetSlotFilter(ELP_RING_SLOT) end
 
     local range, lastRaid = db.range, nil
     if range == 4 or range == 5 then
@@ -108,7 +108,7 @@ function ELP_UpdateItemList()
         end
     end
 
-    if forceSlot then C_EncounterJournal.SetSlotFilter(0) end
+    if forceSlot then C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT) end
     EncounterJournal:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:RegisterEvent("EJ_DIFFICULTY_UPDATE")
 

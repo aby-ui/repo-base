@@ -13,6 +13,24 @@ U1PLUG["OpenBags"] = function()
 end
 
 --[[------------------------------------------------------------
+reload之后记住上次打开的天赋面板
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_TalentUI", function()
+    hooksecurefunc("PlayerTalentTab_OnClick", function(self, button)
+        if U1DB and button == "LeftButton" then U1DB.lastTalentTab = self:GetID() end
+    end)
+    local first = true
+    hooksecurefunc("PlayerTalentFrame_Toggle", function()
+        if not first then return end
+        first = false
+        if U1DB and U1DB.lastTalentTab then
+            local tab = _G["PlayerTalentFrameTab" .. U1DB.lastTalentTab]
+            return tab and tab:Click()
+        end
+    end)
+end)
+
+--[[------------------------------------------------------------
 双击空格跳过动画
 ---------------------------------------------------------------]]
 do

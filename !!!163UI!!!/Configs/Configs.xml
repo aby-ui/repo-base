@@ -106,7 +106,7 @@
     <Include file="..\..\WorldQuestsList\CfgWorldQuestsList.lua"/>
     <Include file="..\..\XLoot\CfgXLoot.lua"/>
     <Include file="..\..\oGlow\CfgoGlow.lua"/>
-    <Include file="..\..\tdCore\CfgtdCore.lua"/>
+    <Include file="..\..\tdPack\CfgtdPack.lua"/>
     <Include file="..\..\tullaRange\CfgtullaRange.lua"/>
     <Include file="..\..\vBar\CfgvBar.lua"/>
     <Include file="..\..\wMarker\CfgwMarker.lua"/>

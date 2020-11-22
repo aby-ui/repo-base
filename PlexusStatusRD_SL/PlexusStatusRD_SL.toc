@@ -1,0 +1,11 @@
+## Interface: 90002
+## Version: v1.1.0
+## Title: PlexusStatusRD(Shadowlands)
+## Notes: Debuff List for Shadowlands
+## Author: Doadin
+## Grid Author: Pastamancer & Maia
+## Dependencies: PlexusStatusRaidDebuff
+## OptionalDeps: Grid, Plexus
+## X-Curse-Project-ID: 411702
+
+CastleNathria.lua

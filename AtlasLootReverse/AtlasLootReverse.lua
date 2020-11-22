@@ -118,9 +118,9 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
     local sourceMap = {}
     for i, name in ipairs(db.sources) do sourceMap[name] = i end
 
-    local ELP_CURRENT_TIER = 8
+    local ELP_CURRENT_TIER, ELP_ALL_SLOT = 9, 15
     EJ_SelectTier(ELP_CURRENT_TIER)
-    EJ_SetSlotFilter(0)
+    C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT)
     EJ_SetLootFilter(0,0)
     for i = 1, 2 do
         local index = 1
@@ -139,11 +139,11 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
             local count = 0
             for loot = 1, EJ_GetNumLoot() do
                 count = count + 1
-                local item_id, encounterID, name, icon, slot, armorType, link = EJ_GetLootInfoByIndex(loot)
-                if not bossNames[encounterID] then
-                    bossNames[encounterID] = EJ_GetEncounterInfo(encounterID)
+                local info = C_EncounterJournal.GetLootInfoByIndex(loot)
+                if not bossNames[info.encounterID] then
+                    bossNames[info.encounterID] = EJ_GetEncounterInfo(info.encounterID)
                 end
-                local boss_name = bossNames[encounterID]
+                local boss_name = bossNames[info.encounterID]
                 local source = instance_name .. " " .. boss_name
                 local source_id = sourceMap[source]
                 if not source_id then
@@ -152,11 +152,12 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
                     sourceMap[source] = source_id
                 end
                 --有可能有多个来源, 不考虑了
-                db.whoTable[item_id] = source_id
+                db.whoTable[info.itemID] = source_id
             end
             print(instance_name, count)
         end
     end
+    db.buildinfo = table.concat({GetBuildInfo()}, " ")
     print("添加手册物品完成...")
 end
 

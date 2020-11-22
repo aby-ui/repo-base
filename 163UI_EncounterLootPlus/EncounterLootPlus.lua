@@ -1,4 +1,6 @@
 ELP_CURRENT_TIER = 9 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
+ELP_RING_SLOT = 12
+ELP_ALL_SLOT = 15
 
 if not ELP_LAST_RAID_IDX then
     EJ_SelectTier(ELP_CURRENT_TIER)

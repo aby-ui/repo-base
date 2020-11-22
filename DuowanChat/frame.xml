@@ -203,7 +203,7 @@
 
 	 <Frame name="DWCCopyFrame" parent="UIParent" movable="true" enableMouse="true" inherits="DialogBoxFrame">
 		<Size>
-			<AbsDimension x="500" y="400"/>
+			<AbsDimension x="800" y="600"/>
 		</Size>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -233,12 +233,12 @@
 					</Anchor>
 				</Anchors>
 				<Size>
-					<AbsDimension x="455" y="330"/>
+					<AbsDimension x="755" y="530"/>
 				</Size>
 				<ScrollChild>
 					<EditBox name="$parentText" letters="99999" multiLine="true" autoFocus="true" enableMouse="true">
 						<Size>
-						  <AbsDimension x="450" y="344"/>
+						  <AbsDimension x="750" y="544"/>
 						</Size>
 						<Scripts>
 							<OnEscapePressed>

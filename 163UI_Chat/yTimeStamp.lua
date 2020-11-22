@@ -16,13 +16,12 @@ local LINK_LEN = #LINK_NAME
 local ts = '|cff68ccef|H'..LINK_NAME..'|h%s|h|r %s'
 
 local AddMessage = function(self, text, ...)
-    if U1Chat_TimeStampFormat then
-        if(type(text) ~= 'string') then
-            text = tostring(text)
+    if U1Chat_TimeStampFormat ~= nil and U1Chat_TimeStampFormat ~= "" and CHAT_TIMESTAMP_FORMAT then
+        local date = BetterDate(CHAT_TIMESTAMP_FORMAT, time())
+        if text:sub(1, #date) == date then
+            text = format(ts, date, text:sub(#date + 1))
         end
-        text = format(ts, date(U1Chat_TimeStampFormat), text)
     end
-
     return origs[self](self, text, ...)
 end
 

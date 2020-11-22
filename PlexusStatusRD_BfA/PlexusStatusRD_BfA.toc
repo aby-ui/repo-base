@@ -1,14 +1,13 @@
 ## Interface: 90002
-## Version: v9.0.0
-## Title: GridStatusRaidDebuff(BfA)
+## Version: v9.1.2
+## Title: PlexusStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
-## Author: tptbk(Doadin-Malorne-US)
+## Author: Doadin
 ## Grid Author: Pastamancer & Maia
-## Dependencies: GridStatusRaidDebuff
+## Dependencies: PlexusStatusRaidDebuff
 ## OptionalDeps: Grid, Plexus
 ## X-Curse-Project-ID: 300448
 
-CheckCompat.lua
 Uldir.lua
 Azeroth.lua
 BattleofDazaralor.lua
