@@ -16,5 +16,5 @@ TheEternalPalace.lua
 Nyalotha.lua
 
 
-## Title: |cff880303[爱不易]|r Grid 团队减益BfA
+## Title: |cff880303[爱不易]|r Grid 团队减益8.0
 ## X-Vendor: AbyUI

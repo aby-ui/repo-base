@@ -9,3 +9,7 @@
 ## X-Curse-Project-ID: 411702
 
 CastleNathria.lua
+
+
+## Title: |cff880303[爱不易]|r Grid 团队减益9.0
+## X-Vendor: AbyUI
