@@ -18,6 +18,13 @@ end
 local f01 = CreateFrame("Frame")
 f01:RegisterEvent("VARIABLES_LOADED")
 f01:SetScript("OnEvent", function(self)
+    if U1DBG and not U1DBG.bossGuide9 then
+        U1DBG.bossGuide9 = true
+        if not U1IsAddonEnabled("AbyBossGuide") then
+            CoreScheduleTimer(false, 3, U1LoadAddOn, "AbyBossGuide")
+        end
+    end
+
     u1debug = DEBUG_MODE and CoreDebug or noop
     if U1DB and U1DB.configs then
         local c = U1DB.configs["163ui_moreoptions/cvar_nameplateMaxDistance"]
