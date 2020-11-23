@@ -1,8 +1,12 @@
 local AddonName, Addon = ...
-local Dominos = LibStub('AceAddon-3.0'):GetAddon('Dominos')
+local ParentAddon = LibStub('AceAddon-3.0'):GetAddon((_G.GetAddOnDependencies(AddonName)))
+
+function Addon:GetParent()
+    return ParentAddon
+end
 
 function Addon:CreateClass(...)
-    return Dominos:CreateClass(...)
+    return ParentAddon:CreateClass(...)
 end
 
 -- returns a function that generates unique names for frames
@@ -83,4 +87,4 @@ do
     end
 end
 
-Dominos.Options = Addon
+ParentAddon.Options = Addon

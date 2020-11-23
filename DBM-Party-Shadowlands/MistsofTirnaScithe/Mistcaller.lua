@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2402, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200927135611")
+mod:SetRevision("20201122213522")
 mod:SetCreatureID(164501)
 mod:SetEncounterID(2392)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -35,10 +35,9 @@ local specWarnFixate				= mod:NewSpecialWarningRun(321891, nil, nil, nil, 4, 2)
 local specWarnPattyCake				= mod:NewSpecialWarningInterrupt(321828, nil, nil, nil, 1, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
----Seems all timers are 45, including dodge ball, except when it isn't
-local timerDodgeBallCD				= mod:NewCDTimer(16.2, 321834, nil, nil, nil, 3)--16-45
-local timerFreezeTagCD				= mod:NewCDTimer(44.9, 321873, nil, nil, nil, 3)
-local timerPattyCakeCD				= mod:NewCDTimer(45.0, 321828, nil, nil, nil, 3)
+local timerDodgeBallCD				= mod:NewCDTimer(14.6, 321834, nil, nil, nil, 3)--14.6-18
+local timerFreezeTagCD				= mod:NewCDTimer(21.9, 321873, nil, nil, nil, 3)
+local timerPattyCakeCD				= mod:NewCDTimer(20.6, 321828, nil, nil, nil, 3)--20-26
 
 mod:AddNamePlateOption("NPAuraOnFixate", 321891)
 mod:AddSetIconOption("SetIconOnAdds", "ej21691", true, true, {1, 2, 3, 4})
@@ -75,7 +74,7 @@ function mod:SPELL_CAST_START(args)
 		--timerDodgeBallCD:Start()--Outside of first case, rest are too chaotic
 	elseif spellId == 321873 then
 		warnFreezeTag:Show()
---		timerFreezeTagCD:Start()
+		timerFreezeTagCD:Start()
 	elseif spellId == 321828 then
 		if self:IsTanking("player", "boss1", nil, nil, nil, true) then
 			--Only target of spell can interrupt it

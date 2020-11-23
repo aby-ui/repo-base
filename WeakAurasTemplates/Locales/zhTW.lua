@@ -34,7 +34,7 @@ local L = WeakAuras.L
 	L["Always shows the aura, turns red when out of range."] = "永遠顯示提醒效果，超出範圍時變成紅色。"
 	L["Back"] = "上一步"
 	L["Basic Show On Cooldown"] = "基本冷卻中顯示"
-	L["Basic Show On Ready"] = "基本可用時顯示"
+	L["Basic Show On Ready"] = "可使用時基本顯示"
 	L["Bloodlust/Heroism"] = "嗜血/英勇"
 	L["Bonded Buff"] = "附帶增益"
 	L["Buff"] = "增益"
@@ -48,8 +48,7 @@ local L = WeakAuras.L
 	L["Charge and Debuff Tracking"] = "次數和減益監控"
 	L["Charge and Duration Tracking"] = "次數和持續時間監控"
 	L["Charge Tracking"] = "次數監控"
-	--[[Translation missing --]]
-	L["Combustion Ready"] = "Combustion Ready"
+	L["Combustion Ready"] = "燃灼可使用"
 	L["Conduits"] = "導管"
 	L["Cooldown"] = "冷卻"
 	L["cooldown"] = "冷卻"
@@ -73,8 +72,7 @@ local L = WeakAuras.L
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 鍵一次建立多個提醒效果"
 	L["Keeps existing triggers intact"] = "完整保留已經存在的觸發事件"
 	L["Legendaries"] = "傳說"
-	--[[Translation missing --]]
-	L["Meteor Ready"] = "Meteor Ready"
+	L["Meteor Ready"] = "隕石可使用"
 	L["Nature"] = "自然"
 	L["Next"] = "下一步"
 	L["Only show the aura if the target has the debuff."] = "只在選取目標有減益時才顯示提醒效果。"
@@ -121,15 +119,12 @@ local L = WeakAuras.L
 	L["Show Only if Enchanted"] = "有附魔時顯示"
 	L["Show Only if on Cooldown"] = "只有在冷卻中時顯示"
 	L["Show Totem and Charge Information"] = "顯示圖騰和次數資訊"
-	--[[Translation missing --]]
-	L["Slow"] = "Slow"
+	L["Slow"] = "慢"
 	L["slow debuff"] = "緩速減益"
 	L["Stance"] = "姿勢/形態"
 	L["stun debuff"] = "暈眩減益"
-	--[[Translation missing --]]
-	L["Stun Debuff"] = "Stun Debuff"
-	--[[Translation missing --]]
-	L["Totem"] = "Totem"
+	L["Stun Debuff"] = "昏迷減益"
+	L["Totem"] = "圖騰"
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "監控次數和機率觸發，觸發時顯著標示，超出範圍時變成紅色，資源不足時變成藍色。"
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追蹤次數和增益，有增益作用時顯著標示，資源不足時變成藍色。"
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追蹤次數和減益，有減益作用時顯著標示，資源不足時變成藍色。"

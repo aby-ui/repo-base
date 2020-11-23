@@ -201,12 +201,11 @@ local function SetHooks()
 	
 	-- Blizzard
 	hooksecurefunc(C_SuperTrack, "SetSuperTrackedQuestID", function(questID)
-		if questID ~= superTrackedQuestID then
-			RemoveWaypoint(superTrackedQuestID)
-			if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
-				if AddWaypoint(questID) then
-					superTrackedQuestID = questID
-				end
+		local isSilet = (questID == superTrackedQuestID)
+		RemoveWaypoint(superTrackedQuestID)
+		if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
+			if AddWaypoint(questID, isSilet) then
+				superTrackedQuestID = questID
 			end
 		end
 	end)

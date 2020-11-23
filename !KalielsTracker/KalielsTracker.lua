@@ -60,13 +60,6 @@ KT.frame = KTF
 local OTF = ObjectiveTrackerFrame
 local OTFHeader = OTF.HeaderMenu
 
---OTF.BlocksFrame.PopupQuestHeader = CreateFrame("Frame", "PopupQuestHeader", OTF.BlocksFrame, "ObjectiveTrackerHeaderTemplate")
---AUTO_QUEST_POPUP_TRACKER_MODULE:SetHeader(OTF.BlocksFrame.PopupQuestHeader, TRACKER_HEADER_QUESTS, nil)
---AUTO_QUEST_POPUP_TRACKER_MODULE.blockOffsetX = -26
---AUTO_QUEST_POPUP_TRACKER_MODULE.blockOffsetY = -6
-
---QUEST_TRACKER_MODULE.lineTemplate = "KT_ObjectiveTrackerLineTemplate"
-
 --------------
 -- Internal --
 --------------
@@ -222,11 +215,11 @@ local function Init()
 	KT.stopUpdate = false
 	KT.inWorld = true
 
-	if dbChar.collapsed then
-		ObjectiveTracker_MinimizeButton_OnClick()
-	end
-
 	C_Timer.After(0, function()
+		if dbChar.collapsed then
+			ObjectiveTracker_MinimizeButton_OnClick()
+		end
+
 		KT:SetQuestsHeaderText()
 		KT:SetAchievsHeaderText()
 
@@ -2008,6 +2001,7 @@ function KT:SetText()
 end
 
 function KT:SaveHeader(module)
+	if not module.Header then return end
 	module.Header.Text:SetWidth(165)
 	module.Header.PlayAddAnimation = function() end
 	module.Header.LineGlow:Hide()
@@ -2365,7 +2359,7 @@ function KT:OnInitialize()
 	self:SetupOptions()
 	db = self.db.profile
 	dbChar = self.db.char
-	--KT:Alert_ResetIncompatibleProfiles("4.0.0-beta.1")
+	--KT:Alert_ResetIncompatibleProfiles("4.2.5")
 
 	-- Blizzard frame resets
 	OTF.IsUserPlaced = function() return true end
@@ -2395,11 +2389,11 @@ function KT:OnEnable()
 
 	self.QuestLog:Enable()
 	self.Filters:Enable()
-	if db.qiActiveButton then self.ActiveButton:Enable() end
 	if db.sIcecrownRares then self.IcecrownRares:Enable() end
 	if self.AddonPetTracker.isLoaded then self.AddonPetTracker:Enable() end
 	if self.AddonTomTom.isLoaded then self.AddonTomTom:Enable() end
 	self.AddonOthers:Enable()
+	if db.qiActiveButton then self.ActiveButton:Enable() end
 	--self.Help:Enable()
 
 	if self.db.global.version ~= self.version then

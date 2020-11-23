@@ -123,11 +123,15 @@ if IsAddOnLoaded("TomTom") then
                 PlaySound(SOUNDKIT.UI_MAP_WAYPOINT_CHAT_SHARE)
             else
                 PlaySound(SOUNDKIT.UI_MAP_WAYPOINT_CLICK_TO_PLACE)
+                if mapPoint then
+                    TomTom:RemoveWaypoint(mapPoint)
+                end
                 local mapID = KT.GetCurrentMapAreaID()
                 if mapID == eventMapID then
                     if mapID and x and y then
                         mapPoint = TomTom:AddWaypoint(mapID, x/100, y/100, {
                             title = rares[self.rareIdx][1],
+                            persistent = false,
                             from = KT.title,
                         })
                     end

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhTW.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhTW");
 
 if not L then
-    T._LoadedFiles["zhTW.lua"] = "2.7.8_beta_1";
+    T._LoadedFiles["zhTW.lua"] = "2.7.8";
     return;
 end;
 
@@ -197,6 +197,7 @@ L["NEW_VERSION_ALERT"] = [=[已檢測到新版本的 Decursive：|cFFEE7722%q|r 
 --------]=]
 L["NORMAL"] = "一般"
 L["NOSPELL"] = "沒有可用法術"
+L["NOTICE_FRAME_TEMPLATE"] = "|cFFFF0000Decursive - 注意|r %s "
 L["OPT_ABOLISHCHECK_DESC"] = "檢查玩家身上是否有淨化法術在運作。"
 L["OPT_ABOUT"] = "關於"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "添加一個自訂法術"
@@ -502,4 +503,4 @@ L["UNSTABLERELEASE"] = "不穩定釋出版"
 
 
 
-T._LoadedFiles["zhTW.lua"] = "2.7.8_beta_1";
+T._LoadedFiles["zhTW.lua"] = "2.7.8";

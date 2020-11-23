@@ -172,7 +172,7 @@ L["S_TUTORIAL_WORLDBUTTONS"] = [=[点击这里可在三种类型的摘要中循�
 L["S_TUTORIAL_WORLDMAPBUTTON"] = "点击这个按钮将向你显示破碎群岛地图。"
 L["S_UNKNOWNQUEST"] = "未知任务"
 L["S_WHATSNEW"] = "更新了什么？"
-L["S_WORLDBUTTONS_SHOW_TYPE"] = "显示概况"
+L["S_WORLDBUTTONS_SHOW_TYPE"] = "按类型排列"
 L["S_WORLDBUTTONS_SHOW_ZONE"] = "按区域排列"
 L["S_WORLDBUTTONS_TOGGLE_QUESTS"] = "切换任务"
 L["S_WORLDMAP_QUESTLOCATIONS"] = "显示任务位置"

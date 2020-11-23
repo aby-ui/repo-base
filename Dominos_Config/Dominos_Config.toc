@@ -8,12 +8,15 @@
 ## Dependencies: Dominos
 ## LoadOnDemand: 1
 localization.xml
+utility.lua
 widgets\include.xml
 options\dsl.lua
 options\main.lua
 options\general.lua
 options\profiles.lua
-options\overlay.lua
+overlay\ui.lua
+overlay\frames.lua
+overlay\help.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Dominos 设置界面

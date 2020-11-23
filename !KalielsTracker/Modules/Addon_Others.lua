@@ -26,17 +26,17 @@ local KTwarning = "  |cff00ffffAddon "..KT.title.." is active.  "
 
 -- Masque
 local function Masque_SetSupport()
-    if db.addonMasque and MSQ then
-        msqGroup1 = MSQ:Group(KT.title, "Quest Item Button")
-        msqGroup2 = MSQ:Group(KT.title, "Active Button")
-        hooksecurefunc(msqGroup2, "Enable", function(self)
+    if M.isLoadedMasque then
+        msqGroup1 = MSQ:Group(KT.title, "Quest Item Buttons")
+        msqGroup2 = MSQ:Group(KT.title, "Quest Active Button")
+        hooksecurefunc(msqGroup2, "__Enable", function(self)
             for button in pairs(self.Buttons) do
                 if button.Style then
                     button.Style:SetAlpha(0)
                 end
             end
         end)
-        hooksecurefunc(msqGroup2, "Disable", function(self)
+        hooksecurefunc(msqGroup2, "__Disable", function(self)
             for button in pairs(self.Buttons) do
                 if button.Style then
                     button.Style:SetAlpha(1)
@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "12.06", true) then
+    if KT:CheckAddOn("ElvUI", "12.13", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -73,7 +73,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.04", true) then
+    if KT:CheckAddOn("Tukui", "20.09", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -81,7 +81,7 @@ end
 
 -- RealUI
 local function RealUI_SetSupport()
-    if KT:CheckAddOn("nibRealUI", "2.2.3", true) then
+    if KT:CheckAddOn("nibRealUI", "2.2.5", true) then
         local R = _G.RealUI
         R:SetModuleEnabled("Objectives Adv.", false)
         -- Fade
@@ -114,7 +114,7 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "6.0.10", true) then
+    if KT:CheckAddOn("SpartanUI", "6.0.14", true) then
         SUI.DB.DisabledComponents.Objectives = true
         local module = SUI:GetModule("Component_Objectives")
         local bck_module_OnEnable = module.OnEnable
@@ -136,6 +136,7 @@ local function SpartanUI_SetSupport()
     end
 end
 
+-- Aurora
 local function Aurora_SetCompatibility()
     if IsAddOnLoaded("Aurora") then
         if not IsAddOnLoaded("Aurora_Extension") then
@@ -184,7 +185,11 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    KT:CheckAddOn("Masque", "9.0.2")
+    self.isLoadedMasque = (KT:CheckAddOn("Masque", "9.0.4") and db.addonMasque)
+
+    if self.isLoadedMasque then
+        KT:Alert_IncompatibleAddon("Masque", "9.0.4")
+    end
 end
 
 function M:OnEnable()

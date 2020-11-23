@@ -1119,6 +1119,37 @@ local options = {
 							end,
 							order = 6.42,
 						},
+						questAutoTrack = {
+							name = L"Auto Quest tracking",
+							desc = "Quests are automatically watched when accepted. Uses Blizzard's value \"autoQuestWatch\".\n"..warning,
+							type = "toggle",
+							confirm = true,
+							confirmText = warning,
+							get = function()
+								return GetCVarBool("autoQuestWatch")
+							end,
+							set = function(_, value)
+								SetCVar("autoQuestWatch", value)
+								ReloadUI()
+							end,
+							order = 6.43,
+						},
+						questProgressAutoTrack = {
+							name = L"Auto Quest progress tracking",
+							desc = "Quests are automatically watched when progress updated. Uses Blizzard's value \"autoQuestProgress\".\n"..warning,
+							type = "toggle",
+							width = "normal+half",
+							confirm = true,
+							confirmText = warning,
+							get = function()
+								return GetCVarBool("autoQuestProgress")
+							end,
+							set = function(_, value)
+								SetCVar("autoQuestProgress", value)
+								ReloadUI()
+							end,
+							order = 6.44,
+						},
 					},
 				},
 				sec7 = {
@@ -1574,6 +1605,7 @@ function GetModulesOptionsTable()
 	local numModules = #db.modulesOrder
 	local text
 	local defaultModule, defaultText
+	local numSkipped = 0
 	local args = {
 		descCurOrder = {
 			name = cTitle..L"Current Order",
@@ -1597,54 +1629,58 @@ function GetModulesOptionsTable()
 	}
 
 	for i, module in ipairs(db.modulesOrder) do
-		text = _G[module].Header.Text:GetText()
-		if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
-			text = text.." *"
-		elseif module == "UI_WIDGET_TRACKER_MODULE" then
-			text = "[ "..ZONE.." ]"
-		end
+		if _G[module].Header then
+			text = _G[module].Header.Text:GetText()
+			if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
+				text = text.." *"
+			elseif module == "UI_WIDGET_TRACKER_MODULE" then
+				text = "[ "..ZONE.." ]"
+			end
 
-		defaultModule = OTF.MODULES_UI_ORDER[i]
-		defaultText = defaultModule.Header.Text:GetText()
-		if defaultModule == SCENARIO_CONTENT_TRACKER_MODULE then
-			defaultText = defaultText.." *"
-		elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
-			defaultText = "[ "..ZONE.." ]"
-		end
+			defaultModule = numSkipped == 0 and OTF.MODULES_UI_ORDER[i] or OTF.MODULES_UI_ORDER[i - numSkipped]
+			defaultText = defaultModule.Header.Text:GetText()
+			if defaultModule == SCENARIO_CONTENT_TRACKER_MODULE then
+				defaultText = defaultText.." *"
+			elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
+				defaultText = "[ "..ZONE.." ]"
+			end
 
-		args["pos"..i] = {
-			name = " "..text,
-			type = "description",
-			width = "normal",
-			fontSize = "medium",
-			order = i,
-		}
-		args["pos"..i.."up"] = {
-			name = (i > 1) and "Up" or " ",
-			desc = text,
-			type = (i > 1) and "execute" or "description",
-			width = "half",
-			func = function()
-				MoveModule(i, "up")
-			end,
-			order = i + 0.1,
-		}
-		args["pos"..i.."down"] = {
-			name = (i < numModules) and "Down" or " ",
-			desc = text,
-			type = (i < numModules) and "execute" or "description",
-			width = "half",
-			func = function()
-				MoveModule(i)
-			end,
-			order = i + 0.2,
-		}
-		args["pos"..i.."default"] = {
-			name = "|T:1:55|t|cff808080"..defaultText,
-			type = "description",
-			width = "normal",
-			order = i + 0.3,
-		}
+			args["pos"..i] = {
+				name = " "..text,
+				type = "description",
+				width = "normal",
+				fontSize = "medium",
+				order = i,
+			}
+			args["pos"..i.."up"] = {
+				name = (i > 1) and "Up" or " ",
+				desc = text,
+				type = (i > 1) and "execute" or "description",
+				width = "half",
+				func = function()
+					MoveModule(i, "up")
+				end,
+				order = i + 0.1,
+			}
+			args["pos"..i.."down"] = {
+				name = (i < numModules) and "Down" or " ",
+				desc = text,
+				type = (i < numModules) and "execute" or "description",
+				width = "half",
+				func = function()
+					MoveModule(i)
+				end,
+				order = i + 0.2,
+			}
+			args["pos"..i.."default"] = {
+				name = "|T:1:55|t|cff808080"..defaultText,
+				type = "description",
+				width = "normal",
+				order = i + 0.3,
+			}
+		else
+			numSkipped = numSkipped + 1
+		end
 	end
 	return args
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SpiresofAscensionTrash", "DBM-Party-Shadowlands", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200927135611")
+mod:SetRevision("20201001160053")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true

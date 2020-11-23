@@ -1112,6 +1112,7 @@ WorldQuestList = CreateFrame("Frame","WorldQuestsListFrame",WorldMapFrame)
 WorldQuestList:SetPoint("TOPLEFT",WorldMapFrame,"TOPRIGHT",10,-4)
 WorldQuestList:SetSize(550,300)
 
+
 --WorldQuestList:SetClampedToScreen(true)
 --WorldQuestList:SetClampRectInsets(0, 0, 30, 0)
 
@@ -3379,6 +3380,7 @@ function UpdateAnchor(forceFreeMode)
 		(VWQL.Anchor == 3 or forceFreeMode) and 3 or	--free
 		4				--default
 
+    WorldQuestList:SetFrameStrata("LOW")
 	if mode == 1 then
 		WorldQuestList.filterDropDown:ClearAllPoints()
 		WorldQuestList.filterDropDown:SetPoint("TOPLEFT",WorldQuestList,"TOPRIGHT",1,0)

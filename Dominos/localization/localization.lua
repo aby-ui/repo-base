@@ -65,6 +65,7 @@ L.ShowOptionsTip = 'Right Click to show the options menu'
 L.ConfigMode = 'Configuration Mode'
 L.ConfigModeExit = 'Exit Config Mode'
 L.ConfigModeHelp = 'Drag any bar to move it. Right Click to configure. Middle Click or Shift-Right Click to toggle visibility.'
+L.ShowAlignmentGrid = "Show Alignment Grid"
 
 -- bar tooltips
 L.TipRollBar = 'Displays frames for rolling on items, when in a group.'

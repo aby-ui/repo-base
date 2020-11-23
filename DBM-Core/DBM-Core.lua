@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201120191257"),
+	Revision = parseCurseDate("20201123041314"),
 	DisplayVersion = "9.0.5 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 11, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -12114,7 +12114,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201120191257" then
+	if not revision or revision == "20201123041314" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

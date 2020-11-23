@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2020-03-19T23:14:08Z
+    This file was last updated on 2020-11-21T16:50:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -197,6 +197,10 @@ Go to |cFFFF0000WoWAce.com|r to get it!
 --------]=]
 L["NORMAL"] = "Normal"
 L["NOSPELL"] = "No spell available"
+L["NOTICE_FRAME_TEMPLATE"] = [=[|cFFFF0000Decursive - Notice|r
+
+%s
+]=]
 L["OPT_ABOLISHCHECK_DESC"] = "select whether units with an active 'Abolish' spell are shown and cured"
 L["OPT_ABOUT"] = "About"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "Add a custom spell / item"
@@ -505,4 +509,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.8_beta_1";
+T._LoadedFiles["enUS.lua"] = "2.7.8";

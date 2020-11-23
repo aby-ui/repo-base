@@ -72,3 +72,5 @@ L.TipVehicleBar = [[
 
 L.BarDisplayName = "%s Bar"
 L.ActionBarDisplayName = "动作条 %s"
+
+L.ShowAlignmentGrid = "显示布局网格"

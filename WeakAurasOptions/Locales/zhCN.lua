@@ -154,10 +154,8 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在群组中的友方玩家名字是有效的。"
 	L["Can be a UID (e.g., party1)."] = "可以是单位 ID（例如：party1）。"
 	L["Cancel"] = "取消"
-	--[[Translation missing --]]
-	L["Cast by Player Character"] = "Cast by Player Character"
-	--[[Translation missing --]]
-	L["Cast by Players"] = "Cast by Players"
+	L["Cast by Player Character"] = "玩家角色施放"
+	L["Cast by Players"] = "玩家施放"
 	L["Center"] = "中间"
 	L["Chat Message"] = "聊天信息"
 	L["Chat with WeakAuras experts on our Discord server."] = "在我们的Discord服务器上与WeakAuras专家聊天。"
@@ -432,8 +430,7 @@ Supports multiple entries, separated by commas
 	L["Invalid type for property '%s' in '%s'. Expected '%s'"] = "'%2$s'的属性'%1$s'类型非法，需要'%3$s'"
 	L["Inverse"] = "反向"
 	L["Inverse Slant"] = "反向倾斜"
-	--[[Translation missing --]]
-	L["Is Boss Debuff"] = "Is Boss Debuff"
+	L["Is Boss Debuff"] = "首领施放的减益效果"
 	L["Is Stealable"] = "可偷取"
 	L["Justify"] = "对齐"
 	L["Keep Aspect Ratio"] = "保持比例不变"
@@ -510,8 +507,7 @@ Supports multiple entries, separated by commas
 	L["On Hide"] = "图示隐藏时"
 	L["On Init"] = "初始化时"
 	L["On Show"] = "图示显示时"
-	--[[Translation missing --]]
-	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
+	L["Only Match auras cast by a player (not an npc)"] = "只匹配由玩家（而不是NPC）施放的光环"
 	L["Only match auras cast by people other than the player"] = "只匹配其它玩家施放的光环"
 	L["Only match auras cast by people other than the player or his pet"] = "只匹配由不是玩家和玩家宠物施放的光环"
 	L["Only match auras cast by the player"] = "只匹配玩家自己施放的光环"

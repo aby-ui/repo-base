@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8_beta_1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-11-12T11:34:16Z
+    This file was last updated on 2020-11-21T20:42:18Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1761,7 +1761,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.8_beta_1", "John Wellesz", ("2020-11-14T22:27:07Z"):sub(1,10),
+                                    "2.7.8", "John Wellesz", ("2020-11-21T20:45:59Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2191,7 +2191,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 local spellDesc = GetSpellDescription(spellID);
                 local desc;
 
-                D:Debug("Dealing with spell description for ", spellID);
+                --D:Debug("Dealing with spell description for ", spellID);
                 if spellID ~= 0 then
                     if spellDesc == "" then
                         if not C_Spell.IsSpellDataCached(spellID) then
@@ -3081,7 +3081,7 @@ do
             -- a delete button
             delete = {
                 type = 'execute',
-                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], D.GetSpellOrItemInfo(TN(info[#info - 1]))) end,
+                name = function(info) return ("%s %q"):format(L["OPT_DELETE_A_CUSTOM_SPELL"], D.GetSpellOrItemInfo(TN(info[#info - 1])) or "BAD SPELL!") end,
                 confirm = true,
                 width = 'double',
                 func = function (info)
@@ -3269,6 +3269,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.8_beta_1";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.8";
 
 -- Closer

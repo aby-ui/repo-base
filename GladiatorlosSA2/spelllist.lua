@@ -463,6 +463,7 @@
 			[309328] = "hex", -- Living Honey
 			--[207778] = "giftOfTheQueen",
 			[191634] = "stormkeeper",
+			[320137] = "stormkeeper",
 			[210714] = "Icefury", -- Icefury
 			
 			-- Warlock (Spell Casting)
@@ -775,7 +776,8 @@
 			--[209525] = "soothingMist",
 			--[205320] = "strikeOfTheWindlord",
 			[116844] = "ringOfPeace",
-			[202370] = "MightyOxKick", 
+			[202370] = "MightyOxKick",
+			[325216] = "bonedustbrew",
 			
 			-- Paladin (Cast Success)
 			[96231] = "rebuke",
@@ -793,6 +795,11 @@
 			[343527] = "ExecutionSentence",
 			[152262] = "Seraphim",
 			[343721] = "finalReckoning",
+			[316958] = "ashenhallow",
+			[328282] = "blessingofspring",
+			[328620] = "blessingofsummer",
+			[328622] = "blessingofautumn",
+			[328281] = "blessingofwinter",
 			
 			-- Priest (Cast Success)
 			[8122] = "fear4", 		-- Psychic Scream
@@ -820,6 +827,7 @@
 			[316262] = "thoughtsteal",
 			[327661] = "faeGuardians",
 			[313347] = "mindGames",
+			[325013] = "boonoftheascended",
 
 			-- Rogue (Cast Success)
 			[2094] = "blind",
@@ -871,6 +879,8 @@
 			[198838] = "protectionTotem",
 			[204336] = "grounding", -- Updated for Legion
 			[8143] = "TremorTotem", -- Tremor Totem!
+			[16191] = "manaTideTotem",
+			[324386] = "vesperTotem",
 			
 			-- Warlock (Cast Success)
 			[6789] = "mortalCoil",
@@ -904,6 +914,7 @@
 			[199892] = "CurseOfWeakness", -- Curse of Weakness
 			[199890] = "CurseOfTongues", -- Curse of Tongues
 			[80240] = "havoc",
+			[312321] = "scouringTithe",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",
@@ -922,6 +933,7 @@
 			[236320] = "warBanner",
 			[6544] = "heroicLeap",
 			[206572] = "DragonCharge", -- Dragon Charge
+			[325886] = "ancientAftershock",
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
 			[19647] = "lockout", -- Spell Lock
@@ -970,10 +982,7 @@ end
 
 --[[@TODO
 Record sound:
-- fleshcraft
 - fleshcraftDown
-- doorOfShadows
-- soulshape
 - soulshapeDown
 - purifyPotion
 - licheborne
@@ -982,18 +991,13 @@ Record sound:
 - transfusion
 - transfusionDown
 - raiseAbomination
-- abominationLimb     (Grabby hands?!)
+- abominationLimb     (Should really change this to grabbyhands lol)
 - abominationLimbDown
 - sinfulBrand
-- elysianDecree
-- theHunt
-- adaptiveSwarm
 - ravenousFrenzy
 - ravenousFrenzyDown
-- convokeTheSpirits
 - heartOfTheWild
 - heartOfTheWildDown
-- deathChakram
 - resonatingArrow
 - huntersMark
 - scareBeast
@@ -1004,12 +1008,11 @@ Record sound:
 - deathborne
 - deathborneDown
 - invokeSerpent
-- turnEvil
-- finalReckoning
-- thoughtsteal
 - faeGuardians
 - boonOfTheAscended
 - mindGames
-- sepsis
 - crimsonVial
+- manaTideTotem
+- vesperTotem
+- scouringTithe
 ]]

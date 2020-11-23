@@ -78,3 +78,4 @@ L.TipVehicleBar = [[
 
 L.BarDisplayName = "%s列"
 L.ActionBarDisplayName = "快捷列 %s"
+L.ShowAlignmentGrid = "顯示佈局網格"

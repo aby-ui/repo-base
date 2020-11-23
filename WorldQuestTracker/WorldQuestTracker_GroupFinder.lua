@@ -170,7 +170,7 @@ local GetDistance_Point = DF.GetDistance_Point
 						_G.LFGListApplicationDialog.TankButton.CheckButton:SetChecked(true)
 						_G.LFGListApplicationDialog.HealerButton.CheckButton:SetChecked(true)
 						_G.LFGListApplicationDialog.DamagerButton.CheckButton:SetChecked(true)
-						_G.LFGListApplicationDialog.Description:SetText("World Quest Tracker.")
+						--_G.LFGListApplicationDialog.Description:SetText("World Quest Tracker.")
 
 						_G.LFGListApplicationDialogSignUpButton_OnClick(_G.LFGListApplicationDialog.SignUpButton)
 					end

@@ -7,13 +7,11 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
-	--[[Translation missing --]]
-	L[" Debuff"] = " Debuff"
+	L[" Debuff"] = "减益效果"
 	L["<70% Mana"] = "<70%法力值"
 	L[">70% Mana"] = ">70%法力值"
 	L["Abilities"] = "技能"
-	--[[Translation missing --]]
-	L["Ability"] = "Ability"
+	L["Ability"] = "技能"
 	L["Add Triggers"] = "添加触发器"
 	L["Always Active"] = "总是激活"
 	L["Always Show"] = "总是显示"
@@ -38,40 +36,30 @@ local L = WeakAuras.L
 	L["Basic Show On Cooldown"] = "仅在冷却中显示"
 	L["Basic Show On Ready"] = "仅在可用时显示"
 	L["Bloodlust/Heroism"] = "嗜血/英勇"
-	--[[Translation missing --]]
-	L["Bonded Buff"] = "Bonded Buff"
-	--[[Translation missing --]]
-	L["Buff"] = "Buff"
+	L["Bonded Buff"] = "羁绊增益效果"
+	L["Buff"] = "增益效果"
 	L["buff"] = "增益效果"
 	L["Buff on Other"] = "其他单位的增益效果"
-	L["Buffs"] = "增益"
-	--[[Translation missing --]]
-	L["Build Up"] = "Build Up"
+	L["Buffs"] = "增益效果"
+	L["Build Up"] = "准备"
 	L["Cancel"] = "取消"
 	L["Cast"] = "施放"
 	L["Charge and Buff Tracking"] = "可用次数充能和增益效果追踪"
 	L["Charge and Debuff Tracking"] = "可用次数充能和减益效果追踪"
 	L["Charge and Duration Tracking"] = "充能和持续时间追踪"
 	L["Charge Tracking"] = "可用次数充能追踪"
-	--[[Translation missing --]]
-	L["Combustion Ready"] = "Combustion Ready"
-	--[[Translation missing --]]
-	L["Conduits"] = "Conduits"
-	--[[Translation missing --]]
-	L["Cooldown"] = "Cooldown"
+	L["Combustion Ready"] = "燃烧就绪"
+	L["Conduits"] = "导灵器"
+	L["Cooldown"] = "冷却"
 	L["cooldown"] = "冷却"
 	L["Cooldown Tracking"] = "冷却追踪"
 	L["Create Auras"] = "创建光环"
-	--[[Translation missing --]]
-	L["Debuff"] = "Debuff"
+	L["Debuff"] = "减益效果"
 	L["debuff"] = "减益效果"
 	L["Debuffs"] = "减益"
-	--[[Translation missing --]]
-	L["Empowered Buff"] = "Empowered Buff"
-	--[[Translation missing --]]
-	L["Fire"] = "Fire"
-	--[[Translation missing --]]
-	L["Frost"] = "Frost"
+	L["Empowered Buff"] = "强化增益效果"
+	L["Fire"] = "火焰"
+	L["Frost"] = "冰霜"
 	L["General"] = "一般"
 	L["Health"] = "生命值"
 	L["Highlight while active, red when out of range."] = "激活时高亮，超出距离是变红"
@@ -83,12 +71,9 @@ local L = WeakAuras.L
 	L["Highlight while spell is active."] = "当法术激活时高亮"
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 键来一次性创建多个光环"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
-	--[[Translation missing --]]
-	L["Legendaries"] = "Legendaries"
-	--[[Translation missing --]]
-	L["Meteor Ready"] = "Meteor Ready"
-	--[[Translation missing --]]
-	L["Nature"] = "Nature"
+	L["Legendaries"] = "传说装备"
+	L["Meteor Ready"] = "流星就绪"
+	L["Nature"] = "自然"
 	L["Next"] = "下一个"
 	L["Only show the aura if the target has the debuff."] = "只有在目标拥有减益效果时才显示此光环"
 	L["Only show the aura when the item is on cooldown."] = "只有当物品在冷却中时才显示此光环"
@@ -134,15 +119,12 @@ local L = WeakAuras.L
 	L["Show Only if Enchanted"] = "仅在已附魔时显示"
 	L["Show Only if on Cooldown"] = "仅在冷却中显示"
 	L["Show Totem and Charge Information"] = "显示图腾和可用次数充能信息"
-	--[[Translation missing --]]
-	L["Slow"] = "Slow"
+	L["Slow"] = "减速"
 	L["slow debuff"] = "减速"
 	L["Stance"] = "姿态"
 	L["stun debuff"] = "眩晕"
-	--[[Translation missing --]]
-	L["Stun Debuff"] = "Stun Debuff"
-	--[[Translation missing --]]
-	L["Totem"] = "Totem"
+	L["Stun Debuff"] = "击晕减益效果"
+	L["Totem"] = "图腾"
 	L["Track the charge and proc, highlight while proc is active, turns red when out of range, blue on insufficient resources."] = "追踪可用次数充能和触发，当触发时高亮显示，超出距离时变红显示，资源不足时变蓝显示"
 	L["Tracks the charge and the buff, highlight while the buff is active, blue on insufficient resources."] = "追踪可用次数和增益效果，当增益效果激活时高亮，当没有足够资源是变蓝显示"
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追踪可用次数和减益效果，当减益效果激活时高亮，当没有足够资源是变蓝显示"

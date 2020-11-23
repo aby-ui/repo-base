@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2387, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200927135611")
+mod:SetRevision("20201122213043")
 mod:SetCreatureID(164185)
 mod:SetEncounterID(2380)
 
@@ -36,7 +36,7 @@ local yellStoneShatteringLeap		= mod:NewYell(319592)
 local yellStoneShatteringLeapFades	= mod:NewShortFadesYell(319592)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-local timerStoneCallCD				= mod:NewCDTimer(37.6, 319733, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--37.6-49.19
+local timerStoneCallCD				= mod:NewCDTimer(37.6, 319733, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--37.6-49.19 (42-51 now? Or maybe health based)
 local timerStoneShatteringLeapCD	= mod:NewCDTimer(29.1, 319592, nil, nil, nil, 3)
 local timerCurseofStoneCD			= mod:NewCDTimer(29.1, 327411, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
 local timerBloodTorrentCD			= mod:NewCDTimer(16.9, 319702, nil, nil, nil, 2)--16.9 unless delayed by one of other casts
@@ -56,10 +56,10 @@ function mod:LeapTarget(targetname, uId, bossuid, scanningTime)
 end
 
 function mod:OnCombatStart(delay)
-	timerBloodTorrentCD:Start(9-delay)--SUCCESS
-	timerStoneCallCD:Start(14.9-delay)--START
+	timerBloodTorrentCD:Start(7.5-delay)--SUCCESS
+	timerStoneCallCD:Start(10.9-delay)--START
+	timerStoneShatteringLeapCD:Start(20.6-delay)--START
 	timerCurseofStoneCD:Start(21.3-delay)--SUCCESS
-	timerStoneShatteringLeapCD:Start(22.8-delay)--START
 	if self.Options.NPAuraOnStoneForm then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end

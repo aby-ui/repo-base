@@ -509,8 +509,7 @@ Supports multiple entries, separated by commas
 	L["On Hide"] = "消失時"
 	L["On Init"] = "初始化時"
 	L["On Show"] = "出現時"
-	--[[Translation missing --]]
-	L["Only Match auras cast by a player (not an npc)"] = "Only Match auras cast by a player (not an npc)"
+	L["Only Match auras cast by a player (not an npc)"] = "只符合玩家 (非 NPC) 施放的光環"
 	L["Only match auras cast by people other than the player"] = "只符合其他玩家施放的光環"
 	L["Only match auras cast by people other than the player or his pet"] = "只符合其他玩家施放的光環"
 	L["Only match auras cast by the player"] = "只符合玩家自己施放的光環"

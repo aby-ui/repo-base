@@ -124,6 +124,8 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Notification sounds"] = "提示音效"
     KT.L["Quest sounds"] = "任务音效"
     KT.L["Complete Sound"] = "完成任务提示音"
+    KT.L["Auto Quest tracking"] = "自动追踪新接任务"
+    KT.L["Auto Quest progress tracking"] = "自动追踪任务进度"
 
     KT.L["Order of Modules "] = "模块顺序"
     KT.L["Modules"] = "模块排序"

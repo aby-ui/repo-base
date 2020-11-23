@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Cannon", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200927135611")
+mod:SetRevision("20201001160053")
 
 mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS 102120",
