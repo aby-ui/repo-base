@@ -294,6 +294,13 @@ Simulationcraft.azeriteEssenceSlotsMinor = {
   2
 }
 
+Simulationcraft.covenants = {
+  [1] = 'kyrian',
+  [2] = 'venthyr',
+  [3] = 'night_fae',
+  [4] = 'necrolord',
+}
+
 ---- core.lua
 Simulationcraft = LibStub("AceAddon-3.0"):NewAddon(Simulationcraft, "SimulationcraftAbyUI", "AceConsole-3.0", "AceEvent-3.0") --aby
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
@@ -891,7 +898,7 @@ end
 function Simulationcraft:GetCovenantString()
   local covenantData = Simulationcraft.GetActiveCovenantData()
   if covenantData then
-    return 'covenant=' .. Tokenize(covenantData.name)
+    return 'covenant=' .. Simulationcraft.covenants[covenantData.ID]
   end
   return nil
 end

@@ -243,12 +243,12 @@ local function AddLootTooltip(tooltip, pin)
 		-- Add loot to the tooltip
 		if (next(itemsIDsFiltered) ~= nil) then
 			local line = tooltip:AddLine()
-			tooltip:AddSeparator(1.11)
+			tooltip:AddSeparator(1)
 			line = tooltip:AddLine()
 
 			local j
 			for i, itemInfo in ipairs(itemsIDsFiltered) do
-				local itemID, itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = itemInfo[1], itemInfo[2], itemInfo[3], itemInfo[4], itemInfo[5], itemInfo[6], itemInfo[7]
+				local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemInfo[1])
 			
 				j = (i - floor(i/10) * 10)
 				if (j == 0) then
@@ -269,12 +269,10 @@ local function AddLootTooltip(tooltip, pin)
 
 			-- fill with white spaces
 			if (j < 9) then
-				for k=j+1, 10 do
-					tooltip:SetCell(line, k, "", nil, "CENTER", 1, nil, nil, nil, nil, 24, 24)
-				end
+				tooltip:SetCell(line, j+1, "", nil, "LEFT", 10-j, nil, nil, nil, nil, 24 * (10 - j), 24 * (10 - j))
 			end
 
-			tooltip:AddSeparator(1.11)
+			tooltip:AddSeparator(1)
 		end
 	end
 end
@@ -282,7 +280,6 @@ end
 local function AddStateTooltip(tooltip, pin)
 	-- Separator
 	local line = tooltip:AddLine()
-	line = tooltip:AddLine()
 
 	if ((pin.POI.isNpc and not pin.POI.isDead) or (pin.POI.isContainer and not pin.POI.isOpened) or (pin.POI.isEvent and not pin.POI.isCompleted)) then
 		local text
@@ -334,7 +331,7 @@ end
 
 local function AddGuideTooltip(tooltip, pin)
 	-- Guide
-	local guide = nil
+	local guide = false
 	if (pin.POI.isNpc) then
 		guide = RSGuideDB.GetNpcGuide(pin.POI.entityID)
 	elseif (pin.POI.isContainer) then

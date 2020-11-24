@@ -1071,8 +1071,6 @@ function DF:NewButton (parent, container, name, member, w, h, func, param1, para
 	build_button (ButtonObject.button)
 	
 	ButtonObject.widget = ButtonObject.button
-
-	--ButtonObject.button:SetBackdrop ({bgFile = DF.folder .. "background", tileSize = 64, edgeFile = DF.folder .. "border_2", edgeSize = 10, insets = {left = 1, right = 1, top = 1, bottom = 1}})
 	ButtonObject.button:SetBackdropColor (0, 0, 0, 0.4)
 	ButtonObject.button:SetBackdropBorderColor (1, 1, 1, 1)
 	

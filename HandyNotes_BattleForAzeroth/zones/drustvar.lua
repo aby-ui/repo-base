@@ -259,6 +259,15 @@ map.nodes[22934948] = Rare({
     }
 }) -- Hyo'gi
 
+map.nodes[64928327] = Rare({
+    id=131735,
+    quest=52061,
+    note=L["idej_note"],
+    rewards={
+        Pet({id=2198, item=161081}) -- Taptaf
+    }
+}) -- Idej the Wise
+
 map.nodes[59245526] = Rare({
     id=127877,
     quest=48981,

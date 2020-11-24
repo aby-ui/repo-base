@@ -1758,6 +1758,8 @@ function Details.Database.StoreEncounter(combat)
 		local mybest2 = mybest[1] or 0
 		local myBestDps = mybest2 / onencounter.elapsed
 
+		--[12:18:37] Details!: error occurred on Details.Database.StoreEncounter(): Interface\AddOns\Details\core\gears.lua:1758: attempt to index local 'mybest' (a nil value)
+
 		if (mybest) then
 			local d_one = 0
 			if (myrole == "DAMAGER" or myrole == "TANK") then

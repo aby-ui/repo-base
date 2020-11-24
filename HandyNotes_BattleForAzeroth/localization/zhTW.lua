@@ -10,6 +10,7 @@ L["ancient_sarco_note"] = nil
 L["beshol_note"] = nil
 L["cottontail_matron_note"] = nil
 L["gluttonous_yeti_note"] = nil
+L["idej_note"] = nil
 L["seething_cache_note"] = nil
 L["the_caterer_note"] = nil
 L["vicemaul_note"] = nil
@@ -150,6 +151,12 @@ L["glowing_chest_5"] = "在洞穴，防衛鐵塔。"
 L["glowing_chest_6"] = "解開線條。"
 L["glowing_chest_7"] = "消掉四個藍色符文。"
 L["glowing_chest_8"] = "在屋頂上。防衛鐵塔。"
+
+L["prismatic_crystal_note"] = nil
+L["strange_crystal"] = nil
+L["strange_crystal_note"] = nil
+L["options_icons_prismatics"] = nil
+L["options_icons_prismatics_desc"] = nil
 
 L["slimy_cocoon"] = "軟泥的卵"
 L["ravenous_slime_note"] = "使用棱彩水晶控制小動物餵養軟泥。重複五天，直到它產生一個帶有寵物的卵。軟泥將一直持續到下一周重置。"

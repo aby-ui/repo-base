@@ -643,7 +643,7 @@ function DF:NewSplitBar (parent, container, name, member, w, h)
 		
 		SplitBarObject.statusbar:SetHeight (h or 200)
 		SplitBarObject.statusbar:SetWidth (w or 14)
-
+		
 		SplitBarObject.statusbar.MyObject = SplitBarObject
 		
 		SplitBarObject.textleft = _G [name .. "_TextLeft"]

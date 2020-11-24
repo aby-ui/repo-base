@@ -150,7 +150,7 @@ panel.opts = {
 	{ "check", "DontWarnMissing", L["Don't Warn About Missing Pets"], L["Don't display a popup when a team loads and a pet within the team can't be found."] },
 	{ "check", "DontConfirmHidePets", L["Don't Ask When Hiding Pets"], L["Don't ask for confirmation when hiding a pet.\n\nYou can view hidden pets in the 'Other' pet filter."] },
 	{ "check", "NoBackupReminder", L["Don't Remind About Backups"], L["Don't show a popup offering to backup teams every once in a while. Generally, the popup appears sometime after the number of teams increases by 50."] },
-	{ "check", "DontConfirmCaging", L["Don't Ask When Caging Pets"]..newIcon, L["Don't ask for confirmation when caging a pet."] },
+	{ "check", "DontConfirmCaging", L["Don't Ask When Caging Pets"]..newIcon, L["Don't ask for confirmation when putting a pet in a cage."] },
 	{ "header", L["Miscellaneous Options"], 6 },
 	{ "check", "ShowAfterBattle", L["Show After Pet Battle"], L["Show the Rematch window after leaving a pet battle."] },
 	{ "check", "ShowAfterPVEOnly", L["But Not After PVP Battle"], L["Since pets don't remain injured in PVP battles, don't show the window when leaving a PVP battle."], "ShowAfterBattle" },

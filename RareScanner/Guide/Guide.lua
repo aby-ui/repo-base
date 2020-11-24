@@ -270,6 +270,7 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP2] = { x = 0.4143, y = 0.3165, comment = AL["GUIDE_BOUNDING_SHROOM"] };
 	}; --Desiccated Moth
 	[171475] = { [RSConstants.FLAG] = { x = 0.4649, y = 0.7012, comment = AL["NOTE_171475_1"] } }; --Faerie Stash
+	[354662] = { [RSConstants.FLAG] = { x = 0.4649, y = 0.7012, comment = AL["NOTE_171475_1"] } }; --Elusive Faerie Cache
 	[353333] = { [RSConstants.FLAG] = { x = 0.4285, y = 0.6612, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Faerie Stash
 	[181164] = {
 		[RSConstants.STEP1] = { x = 0.508, y = 0.53, comment = AL["NOTE_181164_1"] };
@@ -418,6 +419,10 @@ private.CONTAINER_GUIDE = {
 	[357487] = { [RSConstants.PATH_START] = { x = 0.4142, y = 0.4497 } }; --Stylish Parasol
 	[351542] = { [RSConstants.FLAG] = { x = 0.747, y = 0.6259, comment = AL["NOTE_351542_1"] } }; --Secret Treasure
 	[354192] = { [RSConstants.PATH_START] = { x = 0.22, y = 0.41 } }; --Secret Treasure
+	[351544] = { 
+		[RSConstants.ENTRANCE] = { x = 0.5518, y = 0.3473 };
+		[RSConstants.FLAG..1] = { x = 0.5469, y = 0.346, comment = AL["NOTE_351544_1"] };
+	}; --Secret Treasure
 }
 
 ---============================================================================

@@ -5,6 +5,4 @@
   <Script file="zones\maldraxxus.lua"/>
   <Script file="zones\revendreth.lua"/>
   <Script file="zones\the_maw.lua"/>
-  <!-- prepatch only! -->
-  <Script file="zones\icecrown.lua"/>
 </Ui>

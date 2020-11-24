@@ -87,6 +87,7 @@ function RematchCompositeButton:OnPreEnter()
 	focusedButton = self -- set focus to this button
 	focusedTexture = nil
 	reticle:SetParent(self)
+    reticle:SetFrameLevel(self:GetFrameLevel())
 	reticle.Overlay:Hide()
 	reticle:Show() -- start up reticle if it's not started
 end
@@ -153,14 +154,24 @@ reticle:SetScript("OnUpdate",function(self,elapsed)
 					-- position reticle over the texture
 					self.Overlay:SetPoint("TOPLEFT", texture, "TOPLEFT")
 					self.Overlay:SetPoint("BOTTOMRIGHT", texture, "BOTTOMRIGHT")
+                    local drawLayer,textureSubLevel = texture:GetDrawLayer()
+                    self.Overlay:SetDrawLayer(drawLayer,textureSubLevel+1)
 					-- copy the texture to make it lighten the existing one
 					self.Overlay:SetTexture(texture:GetTexture())
 					self.Overlay:SetTexCoord(texture:GetTexCoord())
+					self.Overlay:SetVertexColor(0.75,0.75,0.75,1)
+					self.Overlay:SetDesaturated(true)
 					-- show reticle
 					self.Overlay:Show()
 					-- finally do an OnEnter of the focused texture
 					if onEnters[texture] then
 						onEnters[texture](texture)
+					end
+				else
+					-- check if texture has changed and update if so
+					local currentTexture = texture:GetTexture()
+					if self.Overlay:GetTexture()~=currentTexture then
+						self.Overlay:SetTexture(currentTexture)
 					end
 				end
 				return

@@ -846,7 +846,6 @@ local function move_janela (baseframe, iniciando, instancia, just_updating)
 			if (need_start) then --> se a inst�ncia n�o tiver sido aberta ainda
 
 				local lower_instance = _detalhes:GetLowerInstanceNumber()
-				--print (lower_instance, instancia_alvo.meu_id, DEATHGRAPHICS_BUTTON:GetParent():GetName())
 			
 				instancia_alvo:RestauraJanela (instancia_alvo.meu_id, true)
 				if (instancia_alvo:IsSoloMode()) then
@@ -2054,9 +2053,7 @@ local barra_scripts_onmouseup = function (self, button)
 				
 				return _detalhes:ReportSingleLine (self._instance, self)
 			end
-			
-			--print (self.minha_tabela)
-			-- /dump DetailsBarra_1_1.minha_tabela
+
 			if (not self.minha_tabela) then
 				return _detalhes:Msg ("this bar is waiting update.")
 			end
@@ -2636,6 +2633,7 @@ local function button_stretch_scripts (baseframe, backgrounddisplay, instancia)
 		instancia.rowframe:SetFrameStrata ("TOOLTIP")
 		
 		local _r, _g, _b, _a = baseframe:GetBackdropColor()
+
 		gump:GradientEffect ( baseframe, "frame", _r, _g, _b, _a, _r, _g, _b, 0.9, 1.5)
 		if (instancia.wallpaper.enabled) then
 			_r, _g, _b = baseframe.wallpaper:GetVertexColor()
@@ -4000,7 +3998,6 @@ function _detalhes:SetBarGrowDirection (direction)
 	else
 		for index = 1, #bars do
 			bars [index]:SetWidth (baseframe:GetWidth() + self.row_info.space.right)
-			--print (bars [index]:GetWidth(), baseframe:GetWidth())
 		end
 	end
 end
@@ -5041,9 +5038,6 @@ end
 
 -- ~autohide �utohide
 function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide, alphaAmount)
-
---print(entering_in_combat, "|", true_hide, "|", alphaAmount)
-
 	local amount, rowsamount, menuamount
 
 	--get the values
@@ -5083,8 +5077,6 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide, alpha
 		end
 		self.combat_changes_alpha = nil
 	end
-
-	--print ("baseframe:",amount,"rowframe:",rowsamount,"menu:",menuamount)
 	
 	--apply
 	if (true_hide and amount == 0) then
@@ -5220,7 +5212,6 @@ function _detalhes:InstanceColor (red, green, blue, alpha, no_save, change_statu
 		self:StatusBarColor (nil, nil, nil, alpha, true)
 	end
 
---	print (self.skin, self.meu_id)
 	local skin = _detalhes.skins [self.skin]
 	if (not skin) then --the skin isn't available any more
 		Details:Msg ("Skin " .. (self.skin or "?") .. " not found, changing to 'Dark Theme'.")
@@ -5228,15 +5219,6 @@ function _detalhes:InstanceColor (red, green, blue, alpha, no_save, change_statu
 		skin = _detalhes.skins ["Minimalistic"]
 		self.skin = "Minimalistic"
 	end
-	
-	--[[
-	self.baseframe.rodape.esquerdo:SetVertexColor (red, green, blue)
-		self.baseframe.rodape.esquerdo:SetAlpha (alpha)
-	self.baseframe.rodape.direita:SetVertexColor (red, green, blue)
-		self.baseframe.rodape.direita:SetAlpha (alpha)
-	self.baseframe.rodape.top_bg:SetVertexColor (red, green, blue)
-		self.baseframe.rodape.top_bg:SetAlpha (alpha)
-	--]]
 	
 	self.baseframe.cabecalho.ball_r:SetVertexColor (red, green, blue)
 		self.baseframe.cabecalho.ball_r:SetAlpha (alpha)
@@ -6245,8 +6227,6 @@ local build_segment_list = function (self, elapsed)
 					
 					segments_used = segments_used + 1
 
-					--print (thisCombat.is_boss.name, thisCombat.instance_type, _detalhes:GetRaidIcon (thisCombat.is_boss.mapid), thisCombat.is_boss.ej_instance_id)
-
 					if (thisCombat.is_mythic_dungeon_segment) then
 					
 						if (not isMythicDungeon) then
@@ -6915,6 +6895,7 @@ function _detalhes:ChangeSkin (skin_name)
 	local this_skin = _detalhes.skins [skin_name]
 
 	if (not this_skin) then
+		Details:Msg("error 0x4546", skin_name)
 		skin_name = _detalhes.default_skin_to_use
 		this_skin = _detalhes.skins [skin_name]
 	end
@@ -6927,7 +6908,6 @@ function _detalhes:ChangeSkin (skin_name)
 	if (not just_updating) then
 
 		--> skin updater
-		--print ("debug", self.meu_id, self.iniciada, self.baseframe, self.bgframe)
 		if (self.bgframe.skin_script) then
 			self.bgframe:SetScript ("OnUpdate", nil)
 			self.bgframe.skin_script = false
@@ -7090,7 +7070,7 @@ function _detalhes:ChangeSkin (skin_name)
 		self.baseframe.cabecalho.atributo_icon:SetPoint ("topright", self.baseframe.cabecalho.ball_point, "topright", icon_anchor[1], icon_anchor[2])
 		self:ChangeIcon()
 	end
-	
+
 ----------> lock alpha head	
 	
 	if (not this_skin.can_change_alpha_head) then
@@ -7112,10 +7092,10 @@ function _detalhes:ChangeSkin (skin_name)
 		self:SetBarBackdropSettings()
 		self:SetBarSpecIconSettings()
 		self:SetBarRightTextSettings()
-	
+
 	--> update toolbar
 		self:ToolbarSide()
-	
+
 	--> update stretch button
 		self:StretchButtonAnchor()
 	
@@ -7144,7 +7124,7 @@ function _detalhes:ChangeSkin (skin_name)
 		else
 			self:InstanceWallpaper (false)
 		end
-	
+
 	--> update instance color
 		self:InstanceColor()
 		self:SetBackgroundColor()
@@ -7725,7 +7705,7 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	if (type (enabled) ~= "boolean") then
 		enabled = self.attribute_text.enabled
 	end
-	
+
 	if (not pos_x) then
 		pos_x = self.attribute_text.anchor [1]
 	end
@@ -7753,7 +7733,10 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 		shadow = self.attribute_text.shadow
 	end
 	
-	if (type (timer_encounter) ~= "boolean") then
+	if (type(self.attribute_text.show_timer) ~= "boolean") then
+		self.attribute_text.show_timer = true
+	end
+	if (type(timer_encounter) ~= "boolean") then
 		timer_encounter = self.attribute_text.show_timer
 	end
 	
@@ -8278,7 +8261,7 @@ function _detalhes:ToolbarSide (side, only_update_anchors)
 		self.baseframe.UPFrameLeftPart:SetPoint ("topleft", self.baseframe, "bottomleft", 0, 0)
 
 	end
-	
+
 	if (only_update_anchors) then
 		--> ShowSideBars depends on this and creates a infinite loop
 		return
@@ -8286,10 +8269,10 @@ function _detalhes:ToolbarSide (side, only_update_anchors)
 	
 	--> update top menus
 	self:LeftMenuAnchorSide()
-	
+
 	self:StretchButtonAnchor()
-	
-	self:HideMainIcon()
+
+	self:HideMainIcon() --attribute menu reseting value
 	
 	if (self.show_sidebars) then
 		self:ShowSideBars()
@@ -8362,7 +8345,6 @@ function _detalhes:StretchButtonAnchor (side)
 end
 
 function _detalhes:MenuAnchor (x, y)
-
 	if (self.toolbar_side == 1) then --top
 		if (not x) then
 			x = self.menu_anchor [1]
@@ -8412,7 +8394,6 @@ function _detalhes:MenuAnchor (x, y)
 	end
 	
 	self:ToolbarMenuButtons()
-	
 end
 
 function _detalhes:HideMainIcon (value)
@@ -8435,7 +8416,6 @@ function _detalhes:HideMainIcon (value)
 			self.baseframe.cabecalho.ball:SetTexCoord (l, r, b, t)
 			local l, r, t, b = unpack (COORDS_LEFT_CONNECTOR_NO_ICON)
 			self.baseframe.cabecalho.emenda:SetTexCoord (l, r, b, t)
-		
 		end
 		
 		local skin = _detalhes.skins [self.skin]
@@ -8463,19 +8443,6 @@ function _detalhes:HideMainIcon (value)
 			self.baseframe.cabecalho.emenda:SetTexCoord (l, r, b, t)
 		end
 	end
-
-	if (_detalhes.skins [self.skin].icon_titletext_position) then
-		if (not value and self.attribute_text.enabled and self.attribute_text.side == self.toolbar_side) then
-			self.attribute_text.anchor [1] = _detalhes.skins [self.skin].icon_titletext_position [1]
-			self.attribute_text.anchor [2] = _detalhes.skins [self.skin].icon_titletext_position [2]
-			self:AttributeMenu()
-		elseif (value and self.attribute_text.enabled and self.attribute_text.side == self.toolbar_side) then
-			self.attribute_text.anchor [1] = _detalhes.skins [self.skin].instance_cprops.attribute_text.anchor [1]
-			self.attribute_text.anchor [2] = _detalhes.skins [self.skin].instance_cprops.attribute_text.anchor [2]
-			self:AttributeMenu()
-		end
-	end
-	
 end
 
 --> search key: ~desaturate

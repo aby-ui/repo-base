@@ -499,8 +499,7 @@ map.nodes[70552959] = PetBattle({
 
 local Totem = Class('Totem', NPC, {
     id=131154,
-    icon='flight_point',
-    scale=2,
+    icon='flight_point_y',
     group=ns.groups.PAKU_TOTEMS,
     note=L["totem_of_paku_note"]
 })

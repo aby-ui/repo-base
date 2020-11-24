@@ -1713,8 +1713,8 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			self.icon:SetBlendMode ("BLEND")
 		end
 		
-		local backdrop = {bgFile = DF.folder .. "background", tile = true, tileSize = 16,
-		insets = {left = 0, right = 0, top = 0, bottom = 0}, edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]], edgeSize = 10}
+		local backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tile = true, tileSize = 16,
+		insets = {left = 0, right = 0, top = 0, bottom = 0}, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1}
 		
 		for i = 0, 9 do 
 			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..(i+1), DF.IconPickFrame, "BackdropTemplate")
@@ -2033,12 +2033,14 @@ function DF:CreateSimplePanel (parent, w, h, title, name, panel_options, db)
 	local close = CreateFrame ("button", name and name .. "CloseButton", title_bar)
 	close:SetFrameLevel (DF.FRAMELEVEL_OVERLAY)
 	close:SetSize (16, 16)
-	close:SetNormalTexture (DF.folder .. "icons")
-	close:SetHighlightTexture (DF.folder .. "icons")
-	close:SetPushedTexture (DF.folder .. "icons")
-	close:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
-	close:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
-	close:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
+
+	close:SetNormalTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:SetHighlightTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:SetPushedTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:GetNormalTexture():SetDesaturated(true)
+	close:GetHighlightTexture():SetDesaturated(true)
+	close:GetPushedTexture():SetDesaturated(true)
+
 	close:SetAlpha (0.7)
 	close:SetScript ("OnClick", simple_panel_close_click)
 	f.Close = close
@@ -2065,7 +2067,7 @@ function DF:CreateSimplePanel (parent, w, h, title, name, panel_options, db)
 end
 
 local Panel1PxBackdrop = {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 64,
-edgeFile = DF.folder .. "border_3", edgeSize = 9, insets = {left = 2, right = 2, top = 3, bottom = 3}}
+edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, insets = {left = 2, right = 2, top = 3, bottom = 3}}
 
 local Panel1PxOnClickClose = function (self)
 	self:GetParent():Hide()
@@ -2075,9 +2077,9 @@ local Panel1PxOnToggleLock = function (self)
 		self.IsLocked = false
 		self:SetMovable (true)
 		self:EnableMouse (true)
-		self.Lock:GetNormalTexture():SetTexCoord (32/128, 48/128, 0, 1)
-		self.Lock:GetHighlightTexture():SetTexCoord (32/128, 48/128, 0, 1)
-		self.Lock:GetPushedTexture():SetTexCoord (32/128, 48/128, 0, 1)
+		self.Lock:GetNormalTexture():SetTexCoord (16/64, 32/64, 0, 1)
+		self.Lock:GetHighlightTexture():SetTexCoord (16/32, 32/64, 0, 1)
+		self.Lock:GetPushedTexture():SetTexCoord (16/64, 32/64, 0, 1)
 		if (self.OnUnlock) then
 			self:OnUnlock()
 		end
@@ -2088,9 +2090,9 @@ local Panel1PxOnToggleLock = function (self)
 		self.IsLocked = true
 		self:SetMovable (false)
 		self:EnableMouse (false)
-		self.Lock:GetNormalTexture():SetTexCoord (16/128, 32/128, 0, 1)
-		self.Lock:GetHighlightTexture():SetTexCoord (16/128, 32/128, 0, 1)
-		self.Lock:GetPushedTexture():SetTexCoord (16/128, 32/128, 0, 1)
+		self.Lock:GetNormalTexture():SetTexCoord (0/64, 16/64, 0, 1)
+		self.Lock:GetHighlightTexture():SetTexCoord (0/64, 16/64, 0, 1)
+		self.Lock:GetPushedTexture():SetTexCoord (0/64, 16/64, 0, 1)
 		if (self.OnLock) then
 			self:OnLock()
 		end
@@ -2205,22 +2207,28 @@ function DF:Create1PxPanel (parent, w, h, title, name, config, title_anchor, no_
 	
 	local close = CreateFrame ("button", name and name .. "CloseButton", f, "BackdropTemplate")
 	close:SetSize (16, 16)
-	close:SetNormalTexture (DF.folder .. "icons")
-	close:SetHighlightTexture (DF.folder .. "icons")
-	close:SetPushedTexture (DF.folder .. "icons")
-	close:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
-	close:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
-	close:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
+	close:SetNormalTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:SetHighlightTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:SetPushedTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	close:GetNormalTexture():SetDesaturated(true)
+	close:GetHighlightTexture():SetDesaturated(true)
+	close:GetPushedTexture():SetDesaturated(true)
 	close:SetAlpha (0.7)
 	
 	local lock = CreateFrame ("button", name and name .. "LockButton", f, "BackdropTemplate")
 	lock:SetSize (16, 16)
-	lock:SetNormalTexture (DF.folder .. "icons")
-	lock:SetHighlightTexture (DF.folder .. "icons")
-	lock:SetPushedTexture (DF.folder .. "icons")
-	lock:GetNormalTexture():SetTexCoord (32/128, 48/128, 0, 1)
-	lock:GetHighlightTexture():SetTexCoord (32/128, 48/128, 0, 1)
-	lock:GetPushedTexture():SetTexCoord (32/128, 48/128, 0, 1)
+	lock:SetNormalTexture ([[Interface\GLUES\CharacterSelect\Glues-AddOn-Icons]])
+	lock:SetHighlightTexture ([[Interface\GLUES\CharacterSelect\Glues-AddOn-Icons]])
+	lock:SetPushedTexture ([[Interface\GLUES\CharacterSelect\Glues-AddOn-Icons]])
+	lock:GetNormalTexture():SetDesaturated(true)
+	lock:GetHighlightTexture():SetDesaturated(true)
+	lock:GetPushedTexture():SetDesaturated(true)
+	--lock:GetNormalTexture():SetBlendMode("ADD")
+	--lock:GetHighlightTexture():SetBlendMode("ADD")
+	--lock:GetPushedTexture():SetBlendMode("ADD")
+	--lock:GetNormalTexture():SetTexCoord(73/256, 105/256, 64/128, 110/)
+	--lock:GetHighlightTexture():SetTexCoord(73/256, 105/256, 64/128, 110/)
+	--lock:GetPushedTexture():SetTexCoord(73/256, 105/256, 64/128, 110/)
 	lock:SetAlpha (0.7)
 	
 	close:SetPoint ("topright", f, "topright", -3, -3)
@@ -2438,12 +2446,12 @@ function DF:CreateOptionsButton (parent, callback, name)
 	
 	local b = CreateFrame ("button", name, parent, "BackdropTemplate")
 	b:SetSize (14, 14)
-	b:SetNormalTexture (DF.folder .. "icons")
-	b:SetHighlightTexture (DF.folder .. "icons")
-	b:SetPushedTexture (DF.folder .. "icons")
-	b:GetNormalTexture():SetTexCoord (48/128, 64/128, 0, 1)
-	b:GetHighlightTexture():SetTexCoord (48/128, 64/128, 0, 1)
-	b:GetPushedTexture():SetTexCoord (48/128, 64/128, 0, 1)
+	b:SetNormalTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	b:SetHighlightTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	b:SetPushedTexture ([[Interface\GossipFrame\BinderGossipIcon]])
+	b:GetNormalTexture():SetDesaturated(true)
+	b:GetHighlightTexture():SetDesaturated(true)
+	b:GetPushedTexture():SetDesaturated(true)
 	b:SetAlpha (0.7)
 	
 	b:SetScript ("OnClick", callback)
@@ -2466,10 +2474,6 @@ end
 function DF:CreateFeedbackButton (parent, callback, name)
 	local b = CreateFrame ("button", name, parent, "BackdropTemplate")
 	b:SetSize (12, 13)
-	b:SetNormalTexture (DF.folder .. "mail")
-	b:SetPushedTexture (DF.folder .. "mail")
-	b:SetHighlightTexture (DF.folder .. "mail")
-	
 	b:SetScript ("OnClick", callback)
 	b:SetScript ("OnEnter", function (self) 
 		GameCooltip2:Reset()
@@ -2479,12 +2483,14 @@ function DF:CreateFeedbackButton (parent, callback, name)
 	b:SetScript ("OnLeave", function (self) 
 		GameCooltip2:Hide()
 	end)
+
+	print("Framework:CreateFeedbackButton() is deprecated.")
 	
 	return b
 end
 
-local backdrop_fb_line = {bgFile = DF.folder .. "background", edgeFile = DF.folder .. "border_3", 
-tile = true, tileSize = 64, edgeSize = 8, insets = {left = 2, right = 2, top = 2, bottom = 2}}
+local backdrop_fb_line = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, 
+tile = true, tileSize = 64, insets = {left = 2, right = 2, top = 2, bottom = 2}}
 
 local on_enter_feedback = function (self)
 	self:SetBackdropColor (1, 1, 0, 0.5)
@@ -3877,6 +3883,9 @@ DF.TabContainerFunctions.SelectIndex = function (self, fixedParam, menuIndex)
 	end
 	
 	mainFrame.AllFrames[menuIndex]:Show()
+	if mainFrame.AllFrames[menuIndex].RefreshOptions then
+		mainFrame.AllFrames[menuIndex]:RefreshOptions()
+	end
 	if (mainFrame.ButtonSelectedBorderColor) then
 		mainFrame.AllButtons[menuIndex]:SetBackdropBorderColor (unpack (mainFrame.ButtonSelectedBorderColor))
 	end
@@ -5062,12 +5071,14 @@ function DF:CreateTitleBar (f, titleText)
 	
 	local closeButton = CreateFrame ("button", titleBar:GetName() and titleBar:GetName() .. "CloseButton" or nil, titleBar, "BackdropTemplate")
 	closeButton:SetSize (16, 16)
-	closeButton:SetNormalTexture (DF.folder .. "icons")
-	closeButton:SetHighlightTexture (DF.folder .. "icons")
-	closeButton:SetPushedTexture (DF.folder .. "icons")
-	closeButton:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
-	closeButton:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
-	closeButton:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
+
+	closeButton:SetNormalTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	closeButton:SetHighlightTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	closeButton:SetPushedTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+	closeButton:GetNormalTexture():SetDesaturated(true)
+	closeButton:GetHighlightTexture():SetDesaturated(true)
+	closeButton:GetPushedTexture():SetDesaturated(true)
+
 	closeButton:SetAlpha (0.7)
 	closeButton:SetScript ("OnClick", simple_panel_close_click) --upvalue from this file
 	
@@ -5120,6 +5131,7 @@ DF.IconRowFunctions = {
 			cooldownFrame:SetAllPoints()
 			cooldownFrame:EnableMouse (false)
 			cooldownFrame:SetFrameLevel (newIconFrame:GetFrameLevel()+1)
+			cooldownFrame:SetHideCountdownNumbers (self.options.surpress_blizzard_cd_timer)
 			cooldownFrame.noCooldownCount = self.options.surpress_tulla_omni_cc
 			
 			newIconFrame.CountdownText = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
@@ -5213,12 +5225,15 @@ DF.IconRowFunctions = {
 					
 					iconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", iconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
 					DF:SetFontSize (iconFrame.CountdownText, self.options.text_size)
+					DF:SetFontFace (iconFrame.CountdownText, self.options.text_font)
+					DF:SetFontOutline (iconFrame.CountdownText, self.options.text_outline)
 					iconFrame.CountdownText:SetText (formattedTime)
-					iconFrame.Cooldown:SetHideCountdownNumbers (true)
+					
 				else
 					iconFrame.CountdownText:Hide()
-					iconFrame.Cooldown:SetHideCountdownNumbers (false)
 				end
+				
+				iconFrame.Cooldown:SetHideCountdownNumbers (self.options.surpress_blizzard_cd_timer)
 			else
 				iconFrame.CountdownText:Hide()
 			end
@@ -5229,6 +5244,8 @@ DF.IconRowFunctions = {
 				iconFrame.Desc:SetTextColor (DF:ParseColors (descText.text_color or self.options.desc_text_color))
 				iconFrame.Desc:SetPoint(self.options.desc_text_anchor or "bottom", iconFrame, self.options.desc_text_rel_anchor or "top", self.options.desc_text_x_offset or 0, self.options.desc_text_y_offset or 2)
 				DF:SetFontSize (iconFrame.Desc, descText.text_size or self.options.desc_text_size)
+				DF:SetFontFace (iconFrame.Desc, self.options.desc_text_font)
+				DF:SetFontOutline (iconFrame.Desc, self.options.desc_text_outline)
 			else
 				iconFrame.Desc:Hide()
 			end
@@ -5239,6 +5256,8 @@ DF.IconRowFunctions = {
 				iconFrame.StackText:SetTextColor (DF:ParseColors (self.options.desc_text_color))
 				iconFrame.StackText:SetPoint (self.options.stack_text_anchor or "center", iconFrame, self.options.stack_text_rel_anchor or "bottomright", self.options.stack_text_x_offset or 0, self.options.stack_text_y_offset or 0)
 				DF:SetFontSize (iconFrame.StackText, self.options.stack_text_size)
+				DF:SetFontFace (iconFrame.StackText, self.options.stack_text_font)
+				DF:SetFontOutline (iconFrame.StackText, self.options.stack_text_outline)
 			else
 				iconFrame.StackText:Hide()
 			end
@@ -5319,6 +5338,8 @@ local default_icon_row_options = {
 	show_text = true,
 	text_color = {1, 1, 1, 1},
 	text_size = 12,
+	text_font = "Arial Narrow",
+	text_outline = "NONE",
 	text_anchor = "center",
 	text_rel_anchor = "center",
 	text_x_offset = 0,
@@ -5326,6 +5347,8 @@ local default_icon_row_options = {
 	desc_text = true,
 	desc_text_color = {1, 1, 1, 1},
 	desc_text_size = 7,
+	desc_text_font = "Arial Narrow",
+	desc_text_outline = "NONE",
 	desc_text_anchor = "bottom",
 	desc_text_rel_anchor = "top",
 	desc_text_x_offset = 0,
@@ -5333,6 +5356,8 @@ local default_icon_row_options = {
 	stack_text = true,
 	stack_text_color = {1, 1, 1, 1},
 	stack_text_size = 10,
+	stack_text_font = "Arial Narrow",
+	stack_text_outline = "NONE",
 	stack_text_anchor = "center",
 	stack_text_rel_anchor = "bottomright",
 	stack_text_x_offset = 0,
@@ -5345,6 +5370,7 @@ local default_icon_row_options = {
 	backdrop_border_color = {0, 0, 0, 1},
 	anchor = {side = 6, x = 2, y = 0},
 	grow_direction = 1, --1 = to right 2 = to left
+	surpress_blizzard_cd_timer = false,
 	surpress_tulla_omni_cc = false,
 }
 
@@ -6387,7 +6413,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 						
 						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
 						
-						local preset2_backdrop = {bgFile = DF.folder .. "background", edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+						local preset2_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 						local gray_table = {0.37, 0.37, 0.37, 0.95}
 						local black_table = {0.2, 0.2, 0.2, 1}
 						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
@@ -6485,7 +6511,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 						
 						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
 						
-						local preset2_backdrop = {bgFile = DF.folder .. "background", edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+						local preset2_backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 						local gray_table = {0.37, 0.37, 0.37, 0.95}
 						local black_table = {0.2, 0.2, 0.2, 1}
 						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
@@ -7276,6 +7302,11 @@ DF.StatusBarFunctions = {
 	end
 
 	healthBarMetaFunctions.UpdateHealth = function (self)
+		-- update max health regardless to avoid weird wrong values on UpdateMaxHealth sometimes
+		-- local maxHealth = UnitHealthMax (self.displayedUnit)
+		-- self:SetMinMaxValues (0, maxHealth)
+		-- self.currentHealthMax = maxHealth
+		
 		local health = UnitHealth (self.displayedUnit)
 		self.currentHealth = health
 		PixelUtil.SetStatusBarValue (self, health)

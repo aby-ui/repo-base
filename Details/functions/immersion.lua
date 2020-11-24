@@ -49,10 +49,19 @@ end)
 --store the GUID of the npc or player and point to the coords there the icon is
 local iconPath1 = [[Interface\AddOns\Details\images\special_bar_icons]]
 Details.Immersion.IconDatabase = {
-    ["167826"] = {file = iconPath1, iconId = 1, interest = true}, --lady jaina proudmoore
-    ["167827"] = {file = iconPath1, iconId = 2, interest = true}, --Thrall
+    ["167826"] = {file = iconPath1, iconId = 1, interest = true, class = "MAGE"}, --lady jaina proudmoore
+    ["167827"] = {file = iconPath1, iconId = 2, interest = true, class = "SHAMAN"}, --Thrall
 
+    ["157432"] = {file = iconPath1, iconId = 3, interest = true, class = "WARRIOR"}, --bloodletter phantoriax, a npc inside torghast
+    ["166148"] = {file = iconPath1, iconId = 4, interest = true, class = "WARRIOR"}, --sawn, a npc inside torghast
+    ["171996"] = {file = iconPath1, iconId = 5, interest = true, class = "WARRIOR"}, --kythekios, a npc inside torghast
+    ["172007"] = {file = iconPath1, iconId = 6, interest = true, class = "WARRIOR"}, --thelia, a npc inside torghast
+    ["172024"] = {file = iconPath1, iconId = 7, interest = true, class = "WARRIOR"}, --telethakas, a npc inside torghast
+    ["157406"] = {file = iconPath1, iconId = 8, interest = true, class = "WARRIOR"}, --renavyth, a npc inside torghast
+    ["166151"] = {file = iconPath1, iconId = 9, interest = true, class = "WARRIOR"}, --moriaz the red, a npc inside torghast
 }
+
+Details.Immersion.IconDatabase = {} --abyui TODO
 
 local customIconsDB = Details.Immersion.IconDatabase
 
@@ -75,6 +84,6 @@ end
 function Details.Immersion.IsNpcInteresting(aID)
     local npcImmersion = customIconsDB[aID]
     if (npcImmersion and npcImmersion.interest) then
-        return true
+        return true, npcImmersion.class
     end
 end

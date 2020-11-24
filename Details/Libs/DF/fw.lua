@@ -1,5 +1,6 @@
 
-local dversion = 211
+
+local dversion = 220
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -608,11 +609,30 @@ function DF:TruncateText (fontString, maxWidth)
 		if (string.len (text) <= 1) then
 			break
 		end
-	end	
+	end
+	
+	text = DF:CleanTruncateUTF8String(text)
+	fontString:SetText (text)
 end
 
-function DF:Msg (msg)
-	print ("|cFFFFFFAA" .. (self.__name or "FW Msg:") .. "|r ", msg)
+function DF:CleanTruncateUTF8String(text)
+	if type(text) == "string" and text ~= "" then
+		local b1 = (#text > 0) and strbyte(strsub(text, #text, #text)) or nil
+		local b2 = (#text > 1) and strbyte(strsub(text, #text-1, #text)) or nil
+		local b3 = (#text > 2) and strbyte(strsub(text, #text-2, #text)) or nil
+		if b1 and b1 >= 194 and b1 <= 244 then
+			text = strsub (text, 1, #text - 1)
+		elseif b2 and b2 >= 224 and b2 <= 244 then
+			text = strsub (text, 1, #text - 2)
+		elseif b3 and b3 >= 240 and b3 <= 244 then
+			text = strsub (text, 1, #text - 3)
+		end
+	end
+	return text
+end
+
+function DF:Msg (msg, ...)
+	print ("|cFFFFFFAA" .. (self.__name or "FW Msg:") .. "|r ", msg, ...)
 end
 
 function DF:GetNpcIdFromGuid (guid)
@@ -1445,7 +1465,7 @@ end
 					line_widgets_created = 0
 					max_x = 0
 				end
-				
+
 				if widget_created then
 					widget_created:Show()
 				end
@@ -2049,7 +2069,7 @@ end
 			options_frame:SetPoint ("center", UIParent, "center")
 			
 			options_frame:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,
-			edgeFile = DF.folder ..  "border_2", edgeSize = 32,
+			edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,
 			insets = {left = 1, right = 1, top = 1, bottom = 1}})
 			options_frame:SetBackdropColor (0, 0, 0, .7)
 
@@ -3379,13 +3399,13 @@ function DF:CoreDispatch (context, func, ...)
 		error (errortext)
 	end
 	
-	local okay, result1, result2, result3, result4 = pcall (func, ...)
-	
-	if (not okay) then
-		local stack = debugstack(2)
-		local errortext = "D!Framework (" .. context .. ") error: " .. result1 .. "\n====================\n" .. stack .. "\n====================\n"
-		error (errortext)
-	end
+	local okay, result1, result2, result3, result4 = xpcall(func, geterrorhandler(), ...)
+
+	--if (not okay) then --when using pcall
+		--local stack = debugstack(2)
+		--local errortext = "D!Framework (" .. context .. ") error: " .. result1 .. "\n====================\n" .. stack .. "\n====================\n"
+		--error (errortext)
+	--end
 	
 	return result1, result2, result3, result4
 end
@@ -4184,10 +4204,9 @@ end
 		end
 	}
 
-	function DF:SetEnvironment(func, environmentHandle)
+	function DF:SetEnvironment(func, environmentHandle, newEnvironment)
 		environmentHandle = environmentHandle or DF.DefaultSecureScriptEnvironmentHandle
-
-		local newEnvironment = {}
+		newEnvironment = newEnvironment or {}
 
 		setmetatable(newEnvironment, environmentHandle)
 		_G.setfenv(func, newEnvironment)

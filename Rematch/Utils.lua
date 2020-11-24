@@ -189,12 +189,6 @@ end
 -- yfrombottom is the y offset when frame is anchoring to the bottom (hidden controls of winrecord)
 local references = { ["RematchFrame"]=true, ["UIParent"]=true }
 
-local anchorFrame = CreateFrame("Frame",nil,UIParent,"BackdropTemplate")
-anchorFrame:SetSize(50,50)
---anchorFrame:SetBackdrop({bgFile="Interface\\DialogFrame\\UI-DialogBox-Background"})
-anchorFrame:SetBackdrop({bgFile="INterface\\Icons\\INV_Misc_QuestionMark"})
-anchorFrame:SetFrameStrata("FULLSCREEN")
-
 function rematch:SmartAnchor(frame,relativeTo,center,yfromtop,yfrombottom)
 	if not relativeTo then
 		relativeTo = RematchFrame -- will check if journal visible and change to it

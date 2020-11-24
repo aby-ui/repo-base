@@ -2243,7 +2243,7 @@ function KT:IsTrackerEmpty(noaddon)
 		self.IsTableEmpty(self.activeTasks) and
 		C_QuestLog.GetNumWorldQuestWatches() == 0 and
 		not self.inScenario and
-		not self.IcecrownRares:IsShown())
+		not (self.IcecrownRares and self.IcecrownRares:IsShown()))
 	if not noaddon then
 		result = (result and not self.AddonPetTracker:IsShown())
 	end
@@ -2389,7 +2389,7 @@ function KT:OnEnable()
 
 	self.QuestLog:Enable()
 	self.Filters:Enable()
-	if db.sIcecrownRares then self.IcecrownRares:Enable() end
+	if db.sIcecrownRares and self.IcecrownRares then self.IcecrownRares:Enable() end
 	if self.AddonPetTracker.isLoaded then self.AddonPetTracker:Enable() end
 	if self.AddonTomTom.isLoaded then self.AddonTomTom:Enable() end
 	self.AddonOthers:Enable()

@@ -14,7 +14,7 @@ ns.optionDefaults = {
         -- visibility
         hide_done_rares = false,
         hide_minimap = false,
-        maximized_enlarged = false,
+        maximized_enlarged = true,
         show_completed_nodes = false,
         use_char_achieves = false,
 

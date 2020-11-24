@@ -59,7 +59,11 @@ local _
 		return pairs (self._ActorTable)
 	end
 
-	function container_habilidades:PegaHabilidade (id, criar, token, cria_shadow)
+	function container_habilidades:GetOrCreateSpell(id, shouldCreate, token)
+		return self:PegaHabilidade (id, shouldCreate, token)
+	end
+
+	function container_habilidades:PegaHabilidade (id, criar, token)
 	
 		local esta_habilidade = self._ActorTable [id]
 		
@@ -68,7 +72,7 @@ local _
 		else
 			if (criar) then
 			
-				local novo_objeto = self.funcao_de_criacao (nil, id, shadow_objeto, token)
+				local novo_objeto = self.funcao_de_criacao (nil, id, nil, token)
 			
 				self._ActorTable [id] = novo_objeto
 				

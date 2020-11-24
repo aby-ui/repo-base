@@ -64,6 +64,9 @@ local function GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundIn
 	POI.isOpened = RSContainerDB.IsContainerOpened(containerID)
 	POI.isDiscovered = POI.isOpened or alreadyFoundInfo
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(containerID, mapID)
+	if (containerInfo) then
+		POI.worldmap = containerInfo.worldmap
+	end
 
 	-- Textures
 	if (POI.isOpened) then

@@ -1497,7 +1497,7 @@ end)
 		window.instance.StatusBar.left.options.textStyle = style
 		window.instance.StatusBar.center.options.textStyle = style
 		window.instance.StatusBar.right.options.textStyle = style
-		
+
 		if (window.instance.StatusBar.left.Refresh and type (window.instance.StatusBar.left.Refresh) == "function") then
 			window.instance.StatusBar.left:Refresh (window.instance.StatusBar.left)
 		end
@@ -1630,7 +1630,7 @@ end)
 		window.child = child
 		window.instance = child.instance
 		
-		_G.DetailsStatusBarOptionsTextStyleDropdown.MyObject:SetFixedParameter (child)
+		_G.DetailsStatusBarOptionsTextStyleDropdown.MyObject:Select (child.options.textStyle, true)
 		
 		_G.DetailsStatusBarOptionsTextColorTexture:SetColorTexture (child.options.textColor[1], child.options.textColor[2], child.options.textColor[3], child.options.textColor[4])
 

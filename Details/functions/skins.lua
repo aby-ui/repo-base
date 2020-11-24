@@ -1793,7 +1793,7 @@ local _
 				1, -- [3]
 				1, -- [4]
 			},
-			["toolbar_icon_file"] = "Interface\\AddOns\\Details\\images\\toolbar_icons",
+			["toolbar_icon_file"] = "Interface\\AddOns\\Details\\images\\toolbar_icons_2",
 			["bars_sort_direction"] = 1,
 			["fontstrings_width"] = 35,
 			["tooltip"] = {

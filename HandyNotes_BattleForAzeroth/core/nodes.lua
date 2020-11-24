@@ -84,17 +84,16 @@ glow is applyed to help highlight the node.
 --]]
 
 function Node:GetGlow(minimap)
-    if self._glow and (self._focus or self._hover) then
+    if self.glow and (self._focus or self._hover) then
         local _, scale, alpha = self:GetDisplayInfo(minimap)
-        self._glow.alpha = alpha
-        self._glow.scale = scale
+        self.glow.alpha = alpha
+        self.glow.scale = scale
         if self._focus then
-            self._glow.r, self._glow.g, self._glow.b = 0, 1, 0
+            self.glow.r, self.glow.g, self.glow.b = 0, 1, 0
         else
-            self._glow.r, self._glow.g, self._glow.b = 1, 1, 0
-            self._glow.a = 0.5
+            self.glow.r, self.glow.g, self.glow.b = 1, 1, 0
         end
-        return self._glow
+        return self.glow
     end
 end
 
@@ -198,10 +197,12 @@ function Node:Prepare()
     end
 
     -- initialize glow POI (if glow icon available)
-    local glow = ns.GetGlowPath(self.icon)
-    if glow then
-        local Glow = self.GlowClass or ns.poi.Glow
-        self._glow = Glow({ icon=glow })
+
+    if not self.glow then
+        local icon = ns.GetGlowPath(self.icon)
+        if icon then
+            self.glow = ns.poi.Glow({ icon=icon })
+        end
     end
 
     ns.PrepareLinks(self.label)
@@ -427,10 +428,10 @@ function Rare:GetGlow(minimap)
 
     if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
         local _, scale, alpha = self:GetDisplayInfo(minimap)
-        self._glow.alpha = alpha
-        self._glow.scale = scale
-        self._glow.r, self._glow.g, self._glow.b = 1, 0, 0
-        return self._glow
+        self.glow.alpha = alpha
+        self.glow.scale = scale
+        self.glow.r, self.glow.g, self.glow.b = 1, 0, 0
+        return self.glow
     end
 end
 
@@ -459,10 +460,10 @@ function Treasure:GetGlow(minimap)
 
     if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
         local _, scale, alpha = self:GetDisplayInfo(minimap)
-        self._glow.alpha = alpha
-        self._glow.scale = scale
-        self._glow.r, self._glow.g, self._glow.b = 1, 0, 0
-        return self._glow
+        self.glow.alpha = alpha
+        self.glow.scale = scale
+        self.glow.r, self.glow.g, self.glow.b = 1, 0, 0
+        return self.glow
     end
 end
 

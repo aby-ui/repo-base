@@ -691,6 +691,66 @@ map.nodes[28102670] = PetBattle({
 }) -- Giant Opaline Conch
 
 -------------------------------------------------------------------------------
+------------------------------ PRISMATIC CRYSTALS -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[55154877] = Node({
+    quest=56560,
+    icon='crystal_p',
+    scale=2,
+    label=L["strange_crystal"],
+    note=L["strange_crystal_note"],
+    group=ns.groups.PRISMATICS,
+    -- Hide node even when "Show completed" is enabled
+    IsEnabled = function () return not C_QuestLog.IsQuestFlaggedCompleted(56560) end
+}) -- A Curious Discovery
+
+local Crystal = Class('Crystal', Node, {
+    questDeps=56560,
+    icon='crystal_p',
+    scale=1.5,
+    label='{item:167893}',
+    note=L["prismatic_crystal_note"],
+    group=ns.groups.PRISMATICS
+})
+
+map.nodes[29503608] = Crystal()
+map.nodes[29993606] = Crystal() -- behind the Staghorn Reefwalker
+map.nodes[30033610] = Crystal()
+map.nodes[30712420] = Crystal() -- behind Urduu
+map.nodes[31313554] = Crystal()
+map.nodes[32143302] = Crystal()
+map.nodes[32163311] = Crystal()
+map.nodes[38721815] = Crystal()
+map.nodes[39105950] = Crystal()
+map.nodes[39675954] = Crystal()
+map.nodes[40647131] = Crystal()
+map.nodes[40806604] = Crystal()
+map.nodes[42211795] = Crystal()
+map.nodes[43435545] = Crystal()
+map.nodes[44722111] = Crystal() -- check top and bottom of waterfall
+map.nodes[45475368] = Crystal()
+map.nodes[45584064] = Crystal()
+map.nodes[45803810] = Crystal()
+map.nodes[45804241] = Crystal()
+map.nodes[46503610] = Crystal()
+map.nodes[46805213] = Crystal()
+map.nodes[47236905] = Crystal()
+map.nodes[47668550] = Crystal()
+map.nodes[48272815] = Crystal()
+map.nodes[48358625] = Crystal()
+map.nodes[50117263] = Crystal()
+map.nodes[50656934] = Crystal()
+map.nodes[52235182] = Crystal() -- tucked among the glowing blue bubbles
+map.nodes[52905270] = Crystal()
+map.nodes[70312481] = Crystal()
+map.nodes[71363134] = Crystal()
+map.nodes[71562605] = Crystal()
+map.nodes[71962251] = Crystal()
+map.nodes[72294746] = Crystal()
+map.nodes[73405050] = Crystal()
+
+-------------------------------------------------------------------------------
 ------------------------------------ SLIMES -----------------------------------
 -------------------------------------------------------------------------------
 

@@ -45,5 +45,5 @@ U1RegisterAddon("Details_DataStorage", { title = "信息存储模块", protected
 U1RegisterAddon("Details_EncounterDetails", { title = "首领模块", });
 U1RegisterAddon("Details_RaidCheck", { title = "团队检查模块", });
 U1RegisterAddon("Details_Streamer", { title = "主播模块", });
---U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", });
---U1RegisterAddon("Details_Vanguard", { title = "坦克模块", });
+U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", });
+U1RegisterAddon("Details_Vanguard", { title = "坦克模块", });

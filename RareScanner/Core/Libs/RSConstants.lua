@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 29
-RSConstants.CURRENT_LOOT_DB_VERSION = 41
+RSConstants.CURRENT_DB_VERSION = 30
+RSConstants.CURRENT_LOOT_DB_VERSION = 42
 
 ---============================================================================
 -- Special events
@@ -42,7 +42,6 @@ RSConstants.CACHE_ALL_COMPLETED_QUEST_IDS_TIMER = 60 --1 minute
 RSConstants.FIND_HIDDEN_QUESTS_TIMER = 5 --5 seconds after killing a NPC or opening a container
 RSConstants.CHECK_RESPAWN_BY_QUEST_TIMER = 150 --2.5 minutes
 RSConstants.CHECK_RESPAWNING_BY_LASTSEEN_TIMER = 60 --1 minute
-RSConstants.CLEAR_ALREADY_FOUND_VIGNETTE_TIMER = 150; -- 2.5 minutes to rescan for the same entity
 RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER = 1; -- 1 seconds
 
 ---============================================================================
@@ -67,7 +66,8 @@ RSConstants.PROFILE_DEFAULTS = {
 			enableWaypointsSupport = false,
 			autoWaypoints = false,
 			showMaker = true,
-			marker = 8
+			marker = 8,
+			rescanTimer = 5
 		},
 		sound = {
 			soundPlayed = "Horn",

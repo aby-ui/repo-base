@@ -1585,6 +1585,26 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 			Details:Dump(exportedValues)
 		end
 
+	elseif (msg == "coach") then
+		if (not UnitIsGroupLeader("player")) then
+			Details:Msg("you aren't the raid leader.")
+			return
+		end
+
+		Details.coach.enabled = not Details.coach.enabled
+
+		if (Details.coach.enabled) then
+			Details:Msg("coach enabled, good luck!")
+			Details:Msg("[raid leader] stay outside the raid.")
+			Details:Msg("[assistants] at least one player inside the raid need to have assistant.")
+			Details:Msg("[players] have an updated version of Details!.")
+			Details.Coach.Server.EnableCoach()
+			
+		else
+			Details:Msg("coach disabled.")
+			Details.Coach.Disable()
+		end
+
 	elseif (msg == "9") then
 		print ("skin:", Details.skin)
 		print ("current profile:", _detalhes:GetCurrentProfileName())

@@ -589,7 +589,7 @@ local DuneRider = Class('DuneRider', Collectible, {
     group=ns.groups.DUNE_RIDER,
     rewards={
         Achievement({id=13018, criteria={
-            {id=1, qty=true, suffix=" "..L["planks_ridden"]}
+            {id=1, qty=true, suffix=L["planks_ridden"]}
         }})
     },
     IsCompleted = function (self)

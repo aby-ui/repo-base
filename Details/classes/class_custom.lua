@@ -1,14 +1,14 @@
 --> customized display script
-	
+
 	local _detalhes = 		_G._detalhes
 	local gump = 			_detalhes.gump
 	local _
-	
+
 	_detalhes.custom_function_cache = {}
-	
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> local pointers
-	
+
 	local _cstr = string.format --lua local
 	local _math_floor = math.floor --lua local
 	local _table_sort = table.sort --lua local
@@ -24,7 +24,7 @@
 	local _unpack = unpack --lua local
 	local _type = type --lua local
 	local _pcall = pcall -- lua local
-	
+
 	local _GetSpellInfo = _detalhes.getspellinfo -- api local
 	local _IsInRaid = IsInRaid -- api local
 	local _IsInGroup = IsInGroup -- api local
@@ -32,34 +32,34 @@
 	local _GetNumPartyMembers = GetNumPartyMembers or GetNumSubgroupMembers -- api local
 	local _GetNumRaidMembers = GetNumRaidMembers or GetNumGroupMembers -- api local
 	local _GetUnitName = GetUnitName -- api local
-	
+
 	local _string_replace = _detalhes.string.replace --details api
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
-	
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
 
 	local atributo_custom = _detalhes.atributo_custom
 	atributo_custom.mt = {__index = atributo_custom}
-	
+
 	local combat_containers = {
 		["damagedone"] = 1,
 		["healdone"] = 2,
 	}
-	
+
 	--> hold the mini custom objects
 	atributo_custom._InstanceActorContainer = {}
 	atributo_custom._InstanceLastCustomShown = {}
 	atributo_custom._InstanceLastCombatShown = {}
 	atributo_custom._TargetActorsProcessed = {}
-	
+
 	local ToKFunctions = _detalhes.ToKFunctions
 	local SelectedToKFunction = ToKFunctions [1]
 	local FormatTooltipNumber = ToKFunctions [8]
 	local TooltipMaximizedMethod = 1
 	local UsingCustomRightText = false
 	local UsingCustomLeftText = false
-	
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> core
 
@@ -78,35 +78,35 @@
 
 		--> save the custom name in the instance
 		instance.customName = custom_object:GetName()
-		
+
 		--> get the container holding the custom actor objects for this instance
 		local instance_container = atributo_custom:GetInstanceCustomActorContainer (instance)
-		
+
 		local last_shown = atributo_custom._InstanceLastCustomShown [instance:GetId()]
 		if (last_shown and last_shown ~= custom_object:GetName()) then
 			instance_container:WipeCustomActorContainer()
 		end
 		atributo_custom._InstanceLastCustomShown [instance:GetId()] = custom_object:GetName()
-		
+
 		local last_combat_shown = atributo_custom._InstanceLastCombatShown [instance:GetId()]
 		if (last_combat_shown and last_combat_shown ~= combat) then
 			instance_container:WipeCustomActorContainer()
 		end
 		atributo_custom._InstanceLastCombatShown [instance:GetId()] = combat
-		
+
 		--> declare the main locals
 		local total = 0
 		local top = 0
 		local amount = 0
-		
-		--> check if is a custom script
+
+		--> check if is a custom script (if has .script)
 		if (custom_object:IsScripted()) then
 
 			--> be save reseting the values on every refresh
 			instance_container:ResetCustomActorContainer()
-		
+
 			local func
-			
+
 			if (_detalhes.custom_function_cache [instance.customName]) then
 				func = _detalhes.custom_function_cache [instance.customName]
 			else
@@ -155,20 +155,20 @@
 				_detalhes:EndRefresh (instance, 0, combat, combat [1])
 			end
 			
-			okey, total, top, amount = _pcall (func, combat, instance_container, instance)
+			local okey, _total, _top, _amount = _pcall (func, combat, instance_container, instance)
 			if (not okey) then
 				_detalhes:Msg ("|cFFFF9900error on custom display function|r:", total)
 				return _detalhes:EndRefresh (instance, 0, combat, combat [1])
 			end
 			
-			total = total or 0
-			top = top or 0
-			amount = amount or 0
+			total = _total or 0
+			top = _top or 0
+			amount = _amount or 0
 			
-		else
+		else --does not have a .script
 			--> get the attribute
-			local attribute = custom_object:GetAttribute()
-			
+			local attribute = custom_object:GetAttribute() --"damagedone"
+
 			--> get the custom function (actor, source, target, spellid)
 			local func = atributo_custom [attribute]
 			
@@ -178,7 +178,6 @@
 
 			--> build container
 			total, top, amount = atributo_custom:BuildActorList (func, custom_object.source, custom_object.target, custom_object.spellid, combat, combat_container, container_index, instance_container, instance, custom_object)
-
 		end
 
 		if (custom_object:IsSpellTarget()) then
@@ -317,8 +316,12 @@
 				end
 			end
 
-			for _, actor in _ipairs (combat_container) do 
+			for _, actor in _ipairs (combat_container) do
 				if (actor.grupo) then
+					if (not func) then
+						Details:Msg("error on class_custom 'func' is invalid, backtrace:", debugstack())
+						return
+					end
 					local actortotal = func (_, actor, source, target, spellid, combat, instance_container)
 
 					if (actortotal > 0) then

@@ -59,14 +59,9 @@ local function BootstrapDevelopmentEnvironment()
         order = 103,
     }
 
-    -- Initialize a history for quest ids so we still have a record after /reload
-    if _G[ADDON_NAME.."DB"]['quest_id_history'] == nil then
-        _G[ADDON_NAME.."DB"]['quest_id_history'] = {}
-    end
-    local history = _G[ADDON_NAME.."DB"]['quest_id_history']
-
     -- Print debug messages for each quest ID that is flipped
     local QTFrame = CreateFrame('Frame', ADDON_NAME.."QT")
+    local history = ns.GetDatabaseTable('quest_id_history')
     local lastCheck = GetTime()
     local quests = {}
     local changed = {}
@@ -84,7 +79,7 @@ local function BootstrapDevelopmentEnvironment()
                 for id = 0, max_quest_id do
                     local s = C_QuestLog.IsQuestFlaggedCompleted(id)
                     if s ~= quests[id] then
-                        changed[#changed + 1] = {'Quest', id, 'changed:', tostring(quests[id]), '=>', tostring(s)}
+                        changed[#changed + 1] = {time(), id, quests[id], s}
                         quests[id] = s
                     end
                 end
@@ -93,7 +88,7 @@ local function BootstrapDevelopmentEnvironment()
                     -- ids to flip state, we do not want to report on those
                     for i, args in ipairs(changed) do
                         table.insert(history, 1, args)
-                        DebugQuest(unpack(args))
+                        DebugQuest('Quest', args[2], 'changed:', args[3], '=>', args[4])
                     end
                 end
                 if #history > 100 then
@@ -162,6 +157,27 @@ local function BootstrapDevelopmentEnvironment()
         print("NO MATCH FOR: /mountid "..name)
     end
 
+end
+
+-------------------------------------------------------------------------------
+
+-- Debug function that prints entries from the quest id history
+
+_G[ADDON_NAME..'QuestHistory'] = function (count)
+    local history = ns.GetDatabaseTable('quest_id_history')
+    if #history == 0 then return print('Quest ID history is empty') end
+    for i = 1, (count or 10) do
+        if i > #history then break end
+        local time, id, old, new, _
+        if history[i][1] == 'Quest' then
+            _, id, _, old, _, new = unpack(history[i])
+            time = 'MISSING'
+        else
+            time, id, old, new = unpack(history[i])
+            time = date('%H:%M:%S', time)
+        end
+        print(time, '::', id, '::', old, '=>', new)
+    end
 end
 
 -------------------------------------------------------------------------------

@@ -76,7 +76,6 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	end
 
 	-- Add tooltips to ingame vignettes
-	local ingamePOIs = {}
 	for pin in self:GetMap():EnumeratePinsByTemplate("VignettePinTemplate") do
 		if (pin:GetObjectGUID()) then
 			local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
@@ -129,7 +128,6 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					if (RSGeneralDB.HasGuideActive(foundPOI.entityID)) then
 						ShowInGameVignetteGuide(pin)
 					end
-					tinsert(ingamePOIs, foundPOI.entityID)
 				end
 			end
 		end
@@ -150,16 +148,14 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			end
 		end
 
-		-- If we have already added a tooltip on a current vignette, filter the POI
-		for _, ingamePOI in ipairs(ingamePOIs) do
-			if (POI.isContainer and POI.entityID == ingamePOI) then
-				filtered = true
-			elseif (POI.isGroup) then
-				for _, subPOI in ipairs(POI.POIs) do
-					if (subPOI.isContainer and subPOI.entityID == ingamePOI) then
-						filtered = true
-						break
-					end
+		-- If the container is only available when shown in the world map, there is no need to fill the map with useless icons
+		if (POI.isContainer and POI.worldmap) then
+			filtered = true
+		elseif (POI.isGroup) then
+			for _, subPOI in ipairs(POI.POIs) do
+				if (subPOI.isContainer and subPOI.worldmap) then
+					filtered = true
+					break
 				end
 			end
 		end

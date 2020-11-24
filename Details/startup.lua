@@ -53,6 +53,8 @@ function Details:StartMeUp() --I'll never stop!
 			self:InitializeRunCodeWindow()
 			self:InitializePlaterIntegrationWindow()
 			self:InitializeMacrosWindow()
+
+			--self:InitializeCDTrackerWindow()
 			
 		--custom window
 			self.custom = self.custom or {}
@@ -459,11 +461,17 @@ function Details:StartMeUp() --I'll never stop!
 		C_Timer.After(2, reset_player_detail_window)
 	end
 	
+	--coach feature startup
+	Details.Coach.StartUp()
+
 	--enforce to show 6 abilities on the tooltip
 	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
 
 	--force the group edit be always enabled when Details! starts
 	_detalhes.options_group_edit = true
+
+	--remove standard skin on 9.0.1
+		_detalhes.standard_skin = false
 	
 	--enforce to use the new animation code
 	if (_detalhes.streamer_config) then

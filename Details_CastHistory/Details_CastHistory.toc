@@ -1,9 +1,0 @@
-## Interface: 90002
-## Title: Details! Cast History (plugin)
-## Notes: Record the history of casts for each player in the group
-## RequiredDeps: Details
-
-Details_CastHistory.lua
-
-
-## X-Vendor: AbyUI

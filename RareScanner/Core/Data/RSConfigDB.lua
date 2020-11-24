@@ -19,6 +19,14 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 -- Timers options
 ---============================================================================
 
+function RSConfigDB.GetRescanTimer()
+	return private.db.general.rescanTimer
+end
+
+function RSConfigDB.SetRescanTimer(value)
+	private.db.general.rescanTimer = value
+end
+
 function RSConfigDB.GetAutoHideButtonTime()
 	return private.db.display.autoHideButton
 end

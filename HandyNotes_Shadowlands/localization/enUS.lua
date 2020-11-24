@@ -405,25 +405,3 @@ L["options_icons_bonus_event"] = "Bonus Events"
 L["options_icons_bonus_event_desc"] = "Display locations of bonus events."
 L["options_icons_riftstone"] = "Chaotic Riftstones"
 L["options_icons_riftstone_desc"] = "Display the locations of chaotic riftstone teleporters."
-
--------------------------------------------------------------------------------
------------------------------------ ICECROWN ----------------------------------
--------------------------------------------------------------------------------
-
-L["prepatch_intro"] = "Complete the intro quests for the Shadowlands prepatch event to unlock bosses in this zone."
-L["icecrown_rares"] = "All bosses spawn in a fixed order on a 10 minute interval. Each can be looted multiple times a day!"
-L["next_spawn"] = "Next spawn at %s local time."
-
-local ORIG = ns.color.Orange("Originally in %s.")
-
-L["orig_atk"] = ORIG:format(EJ_GetInstanceInfo(271))
-L["orig_azn"] = ORIG:format(EJ_GetInstanceInfo(272))
-L["orig_dtk"] = ORIG:format(EJ_GetInstanceInfo(273))
-L["orig_fos"] = ORIG:format(EJ_GetInstanceInfo(280))
-L["orig_hor"] = ORIG:format(EJ_GetInstanceInfo(276))
-L["orig_icc"] = ORIG:format(EJ_GetInstanceInfo(758))
-L["orig_nax"] = ORIG:format(EJ_GetInstanceInfo(754))
-L["orig_pos"] = ORIG:format(EJ_GetInstanceInfo(278))
-L["orig_tot"] = ORIG:format(EJ_GetInstanceInfo(284))
-L["orig_utk"] = ORIG:format(EJ_GetInstanceInfo(285))
-L["orig_utp"] = ORIG:format(EJ_GetInstanceInfo(286))

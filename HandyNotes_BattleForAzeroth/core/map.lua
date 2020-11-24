@@ -172,12 +172,16 @@ MinimapDataProvider.facing = GetPlayerFacing()
 MinimapDataProvider.pins = {}
 MinimapDataProvider.pool = {}
 MinimapDataProvider.minimap = true
+MinimapDataProvider.updateTimer = 0
 
 function MinimapDataProvider:ReleaseAllPins()
     for i, pin in ipairs(self.pins) do
-        self.pool[pin] = true
-        pin:OnReleased()
-        pin:Hide()
+        if pin.acquired then
+            self.pool[pin] = true
+            pin.acquired = false
+            pin:OnReleased()
+            pin:Hide()
+        end
     end
 end
 
@@ -192,6 +196,7 @@ function MinimapDataProvider:AcquirePin(template, ...)
         pin:Hide()
         self.pins[#self.pins + 1] = pin
     end
+    pin.acquired = true
     pin:OnAcquired(...)
 end
 
@@ -224,13 +229,18 @@ function MinimapDataProvider:RefreshAllData()
     end
 end
 
+function MinimapDataProvider:RefreshAllRotations()
+    for i, pin in ipairs(self.pins) do
+        if pin.acquired then pin:UpdateRotation() end
+    end
+end
+
 function MinimapDataProvider:OnUpdate()
     local facing = GetPlayerFacing()
     if facing ~= self.facing then
-        if GetCVar('rotateMinimap') == '1' then
-            self:RefreshAllData()
-        end
         self.facing = facing
+        self:RefreshAllRotations()
+        self.updateTimer = 0
     end
 end
 
@@ -243,9 +253,7 @@ end
 function MinimapPinMixin:OnAcquired(poi, ...)
     local mapID = HBD:GetPlayerZone()
     local x, y = poi:Draw(self, ...)
-    if GetCVar('rotateMinimap') == '1' then
-        self.texture:SetRotation(self.texture:GetRotation() + math.pi*2 - self.provider.facing)
-    end
+    if GetCVar('rotateMinimap') == '1' then self:UpdateRotation() end
     HBDPins:AddMinimapIconMap(MinimapPinsKey, self, mapID, x, y, true)
 end
 
@@ -256,8 +264,17 @@ function MinimapPinMixin:OnReleased()
     end
 end
 
+function MinimapPinMixin:UpdateRotation()
+    -- If the pin has a rotation, its original value will be stored in the
+    -- `rotation` attribute. Update to accommodate player facing.
+    if self.rotation == nil then return end
+    self.texture:SetRotation(self.rotation + math.pi*2 - self.provider.facing)
+end
+
 MinimapDataProvider:SetScript('OnUpdate', function ()
-    MinimapDataProvider:OnUpdate()
+    if GetCVar('rotateMinimap') == '1' then
+        MinimapDataProvider:OnUpdate()
+    end
 end)
 
 ns.addon:RegisterEvent('MINIMAP_UPDATE_ZOOM', function (...)

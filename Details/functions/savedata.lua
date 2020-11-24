@@ -31,16 +31,17 @@ function _detalhes:SaveLocalInstanceConfig()
 		local a1, a2 = instance:GetDisplay()
 		
 		local t = {
-			pos = table_deepcopy (instance:GetPosition()), 
+			pos = table_deepcopy (instance:GetPosition()),
 			is_open = instance:IsEnabled(),
-			attribute = a1,
-			sub_attribute = a2,
-			mode = instance:GetMode(),
-			segment = instance:GetSegment(),
+			attribute = a1 or 1,
+			sub_attribute = a2 or 1,
+			modo = instance:GetMode() or 2,
+			mode = instance:GetMode() or 2,
+			segment = instance:GetSegment() or 0,
 			snap = table_deepcopy (instance.snap),
 			horizontalSnap = instance.horizontalSnap,
 			verticalSnap = instance.verticalSnap,
-			sub_atributo_last = instance.sub_atributo_last,
+			sub_atributo_last = instance.sub_atributo_last or {1, 1, 1, 1, 1},
 			isLocked = instance.isLocked,
 			last_raid_plugin = instance.last_raid_plugin
 		}
@@ -48,6 +49,7 @@ function _detalhes:SaveLocalInstanceConfig()
 		if (t.isLocked == nil) then
 			t.isLocked = false
 		end
+		
 		if (_detalhes.profile_save_pos) then
 			local cprofile = _detalhes:GetProfile()
 			local skin = cprofile.instances [instance:GetId()]

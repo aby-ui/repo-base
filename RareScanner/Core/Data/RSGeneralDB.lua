@@ -350,14 +350,24 @@ end
 
 function RSGeneralDB.SetButtonPositionCoordinates(x, y)
 	if (x and y) then
-		private.dbchar.scannerXPos = x
-		private.dbchar.scannerYPos = y
+		private.db.scannerXPos = x
+		private.db.scannerYPos = y
 	end
 end
 
 function RSGeneralDB.GetButtonPositionCoordinates()
+	-- Previous settings based on character database
 	if (private.dbchar.scannerXPos and private.dbchar.scannerYPos) then
-		return private.dbchar.scannerXPos, private.dbchar.scannerYPos
+		if (not private.db.scannerXPos or not private.db.scannerYPos) then
+			RSGeneralDB.SetButtonPositionCoordinates(private.dbchar.scannerXPos, private.dbchar.scannerYPos)
+		end
+		private.dbchar.scannerXPos = nil
+		private.dbchar.scannerYPos = nil
+	end
+	
+	-- Current settings based on profiles database
+	if (private.db.scannerXPos and private.db.scannerYPos) then
+		return private.db.scannerXPos, private.db.scannerYPos
 	end
 
 	return nil

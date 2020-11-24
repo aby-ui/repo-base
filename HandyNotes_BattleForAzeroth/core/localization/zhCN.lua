@@ -66,8 +66,6 @@ L["known"] = "已获得"
 L["missing"] = "未获得"
 L["unobtainable"] = "无法获得"
 L["unlearnable"] = "无法解锁"
-L["A"] = "生" -- available/alive
-L["D"] = "死" -- dead/defeated
 L["defeated"] = "已击杀"
 L["undefeated"] = "未击杀"
 
@@ -111,7 +109,7 @@ L["options_visibility_settings"] = "可见性"
 L["options_general_settings"] = "通用"
 L["options_show_completed_nodes"] = "显示已完成"
 L["options_show_completed_nodes_desc"] = "显示全部项即使它们今天已被拾取或完成。"
-L["options_toggle_hide_done_rare"] = "隐藏所有拾取已解锁的稀有。"
+L["options_toggle_hide_done_rare"] = "隐藏所有拾取已解锁的稀有"
 L["options_toggle_hide_done_rare_desc"] = "隐藏所有拾取已解锁的稀有。"
 L["options_toggle_hide_minimap"] = "隐藏小地图上的所有图标"
 L["options_toggle_hide_minimap_desc"] = "在小地图上隐藏此插件的所有图标，只会在世界地图上显示。"
@@ -144,7 +142,6 @@ L["options_reset_poi_colors_desc"] = "重置上面的颜色为预设。"
 ----------------------------------- TOOLTIP -----------------------------------
 
 L["options_tooltip_settings"] = "提示"
-L["options_tooltip_settings_desc"] = "提示"
 L["options_toggle_show_loot"] = "显示拾取"
 L["options_toggle_show_loot_desc"] = "在提示中加入拾取信息"
 L["options_toggle_show_notes"] = "显示注释"
@@ -153,7 +150,6 @@ L["options_toggle_show_notes_desc"] = "在提示中添加注释"
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L["options_dev_settings"] = "开发"
-L["options_dev_settings_desc"] = "开发者选项"
 L["options_toggle_show_debug_map"] = "除错地图 ID"
 L["options_toggle_show_debug_map_desc"] = "显示地图除错信息"
 L["options_toggle_show_debug_quest"] = "除错任务 ID"

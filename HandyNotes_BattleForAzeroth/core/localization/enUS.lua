@@ -66,8 +66,6 @@ L["known"] = "Known"
 L["missing"] = "Missing"
 L["unobtainable"] = "Unobtainable"
 L["unlearnable"] = "Unlearnable"
-L["A"] = "A" -- available/alive
-L["D"] = "D" -- dead/defeated
 L["defeated"] = "Defeated"
 L["undefeated"] = "Undefeated"
 
@@ -144,7 +142,6 @@ L["options_reset_poi_colors_desc"] = "Reset the above colors to their defaults."
 ----------------------------------- TOOLTIP -----------------------------------
 
 L["options_tooltip_settings"] = "Tooltip"
-L["options_tooltip_settings_desc"] = "Tooltip"
 L["options_toggle_show_loot"] = "Show Loot"
 L["options_toggle_show_loot_desc"] = "Add loot information to the tooltip"
 L["options_toggle_show_notes"] = "Show Notes"
@@ -153,7 +150,6 @@ L["options_toggle_show_notes_desc"] = "Add helpful notes to the tooltip where av
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L["options_dev_settings"] = "Development"
-L["options_dev_settings_desc"] = "Development settings"
 L["options_toggle_show_debug_map"] = "Debug Map IDs"
 L["options_toggle_show_debug_map_desc"] = "Show debug information for maps"
 L["options_toggle_show_debug_quest"] = "Debug Quest IDs"

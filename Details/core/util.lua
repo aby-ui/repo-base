@@ -63,6 +63,18 @@
 			end
 		end
 	end
+
+	function Details:GetRaidLeader()
+		if (IsInRaid()) then
+			for i = 1, GetNumGroupMembers() do
+				local name, rank = GetRaidRosterInfo(i)
+				if (rank == 2) then
+					return name, "raid" .. i
+				end
+			end
+		end
+		return
+	end
 	
 	function _detalhes:UnpackDeathTable (t)
 		local deathevents = t[1]
@@ -841,7 +853,13 @@ end
 		_detalhes:BrokerTick()
 		_detalhes:HealthTick()
 		
-		if ((_detalhes.zone_type == "pvp" and _detalhes.use_battleground_server_parser) or _detalhes.zone_type == "arena" or _InCombatLockdown()) then
+		if (Details.Coach.Server.IsEnabled()) then
+			if (Details.debug) then
+				print("coach server is enabled, can't leave combat...")
+			end
+			return true
+
+		elseif ((_detalhes.zone_type == "pvp" and _detalhes.use_battleground_server_parser) or _detalhes.zone_type == "arena" or _InCombatLockdown()) then
 			return true
 			
 		elseif (_UnitAffectingCombat("player")) then
@@ -861,7 +879,8 @@ end
 				end
 			end
 		end
-		
+
+	
 		--> don't leave the combat if is in the argus encounter ~REMOVE on 8.0
 		--[=[
 		if (_detalhes.encounter_table and _detalhes.encounter_table.id == 2092) then
@@ -875,6 +894,12 @@ end
 		--mythic dungeon test
 		if (_detalhes.MythicPlus.Started and _detalhes.mythic_plus.always_in_combat) then
 			return true
+		end
+
+		if (not Details.Coach.Server.IsEnabled()) then
+			if (Details.debug) then
+				Details:Msg("coach is disabled, the combat is now over!")
+			end
 		end
 
 		_detalhes:SairDoCombate()

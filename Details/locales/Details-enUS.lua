@@ -3,9 +3,6 @@ if not L then return end
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-L["STRING_OPTIONSMENU_TITLEBAR"] = "Title Bar"
-L["STRING_OPTIONSMENU_WINDOWBODY"] = "Window Body"
-
 L["ABILITY_ID"] = "ability id"
 L["STRING_"] = ""
 L["STRING_ABSORBED"] = "Absorbed"
@@ -470,7 +467,7 @@ L["STRING_OPTIONS_BAR_SPACING"] = "Spacing"
 L["STRING_OPTIONS_BAR_SPACING_DESC"] = "Gap size between each bar."
 L["STRING_OPTIONS_BAR_TEXTURE_DESC"] = "Texture used on the top of the bar."
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM"] = "Custom Text Enabled"
-L["STRING_OPTIONS_BARLEFTTEXTCUSTOM_DESC"] = "When enabled, left text is formated following the rules in the box."
+L["STRING_OPTIONS_BARLEFTTEXTCUSTOM_DESC"] = "Use a custom  text, edit the text by clicking the the button below."
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM2"] = ""
 L["STRING_OPTIONS_BARLEFTTEXTCUSTOM2_DESC"] = [=[|cFFFFFF00{data1}|r: generally represents the player position number.
 
@@ -513,7 +510,7 @@ L["STRING_OPTIONS_BARSTART_DESC"] = [=[When disabled the top texture starts at t
 This is useful when using an icon pack with transparent areas.]=]
 L["STRING_OPTIONS_BARUR_ANCHOR"] = "Fast Updates"
 L["STRING_OPTIONS_BARUR_DESC"] = "When enabled, DPS and HPS values are updated just a little bit faster than usual."
-L["STRING_OPTIONS_BG_ALL_ALLY"] = "Show All"
+L["STRING_OPTIONS_BG_ALL_ALLY"] = "Battleground Show Enemies"
 L["STRING_OPTIONS_BG_ALL_ALLY_DESC"] = [=[When enabled, enemy players are also shown when the window is in Group Mode.
 
 |cFFFFFF00Important|r: changes are applied after the next time entering combat.]=]
@@ -843,7 +840,8 @@ L["STRING_OPTIONS_MINIMAP_ACTION2"] = "Reset Segments"
 L["STRING_OPTIONS_MINIMAP_ACTION3"] = "Show/Hide Windows"
 L["STRING_OPTIONS_MINIMAP_ANCHOR"] = "Minimap:"
 L["STRING_OPTIONS_MINIMAP_DESC"] = "Show or Hide minimap icon."
-
+L["STRING_OPTIONS_MISCTITLE"] = "Miscellaneous Settings"
+L["STRING_OPTIONS_MISCTITLE2"] = "These control several options."
 L["STRING_OPTIONS_NICKNAME"] = "Nickname"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[Set a nickname for you.
 
@@ -907,7 +905,7 @@ L["STRING_OPTIONS_PLUGINS_NAME"] = "Name"
 L["STRING_OPTIONS_PLUGINS_OPTIONS"] = "Options"
 L["STRING_OPTIONS_PLUGINS_RAID_ANCHOR"] = "Raid Plugins"
 L["STRING_OPTIONS_PLUGINS_SOLO_ANCHOR"] = "Solo Plugins"
-L["STRING_OPTIONS_PLUGINS_TOOLBAR_ANCHOR"] = "Toolbar Plugins"
+L["STRING_OPTIONS_PLUGINS_TOOLBAR_ANCHOR"] = "Titlebar Plugins"
 L["STRING_OPTIONS_PLUGINS_VERSION"] = "Version"
 L["STRING_OPTIONS_PRESETNONAME"] = "Give a name to your preset."
 L["STRING_OPTIONS_PRESETTOOLD"] = "This preset is too old and cannot be loaded with this version of Details!."
@@ -973,7 +971,7 @@ L["STRING_OPTIONS_REALMNAME_DESC"] = [=[When enabled, the character realm name i
 |cFFFFFF00Disabled|r: Charles-Netherwing
 |cFFFFFF00Enabled|r: Charles]=]
 L["STRING_OPTIONS_REPORT_ANCHOR"] = "Report:"
-L["STRING_OPTIONS_REPORT_HEALLINKS"] = "Helpful Spell Links"
+L["STRING_OPTIONS_REPORT_HEALLINKS"] = "Healing Spell Links"
 L["STRING_OPTIONS_REPORT_HEALLINKS_DESC"] = [=[When sending a report and this option is enabled, |cFF55FF55helpful|r spells are reported with the spell link instead of its name.
 
 |cFFFF5555Harmful|r spells are reported with links by default.]=]
@@ -1041,6 +1039,7 @@ L["STRING_OPTIONS_RT_INTERRUPTS_NEXT"] = "Next Player"
 L["STRING_OPTIONS_RT_INTERRUPTS_NEXT_DESC"] = "When exists, an interrupt sequence, place the player name responsible for the next interrupt."
 L["STRING_OPTIONS_RT_INTERRUPTS_ONOFF_DESC"] = "When you successfully interrupt a spell cast, a message is sent."
 L["STRING_OPTIONS_RT_INTERRUPTS_WHISPER"] = "Whisper To"
+L["STRING_OPTIONS_RT_OTHER_ANCHOR"] = "General:"
 L["STRING_OPTIONS_RT_TITLE"] = "Tools for Raiders"
 L["STRING_OPTIONS_RT_TITLE_DESC"] = "In this panel you can activate several mechanisms to help you during raids."
 L["STRING_OPTIONS_SAVELOAD"] = "Save and Load"
@@ -1063,7 +1062,7 @@ L["STRING_OPTIONS_SAVELOAD_PNAME"] = "Name"
 L["STRING_OPTIONS_SAVELOAD_REMOVE"] = "Erase"
 L["STRING_OPTIONS_SAVELOAD_RESET"] = "Load Default Skin"
 L["STRING_OPTIONS_SAVELOAD_SAVE"] = "save"
-L["STRING_OPTIONS_SAVELOAD_SKINCREATED"] = "Skin created."
+L["STRING_OPTIONS_SAVELOAD_SKINCREATED"] = "skin saved."
 L["STRING_OPTIONS_SAVELOAD_STD_DESC"] = [=[Set the current appearance as Standard Skin.
 
 This skin is applied on all new windows created.]=]
@@ -1106,8 +1105,8 @@ L["STRING_OPTIONS_SKIN_ELVUI_BUTTON3_DESC"] = [=[Modify tooltip's:
 Border Color to: |cFFFFFF00Transparent|r.]=]
 L["STRING_OPTIONS_SKIN_EXTRA_OPTIONS_ANCHOR"] = "Skin Options:"
 L["STRING_OPTIONS_SKIN_LOADED"] = "skin successfully loaded."
-L["STRING_OPTIONS_SKIN_PRESETS_ANCHOR"] = "Save Current Settings as Custom Skin:"
-L["STRING_OPTIONS_SKIN_PRESETSCONFIG_ANCHOR"] = "Manage Saved Custom Skins:"
+L["STRING_OPTIONS_SKIN_PRESETS_ANCHOR"] = "Save Skin:"
+L["STRING_OPTIONS_SKIN_PRESETSCONFIG_ANCHOR"] = "Saved Skins:"
 L["STRING_OPTIONS_SKIN_REMOVED"] = "skin removed."
 L["STRING_OPTIONS_SKIN_RESET_TOOLTIP"] = "Reset Tooltip Border"
 L["STRING_OPTIONS_SKIN_RESET_TOOLTIP_DESC"] = "Set the tooltip's border color and texture to default."
@@ -1314,11 +1313,11 @@ L["STRING_OPTIONS_WC_ANCHOR"] = "Quick Window Control (#%s):"
 L["STRING_OPTIONS_WC_BOOKMARK"] = "Manage Bookmarks"
 L["STRING_OPTIONS_WC_BOOKMARK_DESC"] = "Open config panel for bookmarks."
 L["STRING_OPTIONS_WC_CLOSE"] = "Close"
-L["STRING_OPTIONS_WC_CLOSE_DESC"] = [=[Close the current editing window.
+L["STRING_OPTIONS_WC_CLOSE_DESC"] = [=[Close the window.
 
 When closed, the window is considered inactive and can be reopened at any time using the Window Control menu.
 
-|cFFFFFF00Important:|r to completely remove a window, go to 'Window: General' section.]=]
+|cFFFFFF00Important:|r to completely remove a window, go to 'Window Body' section.]=]
 L["STRING_OPTIONS_WC_CREATE"] = "Create Window"
 L["STRING_OPTIONS_WC_CREATE_DESC"] = "Create a new window."
 L["STRING_OPTIONS_WC_LOCK"] = "Lock"
@@ -1379,7 +1378,7 @@ L["STRING_OPTIONSMENU_DATACOLLECT"] = "Data Collector"
 L["STRING_OPTIONSMENU_DATAFEED"] = "Data Feed"
 L["STRING_OPTIONSMENU_DISPLAY"] = "Display"
 L["STRING_OPTIONSMENU_DISPLAY_DESC"] = "Overall basic adjustments and quick window control."
-L["STRING_OPTIONSMENU_LEFTMENU"] = "Title Bar: General"
+L["STRING_OPTIONSMENU_LEFTMENU"] = "Title Bar"
 L["STRING_OPTIONSMENU_MISC"] = "Miscellaneous"
 L["STRING_OPTIONSMENU_PERFORMANCE"] = "Performance Tweaks"
 L["STRING_OPTIONSMENU_PLUGINS"] = "Plugins"
@@ -1392,9 +1391,12 @@ L["STRING_OPTIONSMENU_ROWTEXTS"] = "Bars: Texts"
 L["STRING_OPTIONSMENU_SKIN"] = "Skins"
 L["STRING_OPTIONSMENU_SPELLS"] = "Rename Spells"
 L["STRING_OPTIONSMENU_SPELLS_CONSOLIDATE"] = "Merge Spells With the Same Name"
+L["STRING_OPTIONSMENU_TITLEBAR"] = "Title Bar"
 L["STRING_OPTIONSMENU_TITLETEXT"] = "Title Bar: Text"
 L["STRING_OPTIONSMENU_TOOLTIP"] = "Tooltips"
 L["STRING_OPTIONSMENU_WALLPAPER"] = "Wallpaper"
+L["STRING_OPTIONSMENU_WINDOW"] = "Window: General"
+L["STRING_OPTIONSMENU_WINDOWBODY"] = "Window Body"
 L["STRING_OVERALL"] = "Overall"
 L["STRING_OVERHEAL"] = "Overheal"
 L["STRING_OVERHEALED"] = "Overhealed"

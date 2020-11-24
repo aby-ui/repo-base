@@ -20,6 +20,7 @@ local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Quest = ns.reward.Quest
 local Toy = ns.reward.Toy
+local Transmog = ns.reward.Transmog
 
 local Path = ns.poi.Path
 local POI = ns.poi.POI
@@ -84,158 +85,188 @@ map.nodes[26005200] = map.intro
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
 
+local MANTID_WEAPONS = {
+    Transmog({item=174220, slot=L["staff"]}), -- Ambered Greatstaff
+    Transmog({item=174223, slot=L["gun"]}), -- Ooze-Imbued Rifle
+    Transmog({item=174226, slot=L["1h_sword"]}), -- Paragon's Will
+}
+
 map.nodes[20007460] = Rare({
     id=160825,
     quest=58300,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Amber-Shaper Esh'ri
-
-map.nodes[34156805] = Rare({
-    id=157466,
-    quest=57363,
-    assault=MOG,
-    rewards={
-        Mount({id=1328, item=174840}) -- Xinlao
-    }
-}) -- Anh-De the Loyal
-
-map.nodes[57084098] = Rare({
-    id=154447,
-    quest=56237,
-    assault=EMP
-}) -- Brother Meller
 
 map.nodes[06487204] = Rare({
     id=160878,
     quest=58307,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Buh'gzaki the Blasphemous
 
 map.nodes[06406433] = Rare({
     id=160893,
     quest=58308,
     assault=MAN,
+    rewards=MANTID_WEAPONS,
     pois={
         Path({06476733, 06416420, 04016423, 04025675, 03985061, 06484877, 06484597})
     }
 }) -- Captain Vor'lek
 
-map.nodes[81226450] = Rare({
-    id=154467,
-    quest=56255,
-    assault=EMP
-}) -- Chief Mek-mek
-
-map.nodes[18806841] = Rare({
-    id=157183,
-    quest=58296,
-    assault=MOG,
-    pois={
-        POI({16806672, 18316516, 19026494, 20166403, 20816263, 20866845, 21016961, 19927330, 18607211})
-    }
-}) -- Coagulated Anima
-
-map.nodes[66556794] = Rare({
-    id=154559,
-    quest=56323,
-    assault=EMP,
-    note=L["big_blossom_mine"]
-}) -- Deeplord Zrihj
-
 map.nodes[26506657] = Rare({
     id=160872,
     quest=58304,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Destroyer Krox'tazar
-
-map.nodes[41505721] = Rare({
-    id=157287,
-    quest=57349,
-    assault=MOG,
-    pois={
-        Path({41745982, 40446144, 38995953, 39805740, 41505721, 45405297})
-    }
-}) -- Dokani Obliterator
 
 map.nodes[13004085] = Rare({
     id=160874,
     quest=58305,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Drone Keeper Ak'thet
 
 map.nodes[10004085] = Rare({
     id=160876,
     quest=58306,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Enraged Amber Elemental
-
-map.nodes[45244524] = Rare({
-    id=157267,
-    quest=57343,
-    assault=EMP,
-    pois={
-        Path({44174609, 45244524, 45324176, 44783891})
-    }
-}) -- Escaped Mutation
-
-map.nodes[29513800] = Rare({
-    id=157153,
-    quest=57344,
-    assault=MOG,
-    rewards={
-        Mount({id=1297, item=173887}) -- Clutch of Ha-Li
-    },
-    pois={
-        Path({37323630, 33973378, 29053930, 31524387, 37313632, 37323630})
-    }
-}) -- Ha-Li
 
 map.nodes[28895272] = Rare({
     id=160810,
     quest=58299,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Harbinger Il'koxik
 
 map.nodes[12835129] = Rare({
     id=160868,
     quest=58303,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Harrier Nir'verash
-
-map.nodes[28214047] = Rare({
-    id=157171,
-    quest=57347,
-    assault=MOG
-}) -- Heixi the Stonelord
 
 map.nodes[19736082] = Rare({
     id=160826,
     quest=58301,
-    assault=MAN
+    assault=MAN,
+    rewards=MANTID_WEAPONS
 }) -- Hive-Guard Naz'ruzek
+
+map.nodes[19976576] = Rare({
+    id=160930,
+    quest=58312,
+    assault=MAN,
+    rewards=MANTID_WEAPONS
+}) -- Infused Amber Ooze
+
+map.nodes[17850918] = Rare({
+    id=160920,
+    quest=58310,
+    assault=MAN,
+    rewards=MANTID_WEAPONS
+}) -- Kal'tik the Blight
+
+map.nodes[25673816] = Rare({
+    id=160867,
+    quest=58302,
+    assault=MAN,
+    rewards=MANTID_WEAPONS
+}) -- Kzit'kovok
+
+map.nodes[14813374] = Rare({
+    id=160922,
+    quest=58311,
+    assault=MAN,
+    rewards=MANTID_WEAPONS
+}) -- Needler Zhesalla
+
+map.nodes[25074411] = Rare({
+    id=160906,
+    quest=58309,
+    assault=MAN,
+    rewards=MANTID_WEAPONS
+}) -- Skiver
+
+-------------------------------------------------------------------------------
+
+local function MoguWeapons(rewards)
+    rewards = rewards or {}
+    table.insert(rewards, 1, Transmog({item=174225, slot=L["shield"]})) -- Bulwark of the Traitorous Disciple
+    table.insert(rewards, 2, Transmog({item=174221, slot=L["1h_axe"]})) -- Cleaver of the Fractured Dynasty
+    table.insert(rewards, 3, Transmog({item=174229, slot=L["offhand"]})) -- Lantern of the Damned
+    return rewards
+end
+
+map.nodes[34156805] = Rare({
+    id=157466,
+    quest=57363,
+    assault=MOG,
+    rewards=MoguWeapons({
+        Mount({id=1328, item=174840}) -- Xinlao
+    })
+}) -- Anh-De the Loyal
+
+map.nodes[18806841] = Rare({
+    id=157183,
+    quest=58296,
+    assault=MOG,
+    rewards=MoguWeapons(),
+    pois={
+        POI({16806672, 18316516, 19026494, 20166403, 20816263, 20866845, 21016961, 19927330, 18607211})
+    }
+}) -- Coagulated Anima
+
+map.nodes[41505721] = Rare({
+    id=157287,
+    quest=57349,
+    assault=MOG,
+    rewards=MoguWeapons(),
+    pois={
+        Path({41745982, 40446144, 38995953, 39805740, 41505721, 45405297})
+    }
+}) -- Dokani Obliterator
+
+map.nodes[29513800] = Rare({
+    id=157153,
+    quest=57344,
+    assault=MOG,
+    rewards=MoguWeapons({
+        Mount({id=1297, item=173887}) -- Clutch of Ha-Li
+    }),
+    pois={
+        Path({37323630, 33973378, 29053930, 31524387, 37313632, 37323630})
+    }
+}) -- Ha-Li
+
+map.nodes[28214047] = Rare({
+    id=157171,
+    quest=57347,
+    assault=MOG,
+    rewards=MoguWeapons()
+}) -- Heixi the Stonelord
 
 map.nodes[12183091] = Rare({
     id=157160,
     quest=57345,
     assault=MOG,
-    rewards={
+    rewards=MoguWeapons({
         Mount({id=1327, item=174841}) -- Ren's Stalwart Hound
-    },
+    }),
     pois={
         Path({13132578, 11833049, 08953570})
     }
 }) -- Houndlord Ren
 
-map.nodes[19976576] = Rare({
-    id=160930,
-    quest=58312,
-    assault=MAN
-}) -- Infused Amber Ooze
-
 map.nodes[17201162] = Rare({
     id=160968,
     quest=58295,
     assault=MOG,
+    rewards=MoguWeapons(),
     note=L["guolai_left"]
 }) -- Jade Colossus
 
@@ -243,91 +274,49 @@ map.nodes[26691061] = Rare({
     id=157290,
     quest=57350,
     assault=MOG,
+    rewards=MoguWeapons(),
     note=L["in_small_cave"]
 }) -- Jade Watcher
-
-map.nodes[17850918] = Rare({
-    id=160920,
-    quest=58310,
-    assault=MAN
-}) -- Kal'tik the Blight
-
-map.nodes[45985858] = Rare({
-    id=157266,
-    quest=57341,
-    assault=EMP,
-    pois={
-        Path({45985858, 48645963, 50576511, 48936926, 45877046, 43096817, 42486336, 45985858})
-    }
-}) -- Kilxl the Gaping Maw
-
-map.nodes[25673816] = Rare({
-    id=160867,
-    quest=58302,
-    assault=MAN
-}) -- Kzit'kovok
-
-map.nodes[14813374] = Rare({
-    id=160922,
-    quest=58311,
-    assault=MAN
-}) -- Needler Zhesalla
-
-map.nodes[90314599] = Rare({
-    id=154106,
-    quest=56094,
-    assault=EMP
-}) -- Quid
 
 map.nodes[21901232] = Rare({
     id=157162,
     quest=57346,
     assault=MOG,
     note=L["guolai_center"],
-    rewards={
+    rewards=MoguWeapons({
         Item({item=174230}), -- Pristine Cloud Serpent Scale
         Mount({id=1313, item=174649}) -- Rajani Warserpent
-    }
+    })
 }) -- Rei Lun
-
-map.nodes[64175175] = Rare({
-    id=154490,
-    quest=56302,
-    assault=EMP
-}) -- Rijz'x the Devourer
 
 map.nodes[46425710] = Rare({
     id=156083,
     quest=56954,
     assault=MOG,
-    rewards={
+    rewards=MoguWeapons({
         Item({item=174071}) -- Sanguifang's Pulsating Canine
-    }
+    })
 }) -- Sanguifang
-
-map.nodes[25074411] = Rare({
-    id=160906,
-    quest=58309,
-    assault=MAN
-}) -- Skiver
 
 map.nodes[17873752] = Rare({
     id=157291,
     quest=57351,
-    assault=MOG
+    assault=MOG,
+    rewards=MoguWeapons()
 }) -- Spymaster Hul'ach
 
 map.nodes[26057505] = Rare({
     id=157279,
     quest=57348,
     assault=MOG,
+    rewards=MoguWeapons(),
     pois={
         Path({23467717, 25247587, 26837367, 27117143})
     }
 }) -- Stormhowl
 
 map.nodes[29132207] = Rare({
-    id=156424,
+    id=155958,
     quest=58507,
     assault=MOG,
     rewards={
@@ -338,8 +327,74 @@ map.nodes[29132207] = Rare({
 map.nodes[47496373] = Rare({
     id=154600,
     quest=56332,
-    assault=MOG
+    assault=MOG,
+    rewards=MoguWeapons()
 }) -- Teng the Awakened
+
+map.nodes[09586736] = Rare({
+    id=157468,
+    quest=57364,
+    note=L["tisiphon"],
+    rewards=MoguWeapons()
+}) -- Tisiphon (spawns during all assaults but drops Mogu loot)
+
+map.nodes[53794889] = Rare({
+    id=157443,
+    quest=57358,
+    assault=MOG,
+    rewards=MoguWeapons()
+}) -- Xiln the Mountain
+
+-------------------------------------------------------------------------------
+
+map.nodes[57084098] = Rare({
+    id=154447,
+    quest=56237,
+    assault=EMP
+}) -- Brother Meller
+
+map.nodes[81226450] = Rare({
+    id=154467,
+    quest=56255,
+    assault=EMP
+}) -- Chief Mek-mek
+
+map.nodes[66556794] = Rare({
+    id=154559,
+    quest=56323,
+    assault=EMP,
+    note=L["big_blossom_mine"]
+}) -- Deeplord Zrihj
+
+map.nodes[45244524] = Rare({
+    id=157267,
+    quest=57343,
+    assault=EMP,
+    pois={
+        Path({44174609, 45244524, 45324176, 44783891})
+    }
+}) -- Escaped Mutation
+
+map.nodes[45985858] = Rare({
+    id=157266,
+    quest=57341,
+    assault=EMP,
+    pois={
+        Path({45985858, 48645963, 50576511, 48936926, 45877046, 43096817, 42486336, 45985858})
+    }
+}) -- Kilxl the Gaping Maw
+
+map.nodes[90314599] = Rare({
+    id=154106,
+    quest=56094,
+    assault=EMP
+}) -- Quid
+
+map.nodes[64175175] = Rare({
+    id=154490,
+    quest=56302,
+    assault=EMP
+}) -- Rijz'x the Devourer
 
 map.nodes[52024173] = Rare({
     id=157176,
@@ -350,12 +405,6 @@ map.nodes[52024173] = Rare({
         Pet({id=2845, item=174473}) -- K'uddly
     }
 }) -- The Forgotten
-
-map.nodes[09586736] = Rare({
-    id=157468,
-    quest=57364,
-    note=L["tisiphon"]
-}) -- Tisiphon
 
 map.nodes[86664165] = Rare({
     id=154394,
@@ -381,12 +430,6 @@ map.nodes[52956225] = Rare({
         Pet({id=2846, item=174474}) -- Corrupted Tentacle
     }
 }) -- Will of N'Zoth
-
-map.nodes[53794889] = Rare({
-    id=157443,
-    quest=57358,
-    assault=MOG
-}) -- Xiln the Mountain
 
 map.nodes[70954053] = Rare({
     id=154087,

@@ -250,8 +250,10 @@ DF.CooldownsBySpec = {
 	--DEMON HUNTER
 		--havoc
 		[577] = {
+
 			[200166] = 1, --Metamorphosis
 			[198589] = 2, --Blur
+
 			[196555] = 2, --Netherwalk (talent)
 			[196718] = 4, --Darkness
 			[188501] = 5, --Spectral Sight
@@ -633,8 +635,10 @@ DF.CooldownsInfo = {
 	[221562]  = {cooldown = 45, duration = 5, talent = false, charges = 1, class = "DEATHKNIGHT", type = 5}, --Asphyxiate
 	
 	--> demon hunter
+
 	[200166] = {cooldown = 240, duration = 30, talent = false, charges = 1, class = "DEMONHUNTER", type = 1}, --Metamorphosis
 	[198589] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Blur
+
 	[196555] = {cooldown = 120, duration = 5, talent = 21865, charges = 1, class = "DEMONHUNTER", type = 2}, --Netherwalk (talent)
 	[196718] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "DEMONHUNTER", type = 4}, --Darkness
 	[187827] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Metamorphosis

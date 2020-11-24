@@ -7,6 +7,7 @@ local Class = ns.Class
 local HBD = LibStub('HereBeDragons-2.0')
 
 local ADDON_NAME2 = "HandyNotes_Shadowlands"
+local ARROW = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\arrow"
 local CIRCLE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\circle"
 local LINE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\line"
 
@@ -17,6 +18,7 @@ local function ResetPin(pin)
     pin.texture:SetTexCoord(0, 1, 0, 1)
     pin.texture:SetVertexColor(1, 1, 1, 1)
     pin.frameOffset = 0
+    pin.rotation = nil
     pin:SetAlpha(1)
     if pin.SetScalingLimits then -- World map only!
         pin:SetScalingLimits(nil, nil, nil)
@@ -74,7 +76,7 @@ function Glow:Draw(pin, xy)
     t:SetTexture(self.icon)
 
     if self.r then
-        t:SetVertexColor(self.r, self.g, self.b, self.a or 1)
+        t:SetVertexColor(self.r, self.g, self.b, self.a or 0.5)
     end
 
     pin.frameOffset = 1
@@ -108,7 +110,7 @@ function Path:Draw(pin, type, xy1, xy2)
     t:SetTexture(type)
 
     -- constant size for minimaps, variable size for world maps
-    local size = pin.minimap and 5 or (pin.parentHeight * 0.005)
+    local size = pin.minimap and 4 or (pin.parentHeight * 0.003)
     local line_width = pin.minimap and 60 or (pin.parentHeight * 0.05)
 
     -- apply user scaling
@@ -118,7 +120,7 @@ function Path:Draw(pin, type, xy1, xy2)
     if type == CIRCLE then
         pin:SetSize(size, size)
         return HandyNotes:getXY(xy1)
-    else
+    elseif type == LINE then
         local x1, y1 = HandyNotes:getXY(xy1)
         local x2, y2 = HandyNotes:getXY(xy2)
         local line_length
@@ -130,16 +132,17 @@ function Path:Draw(pin, type, xy1, xy2)
             local wmapDistance = sqrt((wx2-wx1)^2 + (wy2-wy1)^2)
             local mmapDiameter = C_Minimap:GetViewRadius() * 2
             line_length = Minimap:GetWidth() * (wmapDistance / mmapDiameter)
-            t:SetRotation(-math.atan2(wy2-wy1, wx2-wx1))
+            pin.rotation = -math.atan2(wy2-wy1, wx2-wx1)
         else
             local x1p = x1 * pin.parentWidth
             local x2p = x2 * pin.parentWidth
             local y1p = y1 * pin.parentHeight
             local y2p = y2 * pin.parentHeight
             line_length = sqrt((x2p-x1p)^2 + (y2p-y1p)^2)
-            t:SetRotation(-math.atan2(y2p-y1p, x2p-x1p))
+            pin.rotation = -math.atan2(y2p-y1p, x2p-x1p)
         end
         pin:SetSize(line_length, line_width)
+        pin.texture:SetRotation(pin.rotation)
 
         return (x1+x2)/2, (y1+y2)/2
     end
@@ -192,30 +195,40 @@ end
 
 local Arrow = Class('Arrow', Line)
 
-function Arrow:Initialize(attrs)
-    Line.Initialize(self, attrs)
-
-    local x1, y1 = HandyNotes:getXY(self[1])
-    local x2, y2 = HandyNotes:getXY(self[2])
-    local angle = math.atan2(y2 - y1, (x2 - x1) * 1.85) + (math.pi * 0.5)
-    local xdiff = math.cos(angle) * (self.distance / self.segments / 4)
-    local ydiff = math.sin(angle) * (self.distance / self.segments / 4)
-
-    local xl, yl = HandyNotes:getXY(self.path[#self.path - 1])
-    self.corner1 = HandyNotes:getCoord(xl + xdiff, yl + ydiff)
-    self.corner2 = HandyNotes:getCoord(xl - xdiff, yl - ydiff)
+function Arrow:Render(map, template)
+    -- draw a segmented line and the head of the arrow
+    Line.Render(self, map, template)
+    map:AcquirePin(template, self, ARROW, self[1], self[2])
 end
 
-function Arrow:Render(map, template)
-    -- draw a segmented line
-    Line.Render(self, map, template)
+function Arrow:Draw(pin, type, xy1, xy2)
+    local x, y = Line.Draw(self, pin, type, xy1, xy2)
+    if x and y then return x, y end -- circle or line
 
-    -- draw the head of the arrow
-    map:AcquirePin(template, self, CIRCLE, self.corner1)
-    map:AcquirePin(template, self, CIRCLE, self.corner2)
-    map:AcquirePin(template, self, LINE, self.corner1, self.path[#self.path])
-    map:AcquirePin(template, self, LINE, self.corner2, self.path[#self.path])
-    map:AcquirePin(template, self, LINE, self.corner1, self.corner2)
+    -- constant size for minimaps, variable size for world maps
+    local head_length = pin.minimap and 40 or (pin.parentHeight * 0.04)
+    local head_width = pin.minimap and 15 or (pin.parentHeight * 0.015)
+    head_length = head_length * ns:GetOpt('poi_scale')
+    head_width = head_width * ns:GetOpt('poi_scale')
+    pin:SetSize(head_width, head_length)
+
+    local x1, y1 = HandyNotes:getXY(xy1)
+    local x2, y2 = HandyNotes:getXY(xy2)
+    if pin.minimap then
+        local mapID = HBD:GetPlayerZone()
+        local wx1, wy1 = HBD:GetWorldCoordinatesFromZone(x1, y1, mapID)
+        local wx2, wy2 = HBD:GetWorldCoordinatesFromZone(x2, y2, mapID)
+        pin.rotation = -math.atan2(wy2-wy1, wx2-wx1) + (math.pi / 2)
+    else
+        local x1p = x1 * pin.parentWidth
+        local x2p = x2 * pin.parentWidth
+        local y1p = y1 * pin.parentHeight
+        local y2p = y2 * pin.parentHeight
+        pin.rotation = -math.atan2(y2p-y1p, x2p-x1p) - (math.pi / 2)
+    end
+    pin.texture:SetRotation(pin.rotation)
+
+    return x2, y2
 end
 
 -------------------------------------------------------------------------------

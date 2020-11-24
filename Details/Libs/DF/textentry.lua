@@ -672,20 +672,19 @@ function DF:NewTextEntry (parent, container, name, member, w, h, func, param1, p
 	TextEntryObject.enabled_text_color = {TextEntryObject.editbox:GetTextColor()}
 	TextEntryObject.onleave_backdrop = {TextEntryObject.editbox:GetBackdropColor()}
 	TextEntryObject.onleave_backdrop_border_color = {TextEntryObject.editbox:GetBackdropBorderColor()}
-	
+
 	TextEntryObject.func = func
 	TextEntryObject.param1 = param1
 	TextEntryObject.param2 = param2
 	TextEntryObject.next = nil
 	TextEntryObject.space = space
 	TextEntryObject.tab_on_enter = false
-	
+
 	TextEntryObject.label = _G [name .. "_Desc"]
-	
-	TextEntryObject.editbox:SetBackdrop ({bgFile = DF.folder .. "background", tileSize = 64, edgeFile = DF.folder .. "border_2", edgeSize = 10, insets = {left = 1, right = 1, top = 1, bottom = 1}})
-	
+	TextEntryObject.editbox:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, insets = {left = 1, right = 1, top = 1, bottom = 1}})
+	TextEntryObject.editbox:SetBackdropColor (.2, .2, .2, 1)
+
 	--> hooks
-	
 		TextEntryObject.HookList = {
 			OnEnter = {},
 			OnLeave = {},

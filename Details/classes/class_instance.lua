@@ -130,9 +130,9 @@ end
 function Details:InstanceGroupEditSettingOnTable(instance, table1Key, table2Key, table3Key, value)
 	for _, thisInstance in ipairs (instance:GetInstanceGroup()) do
 		if (value == nil) then
-			value = table3Key
+			local value1 = table3Key
 			local table1 = thisInstance[table1Key]
-			table1[table2Key] = value
+			table1[table2Key] = value1
 		else
 			local table1 = thisInstance[table1Key]
 			table1[table2Key][table3Key] = value
@@ -594,9 +594,10 @@ end
 	end
 	
 	function _detalhes:AtivarInstancia (temp)
-	
 		self.ativa = true
 		self.cached_bar_width = self.cached_bar_width or 0
+
+		self.modo = self.modo or 2
 		
 		local lower = _detalhes:GetLowerInstanceNumber()
 		
@@ -606,11 +607,14 @@ end
 		end
 		
 		if (not self.iniciada) then
-			self:RestauraJanela (self.meu_id) --parece que esta chamando o ativar instance denovo...
+			self:RestauraJanela (self.meu_id, nil, true) --parece que esta chamando o ativar instance denovo... passei true no load_only vamos ver o resultado
+			--tiny threat parou de funcionar depois de /reload depois dessa mudança, talvez tenha algo para carregar ainda
+			self.iniciada = true
 		else
 			_detalhes.opened_windows = _detalhes.opened_windows+1
 		end
 
+		self:ChangeSkin() --carrega a skin aqui que era antes feito dentro do restaura janela
 		_detalhes:TrocaTabela (self, nil, nil, nil, true)
 
 		if (self.hide_icon) then
@@ -625,14 +629,12 @@ end
 		gump:Fade (self.windowSwitchButton, 0)
 		
 		self:SetMenuAlpha()
-		
 		self.baseframe.cabecalho.fechar:Enable()
-		
 		self:ChangeIcon()
 
 		if (not temp) then
 			if (self.modo == modo_raid) then
-				_detalhes.RaidTables:EnableRaidMode (self)
+				_detalhes.RaidTables:EnableRaidMode(self)
 				
 			elseif (self.modo == modo_alone) then
 				self:SoloMode (true)
@@ -643,32 +645,23 @@ end
 			self:ToolbarMenuButtons()
 			self:ToolbarSide()
 			self:AttributeMenu()
-			
-			_detalhes.WindowAutoHideTick = _detalhes.WindowAutoHideTick or {}
-			if (_detalhes.WindowAutoHideTick [self.meu_id]) then
-				_detalhes.WindowAutoHideTick [self.meu_id]:Cancel()
-			end
-			_detalhes.WindowAutoHideTick [self.meu_id] = C_Timer.NewTicker (10, function()
-				if (self.last_interaction) then
-					if (self.last_interaction + 10 < _detalhes._tempo) then
-						self:AdjustAlphaByContext(true)
-						_detalhes.WindowAutoHideTick [self.meu_id]:Cancel()
-					end
-				else
-					self:AdjustAlphaByContext(true)
-					_detalhes.WindowAutoHideTick [self.meu_id]:Cancel()
-				end
-			end)
 		else
 			self:AdjustAlphaByContext(true)
 		end
-		
+
 		self:DesaturateMenu()
 		
 		self:CheckFor_EnabledTrashSuppression()
 		
 		if (not temp and not _detalhes.initializing) then
 			_detalhes:SendEvent ("DETAILS_INSTANCE_OPEN", nil, self)
+		end
+
+		if (self.modo == modo_raid) then
+			_detalhes.RaidTables:EnableRaidMode(self)
+			
+		elseif (self.modo == modo_alone) then
+			self:SoloMode (true)
 		end
 
 	end
@@ -731,7 +724,6 @@ end
 		end
 		
 		table.remove (_detalhes.tabela_instancias, id)
-
 	end
 
 

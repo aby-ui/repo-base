@@ -246,18 +246,6 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			elseif (type (value) == "table") then
 				--> deploy only copy non existing data
 				_detalhes.table.deploy (profile [key], value)
-				
-			--[=[
-				for key2, value2 in pairs (value) do 
-					if (profile [key] [key2] == nil) then
-						if (type (value2) == "table") then
-							profile [key] [key2] = table_deepcopy (_detalhes.default_profile [key] [key2])
-						else
-							profile [key] [key2] = value2
-						end
-					end
-				end
-			--]=]
 			end
 		end
 		
@@ -306,13 +294,13 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
 		--> check if there is a skin saved or this is a empty profile
 		if (#saved_skins == 0) then
-			--> is empty profile, let's set "WoW Interface" on #1 window
 			local instance1 = _detalhes:GetInstance (1)
 			if (not instance1) then
 				instance1 = _detalhes:CreateInstance (1)
 			end
 
 			--> apply default config on this instance (flat skin texture was 'ResetInstanceConfig' running).
+			instance1.modo = 2
 			instance1:ResetInstanceConfig()
 			instance1.skin = "no skin"
 			instance1:ChangeSkin (_detalhes.default_skin_to_use)
@@ -326,11 +314,11 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			
 			if (#_detalhes.tabela_instancias > 1) then
 				for i = #_detalhes.tabela_instancias, 2, -1 do
+					_detalhes.tabela_instancias [i].modo = 2
 					_detalhes.unused_instances [i] = _detalhes.tabela_instancias [i]
 					_detalhes.tabela_instancias [i] = nil
 				end
 			end
-			
 		else
 		
 			--> load skins
@@ -375,6 +363,8 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				else
 					instance.ativa = false
 				end
+
+				instance.modo = instance.modo or 2
 				
 				--> load data saved again
 				instance:LoadLocalInstanceConfig()
@@ -1110,6 +1100,20 @@ _detalhes.default_profile = default_profile
 
 -- aqui fica as propriedades do jogador que n�o ser�o armazenadas no profile
 local default_player_data = {
+		coach = {
+			enabled = false,
+		},
+
+	--> cd tracker
+		cd_tracker = {
+			pos = {},
+			enabled = false,
+			cds_enabled = {},
+			show_conditions = {
+				only_in_group = true,
+				only_inside_instance = true,
+			}
+		},
 
 	--> force all fonts to have this outline
 		force_font_outline = "",

@@ -284,4 +284,15 @@ private.LOOT_QUEST_IDS = {
 	[179327] = { 60414,60415,60416,60417 }; --Coin of Brokerage
 	[175795] = { 59265 }; --Betrayer's Eye
 	[180807] = { 63152 }; --Venthyr Concordat
+	[169215] = { 56239 }; --Silver Knife
+	[170147] = { 56908 }; --Paint Bottle: Goblin Green
+	[173717] = { 58077 }; --Perfected Hand Mirror
+	[173710] = { 58072 }; --Petrified Stonefiend
+	[173715] = { 58075 }; --Dredger's Toolkit
+	[173709] = { 58071 }; --Vial of Dredger Muck
+	[182727] = { 62183 }; --A Leaking Package
+	[182726] = { 62182 }; --Nadja's Letter
+	[180453] = { 60889 }; --She Had a Stone Heart
+	[182728] = { 62184 }; --A Crate of Sinvyr Ore
+	[173720] = { 58080 }; --Glittering Primrose Necklace
 }

@@ -105,6 +105,7 @@ local function RenderLinks(str, nameOnly)
             end
         elseif type == 'item' then
             local name, link, _, _, _, _, _, _, _, icon = GetItemInfo(id)
+            name = name..(suffix or '')
             if link and icon then
                 if nameOnly then return name end
                 return '|T'..icon..':0:0:1:-1|t '..link

@@ -173,6 +173,11 @@ end)
 
 -- backs up filters and expands journal to show all pets
 function roster:ExpandJournalFilters()
+	-- if no filters are used, no need to expand journal
+	if not roster:IsAnyFilterUsed() then
+		roster.noFiltersUsed = true
+		return
+	end
 	roster.updatingSelf = true
 	-- we're going to be triggering a PJLU event, expand disables event; restore turns it on after a delay
 	roster:UnregisterEvent("PET_JOURNAL_LIST_UPDATE")
@@ -195,6 +200,12 @@ end
 
 -- restores journal filters to the state in roster.journalBackup
 function roster:RestoreJournalFilters()
+	-- if this was set in the ExpandJournalFilters, then nothing was backed up to restore
+	if roster.noFiltersUsed then
+		roster.noFiltersUsed = nil
+		return
+	end
+
 	local backup = roster.journalBackup
 	C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED,backup.collected)
 	C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED,backup.notCollected)
@@ -208,6 +219,30 @@ function roster:RestoreJournalFilters()
 	roster.updatingSelf = nil
 	-- we're done messing with PJLU-triggering stuff, start event again next frame
 	C_Timer.After(0,function() roster:RegisterEvent("PET_JOURNAL_LIST_UPDATE") end)
+end
+
+-- returns true if any journal filters are used, since there's no need to expand/restore if it's already expanded
+function roster:IsAnyFilterUsed()
+    if roster.journalBackup.search~="" then
+        return true -- search is used
+    end
+    if not C_PetJournal.IsFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED) then
+        return true -- collected is unchecked
+    end
+    if not C_PetJournal.IsFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED) then
+        return true -- not collected is unchecked
+    end
+    for i=1,C_PetJournal.GetNumPetTypes() do
+        if not C_PetJournal.IsPetTypeChecked(i) then
+            return true -- a pet type is unchecked
+        end
+    end
+    for i=1,C_PetJournal.GetNumPetSources() do
+        if not C_PetJournal.IsPetSourceChecked(i) then
+            return true -- a pet source is unchecked
+        end
+    end
+    return false
 end
 
 

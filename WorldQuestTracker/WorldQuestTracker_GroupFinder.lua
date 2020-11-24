@@ -163,14 +163,15 @@ local GetDistance_Point = DF.GetDistance_Point
 
 						--this should only work on questing and custom, player may want to select the role on other categories
 						local selectedCategory = LFGListFrame.SearchPanel.categoryID
-						if (selectedCategory ~= 1 and selectedCategory ~= 6) then
+						if (selectedCategory ~= 1) then
 							return
 						end
 
-						_G.LFGListApplicationDialog.TankButton.CheckButton:SetChecked(true)
-						_G.LFGListApplicationDialog.HealerButton.CheckButton:SetChecked(true)
-						_G.LFGListApplicationDialog.DamagerButton.CheckButton:SetChecked(true)
-						--_G.LFGListApplicationDialog.Description:SetText("World Quest Tracker.")
+						--checking the boxes make them be saved for the next time player uses it
+	--						_G.LFGListApplicationDialog.TankButton.CheckButton:SetChecked(true)
+	--						_G.LFGListApplicationDialog.HealerButton.CheckButton:SetChecked(true)
+	--						_G.LFGListApplicationDialog.DamagerButton.CheckButton:SetChecked(true)
+						--_G.LFGListApplicationDialog.Description:SetText("World Quest Tracker.") - causing an error
 
 						_G.LFGListApplicationDialogSignUpButton_OnClick(_G.LFGListApplicationDialog.SignUpButton)
 					end

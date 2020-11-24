@@ -847,23 +847,22 @@ local SwitchOnClick = function (self, button, forced_value, value)
 			slider._thumb:SetPoint ("right", slider.widget, "right")
 		end
 	end
-	
+
 	if (slider.OnSwitch and not forced_value) then
 		local value = _rawget (slider, "value")
 		if (slider.return_func) then
 			value = slider:return_func (value)
 		end
-		
-		--> safe call
-		local success, errorText = pcall (slider.OnSwitch, slider, slider.FixedValue, value)
+
+		local success, errorText = xpcall (slider.OnSwitch, geterrorhandler(), slider, slider.FixedValue, value)
 		if (not success) then
 			error ("Details! Framework: OnSwitch() " .. (button.GetName and button:GetName() or "-NONAME-") ..  " error: " .. (errorText or ""))
 		end
-		
+
 		--> trigger hooks
 		slider:RunHooksForWidget ("OnSwitch", slider, slider.FixedValue, value)
 	end
-	
+
 end
 
 local default_switch_func = function (self, passed_value)

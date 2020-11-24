@@ -177,14 +177,16 @@ function Details.options.InitializeOptionsWindow(instance)
             _detalhes:StopTestBarUpdate()
         end
     end
-    local fillbars = DF:NewButton (f, _, "$parentCreateExampleBarsButton", nil, 120, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
-    fillbars:SetPoint ("bottomleft", f.widget, "bottomleft", 41, 12)
+    local fillbars = DF:NewButton (f, _, "$parentCreateExampleBarsButton", nil, 140, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
+    fillbars:SetPoint ("bottomleft", f.widget, "bottomleft", 10, 10)
     fillbars:SetTemplate(options_button_template)
+    fillbars:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {323/512, 365/512, 42/512, 78/512}, {1, 1, 1, 0.6}, 4, 2)
 
     --change log
-    local changelog = DF:NewButton (f, _, "$parentOpenChangeLogButton", nil, 120, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
+    local changelog = DF:NewButton (f, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
     changelog:SetPoint ("left", fillbars, "right", 10, 0)
     changelog:SetTemplate (options_button_template)
+    changelog:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {367/512, 399/512, 43/512, 76/512}, {1, 1, 1, 0.8}, 4, 2)
 
     local sectionsName = { --section names
         [1] = Loc ["STRING_OPTIONSMENU_DISPLAY"],
