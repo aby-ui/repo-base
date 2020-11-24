@@ -443,7 +443,7 @@ local function BuildHubPanel(panel)
 	--[[
 	theme.Default.name.size = 18
 	--]]
-	local ClearCacheButton = CreateFrame("Button", objectName.."ClearCacheButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
+	local ClearCacheButton = CreateFrame("Button", objectName.."ClearCacheButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate")
 	ClearCacheButton:SetPoint("TOPLEFT", F, "BOTTOMLEFT",-6, -18)
 	--ClearCacheButton:SetPoint("TOPLEFT", panel.AdvancedCustomCodeTextbox, "BOTTOMLEFT",-6, -18)
 	ClearCacheButton:SetWidth(300)
@@ -454,7 +454,7 @@ local function BuildHubPanel(panel)
 			print("Tidy Plates Hub: Cleared", count, "entries from cache.")
 		end)
 
-	local BlizzOptionsButton = CreateFrame("Button", objectName.."BlizzButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate", "BackdropTemplate")
+	local BlizzOptionsButton = CreateFrame("Button", objectName.."BlizzButton", AlignmentColumn, "TidyPlatesPanelButtonTemplate")
 	BlizzOptionsButton:SetPoint("TOPLEFT", ClearCacheButton, "BOTTOMLEFT", 0, -16)
 	--BlizzOptionsButton:SetPoint("TOPLEFT", panel.AdvancedCustomCodeTextbox, "BOTTOMLEFT",-6, -18)
 	BlizzOptionsButton:SetWidth(300)
@@ -574,7 +574,7 @@ SlashCmdList['HUB'] = SlashCommandHub
 --]]
 --end
 
---local HubHandler = CreateFrame("Frame", nil, nil, "BackdropTemplate")
+--local HubHandler = CreateFrame("Frame", nil, nil)
 --HubHandler:SetScript("OnEvent", OnLogin)
 --HubHandler:RegisterEvent("PLAYER_LOGIN")
 

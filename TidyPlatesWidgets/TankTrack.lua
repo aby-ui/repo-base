@@ -152,7 +152,7 @@ local function TankWatcherEvents(frame, event, ...)
 	end
 end
 
-if not TankWatcher then TankWatcher = CreateFrame("Frame", nil, nil, "BackdropTemplate") end
+if not TankWatcher then TankWatcher = CreateFrame("Frame", nil, nil) end
 
 --[[
 TankWatcher:RegisterEvent("GROUP_ROSTER_UPDATE")

@@ -227,7 +227,8 @@ hooksecurefunc("GossipFrameUpdate", function()
         if titleButton:IsShown() then
             if titleButton.type == "Active" then
                 local titleTex = titleButton.Icon:GetTexture()
-                if type(titleTex) == "number" or titleTex:GetTexture():find("Incomplete") then --3595324 /dump next(GossipFrame.titleButtonPool.activeObjects).Icon:GetTexture()
+                if type(titleTex) == "number" then titleTex = titleButton.Icon:GetAtlas() or "" end
+                if titleTex:find("Incomplete") then --QuestUtil.GetQuestIconActive
                     titleButton.btnComplete:Hide()
                 else
                     titleButton.btnComplete:Show()

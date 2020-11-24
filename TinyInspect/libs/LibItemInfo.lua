@@ -96,7 +96,7 @@ end
 
 
 --獲取物品實際等級信息
-function lib:GetItemInfo(link, stats)
+function lib:GetItemInfo(link, stats, tooltipFunc)
     if (not link or link == "") then
         return 0, 0
     end
@@ -107,7 +107,9 @@ function lib:GetItemInfo(link, stats)
         return 1, 0
     end
     tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    if tooltipFunc then tooltipFunc(tooltip) else
     tooltip:SetHyperlink(link)
+    end
     local text, level
     for i = 2, 5 do
         if (_G[tooltip:GetName().."TextLeft" .. i]) then

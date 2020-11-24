@@ -1,7 +1,7 @@
 
 	--Spinning Cooldown Frame
 	--[[
-	frame.Cooldown = CreateFrame("Cooldown", nil, frame, "TidyPlatesAuraWidgetCooldown", "BackdropTemplate")
+	frame.Cooldown = CreateFrame("Cooldown", nil, frame, "TidyPlatesAuraWidgetCooldown")
 	frame.Cooldown:SetAllPoints(frame)
 	frame.Cooldown:SetReverse(true)
 	frame.Cooldown:SetHideCountdownNumbers(true)
@@ -13,7 +13,7 @@ TidyPlatesWidgets.DebuffWidgetBuild = 2
 local PlayerGUID = UnitGUID("player")
 local PolledHideIn = TidyPlatesWidgets.PolledHideIn
 local FilterFunction = function() return 1 end
-local AuraMonitor = CreateFrame("Frame", nil, nil, "BackdropTemplate")
+local AuraMonitor = CreateFrame("Frame", nil, nil)
 local WatcherIsEnabled = false
 local WidgetList, WidgetGUID = {}, {}
 
@@ -40,7 +40,7 @@ local AURA_TYPE_BUFF = 1
 local AURA_TYPE_DEBUFF = 6
 
 -- Get a clean version of the function...  Avoid OmniCC interference
-local CooldownNative = CreateFrame("Cooldown", nil, WorldFrame, "BackdropTemplate")
+local CooldownNative = CreateFrame("Cooldown", nil, WorldFrame)
 local SetCooldown = CooldownNative.SetCooldown
 
 local _
@@ -411,14 +411,14 @@ end
 
 -- Create a Wide Aura Icon
 local function CreateAuraIcon(parent)
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame.unit = nil
 	frame.Parent = parent
 
 	frame.Icon = frame:CreateTexture(nil, "BACKGROUND")
 	frame.Border = frame:CreateTexture(nil, "ARTWORK")
 	frame.BorderHighlight = frame:CreateTexture(nil, "ARTWORK")
-	frame.Cooldown = CreateFrame("Cooldown", nil, frame, "TidyPlatesAuraWidgetCooldown", "BackdropTemplate")
+	frame.Cooldown = CreateFrame("Cooldown", nil, frame, "TidyPlatesAuraWidgetCooldown")
 
 	frame.Cooldown:SetAllPoints(frame)
 	frame.Cooldown:SetReverse(true)
@@ -485,7 +485,7 @@ end
 local function CreateAuraWidget(parent, style)
 
 	-- Create Base frame
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetWidth(128); frame:SetHeight(32); frame:Show()
 	--frame.PollFunction = UpdateWidgetTime
 

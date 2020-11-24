@@ -110,7 +110,7 @@ TidyPlatesUtility.updateTable = updatetable
 -- GameTooltipScanner
 ------------------------------------------
 local ScannerName = "TidyPlatesScanningTooltip"
-local TooltipScanner = CreateFrame( "GameTooltip", ScannerName , nil, "GameTooltipTemplate" , "BackdropTemplate"); -- Tooltip name cannot be nil
+local TooltipScanner = CreateFrame( "GameTooltip", ScannerName , nil, "GameTooltipTemplate"); -- Tooltip name cannot be nil
 TooltipScanner:SetOwner( WorldFrame, "ANCHOR_NONE" );
 
 ------------------------------------------
@@ -318,7 +318,7 @@ local function CreatePanelFrame(self, reference, listname, title)
 end
 -- [[
 local function CreateDescriptionFrame(self, reference, parent, title, text)
-	local descframe = CreateFrame( "Frame", reference, parent, "BackdropTemplate");
+	local descframe = CreateFrame( "Frame", reference, parent);
 	descframe:SetHeight(15)
 	descframe:SetWidth(200)
 
@@ -338,7 +338,7 @@ local function CreateDescriptionFrame(self, reference, parent, title, text)
 end
 --]]
 local function CreateCheckButton(self, reference, parent, label)
-	local checkbutton = CreateFrame( "CheckButton", reference, parent, "InterfaceOptionsCheckButtonTemplate" , "BackdropTemplate")
+	local checkbutton = CreateFrame( "CheckButton", reference, parent, "InterfaceOptionsCheckButtonTemplate")
 	checkbutton.Label = _G[reference.."Text"]
 	checkbutton.Label:SetText(label)
 	checkbutton.GetValue = function() if checkbutton:GetChecked() then return true else return false end end
@@ -352,7 +352,7 @@ local function CreateRadioButtons(self, reference, parent, numberOfButtons, defa
 	local radioButtonSet = {}
 
 	for index = 1, numberOfButtons do
-		radioButtonSet[index] = CreateFrame( "CheckButton", reference..index, parent, "UIRadioButtonTemplate" , "BackdropTemplate")
+		radioButtonSet[index] = CreateFrame( "CheckButton", reference..index, parent, "UIRadioButtonTemplate")
 		radioButtonSet[index].Label = _G[reference..index.."Text"]
 		radioButtonSet[index].Label:SetText(list[index] or " ")
 		radioButtonSet[index].Label:SetWidth(250)
@@ -396,7 +396,7 @@ local function CreateRadioButtons(self, reference, parent, numberOfButtons, defa
 end
 
 local function CreateSliderFrame(self, reference, parent, label, val, minval, maxval, step, mode)
-	local slider = CreateFrame("Slider", reference, parent, 'OptionsSliderTemplate', "BackdropTemplate")
+	local slider = CreateFrame("Slider", reference, parent, 'OptionsSliderTemplate')
 	slider:SetWidth(100)
 	slider:SetHeight(15)
 	--
@@ -442,7 +442,7 @@ end
 -- Alternative Dropdown Menu
 ------------------------------------------------
 
-local DropDownMenuFrame = CreateFrame("Frame", nil, nil, "BackdropTemplate")
+local DropDownMenuFrame = CreateFrame("Frame", nil, nil)
 local MaxDropdownItems = 25
 
 DropDownMenuFrame:SetSize(100, 100)
@@ -460,7 +460,7 @@ Border:SetPoint("TOPLEFT", DropDownMenuFrame, "TOPLEFT")
 
 -- Create the Menu Item Buttons
 for i = 1, MaxDropdownItems do
-	local button = CreateFrame("Button", "TidyPlateDropdownMenuButton"..i, DropDownMenuFrame, "BackdropTemplate")
+	local button = CreateFrame("Button", "TidyPlateDropdownMenuButton"..i, DropDownMenuFrame)
 	DropDownMenuFrame["Button"..i] = button
 
 	button:SetHeight(15)
@@ -489,7 +489,7 @@ for i = 1, MaxDropdownItems do
 end
 
 --[[
-local CloseDropdownButton = CreateFrame("Button", nil, DropDownMenuFrame, "UIPanelCloseButton", "BackdropTemplate")
+local CloseDropdownButton = CreateFrame("Button", nil, DropDownMenuFrame, "UIPanelCloseButton")
 CloseDropdownButton:SetPoint("TOPLEFT", DropDownMenuFrame, "TOPRIGHT", -4, 0)
 CloseDropdownButton:SetFrameStrata("TOOLTIP");
 CloseDropdownButton:Raise()
@@ -566,7 +566,7 @@ end
 
 
 local function CreateDropdownFrame(helpertable, reference, parent, menu, default, label, valueMethod)
-	local drawer = CreateFrame("Frame", reference, parent, "TidyPlatesDropdownDrawerTemplate" , "BackdropTemplate")
+	local drawer = CreateFrame("Frame", reference, parent, "TidyPlatesDropdownDrawerTemplate")
 
 	drawer.Text = _G[reference.."Text"]
 	drawer.Button = _G[reference.."Button"]
@@ -764,7 +764,7 @@ PanelHelpers.EnableFreePositioning = EnableFreePositioning
 ----------------------
 do
 	local CallList = {}			-- Key = Frame, Value = Expiration Time
-	local Watcherframe = CreateFrame("Frame", nil, nil, "BackdropTemplate")
+	local Watcherframe = CreateFrame("Frame", nil, nil)
 	local WatcherframeActive = false
 	local select = select
 	local timeToUpdate = 0

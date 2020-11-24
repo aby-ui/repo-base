@@ -4,7 +4,7 @@
 -- Variables and References
 ---------------------------------------------------------------------------------------------------------------------
 local addonName, TidyPlatesInternal = ...
-local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame, "BackdropTemplate")
+local TidyPlatesCore = CreateFrame("Frame", nil, WorldFrame)
 
 TidyPlates = {}
 TidyPlatesDebug = false
@@ -178,8 +178,8 @@ do
 		local carrier
 		local frameName = "TidyPlatesCarrier"..numChildren
 
-		carrier = CreateFrame("Frame", frameName, WorldFrame, "BackdropTemplate")
-		local extended = CreateFrame("Frame", nil, carrier, "BackdropTemplate")
+		carrier = CreateFrame("Frame", frameName, WorldFrame)
+		local extended = CreateFrame("Frame", nil, carrier)
 
 		plate.carrier = carrier
 		plate.extended = extended
@@ -189,8 +189,8 @@ do
 		-- Status Bars
 		local healthbar = CreateTidyPlatesStatusbar(extended)
 		local castbar = CreateTidyPlatesStatusbar(extended)
-		local textFrame = CreateFrame("Frame", nil, healthbar, "BackdropTemplate")
-		local widgetParent = CreateFrame("Frame", nil, textFrame, "BackdropTemplate")
+		local textFrame = CreateFrame("Frame", nil, healthbar)
+		local widgetParent = CreateFrame("Frame", nil, textFrame)
 
 		textFrame:SetAllPoints()
 
@@ -968,20 +968,33 @@ do
 	end
 
 	function CoreEvents:NAME_PLATE_CREATED(...)
-		local plate = ...
+        local plate = ...
 		OnNewNameplate(plate)
-	end
+    end
+
+    hooksecurefunc(NamePlateDriverFrame, "AcquireUnitFrame", function(plate)
+        if not plate.isModified then
+            plate.isModified = true
+            hooksecurefunc(plate.UnitFrame, "Show", function(self)
+                if self.unit ~= "player" and not UnitNameplateShowsWidgetsOnly(self.unit) then
+                    self:Hide()
+                end
+            end)
+        end
+    end)
 
 	function CoreEvents:NAME_PLATE_UNIT_ADDED(...)
 		local unitid = ...
-		local plate = GetNamePlateForUnit(unitid);
-
+        local plate = GetNamePlateForUnit(unitid);
+        
 		-- We're not going to theme the personal unit bar
-		if plate and not UnitIsUnit("player", unitid) then
+		if plate and not UnitIsUnit("player", unitid) and not UnitNameplateShowsWidgetsOnly(unitid) then
 			local blizzFrame = plate.UnitFrame
 			if blizzFrame then blizzFrame:Hide() end
 			OnShowNameplate(plate, unitid)
-		end
+        else
+            plate.UnitFrame:Show()
+        end
 
 	end
 
@@ -1045,8 +1058,7 @@ do
 		end
 	end
 
-
-	 function CoreEvents:UNIT_SPELLCAST_STOP(...)
+	function CoreEvents:UNIT_SPELLCAST_STOP(...)
 		local unitid = ...
 		if UnitIsUnit("player", unitid) or not ShowCastBars then return end
 
@@ -1054,11 +1066,8 @@ do
 
 		if plate then
 			OnStopCasting(plate)
-		end
-	 end
-
-
-
+	    end
+	end
 
 	function CoreEvents:UNIT_SPELLCAST_CHANNEL_START(...)
 		local unitid = ...

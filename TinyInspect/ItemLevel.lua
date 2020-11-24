@@ -120,7 +120,7 @@ local function SetItemLevelScheduled(button, ItemLevelFrame, link)
 end
 
 --設置物品等級
-local function SetItemLevel(self, link, category, BagID, SlotID)
+local function SetItemLevel(self, link, category, BagID, SlotID, tooltipFunc)
     if (not self) then return end
     if link == true or link == false then return end --abyui
     local frame = GetItemLevelFrame(self, category)
@@ -138,7 +138,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
                     level = linklevel
                 end
             else
-                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
+                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link, nil, tooltipFunc)
             end
             --背包不显示装等
             if (equipSlot == "INVTYPE_BAG") then
@@ -187,15 +187,18 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             SetItemLevel(self)
         --QuestInfo
         elseif (self.type and self.objectType == "item") then
+            --abyui QuestInfoRewardItemCodeTemplate_OnEnter
             if (QuestInfoFrame and QuestInfoFrame.questLog) then
                 link = GetQuestLogItemLink(self.type, self:GetID())
+                if link then SetItemLevel(self, link, nil, nil, nil, function(gt) gt:SetQuestLogItem(self.type, self:GetID())  end) end
             else
                 link = GetQuestItemLink(self.type, self:GetID())
+                if link then SetItemLevel(self, link, nil, nil, nil, function(gt) gt:SetQuestItem(self.type, self:GetID())  end) end
             end
             if (not link) then
                 link = select(2, GetItemInfo(itemIDOrLink))
+                SetItemLevel(self, link)
             end
-            SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
             link = select(7, GetLootInfoByIndex(self.index))

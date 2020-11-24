@@ -22,7 +22,7 @@ end
 
 local function CreateClassWidget(parent)
 
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetWidth(24); frame:SetHeight(24)
 
 	frame.Icon = frame:CreateTexture(nil, "ARTWORK")

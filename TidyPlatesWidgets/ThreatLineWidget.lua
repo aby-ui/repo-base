@@ -207,7 +207,7 @@ local function CreateWidgetFrame(extended)
 	--local parent = extended.widgetFrame
 	local parent = extended
 	-- Required Widget Code
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:Hide()
 
 	-- Custom Code

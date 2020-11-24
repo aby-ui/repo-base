@@ -131,7 +131,7 @@ local GetDistance_Point = DF.GetDistance_Point
 			elseif (event == "LFG_LIST_SEARCH_RESULTS_RECEIVED") then
 				local results = LFGListFrame.SearchPanel.results
 				--no results?
-				if (not results or #results == 0) then
+				if (results and #results == 0) then
 					--show the create group button if in quest category
 					local selectedCategory = LFGListFrame.SearchPanel.categoryID
 					if (selectedCategory ~= 1) then
@@ -1086,6 +1086,9 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 			end
 
 			local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+			if (not tagInfo) then
+				return
+			end
 			local tagID = tagInfo.tagID
 			local rarity = tagInfo.rarity or 1
 			local isElite = tagInfo.isElite

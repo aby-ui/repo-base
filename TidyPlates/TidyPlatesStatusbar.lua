@@ -64,6 +64,7 @@ end
 
 
 local function UpdateSize(self)
+    self:OnBackdropSizeChanged()
 	if self.Orientation == "VERTICAL" then self.Dim = self:GetHeight()
 	else self.Dim = self:GetWidth() end
 	UpdateBar(self)

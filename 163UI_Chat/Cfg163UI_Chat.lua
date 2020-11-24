@@ -143,10 +143,10 @@ U1RegisterAddon("163UI_Chat", {
                 if oldv ~= nil then
                     if U1DBG.config_timestamp == nil then
                         --旧版数据兼容, 如果之前有值, 尽量设置为之前的值, 然后删掉他们
-                        if oldv == '无' or oldv == '' then
+                        if oldv == '无' or oldv == '' or oldv == 'none' then
                             v = 'none'
                         else
-                            v = '|cff68ccef' .. oldv .. '|r '
+                            v = '|cff68ccef' .. oldv .. '|r'
                         end
                         -- 我们的旧版会设置为"none", 如果不是none则表示用户改过.
                         if cvalue == "none" or cvalue == "无" or cvalue == "" then
@@ -159,7 +159,7 @@ U1RegisterAddon("163UI_Chat", {
 
                 else
                     --正常进入游戏，以cvar为主来设置插件，如果用其他号设置了cvar，这边会把设置同步过来。但是如果其他号是非|c开头的，那我们也保持原样，只是把设置改为''
-                    if cvalue == 'none' or cvalue == '无' or cvalue == '' then
+                    if cvalue == 'none' or cvalue == '无' or cvalue == '' or cvalue == '|cff68ccefnone|r ' or cvalue == '|cff68ccefnone|r' then
                         if v ~= '' then v = 'none' end --保持住不修改默认
                     elseif cvalue and cvalue:sub(1,2) ~= "|c" then
                         v = '' --暴雪的格式，我们改成不修改暴雪样式

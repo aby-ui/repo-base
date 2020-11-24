@@ -386,7 +386,7 @@ do
 		end
 		local type, _, _, _, _, id = strsplit("-", guid)
 		if type == "Creature" or type == "Pet" or type == "GameObject" or type == "Vehicle" or type == "Vignette" then
-			local displayID = ns.CreatureToDisplayID[id]
+			local displayID = ns and ns.CreatureToDisplayID and ns.CreatureToDisplayID[id]
 			return displayID ~= nil, displayID
 		end
 	end

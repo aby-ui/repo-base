@@ -123,7 +123,7 @@ local function CreateCombatWidget(parent)
 
 
 	-- Required Widget Code
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:Hide()
 
 	frame:SetPoint("CENTER", parent, "CENTER")
@@ -171,7 +171,7 @@ end
 
 
 -- Watcher Frame
-local WatcherFrame = CreateFrame("Frame", nil, WorldFrame , "BackdropTemplate")
+local WatcherFrame = CreateFrame("Frame", nil, WorldFrame)
 local isEnabled = false
 
 
@@ -206,7 +206,7 @@ end
 
 local function CreateWidgetCarrier(parent)
 	-- Required Widget Code
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	--frame:Hide()
 
 	frame:SetHeight(32)

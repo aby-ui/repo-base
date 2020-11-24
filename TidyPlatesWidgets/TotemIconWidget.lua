@@ -109,7 +109,7 @@ local function UpdateTotemIconWidget(self, unit)
 end
 
 local function CreateTotemIconWidget(parent)
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetWidth(19); frame:SetHeight(18)
 
 	frame.Overlay = frame:CreateTexture(nil, "OVERLAY")

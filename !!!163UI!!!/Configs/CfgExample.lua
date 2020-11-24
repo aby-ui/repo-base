@@ -69,7 +69,7 @@ U1RegisterAddon("$NAME$", {
 
         --单选
         type = "radio",
-        options = {"显示1", 值1, "显示", 值2},
+        options = {"显示1", 值1, "显示", 值2}, --不要出现nil, 因为非常麻烦
         cols = 3, --每行的选项数
         indent = 1, 是否缩进
 
