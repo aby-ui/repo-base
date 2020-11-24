@@ -7,4 +7,5 @@
     <Script file="elvui.lua"/>
     <Script file="litebag.lua"/>
     <Script file="bagnon.lua"/>
+    <Script file="combuctor.lua"/>
 </Ui>

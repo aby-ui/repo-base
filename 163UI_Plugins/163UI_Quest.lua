@@ -221,12 +221,13 @@ local function createButtons(titleButton, questNotGossip)
 end
 
 hooksecurefunc("GossipFrameUpdate", function()
+    --local GossipQuests = C_GossipInfo.GetActiveQuests();
     for titleButton, _ in pairs(GossipFrame.titleButtonPool.activeObjects) do
         if not titleButton.btnComplete then createButtons(titleButton) end
         if titleButton:IsShown() then
             if titleButton.type == "Active" then
-                local titleButtonIcon = titleButton.Icon
-                if titleButtonIcon:GetTexture():find("Incomplete") then
+                local titleTex = titleButton.Icon:GetTexture()
+                if type(titleTex) == "number" or titleTex:GetTexture():find("Incomplete") then --3595324 /dump next(GossipFrame.titleButtonPool.activeObjects).Icon:GetTexture()
                     titleButton.btnComplete:Hide()
                 else
                     titleButton.btnComplete:Show()
