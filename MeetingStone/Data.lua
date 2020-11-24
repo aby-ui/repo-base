@@ -18,7 +18,7 @@ _G.BINDING_HEADER_MEETINGSTONE      = ADDON_TITLE
 
 SOLO_HIDDEN_CUSTOM_ID       = 999
 SOLO_VISIBLE_CUSTOM_ID      = 998
-MAX_PLAYER_LEVEL            = 50 --MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
+MAX_PLAYER_LEVEL            = MAX_PLAYER_LEVEL
 MAX_SEARCHBOX_HISTORY_LINES = 5
 
 -- App
@@ -287,16 +287,6 @@ CATEGORY = {
     },
     [7] = {
         groups = {
-            [259] = true,
-            [260] = true,
-            [261] = true,
-            [262] = true,
-            [263] = true,
-            [264] = true,
-            [265] = true,
-            [266] = true,
-            --[267] = true,
-            --[268] = true,
             [135] = true,
             [136] = true,
             [137] = true,
@@ -322,6 +312,22 @@ CATEGORY = {
             [657] = true, --=C_LFGList.GetActivityInfo(657) 世界首领
         },
     },
+    [8] = {
+        groups = {
+            [259] = true,
+            [260] = true,
+            [261] = true,
+            [262] = true,
+            [263] = true,
+            [264] = true,
+            [265] = true,
+            [266] = true,
+            [267] = true,
+            [268] = true,
+        },
+        activities = {
+        },
+    }
 }
 
 --/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))

@@ -172,7 +172,7 @@ local function MakeCategoryMenuTable(categoryId, baseFilter, menuType)
 
     if categoryId == 2 or categoryId == 3 then
         -- for i = #MAX_PLAYER_LEVEL_TABLE, 0, -1 do
-        for i = 7, 0, -1 do
+        for i = 8, 0, -1 do
             local versionMenu = MakeVersionMenuTable(categoryId, i, baseFilter, menuType)
             if versionMenu then
                 tinsert(menuTable, versionMenu)

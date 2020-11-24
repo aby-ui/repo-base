@@ -2,7 +2,7 @@
 local WIDGET, VERSION = 'GridView', 4
 
 local GUI = LibStub('NetEaseGUI-2.0')
-local GridView = GUI:NewClass(WIDGET, 'Frame', VERSION, 'Refresh', 'View', 'Scroll', 'Select', 'Owner')
+local GridView = GUI:NewClass(WIDGET, 'Frame.BackdropTemplate', VERSION, 'Refresh', 'View', 'Scroll', 'Select', 'Owner')
 if not GridView then
     return
 end
@@ -68,21 +68,21 @@ function GridView:UpdateItems()
     local maxCount = min(self:GetColumnCount() * self:GetRowCount(), self:GetItemCount())
     local autoWidth = self:GetItemWidth() or 1
     local maxRight = 0
-    
+
     local column = self:GetColumnCount()
     offset = ceil((offset - 1) / column) * column + 1
 
     for i = 1, maxCount do
         local button = self:GetButton(i)
         local index = offset + i - 1 + self:GetExcludeCount()
-        
+
         if self:GetItem(index) then
             button:SetEnabled(self:IsEnabled())
             button:SetID(index)
             button:SetChecked(self:IsSelected(index))
             button:Show()
             button:FireFormat()
-            
+
             autoWidth = max(autoWidth, button:GetAutoWidth() or 0)
             maxRight = max(maxRight, button:GetRight())
         else

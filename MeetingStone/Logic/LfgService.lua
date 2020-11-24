@@ -141,7 +141,6 @@ function LfgService:LFG_LIST_SEARCH_RESULT_UPDATED(_, id)
 end
 
 function LfgService:Search(categoryId, baseFilter, activityId)
-    
     self.ourSearch = true
     self.activityId = activityId
 

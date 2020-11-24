@@ -62,6 +62,9 @@ function SummaryGrid:Constructor()
             VoiceChat:SetWidth(1)
         end)
         VoiceChat:SetScript('OnEnter', function(VoiceChat)
+            if not self.voiceChat then
+                return
+            end
             GameTooltip:SetOwner(VoiceChat, 'ANCHOR_RIGHT')
             GameTooltip:SetText(format(L['语音聊天：|cffffffff%s|r'], self.voiceChat))
             GameTooltip:Show()

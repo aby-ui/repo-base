@@ -1,7 +1,7 @@
 
 BuildEnv(...)
 
-local InputDialog = Addon:NewClass('InputDialog', 'Frame')
+local InputDialog = Addon:NewClass('InputDialog', 'Frame.BackdropTemplate')
 
 function InputDialog:Constructor()
     self:Hide()

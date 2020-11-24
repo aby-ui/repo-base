@@ -50,7 +50,7 @@ function DataBroker:OnInitialize()
         end
     })
 
-    local BrokerPanel = LibStub('LibWindow-1.1'):Embed(CreateFrameAby('Button', nil, UIParent)) do
+    local BrokerPanel = LibStub('LibWindow-1.1'):Embed(CreateFrame('Button', nil, UIParent, 'BackdropTemplate')) do
         BrokerPanel:SetSize(160, 26)
         BrokerPanel:SetToplevel(true)
         BrokerPanel:SetFrameStrata('HIGH')

@@ -1,5 +1,5 @@
 
-local GUI = LibStub:NewLibrary('NetEaseGUI-2.0', 2)
+local GUI = LibStub:NewLibrary('NetEaseGUI-2.0', 3)
 if not GUI then
     return
 end

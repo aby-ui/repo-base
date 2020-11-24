@@ -15,8 +15,11 @@ function MemberDisplay:Constructor()
     self.DataDisplay = DataDisplay
 end
 
-function LFGListGroupDataDisplay_Update(self, activityID, displayData, disabled)
+local function LFGListGroupDataDisplay_Update(self, activityID, displayData, disabled)
     local fullName, shortName, categoryID, groupID, iLevel, filters, minLevel, maxPlayers, displayType = C_LFGList.GetActivityInfo(activityID)
+    if categoryID == 9 then
+        displayType = LE_LFG_LIST_DISPLAY_TYPE_ROLE_COUNT
+    end
     if displayType == LE_LFG_LIST_DISPLAY_TYPE_ROLE_COUNT or displayType == LE_LFG_LIST_DISPLAY_TYPE_HIDE_ALL then
         self.RoleCount:Show()
         self.Enumerate:Hide()

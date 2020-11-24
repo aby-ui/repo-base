@@ -6,7 +6,7 @@ AppQrDialog.lua
 
 BuildEnv(...)
 
-AppQrDialog = CreateFrame('Frame', nil, UIParent)
+AppQrDialog = CreateFrame('Frame', nil, UIParent, 'BackdropTemplate')
 AppQrDialog:Hide()
 AppQrDialog:SetScript('OnShow', function(self)
     self:SetScript('OnShow', nil)

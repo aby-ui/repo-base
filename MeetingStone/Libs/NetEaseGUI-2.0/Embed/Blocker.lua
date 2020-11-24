@@ -40,6 +40,9 @@ function View:UpdateBlockers()
         if blocker:IsVisible() or (blocker:GetParent():IsVisible() and blocker:Fire('OnCheck')) then
             blocker:Show()
             blocker:SetFrameLevel(prevBlocker:GetFrameLevel() + 50)
+            if blocker:GetScript('OnShow') then
+                blocker:GetScript('OnShow')(blocker)
+            end
             blocker:Fire('OnFormat')
             prevBlocker = blocker
         else

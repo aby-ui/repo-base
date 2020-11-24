@@ -2,7 +2,7 @@
 local WIDGET, VERSION = 'TitlePanel', 1
 
 local GUI = LibStub('NetEaseGUI-2.0')
-local TitlePanel = GUI:NewClass(WIDGET, 'Frame', VERSION)
+local TitlePanel = GUI:NewClass(WIDGET, 'Frame.BackdropTemplate', VERSION)
 if not TitlePanel then
     return
 end

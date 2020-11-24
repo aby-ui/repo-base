@@ -124,7 +124,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID, tooltipFunc)
     if (not self) then return end
     if link == true or link == false then return end --abyui
     local frame = GetItemLevelFrame(self, category)
-    if (self.OrigItemLink == link) then
+    if (self.OrigItemLink == link and not tooltipFunc) then
         SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link, self.OrigItemLevel)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else

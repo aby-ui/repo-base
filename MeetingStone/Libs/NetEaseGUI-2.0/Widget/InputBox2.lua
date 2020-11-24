@@ -2,7 +2,7 @@
 local WIDGET, VERSION = 'InputBox2', 1
 
 local GUI = LibStub('NetEaseGUI-2.0')
-local InputBox2 = GUI:NewClass(WIDGET, 'EditBox', VERSION, 'Owner')
+local InputBox2 = GUI:NewClass(WIDGET, 'EditBox.BackdropTemplate', VERSION, 'Owner')
 if not InputBox2 then
     return
 end

@@ -1,7 +1,7 @@
 
 BuildEnv(...)
 
-local Button = Addon:NewClass('Button', 'Button') do
+local Button = Addon:NewClass('Button', 'Button.BackdropTemplate') do
     GUI:Embed(Button, 'Tooltip')
     Button:SetTooltipAnchor('ANCHOR_RIGHT')
 end
