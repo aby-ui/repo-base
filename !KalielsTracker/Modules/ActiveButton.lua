@@ -64,10 +64,10 @@ local function ActiveFrame_Update()
 	if dbChar.activeButtonPosition then return end
 	point, relativeTo, relativePoint, xOfs, yOfs = extraAbilityFrame:GetPoint(pointNum)
 	if isElvui then
-		yOfs = yOfs - 29
+		yOfs = (yOfs or 300) - 29
 	end
-	if HasExtraActionBar() then
-		yOfs = yOfs + 100
+	if HasExtraActionBar() or #C_ZoneAbility.GetActiveAbilities() > 0 then
+		yOfs = (yOfs or 300) + 100
 	end
 	KT:prot(activeFrame, "ClearAllPoints")
 	KT:prot(activeFrame, "SetPoint", point, relativeTo, relativePoint, xOfs, yOfs)

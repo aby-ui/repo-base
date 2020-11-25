@@ -989,11 +989,10 @@ do
         
 		-- We're not going to theme the personal unit bar
 		if plate and not UnitIsUnit("player", unitid) and not UnitNameplateShowsWidgetsOnly(unitid) then
-			local blizzFrame = plate.UnitFrame
-			if blizzFrame then blizzFrame:Hide() end
+            if plate.UnitFrame then
+                plate.UnitFrame:Hide()
+            end
 			OnShowNameplate(plate, unitid)
-        else
-            plate.UnitFrame:Show()
         end
 
 	end

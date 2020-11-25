@@ -544,10 +544,13 @@ local function SetHooks()
 			Default_UpdateModuleInfoTables()
 
 			SCENARIO_CONTENT_TRACKER_MODULE.blockOffset[SCENARIO_CONTENT_TRACKER_MODULE.blockTemplate][1] = -16
-			QUEST_TRACKER_MODULE.buttonOffsets[QUEST_TRACKER_MODULE.blockTemplate].groupFinder = { 2, 4 }
+			QUEST_TRACKER_MODULE.buttonOffsets[QUEST_TRACKER_MODULE.blockTemplate].useItem = { 3, 4 }
+			QUEST_TRACKER_MODULE.buttonOffsets[QUEST_TRACKER_MODULE.blockTemplate].groupFinder = { 2, 3 }
 			BONUS_OBJECTIVE_TRACKER_MODULE.blockPadding = 0
+			BONUS_OBJECTIVE_TRACKER_MODULE.buttonOffsets[BONUS_OBJECTIVE_TRACKER_MODULE.blockTemplate].useItem = { 0, 2 }
 			BONUS_OBJECTIVE_TRACKER_MODULE.buttonOffsets[BONUS_OBJECTIVE_TRACKER_MODULE.blockTemplate].groupFinder = { 2, 2 }
 			WORLD_QUEST_TRACKER_MODULE.blockPadding = 0
+			WORLD_QUEST_TRACKER_MODULE.buttonOffsets[WORLD_QUEST_TRACKER_MODULE.blockTemplate].useItem = { 0, 2 }
 			WORLD_QUEST_TRACKER_MODULE.buttonOffsets[WORLD_QUEST_TRACKER_MODULE.blockTemplate].groupFinder = { 2, 2 }
 
 			Init()
@@ -941,6 +944,25 @@ local function SetHooks()
 	end)
 	Default_SetFunctionChanged("FreeUnusedLines")
 
+	local function AddFixedTag(block, tag, buttonOffsetsTag)
+		if block.rightButton == tag then
+			return
+		end
+
+		tag:ClearAllPoints()
+
+		if block.rightButton then
+			tag:SetPoint("RIGHT", block.rightButton, "LEFT", -ObjectiveTracker_GetPaddingBetweenButtons(block), 0)
+		else
+			tag:SetPoint("TOPRIGHT", block, ObjectiveTracker_GetButtonOffsets(block, buttonOffsetsTag))
+		end
+
+		tag:Show()
+
+		block.rightButton = tag
+		block.lineWidth = block.lineWidth - tag:GetWidth() - ObjectiveTracker_GetPaddingBetweenButtons(block)
+	end
+
 	local function CreateFixedTag(block, x, y, anchor)
 		local tag = block.fixedTag
 		if not tag then
@@ -958,8 +980,12 @@ local function SetHooks()
 				tag.text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
 				tag.text:SetPoint("CENTER", -0.5, 1)
 			end
-			tag:SetPoint(anchor or "TOPRIGHT", block, x, y)
-			tag:Show()
+			if not anchor then
+				AddFixedTag(block, tag, "useItem")
+			else
+				tag:SetPoint(anchor, block, x, y)
+				tag:Show()
+			end
 			block.fixedTag = tag
 		end
 
@@ -1062,6 +1088,7 @@ local function SetHooks()
 		local link, item, charges, showItemWhenComplete = KT.GetQuestLogSpecialItemInfo(questLogIndex)
 		if item and (not block.questCompleted or showItemWhenComplete) then
 			block.itemButton:Hide()
+			block.rightButton = block.groupFinderButton
 			CreateFixedTag(block, x, y)
 			local button = CreateFixedButton(block)
 			if not InCombatLockdown() then
@@ -1446,7 +1473,9 @@ local function SetHooks()
 	local bck_QuestPOI_GetButton = QuestPOI_GetButton
 	QuestPOI_GetButton = function(parent, questID, style, index)
 		local poiButton = bck_QuestPOI_GetButton(parent, questID, style, index)
-		poiButton.Glow.SetShown = function() end
+		if poiButton then
+			poiButton.Glow.SetShown = function() end
+		end
 		return poiButton
 	end
 

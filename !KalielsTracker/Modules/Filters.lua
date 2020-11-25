@@ -730,7 +730,7 @@ function DropDown_Initialize(self, level)
 			info.func = Filter_Quests
 
 			if numEntries > 0 then
-				local headerTitle, headerOnMap, headerShown
+				local headerTitle, headerOnMap, headerCampaign, headerShown
 
 				for i = 1, numEntries do
 					local questInfo = C_QuestLog.GetInfo(i)
@@ -738,10 +738,14 @@ function DropDown_Initialize(self, level)
 						if questInfo.isHeader then
 							headerTitle = questInfo.title
 							headerOnMap = questInfo.isOnMap
+							headerCampaign = questInfo.campaignID ~= nil
 							headerShown = false
 						elseif not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) then
 							if not headerShown then
 								info.text = (headerOnMap and "|cff00ff00" or "")..headerTitle
+								if headerCampaign then
+									info.text = info.text.." ("..TRACKER_HEADER_CAMPAIGN_QUESTS..")"
+								end
 								info.arg2 = i
 								MSA_DropDownMenu_AddButton(info, level)
 								headerShown = true

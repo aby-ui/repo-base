@@ -516,6 +516,10 @@
 --			Adds GetCurrencyInfo() which works around issues for which Blizzard API to use.
 --			Ensures AzeriteLevelMeetsOrExceeds() checks to make sure API used are present.
 --			Reworks quest abandoning to use events instead of the old routines.
+--		113 Updates some Quest/NPC information.
+--			Fixes the problem where unregistering tracking quest acceptance was not being done properly.
+--			Changes technique of obtaining NPC location to use internal routine rather than Blizzard's which does not show locations in instances.
+--			Changes interface to 90002.
 --
 --	Known Issues
 --
@@ -939,8 +943,6 @@ experimental = false,	-- currently this implementation does not reduce memory si
 		classToBitMapping = { ['K'] = 0x00000004, ['D'] = 0x00000008, ['H'] = 0x00000010, ['M'] = 0x00000020, ['O'] = 0x00000040, ['P'] = 0x00000080, ['T'] = 0x00000100, ['R'] = 0x00000200, ['S'] = 0x00000400, ['L'] = 0x00000800, ['W'] = 0x00001000, },
 		classToMapAreaMapping = { ['CK'] = 200011, ['CD'] = 200004, ['CH'] = 200008, ['CM'] = 200013, ['CO'] = 200015, ['CP'] = 200016, ['CT'] = 200020, ['CR'] = 200018, ['CS'] = 200019, ['CL'] = 200012, ['CW'] = 200023, },
 		completedQuestThreshold = 0.5,
-		completingQuest = nil,
-		completingQuestTitle = nil,
 		continents = {},	-- key is mapId for the continent, value is { name = string, zones = {}, mapID = int, dungeons = {} }
 							-- and zones and dungeons are just arrays of { name = string, mapID = int }
 		currentlyProcessingStatus = {},
@@ -1013,6 +1015,7 @@ experimental = false,	-- currently this implementation does not reduce memory si
 					self.capabilities.usesQuestHyperlink = not self.existsClassic
 					self.capabilities.usesFollowers = not self.existsClassic
 					self.capabilities.usesWorldEvents = not self.existsClassic
+					self.capabilities.usesWorldQuests = not self.existsClassic
 
                     -- These values are no longer used, but kept for posterity.
 					self.existsPandaria = (self.blizzardRelease >= 15640)
@@ -1260,16 +1263,6 @@ experimental = false,	-- currently this implementation does not reduce memory si
 								end
 							end
 						end
-					end
-
-					--	Unfortunately Blizzard event system is not robust enough to provide us the data
-					--	we need to function properly.  Therefore, we override some of the API that the
-					--	Blizzard UI uses regarding quests.
-					--
-					-- Now to hook the QuestRewardCompleteButton_OnClick function
-					if not self.existsWoD then
-						self.origHookFunction = QuestFrameCompleteQuestButton:GetScript("OnClick")
-						QuestFrameCompleteQuestButton:SetScript("OnClick", function() self:_QuestRewardCompleteButton_OnClick() end);
 					end
 
 					--	For the choice of types of quest on Isle of Thunder the following function is eventually
@@ -1624,7 +1617,10 @@ frame:RegisterEvent("GOSSIP_ENTER_CODE")	-- gossipIndex
 					frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 					self:RegisterObserver("FullAccept", Grail._AcceptQuestProcessing)
 					frame:RegisterEvent("QUEST_ACCEPTED")
-					frame:RegisterEvent("QUEST_COMPLETE")
+					frame:RegisterEvent("QUEST_AUTOCOMPLETE")
+					if self.capabilities.usesWorldQuests then
+						frame:RegisterEvent("WORLD_QUEST_COMPLETED_BY_SPELL")
+					end
 					frame:RegisterEvent("QUEST_DETAIL")
 					frame:RegisterEvent("QUEST_LOG_UPDATE")	-- just to indicate we are now available to read the Blizzard quest log without issues
 					frame:RegisterEvent("QUEST_REMOVED")
@@ -1898,12 +1894,12 @@ end,
 
 			-- Prior to Shadowlands, the signature is (self, frame, questIndex, questId)
 			-- In Shadowlands, the signature is       (self, frame, questId)
-			-- To run in both, we need to detect the number of parameters are deal with them appropriately.
+			-- To run in both, we need to detect the number of parameters and deal with them appropriately.
 			['QUEST_ACCEPTED'] = function(self, frame, questIndexOrIdBasedOnRelease, aQuestId)
 				-- If there are two parameters, the first will be the questIndex, otherwise we have no questIndex
 				local questIndex = aQuestId and questIndexOrIdBasedOnRelease or nil
 				
-				-- If there are two parameters, the second in the quest Id, otherwise the first is.
+				-- If there are two parameters, the second is the quest Id, otherwise the first is.
 				local theQuestId = aQuestId or questIndexOrIdBasedOnRelease
 				
 				-- In Shadowlands we need to look up the questIndex
@@ -1911,6 +1907,8 @@ end,
 					questIndex = C_QuestLog.GetLogIndexForQuestID(theQuestId)
 				end
 				
+				-- For the "FullAccept" notification we want to provide a payload that includes all the useful
+				-- information gathered when accepting a quest.
 				local payload = {}
 				if nil ~= self.questDetailInformation then
 					payload.blizzardNPCId = self.questDetailInformation.blizzardNPCId
@@ -1930,57 +1928,29 @@ end,
 				payload.questIndex = questIndex
 				payload.coordinates = self:Coordinates()
 				
-				-- Get rid of the information gotten from QUEST_DETAIL to we do not use it erroneously again.
+				-- Get rid of the information gotten from QUEST_DETAIL so we do not use it erroneously again.
 				self.questDetailInformation = nil
 				
 				-- Inform subscribers of what just happened
 				self:_PostNotification("FullAccept", payload)
 				self:_PostNotification("Accept", theQuestId)
 
---				--	If we think we should not have been able to accept this quest we should record some information that may help us update our faulty database.
---				local statusCode = self:StatusCode(questId)
---				local errorString = 'G' .. self.versionNumber .. '|' .. questId .. '|' .. statusCode
---				if not self:CanAcceptQuest(questId, false, false, true) then
---					-- look at the reason and record the reason and contrary information for that reason
---					if bitband(statusCode, self.bitMaskLevelTooLow + self.bitMaskLevelTooHigh) > 0 then errorString = errorString .. "|L:" .. UnitLevel('player') end
---					if bitband(statusCode, self.bitMaskClass + self.bitMaskAncestorClass) > 0 then errorString = errorString .. "|C:" .. self.playerClass end
----- TODO: Correct the fact that |R results in the loss of the R because it is a code used in their strings
---					if bitband(statusCode, self.bitMaskRace + self.bitMaskAncestorRace) > 0 then errorString = errorString .. "|R:" .. self.playerRace end
---					if bitband(statusCode, self.bitMaskGender + self.bitMaskAncestorGender) > 0 then errorString = errorString .. "|G:" .. self.playerGender end
---					if bitband(statusCode, self.bitMaskFaction + self.bitMaskAncestorFaction) > 0 then errorString = errorString .. "|F:" .. self.playerFaction end
---					if bitband(statusCode, self.bitMaskInvalidated) > 0 then
---
---					end
---					if bitband(statusCode, self.bitMaskProfession) > 0 then
----- TODO: Need to look at all the professions associated with the quest and record the actual profession values the user currently has for them
---
---					end
---					if bitband(statusCode, self.bitMaskReputation) > 0 then
----- TODO: Same as professions, but with reputations instead
---
---					end
---					if bitband(statusCode, self.bitMaskHoliday) > 0 then
----- TODO: Determine if we actually need to mark which holiday caused the problem because when CleanDatabase comes across this without the specific one, it can only remove this if there is NO holiday associated with the quest.
---						errorString = errorString .. "HOL"
---					end
---					if bitband(statusCode, self.bitMaskPrerequisites) > 0 then
---
---					end
---					self:_RecordBadQuestData(errorString)
---				end
-
 			end,
 
-			['QUEST_COMPLETE'] = function(self, frame, ...)
-				local titleText = GetTitleText()
-				self.completingQuest = self:QuestInQuestLogMatchingTitle(titleText)
-				self.completingQuestTitle = titleText
--- Removing special quest processing as it is not working well in Classic
---				if nil == self.completingQuest then	-- if we still do not have it, mark it in the saved variables for possible future inclusion
---					if nil == GrailDatabase["SpecialQuests"] then GrailDatabase["SpecialQuests"] = { } end
---					if nil == GrailDatabase["SpecialQuests"][titleText] then GrailDatabase["SpecialQuests"][titleText] = self.blizzardRelease end
---				end
-				self:_UpdateQuestResetTime()
+			['QUEST_AUTOCOMPLETE'] = function(self, frame, questId)
+				if self.GDE.debug then
+					local message = strformat("QUEST_AUTOCOMPLETE completes %d", questId)
+					print(message)
+					self:_AddTrackingMessage(message)
+				end
+			end,
+			
+			['WORLD_QUEST_COMPLETED_BY_SPELL'] = function(self, frame, questId)
+				if self.GDE.debug then
+					local message = strformat("WORLD_QUEST_COMPLETED_BY_SPELL completes %d", questId)
+					print(message)
+					self:_AddTrackingMessage(message)
+				end
 			end,
 
 			-- This is used solely to indicate to the system that the Blizzard quest log is available to be read properly.  Early in the startup
@@ -2025,6 +1995,7 @@ end,
 			['QUEST_TURNED_IN'] = function(self, frame, questId, xp, money)
 				self.questTurningIn = questId
 				self:_QuestCompleteProcess(questId)
+				self:_UpdateQuestResetTime()
 			end,
 
 			['SKILL_LINES_CHANGED'] = function(self, frame)
@@ -2454,7 +2425,6 @@ end,
 		observers = { },
 		origAbandonQuestFunction = nil,
 		origConfirmAbandonQuestFunction = nil,
-		origHookFunction = nil,
 		playerClass = nil,
 		playerFaction = nil,
 		playerGender = nil,
@@ -2484,7 +2454,7 @@ end,
 		questBits = {},					-- key is the questId, and value is a string that represents integers of bits
 		questCodes = {},
 --		questNames = {},
-		questNPCId = nil,
+--		questNPCId = nil,
 		questPrerequisites = {},
 		questReputationRequirements = {},	-- key is questId, value is a string of 4-character codes appended to each other, ignoring specific aspects of the P: code positions
 		questReputations = {},			-- the table after the initial load is processed
@@ -3968,7 +3938,8 @@ end,
 			local retval, currentLevel = false, nil
 			if C_AzeriteItem then
 				if C_AzeriteItem.GetPowerLevel and C_AzeriteItem.FindActiveAzeriteItem then
-					currentLevel = C_AzeriteItem.GetPowerLevel(C_AzeriteItem.FindActiveAzeriteItem())
+					local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
+					currentLevel = azeriteItemLocation and C_AzeriteItem.GetPowerLevel(azeriteItemLocation) or 0
 				end
 			end
 			if nil ~= currentLevel and currentLevel >= soughtLevel then
@@ -8907,6 +8878,8 @@ end
 			end
 		end,
 
+		--	Internal Use.
+		--	@param controlTable The table that provides control information for processing prerequisites.  Its structure is detailed in _PreparePrerequisiteInfo().
 		_GetPrerequisiteInfo = function(controlTable)
 			controlTable = controlTable or {}
 			local questId, preqTable, result, index = controlTable.questId, controlTable.preq, controlTable.result, controlTable.index
@@ -9531,6 +9504,33 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 			self.timings.ProcessServerQuests = debugprofilestop() - debugStartTime
 		end,
 
+		-- The key is the professionCode used as the key in professionMapping, and the value is a table of ids for each extension
+		-- These values are the ones that are returned by C_TradeSkillUI.GetAllProfessionTradeSkillLines() as of 2020-11-14.
+		-- Note that these do not cover Riding, Cooking, Fishing or Archaeology as the API does not return anything for those.
+		-- Using the values from here with the C_TradeSkillUI.GetTradeSkillLineInfoByID(id) API allows access to the following:
+		--		skillLineDisplayName, skillLineRank, skillLineMaxRank, skillLineModifier
+		-- If skillLineMaxRank is 0 there is no ability for the player.
+		-- TODO: Determine whether someone can have a 0 skillLineMaxRank at a lower expansion but a non-zero at a higher one (i.e.,
+		--		skipped over a "lower level" of the skill.
+		professionSkillLineIdMapping = {
+			A = { 2485, 2484, 2483, 2482, 2481, 2480, 2479, 2478, 2750, }, -- 'Alchemy',
+			B = { 2477, 2476, 2475, 2474, 2473, 2472, 2454, 2437, 2751, }, -- 'Blacksmithing',
+			E = { 2494, 2493, 2492, 2491, 2489, 2488, 2487, 2486, 2753, }, -- 'Enchanting',
+			H = { 2556, 2555, 2554, 2553, 2552, 2551, 2550, 2549, 2760, }, -- 'Herbalism',
+			I = { 2514, 2513, 2512, 2511, 2510, 2509, 2508, 2507, 2756, }, -- 'Inscription',
+			J = { 2524, 2523, 2522, 2521, 2520, 2519, 2518, 2517, 2757, }, -- 'Jewelcrafting',
+			L = { 2532, 2531, 2530, 2529, 2528, 2527, 2526, 2525, 2758, }, -- 'Leatherworking',
+			M = { 2572, 2571, 2570, 2569, 2568, 2567, 2566, 2565, 2761, }, -- 'Mining',
+			N = { 2506, 2505, 2504, 2503, 2502, 2501, 2500, 2499, 2755, }, -- 'Engineering',
+			S = { 2564, 2563, 2562, 2561, 2560, 2559, 2558, 2557, 2762, }, -- 'Skinning',
+			T = { 2540, 2539, 2538, 2537, 2536, 2535, 2534, 2533, 2759, }, -- 'Tailoring',
+		},
+
+		-- TODO: Get the maximum value for skills for Shadowlands and replace the 0 with that...
+		professionMaximumValuesPerExpansio = {
+			300, 75, 75, 75, 75, 100, 100, 175, 0,
+		},
+
 		--	Internal Use.
 		--	Returns whether the character has the profession specified by the code exceeding the specified level.
 		--	@param professionCode The code representing the profession as used in Grail.professionMapping
@@ -9559,6 +9559,9 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 			else
 				local skillName = nil
 				local prof1, prof2, archaeology, fishing, cooking, firstAid = GetProfessions()
+				-- TODO: Remove the use of firstAid as a profession
+
+-- local name, texture, rank, maxRank, numSpells, spelloffset, skillLine, rankModifier, specializationIndex, specializationOffset, skillLineName = GetProfessionInfo(index)
 
 				if "X" == professionCode and nil ~= archaeology then
 					ignore1, ignore2, skillLevel = GetProfessionInfo(archaeology)
@@ -9638,15 +9641,36 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 		end,
 
 		_QuestCompleteProcess = function(self, questId)
-			self.questNPCId = self:GetNPCId(false)
 			if nil == questId then
-				questId = self:QuestIdFromNPCOrName(self.completingQuestTitle, self.questNPCId)
+				print("Grail problem attempting to complete a quest with no questId")
+				return
 			end
+--			self.questNPCId = self:GetNPCId(false)
 
 			if questId then
-				self.completingQuest = self:_GetOTCQuest(questId, self.questNPCId)
+-- It appears we were not even using the results of calling _GetOTCQuest()
+--				self.completingQuest = self:_GetOTCQuest(questId, self.questNPCId)
 				local shouldUpdateActual = (nil ~= self:QuestInvalidates(questId))
 				self:_MarkQuestComplete(questId, true, shouldUpdateActual, false)
+				-- Check to see whether there are any other quests that are also marked by Blizzard as being completed now.
+				if self.GDE.debug then
+					local newlyCompletedQuests, newlyLostQuests = {}, {}
+					self:_ProcessServerCompare(newlyCompletedQuests, newlyLostQuests)
+					if #newlyCompletedQuests > 0 then
+						for _, aQuestId in pairs(newlyCompletedQuests) do
+							if aQuestId ~= questId then
+								print("   *** Completed:", aQuestId)
+							end
+						end
+					end
+					if #newlyLostQuests > 0 then
+					for _, aQuestId in pairs(newlyLostQuests) do
+						print("   *** Lost:", aQuestId)
+					end
+					end
+					-- TODO: Actually do something with this information to update quest database so it can be used to do things like provide ODC: codes
+					self:_ProcessServerBackup(true)
+				end
 
 				if nil ~= self.quests[questId] then
 					local odcCodes = self.quests[questId]['ODC']
@@ -9678,7 +9702,6 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 					print("|cffff0000Grail problem|r because completing quest which seems not to exist", questId)
 				end
 
-				self.completingQuest = nil
 			end
 		end,
 
@@ -10004,13 +10027,6 @@ if self.GDE.debug then print("Marking OEC quest complete", oecCodes[i]) end
 				retval = self:_FromPattern(retval)
 			end
 			return retval
-		end,
-
-		--	Routine used to hook the function for completing a quest.  This is needed because the events that Blizzard issues
-		--	are not adequate for our desired tasks.
-		_QuestRewardCompleteButton_OnClick = function(self)
-			self:_QuestCompleteProcess(self.completingQuest)
-			self.origHookFunction()
 		end,
 
 		--	Returns a table whose key is the questId and whose value is a table made of the quest title and the completedness
@@ -10703,6 +10719,7 @@ if factionId == nil then print("Rep nil issue:", reputationName, reputationId, r
 			[4431] = { 62017, 62711, 62827, },	-- Choosing Necrolord covenant	[for a level 60 prebuild NE druid]
 			[4499] = { 62019, 62827, },	-- Choosing Night Fae covenant	[for a level 60 prebuild NE druid]
 			[4565] = { 62023, 62708, 62827, },	-- Choosing Kyrian covenant	[for a level 60 prebuild NE druid]
+			[15801] = {62020, 62827 }, 	-- Choosing Venthyr covenant (for NE druid played through storyline)
 --			[20920] = XXX, -- Choosing "Replay Storyline" in Choose Your Shadowlands Experience [note that there is no quest completed]
 			[20947] = {		 -- Choosing "The Threads of Fate"
 						56829, 56942, 56955, 56978, 57007, 57025, 57026, 57037, 57098, 57102, 57131, 57136, 57159, 57161, 57164, 57173,
@@ -11015,9 +11032,9 @@ if factionId == nil then print("Rep nil issue:", reputationName, reputationId, r
 				local currentMapInfo = C_Map.GetMapInfo(Grail.GetCurrentMapAreaID())
 				while currentMapInfo do
 					local currentMapId = currentMapInfo.mapID
-					local results = C_Map.GetPlayerMapPosition(currentMapId, victim)
-					if results and results.x and results.y then
-						retval = retval .. spacer .. strformat("%d:%.2f,%.2f", currentMapId, results.x * 100 , results.y * 100)
+					local x, y = self.GetPlayerMapPosition(victim)
+					if x and y then
+						retval = retval .. spacer .. strformat("%d:%.2f,%.2f", currentMapId, x * 100 , y * 100)
 						spacer = " "
 						currentMapInfo = C_Map.GetMapInfo(currentMapInfo.parentMapID)
 						if nil ~= currentMapInfo and currentMapInfo.mapType == Enum.UIMapType.Continent then
@@ -11203,8 +11220,8 @@ end
 				self:RegisterObserver("FullAccept", Grail._AddFullTrackingCallback)
 			else
 				self:UnregisterObserverQuestAbandon(Grail._AddTrackingCallback)
-				self:UnregisterObserverQuestAccept(Grail._AddTrackingCallback)
 				self:UnregisterObserverQuestComplete(Grail._AddTrackingCallback)
+				self:UnregisterObserver("FullAccept", Grail._AddFullTrackingCallback)
 			end
 		end,
 

@@ -548,6 +548,8 @@ local function OnEvent(self, event, arg1, arg2)
         --BM_SetMoveHandlerWith("AzeriteEmpoweredItemUI", "Blizzard_AzeriteUI");
         BM_SetMoveHandlerWith("OrderHallTalentFrame", "Blizzard_OrderHallUI");
 
+        --9.0
+        BM_SetMoveHandler(ItemTextFrame)
         frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
         
     elseif event=="ADDON_LOADED" then
