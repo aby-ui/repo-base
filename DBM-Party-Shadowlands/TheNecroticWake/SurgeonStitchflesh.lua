@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2392, "DBM-Party-Shadowlands", 1, 1182)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201122233248")
+mod:SetRevision("20201124184127")
 mod:SetCreatureID(162689)
 mod:SetEncounterID(2389)
 
@@ -26,7 +26,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 320376 and type = "begincast"
 --]]
 local warnSummonCreation			= mod:NewSpellAnnounce(320358, 2)
-local warnMutilate					= mod:NewCastAnnounce(320376, 4, nil, nil, "Tank|Healer")--Upgrade to special warning if needed
+local warnMutilate					= mod:NewCastAnnounce(320376, 4, nil, nil, "Tank|Healer")--Spammy if lots of adds up, which is why not special warning
 local warnSeverFlesh				= mod:NewSpellAnnounce(334488, 3, nil, "Tank|Healer")
 local warnEscape					= mod:NewCastAnnounce(320359, 3)
 local warnEmbalmingIchor			= mod:NewTargetNoFilterAnnounce(327664, 3)

@@ -343,7 +343,10 @@ local OFFSET_FLAGS = 11
 local OFFSET_CONTEXT = 12
 local OFFSET_BONUS_ID = 13
 
-local TYPE_DROP_LEVEL = 9
+local ITEM_MOD_TYPE_DROP_LEVEL = 9
+-- 28 shows frequently but is currently unknown
+local ITEM_MOD_TYPE_CRAFT_STATS_1 = 29
+local ITEM_MOD_TYPE_CRAFT_STATS_2 = 30
 
 local SocketInventoryItem   = _G.SocketInventoryItem
 local Timer                 = _G.C_Timer
@@ -662,16 +665,24 @@ local function GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput
   -- There's now a variable list of additional data after bonus IDs, looks like some kind of type/value pairs
   local linkOffset = OFFSET_BONUS_ID + #bonuses + 1
 
+  local craftedStats = {}
   local numPairs = itemSplit[linkOffset]
   for index=1, numPairs do
     local pairOffset = 1 + linkOffset + (2 * (index - 1))
     local pairType = itemSplit[pairOffset]
     local pairValue = itemSplit[pairOffset + 1]
-    if pairType == TYPE_DROP_LEVEL then
+    if pairType == ITEM_MOD_TYPE_DROP_LEVEL then
       simcItemOptions[#simcItemOptions + 1] = 'drop_level=' .. pairValue
+    elseif pairType == ITEM_MOD_TYPE_CRAFT_STATS_1 or pairType == ITEM_MOD_TYPE_CRAFT_STATS_2 then
+      craftedStats[#craftedStats + 1] = pairValue
+    else
+      -- Unknown types:
+      -- 28
     end
-    -- Unknown types:
-    -- 28
+  end
+
+  if #craftedStats > 0 then
+    simcItemOptions[#simcItemOptions + 1] = 'crafted_stats=' .. table.concat(craftedStats, '/')
   end
 
   -- Azerite powers - only run in BfA client
@@ -922,7 +933,7 @@ function Simulationcraft:GetSoulbindString(id)
       end
     end
   end
-  return "soulbind=" .. Tokenize(soulbindData.name) .. ':' .. soulbindData.ID .. ',' .. table.concat(soulbindStrings, '/')
+  return "soulbind=" .. Tokenize(soulbindData.name) .. ',' .. table.concat(soulbindStrings, '/')
 end
 
 function Simulationcraft:GetMainFrame(text)

@@ -841,48 +841,23 @@ do
             update810 = true,
         }
 
-        if not Broker_CurrencyCharDB.update810 then
-            Broker_CurrencyCharDB.update810 = true
-            Broker_CurrencyCharDB.show1580 = true
-            Broker_CurrencyCharDB.show1560 = true
-            Broker_CurrencyCharDB.show1718 = true
-            Broker_CurrencyCharDB.show1716 = true
-            Broker_CurrencyCharDB.show1717 = true
-            Broker_CurrencyCharDB["summary1560"] = true
-            Broker_CurrencyCharDB["summary1580"] = true
-            Broker_CurrencyCharDB["summary1718"] = true
-            Broker_CurrencyCharDB["summary1716"] = true
-            Broker_CurrencyCharDB["summary1717"] = true
-
-            Broker_CurrencyCharDB.show1533 = false
-            Broker_CurrencyCharDB.summary1155 = false
-            Broker_CurrencyCharDB.summary1273 = false
-            Broker_CurrencyCharDB.summary1220 = false
+        if not Broker_CurrencyCharDB.update900 then
+            Broker_CurrencyCharDB.update900 = true
+            Broker_CurrencyCharDB.show1767 = true
+            Broker_CurrencyCharDB.summary1767 = true
+            Broker_CurrencyCharDB.show1813 = true
+            Broker_CurrencyCharDB.summary1813 = true
+            Broker_CurrencyCharDB.show1719 = false
+            Broker_CurrencyCharDB.summary1719 = false
+            Broker_CurrencyCharDB.show1803 = false
+            Broker_CurrencyCharDB.summary1803 = false
+            Broker_CurrencyCharDB.show1718 = false
+            Broker_CurrencyCharDB.summary1718 = false
+            Broker_CurrencyCharDB.show1755 = false
+            Broker_CurrencyCharDB.summary1755 = false
+            Broker_CurrencyCharDB.show1560 = false
+            Broker_CurrencyCharDB.summary1560 = false
         end
-
-        if not Broker_CurrencyCharDB.update820 then
-            Broker_CurrencyCharDB.update820 = true
-            Broker_CurrencyCharDB.show1721 = true
-            Broker_CurrencyCharDB["summary1721"] = true
-        end
-        if not Broker_CurrencyCharDB.update830 then
-            Broker_CurrencyCharDB.update830 = true
-            Broker_CurrencyCharDB.show1755 = true
-            Broker_CurrencyCharDB["summary1755"] = true
-            Broker_CurrencyCharDB.show1721 = false
-            Broker_CurrencyCharDB["summary1721"] = false
-        elseif not Broker_CurrencyCharDB.update830b then
-            Broker_CurrencyCharDB.update830b = true
-            Broker_CurrencyCharDB.show1718 = true
-            Broker_CurrencyCharDB["summary1718"] = true
-        elseif not Broker_CurrencyCharDB.update830c then
-            Broker_CurrencyCharDB.update830c = true
-            Broker_CurrencyCharDB.show1719 = true
-            Broker_CurrencyCharDB.summary1719 = true
-            Broker_CurrencyCharDB.show1803 = true
-            Broker_CurrencyCharDB.summary1803 = true
-        end
-
 
 		-- ----------------------------------------------------------------------------
 		-- Initialize the configuration options.

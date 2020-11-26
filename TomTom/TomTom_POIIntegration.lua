@@ -43,7 +43,20 @@ local function ObjectivesChanged()
         scanning = true
     end
 
-    local px, py, map, mapType = hbd:GetPlayerZonePosition(true)
+    local map = C_Map.GetBestMapForUnit("player")
+    if not map then
+        scanning = false
+        return
+    end
+
+    local player = C_Map.GetPlayerMapPosition(map, "player")
+    if not player then
+        scanning = false
+        return
+    end
+
+    local px, py = player:GetXY()
+
     -- Bail out if we can't get the player's position
     if not px or not py or px <= 0 or py <= 0 then
         scanning = false
@@ -58,7 +71,7 @@ local function ObjectivesChanged()
     local closestdist = math.huge
 
     -- This function relies on the above CVar being set, and updates the icon
-    -- position information so it can be queries via the API
+    -- position information so it can be queried via the API
     QuestPOIUpdateIcons()
 
     -- Scan through every quest that is tracked, and find the closest one

@@ -550,6 +550,9 @@ OnAttributeChanged = function(self, name, unit)
 		-- Force a full update when the player is alive to prevent freezes when releasing in a zone that forces a ressurect (naxx/tk/etc)
 		self:RegisterNormalEvent("PLAYER_ALIVE", self, "FullUpdate")
 
+		-- full update when the player targetable changes, ie. during cutscenes or transports
+		self:RegisterUnitEvent("UNIT_TARGETABLE_CHANGED", self, "FullUpdate")
+
 	-- Update boss
 	elseif( self.unitType == "boss" ) then
 		self:RegisterNormalEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT", self, "FullUpdate")

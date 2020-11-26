@@ -1,6 +1,6 @@
 U1RegisterAddon("BFAInvasionTimer", {
     title = "入侵时刻表",
-    defaultEnable = 1,
+    defaultEnable = 0,
 
     tags = { TAG_MAPQUEST, },
     icon = "Interface\\ICONS\\Achievement_Garrison_Invasion",

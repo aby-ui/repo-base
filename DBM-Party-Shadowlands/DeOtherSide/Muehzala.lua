@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2410, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201122213043")
+mod:SetRevision("20201126151802")
 mod:SetCreatureID(169769)
 mod:SetEncounterID(2396)
 
@@ -11,8 +11,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 325258 327646 326171",
 	"SPELL_CAST_SUCCESS 325725 324698 326171 327426",
 	"SPELL_AURA_APPLIED 325725",
-	"SPELL_AURA_REMOVED 325725 334970",
-	"UNIT_DIED"
+	"SPELL_AURA_REMOVED 325725 334970"
+--	"UNIT_DIED"
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
@@ -31,7 +31,7 @@ mod:RegisterEventsInCombat(
 local warnCosmicArtifice			= mod:NewTargetAnnounce(325725, 3)
 local warnShatterReality			= mod:NewCastAnnounce(326171, 4)
 --Stage 2: Shattered Reality
-local warnAddsRemaining				= mod:NewAddsLeftAnnounce("ej22186", 2, 264049)--A nice shackle icon
+--local warnAddsRemaining				= mod:NewAddsLeftAnnounce("ej22186", 2, 264049)--A nice shackle icon
 
 --Stage 1: The Master of Death
 local specWarnMasterofDeath			= mod:NewSpecialWarningDodge(325258, nil, nil, nil, 2, 2)
@@ -47,10 +47,10 @@ local specWarnDeathgate				= mod:NewSpecialWarningMoveTo(324698, nil, nil, nil, 
 local timerMasterofDeathCD			= mod:NewCDTimer(32.8, 325258, nil, nil, nil, 3)
 local timerCosmicArtificeCD			= mod:NewCDCountTimer(19.5, 325725, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
 local timerSoulcrusherCD			= mod:NewCDCountTimer(17.8, 327646, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerShatterRealityCD			= mod:NewCDTimer(25.3, 325258, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerShatterRealityCD			= mod:NewCDTimer(25.3, 326171, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 --Stage 2: Shattered Reality
 
-mod.vb.addsLeft = 3
+--mod.vb.addsLeft = 3
 mod.vb.cosmicCount = 0
 mod.vb.soulCount = 0
 
@@ -58,7 +58,7 @@ function mod:OnCombatStart(delay)
 	self.vb.cosmicCount = 0
 	self.vb.soulCount = 0
 	timerCosmicArtificeCD:Start(3.7-delay, 1)--SUCCESS
-	timerSoulcrusherCD:Start(6.2-delay, 1)
+	timerSoulcrusherCD:Start(5.9-delay, 1)
 	timerMasterofDeathCD:Start(9.5-delay)
 	timerShatterRealityCD:Start(60)
 end
@@ -93,7 +93,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.vb.cosmicCount % 2 == 0 then
 			timerCosmicArtificeCD:Start(10, self.vb.cosmicCount+1)
 		else
-			timerCosmicArtificeCD:Start(25, self.vb.cosmicCount+1)
+			timerCosmicArtificeCD:Start(20, self.vb.cosmicCount+1)
 		end
 	elseif spellId == 324698 then--Deathgate finished
 		specWarnDeathgate:Show(args.spellName)
@@ -133,6 +133,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
+--[[
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 168326 then--Shattered Visage
@@ -143,7 +144,6 @@ function mod:UNIT_DIED(args)
 	end
 end
 
---[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 309991 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnGTFO:Show(spellName)

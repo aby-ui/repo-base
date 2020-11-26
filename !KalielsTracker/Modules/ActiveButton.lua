@@ -274,6 +274,10 @@ local function SetHooks()
 		ActiveFrame_Update()
 	end)
 
+	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", function(self)
+		ActiveFrame_Update()
+	end)
+
 	PetActionBarFrame:HookScript("OnUpdate", function(self, elapsed)
 		if abutton.isPet ~= self.completed then
 			ActiveFrame_Update()

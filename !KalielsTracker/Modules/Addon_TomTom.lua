@@ -242,7 +242,9 @@ local function SetHooks()
 	local bck_QuestPOI_GetButton = QuestPOI_GetButton
 	QuestPOI_GetButton = function(parent, questID, style, index)
 		local poiButton = bck_QuestPOI_GetButton(parent, questID, style, index)
-		SetWaypointTag(poiButton, questWaypoints[questID])
+		if poiButton then
+			SetWaypointTag(poiButton, questWaypoints[questID])
+		end
 		return poiButton
 	end
 

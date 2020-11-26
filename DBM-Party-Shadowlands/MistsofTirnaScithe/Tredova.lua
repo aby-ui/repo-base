@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2405, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201122181224")
+mod:SetRevision("20201125133144")
 mod:SetCreatureID(164517)
 mod:SetEncounterID(2393)
 mod:SetUsedIcons(1, 2, 3, 4, 5)--Probably doesn't use all 5, unsure number of mind link targets at max inteligence/energy
@@ -29,7 +29,7 @@ ability.id = 322550 and type = "begincast"
 local warnMarkthePrey				= mod:NewTargetNoFilterAnnounce(322563, 3)
 
 local specWarnConsumption			= mod:NewSpecialWarningDodge(322450, nil, nil, nil, 2, 2)
-local specWarnConsumptionKick		= mod:NewSpecialWarningInterrupt(322450, "HasInterrupt", nil, nil, 2, 2)
+local specWarnConsumptionKick		= mod:NewSpecialWarningInterrupt(322450, "HasInterrupt", nil, 2, 1, 2)
 local specWarnAcceleratedIncubation	= mod:NewSpecialWarningSwitch(322550, "Dps", nil, nil, 1, 2)
 local specWarnMindLink				= mod:NewSpecialWarningMoveAway(322648, nil, nil, nil, 1, 11)
 local yellMindLink					= mod:NewYell(322648)

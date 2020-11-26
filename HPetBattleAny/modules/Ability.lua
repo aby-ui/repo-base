@@ -14,6 +14,7 @@ local C_PetJournal = _G.C_PetJournal
 local addonname,addon = ...
 local L = addon.L
 local AbilityModules={}
+local CreateFrame = CreateFrameAby
 HPetBattleAny.AbilityModules=AbilityModules
 
 AbilityModules.GetAbilityInfo = function(petOwner, petIndex, i, minmod)

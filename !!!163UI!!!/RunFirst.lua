@@ -94,16 +94,6 @@ PlaySoundFile = function(file, channel, ...)
     end
 end
 
-local f02 = CreateFrame("Frame")
-f02:RegisterEvent("PLAYER_LEVEL_UP")
-f02:SetScript("OnEvent", function()
-    if UnitLevel("player") == GetMaxLevelForPlayerExpansion() then
-        U1Message("恭喜您满级了，不过目前任务追踪增强满级后有BUG，会造成地图错乱。重载界面会自动关闭。会尽快修复。")
-    end
-end)
-
-if UnitLevel("player") >= GetMaxLevelForPlayerExpansion() then DisableAddOn("!KalielsTracker") end
-
 --U1.removedAddOns = {"Fizzle", }
 
 --UI163_USER_MODE = 1 --- alwaysRegister=1 and not checkVendor
