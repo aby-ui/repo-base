@@ -14,7 +14,7 @@ local C_PetJournal = _G.C_PetJournal
 local addonname,addon = ...
 local L = addon.L
 local AbilityModules={}
-local CreateFrame = CreateFrameAby
+local CreateFrame = CreateFrame
 HPetBattleAny.AbilityModules=AbilityModules
 
 AbilityModules.GetAbilityInfo = function(petOwner, petIndex, i, minmod)
@@ -261,7 +261,7 @@ local Backdrop={
 	}
 
 function CreateAbilityList(targetname,rpoints)
-	local frame = CreateFrame("frame","HAbiFrame"..targetname,PetBattleFrame)
+	local frame = CreateFrame("frame","HAbiFrame"..targetname,PetBattleFrame,"BackdropTemplate")
 
 	function frame:Init(unit)
 		self:SetSize("175","30")

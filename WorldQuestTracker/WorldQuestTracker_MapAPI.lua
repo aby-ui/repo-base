@@ -761,6 +761,9 @@ end
 					end
 
 					if (conduitType) then
+						if (not borderColor) then
+							borderColor = {.9, .9, .9, 1}
+						end
 						WorldQuestTracker.CachedConduitData[questID] = {conduitType, borderTexture, borderColor, itemLink}
 					end
 				

@@ -6,7 +6,9 @@ local ADDON_NAME, ns = ...
 local Class = ns.Class
 local Group = ns.Group
 local L = ns.locale
+
 local Map = ns.Map
+local Reward = ns.reward.Reward
 
 -------------------------------------------------------------------------------
 
@@ -62,6 +64,10 @@ local function ProcessCovenant (node)
         node.sublabel = node.sublabel and subl..'\n'..node.sublabel or subl
         node._covenantProcessed = true
     end
+end
+
+function Reward:GetCategoryIcon()
+    return self.covenant and ns.GetIconPath(self.covenant.icon)
 end
 
 -------------------------------------------------------------------------------

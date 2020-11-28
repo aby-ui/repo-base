@@ -1631,9 +1631,11 @@ end
 
 WorldQuestTracker.WorldMapQuestCounter = 0
 
+print(1)
 --questsToUpdate is a hash table with questIDs to just update / if is nil it's a full refresh
+print(2)
 function WorldQuestTracker.UpdateWorldMapSmallIcons (addToWorldMap, questsToUpdate)
-	
+
 	if (not WorldQuestTracker.db.profile.world_map_config.onmap_show) then
 		return
 	end

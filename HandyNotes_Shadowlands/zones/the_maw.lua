@@ -14,6 +14,7 @@ local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
 local Quest = ns.reward.Quest
 local Toy = ns.reward.Toy
+local Transmog = ns.reward.Transmog
 
 local Path = ns.poi.Path
 local POI = ns.poi.POI
@@ -54,6 +55,8 @@ map.nodes[80306280] = map.intro
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
 
+-- TODO: Add Fallen Adventurer's Cache rewards?
+
 map.nodes[25923116] = Rare({
     id=157964,
     quest=57482,
@@ -69,7 +72,7 @@ map.nodes[19324172] = Rare({
     note=L["apholeias_note"],
     rewards={
         Achievement({id=14744, criteria=49842}),
-        Item({item=182327}) -- Dominion Etching Loss 182327
+        Item({item=182327}) -- Dominion Etching: Loss
     }
 }) -- Apholeias, Herald of Loss
 
@@ -78,6 +81,7 @@ map.nodes[39014119] = Rare({
     quest=57469,
     rewards={
         Achievement({id=14744, criteria=49843}),
+        Toy({item=184312}) -- Borr-Geth's Fiery Brimstone
     }
 }) -- Borr-Geth
 
@@ -86,6 +90,7 @@ map.nodes[27731305] = Rare({
     quest=61106,
     rewards={
         Achievement({id=14744, criteria=49844}),
+        Transmog({item=183887, slot=L["1h_sword"]}) -- Suirhtaned, Blade of the Heir
     }
 }) -- Conjured Death
 
@@ -128,6 +133,7 @@ map.nodes[42342108] = Rare({
     note=L["ekphoras_note"],
     rewards={
         Achievement({id=14744, criteria=49849}),
+        Item({item=184105, note=L["ring"]}), -- Gyre
         Item({item=182328}) -- Dominion Etching: Grief
     }
 }) -- Ekphoras, Herald of Grief
@@ -151,7 +157,7 @@ map.nodes[20586935] = Rare({
 
 map.nodes[30775000] = Rare({
     id=175012,
-    quest=nil,
+    quest=62788,
     note=L["ikras_note"],
     rewards={
         Achievement({id=14744, criteria=50621}),
@@ -163,6 +169,7 @@ map.nodes[16945102] = Rare({
     quest=60987,
     rewards={
         Achievement({id=14744, criteria=49852}),
+        Toy({item=184292}) -- Ancient Elethium Coin
     }
 }) -- Morguliax <Lord of Decapitation>
 
@@ -218,6 +225,7 @@ map.nodes[28701204] = Rare({
     note=L["talaporas_note"],
     rewards={
         Achievement({id=14744, criteria=49858}),
+        Transmog({item=184107, slot=L["cloak"]}), -- Borogove Cloak
         Item({item=182326}) -- Dominion Etching: Pain
     }
 }) -- Talaporas, Herald of Pain
@@ -233,7 +241,7 @@ map.nodes[27397152] = Rare({
 -- map.nodes[] = Rare({
 --     id=165973,
 --     quest=61124,
--- }) -- Warren Mongrel
+-- }) -- Gorged Shadehound
 
 map.nodes[37676591] = Rare({
     id=172862,
@@ -263,12 +271,8 @@ local BonusBoss = Class('BonusBoss', NPC, {
 map.nodes[28204450] = BonusBoss({
     id=169102,
     quest=61136, -- 63380
-    note=L["in_cave"],
     rewards={
         Achievement({id=14660, criteria=49485}),
-    },
-    pois={
-        POI({20813927}) -- Cave entrance
     }
 }) -- Agonix
 
@@ -285,6 +289,7 @@ map.nodes[28712513] = BonusBoss({
     quest=61346,
     rewards={
         Achievement({id=14660, criteria=49484}),
+        Item({item=183070, quest=63164}) -- Mawsworn Orders
     }
 }) -- Cyrixia <The Willbreaker>
 
@@ -301,6 +306,8 @@ map.nodes[19205740] = BonusBoss({
     quest=61140,
     rewards={
         Achievement({id=14660, criteria=50410}),
+        Item({item=183066, quest=63160}), -- Korrath's Grimoire: Aleketh
+        Item({item=183067, quest=63161}) -- Korrath's Grimoire: Belidir
     }
 }) -- Dath Rezara <Lord of Blades>
 
@@ -366,7 +373,7 @@ map.nodes[22674223] = BonusBoss({
 
 map.nodes[26173744] = BonusBoss({
     id=162829,
-    quest=62228,
+    quest=60992,
     rewards={
         Achievement({id=14660, criteria=49479}),
     }

@@ -183,6 +183,9 @@ function WorldQuestTracker:OnInit()
 		
 		-- ~review disabling scale since it have some issues for some users
 		WorldQuestTracker.db.profile.map_frame_scale_enabled = false
+
+		--this options is deprecated, switching it to false for all users
+		WorldQuestTracker.db.profile.disable_world_map_widgets = false
 	end)
 
 	WorldQuestTracker.TomTomUIDs = {}
@@ -641,7 +644,6 @@ end
 
 		local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
 		if (not tagInfo) then
-			WorldQuestTracker:Msg("no tag info for quest:", questID, title)
 			return
 		end
 

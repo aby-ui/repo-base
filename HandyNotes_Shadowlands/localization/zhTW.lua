@@ -17,7 +17,8 @@ L["deifir_note"] = "騎上圈內的稀有並使用 {spell:319566} 和 {spell:319
 L["faeflayer_note"] = "瀑布後面隱藏的小洞穴內。"
 L["gormtamer_tizo_note"] = "擊殺 {npc:166735} 和 {npc:166736} 後騎著它們直到 {npc:164110} 刷新。"
 L["humongozz_note"] = "種植一個 {item:175247} 在潮濕的沃土將刷新 {npc:164122}。在一分鐘後 {spell:319367}，稀有將刷新。區域內的許多怪物都掉落蘑菇。"
-L["lehgo_note"] = "摧毀顫動的果姆蛋並擊殺 {npc:171827} 直到他出現。在洞穴內(入口在東南黃塵地穴內)"
+L["lehgo_note"] = "摧毀顫動的果姆蛋並擊殺 {npc:171827} 直到他出現。在洞穴內（入口在東南黃塵地穴內）"
+L["macabre_note"] = nil
 L["mymaen_note"] = "擊殺區域內的腐楠精靈直到他做出表情並出現。"
 L["rainbowhorn_note"] = "\n|cffff5400品|r|cffffaa00嘗|r|cffffff00絕|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9麗|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r"
 L["rootwrithe_note"] = "觸碰 {npc:167928} 直到稀有出現。"
@@ -37,6 +38,7 @@ L["night_mare_note"] = [[
 
 L["star_lake"] = "星湖劇場"
 L["star_lake_note"] = "與舞臺導演 {npc:171743} 交談，會開啟一場特殊的戰鬥"
+L["guldan"] = nil
 
 L["cache_of_the_moon"] = "在黑夜花園收集 {npc:171360} 的五個遺失工具並組合它們以製造 {item:180753}。交給她工具包後會施放 {spell:334353} 給你，讓你可以看到寶箱"
 L["cache_of_the_night"] = "在整個區域收集 {item:180656}、{item:180654} 和 {item:180655} 組合它們製造 {item:180652}。"
@@ -63,13 +65,13 @@ L["playful_vulpin_note"] = [[
 
 L["tame_gladerunner"] = "馴服的巡林者"
 L["tame_gladerunner_note"] = [[
-閱讀“Tale of the Tangle”並跟隨藍色的燈穿過小徑到達 {npc:171767}。擊殺他並拾取 {npc:171699}。
+閱讀樹上的 “密林傳奇” 並跟隨藍色的燈穿過小徑到達 {npc:171767}。擊殺他並拾取 {npc:171699}。
 
-如果你走錯路而且當你到終點時 {npc:171699} 已經消失了，返回開始的位置並再次閱讀“Tale of the Tangle”來再次嘗試。如果 {npc:171767} 不在，你需要等待他刷新。
+如果你走錯路而且當你到終點時 {npc:171699} 已經消失了，返回開始的位置並再次閱讀 “密林傳奇” 來再次嘗試。如果 {npc:171767} 不在，你需要等待他刷新。
 ]]
 
-L["faryl_note"] = "讓亞登曠野的防御由天空生物主宰。（暫）"
-L["glitterdust_note"] = "亞登曠野的生物看上去溫順，但他們將以有史以來最強大的冠軍的力量和勇氣捍衛自己的領土。你有什麼需要？（暫）"
+L["faryl_note"] = "讓天空中的生物來帶領亞登曠野的守軍吧。"
+L["glitterdust_note"] = "亞登曠野的生物或許看起來很溫馴，不過為了守護家園，他們願意拿出無與倫比的力量和勇氣。你也有這種覺悟嗎？"
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -120,16 +122,16 @@ L["gift_of_devos"] = [[
 拾取火焰之前，清除寶箱前面的全部怪物。在運送火焰時，點擊任意路上的 {npc:156571} 獲得 {spell:335012} 負面效果提高移動速度。
 ]]
 L["gift_of_thenios"] = [[
-在寶箱後面有稱為“智慧之路”的飛行平台。它通往了一系列有著可以進行溝通的不同熏香的平台：
+在寶箱後面有稱為“智慧之路”的飛行平台。它通往了一系列有著可以進行溝通的不同薰香的平台：
 
-• 知識熏香
-• 忍耐熏香
-• 洞察熏香
-• 審判熏香
+• 知識薰香
+• 耐心薰香
+• 洞察薰香
+• 審判薰香
 
-按照 忍耐 => 知識 => 洞察 的順序來溝通。最後在審判平臺“有見識的智慧之路”的寶珠將會出現。
+按照 耐心 => 知識 => 洞察 的順序來溝通。最後在審判平臺“審判之路”的寶珠將會出現。
 
-這個寶珠將把你進入真正的審判熏香。與它溝通後最後的飛行平臺會讓你獲得 {spell:333068} 來打開寶箱。
+這個寶珠將把你進入真正的審判薰香。與它溝通後最後的飛行平臺會讓你獲得 {spell:333068} 來打開寶箱。
 ]]
 L["gift_of_vesiphone"] = "敲鐘刷新一個 {npc:170849} 並擊殺獲得 {spell:333239} 負面效果。寶箱正對面的流水將清潔此負面效果，並獲得 {spell:332785}。"
 
@@ -200,9 +202,9 @@ L["anima_shard_61300"] = "掛在中央字體的壁架上。"
 L["options_icons_anima_shard"] = "{achievement:14339}"
 L["options_icons_anima_shard_desc"] = "顯示 {achievement:14339} 成就中全部50個失落的靈魄碎片的位置。"
 
-L["stratios_note"] = "即使是最小的戰鬥，也應以榮譽和謹慎進行。准備好後，向您的團隊介紹。（暫）"
-L["thenia_note"] = "如此宏偉的開闊平原。一個光榮的地方。准備好了嗎？（暫）"
-L["zolla_note"] = "我們非常重視防御。無論規模大小，我們都將全力以赴維護和培訓使堡壘保持強大實力的資源。（暫）"
+L["stratios_note"] = "就算是規模再小的戰爭，也要慎重以對。等你準備好了，就展示你的隊伍。"
+L["thenia_note"] = "這裡有如此廣大的開放平原。正好適合拿來戰鬥。你準備好了嗎？"
+L["zolla_note"] = "我們非常嚴肅看待我們的防禦。無論大小，我們都致力於善用每一分資源，保護昇靈堡。"
 
 -------------------------------------------------------------------------------
 --------------------------------- MALDRAXXUS ----------------------------------
@@ -214,6 +216,7 @@ L["forgotten_mementos"] = "在寶藏西側的房間拖拽寶庫閘門之鏈打�
 L["gieger_note"] = "攻擊 {npc:162815} 後啟動稀有。"
 L["gristlebeak_note"] = "破壞附近的 {npc:162761} 後啟動稀有。"
 L["leeda_note"] = "擊殺兩個 {npc:162220} 單位後稀有刷新。"
+L["nirvaska_note"] = nil
 L["sabriel_note"] = "可以作為苦痛劇場的冠軍之一出現。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破壞他的護盾。"
 L["taskmaster_xox_note"] = "與 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
@@ -227,10 +230,14 @@ L["mixed_pool_note"] = [[
 
 • 從南側的 {npc:165027} 和 {npc:166438} 收集 {spell:306722}。
 ]]
-L["Violet"] = "藍紫誤製品"
+L["Boneslurp"] = nil
+L["Corrupted"] = nil
 L["Oily"] = "油膩的無脊生物"
+L["Pulsing"] = nil
+L["Violet"] = "藍紫誤製品"
 
 L["blackhound_cache"] = "黑犬儲物箱"
+L["blackhound_cache_note"] = nil
 L["bladesworn_supply_cache"] = "刃誓補給箱"
 L["cache_of_eyes"] = "蛛眼寶箱"
 L["cache_of_eyes_note"] = "在盲目要塞有多個刷新點。"
@@ -244,7 +251,7 @@ L["plaguefallen_chest_note"] = [[
 
 轉化後，到 {npc:158406} 平台（入口在東側）下面洞穴並點擊管線來傳送到寶箱。
 ]]
-L["ritualists_cache_note"] = "從骨頭堆(多個刷新點)拾取 {item:181558}。在 {npc:174386} 後面使用它完成裝訂儀式書並獲得 {spell:337041} 增益。"
+L["ritualists_cache_note"] = "從骨頭堆（多個刷新點）拾取 {item:181558}。在 {npc:174386} 後面使用它完成裝訂儀式書並獲得 {spell:337041} 增益。"
 L["runespeakers_trove_note"] = "東側找到 {npc:170563} 並擊殺他獲得 {item:181777}。"
 L["stolen_jar_note"] = "在巨大的蘑菇下面的山洞裡。"
 L["strange_growth_note"] = "攻擊 {npc:165037} 獲得寶藏。"
@@ -284,9 +291,9 @@ L["pus_in_boots"] = "在橋的下面。"
 L["options_icons_slime_cat"] = "{achievement:14634}"
 L["options_icons_slime_cat_desc"] = "顯示 {achievement:14634} 成就中貓咪的位置。"
 
-L["dundley_note"] = "我將為勝利而奮鬥，並贏得應有的尊重。唯一的缺點是我現在擁有的所有東西都是粘性的。所有。（暫）"
-L["maximillian_note"] = "我等了幾十年才找到一個值得的對手。勝利者要敗了！（暫）"
-L["rotgut_note"] = "爛腸。剩菜。多余的東西。你上。（暫）"
+L["dundley_note"] = "我會一路過關斬將，直到獲得我應得的尊敬！唯一的壞處是我的個人物品都變得黏黏的，無一倖免。"
+L["maximillian_note"] = "我等了這麼多年，就是想要一個好對手。贏家擁有所有戰利品！"
+L["rotgut_note"] = "腐腸、殘渣。多出來的。你要打。"
 
 -------------------------------------------------------------------------------
 --------------------------------- REVENDRETH ----------------------------------
@@ -331,7 +338,6 @@ L["smuggled_cache_note"] = ns.color.Red("*在拾取之前*：").."請確認已�
 L["taskmaster_trove_note"] = "閱讀Ingress and Egress Rites然後小心地走到寶箱。"
 L["the_count_note"] = "在歿路沼澤農99個 {currency:1820} 然後把它帶給 {npc:173488}。"
 
-L["bleakwood_chest"] = "冷木寶箱"
 L["forgotten_anglers_rod"] = "被遺忘的漁翁之竿"
 
 L["loyal_gorger_note"] = "到歿路沼澤完成 {npc:173498} 的每日任務七次將以坐騎獲得他。"
@@ -351,9 +357,9 @@ L["options_icons_dredbats_desc"] = "顯示{npc:161015}的位置和路徑。"
 L["options_icons_sinrunners"] = "{npc:174032}"
 L["options_icons_sinrunners_desc"] = "顯示{npc:174032}的位置和路徑。"
 
-L["addius_note"] = "頭腦虛弱的人不應浪費我的時間，但是如果您堅持，我會向您展示真正的痛苦。（暫）"
-L["eyegor_note"] = "艾戈爾准備作戰！（暫） "
-L["sylla_note"] = "在這片令人毛骨悚然的地區，人們永遠無法期望在這裡展開一場出色的戰鬥，可惜我們在這裡。不要浪費我的時間。（暫）"
+L["addius_note"] = "意志軟弱的傢伙不該浪費我的時間，不過，要是你堅持的話，我會讓你見識真正的痛苦。"
+L["eyegor_note"] = "埃格準備好戰鬥了！"
+L["sylla_note"] = "誰也想不到居然能在這種糟糕的地方展開這麼特別的戰鬥，但人算不如天算。不要浪費我的時間。"
 
 L["grand_inquisitor_note"] = "把10個 {item:180451} 交給 {npc:160248} 有機會獲得此罪孽石。"
 L["high_inquisitor_note"] = "把250個 {currency:1816} 交給 {npc:160248} 有機會獲得此罪孽石。"

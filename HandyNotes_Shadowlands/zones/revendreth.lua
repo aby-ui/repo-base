@@ -52,7 +52,10 @@ map.nodes[25304850] = Rare({
     note=L["amalgamation_of_light_note"],
     rewards={
         Achievement({id=14310, criteria=48811}),
+        Transmog({item=179926, slot=L["cloth"]}), -- Light-Infused Tunic
         Transmog({item=179924, slot=L["leather"]}), -- Light-Infused Jacket
+        Transmog({item=179653, slot=L["mail"]}), -- Light-Infused Hauberk
+        Transmog({item=179925, slot=L["plate"]}), -- Light-Infused Breastplate
         Item({item=180688}) -- Infused Remnant of Light
     }
 }) -- Amalgamation of Light
@@ -78,7 +81,7 @@ map.nodes[35817052] = Rare({
 
 map.nodes[35003230] = Rare({
     id=166292,
-    quest=nil,
+    quest=59823,
     note=L["bog_beast_note"],
     rewards={
         Achievement({id=14310, criteria=48818}),
@@ -102,7 +105,6 @@ map.nodes[37084742] = Rare({
     note=L["executioner_aatron_note"],
     rewards={
         Achievement({id=14310, criteria=48819}),
-        Item({item=180696}), -- Legion Wing Insignia
         Transmog({item=183737, slot=L["plate"]}) -- Aatron's Stone Girdle
     }
 }) -- Executioner Aatron
@@ -135,6 +137,9 @@ map.nodes[32641545] = Rare({
     covenant=VENTHYR,
     requires=ns.requirement.GarrisonTalent(1259, L["anima_channeled"]),
     note=L["madalav_note"],
+    rewards={
+        Transmog({item=180939, slot=L["cosmetic"]}) -- Mantle of the Forgemaster's Dark Blades
+    },
     pois={
         POI({32661483}) -- Madalav's Hammer
     }
@@ -170,7 +175,7 @@ map.nodes[51985179] = Rare({
     quest=59900,
     rewards={
         Achievement({id=14310, criteria=48817}),
-        Mount({item=180581, id=1298}) -- Harnessed Hopecrusher
+        Mount({item=180581, id=1298, covenant=VENTHYR}) -- Hopecrusher Gargon
     }
 }) -- Hopecrusher
 
@@ -179,8 +184,7 @@ map.nodes[61717949] = Rare({
     quest=60022,
     rewards={
         Achievement({id=14310, criteria=48820}),
-        Item({item=180705}), -- Gargon Training Manual
-        Item({item=180704}) -- Infused Pet Biscuit
+        Item({item=180705, class='HUNTER'}) -- Gargon Training Manual
     }
 }) -- Huntmaster Petrus
 
@@ -201,7 +205,7 @@ map.nodes[67978179] = Rare({
     note=L["leeched_soul_note"],
     rewards={
         Achievement({id=14310, criteria=48809}),
-        Transmog({item=183736, slot=L["cloth"]}),
+        Transmog({item=183736, slot=L["cloth"]}), -- Pride Resistant Handwraps
         Pet({item=180585, id=2897}) -- Bottled Up Emotions
     }
 }) -- Leeched Soul
@@ -242,7 +246,6 @@ map.nodes[67443048] = Rare({
     note=L["sinstone_hoarder_note"],
     rewards={
         Achievement({id=14310, criteria=50030}),
-        Item({item=180677}), -- Discarded Medal of Valor
         Transmog({item=183732, slot=L["mail"]}) -- Sinstone-Linked Greaves
     }
 }) -- Sinstone Hoarder
@@ -262,8 +265,7 @@ map.nodes[78934975] = Rare({
     quest=58130,
     note=L["soulstalker_doina_note"],
     rewards={
-        Achievement({id=14310, criteria=48799}),
-        Item({item=180692}) -- Box of Stalker Traps
+        Achievement({id=14310, criteria=48799})
     }
 }) -- Soulstalker Doina
 
@@ -291,7 +293,7 @@ map.nodes[43007910] = Rare({
     note=L["tomb_burster_note"],
     rewards={
         Achievement({id=14310, criteria=48802}),
-        Pet({item=180584, id=2891}) -- Rose Spiderling
+        Pet({item=180584, id=2891}) -- Blushing Spiderling
     }
 }) -- Tomb Burster
 
@@ -309,10 +311,6 @@ map.nodes[38607200] = Rare({
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
-
--- Stoneguard Satchel (76226410) (60896,60939)
--- Reliquary of Remembrance (79763376) (item=180403)
--- Unimplemented treasure? (50244910)
 
 map.nodes[51855954] = Treasure({
     quest=59888,
@@ -333,8 +331,7 @@ map.nodes[69327795] = Treasure({
 map.nodes[64187265] = Treasure({
     quest=59883,
     rewards={
-        Achievement({id=14314, criteria=50897}),
-        Item({item=179392}) -- Orb of Burgeoning Ambition
+        Achievement({id=14314, criteria=50897})
     }
 }) -- Filcher's Prize
 
@@ -453,17 +450,6 @@ map.nodes[68446445] = Treasure({
 }) -- Wayfarer's Abandoned Spoils
 
 -------------------------------------------------------------------------------
-
--- Not at this location for me -Zar
--- map.nodes[30342472] = Treasure({
---     quest=60665,
---     label=L["bleakwood_chest"],
---     rewards={
---         Pet({item=180592, id=2901}), -- Trapped Stonefiend
---         Transmog({item=182720, slot=L["mail"]}), -- Mail Courier's Tunic
---         Transmog({item=180398, slot=L["polearm"]}) -- Stonewrought Legion Halberd
---     }
--- }) -- Bleakwood Chest
 
 map.nodes[73597539] = Treasure({
     quest=62196,

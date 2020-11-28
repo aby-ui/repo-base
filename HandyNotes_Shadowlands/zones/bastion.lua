@@ -64,8 +64,8 @@ map.nodes[48985031] = Rare({
     quest={60897,62158},
     note=L["basilofos_note"],
     rewards={
-        Achievement({id=14307, criteria=50602}),
-        Toy({item=182655}) -- Hill King's Roarbox
+        Achievement({id=14307, criteria=50602})
+        -- Toy({item=182655}) -- Hill King's Roarbox (gone?)
     }
 }) -- Basilofos, King of the Hill
 
@@ -106,7 +106,7 @@ map.nodes[50435804] = Rare({
     note=L["cloudfeather_patriarch_note"],
     rewards={
         Achievement({id=14307, criteria=50604}),
-        Pet({item=180812, id=2925}) -- Golden Teroclaw
+        Pet({item=180812, id=2925}) -- Golden Cloudfeather
     }
 }) -- Cloudfeather Guardian
 
@@ -149,8 +149,8 @@ map.nodes[27823014] = Rare({
     quest=60883,
     note=L["dark_watcher_note"],
     rewards={
-        Achievement({id=14307, criteria=50603})
-        -- also dropped class-specific finesse conduits
+        Achievement({id=14307, criteria=50603}),
+        Transmog({item=184297, slot=L["2h_sword"]}) -- Death Warden's Greatblade
     }
 }) -- Dark Watcher
 
@@ -287,7 +287,7 @@ map.nodes[61409050] = Rare({
     }
 }) -- Sundancer
 
-map.nodes[63503590] = Rare({
+local SWELLING_TEAR = Rare({
     id=171012,
     quest={61001,61046,61047},
     questCount=true,
@@ -299,11 +299,14 @@ map.nodes[63503590] = Rare({
             {id=50608, quest=61046}, -- Xixin the Ravening
         }}),
         Transmog({item=183605, slot=L["warglaive"]}) -- Devourer Wrought Warglaive
-    },
-    pois={
-        POI({47434282, 52203280, 56031463, 59825165, 63503590})
     }
 }) -- Swelling Tear
+
+map.nodes[47434282] = SWELLING_TEAR
+map.nodes[52203280] = SWELLING_TEAR
+map.nodes[56031463] = SWELLING_TEAR
+map.nodes[59825165] = SWELLING_TEAR
+map.nodes[63503590] = SWELLING_TEAR
 
 map.nodes[53498868] = Rare({
     id=170899,
@@ -365,7 +368,7 @@ map.nodes[46114536] = Treasure({
         Achievement({id=14311, criteria=50053})
     },
     pois={
-            POI({46454661}) -- Entrance
+        POI({46454661}) -- Entrance
     }
 }) -- Abandoned Stockpile
 
@@ -383,6 +386,9 @@ map.nodes[61061510] = Treasure({
     quest=61698,
     label=L["cloudwalkers_coffer"],
     note=L["cloudwalkers_coffer_note"],
+    rewards={
+        Item({item=180783}) -- Design: Crown of the Righteous
+    },
     pois={
         POI({59011639}) -- First Flower
     }
@@ -397,7 +403,7 @@ map.nodes[51471795] = Treasure({
         Transmog({item=183609, slot=L["fist"]}) -- Re-Powered Golliath Fists
     },
     pois={
-        POI({52471448, 53541715, 53141903}) -- Unstable Anima Core
+        POI({52041999, 52471448, 52861966, 53541715, 53141903}) -- Unstable Anima Core
     }
 }) -- Experimental Construct Part
 
@@ -449,7 +455,8 @@ map.nodes[40601890] = Treasure({
     requires=ns.requirement.Spell(333068),
     note=L["gift_of_thenios"],
     rewards={
-        Achievement({id=14311, criteria=50061})
+        Achievement({id=14311, criteria=50061}),
+        Transmog({item=181290, slot=L["cloak"], covenant=KYRIAN})
     },
     pois={
         POI({41662331, 39551900}) -- Transport platform
@@ -461,7 +468,7 @@ map.nodes[64877114] = Treasure({
     note=L["gift_of_vesiphone"],
     rewards={
         Achievement({id=14311, criteria=50059}),
-        Pet({item=180859, id=2935}) -- White Vulpin
+        Pet({item=180859, id=2935}) -- Purity
     }
 }) -- Gift of Vesiphone
 

@@ -12,6 +12,10 @@ local Orange = ns.status.Orange
 local Red = ns.status.Red
 
 -------------------------------------------------------------------------------
+
+local function Icon(icon) return '|T'..icon..':0:0:1:-1|t ' end
+
+-------------------------------------------------------------------------------
 ----------------------------------- REWARD ------------------------------------
 -------------------------------------------------------------------------------
 
@@ -29,12 +33,39 @@ function Reward:IsEnabled()
     return true
 end
 
-function Reward:IsObtained()
-    return true
-end
+function Reward:IsObtained() return true end
+
+-- These functions drive the appearance of the tooltip
+function Reward:GetLines() return function () end end
+function Reward:GetCategoryIcon() end
+function Reward:GetStatus() end
+function Reward:GetText() return UNKNOWN end
 
 function Reward:Render(tooltip)
-    tooltip:AddLine('Render not implemented: '..tostring(self))
+    local text = self:GetText()
+    local status = self:GetStatus()
+
+    -- Add category icon (if registered)
+    local icon = self:GetCategoryIcon()
+    if text and icon then
+        text = Icon(icon)..text
+    end
+
+    -- Render main line and optional status
+    if text and status then
+        tooltip:AddDoubleLine(text, status)
+    elseif text then
+        tooltip:AddLine(text)
+    end
+
+    -- Render follow-up lines (example: achievement criteria)
+    for text, status, r, g, b in self:GetLines() do
+        if text and status then
+            tooltip:AddDoubleLine(text, status, r, g, b)
+        elseif text then
+            tooltip:AddLine(text, r, g, b)
+        end
+    end
 end
 
 -------------------------------------------------------------------------------
@@ -101,45 +132,51 @@ function Achievement:IsObtained()
     return false
 end
 
-function Achievement:Render(tooltip)
+function Achievement:GetText()
     local _,name,_,_,_,_,_,_,_,icon = GetAchievementInfo(self.id)
+    return Icon(icon)..ACHIEVEMENT_COLOR_CODE..'['..name..']|r'
+end
+
+function Achievement:GetStatus()
+    if not self.oneline then return end
+    return self:IsObtained() and Green(L['completed']) or Red(L['incomplete'])
+end
+
+function Achievement:GetLines()
     local completed = self:IsObtained()
-    if self.criteria and not self.oneline then
-        tooltip:AddLine(ACHIEVEMENT_COLOR_CODE..'['..name..']|r')
-        tooltip:AddTexture(icon, {margin={right=2}})
-        for i, c in ipairs(self.criteria) do
-            local cname,_,ccomp,qty,req = GetCriteriaInfo(self.id, c.id)
-            if (cname == '' or c.qty) then
-                cname = c.suffix or cname
-                cname = (completed and req..'/'..req or qty..'/'..req)..' '..cname
-            end
+    local index = 0
+    return function ()
+        -- ignore sub-lines if oneline is enabled or no criteria were given
+        if self.oneline or not self.criteria then return end
 
-            local r, g, b = .6, .6, .6
-            local ctext = "   • "..cname
-            if (completed or ccomp) then
-                r, g, b = 0, 1, 0
-            end
+        -- increment our criteria counter
+        index = index + 1
+        if index > #self.criteria then return end
 
-            local note, status = c.note
-            if c.quest then
-                if C_QuestLog.IsQuestFlaggedCompleted(c.quest) then
-                    status = ns.status.Green(L['defeated'])
-                else
-                    status = ns.status.Red(L['undefeated'])
-                end
-                note = note and (note..'  '..status) or status
-            end
-
-            if note then
-                tooltip:AddDoubleLine(ctext, note, r, g, b)
-            else
-                tooltip:AddLine(ctext, r, g, b)
-            end
+        local c = self.criteria[index]
+        local cname, _, ccomp, qty, req = GetCriteriaInfo(self.id, c.id)
+        if (cname == '' or c.qty) then
+            cname = c.suffix or cname
+            cname = (completed and req..'/'..req or qty..'/'..req)..' '..cname
         end
-    else
-        local status = completed and Green(L['completed']) or Red(L['incomplete'])
-        tooltip:AddDoubleLine(ACHIEVEMENT_COLOR_CODE..'['..name..']|r', status)
-        tooltip:AddTexture(icon, {margin={right=2}})
+
+        local r, g, b = .6, .6, .6
+        local ctext = "   • "..cname
+        if (completed or ccomp) then
+            r, g, b = 0, 1, 0
+        end
+
+        local note, status = c.note
+        if c.quest then
+            if C_QuestLog.IsQuestFlaggedCompleted(c.quest) then
+                status = ns.status.Green(L['defeated'])
+            else
+                status = ns.status.Red(L['undefeated'])
+            end
+            note = note and (note..'  '..status) or status
+        end
+
+        return ctext, note, r, g, b
     end
 end
 
@@ -171,22 +208,25 @@ function Item:IsObtained()
     return true
 end
 
-function Item:Render(tooltip)
+function Item:GetText()
     local text = self.itemLink
-    local status = ''
-    if self.quest then
-        local completed = C_QuestLog.IsQuestFlaggedCompleted(self.quest)
-        status = completed and Green(L['completed']) or Red(L['incomplete'])
-    elseif self.weekly then
-        local completed = C_QuestLog.IsQuestFlaggedCompleted(self.weekly)
-        status = completed and Green(L['weekly']) or Red(L['weekly'])
+    if self.type then -- mount, pet, toy, etc
+        text = text..' ('..self.type..')'
     end
-
-    if self.note then
+    if self.note then -- additional info
         text = text..' ('..self.note..')'
     end
-    tooltip:AddDoubleLine(text, status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return Icon(self.itemIcon)..text
+end
+
+function Item:GetStatus()
+    if self.quest then
+        local completed = C_QuestLog.IsQuestFlaggedCompleted(self.quest)
+        return completed and Green(L['completed']) or Red(L['incomplete'])
+    elseif self.weekly then
+        local completed = C_QuestLog.IsQuestFlaggedCompleted(self.weekly)
+        return completed and Green(L['weekly']) or Red(L['weekly'])
+    end
 end
 
 -------------------------------------------------------------------------------
@@ -195,23 +235,15 @@ end
 
 -- /run for i,m in ipairs(C_MountJournal.GetMountIDs()) do if (C_MountJournal.GetMountInfoByID(m) == "NAME") then print(m) end end
 
-local Mount = Class('Mount', Item)
+local Mount = Class('Mount', Item, { type = L["mount"] })
 
 function Mount:IsObtained()
     return select(11, C_MountJournal.GetMountInfoByID(self.id))
 end
 
-function Mount:Render(tooltip)
+function Mount:GetStatus()
     local collected = select(11, C_MountJournal.GetMountInfoByID(self.id))
-    local status = collected and Green(L["known"]) or Red(L["missing"])
-    local text = self.itemLink..' ('..L["mount"]..')'
-
-    if self.note then
-        text = text..' ('..self.note..')'
-    end
-
-    tooltip:AddDoubleLine(text, status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return collected and Green(L["known"]) or Red(L["missing"])
 end
 
 -------------------------------------------------------------------------------
@@ -220,7 +252,7 @@ end
 
 -- /run print(C_PetJournal.FindPetIDByName("NAME"))
 
-local Pet = Class('Pet', Item)
+local Pet = Class('Pet', Item, { type = L["pet"] })
 
 function Pet:Initialize(attrs)
     if attrs.item then
@@ -237,17 +269,9 @@ function Pet:IsObtained()
     return C_PetJournal.GetNumCollectedInfo(self.id) > 0
 end
 
-function Pet:Render(tooltip)
+function Pet:GetStatus()
     local n, m = C_PetJournal.GetNumCollectedInfo(self.id)
-    local text = self.itemLink..' ('..L["pet"]..')'
-    local status = (n > 0) and Green(n..'/'..m) or Red(n..'/'..m)
-
-    if self.note then
-        text = text..' ('..self.note..')'
-    end
-
-    tooltip:AddDoubleLine(text, status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return (n > 0) and Green(n..'/'..m) or Red(n..'/'..m)
 end
 
 -------------------------------------------------------------------------------
@@ -271,58 +295,53 @@ function Quest:IsObtained()
     return true
 end
 
-function Quest:Render(tooltip)
+function Quest:GetText()
     local name = C_QuestLog.GetTitleForQuestID(self.id[1])
+    return ns.GetIconLink('quest_ay', 13)..' '..(name or UNKNOWN)
+end
 
-    local status
+function Quest:GetStatus()
     if #self.id == 1 then
         local completed = C_QuestLog.IsQuestFlaggedCompleted(self.id[1])
-        status = completed and Green(L['completed']) or Red(L['incomplete'])
+        return completed and Green(L['completed']) or Red(L['incomplete'])
     else
         local count = 0
         for i, id in ipairs(self.id) do
             if C_QuestLog.IsQuestFlaggedCompleted(id) then count = count + 1 end
         end
-        status = count..'/'..#self.id
-        status = (count == #self.id) and Green(status) or Red(status)
+        local status = count..'/'..#self.id
+        return (count == #self.id) and Green(status) or Red(status)
     end
-
-    local line = ns.GetIconLink('quest_ay', 13)..' '..(name or UNKNOWN)
-    tooltip:AddDoubleLine(line, status)
 end
 
 -------------------------------------------------------------------------------
 ------------------------------------ SPELL ------------------------------------
 -------------------------------------------------------------------------------
 
-local Spell = Class('Spell', Item)
+local Spell = Class('Spell', Item, { type = L["spell"] })
 
 function Spell:IsObtained()
     return IsSpellKnown(self.spell)
 end
 
-function Spell:Render(tooltip)
+function Spell:GetStatus()
     local collected = IsSpellKnown(self.spell)
-    local status = collected and Green(L["known"]) or Red(L["missing"])
-    tooltip:AddDoubleLine(self.itemLink..' ('..L["spell"]..')', status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return collected and Green(L["known"]) or Red(L["missing"])
 end
 
 -------------------------------------------------------------------------------
 ------------------------------------- TOY -------------------------------------
 -------------------------------------------------------------------------------
 
-local Toy = Class('Toy', Item)
+local Toy = Class('Toy', Item, { type = L["toy"] })
 
 function Toy:IsObtained()
     return PlayerHasToy(self.item)
 end
 
-function Toy:Render(tooltip)
+function Toy:GetStatus()
     local collected = PlayerHasToy(self.item)
-    local status = collected and Green(L["known"]) or Red(L["missing"])
-    tooltip:AddDoubleLine(self.itemLink..' ('..L["toy"]..')', status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return collected and Green(L["known"]) or Red(L["missing"])
 end
 
 -------------------------------------------------------------------------------
@@ -331,6 +350,13 @@ end
 
 local Transmog = Class('Transmog', Item)
 local CTC = C_TransmogCollection
+
+function Transmog:Initialize(attrs)
+    Item.Initialize(self, attrs)
+    if self.slot then
+        self.type = self.slot -- backwards compat
+    end
+end
 
 function Transmog:IsObtained()
     -- Check if the player knows the appearance
@@ -350,7 +376,7 @@ function Transmog:IsObtained()
     return false
 end
 
-function Transmog:Render(tooltip)
+function Transmog:GetStatus()
     local collected = CTC.PlayerHasTransmog(self.item)
     local status = collected and Green(L["known"]) or Red(L["missing"])
 
@@ -368,13 +394,7 @@ function Transmog:Render(tooltip)
         end
     end
 
-    local suffix = ' ('..L[self.slot]..')'
-    if self.note then
-        suffix = suffix..' ('..self.note..')'
-    end
-
-    tooltip:AddDoubleLine(self.itemLink..suffix, status)
-    tooltip:AddTexture(self.itemIcon, {margin={right=2}})
+    return status
 end
 
 -------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2423, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201123025233")
+mod:SetRevision("20201126205826")
 mod:SetCreatureID(164266)
 mod:SetEncounterID(2385)
 
@@ -44,9 +44,9 @@ local timerCytotoxicSlashCD			= mod:NewCDTimer(20.6, 325552, nil, nil, nil, 5, n
 mod:AddRangeFrameOption(5, 325245)
 
 function mod:OnCombatStart(delay)
-	timerAmbushCD:Start(6.1-delay)
-	timerCytotoxicSlashCD:Start(9.7-delay)--START
-	timerBroodAssassinsCD:Start(17.8-delay)
+	timerAmbushCD:Start(6.1-delay)--9.1?
+	timerCytotoxicSlashCD:Start(3.1-delay)--START
+	timerBroodAssassinsCD:Start(15.2-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(5)
 	end

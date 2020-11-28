@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2412, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201123175850")
+mod:SetRevision("20201126223127")
 mod:SetCreatureID(162061)
 mod:SetEncounterID(2359)
 
@@ -51,7 +51,7 @@ local timerBackdraftCD				= mod:NewNextTimer(18.2, 322908, nil, nil, nil, 2)
 local shelter = DBM:GetSpellInfo(335806)
 
 function mod:OnCombatStart(delay)
-	timerRunThroughCD:Start(12-delay)
+	timerRunThroughCD:Start(10-delay)
 	timerAbyssalDetonationCD:Start(20.1-delay)
 	timerLostConfidenceCD:Start(24.6-delay)--SUCCESS
 end
@@ -151,7 +151,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerSlipstreamCD:Stop()
 		timerBackdraftCD:Stop()
 		--Timers seem same as pull, minus 0.4 (give or take, because of landing time)
-		timerRunThroughCD:Start(11.6)
+		timerRunThroughCD:Start(9.6)
 		timerAbyssalDetonationCD:Start(19.7)
 		timerLostConfidenceCD:Start(24.2)--SUCCESS
 	end

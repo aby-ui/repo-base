@@ -18,6 +18,13 @@ L["faeflayer_note"] = "In a small cave hidden behind a waterfall."
 L["gormtamer_tizo_note"] = "Kill {npc:166735s} and the {npc:166736s} that are riding them until {npc:164110} spawns."
 L["humongozz_note"] = "Plant an {item:175247} in the Damp Loam to spawn a {npc:164122}. After a minute of {spell:319367}, the rare will spawn. The mushroom drops from numerous mobs in the zone."
 L["lehgo_note"] = "Destroy Quivering Gorm Eggs and kill {npc:171827} until he spawns. In a cave (entrance to the south-east in the Dusty Burrows)."
+L["macabre_note"] = [[
+Spawns in multiple locations. To summon, stand in the Mysterious Mushroom Ring with 2 other players and dance with each other.
+
+• Player 1 dances with Player 2
+• Player 2 dances with Player 3
+• Player 3 dances with Player 1
+]]
 L["mymaen_note"] = "Kill Rotbriar sprites in the area until he emotes and spawns."
 L["rainbowhorn_note"] = "\n|cffff5400T|r|cffffaa00A|r|cffffff00S|r|cffaaff00T|r|cff54ff00E|r |cff00ff55T|r|cff00ffa9H|r|cff00ffffE|r |cff0055ffR|r|cff0000ffA|r|cff5400ffI|r|cffaa00ffN|r|cffff00ffB|r|cffff00aaO|r|cffff0054W|r|cffff0000!|r"
 L["rootwrithe_note"] = "Poke the {npc:167928s} until the rare appears."
@@ -32,11 +39,16 @@ Travel to Tirna Scithe and follow the root path on the northwest cliff to a brok
 
 Take this item to {npc:165704} at Glitterfall Basin. She will give you a {item:181242} in exchange for 10 {item:173204}. |cFFFF8C00If she is not there, you must complete the |cFFFFFD00Trouble at the Gormling Corral|r and |cFFFFFD00Tricky Spriggans|r quest lines.|r
 
-Next, talk to {npc:160262} in the Heart of the Forest to exchange the {item:181242} for a {item:178675}. Use this item to get {spell:327083} buff, allowing you to see the {npc:168135}.
+Next, talk to {npc:160262} in the Heart of the Forest to exchange the {item:181242} for a {item:178675}. Talk to the guards to have her come outside if you are not a Night Fae. Use this item to get {spell:327083} buff, allowing you to see the {npc:168135}.
 ]]
 
 L["star_lake"] = "Star Lake Amphitheater"
-L["star_lake_note"] = "Talk to {npc:171743}, the Stage Director, to start one of the special encounters."
+L["star_lake_note"] = [[
+Talk to {npc:171743}, the Stage Director, to start one of the special encounters. The encounter changes each day.
+
+Participate in all seven encounters to unlock {item:180748} from {npc:163714}.
+]]
+L["guldan"] = "Gul'dan"
 
 L["cache_of_the_moon"] = "Collect {npc:171360}'s five missing tools in the Garden of Night and combine them to create {item:180753}. Return her toolkit and she will cast {spell:334353} on you, allowing you to see the cache."
 L["cache_of_the_night"] = "Collect {item:180656}, {item:180654} and {item:180655} from across the zone and combine them to create {item:180652}."
@@ -214,6 +226,7 @@ L["forgotten_mementos"] = "Pull the Vault Portcullis Chain in the chamber west o
 L["gieger_note"] = "Pull the {npc:162815} to activate the rare."
 L["gristlebeak_note"] = "Break all nearby {npc:162761} to engage the rare."
 L["leeda_note"] = "Kill the two {npc:162220s} until the rare spawns."
+L["nirvaska_note"] = "Only appears when the {wq:Deadly Reminder} world quest is active."
 L["sabriel_note"] = "Can appear as one of the champions in the Theater of Pain."
 L["schmitd_note"] = "Use nearby {spell:313451} to break his shield."
 L["taskmaster_xox_note"] = "Shares a spawn with {npc:160204}, {npc:160230} and {npc:160226}."
@@ -226,11 +239,17 @@ Gather ingredients from the surrounding mobs and toss them into the pool. Once 3
 • Collect {spell:306719} from {npc:165015} and {npc:171142} to the south.
 
 • Collect {spell:306722} from {npc:165027} and {npc:166438} to the south.
+
+Kill each rare once to earn the {item:183903} toy.
 ]]
-L["Violet"] = nil
+L["Boneslurp"] = nil
+L["Corrupted"] = nil
 L["Oily"] = nil
+L["Pulsing"] = nil
+L["Violet"] = nil
 
 L["blackhound_cache"] = "Blackhound Cache"
+L["blackhound_cache_note"] = "Summon {npc:157843} at the Abomination Factory, then escort him to the Blackhound Outpost."
 L["bladesworn_supply_cache"] = "Bladesworn Supply Cache"
 L["cache_of_eyes"] = "Cache of Eyes"
 L["cache_of_eyes_note"] = "Spawns at multiple locations within the Sightless Hold."
@@ -331,7 +350,6 @@ L["smuggled_cache_note"] = ns.color.Red("BEFORE YOU LOOT: ").."Make sure you hav
 L["taskmaster_trove_note"] = "Read the Ingress and Egress Rites then carefully make your way to the chest."
 L["the_count_note"] = "Farm 99 {currency:1820} in the Endmire and then bring them to {npc:173488}."
 
-L["bleakwood_chest"] = "Bleakwood Chest"
 L["forgotten_anglers_rod"] = "Forgotten Angler's Rod"
 
 L["loyal_gorger_note"] = "Visit the Endmire and complete a daily offered by your {npc:173498} 7 times to obtain him as a mount."

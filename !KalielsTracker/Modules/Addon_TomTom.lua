@@ -109,6 +109,10 @@ local function SetWaypointTag(button, show)
 end
 
 local function AddWaypoint(questID, isSilent)
+	if C_QuestLog.IsQuestCalling(questID) then
+		return false
+	end
+
 	local title, mapID
 	local x, y, completed
 	if QuestUtils_IsQuestWorldQuest(questID) then

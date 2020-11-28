@@ -3,6 +3,7 @@
 -- copy from CrystalOfInsanity.lua by 163ui 2017/10
 -- modified for 8.3 by abyui 2020/03
 ------------------------------------------------------------
+if UnitLevel("player") > 59 then return end
 
 local _, addon = ...
 local L = addon.L

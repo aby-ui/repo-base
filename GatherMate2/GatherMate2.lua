@@ -123,6 +123,10 @@ function GatherMate:OnInitialize()
 		self:MigrateData80()
 		self.db.global.data_version = 5
 	end
+	if (self.db.global.data_version or 0) < 6 then
+		self:RemoveDepracatedNodes()
+		self.db.global.data_version = 6
+	end
 end
 
 function GatherMate:RemoveGarrisonNodes()

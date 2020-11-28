@@ -789,6 +789,7 @@ local function GetAnchorPosition()
 	local mouseFocus = GetMouseFocus();
 	local isUnit = UnitExists("mouseover") or (mouseFocus and mouseFocus.GetAttribute and mouseFocus:GetAttribute("unit"));	-- Az: GetAttribute("unit") here is bad, as that will find things like buff frames too
 	local var = "anchor"..(mouseFocus == WorldFrame and "World" or "Frame")..(isUnit and "Unit" or "Tip");
+    if not cfg then return "normal", "BOTTOMRIGHT" end
     if fixInCombat() and cfg[var.."Type"] == "mouse" then return "normal", "BOTTOMRIGHT" end
 	return cfg[var.."Type"], cfg[var.."Point"];
 end

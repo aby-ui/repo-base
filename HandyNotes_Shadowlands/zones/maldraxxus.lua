@@ -36,7 +36,9 @@ map.nodes[52663542] = Rare({
     quest=58870,
     rewards={
         Achievement({id=14308, criteria=48876}),
-        Transmog({item=184154, slot=L["cloak"]}) -- Grungy Containment Pack
+        Transmog({item=184290, slot=L["dagger"]}), -- Blood-Dyed Bonesaw
+        Transmog({item=184154, slot=L["cosmetic"]}), -- Grungy Containment Pack
+        Toy({item=184476}) -- Regenerating Slime Vial
     }
 }) -- Bubbleblood
 
@@ -44,7 +46,9 @@ map.nodes[49012351] = Rare({
     id=159105,
     quest=58005,
     rewards={
-        Achievement({id=14308, criteria=48866})
+        Achievement({id=14308, criteria=48866}),
+        Transmog({item=184181, slot=L["1h_axe"]}), -- Kash's Favored Hook
+        Transmog({item=184182, slot=L["1h_axe"]}) -- Strengthened Abomination Hook
     }
 }) -- Collector Kash
 
@@ -54,13 +58,14 @@ map.nodes[26392633] = Rare({
     rewards={
         Achievement({id=14308, criteria=48872})
     }
-}) -- Corpsecutter (Bonebreaker) Moroc
+}) -- Corpsecutter Moroc
 
 map.nodes[76835707] = Rare({
     id=162711,
     quest=58868,
     rewards={
         Achievement({id=14308, criteria=48851}),
+        Transmog({item=184280, slot=L["cloth"]}), -- Dapper Threads
         Pet({id=2953, item=181263}) -- Shy Melvin
     }
 }) -- Deadly Dapperling
@@ -93,7 +98,7 @@ map.nodes[31603540] = Rare({
     requires=ns.requirement.GarrisonTalent(1250, L["anima_channeled"]),
     note=L["gieger_note"],
     rewards={
-        Mount({item=182080, id=1411}) -- Predatory Bonejowl
+        Mount({item=182080, id=1411}) -- Predatory Plagueroc
     }
 }) -- Gieger
 
@@ -121,7 +126,8 @@ map.nodes[72872891] = Rare({
     id=174108,
     quest=62369,
     rewards={
-        Achievement({id=14308, criteria=49724})
+        Achievement({id=14308, criteria=49724}),
+        Transmog({item=181810, slot=L["cosmetic"]}) -- Phylactery of the Dead Conniver
     }
 }) -- Necromantic Anomaly
 
@@ -134,20 +140,21 @@ map.nodes[66023532] = Rare({
     }
 }) -- Nerissa Heartless
 
+map.nodes[50346328] = Rare({
+    id=161857,
+    quest=58629,
+    note=L["nirvaska_note"],
+    rewards={
+        Achievement({id=14308, criteria=48868})
+    }
+}) -- Nirvaska the Summoner
+
 map.nodes[53726132] = Rare({
     id=162767,
     quest=58875,
     rewards={
         Achievement({id=14308, criteria=48849}),
         Transmog({item=182205, slot=L["mail"]}) -- Scarab-Shell Faceguard
-    }
-}) -- Nirvaska the Summoner
-
-map.nodes[50346328] = Rare({
-    id=161857,
-    quest=58629,
-    rewards={
-        Achievement({id=14308, criteria=48868})
     }
 }) -- Pesticide
 
@@ -169,8 +176,8 @@ map.nodes[51744439] = Rare({
     rewards={
         Achievement({id=14308, criteria=48874}),
         Achievement({id=14802, criteria=48874}),
-        Mount({item=182083, id=1374}), -- Bonecleaver's Skullboar
-        Mount({item=182075, id=1374}) -- Bonehoof Tauralus
+        -- Mount({item=182083, id=1374}), -- Bonecleaver's Skullboar
+        Mount({item=182075, id=1374, covenant=NECROLORD}) -- Bonehoof Tauralus
     }
 }) -- Sabriel the Bonecleaver
 
@@ -189,6 +196,7 @@ map.nodes[55502361] = Rare({
     note=L["chelicerae_note"],
     rewards={
         Achievement({id=14308, criteria=48873}),
+        Transmog({item=184289, slot=L["1h_sword"]}), -- Spindlefang Spellblade
         Pet({item=181172, id=2948}) -- Boneweave Hatchling
     }
 }) -- Sister Chelicerae
@@ -209,7 +217,7 @@ map.nodes[44215132] = Rare({
     rewards={
         Achievement({id=14308, criteria=48850}),
         Transmog({item=182190, slot=L["leather"]}), -- Tauralus Hide Collar
-        Mount({item=181815, id=1370,}) -- Armored Bonehoof Tauralus
+        Mount({item=181815, id=1370, covenant=NECROLORD}) -- Bonehoof Tauralus
     }
 }) -- Tahonta
 
@@ -228,7 +236,7 @@ map.nodes[24184297] = Rare({
     note=L["leeda_note"],
     rewards={
         Achievement({id=14308, criteria=48870}),
-        Transmog({item=184180, slot=L["cloth"]})
+        Transmog({item=184180, slot=L["cloth"]}) -- Leeda's Unrefined Mask
     }
 }) -- Thread Mistress Leeda
 
@@ -237,7 +245,7 @@ map.nodes[33718016] = Rare({
     quest=58889,
     rewards={
         Achievement({id=14308, criteria=48875}),
-        Mount({item=182085, id=1372}) -- Umbral Bloodtusk
+        Mount({item=182085, id=1372}) -- Blisterback Bloodtusk
     }
 }) -- Warbringer Mal'Korak
 
@@ -247,7 +255,9 @@ map.nodes[28965138] = Rare({
     requires=ns.requirement.Item(175841),
     note=L["zargox_the_reborn_note"],
     rewards={
-        Achievement({id=14308, criteria=48864})
+        Achievement({id=14308, criteria=48864}),
+        Transmog({item=184285, slot=L["plate"]}), -- Boneclutched Shackles
+        Transmog({item=181804, slot=L["cosmetic"]}) -- Trophy of the Reborn Bonelord
     },
     pois={
         POI({26314280})
@@ -275,7 +285,14 @@ map.nodes[58197421] = Rare({
             {id=48861, quest=61720, note='('..GOO..' = '..OIL..') > '..OOZE}, -- Violet Mistake
             {id=48859, quest=61724, note=OOZE..' = '..GOO..' = '..OIL}, -- Oily Invertebrate
         }}),
+        Transmog({item=184302, slot=L["mail"], note=L["Corrupted"]}), -- Residue-Coated Muck Waders
+        Transmog({item=184300, slot=L["cloak"], note=L["Oily"]}), -- Fused Spineguard
+        Transmog({item=184301, slot=L["leather"], note=L["Violet"]}), -- Twenty-Loop Violet Girdle
+        -- Item({item=184185, type=L["neck"], note=L["Boneslurp"]}), -- Grunge-Caked Collarbone
+        -- Item({item=184279, type=L["trinket"], note=L["Pulsing"]}), -- Siphoning Blood-Drinker
+        ns.reward.Spacer(),
         Mount({item=182079, id=1410, note=L["Violet"]}), -- Slime-Covered Reins of the Hulking Deathroc
+        Toy({item=183903}), -- Smelly Jelly
         Pet({item=181270, id=2960, note=L["Oily"]}) -- Decaying Oozewalker
     }
 })
@@ -305,19 +322,23 @@ map.nodes[50354728] = Rare({
 
 map.nodes[44083989] = Treasure({
     quest=60368,
-    label=L["blackhound_cache"]
+    label=L["blackhound_cache"],
+    note=L["blackhound_cache_note"],
+    covenant=NECROLORD,
+    rewards={
+        Toy({item=184318}) -- Battlecry of Krexus
+    }
 }) -- Blackhound Cache
 
-map.nodes[36797862] = Treasure({
-    label=L["bladesworn_supply_cache"]
-}) -- Bladesworn Supply Cache
+-- map.nodes[36797862] = Treasure({
+--     label=L["bladesworn_supply_cache"]
+-- }) -- Bladesworn Supply Cache
 
 map.nodes[54011234] = Treasure({
     quest=nil,
     label=L["cache_of_eyes"],
     note=L["cache_of_eyes_note"],
     rewards={
-        -- Achievement({id=14312, criteria=50070}),
         Pet({item=181171, id=2947}) -- Luminous Webspinner
     }
 }) -- Cache of Eyes
@@ -412,7 +433,7 @@ map.nodes[57667581] = Treasure({
     note=L["plaguefallen_chest_note"],
     rewards={
         Achievement({id=14312, criteria=50074}),
-        Pet({item=183515, id=3045}) -- Reanimated Plague
+        Pet({item=183515, id=3045}) -- Iridescent Ooze
     },
     pois={
         POI({62487656})

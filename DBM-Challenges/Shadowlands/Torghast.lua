@@ -1,13 +1,13 @@
 ﻿local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201125191411")
+mod:SetRevision("20201128021118")
 
 mod:RegisterCombat("scenario", 2162)
 mod.noStatistics = true
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018",
+	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528",
 	"SPELL_AURA_APPLIED 304093",
 	"SPELL_AURA_APPLIED_DOSE 303678",
 --	"SPELL_AURA_REMOVED",
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 --	"SPELL_INTERRUPT",
---	"UNIT_DIED",
+	"UNIT_DIED",
 	"NAME_PLATE_UNIT_ADDED",
 	"FORBIDDEN_NAME_PLATE_UNIT_ADDED"
 )
@@ -24,10 +24,16 @@ mod:RegisterEventsInCombat(
 --TODO https://shadowlands.wowhead.com/spell=303678/bone-shrapnel? not sure what i can do about it in a mod though, it's instant cast on death. warn when they are getting low if melee?
 --TODO, alert when a deadsoul scavenger is nearby?
 local warnMightySlam				= mod:NewCastAnnounce(296748, 3)--Cast time to short to really dodge, this is just alert to at least mentally prepare for damage spike
+local warnInferno					= mod:NewSpellAnnounce(335528, 3)
 
+--The Maw (WIP, current combat handling doesn't permit this yet)
+--local specWarnMagmaWave				= mod:NewSpecialWarningDodge(345454, nil, nil, nil, 2, 2)--SPELL_CAST_START
+--Torghast
 local specWarnHowlingSouls			= mod:NewSpecialWarningSpell(215710, nil, nil, nil, 2, 2)
 local specWarnMassiveStrike			= mod:NewSpecialWarningDodge(292903, nil, nil, nil, 2, 2)
 local specWarnMeteor				= mod:NewSpecialWarningDodge(270264, nil, nil, nil, 2, 2)
+local specWarnRatTrap				= mod:NewSpecialWarningDodge(295942, nil, nil, nil, 2, 2)
+local specWarnFanningtheFlames		= mod:NewSpecialWarningDodge(308026, nil, nil, nil, 2, 2)
 local specWarnGroundCrush			= mod:NewSpecialWarningRun(295985, nil, nil, nil, 4, 2)
 --local specWarnMightySlam			= mod:NewSpecialWarningRun(296748, nil, nil, nil, 4, 2)
 local specWarnWhirlwind				= mod:NewSpecialWarningRun(295001, nil, nil, nil, 4, 2)
@@ -45,9 +51,14 @@ local specWarnFireballVolley		= mod:NewSpecialWarningInterrupt(270348, "HasInter
 local specWarnTerrifyingRoar		= mod:NewSpecialWarningInterrupt(263085, "HasInterrupt", nil, nil, 3, 2)
 local specWarnCurseofFrailty		= mod:NewSpecialWarningInterrupt(294526, "HasInterrupt", nil, nil, 1, 2)
 local specWarnFearsomeHowl			= mod:NewSpecialWarningInterrupt(298844, "HasInterrupt", nil, nil, 1, 2)
+local specWarnAccursedStrength		= mod:NewSpecialWarningInterrupt(294165, "HasInterrupt", nil, nil, 1, 2)
+local specWarnWitheringRoar			= mod:NewSpecialWarningInterrupt(330118, "HasInterrupt", nil, nil, 1, 2)
+local specWarnInnerFlames			= mod:NewSpecialWarningInterrupt(258935, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 
---local timerToxicVolleyCD			= mod:NewAITimer(7.3, 304169, nil, nil, nil, 3)
+local timerInfernoCD				= mod:NewCDTimer(21.9, 335528, nil, nil, nil, 3)--21.9-23.1
+local timerWitheringRoarCD			= mod:NewCDTimer(21.5, 330118, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--15.8-19.5
+local timerGroundCrushCD			= mod:NewNextTimer(23.1, 295985, nil, nil, nil, 3)--Seems precise, at least when used by The Grand Malleare
 
 --mod:AddInfoFrameOption(307831, true)
 --mod:AddNamePlateOption("NPAuraOnHorrifyingShout", 305378)
@@ -91,17 +102,31 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 292903 and self:AntiSpam(3, 2) then
 		specWarnMassiveStrike:Show()
 		specWarnMassiveStrike:Play("shockwave")
+	elseif spellId == 308026 and self:AntiSpam(3, 2) then
+		specWarnFanningtheFlames:Show()
+		specWarnFanningtheFlames:Play("shockwave")
 	elseif spellId == 215710 and self:AntiSpam(4, 4) then
 		specWarnHowlingSouls:Show()
 		specWarnHowlingSouls:Play("aesoon")
 	elseif spellId == 270264 and self:AntiSpam(3, 2) then
 		specWarnMeteor:Show()
 		specWarnMeteor:Play("watchstep")
-	elseif spellId == 295985 and self:AntiSpam(4, 1) then
-		specWarnGroundCrush:Show()
-		specWarnGroundCrush:Play("justrun")
+	elseif spellId == 295942 and self:AntiSpam(3, 2) then
+		specWarnRatTrap:Show()
+		specWarnRatTrap:Play("watchstep")
+	elseif spellId == 295985 then
+		if self:AntiSpam(4, 1) then
+			specWarnGroundCrush:Show()
+			specWarnGroundCrush:Play("justrun")
+		end
+		timerGroundCrushCD:Start(nil, args.sourceGUID)
 	elseif spellId == 296748 and self:AntiSpam(4, 7) then
 		warnMightySlam:Show()
+	elseif spellId == 335528 then
+		if self:AntiSpam(4, 7) then
+			warnInferno:Show()
+		end
+		timerInfernoCD:Start(nil, args.sourceGUID)
 	elseif spellId == 295001 and self:AntiSpam(4, 1) then
 		specWarnWhirlwind:Show()
 		specWarnWhirlwind:Play("justrun")
@@ -132,6 +157,18 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 294526 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnCurseofFrailty:Show(args.sourceName)
 		specWarnCurseofFrailty:Play("kickcast")
+	elseif spellId == 294165 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnAccursedStrength:Show(args.sourceName)
+		specWarnAccursedStrength:Play("kickcast")
+	elseif spellId == 330118 then
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnWitheringRoar:Show(args.sourceName)
+			specWarnWitheringRoar:Play("kickcast")
+		end
+		timerWitheringRoarCD:Start(nil, args.sourceGUID)
+	elseif spellId == 258935 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnInnerFlames:Show(args.sourceName)
+		specWarnInnerFlames:Play("kickcast")
 	elseif (spellId == 297018 or spellId == 298844) and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFearsomeHowl:Show(args.sourceName)
 		specWarnFearsomeHowl:Play("kickcast")
@@ -188,14 +225,16 @@ function mod:SPELL_INTERRUPT(args)
 		end
 	end
 end
+--]]
 
 function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 152089 then
-
-	end
+--	local cid = self:GetCIDFromGUID(args.destGUID)
+	--not very efficient to stop all timers when ANYTHING in entire zone dies, but too many mobs have cross overs of these abilities
+	timerInfernoCD:Stop(args.destGUID)
+	timerWitheringRoarCD:Stop(args.destGUID)
+	timerGroundCrushCD:Stop(args.destGUID)
 end
---]]
+
 
 function mod:NAME_PLATE_UNIT_ADDED(unit)
 	if unit then

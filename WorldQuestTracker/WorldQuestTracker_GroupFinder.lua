@@ -65,6 +65,37 @@ local GetDistance_Point = DF.GetDistance_Point
 	ff:SetMovable (true)
 	ff:Hide()
 
+	ff.lastToggleRequest = 0
+
+	hooksecurefunc("PVEFrame_ToggleFrame", function()
+		if (ff.lastToggleRequest == time()) then
+			--the call came from world quest tracker it self
+			return
+		else
+			ff.lastToggleRequest = time()
+		end
+
+		local isFFShown = ff:IsShown()
+		--if FF isn't shown, make sure to restore the alpha
+		--even if this is a hide call
+		if (not isFFShown) then
+			PVEFrame:SetAlpha(1)
+			return
+		end
+
+		--player pressed to show/hide the group finder interface
+		local isPVEFrameShown = PVEFrame:IsShown()
+		local PVEFrameAlpha = PVEFrame:GetAlpha()
+
+		if (isFFShown and PVEFrameAlpha == 0 and not isPVEFrameShown) then
+			--player pressed to show group finder, but is was just with zero alpha due to FF being Shown
+			--here need to show again the group finder and adjust its alpha to 1
+			PVEFrame_ToggleFrame()
+			PVEFrame:SetAlpha(1)
+			return
+		end
+	end)
+
 	--right click to close label
 		ff.RightClickClose = DF:CreateLabel (ff, L["right click to close this window"])
 		ff.RightClickClose:SetPoint ("bottom", ff, "bottom", 0, 2)
@@ -200,6 +231,7 @@ local GetDistance_Point = DF.GetDistance_Point
 			ff.WasLFGWindowOpened = _G.PVEFrame:IsShown()
 
 			if (not ff.WasLFGWindowOpened) then
+				ff.lastToggleRequest = time()
 				_G.PVEFrame_ToggleFrame()
 			end
 
@@ -256,17 +288,24 @@ local GetDistance_Point = DF.GetDistance_Point
 			--restore search box point
 			givebackStolenSearchBox()
 
-			_G.PVEFrame:SetAlpha(1)
-
 			ff.hiddenSearchButton.fakeInputMarkAnim:Stop()
 			ff.hiddenSearchButton.fakeInputMarkTexture:Hide()
 
+			if (_G.PVEFrame:IsShown() and _G.PVEFrame:GetAlpha() > .9) then
+				--already shown, the user might have requested to open it, all good!
+				return
+			end
+
+			_G.PVEFrame:SetAlpha(1)
+
 			if (ff.WasLFGWindowOpened) then
 				if (not _G.PVEFrame:IsShown()) then
+					ff.lastToggleRequest = time()
 					_G.PVEFrame_ToggleFrame()
 				end
 
 			elseif (_G.PVEFrame:IsShown()) then
+				ff.lastToggleRequest = time()
 				_G.PVEFrame_ToggleFrame()
 			end
 		end
@@ -308,6 +347,8 @@ local GetDistance_Point = DF.GetDistance_Point
 				ff.GroupButtonsFrame:Show()
 				ff.GroupButtonsFrame:SetPoint("top", ff, "top", 0, ff.topLevelY)
 
+				ff.leaveButtonSolo:Hide()
+
 				local children = {ff.GroupButtonsFrame:GetChildren()}
 				local firstChild = children[1]
 				firstChild:SetPoint("left", ff.GroupButtonsFrame, "left", 0, 0)
@@ -322,7 +363,7 @@ local GetDistance_Point = DF.GetDistance_Point
 				ff.GroupButtonsFrame:SetSize(width, firstChild:GetHeight())
 			end)
 
-			ff:SetScript ("OnHide", function()
+			ff:SetScript("OnHide", function()
 				ff.hiddenSearchButton:Hide()
 				restoreFrames()
 			end)
@@ -430,6 +471,7 @@ local GetDistance_Point = DF.GetDistance_Point
 	ff.divbar:SetPoint("topleft", ff, "topleft", 3, ff.divBarY)
 	ff.divbar:SetPoint("topright", ff, "topright", -3, ff.divBarY)
 
+	--row with buttons
 	ff.GroupButtonsFrame = CreateFrame("frame", nil, ff)
 
 	--button settings
@@ -557,6 +599,7 @@ local GetDistance_Point = DF.GetDistance_Point
 			ff:HideFrame(true)
 
 			if (not _G.PVEFrame:IsShown()) then
+				ff.lastToggleRequest = time()
 				_G.PVEFrame_ToggleFrame()
 			end
 		
@@ -604,6 +647,17 @@ local GetDistance_Point = DF.GetDistance_Point
 			_G.LFGListCategorySelection_SelectCategory(LFGListFrame.CategorySelection, 1, 0)
 		end)
 	--]=]
+
+
+	--leave group big button
+	local leaveButtonSolo = CreateFrame("button", "$parentLeaveButtonSolo", ff, "BackdropTemplate", "BackdropTemplate")
+	DF:ApplyStandardBackdrop(leaveButtonSolo)
+	leaveButtonSolo:SetPoint("top", ff, "top", 0, ff.topLevelY)
+	leaveButtonSolo:Hide()
+	ff.leaveButtonSolo = leaveButtonSolo
+	leaveButtonSolo.text = leaveButtonSolo:CreateFontString(nil, "overlay", "GameFontNormal")
+	leaveButtonSolo.text:SetPoint("center", 0, 0)
+	leaveButtonSolo.text:SetText("Leave Group")
 
 	--create a title bar
 		DF:CreateTitleBar(ff, "Title")
@@ -695,6 +749,7 @@ end
 	ff:RegisterEvent ("LFG_LIST_APPLICANT_LIST_UPDATED")
 	ff:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
 	ff:RegisterEvent ("PLAYER_ENTERING_WORLD")
+	ff:RegisterEvent ("PLAYER_LOGIN")
 
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function (_, _, msg)
 		if (not WorldQuestTracker.db.profile.groupfinder.send_whispers) then
@@ -878,10 +933,9 @@ function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
 					ff:HideFrame()
 				end
 			end
-
 		end
 		
-		ff.QuestCompletedHidingTimer = C_Timer.NewTimer (20, function()
+		ff.QuestCompletedHidingTimer = C_Timer.NewTimer(25, function()
 			ff:HideFrame()
 		end)
 	else
@@ -1183,7 +1237,6 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 		end		
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-
 		--> check if the player is in a quest location (big quests like invasions)
 		if (not IsInGroup()) then
 			--get invasion quests
@@ -1195,6 +1248,23 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 					if (isInArea and isOnMap) then
 						ff.CurrentWorldQuest = questId
 						ff:PlayerEnteredWorldQuestZone (questId)
+					end
+				end
+			end
+		end
+	
+	elseif (event == "PLAYER_LOGIN") then
+		if (not IsInGroup()) then
+			--attempt to get the quest the player is in at the login
+			local allQuestsInTheMap = C_TaskQuest.GetQuestsForPlayerByMapID(WorldQuestTracker.GetCurrentStandingMapAreaID())
+			if (allQuestsInTheMap) then
+				for index, questInfo in ipairs(allQuestsInTheMap) do
+					local questId = questInfo.questId
+					if(questInfo.inProgress) then
+						--show world quest popup
+						C_Timer.After(3, function()
+							ff:GetScript("OnEvent")(ff, "QUEST_ACCEPTED", questId)
+						end)
 					end
 				end
 			end
@@ -1317,8 +1387,11 @@ function ff.GroupDone()
 		if (WorldQuestTracker.db.profile.groupfinder.autoleave) then
 			C_PartyInfo.LeaveParty()
 		else
-			--> show timer to leave the group
-			---ff.SetAction (ff.actions.ACTIONTYPE_GROUP_LEAVE)
+			ff:Show()
+			C_Timer.After(.1, function()
+				ff.GroupButtonsFrame:Hide()
+				ff.leaveButtonSolo:Show()
+			end)
 		end
 	end
 end
