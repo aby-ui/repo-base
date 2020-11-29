@@ -87,6 +87,12 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Lunarlight Containers
 	elseif (RSUtils.Contains(RSConstants.LUNARLIGHT_CONTAINERS, entityID)) then
 		return AL["NOTE_LUNARLIGHT_CONTAINERS"]
+	-- Bounding Shroom Containers
+	elseif (RSUtils.Contains(RSConstants.BOUNDING_SHRROM_CONTAINERS, entityID)) then
+		return AL["NOTE_BOUNDING_SHROOM"]
+	-- Ripe purian Containers
+	elseif (RSUtils.Contains(RSConstants.RIPE_PURIAN_CONTAINERS, entityID)) then
+		return AL["NOTE_RIPE_PURIAN_CONTAINERS"]
 	end
 	
 end

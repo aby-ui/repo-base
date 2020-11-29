@@ -878,13 +878,13 @@ function RareScanner:ProcessOpenContainerByZone(containerID, mapID, forzed)
 	if (not forzed and RSContainerDB.IsContainerOpened(containerID) and containerInternalInfo and containerInternalInfo.questID) then
 		-- Checks if quest completed
 		C_Timer.After(2, function()
-			for internalNpcID, internalNpcInfo in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
-				if (internalNpcInfo.questID and RSUtils.Contains(internalNpcInfo.questID, containerInternalInfo.questID)) then
-					for i, questID in ipairs (internalNpcInfo.questID) do
+			for internalContainerID, internalContainerInfo in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
+				if (internalContainerInfo.questID and RSUtils.Contains(internalContainerInfo.questID, containerInternalInfo.questID)) then
+					for i, questID in ipairs (internalContainerInfo.questID) do
 						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
-							RSNpcDB.SetNpcKilled(internalNpcID, RSContainerDB.GetContainerOpenedRespawnTime(containerID))
-							RSLogger:PrintDebugMessage(string.format("NPC [%s]. Deja de ser un rare NPC por compartir mision con otro contenedor abierto [%s]", internalNpcID, containerID))
-							RSGeneralDB.DeleteRecentlySeen(internalNpcID)
+							RSContainerDB.SetContainerOpened(internalContainerID, RSContainerDB.GetContainerOpenedRespawnTime(containerID))
+							RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. El contenedor ahora está cerrado por compartir questID con otro contenedor cerrado [%s]", internalContainerID, containerID))
+							RSGeneralDB.DeleteRecentlySeen(internalContainerID)
 						end
 					end
 				end
@@ -1034,6 +1034,10 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	elseif (UnitOnTaxi("player") and not RSConfigDB.IsScanningWhileOnTaxi()) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar montado en un transporte", npcID))
 		return
+		-- disable alerts while in pet combat
+	elseif (C_PetBattles.IsInBattle() and not RSConfigDB.IsScanningWhileOnPetBattle()) then
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en medio de un combate de mascotas", npcID))
+		return
 		-- disable scanning for every entity that is not treasure, event or rare
 	elseif (not RSConstants.IsScanneableAtlas(vignetteInfo.atlasName)) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por tener el atlas [%s] que no es escaneable", npcID, vignetteInfo.atlasName))
@@ -1056,6 +1060,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		return
 		-- extra checkings for containers
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
+		-- there is one container without name in Shadowlands
+		if (not vignetteInfo.name or string.gsub(vignetteInfo.name, "", "") == "") then
+			vignetteInfo.name = AL["CONTAINER"]
+		end
+		
 		-- save containers to show it on the world map
 		RSContainerDB.SetContainerName(npcID, vignetteInfo.name)
 

@@ -234,6 +234,13 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP4] = { x = 0.3949, y = 0.5444, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
 		[RSConstants.STEP5] = { x = 0.3966, y = 0.5352, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
 	}; --Lunarlight Pod
+	[353773] = {
+		[RSConstants.STEP1] = { x = 0.6189, y = 0.5684, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP2] = { x = 0.6145, y = 0.5626, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP3] = { x = 0.6052, y = 0.5644, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP4] = { x = 0.6041, y = 0.5735, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP5] = { x = 0.6144, y = 0.5753, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+	}; --Lunarlight Pod
 	[180645] = {
 		[RSConstants.DOT..1] = { x = 0.407, y = 0.274 };
 		[RSConstants.DOT..2] = { x = 0.512, y = 0.551 };
@@ -283,10 +290,6 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP3] = { x = 0.508, y = 0.53, comment = AL["NOTE_181164_1"] };
 		[RSConstants.STEP4] = { x = 0.7663, y = 0.5612, comment = AL["NOTE_181164_2"] };
 	}; --Sword of Oonar
-	[355980] = {
-		[RSConstants.STEP1] = { x = 0.699, y = 0.311, comment = AL["NOTE_355980_1"] };
-		[RSConstants.STEP2] = { x = 0.717, y = 0.354, comment = AL["NOTE_355980_2"] };
-	}; --Ritualist's Cache
 	[355880] = { [RSConstants.FLAG] = { x = 0.406, y = 0.33, comment =  AL["NOTE_355880_1"] } }; --The Necronom-i-nom
 	[356535] = { [RSConstants.FLAG] = { x = 0.3508, y = 0.7066, comment =  AL["NOTE_356535_1"] } }; --Runespeaker's Trove
 	[351980] = {
@@ -423,6 +426,29 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.ENTRANCE] = { x = 0.5518, y = 0.3473 };
 		[RSConstants.FLAG..1] = { x = 0.5469, y = 0.346, comment = AL["NOTE_351544_1"] };
 	}; --Secret Treasure
+	[349793] = { [RSConstants.FLAG] = { x = 0.68, y = 0.6458, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Wayfarer's Abandoned Spoils
+	[349797] = { [RSConstants.FLAG] = { x = 0.5253, y = 0.592, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Abandoned Curios
+	[353330] = { [RSConstants.FLAG] = { x = 0.6468, y = 0.234, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Faerie Stash
+	[353643] = { [RSConstants.FLAG] = { x = 0.6075, y = 0.5551, comment = AL["NOTE_353643_1"] } }; --Faerie Stash
+	[353869] = { [RSConstants.PATH_START] = { x = 0.4599, y = 0.2012 } }; --Hidden Hoard
+	[351540] = { [RSConstants.FLAG] = { x = 0.7305, y = 0.4727, comment = AL["NOTE_351540_1"] } }; --Secret Treasure
+	[353691] = { [RSConstants.PATH_START] = { x = 0.5826, y = 0.6452 } }; --Campana celeste
+	[173468] = { 
+		[RSConstants.STEP1] = { x = 0.6845, y = 0.6041, comment = AL["NOTE_173468_1"] };
+		[RSConstants.STEP2] = { x = 0.634, y = 0.618, comment = AL["NOTE_173468_2"] };
+		[RSConstants.STEP3.."1"] = { x = 0.7395, y = 0.581, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP3.."2"] = { x = 0.7054, y = 0.5811, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP3.."3"] = { x = 0.6423, y = 0.5881, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP3.."4"] = { x = 0.679, y = 0.6836, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP3.."5"] = { x = 0.6279, y = 0.667, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP3.."6"] = { x = 0.6113, y = 0.6933, comment = AL["NOTE_173468_3"] };
+		[RSConstants.STEP4] = { x = 0.6301, y = 0.6181, comment = AL["NOTE_173468_4"] };
+		[RSConstants.STEP5] = { x = 0.51, y = 0.788, comment = AL["NOTE_173468_5"] };
+		[RSConstants.STEP6] = { x = 0.408, y = 0.468, comment = AL["NOTE_173468_6"] };
+	}; --Blanchy's Reins
+	[353503] = { [RSConstants.PATH_START] = { x = 0.4748, y = 0.252 } }; --Silver Strongbox
+	[353872] = { [RSConstants.ENTRANCE] = { x = 0.6195, y = 0.3845 } }; --Hidden Hoard
+	[345456] = { [RSConstants.PATH_START] = { x = 0.5157, y = 0.1357 } }; --Chest of Eyes
 }
 
 ---============================================================================

@@ -858,6 +858,11 @@ do
             Broker_CurrencyCharDB.show1560 = false
             Broker_CurrencyCharDB.summary1560 = false
         end
+        if not Broker_CurrencyCharDB.update901 then
+            Broker_CurrencyCharDB.update901 = true
+            Broker_CurrencyCharDB.show1828 = true
+            Broker_CurrencyCharDB.summary1828 = true
+        end
 
 		-- ----------------------------------------------------------------------------
 		-- Initialize the configuration options.

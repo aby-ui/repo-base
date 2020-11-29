@@ -790,7 +790,12 @@ do
 				if not indicator then
 					indicator = CreateFrame("frame", nil, self.Health, BackdropTemplateMixin and "BackdropTemplate")
 					indicator:SetSize(8,10)
-					indicator:SetPoint("TOP",floor(i/2)*(i%2==0 and -10 or 10), 0) --1: 0, 0 2: -10, 0 3: 10, 0 4: -20, 0 > i = even > left, uneven > right 
+					indicator:SetPoint("TOP",floor(i/2)*(i%2==0 and -10 or 10), 0) --1: 0, 0 2: -10, 0 3: 10, 0 4: -20, 0 > i = even > left, uneven > right
+					indicator:SetBackdrop({
+						bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+						edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+						edgeSize = 1
+					}) 
 					indicator:SetBackdropBorderColor(0,0,0,1)
 					self.TargetIndicators[i] = indicator
 				end
@@ -1466,6 +1471,11 @@ do
 			playerButton.MyTarget = CreateFrame('Frame', nil, playerButton.Health, BackdropTemplateMixin and "BackdropTemplate")
 			playerButton.MyTarget:SetPoint("TOPLEFT", playerButton.Health, "TOPLEFT", -1, 1)
 			playerButton.MyTarget:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT", 1, -1)
+			playerButton.MyTarget:SetBackdrop({
+				bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+				edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+				edgeSize = 1
+			})
 			playerButton.MyTarget:SetBackdropColor(0, 0, 0, 0)
 			playerButton.MyTarget:Hide()
 			
@@ -1473,6 +1483,11 @@ do
 			playerButton.MyFocus = CreateFrame('Frame', nil, playerButton.Health, BackdropTemplateMixin and "BackdropTemplate")
 			playerButton.MyFocus:SetPoint("TOPLEFT", playerButton.Health, "TOPLEFT", -1, 1)
 			playerButton.MyFocus:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT", 1, -1)
+			playerButton.MyFocus:SetBackdrop({
+				bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+				edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+				edgeSize = 1
+			})
 			playerButton.MyFocus:SetBackdropColor(0, 0, 0, 0)
 			playerButton.MyFocus:Hide()
 			

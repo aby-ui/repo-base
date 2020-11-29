@@ -66,6 +66,12 @@ function BattleGroundEnemies.Objects.Auras.NewAuraContainer(playerButton)
 		auraFrame.Inactive = self.Inactive
 		
 		auraFrame.Icon:SetDrawLayer("BORDER", -1) -- 1 to make it behind the SetBackdrop bg
+
+		auraFrame:SetBackdrop({
+			bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+			edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+			edgeSize = 1
+		})
 		
 		auraFrame:SetBackdropColor(0, 0, 0, 0)
 		auraFrame:SetBackdropBorderColor(0, 0, 0, 0)

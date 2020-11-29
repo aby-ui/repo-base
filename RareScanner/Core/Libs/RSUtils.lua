@@ -84,6 +84,10 @@ function RSUtils.Contains(cTable, item)
 	return false;
 end
 
+function RSUtils.StartsWith(string, start)
+	return string.sub(string,1,string.len(start)) == start
+end
+
 function RSUtils.Distance(POIa, POIb)
 	local dx = POIa.x - POIb.x
 	local dy = POIa.y - POIb.y

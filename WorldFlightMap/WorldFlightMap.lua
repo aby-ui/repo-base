@@ -348,4 +348,8 @@ function WorldMapFrame:ResetTitleAndPortraitIcon()
 	-- Placeholder for missing mixin method that gets called when the map is opened
 end
 
+function WorldMapFrame:UpdateTitleAndPortraitIcon()
+	-- Called when map is opened to a zone with a bastion node on it
+end
+
 WorldMapFrame:AddDataProvider(WorldFlightMapProvider)

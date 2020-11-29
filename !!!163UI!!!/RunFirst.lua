@@ -77,10 +77,25 @@ end
 
 local cfNames = {} for i=1, NUM_CHAT_WINDOWS do cfNames[i] = "ChatFrame"..i end
 function WithAllChatFrame(func, ...)
-    for i=1, NUM_CHAT_WINDOWS do
-        local chatFrame = _G[cfNames[i]]
-        if chatFrame then func(chatFrame, ...); end
+    local args = {}
+    local args_len = select("#", ...)
+    for i = 1, args_len do
+        args[i] = select(i, ...)
     end
+    local hook = function()
+        for _, chatFrameName in pairs(CHAT_FRAMES) do
+            local frame = _G[chatFrameName];
+            if frame then
+                frame.u1funcs = frame.u1funcs or {}
+                if not frame.u1funcs[func] then
+                    frame.u1funcs[func] = true
+                    func(frame, unpack(args, 1, args_len))
+                end
+            end
+        end
+    end
+    hook()
+    hooksecurefunc("FCF_OpenTemporaryWindow", hook)
 end
 
 -- old addons's sound config is changed to number, but still use PlaySoundFile API

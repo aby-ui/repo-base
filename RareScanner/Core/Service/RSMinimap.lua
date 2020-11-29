@@ -82,20 +82,23 @@ function RSMinimap.RefreshAllData(forzed)
 	end
 
 	for _, POI in ipairs (POIs) do
-		local pin = pinFramesPool:Acquire()
-		pin.POI = POI
-		pin.Texture:SetTexture(POI.Texture)
-		pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
-		HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, tonumber(POI.x), tonumber(POI.y), false, false)
-
-		-- Adds overlay if active
-		if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
-			pin:ShowOverlay()
-		end
-
-		-- Adds guide if active
-		if (RSGeneralDB.HasGuideActive(POI.entityID)) then
-			pin:ShowGuide()
+		-- Ignore POIs from worldmap
+		if (not POI.worldmap) then
+			local pin = pinFramesPool:Acquire()
+			pin.POI = POI
+			pin.Texture:SetTexture(POI.Texture)
+			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, tonumber(POI.x), tonumber(POI.y), false, false)
+	
+			-- Adds overlay if active
+			if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
+				pin:ShowOverlay()
+			end
+	
+			-- Adds guide if active
+			if (RSGeneralDB.HasGuideActive(POI.entityID)) then
+				pin:ShowGuide()
+			end
 		end
 	end
 end

@@ -21,6 +21,85 @@ GTFO.SpellID["325246"] = {
   sound = 3;
 };
 
+GTFO.SpellID["308502"] = {
+  --desc = "Unstable Shadows (Gor'groth)";
+  sound = 3;
+};
+
+GTFO.SpellID["305515"] = {
+  --desc = "Necrotic Breath (Ravnyr)";
+  sound = 3;
+};
+
+GTFO.SpellID["340207"] = {
+  --desc = "Anima Flash (Aethon)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["332569"] = {
+  --desc = "Pinning Spear (Fallen Acolyte Erisne)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["343090"] = {
+  --desc = "Dissonance";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["329569"] = {
+  --desc = "Void Collapse (Seething Voidripper)";
+  sound = 3;
+};
+
+GTFO.SpellID["308838"] = {
+  --desc = "Void Rain";
+  sound = 3;
+};
+
+GTFO.SpellID["331270"] = {
+  --desc = "Fling Goop (Diseased Remnant)";
+  sound = 3;
+};
+
+GTFO.SpellID["330404"] = {
+  --desc = "Wing Buffet (Gristlebeak)";
+  sound = 3;
+};
+
+GTFO.SpellID["322014"] = {
+  --desc = "Risen Shadows (Architect Halen)";
+  sound = 3;
+};
+
+GTFO.SpellID["320028"] = {
+  --desc = "Ground Pound (Strategist Ocra)";
+  sound = 3;
+};
+
+GTFO.SpellID["333710"] = {
+  --desc = "Grasping Hands (Sharrex the Fleshcrafter)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["320734"] = {
+  --desc = "Massive Strike (Brethlun the Brand)";
+  sound = 3;
+};
+
+GTFO.SpellID["320726"] = {
+  --desc = "Colossal Exhumation (Brethlun the Brand)";
+  sound = 3;
+};
+
+GTFO.SpellID["334509"] = {
+  --desc = "Warlord's Slam (Baron Vyraz)";
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

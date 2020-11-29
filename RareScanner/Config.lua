@@ -325,6 +325,17 @@ local function GetGeneralOptions()
 					end,
 					width = "full",
 				},
+				scanOnPetBattle = {
+					order = 7,
+					name = AL["ENABLE_SCAN_ON_PET_BATTLE"],
+					desc = AL["ENABLE_SCAN_ON_PET_BATTLE_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsScanningWhileOnPetBattle() end,
+					set = function(_, value)
+						RSConfigDB.SetScanningWhileOnPetBattle(value)
+					end,
+					width = "full",
+				},
 				scanWorldMapVignettes = {
 					order = 8,
 					name = AL["ENABLE_SCAN_WORLDMAP_VIGNETTES"],

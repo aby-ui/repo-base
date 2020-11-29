@@ -23,6 +23,11 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 	local DRContainer = CreateFrame("Frame", nil, playerButton, BackdropTemplateMixin and "BackdropTemplate")
 	DRContainer:SetPoint("TOPRIGHT", playerButton, "TOPLEFT", -1, 0)
 	DRContainer:SetPoint("BOTTOMRIGHT", playerButton, "BOTTOMLEFT", -1, 0)
+	DRContainer:SetBackdrop({
+		bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+		edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+		edgeSize = 1
+	})
 	DRContainer:SetBackdropColor(0, 0, 0, 0)
 	DRContainer.DR = {}
 

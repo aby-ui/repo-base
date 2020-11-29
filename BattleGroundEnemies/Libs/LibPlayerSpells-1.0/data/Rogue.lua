@@ -20,7 +20,7 @@ along with LibPlayerSpells-1.0. If not, see <http://www.gnu.org/licenses/>.
 
 local lib = LibStub('LibPlayerSpells-1.0')
 if not lib then return end
-lib:__RegisterSpells('ROGUE', 80000, 4, {
+lib:__RegisterSpells('ROGUE', 80000, 5, {
 	COOLDOWN = {
 		   1725, -- Distract
 		 195457, -- Grappling Hook (Outlaw)
@@ -123,7 +123,6 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 			  1784, -- Stealth
 			  2823, -- Deadly Poison (Assassination)
 			  3408, -- Crippling Poison (Assassination)
-			  5171, -- Slice and Dice (Outlaw talent)
 			  8679, -- Wound Poison (Assassination)
 			 32645, -- Envenom (Assassination)
 			108211, -- Leeching Poison (Assassination talent)
@@ -134,7 +133,7 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 			193357, -- Ruthless Precision (Outlaw)
 			193358, -- Grand Melee (Outlaw)
 			193359, -- True Bearing (Outlaw)
-			193538, -- Alacrity (Outlaw/Subtlety talent)
+			193538, -- Alacrity
 			193641, -- Elaborate Planning (Assassination talent)
 			195627, -- Opportunity (Outlaw)
 			199027, -- Veil of Midnight (Subtlety honor talent)
@@ -144,6 +143,7 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 			256735, -- Master Assassin (Assassination talent)
 			257506, -- Shot in the Dark (Subtlety talent)
 			270070, -- Hidden Blades (Assassination talent)
+			315496, -- Slice and Dice
 		},
 	},
 }, {
@@ -159,11 +159,11 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 	[121153] = 111240, -- Blindside (Assassination talent)
 	[154953] = 154904, -- Internal Bleeding (Assassination)
 	[185422] = 185313, -- Shadow Dance (Subtlety)
-	[193356] = 193316, -- Broadside <- Roll the Bones (Outlaw)
-	[193357] = 193316, -- Ruthless Precision <- Roll the Bones (Outlaw)
-	[193358] = 193316, -- Grand Melee <- Roll the Bones (Outlaw)
-	[193359] = 193316, -- True Bearing <- Roll the Bones (Outlaw)
-	[193538] = 193539, -- Alacrity (Outlaw/Subtlety talent)
+	[193356] = 315508, -- Broadside <- Roll the Bones (Outlaw)
+	[193357] = 315508, -- Ruthless Precision <- Roll the Bones (Outlaw)
+	[193358] = 315508, -- Grand Melee <- Roll the Bones (Outlaw)
+	[193359] = 315508, -- True Bearing <- Roll the Bones (Outlaw)
+	[193538] = 193539, -- Alacrity
 	[193641] = 193640, -- Elaborate Planning (Assassination talent)
 	[195627] = 193315, -- Opportunity <- Sinister Strike (Outlaw)
 	[196980] = 196976, -- Master of Shadows (Subtlety)
@@ -176,8 +176,8 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 	[198368] = 198265, -- Take Your Cut (Outlaw honor talent)
 	[198688] = 198675, -- Dagger in the Dark (Subtlety honor talent)
 	[199027] = 198952, -- Veil of Midnight (Subtlety honor talent)
-	[199600] = 193316, -- Buried Treasure <- Roll the Bones (Outlaw)
-	[199603] = 193316, -- Skull and Crossbones <- Roll the Bones (Outlaw)
+	[199600] = 315508, -- Buried Treasure <- Roll the Bones (Outlaw)
+	[199603] = 315508, -- Skull and Crossbones <- Roll the Bones (Outlaw)
 	[206760] = 277950, -- Shadow's Grasp (Subtlety)
 	[209754] = 209752, -- Boarding Party (Outlaw honor talent)
 	[212183] = 212182, -- Smoke Bomb (honor talent)
@@ -206,14 +206,14 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 	},
 	[115192] = 115191, -- Subterfuge (Assassination/Subtlety talent) -> Stealth
 	[154953] =    408, -- Internal Bleeding (Assassination) -> Kidney Shot
-	[193538] = { -- Alacrity (Outlaw/Subtlety talent)
+	[193538] = { -- Alacrity
 		   408, -- Kidney Shot (Subtlety)
 		  2098, -- Dispatch (Outlaw)
-		193316, -- Roll the Bones (Outlaw)
 		195452, -- Nightblade (Subtlety)
 		196819, -- Eviscerate (Subtlety)
 		199804, -- Between the Eyes (Outlaw)
 		-- 280719, -- Secret Technique (Subtlety talent) TODO: bugged on Beta or intended?
+		315508, -- Roll the Bones (Outlaw)
 	},
 	[193641] = { -- Elaborate Planning (Assassination talent)
 		   408, -- Kidney Shot
@@ -233,8 +233,8 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 	[198097] =  32645, -- Creeping Venom (Assassination honor talent) -> Envenom
 	[198222] =  32645, -- System Shock (Assassination honor talent) -> Envenom
 	[198368] = { -- Take Your Cut (Outlaw honor talent)
-		  5171, -- Slice and Dice (Outlaw talent)
-		193316, -- Roll the Bones
+		315496, -- Slice and Dice
+		315508, -- Roll the Bones
 	},
 	[198688] = 185438, -- Dagger in the Dark (Subtlety honor talent) -> Shadowstrike
 	[199027] = { -- Veil of Midnight (Subtlety honor talent)
@@ -263,7 +263,7 @@ lib:__RegisterSpells('ROGUE', 80000, 4, {
 		199804, -- Between the Eyes (Outlaw)
 	},
 	[256148] =    703, -- Iron Wire (Assassination talent) -> Garrote
-	[256171] = 193316, -- Loaded Dice (Outlaw talent) -> Roll the Bones
+	[256171] = 315508, -- Loaded Dice (Outlaw talent) -> Roll the Bones
 	[256735] =   1784, -- Master Assassin (Assassination talent) -> Stealth
 	[257506] =   1833, -- Shot in the Dark (Subtlety talent) -> Cheap Shot
 	[270070] =  51723, -- Hidden Blades (Assassination talent) -> Fan of Knives

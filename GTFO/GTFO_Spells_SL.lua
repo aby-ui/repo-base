@@ -21,6 +21,42 @@ GTFO.SpellID["330095"] = {
   sound = 1;
 };
 
+GTFO.SpellID["320006"] = {
+  --desc = "Crackling Anima";
+  sound = 1;
+};
+
+GTFO.SpellID["324816"] = {
+  --desc = "Necrotic Breath (Rotwing Construct)";
+  sound = 1;
+};
+
+GTFO.SpellID["332956"] = {
+  --desc = "Necrotic Spittle (Marrowjaw)";
+  sound = 1;
+};
+
+GTFO.SpellID["321362"] = {
+  --desc = "Necrotic Orb";
+  sound = 1;
+};
+
+GTFO.SpellID["319920"] = {
+  --desc = "Unraveling Abomination";
+  sound = 1;
+};
+
+GTFO.SpellID["330605"] = {
+  --desc = "Death Tempest (Leacher Cvan)";
+  sound = 1;
+};
+
+GTFO.SpellID["333733"] = {
+  --desc = "Cone of Death (Sharrex the Fleshcrafter)";
+  sound = 1;
+};
+
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

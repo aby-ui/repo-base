@@ -183,6 +183,14 @@ function RSConfigDB.SetScanningWhileOnTaxi(value)
 	private.db.general.scanOnTaxi = value
 end
 
+function RSConfigDB.IsScanningWhileOnPetBattle()
+	return private.db.general.scanOnPetBattle
+end
+
+function RSConfigDB.SetScanningWhileOnPetBattle(value)
+	private.db.general.scanOnPetBattle = value
+end
+
 function RSConfigDB.IsScanningWorldMapVignettes()
 	return private.db.general.scanWorldmapVignette
 end

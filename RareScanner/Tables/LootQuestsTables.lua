@@ -295,4 +295,15 @@ private.LOOT_QUEST_IDS = {
 	[180453] = { 60889 }; --She Had a Stone Heart
 	[182728] = { 62184 }; --A Crate of Sinvyr Ore
 	[173720] = { 58080 }; --Glittering Primrose Necklace
+	[182176] = { 62431 }; --Shadowstalker Soul
+	[173707] = { 58070 }; --Soul Hunter's Blade
+	[180806] = { 63145 }; --Shadebound Testimonial
+	[180805] = { 63142 }; --Soulforge Blueprints
+	[183066] = { 63160 }; --Korrath's Grimoire: Aleketh
+	[183067] = { 63161 }; --Korrath's Grimoire: Belidir
+	[183058] = { 63155 }; --Indecipherable Map
+	[184622] = { 63206 }; --Stygian Hammer
+	[183070] = { 63164 }; --Mawsworn Orders
+	[152644] = { 48555 }; --Thistlevine Seeds
+	[174763] = { 58755 }; --Golden Lotus Supplies
 }

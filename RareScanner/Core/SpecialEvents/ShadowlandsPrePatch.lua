@@ -21,7 +21,7 @@ local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 -- Shadowlands pre-patch
-local SHADOWLANDS_PRE_PATCH_EVENT = true
+local SHADOWLANDS_PRE_PATCH_EVENT = false
 
 -- Next spawn timer
 local NEXT_RESPAWN = 600 --10 minutes

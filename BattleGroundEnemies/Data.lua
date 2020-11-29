@@ -461,9 +461,12 @@ Data.BattlegroundspezificDebuffs = { --key = mapID, value = table with key = num
 Data.TriggerSpellIDToTrinketnumber = {--key = which first row honor talent, value = fileID(used for SetTexture())
 	[195710] = 1, 	-- 1: Honorable Medallion, 3. min. CD, detected by Combatlog
 	[208683] = 2, 	-- 2: Gladiator's Medallion, 2 min. CD, detected by Combatlog
+	[336126] = 2,   -- 2: Gladiator's Medallion, 2 min. CD, Shadowlands Update
 	[195901] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901
 	[214027] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901, for the Arena_cooldownupdate
-	[196029] = 4 	-- 4: Relentless, passive, no CD
+	[336135] = 3, 	-- 3: Adaptation, 1 min. CD, Shadowlands Update
+	[196029] = 4, 	-- 4: Relentless, passive, no CD
+	[336128] = 4 	-- 4: Relentless, passive, no CD, Shadowlands Update
 }
 		
 	
@@ -530,7 +533,9 @@ end
 Data.TrinketTriggerSpellIDtoCooldown = {
 	[195710] = 180,	-- Honorable Medallion, 3 min. CD
 	[208683] = 120,	-- Gladiator's Medallion, 2 min. CD
-	[195901] = 60 	-- Adaptation PvP Talent
+	[336126] = 120, -- Gladiator's Medallion, 2 min. CD, Shadowlands Update
+	[195901] = 60, 	-- Adaptation PvP Talent
+	[336135] = 60   -- Adapation, Shadowlands Update
 }
 
 Data.RacialSpellIDtoCooldownTrigger = {

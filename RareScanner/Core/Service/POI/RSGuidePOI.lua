@@ -31,19 +31,19 @@ local function GetTexture(pinType)
 		return RSConstants.GUIDE_DOT_TEXTURE
 	elseif (RSUtils.Contains(pinType,RSConstants.FLAG)) then
 		return RSConstants.GUIDE_FLAG_TEXTURE
-	elseif (pinType == RSConstants.STEP1) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP1)) then
 		return RSConstants.GUIDE_STEP1_TEXTURE
-	elseif (pinType == RSConstants.STEP2) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP2)) then
 		return RSConstants.GUIDE_STEP2_TEXTURE
-	elseif (pinType == RSConstants.STEP3) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP3)) then
 		return RSConstants.GUIDE_STEP3_TEXTURE
-	elseif (pinType == RSConstants.STEP4) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP4)) then
 		return RSConstants.GUIDE_STEP4_TEXTURE
-	elseif (pinType == RSConstants.STEP5) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP5)) then
 		return RSConstants.GUIDE_STEP5_TEXTURE
-	elseif (pinType == RSConstants.STEP6) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP6)) then
 		return RSConstants.GUIDE_STEP6_TEXTURE
-	elseif (pinType == RSConstants.STEP7) then
+	elseif (RSUtils.StartsWith(pinType,RSConstants.STEP7)) then
 		return RSConstants.GUIDE_STEP7_TEXTURE
 	end
 end

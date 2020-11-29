@@ -437,7 +437,10 @@ GTFO.SpellID["238443"] = {
   sound = 1;
 };
 
-
+GTFO.SpellID["293579"] = {
+  --desc = "Electric Wave (Essence of Hati)";
+  sound = 1;
+};
 
 -- **********
 -- * Mardum *
