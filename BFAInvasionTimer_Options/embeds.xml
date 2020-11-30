@@ -1,7 +1,0 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-<!--@non-debug@-->
-<Include file="Libs\LibDDI-1.0\lib.xml"/>
-<!--@end-non-debug@-->
-</Ui>
-

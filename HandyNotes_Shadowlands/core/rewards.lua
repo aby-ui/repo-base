@@ -33,6 +33,7 @@ function Reward:IsEnabled()
     return true
 end
 
+function Reward:IsObtainable() return true end
 function Reward:IsObtained() return true end
 
 -- These functions drive the appearance of the tooltip

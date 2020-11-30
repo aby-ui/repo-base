@@ -7,9 +7,10 @@ _G.RECrystallize = RE
 local time, collectgarbage, hooksecurefunc, strsplit, next, select, pairs, tonumber, floor, print, date = _G.time, _G.collectgarbage, _G.hooksecurefunc, _G.strsplit, _G.next, _G.select, _G.pairs, _G.tonumber, _G.floor, _G.print, _G.date
 local sMatch, sFormat = _G.string.match, _G.string.format
 local tConcat = _G.table.concat
-local Item = _G.Item
+local mFmod = _G.math.fmod
 local Round = _G.Round
 local PlaySound = _G.PlaySound
+local After = _G.C_Timer.After
 local GetCVar = _G.GetCVar
 local GetItemInfo = _G.GetItemInfo
 local GetItemCount = _G.GetItemCount
@@ -33,10 +34,12 @@ local ElvUI = _G.ElvUI
 
 local PETCAGEID = 82800
 
-RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1}
+RE.DefaultConfig = {["LastScan"] = 0, ["GuildChatPC"] = false, ["DatabaseCleanup"] = 432000, ["AlwaysShowAll"] = false, ["DatabaseVersion"] = 1, ["BatchSize"] = 100}
 RE.GUIInitialized = false
 RE.RecipeLock = false
-RE.ScanFinished = false
+RE.ScanInProgress = 0
+RE.ScanProgress = 0
+RE.ScanSize = 0
 RE.BlockTooltip = 0
 RE.TooltipLink = ""
 RE.TooltipItemVariant = ""
@@ -206,19 +209,31 @@ function RE:OnEvent(self, event, ...)
 					set = function(_, val) RE.Config.DatabaseCleanup = val * 86400 end,
 					get = function(_) return RE.Config.DatabaseCleanup / 86400 end
 				},
+				batchsize = {
+					name = L["Scanning speed"],
+					desc = L["Decrease this value if scanning is causing disconnects."],
+					type = "range",
+					width = "double",
+					order = 3,
+					min = 10,
+					max = 1000,
+					step = 10,
+					set = function(_, val) RE.Config.BatchSize = val end,
+					get = function(_) return RE.Config.BatchSize end
+				},
 				dbpurge = {
 					name = L["Purge this server database"],
 					desc = L["WARNING! This operation is not reversible!"],
 					type = "execute",
 					width = "double",
-					order = 3,
+					order = 4,
 					confirm = true,
 					func = function() RE.DB[RE.RealmString] = {}; collectgarbage("collect") end
 				},
 				separator = {
 					type = "header",
 					name = _G.STATISTICS,
-					order = 4
+					order = 5
 				},
 				description = {
 					type = "description",
@@ -234,7 +249,7 @@ function RE:OnEvent(self, event, ...)
 
 						return s
 					end,
-					order = 5
+					order = 6
 				}
 			}
 		}
@@ -358,54 +373,43 @@ function RE:StartScan()
 end
 
 function RE:Scan()
-	RE.ScanFinished = false
-	local num = GetNumReplicateItems()
-	local progress = 0
-	local inProgress = {}
-
-	for i = 0, num - 1 do
-		local link
-		local count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
-
-		if status and count and price and itemID and type(quality) == "number" and count > 0 and price > 0 and itemID > 0 then
-			link = GetReplicateItemLink(i)
-			if link then
-				progress = progress + 1
-				RE.AHButton:SetText(progress.." / "..num)
-				RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
-			end
-		else
-			local item = Item:CreateFromItemID(itemID)
-			inProgress[item] = true
-
-			item:ContinueOnItemLoad(function()
-				count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
-				inProgress[item] = nil
-				if status and count and price and itemID and type(quality) == "number" and count > 0 and price > 0 and itemID > 0 then
-					link = GetReplicateItemLink(i)
-					if link then
-						progress = progress + 1
-						RE.AHButton:SetText(progress.." / "..num)
-						RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
-					end
-				end
-				if not next(inProgress) then
-					inProgress = {}
-					RE:EndScan()
-				end
-			end)
-		end
-	end
-
-	if not next(inProgress) then
+	if RE.ScanInProgress > 2 then
+		RE.ScanInProgress = 0
 		RE:EndScan()
+	else
+		if RE.ScanInProgress == 0 then
+			RE.ScanInProgress = 1
+			RE.ScanSize = GetNumReplicateItems() - 1
+			RE.ScanProgress = 0
+		end
+
+		for i = RE.ScanProgress, RE.ScanSize do
+			local link
+			local count, quality, _, _, _, _, _, price, _, _, _, _, _, _, itemID, status = select(3, GetReplicateItemInfo(i))
+
+			RE.ScanProgress = RE.ScanProgress + 1
+			RE.AHButton:SetText(floor((RE.ScanProgress / (RE.ScanSize * 2)) * 100) + (RE.ScanInProgress == 1 and 0 or 50) .. "%")
+			if status and count and price and itemID and type(quality) == "number" and count > 0 and price > 0 and itemID > 0 then
+				link = GetReplicateItemLink(i)
+				if link then
+					RE.DBScan[i] = {["Price"] = price / count, ["ItemID"] = itemID, ["ItemLink"] = link, ["Quality"] = quality}
+				end
+			end
+
+			if RE.ScanProgress > RE.ScanSize then
+				RE.ScanInProgress = RE.ScanInProgress + 1
+				RE.ScanProgress = 0
+				RE:Scan()
+				break
+			elseif mFmod(RE.ScanProgress, RE.Config.BatchSize) == 0 then
+				After(0, RE.Scan)
+				break
+			end
+		end
 	end
 end
 
 function RE:EndScan()
-	if RE.ScanFinished then return end
-	RE.ScanFinished = true
-
 	RE:ParseDatabase()
 	RE:SyncDatabase()
 	RE:CleanDatabase()

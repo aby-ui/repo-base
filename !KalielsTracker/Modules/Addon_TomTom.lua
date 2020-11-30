@@ -125,14 +125,7 @@ local function AddWaypoint(questID, isSilent)
 		title = C_QuestLog.GetTitleForQuestID(questID)
 		mapID = GetQuestUiMapID(questID)
 		if mapID ~= 0 and KT.GetCurrentMapContinent().mapID == KT.GetMapContinent(mapID).mapID then
-			local wasWorldMapShown = (WorldMapFrame:IsShown())
-			if mapID ~= KT.GetCurrentMapAreaID() then
-				OpenQuestLog(mapID)
-			end
 			completed, x, y = QuestPOIGetIconInfo(questID)
-			if not wasWorldMapShown then
-				HideUIPanel(WorldMapFrame)
-			end
 		end
 	end
 
@@ -186,11 +179,13 @@ end
 
 local function SetHooks()
 	-- TomTom
-	function TomTom:EnableDisablePOIIntegration()	-- R
+	local bck_TomTom_EnableDisablePOIIntegration = TomTom.EnableDisablePOIIntegration
+	function TomTom:EnableDisablePOIIntegration()
 		TomTom.profile.poi.enable = false
 		TomTom.profile.poi.modifier = "A"
 		TomTom.profile.poi.setClosest = false
 		TomTom.profile.poi.arrival = 0
+		bck_TomTom_EnableDisablePOIIntegration(self)
 	end
 	
 	hooksecurefunc(TomTom, "ClearWaypoint", function(self, uid)
@@ -306,7 +301,11 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v90001-1.1.5") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v90002-1.1.9") and db.addonTomTom)
+
+	if self.isLoaded then
+		KT:Alert_IncompatibleAddon("TomTom", "v90002-1.1.9")
+	end
 
 	local defaults = KT:MergeTables({
 		profile = {

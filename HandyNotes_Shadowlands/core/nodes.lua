@@ -104,7 +104,7 @@ associated rewards have been obtained (achievements, toys, pets, mounts).
 
 function Node:IsCollected()
     for reward in self:IterateRewards() do
-        if not reward:IsObtained() then return false end
+        if reward:IsEnabled() and reward:IsObtainable() and not reward:IsObtained() then return false end
     end
     return true
 end

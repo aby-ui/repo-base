@@ -18,3 +18,5 @@ L["Previous scan"] = true
 L["Next scan available in"] = true
 L["Now"] = true
 L["Items in database"] = true
+L["Scanning speed"] = true
+L["Decrease this value if scanning is causing disconnects."] = true

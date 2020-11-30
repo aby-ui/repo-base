@@ -309,12 +309,11 @@ function WorldQuestTracker.UpdateStatusBarAnchors()
 	
 		if (WorldMapFrame.isMaximized) then
 			WorldQuestTrackerOptionsButton:SetPoint ("topleft", statusBar, "topleft", 2, -0)
-			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -40, -3)
+			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -80, -3)
 		else
 			WorldQuestTrackerOptionsButton:SetPoint ("bottomleft", statusBar, "bottomleft", 0, 2)
-			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -40, -3)
+			WorldQuestTracker.IndicatorsAnchor:SetPoint ("topright", statusBar, "topright", -80, -3)
 		end
-	
 	end
 end
 

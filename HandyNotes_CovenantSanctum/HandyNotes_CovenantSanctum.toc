@@ -1,0 +1,27 @@
+## Interface: 90002
+## Title: HandyNotes: CovenantSanctum
+## Notes: Shows the NPC and POI locations in your covenant sanctum.
+## Notes-deDE: Zeigt die Positionen von NPCs und anderer POIs im Paktsanktum an.
+## Author: |cFFFF8C00Dathwada EU-Eredar|r
+## Version: v5
+## RequiredDeps: HandyNotes
+## DefaultState: enabled
+## SavedVariables: HandyNotes_CovenantSanctumDB
+## X-Embeds: AceTimer-3.0
+## X-Date: 2020-11-30
+## X-Category: Map
+
+# LOCALIZATION FILES
+localization\locales.xml
+
+# CORE FILES
+core\constants.lua
+core\handler.lua
+core\config.lua
+#core\dev.lua
+
+# DATABASE
+data\DB.lua
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 盟约圣所
+## X-Vendor: AbyUI

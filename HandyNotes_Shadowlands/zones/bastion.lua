@@ -302,6 +302,7 @@ local SWELLING_TEAR = Rare({
     }
 }) -- Swelling Tear
 
+map.nodes[39604499] = SWELLING_TEAR
 map.nodes[47434282] = SWELLING_TEAR
 map.nodes[52203280] = SWELLING_TEAR
 map.nodes[56031463] = SWELLING_TEAR

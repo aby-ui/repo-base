@@ -275,19 +275,9 @@ local function Filter_Quests(self, spec, idx)
 			C_QuestLog.AddQuestWatch(id)
 		end
 	elseif spec == "zone" then
-		local bckMapShown = WorldMapFrame:IsShown()
-		local bckMapID = KT.GetMapID()
 		local mapID = KT.GetCurrentMapAreaID()
 		local zoneName = GetRealZoneText() or ""
 		local isInZone = false
-		if bckMapShown then
-			KT.SetMapID(mapID)
-		end
-		if (mapID and C_Map.GetMapGroupID(mapID) and not KT.inInstance) or
-				mapID == 1165 then  -- BfA - Dazar'alor
-			local mapInfo = C_Map.GetMapInfo(mapID)
-			OpenQuestLog(mapInfo.parentMapID)
-		end
 		for i = 1, numEntries do
 			local questInfo = C_QuestLog.GetInfo(i)
 			if not questInfo.isHidden then
@@ -297,14 +287,14 @@ local function Filter_Quests(self, spec, idx)
 						isInZone = (isInZone or
 								questInfo.title == "Heart of Azeroth" or  -- TODO: other languages
 								questInfo.title == "Visions of N'Zoth")   -- TODO: other languages
-					elseif mapID == 118 then  -- BfA - Icecrown (Shadowlands Pre-Patch)
+					elseif mapID == 1620 then  -- SL - Torghast
 						isInZone = (isInZone or
-								questInfo.title == "Death Rising")  -- TODO: other languages
+								questInfo.title == "Torghast, Tower of the Damned")  -- TODO: other languages
 					end
 				else
-					if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and (questInfo.isOnMap or isInZone) then
+					if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and (KT.questsCache[questInfo.questID].isCalling or questInfo.isOnMap or isInZone) then
 						if KT.inInstance then
-							if IsInstanceQuest(questInfo.questID) then
+							if IsInstanceQuest(questInfo.questID) or isInZone then
 								C_QuestLog.AddQuestWatch(questInfo.questID)
 							end
 						else
@@ -313,11 +303,6 @@ local function Filter_Quests(self, spec, idx)
 					end
 				end
 			end
-		end
-		if bckMapShown then
-			KT.SetMapID(bckMapID)
-		else
-			HideUIPanel(WorldMapFrame)
 		end
 	elseif spec == "daily" then
 		for i = 1, numEntries do
@@ -383,6 +368,8 @@ local function Filter_Achievements(self, spec)
 				KT.GetCurrentMapContinent().mapID == 876 or
 				KT.GetCurrentMapContinent().mapID == 1355 then
 			categoryName = EXPANSION_NAME7	-- Battle for Azeroth
+		elseif KT.GetCurrentMapContinent().mapID == 1550 then
+			categoryName = EXPANSION_NAME8	-- Shadowlands
 		end
 		local instance = KT.inInstance and 168 or nil
 		_DBG(zoneName.." ... "..KT.GetCurrentMapAreaID(), true)

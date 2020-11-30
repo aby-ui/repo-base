@@ -854,7 +854,7 @@ function WorldQuestTracker.GetOrCreateTrackerWidget (index)
 	end)
 
 	f.TomTomTrackerIcon = CreateFrame("button", nil, f) --no need backdrop
-	f.TomTomTrackerIcon:SetPoint ("right", f.SuperTrackButton, "left", -6, 0)
+	f.TomTomTrackerIcon:SetPoint ("right", f.Arrow, "left", -6, 0)
 	f.TomTomTrackerIcon:SetSize (24, 24)
 	f.TomTomTrackerIcon:SetAlpha (.5)
 	f.TomTomTrackerIcon.Icon = f.TomTomTrackerIcon:CreateTexture (nil, "overlay")

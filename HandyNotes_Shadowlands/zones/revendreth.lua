@@ -876,12 +876,61 @@ local Dredbat = Class('Dredbat', NPC, {
     requires=ns.requirement.Currency(1820, 5),
     rewards={ Achievement({id=14769, criteria={id=1, qty=true}}) }
 })
+
 map.nodes[25103757] = Dredbat({ pois={ Arrow({25103757, 30024700}) } })
-map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
-map.nodes[56236226] = Dredbat({ pois={ Arrow({56236226, 57485549}) } })
+map.nodes[31905920] = Dredbat({ pois={ Arrow({31905920, 38954941}) } })
 map.nodes[57246125] = Dredbat({ pois={ Arrow({57246125, 60286116}) } })
 map.nodes[60396117] = Dredbat({ pois={ Arrow({60396117, 57495549}) } })
 map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
+map.nodes[64076201] = Dredbat({ pois={ Arrow({64076201, 70125719}) } })
+
+-------------------------------------------------------------------------------
+------------------------------ ABSOLUTION FOR ALL -----------------------------
+-------------------------------------------------------------------------------
+
+local Fugitive = Class('Fugitive', NPC, {
+    id=160149,
+    icon=236247,
+    note=L["fugitive_soul_note"],
+    group=ns.groups.FUGITIVES,
+    rewards={
+        Achievement({id=14274, criteria={id=1, qty=true, suffix=L["souls_absolved"]}})
+    }
+})
+
+map.nodes[65404450] = Fugitive()
+map.nodes[65704610] = Fugitive()
+map.nodes[65904250] = Fugitive()
+map.nodes[68604460] = Fugitive()
+map.nodes[70105630] = Fugitive()
+map.nodes[70205500] = Fugitive()
+map.nodes[70604340] = Fugitive()
+map.nodes[70605200] = Fugitive()
+map.nodes[70605200] = Fugitive()
+map.nodes[70804400] = Fugitive()
+map.nodes[71004180] = Fugitive()
+map.nodes[71305350] = Fugitive()
+map.nodes[71504690] = Fugitive()
+map.nodes[71705440] = Fugitive()
+map.nodes[72304440] = Fugitive()
+map.nodes[72605510] = Fugitive()
+
+local Ritualist = Class('Ritualist', NPC, {
+    id=166150,
+    icon=458226,
+    note=L["avowed_ritualist_note"],
+    group=ns.groups.FUGITIVES,
+    rewards={
+        Achievement({id=14274, criteria={id=1, qty=true, suffix=L["souls_absolved"]}})
+    }
+})
+
+map.nodes[72505390] = Ritualist()
+map.nodes[71704790] = Ritualist()
+map.nodes[72004600] = Ritualist()
+map.nodes[69304210] = Ritualist()
+map.nodes[67204610] = Ritualist()
+map.nodes[69204650] = Ritualist()
 
 -------------------------------------------------------------------------------
 ------------------------ ITS ALWAYS SINNY IN REVENDRETH -----------------------

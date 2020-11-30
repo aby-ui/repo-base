@@ -48,6 +48,7 @@
 			[49039] = "lichborne", -- Lichborne
 			[288977] = "transfusion",
 			[315443] = "abominationLimb",
+			[311648] = "swarmingmist", -- Venthyr
 
 			-- Demon Hunter (Aura Applied)
 			[198589] = "blur",
@@ -80,11 +81,12 @@
 			[236696] = "thorns", -- (Feral/Balance)
 			[305497] = "thorns", -- Resto/Feral/Balance 8.2
 			[163505] = "rakeStun",
-			[323557] = "ravenousFrenzy", -- Venthyr
+			--[323557] = "ravenousFrenzy", -- Venthyr
 			[108291] = "heartOfTheWild", -- Heart of the Wild
 			[108292] = "heartOfTheWild", -- Heart of the Wild
 			[108293] = "heartOfTheWild", -- Heart of the Wild
 			[108294] = "heartOfTheWild", -- Heart of the Wild
+			[323546] = "ravenousfrenzy", -- Venthyr
 
 			-- Hunter (Aura Applied)
 			[19263] = "deterrence",
@@ -130,6 +132,7 @@
 			[197908] = "manaTea",
 			[209584] = "zenFocusTea",
 			[202335] = "doubleBarrel", -- Double Barrel (Brewmaster Honor Talent that stuns)
+			[310454] = "weaponoforder", -- Kyrian
 						
 			-- Paladin (Aura Applied)
 			[1022] = "handOfProtection", 
@@ -340,7 +343,6 @@
 			[108294] = "heartOfTheWildDown", -- Heart of the Wild
 			[110909] = "alterTimeDown", -- Alter Time
 			[342246] = "alterTimeDown", -- Alter Time again I guess
-			[324220] = "deathborneDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -429,6 +431,8 @@
 			--[224968] = "_PHmarkOfAluneth",
 			[257537] = "ebonbolt",
 			[314793] = "mirrorsOfTorment",
+			[307443] = "radiantspark", -- Kyrian
+			[314791] = "shiftingpower", -- Nightfae
 			
 			-- Monk (Spell Casting)
 			--[205406] = "sheilunsGift",
@@ -447,6 +451,7 @@
 			[265202] = "holyWordSalvation", -- Holy Word Salvation
 			[289666] = "greaterHeal", -- >:(
 			[325013] = "boonOfTheAscended",
+			[323673] = "mindgames",
 
 			-- Rogue (Spell Casting)
 				--None! :D
@@ -465,6 +470,8 @@
 			[191634] = "stormkeeper",
 			[320137] = "stormkeeper",
 			[210714] = "Icefury", -- Icefury
+			[320674] = "chainharvest", -- Venthyr
+			[328923] = "faetransfusion", -- Nightfae
 			
 			-- Warlock (Spell Casting)
 			[710] = "banish",
@@ -492,9 +499,12 @@
 			[29893] = "CreateHealthstone",
 			[183601] = "CreateHealthstone",
 			[6201] = "CreateHealthstone",
+			[325289] = "decimatingbolt", -- Necrolord
+			[321792] = "impendingcatastrophe", -- Venthyr
+			[325640] = "soulrot", -- Nightfae
 
 			-- Warrior (Spell Casting)
-				--None! :D
+			[64382] = "shatteringthrow",
 		},
 		castSuccess = {					--cast success [spellid] = ".mp3 file name",
 			-- Cure (DPS Dispel)
@@ -619,7 +629,7 @@
 
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature
-			[323436] = "purifyPotion", -- Kyrian signature
+			[323436] = "phialofserenity", -- Kyrian signature
 			
 			-- Death Knight (Cast Success)
 			[47528] = "mindFreeze",
@@ -652,6 +662,8 @@
 			[46585] = "RaiseDead", -- Raise Dead
 			[327574] = "sacrificialPact",
 			[288853] = "raiseAbomination", -- Raise Abomination
+			[324128] = "deathdue", -- Night Fae
+			[312202] = "shackletheunworthy", -- Kyrian
 			
 			-- Demon Hunter (Cast Success)
 			[183752] = "disrupt",
@@ -676,6 +688,7 @@
 			[317009] = "sinfulBrand",	-- Venthyr
 			[306830] = "elysianDecree", -- Kyrian
 			[323639] = "theHunt",		-- Nightfae
+			[329554] = "fodderoftheflame", -- Necrolord
 
 			-- Druid (Cast Success)
 			[740] = "tranquility",
@@ -708,6 +721,9 @@
 			[197721] = "Flourish", -- Flourish
 			[325727] = "adaptiveSwarm", -- Necrolord
 			[323764] = "convokeTheSpirits", -- Nightfae
+			[327071] = "kindredfocus", -- Kyrian 1
+			[327022] = "kindredempowerment", -- Kyrian 2
+			[327037] = "kindredprotection", -- Kyrian 3
 			
 			-- Hunter (Cast Success)
 			[147362] = "counterShot",
@@ -735,6 +751,8 @@
 			[308491] = "resonatingArrow", -- Kyrian
 			[257284] = "huntersMark",
 			[19577] = "intimidation", -- Intimidation
+			[324149] = "flayedshot", -- Venthyr
+			[328231] = "wildspirits", -- Nightfae
 			
 			-- Mage (Cast Success)
 			[2139] = "counterspell", 
@@ -777,7 +795,9 @@
 			--[205320] = "strikeOfTheWindlord",
 			[116844] = "ringOfPeace",
 			[202370] = "MightyOxKick",
-			[325216] = "bonedustbrew",
+			[325216] = "bonedustbrew", -- Necrolord
+			[327104] = "faelinestomp", -- Night Fae
+			[326860] = "fallenorder", -- Venthyr
 			
 			-- Paladin (Cast Success)
 			[96231] = "rebuke",
@@ -800,6 +820,8 @@
 			[328620] = "blessingofsummer",
 			[328622] = "blessingofautumn",
 			[328281] = "blessingofwinter",
+			[304971] = "divinetoll", -- Kyrian
+			[328204] = "vanquisherhammer", -- Necrolord
 			
 			-- Priest (Cast Success)
 			[8122] = "fear4", 		-- Psychic Scream
@@ -825,9 +847,9 @@
 			[32379] = "Premonition", -- Shadow Word: Death
 			[289657] = "holywordconcentration",
 			[316262] = "thoughtsteal",
-			[327661] = "faeGuardians",
-			[313347] = "mindGames",
-			[325013] = "boonoftheascended",
+			[327661] = "faeGuardians", -- Night Fae
+			[325013] = "boonoftheascended", -- Kyrian
+			[324724] = "unholynova", -- Necrolord
 
 			-- Rogue (Cast Success)
 			[2094] = "blind",
@@ -848,8 +870,11 @@
 			[13750] = "adrenalineRush",
 			[1784] = "stealth",
 			[206328] = "Neurotoxin", -- Neurotoxin Honor Talent
-			[328305] = "Sepsis", -- wow really blizzard
+			[328305] = "Sepsis",
 			[185311] = "crimsonVial",
+			[323547] = "echoingreprimand", -- Kyrian
+			[323654] = "flagellation", -- Venthyr
+			[328547] = "serratedbonespikes", -- Necrolord
 
 			-- Shaman (Cast Success)
 			[108281] = "ancestralGuidance",
@@ -861,6 +886,8 @@
 			[204437] = "lightningLasso",
 			[305483] = "lightningLasso", -- 8.2
 			[51490] = "thunderstorm",
+			[320125] = "echoingshock",
+			[326059] = "primordialwave", -- Necrolord
 			
 			-- Shaman (Totems)
 			[98008] = "spiritLinkTotem",
@@ -915,6 +942,7 @@
 			[199890] = "CurseOfTongues", -- Curse of Tongues
 			[80240] = "havoc",
 			[312321] = "scouringTithe",
+			[205179] = "phantomsingularity",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",
@@ -934,6 +962,8 @@
 			[6544] = "heroicLeap",
 			[206572] = "DragonCharge", -- Dragon Charge
 			[325886] = "ancientAftershock",
+			[324143] = "conquerorbanner", -- Necrolord
+			[307865] = "spearofbastion", -- Kyrian
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
 			[19647] = "lockout", -- Spell Lock
@@ -979,40 +1009,3 @@
 		},
 	}
 end
-
---[[@TODO
-Record sound:
-- fleshcraftDown
-- soulshapeDown
-- purifyPotion
-- licheborne
-- lichborneDown
-- darkPact
-- transfusion
-- transfusionDown
-- raiseAbomination
-- abominationLimb     (Should really change this to grabbyhands lol)
-- abominationLimbDown
-- sinfulBrand
-- ravenousFrenzy
-- ravenousFrenzyDown
-- heartOfTheWild
-- heartOfTheWildDown
-- resonatingArrow
-- huntersMark
-- scareBeast
-- alterTime
-- alterTimeDown
-- mirrorImage
-- mirrorsOfTorment
-- deathborne
-- deathborneDown
-- invokeSerpent
-- faeGuardians
-- boonOfTheAscended
-- mindGames
-- crimsonVial
-- manaTideTotem
-- vesperTotem
-- scouringTithe
-]]

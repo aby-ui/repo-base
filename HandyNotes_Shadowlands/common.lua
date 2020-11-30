@@ -8,7 +8,10 @@ local Group = ns.Group
 local L = ns.locale
 
 local Map = ns.Map
+
+local Pet = ns.reward.Pet
 local Reward = ns.reward.Reward
+local Toy = ns.reward.Toy
 
 -------------------------------------------------------------------------------
 
@@ -42,6 +45,69 @@ ns.addon:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED', function (...)
 end)
 
 -------------------------------------------------------------------------------
+------------------------------ CALLING TREASURES ------------------------------
+-------------------------------------------------------------------------------
+
+-- Add reward information to Blizzard's vignette treasures for callings
+
+local VIGNETTES = {
+    [4212] = {
+        Pet({item=180592, id=2901}) -- Trapped Stonefiend
+    }, -- Bleakwood Chest
+    [4214] = {
+        Toy({item=184418}) -- Acrobatic Steward
+    }, -- Gilded Chest
+    [4366] = {
+        Toy({item=184447}) -- Kevin's Party Supplies
+    }, -- Slime-Coated Crate
+
+    -- [4174] = {}, -- Secret Treasure
+    -- [4176] = {}, -- Secret Treasure
+    -- [4202] = {}, -- Spouting Growth
+    -- [4213] = {}, -- Enchanted Chest
+    -- [4222] = {}, -- Faerie Stash
+    -- [4224] = {}, -- Faerie Stash
+    -- [4225] = {}, -- Faerie Stash
+    -- [4238] = {}, -- Lunarlight Pod
+    -- [4243] = {}, -- Skyward Bell
+    -- [4244] = {}, -- Wish Cricket
+    -- [4263] = {}, -- Silver Strongbox
+    -- [4266] = {}, -- Silver Strongbox
+    -- [4270] = {}, -- Silver Strongbox
+    -- [4271] = {}, -- Silver Strongbox
+    -- [4274] = {}, -- Steward's Golden Chest
+    -- [4275] = {}, -- Skyward Bell
+    -- [4278] = {}, -- Hidden Hoard
+    -- [4308] = {}, -- Stoneborn Satchel
+    -- [4314] = {}, -- Pugilist's Prize
+    -- [4317] = {}, -- Pugilist's Prize
+    -- [4323] = {}, -- Stoneborn Satchel
+    -- [4324] = {}, -- Stoneborn Satchel
+    -- [4325] = {}, -- Stoneborn Satchel
+    -- [4327] = {}, -- Stoneborn Satchel
+    -- [4347] = {}, -- Greedstone
+    -- [4362] = {}, -- Spouting Growth
+    -- [4363] = {}, -- Spouting Growth
+    -- [4374] = {}, -- Runebound Coffer
+    -- [4375] = {}, -- Runebound Coffer
+}
+
+hooksecurefunc(GameTooltip, 'SetText', function(self)
+    local owner = self:GetOwner()
+    if owner and owner.vignetteID then
+        local rewards = VIGNETTES[owner.vignetteID]
+        if rewards and #rewards > 0 then
+            self:AddLine(' ') -- add blank line before rewards
+            for i, reward in ipairs(rewards) do
+                if reward:IsEnabled() then
+                    reward:Render(self)
+                end
+            end
+        end
+    end
+end)
+
+-------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------
 -------------------------------------------------------------------------------
 
@@ -70,6 +136,15 @@ function Reward:GetCategoryIcon()
     return self.covenant and ns.GetIconPath(self.covenant.icon)
 end
 
+function Reward:IsObtainable()
+    if self.covenant then
+        if self.covenant.id ~= C_Covenants.GetActiveCovenantID() then
+            return false
+        end
+    end
+    return true
+end
+
 -------------------------------------------------------------------------------
 ----------------------------------- GROUPS ------------------------------------
 -------------------------------------------------------------------------------
@@ -80,6 +155,8 @@ ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_wr')
 ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_wy')
 ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
+ns.groups.FAERIE_TALES = Group('faerie_tales', 355498, {defaults=ns.GROUP_HIDDEN})
+ns.groups.FUGITIVES = Group('fugitives', 236247, {defaults=ns.GROUP_HIDDEN})
 ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_b', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})

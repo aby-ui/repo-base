@@ -111,11 +111,8 @@
     <Include file="..\..\vBar\CfgvBar.lua"/>
     <Include file="..\..\wMarker\CfgwMarker.lua"/>
     <Include file="..\..\!KalielsTracker\Cfg!KalielsTracker.lua"/>
-    <Include file="..\..\AzeriteTooltip\CfgAzeriteTooltip.lua"/>
     <Include file="..\..\AbyBossGuide\CfgAbyBossGuide.lua"/>
-    <Include file="..\..\Paku_Totems\CfgPaku_Totems.lua"/>
     <Include file="..\..\ShadowedUnitFrames\CfgShadowedUnitFrames.lua"/>
-    <Include file="..\..\BFAInvasionTimer\CfgBFAInvasionTimer.lua"/>
     <Include file="..\..\MythicDungeonTools\CfgMythicDungeonTools.lua"/>
     <Include file="..\..\Details\CfgDetails.lua"/>
     <Include file="..\..\RareScanner\CfgRareScanner.lua"/>

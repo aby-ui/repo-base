@@ -130,4 +130,13 @@
             <OnMouseUp function="BonusObjectiveTracker_OnBlockClick" />
         </Scripts>
     </ScrollFrame>
+
+    <Frame name="KT_ObjectiveTrackerBlockIconTemplate" hidden="true" virtual="true">
+        <Size x="31" y="31"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon" setAllPoints="true"/>
+            </Layer>
+        </Layers>
+    </Frame>
 </Ui>

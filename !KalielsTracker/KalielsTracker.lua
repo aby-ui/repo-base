@@ -45,7 +45,8 @@ local UIParent = UIParent
 local trackerWidth = 280
 local paddingBottom = 15
 local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
-local questState = {}
+local questsCache = {}
+local freeIcons = {}
 local freeTags = {}
 local freeButtons = {}
 local msgPatterns = {}
@@ -108,6 +109,33 @@ local function Default_UpdateModuleInfoTables()
 			end
 		end
 	end
+end
+
+local function UpdateQuestsCache()
+	local numEntries = C_QuestLog.GetNumQuestLogEntries()
+	local headerTitle
+
+	for i = 1, numEntries do
+		local questInfo = C_QuestLog.GetInfo(i)
+		if not questInfo.isHidden then
+			if questInfo.isHeader then
+				headerTitle = questInfo.title
+			else
+				if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) then
+					if not questsCache[questInfo.questID] then
+						questsCache[questInfo.questID] = {
+							title = questInfo.title,
+							level = questInfo.level,
+							zone = headerTitle,
+							isCalling = C_QuestLog.IsQuestCalling(questInfo.questID)
+						}
+					end
+				end
+			end
+		end
+	end
+
+	KT.questsCache = questsCache
 end
 
 local function SetHeaders(type)
@@ -195,6 +223,33 @@ local function GetTaskTimeLeftData(questID)
 	return timeString, timeColor
 end
 
+local function GetBlockIcon(block)
+	local icon = block.icon
+	if not icon then
+		local numFreeIcons = #freeIcons
+		if numFreeIcons > 0 then
+			icon = freeIcons[numFreeIcons]
+			tremove(freeIcons, numFreeIcons)
+			icon:ClearAllPoints()
+		else
+			icon = CreateFrame("Frame", nil, OTF.BlocksFrame, "KT_ObjectiveTrackerBlockIconTemplate")
+		end
+		icon:SetPoint("TOPRIGHT", block.HeaderText, "TOPLEFT", 1, 8)
+		block.icon = icon
+	end
+	icon:Show()
+	return icon
+end
+
+local function RemoveBlockIcon(block)
+	local icon = block.icon
+	if icon then
+		tinsert(freeIcons, icon)
+		icon:Hide()
+		block.icon = nil
+	end
+end
+
 -- Setup ---------------------------------------------------------------------------------------------------------------
 
 local function Init()
@@ -216,12 +271,10 @@ local function Init()
 	KT.stopUpdate = false
 	KT.inWorld = true
 
-	if not dbChar.collapsed then
-		ObjectiveTracker_MinimizeButton_OnClick()
-	end
-
 	C_Timer.After(0, function()
-		ObjectiveTracker_MinimizeButton_OnClick()
+		if dbChar.collapsed then
+			ObjectiveTracker_MinimizeButton_OnClick()
+		end
 
 		KT:SetQuestsHeaderText()
 		KT:SetAchievsHeaderText()
@@ -257,7 +310,9 @@ local function SetFrames()
 			local id, added = ...
 			if id and not added then
 				if not KT.questStateStopUpdate then
-					questState[id] = nil
+					if questsCache[id] then
+						questsCache[id].state = nil
+					end
 				end
 				if KT.activeTasks[id] then
 					KT.activeTasks[id] = nil
@@ -295,11 +350,8 @@ local function SetFrames()
 			KTF.Scroll.value = 0
 		elseif event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" then
 			dbChar.quests.num = KT.GetNumQuests()
+			UpdateQuestsCache()
 			KT:SetQuestsHeaderText()
-		elseif event == "QUEST_POI_UPDATE" then
-			dbChar.quests.num = KT.GetNumQuests()
-			ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_QUEST)
-			self:UnregisterEvent(event)
 		elseif event == "ACHIEVEMENT_EARNED" then
 			KT:SetAchievsHeaderText()
 		elseif event == "PLAYER_REGEN_ENABLED" and combatLockdown then
@@ -323,6 +375,13 @@ local function SetFrames()
 			KT:prot(KTF, "Show")
 			KT:prot(KTF.Buttons, "Show")
 			KT.locked = false
+		elseif event == "QUEST_LOG_UPDATE" then
+			UpdateQuestsCache()
+			self:UnregisterEvent(event)
+		elseif event == "QUEST_POI_UPDATE" then
+			dbChar.quests.num = KT.GetNumQuests()
+			ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_QUEST)
+			self:UnregisterEvent(event)
 		end
 	end)
 	KTF:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -335,6 +394,7 @@ local function SetFrames()
 	KTF:RegisterEvent("QUEST_ACCEPTED")
 	KTF:RegisterEvent("QUEST_REMOVED")
 	KTF:RegisterEvent("QUEST_SESSION_JOINED")
+	KTF:RegisterEvent("QUEST_LOG_UPDATE")
 	KTF:RegisterEvent("QUEST_POI_UPDATE")
 	KTF:RegisterEvent("ACHIEVEMENT_EARNED")
 	KTF:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -443,6 +503,7 @@ local function SetFrames()
 	ScenarioBlocksFrame:SetWidth(243)
 	MawBuffs.List:SetParent(UIParent)
 	MawBuffs.List:SetFrameLevel(MawBuffs:GetFrameLevel() - 1)
+	MawBuffs.List:SetClampedToScreen(true)
 	HelpTip:Hide(MawBuffs, JAILERS_TOWER_BUFFS_TUTORIAL)
 
 	-- Other buttons
@@ -696,23 +757,23 @@ local function SetHooks()
 		block.currentLine = line;
 
 		-- completion state
-		if KT.inWorld and type(objectiveKey) == "string" then
+		if KT.inWorld and questsCache[block.id] and type(objectiveKey) == "string" then
 			if strfind(objectiveKey, "Complete") then
-				if not questState[block.id] or questState[block.id] ~= "complete" then
+				if not questsCache[block.id].state or questsCache[block.id].state ~= "complete" then
 					if db.messageQuest then
 						KT:SetMessage(block.title, 0, 1, 0, ERR_QUEST_COMPLETE_S, "Interface\\GossipFrame\\ActiveQuestIcon", -2, 0)
 					end
 					if db.soundQuest then
 						KT:PlaySound(db.soundQuestComplete)
 					end
-					questState[block.id] = "complete"
+					questsCache[block.id].state = "complete"
 				end
 			elseif strfind(objectiveKey, "Failed") then
-				if not questState[block.id] or questState[block.id] ~= "failed" then
+				if not questsCache[block.id].state or questsCache[block.id].state ~= "failed" then
 					if db.messageQuest then
 						KT:SetMessage(block.title, 1, 0, 0, ERR_QUEST_FAILED_S, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
 					end
-					questState[block.id] = "failed"
+					questsCache[block.id].state = "failed"
 				end
 			end
 		end
@@ -1143,6 +1204,15 @@ local function SetHooks()
 		block.questCompleted = isQuestComplete
 
 		QuestItemButton_Add(block, 3, 4)
+
+		if db.questShowZones and questsCache[questID] then
+			local zoneName = questsCache[questID].zone
+			local timeRemaining = GetTaskTimeLeftData(questID)
+			if timeRemaining ~= "" then
+				timeRemaining = " - "..timeRemaining
+			end
+			self:AddObjective(block, "Zone", zoneName..timeRemaining, nil, nil, OBJECTIVE_DASH_STYLE_HIDE, OBJECTIVE_TRACKER_COLOR["Zone"])
+		end
 	end
 
 	function QUEST_TRACKER_MODULE:OnFreeBlock(block)  -- R
@@ -1153,11 +1223,27 @@ local function SetHooks()
 
 			block.timerLine	= nil;
 			block.questCompleted = nil;
+			RemoveBlockIcon(block)
 		else
 			AutoQuestPopupTracker_OnFreeBlock(block);
 		end
 	end
 	CAMPAIGN_QUEST_TRACKER_MODULE.OnFreeBlock = QUEST_TRACKER_MODULE.OnFreeBlock
+
+	hooksecurefunc(QUEST_TRACKER_MODULE, "UpdatePOISingle", function(self, quest)
+		if quest:IsCalling() then
+			local questID = quest:GetID()
+			local block = self:GetExistingBlock(questID)
+			if block then
+				local covenantData = C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID())
+				if covenantData then
+					local covenantIcon = GetBlockIcon(block)
+					covenantIcon.Icon:SetAtlas("shadowlands-landingbutton-"..covenantData.textureKit.."-up")
+				end
+			end
+		end
+	end)
+	CAMPAIGN_QUEST_TRACKER_MODULE.UpdatePOISingle = QUEST_TRACKER_MODULE.UpdatePOISingle
 
 	hooksecurefunc(WORLD_QUEST_TRACKER_MODULE, "Update", function(self)
 		local block, questID
@@ -1864,14 +1950,6 @@ local function SetHooks()
 	-- Torghast
 	MawBuffs:HookScript("OnClick", function(self, button)
 		HelpTip:Acknowledge(UIParent, JAILERS_TOWER_BUFFS_TUTORIAL)
-		if self.List:IsShown() then
-			self.List:ClearAllPoints()
-			if KTF.anchorLeft then
-				self.List:SetPoint("TOPLEFT", self, "TOPRIGHT", 15, 1)
-			else
-				self.List:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 1)
-			end
-		end
 	end)
 
 	MawBuffs.List:SetScript("OnShow", function(self)  -- R
@@ -1881,6 +1959,13 @@ local function SetHooks()
 		self.button:SetButtonState("NORMAL")
 		self.button:SetPushedTextOffset(1.25, -1)
 		self.button:SetButtonState("PUSHED", true)
+
+		self:ClearAllPoints()
+		if KTF.anchorLeft then
+			self:SetPoint("TOPLEFT", self.button, "TOPRIGHT", 15, 1)
+		else
+			self:SetPoint("TOPRIGHT", self.button, "TOPLEFT", -5, 1)
+		end
 	end)
 
 	function MawBuffs:UpdateHelptip()  -- R

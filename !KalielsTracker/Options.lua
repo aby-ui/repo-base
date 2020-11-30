@@ -102,6 +102,7 @@ local defaults = {
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = true,
 		questShowTags = true,
+		questShowZones = true,
 
 		messageQuest = false,
 		messageAchievement = false,
@@ -1110,14 +1111,23 @@ local options = {
                         },
 						questShowTags = {
 							name = L"Show Quest tags",
-							desc = "Show / Hide Quest tags (quest level, quest type) inside the tracker and Quest Log.",
+							desc = "Show / Hide Quest tags (quest level, quest type) inside the tracker.",
 							type = "toggle",
 							set = function()
 								db.questShowTags = not db.questShowTags
 								ObjectiveTracker_Update()
-								QuestMapFrame_UpdateAll()
 							end,
 							order = 6.42,
+						},
+						questShowZones = {
+							name = "Show Quest Zones",
+							desc = "Show / Hide Quest Zones inside the tracker.",
+							type = "toggle",
+							set = function()
+								db.questShowZones = not db.questShowZones
+								ObjectiveTracker_Update()
+							end,
+							order = 6.43,
 						},
 						questAutoTrack = {
 							name = L"Auto Quest tracking",
@@ -1132,7 +1142,7 @@ local options = {
 								SetCVar("autoQuestWatch", value)
 								ReloadUI()
 							end,
-							order = 6.43,
+							order = 6.44,
 						},
 						questProgressAutoTrack = {
 							name = L"Auto Quest progress tracking",
@@ -1148,7 +1158,7 @@ local options = {
 								SetCVar("autoQuestProgress", value)
 								ReloadUI()
 							end,
-							order = 6.44,
+							order = 6.45,
 						},
 					},
 				},

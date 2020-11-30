@@ -16,10 +16,16 @@ L["anima_channeled"] = "靈魄連接到 %s"
 L["deifir_note"] = "騎上圈內的稀有並使用 {spell:319566} 和 {spell:319575} 使其減速和昏迷。"
 L["faeflayer_note"] = "瀑布後面隱藏的小洞穴內。"
 L["gormtamer_tizo_note"] = "擊殺 {npc:166735} 和 {npc:166736} 後騎著它們直到 {npc:164110} 刷新。"
-L["humongozz_note"] = "種植一個 {item:175247} 在潮濕的沃土將刷新 {npc:164122}。在一分鐘後 {spell:319367}，稀有將刷新。區域內的許多怪物都掉落蘑菇。"
+L["humongozz_note"] = "種植一個 {item:175247} 到潮濕的沃土後將刷新 {npc:164122}。在一分鐘後 {spell:319367}，稀有將刷新。區域內的許多怪物都會掉落蘑菇。"
 L["lehgo_note"] = "摧毀顫動的果姆蛋並擊殺 {npc:171827} 直到他出現。在洞穴內（入口在東南黃塵地穴內）"
-L["macabre_note"] = nil
-L["mymaen_note"] = "擊殺區域內的腐楠精靈直到他做出表情並出現。"
+L["macabre_note"] = [[
+有多個刷新點。要召喚稀有，含另外兩個其他玩家戰在神秘的蘑菇環上並且對彼此跳舞。
+
+• 玩家1對玩家2跳舞
+• 玩家2對玩家3跳舞
+• 玩家3對玩家1跳舞
+]]
+L["mymaen_note"] = "擊殺區域內的腐棘精靈直到他做出表情並出現。"
 L["rainbowhorn_note"] = "\n|cffff5400品|r|cffffaa00嘗|r|cffffff00絕|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9麗|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r"
 L["rootwrithe_note"] = "觸碰 {npc:167928} 直到稀有出現。"
 L["rotbriar_note"] = "和 {npc:171684} 交談對話後在附近召喚稀有。"
@@ -37,8 +43,12 @@ L["night_mare_note"] = [[
 ]]
 
 L["star_lake"] = "星湖劇場"
-L["star_lake_note"] = "與舞臺導演 {npc:171743} 交談，會開啟一場特殊的戰鬥"
-L["guldan"] = nil
+L["star_lake_note"] = [[
+與舞臺導演 {npc:171743} 交談，會開啟一場特殊的戰鬥。 戰鬥每天會變更。
+
+參加所有7個戰鬥會從 {npc:163714} 解鎖 {item:180748}。
+]]
+L["guldan"] = "古爾丹"
 
 L["cache_of_the_moon"] = "在黑夜花園收集 {npc:171360} 的五個遺失工具並組合它們以製造 {item:180753}。交給她工具包後會施放 {spell:334353} 給你，讓你可以看到寶箱"
 L["cache_of_the_night"] = "在整個區域收集 {item:180656}、{item:180654} 和 {item:180655} 組合它們製造 {item:180652}。"
@@ -67,11 +77,15 @@ L["tame_gladerunner"] = "馴服的巡林者"
 L["tame_gladerunner_note"] = [[
 閱讀樹上的 “密林傳奇” 並跟隨藍色的燈穿過小徑到達 {npc:171767}。擊殺他並拾取 {npc:171699}。
 
-如果你走錯路而且當你到終點時 {npc:171699} 已經消失了，返回開始的位置並再次閱讀 “密林傳奇” 來再次嘗試。如果 {npc:171767} 不在，你需要等待他刷新。
+如果你走錯路而且當你到終點時 {npc:171699} 已經消失了，返回開始的位置並再次閱讀 “密林傳奇” 來再次嘗試。如果 {npc:171767} 不在，你需要在此等待他刷新。
 ]]
 
 L["faryl_note"] = "讓天空中的生物來帶領亞登曠野的守軍吧。"
 L["glitterdust_note"] = "亞登曠野的生物或許看起來很溫馴，不過為了守護家園，他們願意拿出無與倫比的力量和勇氣。你也有這種覺悟嗎？"
+
+L["lost_book_note"] = nil
+L["options_icons_faerie_tales"] = "{achievement:14788}"
+L["options_icons_faerie_tales_desc"] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -86,7 +100,7 @@ L["beasts_of_bastion_note"] = "和 {npc:161441} 交談召喚四個野獸中的�
 L["bookkeeper_mnemis_note"] = "在此區有機率代替 {npc:166867} 單位刷新"
 L["cloudfeather_patriarch_note"] = "在此區擊殺 {npc:158110} 直到稀有做出表情和刷新"
 L["collector_astor_note"] = "閱讀散落在房間裡的全部六章 Mercia's Legacy，之後會收到來自 {npc:157979} 的悄悄話。和她交談會得到 {spell:333779}，讓你在西北方找到隱藏的 {item:180569}。交還章節將刷新稀有"
-L["corrupted_clawguard_note"] = "在煉火哨站山上拾取 {item:180651} 並使用它修理 {npc:171300}"
+L["corrupted_clawguard_note"] = "在房間或是在煉火哨站山上拾取 {item:180651} 並使用它修理 {npc:171300}"
 L["dark_watcher_note"] = "只在死亡後可以看到。和她交談會在攻擊之前對你施放 {spell:332830} "
 L["demi_hoarder_note"] = "剛開始時會有99層的 {spell:333874}，降低所承受的傷害。受到傷害後堆疊緩慢消失。稀有將沿著固定路徑移動，如果到達路徑終點則會消失"
 L["dionae_note"] = "當她變為免疫時，點選四個 {npc:163747} 來打破她的護盾"
@@ -117,7 +131,7 @@ L["vesper_of_silver_wind_note"] = "完成 {achievement:14339} 成就並和晉升
 L["gift_of_agthia"] = "點擊通往西北方斷橋的火炬並攜帶 {spell:333320} 從火炬到火炬直到到達寶箱。點亮最後的火炬你會受益 {spell:333063}。"
 L["gift_of_chyrus"] = "在寶箱前面跪下將被授予 {spell:333045}。"
 L["gift_of_devos"] = [[
-寶箱西南方一個火炬可以拾取獲得 {spell:333912}。上坐騎，參加戰鬥或受到傷害將火焰會掉落。必須回到寶箱並將火焰放在虔誠的火盆以獲取 {spell:333070}。
+寶箱西南方一個火炬可以拾取獲得 {spell:333912}。上坐騎，進入戰鬥或受到傷害時火焰會掉落。必須找到回到寶箱的路並將火焰放在虔誠的火盆以獲取 {spell:333070}。
 
 拾取火焰之前，清除寶箱前面的全部怪物。在運送火焰時，點擊任意路上的 {npc:156571} 獲得 {spell:335012} 負面效果提高移動速度。
 ]]
@@ -216,10 +230,11 @@ L["forgotten_mementos"] = "在寶藏西側的房間拖拽寶庫閘門之鏈打�
 L["gieger_note"] = "攻擊 {npc:162815} 後啟動稀有。"
 L["gristlebeak_note"] = "破壞附近的 {npc:162761} 後啟動稀有。"
 L["leeda_note"] = "擊殺兩個 {npc:162220} 單位後稀有刷新。"
-L["nirvaska_note"] = nil
+L["nirvaska_note"] = "只在世界任務 {wq:死亡宣告} 存在時啟動"
 L["sabriel_note"] = "可以作為苦痛劇場的冠軍之一出現。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破壞他的護盾。"
 L["taskmaster_xox_note"] = "與 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
+L["theater_of_pain_note"] = nil
 L["zargox_the_reborn_note"] = "使用 {item:175841} 位於 {npc:157124} 頂上。獲得寶珠，你必須完成 {npc:157076} 的任務 {quest:57245} 之後再與他交談。"
 L["mixed_pool_note"] = [[
 從周圍怪物收集材料並扔進池中。每30個材料，根據所使用的組合，將刷新七個稀有中的一個。
@@ -229,15 +244,17 @@ L["mixed_pool_note"] = [[
 • 從南側的 {npc:165015} 和 {npc:171142} 收集 {spell:306719}。
 
 • 從南側的 {npc:165027} 和 {npc:166438} 收集 {spell:306722}。
+
+殺死每個稀有一次來取得 {item:183903} 玩具。
 ]]
-L["Boneslurp"] = nil
-L["Corrupted"] = nil
+L["Boneslurp"] = "骨漿"
+L["Corrupted"] = "腐化的原質"
 L["Oily"] = "油膩的無脊生物"
-L["Pulsing"] = nil
+L["Pulsing"] = "脈動水蛭"
 L["Violet"] = "藍紫誤製品"
 
 L["blackhound_cache"] = "黑犬儲物箱"
-L["blackhound_cache_note"] = nil
+L["blackhound_cache_note"] = "在憎惡體工廠召喚 {npc:157843}，然後護送他到黑犬崗哨。"
 L["bladesworn_supply_cache"] = "刃誓補給箱"
 L["cache_of_eyes"] = "蛛眼寶箱"
 L["cache_of_eyes_note"] = "在盲目要塞有多個刷新點。"
@@ -335,7 +352,7 @@ L["lost_quill_note"] = "從禁忌圖書館的桌上瓶子拾取 {item:182475}，
 L["rapier_fearless_note"] = "點擊地上的劍杆，然後擊敗 {npc:173603}。"
 L["remlates_cache_note"] = "在暗隱村墓穴後面的外牆上。"
 L["smuggled_cache_note"] = ns.color.Red("*在拾取之前*：").."請確認已完成 {quest:60480} 支線任務否則寶藏和任務將缺少40個 {currency:1820}。"
-L["taskmaster_trove_note"] = "閱讀Ingress and Egress Rites然後小心地走到寶箱。"
+L["taskmaster_trove_note"] = '閱讀"出入口儀式"然後小心地閃過球走到寶箱。'
 L["the_count_note"] = "在歿路沼澤農99個 {currency:1820} 然後把它帶給 {npc:173488}。"
 
 L["forgotten_anglers_rod"] = "被遺忘的漁翁之竿"
@@ -361,6 +378,12 @@ L["addius_note"] = "意志軟弱的傢伙不該浪費我的時間，不過，要
 L["eyegor_note"] = "埃格準備好戰鬥了！"
 L["sylla_note"] = "誰也想不到居然能在這種糟糕的地方展開這麼特別的戰鬥，但人算不如天算。不要浪費我的時間。"
 
+L["avowed_ritualist_note"] = nil
+L["fugitive_soul_note"] = nil
+L["souls_absolved"] = nil
+L["options_icons_fugitives"] = "{achievement:14274}"
+L["options_icons_fugitives_desc"] = nil
+
 L["grand_inquisitor_note"] = "把10個 {item:180451} 交給 {npc:160248} 有機會獲得此罪孽石。"
 L["high_inquisitor_note"] = "把250個 {currency:1816} 交給 {npc:160248} 有機會獲得此罪孽石。"
 L["inquisitor_note"] = "把100個 {currency:1816} 交給 {npc:160248} 有機會獲得此罪孽石。"
@@ -376,6 +399,7 @@ L["maw_intro_note"] = "從 {npc:162804} 開始指引任務線以解鎖淵喉的�
 
 L["apholeias_note"] = "和3名其他玩家，站在平臺的角落並施放 {spell:331783} 召喚稀有。"
 L["dekaris_note"] = "在一個大型的突出岩石上。"
+L["drifting_sorrow_note"] = "在懸浮寶珠附近殺死 {npc:175246} 來啟動首領。"
 L["ekphoras_note"] = "和3名其他玩家，站在平臺的角落並施放 {spell:330650} 召喚稀有。"
 L["ikras_note"] = "環繞墮滅堡飛行。這是個攻擊他的好位置。"
 L["orophea_note"] = "從東南方的拾取 {spell:337143} 並提供給 {npc:172577} 啟動。"
@@ -400,7 +424,7 @@ L["obliterated_soul_shards_note"] = "在橋上收集 {item:177834}。"
 L["chaotic_riftstone_note"] = [[
 啟動 {spell:344157} 快速穿過淵喉。
 
-需要從 {npc:162804} 升級 {item:184613}。
+需要從 {npc:162804} 取得 {item:184613} 用來升級。
 ]]
 L["venari_note"] = "使用 {currency:1767} 購買淵喉和托迦司升級。"
 L["venari_upgrade"] = "{npc:162804} 升級"

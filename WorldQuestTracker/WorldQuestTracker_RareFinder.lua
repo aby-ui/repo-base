@@ -635,7 +635,7 @@ rf:SetScript ("OnEvent", function (self, event, ...)
 				end
 				
 				--> ask to leave the group
-				if (ff.QuestName2Text.text == alvo_name and IsInGroup()) then
+				if (ff.CurrentQuestName == alvo_name and IsInGroup()) then
 					ff.WorldQuestFinished (0, true)
 				end
 				

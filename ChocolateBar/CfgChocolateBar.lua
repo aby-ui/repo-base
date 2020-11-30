@@ -9,6 +9,7 @@ local get_ChocolateBar = function()
 end
 
 local L = setmetatable({
+    ["MicroMenu"] = "延迟与菜单", ["MoreChocolate"] = "更多信息条", ["GLPMMB"] = "随从任务",
 }, {__index = function(t, k)
     local addon_title = U1GetAddonInfo(k) and U1GetAddonTitle(k)
     t[k] = addon_title and addon_title:gsub("数据源：", "") or k
@@ -189,7 +190,8 @@ U1RegisterAddon('Broker_Group', {title = '数据源：组队与掷骰', parent =
 U1RegisterAddon('Broker_Raidsave', {title = '数据源：副本进度', parent = 'ChocolateBar'})
 U1RegisterAddon('Broker_DurabilityInfo', {title = '数据源：装备耐久', parent = 'ChocolateBar'})
 U1RegisterAddon('Broker_Equipment', {title = '数据源：套装管理', parent = 'ChocolateBar'})
-U1RegisterAddon('Broker_MicroMenu', {title = '数据源：延迟帧数及菜单', parent = 'ChocolateBar', defaultEnable = 0 })
+U1RegisterAddon('Broker_LootSpec', {title = '数据源：拾取与专精', parent = 'ChocolateBar' })
+U1RegisterAddon('Broker_MicroMenu', {title = '数据源：延迟与菜单', parent = 'ChocolateBar', defaultEnable = 0 })
 U1RegisterAddon('Broker_Currency', {title = '数据源：金钱货币显示', parent = 'ChocolateBar',
     {
         text = "选择显示货币",

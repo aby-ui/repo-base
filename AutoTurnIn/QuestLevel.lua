@@ -24,12 +24,14 @@ function AutoTurnIn:ShowQuestLevelInLog()
 	end	
 
 	for button in QuestMapFrame.QuestsFrame.titleFramePool:EnumerateActive() do
+        if button and button.Text then button.Text:SetWordWrap(true) end --abyui
 		if (button and button.questLogIndex) then
 			local questInfo = C_QuestLog.GetInfo(button.questLogIndex)
 			local text = button.Text:GetText()
 			if questInfo.title and text and (not string.find(text, "^%[.*%].*")) then
 				local prevHeight = button:GetHeight() - button.Text:GetHeight()
 				button.Text:SetText(AutoTurnIn.QuestLevelFormat:format(questInfo.level, questInfo.title))
+                button.Text:SetWordWrap(false) --abyui
 				button:SetHeight(prevHeight + button.Text:GetHeight())
 				-- replacind checkbox image to the new position
 				button.Check:SetPoint("LEFT", button.Text, button.Text:GetWrappedWidth() + 2, 0);

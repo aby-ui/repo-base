@@ -26,7 +26,7 @@ lib.protectedActions = {}
 
 local function protRunStoredActions()
     while #lib.protectedActions > 0 do
-        if lib.combatLockdown then break end
+        if lib.combatLockdown or InCombatLockdown() then break end
         local func, params = unpack(lib.protectedActions[1])
         func(unpack(params))
         tremove(lib.protectedActions, 1)
@@ -48,7 +48,7 @@ function lib:prot(object, method, ...)
         isProtected = region:IsProtected()
     end
 
-    if lib.combatLockdown and isProtected then
+    if (lib.combatLockdown or InCombatLockdown()) and isProtected then
         tinsert(lib.protectedActions, { func, params })
     else
         func(unpack(params))

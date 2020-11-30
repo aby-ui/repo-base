@@ -7,6 +7,7 @@ local Class = ns.Class
 local Map = ns.Map
 local L = ns.locale
 
+local Collectible = ns.node.Collectible
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
 local Treasure = ns.node.Treasure
@@ -125,7 +126,7 @@ map.nodes[67465147] = Rare({
 
 local MACABRE = Rare({
     id=164093,
-    quest=nil,
+    quest=59140,
     note=L["macabre_note"],
     rewards={
         Achievement({id=14309, criteria=48780}),
@@ -586,3 +587,88 @@ map.nodes[58205690] = PetBattle({
         Achievement({id=14877, criteria=10, oneline=true}), -- Undead
     }
 }) -- Glitterdust
+
+-------------------------------------------------------------------------------
+---------------------------- FRACTURED FAIRY TALES ----------------------------
+-------------------------------------------------------------------------------
+
+local Tale = Class('Tale', Collectible, {
+    icon=355498,
+    note=L["lost_book_note"],
+    group=ns.groups.FAERIE_TALES,
+    pois={
+        POI({63622274}) -- Archivist Dreyden
+    },
+    IsCollected = function (self)
+        if ns.PlayerHasItem(self.rewards[2].item) then return true end
+        return Collectible.IsCollected(self)
+    end
+})
+
+local MEANDERING = Tale({
+    id=174721,
+    rewards={
+        Achievement({id=14788, criteria=50012}),
+        Item({item=183877, quest=62619})
+    },
+    pois={
+        Path({
+            53054452, 53544400, 54204350, 54674267, 54974164, 55444087,
+            56044040, 56684009, 57253957, 57573871, 58013798, 58603759,
+            58913716
+        })
+    }
+}) -- A Meandering Story
+
+local WANDERING = Tale({
+    id=174723,
+    rewards={
+        Achievement({id=14788, criteria=50013}),
+        Item({item=183878, quest=62620})
+    }
+}) -- A Wandering Tale
+
+local ESCAPIST = Tale({
+    id=174724,
+    rewards={
+        Achievement({id=14788, criteria=50014}),
+        Item({item=183879, quest=62621})
+    }
+}) -- An Escapist Novel
+
+local JOURNAL = Tale({
+    id=174725,
+    rewards={
+        Achievement({id=14788, criteria=50015}),
+        Item({item=183880, quest=62622})
+    }
+}) -- A Travel Journal
+
+local NAUGHTY = Tale({
+    id=174726,
+    rewards={
+        Achievement({id=14788, criteria=50016}),
+        Item({item=183881, quest=62623})
+    }
+}) -- A Naughty Story
+
+map.nodes[56044040] = MEANDERING
+
+map.nodes[30004480] = WANDERING
+map.nodes[35602680] = WANDERING
+map.nodes[36404800] = WANDERING
+map.nodes[37894005] = WANDERING
+
+map.nodes[32603160] = ESCAPIST
+map.nodes[40004460] = ESCAPIST
+map.nodes[40602760] = ESCAPIST
+map.nodes[40944230] = ESCAPIST
+
+map.nodes[40094168] = JOURNAL
+map.nodes[49664016] = JOURNAL
+map.nodes[50202500] = JOURNAL
+map.nodes[50174187] = JOURNAL
+
+map.nodes[33605740] = NAUGHTY
+map.nodes[39806560] = NAUGHTY
+map.nodes[51005480] = NAUGHTY

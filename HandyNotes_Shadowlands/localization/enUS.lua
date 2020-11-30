@@ -83,6 +83,10 @@ If you take a wrong path and {npc:171699} disappears when you reach the end, go 
 L["faryl_note"] = "Let Ardenweald's defense be lead by the creatures in the sky."
 L["glitterdust_note"] = "The creatures of Ardenweald may look docile, but they will defend their territory with the strength and courage of the mightiest champions ever known. Do you have what it takes?"
 
+L["lost_book_note"] = "Return this lost book to {npc:165867} in the Grove of Memory."
+L["options_icons_faerie_tales"] = "{achievement:14788}"
+L["options_icons_faerie_tales_desc"] = "Display lost book locations for the {achievement:14788} achievement."
+
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ L["beasts_of_bastion_note"] = "Talk to {npc:161441} to summon one of the four be
 L["bookkeeper_mnemis_note"] = "Has a chance to spawn in place of the {npc:166867} units in the area."
 L["cloudfeather_patriarch_note"] = "Kill {npc:158110s} in the area until the guardian engages you."
 L["collector_astor_note"] = "Read all six chapters of Mercia's Legacy scattered around the room, after which you will receive a whisper from {npc:157979}. Talk to her to receive {spell:333779}, allowing you to find the hidden {item:180569} to the northwest. Returning the chapter will spawn the rare."
-L["corrupted_clawguard_note"] = "Loot a {item:180651} in Forgefire Outpost up the hill and use it to repair the {npc:171300}."
+L["corrupted_clawguard_note"] = "Loot a {item:180651} in the room or in Forgefire Outpost up the hill and use it to repair the {npc:171300}."
 L["dark_watcher_note"] = "Can only be seen while dead. Talk to her and she will cast {spell:332830} on you before attacking."
 L["demi_hoarder_note"] = "Starts with 99 stacks of {spell:333874}, reducing damage taken. Stacks are slowly removed with damage. The rare will follow a path and despawn if it reaches the end."
 L["dionae_note"] = "When she becomes immune, click the four {npc:163747} to break her shield."
@@ -230,6 +234,7 @@ L["nirvaska_note"] = "Only appears when the {wq:Deadly Reminder} world quest is 
 L["sabriel_note"] = "Can appear as one of the champions in the Theater of Pain."
 L["schmitd_note"] = "Use nearby {spell:313451} to break his shield."
 L["taskmaster_xox_note"] = "Shares a spawn with {npc:160204}, {npc:160230} and {npc:160226}."
+L["theater_of_pain_note"] = "Your first boss kill each day has a chance to drop the mount."
 L["zargox_the_reborn_note"] = "Use {item:175841} on top of the {npc:157124}. To obtain the orb, you must complete the quest {quest:57245} from {npc:157076} and talk to him again."
 L["mixed_pool_note"] = [[
 Gather ingredients from the surrounding mobs and toss them into the pool. Once 30 ingredients have been added, one of seven rares will spawn depending on the combination used.
@@ -373,6 +378,12 @@ L["addius_note"] = "Weak minded beings should not waste my time, but if you insi
 L["eyegor_note"] = "Eyegor ready for battle!"
 L["sylla_note"] = "One can never expect to have a distinguished battle out here in this awful area, but alas here we are. Do not waste my time."
 
+L["avowed_ritualist_note"] = "Bring nearby {npc:160149s} here to absolve them."
+L["fugitive_soul_note"] = "Bring this {npc:160149} to a nearby {npc:166150} to begin a ritual of absolution."
+L["souls_absolved"] = "souls absolved"
+L["options_icons_fugitives"] = "{achievement:14274}"
+L["options_icons_fugitives_desc"] = "Display fugitive soul locations for the {achievement:14274} achievement."
+
 L["grand_inquisitor_note"] = "Turn in 10 {item:180451} to {npc:160248} for a chance at this sinstone."
 L["high_inquisitor_note"] = "Turn in 250 {currency:1816} to {npc:160248} for a chance at this sinstone."
 L["inquisitor_note"] = "Turn in 100 {currency:1816} to {npc:160248} for a chance at this sinstone."
@@ -388,6 +399,7 @@ L["maw_intro_note"] = "Begin the introductory quest chain from {npc:162804} to u
 
 L["apholeias_note"] = "With 3 other players, stand on the corners of the platform and cast {spell:331783} to summon the rare."
 L["dekaris_note"] = "On top of a large jutting rock."
+L["drifting_sorrow_note"] = "Kill {npc:175246s} near the hovering orb to activate the boss."
 L["ekphoras_note"] = "With 3 other players, stand on the corners of the platform and cast {spell:330650} to summon the rare."
 L["ikras_note"] = "Flies around Perdition Hold. This is a good place to pull him."
 L["orophea_note"] = "Pick up {spell:337143} to the southeast and offer it to {npc:172577} to activate."

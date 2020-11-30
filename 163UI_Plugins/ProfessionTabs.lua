@@ -158,12 +158,15 @@ local function UpdateTab(object, name, rank, texture)
 	local tab = tabs[object][index] or CreateFrame("CheckButton", nil, object, "SpellBookSkillLineTabTemplate SecureActionButtonTemplate") 
 	
 	tab:ClearAllPoints()
-	tab:SetPoint("TOPLEFT", object, "TOPRIGHT", object == ATSWFrame and -32 or 0, 16 + -44 * index)
+    local anchor = object --abyui
+    anchor = anchor == TradeSkillFrame and TradeSkillFrame.OptionalReagentList and TradeSkillFrame.OptionalReagentList:IsShown() and TradeSkillFrame.OptionalReagentList or anchor
+    anchor = anchor == TradeFrame and RecentTradeFrame and RecentTradeFrame:IsShown() and RecentTradeFrame or anchor
+	tab:SetPoint("TOPLEFT", anchor, "TOPRIGHT", anchor == ATSWFrame and -32 or 0, 16 + -44 * index)
 	tab:SetNormalTexture(texture)
 	tab:SetAttribute("type", "spell")
 	tab:SetAttribute("spell", name)
 	tab:Show()
-	
+
 	tab.name = name
 	tab.tooltip = rank and rank ~= "" and format("%s (%s)", name, rank) or name
 	
@@ -237,8 +240,14 @@ function handler:TRADE_SKILL_SHOW(event)
 		self:UnregisterEvent(event)
 	else
 		HandleTabs(owner)
-		self[event] = function() for object in next, tabs do UpdateSelectedTabs(object) end end
-	end
+		self[event] = function() HandleTabs(owner) for object in next, tabs do UpdateSelectedTabs(object) end end
+		--abyui
+        if TradeSkillFrame and TradeSkillFrame.DetailsFrame and TradeSkillFrame.OptionalReagentList then
+            hooksecurefunc(TradeSkillFrame.DetailsFrame, "RefreshDisplay", function()
+                self[event]()
+            end)
+        end
+    end
 end
 
 function handler:TRADE_SKILL_CLOSE(event)
@@ -251,9 +260,17 @@ end
 
 function handler:TRADE_SHOW(event)
 	local owner = TradeFrame
-	
-	HandleTabs(owner)
-	self[event] = function() UpdateSelectedTabs(owner) end
+
+    if RunOnNextFrame then --abyui
+        RunOnNextFrame(function()
+            print(333)
+            HandleTabs(owner)
+            UpdateSelectedTabs(owner)
+        end)
+    else
+        HandleTabs(owner)
+	    self[event] = function() UpdateSelectedTabs(owner) end
+    end
 end
 
 function handler:PLAYER_REGEN_ENABLED(event)

@@ -331,6 +331,9 @@ function M:Update(id)
 					if distSqr and distSqr <= minDistSqr then
 						minDistSqr = distSqr
 						closestQuestID = questID
+					elseif questID == C_SuperTrack.GetSuperTrackedQuestID() then
+						closestQuestID = questID
+						break
 					end
 				end
 			end

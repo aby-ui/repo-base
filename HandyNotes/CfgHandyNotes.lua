@@ -148,7 +148,9 @@ U1RegisterAddon("HandyNotes_DraenorTreasures", {
 U1RegisterAddon("HandyNotes_HallowsEnd", { title = "万圣节糖罐位置", defaultEnable = 1, load = "LATER", })
 U1RegisterAddon("HandyNotes_SummerFestival", { title = "仲夏节篝火位置", defaultEnable = 1, load = "LATER", })
 U1RegisterAddon("HandyNotes_LunarFestival", { title = "春节长者位置", defaultEnable = 1, load = "LATER", })
-U1RegisterAddon("HandyNotes_DungeonLocations", { title = "老地图副本入口", defaultEnable = 1, load = "LATER",})
+U1RegisterAddon("HandyNotes_DungeonLocations", { title = "大地图副本入口", defaultEnable = 1, load = "LATER",})
+U1RegisterAddon("HandyNotes_CovenantSanctum", { title = "暗影国度-盟约圣所", defaultEnable = 1, load = "LATER",})
+U1RegisterAddon("HandyNotes_Oribos", { title = "暗影国度-奥利波斯", defaultEnable = 1, load = "LATER",})
 
 --[[
 U1RegisterAddon("HandyNotes_VisionsOfNZoth", { title = "恩佐斯幻象(8.3)", defaultEnable = 1, load = "LATER", });

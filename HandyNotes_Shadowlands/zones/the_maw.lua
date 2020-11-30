@@ -72,6 +72,7 @@ map.nodes[19324172] = Rare({
     note=L["apholeias_note"],
     rewards={
         Achievement({id=14744, criteria=49842}),
+        Item({item=184106, note=L["ring"]}), -- Gimble
         Item({item=182327}) -- Dominion Etching: Loss
     }
 }) -- Apholeias, Herald of Loss
@@ -152,6 +153,7 @@ map.nodes[20586935] = Rare({
     note=L["exos_note"],
     rewards={
         Achievement({id=14744, criteria=49851}),
+        Item({item=184108, note=L["neck"]}) -- Vorpal Amulet
     }
 }) -- Exos, Herald of Domination
 
@@ -307,13 +309,15 @@ map.nodes[19205740] = BonusBoss({
     rewards={
         Achievement({id=14660, criteria=50410}),
         Item({item=183066, quest=63160}), -- Korrath's Grimoire: Aleketh
-        Item({item=183067, quest=63161}) -- Korrath's Grimoire: Belidir
+        Item({item=183067, quest=63161}), -- Korrath's Grimoire: Belidir
+        Item({item=183068, quest=63162}) -- Korrath's Grimoire: Gyadrek
     }
 }) -- Dath Rezara <Lord of Blades>
 
 map.nodes[31982122] = BonusBoss({
     id=158314,
     quest=59183,
+    note=L["drifting_sorrow_note"],
     rewards={
         Achievement({id=14660, criteria=49475}),
     }

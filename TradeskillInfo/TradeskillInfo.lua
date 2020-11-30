@@ -485,7 +485,9 @@ function TradeskillInfo:TradeSkillFrame_SetSelection(id)
 		local numReagents = C_TradeSkillUI.GetRecipeNumReagents(TradeSkillFrame.DetailsFrame.selectedRecipeID)
 
 		if numReagents > 0 then
+            if not TradeSkillFrame.DetailsFrame.Contents.SourceText:IsShown() then --abyui
 			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.Reagents[numReagents], "BOTTOM", 0, -15)
+            end
 		else
 			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.ReagentLabel, "TOP")
 		end

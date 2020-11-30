@@ -2384,7 +2384,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					--check if is showing a zone map
 					if (WorldQuestTracker.GetCurrentZoneType() == "zone") then
 						local mapId = WorldQuestTracker.MapData.FactionMapId[worldSummary.FactionSelected]
-						print ("faction ID:", worldSummary.FactionSelected)
+						--print ("faction ID:", worldSummary.FactionSelected)
 						if (mapId) then
 							--change the map to faction map
 							WorldMapFrame:SetMapID(mapId)
@@ -4436,8 +4436,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			local resource_PetText = DF:CreateLabel (resource_PetFrame, "", ResourceFontTemplate)
 			
 			resource_APowerIcon:SetPoint ("right", resource_APowerText, "left", -2, 0)
+
 			resource_ResourcesText:SetPoint ("right", resource_APowerIcon, "left", -10, 0)
 			resource_ResourcesIcon:SetPoint ("right", resource_ResourcesText, "left", -2, 0)
+
 			resource_GoldText:SetPoint ("right", resource_ResourcesIcon, "left", -10, 0)
 			resource_GoldIcon:SetPoint ("right", resource_GoldText, "left", -2, 0)
 			
@@ -4446,7 +4448,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			resource_PetText.text = 996
 
-			WorldQuestTracker.IndicatorsAnchor = resource_APowerText
+			WorldQuestTracker.IndicatorsAnchor = resource_APowerText --ANCHOR
+
 			WorldQuestTracker.WorldMap_GoldIndicator = resource_GoldText
 			WorldQuestTracker.WorldMap_ResourceIndicator = resource_ResourcesText
 			WorldQuestTracker.WorldMap_APowerIndicator = resource_APowerText
@@ -4690,9 +4693,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							widget.FactionPulseAnimation:Play()
 						end
 					end
-					
 				end
-
 			end
 			
 			local indicatorsAnimationOnLeave = function (self, questType)

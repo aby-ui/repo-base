@@ -1,16 +1,16 @@
 ﻿local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201128021118")
+mod:SetRevision("20201130022809")
 
 mod:RegisterCombat("scenario", 2162)
 mod.noStatistics = true
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528",
-	"SPELL_AURA_APPLIED 304093",
+	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608",
+	"SPELL_AURA_APPLIED 304093 277040",
 	"SPELL_AURA_APPLIED_DOSE 303678",
---	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_REMOVED 277040",
 --	"SPELL_CAST_SUCCESS",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
@@ -54,14 +54,16 @@ local specWarnFearsomeHowl			= mod:NewSpecialWarningInterrupt(298844, "HasInterr
 local specWarnAccursedStrength		= mod:NewSpecialWarningInterrupt(294165, "HasInterrupt", nil, nil, 1, 2)
 local specWarnWitheringRoar			= mod:NewSpecialWarningInterrupt(330118, "HasInterrupt", nil, nil, 1, 2)
 local specWarnInnerFlames			= mod:NewSpecialWarningInterrupt(258935, "HasInterrupt", nil, nil, 1, 2)
+local specWarnSoulofMist			= mod:NewSpecialWarningInterrupt(277040, "HasInterrupt", nil, nil, 1, 2)
+local specWarnSoulofMistDispel		= mod:NewSpecialWarningDispel(277040, "MagicDispeller", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 
 local timerInfernoCD				= mod:NewCDTimer(21.9, 335528, nil, nil, nil, 3)--21.9-23.1
-local timerWitheringRoarCD			= mod:NewCDTimer(21.5, 330118, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--15.8-19.5
+--local timerWitheringRoarCD			= mod:NewCDTimer(21.5, 330118, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--15.8-19.5
 local timerGroundCrushCD			= mod:NewNextTimer(23.1, 295985, nil, nil, nil, 3)--Seems precise, at least when used by The Grand Malleare
 
 --mod:AddInfoFrameOption(307831, true)
---mod:AddNamePlateOption("NPAuraOnHorrifyingShout", 305378)
+mod:AddNamePlateOption("NPAuraOnSoulofMist", 277040)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 GTFO, 7 misc
 --local playerName = UnitName("player")
@@ -78,9 +80,9 @@ end
 
 function mod:OnCombatStart(delay)
 	table.wipe(warnedGUIDs)
---	if self.Options.NPAuraOnAbyss then
---		DBM:FireEvent("BossMod_EnableHostileNameplates")
---	end
+	if self.Options.NPAuraOnSoulofMist then
+		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
 --		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, 2)--Sorting lowest to highest
@@ -92,13 +94,14 @@ function mod:OnCombatEnd()
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:Hide()
 --	end
---	if self.Options.NPAuraOnAbyss then
---		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)--isGUID, unit, spellId, texture, force, isHostile, isFriendly
---	end
+	if self.Options.NPAuraOnSoulofMist then
+		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)--isGUID, unit, spellId, texture, force, isHostile, isFriendly
+	end
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
+	if not self:IsValidWarning(args.sourceGUID, nil, true) then return end--Filter all casts done by mobs in combat with npcs/other mobs.
 	if spellId == 292903 and self:AntiSpam(3, 2) then
 		specWarnMassiveStrike:Show()
 		specWarnMassiveStrike:Play("shockwave")
@@ -151,7 +154,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 270348 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFireballVolley:Show(args.sourceName)
 		specWarnFireballVolley:Play("kickcast")
-	elseif spellId == 263085 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+	elseif (spellId == 329608 or spellId == 263085) and self:CheckInterruptFilter(args.sourceGUID, false, true) then--329608 might not be interruptable, if it's not I may treat it differently. For now, it's good filter testing
 		specWarnTerrifyingRoar:Show(args.sourceName)
 		specWarnTerrifyingRoar:Play("kickcast")
 	elseif spellId == 294526 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
@@ -160,12 +163,15 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 294165 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnAccursedStrength:Show(args.sourceName)
 		specWarnAccursedStrength:Play("kickcast")
+	elseif spellId == 277040 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnSoulofMist:Show(args.sourceName)
+		specWarnSoulofMist:Play("kickcast")
 	elseif spellId == 330118 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnWitheringRoar:Show(args.sourceName)
 			specWarnWitheringRoar:Play("kickcast")
 		end
-		timerWitheringRoarCD:Start(nil, args.sourceGUID)
+--		timerWitheringRoarCD:Start(nil, args.sourceGUID)
 	elseif spellId == 258935 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnInnerFlames:Show(args.sourceName)
 		specWarnInnerFlames:Play("kickcast")
@@ -192,24 +198,34 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBoneShrapnel:Show(amount)
 			specWarnBoneShrapnel:Play("stackhigh")
 		end
-	elseif spellId == 304093 and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+	elseif spellId == 304093 and self:IsValidWarning(args.destGUID) and args:IsDestTypePlayer() and self:CheckDispelFilter() then
 		specWarnMassCripple:CombinedShow(0.5, args.destName)
 		specWarnMassCripple:ScheduleVoice(0.5, "helpdispel")
-	elseif spellId == 294526 and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+	elseif spellId == 294526 and self:IsValidWarning(args.destGUID) and args:IsDestTypePlayer() and self:CheckDispelFilter() then
 		specWarnCurseofFrailtyDispel:CombinedShow(0.5, args.destName)
 		specWarnCurseofFrailtyDispel:ScheduleVoice(0.5, "helpdispel")
+	elseif spellId == 277040 then
+		if self:IsValidWarning(args.destGUID) and args:IsDestTypeHostile() and self:AntiSpam(3, 5) then
+			specWarnSoulofMistDispel:Show(args.destName)
+			specWarnSoulofMistDispel:Play("helpdispel")
+		end
+		if self.Options.NPAuraOnSoulofMist then
+			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 9)
+		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
---[[
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 298033 then
-
+	if spellId == 277040 then
+		if self.Options.NPAuraOnSoulofMist then
+			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
+		end
 	end
 end
 
+--[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if (spellId == 303594 or spellId == 313303) and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
 		specWarnGTFO:Show(spellName)
@@ -220,7 +236,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:SPELL_INTERRUPT(args)
 	if type(args.extraSpellId) == "number" and args.extraSpellId == 298033 then
-		if self.Options.NPAuraOnAbyss then
+		if self.Options.NPAuraOnSoulofMist then
 			DBM.Nameplate:Hide(true, args.destGUID, 298033)
 		end
 	end
@@ -231,7 +247,7 @@ function mod:UNIT_DIED(args)
 --	local cid = self:GetCIDFromGUID(args.destGUID)
 	--not very efficient to stop all timers when ANYTHING in entire zone dies, but too many mobs have cross overs of these abilities
 	timerInfernoCD:Stop(args.destGUID)
-	timerWitheringRoarCD:Stop(args.destGUID)
+--	timerWitheringRoarCD:Stop(args.destGUID)
 	timerGroundCrushCD:Stop(args.destGUID)
 end
 

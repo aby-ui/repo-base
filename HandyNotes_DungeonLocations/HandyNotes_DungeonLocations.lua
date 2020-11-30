@@ -2,7 +2,7 @@ local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes", true)
 if not HandyNotes then return end
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes_DungeonLocations")
 
-icons = { }
+local icons = { }
 icons["Dungeon"] = "Interface\\MINIMAP\\Dungeon"
 icons["Raid"] = "Interface\\MINIMAP\\Raid"
 icons["Mixed"] = "Interface\\Addons\\HandyNotes_DungeonLocations\\merged.tga"
@@ -1950,6 +1950,43 @@ nodes[1161][71961540] = {
 		 type = "Dungeon",
 		} -- Siege of Boralus
 --	end ]]--
+end
+
+--[[ abyui
+local maps = {1525, 1533, 1536, 1543, 1565, }
+local nodes = {}
+for _, id in ipairs(maps) do
+    WorldMapFrame:SetMapID(id)
+    for pin in WorldMapFrame:EnumeratePinsByTemplate("DungeonEntrancePinTemplate") do
+        nodes[id] = nodes[id] or {}
+        local pos = format("%d%d", pin.normalizedX * 10000, pin.normalizedY * 10000))
+        local instanceId = pin.journalInstanceID
+        local type = pin.description == "地下城" and "Dungeon" or "Raid"
+        nodes[id][pos] = { id = instanceId, type = type, name = pin.name }
+    end
+end
+wowluacopy(nodes)
+ ]]
+if (not self.db.profile.hideSL) then --dump WorldMapFrame.mapID
+    local sl = {
+        [1525] = {
+            [51073012] = { id = 1189, name = "赤红深渊", type = "Dungeon", },
+            [78474907] = { id = 1185, name = "赎罪大厅", type = "Dungeon", },
+        },
+        [1533] = {
+            [40145521] = { id = 1182, name = "通灵战潮", type = "Dungeon", },
+            [58552857] = { id = 1186, name = "晋升高塔", type = "Dungeon", },
+        },
+        [1536] = {
+            [53115291] = { id = 1187, name = "伤逝剧场", type = "Dungeon", },
+            [59396501] = { id = 1183, name = "凋魂之殇", type = "Dungeon", },
+        },
+        [1565] = {
+            [35485413] = { id = 1184, name = "塞兹仙林的迷雾", type = "Dungeon", },
+            [68666660] = { id = 1188, name = "彼界", type = "Dungeon", },
+        },
+    }
+    for k, v in pairs(sl) do nodes[k] = v end
 end
 end
 

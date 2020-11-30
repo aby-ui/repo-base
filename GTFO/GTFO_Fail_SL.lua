@@ -100,6 +100,22 @@ GTFO.SpellID["334509"] = {
   sound = 3;
 };
 
+GTFO.SpellID["342704"] = {
+  --desc = "Rotting Tempest (Rotbriar Boggart)";
+  sound = 3;
+};
+
+GTFO.SpellID["314182"] = {
+  --desc = "Sin Lash";
+  sound = 3;
+};
+
+GTFO.SpellID["321366"] = {
+  --desc = "Crimson Barrage (Lady Inerva Darkvein)";
+  sound = 3;
+  negatingBuffSpellID = 321345; -- Harvester's Might
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -481,4 +497,15 @@ GTFO.SpellID["326171"] = {
   sound = 3;
 };
 
+--- ************
+--- * Torghast *
+--- ************
+
+GTFO.SpellID["348131"] = {
+  --desc = "Soul Emanation";
+  applicationOnly = true;
+  sound = 3;
+};
+
 end
+
