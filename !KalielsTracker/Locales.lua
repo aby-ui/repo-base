@@ -132,6 +132,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Current Order"] = "当前顺序"
     KT.L["Default Order"] = "默认排序"
     KT.L["Popup "] = "自动弹出的"
+    KT.L["Show Quest Zones"] = "显示任务区域"
 
     KT.L["Show Max. height overlay"] = "显示最大高度轮廓"
     KT.L["Show Quest tags"] = "显示任务标签(等级/类型)"

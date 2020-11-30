@@ -102,7 +102,7 @@ local defaults = {
         menuWowheadURLModifier = "ALT",
         questDefaultActionMap = true,
 		questShowTags = true,
-		questShowZones = true,
+		questShowZones = false,
 
 		messageQuest = false,
 		messageAchievement = false,
@@ -1120,7 +1120,7 @@ local options = {
 							order = 6.42,
 						},
 						questShowZones = {
-							name = "Show Quest Zones",
+							name = L"Show Quest Zones",
 							desc = "Show / Hide Quest Zones inside the tracker.",
 							type = "toggle",
 							set = function()
