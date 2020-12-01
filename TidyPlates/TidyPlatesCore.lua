@@ -708,7 +708,12 @@ do
 		if unit.isMarked and style.raidicon.show then
 			visual.raidicon:Show()
 			local iconCoord = RaidIconCoordinate[unit.raidIcon]
-			visual.raidicon:SetTexCoord(iconCoord.x, iconCoord.x + 0.25, iconCoord.y,  iconCoord.y + 0.25)
+            if not iconCoord then
+                if DEBUG_MODE then u1debug(unit.raidIcon) end
+                visual.raidicon:Hide()
+            else
+                visual.raidicon:SetTexCoord(iconCoord.x, iconCoord.x + 0.25, iconCoord.y,  iconCoord.y + 0.25)
+            end
 		else visual.raidicon:Hide() end
 	end
 

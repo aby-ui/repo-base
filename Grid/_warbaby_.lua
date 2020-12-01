@@ -304,7 +304,7 @@ Mixin(GridFrame.defaultDB, {
             alert_ghost = true,
             alert_RaidDebuff = true,
             alert_res = true,
-            alert_bigdebuffs = true,
+            --alert_bigdebuffs = true,
             alert_summon = true,
         },
         iconright = {

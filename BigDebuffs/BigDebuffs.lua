@@ -1,5 +1,5 @@
---print("|cff00dfff[BigDebuffs-v4.9]|rÔ­×÷Õß|c00FF9900Curse:Jordon|r,ÓÉ|c00FF9900NGA:ÒÁµéÍâ|rÓÚ7.23ÈÕ·­ÒëÐÞ¸Ä,ÊäÈë|cff33ff99/bd|rÉèÖÃ.")
---·­Òëºº»¯ÐÞ¸Ä£ºNGA  @ÒÁµéÍâ  barristan@sina.com  http://bbs.ngacn.cc/nuke.php?func=ucp&uid=7350579
+--print("|cff00dfff[BigDebuffs-v4.9]|rÔ­ï¿½ï¿½ï¿½ï¿½|c00FF9900Curse:Jordon|r,ï¿½ï¿½|c00FF9900NGA:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½|rï¿½ï¿½7.23ï¿½Õ·ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½,ï¿½ï¿½ï¿½ï¿½|cff33ff99/bd|rï¿½ï¿½ï¿½ï¿½.")
+--ï¿½ï¿½ï¿½ëººï¿½ï¿½ï¿½Þ¸Ä£ï¿½NGA  @ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  barristan@sina.com  http://bbs.ngacn.cc/nuke.php?func=ucp&uid=7350579
 -- BigDebuffs by Jordon
 
 local addonName, addon = ...
@@ -1740,6 +1740,7 @@ function BigDebuffs:UNIT_AURA(unit)
     else
         frame:Hide()
         frame.current = nil
+        if GridStatusBigDebuffs then GridStatusBigDebuffs:SendLost(unit) end
     end
 end
 
@@ -1859,7 +1860,6 @@ function BigDebuffs:UNIT_AURA_NAMEPLATE(unit)
     else
         frame:Hide()
         frame.current = nil
-		if GridStatusBigDebuffs then GridStatusBigDebuffs:SendLost(unit) end
     end
 end
 

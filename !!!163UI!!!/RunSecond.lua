@@ -485,3 +485,19 @@ hooksecurefunc(GameTooltip, "SetOwner", function(self, parent, anchor)
         tip = ShoppingTooltip2; if select(2, tip:GetPoint()) == self then tip:ClearAllPoints() end
     end
 end)
+
+--[[------------------------------------------------------------
+9.0.1 BossBanner_ConfigureLootFrame -> SetItemButtonQuality -> SetItemButtonOverlay
+---------------------------------------------------------------]]
+hooksecurefunc("IsArtifactRelicItem", function()
+    if BossBanner and BossBanner.LootFrames then
+        local lf = BossBanner.LootFrames[#BossBanner.LootFrames]
+        if not lf.IconHitBox.IconOverlay2 then
+            lf.IconHitBox.IconOverlay2 = {
+                Show = noop,
+                Hide = noop,
+                SetAtlas = noop,
+            }
+        end
+    end
+end)

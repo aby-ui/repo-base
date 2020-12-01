@@ -1206,12 +1206,14 @@ local function SetHooks()
 		QuestItemButton_Add(block, 3, 4)
 
 		if db.questShowZones and questsCache[questID] then
-			local zoneName = questsCache[questID].zone
-			local timeRemaining = GetTaskTimeLeftData(questID)
-			if timeRemaining ~= "" then
-				timeRemaining = " - "..timeRemaining
+			local infoText = questsCache[questID].zone
+			if questsCache[questID].isCalling then
+				local timeRemaining = GetTaskTimeLeftData(questID)
+				if timeRemaining ~= "" then
+					infoText = infoText.." - "..timeRemaining
+				end
 			end
-			self:AddObjective(block, "Zone", zoneName..timeRemaining, nil, nil, OBJECTIVE_DASH_STYLE_HIDE, OBJECTIVE_TRACKER_COLOR["Zone"])
+			self:AddObjective(block, "Zone", infoText, nil, nil, OBJECTIVE_DASH_STYLE_HIDE, OBJECTIVE_TRACKER_COLOR["Zone"])
 		end
 	end
 
@@ -1798,6 +1800,13 @@ local function SetHooks()
 		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
 
 		info.disabled = false;
+
+		if C_QuestLog.CanAbandonQuest(block.id) then
+			info.text = ABANDON_QUEST;
+			info.func = function(_, questID) QuestMapQuestOptions_AbandonQuest(questID) end;
+			info.arg1 = block.id;
+			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWNMENU_MENU_LEVEL);
+		end
 
 		if db.menuWowheadURL then
 			info.text = "|cff33ff99Wowhead|r URL";

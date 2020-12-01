@@ -637,6 +637,15 @@ function GridLayout:PostEnable()
 
 	self:RegisterMessage("Grid_EnteringCombat", "EnteringCombat")
 	self:RegisterMessage("Grid_LeavingCombat", "LeavingCombat")
+
+    self:RegisterEvent("UPDATE_ALL_UI_WIDGETS")
+end
+
+-- Fix Maw bug, from Plexus
+function GridLayout:UPDATE_ALL_UI_WIDGETS()
+	if C_Map.GetBestMapForUnit("player")==1543 then
+        self:ReloadLayout()
+	end
 end
 
 function GridLayout:PostDisable()

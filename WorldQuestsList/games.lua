@@ -1105,3 +1105,69 @@ end)
 CalligraphyHelper:RegisterEvent('QUEST_ACCEPTED')
 CalligraphyHelper:RegisterEvent('QUEST_REMOVED')
 CalligraphyHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+
+
+-------------- SL
+
+-- Aspirant Training
+
+local AspirantTraining = CreateFrame'Frame'
+AspirantTraining:RegisterEvent('QUEST_ACCEPTED')
+AspirantTraining:RegisterEvent('QUEST_REMOVED')
+AspirantTraining:RegisterEvent('PLAYER_ENTERING_WORLD')
+AspirantTraining:SetScript("OnEvent",function(self,event,arg1,arg2)
+	if event == 'QUEST_ACCEPTED' then
+		if arg1 == 59585 then
+			if VWQL and VWQL.DisableAspirantTraining then
+				return
+			end
+			self:RegisterEvent("CHAT_MSG_MONSTER_SAY")
+			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		end
+	elseif event == 'QUEST_REMOVED' then
+		if arg1 == 59585 then
+			self:UnregisterEvent("CHAT_MSG_MONSTER_SAY")
+			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
+			ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		end
+	elseif event == 'UNIT_SPELLCAST_SUCCEEDED' then
+		if arg1 == "player" then
+			ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		end
+	elseif event == 'CHAT_MSG_MONSTER_SAY' then
+		if not arg1 then
+			return
+		end
+		for i=1,3 do
+			local button = _G["OverrideActionBarButton"..i]
+			local action = button.action
+			local _, spellID = GetActionInfo(action)
+			if spellID then
+				local name = GetSpellInfo(spellID)
+				if name and arg1:find(name) then
+					ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+					ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+					ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		
+					ActionButton_ShowOverlayGlow(button)
+					return
+				end
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		for i=1,GetNumQuestLogEntries() do
+			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
+			if questID and questID == 59585 then
+				self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',59585)
+				break
+			end
+		end
+	end
+end)

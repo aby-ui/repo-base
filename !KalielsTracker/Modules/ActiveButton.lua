@@ -23,7 +23,7 @@ local point, relativeTo, relativePoint, xOfs, yOfs
 
 local extraAbilityFrame = ExtraAbilityContainer
 local pointNum = 2
-local isElvui, isTukui = false, false
+local isMoveAnything, isElvui, isTukui = false, false, false
 
 --------------
 -- Internal --
@@ -63,6 +63,7 @@ end
 local function ActiveFrame_Update()
 	if dbChar.activeButtonPosition then return end
 	point, relativeTo, relativePoint, xOfs, yOfs = extraAbilityFrame:GetPoint(pointNum)
+	if not point then return end
 	if isElvui then
 		yOfs = (yOfs or 300) - 29
 	end
@@ -75,7 +76,15 @@ end
 
 local function ActiveFrame_Init()
 	pointNum = extraAbilityFrame:GetNumPoints()
-	if isElvui then
+	if isMoveAnything then
+		if MovAny.Boot then
+			hooksecurefunc(MovAny, "SyncAllFrames", function(self)
+				if extraAbilityFrame.MAHooked then
+					pointNum = 1
+				end
+			end)
+		end
+	elseif isElvui then
 		local parent = ExtraActionBarFrame:GetParent()
 		if parent then
 			extraAbilityFrame = parent
@@ -303,6 +312,7 @@ end
 
 function M:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
+	isMoveAnything = IsAddOnLoaded("MoveAnything")
 	isElvui = IsAddOnLoaded("ElvUI")
 	isTukui = IsAddOnLoaded("Tukui")
 

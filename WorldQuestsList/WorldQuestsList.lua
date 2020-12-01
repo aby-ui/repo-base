@@ -1,4 +1,4 @@
-local VERSION = 96
+local VERSION = 97
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -295,6 +295,9 @@ Fixed TomTom arrow
 
 9.0.2 toc update
 Bugfixes
+
+LFG fixes
+Added Aspirant Training quest helper
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -420,6 +423,7 @@ local LOCALE =
 		rewardSortOption = "Настройка приоритетов",
 		rewardSortCurrOther = "Другие валюты",
 		rewardSortItemOther = "Другие предметы",
+		aspirantTraining = "Помощник тренировки претендента",
 	} or
 	locale == "deDE" and {    --by Sunflow72
 		gear = "Ausrüstung",
@@ -486,6 +490,7 @@ local LOCALE =
 		rewardSortOption = "Prioritätsoptionen",
 		rewardSortCurrOther = "Andere Währungen",
 		rewardSortItemOther = "Andere Gegenstände",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -552,6 +557,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -618,6 +624,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -684,6 +691,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -750,6 +758,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -816,6 +825,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -882,6 +892,7 @@ local LOCALE =
 		rewardSortOption = "优先级",
 		rewardSortCurrOther = "其他货币",
 		rewardSortItemOther = "其他物品",
+		aspirantTraining = "候选者训练助手",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -948,6 +959,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	} or 
 	{
 		gear = "Gear",
@@ -1014,6 +1026,7 @@ local LOCALE =
 		rewardSortOption = "Priority options",
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
+		aspirantTraining = "Aspirant Training Helper",
 	}
 
 local filters = {
@@ -1550,7 +1563,8 @@ do
 				AddArrow(x,y,nil,nil,5)
 			end
 		elseif self.questID then
-			local mapID = self:GetMap():GetMapID()
+			local mapCanvas = self:GetMap()
+			local mapID = mapCanvas and mapCanvas:GetMapID() or 0
 			local x,y = self:GetPosition()
 
 			if (VWQL and not VWQL.DisableLFG and not VWQL.DisableLFG_RightClickIcon) and button == "RightButton" then
@@ -1955,7 +1969,7 @@ do
 		end
 		for mapID,mapCoord in pairs(mapCoords) do
 			local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
-			for _,info in pairs(taskInfo) do
+			for _,info in pairs(taskInfo or WorldQuestList.NULLTable) do
 				if info.questId == questID then
 					cache[questID] = {
 						mapCoord[1] + (info.x or -1) * (mapCoord[3]-mapCoord[1]),
@@ -1969,11 +1983,11 @@ do
 	function WorldQuestList:GetQuestCoord(questID)
 		for mapID,mapCoord in pairs(mapCoords) do
 			local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
-			for _,info in pairs(taskInfo) do
+			for _,info in pairs(taskInfo or WorldQuestList.NULLTable) do
 				if info.questId == questID then
 					if info.mapID then
 						local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(info.mapID)
-						for _,info in pairs(taskInfo) do
+						for _,info in pairs(taskInfo or WorldQuestList.NULLTable) do
 							if info.questId == questID then
 								return info.x, info.y, info.mapID
 							end
@@ -2221,7 +2235,6 @@ do
 		[51173] = 13009,
 		[51178] = 13035,
 		[50717] = 13025,
-		[50717] = 13026,
 		[50899] = 13026,
 		[50559] = 13023,
 		[51127] = 13023,
@@ -4032,6 +4045,14 @@ do
 		checkable = true,
 		shownFunc = function() return NOT_LEGION() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
+	list[#list+1] = {
+		text = LOCALE.aspirantTraining,
+		func = function()
+			VWQL.DisableAspirantTraining = not VWQL.DisableAspirantTraining
+		end,
+		checkable = true,
+		shownFunc = function() return SL() or not WorldQuestList.optionsDropDown:IsVisible() end,
+	}
 
 	list[#list+1] = {
 		text = LOCALE.ignoreList,
@@ -4082,6 +4103,8 @@ do
 				self.List[i].checkState = not VWQL.OppositeContinentNazjatar
 			elseif self.List[i].text == LOCALE.questsForAchievements then
 				self.List[i].checkState = not VWQL.ShowQuestAchievements
+			elseif self.List[i].text == LOCALE.aspirantTraining then
+				self.List[i].checkState = not VWQL.DisableAspirantTraining
 			end
 		end
 		anchorSubMenu[1].checkState = not VWQL.Anchor
@@ -4879,7 +4902,7 @@ local function WorldQuestList_Leveling_Update()
 	if UnitLevel'player' < 50 then
 		local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(currMapID)
 
-		for _,info in pairs(taskInfo or {}) do
+		for _,info in pairs(taskInfo or WorldQuestList.NULLTable) do
 			if HaveQuestData(info.questId) and QuestUtils_IsQuestWorldQuest(info.questId) then
 				local _,_,worldQuestType,rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical = GetQuestTagInfo(info.questId)
 
@@ -5672,6 +5695,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	}
 
 	local taskInfo = C_TaskQuest.GetQuestsForPlayerByMapID(mapAreaID)
+	taskInfo = taskInfo or {}
 
 	if GENERAL_MAPS[mapAreaID] then
 		O.isGeneralMap = true
@@ -5721,7 +5745,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 			moddedMap = C_TaskQuest.GetQuestsForPlayerByMapID(994)
 		end
 		for _,mapID in pairs(ArgusZonesList) do
-			local mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID) or {}
+			local mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID) or WorldQuestList.NULLTable
 			for _,info in pairs(mapQuests) do
 				taskInfo[#taskInfo+1] = info
 				info.dX,info.dY,info.dMap = info.x,info.y,mapID
@@ -7018,7 +7042,7 @@ local function UpdateDB()
 
 	for _,mapID in pairs(listZonesToUpdateDB) do
 		local z = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
-		for i, info  in pairs(z) do
+		for i, info  in pairs(z or WorldQuestList.NULLTable) do
 			local questID = info.questId
 			if HaveQuestData(questID) and QuestUtils_IsQuestWorldQuest(questID) then
 				questsList[ questID ] = true
@@ -7141,6 +7165,10 @@ local slashfunc = function(arg)
 		print("Icons scale set to "..(VWQL.MapIconsScale * 100).."%")
 		return
 	elseif argL:find("^way ") then 
+		if argL:find("^way ml") then
+			print("Added multiline")
+			WorldQuestList.MultiArrow = true
+		end
 		local x,y = argL:match("([%d%.,%-]+) ([%d%.,%-]+)")
 		if x and y then
 			x = tonumber( x:gsub(",$",""):gsub(",","."),nil )
@@ -7596,7 +7624,7 @@ FlightMap:SetScript("OnEvent",function (self, event, arg)
 			if mapID and (not VWQL or not VWQL.DisableTaxiX) then
 				local mapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(mapID)
 				local questsWatched = C_QuestLog.GetNumWorldQuestWatches()
-				for _,questData in pairs(mapQuests) do
+				for _,questData in pairs(mapQuests or WorldQuestList.NULLTable) do
 					for i=1,questsWatched do
 						local questID = C_QuestLog.GetQuestIDForQuestWatchIndex(i)
 						if questID == questData.questId then
@@ -8490,23 +8518,23 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if WorldQuestList.ObjectiveTracker_Update_hook then
 			WorldQuestList.ObjectiveTracker_Update_hook(2)
 		end
-		if not VWQL or VWQL.DisableLFG or not arg2 or C_LFGList.GetActiveEntryInfo() or VWQL.DisableLFG_Popup or (GetNumGroupMembers() or 0) > 1 then
+		if not VWQL or VWQL.DisableLFG or not arg1 or C_LFGList.GetActiveEntryInfo() or VWQL.DisableLFG_Popup or (GetNumGroupMembers() or 0) > 1 then
 			return
 		end
-		if QuestUtils_IsQuestWorldQuest(arg2) and 					--is WQ
+		if QuestUtils_IsQuestWorldQuest(arg1) and 					--is WQ
 			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4)) and	--popup if not busy
-			 CheckQuestPassPopup(arg2) 						--wq pass filters
+			 CheckQuestPassPopup(arg1) 						--wq pass filters
 		 then
-			QuestCreationBox.Text1:SetText("WQL|n"..(C_TaskQuest.GetQuestInfoByQuestID(arg2) or ""))
+			QuestCreationBox.Text1:SetText("WQL|n"..(C_TaskQuest.GetQuestInfoByQuestID(arg1) or ""))
 			QuestCreationBox.Text2:SetText("")
-			QuestCreationBox.PartyFind.questID = arg2
+			QuestCreationBox.PartyFind.questID = arg1
 			QuestCreationBox.PartyFind:Show()
 
 			QuestCreationBox.PartyLeave:Hide()
 			QuestCreationBox.ListGroup:Hide()
 			QuestCreationBox.FindGroup:Hide()
 
-			QuestCreationBox.questID = arg2
+			QuestCreationBox.questID = arg1
 			QuestCreationBox.type = 3
 
 			QuestCreationBox:Show()
@@ -8626,62 +8654,64 @@ local function ObjectiveTracker_Update_hook(reason, questID)
 		local createdID = LFGListFrame.EntryCreation.Name:GetText()
 		for _,module in pairs(ObjectiveTrackerFrame.MODULES) do
 			if module.usedBlocks then
-				for _,block in pairs(module.usedBlocks) do
-					local questID = block.id
-					if questID and IsQuestValidForEye(questID) and not block.hasGroupFinderButton and not WorldQuestList:IsQuestDisabledForLFG(questID) then
-						local b = objectiveTrackerButtons[block]
-						if not b then
-							b = CreateFrame("Button",nil,objectiveTrackerMainFrame)
-							objectiveTrackerButtons[block] = b
-							b.parent = block
-							b:SetSize(26,26)
-							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
-							b:SetScript("OnClick",objectiveTrackerButtons_OnClick)
-							b:SetScript("OnEnter",objectiveTrackerButtons_OnEnter)
-							b:SetScript("OnLeave",objectiveTrackerButtons_OnLeave)
-							b:SetScript("OnUpdate",objectiveTrackerButtons_OnUpdate)
-							b:RegisterForClicks("LeftButtonDown","RightButtonUp")
-
-							b.HighlightTexture = b:CreateTexture()
-							b.HighlightTexture:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight")
-							b.HighlightTexture:SetSize(26,26)
-							b.HighlightTexture:SetPoint("CENTER")
-							b:SetHighlightTexture(b.HighlightTexture,"ADD")
-
-							b.texture = b:CreateTexture(nil, "BACKGROUND")
-							b.texture:SetPoint("CENTER")
-							b.texture:SetSize(26,26)
-							b.texture:SetAtlas("hud-microbutton-LFG-Up")
-
-							b.texture2 = b:CreateTexture(nil, "ARTWORK")
-							b.texture2:SetPoint("CENTER")
-							b.texture2:SetSize(14,14)
-						end
-						if block.itemButton and block.itemButton:IsVisible() and not b.icon_pos then
-							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-44,0)
-							b.icon_pos = true
-						elseif (not block.itemButton or not block.itemButton:IsVisible()) and b.icon_pos then
-							b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
-							b.icon_pos = false
-						end
-						b:SetFrameStrata(block:GetFrameStrata())
-						b:SetFrameLevel(block:GetFrameLevel()+1)
-						b.questID = questID
-						b:Show()
-						if createdID == tostring(questID) and (GetNumGroupMembers() > 0) then
-							if C_LFGList.GetActiveEntryInfo() or (GetNumGroupMembers() >= 5) then
-								b:Hide()
-							end
-							if not b.texture.refresh then
-								b.texture:SetTexture("Interface\\Buttons\\UI-SquareButton-Up")
-								b.texture2:SetTexture("Interface\\Buttons\\UI-RefreshButton")
-								b.texture.refresh = true
-							end
-						else
-							if b.texture.refresh then
+				for _,templateBlock in pairs(module.usedBlocks) do
+					for _,block in pairs(templateBlock) do
+						local questID = block.id
+						if questID and IsQuestValidForEye(questID) and not block.hasGroupFinderButton and not WorldQuestList:IsQuestDisabledForLFG(questID) then
+							local b = objectiveTrackerButtons[block]
+							if not b then
+								b = CreateFrame("Button",nil,objectiveTrackerMainFrame)
+								objectiveTrackerButtons[block] = b
+								b.parent = block
+								b:SetSize(26,26)
+								b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
+								b:SetScript("OnClick",objectiveTrackerButtons_OnClick)
+								b:SetScript("OnEnter",objectiveTrackerButtons_OnEnter)
+								b:SetScript("OnLeave",objectiveTrackerButtons_OnLeave)
+								b:SetScript("OnUpdate",objectiveTrackerButtons_OnUpdate)
+								b:RegisterForClicks("LeftButtonDown","RightButtonUp")
+	
+								b.HighlightTexture = b:CreateTexture()
+								b.HighlightTexture:SetTexture("Interface\\Buttons\\UI-Common-MouseHilight")
+								b.HighlightTexture:SetSize(26,26)
+								b.HighlightTexture:SetPoint("CENTER")
+								b:SetHighlightTexture(b.HighlightTexture,"ADD")
+	
+								b.texture = b:CreateTexture(nil, "BACKGROUND")
+								b.texture:SetPoint("CENTER")
+								b.texture:SetSize(26,26)
 								b.texture:SetAtlas("hud-microbutton-LFG-Up")
-								b.texture2:SetTexture()
-								b.texture.refresh = nil
+	
+								b.texture2 = b:CreateTexture(nil, "ARTWORK")
+								b.texture2:SetPoint("CENTER")
+								b.texture2:SetSize(14,14)
+							end
+							if block.itemButton and block.itemButton:IsVisible() and not b.icon_pos then
+								b:SetPoint("TOPLEFT",block,"TOPRIGHT",-44,0)
+								b.icon_pos = true
+							elseif (not block.itemButton or not block.itemButton:IsVisible()) and b.icon_pos then
+								b:SetPoint("TOPLEFT",block,"TOPRIGHT",-18,0)
+								b.icon_pos = false
+							end
+							b:SetFrameStrata(block:GetFrameStrata())
+							b:SetFrameLevel(block:GetFrameLevel()+1)
+							b.questID = questID
+							b:Show()
+							if createdID == tostring(questID) and (GetNumGroupMembers() > 0) then
+								if C_LFGList.GetActiveEntryInfo() or (GetNumGroupMembers() >= 5) then
+									b:Hide()
+								end
+								if not b.texture.refresh then
+									b.texture:SetTexture("Interface\\Buttons\\UI-SquareButton-Up")
+									b.texture2:SetTexture("Interface\\Buttons\\UI-RefreshButton")
+									b.texture.refresh = true
+								end
+							else
+								if b.texture.refresh then
+									b.texture:SetAtlas("hud-microbutton-LFG-Up")
+									b.texture2:SetTexture()
+									b.texture.refresh = nil
+								end
 							end
 						end
 					end
