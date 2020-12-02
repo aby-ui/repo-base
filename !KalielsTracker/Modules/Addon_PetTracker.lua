@@ -64,12 +64,6 @@ local function SetHooks()
 	function PetTracker.Tracker:AddSpecie(specie, quality, level)  -- R
 		local source = specie:GetSourceIcon()
 		if source then
-			-- Specie Class fix
-			-- TODO: After fix in PetTracker, delete it.
-			function specie:GetID()
-				local best = self:GetBestOwned()
-				return best and best:GetID() or nil
-			end
 			-- original code
 			local name, icon = specie:GetInfo()
 			local text = name .. (level > 0 and format(' (%s)', level) or '')
@@ -245,7 +239,7 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.1") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.5") and db.addonPetTracker)
 
 	if self.isLoaded then
 		KT:Alert_IncompatibleAddon("PetTracker", "9.0.1")

@@ -13,8 +13,7 @@ U1PLUG["OpenBags"] = function()
 end
 
 --[[------------------------------------------------------------
-reload之后记住上次打开的天赋面板
----------------------------------------------------------------]]
+reload之后记住上次打开的天赋面板, 引起污染，所以算了
 CoreDependCall("Blizzard_TalentUI", function()
     hooksecurefunc("PlayerTalentTab_OnClick", function(self, button)
         if U1DB and button == "LeftButton" then U1DB.lastTalentTab = self:GetID() end
@@ -29,6 +28,7 @@ CoreDependCall("Blizzard_TalentUI", function()
         end
     end)
 end)
+---------------------------------------------------------------]]
 
 --[[------------------------------------------------------------
 双击空格跳过动画

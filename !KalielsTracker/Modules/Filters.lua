@@ -325,6 +325,13 @@ local function Filter_Quests(self, spec, idx)
 				end
 			end
 		end
+	elseif spec == "unfinished" then
+		for i = 1, numEntries do
+			local questInfo = C_QuestLog.GetInfo(i)
+			if not questInfo.isHidden and not questInfo.isHeader and not questInfo.isTask and not questInfo.isBounty and not C_QuestLog.IsComplete(questInfo.questID) then
+				C_QuestLog.AddQuestWatch(questInfo.questID)
+			end
+		end
 	elseif spec == "complete" then
 		for i = 1, numEntries do
 			local questInfo = C_QuestLog.GetInfo(i)
@@ -608,6 +615,10 @@ function DropDown_Initialize(self, level)
 
 		info.text = L"Instance"
 		info.arg1 = "instance"
+		MSA_DropDownMenu_AddButton(info)
+
+		info.text = L"Unfinished"
+		info.arg1 = "unfinished"
 		MSA_DropDownMenu_AddButton(info)
 
 		info.text = L"Complete"

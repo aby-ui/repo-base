@@ -453,3 +453,39 @@ function CoreUIChatEdit_Insert(text, clear, no_highlight)
     eb:SetFocus()
     return eb
 end
+
+function CoreUIShowUIPanel(frame)
+    if not frame then return end
+    local frameName = frame:GetName()
+    if not frameName then return end
+    if not InCombatLockdown() then
+        ShowUIPanel(frame)
+    else
+        frame:Show()
+        tDeleteItem(UISpecialFrames, frameName)
+        table.insert(UISpecialFrames, frameName)
+        if not frame._abyHookRemoveSpecial then
+            frame._abyHookRemoveSpecial = true
+            hooksecurefunc(frame, "Hide", function()
+                tDeleteItem(UISpecialFrames, frameName)
+            end)
+        end
+    end
+end
+
+function CoreUIHideUIPanel(frame)
+    if not frame then return end
+    local frameName = frame:GetName()
+    if not frameName then return end
+    frame:Hide()
+    tDeleteItem(UISpecialFrames, frameName)
+end
+
+function CoreUIToggleFrame(frame)
+    if not frame then return end
+	if ( frame:IsShown() ) then
+        CoreUIHideUIPanel(frame);
+	else
+        CoreUIShowUIPanel(frame);
+	end
+end

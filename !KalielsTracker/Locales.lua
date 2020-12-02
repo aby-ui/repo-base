@@ -21,6 +21,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Daily"] = "日常"
     KT.L["Instance"] = "副本"
     KT.L["Complete"] = "已完成"
+	KT.L["Unfinished"] = "未完成"
     KT.L["Untrack All"] = "取消全部追踪"
     KT.L["Achievements"] = "成就"
     KT.L["Categories"] = "分类"

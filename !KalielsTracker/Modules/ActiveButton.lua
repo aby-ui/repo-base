@@ -84,7 +84,8 @@ local function ActiveFrame_Init()
 				end
 			end)
 		end
-	elseif isElvui then
+	end
+	if isElvui then
 		local parent = ExtraActionBarFrame:GetParent()
 		if parent then
 			extraAbilityFrame = parent

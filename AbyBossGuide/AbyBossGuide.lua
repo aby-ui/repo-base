@@ -290,7 +290,11 @@ local function bossOnClick(self, button)
                 if BG.data[zone].id then
                     if self.info.id == 0 then return end --小怪就不显示副本手册了
                     if not EncounterJournal or not EncounterJournal:IsShown() then
-                        ToggleEncounterJournal();
+                        if not InCombatLockdown() then
+                            ToggleEncounterJournal();
+                        else
+                            CoreUIToggleFrame(EncounterJournal)
+                        end
                     end
                     EncounterJournal_ListInstances();
                     EncounterJournal_DisplayInstance(BG.data[zone].id);

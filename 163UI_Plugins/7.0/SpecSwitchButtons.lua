@@ -108,6 +108,7 @@ if TalentMicroButton then
 
     SetOrHookScript(TalentMicroButton, "OnClick", function(self, button)
         if button == "RightButton" then
+            if InCombatLockdown() then return end
             if PlayerTalentFrame:IsVisible() then
                 HideUIPanel(PlayerTalentFrame)
             end
