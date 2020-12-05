@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("PlantsVsZombies", "DBM-WorldEvents", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201021135515")
+mod:SetRevision("20201022005604")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 
 mod:RegisterEvents(

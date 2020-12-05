@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2388, "DBM-Party-Shadowlands", 8, 1189)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201123041314")
+mod:SetRevision("20201202155806")
 mod:SetCreatureID(162100)
 mod:SetEncounterID(2360)
 
@@ -124,7 +124,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 				specWarnJuggernautRush:Show()
 				specWarnJuggernautRush:Play("targetyou")
 				yellJuggernautRush:Yell()
-				yellJuggernautRushFades:Countdown(5)
+				yellJuggernautRushFades:Countdown(4)
 			else
 				specWarnJuggernautRushSoak:Show(targetname)
 				specWarnJuggernautRushSoak:Play("gathershare")

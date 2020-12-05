@@ -116,6 +116,38 @@ GTFO.SpellID["321366"] = {
   negatingBuffSpellID = 321345; -- Harvester's Might
 };
 
+GTFO.SpellID["342499"] = {
+  --desc = "Lurking Eruption (Niya, As Xavius)";
+  sound = 3;
+};
+
+GTFO.SpellID["342488"] = {
+  --desc = "Nightmare Blades (Niya, As Xavius)";
+  sound = 3;
+};
+
+GTFO.SpellID["340808"] = {
+  --desc = "Armageddon (Glimmerdust, As Kil'jaeden)";
+  sound = 3;
+};
+
+GTFO.SpellID["340566"] = {
+  --desc = "Poison Bomb (Invasive Terror)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["340639"] = {
+  --desc = "Binding Fungus (Humon'gozz)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["345454"] = {
+  --desc = "Magma Wave (Borr-Geth)";
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -139,6 +171,12 @@ GTFO.SpellID["323126"] = {
   --desc = "Telekinetic Collision (Lord Chamberlain)";
   sound = 3
 };
+
+GTFO.SpellID["314926"] = {
+  --desc = "Soul Surge";
+  sound = 3;
+};
+
 
 --- **************
 --- * Plaguefall *
@@ -168,6 +206,7 @@ GTFO.SpellID["326242"] = {
 
 GTFO.SpellID["328501"] = {
   --desc = "Plague Bomb (Rigged Plagueborer)";
+  applicationOnly = true;
   sound = 3;
 };
 
@@ -440,6 +479,7 @@ GTFO.SpellID["319567"] = {
 
 GTFO.SpellID["320596"] = {
   --desc = "Heaving Retch (Blightbone)";
+  applicationOnly = true;
   sound = 3;
 };
 
@@ -458,6 +498,16 @@ GTFO.SpellID["321253"] = {
   --desc = "Final Harvest (Amarth)";
   sound = 3;
   test = true;
+};
+
+GTFO.SpellID["320365"] = {
+  --desc = "Embalming Ichor (Surgeon Stitchflesh)";
+  sound = 3;
+};
+
+GTFO.SpellID["327240"] = {
+  --desc = "Spine Crush (Loyal Creation)";
+  sound = 3;
 };
 
 --- *****************
@@ -504,6 +554,65 @@ GTFO.SpellID["326171"] = {
 GTFO.SpellID["348131"] = {
   --desc = "Soul Emanation";
   applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["292903"] = {
+  --desc = "Massive Strike (Empowered Mawsworn Guard)";
+  sound = 3;
+};
+
+GTFO.SpellID["326056"] = {
+  --desc = "Anima Missile";
+  sound = 3;
+};
+
+GTFO.SpellID["306772"] = {
+  --desc = "Massive Scythe";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["330347"] = {
+  --desc = "Flamestrike (Forge Keeper)";
+  sound = 3;
+};
+
+GTFO.SpellID["307115"] = {
+  --desc = "Flame Vent";
+  sound = 3;
+};
+
+GTFO.SpellID["325514"] = {
+  --desc = "Flame Jet";
+  sound = 3;
+};
+
+GTFO.SpellID["331295"] = {
+  --desc = "Burning (Fire Spike)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["331310"] = {
+  --desc = "Burning (Green Spike)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["331349"] = {
+  --desc = "Spike Trap";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["298172"] = {
+  --desc = "Collapse (Kosarus the Fallen)";
+  sound = 3;
+};
+
+GTFO.SpellID["319813"] = {
+  --desc = "Soul Emanation";
   sound = 3;
 };
 

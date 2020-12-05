@@ -26,7 +26,13 @@ Spawns in multiple locations. To summon, stand in the Mysterious Mushroom Ring w
 • Player 3 dances with Player 1
 ]]
 L["mymaen_note"] = "Kill Rotbriar sprites in the area until he emotes and spawns."
-L["rainbowhorn_note"] = "\n|cffff5400T|r|cffffaa00A|r|cffffff00S|r|cffaaff00T|r|cff54ff00E|r |cff00ff55T|r|cff00ffa9H|r|cff00ffffE|r |cff0055ffR|r|cff0000ffA|r|cff5400ffI|r|cffaa00ffN|r|cffff00ffB|r|cffff00aaO|r|cffff0054W|r|cffff0000!|r"
+L["rainbowhorn_note"] = [[
+Find and click the |cffffff00Great Horn of the Runestag|r to summon the rare. The horn can spawn in multiple places across Ardenweald.
+
+He will always spawn north of Tirna Vaal, so set your {item:6948} there and watch for the zone emote.
+
+|cffff5400T|r|cffffaa00A|r|cffffff00S|r|cffaaff00T|r|cff54ff00E|r |cff00ff55T|r|cff00ffa9H|r|cff00ffffE|r |cff0055ffR|r|cff0000ffA|r|cff5400ffI|r|cffaa00ffN|r|cffff00ffB|r|cffff00aaO|r|cffff0054W|r|cffff0000!|r
+]]
 L["rootwrithe_note"] = "Poke the {npc:167928s} until the rare appears."
 L["rotbriar_note"] = "Talk to {npc:171684} nearby to summon the rare after some dialog."
 L["slumbering_note"] = "Running into the fog will stun and port you out. Use a flare or a pet with AOE to knock him out of the fog."
@@ -235,7 +241,11 @@ L["sabriel_note"] = "Can appear as one of the champions in the Theater of Pain."
 L["schmitd_note"] = "Use nearby {spell:313451} to break his shield."
 L["taskmaster_xox_note"] = "Shares a spawn with {npc:160204}, {npc:160230} and {npc:160226}."
 L["theater_of_pain_note"] = "Your first boss kill each day has a chance to drop the mount."
-L["zargox_the_reborn_note"] = "Use {item:175841} on top of the {npc:157124}. To obtain the orb, you must complete the quest {quest:57245} from {npc:157076} and talk to him again."
+L["zargox_the_reborn_note"] = [[
+Use {item:175841} on top of the {npc:157124}. To obtain the orb, you must complete the quest {quest:57245} from {npc:157076} and talk to him again.
+
+If the {npc:157124} is not up, reanimate {npc:157132} in the area until it appears.
+]]
 L["mixed_pool_note"] = [[
 Gather ingredients from the surrounding mobs and toss them into the pool. Once 30 ingredients have been added, one of seven rares will spawn depending on the combination used.
 
@@ -426,8 +436,17 @@ Activate to {spell:344157} quickly across the Maw.
 
 Requires the {item:184613} upgrade from {npc:162804}.
 ]]
-L["venari_note"] = "Use {currency:1767} to purchase Maw and Torghast upgrades."
+L["venari_note"] = [[
+Use {currency:1767} to purchase Maw and Torghast upgrades.
+
+Completion status below will be updated as we unlock them!
+]]
 L["venari_upgrade"] = "{npc:162804} Upgrade"
+L["Ambivalent"] = nil
+L["Appreciative"] = nil
+L["Apprehensive"] = nil
+L["Cordial"] = nil
+L["Tentative"] = nil
 
 L["options_icons_bonus_boss"] = "Bonus Elites"
 L["options_icons_bonus_boss_desc"] = "Display locations of bonus elites."

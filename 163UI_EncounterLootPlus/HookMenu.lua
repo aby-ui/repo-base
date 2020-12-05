@@ -48,6 +48,7 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
         info.value = "forcelevel"
         UIDropDownMenu_AddButton(info, level)
         --]]
+
         info.disabled = nil
     end
 
@@ -72,6 +73,7 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
         info.disabled = db.attr1 == 4 makeSubInfo(info, "+ " .. STAT_VERSATILITY,       4, "attr2", level)
         info.disabled = db.attr1 == 3 makeSubInfo(info, "+ " .. STAT_MASTERY,           3, "attr2", level)
         info.disabled = nil
+    --[[
     elseif (UIDROPDOWNMENU_MENU_VALUE == "forcelevel") then
         for i=895, 915, 15 do
             makeSubInfo(info, i, i, "forcelevel", level)
@@ -80,6 +82,7 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
             makeSubInfo(info, i, i, "forcelevel", level)
         end
         makeSubInfo(info, 1000, 1000, "forcelevel", level)
+    --]]
     end
 
     EncounterJournal_InitLootFilter(self, level)
@@ -94,7 +97,63 @@ EncounterJournal_OnFilterChanged_ELP = function()
     end
 end
 
+--[[------------------------------------------------------------
+部位过滤器，只在关键地方加上 db.range ~= 0
+---------------------------------------------------------------]]
+local SlotFilterToSlotName = {
+	[Enum.ItemSlotFilterType.Head] = INVTYPE_HEAD,
+	[Enum.ItemSlotFilterType.Neck] = INVTYPE_NECK,
+	[Enum.ItemSlotFilterType.Shoulder] = INVTYPE_SHOULDER,
+	[Enum.ItemSlotFilterType.Cloak] = INVTYPE_CLOAK,
+	[Enum.ItemSlotFilterType.Chest] = INVTYPE_CHEST,
+	[Enum.ItemSlotFilterType.Wrist] = INVTYPE_WRIST,
+	[Enum.ItemSlotFilterType.Hand] = INVTYPE_HAND,
+	[Enum.ItemSlotFilterType.Waist] = INVTYPE_WAIST,
+	[Enum.ItemSlotFilterType.Legs] = INVTYPE_LEGS,
+	[Enum.ItemSlotFilterType.Feet] = INVTYPE_FEET,
+	[Enum.ItemSlotFilterType.MainHand] = INVTYPE_WEAPONMAINHAND,
+	[Enum.ItemSlotFilterType.OffHand] = INVTYPE_WEAPONOFFHAND,
+	[Enum.ItemSlotFilterType.Finger] = INVTYPE_FINGER,
+	[Enum.ItemSlotFilterType.Trinket] = INVTYPE_TRINKET,
+	[Enum.ItemSlotFilterType.Other] = EJ_LOOT_SLOT_FILTER_OTHER,
+}
+
+local curr_items, curr_encts, curr_insts, _, curr_links, curr_filters = unpack(ELP.currs)
+
+local function EncounterJournal_InitLootSlotFilter_Mine(self, level)
+    local slotFilter = C_EncounterJournal.GetSlotFilter();
+
+   	local info = UIDropDownMenu_CreateInfo();
+   	info.text = ALL_INVENTORY_SLOTS;
+   	info.checked = slotFilter == Enum.ItemSlotFilterType.NoFilter;
+   	info.arg1 = Enum.ItemSlotFilterType.NoFilter;
+   	info.func = EncounterJournal_SetSlotFilter;
+   	UIDropDownMenu_AddButton(info);
+
+   	C_EncounterJournal.ResetSlotFilter();
+   	local isLootSlotPresent = {};
+   	local numLoot = EJ_GetNumLoot();
+   	for i = 1, numLoot do
+   		local itemInfo = C_EncounterJournal.GetLootInfoByIndex(i);
+   		local filterType = itemInfo and itemInfo.filterType;
+   		if ( filterType ) then
+   			isLootSlotPresent[filterType] = true;
+   		end
+   	end
+   	C_EncounterJournal.SetSlotFilter(slotFilter);
+
+   	for _, filter in pairs(Enum.ItemSlotFilterType) do
+   		if ( ( (db.range ~= 0) or isLootSlotPresent[filter] or filter == slotFilter) and filter ~= Enum.ItemSlotFilterType.NoFilter ) then
+   			info.text = SlotFilterToSlotName[filter];
+   			info.checked = slotFilter == filter;
+   			info.arg1 = filter;
+   			UIDropDownMenu_AddButton(info);
+   		end
+   	end
+end
+
 ELP.initMenus = function()
     ELP_Hook("EncounterJournal_OnFilterChanged", EncounterJournal_OnFilterChanged_ELP)
     UIDropDownMenu_Initialize(EncounterJournal.encounter.info.lootScroll.lootFilter, EncounterJournal_InitLootFilter_Mine, "MENU");
+    UIDropDownMenu_Initialize(EncounterJournal.encounter.info.lootScroll.lootSlotFilter, EncounterJournal_InitLootSlotFilter_Mine, "MENU");
 end

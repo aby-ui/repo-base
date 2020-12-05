@@ -272,8 +272,8 @@ function BM_SetMoveHandlerWith(frameNameToMove, loadWith, callback)
         loadWithTable[loadWith] = callback or frameNameToMove
     end
 end
-function BM_SetMoveHandler(frameToMove, handler)
-    if not frameToMove or frameToMove.settings then
+function BM_SetMoveHandler(frameToMove, handler, multiHandler)
+    if not frameToMove or (not multiHandler and frameToMove.settings) then
         return
     end
     if not handler then
@@ -438,19 +438,26 @@ local function OnEvent(self, event, arg1, arg2)
 
         if not hasConflict and U1GetCfgValue and U1GetCfgValue("BlizzMove", "powerbar") then
             BM_SetMoveHandler(EclipseBarFrame)
+
             BM_SetMoveHandler(PaladinPowerBarFrame)
-            for i=1,3 do BM_SetMoveHandler(PaladinPowerBarFrame, PaladinPowerBarFrame["rune"..i]) end
             PaladinPowerBarFrame:SetFrameStrata("LOW")
-            BM_SetMoveHandler(RuneFrame)
-            for i=1,6 do BM_SetMoveHandler(RuneFrame, RuneFrame["Rune"..i]) end
+            --for i=1,3 do BM_SetMoveHandler(PaladinPowerBarFrame, PaladinPowerBarFrame["rune"..i], true) end
+
+            --BM_SetMoveHandler(RuneFrame)
+            for i=1,6 do BM_SetMoveHandler(RuneFrame, RuneFrame["Rune"..i], true) end
+
             BM_SetMoveHandler(TotemFrame)
-            for i=1,4 do BM_SetMoveHandler(TotemFrame, _G["TotemFrameTotem"..i]) end
+            for i=1,4 do BM_SetMoveHandler(TotemFrame, _G["TotemFrameTotem"..i], true) end
+
             --7.0.3
             --BM_SetMoveHandler(InsanityBarFrame)
+
             BM_SetMoveHandler(WarlockPowerFrame)
             BM_SetMoveHandler(MageArcaneChargesFrame)
-            BM_SetMoveHandler(MonkHarmonyBarFrame)
-            for i=1,1 do BM_SetMoveHandler(MonkHarmonyBarFrame, MonkHarmonyBarFrame.LightEnergy[i]) end
+
+            --BM_SetMoveHandler(MonkHarmonyBarFrame)
+            for i=1,5 do BM_SetMoveHandler(MonkHarmonyBarFrame, MonkHarmonyBarFrame.LightEnergy[i], true) end
+
             BM_SetMoveHandler(ComboPointPlayerFrame)
         end
 

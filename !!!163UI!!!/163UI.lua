@@ -24,40 +24,28 @@ CoreAddEvent("ADDON_SELECTED")
 CoreAddEvent("DB_LOADED")
 CoreAddEvent("INIT_COMPLETED")
 
-local addonToLoad = {}, {}
+local addonToLoad = {}
 
-local function dbLoaded(db)
-
-    --[[
-        -- 2014082901 换回简约背包，确保该插件被激活，同时禁用分类背包（如果没有别卸载的话）
-        if (db.verison or 0) < 2014082901 then
-            U1LoadAddOn("Bagnon",true)
-            U1ToggleAddon("combuctor",nil,nil,true,true)
+-- Plexus插件必须依赖Grid或Plexus之一，否则报错，暴雪没有这种语义
+local SpecialDependencies = {
+    ["PlexusStatusRaidDebuff"] = { "Grid", "Plexus" }
+}
+local ForceDisables = {}
+for addon, deps in pairs(SpecialDependencies) do
+    if select(5, GetAddOnInfo(addon)) ~= "MISSING" then
+        local mustDisable = true
+        for _, dep in ipairs(deps) do
+            if GetAddOnEnableState(UnitName("player"), dep) ~= 0 then
+                mustDisable = false
+                break
+            end
         end
-
-        if (db.verison or 0) < 2014082904 then
-            tinsert(addonToLoad, "tdPack")
+        if mustDisable then
+            ForceDisables[addon:lower()] = true
+            DisableAddOn(addon)
         end
-
-        db.verison = tonumber(GetAddOnMetadata("!!!163UI!!!","X-163UI-Version")or"0")
-    ]]
-end
-
---[[ --fix7
-local NoGoldSeller163ui = LibStub("AceAddon-3.0"):NewAddon("NoGoldSeller163ui", "AceTimer-3.0")
-function NoGoldSeller163ui:OnInitialize()
-    if(NGSSymbolsUI)then
-        NGSSymbols = NGSSymbolsUI
-    else
-        NGSSymbolsUI = NGSSymbols
-    end
-    if(NGSwordsUI)then
-        NGSwords = NGSwordsUI
-    else
-        NGSwordsUI = NGSwords
     end
 end
---]]
 
 local defaultDB = {
     --checkVendor = 1, --无爱不易标记的插件但是在整合包列表中，是否算爱不易的。现在用 UI163_USER_MODE
@@ -1579,7 +1567,9 @@ local function processDefaultEnable()
                     if not enabled and info.originEnabled then
                         DisableAddOn(name)
                     elseif enabled and not info.originEnabled then
-                        EnableAddOn(name)
+                        if not ForceDisables[name] then
+                            EnableAddOn(name)
+                        end
                     end
                 end
             else
@@ -1608,8 +1598,6 @@ function U1:ADDON_LOADED(event, name)
         --print("ADDON_LOADED2", db, U1DB, db==U1DB, db==defaultDB)
         U1DB = db;
         db.LS = nil;
-
-        dbLoaded(U1DB)
 
         --处理老版本的插件开关
         if db.addons then

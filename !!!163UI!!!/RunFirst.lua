@@ -10,10 +10,6 @@ DisableAddOn("DBM-RaidLeadTools")
 DisableAddOn("DPMCore")
 DisableAddOn("DBM-VictorySound")
 
-if GetAddOnEnableState(UnitName("player"), "Grid") == 0 and GetAddOnEnableState(UnitName("player"), "Plexus") == 0 then
-    DisableAddOn("PlexusStatusRaidDebuff")
-end
-
 -- 一些常用的变量会被莫名其妙重置的, 必须在VARIABLES_LOADED里设置
 local f01 = CreateFrame("Frame")
 f01:RegisterEvent("VARIABLES_LOADED")

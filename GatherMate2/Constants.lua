@@ -509,6 +509,7 @@ local rare_spawns = {
 	[494] = {[493]=true,[495]=true,[496]=true,[497]=true,[498]=true}, -- nightshade
 	[493] = {[495]=true,[496]=true,[497]=true,[498]=true}, -- death blossom shares spawn with zone-specific herbs
 }
+GatherMate.rareNodes = rare_spawns
 Collector.rareNodes = rare_spawns
 -- Format zone = { "Database", "new node id"}
 local nodeRemap = {

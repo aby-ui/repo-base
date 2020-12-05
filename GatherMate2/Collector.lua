@@ -236,47 +236,19 @@ function Collector:addItem(skill,what)
 	-- db lock check
 	if GatherMate.db.profile.dbLocks[node_type] then return	end
 
-	local range = GatherMate.db.profile.cleanupRange[node_type]
 	-- special case for fishing and gas extraction guage the pointing direction
 	if node_type == fishSpell or node_type == gasSpell then
 		local yw, yh = GatherMate.HBD:GetZoneSize(zone)
 		if yw == 0 or yh == 0 then return end -- No zone size data
 		x,y = self:GetFloatingNodeLocation(x, y, yw, yh)
 	end
-	local nid = GatherMate:GetIDForNode(node_type, what)
-	-- if we couldnt find the node id for what was found, exit the add
-	if not nid then return end
-	local rares = self.rareNodes
-	-- run through the nearby's
-	local skip = false
+	-- avoid duplicate readds
 	local foundCoord = GatherMate:EncodeLoc(x, y)
-	local specialNode = false
-	local specialWhat = what
 	if foundCoord == lastNodeCoords and what == lastNode then return end
-	--[[ DISABLE SPECIAL NODE PROCESSING FOR HERBS
-	if self.specials[zone] and self.specials[zone][node_type] ~= nil then
-		specialWhat = GatherMate:GetNameForNode(node_type,self.specials[zone][node_type])
-		specialNode = true
-	end
-	--]]
-	for coord, nodeID in GatherMate:FindNearbyNode(zone, x, y, node_type, range, true) do
-		if (nodeID == nid or rares[nodeID] and rares[nodeID][nid]) then
-			GatherMate:RemoveNodeByID(zone, node_type, coord)
-		-- we're trying to add a rare node, but there is already a normal node present, skip the adding
-		elseif rares[nid] and rares[nid][nodeID] then
-			skip = true
-		elseif specialNode then -- handle special case zone mappings
-			skip = false
-			GatherMate:RemoveNodeByID(zone, node_type, coord)
-		end
-	end
 
-	if not skip then
-		if specialNode then
-			GatherMate:AddNode(zone, x, y, node_type, specialWhat)
-		else
-			GatherMate:AddNode(zone, x, y, node_type, what)
-		end
+	-- tell the core to add it
+	local added = GatherMate:AddNodeChecked(zone, x, y, node_type, what)
+	if added then
 		lastNode = what
 		lastNodeCoords = foundCoord
 	end

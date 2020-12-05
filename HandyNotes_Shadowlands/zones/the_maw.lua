@@ -532,32 +532,19 @@ map.nodes[46914169] = NPC({
     icon=3527519,
     note=L["venari_note"],
     rewards={
-        Achievement({id=14895, criteria={
-            51251, -- Vessel of Unforunate Spirits
-            51253, -- Extradimensional Pockets
-            51255, -- Encased Riftwalker Essence
-            51254, -- Animated Levitating Chain
-            51258, -- Animaflow Stabilizer
-            51256, -- Soul-Stabilizing Salve
-            51252, -- Ritual Prism of Fortune
-            51248, -- Bangle of Seniority
-            51257, -- Talisman of Destined Defiance
-            51249, -- Rank Insignia: Acquisitionist
-            51464, -- Possibility Matrix
-            51250, -- Loupe of Unusual Charm
-        }}), -- 'Ghast Five
+        Achievement({id=14895, oneline=true}), -- 'Ghast Five
 
-        -- Item({item=184620, quest=63202, note=L["Apprehensive"]}), -- Vessel of Unforunate Spirits
-        -- Item({item=184615, quest=63183, note=L["Apprehensive"]}), -- Extradimensional Pockets
-        -- Item({item=184613, quest=63177, note=L["Apprehensive"]}), -- Encased Riftwalker Essence
-        -- Item({item=184653, quest=nil, note=L["Tentative"]}), -- Animated Levitating Chain
-        -- Item({item=180949, quest=nil, note=L["Tentative"]}), -- Animaflow Stabilizer
-        -- Item({item=184617, quest=nil, note=L["Tentative"]}), -- Bangle of Seniority
-        -- Item({item=184605, quest=nil, note=L["Tentative"]}), -- Sigil of the Unseen
-        -- Item({item=184588, quest=nil, note=L["Ambivalent"]}), -- Soul-Stabilizing Salve
-        -- Item({item=184621, quest=nil, note=L["Ambivalent"]}), -- Ritual Prism of Fortune
-        -- Item({item=184618, quest=nil, note=L["Cordial"]}), -- Rank Insignia: Acquisitionist
-        -- Item({item=184619, quest=nil, note=L["Cordial"]}), -- Loupe of Unusual Charm
-        -- Item({item=180952, quest=nil, note=L["Appreciative"]}), -- Possibility Matrix
+        Item({item=184620, quest=63202, note=L["Apprehensive"]}), -- Vessel of Unforunate Spirits
+        Item({item=184615, quest=63183, note=L["Apprehensive"]}), -- Extradimensional Pockets
+        Item({item=184613, quest=63177, note=L["Apprehensive"]}), -- Encased Riftwalker Essence
+        Item({item=184653, quest=63217, note=L["Tentative"]}), -- Animated Levitating Chain
+        Item({item=180949, quest=61600, note=L["Tentative"]}), -- Animaflow Stabilizer
+        Item({item=184617, quest=nil, note=L["Tentative"]}), -- Bangle of Seniority
+        Item({item=184605, quest=63092, note=L["Tentative"]}), -- Sigil of the Unseen
+        Item({item=184588, quest=nil, note=L["Ambivalent"]}), -- Soul-Stabilizing Salve
+        Item({item=184621, quest=nil, note=L["Ambivalent"]}), -- Ritual Prism of Fortune
+        Item({item=184618, quest=nil, note=L["Cordial"]}), -- Rank Insignia: Acquisitionist
+        Item({item=184619, quest=nil, note=L["Cordial"]}), -- Loupe of Unusual Charm
+        Item({item=180952, quest=nil, note=L["Appreciative"]}), -- Possibility Matrix
     }
 })

@@ -32,7 +32,7 @@ L["rotbriar_note"] = "和 {npc:171684} 交談對話後在附近召喚稀有。"
 L["slumbering_note"] = "跑到迷霧中將會昏迷並被帶出。使用信號彈或有範圍法術的寵物將他擊出迷霧。"
 L["skuld_vit_note"] = "在被障礙物阻擋的山洞中。暗夜妖精必須使用 {spell:310143} 進入洞穴。他進入戰鬥後，障礙物將消失。"
 L["valfir_note"] = "在閃亮的靈魄種子下降過程中點選並使用 {spell:338045} 移除他的 {spell:338038} 增益。"
-L["wrigglemortis_note"] = "與 {npc:164179} 戰鬥刷新稀有。"
+L["wrigglemortis_note"] = "拉動 {npc:164179} 刷新稀有。"
 
 L["night_mare_note"] = [[
 前往特那希，並沿著西北懸崖的樹根路前往破損的車。在那的地面上可以拾取 {item:181243}。
@@ -83,9 +83,9 @@ L["tame_gladerunner_note"] = [[
 L["faryl_note"] = "讓天空中的生物來帶領亞登曠野的守軍吧。"
 L["glitterdust_note"] = "亞登曠野的生物或許看起來很溫馴，不過為了守護家園，他們願意拿出無與倫比的力量和勇氣。你也有這種覺悟嗎？"
 
-L["lost_book_note"] = nil
+L["lost_book_note"] = "把這本遺失的書交回給在記憶林地的 {npc:165867}"
 L["options_icons_faerie_tales"] = "{achievement:14788}"
-L["options_icons_faerie_tales_desc"] = nil
+L["options_icons_faerie_tales_desc"] = "顯示 {achievement:14788} 成就中遺失的書的位置"
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -234,7 +234,7 @@ L["nirvaska_note"] = "只在世界任務 {wq:死亡宣告} 存在時啟動"
 L["sabriel_note"] = "可以作為苦痛劇場的冠軍之一出現。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破壞他的護盾。"
 L["taskmaster_xox_note"] = "與 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
-L["theater_of_pain_note"] = nil
+L["theater_of_pain_note"] = "你每天第一次殺死首領都會有機會掉落坐騎。"
 L["zargox_the_reborn_note"] = "使用 {item:175841} 位於 {npc:157124} 頂上。獲得寶珠，你必須完成 {npc:157076} 的任務 {quest:57245} 之後再與他交談。"
 L["mixed_pool_note"] = [[
 從周圍怪物收集材料並扔進池中。每30個材料，根據所使用的組合，將刷新七個稀有中的一個。
@@ -378,11 +378,11 @@ L["addius_note"] = "意志軟弱的傢伙不該浪費我的時間，不過，要
 L["eyegor_note"] = "埃格準備好戰鬥了！"
 L["sylla_note"] = "誰也想不到居然能在這種糟糕的地方展開這麼特別的戰鬥，但人算不如天算。不要浪費我的時間。"
 
-L["avowed_ritualist_note"] = nil
-L["fugitive_soul_note"] = nil
-L["souls_absolved"] = nil
+L["avowed_ritualist_note"] = "帶附近的 {npc:160149} 到這裡來赦免他們"
+L["fugitive_soul_note"] = "帶 {npc:160149} 到附近的 {npc:166150} 來開始赦免儀式"
+L["souls_absolved"] = "靈魂被赦免"
 L["options_icons_fugitives"] = "{achievement:14274}"
-L["options_icons_fugitives_desc"] = nil
+L["options_icons_fugitives_desc"] = "顯示 {achievement:14274} 成就中赦免靈魂的位置"
 
 L["grand_inquisitor_note"] = "把10個 {item:180451} 交給 {npc:160248} 有機會獲得此罪孽石。"
 L["high_inquisitor_note"] = "把250個 {currency:1816} 交給 {npc:160248} 有機會獲得此罪孽石。"
@@ -428,6 +428,11 @@ L["chaotic_riftstone_note"] = [[
 ]]
 L["venari_note"] = "使用 {currency:1767} 購買淵喉和托迦司升級。"
 L["venari_upgrade"] = "{npc:162804} 升級"
+L["Ambivalent"] = nil
+L["Appreciative"] = nil
+L["Apprehensive"] = nil
+L["Cordial"] = nil
+L["Tentative"] = nil
 
 L["options_icons_bonus_boss"] = "獎勵精英"
 L["options_icons_bonus_boss_desc"] = "顯示獎勵精英位置。"

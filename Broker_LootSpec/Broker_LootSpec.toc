@@ -1,4 +1,4 @@
-## Interface: 80205
+## Interface: 90002
 ## Version: 1.6
 ## X-Date: 2019-10-02T17:32:10Z
 ## X-Website: https://www.wowace.com/projects/broker-lootspec

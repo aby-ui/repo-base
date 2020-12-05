@@ -707,7 +707,7 @@ function Simulationcraft:GetItemStrings(debugOutput)
       local level, _, _ = GetDetailedItemLevelInfo(itemLink)
       items[slotNum] = {
         string = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput),
-        name = name .. ' (' .. level .. ')',
+        name = name .. (level and ' (' .. level .. ')' or '')
       }
     end
   end
@@ -764,7 +764,7 @@ function Simulationcraft:GetBagItemStrings()
             if IsEquippableItem(itemLink) and quality ~= 6 then
               bagItems[#bagItems + 1] = {
                 string = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, false),
-                name = name .. ' (' .. level .. ')'
+                name = name .. (level and ' (' .. level .. ')' or '')
               }
             end
           end

@@ -56,6 +56,31 @@ GTFO.SpellID["333733"] = {
   sound = 1;
 };
 
+GTFO.SpellID["342582"] = {
+  --desc = "Death Fog (Mi'kai, As Argus, the Unmaker)";
+  sound = 1;
+};
+
+GTFO.SpellID["343421"] = {
+  --desc = "Cursed Heart (Astra, As Azshara)";
+  sound = 1;
+};
+
+GTFO.SpellID["340634"] = {
+  --desc = "Fungistorm (Humon'gozz)";
+  sound = 1;
+  tankSound = 0;
+};
+
+GTFO.SpellID["334562"] = {
+  --desc = "Suppress (Leerok the Scryer)";
+  sound = 2;
+};
+
+GTFO.SpellID["323811"] = {
+  --desc = "Pulsing Bile (Bubbleblood)";
+  sound = 1;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -83,6 +108,11 @@ GTFO.SpellID["323853"] = {
 
 GTFO.SpellID["326891"] = {
   --desc = "Anguish (Inquisitor Sigar)";
+  sound = 1;
+};
+
+GTFO.SpellID["324211"] = {
+  --desc = "Gaseous Collapse";
   sound = 1;
 };
 
@@ -141,6 +171,11 @@ GTFO.SpellID["334676"] = {
 
 GTFO.SpellID["323573"] = {
   --desc = "Residue (Fleeting Manifestation)";
+  sound = 1;
+};
+
+GTFO.SpellID["322212"] = {
+  --desc = "Growing Mistrust (Vestige of Doubt)";
   sound = 1;
 };
 
@@ -246,6 +281,27 @@ GTFO.SpellID["327100"] = {
   sound = 1;
 };
 
+GTFO.SpellID["320366"] = {
+  --desc = "Embalming Ichor (Surgeon Stitchflesh)";
+  sound = 1;
+};
+
+GTFO.SpellID["333485"] = {
+  --desc = "Disease Cloud (Rotspew)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["321956"] = {
+  --desc = "Comet Storm (Nalthor the Rimebinder)";
+  sound = 1;
+};
+
+GTFO.SpellID["320784"] = {
+  --desc = "Comet Storm (Nalthor the Rimebinder)";
+  sound = 1;
+};
+
 --- *****************
 --- * De Other Side *
 --- *****************
@@ -272,6 +328,19 @@ GTFO.SpellID["332672"] = {
   test = true;
 };
 
+--- ************
+--- * Torghast *
+--- ************
+
+GTFO.SpellID["319837"] = {
+  --desc = "Spike";
+  sound = 1;
+};
+
+GTFO.SpellID["329377"] = {
+  --desc = "Torturous Leer (Animimic)";
+  sound = 1;
+};
 
 
 end

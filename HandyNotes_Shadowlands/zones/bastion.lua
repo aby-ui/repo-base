@@ -457,7 +457,7 @@ map.nodes[40601890] = Treasure({
     note=L["gift_of_thenios"],
     rewards={
         Achievement({id=14311, criteria=50061}),
-        Transmog({item=181290, slot=L["cloak"], covenant=KYRIAN})
+        Transmog({item=181290, slot=L["cosmetic"], covenant=KYRIAN}) -- Harmonious Sigil of the Archon
     },
     pois={
         POI({41662331, 39551900}) -- Transport platform

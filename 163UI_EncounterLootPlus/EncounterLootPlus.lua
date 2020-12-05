@@ -1,6 +1,6 @@
 ELP_CURRENT_TIER = 9 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
-ELP_RING_SLOT = 12
-ELP_ALL_SLOT = 15
+ELP_RING_SLOT = Enum.ItemSlotFilterType.Finger
+ELP_ALL_SLOT = Enum.ItemSlotFilterType.NoFilter
 
 if not ELP_LAST_RAID_IDX then
     EJ_SelectTier(ELP_CURRENT_TIER)
@@ -36,7 +36,7 @@ local db = {
     range = 0,
     attr1 = 0,
     attr2 = 0,
-    forcelevel = 945,
+    -- forcelevel = 945,
     ITEMS = {},
 }
 
@@ -54,10 +54,19 @@ ELP.frame:RegisterEvent("VARIABLES_LOADED")
 ELP.frame:SetScript("OnEvent", function(self, event, arg1)
     if event == "VARIABLES_LOADED" then
         if ELPDATA and db ~= ELPDATA then
-            wipe(db)
-            u1copy(ELPDATA, db)
+            local newVersion = GetAddOnMetadata("163UI_EncounterLootPlus", "X-DataVersion")
+            local oldVersion = ELPDATA.dataVersion
+            if oldVersion == newVersion then
+                -- 使用之前保存的ITEM信息
+                wipe(db)
+                u1copy(ELPDATA, db)
+            else
+                -- 使用默认的空数据
+                db.dataVersion = newVersion
+            end
         end
         ELPDATA = db
+
         db.ITEMS = db.ITEMS or {}
         db.range = 0
 

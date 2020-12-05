@@ -467,8 +467,12 @@ local ATTRS = {
     [ITEM_MOD_STRENGTH_SHORT] = 5, --LE_UNIT_STAT_STRENGTH
     [ITEM_MOD_AGILITY_SHORT] = 6, --LE_UNIT_STAT_AGILITY
     [ITEM_MOD_INTELLECT_SHORT] = 8, --LE_UNIT_STAT_INTELLECT
-    --[ITEM_MOD_CORRUPTION] = 9,
-    --[ITEM_MOD_CORRUPTION_RESISTANCE] = 10,
+    CONDUIT_TYPE = 9, --1-效能导灵器, 2-耐久导灵器, 3-灵巧导灵器, 橙装记忆和小宠物是其他
+}
+local CONDUIT_TYPES = {
+    [CONDUIT_TYPE_POTENCY] = 1,
+    [CONDUIT_TYPE_FINESSE] = 2,
+    [CONDUIT_TYPE_ENDURANCE] = 3,
 }
 U1ATTRSNAME = {} for k,v in pairs(ATTRS) do U1ATTRSNAME[v] = k end
 
@@ -495,6 +499,11 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         tip:SetHyperlink(link, classID, specID)
     else
         tip:SetInventoryItem(link, slot)
+    end
+    local line2 = _G[tipname .. "TextLeft2"]:GetText()
+    if CONDUIT_TYPES[line2] then
+        stats = stats or {}
+        stats[ATTRS.CONDUIT_TYPE] = CONDUIT_TYPES[line2]
     end
     for i = 5, tip:NumLines(), 1 do
         local txt = _G[tipname .. "TextLeft"..i]:GetText()
