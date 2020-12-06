@@ -4792,6 +4792,10 @@ function gump:CriaJanelaInfo()
 				tabOBject.player = playerObject
 				tabOBject.spells_amt = my_spells_total
 				
+				if (not info.instancia.showing) then
+					return false
+				end
+
 				for index, actor in _ipairs (info.instancia.showing [info.atributo]._ActorTable) do 
 					if (actor.classe == class and actor ~= playerObject) then
 

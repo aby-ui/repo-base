@@ -194,11 +194,8 @@ function RSContainerPOI.GetMapAlreadyFoundContainerPOI(containerID, alreadyFound
 	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
 	-- This filter doesnt apply to opened entities or worldmap containers
 	if (not containerOpened and (containerInfo and not containerInfo.worldmap) and RSConfigDB.IsMaxSeenTimeContainerFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenContainerTimeFilter())) then
-		-- If the container is part of an achievement it doesnt make sence to hide it because time (it will always be there)
-		if (not RSAchievementDB.HasAchievement(containerID, mapID)) then
-			RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Visto hace demasiado tiempo.", containerID))
-			return
-		end
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Visto hace demasiado tiempo.", containerID))
+		return
 	end
 
 	-- Skip if the entity belongs to a different map that the one displaying

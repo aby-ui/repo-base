@@ -21,7 +21,7 @@ end
 
 local _
 local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
+local isWorldQuest = QuestUtils_IsQuestWorldQuest
 local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
@@ -72,6 +72,8 @@ function WorldQuestTracker.CheckQuestRewardDataForWidget (widget, noScheduleRefr
 	
 	if (not HaveQuestRewardData (questID)) then
 		
+
+		
 		--if this is from a re-schedule it already requested the data
 		if (not noRequestData) then
 			--ask que server for the reward data
@@ -91,7 +93,24 @@ function WorldQuestTracker.CheckQuestRewardDataForWidget (widget, noScheduleRefr
 end
 
 function WorldQuestTracker.HaveDataForQuest (questID)
-	return HaveQuestData (questID) and HaveQuestRewardData (questID)
+	local haveQuestData = HaveQuestData(questID)
+	local haveQuestRewardData = HaveQuestRewardData(questID)
+
+	if (not haveQuestData) then
+		if (WorldQuestTracker.__debug) then
+			WorldQuestTracker:Msg("no HaveQuestData(4) for quest", questID)
+		end
+		return
+	end
+
+	if (not haveQuestRewardData) then
+		if (WorldQuestTracker.__debug) then
+			WorldQuestTracker:Msg("no HaveQuestRewardData(1) for quest", questID)
+		end
+		return
+	end
+
+	return haveQuestData and haveQuestRewardData
 end
 
 --return the list of quests on the tracker
@@ -114,12 +133,12 @@ end
 --check if the zone is a new zone added
 function WorldQuestTracker.IsNewEXPZone (mapID)
 	--battle for azeroth
-	if (WorldQuestTracker.MapData.ZoneIDs.NAZJATAR == mapID) then
-		return true
+	--if (WorldQuestTracker.MapData.ZoneIDs.NAZJATAR == mapID) then
+	--	return true
 		
-	elseif (WorldQuestTracker.MapData.ZoneIDs.MECHAGON == mapID) then
-		return true
-	end
+	--elseif (WorldQuestTracker.MapData.ZoneIDs.MECHAGON == mapID) then
+	--	return true
+	--end
 	
 	--[=[
 	--Legion
@@ -194,24 +213,21 @@ function WorldQuestTracker.GetCurrentBountyQuest()
 	return WorldQuestTracker.DataProvider.bountyQuestID or 0
 end
 
-
-
 --return a map table with quest ids as key and true as value
 function WorldQuestTracker.GetAllWorldQuests_Ids()
 	local allQuests, dataUnavaliable = {}, false
 	for mapId, configTable in pairs (WorldQuestTracker.mapTables) do
-		--local taskInfo = GetQuestsForPlayerByMapID (mapId, 1007)
 		local taskInfo = GetQuestsForPlayerByMapID (mapId)
 		if (taskInfo and #taskInfo > 0) then
 			for i, info  in ipairs (taskInfo) do
 				local questID = info.questId
 				if (HaveQuestData (questID)) then
-					local isWorldQuest = QuestMapFrame_IsQuestWorldQuest (questID)
+					local isWorldQuest = isWorldQuest(questID)
 					if (isWorldQuest) then
 						allQuests [questID] = true
 						if (not HaveQuestRewardData (questID)) then
 							C_TaskQuest.RequestPreloadRewardData (questID)
-						end						
+						end
 					end
 				else
 					dataUnavaliable = true
@@ -221,7 +237,7 @@ function WorldQuestTracker.GetAllWorldQuests_Ids()
 			dataUnavaliable = true
 		end
 	end
-	
+
 	return allQuests, dataUnavaliable
 end
 
@@ -698,6 +714,9 @@ end
 	--pega o premio item da quest
 	function WorldQuestTracker.GetQuestReward_Item(questID)
 		if (not HaveQuestData (questID)) then
+			if (WorldQuestTracker.__debug) then
+				WorldQuestTracker:Msg("no HaveQuestData(5) for quest", questID)
+			end
 			return
 		end
 		

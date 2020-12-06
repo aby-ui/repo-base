@@ -15,8 +15,8 @@ L["anima_channeled"] = "靈魄連接到 %s"
 
 L["deifir_note"] = "騎上圈內的稀有並使用 {spell:319566} 和 {spell:319575} 使其減速和昏迷。"
 L["faeflayer_note"] = "瀑布後面隱藏的小洞穴內。"
-L["gormtamer_tizo_note"] = "擊殺 {npc:166735} 和 {npc:166736} 後騎著它們直到 {npc:164110} 刷新。"
-L["humongozz_note"] = "種植一個 {item:175247} 到潮濕的沃土後將刷新 {npc:164122}。在一分鐘後 {spell:319367}，稀有將刷新。區域內的許多怪物都會掉落蘑菇。"
+L["gormtamer_tizo_note"] = "在霧紗密林擊殺豎果妖精直到 {npc:164110} 刷新。"
+L["humongozz_note"] = "種植一個 {item:175247} 到潮濕的沃土後將刷新 {npc:164122}。區域內的許多怪物都會掉落蘑菇。"
 L["lehgo_note"] = "摧毀顫動的果姆蛋並擊殺 {npc:171827} 直到他出現。在洞穴內（入口在東南黃塵地穴內）"
 L["macabre_note"] = [[
 有多個刷新點。要召喚稀有，含另外兩個其他玩家戰在神秘的蘑菇環上並且對彼此跳舞。
@@ -26,7 +26,13 @@ L["macabre_note"] = [[
 • 玩家3對玩家1跳舞
 ]]
 L["mymaen_note"] = "擊殺區域內的腐棘精靈直到他做出表情並出現。"
-L["rainbowhorn_note"] = "\n|cffff5400品|r|cffffaa00嘗|r|cffffff00絕|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9麗|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r"
+L["rainbowhorn_note"] = [[
+找到並點擊|cffffff00符文雄鹿巨角|r來召喚稀有，角會在亞登曠野多個地點刷新。
+
+他總是在特那瓦勒北邊刷新，所以設定你的 {item:6948} 到那裏並注意附近區域的表情。
+
+|cffff5400品|r|cffffaa00嘗|r|cffffff00絕|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9麗|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r
+]]
 L["rootwrithe_note"] = "觸碰 {npc:167928} 直到稀有出現。"
 L["rotbriar_note"] = "和 {npc:171684} 交談對話後在附近召喚稀有。"
 L["slumbering_note"] = "跑到迷霧中將會昏迷並被帶出。使用信號彈或有範圍法術的寵物將他擊出迷霧。"
@@ -91,6 +97,7 @@ L["options_icons_faerie_tales_desc"] = "顯示 {achievement:14788} 成就中遺�
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
 
+L["aegeon_note"] = "在附近區域殺死敵人直到執法者艾吉昂作為增援刷新"
 L["ascended_council_note"] = "與其他四名玩家，同時點擊五個神廟的暮鐘召喚志士試煉場的 {npc:170899}。"
 L["aspirant_eolis_note"] = "拾取附近的 {item:180613} 並將該 NPC 設為目標後閱讀來啟動他。"
 L["baedos_note"] = "從周圍地區帶一盤發酵的普恩果給 {npc:161536} 直到她啟動。"
@@ -99,7 +106,7 @@ L["beasts_of_bastion"] = "昇靈堡的野獸"
 L["beasts_of_bastion_note"] = "和 {npc:161441} 交談召喚四個野獸中的一個。"
 L["bookkeeper_mnemis_note"] = "在此區有機率代替 {npc:166867} 單位刷新"
 L["cloudfeather_patriarch_note"] = "在此區擊殺 {npc:158110} 直到稀有做出表情和刷新"
-L["collector_astor_note"] = "閱讀散落在房間裡的全部六章 Mercia's Legacy，之後會收到來自 {npc:157979} 的悄悄話。和她交談會得到 {spell:333779}，讓你在西北方找到隱藏的 {item:180569}。交還章節將刷新稀有"
+L["collector_astor_note"] = "閱讀散落在房間裡的全部六章 Mercia's Legacy，之後和 {npc:157979} 交談會得到 {spell:333779}，讓你在西北方找到隱藏的 {item:180569}。交還章節將刷新稀有"
 L["corrupted_clawguard_note"] = "在房間或是在煉火哨站山上拾取 {item:180651} 並使用它修理 {npc:171300}"
 L["dark_watcher_note"] = "只在死亡後可以看到。和她交談會在攻擊之前對你施放 {spell:332830} "
 L["demi_hoarder_note"] = "剛開始時會有99層的 {spell:333874}，降低所承受的傷害。受到傷害後堆疊緩慢消失。稀有將沿著固定路徑移動，如果到達路徑終點則會消失"
@@ -235,7 +242,11 @@ L["sabriel_note"] = "可以作為苦痛劇場的冠軍之一出現。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破壞他的護盾。"
 L["taskmaster_xox_note"] = "與 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
 L["theater_of_pain_note"] = "你每天第一次殺死首領都會有機會掉落坐騎。"
-L["zargox_the_reborn_note"] = "使用 {item:175841} 位於 {npc:157124} 頂上。獲得寶珠，你必須完成 {npc:157076} 的任務 {quest:57245} 之後再與他交談。"
+L["zargox_the_reborn_note"] = [[
+使用 {item:175841} 位於 {npc:157124} 頂上。獲得寶珠，你必須完成 {npc:157076} 的任務 {quest:57245} 之後再與他交談。"
+
+假如 {npc:157124} 不起來，復活區域內的 {npc:157132} 直到他出現。
+]]
 L["mixed_pool_note"] = [[
 從周圍怪物收集材料並扔進池中。每30個材料，根據所使用的組合，將刷新七個稀有中的一個。
 
@@ -247,11 +258,6 @@ L["mixed_pool_note"] = [[
 
 殺死每個稀有一次來取得 {item:183903} 玩具。
 ]]
-L["Boneslurp"] = "骨漿"
-L["Corrupted"] = "腐化的原質"
-L["Oily"] = "油膩的無脊生物"
-L["Pulsing"] = "脈動水蛭"
-L["Violet"] = "藍紫誤製品"
 
 L["blackhound_cache"] = "黑犬儲物箱"
 L["blackhound_cache_note"] = "在憎惡體工廠召喚 {npc:157843}，然後護送他到黑犬崗哨。"
@@ -318,31 +324,27 @@ L["rotgut_note"] = "腐腸、殘渣。多出來的。你要打。"
 
 L["amalgamation_of_filth_note"] = "當世界任務 {wq:苦差事：拆除小隊} 可做時點選一個垃圾箱並使用 {spell:324115} 進入水裡。"
 L["amalgamation_of_light_note"] = "移動全部三個鏡子陷阱釋放稀有。"
-L["amalgamation_of_sin_note"] = "使用世界任務 {wq:召喚你的罪孽} 的能量催化劑獲得 {item:180376} 並使用它召喚稀有。"
+L["amalgamation_of_sin_note"] = "在世界任務 {wq:召喚你的罪孽} 的期間拾取能量催化劑有機會獲得 {item:180376} 並使用它來召喚稀有。"
 L["bog_beast_note"] = "世界任務 {wq:越髒越好} 期間有機率刷新後給 {npc:166206} 使用 {item:177880}。"
 L["endlurker_note"] = "在微光裂隙頂上點選 {npc:165229} 屍體附近的靈魄之樁並使用 {spell:321826}。"
 L["executioner_aatron_note"] = "擊殺三個附近的 {npc:166715} 移除 {spell:324872}。"
 L["famu_note"] = "和 {npc:166483} 交談觸發事件。"
 L["grand_arcanist_dimitri_note"] = "擊殺四個 {npc:167467} 釋放稀有。"
-L["harika_note"] = [[
-|cFFFF0000重要：|r 必須按照正確的順序上交物品，否則事件會出錯！
-
-在掘息坑西側，拾取 {item:176397} 和兩套 {item:176396}。把兩套工具交給弩車附近的 {npc:165328}，然後把箭交給 {npc:165327} 後和他交談擊落稀有。
-]]
+L["harika_note"] = "在掘息坑西側，拾取 {item:176397}，然後把箭交給 {npc:165327} 後和他交談擊落稀有。"
 L["innervus_note"] = "擊殺附近的 {npc:160375} 獲得 {item:177223} 並打開墓穴。"
 L["leeched_soul_note"] = "進入附近的墓穴。走到 {npc:165151} 附近開始事件。"
 L["lord_mortegore_note"] = "擊殺周圍的怪物獲得 {item:174378} 並使用它強化 {npc:161870}。所有四個徽記獲得強化，稀有就會刷新。"
 L["madalav_note"] = "點選鐵砧附近的馬達拉夫的錘子召喚他。"
 L["manifestation_of_wrath_note"] = "當世界任務 {wq:群聚靈魂} 的 {npc:169916} 恢復後有幾率刷新稀有。"
-L["scrivener_lenua_note"] = "返回禁忌圖書館 {npc:160753}。"
+L["scrivener_lenua_note"] = "返還禁忌圖書館 {npc:160753}。"
 L["sinstone_hoarder_note"] = "嘗試拾取 {npc:162503} 後稀有會出來。"
 L["sire_ladinas_note"] = "拾取附近的聖光餘暉並對 {npc:157733} 使用 {spell:313065}"
 L["soulstalker_doina_note"] = "當她逃跑時跟隨下樓並穿過鏡子。"
 L["tomb_burster_note"] = "當 {npc:155777} 被網困住時會刷新。擊殺附近 {npc:155769} 和幾波 {npc:155795} 直到稀有刷新。"
 L["worldedge_gorger_note"] = [[
-從禍孽森林和歿路沼澤的世界掠奪者、吞噬者和幼蟲獲得一個 {item:173939}。使用它點著界緣火盆召喚稀有。
+擊殺禍孽森林和歿路沼澤的{npc:160815}、{npc:163960}和{npc:163961}等類似怪物來獲得一個 {item:173939}。使用它點燃世界邊緣火盆來召喚稀有。
 
-有幾率掉落一個 {item:180583}，然後開始七天任務線獲得 {spell:333027} 坐騎。
+有幾率會掉落一個 {item:180583}，可以開啟七天任務線來獲得 {spell:333027} 坐騎。
 ]]
 
 L["dredglaive_note"] = "在 {npc:173671} 屍體的橋下。"
@@ -415,28 +417,38 @@ L["exos_note"] = [[
 • {item:182326}
 • {item:182327}
 
-組合全部三個銘刻製造 {item:182329}，可以用來在統禦祭壇召喚稀有。使用 {npc:173892} 到達上層。
+組合全部三個刻印製造 {item:182329}，可以用來在統禦祭壇召喚稀有。使用 {npc:173892} 到達上層。
 ]]
 
-L["soul_well_note"] = "從靈魂之井抓住冥殤爆發。"
+L["soul_well_note"] = "接住從靈魂之井爆發出來的冥魄。"
 L["obliterated_soul_shards_note"] = "在橋上收集 {item:177834}。"
 
-L["chaotic_riftstone_note"] = [[
-啟動 {spell:344157} 快速穿過淵喉。
+L["animaflow_teleporter_note"] = "啟動通往悲慘之牢的單向傳送"
+L["chaotic_riftstone_note"] ="啟動 {spell:344157} 來快速穿越淵喉。"
+L["venari_note"] = [[
+使用 {currency:1767} 購買淵喉和托迦司升級。
 
-需要從 {npc:162804} 取得 {item:184613} 用來升級。
+|cFFFF8C00在分身上，帳號通用的托迦司升級將顯示未完成|r
+|cFFFF8C00解鎖後，下面的完成狀態將更新！|r
 ]]
-L["venari_note"] = "使用 {currency:1767} 購買淵喉和托迦司升級。"
 L["venari_upgrade"] = "{npc:162804} 升級"
-L["Ambivalent"] = nil
-L["Appreciative"] = nil
-L["Apprehensive"] = nil
-L["Cordial"] = nil
-L["Tentative"] = nil
+L["torghast"] = "托迦司"
+L["Ambivalent"] = "籠統"
+L["Appreciative"] = "感謝"
+L["Apprehensive"] = "不安"
+L["Cordial"] = "友善"
+L["Tentative"] = "猶豫"
+
+L["stygian_cache"] = "冥魄聖匣"
+L["stygian_cache_note"] = "每次重生只有一個人能夠拾取"
 
 L["options_icons_bonus_boss"] = "獎勵精英"
 L["options_icons_bonus_boss_desc"] = "顯示獎勵精英位置。"
 L["options_icons_bonus_event"] = "獎勵事件"
 L["options_icons_bonus_event_desc"] = "顯示獎勵事件位置。"
-L["options_icons_riftstone"] = "混亂裂隙石"
+L["options_icons_riftstone"] = "{npc:174962}"
 L["options_icons_riftstone_desc"] = "顯示混亂裂隙石傳送者位置。"
+L["options_icons_grapples"] = "{npc:176308}"
+L["options_icons_grapples_desc"] = "顯示使用 {item:184653} 升級後可使用的 {npc:176308} 位置"
+L["options_icons_stygian_caches"] = "冥魄聖匣"
+L["options_icons_stygian_caches_desc"] = "顯示含有額外冥魄寶箱的位置"

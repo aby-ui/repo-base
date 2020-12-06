@@ -379,16 +379,13 @@ spell.successful_casted = how many times this spell has been casted successfully
 - players has its own spell cast counter inside Misc Container with the member "spell_cast".
 - the reason os this is spell_cast holds all spells regardless of its attribute (can hold healing/damage/energy/misc).
 
-spell.m_amt = multistrike hits.
-spell.m_dmg = multistrike damage.
-spell.m_crit = multistrike critical hits.
 spell.n_min = minimal damage made on a normal hit.
 spell.n_max = max damage made on a normal hit.
 spell.n_amt = amount of normal hits.
 spell.n_dmg = total amount made doing only normal hits.
 spell.c_min = minimal damage made on a critical hit.
 spell.c_max = max damage made on a critical hit.
-spell.c_amt = how many times this spell got a critical hit (doesn't count critical by multistrike).
+spell.c_amt = how many times this spell got a critical hit.
 spell.c_dmg = total amount made doing only normal hits.
 spell.g_amt = how many glancing blows this spell has.
 spell.g_dmg = total damage made by glancing blows.
@@ -438,16 +435,13 @@ spell.id = spellid.
 spell.totalabsorb = only for shields, tells how much damage this spell prevented.
 spell.absorbed = is how many healing has been absorbed by some external mechanic like Befouled on Fel Lord Zakuun encounter.
 spell.overheal = amount of overheal made by this spell.
-spell.m_amt = multistrike hits.
-spell.m_healed = multistrike healed.
-spell.m_crit = multistrike critical hits.
 spell.n_min = minimal heal made on a normal hit.
 spell.n_max = max heal made on a normal hit.
 spell.n_amt = amount of normal hits.
 spell.n_curado = total amount made doing only normal hits (weird name I know).
 spell.c_min = minimal heal made on a critical hit.
 spell.c_max = max heal made on a critical hit.
-spell.c_amt = how many times this spell got a critical hit (doesn't count critical by multistrike).
+spell.c_amt = how many times this spell got a critical hit.
 spell.c_curado = total amount made doing only normal hits.
 
 spell.targets = hash table containing {["targetname"] = total healing done by this spell on this target}

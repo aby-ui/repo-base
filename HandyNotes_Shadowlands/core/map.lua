@@ -133,7 +133,7 @@ function Map:IsNodeEnabled(node, coord, minimap)
     if not node:IsEnabled() then return false end
 
     -- Display the node based off the group display setting
-    return node.group:GetDisplay()
+    return node.group:GetDisplay(self.id)
 end
 
 function Map:Prepare()
@@ -213,7 +213,7 @@ function MinimapDataProvider:RefreshAllData()
     for coord, node in pairs(map.nodes) do
         if node._prepared and map:IsNodeEnabled(node, coord, true) then
             -- If this icon has a glow enabled, render it
-            local glow = node:GetGlow(true)
+            local glow = node:GetGlow(map.id, true)
             if glow then
                 glow[1] = coord -- update POI coord for this placement
                 glow:Render(self, MinimapPinTemplate)
@@ -313,7 +313,7 @@ function WorldMapDataProvider:RefreshAllData(fromOnShow)
     for coord, node in pairs(map.nodes) do
         if node._prepared and map:IsNodeEnabled(node, coord, false) then
             -- If this icon has a glow enabled, render it
-            local glow = node:GetGlow(false)
+            local glow = node:GetGlow(map.id, false)
             if glow then
                 glow[1] = coord -- update POI coord for this placement
                 glow:Render(self:GetMap(), WorldMapPinTemplate)

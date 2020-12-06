@@ -6,8 +6,16 @@ local INVSLOT_AVALIABLE = 16
 local S_ITEM_LEVEL = ITEM_LEVEL:gsub("%%d", "(%%d+)")
 --local GSS_Mode = 0;	--0=simply, 1=profession
 
-local MAX_LEVEL = 120
-local RATINGS_BONUS = { 72, 68, 85, 72, } --CRIT HASTE VERSATILITY MASTERY
+local MAX_LEVEL = 60
+local RATINGS_BONUS = { 35, 33, 40, 35, } --CRIT HASTE VERSATILITY MASTERY
+function GearStatsSummary_UpdateRatingBonus()
+    for i, v in ipairs({CR_CRIT_SPELL, CR_HASTE_SPELL, CR_VERSATILITY_DAMAGE_DONE, CR_MASTERY }) do
+        if GetCombatRating(v) > 0 then
+            RATINGS_BONUS[i] = math.floor(GetCombatRating(v) / GetCombatRatingBonus(v) + 0.5)
+        end
+    end
+    return RATINGS_BONUS
+end
 
 local tip
 if not tip then
@@ -214,6 +222,7 @@ function GearStatsSummary_OnEvent(self, event, ...)
 	end
 
 	if event == "ADDON_LOADED" and arg1=="Blizzard_InspectUI" then
+        GearStatsSummary_UpdateRatingBonus()
 		GearStatsSummary_SetupHook();
 	end
 
@@ -366,6 +375,9 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
 		end
     end
 	local inspecting = unit~="player"
+    if not inspecting then
+        GearStatsSummary_UpdateRatingBonus()
+    end
 
     local spec, classID, specID = GearStatsSummary_GetSpecName(unit)
 

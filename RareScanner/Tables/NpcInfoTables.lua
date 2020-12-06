@@ -9,12 +9,10 @@ private.NPC_INFO = {
 	[149040] = { zoneID = 0, displayID = 40301 }; --The Spiritweaver
 	[152500] = { zoneID = 0, displayID = 97777 }; --Deadsoul Amalgam
 	[152517] = { zoneID = 0, displayID = 90427 }; --Deadsoul Lifetaker
-	[152612] = { zoneID = 0, displayID = 92418 }; --Subjugator Klontzas
 	[153667] = { zoneID = 0, displayID = 91878 }; --Slagbelt
 	[155483] = { zoneID = 0, displayID = 95199 }; --Faeleaf Shimmerwing
 	[156158] = { zoneID = 0, displayID = 93906 }; --Adjutant Felipos
 	[156237] = { zoneID = 0, displayID = 94919 }; --Imperator Dara
-	[157125] = { zoneID = 1536, artID = { 1323 }, x = 0.284, y = 0.518, overlay = { "0.28-0.51","0.29-0.51" }, displayID = 94813 }; --Zargox the Reborn
 	[157145] = { zoneID = 0, displayID = 91889 }; --Gravitas
 	[157149] = { zoneID = 0, displayID = 92703 }; --Heartseeker
 	[158060] = { zoneID = 0, displayID = 55139 }; --Vinyeti <Vignette Placeholder>
@@ -135,7 +133,6 @@ private.NPC_INFO = {
 	[163525] = { zoneID = 0, displayID = 95200 }; --Lightseeker
 	[163531] = { zoneID = 0, displayID = 95201 }; --Great Duskflutter
 	[163538] = { zoneID = 0, displayID = 99060 }; --The Tarragrue
-	[164093] = { zoneID = 1565, artID = { 1338 }, x = 0.32799998, y = 0.444, overlay = { "0.32-0.44","0.36-0.48" }, displayID = 70936 }; --Macabre
 	[164212] = { zoneID = 0, displayID = 95381 }; --Commander Bonescythe
 	[164213] = { zoneID = 0, displayID = 95378 }; --Urdo the Invulerable
 	[164239] = { zoneID = 0, displayID = 94229 }; --Anomalous Worldeater
@@ -161,11 +158,10 @@ private.NPC_INFO = {
 	[168149] = { zoneID = 0, displayID = 94297 }; --Night Mare
 	[169379] = { zoneID = 0, displayID = 97024 }; --Lord Inquisitor Winze
 	[169503] = { zoneID = 0, displayID = 94195 }; --Deifir the Untamed
-	[169823] = { zoneID = 0, displayID = 94207 }; --Gorm Behemoth
+	[169823] = { zoneID = 1780, artID = { 1490 }, x = 0.6196178, y = 0.5126988, overlay = { "0.61-0.51" }, displayID = 94207 }; --Gorm Behemoth
 	[170385] = { zoneID = 0, displayID = 94278 }; --Writhing Misery
 	[170414] = { zoneID = 0, displayID = 88583 }; --Howling Spectre
 	[170417] = { zoneID = 0, displayID = 88739 }; --Animated Stygia
-	[171014] = { zoneID = 1533, artID = { 1321 }, x = 0.66, y = 0.436, overlay = { "0.66-0.43" }, displayID = 94640 }; --Collector Astorestes
 	[171216] = { zoneID = 0, displayID = 94305 }; --Fallen Aspirant Eolis
 	[171405] = { zoneID = 0, displayID = 95695 }; --Tricky Trik
 	[171540] = { zoneID = 0, displayID = 90580 }; --Swollen Experiment
@@ -179,7 +175,7 @@ private.NPC_INFO = {
 	[173080] = { zoneID = 0, displayID = 96338 }; --Wandering Death
 	[173114] = { zoneID = 0, displayID = 18722 }; --Invasive Decayfly
 	[173136] = { zoneID = 0, displayID = 98171 }; --Blightsmasher
-	[173238] = { zoneID = 0, displayID = 98490 }; --Deadsoul Strider
+	[173238] = { zoneID = 1806, artID = { 1521 }, x = 0.56176734, y = 0.8404454, overlay = { "0.56-0.84" }, displayID = 98490 }; --Deadsoul Strider
 	[173293] = { zoneID = 0, displayID = 94614 }; --Lady Audat
 	[174473] = { zoneID = 0, displayID = 97524 }; --Echo of Aella <Hand of Courage>
 	[175011] = { zoneID = 0, displayID = 548 }; --Foe Reaper 4000
@@ -1336,7 +1332,7 @@ private.NPC_INFO = {
 	[79629] = { zoneID = 543, artID = { 560 }, x = 0.382, y = 0.66199994, overlay = { "0.38-0.66" }, displayID = 55225, questID = { 35910 } }; --Stomper Kreego
 	[80371] = { zoneID = 543, artID = { 560 }, x = 0.756, y = 0.426, overlay = { "0.75-0.42" }, displayID = 55711, questID = { 37405 } }; --Typhon
 	[80725] = { zoneID = 543, artID = { 560 }, x = 0.412, y = 0.61, overlay = { "0.40-0.60","0.41-0.61" }, displayID = 58882, questID = { 36394 } }; --Sulfurious
-	[80868] = { zoneID = 543, artID = { 560 }, x = 0.46, y = 0.508, overlay = { "0.46-0.50" }, displayID = 56082, questID = { 36204,37390 } }; --Glut
+	[80868] = { zoneID = 543, artID = { 560 }, x = 0.46, y = 0.508, overlay = { "0.46-0.50" }, displayID = 56082, questID = { 36204 } }; --Glut
 	[81038] = { zoneID = 543, artID = { 560 }, x = 0.41799998, y = 0.45599997, overlay = { "0.41-0.45" }, displayID = 55863, questID = { 36391 } }; --Gelgor of the Blue Flame
 	[82058] = { zoneID = 543, artID = { 560 }, x = 0.726, y = 0.406, overlay = { "0.72-0.40" }, displayID = 56891, questID = { 37370 } }; --Depthroot
 	[82085] = { zoneID = 543, artID = { 560 }, x = 0.4, y = 0.79, overlay = { "0.4-0.79" }, displayID = 57020, questID = { 35335 } }; --Bashiok
@@ -2425,39 +2421,41 @@ private.NPC_INFO = {
 	[159156] = { zoneID = 1525, artID = { 1306 }, x = 0.64499146, y = 0.52717555, overlay = { "0.64-0.52" }, displayID = 93845 }; --Grand Inquisitor Nicu
 	[159157] = { zoneID = 1525, artID = { 1306 }, x = 0.6937098, y = 0.44692808, overlay = { "0.69-0.45","0.69-0.44","0.70-0.45" }, displayID = 93844 }; --Grand Inquisitor Aurica
 	[159496] = { zoneID = 1525, artID = { 1306 }, x = 0.3286, y = 0.1501, overlay = { "0.32-0.15","0.33-0.15" }, displayID = 98029, questID = { 61618 } }; --Forgemaster Madalav
-	[159503] = { zoneID = 1525, artID = { 1306 }, x = 0.31325924, y = 0.23250063, overlay = { "0.31-0.23","0.30-0.23","0.30-0.22" }, displayID = 98018, questID = { 62220 } }; --Stonefist
-	[160385] = { zoneID = 1525, artID = { 1306 }, x = 0.7893847, y = 0.49745554, overlay = { "0.78-0.49" }, displayID = 94233, questID = { 58130 } }; --Soulstalker Doina
-	[160392] = { zoneID = 1525, artID = { 1306 }, x = 0.65032786, y = 0.55971813, overlay = { "0.65-0.56","0.65-0.57","0.65-0.55" }, displayID = 94233, questID = { 58130 } }; --Soulstalker Doina
+	[159503] = { zoneID = 1525, artID = { 1306 }, x = 0.31325924, y = 0.23250063, overlay = { "0.31-0.23","0.30-0.23","0.30-0.22","0.24-0.39","0.29-0.26","0.29-0.25","0.3-0.23","0.32-0.24" }, displayID = 98018, questID = { 62220 } }; --Stonefist
+	[160385] = { zoneID = 1525, artID = { 1306 }, x = 0.78938466, y = 0.4974557, overlay = { "0.78-0.49" }, displayID = 94233, questID = { 58130 } }; --Soulstalker Doina
+	[160392] = { zoneID = 1525, artID = { 1306 }, x = 0.6503278, y = 0.55971825, overlay = { "0.65-0.56","0.65-0.57","0.65-0.55" }, displayID = 94233, questID = { 58130 } }; --Soulstalker Doina
 	[160393] = { zoneID = 1525, artID = { 1306 }, x = 0.4877531, y = 0.47958362, overlay = { "0.48-0.48","0.48-0.47" }, displayID = 94233, questID = { 58130 } }; --Soulstalker Doina
-	[160640] = { zoneID = 1525, artID = { 1306 }, x = 0.21397157, y = 0.36153713, overlay = { "0.21-0.36" }, displayID = 93068, questID = { 58210 } }; --Innervus
+	[160640] = { zoneID = 1525, artID = { 1306 }, x = 0.21397164, y = 0.36153728, overlay = { "0.21-0.36" }, displayID = 93068, questID = { 58210 } }; --Innervus
 	[160675] = { zoneID = 1525, artID = { 1306 }, x = 0.3781392, y = 0.68754023, overlay = { "0.38-0.69","0.37-0.68","0.38-0.68" }, displayID = 94369, questID = { 58213 } }; --Scrivener Lenua
 	[160802] = { zoneID = 1525, artID = { 1306 }, x = 0.37753534, y = 0.6883161, overlay = { "0.37-0.68" }, questID = { 58213 } }; --Scrivener Lenua
 	[160821] = { zoneID = 1525, artID = { 1306 }, x = 0.37720296, y = 0.7293052, overlay = { "0.38-0.72","0.39-0.71","0.37-0.72","0.38-0.69","0.38-0.71","0.38-0.70","0.39-0.72" }, displayID = 94402, questID = { 58259 } }; --Worldedge Gorger
-	[160857] = { zoneID = 1525, artID = { 1306 }, x = 0.336, y = 0.554, overlay = { "0.33-0.55","0.34-0.56","0.34-0.55","0.35-0.62" }, displayID = 94416, questID = { 58263 } }; --Sire Ladinas <The Lightrazed>
-	[161310] = { zoneID = 1525, artID = { 1306 }, x = 0.438, y = 0.50200003, overlay = { "0.43-0.50","0.44-0.51" }, displayID = 94521, questID = { 58441 } }; --Executioner Adrastia
-	[161891] = { zoneID = 1525, artID = { 1306 }, x = 0.7594525, y = 0.61593515, overlay = { "0.75-0.61","0.75-0.60","0.75-0.62" }, displayID = 94703, questID = { 58633 } }; --Lord Mortegore
+	[160857] = { zoneID = 1525, artID = { 1306 }, x = 0.336, y = 0.554, overlay = { "0.33-0.55","0.34-0.56","0.34-0.55","0.35-0.62","0.33-0.54","0.33-0.53","0.33-0.56","0.34-0.52","0.34-0.54","0.35-0.53","0.35-0.56" }, displayID = 94416, questID = { 58263 } }; --Sire Ladinas <The Lightrazed>
+	[161310] = { zoneID = 1525, artID = { 1306 }, x = 0.438, y = 0.50200003, overlay = { "0.43-0.50","0.44-0.51","0.42-0.49","0.43-0.49","0.43-0.52" }, displayID = 94521, questID = { 58441 } }; --Executioner Adrastia
+	[161891] = { zoneID = 1525, artID = { 1306 }, x = 0.7594525, y = 0.61593515, overlay = { "0.75-0.61","0.75-0.60","0.75-0.62","0.75-0.63","0.76-0.60" }, displayID = 94703, questID = { 58633 } }; --Lord Mortegore
 	[162481] = { zoneID = 1525, artID = { 1306 }, x = 0.675573, y = 0.3035788, overlay = { "0.67-0.30" }, displayID = 94868, questID = { 62252 } }; --Sinstone Hoarder
 	[164388] = { zoneID = 1525, artID = { 1306 }, x = 0.2531695, y = 0.4851632, overlay = { "0.25-0.48","0.24-0.49","0.26-0.49" }, displayID = 69223, questID = { 59584 } }; --Amalgamation of Light
 	[165152] = { zoneID = 1525, artID = { 1306 }, x = 0.67974335, y = 0.81797343, overlay = { "0.67-0.82","0.67-0.81" }, displayID = 90426, questID = { 59580 } }; --Leeched Soul
 	[165175] = { zoneID = 1525, artID = { 1306 }, x = 0.6791345, y = 0.8186687, overlay = { "0.67-0.82","0.67-0.81" }, displayID = 95669, questID = { 59580 } }; --Prideful Hulk
-	[165206] = { zoneID = 1525, artID = { 1306 }, x = 0.66648245, y = 0.5932914, overlay = { "0.66-0.59" }, displayID = 93853, questID = { 59582 } }; --Endlurker
+	[165206] = { zoneID = 1525, artID = { 1306 }, x = 0.66772294, y = 0.5930581, overlay = { "0.66-0.59" }, displayID = 93853, questID = { 59582 } }; --Endlurker
 	[165230] = { zoneID = 1525, artID = { 1306 }, x = 0.66588247, y = 0.59426856, overlay = { "0.66-0.59" }, questID = { 59582 } }; --Vignette Bunny
 	[165253] = { zoneID = 1525, artID = { 1306 }, x = 0.66487247, y = 0.71496665, overlay = { "0.66-0.71","0.66-0.70" }, displayID = 93077, questID = { 59595 } }; --Tollkeeper Varaboss
 	[165290] = { zoneID = 1525, artID = { 1306 }, x = 0.45080197, y = 0.79527265, overlay = { "0.45-0.79","0.46-0.78","0.45-0.78" }, displayID = 92703, questID = { 59612 } }; --Harika the Horrid
 	[165980] = { zoneID = 1525, artID = { 1306 }, x = 0.617894, y = 0.7891343, overlay = { "0.61-0.78" }, questID = { 60022 } }; --Geza
 	[165981] = { zoneID = 1525, artID = { 1306 }, x = 0.6184753, y = 0.7942918, overlay = { "0.61-0.79" }, questID = { 60022 } }; --Reza
-	[166292] = { zoneID = 1525, artID = { 1306 }, x = 0.33400002, y = 0.324, overlay = { "0.33-0.32","0.35-0.32","0.36-0.30","0.33-0.33","0.34-0.32","0.34-0.34","0.34-0.33","0.35-0.33","0.36-0.31","0.32-0.32","0.33-0.31","0.35-0.31","0.36-0.32","0.37-0.29","0.37-0.30","0.37-0.32","0.37-0.31","0.37-0.28","0.38-0.29" }, displayID = 96261 }; --Bog Beast
+	[166292] = { zoneID = 1525, artID = { 1306 }, x = 0.33400002, y = 0.324, overlay = { "0.33-0.32","0.35-0.32","0.36-0.30","0.33-0.33","0.34-0.32","0.34-0.34","0.34-0.33","0.35-0.33","0.36-0.31","0.32-0.32","0.33-0.31","0.35-0.31","0.36-0.32","0.37-0.29","0.37-0.30","0.37-0.32","0.37-0.31","0.37-0.28","0.38-0.29","0.31-0.31","0.32-0.33","0.32-0.31","0.36-0.3","0.37-0.3","0.38-0.31","0.38-0.32" }, displayID = 96261 }; --Bog Beast
 	[166393] = { zoneID = 1525, artID = { 1306 }, x = 0.53, y = 0.728, overlay = { "0.53-0.72" }, displayID = 91695, questID = { 59854 } }; --Amalgamation of Filth
-	[166521] = { zoneID = 1525, artID = { 1306 }, x = 0.62284184, y = 0.46619403, overlay = { "0.62-0.47","0.63-0.48","0.62-0.46","0.62-0.48","0.63-0.46","0.63-0.45","0.63-0.47" }, displayID = 94229, questID = { 59869 } }; --Famu the Infinite
-	[166576] = { zoneID = 1525, artID = { 1306 }, x = 0.3580477, y = 0.70567197, overlay = { "0.34-0.68","0.35-0.68","0.35-0.70","0.36-0.68","0.35-0.69","0.33-0.68" }, displayID = 95209, questID = { 59893 } }; --Azgar
+	[166483] = { zoneID = 1525, artID = { 1306 }, x = 0.62492, y = 0.47165966, overlay = { "0.62-0.47" } }; --Buscadora Hilda
+	[166521] = { zoneID = 1525, artID = { 1306 }, x = 0.6228454, y = 0.46624202, overlay = { "0.62-0.47","0.63-0.48","0.62-0.46","0.62-0.48","0.63-0.46","0.63-0.45","0.63-0.47" }, displayID = 94229, questID = { 59869 } }; --Famu the Infinite
+	[166576] = { zoneID = 1525, artID = { 1306 }, x = 0.35493422, y = 0.68712246, overlay = { "0.34-0.68","0.35-0.68","0.35-0.70","0.36-0.68","0.35-0.69","0.33-0.68" }, displayID = 95209, questID = { 59893 } }; --Azgar
 	[166679] = { zoneID = 1525, artID = { 1306 }, x = 0.5206616, y = 0.5181178, overlay = { "0.51-0.51","0.51-0.52","0.52-0.51","0.50-0.52","0.51-0.50","0.52-0.52" }, displayID = 95369, questID = { 59900 } }; --Hopecrusher
 	[166682] = { zoneID = 1525, artID = { 1306 }, x = 0.5198185, y = 0.5180235, overlay = { "0.51-0.51" }, questID = { 59900 } }; --Large Prey
-	[166710] = { zoneID = 1525, artID = { 1306 }, x = 0.36572033, y = 0.47040457, overlay = { "0.37-0.47","0.36-0.47","0.37-0.46","0.37-0.48" }, displayID = 94737, questID = { 59913 } }; --Executioner Aatron
+	[166710] = { zoneID = 1525, artID = { 1306 }, x = 0.36477566, y = 0.45844826, overlay = { "0.37-0.47","0.36-0.47","0.37-0.46","0.37-0.48","0.36-0.45" }, displayID = 94737, questID = { 59913 } }; --Executioner Aatron
 	[166993] = { zoneID = 1525, artID = { 1306 }, x = 0.61703396, y = 0.79504395, overlay = { "0.61-0.78","0.61-0.79","0.61-0.77" }, displayID = 96391, questID = { 60022 } }; --Huntmaster Petrus
 	[167464] = { zoneID = 1525, artID = { 1306 }, x = 0.20493434, y = 0.52991587, overlay = { "0.20-0.53","0.20-0.54","0.20-0.52" }, displayID = 96483, questID = { 60173 } }; --Grand Arcanist Dimitri
 	[169253] = { zoneID = 1525, artID = { 1306 }, x = 0.42969894, y = 0.7916527, overlay = { "0.42-0.79" }, questID = { 56877 } }; --Spell Bunny
 	[170048] = { zoneID = 1525, artID = { 1306 }, x = 0.49, y = 0.35, overlay = { "0.49-0.35","0.49-0.34","0.48-0.34","0.49-0.33","0.5-0.34" }, displayID = 95669, questID = { 60729 } }; --Manifestation of Wrath
 	[170434] = { zoneID = 1525, artID = { 1306 }, x = 0.6573, y = 0.2915, overlay = { "0.65-0.29" }, displayID = 94868, questID = { 60836 } }; --Amalgamation of Sin
+	[173468] = { zoneID = 1525, artID = { 1306 }, x = 0.6291, y = 0.4309, overlay = { "0.62-0.43" }, displayID = 98448, nameplate = true, questID = { 62050 } }; --Dead Blanchy
 	[151609] = { zoneID = 1527, artID = { 1343 }, x = 0.736, y = 0.742, overlay = { "0.73-0.74" }, displayID = 34745, zoneQuestId = { 55350 }, questID = { 55353 } }; --Sun Prophet Epaphos
 	[151852] = { zoneID = 1527, artID = { 1343 }, x = 0.816, y = 0.518, overlay = { "0.77-0.52","0.78-0.51","0.78-0.52","0.79-0.51","0.79-0.52","0.80-0.52","0.80-0.51","0.81-0.51" }, displayID = 91292, zoneQuestId = { 55350 }, questID = { 55461 } }; --Watcher Rehu
 	[151878] = { zoneID = 1527, artID = { 1343 }, x = 0.79, y = 0.638, overlay = { "0.79-0.63" }, displayID = 91296, zoneQuestId = { 57157,55350,56308 }, questID = { 58613 } }; --Sun King Nahkotep
@@ -2578,143 +2576,147 @@ private.NPC_INFO = {
 	[158659] = { zoneID = 1533, artID = { 1321 }, x = 0.42907804, y = 0.8265939, overlay = { "0.42-0.82","0.43-0.82" }, displayID = 92534, questID = { 57705 } }; --Herculon <Aspirant Assessor>
 	[160629] = { zoneID = 1533, artID = { 1321 }, x = 0.5131854, y = 0.4076909, overlay = { "0.51-0.40" }, displayID = 97288, questID = { 58648 } }; --Baedos
 	[160721] = { zoneID = 1533, artID = { 1321 }, x = 0.6013546, y = 0.7283028, overlay = { "0.60-0.73","0.6-0.73","0.60-0.74","0.60-0.72","0.59-0.73" }, displayID = 94310, questID = { 58222 } }; --Fallen Acolyte Erisne
-	[160882] = { zoneID = 1533, artID = { 1321 }, x = 0.5146215, y = 0.6743217, overlay = { "0.51-0.68","0.51-0.67" }, displayID = 94421, questID = { 58319 } }; --Nikara Blackheart
+	[160882] = { zoneID = 1533, artID = { 1321 }, x = 0.51065445, y = 0.6832439, overlay = { "0.51-0.68","0.51-0.67" }, displayID = 94421, questID = { 58319 } }; --Nikara Blackheart
 	[160985] = { zoneID = 1533, artID = { 1321 }, x = 0.514, y = 0.684, overlay = { "0.51-0.68","0.52-0.68","0.61-0.50" }, displayID = 94437, questID = { 58320 } }; --Selena the Reborn
 	[161527] = { zoneID = 1533, artID = { 1321 }, x = 0.55336857, y = 0.8028053, overlay = { "0.55-0.80" }, displayID = 94631, questID = { 60570 } }; --Sigilback
 	[161528] = { zoneID = 1533, artID = { 1321 }, x = 0.5533336, y = 0.8029497, overlay = { "0.55-0.80" }, displayID = 94632, questID = { 58526 } }; --Aethon
 	[161529] = { zoneID = 1533, artID = { 1321 }, x = 0.55323815, y = 0.80308104, overlay = { "0.55-0.80" }, displayID = 94634, questID = { 60569 } }; --Nemaeus
 	[161530] = { zoneID = 1533, artID = { 1321 }, x = 0.5534226, y = 0.8027526, overlay = { "0.55-0.80","0.56-0.81" }, displayID = 94633, questID = { 60571 } }; --Cloudtail
 	[161557] = { zoneID = 1533, artID = { 1321 }, x = 0.5533895, y = 0.8027858, overlay = { "0.55-0.80" }, questID = { 60571,60569,58526,60570 } }; --Generic Bunny
-	[163460] = { zoneID = 1533, artID = { 1321 }, x = 0.4134825, y = 0.4888028, overlay = { "0.41-0.47","0.41-0.48" }, displayID = 95126, questID = { 62650 } }; --Dionae
-	[167078] = { zoneID = 1533, artID = { 1321 }, x = 0.407, y = 0.529, overlay = { "0.40-0.52","0.40-0.53","0.41-0.52","0.41-0.54","0.41-0.55","0.40-0.51" }, displayID = 96395, questID = { 60314 } }; --Wingflayer the Cruel
-	[170439] = { zoneID = 1533, artID = { 1321 }, x = 0.61644536, y = 0.90588737, overlay = { "0.61-0.95","0.61-0.89","0.61-0.90","0.59-0.95","0.60-0.95","0.61-0.9","0.61-0.92","0.61-0.94","0.61-0.87","0.62-0.87","0.62-0.84","0.62-0.85","0.62-0.82" }, displayID = 94295 }; --Sundancer
-	[170623] = { zoneID = 1533, artID = { 1321 }, x = 0.2783, y = 0.301, overlay = { "0.27-0.30","0.27-0.3" }, displayID = 97349, questID = { 60883 } }; --Dark Watcher
-	[170659] = { zoneID = 1533, artID = { 1321 }, x = 0.48731723, y = 0.51372546, overlay = { "0.49-0.49","0.48-0.51","0.48-0.50" }, displayID = 93463, questID = { 60897 } }; --Basilofos, King of the Hill
-	[170832] = { zoneID = 1533, artID = { 1321 }, x = 0.5357, y = 0.88, overlay = { "0.53-0.88" }, displayID = 97392 }; --Champion of Loyalty
-	[170833] = { zoneID = 1533, artID = { 1321 }, x = 0.5357, y = 0.88, overlay = { "0.53-0.88","0.39-0.20" }, displayID = 97393 }; --Champion of Wisdom
-	[170834] = { zoneID = 1533, artID = { 1321 }, x = 0.5357, y = 0.88, overlay = { "0.53-0.88","0.64-0.69" }, displayID = 99355 }; --Champion of Purity
-	[170835] = { zoneID = 1533, artID = { 1321 }, x = 0.5357, y = 0.88, overlay = { "0.53-0.88" }, displayID = 99353 }; --Champion of Courage
-	[170836] = { zoneID = 1533, artID = { 1321 }, x = 0.5357, y = 0.88, overlay = { "0.53-0.88" }, displayID = 99354 }; --Champion of Humility
-	[170932] = { zoneID = 1533, artID = { 1321 }, x = 0.5076282, y = 0.5728171, overlay = { "0.49-0.59","0.50-0.59","0.50-0.58","0.49-0.58","0.49-0.56","0.5-0.59","0.50-0.57" }, displayID = 95116, questID = { 60978 } }; --Cloudfeather Guardian
+	[163460] = { zoneID = 1533, artID = { 1321 }, x = 0.4134825, y = 0.4888028, overlay = { "0.41-0.47","0.41-0.48","0.41-0.49" }, displayID = 95126, questID = { 62650 } }; --Dionae
+	[167078] = { zoneID = 1533, artID = { 1321 }, x = 0.40622327, y = 0.5306163, overlay = { "0.40-0.52","0.40-0.53","0.41-0.52","0.41-0.54","0.41-0.55","0.40-0.51" }, displayID = 96395, questID = { 60314 } }; --Wingflayer the Cruel
+	[170439] = { zoneID = 1533, artID = { 1321 }, x = 0.6189423, y = 0.80548084, overlay = { "0.61-0.95","0.61-0.89","0.61-0.90","0.59-0.95","0.60-0.95","0.61-0.9","0.61-0.92","0.61-0.94","0.61-0.87","0.62-0.87","0.62-0.84","0.62-0.85","0.62-0.82","0.58-0.96","0.60-0.79","0.61-0.79","0.61-0.91","0.61-0.93","0.61-0.80","0.61-0.86","0.62-0.81","0.62-0.83" }, displayID = 94295 }; --Sundancer
+	[170623] = { zoneID = 1533, artID = { 1321 }, x = 0.27825132, y = 0.30150113, overlay = { "0.27-0.30","0.27-0.3" }, displayID = 97349, questID = { 60883 } }; --Dark Watcher
+	[170659] = { zoneID = 1533, artID = { 1321 }, x = 0.48737985, y = 0.5140433, overlay = { "0.49-0.49","0.48-0.51","0.48-0.50" }, displayID = 93463, questID = { 60897 } }; --Basilofos, King of the Hill
+	[170832] = { zoneID = 1533, artID = { 1321 }, x = 0.5349574, y = 0.8814117, overlay = { "0.53-0.88","0.32-0.17","0.53-0.84","0.53-0.87","0.54-0.86" }, displayID = 97392, questID = { 60933 } }; --Champion of Loyalty
+	[170833] = { zoneID = 1533, artID = { 1321 }, x = 0.5349574, y = 0.8814117, overlay = { "0.53-0.88","0.39-0.20" }, displayID = 97393, questID = { 60933 } }; --Champion of Wisdom
+	[170834] = { zoneID = 1533, artID = { 1321 }, x = 0.53461504, y = 0.87902945, overlay = { "0.53-0.88","0.64-0.69","0.53-0.87","0.52-0.86","0.54-0.86" }, displayID = 99355, questID = { 60933 } }; --Champion of Purity
+	[170835] = { zoneID = 1533, artID = { 1321 }, x = 0.53461504, y = 0.87902945, overlay = { "0.53-0.88","0.53-0.87","0.33-0.59","0.54-0.87","0.54-0.86","0.54-0.80" }, displayID = 99353, questID = { 60933 } }; --Champion of Courage
+	[170836] = { zoneID = 1533, artID = { 1321 }, x = 0.53461504, y = 0.87902945, overlay = { "0.53-0.88","0.53-0.87","0.54-0.87" }, displayID = 99354, questID = { 60933 } }; --Champion of Humility
+	[170932] = { zoneID = 1533, artID = { 1321 }, x = 0.508684, y = 0.5738141, overlay = { "0.49-0.59","0.50-0.59","0.50-0.58","0.49-0.58","0.49-0.56","0.5-0.59","0.50-0.57" }, displayID = 95116, questID = { 60978 } }; --Cloudfeather Guardian
 	[171008] = { zoneID = 1533, artID = { 1321 }, x = 0.4348464, y = 0.25243407, overlay = { "0.43-0.25","0.43-0.24","0.42-0.24","0.43-0.26" }, displayID = 94277, questID = { 60997 } }; --Unstable Memory
-	[171009] = { zoneID = 1533, artID = { 1321 }, x = 0.50631094, y = 0.18803789, overlay = { "0.50-0.19","0.51-0.16","0.50-0.18","0.51-0.17","0.52-0.18" }, displayID = 92664, questID = { 60998 } }; --Enforcer Aegeon
+	[171009] = { zoneID = 1533, artID = { 1321 }, x = 0.50631094, y = 0.18803789, overlay = { "0.50-0.19","0.51-0.16","0.50-0.18","0.51-0.17","0.52-0.18","0.50-0.17","0.50-0.20","0.51-0.18","0.51-0.19","0.52-0.16","0.52-0.17" }, displayID = 92664, questID = { 60998 } }; --Enforcer Aegeon
 	[171010] = { zoneID = 1533, artID = { 1321 }, x = 0.5687, y = 0.4793, overlay = { "0.56-0.47" }, displayID = 92677, questID = { 60999 } }; --Corrupted Clawguard
-	[171011] = { zoneID = 1533, artID = { 1321 }, x = 0.37068382, y = 0.41907135, overlay = { "0.37-0.41","0.36-0.41","0.37-0.40","0.38-0.40","0.4-0.41","0.40-0.40","0.40-0.39","0.39-0.40","0.4-0.40","0.40-0.41" }, displayID = 96574, questID = { 61069 } }; --Demi the Relic Hoarder
-	[171013] = { zoneID = 1533, artID = { 1321 }, x = 0.4804134, y = 0.42945686, overlay = { "0.63-0.35","0.48-0.42","0.47-0.42","0.55-0.14","0.59-0.52","0.48-0.43","0.47-0.44","0.48-0.41","0.52-0.32","0.54-0.15","0.55-0.15","0.59-0.51","0.63-0.36" }, displayID = 94225, questID = { 61001 } }; --Embodied Hunger
-	[171040] = { zoneID = 1533, artID = { 1321 }, x = 0.635, y = 0.359, overlay = { "0.63-0.35","0.47-0.42","0.59-0.51","0.52-0.32","0.55-0.14","0.47-0.43","0.48-0.42","0.56-0.14" }, displayID = 94227 }; --Xixin the Ravening
-	[171041] = { zoneID = 1533, artID = { 1321 }, x = 0.6337722, y = 0.36676857, overlay = { "0.48-0.42","0.56-0.14","0.59-0.51","0.47-0.42","0.51-0.32","0.52-0.31","0.55-0.14","0.63-0.36","0.48-0.43","0.59-0.52" }, displayID = 94229 }; --Worldfeaster Chronn
+	[171011] = { zoneID = 1533, artID = { 1321 }, x = 0.37068382, y = 0.41907135, overlay = { "0.37-0.41","0.36-0.41","0.37-0.40","0.38-0.40","0.4-0.41","0.40-0.40","0.40-0.39","0.39-0.40","0.4-0.40","0.40-0.41","0.39-0.41" }, displayID = 96574, questID = { 61069 } }; --Demi the Relic Hoarder
+	[171013] = { zoneID = 1533, artID = { 1321 }, x = 0.48143077, y = 0.43547288, overlay = { "0.63-0.35","0.48-0.42","0.47-0.42","0.55-0.14","0.59-0.52","0.48-0.43","0.47-0.44","0.48-0.41","0.52-0.32","0.54-0.15","0.55-0.15","0.59-0.51","0.63-0.36","0.44-0.47","0.46-0.42","0.47-0.41","0.47-0.43","0.55-0.12","0.55-0.13","0.56-0.14","0.59-0.50","0.59-0.53","0.6-0.52" }, displayID = 94225, questID = { 61001 } }; --Embodied Hunger
+	[171014] = { zoneID = 1533, artID = { 1321 }, x = 0.66011477, y = 0.43675017, overlay = { "0.66-0.43" }, displayID = 94640 }; --Collector Astorestes
+	[171040] = { zoneID = 1533, artID = { 1321 }, x = 0.635, y = 0.359, overlay = { "0.63-0.35","0.47-0.42","0.59-0.51","0.52-0.32","0.55-0.14","0.47-0.43","0.48-0.42","0.56-0.14","0.45-0.41","0.46-0.42","0.46-0.43","0.46-0.41","0.47-0.40","0.48-0.43","0.48-0.44","0.49-0.42","0.63-0.36" }, displayID = 94227 }; --Xixin the Ravening
+	[171041] = { zoneID = 1533, artID = { 1321 }, x = 0.6337722, y = 0.36676857, overlay = { "0.48-0.42","0.56-0.14","0.59-0.51","0.47-0.42","0.51-0.32","0.52-0.31","0.55-0.14","0.63-0.36","0.48-0.43","0.59-0.52","0.46-0.43","0.47-0.43","0.48-0.44","0.48-0.39","0.50-0.39","0.51-0.21","0.52-0.32","0.57-0.53","0.57-0.49","0.58-0.51","0.58-0.53","0.59-0.50","0.63-0.35","0.63-0.37","0.64-0.33" }, displayID = 94229 }; --Worldfeaster Chronn
 	[171189] = { zoneID = 1533, artID = { 1321 }, x = 0.5628987, y = 0.6255139, overlay = { "0.57-0.63","0.55-0.64","0.55-0.62","0.55-0.63","0.55-0.61","0.55-0.60","0.56-0.62","0.56-0.60","0.57-0.62","0.57-0.64","0.56-0.61","0.54-0.64","0.56-0.63" }, displayID = 92192, questID = { 59022 } }; --Bookkeeper Mnemis
 	[171211] = { zoneID = 1533, artID = { 1321 }, x = 0.3259029, y = 0.23344253, overlay = { "0.32-0.23" }, displayID = 97513, questID = { 61083 } }; --Aspirant Eolis
-	[171255] = { zoneID = 1533, artID = { 1321 }, x = 0.44617543, y = 0.65186054, overlay = { "0.46-0.63","0.45-0.68","0.45-0.65","0.44-0.65","0.44-0.64","0.45-0.67","0.46-0.64","0.46-0.66","0.47-0.66","0.47-0.65","0.45-0.64","0.45-0.66","0.47-0.64","0.46-0.67" }, displayID = 99373, questID = { 61082 } }; --Echo of Aella <Hand of Courage>
+	[171255] = { zoneID = 1533, artID = { 1321 }, x = 0.44907248, y = 0.68714154, overlay = { "0.46-0.63","0.45-0.68","0.45-0.65","0.44-0.65","0.44-0.64","0.45-0.67","0.46-0.64","0.46-0.66","0.47-0.66","0.47-0.65","0.45-0.64","0.45-0.66","0.47-0.64","0.46-0.67","0.44-0.68" }, displayID = 99373, questID = { 61082 } }; --Echo of Aella <Hand of Courage>
 	[171300] = { zoneID = 1533, artID = { 1321 }, x = 0.56866336, y = 0.47669974, overlay = { "0.56-0.47" }, displayID = 92676, questID = { 60999 } }; --Malfunctioning Clawguard
 	[171327] = { zoneID = 1533, artID = { 1321 }, x = 0.3164255, y = 0.55161184, overlay = { "0.31-0.55","0.3-0.55" }, displayID = 96773 }; --Reekmonger
 	[176543] = { zoneID = 1533, artID = { 1321 }, x = 0.43494788, y = 0.25236973, overlay = { "0.43-0.25" }, questID = { 60997 } }; --Generic Bunny
+	[356756] = { zoneID = 1533, artID = { 1321 }, x = 0.4163994, y = 0.54530585, overlay = { "0.41-0.54" } }; --null
 	[157058] = { zoneID = 1536, artID = { 1323 }, x = 0.26386362, y = 0.26326233, overlay = { "0.26-0.26","0.26-0.27" }, displayID = 96437, questID = { 58335 } }; --Corspecutter Moroc
+	[157125] = { zoneID = 1536, artID = { 1323 }, x = 0.284, y = 0.518, overlay = { "0.28-0.51","0.29-0.51" }, displayID = 94813 }; --Zargox the Reborn
 	[157294] = { zoneID = 1536, artID = { 1323 }, x = 0.5818754, y = 0.7424983, overlay = { "0.58-0.74" }, displayID = 85116, questID = { 61718 } }; --Pulsing Leech
 	[157307] = { zoneID = 1536, artID = { 1323 }, x = 0.58207834, y = 0.7421619, overlay = { "0.58-0.74" }, displayID = 88651 }; --Gelloh
 	[157308] = { zoneID = 1536, artID = { 1323 }, x = 0.58207834, y = 0.7421619, overlay = { "0.58-0.74" }, displayID = 100404, questID = { 61719 } }; --Corrupted Sediment
 	[157309] = { zoneID = 1536, artID = { 1323 }, x = 0.58207834, y = 0.7421619, overlay = { "0.58-0.74","0.59-0.73" }, displayID = 48942 }; --Violet Mistake
 	[157310] = { zoneID = 1536, artID = { 1323 }, x = 0.58207834, y = 0.7421619, overlay = { "0.58-0.74" }, displayID = 95844 }; --Boneslurp
 	[157311] = { zoneID = 1536, artID = { 1323 }, x = 0.58207834, y = 0.7421619, overlay = { "0.58-0.74" }, displayID = 70785 }; --Burnblister
-	[157312] = { zoneID = 1536, artID = { 1323 }, x = 0.5819174, y = 0.74228823, overlay = { "0.58-0.74","0.58-0.73" }, displayID = 96717, questID = { 61724 } }; --Oily Invertebrate
+	[157312] = { zoneID = 1536, artID = { 1323 }, x = 0.5819174, y = 0.74228823, overlay = { "0.58-0.74","0.58-0.73","0.59-0.73" }, displayID = 96717, questID = { 61724 } }; --Oily Invertebrate
 	[158406] = { zoneID = 1536, artID = { 1323 }, x = 0.62122285, y = 0.75793827, overlay = { "0.62-0.75","0.61-0.76","0.61-0.75" }, displayID = 93547, questID = { 58006 } }; --Scunner
-	[159105] = { zoneID = 1536, artID = { 1323 }, x = 0.48775795, y = 0.23780097, overlay = { "0.49-0.22","0.48-0.23","0.49-0.23","0.48-0.24","0.49-0.24","0.50-0.25" }, displayID = 94041, questID = { 58005 } }; --Collector Kash
-	[159753] = { zoneID = 1536, artID = { 1323 }, x = 0.53847086, y = 0.18769942, overlay = { "0.53-0.18","0.53-0.19","0.54-0.19","0.53-0.16","0.54-0.18" }, displayID = 92246, questID = { 58004 } }; --Ravenomous
+	[159105] = { zoneID = 1536, artID = { 1323 }, x = 0.491376, y = 0.23357612, overlay = { "0.49-0.22","0.48-0.23","0.49-0.23","0.48-0.24","0.49-0.24","0.50-0.25","0.46-0.24","0.47-0.24","0.48-0.25","0.48-0.22","0.49-0.19","0.49-0.21","0.5-0.21","0.5-0.24","0.50-0.24","0.50-0.26","0.50-0.22","0.51-0.27" }, displayID = 94041, questID = { 58005 } }; --Collector Kash
+	[159753] = { zoneID = 1536, artID = { 1323 }, x = 0.53847086, y = 0.18769942, overlay = { "0.53-0.18","0.53-0.19","0.54-0.19","0.53-0.16","0.54-0.18","0.53-0.20","0.54-0.17","0.54-0.16","0.54-0.20","0.55-0.16","0.55-0.19" }, displayID = 92246, questID = { 58004 } }; --Ravenomous
 	[159886] = { zoneID = 1536, artID = { 1323 }, x = 0.55508965, y = 0.2362254, overlay = { "0.55-0.23","0.55-0.24","0.55-0.22","0.54-0.22","0.54-0.21" }, displayID = 96755, questID = { 58003 } }; --Sister Chelicerae
-	[160059] = { zoneID = 1536, artID = { 1323 }, x = 0.5055597, y = 0.20127194, overlay = { "0.50-0.20" }, displayID = 94146, questID = { 58091 } }; --Taskmaster Xox <Master Taskmaster>
+	[160059] = { zoneID = 1536, artID = { 1323 }, x = 0.5055597, y = 0.20127194, overlay = { "0.50-0.20","0.49-0.20","0.50-0.19","0.50-0.2","0.51-0.2" }, displayID = 94146, questID = { 58091 } }; --Taskmaster Xox <Master Taskmaster>
 	[161105] = { zoneID = 1536, artID = { 1323 }, x = 0.3875425, y = 0.42594925, overlay = { "0.38-0.42","0.38-0.43","0.39-0.43","0.37-0.43" }, displayID = 94450, questID = { 58332 } }; --Indomitable Schmitd
-	[161857] = { zoneID = 1536, artID = { 1323 }, x = 0.504, y = 0.624, overlay = { "0.50-0.62","0.50-0.63","0.5-0.63" }, displayID = 96863, questID = { 58629 } }; --Nirvaska the Summoner
+	[161857] = { zoneID = 1536, artID = { 1323 }, x = 0.504, y = 0.624, overlay = { "0.50-0.62","0.50-0.63","0.5-0.63","0.50-0.61","0.50-0.64" }, displayID = 96863, questID = { 58629 } }; --Nirvaska the Summoner
 	[162180] = { zoneID = 1536, artID = { 1323 }, x = 0.2417045, y = 0.43033752, overlay = { "0.24-0.43","0.24-0.42" }, displayID = 95830, questID = { 58678 } }; --Thread Mistress Leeda
-	[162528] = { zoneID = 1536, artID = { 1323 }, x = 0.4244468, y = 0.5348967, overlay = { "0.42-0.53","0.43-0.52","0.46-0.53","0.43-0.53","0.43-0.51" }, displayID = 98589, questID = { 58768 } }; --Smorgas the Feaster
+	[162528] = { zoneID = 1536, artID = { 1323 }, x = 0.4244468, y = 0.5348967, overlay = { "0.42-0.53","0.43-0.52","0.46-0.53","0.43-0.53","0.43-0.51","0.44-0.53","0.44-0.52","0.45-0.51","0.49-0.55" }, displayID = 98589, questID = { 58768 } }; --Smorgas the Feaster
 	[162586] = { zoneID = 1536, artID = { 1323 }, x = 0.44072732, y = 0.5076287, overlay = { "0.44-0.50","0.43-0.51","0.44-0.52","0.44-0.51","0.45-0.52","0.43-0.50","0.45-0.51","0.43-0.52" }, displayID = 96462, questID = { 58783 } }; --Tahonta
-	[162588] = { zoneID = 1536, artID = { 1323 }, x = 0.5706589, y = 0.518426, overlay = { "0.57-0.52","0.57-0.50","0.56-0.51","0.57-0.51","0.56-0.49" }, displayID = 94882, questID = { 58837 } }; --Gristlebeak
-	[162669] = { zoneID = 1536, artID = { 1323 }, x = 0.45064247, y = 0.2826186, overlay = { "0.44-0.28","0.45-0.28","0.44-0.29","0.45-0.27","0.45-0.30","0.45-0.26","0.44-0.27","0.45-0.25","0.46-0.26","0.46-0.27" }, displayID = 96375, questID = { 58835 } }; --Devour'us
-	[162690] = { zoneID = 1536, artID = { 1323 }, x = 0.6603312, y = 0.3532475, overlay = { "0.65-0.36","0.65-0.35","0.66-0.35","0.65-0.37","0.65-0.34","0.66-0.34","0.66-0.36" }, displayID = 94945, questID = { 58851 } }; --Nerissa Heartless
+	[162588] = { zoneID = 1536, artID = { 1323 }, x = 0.56318784, y = 0.51264864, overlay = { "0.57-0.52","0.57-0.50","0.56-0.51","0.57-0.51","0.56-0.49" }, displayID = 94882, questID = { 58837 } }; --Gristlebeak
+	[162669] = { zoneID = 1536, artID = { 1323 }, x = 0.45249733, y = 0.2661742, overlay = { "0.44-0.28","0.45-0.28","0.44-0.29","0.45-0.27","0.45-0.30","0.45-0.26","0.44-0.27","0.45-0.25","0.46-0.26","0.46-0.27","0.44-0.26","0.46-0.28" }, displayID = 96375, questID = { 58835 } }; --Devour'us
+	[162690] = { zoneID = 1536, artID = { 1323 }, x = 0.6593677, y = 0.3538065, overlay = { "0.65-0.36","0.65-0.35","0.66-0.35","0.65-0.37","0.65-0.34","0.66-0.34","0.66-0.36","0.66-0.37","0.67-0.36","0.67-0.37" }, displayID = 94945, questID = { 58851 } }; --Nerissa Heartless
 	[162711] = { zoneID = 1536, artID = { 1323 }, x = 0.76849556, y = 0.57056034, overlay = { "0.76-0.57","0.76-0.56" }, displayID = 83605, questID = { 58868 } }; --Deadly Dapperling
 	[162727] = { zoneID = 1536, artID = { 1323 }, x = 0.5251591, y = 0.35823247, overlay = { "0.52-0.35","0.53-0.35","0.51-0.35","0.52-0.34","0.51-0.36","0.52-0.36","0.53-0.34" }, displayID = 48061, questID = { 58870 } }; --Bubbleblood
 	[162741] = { zoneID = 1536, artID = { 1323 }, x = 0.31487226, y = 0.35398957, overlay = { "0.31-0.35" }, displayID = 97217, questID = { 58872 } }; --Gieger <Experimental Construct>
 	[162767] = { zoneID = 1536, artID = { 1323 }, x = 0.5373759, y = 0.61318064, overlay = { "0.53-0.61","0.53-0.60","0.54-0.60" }, displayID = 34902, questID = { 58875 } }; --Pesticide
-	[162797] = { zoneID = 1536, artID = { 1323 }, x = 0.48114756, y = 0.5185999, overlay = { "0.46-0.45","0.48-0.51","0.54-0.45","0.53-0.45","0.47-0.45","0.47-0.52","0.48-0.50","0.48-0.52" }, displayID = 96897, questID = { 58878 } }; --Deepscar <Pit Hound>
+	[162797] = { zoneID = 1536, artID = { 1323 }, x = 0.46786094, y = 0.45552233, overlay = { "0.46-0.45","0.48-0.51","0.54-0.45","0.53-0.45","0.47-0.45","0.47-0.52","0.48-0.50","0.48-0.52" }, displayID = 96897, questID = { 58878 } }; --Deepscar <Pit Hound>
 	[162818] = { zoneID = 1536, artID = { 1323 }, x = 0.3356494, y = 0.8072747, overlay = { "0.33-0.80","0.33-0.8","0.33-0.79" }, displayID = 96452 }; --Wartusk
-	[162819] = { zoneID = 1536, artID = { 1323 }, x = 0.33555752, y = 0.8075535, overlay = { "0.33-0.80","0.33-0.79","0.34-0.79" }, displayID = 93242, questID = { 58889 } }; --Warbringer Mal'Korak
+	[162819] = { zoneID = 1536, artID = { 1323 }, x = 0.33555752, y = 0.8075535, overlay = { "0.33-0.80","0.33-0.79","0.34-0.79","0.33-0.82","0.33-0.77","0.33-0.78","0.33-0.8","0.34-0.78" }, displayID = 93242, questID = { 58889 } }; --Warbringer Mal'Korak
 	[168147] = { zoneID = 1536, artID = { 1323 }, x = 0.504, y = 0.482, overlay = { "0.50-0.48","0.50-0.47" }, displayID = 98584, questID = { 58784 } }; --Sabriel the Bonecleaver
 	[168148] = { zoneID = 1536, artID = { 1323 }, x = 0.50200003, y = 0.48400003, overlay = { "0.50-0.48" }, displayID = 99075, questID = { 58784 } }; --Drolkrad
-	[170995] = { zoneID = 1536, artID = { 1323 }, x = 0.33400002, y = 0.81, overlay = { "0.33-0.81" }, displayID = 96452 }; --Warbringer Mal'korak
+	[170995] = { zoneID = 1536, artID = { 1323 }, x = 0.33400002, y = 0.81, overlay = { "0.33-0.81","0.33-0.80" }, displayID = 96452 }; --Warbringer Mal'korak
 	[174108] = { zoneID = 1536, artID = { 1323 }, x = 0.7287974, y = 0.28918695, overlay = { "0.72-0.28","0.73-0.29" }, displayID = 97852, questID = { 62369 } }; --Necromantic Anomaly
 	[154330] = { zoneID = 1543, artID = { 1329 }, x = 0.274, y = 0.494, overlay = { "0.27-0.49","0.19-0.46","0.2-0.45" }, displayID = 92779, questID = { 57509 } }; --Eternas the Tormentor
-	[156203] = { zoneID = 1543, artID = { 1329 }, x = 0.37080708, y = 0.44629222, overlay = { "0.37-0.44","0.35-0.42","0.36-0.41","0.36-0.43","0.36-0.44","0.37-0.45","0.35-0.44","0.35-0.43","0.34-0.41","0.34-0.42","0.36-0.45" }, displayID = 38549, questID = { 63371 } }; --Stygian Incinerator
-	[157833] = { zoneID = 1543, artID = { 1329 }, x = 0.40031254, y = 0.3984764, overlay = { "0.40-0.41","0.39-0.41","0.39-0.39","0.40-0.39","0.39-0.43","0.4-0.39","0.4-0.43","0.38-0.39","0.39-0.38","0.39-0.40","0.39-0.42","0.40-0.40","0.40-0.42","0.4-0.42","0.41-0.40" }, displayID = 97331, questID = { 57469 } }; --Borr-Geth
-	[157964] = { zoneID = 1543, artID = { 1329 }, x = 0.258, y = 0.313, overlay = { "0.25-0.31","0.25-0.32" }, displayID = 96828, questID = { 57482 } }; --Adjutant Dekaris
-	[158025] = { zoneID = 1543, artID = { 1329 }, x = 0.486, y = 0.814, overlay = { "0.48-0.81" }, displayID = 31119, questID = { 62282 } }; --Darklord Taraxis
+	[156203] = { zoneID = 1543, artID = { 1329 }, x = 0.37067178, y = 0.44631377, overlay = { "0.37-0.44","0.35-0.42","0.36-0.41","0.36-0.43","0.36-0.44","0.37-0.45","0.35-0.44","0.35-0.43","0.34-0.41","0.34-0.42","0.36-0.45" }, displayID = 38549, questID = { 63371 } }; --Stygian Incinerator
+	[157833] = { zoneID = 1543, artID = { 1329 }, x = 0.38985398, y = 0.4130237, overlay = { "0.40-0.41","0.39-0.41","0.39-0.39","0.40-0.39","0.39-0.43","0.4-0.39","0.4-0.43","0.38-0.39","0.39-0.38","0.39-0.40","0.39-0.42","0.40-0.40","0.40-0.42","0.4-0.42","0.41-0.40","0.38-0.41" }, displayID = 97331, questID = { 57469 } }; --Borr-Geth
+	[157964] = { zoneID = 1543, artID = { 1329 }, x = 0.25928944, y = 0.31159225, overlay = { "0.25-0.31","0.25-0.32" }, displayID = 96828, questID = { 57482 } }; --Adjutant Dekaris
+	[158025] = { zoneID = 1543, artID = { 1329 }, x = 0.486, y = 0.814, overlay = { "0.48-0.81","0.47-0.81","0.48-0.80","0.48-0.78" }, displayID = 31119, questID = { 62282 } }; --Darklord Taraxis
 	[158278] = { zoneID = 1543, artID = { 1329 }, x = 0.462, y = 0.72800004, overlay = { "0.46-0.72","0.46-0.74" }, displayID = 93213, questID = { 158278 } }; --Nascent Devourer
-	[158314] = { zoneID = 1543, artID = { 1329 }, x = 0.31971738, y = 0.21237443, overlay = { "0.31-0.21","0.31-0.18","0.31-0.19","0.32-0.20","0.32-0.17","0.32-0.18","0.33-0.18","0.33-0.21","0.33-0.22","0.34-0.2","0.34-0.21","0.32-0.21","0.30-0.21","0.30-0.20","0.32-0.19","0.32-0.22" }, displayID = 97776, questID = { 59183 } }; --Drifting Sorrow
+	[158314] = { zoneID = 1543, artID = { 1329 }, x = 0.31971738, y = 0.21237443, overlay = { "0.31-0.21","0.31-0.18","0.31-0.19","0.32-0.20","0.32-0.17","0.32-0.18","0.33-0.18","0.33-0.21","0.33-0.22","0.34-0.2","0.34-0.21","0.32-0.21","0.30-0.21","0.30-0.20","0.32-0.19","0.32-0.22","0.31-0.20" }, displayID = 97776, questID = { 59183 } }; --Drifting Sorrow
 	[160770] = { zoneID = 1543, artID = { 1329 }, x = 0.612, y = 0.482, overlay = { "0.61-0.48" }, displayID = 97237, questID = { 62281 } }; --Darithis the Bleak
-	[162452] = { zoneID = 1543, artID = { 1329 }, x = 0.254, y = 0.152, overlay = { "0.25-0.15","0.26-0.15","0.26-0.14" }, displayID = 92418, questID = { 59230 } }; --Dartanos <Flayer of Souls>
+	[162452] = { zoneID = 1543, artID = { 1329 }, x = 0.25826964, y = 0.14800903, overlay = { "0.25-0.15","0.26-0.15","0.26-0.14","0.25-0.14" }, displayID = 92418, questID = { 59230 } }; --Dartanos <Flayer of Souls>
 	[162829] = { zoneID = 1543, artID = { 1329 }, x = 0.2617715, y = 0.3744676, overlay = { "0.26-0.37","0.26-0.36","0.27-0.36","0.27-0.37","0.27-0.35" }, displayID = 92410, questID = { 63374 } }; --Razkazzar <Lord of Axes>
-	[162844] = { zoneID = 1543, artID = { 1329 }, x = 0.188, y = 0.574, overlay = { "0.18-0.57","0.19-0.58","0.19-0.57" }, displayID = 92410, questID = { 61140 } }; --Dath Rezara <Lord of Blades>
-	[162845] = { zoneID = 1543, artID = { 1329 }, x = 0.25359043, y = 0.4875919, overlay = { "0.25-0.48","0.25-0.47","0.26-0.48","0.25-0.46","0.25-0.49","0.26-0.46" }, displayID = 92410, questID = { 60991 } }; --Orrholyn <Lord of Bloodletting>
+	[162844] = { zoneID = 1543, artID = { 1329 }, x = 0.18959875, y = 0.57968295, overlay = { "0.18-0.57","0.19-0.58","0.19-0.57","0.19-0.56" }, displayID = 100462, questID = { 61140 } }; --Dath Rezara <Lord of Blades>
+	[162845] = { zoneID = 1543, artID = { 1329 }, x = 0.25359043, y = 0.4875919, overlay = { "0.25-0.48","0.25-0.47","0.26-0.48","0.25-0.46","0.25-0.49","0.26-0.46","0.26-0.47" }, displayID = 92410, questID = { 60991 } }; --Orrholyn <Lord of Bloodletting>
 	[162849] = { zoneID = 1543, artID = { 1329 }, x = 0.162, y = 0.504, overlay = { "0.16-0.50","0.16-0.51","0.16-0.49","0.17-0.49","0.17-0.50" }, displayID = 92410, questID = { 162849 } }; --Morguliax <Lord of Decapitation>
-	[162965] = { zoneID = 1543, artID = { 1329 }, x = 0.20803142, y = 0.29680428, overlay = { "0.20-0.29","0.21-0.29","0.21-0.30","0.21-0.28" }, displayID = 93213, questID = { 58918 } }; --Huwerath
-	[164064] = { zoneID = 1543, artID = { 1329 }, x = 0.48796147, y = 0.18306938, overlay = { "0.48-0.17","0.48-0.18","0.47-0.18" }, displayID = 92781, questID = { 60667 } }; --Obolos <Prime Collector>
+	[162965] = { zoneID = 1543, artID = { 1329 }, x = 0.21179168, y = 0.29409614, overlay = { "0.20-0.29","0.21-0.29","0.21-0.30","0.21-0.28" }, displayID = 93213, questID = { 58918 } }; --Huwerath
+	[164064] = { zoneID = 1543, artID = { 1329 }, x = 0.48796147, y = 0.18306938, overlay = { "0.48-0.17","0.48-0.18","0.47-0.18","0.47-0.17","0.49-0.17","0.49-0.16" }, displayID = 92781, questID = { 60667 } }; --Obolos <Prime Collector>
 	[165047] = { zoneID = 1543, artID = { 1329 }, x = 0.36206466, y = 0.37340462, overlay = { "0.36-0.37","0.35-0.36","0.37-0.36","0.37-0.35","0.37-0.37","0.38-0.37","0.36-0.36" }, displayID = 92410, questID = { 59441 } }; --Soulsmith Yol-Mattar
 	[166398] = { zoneID = 1543, artID = { 1329 }, x = 0.3598901, y = 0.4149425, overlay = { "0.34-0.39","0.34-0.41","0.35-0.43","0.35-0.42","0.35-0.41","0.36-0.41","0.35-0.40","0.36-0.39" }, displayID = 92416, questID = { 60834 } }; --Soulforger Rhovus
-	[168693] = { zoneID = 1543, artID = { 1329 }, x = 0.2952014, y = 0.25453824, overlay = { "0.27-0.23","0.28-0.25","0.28-0.24","0.29-0.23","0.27-0.27","0.27-0.24","0.29-0.25","0.26-0.29","0.27-0.28","0.28-0.23","0.3-0.25" }, displayID = 94400, questID = { 61346 } }; --Cyrixia <The Willbreaker>
+	[168693] = { zoneID = 1543, artID = { 1329 }, x = 0.29483408, y = 0.26978904, overlay = { "0.27-0.23","0.28-0.25","0.28-0.24","0.29-0.23","0.27-0.27","0.27-0.24","0.29-0.25","0.26-0.29","0.27-0.28","0.28-0.23","0.3-0.25","0.29-0.26" }, displayID = 94400, questID = { 61346 } }; --Cyrixia <The Willbreaker>
 	[169102] = { zoneID = 1543, artID = { 1329 }, x = 0.28207123, y = 0.44510227, overlay = { "0.28-0.44","0.22-0.41","0.23-0.42","0.27-0.43","0.27-0.44","0.27-0.45","0.28-0.46" }, displayID = 97472, questID = { 61136 } }; --Agonix
 	[169827] = { zoneID = 1543, artID = { 1329 }, x = 0.425, y = 0.212, overlay = { "0.42-0.21","0.42-0.20","0.42-0.19" }, displayID = 97235, questID = { 60666 } }; --Ekphoras, Herald of Grief
 	[170301] = { zoneID = 1543, artID = { 1329 }, x = 0.192, y = 0.412, overlay = { "0.19-0.41","0.19-0.42" }, displayID = 97234, questID = { 60788 } }; --Apholeias, Herald of Loss
 	[170302] = { zoneID = 1543, artID = { 1329 }, x = 0.266, y = 0.13, overlay = { "0.26-0.13","0.26-0.11","0.28-0.11","0.28-0.12","0.29-0.12" }, displayID = 97237, questID = { 60789 } }; --Talaporas, Herald of Pain
-	[170303] = { zoneID = 1543, artID = { 1329 }, x = 0.205, y = 0.694, overlay = { "0.20-0.69" }, displayID = 97236, questID = { 62260 } }; --Exos, Herald of Domination
-	[170634] = { zoneID = 1543, artID = { 1329 }, x = 0.29799998, y = 0.59599996, overlay = { "0.29-0.59","0.31-0.6","0.31-0.60" }, displayID = 92780, questID = { 170634 } }; --Shadeweaver Zeris
-	[170692] = { zoneID = 1543, artID = { 1329 }, x = 0.306, y = 0.686, overlay = { "0.30-0.68" }, displayID = 94397, questID = { 60903 } }; --Krala <Death's Wings>
-	[170711] = { zoneID = 1543, artID = { 1329 }, x = 0.329, y = 0.652, overlay = { "0.32-0.65" }, displayID = 97235, questID = { 60909 } }; --Dolos <Death's Knife>
-	[170731] = { zoneID = 1543, artID = { 1329 }, x = 0.274, y = 0.713, overlay = { "0.27-0.71" }, displayID = 100037, questID = { 60914 } }; --Thanassos <Death's Voice>
-	[170774] = { zoneID = 1543, artID = { 1329 }, x = 0.23200001, y = 0.53, overlay = { "0.23-0.53","0.23-0.52","0.22-0.52" }, displayID = 96828, questID = { 60915 } }; --Eketra <The Impaler>
-	[170787] = { zoneID = 1543, artID = { 1329 }, x = 0.2601, y = 0.5497, overlay = { "0.26-0.54" }, displayID = 100039, questID = { 60920 } }; --Akros <Death's Hammer>
+	[170303] = { zoneID = 1543, artID = { 1329 }, x = 0.205, y = 0.694, overlay = { "0.20-0.69","0.19-0.69","0.2-0.69","0.2-0.70","0.20-0.68","0.20-0.70","0.21-0.70","0.21-0.71" }, displayID = 97236, questID = { 62260 } }; --Exos, Herald of Domination
+	[170634] = { zoneID = 1543, artID = { 1329 }, x = 0.32876346, y = 0.66408396, overlay = { "0.29-0.59","0.31-0.6","0.31-0.60","0.32-0.67","0.33-0.66","0.33-0.67","0.34-0.67","0.32-0.66" }, displayID = 92780, questID = { 170634 } }; --Shadeweaver Zeris
+	[170692] = { zoneID = 1543, artID = { 1329 }, x = 0.3084571, y = 0.68669134, overlay = { "0.30-0.68","0.31-0.67","0.31-0.68","0.32-0.68" }, displayID = 94397, questID = { 60903 } }; --Krala <Death's Wings>
+	[170711] = { zoneID = 1543, artID = { 1329 }, x = 0.28042084, y = 0.6062194, overlay = { "0.32-0.65","0.28-0.57","0.28-0.59","0.28-0.60" }, displayID = 97235, questID = { 60909 } }; --Dolos <Death's Knife>
+	[170731] = { zoneID = 1543, artID = { 1329 }, x = 0.2738269, y = 0.71498764, overlay = { "0.27-0.71","0.25-0.69" }, displayID = 100037, questID = { 60914 } }; --Thanassos <Death's Voice>
+	[170774] = { zoneID = 1543, artID = { 1329 }, x = 0.237524, y = 0.53412914, overlay = { "0.23-0.53","0.23-0.52","0.22-0.52" }, displayID = 96828, questID = { 60915 } }; --Eketra <The Impaler>
+	[170787] = { zoneID = 1543, artID = { 1329 }, x = 0.34095797, y = 0.7452792, overlay = { "0.26-0.54","0.34-0.73","0.34-0.74" }, displayID = 100039, questID = { 60920 } }; --Akros <Death's Hammer>
 	[171316] = { zoneID = 1543, artID = { 1329 }, x = 0.27344117, y = 0.17552327, overlay = { "0.27-0.17","0.26-0.18","0.27-0.18" }, displayID = 97472, questID = { 61125 } }; --Malevolent Stygia
-	[171317] = { zoneID = 1543, artID = { 1329 }, x = 0.264, y = 0.122, overlay = { "0.26-0.12","0.27-0.13","0.28-0.13","0.28-0.14","0.26-0.13","0.27-0.10","0.27-0.12","0.27-0.14","0.28-0.15" }, displayID = 97472, questID = { 61106 } }; --Conjured Death
+	[171317] = { zoneID = 1543, artID = { 1329 }, x = 0.27725777, y = 0.13048199, overlay = { "0.26-0.12","0.27-0.13","0.28-0.13","0.28-0.14","0.26-0.13","0.27-0.10","0.27-0.12","0.27-0.14","0.28-0.15" }, displayID = 97472, questID = { 61106 } }; --Conjured Death
 	[171783] = { zoneID = 1543, artID = { 1329 }, x = 0.404, y = 0.516, overlay = { "0.40-0.51","0.41-0.51","0.41-0.50","0.41-0.5" }, displayID = 97472 }; --Malevolent Death
 	[172207] = { zoneID = 1543, artID = { 1329 }, x = 0.38642764, y = 0.28802338, overlay = { "0.38-0.29","0.38-0.28","0.43-0.46","0.43-0.47","0.43-0.48","0.44-0.49" }, displayID = 97235, questID = { 62618 } }; --Odalrik
-	[172521] = { zoneID = 1543, artID = { 1329 }, x = 0.556, y = 0.631, overlay = { "0.55-0.63" }, displayID = 96828, questID = { 62210 } }; --Sanngror the Torturer
-	[172523] = { zoneID = 1543, artID = { 1329 }, x = 0.6, y = 0.65800005, overlay = { "0.6-0.65" }, displayID = 92416, questID = { 62209 } }; --Houndmaster Vasanok
-	[172524] = { zoneID = 1543, artID = { 1329 }, x = 0.614, y = 0.78400004, overlay = { "0.61-0.78" }, displayID = 96556, questID = { 62211 } }; --Skittering Broodmother
+	[172521] = { zoneID = 1543, artID = { 1329 }, x = 0.556, y = 0.631, overlay = { "0.55-0.63","0.56-0.64" }, displayID = 96828, questID = { 62210 } }; --Sanngror the Torturer
+	[172523] = { zoneID = 1543, artID = { 1329 }, x = 0.6, y = 0.65800005, overlay = { "0.6-0.65","0.59-0.63","0.60-0.64" }, displayID = 92416, questID = { 62209 } }; --Houndmaster Vasanok
+	[172524] = { zoneID = 1543, artID = { 1329 }, x = 0.614, y = 0.78400004, overlay = { "0.61-0.78","0.61-0.79" }, displayID = 96556, questID = { 62211 } }; --Skittering Broodmother
 	[172577] = { zoneID = 1543, artID = { 1329 }, x = 0.236, y = 0.218, overlay = { "0.23-0.21","0.23-0.22" }, displayID = 96312, questID = { 61519 } }; --Orophea
-	[172862] = { zoneID = 1543, artID = { 1329 }, x = 0.374, y = 0.62, overlay = { "0.37-0.62","0.37-0.65","0.38-0.62","0.37-0.60","0.37-0.66","0.37-0.61","0.39-0.60","0.39-0.58","0.38-0.61" }, displayID = 94426, questID = { 61568 } }; --Yero the Skittish
-	[173086] = { zoneID = 1543, artID = { 1329 }, x = 0.406, y = 0.59599996, overlay = { "0.40-0.59" }, displayID = 97237, questID = { 61728 } }; --Valis the Cruel
-	[175012] = { zoneID = 1543, artID = { 1329 }, x = 0.2686917, y = 0.51199985, overlay = { "0.38-0.51","0.29-0.49","0.36-0.52","0.31-0.48","0.33-0.49","0.36-0.50","0.42-0.51","0.26-0.51","0.30-0.46","0.31-0.46","0.33-0.47","0.33-0.48","0.34-0.48","0.39-0.50","0.42-0.52","0.44-0.51" }, displayID = 100033 }; --Ikras the Devourer
+	[172862] = { zoneID = 1543, artID = { 1329 }, x = 0.374, y = 0.62, overlay = { "0.37-0.62","0.37-0.65","0.38-0.62","0.37-0.60","0.37-0.66","0.37-0.61","0.39-0.60","0.39-0.58","0.38-0.61","0.36-0.61","0.36-0.62","0.37-0.59","0.37-0.58","0.38-0.58","0.38-0.63","0.38-0.60","0.39-0.59" }, displayID = 94426, questID = { 61568 } }; --Yero the Skittish
+	[173086] = { zoneID = 1543, artID = { 1329 }, x = 0.406, y = 0.59599996, overlay = { "0.40-0.59","0.39-0.59","0.40-0.60","0.40-0.6" }, displayID = 97237, questID = { 61728 } }; --Valis the Cruel
+	[175012] = { zoneID = 1543, artID = { 1329 }, x = 0.25001523, y = 0.5937386, overlay = { "0.38-0.51","0.29-0.49","0.36-0.52","0.31-0.48","0.33-0.49","0.36-0.50","0.42-0.51","0.26-0.51","0.30-0.46","0.31-0.46","0.33-0.47","0.33-0.48","0.34-0.48","0.39-0.50","0.42-0.52","0.44-0.51","0.30-0.48","0.25-0.5","0.25-0.49","0.27-0.49","0.28-0.46","0.28-0.48","0.29-0.47","0.33-0.45","0.35-0.49","0.35-0.52","0.36-0.49","0.36-0.5","0.39-0.65","0.39-0.67","0.39-0.66","0.39-0.49","0.40-0.50","0.41-0.51","0.42-0.50","0.43-0.52","0.43-0.50","0.43-0.51","0.44-0.52","0.45-0.53","0.45-0.54","0.25-0.59" }, displayID = 100033 }; --Ikras the Devourer
 	[175821] = { zoneID = 1543, artID = { 1329 }, x = 0.22676702, y = 0.4224243, overlay = { "0.22-0.42","0.21-0.42","0.21-0.41" }, displayID = 95169, questID = { 63044 } }; --Ratgusher <10,000 Mawrats in a Suit of Armor>
 	[176141] = { zoneID = 1543, artID = { 1329 }, x = 0.546, y = 0.58, overlay = { "0.54-0.58" }, displayID = 100426 }; --Rakul <The Soul Ravager>
-	[160448] = { zoneID = 1565, artID = { 1338 }, x = 0.67407376, y = 0.5125298, overlay = { "0.67-0.51","0.67-0.52","0.67-0.50","0.66-0.52" }, displayID = 96274, questID = { 59221 } }; --Hunter Vivanna <The Wild Hunt>
+	[160448] = { zoneID = 1565, artID = { 1338 }, x = 0.67407376, y = 0.5125298, overlay = { "0.67-0.51","0.67-0.52","0.67-0.50","0.66-0.52","0.64-0.51","0.66-0.51" }, displayID = 96274, questID = { 59221 } }; --Hunter Vivanna <The Wild Hunt>
 	[161481] = { zoneID = 1565, artID = { 1338 }, x = 0.402, y = 0.53, overlay = { "0.40-0.53" }, displayID = 22174 }; --Vinyeti <Vignette Placeholder>
-	[163229] = { zoneID = 1565, artID = { 1338 }, x = 0.48538068, y = 0.768936, overlay = { "0.48-0.75","0.48-0.76","0.49-0.76","0.48-0.77" }, displayID = 97941, questID = { 58987 } }; --Dustbrawl
-	[163370] = { zoneID = 1565, artID = { 1338 }, x = 0.5398497, y = 0.7610398, overlay = { "0.53-0.75","0.53-0.76" }, displayID = 94201, questID = { 59006 } }; --Gormbore
+	[163229] = { zoneID = 1565, artID = { 1338 }, x = 0.48538068, y = 0.768936, overlay = { "0.48-0.75","0.48-0.76","0.49-0.76","0.48-0.77","0.47-0.75","0.49-0.75","0.49-0.77" }, displayID = 97941, questID = { 58987 } }; --Dustbrawl
+	[163370] = { zoneID = 1565, artID = { 1338 }, x = 0.5398497, y = 0.7610398, overlay = { "0.53-0.75","0.53-0.76","0.53-0.77","0.54-0.74","0.54-0.75" }, displayID = 94201, questID = { 59006 } }; --Gormbore
+	[164093] = { zoneID = 1565, artID = { 1338 }, x = 0.32799998, y = 0.444, overlay = { "0.32-0.44","0.36-0.48","0.47-0.40","0.57-0.29","0.58-0.29" }, displayID = 70936 }; --Macabre
 	[164102] = { zoneID = 1565, artID = { 1338 }, x = 0.4790543, y = 0.40178317, overlay = { "0.47-0.40" } }; --Mushroom Ring Vignette Bunny
-	[164107] = { zoneID = 1565, artID = { 1338 }, x = 0.29175445, y = 0.5422389, overlay = { "0.29-0.54","0.27-0.56","0.26-0.57","0.27-0.57","0.27-0.53","0.28-0.55","0.29-0.53","0.29-0.56" }, displayID = 41946, questID = { 59145 } }; --Gormtamer Tizo
+	[164107] = { zoneID = 1565, artID = { 1338 }, x = 0.29175445, y = 0.5422389, overlay = { "0.29-0.54","0.27-0.56","0.26-0.57","0.27-0.57","0.27-0.53","0.28-0.55","0.29-0.53","0.29-0.56","0.26-0.58","0.26-0.56","0.26-0.59","0.27-0.52","0.27-0.54","0.27-0.58","0.28-0.52","0.28-0.50","0.28-0.53","0.28-0.57","0.29-0.55","0.30-0.55","0.31-0.54" }, displayID = 41946, questID = { 59145 } }; --Gormtamer Tizo
 	[164112] = { zoneID = 1565, artID = { 1338 }, x = 0.32424718, y = 0.30264962, overlay = { "0.31-0.30","0.32-0.30","0.32-0.3","0.32-0.29","0.32-0.31" }, displayID = 98601, questID = { 59157 } }; --Humon'gozz
 	[164122] = { zoneID = 1565, artID = { 1338 }, x = 0.32424718, y = 0.30264962, overlay = { "0.32-0.30" }, displayID = 94288, questID = { 59157 } }; --Rapidly Growing Mushroom
-	[164147] = { zoneID = 1565, artID = { 1338 }, x = 0.58342457, y = 0.61796236, overlay = { "0.58-0.61" }, displayID = 81163, questID = { 59170 } }; --Wrigglemortis
+	[164147] = { zoneID = 1565, artID = { 1338 }, x = 0.58342457, y = 0.61796236, overlay = { "0.58-0.61","0.57-0.61" }, displayID = 81163, questID = { 59170 } }; --Wrigglemortis
 	[164179] = { zoneID = 1565, artID = { 1338 }, x = 0.5834244, y = 0.6179625, overlay = { "0.58-0.61" }, displayID = 95366, questID = { 59170 } }; --Wriggling Tendril
-	[164238] = { zoneID = 1565, artID = { 1338 }, x = 0.46523842, y = 0.24937542, overlay = { "0.46-0.21","0.46-0.22","0.46-0.24","0.46-0.25","0.46-0.26","0.47-0.27","0.47-0.21","0.47-0.28","0.48-0.27","0.48-0.21","0.49-0.22","0.49-0.25","0.49-0.23","0.49-0.24","0.46-0.23","0.48-0.26" }, displayID = 94195, questID = { 59201 } }; --Deifir the Untamed
+	[164238] = { zoneID = 1565, artID = { 1338 }, x = 0.46523842, y = 0.24937542, overlay = { "0.46-0.21","0.46-0.22","0.46-0.24","0.46-0.25","0.46-0.26","0.47-0.27","0.47-0.21","0.47-0.28","0.48-0.27","0.48-0.21","0.49-0.22","0.49-0.25","0.49-0.23","0.49-0.24","0.46-0.23","0.48-0.26","0.48-0.22" }, displayID = 94195, questID = { 59201 } }; --Deifir the Untamed
 	[164391] = { zoneID = 1565, artID = { 1338 }, x = 0.51129824, y = 0.58443516, overlay = { "0.51-0.57","0.51-0.58","0.50-0.57","0.52-0.58","0.48-0.54","0.49-0.56","0.50-0.58","0.52-0.57" }, displayID = 95115, questID = { 59208 } }; --Old Ardeite
-	[164415] = { zoneID = 1565, artID = { 1338 }, x = 0.37739557, y = 0.5906426, overlay = { "0.37-0.59","0.37-0.60" }, displayID = 96776, questID = { 59220 } }; --Skuld Vit
+	[164415] = { zoneID = 1565, artID = { 1338 }, x = 0.37739557, y = 0.5906426, overlay = { "0.37-0.59","0.37-0.60","0.37-0.6" }, displayID = 96776, questID = { 59220 } }; --Skuld Vit
 	[164477] = { zoneID = 1565, artID = { 1338 }, x = 0.3463524, y = 0.679927, overlay = { "0.34-0.68","0.34-0.67" }, displayID = 96777, questID = { 59226 } }; --Deathbinder Hroth
-	[164547] = { zoneID = 1565, artID = { 1338 }, x = 0.49400002, y = 0.204, overlay = { "0.49-0.20","0.5-0.20","0.62-0.36","0.64-0.34","0.65-0.32","0.65-0.30","0.65-0.28","0.38-0.44","0.38-0.45","0.39-0.47","0.45-0.42","0.52-0.33","0.53-0.29","0.53-0.44","0.53-0.34","0.54-0.28","0.55-0.28","0.55-0.34","0.56-0.33","0.57-0.35","0.59-0.36","0.60-0.37","0.61-0.36","0.63-0.37","0.63-0.36","0.64-0.35","0.64-0.33","0.65-0.33" }, displayID = 93787, questID = { 59235 } }; --Mystic Rainbowhorn
-	[165053] = { zoneID = 1565, artID = { 1338 }, x = 0.61288303, y = 0.2560361, overlay = { "0.61-0.25","0.62-0.24" }, displayID = 95696, questID = { 59431 } }; --Mymaen
+	[164547] = { zoneID = 1565, artID = { 1338 }, x = 0.49400002, y = 0.204, overlay = { "0.49-0.20","0.5-0.20","0.62-0.36","0.64-0.34","0.65-0.32","0.65-0.30","0.65-0.28","0.38-0.44","0.38-0.45","0.39-0.47","0.45-0.42","0.52-0.33","0.53-0.29","0.53-0.44","0.53-0.34","0.54-0.28","0.55-0.28","0.55-0.34","0.56-0.33","0.57-0.35","0.59-0.36","0.60-0.37","0.61-0.36","0.63-0.37","0.63-0.36","0.64-0.35","0.64-0.33","0.65-0.33","0.37-0.37","0.37-0.39","0.37-0.41","0.38-0.42","0.38-0.43","0.38-0.37","0.40-0.38","0.42-0.39","0.42-0.50","0.42-0.4","0.44-0.51","0.44-0.40","0.44-0.5","0.44-0.49","0.45-0.49","0.47-0.45","0.48-0.45","0.49-0.45","0.50-0.45","0.52-0.29","0.53-0.33","0.54-0.27","0.55-0.3","0.55-0.41","0.55-0.27","0.55-0.31","0.56-0.32","0.56-0.34","0.58-0.36","0.59-0.37","0.63-0.35","0.65-0.31","0.65-0.29" }, displayID = 93787, questID = { 59235 } }; --Mystic Rainbowhorn
+	[165053] = { zoneID = 1565, artID = { 1338 }, x = 0.61288303, y = 0.2560361, overlay = { "0.61-0.25","0.62-0.24","0.61-0.24" }, displayID = 95696, questID = { 59431 } }; --Mymaen
 	[166135] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44","0.41-0.45" }, displayID = 94474 }; --Astra, As Azshara <An Infamous Queen>
 	[166138] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 99719 }; --Mi'kai, As Argus, the Unmaker <A Corrupted World Soul>
 	[166139] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 99664 }; --Glimmerdust, As Kil'jaeden <of The Burning Legion>
 	[166140] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 95055 }; --Senthii, As Gul'dan <From an Alternate Timeline>
 	[166142] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 99664 }; --Glimmerdust, As Jaina <A Magic Ice Princess>
-	[166145] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 94430 }; --Dreamweaver, As N'Zoth <An Eldritch Abomination>
+	[166145] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44","0.40-0.43","0.41-0.45","0.41-0.47","0.42-0.45" }, displayID = 94430 }; --Dreamweaver, As N'Zoth <An Eldritch Abomination>
 	[166146] = { zoneID = 1565, artID = { 1338 }, x = 0.415, y = 0.4482, overlay = { "0.41-0.44" }, displayID = 95232 }; --Niya, As Xavius <Some Kind of Evil Sylvar>
 	[167721] = { zoneID = 1565, artID = { 1338 }, x = 0.59442234, y = 0.46656504, overlay = { "0.59-0.46" }, displayID = 95201, questID = { 60290 } }; --The Slumbering Emperor
-	[167724] = { zoneID = 1565, artID = { 1338 }, x = 0.65736026, y = 0.22913375, overlay = { "0.65-0.24","0.65-0.22" }, displayID = 19530, questID = { 60258 } }; --Rotbriar Boggart
-	[167726] = { zoneID = 1565, artID = { 1338 }, x = 0.65053564, y = 0.44336516, overlay = { "0.64-0.44","0.65-0.44","0.63-0.42","0.64-0.41","0.64-0.40","0.64-0.42","0.64-0.43" }, displayID = 55772, questID = { 60273 } }; --Rootwrithe
+	[167724] = { zoneID = 1565, artID = { 1338 }, x = 0.65742743, y = 0.24118422, overlay = { "0.65-0.24","0.65-0.22" }, displayID = 19530, questID = { 60258 } }; --Rotbriar Boggart
+	[167726] = { zoneID = 1565, artID = { 1338 }, x = 0.64990747, y = 0.4430044, overlay = { "0.64-0.44","0.65-0.44","0.63-0.42","0.64-0.41","0.64-0.40","0.64-0.42","0.64-0.43" }, displayID = 55772, questID = { 60273 } }; --Rootwrithe
 	[167851] = { zoneID = 1565, artID = { 1338 }, x = 0.57859, y = 0.2953891, overlay = { "0.58-0.29","0.57-0.29" }, displayID = 94204, questID = { 60266 } }; --Egg-Tender Leh'go
 	[167874] = { zoneID = 1565, artID = { 1338 }, x = 0.578692, y = 0.29515097, overlay = { "0.57-0.29" }, questID = { 60266 } }; --Egg Bunny
 	[167928] = { zoneID = 1565, artID = { 1338 }, x = 0.6500024, y = 0.44328418, overlay = { "0.65-0.44" }, questID = { 60273 } }; --Dormant Blossom
 	[167929] = { zoneID = 1565, artID = { 1338 }, x = 0.650025, y = 0.44238627, overlay = { "0.65-0.44" }, questID = { 60273 } }; --Dormant Blossom
 	[168053] = { zoneID = 1565, artID = { 1338 }, x = 0.5944361, y = 0.4666357, overlay = { "0.59-0.46" }, questID = { 60290 } }; --Sleepy Bunny
-	[168135] = { zoneID = 1565, artID = { 1338 }, x = 0.6202847, y = 0.5085544, overlay = { "0.62-0.53","0.62-0.50" }, displayID = 94297 }; --Night Mare
+	[168135] = { zoneID = 1565, artID = { 1338 }, x = 0.6202847, y = 0.5085544, overlay = { "0.62-0.53","0.62-0.50","0.58-0.49","0.59-0.56","0.59-0.49","0.6-0.49","0.60-0.48","0.60-0.56","0.60-0.5","0.60-0.57","0.61-0.49","0.61-0.50","0.61-0.56","0.61-0.55","0.62-0.55","0.62-0.51","0.62-0.52","0.62-0.54","0.63-0.51" }, displayID = 94297 }; --Night Mare
 	[168647] = { zoneID = 1565, artID = { 1338 }, x = 0.30762914, y = 0.5477285, overlay = { "0.30-0.55","0.30-0.54","0.29-0.56","0.29-0.55","0.3-0.55","0.31-0.53","0.27-0.54","0.27-0.56","0.27-0.59","0.28-0.56","0.28-0.58","0.28-0.55","0.29-0.60","0.31-0.54","0.32-0.53","0.32-0.54","0.32-0.55","0.33-0.55","0.33-0.56","0.34-0.50","0.34-0.53","0.35-0.51","0.37-0.51" }, displayID = 96087, questID = { 61632 } }; --Valfir the Unrelenting
 	[171451] = { zoneID = 1565, artID = { 1338 }, x = 0.72435015, y = 0.5175118, overlay = { "0.72-0.51" }, displayID = 96776, questID = { 61177 } }; --Soultwister Cero
 	[171688] = { zoneID = 1565, artID = { 1338 }, x = 0.68556076, y = 0.2786728, overlay = { "0.68-0.28","0.68-0.27" }, displayID = 86207, questID = { 61184 } }; --Faeflayer
@@ -2734,15 +2736,16 @@ private.NPC_INFO = {
 	[152508] = { zoneID = {
 				[1618] = { x = 0.49733055, y = 0.60849226, artID = { 1375 }, overlay = { "0.49-0.60" } };
 				[1784] = { x = 0.45146632, y = 0.5663026, artID = { 1494 }, overlay = { "0.45-0.56" } };
-			  }, displayID = 93213 }; --Dusky Tremorbeast
+			  }, displayID = 100490 }; --Dusky Tremorbeast
 	[173051] = { zoneID = 1618, artID = { 1375 }, x = 0.51627135, y = 0.635631, overlay = { "0.51-0.63" }, displayID = 97235 }; --Suppressor Xelors
 	[173191] = { zoneID = 1623, artID = { 1379 }, x = 0.39413923, y = 0.32205677, overlay = { "0.39-0.32" }, displayID = 92415 }; --Soulstalker V'lara
 	[156134] = { zoneID = 1632, artID = { 1383 }, x = 0.5175, y = 0.3653, overlay = { "0.51-0.36" }, displayID = 97041 }; --Ghastly Charger
-	[171705] = { zoneID = 1644, artID = { 1398 }, x = 0.36400002, y = 0.382, overlay = { "0.36-0.38" }, displayID = 97758 }; --Court Crusher
+	[171705] = { zoneID = 1644, artID = { 1398 }, x = 0.36400002, y = 0.382, overlay = { "0.36-0.38","0.32-0.39","0.32-0.38","0.33-0.38","0.33-0.39","0.34-0.38","0.35-0.38","0.35-0.37","0.36-0.37","0.36-0.36","0.37-0.38","0.38-0.34","0.38-0.35","0.42-0.32" }, displayID = 97758 }; --Court Crusher
 	[172164] = { zoneID = 1644, artID = { 1398 }, x = 0.44599998, y = 0.324, overlay = { "0.44-0.32" }, displayID = 82239 }; --Ember Skyterror
 	[172180] = { zoneID = 1644, artID = { 1398 }, x = 0.488, y = 0.626, overlay = { "0.48-0.62" }, displayID = 95785 }; --Blustery Boil
 	[172186] = { zoneID = 1644, artID = { 1398 }, x = 0.428, y = 0.34, overlay = { "0.42-0.34","0.43-0.35" }, displayID = 97444 }; --Knockerbock <"Premier" Party Supplies>
-	[156142] = { zoneID = 1751, artID = { 1464 }, x = 0.59994113, y = 0.74144906, overlay = { "0.60-0.73","0.59-0.74" }, displayID = 65973 }; --Seeker of Souls
+	[156142] = { zoneID = 1751, artID = { 1464 }, x = 0.59994113, y = 0.74144906, overlay = { "0.60-0.73","0.59-0.74" }, displayID = 98720 }; --Seeker of Souls
+	[152612] = { zoneID = 1782, artID = { 1492 }, x = 0.4739313, y = 0.36637175, overlay = { "0.47-0.36" }, displayID = 100485 }; --Subjugator Klontzas
 	[173134] = { zoneID = 1798, artID = { 1507 }, x = 0.3386, y = 0.4752, overlay = { "0.33-0.47" }, displayID = 92664 }; --Darksworn Goliath
 	[170228] = { zoneID = 1811, artID = { 1519 }, x = 0.60168165, y = 0.6838672, overlay = { "0.60-0.68" }, displayID = 94814 }; --Bone Husk
 }

@@ -34,11 +34,10 @@ function Group:Initialize(name, icon, attrs)
     self.scaleArg = 'icon_scale_'..self.name
     self.displayArg = 'icon_display_'..self.name
 
-    local opt_defaults = ns.optionDefaults.profile
     if not self.defaults then self.defaults = {} end
-    opt_defaults[self.alphaArg] = self.defaults.alpha or 1
-    opt_defaults[self.scaleArg] = self.defaults.scale or 1
-    opt_defaults[self.displayArg] = self.defaults.display ~= false
+    self.defaults.alpha = self.defaults.alpha or 1
+    self.defaults.scale = self.defaults.scale or 1
+    self.defaults.display = self.defaults.display ~= false
 end
 
 -- Override to hide this group in the UI under certain circumstances
@@ -48,15 +47,32 @@ function Group:IsEnabled()
     return true
 end
 
+function Group:_GetOpt (option, default, mapID)
+    local value
+    if ns:GetOpt('per_map_settings') then
+        value = ns:GetOpt(option..'_'..mapID)
+    else
+        value = ns:GetOpt(option)
+    end
+    return (value == nil) and default or value
+end
+
+function Group:_SetOpt (option, value, mapID)
+    if ns:GetOpt('per_map_settings') then
+        return ns:SetOpt(option..'_'..mapID, value)
+    end
+    return ns:SetOpt(option, value)
+end
+
 -- Get group settings
-function Group:GetAlpha() return ns:GetOpt(self.alphaArg) end
-function Group:GetScale() return ns:GetOpt(self.scaleArg) end
-function Group:GetDisplay() return ns:GetOpt(self.displayArg) end
+function Group:GetAlpha(mapID) return self:_GetOpt(self.alphaArg, self.defaults.alpha, mapID) end
+function Group:GetScale(mapID) return self:_GetOpt(self.scaleArg, self.defaults.scale, mapID) end
+function Group:GetDisplay(mapID) return self:_GetOpt(self.displayArg, self.defaults.display, mapID) end
 
 -- Set group settings
-function Group:SetAlpha(v) ns:SetOpt(self.alphaArg, v) end
-function Group:SetScale(v) ns:SetOpt(self.scaleArg, v) end
-function Group:SetDisplay(v) ns:SetOpt(self.displayArg, v) end
+function Group:SetAlpha(v, mapID) self:_SetOpt(self.alphaArg, v, mapID) end
+function Group:SetScale(v, mapID) self:_SetOpt(self.scaleArg, v, mapID) end
+function Group:SetDisplay(v, mapID) self:_SetOpt(self.displayArg, v, mapID) end
 
 -------------------------------------------------------------------------------
 

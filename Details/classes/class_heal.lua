@@ -2211,7 +2211,6 @@ local absorbed_table = {c = {1, 1, 1, 0.4}, p = 0}
 local overhealing_table = {c = {0.5, 0.1, 0.1, 0.4}, p = 0}
 local anti_heal_table = {c = {0.5, 0.1, 0.1, 0.4}, p = 0}
 local normal_table = {c = {1, 1, 1, 0.4}, p = 0}
-local multistrike_table = {c = {1, 1, 1, 0.4}, p = 0}
 local critical_table = {c = {1, 1, 1, 0.4}, p = 0}
 
 local data_table = {}
@@ -2367,33 +2366,6 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			t2[8] = esta_magia.c_amt .. " [|cFFC0C0C0".. _cstr ("%.1f", esta_magia.c_amt/total_hits*100) .. "%|r]"
 			
 		end
-		
-	--> MULTISTRIKE
-		--[=[
-		if (esta_magia.m_amt > 0) then
-		
-			local multistrike_hits = esta_magia.m_amt
-			local multistrike_heal = esta_magia.m_healed
-
-			local media_normal = multistrike_heal / multistrike_hits
-			local T = (meu_tempo * multistrike_heal) / esta_magia.total
-			local P = media / media_normal * 100
-			T = P * T / 100
-			
-			data[#data+1] = t3
-			multistrike_table.p = esta_magia.m_amt/total_hits*100
-		
-			t3[1] = multistrike_hits
-			t3[2] = multistrike_table
-			t3[3] = Loc ["STRING_MULTISTRIKE_HITS"]
-			t3[4] = "On Critical: " .. esta_magia.m_crit
-			t3[5] = "On Normals: " .. (esta_magia.m_amt - esta_magia.m_crit)
-			t3[6] = Loc ["STRING_AVERAGE"] .. ": " .. _detalhes:comma_value (multistrike_heal / multistrike_hits)
-			t3[7] = Loc ["STRING_HPS"] .. ": " .. _detalhes:comma_value (multistrike_heal / T)
-			t3[8] = multistrike_hits .. " [|cFFC0C0C0" .. _cstr ("%.1f", multistrike_hits / total_hits * 100) .. "%|r]"
-
-		end
-		--]=]
 	end
 
 	_table_sort (data, _detalhes.Sort1)

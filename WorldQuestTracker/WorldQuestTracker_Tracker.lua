@@ -28,15 +28,12 @@ local pi = math.pi
 local pipi = math.pi*2
 local GetPlayerFacing = GetPlayerFacing
 
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
 local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
-local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 
 local MapRangeClamped = DF.MapRangeClamped
 local FindLookAtRotation = DF.FindLookAtRotation
@@ -520,6 +517,11 @@ local buildTooltip = function (self)
 
 	local title, factionID, capped = C_TaskQuest.GetQuestInfoByQuestID (questID)
 	local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+
+	if (not tagInfo and WorldQuestTracker.__debug) then
+		WorldQuestTracker:Msg("no tagInfo(2) for quest", questID)
+	end
+
 	local color = WORLD_QUEST_QUALITY_COLORS [tagInfo.quality]
 	GameTooltip:SetText (title, color.r, color.g, color.b)
 

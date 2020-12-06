@@ -15,6 +15,10 @@ local Red = ns.status.Red
 
 local function Icon(icon) return '|T'..icon..':0:0:1:-1|t ' end
 
+-- in zhCN’s built-in font, ARHei.ttf, the glyph of U+2022 <bullet> is missing.
+-- use U+00B7 <middle dot> instead.
+local bullet = (GetLocale() == "zhCN" and "·" or "•")
+
 -------------------------------------------------------------------------------
 ----------------------------------- REWARD ------------------------------------
 -------------------------------------------------------------------------------
@@ -42,6 +46,8 @@ function Reward:GetCategoryIcon() end
 function Reward:GetStatus() end
 function Reward:GetText() return UNKNOWN end
 
+function Reward:Prepare() end
+
 function Reward:Render(tooltip)
     local text = self:GetText()
     local status = self:GetStatus()
@@ -50,6 +56,11 @@ function Reward:Render(tooltip)
     local icon = self:GetCategoryIcon()
     if text and icon then
         text = Icon(icon)..text
+    end
+
+    -- Add indent if requested
+    if self.indent then
+        text = '   '..text
     end
 
     -- Render main line and optional status
@@ -79,9 +90,12 @@ function Section:Initialize(title)
     self.title = title
 end
 
+function Section:Prepare()
+    ns.PrepareLinks(self.title)
+end
+
 function Section:Render(tooltip)
-    tooltip:AddLine(self.title..':')
-    tooltip:AddLine(' ')
+    tooltip:AddLine(ns.RenderLinks(self.title, true)..':')
 end
 
 -------------------------------------------------------------------------------
@@ -162,7 +176,7 @@ function Achievement:GetLines()
         end
 
         local r, g, b = .6, .6, .6
-        local ctext = "   • "..cname
+        local ctext = "   "..bullet.." "..cname
         if (completed or ccomp) then
             r, g, b = 0, 1, 0
         end
@@ -179,6 +193,21 @@ function Achievement:GetLines()
 
         return ctext, note, r, g, b
     end
+end
+
+-------------------------------------------------------------------------------
+----------------------------------- CURRENCY ----------------------------------
+-------------------------------------------------------------------------------
+
+local Currency = Class('Currency', Reward)
+
+function Currency:GetText()
+    local info = C_CurrencyInfo.GetCurrencyInfo(self.id)
+    local text = C_CurrencyInfo.GetCurrencyLink(self.id, 0)
+    if self.note then -- additional info
+        text = text..' ('..self.note..')'
+    end
+    return Icon(info.iconFileID)..text
 end
 
 -------------------------------------------------------------------------------
@@ -405,6 +434,7 @@ ns.reward = {
     Section=Section,
     Spacer=Spacer,
     Achievement=Achievement,
+    Currency=Currency,
     Item=Item,
     Mount=Mount,
     Pet=Pet,

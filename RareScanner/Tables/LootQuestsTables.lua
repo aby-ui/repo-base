@@ -306,4 +306,11 @@ private.LOOT_QUEST_IDS = {
 	[183070] = { 63164 }; --Mawsworn Orders
 	[152644] = { 48555 }; --Thistlevine Seeds
 	[174763] = { 58755 }; --Golden Lotus Supplies
+	[173712] = { 58074 }; --Ledger of Souls
+	[173719] = { 58079 }; --Pristine Dredbat Fang
+	[174070] = { 58379 }; --Indomitable Hide
+	[174526] = { 58680 }; --Clotting Patches
+	[174076] = { 58376 }; --Necromantic Oil
+	[183068] = { 63162 }; --Korrath's Grimoire: Gyadrek
+	[178562] = { 60271 }; --Molten Anima
 }

@@ -21,21 +21,12 @@ end
 
 local _
 local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
+local isWorldQuest = QuestUtils_IsQuestWorldQuest
 local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
-local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 local IsQuestCriteriaForBounty = C_QuestLog.IsQuestCriteriaForBounty
 
-local MapRangeClamped = DF.MapRangeClamped
-local FindLookAtRotation = DF.FindLookAtRotation
-local GetDistance_Point = DF.GetDistance_Point
-
-local worldFramePOIs = WorldQuestTrackerWorldMapPOI
 local worldFramePOIs = WorldMapFrame.BorderFrame
 
 local UpdateDebug = false
@@ -552,11 +543,9 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 		--print (4)
 		return
 	end
-	
-	--local taskInfo = GetQuestsForPlayerByMapID (mapID, 1007)
+
 	local taskInfo
 	if (mapID == WorldQuestTracker.MapData.ZoneIDs.DALARAN) then
-		--taskInfo = GetQuestsForPlayerByMapID (mapID, 1007)
 		taskInfo = GetQuestsForPlayerByMapID (mapID) --fix from @legowxelab2z8 from curse
 	else
 		taskInfo = GetQuestsForPlayerByMapID (mapID, mapID)
@@ -589,10 +578,6 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 	wipe (WorldQuestTracker.ShowDefaultWorldQuestPin)
 	
 	local bountyQuestId = WorldQuestTracker.GetCurrentBountyQuest()
-	
-	--print (WorldQuestTracker.GetMapName (mapID), #taskInfo) --DEBUG: amount of quests on the map
-	
-	local testCounter = 0
 	local workerQuestIndex = 1
 	local bannedQuests = WorldQuestTracker.db.profile.banned_quests
 	
@@ -605,210 +590,214 @@ function WorldQuestTracker.UpdateZoneWidgets (forceUpdate)
 		for i, info  in ipairs (taskInfo) do
 			local questID = info.questId
 
-			if (HaveQuestData(questID)) then
-			
-				local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
-				local isNotBanned = not bannedQuests[questID]
-				
-				if (isWorldQuest and isNotBanned and WorldQuestTracker.CanShowQuest(info)) then
-
-					local isSuppressed = WorldQuestTracker.DataProvider:IsQuestSuppressed(questID)
-					local passFilters = WorldQuestTracker.DataProvider:DoesWorldQuestInfoPassFilters(info)
-
-					local timeLeft = WorldQuestTracker.GetQuest_TimeLeft(questID)
-					if (not timeLeft or timeLeft == 0) then
-						timeLeft = 1
-					end
+			local isWorldQuest = isWorldQuest(questID)
+			if (isWorldQuest) then
+				if (HaveQuestData(questID)) then
+					local isNotBanned = not bannedQuests[questID]
 					
-					if (timeLeft > 0) then --not isSuppressed and passFilters and timeLeft
-						local can_cache = true
-						if (not HaveQuestRewardData(questID)) then
-							C_TaskQuest.RequestPreloadRewardData(questID)
-							can_cache = false
-							needAnotherUpdate = true
-						end
-						WorldQuestTracker.CurrentZoneQuests [questID] = true
-						
-						local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
-						local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
-						local passFilter = filters [filter]
-						
-						if (not passFilter) then
-							if (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
-								passFilter = true
-								
-							elseif (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then 
-								passFilter = true
-								
-							elseif (WorldQuestTracker.db.profile.filter_always_show_faction_objectives) then
-								local isCriteria = IsQuestCriteriaForBounty(questID, bountyQuestId)
+					if (isWorldQuest and isNotBanned and WorldQuestTracker.CanShowQuest(info)) then
 
-								if (isCriteria) then
+						local isSuppressed = WorldQuestTracker.DataProvider:IsQuestSuppressed(questID)
+						local passFilters = WorldQuestTracker.DataProvider:DoesWorldQuestInfoPassFilters(info)
+
+						local timeLeft = WorldQuestTracker.GetQuest_TimeLeft(questID)
+						if (not timeLeft or timeLeft == 0) then
+							timeLeft = 1
+						end
+						
+						if (timeLeft > 0) then --not isSuppressed and passFilters and timeLeft
+							local can_cache = true
+							if (not HaveQuestRewardData(questID)) then
+								C_TaskQuest.RequestPreloadRewardData(questID)
+								can_cache = false
+								needAnotherUpdate = true
+							end
+							WorldQuestTracker.CurrentZoneQuests [questID] = true
+							
+							local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, itemQuantity, itemQuality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID, can_cache)
+							local filter, order = WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
+							local passFilter = filters [filter]
+							
+							if (not passFilter) then
+								if (rarity == LE_WORLD_QUEST_QUALITY_EPIC) then
 									passFilter = true
+									
+								elseif (worldQuestType == LE_QUEST_TAG_TYPE_FACTION_ASSAULT) then 
+									passFilter = true
+									
+								elseif (WorldQuestTracker.db.profile.filter_always_show_faction_objectives) then
+									local isCriteria = IsQuestCriteriaForBounty(questID, bountyQuestId)
+
+									if (isCriteria) then
+										passFilter = true
+									end
+								end
+								
+							elseif (WorldQuestTracker.db.profile.zone_only_tracked) then
+								if (not WorldQuestTracker.IsQuestBeingTracked(questID)) then
+									passFilter = false
 								end
 							end
-							
-						elseif (WorldQuestTracker.db.profile.zone_only_tracked) then
-							if (not WorldQuestTracker.IsQuestBeingTracked(questID)) then
-								passFilter = false
-							end
-						end
 
-						--todo: broken shore is outdated, as well as argus
-						if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsNewEXPZone(mapID))) then
-							local widget = WorldQuestTracker.GetOrCreateZoneWidget(index)
-							
-							if (widget.questID ~= questID or forceUpdate or not widget.Texture:GetTexture()) then
-								local selected = WorldMap_IsWorldQuestEffectivelyTracked(questID)
-								local isCriteria = C_QuestLog.IsQuestCriteriaForBounty(questID, bountyQuestId)
-								local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget(questID)
+							--todo: broken shore is outdated, as well as argus
+							if (passFilter or (forceShowBrokenShore and WorldQuestTracker.IsNewEXPZone(mapID))) then
+								local widget = WorldQuestTracker.GetOrCreateZoneWidget(index)
 								
-								if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
-									total_Pet = total_Pet + 1
-								end
-							
-								widget.mapID = mapID
-								widget.questID = questID
-								widget.numObjectives = info.numObjectives
-								widget.questName = title
-								widget.Order = order or 1
-								
-								--> cache reward amount
-								widget.Currency_Gold = gold or 0
-								widget.Currency_ArtifactPower = artifactPower or 0
-								widget.Currency_Resources = 0
-								
-								if (WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
-									widget.Currency_Resources = numRewardItems or 0
-								end
-								
-								local xPos, yPos = info.x, info.y
-								
-								--dazralon
-								if (mapID == 1165) then
-									--detect if the quest is a worker quest --0.44248777627945 0.32204276323318
-									if (xPos >= 0.43 and xPos <= 0.45) then
-										if (yPos >= 0.31 and yPos <= 0.33) then
-											local newPos = dazaralor_quests [workerQuestIndex]
-											xPos, yPos = newPos[1], newPos[2]
-											workerQuestIndex = workerQuestIndex + 1
-										end
-									end
-	
-									widget.PosX = xPos
-									widget.PosY = yPos
-								else
-									widget.PosX = info.x
-									widget.PosY = info.y
-								end
-
-								local inProgress
-
-								WorldQuestTracker.SetupWorldQuestButton(widget, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
-
-								widget.AnchorFrame.questID = questID
-								widget.AnchorFrame.numObjectives = widget.numObjectives
-
-								WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition(widget.AnchorFrame, widget.PosX, widget.PosY)
-
-								widget.AnchorFrame:Show()
-								widget:SetFrameLevel (WorldQuestTracker.DefaultFrameLevel + floor (random (1, 30)))
-
-								widget:Show()
-
-								tinsert (WorldQuestTracker.Cache_ShownQuestOnZoneMap, questID)
-								tinsert (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap, widget)
-
-								widget:SetScale(scale) --affect only zones (not the world map)
-
-								if (gold) then
-									total_Gold = total_Gold + gold
-								end
-								if (numRewardItems and WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
-									total_Resources = total_Resources + numRewardItems
-								end
-								if (isArtifact) then
-									total_APower = total_APower + artifactPower
-								end
-								
-								if (showBlizzardWidgets) then
-									widget:Hide()
-									for _, button in WorldQuestTracker.GetDefaultPinIT() do
-										if (button.questID == questID) then
-											button:Show()
-										end
-									end
-								else
-									widget:Show()
-								end
-								
-								if (timeLeft == 1) then
-									--let the default UI show the icon if the time is mess off
-									widget:Hide()
-									WorldQuestTracker.ShowDefaultPinForQuest (questID)
-								end
-							else
-								if (showBlizzardWidgets) then
-									widget:Hide()
-									for _, button in WorldQuestTracker.GetDefaultPinIT() do
-										if (button.questID == questID) then
-											button:Show()
-										end
-									end
-								else
-									widget:Show()
+								if (widget.questID ~= questID or forceUpdate or not widget.Texture:GetTexture()) then
+									local selected = WorldMap_IsWorldQuestEffectivelyTracked(questID)
+									local isCriteria = C_QuestLog.IsQuestCriteriaForBounty(questID, bountyQuestId)
+									local isSpellTarget = SpellCanTargetQuest() and IsQuestIDValidSpellTarget(questID)
 									
-									--> sum totals for the statusbar
-									if (widget.Currency_Gold) then
-										total_Gold = total_Gold + widget.Currency_Gold
+									if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
+										total_Pet = total_Pet + 1
 									end
-									if (widget.Currency_Resources) then
-										total_Resources = total_Resources + widget.Currency_Resources
-									end
-									if (widget.Currency_ArtifactPower) then
-										total_APower = total_APower + widget.Currency_ArtifactPower
+								
+									widget.mapID = mapID
+									widget.questID = questID
+									widget.numObjectives = info.numObjectives
+									widget.questName = title
+									widget.Order = order or 1
+									
+									--> cache reward amount
+									widget.Currency_Gold = gold or 0
+									widget.Currency_ArtifactPower = artifactPower or 0
+									widget.Currency_Resources = 0
+									
+									if (WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
+										widget.Currency_Resources = numRewardItems or 0
 									end
 									
-									--> add the widget to cache tables
+									local xPos, yPos = info.x, info.y
+									
+									--dazralon
+									if (mapID == 1165) then
+										--detect if the quest is a worker quest --0.44248777627945 0.32204276323318
+										if (xPos >= 0.43 and xPos <= 0.45) then
+											if (yPos >= 0.31 and yPos <= 0.33) then
+												local newPos = dazaralor_quests [workerQuestIndex]
+												xPos, yPos = newPos[1], newPos[2]
+												workerQuestIndex = workerQuestIndex + 1
+											end
+										end
+		
+										widget.PosX = xPos
+										widget.PosY = yPos
+									else
+										widget.PosX = info.x
+										widget.PosY = info.y
+									end
+
+									local inProgress
+
+									WorldQuestTracker.SetupWorldQuestButton(widget, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, mapID)
+
+									widget.AnchorFrame.questID = questID
+									widget.AnchorFrame.numObjectives = widget.numObjectives
+
+									WorldQuestTrackerAddon.DataProvider:GetMap():SetPinPosition(widget.AnchorFrame, widget.PosX, widget.PosY)
+
+									widget.AnchorFrame:Show()
+									widget:SetFrameLevel (WorldQuestTracker.DefaultFrameLevel + floor (random (1, 30)))
+
+									widget:Show()
+
 									tinsert (WorldQuestTracker.Cache_ShownQuestOnZoneMap, questID)
 									tinsert (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap, widget)
+
+									widget:SetScale(scale) --affect only zones (not the world map)
+
+									if (gold) then
+										total_Gold = total_Gold + gold
+									end
+									if (numRewardItems and WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
+										total_Resources = total_Resources + numRewardItems
+									end
+									if (isArtifact) then
+										total_APower = total_APower + artifactPower
+									end
+									
+									if (showBlizzardWidgets) then
+										widget:Hide()
+										for _, button in WorldQuestTracker.GetDefaultPinIT() do
+											if (button.questID == questID) then
+												button:Show()
+											end
+										end
+									else
+										widget:Show()
+									end
+									
+									if (timeLeft == 1) then
+										--let the default UI show the icon if the time is mess off
+										widget:Hide()
+										WorldQuestTracker.ShowDefaultPinForQuest (questID)
+									end
+								else
+									if (showBlizzardWidgets) then
+										widget:Hide()
+										for _, button in WorldQuestTracker.GetDefaultPinIT() do
+											if (button.questID == questID) then
+												button:Show()
+											end
+										end
+									else
+										widget:Show()
+										
+										--> sum totals for the statusbar
+										if (widget.Currency_Gold) then
+											total_Gold = total_Gold + widget.Currency_Gold
+										end
+										if (widget.Currency_Resources) then
+											total_Resources = total_Resources + widget.Currency_Resources
+										end
+										if (widget.Currency_ArtifactPower) then
+											total_APower = total_APower + widget.Currency_ArtifactPower
+										end
+										
+										--> add the widget to cache tables
+										tinsert (WorldQuestTracker.Cache_ShownQuestOnZoneMap, questID)
+										tinsert (WorldQuestTracker.Cache_ShownWidgetsOnZoneMap, widget)
+									end
 								end
-							end
+								
+								index = index + 1
 							
-							index = index + 1
-						
+							else
+								if (not filter) then
+									--> if WTQ didn't identify the quest type, allow the default interface to show this quest
+									--> this is a safety measure with bugs or new quest types
+									WorldQuestTracker.ShowDefaultPinForQuest (questID)
+								end
+							end --pass filters
+							
 						else
-							if (not filter) then
-								--> if WTQ didn't identify the quest type, allow the default interface to show this quest
-								--> this is a safety measure with bugs or new quest types
-								WorldQuestTracker.ShowDefaultPinForQuest (questID)
-							end
-						end --pass filters
+							--show blizzard pin if the quest has an invalid time left
+							WorldQuestTracker.ShowDefaultPinForQuest (questID)
+						end --time left
 						
-					else
-						--show blizzard pin if the quest has an invalid time left
-						WorldQuestTracker.ShowDefaultPinForQuest (questID)
-					end --time left
+					end --is world quest
 					
-				end --is world quest
+				else --have quest data
 				
-			else --have quest data
-			
-				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info(questID)
-				if (title) then
-					if (UpdateDebug) then print ("NeedUpdate 1") end
-					quest_bugged [questID] = (quest_bugged [questID] or 0) + 1
-					
-					if (quest_bugged [questID] <= 2) then
-						questFailed = true
-						C_TaskQuest.RequestPreloadRewardData (questID)
-						WorldQuestTracker.ScheduleZoneMapUpdate (1, true)
+					if (WorldQuestTracker.__debug) then
+						WorldQuestTracker:Msg("no HaveQuestData(7) for quest", questID)
 					end
+
+					local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info(questID)
+					if (title) then
+						if (UpdateDebug) then print ("NeedUpdate 1") end
+						quest_bugged [questID] = (quest_bugged [questID] or 0) + 1
+						
+						if (quest_bugged [questID] <= 2) then
+							questFailed = true
+							C_TaskQuest.RequestPreloadRewardData (questID)
+							WorldQuestTracker.ScheduleZoneMapUpdate (1, true)
+						end
+					end
+					--show blizzard pin if the client doesn't have the quest data yet
+					WorldQuestTracker.ShowDefaultPinForQuest (questID)
 				end
-				--show blizzard pin if the client doesn't have the quest data yet
-				WorldQuestTracker.ShowDefaultPinForQuest (questID)
-			end
-			
+			end --end isWorldQuest
 		end --end foreach taskinfo
 		
 		if (needAnotherUpdate) then

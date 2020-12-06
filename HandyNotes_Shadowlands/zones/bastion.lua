@@ -45,7 +45,7 @@ map.nodes[32592336] = Rare({
     pois={
         POI({
             31412295, 31412386, 32052123, 32122305, 32332113, 32562449,
-            32762035, 33062071, 33172321,
+            32762035, 33062071, 33172321
         }) -- Fragile Humility Scroll
     }
 }) -- Aspirant Eolis
@@ -82,7 +82,7 @@ map.nodes[55358024] = Rare({
             {id=50599, quest=60569}, -- Nemaeus
             {id=50617, quest=58526}, -- Aethon
         }}),
-        Toy({item=174445}), -- Glimmerfly Cocoon
+        -- Toy({item=174445}), -- Glimmerfly Cocoon
         Transmog({item=179485, slot=L["dagger"]}), -- Fang of Nemaeus
         Transmog({item=179486, slot=L["1h_mace"]}), -- Sigilback's Smashshell
         Transmog({item=179487, slot=L["warglaive"]}), -- Aethon's Horn
@@ -126,6 +126,12 @@ map.nodes[66004367] = Rare({
             -- 65934316, Mercia's Legacy: Chapter Five
             -- 66204327, Mercia's Legacy: Chapter Six
             64174218, -- Mercia's Legacy: Chapter Seven
+            65074138, -- Mercia's Legacy: Chapter Seven
+            65184396, -- Mercia's Legacy: Chapter Seven
+            65514293, -- Mercia's Legacy: Chapter Seven
+            65844451, -- Mercia's Legacy: Chapter Seven
+            66214333, -- Mercia's Legacy: Chapter Seven
+            67394283, -- Mercia's Legacy: Chapter Seven
             67604342, -- Mercia's Legacy: Chapter Seven
         })
     }
@@ -159,7 +165,14 @@ map.nodes[37004180] = Rare({
     quest={61069,61000},
     note=L["demi_hoarder_note"],
     rewards={
-        Achievement({id=14307, criteria=50611})
+        Achievement({id=14307, criteria=50611}),
+        -- https://www.wowhead.com/object=354649/relic-hoard
+        Transmog({item=183606, slot=L["shield"]}), -- Bulwark of Echoing Courage
+        Transmog({item=183608, slot=L["offhand"]}), -- Evernote Vesper
+        Transmog({item=183613, slot=L["dagger"]}), -- Glinting Daybreak Dagger
+        Transmog({item=183611, slot=L["2h_sword"]}), -- Humble Ophelia's Greatblade
+        Transmog({item=183609, slot=L["fist"]}), -- Re-Powered Golliath Fists
+        Transmog({item=183607, slot=L["polearm"]}), -- Uncertain Aspirant's Spear
     },
     pois={
         Path({
@@ -179,7 +192,7 @@ map.nodes[41354887] = Rare({
     }
 }) -- Dionae
 
-map.nodes[45546459] = Rare({
+map.nodes[45656550] = Rare({
     id=171255,
     quest={61082,61091,62251},
     rewards={
@@ -187,15 +200,26 @@ map.nodes[45546459] = Rare({
         Item({item=180062}) -- Heavenly Drum
     },
     pois={
-        Path({45546459, 44656486, 44766596, 45366670, 45866643, 45616562})
+        Path({
+            45126865, 45596837, 45836792, 46266754, 46326688, 46756655,
+            47196619, 47366568, 47516509, 47196458, 46916413, 46516378,
+            46036393, 45726457, 45636517, 45686586, 45896645, 46326688
+        }),
+        Path({
+            45896645, 45406672, 45106624, 44756599, 44636542, 44656487,
+            45046456, 45436462, 45696476
+        })
+        -- Path({45546459, 44656486, 44766596, 45366670, 45866643, 45616562})
     }
 }) -- Echo of Aella <Hand of Courage>
 
 map.nodes[51151953] = Rare({
     id=171009,
     quest=60998,
+    note=L["aegeon_note"],
     rewards={
-        Achievement({id=14307, criteria=50605})
+        Achievement({id=14307, criteria=50605}),
+        Toy({item=184404}) -- Ever-Abundant Hearth
     },
     pois={
         Path({
@@ -225,7 +249,8 @@ map.nodes[42908265] = Rare({
     requires=ns.requirement.Item(172451, 10),
     rewards={
         Achievement({id=14307, criteria=50582})
-        --Item({item=182759, quest=62200}) -- Functioning Anima Core
+        -- https://www.wowhead.com/object=336428/aspirants-chest
+        -- Item({item=182759, quest=62200}) -- Functioning Anima Core
     }
 }) -- Herculon
 
@@ -298,7 +323,8 @@ local SWELLING_TEAR = Rare({
             {id=50609, quest=61047}, -- Worldfeaster Chronn
             {id=50608, quest=61046}, -- Xixin the Ravening
         }}),
-        Transmog({item=183605, slot=L["warglaive"]}) -- Devourer Wrought Warglaive
+        Transmog({item=183605, slot=L["warglaive"]}), -- Devourer Wrought Warglaive
+        Pet({item=180869, id=2940}) -- Devoured Wader
     }
 }) -- Swelling Tear
 
@@ -404,7 +430,10 @@ map.nodes[51471795] = Treasure({
         Transmog({item=183609, slot=L["fist"]}) -- Re-Powered Golliath Fists
     },
     pois={
-        POI({52041999, 52471448, 52861966, 53541715, 53141903}) -- Unstable Anima Core
+        POI({
+            49811739, 50871471, 52041999, 52471448, 52861966, 53001500,
+            53141903, 53541715
+        }) -- Unstable Anima Core
     }
 }) -- Experimental Construct Part
 

@@ -17,6 +17,7 @@ ns.optionDefaults = {
         maximized_enlarged = true,
         show_completed_nodes = false,
         use_char_achieves = false,
+        per_map_settings = false,
 
         -- tooltip
         show_loot = true,
@@ -125,11 +126,19 @@ ns.options = {
                     order = 15,
                     width = "full",
                 },
+                per_map_settings = {
+                    type = "toggle",
+                    arg = "per_map_settings",
+                    name = L["options_toggle_per_map_settings"],
+                    desc = L["options_toggle_per_map_settings_desc"],
+                    order = 16,
+                    width = "full",
+                },
                 restore_all_nodes = {
                     type = "execute",
                     name = L["options_restore_hidden_nodes"],
                     desc = L["options_restore_hidden_nodes_desc"],
-                    order = 16,
+                    order = 17,
                     width = "full",
                     func = function ()
                         wipe(ns.addon.db.char)
@@ -205,9 +214,9 @@ ns.options = {
             type = "group",
             name = L["options_global"],
             desc = L["options_global_description"],
+            disabled = function () return ns:GetOpt('per_map_settings') end,
             order = 1,
-            args = {
-            }
+            args = {}
         },
         ZonesTab = {
             type = "group",
@@ -215,8 +224,7 @@ ns.options = {
             desc = L["options_zones_description"],
             childGroups = "select",
             order = 2,
-            args = {
-            }
+            args = {}
         }
     }
 }
@@ -315,7 +323,8 @@ function ns.CreateGroupOptions (map, group)
 
     options.args.IconsGroup.args["icon_toggle_"..group.name] = {
         type = "toggle",
-        arg = group.displayArg,
+        get = function () return group:GetDisplay(map.id) end,
+        set = function (info, v) group:SetDisplay(v, map.id) end,
         name = function () return ns.RenderLinks(group.label, true) end,
         desc = function () return ns.RenderLinks(group.desc) end,
         disabled = function () return not group:IsEnabled() end,
@@ -333,9 +342,10 @@ function ns.CreateGroupOptions (map, group)
         type = "range",
         name = L["options_scale"],
         desc = L["options_scale_desc"],
-        disabled = function () return not (group:IsEnabled() and group:GetDisplay()) end,
+        get = function () return group:GetScale(map.id) end,
+        set = function (info, v) group:SetScale(v, map.id) end,
+        disabled = function () return not (group:IsEnabled() and group:GetDisplay(map.id)) end,
         min = 0.3, max = 3, step = 0.01,
-        arg = group.scaleArg,
         width = 0.95,
         order = map._visibility_order + 1
     }
@@ -344,9 +354,10 @@ function ns.CreateGroupOptions (map, group)
         type = "range",
         name = L["options_opacity"],
         desc = L["options_opacity_desc"],
-        disabled = function () return not (group:IsEnabled() and group:GetDisplay()) end,
+        get = function () return group:GetAlpha(map.id) end,
+        set = function (info, v) group:SetAlpha(v, map.id) end,
+        disabled = function () return not (group:IsEnabled() and group:GetDisplay(map.id)) end,
         min = 0, max = 1, step = 0.01,
-        arg = group.alphaArg,
         width = 0.95,
         order = map._visibility_order + 2
     }

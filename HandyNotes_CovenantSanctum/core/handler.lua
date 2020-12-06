@@ -99,7 +99,7 @@ local function SetTooltip(tooltip, point)
                 tooltip:AddLine(requires.." "..sanctum_feature..":", 1) -- red
                 tooltip:AddLine(TALENT["name"], 1, 1, 1) -- white
                 tooltip:AddTexture(TALENT["icon"], {margin={right=2}})
-                tooltip:AddLine("   • "..format(TNRank, TALENT["tier"]+1), 0.6, 0.6, 0.6) -- grey
+                tooltip:AddLine((GetLocale() == "zhCN" and "   · " or "   • ")..format(TNRank, TALENT["tier"]+1), 0.6, 0.6, 0.6) -- grey
             end
         end
     else

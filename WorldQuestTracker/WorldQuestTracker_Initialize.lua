@@ -2,6 +2,8 @@
 
 
 do
+	WQT_VERSION = 414
+
 	--> update quest type max when a new type of world quest is added to the filtering
 	WQT_QUESTTYPE_MAX = 		10			--[[global]]
 
@@ -263,6 +265,7 @@ do
 	
 	--create the addon object
 	local WorldQuestTracker = DF:CreateAddOn("WorldQuestTrackerAddon", "WQTrackerDB", default_config)
+	WorldQuestTracker.__debug = false
 
 	--create the group finder and rare finder frames
 	CreateFrame("frame", "WorldQuestTrackerFinderFrame", UIParent, "BackdropTemplate")

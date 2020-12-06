@@ -15,18 +15,24 @@ L["anima_channeled"] = "心能连接到%s。"
 
 L["deifir_note"] = "骑上圈内的稀有并使用 {spell:319566} 和 {spell:319575} 使其减速和昏迷。"
 L["faeflayer_note"] = "瀑布后面隐藏的小洞穴内。"
-L["gormtamer_tizo_note"] = "击杀 {npc:166735} 和 {npc:166736} 后骑着它们直到 {npc:164110} 刷新。"
-L["humongozz_note"] = "种植一个 {item:175247} 在潮湿的沃土将刷新 {npc:164122}。在一分钟后 {spell:319367}，稀有将刷新。区域内的许多怪物都掉落蘑菇。"
+L["gormtamer_tizo_note"] = "在纱雾迷结击杀蓟果精灵直到 {npc:164110} 刷新。"
+L["humongozz_note"] = "种植一个 {item:175247} 在潮湿的沃土将刷新 {npc:164122}。区域内的许多怪物都掉落蘑菇。"
 L["lehgo_note"] = "摧毁颤动的戈姆之卵并击杀 {npc:171827} 直到他出现。在洞穴内（入口在东南尘泥地穴内）。"
 L["macabre_note"] = [[
 有多个刷新点。要召唤，和其他两名玩家站在神秘的蘑菇环上并相互跳舞。
 
-• 玩家1与玩家2跳舞
-• 玩家2与玩家3跳舞
-• 玩家3与玩家1跳舞
+· 玩家1与玩家2跳舞
+· 玩家2与玩家3跳舞
+· 玩家3与玩家1跳舞
 ]]
 L["mymaen_note"] = "击杀区域内的腐楠精灵直到他做出表情并出现。"
-L["rainbowhorn_note"] = "\n|cffff5400品|r|cffffaa00尝|r|cffffff00绝|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9丽|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r"
+L["rainbowhorn_note"] = [[
+找到并点击|cffffff00符文牡鹿的巨角|r来召唤稀有。角可以在炽蓝仙野多个地点刷新。
+
+他总是在瓦尔仙林北侧刷新，所以设定 {item:6948} 到这里并留意区域的表情。
+
+|cffff5400品|r|cffffaa00尝|r|cffffff00绝|r|cffaaff00妙|r|cff54ff00的|r |cff00ff55美|r|cff00ffa9丽|r|cff00ffff的|r |cff0055ff七|r|cff0000ff彩|r|cff5400ff之|r|cffaa00ff虹|r|cffff00ff好|r|cffff00aa味|r|cffff0054道|r|cffff0000！|r
+]]
 L["rootwrithe_note"] = "触碰 {npc:167928} 直到稀有出现。"
 L["rotbriar_note"] = "和 {npc:171684} 交谈对话后在附近召唤稀有。"
 L["slumbering_note"] = "跑到迷雾中将昏迷并被带出。使用信号弹或带 AOE 的宠物把他击出迷雾。"
@@ -66,11 +72,11 @@ L["swollen_anima_seed"] = "在树干里面的一颗大种子。"
 L["playful_vulpin_note"] = [[
 在 {npc:171206} 找到并使用正确的表情五次后获得宠物。
 
-• 开始好奇的挖掘 = |cFFFF8C00/curious（/好奇）|r
-• 仍然徘徊在无法坐下的地方 = |cFFFF8C00/sit（/坐下）|r
-• 独自一人唱歌 = |cFFFF8C00/sing（/唱歌）|r
-• 欢乐地跳舞 = |cFFFF8C00/dance（/跳舞）|r
-• 孤独悲伤的坐着 = |cFFFF8C00/pet（/拍）|r
+· 开始好奇的挖掘 = |cFFFF8C00/curious（/好奇）|r
+· 仍然徘徊在无法坐下的地方 = |cFFFF8C00/sit（/坐下）|r
+· 独自一人唱歌 = |cFFFF8C00/sing（/唱歌）|r
+· 欢乐地跳舞 = |cFFFF8C00/dance（/跳舞）|r
+· 孤独悲伤的坐着 = |cFFFF8C00/pet（/拍）|r
 ]]
 
 L["tame_gladerunner"] = "驯服的巡林者"
@@ -91,6 +97,7 @@ L["options_icons_faerie_tales_desc"] = "显示 {achievement:14788} 成就中失�
 ----------------------------------- BASTION -----------------------------------
 -------------------------------------------------------------------------------
 
+L["aegeon_note"] = "杀死周围地区的敌人，直到艾格翁作为增援刷新。"
 L["ascended_council_note"] = "与其他四名玩家，同时点击五个神庙的暮钟召唤候选者试练场的 {npc:170899}。"
 L["aspirant_eolis_note"] = "拾取附近的 {item:180613} 并与 NPC 目标阅读激活他。"
 L["baedos_note"] = "从周围地区带一桶发酵的莲榴果给 {npc:161536} 直到她激活。"
@@ -99,7 +106,7 @@ L["beasts_of_bastion"] = "晋升堡垒之兽"
 L["beasts_of_bastion_note"] = "和 {npc:161441} 交谈召唤四个野兽中的一个。"
 L["bookkeeper_mnemis_note"] = "在地区有几率刷新代替 {npc:166867} 单位。"
 L["cloudfeather_patriarch_note"] = "在地区击杀 {npc:158110} 直到守护者与你作战。"
-L["collector_astor_note"] = "阅读散落在房间里的全部六章 Mercia's Legacy，之后会收到来自 {npc:157979} 的悄悄话。和她交谈会得到 {spell:333779}，让你在西北方找到隐藏的 {item:180569}。交还章节将刷新稀有。"
+L["collector_astor_note"] = "阅读散落在房间里的全部六章 Mercia's Legacy，之后和 {npc:157979} 交谈会得到 {spell:333779}。在西北周围地区找到隐藏的 {item:180569} 并交还将刷新稀有。"
 L["corrupted_clawguard_note"] = "在屋内或炉火岗哨山上拾取 {item:180651} 并使用它修理 {npc:171300}。"
 L["dark_watcher_note"] = "只在死亡后可以看到。和她交谈会施放 {spell:332830} 在攻击之前给你。"
 L["demi_hoarder_note"] = "开始时堆叠99层 {spell:333874}，降低承受伤害。伤害后堆叠缓慢消失。稀有将沿着路径前进，如果到达终点则将消失。"
@@ -136,16 +143,16 @@ L["gift_of_devos"] = [[
 拾取火焰之前，清除宝箱前面的全部怪物。在运送火焰时，点击任意路上的 {npc:156571} 获得 {spell:335012} 负面效果提高移动速度。
 ]]
 L["gift_of_thenios"] = [[
-（临）宝箱后面称为“智慧之路”。这会指引一系列平台上不同的熏香进行沟通：
+宝箱后面称为“智慧之路”。这会指引一系列平台上不同的熏香进行沟通：
 
-• 知识熏香
-• 忍耐熏香
-• 洞察熏香
-• 审判熏香
+· 学识熏香
+· 耐心熏香
+· 洞察熏香
+· 审判熏香
 
-小心按顺序与他们沟通 => 知识 => 洞察。在审判平台会出现“有见识的智慧之路”的宝珠。
+按耐心 => 学识 => 洞察的顺序沟通。在审判平台会出现“审判之路”的宝珠。
 
-这个宝珠将把你进入真正的审判熏香。与它沟通后最终飞行平台让你获得 {spell:333068} 打开宝箱。
+这个宝珠将把你带到真正的审判熏香。与它沟通后最终飞行平台让你获得 {spell:333068} 打开宝箱。
 ]]
 L["gift_of_vesiphone"] = "敲钟刷新一个 {npc:170849} 并击杀获得 {spell:333239} 负面效果。宝箱正对面的流水将清洁此负面效果，并获得 {spell:332785}。"
 
@@ -243,19 +250,14 @@ L["zargox_the_reborn_note"] = [[
 L["mixed_pool_note"] = [[
 从周围怪物收集材料并扔进池中。每30个材料，根据所使用的组合，将刷新七个稀有中的一个。
 
-• 从北侧的 {npc:167923} 和 {npc:167948} 收集 {spell:306713}。
+· 从北侧的 {npc:167923} 和 {npc:167948} 收集 {spell:306713}。
 
-• 从南侧的 {npc:165015} 和 {npc:171142} 收集 {spell:306719}。
+· 从南侧的 {npc:165015} 和 {npc:171142} 收集 {spell:306719}。
 
-• 从南侧的 {npc:165027} 和 {npc:166438} 收集 {spell:306722}。
+· 从南侧的 {npc:165027} 和 {npc:166438} 收集 {spell:306722}。
 
 击杀每种稀有一次后获得 {item:183903} 玩具。
 ]]
-L["Boneslurp"] = "骨啜"
-L["Corrupted"] = "腐化沉积物"
-L["Oily"] = "油腻的无脊者"
-L["Pulsing"] = "脉动的汲取者"
-L["Violet"] = "绛紫之误"
 
 L["blackhound_cache"] = "黑犬宝箱"
 L["blackhound_cache_note"] = "在憎恶工厂召唤 {npc:157843}，然后护送他到黑犬岗哨。"
@@ -290,17 +292,17 @@ L["oonar_sorrowbane_note"] = [[
 
 拉出 {item:181164}：
 
-• 到格拉萨恩之腐东侧。
-• 吃4层 {spell:327367} （2分钟负面效果）。
-• 迅速炉石并拉动手臂。
+· 到格拉萨恩之腐东侧。
+· 吃4层 {spell:327367} （2分钟负面效果）。
+· 迅速炉石并拉动手臂。
 
 拉出 {item:180273}：
 
-• 从雷文德斯的 {npc:171808} 买个 {item:182163}。
-• 从玛卓克萨斯的 {npc:166640} 买个 {item:180771}。
-• 从 |cFFFFFD00{wq:一路磕磕绊绊}|r 世界任务西侧得到2层 {spell:306272}。
-• 在格拉萨恩之腐吃4层 {spell:327367}。
-• 迅速炉石，喝下2种药水并拉出大宝剑。
+· 从雷文德斯的 {npc:171808} 买个 {item:182163}。
+· 从玛卓克萨斯的 {npc:166640} 买个 {item:180771}。
+· 从 |cFFFFFD00{wq:一路磕磕绊绊}|r 世界任务西侧得到2层 {spell:306272}。
+· 在格拉萨恩之腐吃4层 {spell:327367}。
+· 迅速炉石，喝下2种药水并拉出大宝剑。
 ]]
 
 L["pet_cat"] = "宠爱该死的猫！"
@@ -322,17 +324,13 @@ L["rotgut_note"] = "腐肠、残躯、更多碎块。来战吧。"
 
 L["amalgamation_of_filth_note"] = "当世界任务 {wq:脏活累活：爆破计划} 可做时点击一个垃圾箱并使用 {spell:324115} 进入水里。"
 L["amalgamation_of_light_note"] = "移动全部三个镜子陷阱释放稀有。"
-L["amalgamation_of_sin_note"] = "使用世界任务 {wq:唤起罪业} 的能量催化剂获得 {item:180376} 并使用它召唤稀有。"
+L["amalgamation_of_sin_note"] = "在世界任务 {wq:唤起罪业} 期间，拾取能量催化剂有机会获得 {item:180376} 并使用它召唤稀有。"
 L["bog_beast_note"] = "世界任务 {wq:又脏又乱} 期间有机率刷新后给 {npc:166206} 使用 {item:177880}。"
 L["endlurker_note"] = "在微光裂隙顶上点击 {npc:165229} 尸体附近的心能之桩并使用 {spell:321826}。"
 L["executioner_aatron_note"] = "击杀三个附近的 {npc:166715} 移除 {spell:324872}。"
 L["famu_note"] = "和 {npc:166483} 交谈触发事件。"
 L["grand_arcanist_dimitri_note"] = "击杀四个 {npc:167467} 释放稀有。"
-L["harika_note"] = [[
-|cFFFF0000重要：|r 必须按照正确的顺序上交物品，否则事件会出错！
-
-在惧谷镇西侧，拾取 {item:176397} 和两套 {item:176396}。把两套工具交给弩车附近的 {npc:165328}，然后把箭交给 {npc:165327} 后和他交谈击落稀有。
-]]
+L["harika_note"] = "在惧谷镇西侧，拾取 {item:176397}，然后把箭交给 {npc:165327} 后和他交谈击落稀有。"
 L["innervus_note"] = "击杀附近的 {npc:160375} 获得 {item:177223} 并打开墓穴。"
 L["leeched_soul_note"] = "进入附近的墓穴。走到 {npc:165151} 附近开始事件。"
 L["lord_mortegore_note"] = "击杀周围的怪物获得 {item:174378} 并使用它强化 {npc:161870}。所有四个徽记获得强化，稀有就会刷新。"
@@ -415,9 +413,9 @@ L["yero_note"] = "靠近 {npc:172862} 然后跟着他进入附近的一个山洞
 L["exos_note"] = [[
 击杀其他三个悲伤、痛苦和失落先驱收集他们的铭刻。
 
-• {item:182328}
-• {item:182326}
-• {item:182327}
+· {item:182328}
+· {item:182326}
+· {item:182327}
 
 组合全部三个铭刻制造 {item:182329}，可以用来在统御祭坛召唤稀有。使用 {npc:173892} 到达上层。
 ]]
@@ -425,26 +423,32 @@ L["exos_note"] = [[
 L["soul_well_note"] = "接住从灵魂之井喷发而出的冥殇。"
 L["obliterated_soul_shards_note"] = "在桥上收集 {item:177834}。"
 
-L["chaotic_riftstone_note"] = [[
-激活 {spell:344157} 快速穿过噬渊。"
-
-需要从 {npc:162804} 升级 {item:184613}。
-]]
+L["animaflow_teleporter_note"] = "激活即可直接前往特玛库伦。"
+L["chaotic_riftstone_note"] = "激活 {spell:344157} 快速穿过噬渊。"
 L["venari_note"] = [[
 使用 {currency:1767} 购买噬渊和托加斯特升级。"
 
-解锁后，下面的完成状态将更新！
+|cFFFF8C00帐号通用托加斯特升级在小号上显示不完整！|r
+|cFFFF8C00解锁后，下面的完成状态将更新！|r
 ]]
 L["venari_upgrade"] = "{npc:162804} 升级"
-L["Ambivalent"] = nil
-L["Appreciative"] = nil
-L["Apprehensive"] = nil
-L["Cordial"] = nil
-L["Tentative"] = nil
+L["torghast"] = "托加斯特"
+L["Ambivalent"] = "纠结"
+L["Appreciative"] = "欣赏"
+L["Apprehensive"] = "防备"
+L["Cordial"] = "和善"
+L["Tentative"] = "犹豫"
+
+L["stygian_cache"] = "冥殇宝箱"
+L["stygian_cache_note"] = "每次刷新只有一人可以拾取宝箱！"
 
 L["options_icons_bonus_boss"] = "奖励精英"
 L["options_icons_bonus_boss_desc"] = "显示奖励精英位置。"
 L["options_icons_bonus_event"] = "奖励事件"
 L["options_icons_bonus_event_desc"] = "显示奖励事件位置。"
-L["options_icons_riftstone"] = "混乱裂隙石"
+L["options_icons_riftstone"] = "{npc:174962}"
 L["options_icons_riftstone_desc"] = "显示混乱裂隙石传送者位置。"
+L["options_icons_grapples"] = "锚点"
+L["options_icons_grapples_desc"] = "显示 {item:184653} 升级锚点的位置。"
+L["options_icons_stygian_caches"] = "冥殇宝箱"
+L["options_icons_stygian_caches_desc"] = "显示获取额外冥殇的宝箱位置。"

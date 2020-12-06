@@ -37,13 +37,14 @@ private.NPC_GUIDE = {
 	[170439] = {
 		[RSConstants.PATH_START] = { x = 0.5526, y = 0.887 };
 		[RSConstants.STEP1] = { x = 0.6002, y = 0.9402, comment = AL["NOTE_170439_1"] };
+		[RSConstants.STEP2] = { x = 0.6182, y = 0.8267, comment = AL["NOTE_170439_2"] };
 	}; --Sundancer
 	[170659] = { [RSConstants.FLAG] = { x = 0.4896, y = 0.5068, comment = AL["NOTE_170659_1"] } }; --Basilofos, King of the Hill
-	[171010] = {
+	[171300] = {
 		[RSConstants.ENTRANCE] = { x = 0.5637, y = 0.4595 };
-		[RSConstants.DOT..1] = { x = 0.545, y = 0.41, comment = AL["NOTE_171010_1"] };
-		[RSConstants.DOT..2] = { x = 0.55, y = 0.402, comment = AL["NOTE_171010_1"] };
-		[RSConstants.DOT..3] = { x = 0.5726, y = 0.4792, comment = AL["NOTE_171010_1"] };
+		[RSConstants.DOT..1] = { x = 0.545, y = 0.41, comment = AL["NOTE_171300_1"] };
+		[RSConstants.DOT..2] = { x = 0.55, y = 0.402, comment = AL["NOTE_171300_1"] };
+		[RSConstants.DOT..3] = { x = 0.5726, y = 0.4792, comment = AL["NOTE_171300_1"] };
 	}; --Corrupted Clawguard
 	[163460] = { [RSConstants.ENTRANCE] = { x = 0.4091, y = 0.4724 } }; --Dionae
 	[167078] = { 
@@ -196,6 +197,32 @@ private.NPC_GUIDE = {
 	[172524] = { [RSConstants.ENTRANCE] = { x = 0.593, y = 0.8 } }; --Skittering Broodmother
 	[165152] = { [RSConstants.ENTRANCE] = { x = 0.6728, y = 0.8234 } }; --Leeched Soul
 	[165175] = { [RSConstants.ENTRANCE] = { x = 0.6728, y = 0.8234 } }; --Prideful Hulk
+	[171014] = { 
+		[RSConstants.STEP1] = { x = 0.6621, y = 0.4411, comment = AL["NOTE_171014_1"] }; 
+		[RSConstants.STEP2] = { x = 0.659, y = 0.4419, comment = AL["NOTE_171014_2"] }; 
+		[RSConstants.STEP3] = { x = 0.6581, y = 0.4402, comment = AL["NOTE_171014_3"] }; 
+		[RSConstants.STEP4] = { x = 0.6573, y = 0.4349, comment = AL["NOTE_171014_4"] }; 
+		[RSConstants.STEP5] = { x = 0.6595, y = 0.4322, comment = AL["NOTE_171014_5"] }; 
+		[RSConstants.STEP6] = { x = 0.6619, y = 0.4328, comment = AL["NOTE_171014_6"] }; 
+		[RSConstants.FLAG] = { x = 0.66, y = 0.436, comment = AL["NOTE_171014_8"] }; 
+		[RSConstants.STEP7..1] = { x = 0.6628, y = 0.4352, comment = AL["NOTE_171014_7"] }; 
+		[RSConstants.STEP7..2] = { x = 0.6542, y = 0.4451, comment = AL["NOTE_171014_7"] }; 
+		[RSConstants.STEP7..3] = { x = 0.6507, y = 0.4138, comment = AL["NOTE_171014_7"] }; 
+		[RSConstants.STEP7..3] = { x = 0.6581, y = 0.445, comment = AL["NOTE_171014_7"] }; 
+	}; --Collector Astorestes
+	[173468] = { 
+		[RSConstants.STEP1] = { x = 0.6845, y = 0.6041, comment = AL["NOTE_173468_1"] };
+		[RSConstants.STEP2] = { x = 0.634, y = 0.618, comment = AL["NOTE_173468_2"], questID = 62042 }; --62107
+		[RSConstants.STEP3.."1"] = { x = 0.7395, y = 0.581, comment = AL["NOTE_173468_3"], questID = 62047 }; --62107
+		[RSConstants.STEP3.."2"] = { x = 0.7054, y = 0.5811, comment = AL["NOTE_173468_3"], questID = 62047 };
+		[RSConstants.STEP3.."3"] = { x = 0.6423, y = 0.5881, comment = AL["NOTE_173468_3"], questID = 62047 };
+		[RSConstants.STEP3.."4"] = { x = 0.679, y = 0.6836, comment = AL["NOTE_173468_3"], questID = 62047 };
+		[RSConstants.STEP3.."5"] = { x = 0.6279, y = 0.667, comment = AL["NOTE_173468_3"], questID = 62047 };
+		[RSConstants.STEP3.."6"] = { x = 0.6113, y = 0.6933, comment = AL["NOTE_173468_3"], questID = 62047 };
+		[RSConstants.STEP4] = { x = 0.6301, y = 0.6181, comment = AL["NOTE_173468_4"], questID = 62049 }; --62107
+		[RSConstants.STEP5] = { x = 0.51, y = 0.788, comment = AL["NOTE_173468_5"], questID = 62048 }; --62107
+		[RSConstants.STEP6] = { x = 0.408, y = 0.468, comment = AL["NOTE_173468_6"], questID = 62050 };
+	}; --Blanchy's Reins
 }
 
 ---============================================================================
@@ -273,7 +300,10 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.DOT..7] = { x = 0.2709, y = 0.5822 };
 	}; --Tame Gladerunner
 	[171484] = {
-		[RSConstants.STEP1] = { x = 0.3645, y = 0.5961, itemID = 180784 };
+		[RSConstants.STEP1..1] = { x = 0.3645, y = 0.5961, itemID = 180784 };
+		[RSConstants.STEP1..2] = { x = 0.3178, y = 0.3248, itemID = 180784 };
+		[RSConstants.STEP1..3] = { x = 0.5628, y = 0.5594, itemID = 180784 };
+		[RSConstants.STEP1..4] = { x = 0.4875, y = 0.3373, itemID = 180784 };
 		[RSConstants.STEP2] = { x = 0.4143, y = 0.3165, comment = AL["GUIDE_BOUNDING_SHROOM"] };
 	}; --Desiccated Moth
 	[171475] = { [RSConstants.FLAG] = { x = 0.4649, y = 0.7012, comment = AL["NOTE_171475_1"] } }; --Faerie Stash
@@ -312,7 +342,7 @@ private.CONTAINER_GUIDE = {
 	[355435] = {
 		[RSConstants.DOT..1] = { x = 0.3905, y = 0.7704, comment = AL["NOTE_355435_1"], questID = 61225 };
 		[RSConstants.DOT..2] = { x = 0.4363, y = 0.7622, comment = AL["NOTE_355435_1"], questID = 61235 };
-		[RSConstants.DOT..3] = { x = 0.4842, y = 0.7273, comment = AL["NOTE_355435_1c"] };
+		[RSConstants.DOT..3] = { x = 0.4842, y = 0.7273, comment = AL["NOTE_355435_1c"], questID = 61236 };
 		[RSConstants.DOT..4] = { x = 0.5267, y = 0.7555, comment = AL["NOTE_355435_1"], questID = 61237 };
 		[RSConstants.DOT..5] = { x = 0.5331, y = 0.7362, comment = AL["NOTE_355435_1"], questID = 61238 };
 		[RSConstants.DOT..6] = { x = 0.5349, y = 0.8060, comment = AL["NOTE_355435_1"], questID = 61239 };
@@ -433,22 +463,22 @@ private.CONTAINER_GUIDE = {
 	[353869] = { [RSConstants.PATH_START] = { x = 0.4599, y = 0.2012 } }; --Hidden Hoard
 	[351540] = { [RSConstants.FLAG] = { x = 0.7305, y = 0.4727, comment = AL["NOTE_351540_1"] } }; --Secret Treasure
 	[353691] = { [RSConstants.PATH_START] = { x = 0.5826, y = 0.6452 } }; --Campana celeste
-	[173468] = { 
-		[RSConstants.STEP1] = { x = 0.6845, y = 0.6041, comment = AL["NOTE_173468_1"] };
-		[RSConstants.STEP2] = { x = 0.634, y = 0.618, comment = AL["NOTE_173468_2"] };
-		[RSConstants.STEP3.."1"] = { x = 0.7395, y = 0.581, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP3.."2"] = { x = 0.7054, y = 0.5811, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP3.."3"] = { x = 0.6423, y = 0.5881, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP3.."4"] = { x = 0.679, y = 0.6836, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP3.."5"] = { x = 0.6279, y = 0.667, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP3.."6"] = { x = 0.6113, y = 0.6933, comment = AL["NOTE_173468_3"] };
-		[RSConstants.STEP4] = { x = 0.6301, y = 0.6181, comment = AL["NOTE_173468_4"] };
-		[RSConstants.STEP5] = { x = 0.51, y = 0.788, comment = AL["NOTE_173468_5"] };
-		[RSConstants.STEP6] = { x = 0.408, y = 0.468, comment = AL["NOTE_173468_6"] };
-	}; --Blanchy's Reins
 	[353503] = { [RSConstants.PATH_START] = { x = 0.4748, y = 0.252 } }; --Silver Strongbox
 	[353872] = { [RSConstants.ENTRANCE] = { x = 0.6195, y = 0.3845 } }; --Hidden Hoard
 	[345456] = { [RSConstants.PATH_START] = { x = 0.5157, y = 0.1357 } }; --Chest of Eyes
+	[351487] = { [RSConstants.FLAG] = { x = 0.6568, y = 0.4295, comment = AL["NOTE_351487_1"] } }; --Secret Treasure
+	[353516] = { [RSConstants.FLAG] = { x = 0.6431, y = 0.3002, comment = AL["NOTE_353643_1"] } }; --Silver Strongbox
+	[353876] = { [RSConstants.FLAG] = { x = 0.586, y = 0.9252, comment = AL["NOTE_353876_1"] } }; --Virtue of Penitence
+	[354647] = { [RSConstants.FLAG] = { x = 0.4895, y = 0.4107, comment = AL["NOTE_354647_1"] } }; --Hearty Dragon Plume
+	[353870] = { [RSConstants.ENTRANCE] = { x = 0.4863, y = 0.4548 } }; --Hidden Hoard
+	[353019] = { [RSConstants.PATH_START] = { x = 0.5806, y = 0.8098 } }; --Silver Strongbox
+	[356823] = { [RSConstants.PATH_START] = { x = 0.587, y = 0.163 } }; --Wayfarer's Abandoned Spoils
+	[354109] = { 
+		[RSConstants.STEP1] = { x = 0.5741, y = 0.3345, comment = AL["NOTE_354109_1"]  };
+		[RSConstants.STEP2] = { x = 0.5761, y = 0.3252, comment = AL["NOTE_354109_2"] };
+	}; --Stoneborn Satchel
+	[351541] = { [RSConstants.ENTRANCE] = { x = 0.4192, y = 0.5008 } }; --Secret Treasure
+	[349795] = { [RSConstants.FLAG] = { x = 0.4699, y = 0.5839, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Fleeing Soul's Bundle
 }
 
 ---============================================================================

@@ -157,7 +157,7 @@
 			
 			local okey, _total, _top, _amount = _pcall (func, combat, instance_container, instance)
 			if (not okey) then
-				_detalhes:Msg ("|cFFFF9900error on custom display function|r:", total)
+				_detalhes:Msg ("|cFFFF9900error on custom display function|r:", _total)
 				return _detalhes:EndRefresh (instance, 0, combat, combat [1])
 			end
 			
@@ -757,6 +757,9 @@
 	-- ~add
 	function atributo_custom:AddValue (actor, actortotal, checktop, name_complement)
 		local actor_table = self:GetActorTable (actor, name_complement)
+		if (not getmetatable(actor)) then
+			_setmetatable(actor,atributo_custom.mt)
+		end
 		actor_table.my_actor = actor
 		actor_table.value = actor_table.value + actortotal
 		
@@ -845,6 +848,7 @@
 				classe = class,
 				value = _detalhes:GetOrderNumber(),
 				is_custom = true,
+				color = actor.color,
 			}, atributo_custom.mt)
 			
 			new_actor.name_complement = name_complement
@@ -1773,7 +1777,7 @@
 			desc = Loc ["STRING_CUSTOM_MYSPELLS_DESC"],
 			source = false,
 			target = false,
-			script_version = 7,
+			script_version = 8,
 			script = [[
 				--get the parameters passed
 				local combat, instance_container, instance = ...
@@ -1936,14 +1940,7 @@
 			    end
 			    
 			    GC:AddStatusBar (100, 1, R, G, B, A)
-			    
-			    --GC:AddLine (" ")
-			    
-			    GC:AddLine ("Multistrike: ", spell.m_amt .. " (" ..floor ( spell.m_amt/total_hits*100) .. "%)")
-			    GC:AddStatusBar (100, 1, R, G, B, A)
-			    
-			    GC:AddLine ("On Normal / On Critical:", spell.m_amt - spell.m_crit .. "  / " .. spell.m_crit)
-			    GC:AddStatusBar (100, 1, R, G, B, A)
+
 			    
 			elseif (spell.n_curado) then
 			    
@@ -2002,14 +1999,6 @@
 				GC:AddLine ("Average / E-Hps: ",  "0 / 0")    
 			    end
 			    
-			    GC:AddStatusBar (100, 1, R, G, B, A)
-			    
-			    --GC:AddLine (" ")
-			    
-			    GC:AddLine ("Multistrike: ", spell.m_amt .. " (" ..floor ( spell.m_amt/total_hits*100) .. "%)")
-			    GC:AddStatusBar (100, 1, R, G, B, A)
-			    
-			    GC:AddLine ("On Normal / On Critical:", spell.m_amt - spell.m_crit .. "  / " .. spell.m_crit)
 			    GC:AddStatusBar (100, 1, R, G, B, A)
 			end
 			]],

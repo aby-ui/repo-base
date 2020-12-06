@@ -140,24 +140,24 @@ function rematch:ShowPetCard(parent,petID,force)
 	if isSpecial then
       if isSpecial=="leveling" then
          card.Title.Icon.Texture:SetTexture("Interface\\AddOns\\Rematch\\Textures\\levelingicon-round")
-         card.Title.Type.Texture:SetTexCoord(0,1,0,1)
-         SetPortraitToTexture(card.Title.Type.Texture,"Interface\\Icons\\INV_Pet_Achievement_CatchPetFamily25")
+		 card.Title.Type.Texture:SetTexCoord(0,1,0,1)
+		 card.Title.Type.Texture:SetTexture("Interface\\Icons\\INV_Pet_Achievement_CatchPetFamily25")
       elseif isSpecial=="ignored" then
          card.Title.Icon.Texture:SetTexture("Interface\\AddOns\\Rematch\\Textures\\ignoredicon-round")
-         card.Title.Type.Texture:SetTexCoord(0,1,0,1)
-         SetPortraitToTexture(card.Title.Type.Texture,"Interface\\Icons\\Ability_Hunter_Pet_GoTo")
-      elseif isSpecial=="random" then
-         SetPortraitToTexture(card.Title.Icon.Texture,"Interface\\Icons\\INV_Misc_Dice_02")
+		 card.Title.Type.Texture:SetTexCoord(0,1,0,1)
+		 card.Title.Type.Texture:SetTexture("Interface\\Icons\\Ability_Hunter_Pet_GoTo")
+	  elseif isSpecial=="random" then
+		card.Title.Icon.Texture:SetTexture("Interface\\Icons\\INV_Misc_Dice_02")
          if petInfo.petType==0 then
-            card.Title.Type.Texture:SetTexCoord(0,1,0,1)
-            SetPortraitToTexture(card.Title.Type.Texture,"Interface\\Icons\\INV_Misc_Dice_01")
+			card.Title.Type.Texture:SetTexCoord(0,1,0,1)
+			card.Title.Type.Texture:SetTexture("Interface\\Icons\\INV_Misc_Dice_01")
          else
       		card.Title.Type.Texture:SetTexCoord(0.4921875,0.796875,0.50390625,0.65625)
             rematch:FillPetTypeIcon(card.Title.Type.Texture,petInfo.petType,"Interface\\PetBattles\\PetIcon-")
          end
       end
 	else
-		SetPortraitToTexture(card.Title.Icon.Texture,petInfo.icon)
+		card.Title.Icon.Texture:SetTexture(petInfo.icon)
 		card.Title.Type.Texture:SetTexCoord(0.4921875,0.796875,0.50390625,0.65625)
 		rematch:FillPetTypeIcon(card.Title.Type.Texture,petInfo.petType,"Interface\\PetBattles\\PetIcon-")
 	end

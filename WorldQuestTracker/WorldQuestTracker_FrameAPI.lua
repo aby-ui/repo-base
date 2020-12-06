@@ -22,17 +22,7 @@ end
 local ff = WorldQuestTrackerFinderFrame
 
 local _
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
-local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardInfo = GetQuestLogRewardInfo
-local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-
-local MapRangeClamped = DF.MapRangeClamped
-local FindLookAtRotation = DF.FindLookAtRotation
-local GetDistance_Point = DF.GetDistance_Point
 
 --debug: print to the chat all quests being tracked
 function WorldQuestTracker.DumpTrackingList()

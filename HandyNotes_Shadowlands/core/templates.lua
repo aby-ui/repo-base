@@ -76,14 +76,14 @@ function WorldMapOptionsButtonMixin:Refresh()
 end
 
 function WorldMapOptionsButtonMixin:InitializeDropDown(level)
+    local map, icon = ns.maps[self:GetParent():GetMapID()]
+
     if level == 1 then
         UIDropDownMenu_AddButton({
             isTitle = true,
             notCheckable = true,
             text = WORLD_MAP_FILTER_TITLE
         })
-
-        local map, icon = ns.maps[self:GetParent():GetMapID()]
 
         for i, group in ipairs(map.groups) do
             if group:IsEnabled() then
@@ -98,10 +98,10 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                     keepShownOnClick = true,
                     hasArrow = true,
                     value = group,
-                    checked = group:GetDisplay(),
+                    checked = group:GetDisplay(map.id),
                     arg1 = group,
                     func = function (button, group)
-                        group:SetDisplay(button.checked)
+                        group:SetDisplay(button.checked, map.id)
                     end
                 })
             end
@@ -155,18 +155,18 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
         UIDropDownMenu_AddSlider({
             text = L["options_opacity"],
             min = 0, max = 1, step=0.01,
-            value = group:GetAlpha(),
+            value = group:GetAlpha(map.id),
             frame = self.AlphaOption,
             percentage = true,
-            func = function (v) group:SetAlpha(v) end
+            func = function (v) group:SetAlpha(v, map.id) end
         }, 2)
 
         UIDropDownMenu_AddSlider({
             text = L["options_scale"],
             min = 0.3, max = 3, step=0.05,
-            value = group:GetScale(),
+            value = group:GetScale(map.id),
             frame = self.ScaleOption,
-            func = function (v) group:SetScale(v) end
+            func = function (v) group:SetScale(v, map.id) end
         }, 2)
     end
 end

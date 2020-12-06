@@ -117,8 +117,10 @@ do
 		elseif (type (class) == "string") then
 			return unpack (_detalhes.class_colors [class] or default_color)
 			
+		elseif (self.color) then
+			return unpack(self.color)
 		else
-			unpack (default_color)
+			return unpack (default_color)
 		end
 	end
 	

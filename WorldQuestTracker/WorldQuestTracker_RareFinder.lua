@@ -25,17 +25,6 @@ local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 
 local _
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
-local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardInfo = GetQuestLogRewardInfo
-local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
-local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-
-local MapRangeClamped = DF.MapRangeClamped
-local FindLookAtRotation = DF.FindLookAtRotation
-local GetDistance_Point = DF.GetDistance_Point
 
 -- /run WorldQuestTrackerAddon.debug = true;
 

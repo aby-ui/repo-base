@@ -31,15 +31,7 @@
 			counter = 0, --counter
 			id = id, --spellid
 			successful_casted = 0, --successful casted times (only for enemies)
-			
-			--> multistrike (deprecated)
-			m_amt = 0,
-			m_dmg = 0,
-			m_crit = 0,
-			--off_amt = 0,
-			--off_dmg = 0,
-			--main_amt = 0,
-			
+
 			--> normal hits
 			n_min = 0,
 			n_max = 0,

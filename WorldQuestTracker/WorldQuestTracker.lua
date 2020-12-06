@@ -36,32 +36,10 @@ local WorldQuestTracker = WorldQuestTrackerAddon
 local ff = WorldQuestTrackerFinderFrame
 local rf = WorldQuestTrackerRareFrame
 
--- 219978
--- /run SetSuperTrackedQuestID(44033);
--- TaskPOI_OnClick
-
-
-local GameCooltip = GameCooltip2
---local Saturate = Saturate
-local floor = floor
---local ceil = ceil
---local ipairs = ipairs
-local GetItemInfo = GetItemInfo
-local GetCurrentMapZone = GetCurrentMapZone
-local GetQuestsForPlayerByMapID = C_TaskQuest.GetQuestsForPlayerByMapID
 local HaveQuestData = HaveQuestData
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
-local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardInfo = GetQuestLogRewardInfo
-local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
+local isWorldQuest = QuestUtils_IsQuestWorldQuest
 local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
 local GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
-
-local MapRangeClamped = DF.MapRangeClamped
-local FindLookAtRotation = DF.FindLookAtRotation
-local GetDistance_Point = DF.GetDistance_Point
 
 local _
 
@@ -405,9 +383,9 @@ function WorldQuestTracker:OnInit()
 
 		--> Court of Farondis 42420
 		--> The Dreamweavers 42170
-		--print ("world quest:", questID, QuestMapFrame_IsQuestWorldQuest (questID), XP, gold)
+		--print ("world quest:", questID, isWorldQuest(questID), XP, gold)
 	
-		if (QuestMapFrame_IsQuestWorldQuest (questID)) then
+		if (isWorldQuest(questID)) then
 			--print (event, questID, XP, gold)
 			--QUEST_TURNED_IN 44300 0 772000
 			-- QINFO: 0 nil nil Petrified Axe Haft true 370
@@ -417,7 +395,7 @@ function WorldQuestTracker:OnInit()
 			
 			FlashClientIcon()
 			
-			if (QuestMapFrame_IsQuestWorldQuest (questID)) then --wait, is this inception?
+			if (isWorldQuest(questID)) then --wait, is this inception?
 				local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, allowDisplayPastCritical, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable, stackAmount = WorldQuestTracker.GetOrLoadQuestData (questID)
 				
 				--print (title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex)
@@ -576,7 +554,7 @@ function WorldQuestTracker:OnInit()
 	
 	function WorldQuestTracker:QUEST_LOOT_RECEIVED (event, questID, item, amount, ...)
 		--print ("LOOT", questID, item, amount, ...)
-		if (QuestMapFrame_IsQuestWorldQuest (questID)) then
+		if (isWorldQuest(questID)) then
 		--	local title, questType, texture, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex, selected, isSpellTarget, timeLeft, isCriteria, gold, goldFormated, rewardName, rewardTexture, numRewardItems, itemName, itemTexture, itemLevel, quantity, quality, isUsable, itemID, isArtifact, artifactPower, isStackable = WorldQuestTracker:GetQuestFullInfo (questID)
 		--	print ("QINFO:", goldFormated, rewardName, numRewardItems, itemName, isArtifact, artifactPower)
 		end
@@ -637,6 +615,9 @@ end
 	--pega os dados da quest
 	function WorldQuestTracker.GetQuest_Info(questID)
 		if (not HaveQuestData(questID)) then
+			if (WorldQuestTracker.__debug) then
+				WorldQuestTracker:Msg("no HaveQuestData(1) for quest", questID)
+			end
 			return
 		end
 
@@ -644,6 +625,9 @@ end
 
 		local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
 		if (not tagInfo) then
+			if (WorldQuestTracker.__debug) then
+				WorldQuestTracker:Msg("no tagInfo(3) for quest", questID)
+			end
 			return
 		end
 
@@ -652,12 +636,11 @@ end
 		local worldQuestType = tagInfo.worldQuestType
 		local rarity = tagInfo.quality
 		local isElite = tagInfo.isElite
-		--local quality = tagInfo.quality
 
 		return title, factionID, tagID, tagName, worldQuestType, rarity, isElite
 	end
 
-	--pega o icone para as quest que dao goild
+	--pega o icone para as quest que dao gold
 	local goldCoords = {0, 1, 0, 1}
 	function WorldQuestTracker.GetGoldIcon()
 		return [[Interface\AddOns\WorldQuestTracker\media\icon_gold]], goldCoords
@@ -969,8 +952,6 @@ hooksecurefunc ("QuestMapFrame_Close", function()
 	WorldQuestTracker.NeedUpdateLoadingIconAnchor()
 end)
 
-
---C_Timer.NewTicker (5, function()WorldQuestTracker.PlayLoadingAnimation()end)
 function WorldQuestTracker.CreateLoadingIcon()
 	local f = CreateFrame ("frame", nil, WorldMapFrame, "BackdropTemplate")
 	f:SetSize (48, 48)
@@ -1066,7 +1047,28 @@ SLASH_WQTRACKER2 = "/worldquesttracker"
 
 function SlashCmdList.WQTRACKER (msg, editbox)
 
-	if (msg == "statusbar") then
+	if (msg == "reinstall") then
+		local b = CreateFrame("button", "WQTResetConfigButton", UIParent, "OptionsButtonTemplate")
+		tinsert(UISpecialFrames, "WQTResetConfigButton")
+		
+		b:SetSize (250, 40)
+		b:SetText ("REINSTALL")
+		b:SetScript ("OnClick", function() 
+			WQTrackerDB = {}
+			WQTrackerDBChr = {}
+			ReloadUI()
+		end)
+		b:SetPoint ("center", UIParent, "center", 0, 0)
+
+	elseif (msg == "debug") then
+		WorldQuestTracker.__debug = not WorldQuestTracker.__debug
+		if (WorldQuestTracker.__debug) then
+			WorldQuestTracker:Msg("debug is now enabled.")
+		else
+			WorldQuestTracker:Msg("debug is disabled.")
+		end
+
+	elseif (msg == "statusbar") then
 		WorldQuestTracker.db.profile.bar_visible = true
 		WorldQuestTracker.RefreshStatusBarVisibility()
 		return
@@ -1175,7 +1177,8 @@ function SlashCmdList.WQTRACKER (msg, editbox)
 			
 		end
 		
-		
+	else
+		WorldQuestTracker:Msg("version:", WQT_VERSION)
 		
 	end
 end

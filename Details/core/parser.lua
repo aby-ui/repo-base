@@ -560,11 +560,6 @@
 		if (is_using_spellId_override) then
 			spellid = override_spellId [spellid] or spellid
 		end
-
-		--Thing From Beyond 8.3 REMOVE ON 9.0
-		if(alvo_serial:match("161895%-%w+$")) then
-			alvo_flags = 0xa48
-		end
 		
 		--> npcId check for ignored npcs
 			--target
@@ -599,15 +594,6 @@
 			--> Light of the Martyr - paladin spell which causes damage to the caster it self
 			elseif (spellid == SPELLID_PALADIN_LIGHTMARTYR) then -- or spellid == 183998 < healing part
 				return parser:LOTM_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
-				
-			--Eye of Corruption 8.3 REMOVE ON 9.0
-			elseif (spellid == 315161) then
-				local enemyName = GetSpellInfo(315161)
-				who_serial, who_name, who_flags = "", enemyName, 0xa48
-				
-			--Thing From Beyond 8.3 REMOVE ON 9.0
-			elseif (spellid == 315197) then
-				who_flags = 0xa48
 			end
 		end
 		
@@ -1354,6 +1340,28 @@
 			t.n = i
 		end
 		
+	end
+
+	--extra attacks
+	function parser:spell_dmg_extra_attacks(token, time, who_serial, who_name, who_flags, _, _, _, _, spellid, spellName, spelltype, arg1)
+		local este_jogador = damage_cache [who_serial]
+		if (not este_jogador) then
+			local meu_dono
+			este_jogador, meu_dono, who_name = _current_damage_container:PegarCombatente (who_serial, who_name, who_flags, true)
+			if (not este_jogador) then
+				return --> just return if actor doen't exist yet
+			end
+		end
+
+--/dump Details:GetCurrentCombat():GetPlayer("Hetdor").spells:GetSpell(1).extra["extra_attack"]
+
+		--> actor spells table
+		local spell = este_jogador.spells._ActorTable[1] --melee damage
+		if (not spell) then
+			return
+		end
+
+		spell.extra["extra_attack"] = (spell.extra["extra_attack"] or 0) + 1
 	end
 	
 	--function parser:swingmissed (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, missType, isOffHand, amountMissed)
@@ -4161,7 +4169,7 @@ spelltype = 1
 		
 		if (capture_type == "damage") then
 			token_list ["SPELL_PERIODIC_DAMAGE"] = parser.spell_dmg
-			token_list ["SPELL_EXTRA_ATTACKS"] = parser.spell_dmg
+			token_list ["SPELL_EXTRA_ATTACKS"] = parser.spell_dmg_extra_attacks
 			token_list ["SPELL_DAMAGE"] = parser.spell_dmg
 			token_list ["SPELL_BUILDING_DAMAGE"] = parser.spell_dmg
 			token_list ["SWING_DAMAGE"] = parser.swing
@@ -4215,9 +4223,10 @@ spelltype = 1
 		end
 
 	end
-	
+
 	parser.original_functions = {
 		["spell_dmg"] = parser.spell_dmg,
+		["spell_dmg_extra_attacks"] = parser.spell_dmg_extra_attacks,
 		["swing"] = parser.swing,
 		["range"] = parser.range,
 		["rangemissed"] = parser.rangemissed,
@@ -4254,7 +4263,7 @@ spelltype = 1
 	
 	local all_parser_tokens = {
 		["SPELL_PERIODIC_DAMAGE"] = "spell_dmg",
-		["SPELL_EXTRA_ATTACKS"] = "spell_dmg",
+		["SPELL_EXTRA_ATTACKS"] = "spell_dmg_extra_attacks",
 		["SPELL_DAMAGE"] = "spell_dmg",
 		["SPELL_BUILDING_DAMAGE"] = "spell_dmg",
 		["SWING_DAMAGE"] = "swing",

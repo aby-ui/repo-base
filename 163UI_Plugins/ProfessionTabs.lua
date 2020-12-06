@@ -263,7 +263,6 @@ function handler:TRADE_SHOW(event)
 
     if RunOnNextFrame then --abyui
         RunOnNextFrame(function()
-            print(333)
             HandleTabs(owner)
             UpdateSelectedTabs(owner)
         end)

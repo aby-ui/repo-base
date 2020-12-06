@@ -66,10 +66,10 @@ Return the associated texture, scale and alpha value to pass to HandyNotes
 for this node.
 --]]
 
-function Node:GetDisplayInfo(minimap)
+function Node:GetDisplayInfo(mapID, minimap)
     local icon = ns.GetIconPath(self.icon)
-    local scale = self.scale * self.group:GetScale()
-    local alpha = self.alpha * self.group:GetAlpha()
+    local scale = self.scale * self.group:GetScale(mapID)
+    local alpha = self.alpha * self.group:GetAlpha(mapID)
 
     if not minimap and WorldMapFrame.isMaximized and ns:GetOpt('maximized_enlarged') then
         scale = scale * 1.3 -- enlarge on maximized world map
@@ -83,9 +83,9 @@ Return the glow POI for this node. If the node is hovered or focused, a green
 glow is applyed to help highlight the node.
 --]]
 
-function Node:GetGlow(minimap)
+function Node:GetGlow(mapID, minimap)
     if self.glow and (self._focus or self._hover) then
-        local _, scale, alpha = self:GetDisplayInfo(minimap)
+        local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
         self.glow.alpha = alpha
         self.glow.scale = scale
         if self._focus then
@@ -217,6 +217,10 @@ function Node:Prepare()
                 ns.PrepareLinks(req)
             end
         end
+    end
+
+    for reward in self:IterateRewards() do
+        reward:Prepare()
     end
 end
 
@@ -422,12 +426,12 @@ function Rare:IsEnabled()
     return NPC.IsEnabled(self)
 end
 
-function Rare:GetGlow(minimap)
-    local glow = NPC.GetGlow(self, minimap)
+function Rare:GetGlow(mapID, minimap)
+    local glow = NPC.GetGlow(self, mapID, minimap)
     if glow then return glow end
 
     if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
-        local _, scale, alpha = self:GetDisplayInfo(minimap)
+        local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
         self.glow.alpha = alpha
         self.glow.scale = scale
         self.glow.r, self.glow.g, self.glow.b = 1, 0, 0
@@ -454,12 +458,12 @@ function Treasure.getters:label()
     return UNKNOWN
 end
 
-function Treasure:GetGlow(minimap)
-    local glow = Node.GetGlow(self, minimap)
+function Treasure:GetGlow(mapID, minimap)
+    local glow = Node.GetGlow(self, mapID, minimap)
     if glow then return glow end
 
     if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
-        local _, scale, alpha = self:GetDisplayInfo(minimap)
+        local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
         self.glow.alpha = alpha
         self.glow.scale = scale
         self.glow.r, self.glow.g, self.glow.b = 1, 0, 0

@@ -28,11 +28,6 @@
 			absorbed = 0,
 			overheal = 0,
 			totaldenied = 0,
-			
-			--> multistrike
-			m_amt = 0,
-			m_healed = 0,
-			m_crit = 0,
 
 			--> normal hits		
 			n_min = 0,

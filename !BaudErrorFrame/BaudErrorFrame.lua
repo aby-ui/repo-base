@@ -194,6 +194,7 @@ end
 
 function BaudErrorFrameAdd(Error, Retrace)
     if Error and Error:find("StaticPopup%.lua:[0-9]+: bad argument #2 to 'SetFormattedText' %(number expected, got nil%)") then return end
+    if Error and Error:find("SetPoint would result in anchor family connection") then return end
     for Key, Value in pairs(ErrorList)do
         if(Value.Error==Error)then
             if(Value.Count < 99)then

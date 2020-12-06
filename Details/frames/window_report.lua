@@ -324,7 +324,7 @@ local function cria_drop_down (este_gump)
 
 	local iconsize = {16, 16}
 
-	local lista = {
+	local baseChannels = {
 		{Loc ["STRING_REPORTFRAME_PARTY"], "PARTY", function() return GetNumSubgroupMembers() > 0 end, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.53125, 0.7265625, 0.078125, 0.40625}, color = {0.66, 0.65, 1}}},
 		{Loc ["STRING_REPORTFRAME_RAID"], "RAID", _IsInRaid, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.53125, 0.7265625, 0.078125, 0.40625}, color = {1, 0.49, 0}}}, 
 		{Loc ["STRING_REPORTFRAME_GUILD"], "GUILD", _IsInGuild, {iconsize = iconsize, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], coords = {0.8046875, 0.96875, 0.125, 0.390625}, color = {0.25, 0.98, 0.25}}}, 
@@ -340,31 +340,36 @@ local function cria_drop_down (este_gump)
 		end
 	
 		local build_list = function()
-			local output_array = {}
+			local reportChannelsTable = {}
 		
-			for index, case in ipairs (lista) do 
-				if (not case [3] or case [3]()) then
-					output_array [#output_array + 1] = {iconsize = case [4].iconsize, value = case [2], label = case [1], onclick = on_click, icon = case [4].icon, texcoord = case [4].coords, iconcolor = case [4].color}
+			for index, channelInfo in ipairs (baseChannels) do 
+				if (not channelInfo [3] or channelInfo[3]()) then
+					reportChannelsTable[#reportChannelsTable + 1] = {iconsize = channelInfo [4].iconsize, value = channelInfo [2], label = channelInfo [1], onclick = on_click, icon = channelInfo [4].icon, texcoord = channelInfo [4].coords, iconcolor = channelInfo [4].color}
 				end
 			end
 			
 			local channels = {_GetChannelList()} --> coloca o resultado em uma tabela .. {id1, canal1, id2, canal2}
 			--09/august/2018: GetChannelList passed to return 3 values for each channel instead of 2
 			for i = 1, #channels, 3 do --> total de canais
-				output_array [#output_array + 1] = {iconsize = iconsize, value = "CHANNEL|"..channels [i+1], label = channels [i]..". "..channels [i+1], onclick = on_click, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], texcoord = {0.3046875, 0.4453125, 0.109375, 0.390625}, iconcolor = {149/255, 112/255, 112/255}}
+				reportChannelsTable [#reportChannelsTable + 1] = {iconsize = iconsize, value = "CHANNEL|"..channels [i+1], label = channels [i]..". "..channels [i+1], onclick = on_click, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], texcoord = {0.3046875, 0.4453125, 0.109375, 0.390625}, iconcolor = {149/255, 112/255, 112/255}}
 			end
 			
-			local bnet_friends = {}
-			
-			local BnetFriends = BNGetNumFriends()
-			for i = 1, BnetFriends do
-				--local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, broadcastTime, canSoR = BNGetFriendInfo (i)
-				--if (isOnline) then
-				--	output_array [#output_array + 1] = {iconsize = iconsize, value = "REALID|" .. presenceID, label = presenceName, onclick = on_click, icon = [[Interface\FriendsFrame\Battlenet-Battleneticon]], texcoord = {0.125, 0.875, 0.125, 0.875}, iconcolor = {1, 1, 1}}
-				--end
+			local _, numBNetOnline = BNGetNumFriends()
+			for i = 1, numBNetOnline do
+				local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
+				local gameAccountInfo = accountInfo and accountInfo.gameAccountInfo
+
+				if (gameAccountInfo) then
+					local isOnline = gameAccountInfo.isOnline
+					if (isOnline) then
+						local bTag = accountInfo.battleTag
+						local bTagNoNumber = bTag:gsub("#.*", "")
+						reportChannelsTable[#reportChannelsTable + 1] = {iconsize = iconsize, value = "REALID|" .. accountInfo.bnetAccountID, label = bTagNoNumber, onclick = on_click, icon = [[Interface\FriendsFrame\Battlenet-Battleneticon]], texcoord = {0.125, 0.875, 0.125, 0.875}, iconcolor = {1, 1, 1}}
+					end
+				end
 			end
 
-			return output_array
+			return reportChannelsTable
 		end
 		este_gump.dropdown_func = build_list
 	
@@ -377,7 +382,7 @@ local function cria_drop_down (este_gump)
 			
 			local last_selected = _detalhes.report_where
 			local check_func
-			for i, t in ipairs (lista) do
+			for i, t in ipairs (baseChannels) do
 				if (t[2] == last_selected) then
 					check_func = t[3]
 					break

@@ -117,6 +117,8 @@ L["options_toggle_maximized_enlarged"] = "Enlarge icons on maximized world map"
 L["options_toggle_maximized_enlarged_desc"] = "When the world map is maximized, enlarge all icons."
 L["options_toggle_use_char_achieves"] = "Use character achievements"
 L["options_toggle_use_char_achieves_desc"] = "Display achievement progress for this character instead of the overall account."
+L["options_toggle_per_map_settings"] = "Use zone-specific settings"
+L["options_toggle_per_map_settings_desc"] = "Apply toggle, scale and opacity settings to each zone individually."
 L["options_restore_hidden_nodes"] = "Restore hidden nodes"
 L["options_restore_hidden_nodes_desc"] = "Restore all nodes hidden using the right-click context menu."
 

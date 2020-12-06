@@ -69,6 +69,8 @@ end
 function RSLootMixin:OnMouseDown()
 	if (IsControlKeyDown()) then
 		DressUpItemLink(self.itemLink)
+		DressUpBattlePetLink(self.itemLink)
+		DressUpMountLink(self.itemLink)
 	elseif (IsAltKeyDown()) then
 		if (RSConfigDB.GetLootFilterByCategory(self.itemClassID, self.itemSubClassID)) then
 			RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, false)

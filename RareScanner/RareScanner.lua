@@ -279,11 +279,16 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		-- Nameplates
 	elseif (event == "NAME_PLATE_UNIT_ADDED") then
 		local nameplateid = ...
-		if (nameplateid and not UnitIsUnit("player", nameplateid) and not UnitIsFriend("player", nameplateid)) then
+		if (nameplateid and not UnitIsUnit("player", nameplateid)) then
 			local nameplateUnitGuid = UnitGUID(nameplateid)
 			if (nameplateUnitGuid) then
-				local _, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
+				local npcType, _, _, _, _, id = strsplit("-", nameplateUnitGuid)
 				local npcID = id and tonumber(id) or nil
+
+				-- Ignore rare hunter pets
+				if (npcType == "Pet") then
+					return
+				end
 
 				-- If player in a zone with vignettes ignore it
 				local mapID = C_Map.GetBestMapForUnit("player")
@@ -292,7 +297,10 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 				end
 
 				if (mapID and not RSMapDB.IsZoneWithoutVignette(mapID)) then
-					return
+					-- Continue if its an NPC that doesnt have vignette in a newer zone
+					if (not RSNpcDB.GetInternalNpcInfo(npcID) or not RSNpcDB.GetInternalNpcInfo(npcID).nameplate) then
+						return
+					end
 				end
 
 				-- If its a supported NPC and its not killed
@@ -1340,7 +1348,7 @@ function RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
 
 	-- Updates if it was found before
 	if (RSGeneralDB.GetAlreadyFoundEntity(entityID)) then
-		RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, vignettePosition.x, vignettePosition.y, artID)
+		RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, vignettePosition.x, vignettePosition.y, artID, atlasName)
 		-- Adds if its the first time found
 	else
 		RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, vignettePosition.x, vignettePosition.y, artID, atlasName)

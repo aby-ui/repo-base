@@ -275,6 +275,15 @@
 						<Layers>
 							<Layer level="BORDER">
 								<Texture parentKey="Texture" setAllPoints="true"/>
+								<MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent.Texture" x="2" y="-2"/>
+										<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Texture" x="-2" y="2"/>
+									</Anchors>
+									<MaskedTextures>
+										<MaskedTexture childKey="Texture"/>
+									</MaskedTextures>
+								</MaskTexture>							
 							</Layer>
 							<Layer level="ARTWORK">
 								<!-- thin gold border around Icon -->
@@ -325,6 +334,15 @@
 									<Size x="41" y="41"/>
 									<TexCoords left="0.4921875" right="0.796875" top="0.50390625" bottom="0.65625"/>
 								</Texture>
+								<MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent.Texture" x="2" y="-2"/>
+										<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Texture" x="-2" y="2"/>
+									</Anchors>
+									<MaskedTextures>
+										<MaskedTexture childKey="Texture"/>
+									</MaskedTextures>
+								</MaskTexture>															
 							</Layer>
 							<Layer level="ARTWORK">
 								<!-- thin gold border around Type (which already has one but not a matching color) -->

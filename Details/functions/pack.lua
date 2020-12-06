@@ -135,6 +135,8 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         --print("finished export (debug):", exportedString) --debug
         --print("uncompressed (debug):", format("%.2f", #exportedString/1024), "KBytes")
 
+--if true then return exportedString end
+
         --compress
         local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")
         local dataCompressed = LibDeflate:CompressDeflate(exportedString, {level = 9})
@@ -413,7 +415,7 @@ function Details.packFunctions.PackDamage(combatObject)
         end
     end
 
-    if (not playerIndex) then
+    if (not playerIndex) then --no player index
         return
     end
 

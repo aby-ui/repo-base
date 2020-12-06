@@ -106,23 +106,38 @@ rematch.targetData = {
     -- expansionID 8: Shadowlands
 
     -- mapID 1533: Bastion
+    {8,1533,173131,61784,4,25,2972,2973,2974}, -- Stratios (Cliffs of Bastion)
+    {8,1533,173133,61783,4,25,2968}, -- Jawbone (Mega Bite)
     {8,1533,173130,61787,4,25,2975,2976,2977}, -- Zolla (Micro Defense Force)
     {8,1533,173129,61791,4,25,2969,2970,2971}, -- Thenia (Thenia's Loyal Companions)
+    {8,1533,175777,nil,6,25,3068}, -- Crystalsnap
+    {8,1533,175783,nil,6,25,3075}, -- Digallo
+    {8,1533,175785,nil,6,25,3077}, -- Kostos
+
     -- mapID 1536: Maldraxxus
     {8,1536,173257,61866,4,25,2980,2981,2982}, -- Caregiver Maximillian (Mighty Minions of Maldraxxus)
     {8,1536,173263,61867,4,25,2983,2984,2985}, -- Rotgut (Extra Pieces)
     {8,1536,173267,61868,4,25,2986,2987,2988}, -- Dundley Stickyfingers (Uncomfortably Undercover)
     {8,1536,173274,61870,4,25,2978}, -- Gorgemouth (Failed Experiment)
+    {8,1536,175784,nil,6,25,3076}, -- Gelatinous
+    {8,1536,175786,nil,6,25,3078}, -- Glurp
+
     -- mapID 1525: Revendreth
     {8,1525,173303,61879,4,25,2979}, -- Scorch (Ashes Will Fall)
     {8,1525,173315,61883,4,25,2989,2990,2991}, -- Sylla (Resilient Survivors)
     {8,1525,173324,61885,4,25,2992,2993,2994}, -- Eyegor (Eyegor's Special Friends)
     {8,1525,173331,61886,4,25,2996}, -- Addius the Tormentor (The Mind Games of Addius)
+    {8,1525,175781,nil,6,25,3073}, -- Sewer Creeper
+    {8,1525,175782,nil,6,25,3074}, -- The Countess
+
     -- mapID 1565: Ardenweald
     {8,1565,173372,61946,4,25,3000,3001,3002}, -- Glitterdust (Natural Defenders)
     {8,1565,173376,61947,4,25,2998}, -- Nightfang (Lurking In The Shadows)
     {8,1565,173377,61948,4,25,3003,3004,3005}, -- Faryl (Airborne Defense Force)
     {8,1565,173381,61949,4,25,2999}, -- Rascal (Ardenweald's Tricksters)
+    {8,1565,175778,nil,6,25,3070}, -- Briarpaw
+    {8,1565,175779,nil,6,25,3071}, -- Chittermaw
+    {8,1565,175780,nil,6,25,3072}, -- Mistwing
 
     -- expansionID 7: Battle for Azeroth
 

@@ -128,6 +128,8 @@ local function filterItem(cell, args)
 
 	if (IsControlKeyDown()) then
 		DressUpItemLink(itemLink)
+		DressUpBattlePetLink(itemLink)
+		DressUpMountLink(itemLink)
 	elseif (IsAltKeyDown()) then
 		if (private.db.loot.filteredLootCategories[itemClassID][itemSubClassID]) then
 			private.db.loot.filteredLootCategories[itemClassID][itemSubClassID] = false
@@ -242,9 +244,8 @@ local function AddLootTooltip(tooltip, pin)
 
 		-- Add loot to the tooltip
 		if (next(itemsIDsFiltered) ~= nil) then
-			local line = tooltip:AddLine()
 			tooltip:AddSeparator(1)
-			line = tooltip:AddLine()
+			local line = tooltip:AddLine()
 
 			local j
 			for i, itemInfo in ipairs(itemsIDsFiltered) do

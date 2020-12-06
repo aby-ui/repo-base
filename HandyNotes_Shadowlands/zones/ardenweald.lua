@@ -35,7 +35,8 @@ map.nodes[34606800] = Rare({
     id=164477,
     quest=59226,
     rewards={
-        Achievement({id=14309, criteria=48714})
+        Achievement({id=14309, criteria=48714}),
+        Transmog({item=180166, slot=L["staff"]}) -- Deathbinder's Staff
     }
 }) -- Deathbinder Hroth
 
@@ -134,8 +135,10 @@ local MACABRE = Rare({
     }
 }) -- Macabre
 
+map.nodes[32664480] = MACABRE
 map.nodes[36474814] = MACABRE
 map.nodes[47924018] = MACABRE
+-- map.nodes[57912935] = MACABRE
 map.nodes[59952940] = MACABRE
 
 map.nodes[62102470] = Rare({
@@ -173,6 +176,7 @@ map.nodes[65702809] = Rare({
     glow=RainbowGlow({ icon=ns.GetGlowPath('skull_w') }),
     rewards={
         Achievement({id=14309, criteria=48715}),
+        Transmog({item=179586, slot=L["bow"]}), -- Elderwood Piercer
         Item({item=182179, quest=62434, covenant=NIGHTFAE}) -- Runestag Soul
     },
     pois={
@@ -252,7 +256,7 @@ map.nodes[65702430] = Rare({
         Achievement({id=14309, criteria=48789}),
         Item({item=175729, note=L["trinket"]}) -- Rotbriar Sprout
     }
-}) -- Rotbriar Changeling
+}) -- Rotbriar Boggart
 
 map.nodes[72425175] = Rare({
     id=171451,
@@ -294,7 +298,7 @@ map.nodes[30115536] = Rare({
     rewards={
         Achievement({id=14309, criteria=48796}),
         Transmog({item=180154, slot=L["2h_axe"]}), -- Greataxe of Unrelenting Pursuit
-        Mount({item=180730, id=1393}), -- Glimmerfur Prowler
+        Mount({item=180730, id=1393}), -- Wild Glimmerfur Prowler
         Item({item=182176, quest=62431, covenant=NIGHTFAE}) -- Shadowstalker Soul
     },
     pois={

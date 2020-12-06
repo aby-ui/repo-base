@@ -10,6 +10,8 @@
 	<Script file="scrollbar.lua"/>
 	<Script file="spells.lua"/>
 	<Script file="math.lua"/>
+	<Script file="savedvars.lua"/>
+	<Script file="languages.lua"/>
 	
 	<Include file="tutorial_alert.xml"/>
 	<Include file="split_bar.xml"/>

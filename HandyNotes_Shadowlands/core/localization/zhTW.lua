@@ -117,6 +117,8 @@ L["options_toggle_maximized_enlarged"] = "當世界地圖時最大化時放大�
 L["options_toggle_maximized_enlarged_desc"] = "當世界地圖放到最大時，放大所有的圖示。"
 L["options_toggle_use_char_achieves"] = "使用角色成就"
 L["options_toggle_use_char_achieves_desc"] = "用此角色的成就進度來替代顯示整個帳號的進度。"
+L["options_toggle_per_map_settings"] = "使用區域個別設定"
+L["options_toggle_per_map_settings_desc"] = "只使用各個地圖各自獨立的切換、縮放和透明度設定"
 L["options_restore_hidden_nodes"] = "恢復隱藏的節點"
 L["options_restore_hidden_nodes_desc"] = "恢復所有使用右鍵選單隱藏的節點。"
 

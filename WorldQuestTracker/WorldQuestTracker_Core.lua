@@ -33,18 +33,7 @@ WorldQuestTracker.WorldSummary = CreateFrame ("frame", "WorldQuestTrackerWorldSu
 local DEV_VERSION_STR = DF:CreateLabel (worldFramePOIs, "")
 
 local _
-local QuestMapFrame_IsQuestWorldQuest = QuestMapFrame_IsQuestWorldQuest or QuestUtils_IsQuestWorldQuest
-local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
-local GetQuestLogRewardInfo = GetQuestLogRewardInfo
-local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
-local GetQuestLogRewardMoney = GetQuestLogRewardMoney
-local GetNumQuestLogRewards = GetNumQuestLogRewards
-local GetQuestInfoByQuestID = C_TaskQuest.GetQuestInfoByQuestID
-
-local MapRangeClamped = DF.MapRangeClamped
-local FindLookAtRotation = DF.FindLookAtRotation
-local GetDistance_Point = DF.GetDistance_Point
-
+local isWorldQuest = QuestUtils_IsQuestWorldQuest
 local GameCooltip = GameCooltip2
 
 local LibWindow = LibStub ("LibWindow-1.1")
@@ -1290,7 +1279,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						else
 							--desligou o tracker do tomtom
 							for questID, t in pairs (WorldQuestTracker.TomTomUIDs) do
-								if (type (questID) == "number" and QuestMapFrame_IsQuestWorldQuest (questID)) then
+								if (type (questID) == "number" and isWorldQuest(questID)) then
 									--procura o bot�o da quest
 									for _, widget in ipairs (WorldQuestTracker.WorldMapWidgets) do
 										if (widget.questID == questID) then

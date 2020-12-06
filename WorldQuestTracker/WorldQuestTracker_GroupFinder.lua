@@ -32,7 +32,7 @@ local GameCooltip = GameCooltip2
 
 local _
 local C_TaskQuest = _G.C_TaskQuest
-local QuestMapFrame_IsQuestWorldQuest = _G.QuestMapFrame_IsQuestWorldQuest or _G.QuestUtils_IsQuestWorldQuest
+local isWorldQuest = QuestUtils_IsQuestWorldQuest
 local GetNumQuestLogRewardCurrencies = _G.GetNumQuestLogRewardCurrencies
 local GetQuestLogRewardInfo = _G.GetQuestLogRewardInfo
 local GetQuestLogRewardCurrencyInfo = _G.GetQuestLogRewardCurrencyInfo
@@ -1141,13 +1141,16 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 
 			local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
 			if (not tagInfo) then
+				if (WorldQuestTracker.__debug) then
+					WorldQuestTracker:Msg("no tagInfo(1) for quest", questID)
+				end
 				return
 			end
 			local tagID = tagInfo.tagID
 			local rarity = tagInfo.rarity or 1
 			local isElite = tagInfo.isElite
 			
-			local isWorldQuest = QuestMapFrame_IsQuestWorldQuest(questID)
+			local isWorldQuest = isWorldQuest(questID)
 
 			if ((isWorldQuest and isInArea) or allAssaultQuests[questID] or tagID == 112 or (isElite and rarity == LE_WORLD_QUEST_QUALITY_EPIC)) then
 				--FlashClientIcon()
@@ -1167,6 +1170,10 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 				
 				ff.CurrentWorldQuest = questID
 				ff:PlayerEnteredWorldQuestZone (questID)
+			end
+		else
+			if (WorldQuestTracker.__debug and not HaveQuestData(questID)) then
+				WorldQuestTracker:Msg("no HaveQuestData(2) for quest", questID)
 			end
 		end 
 	
@@ -1188,7 +1195,7 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 		
 	
 	elseif (event == "QUEST_TURNED_IN") then
-		local isWorldQuest = QuestMapFrame_IsQuestWorldQuest (questID)
+		local isWorldQuest = isWorldQuest(questID)
 		if (isWorldQuest) then
 			ff.WorldQuestFinished (questID)
 
@@ -1357,7 +1364,7 @@ end
 
 function ff.HandleBTrackerBlock (questID, block)
 	if (not ff.BQuestTrackerUsedWidgets [block]) then
-		if (type (questID) == "number" and HaveQuestData (questID) and QuestMapFrame_IsQuestWorldQuest (questID)) then
+		if (type (questID) == "number" and HaveQuestData (questID) and isWorldQuest(questID)) then
 			local title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 			if (not ff.cannot_group_quest [worldQuestType] and not WorldQuestTracker.MapData.GroupFinderIgnoreQuestList [questID]) then
 				--> give a button for this block
@@ -1366,7 +1373,7 @@ function ff.HandleBTrackerBlock (questID, block)
 		end
 	else
 		local isInArea, isOnMap, numObjectives = GetTaskInfo (questID) -- or not isInArea
-		if (type (questID) ~= "number" or not HaveQuestData (questID) or not QuestMapFrame_IsQuestWorldQuest (questID)) then
+		if (type (questID) ~= "number" or not HaveQuestData (questID) or not isWorldQuest(questID)) then
 			--> remove the button from this block
 			ff.RemoveButtonFromBBlock (block)
 		else

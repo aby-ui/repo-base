@@ -73,6 +73,7 @@ local VIGNETTES = {
     -- [4244] = {}, -- Wish Cricket
     -- [4263] = {}, -- Silver Strongbox
     -- [4266] = {}, -- Silver Strongbox
+    -- [4269] = {}, -- Silver Strongbox
     -- [4270] = {}, -- Silver Strongbox
     -- [4271] = {}, -- Silver Strongbox
     -- [4272] = {}, -- Silver Strongbox
@@ -154,16 +155,18 @@ end
 
 ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b', {defaults=ns.GROUP_HIDDEN})
 ns.groups.BLESSINGS = Group('blessings', 1022951, {defaults=ns.GROUP_HIDDEN})
-ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_wr')
-ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_wy')
+ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd')
+ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_yw')
 ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.FAERIE_TALES = Group('faerie_tales', 355498, {defaults=ns.GROUP_HIDDEN})
 ns.groups.FUGITIVES = Group('fugitives', 236247, {defaults=ns.GROUP_HIDDEN})
+ns.groups.GRAPPLES = Group('grapples', 'peg_bk', {defaults=ns.GROUP_HIDDEN})
 ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
-ns.groups.RIFTSTONE = Group('riftstone', 'portal_b', {defaults=ns.GROUP_HIDDEN})
+ns.groups.RIFTSTONE = Group('riftstone', 'portal_b')
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
+ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
 ns.groups.VESPERS = Group('vespers', 3536181, {defaults=ns.GROUP_HIDDEN})
 
 -------------------------------------------------------------------------------

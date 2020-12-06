@@ -73,8 +73,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
     --levels          1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-    local drops  = { nil, 90,  90,  95, 100, 100, 105, 110, 110, 110, 115, 115, 115, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120 }
-    local levels = { nil, 95, 100, 105, 105, 110, 115, 115, 115, 120, 120, 125, 125, 125, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130 }
+    local drops  = { nil, 187, 190, 194, 194, 197, 200, 200, 200, 207, 207, 207, 207, 207, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210 }
+    local levels = { nil, 200, 203, 207, 210, 210, 213, 216, 216, 220, 220, 223, 223, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226 }
     local titans = { nil, nil, nil, nil, nil,  75, 330, 365, 400, 1700, 1790, 1880, 1970, 2060, 2150, 2240, 2330, 2420, 2510, 2600, 2665,2730,2795,2860,2915}
     ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
