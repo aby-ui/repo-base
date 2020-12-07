@@ -91,8 +91,8 @@ function D:GenerateStatText(detail)
     local _, spec, _, _, _, pid = GetSpecializationInfo(GetSpecialization())
     addLine("%s", spec)
     addLine("%s%.1f", L["ILV"], select(2, GetAverageItemLevel()))
-    local loc = C_AzeriteItem.FindActiveAzeriteItem()
-    if loc then addLine("艾心%d级", C_AzeriteItem.GetPowerLevel(loc)) end
+    --local loc = C_AzeriteItem.FindActiveAzeriteItem()
+    --if loc then addLine("艾心%d级", C_AzeriteItem.GetPowerLevel(loc)) end
     --addLine("神器%d级", select(6, C_ArtifactUI.GetEquippedArtifactInfo()))
     addLine("血量%d", UnitHealthMax("player"))
     local primaryName = pid==LE_UNIT_STAT_STRENGTH and ITEM_MOD_STRENGTH_SHORT or pid==LE_UNIT_STAT_AGILITY and ITEM_MOD_AGILITY_SHORT or ITEM_MOD_INTELLECT_SHORT

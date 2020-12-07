@@ -58,6 +58,11 @@ ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE',function(_,_,ms
                     msg = format(template, n, v, _G['FACTION_STANDING_LABEL' .. standingID], curr)
                 end
             end
+        else
+            n = strmatch(msg, "(.*)现在觉得你更有价值了") --威·娜莉现在觉得你更有价值了。 [获得了80点声望]
+            if n then
+                EP_FindFaction(n)
+            end
         end
     end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2410, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201126151802")
+mod:SetRevision("20201206235333")
 mod:SetCreatureID(169769)
 mod:SetEncounterID(2396)
 
@@ -112,7 +112,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellCosmicArtifice:Yell()
 			yellCosmicArtificeFades:Countdown(spellId)
 		else
-			warnCosmicArtifice:Show(args.destName)
+			warnCosmicArtifice:CombinedShow(1, args.destName)
 		end
 	end
 end

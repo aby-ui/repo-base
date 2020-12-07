@@ -208,6 +208,11 @@ GTFO.SpellID["339080"] = {
   sound = 1;
 };
 
+GTFO.SpellID["341215"] = {
+  --desc = "Volatile Anima";
+  sound = 1;
+};
+
 --- *************************
 --- * Mists of Tirna Scithe *
 --- *************************
@@ -225,6 +230,7 @@ GTFO.SpellID["323250"] = {
 GTFO.SpellID["331721"] = {
   --desc = "Spear Flurry";
   sound = 1;
+  tankSound = 0;
 };
 
 GTFO.SpellID["326017"] = {
@@ -254,6 +260,17 @@ GTFO.SpellID["323130"] = {
 
 GTFO.SpellID["323681"] = {
   --desc = "Dark Devastation (Mordretha, the Endless Empress)";
+  sound = 1;
+};
+
+GTFO.SpellID["323750"] = {
+  --desc = "Vile Gas";
+  sound = 1;
+};
+
+GTFO.SpellID["321768"] = {
+  --desc = "On the Hook";
+  applicationOnly = true;
   sound = 1;
 };
 
@@ -306,6 +323,13 @@ GTFO.SpellID["320784"] = {
 --- * De Other Side *
 --- *****************
 
+GTFO.SpellID["334496"] = {
+  --desc = "Soporific Shimmerdust (Weald Shimmermoth)";
+  applicationOnly = true;
+  minimumStacks = 6;
+  sound = 1;
+};
+
 GTFO.SpellID["333250"] = {
   --desc = "Reaver (Risen Warlord)";
   sound = 1;
@@ -328,6 +352,11 @@ GTFO.SpellID["332672"] = {
   test = true;
 };
 
+GTFO.SpellID["323569"] = {
+  --desc = "Spilled Essence (Son of Hakkar)";
+  sound = 1;
+};
+
 --- ************
 --- * Torghast *
 --- ************
@@ -339,6 +368,11 @@ GTFO.SpellID["319837"] = {
 
 GTFO.SpellID["329377"] = {
   --desc = "Torturous Leer (Animimic)";
+  sound = 1;
+};
+
+GTFO.SpellID["294607"] = {
+  --desc = "Death Pool";
   sound = 1;
 };
 

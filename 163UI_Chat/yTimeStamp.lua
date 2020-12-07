@@ -18,9 +18,9 @@ local AddMessage = function(self, text, ...)
     if U1DBG.config_timestamp and U1DBG.config_timestamp ~= '' and CHAT_TIMESTAMP_FORMAT then
         local date = BetterDate(CHAT_TIMESTAMP_FORMAT, time())
         if text:sub(1, #date) == date then
-            text = format(ts, date, text:sub(#date + 1))
+            text = format(ts, date:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1'), text:sub(#date + 1))
         else
-            text = format(ts, date, text)
+            text = format(ts, date:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1'), text)
         end
     end
     return origs[self](self, text, ...)
@@ -74,9 +74,26 @@ local newSetItemRef = function(link, text, button, ...)
 
     local text = borderManipulation(SELECTED_CHAT_FRAME.FontStringContainer:GetRegions())
     if(text) then
+        text = text:gsub('||', '\\124') --text = text:gsub('||', '#!|#') --还是\124方便一些
+        text = text:gsub('|T.-|t', '')
+        text = text:gsub('|K.-|k', '*')
+        --print(text:gsub("|", "/"))
+        text = text:gsub('|c%x%x%x%x%x%x%x%x|H(item:.-)|h.-|h%s-|r', function(link) return select(2, GetItemInfo(link)) end) --特殊处理物品链接被AddMessage处理的情况
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(item:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(spell:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(item:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(clubTicket:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(achievement:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(quest:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(trade:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(battlepet:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(worldmap:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(pvptal:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
+        text = text:gsub('|c(%x%x%x%x%x%x%x%x)|H(talent:.-)|h(.-)|h%s-|r', "|W%1^%2^%3|w")
         text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1')
         text = text:gsub('|H.-|h(.-)|h', '%1')
-		text = text:gsub('|T.-|t', '')
+        text = text:gsub('|W(.-)%^(.-)%^(.-)|w', "|c%1|H%2|h%3|h|r")
+        --text = text:gsub('#!|#', "||")
         CoreUIChatEdit_Insert(text)
     end
 end

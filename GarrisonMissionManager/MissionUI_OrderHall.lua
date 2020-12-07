@@ -1,4 +1,5 @@
 local addon_name, addon_env = ...
+if not addon_env.load_this then return end
 
 -- Confused about mix of CamelCase and_underscores?
 -- Camel case comes from copypasta of how Blizzard calls returns/fields in their code and deriveates

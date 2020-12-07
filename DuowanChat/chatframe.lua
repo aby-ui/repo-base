@@ -252,7 +252,7 @@ function DWChatFrame:OnInitialize()
 	db = self.db.profile;
 	self:SetEnabledState(DWChat:GetModuleEnabled(MODNAME));
 	DWChat:RegisterModuleOptions(MODNAME, getOptions, L["ChatFrame"]);
-	CoreUIEnableTooltip(DWCReportStatButton, "发送属性报告", "左键简略，右键详细");
+	CoreUIEnableTooltip(DWCReportStatButton, "发送属性报告", "点击生成实装和属性信息");
 	CoreUIEnableTooltip(DWCRandomButton, "掷骰子");
 end
 

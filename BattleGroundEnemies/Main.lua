@@ -13,6 +13,7 @@ local BattleGroundEnemies = CreateFrame("Frame", "BattleGroundEnemies")
 local _G = _G
 local pairs = pairs
 local print = print
+local time = time
 local type = type
 local unpack = unpack
 local gsub = gsub
@@ -45,6 +46,7 @@ local PlaySound = PlaySound
 local PowerBarColor = PowerBarColor --table
 local RaidNotice_AddMessage = RaidNotice_AddMessage
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
+local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
 local SetMapToCurrentZone = SetMapToCurrentZone
 local UnitDebuff = UnitDebuff
 local UnitExists = UnitExists
@@ -86,6 +88,46 @@ BattleGroundEnemies.Objects = {}
 
 
 local RequestFrame = CreateFrame("Frame", nil, BattleGroundEnemies)
+
+-- local DebugFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+-- DebugFrame:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+-- 	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+-- 	tile = true, tileSize = 16, edgeSize = 16,
+-- 	insets = {left = 1, right = 1, top = 1, bottom = 1}}
+-- )
+-- DebugFrame:SetBackdropColor(0,0,0,1)
+-- DebugFrame:SetWidth(650)
+-- DebugFrame:SetHeight(500)
+-- DebugFrame:SetPoint("CENTER", UIParent, "CENTER")
+-- DebugFrame:Hide()
+-- DebugFrame:SetFrameStrata("DIALOG")
+
+-- local scrollArea = CreateFrame("ScrollFrame", "BCMCopyScroll", DebugFrame, "UIPanelScrollFrameTemplate")
+-- scrollArea:SetPoint("TOPLEFT", DebugFrame, "TOPLEFT", 8, -5)
+-- scrollArea:SetPoint("BOTTOMRIGHT", DebugFrame, "BOTTOMRIGHT", -30, 5)
+
+-- local editBox = CreateFrame("EditBox", nil, DebugFrame)
+-- editBox:SetMultiLine(true)
+-- editBox:SetMaxLetters(99999)
+-- editBox:EnableMouse(true)
+-- editBox:SetAutoFocus(false)
+-- editBox:SetFontObject(ChatFontNormal)
+-- editBox:SetWidth(620)
+-- editBox:SetHeight(495)
+-- editBox:SetScript("OnEscapePressed", function(f) f:GetParent():GetParent():Hide() f:SetText("") end)
+
+-- scrollArea:SetScrollChild(editBox)
+
+-- local close = CreateFrame("Button", "BCMCloseButton", DebugFrame, "UIPanelCloseButton")
+-- close:SetPoint("TOPRIGHT", DebugFrame, "TOPRIGHT", 0, 25)
+
+-- local font = DebugFrame:CreateFontString(nil, nil, "GameFontNormal")
+-- font:Hide()
+
+-- DebugFrame.box = editBox
+-- DebugFrame.font = font
+
+-- BattleGroundEnemies.DebugFrame = DebugFrame
 
 
 
@@ -2591,6 +2633,9 @@ do
 	-- DefaultSettings.profile.Enemies = {[15] = DefaultSettings.profile, [40] = DefaultSettings.profile}
 	-- DefaultSettings.profile.Allies = {[15] = DefaultSettings.profile, [40] = DefaultSettings.profile}
 	
+
+
+
 	local function CreateMainFrame(playerType)
 		local self = BattleGroundEnemies[playerType]
 		self.Players = {} --index = name, value = button(table), contains enemyButtons
@@ -2617,6 +2662,16 @@ do
 		self.PlayerCount:SetAllPoints()
 		self.PlayerCount:SetJustifyH("LEFT")
 	end
+	
+	local function PVPMatchScoreboard_OnHide()
+		if PVPMatchScoreboard.selectedTab ~= 1 then
+			-- user was looking at another tab than all players
+			SetBattlefieldScoreFaction() -- request a UPDATE_BATTLEFIELD_SCORE
+		end
+
+	end
+
+
 
 	
 	function BattleGroundEnemies:PLAYER_LOGIN()
@@ -2632,6 +2687,8 @@ do
 		CreateMainFrame("Enemies")
 		
 		self:SetupOptions()
+
+		PVPMatchScoreboard:HookScript("OnHide", PVPMatchScoreboard_OnHide)
 		
 		--DBObjectLib:ResetProfile(noChildren, noCallbacks)
 		
@@ -2691,8 +2748,34 @@ function BattleGroundEnemies:ProfileChanged()
 	self.Allies:ApplyAllSettings()
 end
 
+BattleGroundEnemies.DebugText = BattleGroundEnemies.DebugText or ""
 function BattleGroundEnemies:Debug(...)
-	if self.db and self.db.profile.Debug then print("BGE:", ...) end
+	if self.db and self.db.profile.Debug then 
+		print("BGE DEBUG:", ...) 
+
+		-- disabled for now, its just way too cpu intense and makes the game crash, but would be nice to have
+		-- local args = {...}
+		-- local text = ""
+		-- for i = 1, #args do
+		-- 	text = text.. " ".. tostring(args[i])			
+		-- end
+
+		-- local timestampFormat = "[%I:%M:%S] " --timestamp format
+		-- local stamp = BetterDate(timestampFormat, time())
+
+		-- DebugFrame.font:SetFormattedText(stamp.."%s\n", text) -- Set a line break
+		-- local cleanLine = DebugFrame.font:GetText() or ""
+		-- self.DebugText = self.DebugText.. cleanLine
+		-- print("DebugText:", self.DebugText)
+
+		-- DebugFrame.box:SetText(self.DebugText)
+	end
+end
+
+function BattleGroundEnemies:Information(...)
+	
+	print("BGE:", ...) 
+
 end
 
 do
@@ -3066,6 +3149,8 @@ do
 			end
 		end
 
+		local wrongSelectedTab = 0
+
 		function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 
 			-- self:Debug(GetCurrentMapAreaID())
@@ -3099,7 +3184,7 @@ do
 				
 				
 				local MyBgFaction = GetBattlefieldArenaFaction()  -- returns the playered faction 0 for horde, 1 for alliance
-				--print("MyBgFaction:", MyBgFaction)
+				self:Debug("MyBgFaction:", MyBgFaction)
 				if MyBgFaction == 0 then -- i am Horde
 					self.EnemyFaction = 1 --Enemy is Alliance
 					self.AllyFaction = 0
@@ -3130,9 +3215,11 @@ do
 				--self:Debug("IsRatedBG", IsRatedBG)
 			end
 			
-			
 			local _, _, _, _, numEnemies = GetBattlefieldTeamInfo(self.EnemyFaction)
 			local _, _, _, _, numAllies = GetBattlefieldTeamInfo(self.AllyFaction)
+
+			self:Debug("numEnemies:", numEnemies)
+			self:Debug("numAllies:", numAllies)
 			
 			self:BGSizeCheck(numEnemies)
 			
@@ -3143,11 +3230,7 @@ do
 			
 			
 			if InCombatLockdown() then return end
-			
-			
-		
-			
-			
+	
 			
 			wipe(self.Enemies.NewPlayerDetails) --use a local table to not create an unnecessary new button if another player left
 			wipe(self.Allies.NewPlayerDetails) --use a local table to not create an unnecessary new button if another player left
@@ -3155,6 +3238,11 @@ do
 			self.Allies.resort = false
 			
 			local numScores = GetNumBattlefieldScores()
+			self:Debug("numScores:", numScores)
+
+
+			local foundAllies = 0
+			local foundEnemies = 0
 			for i = 1, numScores do
 				local name,_,_,_,_,faction,race, _, classTag,_,_,_,_,_,_,specName = GetBattlefieldScore(i)
 				self:Debug("player", "name:", name, "faction:", faction, "race:", race, "classTag:", classTag, "specName:", specName)
@@ -3169,12 +3257,31 @@ do
 						
 						return
 					end
-					 
-					self[faction == self.EnemyFaction and "Enemies" or "Allies"]:CreateOrUpdatePlayer(name, race, classTag, specName)
+					if faction == self.EnemyFaction then
+						self.Enemies:CreateOrUpdatePlayer(name, race, classTag, specName)
+						foundEnemies = foundEnemies + 1
+					else
+						self.Allies:CreateOrUpdatePlayer(name, race, classTag, specName)
+						foundAllies = foundAllies + 1
+					end
 				end
 			end
-			self.Enemies:DeleteAndCreateNewPlayers()
-			self.Allies:DeleteAndCreateNewPlayers()
+		
+			if foundEnemies == 0 then
+				if numEnemies ~= 0 then
+					self:Debug("Missing Enemies, probably the ally tab is selected")
+				end
+			else
+				self.Enemies:DeleteAndCreateNewPlayers()
+			end
+
+			if foundAllies == 0 then
+				if numAllies ~= 0 then
+					self:Debug("Missing Allies, probably the enemy tab is selected")
+				end
+			else
+				self.Allies:DeleteAndCreateNewPlayers()
+			end
 			
 		end--functions end
 	end-- do-end block end for locals of the function UPDATE_BATTLEFIELD_SCORE
