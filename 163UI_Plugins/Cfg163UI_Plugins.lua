@@ -21,6 +21,18 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
+        var = "MawThreat", text = U1_NEW_ICON.."噬渊典狱长之眼详细数值", default = true,
+        tip = "说明`在噬渊典狱长之眼框体中显示详细进度值",
+        callback = function(cfg, v, loading, ...)
+            if not loading then
+                if U1PluginMawThreatToggle then U1PluginMawThreatToggle(v) end
+            else
+                return load(cfg, v, loading, ...)
+            end
+        end
+    },
+
+    {
         var = "UnlimitedMapPinDistance", text = U1_NEW_ICON.."导航地图标记无限距离", default = true, callback = load, tip = "说明`9.0新增的游戏内导航，暴雪限制地图标记在1000码-100码之内才显示，可以取消这个限制"
     },
 
