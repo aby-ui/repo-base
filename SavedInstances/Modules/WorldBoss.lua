@@ -72,4 +72,6 @@ SI.WorldBosses = {
   [9004] = { quest=47463, name=L["Dragon of Nightmare"], expansion=8, level=60, remove=true }, -- Dragon of Nightmare
   -- Eastern Plaguelands (Shadowlands pre-patch event)
   [9005] = { quest=60542, name=L["Nathanos Blightcaller"], expansion=7, level=50 }, -- Nathanos Blightcaller
+  -- The Maw
+  [9006] = { quest=63414, name=L["Wrath of the Jailer"], expansion=8, level=60 }, -- Wrath of the Jailer
 }

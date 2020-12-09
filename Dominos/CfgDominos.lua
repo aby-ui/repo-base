@@ -47,7 +47,9 @@
         callback = function(cfg, v, loading)
             if(loading) then return end
             Dominos:Unload()
+            Dominos.ignoreResetCalback = true
             Dominos.db:ResetProfile()
+            Dominos.ignoreResetCalback = nil
             -- insert out diff
             Dominos:U1_InitPreset(true)
             Dominos.isNewProfile = nil

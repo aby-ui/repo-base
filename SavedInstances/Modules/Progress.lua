@@ -3,25 +3,22 @@ local Module = SI:NewModule('Progress', 'AceEvent-3.0')
 
 -- Lua functions
 local _G = _G
-local ipairs, type, tostring, wipe = ipairs, type, tostring, wipe
+local ipairs, strmatch, type, tostring, wipe = ipairs, strmatch, type, tostring, wipe
 
 -- WoW API / Variables
-local C_PvP_GetWeeklyChestInfo = C_PvP.GetWeeklyChestInfo
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
 local C_TaskQuest_IsActive = C_TaskQuest.IsActive
+local C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo
+local C_WeeklyRewards_GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress
+local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
 local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
-local QuestUtils_GetCurrentQuestLineQuest = QuestUtils_GetCurrentQuestLineQuest
 local UnitLevel = UnitLevel
 
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
 local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
 local READY_CHECK_READY_TEXTURE = READY_CHECK_READY_TEXTURE
 local READY_CHECK_WAITING_TEXTURE = READY_CHECK_WAITING_TEXTURE
-
-local CONQUEST_QUESTLINE_ID = 782
-
--- GLOBAL
 
 local function KeepProgress(toon, index)
   local t = SI.db.Toons[toon]
@@ -33,7 +30,6 @@ local function KeepProgress(toon, index)
     isFinish = false,
     numFulfilled = prev.isComplete and 0 or prev.numFulfilled,
     numRequired = prev.numRequired,
-    rewardWaiting = prev.rewardAchieved, -- nil for non-Conquest
   }
 end
 
@@ -42,42 +38,25 @@ end
 local function ConquestUpdate(index)
   local data
   if UnitLevel("player") >= SI.maxLevel then
-    local currentQuestID = QuestUtils_GetCurrentQuestLineQuest(CONQUEST_QUESTLINE_ID)
-    local rewardAchieved, lastWeekRewardAchieved, lastWeekRewardClaimed = C_PvP_GetWeeklyChestInfo()
-    local rewardWaiting = lastWeekRewardAchieved and not lastWeekRewardClaimed
-    if currentQuestID == 0 then
-      data = {
-        unlocked = true,
-        isComplete = true,
-        isFinish = true,
-        numFulfilled = 500,
-        numRequired = 500,
-        rewardAchieved = rewardAchieved,
-        rewardWaiting = rewardWaiting,
-      }
-    else
-      local text, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(currentQuestID, 1, false)
-      if text then
-        data = {
-          unlocked = true,
-          isComplete = false,
-          isFinish = finished,
-          numFulfilled = numFulfilled,
-          numRequired = numRequired,
-          rewardAchieved = rewardAchieved,
-          rewardWaiting = rewardWaiting,
-        }
-      end
-    end
+    local weeklyProgress = C_WeeklyRewards_GetConquestWeeklyProgress()
+    if not weeklyProgress then return end
+
+    local rewardWaiting = C_WeeklyRewards_HasAvailableRewards()
+    data = {
+      unlocked = true,
+      isComplete = weeklyProgress.progress >= weeklyProgress.maxProgress,
+      isFinish = false,
+      numFulfilled = weeklyProgress.progress,
+      numRequired = weeklyProgress.maxProgress,
+      unlocksCompleted = weeklyProgress.unlocksCompleted,
+      maxUnlocks = weeklyProgress.maxUnlocks,
+      rewardWaiting = rewardWaiting,
+    }
   else
     data = {
       unlocked = false,
       isComplete = false,
       isFinish = false,
-      numFulfilled = 500,
-      numRequired = 500,
-      rewardAchieved = false,
-      rewardWaiting = false,
     }
   end
   SI.db.Toons[SI.thisToon].Progress[index] = data
@@ -97,12 +76,30 @@ local function ConquestShow(toon, index)
   else
     text = data.numFulfilled .. "/" .. data.numRequired
   end
+  if data.unlocksCompleted and data.maxUnlocks then
+    text = text .. "(" .. data.unlocksCompleted .. "/" .. data.maxUnlocks .. ")"
+  end
   if data.rewardWaiting then
     text = text .. "(\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t)"
-  elseif data.rewardAchieved then
-    text = text .. "(\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t)"
   end
   return text
+end
+
+local function ConquestReset(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+
+  local prev = t.Progress[index]
+  t.Progress[index] = {
+    unlocked = prev.unlocked,
+    isComplete = false,
+    isFinish = false,
+    numFulfilled = 0,
+    numRequired = prev.numRequired,
+    unlocksCompleted = 0,
+    maxUnlocks = prev.maxUnlocks,
+    rewardWaiting = prev.unlocksCompleted and prev.unlocksCompleted > 0,
+  }
 end
 
 -- Horrific Vision (index 3)
@@ -195,14 +192,58 @@ local function LesserVisionReset(toon, index)
   -- do nothing
 end
 
+-- Torghast Weekly (index 6)
+
+local function TorghastUpdate(index)
+  SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(60136) -- Into Torghast
+
+  for i, data in ipairs(Module.TrackedQuest[index].widgetID) do
+    local nameInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[1])
+    local available = nameInfo.shownState == 1
+
+    local levelInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[2])
+    local levelText = strmatch(levelInfo.text, '|cFF00FF00.+(%d+).+|r')
+
+    SI.db.Toons[SI.thisToon].Progress[index]['Available' .. i] = available
+    SI.db.Toons[SI.thisToon].Progress[index]['Level' .. i] = levelText
+  end
+end
+
+local function TorghastShow(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Quests then return end
+  if not t or not t.Progress or not t.Progress[index] then return end
+
+  if t.Progress[index].unlocked then
+    local result = ""
+    for i in ipairs(Module.TrackedQuest[index].widgetID) do
+      if t.Progress[index]['Available' .. i] then
+        local first = (#result == 0)
+        result = result .. (first and '' or ' / ') .. t.Progress[index]['Level' .. i]
+      end
+    end
+    return result
+  end
+end
+
+local function TorghastReset(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+
+  local unlocked = t.Progress[index].unlocked
+  wipe(t.Progress[index])
+  t.Progress[index].unlocked = unlocked
+end
+
 Module.TrackedQuest = {
   -- Conquest
   {
     name = PVP_CONQUEST,
     func = ConquestUpdate,
     weekly = true,
-    resetFunc = KeepProgress,
     showFunc = ConquestShow,
+    resetFunc = ConquestReset,
   },
   -- Island Expedition
   {
@@ -287,6 +328,23 @@ Module.TrackedQuest = {
       58156, -- Vanquishing the Darkness
       58167, -- Preventative Measures
       58168, -- A Dark, Glaring Reality
+    },
+  },
+  -- Torghast Weekly
+  {
+    name = L["Torghast"],
+    weekly = true,
+    func = TorghastUpdate,
+    showFunc = TorghastShow,
+    resetFunc = TorghastReset,
+    tooltipKey = 'ShowTorghastTooltip',
+    widgetID = {
+      {2925, 2930}, -- Fracture Chambers
+      {2926, 2932}, -- Skoldus Hall
+      {2924, 2934}, -- Soulforges
+      {2927, 2936}, -- Coldheart Interstitia
+      {2928, 2938}, -- Mort'regar
+      {2929, 2940}, -- The Upper Reaches
     },
   },
 }

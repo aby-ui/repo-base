@@ -25,10 +25,10 @@ localization.en.lua
 localization.tw.lua
 localization.cn.lua
 Shriekwing.lua
-HungeringDestroyer.lua
 AltimortheHuntsman.lua
-ArtificerXyMox.lua
 Kaelthas.lua
+ArtificerXyMox.lua
+HungeringDestroyer.lua
 LadyInervaDarkvein.lua
 TheCouncilofBlood.lua
 Sludgefist.lua

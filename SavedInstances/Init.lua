@@ -15,6 +15,7 @@ SI.ScanTooltip = CreateFrame('GameTooltip', 'SavedInstancesScanTooltip', _G.UIPa
 SI.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
 
 SI.playerName = UnitName('player')
+SI.playerLevel = UnitLevel('player')
 SI.realmName = GetRealmName()
 SI.thisToon = SI.playerName .. ' - ' .. SI.realmName
 SI.maxLevel = GetMaxLevelForPlayerExpansion()

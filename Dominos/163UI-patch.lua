@@ -80,7 +80,7 @@ function Dominos:U1_GetPreset(style)
         frames.menu = {
             x = 0, y = 0, point = 'LEFT',
             anchor = '1RC',
-            spacing = -2, padW = 1, padH = 1,
+            spacing = 0, padW = 3, padH = 1,
             scale = 1.0,
         }
 
@@ -148,9 +148,6 @@ function Dominos:U1_GetPreset(style)
         padW = 1, spacing = 1, padH = 1,
     }
 
-    frames.artifact = Mixin({x=0, y=0, point='BOTTOMLEFT', width=mini and 280 or 130, display={label=false, value=true, max=true}}, exp_default)
-    frames.artifact.display.percent = false
-    frames.artifact.numButtons = 1
     --/run Dominos:GetModule("ProgressBars").bars[2]:SetNumButtons(5)
     frames.exp = Mixin({x=0, y=0, point='BOTTOM', width=mini and 480 or 950, display={label=true, value=true, max=true, bonus=true, percent=true}}, exp_default)
 
@@ -197,10 +194,9 @@ function Dominos:U1_GetPreset(style)
 
     --基于MINI
     if real_style == "COMPACT" then
-        Mixin(frames.artifact, { point="BOTTOMRIGHT", width=166 })
-        Mixin(frames.exp, { point="BOTTOMRIGHT", anchor="artifactLC", width=439 })
-        Mixin(frames[1], { point="BOTTOMRIGHT", anchor="expTR" })
-        Mixin(frames.menu, { point="BOTTOMRIGHT", anchor="artifactTR" })
+        Mixin(frames.exp, { point="BOTTOMRIGHT", width=610 })
+        Mixin(frames.menu, { point="BOTTOMRIGHT", anchor="expTR" })
+        Mixin(frames[1], { point="BOTTOMLEFT", anchor="expTL" })
         for i=1, 10 do
             frames[i].scale = (i==3 or i==4) and 0.82 or 0.92
         end

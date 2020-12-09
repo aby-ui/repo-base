@@ -13,15 +13,13 @@ local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 
 --0:optional
 local EnchantParts = {
-    [2]  = {1, NECKSLOT},
-    [11] = {1, FINGER1SLOT},
+    [5]  = {1, CHESTSLOT},
+    [8]  = {1, FEETSLOT},
+    --[9]  = {0, WRISTSLOT},
+    [11] = {1, FINGER0SLOT},
     [12] = {1, FINGER1SLOT},
---  [15] = {1, BACKSLOT},
+    [15] = {1, BACKSLOT},
     [16] = {1, MAINHANDSLOT},
---    [17] = {1, SECONDARYHANDSLOT},
---  [3]  = {0, SHOULDERSLOT},
---  [9]  = {0, WRISTSLOT},
---  [10] = {0, HANDSSLOT},
 }
 
 --創建圖標框架

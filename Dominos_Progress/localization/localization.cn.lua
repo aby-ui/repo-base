@@ -31,7 +31,10 @@ L.Color_honor = '荣誉颜色'
 L.Color_honor_bonus = '奖励荣誉颜色'
 L.Color_artifact = '神器能量颜色'
 L.Color_azerite = '项链能量颜色'
+L.Color_gold = '金钱颜色'
+L.Color_gold_realm = '同服务器金钱颜色'
 
 L.Paragon = '巅峰'
 L.Azerite = '艾心能量'
 L.SkipInactiveModes = "只显示选择的进度条"
+L.GoldGoal = "金币目标(设置为0则不显示金币进度)"

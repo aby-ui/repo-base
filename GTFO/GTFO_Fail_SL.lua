@@ -566,6 +566,11 @@ GTFO.SpellID["320232"] = {
   sound = 3;
 };
 
+GTFO.SpellID["320723"] = {
+  --desc = "Displaced Blastwave (Dealer Xy'exa)";
+  sound = 3;
+};
+
 GTFO.SpellID["328729"] = {
   --desc = "Dark Lotus (Risen Cultist)";
   sound = 3;

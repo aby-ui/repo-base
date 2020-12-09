@@ -357,6 +357,19 @@ GTFO.SpellID["323569"] = {
   sound = 1;
 };
 
+GTFO.SpellID["333790"] = {
+  --desc = "Enraged Mask (Enraged Spirit)";
+  sound = 1;
+};
+
+GTFO.SpellID["331933"] = {
+  --desc = "Haywire (Defunct Dental Drill)";
+  sound = 0;
+  soundHeroic = 2;
+  soundChallenge = 1;
+  soundMythic = 1;
+};
+
 --- ************
 --- * Torghast *
 --- ************

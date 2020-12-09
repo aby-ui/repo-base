@@ -172,9 +172,10 @@ function ProgressBarModule:AddOptionsPanel()
                      min = 0,
                      max = 10000000,
                      softMin = 0,
-                     softMax = 100000,
-                     step = 100,
-                     bigStep = 1000,
+                     softMax = 10000000,
+                     step = 1000,
+                     bigStep = 10000,
+                     width = "double",
                      get = function()
                            return Addon.Config:GoldGoal()
                      end,

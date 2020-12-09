@@ -695,7 +695,7 @@ do
 		return segment
 	end
 
-	function ProgressBar:ReleaseButton(button)
+	function ProgressBar:ReleaseButton(button) --from ButtonBar:DetachButton
 		segmentPool:Release(button)
 	end
 end

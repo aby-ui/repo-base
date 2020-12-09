@@ -186,10 +186,10 @@ SI.defaultDB = {
   -- link: string
 
   -- MythicKeyBest
-  -- lastweeklevel: int
   -- ResetTime: expiry
-  -- level: string
-  -- weeklyReward: boolean
+  -- [1-3]: number
+  -- lastCompletedIndex: number
+  -- rewardWaiting: boolean
 
   -- REMOVED
   -- DailyWorldQuest
@@ -233,6 +233,21 @@ SI.defaultDB = {
   -- [index] = {
   --   scenario = (boolean),
   --   boss = (boolean),
+  -- }
+
+  -- Calling
+  -- unlocked = (boolean),
+  -- [Day] = {
+  --   isCompleted = isCompleted,
+  --   expiredTime = expiredTime,
+  --   isOnQuest = isOnQuest,
+  --   questID = questID,
+  --   title = title,
+  --   text = text,
+  --   objectiveType = objectiveType,
+  --   isFinished = isFinished,
+  --   questDone = questDone,
+  --   questNeed = questNeed,
   -- }
 
   Indicators = {
@@ -321,8 +336,8 @@ SI.defaultDB = {
     TrackPlayed = true,
     AugmentBonus = true,
     CurrencyValueColor = true,
-    Currency1754 = true, -- Argent Commendation
     Currency1767 = true, -- Stygia
+    Currency1602 = true, -- Conquest
     Currency1792 = true, -- Honor
     Currency1822 = true, -- Renown
     Currency1828 = true, -- Soul Ash
@@ -338,11 +353,13 @@ SI.defaultDB = {
     CombineEmissary = false,
     AbbreviateKeystone = true,
     TrackParagon = true,
+    Calling = true,
     Progress1 = true, -- PvP Conquest
     Progress2 = false, -- Island Weekly
     Progress3 = false, -- Horrific Vision
     Progress4 = false, -- N'Zoth Assaults
     Progress5 = false, -- Lesser Visions of N'Zoth
+    Progress6 = true, -- Torghast Weekly
     Warfront1 = false, -- Arathi Highlands
     Warfront2 = false, -- Darkshores
     KeystoneReportTarget = "EXPORT",
@@ -1295,6 +1312,7 @@ function SI:UpdateToonData()
   local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
   t.RBGrating = tonumber(rating) or t.RBGrating
   SI:GetModule("TradeSkill"):ScanItemCDs()
+  local Calling = SI:GetModule("Calling")
   local Progress = SI:GetModule("Progress")
   -- Daily Reset
   if nextreset and nextreset > time() then
@@ -1309,6 +1327,7 @@ function SI:UpdateToonData()
         ti.DailyResetTime = (ti.DailyResetTime and ti.DailyResetTime + 24*3600) or nextreset
       end
     end
+    Calling:OnDailyReset()
     t.DailyResetTime = nextreset
     if not db.DailyResetTime or (db.DailyResetTime < time()) then -- AccountDaily reset
       for id,qi in pairs(db.Quests) do
@@ -1389,11 +1408,11 @@ function SI:UpdateToonData()
   end
   for toon, ti in pairs(SI.db.Toons) do
     if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
-      if ti.MythicKeyBest.level and ti.MythicKeyBest.level > 0 then
-        ti.MythicKeyBest.LastWeekLevel = ti.MythicKeyBest.level
-        ti.MythicKeyBest.WeeklyReward = true
-      end
-      ti.MythicKeyBest.level = 0
+      ti.MythicKeyBest.rewardWaiting = not not t.MythicKeyBest.lastCompletedIndex
+      ti.MythicKeyBest[1] = nil
+      ti.MythicKeyBest[2] = nil
+      ti.MythicKeyBest[3] = nil
+      ti.MythicKeyBest.lastCompletedIndex = nil
       ti.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
     end
   end
@@ -1402,6 +1421,7 @@ function SI:UpdateToonData()
       db.Quests[id] = nil
     end
   end
+  Calling:PostRefresh()
   SI:GetModule("Currency"):UpdateCurrency()
   local zone = GetRealZoneText()
   if zone and #zone > 0 then
@@ -2296,6 +2316,27 @@ hoverTooltip.ShowNZothAssaultTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowTorghastTooltip = function (cell, arg, ...)
+  -- Should be in Module Progress
+  local toon, index = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), L["Torghast"])
+
+  local P = SI:GetModule("Progress")
+  for i, data in ipairs(P.TrackedQuest[index].widgetID) do
+    if t.Progress[index]['Available' .. i] then
+      local nameInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(data[1])
+      local nameText = strmatch(nameInfo.text, '|n|cffffffff(.+)|r')
+
+      indicatortip:AddLine(nameText, t.Progress[index]['Level' .. i])
+    end
+  end
+
+  finishIndicator()
+end
+
 hoverTooltip.ShowKeyReportTarget = function (cell, arg, ...)
   openIndicator(2, "LEFT", "RIGHT")
   indicatortip:AddHeader(GOLDFONT..L["Keystone report target"]..FONTEND, SI.db.Tooltip.KeystoneReportTarget)
@@ -2324,7 +2365,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.2-5-ga884c15" then
+  if versionString == "9.0.3" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2812,7 +2853,7 @@ end
 
 -- Lightweight refresh of just quest flag information
 -- all may be nil if not instantiataed
-function SI:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
+function SI:QuestRefresh(recoverdaily, nextreset, weeklyreset)
   local tiq = SI.db.Toons[SI.thisToon]
   tiq = tiq and tiq.Quests
   if not tiq then return end
@@ -2822,7 +2863,7 @@ function SI:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
 
   for _, qinfo in pairs(SI:specialQuests()) do
     local qid = qinfo.quest
-    if IsQuestFlaggedCompleted(qid) or (questcomplete and tContains(questcomplete, qid)) then
+    if IsQuestFlaggedCompleted(qid) then
       local q = tiq[qid] or {}
       tiq[qid] = q
       q.Title = qinfo.name
@@ -2848,8 +2889,7 @@ function SI:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
     end
     if recoverdaily or (scope ~= "Daily") then
       for qid, mapid in pairs(list) do
-        if tonumber(qid) and (IsQuestFlaggedCompleted(qid) or
-          (questcomplete and tContains(questcomplete, qid))) and not questlist[qid] and -- recovering a lost quest
+        if tonumber(qid) and IsQuestFlaggedCompleted(qid) and not questlist[qid] and -- recovering a lost quest
           (list.expires == nil or list.expires > now) then -- don't repop darkmoon quests from last faire
           local title, link = SI:QuestInfo(qid)
           if title then
@@ -2947,7 +2987,6 @@ function SI:Refresh(recoverdaily)
     end
   end
 
-  local questcomplete = C_QuestLog.GetAllCompletedQuestIDs()
   local wbsave = localarr("wbsave")
   if GetNumSavedWorldBosses and GetSavedWorldBossInfo then -- 5.4
     for i=1,GetNumSavedWorldBosses() do
@@ -2958,7 +2997,6 @@ function SI:Refresh(recoverdaily)
   for _,einfo in pairs(SI.WorldBosses) do
     if weeklyreset and (
       (einfo.quest and IsQuestFlaggedCompleted(einfo.quest)) or
-      (questcomplete and einfo.quest and tContains(questcomplete, einfo.quest)) or
       wbsave[einfo.savename or einfo.name]
       ) then
       local truename = einfo.name
@@ -2973,7 +3011,7 @@ function SI:Refresh(recoverdaily)
     end
   end
 
-  SI:QuestRefresh(recoverdaily, questcomplete, nextreset, weeklyreset)
+  SI:QuestRefresh(recoverdaily, nextreset, weeklyreset)
   SI:GetModule('Warfront'):UpdateQuest()
 
   local icnt, dcnt = 0,0
@@ -3778,11 +3816,7 @@ function SI:ShowTooltip(anchorframe)
     local show = false
     for toon, t in cpairs(SI.db.Toons, true) do
       if t.MythicKeyBest then
-        if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
-          show = true
-          addColumns(columns, toon, tooltip)
-        end
-        if t.MythicKeyBest.WeeklyReward then
+        if t.MythicKeyBest.lastCompletedIndex or t.MythicKeyBest.rewardWaiting then
           show = true
           addColumns(columns, toon, tooltip)
         end
@@ -3797,18 +3831,18 @@ function SI:ShowTooltip(anchorframe)
     for toon, t in cpairs(SI.db.Toons, true) do
       if t.MythicKeyBest then
         local keydesc = ""
-        if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
-          keydesc = t.MythicKeyBest.level
+        if t.MythicKeyBest.lastCompletedIndex then
+          for index = 1, t.MythicKeyBest.lastCompletedIndex do
+            if t.MythicKeyBest[index] then
+              keydesc = keydesc .. (index > 1 and " / " or "") .. t.MythicKeyBest[index]
+            end
+          end
         end
-        if t.MythicKeyBest.WeeklyReward then
+        if t.MythicKeyBest.rewardWaiting then
           if keydesc == "" then
             keydesc = "0"
           end
-          local lastlevel = ""
-          if t.MythicKeyBest.LastWeekLevel and t.MythicKeyBest.LastWeekLevel > 0 then
-            lastlevel = t.MythicKeyBest.LastWeekLevel
-          end
-          keydesc = keydesc .."(".. lastlevel ..L[" Chest Available"].. ")"
+          keydesc = keydesc .. "(\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t)"
         end
         if keydesc ~= "" then
           local col = columns[toon..1]
@@ -3940,6 +3974,53 @@ function SI:ShowTooltip(anchorframe)
                   end
                 end
               end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if SI.db.Tooltip.Calling or showall then
+    local show
+    for toon, t in cpairs(SI.db.Toons, true) do
+      if t.Calling and t.Calling.unlocked then
+        for day = 1, 3 do
+          if t.Calling[day] and not t.Calling[day].isCompleted then
+            show = true
+            addColumns(columns, toon, tooltip)
+            break
+          end
+        end
+      end
+    end
+    if show then
+      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+        addsep()
+      end
+      show = tooltip:AddLine(YELLOWFONT .. CALLINGS_QUESTS .. FONTEND)
+      for toon, t in cpairs(SI.db.Toons, true) do
+        if t.Calling and t.Calling.unlocked then
+          for day = 1, 3 do
+            local col = columns[toon .. day]
+            local text = ""
+            if t.Calling[day].isCompleted then
+              text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+            elseif not t.Calling[day].isOnQuest then
+              text = "\124cFFFFFF00!\124r"
+            elseif t.Calling[day].isFinished then
+              text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
+            else
+              if t.Calling[day].objectiveType == 'progressbar' then
+                text = floor(t.Calling[day].questDone / t.Calling[day].questNeed * 100) .. "%"
+              else
+                text = t.Calling[day].questDone .. '/' .. t.Calling[day].questNeed
+              end
+            end
+            if col then
+              -- check if current toon is showing
+              -- don't add columns
+              tooltip:SetCell(show, col, text, "CENTER", 1)
             end
           end
         end

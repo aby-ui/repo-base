@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 3
+local MAJOR, MINOR = "LibItemInfo.7000", 4
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -218,4 +218,11 @@ function lib:GetUnitItemLevel(unit, stats)
     end
     maxlevel = max(maxlevel, mlevel, olevel)
     return counts, total/max(16-counts,1), total, max(mlevel,olevel), (mquality == 6 or oquality == 6), maxlevel
+end
+
+--獲取任务物品實際link
+function lib:GetQuestItemlink(questType, id)
+    tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+    tooltip:SetQuestLogItem(questType, id)
+    return select(2, tooltip:GetItem()) or GetQuestLogItemLink(questType, id)
 end

@@ -65,15 +65,17 @@ local currency = {
 
   -- Shadowlands
   1754, -- Argent Commendation
+  1602, -- Conquest
   1792, -- Honor
   1822, -- Renown
-  1813, -- Reservoir Anima
-  1810, -- Redeemed Soul
-  1885, -- Grateful Offering
-  1828, -- Soul Ash
   1767, -- Stygia
+  1828, -- Soul Ash
+  1810, -- Redeemed Soul
+  1813, -- Reservoir Anima
   1816, -- Sinstone Fragments
+  1819, -- Medallion of Service
   1820, -- Infused Ruby
+  1885, -- Grateful Offering
 }
 SI.currency = currency
 
@@ -195,6 +197,10 @@ function Module:UpdateCurrency()
         if tbl.relatedItem then
           ci.relatedItemCount = GetItemCount(tbl.relatedItem.id)
         end
+      elseif idx == 1822 then -- Renown
+        -- plus one to amount and totalMax
+        ci.amount = ci.amount + 1
+        ci.totalMax = ci.totalMax + 1
       end
       ci.season = GetSeasonCurrency(idx)
       if ci.weeklyMax == 0 then ci.weeklyMax = nil end -- don't store useless info

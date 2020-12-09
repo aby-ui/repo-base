@@ -60,6 +60,12 @@ function HelpDialog:OnLoad(owner)
 
     self.exitButton = exitButton
 
+    --abyui
+    local settingsButton = _G.CreateFrame('Button', nil, self, 'UIPanelButtonNoTooltipResizeToFitTemplate')
+    settingsButton.Text:SetText(_G.SETTINGS)
+    settingsButton:SetScript('OnClick', function() LibStub("AceConfigDialog-3.0"):Open("Dominos") end)
+    settingsButton:SetPoint('RIGHT', exitButton, 'LEFT', -10, 0)
+
     local showGridButton = _G.CreateFrame('CheckButton', nil, self, "UICheckButtonTemplate")
 
     showGridButton.text:SetText(L.ShowAlignmentGrid)

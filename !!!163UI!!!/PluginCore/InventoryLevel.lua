@@ -130,7 +130,7 @@ end
 function U1GetInventoryLevelColor(avgLevel, quality)
     --STEP3 蓝色，随机团本 STEP4 紫色，英雄团本最高或M团本最低 STEP5 红色，M团本最高 STEP6 橙色
     --STEP4 应该是低保或比低保低一点，这样大米最高装等不是标准紫色
-    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 50, 90, 120, 140, 171, 200
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 100, 132, 171, 200, 226, 233
     --8.0 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 430, 460, 481, 481
     --7.0 local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
     --CTM 绿 272-333 蓝 308-359 紫 353-

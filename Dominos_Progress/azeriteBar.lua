@@ -44,7 +44,7 @@ function AzeriteBar:Update()
 end
 
 function AzeriteBar:IsModeActive()
-    return _G.C_AzeriteItem.HasActiveAzeriteItem()
+    return _G.C_AzeriteItem.HasActiveAzeriteItem() and not IsPlayerAtEffectiveMaxLevel()
 end
 
 -- register this as a possible progress bar mode

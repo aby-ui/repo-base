@@ -7,6 +7,7 @@ local date, floor, time, tonumber = date, floor, time, tonumber
 local C_DateAndTime_GetCurrentCalendarTime = C_DateAndTime.GetCurrentCalendarTime
 local C_DateAndTime_GetSecondsUntilWeeklyReset = C_DateAndTime.GetSecondsUntilWeeklyReset
 local C_Calendar_GetMonthInfo = C_Calendar.GetMonthInfo
+local C_Calendar_SetAbsMonth = C_Calendar.SetAbsMonth
 local GetQuestResetTime = GetQuestResetTime
 
 do
@@ -61,6 +62,8 @@ do
   function SI:GetNextDarkmoonResetTime()
     -- Darkmoon faire runs from first Sunday of each month to following Saturday
     -- this function returns an approximate time after the end of the current month's faire
+    local currentCalendarTime = C_DateAndTime_GetCurrentCalendarTime()
+    C_Calendar_SetAbsMonth(currentCalendarTime.month, currentCalendarTime.year)
     local monthInfo = C_Calendar_GetMonthInfo()
     local firstWeekday = monthInfo.firstWeekday
     local firstSunday = ((firstWeekday == 1) and 1) or (9 - firstWeekday)

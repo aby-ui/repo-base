@@ -77,11 +77,11 @@ U1RegisterAddon("163UI_MoreOptions", {
     {
         var = 'profanityFilter',
         text = '强制关闭语言过滤器',
-        tip = '说明`4.3版本后出现的BUG，玩家即使不开启过滤器，系统有时也会强制过滤，而且在界面选项里无法修改。开启此选项后，爱不易会强制关闭语言过滤器选项。',
+        tip = '说明`国服强制开启语言过滤器，但是可以通过一些手段关闭。不过关闭后会影响暴雪自带的支持功能，需要时可以恢复此选项。',
         default = true,
         --getvalue = function() return GetCVar'profanityFilter' == '1' end,
         callback = function(cfg, v, loading)
-            return setProfanityFilter()
+            return setProfanityFilter(loading)
         end
     },
 
@@ -239,12 +239,67 @@ U1RegisterAddon("163UI_MoreOptions", {
 
 if(not GetCVar) then return end --java parser
 do
-    setProfanityFilter = function()
+    local realPortal = GetCVar("portal") or "CN" --GetCVar is always realPortal even after ConsoleExec("SET portal TW")
+
+    StaticPopupDialogs["ABYUI_CLOSE_PROFANITYFILTER"] = {preferredIndex = 3,
+        text = "爱不易监测到你使用了|cff00ff00'强制关闭语言过滤器'|r的功能，这可能会导致暴雪的客服支持面板一直转圈或报错。如果你现在需要客服支持，点击'是'会恢复语言过滤设置，并自动|cffff0000重载界面|r，然后就可以使用了。是否确定？",
+        button1 = TEXT(YES),
+        button2 = TEXT(CANCEL),
+        OnAccept = function(self, data)
+            U1ChangeCfg("163UI_MoreOptions/profanityFilter", false)
+            ReloadUI()
+        end,
+        OnCancel = function(self, data)
+        end,
+        hideOnEscape = 1,
+        timeout = 0,
+        exclusive = 1,
+        whileDead = 1,
+    }
+
+    if GameMenuButtonHelp then
+        SetOrHookScript(HelpFrame, "OnShow", function()
+            if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then
+                StaticPopup_Show("ABYUI_CLOSE_PROFANITYFILTER")
+                AbySetProfanityButton:Hide()
+            else
+                AbySetProfanityButton:Show()
+            end
+        end)
+
+        local btn = WW:Button("AbySetProfanityButton", HelpFrame, "UIPanelButtonTemplate")
+        :SetTextFont(GameFontNormal, 13, "")
+        :SetText("关闭语言过滤器"):Size(120, 26)
+        :TOPRIGHT(-25, 2)
+        :AddFrameLevel(1)
+        :SetScript("OnClick", function()
+            U1ChangeCfg("163UI_MoreOptions/profanityFilter", true)
+            U1Message("已强制关闭语言过滤器，聊天不会再乱码，即时生效，不需重载界面")
+            if not InCombatLockdown() then HideUIPanel(HelpFrame) end
+        end):un()
+        CoreUIEnableTooltip(btn, '说明', '强制关闭语言过滤器和暴雪的支持功能有冲突, 需要访问暴雪支持功能时需要临时恢复语言过滤器。用完了可通过此按钮再次关闭（也可在控制台-额外设置里设置）')
+
+        --[[
+        SetOrHookScript(GameMenuButtonHelp, "PreClick", function()
+            if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then
+                ConsoleExec("SET portal " .. realPortal)
+                U1Message("爱不易监测到你强制关闭了语言过滤器，这会导致支持界面一直转圈或报错，请在额外设置里关闭'强制关闭语言过滤器'选项，然后登出游戏重新进入(小退)，即可打开支持界面。")
+            end
+        end)
+        SetOrHookScript(HelpFrame, "OnHide", function()
+            setProfanityFilter()
+        end)
+        ]]
+    end
+
+    setProfanityFilter = function(loading)
         if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then
             ConsoleExec("SET portal TW")
             SetCVar('profanityFilter', '0')
             --if BNConnected() then
             pcall(BNSetMatureLanguageFilter, false)
+        elseif not loading then
+            ConsoleExec("SET portal " .. realPortal)
         end
     end
 

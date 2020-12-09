@@ -1,7 +1,7 @@
 ## Interface: 90002
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 3.1.2
+## Version: 3.1.3
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
@@ -60,6 +60,9 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\BarModel.lua
+
+# misc
+Legendaries.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras

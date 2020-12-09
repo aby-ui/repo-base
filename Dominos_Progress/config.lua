@@ -41,7 +41,7 @@ function Config:GetDefaults()
 	return {
 		profile = {
 			one_bar = true,
-			skip_inactive_modes = false,
+			skip_inactive_modes = true,
                 gold_goal = 0,
 			colors = {
 				xp = {0.58, 0, 0.55, 1},

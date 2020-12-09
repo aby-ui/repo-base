@@ -3,13 +3,13 @@ local Module = SI:NewModule('MythicPlus', 'AceEvent-3.0')
 
 -- Lua functions
 local _G = _G
-local strsplit, tonumber, select, time = strsplit, tonumber, select, time
+local ipairs, sort, strsplit, tonumber, select, time, wipe = ipairs, sort, strsplit, tonumber, select, time, wipe
 
 -- WoW API / Variables
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
-local C_MythicPlus_GetWeeklyChestRewardLevel = C_MythicPlus.GetWeeklyChestRewardLevel
-local C_MythicPlus_IsWeeklyRewardAvailable = C_MythicPlus.IsWeeklyRewardAvailable
-local C_MythicPlus_RequestRewards = C_MythicPlus.RequestRewards
+local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
+local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
+local C_WeeklyRewards_GetActivities = C_WeeklyRewards.GetActivities
 local CreateFrame = CreateFrame
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemLink = GetContainerItemLink
@@ -19,38 +19,39 @@ local SendChatMessage = SendChatMessage
 
 local StaticPopup_Show = StaticPopup_Show
 
+local Enum_WeeklyRewardChestThresholdType_MythicPlus = Enum.WeeklyRewardChestThresholdType.MythicPlus
+
 local KeystoneAbbrev = {
-  [244] = L["AD"],    -- Atal'Dazar
-  [245] = L["FH"],    -- Freehold
-  [246] = L["TD"],    -- Tol Dagor
-  [247] = L["ML"],    -- The MOTHERLODE!!
-  [248] = L["WM"],    -- Waycrest Manor
-  [249] = L["KR"],    -- Kings' Rest
-  [250] = L["TOS"],   -- Temple of Sethraliss
-  [251] = L["UNDR"],  -- The Underrot
-  [252] = L["SOTS"],  -- Shrine of the Storm
-  [353] = L["SIEGE"], -- Siege of Boralus
-  [369] = L["YARD"],  -- Operation: Mechagon - Junkyard
-  [370] = L["WORK"],  -- Operation: Mechagon - Workshop
+  [375] = L["MISTS"], -- Mists of Tirna Scithe
+  [376] = L["NW"],    -- The Necrotic Wake
+  [377] = L["DOS"],   -- De Other Side
+  [378] = L["HOA"],   -- Halls of Atonement
+  [379] = L["PF"],    -- Plaguefall
+  [380] = L["SD"],    -- Sanguine Depths
+  [381] = L["SOA"],   -- Spires of Ascension
+  [382] = L["TOP"],   -- Theater of Pain
 }
 SI.KeystoneAbbrev = KeystoneAbbrev
 
 function Module:OnEnable()
   self:RegisterEvent("BAG_UPDATE_DELAYED", "RefreshMythicKeyInfo")
-  self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicKeyInfo")
+
+  self:RegisterEvent("CHALLENGE_MODE_COMPLETED", C_MythicPlus_RequestMapInfo)
+
+  self:RegisterEvent("WEEKLY_REWARDS_UPDATE", "RefreshMythicWeeklyBestInfo")
+  self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicWeeklyBestInfo")
+
   self:RefreshMythicKeyInfo()
+  self:RefreshMythicWeeklyBestInfo()
 end
 
-function Module:RefreshMythicKeyInfo(event)
-  -- This event is fired after the rewards data was requested, causing yet another refresh if not checked for
-  if (event ~= "CHALLENGE_MODE_MAPS_UPDATE") then C_MythicPlus_RequestRewards() end
-
+function Module:RefreshMythicKeyInfo()
   local t = SI.db.Toons[SI.thisToon]
-  t.MythicKey = {}
+  t.MythicKey = wipe(t.MythicKey or {})
   for bagID = 0, 4 do
     for invID = 1, GetContainerNumSlots(bagID) do
       local itemID = GetContainerItemID(bagID, invID)
-      if itemID and itemID == 158923 then
+      if itemID and itemID == 180653 then
         local keyLink = GetContainerItemLink(bagID, invID)
         local KeyInfo = {strsplit(':', keyLink)}
         local mapID = tonumber(KeyInfo[3])
@@ -77,15 +78,53 @@ function Module:RefreshMythicKeyInfo(event)
       end
     end
   end
-  if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then -- dont know weekly reset function will run early or not
-    if t.MythicKeyBest.level and t.MythicKeyBest.level > 0 then
-      t.MythicKeyBest.LastWeekLevel = t.MythicKeyBest.level
+end
+
+do
+  local function activityCompare(left, right)
+    return left.index < right.index
   end
+
+  local function runCompare(left, right)
+    return left.level > right.level
   end
-  t.MythicKeyBest = t.MythicKeyBest or {}
-  t.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
-  t.MythicKeyBest.level = C_MythicPlus_GetWeeklyChestRewardLevel()
-  t.MythicKeyBest.WeeklyReward = C_MythicPlus_IsWeeklyRewardAvailable()
+
+  function Module:RefreshMythicWeeklyBestInfo()
+    local t = SI.db.Toons[SI.thisToon]
+
+    -- dont know weekly reset function will run early or not
+    local rewardWaiting = t.MythicKeyBest and t.MythicKeyBest.rewardWaiting
+    if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then
+      rewardWaiting = not not t.MythicKeyBest.lastCompletedIndex
+    end
+
+    t.MythicKeyBest = wipe(t.MythicKeyBest or {})
+    t.MythicKeyBest.rewardWaiting = rewardWaiting
+    t.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
+
+    local activities = C_WeeklyRewards_GetActivities(Enum_WeeklyRewardChestThresholdType_MythicPlus)
+    sort(activities, activityCompare)
+
+    local lastCompletedIndex = 0;
+    for i, activityInfo in ipairs(activities) do
+      if activityInfo.progress >= activityInfo.threshold then
+        lastCompletedIndex = i;
+      end
+    end
+
+    -- done nothing
+    if lastCompletedIndex == 0 then return end
+    t.MythicKeyBest.lastCompletedIndex = lastCompletedIndex
+
+    local runHistory = C_MythicPlus_GetRunHistory()
+    sort(runHistory, runCompare)
+
+    for index = 1, lastCompletedIndex do
+      if runHistory[activities[index].threshold] then
+        t.MythicKeyBest[index] = runHistory[activities[index].threshold].level
+      end
+    end
+  end
 end
 
 function Module:Keys()

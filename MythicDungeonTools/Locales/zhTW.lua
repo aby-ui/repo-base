@@ -41,8 +41,7 @@ L["Anodized Coilbearer"] = "阳极处理的线圈承载者"
 L["Apply to preset"] = "套用到路線"
 L["Aqu'sirr"] = "阿库希尔"
 L["Arcane Eye"] = "魔法之眼"
---[[Translation missing --]]
---[[ L["Ardenweald"] = ""--]] 
+L["Ardenweald"] = "亞登曠野"
 L["Ashvane Cannoneer"] = "艾什凡炮手"
 L["Ashvane Commander"] = "艾什凡指挥官"
 L["Ashvane Deckhand"] = "艾什凡水手"
@@ -223,8 +222,7 @@ L["Dazar'ai Colossus"] = "达萨莱巨像"
 L["Dazar'ai Confessor"] = "达萨莱神官"
 L["Dazar'ai Honor Guard"] = "达萨莱荣誉卫士"
 L["Dazar'ai Juggernaut"] = "达萨莱战神"
---[[Translation missing --]]
---[[ L["De Other Side"] = ""--]] 
+L["De Other Side"] = "彼界境地"
 --[[Translation missing --]]
 --[[ L["Dealer Xy'exa"] = ""--]] 
 --[[Translation missing --]]
@@ -373,8 +371,7 @@ L["Field of the Eternal Hunt"] = "永獵之原"
 --[[ L["Fleeting Manifestation"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Flesh Crafter"] = ""--]] 
---[[Translation missing --]]
---[[ L["Font of Fealty"] = ""--]] 
+L["Font of Fealty"] = "忠誠之泉"
 L["Footbomb Hooligan"] = "足球炸弹流氓"
 L["Forces"] = "敵方部隊"
 L["Forces only: 5/200"] = "只有敵方部隊: 5/200"
@@ -430,8 +427,7 @@ L["Galecaller Apprentice"] = "唤风者学徒"
 L["Galecaller Faye"] = "唤风者菲伊"
 L["Galvazzt"] = "加瓦兹特"
 L["Gamesman's Hall"] = "棋戲大廳"
---[[Translation missing --]]
---[[ L["Gardens of Repose"] = ""--]] 
+L["Gardens of Repose"] = "歇息花園"
 --[[Translation missing --]]
 --[[ L["General Kaal"] = ""--]] 
 L["Giant"] = "巨人"
@@ -475,16 +471,12 @@ L["Hadal Darkfathom"] = "哈达尔·黑渊"
 --[[Translation missing --]]
 --[[ L["Halkias"] = ""--]] 
 L["Hall of the Moon"] = "月之殿堂"
---[[Translation missing --]]
---[[ L["Halls of Atonement"] = ""--]] 
+L["Halls of Atonement"] = "贖罪之殿"
 L["Halls of Valor"] = "英靈殿"
 L["Halls of Valor Sublevel"] = "英靈殿"
---[[Translation missing --]]
---[[ L["HallsOfAtonementFloor1"] = ""--]] 
---[[Translation missing --]]
---[[ L["HallsOfAtonementFloor2"] = ""--]] 
---[[Translation missing --]]
---[[ L["HallsOfAtonementFloor3"] = ""--]] 
+L["HallsOfAtonementFloor1"] = "贖罪之殿"
+L["HallsOfAtonementFloor2"] = "痛苦中殿"
+L["HallsOfAtonementFloor3"] = "靈魂聖所"
 L["Harlan Sweete"] = "哈兰·斯威提"
 --[[Translation missing --]]
 --[[ L["Harugia the Bloodthirsty"] = ""--]] 
@@ -515,8 +507,7 @@ L["Hold CTRL to single-select enemies."] = "按住 CTRL 選擇單一個敵人。
 L["Hold SHIFT to create a new pull while selecting enemies."] = "按住 SHIFT 選擇的敵人時會一併建立新的拉怪。"
 L["Hold SHIFT to delete all presets with the delete preset button."] = "使用刪除路線按鈕時按住 SHIFT 會刪除全部的路線。"
 L["Honored Raptor"] = "荣耀迅猛龙"
---[[Translation missing --]]
---[[ L["Honor's Ascent"] = ""--]] 
+L["Honor's Ascent"] = "榮譽坡"
 L["Hoodoo Hexer"] = "灾厄妖术师"
 L["Humanoid"] = "人形生物"
 --[[Translation missing --]]
@@ -658,8 +649,7 @@ L["MDI Mode"] = "MDI 模式"
 L["MDT: Error importing preset"] = "MDT: 匯入路線時發生錯誤"
 L["MDT: Spells for %s:"] = "MDT: %s 的技能:"
 L["Mech Jockey"] = "机甲驾驶员"
---[[Translation missing --]]
---[[ L["Mechagon"] = ""--]] 
+L["Mechagon"] = "機械岡"
 L["Mechagon - Junkyard"] = "機械岡行動 - 廢料場"
 L["Mechagon - Workshop"] = "機械岡行動 - 工坊"
 L["Mechagon Cavalry"] = "麦卡贡骑兵"
@@ -687,8 +677,7 @@ L["Minion of Zul"] = "祖尔的爪牙"
 --[[ L["Mire Soldier"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Mistcaller"] = ""--]] 
---[[Translation missing --]]
---[[ L["Mists of Tirna Scithe"] = ""--]] 
+L["Mists of Tirna Scithe"] = "特那希迷霧"
 --[[Translation missing --]]
 --[[ L["Mistveil Defender"] = ""--]] 
 --[[Translation missing --]]
@@ -788,8 +777,7 @@ L["Plague Doctor"] = "瘟疫博士"
 --[[ L["Plaguebound Devoted"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Plaguebound Fallen"] = ""--]] 
---[[Translation missing --]]
---[[ L["Plaguefall"] = ""--]] 
+L["Plaguefall"] = "瘟疫之臨"
 --[[Translation missing --]]
 --[[ L["plaguefallDevotedNote"] = ""--]] 
 --[[Translation missing --]]
@@ -921,12 +909,9 @@ L["Sandswept Marksman"] = "卷沙神射手"
 L["Sanguine"] = "膿血"
 --[[Translation missing --]]
 --[[ L["Sanguine Cadet"] = ""--]] 
---[[Translation missing --]]
---[[ L["Sanguine Depths"] = ""--]] 
---[[Translation missing --]]
---[[ L["Sanguine DepthsFloor1"] = ""--]] 
---[[Translation missing --]]
---[[ L["Sanguine DepthsFloor2"] = ""--]] 
+L["Sanguine Depths"] = "血紅深淵"
+L["Sanguine DepthsFloor1"] = "絕望深境"
+L["Sanguine DepthsFloor2"] = "悲傷展演廳"
 L["Sap"] = "悶棍"
 --[[Translation missing --]]
 --[[ L["Sathel the Accursed"] = ""--]] 
@@ -942,8 +927,7 @@ L["Scraphound"] = "废钢猎犬"
 L["Scrimshaw Enforcer"] = "雕骨执行者"
 L["Scrimshaw Gutter"] = "雕骨切割者"
 L["Seasonal Affix:"] = "季詞綴:"
---[[Translation missing --]]
---[[ L["Seat of the Archon"] = ""--]] 
+L["Seat of the Archon"] = "御靈者之座"
 L["Seat of the Triumvirate"] = "三傑議會之座"
 L["Seat of the Triumvirate Sublevel"] = "三傑議會之座"
 L["Select the dungeon level"] = "選擇地城層數"
@@ -1046,8 +1030,7 @@ L["Spider Tank"] = "蜘蛛坦克"
 --[[ L["Spinemaw Reaver"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Spinemaw Staghorn"] = ""--]] 
---[[Translation missing --]]
---[[ L["Spires of Ascension"] = ""--]] 
+L["Spires of Ascension"] = "晉升之巔"
 --[[Translation missing --]]
 --[[ L["Spiteful"] = ""--]] 
 L["Sporecaller Zancha"] = "孢子召唤师赞查"
@@ -1113,8 +1096,7 @@ L["The Brig"] = "禁閉室"
 L["The Cellar"] = "地窖"
 L["The Drain"] = "排水口"
 L["The Emerald Archives"] = "翡翠圖書館"
---[[Translation missing --]]
---[[ L["The Festering Sanctum"] = ""--]] 
+L["The Festering Sanctum"] = "膿瘡聖所"
 L["The Golden Serpent"] = "黄金风蛇"
 L["The Grand Foyer"] = "迎賓大廳"
 L["The Grand Hall"] = "大廳"
@@ -1126,8 +1108,7 @@ L["The Menagerie"] = "展示廳"
 L["The MOTHERLODE!!"] = "晶喜鎮！"
 L["The MOTHERLODE!! Sublevel"] = "晶喜鎮！"
 L["The Naglfar"] = "奈格法號"
---[[Translation missing --]]
---[[ L["The Necrotic Wake"] = ""--]] 
+L["The Necrotic Wake"] = "死靈戰地"
 L["The Platinum Pummeler"] = "白金拳手"
 L["The preset will continuously synchronize between all party members participating in the Live Session"] = "所有參與即時連線的隊友都會持續地同步路線"
 L["The Raven's Crown"] = "玄鴉堡之頂"
@@ -1144,26 +1125,16 @@ L["The Under Junk"] = "廢料底層"
 L["The Underrot"] = "幽腐深窟"
 L["The Underrot Sublevel"] = "幽腐深窟"
 L["The Warden's Court"] = "看守者之廷"
---[[Translation missing --]]
---[[ L["Theater of Pain"] = ""--]] 
---[[Translation missing --]]
---[[ L["theaterOfPain_miniBossNote"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor1"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor2"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor3"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor4"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor5"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheNecroticWakeFloor1"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheNecroticWakeFloor2"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheNecroticWakeFloor3"] = ""--]] 
+L["Theater of Pain"] = "苦痛劇場"
+L["theaterOfPain_miniBossNote"] = "只有一位決鬥者會存活。"
+L["TheaterOfPainFloor1"] = "苦痛劇場"
+L["TheaterOfPainFloor2"] = "征戰之聽"
+L["TheaterOfPainFloor3"] = "痛苦祭壇"
+L["TheaterOfPainFloor4"] = "血肉戮穴上層"
+L["TheaterOfPainFloor5"] = "血肉戮穴下層"
+L["TheNecroticWakeFloor1"] = "死靈戰地"
+L["TheNecroticWakeFloor2"] = "縫合作坊"
+L["TheNecroticWakeFloor3"] = "佐拉慕斯"
 L["Thistle Acolyte"] = "棘刺助祭"
 L["Thornguard"] = "荆棘卫士"
 L["Tidesage Enforcer"] = "海贤执行者"
@@ -1287,6 +1258,5 @@ L["Zanchuli Witch-Doctor"] = "赞枢利巫医"
 --[[ L["Zolramus Siphoner"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Zolramus Sorcerer"] = ""--]] 
---[[Translation missing --]]
---[[ L["Zul'Gurub"] = ""--]] 
+L["Zul'Gurub"] = "祖爾格拉布"
 

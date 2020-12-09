@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Azuregos", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201101003357")
+mod:SetRevision("20201031010726")
 mod:SetCreatureID(121820)--121820 TW ID, 6109 classic ID
 --mod:SetModelID(17887)
 

@@ -1,20 +1,18 @@
 ﻿local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201130022809")
+mod:SetRevision("20201208191256")
 
 mod:RegisterCombat("scenario", 2162)
 mod.noStatistics = true
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608",
+	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608 330438 330471 294401 294517 296839 297020",
 	"SPELL_AURA_APPLIED 304093 277040",
 	"SPELL_AURA_APPLIED_DOSE 303678",
 	"SPELL_AURA_REMOVED 277040",
---	"SPELL_CAST_SUCCESS",
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED",
---	"SPELL_INTERRUPT",
+	"SPELL_PERIODIC_DAMAGE 294607",
+	"SPELL_PERIODIC_MISSED 294607",
 	"UNIT_DIED",
 	"NAME_PLATE_UNIT_ADDED",
 	"FORBIDDEN_NAME_PLATE_UNIT_ADDED"
@@ -22,6 +20,7 @@ mod:RegisterEventsInCombat(
 
 --TODO, verifying howling souls spellId, user submitted and unverified from logs. SpellId given is used in eye of azshara. Can use torghast reusuing it though.
 --TODO https://shadowlands.wowhead.com/spell=303678/bone-shrapnel? not sure what i can do about it in a mod though, it's instant cast on death. warn when they are getting low if melee?
+--TODO https://shadowlands.wowhead.com/spell=299150/unnatural-power? boss buff stacks, basic DPS check
 --TODO, alert when a deadsoul scavenger is nearby?
 local warnMightySlam				= mod:NewCastAnnounce(296748, 3)--Cast time to short to really dodge, this is just alert to at least mentally prepare for damage spike
 local warnInferno					= mod:NewSpellAnnounce(335528, 3)
@@ -34,6 +33,9 @@ local specWarnMassiveStrike			= mod:NewSpecialWarningDodge(292903, nil, nil, nil
 local specWarnMeteor				= mod:NewSpecialWarningDodge(270264, nil, nil, nil, 2, 2)
 local specWarnRatTrap				= mod:NewSpecialWarningDodge(295942, nil, nil, nil, 2, 2)
 local specWarnFanningtheFlames		= mod:NewSpecialWarningDodge(308026, nil, nil, nil, 2, 2)
+local specWarnProphecyOfDeath		= mod:NewSpecialWarningDodge(330471, nil, nil, nil, 2, 2)
+local specWarnDiscordantBarrage		= mod:NewSpecialWarningDodge(294401, nil, nil, nil, 2, 2)
+local specWarnBindSouls				= mod:NewSpecialWarningDodge(297020, nil, nil, nil, 2, 2)
 local specWarnGroundCrush			= mod:NewSpecialWarningRun(295985, nil, nil, nil, 4, 2)
 --local specWarnMightySlam			= mod:NewSpecialWarningRun(296748, nil, nil, nil, 4, 2)
 local specWarnWhirlwind				= mod:NewSpecialWarningRun(295001, nil, nil, nil, 4, 2)
@@ -51,6 +53,8 @@ local specWarnFireballVolley		= mod:NewSpecialWarningInterrupt(270348, "HasInter
 local specWarnTerrifyingRoar		= mod:NewSpecialWarningInterrupt(263085, "HasInterrupt", nil, nil, 3, 2)
 local specWarnCurseofFrailty		= mod:NewSpecialWarningInterrupt(294526, "HasInterrupt", nil, nil, 1, 2)
 local specWarnFearsomeHowl			= mod:NewSpecialWarningInterrupt(298844, "HasInterrupt", nil, nil, 1, 2)
+local specWarnPhasingRoar			= mod:NewSpecialWarningInterrupt(294517, "HasInterrupt", nil, nil, 1, 2)
+local specWarnDeathBlast			= mod:NewSpecialWarningInterrupt(296839, "HasInterrupt", nil, nil, 1, 2)
 local specWarnAccursedStrength		= mod:NewSpecialWarningInterrupt(294165, "HasInterrupt", nil, nil, 1, 2)
 local specWarnWitheringRoar			= mod:NewSpecialWarningInterrupt(330118, "HasInterrupt", nil, nil, 1, 2)
 local specWarnInnerFlames			= mod:NewSpecialWarningInterrupt(258935, "HasInterrupt", nil, nil, 1, 2)
@@ -62,11 +66,9 @@ local timerInfernoCD				= mod:NewCDTimer(21.9, 335528, nil, nil, nil, 3)--21.9-2
 --local timerWitheringRoarCD			= mod:NewCDTimer(21.5, 330118, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--15.8-19.5
 local timerGroundCrushCD			= mod:NewNextTimer(23.1, 295985, nil, nil, nil, 3)--Seems precise, at least when used by The Grand Malleare
 
---mod:AddInfoFrameOption(307831, true)
 mod:AddNamePlateOption("NPAuraOnSoulofMist", 277040)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 GTFO, 7 misc
---local playerName = UnitName("player")
 local warnedGUIDs = {}
 
 --[[
@@ -83,17 +85,10 @@ function mod:OnCombatStart(delay)
 	if self.Options.NPAuraOnSoulofMist then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
---	if self.Options.InfoFrame then
---		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(307831))
---		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, 2)--Sorting lowest to highest
---	end
 end
 
 function mod:OnCombatEnd()
 	table.wipe(warnedGUIDs)
---	if self.Options.InfoFrame then
---		DBM.InfoFrame:Hide()
---	end
 	if self.Options.NPAuraOnSoulofMist then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)--isGUID, unit, spellId, texture, force, isHostile, isFriendly
 	end
@@ -117,6 +112,15 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 295942 and self:AntiSpam(3, 2) then
 		specWarnRatTrap:Show()
 		specWarnRatTrap:Play("watchstep")
+	elseif spellId == 330471 and self:AntiSpam(3, 2) then
+		specWarnProphecyOfDeath:Show()
+		specWarnProphecyOfDeath:Play("watchstep")
+	elseif spellId == 294401 and self:AntiSpam(3, 2) then
+		specWarnDiscordantBarrage:Show()
+		specWarnDiscordantBarrage:Play("watchstep")
+	elseif spellId == 297020 and self:AntiSpam(3, 2) then
+		specWarnBindSouls:Show()
+		specWarnBindSouls:Play("watchstep")
 	elseif spellId == 295985 then
 		if self:AntiSpam(4, 1) then
 			specWarnGroundCrush:Show()
@@ -175,20 +179,17 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 258935 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnInnerFlames:Show(args.sourceName)
 		specWarnInnerFlames:Play("kickcast")
-	elseif (spellId == 297018 or spellId == 298844) and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+	elseif (spellId == 297018 or spellId == 298844 or spellId == 330438) and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnFearsomeHowl:Show(args.sourceName)
 		specWarnFearsomeHowl:Play("kickcast")
+	elseif spellId == 298844 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnPhasingRoar:Show(args.sourceName)
+		specWarnPhasingRoar:Play("kickcast")
+	elseif spellId == 296839 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnDeathBlast:Show(args.sourceName)
+		specWarnDeathBlast:Play("kickcast")
 	end
 end
-
---[[
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 297237 then
-
-	end
-end
---]]
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -225,23 +226,13 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
---[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if (spellId == 303594 or spellId == 313303) and destGUID == UnitGUID("player") and self:AntiSpam(2, 4) then
+	if spellId == 294607 and destGUID == UnitGUID("player") and self:AntiSpam(2, 6) then -- Death Pool
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:SPELL_INTERRUPT(args)
-	if type(args.extraSpellId) == "number" and args.extraSpellId == 298033 then
-		if self.Options.NPAuraOnSoulofMist then
-			DBM.Nameplate:Hide(true, args.destGUID, 298033)
-		end
-	end
-end
---]]
 
 function mod:UNIT_DIED(args)
 --	local cid = self:GetCIDFromGUID(args.destGUID)

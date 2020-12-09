@@ -289,6 +289,7 @@ function U1GetCfgValue(addon, path, safe)
     assert(cfg, format("Error, can't find config [%s] of addon [%s].", path, addon));
     return U1LoadDBValue(cfg), cfg;
 end
+U1SetCfgValue = U1ChangeCfg
 
 ---显示一下配置项，调试用的
 function U1ShowCfg(addon, pattern)

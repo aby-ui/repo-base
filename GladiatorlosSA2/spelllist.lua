@@ -6,6 +6,7 @@
 			-- General (Aura Applied)
 			[195901] = "trinket1",
 			[214027] = "trinket1",
+			[336139] = "trinket1",
 			[34709] = "shadowSight",
 			-- Drinking
 			[104270] = "drinking",
@@ -603,18 +604,14 @@
 			[58984] = "shadowmeld",
 			[20594] = "stoneform",
 			[7744] = "willOfTheForsaken",
-			[42292] = "trinket",
 			[59752] = "everyMan", 
 			[287712] = "haymaker",
 			[295707] = "regeneratin",
---			[214027] = "trinket1", -- Adaptation Legion
---			[195756] = "trinket1", -- Adaptation Legion
---			[195885] = "trinket1", -- Adaptation Legion
---			[195895] = "trinket1", -- Adaptation Legion
---			[195845] = "trinket1", -- Adaptation Legion
+
 			[208683] = "trinket", -- Gladiator's Medallion Legion
 			[195710] = "trinket", -- Honorable Medallion Legion
 			[336126] = "trinket", -- Gladiator's Medallion Shadowlands
+			[42292] = "trinket", -- Inherited Insignias (Heirloom PvP Trinkets)
 			[23035] = "battleStandard",
 			[23034] = "battleStandard",
 			[213664] = "NimbleBrew", -- Nimble Brew consumable
@@ -918,7 +915,6 @@
 			[171138] = "spellLock",
 			[212619] = "spellLock",
 			[115781] = "spellLock",
-			--132409,119910,251523,251922,288047
 			[132409] = "spellLock",
 			[119910] = "spellLock",
 			[251523] = "spellLock",
@@ -966,13 +962,18 @@
 			[307865] = "spearofbastion", -- Kyrian
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
-			[19647] = "lockout", -- Spell Lock
-			[171140] = "lockout", -- Spell Lock
-			[171138] = "lockout", -- Spell Lock
-			[212619] = "lockout", -- Spell Lock
-			[119910] = "lockout", -- Spell Lock
-			[115781] = "lockout", -- Spell Lock (Optical Blast)
-			[119898] = "lockout", -- Spell Lock YET AGAIN
+			[19647] = "lockout", -- Spell Locks begin
+			[119910] = "lockout",
+			[171140] = "lockout",
+			[171138] = "lockout",
+			[212619] = "lockout",
+			[115781] = "lockout",
+			[132409] = "lockout",
+			[119910] = "lockout",
+			[251523] = "lockout",
+			[251922] = "lockout",
+			[288047] = "lockout",
+			[119898] = "lockout", -- Spell Locks end
 			[2139] = "lockout", -- Counterspell
 			[1766] = "lockout", -- Kick
 			[6552] = "lockout", -- Pummel

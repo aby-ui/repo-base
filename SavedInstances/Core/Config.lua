@@ -18,6 +18,7 @@ local SaveBindings = SaveBindings
 local SetBinding = SetBinding
 local StaticPopup_Show = StaticPopup_Show
 local ALL = ALL
+local CALLINGS_QUESTS = CALLINGS_QUESTS
 local COLOR = COLOR
 local CURRENCY = CURRENCY
 local DELETE = DELETE
@@ -477,6 +478,11 @@ function Config:BuildOptions()
             type = "toggle",
             order = 48,
             name = L["Paragon Chests"],
+          },
+          Calling = {
+            type = "toggle",
+            order = 49,
+            name = CALLINGS_QUESTS,
           },
           BindHeader = {
             order = -0.6,

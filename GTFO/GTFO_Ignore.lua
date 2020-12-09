@@ -72,4 +72,4 @@ GTFO.IgnoreScan["287769"] = true; -- N'Zoth's Awareness
 GTFO.IgnoreScan["306583"] = true; -- Leaden Foot
 GTFO.IgnoreScan["326788"] = true; -- Chilling Winds
 GTFO.IgnoreScan["329961"] = true; -- Lycara's Bargain
-
+GTFO.IgnoreScan["322757"] = true; -- Wrath of Zolramus

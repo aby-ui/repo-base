@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201120191257")
+mod:SetRevision("20201208155420")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -108,7 +108,7 @@ local timerDancingFoolsCD						= mod:NewCDTimer(30.3, 330964, nil, nil, nil, 1)
 
 mod:AddRangeFrameOption(8, 346657)
 mod:AddInfoFrameOption(347350, true)
-mod:AddSetIconOption("SetIconOnDancingFools", 346826, true, false, {8})
+mod:AddSetIconOption("SetIconOnDancingFools", 346826, true, false, {8})--Attempts to set icon only on killable one, not yet tested
 mod:AddNamePlateOption("NPAuraOnFixate", 330967)
 mod:AddNamePlateOption("NPAuraOnShield", 346694)
 mod:AddNamePlateOption("NPAuraOnUproar", 346303)

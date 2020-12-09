@@ -120,12 +120,11 @@ local function SetItemLevelScheduled(button, ItemLevelFrame, link)
 end
 
 --設置物品等級
-local function SetItemLevel(self, link, category, BagID, SlotID, tooltipFunc)
+local function SetItemLevel(self, link, category, BagID, SlotID)
     if (not self) then return end
-    if link == true or link == false then return end --abyui
     local frame = GetItemLevelFrame(self, category)
-    if (self.OrigItemLink == link and not tooltipFunc) then
-        SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link, self.OrigItemLevel)
+    if (self.OrigItemLink == link) then
+        SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else
         local level = ""
@@ -138,7 +137,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID, tooltipFunc)
                     level = linklevel
                 end
             else
-                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link, nil, tooltipFunc)
+                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
             end
             --背包不显示装等
             if (equipSlot == "INVTYPE_BAG") then
@@ -187,18 +186,15 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             SetItemLevel(self)
         --QuestInfo
         elseif (self.type and self.objectType == "item") then
-            --abyui QuestInfoRewardItemCodeTemplate_OnEnter
             if (QuestInfoFrame and QuestInfoFrame.questLog) then
-                link = GetQuestLogItemLink(self.type, self:GetID())
-                if link then SetItemLevel(self, link, nil, nil, nil, function(gt) gt:SetQuestLogItem(self.type, self:GetID())  end) end
+                link = LibItemInfo:GetQuestItemlink(self.type, self:GetID())
             else
                 link = GetQuestItemLink(self.type, self:GetID())
-                if link then SetItemLevel(self, link, nil, nil, nil, function(gt) gt:SetQuestItem(self.type, self:GetID())  end) end
             end
             if (not link) then
                 link = select(2, GetItemInfo(itemIDOrLink))
-                SetItemLevel(self, link)
             end
+            SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
             link = select(7, GetLootInfoByIndex(self.index))
@@ -365,7 +361,8 @@ if (BaudBag and BaudBag.CreateItemButton) then
     end
 end
 
--- GuildNews
+-- GuildNews, dark, no change, level + no color, level + our color
+local GUILD_NEWS_LEVELS = { 0, 184, 200 } --先>[3] 再<[1] 再>=[2]
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_Communities" or addonName == "Blizzard_GuildUI") then
         GuildNewsItemCache = GuildNewsItemCache or {}
@@ -400,11 +397,14 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                         GuildNewsItemCache[link] = level + (gem and 2 or 1) * power + (corrupt and 2 or 1) * power * 10
                         gem = gem and "|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t" or ""
                         gem = gem .. (corrupt and "|T3004126:0|t" or "")
-                        if level > 220 then
+                        if level > GUILD_NEWS_LEVELS[3] then
                             local r,g,b = U1GetInventoryLevelColor(level)
                             local hex = ("%.2x%.2x%.2x"):format(r*255, g*255, b*255)
                             text2 = text2:gsub("%|cff......(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", gem .. "|cff" .. hex .. "%1"..level..":%2%3")
-                        elseif level >= 192 then
+                        elseif level < GUILD_NEWS_LEVELS[1] then
+                            local hex = "7f7f7f"
+                            text2 = text2:gsub("%|cff......(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", "|cff" .. hex .. "%1%2%3")
+                        elseif level >= GUILD_NEWS_LEVELS[2] then
                             text2 = text2:gsub("(%|Hitem:%d+:.-%|h%[)(.-)(%]%|h)", gem .. "%1"..level..":%2%3")
                         end
                         button.text:SetFormattedText(text, text1, text2, ...)

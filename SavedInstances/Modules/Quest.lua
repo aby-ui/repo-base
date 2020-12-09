@@ -185,6 +185,32 @@ local QuestExceptions = {
   [58167] = "Daily", -- Preventative Measures
   [58156] = "Daily", -- Vanquishing the Darkness
 
+  -- SL
+  -- "Trading Favors" Heroic Dungeon Weekly
+  [60242] = "Weekly", -- Trading Favors: Necrotic Wake
+  [60243] = "Weekly", -- Trading Favors: Sanguine Depths
+  [60244] = "Weekly", -- Trading Favors: Halls of Atonement
+  [60245] = "Weekly", -- Trading Favors: The Other Side
+  [60246] = "Weekly", -- Trading Favors: Tirna Scithe
+  [60247] = "Weekly", -- Trading Favors: Theater of Pain
+  [60248] = "Weekly", -- Trading Favors: Plaguefall
+  [60249] = "Weekly", -- Trading Favors: Spires of Ascension
+  -- "A Valuable Find" Mythic Dungeon Weekly
+  [60250] = "Weekly", -- A Valuable Find: Theater of Pain
+  [60251] = "Weekly", -- A Valuable Find: Plaguefall
+  [60252] = "Weekly", -- A Valuable Find: Spires of Ascension
+  [60253] = "Weekly", -- A Valuable Find: Necrotic Wake
+  [60254] = "Weekly", -- A Valuable Find: Tirna Scithe
+  [60255] = "Weekly", -- A Valuable Find: The Other Side
+  [60256] = "Weekly", -- A Valuable Find: Halls of Atonement
+  [60257] = "Weekly", -- A Valuable Find: Sanguine Depths
+  -- "Observing" PvP Weekly
+  [62284] = "Weekly", -- Observing Battle
+  [62285] = "Weekly", -- Observing War
+  [62286] = "Weekly", -- Observing Skirmishes
+  [62287] = "Weekly", -- Observing Arenas
+  [62289] = "Weekly", -- Observing Conflict
+
   -- General
   -- Darkmoon Faire
   [7905]  = "Regular", -- Darkmoon Faire referral -- old addon versions misidentified this as monthly

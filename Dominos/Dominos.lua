@@ -34,6 +34,7 @@ function Addon:OnInitialize()
 
     --abyui8 force azerite
     if self.db.profile and self.db.profile.frames and self.db.profile.frames.artifact then
+        --[[
         if not self.db.profile.update801 then
             self.db.profile.frames.artifact.mode = 'azerite';
             self.db.profile.update801 = true
@@ -42,6 +43,7 @@ function Addon:OnInitialize()
             (self.db.profile.frames.artifact.display or {}).bonus = true;
             self.db.profile.update807 = true
         end
+        ]]
     end
 end
 
@@ -92,7 +94,9 @@ end
 
 function Addon:OnProfileReset(msg, db)
     self:Printf(L.ProfileReset, db:GetCurrentProfile())
+    if not self.ignoreResetCalback then
     self:Reload()
+    end
 end
 
 function Addon:OnProfileShutdown(msg, db, name)
