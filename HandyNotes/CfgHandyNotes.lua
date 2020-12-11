@@ -1,7 +1,7 @@
 ﻿U1RegisterAddon("HandyNotes", {
     title = "地图标记",
     tags = { TAG_MAPQUEST, TAG_BIG },
-    defaultEnable = 0,
+    defaultEnable = 1,
     load = "LATER",
     optionsAfterLogin = 1,
     bundleSim = true,

@@ -983,7 +983,7 @@ do
             hooksecurefunc(plate.UnitFrame, "Show", function(self)
                 if UnitIsUnit("player", self.unit or "") then return end --abyui 个人资源有问题
                 if self.unit ~= "player" and not UnitNameplateShowsWidgetsOnly(self.unit) then
-                    self:Hide()
+                    if not self:IsForbidden() then self:Hide() end
                 end
             end)
         end

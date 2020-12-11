@@ -12,12 +12,13 @@ local showChange = function(newValue)
     local ct = UIWidgetTopCenterContainerFrame
     if last == nil or last >= newValue then last = newValue return end
     local change = newValue - last
+    ct.AbyTxtCt.TextAdd:SetAlpha(1)
     ct.AbyTxtCt.TextAdd:SetText("+" .. change)
-    local duration = 2.5
-    UICoreFrameFadeOut(ct.AbyTxtCt.TextAdd, duration, 1, 0)
-    CoreScheduleBucket("AbyMawThreatChange", duration, function()
+    --显示a秒然后渐隐，渐隐开始清掉数值
+    CoreScheduleBucket("AbyMawThreatFade", 2.5, function()
+        local duration = 1.5
+        UICoreFrameFadeOut(ct.AbyTxtCt.TextAdd, duration, 1.0, 0.0, function() ct.AbyTxtCt.TextAdd:SetText("") end)
         last = newValue
-        ct.AbyTxtCt.TextAdd:SetText("")
     end)
 end
 local update = function()

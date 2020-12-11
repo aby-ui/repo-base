@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale("HandyNotes_Oribos", "zhTW", false,
 if not L then return end
 -- Traditional Chinese localization by RainbowUI ( https://www.curseforge.com/members/rainbowui )
 if L then
+L["Blizzard"] = "遊戲內建"
+L["Both"] = "兩個都要"
 L["config_auctioneer"] = "拍賣場"
 L["config_auctioneer_desc"] = "顯示拍賣場的位置。"
 L["config_banker"] = "銀行"
@@ -11,6 +13,10 @@ L["config_barber"] = "美容院"
 L["config_barber_desc"] = "顯示美容院的位置。"
 L["config_easy_waypoints"] = "快速導航"
 L["config_easy_waypoints_desc"] = "簡化建立路線導航的方法，只要點一下滑鼠右鍵便能設定導航目的地，CTRL + 右鍵點擊會有更多選項。"
+L["config_fmaster_waypoint"] = "鳥點導航"
+L["config_fmaster_waypoint_desc"] = "進入樞運之環時，自動導航到鳥點。"
+L["config_fmaster_waypoint_dropdown"] = "選擇"
+L["config_fmaster_waypoint_dropdown_desc"] = "選擇要使用的導航方式。"
 L["config_icon_alpha"] = "圖示透明度"
 L["config_icon_alpha_desc"] = "圖示的透明度。"
 L["config_icon_scale"] = "圖示大小"
@@ -72,4 +78,5 @@ L["Portal to Orgrimmar"] = "奧格瑪傳送門"
 L["Portal to Stormwind"] = "暴風城傳送門"
 L["To Ring of Fates"] = "前往命運之環"
 L["To Ring of Transference"] = "前往樞運之環"
+L["TomTom"] = true
 end

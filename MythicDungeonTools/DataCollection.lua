@@ -253,6 +253,7 @@ end
 ---Merge received collected data into own data collection
 function DC:MergeReceiveData(package)
     db = MDT:GetDB()
+    if type(package) ~= "table" then return end
     local collection,collectionCC = unpack(package)
     --db.dataCollection[dungeonIdx][npcId][spellId]
     for dungeonIdx,npcs in pairs(collection) do

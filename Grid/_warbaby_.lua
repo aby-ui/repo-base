@@ -786,6 +786,7 @@ do
         if status == "alert_phase" then
             self:RegisterEvent("UNIT_PHASE", "UpdateUnit")
             self:RegisterEvent("UNIT_FLAGS", "UpdateUnit")
+            self:RegisterEvent("UNIT_CTR_OPTIONS", "UpdateUnit")
             self:RegisterEvent("UNIT_CONNECTION", "UpdateUnit")
             self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
             self:UpdateAllUnits()

@@ -421,8 +421,7 @@ Supports multiple entries, separated by commas
 	L["Ignored Spell ID"] = "忽略法术 ID"
 	L["Import"] = "导入"
 	L["Import a display from an encoded string"] = "从字串导入一个图示"
-	--[[Translation missing --]]
-	L["Indent Size"] = "Indent Size"
+	L["Indent Size"] = "缩进"
 	L["Information"] = "信息"
 	L["Inner"] = "内部"
 	L["Invalid Item Name/ID/Link"] = "无效的物品名称/ID/链接"

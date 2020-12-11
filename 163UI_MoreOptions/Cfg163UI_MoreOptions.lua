@@ -131,30 +131,6 @@ U1RegisterAddon("163UI_MoreOptions", {
             end
         end}),
 
---[[
-        {
-            text = "堆叠姓名板(不重叠)",
-            tip = UNIT_NAMEPLATES_TYPE_TOOLTIP_2,
-            secure = 1,
-            var = "cvar_nameplateMotion",
-            default = 1,
-            getvalue = function() return GetCVar("nameplateMotion") == "1" and true end,
-            callback = function(cfg, v, loading)
-                if not InCombatLockdown() then
-                    SetCVar(cfg.var:gsub("^cvar_", ""), v)
-                    local d = InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
-                    if d and not loading then
-                        local v --= v and 1 or 0 will taint
-                        d.value = v
-                        d.selectedValue = v
-                    end
-                else
-                    U1Message("无法在战斗中修改")
-                end
-            end,
-        },
-]]
-
         U1CfgMakeCVarOption("允许姓名板移到屏幕之外", "nameplateOtherTopInset", nil, {
             tip = "说明`7.0之后，姓名板默认会收缩到屏幕之内挤在一起``此选项可以恢复到7.0之前的方式",
             secure = 1,
@@ -278,18 +254,6 @@ do
             if not InCombatLockdown() then HideUIPanel(HelpFrame) end
         end):un()
         CoreUIEnableTooltip(btn, '说明', '强制关闭语言过滤器和暴雪的支持功能有冲突, 需要访问暴雪支持功能时需要临时恢复语言过滤器。用完了可通过此按钮再次关闭（也可在控制台-额外设置里设置）')
-
-        --[[
-        SetOrHookScript(GameMenuButtonHelp, "PreClick", function()
-            if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then
-                ConsoleExec("SET portal " .. realPortal)
-                U1Message("爱不易监测到你强制关闭了语言过滤器，这会导致支持界面一直转圈或报错，请在额外设置里关闭'强制关闭语言过滤器'选项，然后登出游戏重新进入(小退)，即可打开支持界面。")
-            end
-        end)
-        SetOrHookScript(HelpFrame, "OnHide", function()
-            setProfanityFilter()
-        end)
-        ]]
     end
 
     setProfanityFilter = function(loading)

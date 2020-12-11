@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201209144105"),
-	DisplayVersion = "9.0.7", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 12, 8) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20201211042607"),
+	DisplayVersion = "9.0.9 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 12, 10) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -327,6 +327,7 @@ DBM.DefaultOptions = {
 	ShortTimerText = true,
 	ChatFrame = "DEFAULT_CHAT_FRAME",
 	CoreSavedRevision = 1,
+	SilentMode = false,
 }
 
 DBM.Bars = DBT:New()
@@ -7415,18 +7416,15 @@ end
 AddMsg = DBM.AddMsg
 
 function DBM:Debug(text, level)
+	--But we still want to generate callbacks for level 1 and 2 events
+	if (level or 1) < 3 then
+		fireEvent("DBM_Debug", text, level)
+	end
 	if not self.Options or not self.Options.DebugMode then return end
 	if (level or 1) <= DBM.Options.DebugLevel then
 		local frame = _G[tostring(DBM.Options.ChatFrame)]
 		frame = frame and frame:IsShown() and frame or DEFAULT_CHAT_FRAME
 		frame:AddMessage("|cffff7d0aDBM Debug:|r "..text, 1, 1, 1)
-		--Debug mode is on, respect users debug logging level for callbacks
-		fireEvent("DBM_Debug", text, level)
-	else--Debug mode is off
-		--But we still want to generate callbacks for level 1 and 2 events
-		if (level or 1) < 3 then
-			fireEvent("DBM_Debug", text, level)
-		end
 	end
 end
 
@@ -12139,7 +12137,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201209144105" then
+	if not revision or revision == "20201211042607" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

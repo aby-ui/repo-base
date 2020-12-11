@@ -169,7 +169,10 @@ GridStatusRaidDebuff.defaultDB = {
             [GetSpellInfo(319346)] = { disable = true, }, --无尽丧钟
             [GetSpellInfo(309657)] = { disable = true, }, --黑暗仪式
             [GetSpellInfo(313250)] = { disable = true, }, --1号蠕行疯狂
-        }
+        },
+        [C_Map.GetMapInfo(1735).name] = {
+            [GetSpellInfo(332443)] = { disable = true, }, --地基
+        },
     },
 	["detected_debuff"] = {},
 }

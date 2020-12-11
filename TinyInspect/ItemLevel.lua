@@ -362,7 +362,7 @@ if (BaudBag and BaudBag.CreateItemButton) then
 end
 
 -- GuildNews, dark, no change, level + no color, level + our color
-local GUILD_NEWS_LEVELS = { 0, 184, 200 } --先>[3] 再<[1] 再>=[2]
+local GUILD_NEWS_LEVELS = { 0, 184, 184 } --先>[3] 再<[1] 再>=[2]
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_Communities" or addonName == "Blizzard_GuildUI") then
         GuildNewsItemCache = GuildNewsItemCache or {}

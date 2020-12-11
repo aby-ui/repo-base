@@ -113,6 +113,23 @@ config.options = {
                     desc = L["config_onlymytrainers_desc"],
                     order = 32,
                 },
+                fmaster_waypoint = {
+                    type = "toggle",
+                    width = 1.3,
+                    name = L["config_fmaster_waypoint"],
+                    desc = L["config_fmaster_waypoint_desc"],
+                    order = 33,
+                },
+                fmaster_waypoint_dropdown = {
+                    type = "select",
+                    values = { L["Blizzard"], L["TomTom"], L["Both"] },
+                    disabled = function() return not private.db.fmaster_waypoint end,
+                    hidden = function() return not IsAddOnLoaded("TomTom") end,
+                    name = L["config_fmaster_waypoint_dropdown"],
+                    desc = L["config_fmaster_waypoint_dropdown_desc"],
+                    width = 0.7,
+                    order = 34,
+                },
                 easy_waypoint = {
                     type = "toggle",
                     width = "full",
@@ -125,7 +142,7 @@ config.options = {
                     end,
                     disabled = function() return not IsAddOnLoaded("TomTom") end,
                     desc = L["config_easy_waypoints_desc"],
-                    order = 33,
+                    order = 35,
                 },
                 unhide = {
                     type = "execute",
@@ -139,7 +156,7 @@ config.options = {
                         addon:Refresh()
                         print("Covenant Sanctum: "..L["config_restore_nodes_print"])
                     end,
-                    order = 34,
+                    order = 36,
                 },
             },
             },
@@ -158,8 +175,8 @@ config.options = {
 }
 
 local icongroup = {
-    "banker", "barber", "innkeeper", "mail", "reforge",
-    "stablemaster", "trainer", "transmogrifier", "vendor", "void"
+    "banker", "barber", "innkeeper", "mail", "reforge", "stablemaster",
+    "trainer", "transmogrifier", "vendor", "void", "others"
 }
 
 for i, icongroup in ipairs(icongroup) do

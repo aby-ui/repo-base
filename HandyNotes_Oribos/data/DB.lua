@@ -62,11 +62,11 @@ DB.points = {
     -- Tailor
     [45493182] = { trainer=true, npc=156681, profession=197 },
     -- Cooking
-    [46232637] = { vendor=true, npc=168353 },
-    [46202560] = { trainer=true, npc=156672 }, -- , profession=185
+    [47492372] = { vendor=true, npc=168353 },
+    [46822268] = { trainer=true, npc=156672 }, -- , profession=185
     -- Fishing
-    [46832259] = { vendor=true, npc=156690 },
-    [47542360] = { trainer=true, npc=156671 }, -- , profession=356
+    [46282576] = { vendor=true, npc=156690 },
+    [46172640] = { trainer=true, npc=156671 }, -- , profession=356
     -- Enchanting
     [48412939] = { trainer=true, npc=156683, profession=333 },
     [47572905] = { vendor=true, npc=156694, profession=333 },
@@ -98,10 +98,14 @@ DB.points = {
     [47867789] = { vendor=true, npc=176067 }, -- Quartermaster
     [47577721] = { vendor=true, npc=176064 }, -- Quartermaster
     [47087695] = { vendor=true, npc=176065 }, -- Quartermaster
+    [46677736] = { vendor=true, npc=176066 }, -- Quartermaster
+    [46227780] = { vendor=true, npc=176368 }, -- Quartermaster
 
     [35055815] = { vendor=true, npc=164095 },
     [34445752] = { vendor=true, npc=168011 },
     [34645648] = { reforge=true, npc=164096 },
+
+    [23324895] = { portaltrainer=true, npc=176186, class="MAGE" },
 
     [20835477] = { portal=true, label=PtoOG, note=Durotar, faction="Horde", quest=60151 },
     [20894567] = { portal=true, label=PtoSW, note=ElwynnForest, faction="Alliance", quest=60151 },
@@ -118,6 +122,11 @@ DB.points = {
     [55735162] = { tpplatform=true, label=RingFates },
     [49506073] = { tpplatform=true, label=RingFates },
     [43375150] = { tpplatform=true, label=RingFates },
+
+    [62183266] = { kyrian=true, label=C_Map.GetMapInfo(1533).name, scale=1.5 },
+    [67345157] = { necrolord=true, label=C_Map.GetMapInfo(1536).name, scale=1.5 },
+    [49587788] = { nightfae=true, label=C_Map.GetMapInfo(1565).name, scale=1.5 },
+    [32015156] = { venthyr=true, label=C_Map.GetMapInfo(1525).name, scale=1.5 },
 },
 
 [1672] = {

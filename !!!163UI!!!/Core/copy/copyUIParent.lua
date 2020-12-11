@@ -64,12 +64,13 @@ function UICoreFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
 end
 
 -- Convenience function to do a simple fade out
-function UICoreFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
+function UICoreFrameFadeOut(frame, timeToFade, startAlpha, endAlpha, finishedFunc)
 	local fadeInfo = {};
 	fadeInfo.mode = "OUT";
 	fadeInfo.timeToFade = timeToFade;
 	fadeInfo.startAlpha = startAlpha;
 	fadeInfo.endAlpha = endAlpha;
+    fadeInfo.finishedFunc = finishedFunc;
 	UICoreFrameFade(frame, fadeInfo);
 end
 

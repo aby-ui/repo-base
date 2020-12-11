@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2418, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201209143946")
+mod:SetRevision("20201210230930")
 mod:SetCreatureID(166644)
 mod:SetEncounterID(2405)
 mod:SetUsedIcons(1, 2)
@@ -90,7 +90,7 @@ function mod:OnCombatStart(delay)
 	self.vb.unleashCount = 0
 	self.vb.p3FirstCast = 0--1- Tear, 2 - Annihilate
 	self.vb.hyperInProgress = false
-	timerHyperlightSparkCD:Start(5.7-delay)
+	timerHyperlightSparkCD:Start(5-delay)
 	if self:IsHard() then
 		timerStasisTrapCD:Start(10.5-delay)
 	end

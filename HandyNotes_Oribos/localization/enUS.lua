@@ -68,6 +68,14 @@ Only affects the trainer and vendor of main professions.
 |cFFFF0000NOTE: Only affects when two main professions are learned.|r
 ]]
 
+L["config_fmaster_waypoint"] = "Flightmaster Waypoint"
+L["config_fmaster_waypoint_desc"] = "Sets automatically a waypoint to the flightmaster if you enter the Ring of Transference."
+L["config_fmaster_waypoint_dropdown"] = "Choose"
+L["config_fmaster_waypoint_dropdown_desc"] = "Choose how the waypoint should be created."
+L["Blizzard"] = true
+L["TomTom"] = true
+L["Both"] = true
+
 L["config_easy_waypoints"] = "Easy Waypoints"
 L["config_easy_waypoints_desc"] = "Activates simplified waypoint creation. \nAllows you to set a waypoint by right-clicking and access to more options by CTRL + right-clicking."
 

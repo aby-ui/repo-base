@@ -30,8 +30,10 @@ constants.defaults = {
         show_transmogrifier = true,
         show_vendor = true,
         show_void = true,
---        show_others = true,
+        show_others = true,
 
+        fmaster_waypoint = true,
+        fmaster_waypoint_dropdown = 1,
         easy_waypoint = true,
 
         force_nodes = false,
@@ -81,11 +83,17 @@ constants.icon = {
     mail            = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\mail",
     reforge         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\reforge",
     stablemaster    = "Interface\\MINIMAP\\TRACKING\\StableMaster",
-    trainer      = "Interface\\MINIMAP\\TRACKING\\Profession",
+    trainer         = "Interface\\MINIMAP\\TRACKING\\Profession",
+    portaltrainer   = "Interface\\MINIMAP\\TRACKING\\Profession",
 --    reagents        = "Interface\\MINIMAP\\TRACKING\\Reagents",
     transmogrifier  = "Interface\\MINIMAP\\TRACKING\\Transmogrifier",
     tpplatform      = "Interface\\MINIMAP\\TempleofKotmogu_ball_cyan",
     vendor          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\vendor",
     void            = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\void",
+
+    kyrian          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\kyrian",
+    necrolord       = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\necrolord",
+    nightfae        = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\nightfae",
+    venthyr         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\venthyr",
 
 }
