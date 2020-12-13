@@ -20,11 +20,10 @@ function RSGuideMixin:OnLoad()
 	self:SetScalingLimits(1, 0.75, 1.0);
 end
 
-function RSGuideMixin:OnAcquired(POI, pin)
+function RSGuideMixin:OnAcquired(POI)
 	self:UseFrameLevelType("PIN_FRAME_LEVEL_DIG_SITE", self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate"));
 
 	-- Set attributes
-	self.pin = pin
 	self.POI = POI
 	self.Texture:SetTexture(POI.texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())

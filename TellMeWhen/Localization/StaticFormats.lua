@@ -9,9 +9,6 @@ local function Spell(id)
     if not name or name == "" or not tex then
         return "?????"
     end
-    if id == 42292 then
-        tex = "Interface\\Icons\\inv_jewelry_trinketpvp_0" .. (UnitFactionGroup("player") == "Horde" and "2" or "1")
-    end
 
     return spellFmt:format(tex, name)
 end
@@ -25,7 +22,7 @@ L["HELP_FIRSTUCD"]                      = L["HELP_FIRSTUCD"]                    
 L["HELP_MISSINGDURS"]                   = L["HELP_MISSINGDURS"]                     :format("%s", GetSpellInfo(1766)) -- keep the first "%s" as "%s"
 L["ICONMENU_IGNORENOMANA_DESC"]         = L["ICONMENU_IGNORENOMANA_DESC"]           :format(Spell(85288), Spell(5308))
 L["ICONMENU_REACTIVE_DESC"]             = L["ICONMENU_REACTIVE_DESC"]               :format(Spell(5308), Spell(119996), Spell(32379))
-L["ICONMENU_UNITCOOLDOWN_DESC"]         = L["ICONMENU_UNITCOOLDOWN_DESC"]           :format(Spell(42292), GetSpellInfo(42292))
+L["ICONMENU_UNITCOOLDOWN_DESC"]         = L["ICONMENU_UNITCOOLDOWN_DESC"]           :format(Spell(336126), GetSpellInfo(336126))
 L["CLEU_DAMAGE_SHIELD_DESC"]            = L["CLEU_DAMAGE_SHIELD_DESC"]              :format(Spell(31271), Spell(30482), Spell(324))
 L["CLEU_DAMAGE_SHIELD_MISSED_DESC"]     = L["CLEU_DAMAGE_SHIELD_MISSED_DESC"]       :format(Spell(31271), Spell(30482), Spell(324))
 L["CLEU_SPELL_STOLEN_DESC"]             = L["CLEU_SPELL_STOLEN_DESC"]               :format(Spell(30449))

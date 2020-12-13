@@ -181,3 +181,20 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 
 	return MapPOIs
 end
+
+function RSMap.GetWorldMapPOI(objectGUID, mapID)
+	if (not objectGUID or not mapID) then
+		return nil
+	end
+	
+	local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
+	local containerID = tonumber(vignetteObjectID)
+	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+	local alreadyFoundInfo = RSGeneralDB.GetAlreadyFoundEntity(containerID)
+	
+	if (containerInfo or alreadyFoundInfo) then
+		return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
+	end
+	
+	return nil
+end

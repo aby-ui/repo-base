@@ -313,4 +313,6 @@ private.LOOT_QUEST_IDS = {
 	[174076] = { 58376 }; --Necromantic Oil
 	[183068] = { 63162 }; --Korrath's Grimoire: Gyadrek
 	[178562] = { 60271 }; --Molten Anima
+	[173718] = { 58078 }; --Bottle of Redelav Wine
+	[173711] = { 58073 }; --Portrait of The Sire
 }

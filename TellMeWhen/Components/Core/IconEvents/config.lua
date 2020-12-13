@@ -653,7 +653,7 @@ local function ChangeEvent_Dropdown_OnClick_Clone(button, eventID)
 	local eventSettings = EVENTS:GetEventSettings(eventID)
 
 	local n = TMW.CI.ics.Events.n + 1
-	TMW:CopyTableInPlaceUsingDestinationMeta(eventSettings, TMW.CI.ics.Events[n])
+	TMW:CopyTableInPlaceUsingDestinationMeta(eventSettings, TMW.CI.ics.Events[n], true)
 	TMW.CI.ics.Events.n = n
 
 	TMW.DD:CloseDropDownMenus()

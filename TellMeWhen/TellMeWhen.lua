@@ -33,10 +33,10 @@ if wow_classic then
 	return
 end
 
-TELLMEWHEN_VERSION = "9.0.2"
+TELLMEWHEN_VERSION = "9.0.3"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "9.0.2" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "9.0.3" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -44,7 +44,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 90201 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 90301 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 86005 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
@@ -437,8 +437,8 @@ end})
 
 TMW.SpellTexturesMetaIndex = {
 	--hack for pvp tinkets
-	[42292] = "Interface\\Icons\\inv_jewelry_trinketpvp_0" .. (UnitFactionGroup("player") == "Horde" and "2" or "1"),
-	[strlowerCache[GetSpellInfo(42292)]] = "Interface\\Icons\\inv_jewelry_trinketpvp_0" .. (UnitFactionGroup("player") == "Horde" and "2" or "1"),
+	[336126] = GetSpellTexture(336126),
+	[strlowerCache[GetSpellInfo(336126)]] = GetSpellTexture(336126),
 }
 local SpellTexturesMetaIndex = TMW.SpellTexturesMetaIndex
 

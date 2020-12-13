@@ -45,6 +45,12 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su categoria.", itemID))
 		return true
 	end
+	
+	-- Individual filter
+	if (RSConfigDB.IsItemFiltered(itemID)) then
+		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado individualmente.", itemID))
+		return true
+	end
 
 	-- Completed quests
 	if (RSConfigDB.IsFilteringLootByCompletedQuest() and (itemClassID == 12 or (itemClassID == 0 and itemSubClassID == 8))) then --quest item
@@ -128,12 +134,20 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 
 	-- Collection toy filter
 	-- Toys have different categories under miscelanious
-	if (RSConfigDB.IsFilteringByCollected()) then --toy
+	if (RSConfigDB.IsFilteringByCollected()) then
 		if (RSTooltipScanners.ScanLoot(itemLink, TOY) and RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (juguete).", itemID))
 			return true
 		end
 	end
-
+	
+	-- Anima items filter
+	if (RSConfigDB.IsFilteringAnimaItems()) then
+		if (RSTooltipScanners.ScanLoot(itemLink, ANIMA)) then
+			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ser un objeto que da ánima.", itemID))
+			return true
+		end
+	end
+	
 	return false
 end

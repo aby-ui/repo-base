@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 32
-RSConstants.CURRENT_LOOT_DB_VERSION = 44
+RSConstants.CURRENT_DB_VERSION = 33
+RSConstants.CURRENT_LOOT_DB_VERSION = 45
 
 ---============================================================================
 -- Special events
@@ -61,6 +61,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			scanOnPetBattle = true,
 			scanWorldmapVignette = true,
 			filteredRares = {},
+			filteredContainers = {},
 			filteredZones = {},
 			enableTomtomSupport = false,
 			autoTomtomWaypoints = false,
@@ -71,9 +72,10 @@ RSConstants.PROFILE_DEFAULTS = {
 			rescanTimer = 5
 		},
 		sound = {
-			soundPlayed = "Horn",
-			soundObjectPlayed = "PVP Horde",
 			soundDisabled = false,
+			soundPlayed = "Horn",
+			soundObjectDisabled = false,
+			soundObjectPlayed = "PVP Horde",
 			soundVolume = 4
 		},
 		display = {
@@ -91,7 +93,10 @@ RSConstants.PROFILE_DEFAULTS = {
 		rareFilters = {
 			filtersToggled = true,
 			filterOnlyMap = false
-
+		},
+		containerFilters = {
+			filtersToggled = true,
+			filterOnlyMap = false
 		},
 		zoneFilters = {
 			filtersToggled = true,
@@ -122,6 +127,7 @@ RSConstants.PROFILE_DEFAULTS = {
 		},
 		loot = {
 			filteredLootCategories = {},
+			filteredItems = {},
 			displayLoot = true,
 			displayLootOnMap = true,
 			lootTooltipPosition = "ANCHOR_LEFT",
@@ -132,6 +138,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			filterItemsCompletedQuest = true,
 			filterNotMatchingClass = false,
 			filterNotMatchingFaction = true,
+			filterAnimaItems = true,
 			numItems = 10,
 			numItemsPerRow = 10
 		}
@@ -199,10 +206,10 @@ RSConstants.DAFFODIL_NPCS = { 171690, 167724 }
 RSConstants.ABUSE_POWER_GI_NPCS = { 159156, 159157 }
 RSConstants.ABUSE_POWER_I_NPCS = { 159151, 156919, 156916, 156918 }
 RSConstants.ABUSE_POWER_HI_NPCS = { 159153, 159152, 159155, 159154 }
-RSConstants.RUNE_CONSTRUCTS_CONTAINERS = { 355036, 355037, 355038 }
+RSConstants.RUNE_CONSTRUCTS_CONTAINERS = { 355036, 355037, 355038, 364531 }
 RSConstants.GRAPPLING_GROWTH_CONTAINERS = { 352596, 354852, 354853 }
 RSConstants.GREEDSTONE_CONTAINERS = { 354211, 354206 }
-RSConstants.LUNARLIGHT_CONTAINERS = { 353771, 353770, 353773 }
+RSConstants.LUNARLIGHT_CONTAINERS = { 353771, 353770, 353772, 353773, 353769 }
 RSConstants.CITADEL_LOYALTY_NPCS = { 156339, 156340 }
 RSConstants.SWELLING_TEAR_NPCS = { 171040, 171013, 171041 }
 RSConstants.VESPER_REPAIR_NPCS = { 160882, 160985 }
@@ -211,12 +218,12 @@ RSConstants.DAPPERDEW_NPCS = { 168135, 164415, 166135, 166138, 166139, 166140, 1
 RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
 RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
-RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019 }
+RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252 }
 	
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths
 RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373 }
-RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731 }
+RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577 }
 
 ---============================================================================
 -- Garrison cache

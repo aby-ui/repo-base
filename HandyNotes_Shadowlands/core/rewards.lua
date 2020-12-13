@@ -153,7 +153,7 @@ function Achievement:GetText()
 end
 
 function Achievement:GetStatus()
-    if not self.oneline then return end
+    if not self.oneline and self.criteria then return end
     return self:IsObtained() and Green(L['completed']) or Red(L['incomplete'])
 end
 

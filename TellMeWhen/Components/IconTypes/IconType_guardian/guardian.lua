@@ -168,7 +168,7 @@ Type.GuardianInfo = {
 	[135816] = Info(15, 264119, true), -- Summon Vilefiend
 	[135002] = Info(15, 265187, true), -- Summon Demonic Tyrant
 
-	[ 17252] = Info(15, 111898, true), -- Grimorie: Felguard
+	[ 17252] = Info(17, 111898, true), -- Grimorie: Felguard
 	[107024] = Info(15, 212459, true), -- Call Fel Lord
 	[107100] = Info(20, 201996, true), -- Call Observer
 }

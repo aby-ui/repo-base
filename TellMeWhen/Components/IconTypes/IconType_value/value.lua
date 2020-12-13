@@ -196,7 +196,7 @@ local function Value_OnUpdate(icon, time)
 			if PowerType == -1 then
 				value, maxValue, valueColor = UnitHealth(unit), UnitHealthMax(unit), PowerBarColor[PowerType]
 			elseif PowerType == -3 then
-				value, maxValue, valueColor = UnitStagger(unit), UnitHealthMax(unit), PowerBarColor[PowerType]
+				value, maxValue, valueColor = UnitStagger(unit) or 0, UnitHealthMax(unit), PowerBarColor[PowerType]
 			else
 				if PowerType == -2 then
 					PowerType = UnitPowerType(unit)

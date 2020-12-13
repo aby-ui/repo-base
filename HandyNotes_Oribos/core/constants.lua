@@ -32,7 +32,7 @@ constants.defaults = {
         show_void = true,
         show_others = true,
 
-        fmaster_waypoint = true,
+        fmaster_waypoint = false,
         fmaster_waypoint_dropdown = 1,
         easy_waypoint = true,
 

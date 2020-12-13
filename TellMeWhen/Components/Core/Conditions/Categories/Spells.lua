@@ -238,7 +238,8 @@ ConditionCategory:RegisterCondition(2.8, "LASTCAST", {
 			assert(pGUID, "pGUID was null when func string was generated!")
 
 			local blacklist = {
-				[204255] = true -- Soul Fragment (happens after casting Sheer for DH tanks)
+				[204255] = true, -- Soul Fragment (happens after casting Sheer for DH tanks)
+				[324260] = true -- Sinful Revelation (https://github.com/ascott18/TellMeWhen/issues/1831)
 			}
 
 			module:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED",

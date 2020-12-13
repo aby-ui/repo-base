@@ -104,7 +104,7 @@ map.nodes[31603540] = Rare({
     note=L["gieger_note"],
     rewards={
         Transmog({item=184298, slot=L["offhand"]}), -- Amalgamated Forsworn's Journal
-        Mount({item=182080, id=1411}) -- Predatory Plagueroc
+        Mount({item=182080, id=1411, covenant=NECROLORD}) -- Predatory Plagueroc
     }
 }) -- Gieger
 
@@ -313,7 +313,7 @@ map.nodes[58197421] = Rare({
         ns.reward.Spacer(),
         ns.reward.Section('{npc:157312}'), -- Oily Invertebrate
         Transmog({item=184300, slot=L["cloak"], indent=true}), -- Fused Spineguard
-        Item({item=184155, quest=62804, indent=true}), -- Recovered Containment Pack
+        Item({item=184155, note=L["cosmetic"], quest=62804, indent=true}), -- Recovered Containment Pack
         Pet({item=181270, id=2960, indent=true}) -- Decaying Oozewalker
     }
 })

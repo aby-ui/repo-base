@@ -3,7 +3,7 @@ Name: DRList-1.0
 Description: Diminishing returns database. Fork of DRData-1.0.
 Website: https://www.curseforge.com/wow/addons/drlist-1-0
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: v1.1.4
+Version: b1a1eff
 Dependencies: LibStub
 License: MIT
 ]]

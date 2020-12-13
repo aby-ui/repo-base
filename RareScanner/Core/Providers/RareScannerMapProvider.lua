@@ -10,6 +10,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 -- RareScanner database libraries
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSGuideDB = private.ImportLib("RareScannerGuideDB")
+local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -38,27 +39,28 @@ function RareScannerDataProviderMixin:RemoveAllData()
 	self:GetMap():RemoveAllPinsByTemplate("RSGroupPinTemplate");
 end
 
-local function ShowInGameVignetteGuide(pin)
+local function ShowInGameVignetteGuide(pin, POI)
 	-- Guide
 	local guide = nil
-	if (pin.POI.isNpc) then
-		guide = RSGuideDB.GetNpcGuide(pin.POI.entityID)
-	elseif (pin.POI.isContainer) then
-		guide = RSGuideDB.GetContainerGuide(pin.POI.entityID)
+	if (POI.isNpc) then
+		guide = RSGuideDB.GetNpcGuide(POI.entityID)
+	elseif (POI.isContainer) then
+		guide = RSGuideDB.GetContainerGuide(POI.entityID)
 	else
-		guide = RSGuideDB.GetEventGuide(pin.POI.entityID)
+		guide = RSGuideDB.GetEventGuide(POI.entityID)
 	end
 
 	if (guide) then
 		for pinType, info in pairs (guide) do
-			local POI = RSGuidePOI.GetGuidePOI(pin.POI.entityID, pinType, info)
+			local POI = RSGuidePOI.GetGuidePOI(POI.entityID, pinType, info)
 			if (not info.questID or not C_QuestLog.IsQuestFlaggedCompleted(info.questID)) then
-				local pin = pin:GetMap():AcquirePin("RSGuideTemplate", POI, pin);
-				pin.ShowPingAnim:Play()
+				local guidePin = pin:GetMap():AcquirePin("RSGuideTemplate", POI);
+				guidePin.ShowPingAnim:Play()
 			end
 		end
-		RSGeneralDB.SetGuideActive(pin.POI.entityID)
+		RSGeneralDB.SetGuideActive(POI.entityID)
 	else
+		pin:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
 		RSGeneralDB.RemoveGuideActive()
 	end
 end
@@ -78,57 +80,59 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	-- Add tooltips to ingame vignettes
 	for pin in self:GetMap():EnumeratePinsByTemplate("VignettePinTemplate") do
 		if (pin:GetObjectGUID()) then
-			local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
-			for _, POI in ipairs (POIs) do
-				local foundPOI = nil
-				if (POI.isContainer and POI.entityID == tonumber(vignetteObjectID)) then
-					foundPOI = POI
-				elseif (POI.isGroup) then
-					for _, subPOI in ipairs(POI.POIs) do
-						if (subPOI.isContainer and subPOI.entityID == tonumber(vignetteObjectID)) then
-							foundPOI = subPOI
-							break
-						end
+			pin:HookScript("OnEnter", function(self)
+				local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
+				if (POI) then
+					self.POI = POI
+					-- Just in case the user didnt have the questID when he found it
+					if (POI.isOpened) then
+						RSContainerDB.DeleteContainerOpened(POI.entityID)
 					end
+					self.hasTooltip = false
+					RSTooltip.ShowSimpleTooltip(self)
+				else
+					self.tooltip = nil
+					self.POI = nil
 				end
-
-				if (foundPOI) then
-					pin.POI = foundPOI
-					pin:HookScript("OnEnter", function(self)
-						self.hasTooltip = false
-						RSTooltip.ShowSimpleTooltip(self)
-					end)
-					pin:HookScript("OnLeave", function(self)
-						if (RSTooltip.HideTooltip(self.tooltip)) then
-							pin.tooltip = nil
-						end
-					end)
-					pin:HookScript("OnMouseDown", function(self, button)
-						if (self.POI) then
-							if (button == "RightButton") then
-								local guideEntityID = RSGeneralDB.GetGuideActive()
-								if (guideEntityID) then
-									self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
-									if (guideEntityID ~= self.POI.entityID) then
-										ShowInGameVignetteGuide(self)
-									else
-										RSGeneralDB.RemoveGuideActive()
-									end
+			end)
+			pin:HookScript("OnLeave", function(self)
+				pin.POI = nil
+				if (RSTooltip.HideTooltip(self.tooltip)) then
+					pin.tooltip = nil
+				end
+			end)
+			pin:HookScript("OnMouseDown", function(self, button)
+				if (button == "RightButton") then
+					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
+					if (POI) then
+						-- If displaying guides
+						if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
+							self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
+												
+							local guideEntityID = RSGeneralDB.GetGuideActive()
+							if (guideEntityID) then
+								-- If same guide showing then disable it
+								if (guideEntityID ~= POI.entityID) then
+									ShowInGameVignetteGuide(self, POI)
 								else
-									ShowInGameVignetteGuide(self)
+									RSGeneralDB.RemoveGuideActive()
 								end
-
-								-- Refresh minimap
-								RSMinimap.RefreshAllData(true)
 							end
+						-- If not displaying guides show current
+						else
+							ShowInGameVignetteGuide(self, POI)
 						end
-					end)
-
-					-- Adds guide if active
-					if (RSGeneralDB.HasGuideActive(foundPOI.entityID)) then
-						ShowInGameVignetteGuide(pin)
+	
+						-- Refresh minimap
+						RSMinimap.RefreshAllData(true)
 					end
 				end
+			end)
+
+			-- Adds guide if active
+			local POI = RSMap.GetWorldMapPOI(pin:GetObjectGUID(), self:GetMap():GetMapID())
+			if (POI and RSGeneralDB.HasGuideActive(POI.entityID)) then
+				ShowInGameVignetteGuide(pin, POI)
 			end
 		end
 	end

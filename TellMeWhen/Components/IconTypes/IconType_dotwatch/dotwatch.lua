@@ -490,7 +490,7 @@ local function Dotwatch_OnUpdate_Controller(icon, time)
 				local remaining = duration - (time - start)
 
 				if remaining > 0 or (start == 0 and duration == 0) then
-					if presentAlpha > 0 and not icon:YieldInfo(true, iName, start, duration, aura.unitName, GUID, aura.stacks) then
+					if not icon:YieldInfo(true, iName, start, duration, aura.unitName, GUID, aura.stacks) then
 						-- YieldInfo returns true if we need to keep harvesting data. Otherwise, it returns false.
 						return
 					end

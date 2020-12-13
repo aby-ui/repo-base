@@ -135,15 +135,25 @@ scanner_button.FilterDisabledButton:SetNormalTexture([[Interface\WorldMap\Dash_6
 scanner_button.FilterDisabledButton:SetScript("OnClick", function(self)
 	local npcID = self:GetParent().npcID
 	if (npcID) then
-		RSConfigDB.SetNpcFiltered(npcID, false)
-		RSLogger:PrintMessage(AL["DISABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
+		if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
+			RSConfigDB.SetNpcFiltered(npcID, false)
+			RSLogger:PrintMessage(AL["DISABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
+		else
+			RSConfigDB.SetContainerFiltered(npcID, false)
+			RSLogger:PrintMessage(string.format(AL["DISABLED_SEARCHING_CONTAINER"], self:GetParent().Title:GetText()))
+		end
+		
 		self:Hide()
 		self:GetParent().FilterEnabledButton:Show()
 	end
 end)
 scanner_button.FilterDisabledButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-	GameTooltip:SetText(AL["DISABLE_SEARCHING_RARE_TOOLTIP"])
+	if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
+		GameTooltip:SetText(AL["DISABLE_SEARCHING_RARE_TOOLTIP"])
+	else
+		GameTooltip:SetText(AL["DISABLE_SEARCHING_CONTAINER_TOOLTIP"])
+	end
 	GameTooltip:Show()
 end)
 
@@ -158,15 +168,24 @@ scanner_button.FilterEnabledButton:SetSize(16, 16)
 scanner_button.FilterEnabledButton:SetScript("OnClick", function(self)
 	local npcID = self:GetParent().npcID
 	if (npcID) then
-		RSConfigDB.SetNpcFiltered(npcID, true)
-		RSLogger:PrintMessage(AL["ENABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
+		if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
+			RSConfigDB.SetNpcFiltered(npcID, true)
+			RSLogger:PrintMessage(AL["ENABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
+		else
+			RSConfigDB.SetContainerFiltered(npcID, true)
+			RSLogger:PrintMessage(string.format(AL["ENABLED_SEARCHING_CONTAINER"], self:GetParent().Title:GetText()))
+		end
 		self:Hide()
 		self:GetParent().FilterDisabledButton:Show()
 	end
 end)
 scanner_button.FilterEnabledButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-	GameTooltip:SetText(AL["ENABLE_SEARCHING_RARE_TOOLTIP"])
+	if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
+		GameTooltip:SetText(AL["ENABLE_SEARCHING_RARE_TOOLTIP"])
+	else
+		GameTooltip:SetText(AL["ENABLE_SEARCHING_CONTAINER_TOOLTIP"])
+	end
 	GameTooltip:Show()
 end)
 
@@ -186,10 +205,11 @@ scanner_button.FilterEnabledButton:Hide()
 scanner_button.LootBar = CreateFrame("Frame", "LootBar", scanner_button)
 scanner_button.LootBar.itemFramesPool = CreateFramePool("FRAME", scanner_button.LootBar, "RSLootTemplate");
 scanner_button.LootBar.LootBarToolTip = CreateFrame("GameTooltip", "LootBarToolTip", scanner_button, "GameTooltipTemplate")
+scanner_button.LootBar.LootBarToolTip:SetScale(0.9)
 scanner_button.LootBar.LootBarToolTipComp1 = CreateFrame("GameTooltip", "LootBarToolTipComp1", nil, "GameTooltipTemplate")
-scanner_button.LootBar.LootBarToolTipComp1:SetScale(0.8)
+scanner_button.LootBar.LootBarToolTipComp1:SetScale(0.7)
 scanner_button.LootBar.LootBarToolTipComp2 = CreateFrame("GameTooltip", "LootBarToolTipComp2", nil, "GameTooltipTemplate")
-scanner_button.LootBar.LootBarToolTipComp2:SetScale(0.8)
+scanner_button.LootBar.LootBarToolTipComp2:SetScale(0.7)
 scanner_button.LootBar.LootBarToolTip.shoppingTooltips = { scanner_button.LootBar.LootBarToolTipComp1, scanner_button.LootBar.LootBarToolTipComp2 }
 
 -- Show navigation buttons
@@ -1034,39 +1054,47 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	-- disable ALL alerts while cinematic is playing
 	if (isCinematicPlaying) then
 		return
-		-- disable ALL alerts in instances
+	-- disable ALL alerts in instances
 	elseif (isInstance == true and not RSConfigDB.IsScanningInInstances()) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en una instancia", npcID))
 		return
-		-- disable alerts while flying
+	-- disable alerts while flying
 	elseif (UnitOnTaxi("player") and not RSConfigDB.IsScanningWhileOnTaxi()) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar montado en un transporte", npcID))
 		return
-		-- disable alerts while in pet combat
+	-- disable alerts while in pet combat
 	elseif (C_PetBattles.IsInBattle() and not RSConfigDB.IsScanningWhileOnPetBattle()) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en medio de un combate de mascotas", npcID))
 		return
-		-- disable scanning for every entity that is not treasure, event or rare
+	-- disable scanning for every entity that is not treasure, event or rare
 	elseif (not RSConstants.IsScanneableAtlas(vignetteInfo.atlasName)) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por tener el atlas [%s] que no es escaneable", npcID, vignetteInfo.atlasName))
 		return
-		-- disable ALL alerts for containers
+	-- disable ALL alerts for containers
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForContainers()) then
 		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por haber deshabilitado alertas de contenedores", npcID))
 		return
-		-- disable alerts for rares NPCs
+	-- disable alerts for filtered containers. Check if the container is filtered, in which case we don't show anything
+	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsContainerFilteredOnlyOnWorldMap() and RSConfigDB.IsContainerFiltered(npcID)) then
+		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por estar filtrado", npcID))
+		return
+	-- disable alerts for rare NPCs
 	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForNpcs()) then
 		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por haber deshabilitado alertas de NPCs", npcID))
 		return
-		-- disable alerts for events
+	-- disable alerts for filtered rare NPCs. Check if the NPC is filtered, in which case we don't show anything
+	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsNpcFilteredOnlyOnWorldMap() and RSConfigDB.IsNpcFiltered(npcID)) then
+		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por estar filtrado", npcID))
+		return
+	-- disable alerts for events
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForEvents()) then
 		RSLogger:PrintDebugMessage(string.format("El evento [%s] se ignora por haber deshabilitado alertas de eventos", npcID))
 		return
-		-- disable alerts for filtered zones
+	-- disable alerts for filtered zones
 	elseif (not RSConfigDB.IsZoneFilteredOnlyOnWorldMap() and (RSConfigDB.IsZoneFiltered(mapID) or RSConfigDB.IsEntityZoneFiltered(npcID, vignetteInfo.atlasName))) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por pertenecer a una zona filtrada", npcID))
 		return
-		-- extra checkings for containers
+	-- extra checkings for containers
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
 		-- there is one container without name in Shadowlands
 		if (not vignetteInfo.name or string.gsub(vignetteInfo.name, "", "") == "") then
@@ -1115,7 +1143,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 				return
 			end
 		end
-		-- extra checkings for events
+	-- extra checkings for events
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName)) then
 		-- check just in case its an NPC
 		if (not RSNpcDB.GetNpcName(npcID)) then
@@ -1132,12 +1160,6 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 
 	-- Sets the current vignette as new found
 	RareScanner:SetVignetteFound(vignetteInfo.id, isNavigating, npcID)
-
-	-- Check if the NPC is filtered, in which case we don't show anything
-	if (npcID and not RSConfigDB.IsNpcFilteredOnlyOnWorldMap() and RSConfigDB.IsNpcFiltered(npcID)) then
-		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por estar filtrado", npcID))
-		return
-	end
 
 	--------------------------------
 	-- show messages and play alarm
@@ -1356,14 +1378,12 @@ function RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
 end
 
 function scanner_button:PlaySoundAlert(atlasName)
-	if (not RSConfigDB.IsPlayingSound()) then
-		if (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName)) then
-			--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
-            PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "Master", false)
-		else
-			--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
-			PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "Master", false)
-		end
+	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
+		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
+		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "Master", false)
+	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
+		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
+		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "Master", false)
 	end
 end
 
@@ -1449,9 +1469,6 @@ function scanner_button:ShowButton()
 
 		self:SetAttribute("macrotext", macrotext)
 
-		-- show button
-		self:Show()
-
 		-- show model
 		if (self.displayID and RSConfigDB.IsDisplayingModel()) then
 			self.ModelView:SetDisplayInfo(self.displayID)
@@ -1459,12 +1476,6 @@ function scanner_button:ShowButton()
 		else
 			self.ModelView:Hide()
 		end
-
-		-- Hide reset filter if it was shown
-		self.FilterEnabledButton:Hide()
-
-		-- Show filter button
-		self.FilterDisabledButton:Show()
 	else
 		self.Description_text:SetText(AL["NOT_TARGETEABLE"])
 		self:SetAttribute("macrotext", string.format("\n/rarescanner %s;%s;%s", RSConstants.CMD_TOMTOM_WAYPOINT, self.npcID, self.name))
@@ -1472,14 +1483,20 @@ function scanner_button:ShowButton()
 		-- hide model if displayed
 		self.ModelView:ClearModel()
 		self.ModelView:Hide()
-
-		-- hide filter button if displayed
+	end
+	
+	-- Toggle filter buttons
+	if (RSConstants.IsNpcAtlas(self.atlasName) or RSConstants.IsContainerAtlas(self.atlasName)) then
+		self.FilterEnabledButton:Hide()
+		self.FilterDisabledButton:Show()
+	else
 		self.FilterDisabledButton:Hide()
 		self.FilterEnabledButton:Hide()
-
-		-- show button
-		self:Show()
 	end
+	
+	
+	-- show button
+	self:Show()
 
 	-- set the time to auto hide
 	self:StartHideTimer()
@@ -1638,10 +1655,6 @@ local function RefreshDatabaseData()
 		currentDbVersion.sync = sync
 	end
 
-	-- Initialize rare filter list
-	for npcIDwithName, _ in pairs(RSNpcDB.GetAllNpcNames()) do
-		RSConstants.PROFILE_DEFAULTS.profile.general.filteredRares[npcIDwithName] = true
-	end
 	RareScanner.db:RegisterDefaults(RSConstants.PROFILE_DEFAULTS)
 
 	-- Sync loot found with internal database and remove duplicates

@@ -403,6 +403,7 @@ L["apholeias_note"] = "和3名其他玩家，站在平臺的角落並施放 {spe
 L["dekaris_note"] = "在一個大型的突出岩石上。"
 L["drifting_sorrow_note"] = "在懸浮寶珠附近殺死 {npc:175246} 來啟動首領。"
 L["ekphoras_note"] = "和3名其他玩家，站在平臺的角落並施放 {spell:330650} 召喚稀有。"
+L["gorged_shadehound_note"] = nil
 L["ikras_note"] = "環繞墮滅堡飛行。這是個攻擊他的好位置。"
 L["orophea_note"] = "從東南方的拾取 {spell:337143} 並提供給 {npc:172577} 啟動。"
 L["sanngror_note"] = "如果他是不可攻擊，等待直到他不再對靈魂做實驗。"

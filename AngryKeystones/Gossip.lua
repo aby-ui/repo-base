@@ -40,6 +40,7 @@ local function IsInActiveChallengeMode()
 end
 
 function Mod:GOSSIP_SHOW()
+    do return end --TODO: 暂时屏蔽，晋升高塔某个NPC有问题
 	local npcId = GossipNPCID()
 	if Addon.Config.autoGossip and IsInActiveChallengeMode() and not npcBlacklist[npcId] then
 		local options = C_GossipInfo.GetOptions()

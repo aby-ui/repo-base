@@ -1,0 +1,22 @@
+## Interface: 90002
+## Title: SwitchSwitch
+## Author: Geloch, Riukka (Sanguino - EU Horde)
+## Version: 1.65
+## Notes: Allows you to creater talents profiles and switch between them quickly, also you can configure it to ask you in X situation if you want to switch to another talent set.
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: SwitchSwitchTalents, SwitchSwitchConfig
+## SavedVariables: SwitchSwitchProfiles
+
+localization/Loc.Core.lua
+localization/Loc.Core.zh_CN.lua
+SwitchSwitch.lua
+TalentUIFrame.lua
+GlobalFrames.lua
+ConfigFrame.lua
+Commands.lua
+Init.lua
+
+
+## Title: |cff880303[爱不易]|r Switch 天赋方案
+## X-Vendor: AbyUI
+

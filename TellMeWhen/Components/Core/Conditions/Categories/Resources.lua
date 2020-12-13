@@ -192,7 +192,7 @@ ConditionCategory:RegisterCondition(26.1, "STAGGER", {
 	Env = {
 		UnitStagger = UnitStagger,
 	},
-	funcstr = [[UnitStagger("player") / (UnitHealthMax("player")+epsilon) c.Operator c.Level]],
+	funcstr = [[(UnitStagger("player") or 0) / (UnitHealthMax("player")+epsilon) c.Operator c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UNIT_ABSORB_AMOUNT_CHANGED", "player"),
@@ -212,7 +212,7 @@ ConditionCategory:RegisterCondition(26.15, "STAGGER_CURPCT", {
 	Env = {
 		UnitStagger = UnitStagger,
 	},
-	funcstr = [[UnitStagger("player") / (UnitHealth("player")+epsilon) c.Operator c.Level]],
+	funcstr = [[(UnitStagger("player") or 0) / (UnitHealth("player")+epsilon) c.Operator c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UNIT_ABSORB_AMOUNT_CHANGED", "player"),
@@ -230,7 +230,7 @@ ConditionCategory:RegisterCondition(26.2, "STAGGER_ABS", {
 	Env = {
 		UnitStagger = UnitStagger,
 	},
-	funcstr = [[UnitStagger("player") c.Operator c.Level]],
+	funcstr = [[(UnitStagger("player") or 0) c.Operator c.Level]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UNIT_ABSORB_AMOUNT_CHANGED", "player")

@@ -2553,6 +2553,7 @@ L["CLEU_SWING_MISSED"] = "Swing Miss"
 L["CLEU_UNIT_DESTROYED"] = "Unit Destroyed"
 L["CLEU_UNIT_DESTROYED_DESC"] = "Occurs when a unit such as a totem is destroyed."
 L["CLEU_UNIT_DIED"] = "Unit Died"
+L["CLEU_UNIT_DIED_DESC"] = "Occurs when a unit dies. Deaths do not have sources and cannot be filtered by source unit (e.g. by who performed the killing blow)."
 L["CLEU_PARTY_KILL"] = "Party Kill"
 L["CLEU_PARTY_KILL_DESC"] = "Occurs when someone in your party kills something."
 

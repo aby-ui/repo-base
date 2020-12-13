@@ -298,7 +298,7 @@ map.nodes[30115536] = Rare({
     rewards={
         Achievement({id=14309, criteria=48796}),
         Transmog({item=180154, slot=L["2h_axe"]}), -- Greataxe of Unrelenting Pursuit
-        Mount({item=180730, id=1393}), -- Wild Glimmerfur Prowler
+        Mount({item=180730, id=1393, covenant=NIGHTFAE}), -- Wild Glimmerfur Prowler
         Item({item=182176, quest=62431, covenant=NIGHTFAE}) -- Shadowstalker Soul
     },
     pois={

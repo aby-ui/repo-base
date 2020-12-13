@@ -88,19 +88,22 @@ end
 --=====================================================
 
 local ItemToolTip = CreateFrame("GameTooltip", "RSMapItemToolTip", nil, "GameTooltipTemplate")
-ItemToolTip:SetScale(0.8)
+ItemToolTip:SetScale(0.7)
 local ItemToolTipComp1 = CreateFrame("GameTooltip", "RSMapItemToolTipComp1", nil, "GameTooltipTemplate")
-ItemToolTipComp1:SetScale(0.6)
+ItemToolTipComp1:SetScale(0.7)
 local ItemToolTipComp2 = CreateFrame("GameTooltip", "RSMapItemToolTipComp2", nil, "GameTooltipTemplate")
-ItemToolTipComp2:SetScale(0.6)
+ItemToolTipComp2:SetScale(0.7)
 ItemToolTip.shoppingTooltips = { ItemToolTipComp1, ItemToolTipComp2 }
 
 local function showItemToolTip(cell, args)
-	local itemLink, itemClassID, itemSubClassID = unpack(args)
-	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT")
+	local itemID, itemLink, itemClassID, itemSubClassID = unpack(args)
+	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT", -10)
 	ItemToolTip:SetHyperlink(itemLink)
-	ItemToolTip:AddLine("RareScanner: "..AL["LOOT_TOGGLE_FILTER"], 1,1,0)
-	ItemToolTip:AddDoubleLine(GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID), 1, 1, 0, 1 ,1, 0);
+	ItemToolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)), 1,1,0)
+	ItemToolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
+	if (RSConstants.DEBUG_MODE) then
+		ItemToolTip:AddLine(itemID, 1,1,0)
+	end
 	ItemToolTip:Show()
 end
 
@@ -124,19 +127,33 @@ local function hideItemToolTip(cell)
 end
 
 local function filterItem(cell, args)
-	local itemClassID, itemSubClassID, itemLink = unpack(args)
+	local itemID, itemClassID, itemSubClassID, itemLink = unpack(args)
 
 	if (IsControlKeyDown()) then
 		DressUpItemLink(itemLink)
 		DressUpBattlePetLink(itemLink)
 		DressUpMountLink(itemLink)
 	elseif (IsAltKeyDown()) then
-		if (private.db.loot.filteredLootCategories[itemClassID][itemSubClassID]) then
-			private.db.loot.filteredLootCategories[itemClassID][itemSubClassID] = false
-			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_FILTERED"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)))
+		if (IsShiftKeyDown()) then
+			if (not RSConfigDB.GetItemFiltered(itemID)) then
+				RSConfigDB.SetItemFiltered(itemID, true)
+				RSLogger:PrintMessage(string.format(AL["LOOT_INDIVIDUAL_FILTERED"], itemLink))
+			else
+				RSConfigDB.SetItemFiltered(itemID, false)
+				RSLogger:PrintMessage(string.format(AL["LOOT_INDIVIDUAL_NOT_FILTERED"], itemLink))
+			end
+			-- Refresh options panel (if its being initialized)
+			if (private.loadFilteredItems) then
+				private.loadFilteredItems()
+			end
 		else
-			private.db.loot.filteredLootCategories[itemClassID][itemSubClassID] = true
-			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_NOT_FILTERED"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)))
+			if (RSConfigDB.GetLootFilterByCategory(itemClassID, itemSubClassID)) then
+				RSConfigDB.SetLootFilterByCategory(itemClassID, itemSubClassID, false)
+				RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_FILTERED"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)))
+			else
+				RSConfigDB.SetLootFilterByCategory(itemClassID, itemSubClassID, true)
+				RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_NOT_FILTERED"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)))
+			end
 		end
 	end
 end
@@ -257,11 +274,11 @@ local function AddLootTooltip(tooltip, pin)
 				end
 
 				tooltip:SetCell(line, j, "|T"..iconFileDataID..":24|t", nil, "CENTER", 1, nil, nil, nil, nil, 24, 24)
-				tooltip:SetCellScript(line, j, "OnEnter", showItemToolTip, { itemLink, itemClassID, itemSubClassID });
+				tooltip:SetCellScript(line, j, "OnEnter", showItemToolTip, { itemInfo[1], itemLink, itemClassID, itemSubClassID });
 				tooltip:SetCellScript(line, j, "OnKeyDown", showItemComparationTooltip);
 				tooltip:SetCellScript(line, j, "OnKeyUp", hideItemComparationTooltip);
 				tooltip:SetCellScript(line, j, "OnLeave", hideItemToolTip)
-				tooltip:SetCellScript(line, j, "OnMouseDown", filterItem, { itemClassID, itemSubClassID, itemLink })
+				tooltip:SetCellScript(line, j, "OnMouseDown", filterItem, { itemInfo[1], itemClassID, itemSubClassID, itemLink })
 
 				if (floor(j%10) == 0) then
 					line = tooltip:AddLine()
@@ -482,11 +499,11 @@ end
 function RSTooltip.HideTooltip(tooltip)
 	if (tooltip) then
 		if (MouseIsOver(tooltip)) then
-			return false;
+			return false
 		end
 		RareScannerMapTooltip:Release(tooltip)
 		tooltip = nil
-		return true;
+		return true
 	end
 end
 

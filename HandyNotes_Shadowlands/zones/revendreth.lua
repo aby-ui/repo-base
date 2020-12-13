@@ -165,7 +165,7 @@ map.nodes[45847919] = Rare({
     note=L["harika_note"],
     rewards={
         Transmog({item=183720, slot=L["leather"]}), -- Dredbatskin Jerkin
-        Mount({item=180461, id=1310}) -- Horrid Brood Dredwing
+        Mount({item=180461, id=1310, covenant=VENTHYR}) -- Horrid Brood Dredwing
     },
     pois={
         POI({43257769}) -- Ballista Bolt
@@ -306,7 +306,17 @@ map.nodes[38607200] = Rare({
     note=L["worldedge_gorger_note"],
     rewards={
         Achievement({id=14310, criteria=48805}),
-        Item({item=180583, quest=61188}) -- Impressionable Gorger Spawn
+        Item({
+            item=180583,
+            quest=61188,
+            IsObtained = function (self)
+                if select(11, C_MountJournal.GetMountInfoByID(1391)) then
+                    return true
+                end
+                return Item.IsObtained(self)
+            end
+        }), -- Impressionable Gorger Spawn
+        Mount({item=182589, id=1391}) -- Loyal Gorger
     }
 }) -- Worldedge Gorger
 
@@ -1036,7 +1046,7 @@ map.nodes[64485273] = Inquisitor({
 
 -- Daily completion: 61843
 
-map.nodes[59305700] = NPC({
+map.nodes[59305700] = Collectible({
     id=173499,
     icon=3601543,
     quest={
@@ -1062,7 +1072,7 @@ map.nodes[59305700] = NPC({
 
 -- daily completed: 62107
 
-local Blanchy = Class('Blanchy', NPC, {
+local Blanchy = Class('Blanchy', Collectible, {
     id=173468,
     icon=2143082,
     quest={62038, 62042, 62047, 62049, 62048, 62050},

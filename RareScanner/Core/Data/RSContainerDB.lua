@@ -155,6 +155,13 @@ function RSContainerDB.IsInternalContainerInMap(containerID, mapID)
 	return false;
 end
 
+function RSContainerDB.IsWorldMap(containerID)
+	if (containerID) then
+		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+		return containerInfo and containerInfo.worldmap
+	end
+end
+
 ---============================================================================
 -- Container Loot internal database
 ----- Stores Container loot included with the addon
@@ -280,6 +287,10 @@ function RSContainerDB.InitContainerNamesDB()
 	if (not private.dbglobal.object_names[GetLocale()]) then
 		private.dbglobal.object_names[GetLocale()] = {}
 	end
+end
+
+function RSContainerDB.GetAllContainerNames()
+	return private.dbglobal.object_names[GetLocale()]
 end
 
 function RSContainerDB.SetContainerName(containerID, name)

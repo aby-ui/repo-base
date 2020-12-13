@@ -41,19 +41,32 @@ do
     _f:SetPropagateKeyboardInput(true);
     _f:SetScript("OnKeyDown", function(self, event, ...)
         if event == "SPACE" then
+            if self._lastSpace and GetTime() - self._lastSpace < 0.25 then
+                self._lastSpace = nil
+            else
+                self._lastSpace = GetTime()
+                return
+            end
+            -- 处理双击空格情况
             if TalkingHeadFrame and TalkingHeadFrame.MainFrame and TalkingHeadFrame.MainFrame.CloseButton then
                 if TalkingHeadFrame.MainFrame.CloseButton:IsVisible() then
-                    if self._lastSpace and GetTime() - self._lastSpace < 0.33 then
-                        TalkingHeadFrame.MainFrame.CloseButton:Click()
-                    else
-                        self._lastSpace = GetTime()
-                        return
-                    end
+                    TalkingHeadFrame.MainFrame.CloseButton:Click()
                 end
             end
+            if GossipFrame:IsShown() then
+                -- Stop if NPC has quests or quest turn-ins
+                if C_GossipInfo.GetNumAvailableQuests() > 0 or C_GossipInfo.GetNumActiveQuests() > 0 then return end
+                if C_GossipInfo.GetNumOptions() == 1 then
+                    U1Message("你通过双击空格选择了唯一对话选项,这个小功能暂时没有开关")
+                    C_GossipInfo.SelectOption(1)
+                end
+            end
+            if scanner_button and scanner_button:IsShown() then
+                scanner_button:Hide()
+            end
         end
-        self._lastSpace = nil
     end)
+
     _G["U1Toggle_SkipTalkingHead"] = function(enable)
         if enable then
             _f:Hide()

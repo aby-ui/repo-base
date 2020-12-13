@@ -60,6 +60,7 @@ L["mount"] = "坐騎"
 L["pet"] = "寵物"
 L["spell"] = "法術"
 L["toy"] = "玩具"
+L["rep"] = nil
 L["completed"] = "已完成"
 L["incomplete"] = "未完成"
 L["known"] = "已獲得"

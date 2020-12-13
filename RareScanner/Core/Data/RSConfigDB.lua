@@ -71,6 +71,14 @@ function RSConfigDB.SetPlayingSound(value)
 	private.db.sound.soundDisabled = value
 end
 
+function RSConfigDB.IsPlayingObjectsSound()
+	return private.db.sound.soundObjectDisabled
+end
+
+function RSConfigDB.SetPlayingObjectsSound(value)
+	private.db.sound.soundObjectDisabled = value
+end
+
 function RSConfigDB.GetSoundPlayedWithObjects()
 	return private.db.sound.soundObjectPlayed
 end
@@ -352,9 +360,24 @@ function RSConfigDB.IsNpcFiltered(npcID)
 	return false
 end
 
+function RSConfigDB.GetNpcFiltered(npcID)
+	if (npcID) then
+		local value = private.db.general.filteredRares[npcID]
+		if (value == nil) then
+			return true
+		else
+			return value
+		end
+	end
+end
+
 function RSConfigDB.SetNpcFiltered(npcID, value)
 	if (npcID) then
-		private.db.general.filteredRares[npcID] = value
+		if (value == false) then
+			private.db.general.filteredRares[npcID] = false
+		else
+			private.db.general.filteredRares[npcID] = nil
+		end
 	end
 end
 
@@ -438,6 +461,43 @@ end
 
 function RSConfigDB.SetShowingContainers(value)
 	private.db.map.displayContainerIcons = value
+end
+
+function RSConfigDB.IsContainerFiltered(containerID)
+	if (containerID) then
+		return private.db.general.filteredContainers[containerID] == false
+	end
+
+	return false
+end
+
+function RSConfigDB.GetContainerFiltered(containerID)
+	if (containerID) then
+		local value = private.db.general.filteredContainers[containerID]
+		if (value == nil) then
+			return true
+		else
+			return value
+		end
+	end
+end
+
+function RSConfigDB.SetContainerFiltered(containerID, value)
+	if (containerID) then
+		if (value == false) then
+			private.db.general.filteredContainers[containerID] = value
+		else
+			private.db.general.filteredContainers[containerID] = nil
+		end
+	end
+end
+
+function RSConfigDB.IsContainerFilteredOnlyOnWorldMap()
+	return private.db.containerFilters.filterOnlyMap
+end
+
+function RSConfigDB.SetContainerFilteredOnlyOnWorldMap(value)
+	private.db.containerFilters.filterOnlyMap = value
 end
 
 function RSConfigDB.IsShowingGarrisonCache()
@@ -624,6 +684,34 @@ end
 -- Loot filters
 ---============================================================================
 
+function RSConfigDB.IsItemFiltered(itemID)
+	if (itemID) then
+		return private.db.loot.filteredItems[itemID] == true
+	end
+
+	return false
+end
+
+function RSConfigDB.GetItemFiltered(itemID)
+	if (itemID) then
+		return private.db.loot.filteredItems[itemID]
+	end
+end
+
+function RSConfigDB.GetAllFilteredItems()
+	return private.db.loot.filteredItems
+end
+
+function RSConfigDB.SetItemFiltered(itemID, value)
+	if (itemID) then
+		if (value) then
+			private.db.loot.filteredItems[itemID] = true
+		else
+			private.db.loot.filteredItems[itemID] = nil
+		end
+	end
+end
+
 function RSConfigDB.GetLootFilterMinQuality()
 	return private.db.loot.lootMinQuality
 end
@@ -692,6 +780,14 @@ end
 
 function RSConfigDB.SetFilteringByCollected(value)
 	private.db.loot.filterCollectedItems = value
+end
+
+function RSConfigDB.IsFilteringAnimaItems()
+	return private.db.loot.filterAnimaItems
+end
+
+function RSConfigDB.SetFilteringAnimaItems(value)
+	private.db.loot.filterAnimaItems = value
 end
 
 ---============================================================================

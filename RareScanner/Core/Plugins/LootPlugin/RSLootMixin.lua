@@ -35,8 +35,8 @@ function RSLootMixin:OnEnter()
 		toolTip:SetOwner(self:GetParent():GetParent(), RSConfigDB:GetLootTooltipPosition())
 		toolTip:SetHyperlink(self.itemLink)
 		toolTip:SetParent(self)
-		toolTip:AddLine("RareScanner: "..AL["LOOT_TOGGLE_FILTER"]..self.itemID, 1,1,0)
-		toolTip:AddDoubleLine(GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID), 1, 1, 0, 1 ,1, 0);
+		toolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)), 1,1,0)
+		toolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
 		if (RSConstants.DEBUG_MODE) then
 			toolTip:AddLine(self.itemID, 1,1,0)
 		end
@@ -72,12 +72,26 @@ function RSLootMixin:OnMouseDown()
 		DressUpBattlePetLink(self.itemLink)
 		DressUpMountLink(self.itemLink)
 	elseif (IsAltKeyDown()) then
-		if (RSConfigDB.GetLootFilterByCategory(self.itemClassID, self.itemSubClassID)) then
-			RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, false)
-			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
+		if (IsShiftKeyDown()) then
+			if (not RSConfigDB.GetItemFiltered(self.itemID)) then
+				RSConfigDB.SetItemFiltered(self.itemID, true)
+				RSLogger:PrintMessage(string.format(AL["LOOT_INDIVIDUAL_FILTERED"], self.itemLink))
+			else
+				RSConfigDB.SetItemFiltered(self.itemID, false)
+				RSLogger:PrintMessage(string.format(AL["LOOT_INDIVIDUAL_NOT_FILTERED"], self.itemLink))
+			end
+			-- Refresh options panel (if its being initialized)
+			if (private.loadFilteredItems) then
+				private.loadFilteredItems()
+			end
 		else
-			RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, true)
-			RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_NOT_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
+			if (RSConfigDB.GetLootFilterByCategory(self.itemClassID, self.itemSubClassID)) then
+				RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, false)
+				RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
+			else
+				RSConfigDB.SetLootFilterByCategory(self.itemClassID, self.itemSubClassID, true)
+				RSLogger:PrintMessage(string.format(AL["LOOT_CATEGORY_NOT_FILTERED"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)))
+			end
 		end
 	end
 end

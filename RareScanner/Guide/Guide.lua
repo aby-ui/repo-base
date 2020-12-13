@@ -321,7 +321,7 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP4] = { x = 0.7663, y = 0.5612, comment = AL["NOTE_181164_2"] };
 	}; --Sword of Oonar
 	[355880] = { [RSConstants.FLAG] = { x = 0.406, y = 0.33, comment =  AL["NOTE_355880_1"] } }; --The Necronom-i-nom
-	[356535] = { [RSConstants.FLAG] = { x = 0.3508, y = 0.7066, comment =  AL["NOTE_356535_1"] } }; --Runespeaker's Trove
+	[356535] = { [RSConstants.FLAG] = { x = 0.3787, y = 0.7008, comment =  AL["NOTE_356535_1"] } }; --Runespeaker's Trove
 	[351980] = {
 		[RSConstants.PATH_START] = { x = 0.62, y = 0.5865 } ;
 		[RSConstants.STEP1] = { x = 0.6251, y = 0.5888, comment = AL["NOTE_351980_1"] };
@@ -479,6 +479,36 @@ private.CONTAINER_GUIDE = {
 	}; --Stoneborn Satchel
 	[351541] = { [RSConstants.ENTRANCE] = { x = 0.4192, y = 0.5008 } }; --Secret Treasure
 	[349795] = { [RSConstants.FLAG] = { x = 0.4699, y = 0.5839, comment = AL["GUIDE_BOUNDING_SHROOM"] } }; --Fleeing Soul's Bundle
+	[353772] = {
+		[RSConstants.STEP1] = { x = 0.5604, y = 0.3872, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP2] = { x = 0.5528, y = 0.3816, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP3] = { x = 0.5517, y = 0.392, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP4] = { x = 0.5569, y = 0.3964, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP5] = { x = 0.5616, y = 0.3942, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+	}; --Lunarlight Pod
+	[353685] = {
+		[RSConstants.STEP1] = { x = 0.5604, y = 0.3872, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP2] = { x = 0.5528, y = 0.3816, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP3] = { x = 0.5517, y = 0.392, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP4] = { x = 0.5569, y = 0.3964, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP5] = { x = 0.5616, y = 0.3942, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+	}; --Lunarlight Pod
+	[353769] = {
+		[RSConstants.STEP1] = { x = 0.4831, y = 0.7122, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP2] = { x = 0.4830, y = 0.7155, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP3] = { x = 0.4779, y = 0.7096, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP4] = { x = 0.4802, y = 0.7018, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP5] = { x = 0.4840, y = 0.6998, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+	}; --Lunarlight Pod
+	[353681] = {
+		[RSConstants.STEP1] = { x = 0.4831, y = 0.7122, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP2] = { x = 0.4830, y = 0.7155, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP3] = { x = 0.4779, y = 0.7096, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP4] = { x = 0.4802, y = 0.7018, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+		[RSConstants.STEP5] = { x = 0.4840, y = 0.6998, comment = AL["GUIDE_LUNARLIGHT_BUD"] };
+	}; --Lunarlight Pod
+	[353327] = { [RSConstants.ENTRANCE] = { x = 0.5405, y = 0.7634 } }; --Decayed Husk
+	[353231] = { [RSConstants.ENTRANCE] = { x = 0.3785, y = 0.7626 } }; --Bonebound Chest
 }
 
 ---============================================================================

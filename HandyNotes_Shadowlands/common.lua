@@ -64,6 +64,7 @@ local VIGNETTES = {
     -- [4174] = {}, -- Secret Treasure
     -- [4176] = {}, -- Secret Treasure
     -- [4202] = {}, -- Spouting Growth
+    -- [4211] = {}, -- Bonebound Chest
     -- [4213] = {}, -- Enchanted Chest
     -- [4222] = {}, -- Faerie Stash
     -- [4224] = {}, -- Faerie Stash

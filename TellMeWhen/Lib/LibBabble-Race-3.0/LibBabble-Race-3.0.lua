@@ -1,6 +1,6 @@
 --[[
 Name: LibBabble-Race-3.0
-Revision: $Rev: 103 $
+Revision: $Rev: 105 $
 Maintainers: ckknight, nevcairiel, Ackis
 Website: http://www.wowace.com/projects/libbabble-race-3-0/
 Dependencies: None
@@ -8,7 +8,7 @@ License: MIT
 ]]
 
 local MAJOR_VERSION = "LibBabble-Race-3.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 103 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 105 $"):match("%d+"))
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub("LibBabble-3.0"):New(MAJOR_VERSION, MINOR_VERSION)
@@ -85,7 +85,7 @@ elseif GAME_LOCALE == "deDE" then
 	["Gnomes"] = "Gnome",
 	["Goblin"] = "Goblin",
 	["Goblins"] = "Goblins",
-	["Highmountain Tauren"] = "Hochbergtaure",
+	["Highmountain Tauren"] = "Hochbergtauren",
 	["Highmountain Tauren_PL"] = "Hochbergtauren",
 	["Human"] = "Mensch",
 	["Humans"] = "Menschen",
@@ -96,16 +96,14 @@ elseif GAME_LOCALE == "deDE" then
 	--[[ ["Kul Tirans"] = "Kul Tirans",--]] 
 	["Lightforged Draenei"] = "Lichtgeschmiedete Draenei",
 	["Lightforged Draenei_PL"] = "Lichtgeschmiedete Draenei",
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orc"] = "Mag'har Orc",--]] 
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orcs"] = "Mag'har Orcs",--]] 
+	["Mag'har Orc"] = "Mag'har Ork",
+	["Mag'har Orcs"] = "Mag'har Orks",
 	["Night Elf"] = "Nachtelf",
 	["Night elves"] = "Nachtelfen",
 	["Nightborne"] = "Nachtgeboren",
 	["Nightborne_PL"] = "Nachtgeborene",
-	["Orc"] = "Orc",
-	["Orcs"] = "Orcs",
+	["Orc"] = "Ork",
+	["Orcs"] = "Orks",
 	["Pandaren"] = "Pandaren",
 	["Pandaren_PL"] = "Pandaren",
 	["Succubus"] = "Sukkubus",
@@ -435,10 +433,8 @@ elseif GAME_LOCALE == "itIT" then
 	lib:SetCurrentTranslations {
 	["Blood Elf"] = "Elfo del Sangue",
 	["Blood elves"] = "Elfi del Sangue",
-	--[[Translation missing --]]
-	--[[ ["Dark Iron Dwarf"] = "Dark Iron Dwarf",--]] 
-	--[[Translation missing --]]
-	--[[ ["Dark Iron Dwarves"] = "Dark Iron Dwarves",--]] 
+	["Dark Iron Dwarf"] = "Nano Ferroscuro",
+	["Dark Iron Dwarves"] = "Nani Ferroscuro",
 	["Draenei"] = "Draenei",
 	["Draenei_PL"] = "Draenei",
 	["Dwarf"] = "Nano",
@@ -449,31 +445,21 @@ elseif GAME_LOCALE == "itIT" then
 	["Gnomes"] = "Gnomi",
 	["Goblin"] = "Goblin",
 	["Goblins"] = "Goblins",
-	--[[Translation missing --]]
-	--[[ ["Highmountain Tauren"] = "Highmountain Tauren",--]] 
-	--[[Translation missing --]]
-	--[[ ["Highmountain Tauren_PL"] = "Highmountain Tauren",--]] 
+	["Highmountain Tauren"] = "Tauren di Alto Monte",
+	["Highmountain Tauren_PL"] = "Tauren di Alto Monte",
 	["Human"] = "Umano",
 	["Humans"] = "Umani",
 	["Imp"] = "Folletto",
-	--[[Translation missing --]]
-	--[[ ["Kul Tiran"] = "Kul Tiran",--]] 
-	--[[Translation missing --]]
-	--[[ ["Kul Tirans"] = "Kul Tirans",--]] 
-	--[[Translation missing --]]
-	--[[ ["Lightforged Draenei"] = "Lightforged Draenei",--]] 
-	--[[Translation missing --]]
-	--[[ ["Lightforged Draenei_PL"] = "Lightforged Draenei",--]] 
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orc"] = "Mag'har Orc",--]] 
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orcs"] = "Mag'har Orcs",--]] 
+	["Kul Tiran"] = "Kul Tirano",
+	["Kul Tirans"] = "Kul Tirani",
+	["Lightforged Draenei"] = "Draenei Forgialuce",
+	["Lightforged Draenei_PL"] = "Draenei Forgialuce",
+	["Mag'har Orc"] = "Orco Mag'har",
+	["Mag'har Orcs"] = "Orchi Mag'har",
 	["Night Elf"] = "Elfo della Notte",
 	["Night elves"] = "Elfi della Notte",
-	--[[Translation missing --]]
-	--[[ ["Nightborne"] = "Nightborne",--]] 
-	--[[Translation missing --]]
-	--[[ ["Nightborne_PL"] = "Nightborne",--]] 
+	["Nightborne"] = "Nobile Oscuro",
+	["Nightborne_PL"] = "Nobili Oscuri",
 	["Orc"] = "Orco",
 	["Orcs"] = "Orchi",
 	["Pandaren"] = "Pandaren",
@@ -485,17 +471,13 @@ elseif GAME_LOCALE == "itIT" then
 	["Trolls"] = "Trolls",
 	["Undead"] = "Non Morto",
 	["Undead_PL"] = "Non Morti",
-	--[[Translation missing --]]
-	--[[ ["Void Elf"] = "Void Elf",--]] 
-	--[[Translation missing --]]
-	--[[ ["Void elves"] = "Void elves",--]] 
+	["Void Elf"] = "Elfo del Vuoto",
+	["Void elves"] = "Elfi del Vuoto",
 	["Voidwalker"] = "Ombra del Vuoto",
 	["Worgen"] = "Worgen",
 	["Worgen_PL"] = "Worgens",
-	--[[Translation missing --]]
-	--[[ ["Zandalari Troll"] = "Zandalari Troll",--]] 
-	--[[Translation missing --]]
-	--[[ ["Zandalari Trolls"] = "Zandalari Trolls",--]]
+	["Zandalari Troll"] = "Troll Zandalari",
+	["Zandalari Trolls"] = "Troll Zandalari"
 }
 elseif GAME_LOCALE == "ruRU" then
 	lib:SetCurrentTranslations {
@@ -568,16 +550,12 @@ elseif GAME_LOCALE == "zhCN" then
 	["Human"] = "人类",
 	["Humans"] = "人类",
 	["Imp"] = "小鬼",
-	--[[Translation missing --]]
-	--[[ ["Kul Tiran"] = "Kul Tiran",--]] 
-	--[[Translation missing --]]
-	--[[ ["Kul Tirans"] = "Kul Tirans",--]] 
+	["Kul Tiran"] = "库尔提拉斯人",
+	["Kul Tirans"] = "库尔提拉斯人",
 	["Lightforged Draenei"] = "光铸德莱尼",
 	["Lightforged Draenei_PL"] = "光铸德莱尼",
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orc"] = "Mag'har Orc",--]] 
-	--[[Translation missing --]]
-	--[[ ["Mag'har Orcs"] = "Mag'har Orcs",--]] 
+	["Mag'har Orc"] = "玛格汉兽人",
+	["Mag'har Orcs"] = "玛格汉兽人",
 	["Night Elf"] = "暗夜精灵",
 	["Night elves"] = "暗夜精灵",
 	["Nightborne"] = "夜之子",

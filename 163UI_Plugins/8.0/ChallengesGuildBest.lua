@@ -50,9 +50,16 @@ function ChallengesFrameGuildBestMixin:SetUp(leaders)
     end
 end
 --[[------------- end copied from 7.3.0 --------------]]
+local ShowWeeklyRewards = function()
+    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
+        LoadAddOn("Blizzard_WeeklyRewards");
+    end
+    CoreUIToggleFrame(WeeklyRewardsFrame)
+end
 
 CoreDependCall("Blizzard_ChallengesUI", function()
     if U1DBG.hideAbyGuildBest then return end
+
     local function update()
         local best = AbyChallengesFrameGuildBest
         best:SetParent(ChallengesFrame)
@@ -83,7 +90,9 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         if i == curr then line = "|cff00ff00"..line.."|r" end
         return format(line, i, drop, level)
     end
-    ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript("OnEnter", function(self)
+    local chest = ChallengesFrame.WeeklyInfo.Child.WeeklyChest
+    chest:HookScript("OnMouseUp", ShowWeeklyRewards)
+    chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             local header = "层数   掉落  周箱"
@@ -105,6 +114,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             end
 
             GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("点击查看宏伟宝库（爱不易提供）", 0, 1, 0)
+            --[[
             GameTooltip:AddLine("9.0低保机制改为最多从9个箱子里选择1个", 1, 1, 1)
             GameTooltip:AddLine("其中通过打大秘境最多可以得到3个箱子：", 1, 1, 1)
             GameTooltip:AddLine("第1个箱子的装等对应本周打过|cff00ff00最高|r层数", 1, 1, 1)
@@ -112,6 +123,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             GameTooltip:AddLine("第3个箱子的装等对应本周打过第|cff00ff0010|r高的层数", 1, 1, 1)
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("例如你本周打了5个大米，层数分别是2 5 7 9 8，那么你下周低保第一个箱子对应9层，第二个箱子对应5层，没有第三个箱子。本周进度可以查看|cff00ff00奥利波斯银行旁边的宏伟宝库|r（那个大台阶就是）", 1, 1, 1, true)
+            --]]
             GameTooltip:Show()
         end
     end)
@@ -124,7 +136,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local aID10, aID15 = 14531, 14532 --s4: 14144, 14145 --s3: 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
     --/run for i, icon in pairs(ChallengesFrame.DungeonIcons) do print(C_ChallengeMode.GetMapUIInfo(icon.mapID), icon.mapID) end
     --/run for i=1,12 do print(GetAchievementCriteriaInfo(14144,i),GetAchievementCriteriaInfo(14145,i)) end
-    local crits_to_mapid = { 244, 245, 249, 252, 353, 250, 247, 251, 246, 248, 369, 370 }
+    local crits_to_mapid = { 375, 380, 381, 376, 382, 378, 379, 377 }
     local crits_name_to_map_name = {}
     local debug_unmapped = {
         ["麦卡贡车间"] = true,
@@ -205,7 +217,10 @@ CoreDependCall("Blizzard_PVPUI", function()
     local match =    { 430,       440,        450,         455,         460,         465 }
     local weekly =   { 445,       455,        460,         465,         470,         475 }
     local weekly2 =  { 445,       460,        460,         475,         475,         475 }
-    PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest:HookScript("OnEnter", function(self)
+
+    local chest = PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest
+    chest:HookScript("OnMouseUp", ShowWeeklyRewards)
+    chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
             --[[
@@ -218,7 +233,7 @@ CoreDependCall("Blizzard_PVPUI", function()
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("500征服 首周440，2~9周445，10~25周460")
             ]]
-            GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，具体情况可以看奥利波斯银行旁边的宏伟宝库（那个大台阶）", 1, 1, 1, true)
+            GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
             GameTooltip:Show()
         end
     end)

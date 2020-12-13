@@ -21,7 +21,7 @@ local clientVersion = select(4, GetBuildInfo())
 
 local ItemCache = TMW:NewModule("ItemCache", "AceEvent-3.0", "AceTimer-3.0")
 
-local CACHE_INVALIDATION_TIME = 1209600 -- 2 weeks
+local CACHE_INVALIDATION_TIME = 28 * 24 * 60 * 60 -- 4 weeks/28 days
 
 local Cache
 local CompiledCache

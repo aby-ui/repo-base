@@ -193,6 +193,7 @@ TMW.BE = {
 			 268050, -- Anchor of Binding                   (Shrine of the Storms dungeon)
 			 274389, -- Rat Traps                           (Freehold dungeon)
 			 285515, -- Surge of Power                      (shaman, elemental)
+			 331362, -- Hateful Shard-Ring                  (hunter, torghast)
 		},
 		Slowed = {
 			   -116, -- Frostbolt                           (mage, frost)

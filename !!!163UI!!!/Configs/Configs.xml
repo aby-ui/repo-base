@@ -117,6 +117,7 @@
     <Include file="..\..\Details\CfgDetails.lua"/>
     <Include file="..\..\RareScanner\CfgRareScanner.lua"/>
     <Include file="..\..\RECrystallize\CfgRECrystallize.lua"/>
+    <Include file="..\..\SwitchSwitch\CfgSwitchSwitch.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

@@ -48,7 +48,7 @@ end
 ---- Manage adding Container icons to the world map and minimap
 ---============================================================================
 
-local function GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
+function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 	local POI = {}
 	POI.entityID = containerID
 	POI.isContainer = true
@@ -102,6 +102,12 @@ local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, vignetteG
 		end
 	end
 
+	-- Skip if the entity is filtered
+	if (RSConfigDB.IsContainerFiltered(containerID) and not RSContainerDB.IsWorldMap(containerID)) then
+		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Filtrado en opciones.", containerID))
+		return true
+	end
+
 	-- Skip if the entity appears only while a quest event is going on and it isnt active
 	if (zoneQuestID) then
 		local active = false
@@ -130,20 +136,20 @@ local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, vignetteG
 	end
 
 	-- Skip if an ingame vignette is already showing this entity (on Vignette)
-	--	for _, vignetteGUID in ipairs(vignetteGUIDs) do
-	--		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
-	--		if (vignetteInfo and vignetteInfo.objectGUID) then
-	--			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
-	--			if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
-	--				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
-	--				return true
-	--			end
-	--			if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
-	--				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
-	--				return true
-	--			end
-	--		end
-	--	end
+--	for _, vignetteGUID in ipairs(vignetteGUIDs) do
+--		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+--		if (vignetteInfo and vignetteInfo.objectGUID) then
+--			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
+--			if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
+--				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
+--				return true
+--			end
+--			if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
+--				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
+--				return true
+--			end
+--		end
+--	end
 
 	return false
 end
@@ -174,7 +180,7 @@ function RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, vignetteGUIDs, o
 
 		-- Skip if common filters
 		if (not filtered and not IsContainerPOIFiltered(containerID, mapID, containerInfo.zoneQuestId, vignetteGUIDs, onWorldMap, onMinimap)) then
-			tinsert(POIs, GetContainerPOI(containerID, mapID, containerInfo))
+			tinsert(POIs, RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo))
 		end
 	end
 
@@ -219,6 +225,6 @@ function RSContainerPOI.GetMapAlreadyFoundContainerPOI(containerID, alreadyFound
 	end
 
 	if (not IsContainerPOIFiltered(containerID, mapID, zoneQuestID, vignetteGUIDs, onWorldMap, onMinimap)) then
-		return GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
+		return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 	end
 end

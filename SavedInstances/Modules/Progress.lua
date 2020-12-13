@@ -200,6 +200,7 @@ local function TorghastUpdate(index)
 
   for i, data in ipairs(Module.TrackedQuest[index].widgetID) do
     local nameInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[1])
+    if not nameInfo then break end
     local available = nameInfo.shownState == 1
 
     local levelInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[2])
