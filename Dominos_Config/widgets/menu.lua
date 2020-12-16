@@ -102,10 +102,10 @@ function Menu:AddLayoutPanel()
 	return panel
 end
 
-function Menu:AddAdvancedPanel()
+function Menu:AddAdvancedPanel(displayConditionsOnly)
 	local panel = self:NewPanel(L.Advanced)
 
-	panel:AddAdvancedOptions()
+	panel:AddAdvancedOptions(displayConditionsOnly)
 
 	return panel
 end

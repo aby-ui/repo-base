@@ -8,7 +8,6 @@ local overrideBarStates = {
     vehicle = '[@vehicle,exists]1;0',
     sstemp = '[shapeshift]1;0',
     form = '[form]1;0'
-    -- modifier = '[mod]1;0'
 }
 
 function OverrideController:OnLoad()

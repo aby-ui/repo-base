@@ -5,8 +5,8 @@
 -- entering a pet battle, or using the override UI
 --------------------------------------------------------------------------------
 
-local AddonName = ...
-local Addon = LibStub('AceAddon-3.0'):GetAddon(AddonName)
+local AddonName,Addon = ...
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local MICRO_BUTTONS
 
@@ -63,6 +63,14 @@ local MenuBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
 function MenuBar:New()
     return MenuBar.proto.New(self, 'menu')
+end
+
+function MenuBar:GetDisplayName()
+    return L.MenuBarDisplayName
+end
+
+function MenuBar:GetDisplayLevel()
+    return 'LOW'
 end
 
 MenuBar:Extend(
@@ -303,7 +311,7 @@ end
 
 local function Menu_AddDisableMenuButtonsPanel(menu)
     local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
-    
+
     local panel = menu:NewPanel(L.Buttons)
     local prev = nil
     local width, height = 0, 0
@@ -332,8 +340,8 @@ end
 function MenuBar:OnCreateMenu(menu)
     Menu_AddLayoutPanel(menu)
     Menu_AddDisableMenuButtonsPanel(menu)
-    menu:AddAdvancedPanel()
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel()
 end
 
 --------------------------------------------------------------------------------

@@ -84,4 +84,37 @@ GTFO.SpellID["17086"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["28865"] = {
+	--desc = "Consumption (Lady Blaumeux - Void Zone - Naxxramas)";
+	sound = 1;
+};
+
+GTFO.SpellID["28062"] = {
+	--desc = "Positive Charge (Thaddius - Naxx)";
+	sound = 4;
+	damageMinimum = 1;
+	ignoreSelfInflicted = true;
+	test = true;
+};
+
+GTFO.SpellID["28085"] = {
+	--desc = "Negative Charge (Thaddius - Naxx)";
+	sound = 4;
+	damageMinimum = 1;
+	ignoreSelfInflicted = true;
+	test = true;
+};
+
+GTFO.SpellID["28801"] = {
+	--desc = "Slime (Thaddius - Naxx)";
+	sound = 2;
+	test = true;
+};
+
+GTFO.SpellID["30122"] = {
+	--desc = "Plague Cloud (Heigan the Unclean - Naxx)";
+	sound = 1;
+	test = true;
+};
+
 end

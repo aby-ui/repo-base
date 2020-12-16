@@ -200,14 +200,15 @@ local function TorghastUpdate(index)
 
   for i, data in ipairs(Module.TrackedQuest[index].widgetID) do
     local nameInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[1])
-    if not nameInfo then break end
-    local available = nameInfo.shownState == 1
-
     local levelInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[2])
-    local levelText = strmatch(levelInfo.text, '|cFF00FF00.+(%d+).+|r')
 
-    SI.db.Toons[SI.thisToon].Progress[index]['Available' .. i] = available
-    SI.db.Toons[SI.thisToon].Progress[index]['Level' .. i] = levelText
+    if nameInfo and levelInfo then
+      local available = nameInfo.shownState == 1
+      local levelText = strmatch(levelInfo.text, '|cFF00FF00.+(%d+).+|r')
+
+      SI.db.Toons[SI.thisToon].Progress[index]['Available' .. i] = available
+      SI.db.Toons[SI.thisToon].Progress[index]['Level' .. i] = levelText
+    end
   end
 end
 
@@ -351,11 +352,13 @@ Module.TrackedQuest = {
 }
 
 function Module:OnEnable()
-  self:QUEST_LOG_UPDATE()
-  self:RegisterEvent("QUEST_LOG_UPDATE")
+  self:UpdateAll()
+
+  self:RegisterEvent('PLAYER_ENTERING_WORLD', 'UpdateAll')
+  self:RegisterEvent('QUEST_LOG_UPDATE', 'UpdateAll')
 end
 
-function Module:QUEST_LOG_UPDATE()
+function Module:UpdateAll()
   local t = SI.db.Toons[SI.thisToon]
   if not t.Progress then t.Progress = {} end
   for i, tbl in ipairs(self.TrackedQuest) do

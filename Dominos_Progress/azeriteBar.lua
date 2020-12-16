@@ -25,9 +25,9 @@ function AzeriteBar:Update()
         return
     end
 
-    local azeriteItemLocation = _G.C_AzeriteItem.FindActiveAzeriteItem()
+    local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
 
-	local _ = _G.Item:CreateFromItemLocation(azeriteItemLocation)
+	Item:CreateFromItemLocation(azeriteItemLocation)
 
     local value, max, powerLevel
 	if _G.AzeriteUtil.IsAzeriteItemLocationBankBag(azeriteItemLocation) then
@@ -35,8 +35,8 @@ function AzeriteBar:Update()
         max = 1
         powerLevel = 0
 	else
-		value, max = _G.C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-		powerLevel = _G.C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+		value, max = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+		powerLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
     end
 
     self:SetValues(value, max)
@@ -44,7 +44,14 @@ function AzeriteBar:Update()
 end
 
 function AzeriteBar:IsModeActive()
-    return _G.C_AzeriteItem.HasActiveAzeriteItem() and not IsPlayerAtEffectiveMaxLevel()
+    local location = C_AzeriteItem.FindActiveAzeriteItem()
+
+    if location then
+        Item:CreateFromItemLocation(location)
+        return not AzeriteUtil.IsAzeriteItemLocationBankBag(location) and not IsPlayerAtEffectiveMaxLevel()
+    end
+
+    return false
 end
 
 -- register this as a possible progress bar mode

@@ -1,4 +1,5 @@
 <Bindings>
+<!-- action bindings -->
 	<Binding name="CLICK DominosActionButton1:HOTKEY" header="DominosActionBar2" category="BINDING_CATEGORY_Dominos"/>
 	<Binding name="CLICK DominosActionButton2:HOTKEY" category="BINDING_CATEGORY_Dominos"/>
 	<Binding name="CLICK DominosActionButton3:HOTKEY" category="BINDING_CATEGORY_Dominos"/>
@@ -59,4 +60,6 @@
 	<Binding name="CLICK DominosActionButton58:HOTKEY" category="BINDING_CATEGORY_Dominos"/>
 	<Binding name="CLICK DominosActionButton59:HOTKEY" category="BINDING_CATEGORY_Dominos"/>
 	<Binding name="CLICK DominosActionButton60:HOTKEY" category="BINDING_CATEGORY_Dominos"/>
+<!-- modified clicks -->
+	<ModifiedClick action="DOMINOS_IGNORE_STICKY_FRAMES" default="ALT"/>
 </Bindings>

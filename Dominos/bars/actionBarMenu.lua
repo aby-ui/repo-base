@@ -118,8 +118,8 @@ function Addon.ActionBar:OnCreateMenu(menu)
     -- add panels
     addLayoutPanel()
     addPagingPanel()
-    menu:AddAdvancedPanel()
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel()
 
     Addon.ActionBar.menu = menu
 end

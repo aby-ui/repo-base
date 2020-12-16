@@ -4,7 +4,7 @@
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 9.0.19
+## Version: 9.0.21
 ## X-Build: Retail
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper
@@ -31,6 +31,7 @@ bars\petBar.lua
 bars\stanceBar.lua
 bars\bagBar.lua
 bars\menuBar.lua
+bars\possessBar.lua
 bars\extraAbilityBar.lua
 bars\vehicleBar.lua
 # stuff you should be able to comment out and still have Dominos work

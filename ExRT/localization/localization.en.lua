@@ -257,6 +257,8 @@ L.RaidCheckHeadVantus = "Vantus"
 L.RaidCheckOnlyRL = "Only for raid leader"
 L.RaidCheckSortByClass = "Sort by class"
 L.RaidCheckReinforced = "Reinforced %("
+L.RaidCheckOilSharpen = "Sharpened %("
+PH.RaidCheckConsum = "Personal buff icons during ready check"
 
 L.marksbarstart = "Clear"
 L.marksbardel = "Delete"

@@ -63,6 +63,11 @@ function module.main:ENCOUNTER_LOOT_RECEIVED(encounterID, itemID, itemLink, quan
 		return
 	end
 
+	local _, _, itemRarity = GetItemInfo(itemLinkShort)
+	if itemRarity and itemRarity < 4 then
+		return
+	end
+
 	local record = currTime.."#"..(encounterID or 0).."#"..(instanceID or 0).."#"..(difficulty or 0).."#"..playerName.."#"..classID.."#"..quantity.."#"..itemLinkShort
 
 	VExRT.LootHistory.list[#VExRT.LootHistory.list+1] = record

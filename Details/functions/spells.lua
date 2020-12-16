@@ -209,7 +209,6 @@ do
 
 	-- Feral 		Druid:
 	[132185] 		= 	103, -- Predatory Swiftness
-	[571586] 		= 	103, -- Incarnation: King of the Jungle
 	[132242] 		= 	103, -- Tiger's Fury
 	[132278] 		= 	103, -- Primal Fury
 	[132141] 		= 	103, -- Brutal Slash
@@ -2878,11 +2877,6 @@ do
 		[12328] 	= 	true, -- Sweeping Strikes
 		[114192] 	= 	true, -- Mocking Banner
 		
-	}
-	
-	_detalhes.DualSideSpells = {
-		[114165]	=	true,-- Holy Prism (paladin)
-		[47750]	=	true, -- Penance (priest)
 	}
 	
 	_detalhes.AttackCooldownSpells = {

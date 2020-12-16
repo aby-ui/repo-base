@@ -14,6 +14,11 @@ function CastingBar:New()
 	return bar
 end
 
+function CastingBar:GetDisplayName()
+    local L = LibStub('AceLocale-3.0'):GetLocale('Dominos')
+    return L.CastingBarDisplayName
+end
+
 function CastingBar:Create(...)
 	local bar = CastingBar.proto.Create(self, ...)
 

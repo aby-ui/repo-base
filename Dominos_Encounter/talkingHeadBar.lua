@@ -23,6 +23,14 @@ function TalkingHeadBar:GetDefaults()
     }
 end
 
+function TalkingHeadBar:GetDisplayName()
+	return GetLocale():sub(1,2)=='zh' and '剧情对话' or 'Talking Heads'
+end
+
+function TalkingHeadBar:GetDisplayLevel()
+    return 'LOW'
+end
+
 function TalkingHeadBar:Layout()
     local frame = TalkingHeadFrame
     local width, height
@@ -44,6 +52,7 @@ end
 function TalkingHeadBar:OnCreateMenu(menu)
     self:AddLayoutPanel(menu)
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel(true)
 end
 
 function TalkingHeadBar:AddLayoutPanel(menu)

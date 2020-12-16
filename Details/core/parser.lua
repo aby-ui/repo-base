@@ -687,8 +687,8 @@
 		end
 
 		if (not este_jogador) then
-			print ("no ente_jogador")
-			print (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount)
+			--print ("no ente_jogador")
+			--print (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount)
 			return
 		end
 		
@@ -1556,23 +1556,6 @@
 			return
 		end
 		
-		--> MOTHER encounter in Uldir is triggering the summon of the add as it was a pet from the player the crossed rooms REMOVE WHEN BFA IS DONE
-		if (spellid == 268871 or spellid == 267833) then
-			--print ("IGNORING summon of a Corrupted Blood Clone for player", who_name)
-			--5/17 18:16:48.886  SPELL_SUMMON,Creature-0-4028-1861-987-136949-00007DF137,"Corrupted Blood Clone",0xa18,0x0,Creature-0-4028-1861-987-136315-00007DF140,"Remnant of Corruption",0xa28,0x0,267833,"Defense Grid",0x1
-			--5/17 18:16:49.601  SPELL_SUMMON,Player-970-000BDB1F,"Fhqwhgads-Anduin",0x514,0x2,Creature-0-4028-1861-987-136949-00007DF141,"Corrupted Blood Clone",0xa28,0x0,268871,"Corrupted Blood Clone",0x1
-			--4/22 18:07:54.369  SPELL_SUMMON,Player-3296-009371B2,"Façade-Anasterian(US)",0x514,0x0,Creature-0-3198-1448-2131-90477-0000380DAA,"Blood Globule",0xa28,0x0,180410,"Heart Seeker",0x1
-			--5/4 15:45:24.222  SPELL_SUMMON,Player-3296-009576DD,"Àlëx-Brill(EU)",0x40514,0x0,Creature-0-2083-1448-25606-90513-000047BE44,"Fel Blood Globule",0xa28,0x0,180413,"Heart Seeker",0x1
-			return
-		end
-		
-		if (alvo_serial and type (alvo_serial) == "string") then
-			--Ice Block from Jaina encounter REMOVE WHEN BFA IS DONE
-			if (alvo_serial:match ("^Creature%-0%-%d+%-%d+%-%d+%-148522%-%w+$")) then
-				return
-			end
-		end
-
 		if (not who_name) then
 			who_name = "[*] " .. spellName
 		end
@@ -1588,15 +1571,11 @@
 			who_name, who_serial, who_flags = alvo_pet[1], alvo_pet[2], alvo_pet[3]
 		end
 		
-		--print ()
 		--petTable:Add
 		_detalhes.tabela_pets:Adicionar (alvo_serial, alvo_name, alvo_flags, who_serial, who_name, who_flags)
-		
-		--print ("SUMMON", alvo_name, _detalhes.tabela_pets.pets, _detalhes.tabela_pets.pets [alvo_serial], alvo_serial)
 
 		--debug summons:
 		--print("summon:", who_name, alvo_serial, alvo_name, alvo_flags, spellid, spellName)
-		
 		return
 	end
 
@@ -1729,11 +1708,6 @@
 				return
 			end
 		end
-		
-		--if (not absorb_spell_list [shieldid] and not gotit[shieldid]) then
-		--	local _, class = UnitClass (owner_name)
-			--print ("Shield Not Registered:", shieldid, shieldname, class)
-		--end
 		
 		--> diminuir o escudo nas tabelas de escudos
 		local shields_on_target = escudo [alvo_name]
@@ -2718,7 +2692,6 @@
 					
 					--local name, texture, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura (alvo_name, spellname, nil, "HARMFUL")
 					--UnitAura ("Kastfall", "Gulp Frog Toxin", nil, "HARMFUL")
-					--print ("Hello World", spellname, name)
 					
 					--if (name) then
 						--> record death log
@@ -3044,12 +3017,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		_current_energy_container.need_refresh = true
 
---print (who_name, spellid, spellname, spelltype, amount, powertype, p6, p7) powertype = 0 p6 = 17
---4/27 13:45:54.903  SPELL_ENERGIZE,
---Player-3208-0A085522,"Licelystiri-Nemesis",0x511,0x0,
---Player-3208-0A085522,"Licelystiri-Nemesis",0x511,0x0,
---162243,"Demon's Bite",0x1,Player-3208-0A085522,0000000000000000,233158,242700,3555,662,17,70,100,0,1030.46,3134.93,660,28,0,17,100		
-	
 ------------------------------------------------------------------------------------------------
 	--> get actors
 
@@ -3770,7 +3737,7 @@ spelltype = 1
 			--> outsider death while in combat
 			
 				--rules for specific encounters
-				if (_current_encounter_id == 2412) then --> The Council of Blood
+				if (_current_encounter_id == 2412) then --> The Council of Blood (REMOVE ON v10.0.1)
 
 					if (not Details.exp90temp.delete_damage_TCOB) then
 						return
@@ -3778,9 +3745,6 @@ spelltype = 1
 
 					--what boss died
 					local bossDeadNpcId = Details:GetNpcIdFromGuid(alvo_serial)
-
-					print("Details: boss died:", bossDeadNpcId, alvo_name, alvo_serial)
-
 					if (bossDeadNpcId ~= 166969 and bossDeadNpcId ~= 166970 and bossDeadNpcId ~= 166971) then
 						return
 					end
@@ -3792,7 +3756,7 @@ spelltype = 1
 				--]]
 
 					if (bossDeadNpcId) then
-						--iterate among boss targets
+						--iterate among boss unit ids
 						for i = 1, 5 do
 							local unitId = "boss" .. i
 
@@ -3805,7 +3769,6 @@ spelltype = 1
 									if (bossSerial) then
 										local bossNpcId = Details:GetNpcIdFromGuid(bossSerial)
 										if (bossNpcId and bossNpcId ~= bossDeadNpcId) then
-											print("Details: deleting boss:", bossName)
 											--remove the damage done
 											local currentCombat = Details:GetCurrentCombat()
 											currentCombat:DeleteActor(DETAILS_ATTRIBUTE_DAMAGE, bossName, false)

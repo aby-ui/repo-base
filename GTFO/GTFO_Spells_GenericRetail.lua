@@ -11,6 +11,8 @@ Sample:
 		tankSound = 2;
 		soundHeroic = 1;
 		tankSoundHeroic = 2;
+		soundMythic = 1;
+		tankSoundMythic = 1;
 		soundChallenge = 1;
 		tankSoundChallenge = 2;
 		ignoreSelfInflicted = true;

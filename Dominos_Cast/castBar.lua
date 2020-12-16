@@ -84,6 +84,16 @@ CastBar:Extend("OnLoadSettings", function(self)
 	self:SetProperty("reaction", "neutral")
 end)
 
+function CastBar:GetDisplayName()
+    local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+
+    return L.CastBarDisplayName
+end
+
+function CastBar:GetDisplayLevel()
+	return 'HIGH'
+end
+
 function CastBar:GetDefaults()
 	return {
 		point = "BOTTOM",

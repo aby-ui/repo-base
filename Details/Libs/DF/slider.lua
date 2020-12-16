@@ -856,7 +856,7 @@ local SwitchOnClick = function (self, button, forced_value, value)
 
 		local success, errorText = xpcall (slider.OnSwitch, geterrorhandler(), slider, slider.FixedValue, value)
 		if (not success) then
-			error ("Details! Framework: OnSwitch() " .. (button.GetName and button:GetName() or "-NONAME-") ..  " error: " .. (errorText or ""))
+			return
 		end
 
 		--> trigger hooks

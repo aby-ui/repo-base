@@ -1,6 +1,6 @@
 
 
-local dversion = 220
+local dversion = 224
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -2374,6 +2374,7 @@ DF.GlobalWidgetControlNames = {
 	split_bar = "DF_SplitBarMetaFunctions",
 	aura_tracker = "DF_AuraTracker",
 	healthBar = "DF_healthBarMetaFunctions",
+	timebar = "DF_TimeBarMetaFunctions",
 }
 
 function DF:AddMemberForWidget (widgetName, memberType, memberName, func)
@@ -3508,6 +3509,30 @@ DF.AlliedRaceList = {
 	[40] = "Vulpera",
 	[41] = "MagharOrc",
 }
+
+local slotIdToIcon = {
+	[1] = "Interface\\ICONS\\" .. "INV_Helmet_29", --head
+	[2] = "Interface\\ICONS\\" .. "INV_Jewelry_Necklace_07", --neck
+	[3] = "Interface\\ICONS\\" .. "INV_Shoulder_25", --shoulder
+	[5] = "Interface\\ICONS\\" .. "INV_Chest_Cloth_08", --chest
+	[6] = "Interface\\ICONS\\" .. "INV_Belt_15", --waist
+	[7] = "Interface\\ICONS\\" .. "INV_Pants_08", --legs
+	[8] = "Interface\\ICONS\\" .. "INV_Boots_Cloth_03", --feet
+	[9] = "Interface\\ICONS\\" .. "INV_Bracer_07", --wrist
+	[10] = "Interface\\ICONS\\" .. "INV_Gauntlets_17", --hands
+	[11] = "Interface\\ICONS\\" .. "INV_Jewelry_Ring_22", --finger 1
+	[12] = "Interface\\ICONS\\" .. "INV_Jewelry_Ring_22", --finger 2
+	[13] = "Interface\\ICONS\\" .. "INV_Jewelry_Talisman_07", --trinket 1
+	[14] = "Interface\\ICONS\\" .. "INV_Jewelry_Talisman_07", --trinket 2
+	[15] = "Interface\\ICONS\\" .. "INV_Misc_Cape_19", --back
+	[16] = "Interface\\ICONS\\" .. "INV_Sword_39", --main hand
+	[17] = "Interface\\ICONS\\" .. "INV_Sword_39", --off hand
+}
+
+function DF:GetArmorIconByArmorSlot(equipSlotId)
+	return slotIdToIcon[equipSlotId] or ""
+end
+
 
 --> store and return a list of character races, always return the non-localized value
 DF.RaceCache = {}

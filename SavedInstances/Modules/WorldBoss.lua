@@ -64,6 +64,12 @@ SI.WorldBosses = {
   -- Uldum
   [2381] = { quest=55466, expansion=7, level=50 }, -- Vuk'laz the Earthbreaker
 
+  -- Shadowlands
+  [2430] = { quest=61813, expansion=8, level=60 }, -- Valinor, the Light of Eons
+  [2431] = { quest=61816, expansion=8, level=60 }, -- Mortanis
+  [2432] = { quest=61815, expansion=8, level=60 }, -- Oranomonos the Everbranching
+  [2433] = { quest=61814, expansion=8, level=60 }, -- Nurgash Muckformed
+
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=40 },
   -- Old Vanilla Bosses during Anniversary Event

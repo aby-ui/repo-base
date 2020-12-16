@@ -2,11 +2,10 @@
 -- frame.lua
 -- a custom window like object
 --------------------------------------------------------------------------------
-
 local AddonName, Addon = ...
 local Frame = Addon:CreateClass('Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
-local FlyPaper = LibStub('LibFlyPaper-1.1')
+local FlyPaper = LibStub('LibFlyPaper-2.0')
 
 local active = {}
 local unused = {}
@@ -19,28 +18,32 @@ local function frame_OnSetScale(frame, scale)
     frame:OnSetScale(scale)
 end
 
-local frame_UpdateShown =
-[[
+local frame_UpdateShown = [[
     if self:GetAttribute("state-hidden") then
         self:Hide()
         return
     end
 
-    local isOverrideUIShown = self:GetAttribute('state-overrideui') and true or false
     local isPetBattleUIShown = self:GetAttribute('state-petbattleui') and true or false
-
     if isPetBattleUIShown and not self:GetAttribute('state-showinpetbattleui') then
         self:Hide()
         return
     end
 
+    local isOverrideUIShown = self:GetAttribute('state-overrideui') and true or false
     if isOverrideUIShown and not self:GetAttribute('state-showinoverrideui') then
         self:Hide()
         return
     end
 
-    local displayState = self:GetAttribute('state-display')
-    if displayState == 'hide' then
+    local requiredState = self:GetAttribute('state-display')
+    if requiredState == 'hide' then
+        self:Hide()
+        return
+    end
+
+    local userState = self:GetAttribute('state-userDisplay')
+    if userState == 'hide' then
         if self:GetAttribute('state-alpha') then
             self:SetAttribute('state-alpha', nil)
         end
@@ -49,24 +52,27 @@ local frame_UpdateShown =
         return
     end
 
-    local stateAlpha = tonumber(displayState)
-    if self:GetAttribute('state-alpha') ~= stateAlpha then
-        self:SetAttribute('state-alpha', stateAlpha)
+    local userAlpha = tonumber(userState)
+    if self:GetAttribute('state-alpha') ~= userAlpha then
+        self:SetAttribute('state-alpha', userAlpha)
     end
 
     self:Show()
 ]]
 
-local frame_CallUpdateShown = "self:RunAttribute('UpdateShown')"
+local frame_CallUpdateShown = 'self:RunAttribute("UpdateShown")'
+
+--------------------------------------------------------------------------------
+-- Constructor / Destructor
+--------------------------------------------------------------------------------
 
 -- constructor
-function Frame:New(id, tooltipText)
+function Frame:New(id)
     id = tonumber(id) or id
 
     local frame = self:Restore(id) or self:Create(id)
 
     frame:LoadSettings()
-    frame:SetTooltipText(tooltipText)
 
     Addon.OverrideController:Add(frame)
 
@@ -81,6 +87,7 @@ function Frame:Create(id)
     local frameName = ('%sFrame%s'):format(AddonName, id)
 
     local frame = self:Bind(CreateFrame('Frame', frameName, UIParent, 'SecureHandlerStateTemplate'))
+
     frame:SetClampedToScreen(true)
     frame:SetMovable(true)
 
@@ -101,6 +108,7 @@ function Frame:Create(id)
     frame:SetAttribute('_onstate-petbattleui', frame_CallUpdateShown)
     frame:SetAttribute('_onstate-showinoverrideui', frame_CallUpdateShown)
     frame:SetAttribute('_onstate-showinpetbattleui', frame_CallUpdateShown)
+    frame:SetAttribute('_onstate-userDisplay', frame_CallUpdateShown)
 
     frame:SetAttribute('UpdateShown', frame_UpdateShown)
     hooksecurefunc(frame, 'SetAlpha', frame_OnSetAlpha)
@@ -132,20 +140,17 @@ function Frame:Free(deleteSettings)
     Addon.OverrideController:Remove(self)
     FlyPaper.RemoveFrame(AddonName, self.id, self)
 
-    self.docked = nil
-
     self:ClearAllPoints()
     self:SetUserPlaced(nil)
     self:Hide()
 
     self:OnRelease(self.id, deleteSettings)
 
-
     unused[self.id] = self
 end
 
 --------------------------------------------------------------------------------
--- Lifecycle Hooks
+-- Lifecycle Hooks/Events
 --------------------------------------------------------------------------------
 
 -- called when a frame is acquired from the pool
@@ -175,21 +180,24 @@ end
 function Frame:OnLoadSettings()
 end
 
-function Frame:OnSetAlpha(alpha)
+function Frame:OnSetAlpha(newAlpha)
 end
 
-function Frame:OnSetScale(scale)
+function Frame:OnSetScale(newScale)
 end
 
 --------------------------------------------------------------------------------
--- Persistence
+-- Initialization
 --------------------------------------------------------------------------------
 
 function Frame:LoadSettings()
     -- get defaults must be provided by anything implementing the Frame type
-    self.sets = Addon:GetFrameSets(self.id) or Addon:SetFrameSets(self.id, self:GetDefaults())
+    self.sets = Addon:GetFrameSets(self.id)
+             or Addon:SetFrameSets(self.id, self:GetDefaults())
 
-    self:Reposition()
+    self:RestorePosition()
+
+    self:RestoreAnchor()
 
     if self.sets.hidden then
         self:HideFrame()
@@ -197,8 +205,8 @@ function Frame:LoadSettings()
         self:ShowFrame()
     end
 
-    self:UpdateShowStates()
-
+    self:UpdateDisplayConditions()
+    self:UpdateUserDisplayConditions()
     self:ShowInOverrideUI(self:ShowingInOverrideUI())
     self:ShowInPetBattleUI(self:ShowingInPetBattleUI())
 
@@ -206,7 +214,27 @@ function Frame:LoadSettings()
 end
 
 --------------------------------------------------------------------------------
--- Layout and Sizing
+-- Layout
+--------------------------------------------------------------------------------
+
+function Frame:Layout()
+    local width, height = 32, 32
+    local paddingW, paddingH = self:GetPadding()
+
+    self:TrySetSize(width + paddingW * 2, height + paddingH * 2)
+end
+
+function Frame:TrySetSize(width, height)
+    if not _G.InCombatLockdown() then
+        self:SetSize(width, height)
+        return true
+    end
+
+    return false
+end
+
+--------------------------------------------------------------------------------
+-- Padding
 --------------------------------------------------------------------------------
 
 function Frame:SetPadding(width, height)
@@ -226,21 +254,6 @@ function Frame:GetPadding()
     return width, height
 end
 
-function Frame:Layout()
-    local width, height = 32, 32
-    local paddingW, paddingH = self:GetPadding()
-
-    self:TrySetSize(width + paddingW * 2, height + paddingH * 2)
-end
-
-function Frame:TrySetSize(width, height)
-    if InCombatLockdown() then
-        return
-    end
-
-    self:SetSize(width, height)
-end
-
 --------------------------------------------------------------------------------
 -- Scaling
 --------------------------------------------------------------------------------
@@ -248,29 +261,14 @@ end
 function Frame:SetFrameScale(newScale, scaleAnchored)
     newScale = tonumber(newScale) or 1
 
-    local oldScale = self:GetFrameScale()
-    local ratio = oldScale / newScale
-
     self.sets.scale = newScale
-    self:Rescale()
 
-    if not self:GetAnchor() then
-        local point, x, y = self:GetSavedFramePosition()
-
-        self:SetAndSaveFramePosition(point, x * ratio, y * ratio)
-    end
+    FlyPaper.SetScale(self, newScale)
+    self:SaveRelativePostiion()
 
     if scaleAnchored then
-        for _, f in self:GetAll() do
-            if f:GetAnchor() == self then
-                f:SetFrameScale(newScale, true)
-            end
-        end
+        self:ForAnchored('SetFrameScale', newScale, scaleAnchored)
     end
-end
-
-function Frame:Rescale()
-    self:SetScale(self:GetFrameScale())
 end
 
 function Frame:GetFrameScale()
@@ -278,7 +276,7 @@ function Frame:GetFrameScale()
 end
 
 --------------------------------------------------------------------------------
--- Frame Opacity/Fading
+-- Opacity
 --------------------------------------------------------------------------------
 
 function Frame:SetFrameAlpha(alpha)
@@ -295,7 +293,11 @@ function Frame:GetFrameAlpha()
     return self.sets.alpha or 1
 end
 
---faded opacity (mouse not over the frame)
+--------------------------------------------------------------------------------
+-- Faded Opacity
+--------------------------------------------------------------------------------
+
+-- faded opacity (mouse not over the frame)
 function Frame:SetFadeMultiplier(alpha)
     alpha = tonumber(alpha) or 1
 
@@ -313,6 +315,10 @@ function Frame:GetFadeMultiplier()
     return self.sets.fadeAlpha or 1
 end
 
+--------------------------------------------------------------------------------
+-- Fade In Timing
+--------------------------------------------------------------------------------
+
 function Frame:SetFadeInDelay(delay)
     delay = tonumber(delay) or 0
     self.sets.fadeInDelay = delay ~= 0 and delay
@@ -321,16 +327,6 @@ end
 
 function Frame:GetFadeInDelay()
     return self.sets.fadeInDelay or 0
-end
-
-function Frame:SetFadeOutDelay(delay)
-    delay = tonumber(delay) or 0
-    self.sets.fadeOutDelay = delay ~= 0 and delay
-    self:UpdateWatched()
-end
-
-function Frame:GetFadeOutDelay()
-    return self.sets.fadeOutDelay or 0
 end
 
 function Frame:SetFadeInDuration(duration)
@@ -343,6 +339,20 @@ function Frame:GetFadeInDuration()
     return self.sets.fadeInDuration or 0.1
 end
 
+--------------------------------------------------------------------------------
+-- Fade Out Timing
+--------------------------------------------------------------------------------
+
+function Frame:SetFadeOutDelay(delay)
+    delay = tonumber(delay) or 0
+    self.sets.fadeOutDelay = delay ~= 0 and delay
+    self:UpdateWatched()
+end
+
+function Frame:GetFadeOutDelay()
+    return self.sets.fadeOutDelay or 0
+end
+
 function Frame:SetFadeOutDuration(duration)
     duration = tonumber(duration) or 0.1
     self.sets.fadeOutDuration = duration ~= 0.1 and duration
@@ -353,11 +363,15 @@ function Frame:GetFadeOutDuration()
     return self.sets.fadeOutDuration or 0.1
 end
 
+--------------------------------------------------------------------------------
+-- Fade Out Timing
+--------------------------------------------------------------------------------
+
 function Frame:UpdateAlpha()
     self:SetAlpha(self:GetExpectedAlpha())
 
     if Addon:IsLinkedOpacityEnabled() then
-        self:ForDocked('UpdateAlpha')
+        self:ForAnchored('UpdateAlpha')
     end
 end
 
@@ -366,20 +380,20 @@ function Frame:GetExpectedAlpha()
     -- if this is a docked frame and linked opacity is enabled
     -- then return the expected opacity of the parent frame
     if Addon:IsLinkedOpacityEnabled() then
-        local anchor = (self:GetAnchor())
-        if anchor and anchor:FrameIsShown() then
+        local anchor = self:GetSavedAnchor()
+        if anchor and type(anchor.GetExpectedAlpha) == "function" then
             return anchor:GetExpectedAlpha()
         end
     end
 
     -- if there's a statealpha value for the frame, then use it
-    local stateAlpha = self:GetAttribute('state-alpha')
-    if stateAlpha then
-        return stateAlpha / 100
+    local alpha = self:GetAttribute('state-alpha')
+    if alpha then
+        return alpha / 100
     end
 
     -- if the frame is moused over, then return the frame's normal opacity
-    if self.focused then
+    if self:IsFocus() then
         return self:GetFrameAlpha()
     end
 
@@ -390,67 +404,34 @@ end
 -- Focus Checking
 --------------------------------------------------------------------------------
 
-local function isChildFocus(...)
-    local focus = GetMouseFocus()
-    for i = 1, select('#', ...) do
-        if focus == select(i, ...) then
-            return true
-        end
+local function IsAncestor(frame, target)
+    if frame == nil then
+        return false
     end
 
-    for i = 1, select('#', ...) do
-        local f = select(i, ...)
-        if f:IsShown() and isChildFocus(f:GetChildren()) then
-            return true
-        end
+    if frame == target then
+        return true
     end
 
-    return false
-end
-
-local function isDescendant(frame, ...)
-    for i = 1, select('#', ...) do
-        local f = select(i, ...)
-        if frame == f then
-            return true
-        end
-    end
-
-    for i = 1, select('#', ...) do
-        local f = select(i, ...)
-        if isDescendant(frame, f:GetChildren()) then
-            return true
-        end
-    end
-
-    return false
+    return IsAncestor(frame:GetParent(), target)
 end
 
 -- returns all frames docked to the given frame
 function Frame:IsFocus()
     if self:IsMouseOver(1, -1, -1, 1) then
-        return (GetMouseFocus() == WorldFrame) or isChildFocus(self:GetChildren())
-    end
-
-    if SpellFlyout and SpellFlyout:IsMouseOver(1, -1, -1, 1) and isDescendant(SpellFlyout:GetParent(), self) then
-        return true
-    end
-
-    return Addon:IsLinkedOpacityEnabled() and self:IsDockedFocus()
-end
-
-function Frame:IsDockedFocus()
-    local docked = self.docked
-
-    if docked then
-        for _, frame in pairs(docked) do
-            if frame:IsFocus() then
-                return true
-            end
+        local focus = _G.GetMouseFocus()
+        if focus == _G.WorldFrame or IsAncestor(focus, self) then
+            return true
         end
     end
 
-    return false
+    local flyout = _G.SpellFlyout
+    if flyout and flyout:IsMouseOver(1, -1, -1, 1) then
+        IsAncestor(flyout, self)
+        return true
+    end
+
+    return Addon:IsLinkedOpacityEnabled() and self:IfAnchored('IsFocus')
 end
 
 --------------------------------------------------------------------------------
@@ -469,7 +450,7 @@ function Frame:Fade(targetAlpha, delay, duration)
     Addon:Fade(self, targetAlpha, delay, duration)
 
     if Addon:IsLinkedOpacityEnabled() then
-        self:ForDocked('Fade', targetAlpha, delay, duration)
+        self:ForAnchored('Fade', targetAlpha, delay, duration)
     end
 end
 
@@ -485,7 +466,7 @@ function Frame:ShowFrame()
     self:UpdateAlpha()
 
     if Addon:IsLinkedOpacityEnabled() then
-        self:ForDocked('ShowFrame')
+        self:ForAnchored('ShowFrame')
     end
 end
 
@@ -497,7 +478,7 @@ function Frame:HideFrame()
     self:UpdateAlpha()
 
     if Addon:IsLinkedOpacityEnabled() then
-        self:ForDocked('HideFrame')
+        self:ForAnchored('HideFrame')
     end
 end
 
@@ -514,34 +495,7 @@ function Frame:FrameIsShown()
 end
 
 --------------------------------------------------------------------------------
--- Override UI Visibility
---------------------------------------------------------------------------------
-
-function Frame:ShowInOverrideUI(enable)
-    self.sets.showInOverrideUI = enable and true or false
-
-    self:SetAttribute('state-showinoverrideui', enable)
-end
-
-function Frame:ShowingInOverrideUI()
-    return self.sets.showInOverrideUI
-end
-
---------------------------------------------------------------------------------
--- Pet Battle UI Visibility
---------------------------------------------------------------------------------
-
-function Frame:ShowInPetBattleUI(enable)
-    self.sets.showInPetBattleUI = enable and true or false
-    self:SetAttribute('state-showinpetbattleui', enable)
-end
-
-function Frame:ShowingInPetBattleUI()
-    return self.sets.showInPetBattleUI
-end
-
---------------------------------------------------------------------------------
--- Click through bars
+-- Click Through
 --------------------------------------------------------------------------------
 
 function Frame:SetClickThrough(enable)
@@ -557,15 +511,62 @@ function Frame:UpdateClickThrough()
 end
 
 --------------------------------------------------------------------------------
--- Showstates
+-- Display Conditions - Override UI
 --------------------------------------------------------------------------------
 
-function Frame:SetShowStates(states)
-    self.sets.showstates = states
-    self:UpdateShowStates()
+function Frame:ShowInOverrideUI(enable)
+    self.sets.showInOverrideUI = enable and true or false
+
+    self:SetAttribute('state-showinoverrideui', enable)
 end
 
-function Frame:GetShowStates()
+function Frame:ShowingInOverrideUI()
+    return self.sets.showInOverrideUI
+end
+
+--------------------------------------------------------------------------------
+-- Display Conditions - Pet Battle UI
+--------------------------------------------------------------------------------
+
+function Frame:ShowInPetBattleUI(enable)
+    self.sets.showInPetBattleUI = enable and true or false
+    self:SetAttribute('state-showinpetbattleui', enable)
+end
+
+function Frame:ShowingInPetBattleUI()
+    return self.sets.showInPetBattleUI
+end
+
+--------------------------------------------------------------------------------
+-- Display Conditions
+--------------------------------------------------------------------------------
+
+function Frame:GetDisplayConditions() end
+
+function Frame:UpdateDisplayConditions()
+    local conditions = self:GetDisplayConditions()
+
+    if conditions and conditions ~= '' then
+        RegisterStateDriver(self, 'display', conditions)
+    else
+        UnregisterStateDriver(self, 'display')
+
+        if self:GetAttribute('state-display') then
+            self:SetAttribute('state-display', nil)
+        end
+    end
+end
+
+--------------------------------------------------------------------------------
+-- Display Conditions - User Set
+--------------------------------------------------------------------------------
+
+function Frame:SetUserDisplayConditions(states)
+    self.sets.showstates = states
+    self:UpdateUserDisplayConditions()
+end
+
+function Frame:GetUserDisplayConditions()
     local states = self.sets.showstates
 
     -- hack to convert [combat] into [combat]show;hide in case a user is using
@@ -580,16 +581,16 @@ function Frame:GetShowStates()
     return states
 end
 
-function Frame:UpdateShowStates()
-    local showstates = self:GetShowStates()
+function Frame:UpdateUserDisplayConditions()
+    local states = self:GetUserDisplayConditions()
 
-    if showstates and showstates ~= '' then
-        RegisterStateDriver(self, 'display', showstates)
+    if states and states ~= '' then
+        RegisterStateDriver(self, 'userDisplay', states)
     else
-        UnregisterStateDriver(self, 'display')
+        UnregisterStateDriver(self, 'userDisplay')
 
-        if self:GetAttribute('state-display') then
-            self:SetAttribute('state-display', nil)
+        if self:GetAttribute('state-userDisplay') then
+            self:SetAttribute('state-userDisplay', nil)
         end
     end
 end
@@ -598,207 +599,291 @@ end
 -- Positioning
 --------------------------------------------------------------------------------
 
--- how far away a frame can be from another frame/edge to trigger anchoring
-Frame.stickyTolerance = 16
-
--- edge anchoring
-function Frame:StickToEdge()
-    local point, x, y = self:GetRelativeFramePosition()
-    local rTolerance = self.stickyTolerance / self:GetFrameScale()
-    local changed = false
-
-    if math.abs(x) <= rTolerance then
-        x = 0
-        changed = true
+function Frame:SavePosition(point, relPoint, x, y)
+    if point == nil then
+        error('Usage: Frame:SavePosition(point, [relPoint, x, y]', 2)
     end
 
-    if math.abs(y) <= rTolerance then
-        y = 0
-        changed = true
+    if relPoint == point then
+        relPoint = nil
     end
 
-    --save this junk if we've done something
-    if changed then
-        self:SetAndSaveFramePosition(point, x, y)
-    end
-end
-
--- bar anchoring
-function Frame:Stick()
-    self:ClearAnchor()
-
-    -- only do sticky code if the alt key is not currently down
-    if Addon:Sticky() and not IsAltKeyDown() then
-        local anchor, id = FlyPaper.StickToClosestFrameInGroup(self, AddonName)
-
-        if anchor then
-            self:SetAnchor(active[id], anchor)
-        else
-            self:StickToEdge()
-        end
+    if point == 'CENTER' then
+        point = nil
     end
 
-    self:SaveRelativeFramePosition()
-end
-
-function Frame:Reanchor()
-    local frame, anchor = self:GetAnchor()
-
-    if not (frame and FlyPaper.StickToPoint(self, frame, anchor)) then
-        self:ClearAnchor()
-        self:Reposition()
-    else
-        self:SetAnchor(frame, anchor)
-    end
-end
-
-function Frame:SetAnchor(frame, anchor)
-    self:ClearAnchor()
-
-    if frame.docked then
-        local found = false
-        for i, f in pairs(frame.docked) do
-            if f == self then
-                found = i
-                break
-            end
-        end
-        if not found then
-            table.insert(frame.docked, self)
-        end
-    else
-        frame.docked = {self}
+    x = tonumber(x) or 0
+    if x == 0 then
+        x = nil
     end
 
-    self.sets.anchor = frame.id .. anchor
-    self:UpdateWatched()
-    self:UpdateAlpha()
-end
-
-function Frame:ClearAnchor()
-    local anchor = self:GetAnchor()
-
-    if anchor and anchor.docked then
-        for i, f in pairs(anchor.docked) do
-            if f == self then
-                tremove(anchor.docked, i)
-                break
-            end
-        end
-
-        if not next(anchor.docked) then
-            anchor.docked = nil
-        end
+    y = tonumber(y) or 0
+    if y == 0 then
+        y = nil
     end
-
-    self.sets.anchor = nil
-    self:UpdateWatched()
-    self:UpdateAlpha()
-end
-
-function Frame:GetAnchor()
-    local anchorString = self.sets.anchor
-
-    if anchorString then
-        local pointStart = #anchorString - 1
-        return self:Get(anchorString:sub(1, pointStart - 1)), anchorString:sub(pointStart)
-    end
-end
-
--- absolute positioning
-function Frame:SetFramePosition(...)
-    self:ClearAllPoints()
-    self:SetPoint(...)
-end
-
-function Frame:SetAndSaveFramePosition(point, x, y)
-    self:SetFramePosition(point, x, y)
-    self:SaveFramePosition(point, x, y)
-end
-
--- relative positioning
-function Frame:SaveRelativeFramePosition()
-    self:SaveFramePosition(self:GetRelativeFramePosition())
-end
-
-function Frame:GetRelativeFramePosition()
-    local scale = self:GetScale() or 1
-    local left = self:GetLeft() or 0
-    local top = self:GetTop() or 0
-    local right = self:GetRight() or 0
-    local bottom = self:GetBottom() or 0
-
-    local parent = self:GetParent() or _G.UIParent
-    local pwidth = parent:GetWidth() / scale
-    local pheight = parent:GetHeight() / scale
-
-    local x, y, point
-    if left < (pwidth - right) and left < math.abs((left + right) / 2 - pwidth / 2) then
-        x = left
-        point = 'LEFT'
-    elseif (pwidth - right) < math.abs((left + right) / 2 - pwidth / 2) then
-        x = right - pwidth
-        point = 'RIGHT'
-    else
-        x = (left + right) / 2 - pwidth / 2
-        point = ''
-    end
-
-    if bottom < (pheight - top) and bottom < math.abs((bottom + top) / 2 - pheight / 2) then
-        y = bottom
-        point = 'BOTTOM' .. point
-    elseif (pheight - top) < math.abs((bottom + top) / 2 - pheight / 2) then
-        y = top - pheight
-        point = 'TOP' .. point
-    else
-        y = (bottom + top) / 2 - pheight / 2
-    end
-
-    if point == '' then
-        point = 'CENTER'
-    end
-
-    return point, x, y
-end
-
--- loading and positionin
-local function roundPoint(point)
-    point = point or 0
-
-    if point > 0 then
-        point = floor(point + 0.5)
-    else
-        point = ceil(point - 0.5)
-    end
-
-    return point
-end
-
-function Frame:Reposition()
-    self:Rescale()
-    self:SetFramePosition(self:GetSavedFramePosition())
-end
-
-function Frame:SaveFramePosition(point, x, y)
-    point = point or 'CENTER'
-    x = roundPoint(x)
-    y = roundPoint(y)
 
     local sets = self.sets
-    sets.point = point ~= 'CENTER' and point or nil
-    sets.x = x ~= 0 and x or nil
-    sets.y = y ~= 0 and y or nil
-
-    self:SetUserPlaced(true)
+    sets.point = point
+    sets.relPoint = relPoint
+    sets.x = x
+    sets.y = y
 end
 
-function Frame:GetSavedFramePosition()
+function Frame:GetSavedPosition()
     local sets = self.sets
     local point = sets.point or 'CENTER'
+    local relPoint = sets.relPoint or point
     local x = sets.x or 0
     local y = sets.y or 0
 
-    return point, x, y
+    return point, relPoint,x, y
+end
+
+function Frame:SaveRelativePostiion()
+    local point, relPoint, x, y = FlyPaper.GetBestAnchorForParent(self)
+
+    self:SavePosition(point, relPoint, x, y)
+end
+
+function Frame:RestorePosition()
+    local point, relPoint, x, y = self:GetSavedPosition()
+    local scale = self:GetFrameScale()
+
+    self:ClearAllPoints()
+    self:SetScale(scale)
+    self:SetPoint(point, self:GetParent() or _G.UIParent, relPoint, x, y)
+    return true
+end
+
+--------------------------------------------------------------------------------
+-- Anchoring
+--------------------------------------------------------------------------------
+
+function Frame:SaveAnchor(relFrame, point, relPoint, x, y)
+    if relFrame == nil or point == nil then
+        error('Usage: Frame:SaveAnchor(relFrame, point, [relPoint, x, y]', 2)
+    end
+
+    if relFrame == self then
+        error('Cannot anchor to self', 2)
+    end
+
+    local relFrameGroup, relFrameId = FlyPaper.GetFrameInfo(relFrame)
+    if relFrame == nil then
+        error('Frame is not registered with FlyPaper', 2)
+    end
+
+    local anchor = self.sets.anchor
+    if not anchor or type(anchor) == "string" then
+        anchor = {}
+        self.sets.anchor = anchor
+    end
+
+    -- purge defaults
+    if relFrameGroup == AddonName then
+        relFrameGroup = nil
+    end
+
+    if relPoint == point then
+        relPoint = nil
+    end
+
+    x = tonumber(x) or 0
+    if x == 0 then
+        x = nil
+    end
+
+    y = tonumber(y) or 0
+    if y == 0 then
+        y = nil
+    end
+
+    anchor.point = point
+    anchor.relFrame = relFrameId
+    anchor.relFrameGroup = relFrameGroup
+    anchor.relPoint = relPoint
+    anchor.x = x
+    anchor.y = y
+
+    if not next(anchor) then
+        self.sets.anchor = nil
+    end
+end
+
+function Frame:GetSavedAnchor()
+    local anchor = self.sets and self.sets.anchor
+
+    if type(anchor) == 'table' then
+        local point = anchor.point
+        local relFrameId = anchor.relFrame
+        local relFrameGroup = anchor.relFrameGroup or AddonName
+        local relFrame = FlyPaper.GetFrame(relFrameGroup, relFrameId)
+        local relPoint = anchor.relPoint or point
+        local x = anchor.x or 0
+        local y = anchor.y or 0
+
+        return relFrame, point, relPoint, x, y
+    end
+
+    -- legacy string based format
+    if type(anchor) == 'string' then
+        local relFrame = Frame:Get(anchor:sub(1, #anchor - 2))
+        local point, relPoint = FlyPaper.ConvertAnchorId(anchor:sub(#anchor - 1))
+        local x = 0
+        local y = 0
+
+        return relFrame, point, relPoint, x, y
+    end
+end
+
+function Frame:ClearSavedAnchor()
+    self.sets.anchor = nil
+end
+
+function Frame:RestoreAnchor()
+    local relFrame, point, relPoint, x, y = self:GetSavedAnchor()
+    local scale = self:GetFrameScale() or 1
+
+    if relFrame then
+        self:ClearAllPoints()
+        self:SetScale(scale)
+        self:SetPoint(point, relFrame, relPoint, x, y)
+        self:UpdateAlpha()
+        return true
+    end
+end
+
+function Frame:ForAnchored(method, ...)
+    for _, frame in pairs(active) do
+        if frame:IsAnchoredToFrame(self) then
+            frame:MaybeCallMethod(method, ...)
+        end
+    end
+end
+
+function Frame:IfAnchored(method, ...)
+    for _, frame in pairs(active) do
+        if frame:IsAnchoredToFrame(self) then
+            if frame:MaybeCallMethod(method, ...) then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function Frame:IsAnchored()
+    if self:GetSavedAnchor() then
+        return true
+    end
+    return false
+end
+
+function Frame:IsAnchoredToFrame(frame)
+    if frame == nil or frame == self then
+        return false
+    end
+
+    for i = 1, self:GetNumPoints() do
+        local _, relFrame = self:GetPoint(i)
+        if frame == relFrame then
+            return true
+        end
+    end
+
+    return false
+end
+
+--------------------------------------------------------------------------------
+-- Sticking/Snapping
+--------------------------------------------------------------------------------
+
+-- how far away a frame can be from another frame/edge to trigger anchoring
+Frame.stickyTolerance = 8
+
+function Frame:Stick()
+    -- only do sticky code if the alt key is not currently down
+    if Addon:Sticky() and not IsModifiedClick("DOMINOS_IGNORE_STICKY_FRAMES") then
+        return self:StickToFrame() or self:StickToEdge() or self:StickToGrid()
+    end
+
+    self:ClearSavedAnchor()
+    self:SaveRelativePostiion()
+    return false
+end
+
+-- bar anchoring
+function Frame:StickToFrame()
+    local point, relFrame, relPoint = FlyPaper.GetBestAnchor(self, self.stickyTolerance)
+
+    if point then
+        self:ClearAllPoints()
+        self:SetPoint(point, relFrame, relPoint)
+        self:SaveAnchor(relFrame, point, relPoint)
+        self:SaveRelativePostiion()
+
+        return true
+    end
+
+    self:ClearSavedAnchor()
+    return false
+end
+
+-- grid anchoring
+function Frame:StickToGrid()
+    if not Addon:GetAlignmentGridEnabled() then
+        return false
+    end
+
+    local xScale, yScale = Addon:GetAlignmentGridScale()
+
+    local point, relPoint, x, y = FlyPaper.GetBestAnchorForParentGrid(
+        self,
+        xScale,
+        yScale,
+        self.stickyTolerance
+    )
+
+    if point then
+        self:ClearAllPoints()
+        self:SetPoint(point, self:GetParent(), relPoint, x, y)
+
+        self:SaveRelativePostiion()
+        return true
+    end
+
+    return false
+end
+
+-- screen edge and center point anchoring
+function Frame:StickToEdge()
+    local point, relPoint, x, y = FlyPaper.GetBestAnchorForParent(self)
+    local scale = self:GetScale()
+
+    if point then
+        local stick = false
+
+        if math.abs(x * scale) <= self.stickyTolerance then
+            x = 0
+            stick = true
+        end
+
+        if math.abs(y * scale) <= self.stickyTolerance then
+            y = 0
+            stick = true
+        end
+
+        if stick then
+            self:ClearAllPoints()
+            self:SetPoint(point, self:GetParent(), relPoint, x, y)
+
+            self:SaveRelativePostiion()
+            return true
+        end
+    end
+
+    return false
 end
 
 --------------------------------------------------------------------------------
@@ -816,8 +901,8 @@ end
 
 function Frame:OnCreateMenu(menu)
     menu:AddLayoutPanel()
-    menu:AddAdvancedPanel()
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel(true)
 end
 
 function Frame:ShowMenu()
@@ -836,19 +921,19 @@ function Frame:ShowMenu()
 end
 
 --------------------------------------------------------------------------------
--- Tooltip Text
+-- Display Information
 --------------------------------------------------------------------------------
 
 function Frame:GetDisplayName()
-    return L.BarDisplayName:format(tostring(self.id):gsub('^%l', string.upper))
+    return L.AbyDisplayNames[self.id] or L.BarDisplayName:format(tostring(self.id):gsub('^%l', string.upper))
 end
 
-function Frame:SetTooltipText(text)
-    self.tooltipText = text
+function Frame:GetDescription()
+    return
 end
 
-function Frame:GetTooltipText()
-    return self.tooltipText
+function Frame:GetDisplayLevel()
+    return 'MEDIUM'
 end
 
 --------------------------------------------------------------------------------
@@ -856,11 +941,11 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:UpdateWatched()
-    local shouldWatch =
-        self:FrameIsShown() and self:GetFadeMultiplier() < 1 and
-        not (Addon:IsLinkedOpacityEnabled() and self:GetAnchor())
+    local watch = self:FrameIsShown()
+              and self:GetFadeMultiplier() < 1
+              and not (Addon:IsLinkedOpacityEnabled() and self:IsAnchored())
 
-    if shouldWatch then
+    if watch then
         Addon.FadeManager:Add(self)
     else
         Addon.FadeManager:Remove(self)
@@ -900,15 +985,6 @@ end
 function Frame:ForAll(method, ...)
     for _, frame in self:GetAll() do
         frame:MaybeCallMethod(method, ...)
-    end
-end
-
-function Frame:ForDocked(method, ...)
-    local docked = self.docked
-    if docked then
-        for _, frame in pairs(docked) do
-            frame:CallMethod(method, ...)
-        end
     end
 end
 

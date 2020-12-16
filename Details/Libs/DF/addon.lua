@@ -31,7 +31,7 @@ end
 --when the player logout or reloadUI
 local addonUnload = function(addonFrame, event, ...)
 	--close saved tables
-	
+	DF.SavedVars.CloseSavedTable(addonFrame.db)
 end
 
 local addonEvents = {
@@ -46,8 +46,8 @@ local addonOnEvent = function(addonFrame, event, ...)
 		func(addonFrame, event, ...)
 	else
 		--might be a registered event from the user
-		if (addonFrame.event) then
-			DF:CoreDispatch(addonFrame.__name, addonFrame.event, addonFrame, event, ...)
+		if (addonFrame[event]) then
+			DF:CoreDispatch(addonFrame.__name, addonFrame[event], addonFrame, event, ...)
 		end
 	end
 end
@@ -66,6 +66,7 @@ function DF:CreateNewAddOn(addonName, globalSavedVariablesName, savedVarsTemplat
 
 	newAddon:RegisterEvent("ADDON_LOADED")
 	newAddon:RegisterEvent("PLAYER_LOGIN")
+	newAddon:RegisterEvent("PLAYER_LOGOUT")
 	newAddon:SetScript("OnEvent", addonOnEvent)
 
 	return newAddon

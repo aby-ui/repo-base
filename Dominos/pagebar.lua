@@ -12,6 +12,10 @@ function PageBar:New()
 	return f
 end
 
+function PageBar:GetDisplayName()
+    return L.PageBarDisplayName
+end
+
 function PageBar:GetDefaults()
 	return {
 		point = 'BOTTOMLEFT',

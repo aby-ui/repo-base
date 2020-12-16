@@ -9,14 +9,31 @@ local L = LibStub('AceLocale-3.0'):GetLocale('Dominos')
 local ContainerFrame = Dominos:CreateClass('Frame', Dominos.Frame)
 
 do
-	function ContainerFrame:New(id, frame, tooltip)
-		local bar = ContainerFrame.proto.New(self, id, tooltip)
+	function ContainerFrame:New(id, frame, description)
+		local bar = ContainerFrame.proto.New(self, id, description)
 
 		bar.repositionedFrame = frame
+		bar.description = description
 
 		bar:Layout()
 
 		return bar
+	end
+
+	function ContainerFrame:GetDisplayName()
+		if self.id == "roll" then
+			return L.RollBarDisplayName
+		end
+
+		if self.id == "alerts" then
+			return L.AlertsBarDisplayName
+		end
+
+		return ContainerFrame.proto:GetDisplayName()
+	end
+
+	function ContainerFrame:GetDescription()
+		return self.description
 	end
 
 	function ContainerFrame:GetDefaults()
@@ -57,8 +74,8 @@ do
 	function ContainerFrameModule:OnInitialize()
 		-- exports
 		-- luacheck: push ignore 122
-		GroupLootContainer.ignoreFramePositionManager = true
-		AlertFrame.ignoreFramePositionManager = true
+		_G.GroupLootContainer.ignoreFramePositionManager = true
+		_G.AlertFrame.ignoreFramePositionManager = true
 		-- luacheck: pop
 	end
 
@@ -68,7 +85,7 @@ do
 		}
 
 		if Dominos:IsBuild("retail") then
-			tinsert(self.frames, ContainerFrame:New('alerts', _G.AlertFrame))
+			table.insert(self.frames, ContainerFrame:New('alerts', _G.AlertFrame))
 		end
 	end
 

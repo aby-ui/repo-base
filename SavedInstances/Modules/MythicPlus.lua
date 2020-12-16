@@ -116,7 +116,7 @@ do
     if lastCompletedIndex == 0 then return end
     t.MythicKeyBest.lastCompletedIndex = lastCompletedIndex
 
-    local runHistory = C_MythicPlus_GetRunHistory()
+    local runHistory = C_MythicPlus_GetRunHistory(false, true)
     sort(runHistory, runCompare)
 
     for index = 1, lastCompletedIndex do

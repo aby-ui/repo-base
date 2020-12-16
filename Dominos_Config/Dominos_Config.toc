@@ -8,14 +8,12 @@
 ## Dependencies: Dominos
 ## LoadOnDemand: 1
 localization.xml
-utility.lua
+main.lua
 widgets\include.xml
-options\dsl.lua
-options\main.lua
 options\general.lua
 options\profiles.lua
 overlay\ui.lua
-overlay\frames.lua
+overlay\dragFrame.lua
 overlay\help.lua
 
 

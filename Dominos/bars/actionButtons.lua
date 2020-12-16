@@ -9,7 +9,7 @@ local function createActionButton(id)
 
     local button = CreateFrame('CheckButton', name, nil, 'ActionBarButtonTemplate')
 
-    button.commandName = ('CLICK:%s:HOTKEY'):format(name)
+    button.commandName = ('CLICK %s:HOTKEY'):format(name)
 
     Addon.BindableButton:AddCastOnKeyPressSupport(button)
 

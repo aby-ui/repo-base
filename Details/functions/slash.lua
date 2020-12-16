@@ -1594,10 +1594,10 @@ Damage Update Status: @INSTANCEDAMAGESTATUS
 		Details.coach.enabled = not Details.coach.enabled
 
 		if (Details.coach.enabled) then
-			Details:Msg("coach enabled, good luck!")
-			Details:Msg("[raid leader] stay outside the raid.")
-			Details:Msg("[assistants] at least one player inside the raid need to have assistant.")
-			Details:Msg("[players] have an updated version of Details!.")
+			Details:Msg("Details! Coach enabled, good luck commander!")
+			Details:Msg("[|cFFAAFFAADetails! Coach|r] raid leader stay outside the raid.")
+			Details:Msg("[|cFFAAFFAADetails! Coach|r] assistants, at least one player inside the raid need to have assistant.")
+			Details:Msg("[|cFFAAFFAADetails! Coach|r] players have an updated version of Details!.")
 			Details.Coach.Server.EnableCoach()
 			
 		else

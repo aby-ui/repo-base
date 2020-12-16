@@ -622,7 +622,7 @@
 			[255654] = "BullRush", -- Bull Rush (Highmountain Racial)
 			-- Gladiator's Maledict :^)
 			--[302144] = "maledict",
-			[305252] = "maledict", -- 8.2
+			--[305252] = "maledict", -- 8.2
 
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature
@@ -769,6 +769,7 @@
 			[108839] = "iceFloes",
 			[31661] = "DragonBreath", -- Dragon's Breath
 			[55342] = "mirrorImage",
+			[122] = "frostNova",
 			
 			-- Monk (Cast Success)
 			[116841] = "tigersLust",
@@ -841,7 +842,7 @@
 			[73325] = "leapOfFaith",
 			[215769] = "redeemer",
 			--[305498] = "Premonition", -- Premonition
-			[32379] = "Premonition", -- Shadow Word: Death
+			[32379] = "ShadowWordDeath", -- Shadow Word: Death
 			[289657] = "holywordconcentration",
 			[316262] = "thoughtsteal",
 			[327661] = "faeGuardians", -- Night Fae
@@ -960,6 +961,7 @@
 			[325886] = "ancientAftershock",
 			[324143] = "conquerorbanner", -- Necrolord
 			[307865] = "spearofbastion", -- Kyrian
+			[64382] = "ShatteringThrowSuccess",
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
 			[19647] = "lockout", -- Spell Locks begin

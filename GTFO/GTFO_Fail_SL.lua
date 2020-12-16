@@ -174,6 +174,15 @@ GTFO.SpellID["344988"] = {
   sound = 3;
 };
 
+GTFO.SpellID["346251"] = {
+  --desc = "Anima Nova (Ghastly Willbreaker)";
+  sound = 3;
+};
+
+GTFO.SpellID["346439"] = {
+  --desc = "Culling Blades (Seeker Xeros)";
+  sound = 3;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -182,6 +191,12 @@ GTFO.SpellID["344988"] = {
 GTFO.SpellID["326440"] = {
   --desc = "Sin Quake (Shard of Halkias)";
   sound = 3;
+};
+
+GTFO.SpellID["346866"] = {
+  --desc = "Stone Breath (Loyal Stoneborn)";
+  sound = 3;
+  tankSound = 0;
 };
 
 GTFO.SpellID["322945"] = {
@@ -201,6 +216,28 @@ GTFO.SpellID["323126"] = {
 
 GTFO.SpellID["314926"] = {
   --desc = "Soul Surge";
+  sound = 3;
+};
+
+GTFO.SpellID["338848"] = {
+  --desc = "Spine Crawl (Mortanis)";
+  sound = 3;
+};
+
+GTFO.SpellID["337196"] = {
+  --desc = "Active Volcano";
+  sound = 3;
+};
+
+GTFO.SpellID["336809"] = {
+  --desc = "Soul Fissure (Azmogal)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["336893"] = {
+  --desc = "Terrifying Chaos (Azmogal)";
+  applicationOnly = true;
   sound = 3;
 };
 
@@ -277,6 +314,21 @@ GTFO.SpellID["322475"] = {
 --- * Sanguine Depths *
 --- *******************
 
+GTFO.SpellID["320999"] = {
+  --desc = "Echoing Thrust (Regal Mistdancer)";
+  sound = 3;
+};
+
+GTFO.SpellID["320991"] = {
+  --desc = "Echoing Thrust (Regal Mistdancer)";
+  sound = 3;
+};
+
+GTFO.SpellID["334921"] = {
+  --desc = "Umbral Crash (Insatiable Brute)";
+  sound = 3;
+};
+
 GTFO.SpellID["322418"] = {
   --desc = "Craggy Fracture (Chamber Sentinel)";
   sound = 3;
@@ -292,6 +344,12 @@ GTFO.SpellID["322429"] = {
   applicationOnly = true;
   sound = 3;
   tankSound = 0;
+};
+
+GTFO.SpellID["328494"] = {
+  --desc = "Sintouched Anima";
+  applicationOnly = true;
+  sound = 3;
 };
 
 GTFO.SpellID["325885"] = {
@@ -388,6 +446,10 @@ GTFO.SpellID["336420"] = {
   sound = 3;
 };
 
+GTFO.SpellID["323943"] = {
+  --desc = "Run Through (Devos)";
+  sound = 3;
+};
 
 --- *************************
 --- * Mists of Tirna Scithe *
@@ -418,15 +480,9 @@ GTFO.SpellID["321893"] = {
   sound = 3;
 };
 
-GTFO.SpellID["325418"] = {
-  --desc = "Acid Spray (Spinemaw Acidgullet)";
-  sound = 3;
-};
-
 GTFO.SpellID["326022"] = {
   --desc = "Acid Globule (Spinemaw Gorger)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["322655"] = {
@@ -509,6 +565,18 @@ GTFO.SpellID["332731"] = {
 
 GTFO.SpellID["319567"] = {
   --desc = "Grasping Hands (Kul'tharok)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["330592"] = {
+  --desc = "Vile Eruption (Rancid Gasbag)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["321768"] = {
+  --desc = "On the Hook";
   applicationOnly = true;
   sound = 3;
 };
@@ -707,6 +775,94 @@ GTFO.SpellID["294533"] = {
   --desc = "Soulblast Nova (Deadsoul Devil)";
   sound = 3;
 };
+
+GTFO.SpellID["333091"] = {
+  --desc = "Lance of Darkness (Coldheart Ambusher)";
+  sound = 3;
+};
+
+GTFO.SpellID["322724"] = {
+  --desc = "Divebomb (Coldheart Ambusher)";
+  sound = 3;
+};
+
+GTFO.SpellID["308096"] = {
+  --desc = "Crashing Inferno (Empowered Flameforge Master)";
+  sound = 3;
+};
+
+GTFO.SpellID["308098"] = {
+  --desc = "Crashing Inferno (Empowered Flameforge Master)";
+  sound = 3;
+};
+
+GTFO.SpellID["296355"] = {
+  --desc = "Subjugate Spirit (Subjugator Klontzas)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["296372"] = {
+  --desc = "Subjugate Soul (Subjugator Klontzas)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+--- ******************
+--- * Castle Nathria *
+--- ******************
+
+GTFO.SpellID["330711"] = {
+  --desc = "Earsplitting Shriek (Shriekwing)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["330712"] = {
+  --desc = "Earsplitting Shriek (Shriekwing)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["343022"] = {
+  --desc = "Echoing Sonar (Shriekwing)";
+  sound = 3;
+};
+
+GTFO.SpellID["343005"] = {
+  --desc = "Blind Swipe (Shriekwing)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["345425"] = {
+  --desc = "Murder Prey (Shriekwing)";
+  sound = 3;
+};
+
+GTFO.SpellID["341304"] = {
+  --desc = "Mastercrafted Gamesman's Snare (Nathrian Gargon Rider)";
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["326455"] = {
+  --desc = "Fiery Strike (Shade of Kael'thas)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+GTFO.SpellID["339553"] = {
+  --desc = "Lingering Anima (Deplina)";
+  sound = 1;
+};
+
+GTFO.SpellID["325713"] = {
+  --desc = "Lingering Anima (Lady Inerva Darkvein)";
+  sound = 1;
+};
+
 
 end
 

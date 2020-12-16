@@ -3,7 +3,8 @@ if not VehicleLeaveButton then
     return
 end
 
-local _, Addon = ...
+local AddonName, Addon = ...
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local CanExitVehicle = _G.CanExitVehicle
 if not CanExitVehicle then
@@ -16,14 +17,11 @@ end
 local VehicleBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function VehicleBar:New()
-    local bar = VehicleBar.proto.New(self, "vehicle")
+    return VehicleBar.proto.New(self, "vehicle")
+end
 
-    -- drop need for showstates for this case
-    if bar:GetShowStates() == '[@vehicle,exists]show;hide' then
-        bar:SetShowStates(nil)
-    end
-
-    return bar
+function VehicleBar:GetDisplayName()
+    return L.VehicleDisplayName --return _G.BINDING_NAME_VEHICLEEXIT
 end
 
 VehicleBar:Extend('OnAcquire', function(self)
@@ -53,6 +51,7 @@ function VehicleBar:OnCreateMenu(menu)
     self:AddLayoutPanel(menu)
 
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel(true)
 end
 
 function VehicleBar:AddLayoutPanel(menu)

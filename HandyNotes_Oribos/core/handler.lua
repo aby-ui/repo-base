@@ -370,10 +370,12 @@ function events:ZONE_CHANGED(...)
         print("MapID: "..C_Map.GetBestMapForUnit("player"))
     end
 
-    if C_Map.GetBestMapForUnit("player") == 1671 or C_Map.GetBestMapForUnit("player") == 1543 then
-        C_Map.ClearUserWaypoint()
-        if IsAddOnLoaded("TomTom") then
-        TomTom:RemoveWaypoint(TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)}))
+    if C_Map.GetBestMapForUnit("player") == 1671 then
+        if private.db.fmaster_waypoint_dropdown == 1 or private.db.fmaster_waypoint_dropdown == 3 then
+            C_Map.ClearUserWaypoint()
+        end
+        if IsAddOnLoaded("TomTom") and (private.db.fmaster_waypoint_dropdown == 2 or private.db.fmaster_waypoint_dropdown == 3) then
+            TomTom:RemoveWaypoint(TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)}))
         end
     end
 end
@@ -398,9 +400,11 @@ function events:ZONE_CHANGED_INDOORS(...)
             C_SuperTrack.SetSuperTrackedUserWaypoint(true)
         end
     elseif C_Map.GetBestMapForUnit("player") == 1670 then
-        C_Map.ClearUserWaypoint()
-        if IsAddOnLoaded("TomTom") then
-        TomTom:RemoveWaypoint(TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)}))
+        if private.db.fmaster_waypoint_dropdown == 1 or private.db.fmaster_waypoint_dropdown == 3 then
+            C_Map.ClearUserWaypoint()
+        end
+        if IsAddOnLoaded("TomTom") and (private.db.fmaster_waypoint_dropdown == 2 or private.db.fmaster_waypoint_dropdown == 3) then
+            TomTom:RemoveWaypoint(TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)}))
         end
     end
 end

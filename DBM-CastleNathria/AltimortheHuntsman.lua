@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2429, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201210213254")
+mod:SetRevision("20201214195403")
 mod:SetCreatureID(165066)
 mod:SetEncounterID(2418)
 mod:SetUsedIcons(1, 2, 3)
@@ -39,32 +39,32 @@ local warnSpreadshot							= mod:NewSpellAnnounce(334404, 3)
 --Hunting Gargon
 ----Margore
 local warnJaggedClaws							= mod:NewStackAnnounce(334971, 2, nil, "Tank|Healer")
-local warnViciousLunge							= mod:NewTargetNoFilterAnnounce(334945, 3)
+local warnViciousLunge							= mod:NewTargetNoFilterAnnounce(334945, 3, nil, nil, 262783)
 ----Bargast
 local warnCrushingStone							= mod:NewStackAnnounce(334860, 2, nil, "Tank|Healer")
-local warnPetrifyingHowl						= mod:NewTargetAnnounce(334852, 3)
+local warnPetrifyingHowl						= mod:NewTargetAnnounce(334852, 3, nil, nil, 135241)--Shortname "Howl"
 ----Hecutis
 
 --Huntsman Altimor
 local specWarnSinseeker							= mod:NewSpecialWarningYouPos(335114, nil, nil, nil, 3, 2)
-local yellSinseeker								= mod:NewPosYell(335114)
+local yellSinseeker								= mod:NewPosYell(335114, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION3)
 local yellSinseekerFades						= mod:NewIconFadesYell(335114)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 --Hunting Gargon
 ----Margore
 local specWarnJaggedClaws						= mod:NewSpecialWarningStack(334971, nil, 2, nil, nil, 1, 6)
 local specWarnJaggedClawsTaunt					= mod:NewSpecialWarningTaunt(334971, nil, nil, nil, 1, 2)
-local specWarnViciousLunge						= mod:NewSpecialWarningYou(334945, nil, nil, nil, 3, 2)
-local yellViciousLunge							= mod:NewYell(334945, nil, nil, nil, "YELL")
-local yellViciousLungeFades						= mod:NewFadesYell(334945, nil, nil, nil, "YELL")
+local specWarnViciousLunge						= mod:NewSpecialWarningYou(334945, nil, 262783, nil, 3, 2)
+local yellViciousLunge							= mod:NewYell(334945, 262783, nil, nil, "YELL")
+local yellViciousLungeFades						= mod:NewFadesYell(334945, 262783, nil, nil, "YELL")
 ----Bargast
 local specWarnRipSoul							= mod:NewSpecialWarningDefensive(334797, nil, nil, nil, 1, 2)
-local specWarnRipSoulHealer						= mod:NewSpecialWarningSwitch(334797, "Healer", nil, nil, 1, 2)
+local specWarnRipSoulHealer						= mod:NewSpecialWarningTarget(334797, "Healer", nil, nil, 1, 2)
 local specWarnShadesofBargast					= mod:NewSpecialWarningSwitch(334757, "Dps", nil, nil, 1, 2)
 ----Hecutis
 local specWarnPetrifyingHowl					= mod:NewSpecialWarningMoveAway(334852, nil, nil, nil, 1, 2)
-local yellPetrifyingHowl						= mod:NewYell(334852)
-local yellPetrifyingHowlFades					= mod:NewFadesYell(334852)
+local yellPetrifyingHowl						= mod:NewYell(334852, 135241)--Shortname "Howl"
+local yellPetrifyingHowlFades					= mod:NewFadesYell(334852, 135241)--Shortname "Howl"
 
 --Huntsman Altimor
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22309))
@@ -74,14 +74,14 @@ local timerSpreadshotCD							= mod:NewCDTimer(12, 334404, nil, nil, nil, 2, nil
 ----Margore
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22312))
 local timerJaggedClawsCD						= mod:NewCDTimer(10.9, 334971, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--22.1, 23.4, 11.0
-local timerViciousLungeCD						= mod:NewCDTimer(25.6, 334945, nil, nil, nil, 3)
+local timerViciousLungeCD						= mod:NewCDTimer(25.6, 334945, 262783, nil, nil, 3)--Shortname Lunge
 ----Bargast
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22311))
 local timerRipSoulCD							= mod:NewCDTimer(30, 334797, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.HEALER_ICON)
 local timerShadesofBargastCD					= mod:NewCDTimer(60.1, 334757, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--60-63 at least
 ----Hecutis
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22310))
-local timerPetrifyingHowlCD						= mod:NewCDTimer(20.6, 334852, nil, nil, nil, 3)--20-26
+local timerPetrifyingHowlCD						= mod:NewCDTimer(20.6, 334852, 135241, nil, nil, 3)--20-26 Shortname "Howl"
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -187,7 +187,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnShadesofBargast:Play("killmob")
 		timerShadesofBargastCD:Start()
 		if self.Options.SetIconOnShades then
-			self:ScanForMobs(171557, 1, 4, 2, 0.2, 15)--Start at 4 ascending up
+			self:ScanForMobs(171557, 1, 4, 2, 0.2, 15, "SetIconOnShades")--Start at 4 ascending up
 		end
 	elseif spellId == 334852 then
 		timerPetrifyingHowlCD:Start()
@@ -199,7 +199,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 334945 then--First event with target information, it's where we sync timers to
 		timerViciousLungeCD:Start()
 	elseif spellId == 334797 then
-		specWarnRipSoulHealer:Show()
+		specWarnRipSoulHealer:Show(args.destName)
 		specWarnRipSoulHealer:Play("healfull")
 	end
 end
@@ -262,7 +262,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			playerSinSeeker = true
 			specWarnSinseeker:Show(self:IconNumToTexture(icon))
 			specWarnSinseeker:Play("mm"..icon)
-			yellSinseeker:Yell(icon, icon, icon)
+			yellSinseeker:Yell(icon, args.spellName, icon)
 			yellSinseekerFades:Countdown(spellId, nil, icon)
 		end
 		if self.Options.SetIconOnSinSeeker then

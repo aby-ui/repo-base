@@ -149,4 +149,15 @@ GTFO.SpellID["15284"] = {
 	};
 };
 
+GTFO.SpellID["15847"] = {
+	--desc = "Tail Sweep (Sapphironz - Onyxia/Naxx)";
+	sound = 3;
+};
+
+GTFO.SpellID["28157"] = {
+	--desc = "Slime Spray (Grobbulus - Naxx)";
+	sound = 3;
+	tankSound = 0;
+};
+
 end

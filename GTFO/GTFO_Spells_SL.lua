@@ -82,6 +82,16 @@ GTFO.SpellID["323811"] = {
   sound = 1;
 };
 
+GTFO.SpellID["338789"] = {
+  --desc = "Forge Exhaust (Anima Forge)";
+  sound = 1;
+};
+
+GTFO.SpellID["344413"] = {
+  --desc = "Acid Splash (Ikras the Devourer)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -252,6 +262,10 @@ GTFO.SpellID["320180"] = {
   sound = 1;
 };
 
+GTFO.SpellID["337037"] = {
+  --desc = "Whirling Blade (Nekthara the Mangler)";
+  sound = 1;
+};
 
 GTFO.SpellID["323130"] = {
   --desc = "Coagulating Ooze (Gorechop)";
@@ -268,11 +282,12 @@ GTFO.SpellID["323750"] = {
   sound = 1;
 };
 
-GTFO.SpellID["321768"] = {
-  --desc = "On the Hook";
-  applicationOnly = true;
+GTFO.SpellID["342103"] = {
+  --desc = "Rancid Bile (Rancid Gasbag)";
   sound = 1;
 };
+
+
 
 --- *********************
 --- * The Necrotic Wake *
@@ -280,6 +295,11 @@ GTFO.SpellID["321768"] = {
 
 GTFO.SpellID["320646"] = {
   --desc = "Fetid Gas (Blightbone)";
+  sound = 1;
+};
+
+GTFO.SpellID["320614"] = {
+  --desc = "Blood Gorge (Carrion Worm)";
   sound = 1;
 };
 
@@ -360,6 +380,7 @@ GTFO.SpellID["323569"] = {
 GTFO.SpellID["333790"] = {
   --desc = "Enraged Mask (Enraged Spirit)";
   sound = 1;
+  casterOnly = true;
 };
 
 GTFO.SpellID["331933"] = {
@@ -389,5 +410,56 @@ GTFO.SpellID["294607"] = {
   sound = 1;
 };
 
+--- ******************
+--- * Castle Nathria *
+--- ******************
+
+GTFO.SpellID["340324"] = {
+  --desc = "Sanguine Ichor (Shriekwing)";
+  sound = 1;
+};
+
+GTFO.SpellID["341441"] = {
+  --desc = "Ground Smash (Hulking Gargon)";
+  sound = 3;
+};
+
+GTFO.SpellID["334893"] = {
+  --desc = "Stone Shards (Hecutis)";
+  sound = 1;
+};
+
+GTFO.SpellID["328579"] = {
+  --desc = "Smoldering Remnants (Kael'thas)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["328579"] = {
+  --desc = "Lingering Anima (Lady Inerva Darkvein)";
+  sound = 1;
+};
+
+GTFO.SpellID["346945"] = {
+  --desc = "Manifest Pain (Baroness Frieda)";
+  sound = 1;
+};
+
+GTFO.SpellID["327992"] = {
+  --desc = "Desolation (Sire Denathrius)";
+  sound = 1;
+};
+
+GTFO.SpellID["340630"] = {
+  --desc = "Rotting";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["339553"] = {
+  --desc = "Lingering Anima (Deplina)";
+  applicationOnly = true;
+  sound = 1;
+};
 
 end

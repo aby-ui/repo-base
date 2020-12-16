@@ -2,7 +2,9 @@
 -- Pet Bar
 -- A movable action bar for pets
 --------------------------------------------------------------------------------
-local _, Addon = ...
+
+local AddonName, Addon = ...
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 --------------------------------------------------------------------------------
 -- Pet Button Setup
@@ -28,14 +30,16 @@ function PetBar:New()
     return PetBar.proto.New(self, 'pet')
 end
 
--- TODO: Not this. Right now, its hard for a user to setup custom fade actions
--- for the pet bar, because we ignore whatever has been set for it
+function PetBar:GetDisplayName()
+    return L.PetBarDisplayName
+end
+
 if Addon:IsBuild("classic") then
-    function PetBar:GetShowStates()
+    function PetBar:GetDisplayConditions()
         return '[pet]show;hide'
     end
 else
-    function PetBar:GetShowStates()
+    function PetBar:GetDisplayConditions()
         return '[@pet,exists,nopossessbar]show;hide'
     end
 end
@@ -70,13 +74,10 @@ end
 
 -- keybound events
 function PetBar:KEYBOUND_ENABLED()
-    self:SetAttribute('state-visibility', 'display')
     self:ForButtons("Show")
 end
 
 function PetBar:KEYBOUND_DISABLED()
-    self:UpdateShowStates()
-
     local petBarShown = PetHasActionBar()
 
     for _, button in pairs(self.buttons) do

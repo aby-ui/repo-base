@@ -54,7 +54,9 @@ function Details:StartMeUp() --I'll never stop!
 			self:InitializePlaterIntegrationWindow()
 			self:InitializeMacrosWindow()
 
-			--self:InitializeCDTrackerWindow()
+			if (self.ocd_tracker.show_options) then
+				self:InitializeCDTrackerWindow()
+			end
 			
 		--custom window
 			self.custom = self.custom or {}
@@ -477,6 +479,9 @@ function Details:StartMeUp() --I'll never stop!
 	if (_detalhes.streamer_config) then
 		_detalhes.streamer_config.use_animation_accel = true
 	end
+
+	--shutdown pre-pot announcer
+	Details.announce_prepots.enabled = false
 
 	--Plater integration
 	C_Timer.After(2, function()

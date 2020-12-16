@@ -1,9 +1,8 @@
 ﻿-- general options for Dominos
 
-local AddonName, Addon = ...
-local ParentAddonName = GetAddOnDependencies(AddonName)
-local ParentAddon = LibStub("AceAddon-3.0"):GetAddon(ParentAddonName)
-local L = LibStub("AceLocale-3.0"):GetLocale(ParentAddonName .. "-Config")
+local _, Addon = ...
+local ParentAddon = Addon:GetParent()
+local L = Addon:GetLocale()
 
 Addon:AddOptionsPanel(
     function()
@@ -106,7 +105,7 @@ Addon:AddOptionsPanel(
                 set = function(_, value)
                     ParentAddon:SetOverrideBar(value)
                 end
-            },            
+            },
             h(L.ActionButtonLookAndFeel),
             check(L.ShowEmptyButtons) {
                 get = function()
@@ -195,7 +194,7 @@ Addon:AddOptionsPanel(
                         error(("%s - Unknown tooltip option %q"):format(ParentAddonName, value))
                     end
                 end
-            }            
+            }
         }
     end
 )

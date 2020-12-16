@@ -68,6 +68,16 @@ function MirrorTimer:GetDefaults()
     }
 end
 
+function MirrorTimer:GetDisplayName()
+    local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
+
+    return L.MirrorTimerDisplayName:format(self.timerID)
+end
+
+function MirrorTimer:GetDisplayLevel()
+	return 'HIGH'
+end
+
 ---@param event string
 function MirrorTimer:OnEvent(event, ...)
     local func = self[event]

@@ -194,6 +194,9 @@
 	end
 	
 	function _detalhes.network.Cloud_Request (player, realm, core_version, ...)
+		--deprecated | need to remove
+		if (true) then return end
+		
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug)", player, _detalhes.host_of, _detalhes:CaptureIsAllEnabled(), core_version == _detalhes.realversion)
 		end
@@ -212,6 +215,9 @@
 	end
 	
 	function _detalhes.network.Cloud_Found (player, realm, core_version, ...)
+		--deprecated | need to remove
+		if (true) then return end
+
 		if (_detalhes.host_by) then
 			return
 		end
@@ -230,6 +236,9 @@
 	end
 	
 	function _detalhes.network.Cloud_DataRequest (player, realm, core_version, ...)
+		--deprecated | need to remove
+		if (true) then return end
+
 		if (not _detalhes.host_of) then
 			return
 		end
@@ -271,6 +280,9 @@
 	end
 	
 	function _detalhes.network.Cloud_DataReceived	(player, realm, core_version, ...)
+		--deprecated | need to remove
+		if (true) then return end
+
 		local atributo, atributo_name, data = player, realm, core_version
 		
 		local container = _detalhes.tabela_vigente [atributo]
@@ -338,6 +350,9 @@
 	end
 	
 	function _detalhes.network.Cloud_Equalize (player, realm, core_version, data)
+		--deprecated | need to remove
+		if (true) then return end
+
 		if (not _detalhes.in_combat) then
 			if (core_version ~= _detalhes.realversion) then
 				return
@@ -429,7 +444,7 @@
 			if (UnitIsGroupLeader("player")) then
 				if (Details.Coach.Server.IsEnabled()) then
 					--update the current combat with new information
-					Details.packFunctions.DeployUnpackedCombatData(data)
+					Details.packFunctions.DeployPackedCombatData(data)
 				end
 			end
 		end

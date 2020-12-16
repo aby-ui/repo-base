@@ -1270,6 +1270,9 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[64402] = 90633,
 	[64401] = 90632,
 	[64400] = 90631,
+	[64399] = 90628,
+	[64398] = 90626,
+	[63359] = 89479,
 
 	[133642] = 215956,
 	[137541] = 215648,
@@ -1612,7 +1615,7 @@ local function BarUpdateText(self)
 
 	local longtime,shorttime = nil
 
-	if time >= 3600 then
+	if time > 3600 then
 		longtime = "1+hour"
 		shorttime = "1+hour"
 	elseif time < 1 then
@@ -4774,6 +4777,8 @@ do
 			end
 		end
 	end
+
+	local isSpellDuplicateDisabled = false
 	function module.main:SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if not sourceName then
 			return
@@ -4917,14 +4922,19 @@ do
 		end
 
 		local modifData = spell_runningSameSpell[spellID]
-		if modifData then
+		if modifData and not isSpellDuplicateDisabled then
 			for i=1,#modifData do
 				local sameSpellID = modifData[i]
 				if sameSpellID ~= spellID then
+					--[[
 					local line = CDList[sourceName][ sameSpellID ]
 					if line then
 						CLEUstartCD(line)
 					end
+					]]
+					isSpellDuplicateDisabled = true
+					module.main:SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,sameSpellID)
+					isSpellDuplicateDisabled = false
 				end
 			end
 		end
@@ -10565,8 +10575,8 @@ module.db.AllSpells = {
 	{30283,	"WARLOCK,AOECC",	1,	{30283,	60,	3},	nil,			nil,			nil,			},	--Shadowfury
 	{20707,	"WARLOCK,RES",		3,	{20707,	600,	0},	nil,			nil,			nil,			},	--Soulstone
 	{205180,"WARLOCK,DPS",		3,	nil,			{205180,180,	20},	nil,			nil,			},	--Summon Darkglare
-	{265187,"WARLOCK,DPS",		3,	nil,			nil,			{265187,90,	0},	nil,			},	--Summon Demonic Tyrant
-	{1122,	"WARLOCK,DPS",		3,	nil,			nil,			nil,			{1122,	180,	0},	},	--Summon Infernal
+	{265187,"WARLOCK,DPS",		3,	nil,			nil,			{265187,90,	15},	nil,			},	--Summon Demonic Tyrant
+	{1122,	"WARLOCK,DPS",		3,	nil,			nil,			nil,			{1122,	180,	30},	},	--Summon Infernal
 	{104773,"WARLOCK,DEF",		4,	{104773,180,	8},	nil,			nil,			nil,			},	--Unending Resolve
 	{267211,"WARLOCK",		3,	nil,			nil,			{267211,30,	0},	nil,			},	--Bilescourge Bombers
 	{152108,"WARLOCK",		3,	nil,			nil,			nil,			{152108,30,	0},	},	--Cataclysm
@@ -10609,7 +10619,7 @@ module.db.AllSpells = {
 	{322101,"MONK",			3,	{322101,15,	0},	nil,			nil,			nil,			},	--Expel Harm
 	{113656,"MONK",			3,	nil,			nil,			{113656,24,	0},	nil,			},	--Fists of Fury
 	{101545,"MONK,MOVE",		3,	nil,			nil,			{101545,20,	0},	nil,			},	--Flying Serpent Kick
-	{115203,"MONK,DEFTANK,DEF",	4,	nil,			{115203,420,	15},	{115203,180,	15},	{115203,180,	15},	},	--Fortifying Brew
+	{115203,"MONK,DEFTANK,DEF",	4,	nil,			{115203,360,	15},	{115203,180,	15},	{115203,180,	15},	},	--Fortifying Brew
 	{122281,"MONK",			3,	nil,			nil,			nil,			{122281,30,	0},	},	--Healing Elixir
 	{132578,"MONK",			3,	nil,			{132578,180,	0},	nil,			nil,			},	--Invoke Niuzao, the Black Ox
 	{123904,"MONK,DPS",		3,	nil,			nil,			{123904,120,	24},	nil,			},	--Invoke Xuen, the White Tiger
@@ -10636,18 +10646,18 @@ module.db.AllSpells = {
 	{115098,"MONK",			3,	{115098,15,	0},	nil,			nil,			nil,			},	--Chi Wave
 	{122278,"MONK,DEF",		3,	{122278,120,	10},	nil,			nil,			nil,			},	--Dampen Harm
 	{122783,"MONK,DEF",		4,	nil,			nil,			{122783,90,	6},	{122783,90,	6},	},	--Diffuse Magic
-	{115288,"MONK",			3,	nil,			nil,			nil,			{115288,60,	5},	},	--Energizing Elixir
+	{115288,"MONK",			3,	nil,			nil,			{115288,60,	5},	nil,			},	--Energizing Elixir
 	{325153,"MONK",			3,	nil,			{325153,60,	0},	nil,			nil,			},	--Exploding Keg
-	{261947,"MONK",			3,	nil,			nil,			nil,			{261947,30,	0},	},	--Fist of the White Tiger
-	{325197,"MONK,HEAL",		3,	nil,			nil,			{325197,180,	0},	nil,			},	--Invoke Chi-Ji, the Red Crane
-	{197908,"MONK,HEAL",		3,	nil,			nil,			{197908,90,	10},	nil,			},	--Mana Tea
+	{261947,"MONK",			3,	nil,			nil,			{261947,30,	0},	nil,			},	--Fist of the White Tiger
+	{325197,"MONK,HEAL",		3,	nil,			nil,			nil,			{325197,180,	0},	},	--Invoke Chi-Ji, the Red Crane
+	{197908,"MONK,HEAL",		3,	nil,			nil,			nil,			{197908,90,	10},	},	--Mana Tea
 	{116844,"MONK,UTIL",		1,	{116844,45,	5},	nil,			nil,			nil,			},	--Ring of Peace
-	{152173,"MONK,DPS",		3,	nil,			nil,			nil,			{152173,90,	12},	},	--Serenity
-	{198898,"MONK",			3,	nil,			nil,			{198898,30,	0},	nil,			},	--Song of Chi-Ji
+	{152173,"MONK,DPS",		3,	nil,			nil,			{152173,90,	12},	nil,			},	--Serenity
+	{198898,"MONK",			3,	nil,			nil,			nil,			{198898,30,	0},	},	--Song of Chi-Ji
 	{115315,"MONK",			3,	nil,			{115315,10,	0},	nil,			nil,			},	--Summon Black Ox Statue
-	{115313,"MONK",			3,	nil,			nil,			{115313,10,	0},	{115313,10,	0},	},	--Summon Jade Serpent Statue
+	{115313,"MONK",			3,	nil,			nil,			nil,			{115313,10,	0},	},	--Summon Jade Serpent Statue
 	{116841,"MONK,UTIL,RAIDSPEED",	2,	{116841,30,	6},	nil,			nil,			nil,			},	--Tiger's Lust
-	{152175,"MONK",			3,	nil,			nil,			nil,			{152175,24,	0},	},	--Whirling Dragon Punch
+	{152175,"MONK",			3,	nil,			nil,			{152175,24,	0},	nil,			},	--Whirling Dragon Punch
 	{207025,"MONK,PVP",		3,	nil,			{207025,20,	0},	nil,			nil,			},	--Admonishment
 	{202162,"MONK,PVP",		3,	nil,			{202162,45,	15},	nil,			nil,			},	--Avert Harm
 	{202335,"MONK,PVP",		3,	nil,			{202335,45,	0},	nil,			nil,			},	--Double Barrel
@@ -10725,7 +10735,7 @@ module.db.AllSpells = {
 	{191427,"DEMONHUNTER,DPS,DEFTANK",3,	nil,			{191427,240,	30},	{187827,180,	15},	},	--Metamorphosis
 	{204596,"DEMONHUNTER",		3,	nil,			nil,			{204596,30,	2},	},	--Sigil of Flame
 	{207684,"DEMONHUNTER,AOECC",	1,	nil,			nil,			{207684,180,	2},	},	--Sigil of Misery
-	{202137,"DEMONHUNTER,UTIL",	1,	nil,			nil,			{202137,120,	2},	},	--Sigil of Silence
+	{202137,"DEMONHUNTER,UTIL",	1,	nil,			nil,			{202137,60,	2},	},	--Sigil of Silence
 	{188501,"DEMONHUNTER",		3,	{188501,60,	10},	nil,			nil,			},	--Spectral Sight
 	{185123,"DEMONHUNTER",		3,	{185123,9,	0},	nil,			nil,			},	--Throw Glaive
 	{185245,"DEMONHUNTER,TAUNT",	5,	{185245,8,	0},	nil,			nil,			},	--Torment
@@ -10758,7 +10768,7 @@ module.db.AllSpells = {
 	{91802,	"PET,DEATHKNIGHT",	5,	{91802,30,0}	},
 	{91797,	"PET,DEATHKNIGHT",	3,	{91797,90,0}	},
 	{89751,	"PET,WARLOCK",		3,	{89751,45,6}	},
-	{89766,	"PET,WARLOCK,CC",	5,	{89766,30,0}	},
+	{89766,	"PET,WARLOCK,CC,KICK",	5,	{89766,30,0}	},
 	{115276,"PET,WARLOCK,DISPEL",	5,	{115276,10,0}	},
 	{17767,	"PET,WARLOCK",		3,	{17767,120,20}	},
 	{89808,	"PET,WARLOCK,DISPEL",	5,	{89808,10,0}	},

@@ -387,7 +387,6 @@ DF.CooldownsBySpec = {
 		--marksmanship
 		[254] = {
 			[193526] = 1, --Trueshot
-			[260402] = 1, --Double tap
 			[186265] = 2, --Aspect of the Turtle
 			[199483] = 2, --Camouflage (talent)
 			[109304] = 2, --Exhilaration
@@ -879,9 +878,7 @@ for specId, cooldownTable in pairs (DF.CooldownsBySpec) do
 		end
 		
 		DF.CooldownToClass [spellId] = DF.SpecIds [spellId]
-
 	end
-	
 end
 
 function DF:FindClassForCooldown (spellId)
@@ -900,6 +897,15 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --consumables
 
+DF.WeaponEnchantIds = {
+	[6188] = true, --shadowcore oil
+	[6190] = true, --embalmer's oil
+	[6201] = true, --weighted
+	[6200] = true, --sharpened
+	[5400] = true, --flametongue
+	[5401] = true, --windfury
+}
+
 DF.FlaskIDs = {
 	--Shadowlands
 	[307185] = true, --Spectral Flask of Power
@@ -914,13 +920,23 @@ DF.FoodIDs = {
 	--shadowlands tier 1
 	[259454] = 1, -- (agility) Feast of Gluttonous Hedonism
 	[308434] = 1, -- (critical) Phantasmal Souffle and Fries
+	[308397] = 1, --(critical +18) Butterscotch Marinated Ribs
+	[308400] = 1, --(critical +30) Spinefin Souffle and Fries
 	[308488] = 1, -- (haste) Tenebrous Crown Roast Aspic
+	[308404] = 1, -- (haste +18) Cinnamon Bonefish Stew
+	[308405] = 1, -- (haste +30) Tenebrous Crown Roast Aspic
 	[308506] = 1, -- (mastery) Crawler Ravioli with Apple Sauce
+	[308412] = 1, -- (mastery +18) Meaty Apple Dumplings
+	[308413] = 1, -- (mastery +30) Iridescent Ravioli with Apple Sauce
 	[308525] = 1, -- (stamina) Banana Beef Pudding
+	[308414] = 1, -- (stamina +14) Pickled Meat Smoothie
+	[308415] = 1, -- (stamina +22) Banana Beef Pudding
 	[308514] = 1, -- (versatility) Steak a la Mode
-	[327851] = 1, -- (periodicaly heal out of combat) Seraph Tenders
-	[308637] = 1, -- (periodicaly damage) Smothered Shank
+	[308425] = 1, -- (versatility +18) Sweet Silvergill Sausages
+	[308426] = 1, -- (versatility +30) Steak a la Mode
+	[308419] = 1, -- (periodicaly damage) Smothered Shank
 	[327715] = 1, -- (speed) Fried Bonefish
+
 }
 
 DF.PotionIDs = {
@@ -932,7 +948,6 @@ DF.PotionIDs = {
 	[307162] = true, --Potion of Spectral Intellect
 	[307494] = true, --Potion of Empowered Exorcisms
 	[307495] = true, --Potion of Phantom Fire
-	[307496] = true, --Potion of Divine Awakening
 	[307161] = true, --Potion of Spiritual Clarity
 	[307496] = true, --Potion of Divine Awakening
 	[307501] = true, --Potion of Specter Swiftness

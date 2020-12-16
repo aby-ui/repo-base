@@ -320,7 +320,7 @@ function ActionBar:UpdateFlyoutDirection()
 end
 
 ActionBar:Extend("Layout", ActionBar.UpdateFlyoutDirection)
-ActionBar:Extend("SaveFramePosition", ActionBar.UpdateFlyoutDirection)
+ActionBar:Extend("Stick", ActionBar.UpdateFlyoutDirection)
 
 -- exports
 Addon.ActionBar = ActionBar

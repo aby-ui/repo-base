@@ -16,6 +16,7 @@ L.BarSettings = "%s Settings"
 L.Buttons = "Buttons"
 L.ClickThrough = "Enable Click Through"
 L.Columns = "Columns"
+L.CommandKey = 'Command Key'
 L.ConfirmCopyProfile = "Copy contents from %s into the current profile?"
 L.ConfirmDeleteProfile = "Delete profile %s?"
 L.ConfirmResetProfile = "Are you sure you want to reset your profile?"
@@ -23,7 +24,7 @@ L.Copy = "Copy"
 L.CopyProfile = "Copy Profile..."
 L.CreateProfile = "Create Profile..."
 L.Delay = "Delay (sec)"
-L.Delete = DELETE
+L.Delete = _G.DELETE
 L.DisableMenuButtons = "Disable Buttons"
 L.Duration = "Duration (sec)"
 L.EnterBindingMode = "Bind Keys..."
@@ -39,10 +40,11 @@ L.Layout = "Layout"
 L.LeftToRight = "Layout Buttons From Left to Right"
 L.LinkedOpacity = "Docked bars inherit opacity"
 L.LockActionButtons = "Lock Action Button Positions"
+L.MetaKey = 'Meta Key'
 L.Modifiers = "Modifiers"
-L.None = NONE
+L.None = _G.NONE
 L.OneBag = "One Bag"
-L.Opacity = OPACITY
+L.Opacity = _G.OPACITY
 L.OutOfCombat = "Out of Combat"
 L.Padding = "Padding"
 L.Paging = "Paging"
@@ -52,12 +54,12 @@ L.Profiles = "Profiles"
 L.ProfilesPanelDesc = "Allows you to manage saved Dominos layouts"
 L.QuickMoveKey = "Quick Move Key"
 L.QuickPaging = "Quick Paging"
-L.RCUFocus = FOCUS
+L.RCUFocus = _G.FOCUS
 L.RCUPlayer = "Self"
 L.RCUToT = "Target of Target"
 L.ResetProfile = "Reset Profile..."
 L.RightClickUnit = "Right Click Target"
-L.Save = SAVE
+L.Save = _G.SAVE
 L.Scale = "Scale"
 L.SelfcastKey = "Selfcast Key"
 L.Set = "Set"
@@ -77,17 +79,6 @@ L.ShowTooltips = "Show Tooltips"
 L.ShowTooltipsCombat = "Show Tooltips in Combat"
 L.Size = "Size"
 L.Spacing = "Spacing"
-L.State_ALTSHIFT = strjoin("-", ALT_KEY_TEXT, SHIFT_KEY_TEXT)
-L.State_CTRLALT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT)
-L.State_CTRLALTSHIFT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT, SHIFT_KEY_TEXT)
-L.State_CTRLSHIFT = strjoin("-", CTRL_KEY_TEXT, SHIFT_KEY_TEXT)
-
-if IsMacClient() then
-    L.State_META = 'Command Key'
-else
-    L.State_META = 'Meta Key'
-end
-
 L.State_HARM = "Harm"
 L.State_HELP = "Help"
 L.State_NOTARGET = "No Target"
@@ -98,3 +89,15 @@ L.ThemeActionButtons = "Theme Action Buttons (Requires Reload)"
 L.ThemeActionButtonsDesc = "Applies some custom style adjustments to action buttons when enabled, and leave them untouched when not"
 L.TopToBottom = "Layout Buttons From Top to Bottom"
 L.Visibility = "Visibility"
+
+-- derived translations
+L.State_ALTSHIFT = strjoin("-", ALT_KEY_TEXT, SHIFT_KEY_TEXT)
+L.State_CTRLALT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT)
+L.State_CTRLALTSHIFT = strjoin("-", CTRL_KEY_TEXT, ALT_KEY_TEXT, SHIFT_KEY_TEXT)
+L.State_CTRLSHIFT = strjoin("-", CTRL_KEY_TEXT, SHIFT_KEY_TEXT)
+
+if IsMacClient() then
+    L.State_META = 'CMD Key'
+else
+    L.State_META = 'Meta Key'
+end

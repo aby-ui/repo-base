@@ -109,6 +109,10 @@ module.db.topEnchGems = IS_SL and {
 	[173127]="Gem:crit:16",
 	[173130]="Gem:mastery:16",
 	[173128]="Gem:haste:16",
+
+	[3368]="DKWeapon:knight",
+	[3370]="DKWeapon:frost",
+	[3847]="DKWeapon:2h",
 } or {
 	--[5938]="Ring:Crit:27",
 	--[5939]="Ring:Haste:27",
@@ -475,7 +479,7 @@ function module.options:Load()
 		elseif UnitLevel'player' < 50 then
 			contentID = 1
 			extra_list[#extra_list+1] = text_relic
-		elseif UnitLevel'player' < 60 then
+		elseif UnitLevel'player' < 51 then
 			contentID = 2
 			extra_list[#extra_list+1] = text_az
 		else

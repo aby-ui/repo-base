@@ -64,7 +64,7 @@ function HelpDialog:OnLoad(owner)
     local settingsButton = _G.CreateFrame('Button', nil, self, 'UIPanelButtonNoTooltipResizeToFitTemplate')
     settingsButton.Text:SetText(_G.SETTINGS)
     settingsButton:SetScript('OnClick', function() LibStub("AceConfigDialog-3.0"):Open("Dominos") end)
-    settingsButton:SetPoint('RIGHT', exitButton, 'LEFT', -10, 0)
+    settingsButton:SetPoint('BOTTOM', exitButton, 'TOP', 0, 5)
 
     local showGridButton = _G.CreateFrame('CheckButton', nil, self, "UICheckButtonTemplate")
 
@@ -72,6 +72,30 @@ function HelpDialog:OnLoad(owner)
     showGridButton:SetChecked(Addon:GetParent():GetAlignmentGridEnabled())
     showGridButton:SetScript('OnClick', function(button) self:OnShowGridButtonClicked(button) end)
     showGridButton:SetPoint('BOTTOMLEFT', 14, 10)
+
+
+	local slider = Addon.Slider:New({
+		name = L.GridDensity,
+
+        min = 8,
+
+        max = 128,
+
+        step = 8,
+
+		get = function()
+			return Addon:GetParent():GetAlignmentGridSize()
+		end,
+
+		set = function(_, value)
+			Addon:GetParent():SetAlignmentGridSize(value)
+		end
+    })
+
+    slider:SetParent(self)
+    slider:SetScale(0.8)
+    slider:SetPoint('LEFT', showGridButton, 'RIGHT', 75, -6)
+    slider:SetPoint('RIGHT', exitButton, 'LEFT', -2, -6)
 
     self.showGridButton = showGridButton
 

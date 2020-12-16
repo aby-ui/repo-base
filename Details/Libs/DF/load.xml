@@ -12,6 +12,7 @@
 	<Script file="math.lua"/>
 	<Script file="savedvars.lua"/>
 	<Script file="languages.lua"/>
+	<Script file="timebar.lua"/>
 	
 	<Include file="tutorial_alert.xml"/>
 	<Include file="split_bar.xml"/>

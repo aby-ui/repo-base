@@ -667,27 +667,6 @@ function mythicDungeonCharts.ShowChart()
 		
 		mythicDungeonCharts.Frame.ChartFrame:AddLine (chartData, lineColor, lineName, combatTime, texture, "SMA")
 		tinsert (mythicDungeonCharts.PlayerGraphIndex, playerName)
-		
-		--[=[
-		local smoothFactor = 0.075
-		local forecastSmoothFactor = 1 - smoothFactor
-		local lastForecast = chartData[1]
-		local chartLag = {lastForecast}
-		local maxValue = lastForecast
-		
-		for i = 2, #chartData do
-			local forecast = (chartData[i] * smoothFactor) + (lastForecast * forecastSmoothFactor)
-			tinsert (chartLag, forecast)
-			lastForecast = forecast
-			
-			if (forecast > maxValue) then
-				maxValue = forecast
-			end
-		end
-		chartLag.max_value = maxValue
-
-		mythicDungeonCharts.Frame.ChartFrame:AddLine (chartLag, lineColor, lineName, combatTime, texture, "SMA")		
-		--]=]
 	end
 	
 	mythicDungeonCharts.Frame.ChartFrame:RefreshBossTimeline (mythicDungeonCharts.ChartTable.BossDefeated, mythicDungeonCharts.ChartTable.ElapsedTime)

@@ -149,7 +149,7 @@ do
 				icon:Show("MythicDungeonTools")
 			end
 
-            if db.dataCollectionActive then MDT.DataCollection:Init() end
+            --if db.dataCollectionActive then MDT.DataCollection:Init() end
             --fix db corruption
             do
                 for _,presets in pairs(db.presets) do
@@ -166,15 +166,15 @@ do
                     if v <= 0 then db.currentPreset[k] = 1 end
                 end
             end
-			--[[ --abyui_nouse
+
             for _, d in pairs(MDT.dungeonEnemies) do
                 for _, v in pairs(d) do
-                    local name = L.NPCS[v.id] if name then v.name = name end
-                    local name = L.CREATURES[v.creatureType] if name then v.creatureType = name end
+                    local name = MDT.ABY_NPCS[v.id] if name then v.name = name end
+                    local name = MDT.ABY_CREATURES[v.creatureType] if name then v.creatureType = name end
                 end
             end
-            L.NPCS, L.CREATURES = nil, nil
-			--]]
+            MDT.ABY_NPCS, MDT.ABY_CREATURES = nil, nil
+
             --register AddOn Options
             MDT:RegisterOptions()
             self:UnregisterEvent("ADDON_LOADED")

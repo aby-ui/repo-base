@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2410, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201206235333")
+mod:SetRevision("20201214032105")
 mod:SetCreatureID(169769)
 mod:SetEncounterID(2396)
 
@@ -49,6 +49,7 @@ local timerCosmicArtificeCD			= mod:NewCDCountTimer(19.5, 325725, nil, nil, nil,
 local timerSoulcrusherCD			= mod:NewCDCountTimer(17.8, 327646, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerShatterRealityCD			= mod:NewCDTimer(25.3, 326171, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
 --Stage 2: Shattered Reality
+local timerCoalescing				= mod:NewCastTimer(25, 334970, nil, nil, nil, 6)
 
 --mod.vb.addsLeft = 3
 mod.vb.cosmicCount = 0
@@ -114,6 +115,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnCosmicArtifice:CombinedShow(1, args.destName)
 		end
+	elseif spellId == 334970 then--Coalescing
+		timerCoalescing:Start()
 	end
 end
 
@@ -126,6 +129,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 334970 then--Coalescing
 		self.vb.cosmicCount = 0
 		self.vb.soulCount = 0
+		timerCoalescing:Stop()
 		timerCosmicArtificeCD:Start(19.6, 1)
 		timerSoulcrusherCD:Start(21.8, 1)
 		timerMasterofDeathCD:Start(25.4)

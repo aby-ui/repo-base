@@ -130,7 +130,7 @@ function Addon:Load()
         end
     end
 
-    self.Frame:ForAll('Reanchor')
+    self.Frame:ForAll('RestoreAnchor')
     self:GetModule('ButtonThemer'):Reskin()
 
     self.callbacks:Fire('LAYOUT_LOADED')
@@ -764,6 +764,18 @@ function Addon:GetAlignmentGridSize()
     return self.db.profile.alignmentGrid.size
 end
 
+function Addon:GetAlignmentGridScale()
+    local gridSize = self:GetAlignmentGridSize()
+    if gridSize <= 0 then
+        return 0, 0
+    end
+
+    local aspectRatio = GetScreenWidth() / GetScreenHeight()
+    local xScale = _G.Round(gridSize / 2) * 2
+    local yScale = _G.Round((xScale / aspectRatio) / 2) * 2
+
+    return xScale, yScale
+end
 --------------------------------------------------------------------------------
 -- Utility Methods
 --------------------------------------------------------------------------------

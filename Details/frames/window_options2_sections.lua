@@ -617,6 +617,17 @@ do
                 desc = Loc ["STRING_OPTIONS_IGNORENICKNAME_DESC"],
             },
 
+            {--remove realm name
+                type = "toggle",
+                get = function() return _detalhes.remove_realm_from_name end,
+                set = function (self, fixedparam, value)
+                    _detalhes.remove_realm_from_name = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_REALMNAME"],
+                desc = Loc ["STRING_OPTIONS_REALMNAME_DESC"],
+            },
+
             {type = "blank"},
 
             {type = "label", get = function() return "Immersion" end, text_template = subSectionTitleTextTemplate}, --localize-me

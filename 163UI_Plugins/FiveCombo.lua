@@ -67,7 +67,7 @@ local function comboEventFrame_OnEvent(self, event, ...)
 end
 
 local function myActionButton_OnUpdate(self, elapsed)
-    if self.comboEventFrame then return end
+    if not self or self.comboEventFrame then return end
 	self.comboEventFrame = CreateFrame("Frame", nil, self);
 	self.comboEventFrame.countTime = 0;
 	self.comboEventFrame:RegisterEvent("UNIT_POWER_UPDATE");
@@ -77,13 +77,6 @@ local function myActionButton_OnUpdate(self, elapsed)
 end
 
     --abyui change for 9.0 hooksecurefunc("ActionButton_OnUpdate", myActionButton_OnUpdate);
-    hooksecurefunc(ActionBarButtonEventsFrame, "RegisterFrame", function(self, btn)
-        if not self.__abyFiveCombo then
-            self.__abyFiveCombo = true
-            for _, btn in ipairs(self.frames) do
-                myActionButton_OnUpdate(btn)
-            end
-        end
-        myActionButton_OnUpdate(btn)
-    end)
+    for _, btn in ipairs(ActionBarButtonEventsFrame.frames) do myActionButton_OnUpdate(btn) end
+    hooksecurefunc(ActionBarButtonEventsFrame, "RegisterFrame", function(self, btn) myActionButton_OnUpdate(btn) end)
 end

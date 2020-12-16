@@ -2,7 +2,9 @@
 -- Stance bar
 -- Lets you move around the bar for displaying forms/stances/etc
 --------------------------------------------------------------------------------
-local _, Addon = ...
+
+local AddonName, Addon = ...
+local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 -- test to see if the player has a stance bar
 -- not the best looking, but I also don't need to keep it after I do the check
@@ -46,6 +48,10 @@ local StanceBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
 function StanceBar:New()
     return StanceBar.proto.New(self, 'class')
+end
+
+function StanceBar:GetDisplayName()
+    return L.ClassBarDisplayName
 end
 
 function StanceBar:GetDefaults()

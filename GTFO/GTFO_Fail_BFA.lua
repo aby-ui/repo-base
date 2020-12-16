@@ -187,13 +187,13 @@ GTFO.SpellID["257336"] = {
 
 GTFO.SpellID["265720"] = {
   --desc = "Poison Spray (Thu'zun the Vile)";
-  sound = 1;
+  sound = 3;
   applicationOnly = true;
 };
 
 GTFO.SpellID["266144"] = {
   --desc = "Poison Bomb (Thu'zun the Vile)";
-  sound = 1;
+  sound = 3;
   applicationOnly = true;
 };
 
@@ -336,7 +336,7 @@ GTFO.SpellID["287537"] = {
 GTFO.SpellID["284949"] = {
   --desc = "Warden's Prison (Sira Moonwarden)";
   applicationOnly = true;
-  sound = 1;
+  sound = 3;
 };
 
 GTFO.SpellID["288949"] = {
@@ -1302,7 +1302,7 @@ GTFO.SpellID["273486"] = {
 GTFO.SpellID["273401"] = {
   --desc = "Mind Thrall (G'huun)";
   applicationOnly = true;
-  sound = 1;
+  sound = 3;
 };
 
 GTFO.SpellID["267700"] = {

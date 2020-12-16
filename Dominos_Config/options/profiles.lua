@@ -1,12 +1,10 @@
-local AddonName, Addon = ...
-local ParentAddonName = GetAddOnDependencies(AddonName)
-local ParentAddon = LibStub("AceAddon-3.0"):GetAddon(ParentAddonName)
+local _, Addon = ...
 
-local tbl = LibStub("AceDBOptions-3.0"):GetOptionsTable(ParentAddon.db, true)
+local tbl = LibStub("AceDBOptions-3.0"):GetOptionsTable(Addon:GetParent().db, true)
 tbl.args.choose.width = "double"
 tbl.args.copyfrom.width = "double"
 tbl.args.delete.width = "double"
 Addon:AddOptionsPanelOptions(
-    "profiles", 
-    LibStub("AceDBOptions-3.0"):GetOptionsTable(ParentAddon.db, true)
+    "profiles",
+    _G.LibStub("AceDBOptions-3.0"):GetOptionsTable(Addon:GetParent().db, true)
 )

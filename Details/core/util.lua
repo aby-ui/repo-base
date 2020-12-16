@@ -597,6 +597,10 @@
 	end	
 	
 	function _detalhes.table.dump (t, s, deep)
+
+		if (type(t) == "number") then
+			return t
+		end
 	
 		s = s or ""
 		deep = deep or 0

@@ -770,12 +770,10 @@ function module:Disable()
 end
 
 function module:Lock()
-	VExRT.MarksBar.Fix = true
-	module.frame:SetMovable(true)
+	module.frame:SetMovable(false)
 end
 function module:Unlock()
-	VExRT.MarksBar.Fix = nil
-	module.frame:SetMovable(false)
+	module.frame:SetMovable(true)
 end
 
 function module.options:Load()
@@ -791,8 +789,10 @@ function module.options:Load()
 	
 	self.chkFix = ELib:Check(self,L.messagebutfix,VExRT.MarksBar.Fix):Point(15,-55):OnClick(function(self)
 		if self:GetChecked() then
+			VExRT.MarksBar.Fix = true
 			module:Lock()
 		else
+			VExRT.MarksBar.Fix = nil
 			module:Unlock()
 		end
 	end)
@@ -1023,6 +1023,8 @@ function module.main:ADDON_LOADED()
 
 	if VExRT.MarksBar.Fix then 
 		module:Lock()
+	else
+		module:Unlock()
 	end
 
 	if VExRT.MarksBar.Alpha then module.frame:SetAlpha(VExRT.MarksBar.Alpha/100) end

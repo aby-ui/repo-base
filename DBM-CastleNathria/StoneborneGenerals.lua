@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201210215226")
+mod:SetRevision("20201214195403")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -69,7 +69,7 @@ local specWarnSerratedSwipe						= mod:NewSpecialWarningDefensive(334929, nil, n
 --local specWarnLaceration						= mod:NewSpecialWarningStack(333913, nil, 3, nil, nil, 1, 6)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 --General Grashaal
-local specWarnReverberatingEruption				= mod:NewSpecialWarningYou(344496, nil, nil, nil, 1, 2)
+local specWarnReverberatingEruption				= mod:NewSpecialWarningYou(344496, nil, 138658, nil, 1, 2)
 local yellReverberatingEruption					= mod:NewYell(344496, 138658)--Short text "Eruption"
 local yellReverberatingEruptionFades			= mod:NewFadesYell(344496, 138658)--Short text "Eruption"
 local specWarnSeismicUpheaval					= mod:NewSpecialWarningDodge(334498, nil, nil, nil, 2, 2)
@@ -180,7 +180,6 @@ function mod:OnCombatEnd()
 	if self.Options.NPAuraOnVolatileShell then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
-	DBM:AddMsg("This boss has some pretty bad spell queuing that can cause huge timer variance such as 25-46s variations. This is why many of timers stay on screen when timer expires and then shows how long the spell has been queued (with negative number)")
 end
 
 function mod:SPELL_CAST_START(args)
@@ -260,7 +259,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 339690 then
 		timerCrystalizeCD:Start()
 	elseif spellId == 342732 then
-		timerRavenousFeastCD:Start(30, args.sourceGUID)
+		timerRavenousFeastCD:Start(18.6, args.sourceGUID)
 	elseif spellId == 342253 then
 		warnWickedSlaughter:CombinedShow(1.5, args.destName)--Needs to allow at least 1.5 to combine targets
 		timerWickedSlaughterCD:Start(10.9, args.sourceGUID)
@@ -276,13 +275,13 @@ function mod:SPELL_SUMMON(args)
 		if cid == 172858 then--stone-legion-goliath
 			warnStoneLegionGoliath:Show()
 			if self:IsHard() then
-				timerRavenousFeastCD:Start(31.4, args.destGUID)
+				timerRavenousFeastCD:Start(27.6, args.destGUID)
 			end
 		end
 	elseif spellId == 342257 or spellId == 342258 or spellId == 342259 then
 		if self.Options.SetIconOnShadowForces then
 			local icon = spellId == 342257 and 8 or spellId == 342258 and 7 or 6
-			self:ScanForMobs(args.destGUID, 2, icon, 1, 0.2, 12)
+			self:ScanForMobs(args.destGUID, 2, icon, 1, 0.2, 12, "SetIconOnShadowForces")
 		end
 		timerWickedSlaughterCD:Start(10.6, args.destGUID)
 	end

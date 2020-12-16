@@ -18,10 +18,17 @@ function DF.SavedVars.CreateNewSavedTable(dbTable, savedTableName)
 end
 
 function DF.SavedVars.GetOrCreateAddonSavedTablesPlayerList(addonFrame)
-    local addonGlobalSavedTable = _G[addonFrame.savedVarsName]
+    local addonGlobalSavedTable = _G[addonFrame.__savedVarsName]
+
+    --player list
     local playerList = addonGlobalSavedTable.__savedVarsByGUID
     if (not playerList) then
         addonGlobalSavedTable.__savedVarsByGUID = {}
+    end
+
+    --saved variables table
+    if (not addonGlobalSavedTable.__savedVars) then
+        addonGlobalSavedTable.__savedVars = {}
     end
 
     return addonGlobalSavedTable.__savedVarsByGUID
@@ -51,23 +58,50 @@ function DF.SavedVars.LoadSavedVarsForPlayer(addonFrame)
         savedTable = addonFrame.db:CreateNewSavedTable(playerSavedTableName)
     end
 
-    addonFrame.db.profile = savedTable
-    addonFrame.db.currentSavedTableName = playerSavedTableName
-
+    DF.SavedVars.SetSavedTable(dbTable, playerSavedTableName, true, true)
     return savedTable
 end
 
+function DF.SavedVars.TableCleanUpRecursive(t, default)
+    for key, value in pairs(t) do
+        if (type(value) == "table") then
+            DF.SavedVars.TableCleanUpRecursive(value, default[key])
+        else
+            if (value == default[key]) then
+                t[key] = nil
+            end
+        end
+    end
+end
+
+function DF.SavedVars.CloseSavedTable(dbTable)
+    local currentSavedTable = dbTable:GetSavedTable(dbTable:GetCurrentSavedTableName())
+
+    local default = dbTable.defaultSavedVars
+    if (type(currentSavedTable) == "table") then
+        DF.SavedVars.TableCleanUpRecursive(currentSavedTable, default)
+
+        --save
+        local addonGlobalSavedTable = _G[dbTable.addonFrame.__savedVarsName]
+        addonGlobalSavedTable.__savedVars[dbTable:GetCurrentSavedTableName()] = currentSavedTable
+    end
+end
 
 --base functions
-function DF.SavedVars.SetSavedTable(dbTable, savedTableName, createIfNonExistant)
+function DF.SavedVars.SetSavedTable(dbTable, savedTableName, createIfNonExistant, isFromInit)
     local savedTableToBeApplied = dbTable:GetSavedTable(savedTableName)
 
     if (savedTableToBeApplied) then
-        --callback unload profile table
-        local currentSavedTable = dbTable:GetSavedTable(dbTable:GetCurrentSavedTableName())
-        dbTable:TriggerCallback("OnProfileUnload", currentSavedTable)
+        if (not isFromInit) then
+            --callback unload profile table
+            local currentSavedTable = dbTable:GetSavedTable(dbTable:GetCurrentSavedTableName())
+            dbTable:TriggerCallback("OnProfileUnload", currentSavedTable)
+            DF.SavedVars.CloseSavedTable(dbTable, currentSavedTable)
+        end
 
         dbTable.profile = savedTableToBeApplied
+        dbTable.currentSavedTableName = savedTableName
+
         dbTable:TriggerCallback("OnProfileLoad", savedTableToBeApplied)
 
     else
@@ -77,10 +111,11 @@ function DF.SavedVars.SetSavedTable(dbTable, savedTableName, createIfNonExistant
             --callback unload profile table
             local currentSavedTable = dbTable:GetSavedTable(dbTable:GetCurrentSavedTableName())
             dbTable:TriggerCallback("OnProfileUnload", currentSavedTable)
+            DF.SavedVars.CloseSavedTable(dbTable, currentSavedTable)
 
             dbTable.profile = newSavedTable
+            dbTable.currentSavedTableName = savedTableName
             dbTable:TriggerCallback("OnProfileLoad", newSavedTable)
-
         else
             DF:Msg("profile does not exists", savedTableName)
             return

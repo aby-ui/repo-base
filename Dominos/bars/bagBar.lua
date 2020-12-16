@@ -3,6 +3,7 @@
 --------------------------------------------------------------------------------
 
 local AddonName, Addon = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(AddonName)
 
 -- register buttons for use later
 local BagButtons = {}
@@ -11,6 +12,14 @@ local BagBar = Addon:CreateClass('Frame', Addon.ButtonBar)
 
 function BagBar:New()
     return BagBar.proto.New(self, 'bags')
+end
+
+function BagBar:GetDisplayName()
+    return L.BagBarDisplayName
+end
+
+function BagBar:GetDisplayLevel()
+    return 'LOW'
 end
 
 function BagBar:GetDefaults()
@@ -109,8 +118,8 @@ function BagBar:OnCreateMenu(menu)
 
     layoutPanel:AddLayoutOptions()
 
-    menu:AddAdvancedPanel()
     menu:AddFadingPanel()
+    menu:AddAdvancedPanel()
 end
 
 --------------------------------------------------------------------------------

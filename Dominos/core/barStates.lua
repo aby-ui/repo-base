@@ -64,12 +64,12 @@ addState('modifier', 'meta', '[mod:meta]')
 
 -- paging
 for i = 2, 6 do
-    addState('page', 'page' .. i, ('[bar:%d]'):format(i), _G['BINDING_NAME_ACTIONPAGE' .. i])
+    addState('page', ('page%d'):format(i), ('[bar:%d]'):format(i), _G['BINDING_NAME_ACTIONPAGE' .. i])
 end
 
 -- class
 do
-    local class = select(2, UnitClass('player'))
+    local class = UnitClassBase('player')
 
     -- some class states are a bit dynamic
     -- druid forms, for instance, can vary based on how many different abilities
@@ -114,8 +114,9 @@ do
         end
     elseif class == 'ROGUE' then
         if GetSpellInfo(185313) then
-            addState('class', 'shadowdance', '[form:2]', GetSpellInfo(185313))
+            addState('class', 'shadowdance', '[bonusbar:1,form:2]', GetSpellInfo(185313))
         end
+
         addState('class', 'stealth', '[bonusbar:1]', GetSpellInfo(1784))
     elseif class == 'WARRIOR' then
         -- paladin auras

@@ -1,6 +1,18 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4400
+* Raid check: added new food consumables
+* Raid check: added ap weapon buffs to ready check window
+* Raid check: readded runes to ready check window
+* Raid check: added personal icons for consumable buffs on ready check
+* Raid cooldowns: fixed mw & ww monk talents
+* Raid cooldowns: fixed dh silence cd timer
+* Raid cooldowns: added kick category for demonology warlock kick
+* Marks bar: fixed locked/unlocked option
+* Raid inspect: fixed highlight for dk weapon enchants
+* Loot History: now records only epic quality items
+
 v.4390
 * Raid cooldowns: added avenger's shield reset support
 * Raid cooldowns: added "only visual" option for import
