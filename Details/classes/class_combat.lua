@@ -397,11 +397,12 @@
 			if (indexToDelete) then
 				local actorToDelete = self(attribute, actorName)
 				local actorToDelete2 = container._ActorTable[indexToDelete]
+				
 				if (actorToDelete ~= actorToDelete2) then
 					Details:Msg("error 0xDE8745")
 				end
 
-				local index = self._NameIndexTable[actorName]
+				local index = container._NameIndexTable[actorName]
 				if (indexToDelete ~= index) then
 					Details:Msg("error 0xDE8751")
 				end

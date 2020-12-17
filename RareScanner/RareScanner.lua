@@ -1075,7 +1075,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por haber deshabilitado alertas de contenedores", npcID))
 		return
 	-- disable alerts for filtered containers. Check if the container is filtered, in which case we don't show anything
-	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsContainerFilteredOnlyOnWorldMap() and RSConfigDB.IsContainerFiltered(npcID)) then
+	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and RSConfigDB.IsContainerFiltered(npcID)) then
 		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por estar filtrado", npcID))
 		return
 	-- disable alerts for rare NPCs
@@ -1253,6 +1253,10 @@ function RareScanner:SetVignetteFound(vignetteID, isNavigating, npcID)
 	if (not isNavigating) then
 		RSLogger:PrintDebugMessage(string.format("SetVignetteFound[%s]", vignetteID))
 		self.already_notified[vignetteID] = true
+		-- If not spawning in multiple places at the same time
+		if (not RSUtils.Contains(RSConstants.NPCS_WITH_MULTIPLE_SPAWNS, npcID)) then
+			self.already_notified["NPC"..npcID] = true
+		end
 
 		-- FIX Blubbery Blobule/Unstable Glob (NPCID = 160841/161407) multipoping
 		if (npcID == 160841) then

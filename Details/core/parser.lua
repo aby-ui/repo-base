@@ -107,6 +107,8 @@
 		local ignore_death = {}
 	--> temp ignored 
 		local ignore_actors = {}
+	--> druids kyrian bounds
+		local druid_kyrian_bounds = {}
 	--> spell containers for special cases
 		local monk_guard_talent = {} --guard talent for bm monks
 	--> spell reflection
@@ -256,15 +258,12 @@
 	local SPELLID_SHAMAN_SLT = 98021
 	--> holy paladin light of the martyr
 	local SPELLID_PALADIN_LIGHTMARTYR = 196917
-	--> blood shield g'huun
-	local SPELLNAME_BLOODSHIELD = GetSpellInfo (263217)
-	--> unliving Bwonsamdi
-	local SPELLNAME_UNLIVING = GetSpellInfo (284377)
-	--> discharge apetagonizer core
-	local SPELLNAME_GRONG_CORE = GetSpellInfo (285660)
-	local SPELLNAME_GRONG_CORE_ALLIANCE = GetSpellInfo (286435)
-	--> storm of annihilation
-	local SPELLANAME_STORM_OF_ANNIHILATION = GetSpellInfo (284601)
+	--> druid kyrian bound spirits
+	local SPELLID_KYRIAN_DRUID = 326434
+	--> druid kyrian bound damage, heal
+	local SPELLID_KYRIAN_DRUID_DAMAGE = 338411
+	local SPELLID_KYRIAN_DRUID_HEAL = 327149
+	local SPELLID_KYRIAN_DRUID_TANK = 327037
 	
 	--> spells with special treatment
 	local special_damage_spells = {
@@ -450,24 +449,6 @@
 		
 	end
 	
---[=[
-[1]="Blood Shield",
-[2]=538744,
-[3]=0,
-[5]=0,
-[6]=0,
-[7]="nameplate12",
-[8]=false,
-[9]=false,
-[10]=263217,
-[11]=false,
-[12]=false,
-[13]=false,
-[14]=false,
-[15]=1
---]=]	
-	
-	
 	function parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected)
 	
 	------------------------------------------------------------------------------------------------
@@ -501,6 +482,13 @@
 		--if (ignore_actors [alvo_serial]) then
 		--	return
 		--end
+
+		if (spellid == SPELLID_KYRIAN_DRUID_DAMAGE) then
+			local ownerTable = druid_kyrian_bounds[who_name]
+			if (ownerTable) then
+				who_serial, who_name, who_flags = unpack(ownerTable)
+			end
+		end
 
 		------------------------------------------------------------------------------------------------
 		--> spell reflection
@@ -596,6 +584,8 @@
 				return parser:LOTM_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
 			end
 		end
+
+
 		
 	------------------------------------------------------------------------------------------------
 	--> check if need start an combat
@@ -912,7 +902,7 @@
 			end
 		end
 		
-		if (is_friendly_fire) then
+		if (is_friendly_fire and spellid ~= SPELLID_KYRIAN_DRUID_TANK) then
 			if (este_jogador.grupo) then --> se tiver ele n�o adiciona o evento l� em cima
 				local t = last_events_cache [alvo_name]
 				
@@ -1780,6 +1770,13 @@
 		
 		_current_heal_container.need_refresh = true
 	
+		if (spellid == SPELLID_KYRIAN_DRUID_HEAL) then
+			local ownerTable = druid_kyrian_bounds[who_name]
+			if (ownerTable) then
+				who_serial, who_name, who_flags = unpack(ownerTable)
+			end
+		end
+
 	------------------------------------------------------------------------------------------------
 	--> get actors
 
@@ -2043,6 +2040,35 @@
 				spelltype = spellschool,
 			}
 		end
+
+	------------------------------------------------------------------------------------------------
+	-->
+
+--[=[
+--druid_kyrian_bounds
+
+--damager on damager
+
+SPELL_CAST_SUCCESS,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,326434,"Kindred Spirits",0x40,Player-3209-065BAEDE,0000000000000000,28240,28240,1233,448,472,0,0,10000,10000,200,-3298.34,5440.53,1525,5.8081,177
+SPELL_AURA_APPLIED,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,326434,"Kindred Spirits",0x40,BUFF
+SPELL_AURA_REMOVED,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,326434,"Kindred Spirits",0x40,BUFF
+
+12/15 10:03:51.702  SPELL_CAST_SUCCESS,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,0000000000000000,nil,0x80000000,0x80000000,326446,"Empower Bond",0x40,Player-3209-065BAEDE,0000000000000000,28240,28240,1234,448,472,0,3,100,100,0,-3294.17,5437.12,1525,0.7611,177
+
+12/15 10:03:51.702  SPELL_AURA_APPLIED,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,327139,"Kindred Empowerment",0x40,BUFF
+12/15 10:03:51.702  SPELL_AURA_APPLIED,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,327022,"Kindred Empowerment",0x40,BUFF,1
+12/15 10:03:51.702  SPELL_AURA_APPLIED,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,327139,"Kindred Empowerment",0x40,BUFF
+12/15 10:03:51.702  SPELL_AURA_APPLIED,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,327022,"Kindred Empowerment",0x40,BUFF,1
+
+SPELL_DAMAGE,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Creature-0-4217-2222-22679-166718-000058B14F,"Manifestation of Envy",0x10a48,0x0,338411,"Kindred Empowerment",0x40,Creature-0-4217-2222-22679-166718-000058B14F,0000000000000000,4218,5895,0,0,651,0,0,2289,2289,0,-3290.46,5445.37,1525,4.1809,58,31,30,-1,64,0,0,0,nil,nil,nil
+SPELL_DAMAGE,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Creature-0-4217-2222-22679-166718-000058B14F,"Manifestation of Envy",0x10a48,0x0,338411,"Kindred Empowerment",0x40,Creature-0-4217-2222-22679-166718-000058B14F,0000000000000000,867,5895,0,0,651,0,0,2289,2289,0,-3289.84,5446.94,1525,4.3379,58,89,89,-1,64,0,0,0,nil,nil,nil
+
+SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x10512,0x0,327149,"Kindred Focus",0x40,Player-3209-065BAEDE,0000000000000000,50058,50058,1575,448,1510,8832,1,1000,1000,0,-2640.65,5656.60,1525,3.3950,177,485,485,485,0,nil
+
+12/15 10:04:01.739  SPELL_AURA_REMOVED,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,327139,"Kindred Empowerment",0x40,BUFF
+12/15 10:04:01.739  SPELL_AURA_REMOVED,Player-3209-065BAEDE,"Bullcéfalo-Azralon",0x512,0x0,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,327139,"Kindred Empowerment",0x40,BUFF
+
+--]=]
 
 	------------------------------------------------------------------------------------------------
 	--> handle shields
@@ -2425,6 +2451,7 @@
 		end
 	end
 
+	-- ~unbuff
 	function parser:unbuff (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spellschool, tipo, amount)
 
 	------------------------------------------------------------------------------------------------
@@ -2450,6 +2477,11 @@
 						local damage_prevented = monk_guard_talent [who_serial] - (amount or 0)
 						parser:heal (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spellschool, damage_prevented, _math_ceil (amount or 0), 0, 0, true)
 					end
+				end
+
+				--druid kyrian empower bounds (9.0 kyrian covenant - probably remove on 10.0)
+				if (spellid == SPELLID_KYRIAN_DRUID and alvo_name) then
+					druid_kyrian_bounds[alvo_name] = nil
 				end
 				
 			------------------------------------------------------------------------------------------------
@@ -3329,6 +3361,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			who_name = "[*] " .. spellname
 		end
 
+		--druid kyrian empower bounds (9.0 kyrian covenant - probably remove on 10.0)
+		if (spellid == SPELLID_KYRIAN_DRUID and alvo_name and who_serial and who_name and who_flags) then
+			druid_kyrian_bounds[alvo_name] = {who_serial, who_name, who_flags}
+		end
+
 	------------------------------------------------------------------------------------------------
 	--> get actors
 
@@ -3397,29 +3434,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				if (not este_jogador) then
 					este_jogador = _current_damage_container:PegarCombatente (who_serial, who_name, who_flags, true)
 				end
-
---[[
-Message: Interface\AddOns\Details\core\parser.lua:3418: attempt to index local 'este_jogador' (a nil value)
-Time: Sun Aug 30 15:43:58 2020
-Count: 39
-Stack: Interface\AddOns\Details\core\parser.lua:3418: attempt to index local 'este_jogador' (a nil value)
-[string "@Interface\AddOns\Details\core\parser.lua"]:3418: in function <Interface\AddOns\Details\core\parser.lua:3335>
-[string "=(tail call)"]: ?
-
-Locals: self = nil
-token = "SPELL_CAST_SUCCESS"
-time = 1598813037.261000
-who_serial = "Vehicle-0-2085-2296-4034-168406-000B4BF36E"
-who_name = "Waltzing Venthyr"
-who_flags = 2632
-alvo_serial = ""
-alvo_name = nil
-alvo_flags = -2147483648
-alvo_flags2 = -2147483648
-spellid = 335773
-spellname = "Waltzing Venthyr"
-spelltype = 1
---]]
 
 				if (este_jogador) then 
 					--> actor spells table

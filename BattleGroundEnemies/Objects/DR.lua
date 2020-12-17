@@ -1,7 +1,7 @@
 local BattleGroundEnemies = BattleGroundEnemies
 local addonName, Data = ...
 BattleGroundEnemies.Objects.DR = {}
-local DRData = LibStub("DRData-1.0")
+local DRList = LibStub("DRList-1.0")
 
 local dRstates = {
 	[1] = { 0, 1, 0, 1}, --green (next cc in DR time will be only half duration)
@@ -131,7 +131,7 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 			self:DrPositioning()
 		end
 		drFrame.Icon:SetTexture(GetSpellTexture(spellID))
-		drFrame.Cooldown:SetCooldown(GetTime(), DRData:GetResetTime(drCat) + additionalDuration)
+		drFrame.Cooldown:SetCooldown(GetTime(), DRList:GetResetTime(drCat) + additionalDuration)
 	end
 
 	DRContainer.DrPositioning = function(self)

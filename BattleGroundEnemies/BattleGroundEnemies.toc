@@ -1,9 +1,9 @@
 ## Interface: 90002
 ## Title: BattleGroundEnemies
-## Version: 9.0.2.4
+## Version: 9.0.2.5
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
-## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRData-1.0, LibSharedMedia-3.0, LibPlayerSpells-1.0
+## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, LibPlayerSpells-1.0
 
 ## X-Curse-Project-ID: 274066
 
@@ -14,6 +14,7 @@ Locales\zhCN.lua
 Locales\zhTW.lua
 
 Data.lua
+Defaults.lua
 Main.lua
 
 Objects\Auras.lua

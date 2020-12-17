@@ -6,7 +6,6 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
-local DRData = LibStub("DRData-1.0")
 
 local function copy(obj)
 	if type(obj) ~= 'table' then return obj end
@@ -2188,6 +2187,16 @@ function BattleGroundEnemies:SetupOptions()
 						name = L.Font,
 						desc = L.Font_Desc,
 						set = function(option, value)
+							local conf
+							BattleGroundEnemies.Enemies.bgSizeConfig = BattleGroundEnemies.Enemies.config[tostring(BattleGroundEnemies.BGSize)]
+							conf = BattleGroundEnemies.Enemies.bgSizeConfig
+							BattleGroundEnemies.Enemies.PlayerCount:SetFont(LSM:Fetch("font", value), conf.NumericTargetindicator_Fontsize, conf.NumericTargetindicator_Outline)
+
+							
+							BattleGroundEnemies.Allies.bgSizeConfig = BattleGroundEnemies.Allies.config[tostring(BattleGroundEnemies.BGSize)]
+							conf = BattleGroundEnemies.Allies.bgSizeConfig
+							BattleGroundEnemies.Allies.PlayerCount:SetFont(LSM:Fetch("font", value), conf.NumericTargetindicator_Fontsize, conf.NumericTargetindicator_Outline)
+
 							for number, playerType in pairs({BattleGroundEnemies.Allies, BattleGroundEnemies.Enemies}) do
 								for playerName, playerButton in pairs (playerType.Players) do
 									applyMainfont(playerButton, value)

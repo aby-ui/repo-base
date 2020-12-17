@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20201215071215"),
-	DisplayVersion = "9.0.10 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20201217145042"),
+	DisplayVersion = "9.0.12 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 12, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -480,7 +480,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 193, "ad86060"--189.0
+local fakeBWVersion, fakeBWHash = 194, "4562dcf"--194.1
 local bwVersionResponseString = "V^%d^%s"
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
 
@@ -557,6 +557,7 @@ local DBM = DBM
 -- these global functions are accessed all the time by the event handler
 -- so caching them is worth the effort
 local ipairs, pairs, next = ipairs, pairs, next
+local tonumber, tostring = tonumber, tostring
 local tinsert, tremove, twipe, tsort, tconcat = table.insert, table.remove, table.wipe, table.sort, table.concat
 local type, select = type, select
 local GetTime = GetTime
@@ -6838,54 +6839,75 @@ function DBM:HasMapRestrictions()
 end
 
 do
-	local LSMMediaCacheBuilt = false
-	local sharedMediaFileCache = {}
+	local LSMMediaCacheBuilt, sharedMediaFileCache, validateCache = false, {}, {}
+
 	local function buildLSMFileCache()
+		local hashtable = LibStub("LibSharedMedia-3.0", true):HashTable("sound")
 		local keytable = {}
-		for k in next, LibStub("LibSharedMedia-3.0", true):HashTable("sound") do
+		for k in next, hashtable do
 			tinsert(keytable, k)
-			for i=1,#keytable do
-				local key = keytable[i]
-				local path = LibStub("LibSharedMedia-3.0", true):HashTable("sound")[key]
-				sharedMediaFileCache[path] = true
-			end
+		end
+		for i = 1, #keytable do
+			sharedMediaFileCache[hashtable[keytable[i]]] = true
 		end
 		LSMMediaCacheBuilt = true
 	end
+
+	function DBM:ValidateSound(path, log)
+		-- Validate LibSharedMedia
+		if not LSMMediaCacheBuilt then
+			buildLSMFileCache()
+		end
+		if not sharedMediaFileCache[path] and not path:find("DBM") then
+			if log then
+				-- This uses debug print because it has potential to cause mid fight spam
+				self:Debug("PlaySoundFile failed do to missing media at " .. path .. ". To fix this, re-add missing sound or change setting using this sound to a different sound.")
+			end
+			return false
+		end
+		-- Validate audio packs
+		if not validateCache[path] then
+			local splitTable = {}
+			for split in string.gmatch(path, "[^\\]+") do
+				tinsert(splitTable, split)
+			end
+			if splitTable[1] == "Interface" and splitTable[2] == "AddOns" then -- We're an addon sound
+				validateCache[path] = {
+					exists = IsAddOnLoaded(splitTable[3]),
+					AddOn = splitTable[3]
+				}
+			end
+		end
+		if validateCache[path].exists == false then
+			if log then
+				-- This uses actual user print because these events only occure at start or end of instance or fight.
+				AddMsg(self, "PlaySoundFile failed do to missing media at " .. path .. ". To fix this, re-add/enable " .. validateCache[path].AddOn .. " or change setting using this sound to a different sound.")
+			end
+			return false
+		end
+		return true
+	end
+
 	local function playSound(self, path, ignoreSFX, validate)
+		if self.Options.SilentMode or path == "" or path == "None" then
+			return
+		end
 		local soundSetting = self.Options.UseSoundChannel
 		if type(path) == "number" then
-			self:Debug("PlaySound playing with media "..path, 3)
+			self:Debug("PlaySound playing with media " .. path, 3)
 			if soundSetting == "Dialog" then
 				PlaySound(path, "Dialog", false)
 			elseif ignoreSFX or soundSetting == "Master" then
 				PlaySound(path, "Master", false)
 			else
-				PlaySound(path)--using SFX channel, leave forceNoDuplicates on.
+				PlaySound(path) -- Using SFX channel, leave forceNoDuplicates on.
 			end
 			fireEvent("DBM_PlaySound", path)
 		else
-			if validate then
-				--Validate LibSharedMedia
-				if not LSMMediaCacheBuilt then buildLSMFileCache() end
-				if not sharedMediaFileCache[path] and not path:find("DBM") then
-					--This uses debug print because it has potential to cause mid fight spam
-					self:Debug("PlaySoundFile failed do to missing media at "..path..". To fix this, re-add missing sound or change setting using this sound to a different sound.")
-					return
-				end
-				--Validate Event packs
-				if not _G["DBMVPSoundEventsPack"] and path:find("DBM-SoundEventsPack") then
-					--This uses actual user print because these events only occure at start or end of instance or fight.
-					AddMsg(self, "PlaySoundFile failed do to missing media at "..path..". To fix this, re-add/enable DBM-SoundEventsPack or change setting using this sound to a different sound.")
-					return
-				end
-				if not _G["DBMVPSMGPack"] and path:find("DBM-SMGEventsPack") then
-					--This uses actual user print because these events only occure at start or end of instance or fight.
-					AddMsg(self, "PlaySoundFile failed do to missing media at "..path..". To fix this, re-add/enable DBM-SMGEventsPack or change setting using this sound to a different sound.")
-					return
-				end
+			if validate and not self:ValidateSound(path, true) then
+				return
 			end
-			self:Debug("PlaySoundFile playing with media "..path, 3)
+			self:Debug("PlaySoundFile playing with media " .. path, 3)
 			if soundSetting == "Dialog" then
 				PlaySoundFile(path, "Dialog")
 			elseif ignoreSFX or soundSetting == "Master" then
@@ -6898,12 +6920,10 @@ do
 	end
 
 	function DBM:PlaySoundFile(path, ignoreSFX, validate)
-		if self.Options.SilentMode or path == "" or path == "None" then return end
 		playSound(self, path, ignoreSFX, validate)
 	end
 
 	function DBM:PlaySound(path, ignoreSFX, validate)
-		if self.Options.SilentMode or path == "" or path == "None" then return end
 		playSound(self, path, ignoreSFX, validate)
 	end
 end
@@ -12139,7 +12159,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20201215071215" then
+	if not revision or revision == "20201217145042" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

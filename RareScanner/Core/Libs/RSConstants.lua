@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 33
-RSConstants.CURRENT_LOOT_DB_VERSION = 45
+RSConstants.CURRENT_DB_VERSION = 34
+RSConstants.CURRENT_LOOT_DB_VERSION = 46
 
 ---============================================================================
 -- Special events
@@ -223,7 +223,8 @@ RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 3
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths
 RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373 }
-RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577 }
+RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577, 158025 }
+RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
 
 ---============================================================================
 -- Garrison cache

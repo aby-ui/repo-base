@@ -141,8 +141,11 @@ local locales = {
 			visible = "Anchor visible",
 			show_crafted = "Crafted",
 			show_totals = "Show total items in inventory",
+			totals_delay = "Totals delay",
+			totals_delay_desc = "Time to wait before asking the game how many items you have, as the item events do not reliably match up to inventory counts",
 			use_altoholic = "Include bank (Altoholic)",
 			show_ilvl = "Show item level",
+			font_size_ilvl = "Item level",
 			name_width = "Player name width",
 		},
 		Master = {
@@ -296,7 +299,8 @@ locales.esMX["Options"] = {
 
 locales.ruRU["Options"] = {
 	["alpha"] = "Прозрачность",
-	["bottom"] = "Внизу",
+	["bottom"] = [=[Внизу
+]=],
 	["confirm_reset_profile"] = "Это сбросит все параметры этого профиля. Вы уверены?",
 	["desc_channel_auto"] = "Наивысший из доступных",
 	["down"] = "Вниз",
@@ -309,10 +313,12 @@ locales.ruRU["Options"] = {
 	["items_others"] = "Остальные вещи",
 	["items_own"] = "Ваши вещи",
 	["minimum_quality"] = "Минимальное качество",
-	["padding"] = "Заполнение",
+	["padding"] = [=[Заполнение
+]=],
 	["profile"] = "Профиль",
 	["scale"] = "Масштаб",
-	["top"] = "Вверх",
+	["top"] = [=[Вверх
+]=],
 	["up"] = "Вверх",
 	["visible"] = "Видимый",
 	["when_always"] = "Всегда",
@@ -664,10 +670,11 @@ locales.koKR["Group"] = {
 }
 
 locales.esMX["Group"] = {
+	["alert_anchor"] = "Ventanas emergentes de botín",
 }
 
 locales.ruRU["Group"] = {
-	["alert_anchor"] = "Всплывающие фреймы добычи",
+	["alert_anchor"] = "Всплывающие фреймы добычи.",
 	["anchor"] = "Броски группы",
 	["undecided"] = "Не принял решения",
 }

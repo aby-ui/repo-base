@@ -254,7 +254,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[118038] = 2, --Die by the Sword
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			[18499] = 5, --Berserker Rage
+			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
 		},
 		--Fury
@@ -264,7 +264,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[184364] = 2, --Enraged Regeneration
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			[18499] = 5, --Berserker Rage
+			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
 		},
 		--Protection
@@ -275,7 +275,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[871] = 2, --Shield Wall
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			[18499] = 5, --Berserker Rage
+			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
 		},
 	

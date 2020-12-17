@@ -207,6 +207,12 @@ local preview_loot = {
 	{ 15487, false, false, false }
 }
 
+local preview_currency = {
+	828,
+	-- 1728,
+	-- 1767,
+}
+
 for i=1,#preview_loot do
 	XLootTooltip:SetItemByID(preview_loot[i][1])
 	GetItemInfo(preview_loot[i][1])
@@ -243,18 +249,20 @@ function addon:ApplyOptions(in_options)
 			end
 		end
 		-- !CLASSIC
-		if GetCurrencyInfo then
-			local name, currentAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(828)
-			if name and texture then
-				local row =  Fake.rows[slot+1]
-				max_width = math.max(max_width, row:Update({
-					name = name,
-					icon = texture,
-					quality = rarity,
-					slotType = LOOT_SLOT_CURRENCY,
-					quantity = 5,
-				}))
-				Fake.slots[#preview_loot+1] = row
+		if C_CurrencyInfo then
+			for i,id in ipairs(preview_currency) do
+				local c = C_CurrencyInfo.GetCurrencyInfo(id)
+				if c.name then
+					local row =  Fake.rows[slot+i]
+					max_width = math.max(max_width, row:Update({
+						name = c.name,
+						icon = c.iconFileID,
+						quality = c.quality,
+						slotType = LOOT_SLOT_CURRENCY,
+						quantity = 5,
+					}))
+					Fake.slots[#preview_loot+i] = row
+				end
 			end
 		end
 		Fake:SizeAndColor(max_width, max_quality)

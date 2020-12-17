@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2429, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201214195403")
+mod:SetRevision("20201217054451")
 mod:SetCreatureID(165066)
 mod:SetEncounterID(2418)
 mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20200815000000)--2020, 8, 15
-mod:SetMinSyncRevision(20200815000000)
+mod:SetHotfixNoticeRev(20201216000000)--2020, 12, 16
+mod:SetMinSyncRevision(20201216000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -34,6 +34,7 @@ mod:RegisterEventsInCombat(
  or (target.id = 165067 or target.id = 169457 or target.id = 169458) and type = "death"
 --]]
 --Huntsman Altimor
+local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnSinseeker								= mod:NewTargetNoFilterAnnounce(335114, 4)
 local warnSpreadshot							= mod:NewSpellAnnounce(334404, 3)
 --Hunting Gargon
@@ -74,7 +75,7 @@ local timerSpreadshotCD							= mod:NewCDTimer(12, 334404, nil, nil, nil, 2, nil
 ----Margore
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22312))
 local timerJaggedClawsCD						= mod:NewCDTimer(10.9, 334971, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--22.1, 23.4, 11.0
-local timerViciousLungeCD						= mod:NewCDTimer(25.6, 334945, 262783, nil, nil, 3)--Shortname Lunge
+local timerViciousLungeCD						= mod:NewCDTimer(25.5, 334945, 262783, nil, nil, 3)--Shortname Lunge
 ----Bargast
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22311))
 local timerRipSoulCD							= mod:NewCDTimer(30, 334797, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.HEALER_ICON)
@@ -163,7 +164,7 @@ function mod:SPELL_CAST_START(args)
 		--Mythic, Dog1: 49, Dog2: 60, Dog3: 50, dogs dead: 39.9
 		--Normal, Dog1: 50-51, Dog2: 60-61, Dog3: 50-51, dogs dead: 24.3
 
-		local timer = self:IsMythic() and (self.vb.phase == 4 and 39.9 or self.vb.phase == 2 and 60.2 or 49) or (self.vb.phase == 4 and 24.3 or self.vb.phase == 2 and 61.1 or 50)
+		local timer = self:IsMythic() and (self.vb.phase == 4 and 39.9 or self.vb.phase == 2 and 60.2 or 49) or (self.vb.phase == 4 and 24.3 or 50)--self.vb.phase == 2 and 61.1 or
 		timerSinseekerCD:Start(timer, self.vb.sinSeekerCount+1)
 		if self.vb.phase == 3 and self:IsMythic() then
 			updateRangeFrame(self, true)--Force show during cast so it's up a little early
@@ -190,7 +191,7 @@ function mod:SPELL_CAST_START(args)
 			self:ScanForMobs(171557, 1, 4, 2, 0.2, 15, "SetIconOnShades")--Start at 4 ascending up
 		end
 	elseif spellId == 334852 then
-		timerPetrifyingHowlCD:Start()
+		timerPetrifyingHowlCD:Start(self:IsMythic() and 30 or 20.6)
 	end
 end
 
@@ -257,7 +258,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 335111 or spellId == 335112 or spellId == 335113 then
 		self.vb.activeSeekers = self.vb.activeSeekers + 1
 		warnSinseeker:CombinedShow(spellId == 335113 and 0.1 or 2.5, args.destName)
-		local icon = 335111 and 1 or 335112 and 2 or 335113 and 3
+		local icon = spellId == 335111 and 1 or spellId == 335112 and 2 or spellId == 335113 and 3
 		if args:IsPlayer() then
 			playerSinSeeker = true
 			specWarnSinseeker:Show(self:IconNumToTexture(icon))
@@ -323,7 +324,9 @@ function mod:UNIT_DIED(args)
 		timerSpreadshotCD:Stop()
 		--Start Phase 4 stuff because no hunters bond here, still has a small chance to clip sinseeker timer that got off at end of phase 3
 		self.vb.phase = 4
-		if self:IsMythic() then
+		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(4))
+		warnPhase:Play("pfour")
+		if self:IsMythic() then--TODO, this still needs review
 			--Timer is decreased from 50 to 40, INCLUDING existing timer, but only on mythic?
 			local elapsed, total = timerSinseekerCD:GetTime(self.vb.sinSeekerCount+1)
 			local remaining = total-elapsed
@@ -376,46 +379,29 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 334504 then--Huntsman's Bond (only boss1 is registered so dog casts SHOULD be ignored)
 		self.vb.phase = self.vb.phase + 1
 		if self.vb.phase == 2 then
+			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
+			warnPhase:Play("ptwo")
 			--Start Next Dog. Move if order changes or is variable
 			--timerSpreadshotCD:Start()--Used instantly
+			timerSinseekerCD:Stop()
 			timerRipSoulCD:Start(10)
 			timerShadesofBargastCD:Start(17.5)
-			if self:IsMythic() then--Behavir may no longer be valid
-				--Timer is increased from 50 to 60 during bargast phase and this DOES INCLUDE existing timer
-				local elapsed, total = timerSinseekerCD:GetTime(self.vb.sinSeekerCount+1)
-				timerSinseekerCD:Update(elapsed, total+10, self.vb.sinSeekerCount+1)
-			else--New timer starts
-				timerSinseekerCD:Stop()
-				--Transition window behavior not observed here yet, need to run into it before enabling
-				--if transitionwindow == 2 then--Cast within transition window
-				--	timerSinseekerCD:Start(60, self.vb.sinSeekerCount+1)
-				--else
-					timerSinseekerCD:Start(31.8, self.vb.sinSeekerCount+1)
-				--end
-			end
+			timerSinseekerCD:Start(31.8, self.vb.sinSeekerCount+1)
 			transitionwindow = 0
 		elseif self.vb.phase == 3 then
+			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
+			warnPhase:Play("pthree")
 			--Start Next Dog. Move if order changes or is variable
 			timerSpreadshotCD:Start(6.3)
 			timerPetrifyingHowlCD:Start(15.1)
-			if self:IsMythic() then
-				--Timer is decreased from 60 to 50, but NOT existing timer. If that changes, simply uncomment code
-				--local elapsed, total = timerSinseekerCD:GetTime(self.vb.sinSeekerCount+1)
-				--if remaining > 10 then
-				--	timerSinseekerCD:Update(elapsed, total-10, self.vb.sinSeekerCount+1)
-				--else
-				--	timerSinseekerCD:Stop()
-				--end
-			else--New timer starts
-				timerSinseekerCD:Stop()
-				if transitionwindow == 2 then--Cast within transition window
-					--It was cast going into phase change, which causes it to incurr it's full 50 second cd on this event
-					timerSinseekerCD:Start(50, self.vb.sinSeekerCount+1)
-				else
-					timerSinseekerCD:Start(30, self.vb.sinSeekerCount+1)--Need fresh transcriptor log to verify this
-				end
-				transitionwindow = 0
+			timerSinseekerCD:Stop()
+			if transitionwindow == 2 then--Cast within transition window
+				--It was cast going into phase change, which causes it to incurr it's full 50 second cd on this event
+				timerSinseekerCD:Start(50, self.vb.sinSeekerCount+1)
+			else
+				timerSinseekerCD:Start(30, self.vb.sinSeekerCount+1)--Need fresh transcriptor log to verify this
 			end
+			transitionwindow = 0
 		end
 	end
 end

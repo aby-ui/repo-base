@@ -651,6 +651,7 @@ function addon:OnEnable() -- Construct addon option tables here
 			{ "details", "group", {
 				{ "show_totals", width = "double" },
 				{ "use_altoholic", requires = "show_totals" },
+				{ "totals_delay", "range", 0.1, 1.0, 0.1 },
 				{ "name_width", "range", 25, 200, 5 },
 				{ "show_ilvl" },
 			}},
@@ -660,6 +661,7 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "font_sizes", "header" },
 				{ "font_size_loot", "range", 4, 26, 1 },
 				{ "font_size_quantity", "range", 4, 26, 1 },
+				{ "font_size_ilvl", "range", 4, 26, 1 },
 			}},
 		})
 	end

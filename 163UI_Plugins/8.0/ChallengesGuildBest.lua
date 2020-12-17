@@ -80,7 +80,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
     --levels          1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-    local drops  = { nil, 187, 190, 194, 194, 197, 200, 200, 200, 207, 207, 207, 207, 207, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210 }
+    local drops  = { nil, 187, 190, 194, 194, 197, 200, 200, 200, 203, 203, 207, 207, 207, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210 }
     local levels = { nil, 200, 203, 207, 210, 210, 213, 216, 216, 220, 220, 223, 223, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226 }
     local function getline(i, curr)
         if not levels[i] then return "" end
