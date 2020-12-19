@@ -1,4 +1,4 @@
-
+local _
 
 local _detalhes	= 	_G._detalhes
 local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )

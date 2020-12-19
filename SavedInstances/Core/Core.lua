@@ -1408,7 +1408,7 @@ function SI:UpdateToonData()
   end
   for toon, ti in pairs(SI.db.Toons) do
     if ti.MythicKeyBest and (ti.MythicKeyBest.ResetTime or 0) < time() then
-      ti.MythicKeyBest.rewardWaiting = not not t.MythicKeyBest.lastCompletedIndex
+      ti.MythicKeyBest.rewardWaiting = ti.MythicKeyBest.lastCompletedIndex and ti.MythicKeyBest.lastCompletedIndex > 0
       ti.MythicKeyBest[1] = nil
       ti.MythicKeyBest[2] = nil
       ti.MythicKeyBest[3] = nil
@@ -2365,7 +2365,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.4" then
+  if versionString == "9.0.4-1-gf0a6113" then
     versionString = "Dev"
   end
   --@end-debug@]==]

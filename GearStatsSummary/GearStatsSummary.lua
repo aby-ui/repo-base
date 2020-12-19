@@ -7,11 +7,16 @@ local S_ITEM_LEVEL = ITEM_LEVEL:gsub("%%d", "(%%d+)")
 --local GSS_Mode = 0;	--0=simply, 1=profession
 
 local MAX_LEVEL = 60
-local RATINGS_BONUS = { 35, 33, 40, 35, } --CRIT HASTE VERSATILITY MASTERY
+local RATINGS_BONUS = { 35, 33, 40, 35, nil, nil, nil, nil, nil, nil, 14, 21, 10} --CRIT HASTE VERSATILITY MASTERY 闪避吸血加速
 function GearStatsSummary_UpdateRatingBonus()
     for i, v in ipairs({CR_CRIT_SPELL, CR_HASTE_SPELL, CR_VERSATILITY_DAMAGE_DONE, CR_MASTERY }) do
         if GetCombatRating(v) > 0 then
             RATINGS_BONUS[i] = math.floor(GetCombatRating(v) / GetCombatRatingBonus(v) + 0.5)
+        end
+    end
+    for i, v in ipairs({CR_AVOIDANCE, CR_LIFESTEAL, CR_SPEED}) do
+        if GetCombatRating(v) > 0 then
+            RATINGS_BONUS[10+i] = math.floor(GetCombatRating(v) / GetCombatRatingBonus(v) + 0.5)
         end
     end
     return RATINGS_BONUS
@@ -472,7 +477,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
             end
 
             local _, _, ccode, linkp1, itemname = v:find("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r")
-            if attrs[9] and attrs[9] > 0 then ccode = "|cffC21010" end
+            --if attrs[9] and attrs[9] > 0 then ccode = "|cffC21010" end --腐蚀
             if (GetLocale() == "zhCN" or GetLocale() == "zhTW") and string.utf8len(itemname) > 6 then itemname = string.utf8sub(itemname,1,5).."…" end
             --v = v:gsub("(\124c.-)(\124Hitem.-)\124h%[(.-)%]\124h\124r", "%2\124h" .. sum["ItemLevels"][k] .. " %1%3\124r\124h")
             v = sum["ItemLevels"][k] .. " " .. ccode..linkp1.."\124h"..itemname.."\124h\124r"
@@ -520,15 +525,28 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
     local greenTotal = 0
     for i=1, 4 do greenTotal = greenTotal + (stats_total[i] or 0) end
     tiptext = tiptext .. "\n|cffffd200绿字总和:|r " .. GREEN_FONT_COLOR_CODE .. greenTotal .. "|r"
-    for i=1, 4 do if stats_total[i] then tiptext = tiptext .. "\n |cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-6d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "") end end
-    if not inspecting then tiptext = tiptext .. "\n |cffffd200精通系数:|r " .. YELLOW_FONT_COLOR_CODE .. format("%.2f", select(2, GetMasteryEffect())) .. "|r" end
+    for i=1, 4 do
+        if stats_total[i] then
+            tiptext = tiptext .. "\n |cffffd200"..U1ATTRSNAME[i]..":|r"..GREEN_FONT_COLOR_CODE .." +"..format("%-4d",stats_total[i]).."|r"..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "")
+            if not inspecting and i == 4 then
+                --"\n |cffffd200精通系数:|r "
+                tiptext = tiptext .. YELLOW_FONT_COLOR_CODE .. format(" *%.1f", select(2, GetMasteryEffect())) .. "|r"
+            end
+        end
+    end
+    --吸血闪避加速
+    for i=11, 13 do
+        if stats_total[i] then
+            tiptext = tiptext .. "\n |cffffd200"..U1ATTRSNAME[i]..":|r"..BATTLENET_FONT_COLOR_CODE .." +"..format("%-3d",stats_total[i])..(showPercent and format(" +%.2f%%", stats_total[i]/RATINGS_BONUS[i]) or "").."|r"
+        end
+    end
+    --[[
     --8.3 CORRUPTION
     local corruption_resistence = (stats_total[10] or 0) + 10
     if not inspecting then stats_total[9], corruption_resistence = GetCorruption(), GetCorruptionResistance() end
     local total_corrupt = max(0, (stats_total[9] or 0) - corruption_resistence)
     local cccode = "|cff946cd0"
     local tccode = total_corrupt > 59 and "|cffff0000" or total_corrupt > 39 and "|cffFF6CD0" or cccode
-    --[[
     local i=9 if stats_total[i] then tiptext = tiptext .. "\n"..cccode.."合计腐蚀"..":".." +"..format("|r"..tccode.."%d|r"..cccode, total_corrupt)..format(" (+%d)", stats_total[i], corruption_resistence).."|r" end
     if U1GetAllCorruptionText then
         local corrupt_text, c_all, c_corrupt = U1GetAllCorruptionText(sum["ItemLink"])

@@ -173,7 +173,7 @@ function Details.CooldownTracking.RefreshScreenPanel()
             local classColor = C_ClassColor.GetClassColor(cooldownTable[6])
             bar:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
 
-            local _, _, spellIcon = GetSpellInfo(cooldownTable[5])
+            local spellNameDebug, _, spellIcon = GetSpellInfo(cooldownTable[5])
             bar:SetIcon(spellIcon, .1, .9, .1, .9)
             bar:SetLeftText(DF:RemoveRealmName(cooldownTable[1]))
 
@@ -181,6 +181,7 @@ function Details.CooldownTracking.RefreshScreenPanel()
             if (timeLeft > 0) then
                 bar.spellId = cooldownTable[5]
                 bar:SetTimer(timeLeft)
+                --print("timeLeft:", timeLeft, spellNameDebug)
             else
                 bar:SetMinMaxValues(0, 100)
                 bar:SetValue(100)

@@ -1,17 +1,13 @@
 ## Interface: 90002
 ## Notes: Wowhead Data dump for GatherMate2
-## Notes-zhTW: Wowhead 資料轉存至採集助手 GatherMate2
-## Notes-zhCN: Wowhead 资料转存至采集助手 GatherMate2
 ## Title: GatherMate2Data
-## Title-zhTW: GatherMate2Data 採集助手資料庫
-## Title-zhCN: GatherMate2Data 采集助手数据库
 ## Author: kagaro, Xinhuan
 ## X-Category: Map
 ## X-Email: sal.scotto@gmail.com
-## Version: v35.0
+## Version: v36.1
 ## LoadOnDemand: 1
-## X-Generated-Version: $Revision: 474 $
 ## Dependencies: GatherMate2
+## X-Curse-Project-ID: 26737
 
 MiningData.lua
 HerbalismData.lua

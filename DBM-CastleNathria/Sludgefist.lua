@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2394, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201217062544")
+mod:SetRevision("20201218224213")
 mod:SetCreatureID(164407)
 mod:SetEncounterID(2399)
 mod:SetUsedIcons(1)
-mod:SetHotfixNoticeRev(20201114000000)--2020, 11, 14
-mod:SetMinSyncRevision(20201114000000)
+mod:SetHotfixNoticeRev(20201117000000)--2020, 11, 17
+mod:SetMinSyncRevision(20201117000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -32,17 +32,17 @@ mod:RegisterEventsInCombat(
  or ability.id = 346269 or ability.id = 331314
  or (ability.id = 342420 or ability.id = 340817) and type = "applydebuff"
 --]]
-local warnHatefulGaze							= mod:NewTargetNoFilterAnnounce(331209, 4)
+local warnHatefulGaze							= mod:NewTargetCountAnnounce(331209, 4, nil, nil, nil, nil, nil, nil, true)
 local warnStunnedImpact							= mod:NewTargetNoFilterAnnounce(331314, 1)
 --local warnChainLink								= mod:NewTargetAnnounce(342419, 3)--Targetting debuff
-local warnChainSlam								= mod:NewTargetNoFilterAnnounce(335470, 3)
+local warnChainSlam								= mod:NewTargetCountAnnounce(335470, 3, nil, nil, nil, nil, nil, nil, true)
 local warnGruesomeRage							= mod:NewTargetNoFilterAnnounce(341250, 4)
 
 local specWarnHatefulGaze						= mod:NewSpecialWarningMoveTo(331209, nil, nil, nil, 3, 2)
 local specWarnHeedlessCharge					= mod:NewSpecialWarningSoon(331212, nil, nil, nil, 2, 2)
 local yellHatefulGaze							= mod:NewShortYell(331209)
 local yellHatefulGazeFades						= mod:NewShortFadesYell(331209)
-local specWarnChainLink							= mod:NewSpecialWarningYou(335300, nil, nil, nil, 1, 2)
+local specWarnChainLink							= mod:NewSpecialWarningMoveTo(335300, nil, nil, nil, 1, 2)
 local yellChainLink								= mod:NewIconRepeatYell(335300, DBM_CORE_L.AUTO_YELL_ANNOUNCE_TEXT.shortyell, false, 2)
 local specWarnChainSlam							= mod:NewSpecialWarningYou(335470, nil, nil, nil, 1, 2)
 local specWarnChainSlamPartner					= mod:NewSpecialWarningTarget(335470, nil, nil, nil, 1, 2)
@@ -80,8 +80,8 @@ mod.vb.shiftCount = 0
 local ChainLinkTargets = {}
 local playerName = UnitName("player")
 local playerPartner = nil
-local SiesmicTimers = {18.4, 25.5, 29.3, 12.9, 25.5, 30.2, 12.6, 25.5, 30.1, 13.6}
-
+local SiesmicTimers = {18.1, 25.4, 29.3, 12.3, 25.5, 30.1, 12.6, 25.5, 30.1, 12.3, 25.4, 30.1, 13.5, 25.5, 28.8}
+--								   30.1				       13.5        31.3
 local function ChainLinkYellRepeater(self, text, runTimes)
 	yellChainLink:Yell(text)
 	runTimes = runTimes + 1
@@ -107,7 +107,7 @@ function mod:OnCombatStart(delay)
 	timerHatefulGazeCD:Start(50.1-delay, 1)
 	if self:IsMythic() then
 		self.vb.shiftCount = 0
-		timerSiesmicShiftCD:Start(18.4, 1)
+		timerSiesmicShiftCD:Start(18.1, 1)
 	end
 --	if self.Options.RangeFrame then
 --		DBM.RangeCheck:Show(4)
@@ -172,7 +172,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			specWarnHeedlessCharge:Show()
 			specWarnHeedlessCharge:Play("farfromline")
-			warnHatefulGaze:Show(args.destName)
+			warnHatefulGaze:Show(self.vb.gazeCount, args.destName)
 		end
 		if self.Options.SetIconGaze then
 			self:SetIcon(args.destName, 1)
@@ -232,7 +232,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnChainSlamPartner:Show(args.destName)
 			specWarnChainSlamPartner:Play("gathershare")
 		else
-			warnChainSlam:Show(args.destName)
+			warnChainSlam:Show(self.vb.chainSlamCount, args.destName)
 		end
 	elseif spellId == 341250 then
 		warnGruesomeRage:Show(args.destName)
@@ -242,6 +242,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			local timer = SiesmicTimers[self.vb.shiftCount+1]
 			if timer then
 				timerSiesmicShiftCD:Start(timer, self.vb.shiftCount+1)
+				local timerAfter = SiesmicTimers[self.vb.shiftCount+2]
+				if not timerAfter then--Disable timer keeping if we're out of timer data beind THIS timer
+					timerSiesmicShiftCD:SetSTKeep(false, self.vb.shiftCount+1)
+				end
 			end
 		end
 		if args:IsPlayer() then

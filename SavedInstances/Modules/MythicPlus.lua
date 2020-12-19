@@ -9,7 +9,9 @@ local ipairs, sort, strsplit, tonumber, select, time, wipe = ipairs, sort, strsp
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
 local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
 local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
+local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
 local C_WeeklyRewards_GetActivities = C_WeeklyRewards.GetActivities
+local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local CreateFrame = CreateFrame
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemLink = GetContainerItemLink
@@ -92,14 +94,8 @@ do
   function Module:RefreshMythicWeeklyBestInfo()
     local t = SI.db.Toons[SI.thisToon]
 
-    -- dont know weekly reset function will run early or not
-    local rewardWaiting = t.MythicKeyBest and t.MythicKeyBest.rewardWaiting
-    if t.MythicKeyBest and (t.MythicKeyBest.ResetTime or 0) < time() then
-      rewardWaiting = not not t.MythicKeyBest.lastCompletedIndex
-    end
-
     t.MythicKeyBest = wipe(t.MythicKeyBest or {})
-    t.MythicKeyBest.rewardWaiting = rewardWaiting
+    t.MythicKeyBest.rewardWaiting = C_WeeklyRewards_HasAvailableRewards() and C_WeeklyRewards_CanClaimRewards()
     t.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
 
     local activities = C_WeeklyRewards_GetActivities(Enum_WeeklyRewardChestThresholdType_MythicPlus)

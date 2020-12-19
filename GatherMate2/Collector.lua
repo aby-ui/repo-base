@@ -37,6 +37,7 @@ local spells =
 	[archSpell] = "Archaeology",
 	[sandStormSpell] = "Treasure",
 	[loggingSpell] = "Logging",
+	[205243] = "Treasure", -- skinning ground warts
 }
 local tooltipLeftText1 = _G["GameTooltipTextLeft1"]
 local strfind, stringmatch = string.find, string.match
@@ -200,10 +201,15 @@ function Collector:SpellStarted(event,unit,target,guid,spellcast)
 	if unit ~= "player" then return end
 	foundTarget = false
 	ga ="No"
-	spellcast = GetSpellInfo(spellcast)
-	if spellcast and spells[spellcast] then
-		curSpell = spellcast
-		prevSpell = spellcast
+	local spellname = GetSpellInfo(spellcast)
+	if spellname and (spells[spellname] or spells[spellcast]) then
+		if spells[spellname] then
+			curSpell = spellname
+			prevSpell = spellname
+		else
+			curSpell = spellcast
+			prevSpell = spellcast
+		end
 		local nodeID = GatherMate:GetIDForNode(spells[prevSpell], target)
 		if nodeID then -- seem 2.4 has the node name now as the target
 			self:addItem(prevSpell,target)

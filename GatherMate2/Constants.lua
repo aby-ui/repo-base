@@ -411,6 +411,8 @@ local node_ids = {
 		-- 8.2.5
 		[NL["Jelly Deposit"]]					= 563,
 		[NL["Large Jelly Deposit"]]				= 564,
+		-- Shadowlands
+		[NL["Ground Wart"]]						= 565,
 	},
 	["Archaeology"] = {
 		-- cata archeolgy objects
@@ -911,6 +913,7 @@ local node_textures = {
 		[562] = icon_path.."Treasure\\ancient_mana.tga",
 		[563] = icon_path.."Treasure\\honey.tga",
 		[564] = icon_path.."Treasure\\honey.tga",
+		[565] = icon_path.."Treasure\\hide.tga",
 	},
 	["Archaeology"] = {
 		[601] = icon_path.."Archaeology\\shovel.tga",

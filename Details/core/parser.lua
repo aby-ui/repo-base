@@ -3878,21 +3878,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					end
 				end
 
-				if (_hook_deaths) then
-					--> send event to registred functions
-					local death_at = _GetTime() - _current_combat:GetStartTime()
-					local max_health = _UnitHealthMax (alvo_name)
-
-					for _, func in _ipairs (_hook_deaths_container) do 
-						local new_death_table = table_deepcopy (esta_morte)
-						local successful, errortext = pcall (func, nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, new_death_table, este_jogador.last_cooldown, death_at, max_health)
-						if (not successful) then
-							_detalhes:Msg ("error occurred on a death hook function:", errortext)
-						end
-						--func (nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, new_death_table, este_jogador.last_cooldown, death_at, max_health)
-					end
-				end
-				
 				--if (_detalhes.deadlog_limit and #esta_morte > _detalhes.deadlog_limit) then
 				--	while (#esta_morte > _detalhes.deadlog_limit) do
 				--		_table_remove (esta_morte, 1)
@@ -3923,9 +3908,22 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				local minutos, segundos = _math_floor (decorrido/60), _math_floor (decorrido%60)
 				
 				local t = {esta_morte, time, este_jogador.nome, este_jogador.classe, _UnitHealthMax (alvo_name), minutos.."m "..segundos.."s",  ["dead"] = true, ["last_cooldown"] = este_jogador.last_cooldown, ["dead_at"] = decorrido}
-				
 				_table_insert (_current_combat.last_events_tables, #_current_combat.last_events_tables+1, t)
 				
+				if (_hook_deaths) then
+					--> send event to registred functions
+					local death_at = _GetTime() - _current_combat:GetStartTime()
+					local max_health = _UnitHealthMax (alvo_name)
+
+					for _, func in _ipairs (_hook_deaths_container) do 
+						local copiedDeathTable = table_deepcopy(t)
+						local successful, errortext = pcall(func, nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, copiedDeathTable, este_jogador.last_cooldown, death_at, max_health)
+						if (not successful) then
+							_detalhes:Msg ("error occurred on a death hook function:", errortext)
+						end
+					end
+				end
+
 				--> check if this is a mythic+ run
 				local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() --classic wow doesn't not have C_ChallengeMode API
 				if (mythicLevel and type (mythicLevel) == "number" and mythicLevel >= 2) then --several checks to be future proof

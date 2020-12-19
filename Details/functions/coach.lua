@@ -69,6 +69,14 @@ function Details.Coach.SendRaidCoachStartNotify()
     end
 end
 
+--player send his death to the raid leader
+function Details.Coach.SendDeathToRL(deathTable)
+    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CDD", deathTable), "RAID")
+    if (_detalhes.debug) then
+        Details:Msg("[|cFFAAFFAADetails! Coach|r] your death has been sent to coach.")
+    end
+end
+
 --send data to raid leader
 function Details.Coach.Client.SendDataToRL()
     if (_detalhes.debug) then
@@ -434,3 +442,15 @@ Details.Coach.EventFrame:SetScript("OnEvent", function(event, ...)
         end
     end
 end)
+
+function Details.Coach.Client.SendMyDeath(_, _, _, _, _, _, playerGUID, _, _, deathTable)
+    if (Details.Coach.Client.enabled) then
+        if (Details.Coach.Client.coachName) then
+            if (Details.in_combat) then
+                if (playerGUID == UnitGUID("player")) then
+                    Details.Coach.SendDeathToRL(deathTable)
+                end
+            end
+        end
+    end
+end

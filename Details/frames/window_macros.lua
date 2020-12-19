@@ -1,4 +1,4 @@
-
+local _
 
 local Details = _G.Details
 local DF = _G.DetailsFramework

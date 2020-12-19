@@ -353,6 +353,7 @@ NL["Great Sea Catfish School"] = true
 NL["Greater Sagefish School"] = true
 NL["Green Tea Leaf"] = true
 NL["Gromsblood"] = true
+NL["Ground Wart"] = true
 NL["Heartblossom"] = true
 NL["Heavy Fel Iron Chest"] = true
 NL["Highborne Archaeology Find"] = true

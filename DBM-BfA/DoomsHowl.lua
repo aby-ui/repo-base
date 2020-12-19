@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-BfA", 3, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116012055")
+mod:SetRevision("20201218181040")
 mod:SetCreatureID(creatureID)--Dooms Howl 138122, Lion's Roar 137374
 --mod:SetEncounterID(encounterID)
 mod:SetReCombatTime(20)

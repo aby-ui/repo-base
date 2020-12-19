@@ -9,6 +9,7 @@ local ipairs, strmatch, type, tostring, wipe = ipairs, strmatch, type, tostring,
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
 local C_TaskQuest_IsActive = C_TaskQuest.IsActive
 local C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo
+local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
 local C_WeeklyRewards_GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress
 local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
@@ -41,7 +42,7 @@ local function ConquestUpdate(index)
     local weeklyProgress = C_WeeklyRewards_GetConquestWeeklyProgress()
     if not weeklyProgress then return end
 
-    local rewardWaiting = C_WeeklyRewards_HasAvailableRewards()
+    local rewardWaiting = C_WeeklyRewards_HasAvailableRewards() and C_WeeklyRewards_CanClaimRewards()
     data = {
       unlocked = true,
       isComplete = weeklyProgress.progress >= weeklyProgress.maxProgress,

@@ -1132,11 +1132,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 				RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 			end
 
-			if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, false)) then
+			if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, false, npcID)) then
 				RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", npcID))
 				return
 			else
-				RareScanner:SetVignetteFound(vignetteInfo.id, false)
+				RareScanner:SetVignetteFound(vignetteInfo.id, false, npcID)
 				FlashClientIcon()
 				self:PlaySoundAlert(vignetteInfo.atlasName)
 				self:DisplayMessages(vignetteInfo.name)
@@ -1254,7 +1254,7 @@ function RareScanner:SetVignetteFound(vignetteID, isNavigating, npcID)
 		RSLogger:PrintDebugMessage(string.format("SetVignetteFound[%s]", vignetteID))
 		self.already_notified[vignetteID] = true
 		-- If not spawning in multiple places at the same time
-		if (not RSUtils.Contains(RSConstants.NPCS_WITH_MULTIPLE_SPAWNS, npcID)) then
+		if (npcID and not RSUtils.Contains(RSConstants.NPCS_WITH_MULTIPLE_SPAWNS, npcID)) then
 			self.already_notified["NPC"..npcID] = true
 		end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2362, "DBM-BfA", 5, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116012055")
+mod:SetRevision("20201218181040")
 mod:SetCreatureID(152697)--152736/guardian-tannin, 152729/moon-priestess-liara
 mod:SetEncounterID(2317)
 mod:SetReCombatTime(20)

@@ -444,7 +444,22 @@
 			if (UnitIsGroupLeader("player")) then
 				if (Details.Coach.Server.IsEnabled()) then
 					--update the current combat with new information
-					Details.packFunctions.DeployPackedCombatData(data)
+
+					--this is disabled due to lack of testing
+					if (_detalhes.debug) then
+						Details.packFunctions.DeployPackedCombatData(data)
+					end
+				end
+			end
+
+		elseif (msgType == "CDD") then --Coach Death (a player in the raid sent to raid leader his death log)
+			if (UnitIsGroupLeader("player")) then
+				if (Details.Coach.Server.IsEnabled()) then
+					local currentCombat = Details:GetCurrentCombat()
+					tinsert(currentCombat.last_events_tables, data)
+
+					--tag the misc container as need refresh
+					currentCombat[DETAILS_ATTRIBUTE_MISC].need_refresh = true
 				end
 			end
 		end
