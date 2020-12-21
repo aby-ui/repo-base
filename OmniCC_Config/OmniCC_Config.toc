@@ -5,7 +5,12 @@
 ## Author: Tuller
 ## Dependencies: OmniCC
 ## LoadOnDemand: 1
-..\OmniCC\config\config.xml
+#embeds.xml
+localization\localization.xml
+preview.lua
+themes.lua
+rules.lua
+options.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r OmniCC 配置界面

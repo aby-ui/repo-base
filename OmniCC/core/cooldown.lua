@@ -133,10 +133,7 @@ function Cooldown:CanShowFinishEffect()
         return false
     end
 
-
-
     return true, effect
-
 end
 
 function Cooldown:GetKind()
@@ -234,7 +231,12 @@ function Cooldown:UpdateStyle()
     if settings and not settings.drawSwipes then
         self:SetDrawSwipe(false)
     else
-        self:SetDrawSwipe(self._occ_draw_swipe)
+        -- only call SetDrawSwipe if we have a value set for _occ_draw_swipe
+        -- otherwise we may unintentionally hide cooldown swipes
+        local drawSwipes = self._occ_draw_swipe
+        if drawSwipes ~= nil then
+            self:SetDrawSwipe(drawSwipes)
+        end
     end
 end
 

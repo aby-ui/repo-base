@@ -34,6 +34,9 @@ L["config_travelguide_note"] = "|cFFFF0000*Already active through HandyNotes: Tr
 L["config_reforge"] = "Armor Enhancer"
 L["config_reforge_desc"] = "Show the armor enhancer locations."
 
+L["config_renown"] = "Keeper of Renown"
+L["config_renown_desc"] = "Show the keeper of renown locations."
+
 L["config_stablemaster"] = "Stable Master"
 L["config_stablemaster_desc"] = "Show the stable master locations."
 

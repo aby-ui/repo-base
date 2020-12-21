@@ -117,4 +117,10 @@ GTFO.SpellID["30122"] = {
 	test = true;
 };
 
+GTFO.SpellID["28547"] = {
+	--desc = "Chill (Sapphiron - Naxx)";
+	sound = 1;
+	specificMobs = { 16474 };
+};
+
 end

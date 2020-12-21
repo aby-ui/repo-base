@@ -50,13 +50,7 @@ local TOTAL_INDEXES_FOR_COMBAT_INFORMATION = 6
 
 local entitySerialCounter = 0
 
-local isDebugging = true
-
-function Dexport() --test case
-    local combat = Details:GetCurrentCombat()
-    local readyToSendData = Details.packFunctions.PackCombatData(combat, 0x1)
-    local newCombatWithData = Details.packFunctions.UnPackCombatData(readyToSendData)
-end
+local isDebugging = false
 
 function Details.packFunctions.GetAllData()
     local combat = Details:GetCurrentCombat()
@@ -112,7 +106,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         Details.packFunctions.PackDamage(combatObject)
     end
 
-    if (bit.band(flags, 0x2) ~= 0) then
+    if (bit.band(flags, 0x2) ~= 0 and false) then
         Details.packFunctions.PackHeal(combatObject)
     end
 
@@ -140,7 +134,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         end
 
         --add the heal actors data
-        if (bit.band(flags, 0x2) ~= 0) then
+        if (bit.band(flags, 0x2) ~= 0 and false) then
             exportedString = exportedString .. "!H" .. ","
             for index, data in ipairs(actorHealInfo) do
                 exportedString = exportedString .. data .. ","
@@ -156,6 +150,8 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         if (isDebugging) then
             print(exportedString)
         end
+
+        --Details:Dump({exportedString})
 
         --compress
         local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")
@@ -402,7 +398,7 @@ end
 function Details.packFunctions.PackDamage(combatObject)
 
     if (isDebugging) then
-        print("PackDamage(): START.")
+        print("PackDamage(): start.")
     end
 
     --store actorObjects to pack
@@ -413,7 +409,7 @@ function Details.packFunctions.PackDamage(combatObject)
     local playerObject = combatObject:GetActor(DETAILS_ATTRIBUTE_DAMAGE, playerName)
     if (not playerObject) then
         if (isDebugging) then
-            print("PackDamage(): RETURN | no player object.")
+            print("PackDamage(): return | no player object.")
         end
         return
     end
@@ -429,21 +425,11 @@ function Details.packFunctions.PackDamage(combatObject)
         end
     end
 
-    local playerIndex
-    --check if this player has to send information about an enemy npc
-    if (IsInGroup()) then
-        for i = 1, GetNumGroupMembers() do
-            local name = GetRaidRosterInfo(i) --, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML
-            if (name == playerName) then
-                playerIndex = i
-                break
-            end
-        end
-    end
+    local playerIndex = UnitInRaid("player")
 
     if (not playerIndex) then --no player index
         if (isDebugging) then
-            print("PackDamage(): RETURN | no player index found.")
+            print("PackDamage(): return | no player index found.")
         end
         return
     end
@@ -458,9 +444,10 @@ function Details.packFunctions.PackDamage(combatObject)
         --check if is an enemy or neutral
         if (actor:IsNeutralOrEnemy()) then
             --get the spawnId
-            local spawnId = select(7, strsplit( "-", actor.serial))
+            local spawnId = select(7, strsplit("-", actor.serial))
             if (spawnId) then
-                spawnId = tonumber(spawnId)
+                --convert hex to number
+                spawnId = tonumber(spawnId:sub(1, 10), 16)
                 if (spawnId) then
                     --first index is the actorObject, the second index is the spawnId to sort enemies
                     tinsert(allEnemies, {actor, spawnId})
@@ -468,12 +455,30 @@ function Details.packFunctions.PackDamage(combatObject)
             end
         end
     end
-
     --sort enemies by their spawnId
     table.sort(allEnemies, Details.Sort2)
 
+    local allPlayerNames = {}
+    for i = 1, 20 do
+        local unitName = UnitName("raid" .. i)
+        local _, _, subgroup = GetRaidRosterInfo(i)
+
+        if (unitName and subgroup <= 4) then
+            allPlayerNames[#allPlayerNames+1] = unitName
+        end
+    end
+    table.sort(allPlayerNames, DetailsFramework.SortOrder1R)
+
+    local playerName = UnitName("player")
+    for i = 1, #allPlayerNames do
+        if (playerName == allPlayerNames[i]) then
+            playerIndex = i
+            break
+        end
+    end
+
     --this is the enemy that this player has to send
-    local enemyObjectToSend = allEnemies[playerIndex]
+    local enemyObjectToSend = allEnemies[playerIndex] and allEnemies[playerIndex][1]
     if (enemyObjectToSend) then
         tinsert(actorsToPack, enemyObjectToSend)
     end
@@ -487,8 +492,6 @@ function Details.packFunctions.PackDamage(combatObject)
             indexToActorInfo = Details.packFunctions.AddActorInformation(actorObject)
         end
     end
-
-    local spellSize = 0
 
     for i = 1, #actorsToPack do
         --get the actor object
@@ -523,24 +526,18 @@ function Details.packFunctions.PackDamage(combatObject)
             actorDamageInfo [#actorDamageInfo + 1] = floor(spellId)
             actorDamageInfo [#actorDamageInfo + 1] = floor(spellDamage)
             actorDamageInfo [#actorDamageInfo + 1] = floor(spellHits)
+            totalSpellIndexes = totalSpellIndexes + 3
 
             --build targets
             local targetsSize = Details.packFunctions.CountTableEntriesValid(spellTargets) * 2
             actorDamageInfo [#actorDamageInfo + 1] = targetsSize
+            totalSpellIndexes = totalSpellIndexes + 1
 
             for actorName, damageDone in pairs(spellTargets) do
-                local actorInfoIndex = actorInformationIndexes[actorName]
-                if (actorInfoIndex) then
-                    actorDamageInfo [#actorDamageInfo + 1] = actorInfoIndex
-                    actorDamageInfo [#actorDamageInfo + 1] = floor(damageDone)
-                    spellSize = spellSize + 2
-                end
+                actorDamageInfo [#actorDamageInfo + 1] = actorName
+                actorDamageInfo [#actorDamageInfo + 1] = floor(damageDone)
+                totalSpellIndexes = totalSpellIndexes + 2
             end
-
-            --+3: spellId, damage, spellHits
-            --+1: the index that tell the size of targets
-            totalSpellIndexes = totalSpellIndexes + 3 + targetsSize + 1
-            spellSize = spellSize + 1 --debug
         end
 
         --amount of indexes spells are using
@@ -548,7 +545,7 @@ function Details.packFunctions.PackDamage(combatObject)
     end
 
     if (isDebugging) then
-        print("PackDamage(): DONE.")
+        print("PackDamage(): done.")
     end
 end
 
@@ -560,7 +557,7 @@ end
 --@tablePosition: first index of the first damage actor
 function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosition)
     if (isDebugging) then
-        print("UnPackDamage(): START.")
+        print("UnPackDamage(): start.")
     end
 
     --get the damage container
@@ -576,14 +573,14 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
         local actorName, actorFlag, serialNumber, class, spec = Details.packFunctions.RetriveActorInformation(combatData, actorReference)
 
         if (isDebugging) then
-            print("UnPackDamage(): Retrivied Data From " .. actorReference .. ":", actorName, actorFlag, serialNumber, class, spec)
+            print("UnPackDamage(): Retrivied Data From " .. (actorReference or "nil") .. ":", actorName, actorFlag, serialNumber, class, spec)
         end
 
         --check if all damage actors has been processed
         --if there's no actor name it means it reached the end
         if (not actorName) then
             if (isDebugging) then
-                print("UnPackDamage(): BREAK damage END index:", i, actorReference, "tablePosition:", tablePosition, "value:", combatData[tablePosition])
+                print("UnPackDamage(): break damage, end index:", i, (actorReference or "nil"), "tablePosition:", tablePosition, "value:", combatData[tablePosition])
             end
             break
         end
@@ -595,6 +592,7 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
         actorObject.classe = class
         actorObject.spec = spec
         actorObject.grupo = isActorInGroup(class, actorFlag)
+        actorObject.flag_original = actorFlag
 
         --> copy back the base damage
             actorObject.total =               tonumber(combatData[tablePosition+1]) --[2]
@@ -608,7 +606,12 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
         --> copy back the actor spells
             --amount of indexes used to store spells for this actor
             local spellsSize = tonumber(combatData [tablePosition]) --[7]
+            if (isDebugging) then
+                print("spell size unpack:", spellsSize)
+            end
+
             tablePosition = tablePosition + 1
+            local newTargetsTable = {}
 
             local spellIndex = tablePosition
             while(spellIndex < tablePosition + spellsSize) do
@@ -616,21 +619,28 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
                 local spellDamage = tonumber(combatData [spellIndex+1]) --[2]
                 local spellHits = tonumber(combatData [spellIndex+2]) --[3]
 
-                local targetsSize = combatData [spellIndex+3] --[4]
+                local targetsSize = tonumber(combatData[spellIndex+3]) --[4]
+
                 local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+3, true)
                 local spellObject = actorObject.spells:GetOrCreateSpell(spellId, true) --this one need some translation
                 spellObject.total = spellDamage
                 spellObject.counter = spellHits
                 spellObject.targets = targetTable
 
+                for targetName, amount in pairs (spellObject.targets) do
+                    newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
+                end
+
                 spellIndex = spellIndex + targetsSize + 4
             end
 
+            --each iteration need to build a new target table
+            actorObject.targets = newTargetsTable
             tablePosition = tablePosition + spellsSize --increase table position
     end
 
     if (isDebugging) then
-        print("UnPackDamage(): DONE.")
+        print("UnPackDamage(): done.")
     end
 
     return tablePosition
@@ -638,7 +648,7 @@ end
 
 function Details.packFunctions.PackHeal(combatObject)
     if (isDebugging) then
-        print("PackHeal(): START.")
+        print("PackHeal(): start.")
     end
 
     --store actorObjects to pack
@@ -649,7 +659,7 @@ function Details.packFunctions.PackHeal(combatObject)
     local playerObject = combatObject:GetActor(DETAILS_ATTRIBUTE_HEAL, playerName)
     if (not playerObject) then
         if (isDebugging) then
-            print("PackHeal(): RETURN | no player object.")
+            print("PackHeal(): return | no player object.")
         end
         return
     end
@@ -679,7 +689,7 @@ function Details.packFunctions.PackHeal(combatObject)
 
     if (not playerIndex) then
         if (isDebugging) then
-            print("PackHeal(): RETURN | no player index found.")
+            print("PackHeal(): return | no player index found.")
         end
         return
     end
@@ -784,7 +794,7 @@ function Details.packFunctions.PackHeal(combatObject)
     end
 
     if (isDebugging) then
-        print("PackHeal(): DONE.")
+        print("PackHeal(): done.")
     end
 end
 
@@ -794,7 +804,7 @@ end
 function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePosition)
 
     if (isDebugging) then
-        print("UnPackHeal(): START.")
+        print("UnPackHeal(): start.")
     end
 
     --get the healing container
@@ -806,13 +816,13 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
         local actorName, actorFlag, serialNumber, class, spec = Details.packFunctions.RetriveActorInformation(combatData, actorReference)
 
         if (isDebugging) then
-            print("UnPackHeal(): Retrivied Data From " .. actorReference .. ":", actorName, actorFlag, serialNumber, class, spec)
+            print("UnPackHeal(): Retrivied Data From " .. (actorReference or "nil") .. ":", actorName, actorFlag, serialNumber, class, spec)
         end
 
         --if there's no actor name it means it reached the end
         if (not actorName) then
             if (isDebugging) then
-                print("UnPackHeal(): BREAK | Heal loop has been stopped", "index:", i, "tablePosition:", tablePosition, "value:", combatData[tablePosition])
+                print("UnPackHeal(): break | Heal loop has been stopped", "index:", i, "tablePosition:", tablePosition, "value:", combatData[tablePosition])
             end
             break
         end
@@ -858,7 +868,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
     end
 
     if (isDebugging) then
-        print("UnPackHeal(): DONE.")
+        print("UnPackHeal(): done.")
     end
 
     return tablePosition
@@ -866,14 +876,17 @@ end
 
 --this function does the same as the function above but does not create a new combat, it just add new information
 function Details.packFunctions.DeployPackedCombatData(packedCombatData)
-
     if (isDebugging) then
-        print("DeployPackedCombatData(): START.")
+        print("DeployPackedCombatData(): start.")
     end
 
     local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")
     local dataCompressed = LibDeflate:DecodeForWoWAddonChannel(packedCombatData)
     local combatDataString = LibDeflate:DecompressDeflate(dataCompressed)
+
+    if (isDebugging) then
+        print(combatDataString)
+    end
 
     local function count(text, pattern)
         return select(2, text:gsub(pattern, ""))
@@ -955,6 +968,38 @@ function Details.packFunctions.DeployPackedCombatData(packedCombatData)
         currentCombat:SetDate(combatData[INDEX_COMBAT_START_DATE], combatData[INDEX_COMBAT_END_DATE])
         currentCombat.enemy = combatData[INDEX_COMBAT_NAME]
     end
+
+    --refresh container
+    currentCombat[DETAILS_ATTRIBUTE_DAMAGE]:Remap()
+    currentCombat[DETAILS_ATTRIBUTE_HEAL]:Remap()
+
+    --refresh damage taken
+    local damageContainer = currentCombat[DETAILS_ATTRIBUTE_DAMAGE]
+    local allActors = damageContainer._ActorTable
+
+    for i = 1, #allActors do --reset damage taken table
+        local actor = allActors[i]
+        actor.damage_taken = 0
+        actor.damage_from = {}
+    end
+
+    for i = 1, #allActors do
+        local actor = allActors[i]
+        for targetName, amount in pairs (actor.targets) do
+            local actorIndex = damageContainer._NameIndexTable[targetName]
+            if (actorIndex) then
+                local targetActor = allActors[actorIndex]
+                if (targetActor) then
+                    targetActor.damage_taken = targetActor.damage_taken + amount
+                    targetActor.damage_from[actor.nome] = (targetActor.damage_from[actor.nome] or 0) + amount
+                end
+            end
+        end
+    end
+
+    --refresh windows
+    currentCombat[DETAILS_ATTRIBUTE_DAMAGE].need_refresh = true
+    currentCombat[DETAILS_ATTRIBUTE_HEAL].need_refresh = true
 end
 
 --get the amount of entries of a hash table
@@ -970,9 +1015,9 @@ end
 function Details.packFunctions.CountTableEntriesValid(hasTable)
     local amount = 0
     for actorName, _ in pairs(hasTable) do
-        if (actorInformationIndexes[actorName]) then
+        --if (actorInformationIndexes[actorName]) then
             amount = amount + 1
-        end
+        --end
     end
     return amount
 end
@@ -988,18 +1033,18 @@ end
 
 function Details.packFunctions.UnpackTable(table, index, isPair, valueAsTable, amountOfValues)
     local result = {}
-    local reservedIndexes = table[index]
+    local reservedIndexes = tonumber(table[index])
     local indexStart = index+1
     local indexEnd = reservedIndexes+index
 
     if (isPair) then
         amountOfValues = amountOfValues or 2
-        for i = indexStart, indexEnd, amountOfValues do
+        for i = indexStart, indexStart + reservedIndexes - 1, amountOfValues do
             if (valueAsTable) then
                 local key = tonumber(table[i])
                 result[key] = {selectIndexes(table, i+1, amountOfValues-1)}
             else
-                local key = tonumber(table[i])
+                local key = table[i]
                 local value = tonumber(table[i+1])
                 result[key] = value
             end
@@ -1012,119 +1057,4 @@ function Details.packFunctions.UnpackTable(table, index, isPair, valueAsTable, a
     end
 
     return result
-end
-
---DEPRECATED
---what this function receives:
---@packedCombatData: packed combat, ready to be unpacked
-function Details.packFunctions.UnPackCombatData(packedCombatData)
-
-    if (true) then
-        print("Details is calling the wrong function UnPackCombatData()")
-        return
-    end
-
-    local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")
-    local dataCompressed = LibDeflate:DecodeForWoWAddonChannel(packedCombatData)
-    local combatDataString = LibDeflate:DecompressDeflate(dataCompressed)
-
-    --[=
-    local function count(text, pattern)
-        return select(2, text:gsub(pattern, ""))
-    end
-    --]=]
-
-    local combatData = {}
-    local amountOfIndexes = count(combatDataString, ",") + 1
-    print ("amountOfIndexes (debug):", amountOfIndexes)
-
-    while (amountOfIndexes > 0) do
-
-        local splitPart = {strsplit(",", combatDataString, 4000)} --strsplit(): Stack overflow, max allowed: 4000
-
-        if (#splitPart == 4000 and amountOfIndexes > 4000) then
-
-            print ("#combatDataString (debug) must be > 4000:", amountOfIndexes)
-            for i = 1, 3999 do
-                combatData[#combatData+1] = splitPart[i]
-            end
-
-            --get get part that couldn't be read this loop
-            combatDataString = splitPart[4000]
-            amountOfIndexes = amountOfIndexes - 3999
-
-            print ("#combatDataString (debug) left over:", amountOfIndexes)
-        else
-            for i = 1, #splitPart do
-                combatData[#combatData+1] = splitPart[i]
-            end
-            
-            amountOfIndexes = amountOfIndexes - #splitPart
-        end
-    end
-
-    print("total indexes (debug):", #combatData)
-
-    --if true then return end
-
-    local flags = tonumber(combatData[INDEX_EXPORT_FLAG])
-
-    local tablePosition = TOTAL_INDEXES_FOR_COMBAT_INFORMATION + 1 --[[ +1 to jump to damage ]] --DEPRECATED FUNC
-    --tablePosition now have the first index of the actorInfoTable
-
-    --stop the combat if already in one
-    if (Details.in_combat) then
-        Details:EndCombat()
-    end
-
-    --start a new combat
-    Details:StartCombat()
-    --get the current combat
-    local currentCombat = Details:GetCurrentCombat()
-
-    --check if this export has include damage info
-    if (bit.band(flags, 0x1) ~= 0) then
-        --find the index where the damage information start
-        for i = tablePosition, #combatData do
-            if (combatData[i] == "!D") then
-                tablePosition = i + 1;
-                break
-            end
-        end
-
-        --unpack damage
-        tablePosition = Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosition)
-    end
-
-    if (bit.band(flags, 0x2) ~= 0) then
-        --find the index where the heal information start
-        for i = tablePosition, #combatData do
-            if (combatData[i] == "!H") then
-                tablePosition = i + 1;
-                break
-            end
-        end
-
-        --unpack heal
-        Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePosition)
-    end
-
-    --all done, end combat
-    Details:EndCombat()
-
-    --set the start and end of combat time and date
-    currentCombat:SetStartTime(combatData[INDEX_COMBAT_START_TIME])
-    currentCombat:SetEndTime(combatData[INDEX_COMBAT_END_TIME])
-    currentCombat:SetDate(combatData[INDEX_COMBAT_START_DATE], combatData[INDEX_COMBAT_END_DATE])
-    currentCombat.enemy = combatData[INDEX_COMBAT_NAME]
-
-    --debug: delete the segment just created (debug)
-    --[[
-    local combat2 = _detalhes.tabela_historico.tabelas[2]
-    if (combat2) then
-        tremove (_detalhes.tabela_historico.tabelas, 1)
-        _detalhes.tabela_historico.tabelas[1] = combat2
-        _detalhes.tabela_vigente = combat2
-    end
-    --]]
 end

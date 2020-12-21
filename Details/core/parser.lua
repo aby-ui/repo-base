@@ -264,6 +264,9 @@
 	local SPELLID_KYRIAN_DRUID_DAMAGE = 338411
 	local SPELLID_KYRIAN_DRUID_HEAL = 327149
 	local SPELLID_KYRIAN_DRUID_TANK = 327037
+
+	local SPELLID_BARGAST_DEBUFF = 334695
+	local bargastBuffs = {}
 	
 	--> spells with special treatment
 	local special_damage_spells = {
@@ -718,11 +721,20 @@
 		if (absorbed) then
 			amount = absorbed + (amount or 0)
 		end
+
 		if (_is_in_instance) then
 			if (overkill and overkill > 0) then
 				--if enabled it'll cut the amount of overkill from the last hit (which killed the actor)
 				--when disabled it'll show the total damage done for the latest hit
 				--amount = amount - overkill
+			end
+		end
+
+		if (bargastBuffs[alvo_serial]) then --REMOVE ON 10.0
+			local stacks = bargastBuffs[alvo_serial]
+			if (stacks) then
+				local newDamage = amount / stacks
+				amount = newDamage
 			end
 		end
 		
@@ -2134,8 +2146,12 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 				reflection_debuffs[who_serial][spellid] = true
 			end
 			
+			if (spellid == SPELLID_BARGAST_DEBUFF) then --REMOVE ON 10.0
+				bargastBuffs[alvo_serial] = (bargastBuffs[alvo_serial] or 0) + 1
+			end
+
 			if (_in_combat) then
-			
+
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
 				if (_recording_buffs_and_debuffs) then
@@ -2385,6 +2401,10 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 			if (spellid == 315161) then
 				local enemyName = GetSpellInfo(315161)
 				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
+
+			if (spellid == SPELLID_BARGAST_DEBUFF) then
+				bargastBuffs[alvo_serial] = (bargastBuffs[alvo_serial] or 0) + 1
 			end
 
 			if (_in_combat) then
@@ -4645,6 +4665,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:SendEvent ("COMBAT_ENCOUNTER_END", nil, ...)
 		
 		_table_wipe (_detalhes.encounter_table)
+		_table_wipe (bargastBuffs)
 		
 		return true
 	end

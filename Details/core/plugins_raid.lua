@@ -557,8 +557,9 @@
 			end
 			
 			local spells = ""
+			death_table = death_table[1]
 			local last = #death_table
-			
+
 			for i = 1, _detalhes.announce_deaths.last_hits do
 				for o = last, 1, -1 do
 					local this_death = death_table [o]

@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2394, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201218224213")
+mod:SetRevision("20201220024326")
 mod:SetCreatureID(164407)
 mod:SetEncounterID(2399)
 mod:SetUsedIcons(1)
-mod:SetHotfixNoticeRev(20201117000000)--2020, 11, 17
-mod:SetMinSyncRevision(20201117000000)
---mod.respawnTime = 29
+mod:SetHotfixNoticeRev(20201217000000)--2020, 12, 17
+mod:SetMinSyncRevision(20201217000000)
+mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 

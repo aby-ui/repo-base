@@ -1,6 +1,6 @@
 
 local major = "LibRaidStatus-1.0"
-local CONST_LIB_VERSION = 9
+local CONST_LIB_VERSION = 10
 LIB_RAID_STATUS_CAN_LOAD = false
 
 --declae the library within the LibStub

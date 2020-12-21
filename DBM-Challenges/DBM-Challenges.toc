@@ -27,11 +27,11 @@
 ## X-DBM-Mod-Name-zhCN: 个人挑战
 ## X-DBM-Mod-Name-ruRU: Арена испытаний
 ## X-DBM-Mod-Sort: 316
-## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162
+## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162, 1911
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
-## Version: r136-7-ga3b80bb
+## Version: r136-8-g9220154
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

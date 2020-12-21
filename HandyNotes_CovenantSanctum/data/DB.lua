@@ -26,23 +26,21 @@ DB.points = {
 [1707] = { -- Elysisan Hold - Archon's Rise
     [48816478] = { portal=true, label=L["Portal to Oribos"], covenant=Kyrian, sanctumtalent=1058 },
 
---    [42747027] = { vendor=true, npc=176100, covenant=Kyrian }, -- Hüter des Ruhms
+    [42747027] = { renown=true, npc=176100, covenant=Kyrian }, -- Hüterin des Ruhms
 
     [48275915] = { innkeeper=true, npc=174581, covenant=Kyrian }, -- Gastwirt
---    [50964903] = { flightmaster=true, npc=159421, covenant=Kyrian },
     [48545823] = { mail=true, label=L["Mailbox"], covenant=Kyrian }, -- Briefkasten
 
-    [31584798] = { vendor=true, npc=171973, covenant=Kyrian },
-    [31084725] = { vendor=true, npc=171981, covenant=Kyrian },
+    [31584798] = { vendor=true, npc=171973, covenant=Kyrian, sanctumtalent=1091 }, -- quest 60489
+    [31084725] = { vendor=true, npc=171981, covenant=Kyrian, sanctumtalent=1091 },
     [32784318] = { anvil=true, npc=154635, covenant=Kyrian },
-    [27084093] = { vendor=true, npc=171959, covenant=Kyrian },
-    [30393967] = { vendor=true, npc=171958, covenant=Kyrian },
+    [27084093] = { vendor=true, npc=171959, covenant=Kyrian, sanctumtalent=1091 },
+    [30393967] = { vendor=true, npc=171958, covenant=Kyrian, sanctumtalent=1091 },
+    [29983878] = { trainer=true, npc=168430, covenant=Kyrian, sanctumtalent=1091 },
     [26373385] = { innkeeper=true, npc=174582, covenant=Kyrian }, -- Gastwirt
     [24023658] = { vendor=true, npc=174583, covenant=Kyrian },
     [24623230] = { mail=true, label=L["Mailbox"], covenant=Kyrian }, -- Briefkasten
     [22773160] = { stablemaster=true, npc=174580, covenant=Kyrian },
-
---    [42605303] = { weekly=true, npc=167745, covenant=Kyrian },
 
     [54788307] = { weaponsmith=true, npc=175522, covenant=Kyrian }, -- LFR
     [56068495] = { weaponsmith=true, npc=175521, covenant=Kyrian }, -- Normal
@@ -72,7 +70,7 @@ DB.points = {
     [56234811] = { reforge=true, npc=175314, covenant=Necrolord }, -- Paktrüstungsaufwertungen
 
     [52724104] = { vendor=true, npc=172176, covenant=Necrolord }, -- Ruhmrüstmeisterin
---    [46474023] = { vendor=true, npc=175998, covenant=Necrolord }, -- Hüterin des Ruhms
+    [46474023] = { renown=true, npc=175998, covenant=Necrolord }, -- Hüterin des Ruhms
 --    [46684234] = { vendor=true, npc=167748, covenant=Necrolord }, -- Seelenwächter
 
     [42163153] = { anvil=true, npc=173022, covenant=Necrolord }, --
@@ -89,7 +87,7 @@ DB.points = {
 },
 
 [1701] = { -- Hearth of the Forest - The Trunk
---    [33623696] = { vendor=true, npc=176096, covenant=Nightfae }, -- Hüterin des Ruhms
+    [33623696] = { renown=true, npc=176096, covenant=Nightfae }, -- Hüterin des Ruhms
 --    [34024355] = { vendor=true, npc=158553, covenant=Nightfae }, -- Seelenwächterin
 
     [46085651] = { vendor=true, npc=175418, covenant=Nightfae }, -- Rüstungshänderin der Nachtfae
@@ -103,6 +101,7 @@ DB.points = {
 
     [88013726] = { stablemaster=true, npc=168082, covenant=Nightfae }, -- Stallmeisterin
 },
+
 [1702] = { -- Hearth of the Forest - The Roots
     [59972842] = { portal=true, label=L["Portal to Oribos"], covenant=Nightfae, sanctumtalent=1055 },
 
@@ -110,8 +109,6 @@ DB.points = {
     [48035327] = { weaponsmith=true, npc=175414, covenant=Nightfae }, -- Normal
     [49495377] = { weaponsmith=true, npc=175415, covenant=Nightfae }, -- Heroic
     [51365462] = { weaponsmith=true, npc=175417, covenant=Nightfae }, -- Mythic
-
---    [50466277] = { weekly=true, npc=167196, covenant=Nightfae }, -- Wöchentliche Animaquest
 },
 
 ----------------------------------------------VENTHYR-----------------------------------------------
@@ -123,7 +120,7 @@ DB.points = {
     [54122456] = { vendor=true, npc=174710, covenant=Venthyr }, -- Ruhmrüstmeisterin
     [60054330] = { anvil=true, npc=166160, covenant=Venthyr}, -- Schmiedebedarf
     [59782904] = { mail=true, label=L["Mailbox"], covenant=Venthyr }, -- Briefkasten
---    [54322626] = { speak=true, npc=175772, covenant=Venthyr}, -- Hüterin des Ruhms
+    [54322626] = { renown=true, npc=175772, covenant=Venthyr}, -- Hüterin des Ruhms
 --    [45412852] = { anvil=true, npc=164738, covenant=Venthyr}, -- Seelenwächter
 },
 

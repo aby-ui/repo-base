@@ -46,7 +46,7 @@ local function SetIcon(point)
     local icon_key
 
     for i, k in ipairs({
-        "anvil", "flightmaster", "innkeeper", "mail", "portal", "reforge", "stablemaster", "vendor", "weaponsmith"
+        "anvil", "flightmaster", "innkeeper", "mail", "portal", "reforge", "renown", "stablemaster", "trainer", "vendor", "weaponsmith"
     }) do
         if point[k] then icon_key = k end
     end
@@ -60,7 +60,7 @@ local GetPointInfo = function(point)
     local icon
     if point then
         local label = getCreatureNamebyID(point.npc) or point.label or UNKNOWN
-        if (point.covenant and point.sanctumtalent) then
+        if (point.portal and point.sanctumtalent) then
             local TALENT = C_Garrison.GetTalentInfo(point.sanctumtalent)
             icon = TALENT["researched"] and SetIcon(point) or private.constants.icon["MagePortalHorde"]
         else
@@ -263,15 +263,17 @@ local currentMapID = nil
         if (point.covenant and point.covenant ~= C_Covenants.GetActiveCovenantID()) then
             return false
         end
-        if (point.anvil and not private.db.show_vendor) then return false; end
-        if (point.flightmaster and not private.db.show_others) then return false; end
-        if (point.innkeeper and not private.db.show_innkeeper) then return false; end
-        if (point.portal and (not private.db.show_portal or IsAddOnLoaded("HandyNotes_TravelGuide"))) then return false; end
-        if (point.mail and not private.db.show_mail) then return false; end
-        if (point.reforge and not private.db.show_reforge) then return false; end
-        if (point.stablemaster and not private.db.show_stablemaster) then return false; end
-        if (point.vendor and not private.db.show_vendor) then return false; end
-        if (point.weaponsmith and not private.db.show_weaponsmith) then return false; end
+        if (point.anvil and not private.db.show_vendor) then return false end
+        if (point.flightmaster and not private.db.show_others) then return false end
+        if (point.innkeeper and not private.db.show_innkeeper) then return false end
+        if (point.portal and (not private.db.show_portal or IsAddOnLoaded("HandyNotes_TravelGuide"))) then return false end
+        if (point.mail and not private.db.show_mail) then return false end
+        if (point.reforge and not private.db.show_reforge) then return false end
+        if (point.renown and not private.db.show_renown) then return false end
+        if (point.stablemaster and not private.db.show_stablemaster) then return false end
+        if (point.trainer and not private.db.show_others) then return false end
+        if (point.vendor and not private.db.show_vendor) then return false end
+        if (point.weaponsmith and not private.db.show_weaponsmith) then return false end
     end
         return true
     end

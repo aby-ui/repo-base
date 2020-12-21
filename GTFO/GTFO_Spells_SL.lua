@@ -92,6 +92,47 @@ GTFO.SpellID["344413"] = {
   sound = 1;
 };
 
+GTFO.SpellID["328879"] = {
+  --desc = "Hindering Soot";
+  sound = 2;
+};
+
+GTFO.SpellID["339040"] = {
+  --desc = "Withered Winds (Oranomonos the Everbranching)";
+  sound = 1;
+};
+
+GTFO.SpellID["327471"] = {
+  --desc = "Noxious Cloud (Custodian Thonar)";
+  sound = 1;
+};
+
+GTFO.SpellID["344462"] = {
+  --desc = "Soul Slag";
+  sound = 1;
+};
+
+GTFO.SpellID["338085"] = {
+  --desc = "Necrosis (Xantuth the Blighted)";
+  sound = 1;
+};
+
+GTFO.SpellID["323800"] = {
+  --desc = "Putrid Bile";
+  sound = 1;
+};
+
+GTFO.SpellID["338410"] = {
+  --desc = "Rain of Felfire (Mistress Dyrax)";
+  sound = 1;
+};
+
+GTFO.SpellID["338367"] = {
+  --desc = "Molten Stomp (Unbreakable Urtz)";
+  sound = 1;
+};
+
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -220,6 +261,12 @@ GTFO.SpellID["339080"] = {
 
 GTFO.SpellID["341215"] = {
   --desc = "Volatile Anima";
+  sound = 1;
+};
+
+GTFO.SpellID["331251"] = {
+  --desc = "Deep Connection (Azules)";
+  applicationOnly = true;
   sound = 1;
 };
 
@@ -407,6 +454,11 @@ GTFO.SpellID["329377"] = {
 
 GTFO.SpellID["294607"] = {
   --desc = "Death Pool";
+  sound = 1;
+};
+
+GTFO.SpellID["328879"] = {
+  --desc = "Creeping Sins (Patrician Cromwell)";
   sound = 1;
 };
 

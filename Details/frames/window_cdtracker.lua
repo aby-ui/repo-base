@@ -184,7 +184,12 @@ function Details.CooldownTracking.RefreshScreenPanel()
                 --print("timeLeft:", timeLeft, spellNameDebug)
             else
                 bar:SetMinMaxValues(0, 100)
-                bar:SetValue(100)
+                bar:SetTimer(0)
+                --print(spellNameDebug)
+                C_Timer.After(1, function()
+                   -- bar:SetMinMaxValues(0, 100)
+                   -- bar:SetTimer(0)
+                end)
             end
         end
     end

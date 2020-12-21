@@ -22,6 +22,7 @@ L["config_mail_desc"] = "显示邮箱的位置"
 L["config_onlymytrainers"] = "只显示与我专业相关的训练师和商人"
 L["config_onlymytrainers_desc"] = [[
 只显示与我专业相关的训练师和商人
+
 |cFFFF0000 注意:只有学习了两个专业后该功能才有效果 |r
 ]]
 L["config_others"] = "其他"

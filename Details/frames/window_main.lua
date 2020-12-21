@@ -5054,12 +5054,6 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide, alpha
 		self:InstanceAlpha(min (amount, self.color[4]))
 		gump:Fade(self.rowframe, "ALPHAANIM", rowsamount)
 		gump:Fade(self.baseframe, "ALPHAANIM", rowsamount)
-
-		--self:SetIconAlpha(menuamount)
-		
-		if (_detalhes.debug) then
-			_detalhes:Msg ("(debug) showing window SetWindowAlphaForCombat()", amount, rowsamount, menuamount)
-		end
 	--]]
 	end
 	

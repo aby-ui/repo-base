@@ -151,8 +151,8 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[64844] = 4, --Divine Hymn
 			[64901] = 4, --Symbol of Hope
 			[265202] = 4, --Holy Word: Salvation (talent)
-			[88625] = 5, --Holy Word: Chastise
-			[34861] = 5, --Holy Word: Sanctify
+			--[88625] = 5, --Holy Word: Chastise
+			--[34861] = 5, --Holy Word: Sanctify
 			[19236] = 5, --Desperate Prayer
 			[8122] = 5, --Psychic Scream
 		},
@@ -211,8 +211,8 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[205180] = 1, --Summon Darkglare
 			[342601] = 1, --Ritual of Doom
 			[113860] = 1, --Dark Soul: Misery (talent)
-			[104773] = 2, --Unending Resolve			
-			[108416] = 2, --Dark Pact (talent)			
+			[104773] = 2, --Unending Resolve
+			[108416] = 2, --Dark Pact (talent)
 			[30283] = 5, --Shadowfury
 			[6789] = 5, --Mortal Coil (talent)
 			[333889] = 5, --Fel Domination
@@ -237,9 +237,9 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 		[267] = {
 			[1122] = 1, --Summon Infernal
 			[342601] = 1, --Ritual of Doom
-			[113858] = 1, --Dark Soul: Instability (talent)			
+			[113858] = 1, --Dark Soul: Instability (talent)
 			[104773] = 2, --Unending Resolve
-			[108416] = 2, --Dark Pact (talent)			
+			[108416] = 2, --Dark Pact (talent)
 			[6789] = 5, --Mortal Coil (talent)
 			[30283] = 5, --Shadowfury
 			[333889] = 5, --Fel Domination
@@ -248,7 +248,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 	--WARRIOR
 		--Arms
 		[71] = {
-			[107574] = 1, --Avatar (talent)			
+			[107574] = 1, --Avatar (talent)
 			[227847] = 1, --Bladestorm
 			[152277] = 1, --Ravager (talent)
 			[118038] = 2, --Die by the Sword
@@ -283,7 +283,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 		--holy
 		[65] = {
 			[31884] = 1, --Avenging Wrath
-			[216331] = 1, --Avenging Crusader (talent)			
+			[216331] = 1, --Avenging Crusader (talent)
 			[498] = 2, --Divine Protection
 			[642] = 2, --Divine Shield
 			[105809] = 2, --Holy Avenger (talent)
@@ -394,7 +394,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[221562] = 5, --Asphyxiate
 			[212552] = 5, --Wraith walk (talent)
 		},
-	
+
 	--DRUID
 		--Balance
 		[102] = {
@@ -404,7 +404,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[108238] = 2, --Renewal (talent)
 			[29166] = 3, --Innervate
 			[77761] = 4, --Stampeding Roar
-			[99] = 5, --Incapacitating Roar
+			--[99] = 5, --Incapacitating Roar
 			[319454] = 5, --Heart of the Wild (talent)
 			[132469] = 5, --Typhoon
 			[78675] = 5, --Solar Beam
@@ -430,7 +430,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 			[108238] = 2, --Renewal (talent)
 			[77761] = 4, --Stampeding Roar
 			[132469] = 5, --Typhoon
-			[99] = 5, --Incapacitating Roar
+			--[99] = 5, --Incapacitating Roar
 			[319454] = 5, --Heart of the Wild (talent)
 		},
 		--Restoration
@@ -676,6 +676,7 @@ LIB_RAID_STATUS_COOLDOWNS_INFO = {
 	[186289] = {cooldown = 72, duration = 15, talent = false, charges = 1, class = "HUNTER", type = 5}, --Aspect of the eagle
 
 	--> druid
+	[77761] = {cooldown = 120, duration = 8, talent = false, charges = 1, class = "DRUID", type = 4}, --Stampeding Roar
 	[194223] = {cooldown = 180, duration = 20, talent = false, charges = 1, class = "DRUID", type = 1}, --Celestial Alignment
 	[102560] = {cooldown = 180, duration = 30, talent = 21702, charges = 1, class = "DRUID", type = 1}, --Incarnation: Chosen of Elune (talent)
 	[22812] = {cooldown = 60, duration = 12, talent = false, charges = 1, class = "DRUID", type = 2}, --Barkskin
@@ -694,6 +695,7 @@ LIB_RAID_STATUS_COOLDOWNS_INFO = {
 	[197721] = {cooldown = 90, duration = 8, talent = 22404, charges = 1, class = "DRUID", type = 4}, --Flourish (talent)
 	[132469] = {cooldown = 30, duration = false, talent = false, charges = 1, class = "DRUID", type = 5}, --Typhoon
 	[319454] = {cooldown = 300, duration = 45, talent = 18577, charges = 1, class = "DRUID", type = 5}, --Heart of the Wild (talent)
+	[102793] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "DRUID", type = 5}, --Ursol's Vortex
 
 	--> death knight
 	[275699] = {cooldown = 90, duration = 15, talent = false, charges = 1, class = "DEATHKNIGHT", type = 1}, --Apocalypse
@@ -720,7 +722,6 @@ LIB_RAID_STATUS_COOLDOWNS_INFO = {
 	[200166] = {cooldown = 240, duration = 30, talent = false, charges = 1, class = "DEMONHUNTER", type = 1}, --Metamorphosis
 	[198589] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Blur
 	[196555] = {cooldown = 120, duration = 5, talent = 21865, charges = 1, class = "DEMONHUNTER", type = 2}, --Netherwalk (talent)
-	[196718] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "DEMONHUNTER", type = 4}, --Darkness
 	[187827] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Metamorphosis
 	[196718] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "DEMONHUNTER", type = 4}, --Darkness
 	[188501] = {cooldown = 30, duration = 10, talent = false, charges = 1, class = "DEMONHUNTER", type = 5}, --Spectral Sight
@@ -769,6 +770,8 @@ LIB_RAID_STATUS_COOLDOWNS_INFO = {
 	[193223] = {cooldown = 240, duration = 60, talent = 21979, charges = 1, class = "PRIEST", type = 1},  --Surrender to Madness (talent)
 	[47585] = {cooldown = 120, duration = 6, talent = false, charges = 1, class = "PRIEST", type = 2},  --Dispersion
 	[15286] = {cooldown = 120, duration = 15, talent = false, charges = 1, class = "PRIEST", type = 4},  --Vampiric Embrace
+	[64044] = {cooldown = 45, duration = 4, talent = 21752, charges = 1, class = "PRIEST", type = 5}, --Psychic Horror
+	[205369] = {cooldown = 30, duration = 6, talent = 23375, charges = 1, class = "PRIEST", type = 5}, --Mind Bomb
 
 	--> rogue
 	[79140] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "ROGUE", type = 1},  --Vendetta

@@ -1,8 +1,8 @@
 ## Interface: 90002
-## classic ## Interface: 11305
+## classic ## Interface: 11306
 ## Title: TomTom
 ## Author: jnwhiteh
-## Version: v90002-1.1.9
+## Version: v90002-1.2.0
 ## License: All Rights Reserved
 ## Notes: Acts as your portable navigation assistant
 ## Notes-frFR: Agit comme un assistant de navigation portable

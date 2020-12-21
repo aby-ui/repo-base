@@ -130,7 +130,7 @@ config.options = {
     },
 }
 
-local icongroup = {"innkeeper", "mail", "reforge", "stablemaster", "vendor", "weaponsmith", "others"}
+local icongroup = {"innkeeper", "mail", "reforge", "renown", "stablemaster", "vendor", "weaponsmith", "others"}
 
 for i, icongroup in ipairs(icongroup) do
 

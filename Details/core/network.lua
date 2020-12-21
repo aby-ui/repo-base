@@ -405,21 +405,8 @@
 			return
 		end
 
-		if (core_version ~= _detalhes.realversion) then
-			if (core_version > _detalhes.realversion) then
-				Details:Msg ("your Details! is out dated and cannot use Coach feature.")
-			end
-			return false
-		end
-
-		if (msgType == "CIEA") then --Coach Is Enabled Ask (regular player asked to raid leader)
-			--check if the player that received the msg is the raid leader
-			if (UnitIsGroupLeader("player")) then
-				return
-			end
-
-			--send the answer
-			Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(DETAILS_PREFIX_COACH, playerName, GetRealmName(), Details.realversion, "CIER", Details.Coach.Server.IsEnabled()), "WHISPER", sourcePlayer)
+		if (msgType == "CIEA") then --Is Coach Enabled Ask (regular player asked to raid leader)
+			Details.Coach.Server.CoachIsEnabled_Answer(sourcePlayer)
 
 		elseif (msgType == "CIER") then --Coach Is Enabled Response (regular player received a raid leader response)
 			local isEnabled = data
@@ -441,26 +428,14 @@
 			Details.Coach.Client.CoachEnd()
 
 		elseif (msgType == "CDT") then --Coach Data (a player in the raid sent to raid leader combat data)
-			if (UnitIsGroupLeader("player")) then
-				if (Details.Coach.Server.IsEnabled()) then
-					--update the current combat with new information
-
-					--this is disabled due to lack of testing
-					if (_detalhes.debug) then
-						Details.packFunctions.DeployPackedCombatData(data)
-					end
-				end
+			if (Details.Coach.Server.IsEnabled()) then
+				--update the current combat with new information
+				Details.packFunctions.DeployPackedCombatData(data)
 			end
 
 		elseif (msgType == "CDD") then --Coach Death (a player in the raid sent to raid leader his death log)
-			if (UnitIsGroupLeader("player")) then
-				if (Details.Coach.Server.IsEnabled()) then
-					local currentCombat = Details:GetCurrentCombat()
-					tinsert(currentCombat.last_events_tables, data)
-
-					--tag the misc container as need refresh
-					currentCombat[DETAILS_ATTRIBUTE_MISC].need_refresh = true
-				end
+			if (Details.Coach.Server.IsEnabled()) then
+				Details.Coach.Server.AddPlayerDeath(sourcePlayer, data)
 			end
 		end
 	end

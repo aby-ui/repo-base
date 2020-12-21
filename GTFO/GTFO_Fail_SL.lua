@@ -184,6 +184,12 @@ GTFO.SpellID["346439"] = {
   sound = 3;
 };
 
+GTFO.SpellID["338855"] = {
+  --desc = "Seeds of Sorrow (Oranomonos the Everbranching)";
+  sound = 3;
+};
+
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -238,6 +244,16 @@ GTFO.SpellID["336809"] = {
 GTFO.SpellID["336893"] = {
   --desc = "Terrifying Chaos (Azmogal)";
   applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["337072"] = {
+  --desc = "Deathshade Volley (Deathshade of Xantuth)";
+  sound = 3;
+};
+
+GTFO.SpellID["336945"] = {
+  --desc = "Hurl Boulders (Unbreakable Urtz)";
   sound = 3;
 };
 
@@ -327,6 +343,7 @@ GTFO.SpellID["320991"] = {
 GTFO.SpellID["334921"] = {
   --desc = "Umbral Crash (Insatiable Brute)";
   sound = 3;
+  test = true;
 };
 
 GTFO.SpellID["322418"] = {
@@ -433,6 +450,7 @@ GTFO.SpellID["328466"] = {
 GTFO.SpellID["334625"] = {
   --desc = "Abyssal Detonation (Devos)";
   sound = 3;
+  negatingDebuffSpellID = 335805; -- Archon's Bastion
 };
 
 GTFO.SpellID["323831"] = {
@@ -719,6 +737,7 @@ GTFO.SpellID["330347"] = {
 
 GTFO.SpellID["307115"] = {
   --desc = "Flame Vent";
+  applicationOnly = true;
   sound = 3;
 };
 
@@ -740,6 +759,12 @@ GTFO.SpellID["331310"] = {
 };
 
 GTFO.SpellID["331349"] = {
+  --desc = "Spike Trap";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["331321"] = {
   --desc = "Spike Trap";
   sound = 3;
   applicationOnly = true;
@@ -808,6 +833,28 @@ GTFO.SpellID["296372"] = {
   sound = 3;
 };
 
+GTFO.SpellID["296365"] = {
+  --desc = "Subjugate Essence (Subjugator Klontzas)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["307023"] = {
+  --desc = "Soul Burst";
+  sound = 3;
+};
+
+GTFO.SpellID["303678"] = {
+  --desc = "Bone Shrapnel (Skeletal Remains)";
+  sound = 3;
+};
+
+GTFO.SpellID["321662"] = {
+  --desc = "Bone Spike (Bone Husk)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************
@@ -863,6 +910,10 @@ GTFO.SpellID["325713"] = {
   sound = 1;
 };
 
+GTFO.SpellID["339649"] = {
+  --desc = "Gorging Leap (Gorging Mite)";
+  sound = 3;
+};
 
 end
 
