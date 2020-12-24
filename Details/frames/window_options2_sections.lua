@@ -22,6 +22,7 @@ end
     ~15 - broadcaster
     ~16 - custom spells
     ~17 - charts data
+    ~18 - mythic dungeon
 --]]
 
 
@@ -6252,6 +6253,91 @@ do
 
     tinsert(Details.optionsSection, buildSection)
 end
+
+do
+    local buildSection = function(sectionFrame)
+
+        local sectionOptions = {
+            {type = "label", get = function() return Loc["STRING_OPTIONS_GENERAL_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+            {--always in combat
+                type = "toggle",
+                get = function() return Details.mythic_plus.always_in_combat end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.always_in_combat = value
+                end,
+                name = "Always in Combat",
+                desc = "Details won't create new segments for trash or boss and treat the run as a single segment.",
+            },
+
+            {--dedicated segment for bosses
+                type = "toggle",
+                get = function() return Details.mythic_plus.boss_dedicated_segment end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.boss_dedicated_segment = value
+                end,
+                name = "Boss Dedicated Segment",
+                desc = "If a boss is pulled while in combat, Details! close the combat and start a new one for the boss.",
+            },
+
+            {--make overall when done
+                type = "toggle",
+                get = function() return Details.mythic_plus.make_overall_when_done end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.make_overall_when_done = value
+                end,
+                name = "Make Overall Segment",
+                desc = "When the run is done, make an overall segment.",
+            },
+
+            {--overall only with bosses
+                type = "toggle",
+                get = function() return Details.mythic_plus.make_overall_boss_only end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.make_overall_boss_only = value
+                end,
+                name = "Overall Segment Boss Only",
+                desc = "Only add boss segments on the overall.",
+            },
+
+            {--merge trash
+                type = "toggle",
+                get = function() return Details.mythic_plus.merge_boss_trash end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.merge_boss_trash = value
+                end,
+                name = "Merge Trash",
+                desc = "Merge Trash",
+            },
+
+            {--delete merged trash
+                type = "toggle",
+                get = function() return Details.mythic_plus.delete_trash_after_merge end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.delete_trash_after_merge = value
+                end,
+                name = "Delete Merged Trash Segments",
+                desc = "After have the segment merged, if this option is enabled it'll delete those merged segments.",
+            },            
+
+            {--show chart popup
+                type = "toggle",
+                get = function() return Details.mythic_plus.show_damage_graphic end,
+                set = function (self, fixedparam, value)
+                    Details.mythic_plus.show_damage_graphic = value
+                end,
+                name = "Show Damage Charts",
+                desc = "Show Damage Charts",
+            },
+
+
+        }
+
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
+
 
 --[[]
 do

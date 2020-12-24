@@ -1536,6 +1536,9 @@ function Details.Database.StoreWipe(combat)
 	
 	--database
 		local db = Details.Database.LoadDB()
+		if (not db) then
+			return
+		end
 
 		local diff_storage = db [diff]
 		if (not diff_storage) then
@@ -1604,7 +1607,10 @@ function Details.Database.StoreEncounter(combat)
 	
 	--database
 		local db = Details.Database.LoadDB()
-
+		if (not db) then
+			return
+		end
+		
 		local diff_storage = db [diff]
 		if (not diff_storage) then
 			db [diff] = {}

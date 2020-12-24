@@ -503,7 +503,7 @@ function Details.Coach.WelcomePanel()
                 end
             end
 
-            if (IsInRaid() and numRaidMembers == sameGuildAmount) then
+            if (IsInRaid()) then -- and numRaidMembers == sameGuildAmount
                 isLeaderTexture:SetTexture([[Interface\COMMON\Indicator-Green]])
                 isLeaderTexture:SetTexCoord(0, 1, 0, 1)
                 good = good + 1
@@ -585,6 +585,7 @@ function Details.Coach.WelcomePanel()
             if (updatedUsers >= numRaidMembers) then
                 allUsersUpdated = true
             end
+            allUsersUpdated = true
 
             if (allUsersUpdated) then
                 allUpdatedTexture:SetTexture([[Interface\COMMON\Indicator-Green]])

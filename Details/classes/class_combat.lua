@@ -411,7 +411,7 @@
 				tremove(container._ActorTable, index)
 
 				--remap
-				self:Remap()
+				container:Remap()
 			end
 		end
 	end

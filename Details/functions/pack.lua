@@ -460,14 +460,13 @@ function Details.packFunctions.PackDamage(combatObject)
 
     local allPlayerNames = {}
     for i = 1, 20 do
-        local unitName = UnitName("raid" .. i)
-        local _, _, subgroup = GetRaidRosterInfo(i)
-
-        if (unitName and subgroup <= 4) then
-            allPlayerNames[#allPlayerNames+1] = unitName
+        local name, _, subgroup = GetRaidRosterInfo(i)
+        name = Ambiguate(name, "none")
+        if (name and subgroup <= 4) then
+            tinsert(allPlayerNames, name)
         end
     end
-    table.sort(allPlayerNames, DetailsFramework.SortOrder1R)
+    table.sort(allPlayerNames, function(t1, t2) return t1 < t2 end)
 
     local playerName = UnitName("player")
     for i = 1, #allPlayerNames do

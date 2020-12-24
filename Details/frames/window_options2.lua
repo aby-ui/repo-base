@@ -210,12 +210,14 @@ function Details.options.InitializeOptionsWindow(instance)
         [16] = Loc ["STRING_OPTIONSMENU_SPELLS"],
         [17] = Loc ["STRING_OPTIONSMENU_DATACHART"],
 
+        [18] = "Mythic Dungeon",
+
     }
 
     local optionsSectionsOrder = {
-        1, "", 3, 4, "", 5, 6, 7, 12, 13, "", 9, 2, 8, 10, 11, "", 14, 15, 16, 17--, 18, 19
+        1, "", 3, 4, "", 5, 6, 7, 12, 13, "", 9, 2, 8, 10, 11, 18, "", 14, 15, 16, 17--, 18, 19
     }
-    local maxSectionIds = 17
+    local maxSectionIds = 18
     Details.options.maxSectionIds = maxSectionIds
 
     local buttonYPosition = -40

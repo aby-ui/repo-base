@@ -512,9 +512,6 @@ do
 	[200025]        =       65,     --      Beacon of Virtue
 	[223306]        =       65,     --      Bestow Faith
 	[4987]  =       65,     --      Cleanse
-	[231667]        =       65,     --      Crusader Strike
-	[342348]        =       65,     --      Crusader Strike
-	[35395] =       65,     --      Crusader Strike
 	[196926]        =       65,     --      Crusader's Might
 	[498]   =       65,     --      Divine Protection
 	[325966]        =       65,     --      Glimmer of Light
@@ -546,7 +543,6 @@ do
 	[204019]        =       66,     --      Blessed Hammer
 	[229976]        =       66,     --      Blessed Hammer
 	[204018]        =       66,     --      Blessing of Spellwarding
-	[204054]        =       66,     --      Consecrated Ground
 	[204023]        =       66,     --      Crusader's Judgment
 	[204077]        =       66,     --      Final Stand
 	[203776]        =       66,     --      First Avenger
@@ -556,14 +552,13 @@ do
 	[337287]        =       66,     --      Hammer of the Righteous
 	[53595] =       66,     --      Hammer of the Righteous
 	[315924]        =       66,     --      Hand of the Protector
-	[152261]        =       66,     --      Holy Shield
 	[327193]        =       66,     --      Moment of Glory
 	[280373]        =       66,     --      Redoubt
 	[204074]        =       66,     --      Righteous Protector
 	[161800]        =       66,     --      Riposte
 	[321136]        =       66,     --      Shining Light
 
-
+	
 	-- Retribution Paladin:
 	[267344]        =       70,     --      Art of War
 	[317912]        =       70,     --      Art of War
@@ -574,15 +569,11 @@ do
 	[53385] =       70,     --      Divine Storm
 	[326732]        =       70,     --      Empyrean Power
 	[343527]        =       70,     --      Execution Sentence
-	[205191]        =       70,     --      Eye for an Eye
 	[343721]        =       70,     --      Final Reckoning
 	[203316]        =       70,     --      Fires of Justice
 	[183218]        =       70,     --      Hand of Hindrance
-	[326734]        =       70,     --      Healing Hands
 	[215661]        =       70,     --      Justicar's Vengeance
 	[267610]        =       70,     --      Righteous Verdict
-	[85804] =       70,     --      Selfless Healer
-	[184662]        =       70,     --      Shield of Vengeance
 	[85256] =       70,     --      Templar's Verdict
 	[255937]        =       70,     --      Wake of Ashes
 	[269569]        =       70,     --      Zeal

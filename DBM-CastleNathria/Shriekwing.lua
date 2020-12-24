@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2393, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201217054451")
+mod:SetRevision("20201223204239")
 mod:SetCreatureID(164406)
 mod:SetEncounterID(2398)
 mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20201209000000)--2020, 12, 9
-mod:SetMinSyncRevision(20200815000000)
+mod:SetHotfixNoticeRev(20201222000000)--2020, 12, 22
+mod:SetMinSyncRevision(20201222000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -148,7 +148,8 @@ function mod:SPELL_CAST_START(args)
 		timerBlindSwipeCD:Start()
 	elseif spellId == 342863 then
 		specWarnEchoingScreech:Show()
-		specWarnEchoingScreech:Play("defensive")
+		specWarnEchoingScreech:Play("watchstep")--Maybe shockwave?
+		timerEchoingScreechCD:Start()
 	elseif spellId == 345397 then
 		self.vb.waveCount = self.vb.waveCount + 1
 		warnWaveofBlood:Show(self.vb.waveCount)
@@ -203,17 +204,17 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnDeadlyDescent:CombinedShow(0.3, args.destName)
 		end
 	elseif spellId == 342077 then
-		warnEcholocation:CombinedShow(0.5, args.destName)
 		local icon = self.vb.EchoIcon
+		if self.Options.SetIconOnEcholocation then
+			self:SetIcon(args.destName, self.vb.EchoIcon)
+		end
 		if args:IsPlayer() then
 			specWarnEcholocation:Show()
 			specWarnEcholocation:Play("runout")
 			yellEcholocation:Yell(icon, icon, icon)
 			yellEcholocationFades:Countdown(spellId, nil, icon)
 		end
-		if self.Options.SetIconOnEcholocation then
-			self:SetIcon(args.destName, self.vb.EchoIcon)
-		end
+		warnEcholocation:CombinedShow(0.5, args.destName)
 		self.vb.EchoIcon = self.vb.EchoIcon + 1
 	elseif spellId == 341684 then
 		warnBloodLantern:Show(args.destName)
@@ -225,6 +226,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerEcholocationCD:Stop()
 		timerBlindSwipeCD:Stop()
 		timerWaveofBloodCD:Stop()
+		timerEchoingScreechCD:Stop()
 		timerEarsplittingShriekCD:Start(13.4)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(8)

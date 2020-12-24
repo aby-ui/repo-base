@@ -88,48 +88,36 @@ BattleGroundEnemies.Objects = {}
 
 
 local RequestFrame = CreateFrame("Frame", nil, BattleGroundEnemies)
-
--- local DebugFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
--- DebugFrame:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
--- 	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
--- 	tile = true, tileSize = 16, edgeSize = 16,
--- 	insets = {left = 1, right = 1, top = 1, bottom = 1}}
--- )
--- DebugFrame:SetBackdropColor(0,0,0,1)
--- DebugFrame:SetWidth(650)
--- DebugFrame:SetHeight(500)
--- DebugFrame:SetPoint("CENTER", UIParent, "CENTER")
--- DebugFrame:Hide()
--- DebugFrame:SetFrameStrata("DIALOG")
-
--- local scrollArea = CreateFrame("ScrollFrame", "BCMCopyScroll", DebugFrame, "UIPanelScrollFrameTemplate")
--- scrollArea:SetPoint("TOPLEFT", DebugFrame, "TOPLEFT", 8, -5)
--- scrollArea:SetPoint("BOTTOMRIGHT", DebugFrame, "BOTTOMRIGHT", -30, 5)
-
--- local editBox = CreateFrame("EditBox", nil, DebugFrame)
--- editBox:SetMultiLine(true)
--- editBox:SetMaxLetters(99999)
--- editBox:EnableMouse(true)
--- editBox:SetAutoFocus(false)
--- editBox:SetFontObject(ChatFontNormal)
--- editBox:SetWidth(620)
--- editBox:SetHeight(495)
--- editBox:SetScript("OnEscapePressed", function(f) f:GetParent():GetParent():Hide() f:SetText("") end)
-
--- scrollArea:SetScrollChild(editBox)
-
--- local close = CreateFrame("Button", "BCMCloseButton", DebugFrame, "UIPanelCloseButton")
--- close:SetPoint("TOPRIGHT", DebugFrame, "TOPRIGHT", 0, 25)
-
--- local font = DebugFrame:CreateFontString(nil, nil, "GameFontNormal")
--- font:Hide()
-
--- DebugFrame.box = editBox
--- DebugFrame.font = font
-
--- BattleGroundEnemies.DebugFrame = DebugFrame
+RequestFrame:Hide()
+do
+	local TimeSinceLastOnUpdate = 0
+	local UpdatePeroid = 2 --update every second
+	local function RequestTicker(self, elapsed) --OnUpdate runs if the frame RequestFrame is shown
+		TimeSinceLastOnUpdate = TimeSinceLastOnUpdate + elapsed
+		if TimeSinceLastOnUpdate > UpdatePeroid then
+			RequestBattlefieldScoreData()
+			TimeSinceLastOnUpdate = 0
+		end
+	end
+	RequestFrame:SetScript("OnUpdate", RequestTicker)
+end
 
 
+
+local function CreatedebugFrame()
+	local f = FCF_OpenTemporaryWindow("FILTERED")
+	f:SetMaxLines(2500)
+	FCF_UnDockFrame(f);
+	f:ClearAllPoints();
+	f:SetPoint("CENTER", "UIParent", "CENTER", 0, 0);
+	FCF_SetTabPosition(f, 0);
+	f:Show();
+	f.Tab = _G[f:GetName().."Tab"]
+	f.Tab.conversationIcon:Hide()
+	FCF_SetWindowName(f, "BGE_DebugFrame")
+
+	return f
+end
 
 BattleGroundEnemies.ArenaEnemyIDToPlayerButton = {} --key = arenaID: arenaX, value = playerButton of that unitID
 
@@ -1829,8 +1817,7 @@ do
 		PVPMatchScoreboard:HookScript("OnHide", PVPMatchScoreboard_OnHide)
 		
 		--DBObjectLib:ResetProfile(noChildren, noCallbacks)
-		
-		
+	
 		
 		self:UnregisterEvent("PLAYER_LOGIN")
 	end
@@ -1889,24 +1876,23 @@ end
 BattleGroundEnemies.DebugText = BattleGroundEnemies.DebugText or ""
 function BattleGroundEnemies:Debug(...)
 	if self.db and self.db.profile.Debug then 
-		print("BGE DEBUG:", ...) 
 
-		-- disabled for now, its just way too cpu intense and makes the game crash, but would be nice to have
-		-- local args = {...}
-		-- local text = ""
-		-- for i = 1, #args do
-		-- 	text = text.. " ".. tostring(args[i])			
-		-- end
+		if not self.debugFrame then
+			self.debugFrame = CreatedebugFrame()
+		end
 
-		-- local timestampFormat = "[%I:%M:%S] " --timestamp format
-		-- local stamp = BetterDate(timestampFormat, time())
+		local args = {...}
+		local text = ""
 
-		-- DebugFrame.font:SetFormattedText(stamp.."%s\n", text) -- Set a line break
-		-- local cleanLine = DebugFrame.font:GetText() or ""
-		-- self.DebugText = self.DebugText.. cleanLine
-		-- print("DebugText:", self.DebugText)
+		local timestampFormat = "[%I:%M:%S] " --timestamp format
+		local stamp = BetterDate(timestampFormat, time())
+		text = stamp
 
-		-- DebugFrame.box:SetText(self.DebugText)
+		for i = 1, #args do
+			text = text.. " ".. tostring(args[i])
+		end
+
+		self.debugFrame:AddMessage(text)
 	end
 end
 
@@ -1916,18 +1902,7 @@ function BattleGroundEnemies:Information(...)
 
 end
 
-do
-	local TimeSinceLastOnUpdate = 0
-	local UpdatePeroid = 2 --update every second
-	local function RequestTicker(self, elapsed) --OnUpdate runs if the frame RequestFrame is shown
-		TimeSinceLastOnUpdate = TimeSinceLastOnUpdate + elapsed
-		if TimeSinceLastOnUpdate > UpdatePeroid then
-			RequestBattlefieldScoreData()
-			TimeSinceLastOnUpdate = 0
-		end
-	end
-	RequestFrame:SetScript("OnUpdate", RequestTicker)
-end
+
 
 
 --fires when a arena enemy appears and a frame is ready to be shown
@@ -2358,16 +2333,15 @@ do
 
 			self:Debug("numEnemies:", numEnemies)
 			self:Debug("numAllies:", numAllies)
-			
+
+			if InCombatLockdown() then return end
+
 			self:BGSizeCheck(numEnemies)
 			
 			self.Enemies:UpdatePlayerCount(numEnemies)
 			self.Allies:UpdatePlayerCount(numAllies)
 			
 			
-			
-			
-			if InCombatLockdown() then return end
 	
 			
 			wipe(self.Enemies.NewPlayerDetails) --use a local table to not create an unnecessary new button if another player left

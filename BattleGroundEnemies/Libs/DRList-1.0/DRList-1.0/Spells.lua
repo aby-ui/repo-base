@@ -27,6 +27,7 @@ if Lib.gameExpansion == "retail" then
         [280062]  = "disorient",       -- Unluckydo (Item)
         [267026]  = "disorient",       -- Giant Flower (Item)
         [243576]  = "disorient",       -- Sticky Starfish (Item)
+        [331866]  = "disorient",       -- Agent of Chaos (Venthyr Covenant)
 
         -- Incapacitates
         [217832]  = "incapacitate",    -- Imprison

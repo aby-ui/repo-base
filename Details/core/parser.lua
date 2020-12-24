@@ -711,6 +711,12 @@
 			alvo_name = alvo_name .. " <" .. alvo_dono.nome .. ">"
 		
 		end
+
+		if (not jogador_alvo) then
+			local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+			Details:Msg("Report 0x885488", alvo_name, instanceName, instanceId, damage_cache[alvo_serial] and "true")
+			return
+		end
 		
 		--> last event
 		este_jogador.last_event = _tempo
@@ -4527,7 +4533,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			return
 		end
 
-		--> leave the current combat when the encounter start, if is doing a mythic plus dungeons, check if the options alows to create a dedicated segment for the boss fight
+		--> leave the current combat when the encounter start, if is doing a mythic plus dungeons, check if the options allows to create a dedicated segment for the boss fight
 		if ((_in_combat and not _detalhes.tabela_vigente.is_boss) and (not _detalhes.MythicPlus.Started or _detalhes.mythic_plus.boss_dedicated_segment)) then
 			_detalhes:SairDoCombate()
 		end
