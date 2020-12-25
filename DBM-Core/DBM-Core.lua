@@ -3180,7 +3180,7 @@ do
 	end
 
 	function DBM:GetRaidClass(name)
-		return (raid[name] and raid[name].class) or "UNKNOWN", raid[name].id and GetRaidTargetIndex(raid[name].id) or 0
+		return (raid[name] and raid[name].class) or "UNKNOWN", raid[name] and raid[name].id and GetRaidTargetIndex(raid[name].id) or 0
 	end
 
 	function DBM:GetRaidUnitId(name)
