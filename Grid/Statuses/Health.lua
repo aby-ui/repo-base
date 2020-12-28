@@ -169,7 +169,7 @@ function GridStatusHealth:PostEnable()
 	self:RegisterMessage("Grid_UnitJoined")
 
 	--self:RegisterEvent("UNIT_AURA", "UpdateUnit") --没觉得哪个场景需要这个
-    self:RegisterEvent("UNIT_FLAGS", "UpdateUnit")
+    --self:RegisterEvent("UNIT_FLAGS", "UpdateUnit")
     self:RegisterEvent("PLAYER_FLAGS_CHANGED", "UpdateUnit")
 	self:RegisterEvent("UNIT_CONNECTION", "UpdateUnit")
 	self:RegisterEvent("UNIT_HEALTH", "UpdateUnit")
@@ -180,6 +180,11 @@ function GridStatusHealth:PostEnable()
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateAllUnits")
 
 	self:RegisterMessage("Grid_ColorsChanged", "UpdateAllUnits")
+
+    self:RegisterEvent("UNIT_CTR_OPTIONS", "UpdateAllUnits")
+    self:RegisterEvent("UNIT_FLAGS", "UpdateAllUnits")
+    self:RegisterEvent("PLAYER_ROLES_ASSIGNED", "UpdateAllUnits")
+    self:RegisterEvent("UNIT_OTHER_PARTY_CHANGED", "UpdateAllUnits")
 end
 
 function GridStatusHealth:OnStatusEnable(status)

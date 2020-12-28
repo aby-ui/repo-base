@@ -1,3 +1,4 @@
+-- colorLow if <= countLow, colorMiddle if <= countHigh, if > countHigh colorHigh
 GridWarbabyMoreAuras = {
     --[317420] = { buff = true,  statusText="count", priority=98 }, --测试：黑曜毁灭
     --[315161] = { buff = false, statusText="count", priority=98 }, --测试：腐化之眼
@@ -7,5 +8,6 @@ GridWarbabyMoreAuras = {
     --[318078] = { desc="锁定-无厌者"   ,buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=98,},
     --[307358] = { desc="衰弱唾液-无厌者",buff=false, indicator="borderglow", statusText="count"   ,color={0,1,0},priority=99,statusColor="count",countColorLow={.4,.4,.4},countLow=2,countColorMiddle={0,1,0},countHigh=3,countColorHigh={1,1,0},},
 
-    [326699] = { desc="大帝-P1层数",buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={0,1,1},countLow=2,countColorMiddle={0,1,0},countHigh=4,countColorHigh={1,1,0},},
+    [326699] = { desc="大帝-P1层数",   buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={.5,.5,.5},countLow=2,countColorMiddle={0,1,0},countHigh=3,countColorHigh={1,1,0},},
+    [329785] = { desc="大帝-P2猩红合唱",buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={ 0, 1, 0},countLow=2,countColorMiddle={1,1,0},countHigh=4,countColorHigh={1,.5,0},},
 }

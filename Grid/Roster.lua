@@ -91,6 +91,9 @@ function GridRoster:OnEnable()
     self:RegisterEvent("GROUP_JOINED", "UpdateRoster")
     self:RegisterEvent("GROUP_LEFT", "UpdateRoster")
     self:RegisterEvent("UNIT_OTHER_PARTY_CHANGED", "UpdateRoster")
+    self:RegisterEvent("UNIT_CTR_OPTIONS", "UpdateRoster")
+    self:RegisterEvent("UNIT_FLAGS", "UpdateRoster")
+    self:RegisterEvent("PLAYER_ROLES_ASSIGNED", "UpdateRoster")
 
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "PartyTransitionCheck")
 

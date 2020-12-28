@@ -1,14 +1,15 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201215235101")
+mod:SetRevision("20201226232358")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
+mod:DisableIEEUCombatDetection()
 mod:SetUsedIcons(1, 2, 3, 4, 5)
 mod.onlyHighest = true--Instructs DBM health tracking to literally only store highest value seen during fight, even if it drops below that
 mod.noBossDeathKill = true--Instructs mod to ignore 165759 deaths, since goal is to heal kael, not kill him
-mod:SetHotfixNoticeRev(20201214000000)--2020, 12, 14
-mod:SetMinSyncRevision(20201214000000)
+mod:SetHotfixNoticeRev(20201226000000)--2020, 12, 26
+mod:SetMinSyncRevision(20201226000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -278,11 +279,12 @@ local addTimers = {
 
 function mod:EmberBlastTarget(targetname, uId, bossuid, scanningTime)
 	if not targetname then return end
+	local debuffTimer = self:IsMythic() and 3 or 5
 	if targetname == UnitName("player") then
 		specWarnEmberBlast:Show(DBM_CORE_L.ALLIES)
 		specWarnEmberBlast:Play("gathershare")
 		yellEmberBlast:Yell()
-		yellEmberBlastFades:Countdown(5-scanningTime)
+		yellEmberBlastFades:Countdown(debuffTimer-scanningTime)
 	elseif self.Options.SpecWarn325877moveto then
 		specWarnEmberBlast:Show(targetname)
 		specWarnEmberBlast:Play("gathershare")
@@ -290,7 +292,7 @@ function mod:EmberBlastTarget(targetname, uId, bossuid, scanningTime)
 		warnEmberBlast:Show(targetname)
 	end
 	if self.Options.SetIconOnEmberBlast then
-		self:SetIcon(targetname, 1, 6-scanningTime)--So icon clears 1 second after blast
+		self:SetIcon(targetname, 1, debuffTimer-scanningTime)--So icon clears 1 second after blast
 	end
 end
 

@@ -73,3 +73,8 @@ GTFO.IgnoreScan["306583"] = true; -- Leaden Foot
 GTFO.IgnoreScan["326788"] = true; -- Chilling Winds
 GTFO.IgnoreScan["329961"] = true; -- Lycara's Bargain
 GTFO.IgnoreScan["322757"] = true; -- Wrath of Zolramus
+GTFO.IgnoreScan["325184"] = true; -- Loose Anima
+GTFO.IgnoreScan["334909"] = true; -- Oppressive Atmosphere
+GTFO.IgnoreScan["332444"] = true; -- Crumbling Foundation
+GTFO.IgnoreScan["335298"] = true; -- Giant Fists
+

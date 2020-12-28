@@ -438,6 +438,11 @@ GTFO.SpellID["331933"] = {
   soundMythic = 1;
 };
 
+GTFO.SpellID["331126"] = {
+  --desc = "Super Icky Sticky";
+  sound = 1;
+};
+
 --- ************
 --- * Torghast *
 --- ************
@@ -484,7 +489,6 @@ GTFO.SpellID["334893"] = {
 GTFO.SpellID["328579"] = {
   --desc = "Smoldering Remnants (Kael'thas)";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["328579"] = {
@@ -510,7 +514,66 @@ GTFO.SpellID["340630"] = {
 
 GTFO.SpellID["339553"] = {
   --desc = "Lingering Anima (Deplina)";
+  sound = 1;
+};
+
+GTFO.SpellID["325713"] = {
+  --desc = "Lingering Anima (Lady Inerva Darkvein)";
+  sound = 1;
+};
+
+GTFO.SpellID["339603"] = {
+  --desc = "Shared Suffering (Fara)";
+  sound = 4;
+  negatingDebuffSpellID = 324982; -- Shared Suffering
+  --negatingDebuffSpellID = 339607; -- Shared Suffering 2
+};
+
+GTFO.SpellID["325004"] = {
+  --desc = "Shared Suffering (Lady Inerva Darkvein)";
+  sound = 4;
+  negatingDebuffSpellID = 324982; -- Shared Suffering
+  --negatingDebuffSpellID = 324983; -- Shared Suffering 2
+};
+
+GTFO.SpellID["326538"] = {
+  --desc = "Anima Web (Lady Inerva Darkvein)";
+  sound = 1;
   applicationOnly = true;
+};
+
+GTFO.SpellID["331637"] = {
+  --desc = "Dark Recital (Lord Stavros)";
+  negatingDebuffSpellID = 331637; -- Dark Recital
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["331638"] = {
+  --desc = "Dark Recital (Lord Stavros) - Red Circles?";
+  sound = 4;
+  test = true;
+};
+
+GTFO.SpellID["347425"] = {
+  --desc = "Dark Recital (Lord Stavros) - Too far from partner?";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["334743"] = {
+  --desc = "Dark Recital (Lord Stavros) - Empowered Circles?";
+  sound = 4;
+  test = true;
+};
+
+GTFO.SpellID["335361"] = {
+  --desc = "Stonequake (Sludgefist)";
+  sound = 1;
+};
+
+GTFO.SpellID["332734"] = {
+  --desc = "Indignation (Sire Denathrius)";
   sound = 1;
 };
 

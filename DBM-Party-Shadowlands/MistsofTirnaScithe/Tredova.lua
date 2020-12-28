@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2405, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201125133144")
+mod:SetRevision("20201224023810")
 mod:SetCreatureID(164517)
 mod:SetEncounterID(2393)
 mod:SetUsedIcons(1, 2, 3, 4, 5)--Probably doesn't use all 5, unsure number of mind link targets at max inteligence/energy
@@ -127,14 +127,14 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.InfoFrame:Show(2, "enemyabsorb", nil, args.amount, "boss1")
 		end
 	elseif spellId == 331172 or spellId == 322648 then
+		if self.Options.SetIconOnMindLink then
+			--Always set Star on parent link
+			self:SetIcon(args.destName, spellId == 322648 and 1 or self.vb.mindLinkIcon)
+		end
 		if args:IsPlayer() then
 			specWarnMindLink:Show()
 			specWarnMindLink:Play("lineapart")
 			yellMindLink:Yell()
-		end
-		if self.Options.SetIconOnMindLink then
-			--Always set Star on parent link
-			self:SetIcon(args.destName, spellId == 322648 and 1 or self.vb.mindLinkIcon)
 		end
 		if spellId == 331172 then
 			self.vb.mindLinkIcon = self.vb.mindLinkIcon + 1

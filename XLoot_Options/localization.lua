@@ -147,6 +147,7 @@ local locales = {
 			show_ilvl = "Show item level",
 			font_size_ilvl = "Item level",
 			name_width = "Player name width",
+			gradients = "Gradients",
 		},
 		Master = {
 			panel_title = "Loot Master",

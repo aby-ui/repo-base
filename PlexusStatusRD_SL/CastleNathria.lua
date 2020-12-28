@@ -98,9 +98,9 @@ GridStatusRaidDebuff:DebuffId(zoneid, 342735, 915, 6, 6) -- Ravenous Feast
 GridStatusRaidDebuff:BossNameId(zoneid, 1000, "Sire Denathrius")
 GridStatusRaidDebuff:DebuffId(zoneid, 329181, 1001, 6, 6) -- Wracking Pain
 GridStatusRaidDebuff:DebuffId(zoneid, 329906, 1002, 6, 6) -- Carnage
-GridStatusRaidDebuff:DebuffId(zoneid, 326699, 1003, 6, 6, nil, true) -- Burden of Sin
+GridStatusRaidDebuff:DebuffId(zoneid, 326699, 1003, 6, 6, nil, true, nil, true) -- Burden of Sin
 GridStatusRaidDebuff:DebuffId(zoneid, 332585, 1004, 6, 6, nil, true) -- Scorn
-GridStatusRaidDebuff:DebuffId(zoneid, 329785, 1005, 6, 6) -- Crimson Chorus
+GridStatusRaidDebuff:DebuffId(zoneid, 329785, 1005, 6, 6, nil, true, nil, true) -- Crimson Chorus
 GridStatusRaidDebuff:DebuffId(zoneid, 332797, 1006, 6, 6, true) -- Fatal Finesse
 GridStatusRaidDebuff:DebuffId(zoneid, 329951, 1007, 6, 6) -- Impale
 GridStatusRaidDebuff:DebuffId(zoneid, 327796, 1008, 6, 6) -- Night Hunter

@@ -465,9 +465,9 @@ function addon:OnEnable() -- Construct addon option tables here
 	else
 		fonts = {
 			{ STANDARD_TEXT_FONT, "Friz Quadrata TT" },
-			{ "Fonts\MORPHEUS.ttf", "Morpheus" },
-			{ "Fonts\ARIALN.ttf", "Arial Narrow" },
-			{ "Fonts\SKURRI.ttf", "Skurri" },
+			{ [[Fonts\MORPHEUS.ttf]], "Morpheus" },
+			{ [[Fonts\ARIALN.ttf]], "Arial Narrow" },
+			{ [[Fonts\SKURRI.ttf]], "Skurri" },
 		}
 	end
 
@@ -663,6 +663,9 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "font_size_quantity", "range", 4, 26, 1 },
 				{ "font_size_ilvl", "range", 4, 26, 1 },
 			}},
+			{ "colors", "group", {
+				{ "gradients", must_reload_ui = true },
+			}, name = L.Frame.colors },
 		})
 	end
 
