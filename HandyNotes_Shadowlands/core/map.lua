@@ -98,7 +98,8 @@ function Map:HasEnabledGroups()
     return false
 end
 
-function Map:HasPOIs(node)
+function Map:CanFocus(node)
+    if node.focusable then return true end
     if type(node.pois) == 'table' then return true end
     if node.fgroup then
         for i, coord in ipairs(self.fgroups[node.fgroup]) do

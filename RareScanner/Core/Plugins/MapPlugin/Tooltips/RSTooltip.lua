@@ -204,6 +204,10 @@ function RSTooltip.ShowGroupTooltip(pin)
 end
 
 local function AddLastTimeSeenTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsSeen()) then
+		return
+	end
+	
 	local line = tooltip:AddLine()
 	if (pin.POI.isDiscovered) then
 		tooltip:SetCell(line, 1, string.format(AL["MAP_TOOLTIP_SEEN"], RSUtils.TextColor(RSTimeUtils.TimeStampToClock(pin.POI.foundTime, true), "FF8000")), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
@@ -213,6 +217,10 @@ local function AddLastTimeSeenTooltip(tooltip, pin)
 end
 
 local function AddAchievementTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsAchievements()) then
+		return
+	end
+	
 	if (pin.POI.achievementLink) then
 		local line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ACHIEVEMENT"], pin.POI.achievementLink), "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
@@ -222,6 +230,10 @@ local function AddAchievementTooltip(tooltip, pin)
 end
 
 local function AddNotesTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsNotes()) then
+		return
+	end
+	
 	local note = RSNotes.GetNote(pin.POI.entityID, pin.POI.mapID)
 	if (note) then
 		local line = tooltip:AddLine()
@@ -229,7 +241,7 @@ local function AddNotesTooltip(tooltip, pin)
 	end
 end
 
-local function AddLootTooltip(tooltip, pin)
+local function AddLootTooltip(tooltip, pin)	
 	if (RSConfigDB.IsShowingLootOnWorldMap()) then
 		local itemsIDs
 		if (pin.POI.isNpc) then
@@ -295,11 +307,14 @@ local function AddLootTooltip(tooltip, pin)
 	end
 end
 
-local function AddStateTooltip(tooltip, pin)
-	-- Separator
-	local line = tooltip:AddLine()
-
+local function AddStateTooltip(tooltip, pin)	
 	if ((pin.POI.isNpc and not pin.POI.isDead) or (pin.POI.isContainer and not pin.POI.isOpened) or (pin.POI.isEvent and not pin.POI.isCompleted)) then
+		if (not RSConfigDB.IsShowingTooltipsCommands()) then
+			return
+		end
+		
+		local line = tooltip:AddLine()
+	
 		local text
 		if (pin.POI.isNpc) then
 			text = AL["MAP_TOOLTIP_KILLED"]
@@ -317,37 +332,62 @@ local function AddStateTooltip(tooltip, pin)
 		local eventCompletedTime = RSEventDB.GetEventCompletedRespawnTime(pin.POI.entityID)
 
 		if (rareKilledTime and pin.POI.isNpc) then
-			local rareKilledTimeLeft = rareKilledTime - time()
-			if (rareKilledTimeLeft > 0) then
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], RSTimeUtils.TimeStampToClock(rareKilledTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
-			else
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			if (RSConfigDB.IsShowingTooltipsState()) then
+				local line = tooltip:AddLine()		
+				
+				local rareKilledTimeLeft = rareKilledTime - time()
+				if (rareKilledTimeLeft > 0) then
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], RSTimeUtils.TimeStampToClock(rareKilledTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				else
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_KILLED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				end
 			end
-			line = tooltip:AddLine()
-			tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_NOT_KILLED"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			
+			if (RSConfigDB.IsShowingTooltipsCommands()) then
+				local line = tooltip:AddLine()
+				tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_NOT_KILLED"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			end
 		elseif (containerOpenedTime and pin.POI.isContainer) then
-			local containerOpenedTimeLeft = containerOpenedTime - time()
-			if (containerOpenedTime > 0) then
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], RSTimeUtils.TimeStampToClock(containerOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
-			else
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			if (RSConfigDB.IsShowingTooltipsState()) then
+				local line = tooltip:AddLine()	
+					
+				local containerOpenedTimeLeft = containerOpenedTime - time()
+				if (containerOpenedTime > 0) then
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], RSTimeUtils.TimeStampToClock(containerOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				else
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_OPENED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				end
 			end
-			line = tooltip:AddLine()
-			tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_CONTAINER_NOT_LOOTED"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			
+			if (RSConfigDB.IsShowingTooltipsCommands()) then
+				local line = tooltip:AddLine()
+				tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_CONTAINER_NOT_LOOTED"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			end
 		elseif (eventCompletedTime and pin.POI.isEvent) then
-			local eventOpenedTimeLeft = eventCompletedTime - time()
-			if (eventCompletedTime > 0) then
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], RSTimeUtils.TimeStampToClock(eventOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
-			else
-				tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			if (RSConfigDB.IsShowingTooltipsState()) then
+				local line = tooltip:AddLine()	
+					
+				local eventOpenedTimeLeft = eventCompletedTime - time()
+				if (eventCompletedTime > 0) then
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], RSTimeUtils.TimeStampToClock(eventOpenedTimeLeft)), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				else
+					tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_ALREADY_COMPLETED"], AL["MAP_NEVER"]), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+				end
 			end
-			line = tooltip:AddLine()
-			tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_EVENT_NOT_DONE"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			
+			if (RSConfigDB.IsShowingTooltipsCommands()) then
+				local line = tooltip:AddLine()
+				tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_EVENT_NOT_DONE"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
+			end
 		end
 	end
 end
 
 local function AddGuideTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsCommands()) then
+		return
+	end
+	
 	-- Guide
 	local guide = false
 	if (pin.POI.isNpc) then
@@ -365,6 +405,10 @@ local function AddGuideTooltip(tooltip, pin)
 end
 
 local function AddWaypointsTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsCommands()) then
+		return
+	end
+	
 	if (RSConfigDB.IsAddingWorldMapTomtomWaypoints() or RSConfigDB.IsAddingWorldMapIngameWaypoints()) then
 		local line = tooltip:AddLine()
 		tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_ADD_WAYPOINT"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH)
@@ -372,6 +416,10 @@ local function AddWaypointsTooltip(tooltip, pin)
 end
 
 local function AddOverlayTooltip(tooltip, pin)
+	if (not RSConfigDB.IsShowingTooltipsCommands()) then
+		return
+	end
+	
 	local overlay = nil
 	if (pin.POI.isNpc) then
 		overlay = RSNpcDB.GetInternalNpcOverlay(pin.POI.entityID, pin.POI.mapID)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2420, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201223204239")
+mod:SetRevision("20201229011624")
 mod:SetCreatureID(165521)
 mod:SetEncounterID(2406)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -70,7 +70,7 @@ local timerConcentrateContainer					= mod:NewTimer(120, "timerConcentrateContain
 local timerExposedDesiresCD						= mod:NewCDTimer(8.5, 341621, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON, true)--8.5-25 because yeah, boss spell queuing+CD even changing when higher rank
 local timerBottledAnimaCD						= mod:NewCDTimer(10.8, 342280, nil, nil, nil, 3, nil, nil, true)--10-36
 local timerSinsandSufferingCD					= mod:NewCDTimer(44.3, 325064, 202046, nil, nil, 3, nil, nil, true)--ShortName "Beams"
-local timerConcentratedAnimaCD					= mod:NewCDTimer(35.4, 342321, nil, nil, nil, 1, nil, nil, true, 1, 3)--Technically targetted(3) bar type as well, but since bar is both, and 2 other bars are already 3s, 1 makes more sense
+local timerConcentratedAnimaCD					= mod:NewCDTimer(35.4, 342321, nil, nil, 2, 1, nil, nil, true, 1)--Technically targetted(3) bar type as well, but since bar is both, and 2 other bars are already 3s, 1 makes more sense
 local timerChangeofHeart						= mod:NewTargetTimer(4, 340452, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)

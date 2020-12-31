@@ -315,4 +315,7 @@ private.LOOT_QUEST_IDS = {
 	[178562] = { 60271 }; --Molten Anima
 	[173718] = { 58078 }; --Bottle of Redelav Wine
 	[173711] = { 58073 }; --Portrait of The Sire
+	[182692] = { 61849 }; --Venthyr Fang
+	[180816] = { 61159 }; --Forsworn Insignia
+	[184155] = { 62804 }; --Recovered Containment Pack
 }

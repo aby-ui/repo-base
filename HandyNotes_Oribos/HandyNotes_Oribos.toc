@@ -3,12 +3,12 @@
 # ## Notes: Shows the NPC and POI locations in Oribos.
 # ## Notes-deDE: Zeigt die Positionen von NPCs und anderer POIs in Oribos an.
 ## Author: |cFFFF8C00Dathwada EU-Eredar|r
-## Version: v9
+## Version: v10
 ## RequiredDeps: HandyNotes
 ## DefaultState: enabled
 ## SavedVariables: HandyNotes_OribosDB
 ## X-Embeds: AceTimer-3.0
-## X-Date: 2020-12-20
+## X-Date: 2020-12-30
 ## X-Category: Map
 
 # LOCALIZATION FILES

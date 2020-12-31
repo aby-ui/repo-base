@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 34
-RSConstants.CURRENT_LOOT_DB_VERSION = 46
+RSConstants.CURRENT_DB_VERSION = 36
+RSConstants.CURRENT_LOOT_DB_VERSION = 48
 
 ---============================================================================
 -- Special events
@@ -123,7 +123,13 @@ RSConstants.PROFILE_DEFAULTS = {
 			cleanWorldMapSearcherOnChange = true,
 			displayMinimapIcons = true,
 			waypointTomtom = false,
-			waypointIngame = true
+			waypointIngame = true,
+			tooltipsOnIngameIcons = true,
+			tooltipsAchievements = true,
+			tooltipsNotes = true,
+			tooltipsState = true,
+			tooltipsSeen = true,
+			tooltipsCommands = true
 		},
 		loot = {
 			filteredLootCategories = {},
@@ -139,6 +145,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			filterNotMatchingClass = false,
 			filterNotMatchingFaction = true,
 			filterAnimaItems = true,
+			filterConduitItems = true,
 			numItems = 10,
 			numItemsPerRow = 10
 		}
@@ -218,7 +225,11 @@ RSConstants.DAPPERDEW_NPCS = { 168135, 164415, 166135, 166138, 166139, 166140, 1
 RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
 RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
-RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252 }
+RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314 }
+RSConstants.NPCS_WITH_PRE_EVENT = {
+	[164102] = 164093;
+	[167874] = 167851;
+}
 	
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths

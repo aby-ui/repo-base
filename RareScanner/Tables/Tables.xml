@@ -7,4 +7,5 @@
 	<Script file="EventInfoTables.lua"/>
 	<Script file="AchievementTables.lua"/>
 	<Script file="LootQuestsTables.lua"/>
+	<Script file="Conduits.lua"/>
 </Ui>

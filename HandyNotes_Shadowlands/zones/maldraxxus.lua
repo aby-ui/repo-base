@@ -529,7 +529,12 @@ map.nodes[51444848] = Treasure({
         Transmog({item=180273, slot=L["2h_sword"]}), --Sorrowbane
     },
     pois={
-        POI({50945317, 37114699, 53634792, 76445672})
+        POI({
+            37114699, -- A Few Bumps Along the Way
+            53134131, -- One-Eyed Joby
+            53634792, -- Au'larrynar
+            76445672, -- Edible Redcaps
+        })
     }
 }) -- Oonar's Arm and Sorrowbane
 

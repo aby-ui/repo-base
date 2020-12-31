@@ -501,3 +501,16 @@ hooksecurefunc("IsArtifactRelicItem", function()
         end
     end
 end)
+
+--[[------------------------------------------------------------
+9.0 噬渊reload显示帮助信息
+---------------------------------------------------------------]]
+CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    for frame in HelpTip.framePool:EnumerateActive() do
+      if frame and frame.info and frame.info.text == EYE_OF_JAILER_TUTORIAL then
+          frame:Close()
+          break
+      end
+    end
+    return true
+end)

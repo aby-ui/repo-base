@@ -1399,20 +1399,9 @@ local function GetLootFilterOptions()
 					end,
 					width = "full",
 				},
-				displayLootOnMap = {
-					order = 2,
-					type = "toggle",
-					name = AL["DISPLAY_LOOT_ON_MAP"],
-					desc = AL["DISPLAY_LOOT_ON_MAP_DESC"],
-					get = function() return RSConfigDB.IsShowingLootOnWorldMap() end,
-					set = function(_, value)
-						RSConfigDB.SetShowingLootOnWorldMap(value)
-					end,
-					width = "full",
-				},
 				display_options = {
 					type = "group",
-					order = 3,
+					order = 2,
 					name = AL["LOOT_DISPLAY_OPTIONS"],
 					handler = RareScanner,
 					desc = AL["LOOT_DISPLAY_OPTIONS_DESC"],
@@ -1467,7 +1456,7 @@ local function GetLootFilterOptions()
 				},
 				category_filters = {
 					type = "group",
-					order = 4,
+					order = 3,
 					name = AL["LOOT_CATEGORY_FILTERS"],
 					handler = RareScanner,
 					desc = AL["LOOT_CATEGORY_FILTERS_DESC"],
@@ -1540,7 +1529,7 @@ local function GetLootFilterOptions()
 				},
 				individual = {
 					type = "group",
-					order = 5,
+					order = 4,
 					name = AL["LOOT_INDIVIDUAL_FILTERS"],
 					handler = RareScanner,
 					desc = AL["LOOT_INDIVIDUAL_FILTERS_DESC"],
@@ -1576,7 +1565,7 @@ local function GetLootFilterOptions()
 				},
 				other_filters = {
 					type = "group",
-					order = 6,
+					order = 5,
 					name = AL["LOOT_OTHER_FILTERS"],
 					handler = RareScanner,
 					desc = AL["LOOT_OTHER_FILTERS_DESC"],
@@ -1674,6 +1663,18 @@ local function GetLootFilterOptions()
 							get = function() return RSConfigDB.IsFilteringAnimaItems() end,
 							set = function(_, value)
 								RSConfigDB.SetFilteringAnimaItems(value)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+						},
+						filterNotUsableConduits = {
+							order = 9,
+							type = "toggle",
+							name = AL["LOOT_FILTER_CONDUIT_ITEMS"],
+							desc = AL["LOOT_FILTER_CONDUIT_ITEMS_DESC"],
+							get = function() return RSConfigDB.IsFilteringConduitItems() end,
+							set = function(_, value)
+								RSConfigDB.SetFilteringConduitItems(value)
 							end,
 							width = "full",
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
@@ -2024,6 +2025,92 @@ local function GetMapOptions()
 								RSConfigDB.SetAddingWorldMapIngameWaypoints(value)
 							end,
 							width = "double",
+						},
+					}
+				},
+				tooltips = {
+					type = "group",
+					order = 1,
+					name = AL["MAP_TOOLTIPS"],
+					handler = RareScanner,
+					desc = AL["MAP_TOOLTIPS_DESC"],
+					args = {
+						worldmapTooltips = {
+							order = 1,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_WORLDMAP_ICONS"],
+							desc = AL["MAP_TOOLTIPS_WORLDMAP_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsOnIngameIcons() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsOnIngameIcons(value)
+							end,
+							width = "full",
+						},
+						achievementsInfo = {
+							order = 2,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_ACHIEVEMENT"],
+							desc = AL["MAP_TOOLTIPS_ACHIEVEMENT_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsAchievements() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsAchievements(value)
+							end,
+							width = "full",
+						},
+						notes = {
+							order = 3,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_NOTES"],
+							desc = AL["MAP_TOOLTIPS_NOTES_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsNotes() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsNotes(value)
+							end,
+							width = "full",
+						},
+						loot = {
+							order = 4,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_LOOT"],
+							desc = AL["MAP_TOOLTIPS_LOOT_DESC"],
+							get = function() return RSConfigDB.IsShowingLootOnWorldMap() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingLootOnWorldMap(value)
+							end,
+							width = "full",
+						},
+						lastTimeSeen = {
+							order = 5,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_SEEN"],
+							desc = AL["MAP_TOOLTIPS_SEEN_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsSeen() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsSeen(value)
+							end,
+							width = "full",
+						},
+						state = {
+							order = 6,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_STATE"],
+							desc = AL["MAP_TOOLTIPS_STATE_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsState() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsState(value)
+							end,
+							width = "full",
+						},
+						commands = {
+							order = 7,
+							type = "toggle",
+							name = AL["MAP_TOOLTIPS_COMMANDS"],
+							desc = AL["MAP_TOOLTIPS_COMMANDS_DESC"],
+							get = function() return RSConfigDB.IsShowingTooltipsCommands() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingTooltipsCommands(value)
+							end,
+							width = "full",
 						},
 					}
 				}

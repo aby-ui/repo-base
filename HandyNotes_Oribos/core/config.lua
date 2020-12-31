@@ -44,55 +44,6 @@ config.options = {
                     name = L["config_what_to_display_desc"],
                     order = 1,
                 },
-                icon_scale = {
-                    type = "range",
-                    name = L["config_icon_scale"],
-                    desc = L["config_icon_scale_desc"],
-                    min = 0.25, max = 3, step = 0.01,
-                    width = 1,
-                    order = 2,
-                },
-                icon_alpha = {
-                    type = "range",
-                    name = L["config_icon_alpha"],
-                    desc = L["config_icon_alpha_desc"],
-                    min = 0, max = 1, step = 0.01,
-                    width = 1,
-                    order = 2.1,
-                },
-                show_auctioneer = {
-                    type = "toggle",
-                    name = L["config_auctioneer"],
-                    desc = L["config_auctioneer_desc"],
-                    order = 3,
-                    hidden = function() return not addon:CharacterHasProfession(202) end,
-                },
-                show_portal = {
-                    type = "toggle",
-                    name = function()
-                        if not IsAddOnLoaded("HandyNotes_TravelGuide") then
-                            return L["config_portal"]
-                        else
-                            return L["config_portal"].." |cFFFF0000(*)|r"
-                        end
-                    end,
-                    desc = L["config_portal_desc"],
-                    order = 28,
-                    disabled = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end,
-                },
-                show_tpplatform = {
-                    type = "toggle",
-                    name = function()
-                        if not IsAddOnLoaded("HandyNotes_TravelGuide") then
-                            return L["config_tpplatforms"]
-                        else
-                            return L["config_tpplatforms"].." |cFFFF0000(*)|r"
-                        end
-                    end,
-                    desc = L["config_tpplatforms_desc"],
-                    order = 29,
-                    disabled = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end,
-                },
                 desc2 = {
                     type = "description",
                     name = L["config_travelguide_note"],
@@ -113,12 +64,33 @@ config.options = {
                     desc = L["config_onlymytrainers_desc"],
                     order = 32,
                 },
+                picons = {
+                    type = "description",
+                    width = 0.9,
+                    name = L["config_picons"],
+                    fontSize = "medium",
+                    order = 33,
+                },
+                picons_vendor = {
+                    type = "toggle",
+                    width = 0.5,
+                    name = L["config_vendor"],
+                    desc = L["config_picons_vendor_desc"],
+                    order = 33.1,
+                },
+                picons_trainer = {
+                    type = "toggle",
+                    width = 0.6,
+                    name = L["config_trainer"],
+                    desc = L["config_picons_trainer_desc"],
+                    order = 33.2,
+                },
                 fmaster_waypoint = {
                     type = "toggle",
                     width = 1.3,
                     name = L["config_fmaster_waypoint"],
                     desc = L["config_fmaster_waypoint_desc"],
-                    order = 33,
+                    order = 34,
                 },
                 fmaster_waypoint_dropdown = {
                     type = "select",
@@ -128,7 +100,7 @@ config.options = {
                     name = L["config_fmaster_waypoint_dropdown"],
                     desc = L["config_fmaster_waypoint_dropdown_desc"],
                     width = 0.7,
-                    order = 34,
+                    order = 35,
                 },
                 easy_waypoint = {
                     type = "toggle",
@@ -142,7 +114,7 @@ config.options = {
                     end,
                     disabled = function() return not IsAddOnLoaded("TomTom") end,
                     desc = L["config_easy_waypoints_desc"],
-                    order = 35,
+                    order = 36,
                 },
                 unhide = {
                     type = "execute",
@@ -154,32 +126,27 @@ config.options = {
                             wipe(coords)
                         end
                         addon:Refresh()
-                        print("Covenant Sanctum: "..L["config_restore_nodes_print"])
+                        print("Oribos: "..L["config_restore_nodes_print"])
                     end,
-                    order = 36,
+                    order = 37,
                 },
             },
             },
         },
     },
---    SCALEALPHA = {
---        type = "group",
---        name = L["config_tab_scale_alpha"],
---        desc = L["config_scale_alpha_desc"],
---        order = 1,
---        args = {
---
---        },
---    },
+    SCALEALPHA = {
+        type = "group",
+        name = L["config_tab_scale_alpha"],
+        desc = L["config_scale_alpha_desc"],
+        order = 1,
+        args = {
+        },
+    },
     },
 }
 
-local icongroup = {
-    "banker", "barber", "innkeeper", "mail", "reforge", "stablemaster",
-    "trainer", "transmogrifier", "vendor", "void", "others"
-}
-
-for i, icongroup in ipairs(icongroup) do
+-- create the general config menu
+for i, icongroup in ipairs(private.constants.icongroup) do
 
     config.options.args.ICONDISPLAY.args.display.args["show_"..icongroup] = {
         type = "toggle",
@@ -190,8 +157,20 @@ for i, icongroup in ipairs(icongroup) do
 
 end
 
---[[
-for i, icongroup in ipairs(icongroup) do
+-- set some parameters for general config menu points
+local gcmp = config.options.args.ICONDISPLAY.args.display.args
+gcmp.show_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end
+
+gcmp.show_portal["name"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") and L["config_portal"].." |cFFFF0000(*)|r" or L["config_portal"] end
+gcmp.show_portal["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end
+
+gcmp.show_portaltrainer["hidden"] = function() return not (select(2, UnitClass("player")) == "MAGE") end
+
+gcmp.show_tpplatform["name"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") and L["config_tpplatform"].." |cFFFF0000(*)|r" or L["config_tpplatform"] end
+gcmp.show_tpplatform["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end
+
+-- create the scale / alpha config menu
+for i, icongroup in ipairs(private.constants.icongroup) do
 
     config.options.args.SCALEALPHA.args["name_"..icongroup] = {
         type = "header",
@@ -205,7 +184,7 @@ for i, icongroup in ipairs(icongroup) do
         desc = L["config_icon_scale_desc"],
         min = 0.25, max = 3, step = 0.01,
         arg = "icon_scale_"..icongroup,
-        width = 1.13,
+        width = 1.07,
         order = i *10 + 1,
     }
 
@@ -215,8 +194,25 @@ for i, icongroup in ipairs(icongroup) do
         desc = L["config_icon_alpha_desc"],
         min = 0, max = 1, step = 0.01,
         arg = "icon_alpha_"..icongroup,
-        width = 1.13,
+        width = 1.07,
         order = i *10 + 2,
     }
 end
-]]
+
+-- set some parameters for scale / aplha config menu points
+local sacmp = config.options.args.SCALEALPHA.args
+sacmp.name_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end
+sacmp.icon_scale_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end
+sacmp.icon_alpha_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end
+
+sacmp.name_portal["name"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") and L["config_portal"].." |cFFFF0000(*)|r" or L["config_portal"] end
+sacmp.icon_scale_portal["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end
+sacmp.icon_alpha_portal["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end
+
+sacmp.name_portaltrainer["hidden"] = function() return not (select(2, UnitClass("player")) == "MAGE") end
+sacmp.icon_scale_portaltrainer["hidden"] = function() return not (select(2, UnitClass("player")) == "MAGE") end
+sacmp.icon_alpha_portaltrainer["hidden"] = function() return not (select(2, UnitClass("player")) == "MAGE") end
+
+sacmp.name_tpplatform["name"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") and L["config_tpplatform"].." |cFFFF0000(*)|r" or L["config_tpplatform"] end
+sacmp.icon_scale_tpplatform["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end
+sacmp.icon_alpha_tpplatform["disabled"] = function() return IsAddOnLoaded("HandyNotes_TravelGuide") end

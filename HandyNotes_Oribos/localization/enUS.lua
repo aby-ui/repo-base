@@ -11,7 +11,7 @@ L["config_plugin_name"] = "Oribos"
 L["config_plugin_desc"] = "Displays the NPC and POI locations in Oribos on the world map and minimap."
 
 L["config_tab_general"] = "General"
---L["config_tab_scale_alpha"] = "Scale / Alpha"
+L["config_tab_scale_alpha"] = "Scale / Alpha"
 --L["config_scale_alpha_desc"] = "PH"
 L["config_icon_scale"] = "Icon Scale"
 L["config_icon_scale_desc"] = "The scale of the icons"
@@ -29,6 +29,12 @@ L["config_banker_desc"] = "Show the banker locations."
 L["config_barber"] = "Barber"
 L["config_barber_desc"] = "Show the barber location."
 
+L["config_greatvault"] = "The Great Vault"
+L["config_greatvault_desc"] = "Show the great vault location."
+
+L["config_guildvault"] = "Guild Vault"
+L["config_guildvault_desc"] = "Show the guild vault location."
+
 L["config_innkeeper"] = "Innkeeper"
 L["config_innkeeper_desc"] = "Show the innkeeper location."
 
@@ -38,8 +44,11 @@ L["config_mail_desc"] = "Show the mailbox locations."
 L["config_portal"] = "Portal"
 L["config_portal_desc"] = "Show the portal location."
 
-L["config_tpplatforms"] = "Teleport Platform"
-L["config_tpplatforms_desc"] = "Show the teleport platform locations."
+L["config_portaltrainer"] = "Portal Trainer"
+L["config_portaltrainer_desc"] = "Show the Mage portal trainer location."
+
+L["config_tpplatform"] = "Teleport Platform"
+L["config_tpplatform_desc"] = "Show the teleport platform locations."
 
 L["config_travelguide_note"] = "|cFFFF0000*Already active through HandyNotes: TravelGuide.|r"
 
@@ -61,6 +70,12 @@ L["config_vendor_desc"] = "Show the vendor locations."
 L["config_void"] = "Void Storage"
 L["config_void_desc"] = "Show the void storage location."
 
+L["config_zonegateway"] = "Zone Gateways"
+L["config_zonegateway_desc"] = "Show the zone gateway locations."
+
+L["config_others"] = "Others"
+L["config_others_desc"] = "Show all the other POIs."
+
 L["config_onlymytrainers"] = "Show only the trainers and vendors for my professions"
 L["config_onlymytrainers_desc"] = [[
 Only affects the trainer and vendor of main professions.
@@ -79,8 +94,9 @@ L["Both"] = true
 L["config_easy_waypoints"] = "Easy Waypoints"
 L["config_easy_waypoints_desc"] = "Activates simplified waypoint creation. \nAllows you to set a waypoint by right-clicking and access to more options by CTRL + right-clicking."
 
-L["config_others"] = "Others"
-L["config_others_desc"] = "Show all the other POIs."
+L["config_picons"] = "Show profession icons for:"
+L["config_picons_vendor_desc"] = "Show profession icons for vendors instead of the vendor icons."
+L["config_picons_trainer_desc"] = "Show profession icons for trainers instead of the trainer icons."
 
 L["config_restore_nodes"] = "Restore hidden nodes"
 L["config_restore_nodes_desc"] = "Restore all nodes that were hidden via the context menu."

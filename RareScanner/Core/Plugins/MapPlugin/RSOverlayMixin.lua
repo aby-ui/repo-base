@@ -29,7 +29,7 @@ function RSOverlayMixin:OnAcquired(x, y, pin)
 end
 
 function RSOverlayMixin:OnMouseEnter()
-	if (not self.pin.ShowAnim:IsPlaying()) then
+	if (self.pin.ShowAnim and not self.pin.ShowAnim:IsPlaying()) then
 		self.pin.ShowAnim:Play();
 	end
 
@@ -39,7 +39,7 @@ function RSOverlayMixin:OnMouseEnter()
 end
 
 function RSOverlayMixin:OnMouseLeave()
-	if (self.pin.ShowAnim:IsPlaying()) then
+	if (self.pin.ShowAnim and self.pin.ShowAnim:IsPlaying()) then
 		self.pin.ShowAnim:Stop();
 	end
 

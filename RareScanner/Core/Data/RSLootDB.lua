@@ -17,3 +17,15 @@ function RSLootDB.GetAssociatedQuestIDs(itemID)
 
 	return nil
 end
+
+---============================================================================
+-- Conduits database
+---============================================================================
+
+function RSLootDB.GetConduitInfo(itemID)
+	if (itemID) then
+		return private.CONDUITS[itemID]
+	end
+
+	return nil
+end

@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2394, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201223204239")
+mod:SetRevision("20201228233217")
 mod:SetCreatureID(164407)
 mod:SetEncounterID(2399)
 mod:SetUsedIcons(1)
-mod:SetHotfixNoticeRev(20201217000000)--2020, 12, 17
-mod:SetMinSyncRevision(20201217000000)
+mod:SetHotfixNoticeRev(20201228000000)--2020, 12, 28
+mod:SetMinSyncRevision(20201228000000)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -216,8 +216,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellChainLink:Yell(icon)
 		end
 	elseif spellId == 335470 then
-		self.vb.chainSlamCount = self.vb.chainSlamCount + 1
-		--timerChainSlamCD:Start(nil, self.vb.chainSlamCount+1)
 		if args:IsPlayer() then
 			specWarnChainSlam:Show()
 			specWarnChainSlam:Play("targetyou")

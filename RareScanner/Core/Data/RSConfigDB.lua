@@ -641,18 +641,6 @@ function RSConfigDB.GetIconsMinimapScale()
 end
 
 ---============================================================================
--- WorldMap loot
----============================================================================
-
-function RSConfigDB.IsShowingLootOnWorldMap()
-	return private.db.loot.displayLootOnMap
-end
-
-function RSConfigDB.SetShowingLootOnWorldMap(value)
-	private.db.loot.displayLootOnMap = value
-end
-
----============================================================================
 -- Loot in general
 ---============================================================================
 
@@ -790,6 +778,14 @@ function RSConfigDB.SetFilteringAnimaItems(value)
 	private.db.loot.filterAnimaItems = value
 end
 
+function RSConfigDB.IsFilteringConduitItems()
+	return private.db.loot.filterConduitItems
+end
+
+function RSConfigDB.SetFilteringConduitItems(value)
+	private.db.loot.filterConduitItems = value
+end
+
 ---============================================================================
 -- Navigator options
 ---============================================================================
@@ -876,4 +872,72 @@ end
 
 function RSConfigDB.SetAddingWorldMapIngameWaypoints(value)
 	private.db.map.waypointIngame = value
+end
+
+---============================================================================
+-- Worldmap tooltips
+---============================================================================
+
+function RSConfigDB.IsShowingTooltipsOnIngameIcons()
+	return private.db.map.tooltipsOnIngameIcons
+end
+
+function RSConfigDB.SetShowingTooltipsOnIngameIcons(value)
+	private.db.map.tooltipsOnIngameIcons = value
+end
+
+function RSConfigDB.IsShowingTooltipsAchievements()
+	return private.db.map.tooltipsAchievements
+end
+
+function RSConfigDB.SetShowingTooltipsAchievements(value)
+	private.db.map.tooltipsAchievements = value
+end
+
+function RSConfigDB.IsShowingTooltipsNotes()
+	return private.db.map.tooltipsNotes
+end
+
+function RSConfigDB.SetShowingTooltipsNotes(value)
+	private.db.map.tooltipsNotes = value
+end
+
+function RSConfigDB.IsShowingTooltipsLoot()
+	return private.db.map.tooltipsLoot
+end
+
+function RSConfigDB.SetShowingTooltipsLoot(value)
+	private.db.map.tooltipsLoot = value
+end
+
+function RSConfigDB.IsShowingLootOnWorldMap()
+	return private.db.loot.displayLootOnMap
+end
+
+function RSConfigDB.SetShowingLootOnWorldMap(value)
+	private.db.loot.displayLootOnMap = value
+end
+
+function RSConfigDB.IsShowingTooltipsSeen()
+	return private.db.map.tooltipsSeen
+end
+
+function RSConfigDB.SetShowingTooltipsSeen(value)
+	private.db.map.tooltipsSeen = value
+end
+
+function RSConfigDB.IsShowingTooltipsState()
+	return private.db.map.tooltipsState
+end
+
+function RSConfigDB.SetShowingTooltipsState(value)
+	private.db.map.tooltipsState = value
+end
+
+function RSConfigDB.IsShowingTooltipsCommands()
+	return private.db.map.tooltipsCommands
+end
+
+function RSConfigDB.SetShowingTooltipsCommands(value)
+	private.db.map.tooltipsCommands = value
 end

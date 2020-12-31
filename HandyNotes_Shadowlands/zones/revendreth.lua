@@ -285,7 +285,8 @@ map.nodes[66507080] = Rare({
     quest=59595,
     rewards={
         Achievement({id=14310, criteria=48812}),
-        Item({item=179363, quest=60517}) -- The Toll of the Road
+        -- Item({item=179363, quest=60517}) -- The Toll of the Road
+        -- quest id for this never actually flips true?
     }
 }) -- Tollkeeper Varaboss
 
@@ -943,7 +944,7 @@ end
 ------------------------ ITS ALWAYS SINNY IN REVENDRETH -----------------------
 -------------------------------------------------------------------------------
 
-local Inquisitor = Class('Inquisitor', Collectible, {
+local Inquisitor = Class('Inquisitor', NPC, {
     icon='peg_rd',
     scale=1.3,
     group=ns.groups.INQUISITORS,

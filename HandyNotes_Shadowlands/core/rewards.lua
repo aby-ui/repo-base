@@ -34,6 +34,7 @@ end
 function Reward:IsEnabled()
     if self.class and self.class ~= ns.class then return false end
     if self.faction and self.faction ~= ns.faction then return false end
+    if self.display_option and not ns:GetOpt(self.display_option) then return false end
     return true
 end
 
@@ -90,6 +91,8 @@ function Section:Initialize(title)
     self.title = title
 end
 
+function Section:IsEnabled() return true end
+
 function Section:Prepare()
     ns.PrepareLinks(self.title)
 end
@@ -104,6 +107,8 @@ end
 
 local Spacer = Class('Spacer', Reward)
 
+function Spacer:IsEnabled() return true end
+
 function Spacer:Render(tooltip)
     tooltip:AddLine(' ')
 end
@@ -112,9 +117,8 @@ end
 --------------------------------- ACHIEVEMENT ---------------------------------
 -------------------------------------------------------------------------------
 
--- /run print(GetAchievementCriteriaInfo(ID, NUM))
-
 local Achievement = Class('Achievement', Reward)
+
 local GetCriteriaInfo = function (id, criteria)
     local results = {GetAchievementCriteriaInfoByID(id, criteria)}
     if not results[1] then
@@ -233,6 +237,10 @@ function Item:Initialize(attrs)
     end
 end
 
+function Item:Prepare()
+    ns.PrepareLinks(self.note)
+end
+
 function Item:IsObtained()
     if self.quest then return C_QuestLog.IsQuestFlaggedCompleted(self.quest) end
     return true
@@ -244,7 +252,7 @@ function Item:GetText()
         text = text..' ('..self.type..')'
     end
     if self.note then -- additional info
-        text = text..' ('..self.note..')'
+        text = text..' ('..ns.RenderLinks(self.note, true)..')'
     end
     return Icon(self.itemIcon)..text
 end
@@ -263,9 +271,10 @@ end
 ------------------------------------ MOUNT ------------------------------------
 -------------------------------------------------------------------------------
 
--- /run for i,m in ipairs(C_MountJournal.GetMountIDs()) do if (C_MountJournal.GetMountInfoByID(m) == "NAME") then print(m) end end
-
-local Mount = Class('Mount', Item, { type = L["mount"] })
+local Mount = Class('Mount', Item, {
+    display_option='show_mount_rewards',
+    type=L["mount"]
+})
 
 function Mount:IsObtained()
     return select(11, C_MountJournal.GetMountInfoByID(self.id))
@@ -280,9 +289,10 @@ end
 ------------------------------------- PET -------------------------------------
 -------------------------------------------------------------------------------
 
--- /run print(C_PetJournal.FindPetIDByName("NAME"))
-
-local Pet = Class('Pet', Item, { type = L["pet"] })
+local Pet = Class('Pet', Item, {
+    display_option='show_pet_rewards',
+    type=L["pet"]
+})
 
 function Pet:Initialize(attrs)
     if attrs.item then
@@ -363,7 +373,10 @@ end
 ------------------------------------- TOY -------------------------------------
 -------------------------------------------------------------------------------
 
-local Toy = Class('Toy', Item, { type = L["toy"] })
+local Toy = Class('Toy', Item, {
+    display_option='show_toy_rewards',
+    type=L["toy"]
+})
 
 function Toy:IsObtained()
     return PlayerHasToy(self.item)
@@ -378,7 +391,10 @@ end
 ---------------------------------- TRANSMOG -----------------------------------
 -------------------------------------------------------------------------------
 
-local Transmog = Class('Transmog', Item)
+local Transmog = Class('Transmog', Item, {
+    display_option='show_transmog_rewards'
+})
+
 local CTC = C_TransmogCollection
 
 function Transmog:Initialize(attrs)

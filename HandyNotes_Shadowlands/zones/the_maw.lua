@@ -9,6 +9,7 @@ local Map = ns.Map
 
 local NPC = ns.node.NPC
 local Rare = ns.node.Rare
+local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
@@ -379,7 +380,7 @@ map.nodes[20782968] = BonusBoss({
 
 map.nodes[30846866] = BonusBoss({
     id=170692,
-    quest=60903,
+    quest=63381,
     rewards={
         Achievement({id=14660, criteria=49486})
     }
@@ -397,7 +398,9 @@ map.nodes[38642880] = BonusBoss({
     id=172207,
     quest=62618,
     rewards={
-        Achievement({id=14660, criteria=50408})
+        Achievement({id=14660, criteria=50408}),
+        Achievement({id=14761, criteria=49909}),
+        Item({item=183061, quest=63158}) -- Wailing Coin
     }
 }) -- Odalrik
 
@@ -564,7 +567,11 @@ local GRAPPLES = {
     31655664, 32056840, 32194490, 32426772, 32674369, 32904238, 33102066,
     33286365, 33295928, 33374532, 33584024, 33767056, 34074701, 34237005,
     34463889, 34624440, 35006680, 36244139, 36264642, 37844512, 40334904,
-    41184945, 41304785, 42264174
+    41184945, 41304785, 42264174,
+    -- Beast Warrens
+    44996655, 47608194, 48397060, 49377318, 49997460, 50027306, 51427820,
+    52177614, 52247887, 52957021, 53157840, 53266871, 53726760, 53917700,
+    54486713, 54987622, 55247788
 }
 
 for _, coord in ipairs(GRAPPLES) do
@@ -576,6 +583,49 @@ for _, coord in ipairs(GRAPPLES) do
         scale=1.25,
     })
 end
+
+-------------------------------------------------------------------------------
+---------------------------------- MAW LORE -----------------------------------
+-------------------------------------------------------------------------------
+
+local Lore = Class('MawLore', Treasure, {
+    group=ns.groups.MAW_LORE,
+    rlabel=ns.status.LightBlue('+150 '..L["rep"]),
+    IsCompleted=function(self)
+        if C_QuestLog.IsOnQuest(self.quest[1]) then return true end
+        return Treasure.IsCompleted(self)
+    end
+})
+
+Map({id=1822}).nodes[73121659] = Lore({
+    quest=63157,
+    note=L["box_of_torments_note"],
+    parent={ id=map.id, pois={POI({27702020})} },
+    rewards={
+        Achievement({id=14761, criteria=49908}),
+        Item({item=183060, quest=63157})
+    }
+}) -- Box of Torments
+
+-- Shadehound Armor Plating ??
+
+map.nodes[35764553] = Lore({
+    quest=63163,
+    note=L["tormentors_notes_note"],
+    rewards={
+        Achievement({id=14761, criteria=49914}),
+        Item({item=183069, quest=63163})
+    }
+}) -- Tormentor's Notes
+
+map.nodes[19363340] = Lore({
+    quest=63159,
+    note=L["words_of_warden_note"],
+    rewards={
+        Achievement({id=14761, criteria=49910}),
+        Item({item=183063, quest=63159})
+    }
+}) -- Words of the Warden
 
 -------------------------------------------------------------------------------
 ------------------------------- STYGIAN CACHES --------------------------------
@@ -592,17 +642,34 @@ local Cache = Class('Cache', ns.node.Node, {
     }
 })
 
-map.nodes[15705040] = Cache()
-map.nodes[19604460] = Cache()
-map.nodes[19805500] = Cache()
+map.nodes[15705050] = Cache()
+map.nodes[19203310] = Cache()
+map.nodes[19704460] = Cache()
+map.nodes[19705500] = Cache()
 map.nodes[24301660] = Cache()
-map.nodes[28402560] = Cache()
+map.nodes[25603660] = Cache()
+map.nodes[26602920] = Cache()
+map.nodes[27604570] = Cache()
+map.nodes[27607180] = Cache()
+map.nodes[28402550] = Cache()
 map.nodes[29621283] = Cache()
+map.nodes[34306190] = Cache()
 map.nodes[35201630] = Cache()
 map.nodes[35902360] = Cache()
 map.nodes[39802510] = Cache()
-map.nodes[44201870] = Cache()
+map.nodes[40306160] = Cache()
+map.nodes[44301870] = Cache()
+map.nodes[44804830] = Cache()
 map.nodes[45204740] = Cache()
+map.nodes[47407630] = Cache()
+map.nodes[50808390] = Cache()
+map.nodes[56196307] = Cache({
+    note=L["in_cave"],
+    pois={
+        POI({55806753}) -- Cave entrance
+    }
+})
+map.nodes[61505080] = Cache()
 
 -------------------------------------------------------------------------------
 ----------------------------------- VE'NARI -----------------------------------
@@ -630,6 +697,6 @@ map.nodes[46914169] = NPC({
         Item({item=184621, quest=63204, note=L["Ambivalent"]}), -- Ritual Prism of Fortune
         Item({item=184618, quest=63200, note=L["Cordial"]}), -- Rank Insignia: Acquisitionist
         Item({item=184619, quest=63201, note=L["Cordial"]}), -- Loupe of Unusual Charm
-        Item({item=180952, quest=nil, note=L["Appreciative"]}), -- Possibility Matrix
+        Item({item=180952, quest=61144, note=L["Appreciative"]}), -- Possibility Matrix
     }
 })

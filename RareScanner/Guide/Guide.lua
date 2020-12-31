@@ -223,6 +223,9 @@ private.NPC_GUIDE = {
 		[RSConstants.STEP5] = { x = 0.51, y = 0.788, comment = AL["NOTE_173468_5"], questID = 62048 }; --62107
 		[RSConstants.STEP6] = { x = 0.408, y = 0.468, comment = AL["NOTE_173468_6"], questID = 62050 };
 	}; --Blanchy's Reins
+	[157125] = { 
+		[RSConstants.FLAG] = { x = 0.264, y = 0.4272, comment = AL["NOTE_157125_1"] }; --Zargox the Reborn
+	};
 }
 
 ---============================================================================
@@ -509,6 +512,8 @@ private.CONTAINER_GUIDE = {
 	}; --Lunarlight Pod
 	[353327] = { [RSConstants.ENTRANCE] = { x = 0.5405, y = 0.7634 } }; --Decayed Husk
 	[353231] = { [RSConstants.ENTRANCE] = { x = 0.3785, y = 0.7626 } }; --Bonebound Chest
+	[353868] = { [RSConstants.ENTRANCE] = { x = 0.5963, y = 0.1331 } }; --Hidden Hoard
+	[353314] = { [RSConstants.PATH_START] = { x = 0.3983, y = 0.2589 } }; --Silver Strongbox
 }
 
 ---============================================================================

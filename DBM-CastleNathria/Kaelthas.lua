@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201226232358")
+mod:SetRevision("20201227234821")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()
@@ -279,7 +279,7 @@ local addTimers = {
 
 function mod:EmberBlastTarget(targetname, uId, bossuid, scanningTime)
 	if not targetname then return end
-	local debuffTimer = self:IsMythic() and 3 or 5
+	local debuffTimer = self:IsLFR() and 5 or 3
 	if targetname == UnitName("player") then
 		specWarnEmberBlast:Show(DBM_CORE_L.ALLIES)
 		specWarnEmberBlast:Play("gathershare")
@@ -292,7 +292,7 @@ function mod:EmberBlastTarget(targetname, uId, bossuid, scanningTime)
 		warnEmberBlast:Show(targetname)
 	end
 	if self.Options.SetIconOnEmberBlast then
-		self:SetIcon(targetname, 1, debuffTimer-scanningTime)--So icon clears 1 second after blast
+		self:SetIcon(targetname, 1, debuffTimer-scanningTime+1)--So icon clears 1-3 second after blast
 	end
 end
 

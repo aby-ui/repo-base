@@ -11,6 +11,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
+local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -81,8 +82,21 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	for pin in self:GetMap():EnumeratePinsByTemplate("VignettePinTemplate") do
 		if (pin:GetObjectGUID()) then
 			if (not pin.initialized) then
-				RSLogger:PrintDebugMessage(string.format("Sobreescrito contenedor del mapa del mundo: %s", pin:GetObjectGUID()))
+				-- Saves name if we dont have it
+				if (pin:GetVignetteType() == Enum.VignetteType.Treasure) then
+					local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
+					local containerID = tonumber(vignetteObjectID)
+					if (not RSContainerDB.GetContainerName(containerID) and pin:GetVignetteName()) then
+						RSContainerDB.SetContainerName(containerID, pin:GetVignetteName())
+					end
+				end
+				
 				pin:HookScript("OnEnter", function(self)
+					if (not RSConfigDB.IsShowingTooltipsOnIngameIcons()) then
+						self.hasTooltip = true
+						return
+					end
+					
 					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
 					if (POI) then
 						self.POI = POI
@@ -98,12 +112,16 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					end
 				end)
 				pin:HookScript("OnLeave", function(self)
+					if (not RSConfigDB.IsShowingTooltipsOnIngameIcons()) then
+						return
+					end
+					
 					pin.POI = nil
 					if (RSTooltip.HideTooltip(self.tooltip)) then
 						pin.tooltip = nil
 					end
 				end)
-				pin:HookScript("OnMouseDown", function(self, button)
+				pin:HookScript("OnMouseDown", function(self, button)					
 					if (button == "RightButton") then
 						local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
 						if (POI) then
@@ -130,6 +148,8 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 						end
 					end
 				end)
+			
+				RSLogger:PrintDebugMessage(string.format("Sobreescrito contenedor del mapa del mundo: %s", pin:GetObjectGUID()))
 				pin.initialized = true
 			end
 

@@ -23,6 +23,8 @@
 
 			-- Covenant Abilities
 			[310143] = "soulshape", -- Nightfae Signature
+			[319217] = "podtender", -- Nightfae Cheat Death
+			[320224] = "podtender", -- Nightfae Cheat Death
 
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
@@ -115,6 +117,7 @@
 			[190319] = "Combustion",
 			[110909] = "alterTime",
 			[342246] = "alterTime",
+			[108978] = "alterTime",
 			[324220] = "deathborne", -- Necrolord
 
 			-- Monk (Aura Applied)
@@ -229,8 +232,8 @@
 			[198817] = "sharpenBlade",
 			[197690] = "defensestance",
 			--[218826] = "trialByCombat",
-			[23920] = "spellReflection", -- Protection
-			--[216890] = "spellReflection", -- Arms/Fury
+			[23920] = "spellReflection",
+			[330279] = "spellReflection", -- Overwatch PvP talent
 			[236273] = "duel",
 			[260708] = "sweepingStrikes", -- Sweeping Strikes
 			[202147] = "secondWind", -- Second Wind
@@ -309,6 +312,7 @@
 			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
 			--[216890] = "SpellreflectionDown", 		-- Arms/Fury
 			[23920] = "SpellreflectionDown",			-- Protection
+			[330279] = "SpellReflectionDown",			-- Overwatch PvP Talent
 			[152279] = "BreathOfSindragosaDown",--Breath of Sindragosa
 			[34709] = "shadowSightDown",		-- Shadow Sight Crystal in Arenas
 			[25771] = "forbearanceDown",		-- Forbearance
@@ -344,6 +348,7 @@
 			[108294] = "heartOfTheWildDown", -- Heart of the Wild
 			[110909] = "alterTimeDown", -- Alter Time
 			[342246] = "alterTimeDown", -- Alter Time again I guess
+			[108978] = "alterTimeDown", -- Alter Time again I guess again I guess
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -503,6 +508,7 @@
 			[325289] = "decimatingbolt", -- Necrolord
 			[321792] = "impendingcatastrophe", -- Venthyr
 			[325640] = "soulrot", -- Nightfae
+			[264106] = "deathbolt",
 
 			-- Warrior (Spell Casting)
 			[64382] = "shatteringthrow",
@@ -940,6 +946,7 @@
 			[80240] = "havoc",
 			[312321] = "scouringTithe",
 			[205179] = "phantomsingularity",
+			[344566] = "RapidContagion",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",

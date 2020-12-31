@@ -1,5 +1,5 @@
 ## Interface: 90002
-## Version: 900r1
+## Version: 900r2
 ## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.

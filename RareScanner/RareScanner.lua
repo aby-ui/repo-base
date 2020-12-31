@@ -441,22 +441,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 					RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
 				end
 			end
-
-			-- if (npcID and RSGeneralDB.GetAlreadyFoundEntity(npcID) and RSConstants.DEBUG_MODE) then
-			-- StaticPopupDialogs["UPDATE_COORDS"] = {
-			-- text = "¿Quieres actualizar las coordenadas?",
-			-- button1 = "Si",
-			-- button2 = "No",
-			-- OnAccept = function()
-			--RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
-			-- end,
-			-- timeout = 0,
-			-- whileDead = true,
-			-- hideOnEscape = true,
-			-- preferredIndex = 3,
-			-- }
-			-- StaticPopup_Show("UPDATE_COORDS")
-			-- end
 		end
 		-- Loot info
 	elseif (event == "GET_ITEM_INFO_RECEIVED") then
@@ -527,50 +511,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						end
 					end
 				end
-				-- else
-				-- local containerID = id and tonumber(id) or nil
-				-- if (RSConstants.DEBUG_MODE) then
-				-- StaticPopupDialogs["RS_CHECK_NEW"] = {
-				-- text = "¿Quieres procesar el NPC/contenedor que acabas de localizar?",
-				-- button1 = "Si",
-				-- button2 = "No",
-				-- OnAccept = function()
-				-- -- Emulate vignette found
-				-- if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
-				-- RSGeneralDB.AddAlreadyFoundContainerWithoutVignette(containerID)
-				-- end
-
-				-- -- If its a cointainer check it as opened
-				-- RareScanner:ProcessOpenContainer(containerID)
-				-- end,
-				-- timeout = 0,
-				-- whileDead = true,
-				-- hideOnEscape = true,
-				-- preferredIndex = 3,
-				-- }
-				-- StaticPopup_Show("RS_CHECK_NEW")
-
-				-- if (not private.dbglobal.temp_loot) then
-				-- private.dbglobal.temp_loot = {}
-				-- end
-
-				-- RSLogger:PrintDebugMessage("DEBUG: Obtenido loot de "..destGUID)
-				-- local itemLink = GetLootSlotLink(i)
-				-- if (itemLink) then
-				-- local _, _, _, ltype, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
-				-- if (ltype == "item") then
-				-- local itemID = id and tonumber(id) or nil
-				-- if (itemID and (not private.dbglobal.temp_loot[npcID] or not RSUtils.Contains(private.dbglobal.temp_loot[npcID], itemID)) and (not private.NPC_LOOT[npcID] or not RSUtils.Contains(private.NPC_LOOT[npcID], itemID))) then
-				-- RSLogger:PrintDebugMessage("DEBUG: Añadido nuevo botin "..itemID.." para el npcID "..npcID)
-				-- if (not private.dbglobal.temp_loot[npcID]) then
-				-- private.dbglobal.temp_loot[npcID] = {}
-				-- end
-				-- tinsert(private.dbglobal.temp_loot[npcID], itemID)
-				-- end
-				-- end
-				-- end
-				-- end
-				-- end
 			end
 		end
 		-- Chat
@@ -580,31 +520,43 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			return
 		end
 
-		-- Only for Mechagon
-		local mapID = C_Map.GetBestMapForUnit("player")
-		if (mapID and mapID == RSConstants.MECHAGON_MAPID) then
-			local message, name = ...
-			if (name) then
-				local npcID = RSNpcDB.GetNpcId(name, mapID)
-				if (not npcID) then
-					return
-				end
-
+		local message, name = ...
+		if (name) then
+			RSLogger:PrintDebugMessage(string.format("CHAT_MSG_MONSTER_YELL name: [%s]", name))
+			
+			local mapID = C_Map.GetBestMapForUnit("player")
+			if (not mapID) then
+				return
+			end
+			RSLogger:PrintDebugMessage(string.format("CHAT_MSG_MONSTER_YELL mapID: [%s]", mapID))
+			
+			local npcID = RSNpcDB.GetNpcId(name, mapID)
+			if (not npcID) then
+				return
+			end
+			RSLogger:PrintDebugMessage(string.format("CHAT_MSG_MONSTER_YELL npcID: [%s]", npcID))
+			
+			-- Enabled in Mechagon for every NPC
+			if (mapID == RSConstants.MECHAGON_MAPID) then
 				-- Arachnoid Harvester fix
 				if (npcID == 154342) then
 					npcID = 151934
 				end
-
+	
 				-- The Scrap King fix
 				if ((npcID == 151623 or npcID == 151625) and (RSNpcDB.IsNpcKilled(151623) or RSNpcDB.IsNpcKilled(151625))) then
 					return
 				end
-
+	
 				-- Simulates vignette event
 				if (RSNpcDB.GetInternalNpcInfo(npcID) and not RSNpcDB.IsNpcKilled(npcID)) then
 					local x, y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 					self:SimulateRareFound(npcID, nil, name, x, y, RSConstants.NPC_VIGNETTE)
 				end
+			-- If not in Mechagon check only for NPCs without vignette and scanneable with nameplates
+			elseif (RSNpcDB.GetInternalNpcInfo(npcID) and RSNpcDB.GetInternalNpcInfo(npcID).nameplate and not RSNpcDB.IsNpcKilled(npcID)) then
+				local x, y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+				self:SimulateRareFound(npcID, nil, name, x, y, RSConstants.NPC_VIGNETTE)
 			end
 		end
 	elseif (event == "CHAT_MSG_MONSTER_EMOTE") then
@@ -996,6 +948,14 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	
 	if (not npcID) then
 		return
+	end
+	
+	-- Check if it is an event to summon another NPC. In that case display NPC information instead
+	for eventID, rareNpcID in pairs (RSConstants.NPCS_WITH_PRE_EVENT) do
+		if (eventID == npcID) then
+			RSGeneralDB.RemoveAlreadyFoundEntity(eventID)
+			npcID = rareNpcID
+		end
 	end
 
 	-- Check it it is an entity that use a vignette but it isn't a rare, event or treasure

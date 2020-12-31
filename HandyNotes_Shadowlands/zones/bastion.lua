@@ -115,7 +115,8 @@ map.nodes[66004367] = Rare({
     quest=61002,
     note=L["collector_astor_note"],
     rewards={
-        Achievement({id=14307, criteria=50610})
+        Achievement({id=14307, criteria=50610}),
+        Transmog({item=183608, slot=L["offhand"]}) -- Evernote Vesper
     },
     pois={
         POI({
@@ -257,7 +258,7 @@ map.nodes[42908265] = Rare({
 map.nodes[51456859] = Rare({
     id=160882,
     quest=58319,
-    note=L["nikara_note"],
+    note=L["repair_note"],
     rewards={
         Achievement({id=14307, criteria=50594}),
         Transmog({item=183608, slot=L["offhand"]}) -- Evernote Vesper
@@ -276,7 +277,7 @@ map.nodes[30365517] = Rare({
 map.nodes[61295090] = Rare({
     id=160985,
     quest=58320,
-    note=L["nikara_note"],
+    note=L["repair_note"],
     rewards={
         Achievement({id=14307, criteria=50593}),
         Transmog({item=183608, slot=L["offhand"]}) -- Evernote Vesper
@@ -317,6 +318,7 @@ local SWELLING_TEAR = Rare({
     quest={61001,61046,61047},
     questCount=true,
     note=L["swelling_tear_note"],
+    focusable=true,
     rewards={
         Achievement({id=14307, criteria={
             {id=50607, quest=61001}, -- Embodied Hunger
@@ -771,11 +773,11 @@ map.nodes[71933896] = Collectible({
 -------------------------------------------------------------------------------
 
 local AnimaShard = Class('AnimaShard', Node, {
-    label = L["anima_shard"],
-    icon = 'crystal_b',
-    scale = 1.5,
-    group = ns.groups.ANIMA_SHARD,
-    rewards = {
+    label=L["anima_shard"],
+    icon='crystal_b',
+    scale=1.5,
+    group=ns.groups.ANIMA_SHARD,
+    rewards={
         Achievement({id=14339, criteria={
             {id=0, qty=true, suffix=L["anima_shard"]}
         }})
@@ -851,3 +853,73 @@ wake.nodes[36202280] = AnimaShard({quest=61297, note=L["anima_shard_61297"], par
 gardens.nodes[46605310] = AnimaShard({quest=61298, note=L["anima_shard_61298"]})
 gardens.nodes[69403870] = AnimaShard({quest=61299, note=L["anima_shard_61299"]})
 font.nodes[49804690] = AnimaShard({quest=61300, note=L["anima_shard_61300"]})
+
+map.nodes[60552554] = AnimaShard({
+    quest={61298, 61299, 61300},
+    questCount=true,
+    note=L["anima_shard_spires"]
+})
+
+-------------------------------------------------------------------------------
+---------------------------- WHAT IS THAT MELODY? -----------------------------
+-------------------------------------------------------------------------------
+
+local Hymn = Class('Hymn', Collectible, {
+    icon='scroll',
+    note=L["hymn_note"],
+    group=ns.groups.HYMNS
+})
+
+local COURAGE = Hymn({
+    label='{spell:338912}',
+    rewards={
+        Achievement({id=14768, criteria=49948})
+    }
+})
+
+local HUMILITY = Hymn({
+    label='{spell:338910}',
+    rewards={
+        Achievement({id=14768, criteria=49949})
+    }
+})
+
+local PURITY = Hymn({
+    label='{spell:338911}',
+    rewards={
+        Achievement({id=14768, criteria=49947})
+    }
+})
+
+local WISDOM = Hymn({
+    label='{spell:338909}',
+    rewards={
+        Achievement({id=14768, criteria=49950})
+    }
+})
+
+map.nodes[31905460] = COURAGE
+map.nodes[32505770] = COURAGE
+map.nodes[34105850] = COURAGE
+map.nodes[35405560] = COURAGE
+map.nodes[39216038] = COURAGE -- available after phase
+map.nodes[40365882] = COURAGE -- available after phase
+
+map.nodes[63004290] = HUMILITY
+map.nodes[64504640] = HUMILITY
+map.nodes[66104080] = HUMILITY
+map.nodes[68704340] = HUMILITY
+map.nodes[69304110] = HUMILITY
+
+map.nodes[57927896] = PURITY
+map.nodes[61107610] = PURITY
+map.nodes[63607370] = PURITY
+map.nodes[63717413] = PURITY
+map.nodes[63907350] = PURITY
+
+map.nodes[41702420] = WISDOM
+map.nodes[41832781] = WISDOM
+map.nodes[42202370] = WISDOM
+map.nodes[42502560] = WISDOM
+map.nodes[42902730] = WISDOM
+map.nodes[43182813] = WISDOM
