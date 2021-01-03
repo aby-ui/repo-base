@@ -8,26 +8,32 @@ local requestPartyKeystones
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
 -- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
 local affixScheduleText = {
-	{"Fortified",	"Bolstering",	"Grievous"},
-	{"Tyrannical",	"Raging",	"Explosive"},
-	{"Fortified",	"Sanguine",	"Grievous"},
-	{"Tyrannical",	"Teeming",	"Volcanic"},
-	{"Fortified",	"Bolstering",	"Skittish"},
-	{"Tyrannical",	"Bursting",	"Necrotic"},
-	{"Fortified",	"Sanguine",	"Quaking"},
-	{"Tyrannical",	"Bolstering",	"Explosive"},
-	{"Fortified",	"Bursting",	"Volcanic"},
-	{"Tyrannical",	"Raging",	"Necrotic"},
-	{"Fortified",	"Teeming",	"Quaking"},
-	{"Tyrannical",	"Bursting",	"Skittish"}
+    { "Fortified", "Bursting", "Volcanic" },
+    { "Tyrannical", "Bolstering", "Storming" },
+    { "Fortified", "Spiteful", "Grievous" },
+    { "Tyrannical", "Inspiring", "Necrotic" },
+    { "Fortified", "Sanguine", "Quaking" },
+    { "Tyrannical", "Raging", "Explosive" },
+    { "Fortified", "Spiteful", "Volcanic" },
+    { "Tyrannical", "Bolstering", "Necrotic" },
+    { "Fortified", "Storming", "Inspiring" },
+    { "Tyrannical", "Bursting", "Explosive" },
+    { "Fortified", "Sanguine", "Grievous" },
+    { "Tyrannical", "Raging", "Quaking" },
 }
-local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
+
+--/run for i=1, 1000 do local a = C_ChallengeMode.GetAffixInfo(i) if a then print(i, a) end end
+local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14,
+    ["Inspiring"]=122, --鼓舞
+    ["Spiteful"]=123, --怨毒
+    ["Storming"]=124, --风雷
+}
 local affixSchedule = {}
 for i,v in ipairs(affixScheduleText) do
 	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
 end
 
-local affixScheduleUnknown = true
+local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel
