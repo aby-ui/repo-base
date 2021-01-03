@@ -2022,6 +2022,7 @@ end
 function CoreGetParaParam(cvar, start, len)
     local c = GetCVar(cvar)
     local p = c:find("%.")
+    if not p then return 0 end
     local frac = strsub(c, p + 1);
     --如果前面位数不够则补零，比如从第3位开始，但是只有1位，则补一个0
     if frac:len() < start + len - 1 then

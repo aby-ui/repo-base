@@ -227,7 +227,7 @@ end
 --  OnUpdate Handler  --
 ------------------------
 
-local functionOnUpdateWorld,functionOnUpdateMap,functionOnUpdateStatic = nil
+local functionOnUpdateWorld,functionOnUpdateMap,functionOnUpdateStatic,functionOnUpdateWorldPoint = nil
 do
 	local rotateState = 0
 	

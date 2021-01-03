@@ -906,7 +906,7 @@ function module.options:Load()
 		{L.S_ZoneT26CastleNathria..": "..L.bossName[2417],{"Interface/AddOns/ExRT/mediamodern/nathria9"}},
 
 		--91-100
-		{L.S_ZoneT26CastleNathria..": "..L.bossName[2417],{"Interface/AddOns/ExRT/mediamodern/nathria8"}},
+		{L.S_ZoneT26CastleNathria..": "..L.bossName[2412],{"Interface/AddOns/ExRT/mediamodern/nathria8"}},
 		{L.S_ZoneT26CastleNathria..": "..L.bossName[2405],{"Interface/AddOns/ExRT/mediamodern/nathria6"}},
 		{L.S_ZoneT26CastleNathria..": "..L.bossName[2402],{"Interface/AddOns/ExRT/mediamodern/nathria7"}},
 		{L.NoteColorBlack:lower(),{{0,0,0,1}}},

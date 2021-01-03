@@ -488,7 +488,7 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[207684] = {209281,-1},
 	[202137] = {209281,-1},
 	[5217] = {202021,5},
-	[47536] = {337790,2},
+	[47536] = {337790,1},
 	[109964] = {337790,2},
 	[47788] = {337811,2,329693,5},
 	[324724] = {337979,2},
@@ -2667,6 +2667,9 @@ do
 		local currTime = GetTime()
 		if ((currTime - lastSaving) < 20 and not overwrite) or module.db.testMode then 
 			return 
+		end
+		if not VExRT or not VExRT.ExCD2 then
+			return
 		end
 		local VExRT_ExCD2_Save = VExRT.ExCD2.Save
 		wipe(VExRT_ExCD2_Save)
@@ -10689,7 +10692,7 @@ module.db.AllSpells = {
 	{18562,	"DRUID",		3,	nil,			nil,			nil,			nil,			{18562,	15,	0},	},	--Swiftmend
 	{5217,	"DRUID,DPS",		3,	nil,			nil,			{5217,	30,	10},	nil,			nil,			},	--Tiger's Fury
 	{740,	"DRUID,RAID",		1,	nil,			nil,			nil,			nil,			{740,	180,	8},	},	--Tranquility
-	{132469,"DRUID,UTIL",		3,	{132469,30,	0},	nil,			nil,			nil,			nil,			},	--Typhoon
+	{132469,"DRUID,UTIL",		3,	{61391,	30,	0},	nil,			nil,			nil,			nil,			},	--Typhoon
 	{102793,"DRUID,UTIL",		3,	{102793,60,	10},	nil,			nil,			nil,			nil,			},	--Ursol's Vortex
 	{48438,	"DRUID",		3,	nil,			nil,			nil,			nil,			{48438,	10,	0},	},	--Wild Growth
 	{155835,"DRUID,DEFTANK",	3,	nil,			nil,			nil,			{155835,40,	0},	nil,			},	--Bristling Fur

@@ -10,4 +10,6 @@ GridWarbabyMoreAuras = {
 
     [326699] = { desc="大帝-P1层数",   buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={.5,.5,.5},countLow=2,countColorMiddle={0,1,0},countHigh=3,countColorHigh={1,1,0},},
     [329785] = { desc="大帝-P2猩红合唱",buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={ 0, 1, 0},countLow=2,countColorMiddle={1,1,0},countHigh=4,countColorHigh={1,.5,0},},
+    [334755] = { desc="饥饿者-M吸球层数", buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=98, statusColor="count",countColorLow={ 0, 1, 0},countLow=6,countColorMiddle={1,1,0},countHigh=12,countColorHigh={1,0,0},},
+    [329298] = { desc="饥饿者-中白圈", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=98,},
 }

@@ -137,7 +137,7 @@ config.options = {
     SCALEALPHA = {
         type = "group",
         name = L["config_tab_scale_alpha"],
-        desc = L["config_scale_alpha_desc"],
+        -- desc = L["config_scale_alpha_desc"],
         order = 1,
         args = {
         },

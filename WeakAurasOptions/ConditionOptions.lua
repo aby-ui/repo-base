@@ -783,9 +783,13 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     end
 
     if data.controlledChildren then
+      local ordered = {}
       for id, reference in pairs(conditions[i].changes[j].references) do
+        tinsert(ordered, reference)
+      end
+      for index, reference in ipairs(ordered) do
         local input = reference.value and reference.value.message
-        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
+        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden, index, #ordered)
       end
     else
       local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]
@@ -1811,7 +1815,7 @@ end
 
 local function addControlsForCondition(args, order, data, conditionVariable, conditions, i, conditionTemplates, conditionTemplateWithoutCombinations, allProperties)
   if (not conditions[i].check) then
-    return;
+    return order;
   end
 
   local defaultCollapsed = #conditions > 2
@@ -2551,6 +2555,13 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
   end
 end
 
+local fixupConditions = function(conditions)
+  for index, condition in ipairs(conditions) do
+    condition.check = condition.check or {}
+    condition.changes = condition.changes or {}
+  end
+end
+
 function OptionsPrivate.GetConditionOptions(data)
   local  options = {
     type = "group",
@@ -2578,11 +2589,13 @@ function OptionsPrivate.GetConditionOptions(data)
     for index = last, 1, -1 do
       local id = data.controlledChildren[index];
       local data = WeakAuras.GetData(id);
+      fixupConditions(data[conditionVariable])
       mergeConditions(conditions, data[conditionVariable], data.id, conditionTemplates.all, allProperties);
     end
   else
     data[conditionVariable] = data[conditionVariable] or {};
     conditions = data[conditionVariable];
+    fixupConditions(data[conditionVariable])
   end
 
   local order = startorder;

@@ -173,6 +173,9 @@ local blockedFunctions = {
 
 local blockedTables = {
   SlashCmdList = true,
+  SendMailMailButton = true,
+  SendMailMoneyGold = true,
+  MailFrameTab2 = true,
 }
 
 local aura_environments = {}
@@ -424,9 +427,11 @@ local exec_env = setmetatable({},
     elseif k == "aura_env" then
       return current_aura_env
     elseif blockedFunctions[k] then
-      return blocked
+      blocked(k)
+      return function() end
     elseif blockedTables[k] then
-      return blocked()
+      blocked(k)
+      return {}
     elseif overridden[k] then
       return overridden[k]
     else

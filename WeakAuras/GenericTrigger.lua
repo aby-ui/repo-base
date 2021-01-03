@@ -2888,8 +2888,6 @@ do
       bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
       bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
       bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
-      local BWEmphasizedModule = BigWigs:GetPlugin("Super Emphasize")
-      bar.emphasized = BWEmphasizedModule:IsSuperEmphasized(addon, spellId) and true or false
       bar.count = text:match("(%d+)") or "0"
       bar.cast = not(text:match("^[^<]") and true)
 
@@ -2955,7 +2953,6 @@ do
     state.bwBarColor = bar.bwBarColor
     state.bwTextColor = bar.bwTextColor
     state.bwBackgroundColor = bar.bwBackgroundColor
-    state.emphasized = bar.emphasized
     state.count = bar.count
     state.cast = bar.cast
     state.progressType = "timed"
@@ -2966,7 +2963,7 @@ do
     end
   end
 
-  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized, count, cast)
+  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, count, cast)
     if not bars[id] then
       return false
     end
@@ -2991,9 +2988,6 @@ do
         end
       end
     end
-    if emphasized ~= nil and v.emphasized ~= emphasized then
-      return false
-    end
     if count and count ~= "" and count ~= v.count then
       return false
     end
@@ -3011,10 +3005,10 @@ do
     return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized, count, cast)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, count, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized, count, cast)
+      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, count, cast)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -3452,10 +3446,13 @@ function GenericTrigger.SetToolTip(trigger, state)
       GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
       return true
     elseif (state.unit and state.unitBuffIndex) then
-      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex);
+      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex, state.unitBuffFilter);
       return true
     elseif (state.unit and state.unitDebuffIndex) then
-      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex);
+      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex, state.unitDebuffFilter);
+      return true
+    elseif (state.unit and state.unitAuraIndex) then
+      GameTooltip:SetUnitAura(state.unit, state.unitAuraIndex, state.unitAuraFilter)
       return true
     end
   end
@@ -3839,13 +3836,12 @@ WeakAuras.CheckForItemBonusId = function(ids)
   return false
 end
 
-WeakAuras.GetBonusIdInfo = function(ids)
-  if WeakAuras.IsClassic() then
-    return
-  end
+
+WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
+  local checkSlots = specificSlot and {[specificSlot] = true} or Private.item_slot_types
   for id in tostring(ids):gmatch('([^,]+)') do
     local findID = ":" .. tostring(id:trim()) .. ":"
-    for slot in pairs(Private.item_slot_types) do
+    for slot in pairs(checkSlots) do
       local itemLink = GetInventoryItemLink('player', slot)
       if itemLink and itemLink:find(findID, 1, true) then
         local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)

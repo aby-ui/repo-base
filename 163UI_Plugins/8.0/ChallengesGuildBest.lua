@@ -213,28 +213,24 @@ end)
 PVP每周奖励
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_PVPUI", function()
-    local ratings  = { "0000~1399", "1400~1599", "1600~1799", "1800~2099", "2100~2399", "2400~9999" }
-    local match =    { 430,       440,        450,         455,         460,         465 }
-    local weekly =   { 445,       455,        460,         465,         470,         475 }
-    local weekly2 =  { 445,       460,        460,         475,         475,         475 }
+    local ratings  = { "0000+",    "1400+", "1600+", "1800+", "2100+", "2400+" }
+    local upgrade  = {  200,    207,     213,     220,     226,     "233(仅武器)" }
+    local title    = { "休闲者", "争斗者", "挑战者", "竞争者", "决斗者", "精　锐" }
 
-    local chest = PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest
-    chest:HookScript("OnMouseUp", ShowWeeklyRewards)
-    chest:HookScript("OnEnter", function(self)
-        if GameTooltip:IsVisible() then
-            GameTooltip:AddLine(" ")
-            --[[
-            GameTooltip:AddLine("PVP等级  比赛结束  低保散件  低保特质")
-            for i, v in ipairs(ratings) do
-            local line = " %9s |T130758:10:20:0:0:32:32:10:22:10:22|t %d |T130758:10:28:0:0:32:32:10:22:10:22|t %d |T130758:10:35:0:0:32:32:10:22:10:22|t %d"
-                GameTooltip:AddLine(format(line, ratings[i], match[i], weekly[i], weekly2[i]))
+    for _, chest in ipairs({ PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest, PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest}) do
+        chest:HookScript("OnMouseUp", ShowWeeklyRewards)
+        chest:HookScript("OnEnter", function(self)
+            if GameTooltip:IsVisible() then
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("PVP等级  头衔  可升级到")
+                for i, v in ipairs(ratings) do
+                local line = " %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s"
+                    GameTooltip:AddLine(format(line, ratings[i], title[i], tostring(upgrade[i])))
+                end
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
+                GameTooltip:Show()
             end
-
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("500征服 首周440，2~9周445，10~25周460")
-            ]]
-            GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
-            GameTooltip:Show()
-        end
-    end)
+        end)
+    end
 end)

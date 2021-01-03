@@ -105,7 +105,7 @@ table.insert(TABS, {
     ids = { 14407, 14398, 14395, 14389, 14401, 14392, 14205, 14404, },
     widths = { 40, 40, 40, 40, 40, 40, 40, },
     tips = { tip, tip, tip, tip, tip, tip, tip, tip, tip, tip, tip, tip, tip,  },
-    names = { "剧场", "凋魂", "仙林", "彼界", "高塔",  "赎罪", "深渊", "通灵", },
+    names = { "伤逝", "凋魂", "仙林", "彼界", "高塔",  "赎罪", "赤红", "通灵", },
 })
 
 table.insert(TABS, {

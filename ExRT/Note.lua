@@ -194,6 +194,40 @@ local function GSUB_Class(anti,list,msg)
 	end
 end
 
+local function GSUB_ClassUnique(list,msg)
+	list = {strsplit(",",list)}
+	local classInParty = {}
+	for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole in ExRT.F.IterateRoster, ExRT.F.GetRaidDiffMaxGroup() do
+		if class then
+			classInParty[ classList[class:lower()] or 0 ] = true
+		end
+	end
+
+	local found = nil
+
+	for i=1,#list do
+		list[i] = list[i]:gsub("|c........",""):gsub("|r",""):lower()
+		local classID = classList[ list[i] ]
+		if classID and classInParty[classID] then
+			found = classID
+			break
+		end
+	end
+
+	local myClassIndex = select(3,UnitClass("player"))
+	if found == myClassIndex then
+		found = true
+	else
+		found = false
+	end
+
+	if found then
+		return msg
+	else
+		return ""
+	end
+end
+
 local function GSUB_Race(anti,list,msg)
 	list = {strsplit(",",list)}
 	local myRace = select(2,UnitRace("player")):lower()
@@ -377,6 +411,8 @@ local function txtWithIcons(t)
 	t = string_gsub(t,"{(!?)[Pp](%d+)}(.-){/[Pp]}",GSUB_Phase)
 
 	t = string_gsub(t,"{(!?)[Cc]:([^}]+)}(.-){/[Cc]}",GSUB_Class)
+
+	t = string_gsub(t,"{[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]:([^}]+)}(.-){/[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]}",GSUB_ClassUnique)
 
 	t = string_gsub(t,"{(!?)[Gg](%d+)}(.-){/[Gg]}",GSUB_Group)
 

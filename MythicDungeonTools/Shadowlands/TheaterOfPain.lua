@@ -171,6 +171,7 @@ MDT.mapPOIs[dungeonIndex] = {
     };
 };
 
+
 MDT.dungeonEnemies[dungeonIndex] = {
     [1] = {
         ["clones"] = {
@@ -182,6 +183,33 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 174197;
+        ["spells"] = {
+            [288865] = {};
+            [317898] = {};
+            [341902] = {};
+            [330784] = {};
+            [132951] = {};
+            [240443] = {};
+            [224729] = {};
+            [121308] = {};
+            [326868] = {};
+            [334882] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Root"] = true;
+            ["Fear"] = true;
+            ["Disorient"] = true;
+            ["Polymorph"] = true;
+            ["Mind Control"] = true;
+            ["Sap"] = true;
+            ["Stun"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Imprison"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 72090;
         ["name"] = "Battlefield Ritualist";
         ["displayId"] = 98696;
@@ -207,6 +235,33 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 170838;
+        ["spells"] = {
+            [331510] = {};
+            [317898] = {};
+            [334882] = {};
+            [121308] = {};
+            [337178] = {};
+            [240443] = {};
+            [224729] = {};
+            [132951] = {};
+            [320679] = {};
+            [288865] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Root"] = true;
+            ["Fear"] = true;
+            ["Disorient"] = true;
+            ["Polymorph"] = true;
+            ["Mind Control"] = true;
+            ["Sap"] = true;
+            ["Stun"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Imprison"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 92115;
         ["name"] = "Unyielding Contender";
         ["displayId"] = 95570;
@@ -225,6 +280,16 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 170850;
+        ["spells"] = {
+            [288865] = {};
+            [333242] = {};
+            [132951] = {};
+            [333241] = {};
+            [240443] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 144180;
         ["name"] = "Raging Bloodhorn";
         ["displayId"] = 96471;
@@ -242,7 +307,19 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 164451;
+        ["spells"] = {
+            [288865] = {};
+            [326892] = {};
+            [132466] = {};
+            [324085] = {};
+            [132951] = {};
+            [320069] = {};
+            [320063] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2397;
         ["instanceID"] = 1187;
@@ -263,7 +340,18 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 164463;
+        ["spells"] = {
+            [320120] = {};
+            [320248] = {};
+            [320180] = {};
+            [132951] = {};
+            [288865] = {};
+            [326868] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2397;
         ["instanceID"] = 1187;
@@ -284,7 +372,23 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 164461;
+        ["spells"] = {
+            [288865] = {};
+            [326868] = {};
+            [333292] = {};
+            [132951] = {};
+            [320277] = {};
+            [320300] = {};
+            [320293] = {};
+            [320278] = {};
+            [320272] = {};
+            [333231] = {};
+            [225832] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2397;
         ["instanceID"] = 1187;
@@ -306,6 +410,26 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 164464;
+        ["spells"] = {
+            [342048] = {};
+            [333552] = {};
+            [333540] = {};
+            [132951] = {};
+            [333523] = {};
+            [317898] = {};
+        };
+        ["characteristics"] = {
+            ["Incapacitate"] = true;
+            ["Root"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Fear"] = true;
+            ["Silence"] = true;
+            ["Stun"] = true;
+            ["Slow"] = true;
+            ["Imprison"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 96120;
         ["name"] = "Xira the Underhanded";
         ["displayId"] = 96440;
@@ -336,6 +460,32 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 164510;
+        ["spells"] = {
+            [288865] = {};
+            [327029] = {};
+            [317898] = {};
+            [330532] = {};
+            [186439] = {};
+            [132951] = {};
+            [240443] = {};
+            [201657] = {};
+            [224729] = {};
+            [319997] = {};
+            [344991] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 68085;
         ["name"] = "Shambling Arbalest";
         ["displayId"] = 96212;
@@ -373,6 +523,31 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 167994;
+        ["spells"] = {
+            [288865] = {};
+            [317898] = {};
+            [35079] = {};
+            [132951] = {};
+            [240443] = {};
+            [201657] = {};
+            [224729] = {};
+            [132466] = {};
+            [344991] = {};
+            [326835] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 80100;
         ["name"] = "Ossified Conscript";
         ["displayId"] = 96253;
@@ -390,6 +565,20 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 167538;
+        ["spells"] = {
+            [331319] = {};
+            [331316] = {};
+            [331320] = {};
+            [121308] = {};
+            [132951] = {};
+            [342125] = {};
+            [342139] = {};
+            [342126] = {};
+            [320661] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 256320;
         ["name"] = "Dokigg the Brutalizer";
         ["displayId"] = 97488;
@@ -407,6 +596,19 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 167536;
+        ["spells"] = {
+            [333861] = {};
+            [121308] = {};
+            [342139] = {};
+            [132951] = {};
+            [334023] = {};
+            [240443] = {};
+            [334025] = {};
+            [288865] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 256320;
         ["name"] = "Harugia the Bloodthirsty";
         ["displayId"] = 95969;
@@ -426,6 +628,34 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 164506;
+        ["spells"] = {
+            [330565] = {};
+            [317898] = {};
+            [330562] = {};
+            [35079] = {};
+            [186439] = {};
+            [132951] = {};
+            [240443] = {};
+            [330545] = {};
+            [224729] = {};
+            [201657] = {};
+            [330546] = {};
+            [344991] = {};
+            [288865] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 96120;
         ["name"] = "Ancient Captain";
         ["displayId"] = 96489;
@@ -443,6 +673,18 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 167533;
+        ["spells"] = {
+            [333861] = {};
+            [331275] = {};
+            [333827] = {};
+            [121308] = {};
+            [132951] = {};
+            [288865] = {};
+            [240443] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 256320;
         ["name"] = "Advent Nevermore";
         ["displayId"] = 95966;
@@ -459,7 +701,26 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 2;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 162329;
+        ["spells"] = {
+            [320050] = {};
+            [320789] = {};
+            [317231] = {};
+            [316995] = {};
+            [320644] = {};
+            [132951] = {};
+            [318102] = {};
+            [316981] = {};
+            [320114] = {};
+            [288865] = {};
+            [331618] = {};
+            [320729] = {};
+            [320661] = {};
+            [339415] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2390;
         ["instanceID"] = 1187;
@@ -621,6 +882,33 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 169875;
+        ["spells"] = {
+            [288865] = {};
+            [326868] = {};
+            [334882] = {};
+            [330810] = {};
+            [132951] = {};
+            [240443] = {};
+            [201657] = {};
+            [224729] = {};
+            [132466] = {};
+            [332550] = {};
+            [344991] = {};
+            [317898] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 48060;
         ["name"] = "Shackled Soul";
         ["displayId"] = 90428;
@@ -644,6 +932,20 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 167998;
+        ["spells"] = {
+            [288865] = {};
+            [326868] = {};
+            [326497] = {};
+            [330716] = {};
+            [330720] = {};
+            [326494] = {};
+            [132951] = {};
+            [240443] = {};
+            [330725] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 120150;
         ["name"] = "Portal Guardian";
         ["displayId"] = 96442;
@@ -729,6 +1031,35 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 170882;
+        ["spells"] = {
+            [288865] = {};
+            [50707] = {};
+            [317898] = {};
+            [341771] = {};
+            [342675] = {};
+            [186439] = {};
+            [132951] = {};
+            [240443] = {};
+            [201657] = {};
+            [224729] = {};
+            [333293] = {};
+            [344991] = {};
+            [328506] = {};
+            [35079] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Stun"] = true;
+            ["Slow"] = true;
+            ["Silence"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 40050;
         ["name"] = "Bone Magus";
         ["displayId"] = 97410;
@@ -778,6 +1109,35 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 160495;
+        ["spells"] = {
+            [288865] = {};
+            [333708] = {};
+            [330784] = {};
+            [132951] = {};
+            [240443] = {};
+            [121308] = {};
+            [201657] = {};
+            [224729] = {};
+            [330868] = {};
+            [326868] = {};
+            [344991] = {};
+            [317898] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Root"] = true;
+            ["Fear"] = true;
+            ["Disorient"] = true;
+            ["Polymorph"] = true;
+            ["Mind Control"] = true;
+            ["Sap"] = true;
+            ["Silence"] = true;
+            ["Stun"] = true;
+            ["Slow"] = true;
+            ["Imprison"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 72090;
         ["name"] = "Maniacal Soulbinder";
         ["displayId"] = 95233;
@@ -796,6 +1156,20 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 162763;
+        ["spells"] = {
+            [288865] = {};
+            [326868] = {};
+            [331237] = {};
+            [331223] = {};
+            [240443] = {};
+            [331224] = {};
+            [132466] = {};
+            [132951] = {};
+            [331243] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 160200;
         ["name"] = "Soulforged Bonereaver";
         ["displayId"] = 94812;
@@ -826,6 +1200,20 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 169893;
+        ["spells"] = {
+            [288865] = {};
+            [333299] = {};
+            [326868] = {};
+            [132951] = {};
+            [333297] = {};
+            [330875] = {};
+            [333294] = {};
+            [325748] = {};
+            [240443] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 112140;
         ["name"] = "Nefarious Darkspeaker";
         ["displayId"] = 97011;
@@ -842,7 +1230,152 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 3;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 162309;
+        ["spells"] = {
+            [343724] = {};
+            [212792] = {};
+            [325748] = {};
+            [329127] = {};
+            [61391] = {};
+            [185763] = {};
+            [323710] = {};
+            [319567] = {};
+            [259491] = {};
+            [124280] = {};
+            [319952] = {};
+            [115196] = {};
+            [122] = {};
+            [1490] = {};
+            [113746] = {};
+            [228287] = {};
+            [205369] = {};
+            [327095] = {};
+            [589] = {};
+            [319765] = {};
+            [323654] = {};
+            [106830] = {};
+            [194310] = {};
+            [319639] = {};
+            [132951] = {};
+            [408] = {};
+            [1943] = {};
+            [2094] = {};
+            [48045] = {};
+            [32390] = {};
+            [115804] = {};
+            [197277] = {};
+            [328506] = {};
+            [48181] = {};
+            [5211] = {};
+            [345466] = {};
+            [319521] = {};
+            [56222] = {};
+            [208086] = {};
+            [20549] = {};
+            [262115] = {};
+            [289308] = {};
+            [34914] = {};
+            [2120] = {};
+            [5246] = {};
+            [313663] = {};
+            [198813] = {};
+            [5760] = {};
+            [288865] = {};
+            [323673] = {};
+            [335467] = {};
+            [1513] = {};
+            [236299] = {};
+            [6788] = {};
+            [317491] = {};
+            [122470] = {};
+            [337956] = {};
+            [340379] = {};
+            [280773] = {};
+            [192090] = {};
+            [3409] = {};
+            [51490] = {};
+            [342867] = {};
+            [196840] = {};
+            [316220] = {};
+            [345546] = {};
+            [155722] = {};
+            [271788] = {};
+            [322087] = {};
+            [12323] = {};
+            [1776] = {};
+            [322088] = {};
+            [339301] = {};
+            [196364] = {};
+            [137619] = {};
+            [102359] = {};
+            [331016] = {};
+            [51714] = {};
+            [316099] = {};
+            [211793] = {};
+            [324260] = {};
+            [212431] = {};
+            [255909] = {};
+            [321712] = {};
+            [8122] = {};
+            [105771] = {};
+            [87204] = {};
+            [191587] = {};
+            [157736] = {};
+            [205708] = {};
+            [206760] = {};
+            [325733] = {};
+            [342691] = {};
+            [15487] = {};
+            [321973] = {};
+            [317367] = {};
+            [17877] = {};
+            [155625] = {};
+            [319531] = {};
+            [255937] = {};
+            [257284] = {};
+            [328275] = {};
+            [108366] = {};
+            [347037] = {};
+            [329737] = {};
+            [135299] = {};
+            [51514] = {};
+            [255723] = {};
+            [64044] = {};
+            [45524] = {};
+            [35079] = {};
+            [328305] = {};
+            [326868] = {};
+            [339] = {};
+            [853] = {};
+            [1079] = {};
+            [118699] = {};
+            [1604] = {};
+            [2818] = {};
+            [25771] = {};
+            [333567] = {};
+            [115078] = {};
+            [58180] = {};
+            [322098] = {};
+            [5116] = {};
+            [345569] = {};
+            [55095] = {};
+            [12654] = {};
+            [327092] = {};
+            [8680] = {};
+            [327093] = {};
+            [198590] = {};
+            [226943] = {};
+            [196414] = {};
+            [319539] = {};
+            [312321] = {};
+            [132466] = {};
+            [319669] = {};
+            [319626] = {};
+            [260369] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2389;
         ["instanceID"] = 1187;
@@ -895,6 +1428,35 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 174210;
+        ["spells"] = {
+            [330700] = {};
+            [341969] = {};
+            [330693] = {};
+            [334882] = {};
+            [321041] = {};
+            [330694] = {};
+            [132951] = {};
+            [240443] = {};
+            [201657] = {};
+            [224729] = {};
+            [330703] = {};
+            [317898] = {};
+            [326868] = {};
+            [288865] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Stun"] = true;
+            ["Slow"] = true;
+            ["Silence"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 64080;
         ["name"] = "Blighted Sludge-Spewer";
         ["displayId"] = 95559;
@@ -998,6 +1560,30 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 163089;
+        ["spells"] = {
+            [288865] = {};
+            [317898] = {};
+            [321041] = {};
+            [330694] = {};
+            [132951] = {};
+            [201657] = {};
+            [224729] = {};
+            [344991] = {};
+            [330693] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 20025;
         ["name"] = "Disgusting Refuse";
         ["displayId"] = 94761;
@@ -1028,6 +1614,37 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 170690;
+        ["spells"] = {
+            [288865] = {};
+            [341977] = {};
+            [317898] = {};
+            [334882] = {};
+            [330697] = {};
+            [319290] = {};
+            [186439] = {};
+            [132951] = {};
+            [240443] = {};
+            [326868] = {};
+            [201657] = {};
+            [224729] = {};
+            [132466] = {};
+            [35079] = {};
+            [344991] = {};
+            [330700] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 80100;
         ["name"] = "Diseased Horror";
         ["displayId"] = 97117;
@@ -1097,6 +1714,33 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 169927;
+        ["spells"] = {
+            [288865] = {};
+            [317898] = {};
+            [334882] = {};
+            [35079] = {};
+            [186439] = {};
+            [132951] = {};
+            [240443] = {};
+            [332836] = {};
+            [201657] = {};
+            [224729] = {};
+            [344991] = {};
+            [330586] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Shackle Undead"] = true;
+            ["Root"] = true;
+            ["Control Undead"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Silence"] = true;
+            ["Slow"] = true;
+            ["Stun"] = true;
+            ["Repentance"] = true;
+        };
         ["health"] = 96120;
         ["name"] = "Putrid Butcher";
         ["displayId"] = 97116;
@@ -1208,6 +1852,20 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["id"] = 163086;
+        ["spells"] = {
+            [288865] = {};
+            [330614] = {};
+            [326868] = {};
+            [330592] = {};
+            [132951] = {};
+            [240443] = {};
+            [345245] = {};
+            [330973] = {};
+            [330608] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["health"] = 152190;
         ["name"] = "Rancid Gasbag";
         ["displayId"] = 97161;
@@ -1224,7 +1882,18 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 5;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 162317;
+        ["spells"] = {
+            [323515] = {};
+            [132466] = {};
+            [318406] = {};
+            [132951] = {};
+            [288865] = {};
+            [332629] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2401;
         ["instanceID"] = 1187;
@@ -1244,7 +1913,25 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
         };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
         ["id"] = 165946;
+        ["spells"] = {
+            [288865] = {};
+            [324449] = {};
+            [339573] = {};
+            [323681] = {};
+            [324424] = {};
+            [132951] = {};
+            [324079] = {};
+            [323608] = {};
+            [339759] = {};
+            [323683] = {};
+            [326868] = {};
+            [132466] = {};
+            [225832] = {};
+        };
         ["isBoss"] = true;
         ["encounterID"] = 2417;
         ["instanceID"] = 1187;
@@ -1265,13 +1952,26 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["scale"] = 2;
+        ["spells"] = {
+            [342135] = {};
+            [240443] = {};
+            [317605] = {};
+            [336996] = {};
+            [121308] = {};
+            [132951] = {};
+            [337037] = {};
+            [288865] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 256320;
         ["count"] = 20;
-        ["name"] = "Nekthara the Mangler";
         ["displayId"] = 97489;
         ["creatureType"] = "Humanoid";
         ["level"] = 61;
         ["id"] = 162744;
-        ["health"] = 256320;
+        ["name"] = "Nekthara the Mangler";
     };
     [30] = {
         ["clones"] = {
@@ -1282,13 +1982,25 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["scale"] = 2;
+        ["spells"] = {
+            [342135] = {};
+            [332708] = {};
+            [240443] = {};
+            [121308] = {};
+            [331288] = {};
+            [288865] = {};
+            [132951] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 256320;
         ["count"] = 20;
-        ["name"] = "Heavin the Breaker";
         ["displayId"] = 97490;
         ["creatureType"] = "Humanoid";
         ["level"] = 61;
         ["id"] = 167532;
-        ["health"] = 256320;
+        ["name"] = "Heavin the Breaker";
     };
     [31] = {
         ["clones"] = {
@@ -1299,13 +2011,25 @@ MDT.dungeonEnemies[dungeonIndex] = {
             };
         };
         ["scale"] = 2;
+        ["spells"] = {
+            [288865] = {};
+            [132951] = {};
+            [333845] = {};
+            [333839] = {};
+            [333841] = {};
+            [240443] = {};
+            [317605] = {};
+            [121308] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["health"] = 256320;
         ["count"] = 20;
-        ["name"] = "Rek the Hardened";
         ["displayId"] = 96829;
         ["creatureType"] = "Humanoid";
         ["level"] = 61;
         ["id"] = 167534;
-        ["health"] = 256320;
+        ["name"] = "Rek the Hardened";
     };
 };
-

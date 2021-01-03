@@ -249,7 +249,8 @@ function addon:CanChangeTalents()
         338907,
         -- Still mind tomes
         324029,
-        324028
+        324028,
+        325012, --格里恩随从
     }
     local debuffsLookingFor =
     {

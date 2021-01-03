@@ -173,10 +173,12 @@ if not ExRT.isClassic and UnitLevel'player' > 50 then
 	--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
 	[308488]=30,	[308506]=30,	[308434]=30,	[308514]=30,	[327708]=20,	[327706]=20,	[327709]=20,	[308525]=30,	[327707]=30,	[308637]=30,
 	[308474]=18,	[308504]=18,	[308430]=18,	[308509]=18,	[327704]=18,	[327701]=18,	[327705]=18,	[327702]=18,	[308525]=18,
+									[341449]=20,
 	}
 	module.db.tableFoodIsBest = {
 	--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
 	[308488]=30,	[308506]=30,	[308434]=30,	[308514]=30,	[327708]=30,	[327706]=30,	[327709]=30,	[308525]=30,	[327707]=30,	[308637]=30,
+									[341449]=30,
 	}
 	module.db.tableFood_headers = {0,18,30}
 
@@ -2249,6 +2251,11 @@ function module.main:ADDON_LOADED()
 	if VExRT.RaidCheck.PotionCheck then
 		--module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 	end
+
+	if not VExRT.RaidCheck.WeaponEnch then
+		VExRT.RaidCheck.WeaponEnch = {}
+	end
+
 	module:RegisterEvents('READY_CHECK')
 
 	module:RegisterSlash()
@@ -2487,7 +2494,15 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	module.consumables:SetSize(consumables_size*5,consumables_size)
 	module.consumables:Hide()
 	module.consumables.buttons = {}
-	for i=1,5 do
+
+	local function ButtonOnEnter(self)
+		self:GetParent():SetAlpha(.7)
+	end
+	local function ButtonOnLeave(self)
+		self:GetParent():SetAlpha(1)
+	end
+
+	for i=1,6 do
 		local button = CreateFrame("Frame",nil,module.consumables)
 		module.consumables.buttons[i] = button
 		button:SetSize(consumables_size,consumables_size)
@@ -2509,17 +2524,34 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		button.count:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-1,1)
 		button.count:SetFont(button.timeleft:GetFont(),10,"OUTLINE")
 		--button.count:SetTextColor(0,1,0,1)
+
+		button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
+		button.click:SetAllPoints()
+		button.click:Hide()
+		button.click:RegisterForClicks("AnyDown")
+		button.click:SetAttribute("type", "macro")
+
+		button.click:SetScript("OnEnter",ButtonOnEnter)
+		button.click:SetScript("OnLeave",ButtonOnLeave)
 	
 		if i == 1 then
 			button.texture:SetTexture(136000)
+			module.consumables.buttons.food = button
 		elseif i == 2 then
 			button.texture:SetTexture(3566840)
+			module.consumables.buttons.flask = button
 		elseif i == 3 then
 			button.texture:SetTexture(3528447)
+			module.consumables.buttons.kit = button
 		elseif i == 4 then
 			button.texture:SetTexture(463543)
+			module.consumables.buttons.oil = button
 		elseif i == 5 then
+			button.texture:SetTexture(134078)
+			module.consumables.buttons.rune = button
+		elseif i == 6 then
 			button.texture:SetTexture(538745)
+			module.consumables.buttons.hs = button
 		end
 	end
 	
@@ -2531,105 +2563,227 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		self:UnregisterAllEvents()
 		self:Hide()
 	end
-	module.consumables:SetScript("OnEvent",function(self,event)
+
+	local isElvUIFix
+
+	function module.consumables:Update()
+		if IsAddOnLoaded("ElvUI") and not isElvUIFix then
+			self:SetParent(ReadyCheckFrame)
+			self:ClearAllPoints()
+			self:SetPoint("BOTTOM",ReadyCheckFrame,"TOP",0,5)
+			isElvUIFix = true
+		end
+
+		local isWarlockInRaid
+		for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole in ExRT.F.IterateRoster, ExRT.F.GetRaidDiffMaxGroup() do
+			if class == "WARLOCK" then
+				isWarlockInRaid = true
+				break
+			end
+		end
+		local totalButtons = 6
+        if not InCombatLockdown() then
+            if isWarlockInRaid then
+                self.buttons.hs:Show()
+            else
+                self.buttons.hs:Hide()
+                totalButtons = totalButtons - 1
+            end
+            self:SetWidth(consumables_size*totalButtons)
+        end
+
+		for i=1,#self.buttons do
+			self.buttons[i].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
+			self.buttons[i].timeleft:SetText("")
+			self.buttons[i].count:SetText("")
+			self.buttons[i].texture:SetDesaturated(true)
+		end
+
+		local LCG = LibStub("LibCustomGlow-1.0",true)
+
+		local now = GetTime()
+
+		local isFood, isRune
+
+		for i=1,60 do
+			local name,icon,count,dispelType,duration,expires,caster,isStealable,_,spellId = UnitAura("player", i, "HELPFUL")
+			if not spellId then
+				break
+			elseif module.db.tableFood[spellId] then
+				self.buttons.food.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+				self.buttons.food.texture:SetDesaturated(false)
+				self.buttons.food.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
+				isFood = true
+			elseif icon == 136000 and not isFood then
+				self.buttons.food.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+				self.buttons.food.texture:SetDesaturated(false)
+				self.buttons.food.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
+			elseif module.db.tableFlask[spellId] then
+				self.buttons.flask.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+				self.buttons.flask.texture:SetDesaturated(false)
+				self.buttons.flask.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
+			elseif module.db.tableRunes[spellId] then
+				self.buttons.rune.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+				self.buttons.rune.texture:SetDesaturated(false)
+				self.buttons.rune.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
+				isRune = true
+			end
+		end
+
+		local hsCount = GetItemCount(5512,false,true)
+		if hsCount and hsCount > 0 then
+			self.buttons.hs.count:SetFormattedText("%d",hsCount)
+			self.buttons.hs.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+			self.buttons.hs.texture:SetDesaturated(false)
+		else
+			self.buttons.hs.count:SetText("0")
+		end
+
+
+		local kitCount = GetItemCount(172347,false,true)
+		local kitNow, kitMax, kitTimeLeft = module:KitCheck()
+		if kitNow > 0 then
+			self.buttons.kit.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+			self.buttons.kit.texture:SetDesaturated(false)
+			if kitTimeLeft then
+				self.buttons.kit.timeleft:SetText(kitTimeLeft)
+			end
+		end
+		if kitCount and kitCount > 0 then
+			if not InCombatLockdown() then
+				local itemName = GetItemInfo(172347)
+				if itemName then
+					self.buttons.kit.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s\n/use 5", itemName))
+					self.buttons.kit.click:Show()
+				else
+					self.buttons.kit.click:Hide()
+				end
+			end
+		else
+			if not InCombatLockdown() then
+				self.buttons.kit.click:Hide()
+			end
+		end
+		self.buttons.kit.count:SetFormattedText("%d",kitCount)
+		if LCG then
+			if kitCount and kitCount > 0 and kitNow == 0 then
+				LCG.PixelGlow_Start(self.buttons.kit)
+			else
+				LCG.PixelGlow_Stop(self.buttons.kit)
+			end
+		end
+
+		lastWeaponEnchantItem = lastWeaponEnchantItem or VExRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey]
+
+		local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID = GetWeaponEnchantInfo()
+		if hasMainHandEnchant then
+			self.buttons.oil.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+			self.buttons.oil.texture:SetDesaturated(false)
+			self.buttons.oil.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil(mainHandExpiration/1000/60))
+
+			if mainHandEnchantID == 6190 then
+				if lastWeaponEnchantItem ~= 171286 then
+					self.buttons.oil.texture:SetTexture(463544)
+				end
+				lastWeaponEnchantItem = 171286
+			elseif mainHandEnchantID == 6188 then
+				if lastWeaponEnchantItem ~= 171286 then
+					self.buttons.oil.texture:SetTexture(463543)
+				end
+				lastWeaponEnchantItem = 171285
+			elseif mainHandEnchantID == 6200 then
+				if lastWeaponEnchantItem ~= 171286 then
+					self.buttons.oil.texture:SetTexture(3528422)
+				end
+				lastWeaponEnchantItem = 171437
+			elseif mainHandEnchantID == 6198 then
+				if lastWeaponEnchantItem ~= 171286 then
+					self.buttons.oil.texture:SetTexture(3528424)
+				end
+				lastWeaponEnchantItem = 171436
+			end
+		end
+
+		VExRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey] = lastWeaponEnchantItem
+
+		if lastWeaponEnchantItem then
+			local oilCount = GetItemCount(lastWeaponEnchantItem,false,true)
+			self.buttons.oil.count:SetText(oilCount)
+			if oilCount and oilCount > 0 then
+				if not InCombatLockdown() then
+					local itemName = GetItemInfo(lastWeaponEnchantItem)
+					if itemName then
+						if mainHandExpiration and mainHandExpiration <= 300000 then
+							self.buttons.oil.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
+						else
+							self.buttons.oil.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
+						end
+						self.buttons.oil.click:Show()
+					else
+						self.buttons.oil.click:Hide()
+					end
+				end
+			else
+				if not InCombatLockdown() then
+					self.buttons.oil.click:Hide()
+				end
+			end
+
+			if LCG then
+				if oilCount and oilCount > 0 and (not hasMainHandEnchant or (mainHandExpiration and mainHandExpiration <= 300000)) then
+					LCG.PixelGlow_Start(self.buttons.oil)
+				else
+					LCG.PixelGlow_Stop(self.buttons.oil)
+				end
+			end
+		end
+
+		local runeCount = GetItemCount(181468,false,true)
+		if runeCount and runeCount > 0 then
+			self.buttons.rune.count:SetFormattedText("%d",runeCount)
+			if not InCombatLockdown() then
+				local itemName = GetItemInfo(181468)
+				if itemName then
+					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
+					self.buttons.rune.click:Show()
+				else
+					self.buttons.rune.click:Hide()
+				end
+			end
+		else
+			self.buttons.rune.count:SetText("0")
+			if not InCombatLockdown() then
+				self.buttons.rune.click:Hide()
+			end
+		end
+
+		if LCG then
+			if runeCount and runeCount > 0 and not isRune then
+				LCG.PixelGlow_Start(self.buttons.rune)
+			else
+				LCG.PixelGlow_Stop(self.buttons.rune)
+			end
+		end
+	end
+
+	module.consumables:SetScript("OnEvent",function(self,event,arg1)
 		if event == "READY_CHECK" then
-			local isWarlockInRaid
-			for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole in ExRT.F.IterateRoster, ExRT.F.GetRaidDiffMaxGroup() do
-				if class == "WARLOCK" then
-					isWarlockInRaid = true
-					break
-				end
+			self:Update()
+			self:RegisterEvent("UNIT_AURA")
+			self:RegisterEvent("UNIT_INVENTORY_CHANGED")
+			C_Timer.After(40,function()
+				self:UnregisterEvent("UNIT_AURA")
+				self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+			end)
+		elseif event == "UNIT_AURA" then
+			if arg1 == "player" then
+				self:Update()
 			end
-			if isWarlockInRaid then
-				self.buttons[5]:Show()
-				self:SetWidth(consumables_size*5)
-			else
-				self.buttons[5]:Hide()
-				self:SetWidth(consumables_size*4)
-			end
-	
-			for i=1,5 do
-				self.buttons[i].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
-				self.buttons[i].timeleft:SetText("")
-				self.buttons[i].count:SetText("")
-				self.buttons[i].texture:SetDesaturated(true)
-			end
-
-			local now = GetTime()
-	
-			for i=1,60 do
-				local name,icon,count,dispelType,duration,expires,caster,isStealable,_,spellId = UnitAura("player", i, "HELPFUL")
-				if not spellId then
-					break
-				elseif module.db.tableFood[spellId] then
-					self.buttons[1].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-					self.buttons[1].texture:SetDesaturated(false)
-					self.buttons[1].timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
-					isFood = true
-				elseif icon == 136000 and not isFood then
-					self.buttons[1].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-					self.buttons[1].texture:SetDesaturated(false)
-					self.buttons[1].timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
-				elseif module.db.tableFlask[spellId] then
-					self.buttons[2].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-					self.buttons[2].texture:SetDesaturated(false)
-					self.buttons[2].timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
-				end
-			end
-
-			local hsCount = GetItemCount(5512,false,true)
-			if hsCount and hsCount > 0 then
-				self.buttons[5].count:SetFormattedText("%d",hsCount)
-				self.buttons[5].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-				self.buttons[5].texture:SetDesaturated(false)
-			else
-				self.buttons[5].count:SetText("0")
-			end
-
-
-			local kitCount = GetItemCount(172347,false,true)
-			local kitNow, kitMax, kitTimeLeft = module:KitCheck()
-			if kitNow > 0 then
-				self.buttons[3].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-				self.buttons[3].texture:SetDesaturated(false)
-				if kitTimeLeft then
-					self.buttons[3].timeleft:SetText(kitTimeLeft)
-				end
-			end
-			self.buttons[3].count:SetFormattedText("%d",kitCount)
-
-			local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID = GetWeaponEnchantInfo()
-			if hasMainHandEnchant then
-				self.buttons[4].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-				self.buttons[4].texture:SetDesaturated(false)
-				self.buttons[4].timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil(mainHandExpiration/1000/60))
-
-				if mainHandEnchantID == 6190 then
-					if lastWeaponEnchantItem ~= 171286 then
-						self.buttons[4].texture:SetTexture(463544)
-					end
-					lastWeaponEnchantItem = 171286
-				elseif mainHandEnchantID == 6188 then
-					if lastWeaponEnchantItem ~= 171286 then
-						self.buttons[4].texture:SetTexture(463543)
-					end
-					lastWeaponEnchantItem = 171285
-				elseif mainHandEnchantID == 6200 then
-					if lastWeaponEnchantItem ~= 171286 then
-						self.buttons[4].texture:SetTexture(3528422)
-					end
-					lastWeaponEnchantItem = 171437
-				elseif mainHandEnchantID == 6198 then
-					if lastWeaponEnchantItem ~= 171286 then
-						self.buttons[4].texture:SetTexture(3528424)
-					end
-					lastWeaponEnchantItem = 171436
-				end
-			end
-
-			if lastWeaponEnchantItem then
-				local oilCount = GetItemCount(lastWeaponEnchantItem,false,true)
-				self.buttons[4].count:SetText(oilCount)
+		elseif event == "UNIT_INVENTORY_CHANGED" then
+			if arg1 == "player" then
+				C_Timer.After(.2,function()
+					self:Update()
+				end)
 			end
 		end
 	end)

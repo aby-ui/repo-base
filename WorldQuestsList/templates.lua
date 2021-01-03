@@ -62,11 +62,13 @@ function WQL_WayPinMixin:TryShowTooltip()
 end
 
 function WQL_WayPinMixin:OnMouseEnter()
-
+	if self.waypoint and self.waypoint.comment then
+		self:GetMap():TriggerEvent("SetAreaLabel", MAP_AREA_LABEL_TYPE.POI, " ", self.waypoint.comment);
+	end
 end
 
 function WQL_WayPinMixin:OnMouseLeave()
-
+	self:GetMap():TriggerEvent("ClearAreaLabel", MAP_AREA_LABEL_TYPE.POI);
 end
 
 function WQL_WayPinMixin:OnAcquired(poiInfo) -- override

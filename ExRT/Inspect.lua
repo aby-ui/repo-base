@@ -186,6 +186,7 @@ local function CheckForSuccesInspect(name)
 	end
 end
 
+local lastCheckNext = {}
 local inspectLastTime = 0
 local function InspectNext()
 	if RaidInCombat() or (InspectFrame and InspectFrame:IsShown()) then
@@ -193,7 +194,8 @@ local function InspectNext()
 	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
-		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) then
+		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) then
+			lastCheckNext[name] = nowTime
 			NotifyInspect(name)
 
 			if (VExRT and VExRT.InspectViewer and VExRT.InspectViewer.EnableA4ivs) and not module.db.inspectDBAch[name] and not ExRT.isClassic then
@@ -231,6 +233,7 @@ end
 
 function module:AddToQueue(name) 
 	if not module.db.inspectQuery[name] then
+		lastCheckNext[name] = nil
 		module.db.inspectQuery[name] = GetTime()
 		module.db.inspectNotItemsOnly[name] = true
 	end

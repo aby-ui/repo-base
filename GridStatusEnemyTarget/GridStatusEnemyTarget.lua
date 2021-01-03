@@ -1,13 +1,13 @@
 local L = setmetatable({}, {__index = function(t, k) t[k] = k return k end})
 
 if GetLocale()=="zhCN" then
-    L["Enemy target"] = "敌方目标"
+    L["Enemy target"] = "敌方目标(个数)"
     L["Enemy incoming spell"] = "敌方施法目标"
     L["Target Raid Icon"] = "团员目标的标记"
     L['Update Interval'] = "刷新时间间隔"
 elseif GetLocale()=="zhTW" then
-    L["Enemy target"] = "怪物目標"
-    L["Enemy incoming spell"] = "怪物施法目標"
+    L["Enemy target"] = "敵方目標(個數)"
+    L["Enemy incoming spell"] = "敵方施法目標"
     L["Target Raid Icon"] = "團員目標的標記"
 elseif GetLocale()=="ruRU" then
     L["Enemy target"] = "Цель врага"
@@ -29,7 +29,7 @@ GridStatusEnemyTarget.defaultDB = {
         text =  "!!",
         enable = true,
         color = { r = 1, g = 1, b = 0, a = 1 },
-        priority = 98,
+        priority = 80,
         range = false,
     },
     alert_et_incoming = {
@@ -218,7 +218,7 @@ function GridStatusEnemyTarget:OnUpdate()
                     settings.priority,
                     nil, --(settings.range and 40),
                     settings.color,
-                    settings.text,
+                    tostring(newcount[guid]),
                     nil,
                     nil,
                     settings.icon
@@ -268,7 +268,7 @@ function GridStatusEnemyTarget:UpdateUnit(npcunit)
     if( npcguid and self:IsHostileNpcUnit(npcguid) ) then
         local guid = UnitGUID(targets[npcunit])
         if guid and GridRoster:IsGUIDInRaid(guid) then
-            newcount[guid]=true  --for alert_et_target
+            newcount[guid]=(newcount[guid] or 0) + 1  --for alert_et_target
 
             local spell_name = spellstarts[npcguid]
             if(spell_name) then

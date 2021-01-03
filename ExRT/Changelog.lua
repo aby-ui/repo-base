@@ -1,6 +1,14 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4420
+* Raid Inspect: fixed query stuck
+* Raid check: consumables on ready check are clickable now
+* Raid check: consumables on ready check: fix for elvui users
+* Raid cooldowns: fixed typhoon
+* Note: added {classunique:monk,priest}message{/classunique} syntax
+* Minor fixes
+
 v.4400
 * Raid check: added new food consumables
 * Raid check: added ap weapon buffs to ready check window

@@ -1129,7 +1129,7 @@ local function scamCheck(codes, data)
 
   if (data.conditions) then
     for _, condition in ipairs(data.conditions) do
-      if (condition) then
+      if (condition and condition.changes) then
         for _, property in ipairs(condition.changes) do
           if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
             checkCustomCondition(codes, L["%s - Condition Custom Chat"]:format(data.id), property.value.custom);
@@ -1827,11 +1827,9 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       local matchInfo = MatchInfo(data, children)
       ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
-      --if(WeakAuras.linked[received.d]) then
-      TransmitDisplay(received.d, sender);
-    --else
-    --    TransmitError("not authorized", sender);
-    --end
+      if(Private.linked and Private.linked[received.d]) then
+        TransmitDisplay(received.d, sender);
+      end
     elseif(received.m == "dE") then
       tooltipLoading = nil;
       if(received.eM == "dne") then

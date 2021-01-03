@@ -4737,7 +4737,6 @@ Private.event_prototypes = {
           local extendTimer = %s
           local triggerUseRemaining = %s
           local triggerRemaining = %s
-          local triggerEmphasized = %s
           local triggerCount = %q
           local triggerCast = %s
           local cloneId = useClone and id or ""
@@ -4765,7 +4764,7 @@ Private.event_prototypes = {
 
           if useClone then
             if event == "BigWigs_StartBar" then
-              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -4779,14 +4778,14 @@ Private.event_prototypes = {
               end
             elseif event == "BigWigs_Timer_Update" then
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
             elseif event == "BigWigs_Timer_Force" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
@@ -4794,13 +4793,13 @@ Private.event_prototypes = {
           else
             if event == "BigWigs_StartBar" then
               if extendTimer ~= 0 then
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   local bar = WeakAuras.GetBigWigsTimerById(id)
                   WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = WeakAuras.GetBigWigsTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerEmphasized, triggerCount, triggerCast)
+            local bar = WeakAuras.GetBigWigsTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerCount, triggerCast)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -4829,7 +4828,6 @@ Private.event_prototypes = {
         trigger.use_extend and tonumber(trigger.extend or 0) or 0,
         trigger.use_remaining and "true" or "false",
         trigger.remaining or 0,
-        trigger.use_emphasized == nil and "nil" or trigger.use_emphasized and "true" or "false",
         trigger.use_count and trigger.count or "",
         trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
         trigger.remaining_operator or "<"
@@ -4866,15 +4864,6 @@ Private.event_prototypes = {
         desc = L["Only if BigWigs shows it on it's bar"],
         type = "string",
         conditionType = "string",
-      },
-      {
-        name = "emphasized",
-        display = L["Emphasized"],
-        type = "tristate",
-        desc = L["Emphasized option checked in BigWigs's spell options"],
-        test = "true",
-        init = "false",
-        conditionType = "bool"
       },
       {
         name = "cast",
@@ -6356,12 +6345,21 @@ Private.event_prototypes = {
     statesParameter = "one",
     init = function(trigger)
       local ret = [=[
-        local useLegendaryIcon = %s
-        local itemBonusId, itemId, itemName, itemIcon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(%q)
+        local fetchLegendaryPower = %s
+        local item = %q
+        local inverse = %s
+        local useItemSlot, slotSelected = %s, %d
+
+        local itemBonusId, itemId, itemName, icon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(item, useItemSlot and slotSelected)
         local itemBonusId = tonumber(itemBonusId)
-        local icon = useLegendaryIcon and WeakAuras.GetLegendaryIcon(itemBonusId) or itemIcon
+        if fetchLegendaryPower then
+          itemName, icon = WeakAuras.GetLegendaryData(itemBonusId or item)
+        end
+
+        local slotValidation = (useItemSlot and itemSlot == slotSelected) or (not useItemSlot)
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "")
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "", trigger.use_inverse and "true" or "false",
+                        trigger.use_itemSlot and "true" or "false", trigger.itemSlot)
     end,
     args = {
       {
@@ -6369,7 +6367,7 @@ Private.event_prototypes = {
         display = L["Item Bonus Id"],
         type = "string",
         store = "true",
-        test = "itemBonusId",
+        test = "true",
         required = true,
         desc = function()
           return WeakAuras.GetLegendariesBonusIds()
@@ -6379,10 +6377,12 @@ Private.event_prototypes = {
       },
       {
         name = "legendaryIcon",
-        display = L["Use Legendary Power Icon"],
+        display = L["Fetch Legendary Power"],
         type = "toggle",
         test = "true",
-        desc = L["Displays the icon for the Legendary Power that matches this bonus id."],
+        desc = L["Fetches the name and icon of the Legendary Power that matches this bonus id."],
+        enable = not WeakAuras.IsClassic(),
+        hidden = WeakAuras.IsClassic(),
       },
       {
         name = "name",
@@ -6395,7 +6395,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = "true",
-        init = "icon or 'Interface\\Icons\\INV_Misc_QuestionMark'",
+        init = "icon or 'Interface/Icons/INV_Misc_QuestionMark'",
         store = "true",
         test = "true",
       },
@@ -6415,6 +6415,13 @@ Private.event_prototypes = {
         store = "true",
         conditionType = "select",
         values = "item_slot_types",
+        test = "true",
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
       },
       {
         name = "itemSlotString",
@@ -6423,6 +6430,10 @@ Private.event_prototypes = {
         store = "true",
         test = "true",
       },
+      {
+        hidden = true,
+        test = "not inverse == (itemBonusId and slotValidation or false)",
+      }
     },
     automaticrequired = true
   },
@@ -6662,21 +6673,145 @@ Private.event_prototypes = {
   ["Crowd Controlled"] = {
     type = "status",
     events = {
-      ["unit_events"] = {
-        ["player"] = {"UNIT_AURA"}
+      ["events"] = {
+        "LOSS_OF_CONTROL_UPDATE"
       }
     },
-    force_events = "UNIT_AURA",
+    force_events = "LOSS_OF_CONTROL_UPDATE",
     name = L["Crowd Controlled"],
+    canHaveDuration = true,
+    statesParameter = "one",
+    init = function(trigger)
+      local ret = [=[
+          local show = false
+          local use_controlType = %s
+          local controlType = %s
+          local inverse = %s
+          local use_interruptSchool = %s
+          local interruptSchool = tonumber(%q)
+          local duration, expirationTime, spellName, icon, spellName, spellId, locType, lockoutSchool, name, _
+          for i = 1, C_LossOfControl.GetActiveLossOfControlDataCount() do
+            local data = C_LossOfControl.GetActiveLossOfControlData(i)
+            if data then
+              if (not use_controlType)
+              or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or bit.band(data.lockoutSchool, interruptSchool) > 0)))
+              then
+                spellId = data.spellID
+                spellName, _, icon = GetSpellInfo(data.spellID)
+                duration = data.duration
+                expirationTime = data.startTime + data.duration
+                locType = data.locType
+                lockoutSchool = data.lockoutSchool
+                name = data.displayText
+                show = true
+                break
+              end
+            end
+          end
+      ]=]
+      ret = ret:format(
+        trigger.use_controlType and "true" or "false",
+        type(trigger.controlType) == "string" and "[["..trigger.controlType.."]]" or [["STUN"]],
+        trigger.use_inverse and "true" or "false",
+        trigger.use_interruptSchool and "true" or "false",
+        trigger.interruptSchool or 0
+      )
+      return ret
+    end,
     args = {
       {
-        name = "controlled",
-        display = L["Crowd Controlled"],
-        type = "tristate",
-        init = "not HasFullControl()"
-      }
+        name = "controlType",
+        display = L["Specific Type"],
+        type = "select",
+        values = "loss_of_control_types",
+        conditionType = "select",
+        test = "true",
+        default = "STUN",
+        init = "locType",
+        store = true,
+      },
+      {
+        name = "interruptSchool",
+        display = L["Interrupt School"],
+        type = "select",
+        values = "main_spell_schools",
+        conditionType = "select",
+        default = 1,
+        test = "true",
+        enable = function(trigger) return trigger.controlType == "SCHOOL_INTERRUPT" end,
+        init = "lockoutSchool",
+        store = true,
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "name",
+        display = L["Name"],
+        hidden = true,
+        conditionType = "string",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "spellName",
+        display = L["Spell Name"],
+        hidden = true,
+        conditionType = "string",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        hidden = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "lockoutSchool",
+        display = L["Interrupted School Text"],
+        hidden = true,
+        init = "lockoutSchool and lockoutSchool > 0 and GetSchoolString(lockoutSchool) or nil",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "icon",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "duration",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "expirationTime",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'timed'",
+        store = true,
+        test = "true",
+      },
+      {
+        hidden = true,
+        test = "inverse ~= show",
+      },
     },
-    automaticrequired = true
+    automaticrequired = true,
   },
   ["Cast"] = {
     type = "status",

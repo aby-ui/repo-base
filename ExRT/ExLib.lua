@@ -163,7 +163,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 37
+local libVersion = 38
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -4265,6 +4265,8 @@ local function ScrollDropDown_DefaultCheckFunc(self)
 	self:Click()
 end
 
+local IsDropDownCustom
+
 function ELib.ScrollDropDown.ClickButton(self)
 	if ELib.ScrollDropDown.DropDownList[1]:IsShown() then
 		ELib:DropDownClose()
@@ -4276,6 +4278,7 @@ function ELib.ScrollDropDown.ClickButton(self)
 	else
 		dropDown = self:GetParent()
 	end
+	IsDropDownCustom = nil
 	ELib.ScrollDropDown.ToggleDropDownMenu(dropDown)
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
@@ -4416,7 +4419,6 @@ function ELib.ScrollDropDown.UpdateChecks()
 	end
 end
 
-
 function ELib.ScrollDropDown.Update(self, elapsed)
 	if ( not self.showTimer or not self.isCounting ) then
 		return
@@ -4442,7 +4444,11 @@ function ELib.ScrollDropDown.OnButtonEnter(self)
 	end
 	ELib.ScrollDropDown:CloseSecondLevel(self.Level)
 	if self.subMenu then
-		ELib.ScrollDropDown.ToggleDropDownMenu(self,2)
+		if IsDropDownCustom then
+			ELib.ScrollDropDown.ToggleDropDownMenu(self,2,self.subMenu,IsDropDownCustom)
+		else
+			ELib.ScrollDropDown.ToggleDropDownMenu(self,2)
+		end
 	end
 end
 function ELib.ScrollDropDown.OnButtonLeave(self)
@@ -4452,14 +4458,20 @@ function ELib.ScrollDropDown.OnButtonLeave(self)
 	end
 end
 
-function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
+function ELib.ScrollDropDown.EasyMenu(self,list,customWidth)
+	IsDropDownCustom = customWidth or 200
+	ELib.ScrollDropDown.ToggleDropDownMenu(self,nil,list,customWidth)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+end
+
+function ELib.ScrollDropDown.ToggleDropDownMenu(self,level,customList,customWidth)
 	level = level or 1
 	if self.ToggleUpadte then
 		self:ToggleUpadte()
 	end
 
 	if level == 1 then
-		if self.isModern then
+		if self.isModern or customList then
 			ELib.ScrollDropDown.DropDownList = ScrollDropDown_Modern
 		else
 			ELib.ScrollDropDown.DropDownList = ScrollDropDown_Blizzard
@@ -4470,16 +4482,15 @@ function ELib.ScrollDropDown.ToggleDropDownMenu(self,level)
 	end
 	local dropDown = ELib.ScrollDropDown.DropDownList[level]
 
-	local dropDownWidth = self.Width
-	local isModern = self.isModern
+	local dropDownWidth = self.Width or customWidth or (customList and 200) or IsDropDownCustom
+	local isModern = self.isModern or (customList and true)
 	if level > 1 then
 		local parent = ELib.ScrollDropDown.DropDownList[1].parent
-		dropDownWidth = parent.Width
-		isModern = parent.isModern
+		dropDownWidth = parent.Width or IsDropDownCustom
+		isModern = parent.isModern or (customList and true)
 	end
 
-
-	dropDown.List = self.subMenu or self.List
+	dropDown.List = customList or self.subMenu or self.List
 
 	local count = #dropDown.List
 

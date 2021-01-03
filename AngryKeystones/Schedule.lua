@@ -27,7 +27,7 @@ for i,v in ipairs(affixScheduleText) do
 	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
 end
 
-local affixScheduleUnknown = false
+local affixScheduleUnknown = true
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel

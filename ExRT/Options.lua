@@ -320,7 +320,8 @@ local function MiniMapIconOnClick(self, button)
 			func:miniMapMenu()
 		end
 		ExRT.Options:UpdateModulesList()
-		EasyMenu(ExRT.F.menuTable, ExRT.Options.MiniMapDropdown, "cursor", 10 , -15, "MENU")
+		--EasyMenu(ExRT.F.menuTable, ExRT.Options.MiniMapDropdown, "cursor", 10 , -15, "MENU")
+		ELib.ScrollDropDown.EasyMenu(self,ExRT.F.menuTable,150)
 	elseif button == "LeftButton" then
 		ExRT.Options:Open()
 	end
@@ -347,6 +348,7 @@ function ExRT.F.MinimapMenuAdd(text, func, level, uid, subMenu)
 	if subMenu then
 		menuTable.hasArrow = true
 		menuTable.menuList = subMenu
+		menuTable.subMenu = subMenu
 	end
 	tinsert(ExRT.F.menuTable,MinimapMenu_Level[level],menuTable)
 	for i=level,#MinimapMenu_Level do
@@ -374,6 +376,7 @@ end
 
 function ExRT.Options:Open(PANEL)
 	CloseDropDownMenus()
+	ELib.ScrollDropDown.Close()
 	Options:Show()
 	
 	Options:SetPage(PANEL or Options.Frames[Options.modulesList.selected or 1])
@@ -394,7 +397,7 @@ ExRT.F.menuTable = {
 { text = L.minimapmenuset, func = ExRT.Options.Open, notCheckable = true, keepShownOnClick = true, },
 { text = " ", isTitle = true, notCheckable = true, notClickable = true },
 { text = " ", isTitle = true, notCheckable = true, notClickable = true },
-{ text = L.minimapmenuclose, func = function() CloseDropDownMenus() end, notCheckable = true },
+{ text = L.minimapmenuclose, func = function() CloseDropDownMenus() ELib.ScrollDropDown.Close() end, notCheckable = true },
 }
 
 local modulesActive = {}

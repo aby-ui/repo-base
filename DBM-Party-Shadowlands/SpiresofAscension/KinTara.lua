@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2399, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201228151841")
+mod:SetRevision("20210101213950")
 mod:SetCreatureID(162059, 163077)--162059 Kin-Tara, 163077 Azules
 mod:SetEncounterID(2357)
 mod:SetBossHPInfoToHighest()
@@ -158,7 +158,7 @@ function mod:OnSync(msg)
 end
 --]]
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, targetname)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 	if msg:find("spell:321009") then
 		self.vb.spearCount = self.vb.spearCount + 1
 		if self.vb.flightActive then
@@ -170,15 +170,18 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, targetname)
 		else--Casting it when on ground because enraged
 			timerChargedSpearCD:Start(23.1, self.vb.spearCount+1)
 		end
-		if targetname == UnitName("player") then
-			specWarnChargedSpear:Show()
-			specWarnChargedSpear:Play("runout")
-			yellChargedSpear:Yell()
-		elseif self:CheckNearby(5, targetname) then
-			specWarnChargedSpearNear:Show(targetname)
-			specWarnChargedSpearNear:Play("runaway")
-		else
-			warnChargedSpear:Show(targetname)
+		local targetname = DBM:GetUnitFullName(target)
+		if targetname then
+			if targetname == UnitName("player") then
+				specWarnChargedSpear:Show()
+				specWarnChargedSpear:Play("runout")
+				yellChargedSpear:Yell()
+			elseif self:CheckNearby(5, targetname) then
+				specWarnChargedSpearNear:Show(targetname)
+				specWarnChargedSpearNear:Play("runaway")
+			else
+				warnChargedSpear:Show(targetname)
+			end
 		end
 	end
 end

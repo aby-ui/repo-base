@@ -46,8 +46,9 @@ GridStatusRaidDebuff:DebuffId(zoneid, 327902, 406, 6, 6) -- Fixate
 
 -- Hungering Destroyer
 GridStatusRaidDebuff:BossNameId(zoneid, 500, "Hungering Destroyer")
-GridStatusRaidDebuff:DebuffId(zoneid, 329298, 511, 6, 6) -- Gluttonous Miasma
+GridStatusRaidDebuff:DebuffId(zoneid, 329298, 511, 6, 6, nil, false, nil, true) -- 暴食瘴气 Gluttonous Miasma
 GridStatusRaidDebuff:DebuffId(zoneid, 334228, 512, 6, 6) -- Volatile Ejection
+GridStatusRaidDebuff:DebuffId(zoneid, 334755, 513, 6, 6, nil, true, nil, true) -- 暴食层数
 
 -- Lady Inerva Darkvein
 GridStatusRaidDebuff:BossNameId(zoneid, 600, "Lady Inerva Darkvein")

@@ -217,6 +217,8 @@ L["Cutwater Striker"] = "破浪打击者"
 --[[ L["Dark Acolyte"] = ""--]] 
 L["Darkheart Thicket"] = "暗心灌木林"
 L["Darkheart Thicket Sublevel"] = "暗心灌木林"
+--[[Translation missing --]]
+--[[ L["DataImportButtonTooltip"] = ""--]] 
 L["Dazar'ai Augur"] = "达萨莱占卜师"
 L["Dazar'ai Colossus"] = "达萨莱巨像"
 L["Dazar'ai Confessor"] = "达萨莱神官"
@@ -305,6 +307,8 @@ L["Drowned Depthbringer"] = "溺水的深渊使者"
 --[[ L["Drust Soulcleaver"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Drust Spiteclaw"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Dungeon Data Missing"] = ""--]] 
 L["Dungeon Level"] = "地城層數"
 L["Earlier Version"] = "你有這個路線較早期的版本，名稱為 '%s'%s請問要更新原有的，還是複製成另一個新的版本?%s%s%s"
 L["Earthrager"] = "地怒者"
@@ -516,6 +520,8 @@ L["If the Minimap Button is enabled"] = "如果有啟用小地圖按鈕"
 L["Imbued Stormcaller"] = "灌注能量的唤雷者"
 L["Import"] = "匯入"
 L["Import a preset from a text string"] = "從文字字串匯入路線"
+--[[Translation missing --]]
+--[[ L["Import Data"] = ""--]] 
 L["Import Preset"] = "匯入路線"
 L["Imprison"] = "囚禁"
 L["In the bottom right corner"] = "右下角"
@@ -729,6 +735,12 @@ L["New Preset"] = "新的路線"
 L["Next to the NPC"] = "NPC 旁"
 --[[Translation missing --]]
 --[[ L["Noble Skirmisher"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["noDungeonData1"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["noDungeonData2"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["noDungeonData3"] = ""--]] 
 L["Not specified"] = "未分類"
 L["Note Text:"] = "註記文字:"
 L["Off-Duty Laborer"] = "下班的劳工"
