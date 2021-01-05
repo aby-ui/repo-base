@@ -302,7 +302,7 @@ function Mod:Blizzard_ChallengesUI()
 	frame2.Entries = entries2
 
 	local keystoneText = ChallengesFrame.WeeklyInfo.Child:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
-	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -15)
+	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "BOTTOM", 0, -30)
 	keystoneText:SetWidth(220)
 	Mod.KeystoneText = keystoneText
 

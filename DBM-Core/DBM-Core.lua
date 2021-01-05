@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210101213950"),
+	Revision = parseCurseDate("20210105044303"),
 	DisplayVersion = "9.0.16 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2020, 12, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -4607,7 +4607,8 @@ do
 		--Abort if mapID filter is enabled and sender actually sent a mapID. if no mapID is sent, it's always passed through (IE BW pull timers)
 		if DBM.Options.DontShowPTNoID and senderMapID and tonumber(senderMapID) ~= LastInstanceMapID then return end
 		timer = tonumber(timer or 0)
-		if timer > 60 or (timer > 0 and timer < 3) then
+		--We want to permit 0 itself, but block anything negative number or anything between 0 and 3 or anything longer than minute
+		if timer > 60 or (timer > 0 and timer < 3) or timer < 0 then
 			return
 		end
 		if not dummyMod then
@@ -7219,11 +7220,15 @@ do
 			if not C_ChatInfo.RegisterAddonMessagePrefix("D4") then -- main prefix for DBM4
 				self:AddMsg("Error: unable to register DBM addon message prefix (reached client side addon message filter limit), synchronization will be unavailable") -- TODO: confirm that this actually means that the syncs won't show up
 			end
-			if not C_ChatInfo.RegisterAddonMessagePrefix("BigWigs") then
-				self:AddMsg("Error: unable to register BigWigs addon message prefix (reached client side addon message filter limit), BigWigs version checks will be unavailable")
+			if not C_ChatInfo.IsAddonMessagePrefixRegistered("BigWigs") then
+				if not C_ChatInfo.RegisterAddonMessagePrefix("BigWigs") then
+					self:AddMsg("Error: unable to register BigWigs addon message prefix (reached client side addon message filter limit), BigWigs version checks will be unavailable")
+				end
 			end
-			if not C_ChatInfo.RegisterAddonMessagePrefix("Transcriptor") then
-				self:AddMsg("Error: unable to register Transcriptor addon message prefix (reached client side addon message filter limit)")
+			if not C_ChatInfo.IsAddonMessagePrefixRegistered("Transcriptor") then
+				if not C_ChatInfo.RegisterAddonMessagePrefix("Transcriptor") then
+					self:AddMsg("Error: unable to register Transcriptor addon message prefix (reached client side addon message filter limit)")
+				end
 			end
 		end
 		--Check if any previous changed cvars were not restored and restore them
@@ -12203,7 +12208,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210101213950" then
+	if not revision or revision == "20210105044303" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

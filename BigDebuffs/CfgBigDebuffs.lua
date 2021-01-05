@@ -7,7 +7,7 @@ U1RegisterAddon("BigDebuffs", {
     desc = "在头像上提示控制技能图标及其剩余时间。",
     nopic = 1,
 
-    modifier = "NGA-伊甸外",
+    modifier = "伊甸外@NGA",
 
     toggle = function(name, info, enable, justload)
         if(not justload) then

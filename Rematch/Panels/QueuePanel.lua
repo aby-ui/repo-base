@@ -340,13 +340,17 @@ function panel:UpdateTop()
 end
 
 function panel:ShowFillQueueDialog(more)
-	local dialog = rematch:ShowDialog("FillQueue",300,246,L["Fill Queue"],L["Add these pets to the queue?"],YES,function() rematch:FillQueue(nil,more) end,NO)
-	local count = rematch:FillQueue(true,more)
-	if count>50 then
-		dialog:ShowText(format(L["This will add %s%d\124r pets to the leveling queue.\n\nYou can be more selective by filtering pets.\n\nFor instance, if you filter pets to High Level (15-24) and Rare, Fill Queue will only add rare pets between level 15 and 24."],rematch.hexWhite,count),220,140,"TOP",0,-36)
+	if settings.DontConfirmFillQueue then -- skip dialog and fill queue if 'Don't Confirm To Fill Queue' is checked
+		rematch:FillQueue(nil,more)
 	else
-		dialog:ShowText(format(L["This will add %s%d\124r pets to the leveling queue."],rematch.hexWhite,count),260,32,"TOP",0,-36)
-		dialog:SetHeight(138)
+		local dialog = rematch:ShowDialog("FillQueue",300,246,L["Fill Queue"],L["Add these pets to the queue?"],YES,function() rematch:FillQueue(nil,more) end,NO)
+		local count = rematch:FillQueue(true,more)
+		if count>50 then
+			dialog:ShowText(format(L["This will add %s%d\124r pets to the leveling queue.\n\nYou can be more selective by filtering pets.\n\nFor instance, if you filter pets to High Level (15-24) and Rare, Fill Queue will only add rare pets between level 15 and 24."],rematch.hexWhite,count),220,140,"TOP",0,-36)
+		else
+			dialog:ShowText(format(L["This will add %s%d\124r pets to the leveling queue."],rematch.hexWhite,count),260,32,"TOP",0,-36)
+			dialog:SetHeight(138)
+		end
 	end
 end
 

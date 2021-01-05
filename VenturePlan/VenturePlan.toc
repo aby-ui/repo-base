@@ -1,0 +1,19 @@
+## Interface: 90002
+## Title: Venture Plan
+## Notes: Interface improvements for Adventures.
+## Author: foxlit
+## X-Website: https://www.townlong-yak.com/addons/venture-plan
+## Version: 4.04
+## SavedVariables: VP_MissionReports
+Libs/Evie.lua
+Widgets.lua
+vs-spells.lua
+vs.lua
+MissionList.lua
+MissionView.lua
+Collector.lua
+Loader.lua
+
+
+## Title-zhCN: |cff880303[爱不易]|r VenturePlan 盟约随从任务
+## X-Vendor: AbyUI

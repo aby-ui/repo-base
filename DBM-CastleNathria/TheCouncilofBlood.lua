@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201228013951")
+mod:SetRevision("20210102145336")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -680,7 +680,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		FeverStacks[args.destName] = 3
 		if self.Options.InfoFrame then
-			if not DBM.Infoframe:IsShown() then
+			if not DBM.InfoFrame:IsShown() then
 				DBM.InfoFrame:SetHeader(args.spellName)
 				DBM.InfoFrame:Show(20, "table", FeverStacks, 1)
 			else

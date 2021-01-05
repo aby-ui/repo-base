@@ -261,4 +261,6 @@ U1.PINYIN={
     ['大秘路线']={'damiluxian','dmlx'},
     ['拍卖价格统计']={'paimaijiagetongji','pmjgtj'},
     ['拍卖收藏保存']={'paimaishoucangbaocun','pmscbc'},
+    ['天赋方案切换']={'tianfufanganqiehuan','tffaqh'},
+    ['盟约随从任务']={'mengyuesuicongrenwu','myscrw'},
 }

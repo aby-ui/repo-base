@@ -68,6 +68,7 @@ end
 
 function rematch:UpdateQueue()
 	rematch.queueNeedsProcessed = true
+	rematch:UpdateRoster()
 	rematch:UpdateUI()
 end
 
