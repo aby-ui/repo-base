@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2410, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201217054451")
+mod:SetRevision("20210109152455")
 mod:SetCreatureID(169769)
 mod:SetEncounterID(2396)
 
@@ -98,6 +98,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif spellId == 324698 then--Deathgate finished
 		specWarnDeathgate:Show(args.spellName)
+		specWarnDeathgate:Play("findshelter")
 ---	elseif spellId == 326171 then--Shattered Reality ending (Phase 2 begin)
 --		self.vb.cosmicCount = 0
 --		timerCosmicArtificeCD:Start(2, 1)

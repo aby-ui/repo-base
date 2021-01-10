@@ -1,5 +1,13 @@
 local zoneOrder = { -- /dump WorldMapFrame.mapID
-    [C_Map.GetMapInfo(1735).name] = 10-9.0,         --纳斯利亚堡
+    [C_Map.GetMapInfo(1735).name] = 10-9.1,         --纳斯利亚堡
+    [C_Map.GetMapInfo(1683).name] = 10-9.01,         --9.0小副本
+    [C_Map.GetMapInfo(1674).name] = 10-9.02,
+    [C_Map.GetMapInfo(1669).name] = 10-9.03,
+    [C_Map.GetMapInfo(1679).name] = 10-9.04,
+    [C_Map.GetMapInfo(1693).name] = 10-9.05,
+    [C_Map.GetMapInfo(1663).name] = 10-9.06,
+    [C_Map.GetMapInfo(1675).name] = 10-9.07,
+    [C_Map.GetMapInfo(1666).name] = 10-9.08,
     [C_Map.GetMapInfo(1581).name] = 10-8.5,         --尼奥萨罗
     [C_Map.GetMapInfo(1512).name] = 10-8.4,         --永恒王宫
     [C_Map.GetMapInfo(1345).name] = 10-8.3,         --风暴熔炉
@@ -173,6 +181,15 @@ GridStatusRaidDebuff.defaultDB = {
         [C_Map.GetMapInfo(1735).name] = {
             [GetSpellInfo(332443)] = { disable = true, }, --地基
         },
+        --9.0傲慢
+        [C_Map.GetMapInfo(1683).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1674).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1669).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1679).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1693).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
     },
 	["detected_debuff"] = {},
 }

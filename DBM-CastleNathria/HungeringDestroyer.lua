@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2428, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201223204239")
+mod:SetRevision("20210109154838")
 mod:SetCreatureID(164261)
 mod:SetEncounterID(2383)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -308,7 +308,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 329774 then
 		if not args:IsPlayer() then
-			specWarnOverwhelmTaunt:Show()
+			specWarnOverwhelmTaunt:Show(args.destName)
 			specWarnOverwhelmTaunt:Play("tauntboss")
 		end
 	end

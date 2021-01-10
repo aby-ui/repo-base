@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210108142901"),
+	Revision = parseCurseDate("20210110031346"),
 	DisplayVersion = "9.0.18 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2021, 1, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -4448,7 +4448,7 @@ end
 
 do
 	local function checkForActualPull()
-		if DBM.Options.RecordOnlyBosses and #inCombat == 0 then
+		if (DBM.Options.RecordOnlyBosses and #inCombat == 0) or difficultyIndex ~= 8 then
 			DBM:StopLogging()
 		end
 	end
@@ -4668,7 +4668,7 @@ do
 				dummyMod.text:Schedule(timer, L.ANNOUNCE_PULL_NOW)
 			end
 		end
-		if DBM.Options.RecordOnlyBosses then
+		if DBM.Options.RecordOnlyBosses or difficultyIndex == 23 then
 			DBM:StartLogging(timer, checkForActualPull)--Start logging here to catch pre pots.
 		end
 		if DBM.Options.CheckGear then
@@ -6206,6 +6206,7 @@ do
 				end
 				if self.Options.DisableSFX and GetCVar("Sound_EnableSFX") == "1" then
 					SetCVar("Sound_EnableSFX", 0)
+					self.Options.RestoreSettingSFX = true
 				end
 				--boss health info scheduler
 				if mod.CustomHealthUpdate then
@@ -6640,8 +6641,9 @@ do
 					tooltipsHidden = false
 					GameTooltip:SetScript("OnShow", GameTooltip.Show)
 				end
-				if self.Options.DisableSFX then
+				if self.Options.RestoreSettingSFX then
 					SetCVar("Sound_EnableSFX", 1)
+					self.Options.RestoreSettingSFX = nil
 				end
 				--cache table
 				twipe(autoRespondSpam)
@@ -6719,10 +6721,6 @@ do
 				autoLog = true
 				self:AddMsg("|cffffff00"..COMBATLOGENABLED.."|r")
 				LoggingCombat(true)
-				if checkFunc then
-					self:Unschedule(checkFunc)
-					self:Schedule(timer+10, checkFunc)--But if pull was canceled and we don't have a boss engaged within 10 seconds of pull timer ending, abort log
-				end
 			end
 		end
 		local transcriptor = _G["Transcriptor"]
@@ -6732,10 +6730,10 @@ do
 				self:AddMsg("|cffffff00"..L.TRANSCRIPTOR_LOG_START.."|r")
 				transcriptor:StartLog(1)
 			end
-			if checkFunc then
-				self:Unschedule(checkFunc)
-				self:Schedule(timer+10, checkFunc)--But if pull was canceled and we don't have a boss engaged within 10 seconds of pull timer ending, abort log
-			end
+		end
+		if checkFunc and (autoLog or autoTLog) then
+			self:Unschedule(checkFunc)
+			self:Schedule(timer+10, checkFunc)--But if pull was canceled and we don't have a boss engaged within 10 seconds of pull timer ending, abort log
 		end
 	end
 
@@ -7232,8 +7230,9 @@ do
 			end
 		end
 		--Check if any previous changed cvars were not restored and restore them
-		if 	self.Options.DisableSFX then
+		if self.Options.RestoreSettingSFX then
 			SetCVar("Sound_EnableSFX", 1)
+			self.Options.RestoreSettingSFX = nil
 			self:Debug("Restoring Sound_EnableSFX CVAR")
 		end
 		--RestoreSettingMusic doens't need restoring here, since zone change transition will handle it
@@ -12208,7 +12207,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210108142901" then
+	if not revision or revision == "20210110031346" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

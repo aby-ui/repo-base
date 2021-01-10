@@ -1076,9 +1076,11 @@ do
 	local L_EncName = "^"..L.RaidCheckReinforced
 	if ExRT.locale == "koKR" then
 		L_EncName = "%([^%)]+%+%d+%) %(%d+"
+    elseif ExRT.locale == "zhCN" or ExRT.locale == "zhTW" then
+        --abyui fix locale
 	elseif ExRT.locale ~= "ruRU" and ExRT.locale ~= "enGB" and ExRT.locale ~= "enUS" then
 		L_EncName = "%(%+%d+[^%)]+%) %(%d+"
-	end
+    end
 
 	function module:KitCheck()
 		local kitNow, kitMax = 0, 1
@@ -1092,7 +1094,11 @@ do
 				if text and text ~= "" then
 					if text:find(L_EncName) then
 						kitNow = kitNow + 1
-						timeLeft = text:match("%(([^%)]+)%)[^%)]*$")
+                        if ExRT.locale == "zhCN" then
+                            timeLeft = text:match("（([^）]-)）$") --abyui fix
+                        else
+                            timeLeft = text:match("%(([^%)]+)%)[^%)]*$")
+                        end
 						break
 					end
 				end

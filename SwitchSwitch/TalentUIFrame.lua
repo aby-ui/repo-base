@@ -202,7 +202,7 @@ function TalentUIFrame:OnRenameTextChanged(frame)
     --Check if text is not nill or not empty
     if(data ~= nil and data ~= '') then
 
-        if(data:lower() == addon.CustomProfileName:lower()) then
+        if(data:lower() == addon.CustomProfileName:lower() or data:lower() == "custom") then
             --Text is "custom" so disable the Create button and give a warning
             frame:GetParent().text:SetText(addon.L["Rename profile"] .. "\n\n|cFFFF0000" .. addon.L["'Custom' cannot be used as name!"])
             frame:GetParent().button1:Disable()
@@ -326,6 +326,13 @@ function TalentUIFrame:CreateTalentFrameUI()
             self.insertedFrame:SetParent(self)
             self.editBox:ClearAllPoints()
             self.editBox:SetPoint("TOP", self, "TOP", 0, -38);
+            do --abyui
+                local last = addon.lastSelectedProfile
+                if last and last ~= addon.CustomProfileName and last ~= "custom" then
+                    self.editBox:SetText(last)
+                    self.editBox:HighlightText()
+                end
+            end
             self.insertedFrame:ClearAllPoints()
             self.insertedFrame:SetPoint("BOTTOM", self, "BOTTOM", -self.insertedFrame.text:GetWidth()*0.5, 40)
             self.insertedFrame:Show()
@@ -414,7 +421,7 @@ function TalentUIFrame:NewProfileOnTextChange(frame)
     --Check if text is not nill or not empty
     if(data ~= nil and data ~= '') then
 
-        if(data:lower() == addon.CustomProfileName:lower()) then
+        if(data:lower() == addon.CustomProfileName:lower() or data:lower() == "custom") then
             --Text is "custom" so disable the Create button and give a warning
             frame:GetParent().text:SetText(addon.L["Create/Ovewrite a profile"] .. "\n\n|cFFFF0000" .. addon.L["'Custom' cannot be used as name!"])
             frame:GetParent().button1:Disable()
@@ -494,7 +501,7 @@ function TalentUIFrame.UpdateUpperFrame(self, elapsed)
             UIDropDownMenu_SetText(self.DropDownTalents, addon.sv.config.SelectedTalentsProfile)
         end
         -- Save button 
-        if(addon.sv.config.SelectedTalentsProfile == addon.CustomProfileName) then
+        if(addon.sv.config.SelectedTalentsProfile == addon.CustomProfileName or addon.sv.config.SelectedTalentsProfile == "custom") then
             self.NewButton:Show()
             self.NewButton:Enable()
         else

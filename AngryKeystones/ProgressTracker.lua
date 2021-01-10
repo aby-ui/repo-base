@@ -10,7 +10,7 @@ local lastAmount
 local lastAmountTime
 local lastQuantity
 
-local REAPING_AFFIX_ID = 117
+local PRIDEFUL_AFFIX_ID = 121
 
 local progressPresets = {}
 
@@ -208,17 +208,17 @@ local function ProgressBar_SetValue(self, percent)
 			end
 		end
 
-		local isReapingActive = false
-		local _, affixes, _ = C_ChallengeMode.GetActiveKeystoneInfo()
+		local isPridefulActive = false
+		local _, affixes = C_ChallengeMode.GetActiveKeystoneInfo()
 		if affixes then
 			for i = 1, #affixes do
-				if affixes[i] == REAPING_AFFIX_ID then
-					isReapingActive = true
+				if affixes[i] == PRIDEFUL_AFFIX_ID then
+					isPridefulActive = true
 				end
 			end
 		end
 
-		if isReapingActive and currentQuantity < totalQuantity then
+		if isPridefulActive and currentQuantity < totalQuantity then
 			if not self.ReapingFrame then
 				local reapingFrame = CreateFrame("Frame", nil, self)
 				reapingFrame:SetSize(56, 16)
@@ -226,9 +226,9 @@ local function ProgressBar_SetValue(self, percent)
 		
 				reapingFrame.Icon = CreateFrame("Frame", nil, reapingFrame, "ScenarioChallengeModeAffixTemplate")
 				reapingFrame.Icon:SetPoint("LEFT", reapingFrame, "LEFT", 0, 0)
-				reapingFrame.Icon:SetSize(14, 14)
-				reapingFrame.Icon.Portrait:SetSize(12, 12)
-				reapingFrame.Icon:SetUp(REAPING_AFFIX_ID)
+				reapingFrame.Icon:SetSize(16, 16)
+				reapingFrame.Icon.Portrait:SetSize(16, 16)
+				reapingFrame.Icon:SetUp(PRIDEFUL_AFFIX_ID)
 
 				reapingFrame.Text = reapingFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 				reapingFrame.Text:SetPoint("LEFT", reapingFrame.Icon, "RIGHT", 4, 0)

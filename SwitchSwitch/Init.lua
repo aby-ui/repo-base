@@ -95,6 +95,12 @@ function addon:eventHandler(event, arg1)
         self:RegisterEvent("AZERITE_ESSENCE_UPDATE")
         self:RegisterEvent("PLAYER_TALENT_UPDATE")
     elseif(event == "PLAYER_TALENT_UPDATE" or event == "AZERITE_ESSENCE_UPDATE") then
+        do --修改方案前必然修改天赋,记录下此时的方案即可
+            local last = addon.sv.config.SelectedTalentsProfile
+            if last and last ~= addon.CustomProfileName and last ~= "custom" then
+                addon.lastSelectedProfile = last
+            end
+        end
         addon.sv.config.SelectedTalentsProfile = addon:GetCurrentProfileFromSaved()
     elseif(event == "PLAYER_ENTERING_WORLD") then
         --Check if we actually switched map from last time

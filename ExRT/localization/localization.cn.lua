@@ -254,7 +254,7 @@ L.RaidCheckHeadRune = "符文"
 L.RaidCheckHeadVantus = "凡图斯"
 L.RaidCheckOnlyRL = "仅团队领袖可用"
 L.RaidCheckSortByClass = "根据职业排序"
-L.RaidCheckReinforced = "增强 %("
+L.RaidCheckReinforced = "加固（%+[0-9]+ " --加固（+32 耐力）（2小时）
 
 L.marksbarstart = "清除"
 L.marksbardel = "删除"

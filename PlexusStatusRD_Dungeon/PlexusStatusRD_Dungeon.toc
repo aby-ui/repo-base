@@ -1,0 +1,22 @@
+## Interface: 90002
+## Version: v9.1.6
+## Title: PlexusStatusDungeonDebuff
+## Notes: Complete Debuff List Up To BfA
+## Author: Doadin
+## Grid Author: Pastamancer & Maia
+## Dependencies: PlexusStatusRaidDebuff
+## OptionalDeps: Grid, Plexus
+## X-Curse-Project-ID: 83874
+
+ShadowLands/HallsofAtonement.lua
+ShadowLands/MistsofTirnaScithe.lua
+ShadowLands/Plaguefall.lua
+ShadowLands/SanguineDepths.lua
+ShadowLands/SpiresofAscension.lua
+ShadowLands/TheaterofPain.lua
+ShadowLands/TheNecroticWake.lua
+ShadowLands/TheOtherSide.lua
+
+
+## Title: |cff880303[爱不易]|r Grid 团队减益五人本9.0
+## X-Vendor: AbyUI
