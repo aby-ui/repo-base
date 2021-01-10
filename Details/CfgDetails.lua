@@ -19,7 +19,7 @@ U1RegisterAddon("Details", {
     {
         text = "配置选项",
         callback = function(cfg, v, loading)
-            local _detalhes = _G._detalhes
+            local _detalhes, _ = _G._detalhes, nil
             local lower_instance = _detalhes:GetLowerInstanceNumber()
             if (not lower_instance) then
                 local instance = _detalhes:GetInstance (1)

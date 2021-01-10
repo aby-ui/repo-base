@@ -5,7 +5,7 @@ local _, addon = ...
 
 addon.G = {}
 addon.G.SwitchingTalents = false
-addon.version = "1.66"
+addon.version = "1.68"
 addon.CustomProfileName = "custom"
 
 --##########################################################################################################################
@@ -250,7 +250,8 @@ function addon:CanChangeTalents()
         -- Still mind tomes
         324029,
         324028,
-        321923,		
+        321923,
+        -- Time to reflect
         325012, --格里恩随从
     }
     local debuffsLookingFor =
@@ -380,11 +381,11 @@ function addon:SetTalents(profileName)
         return;
     end
 
-    local currentTalentPorfile = addon:GetTalentTable(profileName)
+    local currentTalentProfile = addon:GetTalentTable(profileName)
 
     --Learn talents normal talents
-    if(currentTalentPorfile.pva ~= nil) then
-        for i, talentTbl in ipairs(currentTalentPorfile.pva) do
+    if(currentTalentProfile.pva ~= nil) then
+        for i, talentTbl in ipairs(currentTalentProfile.pva) do
             --Get the current talent info to see if the talent id changed
             local talent = GetTalentInfo(talentTbl.tier, talentTbl.column, 1)
             if talentTbl.tier > 0 and talentTbl.column > 0  then
@@ -397,9 +398,9 @@ function addon:SetTalents(profileName)
         end
     end
 
-    if(currentTalentPorfile.pvp ~= nil) then
+    if(currentTalentProfile.pvp ~= nil) then
         --Leanr pvp talent
-        for i, pvpTalentTabl in ipairs(currentTalentPorfile.pvp) do
+        for i, pvpTalentTabl in ipairs(currentTalentProfile.pvp) do
             if(pvpTalentTabl.unlocked and pvpTalentTabl.id ~= nil) then
                 --Make sure the talent is not used anywhere else, set to random if used in anothet tier
                 for i2 = 0, 3 do
@@ -416,19 +417,19 @@ function addon:SetTalents(profileName)
     end
 
 
-    if(currentTalentPorfile.heart_of_azeroth_essences ~= nil and addon:HasHeartOfAzerothEquipped()) then
+    if(currentTalentProfile.heart_of_azeroth_essences ~= nil and addon:HasHeartOfAzerothEquipped()) then
         --Learn essences
-        for milestoneID, essenceID in pairs(currentTalentPorfile.heart_of_azeroth_essences) do
+        for milestoneID, essenceID in pairs(currentTalentProfile.heart_of_azeroth_essences) do
             C_AzeriteEssence.ActivateEssence(essenceID, milestoneID)
         end
     end
 
     --Change gear set if available
-    if(currentTalentPorfile.gearSet ~= nil) then
-        addon:Debug("ID: ", currentTalentPorfile.gearSet)
-        local name, iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(currentTalentPorfile.gearSet)
+    if(currentTalentProfile.gearSet ~= nil) then
+        addon:Debug("ID: ", currentTalentProfile.gearSet)
+        local name, iconFileID, setID, isEquipped, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(currentTalentProfile.gearSet)
         if(not isEquipped) then
-            C_EquipmentSet.UseEquipmentSet(currentTalentPorfile.gearSet)
+            C_EquipmentSet.UseEquipmentSet(currentTalentProfile.gearSet)
         end
     end
 

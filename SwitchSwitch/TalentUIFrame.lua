@@ -19,7 +19,7 @@ function TalentUIFrame:CreateEditUI()
     editorFrame:SetWidth(250)
     editorFrame:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPRIGHT")
     editorFrame:SetPoint("BOTTOMLEFT", PlayerTalentFrame, "BOTTOMRIGHT")
-    editorFrame.Title:SetText(addon.L["Talent Porfile Editor"])
+    editorFrame.Title:SetText(addon.L["Talent Profile Editor"])
     editorFrame:HookScript("OnHide", function(self) 
         --Save all the data modified
         addon:Debug("Closed editor, saving data...")
@@ -249,7 +249,7 @@ function TalentUIFrame:CreateTalentFrameUI()
     UpperTalentsUI:SetPoint("BOTTOMRIGHT", PlayerTalentFrameTalents, "TOPRIGHT", -110, 2)
 
     --Set variable for update
-    UpperTalentsUI.LastPorfileUpdateName = "Custom"
+    UpperTalentsUI.LastProfileUpdateName = "Custom"
 
     --Set scripts for the fram
     UpperTalentsUI:SetScript("OnUpdate", TalentUIFrame.UpdateUpperFrame)
@@ -483,9 +483,9 @@ end
 function TalentUIFrame.UpdateUpperFrame(self, elapsed)
     --Just to make sure we dont update all every frame, as 90% of the time it will not change
     self.LastUpdateTimerPassed = (self.LastUpdateTimerPassed or 1) + elapsed
-    if(self.LastPorfileUpdateName ~= addon.sv.config.SelectedTalentsProfile or self.LastUpdateTimerPassed >= 1) then
+    if(self.LastProfileUpdateName ~= addon.sv.config.SelectedTalentsProfile or self.LastUpdateTimerPassed >= 1) then
         --Update the local variable to avoud updating every frame
-        self.LastPorfileUpdateName = addon.sv.config.SelectedTalentsProfile
+        self.LastProfileUpdateName = addon.sv.config.SelectedTalentsProfile
         self.LastUpdateTimerPassed = 0
         --Update the UI elements
         UIDropDownMenu_SetSelectedValue(self.DropDownTalents, addon.sv.config.SelectedTalentsProfile)

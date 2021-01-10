@@ -58,9 +58,19 @@ L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000不是|r玩家名字/伺服�
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00額外選項:|r %s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00額外選項:|r 無"
 L["10 Man Raid"] = "10人團隊"
+--[[Translation missing --]]
+L["10 Player Raid (Heroic)"] = "10 Player Raid (Heroic)"
+--[[Translation missing --]]
+L["10 Player Raid (Normal)"] = "10 Player Raid (Normal)"
 L["20 Man Raid"] = "20人團隊"
 L["25 Man Raid"] = "25人團隊"
+--[[Translation missing --]]
+L["25 Player Raid (Heroic)"] = "25 Player Raid (Heroic)"
+--[[Translation missing --]]
+L["25 Player Raid (Normal)"] = "25 Player Raid (Normal)"
 L["40 Man Raid"] = "40人團隊"
+--[[Translation missing --]]
+L["40 Player Raid"] = "40 Player Raid"
 L["5 Man Dungeon"] = "5人副本"
 L["Abbreviate"] = "縮寫"
 L["AbbreviateLargeNumbers (Blizzard)"] = "縮寫大數字 (暴雪)"
@@ -293,6 +303,14 @@ L["Down, then Left"] = "先下後左"
 L["Down, then Right"] = "先下後右"
 L["Drain"] = "抽取資源"
 L["Dropdown Menu"] = "下拉選單"
+--[[Translation missing --]]
+L["Dungeon (Heroic)"] = "Dungeon (Heroic)"
+--[[Translation missing --]]
+L["Dungeon (Mythic)"] = "Dungeon (Mythic)"
+--[[Translation missing --]]
+L["Dungeon (Normal)"] = "Dungeon (Normal)"
+--[[Translation missing --]]
+L["Dungeon (Timewalking)"] = "Dungeon (Timewalking)"
 L["Dungeons"] = "地城"
 L["Durability Damage"] = "耐久度傷害"
 L["Durability Damage All"] = "耐久性傷害所有"
@@ -352,10 +370,8 @@ L["Fallback"] = "Fallback"
 L["Fallback Icon"] = "缺少圖示時要顯示的圖示"
 L["False"] = "否 (False)"
 L["Fankriss the Unyielding"] = "不屈的范克里斯"
---[[Translation missing --]]
-L["Fetch Legendary Power"] = "Fetch Legendary Power"
---[[Translation missing --]]
-L["Fetches the name and icon of the Legendary Power that matches this bonus id."] = "Fetches the name and icon of the Legendary Power that matches this bonus id."
+L["Fetch Legendary Power"] = "取得傳說能力"
+L["Fetches the name and icon of the Legendary Power that matches this bonus id."] = "取得符合獎勵 ID 的傳說能力名稱和圖示。"
 L["Filter messages with format <message>"] = "使用 <訊息內容> 的格式來過濾訊息"
 L["Fire Resistance"] = "火焰抗性"
 L["Firemaw"] = "費爾默"
@@ -469,16 +485,16 @@ L["Inherited"] = "繼承"
 L["Instakill"] = "秒殺"
 L["Instance"] = "副本"
 L["Instance Difficulty"] = "副本難度"
+--[[Translation missing --]]
+L["Instance Size Type"] = "Instance Size Type"
 L["Instance Type"] = "副本類型"
 L["Instructor Razuvious"] = "講師拉祖維斯"
 L["Insufficient Resources"] = "資源不足"
 L["Intellect"] = "智力"
-L["Interrupt"] = "中斷"
---[[Translation missing --]]
-L["Interrupt School"] = "Interrupt School"
---[[Translation missing --]]
-L["Interrupted School Text"] = "Interrupted School Text"
-L["Interruptible"] = "可中斷"
+L["Interrupt"] = "打斷"
+L["Interrupt School"] = "打斷類型"
+L["Interrupted School Text"] = "已打斷的類型文字"
+L["Interruptible"] = "可打斷"
 L["Inverse"] = "反向"
 L["Inverse Pet Behavior"] = "反向寵物行為"
 L["Is Away from Keyboard"] = "暫離"
@@ -486,6 +502,14 @@ L["Is Exactly"] = "完全符合"
 L["Is Moving"] = "正在移動"
 L["Is Off Hand"] = "副手"
 L["is useable"] = "可使用"
+--[[Translation missing --]]
+L["Island Expedition (Heroic)"] = "Island Expedition (Heroic)"
+--[[Translation missing --]]
+L["Island Expedition (Mythic)"] = "Island Expedition (Mythic)"
+--[[Translation missing --]]
+L["Island Expedition (Normal)"] = "Island Expedition (Normal)"
+--[[Translation missing --]]
+L["Island Expeditions (PvP)"] = "Island Expeditions (PvP)"
 L["It might not work correctly on Classic!"] = "在經典版可能無法正常運作!"
 L["It might not work correctly on Retail!"] = "在正式版可能無法正常運作!"
 L["It might not work correctly with your version!"] = "在你所使用的版本可能無法正常運作!"
@@ -519,6 +543,8 @@ L["Left, then Down"] = "先左後下"
 L["Left, then Up"] = "先左後上"
 L["Legacy Aura (disabled)"] = "舊的提醒效果 (已停用)"
 L["Legacy Aura (disabled):"] = "舊的提醒效果 (已停用):"
+--[[Translation missing --]]
+L["Legacy Looking for Raid"] = "Legacy Looking for Raid"
 L["Legacy RGB Gradient"] = "舊的 RGB 漸層"
 L["Legacy RGB Gradient Pulse"] = "舊的 RGB 漸層脈衝"
 L["Length"] = "長度"
@@ -527,6 +553,8 @@ L["Limited"] = "有限"
 L["Lines & Particles"] = "直線 & 粒子"
 L["Load Conditions"] = "載入條件"
 L["Loatheb"] = "憎惡體"
+--[[Translation missing --]]
+L["Looking for Raid"] = "Looking for Raid"
 L["Loop"] = "重複循環"
 L["Lost"] = "失去"
 L["Low Damage"] = "低傷害"
@@ -583,6 +611,8 @@ L["Mouse Cursor"] = "滑鼠游標"
 L["Movement Speed (%)"] = "移動速度 (%)"
 L["Movement Speed Rating"] = "移動速度分數"
 L["Multi-target"] = "多目標"
+--[[Translation missing --]]
+L["Mythic Keystone"] = "Mythic Keystone"
 L["Mythic+ Affix"] = "傳奇+ 詞綴"
 L["Name"] = "名稱"
 L["Name of Caster's Target"] = "施法者目標的名字"
@@ -651,6 +681,14 @@ L["Parry Rating"] = "架招分數"
 L["Party"] = "隊伍"
 L["Party Kill"] = "隊伍擊殺"
 L["Patchwerk"] = "縫補者"
+--[[Translation missing --]]
+L["Path of Ascension: Courage"] = "Path of Ascension: Courage"
+--[[Translation missing --]]
+L["Path of Ascension: Humility"] = "Path of Ascension: Humility"
+--[[Translation missing --]]
+L["Path of Ascension: Loyalty"] = "Path of Ascension: Loyalty"
+--[[Translation missing --]]
+L["Path of Ascension: Wisdom"] = "Path of Ascension: Wisdom"
 L["Paused"] = "已暫停"
 L["Periodic Spell"] = "週期法術"
 L["Personal Resource Display"] = "個人資源條"
@@ -702,6 +740,14 @@ L["Queued Action"] = "佇列動作"
 L["Radius"] = "範圍"
 L["Ragnaros"] = "拉格納羅斯"
 L["Raid"] = "團隊"
+--[[Translation missing --]]
+L["Raid (Heroic)"] = "Raid (Heroic)"
+--[[Translation missing --]]
+L["Raid (Mythic)"] = "Raid (Mythic)"
+--[[Translation missing --]]
+L["Raid (Normal)"] = "Raid (Normal)"
+--[[Translation missing --]]
+L["Raid (Timewalking)"] = "Raid (Timewalking)"
 L["Raid Role"] = "團隊職責"
 L["Raid Warning"] = "團隊警告"
 L["Raids"] = "團隊"
@@ -774,6 +820,10 @@ L["Sapphiron"] = "薩菲隆"
 L["Say"] = "說"
 L["Scale"] = "縮放大小"
 L["Scenario"] = "事件"
+--[[Translation missing --]]
+L["Scenario (Heroic)"] = "Scenario (Heroic)"
+--[[Translation missing --]]
+L["Scenario (Normal)"] = "Scenario (Normal)"
 L["Screen/Parent Group"] = "螢幕/所屬群組"
 L["Second"] = "第二個"
 L["Second Value of Tooltip Text"] = "滑鼠提示文字中的第二個值"
@@ -836,8 +886,7 @@ L["Space"] = "間距"
 L["Spacing"] = "間距"
 L["Spark"] = "亮點"
 L["Spec Role"] = "專精角色"
---[[Translation missing --]]
-L["Specific Type"] = "Specific Type"
+L["Specific Type"] = "指定類型"
 L["Specific Unit"] = "指定單位"
 L["Spell"] = "法術"
 L["Spell (Building)"] = "法術 (建築物)"
@@ -929,6 +978,8 @@ L["Top"] = "上"
 L["Top Left"] = "上左"
 L["Top Right"] = "上右"
 L["Top to Bottom"] = "上到下"
+--[[Translation missing --]]
+L["Torghast"] = "Torghast"
 L["Total"] = "總共"
 L["Total Duration"] = "總共持續時間"
 L["Total Experience"] = "全部經驗值"
@@ -987,7 +1038,13 @@ L["Versatility Rating"] = "臨機應變分數"
 L["Version: "] = "版本: "
 L["Viscidus"] = "維希度斯"
 L["Visibility"] = "顯示"
+--[[Translation missing --]]
+L["Visions of N'Zoth"] = "Visions of N'Zoth"
 L["War Mode Active"] = "開啟戰爭模式"
+--[[Translation missing --]]
+L["Warfront (Heroic)"] = "Warfront (Heroic)"
+--[[Translation missing --]]
+L["Warfront (Normal)"] = "Warfront (Normal)"
 L["Warning"] = "警告"
 L["Warning for unknown aura:"] = "未知的提醒效果警告:"
 L["Warning: Full Scan auras checking for both name and spell id can't be converted."] = "警告: 完整掃描光環會同時檢查名稱和法術 ID，無法轉換。"

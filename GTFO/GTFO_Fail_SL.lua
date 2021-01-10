@@ -206,6 +206,18 @@ GTFO.SpellID["330642"] = {
   sound = 3;
 };
 
+GTFO.SpellID["295985"] = {
+  --desc = "Ground Crush (The Grand Malleare)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["332655"] = {
+  --desc = "Cantrip of Flame (Scrivener Lenua)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 
 --- **********************
 --- * Halls of Atonement *
@@ -910,6 +922,11 @@ GTFO.SpellID["345425"] = {
   sound = 3;
 };
 
+GTFO.SpellID["341441"] = {
+  --desc = "Ground Smash (Hulking Gargon)";
+  sound = 3;
+};
+
 GTFO.SpellID["341304"] = {
   --desc = "Mastercrafted Gamesman's Snare (Nathrian Gargon Rider)";
   sound = 3;
@@ -934,7 +951,12 @@ GTFO.SpellID["342777"] = {
 };
 
 GTFO.SpellID["329256"] = {
-  --desc = "Rift Blast (Rift Blast Portal)";
+  --desc = "Rift Blast (Artificer Xy'mox)";
+  sound = 3;
+};
+
+GTFO.SpellID["329107"] = {
+  --desc = "Extinction (Artificer Xy'mox)";
   sound = 3;
 };
 

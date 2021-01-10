@@ -323,9 +323,11 @@ CATEGORY = {
             [265] = true,
             [266] = true,
             [267] = true,
-            [268] = true,
+            --[269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
+            --[270] = true, --暗影国度
         },
         activities = {
+            [723] = true, --世界首领
         },
     }
 }

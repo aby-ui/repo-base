@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210103152359")
+mod:SetRevision("20210108022347")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -589,10 +589,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 172858 then--stone-legion-goliath
-		if castsPerGUID[args.sourceGUID] then
-			timerRavenousFeastCD:Stop(castsPerGUID[args.sourceGUID], args.destGUID)
-			timerRavenousFeastCD:Stop(castsPerGUID[args.sourceGUID]+1, args.destGUID)
-		end
+		timerRavenousFeastCD:Stop((castsPerGUID[args.sourceGUID] or 0)+1, args.destGUID)
 	elseif cid == 173280 then--stone-legion-skirmisher
 		timerWickedSlaughterCD:Stop(args.destGUID)
 	elseif cid == 168112 then--Kaal

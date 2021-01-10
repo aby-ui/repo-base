@@ -4,4 +4,5 @@
 	<Include file="TheWarlordsOfDraenor\embeds.xml"/>
 	<Include file="Legion\embeds.xml"/>
 	<Include file="BattleForAzeroth\embeds.xml"/>
+	<Include file="ShadowLands\embeds.xml"/>
 </Ui>

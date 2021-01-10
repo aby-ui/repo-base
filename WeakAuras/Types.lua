@@ -1972,6 +1972,84 @@ Private.instance_types = {
   arena = L["Arena"]
 }
 
+Private.instance_difficulty_types = {
+
+}
+
+if not WeakAuras.IsClassic() then
+  -- Fill out instance_difficulty_types automatically.
+  -- Unfourtunately the names BLizzard gives are not entirely unique,
+  -- so try hard to disambiguate them via the type, and if nothing works by
+  -- including the plain id.
+
+  local unused = {}
+
+  local instance_difficulty_names = {
+    [1] = L["Dungeon (Normal)"],
+    [2] = L["Dungeon (Heroic)"],
+    [3] = L["10 Player Raid (Normal)"],
+    [4] = L["25 Player Raid (Normal)"],
+    [5] = L["10 Player Raid (Heroic)"],
+    [6] = L["25 Player Raid (Heroic)"],
+    [7] = L["Legacy Looking for Raid"],
+    [8] = L["Mythic Keystone"],
+    [9] = L["40 Player Raid"],
+    [11] = L["Scenario (Heroic)"],
+    [12] = L["Scenario (Normal)"],
+    [14] = L["Raid (Normal)"],
+    [15] = L["Raid (Heroic)"],
+    [16] = L["Raid (Mythic)"],
+    [17] = L["Looking for Raid"],
+    [18] = unused, -- Event Raid
+    [19] = unused, -- Event Party
+    [20] = unused, -- Event Scenario
+    [23] = L["Dungeon (Mythic)"],
+    [24] = L["Dungeon (Timewalking)"],
+    [25] = unused, -- World PvP Scenario
+    [29] = unused, -- PvEvP Scenario
+    [30] = unused, -- Event Scenario
+    [32] = unused, -- World PvP Scenario
+    [33] = L["Raid (Timewalking)"],
+    [34] = unused, -- PvP
+    [38] = L["Island Expedition (Normal)"],
+    [39] = L["Island Expedition (Heroic)"],
+    [40] = L["Island Expedition (Mythic)"],
+    [45] = L["Island Expeditions (PvP)"],
+    [147] = L["Warfront (Normal)"],
+    [149] = L["Warfront (Heroic)"],
+    [152] = L["Visions of N'Zoth"],
+    [150] = unused, -- Normal Party
+    [151] = unused, -- LfR
+    [153] = unused, -- Teeming Islands
+    [167] = L["Torghast"],
+    [168] = L["Path of Ascension: Courage"],
+    [169] = L["Path of Ascension: Loyalty"],
+    [171] = L["Path of Ascension: Humility"],
+    [170] = L["Path of Ascension: Wisdom"],
+    [172] = unused, -- World Boss
+  }
+
+  local names = {}
+  local ids = {}
+
+  for i = 1, 200 do
+    local name, type = GetDifficultyInfo(i)
+    if name then
+      if instance_difficulty_names[i] then
+        if instance_difficulty_names[i] ~= unused then
+          Private.instance_difficulty_types[i] = instance_difficulty_names[i]
+        end
+      else
+        Private.instance_difficulty_types[i] = name
+        WeakAuras.prettyPrint(string.format("Unknown difficulty id found. Please report as a bug: %s %s %s", i, name, type))
+      end
+    end
+  end
+
+
+end
+
+
 Private.group_types = {
   solo = L["Not in Group"],
   group = L["In Group"],

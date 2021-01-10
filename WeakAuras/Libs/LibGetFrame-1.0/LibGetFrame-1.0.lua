@@ -144,13 +144,14 @@ end
 
 local function GetUnitFrames(target, ignoredFrames)
     if not UnitExists(target) then
-        if type(target) == "string" and target:find("Player") then
+        if type(target) ~= "string" then return end
+        if target:find("Player") then
             target = select(6, GetPlayerInfoByGUID(target))
         else
             target = target:gsub(" .*", "")
-            if not UnitExists(target) then
-                return
-            end
+        end
+        if not UnitExists(target) then
+            return
         end
     end
 

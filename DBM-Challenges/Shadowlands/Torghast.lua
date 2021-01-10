@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210103173443")
+mod:SetRevision("20210106201501")
 
 mod:RegisterCombat("scenario", 2162)--1911-1912 are outdoor areas
 mod.noStatistics = true
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608 330438 330471 294401 294517 296839 297020 242391 330573 332165",
+	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608 330438 330471 294401 294517 296839 297020 242391 330573 332165 258938 329422 329423",
 	"SPELL_AURA_APPLIED 304093 277040",
 	"SPELL_AURA_APPLIED_DOSE 303678",
 	"SPELL_AURA_REMOVED 277040",
@@ -47,13 +47,13 @@ local specWarnCurseofFrailtyDispel	= mod:NewSpecialWarningDispel(294526, "Remove
 --local yellScorchedFeet			= mod:NewYell(315385)
 local specWarnNecroticBolt			= mod:NewSpecialWarningInterrupt(288210, "HasInterrupt", nil, nil, 1, 2)
 local specWarnShadowBoltVolley		= mod:NewSpecialWarningInterrupt(294362, "HasInterrupt", nil, nil, 1, 2)
-local specWarnBindofFallen			= mod:NewSpecialWarningInterrupt(304075, "HasInterrupt", nil, nil, 3, 2)
+local specWarnBindofFallen			= mod:NewSpecialWarningInterrupt(304075, false, nil, 2, 1, 2)
 local specWarnConflagrate			= mod:NewSpecialWarningInterrupt(270248, "HasInterrupt", nil, nil, 1, 2)
 local specWarnFireballVolley		= mod:NewSpecialWarningInterrupt(270348, "HasInterrupt", nil, nil, 1, 2)
-local specWarnTerrifyingRoar		= mod:NewSpecialWarningInterrupt(263085, "HasInterrupt", nil, nil, 3, 2)
+local specWarnTerrifyingRoar		= mod:NewSpecialWarningInterrupt(263085, "HasInterrupt", nil, nil, 1, 2)
 local specWarnCurseofFrailty		= mod:NewSpecialWarningInterrupt(294526, "HasInterrupt", nil, nil, 1, 2)
+local specWarnFearsomeHowl			= mod:NewSpecialWarningInterrupt(298844, "HasInterrupt", nil, 2, 1, 2)
 local specWarnFearsomeShriek		= mod:NewSpecialWarningInterrupt(332165, "HasInterrupt", nil, nil, 1, 2)
-local specWarnFearsomeHowl			= mod:NewSpecialWarningInterrupt(298844, "HasInterrupt", nil, nil, 1, 2)
 local specWarnPhasingRoar			= mod:NewSpecialWarningInterrupt(294517, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDeathBlast			= mod:NewSpecialWarningInterrupt(296839, "HasInterrupt", nil, nil, 1, 2)
 local specWarnAccursedStrength		= mod:NewSpecialWarningInterrupt(294165, "HasInterrupt", nil, nil, 1, 2)
@@ -172,7 +172,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 330118 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnWitheringRoar:Show(args.sourceName)
 		specWarnWitheringRoar:Play("kickcast")
-	elseif spellId == 258935 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+	elseif (spellId == 258935 or spellId == 258938 or spellId == 329422 or spellId == 329423) and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnInnerFlames:Show(args.sourceName)
 		specWarnInnerFlames:Play("kickcast")
 	elseif (spellId == 297018 or spellId == 298844 or spellId == 330438) and self:CheckInterruptFilter(args.sourceGUID, false, true) then

@@ -53,6 +53,7 @@
     },
     {
         text = "重置所有控制台设定",
+        confirm = "会恢复所有设置到默认状态，此操作无法恢复，是否确定",
         callback = function(cfg, v, loading)
             TidyPlatesOptions = nil;
             TidyPlatesHubCache = nil;

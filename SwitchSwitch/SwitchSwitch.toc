@@ -1,7 +1,7 @@
 ## Interface: 90002
 ## Title: SwitchSwitch
 ## Author: Geloch, Riukka (Sanguino - EU Horde)
-## Version: 1.66
+## Version: 1.68
 ## Notes: Allows you to creater talents profiles and switch between them quickly, also you can configure it to ask you in X situation if you want to switch to another talent set.
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: SwitchSwitchTalents, SwitchSwitchConfig

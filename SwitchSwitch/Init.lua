@@ -108,7 +108,7 @@ function addon:eventHandler(event, arg1)
         --Check if we are in an instance
         local inInstance, instanceType = IsInInstance()
         if(inInstance) then
-            local porfileNameToUse = addon.sv.config.autoSuggest[instanceType]
+            local profileNameToUse = addon.sv.config.autoSuggest[instanceType]
 
             addon:Debug("Instance type: " .. instanceType)
 
@@ -121,15 +121,15 @@ function addon:eventHandler(event, arg1)
                     [2] = "HM",
                     [23] = "MM"
                 }
-                porfileNameToUse = addon.sv.config.autoSuggest[instanceType][difficultyByID[difficulty]]
+                profileNameToUse = addon.sv.config.autoSuggest[instanceType][difficultyByID[difficulty]]
             end
-            --Check if we are already in the current porfile
-            if(porfileNameToUse ~= nil and porfileNameToUse ~= "") then
-                if(not addon:IsCurrentTalentProfile(porfileNameToUse)) then 
-                    addon:Debug("Atuo suggest changing to profile: " .. porfileNameToUse)
-                    addon.GlobalFrames:ToggleSuggestionFrame(porfileNameToUse)
+            --Check if we are already in the current profile
+            if(profileNameToUse ~= nil and profileNameToUse ~= "") then
+                if(not addon:IsCurrentTalentProfile(profileNameToUse)) then 
+                    addon:Debug("Atuo suggest changing to profile: " .. profileNameToUse)
+                    addon.GlobalFrames:ToggleSuggestionFrame(profileNameToUse)
                 else
-                    addon:Debug("Profile " .. porfileNameToUse .. " is already in use.")
+                    addon:Debug("Profile " .. profileNameToUse .. " is already in use.")
                 end
             else
                 addon:Debug("No profile set for this type of instance.")
