@@ -1,8 +1,8 @@
-local Factory, _, T = {}, ...
-local C = C_Garrison
+local Factory, AN, T = {}, ...
+local C, EV = C_Garrison, T.Evie
 local PROGRESS_MIN_STEP = 0.2
 local CovenKit = "NightFae"
-local currencyMeterFrame
+local currencyMeterFrame, tooltipShopWatch
 
 local function CreateObject(otype, ...)
 	return assert(Factory[otype], otype)(...)
@@ -42,9 +42,29 @@ local function GetTimeStringFromSeconds(sec, shorter, roundUp, disallowSeconds)
 		return (shorter and COOLDOWN_DURATION_DAYS or INT_GENERAL_DURATION_DAYS):format(h(sec/84600))
 	end
 end
+local function CommonTooltip_ShopWatch()
+	if not tooltipShopWatch or GameTooltip:IsForbidden() or GameTooltip:GetOwner() ~= tooltipShopWatch then
+		tooltipShopWatch = nil
+		return "remove"
+	end
+	if IsModifiedClick("COMPAREITEMS") or GetCVarBool("alwaysCompareItems") then
+		GameTooltip_ShowCompareItem(GameTooltip, GameTooltip)
+	else
+		GameTooltip_HideShoppingTooltips(GameTooltip)
+	end
+end
+local function CommonTooltip_ArmShopWatch(self, item)
+	if IsEquippableItem(item) and tooltipShopWatch ~= self then
+		if not tooltipShopWatch then
+			EV.MODIFIER_STATE_CHANGED = CommonTooltip_ShopWatch
+		end
+		tooltipShopWatch = self
+	end
+end
 local function CommonTooltip_OnEnter(self)
 	local showCurrencyBar = false
 	GameTooltip:SetOwner(self, self.tooltipAnchor or "ANCHOR_TOP")
+	tooltipShopWatch = not not tooltipShopWatch
 	if type(self.mechanicInfo) == "table" then
 		local ic, m = self.Icon and self.Icon:GetTexture(), self.mechanicInfo
 		ic = ic or m.icon
@@ -64,11 +84,17 @@ local function CommonTooltip_OnEnter(self)
 		end
 	elseif self.itemLink then
 		GameTooltip:SetHyperlink(self.itemLink)
+		CommonTooltip_ArmShopWatch(self, self.itemLink)
 	elseif self.itemID then
 		GameTooltip:SetItemByID(self.itemID)
-	elseif self.tooltipHeader and self.tooltipText then
+		CommonTooltip_ArmShopWatch(self, self.itemID)
+	elseif self.tooltipHeader and (self.tooltipText or self.tooltipCountdownTo) then
 		GameTooltip:AddLine(self.tooltipHeader)
-		GameTooltip:AddLine(self.tooltipText, 1,1,1, 1)
+		if self.tooltipCountdownTo then
+			GameTooltip:AddLine(GetTimeStringFromSeconds(self.tooltipCountdownTo - GetTime(), false, false, true), 1,1,1)
+		else
+			GameTooltip:AddLine(self.tooltipText, 1,1,1, 1)
+		end
 		showCurrencyBar = not not (self.currencyID)
 	elseif self.currencyID then
 		GameTooltip:SetCurrencyByID(self.currencyID)
@@ -102,7 +128,7 @@ local function CommonTooltip_OnEnter(self)
 		GameTooltip:Hide()
 		return
 	end
-	if self.ShowQuantityFromWidgetText then
+	if self.ShowQuantityFromWidgetText and not showCurrencyBar then
 		local w = self[self.ShowQuantityFromWidgetText]
 		local t = w and w:GetText() or ""
 		local c = NORMAL_FONT_COLOR
@@ -146,7 +172,7 @@ local function MissionList_SpawnMissionButton(arr, i)
 	if type(prev) == "table" then
 		local cf = CreateObject("MissionButton", prev:GetParent())
 		arr[i] = cf
-		cf:SetPoint("TOPLEFT", 294*(((i-1)%3)+1)-286, math.floor((i-1)/3) *- 195)
+		cf:SetPoint("TOPLEFT", 292*(((i-1)%3)+1)-284, math.floor((i-1)/3) *- 195)
 		return cf
 	end
 end
@@ -172,7 +198,7 @@ end
 local function Progress_UpdateTimer(self)
 	local now, endTime = GetTime(), self.endTime
 	if endTime <= now then
-		self.Fill:SetWidth(self:GetWidth())
+		self.Fill:SetWidth(math.max(0.01, self:GetWidth()))
 		self:SetScript("OnUpdate", nil)
 		if self.endText then
 			self.Text:SetText(self.endText)
@@ -183,7 +209,7 @@ local function Progress_UpdateTimer(self)
 		self.endTime, self.duration, self.endText, self.nextUp = nil
 	elseif (self.nextUp or 0) < now then
 		local w, d = self:GetWidth(), self.duration
-		local secsLeft = endTime-now
+		local secsLeft = endTime-now-0.5
 		self.Fill:SetWidth(math.max(0.01, w*(1-(endTime-now)/d)))
 		self.nextUp = now + math.min(PROGRESS_MIN_STEP/w * d, 0.01 + secsLeft % (secsLeft < 100 and 1 or 60))
 		if self.showTimeRemaining then
@@ -353,7 +379,7 @@ local RewardButton_SetReward do
 			end
 		elseif rew.itemID then
 			q = rew.quantity == 1 and "" or rew.quantity or ""
-			local _,_,r = GetItemInfo(rew.itemID)
+			local _,_,r = GetItemInfo(rew.itemLink or rew.itemID)
 			self.RarityBorder:SetAtlas(
 				((r or 2) <= 2) and "loottoast-itemborder-green"
 				or r == 3 and "loottoast-itemborder-blue"
@@ -370,6 +396,16 @@ local RewardButton_SetReward do
 		self.itemID, self.itemLink = rew.itemID, rew.itemLink
 		self.tooltipExtra, self.tooltipHeader, self.tooltipText = overfullText, tooltipTitle, tooltipText
 		self.Quantity:SetText(q == 1 and "" or q or "")
+	end
+end
+local function RewardBlock_SetRewards(self, xp, rw)
+	self[1]:SetReward("xp", xp)
+	self[2]:SetReward(rw and rw[1])
+	self[3]:SetReward(rw and rw[2])
+	if self.Container then
+		self.Container:SetWidth(52*(1+(rw and #rw or 0))-2)
+	elseif self.Label then
+		self[1]:GetParent():SetWidth(self.Label:GetStringWidth()+16+32*(1+(rw and #rw or 0)))
 	end
 end
 
@@ -518,26 +554,28 @@ function Factory.CopyBoxUI(parent)
 	t:SetText("2. Kittens.")
 	t:SetTextColor(0.1, 0.1, 0.1)
 	f.SecondInputBoxLabel = t
-	
+
 	f:SetScript("OnKeyDown", function(self, key)
 		f:SetPropagateKeyboardInput(key ~= "ESCAPE")
 		if key == "ESCAPE" then
 			self:Hide()
 		end
 	end)
-	
+
 	t = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-	t:SetPoint("BOTTOM", 0, 30)
+	t:SetPoint("BOTTOM", 0, 34)
 	t:SetWidth(200)
 	t:SetText("Reset")
-	f.ResetButton = t
-	t = CreateFrame("Button", nil, f, "UIPanelCloseButtonNoScripts")
+	t, f.ResetButton = CreateFrame("Button", nil, f, "UIPanelCloseButtonNoScripts"), t
 	t:SetPoint("TOPRIGHT", -8, -8)
 	t:SetScript("OnClick", function()
 		f:Hide()
 	end)
-	f.CloseButton2 = t
-	
+	t, f.CloseButton2 = f:CreateFontString(nil, "OVERLAY", "GameFontBlackSmall"), t
+	t:SetPoint("BOTTOMRIGHT", -16, 14)
+	t:SetText(GetAddOnMetadata(AN, "Title") .. " v" .. GetAddOnMetadata(AN, "Version"))
+	f.VersionText = t
+
 	f.soundKitOnHide = 170568
 	f:SetScript("OnHide", PlaySoundKit_OnHide)
 	
@@ -603,7 +641,7 @@ function Factory.MissionList(parent)
 				self.scrollLastTime, self.scrollLastOffset = c, s
 			end
 		end
-		missionList:SetScript("OnMouseWheel", function(self, d)
+		local function onMouseWheel(self, d)
 			local scrollChild = self:GetScrollChild()
 			local _, _, _, _, y = scrollChild:GetPoint()
 			local snap = math.min(math.max(0, (self.scrollSnap or 0) - d), math.floor(((self.numMissions or 0)-1)/3)-1)
@@ -614,6 +652,17 @@ function Factory.MissionList(parent)
 				self:SetScript("OnUpdate", scrollOnUpdate)
 				self:SetScript("OnHide", scrollFinish)
 				self.ScrollVeil:Show()
+			end
+		end
+		missionList:SetScript("OnMouseWheel", onMouseWheel)
+		missionList:SetScript("OnKeyDown", function(self, k)
+			self:SetPropagateKeyboardInput(true)
+			if k == "PAGEDOWN" or k == "PAGEUP" then
+				self:SetPropagateKeyboardInput(false)
+				onMouseWheel(self, k == "PAGEDOWN" and -2 or 2)
+			elseif k == "HOME" or k == "END" then
+				self:SetPropagateKeyboardInput(false)
+				onMouseWheel(self, k == "END" and -math.huge or math.huge)
 			end
 		end)
 		function missionList:ReturnToTop()
@@ -665,16 +714,20 @@ function Factory.MissionButton(parent)
 	t:SetWidth(262)
 	t:SetPoint("TOP", cf.Name, "BOTTOM", 0, -26)
 	t:SetText("There is no cow level. Our forces, however, have discovered a goat level. Perhaps there's even epic goat loot? You should go rescue the goats. Who knows what would happen if the Horde got there first.")
-	t, cf.Description = cf:CreateFontString(nil, "OVERLAY", "GameFontBlack"), t
-	t:SetPoint("BOTTOMLEFT", cf, 14, 16)
+	t, cf.Description = CreateObject("CommonHoverTooltip", CreateFrame("Button", nil, cf)), t
+	t:SetNormalFontObject(GameFontBlack)
+	t:SetSize(40, 16)
+	t:SetPoint("BOTTOMLEFT", cf, 14, 13)
 	t:SetText("Expired")
+	t:GetFontString():SetJustifyH("LEFT")
+	t:SetMouseClickEnabled(false)
 	cf.ExpireTime = t
 	CreateObject("CountdownText", cf, t)
 
 	t = CreateFrame("Frame", nil, cf)
 	t:SetPoint("TOP", 0, -4)
 	t:SetSize(104, 48)
-	cf.Rewards = {Container=t}
+	cf.Rewards = {Container=t, SetRewards=RewardBlock_SetRewards}
 	for j=1,3 do
 		local rew = CreateObject("RewardFrame", t)
 		rew:SetPoint("LEFT", 52*j-52, 0)
@@ -735,6 +788,7 @@ function Factory.MissionButton(parent)
 				PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_SELECT_MISSION)
 				CovenantMissionFrame:GetMissionPage():Show()
 				CovenantMissionFrame:ShowMission(mi)
+				CovenantMissionFrame.FollowerList:OnShow()
 				self:GetParent():GetParent():GetParent():GetParent():Hide()
 				break
 			end
@@ -774,15 +828,16 @@ function Factory.InlineRewardBlock(parent)
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	t:SetPoint("LEFT")
 	t:SetText("奖励:")
-	f.Rewards, f.RewardsLabel = {}, t
+	f.Rewards = {Label=t}
 	for i=1,3 do
 		t = CreateObject("RewardFrame", f)
 		t:SetSize(28,28)
-		t:SetPoint("LEFT", f.Rewards[i-1] or f.RewardsLabel, "RIGHT", i == 1 and 12 or 4, 0)
+		t:SetPoint("LEFT", f.Rewards[i-1] or f.Rewards.Label, "RIGHT", i == 1 and 12 or 4, 0)
 		t.Quantity:Hide()
 		t.ShowQuantityFromWidgetText = "Quantity"
 		f.Rewards[i] = t
 	end
+	f.Rewards.SetRewards = RewardBlock_SetRewards
 	return f
 end
 function Factory.CommonHoverTooltip(frame)
@@ -1011,6 +1066,7 @@ function Factory.LogBookButton(parent)
 	local f,t = CreateObject("CommonHoverTooltip", CreateFrame("Button", nil, parent))
 	f.tooltipAnchor = "ANCHOR_BOTTOM"
 	f:SetSize(60, 23)
+	f:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	t = f:CreateTexture()
 	t:SetSize(18, 18)
 	t:SetTexture("Interface/Icons/INV_Inscription_80_Scroll")

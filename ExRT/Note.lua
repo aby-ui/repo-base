@@ -5,7 +5,7 @@ local VExRT = nil
 local module = ExRT:New("Note",ExRT.L.message)
 local ELib,L = ExRT.lib,ExRT.L
 
-local GetTime, CombatLogGetCurrentEventInfo = GetTime, CombatLogGetCurrentEventInfo
+local GetTime, CombatLogGetCurrentEventInfo, GetSpecializationInfo = GetTime, CombatLogGetCurrentEventInfo, GetSpecializationInfo
 local string_gsub, strsplit, tonumber, format, string_match, floor, string_find, type = string.gsub, strsplit, tonumber, format, string.match, floor, string.find, type
 
 local GetSpecialization = GetSpecialization
@@ -80,13 +80,21 @@ local encounter_time_c = module.db.encounter_time_c
 local encounter_time_wa_uids = module.db.encounter_time_wa_uids
 local encounter_id = module.db.encounter_id
 
+local predefSpellIcons = {	--some talents replace icons for basic spells
+	[47536] = 237548,
+	[1022] = 135964,
+}
+
 local function GSUB_Icon(spellID)
 	spellID = tonumber(spellID)
 
-	local spellTexture = select(3,GetSpellInfo(spellID))
-	spellTexture = "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
+	local preicon = predefSpellIcons[spellID]
+	if preicon then
+		return "|T"..preicon..":16|t"
+	end
 
-	return spellTexture
+	local spellTexture = select(3,GetSpellInfo(spellID))
+	return "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
 end
 
 local function GSUB_Player(anti,list,msg)
@@ -278,6 +286,8 @@ formats:
 {time:2:30,wa:nzoth_hs1}	--run weakauras custom event EXRT_NOTE_TIME_EVENT with arg1 = nzoth_hs1, arg2 = time left (event runs every second when timer has 5 seconds or lower), arg3 = note line text
 ]]
 local function GSUB_Time(t,msg)
+	t = t .. "\n"
+
 	local lineTime
 	if string_find(t,":") then
 		lineTime = tonumber(string_match(t,"(%d+):") or "0",nil) * 60 + tonumber(string_match(t,":(%d+)") or "0",nil)
@@ -364,74 +374,65 @@ local function GSUB_Phase(anti,phase,msg)
 	end
 end
 
+local allIcons = {}
+for i=1,8 do
+	allIcons[ module.db.iconsLocalizatedNames[i] ] = module.db.iconsList[i]
+	allIcons[ "{rt"..i.."}" ] = module.db.iconsList[i]
+
+	for _,lang in pairs(iconsLangs) do
+		allIcons[ module.db["icons"..lang.."Names"][i] ] = module.db.iconsList[i]
+	end
+end
+for i=1,#module.db.otherIconsList do
+	allIcons[ module.db.otherIconsList[i][1] ] = module.db.otherIconsList[i][2]
+end
+
+local function GSUB_RaidIcon(text)
+	return allIcons[text]
+end
+
 local function txtWithIcons(t)
 	t = t or ""
 
-	if not t:find("{self}") then
-		t = t..(t~="" and t~=" " and "\n" or "").."{self}"
+	if t:find("{self}") then
+		t = string_gsub(t,"{self}",VExRT.Note.SelfText or "")
+	else
+		t = t..(t~="" and t~=" " and "\n" or "")..(VExRT.Note.SelfText or "")
 	end
-	t = string_gsub(t,"{self}",VExRT.Note.SelfText or "")
-
-	t = string_gsub(t,"{[Ee]:([^}]+)}(.-){/[Ee]}",GSUB_Encounter)
-
-	for i=1,8 do
-		t = string_gsub(t,module.db.iconsLocalizatedNames[i],module.db.iconsList[i])
-		t = string_gsub(t,"{rt"..i.."}",module.db.iconsList[i])
-		for _,lang in pairs(iconsLangs) do
-			t = string_gsub(t,module.db["icons"..lang.."Names"][i],module.db.iconsList[i])
-		end
-	end
-	t = string_gsub(t,"||c","|c")
-	t = string_gsub(t,"||r","|r")
-	for i=1,#module.db.otherIconsList do
-		t = string_gsub(t,module.db.otherIconsList[i][1],module.db.otherIconsList[i][2])
-	end
-	t = string_gsub(t,"{icon:([^}]+)}","|T%1:16|t")
-
-	t = string_gsub(t,"{spell:(%d+)}",GSUB_Icon)
-
-	local isHealer,isDD,isTank = false,false,false
+	
 	local spec = GetSpecialization()
 	if spec then
 		local role = select(5,GetSpecializationInfo(spec))
-		if role == "HEALER" then isHealer = true end
-		if role == "TANK" then isTank = true end
-		if role == "DAMAGER" then isDD = true end
+		if role ~= "HEALER" then t = string_gsub(t,"{[Hh]}.-{/[Hh]}","") end
+		if role ~= "TANK" then t = string_gsub(t,"{[Tt]}.-{/[Tt]}","") end
+		if role ~= "DAMAGER" then t = string_gsub(t,"{[Dd]}.-{/[Dd]}","") end
 	end
-	if not isHealer then t = string_gsub(t,"{[Hh]}.-{/[Hh]}","") end
-	if not isTank then t = string_gsub(t,"{[Tt]}.-{/[Tt]}","") end
-	if not isDD then t = string_gsub(t,"{[Dd]}.-{/[Dd]}","") end
-	t = string_gsub(t,"{0}.-{/0}","")
 
-	t = string_gsub(t,"(\n{!?[CcPpGg]:?[^}]+})\n","%1")
-	t = string_gsub(t,"\n({/[CcPpGg]}\n)","%1")
-
-	t = string_gsub(t,"{(!?)[Pp]:([^}]+)}(.-){/[Pp]}",GSUB_Player)
-
-	t = string_gsub(t,"{(!?)[Pp](%d+)}(.-){/[Pp]}",GSUB_Phase)
-
-	t = string_gsub(t,"{(!?)[Cc]:([^}]+)}(.-){/[Cc]}",GSUB_Class)
-
-	t = string_gsub(t,"{[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]:([^}]+)}(.-){/[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]}",GSUB_ClassUnique)
-
-	t = string_gsub(t,"{(!?)[Gg](%d+)}(.-){/[Gg]}",GSUB_Group)
-
-	t = string_gsub(t,"{(!?)[Rr][Aa][Cc][Ee]:([^}]+)}(.-){/[Rr][Aa][Cc][Ee]}",GSUB_Race)
-
-	t = string_gsub(t.."\n","{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
-
-	t = string_gsub(t,"%b{}","")
-
-	t = string_gsub(t, "\n+$", "")
-
-	return t
+	return t:gsub("{0}.-{/0}","")
+		:gsub("(\n{!?[CcPpGg]:?[^}]+})\n","%1")
+		:gsub("\n({/[CcPpGg]}\n)","%1")
+		:gsub("{(!?)[Pp]:([^}]+)}(.-){/[Pp]}",GSUB_Player)
+		:gsub("{(!?)[Cc]:([^}]+)}(.-){/[Cc]}",GSUB_Class)
+		:gsub("{[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]:([^}]+)}(.-){/[Cc][Ll][Aa][Ss][Ss][Uu][Nn][Ii][Qq][Uu][Ee]}",GSUB_ClassUnique)
+		:gsub("{(!?)[Gg](%d+)}(.-){/[Gg]}",GSUB_Group)
+		:gsub("{(!?)[Rr][Aa][Cc][Ee]:([^}]+)}(.-){/[Rr][Aa][Cc][Ee]}",GSUB_Race)
+		:gsub("{[Ee]:([^}]+)}(.-){/[Ee]}",GSUB_Encounter)
+		:gsub("{(!?)[Pp](%d+)}(.-){/[Pp]}",GSUB_Phase)
+		:gsub("{icon:([^}]+)}","|T%1:16|t")
+		:gsub("{spell:(%d+)}",GSUB_Icon)
+		:gsub("%b{}",GSUB_RaidIcon)
+		:gsub("||([cr])","|%1")
+		:gsub("{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
+		:gsub("%b{}","")
+		:gsub( "\n+$", ""), nil
 end
+
 
 function module.options:Load()
 	self:CreateTilte()
 
 	module.db.otherIconsAdditionalList = ExRT.isClassic and {} or {
-		31821,62618,97462,98008,115310,64843,740,265202,108280,31884,196718,15286,64901,47536,246287,33891,16191,0,
+		31821,62618,97462,98008,115310,64843,740,265202,108280,31884,196718,15286,64901,47536,246287,109964,33891,16191,0,
 		47788,33206,6940,102342,114030,1022,116849,633,204018,207399,0,
 		2825,32182,80353,0,
 		106898,192077,46968,119381,179057,192058,30283,0,
@@ -447,19 +448,6 @@ function module.options:Load()
 		335354,335300,340803,331209,332318,332443,341294,331212,332197,341102,341482,335297,341250,332969,339189,332687,335361,335295,332572,0,
 		334765,333913,344740,342733,334929,333387,343881,336212,332683,339728,343086,343898,339690,344655,342425,342256,336231,342985,339645,343063,340038,334771,342741,332412,339693,339885,329636,342253,0,
 		332734,341366,338689,330137,344313,338738,330627,330580,338582,326707,327227,327842,335875,329906,326851,332585,344776,327089,332797,328098,340685,332619,326823,338683,338510,327123,326824,330871,329974,341391,326699,338685,328936,336008,335873,329785,327992,328839,328276,338687,336162,327796,0,
-		0,
-		307013,313175,306735,311362,306015,314347,308682,305978,307017,306289,306111,306824,314373,312490,306794,313250,312266,307053,307974,0,
-		314992,306005,306387,308872,305722,309315,307399,308903,314337,306301,307805,307839,308158,305663,308044,305675,0,
-		313210,307784,309652,307785,307864,313208,309687,307445,313239,309657,307937,312741,307977,0,
-		305575,311551,314298,311383,316211,306495,313264,306228,314202,312406,314300,309654,313198,305792,306876,314179,0,
-		313460,313461,313129,307968,307201,310402,307217,307202,307582,307637,313676,313692,307227,313652,307232,315311,307569,308166,307213,307334,313441,0,
-		312530,312329,311849,307471,308177,307472,312099,312332,314736,306932,306692,312528,307358,307945,312529,306934,312328,306942,306448,0,
-		310329,310361,310563,310478,310246,308953,310078,315712,308373,310584,308947,310288,310358,308661,310567,308956,308995,317001,310406,310614,310552,0,
-		310319,310788,314396,275269,318383,314502,309961,318396,316813,311143,310322,312486,311401,0,
-		317157,315933,307177,307371,307317,310325,307729,307218,307639,307284,310311,306878,307421,307359,307057,315931,307297,307019,315769,315932,307343,0,
-		306733,306865,306819,312996,306184,306874,306634,306115,313114,312750,306279,309852,316065,309985,309755,306257,313395,310003,306866,313109,313398,309777,306168,306090,306732,313399,313227,306881,314484,0,
-		312158,316847,317165,307044,313322,313330,317627,307340,307131,317896,306984,307079,307008,307058,316701,312333,313364,307048,307831,307092,313334,311980,307832,316307,307042,315947,307306,306973,315954,0,
-		309991,318449,318969,315772,310134,315710,318688,317066,310042,318768,309713,313793,313195,313400,312078,317292,309592,313955,310333,316271,313610,312873,308996,313184,313609,315709,308997,318896,311176,309990,316711,317874,314889,312155,0,
 	}
 
 	function self:DebugGetIcons(notUseJJBox)
@@ -1649,7 +1637,7 @@ module.frame.sf:SetPoint("TOPLEFT",0,0)
 module.frame.sf:SetAllPoints()
 module.frame.sf.C = CreateFrame("Frame", nil, module.frame.sf) 
 module.frame.sf:SetScrollChild(module.frame.sf.C)
-module.frame.sf.C:SetHeight(2000)
+module.frame.sf.C:SetHeight(20000)
 module.frame.sf:Hide()
 
 ELib:FixPreloadFont(module.frame,function() 
@@ -1671,11 +1659,13 @@ function module.frame:UpdateFont()
 end
 
 function module.frame:UpdateText()
+	--local tt = debugprofilestop()
 	if VExRT.Note.ShowOnlyPersonal then
 		self.text:SetText(txtWithIcons(""))
 	else
 		self.text:SetText(txtWithIcons(VExRT.Note.Text1 or "")) 
 	end
+	--print(debugprofilestop() - tt)
 end
 
 module.frame.background = module.frame:CreateTexture(nil, "BACKGROUND")
@@ -2153,7 +2143,7 @@ do
 			BossPhasesBossmodAdded = true
 		elseif type(DBM)=='table' and DBM.RegisterCallback then
 			DBM:RegisterCallback("DBM_Announce", function(event, message, icon, etype, spellId, modId)
-				if etype == "stagechange" then
+				if etype == "stagechange" or etype == "stage" then
 					local phase = message:match("%d+")
 					phase = tonumber(phase or "")
 					if phase then

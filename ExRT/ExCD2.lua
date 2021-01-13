@@ -5066,6 +5066,7 @@ do
 	local spell339272_var = {}
 	local spell338741_var = {}
 	local spell335229_var = {}
+	local spell155148_var1,spell155148_var2 = nil
 	function module.main:SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overkill)
 		if destGUID and isWarlock[destGUID] and destName and session_gGUIDs[destName][339272] then
 			local maxHP = UnitHealthMax(destName)
@@ -5124,8 +5125,8 @@ do
 			if line then
 				line:ReduceCD(4)
 			end
-		elseif (spellID == 11366 or spellID == 133 or spellID == 108853 or spellID == 257542 or spellID == 2948 or spellID == 133) and critical then
-			if (spellID == 11366 or spellID == 133 or spellID == 108853 or spellID == 257542) and session_gGUIDs[sourceName][155148] then
+		elseif (spellID == 11366 or spellID == 133 or spellID == 108853 or spellID == 2948 or spellID == 133) and critical then
+			if (spellID == 11366 or spellID == 133 or spellID == 108853) and session_gGUIDs[sourceName][155148] then
 				local line = CDList[sourceName][190319]
 				if line then
 					line:ReduceCD(1.5)
@@ -5137,6 +5138,20 @@ do
 					line:ReduceCD(1)
 				end
 			end
+		elseif spellID == 257542 and session_gGUIDs[sourceName][155148] then
+			if not spell155148_var1 then
+				spell155148_var1 = C_Timer.NewTimer(0.3,function()
+					spell155148_var1 = nil
+					if spell155148_var2 then
+						local line = CDList[sourceName][190319]
+						if line then
+							line:ReduceCD(1.5)
+						end
+					end
+					spell155148_var2 = nil
+				end)
+			end
+			spell155148_var2 = critical
 		elseif spellID == 320752 and critical then
 			local line = CDList[sourceName][320674]
 			if line then
@@ -6038,11 +6053,19 @@ function module.options:Load()
 		module.options.list:Update()
 		module:UpdateSpellDB()
 	end
+
+	local priorChangeDelay
 	local function SpellsListPrioritySetValue(self,value)
 	  	self.text:SetText(L.cd2Priority.." |cffffffff"..(100-value).."%")
 		if self.lock then return end
 		VExRT.ExCD2.Priority[ self:GetParent().data[1] ] = value
-		module:UpdateSpellDB()
+		if not priorChangeDelay then
+			priorChangeDelay = C_Timer.NewTimer(.5,function()
+				priorChangeDelay = nil
+				UpdateRoster()
+				module:UpdateSpellDB()
+			end)
+		end
 	end
 
 	local function SpellsListButtonModifyOnClick(self)
@@ -10733,7 +10756,7 @@ module.db.AllSpells = {
 	{212084,"DEMONHUNTER",		3,	nil,			nil,			{212084,60,	0},	},	--Fel Devastation
 	{195072,"DEMONHUNTER,MOVE",	3,	nil,			{195072,10,	0},	nil,			},	--Fel Rush
 	{204021,"DEMONHUNTER",		3,	nil,			nil,			{204021,60,	10},	},	--Fiery Brand
-	{258920,"DEMONHUNTER",		3,	{258920,30,	0},	nil,			nil,			},	--Immolation Aura
+	{258920,"DEMONHUNTER",		3,	{258920,15,	0},	nil,			nil,			},	--Immolation Aura
 	{217832,"DEMONHUNTER,CC",	3,	{217832,45,	0},	nil,			nil,			},	--Imprison
 	{191427,"DEMONHUNTER,DPS,DEFTANK",3,	nil,			{191427,240,	30},	{187827,180,	15},	},	--Metamorphosis
 	{204596,"DEMONHUNTER",		3,	nil,			nil,			{204596,30,	2},	},	--Sigil of Flame

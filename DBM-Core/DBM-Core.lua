@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210110031346"),
+	Revision = parseCurseDate("20210112033002"),
 	DisplayVersion = "9.0.18 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2021, 1, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -1646,7 +1646,8 @@ do
 				"PARTY_INVITE_REQUEST",
 				"LOADING_SCREEN_DISABLED",
 				"LOADING_SCREEN_ENABLED",
-				"SCENARIO_COMPLETED"
+				"SCENARIO_COMPLETED",
+				"CHALLENGE_MODE_RESET"
 			)
 			if RolePollPopup:IsEventRegistered("ROLE_POLL_BEGIN") then
 				RolePollPopup:UnregisterEvent("ROLE_POLL_BEGIN")
@@ -4270,6 +4271,12 @@ do
 		end
 	end
 
+	function DBM:CHALLENGE_MODE_RESET()
+		if not self.Options.RecordOnlyBosses then
+			self:StartLogging(0, nil, true)
+		end
+	end
+
 	function DBM:LOADING_SCREEN_ENABLED()
 		--TimerTracker Cleanup, required to work around logic code blizzard put into TimerTracker for /countdown timers
 		--TimerTracker is hard coded that if a type 3 timer exists, to give it prio over type 1 and type 2. This causes the M+ timer not to show, even if only like 0.01 sec was left on the /countdown
@@ -4448,7 +4455,7 @@ end
 
 do
 	local function checkForActualPull()
-		if (DBM.Options.RecordOnlyBosses and #inCombat == 0) or difficultyIndex ~= 8 then
+		if DBM.Options.RecordOnlyBosses and #inCombat == 0 then
 			DBM:StopLogging()
 		end
 	end
@@ -4668,7 +4675,7 @@ do
 				dummyMod.text:Schedule(timer, L.ANNOUNCE_PULL_NOW)
 			end
 		end
-		if DBM.Options.RecordOnlyBosses or difficultyIndex == 23 then
+		if DBM.Options.RecordOnlyBosses then
 			DBM:StartLogging(timer, checkForActualPull)--Start logging here to catch pre pots.
 		end
 		if DBM.Options.CheckGear then
@@ -6713,9 +6720,9 @@ do
 		return false
 	end
 
-	function DBM:StartLogging(timer, checkFunc)
+	function DBM:StartLogging(timer, checkFunc, force)
 		self:Unschedule(DBM.StopLogging)
-		if self.Options.LogOnlyNonTrivial and ((LastInstanceType ~= "raid" and difficultyIndex ~= 8) or IsPartyLFG() or not isCurrentContent()) then return end
+		if not force and self.Options.LogOnlyNonTrivial and ((LastInstanceType ~= "raid" and difficultyIndex ~= 8) or IsPartyLFG() or not isCurrentContent()) then return end
 		if self.Options.AutologBosses then
 			if not LoggingCombat() then
 				autoLog = true
@@ -7481,6 +7488,14 @@ do
 			testSpecialWarning2 = testMod:NewSpecialWarning(" %s ", nil, nil, nil, 2, 2)
 			testSpecialWarning3 = testMod:NewSpecialWarning("  %s  ", nil, nil, nil, 3, 2) -- hack: non auto-generated special warnings need distinct names (we could go ahead and give them proper names with proper localization entries, but this is much easier)
 		end
+		testTimer1:Stop("Test Bar")
+		testTimer2:Stop("Adds")
+		testTimer3:Stop("Evil Debuff")
+		testTimer4:Stop("Important Interrupt")
+		testTimer5:Stop("Boom!")
+		testTimer6:Stop("Handle your Role")
+		testTimer7:Stop("Next Stage")
+		testTimer8:Stop("Custom User Bar")
 		testTimer1:Start(10, "Test Bar")
 		testTimer2:Start(30, "Adds")
 		testTimer3:Start(43, "Evil Debuff")
@@ -12207,7 +12222,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210110031346" then
+	if not revision or revision == "20210112033002" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

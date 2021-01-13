@@ -1047,7 +1047,12 @@ function module.main:RAID_TARGET_UPDATE()
 	end
 end
 
+local delayTimer
 function module:GroupRosterUpdate()
+	if delayTimer then
+		delayTimer:Cancel()
+		delayTimer = nil
+	end
 	if not VExRT.MarksBar.enabled then
 		return
 	end
@@ -1075,9 +1080,17 @@ function module:GroupRosterUpdate()
 		end
 	end
 	if needShow and not module.frame:IsShown() then
-		module.frame:Show()
+		if InCombatLockdown() then
+			delayTimer = ExRT.F.ScheduleTimer(module.GroupRosterUpdate, 2, module)
+		else
+			module.frame:Show()
+		end
 	elseif not needShow and module.frame:IsShown() then
-		module.frame:Hide()
+		if InCombatLockdown() then
+			delayTimer = ExRT.F.ScheduleTimer(module.GroupRosterUpdate, 2, module)
+		else
+			module.frame:Hide()
+		end
 	end
 end
 function module.main:GROUP_ROSTER_UPDATE()

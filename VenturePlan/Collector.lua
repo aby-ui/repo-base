@@ -128,10 +128,10 @@ local function logOracle(log)
 		end
 	end
 end
-local checkpointBoard do
+local generateCheckpoints do
 	local hex = {}
 	for i=0,12 do hex[i] = ("%x"):format(i) end
-	function checkpointBoard(b)
+	local function checkpointBoard(b)
 		local r = ""
 		for i=0,12 do
 			local lh = b[i] or 0
@@ -141,14 +141,10 @@ local checkpointBoard do
 		end
 		return r
 	end
-end
-local function checkSim(cr)
-	local eei = cr.environment
-	local envs = eei and eei.autoCombatSpellInfo
-	local sim = T.VSim:New(cr.followers, cr.encounters, envs, cr.missionID, cr.missionScalar, logOracle(cr.log))
-	sim:Run(0)
-	local checkpoints = {} do
-		local b = {}
+	function generateCheckpoints(cr)
+		local eei = cr.environment
+		local envs = eei and eei.autoCombatSpellInfo
+		local checkpoints, b = {}, {[-1]=envs and true or nil}
 		for i=1,#cr.encounters do
 			local e = cr.encounters[i]
 			b[e.boardIndex] = e.health
@@ -161,10 +157,17 @@ local function checkSim(cr)
 			local e = cr.log[t].events
 			for i=1,#e do
 				local ti = e[i].targetInfo
+				local cidx = e[i].casterBoardIndex
+				if not b[cidx] then
+					return false
+				end
 				for i=1,ti and #ti or 0 do
 					local tii = ti[i]
-					if tii and b[tii.boardIndex] and tii.newHealth then
-						b[tii.boardIndex] = tii.newHealth
+					local tidx = tii.boardIndex
+					if not b[tidx] then
+						return false
+					elseif tii.newHealth then
+						b[tidx] = tii.newHealth
 					end
 				end
 			end
@@ -173,7 +176,14 @@ local function checkSim(cr)
 		if checkpoints[#checkpoints] == checkpoints[#checkpoints-1] then
 			checkpoints[#checkpoints] = nil
 		end
+		return true, checkpoints
 	end
+end
+local function checkSim(cr, checkpoints)
+	local eei = cr.environment
+	local envs = eei and eei.autoCombatSpellInfo
+	local sim = T.VSim:New(cr.followers, cr.encounters, envs, cr.missionID, cr.missionScalar, logOracle(cr.log), 0)
+	sim:Run()
 	if #checkpoints ~= #sim.checkpoints then
 		return false
 	end
@@ -184,26 +194,35 @@ local function checkSim(cr)
 	end
 	return true
 end
-local function isNovelLog(cr)
-	local ok, ret = pcall(checkSim, cr)
+local function isNovelLog(cr, checkpoints)
+	local ok, ret = pcall(checkSim, cr, checkpoints)
 	return not (ok and ret)
 end
-local function findOldestReport(logs, st, novel)
-	local count, oldTS, oldID = 0
+local function findReportSlot(logs, st, novel)
+	local nc, oc, nt, ot, ni, oi = 0, 0
 	for i=1,#logs do
-		if logs[i][1] == st then
+		local li = logs[i]
+		if li[1] == st then
 			return i
-		elseif logs[i].novel == novel then
-			count = count + 1
-			if count == 1 or oldTS > logs[i].ts then
-				oldID, oldTS = i, logs[i].ts
+		elseif li.novel then
+			nc = nc + 1
+			if nc == 1 or nt > li.ts then
+				nt, ni = li.ts, i
+			end
+		else
+			oc = oc + 1
+			if oc == 1 or ot > li.ts then
+				ot, oi = li.ts, i
 			end
 		end
 	end
-	if count >= 49 and oldID then
-		return oldID
+	if nc + oc < 99 then
+		return #logs+1
+	elseif novel then
+		return oc > 49 and oi or ni
+	else
+		return nc > 50 and ni or oi
 	end
-	return #logs+1
 end
 function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _followerDeaths, autoCombatResult)
 	if not (autoCombatResult and autoCombatResult.combatLog and mid and C_Garrison.GetFollowerTypeByMissionID(mid) == 123) then return end
@@ -244,11 +263,13 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 	cr.followers = fm
 	cr.missionScalar = mi.missionScalar
 	cr.missionName = mi.name
-	
-	local st, novel = serialize(cr), isNovelLog(cr)
-	VP_MissionReports = VP_MissionReports or {}
-	VP_MissionReports[findOldestReport(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
-	EV("I_STORED_LOG_UPDATE")
+	local ok, checkpoints = generateCheckpoints(cr)
+	if ok then
+		local st, novel = serialize(cr), isNovelLog(cr, checkpoints)
+		VP_MissionReports = VP_MissionReports or {}
+		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
+		EV("I_STORED_LOG_UPDATE")
+	end
 end
 function EV:I_RESET_STORED_LOGS()
 	VP_MissionReports = nil

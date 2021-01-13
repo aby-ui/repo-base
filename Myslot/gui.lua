@@ -2,6 +2,7 @@ local _, MySlot = ...
 
 local L = MySlot.L
 local RegEvent = MySlot.regevent
+local MAX_PROFILES_COUNT = 50
 
 
 local f = CreateFrame("Frame", "MYSLOT_ReportFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
@@ -261,6 +262,11 @@ RegEvent("ADDON_LOADED", function()
         end
 
         local create = function(name)
+            if #exports >= MAX_PROFILES_COUNT then
+                MySlot:Print(L["Too many saved profiles, please use '/myslot trim' to clean up"])
+                return
+            end
+
             local txt = {
                 name = name
             }
@@ -271,6 +277,8 @@ RegEvent("ADDON_LOADED", function()
             info.value = #exports
             info.func = onclick
             UIDropDownMenu_AddButton(info)
+
+            return true
         end
 
         local save = function(force)
@@ -281,7 +289,9 @@ RegEvent("ADDON_LOADED", function()
             end
             if (not c) or (not exports[c]) then
                 local n = date()
-                create(n)
+                if not create(n) then
+                    return
+                end
                 UIDropDownMenu_SetSelectedValue(t, #exports)
                 UIDropDownMenu_SetText(t, n)
                 c = #exports
@@ -328,8 +338,9 @@ RegEvent("ADDON_LOADED", function()
                 return
             end
 
-            create(self.editBox:GetText())
-            onclick({value = #exports})
+            if create(self.editBox:GetText()) then
+                onclick({value = #exports})
+            end
         end
 
         do
@@ -434,6 +445,20 @@ SlashCmdList["MYSLOT"] = function(msg, editbox)
         -- MySlot:Clear(what)
         InterfaceOptionsFrame_OpenToCategory(L["Myslot"])
         InterfaceOptionsFrame_OpenToCategory(L["Myslot"])
+    elseif cmd == "trim" then
+        if not MyslotExports then
+            MyslotExports = {}
+        end
+        if not MyslotExports["exports"] then
+            MyslotExports["exports"] = {}
+        end
+        local exports = MyslotExports["exports"]
+        local n = tonumber(what) or MAX_PROFILES_COUNT
+        n = math.max(n, 0)
+        while #exports > n do
+            table.remove(exports, 1)
+        end
+        C_UI.Reload()
     else
         f:Show()
     end

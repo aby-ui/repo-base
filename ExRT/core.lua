@@ -1,8 +1,8 @@
---	31.12.2020
+--	12.01.2021
 
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4420
+ExRT.V = 4440
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -471,6 +471,15 @@ local reloadTimer = 0.1
 
 ExRT.frame = CreateFrame("Frame")
 
+local function loader(self,func)
+	local isSuccessful, errorMsg = pcall(func,self)
+	if not isSuccessful then
+		C_Timer.After(0.01,function()
+			error(errorMsg)	--Any other way to throw error for user, but continue loader?
+		end)
+	end
+end
+
 ExRT.frame:SetScript("OnEvent",function (self, event, ...)
 	if event == "CHAT_MSG_ADDON" then
 		local prefix, message, channel, sender = ...
@@ -503,7 +512,7 @@ ExRT.frame:SetScript("OnEvent",function (self, event, ...)
 		VExRT.Addon.Version = tonumber(VExRT.Addon.Version or "0")
 		VExRT.Addon.PreVersion = VExRT.Addon.Version
 		
-		if not ExRT.F.FUNC_FILE_LOADED then
+		if not ExRT.F.FUNC_FILE_LOADED then	--Outdated for shadowlands, but not for classic
 			print("|cffff0000Exorsus Raid Tools:|r after updating may work incorrectly, please restart your game client")
 		end
 		
@@ -514,10 +523,8 @@ ExRT.frame:SetScript("OnEvent",function (self, event, ...)
 		ExRT.F.dprint("ADDON_LOADED event")
 		ExRT.F.dprint("MODULES FIND",#ExRT.Modules)
 		for i=1,#ExRT.Modules do
-			local isSuccessful = pcall(ExRT.Modules[i].main.ADDON_LOADED,self) 	-- BE CARE ABOUT IT
-			if not isSuccessful then
-				ExRT.F.dprint("|cffff0000Error loading",ExRT.Modules[i].name)
-			end
+			loader(self,ExRT.Modules[i].main.ADDON_LOADED)
+
 			ExRT.ModulesLoaded[i] = true
 			
 			ExRT.F.dprint("ADDON_LOADED",i,ExRT.Modules[i].name)

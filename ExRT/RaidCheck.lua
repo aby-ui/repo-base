@@ -21,6 +21,7 @@ module.db.tableFood = not ExRT.isClassic and {
 	[18192]=true,	[24799]=true,	[18194]=true,	[22730]=true,	[25661]=true,	[18141]=true,	[18125]=true,
 	[22790]=true,	[22789]=true,	[25804]=true,
 	[18222]=true,
+	[18125]=true,	[18141]=true,
 }
 module.db.StaminaFood = {[201638]=true,[259457]=true,[288075]=true,[288074]=true,[297119]=true,[297040]=true,}
 
@@ -238,6 +239,7 @@ module.db.tableRunes = {[224001]=5,[270058]=6,[317065]=6,[347901]=18,}
 
 module.db.durability = {}
 module.db.oil = {}
+module.db.oil2 = {}
 module.db.kit = {}
 
 local IsSendFoodByMe,IsSendFlaskByMe,IsSendRunesByMe,IsSendBuffsByMe = nil
@@ -945,9 +947,9 @@ function module.options:Load()
 	self.consumablesCheckFrame:SetSize(688,145)
 	self.consumablesCheckFrame:SetPoint("TOP",0,-607)
 
-	ELib:DecorationLine(self):Point("BOTTOM",self.consumablesCheckFrame,"TOP",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
+	self.consumablesCheckFrame.dl1 = ELib:DecorationLine(self):Point("BOTTOM",self.consumablesCheckFrame,"TOP",0,0):Point("LEFT",self):Point("RIGHT",self):Size(0,1)
 
-	self.consumablesFrameHeader = ELib:Text(self.optReadyCheckFrame,L.RaidCheckConsum):Point("BOTTOMLEFT",self.consumablesCheckFrame,"TOPLEFT",10,3):Bottom():Color()
+	self.consumablesFrameHeader = ELib:Text(self.consumablesCheckFrame,L.RaidCheckConsum):Point("BOTTOMLEFT",self.consumablesCheckFrame,"TOPLEFT",10,3):Bottom():Color()
 
 	self.chkReadyCheckFrameEnable = ELib:Check(self.consumablesCheckFrame,L.Enable,not VExRT.RaidCheck.DisableConsumables):Point(15,-5):AddColorState():OnClick(function(self) 
 		if self:GetChecked() then
@@ -1003,6 +1005,8 @@ function module.options:Load()
 		self.potionToChat.txt:Hide()
 		self.hs:Hide()
 		self.hsToChat:Hide()
+		self.consumablesCheckFrame:Hide()
+		self.consumablesCheckFrame.dl1:Hide()
 
 		self.optReadyCheckFrame:SetPoint("TOP",0,-50)
 	end
@@ -1126,6 +1130,7 @@ do
 				{GetSpellInfo(295623),33757},
 				{GetSpellInfo(194084),318038},
 				{L.RaidCheckOilSharpen,322762},
+				{L.RaidCheckOilSharpen2,322763},
 			}
 			for i=#oilTypes,1,-1 do
 				if not oilTypes[i][1] then
@@ -1134,26 +1139,37 @@ do
 			end
 		end
 
+		local oilMH, oilOH = 0, 0
+
 		for _,itemSlotID in pairs(OilSlots) do
 			inspectScantip:SetInventoryItem("player", itemSlotID)
 
 			for j=2, inspectScantip:NumLines() do
 				local tooltipLine = _G["ExRTRaidCheckScanningTooltipTextLeft"..j]
 				local text = tooltipLine:GetText()
+				local isBreak
 				if text and text ~= "" then
 					for i=1,#oilTypes do
 						if text:find("^"..oilTypes[i][1]) then
-							inspectScantip:ClearLines()
-							return oilTypes[i][2]
+							if itemSlotID == 16 then
+								oilMH = oilTypes[i][2]
+							elseif itemSlotID == 17 then
+								oilOH = oilTypes[i][2]
+							end
+							isBreak = true
+							break
 						end
 					end
+				end
+				if isBreak then
+					break
 				end
 			end
 
 			inspectScantip:ClearLines()
 		end
 
-		return 0
+		return oilMH, oilOH
 	end
 end
 
@@ -2066,9 +2082,10 @@ function module.frame:UpdateData(onlyLine)
 					end
 				end
 				if line.oil and not self.isTest then
-					local durTab, oil = module.db.oil[line.unit_name]
+					local durTab, oil, oil2 = module.db.oil[line.unit_name]
 					if durTab and (durTab.time + (line.rc_status ~= 4 and 60 or 600) > currTime) then
 						oil = durTab.oil
+						oil2 = module.db.oil2[line.unit_name]
 					end
 					if not oil then
 						line.oil.bigText:SetText("-")
@@ -2083,6 +2100,23 @@ function module.frame:UpdateData(onlyLine)
 						end
 						line.oil.texture:SetTexture(texture)
 						line.oil.tooltip = "spell:"..oil
+
+						if oil2 then
+							oil2 = oil2.oil
+							if oil2 ~= "0" then
+								local texture = select(3,GetSpellInfo(tonumber(oil2)))
+								if oil2 == "320798" then texture = 463543
+								elseif oil2 == "321389" then texture = 463544
+								elseif oil2 == "322762" then texture = 3528422
+								elseif oil2 == "322763" then texture = 3528423 
+								end
+								line.oil2.texture:SetTexture(texture)
+								line.oil2.tooltip = "spell:"..oil2
+								line.oil2:Show()
+	
+								line.oil:Point("CENTER",line.oilpointer,"CENTER",-(line.oil.size or 18)*(1/2),0)
+							end
+						end
 					end
 				end
 
@@ -2418,6 +2452,12 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 							oil = val,
 						}
 						module.db.oil[shortName] = module.db.oil[sender]
+					elseif key == "OIL2" then
+						module.db.oil2[sender] = {
+							time = time(),
+							oil = val,
+						}
+						module.db.oil2[shortName] = module.db.oil2[sender]
 					end
 				end
 
@@ -2462,9 +2502,12 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 				end
 				module.db.prevReqAntispam = currTime
 
+				local oilMH, oilOH = module:OilCheck()
+
 				ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
 					(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
-					(not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
+					(not ExRT.isClassic and "\tOIL\t"..format("%d",oilMH) or "")..
+					(not ExRT.isClassic and "\tOIL2\t"..format("%d",oilOH) or "")
 				)
 			end
 		end
@@ -2508,6 +2551,18 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		self:GetParent():SetAlpha(1)
 	end
 
+	module.consumables.state = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
+	module.consumables.state:SetAttribute('_onstate-combat', [=[
+		if newstate == 'hide' then
+			for i=1,6 do
+				if i == 3 or i == 4 or i == 5 then
+					self:GetFrameRef("Button"..i):Hide()
+				end
+			end
+		end
+	]=])
+	RegisterStateDriver(module.consumables.state, 'combat', '[combat] hide')
+
 	for i=1,6 do
 		local button = CreateFrame("Frame",nil,module.consumables)
 		module.consumables.buttons[i] = button
@@ -2531,14 +2586,18 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		button.count:SetFont(button.timeleft:GetFont(),10,"OUTLINE")
 		--button.count:SetTextColor(0,1,0,1)
 
-		button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
-		button.click:SetAllPoints()
-		button.click:Hide()
-		button.click:RegisterForClicks("AnyDown")
-		button.click:SetAttribute("type", "macro")
-
-		button.click:SetScript("OnEnter",ButtonOnEnter)
-		button.click:SetScript("OnLeave",ButtonOnLeave)
+		if i == 3 or i == 4 or i == 5 then
+			button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
+			button.click:SetAllPoints()
+			button.click:Hide()
+			button.click:RegisterForClicks("AnyDown")
+			button.click:SetAttribute("type", "macro")
+	
+			button.click:SetScript("OnEnter",ButtonOnEnter)
+			button.click:SetScript("OnLeave",ButtonOnLeave)
+	
+			module.consumables.state:SetFrameRef("Button"..i, button.click)
+		end
 	
 		if i == 1 then
 			button.texture:SetTexture(136000)
@@ -2688,26 +2747,31 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 			self.buttons.oil.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil(mainHandExpiration/1000/60))
 
 			if mainHandEnchantID == 6190 then
-				if lastWeaponEnchantItem ~= 171286 then
-					self.buttons.oil.texture:SetTexture(463544)
-				end
 				lastWeaponEnchantItem = 171286
 			elseif mainHandEnchantID == 6188 then
-				if lastWeaponEnchantItem ~= 171286 then
-					self.buttons.oil.texture:SetTexture(463543)
-				end
 				lastWeaponEnchantItem = 171285
 			elseif mainHandEnchantID == 6200 then
-				if lastWeaponEnchantItem ~= 171286 then
-					self.buttons.oil.texture:SetTexture(3528422)
-				end
 				lastWeaponEnchantItem = 171437
 			elseif mainHandEnchantID == 6198 then
-				if lastWeaponEnchantItem ~= 171286 then
-					self.buttons.oil.texture:SetTexture(3528424)
-				end
 				lastWeaponEnchantItem = 171436
+			elseif mainHandEnchantID == 6201 then
+				lastWeaponEnchantItem = 171439
+			elseif mainHandEnchantID == 6199 then
+				lastWeaponEnchantItem = 171438
 			end
+		end
+		if lastWeaponEnchantItem == 171286 then
+			self.buttons.oil.texture:SetTexture(463544)
+		elseif lastWeaponEnchantItem == 171285 then
+			self.buttons.oil.texture:SetTexture(463543)
+		elseif lastWeaponEnchantItem == 171437 then
+			self.buttons.oil.texture:SetTexture(3528422)
+		elseif lastWeaponEnchantItem == 171436 then
+			self.buttons.oil.texture:SetTexture(3528424)
+		elseif lastWeaponEnchantItem == 171439 then
+			self.buttons.oil.texture:SetTexture(3528423)
+		elseif lastWeaponEnchantItem == 171438 then
+			self.buttons.oil.texture:SetTexture(3528425)
 		end
 
 		VExRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey] = lastWeaponEnchantItem

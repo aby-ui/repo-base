@@ -1269,6 +1269,8 @@ function module.options:Load()
 
 						line.refreshSoulbind:Show()
 
+						line.time2:SetText("")
+
 						if data then
 							local it = 2
 

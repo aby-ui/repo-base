@@ -795,6 +795,10 @@ function module.options:Load()
 	end
 	self.SelectMapDropDown.Text:SetFont(self.SelectMapDropDown.Text:GetFont(),8)
 
+	local function ZoneNameFromMap(mapID)
+		return (C_Map.GetMapInfo(mapID or 0) or {}).name or ("Map ID "..mapID)
+	end
+
 	local maps = {
 		--1-10
 		{"None",{}},
@@ -916,12 +920,30 @@ function module.options:Load()
 		{L.NoteColorBlue:lower(),{{.5,.5,1,1}}},
 		{L.NoteColorYellow:lower(),{{1,1,.5,1}}},
 		{L.S_ZoneT26CastleNathria..": "..L.bossName[2398].."/"..L.bossName[2399],{"Interface/AddOns/ExRT/mediamodern/nathria1"}},	--Shriekwing/Sludgefist
+
+		--101-110
+		{ZoneNameFromMap(1339),{1339,nil,nil,0.8}},	--Warsong Gulch
+		{ZoneNameFromMap(1366),{1366,nil,nil,0.9}},	--Arathi Basin
+		{ZoneNameFromMap(1537),{1537,nil,nil,0.9}},	--Alterac Valley
+		{ZoneNameFromMap(397),{397,nil,nil,0.9}},	--Eye of the Storm
+		{ZoneNameFromMap(169),{169,nil,nil,0.9}},	--Isle of Conquest
+		{ZoneNameFromMap(275),{275,nil,nil,0.9}},	--The Battle for Gilneas
+		{ZoneNameFromMap(1334),{1334,nil,nil,0.9}},	--Wintergrasp
+		{ZoneNameFromMap(1478),{1478,nil,nil,0.9}},	--Ashran
+		{ZoneNameFromMap(206),{206,nil,nil,0.9}},	--Twin Peaks
+		{ZoneNameFromMap(423),{423,nil,nil,0.9}},	--Silvershard Mines
+
+		--111-120
+		{ZoneNameFromMap(417),{417,nil,nil,0.9}},	--Temple of Kotmogu
+		{ZoneNameFromMap(907),{907,nil,nil,0.9}},	--Seething Shore
+		{ZoneNameFromMap(1576),{1576,nil,nil,0.9}},	--Deepwind Gorge
 	}
 	local mapsSorted = {
 		1,
 		{L.NoteColor,10,94,95,96,97,98,99},
 		{L.S_ZoneT26CastleNathria.." Ingame",100,93,91,92,90,89,88},
 		{L.S_ZoneT26CastleNathria,77,78,79,80,81,82,83,84,85,86,87},
+		{BATTLEFIELDS,101,102,103,104,105,106,107,108,109,110,111,112,113},
 		{L.S_ZoneT25Nyalotha,45,46,47,48,49,50,51,52,53,54,55,56},
 		{L.S_ZoneT24Eternal,40,39,38,37,36,35,34,33},
 		{L.S_ZoneT23Storms,32,31},
@@ -2943,6 +2965,7 @@ function module.options:Load()
 	function self.SelectNote:PreUpdate()
 		self.List = {
 			{
+				colorCode = "|cff00ff00",
 				text = L.ProfilesNew,
 				justifyH = "CENTER",
 				func = function ()

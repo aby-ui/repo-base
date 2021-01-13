@@ -1,9 +1,10 @@
 ## Interface: 90002
 ## Title: Venture Plan
+## Version: 4.05
 ## Notes: Interface improvements for Adventures.
 ## Author: foxlit
+## License: All rights reserved. Do not modify or redistribute.
 ## X-Website: https://www.townlong-yak.com/addons/venture-plan
-## Version: 4.04
 ## SavedVariables: VP_MissionReports
 Libs/Evie.lua
 Widgets.lua

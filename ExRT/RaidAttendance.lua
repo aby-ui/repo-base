@@ -811,7 +811,7 @@ end
 
 function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
-	VExRT.Attendance = VExRT.Attendance or {enabled=2}
+	VExRT.Attendance = VExRT.Attendance or {}
 	VExRT.Attendance.data = VExRT.Attendance.data or {}
 	VExRT.Attendance.alts = VExRT.Attendance.alts or {}
 	

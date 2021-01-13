@@ -194,7 +194,7 @@ local function InspectNext()
 	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
-		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) then
+		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) and (ExRT.isClassic or (select(4,UnitPosition'player') == select(4,UnitPosition(name)))) then
 			lastCheckNext[name] = nowTime
 			NotifyInspect(name)
 

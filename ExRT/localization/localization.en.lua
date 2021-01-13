@@ -259,6 +259,7 @@ L.RaidCheckSortByClass = "Sort by class"
 L.RaidCheckReinforced = "Reinforced %("
 L.RaidCheckOilSharpen = "Sharpened %("
 PH.RaidCheckConsum = "Personal buff icons during ready check"
+L.RaidCheckOilSharpen2 = "Weighted %("
 
 L.marksbarstart = "Clear"
 L.marksbardel = "Delete"

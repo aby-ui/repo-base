@@ -21,7 +21,7 @@ module.db.diffNames = {
 	[5] = L.EncounterLegacy..": "..L.sencounter10pplHC,
 	[6] = L.EncounterLegacy..": "..L.sencounter25pplHC,
 	[7] = L.sencounterLfr,		--		PLAYER_DIFFICULTY3
-	[8] = L.sencounterChall,
+	[8] = CHALLENGES or L.sencounterChall,
 	[9] = L.EncounterLegacy..": "..L.sencounter40ppl,
 	[14] = L.sencounterWODNormal,	-- Normal,	PLAYER_DIFFICULTY1
 	[15] = L.sencounterWODHeroic,	-- Heroic,	PLAYER_DIFFICULTY2
@@ -29,7 +29,7 @@ module.db.diffNames = {
 	[23] = DUNGEON_DIFFICULTY_5PLAYER..": "..PLAYER_DIFFICULTY6,
 	[148] = "20ppl raid",
 }
-module.db.diffPos = ExRT.isClassic and {1,148,9} or {24,1,2,23,8,9,3,4,5,6,172,7,14,15,16}
+module.db.diffPos = ExRT.isClassic and {1,148,9} or {24,1,2,23,8,9,3,4,5,6,7,14,15,16}
 module.db.dropDownNow = nil
 module.db.onlyMy = nil
 module.db.scrollPos = 1
@@ -177,7 +177,9 @@ function module.options:Load()
 
 		{809,1957,1954,1961,1960,1964,1965,1959,2017,2031},
 
-		{845,2055,2057,2039,2053},			
+		{845,2055,2057,2039,2053},		
+
+		{903,2065,2066,2067,2068},	
 	
 		{934,2084,2085,2086,2087},
 		{936,2093,2094,2095,2096},
@@ -189,6 +191,7 @@ function module.options:Load()
 		{1038,2124,2125,2126,2127},
 		{1039,2130,2131,2132,2133},
 		{1004,2139,2142,2140,2143},
+		{1490,2290,2292,2312,2291,2257,2258,2259,2260},
 
 		{1666,2387,2388,2389,2390},
 		{1674,2382,2384,2385,2386},
@@ -210,7 +213,6 @@ function module.options:Load()
 		{1148,2144,2141,2136,2128,2134,2145,2135,2122},--uldir
 		{1358,2265,2263,2284,2266,2285,2271,2268,2272,2276,2280,2281},	--bfd
 		{L.S_ZoneT23Storms,2269,2273},	--storms
-		{1490,2290,2292,2097,2312,2291,2257,2258,2259,2260},	--mechagon
 		{1512,2298,2305,2289,2304,2303,2311,2293,2299},	--ethernal place
 		{1582,2329,2327,2334,2328,2336,2333,2331,2335,2343,2345,2337,2344}, --nyalotha
 		{1735,2398,2418,2402,2383,2405,2406,2412,2399,2417,2407},	--castle Nathria

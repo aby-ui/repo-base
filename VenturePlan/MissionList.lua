@@ -40,9 +40,9 @@ end
 local MissionPage, MissionList
 
 local startedMissions, finishedMissions, FlagMissionFinish = {}, {} do
-	function EV:I_MISSION_PRE_START(mid)
+	hooksecurefunc(C_Garrison, "StartMission", function(mid)
 		startedMissions[mid] = 1
-	end
+	end)
 	function EV:ADVENTURE_MAP_CLOSE()
 		startedMissions = {}
 		finishedMissions = {}
@@ -107,18 +107,17 @@ local function ConfigureMission(me, mi, isAvailable)
 	elseif mi.timeLeftSeconds then
 		me.completableAfter = timeNow+mi.timeLeftSeconds
 		me.ProgressBar.Text:SetText("")
-		me.ProgressBar:SetProgressCountdown(mi.timeLeftSeconds+timeNow, mi.durationSeconds, "点击完成", true, true)
+		me.ProgressBar:SetProgressCountdown(me.completableAfter, mi.durationSeconds, "点击完成", true, true)
 	elseif mi.completed then
 		me.completableAfter = timeNow-1
 		me.ProgressBar:SetProgress(1)
 		me.ProgressBar.Text:SetText("点击完成")
 	end
 	me.ProgressBar:SetMouseMotionEnabled(me.completableAfter and me.completableAfter <= timeNow)
+	me.ExpireTime.tooltipHeader = "Adventure Expires In:"
+	me.ExpireTime.tooltipCountdownTo = expireAt
 	me:SetCountdown(expirePrefix, expireAt, nil, nil, true, expireRoundUp)
-	me.Rewards[1]:SetReward("xp", mdi.xp)
-	me.Rewards[2]:SetReward(mi.rewards and mi.rewards[1])
-	me.Rewards[3]:SetReward(mi.rewards and mi.rewards[2])
-	me.Rewards.Container:SetWidth(52*(1+#mi.rewards)-2)
+	me.Rewards:SetRewards(mdi.xp, mi.rewards)
 	me.AchievementReward.assetID = mi.missionID
 	me.AchievementReward.achievementID = mi.achievementID
 	me.AchievementReward:SetShown(mi.achievementID and not mi.achievementComplete)
@@ -166,12 +165,6 @@ local function cmpMissionInfo(a,b)
 	if ac ~= bc then
 		return ac
 	end
-	if startedMissions[a.missionID] and not a.timeLeftSeconds then
-		a.timeLeftSeconds, a.offerEndTime = a.durationSeconds
-	end
-	if startedMissions[b.missionID] and not b.timeLeftSeconds then
-		b.timeLeftSeconds, b.offerEndTime = b.durationSeconds
-	end
 	ac, bc = a.timeLeftSeconds, b.timeLeftSeconds
 	if (not ac) ~= (not bc) then
 		return not ac
@@ -194,6 +187,12 @@ local function UpdateMissions()
 	local missions = C_Garrison.GetAvailableMissions(123) or {}
 	local inProgressMissions = C_Garrison.GetInProgressMissions(123)
 	local cMissions = C_Garrison.GetCompleteMissions(123)
+	for i=1,#missions do
+		local m = missions[i]
+		if startedMissions[m.missionID] and not m.timeLeftSeconds then
+			m.timeLeftSeconds, m.offerEndTime = m.durationSeconds
+		end
+	end
 	for i=1,inProgressMissions and #inProgressMissions or 0 do
 		missions[#missions+1] = inProgressMissions[i]
 	end

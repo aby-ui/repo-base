@@ -440,6 +440,137 @@ function module.options:Load()
 
 	self.importWindow, self.exportWindow = ExRT.F.CreateImportExportWindows()
 
+	do
+		self.importWindow:SetHeight(180)
+		self.importWindow.Edit:Point("TOP",0,-100)
+
+		ELib:DecorationLine(self.importWindow):Point("TOPLEFT",0,-17):Point("BOTTOMRIGHT",'x',"TOPRIGHT",0,-18)
+		ELib:DecorationLine(self.importWindow):Point("TOPLEFT",0,-95):Point("BOTTOMRIGHT",'x',"TOPRIGHT",0,-96)
+
+		local importWindow = self.importWindow
+		local function ButtonOnClick(self)
+			local index = 1
+			local c = importWindow["c"..index]
+			while c do
+				c:Enable()
+				if self == c then
+					importWindow.importType = index
+					VExRT.RaidGroups.importType = index
+				end
+				index = index + 1
+				c = importWindow["c"..index]
+			end
+
+			self:Disable()
+		end
+
+		local function CreateButton()
+			local self = ELib:Template("ExRTButtonTransparentTemplate",importWindow)
+			self:SetSize(importWindow:GetWidth()/4,77)
+
+			self.DisabledTexture = self:CreateTexture()
+			self.DisabledTexture:SetColorTexture(0.20,0.21,0.25,0.5)
+			self.DisabledTexture:SetPoint("TOPLEFT")
+			self.DisabledTexture:SetPoint("BOTTOMRIGHT")
+			self:SetDisabledTexture(self.DisabledTexture)
+
+			self:SetScript("OnClick",ButtonOnClick)
+		  
+			return self
+		end
+
+		importWindow.c1 = CreateButton()
+		importWindow.c1:SetPoint("TOPLEFT",0,-18)
+		importWindow.c1:SetText("G1    G2\nG3    G4\nG5    G6\nG7    G8")
+
+		importWindow.c2 = CreateButton()
+		importWindow.c2:SetPoint("LEFT",importWindow.c1,"RIGHT",0,0)
+		importWindow.c2:SetText("G1   G2   G3   G4   G5")
+
+		importWindow.c3 = CreateButton()
+		importWindow.c3:SetPoint("LEFT",importWindow.c2,"RIGHT",0,0)
+		importWindow.c3:SetText("G1\nG2\nG3\nG4\nG5")
+
+		importWindow.c4 = CreateButton()
+		importWindow.c4:SetPoint("LEFT",importWindow.c3,"RIGHT",0,0)
+		importWindow.c4:SetText("From ExRT export string")
+
+		local importType = VExRT.RaidGroups.importType or 4
+		local c = importWindow["c"..importType]
+		if c then
+			c:Click()
+		end
+	end
+
+	do
+		self.exportWindow:SetHeight(130)
+		self.exportWindow.Edit:Point("TOP",0,-100)
+
+		ELib:DecorationLine(self.exportWindow):Point("TOPLEFT",0,-17):Point("BOTTOMRIGHT",'x',"TOPRIGHT",0,-18)
+		ELib:DecorationLine(self.exportWindow):Point("TOPLEFT",0,-95):Point("BOTTOMRIGHT",'x',"TOPRIGHT",0,-96)
+
+		local exportWindow = self.exportWindow
+		local function ButtonOnClick(self)
+			local index = 1
+			local c = exportWindow["c"..index]
+			while c do
+				c:Enable()
+				if self == c then
+					exportWindow.exportType = index
+					VExRT.RaidGroups.exportType = index
+				end
+				index = index + 1
+				c = exportWindow["c"..index]
+			end
+
+			self:Disable()
+
+			module.options:RecordToText()
+			if exportWindow:IsShown() then
+				exportWindow.Edit:SetFocus()
+				exportWindow.Edit:HighlightText()
+			end
+		end
+
+		local function CreateButton()
+			local self = ELib:Template("ExRTButtonTransparentTemplate",exportWindow)
+			self:SetSize(exportWindow:GetWidth()/4,77)
+
+			self.DisabledTexture = self:CreateTexture()
+			self.DisabledTexture:SetColorTexture(0.20,0.21,0.25,0.5)
+			self.DisabledTexture:SetPoint("TOPLEFT")
+			self.DisabledTexture:SetPoint("BOTTOMRIGHT")
+			self:SetDisabledTexture(self.DisabledTexture)
+
+			self:SetScript("OnClick",ButtonOnClick)
+		  
+			return self
+		end
+
+		exportWindow.c1 = CreateButton()
+		exportWindow.c1:SetPoint("TOPLEFT",0,-18)
+		exportWindow.c1:SetText("G1    G2\nG3    G4\nG5    G6\nG7    G8")
+
+		exportWindow.c2 = CreateButton()
+		exportWindow.c2:SetPoint("LEFT",exportWindow.c1,"RIGHT",0,0)
+		exportWindow.c2:SetText("G1   G2   G3   G4   G5")
+
+		exportWindow.c3 = CreateButton()
+		exportWindow.c3:SetPoint("LEFT",exportWindow.c2,"RIGHT",0,0)
+		exportWindow.c3:SetText("G1\nG2\nG3\nG4\nG5")
+
+		exportWindow.c4 = CreateButton()
+		exportWindow.c4:SetPoint("LEFT",exportWindow.c3,"RIGHT",0,0)
+		exportWindow.c4:SetText("ExRT export string")
+
+		local exportType = VExRT.RaidGroups.exportType or 4
+		local c = exportWindow["c"..exportType]
+		if c then
+			c:Disable()
+		end
+		exportWindow.exportType = exportType
+	end
+
 	local function SaveDataFromTable(rec,name)
 		if not name or string.trim(name) == "" then
 			return
@@ -453,21 +584,98 @@ function module.options:Load()
 	end
 
 	function self.importWindow:ImportFunc(str)
-		local header = str:sub(1,8)
-		if header:sub(1,7) ~= "EXRTRGR" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
-			StaticPopupDialogs["EXRT_RAIDGROUP_IMPORT"] = {
-				text = "|cffff0000"..ERROR_CAPS.."|r "..L.ProfilesFail3,
-				button1 = OKAY,
-				timeout = 0,
-				whileDead = true,
-				hideOnEscape = true,
-				preferredIndex = 3,
-			}
-			StaticPopup_Show("EXRT_RAIDGROUP_IMPORT")
-			return
-		end
+		if self.importType == 4 then
+			local header = str:sub(1,8)
+			if header:sub(1,7) ~= "EXRTRGR" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
+				StaticPopupDialogs["EXRT_RAIDGROUP_IMPORT"] = {
+					text = "|cffff0000"..ERROR_CAPS.."|r "..L.ProfilesFail3,
+					button1 = OKAY,
+					timeout = 0,
+					whileDead = true,
+					hideOnEscape = true,
+					preferredIndex = 3,
+				}
+				StaticPopup_Show("EXRT_RAIDGROUP_IMPORT")
+				return
+			end
+	
+			module.options:TextToRecord(str:sub(9),header:sub(8,8)=="0")
+		elseif self.importType == 1 then
+			local res = {}
 
-		module.options:TextToRecord(str:sub(9),header:sub(8,8)=="0")
+			local group = 1
+			local posInGroup = 0
+
+			local lines = {strsplit("\n",str)}
+			for i=1,#lines do
+				local left,right = strsplit(" ",lines[i]:gsub(" +"," "),nil)
+				if left and left:trim() ~= "" then
+					left = left:trim()
+				else
+					left = nil
+				end
+				if right and right:trim() ~= "" then
+					right = right:trim()
+				else
+					right = nil
+				end
+				posInGroup = posInGroup + 1
+				if posInGroup > 5 and (left or right) then
+					posInGroup = 1
+					group = group + 2
+				end
+				if posInGroup <= 5 and group <= 8 then
+					res[(group-1)*5+posInGroup] = left
+					res[(group-0)*5+posInGroup] = right
+				end
+			end
+			ExRT.F.ShowInput(L.RaidGroupsEnterName,SaveDataFromTable,res,nil,nil,SaveInputOnEdit)
+		elseif self.importType == 3 then
+			local res = {}
+
+			local group = 1
+			local posInGroup = 0
+
+			local lines = {strsplit("\n",str)}
+			for i=1,#lines do
+				local left = lines[i]
+				if left and left:trim() ~= "" then
+					left = left:trim()
+				else
+					left = nil
+				end
+				posInGroup = posInGroup + 1
+				if posInGroup > 5 and left then
+					posInGroup = 1
+					group = group + 1
+				end
+				if posInGroup <= 5 and group <= 8 then
+					res[(group-1)*5+posInGroup] = left
+				end
+			end
+			ExRT.F.ShowInput(L.RaidGroupsEnterName,SaveDataFromTable,res,nil,nil,SaveInputOnEdit)
+		elseif self.importType == 2 then
+			local res = {}
+
+			local lines = {strsplit("\n",str)}
+			for i=1,#lines do
+				local group = 0
+
+				local name,line = strsplit(" ",lines[i]:gsub(" +"," "),2)
+				while name do
+					group = group + 1
+					if i <= 5 and group <= 8 then
+						res[(group-1)*5+i] = name:trim()
+					end
+					if line then
+						name,line = strsplit(" ",line,2)
+					else
+						break
+					end
+				end
+			end
+			ExRT.F.ShowInput(L.RaidGroupsEnterName,SaveDataFromTable,res,nil,nil,SaveInputOnEdit)
+		end
 	end
 
 
@@ -515,23 +723,51 @@ function module.options:Load()
 				new[i] = text
 			end
 		end
-		local strlist = ExRT.F.TableToText(new)
-		strlist[1] = "0,"..strlist[1]
-		local str = table.concat(strlist)
-
-		local compressed
-		if #str < 1000000 then
-			compressed = LibDeflate:CompressDeflate(str,{level = 5})
-		end
-		local encoded = "EXRTRGR"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+		local exportWindow = module.options.exportWindow
+		if exportWindow.exportType == 1 then
+			local text = ""
+			for i=1,8,2 do
+				for j=1,5 do
+					text = text .. (new[(i-1)*5+j] or "") .. "\t" .. (new[(i-0)*5+j] or "") .. "\n"
+				end
+			end
+			exportWindow.Edit:SetText(text)
+		elseif exportWindow.exportType == 2 then
+			local text = ""
+			for j=1,5 do
+				for i=1,8 do
+					text = text .. (new[(i-1)*5+j] or "") .. "\t"
+				end
+				text = text .. "\n"
+			end
+			exportWindow.Edit:SetText(text)
+		elseif exportWindow.exportType == 3 then
+			local text = ""
+			for i=1,8 do
+				for j=1,5 do
+					text = text .. (new[(i-1)*5+j] or "") .. "\n"
+				end
+			end
+			exportWindow.Edit:SetText(text)
+		else
+			local strlist = ExRT.F.TableToText(new)
+			strlist[1] = "0,"..strlist[1]
+			local str = table.concat(strlist)
 	
-		ExRT.F.dprint("Str len:",#str,"Encoded len:",#encoded)
-	
-		if ExRT.isDev then
-			module.db.exportTable = new
+			local compressed
+			if #str < 1000000 then
+				compressed = LibDeflate:CompressDeflate(str,{level = 5})
+			end
+			local encoded = "EXRTRGR"..(compressed and "1" or "0")..LibDeflate:EncodeForPrint(compressed or str)
+		
+			ExRT.F.dprint("Str len:",#str,"Encoded len:",#encoded)
+		
+			if ExRT.isDev then
+				module.db.exportTable = new
+			end
+			exportWindow.Edit:SetText(encoded)
 		end
-		module.options.exportWindow.Edit:SetText(encoded)
-		module.options.exportWindow:Show()
+		exportWindow:Show()
 	end
 
 	self.butExport = ELib:Button(self,L.RaidGroupsExport):Size(192,20):Point("TOP",self.presetListSave,"BOTTOM",0,-5):OnClick(function(self) 
