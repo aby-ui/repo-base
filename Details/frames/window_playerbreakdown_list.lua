@@ -11,7 +11,7 @@
 	local scrollbox_size = {200, 405}
 	local scrollbox_lines = 25
     local player_line_height = 21.7
-	local scrollbox_line_backdrop_color = {0, 0, 0, 0.5}
+	local scrollbox_line_backdrop_color = {0.2, 0.2, 0.2, 0.5}
 	local scrollbox_line_backdrop_color_selected = {.6, .6, .1, 0.7}
     local scrollbox_line_backdrop_color_highlight = {.9, .9, .9, 0.5}
     local player_scroll_size = {180, 288}
@@ -21,13 +21,17 @@
 		
 		local refreshPlayerList = function(self, data, offset, totalLines)
 			--update the scroll
+			local topResult = data[1]
+			if (topResult) then
+				topResult = topResult.total
+			end
 			for i = 1, totalLines do
 				local index = i + offset
-				local playerObject = data [index]
+				local playerObject = data[index]
 				if (playerObject) then
 					local line = self:GetLine(i)
 					line.playerObject = playerObject
-					line:UpdateLine()
+					line:UpdateLine(topResult)
 				end
 			end
 		end
@@ -55,7 +59,7 @@
 			self.roleIcon:SetBlendMode("BLEND")
 		end
 		
-		local updatePlayerLine = function(self)
+		local updatePlayerLine = function(self, topResult)
 
 			local playerSelected = Details:GetPlayerObjectFromBreakdownWindow()
 			if (playerSelected and playerSelected == self.playerObject) then
@@ -99,6 +103,12 @@
 			
 			--set the player class name
 			self.className:SetText(string.lower(_G.UnitClass(self.playerObject.nome) or self.playerObject:Class()))
+
+			--set the statusbar
+			local r, g, b = self.playerObject:GetClassColor()
+			self.totalStatusBar:SetStatusBarColor(r, g, b, 1)
+			self.totalStatusBar:SetMinMaxValues(0, topResult)
+			self.totalStatusBar:SetValue(self.playerObject.total)
 		end
 		
 		local createPlayerLine = function(self, index)
@@ -127,20 +137,28 @@
 			playerName.textcolor = {1, 1, 1, .9}
 			playerName.textsize = 11
 			local className = DF:CreateLabel(line, "", "GameFontNormal")
-			className.textcolor = {.5, .5, .5, .5}
+			className.textcolor = {.95, .8, .2, 0}
 			className.textsize = 9
-			
+
+			local totalStatusBar = CreateFrame("statusbar", nil, line)
+			totalStatusBar:SetSize(scrollbox_size[1]-19-player_line_height, 4)
+			totalStatusBar:SetMinMaxValues(0, 100)
+			totalStatusBar:SetStatusBarTexture([[Interface\AddOns\Details\images\bar_skyline]])
+			totalStatusBar:SetFrameLevel(line:GetFrameLevel()-1)
+
 			--setup anchors
 			specIcon:SetPoint("topleft", line, "topleft", 0, 0)
 			roleIcon:SetPoint("topleft", specIcon, "topright", 2, 0)
 			--playerName:SetPoint("left", roleIcon, "right", 2, 0)
 			playerName:SetPoint("topleft", specIcon, "topright", 2, -1)
 			className:SetPoint("topleft", roleIcon, "bottomleft", 0, -2)
-			
+			totalStatusBar:SetPoint("bottomleft", specIcon, "bottomright", 0, 0)
+
 			line.specIcon = specIcon
 			line.roleIcon = roleIcon
 			line.playerName = playerName
 			line.className = className
+			line.totalStatusBar = totalStatusBar
 
 			line.UpdateLine = updatePlayerLine
 
@@ -193,12 +211,12 @@
 						local unitClassID = classIds [playerObject:Class()] or 13
 						local unitName = playerObject:Name()
 						local playerPosition = (((unitClassID or 0) + 128) ^ 4) + tonumber (string.byte (unitName, 1) .. "" .. string.byte (unitName, 2))
-						tinsert(playerTable, {playerObject, playerPosition})
+						tinsert(playerTable, {playerObject, playerPosition, playerObject.total})
 					end
 				end
 			end
 			
-			table.sort (playerTable, DF.SortOrder2R)
+			table.sort (playerTable, DF.SortOrder3)
 			
 			local resultTable = {}
 			for i = 1, #playerTable do
@@ -208,7 +226,7 @@
 			return resultTable
 		end
 		
-		f:HookScript("OnShow", function()
+		function Details:UpdateBreakdownPlayerList()
 			--run the update on the next tick
 			C_Timer.After(0, function()
 				local playerList = breakdownWindowPlayerList.BuildPlayerList()
@@ -216,7 +234,12 @@
 				playerScroll:Refresh()
 				playerScroll:Show()
 			end)
+		end
+
+		f:HookScript("OnShow", function()
+			Details:UpdateBreakdownPlayerList()
 		end)
     end
-    
-    breakdownWindowPlayerList.CreatePlayerListFrame()
+
+	breakdownWindowPlayerList.CreatePlayerListFrame()
+

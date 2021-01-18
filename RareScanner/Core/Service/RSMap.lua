@@ -182,18 +182,29 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	return MapPOIs
 end
 
-function RSMap.GetWorldMapPOI(objectGUID, mapID)
+function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
 	if (not objectGUID or not mapID) then
 		return nil
 	end
 	
-	local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
-	local containerID = tonumber(vignetteObjectID)
-	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-	local alreadyFoundInfo = RSGeneralDB.GetAlreadyFoundEntity(containerID)
-	
-	if (containerInfo or alreadyFoundInfo) then
-		return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
+	if (vignetteType == Enum.VignetteType.Treasure) then
+		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
+		local containerID = tonumber(vignetteObjectID)
+		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
+		local alreadyFoundInfo = RSGeneralDB.GetAlreadyFoundEntity(containerID)
+		
+		if (containerInfo or alreadyFoundInfo) then
+			return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
+		end
+	elseif (vignetteType == Enum.VignetteType.Normal) then
+		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
+		local npcID = tonumber(vignetteObjectID)
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+		local alreadyFoundInfo = RSGeneralDB.GetAlreadyFoundEntity(npcID)
+		
+		if (npcInfo or alreadyFoundInfo) then
+			return RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
+		end
 	end
 	
 	return nil

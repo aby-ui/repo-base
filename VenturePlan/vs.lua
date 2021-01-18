@@ -61,7 +61,7 @@ end
 
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local TP = {} do
-	local mistypedAutoAttack = {[43386]=0, [43387]=0, [43390]=0, [43391]=0, [43445]=0, [43447]=0, [43448]=0, [43451]=0, [43525]=0, [43526]=0, [43527]=0, [43528]=0, [43905]=0, [43906]=0, [43907]=0, [43908]=0, [43925]=0, [43926]=0, [43927]=0, [43928]=0, [44030]=0, [44045]=0, [44089]=0, [44092]=0, [44110]=0, [44111]=0, [44145]=0, [44146]=0, [44147]=0, [44148]=0, [44169]=0, [44171]=0, [44172]=0, [44185]=0, [44186]=0, [44187]=0, [44188]=0, [44191]=0, [44249]=0, [44250]=0, [44252]=0, [44266]=0, [44285]=0, [44288]=0, [44291]=0, [44312]=0, [44491]=0, [44749]=0, [44752]=0, [44770]=0, [44789]=0, [44790]=0, [44791]=0, [44792]=0, [44830]=0, [44870]=0, [44871]=0, [45049]=0, [45050]=0, [45051]=0, [45052]=0, [45189]=0, [45191]=0, [45206]=0, [45207]=0, [45585]=0, [45586]=0, [45587]=0, [45588]=0, [45591]=0, [45751]=0, [45869]=0, [45872]=0, [45969]=0, [45970]=0, [45972]=0}
+	local mistypedAutoAttack = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -76,7 +76,7 @@ local TP = {} do
 		},
 		[3]={
 			[0]="23104", "03421", "03214", "20143", "31204",
-			"56a79b8c", "5a7b698c", "56ba798c", "7685a9bc",
+			"56a79b8c", "5a7b698c", "56bac798", "7685a9bc",
 			"56a79b8c", "96b57a8c", "a57c69b8", "56a79b8c"
 		},
 		[4]={
@@ -102,12 +102,12 @@ local TP = {} do
 		[0x51]=4, [0x70]=1, [0x82]=0,
 	}
 	local adjCleaveN = {
-		[0]={5,6,0x15,0x16,7,9,10,11,0x20,8,12},
-		{6,7,0x16,0x17,8,10,11,12,0x20,5,9},
-		{5,6,0x15,0x16,9,10,0x20,7,11,0x20,8,12},
-		{6,7,0x16,0x17,5,9,10,11,0x20,8,12},
-		{7,8,0x17,0x18,6,10,11,12,0x20,5,9},
-		[7]={3,4,0x20,0,1,2},
+		[0]={5,6,32,7,9,10,11,32,8,12},
+		{6,7,32,8,10,11,12,32,5,9},
+		{5,6,32,9,10,32,7,11,32,8,12},
+		{6,7,32,5,9,10,11,32,8,12},
+		{7,8,32,6,10,11,12,32,5,9},
+		[7]={3,4,32,0,1,2},
 	}
 	local coneCleave = {
 		[0x20]=1, [0x30]=1, [0x31]=1, [0x41]=1,
@@ -224,15 +224,8 @@ local TP = {} do
 						if tu and tu.curHP > 0 and not tu.shroud then
 							stt[ni], ni = i, ni + 1
 						end
-					elseif i == 0x20 then
-						if ni > 1 then
-							break
-						end
-					else
-						local tu = board[i-16]
-						if tu and tu.curHP > 0 and not tu.shroud then
-							break
-						end
+					elseif i == 32 and ni > 1 then
+						break
 					end
 				end
 			else
@@ -263,6 +256,9 @@ local TP = {} do
 					break
 				end
 			end
+			for i=1,ni > 2 and not lo and ni/2 or 0 do
+				stt[ni-i], stt[i] = stt[i], stt[ni-i]
+			end
 		elseif tt == "enemy-back" then
 			local br = lo and 9 or 1
 			for i=lo and 12 or 0, lo and 5 or 4, lo and -1 or 1 do
@@ -273,6 +269,9 @@ local TP = {} do
 				if i == br and ni > 1 then
 					break
 				end
+			end
+			for i=1,ni > 2 and lo and ni/2 or 0 do
+				stt[ni-i], stt[i] = stt[i], stt[ni-i]
 			end
 		elseif tt == "friend-back" or tt == "friend-back-hard" or tt == "friend-back-soft" then
 			local br, selfOK = lo and 1 or 9, tt == "friend-back"
@@ -311,13 +310,9 @@ local TP = {} do
 		return stt
 	end
 	function TP:GetAutoAttack(role, slot, mid, firstSpell)
-		local a1 = slot and mid and mistypedAutoAttack[slot+20*mid]
-		local a2 = slot == nil and role == 2 and (firstSpell == 45 or firstSpell == 52) and 0
+		local a1 = slot and mid and mistypedAutoAttack[4+2*slot+32*mid]
+		local a2 = slot == nil and firstSpell and mistypedAutoAttack[1+4*firstSpell]
 		return (a1 or a2 or (role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
-	end
-	function TP:GetSpellTargetType(spellID)
-		local si = SpellInfo[spellID]
-		return si and type(si.target) == "number" and si.target or nil
 	end
 	TP.GetTargets = GetTargets
 	TP.targetLists = targetLists
@@ -418,6 +413,9 @@ function mu:damage(sourceIndex, targetIndex, baseDamage, causeTag, causeSID)
 			end
 			if tHP > points then
 				tu.curHP = tHP-points
+				if points < 0 and (tHP-points) > tu.maxHP then
+					tu.curHP = tu.maxHP
+				end
 			else
 				tu.curHP = 0
 				mu.die(self, targetIndex, causeTag)
@@ -537,13 +535,18 @@ function mu:spell(source, sid, eid, ord)
 	end
 	if sit == "passive" then
 		local onDeath = su.deathUnwind or {}
-		local mdd, tatk = si.modDamageDealt, si.thornsATK
+		local mdd, mdt, tatk = si.modDamageDealt, si.modDamageTaken, si.thornsATK
 		local td = tatk and f32_pim(tatk,su.atk)
 		for i=1,#tt do
 			i = tt[i]
 			local tu = board[i]
 			if mdd then
 				mu.modDamageDealt(self, source, i, mdd, sid)
+				onDeath[#onDeath+1] = {"unstackf32", source, i, self.lsName, self.lsToken}
+				self.lsName = nil
+			end
+			if mdt then
+				mu.modDamageTaken(self, source, i, mdt, sid)
 				onDeath[#onDeath+1] = {"unstackf32", source, i, self.lsName, self.lsToken}
 				self.lsName = nil
 			end
@@ -570,9 +573,8 @@ function mu:spell(source, sid, eid, ord)
 		local pdd, pdt = pdda and (pdda*su.atk/100), pdta and (pdta*su.atk/100)
 		local nore = si.nore
 		if sid == 91 then pdd = -0.6 end
-		
-		for i=1,#tt do
-			i = tt[i]
+		for ti=1,#tt do
+			local i = tt[ti]
 			local tu = board[i]
 			local thornsp = thornsa and f32_pim(thornsa, tu.atk)
 			if d1 then
@@ -614,18 +616,18 @@ function mu:spell(source, sid, eid, ord)
 				if period == 2 then
 					for j=3,duration+1,2 do
 						if hasDamage or hasHeal then
-							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100})
+							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100+ti})
 						end
 					end
 				else
 					for j=2,duration do
 						if hasDamage or hasHeal then
-							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100})
+							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100+ti})
 						end
 					end
 				end
 				if si.echo then
-					enq(self.queue, tb+si.echo+1, {"damage", source, i, halfPoints, "EEcho", sid, ord=ord-100})
+					enq(self.queue, tb+si.echo+1, {"damage", source, i, halfPoints, "EEcho", sid, ord=ord-100+ti})
 				end
 			end
 		end
@@ -635,8 +637,8 @@ function mu:spell(source, sid, eid, ord)
 		local points1, points2 = datk and f32_pim(datk, sATK) or 0, datk2 and f32_pim(datk2, sATK) or 0
 		echo = echo and (self.turn+echo) or nil
 		local causeTag = si.nore and "Tick" or "Spell"
-		for i=1,#tt do
-			i = tt[i]
+		for ti=1,#tt do
+			local i = tt[ti]
 			local tu = board[i]
 			rflag = mu.damage(self, source, i, points1 + (dperc and math.floor(dperc*tu.maxHP/100) or 0), causeTag, sid) or rflag
 			if points2 > 0 then
@@ -648,7 +650,7 @@ function mu:spell(source, sid, eid, ord)
 					mu.funstackf32(self, source, self.turn+si.duration, ord-100)
 				end
 				if echo then
-					enq(self.queue, echo, {"damage", source, i, points1, "Tick", sid, ord=ord-100})
+					enq(self.queue, echo, {"damage", source, i, points1, "Tick", sid, ord=ord-100+ti})
 				end
 			end
 		end
@@ -822,7 +824,7 @@ function VSI:Run()
 	elseif not self.prime then
 		local isFullyExplored, mass = not self.droppedTraces, 1/self.mass
 		self.pWin = self.won and (isFullyExplored and 1 or mass) or 0
-		self.pLoss = self.won and 0 or (isFullyExplored and 1 or mass)
+		self.pLose = self.won and 0 or (isFullyExplored and 1 or mass)
 		self.exhaustive = isFullyExplored
 	end
 end

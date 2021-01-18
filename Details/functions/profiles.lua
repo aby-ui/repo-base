@@ -225,6 +225,8 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			_detalhes:Msg ("Profile Not Found.")
 			return false
 		end
+
+		profile.ocd_tracker = nil --moved to local character saved
 		
 	--> always save the previous profile, except if nosave flag is up
 		if (not nosave) then
@@ -834,18 +836,6 @@ local default_profile = {
 				0, -- [3]
 			},
 		},
-		
-	--> ocd tracker test
-		ocd_tracker = {
-			enabled = false,
-			cooldowns = {},
-			pos = {},
-			show_conditions = {
-				only_in_group = true,
-				only_inside_instance = true,
-			},
-			show_options = false,
-		},
 
 	--> minimap
 		minimap = {hide = false, radius = 160, minimapPos = 220, onclick_what_todo = 1, text_type = 1, text_format = 3},
@@ -1114,6 +1104,19 @@ local default_player_data = {
 			enabled = false,
 			welcome_panel_pos = {},
 			last_coach_name = false,
+		},
+
+	--> ocd tracker test
+		ocd_tracker = {
+			enabled = false,
+			cooldowns = {},
+			pos = {},
+			show_conditions = {
+				only_in_group = true,
+				only_inside_instance = true,
+			},
+			show_options = false,
+			current_cooldowns = {},
 		},
 
 	--> force all fonts to have this outline

@@ -12,10 +12,12 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
+local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
+local RSConstants = private.ImportLib("RareScannerConstants")
 
 -- RareScanner services libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
@@ -89,6 +91,12 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					if (not RSContainerDB.GetContainerName(containerID) and pin:GetVignetteName()) then
 						RSContainerDB.SetContainerName(containerID, pin:GetVignetteName())
 					end
+				elseif (pin:GetVignetteType() == Enum.VignetteType.Normal and mapID == RSConstants.THE_MAW_MAPID) then
+					local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
+					local npcID = tonumber(vignetteObjectID)
+					if (pin:GetVignetteName()) then
+						RSNpcDB.SetNpcName(npcID, pin:GetVignetteName())
+					end
 				end
 				
 				pin:HookScript("OnEnter", function(self)
@@ -97,12 +105,14 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 						return
 					end
 					
-					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
+					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), self:GetMap():GetMapID())
 					if (POI) then
 						self.POI = POI
 						-- Just in case the user didnt have the questID when he found it
 						if (POI.isOpened) then
 							RSContainerDB.DeleteContainerOpened(POI.entityID)
+						elseif (POI.isDead) then
+							RSNpcDB.DeleteNpcKilled(POI.entityID)
 						end
 						self.hasTooltip = false
 						RSTooltip.ShowSimpleTooltip(self)
@@ -123,7 +133,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				end)
 				pin:HookScript("OnMouseDown", function(self, button)					
 					if (button == "RightButton") then
-						local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetMap():GetMapID())
+						local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), self:GetMap():GetMapID())
 						if (POI) then
 							-- If displaying guides
 							if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
@@ -149,12 +159,12 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					end
 				end)
 			
-				RSLogger:PrintDebugMessage(string.format("Sobreescrito contenedor del mapa del mundo: %s", pin:GetObjectGUID()))
+				RSLogger:PrintDebugMessage(string.format("Sobreescrito contenedor del mapa del mundo: %s, [%s]", pin:GetObjectGUID(), pin:GetVignetteType()))
 				pin.initialized = true
 			end
 
 			-- Adds guide if active
-			local POI = RSMap.GetWorldMapPOI(pin:GetObjectGUID(), self:GetMap():GetMapID())
+			local POI = RSMap.GetWorldMapPOI(pin:GetObjectGUID(), pin:GetVignetteType(), self:GetMap():GetMapID())
 			if (POI and RSGeneralDB.HasGuideActive(POI.entityID)) then
 				ShowInGameVignetteGuide(pin, POI)
 			end
@@ -176,8 +186,8 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			end
 		end
 
-		-- If the container is only available when shown in the world map, there is no need to fill the map with useless icons
-		if (POI.isContainer and POI.worldmap) then
+		-- If the entity is only available when shown in the world map, there is no need to fill the map with useless icons
+		if (POI.worldmap) then
 			filtered = true
 		elseif (POI.isGroup) then
 			for _, subPOI in ipairs(POI.POIs) do

@@ -466,15 +466,9 @@ function Details:StartMeUp() --I'll never stop!
 	--coach feature startup
 	Details.Coach.StartUp()
 
-	--enforce to show 6 abilities on the tooltip
-	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
-
 	--force the group edit be always enabled when Details! starts
 	_detalhes.options_group_edit = true
 
-	--remove standard skin on 9.0.1
-		_detalhes.standard_skin = false
-	
 	--enforce to use the new animation code
 	if (_detalhes.streamer_config) then
 		_detalhes.streamer_config.use_animation_accel = true
@@ -482,6 +476,12 @@ function Details:StartMeUp() --I'll never stop!
 
 	--shutdown pre-pot announcer
 	Details.announce_prepots.enabled = false
+	--disable the min healing to show
+	Details.deathlog_healingdone_min =  1
+	--remove standard skin on 9.0.1
+	_detalhes.standard_skin = false
+	--enforce to show 6 abilities on the tooltip
+	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
 
 	--Plater integration
 	C_Timer.After(2, function()
@@ -500,6 +500,8 @@ function Details:StartMeUp() --I'll never stop!
 	if (math.random(10) == 1) then
 		--Details:Msg("use '/details me' macro to open the player breakdown for you!")
 	end
+
+	Details.cached_specs[UnitGUID("player")] = GetSpecializationInfo(GetSpecialization() or 0)
 
 	function Details:InstallOkey()
 		return true

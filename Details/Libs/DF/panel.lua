@@ -5139,7 +5139,7 @@ DF.IconRowFunctions = {
 			newIconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", newIconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
 			newIconFrame.CountdownText:Hide()
 			
-			newIconFrame.StackText = cooldownFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			newIconFrame.StackText = newIconFrame:CreateFontString (nil, "overlay", "GameFontNormal")
 			--newIconFrame.StackText:SetPoint ("bottomright")
 			newIconFrame.StackText:SetPoint (self.options.stack_text_anchor or "center", newIconFrame, self.options.stack_text_rel_anchor or "bottomright", self.options.stack_text_x_offset or 0, self.options.stack_text_y_offset or 0)
 			newIconFrame.StackText:Hide()
@@ -6080,7 +6080,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 			canCheckTalents = false
 			
 			for _, specID in ipairs (specsForThisClass) do
-				if (loadTable.spec [specID]) then
+				if (loadTable.spec [specID] or loadTable.spec [specID..""]) then
 					--theres a talent for this class
 					canCheckTalents = true
 					break
@@ -6092,7 +6092,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 			local specIndex = DetailsFramework.GetSpecialization()
 			if (specIndex) then
 				local specID = DetailsFramework.GetSpecializationInfo (specIndex)
-				if (not loadTable.spec [specID]) then
+				if (not loadTable.spec [specID] or loadTable.spec [specID..""]) then
 					return false
 				end
 			else
@@ -6316,7 +6316,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 					name = specName,
 					set = f.OnRadioCheckboxClick,
 					param = specID,
-					get = function() return f.OptionsTable.spec [specID] end,
+					get = function() return f.OptionsTable.spec [specID] or f.OptionsTable.spec [specID..""] end,
 					texture = specIcon,
 				})
 			end

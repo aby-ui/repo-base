@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210106042720")
+mod:SetRevision("20210114202106")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(8)
-mod:SetHotfixNoticeRev(20210105000000)--2021, 01, 05
-mod:SetMinSyncRevision(20210105000000)
+mod:SetHotfixNoticeRev(20210113000000)--2021, 01, 13
+mod:SetMinSyncRevision(20210113000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -76,6 +76,7 @@ local specWarnFixate							= mod:NewSpecialWarningRun(330967, nil, nil, nil, 4, 
 ----Mythic
 --local specWarnMindFlay						= mod:NewSpecialWarningInterrupt(310552, "HasInterrupt", nil, nil, 1, 2)
 --Baroness Frieda
+local specWarnDreadboltVolley					= mod:NewSpecialWarningInterruptCount(337110, false, nil, nil, 1, 2)
 local specWarnPridefulEruption					= mod:NewSpecialWarningMoveAway(346657, nil, 138658, nil, 2, 2)--One boss dead
 --Lord Stavros
 local specWarnEvasiveLunge						= mod:NewSpecialWarningDodge(327497, nil, 219588, nil, 2, 2)
@@ -349,6 +350,44 @@ local function phaseChange(self, adjustment)
 	end
 end
 
+--/run DBM:GetModByName(2426):TestAdd(10)
+function mod:TestAdd(amount)
+	timerDutifulAttendantCD:AddTime(amount)
+	timerDualistsRiposteCD:AddTime(amount)
+	timerDredgerServantsCD:AddTime(amount)
+	timerCastellansCadreCD:AddTime(amount)
+	timerDrainEssenceCD:AddTime(amount)
+	timerSoulSpikesCD:AddTime(amount)
+	timerDarkRecitalCD:AddTime(amount)
+	timerEvasiveLungeCD:AddTime(amount)
+	timerWaltzofBloodCD:AddTime(amount)
+	timerDancingFoolsCD:AddTime(amount)
+end
+
+--/run DBM:GetModByName(2426):TestRemove(10)
+function mod:TestRemove(amount)
+	timerDutifulAttendantCD:RemoveTime(amount)
+	timerDualistsRiposteCD:RemoveTime(amount)
+	timerDredgerServantsCD:RemoveTime(amount)
+	timerCastellansCadreCD:RemoveTime(amount)
+	timerDrainEssenceCD:RemoveTime(amount)
+	timerSoulSpikesCD:RemoveTime(amount)
+	timerDarkRecitalCD:RemoveTime(amount)
+	timerEvasiveLungeCD:RemoveTime(amount)
+	timerWaltzofBloodCD:RemoveTime(amount)
+	timerDancingFoolsCD:RemoveTime(amount)
+end
+
+--/run DBM:GetModByName(2426):SmallTestAdd(10)
+function mod:SmallTestAdd(amount)
+	timerDutifulAttendantCD:AddTime(amount)
+end
+
+--/run DBM:GetModByName(2426):SmallTestRemove(10)
+function mod:SmallTestRemove(amount)
+	timerDutifulAttendantCD:RemoveTime(amount)
+end
+
 function mod:OnCombatStart(delay)
 	self.vb.phase = 1
 	self.vb.feversActive = 0
@@ -477,7 +516,21 @@ function mod:SPELL_CAST_START(args)
 			self.vb.volleyCast = 0
 		end
 		self.vb.volleyCast = self.vb.volleyCast + 1
-		warnDreadboltVolley:Show(self.vb.volleyCast)
+		local count = self.vb.volleyCast
+		if self.Options.SpecWarn337110interruptcount then
+			specWarnDreadboltVolley:Show(count)
+			if count == 1 then
+				specWarnDreadboltVolley:Play("kick1r")
+			elseif count == 2 then
+				specWarnDreadboltVolley:Play("kick2r")
+			elseif count == 3 then
+				specWarnDreadboltVolley:Play("kick3r")
+			else--fallback, shouldn't happen but never know
+				specWarnDreadboltVolley:Play("kickcast")
+			end
+		else
+			warnDreadboltVolley:Show(count)
+		end
 --		if args:GetSrcCreatureID() == 166969 then--Main boss
 --			local timer = self.vb.volleyCast == 3 and 12 or 4
 			--Phase 2 always 12, phase 1 is 4 between 3 set then 12 til next set
@@ -589,7 +642,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 --			timerDreadboltVolleyCD:AddTime(50)
 			timerDrainEssenceCD:AddTime(50)
 			if self.vb.phase >= 2 then--1 Dead
-				timerSoulSpikesCD:AddTime(50)
+				timerPridefulEruptionCD:AddTime(50)
 			end
 			if self.vb.phase >= 3 then--2 Dead
 				timerSoulSpikesCD:AddTime(50)
@@ -751,7 +804,7 @@ function mod:SPELL_AURA_REMOVED(args)
 --			timerDreadboltVolleyCD:RemoveTime(adjustment)
 			timerDrainEssenceCD:RemoveTime(adjustment)
 			if self.vb.phase >= 2 then--1 Dead
-				timerSoulSpikesCD:RemoveTime(adjustment)
+				timerPridefulEruptionCD:RemoveTime(adjustment)
 			end
 			if self.vb.phase >= 3 then--2 Dead
 				timerSoulSpikesCD:RemoveTime(adjustment)

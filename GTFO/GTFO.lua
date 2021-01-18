@@ -23,10 +23,10 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.57.4"; -- Version number (text format)
+	Version = "4.59"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 45704; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 45702; -- Numeric version number for checking out-of-date clients (classic)
+	RetailVersionNumber = 45900; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 45900; -- Numeric version number for checking out-of-date clients (classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -104,6 +104,11 @@ StaticPopupDialogs["GTFO_POPUP_MESSAGE"] = {
 	whileDead = true,
 	hideOnEscape = true,
 };	
+
+local ddm;
+if not (GTFO.ClassicMode) then
+	ddm = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+end
 
 function GTFO_ChatPrint(str)
 	DEFAULT_CHAT_FRAME:AddMessage("[GTFO] "..tostring(str), 0.25, 1.0, 0.25);
@@ -889,7 +894,11 @@ function GTFO_PlaySound(iSound, bOverride)
 	if (bOverride or GTFO.Settings.Sounds[iSound]) then
 		local soundChannel = GTFO.Settings.SoundChannel;
 		if (bOverride) then
-			soundChannel = L_UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown) or soundChannel;
+			if (GTFO.ClassicMode) then
+				soundChannel = L_UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown) or soundChannel;
+			else
+				soundChannel = ddm:UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown) or soundChannel;
+			end
 		end
 		if (bOverride and getglobal("GTFO_UnmuteButton"):GetChecked()) then
 			GTFO_UnmuteSound(GTFO.SoundTimes[iSound], soundChannel);
@@ -1034,13 +1043,23 @@ function GTFO_RenderOptions()
 	SoundChannelText:SetText(GTFOLocal.UI_SoundChannel);
 	SoundChannelText.tooltip = UI_SoundChannelDescription;
 	
-	GTFO_SoundChannelDropdown = L_Create_UIDropDownMenu("GTFO_SoundChannelDropdown", ConfigurationPanel);
-	GTFO_SoundChannelDropdown:SetPoint("TOPLEFT", 10, -350)
-	L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
-	L_UIDropDownMenu_SetWidth(GTFO_SoundChannelDropdown, 150);
-	L_UIDropDownMenu_SetButtonWidth(GTFO_SoundChannelDropdown, 124);
-	L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
-	L_UIDropDownMenu_JustifyText(GTFO_SoundChannelDropdown, "LEFT");
+	if (GTFO.ClassicMode) then
+		GTFO_SoundChannelDropdown = L_Create_UIDropDownMenu("GTFO_SoundChannelDropdown", ConfigurationPanel);
+		GTFO_SoundChannelDropdown:SetPoint("TOPLEFT", 10, -350)
+		L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+		L_UIDropDownMenu_SetWidth(GTFO_SoundChannelDropdown, 150);
+		L_UIDropDownMenu_SetButtonWidth(GTFO_SoundChannelDropdown, 124);
+		L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+		L_UIDropDownMenu_JustifyText(GTFO_SoundChannelDropdown, "LEFT");
+	else
+		GTFO_SoundChannelDropdown = ddm:Create_UIDropDownMenu("GTFO_SoundChannelDropdown", ConfigurationPanel);
+		GTFO_SoundChannelDropdown:SetPoint("TOPLEFT", 10, -350)
+		ddm:UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+		ddm:UIDropDownMenu_SetWidth(GTFO_SoundChannelDropdown, 150);
+		ddm:UIDropDownMenu_SetButtonWidth(GTFO_SoundChannelDropdown, 124);
+		ddm:UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+		ddm:UIDropDownMenu_JustifyText(GTFO_SoundChannelDropdown, "LEFT");
+	end
 
 	-- Special Alerts frame
 
@@ -1093,7 +1112,12 @@ function GTFO_RenderOptions()
 					GTFO.Settings.IgnoreOptions[key] = true;
 				end
 			end
-			GTFO.Settings.SoundChannel = L_UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown);
+			
+			if (GTFO.ClassicMode) then
+				GTFO.Settings.SoundChannel = L_UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown);
+			else
+				GTFO.Settings.SoundChannel = ddm:UIDropDownMenu_GetSelectedValue(GTFO_SoundChannelDropdown);
+			end
 
 			GTFO_SaveSettings();
 		end
@@ -1101,8 +1125,13 @@ function GTFO_RenderOptions()
 		function (self)
 			VolumeSlider:SetValue(GTFO.Settings.OriginalVolume);
 			TrivialDamageSlider:SetValue(GTFO.Settings.OriginalTrivialDamagePercent);
-			L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
-			L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+			if (GTFO.ClassicMode) then
+				L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+				L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+			else
+				ddm:UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+				ddm:UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+			end
 			GTFO_SaveSettings();
 		end
 	ConfigurationPanel.default = 
@@ -1114,14 +1143,26 @@ end
 function GTFO_SoundChannelDropdownInitialize(self, level)
   for id, soundChannel in pairs(GTFO.SoundChannels) do
     local info;
-    info = L_UIDropDownMenu_CreateInfo();
+	if (GTFO.ClassicMode) then
+		info = L_UIDropDownMenu_CreateInfo();
+	else	
+		info = ddm:UIDropDownMenu_CreateInfo();
+	end
     info.text = soundChannel.Name;
     info.value = soundChannel.Code;
     info.arg1 = id;
     info.func = function(self, arg1, arg2, checked)
-    	L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, self.value);
+    	if (GTFO.ClassicMode) then
+			L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, self.value);
+		else
+			ddm:UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, self.value);
+		end
     end
-    L_UIDropDownMenu_AddButton(info, level);
+	if (GTFO.ClassicMode) then
+		L_UIDropDownMenu_AddButton(info, level);
+	else
+		ddm:UIDropDownMenu_AddButton(info, level);
+	end
   end
 end
 
@@ -1663,8 +1704,13 @@ function GTFO_SetDefaults()
 	if (GTFO.UIRendered) then
 		getglobal("GTFO_VolumeSlider"):SetValue(GTFO.DefaultSettings.Volume);
 		getglobal("GTFO_TrivialDamageSlider"):SetValue(GTFO.DefaultSettings.TrivialDamagePercent);
-		L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
-		L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+		if (GTFO.ClassicMode) then
+			L_UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+			L_UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+		else
+			ddm:UIDropDownMenu_Initialize(GTFO_SoundChannelDropdown, GTFO_SoundChannelDropdownInitialize);
+			ddm:UIDropDownMenu_SetSelectedValue(GTFO_SoundChannelDropdown, GTFO.Settings.SoundChannel);
+		end
 	end
 	GTFO.Settings.IgnoreOptions = GTFO.DefaultSettings.IgnoreOptions;
 	GTFO.Settings.SoundOverrides = GTFO.DefaultSettings.SoundOverrides;

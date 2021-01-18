@@ -243,6 +243,7 @@ function _detalhes:AbreJanelaInfo (jogador, from_att_change, refresh, ShiftKeyDo
 	
 	info:ShowTabs()
 	gump:Fade (info, 0)
+	Details:UpdateBreakdownPlayerList()
 	
 	--check which tab was selected and reopen that tab
 	if (info.selectedTab == "Summary") then
@@ -1848,21 +1849,21 @@ function gump:CriaJanelaInfo()
 	}
 	
 	_detalhes:CreatePlayerDetailsTab ("Summary", Loc ["STRING_SPELLS"], --[1] tab name [2] localized name
-			function (tabOBject, playerObject) --[2] condition
+			function (tabOBject, playerObject) --[3] condition
 				if (playerObject) then 
 					return true 
 				else 
 					return false 
 				end
 			end, 
-			nil, --[3] fill function
-			function() --[4] onclick
+			nil, --[4] fill function
+			function() --[5] onclick
 				for _, tab in _ipairs (_detalhes.player_details_tabs) do
 					tab.frame:Hide()
 				end
 			end,
-			nil, --[5] oncreate
-			iconTableSummary --icon table
+			nil, --[6] oncreate
+			iconTableSummary --[7] icon table
 	)
 		
 		--> search key: ~avoidance --> begining of avoidance tab
@@ -2569,8 +2570,9 @@ function gump:CriaJanelaInfo()
 			height = 16,
 		}		
 		
-		_detalhes:CreatePlayerDetailsTab ("Avoidance", Loc ["STRING_INFO_TAB_AVOIDANCE"], --[1] tab name [2] localized name
-			function (tabOBject, playerObject)  --[2] condition
+		_detalhes:CreatePlayerDetailsTab ("Avoidance", --[1] tab name
+			Loc ["STRING_INFO_TAB_AVOIDANCE"],  --[2] localized name
+			function (tabOBject, playerObject)  --[3] condition
 				if (playerObject.isTank) then 
 					return true 
 				else 
@@ -2578,12 +2580,12 @@ function gump:CriaJanelaInfo()
 				end
 			end, 
 			
-			avoidance_fill, --[3] fill function
+			avoidance_fill, --[4] fill function
 			
-			nil, --[4] onclick
+			nil, --[5] onclick
 			
-			avoidance_create, --[5] oncreate
-			iconTableAvoidance
+			avoidance_create, --[6] oncreate
+			iconTableAvoidance --[7] icon
 		)
 	
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2803,7 +2805,6 @@ function gump:CriaJanelaInfo()
 	end
 	
 	local auras_tab_fill = function (tab, player, combat)
-		
 		local miscActor = combat:GetActor (4, player:name())
 		local combatTime = combat:GetCombatTime()
 		
@@ -2841,16 +2842,17 @@ function gump:CriaJanelaInfo()
 		height = 16,
 	}	
 	
-	_detalhes:CreatePlayerDetailsTab ("Auras", "Auras", --[1] tab name [2] localized name
-		function (tabOBject, playerObject)  --[2] condition
+	_detalhes:CreatePlayerDetailsTab ("Auras", --[1] tab name
+		"Auras",  --[2] localized name
+		function (tabOBject, playerObject)  --[3] condition
 			return true
 		end, 
 		
-		auras_tab_fill, --[3] fill function
+		auras_tab_fill, --[4] fill function
 		
-		nil, --[4] onclick
+		nil, --[5] onclick
 		
-		auras_tab_create, --[5] oncreate
+		auras_tab_create, --[6] oncreate
 		iconTableAuras --icon table
 	)
 
@@ -4771,8 +4773,9 @@ function gump:CriaJanelaInfo()
 			height = 14,
 		}
 		
-		_detalhes:CreatePlayerDetailsTab ("Compare", Loc ["STRING_INFO_TAB_COMPARISON"], --[1] tab name [2] localized name
-			function (tabOBject, playerObject)  --[2] condition
+		_detalhes:CreatePlayerDetailsTab ("Compare", --[1] tab name
+			Loc ["STRING_INFO_TAB_COMPARISON"],  --[2] localized name
+			function (tabOBject, playerObject)  --[3] condition
 				
 				if (info.atributo > 2) then
 					return false
@@ -4845,20 +4848,17 @@ function gump:CriaJanelaInfo()
 				return true --debug?
 			end, 
 			
-			compare_fill, --[3] fill function
+			compare_fill, --[4] fill function
 			
-			nil, --[4] onclick
+			nil, --[5] onclick
 			
-			compare_create, --[5] oncreate
+			compare_create, --[6] oncreate
 			iconTableCompare --icon table
 		)
 		
 		-- ~compare ~newcompare
 		-- ~compare
-		
 
-
-		
 	
 	-- ~tab ~tabs
 		function este_gump:ShowTabs()

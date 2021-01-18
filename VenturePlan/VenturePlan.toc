@@ -1,6 +1,6 @@
 ## Interface: 90002
 ## Title: Venture Plan
-## Version: 4.05
+## Version: 4.06
 ## Notes: Interface improvements for Adventures.
 ## Author: foxlit
 ## License: All rights reserved. Do not modify or redistribute.

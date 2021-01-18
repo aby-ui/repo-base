@@ -12,7 +12,6 @@ function Details:OpenNewsWindow(textToShow, dumpValues, keeptext)
 
 	if (dumpValues == "change_log" or textToShow == "LeftButton") then
 		newsFrame:Text (Loc ["STRING_VERSION_LOG"])
-		--newsFrame:Icon ([[Interface\AddOns\Details\images\icons2]], {108/512, 189/512, 319/512, 400/512})
 		newsFrame:Show()
 		return
 	end
@@ -46,7 +45,15 @@ function Details:OpenNewsWindow(textToShow, dumpValues, keeptext)
 		if (keeptext) then
 			newsFrame:Text ((DetailsNewsWindowText:GetText() or "") .. "\n\n" .. (textToShow or Loc ["STRING_VERSION_LOG"]))
 		else
+			--show news
 			newsFrame:Text (textToShow or Loc["STRING_VERSION_LOG"])
+			--show textures
+			if (_detalhes.build_counter == 8154) then
+				newsFrame.imageFrame:Show()
+				newsFrame.imageFrame.texture:SetTexture([[interface/addons/details/images/news_images]])
+				newsFrame.imageFrame.texture:SetSize(279, 452)
+				newsFrame.imageFrame.texture:SetTexCoord(0, 279/512, 0, 452/512)
+			end
 		end
 	end
 
@@ -65,6 +72,16 @@ function Details:CreateOrOpenNewsWindow()
 		frame:SetFrameStrata("FULLSCREEN")
 		frame:SetMovable(true)
 		frame:Hide()
+		DetailsFramework:ApplyStandardBackdrop(frame)
+
+		frame.imageFrame = CreateFrame("frame", "DetailsNewsWindowImageFrame", frame, "BackdropTemplate")
+		frame.imageFrame:SetPoint("topleft", frame, "topright", 2, 0)
+		frame.imageFrame:SetPoint("bottomleft", frame, "bottomright", 2, 0)
+		frame.imageFrame:SetWidth(256)
+		DetailsFramework:ApplyStandardBackdrop(frame.imageFrame)
+		frame.imageFrame:Hide()
+		frame.imageFrame.texture = frame.imageFrame:CreateTexture(nil, "overlay")
+		frame.imageFrame.texture:SetPoint("topleft", frame.imageFrame, "topleft")
 
 		local dumpFrame = g:CreateTextEntry(frame, function()end, 500, 512, "DumpTable", "$parentDumpTable")
 		dumpFrame.editbox:SetMultiLine (true)

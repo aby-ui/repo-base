@@ -1,3 +1,4 @@
+if UnitName("player") == "心钥" then return end
 if not(GetLocale() == "zhCN") then
   return
 end

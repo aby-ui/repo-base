@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -52,7 +52,7 @@ local function SetHooks()
 		if PetTracker.sets.trackPets then
 			self:GetClass().Update(self)
 		end
-		self:SetShown(PetTracker.sets.trackPets and self.Anchor:IsShown())
+		self:SetShown(PetTracker.sets.trackPets and self.Bar:IsShown())
 		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_PETTRACKER)
 	end
 
@@ -77,7 +77,7 @@ local function SetHooks()
 			line.SubIcon:SetPoint("TOPLEFT", 0, 0)
 			line.Icon:ClearAllPoints()
 			line.Icon:SetPoint("LEFT", line.SubIcon, "RIGHT", 5, 0)
-			line.Text:SetWidth(self.Anchor:GetWidth() - line.Icon:GetWidth() - line.SubIcon:GetWidth() - 10)
+			line.Text:SetWidth(self.Bar:GetWidth() - line.Icon:GetWidth() - line.SubIcon:GetWidth() - 10)
 			line.Text:ClearAllPoints()
 			line.Text:SetPoint("LEFT", line.Icon, "RIGHT", 5, 0)
 			line.Text:SetFont(KT.font, db.fontSize, db.fontFlag)
@@ -166,26 +166,26 @@ local function SetFrames()
 	objectives:Hide()
 
 	-- Progress bar
-	objectives.Anchor:SetSize(content:GetWidth() - 4, 13)
-	objectives.Anchor:SetPoint("TOPLEFT", content, -8, -4)
-	objectives.Anchor.xOff = -2
+	objectives.Bar:SetSize(content:GetWidth() - 4, 13)
+	objectives.Bar:SetPoint("TOPLEFT", content, -8, -4)
+	objectives.Bar.xOff = -2
 
-	objectives.Anchor.Overlay.BorderLeft:Hide()
-	objectives.Anchor.Overlay.BorderRight:Hide()
-	objectives.Anchor.Overlay.BorderCenter:Hide()
+	objectives.Bar.Overlay.BorderLeft:Hide()
+	objectives.Bar.Overlay.BorderRight:Hide()
+	objectives.Bar.Overlay.BorderCenter:Hide()
 
-	local border1 = objectives.Anchor:CreateTexture(nil, "BACKGROUND", nil, -2)
+	local border1 = objectives.Bar:CreateTexture(nil, "BACKGROUND", nil, -2)
 	border1:SetPoint("TOPLEFT", -1, 1)
 	border1:SetPoint("BOTTOMRIGHT", 1, -1)
 	border1:SetColorTexture(0, 0, 0)
 
-	local border2 = objectives.Anchor:CreateTexture(nil, "BACKGROUND", nil, -3)
+	local border2 = objectives.Bar:CreateTexture(nil, "BACKGROUND", nil, -3)
 	border2:SetPoint("TOPLEFT", -2, 2)
 	border2:SetPoint("BOTTOMRIGHT", 2, -2)
 	border2:SetColorTexture(0.4, 0.4, 0.4)
 
-	objectives.Anchor.Overlay.Text:SetPoint("CENTER", 0, 0.5)
-	objectives.Anchor.Overlay.Text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
+	objectives.Bar.Overlay.Text:SetPoint("CENTER", 0, 0.5)
+	objectives.Bar.Overlay.Text:SetFont(LSM:Fetch("font", "Arial Narrow"), 13, "")
 end
 
 --------------
@@ -239,10 +239,10 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.5") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.7") and db.addonPetTracker)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("PetTracker", "9.0.1")
+		KT:Alert_IncompatibleAddon("PetTracker", "9.0.7")
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)

@@ -3,6 +3,7 @@ local EV = T.Evie
 
 local overDesc = {
 	[91]="Reduces the damage dealt by the furthest enemy by 1 for 3 rounds.",
+	[85]="Reduces the damage taken by the closest ally by 5000% for two rounds.",
 }
 
 local GetMaskBoard do
@@ -58,20 +59,34 @@ local function FormatTargetBlips(tm, bm, prefix, ac)
 	ac = ac and ac .. "|t" or "120:255:0|t"
 	local r, xs = "", 0
 	local _, sh = GetPhysicalScreenSize()
-	local bw = (blipMetric:GetStringWidth()+select(2,blipMetric:GetFont())*(sh*5/9000-0.7))/0.64*UIParent:GetScale()
-	local yd, bwc = math.floor(bw/2+0.5), math.ceil(bw)
+	blipMetric:SetText("|TInterface/Minimap/PartyRaidBlipsV2:8:8|t|TInterface/Minimap/PartyRaidBlipsV2:8:8|t")
+	local w2 = blipMetric:GetStringWidth()
+	blipMetric:SetText("|TInterface/Minimap/PartyRaidBlipsV2:8:8|t")
+	local w1 = blipMetric:GetStringWidth()
+	local bw = (w2-w1+select(2,blipMetric:GetFont())*(sh*5/9000-0.7))/0.64*UIParent:GetScale()
+	local yd = bw/2
 	if tm % 32 > 0 then
-		for i=0,4 do
+		local xo = 0
+		for i=2,4 do
 			local t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (i < 2 and (math.ceil(bw/2) .. ":" .. -yd) or (-2*bwc .. ":" .. yd)).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
+			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (xo .. ":" .. yd).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
+			if i < 4 then
+				i, xo = i - 2, xo - bw/2
+				t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
+				r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (xo .. ":" .. -yd).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
+				xo = xo - bw/2
+			end
 		end
-		xs = -10
+		xs = -bw*3
 	end
 	if tm >= 32 then
-		local lo, hi = xs .. ":" .. -yd, (xs-4*bwc) .. ":" .. yd
-		for i=5,12 do
+		local xo = xs
+		for i=5,8 do
 			local t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (i > 8 and hi or lo).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
+			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. xo .. ":" .. -yd .. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
+			i, xo = i + 4, xo - bw
+			t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
+			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. xo .. ":" .. yd  .. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
 		end
 	end
 	if prefix and r ~= "" then
@@ -168,7 +183,8 @@ local function Puck_OnEnter(self)
 			GameTooltip:AddLine(" ")
 			local si = T.KnownSpells[s.autoCombatSpellID]
 			local pfx = si and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
-			GameTooltip:AddDoubleLine(pfx .. "|T" .. s.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. s.name, "|cffa8a8a8[CD: " .. s.cooldown .. "回合]|r")
+			local cdt = s.cooldown ~= 0 and "[CD: " .. s.cooldown .. "回合]" or SPELL_PASSIVE_EFFECT
+			GameTooltip:AddDoubleLine(pfx .. "|T" .. s.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. s.name, "|cffa8a8a8" .. cdt .. "|r")
 			local dc, guideLine = 0.95
 			if si and si.type == "nop" then
 				dc, guideLine = 0.60, "It does nothing."
@@ -340,7 +356,7 @@ local function Predictor_OnClick(self)
 				GameTooltip:AddLine("坚持回合数: |cffffffff" .. sim.turn, c.r, c.g, c.b)
 				GameTooltip:AddLine("剩余敌人生命值: |cffffffff" .. thp .. " (" .. math.ceil(thp/mhp*100) .. "%)", c.r, c.g, c.b)
 			end
-		elseif sim.exhaustive and (sim.pWin == 1 or sim.pLoss == 0) and sim.forks then
+		elseif sim.exhaustive and (sim.pWin == 1 or sim.pLose == 1) and sim.forks then
 			local lo, hi, inf = {}, {}, math.huge
 			local c = NORMAL_FONT_COLOR
 			for i=0,#sim.forks do
@@ -378,8 +394,10 @@ local function Predictor_OnClick(self)
 				local hmin, hmax, maxHP = 0, 0, 0
 				for i=5,12 do
 					local e = sim.board[i]
-					maxHP = maxHP + (e.maxHP or 0)
-					hmin, hmax = hmin + (lo[i] or 0), hmax + (hi[i] or 0)
+					if e then
+						maxHP = maxHP + (e.maxHP or 0)
+						hmin, hmax = hmin + (lo[i] or 0), hmax + (hi[i] or 0)
+					end
 				end
 				local chp = hmin == hmax and hmin or (hmin .. " - " .. hmax)
 				hmin, hmax = math.ceil(hmin/maxHP*100), math.ceil(hmax/maxHP*100)

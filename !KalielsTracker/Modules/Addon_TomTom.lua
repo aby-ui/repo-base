@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -15,7 +15,6 @@ local db
 local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
 local questWaypoints = {}
 local superTrackedQuestID = 0
-local questChanged = false
 
 local eventFrame
 
@@ -150,6 +149,7 @@ local function AddWaypoint(questID, isSilent)
 		title = title,
 		silent = true,
 		world = false,
+		minimap = false,
 		persistent = false,
 		arrivaldistance = db.tomtomArrival,
 	})
@@ -192,7 +192,9 @@ local function SetHooks()
 		local questID = uid.questID
 		if questWaypoints[questID] then
 			questWaypoints[questID] = nil
-			superTrackedQuestID = 0
+			if not KT.stopUpdate then
+				superTrackedQuestID = 0
+			end
 			ObjectiveTracker_Update()
 			QuestMapFrame_UpdateAll()
 		end
@@ -200,17 +202,19 @@ local function SetHooks()
 	
 	-- Blizzard
 	hooksecurefunc(C_SuperTrack, "SetSuperTrackedQuestID", function(questID)
-		local isSilet = (questID == superTrackedQuestID)
+		local isSilent = (questID == superTrackedQuestID)
 		RemoveWaypoint(superTrackedQuestID)
 		if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
-			if AddWaypoint(questID, isSilet) then
+			if AddWaypoint(questID, isSilent) then
 				superTrackedQuestID = questID
 			end
 		end
 	end)
 
 	hooksecurefunc(C_QuestLog, "RemoveQuestWatch", function(questID)
-		RemoveWaypoint(questID)
+		if not KT.stopUpdate then
+			RemoveWaypoint(questID)
+		end
 	end)
 
 	hooksecurefunc(C_QuestLog, "AbandonQuest", function()
@@ -268,30 +272,20 @@ local function SetFrames()
 	-- Event frame
 	if not eventFrame then
 		eventFrame = CreateFrame("Frame")
-		eventFrame:SetScript("OnEvent", function(_, event, ...)
+		eventFrame:SetScript("OnEvent", function(self, event, ...)
 			_DBG("Event - "..event, true)
 			if event == "QUEST_WATCH_UPDATE" then
 				local questID = ...
-				if superTrackedQuestID == questID then
-					questChanged = true
+				if questID == superTrackedQuestID then
+					self:RegisterEvent("QUEST_LOG_UPDATE")
 				end
 			elseif event == "QUEST_LOG_UPDATE" then
-				if questChanged then
-					local questID = superTrackedQuestID
-					ReAddWaipoint(questID, true)
-					questChanged = false
-				end
-			elseif event == "ZONE_CHANGED_NEW_AREA" then
-				local questID = C_SuperTrack.GetSuperTrackedQuestID()
-				if QuestUtils_IsQuestWatched(questID) or KT.activeTasks[questID] then
-					ReAddWaipoint(questID, true)
-				end
+				ReAddWaipoint(superTrackedQuestID, true)
+				self:UnregisterEvent(event)
 			end
 		end)
 	end
 	eventFrame:RegisterEvent("QUEST_WATCH_UPDATE")
-	eventFrame:RegisterEvent("QUEST_LOG_UPDATE")
-	eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 end
 
 --------------
@@ -301,7 +295,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v90002-1.1.9") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v90002-1.2.0") and db.addonTomTom)
 
 	if self.isLoaded then
 		KT:Alert_IncompatibleAddon("TomTom", "v90002-1.1.9")

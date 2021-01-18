@@ -19,6 +19,7 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     KT.L["Favorites"] = "收藏"	
     KT.L["Zone"] = "当前地图"
     KT.L["Daily"] = "日常"
+	KT.L["Daily / Weekly"] = "日常/周常"
     KT.L["Instance"] = "副本"
     KT.L["Complete"] = "已完成"
 	KT.L["Unfinished"] = "未完成"

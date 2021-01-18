@@ -768,13 +768,16 @@ DF.CrowdControlSpells = {
 	[50259] = "DRUID", --Dazed (from Wild Charge)
 	[209753] = "DRUID", --Cyclone (from pvp talent)
 	[33786] = "DRUID", --Cyclone (from pvp talent - resto druid)
-	[155722] = "DRUID", --Rake
+	[163505] = "DRUID", --Rake
+	[127797] = "DRUID", --Ursol's Vortex
 	
     [3355] = "HUNTER", --Freezing Trap / Diamond Ice (from pvp talent)
 	[19577] = "HUNTER", --Intimidation
 	[190927] = "HUNTER", --Harpoon
 	[162480] = "HUNTER", --Steel Trap
 	[24394] = "HUNTER", --Intimidation
+	[117405] = "HUNTER", --Binding Shot (trigger)
+	[117526] = "HUNTER", --Binding Shot (triggered)
 	
 	[119381] = "MONK", --Leg Sweep
 	[115078] = "MONK", --Paralysis
@@ -784,6 +787,14 @@ DF.CrowdControlSpells = {
 	
 	[118905] = "SHAMAN", --Static Charge (Capacitor Totem)
 	[51514] = "SHAMAN", --Hex
+	[210873] = "SHAMAN", --Hex (Compy)
+	[211004] = "SHAMAN", --Hex (Spider)
+	[211010] = "SHAMAN", --Hex (Snake)
+	[211015] = "SHAMAN", --Hex (Cockroach)
+	[269352] = "SHAMAN", --Hex (Skeletal Hatchling)
+	[277778] = "SHAMAN", --Hex (Zandalari Tendonripper)
+	[277784] = "SHAMAN", --Hex (Wicker Mongrel)
+	[309328] = "SHAMAN", --Hex (Living Honey)
 	[64695] = "SHAMAN", --Earthgrab (talent)
 	[197214] = "SHAMAN", --Sundering (talent)
 	
@@ -963,8 +974,6 @@ DF.PotionIDs = {
 --	[] = true, --
 
 	[307165] = true, --Spiritual Anti-Venom
-
-
 }
 
 DF.FeastIDs = {

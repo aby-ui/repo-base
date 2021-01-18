@@ -197,23 +197,27 @@ function TimeBarMetaFunctions:SetDirection(direction)
     self.direction = direction
 end
 
+function TimeBarMetaFunctions:HasTimer()
+    return self.statusBar.hasTimer
+end
+
 function TimeBarMetaFunctions:StopTimer()
     if (self.statusBar.hasTimer) then
+        self.statusBar.hasTimer = nil
         local kill = self:RunHooksForWidget("OnTimerEnd", self.statusBar, self)
         if (kill) then
             return
         end
-
-        local statusBar = self.statusBar
-        statusBar:SetScript("OnUpdate", nil)
-
-        statusBar:SetMinMaxValues(0, 100)
-        statusBar:SetValue(100)
-        statusBar.rightText:SetText("")
-
-        statusBar.spark:Hide()
-        statusBar.hasTimer = nil
     end
+
+    local statusBar = self.statusBar
+    statusBar:SetScript("OnUpdate", nil)
+
+    statusBar:SetMinMaxValues(0, 100)
+    statusBar:SetValue(100)
+    statusBar.rightText:SetText("")
+
+    statusBar.spark:Hide()
 end
 
 local OnUpdateFunc = function(self, deltaTime)
@@ -249,6 +253,12 @@ local OnUpdateFunc = function(self, deltaTime)
 end
 
 function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
+
+    if (not currentTime or currentTime == 0) then
+        self:StopTimer()
+        return
+    end
+
     if (startTime and endTime) then
         if (self.statusBar.hasTimer and currentTime == self.statusBar.timeLeft1) then
             --it is the same timer called again
@@ -266,6 +276,7 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
         self.statusBar.timeLeft2 = currentTime
     end
 
+    --print("min|max values:", self.statusBar.starTime, self.statusBar.endTime)
     self.statusBar:SetMinMaxValues(self.statusBar.starTime, self.statusBar.endTime)
 
     if (self.direction == "right") then

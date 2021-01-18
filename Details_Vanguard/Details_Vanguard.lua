@@ -962,7 +962,7 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 					print (install.error)
 				end
 
-				Vanguard.db.first_run = false
+				--Vanguard.db.first_run = false --debug
 				
 				--> create widgets
 				CreatePluginFrames()

@@ -6,13 +6,12 @@ StaticPopupDialogs["163UI_CHAT_CLEAR"] = {preferredIndex = 3,
     button1 = TEXT(YES),
     button2 = TEXT(CANCEL),
     OnAccept = function(self, data)
-        local lines = CoreGetParaParam("Gamma", 17, 4);
-        if lines ~= 0 then
+        (data or SELECTED_CHAT_FRAME):Clear();
+        local lines = U1GetCfgValue("163ui_chat", "maxLines") --CoreGetParaParam("Gamma", 17, 4);
+        if lines and lines ~= 0 then
             lines = normalize(lines, 50, 5000);
             (data or SELECTED_CHAT_FRAME):SetMaxLines(lines);
             U1Message("本聊天框记录行数设置为|cffffd100"..lines.."|r", nil, nil, nil, (data or SELECTED_CHAT_FRAME));
-        else
-            (data or SELECTED_CHAT_FRAME):Clear();
         end
     end,
     timeout = 0,

@@ -949,6 +949,387 @@ local function GetFilterOptions()
 end
 
 
+
+local custom_npcs_options
+
+local function GetCustomNpcOptions()
+	if not custom_npcs_options then
+		-- load continent combo
+		local CONTINENT_MAP_IDS = {}
+		for k, v in pairs(private.CONTINENT_ZONE_IDS) do
+			if (v.zonefilter) then
+				if (v.id) then
+					CONTINENT_MAP_IDS[k] = getZoneName(k)
+				else
+					CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
+				end
+			end
+		end
+
+		local loadSubmapsCombo = function(continentID, npcID)
+			if (continentID) then
+				custom_npcs_options.args[npcID].args.subzones.values = {}
+				private.custom_npcs_options[npcID].subzone = nil
+				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
+					local zoneName = getZoneName(zoneID)
+					if (zoneName) then
+						custom_npcs_options.args[npcID].args.subzones.values[zoneID] = zoneName
+					end
+				end)
+			end
+		end
+		
+		local addNewCustomNpc = function(npcID)
+			if (not private.custom_npcs_options) then
+				private.custom_npcs_options = {}
+			end
+			
+			private.custom_npcs_options[npcID] = {}
+			
+			if (not private.custom_npcs_options[npcID].zones) then
+				private.custom_npcs_options[npcID].zones = {}
+				private.custom_npcs_options[npcID].coordinates = {}
+			end
+			
+			custom_npcs_options.args[npcID] = {
+				type = "group",
+				order = 2,
+				name = RSNpcDB.GetNpcName(tonumber(npcID)),
+				handler = RareScanner,
+				desc = RSNpcDB.GetNpcName(tonumber(npcID)),
+				args = {
+					deleteNpc = {
+						order = 1,
+						name = AL["CUSTOM_NPC_DELETE_NPC"],
+						desc = AL["CUSTOM_NPC_DELETE_NPC_DESC"],
+						type = "execute",
+						confirm = true,
+						confirmText = string.format(AL["CUSTOM_NPC_DELETE_NPC_CONFIRM"], RSNpcDB.GetNpcName(tonumber(npcID))),
+						func = function()
+							private.custom_npcs_options[npcID] = nil
+							custom_npcs_options.args[npcID] = nil
+							RSNpcDB.DeleteCustomNpcInfo(npcID)
+							RSNpcDB.DeleteCustomNpcLoot(npcID)
+							RSGeneralDB.RemoveAlreadyFoundEntity(tonumber(npcID))
+						end,
+						width = "normal",
+					},
+					separatorFindZone = {
+						order = 2,
+						type = "header",
+						name = AL["CUSTOM_NPC_FIND_ZONES"],
+					},
+					continents = {
+						order = 3.1,
+						type = "select",
+						name = AL["FILTER_CONTINENT"],
+						desc = AL["FILTER_CONTINENT_DESC"],
+						values = CONTINENT_MAP_IDS,
+						sorting = sortValues(CONTINENT_MAP_IDS),
+						get = function(_, key)
+							-- initialize
+							if (not private.custom_npcs_options[npcID].continent) then
+								private.custom_npcs_options[npcID].continent = DEFAULT_CONTINENT_MAP_ID
+	
+								-- load submaps combo
+								loadSubmapsCombo(private.custom_npcs_options[npcID].continent, npcID)
+							end
+	
+							return private.custom_npcs_options[npcID].continent
+						end,
+						set = function(_, key, value)
+							private.custom_npcs_options[npcID].continent = key
+	
+							-- load subzones combo
+							loadSubmapsCombo(key, npcID)
+						end,
+						width = 1.0,
+					},
+					subzones = {
+						order = 3.2,
+						type = "select",
+						name = AL["FILTER_ZONE"],
+						desc = AL["FILTER_ZONE_DESC"],
+						values = {},
+						sorting = function()
+							if (next(custom_npcs_options.args[npcID].args.subzones.values)) then
+								return sortValues(custom_npcs_options.args[npcID].args.subzones.values)
+							end
+							return nil;
+						end,
+						get = function(_, key) return private.custom_npcs_options[npcID].subzone end,
+						set = function(_, key, value)
+							private.custom_npcs_options[npcID].subzone = key
+						end,
+						width = 1.4,
+						disabled = function() return (next(custom_npcs_options.args[npcID].args.subzones.values) == nil) end,
+					},
+					addZone = {
+						order = 4,
+						name = AL["CUSTOM_NPC_ADD_ZONE"],
+						desc = AL["CUSTOM_NPC_ADD_ZONE_DESC"],
+						type = "execute",
+						func = function()
+							-- if already selected ignore it
+							if (not private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone]) then
+								private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = getZoneName(private.custom_npcs_options[npcID].subzone)
+								private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
+							end
+						end,
+						width = "normal",
+						disabled = function() return (not private.custom_npcs_options[npcID].subzone) end,
+					},
+					separatorCurrentZones = {
+						order = 5,
+						type = "header",
+						name = AL["CUSTOM_NPC_CURRENT_ZONES"],
+					},
+					zones = {
+						order = 6.1,
+						type = "select",
+						name = AL["CUSTOM_NPC_CURRENT_ZONE"],
+						desc = AL["CUSTOM_NPC_CURRENT_ZONE_DESC"],
+						values = private.custom_npcs_options[npcID].zones,
+						sorting = function()
+							return sortValues(private.custom_npcs_options[npcID].zones)
+						end,
+						get = function(_, key) return private.custom_npcs_options[npcID].zone end,
+						set = function(_, key, value)
+							private.custom_npcs_options[npcID].zone = key
+						end,
+						width = 1.4,
+						disabled = function() return (next(private.custom_npcs_options[npcID].zones) == nil) end,
+					},
+					deleteZone = {
+						order = 6.2,
+						name = AL["CUSTOM_NPC_DELETE_ZONE"],
+						desc = AL["CUSTOM_NPC_DELETE_ZONE_DESC"],
+						type = "execute",
+						confirm = true,
+						confirmText = AL["CUSTOM_NPC_DELETE_ZONE_CONFIRM"],
+						func = function()
+							private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].zone] = nil
+							private.custom_npcs_options[npcID].coordinates[private.custom_npcs_options[npcID].zone] = nil
+							private.custom_npcs_options[npcID].zone = next(private.custom_npcs_options[npcID].zones)
+						end,
+						width = 1.0,
+						disabled = function() return (next(private.custom_npcs_options[npcID].zones) == nil) end,
+					},
+					coordinates = {
+						order = 7,
+						type = "input",
+						name = AL["CUSTOM_NPC_COORDINATES"],
+						desc = AL["CUSTOM_NPC_COORDINATES_DESC"],
+						get = function(_, value) 
+							if (private.custom_npcs_options[npcID].zone) then
+								return private.custom_npcs_options[npcID].coordinates[private.custom_npcs_options[npcID].zone]
+							end
+							
+							return nil
+						end,
+						set = function(_, value)
+							private.custom_npcs_options[npcID].coordinates[private.custom_npcs_options[npcID].zone] = value
+							RSNpcDB.SetCustomNpcInfo(npcID, private.custom_npcs_options[npcID])
+						end,
+						validate = function(_, value)
+							-- Check if contains proper characters
+							if (not string.match(value, "[0-9,%-]")) then
+								return string.format(AL["CUSTOM_NPC_VALIDATION_CHAR"], "0123456789-,")
+							end
+							
+							-- Check if the string is well formed
+							local coordinatePairs = { strsplit(",", value) }
+							for i, coordinatePair in ipairs(coordinatePairs) do
+								local coordx, coordy = 	strsplit("-", coordinatePair)
+								if (not coordx or tonumber(coordx) == nil or not coordy or tonumber(coordy) == nil) then
+									return string.format(AL["CUSTOM_NPC_VALIDATION_COORD"], coordinatePair)
+								end
+							end
+							
+							return true
+						end,
+						width = "full",
+						disabled = function() return (next(private.custom_npcs_options[npcID].zones) == nil or not private.custom_npcs_options[npcID].zone) end,
+					},
+					separatorExtraInfo = {
+						order = 8,
+						type = "header",
+						name = AL["CUSTOM_NPC_EXTRA_INFO"],
+					},
+					displayID = {
+						order = 9,
+						type = "input",
+						name = AL["CUSTOM_NPC_DISPLAY_ID"],
+						desc = AL["CUSTOM_NPC_DISPLAY_ID_DESC"],
+						get = function(_, value) 
+							return private.custom_npcs_options[npcID].displayID
+						end,
+						set = function(_, value)
+							private.custom_npcs_options[npcID].displayID = value
+							RSNpcDB.SetCustomNpcInfo(npcID, private.custom_npcs_options[npcID])
+						end,
+						validate = function(_, value)
+							-- Skips if empty
+							if (not value or value == '') then
+								return true
+							end
+							
+							-- Check if number
+							if (value and tonumber(value) == nil) then
+								return AL["CUSTOM_NPC_VALIDATION_NUMBER"]
+							end
+							
+							return true
+						end,
+						width = "full",
+					},
+					loot = {
+						order = 10,
+						type = "input",
+						name = AL["CUSTOM_NPC_LOOT"],
+						desc = AL["CUSTOM_NPC_LOOT_DESC"],
+						get = function(_, value) 
+							return private.custom_npcs_options[npcID].loot
+						end,
+						set = function(_, value)
+							private.custom_npcs_options[npcID].loot = value
+							
+							if (value and value ~= '') then
+								local itemIDs = {}
+								for _, itemID in ipairs ({ strsplit(",", value) }) do
+									tinsert(itemIDs, tonumber(itemID))
+								end
+								RSNpcDB.SetCustomNpcLoot(npcID, itemIDs)
+							else
+								RSNpcDB.SetCustomNpcLoot(npcID, nil)
+							end
+						end,
+						validate = function(_, value)
+							-- Skips if empty
+							if (not value or value == '') then
+								return true
+							end
+						
+							-- Check if contains proper characters
+							if (not string.match(value, "[0-9,]")) then
+								return string.format(AL["CUSTOM_NPC_VALIDATION_CHAR"], "0123456789,")
+							end
+							
+							-- Check if the string is well formed
+							local itemIDs = { strsplit(",", value) }
+							for _, itemID in ipairs (itemIDs) do
+								if (not itemID or tonumber(itemID) == nil) then
+									return AL["CUSTOM_NPC_VALIDATION_ITEM"]
+								end
+							end
+							
+							return true
+						end,
+						width = "full",
+					},
+				}
+			}
+		end
+
+		custom_npcs_options = {
+			type = "group",
+			order = 1,
+			name = AL["CUSTOM_NPCS"],
+			handler = RareScanner,
+			desc = AL["CUSTOM_NPCS"],
+			args = {
+				description = {
+					order = 1,
+					type = "description",
+					name = AL["CUSTOM_NPC_TEXT"],
+				},
+				newNpcID = {
+					order = 2,
+					type = "input",
+					name = AL["CUSTOM_NPC_ADD_NPC"],
+					desc = AL["CUSTOM_NPC_ADD_NPC_DESC"],
+					get = function(_, value) return private.custom_npcs_options_newNpcID_input end,
+					set = function(_, value)
+						private.custom_npcs_options_newNpcID_input = value
+						addNewCustomNpc(private.custom_npcs_options_newNpcID_input);
+					end,
+					validate = function(_, value)
+						-- Check if number
+						if (tonumber(value) == nil) then
+							return AL["CUSTOM_NPC_VALIDATION_NUMBER"]
+						end
+						
+						-- Check if valid NPC
+						-- Call several times to let the server load it
+						RSNpcDB.GetNpcName(tonumber(value))
+						RSNpcDB.GetNpcName(tonumber(value))
+						local name = RSNpcDB.GetNpcName(tonumber(value))
+						if (not name) then
+							return AL["CUSTOM_NPC_ADD_NPC_NOEXIST"]
+						end
+						
+						-- Check if already supported by RareScanner
+						if (RSNpcDB.GetInternalNpcInfo(tonumber(value))) then
+							return AL["CUSTOM_NPC_ADD_NPC_EXISTS_RS"]
+						end
+						
+						return true
+					end,
+					width = "normal",
+				}
+			},
+		}
+		
+		local extractCoordinates = function(overlay)
+			local coordinates = ""
+			if (overlay) then
+				for i, coordinate in pairs (overlay) do
+					local x, y = strsplit("-",coordinate)
+					if (i > 1) then
+						coordinates = coordinates..string.format(",%s-%s", string.sub(x, 3), string.sub(y, 3))
+					else
+						coordinates = coordinates..string.format("%s-%s", string.sub(x, 3), string.sub(y, 3))
+					end
+				end
+			end
+			
+			return coordinates
+		end
+		
+		-- Preload already added custom NPCs
+		if (RSNpcDB.GetAllCustomNpcInfo()) then
+			for npcID, npcInfo in pairs (RSNpcDB.GetAllCustomNpcInfo()) do
+				local npcIDstring = tostring(npcID)
+				addNewCustomNpc(npcIDstring)
+				
+				local npcInfo = RSNpcDB.GetCustomNpcInfo(npcID)
+				if (npcInfo.displayID and npcInfo.displayID ~= 0) then
+					private.custom_npcs_options[npcIDstring].displayID = tostring(npcInfo.displayID)
+				end
+				
+				local npcLoot = RSNpcDB.GetCustomNpcLoot(npcID)
+				if (npcLoot) then
+					private.custom_npcs_options[npcIDstring].loot = table.concat(npcLoot, ",")
+				end
+				
+				if (RSNpcDB.IsInternalNpcMultiZone(npcID)) then
+					for zoneID, zoneInfo in pairs (npcInfo.zoneID) do
+						private.custom_npcs_options[npcIDstring].zones[zoneID] = getZoneName(zoneID)
+						private.custom_npcs_options[npcIDstring].zone = zoneID
+						private.custom_npcs_options[npcIDstring].coordinates[zoneID] = extractCoordinates(zoneInfo.overlay)
+					end
+				else
+					private.custom_npcs_options[npcIDstring].zones[npcInfo.zoneID] = getZoneName(npcInfo.zoneID)
+					private.custom_npcs_options[npcIDstring].zone = npcInfo.zoneID
+					private.custom_npcs_options[npcIDstring].coordinates[npcInfo.zoneID] = extractCoordinates(npcInfo.overlay)
+				end
+			end
+		end
+	end
+
+	return custom_npcs_options
+end
+
 local container_filter_options
 
 local function GetContainerFilterOptions()
@@ -2130,6 +2511,7 @@ function RareScanner:SetupOptions()
 	RSAC:RegisterOptionsTable("RareScanner General", GetGeneralOptions)
 	RSAC:RegisterOptionsTable("RareScanner Sound", GetSoundOptions)
 	RSAC:RegisterOptionsTable("RareScanner Display", GetDisplayOptions)
+	RSAC:RegisterOptionsTable("RareScanner Custom NPCs", GetCustomNpcOptions)
 	RSAC:RegisterOptionsTable("RareScanner NPC Filter", GetFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Container Filter", GetContainerFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Zone Filter", GetZonesFilterOptions)
@@ -2141,6 +2523,7 @@ function RareScanner:SetupOptions()
 	RSACD:AddToBlizOptions("RareScanner General", _G.GENERAL_LABEL, "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Sound", AL["SOUND"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Display", AL["DISPLAY"], "RareScanner")
+	RSACD:AddToBlizOptions("RareScanner Custom NPCs", AL["CUSTOM_NPCS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner NPC Filter", AL["FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Container Filter", AL["CONTAINER_FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Zone Filter", AL["ZONES_FILTER"], "RareScanner")

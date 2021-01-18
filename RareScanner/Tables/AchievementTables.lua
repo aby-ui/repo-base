@@ -57,7 +57,7 @@ private.ACHIEVEMENT_ZONE_IDS = {
 	[1649] = { 14312 }; --Maldraxxus (Shadowlands)
 	[1565] = { 14309, 14313, 14353 }; --Ardenweald (Shadowlands)
 	[1525] = { 14310, 14314 }; --Revendreth (Shadowlands)
-	[1543] = { 14743, 14660 }; --The Maw (Shadowlands)
+	[1543] = { 14743, 14660, 14738 }; --The Maw (Shadowlands)
 }
 
 private.ACHIEVEMENT_TARGET_IDS = {
@@ -102,4 +102,5 @@ private.ACHIEVEMENT_TARGET_IDS = {
 	[14743] = { 157964, 157833, 160770, 170711, 169827, 170303, 158278, 172577, 166398, 170731, 170301, 171317, 158025, 170774, 154330, 162849, 164064, 170634, 170302, 172862 }; --Deadly Serious
 	[14660] = { 158314, 162829, 162965, 168693, 170692, 171316, 172523, 173086, 156203, 175821, 162452, 162845, 165047, 169102, 170787, 172521, 172524, 172207, 162844 }; --It's About Sending a Message
 	[14733] = { 170548 }; --In the Hot Seat
+	[14738] = { 172629, 172631, 172632, 175885 }; --Hungry party
 }

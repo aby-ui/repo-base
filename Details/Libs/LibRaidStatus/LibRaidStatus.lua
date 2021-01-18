@@ -1,6 +1,6 @@
 
 local major = "LibRaidStatus-1.0"
-local CONST_LIB_VERSION = 11
+local CONST_LIB_VERSION = 13
 LIB_RAID_STATUS_CAN_LOAD = false
 
 --declae the library within the LibStub
@@ -17,7 +17,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
     raidStatusLib.CanReceiveComms = false
 
     --print failures (when the function return an error) results to chat
-    local CONST_DIAGNOSTIC_ERRORS = true
+    local CONST_DIAGNOSTIC_ERRORS = false
     --print the data to be sent and data received from comm
     local CONST_DIAGNOSTIC_COMM = false
 
@@ -120,15 +120,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
         return newString
     end
 
-    --stract some indexes of a table
-    local selectIndexes = function(table, startIndex, amountIndexes)
-        local values = {}
-        for i = startIndex, startIndex+amountIndexes do
-            values[#values+1] = tonumber(table[i]) or 0
-        end
-        return values
-    end
-
     --return is a number is almost equal to another within a tolerance range
     function raidStatusLib.isNearlyEqual(value1, value2, tolerance)
         tolerance = tolerance or CONST_FRACTION_OF_A_SECOND
@@ -138,6 +129,15 @@ LIB_RAID_STATUS_CAN_LOAD = false
     --return true if the lib is allowed to receive comms from other players
     function raidStatusLib.IsCommAllowed()
         return raidStatusLib.CanReceiveComms
+    end
+
+    --stract some indexes of a table
+    local selectIndexes = function(table, startIndex, amountIndexes)
+        local values = {}
+        for i = startIndex, startIndex+amountIndexes do
+            values[#values+1] = tonumber(table[i]) or 0
+        end
+        return values
     end
 
     --transform a string table into a regular table
@@ -160,7 +160,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
             for i = indexStart, indexEnd, amountOfValues do
                 if (valueIsTable) then
                     local key = tonumber(table[i])
-                    local values = selectIndexes(table, i+1, 1)
+                    local values = selectIndexes(table, i+1, max(amountOfValues-2, 1))
                     result[key] = values
                 else
                     local key = tonumber(table[i])
@@ -220,7 +220,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
             --remove the first index (prefix)
             tremove(dataAsTable, 1)
-            --Details:Dump(dataAsTable)
 
             --trigger callbacks
             for i = 1, #callbackTable do
@@ -659,19 +658,19 @@ LIB_RAID_STATUS_CAN_LOAD = false
     local cooldownTimeLeftCheck = function(tickerObject)
         local spellId = tickerObject.spellId
         tickerObject.cooldownTimeLeft = tickerObject.cooldownTimeLeft - CONST_COOLDOWN_CHECK_INTERVAL
-        local timeLeft, charges = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
+        local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
 
         --is the spell ready to use?
         if (timeLeft == 0) then
             --it's ready
-            raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, 0, charges)
+            raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, 0, charges, 0, 0)
             raidStatusLib.cooldownManager.cooldownTickers[spellId] = nil
             tickerObject:Cancel()
         else
             --check if the time left has changed
             if (not raidStatusLib.isNearlyEqual(tickerObject.cooldownTimeLeft, timeLeft, CONST_COOLDOWN_TIMELEFT_HAS_CHANGED)) then
                 --there's a deviation, send a comm to communicate the change in the time left
-                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges)
+                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
                 tickerObject.cooldownTimeLeft = timeLeft
             end
         end
@@ -724,11 +723,14 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --update a single spell time and charges
     --called when the player casted a cooldown and when received a cooldown update from another player
-    local singleCooldownUpdate = function(unitName, spellId, newTimeLeft, newCharges)
+    --only update the db, no other action is taken
+    local singleCooldownUpdate = function(unitName, spellId, newTimeLeft, newCharges, startTime, duration)
         local unitCooldownTable = cooldownGetUnitTable(unitName)
         local spellIdTable = unitCooldownTable[spellId] or {}
         spellIdTable[1] = newTimeLeft
         spellIdTable[2] = newCharges
+        spellIdTable[3] = startTime
+        spellIdTable[4] = duration
         unitCooldownTable[spellId] = spellIdTable
     end
 
@@ -736,6 +738,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
         return raidStatusLib.cooldownManager.playerData
     end
 
+    --@playerName: name of the player
     function raidStatusLib.cooldownManager.GetPlayerCooldownTable(playerName)
         return raidStatusLib.cooldownManager.playerData[playerName]
     end
@@ -746,18 +749,17 @@ LIB_RAID_STATUS_CAN_LOAD = false
         if (playerSpec) then
             if (LIB_RAID_STATUS_COOLDOWNS_BY_SPEC[playerSpec] and LIB_RAID_STATUS_COOLDOWNS_BY_SPEC[playerSpec][spellId]) then
                 --get the cooldown time for this spell
-                local timeLeft, charges = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
-
+                local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
                 local playerName = UnitName("player")
 
                 --update the time left
-                singleCooldownUpdate(playerName, spellId, timeLeft, charges)
+                singleCooldownUpdate(playerName, spellId, timeLeft, charges, startTime, duration)
 
                 --trigger a public callback
-                raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", playerName, spellId, timeLeft, charges, raidStatusLib.cooldownManager.playerData)
+                raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", playerName, spellId, timeLeft, charges, startTime, duration, raidStatusLib.cooldownManager.playerData)
 
                 --send to comm
-                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges)
+                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
 
                 --create a timer to monitor the time of this cooldown
                 --as there's just a few of them to monitor, there's no issue on creating one timer per spell
@@ -774,6 +776,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
         local spellId = tonumber(dataAsArray[1])
         local cooldownTimer = tonumber(dataAsArray[2])
         local charges = tonumber(dataAsArray[3])
+        local startTime = tonumber(dataAsArray[4])
+        local duration = tonumber(dataAsArray[5])
 
         --check integraty
         if (not spellId or spellId == 0) then
@@ -784,13 +788,19 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
         elseif (not charges) then
             return diagnosticError("cooldownManager|comm received|charges is invalid")
+        
+        elseif (not startTime) then
+            return diagnosticError("cooldownManager|comm received|startTime is invalid")
+
+        elseif (not duration) then
+            return diagnosticError("cooldownManager|comm received|duration is invalid")
         end
 
         --update
-        singleCooldownUpdate(sourceName, spellId, cooldownTimer, charges)
+        singleCooldownUpdate(sourceName, spellId, cooldownTimer, charges, startTime, duration)
 
         --trigger a public callback
-        raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", sourceName, spellId, cooldownTimer, charges, raidStatusLib.cooldownManager.playerData)
+        raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", sourceName, spellId, cooldownTimer, charges, startTime, duration, raidStatusLib.cooldownManager.playerData)
     end)
 
     --when the player is ressed while in a group, send the cooldown list
@@ -836,20 +846,22 @@ LIB_RAID_STATUS_CAN_LOAD = false
                 local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)
 
                 if (chargesAvailable == chargesTotal) then
-                    return 0, chargesTotal --all charges are ready to use
+                    return 0, chargesTotal, 0, 0 --all charges are ready to use
                 else
                     --return the time to the next charge
                     local timeLeft = start + duration - GetTime()
-                    return ceil(timeLeft), chargesAvailable
+                    local startTimeOffset = start - GetTime()
+                    return ceil(timeLeft), chargesAvailable, startTimeOffset, duration --time left, charges, startTime
                 end
 
             else
                 local start, duration = GetSpellCooldown(spellId)
                 if (start == 0) then --cooldown is ready
-                    return 0, 1
+                    return 0, 1, 0, 0 --time left, charges, startTime
                 else
                     local timeLeft = start + duration - GetTime()
-                    return ceil(timeLeft), 0
+                    local startTimeOffset = start - GetTime()
+                    return ceil(timeLeft), 0, ceil(startTimeOffset), duration --time left, charges, startTime, duration
                 end
             end
         else
@@ -862,8 +874,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
         --get the full cooldown list
         local playerCooldownList = raidStatusLib.cooldownManager.GetPlayerCooldownList()
         local dataToSend = CONST_COMM_COOLDOWNFULLLIST_PREFIX .. ","
-        --pack
 
+        --pack
         local playerCooldownString = raidStatusLib.PackTable(playerCooldownList)
         dataToSend = dataToSend .. playerCooldownString
 
@@ -873,8 +885,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --send to comm a specific cooldown that was just used, a charge got available or its cooldown is over (ready to use)
-    function raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, cooldownTimeLeft, charges)
-        local dataToSend = CONST_COMM_COOLDOWNUPDATE_PREFIX .. "," .. spellId .. "," .. cooldownTimeLeft .. "," .. charges
+    function raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, cooldownTimeLeft, charges, startTime, duration)
+        local dataToSend = CONST_COMM_COOLDOWNUPDATE_PREFIX .. "," .. spellId .. "," .. cooldownTimeLeft .. "," .. charges .. "," .. startTime .. "," .. duration
         raidStatusLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("SendCooldownUpdate| " .. dataToSend) --debug
     end
@@ -883,13 +895,12 @@ LIB_RAID_STATUS_CAN_LOAD = false
     --@data: table received from comm
     --@source: player name
     function raidStatusLib.cooldownManager.OnReceiveCooldowns(data, source)
-        --unpack the table as a pairs table
-        local unpackedTable = raidStatusLib.UnpackTable(data, 1, true, true, 3)
+        --unpack the table as a pairs table | the cooldown info uses 5 indexes
+        local unpackedTable = raidStatusLib.UnpackTable(data, 1, true, true, 5)
         --add the list of cooldowns
         raidStatusLib.cooldownManager.AddUnitCooldownsList(source, unpackedTable)
     end
     raidStatusLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNFULLLIST_PREFIX, raidStatusLib.cooldownManager.OnReceiveCooldowns)
-
 
 
     --build a list with the local player cooldowns
@@ -917,15 +928,19 @@ LIB_RAID_STATUS_CAN_LOAD = false
                         --check if the player has the talent selected
                         if (talentsHash[talentId]) then
                             cooldowns[#cooldowns+1] = cooldownSpellId
-                            local timeLeft, charges = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
+                            local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
                             cooldowns[#cooldowns+1] = timeLeft
                             cooldowns[#cooldowns+1] = charges
+                            cooldowns[#cooldowns+1] = startTime
+                            cooldowns[#cooldowns+1] = duration
                         end
                     else
                         cooldowns[#cooldowns+1] = cooldownSpellId
-                        local timeLeft, charges = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
+                        local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
                         cooldowns[#cooldowns+1] = timeLeft
                         cooldowns[#cooldowns+1] = charges
+                        cooldowns[#cooldowns+1] = startTime
+                        cooldowns[#cooldowns+1] = duration
                     end
                 end
             end
@@ -934,6 +949,47 @@ LIB_RAID_STATUS_CAN_LOAD = false
             return {}
         end
     end
+
+--> vintage cooldown tracker
+C_Timer.After(0.1, function()
+    local vintageCDTrackerFrame = CreateFrame("frame")
+    vintageCDTrackerFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+    local allCooldownsFromLib = LIB_RAID_STATUS_COOLDOWNS_INFO
+    local recentCastedSpells =  {}
+
+    vintageCDTrackerFrame:SetScript("OnEvent", function(self, event, ...)
+        if (event == "UNIT_SPELLCAST_SUCCEEDED") then
+            local unit, castGUID, spellId = ...
+            if (UnitInParty(unit) or UnitInRaid(unit)) then
+                local unitName = UnitName(unit)
+                local cooldownInfo = allCooldownsFromLib[spellId]
+                if (cooldownInfo and unitName and not raidStatusLib.cooldownManager.GetPlayerCooldownTable(unitName)) then
+                    --check for cast_success spam from channel spells
+                    local unitCastCooldown = recentCastedSpells[UnitGUID(unit)]
+                    if (not unitCastCooldown) then
+                        unitCastCooldown = {}
+                        recentCastedSpells[UnitGUID(unit)] = unitCastCooldown
+                    end
+
+                    if (not unitCastCooldown[spellId] or unitCastCooldown[spellId]+5 < GetTime()) then
+                        unitCastCooldown[spellId] = GetTime()
+                        --trigger a cooldown usage
+
+                        local duration = cooldownInfo.duration
+                        --time left, charges, startTimeDeviation, duration
+                        singleCooldownUpdate(unitName, spellId, duration, 0, 0, duration)
+
+                        --trigger a public callback
+                        raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", unitName, spellId, duration, 0, 0, duration, raidStatusLib.cooldownManager.playerData)
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+
+
 
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~equipment
@@ -1227,9 +1283,9 @@ LIB_RAID_STATUS_CAN_LOAD = false
         local playerInfo = raidStatusLib.playerInfoManager.playerData[playerName]
         if (not playerInfo and createNew) then
             playerInfo = {
-                specId = 0, 
-                renown = 1, 
-                talents = {}, 
+                specId = 0,
+                renown = 1,
+                talents = {},
                 conduits = {},
             }
             raidStatusLib.playerInfoManager.playerData[playerName] = playerInfo
@@ -1393,8 +1449,10 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
 
 end
 
-
-
+function raidStatusLib.playerInfoManager.onEnterWorld()
+    raidStatusLib.playerInfoManager.GetPlayerFullInfo()
+end
+raidStatusLib.internalCallback.RegisterCallback("onEnterWorld", raidStatusLib.playerInfoManager.onEnterWorld)
 
 --------------------------------------------------------------------------------------------------------------------------------
 --> data

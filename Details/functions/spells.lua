@@ -2117,86 +2117,6 @@ do
 
 	}
 
-		-- ~cooldown 1 self
-	_detalhes.DefensiveCooldownSpellsNoBuff = {
-		
-		[20594] = {120, 8, 1}, --racial stoneform
-		
-		--[6262] = {120, 1, 1}, --healthstone
-		
-		--["DEATHKNIGHT"] = {},
-		[48707] = {45, 5, 1}, -- Anti-Magic Shell
-		[48743] = {120, 0, 1}, --Death Pact
-		[51052] = {120, 3, 0}, --Anti-Magic Zone
-		[152279] = {120, 6}, -- "Breath of Sindragosa"
-		[48982] = {30, 0, 1}, -- "Blood T�p"
-		
-		--["DRUID"] = {},
-		[740] = {480, 8, 0}, --Tranquility
-		[22842] = {0, 0, 1}, --Frenzied Regeneration
-		--[124988] = {90, 30, 0}, --Nature's Vigil
-		[124974] = {90, 30, 0}, --Nature's Vigil
-		
-		--["HUNTER"] = {},
-		[172106] = {180, 6}, -- "Aspect of the Fox"
-		
-		--["MAGE"] = {},
-		[159916]	= {120, 6}, -- "Amplify Magic"
-		[157913]	= {45, 3, 1}, -- "Evanesce"
-		[110960] = {90, 20, 1}, -- greater invisibility - 110959 too
-		
-		--["MONK"] = {},
-		[115295] = {30, 30, 1}, -- Guard
-		[116849] = {120, 12, 0}, -- Life Cocoon (a)
-		[115310] = {180, 0, 0}, -- Revival
-		[119582] = {60, 0, 1}, -- Purifying Brew
-		[116844] = {45, 8, 0}, --Ring of Peace
-		[115308] = {0, 6, 1}, --Elusive Brew
-		[122783] = {90, 6}, -- Diffuse Magic
-		[122278] = {90, 45}, -- Dampen Harm
-		[115176] = {180, 8, 1}, -- Zen Meditation
-		[115203] = {180, 20, 1}, -- Fortifying Brew
-		[157535] = {90, 10}, -- "Breath of the Serpent"
-		
-		--["PALADIN"] = {},
-		[633]	=	{600, 0, 0}, --Lay on Hands
-		[31821]	=	{180, 6, 0},-- Devotion Aura
-		
-		--["PRIEST"] = {},
-		[62618] = {180, 10, 0}, --Power Word: Barrier
-		[109964] = {60, 10, 0}, --Spirit Shell
-		[64843] = {180, 8, 0}, --Divine Hymn
-		--[108968] = {300, 0, 0}, --Void Shift holy disc
-		--[142723] = {600, 0, 0}, --Void Shift shadow
-		
-		--["ROGUE"] = {},
-		[76577] = {180, 0, 0}, --Smoke Bomb
-		
-		--["SHAMAN"] = {},
-		[108270] = {60, 5, 1}, -- Stone Bulwark Totem
-		[108280]	=	{180, 12}, -- Healing Tide Totem
-		[98008]	=	{180, 6}, -- Spirit Link Totem
-		[108281]	=	{120, 10}, -- Ancestral Guidance
-		[165344]	=	{180, 15}, -- "Ascendance"
-		[152256]	=	{300, 60}, -- "Storm Elemental Totem"
-		
-		--["WARLOCK"] = {108416, 6229},
-		[108416] = {60, 20, 1}, -- Sacrificial Pact  1 = self
-		--[6229] = {30, 30, 1}, -- Twilight Ward  1 = self
-		
-		--["WARRIOR"] = {},
-		--[114203]	= {180, 15}, -- Demoralizing Banner
-		[114028]	= {60, 5}, -- Mass Spell Reflection
-		[97462]	= {180, 10}, -- Rallying Cry
-		[2565] 	= {12, 6, 1}, -- Shield Block
-		[871] = {180, 12, 1}, -- Shield Wall
-		[12975] = {180, 20, 1}, -- Last Stand
-		[23920] = {25, 5, 1}, -- Spell Reflection
-		[114030] = {120, 12}, -- Vigilance
-		[118038] = {120, 8, 1}, -- Die by the Sword
-		[112048]	= {90, 6, 1}, -- Shield Barrier
-	}
-
 	local getCooldownsForClass = function(class)
 		local result = {}
 		for spellId, spellInfo in pairs (_G.DetailsFramework.CooldownsInfo) do
@@ -2208,83 +2128,17 @@ do
 	end
 
 	_detalhes.DefensiveCooldownSpells = {
-
-		--> spellid = {cooldown, duration}
-
-		-- Death Knigh
-		[55233] = {60, 10}, -- Vampiric Blood
-		[49222] = {60, 300}, -- Bone Shield
-		[48792] = {180, 12}, -- Icebound Fortitude
-		[48743] = {120, 0}, -- Death Pact
-		[49039] = {12, 10}, -- Lichborne
 		["DEATHKNIGHT"] = getCooldownsForClass("DEATHKNIGHT"),
-
-		-- Druid
-		[62606] = {1.5, 6}, -- Savage Defense
-		--[106922] = {180, 20}, -- Might of Ursoc
-		[102342] = {60, 12}, -- Ironbark
-		[61336] = {180, 12}, -- Survival Instincts
-		[22812] = {60, 12}, -- Barkskin
-		[155835] = {60, 3}, -- Bristling Fur
 		["DRUID"] = getCooldownsForClass("DRUID"),
-		
-		-- Hunter
-		[19263] = {120, 5}, -- Deterrence
 		["HUNTER"] = getCooldownsForClass("HUNTER"),
-		
-		-- Mage
-		[45438] = {300, 12}, -- Ice Block
 		["MAGE"] = getCooldownsForClass("MAGE"),
-		
-		-- Monk
-		[122470] = {90, 10}, -- Touch of Karma
-		--[115213] = {180, 6}, -- Avert Harm
 		["MONK"] = getCooldownsForClass("MONK"),
-		
-		-- Paladin
-		[86659] = {180, 12}, -- Guardian of Ancient Kings
-		[31850] = {180, 10}, -- Ardent Defender
-		[498] = {60, 10}, -- Divine Protection
-		[642] = {300, 8}, -- Divine Shield
-		[6940] = {120, 12}, -- Hand of Sacrifice
-		[1022] = {300, 10}, -- Hand of Protection
-		[1038] = {120, 10}, -- Hand of Salvation
 		["PALADIN"] = getCooldownsForClass("PALADIN"),
-
-		-- Priest
-		[15286] = {180, 15}, -- Vampiric Embrace
-		[47788] = {180, 10}, -- Guardian Spirit
-		[47585] = {120, 6}, -- Dispersion
-		[33206] = {180, 8}, -- Pain Suppression
 		["PRIEST"] = getCooldownsForClass("PRIEST"),
-		
-		-- Rogue
-		[1966] = {1.5, 5}, -- Feint
-		[31224] = {60, 5}, -- Cloak of Shadows
-		[5277] = {180, 15}, -- Evasion,
-		[1856] = {120 , 0}, -- Vanish
 		["ROGUE"] = getCooldownsForClass("ROGUE"),
-		
-		-- Shaman
-		[30823] = {60, 15}, -- Shamanistic Rage
-		[108271] = {120, 6}, -- Astral Shift
 		["SHAMAN"] = getCooldownsForClass("SHAMAN"),
-		
-		-- Warlock
-		[104773] = {180, 8}, -- Unending Resolve
-		[108359] = {120, 12}, -- Dark Regeneration
-		[110913] = {180, 8}, -- Dark Bargain
 		["WARLOCK"] = getCooldownsForClass("WARLOCK"),
-
-		-- Warrior
-		[871] = {180, 12}, -- Shield Wall
-		[12975] = {180, 20}, -- Last Stand
-		[23920] = {25, 5}, -- Spell Reflection
-		[114030] = {120, 12}, -- Vigilance
-		[118038] = {120, 8}, -- Die by the Sword
-		[112048]	= {90, 6}, -- Shield Barrier
 		["WARRIOR"] = getCooldownsForClass("WARRIOR"),
-
 	}
 
 	_detalhes.HarmfulSpells = {

@@ -34,6 +34,12 @@ function RSNpcPOI.InitializeNotDiscoveredNpcs()
 	end
 end
 
+local function RefreshNotDiscoveredNpcs(npcID)
+	if (not RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
+		tinsert(notDiscoveredNpcIDs, npcID)
+	end
+end
+
 local function RemoveNotDiscoveredNpc(npcID)
 	if (npcID) then
 		notDiscoveredNpcIDs[npcID] = nil
@@ -45,7 +51,7 @@ end
 ---- Manage adding NPC icons to the world map and minimap
 ---============================================================================
 
-local function GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
+function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	local POI = {}
 	POI.entityID = npcID
 	POI.isNpc = true
@@ -62,7 +68,10 @@ local function GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.isDiscovered = POI.isDead or alreadyFoundInfo
 	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(npcID, mapID)
-
+	if (npcInfo) then
+		POI.worldmap = npcInfo.worldmap
+	end
+	
 	-- Textures
 	if (POI.isDead) then
 		POI.Texture = RSConstants.BLUE_NPC_TEXTURE
@@ -92,7 +101,7 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 	end
 
 	-- Skip if the entity is filtered
-	if (RSConfigDB.IsNpcFiltered(npcID)) then
+	if (RSConfigDB.IsNpcFiltered(npcID) and not RSNpcDB.IsWorldMap(npcID)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado en opciones.", npcID))
 		return true
 	end
@@ -175,6 +184,11 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 	if (not RSConfigDB.IsShowingNpcs()) then
 		return
 	end
+	
+	-- Refresh custom NPCs, just in case they were added after the list of not discovered was loaded
+	for npcID, _ in pairs (RSNpcDB.GetAllCustomNpcInfo()) do
+		RefreshNotDiscoveredNpcs(npcID)
+	end
 
 	local POIs = {}
 	for _, npcID in ipairs(notDiscoveredNpcIDs) do
@@ -196,7 +210,7 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 
 		-- Skip if common filters
 		if (not filtered and not IsNpcPOIFiltered(npcID, mapID, RSNpcDB.GetInternalNpcArtID(npcID, mapID), npcInfo.zoneQuestId, questTitles, vignetteGUIDs, onWorldMap, onMinimap)) then
-			tinsert(POIs, GetNpcPOI(npcID, mapID, npcInfo))
+			tinsert(POIs, RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo))
 		end
 	end
 
@@ -214,8 +228,8 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, quest
 	local npcDead = RSNpcDB.IsNpcKilled(npcID)
 
 	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
-	-- This filter doesnt apply to dead entities
-	if (not npcDead and RSConfigDB.IsMaxSeenTimeFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenTimeFilter())) then
+	-- This filter doesnt apply to dead entities or worldmap npcs
+	if (not npcDead and (npcInfo and not npcInfo.worldmap) and RSConfigDB.IsMaxSeenTimeFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenTimeFilter())) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Visto hace demasiado tiempo.", npcID))
 		return
 	end
@@ -242,6 +256,6 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, quest
 	end
 
 	if (not IsNpcPOIFiltered(npcID, mapID, alreadyFoundInfo.artID, zoneQuestID, questTitles, vignetteGUIDs, onWorldMap, onMinimap)) then
-		return GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
+		return RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	end
 end

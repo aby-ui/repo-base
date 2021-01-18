@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -111,11 +111,6 @@ local defaults = {
 		soundQuest = false,
 		soundQuestComplete = "KT - Default",
 
-		sIcecrownRares = true,
-		sIcecrownRaresRealmZone = "CN",
-		sIcecrownRaresTimerCorrection = 0,
-		sIcecrownRaresOnlyInZone = false,
-
 		modulesOrder = KT.BLIZZARD_MODULES,
 
 		addonMasque = false,
@@ -126,7 +121,8 @@ local defaults = {
 		collapsed = false,
 		quests = {
 			num = 0,
-			favorites = {}
+			favorites = {},
+			cache = {}
 		},
 		achievements = {
 			favorites = {}
@@ -1219,124 +1215,6 @@ local options = {
 						},
 					},
 				},
-				sec9 = {
-					name = "Special",
-					type = "group",
-					inline = true,
-					order = 0.5,
-					args = {
-						sIcecrownRaresImg = {
-							name = "",
-							type = "description",
-							width = 0.3,
-							image = "Interface\\Scenarios\\LegionInvasion",
-							imageCoords = { 0.61328125, 0.728515625, 0.28125, 0.40234375 },
-							imageWidth = 39,
-							imageHeight = 42,
-							order = 9.11,
-						},
-						sIcecrownRares = {
-							name = L"Icecrown Rare Monitor "..beta,
-							desc = L"Shows Shadowlands Pre-Patch Rares, which are spawns. "..cWarning..L"This feature has not been tested much!|r",
-							descStyle = "inline",
-							type = "toggle",
-							width = 2.1,
-							confirm = true,
-							confirmText = warning,
-							set = function()
-								db.sIcecrownRares = not db.sIcecrownRares
-								if db.sIcecrownRares then
-									db.collapsed = false
-								end
-								db.modulesOrder = nil
-								ReloadUI()
-							end,
-							order = 9.12,
-						},
-						sIcecrownRaresSpacer2 = {
-							name = " ",
-							type = "description",
-							width = 0.6,
-							order = 9.13,
-						},
-						sIcecrownRaresSpacer1 = {
-							name = " ",
-							type = "description",
-							width = 0.3,
-							order = 9.21,
-						},
-						sIcecrownRaresRealmZone = {
-							name = L"Realm Zone",
-							desc = "Select the Realm Zone where you are connecting for the correct Rares order.",
-							type = "select",
-							width = 0.8,
-							values = realmZones,
-							disabled = function()
-								return not db.sIcecrownRares
-							end,
-							get = function()
-								for k, v in pairs(realmZones) do
-									if db.sIcecrownRaresRealmZone == k then
-										return k
-									end
-								end
-							end,
-							set = function(_, value)
-								db.sIcecrownRaresRealmZone = value
-								KT.IcecrownRares:SetUserUtcOffset()
-								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
-							end,
-							order = 9.22,
-						},
-						sIcecrownRaresTimerCorrection = {
-							name = L"Timer Correction",
-							desc = L"Rare timer correction in seconds. Positive and negative numbers are allowed.\n"..cWarning..L"Use it when Rare spawns sooner or later than the timer shows.",
-							type = "input",
-							width = 0.8,
-							disabled = function()
-								return not db.sIcecrownRares
-							end,
-							get = function(info)
-								return tostring(db[info[#info]] or 0)
-							end,
-							set = function(_, value)
-								db.sIcecrownRaresTimerCorrection = tonumber(value) or 0
-								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
-							end,
-							order = 9.23,
-						},
-						sIcecrownRaresOnlyInZone = {
-							name = L"Show only in Icecrown",
-							descStyle = "inline",
-							type = "toggle",
-							width = 1.1,
-							disabled = function()
-								return not db.sIcecrownRares
-							end,
-							set = function()
-								db.sIcecrownRaresOnlyInZone = not db.sIcecrownRaresOnlyInZone
-								KT.IcecrownRares:SetUsed()
-								ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_ICECROWN_RARES)
-							end,
-							order = 9.24,
-						},
-						sIcecrownRaresSpacer3 = {
-							name = " ",
-							type = "description",
-							width = 0.3,
-							order = 9.31,
-						},
-						sIcecrownRaresDesc = {
-							name = L"  Available actions:\n"..
-									"  - "..cBold..L"Left Click|r - add waypoint (Blizzard or TomTom)\n"..
-									"  - "..cBold..L"Right Click|r - remove waypoint (Blizzard or TomTom)\n"..
-									"  - "..cBold..L"Shift + Left Click|r - send Rare info to General chat channel",
-							type = "description",
-							width = "double",
-							order = 9.32,
-						},
-					},
-				},
 			},
 		},
 		modules = {
@@ -1559,6 +1437,43 @@ function KT:SetupOptions()
 	options.args.profiles.args.new.confirmText = warning
 	options.args.profiles.args.choose.confirmText = warning
 	options.args.profiles.args.copyfrom.confirmText = warning
+	if not options.args.profiles.plugins then
+		options.args.profiles.plugins = {}
+	end
+	options.args.profiles.plugins[addonName] = {
+		clearTrackerDataDesc1 = {
+			name = "Clear the data (no settings) of the tracked content (Quests, Achievements etc.) for current character.",
+			type = "description",
+			order = 0.1,
+		},
+		clearTrackerData = {
+			name = "Clear Tracker Data",
+			desc = "Clear the data of the tracked content.",
+			type = "execute",
+			confirmText = "Clear Tracker Data - "..cBold..self.playerName,
+			func = function()
+				dbChar.quests.cache = {}
+				for i = 1, #db.filterAuto do
+					db.filterAuto[i] = nil
+				end
+				self:SetBackground()
+				KT.QuestsCache_Init()
+				ObjectiveTracker_Update()
+			end,
+			order = 0.2,
+		},
+		clearTrackerDataDesc2 = {
+			name = "Current Character: "..cBold..self.playerName,
+			type = "description",
+			width = "double",
+			order = 0.3,
+		},
+		clearTrackerDataDesc4 = {
+			name = "",
+			type = "description",
+			order = 0.4,
+		}
+	}
 
 	ACR:RegisterOptionsTable(addonName, options, nil)
 	

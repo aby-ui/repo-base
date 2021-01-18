@@ -54,6 +54,19 @@ function RSUtils.JoinTables(table1, table2)
 	return nil
 end
 
+function RSUtils.GetTableLength(table)
+	local getN = 0
+	for n in pairs(table) do 
+    	getN = getN + 1 
+	end
+	
+  	return getN
+end
+
+---============================================================================
+-- Auxiliar utils
+---============================================================================
+
 function RSUtils.Contains(cTable, item)
 	if (not cTable or not item) then
 		return false
@@ -84,9 +97,17 @@ function RSUtils.Contains(cTable, item)
 	return false;
 end
 
+---============================================================================
+-- String utils
+---============================================================================
+
 function RSUtils.StartsWith(string, start)
 	return string.sub(string,1,string.len(start)) == start
 end
+
+---============================================================================
+-- Arithmetic utils
+---============================================================================
 
 function RSUtils.Distance(POIa, POIb)
 	local dx = POIa.x - POIb.x

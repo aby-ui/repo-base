@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 36
-RSConstants.CURRENT_LOOT_DB_VERSION = 48
+RSConstants.CURRENT_DB_VERSION = 37
+RSConstants.CURRENT_LOOT_DB_VERSION = 49
 
 ---============================================================================
 -- Special events
@@ -192,6 +192,7 @@ RSConstants.UNKNOWN_ZONE_ID = 0
 RSConstants.MECHAGON_MAPID = 1462
 RSConstants.VALLEY_OF_ETERNAL_BLOSSOMS_MAPID = 1530
 RSConstants.ULDUM_MAPID = 1527
+RSConstants.THE_MAW_MAPID = 1543
 
 ---============================================================================
 -- NpcIDS

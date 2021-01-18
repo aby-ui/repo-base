@@ -95,7 +95,7 @@ do
 	
 	function _detalhes:GetSpecIcon (spec, useAlpha)
 		if (spec) then
-			if (spec > 500) then --hack to new spec ids on new leveling zones from level 1-10
+			if (spec > 600) then --hack to new spec ids on new leveling zones from level 1-10
 				spec = 65
 			end
 			if (useAlpha) then

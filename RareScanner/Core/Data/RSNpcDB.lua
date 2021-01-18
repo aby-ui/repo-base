@@ -61,11 +61,121 @@ function RSNpcDB.DeleteNpcKilled(npcID)
 end
 
 ---============================================================================
--- NPC internal database
------ Stores NPCs information included with the addon
+-- Custom NPC database
+----- Stores custom NPCs information
 ---============================================================================
 
+function RSNpcDB.InitCustomNpcDB()
+	if (not private.dbglobal.custom_npcs) then
+		private.dbglobal.custom_npcs = {}
+	end
+end
+
+function RSNpcDB.GetAllCustomNpcInfo()
+	return private.dbglobal.custom_npcs
+end
+
+function RSNpcDB.GetCustomNpcInfo(npcID)
+	if (npcID) then
+		return private.dbglobal.custom_npcs[npcID]
+	end
+
+	return nil
+end
+
+function RSNpcDB.SetCustomNpcInfo(npcID, info)
+	if (not npcID or not info or not info.zones or next(info.zones) == nil or not info.coordinates) then
+		RSLogger:PrintDebugMessage(string.format("SetCustomNpcInfo[%s]: Ignorado por no tener todos los datos rellenos", npcID))
+		return
+	end
+	
+	local zones = {}
+	local completedZonesCounter = 0
+	for zoneID, _ in pairs (info.zones) do
+		if (info.coordinates[zoneID]) then		
+			local mapID = tonumber(zoneID)	
+			zones[mapID] = {}
+			zones[mapID].artID = { C_Map.GetMapArtID(mapID) }
+			zones[mapID].overlay = {}
+			
+			local coordinatePairs = { strsplit(",", info.coordinates[zoneID]) }
+			for i, coordinatePair in ipairs(coordinatePairs) do
+				local coordx, coordy = 	strsplit("-", coordinatePair)
+				if (i == 1) then
+					zones[mapID].x = tonumber("0."..coordx)
+					zones[mapID].y = tonumber("0."..coordy)
+				end
+					
+				table.insert(zones[mapID].overlay, string.format("0.%s-0.%s", coordx, coordy))
+			end
+			
+			completedZonesCounter = completedZonesCounter + 1
+		end
+	end
+	
+	if (completedZonesCounter == 0) then
+		RSLogger:PrintDebugMessage(string.format("SetCustomNpcInfo[%s]: Ignorado por no tener coordenadas en ninguna de sus zonas", npcID))
+		return
+	end
+	
+	local npcIDnumber = tonumber(npcID)
+	private.dbglobal.custom_npcs[npcIDnumber] = {}
+	private.dbglobal.custom_npcs[npcIDnumber].displayID = tonumber(info.displayID or "0")
+	private.dbglobal.custom_npcs[npcIDnumber].reset = true
+	private.dbglobal.custom_npcs[npcIDnumber].nameplate = true
+	
+	-- If it spawns in several zones
+	if (completedZonesCounter > 1) then
+		private.dbglobal.custom_npcs[npcIDnumber].zoneID = zones
+		
+		for mapID, zoneInfo in pairs (zones) do
+			RSLogger:PrintDebugMessage(string.format("SetCustomNpcInfo[%s]: %s", npcIDnumber, string.format("zoneID:%s,artID:%s,x:%s,y:%s,displayID:%s", mapID or "", ((type(zoneInfo.artID) == "table" and unpack(zoneInfo.artID)) or zoneInfo.artID or "") or "", zoneInfo.x or "", zoneInfo.y or "", private.dbglobal.custom_npcs[npcIDnumber].displayID or "")))
+		end
+	-- If it spawns in one zone
+	else
+		for mapID, zoneInfo in pairs (zones) do
+			private.dbglobal.custom_npcs[npcIDnumber].zoneID = mapID
+			private.dbglobal.custom_npcs[npcIDnumber].artID = zoneInfo.artID
+			private.dbglobal.custom_npcs[npcIDnumber].x = zoneInfo.x
+			private.dbglobal.custom_npcs[npcIDnumber].y = zoneInfo.y
+			private.dbglobal.custom_npcs[npcIDnumber].overlay = zoneInfo.overlay
+		end
+		
+		RSLogger:PrintDebugMessage(string.format("SetCustomNpcInfo[%s]: %s", npcIDnumber, string.format("zoneID:%s,artID:%s,x:%s,y:%s,displayID:%s", private.dbglobal.custom_npcs[npcIDnumber].zoneID or "", ((type(private.dbglobal.custom_npcs[npcIDnumber].artID) == "table" and unpack(private.dbglobal.custom_npcs[npcIDnumber].artID)) or private.dbglobal.custom_npcs[npcIDnumber].artID or "") or "", private.dbglobal.custom_npcs[npcIDnumber].x or "", private.dbglobal.custom_npcs[npcIDnumber].y or "", private.dbglobal.custom_npcs[npcIDnumber].displayID or "")))
+	end
+	
+	-- Merge internal database with custom
+	private.NPC_INFO[npcIDnumber] = private.dbglobal.custom_npcs[npcIDnumber]
+	
+	-- Just in case is tagged as dead for whatever reason
+	RSNpcDB.DeleteNpcKilled(npcIDnumber)
+end
+
+function RSNpcDB.DeleteCustomNpcInfo(npcID)
+	if (not npcID) then
+		return
+	end
+	
+	private.dbglobal.custom_npcs[tonumber(npcID)] = nil
+	private.NPC_INFO[tonumber(npcID)] = nil
+end
+
+---============================================================================
+-- NPC internal database (included with the addon and custom NPCs)
+----- Stores NPCs information included with the addon and custom NPCs
+---============================================================================
+
+local internalNpcsMerged = false
 function RSNpcDB.GetAllInternalNpcInfo()
+	-- Merge internal database with custom
+	if (not internalNpcsMerged) then
+		for npcID, customNpcID in pairs(RSNpcDB.GetAllCustomNpcInfo()) do
+			private.NPC_INFO[npcID] = customNpcID
+		end
+		internalNpcsMerged = true
+		RSLogger:PrintDebugMessage("GetAllInternalNpcInfo: Mezclada la tabla de NPCs internos con la de personalizados.")
+	end
+	
 	return private.NPC_INFO
 end
 
@@ -171,6 +281,13 @@ function RSNpcDB.IsInternalNpcFriendly(npcID)
 	return false
 end
 
+function RSNpcDB.IsWorldMap(npcID)
+	if (npcID) then
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+		return npcInfo and npcInfo.worldmap
+	end
+end
+
 ---============================================================================
 -- NPC Loot internal database
 ----- Stores NPC loot included with the addon
@@ -187,10 +304,37 @@ end
 function RSNpcDB.GetNpcLoot(npcID)
 	if (npcID) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("NPC [%s]: Obeniendo su loot.", npcID))
-		return RSUtils.JoinTables(RSNpcDB.GetInteralNpcLoot(npcID), RSNpcDB.GetNpcLootFound(npcID))
+		return RSUtils.JoinTables(RSUtils.JoinTables(RSNpcDB.GetInteralNpcLoot(npcID), RSNpcDB.GetNpcLootFound(npcID)), RSNpcDB.GetCustomNpcLoot(npcID))
 	end
 
 	return nil
+end
+
+---============================================================================
+-- Custom NPC loot database
+----- Stores custom NPC loot
+---============================================================================
+
+function RSNpcDB.GetCustomNpcLoot(npcID)
+	if (npcID and private.dbglobal.custom_loot) then
+		return private.dbglobal.custom_loot[npcID]
+	end
+
+	return nil
+end
+
+function RSNpcDB.SetCustomNpcLoot(npcID, loot)
+	if (not private.dbglobal.custom_loot) then
+		private.dbglobal.custom_loot = {}
+	end
+	
+	private.dbglobal.custom_loot[tonumber(npcID)] = loot
+end
+
+function RSNpcDB.DeleteCustomNpcLoot(npcID)
+	if (npcID and private.dbglobal.custom_loot) then
+		private.dbglobal.custom_loot[tonumber(npcID)] = nil
+	end
 end
 
 ---============================================================================

@@ -46,7 +46,7 @@ function Details.CooldownTracking.EnableTracker()
     raidStatusLib.RegisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownListWipedFunc")
     raidStatusLib.RegisterCallback(Details.CooldownTracking, "CooldownUpdate", "CooldownUpdateFunc")
 
-    Details.CooldownTracking.RefreshScreenPanel()
+    Details.CooldownTracking.RefreshCooldownFrames()
 end
 
 function Details.CooldownTracking.DisableTracker()
@@ -65,21 +65,100 @@ end
 
 function Details.CooldownTracking.CooldownListUpdateFunc()
     --print("CooldownListUpdate")
-    Details.CooldownTracking.RefreshScreenPanel()
+    Details.CooldownTracking.RefreshCooldowns()
 end
 
 function Details.CooldownTracking.CooldownListWipedFunc()
     --print("CooldownListWiped")
-    Details.CooldownTracking.RefreshScreenPanel()
+    Details.CooldownTracking.RefreshCooldowns()
 end
 
 function Details.CooldownTracking.CooldownUpdateFunc()
-    --print("CooldownUpdate")
-    Details.CooldownTracking.RefreshScreenPanel()
+    print("CooldownUpdate")
+    Details.CooldownTracking.RefreshCooldowns()
 end
 
-function Details.CooldownTracking.RefreshScreenPanel()
+function Details.CooldownTracking.HideAllBars()
+    for _, bar in ipairs (DetailsOnlineCDTrackerScreenPanel.bars) do
+        bar:ClearAllPoints()
+        bar:Hide()
+    end
+end
 
+function Details.CooldownTracking.GetOrCreateNewCooldownFrame(screenPanel, frameId)
+    local cooldownFrame = screenPanel.bars[frameId]
+    if (cooldownFrame) then
+        return cooldownFrame
+    end
+
+    local cooldownFrame = DF:CreateTimeBar(screenPanel, [[Interface\AddOns\Details\images\bar_serenity]], width-2, bar_height-2, 100, nil, screenPanel:GetName() .. "CDFrame" .. frameId)
+    tinsert(screenPanel.bars, cooldownFrame)
+    return cooldownFrame
+end
+
+function Details.CooldownTracking.SetupCooldownFrame(cooldownFrame, unitName, class, spellId)
+    local spellIcon = GetSpellTexture(spellId)
+    if (spellIcon) then
+        cooldownFrame:SetIcon(spellIcon, .1, .9, .1, .9)
+
+        local classColor = C_ClassColor.GetClassColor(class)
+        cooldownFrame:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
+
+        cooldownFrame:SetLeftText(DF:RemoveRealmName(unitName))
+
+        cooldownFrame.spellId = spellId
+        cooldownFrame.class = class
+        cooldownFrame.unitName = unitName
+    end
+end
+
+
+function Details.CooldownTracking.SetupCooldownFrameTimer(cooldownFrame, startTime, endTime, currentTime)
+    if (currentTime == 0) then
+        cooldownFrame:StopTimer()
+
+    else
+        cooldownFrame:SetTimer(currentTime, startTime, endTime)
+    end
+end
+
+function Details.CooldownTracking.ProcessUnitCooldowns(unitId, statusBarFrameId, cooldownsOrganized)
+    local screenPanel = DetailsOnlineCDTrackerScreenPanel
+    if (not screenPanel) then
+        return
+    end
+
+    local playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo()
+    local allCooldownsFromLib = LIB_RAID_STATUS_COOLDOWNS_BY_SPEC
+    local cooldownsEnabled = Details.ocd_tracker.cooldowns
+
+    local unitName = UnitName(unitId)
+    local thisPlayerInfo = playerInfo[unitName]
+    local GUID = UnitGUID(unitId)
+    local _, unitClassEng, classId = UnitClass(unitId)
+    local unitSpec = (thisPlayerInfo and thisPlayerInfo.specId) or (Details:GetSpecFromSerial(GUID)) or 0
+
+    if (unitSpec and unitSpec ~= 0) then
+        local unitCooldowns = allCooldownsFromLib[unitSpec]
+        for spellId, cooldownType in pairs(unitCooldowns) do
+            if (cooldownsEnabled[spellId]) then
+
+                local spellName = GetSpellInfo(spellId)
+                --print("CD:", spellName, unitName) --problema com shadowfiend do shadowpriest the mostra 2 vezes
+
+                local cooldownFrame = Details.CooldownTracking.GetOrCreateNewCooldownFrame(screenPanel, statusBarFrameId)
+                Details.CooldownTracking.SetupCooldownFrame(cooldownFrame, unitName, unitClassEng, spellId)
+                tinsert(cooldownsOrganized[classId], cooldownFrame)
+                statusBarFrameId =  statusBarFrameId + 1
+
+                screenPanel.playerCache[unitName] = screenPanel.playerCache[unitName] or {}
+                screenPanel.playerCache[unitName][spellId] = cooldownFrame
+            end
+        end
+    end
+end
+
+function Details.CooldownTracking.RefreshCooldownFrames()
     local screenPanel = DetailsOnlineCDTrackerScreenPanel
 
     if (not screenPanel) then
@@ -100,15 +179,29 @@ function Details.CooldownTracking.RefreshScreenPanel()
         libWindow.MakeDraggable(screenPanel)
         libWindow.RestorePosition(screenPanel)
 
+        screenPanel:RegisterEvent("GROUP_ROSTER_UPDATE")
+        screenPanel:SetScript("OnShow", function()
+            screenPanel:RegisterEvent("GROUP_ROSTER_UPDATE")
+        end)
+        screenPanel:SetScript("OnHide", function()
+            screenPanel:UnregisterEvent("GROUP_ROSTER_UPDATE")
+        end)
+
+        screenPanel:SetScript("OnEvent", function(self, event)
+            if (event == "GROUP_ROSTER_UPDATE") then
+                if (screenPanel.scheduleRosterUpdate) then
+                    return
+                end
+                screenPanel.scheduleRosterUpdate = C_Timer.NewTimer(1, Details.CooldownTracking.RefreshCooldownFrames)
+            end
+        end)
+
         screenPanel.bars = {}
+        screenPanel.cooldownCache = Details.ocd_tracker.current_cooldowns
+        screenPanel.playerCache = {}
     end
 
-    function screenPanel.HideAllBars()
-        for _, bar in ipairs (screenPanel.bars) do
-            bar:ClearAllPoints()
-            bar:Hide()
-        end
-    end
+    screenPanel.scheduleRosterUpdate = nil
 
     if (Details.ocd_tracker.show_conditions.only_in_group) then
         if (not IsInGroup()) then
@@ -125,31 +218,115 @@ function Details.CooldownTracking.RefreshScreenPanel()
         end
     end
 
-    local cooldownsAvailable = raidStatusLib.cooldownManager.GetCooldownTable()
-    local cooldownsEnabled = Details.ocd_tracker.cooldowns
     local cooldownsOrganized = {}
-
     for classId = 1, 12 do --12 classes
         cooldownsOrganized[classId] = {}
     end
+    local numGroupMembers = GetNumGroupMembers()
+    local statusBarFrameId = 1
 
-    for playerName, allPlayerCooldowns in pairs(cooldownsAvailable) do
-        local _, classEngName, classId = UnitClass(playerName)
-        if (classId) then
-            for spellId, cooldownInfo in pairs(allPlayerCooldowns) do
-                if (cooldownsEnabled[spellId]) then
-                    cooldownsOrganized[classId][#cooldownsOrganized[classId]+1] = {playerName, cooldownInfo[1], cooldownInfo[2], classId, spellId, classEngName}
+    wipe(screenPanel.playerCache)
+
+    if (IsInRaid()) then
+        for i = 1, numGroupMembers do
+            local unitId = "raid"..i
+            Details.CooldownTracking.ProcessUnitCooldowns(unitId, statusBarFrameId, cooldownsOrganized)
+        end
+
+    elseif (IsInGroup()) then
+        for i = 1, numGroupMembers - 1 do
+            local unitId = "party"..i
+            Details.CooldownTracking.ProcessUnitCooldowns(unitId, statusBarFrameId, cooldownsOrganized)
+        end
+
+        --player
+        Details.CooldownTracking.ProcessUnitCooldowns("player", statusBarFrameId, cooldownsOrganized)
+    end
+
+    for classId = 1, 12 do --12 classes
+        table.sort(cooldownsOrganized[classId], function(t1, t2) return t1.spellId < t2.spellId end)
+    end
+
+    Details.CooldownTracking.RefreshCooldowns()
+end
+
+--esta passando NIL no startTime para o SetTimer
+--o numero de frames criados é menor que o numero de frames mostrados, esta dando erro em local bar = screenPanel.bars[barIndex] 381
+
+function Details.CooldownTracking.RefreshCooldowns()
+    local screenPanel = DetailsOnlineCDTrackerScreenPanel
+    if (not screenPanel) then
+        return
+    end
+
+    --local cache saved with the character savedVariables
+    local cooldownCache = screenPanel.cooldownCache
+    local cooldownStatus = raidStatusLib.cooldownManager.GetCooldownTable()
+    local cooldownIndex = 1
+
+    for unitName, allPlayerCooldowns in pairs(cooldownStatus) do
+        for spellId, cooldownInfo in pairs(allPlayerCooldowns) do
+            local cooldownFrame = screenPanel.playerCache[unitName] and screenPanel.playerCache[unitName][spellId]
+            if (cooldownFrame) then
+
+                local cooldownCache = cooldownCache[unitName] and cooldownCache[unitName][spellId]
+                if (not cooldownCache) then
+                    --a cache with cooldown timers is saved within the host addon
+                    screenPanel.cooldownCache[unitName] = screenPanel.cooldownCache[unitName] or {}
+                    screenPanel.cooldownCache[unitName][spellId] = screenPanel.cooldownCache[unitName][spellId] or {}
+                    cooldownCache = screenPanel.cooldownCache[unitName][spellId]
                 end
+
+                local timeLeft = cooldownInfo[1]
+                local charges = cooldownInfo[2]
+                local startTime = GetTime() - cooldownInfo[3]
+                local duration = cooldownInfo[4]
+                local endTime = startTime + duration
+
+                --save the cooldown data in the host addon
+                cooldownCache[1] = timeLeft
+                cooldownCache[2] = charges
+                cooldownCache[3] = startTime
+                cooldownCache[4] = endTime
+
+                cooldownFrame:Show()
+
+                if (cooldownFrame.spellId ~= spellId or unitName ~= cooldownFrame.unitName) then
+                    --there's a different spell showing or player using this frame
+                    if (timeLeft ~= 0) then
+                        local spellName = GetSpellInfo(spellId)
+                        --print("set timer 3", spellName, startTime + timeLeft, startTime, endTime)
+                        --cooldownFrame:SetTimer(startTime + timeLeft, startTime, endTime)
+                    end
+                else
+                    --spell and player are the same
+                    if (timeLeft ~= 0) then
+                        if (cooldownFrame:HasTimer()) then
+                            if (cooldownFrame.timeLeft ~= timeLeft) then
+                                local spellName = GetSpellInfo(spellId)
+                                --print("set timer 1", spellName, startTime + timeLeft, startTime, endTime)
+                                --cooldownFrame:SetTimer(startTime + timeLeft, startTime, endTime)
+                            end
+                        else
+                            if (timeLeft ~= 0) then
+                                local spellName = GetSpellInfo(spellId)
+                                --print("set timer 2", spellName, startTime + timeLeft, startTime, endTime)
+                                --cooldownFrame:SetTimer(startTime + timeLeft, startTime, endTime)
+                            end
+                        end
+                    else
+                        if (cooldownFrame:GetValue() ~= 100) then
+                            cooldownFrame:StopTimer()
+                        end
+                    end
+                end
+
+                cooldownIndex = cooldownIndex + 1
             end
         end
     end
 
-    for classId = 1, 12 do --12 classes
-        local t = cooldownsOrganized[classId]
-        table.sort(t, function(t1, t2) return t1[5] < t2[5] end) --sort by spellId
-    end
-
-    screenPanel.HideAllBars()
+    --[=[]]
 
     local cooldownIndex = 1
 
@@ -157,17 +334,8 @@ function Details.CooldownTracking.RefreshScreenPanel()
         local t = cooldownsOrganized[classId]
         for i = 1, #t do
             local bar = screenPanel.bars[cooldownIndex]
-
-            if (not bar) then
-                local newBar = DF:CreateTimeBar(screenPanel, [[Interface\AddOns\Details\images\bar_serenity]], width-2, bar_height-2, 100, nil, "DetailsOCDBar" .. cooldownIndex)
-                tinsert(screenPanel.bars, newBar)
-                bar = newBar
-            end
-
             cooldownIndex = cooldownIndex + 1
-
             bar:Show()
-
             local cooldownTable = t[i]
 
             local classColor = C_ClassColor.GetClassColor(cooldownTable[6])
@@ -193,8 +361,10 @@ function Details.CooldownTracking.RefreshScreenPanel()
             end
         end
     end
+    --]=]
 
     cooldownIndex = cooldownIndex - 1
+    print("total frames:", cooldownIndex)
 
     local xAnchor = 1
     local defaultY = 0
@@ -263,7 +433,7 @@ function Details.OpenCDTrackerWindow()
                 get = function() return Details.ocd_tracker.show_conditions.only_in_group end,
                 set = function (self, fixedparam, value)
                     Details.ocd_tracker.show_conditions.only_in_group = value
-                    Details.CooldownTracking.RefreshScreenPanel()
+                    Details.CooldownTracking.RefreshCooldownFrames()
                 end,
                 name = "Only in Group",
                 desc = "Only in Group",
@@ -274,7 +444,7 @@ function Details.OpenCDTrackerWindow()
                 get = function() return Details.ocd_tracker.show_conditions.only_inside_instance end,
                 set = function (self, fixedparam, value)
                     Details.ocd_tracker.show_conditions.only_inside_instance = value
-                    Details.CooldownTracking.RefreshScreenPanel()
+                    Details.CooldownTracking.RefreshCooldownFrames()
                 end,
                 name = "Only Inside Instances",
                 desc = "Only Inside Instances",

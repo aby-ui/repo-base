@@ -307,7 +307,12 @@ local function AddLootTooltip(tooltip, pin)
 	end
 end
 
-local function AddStateTooltip(tooltip, pin)	
+local function AddStateTooltip(tooltip, pin)
+	-- Skip if worldmap icon
+	if (pin.POI.worldmap) then
+		return
+	end
+	
 	if ((pin.POI.isNpc and not pin.POI.isDead) or (pin.POI.isContainer and not pin.POI.isOpened) or (pin.POI.isEvent and not pin.POI.isCompleted)) then
 		if (not RSConfigDB.IsShowingTooltipsCommands()) then
 			return

@@ -4,8 +4,8 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8102
-		_detalhes.alpha_build_counter = 8102 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8154
+		_detalhes.alpha_build_counter = 8154 --if this is higher than the regular counter, use it instead
 		_detalhes.game_version = "v9.0.2"
 		_detalhes.userversion = "v9.0.2." .. _detalhes.build_counter
 		_detalhes.realversion = 144 --core version, this is used to check API version for scripts and plugins (see alias below)
@@ -28,7 +28,18 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
-		{"v9.0.1.8001.144", "December 19th, 2020"},
+		{"v9.0.2.8154.144", "January 14th, 2021"},
+		"Added total damage bars into the player list in the Breakdown window.",
+		"Added 'Square' or 'Roll' mode to Details! Streamer plugin, to change the statusbar mode to Squares, visit the options panel for the plugin.",
+		"Added Binding Shot to crowd control (Hunter)",
+		"Merged all whirlwind damage (Warrior).",
+		"Fixed errors on the 1-10 tutorial levels while playing Demon Hunters.",
+		"Fixed some cases of DeathLog not showing healing",
+		"Fixed windows making a group after '/details toggle', while the option to not make groups enabled.",
+		"Fixed some issues with the custom display 'Potion Used' and 'Health Potion & Stone'.",
+		"Fixed the breakdown window where using the comparisson tab sometimes made the frame to overlap with the aura tab.",
+
+		{"v9.0.2.8001.144", "December 19th, 2020"},
 		"Added Details! Coach as a new experimental feature, you may want to test using /details coach",
 		"Coach feature allows the raid leader to stay outside the raid while seeing in real time player deaths and damage information.",
 		"Fixed issues with some raid encounters in Castle Nathria.",
@@ -492,28 +503,31 @@ do
 			--> plugins container
 				_detalhes.StatusBar = {}
 			--> maintain plugin menu
-				_detalhes.StatusBar.Menu = {} 
+				_detalhes.StatusBar.Menu = {}
 			--> plugins object
-				_detalhes.StatusBar.Plugins = {} 
+				_detalhes.StatusBar.Plugins = {}
 			--> name to plugin object
-				_detalhes.StatusBar.NameTable = {} 
+				_detalhes.StatusBar.NameTable = {}
 
 	--> constants
-		--[[global]] DETAILS_HEALTH_POTION_LIST = {
-			[250870] = true, --Coastal Healing Potion
-			[250872] = true, --Coastal Rejuvenation Potion
-			[6262] = true, --Warlock's Healthstone
-			[301308] = true, --Abyssal  Healing Potion
-		}
-		--[[global]] DETAILS_HEALTH_POTION_ID = 250870
-		--[[global]] DETAILS_REJU_POTION_ID = 250872
-		--[[global]] DETAILS_MANA_POTION_ID = 250871
-		--[[global]] DETAILS_FOCUS_POTION_ID = 252753
+		--[[global]] DETAILS_HEALTH_POTION_ID = 307192
+		--[[global]] DETAILS_REJU_POTION_ID = 307194
+		--[[global]] DETAILS_MANA_POTION_ID = 307193
+		--[[global]] DETAILS_FOCUS_POTION_ID = 307161
+		--[[global]] DETAILS_HEALTHSTONE_ID = 6262
 		
-		--[[global]] DETAILS_INT_POTION_ID = 279151
-		--[[global]] DETAILS_AGI_POTION_ID = 279152
-		--[[global]] DETAILS_STR_POTION_ID = 279153
-		--[[global]] DETAILS_STAMINA_POTION_ID = 279154
+		--[[global]] DETAILS_INT_POTION_ID = 307162
+		--[[global]] DETAILS_AGI_POTION_ID = 307159
+		--[[global]] DETAILS_STR_POTION_ID = 307164
+		--[[global]] DETAILS_STAMINA_POTION_ID = 307163
+
+		--[[global]] DETAILS_HEALTH_POTION_LIST = {
+			[DETAILS_HEALTH_POTION_ID] = true, --Healing Potion
+			[DETAILS_HEALTHSTONE_ID] = true, --Warlock's Healthstone
+			[DETAILS_REJU_POTION_ID] = true, --Rejuvenation Potion
+			[DETAILS_MANA_POTION_ID] = true, --Mana Potion
+			[323436] = true --Phial of Serenity (from Kyrians)
+		}
 	
 		_detalhes._detalhes_props = {
 			DATA_TYPE_START = 1,	--> Something on start

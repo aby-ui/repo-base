@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -338,13 +338,14 @@ function M:Update(id)
 		if not dbChar.collapsed then
 			for questID, _ in pairs(KT.fixedButtons) do
 				if QuestHasPOIInfo(questID) then
+					if questID == C_SuperTrack.GetSuperTrackedQuestID() then
+						closestQuestID = questID
+						break
+					end
 					local distSqr, _ = C_QuestLog.GetDistanceSqToQuest(questID)
 					if distSqr and distSqr <= minDistSqr then
 						minDistSqr = distSqr
 						closestQuestID = questID
-					elseif questID == C_SuperTrack.GetSuperTrackedQuestID() then
-						closestQuestID = questID
-						break
 					end
 				end
 			end

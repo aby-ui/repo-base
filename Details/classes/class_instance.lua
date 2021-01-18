@@ -520,12 +520,14 @@ end
 			else
 				_detalhes:ReabrirTodasInstancias()
 				
-				local instance1 = _detalhes:GetInstance (1)
-				local instance2 = _detalhes:GetInstance (2)
+				local instance1 = _detalhes:GetInstance(1)
+				local instance2 = _detalhes:GetInstance(2)
 				
 				if (instance1 and instance2) then
-					if (not instance1.ignore_mass_showhide and not instance2.ignore_mass_showhide) then
-						_detalhes:CheckCoupleWindows (instance1, instance2)
+					if (not Details.disable_window_groups) then
+						if (not instance1.ignore_mass_showhide and not instance2.ignore_mass_showhide) then
+							_detalhes:CheckCoupleWindows (instance1, instance2)
+						end
 					end
 				end
 			end

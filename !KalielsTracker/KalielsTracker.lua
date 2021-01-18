@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -45,7 +45,6 @@ local UIParent = UIParent
 local trackerWidth = 280
 local paddingBottom = 15
 local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
-local questsCache = {}
 local freeIcons = {}
 local freeTags = {}
 local freeButtons = {}
@@ -111,7 +110,8 @@ local function Default_UpdateModuleInfoTables()
 	end
 end
 
-local function UpdateQuestsCache()
+local function QuestsCache_Update(isForced)
+	local numQuests = 0
 	local numEntries = C_QuestLog.GetNumQuestLogEntries()
 	local headerTitle
 
@@ -122,20 +122,46 @@ local function UpdateQuestsCache()
 				headerTitle = questInfo.title
 			else
 				if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) then
-					if not questsCache[questInfo.questID] then
-						questsCache[questInfo.questID] = {
+					if not dbChar.quests.cache[questInfo.questID] or isForced then
+						dbChar.quests.cache[questInfo.questID] = {
 							title = questInfo.title,
 							level = questInfo.level,
 							zone = headerTitle,
+							startMapID = dbChar.quests.cache[questInfo.questID] and dbChar.quests.cache[questInfo.questID].startMapID or 0,
 							isCalling = C_QuestLog.IsQuestCalling(questInfo.questID)
 						}
 					end
 				end
+				numQuests = numQuests + 1
 			end
 		end
 	end
 
-	KT.questsCache = questsCache
+	return numEntries <= 1, numQuests
+end
+
+local function QuestsCache_UpdateProperty(questID, key, value)
+	if dbChar.quests.cache[questID] then
+		dbChar.quests.cache[questID][key] = value
+	end
+end
+
+local function QuestsCache_RemoveQuest(questID)
+	dbChar.quests.cache[questID] = nil
+end
+
+local function QuestsCache_Init()
+	return QuestsCache_Update(true)
+end
+KT.QuestsCache_Init = QuestsCache_Init
+
+local function ObjectiveTracker_Toggle()
+	if OTF.collapsed then
+		ObjectiveTracker_Expand()
+	else
+		ObjectiveTracker_Collapse()
+	end
+	ObjectiveTracker_Update()
 end
 
 local function SetHeaders(type)
@@ -273,7 +299,7 @@ local function Init()
 
 	C_Timer.After(0, function()
 		if dbChar.collapsed then
-			ObjectiveTracker_MinimizeButton_OnClick()
+			ObjectiveTracker_Toggle()
 		end
 
 		KT:SetQuestsHeaderText()
@@ -302,18 +328,13 @@ local function SetFrames()
 			KT.inWorld = true
 			KT.inInstance = IsInInstance()
 			if db.collapseInInstance and KT.inInstance and not dbChar.collapsed then
-				ObjectiveTracker_MinimizeButton_OnClick()
+				ObjectiveTracker_Toggle()
 			end
 		elseif event == "PLAYER_LEAVING_WORLD" then
 			KT.inWorld = false
 		elseif event == "QUEST_WATCH_LIST_CHANGED" then
 			local id, added = ...
 			if id and not added then
-				if not KT.questStateStopUpdate then
-					if questsCache[id] then
-						questsCache[id].state = nil
-					end
-				end
 				if KT.activeTasks[id] then
 					KT.activeTasks[id] = nil
 				end
@@ -349,9 +370,17 @@ local function SetFrames()
 		elseif event == "QUEST_AUTOCOMPLETE" then
 			KTF.Scroll.value = 0
 		elseif event == "QUEST_ACCEPTED" or event == "QUEST_REMOVED" then
-			dbChar.quests.num = KT.GetNumQuests()
-			UpdateQuestsCache()
-			KT:SetQuestsHeaderText()
+			local questID = ...
+			if not C_QuestLog.IsQuestTask(questID) and not C_QuestLog.IsQuestBounty(questID) then
+				local _, numQuests = QuestsCache_Update()
+				dbChar.quests.num = numQuests
+				KT:SetQuestsHeaderText()
+				if event == "QUEST_ACCEPTED" then
+					QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
+				elseif event == "QUEST_REMOVED" then
+					QuestsCache_RemoveQuest(questID)
+				end
+			end
 		elseif event == "ACHIEVEMENT_EARNED" then
 			KT:SetAchievsHeaderText()
 		elseif event == "PLAYER_REGEN_ENABLED" and combatLockdown then
@@ -376,8 +405,10 @@ local function SetFrames()
 			KT:prot(KTF.Buttons, "Show")
 			KT.locked = false
 		elseif event == "QUEST_LOG_UPDATE" then
-			UpdateQuestsCache()
-			self:UnregisterEvent(event)
+			local emptyCache = QuestsCache_Init()
+			if not emptyCache then
+				self:UnregisterEvent(event)
+			end
 		elseif event == "QUEST_POI_UPDATE" then
 			dbChar.quests.num = KT.GetNumQuests()
 			ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_QUEST)
@@ -671,7 +702,7 @@ local function SetHooks()
 			block.title = text
 		end
 		if self == ACHIEVEMENT_TRACKER_MODULE and text == "" then
-			text = "..."	-- fix Blizz bug
+			text = "..."  -- fix Blizz bug
 		elseif self == SCENARIO_TRACKER_MODULE and self.lineSpacing == 12 then
 			self.lineSpacing = 5
 		end
@@ -757,6 +788,7 @@ local function SetHooks()
 		block.currentLine = line;
 
 		-- completion state
+		local questsCache = dbChar.quests.cache
 		if KT.inWorld and questsCache[block.id] and type(objectiveKey) == "string" then
 			if strfind(objectiveKey, "Complete") then
 				if not questsCache[block.id].state or questsCache[block.id].state ~= "complete" then
@@ -790,7 +822,7 @@ local function SetHooks()
 			fontString.KTskinned = true
 		end
 		if self == QUEST_TRACKER_MODULE and not useHighlight then
-			useHighlight = fontString:GetParent().isHighlighted		-- Fix Blizz bug
+			useHighlight = fontString:GetParent().isHighlighted  -- fix Blizz bug
 		end
 		if useFullHeight then
 			fontString:SetMaxLines(0)
@@ -990,8 +1022,10 @@ local function SetHooks()
 	ObjectiveTracker_AddBlock = function(block)
 		if block.module == SCENARIO_CONTENT_TRACKER_MODULE then
 			if block.currentBlock then
-				block.height = block.contentsHeight - 18
-				block:SetHeight(block.height)
+				if ScenarioWidgetContainerBlock.height < 16.5 then
+					block.height = block.contentsHeight - ScenarioWidgetContainerBlock.height
+					block:SetHeight(block.height)
+				end
 			end
 		end
 		local blockAdded = bck_ObjectiveTracker_AddBlock(block)
@@ -1205,6 +1239,7 @@ local function SetHooks()
 
 		QuestItemButton_Add(block, 3, 4)
 
+		local questsCache = dbChar.quests.cache
 		if db.questShowZones and questsCache[questID] then
 			local infoText = questsCache[questID].zone
 			if questsCache[questID].isCalling then
@@ -1517,7 +1552,6 @@ local function SetHooks()
 		OTFHeader.Title:Show()
 		MSA_CloseDropDownMenus()
 		MawBuffs.List:Hide()
-		HelpTip:Hide(UIParent, JAILERS_TOWER_BUFFS_TUTORIAL)
 	end
 
 	function ObjectiveTracker_Expand()  -- R
@@ -1529,7 +1563,6 @@ local function SetHooks()
 		KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.25, 0.5)
 		OTFHeader.Title:Hide()
 		MSA_CloseDropDownMenus()
-		MawBuffs:UpdateHelptip()
 	end
 
 	local bck_BonusObjectiveTracker_OnBlockAnimOutFinished = BonusObjectiveTracker_OnBlockAnimOutFinished
@@ -1556,6 +1589,22 @@ local function SetHooks()
 			if dbChar.collapsed then
 				BonusObjectiveTracker_OnBlockAnimOutFinished(block.ScrollContents)
 			end
+		end
+	end)
+
+	hooksecurefunc("GossipFrameUpdate", function()
+		local gossipQuests = C_GossipInfo.GetActiveQuests()
+		for _, questInfo in ipairs(gossipQuests) do
+			if dbChar.quests.cache[questInfo.questID] and not C_QuestLog.IsComplete(questInfo.questID) then
+				QuestsCache_UpdateProperty(questInfo.questID, "startMapID", KT.GetCurrentMapAreaID())
+			end
+		end
+	end)
+
+	QuestFrame:HookScript("OnShow", function(self)
+		local questID = GetQuestID()
+		if dbChar.quests.cache[questID] and not C_QuestLog.IsComplete(questID) then
+			QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
 		end
 	end)
 
@@ -1605,7 +1654,7 @@ local function SetHooks()
 	function QuestMapFrame_OpenToQuestDetails(questID)  -- R
 		local mapID = GetQuestUiMapID(questID);
 		if ( mapID == 0 ) then mapID = nil; end
-		OpenQuestLog(mapID);	-- fix Blizz bug
+		OpenQuestLog(mapID);  -- fix Blizz bug
 		QuestMapFrame_ShowQuestDetails(questID);
 	end
 	--]]
@@ -1922,7 +1971,7 @@ local function SetHooks()
 
 		-- Add title
 		local info = MSA_DropDownMenu_CreateInfo();
-		info.text = C_TaskQuest.GetQuestInfoByQuestID(questID);
+		info.text = C_TaskQuest.GetQuestInfoByQuestID(questID) or block.title;  -- fix Blizz bug
 		info.isTitle = 1;
 		info.notCheckable = 1;
 		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
@@ -1957,10 +2006,6 @@ local function SetHooks()
 	end)
 
 	-- Torghast
-	MawBuffs:HookScript("OnClick", function(self, button)
-		HelpTip:Acknowledge(UIParent, JAILERS_TOWER_BUFFS_TUTORIAL)
-	end)
-
 	MawBuffs.List:SetScript("OnShow", function(self)  -- R
 		self.button:SetPushedAtlas("jailerstower-animapowerbutton-normalpressed", true)
 		self.button:SetHighlightAtlas("jailerstower-animapowerbutton-highlight", true)
@@ -1977,22 +2022,7 @@ local function SetHooks()
 		end
 	end)
 
-	function MawBuffs:UpdateHelptip()  -- R
-		if(not dbChar.collapsed and self.buffCount > 0 and not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_9_0_JAILERS_TOWER_BUFFS)) then
-			local selectLocationHelpTipInfo = {
-				text = JAILERS_TOWER_BUFFS_TUTORIAL,
-				buttonStyle = HelpTip.ButtonStyle.Close,
-				cvarBitfield = "closedInfoFrames",
-				bitfieldFlag = LE_FRAME_TUTORIAL_9_0_JAILERS_TOWER_BUFFS,
-				targetPoint = HelpTip.Point.RightEdgeCenter,
-				autoEdgeFlipping = true,
-				useParentStrata = true,
-			}
-			HelpTip:Show(UIParent, selectLocationHelpTipInfo, self)
-		else
-			HelpTip:Hide(UIParent, JAILERS_TOWER_BUFFS_TUTORIAL)
-		end
-	end
+	MawBuffs.UpdateHelptip = function() end
 end
 
 --------------
@@ -2002,9 +2032,7 @@ end
 function KT_WorldQuestPOIButton_OnClick(self)
 	local questID = self.questID
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-	if C_SuperTrack.GetSuperTrackedQuestID() ~= questID then
-		C_SuperTrack.SetSuperTrackedQuestID(questID)
-	end
+	C_SuperTrack.SetSuperTrackedQuestID(questID)
 	WorldMapPing_StartPingQuest(questID)
 end
 
@@ -2376,7 +2404,7 @@ function KT:CreateQuestTag(level, questTag, frequency, suggestedGroup)
 			if suggestedGroup > 0 then
 				tag = tag..suggestedGroup
 			end
-		elseif questTag == Enum.QuestTag.Pvp then
+		elseif questTag == Enum.QuestTag.PvP then
 			tag = "pvp"
 		elseif questTag == Enum.QuestTag.Dungeon then
 			tag = "d"
@@ -2417,8 +2445,7 @@ function KT:IsTrackerEmpty(noaddon)
 		GetNumTrackedAchievements() == 0 and
 		self.IsTableEmpty(self.activeTasks) and
 		C_QuestLog.GetNumWorldQuestWatches() == 0 and
-		not self.inScenario and
-		not (self.IcecrownRares and self.IcecrownRares:IsShown()))
+		not self.inScenario)
 	if not noaddon then
 		result = (result and not self.AddonPetTracker:IsShown())
 	end
@@ -2429,7 +2456,7 @@ function KT:ToggleEmptyTracker(added)
 	local alpha, mouse = 1, true
 	if self:IsTrackerEmpty() then
 		if not dbChar.collapsed then
-			ObjectiveTracker_MinimizeButton_OnClick()
+			ObjectiveTracker_Toggle()
 		end
 		KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.5, 0.75)
 		if db.hideEmptyTracker then
@@ -2439,7 +2466,7 @@ function KT:ToggleEmptyTracker(added)
 	else
 		if dbChar.collapsed then
 			if added then
-				ObjectiveTracker_MinimizeButton_OnClick()
+				ObjectiveTracker_Toggle()
 			else
 				KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.25)
 			end
@@ -2523,7 +2550,7 @@ function KT:OnInitialize()
 	self.activeTasks = {}
 	self.inWorld = false
 	self.inInstance = IsInInstance()
-	self.inScenario = C_Scenario.IsInScenario() and not IsOnGroundFloorInJailersTower()
+	self.inScenario = C_Scenario.IsInScenario() and not KT.IsScenarioHidden()
 	self.stopUpdate = true
 	self.questStateStopUpdate = false
 	self.locked = false
@@ -2564,7 +2591,6 @@ function KT:OnEnable()
 
 	self.QuestLog:Enable()
 	self.Filters:Enable()
-	if db.sIcecrownRares and self.IcecrownRares then self.IcecrownRares:Enable() end
 	if self.AddonPetTracker.isLoaded then self.AddonPetTracker:Enable() end
 	if self.AddonTomTom.isLoaded then self.AddonTomTom:Enable() end
 	self.AddonOthers:Enable()
@@ -2577,4 +2603,18 @@ function KT:OnEnable()
 
 	self.screenWidth = round(GetScreenWidth())
 	self.screenHeight = round(GetScreenHeight())
+
+	local i = 1
+	local isChange = false
+	while i <= #db.modulesOrder do
+		if _G[db.modulesOrder[i]] then
+			i = i + 1
+		else
+			tremove(db.modulesOrder, i)
+			isChange = true
+		end
+	end
+	if isChange then
+		self.db:RegisterDefaults(self.db.defaults)
+	end
 end

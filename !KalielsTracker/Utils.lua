@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -31,28 +31,23 @@ function KT.IsHigherVersion(newVersion, oldVersion)
     oV1, oV2, oV3, oBuildNumber = tonumber(oV1), tonumber(oV2), tonumber(oV3), tonumber(oBuildNumber)
     if nV1 == oV1 then
         if nV2 == oV2 then
-            if nV3 > oV3 then
-                result = true
-            else
-                if nBuildType == oBuildType then
-                    if nBuildNumber and nBuildNumber > oBuildNumber then
-                        result = true
-                    end
-                else
-                    if nBuildType == nil then
+            if nV3 == oV3 then
+                -- no support for alpha vs beta builds
+                if nBuildType == nil then
+                    result = true
+                elseif nBuildType == oBuildType then
+                    if nBuildNumber and nBuildNumber >= oBuildNumber then
                         result = true
                     end
                 end
-            end
-        else
-            if nV2 > oV2 then
+            elseif nV3 > oV3 then
                 result = true
             end
-        end
-    else
-        if nV1 > oV1 then
+        elseif nV2 > oV2 then
             result = true
         end
+    elseif nV1 > oV1 then
+        result = true
     end
     return result
 end
@@ -106,6 +101,10 @@ end
 
 function KT.SetMapID(mapID)
     WorldMapFrame:SetMapID(mapID)
+end
+
+function KT.IsInBetween()  -- Shadowlands
+    return (UnitOnTaxi("player") and KT.GetCurrentMapAreaID() == 1550)
 end
 
 -- RGB to Hex
@@ -266,6 +265,12 @@ function KT.GetNumQuestWatches()
     return numWatches
 end
 
+-- Scenario
+function KT.IsScenarioHidden()
+    local _, _, numStages = C_Scenario.GetInfo()
+    return numStages == 0 or IsOnGroundFloorInJailersTower()
+end
+
 -- Time
 function KT.SecondsToTime(seconds, noSeconds, maxCount, roundUp)
     local time = "";
@@ -405,7 +410,7 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
 }
 
 function KT:Alert_ResetIncompatibleProfiles(version)
-    if self.db.global.version and self.IsHigherVersion(version, self.db.global.version) then
+    if self.db.global.version and not self.IsHigherVersion(self.db.global.version, version) then
         local profile
         for _, v in ipairs(self.db:GetProfiles()) do
             profile = self.db.profiles[v]
@@ -418,7 +423,7 @@ function KT:Alert_ResetIncompatibleProfiles(version)
 end
 
 function KT:Alert_IncompatibleAddon(addon, version)
-    if self.IsHigherVersion(version, GetAddOnMetadata(addon, "Version")) then
+    if not self.IsHigherVersion(GetAddOnMetadata(addon, "Version"), version) then
         self.db.profile["addon"..addon] = false
         StaticPopup_Show(addonName.."_ReloadUI", nil, "|cff00ffe3%s|r support has been disabled. Please install version |cff00ffe3%s|r or later and enable addon support.", { GetAddOnMetadata(addon, "Title"), version })
     end

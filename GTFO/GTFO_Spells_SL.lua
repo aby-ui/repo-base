@@ -547,19 +547,16 @@ GTFO.SpellID["331637"] = {
   --desc = "Dark Recital (Lord Stavros)";
   negatingDebuffSpellID = 331637; -- Dark Recital
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["331638"] = {
   --desc = "Dark Recital (Lord Stavros) - Too far";
   sound = 4;
-  test = true;
 };
 
 GTFO.SpellID["347425"] = {
   --desc = "Dark Recital (Lord Stavros) - successful";
   sound = 0;
-  test = true;
 };
 
 GTFO.SpellID["334743"] = {
@@ -577,5 +574,6 @@ GTFO.SpellID["332734"] = {
   --desc = "Indignation (Sire Denathrius)";
   sound = 1;
 };
+
 
 end

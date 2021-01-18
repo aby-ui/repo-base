@@ -226,6 +226,17 @@ private.NPC_GUIDE = {
 	[157125] = { 
 		[RSConstants.FLAG] = { x = 0.264, y = 0.4272, comment = AL["NOTE_157125_1"] }; --Zargox the Reborn
 	};
+	[164547] = { 
+		[RSConstants.DOT..1] = { x = 0.27, y = 0.45, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..2] = { x = 0.448, y = 0.2, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..3] = { x = 0.5, y = 0.2, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..4] = { x = 0.5837, y = 0.6104, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..5] = { x = 0.41, y = 0.71, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..6] = { x = 0.554, y = 0.558, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..7] = { x = 0.25, y = 0.5, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..8] = { x = 0.39, y = 0.6, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+		[RSConstants.DOT..9] = { x = 0.3, y = 0.36, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
+	};
 }
 
 ---============================================================================
@@ -514,6 +525,13 @@ private.CONTAINER_GUIDE = {
 	[353231] = { [RSConstants.ENTRANCE] = { x = 0.3785, y = 0.7626 } }; --Bonebound Chest
 	[353868] = { [RSConstants.ENTRANCE] = { x = 0.5963, y = 0.1331 } }; --Hidden Hoard
 	[353314] = { [RSConstants.PATH_START] = { x = 0.3983, y = 0.2589 } }; --Silver Strongbox
+	[353688] = { [RSConstants.ENTRANCE] = { x = 0.5779, y = 0.4207 } }; --Hidden Hoard
+	[353873] = { [RSConstants.ENTRANCE] = { x = 0.4942, y = 0.5199 } }; --Hidden Hoard
+	[352703] = { 
+		[RSConstants.FLAG..1] = { x = 0.4386, y = 0.4148, itemID = 179823 };
+		[RSConstants.FLAG..2] = { x = 0.3823, y = 0.4376, itemID = 179823 };
+	}; --La cosecha
+	[354206] = { [RSConstants.PATH_START] = { x = 0.4102, y = 0.3753 } }; --Greedstone
 }
 
 ---============================================================================

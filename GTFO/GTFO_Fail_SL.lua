@@ -1027,5 +1027,22 @@ GTFO.SpellID["334016"] = {
   sound = 3;
 };
 
+GTFO.SpellID["341732"] = {
+  --desc = "Searing Censure (Lady Sinsear)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["329835"] = {
+  --desc = "Obliterating Rift (Hungering Destroyer)";
+  sound = 2;
+};
+
+GTFO.SpellID["327464"] = {
+  --desc = "Turbulent Anima (Sire Denathrius)";
+  sound = 3;
+};
+
+
 end
 
