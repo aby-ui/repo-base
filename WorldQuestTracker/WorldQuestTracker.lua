@@ -1060,6 +1060,20 @@ function SlashCmdList.WQTRACKER (msg, editbox)
 		end)
 		b:SetPoint ("center", UIParent, "center", 0, 0)
 
+	elseif (msg == "test") then
+		local playerLevel = UnitLevel("player")
+		if (playerLevel < 51) then
+			WorldQuestTracker:Msg("Character level too low for shadowlands, minimum is 51 for alts.")
+		end
+
+		local bastionQuests = C_TaskQuest.GetQuestsForPlayerByMapID(1533, 1533)
+		WorldQuestTracker:Msg("Finding quests on Bastion Map")
+		if (bastionQuests and type(bastionQuests) == "table") then
+			WorldQuestTracker:Msg("Found quests, amount:", #bastionQuests)
+		else
+			WorldQuestTracker:Msg("Blizzard's GetQuestsForPlayerByMapID() returned invalid data.")
+		end
+
 	elseif (msg == "debug") then
 		WorldQuestTracker.__debug = not WorldQuestTracker.__debug
 		if (WorldQuestTracker.__debug) then
@@ -1221,6 +1235,20 @@ function MicroButtonAlert_OnHide2(self)
 	MainMenuMicroButton_UpdateAlertsEnabled(self);
 end
 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+local p = CreateFrame("frame")
+p:RegisterEvent("TALKINGHEAD_REQUESTED")
+p:SetScript("OnEvent", function (self, event, arg1)
+	if (event == "TALKINGHEAD_REQUESTED") then
+		local displayInfo, cameraID, vo, duration, lineNumber, numLines, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
+		if (WorldQuestTracker.db.profile.talking_heads[vo]) then
+			C_Timer.After(0.1, TalkingHeadFrame_CloseImmediately)
+		else
+			WorldQuestTracker.db.profile.talking_heads[vo] = true
+		end
+	end
+end)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> faction bounty

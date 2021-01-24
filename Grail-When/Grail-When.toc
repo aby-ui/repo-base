@@ -2,7 +2,7 @@
 ## Title: Grail |r|cff69ccf0When|r
 ## Author: Scott M Harrison
 ## Notes: Provides completion date information to Grail
-## Version: 002
+## Version: 003
 ## Dependencies: Grail
 ## LoadOnDemand: 1
 ## SavedVariablesPerCharacter: GrailWhenPlayer

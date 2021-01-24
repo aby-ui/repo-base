@@ -4,7 +4,7 @@
 ## Dependencies: Wholly
 ## Author: Scott M Harrison
 ## Notes: Knows about quests
-## Version: 113
+## Version: 114
 ## SavedVariables: GrailDatabase
 ## SavedVariablesPerCharacter: GrailDatabasePlayer
 

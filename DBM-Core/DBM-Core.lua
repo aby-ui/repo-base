@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210114202106"),
-	DisplayVersion = "9.0.18 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 1, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210121233650"),
+	DisplayVersion = "9.0.19 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 1, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -660,15 +660,12 @@ local function checkForSafeSender(sender, checkFriends, checkGuild, filterRaid, 
 			end
 		end
 		--Check if it's a non bnet friend
-		local nf = C_FriendList.GetNumFriends()
-		for i = 1, nf do
-			local toonName = C_FriendList.GetFriendInfo(i)
-			if toonName == sender then
-				if filterRaid and DBM:GetRaidUnitId(toonName) then--Person is in raid group and filter raid enabled
-					return false--just set sender as unsafe
-				else
-					return true
-				end
+		local friendInfo = C_FriendList.GetFriendInfo(sender)
+		if friendInfo then
+			if filterRaid and DBM:GetRaidUnitId(friendInfo.name) then--Person is in raid group and filter raid enabled
+				return false--just set sender as unsafe
+			else
+				return true
 			end
 		end
 	end
@@ -10780,7 +10777,7 @@ do
 
 	function DBM:PlaySpecialWarningSound(soundId, force)
 		local sound
-		if not force and DBM:IsTrivial() and DBM.Options.DontPlayTrivialSpecialWarningSound then
+		if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then
 			sound = self.Options.RaidWarningSound
 		else
 			sound = type(soundId) == "number" and self.Options["SpecialWarningSound" .. (soundId == 1 and "" or soundId)] or soundId or self.Options.SpecialWarningSound
@@ -10804,6 +10801,7 @@ do
 			self:PlaySpecialWarningSound(number, force)
 		end
 		if number and DBM.Options["SpecialWarningFlash"..number] then
+			if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then return end--No flash if trivial
 			local flashColor = self.Options["SpecialWarningFlashCol"..number]
 			local repeatCount = self.Options["SpecialWarningFlashCount"..number] or 1
 			self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura"..number], self.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
@@ -12234,7 +12232,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210114202106" then
+	if not revision or revision == "20210121233650" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

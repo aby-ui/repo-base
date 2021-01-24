@@ -6092,7 +6092,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 			local specIndex = DetailsFramework.GetSpecialization()
 			if (specIndex) then
 				local specID = DetailsFramework.GetSpecializationInfo (specIndex)
-				if (not loadTable.spec [specID] or loadTable.spec [specID..""]) then
+				if not specID or (not loadTable.spec [specID] and not loadTable.spec [specID..""]) then
 					return false
 				end
 			else
@@ -6114,7 +6114,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 		local talentsInUse = DF:GetCharacterTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
-			if (loadTable.talent [talentID]) then
+			if talentID and (loadTable.talent [talentID] or loadTable.talent [talentID .. ""]) then
 				hasTalent =  true
 				break
 			end
@@ -6129,7 +6129,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 		local talentsInUse = DF:GetCharacterPvPTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
-			if (loadTable.pvptalent [talentID]) then
+			if talentID and (loadTable.pvptalent [talentID] or loadTable.pvptalent [talentID .. ""]) then
 				hasTalent =  true
 				break
 			end
@@ -6171,7 +6171,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 		local level, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
 		local hasAffix = false
 		for _, affixID in ipairs (affixes) do
-			if (loadTable.affix [affixID]) then
+			if affixID and (loadTable.affix [affixID] or loadTable.affix [affixID .. ""]) then
 				hasAffix = true
 				break
 			end
@@ -6285,7 +6285,10 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			f.OnRadioCheckboxClick = function (self, key, value)
 				--hierarchy: DBKey ["class"] key ["HUNTER"] value TRUE
 				local DBKey = self:GetParent().DBKey
-				f.OptionsTable [DBKey] [key] = value and true or nil
+				f.OptionsTable [DBKey] [key and key .. ""] = value and true or nil
+				if not value then -- cleanup "number" type values
+					f.OptionsTable [DBKey] [key] = nil
+				end
 				f.OnRadioStateChanged (self:GetParent(), f.OptionsTable [DBKey])
 				f.RunCallback()
 			end
@@ -6347,7 +6350,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 					name = talentTable.Name, 
 					set = f.OnRadioCheckboxClick,
 					param = talentTable.ID,
-					get = function() return f.OptionsTable.talent [talentTable.ID] end,
+					get = function() return f.OptionsTable.talent [talentTable.ID] or f.OptionsTable.talent [talentTable.ID .. ""] end,
 					texture = talentTable.Texture,
 				})
 			end
@@ -6445,7 +6448,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 					name = talentTable.Name, 
 					set = f.OnRadioCheckboxClick,
 					param = talentTable.ID,
-					get = function() return f.OptionsTable.pvptalent [talentTable.ID] end,
+					get = function() return f.OptionsTable.pvptalent [talentTable.ID] or f.OptionsTable.pvptalent [talentTable.ID .. ""] end,
 					texture = talentTable.Texture,
 				})
 			end
@@ -6543,7 +6546,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 					name = groupTable.Name, 
 					set = f.OnRadioCheckboxClick,
 					param = groupTable.ID,
-					get = function() return f.OptionsTable.group [groupTable.ID] end,
+					get = function() return f.OptionsTable.group [groupTable.ID] or f.OptionsTable.group [groupTable.ID .. ""] end,
 				})
 			end
 			local groupTypesGroup = DF:CreateRadionGroup (f, groupTypes, name, {width = 200, height = 200, title = "Group Types"})
@@ -6558,7 +6561,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 					name = roleTable.Texture .. " " .. roleTable.Name, 
 					set = f.OnRadioCheckboxClick,
 					param = roleTable.ID,
-					get = function() return f.OptionsTable.role [roleTable.ID] end,
+					get = function() return f.OptionsTable.role [roleTable.ID] or f.OptionsTable.role [roleTable.ID .. ""] end,
 				})
 			end
 			local roleTypesGroup = DF:CreateRadionGroup (f, roleTypes, name, {width = 200, height = 200, title = "Role Types"})
@@ -6575,7 +6578,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 						name = affixName, 
 						set = f.OnRadioCheckboxClick,
 						param = i, 
-						get = function() return f.OptionsTable.affix [i] end,
+						get = function() return f.OptionsTable.affix [i] or f.OptionsTable.affix [i .. ""] end,
 						texture = texture,
 					})
 				end
@@ -6643,7 +6646,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 						name = talentTable.Name, 
 						set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
 						param = talentTable.ID,
-						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID] end,
+						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID] or DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID .. ""] end,
 						texture = talentTable.Texture,
 					})
 				end
@@ -6657,7 +6660,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 						name = talentTable.Name, 
 						set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
 						param = talentTable.ID,
-						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.pvptalent [talentTable.ID] end,
+						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.pvptalent [talentTable.ID] or DetailsFrameworkLoadConditionsPanel.OptionsTable.pvptalent [talentTable.ID .. ""] end,
 						texture = talentTable.Texture,
 					})
 				end
@@ -10026,4 +10029,213 @@ function DF:SetPointOffsets(frame, xOffset, yOffset)
 		frame:SetPoint(anchor1, anchorTo, anchor2, xOffset, yOffset)
 	end
 end
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> list box
+
+DF.ListboxFunctions = {
+	scrollRefresh = function(self, data, offset, totalLines)
+		for i = 1, totalLines do
+			local index = i + offset
+			local lineData = data[index] --what is shown in the textentries, array
+			if (lineData) then
+				local line = self:GetLine(i)
+				line.dataIndex = index
+				line.deleteButton:SetClickFunction(DF.ListboxFunctions.deleteEntry, data, index)
+
+				local amountEntries = #lineData
+				for o = 1, amountEntries do
+					local textEntry = line.widgets[o]
+					textEntry.dataTable = lineData
+					textEntry.dataTableIndex = o
+					local text = lineData[o]
+					textEntry:SetText(text)
+				end
+			end
+		end
+	end,
+
+	addEntry = function(self)
+		local frameCanvas = self:GetParent()
+		local data = frameCanvas.data
+		local newEntry = {}
+		for i = 1, frameCanvas.headerLength do
+			tinsert(newEntry, "")
+		end
+		tinsert(data, newEntry)
+		frameCanvas.scrollBox:Refresh()
+	end,
+
+	deleteEntry = function(self, button, data, index)
+		tremove(data, index)
+		--get the line, get the scrollframe
+		self:GetParent():GetParent():Refresh()
+	end,
+
+	createScrollLine = function(self, index)
+		local listBox = self:GetParent()
+		local line = CreateFrame("frame", self:GetName().. "line_" .. index, self, "BackdropTemplate")
+
+		line:SetPoint("topleft", self, "topleft", 1, -((index-1)*(self.lineHeight+1)) - 1)
+		line:SetSize(self:GetWidth() - 28, self.lineHeight) -- -28 space for the scrollbar
+
+		local options = listBox.options
+		line:SetBackdrop(options.line_backdrop)
+		line:SetBackdropColor(unpack(options.line_backdrop_color))
+
+		DF:Mixin(line, DF.HeaderFunctions)
+
+		line.widgets = {}
+
+		for i = 1, (listBox.headerLength+1) do --+1 to add the delete button
+			local headerColumn = listBox.headerTable[i]
+
+			if (headerColumn.isDelete) then
+				local deleteButton = DF:CreateButton(line, DF.ListboxFunctions.deleteEntry, 20, self.lineHeight, "X", listBox.data, index, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+				line.deleteButton = deleteButton
+				line:AddFrameToHeaderAlignment(deleteButton)
+
+			elseif (headerColumn.text) then
+				local template = DF.table.copy({}, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+				template.backdropcolor = {0.1, 0.1, 0.1, .7}
+				local textEntry = DF:CreateTextEntry(line, function()end, headerColumn.width, self.lineHeight, nil, nil, nil, template)
+				textEntry:SetHook("OnEditFocusGained", function() textEntry:HighlightText(0) end)
+				textEntry:SetHook("OnEditFocusLost", function()
+					textEntry:HighlightText(0, 0)
+					local text = textEntry.text
+					local dataTable = textEntry.dataTable
+					dataTable[textEntry.dataTableIndex] = text
+				end)
+				tinsert(line.widgets, textEntry)
+				line:AddFrameToHeaderAlignment(textEntry)
+			end
+		end
+
+		line:AlignWithHeader(listBox.header, "left")
+		return line
+	end,
+}
+
+
+local listbox_options = {
+	width = 800,
+	height = 600,
+	auto_width = true,
+	line_height = 16,
+	line_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
+	line_backdrop_color = {.3, .3, .3, .8},
+}
+
+--@parent: parent frame
+--@name: name of the frame to be created
+--@data: table with current data to fill the column, this table are also used for values changed or added
+--@options: table with options to overwrite the default setting from 'listbox_options'
+--@header: a table to create a header widget
+--@header_options: a table with options to overwrite the default header options
+function DF:CreateListBox(parent, name, data, options, headerTable, headerOptions)
+
+	options = options or {}
+	name = name or "ListboxUnamed_" .. (math.random(100000, 1000000))
+
+	--canvas
+	local frameCanvas = CreateFrame("scrollframe", name, parent, "BackdropTemplate")
+	DF:Mixin(frameCanvas, DF.ListboxFunctions)
+	DF:Mixin(frameCanvas, DF.OptionsFunctions)
+	DF:Mixin(frameCanvas, DF.LayoutFrame)
+	frameCanvas.headerTable = headerTable
+
+	if (not data or type(data) ~= "table") then
+		error("CreateListBox() parameter 3 'data' must be a table.")
+	end
+
+	frameCanvas.data = data
+	frameCanvas.lines = {}
+	DF:ApplyStandardBackdrop(frameCanvas)
+	frameCanvas:BuildOptionsTable(listbox_options, options)
+
+	--> header
+		--check for default values in the header
+		headerTable = headerTable or {
+			{text = "Spell Name", width = 70},
+			{text = "Spell Id", width = 70},
+		}
+		headerOptions = headerOptions or {
+			padding = 2,
+		}
+
+		--each header is an entry in the data, if the header has 4 indexes the data has sub tables with 4 indexes as well
+		frameCanvas.headerLength = #headerTable
+
+		--add the detele line column into the header frame
+		tinsert(headerTable, {text = "Delete", width = 50, isDelete = true}) --isDelete signals the createScrollLine() to make the delete button for the line 
+		
+		local header = DF:CreateHeader(frameCanvas, headerTable, headerOptions)
+		--set the header point
+		header:SetPoint("topleft", frameCanvas, "topleft", 5, -5)
+		frameCanvas.header = header
+
+	--> auto size
+		if (frameCanvas.options.auto_width) then
+			local width = 10 --padding 5 on each side
+			width = width + 20 --scrollbar reserved space
+			local headerPadding = headerOptions.padding or 0
+
+			for _, header in pairs(headerTable) do
+				if (header.width) then
+					width = width + header.width + headerPadding
+				end
+			end
+
+			frameCanvas.options.width = width
+			frameCanvas:SetWidth(width)
+		end
+
+		local width = frameCanvas.options.width
+		local height = frameCanvas.options.height
+
+		frameCanvas:SetSize(frameCanvas.options.width, height)
+
+	--> scroll frame
+		local lineHeight = frameCanvas.options.line_height
+		local lineAmount = floor(height / lineHeight)
+
+		-- -12 is padding: 5 on top, 7 bottom, 2 header scrollbar blank space | -24 to leave space to the add button
+		local scrollBox = DF:CreateScrollBox(frameCanvas, "$parentScrollbox", frameCanvas.scrollRefresh, data, width-4, height - header:GetHeight() - 12 - 24, lineAmount, lineHeight)
+		scrollBox:SetPoint("topleft", header, "bottomleft", 0, -2)
+		scrollBox:SetPoint("topright", header, "bottomright", 0, -2) -- -20 for the scrollbar
+		DF:ReskinSlider(scrollBox)
+		scrollBox.lineHeight = lineHeight
+		scrollBox.lineAmount = lineAmount
+		frameCanvas.scrollBox = scrollBox
+
+		for i = 1, lineAmount do
+			scrollBox:CreateLine(frameCanvas.createScrollLine)
+		end
+
+		scrollBox:Refresh()
+
+	--> add line button
+		local addLineButton = DF:CreateButton(frameCanvas, DF.ListboxFunctions.addEntry, 80, 20, "Add", nil, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+		addLineButton:SetPoint("topleft", scrollBox, "bottomleft", 0, -4)
+
+	return frameCanvas
+end
+
+--[=[ -- test case
+
+    local pframe = ListBoxTest or CreateFrame("frame", "ListBoxTest", UIParent)
+    pframe:SetSize(900, 700)
+    pframe:SetPoint("left")
+    
+    local data = {{254154, "spell name 1", 45}, {299154, "spell name 2", 05}, {354154, "spell name 3", 99}}
+    local headerTable = {
+        {text = "spell id", width = 120},
+        {text = "spell name", width = 180},
+        {text = "number", width = 90},
+    }
+    
+    local listbox = DetailsFramework:CreateListBox(pframe, "$parentlistbox", data, nil, headerTable, nil)
+    listbox:SetPoint("topleft", pframe, "topleft", 10, -10)
+
+--]=]
 

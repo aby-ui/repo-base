@@ -461,9 +461,11 @@ function Details.packFunctions.PackDamage(combatObject)
     local allPlayerNames = {}
     for i = 1, 20 do
         local name, _, subgroup = GetRaidRosterInfo(i)
-        name = Ambiguate(name, "none")
-        if (name and subgroup <= 4) then
-            tinsert(allPlayerNames, name)
+        if (name) then --maybe the group has less than 20 players
+            name = Ambiguate(name, "none")
+            if (name and subgroup <= 4) then
+                tinsert(allPlayerNames, name)
+            end
         end
     end
     table.sort(allPlayerNames, function(t1, t2) return t1 < t2 end)

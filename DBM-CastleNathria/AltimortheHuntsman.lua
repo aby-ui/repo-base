@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2429, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210104005548")
+mod:SetRevision("20210119021124")
 mod:SetCreatureID(165066)
 mod:SetEncounterID(2418)
 mod:SetUsedIcons(1, 2, 3)
@@ -410,7 +410,7 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 334504 then--Huntsman's Bond (only boss1 is registered so dog casts SHOULD be ignored)
-		if self:GetUnitCreatureId(uId) == 165066 then
+		if self:GetUnitCreatureId(uId) == 165066 and self:AntiSpam(3, 1) then--Antispam will break when boss can be beaten by characters really fast 2-3 expansions from now
 			self.vb.phase = self.vb.phase + 1
 			if self.vb.phase == 2 then
 				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))

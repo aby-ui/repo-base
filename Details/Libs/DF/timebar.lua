@@ -276,7 +276,6 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
         self.statusBar.timeLeft2 = currentTime
     end
 
-    --print("min|max values:", self.statusBar.starTime, self.statusBar.endTime)
     self.statusBar:SetMinMaxValues(self.statusBar.starTime, self.statusBar.endTime)
 
     if (self.direction == "right") then

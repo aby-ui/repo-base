@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210114202106")
+mod:SetRevision("20210121233650")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -348,6 +348,20 @@ local function phaseChange(self, adjustment)
 			timerWaltzofBloodCD:Start((self:IsMythic() and 26.9 or self:IsLFR() and 35.7 or 30.7)-adjustment)--START
 		end
 	end
+end
+
+--/run DBM:GetModByName(2426):TestRestart(20)
+function mod:TestRestart(amount)
+	timerDutifulAttendantCD:Start(amount)
+	timerDualistsRiposteCD:Start(amount)
+	timerDredgerServantsCD:Start(amount)
+	timerCastellansCadreCD:Start(amount)
+	timerDrainEssenceCD:Start(amount)
+	timerSoulSpikesCD:Start(amount)
+	timerDarkRecitalCD:Start(amount)
+	timerEvasiveLungeCD:Start(amount)
+	timerWaltzofBloodCD:Start(amount)
+	timerDancingFoolsCD:Start(amount)
 end
 
 --/run DBM:GetModByName(2426):TestAdd(10)

@@ -890,6 +890,11 @@ GTFO.SpellID["321662"] = {
   sound = 3;
 };
 
+GTFO.SpellID["330813"] = {
+  --desc = "Aerial Strikes (Observer Zelgar)";
+  sound = 3;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************

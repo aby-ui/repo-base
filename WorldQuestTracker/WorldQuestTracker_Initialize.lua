@@ -206,6 +206,8 @@ do
 			tracker_scale = 1,
 			tracker_show_time = false,
 			tracker_textsize = 12,
+
+			talking_heads = {},
 			
 			show_faction_frame = true,
 			

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1731, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210118141911")
 mod:SetCreatureID(104288)
 mod:SetEncounterID(1867)
 mod:SetUsedIcons(1)
@@ -198,6 +198,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
+local bombTexture = _G["_BombTexture"]
+
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 211615 then--Pre debuff
@@ -240,7 +242,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnArcanoSlash:Show(args.destName, amount)
 		end
 	elseif spellId == 207327 then
-		if self.Options.NPAuraOnCleansing and not _BombTexture then
+		if self.Options.NPAuraOnCleansing and not bombTexture then
 			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 7)
 		end
 	end
@@ -258,7 +260,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 206560 then--Cleaner Mode (45 seconds)
 		timerToxicSliceCD:Stop("boss")
 	elseif spellId == 207327 then
-		if self.Options.NPAuraOnCleansing and not _BombTexture then
+		if self.Options.NPAuraOnCleansing and not bombTexture then
 			DBM.Nameplate:Hide(true, args.destGUID, spellId)
 		end
 	end

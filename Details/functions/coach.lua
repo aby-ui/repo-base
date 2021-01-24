@@ -539,7 +539,7 @@ function Details.Coach.WelcomePanel()
                 hasAssistantsTexture:SetTexCoord(0, 0.5, 0, 0.5)
             end
 
-            local isInCorrectGroup = false
+            local isInCorrectGroup = true --debug
             for i = 1, numRaidMembers do
                 local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML = GetRaidRosterInfo(i)
                 if (name == playerName) then

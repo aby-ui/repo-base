@@ -410,6 +410,12 @@
 --			Changes the reputation section to allow for future expansions without code change.
 --			Adds the ability to use Blizzard's user waypoint.
 --			Changes interface to 90002.
+--		082	*** Requires Grail 114 or later ***
+--			Adds the ability to display covenant renown level prerequisites (minimum and maximum).
+--			Adds the ability to display calling quests availability prerequisites.
+--			Adds the ability to display quest types for biweekly, threat and calling quests.
+--			Adds the ability to display covenant talent prerequisites.
+--			Adds the ability to display custom achivements Grail supports.
 --
 --	Known Issues
 --
@@ -427,7 +433,7 @@ local mathmax, mathmin, sqrt = math.max, math.min, math.sqrt
 
 local CloseDropDownMenus					= CloseDropDownMenus
 local CreateFrame							= CreateFrame
-local GetAchievementInfo					= GetAchievementInfo
+--local GetAchievementInfo					= GetAchievementInfo
 local GetAddOnMetadata						= GetAddOnMetadata
 local GetBuildInfo							= GetBuildInfo
 local GetCursorPosition						= GetCursorPosition
@@ -466,7 +472,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 112
+local requiredGrailVersion = 114
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -2661,11 +2667,11 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				local name = GetSpellInfo(numeric)
 				return format("|c%s%s|r [%s]", colorCode, name, self.s.EVER_CAST)
 			elseif questCode == 'J' or questCode == 'j' then
-				local id, name = GetAchievementInfo(numeric)
+				local name = Grail:GetBasicAchievementInfo(numeric)
 				local negateString = (questCode == 'j') and "!" or ""
 				return format("|c%s%s|r %s[%s]", colorCode, name, negateString, self.s.ACHIEVEMENTS)
 			elseif questCode == 'Y' or questCode == 'y' then
-				local id, name = GetAchievementInfo(numeric, true)
+				local name = Grail:GetBasicAchievementInfo(numeric, true)
 				local negateString = (questCode == 'y') and "!" or ""
 				return format("|c%s%s|r %s[%s][%s]", colorCode, name, negateString, self.s.ACHIEVEMENTS, self.s.PLAYER)
 			elseif questCode == 'K' or questCode == 'k' then
@@ -2727,7 +2733,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				return format("|c%s%s %s [%s]|r", colorCode, phaseLocation, questCode, phaseString)
 			elseif questCode == 'x' then
 				return format("|c%s"..ARTIFACTS_KNOWLEDGE_TOOLTIP_LEVEL.."|r", colorCode, numeric)
-			elseif questCode == 'a' or questCode == 'b' then
+			elseif questCode == 'a' or questCode == 'b' or questCode == '^' then
 				return format("|c%s"..AVAILABLE_QUEST.."|r", colorCode)
 			elseif questCode == '@' then
 				return format("|c%s%s %s %d|r", colorCode, Grail:NPCName(100000000 + subcode), self.s.LEVEL, numeric)
@@ -2737,6 +2743,13 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			elseif questCode == '&' then
 				local message = format(REQUIRES_AZERITE_LEVEL_TOOLTIP, numeric)
 				return format("|c%s%s|r", colorCode, message)
+			elseif questCode == '$' then
+				return format("|c%s%s - %s|r", colorCode, LANDING_PAGE_RENOWN_LABEL, C_Covenants.GetCovenantData(subcode).name or "???", numeric)
+			elseif questCode == '*' then
+				return format("|c%s%s - %s <|r", colorCode, LANDING_PAGE_RENOWN_LABEL, C_Covenants.GetCovenantData(subcode).name or "???", numeric)
+			elseif questCode == '%' then
+				local _, mainTitle, title = Grail:_GarrisonTalentResearched(numeric)
+				return format("|c%s%s - %s|r", colorCode, mainTitle, title)
 			else
 				questId = numeric
 				local typeString = ""
@@ -3032,6 +3045,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			self:_QuestInfoSection(self.s.OAC, Grail:QuestOnAcceptCompletes(questId))
 			self:_QuestInfoSection(self.s.OCC, Grail:QuestOnCompletionCompletes(questId))
 			self:_QuestInfoTurninSection(self.s.OTC, Grail:QuestOnTurninCompletes(questId))
+			self:_QuestInfoSection(self.s.OTC, Grail:QuestOnDoneCompletes(questId))
 			if nil ~= Grail.quests[questId] and nil ~= Grail.quests[questId]['AZ'] then
 				self:_AddLine(" ")
 				if "table" == type(Grail.quests[questId]['AZ']) then
@@ -3275,6 +3289,9 @@ end
 				if bitband(bitValue, Grail.bitMaskQuestRareMob) > 0 then retval = retval .. self.s.RARE_MOBS .. " " end
 				if bitband(bitValue, Grail.bitMaskQuestTreasure) > 0 then retval = retval .. self.s.TREASURE .. " " end
 				if bitband(bitValue, Grail.bitMaskQuestWorldQuest) > 0 then retval = retval .. self.s.WORLD_QUEST .. " " end
+				if bitband(bitValue, Grail.bitMaskQuestBiweekly) > 0 then retval = retval .. self.s.BIWEEKLY .. " " end
+				if bitband(bitValue, Grail.bitMaskQuestThreatQuest) > 0 then retval = retval .. self.s.THREAT_QUEST .. " " end
+				if bitband(bitValue, Grail.bitMaskQuestCallingQuest) > 0 then retval = retval .. self.s.CALLING_QUEST .. " " end
 			end
 			return trim(retval)
 		end,
@@ -4691,7 +4708,6 @@ end
 		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "Mostrar/ocultar misiones repetibles"
 		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "Mostrar/ocultar misiones no obtenibles"
 		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "Mostrar/ocultar misiones semanales"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "Toggle shows World Quests"
 		S["BLIZZARD_TOOLTIP"] = "Mostrar la Herramienta de información en el registro de busquedas de Blizzard"
 		S["BREADCRUMB"] = "Misiones de senderos migas de pan:"
@@ -4718,7 +4734,6 @@ end
 		S["GENDER_NONE"] = "Ninguno"
 		S["GRAIL_NOT_HAVE"] = "Grail no tiene esta misión"
 		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "Ocultar objetivos de bonificación de Blizzard"
---[[Translation missing --]]
 		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "Hide Blizzard dungeon entrances"
 		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "Ocultar marcadores de mapa de busqueda de Blizzard"
 		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "Ocultar tesoros de Blizzard"
@@ -4909,48 +4924,36 @@ end
 		S["ABANDONED"] = "Abbandonata"
 		S["ACCEPTED"] = "Accettata"
 		S["ACHIEVEMENT_COLORS"] = "Visualizza il colore delle realizzazioni completate"
---[[Translation missing --]]
 		S["ADD_ADVENTURE_GUIDE"] = "Display Adventure Guide quests in every zone"
 		S["ALL_FACTION_REPUTATIONS"] = "Mostra la reputazione di tutte le fazioni"
 		S["APPEND_LEVEL"] = "Posponi livello richiesto"
 		S["BASE_QUESTS"] = "Quest di base"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLEMAPPINS = "Toggle map pins"
 		BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "Attiva/disattiva visualizzazione quest completate"
 		BINDING_NAME_WHOLLY_TOGGLESHOWDAILIES = "Attiva/disattiva quest giornaliere"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLESHOWLOREMASTER = "Toggle shows Loremaster quests"
 		BINDING_NAME_WHOLLY_TOGGLESHOWNEEDSPREREQUISITES = "Attiva/disattiva visualizzazione prerequisiti"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "Toggle shows repeatables"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "Toggle shows unobtainables"
 		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "Attiva/disattiva visualizzazione quest settimanali"
---[[Translation missing --]]
 		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "Toggle shows World Quests"
---[[Translation missing --]]
 		S["BLIZZARD_TOOLTIP"] = "Tooltips appear on Blizzard Quest Log"
 		S["BREADCRUMB"] = "Traccia Missioni"
 		S["BUGGED"] = "Bug"
 		S["BUGGED_UNOBTAINABLE"] = "Missioni buggate considerate non ottenibili"
---[[Translation missing --]]
 		S["BUILDING"] = "Building"
 		S["CHRISTMAS_WEEK"] = "Settimana di Natale"
 		S["CLASS_ANY"] = "Qualsiasi"
 		S["CLASS_NONE"] = "Nessuna"
 		S["COMPLETED"] = "Completata"
---[[Translation missing --]]
 		S["COMPLETION_DATES"] = "Completion Dates"
---[[Translation missing --]]
 		S["DROP_TO_START_FORMAT"] = "Drops %s to start [%s]"
 		S["EMPTY_ZONES"] = "Mostra le zone vuote"
 		S["ENABLE_COORDINATES"] = "Attiva le coordinate del giocatore"
 		S["ENTER_ZONE"] = "Accetta quando entri nell'area"
 		S["ESCORT"] = "Scorta"
---[[Translation missing --]]
 		S["EVER_CAST"] = "Has ever cast"
 		S["EVER_COMPLETED"] = "Stata completata"
---[[Translation missing --]]
 		S["EVER_EXPERIENCED"] = "Has ever experienced"
 		S["FACTION_BOTH"] = "Entrambe"
 		S["FIRST_PREREQUISITE"] = "In primo luogo nella catena dei prerequisiti:"
@@ -4958,15 +4961,10 @@ end
 		S["GENDER_BOTH"] = "Entrambi"
 		S["GENDER_NONE"] = "Nessun"
 		S["GRAIL_NOT_HAVE"] = "Grail non dispone di questa ricerca"
---[[Translation missing --]]
 		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "Hide Blizzard bonus objectives"
---[[Translation missing --]]
 		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "Hide Blizzard dungeon entrances"
---[[Translation missing --]]
 		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "Hide Blizzard quest map pins"
---[[Translation missing --]]
 		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "Hide Blizzard treasures"
---[[Translation missing --]]
 		S["HIDE_WORLD_MAP_FLIGHT_POINTS"] = "Hide flight points"
 		S["HIGH_LEVEL"] = "Di livello alto"
 		S["HOLIDAYS_ONLY"] = "Disponibile solo durante le vacanze"
@@ -4974,7 +4972,6 @@ end
 		S["IN_LOG"] = "Connettiti"
 		S["IN_LOG_STATUS"] = "Mostra lo stato delle quest"
 		S["INVALIDATE"] = "Missioni invalidate"
---[[Translation missing --]]
 		S["IS_BREADCRUMB"] = "Is breadcrumb quest for:"
 		S["ITEM"] = "Oggetto"
 		S["ITEM_LACK"] = "Oggetto mancante"
@@ -4990,21 +4987,17 @@ end
 		S["MAP_UPDATES"] = "Aggiorna la mappa quando cambio zona"
 		S["MAPAREA_NONE"] = "Nessuna"
 		S["MAXIMUM_LEVEL_NONE"] = "Nessun"
---[[Translation missing --]]
 		S["MULTIPLE_BREADCRUMB_FORMAT"] = "%d Breadcrumb quests available"
 		S["MUST_KILL_PIN_FORMAT"] = "%s [Uccidere]"
 		S["NEAR"] = "Vicino a"
 		S["NEEDS_PREREQUISITES"] = "Prerequisiti richiesti"
 		S["NEVER_ABANDONED"] = "Mai abbandonata"
---[[Translation missing --]]
 		S["OAC"] = "On acceptance complete quests:"
 		S["OCC"] = "Requisiti richiesti per completare la missione"
---[[Translation missing --]]
 		S["OTC"] = "On turn in complete quests:"
 		S["OTHER"] = "altro"
 		S["OTHER_PREFERENCE"] = "Altre"
 		S["PANEL_UPDATES"] = "Aggiorna il pannello log quest quando cambia zona"
---[[Translation missing --]]
 		S["PLOT"] = "Plot"
 		S["PREPEND_LEVEL"] = "Anteponi Livello missioni"
 		S["PREREQUISITES"] = "Prerequisiti missione"
@@ -5019,7 +5012,6 @@ end
 		S["REPUTATION_REQUIRED"] = "Reputazione richiesta"
 		S["REQUIRED_LEVEL"] = "Livello Richiesto"
 		S["REQUIRES_FORMAT"] = "Richiede interamente versione Grail %s o versione successiva"
---[[Translation missing --]]
 		S["RESTORE_DIRECTIONAL_ARROWS"] = "Should not restore directional arrows"
 		S["SEARCH_ALL_QUESTS"] = "Tutte le quest"
 		S["SEARCH_CLEAR"] = "Cancella"
@@ -5051,27 +5043,24 @@ end
 		S["APPEND_LEVEL"] = "요구 레벨 추가"
 		S["BASE_QUESTS"] = "기본 퀘스트"
 		BINDING_NAME_WHOLLY_TOGGLEMAPPINS = "지도 핀 표시 여부 전환"
---Translation missing 
 		BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "Toggle shows completed"
 		BINDING_NAME_WHOLLY_TOGGLESHOWDAILIES = "일일 퀘스트 표시 여부 전환"
---Translation missing 
+		BINDING_NAME_WHOLLY_TOGGLESHOWLOREMASTER = "Toggle shows Loremaster quests"
 		BINDING_NAME_WHOLLY_TOGGLESHOWNEEDSPREREQUISITES = "Toggle shows needs prerequisites"
 		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "반복 가능 퀘스트 표시 여부 전환"
---Translation missing 
 		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "Toggle shows unobtainables"
 		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "주간 퀘스트 표시 여부 전환"
+		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "Toggle shows World Quests"
 		S["BLIZZARD_TOOLTIP"] = "Blizzard 퀘스트 목록에 툴팁 표시"
 		S["BREADCRUMB"] = "추가 목표 퀘스트:"
 		S["BUGGED"] = "|cffff0000*** 오류 ***|r"
 		S["BUGGED_UNOBTAINABLE"] = "불가능한 퀘스트는 오류로 결정"
---Translation missing 
 		S["BUILDING"] = "Building"
 		S["CHRISTMAS_WEEK"] = "한겨울 축제 주간"
 		S["CLASS_ANY"] = "모두"
 		S["CLASS_NONE"] = "없음"
 		S["COMPLETED"] = "|cFF00FF00완료한 퀘스트|r"
 		S["COMPLETION_DATES"] = "완료 날짜"
---Translation missing 
 		S["DROP_TO_START_FORMAT"] = "Drops %s to start [%s]"
 		S["EMPTY_ZONES"] = "빈 지역 표시"
 		S["ENABLE_COORDINATES"] = "플레이어 좌표 사용"
@@ -5081,18 +5070,15 @@ end
 		S["EVER_COMPLETED"] = "완료한 적 있음"
 		S["EVER_EXPERIENCED"] = "받은 적 있음"
 		S["FACTION_BOTH"] = "둘다"
---Translation missing 
 		S["FIRST_PREREQUISITE"] = "First in Prerequisite Chain:"
 		S["GENDER"] = "성별"
 		S["GENDER_BOTH"] = "둘다"
 		S["GENDER_NONE"] = "없음"
 		S["GRAIL_NOT_HAVE"] = "Grail에 이 퀘스트가 없습니다."
---Translation missing 
 		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "Hide Blizzard bonus objectives"
+		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "Hide Blizzard dungeon entrances"
 		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "Blizzard 퀘스트 지도 핀 숨김"
---Translation missing 
 		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "Hide Blizzard treasures"
---Translation missing 
 		S["HIDE_WORLD_MAP_FLIGHT_POINTS"] = "Hide flight points"
 		S["HIGH_LEVEL"] = "고레벨"
 		S["HOLIDAYS_ONLY"] = "축제 동안에만 이용 가능:"
@@ -5100,11 +5086,9 @@ end
 		S["IN_LOG"] = "|cFFFF00FF목록에 있는 퀘스트|r"
 		S["IN_LOG_STATUS"] = "퀘스트 진행 상태를 목록에 표시"
 		S["INVALIDATE"] = "퀘스트 무효화"
---Translation missing 
 		S["IS_BREADCRUMB"] = "Is breadcrumb quest for:"
 		S["ITEM"] = "아이템"
 		S["ITEM_LACK"] = "아이템 부족"
---Translation missing 
 		S["KILL_TO_START_FORMAT"] = "Kill to start [%s]"
 		S["LIVE_COUNTS"] = "실시간 퀘스트 수 갱신"
 		S["LOAD_DATA"] = "데이터 불러오기"
@@ -5124,12 +5108,10 @@ end
 		S["NEVER_ABANDONED"] = "버릴 수 없음"
 		S["OAC"] = "접수 완료 퀘스트:"
 		S["OCC"] = "목표 완료 퀘스트:"
---Translation missing 
 		S["OTC"] = "On turn in complete quests:"
 		S["OTHER"] = "기타"
 		S["OTHER_PREFERENCE"] = "기타"
 		S["PANEL_UPDATES"] = "지역 이동시 퀘스트 목록 갱신"
---Translation missing 
 		S["PLOT"] = "Plot"
 		S["PREPEND_LEVEL"] = "퀘스트 레벨 표시"
 		S["PREREQUISITES"] = "퀘스트 조건:"
@@ -5144,7 +5126,6 @@ end
 		S["REPUTATION_REQUIRED"] = "평판 요구 사항:"
 		S["REQUIRED_LEVEL"] = "요구 레벨"
 		S["REQUIRES_FORMAT"] = "Wholly 애드온은 Grail의 %s 버전 이상을 요구합니다."
---Translation missing 
 		S["RESTORE_DIRECTIONAL_ARROWS"] = "Should not restore directional arrows"
 		S["SEARCH_ALL_QUESTS"] = "모든 퀘스트"
 		S["SEARCH_CLEAR"] = "초기화"
@@ -5154,14 +5135,12 @@ end
 		S["SHOW_BREADCRUMB_MESSAGE"] = "Display breadcrumb message in chat"
 		S["SHOW_LOREMASTER"] = "Loremaster 퀘스트만 표시"
 		S["SINGLE_BREADCRUMB_FORMAT"] = "추가 목표 퀘스트가 가능합니다."
---Translation missing 
 		S["SP_MESSAGE"] = "Special quest never enters Blizzard quest log"
 		S["TAGS"] = "태그"
 		S["TAGS_DELETE"] = "태그 삭제"
 		S["TAGS_NEW"] = "태그 추가"
 		S["TITLE_APPEARANCE"] = "퀘스트 제목 모양"
 		S["TREASURE"] = "보물"
---Translation missing 
 		S["TURNED_IN"] = "Turned in"
 		S["UNOBTAINABLE"] = "|cFF996600불가능한 퀘스트|r"
 		S["WHEN_KILL"] = "죽일 때 수락:"
@@ -5398,62 +5377,62 @@ end
 		S["WORLD_EVENTS"] = "Игровые события"
 		S["YEARLY"] = "Ежегодные задания"
 	elseif "zhCN" == locale then
-		S["ABANDONED"] = "放弃"
+		S["ABANDONED"] = "已放弃"
 		S["ACCEPTED"] = "已接受"
 		S["ACHIEVEMENT_COLORS"] = "显示成就完成颜色"
 		S["ADD_ADVENTURE_GUIDE"] = "在所有区域显示“冒险指南”任务"
 		S["ALL_FACTION_REPUTATIONS"] = "显示全部阵营的声望进度"
 		S["APPEND_LEVEL"] = "显示需要等级"
 		S["BASE_QUESTS"] = "基础任务"
-		BINDING_NAME_WHOLLY_TOGGLEMAPPINS = "开启地图标记"
-		BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "切换是否显示已完成任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWDAILIES = "显示每日任务"
+		BINDING_NAME_WHOLLY_TOGGLEMAPPINS = "切换地图标记"
+		BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "切换显示已完成"
+		BINDING_NAME_WHOLLY_TOGGLESHOWDAILIES = "切换显示日常"
 		BINDING_NAME_WHOLLY_TOGGLESHOWLOREMASTER = "切换是否显示“博学者”任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWNEEDSPREREQUISITES = "显示需要前置的任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "显示重复任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "显示无法取得任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "显示每周任务"
-		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "切换是否显示世界任务"
-		S["BLIZZARD_TOOLTIP"] = "在游戏任务日志中显示提示信息"
+		BINDING_NAME_WHOLLY_TOGGLESHOWNEEDSPREREQUISITES = "切换显示需要先决条件"
+		BINDING_NAME_WHOLLY_TOGGLESHOWREPEATABLES = "切换显示可重复"
+		BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "切换显示无法获得"
+		BINDING_NAME_WHOLLY_TOGGLESHOWWEEKLIES = "切换显示周常"
+		BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "切换显示世界任务"
+		S["BLIZZARD_TOOLTIP"] = "工具提示显示在暴雪任务日志中"
 		S["BREADCRUMB"] = "引导任务："
-		S["BUGGED"] = "*** 有问题的 ***"
-		S["BUGGED_UNOBTAINABLE"] = "将有BUG的任务视为不可取得"
-		S["BUILDING"] = "建筑"
+		S["BUGGED"] = "*** 错误的 ***"
+		S["BUGGED_UNOBTAINABLE"] = "被认为是不可能完成的任务"
+		S["BUILDING"] = "建造"
 		S["CHRISTMAS_WEEK"] = "圣诞周"
-		S["CLASS_ANY"] = "任何职业"
+		S["CLASS_ANY"] = "任何"
 		S["CLASS_NONE"] = "无"
 		S["COMPLETED"] = "已完成"
 		S["COMPLETION_DATES"] = "完成日期"
 		S["DROP_TO_START_FORMAT"] = "掉落 %s 以开始 [%s]"
 		S["EMPTY_ZONES"] = "显示空白区域"
-		S["ENABLE_COORDINATES"] = "启用显示玩家座标"
-		S["ENTER_ZONE"] = "进入区域时取得"
+		S["ENABLE_COORDINATES"] = "启用玩家坐标"
+		S["ENTER_ZONE"] = "进入地图区域时接受"
 		S["ESCORT"] = "护送"
-		S["EVER_CAST"] = "曾经施放"
-		S["EVER_COMPLETED"] = "代表一个任务从未完成过"
-		S["EVER_EXPERIENCED"] = "有过经验"
-		S["FACTION_BOTH"] = "联盟&部落"
-		S["FIRST_PREREQUISITE"] = "前置任务链中的第一个："
+		S["EVER_CAST"] = "曾经施放过"
+		S["EVER_COMPLETED"] = "已经完成了"
+		S["EVER_EXPERIENCED"] = "曾经经历过"
+		S["FACTION_BOTH"] = "两者"
+		S["FIRST_PREREQUISITE"] = "先决条件链中的第一个："
 		S["GENDER"] = "性別"
-		S["GENDER_BOTH"] = "男女皆可"
+		S["GENDER_BOTH"] = "两者"
 		S["GENDER_NONE"] = "无"
-		S["GRAIL_NOT_HAVE"] = "|cFFFF0000Grail资料库内无此任务|r"
-		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "隐藏Blizzard世界地图奖励目标"
-		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "隐藏Blizzard世界地图地下城入口"
-		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "隐藏Blizzard世界地图任务图标"
-		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "隐藏Blizzard世界地图宝藏"
+		S["GRAIL_NOT_HAVE"] = "Grail 资料库内无此任务"
+		S["HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES"] = "隐藏暴雪世界地图奖励目标"
+		S["HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES"] = "隐藏暴雪世界地图副本入口"
+		S["HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS"] = "隐藏暴雪世界地图任务图标"
+		S["HIDE_BLIZZARD_WORLD_MAP_TREASURES"] = "隐藏暴雪世界地图宝藏"
 		S["HIDE_WORLD_MAP_FLIGHT_POINTS"] = "隐藏飞行点"
 		S["HIGH_LEVEL"] = "高等级"
-		S["HOLIDAYS_ONLY"] = "仅在节日时可取得："
-		S["IGNORE_REPUTATION_SECTION"] = "忽视任务的声望部分"
-		S["IN_LOG"] = "已接"
-		S["IN_LOG_STATUS"] = "在纪录中显示任务状态"
-		S["INVALIDATE"] = "被以下任务停用："
+		S["HOLIDAYS_ONLY"] = "仅在节日期间可用："
+		S["IGNORE_REPUTATION_SECTION"] = "忽略任务的声望部分"
+		S["IN_LOG"] = "在日志中"
+		S["IN_LOG_STATUS"] = "在日志中显示任务的状态"
+		S["INVALIDATE"] = "此任务无效："
 		S["IS_BREADCRUMB"] = "是下列任务的引导任务："
 		S["ITEM"] = "物品"
 		S["ITEM_LACK"] = "缺少物品"
-		S["KILL_TO_START_FORMAT"] = "击杀以开始 [%s]"
-		S["LIVE_COUNTS"] = "即时更新计数"
+		S["KILL_TO_START_FORMAT"] = "击杀已开始 [%s]"
+		S["LIVE_COUNTS"] = "实时任务计数更新"
 		S["LOAD_DATA"] = "读取资料"
 		S["LOREMASTER_AREA"] = "博学大师区域"
 		S["LOW_LEVEL"] = "低等级"
@@ -5471,9 +5450,9 @@ end
 		S["NEAR"] = "靠近"
 		S["NEEDS_PREREQUISITES"] = "需要前置"
 		S["NEVER_ABANDONED"] = "不可放弃"
-		S["OAC"] = "接受时完成任务"
-		S["OCC"] = "完成要求时完成任务"
-		S["OTC"] = "缴交时完成任务"
+		S["OAC"] = "接受时完成任务："
+		S["OCC"] = "完成要求时完成任务："
+		S["OTC"] = "缴付时完成任务："
 		S["OTHER"] = "其他"
 		S["OTHER_PREFERENCE"] = "其他"
 		S["PANEL_UPDATES"] = "当变更区域时更新任务纪录视窗"
@@ -5483,14 +5462,14 @@ end
 		S["QUEST_COUNTS"] = "显示任务计数"
 		S["QUEST_ID"] = "任务 ID："
 		S["QUEST_TYPE_NORMAL"] = "普通"
-		S["RACE_ANY"] = "任何种族"
+		S["RACE_ANY"] = "任意"
 		S["RACE_NONE"] = "无"
 		S["RARE_MOBS"] = "稀有怪"
 		S["REPEATABLE"] = "可重复"
 		S["REPEATABLE_COMPLETED"] = "显示已完成过的可重复任务"
-		S["REPUTATION_REQUIRED"] = "声望要求："
+		S["REPUTATION_REQUIRED"] = "声望要求"
 		S["REQUIRED_LEVEL"] = "等级要求"
-		S["REQUIRES_FORMAT"] = "Wholly 需要 %s 或更新的 Grail版本"
+		S["REQUIRES_FORMAT"] = "Wholly 需要 %s 或更新的 Grail 版本"
 		S["RESTORE_DIRECTIONAL_ARROWS"] = "不重置指向箭头"
 		S["SEARCH_ALL_QUESTS"] = "所有任务"
 		S["SEARCH_CLEAR"] = "清除"
@@ -5503,13 +5482,13 @@ end
 		S["SP_MESSAGE"] = "不会进入内建任务纪录的特殊任务"
 		S["TAGS"] = "标记"
 		S["TAGS_DELETE"] = "删除标记"
-		S["TAGS_NEW"] = "添加标记"
+		S["TAGS_NEW"] = "新标记"
 		S["TITLE_APPEARANCE"] = "任务标题显示"
-		S["TREASURE"] = "宝藏"
-		S["TURNED_IN"] = "缴交"
+		S["TREASURE"] = "宝箱"
+		S["TURNED_IN"] = "缴付"
 		S["UNOBTAINABLE"] = "无法取得"
 		S["WHEN_KILL"] = "击杀时取得："
-		S["WIDE_PANEL"] = "更宽的 Wholly 任务视窗"
+		S["WIDE_PANEL"] = "更宽的 Wholly 任务面板"
 		S["WIDE_SHOW"] = "显示"
 		S["WORLD_EVENTS"] = "世界事件"
 		S["YEARLY"] = "每年"
@@ -5681,6 +5660,9 @@ end
 	S['PET_BATTLES'] = BATTLE_PET_SOURCE_5								-- "Pet Battle"
 	S['PLAYER'] = PLAYER												-- "Player"
 	S['WORLD_QUEST'] = TRACKER_HEADER_WORLD_QUESTS						-- "World Quests"
+	S['BIWEEKLY'] = CALENDAR_REPEAT_BIWEEKLY							-- "Biweekly"
+	S['THREAT_QUEST'] = WORLD_MAP_THREATS								-- "N'Zoth Assaults"
+	S['CALLING_QUEST'] = CALLINGS_QUESTS								-- "Callings"
 
 	local C = Wholly.color
 	Wholly.configuration = {}

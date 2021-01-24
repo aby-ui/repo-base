@@ -10,11 +10,12 @@
 --	Version History
 --		001	Initial version.
 --		002 Converted to using Grail:CurrentDateTime()
+--		003 Adds a number of quest types that get counts.  Adds slash command "eraseCompletedQuestsDates"
 --
 
 GrailWhenPlayer = { ['when'] = {}, ['count'] = {} }
 
-local bitMask = Grail.bitMaskQuestRepeatable + Grail.bitMaskQuestDaily + Grail.bitMaskQuestWeekly + Grail.bitMaskQuestMonthly + Grail.bitMaskQuestYearly
+local bitMask = Grail.bitMaskQuestRepeatable + Grail.bitMaskQuestDaily + Grail.bitMaskQuestWeekly + Grail.bitMaskQuestMonthly + Grail.bitMaskQuestYearly + Grail.bitMaskQuestWorldQuest + Grail.bitMaskQuestBiweekly + Grail.bitMaskQuestThreatQuest + Grail.bitMaskQuestCallingQuest
 
 Grail._When = function(callbackType, questId)
 	questId = tonumber(questId)
@@ -29,3 +30,8 @@ Grail._When = function(callbackType, questId)
 end
 
 Grail:RegisterObserverQuestComplete(Grail._When)
+
+Grail:RegisterSlashOption("eraseCompletedQuestsDates", "|cFF00FF00eraseCompletedQuestsDates|r => erases the dates and/or counts associated with completing quests", function()
+	GrailWhenPlayer.when = {}
+	GrailWhenPlayer.count = {}
+end)

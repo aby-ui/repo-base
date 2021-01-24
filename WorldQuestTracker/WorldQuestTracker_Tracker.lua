@@ -318,6 +318,10 @@ local WorldQuestTrackerHeader = CreateFrame ("frame", "WorldQuestTrackerQuestsHe
 WorldQuestTrackerHeader.Text:SetText (L["World Quest Tracker"])
 local minimizeButton = CreateFrame ("button", "WorldQuestTrackerQuestsHeaderMinimizeButton", WorldQuestTrackerFrame, "BackdropTemplate")
 local minimizeButtonText = minimizeButton:CreateFontString (nil, "overlay", "GameFontNormal")
+
+--hide the default minimize button from the blizz template
+WorldQuestTrackerHeader.MinimizeButton:Hide()
+
 minimizeButtonText:SetText (L["S_WORLDQUESTS"])
 minimizeButtonText:SetPoint ("right", minimizeButton, "left", -3, 1)
 minimizeButtonText:Hide()
@@ -343,6 +347,7 @@ minimizeButton:SetScript ("OnClick", function()
 		minimizeButtonText:SetText (L["World Quest Tracker"])
 	end
 end)
+
 minimizeButton:SetNormalTexture ([[Interface\Buttons\UI-Panel-QuestHideButton]])
 minimizeButton:GetNormalTexture():SetTexCoord (0, 0.5, 0.5, 1)
 minimizeButton:SetPushedTexture ([[Interface\Buttons\UI-Panel-QuestHideButton]])
@@ -1206,14 +1211,14 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 
 				if (WorldQuestTracker.db.profile.TutorialTracker == 1) then
 					WorldQuestTracker.db.profile.TutorialTracker = WorldQuestTracker.db.profile.TutorialTracker + 1
-					local alert = CreateFrame ("frame", "WorldQuestTrackerTrackerTutorialAlert1", worldFramePOIs, "AlertContainerTemplate")
-					alert:SetFrameLevel (302)
-					alert.label = "Tracked quests are shown here!"
-					alert.Text:SetSpacing (4)
-					alert:SetPoint ("bottom", widget, "top", 0, 28)
-					
-					MicroButtonAlert_SetText (alert, alert.label)
-					alert:Show()
+				--	local alert = CreateFrame ("frame", "WorldQuestTrackerTrackerTutorialAlert1", worldFramePOIs, "AlertContainerTemplate")
+				--	alert:SetFrameLevel (302)
+				--	alert.label = "Tracked quests are shown here!"
+				--	alert.Text:SetSpacing (4)
+				--	alert:SetPoint ("bottom", widget, "top", 0, 28)
+				--	
+				--	MicroButtonAlert_SetText (alert, alert.label)
+				--	alert:Show()
 				end
 				
 				if (WorldQuestTracker.JustAddedToTracker [quest.questID]) then

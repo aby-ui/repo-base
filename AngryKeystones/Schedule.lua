@@ -5,41 +5,21 @@ local rowCount = 3
 
 local requestPartyKeystones
 
--- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 15冷酷
--- 1: Overflowing, 2: Skittish, 3: Volcanic, 4: Necrotic, 5: Teeming, 6: Raging, 7: Bolstering, 8: Sanguine, 9: Tyrannical, 10: Fortified, 11: Bursting, 12: Grievous, 13: Explosive, 14: Quaking
--- /run for i=1, 1000 do local a = C_ChallengeMode.GetAffixInfo(i) if a then print(i, a) end end
--- local affixScheduleText = {
--- 	{"Fortified",	"Bolstering",	"Grievous"},
--- 	{"Tyrannical",	"Raging",	"Explosive"},
--- 	{"Fortified",	"Sanguine",	"Grievous"},
--- 	{"Tyrannical",	"Teeming",	"Volcanic"},
--- 	{"Fortified",	"Bolstering",	"Skittish"},
--- 	{"Tyrannical",	"Bursting",	"Necrotic"},
--- 	{"Fortified",	"Sanguine",	"Quaking"},
--- 	{"Tyrannical",	"Bolstering",	"Explosive"},
--- 	{"Fortified",	"Bursting",	"Volcanic"},
--- 	{"Tyrannical",	"Raging",	"Necrotic"},
--- 	{"Fortified",	"Teeming",	"Quaking"},
--- 	{"Tyrannical",	"Bursting",	"Skittish"}
--- }
--- local affixScheduleKeys = {["Overflowing"]=1, ["Skittish"]=2, ["Volcanic"]=3, ["Necrotic"]=4, ["Teeming"]=5, ["Raging"]=6, ["Bolstering"]=7, ["Sanguine"]=8, ["Tyrannical"]=9, ["Fortified"]=10, ["Bursting"]=11, ["Grievous"]=12, ["Explosive"]=13, ["Quaking"]=14 }
--- local affixSchedule = {}
--- for i,v in ipairs(affixScheduleText) do
--- 	affixSchedule[i] = { affixScheduleKeys[v[1]], affixScheduleKeys[v[2]], affixScheduleKeys[v[3]] }
--- end
+-- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
+-- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 16寄生 117 收割 119 迷醉 120 觉醒 121 傲慢 122 鼓舞 123怨毒 124 风雷
 local affixSchedule = {
-	[1] = {[1]=5,[2]=3,[3]=9},
-	[2] = {[1]=7,[2]=2,[3]=10},
-	[3] = {[1]=11,[2]=4,[3]=9},
-	[4] = {[1]=8,[2]=14,[3]=10},
-	[5] = {[1]=7,[2]=13,[3]=9},
-	[6] = {[1]=11,[2]=3,[3]=10},
-	[7] = {[1]=6,[2]=4,[3]=9},
-	[8] = {[1]=5,[2]=14,[3]=10},
-	[9] = {[1]=11,[2]=2,[3]=9},
-	[10] = {[1]=7,[2]=12,[3]=10},
-	[11] = {[1]=6,[2]=13,[3]=9},
-	[12] = {[1]=8,[2]=12,[3]=10},
+	[1] =  {[1]=11, [2]=3,  [3]=10}, --1 Bursting Volcanic Fortified
+	[2] =  {[1]=7,  [2]=124,[3]=9}, --2 Bolstering Storming Tyrannical
+	[3] =  {[1]=123,[2]=12, [3]=10}, --3 Spiteful Grievous Fortified
+	[4] =  {[1]=122,[2]=4,  [3]=9}, --4 Inspiring Necrotic Tyrannical
+	[5] =  {[1]=8,  [2]=14, [3]=10}, --5 Sanguine Quaking Fortified
+	[6] =  {[1]=6,  [2]=13, [3]=9}, --6 Raging Explosive Tyrannical
+	[7] =  {[1]=123,[2]=3,  [3]=10}, --7 Spiteful Volcanic Fortified
+	[8] =  {[1]=7,  [2]=4,  [3]=9}, --8 Bolstering Necrotic Tyrannical
+	[9] =  {[1]=122,[2]=124,[3]=10}, --9 Inspiring Storming Fortified
+	[10] = {[1]=11, [2]=13, [3]=9}, --10 Bursting Explosive Tyrannical
+	[11] = {[1]=8,  [2]=12, [3]=10}, --11 Sanguine Grievous Fortified
+	[12] = {[1]=6,  [2]=14, [3]=9}, --12 Raging Quaking Tyrannical
 }
 
 local affixScheduleUnknown = false

@@ -650,7 +650,7 @@ local GetDistance_Point = DF.GetDistance_Point
 
 
 	--leave group big button
-	local leaveButtonSolo = CreateFrame("button", "$parentLeaveButtonSolo", ff, "BackdropTemplate", "BackdropTemplate")
+	local leaveButtonSolo = CreateFrame("button", "$parentLeaveButtonSolo", ff, "BackdropTemplate")
 	DF:ApplyStandardBackdrop(leaveButtonSolo)
 	leaveButtonSolo:SetPoint("top", ff, "top", 0, ff.topLevelY)
 	leaveButtonSolo:Hide()

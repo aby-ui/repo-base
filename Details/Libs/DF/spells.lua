@@ -948,6 +948,11 @@ DF.FoodIDs = {
 	[308419] = 1, -- (periodicaly damage) Smothered Shank
 	[327715] = 1, -- (speed) Fried Bonefish
 
+	--feasts
+	[327706] = 2, --strength +20
+	[327707] = 2, --stamina +20
+	[327708] = 2, --intellect +20
+	[327709] = 2, --agility +20
 }
 
 DF.PotionIDs = {
