@@ -717,9 +717,7 @@
 	end
 	
 	function _detalhes:SendRaidData (type, ...)
-	
 		local isInInstanceGroup = IsInRaid (LE_PARTY_CATEGORY_INSTANCE)
-	
 		if (isInInstanceGroup) then
 			_detalhes:SendCommMessage (DETAILS_PREFIX_NETWORK, _detalhes:Serialize (type, _UnitName("player"), _GetRealmName(), _detalhes.realversion, ...), "INSTANCE_CHAT")
 			if (_detalhes.debug) then
@@ -734,9 +732,7 @@
 	end
 	
 	function _detalhes:SendPartyData (type, ...)
-		
 		local isInInstanceGroup = IsInGroup (LE_PARTY_CATEGORY_INSTANCE)
-		
 		if (isInInstanceGroup) then
 			_detalhes:SendCommMessage (DETAILS_PREFIX_NETWORK, _detalhes:Serialize (type, _UnitName ("player"), _GetRealmName(), _detalhes.realversion, ...), "INSTANCE_CHAT")
 			if (_detalhes.debug) then
@@ -748,7 +744,6 @@
 				_detalhes:Msg ("(debug) sent comm to LOCAL party group")
 			end
 		end
-		
 	end
 	
 	function _detalhes:SendRaidOrPartyData (type, ...)

@@ -1015,14 +1015,22 @@ end
 		if (not StartAlpha) then
 			StartAlpha = 1.0
 		end
-		
-		if (EndRed > 1.0) then
+		if (not StartRed) then
+			StartRed = 1.0
+		end
+		if (not StartGreen) then
+			StartGreen = 1.0
+		end
+		if (not startBlue) then
+			StartBlue = 1.0
+		end
+		if (not EndRed or EndRed > 1.0) then
 			EndRed = 1.0
 		end
-		if (EndGreen > 1.0) then
+		if (not EndGreen or EndGreen > 1.0) then
 			EndGreen = 1.0
 		end
-		if (EndBlue > 1.0) then
+		if (not EndBlue or EndBlue > 1.0) then
 			EndBlue = 1.0
 		end	
 		
@@ -1369,5 +1377,3 @@ end
 			barra.lineText4:SetSize (texto_direita_tamanho+5, 15)
 		end
 	end
-
-

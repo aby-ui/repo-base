@@ -36,7 +36,10 @@ end
 
 --cancel an ongoing ticker
 function Details.Schedules.Cancel(tickerObject)
-    return tickerObject:Cancel()
+    --ignore if there's no ticker object
+    if (tickerObject) then
+        return tickerObject:Cancel()
+    end
 end
 
 --schedule a task with an interval of @time

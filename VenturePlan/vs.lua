@@ -570,9 +570,8 @@ function mu:spell(source, sid, eid, ord)
 		local pdda, pdta, thornsa = si.plusDamageDealtATK, si.plusDamageTakenATK, si.thornsATK
 		local hasDamage, hasHeal = si.damageATK or si.damagePerc, si.healATK or si.healPerc
 		local modHPP, modHPA = si.modMaxHP, si.modMaxHPATK
-		local pdd, pdt = pdda and (pdda*su.atk/100), pdta and (pdta*su.atk/100)
+		local pdd, pdt = pdda and (pdda*su.atk/100) or si.plusDamageDealtA, pdta and (pdta*su.atk/100) or si.plusDamageTakenA
 		local nore = si.nore
-		if sid == 91 then pdd = -0.6 end
 		for ti=1,#tt do
 			local i = tt[ti]
 			local tu = board[i]
@@ -589,19 +588,19 @@ function mu:spell(source, sid, eid, ord)
 			if tu.curHP > 0 then
 				if mdd then
 					mu.modDamageDealt(self, source, i, mdd, sid)
-					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -100))
+					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -80))
 				end
 				if mdt then
 					mu.modDamageTaken(self, source, i, mdt, sid)
-					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -100))
+					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -80))
 				end
 				if pdd then
 					tu.plusDamageDealt = tu.plusDamageDealt + pdd
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageDealt", -pdd, ord=ord-100})
+					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageDealt", -pdd, ord=ord-80})
 				end
 				if pdt then
 					tu.plusDamageTaken = tu.plusDamageTaken + pdt
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageTaken", -pdt, ord=ord-100})
+					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageTaken", -pdt, ord=ord-80})
 				end
 				if modHPP or modHPA then
 					local d = (modHPP and f32_pim(modHPP, tu.maxHP) or 0) + (modHPA and f32_pim(modHPA, su.atk) or 0)
@@ -611,7 +610,7 @@ function mu:spell(source, sid, eid, ord)
 				if thornsp then
 					tu.thornsDamage = tu.thornsDamage + thornsp
 					tu.thornsSID = tu.thornsSID or sid
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "thornsDamage", -thornsp, ord=ord-100})
+					enq(self.queue, tb+duration+1, {"statDelta", source, i, "thornsDamage", -thornsp, ord=ord-80})
 				end
 				if period == 2 then
 					for j=3,duration+1,2 do
@@ -647,7 +646,7 @@ function mu:spell(source, sid, eid, ord)
 			if tu.curHP > 0 then
 				if mdd then
 					mu.modDamageDealt(self, source, i, mdd, sid)
-					mu.funstackf32(self, source, self.turn+si.duration, ord-100)
+					mu.funstackf32(self, source, self.turn+si.duration, ord-80)
 				end
 				if echo then
 					enq(self.queue, echo, {"damage", source, i, points1, "Tick", sid, ord=ord-100+ti})
@@ -676,7 +675,7 @@ function mu:spell(source, sid, eid, ord)
 			mu.heal(self, source, i, points, "Spell", sid)
 			if mdd then
 				mu.modDamageDealt(self, source, i, mdd, sid)
-				mu.funstackf32(self, source, self.turn+si.duration, ord)
+				mu.funstackf32(self, source, self.turn+si.duration, ord-80)
 			end
 			if si.shroudTurns then
 				tu.shroud = (tu.shroud or 0) + 1

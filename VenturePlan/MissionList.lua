@@ -40,12 +40,20 @@ end
 local MissionPage, MissionList
 
 local startedMissions, finishedMissions, FlagMissionFinish = {}, {} do
+	local followerLock = {}
 	hooksecurefunc(C_Garrison, "StartMission", function(mid)
+		if not mid then return end
 		startedMissions[mid] = 1
+		local mi = C_Garrison.GetBasicMissionInfo(mid)
+		local et = GetTime()+(mi and mi.durationSeconds or 3600)
+		for i=1,mi and mi.followers and #mi.followers or 0 do
+			followerLock[mi.followers[i]] = et
+		end
 	end)
 	function EV:ADVENTURE_MAP_CLOSE()
 		startedMissions = {}
 		finishedMissions = {}
+		followerLock = {}
 		if MissionList then
 			MissionList:ReturnToTop()
 		end
@@ -53,6 +61,16 @@ local startedMissions, finishedMissions, FlagMissionFinish = {}, {} do
 	function EV:GARRISON_MISSION_STARTED(_, mid)
 		if mid then
 			startedMissions[mid] = nil
+		end
+	end
+	function EV:I_MARK_FALSESTART_FOLLOWERS(fa)
+		for i=1,fa and #fa or 0 do
+			local fi = fa[i]
+			local et = followerLock[fi.followerID]
+			if et and not fi.isAutoTroop then
+				fi.status = GARRISON_FOLLOWER_ON_MISSION
+				fi.missionTimeEnd = et
+			end
 		end
 	end
 	function FlagMissionFinish(mid)
@@ -82,7 +100,7 @@ local function LogCounter_Update()
 	lc:SetText(BreakUpLargeNumbers(c))
 end
 
-local function ConfigureMission(me, mi, isAvailable)
+local function ConfigureMission(me, mi, isAvailable, haveSpareCompanions)
 	local mid = mi.missionID
 	local emi = C_Garrison.GetMissionEncounterIconInfo(mid)
 	mi.encounterIconInfo, mi.isElite, mi.isRare = emi, emi.isElite, emi.isRare
@@ -127,6 +145,8 @@ local function ConfigureMission(me, mi, isAvailable)
 	me.Veil:SetShown(isMissionActive)
 	me.ProgressBar:SetShown(isMissionActive and not mi.isFakeStart)
 	me.ViewButton:SetShown(not isMissionActive)
+	me.DoomRunButton:SetShown(haveSpareCompanions and not isMissionActive)
+	me.ViewButton:SetPoint("BOTTOM", me.DoomRunButton:IsShown() and 20 or 0, 12)
 	for i=1,#me.Rewards do
 		me.Rewards[i].RarityBorder:SetVertexColor(veilShade, veilShade, veilShade)
 	end
@@ -184,9 +204,21 @@ local function cmpMissionInfo(a,b)
 end
 local function UpdateMissions()
 	MissionList.dirty = nil
+	MissionList.clearedRewardSync = nil
 	local missions = C_Garrison.GetAvailableMissions(123) or {}
 	local inProgressMissions = C_Garrison.GetInProgressMissions(123)
 	local cMissions = C_Garrison.GetCompleteMissions(123)
+	local hasSpareFollowers = false do
+		local ft = C_Garrison.GetFollowers(123)
+		EV("I_MARK_FALSESTART_FOLLOWERS", ft)
+		for i=1,#ft do
+			local fi = ft[i]
+			if fi.isCollected and not fi.isMaxLevel and fi.status ~= GARRISON_FOLLOWER_ON_MISSION then
+				hasSpareFollowers = true
+				break
+			end
+		end
+	end
 	for i=1,#missions do
 		local m = missions[i]
 		if startedMissions[m.missionID] and not m.timeLeftSeconds then
@@ -211,14 +243,35 @@ local function UpdateMissions()
 	W.AddMissionAchievementInfo(missions)
 	table.sort(missions, cmpMissionInfo)
 	
-	local Missions =  MissionList.Missions
+	local Missions = MissionList.Missions
 	for i=1,#missions do
-		ConfigureMission(Missions[i], missions[i], true)
+		ConfigureMission(Missions[i], missions[i], true, hasSpareFollowers)
 	end
 	MissionList.numMissions = #missions
 	for i=#missions+1, #Missions do
 		Missions[i]:Hide()
 	end
+end
+local function CheckRewardCache()
+	if MissionList.clearedRewardSync == true or not MissionList:IsVisible() then
+		return
+	end
+	local mwa, isCleared = MissionList.Missions, true
+	for i=1,#mwa do
+		local w = mwa[i]
+		if w:IsShown() then
+			for j=2,3 do
+				local rw = w.Rewards[j]
+				if rw:IsShown() and rw.itemID and rw.itemLink and rw.itemLink:match("|h%[%]|h") then
+					local mi = C_Garrison.GetBasicMissionInfo(w.missionID)
+					w.Rewards:SetRewards(mi.xp, mi.rewards)
+					isCleared = nil
+					break
+				end
+			end
+		end
+	end
+	MissionList.clearedRewardSync = isCleared
 end
 
 local function QueueListSync()
@@ -251,6 +304,8 @@ function EV:I_ADVENTURES_UI_LOADED()
 	hooksecurefunc(C_Garrison, "MissionBonusRoll", FlagMissionFinish)
 	EV.I_STORED_LOG_UPDATE = LogCounter_Update
 	EV.GARRISON_MISSION_LIST_UPDATE = QueueListSync
+	EV.I_MISSION_LIST_UPDATE = QueueListSync
+	EV.GET_ITEM_INFO_RECEIVED = CheckRewardCache
 	MissionPage.CopyBox.ResetButton:SetScript("OnClick", function(self)
 		EV("I_RESET_STORED_LOGS")
 		self:GetParent():Hide()

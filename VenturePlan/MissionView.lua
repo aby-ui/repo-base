@@ -1,10 +1,7 @@
 local _, T = ...
 local EV = T.Evie
 
-local overDesc = {
-	[91]="Reduces the damage dealt by the furthest enemy by 1 for 3 rounds.",
-	[85]="Reduces the damage taken by the closest ally by 5000% for two rounds.",
-}
+local FollowerList, MissionRewards
 
 local GetMaskBoard do
 	local b, u, om = {}, {curHP=1}
@@ -77,7 +74,7 @@ local function FormatTargetBlips(tm, bm, prefix, ac)
 				xo = xo - bw/2
 			end
 		end
-		xs = -bw*3
+		xs = -bw
 	end
 	if tm >= 32 then
 		local xo = xs
@@ -196,15 +193,15 @@ local function Puck_OnEnter(self)
 						guideLine = "目标: " .. b
 					end
 				end
-				if si and (si.healATK or si.damageATK or si.healPerc or si.damagePerc) then
+				if si.healATK or si.damageATK or si.healPerc or si.damagePerc then
 					local p = FormatSpellPulse(si)
 					if p then
 						guideLine = "Pulse: " .. p .. (guideLine and "    " .. guideLine or "")
 					end
 				end
-			end
-			if overDesc[s.autoCombatSpellID] then
-				dc, guideLine = 0.60, overDesc[s.autoCombatSpellID] .. (guideLine and "|n" .. guideLine or "")
+				if si.desc then
+					dc, guideLine = 0.60, si.desc .. (guideLine and "|n" .. guideLine or "")
+				end
 			end
 			GameTooltip:AddLine(s.description, dc, dc, dc, 1)
 			if guideLine then
@@ -421,12 +418,44 @@ local function MissionGroup_OnUpdate()
 	if o and not o:IsForbidden() and o:GetScript("OnEnter") and o:GetParent():GetParent() == CovenantMissionFrame.MissionTab.MissionPage.Board then
 		o:GetScript("OnEnter")(o)
 	end
+	FollowerList:SyncToBoard()
 end
 local function MissionRewards_OnShow(self)
 	local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
 	local d = mi and mi.duration
 	self.Rewards:SetRewards(mi and mi.xp, mi and mi.rewards)
 	self.Duration:SetText(d and "时长: |cffffffff" .. d or "")
+	local xp = mi and mi.xp or 0
+	for i=1,mi and mi.rewards and #mi.rewards or 0 do
+		local r = mi.rewards[i]
+		if r.followerXP then
+			xp = xp + r.followerXP
+		end
+	end
+	if FollowerList then
+		self.xpGain = xp
+		FollowerList:SyncXPGain(xp)
+	end
+end
+local function MissionView_OnShow()
+	if not FollowerList then
+		FollowerList = T.CreateObject("FollowerList", CovenantMissionFrame)
+		FollowerList:ClearAllPoints()
+		FollowerList:SetPoint("BOTTOM", CovenantMissionFrameFollowers, "BOTTOM", 0, 8)
+	end
+	FollowerList:Refresh(MissionRewards and MissionRewards.xpGain)
+	FollowerList:Show()
+	CovenantMissionFrameFollowers:Hide()
+	CovenantMissionFrameFollowers.MaterialFrame:SetParent(FollowerList)
+	CovenantMissionFrameFollowers.HealAllButton:SetParent(FollowerList)
+end
+local function MissionView_OnHide()
+	if FollowerList then
+		FollowerList:Hide()
+	end
+	CovenantMissionFrameFollowers:Show()
+	CovenantMissionFrameFollowers.MaterialFrame:SetParent(CovenantMissionFrameFollowers)
+	CovenantMissionFrameFollowers.HealAllButton:SetParent(CovenantMissionFrameFollowers)
 end
 
 function EV:I_ADVENTURES_UI_LOADED()
@@ -468,12 +497,21 @@ function EV:I_ADVENTURES_UI_LOADED()
 	local s = CovenantMissionFrame.MissionTab.MissionPage.Stage
 	s.Title:SetPoint("LEFT", s.Header, "LEFT", 100, 9)
 	local ir = T.CreateObject("InlineRewardBlock", s)
+	MissionRewards = ir
 	ir:SetPoint("LEFT", s.Header, "LEFT", 100, -16)
 	ir:SetScript("OnShow", MissionRewards_OnShow)
 	ir.Duration = ir:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	ir.Duration:SetPoint("LEFT", ir, "RIGHT", 4, 0)
 	hooksecurefunc(CovenantMissionFrame, "SetTitle", function()
 		MissionRewards_OnShow(ir)
+	end)
+	hooksecurefunc(CovenantMissionFrame:GetMissionPage(), "Show", MissionView_OnShow)
+	MP.Board:HookScript("OnHide", MissionView_OnHide)
+	MP.Board:HookScript("OnShow", MissionView_OnShow)
+	hooksecurefunc(CovenantMissionFrameFollowers, "UpdateFollowers", function()
+		if MP.Board:IsVisible() and not (MissionList and MissionList:IsVisible()) then
+			MissionView_OnShow()
+		end
 	end)
 	return false
 end

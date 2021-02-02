@@ -5,7 +5,7 @@
 
 local Search = LibStub('CustomSearch-1.0')
 local Unfit = LibStub('Unfit-1.0')
-local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 20)
+local Lib = LibStub:NewLibrary('LibItemSearch-1.2', 21)
 if Lib then
 	Lib.Filters = {}
 	Lib.Scanner = LibItemSearchTooltipScanner or CreateFrame('GameTooltip', 'LibItemSearchTooltipScanner', UIParent, 'GameTooltipTemplate')
@@ -329,6 +329,7 @@ Lib.Filters.tipPhrases = {
 		[QUESTS_LABEL:lower()] = ITEM_BIND_QUEST,
 		[GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM):lower()] = ITEM_BIND_QUEST,
 		[PROFESSIONS_USED_IN_COOKING:lower()] = PROFESSIONS_USED_IN_COOKING,
+		[APPEARANCE_LABEL:lower()] = TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN,
 		[TOY:lower()] = TOY,
 
   	['bound'] = ITEM_BIND_ON_PICKUP,

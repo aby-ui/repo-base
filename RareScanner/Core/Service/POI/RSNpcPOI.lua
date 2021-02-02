@@ -35,7 +35,7 @@ function RSNpcPOI.InitializeNotDiscoveredNpcs()
 end
 
 local function RefreshNotDiscoveredNpcs(npcID)
-	if (not RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
+	if (not RSGeneralDB.GetAlreadyFoundEntity(npcID) and not RSUtils.Contains(notDiscoveredNpcIDs, npcID)) then
 		tinsert(notDiscoveredNpcIDs, npcID)
 	end
 end

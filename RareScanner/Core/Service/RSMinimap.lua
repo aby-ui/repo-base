@@ -15,6 +15,8 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 -- RareScanner services
 local RSMap = private.ImportLib("RareScannerMap")
 
+-- RareScanner general libraries
+local RSLogger = private.ImportLib("RareScannerLogger")
 
 ---============================================================================
 -- Update minimap icons

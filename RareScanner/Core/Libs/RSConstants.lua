@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 37
-RSConstants.CURRENT_LOOT_DB_VERSION = 49
+RSConstants.CURRENT_DB_VERSION = 38
+RSConstants.CURRENT_LOOT_DB_VERSION = 50
 
 ---============================================================================
 -- Special events
@@ -187,6 +187,7 @@ RSConstants.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
 -- MapIDS
 ---============================================================================
 
+RSConstants.ALL_ZONES_CUSTOM_NPC = 0
 RSConstants.ALL_ZONES = "all"
 RSConstants.UNKNOWN_ZONE_ID = 0
 RSConstants.MECHAGON_MAPID = 1462
@@ -226,7 +227,7 @@ RSConstants.DAPPERDEW_NPCS = { 168135, 164415, 166135, 166138, 166139, 166140, 1
 RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
 RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
-RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314 }
+RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314, 352998 }
 RSConstants.NPCS_WITH_PRE_EVENT = {
 	[164102] = 164093;
 	[167874] = 167851;

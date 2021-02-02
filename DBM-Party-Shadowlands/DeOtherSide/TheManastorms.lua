@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2409, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210110155615")
+mod:SetRevision("20210123235530")
 mod:SetCreatureID(164555, 164556)
 mod:SetEncounterID(2394)
 mod:SetBossHPInfoToHighest()
@@ -188,7 +188,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerExperimentalSquirrelBombCD:Stop()
 		timerAerialRocketChickenCD:Stop()
 		timerShadowfuryCD:Stop()
-		timerSummonPowerCrystalCD:Start(9)
+		timerSummonPowerCrystalCD:Start(5.9)
 		if self:IsMythic() then
 			timerLaserCD:Start(22, 1)
 			timerDoomCD:Start(45.5)

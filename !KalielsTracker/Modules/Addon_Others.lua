@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "12.16", true) then
+    if KT:CheckAddOn("ElvUI", "12.17", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
@@ -73,7 +73,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.11", true) then
+    if KT:CheckAddOn("Tukui", "20.14", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -114,15 +114,19 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "6.0.14", true) then
+    if KT:CheckAddOn("SpartanUI", "6.0.17", true) then
         SUI.DB.DisabledComponents.Objectives = true
         local module = SUI:GetModule("Component_Objectives")
         local bck_module_OnEnable = module.OnEnable
         function module:OnEnable()
             if SUI.DB.DisabledComponents.Objectives then
-                module:BuildOptions()
                 local options = SUI.opt.args.ModSetting.args
-                options.Objectives.disabled = true
+                options.Objectives = {
+                    type = "group",
+                    name = SUI.L.Objectives,
+                    disabled = true,
+                    args = {},
+                }
                 options.Components.args.Objectives.disabled = true
                 options.Components.args[addonName.."Warning"] = {
                     name = "\n"..KTwarning,

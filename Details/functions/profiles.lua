@@ -1238,6 +1238,14 @@ local default_global_data = {
 		immersion_pets_on_solo_play = false, --pets showing when solo play
 		damage_scroll_auto_open = true,
 		damage_scroll_position = {},
+		data_wipes_exp = {
+			["9"] = false,
+			["10"] = false,
+			["11"] = false,
+			["12"] = false,
+			["13"] = false,
+			["14"] = false,
+		},
 		
 	--> death log
 		show_totalhitdamage_on_overkill = false,

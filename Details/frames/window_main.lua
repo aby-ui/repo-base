@@ -7577,10 +7577,10 @@ function _detalhes:CheckForTextTimeCounter (combat_start)
 				local instance = _detalhes:GetInstance (lower)
 				if (instance.baseframe and instance:IsEnabled()) then
 					if (instance.attribute_text.show_timer) then
-						if (_detalhes.instance_title_text_timer [instance.meu_id]) then
-							_detalhes:CancelTimer (_detalhes.instance_title_text_timer [instance.meu_id])
+						if (_detalhes.instance_title_text_timer [instance:GetId()]) then
+							Details.Schedules.Cancel(_detalhes.instance_title_text_timer [instance:GetId()])
 						end
-						_detalhes.instance_title_text_timer [instance.meu_id] = _detalhes:ScheduleRepeatingTimer ("TitleTextTickTimer", 1, instance)
+						_detalhes.instance_title_text_timer[instance:GetId()] = Details.Schedules.NewTicker(1, Details.TitleTextTickTimer, Details, instance)
 					end
 				end
 			else
@@ -7588,16 +7588,16 @@ function _detalhes:CheckForTextTimeCounter (combat_start)
 			end
 		else
 			if (_detalhes.in_combat and _detalhes.zone_type == "raid") then
-				_detalhes:ScheduleTimer ("CheckForTextTimeCounter", 3, true)
+				Details.Schedules.NewTimer(3, Details.CheckForTextTimeCounter, Details, true)
 			end
 		end
 	else
 		for _, instance in ipairs (_detalhes.tabela_instancias) do
-			if (_detalhes.instance_title_text_timer [instance.meu_id] and instance.baseframe and instance:IsEnabled() and instance.menu_attribute_string) then
-				_detalhes:CancelTimer (_detalhes.instance_title_text_timer [instance.meu_id])
-				local current_text = instance.menu_attribute_string:GetText()
+			if (_detalhes.instance_title_text_timer [instance:GetId()] and instance.baseframe and instance:IsEnabled() and instance.menu_attribute_string) then
+				Details.Schedules.Cancel(_detalhes.instance_title_text_timer[instance:GetId()])
+				local current_text = instance:GetTitleBarText()
 				current_text = current_text:gsub ("%[.*%] ", "")
-				instance.menu_attribute_string:SetText (current_text)
+				instance:SetTitleBarText(current_text)
 			end
 		end
 	end
@@ -7621,24 +7621,29 @@ function _detalhes:TitleTextTickTimer (instance)
 		local currentText = instance.menu_attribute_string.originalText
 		if (currentText) then
 			local timer = format_timer (_detalhes.tabela_vigente:GetCombatTime())
-			instance.menu_attribute_string:SetText(timer .. " " .. currentText)
-
+			instance:SetTitleBarText(timer .. " " .. currentText)
 		else
-			local current_text = instance.menu_attribute_string:GetText()
+			local current_text = instance:GetTitleBarText()
 			if (not current_text:find ("%[.*%]")) then
-				instance.menu_attribute_string:SetText ("[00:01] " .. current_text)
+				instance:SetTitleBarText("[00:01] " .. current_text)
 			else
 				local timer = format_timer (_detalhes.tabela_vigente:GetCombatTime())
 				current_text = current_text:gsub ("%[.*%]", timer)
-				instance.menu_attribute_string:SetText (current_text)
+				instance:SetTitleBarText(current_text)
 			end
 		end
 	end
 end
 
-function _detalhes:SetTitleBarText (text)
+function _detalhes:SetTitleBarText(text)
 	if (self.attribute_text.enabled and self.menu_attribute_string) then
-		self.menu_attribute_string:SetText (text)
+		self.menu_attribute_string:SetText(text)
+	end
+end
+
+function _detalhes:GetTitleBarText()
+	if (self.menu_attribute_string) then
+		return self.menu_attribute_string:GetText()
 	end
 end
 
@@ -7718,6 +7723,18 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 		function self.menu_attribute_string:OnEvent (instance, attribute, subAttribute)
 			if (instance == label.owner_instance) then
 				local sName = instance:GetInstanceAttributeText()
+				local instanceMode = instance:GetMode()
+
+				if (instanceMode == DETAILS_MODE_GROUP or instanceMode == DETAILS_MODE_ALL) then
+					local segment = instance:GetSegment()
+					if (segment == DETAILS_SEGMENTID_OVERALL) then
+						sName = sName .. " " .. Loc ["STRING_OVERALL"]
+
+					elseif (segment >= 2) then
+						sName = sName .. " [" .. segment .. "]"
+					end
+				end
+
 				label.text = sName
 				label.originalText = sName
 			end
@@ -7725,7 +7742,7 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 		
 		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEATTRIBUTE", self.menu_attribute_string.OnEvent)
 		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEMODE", self.menu_attribute_string.OnEvent)
-
+		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGESEGMENT", self.menu_attribute_string.OnEvent)
 	end
 
 	self.menu_attribute_string:Show()

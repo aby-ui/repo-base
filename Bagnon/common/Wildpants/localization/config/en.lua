@@ -15,6 +15,8 @@ L.FlashFind = 'Flash Find'
 L.DisplayBlizzard = 'Fallback Hidden Bags'
 L.DisplayBlizzardTip = 'If enabled, the default Blizzard UI bag panels will be displayed for hidden inventory or bank containers.\n\n|cffff1919Requires UI reload.|r'
 L.ConfirmGlobals = 'Are you sure you want to disable specific settings for this character? All specific settings will be lost.'
+L.ServerSort = 'Server Sorting'
+L.ServerSortTip = 'If enabled, item cleanup will let server sort items whenever available.\n\n|cffff1919Disabling is experimental and WILL have issues.|r'
 L.CharacterSpecific = 'Character Specific Settings'
 
 -- frame

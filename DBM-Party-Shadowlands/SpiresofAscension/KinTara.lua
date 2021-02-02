@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2399, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210101213950")
+mod:SetRevision("20210123235530")
 mod:SetCreatureID(162059, 163077)--162059 Kin-Tara, 163077 Azules
 mod:SetEncounterID(2357)
 mod:SetBossHPInfoToHighest()
@@ -219,7 +219,7 @@ function mod:UNIT_POWER_UPDATE()
 	if self.vb.flightActive and bossPower == 0 then--Boss does a hard energy reset to 0 when she lands (flight phase ends)
 		self.vb.flightActive = false
 		self:UnregisterShortTermEvents()
-		timerOverheadSlashCD:Start(8.4)
+		timerOverheadSlashCD:Start(7.2)
 		timerFlightCD:Start(30.4)
 	end
 end

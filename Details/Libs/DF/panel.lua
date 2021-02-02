@@ -10114,8 +10114,17 @@ DF.ListboxFunctions = {
 		line:AlignWithHeader(listBox.header, "left")
 		return line
 	end,
-}
 
+	SetData = function(frameCanvas, newData)
+		if (type(newData) ~= "table") then
+			error("ListBox:SetData received an invalid newData on parameter 2.")
+			return
+		end
+
+		frameCanvas.data = newData
+		frameCanvas.scrollBox:Refresh()
+	end,
+}
 
 local listbox_options = {
 	width = 800,

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2412, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201206174353")
+mod:SetRevision("20210129042048")
 mod:SetCreatureID(162061)
 mod:SetEncounterID(2359)
 
@@ -101,7 +101,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnLostConfidence:Play("runout")
 			yellLostConfidence:Yell()
 		else
-			warnLostConfidence:CombinedShow(0.3, args.destName)
+			warnLostConfidence:CombinedShow(0.5, args.destName)
 		end
 	end
 end

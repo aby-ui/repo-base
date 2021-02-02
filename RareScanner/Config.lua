@@ -17,6 +17,7 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 -- RareScanner internal libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
+local RSConstants = private.ImportLib("RareScannerConstants")
 
 -- RareScanner service libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
@@ -965,17 +966,26 @@ local function GetCustomNpcOptions()
 				end
 			end
 		end
+		
+		-- add wild zone
+		CONTINENT_MAP_IDS[RSConstants.ALL_ZONES_CUSTOM_NPC] = AL["ALL_ZONES"]
 
 		local loadSubmapsCombo = function(continentID, npcID)
 			if (continentID) then
 				custom_npcs_options.args[npcID].args.subzones.values = {}
 				private.custom_npcs_options[npcID].subzone = nil
-				table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
-					local zoneName = getZoneName(zoneID)
-					if (zoneName) then
-						custom_npcs_options.args[npcID].args.subzones.values[zoneID] = zoneName
-					end
-				end)
+				
+				if (continentID == RSConstants.ALL_ZONES_CUSTOM_NPC) then
+					custom_npcs_options.args[npcID].args.subzones.values[RSConstants.ALL_ZONES_CUSTOM_NPC] = AL["ALL_ZONES"]
+					private.custom_npcs_options[npcID].subzone = RSConstants.ALL_ZONES_CUSTOM_NPC
+				else
+					table.foreach(private.CONTINENT_ZONE_IDS[continentID].zones, function(index, zoneID)
+						local zoneName = getZoneName(zoneID)
+						if (zoneName) then
+							custom_npcs_options.args[npcID].args.subzones.values[zoneID] = zoneName
+						end
+					end)
+				end
 			end
 		end
 		
@@ -1009,7 +1019,6 @@ local function GetCustomNpcOptions()
 							private.custom_npcs_options[npcID] = nil
 							custom_npcs_options.args[npcID] = nil
 							RSNpcDB.DeleteCustomNpcInfo(npcID)
-							RSNpcDB.DeleteCustomNpcLoot(npcID)
 							RSGeneralDB.RemoveAlreadyFoundEntity(tonumber(npcID))
 						end,
 						width = "normal",
@@ -1072,8 +1081,16 @@ local function GetCustomNpcOptions()
 						func = function()
 							-- if already selected ignore it
 							if (not private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone]) then
-								private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = getZoneName(private.custom_npcs_options[npcID].subzone)
-								private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
+								if (private.custom_npcs_options[npcID].subzone == RSConstants.ALL_ZONES_CUSTOM_NPC) then
+									private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = AL["ALL_ZONES"]
+									private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
+									
+									-- It won't have coordinates, so add it directly
+									RSNpcDB.SetCustomNpcInfo(npcID, private.custom_npcs_options[npcID])
+								else
+									private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = getZoneName(private.custom_npcs_options[npcID].subzone)
+									private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
+								end
 							end
 						end,
 						width = "normal",
@@ -1110,6 +1127,11 @@ local function GetCustomNpcOptions()
 						func = function()
 							private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].zone] = nil
 							private.custom_npcs_options[npcID].coordinates[private.custom_npcs_options[npcID].zone] = nil
+							
+							if (RSNpcDB.DeleteCustomNpcZone(npcID, private.custom_npcs_options[npcID].zone)) then
+								RSGeneralDB.RemoveAlreadyFoundEntity(tonumber(npcID))
+							end
+							
 							private.custom_npcs_options[npcID].zone = next(private.custom_npcs_options[npcID].zones)
 						end,
 						width = 1.0,
@@ -1149,7 +1171,7 @@ local function GetCustomNpcOptions()
 							return true
 						end,
 						width = "full",
-						disabled = function() return (next(private.custom_npcs_options[npcID].zones) == nil or not private.custom_npcs_options[npcID].zone) end,
+						disabled = function() return (next(private.custom_npcs_options[npcID].zones) == nil or not private.custom_npcs_options[npcID].zone or private.custom_npcs_options[npcID].zone == RSConstants.ALL_ZONES_CUSTOM_NPC) end,
 					},
 					separatorExtraInfo = {
 						order = 8,
@@ -1314,14 +1336,24 @@ local function GetCustomNpcOptions()
 				
 				if (RSNpcDB.IsInternalNpcMultiZone(npcID)) then
 					for zoneID, zoneInfo in pairs (npcInfo.zoneID) do
-						private.custom_npcs_options[npcIDstring].zones[zoneID] = getZoneName(zoneID)
-						private.custom_npcs_options[npcIDstring].zone = zoneID
-						private.custom_npcs_options[npcIDstring].coordinates[zoneID] = extractCoordinates(zoneInfo.overlay)
+						if (zoneID == RSConstants.ALL_ZONES_CUSTOM_NPC) then
+							private.custom_npcs_options[npcIDstring].zones[zoneID] = AL["ALL_ZONES"]
+							private.custom_npcs_options[npcIDstring].zone = zoneID
+						else
+							private.custom_npcs_options[npcIDstring].zones[zoneID] = getZoneName(zoneID)
+							private.custom_npcs_options[npcIDstring].zone = zoneID
+							private.custom_npcs_options[npcIDstring].coordinates[zoneID] = extractCoordinates(zoneInfo.overlay)
+						end
 					end
 				else
-					private.custom_npcs_options[npcIDstring].zones[npcInfo.zoneID] = getZoneName(npcInfo.zoneID)
-					private.custom_npcs_options[npcIDstring].zone = npcInfo.zoneID
-					private.custom_npcs_options[npcIDstring].coordinates[npcInfo.zoneID] = extractCoordinates(npcInfo.overlay)
+					if (npcInfo.zoneID == RSConstants.ALL_ZONES_CUSTOM_NPC) then
+						private.custom_npcs_options[npcIDstring].zones[npcInfo.zoneID] = AL["ALL_ZONES"]
+						private.custom_npcs_options[npcIDstring].zone = npcInfo.zoneID
+					else
+						private.custom_npcs_options[npcIDstring].zones[npcInfo.zoneID] = getZoneName(npcInfo.zoneID)
+						private.custom_npcs_options[npcIDstring].zone = npcInfo.zoneID
+						private.custom_npcs_options[npcIDstring].coordinates[npcInfo.zoneID] = extractCoordinates(npcInfo.overlay)
+					end
 				end
 			end
 		end

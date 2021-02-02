@@ -4534,7 +4534,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 
 		_current_encounter_id = encounterID
-		Details:Msg("encounter started:", encounterID, encounterName)
+		--Details:Msg("encounter started:", encounterID, encounterName)
 		_detalhes.boss1_health_percent = 1
 		
 		local dbm_mod, dbm_time = _detalhes.encounter_table.DBM_Mod, _detalhes.encounter_table.DBM_ModTime
@@ -4546,7 +4546,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes.encounter_table.phase = 1
 		
 		--store the encounter time inside the encounter table for the encounter plugin
-		_detalhes.encounter_table ["start"] = _GetTime()
+		_detalhes.encounter_table.start = GetTime()
 		_detalhes.encounter_table ["end"] = nil
 --		local encounterID = Details.encounter_table.id
 		_detalhes.encounter_table.id = encounterID
@@ -4585,6 +4585,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 		_detalhes:SendEvent ("COMBAT_ENCOUNTER_START", nil, ...)
+
+		--print ("encounter staerted at:", _detalhes.encounter_table.start)
 	end
 	
 	function _detalhes.parser_functions:ENCOUNTER_END (...)

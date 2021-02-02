@@ -1,6 +1,6 @@
 
 
-local dversion = 232
+local dversion = 233
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -3637,6 +3637,28 @@ DF.RoleTypes = {
 }
 function DF:GetRoleTypes()
 	return DF.RoleTypes
+end
+
+local roleTexcoord = {
+	DAMAGER = "72:130:69:127",
+	HEALER = "72:130:2:60",
+	TANK = "5:63:69:127",
+	NONE = "139:196:69:127",
+}
+
+function DF:AddRoleIconToText(text, role, size)
+	if (role and type(role) == "string") then
+		local coords = GetTexCoordsForRole(role)
+		if (coords) then
+			if (type (text) == "string" and role ~= "NONE") then
+				size = size or 14
+				text = "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" .. size .. ":" .. size .. ":0:0:256:256:" .. roleTexcoord[role] .. "|t " .. text
+				return text
+			end
+		end
+	end
+
+	return text
 end
 
 DF.CLEncounterID = {

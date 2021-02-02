@@ -502,15 +502,14 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			gump:Fade (row1, "out")
 			
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
+				conteudo[myPos]:RefreshLine (instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				whichRowLine = whichRowLine+1
 				for i = iter_last-1, instancia.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
 						conteudo[i]:RefreshLine (instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine (instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
-				whichRowLine = whichRowLine+1
 			else
 				for i = iter_last, instancia.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
@@ -521,15 +520,14 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			end
 		else
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
+				conteudo[myPos]:RefreshLine (instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				whichRowLine = whichRowLine+1
 				for i = instancia.barraS[2]-1, instancia.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
 						conteudo[i]:RefreshLine (instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine (instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
-				whichRowLine = whichRowLine+1
 			else
 				for i = instancia.barraS[2], instancia.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then

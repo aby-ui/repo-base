@@ -8,6 +8,7 @@ local Search = LibStub('LibItemSearch-1.2')
 local Sort = Addon:NewModule('Sorting', 'MutexDelay-1.0')
 
 Sort.Proprieties = {
+  'set',
   'class', 'subclass', 'equip',
   'quality',
   'icon',
@@ -117,6 +118,7 @@ function Sort:GetSpaces()
       tinsert(spaces, {index = #spaces, bag = bag, slot = slot, family = container.family, item = item})
 
       item.class = item.link and Search:ForQuest(item.link) and LE_ITEM_CLASS_QUESTITEM or item.class
+      item.set = item.link and Search:InSet(item.link) and 0 or 1 
       item.space = spaces[#spaces]
     end
   end

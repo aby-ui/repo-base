@@ -217,28 +217,27 @@
 		
 			--> � um player
 			if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
-			
+				
 				if (not _detalhes.ignore_nicktag) then
 					novo_objeto.displayName = _detalhes:GetNickname (nome, false, true) --> serial, default, silent
+					if (novo_objeto.displayName and novo_objeto.displayName ~= "") then
+						--don't display empty nicknames
+						if (novo_objeto.displayName:find(" ")) then
+							if (_detalhes.remove_realm_from_name) then
+								novo_objeto.displayName = nome:gsub (("%-.*"), "")
+							else
+								novo_objeto.displayName = nome
+							end
+						end
+					end
 				end
+
 				if (not novo_objeto.displayName) then
 					if (_detalhes.remove_realm_from_name) then
 						novo_objeto.displayName = nome:gsub (("%-.*"), "")
 					else
 						novo_objeto.displayName = nome
-					end				
-					--[=[
-				
-					if (_IsInInstance() and _detalhes.remove_realm_from_name) then
-						novo_objeto.displayName = nome:gsub (("%-.*"), "")
-						
-					elseif (_detalhes.remove_realm_from_name) then
-						novo_objeto.displayName = nome:gsub (("%-.*"), "%*") --nome = nil
-						
-					else
-						novo_objeto.displayName = nome
 					end
-					--]=]
 				end
 				
 				if (_detalhes.all_players_are_group or _detalhes.immersion_enabled) then

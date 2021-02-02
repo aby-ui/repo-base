@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2428, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210118214451")
+mod:SetRevision("20210127004858")
 mod:SetCreatureID(164261)
 mod:SetEncounterID(2383)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -54,7 +54,7 @@ local specWarnOverwhelmTaunt					= mod:NewSpecialWarningTaunt(329774, nil, nil, 
 local timerGluttonousMiasmaCD					= mod:NewCDCountTimer(23.8, 329298, 212238, nil, nil, 3, nil, nil, nil, 1, 3)--Short text, Miasma
 local timerConsumeCD							= mod:NewNextCountTimer(119.8, 334522, nil, nil, nil, 2)
 local timerExpungeCD							= mod:NewNextCountTimer(44.3, 329725, nil, nil, nil, 3)
-local timerVolatileEjectionCD					= mod:NewNextCountTimer(35.9, 334266, 202046, nil, nil, 3)--maybe short this text too? 202046 for beam
+local timerVolatileEjectionCD					= mod:NewNextCountTimer(35.9, 334266, 202046, nil, nil, 3)--202046 for beam
 local timerDesolateCD							= mod:NewNextCountTimer(59.8, 329455, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
 local timerOverwhelmCD							= mod:NewNextCountTimer(11.9, 329774, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)
 
@@ -113,42 +113,40 @@ do
 			end
 		end
 		--Add entire raids Essence Sap players on Mythic
-		if mod:IsMythic() then
-			if mod.Options.ShowTimeNotStacks then
-				--Higher Performance check that scans all debuff remaining times
-				for uId in DBM:GetGroupMembers() do
-					if not (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1) or UnitIsDeadOrGhost(uId)) then--Exclude tanks and dead
-						local unitName = DBM:GetUnitFullName(uId)
-						local spellName3, _, _, _, _, expireTime3 = DBM:UnitDebuff(uId, 334755)
-						if spellName3 and expireTime3 then
-							tempLines[unitName] = mfloor(expireTime3-GetTime())
-							tempLinesSorted[#tempLinesSorted + 1] = unitName
-						else
-							tempLines[unitName] = 0
-							tempLinesSorted[#tempLinesSorted + 1] = unitName
-						end
-					end
-				end
-			else
-				--More performance friendly check that just returns all player stacks (the default option)
-				for uId in DBM:GetGroupMembers() do
-					local _, _, _, mapId = UnitPosition(uId)
-					if not (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1) or UnitIsDeadOrGhost(uId)) and mapId == 2296 then--Exclude tanks and dead and people not in zone
-						local unitName = DBM:GetUnitFullName(uId)
-						tempLines[unitName] = essenceSapStacks[unitName] or 0
+		if mod.Options.ShowTimeNotStacks then
+			--Higher Performance check that scans all debuff remaining times
+			for uId in DBM:GetGroupMembers() do
+				if not (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1) or UnitIsDeadOrGhost(uId)) then--Exclude tanks and dead
+					local unitName = DBM:GetUnitFullName(uId)
+					local spellName3, _, _, _, _, expireTime3 = DBM:UnitDebuff(uId, 334755)
+					if spellName3 and expireTime3 then
+						tempLines[unitName] = mfloor(expireTime3-GetTime())
+						tempLinesSorted[#tempLinesSorted + 1] = unitName
+					else
+						tempLines[unitName] = 0
 						tempLinesSorted[#tempLinesSorted + 1] = unitName
 					end
 				end
 			end
-			--Sort debuffs, then inject into regular table
-			if mod.Options.SortDesc then
-				tsort(tempLinesSorted, sortFuncDesc)
-			else
-				tsort(tempLinesSorted, sortFuncAsc)
+		else
+			--More performance friendly check that just returns all player stacks (the default option)
+			for uId in DBM:GetGroupMembers() do
+				local _, _, _, mapId = UnitPosition(uId)
+				if not (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, 1) or UnitIsDeadOrGhost(uId)) and mapId == 2296 then--Exclude tanks and dead and people not in zone
+					local unitName = DBM:GetUnitFullName(uId)
+					tempLines[unitName] = essenceSapStacks[unitName] or 0
+					tempLinesSorted[#tempLinesSorted + 1] = unitName
+				end
 			end
-			for _, name in ipairs(tempLinesSorted) do
-				addLine(name, tempLines[name])
-			end
+		end
+		--Sort debuffs, then inject into regular table
+		if mod.Options.SortDesc then
+			tsort(tempLinesSorted, sortFuncDesc)
+		else
+			tsort(tempLinesSorted, sortFuncAsc)
+		end
+		for _, name in ipairs(tempLinesSorted) do
+			addLine(name, tempLines[name])
 		end
 		return lines, sortedLines
 	end
@@ -208,10 +206,10 @@ function mod:OnCombatStart(delay)
 			local unitName = DBM:GetUnitFullName(uId)
 			essenceSapStacks[unitName] = 0
 		end
-	end
-	if self.Options.InfoFrame then
-		DBM.InfoFrame:SetHeader(OVERVIEW)
-		DBM.InfoFrame:Show(22, "function", updateInfoFrame, false, false)
+		if self.Options.InfoFrame then
+			DBM.InfoFrame:SetHeader(OVERVIEW)
+			DBM.InfoFrame:Show(22, "function", updateInfoFrame, false, false)
+		end
 	end
 end
 

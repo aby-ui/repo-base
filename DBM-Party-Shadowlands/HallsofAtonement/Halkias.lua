@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2406, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210111195607")
+mod:SetRevision("20210123235530")
 mod:SetCreatureID(165408)
 mod:SetEncounterID(2401)
 
@@ -41,7 +41,7 @@ local timerRefractedSinlightD		= mod:NewCDTimer(45, 322711, nil, nil, nil, 3, ni
 function mod:OnCombatStart(delay)
 	timerCrumblingSlamCD:Start(4-delay)
 --	timerSinlightVisionsCD:Start(5-delay)--SUCCESS
-	timerHeaveDebrisCD:Start(14.6-delay)--SUCCESS
+	timerHeaveDebrisCD:Start(13.5-delay)--SUCCESS
 	timerRefractedSinlightD:Start(29.6-delay)--Iffy
 end
 

@@ -425,6 +425,7 @@ function Simulationcraft:HandleChatCommand(input)
 
   local debugOutput = false
   local noBags = false
+  local showMerchant = false
   local links = getLinks(input)
 
   for _, arg in ipairs(args) do
@@ -432,6 +433,8 @@ function Simulationcraft:HandleChatCommand(input)
       debugOutput = true
     elseif arg == 'nobag' or arg == 'nobags' or arg == 'nb' then
       noBags = true
+    elseif arg == 'merchant' then
+      showMerchant = true
 --[[
     elseif arg == 'minimap' then
       self.db.profile.minimap.hide = not self.db.profile.minimap.hide
@@ -442,7 +445,7 @@ function Simulationcraft:HandleChatCommand(input)
     end
   end
 
-  self:PrintSimcProfile(debugOutput, noBags, links)
+  self:PrintSimcProfile(debugOutput, noBags, showMerchant, links)
 end
 
 
@@ -701,19 +704,13 @@ function Simulationcraft:GetItemStrings(debugOutput)
       if ItemLocation then
         itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
       end
-      local name = GetItemInfo(itemLink)
+      local name, _, _, _, _, _, _, _, _, _, _ = GetItemInfo(itemLink)
 
       -- get correct level for scaling gear
       local level, _, _ = GetDetailedItemLevelInfo(itemLink)
-
-      local itemComment
-      if name and level then
-        itemComment = name .. ' (' .. level .. ')'
-      end
-
       items[slotNum] = {
         string = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput),
-        name = itemComment
+        name = name .. (level and ' (' .. level .. ')' or '')
       }
     end
   end
@@ -939,7 +936,7 @@ function Simulationcraft:GetMainFrame(text)
 end
 
 -- This is the workhorse function that constructs the profile
-function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
+function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --abyui GetAddOnMetadata('Simulationcraft', 'Version')
   local simcVersionWarning = '# Requires SimulationCraft 901-01 or newer'
@@ -1119,9 +1116,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
       simulationcraftProfile = simulationcraftProfile .. '### Gear from Bags\n'
       for i=1, #bagItems do
         simulationcraftProfile = simulationcraftProfile .. '#\n'
-        if bagItems[i].name then
-          simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
-        end
+        simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
         simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].string .. '\n'
       end
     end
@@ -1160,6 +1155,26 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, links)
       end
     end
   end
+
+  -- Dump out equippable items from a vendor, this is mostly for debugging / data collection
+  local numMerchantItems = GetMerchantNumItems()
+  if showMerchant and numMerchantItems > 0 then
+    simulationcraftProfile = simulationcraftProfile .. '\n'
+    simulationcraftProfile = simulationcraftProfile .. '\n### Merchant items\n'
+    for i=1,numMerchantItems do
+      local link = GetMerchantItemLink(i)
+      local name,_,_,_,_,_,_,_,invType = GetItemInfo(link)
+      if name and invType ~= "" then
+        local slotNum = Simulationcraft.invTypeToSlotNum[invType]
+        -- Doesn't work, seems to always return base item level
+        -- local level, _, _ = GetDetailedItemLevelInfo(itemLink)
+        simulationcraftProfile = simulationcraftProfile .. '#\n'
+        simulationcraftProfile = simulationcraftProfile .. '# ' .. name .. '\n'
+        simulationcraftProfile = simulationcraftProfile .. '# ' .. GetItemStringFromItemLink(slotNum, link, nil, false) .. "\n"
+      end
+    end
+  end
+
 
   -- output item links that were included in the /simc chat line
   if links and #links > 0 then

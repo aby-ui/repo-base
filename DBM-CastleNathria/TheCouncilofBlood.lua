@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210121233650")
+mod:SetRevision("20210128202945")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -152,7 +152,7 @@ local allTimers = {
 		[330965] = {0, 0, 60},
 
 		--Drain Essence
-		[346654] = {29.9, 23.3, 48.3},
+		[346654] = {29.9, 21.6, 48.3},
 		--Prideful Eruption (P2+)
 		[346657] = {0, 43.3, 48.3},
 		--Soul Spikes (P3+)

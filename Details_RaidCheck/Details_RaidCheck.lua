@@ -247,12 +247,13 @@ end
 		
 		--header and scroll
 		local headerTable = {
-			{text = "Player Name", width = 160},
-			{text = "Talents", width = 150},
-			{text = "Item Level", width = 70},
-			{text = "Food", width = 50},
-			{text = "Flask", width = 50},
-			{text = "Rune", width = 50},
+			{text = "Player Name", width = 140},
+			{text = "Talents", width = 130},
+			{text = "ILevel", width = 45},
+			{text = "Repair", width = 45},
+			{text = "Food", width = 45},
+			{text = "Flask", width = 45},
+			{text = "Rune", width = 45},
 			--{text = "Pre-Pot Last Try", width = 100},
 			{text = "Using Details!", width = 100},
 		}
@@ -300,10 +301,14 @@ end
 			--spec icon
 			local specIcon = DF:CreateImage (line, nil, scroll_line_height, scroll_line_height)
 				specIcon:SetPoint ("left", roleIcon, "right", 2, 0)
+
+			--covenant icon
+			local covenantIcon = DF:CreateImage (line, nil, scroll_line_height, scroll_line_height)
+				covenantIcon:SetPoint ("left", specIcon, "right", 2, 0)
 				
 			--player name
 			local playerName = DF:CreateLabel (line)
-				playerName:SetPoint ("left", specIcon, "right", 2, 0)
+				playerName:SetPoint ("left", covenantIcon, "right", 2, 0)
 			
 			--talents
 			local talent_row_options = {
@@ -316,35 +321,39 @@ end
 			local talentsRow = DF:CreateIconRow (line, "$parentTalentIconsRow", talent_row_options)
 			
 			--item level
-			local itemLevel = DF:CreateLabel (line)
-			
+			local itemLevel = DF:CreateLabel(line)
+			--repair status
+			local repairStatus = DF:CreateLabel(line)
 			--no food
-			local FoodIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+			local FoodIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 			--no flask
-			local FlaskIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+			local FlaskIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 			--no rune
-			local RuneIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+			local RuneIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 			--no pre pot
 			--local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 			--using details!
-			local DetailsIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+			local DetailsIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 			
-			line:AddFrameToHeaderAlignment (roleIcon)
-			line:AddFrameToHeaderAlignment (talentsRow)
-			line:AddFrameToHeaderAlignment (itemLevel)
-			line:AddFrameToHeaderAlignment (FoodIndicator)
-			line:AddFrameToHeaderAlignment (FlaskIndicator)
-			line:AddFrameToHeaderAlignment (RuneIndicator)
-			--line:AddFrameToHeaderAlignment (PrePotIndicator)
-			line:AddFrameToHeaderAlignment (DetailsIndicator)
+			line:AddFrameToHeaderAlignment(roleIcon)
+			line:AddFrameToHeaderAlignment(talentsRow)
+			line:AddFrameToHeaderAlignment(itemLevel)
+			line:AddFrameToHeaderAlignment(repairStatus)
+			line:AddFrameToHeaderAlignment(FoodIndicator)
+			line:AddFrameToHeaderAlignment(FlaskIndicator)
+			line:AddFrameToHeaderAlignment(RuneIndicator)
+			--line:AddFrameToHeaderAlignment(PrePotIndicator)
+			line:AddFrameToHeaderAlignment(DetailsIndicator)
 			
 			line:AlignWithHeader (DetailsRaidCheck.Header, "left")
 			
+			line.CovenantIcon = covenantIcon
 			line.RoleIcon = roleIcon
 			line.SpecIcon = specIcon
 			line.PlayerName = playerName
 			line.TalentsRow = talentsRow
 			line.ItemLevel = itemLevel
+			line.RepairStatus = repairStatus
 			line.FoodIndicator = FoodIndicator
 			line.FlaskIndicator = FlaskIndicator
 			line.RuneIndicator = RuneIndicator
@@ -369,6 +378,12 @@ end
 			table.sort (dataInOrder, DF.SortOrder2)
 			--table.sort (dataInOrder, DF.SortOrder1R) --alphabetical
 			data = dataInOrder
+
+			local raidStatusLib = LibStub:GetLibrary("LibRaidStatus-1.0")
+			local playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo()
+			local gearInfo = raidStatusLib.gearManager.GetGearTable()
+
+			local libRaidStatus = 0
 		
 			for i = 1, total_lines do
 				local index = i + offset
@@ -377,18 +392,38 @@ end
 				if (playerTable) then
 					local line = self:GetLine (i)
 					if (line) then
+						local thisPlayerInfo = playerInfo[playerTable.Name]
+						if (thisPlayerInfo) then
+							local playerCovenantId = thisPlayerInfo.covenantId
+							if (playerCovenantId > 0) then
+								line.CovenantIcon:SetTexture(LIB_RAID_STATUS_COVENANT_ICONS[playerCovenantId])
+								line.CovenantIcon:SetTexCoord(.05, .95, .05, .95)
+							else
+								line.CovenantIcon:SetTexture("")
+							end
+						else
+							line.CovenantIcon:SetTexture("")
+						end
+
+						--repair status
+						local thisPlayerGearInfo = gearInfo[playerTable.Name]
+						if (thisPlayerGearInfo) then
+							line.RepairStatus:SetText(thisPlayerGearInfo.durability .. "%")
+						else
+							line.RepairStatus:SetText("")
+						end
 						
-						local roleTexture, L, R, T, B = _detalhes:GetRoleIcon (playerTable.Role or "NONE")
+						local roleTexture, L, R, T, B = _detalhes:GetRoleIcon(playerTable.Role or "NONE")
 						
-						line.RoleIcon:SetTexture (roleTexture)
-						line.RoleIcon:SetTexCoord (L, R, T, B)
+						line.RoleIcon:SetTexture(roleTexture)
+						line.RoleIcon:SetTexCoord(L, R, T, B)
 						
 						if (playerTable.Spec) then
-							local texture, L, R, T, B = _detalhes:GetSpecIcon (playerTable.Spec)
-							line.SpecIcon:SetTexture (texture)
-							line.SpecIcon:SetTexCoord (L, R, T, B)
+							local texture, L, R, T, B = _detalhes:GetSpecIcon(playerTable.Spec)
+							line.SpecIcon:SetTexture(texture)
+							line.SpecIcon:SetTexCoord(L, R, T, B)
 						else
-							local texture, L, R, T, B = _detalhes:GetClassIcon (playerTable.Class)
+							local texture, L, R, T, B = _detalhes:GetClassIcon(playerTable.Class)
 							line.SpecIcon:SetTexture (texture)
 							line.SpecIcon:SetTexCoord (L, R, T, B)
 						end
@@ -398,8 +433,8 @@ end
 						if (playerTable.Talents) then
 							for i = 1, #playerTable.Talents do
 								local talent = playerTable.Talents [i]
-								local talentID, name, texture, selected, available = GetTalentInfoByID (talent)
-								line.TalentsRow:SetIcon (false, false, false, false, texture)
+								local talentID, name, texture, selected, available = GetTalentInfoByID(talent)
+								line.TalentsRow:SetIcon(false, false, false, false, texture)
 							end
 						end
 

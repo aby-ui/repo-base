@@ -84,7 +84,7 @@ function RSNpcDB.GetCustomNpcInfo(npcID)
 end
 
 function RSNpcDB.SetCustomNpcInfo(npcID, info)
-	if (not npcID or not info or not info.zones or next(info.zones) == nil or not info.coordinates) then
+	if (not npcID or not info or not info.zones or next(info.zones) == nil) then
 		RSLogger:PrintDebugMessage(string.format("SetCustomNpcInfo[%s]: Ignorado por no tener todos los datos rellenos", npcID))
 		return
 	end
@@ -92,8 +92,9 @@ function RSNpcDB.SetCustomNpcInfo(npcID, info)
 	local zones = {}
 	local completedZonesCounter = 0
 	for zoneID, _ in pairs (info.zones) do
-		if (info.coordinates[zoneID]) then		
-			local mapID = tonumber(zoneID)	
+		if (info.coordinates and info.coordinates[zoneID] and info.coordinates[zoneID] ~= "") then
+			string.format("Coordenadas %s", info.coordinates[zoneID]);
+			local mapID = tonumber(zoneID)
 			zones[mapID] = {}
 			zones[mapID].artID = { C_Map.GetMapArtID(mapID) }
 			zones[mapID].overlay = {}
@@ -109,6 +110,10 @@ function RSNpcDB.SetCustomNpcInfo(npcID, info)
 				table.insert(zones[mapID].overlay, string.format("0.%s-0.%s", coordx, coordy))
 			end
 			
+			completedZonesCounter = completedZonesCounter + 1
+		elseif (zoneID == RSConstants.ALL_ZONES_CUSTOM_NPC) then
+			local mapID = tonumber(zoneID)
+			zones[mapID] = {}			
 			completedZonesCounter = completedZonesCounter + 1
 		end
 	end
@@ -158,6 +163,48 @@ function RSNpcDB.DeleteCustomNpcInfo(npcID)
 	
 	private.dbglobal.custom_npcs[tonumber(npcID)] = nil
 	private.NPC_INFO[tonumber(npcID)] = nil
+	
+	RSNpcDB.DeleteCustomNpcLoot(npcID)
+end
+
+function RSNpcDB.DeleteCustomNpcZone(npcID, zoneID)
+	if (not npcID or not zoneID) then
+		return false
+	end
+	
+	local npcIDnumber = tonumber(npcID)
+	local mapID = tonumber(zoneID)
+	
+	if (not private.dbglobal.custom_npcs[npcIDnumber]) then
+		return false
+	else
+		-- If it has multiple zones
+		if (type(private.dbglobal.custom_npcs[npcIDnumber].zoneID) == "table") then
+			private.dbglobal.custom_npcs[npcIDnumber].zoneID[mapID] = nil
+			
+			-- If after removing it only contains one zone, transform to unimap
+			if (RSUtils.GetTableLength(private.dbglobal.custom_npcs[npcIDnumber].zoneID) == 1) then
+				for lastMapID, zoneInfo in pairs (private.dbglobal.custom_npcs[npcIDnumber].zoneID) do
+					private.dbglobal.custom_npcs[npcIDnumber].zoneID = lastMapID
+					private.dbglobal.custom_npcs[npcIDnumber].artID = zoneInfo.artID
+					private.dbglobal.custom_npcs[npcIDnumber].x = zoneInfo.x
+					private.dbglobal.custom_npcs[npcIDnumber].y = zoneInfo.y
+					private.dbglobal.custom_npcs[npcIDnumber].overlay = zoneInfo.overlay
+					
+					-- Merge internal database with custom
+					private.NPC_INFO[npcIDnumber] = private.dbglobal.custom_npcs[npcIDnumber]
+					
+					RSLogger:PrintDebugMessage(string.format("RSNpcDB.DeleteCustomNpcZone[%s]: Eliminada zona %s", npcIDnumber, mapID))
+					return false
+				end
+			end
+		-- If it has only one zone then remove it from the NPC custom database
+		else
+			RSNpcDB.DeleteCustomNpcInfo(npcID)
+			RSLogger:PrintDebugMessage(string.format("RSNpcDB.DeleteCustomNpcZone[%s]: Eliminado NPC por no contener mas zonas", npcIDnumber))
+			return true
+		end
+	end
 end
 
 ---============================================================================
@@ -329,11 +376,13 @@ function RSNpcDB.SetCustomNpcLoot(npcID, loot)
 	end
 	
 	private.dbglobal.custom_loot[tonumber(npcID)] = loot
+	RSLogger:PrintDebugMessage(string.format("RSNpcDB.SetCustomNpcLoot[%s]: Añadido loot", npcID))
 end
 
 function RSNpcDB.DeleteCustomNpcLoot(npcID)
 	if (npcID and private.dbglobal.custom_loot) then
 		private.dbglobal.custom_loot[tonumber(npcID)] = nil
+		RSLogger:PrintDebugMessage(string.format("RSNpcDB.DeleteCustomNpcLoot[%s]: Eliminado loot", npcID))
 	end
 end
 

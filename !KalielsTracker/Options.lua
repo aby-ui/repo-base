@@ -27,7 +27,7 @@ local strsub = string.sub
 local db, dbChar
 local mediaPath = "Interface\\AddOns\\"..addonName.."\\Media\\"
 local anchors = { "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT" }
-local strata = { "LOW", "MEDIUM", "HIGH" }
+local strata = { "BACKGROUND", "LOW", "MEDIUM", "HIGH" }
 local flags = { [""] = "None", ["OUTLINE"] = "Outline", ["OUTLINE, MONOCHROME"] = "Outline Monochrome" }
 local textures = { "None", "Default (Blizzard)", "One line", "Two lines" }
 local modifiers = { [""] = "None", ["ALT"] = "Alt", ["CTRL"] = "Ctrl", ["ALT-CTRL"] = "Alt + Ctrl" }

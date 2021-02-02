@@ -4089,7 +4089,9 @@ end,
 			if C_AzeriteItem then
 				if C_AzeriteItem.GetPowerLevel and C_AzeriteItem.FindActiveAzeriteItem then
 					local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
-					currentLevel = azeriteItemLocation and C_AzeriteItem.GetPowerLevel(azeriteItemLocation) or 0
+                    Item:CreateFromItemLocation(azeriteItemLocation)
+                    if AzeriteUtil.IsAzeriteItemLocationBankBag(azeriteItemLocation) then currentLevel = 0 else
+					currentLevel = azeriteItemLocation and C_AzeriteItem.GetPowerLevel(azeriteItemLocation) or 0 end
 				end
 			end
 			if nil ~= currentLevel and currentLevel >= soughtLevel then

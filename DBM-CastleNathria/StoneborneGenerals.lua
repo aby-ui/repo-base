@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210120015156")
+mod:SetRevision("20210128203349")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 mod:SetBossHPInfoToHighest()
-mod:SetHotfixNoticeRev(20210119000000)--2021, 01, 19
-mod:SetMinSyncRevision(20210119000000)
+mod:SetHotfixNoticeRev(20210128000000)--2021, 01, 28
+mod:SetMinSyncRevision(20210126000000)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -24,7 +24,8 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_MISSED",
 	"UNIT_DIED",
 	"RAID_BOSS_WHISPER",
-	"UNIT_SPELLCAST_START boss1 boss2"
+	"UNIT_SPELLCAST_START boss1 boss2",
+	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
 )
 
 --TODO, review more of timers with some bug fixes to fight as well as just a better version of transcriptor recording it., especailly P3 timers after intermission 2
@@ -146,7 +147,7 @@ mod.vb.grashDead = false
 --Crystalize triggers an 8 second ICD
 --Reverberating Eruption triggers an 8 second ICD/ Leap is inconclusive but probably same
 --Wicked blade triggers a 6 second ICD on all but swipe, which then only imposes 5
---Heart rend triggers 2.4 second ICD
+--Heart rend triggers 2.3 second ICD
 --Stone fist triggers 3-3.5 second ICD
 --Serrated swipe triggers 2.4 second ICD
 --Shattering Blast triggers 12 second ICD first time, and 5.4 second ICD the second time
@@ -154,6 +155,9 @@ mod.vb.grashDead = false
 --1-Heart rend DC not extended by crystalize most of time
 --2-To prevent swipe from altering it's OWN CD since it's started in success and not start (where timer update is)
 --3-To prevent stone fist from altering it's OWN CD since it's started in success and not start (where timer update is)
+--4-Heart rend is not extended by LFR version Reverberation
+--TODO, maybe one day even smarter code it for spell queue order below
+--Crystallize > tank abilities> wicked blade> eruption>seismic upheaval
 local function updateAllTimers(self, ICD, exclusion)
 	if not self.Options.ExperimentalTimerCorrection then return end
 	DBM:Debug("updateAllTimers running", 3)
@@ -175,7 +179,7 @@ local function updateAllTimers(self, ICD, exclusion)
 	end
 	local phase = self.vb.phase
 	if not self.vb.kaalDead and (phase == 1 or phase == 3) then
-		if exclusion ~= 1 and timerHeartRendCD:GetRemaining(self.vb.heartCount+1) < ICD then
+		if exclusion ~= 1 and exclusion ~= 4 and timerHeartRendCD:GetRemaining(self.vb.heartCount+1) < ICD then
 			local elapsed, total = timerHeartRendCD:GetTime(self.vb.heartCount+1)
 			local extend = ICD - (total-elapsed)
 			DBM:Debug("timerHeartRendCD extended by: "..extend, 2)
@@ -298,9 +302,9 @@ function mod:OnCombatStart(delay)
 	else
 		--Everyone else still gets crappy less consistent timers
 		--General Kaal
-		timerSerratedSwipeCD:Start(8.2-delay, 1)--START, but next timer is started at SUCCESS
+		timerSerratedSwipeCD:Start(8.1-delay, 1)--START, but next timer is started at SUCCESS
 		timerWickedBladeCD:Start(16.6-delay, 1)--16.8-21
-		timerHeartRendCD:Start(28.9-delay, 1)--START
+		timerHeartRendCD:Start(28.9-delay, 1)--START 28-30
 		--General Grashaal Air ability
 		timerCrystalizeCD:Start(23.1-delay, 1)
 		berserkTimer:Start(840)
@@ -340,7 +344,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnHeartRendCast:Show(self.vb.heartCount)
 		specWarnHeartRendCast:Play("specialsoon")
 		timerHeartRendCD:Start(nil, self.vb.heartCount+1)
-		updateAllTimers(self, 2.4)
+		updateAllTimers(self, 2.3)
 	elseif spellId == 334929 then
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
 			specWarnSerratedSwipe:Show()
@@ -360,7 +364,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 334009 then--Leap (LFR)
 		self.vb.eruptionCount = self.vb.eruptionCount + 1
 		timerReverberatingLeapCD:Start(nil, self.vb.eruptionCount+1)
-		updateAllTimers(self, 8)
+		updateAllTimers(self, 8, 4)
 		--self:BossTargetScanner(args.sourceGUID, "EruptionTarget", 0.01, 12)
 	elseif spellId == 334498 then
 		self.vb.upHeavalCount = self.vb.upHeavalCount + 1
@@ -387,40 +391,50 @@ function mod:SPELL_CAST_START(args)
 		timerShatteringBlast:Start()
 		--Start INCOMING boss timers here, that seems to be how it's scripted.
 		self.vb.phase = self.vb.phase + 1
-		self.vb.upHeavalCount = 0
+		self.vb.upHeavalCount = 0--always resets since boss stops casting it while shielded, so even between phase 2 and 3 there is a long break
 		self.vb.forcesCount = 0
 		if self.vb.phase == 2 then
-			--General Grashaal
-			--Boss continues timer for crystalize/combo from air phase, it doesn't start here
-			--just spell queued depending on overlap with Grashaal resuming other stuff
-			--These 3 abilities are cast in a random order.
-			--probably a bit more work to do to detect possible combos and then start one initial timer and start 2nd and 3rd after seeing what first ability is
-			timerStoneFistCD:Start(10.7, 1)--10.7-39.4 (11.3, 21.8, 29.6, 22.4, 12.2)
+			--Kaal's Wicked Blade timer is tied to shield 100%
+			--Start initial Grashal timers and reset crystalize timer
+			timerCrystalizeCD:Stop()--Chance this doesn't happen here but at shield
+			timerCrystalizeCD:Start(18.5, self.vb.crystalCount+1)--18.5-20.7
+			timerStoneFistCD:Start(26.4, 1)--26.4-28.1
 			if self:IsLFR() then
-				timerReverberatingLeapCD:Start(11.1, 1)
+				timerReverberatingLeapCD:Start(29.4, 1)--Assumed for now
 			else
-				timerReverberatingEruptionCD:Start(11.1, 1)--11-23.27 (11.9, 14.5, 31.9, 12.9, 15.2)
+				timerReverberatingEruptionCD:Start(29.4, 1)--29.4-38.2 (it's basically either 29 or 38 based on if wicked blade happens first
 			end
-			timerSeismicUpheavalCD:Start(19.5, 1)--19.5-51.7 (19.9, 22.6, 43, 51.7, 29.8)
+			timerSeismicUpheavalCD:Start(50.2, 1)--19.5-51.7 (19.9, 22.6, 43, 51.7, 29.8)
 			--Kael also resumes summoning adds on mythic once intermission 1 is over, but it's pretty instant
 --			if self:IsMythic() then
 --				timerCallShadowForcesCD:Start(0, 1)--0-5
 --			end
-			updateAllTimers(self, 11.9)
 		else--Stage 3 (Both Generals at once)
 			self.vb.heartCount = 0
+			self.vb.swipeCount = 0
 			--General Kaal returning
-			--These probably need redoing
-			timerSerratedSwipeCD:Start(5.3, 1)--START (could be heart first)
-			timerHeartRendCD:Start(5.3, 1)--START (could e swipe first)
---			timerWickedBladeCD:Start(32.2, self.vb.bladeCount+1)--(41.8)
+			--Kaal's Wicked Blade timer is tied to shield 100%
+			timerSerratedSwipeCD:Start(13.8, 1)--START 13.8-14.1
+			timerHeartRendCD:Start(35.8, 1)--START 35.8-38.2
 			--Kael also resumes summing adds on mythic once intermission 2 is over
-			if self:IsMythic() then
-				timerCallShadowForcesCD:Start(8, 1)--8-15
-			end
+--			if self:IsMythic() then
+--				timerCallShadowForcesCD:Start(8, 1)--8-16.6
+--			end
 			--General Grashaal
-			timerSeismicUpheavalCD:Start(8.8, self.vb.upHeavalCount+1)--Could be even lower, as usual it's spell queued behind everything else often time
-			updateAllTimers(self, 5)--This may not be true on non mythic
+			--Restart timers
+			timerCrystalizeCD:Stop()
+			timerStoneFistCD:Stop()
+			timerReverberatingLeapCD:Stop()
+			timerReverberatingEruptionCD:Stop()
+			timerCrystalizeCD:Start(12.4, self.vb.crystalCount+1)--12.4-12.7
+			timerStoneFistCD:Start(20.9, self.vb.fistCount+1)--20.9-21.2
+			if self:IsLFR() then
+				timerReverberatingLeapCD:Start(30.7, self.vb.eruptionCount+1)--Guessed
+			else
+				timerReverberatingEruptionCD:Start(30.7, self.vb.eruptionCount+1)--30.7-30.9
+			end
+			--Re-enable Upheaval
+			timerSeismicUpheavalCD:Start(44, 1)--44-44.4
 		end
 	elseif spellId == 342425 then
 		updateAllTimers(self, 3, 3)
@@ -447,7 +461,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		castsPerGUID[args.sourceGUID] = castsPerGUID[args.sourceGUID] + 1
 		local count = castsPerGUID[args.sourceGUID]
 		warnRavenousFeast:Show(count, args.destName)
-		timerRavenousFeastCD:Start(18.6, count+1, args.sourceGUID)
+		timerRavenousFeastCD:Start(self:IsMythic() and 24.6 or 18.2, count+1, args.sourceGUID)
 	elseif spellId == 342253 then
 		warnWickedSlaughter:CombinedShow(1.5, args.destName)--Needs to allow at least 1.5 to combine targets
 		timerWickedSlaughterCD:Start(8.5, args.sourceGUID)
@@ -483,7 +497,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 329636 or spellId == 329808 then--50% transition for Kaal/50% transition for Grashaal
 		self.vb.shieldUp = true
 		warnHardenedStoneForm:Show(args.destName)
-		timerCallShadowForcesCD:Stop()--The only timer that stops here is this one, rest continue on until boss leaves
+		timerCallShadowForcesCD:Stop()--The only timer that always stops here is this one, rest continue on until boss leaves
 		if spellId == 329808 then--Grashaal seems to stop casting this while stoned
 			timerSeismicUpheavalCD:Stop()
 		end
@@ -554,20 +568,22 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 329636 or spellId == 329808 then--phase 2 (Kael Departing, Grashaal landing)
 		warnHardenedStoneFormOver:Show()
+		timerWickedBladeCD:Stop()--Probably stops--resets now
 		if spellId == 329636 then
 			--Stop Outgoing boss (Kael) timers here
---			timerWickedBladeCD:Stop()
 			timerHeartRendCD:Stop()
 			timerSerratedSwipeCD:Stop()
 			--Start Outgoing boss (Kael) (stuff he still casts airborn) here as well
---			timerWickedBladeCD:Start(20.3, self.vb.bladeCount+1)
+			timerWickedBladeCD:Start(25.5, self.vb.bladeCount+1)--TODO, Needs more data and fixing, 25.7-32 spell queue seems off
+		else
+			timerWickedBladeCD:Start(19.6, self.vb.bladeCount+1)
 		end
 		--If crystalize was off CD going into this phase, the CD is reset.
 		--But if crystalize was still ticking down it's CD, it's NOT reset
-		if timerCrystalizeCD:GetRemaining(self.vb.crystalCount+1) <= 0 then
-			timerCrystalizeCD:Stop()
-			timerCrystalizeCD:Start(self:IsMythic() and 55 or 50, self.vb.crystalCount+1)
-		end
+--		if timerCrystalizeCD:GetRemaining(self.vb.crystalCount+1) <= 0 then
+--			timerCrystalizeCD:Stop()
+--			timerCrystalizeCD:Start(self:IsMythic() and 55 or 50, self.vb.crystalCount+1)
+--		end
 	elseif spellId == 333913 then
 		LacerationStacks[args.destName] = nil
 		if self.Options.InfoFrame then
@@ -649,13 +665,14 @@ function mod:UNIT_DIED(args)
 		timerRavenousFeastCD:Stop((castsPerGUID[args.sourceGUID] or 0)+1, args.destGUID)
 	elseif cid == 173280 then--stone-legion-skirmisher
 		timerWickedSlaughterCD:Stop(args.destGUID)
-	elseif cid == 168112 then--Kaal
+	elseif cid == 168112 and not self.vb.kaalDead then--Kaal
 		self.vb.kaalDead = true
 		timerWickedBladeCD:Stop()
 		timerHeartRendCD:Stop()
 		timerSerratedSwipeCD:Stop()
 		timerCallShadowForcesCD:Stop()
-	elseif cid == 168113 then--Grashaal
+		timerCrystalizeCD:Stop()--Yes this stops on kaal death too, because his death causes grashaal to recast it immediately
+	elseif cid == 168113 and not self.vb.grashDead then--Grashaal
 		self.vb.grashDead = true
 		timerReverberatingEruptionCD:Stop()
 		timerReverberatingLeapCD:Stop()
@@ -674,7 +691,6 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 --]]
-
 --"<10.92 16:10:19> [UNIT_SPELLCAST_START] General Grashaal(Lightea) - Reverberating Leap - 5.2s [[boss2:Cast-3-2084-2296-21431-334009-0026A47AA9:334009]]", -- [614]
 --"<10.92 16:10:19> [CLEU] SPELL_CAST_START#Creature-0-2084-2296-21431-168113-0000247A6F#General Grashaal##nil#334009#Reverberating Leap#nil#nil", -- [616]
 --"<10.94 16:10:19> [DBM_Debug] boss2 changed targets to Kngflyven#nil", -- [618]
@@ -682,5 +698,26 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_SPELLCAST_START(uId, _, spellId)
 	if spellId == 344496 or spellId == 334009 then
 		self:BossUnitTargetScanner(uId, "EruptionTarget", 1)
+	end
+end
+
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+	if spellId == 343288 then
+		local cid = self:GetUnitCreatureId(uId)
+		if cid == 168112 and not self.vb.kaalDead then--Kaal
+			self.vb.kaalDead = true
+			timerWickedBladeCD:Stop()
+			timerHeartRendCD:Stop()
+			timerSerratedSwipeCD:Stop()
+			timerCallShadowForcesCD:Stop()
+			timerCrystalizeCD:Stop()--Yes this stops on kaal death too, because his death causes grashaal to recast it immediately
+		elseif cid == 168113 and not self.vb.grashDead then--Grashaal
+			self.vb.grashDead = true
+			timerReverberatingEruptionCD:Stop()
+			timerReverberatingLeapCD:Stop()
+			timerSeismicUpheavalCD:Stop()
+			timerCrystalizeCD:Stop()
+			timerStoneFistCD:Stop()
+		end
 	end
 end

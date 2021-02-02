@@ -140,6 +140,11 @@ local function QuestsCache_Update(isForced)
 	return numEntries <= 1, numQuests
 end
 
+local function QuestsCache_GetProperty(questID, key)
+	return dbChar.quests.cache[questID] and dbChar.quests.cache[questID][key] or nil
+end
+KT.QuestsCache_GetProperty = QuestsCache_GetProperty
+
 local function QuestsCache_UpdateProperty(questID, key, value)
 	if dbChar.quests.cache[questID] then
 		dbChar.quests.cache[questID][key] = value
@@ -397,12 +402,12 @@ local function SetFrames()
 		elseif event == "QUEST_SESSION_JOINED" then
 			self:RegisterEvent("QUEST_POI_UPDATE")
 		elseif event == "PET_BATTLE_OPENING_START" then
-			KT:prot(KTF, "Hide")
-			KT:prot(KTF.Buttons, "Hide")
+			KT:prot("Hide", KTF)
+			KT:prot("Hide", KTF.Buttons)
 			KT.locked = true
 		elseif event == "PET_BATTLE_CLOSE" then
-			KT:prot(KTF, "Show")
-			KT:prot(KTF.Buttons, "Show")
+			KT:prot("Show", KTF)
+			KT:prot("Show", KTF.Buttons)
 			KT.locked = false
 		elseif event == "QUEST_LOG_UPDATE" then
 			local emptyCache = QuestsCache_Init()
@@ -631,7 +636,7 @@ local function SetHooks()
 			if dbChar.collapsed or KTF.Buttons.num == 0 then
 				KTF.Buttons:Hide()
 			else
-				KTF.Buttons:Show()
+				KTF.Buttons:SetShown(not KT.locked)
 			end
 			KT.ActiveButton:Update()
 		end

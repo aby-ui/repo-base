@@ -258,22 +258,30 @@ U1RegisterAddon("!!!163UI!!!", {
         callback = function(cfg, v, loading)
             if loading and not v then return end
             --- 拍卖行不会自动关闭
-            CoreDependCall("Blizzard_AuctionHouseUI", function()
+            local function handleFrame(frameName, v)
+                local frame = _G[frameName]
+                if not frame then return end
                 if v then
-                    AuctionHouseFrame:SetAttribute("UIPanelLayout-area", false);
-                    tinsertdata(UISpecialFrames, "AuctionHouseFrame")
+                    frame:SetAttribute("UIPanelLayout-area", false);
+                    tinsertdata(UISpecialFrames, frameName)
                 else
-                    AuctionHouseFrame:SetAttribute("UIPanelLayout-area", "doublewide");
-                    tremovedata(UISpecialFrames, "AuctionHouseFrame")
+                    frame:SetAttribute("UIPanelLayout-area", "doublewide");
+                    tremovedata(UISpecialFrames, frameName)
                 end
-                if not AuctionHouseFrame._hooked163 then
-                    AuctionHouseFrame._hooked163 = true
-                    hooksecurefunc(AuctionHouseFrame, "SetAttribute", function(self, arg1, value)
+                if not frame._hooked163 then
+                    frame._hooked163 = true
+                    hooksecurefunc(frame, "SetAttribute", function(self, arg1, value)
                         if (arg1 == "UIPanelLayout-area" and value and U1GetCfgValue(cfg._path)) then
                             self:SetAttribute(arg1, false);
                         end
                     end)
                 end
+            end
+            CoreDependCall("Blizzard_AuctionHouseUI", function()
+                handleFrame("AuctionHouseFrame", v)
+            end)
+            CoreDependCall("Blizzard_Soulbinds", function()
+                handleFrame("SoulbindViewer", v)
             end)
         end,
     },

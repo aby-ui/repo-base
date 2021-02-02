@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2423, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201126205826")
+mod:SetRevision("20210131035348")
 mod:SetCreatureID(164266)
 mod:SetEncounterID(2385)
 
@@ -93,7 +93,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnAmbush:Show(args.destName)
 		end
-	elseif spellId == 336258 and args:IsPlayer() then
+	elseif spellId == 336258 and args:IsPlayer() and self:AntiSpam(3, 1) then
 		if self.Options.SpecWarn336258you then
 			specWarnSolitaryPrey:Show()
 			specWarnSolitaryPrey:Play("targetyou")

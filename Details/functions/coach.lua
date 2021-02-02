@@ -32,7 +32,7 @@ Details.Coach = {
 }
 
 function Details.Coach.AskRLForCoachStatus()
-    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CIEA"), "RAID")
+    Details:SendRaidData(DETAILS_PREFIX_COACH, "CIEA")
     if (_detalhes.debug) then
         Details:Msg("[|cFFAAFFAADetails! Coach|r] asked the coach the coach status.")
     end
@@ -54,7 +54,7 @@ end
 
 --the coach is no more a coach
 function Details.Coach.SendRaidCoachEndNotify()
-    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CE"), "RAID")
+    Details:SendRaidData(DETAILS_PREFIX_COACH, "CE")
     if (_detalhes.debug) then
         Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid a coach end notification.")
     end
@@ -62,7 +62,7 @@ end
 
 --there's a new coach, notify players
 function Details.Coach.SendRaidCoachStartNotify()
-    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CS"), "RAID")
+    Details:SendRaidData(DETAILS_PREFIX_COACH, "CS")
     if (_detalhes.debug) then
         Details:Msg("[|cFFAAFFAADetails! Coach|r] sent to raid a coach start notification.")
     end
@@ -70,7 +70,7 @@ end
 
 --player send his death to the coach
 function Details.Coach.SendDeathToRL(deathTable)
-    Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CDD", deathTable), "RAID")
+    Details:SendRaidData(DETAILS_PREFIX_COACH, "CDD", deathTable)
     if (_detalhes.debug) then
         Details:Msg("[|cFFAAFFAADetails! Coach|r] your death has been sent to coach.")
     end
@@ -81,7 +81,7 @@ function Details.Coach.Client.SendDataToRL()
     if (_detalhes.debug) then
         print("Details Coach sending data to RL.")
     end
-    
+
     local data = Details.packFunctions.GetAllData()
     if (data and Details.Coach.Client.coachName) then
         Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CDT", data), "WHISPER", Details.Coach.Client.coachName)

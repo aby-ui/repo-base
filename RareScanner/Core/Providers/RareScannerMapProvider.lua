@@ -231,6 +231,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 
 				-- Adds overlay if active
 				if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
+					RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Mostrando Overlay [%s].", POI.entityID))
 					pin:ShowOverlay()
 				end
 

@@ -1,6 +1,6 @@
 
 local major = "LibRaidStatus-1.0"
-local CONST_LIB_VERSION = 13
+local CONST_LIB_VERSION = 14
 LIB_RAID_STATUS_CAN_LOAD = false
 
 --declae the library within the LibStub
@@ -1285,6 +1285,7 @@ end)
             playerInfo = {
                 specId = 0,
                 renown = 1,
+                covenantId = 0,
                 talents = {},
                 conduits = {},
             }
@@ -1293,11 +1294,12 @@ end)
         return playerInfo
     end
 
-    function raidStatusLib.playerInfoManager.AddPlayerInfo(playerName, specId, renown, talentsTableUnpacked, conduitsTableUnpacked)
+    function raidStatusLib.playerInfoManager.AddPlayerInfo(playerName, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
         local playerInfoTable = raidStatusLib.playerInfoManager.GetPlayerInfoTable(playerName, true)
 
         playerInfoTable.specId = specId
         playerInfoTable.renown = renown
+        playerInfoTable.covenantId = covenantId
         playerInfoTable.talents = talentsTableUnpacked
         playerInfoTable.conduits = conduitsTableUnpacked
 
@@ -1311,31 +1313,31 @@ end)
         --Details:Dump(data)
         local specId = tonumber(data[1])
         local renown = tonumber(data[2])
-        local talentsSize = tonumber(data[3])
-        local conduitsTableIndex = tonumber((talentsSize + 1) + 2) + 1 -- +2 = specIndex renowIndex | talentSizeIndex + talentSize | +1
+        local covenantId = tonumber(data[3])
+        local talentsSize = tonumber(data[4])
+        local conduitsTableIndex = tonumber((talentsSize + 1) + 3) + 1 -- +3 = specIndex renowIndex covenantIdIndex | talentSizeIndex + talentSize | +1
         local conduitsSize = data[conduitsTableIndex]
 
-        --unpack the enchant data as a ipairs table
+        --unpack the talents data as a ipairs table
         local talentsTableUnpacked = raidStatusLib.UnpackTable(data, 3, false, false, talentsSize)
-        
-        --unpack the enchant data as a ipairs table
+
+        --unpack the conduits data as a ipairs table
         local conduitsTableUnpacked = raidStatusLib.UnpackTable(data, conduitsTableIndex, false, false, conduitsSize)
 
         --add to the list of player information
-        raidStatusLib.playerInfoManager.AddPlayerInfo(source, specId, renown, talentsTableUnpacked, conduitsTableUnpacked)
+        raidStatusLib.playerInfoManager.AddPlayerInfo(source, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
     end
     raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYER_INFO_PREFIX, raidStatusLib.playerInfoManager.OnReceivePlayerFullInfo)
 
-
-
 function raidStatusLib.playerInfoManager.SendAllPlayerInfo()
     local playerInfo = raidStatusLib.playerInfoManager.GetPlayerFullInfo()
-    
+
     local dataToSend = CONST_COMM_PLAYER_INFO_PREFIX .. ","
     dataToSend = dataToSend .. playerInfo[1] .. "," --spec id
     dataToSend = dataToSend .. playerInfo[2] .. "," --renown
-    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[3]) .. "," --talents
-    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[4]) .. "," --conduits
+    dataToSend = dataToSend .. playerInfo[3] .. "," --covenantId
+    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[4]) .. "," --talents
+    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[5]) .. "," --conduits
 
     --send the data
     raidStatusLib.commHandler.SendCommData(dataToSend)
@@ -1351,12 +1353,15 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
     if (selectedSpecialization) then
         specId = GetSpecializationInfo(selectedSpecialization) or 0
     end
-
     playerInfo[1] = specId
 
     --renown
     local renown = C_CovenantSanctumUI.GetRenownLevel() or 1
     playerInfo[2] = renown
+
+    --covenant
+    local covenant = C_Covenants.GetActiveCovenantID()
+    playerInfo[3] = covenant
 
     --talents
     local talents = {0, 0, 0, 0, 0, 0, 0}
@@ -1370,7 +1375,7 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
         end
     end
 
-    playerInfo[3] = talents
+    playerInfo[4] = talents
 
     --conduits
     local conduits = {}
@@ -1411,12 +1416,12 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
                         --local link = C_Soulbinds.GetConduitHyperlink( conduitId,  conduitRank )
                         --print(link)
                     end
-                end        
+                end
             end
         end
     end
 
-    playerInfo[4] = conduits
+    playerInfo[5] = conduits
 
     return playerInfo
 

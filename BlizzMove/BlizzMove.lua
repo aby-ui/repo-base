@@ -481,6 +481,7 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith("ArtifactRelicForgeFrame", "Blizzard_ArtifactUI");
         BM_SetMoveHandlerWith("ScrappingMachineFrame", "Blizzard_ScrappingMachineUI");
         BM_SetMoveHandlerWith("AzeriteEmpoweredItemUI", "Blizzard_AzeriteUI");
+        BM_SetMoveHandlerWith("SoulbindViewer", "Blizzard_Soulbinds");
 
         if not hasConflict then
             BM_SetMoveHandler(PlayerPowerBarAlt)

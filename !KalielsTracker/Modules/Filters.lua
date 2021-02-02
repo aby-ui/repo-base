@@ -291,8 +291,8 @@ local function Filter_Quests(self, spec, idx)
 					end
 				else
 					isOnMap = (questInfo.isOnMap or
-							dbChar.quests.cache[questInfo.questID].startMapID == mapID)
-					if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and (dbChar.quests.cache[questInfo.questID].isCalling or isOnMap or isInZone) then
+							KT.QuestsCache_GetProperty(questInfo.questID, "startMapID") == mapID)
+					if not questInfo.isTask and (not questInfo.isBounty or C_QuestLog.IsComplete(questInfo.questID)) and (KT.QuestsCache_GetProperty(questInfo.questID, "isCalling") or isOnMap or isInZone) then
 						if KT.inInstance then
 							if IsInstanceQuest(questInfo.questID) or isInZone then
 								C_QuestLog.AddQuestWatch(questInfo.questID)
@@ -801,10 +801,13 @@ local function SetFrames()
 			elseif event == "QUEST_ACCEPTED" then
 				local questID = arg1
 				if not C_QuestLog.IsQuestTask(questID) and (not C_QuestLog.IsQuestBounty(questID) or C_QuestLog.IsComplete(questID)) and db.filterAuto[1] then
-					KT.questStateStopUpdate = true
-					Filter_Quests(_, "zone")
-					KT.questStateStopUpdate = false
+					self:RegisterEvent("QUEST_POI_UPDATE")
 				end
+			elseif event == "QUEST_POI_UPDATE" then
+				KT.questStateStopUpdate = true
+				Filter_Quests(_, "zone")
+				KT.questStateStopUpdate = false
+				self:UnregisterEvent(event)
 			elseif event == "QUEST_COMPLETE" then
 				local questID = GetQuestID()
 				RemoveFavorite("quests", questID)

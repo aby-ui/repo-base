@@ -45,7 +45,7 @@ function ActionBarsModule:PET_BAR_HIDEGRID()
         return
     end
 
-    self:ForAll('HideGrid', ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
+    self:ForAll('HideGrid', ACTION_BUTTON_SHOW_GRID_REASON_EVENT or 2)
 end
 
 function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()

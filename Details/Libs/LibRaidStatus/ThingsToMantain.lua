@@ -5,6 +5,15 @@ if (not LIB_RAID_STATUS_CAN_LOAD) then
 	return
 end
 
+LIB_RAID_STATUS_AUGMENTATED_RUNE = 347901
+
+LIB_RAID_STATUS_COVENANT_ICONS = {
+	[[Interface\ICONS\UI_Sigil_Kyrian]], --kyrian
+	[[Interface\ICONS\UI_Sigil_Venthyr]], --venthyr
+	[[Interface\ICONS\UI_Sigil_NightFae]], --nightfae
+	[[Interface\ICONS\UI_Sigil_Necrolord]], --necrolords
+}
+
 --which gear slots can be enchanted on the latest retail version of the game
 --when the value is a number, the slot only receives enchants for a specific attribute
 LIB_RAID_STATUS_ENCHANT_SLOTS = {

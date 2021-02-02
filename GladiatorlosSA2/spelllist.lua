@@ -352,7 +352,7 @@
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
-			[324867] = "fleshcraftDown", -- Necrolord Signature
+			--[324867] = "fleshcraftDown", -- Necrolord Signature
 		--TANK TAUNTS
 			--[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
 			},
@@ -393,7 +393,7 @@
 				--None! :D
 				
 			-- Demon Hunter (Spell Casting)
-				--None! :D
+			[323639] = "theHunt",		-- Nightfae
 
 			-- Druid (Spell Casting)
 			[33786] = "cyclone",
@@ -690,7 +690,6 @@
 			[235903] = "manaRift",
 			[317009] = "sinfulBrand",	-- Venthyr
 			[306830] = "elysianDecree", -- Kyrian
-			[323639] = "theHunt",		-- Nightfae
 			[329554] = "fodderoftheflame", -- Necrolord
 
 			-- Druid (Cast Success)
@@ -905,7 +904,7 @@
 			[192222] = "LiquidMagma", -- Updated for Legion
 			[204330] = "skyfuryTotem",
 			[204331] = "counterstrikeTotem",
-			--[204332] = "windfuryTotem",	
+			[8512] = "windfuryTotem",
 			[207399] = "reincarnationTotem",
 			[198838] = "protectionTotem",
 			[204336] = "grounding", -- Updated for Legion
@@ -969,6 +968,8 @@
 			[324143] = "conquerorbanner", -- Necrolord
 			[307865] = "spearofbastion", -- Kyrian
 			[64382] = "ShatteringThrowSuccess",
+			[167105] = "colossusSmash",
+			[262161] = "colossusSmash", -- Warbreaker Talent
 		},
 		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
 			[19647] = "lockout", -- Spell Locks begin

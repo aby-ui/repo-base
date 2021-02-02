@@ -2301,15 +2301,14 @@ function atributo_damage:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			totalBarIsShown = true
 			
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
+				conteudo[myPos]:RefreshLine (instancia, lineContainer, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				whichRowLine = whichRowLine+1
 				for i = iter_last-1, instancia.barraS[1], -1 do 
 					if (conteudo[i]) then
 						conteudo[i]:RefreshLine (instancia, lineContainer, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine (instancia, lineContainer, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
-				whichRowLine = whichRowLine+1
 			else
 				for i = iter_last, instancia.barraS[1], -1 do 
 					if (conteudo[i]) then
@@ -2320,15 +2319,14 @@ function atributo_damage:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			end
 		else
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
+				conteudo[myPos]:RefreshLine (instancia, lineContainer, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				whichRowLine = whichRowLine+1
 				for i = instancia.barraS[2]-1, instancia.barraS[1], -1 do 
 					if (conteudo[i]) then
 						conteudo[i]:RefreshLine (instancia, lineContainer, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine (instancia, lineContainer, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
-				whichRowLine = whichRowLine+1
 			else
 				-- /run print (Details:GetInstance(1).barraS[2]) -- vai do 5 ao 1 -- qual barra come�a no 1 -- i = 5 at� 1 -- player 5 atualiza na barra 1 / player 1 atualiza na barra 5
 				for i = instancia.barraS[2], instancia.barraS[1], -1 do 

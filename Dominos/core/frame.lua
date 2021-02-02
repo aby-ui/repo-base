@@ -426,7 +426,7 @@ function Frame:IsFocus()
     end
 
     local flyout = _G.SpellFlyout
-    if flyout and flyout:IsMouseOver(1, -1, -1, 1) then
+    if flyout and flyout:IsVisible() and flyout:IsMouseOver(1, -1, -1, 1) then
         IsAncestor(flyout, self)
         return true
     end

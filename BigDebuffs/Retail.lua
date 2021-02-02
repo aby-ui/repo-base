@@ -37,6 +37,7 @@ addon.WarningDebuffs = {
     233498, -- Unstable Affliction
     233499, -- Unstable Affliction
     34914, -- Vampiric Touch
+    323673, -- Mindgames
 }
 
 -- Make sure we always see these debuffs, but don't make them bigger
@@ -53,6 +54,7 @@ addon.PriorityDebuffs = {
     208997, -- Counterstrike Totem
     770, -- Faerie Fire
     130736, -- Soul Reaper (Unholy)
+    323673, -- Mindgames
 }
 
 addon.Spells = {
@@ -122,14 +124,11 @@ addon.Spells = {
     [206649] = { type = BUFF_OTHER }, -- Eye of Leotheras
     [207685] = { type = CROWD_CONTROL }, -- Sigil of Misery
     [207810] = { type = BUFF_DEFENSIVE }, -- Nether Bond
-    [211048] = { type = BUFF_OFFENSIVE }, -- Chaos Blades
     [211881] = { type = CROWD_CONTROL }, -- Fel Eruption
     [212800] = { type = BUFF_DEFENSIVE }, -- Blur
         [196555] = { type = BUFF_DEFENSIVE }, -- Netherwalk
-    [218256] = { type = BUFF_DEFENSIVE }, -- Empower Wards
     [221527] = { type = CROWD_CONTROL }, -- Imprison (Detainment Honor Talent)
         [217832] = { type = CROWD_CONTROL, parent = 221527 }, -- Imprison (Baseline Undispellable)
-    [227225] = { type = BUFF_DEFENSIVE }, -- Soul Barrier
 
     -- Druid
 
@@ -144,6 +143,7 @@ addon.Spells = {
     [22812] = { type = BUFF_DEFENSIVE }, -- Barkskin
     [22842] = { type = BUFF_DEFENSIVE }, -- Frenzied Regeneration
     [29166] = { type = BUFF_OFFENSIVE }, -- Innervate
+    [33786] = { type = CROWD_CONTROL }, -- Cyclone
     [33891] = { type = BUFF_OFFENSIVE }, -- Incarnation: Tree of Life
     [45334] = { type = ROOT }, -- Wild Charge
     [61336] = { type = BUFF_DEFENSIVE }, -- Survival Instincts
@@ -168,8 +168,6 @@ addon.Spells = {
         [305484] = { parent = 204437 },
         [305485] = { parent = 204437 },
     [209749] = { type = CROWD_CONTROL }, -- Faerie Swarm (Slow/Disarm)
-    [209753] = { type = CROWD_CONTROL, priority = true }, -- Cyclone
-        [33786] = { type = CROWD_CONTROL, parent = 209753 }, -- Cyclone
     [22570] = { type = CROWD_CONTROL }, -- Maim
         [203123] = { type = CROWD_CONTROL, parent = 22570 }, -- Maim
         [236025] = { type = CROWD_CONTROL, parent = 22570 }, -- Enraged Maim (Feral Honor Talent)
@@ -194,7 +192,6 @@ addon.Spells = {
     [186289] = { type = BUFF_OFFENSIVE }, -- Aspect of the Eagle
     [238559] = { type = CROWD_CONTROL }, -- Bursting Shot
         [186387] = { type = CROWD_CONTROL, parent = 238559 }, -- Bursting Shot
-    [193526] = { type = BUFF_OFFENSIVE }, -- Trueshot
     [193530] = { type = BUFF_OFFENSIVE }, -- Aspect of the Wild
     [199483] = { type = BUFF_DEFENSIVE }, -- Camouflage
     [202914] = { type = CROWD_CONTROL }, -- Spider Sting (Armed)
@@ -205,11 +202,13 @@ addon.Spells = {
     [212638] = { type = ROOT }, -- Tracker's Net
     [213691] = { type = CROWD_CONTROL }, -- Scatter Shot
     [272682] = { type = BUFF_DEFENSIVE }, -- Master's Call
+    [288613] = { type = BUFF_OFFENSIVE }, -- Trueshot
 
     -- Mage
 
     [66] = { type = BUFF_OFFENSIVE }, -- Invisibility
-        [110959] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Greater Invisibility
+        [32612] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Invisibility
+        [110960] = { type = BUFF_OFFENSIVE, parent = 66 }, -- Greater Invisibility
     [118] = { type = CROWD_CONTROL }, -- Polymorph
         [28271] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Turtle
         [28272] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Pig
@@ -237,6 +236,8 @@ addon.Spells = {
     [80353] = { type = BUFF_OFFENSIVE }, -- Time Warp
     [82691] = { type = CROWD_CONTROL }, -- Ring of Frost
     [108839] = { type = BUFF_OFFENSIVE }, -- Ice Floes
+    [342246] = { type = BUFF_DEFENSIVE }, --Alter Time (Arcane)
+        [110909] = { type = BUFF_DEFENSIVE, parent = 108978 }, --Alter Time (Fire/Frost)
     [157997] = { type = ROOT }, -- Ice Nova
     [190319] = { type = BUFF_OFFENSIVE }, -- Combustion
     [198111] = { type = BUFF_DEFENSIVE }, -- Temporal Shield
@@ -250,6 +251,7 @@ addon.Spells = {
 
     [115078] = { type = CROWD_CONTROL }, -- Paralysis
     [115080] = { type = BUFF_OFFENSIVE }, -- Touch of Death
+    [115176] = { type = BUFF_DEFENSIVE }, -- Zen Meditation
     [115203] = { type = BUFF_DEFENSIVE }, -- Fortifying Brew (Brewmaster)
         [201318] = { type = BUFF_DEFENSIVE, parent = 115203 }, -- Fortifying Brew (Windwalker Honor Talent)
         [243435] = { type = BUFF_DEFENSIVE, parent = 115203 }, -- Fortifying Brew (Mistweaver)
@@ -257,18 +259,16 @@ addon.Spells = {
     [116849] = { type = BUFF_DEFENSIVE }, -- Life Cocoon
     [119381] = { type = CROWD_CONTROL }, -- Leg Sweep
     [122278] = { type = BUFF_DEFENSIVE }, -- Dampen Harm
-    [122470] = { type = BUFF_DEFENSIVE }, -- Touch of Karma
+    [122470] = { type = BUFF_DEFENSIVE }, -- Touch of Karma (Debuff)
+        [125174] = { type = BUFF_DEFENSIVE, parent = 125174 }, -- Touch of Karma (Buff)
     [122783] = { type = BUFF_DEFENSIVE }, -- Diffuse Magic
     [137639] = { type = BUFF_DEFENSIVE }, -- Storm, Earth, and Fire
     [198909] = { type = CROWD_CONTROL }, -- Song of Chi-Ji
-    [201325] = { type = BUFF_DEFENSIVE }, -- Zen Meditation
-        [115176] = { type = BUFF_DEFENSIVE, parent = 201325 }, -- Zen Meditation
     [202162] = { type = BUFF_DEFENSIVE }, -- Guard
     [202274] = { type = CROWD_CONTROL }, -- Incendiary Brew
-    [216113] = { type = BUFF_DEFENSIVE }, -- Way of the Crane
-    [232055] = { type = CROWD_CONTROL }, -- Fists of Fury
-        [120086] = { type = CROWD_CONTROL, parent = 232055 }, -- Fists of Fury
+    [209584] = { type = BUFF_DEFENSIVE }, -- Zen Focus Tea
     [233759] = { type = CROWD_CONTROL }, -- Grapple Weapon
+    [247483] = { type = BUFF_OFFENSIVE }, -- Tigereye Brew
 
     -- Paladin
 
@@ -312,20 +312,18 @@ addon.Spells = {
     [9484] = { type = CROWD_CONTROL }, -- Shackle Undead
     [10060] = { type = BUFF_OFFENSIVE }, -- Power Infusion
     [15487] = { type = CROWD_CONTROL }, -- Silence
-        [199683] = { type = CROWD_CONTROL, parent = 15487 }, -- Last Word
     [33206] = { type = BUFF_DEFENSIVE }, -- Pain Suppression
     [47536] = { type = BUFF_DEFENSIVE }, -- Rapture
+        [109964] = { type = BUFF_DEFENSIVE, parent = 47536 }, -- Spirit Shell
     [47585] = { type = BUFF_DEFENSIVE }, -- Dispersion
     [47788] = { type = BUFF_DEFENSIVE }, -- Guardian Spirit
     [64044] = { type = CROWD_CONTROL }, -- Psychic Horror
     [64843] = { type = BUFF_DEFENSIVE }, -- Divine Hymn
     [81782] = { type = BUFF_DEFENSIVE }, -- Power Word: Barrier
-        [271466] = { type = BUFF_DEFENSIVE, parent = 81782 }, -- Luminous Barrier (Disc Talent)
     [87204] = { type = CROWD_CONTROL }, -- Sin and Punishment
-    [193223] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
     [194249] = { type = BUFF_OFFENSIVE }, -- Voidform
     [196762] = { type = BUFF_DEFENSIVE }, -- Inner Focus
-    [197268] = { type = BUFF_DEFENSIVE }, -- Ray of Hope
+    [232707] = { type = BUFF_DEFENSIVE }, -- Ray of Hope
     [197862] = { type = BUFF_DEFENSIVE }, -- Archangel
     [197871] = { type = BUFF_OFFENSIVE }, -- Dark Archangel
     [200183] = { type = BUFF_DEFENSIVE }, -- Apotheosis
@@ -335,7 +333,13 @@ addon.Spells = {
         [226943] = { type = CROWD_CONTROL, parent = 205369 }, -- Mind Bomb (Disorient)
     [213610] = { type = BUFF_DEFENSIVE }, -- Holy Ward
     [215769] = { type = BUFF_DEFENSIVE }, -- Spirit of Redemption
-    [221660] = { type = IMMUNITY_SPELL }, -- Holy Concentration
+    [289655] = { type = BUFF_DEFENSIVE }, -- Holy Word: Concentration
+    [319952] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
+    [322431] = { type = BUFF_OFFENSIVE }, -- Thoughtsteal (Buff)
+        [323716] = { type = BUFF_OFFENSIVE, parent = 322431 }, -- Thoughtsteal (Debuff)
+    [323673] = { type = BUFF_OTHER }, -- Mindgames
+    [329543] = { type = BUFF_DEFENSIVE }, -- Divine Ascension
+        [328530] = { type = IMMUNITY, parent = 329543 }, -- Divine Ascension
 
     -- Rogue
 
@@ -345,7 +349,6 @@ addon.Spells = {
     [1833] = { type = CROWD_CONTROL }, -- Cheap Shot
     [1966] = { type = BUFF_DEFENSIVE }, -- Feint
     [2094] = { type = CROWD_CONTROL }, -- Blind
-        [199743] = { type = CROWD_CONTROL, parent = 2094 }, -- Parley
     [5277] = { type = BUFF_DEFENSIVE }, -- Evasion
     [6770] = { type = CROWD_CONTROL }, -- Sap
     [13750] = { type = BUFF_OFFENSIVE }, -- Adrenaline Rush
@@ -353,8 +356,6 @@ addon.Spells = {
     [51690] = { type = BUFF_OFFENSIVE }, -- Killing Spree
     [79140] = { type = BUFF_OFFENSIVE }, -- Vendetta
     [121471] = { type = BUFF_OFFENSIVE }, -- Shadow Blades
-    [199754] = { type = BUFF_DEFENSIVE }, -- Riposte
-    [199804] = { type = CROWD_CONTROL }, -- Between the Eyes
     [207736] = { type = BUFF_OFFENSIVE }, -- Shadowy Duel
     [212183] = { type = CROWD_CONTROL }, -- Smoke Bomb
 
@@ -426,13 +427,14 @@ addon.Spells = {
     [871] = { type = BUFF_DEFENSIVE }, -- Shield Wall
     [1719] = { type = BUFF_OFFENSIVE }, -- Recklessness
     [5246] = { type = CROWD_CONTROL }, -- Intimidating Shout
+    [3411] = { type = BUFF_DEFENSIVE }, -- Intervene
     [12975] = { type = BUFF_DEFENSIVE }, -- Last Stand
     [18499] = { type = BUFF_OTHER }, -- Berserker Rage
     [23920] = { type = IMMUNITY_SPELL }, -- Spell Reflection
         [213915] = { type = IMMUNITY_SPELL, parent = 23920 }, -- Mass Spell Reflection
-        [216890] = { type = IMMUNITY_SPELL, parent = 23920 }, -- Spell Reflection (Arms, Fury)
+        [330279] = { type = IMMUNITY_SPELL, parent = 23920 }, -- Overwatch (Intervene Reflect)
     [46968] = { type = CROWD_CONTROL }, -- Shockwave
-    [97462] = { type = BUFF_DEFENSIVE }, -- Rallying Cry
+    [97463] = { type = BUFF_DEFENSIVE }, -- Rallying Cry
     [105771] = { type = ROOT }, -- Charge (Warrior)
     [107574] = { type = BUFF_OFFENSIVE }, -- Avatar
     [118038] = { type = BUFF_DEFENSIVE }, -- Die by the Sword
@@ -467,6 +469,7 @@ addon.Spells = {
     [255654] = { type = CROWD_CONTROL }, --Bull Rush
     [305252] = { type = CROWD_CONTROL }, -- Gladiator's Maledict
     [313148] = { type = CROWD_CONTROL }, -- Forbidden Obsidian Claw
+    [331866] = { type = CROWD_CONTROL }, -- Agent of Chaos (Venthyr Door of Shadows)
 
     -- Legacy (may be deprecated)
 

@@ -4,8 +4,9 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8156
-		_detalhes.alpha_build_counter = 8156 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8192
+		_detalhes.alpha_build_counter = 8192 --if this is higher than the regular counter, use it instead
+		_detalhes.dont_open_news = true
 		_detalhes.game_version = "v9.0.2"
 		_detalhes.userversion = "v9.0.2." .. _detalhes.build_counter
 		_detalhes.realversion = 144 --core version, this is used to check API version for scripts and plugins (see alias below)
@@ -28,7 +29,16 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
-		{"v9.0.2.8156.144", "January 21th, 2021"},
+		{"v9.0.2.8192.144", "January 27th, 2021"},
+		"If you get issues with nicknames, disable any weakaura which modifies this feature.",
+		"Advanced Death Logs plugin got some fixes and should work properly.",
+		"Added the word 'Overall' at the end of the title bar text when the segment is overall.",
+		"Added covenant and durability into the Raid Check plugin.",
+		"Added API Window:SetTitleBarText(text) and Window:GetTitleBarText().",
+		"Fixed some issues where Details! printed 'combat start time not found.'",
+		"Fixed damage per Phase.",
+		"Fixed resizing window with no background error.",
+		"Fixed 'Always Show player' on ascending sort direction.",
 		"Added more foods into the Ready Check plugin.",
 		"Fixed some issues with the coach fearure.",
 		
@@ -533,6 +543,9 @@ do
 			[323436] = true --Phial of Serenity (from Kyrians)
 		}
 	
+		--[[global]] DETAILS_MODE_GROUP = 2
+		--[[global]] DETAILS_MODE_ALL = 3
+
 		_detalhes._detalhes_props = {
 			DATA_TYPE_START = 1,	--> Something on start
 			DATA_TYPE_END = 2,	--> Something on end

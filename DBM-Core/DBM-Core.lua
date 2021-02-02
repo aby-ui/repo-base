@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210121233650"),
-	DisplayVersion = "9.0.19 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 1, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210131051646"),
+	DisplayVersion = "9.0.20 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 1, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -179,7 +179,6 @@ DBM.DefaultOptions = {
 	SWarningAlphabetical = true,
 	SWarnNameInNote = true,
 	CustomSounds = 0,
-	ShowBigBrotherOnCombatStart = false,
 	FilterTankSpec = true,
 	FilterInterrupt2 = "TandFandBossCooldown",
 	FilterInterruptNoteName = false,
@@ -302,7 +301,7 @@ DBM.DefaultOptions = {
 	DontShowPTNoID = false,
 	PTCountThreshold2 = 5,
 	LatencyThreshold = 250,
-	BigBrotherAnnounceToRaid = false,
+	oRA3AnnounceConsumables = false,
 	SettingsMessageShown = false,
 	ForumsMessageShown = false,
 	AlwaysShowSpeedKillTimer2 = false,
@@ -2100,8 +2099,11 @@ do
 	local trackedHudMarkers = {}
 	local function Pull(timer)
 		local LFGTankException = IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.
-		if (DBM:GetRaidRank(playerName) == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or IsEncounterInProgress() or (timer > 0 and timer < 3) then
+		if (DBM:GetRaidRank(playerName) == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or IsEncounterInProgress() then
 			return DBM:AddMsg(L.ERROR_NO_PERMISSION)
+		end
+		if timer > 0 and timer < 3 then
+			return DBM:AddMsg(L.TIME_TOO_SHORT)
 		end
 		local targetName = (UnitExists("target") and UnitIsEnemy("player", "target")) and UnitName("target") or nil--Filter non enemies in case player isn't targetting bos but another player/pet
 		if targetName then
@@ -6296,16 +6298,16 @@ do
 						sendSync("DSW")
 					end
 				end
-				--show bigbrother check
-				local bigBrother = _G["BigBrother"]
-				if self.Options.ShowBigBrotherOnCombatStart and bigBrother and type(bigBrother.ConsumableCheck) == "function" then
-					if self.Options.BigBrotherAnnounceToRaid then
-						bigBrother:ConsumableCheck("RAID")
-					else
-						bigBrother:ConsumableCheck("SELF")
+				if self.Options.oRA3AnnounceConsumables and _G["oRA3Frame"] then
+					local oRA3 = LibStub("AceAddon-3.0"):GetAddon("oRA3", true)
+					if oRA3 then
+						local consumables = oRA3:GetModule("Consumables", true)
+						if consumables then
+							consumables:OutputResults()
+						end
 					end
 				end
-				--show enage message
+				--show engage message
 				if self.Options.ShowEngageMessage and not mod.noStatistics then
 					if mod.ignoreBestkill and (savedDifficulty == "worldboss") then--Should only be true on in progress field bosses, not in progress raid bosses we did timer recovery on.
 						self:AddMsg(L.COMBAT_STARTED_IN_PROGRESS:format(difficultyText..name))
@@ -12232,7 +12234,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210121233650" then
+	if not revision or revision == "20210131051646" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end
