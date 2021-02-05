@@ -198,7 +198,7 @@
 	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
         <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOAST_12_12" type="global"/>
         </KeyValues>
 		<Size>
 			<AbsDimension x="260" y="270"/>
@@ -428,12 +428,10 @@
 
 		</Frames>
 		<Scripts>
-			<OnLoad>
+			<OnLoad inherit="prepend">
 				TradeLogFrame_OnLoad(self);
+                CoreUIMakeMovable(self)
 			</OnLoad>
-			<OnShow>
-				self:RegisterForDrag("LeftButton");
-			</OnShow>
 		</Scripts>
 
 	</Frame>
@@ -653,7 +651,7 @@
 	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
 		<TitleRegion setAllPoints="true"/>
         <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
+            <KeyValue key="backdropInfo" value="BACKDROP_TOAST_12_12" type="global"/>
         </KeyValues>
 		<Size>
 			<AbsDimension x="543" y="330"/>
@@ -704,7 +702,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>
+					<OnLoad inherit="prepend">
 						local string = getglobal(self:GetName().."Text");
 						--OptionsFrame_EnableSlider(self);
 						local name = self:GetName();
@@ -1018,6 +1016,9 @@
 			</ScrollFrame>
 		</Frames>
 		<Scripts>
+            <OnLoad inherit="prepend">
+                CoreUIMakeMovable(self)
+            </OnLoad>
 			<OnShow>
 				TradeListScrollFrame_Update(self);
 				self:SetFrameLevel(100);

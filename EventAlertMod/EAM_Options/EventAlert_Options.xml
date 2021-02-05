@@ -1026,7 +1026,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>
+					<OnLoad inherit="prepend">
 						_G[self:GetName().."Text"]:SetText(EA_XICON_ICONSIZE.."(60)");
 						_G[self:GetName().."High"]:SetText(EA_XICON_LARGE.."(130)");
 						_G[self:GetName().."Low"]:SetText(EA_XICON_SMALL.."(30)");
@@ -1054,7 +1054,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>
+					<OnLoad inherit="prepend">
 						_G[self:GetName().."Text"]:SetText(EA_XGRPALERT_ICONALPHA.."(50%)");
 						_G[self:GetName().."High"]:SetText(EA_XICON_DEEP.."(100%)");
 						_G[self:GetName().."Low"]:SetText(EA_XICON_LIGHT.."(0%)");

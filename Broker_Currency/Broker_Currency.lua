@@ -68,6 +68,7 @@ local HEARTHSTONE_IDNUM = 6948
 -- Populated as needed.
 local CURRENCY_NAMES
 local CURRENCY_MAX_COUNT = {}
+local CURRENCY_TOTAL_EARNED = {} --163ui
 local OPTION_ICONS = {}
 local BROKER_ICONS = {}
 
@@ -458,6 +459,9 @@ do
 --						else
 							--concatList[#concatList + 1] = string.format(displayIcon, _G.BreakUpLargeNumbers(count), size, size)
 							concatList[#concatList + 1] = string.format(displayIcon:sub(4) .. "%s ", size, size, (count)) --163ui
+                            if currencyID == CURRENCY_IDS_BY_NAME.PVP_CONQUER then
+                                concatList[#concatList] = concatList[#concatList]:sub(1, -2) .. "/" .. (count+totalMax-CURRENCY_TOTAL_EARNED[currencyID])
+                            end
 --						end
 						
 						concatList[#concatList + 1] = " "
@@ -482,7 +486,12 @@ do
 			return 0
 		end
 
-		return ITEM_CURRENCY_NAMES_BY_ID[idnum] and _G.GetItemCount(idnum, true) or _G.C_CurrencyInfo.GetCurrencyInfo(idnum).quantity
+        if ITEM_CURRENCY_NAMES_BY_ID[idnum] then
+            return _G.GetItemCount(idnum, true)
+        end
+        local info = _G.C_CurrencyInfo.GetCurrencyInfo(idnum)
+        CURRENCY_TOTAL_EARNED[idnum] = info.totalEarned
+        return info.quantity
 	end
 end
 

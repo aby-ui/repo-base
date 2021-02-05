@@ -109,8 +109,10 @@ for _, v in ipairs(utilityMounts) do
 end
 
 --登入及关闭坐骑收藏时触发
+local maw = {}
 local function UpdateMountsData()
     local count = C_MountJournal.GetNumMounts()
+    table.wipe(maw)
     if count > 0 then gotMountsData = true end
     for i = 1, count do
         local creatureName, spellId, icon, active, summonable, source, isFavorite, isFactionSpecific, faction, hideOnChar, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
@@ -142,7 +144,24 @@ local function UpdateMountsData()
                     mountsData[spellId].groundOnly = 1
                 end
             end
+            if mountID == 1304 or mountID == 1442 then table.insert(maw, (isFavorite and -1 or 1) * mountID) end --渊誓猎魂犬 1304 --回廊潜行猎犬 1442
         end
+    end
+    --tricky if any < 0, remove x>0 and revert x<0, else all > 0, no proc
+    for i, v in ipairs(maw) do
+        if v < 0 then
+            for j=#maw, 1 do if maw[j] < 0 then maw[j] = -maw[j] else table.remove(maw, j) end end
+            break
+        end
+    end
+    if SPELL_FAILED_CUSTOM_ERROR_511 and #maw > 0 and not LB_MOUNT_MAW_FRAME then
+        local f = CreateFrame("Frame", "LB_MOUNT_MAW_FRAME")
+        f:RegisterEvent("UI_ERROR_MESSAGE")
+        f:SetScript("OnEvent", function(self, event, arg1, arg2)
+            if arg2 == SPELL_FAILED_CUSTOM_ERROR_511 then
+                C_MountJournal.SummonByID(maw[random(1, #maw)])
+            end
+        end)
     end
 end
 

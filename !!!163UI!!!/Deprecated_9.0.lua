@@ -25,6 +25,7 @@ inherits="BackdropTemplate"
                 </KeyValues>
 BACKDROP_DIALOG_32_32 大粗方框
 BACKDROP_TOOLTIP_0_16 是白线白背景
+BACKDROP_TOAST_12_12 是黑色不透明
 
 dropdown menu
                 <KeyValues>

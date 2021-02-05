@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2418, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210111144914")
+mod:SetRevision("20210203180945")
 mod:SetCreatureID(166644)
 mod:SetEncounterID(2405)
 mod:SetUsedIcons(1, 2)
@@ -41,7 +41,7 @@ local warnUnleashPower								= mod:NewCountAnnounce(342854, 4)
 local specWarnDimensionalTear						= mod:NewSpecialWarningYouPos(328437, 327770, nil, nil, 1, 2)
 local yellDimensionalTear							= mod:NewPosYell(328437, 327770)
 local yellDimensionalTearFades						= mod:NewIconFadesYell(328437, 327770)
-local specWarnGlyphofDestruction					= mod:NewSpecialWarningMoveAway(325361, nil, nil, nil, 1, 2)
+local specWarnGlyphofDestruction					= mod:NewSpecialWarningMoveAwayCount(325361, nil, nil, nil, 1, 2)
 local yellGlyphofDestruction						= mod:NewYell(325361)
 local yellGlyphofDestructionFades					= mod:NewShortFadesYell(325361)
 local specWarnGlyphofDestructionTaunt				= mod:NewSpecialWarningTaunt(325361, nil, nil, nil, 1, 2)
@@ -347,11 +347,13 @@ function mod:OnSync(msg)
 		else--When this happens, it doesn't get recast for a full minute
 			timerHyperlightSparkCD:Start(60)
 		end
-		timerStasisTrapCD:Start(10.7)
 		timerDimensionalTearCD:Start(14)
 		timerRiftBlastCD:Start(20)
 		timerSeedsofExtinctionCD:Start(21.6)
 		timerGlyphofDestructionCD:Start(27.8, self.vb.destructionCount+1)--SUCCESS
+		if self:IsHard() then
+			timerStasisTrapCD:Start(10.7)
+		end
 	elseif msg == "Phase3" then
 		self.vb.phase = 3
 		self.vb.p3FirstCast = 0--1- Tear, 2 - Annihilate/Unleashed
@@ -369,10 +371,12 @@ function mod:OnSync(msg)
 		else--When this happens, it doesn't get recast for a full minute
 			timerHyperlightSparkCD:Start(60)
 		end
-		timerStasisTrapCD:Start(10.7)
 		timerDimensionalTearCD:Start(14.4)
 		timerRiftBlastCD:Start(45.9)
 		timerGlyphofDestructionCD:Start(53.5, self.vb.destructionCount+1)--SUCCESS
+		if self:IsHard() then
+			timerStasisTrapCD:Start(10.7)
+		end
 		if self:IsMythic() then
 			timerUnleashPowerCD:Start(20)--Time until phase 3 activation edge of annihilation spell
 		else

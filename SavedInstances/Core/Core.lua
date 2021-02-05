@@ -148,6 +148,9 @@ SI.defaultDB = {
   -- MaxXP: integer
   -- XP: integer
   -- RestXP: integer
+  -- Arena2v2rating: integer
+  -- Arena3v3rating: integer
+  -- RBGrating: integer
 
   -- currency: key: currencyID  value:
   -- amount: integer
@@ -1309,8 +1312,9 @@ function SI:UpdateToonData()
   if IL and tonumber(IL) and tonumber(IL) > 0 then -- can fail during logout
     t.IL, t.ILe = tonumber(IL), tonumber(ILe)
   end
-  local rating = (GetPersonalRatedInfo and GetPersonalRatedInfo(4))
-  t.RBGrating = tonumber(rating) or t.RBGrating
+  t.Arena2v2rating = tonumber(GetPersonalRatedInfo(1), 10) or t.Arena2v2rating
+  t.Arena3v3rating = tonumber(GetPersonalRatedInfo(2), 10) or t.Arena3v3rating
+  t.RBGrating = tonumber(GetPersonalRatedInfo(4), 10) or t.RBGrating
   SI:GetModule("TradeSkill"):ScanItemCDs()
   local Calling = SI:GetModule("Calling")
   local Progress = SI:GetModule("Progress")
@@ -1447,8 +1451,8 @@ function SI:UpdateToonData()
       t.XP = nil
       t.RestXP = nil
     end
+    t.Warmode = C_PvP.IsWarModeDesired()
   end
-  t.Warmode = C_PvP.IsWarModeDesired()
 
   t.LastSeen = time()
 end
@@ -1580,8 +1584,14 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
     indicatortip:AddLine(COMBAT_XP_GAIN, format("%.0f%% + %.0f%%", t.XP / t.MaxXP * 100, percent))
   end
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
+  if t.Arena2v2rating and t.Arena2v2rating > 0 then
+    indicatortip:AddLine(ARENA_2V2 .. ARENA_RATING, t.Arena2v2rating)
+  end
+  if t.Arena3v3rating and t.Arena3v3rating > 0 then
+    indicatortip:AddLine(ARENA_3V3 .. ARENA_RATING, t.Arena3v3rating)
+  end
   if t.RBGrating and t.RBGrating > 0 then
-    indicatortip:AddLine(BATTLEGROUND_RATING, t.RBGrating)
+    indicatortip:AddLine(BG_RATING_ABBR, t.RBGrating)
   end
   if t.Money then
     indicatortip:AddLine(MONEY,SI:formatNumber(t.Money,true))
@@ -1725,7 +1735,7 @@ hoverTooltip.ShowEmissarySummary = function (cell, arg, ...)
     else
       local globalInfo = SI.db.Emissary.Expansion[expansionLevel][day]
       local merge = (globalInfo.questID.Alliance == globalInfo.questID.Horde) and true or false
-      local header, fac, toon, t = false
+      local header = false
       for fac, _ in pairs(tbl) do
         if merge == false then header = false end
         for toon, t in pairs(SI.db.Toons) do
@@ -1923,6 +1933,9 @@ hoverTooltip.ShowAccountSummary = function (cell, arg, ...)
   indicatortip:SetCell(indicatortip:AddLine(),1,
     string.format(L["These are the instances that count towards the %i instances per hour account limit, and the time until they expire."],
       SI.histLimit),"LEFT",2,nil,nil,nil,250)
+
+  indicatortip:AddLine("")
+  indicatortip:SetCell(indicatortip:AddLine(), 1, L["|cffffff00Click|r to open weekly rewards"], "LEFT", indicatortip:GetColumnCount())
   finishIndicator()
 end
 
@@ -2365,7 +2378,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.5" then
+  if versionString == "9.0.5-13-g7d7ab89" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2429,6 +2442,7 @@ function SI:OnInitialize()
       db.QuestDB[escope][qid] = val
     end
   end
+  RequestRatedInfo()
   RequestRaidInfo() -- get lockout data
   RequestLFDPlayerLockInfo()
   SI.dataobject = SI.Libs.LDB and SI.Libs.LDB:NewDataObject("SavedInstances", {
@@ -2469,9 +2483,16 @@ function SI:OnEnable()
   self:RegisterEvent("CHAT_MSG_SYSTEM", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_CURRENCY", "CheckSystemMessage")
   self:RegisterEvent("CHAT_MSG_LOOT", "CheckSystemMessage")
-  self:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN", function() SI:UpdateToonData() end)
-  self:RegisterEvent("PLAYER_UPDATE_RESTING", function() SI:UpdateToonData() end)
-  self:RegisterEvent("PLAYER_ENTERING_WORLD", function() SI:UpdateToonData(); C_Timer.After(1, RequestRaidInfo) end)
+  self:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN", "UpdateToonData")
+  self:RegisterEvent("PLAYER_UPDATE_RESTING", "UpdateToonData")
+  self:RegisterEvent("PVP_RATED_STATS_UPDATE", "UpdateToonData")
+  self:RegisterEvent("ZONE_CHANGED_NEW_AREA", RequestRatedInfo)
+  self:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+    RequestRatedInfo()
+    C_Timer.After(1, RequestRaidInfo)
+
+    SI:UpdateToonData()
+  end)
   -- self:RegisterBucketEvent("PLAYER_ENTERING_WORLD", 1, RequestRaidInfo)
   self:RegisterBucketEvent("LFG_LOCK_INFO_RECEIVED", 1, RequestRaidInfo)
   self:RegisterEvent("PLAYER_LOGOUT", function() SI.logout = true ; SI:UpdateToonData() end) -- update currency spent
@@ -3223,6 +3244,15 @@ end
 -----------------------------------------------------------------------------------------------
 -- tooltip event handlers
 
+local function OpenWeeklyRewards()
+  if _G.WeeklyRewardsFrame and _G.WeeklyRewardsFrame:IsVisible() then return end
+
+  if not IsAddOnLoaded('Blizzard_WeeklyRewards') then
+    LoadAddOn('Blizzard_WeeklyRewards')
+  end
+  _G.WeeklyRewardsFrame:Show()
+end
+
 local function OpenLFD(self, instanceid, button)
   if LFDParentFrame and LFDParentFrame:IsVisible() and LFDQueueFrame.type ~= instanceid then
   -- changing entries
@@ -3254,6 +3284,10 @@ local function OpenLFS(self, instanceid, button)
   if ScenarioFinderFrame and ScenarioFinderFrame:IsVisible() and ScenarioQueueFrame_SetType then
     ScenarioQueueFrame_SetType(instanceid)
   end
+end
+
+local function ReportKeys(self, _, button)
+  SI:GetModule("MythicPlus"):Keys()
 end
 
 local function OpenCurrency(self, _, button)
@@ -3336,6 +3370,7 @@ function SI:ShowTooltip(anchorframe)
   local headLine = tooltip:AddHeader(headText)
   tooltip:SetCellScript(headLine, 1, "OnEnter", hoverTooltip.ShowAccountSummary )
   tooltip:SetCellScript(headLine, 1, "OnLeave", CloseTooltips)
+  tooltip:SetCellScript(headLine, 1, "OnMouseDown", OpenWeeklyRewards)
   SI:UpdateToonData()
   local columns = localarr("columns")
   for toon,_ in cpairs(columnCache[showall]) do
@@ -3793,9 +3828,7 @@ function SI:ShowTooltip(anchorframe)
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Keystone"] .. FONTEND)
       tooltip:SetCellScript(show, 1, "OnEnter", hoverTooltip.ShowKeyReportTarget)
       tooltip:SetCellScript(show, 1, "OnLeave", CloseTooltips)
-      tooltip:SetCellScript(show, 1, "OnMouseDown", function()
-        SI:GetModule("MythicPlus"):Keys()
-      end, nil)
+      tooltip:SetCellScript(show, 1, "OnMouseDown", ReportKeys)
     end
     for toon, t in cpairs(SI.db.Toons, true) do
       if t.MythicKey and t.MythicKey.link then
@@ -3852,7 +3885,7 @@ function SI:ShowTooltip(anchorframe)
     end
   end
 
-  local firstEmissary, expansionLevel = true
+  local firstEmissary = true
   for expansionLevel, _ in pairs(SI.Emissaries) do
     if SI.db.Tooltip["Emissary" .. expansionLevel] or showall then
       local day, tbl, show
@@ -3892,7 +3925,8 @@ function SI:ShowTooltip(anchorframe)
               for day = 1, 3 do
                 tbl = t.Emissary[expansionLevel].days[day]
                 if tbl then
-                  local col, text = columns[toon..day]
+                  local col = columns[toon .. day]
+                  local text = ""
                   if tbl.isComplete == true then
                     text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
                   elseif tbl.isFinish == true then
@@ -3950,7 +3984,8 @@ function SI:ShowTooltip(anchorframe)
                 if t.Emissary and t.Emissary[expansionLevel] and t.Emissary[expansionLevel].unlocked then
                   tbl = t.Emissary[expansionLevel].days[day]
                   if tbl then
-                    local col, text = columns[toon..1]
+                    local col = columns[toon .. 1]
+                    local text = ""
                     if tbl.isComplete == true then
                       text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
                     elseif tbl.isFinish == true then

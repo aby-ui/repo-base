@@ -65,7 +65,7 @@ $Id: AccountantOptions.xml 69 2012-09-26 09:54:33Z arith $
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>
+					<OnLoad inherit="prepend">
 						_G[self:GetName().."High"]:SetText();
 						_G[self:GetName().."Low"]:SetText();
 						AccountantSliderButtonPos:SetMinMaxValues(0,360);

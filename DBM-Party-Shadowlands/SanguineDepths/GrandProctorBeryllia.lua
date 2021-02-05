@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2421, "DBM-Party-Shadowlands", 8, 1189)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210123235530")
+mod:SetRevision("20210201175511")
 mod:SetCreatureID(162102)
 mod:SetEncounterID(2362)
 
@@ -24,7 +24,7 @@ mod:RegisterEventsInCombat(
 --TODO, more timer data verification
 local warnRiteofSupremacy			= mod:NewCastAnnounce(325360, 4)
 
-local specWarnIronSpikes			= mod:NewSpecialWarningDefensive(325254, nil, nil, nil, 1, 2)
+local specWarnIronSpikes			= mod:NewSpecialWarningDefensive(325254, "Tank|Healer", nil, 2, 1, 2)
 local specWarnEndlessTorment		= mod:NewSpecialWarningMoveAway(326039, nil, nil, nil, 2, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 

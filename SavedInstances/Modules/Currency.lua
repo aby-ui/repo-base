@@ -76,6 +76,7 @@ local currency = {
   1819, -- Medallion of Service
   1820, -- Infused Ruby
   1885, -- Grateful Offering
+  1889, -- Adventure Campaign Progress
 }
 SI.currency = currency
 

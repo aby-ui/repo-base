@@ -43,6 +43,8 @@ function Module:OnEnable()
   self:RegisterEvent("WEEKLY_REWARDS_UPDATE", "RefreshMythicWeeklyBestInfo")
   self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicWeeklyBestInfo")
 
+  C_MythicPlus_RequestMapInfo()
+
   self:RefreshMythicKeyInfo()
   self:RefreshMythicWeeklyBestInfo()
 end
