@@ -1,4 +1,4 @@
-local VERSION = 98
+local VERSION = 99
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -301,6 +301,9 @@ Added Aspirant Training quest helper
 
 Adeed shadowlands achievements
 Updated german translation (by sunflow72)
+
+Added Tough Crowd helper
+Minor fixes
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -427,6 +430,7 @@ local LOCALE =
 		rewardSortCurrOther = "Другие валюты",
 		rewardSortItemOther = "Другие предметы",
 		aspirantTraining = "Помощник тренировки претендента",
+		toughCrowdHelper = "Помощник требовательной публики",
 	} or
 	locale == "deDE" and {    --by SunnySunflow
 	        gear = "Ausrüstung",
@@ -494,6 +498,7 @@ local LOCALE =
 	        rewardSortCurrOther = "Andere Währungen",
 	        rewardSortItemOther = "Andere Gegenstände",
 	        aspirantTraining = "Aspiranten Übungskampf Helfer",
+		toughCrowdHelper = "Schwieriges Publikum Helfer",
 	} or
 	locale == "frFR" and {
 		gear = "Équipement",
@@ -561,6 +566,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or
 	(locale == "esES" or locale == "esMX") and {
 		gear = "Equipo",
@@ -628,6 +634,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or
 	locale == "itIT" and {
 		gear = "Equipaggiamento",
@@ -695,6 +702,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or
 	locale == "ptBR" and {
 		gear = "Equipamento",
@@ -762,6 +770,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or
 	locale == "koKR" and {
 		gear = "장비",
@@ -829,6 +838,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or
 	locale == "zhCN" and {	--by sprider00
 		gear = "装备",
@@ -896,6 +906,7 @@ local LOCALE =
 		rewardSortCurrOther = "其他货币",
 		rewardSortItemOther = "其他物品",
 		aspirantTraining = "候选者训练助手",
+		toughCrowdHelper = "乌合之众助手",
 	} or
 	locale == "zhTW" and {	--by sprider00
 		gear = "裝備",
@@ -963,6 +974,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	} or 
 	{
 		gear = "Gear",
@@ -1030,6 +1042,7 @@ local LOCALE =
 		rewardSortCurrOther = "Other currencies",
 		rewardSortItemOther = "Other items",
 		aspirantTraining = "Aspirant Training Helper",
+		toughCrowdHelper = "Tough Crowd Helper",
 	}
 
 local filters = {
@@ -4074,6 +4087,14 @@ do
 		checkable = true,
 		shownFunc = function() return SL() or not WorldQuestList.optionsDropDown:IsVisible() end,
 	}
+	list[#list+1] = {
+		text = LOCALE.toughCrowdHelper,
+		func = function()
+			VWQL.DisableToughCrowd = not VWQL.DisableToughCrowd
+		end,
+		checkable = true,
+		shownFunc = function() return SL() or not WorldQuestList.optionsDropDown:IsVisible() end,
+	}
 
 	list[#list+1] = {
 		text = LOCALE.ignoreList,
@@ -4126,6 +4147,8 @@ do
 				self.List[i].checkState = not VWQL.ShowQuestAchievements
 			elseif self.List[i].text == LOCALE.aspirantTraining then
 				self.List[i].checkState = not VWQL.DisableAspirantTraining
+			elseif self.List[i].text == LOCALE.toughCrowdHelper then
+				self.List[i].checkState = not VWQL.DisableToughCrowd
 			end
 		end
 		anchorSubMenu[1].checkState = not VWQL.Anchor
@@ -5673,6 +5696,7 @@ end
 WorldQuestList.NULLTable = {}
 
 WorldQuestList.QuestIDtoMapID = {}
+WorldQuestList.CacheSLAnimaItems = {}
 
 function WorldQuestList_Update(preMapID,forceUpdate)
 	if not WorldQuestList:IsVisible() and not VWQL[charKey].HideMap and not forceUpdate then
@@ -6359,31 +6383,39 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						local isBoeItem = nil
 						local isAnimaItem = nil
 
-						inspectScantip:SetQuestLogItem("reward", 1, questID)
-						rewardItemLink = select(2,inspectScantip:GetItem())
-						for j=2, inspectScantip:NumLines() do
-							local tooltipLine = _G[GlobalAddonName.."WorldQuestListInspectScanningTooltipTextLeft"..j]
-							local text = tooltipLine:GetText()
-							if text and text:find(ITEM_LEVEL) then
-								local ilvl = text:match(ITEM_LEVEL)
-								RewardListStrings[#RewardListStrings] = RewardListStrings[#RewardListStrings]:gsub("(|t %d*x* *)","%1"..ilvl.." ")
-								ilvl = tonumber( ilvl:gsub("%+",""),nil )
-								if ilvl then
-									RewardListType[#RewardListStrings] = (VWQL.SortPrio.itemgear or defSortPrio.itemgear)
-									RewardListSort[#RewardListStrings] = ilvl + (itemID / 1000000)
-									itemIlvl = ilvl
-									hasRewardFiltered = true
-								end
-							elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
-								isBoeItem = true
-							elseif text and text:find(ANIMA.."|r$") then
-								isAnimaItem = true
-							elseif text and isAnimaItem and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
-								local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
-								isAnimaItem = tonumber(num or "") or 100
-							end 
+						if itemID and WorldQuestList.CacheSLAnimaItems[itemID] then
+							isAnimaItem = WorldQuestList.CacheSLAnimaItems[itemID]
+						else
+							inspectScantip:SetQuestLogItem("reward", 1, questID)
+							rewardItemLink = select(2,inspectScantip:GetItem())
+							for j=2, inspectScantip:NumLines() do
+								local tooltipLine = _G[GlobalAddonName.."WorldQuestListInspectScanningTooltipTextLeft"..j]
+								local text = tooltipLine:GetText()
+								if text and text:find(ITEM_LEVEL) then
+									local ilvl = text:match(ITEM_LEVEL)
+									RewardListStrings[#RewardListStrings] = RewardListStrings[#RewardListStrings]:gsub("(|t %d*x* *)","%1"..ilvl.." ")
+									ilvl = tonumber( ilvl:gsub("%+",""),nil )
+									if ilvl then
+										RewardListType[#RewardListStrings] = (VWQL.SortPrio.itemgear or defSortPrio.itemgear)
+										RewardListSort[#RewardListStrings] = ilvl + (itemID / 1000000)
+										itemIlvl = ilvl
+										hasRewardFiltered = true
+									end
+								elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
+									isBoeItem = true
+								elseif text and text:find(ANIMA.."|r$") then
+									isAnimaItem = true
+								elseif text and isAnimaItem and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
+									local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
+									isAnimaItem = tonumber(num or "")
+									if isAnimaItem then
+										WorldQuestList.CacheSLAnimaItems[itemID] = isAnimaItem
+									end
+									isAnimaItem = isAnimaItem or 35
+								end 
+							end
+							inspectScantip:ClearLines()
 						end
-						inspectScantip:ClearLines()
 
 						if isAnimaItem then
 							hasRewardFiltered = true

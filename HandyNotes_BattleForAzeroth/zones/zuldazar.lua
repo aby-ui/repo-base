@@ -685,14 +685,14 @@ map.nodes[66211662] = Collectible({
 }) -- Big Hunter Mon
 
 map.nodes[62632058] = Collectible({
-    quest=50331,
+    quest=50431,
     icon=1604165,
     note=L["feathered_junk_note"],
     group=ns.groups.GET_HEKD,
     rewards={
         Achievement({id=12482, criteria=40040})
     }
-}) -- Feathered Serpent Scale (157794)
+}) -- Feathered Viper Scale (157794)
 
 map.nodes[71704128] = Collectible({
     quest=50308,

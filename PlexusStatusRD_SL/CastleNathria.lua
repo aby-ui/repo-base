@@ -60,7 +60,7 @@ GridStatusRaidDebuff:DebuffId(zoneid, 325713, 604, 6, 6) -- Lingering Anima
 -- The Council of Blood
 GridStatusRaidDebuff:BossNameId(zoneid, 700, "The Council of Blood")
 GridStatusRaidDebuff:DebuffId(zoneid, 327610, 701, 6, 6) -- Evasive Lunge
-GridStatusRaidDebuff:DebuffId(zoneid, 334909, 702, 5, 5, nil, true) -- Oppressive Atmosphere
+GridStatusRaidDebuff:DebuffId(zoneid, 334909, 702, 5, 5, nil, true, nil, true) -- Oppressive Atmosphere
 GridStatusRaidDebuff:DebuffId(zoneid, 346690, 703, 6, 6) -- Duelist's Riposte
 GridStatusRaidDebuff:DebuffId(zoneid, 331636, 704, 6, 6) -- Dark Recital
 GridStatusRaidDebuff:DebuffId(zoneid, 346651, 705, 6, 6) -- Drain Essence

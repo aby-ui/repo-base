@@ -88,6 +88,7 @@ map.nodes[68612765] = Rare({
 map.nodes[54067601] = Rare({
     id=163370,
     quest=59006,
+    note=L["gormbore_note"],
     rewards={
         Achievement({id=14309, criteria=48795}),
         Pet({item=183196, id=3035}) -- Lavender Nibbler
@@ -120,10 +121,12 @@ map.nodes[67465147] = Rare({
     quest=59221,
     rewards={
         Achievement({id=14309, criteria=48787}),
+        Transmog({item=179593, slot=L["cloth"]}), -- Darkreach Mask
+        Transmog({item=179594, slot=L["leather"]}), -- Witherscorn Guise
         Transmog({item=179596, slot=L["cosmetic"]}), -- Drust Mask of Dominance
         Item({item=183091, quest=62246}) -- Lifewoven Bracelet
     }
-}) -- Hunter Vivian
+}) -- Hunter Vivanna
 
 local MACABRE = Rare({
     id=164093,

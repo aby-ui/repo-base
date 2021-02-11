@@ -2,7 +2,7 @@
 ## Title: HandyNotes_LunarFestival
 ## Notes: Displays the locations of Lunar Festival elders.
 ## Author: Ravendwyr
-## Version: v1.6.1-25-g3c78623
+## Version: v1.6.3
 ## X-Category: Map & Minimap
 ## SavedVariables: HandyNotes_LunarFestivalDB
 ## RequiredDeps: HandyNotes

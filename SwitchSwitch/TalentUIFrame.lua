@@ -482,7 +482,9 @@ function TalentUIFrame:OnAcceptDeleteprofile(frame, profile)
 end
 
 function TalentUIFrame:OnAcceptOverwrrite(frame, profile, savePVP)
+    local old = {} deepmix(old, addon:GetTalentTable(profile))
     addon:SetTalentTable(profile, addon:GetCurrentTalents(savePVP))
+    local new = addon:GetTalentTable(profile) for k,v in pairs(old) do if new[k] == nil then new[k] = v end end --abyui
     addon.sv.config.SelectedTalentsProfile = profile:lower()
     addon:Print(addon.L["Profile '%s' overwritten!"]:format(profile))
 end

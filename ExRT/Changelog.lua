@@ -1,6 +1,12 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4460
+* Raid check: consumables on ready check: flask icon is clickable now
+* Note: added "Set as personal note" button
+* Bugfixes
+* Minor updates
+
 v.4440
 * Note: increased performance for huge notes with timers
 * Visual Note: added pvp battlegrounds

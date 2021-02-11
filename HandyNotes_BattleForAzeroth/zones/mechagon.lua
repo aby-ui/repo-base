@@ -597,7 +597,7 @@ map.nodes[53486145] = Quest({
 
 map.nodes[69976201] = Class('RegRig', NPC, {
     id=150448,
-    icon="peg_wb",
+    icon="peg_bl",
     scale=2,
     note=L["rec_rig_note"],
     group=ns.groups.RECRIG,

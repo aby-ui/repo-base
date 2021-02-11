@@ -1122,11 +1122,13 @@ AspirantTraining.locale =
 	locale == "ruRU" and {
 		def = "^Защита",
 		dmg = "^Удар",
+		dmg2 = "^Удар сплеча",
 		dod = "^Уворот",
 	}
 	or {
 		def = "^Защита",
 		dmg = "^Удар",
+		dmg2 = "^Удар сплеча",
 		dod = "^Уворот",
 	}
 
@@ -1160,6 +1162,8 @@ AspirantTraining:SetScript("OnEvent",function(self,event,arg1,arg2)
 		end
 		if arg1:find(AspirantTraining.locale.def) then
 			arg1 = GetSpellInfo(321847)
+		elseif arg1:find(AspirantTraining.locale.dmg2) then
+			arg1 = GetSpellInfo(341931)
 		elseif arg1:find(AspirantTraining.locale.dmg) then
 			arg1 = GetSpellInfo(321843)
 		elseif arg1:find(AspirantTraining.locale.dod) then
@@ -1241,11 +1245,11 @@ AspirantTraining2:SetScript("OnEvent",function(self,event,arg1,arg2)
 			return
 		end
 		if arg1:find(AspirantTraining2.locale.cmd1) then
-			ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+			ActionButton_ShowOverlayGlow(OverrideActionBarButton1)
 		elseif arg1:find(AspirantTraining2.locale.cmd2) then
-			ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+			ActionButton_ShowOverlayGlow(OverrideActionBarButton2)
 		elseif arg1:find(AspirantTraining2.locale.cmd3) then
-			ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+			ActionButton_ShowOverlayGlow(OverrideActionBarButton3)
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -1253,6 +1257,66 @@ AspirantTraining2:SetScript("OnEvent",function(self,event,arg1,arg2)
 			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
 			if questID and questID == 61540 then
 				self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',61540)
+				break
+			end
+		end
+	end
+end)
+
+
+
+
+local ToughCrowdHelperQuests = {
+	[60739]=true,
+}
+local ToughCrowdHelper_guid = {}
+local ToughCrowdHelper_count = 8
+
+local ToughCrowdHelper = CreateFrame'Frame'
+ToughCrowdHelper:RegisterEvent('QUEST_ACCEPTED')
+ToughCrowdHelper:RegisterEvent('QUEST_REMOVED')
+ToughCrowdHelper:RegisterEvent('PLAYER_ENTERING_WORLD')
+ToughCrowdHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
+	if event == 'QUEST_ACCEPTED' then
+		if arg1 and ToughCrowdHelperQuests[arg1] then
+			if VWQL and VWQL.DisableToughCrowd then
+				return
+			end
+			print("World Quests List: Tough Crowd helper loaded")
+			ToughCrowdHelper_count = 8
+			self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+		end
+	elseif event == 'QUEST_REMOVED' then
+		if arg1 and ToughCrowdHelperQuests[arg1] then
+			self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
+			ToughCrowdHelper_count = 8
+		end
+	elseif event == 'UPDATE_MOUSEOVER_UNIT' then
+		local guid = UnitGUID'mouseover'
+		if guid then
+			local type,_,serverID,instanceID,zoneUID,id,spawnID = strsplit("-", guid)
+			if id == "170080" then
+				if not ToughCrowdHelper_guid[guid] then
+					ToughCrowdHelper_guid[guid] = ToughCrowdHelper_count
+					ToughCrowdHelper_count = ToughCrowdHelper_count - 1
+					if ToughCrowdHelper_count < 1 then
+						ToughCrowdHelper_count = 8
+					end
+				end
+				if GetRaidTargetIndex("mouseover") ~= ToughCrowdHelper_guid[guid] then
+					SetRaidTarget("mouseover", ToughCrowdHelper_guid[guid])
+				end
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		if VWQL and VWQL.DisableToughCrowd then
+			return
+		end
+		for i=1,GetNumQuestLogEntries() do
+			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
+			if questID and ToughCrowdHelperQuests[questID] then
+				self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',questID)
 				break
 			end
 		end

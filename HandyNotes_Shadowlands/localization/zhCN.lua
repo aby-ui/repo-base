@@ -15,6 +15,7 @@ L["anima_channeled"] = "心能连接到%s。"
 
 L["deifir_note"] = "骑上圈内的稀有并使用 {spell:319566} 和 {spell:319575} 使其减速和昏迷。"
 L["faeflayer_note"] = "瀑布后面隐藏的小洞穴内。"
+L["gormbore_note"] = nil
 L["gormtamer_tizo_note"] = "在纱雾迷结击杀蓟果精灵直到 {npc:164110} 刷新。"
 L["humongozz_note"] = "种植一个 {item:175247} 在潮湿的沃土将刷新 {npc:164122}。区域内的许多怪物都掉落蘑菇。"
 L["lehgo_note"] = "摧毁颤动的戈姆之卵并击杀 {npc:171827} 直到他出现。在洞穴内（入口在东南尘泥地穴内）。"
@@ -37,13 +38,13 @@ L["rootwrithe_note"] = "触碰 {npc:167928} 直到稀有出现。"
 L["rotbriar_note"] = "和 {npc:171684} 交谈对话后在附近召唤稀有。"
 L["slumbering_note"] = "跑到迷雾中将昏迷并被带出。使用信号弹或带 AOE 的宠物把他击出迷雾。"
 L["skuld_vit_note"] = "在被障碍物阻挡的山洞中。法夜必须使用 {spell:310143} 进入洞穴。他进入战斗后，障碍物将消失。"
-L["valfir_note"] = "在闪光的心能之种下降过程中点击并使用 {spell:338045} 移除他的 {spell:338038} 增益。"
+L["valfir_note"] = "在路径中途下坡点击闪光的心能之种并使用 {spell:338045} 移除他的 {spell:338038} 增益。"
 L["wrigglemortis_note"] = "拉动 {npc:164179} 刷新稀有。"
 
 L["night_mare_note"] = [[
 前往塞兹仙林，并沿着西北悬崖的树根路前往破损的车。在那可以在地面上拾取 {item:181243}。
 
-把此物品带给位于闪瀑盆地的 {npc:165704}。用10个 {item:173204} 和她交换一个 {item:181242}。|cFFFF8C00如果她不在这里，你必须完成|cFFFFFD00戈姆蛴围栏的麻烦|r和|cFFFFFD00捣蛋的林鬼|r任务线。|r
+把此物品带给位于闪瀑盆地的 {npc:165704}。用10个 {item:173204} 和她交换一个 {item:181242}。|cFFFF8C00如果她不在这里，你必须完成 |cFFFFFD00戈姆蛴围栏的麻烦|r 和 |cFFFFFD00捣蛋的林鬼|r 任务线。|r
 
 接下来，和森林之心的 {npc:160262} 交谈兑换 {item:181242} 为 {item:178675}。如果你不是法夜的话，与守卫交谈让她出来。使用此物品得到 {spell:327083} 增益，可以让你看见 {npc:168135}。
 ]]
@@ -117,8 +118,9 @@ L["herculon_note"] = [[
 
 |cFFFF8C00不能在世界任务 {wq:突袭前庭} 期间击败。|r
 ]]
+L["reekmonger_note"] = "在勇气神庙击杀敌人直到 {npc:171327} 做出表情并降落。"
 L["repair_note"] = "和两名其他玩家，点击上古熏香来召唤。"
-L["sotiros_orstus_note"] = "点击黑色的钟召唤稀有。"
+L["sotiros_orstus_note"] = "点击黑色钟铃召唤稀有。"
 L["sundancer_note"] = "点击雕像获得 {spell:332309} 增益，然后使用 {item:180445} 滑翔到稀有并骑上它。"
 L["swelling_tear_note"] = "点击 {npc:171012} 召唤三个稀有中的一个。裂隙可以在区域内的多个位置出现。"
 L["unstable_memory_note"] = "当 {npc:171018} 存在时可以刷新。拉一个 {npc:171018} 到其它会给它10层堆叠 {spell:333558}，把它变成稀有。"
@@ -240,8 +242,9 @@ L["deepscar_note"] = "可能出现在伤逝剧场的多个入口。"
 L["forgotten_mementos"] = "在宝藏西侧的房间拖拽宝库闸门之链打开大门。"
 L["gieger_note"] = "攻击 {npc:162815} 后激活稀有。"
 L["gristlebeak_note"] = "破坏附近的 {npc:162761} 后激活稀有。"
-L["leeda_note"] = "击杀两个 {npc:162220} 单位后稀有刷新。"
+L["leeda_note"] = "击杀两个 {npc:162220} 直到稀有刷新。"
 L["nirvaska_note"] = "只在世界任务 {wq:致命提醒} 出现时激活。"
+L["ravenomous_note"] = "踩死区域内中立 {npc:159901}，直到稀有刷新。"
 L["sabriel_note"] = "可以作为伤逝剧场的冠军之一出现。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破坏他的护盾。"
 L["taskmaster_xox_note"] = "与 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
@@ -249,7 +252,7 @@ L["theater_of_pain_note"] = "每天第一次击杀首领有几率掉落坐骑。
 L["zargox_the_reborn_note"] = [[
 使用 {item:175841} 位于 {npc:157124} 顶上。获得宝珠，你必须完成 {npc:157076} 的任务 {quest:57245} 之后再与他交谈。
 
-假如 {npc:157124} 不起来，复活区域内的 {npc:157132} 直到它出现。
+假如 {npc:157124} 不在，复活区域内的 {npc:157132} 直到它出现。
 ]]
 L["mixed_pool_note"] = [[
 从周围怪物收集材料并扔进池中。每30个材料，根据所使用的组合，将刷新七个稀有中的一个。
@@ -327,6 +330,7 @@ L["amalgamation_of_sin_note"] = "在世界任务 {wq:唤起罪业} 期间，拾�
 L["bog_beast_note"] = "世界任务 {wq:又脏又乱} 期间有机率刷新后给 {npc:166206} 使用 {item:177880}。"
 L["endlurker_note"] = "在微光裂隙顶上点击 {npc:165229} 尸体附近的心能之桩并使用 {spell:321826}。"
 L["executioner_aatron_note"] = "击杀三个附近的 {npc:166715} 移除 {spell:324872}。"
+L["executioner_adrastia_note"] = nil
 L["famu_note"] = "和 {npc:166483} 交谈触发事件。"
 L["grand_arcanist_dimitri_note"] = "击杀四个 {npc:167467} 释放稀有。"
 L["harika_note"] = "在惧谷镇西侧，拾取 {item:176397}，然后把箭交给 {npc:165327} 后和他交谈击落稀有。"
@@ -402,7 +406,6 @@ L["apholeias_note"] = "和3名其他玩家，站在平台的角落并施放 {spe
 L["dekaris_note"] = "在一块凸起的大岩石上。"
 L["drifting_sorrow_note"] = "在悬浮宝珠附近击杀 {npc:175246} 激活首领。"
 L["ekphoras_note"] = "和3名其他玩家，站在平台的角落并施放 {spell:330650} 召唤稀有。"
-L["gorged_shadehound_note"] = "只在 {wq:狩猎：影犬} 事件期间可用。"
 L["ikras_note"] = "在破灭堡飞来飞去。这里是攻击他的好位置。"
 L["orophea_note"] = "从东南方的拾取 {spell:337143} 并提供给 {npc:172577} 激活。"
 L["sanngror_note"] = "如果他是不可攻击，等待直到他不再灵魂实验。"

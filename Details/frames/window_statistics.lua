@@ -238,6 +238,10 @@ function Details:OpenRaidHistoryWindow (_raid, _boss, _difficulty, _role, _guild
                         
                     --received one encounter table
                     elseif (guildSyncID == "A") then
+                        if (not f.RequestedAmount) then
+                            --if the receiving player reloads, f.RequestedAmount is nil
+                            return
+                        end
                         f.DownloadedAmount = (f.DownloadedAmount or 0) + 1
                         
                         --size = 1 byte per characters in the string

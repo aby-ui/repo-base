@@ -73,7 +73,7 @@ local IS_SL = UnitLevel'player' >= 60
 
 module.db.topEnchGems = IS_SL and {
 	[6202]="cloak:stamina:speed",
-	--[6208]="cloak:stamina",
+	[6208]="cloak:stamina",
 	[6204]="cloak:stamina:leech",
 	[6203]="cloak:stamina:avoid",
 

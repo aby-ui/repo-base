@@ -357,6 +357,8 @@ SI.defaultDB = {
     AbbreviateKeystone = true,
     TrackParagon = true,
     Calling = true,
+    CallingShowCompleted = true,
+    CombineCalling = true,
     Progress1 = true, -- PvP Conquest
     Progress2 = false, -- Island Weekly
     Progress3 = false, -- Horrific Vision
@@ -2378,7 +2380,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.5-13-g7d7ab89" then
+  if versionString == "9.0.5-18-g64e7b2c" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -3452,13 +3454,16 @@ function SI:ShowTooltip(anchorframe)
   local blankrow = localarr("blankrow") -- track blank lines
   local firstcategory = true -- use this to skip spacing before the first category
   local function addsep()
-    local line = tooltip:AddSeparator(6,0,0,0,0)
-    blankrow[line] = true
-    return line
+    if firstcategory then
+      firstcategory = false
+    else
+      local line = tooltip:AddSeparator(6,0,0,0,0)
+      blankrow[line] = true
+    end
   end
   for _, category in ipairs(SI:OrderedCategories()) do
     if categoryshown[category] then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       if (categories > 1 or SI.db.Tooltip.ShowSoloCategory) and categoryshown[category] then
@@ -3492,7 +3497,6 @@ function SI:ShowTooltip(anchorframe)
           lfrbox[inst.LFDID] = nil
         end
       end
-      firstcategory = false
     end
   end
   -- now printing instance data
@@ -3597,7 +3601,7 @@ function SI:ShowTooltip(anchorframe)
 
   -- combined world bosses
   if wbcons and next(worldbosses) and (wbalways or instancesaved[L["World Bosses"]]) then
-    if not firstcategory and SI.db.Tooltip.CategorySpaces then
+    if SI.db.Tooltip.CategorySpaces then
       addsep()
     end
     local line = tooltip:AddLine((instancesaved[L["World Bosses"]] and YELLOWFONT or GRAYFONT) .. L["World Bosses"] .. FONTEND)
@@ -3632,7 +3636,7 @@ function SI:ShowTooltip(anchorframe)
           addColumns(columns, toon, tooltip)
           local row = holidayinst[instance]
           if not row then
-            if not firstcategory and SI.db.Tooltip.CategorySpaces and firstlfd then
+            if SI.db.Tooltip.CategorySpaces and firstlfd then
               addsep()
               firstlfd = false
             end
@@ -3663,7 +3667,7 @@ function SI:ShowTooltip(anchorframe)
     end
     local randomLine
     if cd1 or cd2 then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces and firstlfd then
+      if SI.db.Tooltip.CategorySpaces and firstlfd then
         addsep()
         firstlfd = false
       end
@@ -3699,7 +3703,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces and firstlfd then
+      if SI.db.Tooltip.CategorySpaces and firstlfd then
         addsep()
         firstlfd = false
       end
@@ -3732,7 +3736,7 @@ function SI:ShowTooltip(anchorframe)
     local adc, awc = SI:QuestCount(nil)
     if adc > 0 and (SI.db.Tooltip.TrackDailyQuests or showall) then showd = true end
     if awc > 0 and (SI.db.Tooltip.TrackWeeklyQuests or showall) then showw = true end
-    if not firstcategory and SI.db.Tooltip.CategorySpaces and (showd or showw) then
+    if SI.db.Tooltip.CategorySpaces and (showd or showw) then
       addsep()
     end
     if showd then
@@ -3766,7 +3770,7 @@ function SI:ShowTooltip(anchorframe)
   end
 
   SI:GetModule("Progress"):ShowTooltip(tooltip, columns, showall, function()
-    if not firstcategory and SI.db.Tooltip.CategorySpaces then
+    if SI.db.Tooltip.CategorySpaces then
       addsep()
     end
     if SI.db.Tooltip.ShowCategories then
@@ -3775,7 +3779,7 @@ function SI:ShowTooltip(anchorframe)
   end)
 
   SI:GetModule("Warfront"):ShowTooltip(tooltip, columns, showall, function()
-    if not firstcategory and SI.db.Tooltip.CategorySpaces then
+    if SI.db.Tooltip.CategorySpaces then
       addsep()
     end
     if SI.db.Tooltip.ShowCategories then
@@ -3792,7 +3796,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Trade Skill Cooldowns"] .. FONTEND)
@@ -3822,7 +3826,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Keystone"] .. FONTEND)
@@ -3856,7 +3860,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Key Best"] .. FONTEND)
@@ -3907,7 +3911,7 @@ function SI:ShowTooltip(anchorframe)
 
       if show then
         if firstEmissary == true then
-          if not firstcategory and SI.db.Tooltip.CategorySpaces then
+          if SI.db.Tooltip.CategorySpaces then
             addsep()
           end
           if SI.db.Tooltip.ShowCategories then
@@ -4021,41 +4025,89 @@ function SI:ShowTooltip(anchorframe)
     for toon, t in cpairs(SI.db.Toons, true) do
       if t.Calling and t.Calling.unlocked then
         for day = 1, 3 do
-          if t.Calling[day] and not t.Calling[day].isCompleted then
-            show = true
-            addColumns(columns, toon, tooltip)
-            break
+          if showall or SI.db.Tooltip.CallingShowCompleted or (t.Calling[day] and not t.Calling[day].isCompleted) then
+            if not show then show = {} end
+            if not show[day] or show[day] == true then
+              show[day] = t.Calling[day] and t.Calling[day].title or true
+            end
           end
         end
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
-      show = tooltip:AddLine(YELLOWFONT .. CALLINGS_QUESTS .. FONTEND)
-      for toon, t in cpairs(SI.db.Toons, true) do
-        if t.Calling and t.Calling.unlocked then
-          for day = 1, 3 do
-            local col = columns[toon .. day]
-            local text = ""
-            if t.Calling[day].isCompleted then
-              text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
-            elseif not t.Calling[day].isOnQuest then
-              text = "\124cFFFFFF00!\124r"
-            elseif t.Calling[day].isFinished then
-              text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
-            else
-              if t.Calling[day].objectiveType == 'progressbar' then
-                text = floor(t.Calling[day].questDone / t.Calling[day].questNeed * 100) .. "%"
+      if SI.db.Tooltip.CombineCalling then
+        show = tooltip:AddLine(GOLDFONT .. CALLINGS_QUESTS .. FONTEND)
+        for toon, t in cpairs(SI.db.Toons, true) do
+          if t.Calling and t.Calling.unlocked then
+            for day = 1, 3 do
+              local col = columns[toon .. day]
+              local text = ""
+              if t.Calling[day].isCompleted then
+                text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+              elseif not t.Calling[day].isOnQuest then
+                text = "\124cFFFFFF00!\124r"
+              elseif t.Calling[day].isFinished then
+                text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
               else
-                text = t.Calling[day].questDone .. '/' .. t.Calling[day].questNeed
+                if t.Calling[day].objectiveType == 'progressbar' then
+                  text = floor(t.Calling[day].questDone / t.Calling[day].questNeed * 100) .. "%"
+                else
+                  text = t.Calling[day].questDone .. '/' .. t.Calling[day].questNeed
+                end
+              end
+              if col then
+                -- check if current toon is showing
+                -- don't add columns
+                tooltip:SetCell(show, col, text, "CENTER", 1)
               end
             end
-            if col then
-              -- check if current toon is showing
-              -- don't add columns
-              tooltip:SetCell(show, col, text, "CENTER", 1)
+          end
+        end
+      else
+        if SI.db.Tooltip.ShowCategories then
+          tooltip:AddLine(YELLOWFONT .. CALLINGS_QUESTS .. FONTEND)
+        end
+        for day = 1, 3 do
+          if show[day] then
+            local name = show[day]
+            if name == true then
+              -- fail to fetch quest title
+              name = L["Calling Missing"]
+              for _, t in pairs(SI.db.Toons) do
+                if t.Calling and t.Calling[day] and t.Calling[day].title then
+                  name = t.Calling[day].title
+                  break
+                end
+              end
+            end
+            local line = tooltip:AddLine(GOLDFONT .. name .. " (+" .. (day - 1) .. " " .. L["Day"] .. ")" .. FONTEND)
+
+            for toon, t in cpairs(SI.db.Toons, true) do
+              if t.Calling and t.Calling.unlocked then
+                local col = columns[toon .. 1]
+                local text = ""
+                if t.Calling[day].isCompleted then
+                  text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+                elseif not t.Calling[day].isOnQuest then
+                  text = "\124cFFFFFF00!\124r"
+                elseif t.Calling[day].isFinished then
+                  text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
+                else
+                  if t.Calling[day].objectiveType == 'progressbar' then
+                    text = floor(t.Calling[day].questDone / t.Calling[day].questNeed * 100) .. "%"
+                  else
+                    text = t.Calling[day].questDone .. '/' .. t.Calling[day].questNeed
+                  end
+                end
+                if col then
+                  -- check if current toon is showing
+                  -- don't add columns
+                  tooltip:SetCell(show, col, text, "CENTER", 1)
+                end
+              end
             end
           end
         end
@@ -4072,7 +4124,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Paragon Chests"] .. FONTEND)
@@ -4098,7 +4150,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if not firstcategory and SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Roll Bonus"] .. FONTEND)
@@ -4145,7 +4197,7 @@ function SI:ShowTooltip(anchorframe)
       end
       local currLine
       if show then
-        if not firstcategory and SI.db.Tooltip.CategorySpaces and firstcurrency then
+        if SI.db.Tooltip.CategorySpaces and firstcurrency then
           addsep()
           firstcurrency = false
         end

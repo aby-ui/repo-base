@@ -13,7 +13,6 @@ local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
-local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Quest = ns.reward.Quest
 local Section = ns.reward.Section
@@ -177,15 +176,6 @@ map.nodes[20586935] = Rare({
         Item({item=183068, quest=63162})  -- Korrath's Grimoire: Gyadrek
     }
 }) -- Exos, Herald of Domination
-
-map.nodes[53507950] = Rare({
-    id=174827,
-    note=L["gorged_shadehound_note"],
-    -- quest=61124,
-    rewards={
-        Mount({item=184167, id=1304}) -- Mawsworn Soulhunter
-    }
-}) -- Gorged Shadehound
 
 map.nodes[30775000] = Rare({
     id=175012,

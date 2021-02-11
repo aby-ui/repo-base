@@ -19,7 +19,7 @@ ns.expansion = 8
 
 -------------------------------------------------------------------------------
 
-ns.groups.ASSAULT_EVENT = Group('assault_events', 'peg_wy')
+ns.groups.ASSAULT_EVENT = Group('assault_events', 'peg_yw')
 ns.groups.BOW_TO_YOUR_MASTERS = Group('bow_to_your_masters', 1850548, {defaults=ns.GROUP_HIDDEN, faction='Horde'})
 ns.groups.BRUTOSAURS = Group('brutosaurs', 1881827, {defaults=ns.GROUP_HIDDEN})
 ns.groups.CARVED_IN_STONE = Group('carved_in_stone', 134424, {defaults=ns.GROUP_HIDDEN})
@@ -39,7 +39,7 @@ ns.groups.MISC_NAZJ = Group('misc_nazj', 528288)
 ns.groups.MUSHROOM_HARVEST = Group('mushroom_harvest', 1869654, {defaults=ns.GROUP_HIDDEN})
 ns.groups.PAKU_TOTEMS = Group('paku_totems', 'flight_point_y', {defaults=ns.GROUP_HIDDEN, faction='Horde'})
 ns.groups.PRISMATICS = Group('prismatics', 'crystal_p', {defaults=ns.GROUP_HIDDEN})
-ns.groups.RECRIG = Group('recrig', 'peg_wb')
+ns.groups.RECRIG = Group('recrig', 'peg_bl')
 ns.groups.SAUSAGE_SAMPLER = Group('sausage_sampler', 133200, {defaults=ns.GROUP_HIDDEN, faction='Alliance'})
 ns.groups.SCAVENGER_OF_THE_SANDS = Group('scavenger_of_the_sands', 135725, {defaults=ns.GROUP_HIDDEN})
 ns.groups.SECRET_SUPPLY = Group('secret_supplies', 'star_chest_b', {defaults=ns.GROUP_HIDDEN75})
@@ -99,7 +99,7 @@ end)
 -------------------------------------------------------------------------------
 
 local TimedEvent = Class('TimedEvent', Quest, {
-    icon = "peg_wy",
+    icon = "peg_yw",
     scale = 2,
     group = ns.groups.ASSAULT_EVENT,
     note = ''

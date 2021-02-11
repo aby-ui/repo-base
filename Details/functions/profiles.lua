@@ -1246,6 +1246,7 @@ local default_global_data = {
 			["13"] = false,
 			["14"] = false,
 		},
+		current_exp_raid_encounters = {},
 		
 	--> death log
 		show_totalhitdamage_on_overkill = false,
@@ -1473,10 +1474,10 @@ function _detalhes:RestoreState_CurrentMythicDungeonRun()
 	local savedTable = _detalhes.mythic_dungeon_currentsaved
 	local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
 	local zoneName, _, _, _, _, _, _, currentZoneID = GetInstanceInfo()
-	
 	local mapID =  C_Map.GetBestMapForUnit ("player")
 	
 	if (not mapID) then
+		--print("D! no mapID to restored mythic dungeon state.")
 		return
 	end
 	
@@ -1503,16 +1504,24 @@ function _detalhes:RestoreState_CurrentMythicDungeonRun()
 				_detalhes.MythicPlus.PreviousBossKilledAt = savedTable.previous_boss_killed_at
 				_detalhes.MythicPlus.IsRestoredState = true
 				DetailsMythicPlusFrame.IsDoingMythicDungeon = true
+
+				print("D! (debug) mythic dungeon state restored.")
 				
 				C_Timer.After (2, function()
 					_detalhes:SendEvent ("COMBAT_MYTHICDUNGEON_START")
 				end)
 				return
+			else
+				print("D! (debug) mythic level isn't equal.", mythicLevel, savedTable.level)
 			end
+		else
+			print("D! (debug) zone name or zone Id isn't the same:", zoneName, savedTable.dungeon_name, currentZoneID, savedTable.dungeon_zone_id)
 		end
 		
 		--> mythic run is over
 		savedTable.started = false
+	else
+		--print("D! savedTable.stated isn't true.")
 	end
 end
 

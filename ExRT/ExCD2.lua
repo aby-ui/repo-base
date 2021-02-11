@@ -348,6 +348,7 @@ module.db.spell_isTalent = {
 	[207029]=true,[205604]=true,[205630]=true,	--PvP
 
 	[115008]=true,[121536]=true,
+	[132409]=true,
 
 	--Other & items
 	[67826]=true,
@@ -362,6 +363,7 @@ module.db.spell_autoTalent = {		--Для маркировки базовых з�
 	[88] = 104,
 	[22842] = 104,
 	[273048] = 104,
+	[109248] = 254,
 }
 
 module.db.spell_talentProvideAnotherTalents = {
@@ -4082,7 +4084,7 @@ do
 			UpdateAllData()
 			SortAllData()
 		end
-		if not scheduledUpdateRoster then
+		if not scheduledVisibility then
 			scheduledVisibility = ScheduleTimer(funcScheduledVisibility,2)
 		end
 		if not scheduledUpdateRoster then
@@ -4763,6 +4765,9 @@ do
 			handOfHind_var[destGUID] = sourceName
 		elseif spellID == 79140 then
 			roguepvptal_var[sourceName] = nil
+		elseif spellID == 196099 then
+			session_gGUIDs[sourceName] = -132409
+			forceUpdateAllData = true
 		end
 
 		if forceUpdateAllData then
@@ -10292,7 +10297,7 @@ module.db.AllSpells = {
 	{152262,"PALADIN,DPS,HEAL",	3,	{152262,45,	15},	nil,			nil,			nil,			},	--Seraphim
 	{210256,"PALADIN,PVP",		3,	nil,			nil,			nil,			{210256,45,	5},	},	--Blessing of Sanctuary
 	{236186,"PALADIN,PVP",		3,	nil,			nil,			{236186,4,	0},	{236186,4,	0},	},	--Cleansing Light
-	{210294,"PALADIN,PVP",		3,	nil,			{210294,25,	0},	nil,			nil,			},	--Divine Favor
+	{210294,"PALADIN,PVP",		3,	nil,			{210294,30,	0},	nil,			nil,			},	--Divine Favor
 	{228049,"PALADIN,PVP",		3,	nil,			nil,			{228049,180,	10},	nil,			},	--Guardian of the Forgotten Queen
 	{207028,"PALADIN,PVP",		3,	nil,			nil,			{207028,20,	0},	nil,			},	--Inquisition
 	{215652,"PALADIN,PVP",		3,	nil,			nil,			{215652,45,	0},	nil,			},	--Shield of Virtue
@@ -10623,6 +10628,8 @@ module.db.AllSpells = {
 	{264057,"WARLOCK",		3,	nil,			nil,			{264057,10,	0},	nil,			},	--Soul Strike
 	{264119,"WARLOCK",		3,	nil,			nil,			{264119,45,	0},	nil,			},	--Summon Vilefiend
 	{278350,"WARLOCK",		3,	nil,			{278350,20,	0},	nil,			nil,			},	--Vile Taint
+	{132409,"WARLOCK,KICK",		3,	nil,			{132409,24,	0},	nil,			{132409,24,	0},	},	--Kick with Grimoire
+	
 	{328774,"WARLOCK,PVP",		3,	{328774,45,	0},	nil,			nil,			nil,			},	--Amplify Curse
 	{199954,"WARLOCK,PVP",		3,	{199954,45,	10},	nil,			nil,			nil,			},	--Bane of Fragility
 	{200546,"WARLOCK,PVP",		3,	nil,			nil,			nil,			{200546,45,	12},	},	--Bane of Havoc

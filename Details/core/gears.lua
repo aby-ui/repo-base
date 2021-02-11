@@ -19,7 +19,7 @@ if (DetailsFramework.IsClassicWow()) then
 	LibGroupInSpecT = false
 end
 
-local storageDebug = true --remember to turn this to false!
+local storageDebug = false --remember to turn this to false!
 local store_instances = _detalhes.InstancesToStoreData
 
 function _detalhes:UpdateGears()
@@ -1034,7 +1034,8 @@ function _detalhes.storage:GetIDsToGuildSync()
 	end
 	
 	local IDs = {}
-	
+	local myGuildName = GetGuildInfo("player")
+
 	--build the encounter ID list
 	for diff, diffTable in pairs (db or {}) do
 		if (type (diffTable) == "table") then
@@ -1042,7 +1043,9 @@ function _detalhes.storage:GetIDsToGuildSync()
 				if (encounter_is_current_tier (encounterID)) then
 					for index, encounter in ipairs (encounterTable) do
 						if (encounter.servertime) then
-							tinsert (IDs, encounter.servertime)
+							if (myGuildName == encounter.guild) then
+								tinsert (IDs, encounter.servertime)
+							end
 						end
 					end
 				end
@@ -1514,7 +1517,7 @@ function Details.Database.StoreWipe(combat)
 	
 	local bossCLEUID = combat.boss_info and combat.boss_info.id
 	
-	if (not store_instances [mapID] and not _detalhes.EncountersToStoreData [bossCLEUID]) then
+	if (not store_instances [mapID]) then
 		if (_detalhes.debug) then
 			print ("|cFFFFFF00Details! Storage|r: instance not allowed.")
 		end
@@ -1585,7 +1588,7 @@ function Details.Database.StoreEncounter(combat)
 	
 	local bossCLEUID = combat.boss_info and combat.boss_info.id
 	
-	if (not store_instances [mapID] and not _detalhes.EncountersToStoreData [bossCLEUID]) then
+	if (not store_instances [mapID]) then
 		if (_detalhes.debug) then
 			print ("|cFFFFFF00Details! Storage|r: instance not allowed.")
 		end
@@ -1668,25 +1671,24 @@ function Details.Database.StoreEncounter(combat)
 		end
 
 
-
 	--> check for heroic and mythic
-	if (storageDebug or (diff == 15 or diff == 16 or diff == 17)) then --test on raid finder:  ' or diff == 17' -- normal mode: diff == 14 or 
+	if (storageDebug or (diff == 15 or diff == 16 or diff == 14)) then --test on raid finder:  ' or diff == 17' -- normal mode: diff == 14 or 
 	
 		--> check the guild name
 		local match = 0
-		local guildName = select (1, GetGuildInfo ("player"))
-		local raid_size = GetNumGroupMembers() or 0
+		local guildName = GetGuildInfo ("player")
+		local raidSize = GetNumGroupMembers() or 0
 		
 		if (not storageDebug) then
 			if (guildName) then
-				for i = 1, raid_size do
-					local gName = select (1, GetGuildInfo ("raid" .. i)) or ""
+				for i = 1, raidSize do
+					local gName = GetGuildInfo("raid" .. i) or ""
 					if (gName == guildName) then
 						match = match + 1
 					end
 				end
 				
-				if (match < raid_size * 0.75 and not storageDebug) then
+				if (match < raidSize * 0.75 and not storageDebug) then
 					if (_detalhes.debug) then
 						print ("|cFFFFFF00Details! Storage|r: can't save the encounter, need at least 75% of players be from your guild.")
 					end

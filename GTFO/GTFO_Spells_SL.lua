@@ -142,6 +142,11 @@ GTFO.SpellID["308030"] = {
   sound = 1;
 };
 
+GTFO.SpellID["346597"] = {
+  --desc = "Soul Bomb (Anima Devourer)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -575,5 +580,9 @@ GTFO.SpellID["332734"] = {
   sound = 1;
 };
 
+GTFO.SpellID["335873"] = {
+  --desc = "Rancor (Remornia)";
+  sound = 1;
+};
 
 end

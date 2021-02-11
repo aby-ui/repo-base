@@ -117,17 +117,6 @@ local function GetCompletedMissionInfo(mid)
 	end
 end
 
-local function logOracle(log)
-	return function(turn, source, spell)
-		local l = log[turn].events
-		for i=1,#l do
-			local l = l[i]
-			if l.spellID == spell and l.casterBoardIndex == source and (l.type < 5 or l.type == 7) and l.targetInfo[1] then
-				return l.targetInfo[1].boardIndex
-			end
-		end
-	end
-end
 local generateCheckpoints do
 	local hex = {}
 	for i=0,12 do hex[i] = ("%x"):format(i) end
@@ -179,16 +168,35 @@ local generateCheckpoints do
 		return true, checkpoints
 	end
 end
+local function checkpointMatch(truth, sim)
+	if truth == sim then return true end
+	for u, top, range in sim:gmatch("(.:)(%d+)%-?(%d*)") do
+		local rh = truth:match(u .. "(%d+)")
+		if not rh then return false end
+		rh = rh + 0
+		top, range = top + 0, range ~= "" and range+0 or 0
+		if not (rh <= top and rh >= (top-range)) then
+			return false
+		end
+	end
+	for u in truth:gmatch("(.:)") do
+		if not sim:match(u .. "%d") then
+			return false
+		end
+	end
+	return true
+end
 local function checkSim(cr, checkpoints)
 	local eei = cr.environment
 	local envs = eei and eei.autoCombatSpellInfo
-	local sim = T.VSim:New(cr.followers, cr.encounters, envs, cr.missionID, cr.missionScalar, logOracle(cr.log), 0)
+	local sim = T.VSim:New(cr.followers, cr.encounters, envs, cr.missionID, cr.missionScalar, 0)
+	sim:AddFightLogOracles(cr.log)
 	sim:Run()
 	if #checkpoints ~= #sim.checkpoints then
 		return false
 	end
 	for i=0,#checkpoints do
-		if checkpoints[i] ~= sim.checkpoints[i] then
+		if not checkpointMatch(checkpoints[i], sim.checkpoints[i]) then
 			return false
 		end
 	end

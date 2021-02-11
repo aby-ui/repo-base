@@ -128,7 +128,7 @@ local function MakeEnemeyInfoFrame()
         model:SetFrameLevel(1)
         model:SetSize(leftContainer.frame:GetWidth()-30,269)
         model:SetScript("OnEnter",nil)
-        model:SetFrameLevel(15)
+        model:SetFrameLevel(150)
         model:Show()
         f.modelContainer = f.modelContainer or AceGUI:Create("InlineGroup")
         local modelContainer = f.modelContainer
@@ -433,6 +433,7 @@ local spellBlacklist = {
     [35079] = true, --
     [50707] = true, --
     [240443] = true, --
+    [328506] = true, --
     --[X]  = true,
 }
 local lastEnemyIdx

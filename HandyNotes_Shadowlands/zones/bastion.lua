@@ -267,8 +267,8 @@ map.nodes[51456859] = Rare({
 
 map.nodes[30365517] = Rare({
     id=171327,
-    quest=nil,
-    note=L["activation_unknown"],
+    quest=61108,
+    note=L["reekmonger_note"],
     rewards={
         Achievement({id=14307, criteria=50616}),
     }
@@ -292,13 +292,14 @@ map.nodes[22432285] = Rare({
    requires=ns.requirement.GarrisonTalent(1241, L["anima_channeled"]),
    note=L["sotiros_orstus_note"],
    rewards={
-       Achievement({id=14307, criteria=50618})
+       Achievement({id=14307, criteria=50618}),
+       Transmog({item=184365, slot=L["shield"]}) -- Aegis of Salvation
    }
 }) -- Orstus and Sotiros
 
 map.nodes[61409050] = Rare({
     id=170548,
-    quest=nil,
+    quest=60862,
     note=L["sundancer_note"],
     rewards={
         Achievement({id=14307, criteria=50601}),

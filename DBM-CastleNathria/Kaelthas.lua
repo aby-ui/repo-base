@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210128202945")
+mod:SetRevision("20210208024707")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()--kael gets stuck on boss frames well after encounter has ended, therefor must not re-engage boss off this bug
@@ -45,7 +45,7 @@ mod:RegisterEventsInCombat(
  or (source.type = "NPC" and source.firstSeen = timestamp) or (target.type = "NPC" and target.firstSeen = timestamp)
  or (abililty.id = 326455 or ability.id = 326455 or ability.id = 325506) and type = "begincast"
 
- ability.id = 328659 or ability.id == 341254 or ability.id = 328731 and (type = "applybuff" or type = "removebuff")
+ or ability.id = 328659 or ability.id == 341254 or ability.id = 328731 and (type = "applybuff" or type = "removebuff")
 --]]
 --Shade of Kael'thas
 local warnFeiryStrike							= mod:NewCastAnnounce(326455, 2, nil, nil, "Melee")
@@ -461,7 +461,7 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd(wipe, isSecondRun)
+function mod:OnCombatEnd(wipe)
 	table.wipe(seenAdds)
 	table.wipe(castsPerGUID)
 	table.wipe(infuserTargets)
@@ -473,9 +473,6 @@ function mod:OnCombatEnd(wipe, isSecondRun)
 	end
 	if self.Options.NPAuraOnPhoenixFixate then--self.Options.NPAuraOnPhoenixEmbers or
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
-	end
-	if not isSecondRun then
-		DBM:AddMsg("Add timer accuracy may stil suffer greatly until blizzard fixes bugs with adds inconsistently firing events when spawning, especially soul infusers")
 	end
 end
 

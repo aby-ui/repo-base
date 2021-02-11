@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1761, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210204220422")
 mod:SetCreatureID(104528)--109042
 mod:SetEncounterID(1886)
 mod:SetUsedIcons(6, 5, 4, 3, 2, 1)
@@ -71,7 +71,7 @@ local timerSolarCollapseCD			= mod:NewNextTimer(35, 218148, nil, nil, nil, 3)
 
 --Stage 2: Nightosis
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerPlasmaSpheresCD			= mod:NewNextTimer(55, 218774, 104923, nil, nil, 1)--"Summon Balls" short text
+local timerPlasmaSpheresCD			= mod:NewNextTimer(55, 218774, nil, nil, nil, 1)
 local timerFlareCD					= mod:NewCDTimer(8.5, 218806, nil, "Melee", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Exception to 35, 40, 50 rule
 --Stage 3: Pure Forms
 mod:AddTimerLine(SCENARIO_STAGE:format(3))

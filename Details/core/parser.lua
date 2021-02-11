@@ -4522,6 +4522,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 		local encounterID, encounterName, difficultyID, raidSize = _select (1, ...)
+		local zoneName, _, _, _, _, _, _, zoneMapID = _GetInstanceInfo()
+
+		if (_detalhes.InstancesToStoreData[zoneMapID]) then
+			Details.current_exp_raid_encounters[encounterID] = true
+		end
 		
 		if (not _detalhes.WhoAggroTimer and _detalhes.announce_firsthit.enabled) then
 			_detalhes.WhoAggroTimer = C_Timer.NewTimer (0.5, who_aggro)
@@ -4539,8 +4544,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		local dbm_mod, dbm_time = _detalhes.encounter_table.DBM_Mod, _detalhes.encounter_table.DBM_ModTime
 		_table_wipe (_detalhes.encounter_table)
-		
-		local zoneName, _, _, _, _, _, _, zoneMapID = _GetInstanceInfo()
 		
 		--print (encounterID, encounterName, difficultyID, raidSize)
 		_detalhes.encounter_table.phase = 1

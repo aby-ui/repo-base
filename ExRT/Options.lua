@@ -567,8 +567,173 @@ function OptionsFrame:AddSnowStorm(maxSnowflake)
 	sf.snowlast = maxSnowflake
 end
 
+function OptionsFrame:AddDeathStar(maxDeathStars)
+	local sf = OptionsFrame.DeathStar or CreateFrame("ScrollFrame", nil, Options)
+	OptionsFrame.DeathStar = sf
+	sf:SetPoint("TOPLEFT")
+	sf:SetPoint("BOTTOMRIGHT")
+	
+	sf.C = sf.C or CreateFrame("Frame", nil, sf) 
+	sf:SetScrollChild(sf.C)
+	sf.C:SetSize(Options:GetWidth(),Options:GetHeight())
+
+	maxDeathStars = maxDeathStars or 1
+
+	if not OptionsFrame.hatBut then
+		local hat = CreateFrame("Button",nil,OptionsFrame)  
+		OptionsFrame.hatBut = hat
+		hat:SetSize(76,20) 
+		hat:SetPoint("TOP",OptionsFrame.image,22,-5)
+		hat.maxDeathStars = maxDeathStars
+		hat:RegisterForClicks("LeftButtonDown","RightButtonDown")
+		hat:SetScript("OnClick",function(self,button) 
+			if button == "RightButton" then
+				self.maxDeathStars = 0
+			else
+				self.maxDeathStars = self.maxDeathStars + 1
+			end
+			OptionsFrame:AddDeathStar(self.maxDeathStars)
+		end)
+	end
+
+	sf.snow = sf.snow or {}
+	sf.snowlast = sf.snowlast or 0
+	if sf.snowlast > maxDeathStars then
+		for i=maxDeathStars+1,#sf.snow do
+			local f = sf.snow[i]
+			f:Hide()
+		end
+		sf.snowlast = 0
+		return
+	end
+
+	local function AnimOnFinished(self)
+		local f = self.p
+		f.img:Hide()
+		f:Update()
+	end
+	local function AnimOnUpdate(self)
+		local f = self.p
+		local p = self:GetProgress()
+		if p == 0 then
+			return
+		end
+		if p > 0 and not f.img.on then
+			f.img.on = true
+			f.img:Show()
+		end
+		if not f.pause then
+			f.img:SetPoint("TOPLEFT",sf.C,"TOPLEFT",f.xf+(f.xt-f.xf)*p,-(f.yf+(f.yt-f.yf)*p))
+		end
+		if IsMouseButtonDown(1) and f.img2:IsMouseOver() and not f.pause then
+			f.pause = true
+			f.img:SetTexture([[Interface\AddOns\ExRT\media\deathstard]])
+			
+			local d = self:GetDuration()
+			local ds = math.min(p + 0.5 / d, 0.999)
+			local dp = math.min(p + 2 / d, 1)
+			f.alphastart = ds
+			f.alphaend = dp
+
+			local t = OptionsFrame.title:GetText()
+			if not t:find("%d+") then
+				t = t .. " <0>"
+			end
+			local tt = tonumber(t:match("%d+"),10)
+			OptionsFrame.title:SetText(t:gsub("%d+",tt+1))
+		end
+		if f.pause then
+			local a = 1
+			if p >= f.alphastart then
+				a = 1 - (p - f.alphastart) / (f.alphaend - f.alphastart)
+			end
+			f.img:SetAlpha(a)
+			if p >= f.alphaend then
+				self:Stop()
+			end
+		end
+	end
+	local function Update(self,isFirstTime)
+		local size = 128
+		if self.pause then
+			self.pause = nil
+			self.img:SetTexture([[Interface\AddOns\ExRT\media\deathstar]])
+			self.img:SetAlpha(1)
+		end
+		self.img:SetSize(size,size)
+		self.img2:SetSize(size*0.7,size*0.7)
+		self.img.on = nil
+		self.g.a.wayu = 0
+		local MIN,MAXX,MAXY = -size, Options:GetWidth(), Options:GetHeight()
+		self.xf = math.random(MIN,MAXX)
+		self.xt = math.random(MIN,MAXX)
+		self.yf = math.random(MIN,MAXY)
+		self.yt = math.random(MIN,MAXY)
+		local p = math.random(1,4)
+		if p == 1 then
+			self.yf = MIN
+		elseif p == 2 then
+			self.xf = MAXX
+		elseif p == 3 then
+			self.yf = MAXY
+		elseif p == 4 then
+			self.xf = MIN
+		end
+		local p2 = math.random(1,4)
+		while p == p2 do
+			p2 = math.random(1,4)
+		end
+		if p2 == 1 then
+			self.yt = MIN
+		elseif p2 == 2 then
+			self.xt = MAXX
+		elseif p2 == 3 then
+			self.yt = MAXY
+		elseif p2 == 4 then
+			self.xt = MIN
+		end		
+		self.g.a:SetStartDelay(1+math.random(0,1000)/100)
+		self.g.a:SetDuration(math.random(5,14))
+		if isFirstTime then
+			self.g.a:SetStartDelay(0)
+		end
+		self.g:Play()
+	end
+
+	for i=1,maxDeathStars do
+		if not sf.snow[i] then
+			local f = CreateFrame("Frame",nil,sf.C)
+			sf.snow[i] = f
+		
+			f.Update = Update
+
+			f.img = f:CreateTexture(nil,"BACKGROUND")
+			f.img:SetTexture([[Interface\AddOns\ExRT\media\deathstar]])
+			f.img:SetAlpha(1)
+			f.img:Hide()
+
+			f.img2 = f:CreateTexture(nil,"BACKGROUND")
+			f.img2:SetPoint("CENTER",f.img)
+			f.img2:Hide()
+			
+			f.g = f:CreateAnimationGroup()
+			f.g.p = f
+			f.g:SetScript('OnFinished', AnimOnFinished)
+			f.g.a = f.g:CreateAnimation()
+			f.g.a.p = f
+			f.g.a:SetScript("OnUpdate",AnimOnUpdate)
+		
+			f:Update(true)
+		end
+		sf.snow[i]:Show()
+	end
+	sf.snowlast = maxDeathStars
+end
+
+
 OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\MiniMap"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
 OptionsFrame.image2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\Aura73","BORDER"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140*2,140*2):Color(.9,.9,.45,1)
+
 OptionsFrame.image2:SetAlpha(0)
 OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",28):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
 
@@ -627,6 +792,18 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 		else
 			OptionsFrame:AddSnowStorm(0)
 		end
+	end
+
+	if false and (today.month == 5 and today.day == 4) then
+		OptionsFrame.image:SetTexture("Interface\\AddOns\\ExRT\\media\\OptionLogom4")
+		if math.random(0,9) == 4 then
+			OptionsFrame.image2:Color(1,0,0,1)	--you are sith
+		else	
+			OptionsFrame.image2:Color(0,1,0,1)
+		end
+		OptionsFrame.title:Color(.95,.455,.23,1)
+
+		OptionsFrame:AddDeathStar()
 	end
 end)
 

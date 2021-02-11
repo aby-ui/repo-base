@@ -108,6 +108,7 @@ PH.NoteHelp10 = "All text inside this code (\"...\" in current example) will be 
 PH.NoteHelp10b = "All text inside this code (\"...\" in current example) will be shown for all players except in groups 2 and 3 (current example). You can use any numbers of groups (|cffffff00{!g35}|r)."
 L.NoteHelp11 = "All text inside this code (\"...\" in current example) will be shown only for players with selected race (troll in this example). You can use any numbers of races."
 L.NoteHelp11b = "All text inside this code (\"...\" in current example) will be shown for all players except selected race (dwarf in this example). You can use any numbers of races."
+L.NoteMoveToPersonal = "Set as personal note"
 
 L.setminimap1 = "Hide minimap icon"
 L.setauthor = "Author"
@@ -1051,7 +1052,7 @@ L.RaidGroupsCombatStarted = "Combat started for this players"
 L.RaidGroupsSave = "Save current roster as new"
 L.RaidGroupsEnterName = "Enter preset name"
 L.RaidGroupsQuickLoad = "Quick Load"
-L.RaidGroupsTextMovable = "* name are movable"
+L.RaidGroupsTextMovable = "* names are movable"
 L.RaidGroupsExport = "Export current groups"
 
 L.OtherCovHelper = "Help me with choice"

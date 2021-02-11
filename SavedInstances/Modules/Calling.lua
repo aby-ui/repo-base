@@ -11,6 +11,7 @@ local C_QuestLog_GetTitleForQuestID = C_QuestLog.GetTitleForQuestID
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
 local C_TaskQuest_GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
+local GetQuestProgressBarPercent = GetQuestProgressBarPercent
 
 function Module:PostRefresh()
   if self.initialized then
@@ -61,6 +62,10 @@ function Module:COVENANT_CALLINGS_UPDATED(_, callings)
 
       if isOnQuest then
         local text, objectiveType, isFinished, questDone, questNeed = GetQuestObjectiveInfo(data.questID, 1, false)
+        if objectiveType == 'progressbar' then
+          questDone = GetQuestProgressBarPercent(data.questID)
+          questNeed = 100
+        end
         t.Calling[day].text = text
         t.Calling[day].objectiveType = objectiveType
         t.Calling[day].isFinished = isFinished

@@ -71,11 +71,14 @@ function WorldMapOptionsButtonMixin:OnEnter()
 end
 
 function WorldMapOptionsButtonMixin:Refresh()
+    local enabled = ns:GetOpt('show_worldmap_button')
     local map = ns.maps[self:GetParent():GetMapID() or 0]
-    if map and map:HasEnabledGroups() then self:Show() else self:Hide() end
+    if enabled and map and map:HasEnabledGroups() then self:Show() else self:Hide() end
 end
 
 function WorldMapOptionsButtonMixin:InitializeDropDown(level)
+    local map, icon, iconLink = ns.maps[self:GetParent():GetMapID()]
+
     if level == 1 then
         UIDropDownMenu_AddButton({
             isTitle = true,
@@ -83,25 +86,35 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             text = WORLD_MAP_FILTER_TITLE
         })
 
-        local map, icon = ns.maps[self:GetParent():GetMapID()]
-
         for i, group in ipairs(map.groups) do
             if group:IsEnabled() then
-                if type(group.icon) == 'number' then
-                    icon = ns.GetIconLink(group.icon, 12, 1, 0)..' '
-                else
-                    icon = ns.GetIconLink(group.icon, 16)
+                icon = group.icon
+                if group.name == 'misc' then
+                    -- find an icon from the misc nodes in the map
+                    for coord, node in pairs(map.nodes) do
+                        if node.group == group then
+                            icon = node.icon
+                            break
+                        end
+                    end
                 end
+
+                if type(icon) == 'number' then
+                    iconLink = ns.GetIconLink(icon, 12, 1, 0)..' '
+                else
+                    iconLink = ns.GetIconLink(icon, 16)
+                end
+
                 UIDropDownMenu_AddButton({
-                    text = icon..' '..ns.RenderLinks(group.label, true),
+                    text = iconLink..' '..ns.RenderLinks(group.label, true),
                     isNotRadio = true,
                     keepShownOnClick = true,
                     hasArrow = true,
                     value = group,
-                    checked = group:GetDisplay(),
+                    checked = group:GetDisplay(map.id),
                     arg1 = group,
                     func = function (button, group)
-                        group:SetDisplay(button.checked)
+                        group:SetDisplay(button.checked, map.id)
                     end
                 })
             end
@@ -109,12 +122,29 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
 
         UIDropDownMenu_AddSeparator()
         UIDropDownMenu_AddButton({
+            text = L["options_reward_types"],
+            isNotRadio = true,
+            notCheckable = true,
+            keepShownOnClick = true,
+            hasArrow = true,
+            value = 'rewards'
+        })
+        UIDropDownMenu_AddButton({
             text = L["options_show_completed_nodes"],
             isNotRadio = true,
             keepShownOnClick = true,
             checked = ns:GetOpt('show_completed_nodes'),
             func = function (button, option)
                 ns:SetOpt('show_completed_nodes', button.checked)
+            end
+        })
+        UIDropDownMenu_AddButton({
+            text = L["options_toggle_hide_done_rare"],
+            isNotRadio = true,
+            keepShownOnClick = true,
+            checked = ns:GetOpt('hide_done_rares'),
+            func = function (button, option)
+                ns:SetOpt('hide_done_rares', button.checked)
             end
         })
         UIDropDownMenu_AddButton({
@@ -142,31 +172,45 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         })
     elseif level == 2 then
-        -- Get correct map ID to query/set options for
-        local group = UIDROPDOWNMENU_MENU_VALUE
+        if UIDROPDOWNMENU_MENU_VALUE == 'rewards' then
+            for i, type in ipairs({'mount', 'pet', 'toy', 'transmog'}) do
+                UIDropDownMenu_AddButton({
+                    text = L["options_"..type.."_rewards"],
+                    isNotRadio = true,
+                    keepShownOnClick = true,
+                    checked = ns:GetOpt('show_'..type..'_rewards'),
+                    func = function (button, option)
+                        ns:SetOpt('show_'..type..'_rewards', button.checked)
+                    end
+                }, 2)
+            end
+        else
+            -- Get correct map ID to query/set options for
+            local group = UIDROPDOWNMENU_MENU_VALUE
 
-        self.GroupDesc.Text:SetText(ns.RenderLinks(group.desc))
-        UIDropDownMenu_AddButton({ customFrame = self.GroupDesc }, 2)
-        UIDropDownMenu_AddButton({
-            notClickable = true,
-            notCheckable = true
-        }, 2)
+            self.GroupDesc.Text:SetText(ns.RenderLinks(group.desc))
+            UIDropDownMenu_AddButton({ customFrame = self.GroupDesc }, 2)
+            UIDropDownMenu_AddButton({
+                notClickable = true,
+                notCheckable = true
+            }, 2)
 
-        UIDropDownMenu_AddSlider({
-            text = L["options_opacity"],
-            min = 0, max = 1, step=0.01,
-            value = group:GetAlpha(),
-            frame = self.AlphaOption,
-            percentage = true,
-            func = function (v) group:SetAlpha(v) end
-        }, 2)
+            UIDropDownMenu_AddSlider({
+                text = L["options_opacity"],
+                min = 0, max = 1, step=0.01,
+                value = group:GetAlpha(map.id),
+                frame = self.AlphaOption,
+                percentage = true,
+                func = function (v) group:SetAlpha(v, map.id) end
+            }, 2)
 
-        UIDropDownMenu_AddSlider({
-            text = L["options_scale"],
-            min = 0.3, max = 3, step=0.05,
-            value = group:GetScale(),
-            frame = self.ScaleOption,
-            func = function (v) group:SetScale(v) end
-        }, 2)
+            UIDropDownMenu_AddSlider({
+                text = L["options_scale"],
+                min = 0.3, max = 3, step=0.05,
+                value = group:GetScale(map.id),
+                frame = self.ScaleOption,
+                func = function (v) group:SetScale(v, map.id) end
+            }, 2)
+        end
     end
 end

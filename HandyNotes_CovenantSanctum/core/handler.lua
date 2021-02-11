@@ -43,30 +43,44 @@ end
 ----------------------------------------------------------------------------------------------------
 
 local function SetIcon(point)
-    local icon_key
-
-    for i, k in ipairs({
-        "anvil", "flightmaster", "innkeeper", "mail", "portal", "reforge", "renown", "stablemaster", "trainer", "vendor", "weaponsmith"
-    }) do
-        if point[k] then icon_key = k end
-    end
+    local icon_key = point.icon
 
     if (icon_key and constantsicon[icon_key]) then
         return constantsicon[icon_key]
     end
 end
 
+local function GetIconScale(icon)
+    -- anvil npcs are vendors
+    if icon == "anvil" then
+        return private.db["icon_scale_vendor"]
+    end
+
+    return private.db["icon_scale_"..icon] or private.db["icon_scale_others"]
+end
+
+local function GetIconAlpha(icon)
+    -- anvil npcs are vendors
+    if icon == "anvil" then
+        return private.db["icon_alpha_vendor"]
+    end
+
+    return private.db["icon_alpha_"..icon] or private.db["icon_alpha_others"]
+end
+
 local GetPointInfo = function(point)
     local icon
     if point then
         local label = getCreatureNamebyID(point.npc) or point.label or UNKNOWN
-        if (point.portal and point.sanctumtalent) then
+        local MagePortalHorde = private.constants.icon["MagePortalHorde"]
+
+        if (point.icon == "portal" and point.sanctumtalent) then
             local TALENT = C_Garrison.GetTalentInfo(point.sanctumtalent)
-            icon = TALENT["researched"] and SetIcon(point) or private.constants.icon["MagePortalHorde"]
+            icon = TALENT["researched"] and SetIcon(point) or MagePortalHorde
         else
             icon = SetIcon(point)
         end
-        return label, icon, point.scale, point.alpha
+        return label, icon, point.icon, point.scale, point.alpha
     end
 end
 
@@ -241,9 +255,9 @@ local currentMapID = nil
         local state, value = next(t, prestate)
         while state do
             if value and private:ShouldShow(state, value, currentMapID) then
-                local _, icon, scale, alpha = GetPointInfo(value)
-                    scale = (scale or 1) * private.db.icon_scale
-                    alpha = (alpha or 1) * private.db.icon_alpha
+                local _, icon, iconname, scale, alpha = GetPointInfo(value)
+                    scale = (scale or 1) * GetIconScale(iconname)
+                    alpha = (alpha or 1) * GetIconAlpha(iconname)
                 return state, nil, icon, scale, alpha
             end
             state, value = next(t, state)
@@ -263,17 +277,17 @@ local currentMapID = nil
         if (point.covenant and point.covenant ~= C_Covenants.GetActiveCovenantID()) then
             return false
         end
-        if (point.anvil and not private.db.show_vendor) then return false end
-        if (point.flightmaster and not private.db.show_others) then return false end
-        if (point.innkeeper and not private.db.show_innkeeper) then return false end
-        if (point.portal and (not private.db.show_portal or IsAddOnLoaded("HandyNotes_TravelGuide"))) then return false end
-        if (point.mail and not private.db.show_mail) then return false end
-        if (point.reforge and not private.db.show_reforge) then return false end
-        if (point.renown and not private.db.show_renown) then return false end
-        if (point.stablemaster and not private.db.show_stablemaster) then return false end
-        if (point.trainer and not private.db.show_others) then return false end
-        if (point.vendor and not private.db.show_vendor) then return false end
-        if (point.weaponsmith and not private.db.show_weaponsmith) then return false end
+        if (point.icon == "anvil" and not private.db.show_vendor) then return false end
+        if (point.icon == "flightmaster" and not private.db.show_others) then return false end
+        if (point.icon == "innkeeper" and not private.db.show_innkeeper) then return false end
+        if (point.icon == "portal" and (not private.db.show_portal or IsAddOnLoaded("HandyNotes_TravelGuide"))) then return false end
+        if (point.icon == "mail" and not private.db.show_mail) then return false end
+        if (point.icon == "reforge" and not private.db.show_reforge) then return false end
+        if (point.icon == "renown" and not private.db.show_renown) then return false end
+        if (point.icon == "stablemaster" and not private.db.show_stablemaster) then return false end
+        if (point.icon == "trainer" and not private.db.show_others) then return false end
+        if (point.icon == "vendor" and not private.db.show_vendor) then return false end
+        if (point.icon == "weaponsmith" and not private.db.show_weaponsmith) then return false end
     end
         return true
     end

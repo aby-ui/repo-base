@@ -1,43 +1,8 @@
 local _, T = ...
-local EV = T.Evie
+local EV, L, U = T.Evie, T.L, T.Util
 
 local FollowerList, MissionRewards
 
-local GetMaskBoard do
-	local b, u, om = {}, {curHP=1}
-	function GetMaskBoard(bm)
-		if om == bm then
-			return b
-		end
-		om = bm
-		for i=0,12 do
-			b[i] = bm % 2^(i+1) >= 2^i and u or nil
-		end
-		return b
-	end
-end
-local function GetTargetMask(si, casterBoardIndex, boardMask)
-	local TP = T.VSim.TP
-	local board = GetMaskBoard(boardMask)
-	local tt = si.target
-	if #si > 0 then
-		for i=1,#si do
-			if si[i].target ~= 4 then
-				tt = si[i].target
-				break
-			end
-		end
-	end
-	if tt == nil then
-		return 0
-	end
-	tt = TP.forkTargetMap[tt] or tt
-	local r, ta = 0, TP.GetTargets(casterBoardIndex, tt, board)
-	for i=1,ta and #ta or 0 do
-		r = r + 2^ta[i]
-	end
-	return r
-end
 local function GenBoardMask()
 	local m, MP = 0, CovenantMissionFrame.MissionTab.MissionPage
 	for i=0,12 do
@@ -48,73 +13,12 @@ local function GenBoardMask()
 	end
 	return m
 end
-local blipMetric = UIParent:CreateFontString(nil, "BACKGROUND", "GameTooltipText")
-blipMetric:SetPoint("TOPLEFT")
-blipMetric:SetText("|TInterface/Minimap/PartyRaidBlipsV2:8:8|t")
-blipMetric:Hide()
-local function FormatTargetBlips(tm, bm, prefix, ac)
-	ac = ac and ac .. "|t" or "120:255:0|t"
-	local r, xs = "", 0
-	local _, sh = GetPhysicalScreenSize()
-	blipMetric:SetText("|TInterface/Minimap/PartyRaidBlipsV2:8:8|t|TInterface/Minimap/PartyRaidBlipsV2:8:8|t")
-	local w2 = blipMetric:GetStringWidth()
-	blipMetric:SetText("|TInterface/Minimap/PartyRaidBlipsV2:8:8|t")
-	local w1 = blipMetric:GetStringWidth()
-	local bw = (w2-w1+select(2,blipMetric:GetFont())*(sh*5/9000-0.7))/0.64*UIParent:GetScale()
-	local yd = bw/2
-	if tm % 32 > 0 then
-		local xo = 0
-		for i=2,4 do
-			local t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (xo .. ":" .. yd).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
-			if i < 4 then
-				i, xo = i - 2, xo - bw/2
-				t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-				r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. (xo .. ":" .. -yd).. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
-				xo = xo - bw/2
-			end
-		end
-		xs = -bw
-	end
-	if tm >= 32 then
-		local xo = xs
-		for i=5,8 do
-			local t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. xo .. ":" .. -yd .. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
-			i, xo = i + 4, xo - bw
-			t, p = tm % 2^(i+1) >= 2^i, bm % 2^(i+1) >= 2^i
-			r = r .. "|TInterface/Minimap/PartyRaidBlipsV2:8:8:" .. xo .. ":" .. yd  .. ":64:32:0:20:0:20:" .. (t and ac or p and "160:160:160|t" or "40:40:40|t")
-		end
-	end
-	if prefix and r ~= "" then
-		r = prefix .. r
-	end
-	return r
-end
-local function FormatSpellPulse(si)
-	local t = si.type
-	local on, off = "|TInterface/Minimap/PartyRaidBlipsV2:8:8:0:0:64:32:0:20:0:20:255:120:0|t", "|TInterface/Minimap/PartyRaidBlipsV2:8:8:0:0:64:32:0:20:0:20:80:80:80|t"
-	if t == "heal" or t == "nuke" or t == "nukem" or (si.duration and si.duration <= 1 and si.echo) then
-		if si.echo then
-			return on .. (off):rep(si.echo-1) .. on
-		end
-	elseif (t == "heal" or t == "nuke") and (si.duration and si.duration > 1) then
-		return on .. (off):rep(si.duration-1)
-	elseif t == "aura" then
-		local r, p = (si.noFirstTick or si.period) and off or on, si.period or 1
-		for i=2, si.duration do
-			r = r .. (i % p == 0 and on or off)
-		end
-		return r
-	end
-end
 local function GetIncomingAAMask(slot, bm)
-	local r = 0
+	local r, TP = 0, T.VSim.TP
 	local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
-	local TP = T.VSim.TP
 
-	local board = GetMaskBoard(bm)
+	local board = U.GetMaskBoard(bm)
 	if slot < 5 then
 		for _,v in pairs(C_Garrison.GetMissionDeploymentInfo(mid).enemies) do
 			local i = v.boardIndex
@@ -126,11 +30,11 @@ local function GetIncomingAAMask(slot, bm)
 			end
 		end
 	else
-		for i=slot < 5 and 5 or 0, slot < 5 and 12 or 4 do
+		for i=0, 4 do
 			if bm % 2^(i+1) >= 2^i then
 				local fi = f[i]
 				local v, s1 = fi.info, fi.autoCombatSpells and fi.autoCombatSpells[1]
-				local aa = T.KnownSpells[T.VSim.TP:GetAutoAttack(v.role, i, mid, s1 and s1.autoCombatSpellID)]
+				local aa = T.KnownSpells[T.VSim.TP:GetAutoAttack(v.role, nil, nil, s1 and s1.autoCombatSpellID)]
 				if aa and TP.GetTargets(i, aa.target, board)[1] == slot then
 					r = bit.bor(r, 2^i)
 				end
@@ -141,86 +45,34 @@ local function GetIncomingAAMask(slot, bm)
 	return r
 end
 local function Puck_OnEnter(self)
-	if self.name then
-		local mhp, hp, atk, role, aat
-		local s1 = self.autoCombatSpells and self.autoCombatSpells[1]
-		local mi  = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
-		local mid = mi.missionID
-		local fi, level
-		if self.boardIndex > 4 then
-			for _,v in pairs(C_Garrison.GetMissionDeploymentInfo(mid).enemies) do
-				if v.boardIndex == self.boardIndex then
-					mhp, hp, atk, role = v.maxHealth, v.health, v.attack, v.role
-					aat = T.VSim.TP:GetAutoAttack(role, self.boardIndex, mid, s1 and s1.autoCombatSpellID)
-				end
-			end
-		elseif self.info and self.info.autoCombatantStats then
-			fi = self.info
-			local acs = fi.autoCombatantStats
-			mhp, hp, atk, role = acs.maxHealth, acs.currentHealth, acs.attack, fi.role
-			aat = T.VSim.TP:GetAutoAttack(role, self.boardIndex, mid, s1 and s1.autoCombatSpellID)
-			level = "|cffa8a8a8" .. UNIT_LEVEL_TEMPLATE:format(fi.level)
+	if not self.name then
+		if GameTooltip:IsOwned(self) then
+			GameTooltip:Hide()
 		end
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(self.name, level or "")
-
-		local bm = GenBoardMask()
-		local atype = FormatTargetBlips(GetTargetMask(T.KnownSpells[aat], self.boardIndex, bm), bm, " ")
-		if atype == "" then
-			atype = aat == 11 and " (近战)" or aat == 15 and " (远程)" or ""
-		end
-		GameTooltip:AddLine("|A:ui_adv_health:20:20|a" .. (hp and BreakUpLargeNumbers(hp) or "???") .. (mhp and mhp ~= hp and ("|cffa0a0a0/|r" .. BreakUpLargeNumbers(mhp)) or "").. "  |A:ui_adv_atk:20:20|a" .. (atk and BreakUpLargeNumbers(atk) or "???") .. "|cffa8a8a8" .. atype, 1,1,1)
-		if fi and fi.isMaxLevel == false and fi.xp and fi.levelXP and fi.level and not fi.isAutoTroop then
-			GameTooltip:AddLine(GARRISON_FOLLOWER_TOOLTIP_XP:format(fi.levelXP-fi.xp), 0.7, 0.7, 0.7)
-		end
-
-		for i=1,#self.autoCombatSpells do
-			local s = self.autoCombatSpells[i]
-			GameTooltip:AddLine(" ")
-			local si = T.KnownSpells[s.autoCombatSpellID]
-			local pfx = si and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
-			local cdt = s.cooldown ~= 0 and "[CD: " .. s.cooldown .. "回合]" or SPELL_PASSIVE_EFFECT
-			GameTooltip:AddDoubleLine(pfx .. "|T" .. s.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. s.name, "|cffa8a8a8" .. cdt .. "|r")
-			local dc, guideLine = 0.95
-			if si and si.type == "nop" then
-				dc, guideLine = 0.60, "It does nothing."
-			elseif si then
-				local tm = GetTargetMask(si, self.boardIndex, bm)
-				if tm > 0 then
-					local b = FormatTargetBlips(tm, bm)
-					if b and b ~= "" then
-						guideLine = "目标: " .. b
-					end
-				end
-				if si.healATK or si.damageATK or si.healPerc or si.damagePerc then
-					local p = FormatSpellPulse(si)
-					if p then
-						guideLine = "Pulse: " .. p .. (guideLine and "    " .. guideLine or "")
-					end
-				end
-				if si.desc then
-					dc, guideLine = 0.60, si.desc .. (guideLine and "|n" .. guideLine or "")
-				end
-			end
-			GameTooltip:AddLine(s.description, dc, dc, dc, 1)
-			if guideLine then
-				GameTooltip:AddLine(guideLine, 0.45, 1, 0, 1)
-			end
-		end
-
-		local aa = GetIncomingAAMask(self.boardIndex, bm)
-		if aa and aa > 0 then
-			local nc = NORMAL_FONT_COLOR
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine("承受攻击: " .. FormatTargetBlips(aa, bm, nil, "240:60:0"), nc.r, nc.g, nc.b)
-		end
-
-		GameTooltip:Show()
-		self:GetBoard():ShowHealthValues()
-	elseif GameTooltip:IsOwned(self) then
-		GameTooltip:Hide()
+		return
 	end
+	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
+	local bi, bm = self.boardIndex, GenBoardMask()
+	local info = self.info
+	local acs = self.autoCombatantStats or self.info and self.info.autoCombatantStats
+	if bi > 4 then
+		for _,v in pairs(C_Garrison.GetMissionDeploymentInfo(mid).enemies) do
+			if v.boardIndex == bi then
+				info, acs = v, {currentHealth=v.health, maxHealth=v.maxHealth, attack=v.attack}
+				break
+			end
+		end
+	end
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+	U.SetFollowerInfo(GameTooltip, info, self.autoCombatSpells, acs, mid, bi, bm, false)
+	local aa = GetIncomingAAMask(bi, bm)
+	if aa and aa > 0 then
+		local nc = NORMAL_FONT_COLOR
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(L"Incoming attacks:" .. " " .. U.FormatTargetBlips(aa, bm, nil, "240:60:0", false), nc.r, nc.g, nc.b)
+	end
+	GameTooltip:Show()
+	self:GetBoard():ShowHealthValues()
 end
 local function Puck_OnLeave(self)
 	if GameTooltip:IsOwned(self) then
@@ -230,16 +82,20 @@ local function Puck_OnLeave(self)
 end
 local function EnvironmentEffect_OnEnter(self)
 	local info = self.info
-	local si = T.KnownSpells[info and info.autoCombatSpellID]
-	local pfx = si and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
+	if not info then return end
+	local sid = info.autoCombatSpellID
+	local pfx = T.KnownSpells[sid] and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
 	GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -8, 0)
-	GameTooltip:SetText(pfx .. "|T" .. info.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. info.name .. "  |cffffffff[CD: " .. info.cooldown .. "回合]|r")
-	local dc, guideLine = 0.95
-	if si and si.type == "nop" then
-		dc, guideLine = 0.60, "It does nothing."
-	end
+	GameTooltip:ClearLines()
+	GameTooltip:AddDoubleLine(pfx .. "|T" .. info.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. info.name, "|cffa8a8a8" .. (L"[CD: %dT]"):format(info.cooldown) .. "|r")
+	local guideLine = U.GetAbilityGuide(sid, -1, GenBoardMask(), false)
+	local od = U.GetAbilityDescriptionOverride(info and info.autoCombatSpellID)
+	local dc = od and 0.60 or 0.95
 	GameTooltip:AddLine(info.description, dc, dc, dc, 1)
+	if od then
+		GameTooltip:AddLine(od, 0.45, 1, 0, 1)
+	end
 	if guideLine then
 		GameTooltip:AddLine(guideLine, 0.45, 1, 0, 1)
 	end
@@ -279,131 +135,89 @@ local GetSim do
 			local eei = C_Garrison.GetAutoMissionEnvironmentEffect(mid)
 			local mdi = C_Garrison.GetMissionDeploymentInfo(mid)
 			local espell = eei and eei.autoCombatSpellInfo
-			simTag, simArch, simMS = tag, T.VSim:New(team, mdi.enemies, espell, mid, mi.missionScalar, nil, 100)
+			simTag, simArch, simMS = tag, T.VSim:New(team, mdi.enemies, espell, mid, mi.missionScalar, 100)
 		end
 		return simArch, simMS
 	end
 end
 local function Predictor_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-	GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. "诅咒冒险者的指南")
+	GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. L"Cursed Adventurer's Guide")
 	GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1, 1)
-	GameTooltip:AddLine("使用: 阅读指南, 确定冒险队的命运。", 0, 1, 0, 1)
-	GameTooltip:AddLine('"不要相信它的谎言！ 平衡德鲁伊不是紧急口粮。"', 1, 0.835, 0.09, 1)
+	GameTooltip:AddLine(L"Use: Read the guide, determining the fate of your adventuring party.", 0, 1, 0, 1)
+	GameTooltip:AddLine(L'"Do not believe its lies! Balance druids are not emergency rations."', 1, 0.835, 0.09, 1)
 	GameTooltip:Show()
 end
 local function Predictor_OnClick(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 	local sim, ms = GetSim()
 	sim:Run()
+	local res = sim.res
 	local incompleteModel = ms and next(ms) and true
-	local rngModel = (sim.pWin < 1 and sim.pWin > 0) or not sim.exhaustive
+	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
 	local hprefix = (incompleteModel and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or "")
 	if rngModel then
-		GameTooltip:SetText(hprefix .. "诅咒的不确定性", 1, 0.20, 0)
+		GameTooltip:SetText(hprefix .. L"Curse of Uncertainty", 1, 0.20, 0)
 	else
-		GameTooltip:SetText(hprefix .. (sim.won and "|cff00ff00胜利|r" or "|cffff0000失败|r"), 1,1,1)
+		GameTooltip:SetText(hprefix .. (sim.won and L"Victorious" or L"Defeated"), 1,1,1)
 	end
 	if incompleteModel then
-		GameTooltip:AddLine("并非所有的能力都被考虑到。|n ", 0.9,0.25,0.15)
+		GameTooltip:AddLine(L"Not all abilities have been taken into account." .. "|n ", 0.9,0.25,0.15)
 	end
 
 	if rngModel then
-		if sim.exhaustive then
-			GameTooltip:AddLine("指南显示了一些可能的未来。 在某些情况下，冒险以胜利结束。 在其他情况下，则是特别可怕的失败。", 1,1,1,1)
-		else
-			GameTooltip:AddLine("指南向你展示了许多可能的未来，太多了。从这一点不可能得出你的队伍获胜的结论。", 1,1,1,1)
-			if (sim.pWin == 0) then
-				GameTooltip:AddLine("不管怎样，你记得的一切都以失败告终。", 1,1,1,1)
-			elseif sim.pLose == 0 then
-				GameTooltip:AddLine("不管怎样，你记得的一切都结束得很好。", 1,1,1,1)
+		if res.hadDrops then
+			GameTooltip:AddLine(L"The guide shows you many possible futures. Too many. It is impossible to draw conclusions about your party's chances from this.", 1,1,1,1)
+			if not res.hadWins then
+				GameTooltip:AddLine(L"For what it is worth, everything you remember ended badly.", 1,1,1,1)
+			elseif not res.hadLosses then
+				GameTooltip:AddLine(L"For what it is worth, everything you remember ended well.", 1,1,1,1)
 			end
+		else
+			GameTooltip:AddLine(L"The guide shows you a number of possible futures. In some, the adventure ends in triumph; in others, a particularly horrible failure.", 1,1,1,1)
 		end
 		if not incompleteModel then
-			GameTooltip:AddLine('"运气好的话，这就是结束的唯一方法。"', 1, 0.835, 0.09, 1)
+			GameTooltip:AddLine(L'"With your luck, there is only one way this ends."', 1, 0.835, 0.09, 1)
 		end
 	else
-		if sim.mass == 1 then
-			if sim.won then
-				local c = NORMAL_FONT_COLOR
-				GameTooltip:AddLine("回合数: |cffffffff" .. sim.turn, c.r, c.g, c.b)
-				local troopCount, troopHealth, troopHealthMax = 0, 0, 0
-				for i=0,4 do
-					local e, f = sim.board[i], CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex[i]
-					if f and f.name and f:IsShown() and f.info and e then
-						if f.info.isAutoTroop then
-							troopCount, troopHealth, troopHealthMax = troopCount + 1, troopHealth + (e.curHP or 0), troopHealthMax + (e.maxHP or 0)
-						else
-							GameTooltip:AddDoubleLine(f.name, e.curHP .. "/" .. e.maxHP, 1,1,1, e.curHP > 0 and 0 or 1, e.curHP > 0 and 1 or 0.3, 0.15)
-						end
+		local lo, hi, c = res.min, res.max, NORMAL_FONT_COLOR
+		local turns = lo[17] ~= hi[17] and lo[17] .. " - " .. hi[17] or lo[17]
+		if turns then
+			GameTooltip:AddLine((sim.won and L"Turns taken: %s" or L"Turns survived: %s"):format("|cffffffff" .. turns .. "|r"), c.r, c.g, c.b)
+		end
+		if sim.won then
+			local troopCount, troopHealth1, troopHealth2, troopHealthMax = 0, 0, 0, 0
+			for i=0,4 do
+				local hmin, hmax = lo[i], hi[i]
+				local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex[i]
+				local e = sim.board[i]
+				if f and f.name and f:IsShown() and f.info and hmin and e then
+					if f.info.isAutoTroop then
+						troopCount, troopHealth1, troopHealth2, troopHealthMax = troopCount + 1, troopHealth1 + hmin, troopHealth2 + hmax, troopHealthMax + (e.maxHP or 0)
+					else
+						local chp = hmin == hmax and hmin or ((hmin == 0 and "|cffff40200|r" or hmin) .. " |cffffffff-|r " .. hmax)
+						GameTooltip:AddDoubleLine(f.name, chp .. "/" .. e.maxHP, 1,1,1, hmax > 0 and 0 or 1, hmax > 0 and 1 or 0.3, 0.15)
 					end
 				end
-				if troopCount > 0 then
-					GameTooltip:AddDoubleLine("其他部队", troopHealth .. "/" .. troopHealthMax, 1,1,1, troopHealth > 0 and 0 or 1, troopHealth > 0 and 1 or 0.3, 0.15)
-				end
-			else
-				local thp, mhp = 0, 0
-				for i=5,12 do
-					local e = sim.board[i]
-					if e then
-						mhp, thp = mhp + e.maxHP, thp + e.curHP
-					end
-				end
-				local c = NORMAL_FONT_COLOR
-				GameTooltip:AddLine("坚持回合数: |cffffffff" .. sim.turn, c.r, c.g, c.b)
-				GameTooltip:AddLine("剩余敌人生命值: |cffffffff" .. thp .. " (" .. math.ceil(thp/mhp*100) .. "%)", c.r, c.g, c.b)
 			end
-		elseif sim.exhaustive and (sim.pWin == 1 or sim.pLose == 1) and sim.forks then
-			local lo, hi, inf = {}, {}, math.huge
-			local c = NORMAL_FONT_COLOR
-			for i=0,#sim.forks do
-				local simf = sim.forks[i]
-				for k,v in pairs(simf.board) do
-					lo[k], hi[k] = math.min(lo[k] or inf, v.curHP), math.max(hi[k] or -inf, v.curHP)
-				end
-				lo[-2], hi[-2] = math.min(simf.turn, lo[-2] or inf), math.max(simf.turn, hi[-2] or -inf)
+			if troopCount > 0 then
+				local hmin, hmax = troopHealth1, troopHealth2
+				local chp = hmin == hmax and hmin or ((hmin == 0 and "|cffff40200|r" or hmin) .. " |cffffffff-|r " .. hmax)
+				GameTooltip:AddDoubleLine(FOLLOWERLIST_LABEL_TROOPS, chp .. "/" .. troopHealthMax, 1,1,1, troopHealth2 > 0 and 0 or 1, troopHealth2 > 0 and 1 or 0.3, 0.15)
 			end
-			local turns = lo[-2] ~= hi[-2] and lo[-2] .. " - " .. hi[-2] or lo[-2]
-			if turns then
-				GameTooltip:AddLine((sim.won and "回合数: |cffffffff" or "坚持回合数: |cffffffff") .. turns, c.r, c.g, c.b)
+		else
+			local hmin, hmax, maxHP = lo[15], hi[15], 0
+			for i=5,12 do
+				local e = sim.board[i]
+				maxHP = maxHP + (e and e.maxHP or 0)
 			end
-			if sim.won then
-				local troopCount, troopHealth1, troopHealth2, troopHealthMax = 0, 0, 0, 0
-				for i=0,4 do
-					local hmin, hmax = lo[i], hi[i]
-					local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex[i]
-					local e = sim.board[i]
-					if f and f.name and f:IsShown() and f.info and hmin and e then
-						if f.info.isAutoTroop then
-							troopCount, troopHealth1, troopHealth2, troopHealthMax = troopCount + 1, troopHealth1 + hmin, troopHealth2 + hmax, troopHealthMax + (e.maxHP or 0)
-						else
-							local chp = hmin == hmax and hmin or ((hmin == 0 and "|cffff40200|r" or hmin) .. " |cffffffff-|r " .. hmax)
-							GameTooltip:AddDoubleLine(f.name, chp .. "/" .. e.maxHP, 1,1,1, hmax > 0 and 0 or 1, hmax > 0 and 1 or 0.3, 0.15)
-						end
-					end
-				end
-				if troopCount > 0 then
-					local hmin, hmax = troopHealth1, troopHealth2
-					local chp = hmin == hmax and hmin or ((hmin == 0 and "|cffff40200|r" or hmin) .. " |cffffffff-|r " .. hmax)
-					GameTooltip:AddDoubleLine("其他部队", chp .. "/" .. troopHealthMax, 1,1,1, troopHealth2 > 0 and 0 or 1, troopHealth2 > 0 and 1 or 0.3, 0.15)
-				end
-			else
-				local hmin, hmax, maxHP = 0, 0, 0
-				for i=5,12 do
-					local e = sim.board[i]
-					if e then
-						maxHP = maxHP + (e.maxHP or 0)
-						hmin, hmax = hmin + (lo[i] or 0), hmax + (hi[i] or 0)
-					end
-				end
-				local chp = hmin == hmax and hmin or (hmin .. " - " .. hmax)
-				hmin, hmax = math.ceil(hmin/maxHP*100), math.ceil(hmax/maxHP*100)
-				local cr = hmin == hmax and hmin or (hmin .. "% - " .. hmax)
-				GameTooltip:AddLine("剩余敌人生命值: |cffffffff" .. chp .. " (" .. cr .. "%)", c.r, c.g, c.b)
-			end
+			local chp = hmin == hmax and hmin or (hmin .. " - " .. hmax)
+			hmin, hmax = math.ceil(hmin/maxHP*100), math.ceil(hmax/maxHP*100)
+			local cr = hmin == hmax and hmin or (hmin .. "% - " .. hmax)
+			GameTooltip:AddLine((L"Remaining enemy health: %s"):format("|cffffffff" .. chp .. " (" .. cr .. "%)|r"), c.r, c.g, c.b)
 		end
 		if not incompleteModel then
-			GameTooltip:AddLine('"有什么疑问吗？"', 1, 0.835, 0.09, 1)
+			GameTooltip:AddLine(L'"Was there ever any doubt?"', 1, 0.835, 0.09, 1)
 		end
 	end
 	GameTooltip:Show()
@@ -424,7 +238,7 @@ local function MissionRewards_OnShow(self)
 	local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
 	local d = mi and mi.duration
 	self.Rewards:SetRewards(mi and mi.xp, mi and mi.rewards)
-	self.Duration:SetText(d and "时长: |cffffffff" .. d or "")
+	self.Duration:SetText(d and L"Duration:" .. " |cffffffff" .. d or "")
 	local xp = mi and mi.xp or 0
 	for i=1,mi and mi.rewards and #mi.rewards or 0 do
 		local r = mi.rewards[i]
@@ -432,8 +246,8 @@ local function MissionRewards_OnShow(self)
 			xp = xp + r.followerXP
 		end
 	end
+	self.xpGain = xp
 	if FollowerList then
-		self.xpGain = xp
 		FollowerList:SyncXPGain(xp)
 	end
 end
@@ -499,7 +313,6 @@ function EV:I_ADVENTURES_UI_LOADED()
 	local ir = T.CreateObject("InlineRewardBlock", s)
 	MissionRewards = ir
 	ir:SetPoint("LEFT", s.Header, "LEFT", 100, -16)
-	ir:SetScript("OnShow", MissionRewards_OnShow)
 	ir.Duration = ir:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	ir.Duration:SetPoint("LEFT", ir, "RIGHT", 4, 0)
 	hooksecurefunc(CovenantMissionFrame, "SetTitle", function()
@@ -509,9 +322,10 @@ function EV:I_ADVENTURES_UI_LOADED()
 	MP.Board:HookScript("OnHide", MissionView_OnHide)
 	MP.Board:HookScript("OnShow", MissionView_OnShow)
 	hooksecurefunc(CovenantMissionFrameFollowers, "UpdateFollowers", function()
-		if MP.Board:IsVisible() and not (MissionList and MissionList:IsVisible()) then
+		if MP.Board:IsVisible() and not (T.MissionList and T.MissionList:IsVisible()) then
 			MissionView_OnShow()
 		end
 	end)
+	MP.Stage.Title:SetWidth(320)
 	return false
 end

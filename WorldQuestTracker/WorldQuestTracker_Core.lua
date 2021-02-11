@@ -1060,6 +1060,21 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					GameCooltip:Hide()
 					return
 				end
+
+				if (option == "talkinghead") then
+					if (value == "talking_heads_openworld") then
+						WorldQuestTracker.db.profile.talking_heads_openworld = not WorldQuestTracker.db.profile.talking_heads_openworld
+					elseif (value == "talking_heads_dungeon") then
+						WorldQuestTracker.db.profile.talking_heads_dungeon = not WorldQuestTracker.db.profile.talking_heads_dungeon
+					elseif (value == "talking_heads_raid") then
+						WorldQuestTracker.db.profile.talking_heads_raid = not WorldQuestTracker.db.profile.talking_heads_raid
+					elseif (value == "talking_heads_torgast") then
+						WorldQuestTracker.db.profile.talking_heads_torgast = not WorldQuestTracker.db.profile.talking_heads_torgast
+					end
+
+					GameCooltip:Hide()
+					return
+				end
 			
 				if (option == "ignore_quest") then
 					WorldQuestTracker.OpenQuestBanPanel()
@@ -4181,8 +4196,28 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 2, 1, 16, 16)
 					else
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
-					end					
-				
+					end	
+					
+				-- ~talking ~head
+				GameCooltip:AddLine ("No Talking Head")
+				GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\icon_talking_head]], 1, 1, IconSize, IconSize)
+
+					GameCooltip:AddLine ("Open World", "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.talking_heads_openworld)
+					GameCooltip:AddMenu (2, options_on_click, "talkinghead", "talking_heads_openworld", not WorldQuestTracker.db.profile.talking_heads_openworld)
+					
+					GameCooltip:AddLine ("Dungeon", "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.talking_heads_dungeon)
+					GameCooltip:AddMenu (2, options_on_click, "talkinghead", "talking_heads_dungeon", not WorldQuestTracker.db.profile.talking_heads_dungeon)
+					
+					GameCooltip:AddLine ("Raid", "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.talking_heads_raid)
+					GameCooltip:AddMenu (2, options_on_click, "talkinghead", "talking_heads_raid", not WorldQuestTracker.db.profile.talking_heads_raid)
+
+					GameCooltip:AddLine ("Torgasth", "", 2)
+					add_checkmark_icon (WorldQuestTracker.db.profile.talking_heads_torgast)
+					GameCooltip:AddMenu (2, options_on_click, "talkinghead", "talking_heads_torgast", not WorldQuestTracker.db.profile.talking_heads_torgast)
+
 				-- ~accessibility
 				GameCooltip:AddLine (L["S_OPTIONS_ACCESSIBILITY"])
 				GameCooltip:AddIcon ([[Interface\PVPFrame\PVP-Banner-Emblem-1]], 1, 1, IconSize, IconSize)

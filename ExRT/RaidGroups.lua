@@ -282,6 +282,11 @@ function module.options:Load()
 			end
 		end
 
+		--reports saying that too many swap events can trigger disconnect on classic, unconfirmed cause: other addons or pure swap events
+		if ExRT.isClassic and not IsShiftKeyDown() then
+			wipe(needPosInGroup)
+		end
+
 		module.db.needGroup = needGroup
 		module.db.needPosInGroup = needPosInGroup
 		module.db.lockedUnit = lockedUnit
@@ -608,7 +613,7 @@ function module.options:Load()
 
 			local lines = {strsplit("\n",str)}
 			for i=1,#lines do
-				local left,right = strsplit(" ",lines[i]:gsub(" +"," "),nil)
+				local left,right = strsplit(" ",lines[i]:gsub(" +"," "):gsub('"',''),nil)
 				if left and left:trim() ~= "" then
 					left = left:trim()
 				else
@@ -640,7 +645,7 @@ function module.options:Load()
 			for i=1,#lines do
 				local left = lines[i]
 				if left and left:trim() ~= "" then
-					left = left:trim()
+					left = left:trim():gsub('"','')
 				else
 					left = nil
 				end
@@ -661,7 +666,7 @@ function module.options:Load()
 			for i=1,#lines do
 				local group = 0
 
-				local name,line = strsplit(" ",lines[i]:gsub(" +"," "),2)
+				local name,line = strsplit(" ",lines[i]:gsub(" +"," "):gsub('"',''),2)
 				while name do
 					group = group + 1
 					if i <= 5 and group <= 8 then

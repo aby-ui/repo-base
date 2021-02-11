@@ -4,8 +4,8 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8192
-		_detalhes.alpha_build_counter = 8192 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8203
+		_detalhes.alpha_build_counter = 8203 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = "v9.0.2"
 		_detalhes.userversion = "v9.0.2." .. _detalhes.build_counter
@@ -152,85 +152,9 @@ do
 				{Name = "Report What is Shown In the Window", Desc = "Report the current data shown in the window, the number 1 is the window number, replace it to report another window.", MacroText = "/script Details:FastReportWindow(1)"},
 			}
 			
-		--> quais raides devem ser guardadas no hist�rico
-			_detalhes.InstancesToStoreData = { --> mapIDs
-				[2070] = true, --Battle for Dazaralor (BFA) GetInstanceInfo
-				[1148] = true, --Uldir (BFA) uiMapID
-				[1861] = true, --Uldir (BFA) from GetInstanceInfo
-				[2164] = true, --Eternal Palace
-
-				[2217] = true, --8.3
-
+		--> current instances of the exp (need to maintain)
+			_detalhes.InstancesToStoreData = { --mapId
 				[2296] = true, --castle narnia
-			}
-			
-			--must fail in map and encounter id to not store data
-			_detalhes.EncountersToStoreData = { --> encounterIDs
-				--CLEU
-				[2144] = 1, --Taloc - Taloc
-				[2141] = 2, --MOTHER - MOTHER
-				[2128] = 3, --Fetid Devourer - Fetid Devourer
-				[2136] = 4, --Zek'voz - Zek'voz, Herald of N'zoth
-				[2134] = 5, --Vectis - Vectis
-				[2145] = 6, --Zul - Zul, Reborn
-				[2135] = 7, --Mythrax the Unraveler - Mythrax the Unraveler
-				[2122] = 8, --G'huun - G'huun
-				
-				[2265] = 1, --Champion of the Light
-				[2263] = 2, --Grong, the Jungle Lord
-				[2266] = 3, --Jadefire Masters
-				[2271] = 4, --Opulence
-				[2268] = 5, --Conclave of the Chosen
-				[2272] = 6, --King Rastakhan
-				[2276] = 7, --High Tinker Mekkatorque
-				[2280] = 8, --Stormwall Blockade
-				[2281] = 9, --Lady Jaina Proudmoore
-				
-				[2269] = 1, --The Restless Cabal
-				[2273] = 2, --Uu'nat, Harbinger of the Void
-				
-				[2298] = 1, --Abyssal Commander Sivara
-				[2289] = 2, --Blackwater Behemoth
-				[2305] = 3, --Radiance of Azshara
-				[2304] = 4, --Lady Ashvane
-				[2303] = 5, --Orgozoa
-				[2311] = 6, --The Queen's Court
-				[2293] = 7, --Za'qul, Harbinger of Ny'alotha
-				[2299] = 8, --Queen Azshara
-				
-				--EJID
-				[2168] = 1, --Taloc
-				[2167] = 2, --MOTHER
-				[2146] = 3, --Fetid Devourer
-				[2169] = 4, --Zek'voz, Herald of N'zoth
-				[2166] = 5, --Vectis
-				[2195] = 6, --Zul, Reborn
-				[2194] = 7, --Mythrax the Unraveler
-				[2147] = 8, --G'huun
-				
-				[2333] = 1, --Champion of the Light
-				[2325] = 2, --Grong, the Jungle Lord
-				[2341] = 3, --Jadefire Masters
-				[2342] = 4, --Opulence
-				[2330] = 5, --Conclave of the Chosen
-				[2335] = 6, --King Rastakhan
-				[2334] = 7, --High Tinker Mekkatorque
-				[2337] = 8, --Stormwall Blockade
-				[2343] = 9, --Lady Jaina Proudmoore
-				
-				[2328] = 1, --The Restless Cabal
-				[2332] = 2, --Uu'nat, Harbinger of the Void
-				
-				[2352] = 1, --Abyssal Commander Sivara
-				[2347] = 2, --Blackwater Behemoth
-				[2353] = 3, --Radiance of Azshara
-				[2354] = 4, --Lady Ashvane
-				[2351] = 5, --Orgozoa
-				[2359] = 6, --The Queen's Court
-				[2349] = 7, --Za'qul, Harbinger of Ny'alotha
-				[2361] = 8, --Queen Azshara
-				
-			
 			}
 			
 		--> armazena os escudos - Shields information for absorbs

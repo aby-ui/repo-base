@@ -474,7 +474,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["CovenantAbilities"],
 								order = 32,
-								args = listOption({310143}, "auraApplied"),
+								args = listOption({310143,327676}, "auraApplied"),
 							},
 							dispelkickback = { -- AuraApplied
 								type = 'group',
@@ -509,7 +509,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffABD473Hunter|r"],
 								order = 80,
-								args = listOption({19263,53271,62305,53480,186265,186257,212640,193530,266779,3355,202748,212704},"auraApplied"),
+								args = listOption({19263,53271,62305,53480,186265,186257,212640,288613,193530,266779,3355,202748,212704,260402},"auraApplied"),
 							},
 							mage = { -- AuraApplied
 								type = 'group',
@@ -558,7 +558,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff9482C9Warlock|r"],
 								order = 150,
-								args = listOption({108416,104773,113860,196098,212295},"auraApplied"),
+								args = listOption({108416,104773,113860,212295},"auraApplied"),
 							},
 							warrior	= { -- AuraApplied
 								type = 'group',
@@ -948,7 +948,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff0070daShaman|r"],
 								order = 140,
-								args = listOption({198067,198103,192249,108281,118345,204437,51490,320125},"castSuccess"),
+								args = listOption({198067,198103,192249,108281,118345,204437,51490,320125,326059},"castSuccess"),
 							},
 							shamanTotems	= { -- CastSuccess
 								type = 'group',

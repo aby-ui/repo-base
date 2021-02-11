@@ -1,6 +1,7 @@
 local _, T = ...
 local SpellInfo = T.KnownSpells
 
+local band, bor = bit.band, bit.bor
 local f32_ne, f32_perc, f32_pim do
 	local frexp, lt = math.frexp, {
 		[-80]=-0xcccccd*2^-24,
@@ -46,6 +47,66 @@ local f32_ne, f32_perc, f32_pim do
 		return i - i%1
 	end
 end
+local f32_sr do
+	local ah, al = {}, {}
+	local ev, minv, maxv = {}, {}, {}
+	function f32_sr(s)
+		local c, mc = s.c, #s
+		if mc == 1 then
+			local m, r = f32_perc(s[1]), 1
+			for i=1, c[s[1]] do
+				r = f32_ne(r+m)
+			end
+			return r, r
+		end
+		table.sort(s)
+		local sk, ec = "", 0
+		for i=1,mc do
+			local m = s[i]
+			ec = ec + c[m]
+			sk = sk .. m .. ":" .. ec .. ":"
+		end
+		local vl, vh = al[sk], ah[sk]
+		if vl then
+			return vl, vh
+		end
+		local sv, cv = 0, 1
+		for i=1,mc do
+			local m = s[i]
+			local c, smul = c[m], 2
+			while smul <= c do
+				smul = smul + smul
+			end
+			ev[i], sv, minv[i], maxv[i], cv = f32_perc(m), sv+cv*c, cv, cv*smul, cv*smul
+		end
+		local hi, lo = {[sv]=1}, {[sv]=1}
+		for i=1,ec do
+			local hi2, lo2 = {}, {}
+			for k, v in pairs(hi) do
+				for j=1,mc do
+					local f, mv = k % maxv[j], minv[j]
+					if f >= mv then
+						local nk = k - mv
+						local vj = ev[j]
+						local hv = f32_ne(v+vj)
+						local lv = f32_ne(lo[k]+vj)
+						local oh, ol = hi2[nk], lo2[nk]
+						if oh == nil or hv > oh then
+							hi2[nk] = hv
+						end
+						if ol == nil or lv < ol then
+							lo2[nk] = lv
+						end
+					end
+				end
+			end
+			hi, lo = hi2, lo2
+		end
+		vl, vh = lo[0], hi[0]
+		al[sk], ah[sk] = vl, vh
+		return vl, vh
+	end
+end
 local function icast(f)
 	local m = f % 1
 	return f - m + (m > f and m > 0 and 1 or 0)
@@ -54,14 +115,15 @@ end
 local VS, VSI = {}, {}
 local VSIm = {__index=VSI}
 
-local boardSlotName = {}
+local slotHex = {[-1]="w"}
 for i=0,15 do
-	boardSlotName[i] = ("%x"):format(i)
+	slotHex[i] = ("%x"):format(i)
 end
 
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
+local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
 local TP = {} do
-	local mistypedAutoAttack = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
+	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -124,7 +186,7 @@ local TP = {} do
 		[0x41]=1, [0x43]=1,
 	}
 	local stt = {}
-	local function GetTargets(source, tt, board)
+	local function GetTargets(source, tt, board, targ)
 		local ni, su, tl, lo, taunt = 1, board[source], targetLists[tt], source < 5 and source >= 0
 		taunt, tl = su and su.taunt, tl and tl[source]
 		if tl then
@@ -163,6 +225,15 @@ local TP = {} do
 				if tu and tu.curHP > 0 and not tu.shroud then
 					stt[ni], ni = i, ni + 1
 				end
+			end
+		elseif tt == "mark" then
+			local m, p = 2, 1
+			for i=0,targ and 12 or -1 do
+				local tu = board[i]
+				if tu and tu.curHP > 0 and targ % m >= p then
+					stt[ni], ni = i, ni + 1
+				end
+				m, p = m+m, m
 			end
 		elseif tt == "friend-surround" then
 			local f = source*16
@@ -231,10 +302,14 @@ local TP = {} do
 			else
 				GetTargets(source, 0, board)
 				if #stt > 0 then
-					local t = adjCleave[source*16+stt[1]]
+					local s1 = stt[1]
+					local t = adjCleave[source*16+s1]
 					local tu = board[t]
-					stt[2] = tu and tu.curHP > 0 and not tu.shroud and t or nil
-					ni = stt[2] and 3 or 2
+					local s2 = tu and tu.curHP > 0 and not tu.shroud and t or nil
+					stt[2], ni = s2, s2 and 3 or 2
+					if s2 and s2 < s1 then
+						stt[1], stt[2] = s2, s1
+					end
 				end
 			end
 		elseif tt == "col" then
@@ -310,8 +385,8 @@ local TP = {} do
 		return stt
 	end
 	function TP:GetAutoAttack(role, slot, mid, firstSpell)
-		local a1 = slot and mid and mistypedAutoAttack[4+2*slot+32*mid]
-		local a2 = slot == nil and firstSpell and mistypedAutoAttack[1+4*firstSpell]
+		local a1 = slot and mid and overrideAA[4+2*slot+32*mid]
+		local a2 = (slot or 0) < 5 and firstSpell and overrideAA[1+4*firstSpell]
 		return (a1 or a2 or (role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
 	end
 	TP.GetTargets = GetTargets
@@ -331,66 +406,45 @@ local function enqc(q, k, e)
 	e[5] = e
 	return enq(q, k, e)
 end
-local stacksort do
-	local u2, o, u = {}
-	local function cmp(a,b)
-		local ac, bc = o[a], o[b]
-		if ac == bc then
-			return u2[a] < u2[b]
-		end
-		return u[ac] < u[bc]
-	end
-	function stacksort(s, bom)
-		o, u = s.o, bom
-		for i=1,#s do
-			u2[s[i]] = i
-		end
-		table.sort(s, cmp)
-		local nv, m = 1, s.m
-		for i=1, #s do
-			local v = s[i]
-			nv, u2[v] = f32_ne(nv + m[v]), nil
-		end
-		return nv
-	end
-end
 
 local mu = {}
-function mu:stackf32(sourceIndex, targetIndex, stackName, magh, _sid)
+function mu:stackf32(_sourceIndex, targetIndex, stackName, magh, _sid)
 	local b = self.board[targetIndex]
 	local s = b.stacks[stackName]
 	if s == nil then
-		s = {m={}, o={}}
-		b.stacks[stackName] = s
-	end
-	local tok = (self.lsToken or 0) - 1
-	self.lsToken, self.lsName, self.lsTarget = tok, stackName, targetIndex
-	s.m[tok], s.o[tok], s[#s+1] = f32_perc(magh), sourceIndex, tok
-	b[stackName] = stacksort(s, self.bom)
-	return tok
-end
-function mu:unstackf32(_sourceIndex, targetIndex, stackName, cancelToken)
-	local b = self.board[targetIndex]
-	local s = b.stacks[stackName]
-	local m, nv, wi = s.m, 1, 1
-	if not m[cancelToken] then error("cannot unwind") end
-	m[cancelToken] = nil
-	for i=1,#s do
-		local t = s[i]
-		if t ~= cancelToken then
-			s[wi], wi = t, wi+1
-			nv = f32_ne(nv + m[t])
+		b.stacks[stackName] = {magh, c={[magh]=1}}
+	else
+		local c = s.c
+		local oc = c[magh]
+		if oc then
+			c[magh] = oc + 1
+		else
+			s[#s+1], c[magh] = magh, 1
 		end
 	end
-	b[stackName], s[wi] = nv, nil
+	b[stackName], b[stackName .. "H"] = nil
 end
-function mu:funstackf32(sourceIndex, atTurn, ord)
-	local sn = self.lsName
-	if not sn then
-		error("stackop desync")
+function mu:unstackf32(_sourceIndex, targetIndex, stackName, magh)
+	local b = self.board[targetIndex]
+	local s = b.stacks[stackName]
+	local c = s.c
+	local oc = c[magh]
+	if oc > 1 then
+		c[magh] = oc - 1
+	elseif #s == 1 then
+		b[stackName], b[stackName .. "H"], b.stacks[stackName] = 1,1, nil
+		return
+	else
+		c[magh] = nil
+		for i=1, #s-1 do
+			if s[i] == magh then
+				s[i] = s[#s]
+				break
+			end
+		end
+		s[#s] = nil
 	end
-	enq(self.queue, atTurn, {"unstackf32", sourceIndex, self.lsTarget, sn, self.lsToken, ord=ord})
-	self.lsName = nil
+	b[stackName], b[stackName .. "H"] = nil
 end
 function mu:modDamageDealt(sourceIndex, targetIndex, mod, sid)
 	mu.stackf32(self, sourceIndex, targetIndex, "modDamageDealt", mod, sid)
@@ -399,37 +453,97 @@ function mu:modDamageTaken(sourceIndex, targetIndex, mod, sid)
 	mu.stackf32(self, sourceIndex, targetIndex, "modDamageTaken", mod, sid)
 end
 function mu:damage(sourceIndex, targetIndex, baseDamage, causeTag, causeSID)
-	local board, ret = self.board, false
+	local board = self.board
 	local tu, su = board[targetIndex], board[sourceIndex]
-	local tHP = tu.curHP
-	if tHP > 0 then
-		local points = math.floor(baseDamage) + su.plusDamageDealt
-		points = icast(f32_ne(points * su.modDamageDealt)) + tu.plusDamageTaken
-		points = icast(f32_ne(points * tu.modDamageTaken))
-		if points > 0 or (causeTag == "Thorn" and points ~= 0) then
-			local tracer = self.trace
-			if tracer then
-				tracer(self, "HIT", sourceIndex, targetIndex, points, tHP, causeTag, causeSID)
-			end
-			if tHP > points then
-				tu.curHP = tHP-points
-				if points < 0 and (tHP-points) > tu.maxHP then
-					tu.curHP = tu.maxHP
-				end
-			else
-				tu.curHP = 0
-				mu.die(self, targetIndex, causeTag)
-				ret=true
-			end
+	local tHP, rHP = tu.curHP, tu.hpR
+	if tHP <= 0 then
+		return
+	end
+	local su_mdd, tu_mdt, su_hmdd, tu_hmdt = su.modDamageDealt, tu.modDamageTaken
+	if su_mdd then
+		su_hmdd = su.modDamageDealtH
+	else
+		su_mdd, su_hmdd = f32_sr(su.stacks.modDamageDealt)
+		su.modDamageDealt, su.modDamageDealtH = su_mdd, su_hmdd
+	end
+	if tu_mdt then
+		tu_hmdt = tu.modDamageTakenH
+	else
+		tu_mdt, tu_hmdt = f32_sr(tu.stacks.modDamageTaken)
+		tu.modDamageTaken, tu.modDamageTakenH = tu_mdt, tu_hmdt
+	end
+	if (su_mdd < 0) ~= (tu_mdt < 0) then
+		tu_mdt, tu_hmdt = tu_hmdt, tu_mdt
+	end
+	local basepoints = math.floor(baseDamage) + su.plusDamageDealt
+	local points = icast(f32_ne(basepoints * su_mdd)) + tu.plusDamageTaken
+	points = icast(f32_ne(points * tu_mdt))
+	local pointsR, points2 = 0, points
+	if su_mdd ~= su_hmdd or tu_mdt ~= tu_hmdt then
+		points2 = icast(f32_ne(basepoints * su_hmdd)) + tu.plusDamageTaken
+		points2 = icast(f32_ne(points2 * tu_hmdt))
+		if points > points2 then
+			points, points2, pointsR = points2, points, points-points2
+		elseif points < points2 then
+			pointsR = points2-points
 		end
-		if causeTag ~= "Thorn" then
-			local thorns = tu.thornsDamage
-			if thorns > 0 and causeTag ~= "Tick" and causeTag ~= "Thorn" and causeTag ~= "EEcho" then
-				mu.damage(self, targetIndex, sourceIndex, thorns, "Thorn", tu.thornsSID)
+	end
+	if causeTag ~= "Thorn" and points <= 0 and points2 >= 0 then
+		points, pointsR = 0, points2
+	end
+	if points2 > 0 or (causeTag == "Thorn" and (points ~= 0 or points2 ~= 0)) then
+		local tracer = self.trace
+		if tracer then
+			tracer(self, "HIT", sourceIndex, targetIndex, points, tHP, causeTag, causeSID, pointsR)
+		end
+		if points < 0 then
+			local nHP, maxHP, nrHP = tHP-points2, tu.maxHP, rHP + pointsR
+			if nHP > maxHP then
+				tu.curHP = maxHP
+				local nr = nrHP - nHP + maxHP
+				tu.rHP = nr > 0 and nr or 0
+			else
+				tu.curHP, tu.hpR = nHP, nrHP
+			end
+		elseif tHP > points then
+			tu.curHP, tu.hpR = tHP - points, rHP + pointsR
+		else
+			tu.curHP, tu.hpR = 0, 0
+			mu.die(self, targetIndex, causeTag)
+		end
+		if tu.curHP > 0 and tu.curHP <= tu.hpR then
+			local oracle = self.finalHitOracle
+			local survived = oracle and oracle(self.turn, sourceIndex, targetIndex, causeSID, tHP, rHP)
+			if survived == nil then
+				survived = math.random() >= 0.5
+				local f = self:Clone()
+				if f then
+					local tuf = f.board[targetIndex]
+					if survived then
+						tuf.curHP, tuf.hpR = 0,0
+						mu.die(f, targetIndex, causeTag)
+					else
+						tuf.hpR = tuf.curHP-1
+						local thorns = tu.thornsDamage
+						if thorns > 0 and causeTag ~= "Tick" and causeTag ~= "Thorn" and causeTag ~= "EEcho" then
+							local fqh = f.sqh-1
+							f.sqh, f.sq[fqh] = fqh, {"damage", targetIndex, sourceIndex, thorns, "Thorn", tu.thornsSID}
+						end
+					end
+				end
+			end
+			if survived then
+				tu.hpR = tu.curHP-1
+			else
+				tu.curHP, tu.hpR = 0, 0
+				mu.die(self, targetIndex, causeTag)
 			end
 		end
 	end
-	return ret
+	local thorns = tu.thornsDamage
+	if thorns > 0 and causeTag ~= "Tick" and causeTag ~= "Thorn" and causeTag ~= "EEcho" then
+		mu.damage(self, targetIndex, sourceIndex, thorns, "Thorn", tu.thornsSID)
+	end
 end
 function mu:dtick(sourceIndex, targetIndex, esid, eeid, causeTag, causeSID)
 	local board, ret = self.board
@@ -448,21 +562,25 @@ function mu:dtick(sourceIndex, targetIndex, esid, eeid, causeTag, causeSID)
 		local datk, dperc = effect.healATK, effect.healPerc
 		local points = (datk and f32_pim(datk,su.atk) or 0) + (dperc and math.floor(dperc*tu.maxHP/100) or 0)
 		if points > 0 then
-			mu.heal(self, sourceIndex, targetIndex, points, causeTag, causeSID)
+			mu.mend(self, sourceIndex, targetIndex, points, causeTag, causeSID)
 		end
 	end
 	return ret
 end
-function mu:heal(sourceIndex, targetIndex, halfPoints, causeTag, causeSID)
+function mu:mend(sourceIndex, targetIndex, halfPoints, causeTag, causeSID)
 	local board = self.board
 	local tu = board[targetIndex]
 	local cHP = tu.curHP
 	if cHP > 0 then
 		local points = math.floor(halfPoints)
 		if points > 0 then
-			local nhp, max = cHP + points, tu.maxHP
-			nhp = nhp > max and max or nhp
-			tu.curHP = nhp
+			local nhp, max, rHP = cHP + points, tu.maxHP, tu.hpR
+			if nhp > max then
+				local nr = rHP - nhp + max
+				tu.curHP, tu.hpR = max, nr > 0 and nr or 0
+			else
+				tu.curHP = nhp
+			end
 			local tracer = self.trace
 			if tracer then
 				tracer(self, "HEAL", sourceIndex, targetIndex, points, cHP, causeTag, causeSID)
@@ -470,227 +588,12 @@ function mu:heal(sourceIndex, targetIndex, halfPoints, causeTag, causeSID)
 		end
 	end
 end
-function mu:shroud(_sourceIndex, targetIndex, delta)
+function mu:unshroud(_sourceIndex, targetIndex)
 	local tu = self.board[targetIndex]
 	if tu then
-		local ns = (tu.shroud or 0) + delta
-		tu.shroud = ns > 0 and ns or nil
+		local ns = (tu.shroud or 0) - 1
+		tu.shroud, self.ftc = ns > 0 and ns or nil, nil
 	end
-end
-function mu:spell(source, sid, eid, ord)
-	local si = eid ~= 0 and SpellInfo[sid][eid] or SpellInfo[sid]
-	local board = self.board
-	local su = board[source]
-	local rflag = false
-	local sit, sitt, tt = si.type, si.target
-	local ft = forkTargets[sitt]
-	if not ft then
-	elseif self.inFork then
-		sitt, self.inFork = "fork", nil
-	else
-		tt = TP.GetTargets(source, ft, board)
-		local lim, cc = self.forkLimit, self.forks
-		cc = cc and #cc or 0
-		if #tt > 1 then
-			local oracle, baseSpell = self.forkOracle, SpellInfo[sid]
-			local ownTarget = oracle and oracle(self.turn, source, sid) or tt[math.random(#tt)]
-			for i=1,#tt do
-				if tt[i] == ownTarget then
-					tt[1], tt[i] = tt[i], tt[1]
-					break
-				end
-			end
-			self.mass, self.inFork, self.forkTarget = self.mass * #tt, true, nil
-			for i=2,#tt do
-				if not lim or #(self.forks or "") < lim then
-					local f = self:Clone()
-					f.forkTarget = tt[i]
-					local fq = f.queue[self.turn]
-					for e2=eid,#baseSpell do
-						fq[#fq+1] = {"spell", source, sid, e2, ord-eid+e2}
-					end
-				else
-					local prime = self.prime or self
-					prime.droppedTraces = true
-				end
-			end
-			self.inFork, self.forkTarget, sitt = nil, tt[1], "fork"
-		else
-			self.forkTarget, sitt = tt[1], "fork"
-		end
-	end
-	
-	if sitt == "fork" then
-		if self.forkTarget == nil then
-			return
-		end
-		tt = TP.GetTargets(self.forkTarget, "self", board)
-	elseif sitt == "mark" then
-		if self.markTarget == nil then
-			return
-		end
-		tt = TP.GetTargets(self.markTarget, "self", board)
-	else
-		tt = TP.GetTargets(source, sitt, board)
-	end
-	if sit == "passive" then
-		local onDeath = su.deathUnwind or {}
-		local mdd, mdt, tatk = si.modDamageDealt, si.modDamageTaken, si.thornsATK
-		local td = tatk and f32_pim(tatk,su.atk)
-		for i=1,#tt do
-			i = tt[i]
-			local tu = board[i]
-			if mdd then
-				mu.modDamageDealt(self, source, i, mdd, sid)
-				onDeath[#onDeath+1] = {"unstackf32", source, i, self.lsName, self.lsToken}
-				self.lsName = nil
-			end
-			if mdt then
-				mu.modDamageTaken(self, source, i, mdt, sid)
-				onDeath[#onDeath+1] = {"unstackf32", source, i, self.lsName, self.lsToken}
-				self.lsName = nil
-			end
-			if td then
-				tu.thornsDamage = tu.thornsDamage + td
-				tu.thornsSID = tu.thornsSID or sid
-				onDeath[#onDeath+1] = {"statDelta", source, i, "thornsDamage", -td}
-			end
-		end
-		su.deathUnwind = onDeath
-	elseif sit == "mark" then
-		self.markTarget = tt[1]
-	elseif sit == "aura" then
-		local period, duration = si.period, si.duration
-		local mdd, mdt = si.modDamageDealt, si.modDamageTaken
-		local datk, hatk = si.damageATK, si.healATK
-		local halfPoints = datk and f32_pim(datk, su.atk) or 0
-		local healPoints = hatk and f32_pim(hatk, su.atk) or 0
-		local tb = self.turn-1
-		local d1 = si.damageATK1
-		local pdda, pdta, thornsa = si.plusDamageDealtATK, si.plusDamageTakenATK, si.thornsATK
-		local hasDamage, hasHeal = si.damageATK or si.damagePerc, si.healATK or si.healPerc
-		local modHPP, modHPA = si.modMaxHP, si.modMaxHPATK
-		local pdd, pdt = pdda and (pdda*su.atk/100) or si.plusDamageDealtA, pdta and (pdta*su.atk/100) or si.plusDamageTakenA
-		local nore = si.nore
-		for ti=1,#tt do
-			local i = tt[ti]
-			local tu = board[i]
-			local thornsp = thornsa and f32_pim(thornsa, tu.atk)
-			if d1 then
-				rflag = mu.damage(self, source, i, f32_pim(d1, su.atk), "EFirst", sid) or rflag
-			end
-			if not si.noFirstTick and halfPoints > 0 and not period then -- Periodic initial damage is deferred?
-				rflag = mu.damage(self, source, i, halfPoints, (nore or d1) and "Tick" or "EFront", sid) or rflag
-			end
-			if healPoints > 0 and not si.noFirstTick and not period then -- Periodic heals are deferred too
-				mu.heal(self, source, i, healPoints, "EFront", sid)
-			end
-			if tu.curHP > 0 then
-				if mdd then
-					mu.modDamageDealt(self, source, i, mdd, sid)
-					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -80))
-				end
-				if mdt then
-					mu.modDamageTaken(self, source, i, mdt, sid)
-					mu.funstackf32(self, source, tb+duration+1, ord+(si.fadeOrd or -80))
-				end
-				if pdd then
-					tu.plusDamageDealt = tu.plusDamageDealt + pdd
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageDealt", -pdd, ord=ord-80})
-				end
-				if pdt then
-					tu.plusDamageTaken = tu.plusDamageTaken + pdt
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "plusDamageTaken", -pdt, ord=ord-80})
-				end
-				if modHPP or modHPA then
-					local d = (modHPP and f32_pim(modHPP, tu.maxHP) or 0) + (modHPA and f32_pim(modHPA, su.atk) or 0)
-					tu.curHP, tu.maxHP = tu.curHP+d, tu.maxHP+d
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "maxHP", -d, ord=ord-100})
-				end
-				if thornsp then
-					tu.thornsDamage = tu.thornsDamage + thornsp
-					tu.thornsSID = tu.thornsSID or sid
-					enq(self.queue, tb+duration+1, {"statDelta", source, i, "thornsDamage", -thornsp, ord=ord-80})
-				end
-				if period == 2 then
-					for j=3,duration+1,2 do
-						if hasDamage or hasHeal then
-							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100+ti})
-						end
-					end
-				else
-					for j=2,duration do
-						if hasDamage or hasHeal then
-							enq(self.queue, tb+j, {"dtick", source, i, sid, eid, "Effect", sid, ord=ord-100+ti})
-						end
-					end
-				end
-				if si.echo then
-					enq(self.queue, tb+si.echo+1, {"damage", source, i, halfPoints, "EEcho", sid, ord=ord-100+ti})
-				end
-			end
-		end
-	elseif sit == "nuke" then
-		local mdd, sATK = si.modDamageDealt, su.atk
-		local datk, datk2, dperc, echo = si.damageATK, si.damageATK2, si.damagePerc, si.echo
-		local points1, points2 = datk and f32_pim(datk, sATK) or 0, datk2 and f32_pim(datk2, sATK) or 0
-		echo = echo and (self.turn+echo) or nil
-		local causeTag = si.nore and "Tick" or "Spell"
-		for ti=1,#tt do
-			local i = tt[ti]
-			local tu = board[i]
-			rflag = mu.damage(self, source, i, points1 + (dperc and math.floor(dperc*tu.maxHP/100) or 0), causeTag, sid) or rflag
-			if points2 > 0 then
-				rflag = mu.damage(self, source, i, points2, "Spell", sid) or rflag
-			end
-			if tu.curHP > 0 then
-				if mdd then
-					mu.modDamageDealt(self, source, i, mdd, sid)
-					mu.funstackf32(self, source, self.turn+si.duration, ord-80)
-				end
-				if echo then
-					enq(self.queue, echo, {"damage", source, i, points1, "Tick", sid, ord=ord-100+ti})
-				end
-			end
-		end
-		if si.healTarget == "self" then
-			mu.heal(self, source, source, f32_pim(si.healATK or 0, su.atk), "DHeal", sid)
-		end
-	elseif sit == "nukem" then
-		local sATK, d = su.atk, si.damageATK
-		for i=1,#tt do
-			local i = tt[i]
-			for j=1,#d do
-				local p = f32_pim(d[j], sATK)
-				rflag = mu.damage(self, source, i, p, "Spell", sid) or rflag
-			end
-		end
-	elseif sit == "heal" then
-		local mdd, hPerc = si.modDamageDealt, si.healPercent
-		for i=1,#tt do
-			i = tt[i]
-			local tu = board[i]
-			local hatk = si.healATK
-			local points = (hatk and f32_pim(hatk, su.atk) or 0) + (hPerc and math.floor(hPerc*tu.maxHP/100) or 0)
-			mu.heal(self, source, i, points, "Spell", sid)
-			if mdd then
-				mu.modDamageDealt(self, source, i, mdd, sid)
-				mu.funstackf32(self, source, self.turn+si.duration, ord-80)
-			end
-			if si.shroudTurns then
-				tu.shroud = (tu.shroud or 0) + 1
-				enq(self.queue, self.turn+si.shroudTurns, {"shroud", source, i, -1, ord=ord})
-			end
-		end
-	elseif sit == "taunt" then
-		for i=1,#tt do
-			i = tt[i]
-			local tu = board[i]
-			tu.taunt = source
-			enq(self.queue, self.turn+si.duration, {"untaunt", source, i, sid, ord=ord-100})
-		end
-	end
-	return rflag
 end
 function mu:untaunt(source, target, _sid)
 	local tu = self.board[target]
@@ -710,7 +613,7 @@ function mu:statDelta(_sourceIndex, targetIndex, statName, delta)
 end
 function mu:die(deadIndex, causeTag)
 	local k, board, wasOver = deadIndex < 5 and "liveFriends" or "liveEnemies", self.board, self.over
-	self[k] = self[k] - 1
+	self[k], self.ftc = self[k] - 1, nil
 	if self[k] == 0 then
 		self.over, self.won = true, deadIndex >= 5
 	end
@@ -738,40 +641,454 @@ function mu:die(deadIndex, causeTag)
 			mu[q[1]](self, unpack(q,2))
 		end
 	end
+	local turn, dside, masks, horizon = self.turn, deadIndex < 5
+	for k,v in pairs(self.queue) do
+		if k > turn then
+			local fim, fom, dtm = 0,0,0
+			for i=1,#v do
+				local vi = v[i]
+				if vi[2] == deadIndex then
+					local mt, tar, ex = vi[1], vi[3], vi[4]
+					local tside = tar < 5
+					if tside == dside and (mt == "unstackf32" and ex == "modDamageDealt" or mt == "statDelta" and ex == "plusDamageDealt") then
+						fom = bor(fom, 2^tar)
+					elseif tside ~= dside and (mt == "unstackf32" and ex == "modDamageTaken" or mt == "statDelta" and ex == "plusDamageTaken") then
+						fim = bor(fim, 2^tar)
+					elseif (mt == "damage" or mt == "dtick") then
+						dtm = bor(dtm, 2^tar)
+					end
+				end
+			end
+			if fim > 0 or fom > 0 or dtm > 0 then
+				masks = masks or {}
+				masks[3*k] = fim > 0 and fim or nil
+				masks[3*k+1] = fom > 0 and fom or nil
+				masks[3*k+2] = dtm > 0 and dtm or nil
+				horizon = horizon and horizon > k and horizon or k
+			end
+		end
+	end
+	du.dmasks, du.dhorizon, du.drA, du.drB, du.drC = masks, horizon, 0, 0, 0
+end
+function mu:passive(source, sid)
+	local board = self.board
+	local si, su = SpellInfo[sid], board[source]
+	local onDeath = su.deathUnwind or {}
+	local mdd, mdt, tatk = si.modDamageDealt, si.modDamageTaken, si.thornsATK
+	local td = tatk and f32_pim(tatk, su.atk)
+	local tt = TP.GetTargets(source, si.target, board)
+	for i=1,#tt do
+		i = tt[i]
+		local tu = board[i]
+		if mdd then
+			mu.modDamageDealt(self, source, i, mdd, sid)
+			onDeath[#onDeath+1] = {"unstackf32", source, i, "modDamageDealt", mdd}
+		end
+		if mdt then
+			mu.modDamageTaken(self, source, i, mdt, sid)
+			onDeath[#onDeath+1] = {"unstackf32", source, i, "modDamageTaken", mdt}
+		end
+		if td then
+			tu.thornsDamage = tu.thornsDamage + td
+			tu.thornsSID = tu.thornsSID or sid
+			onDeath[#onDeath+1] = {"statDelta", source, i, "thornsDamage", -td}
+		end
+	end
+	su.deathUnwind = onDeath
+end
+function mu:aura0(sourceIndex, targetIndex, _targetSeq, _ord, si, sid, _eid)
+	local board = self.board
+	local su = board[sourceIndex]
+	local firstTick = not si.period and not si.noFirstTick
+	local d1, d2, h2 = si.damageATK1, firstTick and si.damageATK, firstTick and si.healATK
+	local ec = (d1 and 1 or 0) + (d2 and 1 or 0) + (h2 and 1 or 0)
+	local sATK = su.atk
+	if ec == 1 then
+		if d1 then
+			mu.damage(self, sourceIndex, targetIndex, f32_pim(d1, sATK), "EFirst", sid)
+		elseif d2 then
+			mu.damage(self, sourceIndex, targetIndex, f32_pim(d2, sATK), si.nore and "Tick" or "EFront", sid)
+		else
+			mu.mend(self, sourceIndex, targetIndex, f32_pim(h2, sATK), "EFront", sid)
+		end
+	elseif ec > 0 then
+		local sq, sqh = self.sq, self.sqh-1
+		if h2 then
+			sqh, sq[sqh] = sqh-1, {"mend", sourceIndex, targetIndex, f32_pim(h2, sATK), "EFront", sid}
+		end
+		if d2 then
+			sqh, sq[sqh] = sqh-1, {"damage", sourceIndex, targetIndex, f32_pim(d2, sATK), (si.nore or d1) and "Tick" or "EFront", sid}
+		end
+		if d1 then
+			sqh, sq[sqh] = sqh-1, {"damage", sourceIndex, targetIndex, f32_pim(d1, sATK), "EFirst", sid}
+		end
+		self.sqh = sqh+1
+	end
+end
+function mu:aura(sourceIndex, targetIndex, targetSeq, ord, si, sid, eid)
+	local board = self.board
+	local su, tu = board[sourceIndex], board[targetIndex]
+	if tu.curHP <= 0 then
+		return
+	end
+	local period, duration = si.period, si.duration
+	local mdd, mdt = si.modDamageDealt, si.modDamageTaken
+	local pdda, pdta, thornsa = si.plusDamageDealtATK, si.plusDamageTakenATK, si.thornsATK
+	local thornsp = thornsa and f32_pim(thornsa, tu.atk)
+	local hasDamage, hasHeal = si.damageATK or si.damagePerc, si.healATK or si.healPerc
+	local modHPP, modHPA = si.modMaxHP, si.modMaxHPATK
+	local pdd, pdt = pdda and (pdda*su.atk/100) or si.plusDamageDealtA, pdta and (pdta*su.atk/100) or si.plusDamageTakenA
+	local ordt, ordf, fadeTurn = ord-100+targetSeq, ord-80, self.turn+duration
+	if mdd then
+		mu.modDamageDealt(self, sourceIndex, targetIndex, mdd, sid)
+		enq(self.queue, fadeTurn, {"unstackf32", sourceIndex, targetIndex, "modDamageDealt", mdd, ord=ordf})
+	end
+	if mdt then
+		mu.modDamageTaken(self, sourceIndex, targetIndex, mdt, sid)
+		enq(self.queue, fadeTurn, {"unstackf32", sourceIndex, targetIndex, "modDamageTaken", mdt, ord=ordf})
+	end
+	if pdd then
+		tu.plusDamageDealt = tu.plusDamageDealt + pdd
+		enq(self.queue, fadeTurn, {"statDelta", sourceIndex, targetIndex, "plusDamageDealt", -pdd, ord=ordf})
+	end
+	if pdt then
+		tu.plusDamageTaken = tu.plusDamageTaken + pdt
+		enq(self.queue, fadeTurn, {"statDelta", sourceIndex, targetIndex, "plusDamageTaken", -pdt, ord=ordf})
+	end
+	if modHPP or modHPA then
+		local d = (modHPP and f32_pim(modHPP, tu.maxHP) or 0) + (modHPA and f32_pim(modHPA, su.atk) or 0)
+		tu.curHP, tu.maxHP = tu.curHP+d, tu.maxHP+d
+		enq(self.queue, fadeTurn, {"statDelta", sourceIndex, targetIndex, "maxHP", -d, ord=ordf})
+	end
+	if thornsp then
+		tu.thornsDamage = tu.thornsDamage + thornsp
+		tu.thornsSID = tu.thornsSID or sid
+		enq(self.queue, fadeTurn, {"statDelta", sourceIndex, targetIndex, "thornsDamage", -thornsp, ord=ordf})
+	end
+	if hasDamage or hasHeal then
+		local tb = fadeTurn-duration-1
+		if period == 2 then
+			for j=3,duration+1,2 do
+				enq(self.queue, tb+j, {"dtick", sourceIndex, targetIndex, sid, eid, "Effect", sid, ord=ordt})
+			end
+		else
+			for j=2,duration do
+				enq(self.queue, tb+j, {"dtick", sourceIndex, targetIndex, sid, eid, "Effect", sid, ord=ordt})
+			end
+		end
+	end
+	if si.echo then
+		enq(self.queue, self.turn+si.echo, {"damage", sourceIndex, targetIndex, f32_pim(si.damageATK, su.atk), "EEcho", sid, ord=ordt})
+	end
+end
+function mu:nuke(sourceIndex, targetIndex, targetSeq, ord, si, sid, _eid)
+	local board = self.board
+	local su, tu = board[sourceIndex], board[targetIndex]
+	local sATK, datk, dperc, echo = su.atk, si.damageATK, si.damagePerc, si.echo
+	local points = (datk and f32_pim(datk, sATK) or 0) + (dperc and math.floor(dperc*tu.maxHP/100) or 0)
+	local causeTag = si.nore and "Tick" or "Spell"
+	mu.damage(self, sourceIndex, targetIndex, points, causeTag, sid)
+	if tu.curHP > 0 and echo then
+		enq(self.queue, self.turn+echo, {"damage", sourceIndex, targetIndex, points, "Tick", sid, ord=ord-100+targetSeq})
+	end
+end
+function mu:nukem(sourceIndex, targetIndex, _targetSeq, _ord, si, sid, _eid)
+	local su = self.board[sourceIndex]
+	local sATK, d = su.atk, si.damageATK
+	local sq, sqh = self.sq, self.sqh-1
+	for j=#d, 1, -1 do
+		sq[sqh], sqh = {"damage", sourceIndex, targetIndex, f32_pim(d[j], sATK), "Spell", sid}, sqh - 1
+	end
+	self.sqh = sqh+1
+end
+function mu:heal(sourceIndex, targetIndex, _targetSeq, ord, si, sid, _eid)
+	local board = self.board
+	local su, tu = board[sourceIndex], board[targetIndex]
+	local hPerc, hatk = si.healPercent, si.healATK
+	local points = (hatk and f32_pim(hatk, su.atk) or 0) + (hPerc and math.floor(hPerc*tu.maxHP/100) or 0)
+	mu.mend(self, sourceIndex, targetIndex, points, "Spell", sid)
+	if si.shroudTurns then
+		tu.shroud, self.ftc = (tu.shroud or 0) + 1, nil
+		enq(self.queue, self.turn+si.shroudTurns, {"unshroud", sourceIndex, targetIndex, ord=ord-80})
+	end
+end
+function mu:taunt(sourceIndex, targetIndex, _targetSeq, ord, si, sid, _eid)
+	local tu = self.board[targetIndex]
+	tu.taunt = sourceIndex
+	enq(self.queue, self.turn+si.duration, {"untaunt", sourceIndex, targetIndex, sid, ord=ord-100})
 end
 function mu:cast(sourceIndex, sid, recast, qe)
 	local board = self.board
 	local su = board[sourceIndex]
-	if su.curHP > 0 or sourceIndex < 0 then
-		local si = SpellInfo[sid]
-		local ord1 = (qe.ord or 0)-1
-		if si.type ~= "passive" then
-			enq(self.queue, self.turn+recast+1, qe)
-		end
-		if #si > 0 then
-			for i=1,#si do
-				mu.spell(self, sourceIndex, sid, i, ord1+i)
+	if su.curHP <= 0 and sourceIndex >= 0 then
+		return
+	end
+	local si = SpellInfo[sid]
+	if si.type == "passive" then
+		return mu.passive(self, sourceIndex, sid)
+	else
+		enqc(self.queue, self.turn+recast+1, {"cast", sourceIndex, sid, recast, ord=qe.ord, ord0=qe.ord0})
+	end
+	return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, (qe.ord or 0)-1)
+end
+function mu:qcast(sourceIndex, sid, eid, ord1, forkTarget)
+	local si, board = SpellInfo[sid], self.board
+	local ne = #si
+	for i=eid, ne do
+		local si = si[i] or si
+		local sitt, tt = si.target
+		local ft = forkTargets[sitt]
+		if ft and forkTarget then
+			tt = TP.GetTargets(forkTarget, "self", board)
+		elseif ft then
+			local pileOn = band(self.ftc or 0, forkTargetBits[ft]) > 0 and self["ft-" .. ft]
+			pileOn = pileOn and TP.GetTargets(pileOn, "self", board)
+			if pileOn and pileOn[1] then
+				tt = pileOn
+			else
+				tt = TP.GetTargets(sourceIndex, ft, board)
+				if #tt > 1 then
+					local oracle = self.forkOracle
+					local ownTarget = oracle and oracle(self.turn, sourceIndex, sid) or tt[math.random(#tt)]
+					for i=1,#tt do
+						if tt[i] == ownTarget then
+							tt[1], tt[i] = tt[i], tt[1]
+							break
+						end
+					end
+					for j=2,#tt do
+						local f = self:Clone()
+						if not f then
+							break
+						end
+						local sqh = f.sqh-1
+						f.sq[sqh], f.sqh = {"qcast", sourceIndex, sid, i, ord1, tt[j]}, sqh
+					end
+				end
+				tt = tt[1] and TP.GetTargets(tt[1], "self", board)
 			end
 		else
-			mu.spell(self, sourceIndex, sid, 0, ord1+1)
+			tt = TP.GetTargets(sourceIndex, sitt, board)
 		end
+		if ft then
+			self.ftc, self["ft-"..ft] = bor(self.ftc or 0, tt and tt[1] and forkTargetBits[ft] or 0), tt and tt[1] or nil
+		end
+		
+		local et, sq, sqt, ordi = si.type, self.sq, self.sqt, ord1+i
+		for ti=1,tt and #tt or 0 do
+			local targetIndex = tt[ti]
+			if et == "aura" then
+				sqt = sqt + 1
+				sq[sqt] = {"aura0", sourceIndex, targetIndex, ti, ordi, si, sid, i}
+			end
+			sqt = sqt + 1
+			sq[sqt] = {et, sourceIndex, targetIndex, ti, ordi, si, sid, i}
+		end
+		if et == "nuke" and si.selfhealATK then
+			sqt = sqt + 1
+			sq[sqt] = {"mend", sourceIndex, sourceIndex, f32_pim(si.selfhealATK, board[sourceIndex].atk), "DHeal", sid}
+		end
+		self.sqt = sqt
 	end
 end
 
+local function resolveRange(bFirst, b, f, bh, bl, fh, fl)
+	if bFirst then
+		if bh < fh then
+			f.curHP, f.hpR = bh, bh-fl
+		end
+		if fl > bl then
+			b.hpR = bh-fl
+		end
+	else
+		if fh <= bh then
+			b.curHP, b.hpR = fh - 1, fh - 1 - bl
+		end
+		if fl <= bl then
+			f.hpR = fh - bl - 1
+		end
+	end
+end
+local function resolveDeath(board, a, b, inOrder)
+	if not inOrder then
+		a, b = b, a
+	end
+	local abit, bbit = 2^a, 2^b
+	local lo, au, bu = a < 5, board[a], board[b]
+	au.drB, au.drC = bor(au.drB, bbit, bu.drC), bor(au.drC, bbit, bu.drC)
+	bu.drB, bu.drA = bor(bu.drB, abit, au.drA), bor(bu.drA, abit, au.drA)
+	local aA, bC, aC, maxAA = au.drA, bu.drC, au.drC, 0
+	for i=lo and 0 or 5, lo and 4 or 12 do
+		local iu, ibit = board[i], 2^i
+		if iu and iu.curHP == 0 then
+			if band(aA, ibit) then
+				iu.drB, iu.drC = bor(iu.drB, bC), bor(iu.drC, bC)
+				maxAA = iu.deathSeq > maxAA and iu.deathSeq or maxAA
+			elseif band(bC, ibit) then
+				iu.drB, iu.drA = bor(iu.drB, aA), bor(iu.drA, aA)
+			end
+		end
+	end
+	maxAA = maxAA+1
+	au.deathSeq = maxAA
+	for i=lo and 0 or 5, lo and 4 or 12 do
+		local iu, ibit = board[i], 2^i
+		if i ~= a and iu and iu.curHP == 0 and (iu.deathSeq >= maxAA or band(aC, ibit) > 0) then
+			iu.deathSeq = maxAA + iu.deathSeq
+		end
+	end
+end
+local function prepareTurn(self)
+	local board, turn = self.board, self.turn
+	
+	local mlive = 0
+	for b=0,12 do
+		local e = board[b]
+		if e and e.curHP > 0 then
+			mlive = mlive + 2^b
+		end
+	end
+
+	local t3, pm, oracle, skip = turn*3, band(self.pmask, mlive), self.firstHitOracle, self.saoSkip or 0
+	for b=0, 12 do
+		local e = board[b]
+		local bh = e and e.curHP
+		local bl = bh and (bh-e.hpR)
+		local bd = bh == 0 and (e.dhorizon or 0) >= turn
+		for i=b+1,bh and (b<5 and 4 or 12) or 0 do
+			local f = board[i]
+			local fh = f and f.curHP
+			local fl = fh and (fh-f.hpR)
+			local fd = fh == 0 and (f.dhorizon or 0) >= turn
+			if skip >= (16*b+i) then
+			elseif fh and fh > 0 and bh > 0 and not (bl >= fh or fl > bh) then
+				local bFirst = oracle and oracle(turn, b, i)
+				if bFirst == nil and oracle then
+				else
+					if bFirst == nil then
+						bFirst = math.random(2) == 1
+					end
+					local fc, fb = self:Clone()
+					if fc then
+						fc.turn, fb, fc.saoSkip, fc.unfinishedTurn = turn-1, fc.board, b*16+i
+						resolveRange(not bFirst, fb[b], fb[i], bh, bl, fh, fl)
+					end
+					resolveRange(bFirst, e, f, bh, bl, fh, fl)
+				end
+			elseif bd and fd and band(e.drB, 2^i) == 0 then
+				local bm, fm, bbit, fbit = e.dmasks, f.dmasks, 2^b, 2^i
+				local bfi, bfo, bdt = bm[t3], bm[t3+1], bm[t3+2]
+				local ffi, ffo, fdt = fm[t3], fm[t3+1], fm[t3+2]
+				bdt, fdt = bdt and band(bdt, mlive) or 0, fdt and band(fdt, mlive) or 0
+				if bdt > 0 and (ffi and band(ffi, bdt) > 0 or ffo and band(ffo, bbit) > 0) or
+				   fdt > 0 and (bfi and band(bfi, fdt) > 0 or bfo and band(bfo, fbit) > 0) or
+				   bdt > 0 and fdt > 0 and pm > 0 and (band(bdt, pm) > 0 or band(fdt, pm) > 0)
+				   then
+					local bFirst = oracle and oracle(turn, b, i)
+					if bFirst == nil then
+						bFirst = math.random(2) == 1
+					end
+					local fc = self:Clone()
+					if fc then
+						fc.turn, fc.saoSkip, fc.unfinishedTurn = turn-1, b*16+i
+						resolveDeath(fc.board, b, i, not bFirst)
+					end
+					resolveDeath(board, b, i, bFirst)
+				end
+			end
+		end
+	end
+	self.saoSkip = nil
+end
+local function sortAttackOrder(self, q)
+	prepareTurn(self)
+	local board, bo, bom = self.board, self.boardOrder, self.bom
+	for b=0,12 do
+		local e = board[b]
+		if e then
+			bom[b] = (b < 5 and 1e9 or 2e9) - e.curHP * 1e3 + b + 20*(e.deathSeq or 0)
+		end
+	end
+	table.sort(bo, function(a,b)
+		return bom[a] < bom[b]
+	end)
+	for i=1,#bo do
+		bom[bo[i]] = i
+	end
+	table.sort(q, function(a, b)
+		local ac, bc = a.ord0 or bom[a[2]], b.ord0 or bom[b[2]]
+		if ac == bc then
+			ac, bc = a.ord or 0, b.ord or 0
+		end
+		return ac > bc
+	end)
+end
+local function registerTraceResult(self)
+	local prime = self.prime or self
+	if not prime.res then
+		prime.res = {min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, n=0}
+	end
+	local tHP1, tHP2, ns, res, inf = 0, 0, 0, prime.res, math.huge
+	res[self.won and "hadWins" or "hadLosses"] = true
+	res.hadDrops = res.hadDrops or prime.droppedTraces
+	res.n = res.n + 1
+	res.isFinished = res.n > #(prime.forks or "")
+	res.min[17] = math.min(res.min[17] or inf, self.turn)
+	res.max[17] = math.max(res.max[17] or 0, self.turn)
+	for i=0,12 do
+		local e = self.board[i]
+		if e then
+			local hp1, hp2 = e.curHP-e.hpR, e.curHP
+			tHP1, tHP2, ns = tHP1 + hp1, tHP2 + hp2, ns + 1
+			res.min[i] = math.min(res.min[i] or inf, hp1)
+			res.max[i] = math.max(res.max[i] or 0, hp2)
+		end
+		if i == 4 or i == 12 then
+			local o = i == 4 and 12 or 14
+			res.min[o+1], res.max[o+1] = math.min(tHP1, res.min[o+1] or inf), math.max(tHP2, res.max[o+1] or 0)
+			res.min[o+2], res.max[o+2] = math.min(ns, res.min[o+2] or inf), math.max(ns, res.max[o+2] or 0)
+			tHP1, tHP2, ns = 0, 0, 0
+		end
+	end
+	if self.forkID and self.dropForks then
+		self.forks[self.forkID] = not not self.won
+	end
+end
+local function storeShallowCopy(r, s)
+	local d = {}
+	for k,v in pairs(s) do
+		d[k] = v
+	end
+	r[s] = d
+end
+
 function VSI:Turn(isResumed)
-	local q, turn
+	local sq, sqh, q, turn = self.sq, self.sqh
 	if isResumed then
 		turn = self.turn
 		q = self.queue[turn]
+		while sqh <= self.sqt do
+			local e = sq[sqh]
+			self.sqh, sq[sqh] = sqh + 1
+			mu[e[1]](self, unpack(e, 2))
+			sqh = self.sqh
+		end
 	else
 		turn = self.turn + 1
 		q, self.turn = self.queue[turn], turn
-		self:SortAttackOrder(q)
+		sortAttackOrder(self, q)
 	end
 	local qi
-	for i=#q,1,-1 do
+	for i=#q, 1, -1 do
 		qi, q[i] = q[i], nil
 		mu[qi[1]](self, unpack(qi, 2))
+		sqh = self.sqh
+		while sqh <= self.sqt do
+			local e = sq[sqh]
+			self.sqh, sq[sqh] = sqh + 1
+			mu[e[1]](self, unpack(e, 2))
+			sqh = self.sqh
+		end
 		if self.over then
 			local si, sn = qi[2], i > 1 and q[i-1][2] or nil
 			if self.over ~= true and si and sn and self.board[si].curHP == 0 and self.board[sn].curHP == 0 then
@@ -794,37 +1111,23 @@ function VSI:Turn(isResumed)
 	return not not self.over
 end
 function VSI:Run()
-	if self.unfinishedTurn then
-		self.unfinishedTurn = nil
-		self:Turn(true)
-	end
-	while not self.over do
-		self:Turn()
-	end
-	self.queue = nil
-	if self.forks and not self.prime then
-		local i, forks = (self.exploredForks or 0) + 1, self.forks
-		local winMass, lossMass = self.winMass, self.lossMass
-		if winMass == nil then
-			winMass, lossMass = self.won and 1/self.mass or 0, self.won and 0 or 1/self.mass
+	if not self.over then
+		if self.unfinishedTurn then
+			self.unfinishedTurn = nil
+			self:Turn(true)
 		end
-		local rMass = 1-winMass-lossMass
+		while not self.over do
+			self:Turn()
+		end
+		self.queue, self.sq, self.sqh, self.sqt = nil
+		registerTraceResult(self)
+	end
+	if self.forks and not self.prime then
+		local i, forks = self.res.n, self.forks
 		while i <= #forks do
 			forks[i]:Run()
-			local mi, won = 1/forks[i].mass, forks[i].won
-			winMass, lossMass, rMass = winMass + (won and mi or 0), lossMass + (won and 0 or mi), rMass - mi
 			i = i + 1
 		end
-		local isFullyExplored = i >= #forks and not self.droppedTraces
-		self.winMass, self.lossMass = winMass, lossMass
-		self.pWin = lossMass == 0 and isFullyExplored and 1 or winMass
-		self.pLose = winMass == 0 and isFullyExplored and 1 or lossMass
-		self.exhaustive, self.exploredForks = isFullyExplored, i-1
-	elseif not self.prime then
-		local isFullyExplored, mass = not self.droppedTraces, 1/self.mass
-		self.pWin = self.won and (isFullyExplored and 1 or mass) or 0
-		self.pLose = self.won and 0 or (isFullyExplored and 1 or mass)
-		self.exhaustive = isFullyExplored
 	end
 end
 function VSI:CheckpointBoard()
@@ -833,53 +1136,46 @@ function VSI:CheckpointBoard()
 	for i=0,12 do
 		local b = board[i]
 		if b and b.curHP > 0 then
-			c = (c ~= "" and c .. "_" or "") .. boardSlotName[i] .. ":" .. b.curHP
+			local r = b.hpR
+			c = (c ~= "" and c .. "_" or "") .. slotHex[i] .. ":" .. b.curHP .. (r > 0 and "-" .. r or "")
 		end
 	end
 	return c
 end
-function VSI:SortAttackOrder(q)
-	local board, bo, bom = self.board, self.boardOrder, self.bom
-	for b=0,12 do
-		local e = board[b]
-		if e then
-			bom[b] = (b < 5 and 1e9 or 2e9) - e.curHP * 1e3 + b + 20*(e.deathSeq or 0)
-		end
-	end
-	table.sort(bo, function(a,b)
-		return bom[a] < bom[b]
-	end)
-	for i=1,#bo do
-		bom[bo[i]] = i
-	end
-	table.sort(q, function(a, b)
-		local ac, bc = a.ord0 or bom[a[2]], b.ord0 or bom[b[2]]
-		if ac == bc then
-			ac, bc = a.ord or 0, b.ord or 0
-		end
-		return ac > bc
-	end)
-end
 function VSI:Clone()
+	local lim, forks = self.forkLimit, self.forks
+	if lim and lim <= (forks and #forks or 0) then
+		(self.prime or self).droppedTraces = true
+		return
+	elseif forks == nil then
+		forks = {[0]=self}
+	end
 	local n = setmetatable({}, VSIm)
 	local q, r, s, d = {}, {[self]=n}, self, n
-	local forks = self.forks or {[0]=self}
 	self.forks, forks[#forks+1] = forks, n
 	r[self.prime or 0], r[forks] = self.prime, forks
 	r[0] = nil
+	if s.sq then
+		storeShallowCopy(r, s.sq)
+	end
+	if s.queue then
+		for _, v in pairs(s.queue) do
+			storeShallowCopy(r, v)
+		end
+	end
 	while s do
 		q[s] = nil
 		for k,v in pairs(s) do
 			if r[k] then
 				k = r[k]
 			elseif type(k) == "table" then
-				r[k] = setmetatable({}, getmetatable(k))
+				r[k] = {}
 				q[k], k = r[k], r[k]
 			end
 			if r[v] then
 				v = r[v]
 			elseif type(v) == "table" then
-				r[v] = setmetatable({}, getmetatable(v))
+				r[v] = {}
 				q[v], v = r[v], r[v]
 			end
 			d[k] = v
@@ -887,21 +1183,66 @@ function VSI:Clone()
 		q[s] = nil
 		s, d = next(q)
 	end
-	n.prime, n.forkOracle = self.prime or self
+	n.prime, n.unfinishedTurn, n.forkID, n.forkOracle = self.prime or self, true, #forks
 	return n
+end
+function VSI:AddFightLogOracles(log)
+	function self.forkOracle(turn, source, spell)
+		local la = log[turn]
+		la = la and la.events
+		for i=1,la and #la or 0 do
+			local li = la[i]
+			if li.spellID == spell and li.casterBoardIndex == source and (li.type < 5 or li.type == 7) and li.targetInfo[1] then
+				return li.targetInfo[1].boardIndex
+			end
+		end
+	end
+	function self.finalHitOracle(turn, source, target, sid, _oldHP, _oldRange)
+		local la = log[turn]
+		la = la and la.events
+		for i=1,la and #la or 0 do
+			local li = la[i]
+			if li.type == 9 and li.casterBoardIndex == source and li.spellID == sid then
+				local tt = li.targetInfo
+				for j=1,tt and #tt or 0 do
+					if tt[j].boardIndex == target then
+						return false
+					end
+				end
+			end
+		end
+		return true
+	end
+	function self.firstHitOracle(turn, a, b)
+		local la = log[turn]
+		la = la and la.events
+		for i=1,la and #la or 0 do
+			local li = la[i]
+			local c, t = li.casterBoardIndex, li.type
+			if (c == a or c == b) and t ~= 9 then
+				local si = SpellInfo[li.spellID]
+				if (li.type == 7 or not (si and si.thornsATK)) and (li.type ~= 8 or not (si and si.type == "passive"))  then
+					return c == a
+				end
+			end
+		end
+	end
 end
 
 local function addActorProps(a)
 	a.modDamageTaken = 1
 	a.modDamageDealt = 1
+	a.modDamageTakenH = 1
+	a.modDamageDealtH = 1
 	a.plusDamageTaken = 0
 	a.plusDamageDealt = 0
 	a.thornsDamage = 0
+	a.hpR = 0
 	a.stacks = {}
 	return a
 end
-function VS:New(team, encounters, envSpell, mid, mscalar, forkOracle, forkLimit)
-	local q, board, nf, missingSpells = {}, {}, 0
+function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
+	local q, board, nf, pmask, missingSpells = {}, {}, 0, 0
 	for _, f in pairs(team) do
 		if f.stats then
 			f.attack, f.health, f.maxHealth = f.stats.attack, f.stats.currentHealth, f.stats.maxHealth
@@ -922,11 +1263,14 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkOracle, forkLimit)
 					qe.ord = 1e5 + rf.slot*1e3 + 500 + i*10
 				end
 				enqc(q, si.firstTurn or 1, qe)
+				if si.type == "passive" and si.modDamageTaken and not board[rf.slot] then
+					pmask = pmask + 2^rf.slot
+				end
 			end
 		end
 		local aa = TP:GetAutoAttack(f.role, nil, nil, f.spells and f.spells[1] and f.spells[1].autoCombatSpellID)
 		enqc(q, 1, {"cast", rf.slot, aa, 0, ord=1e5 + rf.slot*1e3 + 500})
-		board[f.boardIndex], nf = addActorProps(rf), nf + 1
+		board[rf.slot], nf = addActorProps(rf), nf + 1
 	end
 	for i=1,#encounters do
 		local e = encounters[i]
@@ -973,12 +1317,16 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkOracle, forkLimit)
 	end
 	
 	local ii = setmetatable({
-		board=board, turn=0, queue=q,
+		board=board, turn=0, queue=q, sq={}, sqh=1, sqt=0,
 		liveFriends=nf, liveEnemies=#encounters, over=nf == 0,
 		checkpoints={}, boardOrder=boardOrder, bom={[-1]=14},
-		mass=1, forkOracle=forkOracle, forkLimit=forkLimit,
+		pmask=pmask,
+		forkLimit=forkLimit,
 	}, VSIm)
 	ii.checkpoints[0] = ii:CheckpointBoard()
+	if ii.over then
+		registerTraceResult(ii)
+	end
 	return ii, missingSpells
 end
 

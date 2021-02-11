@@ -9,9 +9,11 @@ local L = ns.locale
 
 local Map = ns.Map
 
+local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Reward = ns.reward.Reward
 local Toy = ns.reward.Toy
+local Transmog = ns.reward.Transmog
 
 -------------------------------------------------------------------------------
 
@@ -50,51 +52,72 @@ end)
 
 -- Add reward information to Blizzard's vignette treasures for callings
 
-local VIGNETTES = {
-    [4212] = {
-        Pet({item=180592, id=2901}) -- Trapped Stonefiend
-    }, -- Bleakwood Chest
-    [4214] = {
-        Toy({item=184418}) -- Acrobatic Steward
-    }, -- Gilded Chest
-    [4366] = {
-        Toy({item=184447}) -- Kevin's Party Supplies
-    }, -- Slime-Coated Crate
+local GILDED_WADER = Pet({item=180866, id=2938}) -- Gilded Wader
 
-    -- [4174] = {}, -- Secret Treasure
-    -- [4176] = {}, -- Secret Treasure
-    -- [4202] = {}, -- Spouting Growth
-    -- [4211] = {}, -- Bonebound Chest
-    -- [4213] = {}, -- Enchanted Chest
-    -- [4222] = {}, -- Faerie Stash
-    -- [4224] = {}, -- Faerie Stash
-    -- [4225] = {}, -- Faerie Stash
-    -- [4238] = {}, -- Lunarlight Pod
-    -- [4243] = {}, -- Skyward Bell
-    -- [4244] = {}, -- Wish Cricket
-    -- [4263] = {}, -- Silver Strongbox
-    -- [4266] = {}, -- Silver Strongbox
-    -- [4269] = {}, -- Silver Strongbox
-    -- [4270] = {}, -- Silver Strongbox
-    -- [4271] = {}, -- Silver Strongbox
-    -- [4272] = {}, -- Silver Strongbox
-    -- [4274] = {}, -- Steward's Golden Chest
-    -- [4275] = {}, -- Skyward Bell
-    -- [4278] = {}, -- Hidden Hoard
-    -- [4279] = {}, -- Hidden Hoard
-    -- [4282] = {}, -- Virtue of Penitence
-    -- [4308] = {}, -- Stoneborn Satchel
-    -- [4314] = {}, -- Pugilist's Prize
-    -- [4317] = {}, -- Pugilist's Prize
-    -- [4323] = {}, -- Stoneborn Satchel
-    -- [4324] = {}, -- Stoneborn Satchel
-    -- [4325] = {}, -- Stoneborn Satchel
-    -- [4327] = {}, -- Stoneborn Satchel
-    -- [4347] = {}, -- Greedstone
-    -- [4362] = {}, -- Spouting Growth
-    -- [4363] = {}, -- Spouting Growth
-    -- [4374] = {}, -- Runebound Coffer
-    -- [4375] = {}, -- Runebound Coffer
+local BLEAKWOOD_CHEST = { Pet({item=180592, id=2901}) } -- Trapped Stonefiend
+local BROKEN_SKYWARD_BELL = { GILDED_WADER, Toy({item=184415}) } -- Soothing Vesper
+local DECAYED_HUSK = {
+    Transmog({item=179593, slot=L["cloth"]}), -- Darkreach Mask
+    Transmog({item=179594, slot=L["leather"]}), -- Witherscorn Guise
+}
+local GILDED_CHEST = { Toy({item=184418}) } -- Acrobatic Steward
+local HIDDEN_HOARD = { GILDED_WADER }
+local HUNT_SHADEHOUNDS = { Mount({item=184167, id=1304}) } -- Mawsworn Soulhunter
+local SECRET_TREASURE = { Pet({item=180589, id=2894}) } -- Burdened Soul
+local SILVER_STRONGBOX = { GILDED_WADER }
+local SLIME_COATED_CRATE = {
+    Pet({item=181262, id=2952}), -- Bubbling Pustule
+    Toy({item=184447}) -- Kevin's Party Supplies
+}
+local SPOUTING_GROWTH = { Pet({item=181173, id=2949}) } -- Skittering Venomspitter
+
+local VIGNETTES = {
+    [4173] = SECRET_TREASURE,
+    [4174] = SECRET_TREASURE,
+    [4175] = SECRET_TREASURE,
+    [4176] = SECRET_TREASURE,
+    [4177] = SECRET_TREASURE,
+    [4178] = SECRET_TREASURE,
+    [4179] = SECRET_TREASURE,
+    [4180] = SECRET_TREASURE,
+    [4181] = SECRET_TREASURE,
+    [4182] = SECRET_TREASURE,
+    [4202] = SPOUTING_GROWTH,
+    [4212] = BLEAKWOOD_CHEST,
+    [4214] = GILDED_CHEST,
+    [4217] = DECAYED_HUSK,
+    [4218] = DECAYED_HUSK,
+    [4219] = DECAYED_HUSK,
+    [4220] = DECAYED_HUSK,
+    [4221] = DECAYED_HUSK,
+    [4239] = BROKEN_SKYWARD_BELL,
+    [4240] = BROKEN_SKYWARD_BELL,
+    [4241] = BROKEN_SKYWARD_BELL,
+    [4242] = BROKEN_SKYWARD_BELL,
+    [4243] = BROKEN_SKYWARD_BELL,
+    [4263] = SILVER_STRONGBOX,
+    [4264] = SILVER_STRONGBOX,
+    [4265] = SILVER_STRONGBOX,
+    [4266] = SILVER_STRONGBOX,
+    [4267] = SILVER_STRONGBOX,
+    [4268] = SILVER_STRONGBOX,
+    [4269] = SILVER_STRONGBOX,
+    [4270] = SILVER_STRONGBOX,
+    [4271] = SILVER_STRONGBOX,
+    [4272] = SILVER_STRONGBOX,
+    [4273] = SILVER_STRONGBOX,
+    [4275] = BROKEN_SKYWARD_BELL,
+    [4276] = HIDDEN_HOARD,
+    [4277] = HIDDEN_HOARD,
+    [4278] = HIDDEN_HOARD,
+    [4279] = HIDDEN_HOARD,
+    [4280] = HIDDEN_HOARD,
+    [4281] = HIDDEN_HOARD,
+    [4362] = SPOUTING_GROWTH,
+    [4363] = SPOUTING_GROWTH,
+    [4366] = SLIME_COATED_CRATE,
+    [4460] = HUNT_SHADEHOUNDS,
+    [4577] = SILVER_STRONGBOX
 }
 
 hooksecurefunc(GameTooltip, 'SetText', function(self)

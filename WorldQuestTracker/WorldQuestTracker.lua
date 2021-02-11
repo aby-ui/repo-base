@@ -1241,11 +1241,37 @@ local p = CreateFrame("frame")
 p:RegisterEvent("TALKINGHEAD_REQUESTED")
 p:SetScript("OnEvent", function (self, event, arg1)
 	if (event == "TALKINGHEAD_REQUESTED") then
+
+		--get where the player is
+		local _, zoneType = GetInstanceInfo()
+
+		if (zoneType == "none") then
+			if (not WorldQuestTracker.db.profile.talking_heads_openworld) then
+				return
+			end
+
+		elseif (zoneType == "party") then
+			if (not WorldQuestTracker.db.profile.talking_heads_dungeon) then
+				return
+			end
+			
+		elseif (zoneType == "raid") then
+			if (not WorldQuestTracker.db.profile.talking_heads_raid) then
+				return
+			end
+
+		elseif (zoneType == "scenario") then
+			if (not WorldQuestTracker.db.profile.talking_heads_torgast) then
+				return
+			end
+			
+		end
+
 		local displayInfo, cameraID, vo, duration, lineNumber, numLines, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
-		if (WorldQuestTracker.db.profile.talking_heads[vo]) then
+		if (WorldQuestTracker.db.profile.talking_heads_heard[vo]) then
 			C_Timer.After(0.1, TalkingHeadFrame_CloseImmediately)
 		else
-			WorldQuestTracker.db.profile.talking_heads[vo] = true
+			WorldQuestTracker.db.profile.talking_heads_heard[vo] = true
 		end
 	end
 end)

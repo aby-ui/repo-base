@@ -11,7 +11,7 @@ L["config_plugin_name"] = "Covenant Sanctum"
 L["config_plugin_desc"] = "Displays the NPC and POI locations in your covenant sanctum on the world map and minimap."
 
 L["config_tab_general"] = "General"
---L["config_tab_scale_alpha"] = "Scale / Alpha"
+L["config_tab_scale_alpha"] = "Scale / Alpha"
 --L["config_scale_alpha_desc"] = "PH"
 L["config_icon_scale"] = "Icon Scale"
 L["config_icon_scale_desc"] = "The scale of the icons"

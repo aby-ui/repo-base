@@ -1,6 +1,6 @@
 ## Interface: 90002
 ## Title: HandyNotes: Battle for Azeroth
-## Version: 3
+## Version: 4
 ## Notes: Battle for Azeroth Notes
 ## OptionalDeps: Ace3
 ## RequiredDeps: HandyNotes

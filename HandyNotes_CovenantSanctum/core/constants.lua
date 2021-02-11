@@ -13,8 +13,24 @@ private.constants = constants
 
 constants.defaults = {
     profile = {
-        icon_scale = 1.25,
-        icon_alpha = 1.0,
+        icon_scale_innkeeper = 1.25,
+        icon_alpha_innkeeper = 1.0,
+        icon_scale_mail = 1.25,
+        icon_alpha_mail = 1.0,
+        icon_scale_portal = 1.5,
+        icon_alpha_portal = 1.0,
+        icon_scale_reforge = 1.25,
+        icon_alpha_reforge = 1.0,
+        icon_scale_renown = 1.25,
+        icon_alpha_renown = 1.0,
+        icon_scale_stablemaster = 1.25,
+        icon_alpha_stablemaster = 1.0,
+        icon_scale_vendor = 1.25,
+        icon_alpha_vendor = 1.0,
+        icon_scale_weaponsmith = 1.25,
+        icon_alpha_weaponsmith = 1.0,
+        icon_scale_others = 1.25,
+        icon_alpha_others = 1.0,
 
         show_anvil = true,
         show_innkeeper = true,
@@ -46,6 +62,18 @@ constants.defaults = {
 ------------------------------------------------ICONS-----------------------------------------------
 ----------------------------------------------------------------------------------------------------
 
+constants.icongroup = {
+    "innkeeper",
+    "mail",
+    "portal",
+    "reforge",
+    "renown",
+    "stablemaster",
+    "vendor",
+    "weaponsmith",
+    "others"
+}
+
 local left, right, top, bottom = GetObjectIconTextureCoords("4772") --MagePortalAlliance
 local left2, right2, top2, bottom2 = GetObjectIconTextureCoords("4773") --MagePortalHorde
 
@@ -69,12 +97,11 @@ constants.icon = {
     anvil           = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\anvil",
     flightmaster    = "Interface\\MINIMAP\\TRACKING\\FlightMaster",
     innkeeper       = "Interface\\MINIMAP\\TRACKING\\Innkeeper",
-    mail            = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\mail",
+    mail            = "Interface\\MINIMAP\\TRACKING\\Mailbox",
     reforge         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\reforge",
-    renown         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\renown",
+    renown          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\renown",
     stablemaster    = "Interface\\MINIMAP\\TRACKING\\StableMaster",
     trainer         = "Interface\\MINIMAP\\TRACKING\\Profession",
     vendor          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\vendor",
     weaponsmith     = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\weaponsmith",
---    weekly          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\weekly",
 }

@@ -66,11 +66,11 @@ local function PrepareLinks(str)
         if type == 'npc' then
             NameResolver:Prepare(("unit:Creature-0-0-0-0-%d"):format(id))
         elseif type == 'item' then
-            GetItemInfo(id) -- prime item info
+            C_Item.RequestLoadItemDataByID(id) -- prime item info
         elseif type == 'daily' or type == 'quest' then
-            C_QuestLog.GetTitleForQuestID(id) -- prime quest title
+            C_QuestLog.RequestLoadQuestByID(id) -- prime quest title
         elseif type == 'spell' then
-            GetSpellInfo(id) -- prime spell info
+            C_Spell.RequestLoadSpellData(id) -- prime spell info
         end
     end
 end

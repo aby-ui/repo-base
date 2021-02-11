@@ -23,9 +23,9 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.59.1"; -- Version number (text format)
+	Version = "4.59.2"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 45900; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 45902; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 45900; -- Numeric version number for checking out-of-date clients (classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
@@ -1549,12 +1549,7 @@ function GTFO_IsTank(target)
 			if (GTFO_HasBuff(target, 5487)) then
 				return true;
 			end
-		elseif (class == "DEATHKNIGHT") then
-			-- Check for Blood Presence
-			if (GTFO_HasBuff(target, 48263)) then
-				return true;
-			end
-		elseif (class == "WARRIOR" or class == "MONK" or class == "DEMONHUNTER") then
+		elseif (class == "WARRIOR" or class == "MONK" or class == "DEMONHUNTER" or class == "DEATHKNIGHT") then
 			-- No definitive way to determine...take a guess.
 			if (UnitGroupRolesAssigned(target) == "TANK" or GetPartyAssignment("MAINTANK", target)) then
 				return true;

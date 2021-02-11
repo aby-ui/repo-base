@@ -758,8 +758,6 @@
 		if not IsInGuild() then return end --> fix from Tim@WoWInterface
 		_detalhes:SendCommMessage (DETAILS_PREFIX_NETWORK, _detalhes:Serialize (type, _UnitName ("player"), _GetRealmName(), _detalhes.realversion, ...), "GUILD")
 	end
-	
-
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> cloud

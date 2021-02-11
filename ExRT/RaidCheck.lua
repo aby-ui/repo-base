@@ -1078,16 +1078,19 @@ do
 		--8,	--INVSLOT_FEET
 	}
 	local L_EncName = "^"..L.RaidCheckReinforced
+	local TimeLeftPatt = "%(([^%)]+)%)[^%)]*$"
 	if ExRT.locale == "koKR" then
 		L_EncName = "%([^%)]+%+%d+%) %(%d+"
-    elseif ExRT.locale == "zhCN" or ExRT.locale == "zhTW" then
-        --abyui fix locale
+	elseif ExRT.locale == "zhCN" then
+		L_EncName = "^加固（%+[0-9]+ "
+		TimeLeftPatt = "（([^）]-)）$"
 	elseif ExRT.locale ~= "ruRU" and ExRT.locale ~= "enGB" and ExRT.locale ~= "enUS" then
 		L_EncName = "%(%+%d+[^%)]+%) %(%d+"
-    end
+	end
 
 	function module:KitCheck()
 		local kitNow, kitMax = 0, 1
+		local kitType = 0
 		local timeLeft
 		for _,itemSlotID in pairs(KitSlots) do
 			inspectScantip:SetInventoryItem("player", itemSlotID)
@@ -1098,11 +1101,15 @@ do
 				if text and text ~= "" then
 					if text:find(L_EncName) then
 						kitNow = kitNow + 1
-                        if ExRT.locale == "zhCN" then
-                            timeLeft = text:match("（([^）]-)）$") --abyui fix
-                        else
-                            timeLeft = text:match("%(([^%)]+)%)[^%)]*$")
-                        end
+						timeLeft = text:match(TimeLeftPatt)
+						local stats = text:match("%d+")
+						if stats == "32" then
+							kitType = 172347
+						elseif stats == "16" then
+							kitType = 172346
+						elseif stats == "24" then
+							kitType = 180709
+						end
 						break
 					end
 				end
@@ -1110,7 +1117,7 @@ do
 
 			inspectScantip:ClearLines()
 		end
-		return kitNow, kitMax, timeLeft
+		return kitNow, kitMax, timeLeft, kitType
 	end
 end
 
@@ -1291,7 +1298,7 @@ end
 module.frame = ELib:Template("ExRTDialogModernTemplate",UIParent)
 module.frame:SetSize(430+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff,100)
 module.frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
-module.frame:SetFrameStrata("TOOLTIP")
+module.frame:SetFrameStrata("DIALOG")
 module.frame:EnableMouse(true)
 module.frame:SetMovable(true)
 module.frame:RegisterForDrag("LeftButton")
@@ -2070,8 +2077,41 @@ function module.frame:UpdateData(onlyLine)
 						dur = durTab.kit
 					end
 					line.kit.bigText:SetText(dur or "-")
+					line.kit.text:SetTextColor(1,1,1)
 
 					local kNow,kMax = (dur or ""):match("(%d+)/(%d+)")
+
+					if kNow == "1" then
+						line.kit.bigText:SetText("")
+						line.kit.texture:SetTexture(3528447)
+						line.kit.tooltip = "spell:"..324068
+
+						if durTab.types then
+							local itemID = strsplit(":",durTab.types)
+							if itemID and itemID ~= "0" and tonumber(itemID) then
+								local _, _, _, _, icon = GetItemInfoInstant(tonumber(itemID))
+								if icon then
+									line.kit.texture:SetTexture(icon)
+								end
+								line.kit.tooltip = "item:"..itemID
+
+								local stats = ""
+								if itemID == "172347" then
+									stats = 32
+									line.kit.text:SetTextColor(0,1,0)
+								elseif itemID == "172346" then
+									stats = 16
+									line.kit.text:SetTextColor(1,1,0)
+								elseif itemID == "180709" then
+									stats = 24
+									line.kit.text:SetTextColor(1,1,0)
+								end
+								line.kit.text:SetText(stats)
+							end
+						end
+					elseif kNow == "0" then
+						line.kit.bigText:SetText("")
+					end 
 
 					if not kNow or not kMax or kNow == kMax then
 						line.kit.bigText:SetTextColor(1,1,1)
@@ -2114,7 +2154,11 @@ function module.frame:UpdateData(onlyLine)
 								line.oil2.tooltip = "spell:"..oil2
 								line.oil2:Show()
 	
-								line.oil:Point("CENTER",line.oilpointer,"CENTER",-(line.oil.size or 18)*(1/2),0)
+								local size = (line.oil.size or 18) - 4
+								line.oil:SetSize(size,size)
+								line.oil2:SetSize(size,size)
+								
+								line.oil:Point("CENTER",line.oilpointer,"CENTER",-size*(1/2),0)
 							end
 						end
 					end
@@ -2361,6 +2405,19 @@ local function PrepareDataToChat(toSelf)
 	end
 end
 
+function module:SendConsumeData()
+	local oilMH, oilOH = module:OilCheck()
+
+	local kitNow, kitMax, kitTimeLeft, kitType = module:KitCheck()
+
+	ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
+		(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",kitNow, kitMax) or "")..
+		(not ExRT.isClassic and "\tOIL\t"..format("%d",oilMH) or "")..
+		(not ExRT.isClassic and "\tOIL2\t"..format("%d",oilOH) or "")..
+		(not ExRT.isClassic and "\tKITT\t"..format("%d",kitType or 0) or "")
+	)
+end
+
 do
 	local function ScheduledReadyCheckFinish()
 		module.main:READY_CHECK_FINISHED()
@@ -2383,10 +2440,7 @@ do
 			module.main:READY_CHECK_CONFIRM(ExRT.F.delUnitNameServer(starter),true,isTest)
 		end
 		if not isTest then
-			ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
-				(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
-				(not ExRT.isClassic and "\tOIL\t"..format("%d",module:OilCheck()) or "")
-			)
+			module:SendConsumeData()
 		end
 	end
 end
@@ -2446,6 +2500,11 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 							kit = val,
 						}
 						module.db.kit[shortName] = module.db.kit[sender]
+					elseif key == "KITT" then
+						local data = module.db.kit[sender]
+						if data then
+							data.types = val
+						end
 					elseif key == "OIL" then
 						module.db.oil[sender] = {
 							time = time(),
@@ -2502,13 +2561,7 @@ function module:addonMessage(sender, prefix, type, ver, ...)
 				end
 				module.db.prevReqAntispam = currTime
 
-				local oilMH, oilOH = module:OilCheck()
-
-				ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
-					(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",module:KitCheck()) or "")..
-					(not ExRT.isClassic and "\tOIL\t"..format("%d",oilMH) or "")..
-					(not ExRT.isClassic and "\tOIL2\t"..format("%d",oilOH) or "")
-				)
+				module:SendConsumeData()
 			end
 		end
 	end
@@ -2553,15 +2606,21 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 	module.consumables.state = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
 	module.consumables.state:SetAttribute('_onstate-combat', [=[
-		if newstate == 'hide' then
-			for i=1,6 do
-				if i == 3 or i == 4 or i == 5 then
-					self:GetFrameRef("Button"..i):Hide()
+		for i=1,6 do
+			if i == 2 or i == 3 or i == 4 or i == 5 then
+				if self:GetFrameRef("Button"..i) then
+					if newstate == 'hide' then
+						self:GetFrameRef("Button"..i):Hide()
+					elseif newstate == 'show' then
+						if self:GetFrameRef("Button"..i).IsON then
+							self:GetFrameRef("Button"..i):Show()
+						end
+					end
 				end
 			end
 		end
 	]=])
-	RegisterStateDriver(module.consumables.state, 'combat', '[combat] hide')
+	RegisterStateDriver(module.consumables.state, 'combat', '[combat] hide; [nocombat] show')
 
 	for i=1,6 do
 		local button = CreateFrame("Frame",nil,module.consumables)
@@ -2586,7 +2645,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		button.count:SetFont(button.timeleft:GetFont(),10,"OUTLINE")
 		--button.count:SetTextColor(0,1,0,1)
 
-		if i == 3 or i == 4 or i == 5 then
+		if i == 2 or i == 3 or i == 4 or i == 5 then
 			button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
 			button.click:SetAllPoints()
 			button.click:Hide()
@@ -2647,15 +2706,15 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 			end
 		end
 		local totalButtons = 6
-        if not InCombatLockdown() then
-            if isWarlockInRaid then
-                self.buttons.hs:Show()
-            else
-                self.buttons.hs:Hide()
-                totalButtons = totalButtons - 1
-            end
-            self:SetWidth(consumables_size*totalButtons)
-        end
+		if isWarlockInRaid then
+			if not InCombatLockdown() then self.buttons.hs:Show() end
+		else
+			if not InCombatLockdown() then self.buttons.hs:Hide() end
+			totalButtons = totalButtons - 1
+		end
+		if not InCombatLockdown() then
+			self:SetWidth(consumables_size*totalButtons)
+		end
 
 		for i=1,#self.buttons do
 			self.buttons[i].statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-NotReady")
@@ -2668,7 +2727,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 		local now = GetTime()
 
-		local isFood, isRune
+		local isFood, isRune, isFlask
 
 		for i=1,60 do
 			local name,icon,count,dispelType,duration,expires,caster,isStealable,_,spellId = UnitAura("player", i, "HELPFUL")
@@ -2687,6 +2746,10 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 				self.buttons.flask.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
 				self.buttons.flask.texture:SetDesaturated(false)
 				self.buttons.flask.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((expires-now)/60))
+				isFlask = true
+				if expires - now <= 900 then
+					isFlask = false
+				end
 			elseif module.db.tableRunes[spellId] then
 				self.buttons.rune.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
 				self.buttons.rune.texture:SetDesaturated(false)
@@ -2705,6 +2768,38 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 
+
+		local flaskCount = GetItemCount(171276,false,false)
+		local flaskCanCount = GetItemCount(171280,false,false)
+		if not isFlask and ((flaskCount and flaskCount > 0) or (flaskCanCount and flaskCanCount > 0)) then
+			if not InCombatLockdown() then
+				local itemID = (flaskCanCount and flaskCanCount > 0) and 171280 or 171276
+				local itemName = GetItemInfo(itemID)
+				if itemName then
+					self.buttons.flask.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
+					self.buttons.flask.click:Show()
+					self.buttons.flask.click.IsON = true
+				else
+					self.buttons.flask.click:Hide()
+					self.buttons.flask.click.IsON = false
+				end
+			end
+		else
+			if not InCombatLockdown() then
+				self.buttons.flask.click:Hide()
+				self.buttons.flask.click.IsON = false
+			end
+		end
+		self.buttons.flask.count:SetFormattedText("%d%s",flaskCount,flaskCanCount > 0 and "+|cff00ff00"..flaskCanCount or "")
+		if LCG then
+			if not isFlask and ((flaskCount and flaskCount > 0) or (flaskCanCount and flaskCanCount > 0)) then
+				LCG.PixelGlow_Start(self.buttons.flask)
+			else
+				LCG.PixelGlow_Stop(self.buttons.flask)
+			end
+		end
+
+
 		local kitCount = GetItemCount(172347,false,true)
 		local kitNow, kitMax, kitTimeLeft = module:KitCheck()
 		if kitNow > 0 then
@@ -2720,13 +2815,16 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 				if itemName then
 					self.buttons.kit.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s\n/use 5", itemName))
 					self.buttons.kit.click:Show()
+					self.buttons.kit.click.IsON = true
 				else
 					self.buttons.kit.click:Hide()
+					self.buttons.kit.click.IsON = false
 				end
 			end
 		else
 			if not InCombatLockdown() then
 				self.buttons.kit.click:Hide()
+				self.buttons.kit.click.IsON = false
 			end
 		end
 		self.buttons.kit.count:SetFormattedText("%d",kitCount)
@@ -2789,13 +2887,16 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 							self.buttons.oil.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
 						end
 						self.buttons.oil.click:Show()
+						self.buttons.oil.click.IsON = true
 					else
 						self.buttons.oil.click:Hide()
+						self.buttons.oil.click.IsON = false
 					end
 				end
 			else
 				if not InCombatLockdown() then
 					self.buttons.oil.click:Hide()
+					self.buttons.oil.click.IsON = false
 				end
 			end
 
@@ -2816,14 +2917,17 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 				if itemName then
 					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
 					self.buttons.rune.click:Show()
+					self.buttons.rune.click.IsON = true
 				else
 					self.buttons.rune.click:Hide()
+					self.buttons.rune.click.IsON = false
 				end
 			end
 		else
 			self.buttons.rune.count:SetText("0")
 			if not InCombatLockdown() then
 				self.buttons.rune.click:Hide()
+				self.buttons.rune.click.IsON = false
 			end
 		end
 

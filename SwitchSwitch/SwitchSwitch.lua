@@ -7,6 +7,7 @@ addon.G = {}
 addon.G.SwitchingTalents = false
 addon.version = "1.68"
 addon.CustomProfileName = GetLocale():sub(1,2) == "zh" and "未保存" or "custom"
+_G.SWSW = addon
 
 --##########################################################################################################################
 --                                  Helper Functions

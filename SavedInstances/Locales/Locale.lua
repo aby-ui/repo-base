@@ -49,9 +49,11 @@ Ld["Bonus rolls"] = "Bonus rolls"
 Ld[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+Ld["Calling Missing"] = "Calling Missing"
 Ld["Categories"] = "Categories"
 Ld["Characters"] = "Characters"
 Ld["Color currency by cap"] = "Color currency by cap"
+Ld["Combine Callings"] = "Combine Callings"
 Ld["Combine Emissaries"] = "Combine Emissaries"
 Ld["Combine emissaries of same expansion"] = "Combine emissaries of same expansion"
 Ld["Combine LFR"] = "Combine LFR"
@@ -145,6 +147,7 @@ Ld["SD"] = "SD"
 Ld["Set All"] = "Set All"
 Ld["Show all emissary names"] = "Show all emissary names"
 Ld["Show both factions' emissay name"] = "Show both factions' emissay name"
+Ld["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 Ld["Show category names"] = "Show category names"
 Ld["Show category names in the tooltip"] = "Show category names in the tooltip"
 Ld["Show cooldown for characters to use battleground system"] = "Show cooldown for characters to use battleground system"
@@ -236,9 +239,13 @@ La["Bonus loot frame"] = "Cadre de jet de butin bonus"
 La["Bonus rolls"] = "Jets de dé bonus"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = "Les informations de mort des boss manquent pour ce verrouillage d'instance.\\\\nC'est un bogue de Blizzard qui touche certains vieux raids."
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Catégories"
 La["Characters"] = "Personnages"
 La["Color currency by cap"] = "Colorer les monnaies par cap"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 --[[Translation missing --]]
 La["Combine Emissaries"] = "Combine Emissaries"
 --[[Translation missing --]]
@@ -366,6 +373,8 @@ La["Set All"] = "Tout régler sur :"
 La["Show all emissary names"] = "Show all emissary names"
 --[[Translation missing --]]
 La["Show both factions' emissay name"] = "Show both factions' emissay name"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Noms des catégories"
 La["Show category names in the tooltip"] = "Affiche les noms des catégories dans l'infobulle."
 La["Show cooldown for characters to use battleground system"] = "Affiche le temps restant avant que les personnages déserteurs ne puissent rejoindre un champs de bataille à nouveau."
@@ -466,9 +475,13 @@ La["Bonus rolls"] = "Bonuswürfe"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Informationen über getötete Bosse fehlen für diese Instanzsperre.
 Dies ist ein Fehler von Blizzard, der einige ältere Schlachtzüge betrifft.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Kategorien"
 La["Characters"] = "Charaktere"
 La["Color currency by cap"] = "Währung nach Limit einfärben"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 La["Combine Emissaries"] = "Kombiniere Abgesandte"
 La["Combine emissaries of same expansion"] = "Kombiniert die Abgesandten der selben Erweiterung"
 La["Combine LFR"] = "LFR/Flex zusammenfassen"
@@ -577,6 +590,8 @@ La["SD"] = "SD"
 La["Set All"] = "Alle festlegen"
 La["Show all emissary names"] = "Zeige alle Namen der Abgesandten"
 La["Show both factions' emissay name"] = "Zeige den Namen beider Fraktionen der Abgesandten"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Kategorienamen anzeigen"
 La["Show category names in the tooltip"] = "Kategorienamen im Tooltip anzeigen"
 La["Show cooldown for characters to use battleground system"] = "Zeigt Abklingzeiten für Charaktere, um das Schlachtfeldsystem zu benutzen, an."
@@ -671,9 +686,13 @@ La["Bonus loot frame"] = "추가 전리품 창"
 La["Bonus rolls"] = "추가 전리품 주사위 추적"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = "보스 처지 정보가 누락되어 잠겨 있습니다.\\n 이것은 특정 낭만 공격대에 영향을 미치는 블리자드 버그입니다."
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "카테고리"
 La["Characters"] = "캐릭터"
 La["Color currency by cap"] = "화폐 한도에 채색"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 La["Combine Emissaries"] = "사절퀘 모음"
 La["Combine emissaries of same expansion"] = "확팩별 사절퀘 모음"
 La["Combine LFR"] = "공찾/탄공 합침"
@@ -774,6 +793,8 @@ La["SD"] = "심연"
 La["Set All"] = "모든 설정"
 La["Show all emissary names"] = "모든 사절 이름 표시"
 La["Show both factions' emissay name"] = "양쪽 진영의 사절퀘 모두 보기"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "카테고리 이름 표시"
 La["Show category names in the tooltip"] = "툴팁에 카테고리 이름을 표시합니다"
 La["Show cooldown for characters to use battleground system"] = "캐릭터가 전장 시스템을 사용하기 위해 남은 대기시간을 표시합니다."
@@ -870,9 +891,13 @@ La["Bonus rolls"] = "Tiradas extras"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
 La["Color currency by cap"] = "Colorea moneda por límite"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 --[[Translation missing --]]
 La["Combine Emissaries"] = "Combine Emissaries"
 --[[Translation missing --]]
@@ -1010,6 +1035,8 @@ La["Set All"] = "Ajustar todos"
 La["Show all emissary names"] = "Show all emissary names"
 --[[Translation missing --]]
 La["Show both factions' emissay name"] = "Show both factions' emissay name"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Mostrar nombres de categorías"
 La["Show category names in the tooltip"] = "Mostrar los nombres de categorías en la descripción"
 La["Show cooldown for characters to use battleground system"] = "Muestra el cooldown de personajes para entrar en un campo de batalla."
@@ -1117,9 +1144,13 @@ La["Bonus rolls"] = "Отслеживать бонусные броски"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Отсутствует информация об убийстве босса для этого сохранения рейда.
 Это является ошибкой компании Blizzard, затрагивающей некоторые старые рейды.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Категории"
 La["Characters"] = "Персонажи"
 La["Color currency by cap"] = "Расцвечивать валюту в зависимости от достижения максимума"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 La["Combine Emissaries"] = "Объединить эмиссаров"
 La["Combine emissaries of same expansion"] = "Объединить эмиссаров одного и того же дополнения"
 La["Combine LFR"] = "Объединять СПР (LFR)"
@@ -1220,6 +1251,8 @@ La["SD"] = "КК"
 La["Set All"] = "Установить значение для всех"
 La["Show all emissary names"] = "Показать все имена эмиссаров"
 La["Show both factions' emissay name"] = "Показать название эмиссаров обеих фракций"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Показывать названия категорий"
 La["Show category names in the tooltip"] = "Отображать названия категорий в подсказках"
 La["Show cooldown for characters to use battleground system"] = "Показывать время задержки системы Полей битв"
@@ -1307,9 +1340,13 @@ La["Bonus rolls"] = "额外拾取情况"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[首领击杀信息遗失
 这是一个会影响特定旧副本的暴雪BUG]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "分类"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "根据上限显示颜色"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 La["Combine Emissaries"] = "合并大使任务"
 La["Combine emissaries of same expansion"] = "合并同一个资料片的大使任务"
 La["Combine LFR"] = "合并显示随机团本"
@@ -1403,6 +1440,8 @@ La["SD"] = "赤红"
 La["Set All"] = "设置所有"
 La["Show all emissary names"] = "显示所有大使名称"
 La["Show both factions' emissay name"] = "同时显示两个阵营不同的大使任务名称"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "显示分类名字"
 La["Show category names in the tooltip"] = "在界面中显示分类名字"
 La["Show cooldown for characters to use battleground system"] = "随机战场冷却"
@@ -1499,9 +1538,13 @@ La["Bonus rolls"] = "Tiradas extra"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
 La["Color currency by cap"] = "---- \"Show currency max\" is \"Mostrar máximos de monedas\""
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 --[[Translation missing --]]
 La["Combine Emissaries"] = "Combine Emissaries"
 --[[Translation missing --]]
@@ -1639,6 +1682,8 @@ La["Set All"] = "Establecer todos"
 La["Show all emissary names"] = "Show all emissary names"
 --[[Translation missing --]]
 La["Show both factions' emissay name"] = "Show both factions' emissay name"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Mostrar nombres de categorías"
 La["Show category names in the tooltip"] = "Mostrar los nombres de categorías en la descripción"
 La["Show cooldown for characters to use battleground system"] = "Muestra el tiempo de reutilización de personajes para entrar en un campo de batalla."
@@ -1746,9 +1791,13 @@ La["Bonus rolls"] = "額外骰子"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[缺少這個進度的首領擊殺資訊。
 這是暴雪的 BUG，會影響舊團隊。]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "分類"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "依據數量上限顯示兌換通貨顏色"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 La["Combine Emissaries"] = "合併特使"
 La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
@@ -1849,6 +1898,8 @@ La["SD"] = "血紅"
 La["Set All"] = "設定全部"
 La["Show all emissary names"] = "顯示所有特使名稱"
 La["Show both factions' emissay name"] = "顯示雙方陣營特使名稱"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "顯示分類名稱"
 La["Show category names in the tooltip"] = "在滑鼠提示中顯示分類名稱"
 La["Show cooldown for characters to use battleground system"] = "顯示角色可以使用戰場系統的冷卻時間"
@@ -1945,9 +1996,13 @@ La["Bonus rolls"] = "Saque de bônus"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorias"
 La["Characters"] = "Personagens"
 La["Color currency by cap"] = "Colorir moedas por limite"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 --[[Translation missing --]]
 La["Combine Emissaries"] = "Combine Emissaries"
 --[[Translation missing --]]
@@ -2075,6 +2130,8 @@ La["Set All"] = "Ajustar todos"
 La["Show all emissary names"] = "Show all emissary names"
 --[[Translation missing --]]
 La["Show both factions' emissay name"] = "Show both factions' emissay name"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Mostrar nome das categorias"
 La["Show category names in the tooltip"] = "Mostrar nome das categorias nas Dicas"
 La["Show cooldown for characters to use battleground system"] = "Mostrar tempo de espera para personagens poderem usar o sistema de campo de batalha"
@@ -2186,9 +2243,13 @@ La["Bonus rolls"] = "Tiri bonus"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+--[[Translation missing --]]
+La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorie"
 La["Characters"] = "Personaggi"
 La["Color currency by cap"] = "Colora valute in base al limite"
+--[[Translation missing --]]
+La["Combine Callings"] = "Combine Callings"
 --[[Translation missing --]]
 La["Combine Emissaries"] = "Combine Emissaries"
 --[[Translation missing --]]
@@ -2324,6 +2385,8 @@ La["Set All"] = "Imposta tutto"
 La["Show all emissary names"] = "Show all emissary names"
 --[[Translation missing --]]
 La["Show both factions' emissay name"] = "Show both factions' emissay name"
+--[[Translation missing --]]
+La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Mostra i nomi delle categorie"
 La["Show category names in the tooltip"] = "Mostra il nome della categoria nel tooltip"
 La["Show cooldown for characters to use battleground system"] = "Mostra il tempo rimanente prima che i personaggi possano usare il sistema di campi di battaglia"

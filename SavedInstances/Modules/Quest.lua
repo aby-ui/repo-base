@@ -235,6 +235,7 @@ local QuestExceptions = {
   [62285] = "Weekly", -- Observing War
   [62286] = "Weekly", -- Observing Skirmishes
   [62287] = "Weekly", -- Observing Arenas
+  [62288] = "Weekly", -- Observing Teamwork
   [62289] = "Weekly", -- Observing Conflict
   -- Ve'nari Weekly
   [60622] = "Weekly", -- Eye of the Scryer
@@ -271,16 +272,16 @@ local QuestExceptions = {
   [58458] = "AccountWeekly", -- Pet Battle Challenge: Blackrock Depths
 
   -- Weekend Event
-  [53030] = "Weekly", -- The World Awaits - World Quests
-  [53032] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
-  [53033] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
-  [53034] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
-  [53035] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
-  [54995] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
-  [53036] = "Weekly", -- A Call to Battle - Battlegrounds
-  [53037] = "Weekly", -- Emissary of War - Mythic Dungeons
-  [53038] = "AccountWeekly", -- The Very Best - PvP Pet Battles
-  [53039] = "Weekly", -- The Arena Calls - Arena Skirmishes
+  [62631] = "Weekly", -- The World Awaits - World Quests
+  [62632] = "Weekly", -- A Burning Path Through Time - TBC Timewalking
+  [62633] = "Weekly", -- A Frozen Path Through Time - WLK Timewalking
+  [62634] = "Weekly", -- A Shattered Path Through Time - CTM Timewalking
+  [62635] = "Weekly", -- A Shattered Path Through Time - MOP Timewalking
+  [62636] = "Weekly", -- A Savage Path Through Time - WOD Timewalking
+  [62637] = "Weekly", -- A Call to Battle - Battlegrounds
+  [62638] = "Weekly", -- Emissary of War - Mythic Dungeons
+  [62639] = "AccountWeekly", -- The Very Best - PvP Pet Battles
+  [62640] = "Weekly", -- The Arena Calls - Arena Skirmishes
 }
 SI.QuestExceptions = QuestExceptions
 

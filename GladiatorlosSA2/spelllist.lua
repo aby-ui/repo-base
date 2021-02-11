@@ -25,6 +25,7 @@
 			[310143] = "soulshape", -- Nightfae Signature
 			[319217] = "podtender", -- Nightfae Cheat Death
 			[320224] = "podtender", -- Nightfae Cheat Death
+			[327676] = "forgeborne", -- Forgeborne (Necrolord Soulbind)
 
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
@@ -99,12 +100,14 @@
 			[186257] = "cheetah",
 			[212640] = "mendingBandage",
 			--[193526] = "trueShot",
+			[288613] = "trueShot",
 			[193530] = "trueShot",	-- Aspect of the Wild
 			[266779] = "trueShot",	-- Coordinated Assault
 			--[186289] = "eagle",
 			[3355] = "trapped", -- Freezing Trap Success
 			[202748] = "survivalTactics", -- Survival Tactics (Honor Talent Feign Death Passive)
 			[212704] = "beastWithin", -- The Beast Within; Beastial Wrath Fear/Horror Immunity Honor Talent
+			[260402] = "doubletap",
 
 			-- Mage (Aura Applied)
 			[45438] = "iceBlock",
@@ -213,7 +216,7 @@
 			-- Warlock (Aura Applied)
 			[108416] = "darkPact",
 			[104773] = "unendingResolve",
-			[196098] = "darkSoul", -- Soul Harvest (Legion's Version)
+			--[196098] = "darkSoul", -- Soul Harvest (Legion's Version)
 			[113860] = "darkSoul", -- Dark Soul: Misery (Affliction)
 			[113858] = "darkSoul", -- Dark Soul: Instability (Destruction)
 			[212295] = "netherWard",
@@ -297,6 +300,7 @@
 			[33891] = "incarnationDown",		--Incarnation (Tree)
 			[197690] = "damageStance",			--Defensive Stance (Falling off)
 			--[193526] = "trueShotDown",			--Trueshot
+			[288613] = "trueShotDown",
 			[193530] = "trueShotDown",			--Aspect of the Wild
 			[266779] = "trueShotDown",			--Coordinated Assault
 			[199754] = "riposteDown",			--Riposte

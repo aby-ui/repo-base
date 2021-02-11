@@ -286,8 +286,6 @@ formats:
 {time:2:30,wa:nzoth_hs1}	--run weakauras custom event EXRT_NOTE_TIME_EVENT with arg1 = nzoth_hs1, arg2 = time left (event runs every second when timer has 5 seconds or lower), arg3 = note line text
 ]]
 local function GSUB_Time(t,msg)
-	t = t .. "\n"
-
 	local lineTime
 	if string_find(t,":") then
 		lineTime = tonumber(string_match(t,"(%d+):") or "0",nil) * 60 + tonumber(string_match(t,":(%d+)") or "0",nil)
@@ -298,7 +296,7 @@ local function GSUB_Time(t,msg)
 	local phase = string_match(t,",p(%d+)")
 
 	if not module.db.encounter_time then
-		return "|cffffed88"..(phase and "P"..phase.." " or "")..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+		return "|cffffed88"..(phase and "P"..phase.." " or "")..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg
 	end
 
 	local currTime = GetTime() - module.db.encounter_time
@@ -311,7 +309,7 @@ local function GSUB_Time(t,msg)
 		if t then
 			currTime = GetTime() - t
 		else
-			return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+			return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg
 		end
 	end
 
@@ -319,7 +317,7 @@ local function GSUB_Time(t,msg)
 	if phase then
 		t = encounter_time_p[tonumber(phase)]
 		if not t then
-			return "|cffffed88"..format("P%s %d:%02d|r ",phase,floor(lineTime/60),lineTime % 60)..msg.."\n"
+			return "|cffffed88"..format("P%s %d:%02d|r ",phase,floor(lineTime/60),lineTime % 60)..msg
 		end
 		currTime = GetTime() - t
 
@@ -331,7 +329,7 @@ local function GSUB_Time(t,msg)
 		if custom_event then
 			t = encounter_time_c[custom_event]
 			if not t then
-				return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg.."\n"
+				return "|cffffed88"..format("%d:%02d|r ",floor(lineTime/60),lineTime % 60)..msg
 			end
 			currTime = GetTime() - t
 		end
@@ -351,13 +349,13 @@ local function GSUB_Time(t,msg)
 	end
 
 	if currTime >= lineTime then
-		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r\n"
+		return "|cff555555"..msg:gsub("|c........",""):gsub("|r","").."|r"
 	elseif lineTime - currTime <= 10 then
 		t = lineTime - currTime
-		return "|cff00ff00"..phaseText..format("%d:%02d ",floor(t/60),t % 60)..msg:gsub("|c........",""):gsub("|r",""):gsub(ExRT.SDB.charName,"|r|cffff0000>%1<|r|cff00ff00").."|r\n"
+		return "|cff00ff00"..phaseText..format("%d:%02d ",floor(t/60),t % 60)..msg:gsub("|c........",""):gsub("|r",""):gsub(ExRT.SDB.charName,"|r|cffff0000>%1<|r|cff00ff00").."|r"
 	else
 		t = lineTime - currTime
-		return "|cffffed88"..phaseText..format("%d:%02d|r ",floor(t/60),t % 60)..msg.."\n"
+		return "|cffffed88"..phaseText..format("%d:%02d|r ",floor(t/60),t % 60)..msg
 	end
 end
 
@@ -422,7 +420,7 @@ local function txtWithIcons(t)
 		:gsub("{spell:(%d+)}",GSUB_Icon)
 		:gsub("%b{}",GSUB_RaidIcon)
 		:gsub("||([cr])","|%1")
-		:gsub("{time:([0-9:]+[^{}]*)}(.-)\n",GSUB_Time)
+		:gsub("{time:([0-9:]+[^{}]*)}([^\n]*)",GSUB_Time)
 		:gsub("%b{}","")
 		:gsub( "\n+$", ""), nil
 end
@@ -438,14 +436,14 @@ function module.options:Load()
 		106898,192077,46968,119381,179057,192058,30283,0,
 		29166,32375,114018,108199,49576,0,
 		0,
-		341489,328897,344111,343365,340324,342923,328857,328921,340047,343005,342863,341684,330711,342074,0,
-		334757,338609,335114,334797,334960,334852,334860,334504,334884,334404,334893,334971,334708,338615,343259,334695,339639,338593,335303,0,
+		341489,345397,328897,343365,340324,342923,328857,328921,345425,343005,342863,341684,330711,342074,0,
+		334695,338609,345902,334797,334960,334852,334860,334504,334884,334404,334893,334971,334708,338615,343259,335114,334757,339639,338593,335303,0,
 		333145,337865,325442,328248,325590,325877,341308,335581,328885,329561,325665,328731,329509,335598,326430,341473,326078,333002,328254,329539,336398,326455,329470,323402,339251,326456,328579,343026,325440,0,
 		329770,340533,325361,340860,325399,328437,340870,328880,327414,329458,327887,326271,340842,0,
 		329455,329774,329298,334522,334755,338614,329742,332375,332294,332295,0,
-		325225,331844,331573,325908,331527,325769,325382,326538,325384,342287,325718,331550,325184,341746,324983,342320,335322,325596,341590,329618,0,
-		327503,331634,330968,328334,328497,330978,342859,342852,331708,334909,334948,330965,335778,330964,327773,342847,327475,330967,327619,337110,0,
-		335354,335300,340803,331209,332318,332443,341294,331212,332197,341102,341482,335297,341250,332969,339189,332687,335361,335295,332572,0,
+		325225,331844,331573,325908,331527,325382,326538,325384,342287,331550,325718,342280,325117,325184,341746,324983,342320,335322,325596,341590,329618,0,
+		346692,331634,330968,346934,346694,330978,328497,330848,346035,330964,327503,346681,334909,346945,346891,330965,346690,346651,346303,346939,346660,347350,337110,327619,346790,0,
+		335354,335300,340803,331209,332318,332443,331212,332197,341102,341482,335297,341250,332969,339189,332687,335361,335295,332572,0,
 		334765,333913,344740,342733,334929,333387,343881,336212,332683,339728,343086,343898,339690,344655,342425,342256,336231,342985,339645,343063,340038,334771,342741,332412,339693,339885,329636,342253,0,
 		332734,341366,338689,330137,344313,338738,330627,330580,338582,326707,327227,327842,335875,329906,326851,332585,344776,327089,332797,328098,340685,332619,326823,338683,338510,327123,326824,330871,329974,341391,326699,338685,328936,336008,335873,329785,327992,328839,328276,338687,336162,327796,0,
 	}
@@ -734,6 +732,7 @@ function module.options:Load()
 
 		module.options.buttonsend:SetShown(index == 1)
 		module.options.buttoncopy:SetShown(index > 2)
+		module.options.buttoncopyPersonal:SetShown(index > 2)
 
 		BlackNoteNow = nil
 		NoteIsSelfNow = nil
@@ -1150,7 +1149,20 @@ function module.options:Load()
 		end
 	end
 
-	self.buttoncopy = ELib:Button(self.tab.tabs[1],L.messageButCopy):Size(0,30):Point("LEFT",self.NotesList,"TOPRIGHT",4,0):Point("BOTTOM",self,"BOTTOM",0,2):Point("RIGHT",self,"RIGHT",-2,0):OnClick(function (self)
+	self.buttoncopyPersonal = ELib:Button(self.tab.tabs[1],L.NoteMoveToPersonal):Size(180,30):Point("BOTTOM",self,"BOTTOM",0,2):Point("RIGHT",self,"RIGHT",-2,0):OnClick(function (self)
+		if not BlackNoteNow then
+			return
+		end
+		VExRT.Note.SelfText = VExRT.Note.Black[BlackNoteNow]
+
+		module.options.NotesList:SetListValue(2)
+
+		module.options.NotesList.selected = 2
+		module.options.NotesList:Update()
+	end) 
+	self.buttoncopyPersonal:Hide()
+
+	self.buttoncopy = ELib:Button(self.tab.tabs[1],L.messageButCopy):Size(0,30):Point("LEFT",self.NotesList,"TOPRIGHT",4,0):Point("BOTTOM",self,"BOTTOM",0,2):Point("RIGHT",self.buttoncopyPersonal,"LEFT",-5,0):OnClick(function (self)
 		if not BlackNoteNow then
 			return
 		end
@@ -1264,6 +1276,9 @@ function module.options:Load()
 				end
 			else
 				local _,_,spellTexture = GetSpellInfo( spellID )
+				if predefSpellIcons[spellID] then
+					spellTexture = predefSpellIcons[spellID]
+				end
 
 				CreateOtherIcon(5+inLine*20,-2-(line-1)*20,spellTexture,"{spell:"..spellID.."}")
 				inLine = inLine + 1
@@ -1710,6 +1725,9 @@ function module.frame.text:FixLag()
 	self:SetPoint("TOPLEFT",5,-5)
 	self:SetPoint("BOTTOMRIGHT",-5,5)
 end
+
+module.frame.sf:Show()
+module.frame.text:FixLag()
 
 module.frame.buttonResize = CreateFrame("Frame",nil,module.frame)
 module.frame.buttonResize:SetSize(15,15)
@@ -2162,14 +2180,10 @@ do
 
 
 	function module.main:ENCOUNTER_START(encounterID, encounterName, difficultyID, groupSize)
-		local updateTextReq
 		local noteText = (VExRT.Note.Text1 or "")..(VExRT.Note.SelfText or "")
 		if encounterID and encounterName then
 			encounter_id[tostring(encounterID)] = true
 			encounter_id[encounterName] = true
-			if noteText:find("{[Ee]:([^}]+)}.-{/[Ee]}") then
-				updateTextReq = true
-			end
 		end
 		local timeInText = noteText:find("{time:([0-9:]+[^{}]*)}")
 		local phaseInText = noteText:find("{[Pp](%d+)}(.-){/[Pp]}")
@@ -2181,7 +2195,6 @@ do
 			end
 			module.db.encounter_time = GetTime()
 			encounter_time_p[1] = module.db.encounter_time
-			updateTextReq = true
 			BossPhasesBossmod()
 
 			if timeInText and noteText:find("{time:[0-9:]+[^}]*,S[^{},]+") then
@@ -2202,10 +2215,6 @@ do
 					module:RegisterEvents("COMBAT_LOG_EVENT_UNFILTERED")
 				end
 			end
-		end
-		if updateTextReq then
-			module.frame.sf:Show()
-			module.frame.text:FixLag()
 		end
 		module.frame:UpdateText()
 	end

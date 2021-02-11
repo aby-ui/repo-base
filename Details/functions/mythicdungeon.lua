@@ -689,16 +689,27 @@ function DetailsMythicPlusFrame.OnChallengeModeStart()
     if (difficulty == 8 and DetailsMythicPlusFrame.LastTimer and DetailsMythicPlusFrame.LastTimer+2 > GetTime()) then
         --> start the dungeon on Details!
         DetailsMythicPlusFrame.MythicDungeonStarted()
+        --print("D! mythic dungeon started!")
     else
+
+        --print("D! mythic dungeon was already started!")
         --> from zone changed
         local mythicLevel = C_ChallengeMode.GetActiveKeystoneInfo()
         local zoneName, _, _, _, _, _, _, currentZoneID = GetInstanceInfo()
+
+        --print("Details.MythicPlus.Started", Details.MythicPlus.Started)
+        --print("Details.MythicPlus.DungeonID", Details.MythicPlus.DungeonID)
+        --print("currentZoneID", currentZoneID)
+        --print("Details.MythicPlus.Level", Details.MythicPlus.Level)
+        --print("mythicLevel", mythicLevel)
         
         if (not Details.MythicPlus.Started and Details.MythicPlus.DungeonID == currentZoneID and Details.MythicPlus.Level == mythicLevel) then
             Details.MythicPlus.Started = true
             Details.MythicPlus.EndedAt = nil
             _detalhes.mythic_dungeon_currentsaved.started = true
             DetailsMythicPlusFrame.IsDoingMythicDungeon = true
+
+            --print("D! mythic dungeon was NOT already started! debug 2")
         end
     end
 end

@@ -507,6 +507,9 @@ do
 	end
 
 	function promoteRosterUpdate()
+		if not VExRT.InviteTool.AutoPromote then
+			return
+		end
 		for i = 1, GetNumGroupMembers() do
 			local name, rank = GetRaidRosterInfo(i)
 			if name and rank == 0 then
