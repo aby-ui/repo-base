@@ -1,0 +1,18 @@
+## Interface: 90002
+## Title: Details!: Explosive Orbs (plugin)
+## Notes: Show how many explosive orbs players target and hit.
+## RequiredDeps: Details
+## Author: LiangYuxuan
+## Version: v9.0.4
+## X-License: MIT
+## X-Curse-Project-ID: 352367
+## SavedVariablesPerCharacter: ExplosiveOrbsLog
+
+#Libs\Load_Libs.xml
+
+Locale.lua
+Core.lua
+
+
+## Title: |cff880303[爱不易]|r Details易爆打球统计
+## X-Vendor: AbyUI

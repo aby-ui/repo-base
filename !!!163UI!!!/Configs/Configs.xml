@@ -119,6 +119,7 @@
     <Include file="..\..\RECrystallize\CfgRECrystallize.lua"/>
     <Include file="..\..\SwitchSwitch\CfgSwitchSwitch.lua"/>
     <Include file="..\..\VenturePlan\CfgVenturePlan.lua"/>
+    <Include file="..\..\OmniCD\CfgOmniCD.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

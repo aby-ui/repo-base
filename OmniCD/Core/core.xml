@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="constants.lua"/>
+	<Script file="load.lua"/>
+	<Script file="core.lua"/>
+	<Script file="addons.lua"/>
+	<Script file="commands.lua"/>
+	<Script file="dialogs.lua"/>
+	<Script file="API.lua"/>
+</Ui>

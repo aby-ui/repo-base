@@ -1,0 +1,20 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Include file="Libs\lib.xml"/>
+	<Script file="defaults.lua"/>
+	<Script file="changelog.lua"/>
+	<Script file="core.lua"/>
+	<Script file="general.lua"/>
+	<Script file="spellEditor.lua"/>
+
+	<!-- Party -->
+	<Script file="Party\core.lua"/>
+	<Script file="Party\visibility.lua"/>
+	<Script file="Party\general.lua"/>
+	<Script file="Party\extraBars.lua"/>
+	<Script file="Party\position.lua"/>
+	<Script file="Party\icons.lua"/>
+	<Script file="Party\highlight.lua"/>
+	<Script file="Party\priority.lua"/>
+	<Script file="Party\spells.lua"/>
+</Ui>

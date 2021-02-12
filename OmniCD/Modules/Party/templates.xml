@@ -1,0 +1,319 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Frame name="OmniCDTemplate" virtual="true" parent="UIParent" frameStrata="MEDIUM" movable="true" clampedToScreen="true" dontSavePosition="true" hidden="true">
+		<Size>
+			<AbsDimension x="1" y="1"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<Frame name="$parentAnchor" parentKey="anchor" enableMouse="true" clampedToScreen="true">
+				<Size>
+					<AbsDimension x="15" y="15"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBG" setAllPoints="true" parentKey="background">
+							<Color r="0.756" g="0" b="0.012" a="0.7"/>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString name="$parentText" parentKey="text" inherits="GameFontNormal">
+							<Color r="1" g="1" b="1" a="1"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnMouseDown>
+						OmniCD_AnchorOnMouseDown(self);
+					</OnMouseDown>
+					<OnMouseUp>
+						OmniCD_AnchorOnMouseUp(self);
+					</OnMouseUp>
+				</Scripts>
+			</Frame>
+			<Frame name="$parentIcons" parentKey="container" clampedToScreen="true">
+				<Size>
+					<AbsDimension x="1" y="1"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnHide>
+				OmniCD_BarOnHide(self);
+			</OnHide>
+		</Scripts>
+	</Frame>
+	<Button name="OmniCDButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
+		<Size>
+			<AbsDimension x="36" y="36"/>
+		</Size>
+		<Anchors>
+			<Anchors>
+				<Anchor point="CENTER"/>
+			</Anchors>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1" hidden="true">
+				<Texture parentKey="borderTop">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="borderBottom">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="borderLeft">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="borderRight">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="flash" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true" looping="NONE">
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.2"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.2" toAlpha="1"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
+				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1.1" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+		</Animations>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawBling="false" drawEdge="false" hidden="true">
+				<SwipeTexture>
+					<Color r="1" g="1" b="1" a="0.8"/>
+				</SwipeTexture>
+				<Scripts>
+					<OnHide>
+						OmniCD_CooldownOnHide(self);
+					</OnHide>
+				</Scripts>
+			</Cooldown>
+			<Frame parentKey="PendingFrame" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Glow" file="Interface\Transmogrify\Textures.png">
+							<Size x="58" y="57"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.38476563" bottom="0.49609375"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<Texture parentKey="Ants" file="Interface\Transmogrify\PurpleIconAlertAnts.png">
+							<Size x="44" y="44"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnUpdate>
+						AnimateTexCoords(self.Ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+					</OnUpdate>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="AnimFrame" setAllPoints="true" hidden="true">
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Glow" file="Interface\Transmogrify\Textures.png" alpha="0">
+							<Size x="58" y="57"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.38476563" bottom="0.49609375"/>
+						</Texture>
+						<Texture parentKey="Transition" file="Interface\Transmogrify\Textures.png" hidden="true">
+							<Size x="42" y="41"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.52343750" right="0.97656250" top="0.25781250" bottom="0.36914063"/>
+						</Texture>
+						<Texture parentKey="OuterGlow" file="Interface\SpellActivationOverlay\IconAlert" alpha="0">
+							<Size x="58" y="57"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.00781250" right="0.50781250" top="0.53515625" bottom="0.78515625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Animations>
+					<AnimationGroup parentKey="Anim">
+						<Alpha childKey="OuterGlow" duration="0.15" fromAlpha="0" toAlpha="1" order="1"/>
+						<Alpha childKey="OuterGlow" duration="0.15" fromAlpha="1" toAlpha="0" order="2"/>
+						<Scale childKey="Transition" duration="0.2" scaleX="1.381" scaleY="1.381" order="2"/>
+						<Alpha childKey="Glow" fromAlpha="1" toAlpha="0" duration="0.2" order="2"/>
+						<Scripts>
+							<OnFinished>
+								local frame = self:GetParent();
+								frame:Hide();
+								local icon = frame:GetParent()
+								if icon and icon.isHilightRemoved then
+									icon.isHighlighted = nil
+								end
+							</OnFinished>
+						</Scripts>
+					</AnimationGroup>
+				</Animations>
+			</Frame>
+		</Frames>
+		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture">
+			<Anchors>
+				<Anchor point="TOPLEFT" x="-15" y="15"/>
+				<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
+			</Anchors>
+		</NormalTexture>
+		<PushedTexture/>
+		<HighlightTexture/>
+		<CheckedTexture/>
+		<Scripts>
+			<OnEnter>
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+				GameTooltip:SetSpellByID(self.spellID);
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</Button>
+	<Frame name="OmniCDButtonSpellActivationAlert" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentSpark" parentKey="spark" file="Interface\SpellActivationOverlay\IconAlert" alpha="0" setAllPoints="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.61718750" top="0.00390625" bottom="0.26953125"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentInnerGlow" parentKey="innerGlow" file="Interface\SpellActivationOverlay\IconAlert" alpha="0" setAllPoints="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.50781250" top="0.27734375" bottom="0.52734375"/>
+				</Texture>
+				<Texture name="$parentInnerGlowOver" parentKey="innerGlowOver" file="Interface\SpellActivationOverlay\IconAlert" alpha="0">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentInnerGlow" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentInnerGlow" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.50781250" top="0.53515625" bottom="0.78515625"/>
+				</Texture>
+				<Texture name="$parentOuterGlow" parentKey="outerGlow" file="Interface\SpellActivationOverlay\IconAlert" alpha="0" setAllPoints="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.50781250" top="0.27734375" bottom="0.52734375"/>
+				</Texture>
+				<Texture name="$parentOuterGlowOver" parentKey="outerGlowOver" file="Interface\SpellActivationOverlay\IconAlert" alpha="0">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentOuterGlow" relativePoint="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentOuterGlow" relativePoint="BOTTOMRIGHT"/>
+					</Anchors>
+					<TexCoords left="0.00781250" right="0.50781250" top="0.53515625" bottom="0.78515625"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentAnts" parentKey="ants" file="Interface\SpellActivationOverlay\IconAlertAnts" alpha="0" setAllPoints="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Animations>
+			<AnimationGroup parentKey="animIn">
+				<Scale target="$parentSpark" duration="0.2" scaleX="1.5" scaleY="1.5" order="1"/>
+				<Alpha target="$parentSpark" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
+				<Scale target="$parentInnerGlow" duration="0.3" scaleX="2" scaleY="2" order="1"/>
+				<Scale target="$parentInnerGlowOver" duration="0.3" scaleX="2" scaleY="2" order="1"/>
+				<Alpha target="$parentInnerGlowOver" duration="0.3" fromAlpha="1" toAlpha="0" order="1"/>
+				<Scale target="$parentOuterGlow" duration="0.3" scaleX="0.5" scaleY="0.5" order="1"/>
+				<Scale target="$parentOuterGlowOver" duration="0.3" scaleX="0.5" scaleY="0.5" order="1"/>
+				<Alpha target="$parentOuterGlowOver" duration="0.3" fromAlpha="1" toAlpha="0" order="1"/>
+				<Scale target="$parentSpark" startDelay="0.2" duration="0.2" scaleX="0.666666" scaleY="0.666666" order="1"/>
+				<Alpha target="$parentSpark" startDelay="0.2" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
+				<Alpha target="$parentInnerGlow" startDelay="0.3" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
+				<Alpha target="$parentAnts" startDelay="0.3" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
+				<Scripts>
+					<OnPlay>
+						local frame = self:GetParent();
+						local frameWidth, frameHeight = frame:GetSize();
+						frame.spark:SetSize(frameWidth, frameHeight);
+						frame.spark:SetAlpha(0.3)
+						frame.innerGlow:SetSize(frameWidth / 2, frameHeight / 2);
+						frame.innerGlow:SetAlpha(1.0);
+						frame.innerGlowOver:SetAlpha(1.0);
+						frame.outerGlow:SetSize(frameWidth * 2, frameHeight * 2);
+						frame.outerGlow:SetAlpha(1.0);
+						frame.outerGlowOver:SetAlpha(1.0);
+						frame.ants:SetSize(frameWidth * 0.85, frameHeight * 0.85)
+						frame.ants:SetAlpha(0);
+						frame:Show();
+					</OnPlay>
+					<OnFinished>
+						local frame = self:GetParent();
+						local frameWidth, frameHeight = frame:GetSize();
+						frame.spark:SetAlpha(0);
+						frame.innerGlow:SetAlpha(0);
+						frame.innerGlow:SetSize(frameWidth, frameHeight);
+						frame.innerGlowOver:SetAlpha(0.0);
+						frame.outerGlow:SetSize(frameWidth, frameHeight);
+						frame.outerGlowOver:SetAlpha(0.0);
+						frame.outerGlowOver:SetSize(frameWidth, frameHeight);
+						frame.ants:SetAlpha(1.0);
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+			<AnimationGroup parentKey="animOut">
+				<Alpha target="$parentOuterGlowOver" duration="0.2" fromAlpha="0" toAlpha="1" order="1"/>
+				<Alpha target="$parentAnts" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
+				<Alpha target="$parentOuterGlowOver" duration="0.2" fromAlpha="1" toAlpha="0" order="2"/>
+				<Alpha target="$parentOuterGlow" duration="0.2" fromAlpha="1" toAlpha="0" order="2"/>
+				<Scripts>
+					<OnFinished>
+						OmniCD_OverlayGlowAnimOutFinished(self);
+					</OnFinished>
+				</Scripts>
+			</AnimationGroup>
+		</Animations>
+		<Scripts>
+			<OnUpdate function="OmniCD_OverlayGlowOnUpdate"/>
+			<OnHide>
+				if ( self.animOut:IsPlaying() ) then
+					self.animOut:Stop();
+					OmniCD_OverlayGlowAnimOutFinished(self.animOut);
+				end
+			</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>

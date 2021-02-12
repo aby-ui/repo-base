@@ -1,0 +1,22 @@
+## Interface: 90002
+## Title: OmniCD
+## Version: 2.5.12
+## Author: Treebonker
+## Notes: Tracks party cooldowns. Use /oc or /omnicd to open options
+## X-Credits:
+## X-License: All Rights Reserved
+## X-Localizations: enUS, koKR, ruRU, zhCN, zhTW
+## X-Website: https://www.curseforge.com/wow/addons/omnicd
+## DefaultState: Enabled
+## SavedVariables: OmniCDDB
+
+#Libs\embeds.xml
+Locales\locales.xml
+Core\init.lua
+Core\core.xml
+Modules\modules.xml
+Config\config.xml
+
+
+## Title: |cff880303[爱不易]|r OmniCD队友冷却监控
+## X-Vendor: AbyUI

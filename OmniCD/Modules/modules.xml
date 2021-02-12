@@ -1,0 +1,34 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<!-- Spells -->
+	<Script file="Spells\core.lua"/>
+	<Script file="Spells\spells.lua"/>
+	<Script file="Spells\modifiers.lua"/>
+
+	<!-- Party -->
+	<Include file="Party\templates.xml"/>
+	<Script file="Party\core.lua"/>
+	<Script file="Party\bars.lua"/>
+	<Script file="Party\icons.lua"/>
+	<Script file="Party\position.lua"/>
+	<Script file="Party\visibility.lua"/>
+	<Script file="Party\cooldowns.lua"/>
+	<Script file="Party\highlights.lua"/>
+	<Script file="Party\test.lua"/>
+	<Script file="Party\extraBars.lua"/>
+	<Include file="Party\statusBar.xml"/>
+	<Script file="Party\statusBar.lua"/>
+
+	<!-- Comms -->
+	<Script file="Comms\core.lua"/>
+	<Script file="Comms\inspect.lua"/>
+	<Script file="Comms\sync.lua"/>
+
+	<!-- Cooldowns -->
+	<Script file="Cooldowns\core.lua"/>
+	<Script file="Cooldowns\cooldowns.lua"/>
+
+	<!-- Misc -->
+	<Script file="Tooltips\tooltipID.lua"/>
+	<Script file="Blizzard\blizzard.lua"/>
+</Ui>

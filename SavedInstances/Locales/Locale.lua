@@ -1340,13 +1340,11 @@ La["Bonus rolls"] = "额外拾取情况"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[首领击杀信息遗失
 这是一个会影响特定旧副本的暴雪BUG]=]
---[[Translation missing --]]
-La["Calling Missing"] = "Calling Missing"
+La["Calling Missing"] = "使命任务缺失"
 La["Categories"] = "分类"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "根据上限显示颜色"
---[[Translation missing --]]
-La["Combine Callings"] = "Combine Callings"
+La["Combine Callings"] = "合并使命任务"
 La["Combine Emissaries"] = "合并大使任务"
 La["Combine emissaries of same expansion"] = "合并同一个资料片的大使任务"
 La["Combine LFR"] = "合并显示随机团本"
@@ -1440,8 +1438,7 @@ La["SD"] = "赤红"
 La["Set All"] = "设置所有"
 La["Show all emissary names"] = "显示所有大使名称"
 La["Show both factions' emissay name"] = "同时显示两个阵营不同的大使任务名称"
---[[Translation missing --]]
-La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
+La["Show calling line when all quests completed"] = "全部角色的使命任务完成后仍显示该行"
 La["Show category names"] = "显示分类名字"
 La["Show category names in the tooltip"] = "在界面中显示分类名字"
 La["Show cooldown for characters to use battleground system"] = "随机战场冷却"

@@ -251,6 +251,10 @@ SI.defaultDB = {
   --   isFinished = isFinished,
   --   questDone = questDone,
   --   questNeed = questNeed,
+  --   questReward = {
+  --     itemName = itemName,
+  --     quality = quality,
+  --   },
   -- }
 
   Indicators = {
@@ -1816,6 +1820,46 @@ hoverTooltip.ShowEmissaryTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
+hoverTooltip.ShowCallingTooltip = function (cell, arg, ...)
+  local day, toon = unpack(arg)
+  local info = db.Toons[toon].Calling[day]
+  if not info then return end
+  openIndicator(2, "LEFT", "RIGHT")
+  local text
+  if info.isCompleted == true then
+    text = "\124T"..READY_CHECK_READY_TEXTURE..":0|t"
+  elseif not info.isOnQuest then
+    text = "\124cFFFFFF00!\124r"
+  elseif info.isFinished == true then
+    text = "\124T"..READY_CHECK_WAITING_TEXTURE..":0|t"
+  else
+    if info.objectiveType == 'progressbar' then
+      text = floor(info.questDone / info.questNeed * 100) .. "%"
+    else
+      text = info.questDone .. '/' .. info.questNeed
+    end
+  end
+  indicatortip:AddLine(ClassColorise(db.Toons[toon].Class, toon), text)
+  indicatortip:AddLine()
+  text = info.title
+  if not text then
+    for _, t in pairs(SI.db.Toons) do
+      if t.Calling and t.Calling[day] and t.Calling[day].title then
+        text = t.Calling[day].title
+        break
+      end
+    end
+  end
+  indicatortip:SetCell(2, 1, text or L["Calling Missing"], "LEFT", 2)
+  if info.questReward and info.questReward.itemName then
+    text = "|c" .. select(4, GetItemQualityColor(info.questReward.quality)) ..
+           "[" .. info.questReward.itemName .. "]" .. FONTEND
+    indicatortip:AddLine()
+    indicatortip:SetCell(3, 1, text, "RIGHT", 2)
+  end
+  finishIndicator()
+end
+
 hoverTooltip.ShowParagonTooltip = function (cell, arg, ...)
   local toon = arg
   local t = SI.db.Toons[toon]
@@ -2380,7 +2424,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.5-18-g64e7b2c" then
+  if versionString == "9.0.5-23-gc1f9239" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -4039,7 +4083,7 @@ function SI:ShowTooltip(anchorframe)
         addsep()
       end
       if SI.db.Tooltip.CombineCalling then
-        show = tooltip:AddLine(GOLDFONT .. CALLINGS_QUESTS .. FONTEND)
+        local line = tooltip:AddLine(GOLDFONT .. CALLINGS_QUESTS .. FONTEND)
         for toon, t in cpairs(SI.db.Toons, true) do
           if t.Calling and t.Calling.unlocked then
             for day = 1, 3 do
@@ -4061,7 +4105,9 @@ function SI:ShowTooltip(anchorframe)
               if col then
                 -- check if current toon is showing
                 -- don't add columns
-                tooltip:SetCell(show, col, text, "CENTER", 1)
+                tooltip:SetCell(line, col, text, "CENTER", 1)
+                tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowCallingTooltip, {day, toon})
+                tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
               end
             end
           end
@@ -4105,7 +4151,9 @@ function SI:ShowTooltip(anchorframe)
                 if col then
                   -- check if current toon is showing
                   -- don't add columns
-                  tooltip:SetCell(show, col, text, "CENTER", 1)
+                  tooltip:SetCell(line, col, text, "CENTER", maxcol)
+                  tooltip:SetCellScript(line, col, "OnEnter", hoverTooltip.ShowCallingTooltip, {day, toon})
+                  tooltip:SetCellScript(line, col, "OnLeave", CloseTooltips)
                 end
               end
             end
