@@ -15,4 +15,6 @@ GridWarbabyMoreAuras = {
     [329298] = { desc="饥饿者-中白圈", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=98,},
     [332664] = { desc="女勋爵-大怪点名", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=99,},
     [334909] = { desc="议会层数",   buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={.5,.5,.5},countLow=2,countColorMiddle={0,1,0},countHigh=3,countColorHigh={1,1,0},},
+    [323687] = { desc="彼界商人闪电", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=99,},
+    [323692] = { desc="彼界商人易伤",buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={ 0, 1, 0},countLow=4,countColorMiddle={1,1,0},countHigh=8,countColorHigh={1,.5,0},},
 }

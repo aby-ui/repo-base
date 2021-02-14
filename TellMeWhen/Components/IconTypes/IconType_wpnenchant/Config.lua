@@ -187,9 +187,9 @@ function Module:GET_ITEM_INFO_RECEIVED(event, id)
 	if gotItemInfo[id] then return end
 	gotItemInfo[id] = true
 
-	local name = GetItemInfo(id)
+	local name, link = GetItemInfo(id)
 	if name then
-		self.Items[name] = id
+		self.Items[name] = link
 		self.Table[name] = id
 	else
 		print("wpnenchant SUG: WoW Server seems to think that item doesn't exist", id)
@@ -200,9 +200,9 @@ function Module:Etc_DoItemLookups()
 	self:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
 
 	for k, id in pairs(self.ItemIDs) do
-		local name = GetItemInfo(id)
+		local name, link = GetItemInfo(id)
 		if name then
-			self.Items[name] = id
+			self.Items[name] = link
 		else
 			self:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 		end
@@ -233,8 +233,8 @@ function Module:Entry_AddToList_1(f, name)
 
 		f.insert = name
 	elseif self.Items[name] then
-		local id = CurrentItems[strlowerCache[name]] or self.Items[name]
-		local name, link = GetItemInfo(id)
+		local link = CurrentItems[strlowerCache[name]] or self.Items[name]
+		local name, link = GetItemInfo(link)
 
 		f.Name:SetText(link:gsub("[%[%]]", ""))
 		f.ID:SetText(nil)
@@ -278,8 +278,6 @@ end
 
 local PlayerSpells
 function Module:Table_GetSorter()
-	TMW:GetModule("ItemCache"):CacheItems(true)
-	
 	PlayerSpells = TMW:GetModule("ClassSpellCache"):GetPlayerSpells()
 	
 	return self.Sorter

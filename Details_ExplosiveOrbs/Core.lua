@@ -35,7 +35,7 @@ EO.CustomDisplay = {
     target = false,
     author = "Rhythm",
     desc = L["Show how many explosive orbs players target and hit."],
-    script_version = 4,
+    script_version = 10,
     script = [[
         local Combat, CustomContainer, Instance = ...
         local total, top, amount = 0, 0, 0
@@ -111,6 +111,134 @@ EO.CustomDisplay = {
 
         if _G.Details_ExplosiveOrbs then
             return _G.Details_ExplosiveOrbs:GetDisplayText(Combat:GetCombatNumber(), Actor.my_actor:guid())
+        end
+        return ""
+    ]],
+}
+EO.CustomDisplayOverall = {
+    name = L["Dynamic Overall Explosive Orbs"],
+    icon = 2175503,
+    source = false,
+    attribute = false,
+    spellid = false,
+    target = false,
+    author = "Rhythm",
+    desc = L["Show how many explosive orbs players target and hit."],
+    script_version = 10,
+    script = [[
+        local Combat, CustomContainer, Instance = ...
+        local total, top, amount = 0, 0, 0
+
+        if _G.Details_ExplosiveOrbs then
+            local OverallCombat = Details:GetCombat(-1)
+            local CombatNumber = OverallCombat:GetCombatNumber()
+            local Container = OverallCombat:GetContainer(DETAILS_ATTRIBUTE_MISC)
+            for _, Actor in Container:ListActors() do
+                if Actor:IsGroupPlayer() then
+                    -- we only record the players in party
+                    local target, hit = _G.Details_ExplosiveOrbs:GetRecord(CombatNumber, Actor:guid())
+                    if target > 0 or hit > 0 then
+                        CustomContainer:AddValue(Actor, hit)
+                    end
+                end
+            end
+
+            total, top = CustomContainer:GetTotalAndHighestValue()
+            amount = CustomContainer:GetNumActors()
+        end
+
+        return total, top, amount
+    ]],
+    tooltip = [[
+        local Actor, Combat, Instance = ...
+        local GameCooltip = GameCooltip
+
+        if _G.Details_ExplosiveOrbs then
+            local actorName = Actor:name()
+            local orbName = _G.Details_ExplosiveOrbs:RequireOrbName()
+
+            local OverallCombat = Details:GetCombat(-1)
+            local CurrentCombat = Details:GetCombat(0)
+
+            local OverallContainer = OverallCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+            local CurrentContainer = CurrentCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+
+            local AllSpells = {}
+
+            -- handle overall
+            local Actor = OverallContainer:GetActor(actorName)
+            local ActorSpells = Actor:GetSpellList()
+
+            -- handle player
+            AllSpells[actorName] = {}
+            for spellID, spellTable in pairs(ActorSpells) do
+                AllSpells[actorName][spellID] = spellTable.targets[orbName]
+            end
+
+            -- handle pet
+            for _, petName in ipairs(Actor.pets) do
+                local petActor = OverallContainer:GetActor(petName)
+                local petActorSpells = petActor:GetSpellList()
+
+                AllSpells[petName] = {}
+                for spellID, spellTable in pairs(petActorSpells) do
+                    AllSpells[petName][spellID] = spellTable.targets[orbName]
+                end
+            end
+
+            if Details.in_combat then
+                -- handle current
+                local Actor = CurrentContainer:GetActor(actorName)
+                local ActorSpells = Actor:GetSpellList()
+
+                -- handle player
+                for spellID, spellTable in pairs(ActorSpells) do
+                    AllSpells[actorName][spellID] = (AllSpells[actorName][spellID] or 0) + (spellTable.targets[orbName] or 0)
+                end
+
+                -- handle pet
+                for _, petName in ipairs(Actor.pets) do
+                    local petActor = CurrentContainer:GetActor(petName)
+                    local petActorSpells = petActor:GetSpellList()
+
+                    if not AllSpells[petName] then
+                        AllSpells[petName] = {}
+                    end
+
+                    for spellID, spellTable in pairs(petActorSpells) do
+                        AllSpells[petName][spellID] = (AllSpells[petName][spellID] or 0) + (spellTable.targets[orbName] or 0)
+                    end
+                end
+            end
+
+            local sortedList = {}
+            for name, spellTable in pairs(AllSpells) do
+                for spellID, amount in pairs(spellTable) do
+                    tinsert(sortedList, {spellID, amount, name ~= actorName and name})
+                end
+            end
+
+            sort(sortedList, Details.Sort2)
+
+            local format_func = Details:GetCurrentToKFunction()
+            for _, tbl in ipairs(sortedList) do
+                local spellID, amount, petName = unpack(tbl)
+                local spellName, _, spellIcon = Details.GetSpellInfo(spellID)
+                if petName then
+                    spellName = spellName .. ' (' .. petName .. ')'
+                end
+
+                GameCooltip:AddLine(spellName, format_func(_, amount))
+                Details:AddTooltipBackgroundStatusbar()
+                GameCooltip:AddIcon(spellIcon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+            end
+        end
+    ]],
+    total_script = [[
+        local value, top, total, Combat, Instance, Actor = ...
+
+        if _G.Details_ExplosiveOrbs then
+            return _G.Details_ExplosiveOrbs:GetDisplayText(Details:GetCombat(-1):GetCombatNumber(), Actor.my_actor:guid())
         end
         return ""
     ]],
@@ -406,7 +534,7 @@ function EO:OnDetailsEvent(event, combat)
         EO.db[EO.current].runID = select(2, combat:IsMythicDungeon())
     elseif event == 'DETAILS_DATA_RESET' then
         EO:Debug("DETAILS_DATA_RESET")
-        self.overall = Details:GetCombat(-1):GetCombatNumber()
+        EO.overall = Details:GetCombat(-1):GetCombatNumber()
         EO:CleanDiscardCombat()
     end
 end
@@ -434,6 +562,7 @@ function EO:LoadHooks()
     self.EventListener.OnDetailsEvent = self.OnDetailsEvent
 
     Details:InstallCustomObject(self.CustomDisplay)
+    Details:InstallCustomObject(self.CustomDisplayOverall)
     self:CleanDiscardCombat()
 end
 

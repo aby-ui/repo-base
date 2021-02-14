@@ -38,6 +38,21 @@ end
 --function Postal_Express:OnDisable()
 --end
 
+local Postal_Express_cTip = CreateFrame("GameTooltip",'MailBagScanTooltip',nil,"GameTooltipTemplate")
+local function Postal_Express_IsSoulbound(bag, slot)
+    Postal_Express_cTip:SetOwner(UIParent, "ANCHOR_NONE")
+    Postal_Express_cTip:SetBagItem(bag, slot)
+    Postal_Express_cTip:Show()
+    for i = 1,Postal_Express_cTip:NumLines() do
+		local str = _G['MailBagScanTooltipTextLeft' .. i]
+		if str and (str:GetText() == ITEM_SOULBOUND) then
+            return true
+        end
+    end
+    Postal_Express_cTip:Hide()
+    return false
+end
+
 function Postal_Express:InboxFrameItem_OnEnter(this, motion)
 	self.hooks["InboxFrameItem_OnEnter"](this, motion)
 	local tooltip = GameTooltip
@@ -129,8 +144,8 @@ function Postal_Express:ContainerFrameItemButton_OnModifiedClick(this, button, .
 				for b = 0,4 do
 					for s = 1, GetContainerNumSlots(b) do
 						local tid = GetContainerItemID(b, s)
-						if not tid or select(3,GetContainerItemInfo(b,s)) then
-							-- item locked, already attached
+						if not tid or select(3,GetContainerItemInfo(b,s)) or Postal_Express_IsSoulbound(b, s) then
+							-- item locked, already attached, soulbound
 						else
 							local tq, _,_, tc, tsc, _, tes = select(3,GetItemInfo(tid))
 							-- tc = (tq or "").."."..(tc or "")

@@ -336,7 +336,7 @@ ConditionCategory:RegisterCondition(16,	 "TRACKING", {
 	useSUG = "tracking",
 	icon = "Interface\\MINIMAP\\TRACKING\\None",
 	tcoords = CNDT.COMMON.standardtcoords,
-	funcstr = function(ConditionObject, c)
+	funcstr = function(c)
 		-- this event handling it is really extensive, so keep it in a handler separate from the condition
 		CNDT:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 		CNDT:MINIMAP_UPDATE_TRACKING()

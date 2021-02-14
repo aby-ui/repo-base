@@ -20,9 +20,6 @@ local print = TMW.print
 
 local SUG = TMW.SUG
 
-local ItemCache = TMW:GetModule("ItemCache")
-local ItemCache_Cache
-
 local Module = SUG:NewModule("texture_withVarTex", SUG:GetModule("texture"))
 Module.Slots = {}
 
@@ -66,7 +63,7 @@ function Module:Entry_AddToList_2(f, id)
 
 		f.overrideInsertName = L["SUG_INSERTITEMSLOT"]
 
-		local name = GetItemInfo(itemID)
+		local name = GetItemInfo(link)
 
 		f.Name:SetText(link and link:gsub("[%[%]]", ""))
 		f.ID:SetText(id)

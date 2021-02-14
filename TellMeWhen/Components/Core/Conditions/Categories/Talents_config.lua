@@ -149,4 +149,61 @@ function Module:Entry_AddToList_1(f, id)
 
 	f.Icon:SetTexture(info.icon)
 end
+
+
+
+
+local Module = SUG:NewModule("soulbind", SUG:GetModule("default"))
+Module.noMin = true
+Module.showColorHelp = false
+Module.helpText = L["SUG_TOOLTIPTITLE_GENERIC"]
+Module.table = {}
+local covenantIcons = {
+	[1] = GetSpellTexture(321076),
+	[2] = GetSpellTexture(321079),
+	[3] = GetSpellTexture(299206),
+	[4] = GetSpellTexture(321078),
+}
+function Module:OnInitialize()
+	-- nothing
+end
+function Module:Table_Get()
+	wipe(self.table)
+
+	for id = 1, 30 do
+		local data = C_Soulbinds.GetSoulbindData(id)
+		if data.name and data.name ~= "" then
+			self.table[id] = strlowerCache[data.name]
+		end
+	end
+
+	return self.table
+end
+function Module.Sorter(a, b)
+	local nameA, nameB = C_Soulbinds.GetSoulbindData(a), C_Soulbinds.GetSoulbindData(b)
+	if nameA.covenantID == nameB.covenantID then
+		--sort identical names by ID
+		return a < b
+	else
+		--sort by name
+		return nameA.covenantID < nameB.covenantID
+	end
+end
+function Module:Table_GetSorter()
+	return self.Sorter
+end
+function Module:Entry_AddToList_1(f, id)
+	local info = C_Soulbinds.GetSoulbindData(id)
+
+	f.Name:SetText(info.name)
+	f.ID:SetText(id)
+
+	f.tooltiptitle = info.name
+	f.tooltiptext = info.description
+
+	f.insert = info.name
+	f.insert2 = id
+
+	f.Icon:SetTexture(covenantIcons[info.covenantID])
+end
 Module.Entry_Colorize_1 = TMW.NULLFUNC

@@ -53,8 +53,9 @@ local function GetAnchoredPoints(group, wasMove)
 	local relframe = TMW.GUIDToOwner[p.relativeTo] or _G[p.relativeTo] or UIParent
 	local point, relativePoint = p.point, p.relativePoint
 
-	if relframe == UIParent and wasMove then
+	if relframe == UIParent and wasMove and not gs.ShrinkGroup then
 		-- use the smart anchor points provided by UIParent anchoring if it is being used
+		-- Don't do this for shrunk groups, per https://github.com/ascott18/TellMeWhen/issues/1811
 		point, _, relativePoint = group:GetPoint(1)
 	end
 

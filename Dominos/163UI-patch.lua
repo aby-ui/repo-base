@@ -183,7 +183,7 @@ function Dominos:U1_GetPreset(style)
         }
     }
 
-    frames.cast = { x=0, y=180, point='BOTTOM', showText=true, }
+    frames.cast = { x=0, y=180, point='BOTTOM', showText=true, showInOverrideUI = true }
     frames.roll = { point='BOTTOM', x=0, y=128, spacing=2, columns=1, }
     frames.alerts = { point='BOTTOM', x=0, y=138, spacing=2, columns=1, }
     --frames.roll = { x=0, y=0, point='CENTER', numButtons = NUM_GROUP_LOOT_FRAMES, spacing=2, columns=1, }

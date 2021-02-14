@@ -13,18 +13,22 @@ Engine.L = setmetatable(L, {
 })
 
 if locale == 'zhCN' then
+L["Dynamic Overall Explosive Orbs"] = "动态总体爆炸物"
 L["Explosive Orbs"] = "爆炸物"
 L["Hit: "] = "击: "
 L["Show how many explosive orbs players target and hit."] = "显示玩家选中与击中不同爆炸物的次数。"
 L["Target: "] = "选: "
 
 elseif locale == 'zhTW' then
+L["Dynamic Overall Explosive Orbs"] = "動態整場炸藥"
 L["Explosive Orbs"] = "炸藥"
 L["Hit: "] = "擊: "
 L["Show how many explosive orbs players target and hit."] = "顯示玩家選中與擊中不同炸藥的次數"
 L["Target: "] = "選: "
 
 elseif locale == 'deDE' then
+--[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
@@ -36,6 +40,8 @@ elseif locale == 'deDE' then
 
 elseif locale == 'esES' then
 --[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
+--[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Hit: "] = "Hit: "--]] 
@@ -45,6 +51,8 @@ elseif locale == 'esES' then
 --[[ L["Target: "] = "Target: "--]] 
 
 elseif locale == 'esMX' then
+--[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
@@ -56,6 +64,8 @@ elseif locale == 'esMX' then
 
 elseif locale == 'frFR' then
 --[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
+--[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Hit: "] = "Hit: "--]] 
@@ -65,6 +75,8 @@ elseif locale == 'frFR' then
 --[[ L["Target: "] = "Target: "--]] 
 
 elseif locale == 'itIT' then
+--[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
@@ -76,6 +88,8 @@ elseif locale == 'itIT' then
 
 elseif locale == 'koKR' then
 --[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
+--[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Hit: "] = "Hit: "--]] 
@@ -86,6 +100,8 @@ elseif locale == 'koKR' then
 
 elseif locale == 'ptBR' then
 --[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
+--[[Translation missing --]]
 --[[ L["Explosive Orbs"] = "Explosive Orbs"--]] 
 --[[Translation missing --]]
 --[[ L["Hit: "] = "Hit: "--]] 
@@ -95,6 +111,8 @@ elseif locale == 'ptBR' then
 --[[ L["Target: "] = "Target: "--]] 
 
 elseif locale == 'ruRU' then
+--[[Translation missing --]]
+--[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
 L["Explosive Orbs"] = "Взрывоопасная сфера"
 L["Hit: "] = "Урон:"
 L["Show how many explosive orbs players target and hit."] = "Отображает, сколько взрывоопасных сфер игроки выделяют и бьют."

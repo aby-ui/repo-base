@@ -91,7 +91,6 @@ function SUG:DoSuggest()
 
 	local tbl = SUG.CurrentModule:Table_Get() or {}
 
-	local start = debugprofilestop()
 	SUG.CurrentModule:Table_GetNormalSuggestions(SUGpreTable, tbl)
 	SUG.CurrentModule:Table_GetEquivSuggestions(SUGpreTable, SUG.CurrentModule:Table_Get())
 
@@ -103,8 +102,6 @@ function SUG:DoSuggest()
 
 		Table_GetSpecialSuggestions(SUG.CurrentModule, SUGpreTable)
 	end
-
-	print("SUG: Got Suggestions in " .. (debugprofilestop() - start))
 
 	suggestedForModule = SUG.CurrentModule
 	SUG.tabIndex = 1
@@ -129,7 +126,6 @@ function SUG:SuggestingComplete(doSort)
 	SUG.SuggestionList.blocker:Hide()
 	SUG.SuggestionList.Header:SetText(SUG.CurrentModule.headerText)
 	if doSort and not SUG.CurrentModule.dontSort then
-		local start = debugprofilestop()
 
 		local sorter, sorterBucket = SUG.CurrentModule:Table_GetSorter()
 
@@ -176,7 +172,6 @@ function SUG:SuggestingComplete(doSort)
 			TMW.shellsortDeferred(SUGpreTable, sorter, nil, SUG.SuggestingComplete, SUG, progressCallback)
 			return
 		end
-		print("SUG: Sorted in " .. debugprofilestop() - start)
 	end
 
 	if suggestedForModule ~= SUG.CurrentModule then
@@ -1061,6 +1056,7 @@ end
 
 
 local Module = SUG:NewModule("item", SUG:GetModule("default"), "AceEvent-3.0")
+local Item = TMW.C.Item
 Module.showColorHelp = false
 Module.helpText = L["SUG_TOOLTIPTITLE_GENERIC"]
 function Module:GET_ITEM_INFO_RECEIVED()
@@ -1070,30 +1066,122 @@ function Module:GET_ITEM_INFO_RECEIVED()
 	end
 end
 Module:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+Module.Slots = {}
 function Module:Table_Get()
-	return TMW:GetModule("ItemCache"):GetCache()
+	return ItemCache:GetCache()
+end
+function Module:OnSuggest()
+	for i = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+		if i ~= INVSLOT_RANGED then -- why did you not get rid of this, blizz?....
+			self.Slots[Item:GetRepresentation(i)] = 1
+		end
+	end
+end
+function Module:Table_GetNormalSuggestions(suggestions, tbl)
+	local len = #suggestions
+
+	local match = tonumber(SUG.lastName)
+	local inputLen = #SUG.lastName - 1
+
+	local sources = {tbl}
+	if self.IncludeSlots then
+		sources[2] = self.Slots
+	end
+
+	for _, table in pairs(sources) do
+		for item in pairs(table) do
+			if type(item) ~= "table" then
+				item = Item:GetRepresentation(item)
+			end
+			
+			if SUG.inputType == "number" then
+				local id = item.slot or item:GetID()
+				if id and min(id, floor(id / 10^(floor(log10(id)) - inputLen))) == match then
+					len = len + 1
+					suggestions[len] = item
+				end
+			else
+				local name = item:GetName()
+				if name and strfindsug(strlower(name)) then
+					len = len + 1
+					suggestions[len] = item
+				end
+			end
+		end
+	end
 end
 function Module:Table_GetSpecialSuggestions_1(suggestions)
 	local id = tonumber(SUG.lastName)
+	if not id then return end
+	local item = Item:GetRepresentation(id)
 
-	if id and GetItemInfo(id) and not TMW.tContains(suggestions, id) then
-		suggestions[#suggestions + 1] = id
+	if item:GetName() and not TMW.tContains(suggestions, item) then
+		suggestions[#suggestions + 1] = item
 	end
 end
-function Module:Entry_AddToList_1(f, id)
-	if id > INVSLOT_LAST_EQUIPPED then
-		local name, link = GetItemInfo(id)
+function Module.Sorter_Item(a, b)
+	local haveA, haveB = a.slot, b.slot
+	if haveA or haveB then
+		if haveA and haveB then
+			return a.slot < b.slot
+		else
+			return haveA
+		end
+	end
 
-		f.Name:SetText(link and link:gsub("[%[%]]", ""))
+	-- Sort by whether current posessed or not
+	haveA, haveB = a:GetCount() > 0, b:GetCount() > 0
+	if (haveA ~= haveB) then
+		return haveA
+	end
+
+	local nameA, nameB = a:GetName(), b:GetName()
+	if nameA == nameB then
+		--sort identical names by ID
+		return a:GetID() < b:GetID()
+	else
+		--sort by name
+		return nameA < nameB
+	end
+end
+function Module:Table_GetSorter()
+	return self.Sorter_Item
+end
+function Module:Entry_AddToList_1(f, item)
+	local link = item:GetLink()
+	local id = item:GetID()
+	local name = item:GetName()
+
+	f.Name:SetText(link and link:gsub("[%[%]]", "") or name)
+
+	if item.slot then
+		id = item.slot
+		f.ID:SetText("(" .. item.slot .. ")")
+		f.overrideInsertID = L["SUG_INSERTITEMSLOT"]
+		if not link then
+			f.tooltiptitle = name
+			f.tooltiptext = TRANSMOGRIFY_INVALID_NO_ITEM
+		end
+	else
 		f.ID:SetText(id)
+	end
 
-		f.insert = SUG.inputType == "number" and id or name
-		f.insert2 = SUG.inputType ~= "number" and id or name
+	f.insert = SUG.inputType == "number" and id or name
+	f.insert2 = SUG.inputType ~= "number" and id or name
 
+	if link then
 		f.tooltipmethod = "SetHyperlink"
 		f.tooltiparg = link
+	end
 
-		f.Icon:SetTexture(GetItemIcon(id))
+	f.Icon:SetTexture(item:GetIcon())
+end
+
+local Module = SUG:NewModule("itemwithslots", SUG:GetModule("item"))
+Module.IncludeSlots = true
+function Module:Entry_Colorize_1(f, item)
+	if item.slot then
+		f.Background:SetVertexColor(.23, .20, .29, 1) -- color item slots purpleish
 	end
 end
 

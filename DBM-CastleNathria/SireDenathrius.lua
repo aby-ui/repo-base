@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2424, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210207181435")
+mod:SetRevision("20210214034559")
 mod:SetCreatureID(167406)
 mod:SetEncounterID(2407)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -752,7 +752,7 @@ function mod:UNIT_DIED(args)
 	if cid == 169196 or cid == 173163 or cid == 173162 or cid == 173164 or cid == 173161 then--crimson-cabalist and all 4 horseman
 		stage2Adds[args.destGUID] = nil
 		deadAdds[args.destGUID] = true
-		if self:AntiSpam(3, 3) then
+		if self:IsHard() and self:AntiSpam(3, 3) then
 			if self.Options.SpecWarn336162dodge then
 				specWarnCrescendo:Show()
 				specWarnCrescendo:Play("watchstep")

@@ -129,7 +129,7 @@ TMW.BE = {
 			 200196, -- Holy Word: Chastise                 (priest, holy)
 			 217832, -- Imprison                            (demon hunter)
 			 221527, -- Imprison                            (demon hunter)
-			 226943, -- Mind Bomb                           (priest, shadow)
+			 226943, -- Mind Bomb                           (priest, shadow, talent)
 			 252781, -- Unstable Hex                        (Atal'dazar dungeon)
 			 263914, -- Blinding Sand                       (Temple of Sethraliss dungeon)
 			 268008, -- Snake Charm                         (Temple of Sethraliss dungeon)
@@ -232,6 +232,7 @@ TMW.BE = {
 			 160067, -- Web Spray                           (pet ability)
 			 183218, -- Hand of Hindrance                   (paladin, retribution)
 			 185763, -- Pistol Shot                         (rogue, outlaw)
+			 186387, -- Bursting Shot                       (hunter, marks)
 			 195645, -- Wing Clip                           (hunter, survival)
 			-196840, -- Frost Shock                         (shaman, elemental)
 			 198222, -- System Shock                        (rogue, assassination)
@@ -247,7 +248,6 @@ TMW.BE = {
 			-212792, -- Cone of Cold                        (mage, frost)
 			 213405, -- Master of the Glaive                (demon hunter, PVE talent, havoc)
 			 228354, -- Flurry                              (mage, frost)
-			 248744, -- Shiv                                (rogue, PVP talent, general)
 			 255937, -- Wake of Ashes                       (paladin, PVE talent, retribution)
 			 257478, -- Crippling Bite                      (Freehold dungeon)
 			 257777, -- Crippling Shiv                      (Tol Dagor dungeon)
@@ -278,6 +278,7 @@ TMW.BE = {
 			 -20549, -- War Stomp                           (tauren racial)
 			  22703, -- Infernal Awakening                  (warlock, destro)
 			 -30283, -- Shadowfury                          (warlock, general)
+			  64044, -- Psychic Horror						(priest, talent)
 			 -89766, -- Axe Toss                            (warlock, demonology)
 			  91797, -- Monstrous Blow                      (death knight, unholy)
 			 -91800, -- Gnaw                                (death knight, unholy)
@@ -290,13 +291,11 @@ TMW.BE = {
 			 132169, -- Storm Bolt                          (warrior, PVE talent, general)
 			 163505, -- Rake                                (druid, general)
 			 179057, -- Chaos Nova                          (demon hunter)
-			 199804, -- Between the Eyes                    (rogue, outlaw)
 			 199085, -- Warpath                             (warrior, protection)
 			 200200, -- Holy Word: Chastise                 (priest, holy)
 			 202244, -- Overrun                             (druid, bear)
 			 202346, -- Double Barrel                       (monk, brewmaster)
 			 203123, -- Maim                                (druid, feral)
-			 204437, -- Lightning Lasso                     (shaman, elemental)
 			 205629, -- Demonic Trample                     (demon hunter, vengeance)
 			 205630, -- Illidan's Grasp                     (demon hunter, vengeance)
 			 208618, -- Illidan's Grasp                     (demon hunter, vengeance)
@@ -320,6 +319,7 @@ TMW.BE = {
 			 278961, -- Decaying Mind                       (Underrot dungeon)
 			 280605, -- Brain Freeze                        (Motherload dungeon)
 			 287254, -- Dead of Winter                      (death knight, frost)
+			-305484, -- Lightning Lasso						(shaman, elemental)
 		},
 	},
 	buffs = {
@@ -360,6 +360,7 @@ TMW.BE = {
 			-276112, -- Divine Steed                        (paladin, general)
 			 287827, -- Fight or Flight                     (azerite trait, general)
 			 290244, -- Gilded Path                         (Boots of the Gilded Path, Battle of Dazar'alor raid)
+			 310143, -- Soulshape							(Night Fae)
 		},
 		ImmuneToStun = {
 			    642, -- Divine Shield                       (paladin)
@@ -382,8 +383,6 @@ TMW.BE = {
 			 -62618, -- Power Word: Barrier                 (priest, disc)
 			  97463, -- Rallying Cry                        (warrior, arms/fury)
 			 201633, -- Earthen Wall                        (shaman, resto)
-			 204150, -- Aegis of light                      (paladin, protection)
-			 204335, -- Aegis of light                      (paladin, protection)
 			-209426, -- Darkness                            (demon hunter, havoc)
 		},
 		DefensiveBuffsSingle = {
@@ -431,6 +430,7 @@ TMW.BE = {
 			-228049, -- Guardian of the Forgotten Queen     (paladin, protection)
 			 223658, -- Safeguard                           (warrior, protection)
 			 287081, -- Lichborne                           (frost/unholy, PVP talent)
+			 319217, -- Podtender						 	(night fae)
 		},
 		DamageBuffs = {
 			   1719, -- Recklessness                        (warrior, arms)
@@ -461,7 +461,6 @@ TMW.BE = {
 			 207289, -- Unholy Frenzy                       (death knight, unholy)
 			 212155, -- Tricks of the Trade                 (rogue, Outlaw, PVP talent)
 			 212283, -- Symbols of Death                    (rogue, subtlety)
-			 216113, -- Way of the Crane                    (monk, mistweaver)
 			 216331, -- Avenging Crusader                   (paladin, holy)
 			 248622, -- In for the Kill                     (warrior, arms)
 			 262228, -- Deadly Calm                         (warrior, arms)
@@ -472,6 +471,7 @@ TMW.BE = {
 			    -17, -- Power Word: Shield                  (priest, disc/shadow)
 			 -11426, -- Ice Barrier                         (mage, frost)
 			  48707, -- Anti-Magic Shell                    (death knight, general)
+			 -50324, -- Bone Armor							(generic NPC ability)
 			  77535, -- Blood Shield                        (death knight, blood)
 			 108008, -- Indomitable                         (old Dragon Soul PVE trinket)
 			 108366, -- Soul Leech                          (warlock, general)
@@ -482,7 +482,6 @@ TMW.BE = {
 			 173260, -- Shieldtronic Shield                 (WOD engineering item)
 			 184662, -- Shield of Vengeance                 (paladin, retribution)
 			 190456, -- Ignore Pain                         (warrior, protection)
-			 203538, -- Greater Blessing of Kings           (paladin, retribution)
 			 205655, -- Dome of Mists                       (monk, mistweaver, PVP talent)
 			 235313, -- Blazing Barrier                     (mage, fire)
 			 235450, -- Prismatic Barrier                   (mage, arcane)
@@ -516,6 +515,9 @@ TMW.BE = {
 			 288024, -- Diamond Barrier                     (Diamond-Laced Refracting Prism, Battle of Dazar'alor raid)
 			 295271, -- Umbral Shell                        (Void Stone, Crucible of Storms raid)
 			 295431, -- Ephemeral Vigor                     (Abyssal Speaker's Gauntlets, Crucible of Storms raid)
+			 311444, -- Indomitable Deck                    (Shadowlands tank darkmoon deck)
+			 322507, -- Celestial Brew                      (Monk, brewmaster)
+			 324867, -- Fleshcraft							(Necrolord)
 		},
 		ImmuneToMagicCC = {
 			    642, -- Divine Shield                       (paladin, general)
@@ -571,7 +573,6 @@ TMW.BE = {
 			 197003, -- Maneuverability                     (rogue, PVP talent, general)
 			 201447, -- Ride the Wind                       (monk, windwalker)
 			 212552, -- Wraith Walk                         (death knight, frost/unholy)
-			 216113, -- Way of the Crane                    (monk, mistweaver)
 			 227847, -- Bladestorm                          (arms ID)
 			 287081, -- Lichborne                           (death knight, frost/unholy)
 		},

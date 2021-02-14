@@ -504,6 +504,33 @@ TMW:MakeSingleArgFunctionCached(TMW, "EquivToTable")
 -- Constant spell data
 ---------------------------------
 
+local genericTotemSlots = {
+	{
+		hasVariableNames = true,
+		name = L["GENERICTOTEM"]:format(1),
+		texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
+	},
+	{
+		hasVariableNames = true,
+		name = L["GENERICTOTEM"]:format(2),
+		texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
+	},
+	{
+		hasVariableNames = true,
+		name = L["GENERICTOTEM"]:format(3),
+		texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
+	},
+	{
+		hasVariableNames = true,
+		name = L["GENERICTOTEM"]:format(4),
+		texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
+	},
+	{
+		hasVariableNames = true,
+		name = L["GENERICTOTEM"]:format(5),
+		texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
+	},
+}
 
 if pclass == "DRUID" then
 	TMW.COMMON.CurrentClassTotems = {
@@ -542,22 +569,6 @@ elseif pclass == "PALADIN" then
             texture = GetSpellTexture(114158)
         }
 	}
-elseif pclass == "MONK" then
-	TMW.COMMON.CurrentClassTotems = {
-		name = L["ICONMENU_STATUE"],
-		desc = L["ICONMENU_TOTEM_GENERIC_DESC"]:format(L["ICONMENU_STATUE"]),
-		{
-			hasVariableNames = false,
-			name = L["ICONMENU_STATUE"],
-			texture = function()
-				if GetSpecialization() == 1 then
-					return GetSpellTexture(163177) -- black ox
-				else
-					return GetSpellTexture(115313) -- jade serpent
-				end
-			end,
-		}
-	}
 elseif pclass == "DEATHKNIGHT" then
 	local npcName = function(npcID)
 		local cachedName = TMW:TryGetNPCName(npcID)
@@ -588,30 +599,6 @@ else
 	TMW.COMMON.CurrentClassTotems = {
 		name = L["ICONMENU_TOTEM"],
 		desc = L["ICONMENU_TOTEM_DESC"],
-		{
-			hasVariableNames = true,
-			name = L["GENERICTOTEM"]:format(1),
-			texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
-		},
-		{
-			hasVariableNames = true,
-			name = L["GENERICTOTEM"]:format(2),
-			texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
-		},
-		{
-			hasVariableNames = true,
-			name = L["GENERICTOTEM"]:format(3),
-			texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
-		},
-		{
-			hasVariableNames = true,
-			name = L["GENERICTOTEM"]:format(4),
-			texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
-		},
-		{
-			hasVariableNames = true,
-			name = L["GENERICTOTEM"]:format(5),
-			texture = "Interface\\ICONS\\ability_shaman_tranquilmindtotem"
-		},
 	}
+	TMW:CopyTableInPlaceUsingDestinationMeta(genericTotemSlots, TMW.COMMON.CurrentClassTotems, true)
 end

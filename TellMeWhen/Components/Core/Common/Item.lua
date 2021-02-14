@@ -235,6 +235,10 @@ function ItemByID:GetName()
 		return name
 	end
 end
+function ItemByID:GetLink()
+	local _, itemLink = GetItemInfo(self.itemID)
+	return itemLink
+end
 
 
 
@@ -271,7 +275,7 @@ function ItemByName:GetCooldown()
 end
 
 function ItemByName:GetID()
-	local _, itemLink = GetItemInfo(self.name)
+	local itemLink = self:GetLink()
 	if itemLink then
 		return tonumber(strmatch(itemLink, ":(%d+)"))
 	end
@@ -287,6 +291,10 @@ function ItemByName:GetName()
 		return self.name
 	end
 end
+function ItemByName:GetLink()
+	local _, itemLink = GetItemInfo(self.name)
+	return itemLink
+end
 
 
 
@@ -296,6 +304,36 @@ end
 
 
 local ItemBySlot = TMW:NewClass("ItemBySlot", Item)
+
+
+local slotNames = {}
+for _, slotName in pairs{
+	"BackSlot",
+	"ChestSlot",
+	"FeetSlot",
+	"Finger0Slot",
+	"Finger1Slot",
+	"HandsSlot",
+	"HeadSlot",
+	"LegsSlot",
+	"MainHandSlot",
+	"NeckSlot",
+	"SecondaryHandSlot",
+	"ShirtSlot",
+	"ShoulderSlot",
+	"TabardSlot",
+	"Trinket0Slot",
+	"Trinket1Slot",
+	"WaistSlot",
+	"WristSlot",
+} do
+	local slotID = GetInventorySlotInfo(slotName)
+	if slotID then
+		slotNames[slotID] = slotName
+	else
+		TMW:Debug("Invalid slot name %s", slotName)
+	end
+end
 
 function ItemBySlot:OnNewInstance(itemSlot)
 	TMW:ValidateType("2 (itemSlot)", "ItemByID:New(itemSlot)", itemSlot, "number")
@@ -323,8 +361,12 @@ function ItemBySlot:GetID()
 	return GetInventoryItemID("player", self.slot)
 end
 function ItemBySlot:GetName()
-	local name = GetItemInfo(self:GetLink())
-	return name
+	local link = self:GetLink()
+	if link then
+		local name = GetItemInfo(link)
+		if name then return name end
+	end
+	return slotNames[self.slot] and _G[slotNames[self.slot]:upper()] or nil
 end
 function ItemBySlot:GetLink()
 	return GetInventoryItemLink("player", self.slot)
@@ -343,7 +385,7 @@ function ItemByLink:OnNewInstance(itemLink)
 	TMW:ValidateType("2 (itemLink)", "ItemByID:New(itemLink)", itemLink, "string")
 
 	self.link = itemLink
-	self.itemID = tonumber(strmatch(itemLink, ":(%d+)"))
+	self.itemID = tonumber(strmatch(itemLink, "item:(%d+)"))
 	self.name = GetItemInfo(itemLink)
 end
 
@@ -367,9 +409,15 @@ end
 
 function ItemByLink:GetName()
 	local name = GetItemInfo(self.link)
+	if not name then
+		name = self.link:match("%[(.-)%]")
+	end
 	if name then
 		self.name = name
 		self.GetName = self.GetName_saved
 		return name
 	end
+end
+function ItemByLink:GetLink()
+	return self.link
 end

@@ -589,7 +589,7 @@ L["ICONMENU_REACT"] = "Unit Reaction"
 L["ICONMENU_FRIEND"] = "Friendly"
 L["ICONMENU_HOSTILE"] = "Hostile"
 
-L["ICONMENU_ISPLAYER"] = "Unit Is Player"
+L["ICONMENU_ISPLAYER"] = "Unit Is a Player"
 
 L["ICONMENU_ICDTYPE"] = "Cooldown begins on..."
 L["ICONMENU_SPELLCAST_COMPLETE"] = "Spell Cast Finish/Instant Cast"
@@ -1600,6 +1600,10 @@ L["CONDITIONPANEL_LOC_SUBZONE"] = "Sub-Zone"
 L["CONDITIONPANEL_LOC_SUBZONE_LABEL"] = "Enter Sub-Zones to check"
 L["CONDITIONPANEL_LOC_SUBZONE_DESC"] = "Checks your current sub-zone. Note that sometimes, you may not be in a sub-zone."
 L["CONDITIONPANEL_LOC_SUBZONE_BOXDESC"] = "Enter the sub-zones that you would like to check for. Separate multiple sub-zones with semicolons."
+
+
+L["CONDITIONPANEL_ANIMAPOW"] = "Torghast Anima Power Count"
+L["CONDITIONPANEL_SOULBIND"] = "Soulbind Active"
 
 
 L["AURA"] = "Aura"

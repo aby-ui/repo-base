@@ -11,6 +11,8 @@ function CastingBar:New()
 
 	bar:Layout()
 
+    bar:ShowInOverrideUI(true)
+
 	return bar
 end
 
@@ -40,6 +42,7 @@ function CastingBar:GetDefaults()
 		point = 'BOTTOM',
 		x = 0,
 		y = 180,
+        showInOverrideUI = true,
 	}
 end
 

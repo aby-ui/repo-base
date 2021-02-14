@@ -41,7 +41,7 @@ TMW.IE:RegisterDatabaseDefaults{
 	},
 }
 
-TMW.IE:RegisterUpgrade(72310, {
+TMW.IE:RegisterUpgrade(90403, {
 	locale = function(self, locale)
 		locale.ItemCache = nil
 		locale.XPac_ItemCache = nil
@@ -59,7 +59,7 @@ TMW.IE:RegisterUpgrade(62217, {
 
 --[[ Returns the main cache table. Structure:
 Cache = {
-	[itemID] = 1,
+	[link] = 1,
 }
 ]]
 function ItemCache:GetCache()
@@ -74,8 +74,8 @@ end
 
 --[[ Returns a list of items that the player currently has. Structure:
 Cache = {
-	[itemID] = name,
-	[name] = itemID,
+	[link] = 1,
+	[name] = link,
 }
 ]]
 function ItemCache:GetCurrentItems()
@@ -119,14 +119,14 @@ TMW:RegisterCallback("TMW_OPTIONS_LOADED", function()
 	-- Compile all items from all timesegments into a cohesive table for
 	-- fast lookups and easy iteration.
 	for timestamp, items in pairs(Cache) do
-		for id, name in pairs(items) do
-			CompiledCache[id] = name
+		for link in pairs(items) do
+			CompiledCache[link] = 1
 		end
 	end
 
 	--Start requests so that we can validate itemIDs.
-	for id in pairs(CompiledCache) do
-		GetItemInfo(id)
+	for link in pairs(CompiledCache) do
+		GetItemInfo(link)
 	end
 
 	ItemCache:RegisterEvent("BAG_UPDATE")
@@ -135,21 +135,36 @@ TMW:RegisterCallback("TMW_OPTIONS_LOADED", function()
 	ItemCache:CacheItems()
 end)
 
-local function cacheItem(itemID, name)
+local function cacheItem(itemID, link)
+	-- Sanitize the link:
+	-- strip out all gems/enchants (not an important distinction for TMW)
+	-- LEAVE suffixID alone (makes sure that the name is correct)
+	-- strip out uniqueID (not an important distinction for TMW)
+	-- strip out linkLevel,specializationId
+	link = link:gsub("(item:%d+):%-?%d*:%-?%d*:%-?%d*:%-?%d*:%-?%d*:(%-?%d*):%-?%d*:%-?%d*:%-?%d*", "%1:::::%2::::")
+
+	if link:find("|h%[%]|h") then
+		-- Links that don't have the item name loaded
+		-- will just have brackets in the position of the name and nothing else.
+		return 
+	end
+
+	CurrentItems[link] = 1
+
 	-- The item is not cached at all.
-	if not CompiledCache[itemID] then
-		Cache[currentTimestamp][itemID] = name
-		CompiledCache[itemID] = name
+	if not CompiledCache[link] then
+		Cache[currentTimestamp][link] = 1
+		CompiledCache[link] = 1
 
 	-- The item is in an old cache timesegment.
-	elseif not Cache[currentTimestamp][itemID] then
+	elseif not Cache[currentTimestamp][link] then
 		-- Remove the item from the old cache.
 		for timestamp, items in pairs(Cache) do
-			items[itemID] = nil
+			items[link] = nil
 		end
 
 		-- Add it to the current cache timesegment.
-		Cache[currentTimestamp][itemID] = name
+		Cache[currentTimestamp][link] = 1
 	end
 end
 
@@ -169,12 +184,9 @@ function ItemCache:CacheItems(force)
 	for container = 0, NUM_BAG_SLOTS do
 		for slot = 1, GetContainerNumSlots(container) do
 			local id = GetContainerItemID(container, slot)
+			local link = GetContainerItemLink(container, slot)
 			if id then
-				local name = GetItemInfo(id)
-				name = name and strlower(name)
-
-				CurrentItems[id] = name
-				cacheItem(id, name)
+				cacheItem(id, link)
 			end
 		end
 	end
@@ -182,17 +194,19 @@ function ItemCache:CacheItems(force)
 	-- Cache equipped items
 	for slot = 1, 19 do
 		local id = GetInventoryItemID("player", slot)
+		local link = GetInventoryItemLink("player", slot)
 		if id then
-			local name = GetItemInfo(id)
-			name = name and strlower(name)
-
-			CurrentItems[id] = name
-			cacheItem(id, name)
+			cacheItem(id, link)
 		end
 	end
 
-	for id, name in pairs(CurrentItems) do
-		CurrentItems[name] = id
+	local reverseMap = {}
+	for link in pairs(CurrentItems) do
+		local name = link:match("%[(.-)%]")
+		reverseMap[strlower(name)] = link
+	end
+	for k, v in pairs(reverseMap) do
+		CurrentItems[k] = v
 	end
 
 	doUpdateCache = nil
