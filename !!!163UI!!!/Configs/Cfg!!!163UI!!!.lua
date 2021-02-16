@@ -228,7 +228,7 @@ U1RegisterAddon("!!!163UI!!!", {
                 local function shouldRedirect(channel, sound)
                     if looping[sound] then return end
                     if(not U1GetCfgValue(config)) then return end
-                    channel = channel and channel:upper() or "SFX"
+                    channel = channel and type(channel) == "string" and channel:upper() or "SFX"
                     if(channel == "MASTER") then return end
                     if playing[sound] then return end
                     if(GetCVarBool("Sound_EnableSFX") and channel~="MUSIC" and channel~="MASTER" and channel~="AMBIENCE") then return end

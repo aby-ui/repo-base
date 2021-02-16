@@ -17,6 +17,7 @@ local function FindAnchorFrame(guid) --[87]
 			local f = _G[E.customUF.frame .. i]
 			if f and f:GetPoint() then -- [93]
 				local unit = f[E.customUF.unit]
+                if unit == nil and f.GetAttribute then unit = f:GetAttribute("unit") end
 				if unit and UnitGUID(unit) == guid then return f end
 			end
 		end
@@ -75,8 +76,11 @@ function P:UpdatePosition()
 		else
 			local frame = FindAnchorFrame(guid)
 			if frame then
+                local _, _, idx = (frame:GetName() or ""):find("PartyMemberFrame([1-4])")
+                local EUF = idx and _G["EUF_PartyFrame"..idx.."HP"]
+                local ox = EUF and EUF:IsVisible() and (self.relativePoint or ""):find("RIGHT") and 70 or idx and 12 or 0
 				f:ClearAllPoints()
-				f:SetPoint(self.point, frame, self.relativePoint)
+				f:SetPoint(self.point, frame, self.relativePoint, ox, 0) --abyui adapt EUF
 				f:Show()
 			end
 		end

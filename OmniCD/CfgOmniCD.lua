@@ -1,7 +1,8 @@
 U1RegisterAddon("OmniCD", {
-    title = "队友冷却监控",
-    defaultEnable = 1,
-    load = "LOGIN",
+    title = "队友技能监控",
+    defaultEnable = 0,
+    load = "LATER",
+    --optdeps = { "Grid", "CompactRaid", "ShadowedUnitFrames" },
 
     tags = { TAG_COMBATINFO, },
     icon = [[Interface\AddOns\OmniCD\Media\logo64]],

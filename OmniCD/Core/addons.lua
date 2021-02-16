@@ -1,4 +1,5 @@
 local E, L, C = select(2, ...):unpack()
+_G["OmniCD_E"] = E
 
 function E:Counters()
 	if ( IsAddOnLoaded("OmniCC") or IsAddOnLoaded("tullaCC") ) then
@@ -59,6 +60,11 @@ local unitFrameData = {
 	},
     {   [1] = "Grid",
    		[2] = "GridLayoutHeader1UnitButton",
+   		[3] = "unit",
+   		[4] = 1,
+   	},
+    {   [1] = "CompactRaid",
+   		[2] = "CompactRaidPartyFrameParty",
    		[3] = "unit",
    		[4] = 1,
    	},
@@ -173,7 +179,7 @@ function E:UnitFrames()
 		self:SetActiveUnitFrameData()
 
 		if not self.DB.global.disableElvMsg then
-			StaticPopup_Show("OMNICD_Elv_MSG")
+			--StaticPopup_Show("OMNICD_Elv_MSG")
 		end
 
 		self:SetNumPixels() -- set after UFs load
@@ -183,6 +189,7 @@ end
 function E:LoadAddOns()
 	self:Counters()
 	self:UnitFrames()
+    C_Timer.After(1, function() E:Refresh(true) end) --abyui
 end
 
 E.unitFrameData = unitFrameData

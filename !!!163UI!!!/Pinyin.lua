@@ -263,4 +263,5 @@ U1.PINYIN={
     ['拍卖收藏保存']={'paimaishoucangbaocun','pmscbc'},
     ['天赋方案切换']={'tianfufanganqiehuan','tffaqh'},
     ['盟约随从任务']={'mengyuesuicongrenwu','myscrw'},
+    ['队友技能监控']={'duiyoujinengjiankong','dyjnjk'},
 }
