@@ -1053,6 +1053,10 @@ GTFO.SpellID["327464"] = {
   sound = 3;
 };
 
+GTFO.SpellID["336162"] = {
+  --desc = "Crescendo (Crimson Cabalist)";
+  sound = 3;
+};
 
 end
 

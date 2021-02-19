@@ -424,8 +424,8 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 					return
 				end
 				
-				--add the spellId to the blacklist
-				f.db.aura_tracker.buff_banned [spellId] = true 
+				--add the spellName to the blacklist
+				f.db.aura_tracker.buff_banned [spellId] = true
 				
 				--refresh the buff blacklist frame
 				f.buff_ignored:DoRefresh()
@@ -436,7 +436,38 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				same_name_spells_add (spellId)
 			end
 			
-		end, textEntryWidth, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		
+		local add_blacklist_buff_button_id = self:CreateButton (background_add_blacklist, function()
+			local text = buff_name_blacklist_entry.text
+			buff_name_blacklist_entry:SetText ("")
+			buff_name_blacklist_entry:ClearFocus()
+			
+			if (text ~= "") then
+				if (not tonumber(text)) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Invalid Spell-ID.")
+				end
+				
+				--get the spellId
+				local spellId = get_spellID_from_string (text)
+				if (not spellId) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Spell not found!")
+					return
+				end
+				
+				--add the spellId to the blacklist
+				f.db.aura_tracker.buff_banned [spellId] = false
+				
+				--refresh the buff blacklist frame
+				f.buff_ignored:DoRefresh()
+
+				DF:QuickDispatch (change_callback)
+				
+				--add to spells with the same name cache
+				same_name_spells_add (spellId)
+			end
+			
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 		
 		local add_blacklist_debuff_button = self:CreateButton (background_add_blacklist, function()
 			local text = debuff_name_blacklist_entry.text
@@ -451,7 +482,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 					return
 				end
 				
-				--add the spellId to the blacklist
+				--add the spellName to the blacklist
 				f.db.aura_tracker.debuff_banned [spellId] = true
 				
 				--refresh the buff blacklist frame
@@ -462,7 +493,37 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
 			end
-		end, textEntryWidth, 20, "Add to Blacklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))	
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		
+		local add_blacklist_debuff_button_id = self:CreateButton (background_add_blacklist, function()
+			local text = debuff_name_blacklist_entry.text
+			debuff_name_blacklist_entry:SetText ("")
+			debuff_name_blacklist_entry:ClearFocus()
+			
+			if (text ~= "") then
+				if (not tonumber(text)) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Invalid Spell-ID.")
+				end
+				
+				--get the spellId
+				local spellId = get_spellID_from_string (text)
+				if (not spellId) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Spell not found!")
+					return
+				end
+				
+				--add the spellId to the blacklist
+				f.db.aura_tracker.debuff_banned [spellId] = false
+				
+				--refresh the buff blacklist frame
+				f.debuff_ignored:DoRefresh()
+				
+				DF:QuickDispatch (change_callback)
+				
+				--add to spells with the same name cache
+				same_name_spells_add (spellId)
+			end
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))	
 	
 	
 	--track list
@@ -493,8 +554,8 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Spell not found!")
 					return
 				end
-				
-				--add the spellId to the blacklist
+			
+				--add the spellName to the tracklist
 				f.db.aura_tracker.debuff_tracked [spellId] = true
 				
 				--refresh the buff blacklist frame
@@ -505,7 +566,36 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				--add to spells with the same name cache
 				same_name_spells_add (spellId)
 			end
-		end, textEntryWidth, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		
+		local add_tracklist_debuff_button_id = self:CreateButton (background_add_tracklist, function()
+			local text = debuff_name_tracklist_entry.text
+			debuff_name_tracklist_entry:SetText ("")
+			debuff_name_tracklist_entry:ClearFocus()
+			
+			if (text ~= "") then
+				if (not tonumber(text)) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Invalid Spell-ID.")
+				end
+				
+				--get the spellId
+				local spellId = get_spellID_from_string (text)
+				if (not spellId) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Spell not found!")
+					return
+				end
+				
+				f.db.aura_tracker.debuff_tracked [spellId] = false
+				
+				--refresh the buff blacklist frame
+				f.debuff_tracked:DoRefresh()
+				
+				DF:QuickDispatch (change_callback)
+				
+				--add to spells with the same name cache
+				same_name_spells_add (spellId)
+			end
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 	
 		local add_tracklist_buff_button = self:CreateButton (background_add_tracklist, function()
 			local text = buff_name_tracklist_entry.text
@@ -520,8 +610,8 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 					return
 				end
 				
-				--add the spellId to the blacklist
-				f.db.aura_tracker.buff_tracked [spellId] = true 
+				--add the spellName to the tracklist
+				f.db.aura_tracker.buff_tracked [spellId] = true
 				
 				--refresh the buff tracklist frame
 				f.buff_tracked:DoRefresh()
@@ -533,7 +623,38 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				same_name_spells_add (spellId)
 			end
 			
-		end, textEntryWidth, 20, "Add to Tracklist", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		end, textEntryWidth/2 -3, 20, "By Name", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
+		
+		local add_tracklist_buff_button_id = self:CreateButton (background_add_tracklist, function()
+			local text = buff_name_tracklist_entry.text
+			buff_name_tracklist_entry:SetText ("")
+			buff_name_tracklist_entry:ClearFocus()
+			
+			if (text ~= "") then
+				if (not tonumber(text)) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Invalid Spell-ID.")
+				end
+				
+				--get the spellId
+				local spellId = get_spellID_from_string (text)
+				if (not spellId) then
+					DetailsFramework.Msg ({__name = "DetailsFramework"}, "Spell not found!")
+					return
+				end
+				
+				--add the spellId to the tracklist
+				f.db.aura_tracker.buff_tracked [spellId] = false
+				
+				--refresh the buff tracklist frame
+				f.buff_tracked:DoRefresh()
+
+				--callback the addon
+				DF:QuickDispatch (change_callback)
+				
+				--add to spells with the same name cache
+				same_name_spells_add (spellId)
+			end
+		end, textEntryWidth/2 -3, 20, "By ID", nil, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", options.button_text_template))
 	
 	--anchors:
 		background_add_blacklist:SetPoint ("topleft", f_auto, "topleft", 0, y)
@@ -543,22 +664,26 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		debuff_name_blacklist_entry:SetPoint ("topleft", background_add_blacklist, "topleft", 5, -20)
 		debuff_blacklist_label:SetPoint ("bottomleft", debuff_name_blacklist_entry, "topleft", 0, 2)
 		add_blacklist_debuff_button:SetPoint ("topleft", debuff_name_blacklist_entry, "bottomleft", 0, -2)
+		add_blacklist_debuff_button_id:SetPoint ("left", add_blacklist_debuff_button, "right", 1, 0)
 	
 		--buff blacklist
 		buff_blacklist_label:SetPoint ("topleft", add_blacklist_debuff_button.widget, "bottomleft", 0, -10)
 		buff_name_blacklist_entry:SetPoint ("topleft", buff_blacklist_label, "bottomleft", 0, -2)
 		add_blacklist_buff_button:SetPoint ("topleft", buff_name_blacklist_entry, "bottomleft", 0, -2)
+		add_blacklist_buff_button_id:SetPoint ("left", add_blacklist_buff_button, "right", 1, 0)
 
 		
 		--debuff tracklist
 		debuff_name_tracklist_entry:SetPoint ("topleft", background_add_tracklist, "topleft", 5, -20)
 		debuff_tracklist_label:SetPoint ("bottomleft", debuff_name_tracklist_entry, "topleft", 0, 2)
 		add_tracklist_debuff_button:SetPoint ("topleft", debuff_name_tracklist_entry, "bottomleft", 0, -2)
+		add_tracklist_debuff_button_id:SetPoint ("left", add_tracklist_debuff_button, "right", 1, 0)
 		
 		--buff tracklist
 		buff_tracklist_label:SetPoint ("topleft", add_tracklist_debuff_button.widget, "bottomleft", 0, -10)
 		buff_name_tracklist_entry:SetPoint ("topleft", buff_tracklist_label, "bottomleft", 0, -2)
 		add_tracklist_buff_button:SetPoint ("topleft", buff_name_tracklist_entry, "bottomleft", 0, -2)
+		add_tracklist_buff_button_id:SetPoint ("left", add_tracklist_buff_button, "right", 1, 0)
 
 	local ALL_BUFFS = {}
 	local ALL_DEBUFFS = {}
@@ -568,31 +693,46 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 
 	local autoTrackList_LineOnEnter = function (self, capsule, value) 
 	
+		local flag = self.Flag
 		value = value or self.SpellID
 		
-		local spellName = GetSpellInfo (value)
-		if (spellName) then
-
-			local spellsWithSameName = db.aura_cache_by_name [lower (spellName)]
-			if (not spellsWithSameName) then
-				same_name_spells_add (value)
-				spellsWithSameName = db.aura_cache_by_name [lower (spellName)]
-			end
+		if not flag then
+			GameCooltip2:Preset (2)
+			GameCooltip2:SetOwner (self, "left", "right", 2, 0)
+			GameCooltip2:SetOption ("TextSize", 10)
 			
-			if (spellsWithSameName) then
-				GameCooltip2:Preset (2)
-				GameCooltip2:SetOwner (self, "left", "right", 2, 0)
-				GameCooltip2:SetOption ("TextSize", 10)
-				
-				for i, spellID in ipairs (spellsWithSameName) do
-					local spellName, _, spellIcon = GetSpellInfo (spellID)
-					if (spellName) then
-						GameCooltip2:AddLine (spellName .. " (" .. spellID .. ")")
-						GameCooltip2:AddIcon (spellIcon, 1, 1, 14, 14, .1, .9, .1, .9)
-					end
+			local spellName, _, spellIcon = GetSpellInfo (value)
+			if (spellName) then
+				GameCooltip2:AddLine (spellName .. " (" .. value .. ")")
+				GameCooltip2:AddIcon (spellIcon, 1, 1, 14, 14, .1, .9, .1, .9)
+			end
+			GameCooltip2:Show()
+		else
+			
+			local spellName = GetSpellInfo (value)
+			if (spellName) then			
+
+				local spellsWithSameName = db.aura_cache_by_name [lower (spellName)]
+				if (not spellsWithSameName) then
+					same_name_spells_add (value)
+					spellsWithSameName = db.aura_cache_by_name [lower (spellName)]
 				end
 				
-				GameCooltip2:Show()
+				if (spellsWithSameName) then
+					GameCooltip2:Preset (2)
+					GameCooltip2:SetOwner (self, "left", "right", 2, 0)
+					GameCooltip2:SetOption ("TextSize", 10)
+					
+					for i, spellID in ipairs (spellsWithSameName) do
+						local spellName, _, spellIcon = GetSpellInfo (spellID)
+						if (spellName) then
+							GameCooltip2:AddLine (spellName .. " (" .. spellID .. ")")
+							GameCooltip2:AddIcon (spellIcon, 1, 1, 14, 14, .1, .9, .1, .9)
+						end
+					end
+					
+					GameCooltip2:Show()
+				end
 			end
 		
 		end
@@ -617,13 +757,19 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				local auraTable = data [index]
 				if (auraTable) then
 					local line = self:GetLine (i)
-					local spellID, spellName, spellIcon = unpack (auraTable)
+					local spellID, spellName, spellIcon, lowerSpellName, flag = unpack (auraTable)
 					
 					line.SpellID = spellID
 					line.SpellName = spellName
+					line.SpellNameLower = lowerSpellName
 					line.SpellIcon = spellIcon
+					line.Flag = flag
 					
-					line.name:SetText (spellName)
+					if flag then
+						line.name:SetText (spellName)
+					else
+						line.name:SetText (spellName .. " (" .. spellID .. ")")
+					end
 					line.icon:SetTexture (spellIcon)
 					line.icon:SetTexCoord (.1, .9, .1, .9)
 				end
@@ -647,6 +793,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		local onRemoveClick = function (self)
 			local spellID = self:GetParent().SpellID
 			db [spellID] = nil
+			db ["".. (spellID or "")] = nil -- cleanup...
 			parent [member]:DoRefresh()
 		end
 		
@@ -691,11 +838,13 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		
 		function scroll:DoRefresh()
 			local t = {}
-			for spellID, _ in pairs (scroll.OriginalData) do
+			local added = {}
+			for spellID, flag in pairs (scroll.OriginalData) do
 				local spellName, _, spellIcon = GetSpellInfo (spellID)
-				if (spellName) then
+				if (spellName and not added[tonumber(spellID) or 0]) then
 					local lowerSpellName = spellName:lower()
-					tinsert (t, {spellID, spellName, spellIcon, lowerSpellName})
+					tinsert (t, {spellID, spellName, spellIcon, lowerSpellName, flag})
+					added[tonumber(spellID) or 0] = true
 				end
 			end
 			
@@ -756,7 +905,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		
 		buff_tracked:DoRefresh()
 		debuff_tracked:DoRefresh()
-		buff_ignored:DoRefresh()		
+		buff_ignored:DoRefresh()
 		debuff_ignored:DoRefresh()
 		
 	end)
@@ -923,6 +1072,13 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 
 					if (spellID) then
 						tinsert (f.db.aura_tracker.buff, spellID)
+						--[[
+						if not tonumber(spellName) then
+							tinsert (f.db.aura_tracker.buff, spellName)
+						else
+							tinsert (f.db.aura_tracker.buff, spellID)
+						end
+						]]--
 					else
 						print ("spellId not found for spell:", spellName)
 					end
@@ -936,6 +1092,13 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				end
 			
 				tinsert (f.db.aura_tracker.buff, spellID)
+				--[[
+				if not tonumber(text) then
+					tinsert (f.db.aura_tracker.buff, text)
+				else
+					tinsert (f.db.aura_tracker.buff, spellID)
+				end
+				]]--
 			end
 			
 			buffs_added:Refresh()
@@ -956,6 +1119,13 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 					
 					if (spellID) then
 						tinsert (f.db.aura_tracker.debuff, spellID)
+						--[[
+						if not tonumber(spellName) then
+							tinsert (f.db.aura_tracker.debuff, spellName)
+						else
+							tinsert (f.db.aura_tracker.debuff, spellID)
+						end
+						]]--
 					else
 						print ("spellId not found for spell:", spellName)
 					end
@@ -969,6 +1139,15 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 				end
 			
 				tinsert (f.db.aura_tracker.debuff, spellID)
+				--[[
+				if not tonumber(text) then
+					print(text)
+					tinsert (f.db.aura_tracker.debuff, text)
+				else
+					print(spellID)
+					tinsert (f.db.aura_tracker.debuff, spellID)
+				end
+				]]--
 			end
 			
 			debuffs_added:Refresh()

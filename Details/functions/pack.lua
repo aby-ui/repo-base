@@ -18,6 +18,7 @@ local IsInRaid = _G.IsInRaid
 local GetNumGroupMembers = _G.GetNumGroupMembers
 local GetRaidRosterInfo = _G.GetRaidRosterInfo
 local unpack = _G.unpack
+local IsInGroup = _G.IsInGroup
 
 Details.packFunctions = {}
 
@@ -106,7 +107,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         Details.packFunctions.PackDamage(combatObject)
     end
 
-    if (bit.band(flags, 0x2) ~= 0 and false) then
+    if (bit.band(flags, 0x2) ~= 0) then
         Details.packFunctions.PackHeal(combatObject)
     end
 
@@ -134,7 +135,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         end
 
         --add the heal actors data
-        if (bit.band(flags, 0x2) ~= 0 and false) then
+        if (bit.band(flags, 0x2) ~= 0) then
             exportedString = exportedString .. "!H" .. ","
             for index, data in ipairs(actorHealInfo) do
                 exportedString = exportedString .. data .. ","
@@ -425,7 +426,7 @@ function Details.packFunctions.PackDamage(combatObject)
         end
     end
 
-    local playerIndex = UnitInRaid("player")
+    local playerIndex = _G.UnitInRaid("player")
 
     if (not playerIndex) then --no player index
         if (isDebugging) then
@@ -462,7 +463,7 @@ function Details.packFunctions.PackDamage(combatObject)
     for i = 1, 20 do
         local name, _, subgroup = GetRaidRosterInfo(i)
         if (name) then --maybe the group has less than 20 players
-            name = Ambiguate(name, "none")
+            name = _G.Ambiguate(name, "none")
             if (name and subgroup <= 4) then
                 tinsert(allPlayerNames, name)
             end
@@ -588,8 +589,8 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
 
         --get or create the actor object
         local actorObject = damageContainer:GetOrCreateActor(serialNumber, actorName, actorFlag, true)
-        --set the actor class, spec and group
 
+        --set the actor class, spec and group
         actorObject.classe = class
         actorObject.spec = spec
         actorObject.grupo = isActorInGroup(class, actorFlag)
@@ -635,7 +636,6 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
                 spellIndex = spellIndex + targetsSize + 4
             end
 
-            --each iteration need to build a new target table
             actorObject.targets = newTargetsTable
             tablePosition = tablePosition + spellsSize --increase table position
     end
@@ -676,19 +676,9 @@ function Details.packFunctions.PackHeal(combatObject)
         end
     end
 
-    local playerIndex
-    --check if this player has to send information about an enemy npc
-    if (IsInGroup()) then
-        for i = 1, GetNumGroupMembers() do
-            local name = GetRaidRosterInfo(i)
-            if (name == playerName) then
-                playerIndex = i
-                break
-            end
-        end
-    end
+    local playerIndex = UnitInRaid("player")
 
-    if (not playerIndex) then
+    if (not playerIndex) then --no player index
         if (isDebugging) then
             print("PackHeal(): return | no player index found.")
         end
@@ -705,9 +695,10 @@ function Details.packFunctions.PackHeal(combatObject)
         --check if is an enemy or neutral
         if (actor:IsNeutralOrEnemy()) then
             --get the spawnId
-            local spawnId = select(7, strsplit( "-", actor.serial))
+            local spawnId = select(7, strsplit("-", actor.serial))
             if (spawnId) then
-                spawnId = tonumber(spawnId)
+                --convert hex to number
+                spawnId = tonumber(spawnId:sub(1, 10), 16)
                 if (spawnId) then
                     --first index is the actorObject, the second index is the spawnId to sort enemies
                     tinsert(allEnemies, {actor, spawnId})
@@ -715,12 +706,31 @@ function Details.packFunctions.PackHeal(combatObject)
             end
         end
     end
-
     --sort enemies by their spawnId
     table.sort(allEnemies, Details.Sort2)
 
+    local allPlayerNames = {}
+    for i = 1, 20 do
+        local name, _, subgroup = GetRaidRosterInfo(i)
+        if (name) then --maybe the group has less than 20 players
+            name = Ambiguate(name, "none")
+            if (name and subgroup <= 4) then
+                tinsert(allPlayerNames, name)
+            end
+        end
+    end
+    table.sort(allPlayerNames, function(t1, t2) return t1 < t2 end)
+
+    local playerName = UnitName("player")
+    for i = 1, #allPlayerNames do
+        if (playerName == allPlayerNames[i]) then
+            playerIndex = i
+            break
+        end
+    end
+
     --this is the enemy that this player has to send
-    local enemyObjectToSend = allEnemies[playerIndex]
+    local enemyObjectToSend = allEnemies[playerIndex] and allEnemies[playerIndex][1]
     if (enemyObjectToSend) then
         tinsert(actorsToPack, enemyObjectToSend)
     end
@@ -735,8 +745,6 @@ function Details.packFunctions.PackHeal(combatObject)
         end
     end
 
-    local spellSize = 0
-
     for i = 1, #actorsToPack do
         --get the actor object
         local actor = actorsToPack[i]
@@ -745,8 +753,8 @@ function Details.packFunctions.PackHeal(combatObject)
         --where the information of this actor starts
         local currentIndex = #actorHealInfo + 1
 
-        --[1] index where is stored the this actor general information
-        actorHealInfo[currentIndex] = indexToActorInfo                    --[1]
+        --[1] index where is stored the this actor info like name, class, spec, etc
+        actorHealInfo[currentIndex] = indexToActorInfo --[1]
 
         --[2 - 6]
         actorHealInfo [currentIndex + 1] = floor(actor.total)                    --[2]
@@ -770,28 +778,22 @@ function Details.packFunctions.PackHeal(combatObject)
             actorHealInfo [#actorHealInfo + 1] = floor(spellId)
             actorHealInfo [#actorHealInfo + 1] = floor(spellHealingDone)
             actorHealInfo [#actorHealInfo + 1] = floor(spellHits)
+            totalSpellIndexes = totalSpellIndexes + 3
 
             --build targets
             local targetsSize = Details.packFunctions.CountTableEntriesValid(spellTargets) * 2
             actorHealInfo [#actorHealInfo + 1] = targetsSize
+            totalSpellIndexes = totalSpellIndexes + 1
 
-            for actorName, damageDone in pairs(spellTargets) do
-                local actorInfoIndex = actorInformationIndexes[actorName]
-                if (actorInfoIndex) then
-                    actorHealInfo [#actorHealInfo + 1] = actorInfoIndex
-                    actorHealInfo [#actorHealInfo + 1] = floor(damageDone)
-                    spellSize = spellSize + 2
-                end
+            for actorName, healingDone in pairs(spellTargets) do
+                actorHealInfo [#actorHealInfo + 1] = actorName
+                actorHealInfo [#actorHealInfo + 1] = floor(healingDone)
+                totalSpellIndexes = totalSpellIndexes + 2
             end
-
-            --+3: spellId, damage, spellHits
-            --+1: the index that tell the size of targets
-            totalSpellIndexes = totalSpellIndexes + 3 + targetsSize + 1
-            spellSize = spellSize + 1 --debug
         end
 
         --amount of indexes spells are using
-        actorDamageInfo[reservedSpellSizeIndex] = totalSpellIndexes
+        actorHealInfo[reservedSpellSizeIndex] = totalSpellIndexes
     end
 
     if (isDebugging) then
@@ -811,8 +813,12 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
     --get the healing container
     local healContainer = currentCombat[DETAILS_ATTRIBUTE_HEAL]
 
+    --loop from 1 to 199, the amount of actors store is unknown
+    --todo: it's only unpacking the first actor from the table, e.g. theres izimode and eye of corruption, after export it only shows the eye of corruption
+    --table position does not move forward
     for i = 1, 199 do
-        --this is the same as damage, all comments for the code are there
+        --actor information index in the combatData table
+        --this index gives the position where the actor name, class, spec are stored
         local actorReference = tonumber(combatData[tablePosition]) --[1]
         local actorName, actorFlag, serialNumber, class, spec = Details.packFunctions.RetriveActorInformation(combatData, actorReference)
 
@@ -820,6 +826,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
             print("UnPackHeal(): Retrivied Data From " .. (actorReference or "nil") .. ":", actorName, actorFlag, serialNumber, class, spec)
         end
 
+        --check if all healing actors has been processed
         --if there's no actor name it means it reached the end
         if (not actorName) then
             if (isDebugging) then
@@ -828,43 +835,56 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
             break
         end
 
-        --creata the actor object
+        --get or create the actor object
         local actorObject = healContainer:GetOrCreateActor(serialNumber, actorName, actorFlag, true)
+
         --set the actor class, spec and group
         actorObject.classe = class
         actorObject.spec = spec
         actorObject.grupo = isActorInGroup(class, actorFlag)
+        actorObject.flag_original = actorFlag
 
         --> copy the base healing
             actorObject.total =                 tonumber(combatData[tablePosition+1]) --[2]
             actorObject.totalabsorb =           tonumber(combatData[tablePosition+2]) --[3]
             actorObject.totalover =             tonumber(combatData[tablePosition+3]) --[4]
             actorObject.healing_taken =         tonumber(combatData[tablePosition+4]) --[5]
-            actorObject.totalover_without_pet  = tonumber(combatData[tablePosition+5]) --[6]
+            actorObject.totalover_without_pet = tonumber(combatData[tablePosition+5]) --[6]
 
             tablePosition = tablePosition + 6
 
         --> copy back the actor spells
             --amount of indexes used to store spells for this actor
             local spellsSize = tonumber(combatData [tablePosition]) --[7]
+            if (isDebugging) then
+                print("spell size unpack:", spellsSize)
+            end
+
             tablePosition = tablePosition + 1
+            local newTargetsTable = {}
 
             local spellIndex = tablePosition
             while(spellIndex < tablePosition + spellsSize) do
                 local spellId = tonumber(combatData [spellIndex]) --[1]
-                local spellDamage = tonumber(combatData [spellIndex+1]) --[2]
+                local spellHealingDone = tonumber(combatData [spellIndex+1]) --[2]
                 local spellHits = tonumber(combatData [spellIndex+2]) --[3]
 
-                local targetsSize = combatData [spellIndex+3] --[4]
+                local targetsSize = tonumber(combatData[spellIndex+3]) --[4]
+
                 local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+3, true)
                 local spellObject = actorObject.spells:GetOrCreateSpell(spellId, true) --this one need some translation
-                spellObject.total = spellDamage
+                spellObject.total = spellHealingDone
                 spellObject.counter = spellHits
                 spellObject.targets = targetTable
+
+                for targetName, amount in pairs (spellObject.targets) do
+                    newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
+                end
 
                 spellIndex = spellIndex + targetsSize + 4
             end
 
+            actorObject.targets = newTargetsTable
             tablePosition = tablePosition + spellsSize --increase table position
     end
 
@@ -975,27 +995,55 @@ function Details.packFunctions.DeployPackedCombatData(packedCombatData)
     currentCombat[DETAILS_ATTRIBUTE_HEAL]:Remap()
 
     --refresh damage taken
-    local damageContainer = currentCombat[DETAILS_ATTRIBUTE_DAMAGE]
-    local allActors = damageContainer._ActorTable
+    do
+        local damageContainer = currentCombat[DETAILS_ATTRIBUTE_DAMAGE]
+        local allActors = damageContainer._ActorTable
 
-    for i = 1, #allActors do --reset damage taken table
-        local actor = allActors[i]
-        actor.damage_taken = 0
-        actor.damage_from = {}
-    end
+        for i = 1, #allActors do --reset damage taken table
+            local actor = allActors[i]
+            actor.damage_taken = 0
+            actor.damage_from = {}
+        end
 
-    for i = 1, #allActors do
-        local actor = allActors[i]
-        for targetName, amount in pairs (actor.targets) do
-            local actorIndex = damageContainer._NameIndexTable[targetName]
-            if (actorIndex) then
-                local targetActor = allActors[actorIndex]
-                if (targetActor) then
-                    targetActor.damage_taken = targetActor.damage_taken + amount
-                    targetActor.damage_from[actor.nome] = (targetActor.damage_from[actor.nome] or 0) + amount
+        for i = 1, #allActors do
+            local actor = allActors[i]
+            for targetName, amount in pairs (actor.targets) do
+                local actorIndex = damageContainer._NameIndexTable[targetName]
+                if (actorIndex) then
+                    local targetActor = allActors[actorIndex]
+                    if (targetActor) then
+                        targetActor.damage_taken = targetActor.damage_taken + amount
+                        targetActor.damage_from[actor.nome] = (targetActor.damage_from[actor.nome] or 0) + amount
+                    end
                 end
             end
         end
+    end
+
+    --refresh healing taken
+    do
+        local healingContainer = currentCombat[DETAILS_ATTRIBUTE_HEAL]
+        local allActors = healingContainer._ActorTable
+
+        for i = 1, #allActors do --reset healing taken table
+            local actor = allActors[i]
+            actor.healing_taken = 0
+            actor.healing_from = {}
+        end
+
+        for i = 1, #allActors do
+            local actor = allActors[i]
+            for targetName, amount in pairs (actor.targets) do
+                local actorIndex = healingContainer._NameIndexTable[targetName]
+                if (actorIndex) then
+                    local targetActor = allActors[actorIndex]
+                    if (targetActor) then
+                        targetActor.healing_taken = targetActor.healing_taken + amount
+                        targetActor.healing_from[actor.nome] = (targetActor.healing_from[actor.nome] or 0) + amount
+                    end
+                end
+            end
+        end        
     end
 
     --refresh windows

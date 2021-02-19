@@ -80,7 +80,7 @@ function Details:OpenProfiler()
         end
         f:Hide()
     end
-    local confirm = Details.gump:NewButton (f, f, "DetailsProfilerProfileConfirmButton", "button", 150, 20, confirm_func, nil, nil, nil, "okey!")
+    local confirm = Details.gump:NewButton (f, f, "DetailsProfilerProfileConfirmButton", "button", 150, 20, confirm_func, nil, nil, nil, "Okey!")
     confirm:SetPoint (50, -250)
     confirm:InstallCustomTexture()
 end

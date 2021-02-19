@@ -212,6 +212,9 @@ do
 			talking_heads_dungeon = true,
 			talking_heads_raid = true,
 			talking_heads_openworld = true,
+
+			flymaster_tracker_frame_pos = {},
+			flymaster_tracker_enabled = false,
 			
 			show_faction_frame = true,
 			

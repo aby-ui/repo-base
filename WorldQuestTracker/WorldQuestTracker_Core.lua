@@ -1061,6 +1061,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					return
 				end
 
+				if (option == "oribos_flight_master") then
+					WorldQuestTracker.db.profile.flymaster_tracker_enabled = not WorldQuestTracker.db.profile.flymaster_tracker_enabled
+					GameCooltip:Hide()
+				end
+
 				if (option == "talkinghead") then
 					if (value == "talking_heads_openworld") then
 						WorldQuestTracker.db.profile.talking_heads_openworld = not WorldQuestTracker.db.profile.talking_heads_openworld
@@ -4324,6 +4329,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						GameCooltip:AddIcon ([[Interface\BUTTONS\UI-AutoCastableOverlay]], 2, 1, 16, 16, .4, .6, .4, .6)
 					end
 				end
+
+				--oribos arrow
+				GameCooltip:AddLine ("Oribos Flight Master")
+				add_checkmark_icon (WorldQuestTracker.db.profile.flymaster_tracker_enabled, true)
+				GameCooltip:AddMenu (1, options_on_click, "oribos_flight_master", WorldQuestTracker.db.profile.flymaster_tracker_enabled)
 				--
 				
 				GameCooltip:AddLine ("$div")

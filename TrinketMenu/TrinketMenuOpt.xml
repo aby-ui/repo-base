@@ -61,7 +61,7 @@
 				self:RegisterForDrag("LeftButton")
 			</OnLoad>
 			<OnEnter>
-				TrinketMenu.OnTooltip(self,"TrinketMenu",(TrinketMenuOptions.DisableToggle == "ON") and "Click: toggle options\nDrag: move icon" or "Left click: toggle trinkets\nRight click: toggle options\nDrag: move icon")
+				TrinketMenu.OnTooltip(self,"TrinketMenu",(TrinketMenuOptions.DisableToggle == "ON") and TrinketMenu.Tooltip1 or TrinketMenu.Tooltip2)
 			</OnEnter>
 			<OnLeave>
 				GameTooltip:Hide()
@@ -75,21 +75,21 @@
 				self:UnlockHighlight()
 			</OnDragStop>
 			<OnClick>
-				TrinketMenu.MinimapButton_OnClick()
+				TrinketMenu.MinimapButton_OnClick(button)
 			</OnClick>
 		</Scripts>
 		<NormalTexture file = "Interface\AddOns\TrinketMenu\Textures\TrinketMenu-Icon-Up"/>
 		<PushedTexture file = "Interface\AddOns\TrinketMenu\Textures\TrinketMenu-Icon-Down"/>
 		<HighlightTexture alphaMode = "ADD" file = "Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 	</Button>
-	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true" inherits="BackdropTemplate">
+	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size x = "300" y = "336"/>
 		<Anchors>
 			<Anchor point = "CENTER"/>
 		</Anchors>
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
-        </KeyValues>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+		</KeyValues>
 		<Layers>
 			<Layer level = "BACKGROUND">
 				<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -167,7 +167,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Frame name = "TrinketMenu_SubOptFrame" hidden = "true" inherits="BackdropTemplate">
+			<Frame name = "TrinketMenu_SubOptFrame" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 				<Anchors>
 					<Anchor point = "TOPLEFT">
 						<Offset>
@@ -180,9 +180,9 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-                <KeyValues>
-                    <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_0_16" type="global"/>
-                </KeyValues>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16" type="global"/>
+				</KeyValues>
 				<Layers>
 					<Layer level = "BACKGROUND">
 						<Texture file = "Interface\ChatFrame\ChatFrameBackground">
@@ -396,7 +396,7 @@
 							</Anchor>
 						</Anchors>
 					</CheckButton>
-					<Slider name = "TrinketMenu_OptColumnsSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "1" maxValue = "30" defaultValue = "4" valueStep = "1" inherits="BackdropTemplate">
+					<Slider name = "TrinketMenu_OptColumnsSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "1" maxValue = "30" defaultValue = "4" valueStep = "1" inherits = "TrinketMenuBackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -410,9 +410,9 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-                        <KeyValues>
-                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
-                        </KeyValues>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="TRINKETMENU_SLIDER_BACKDROP" type="global"/>
+						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptColumnsSliderText" inherits = "GameFontHighlightSmall" text = "5 trinkets">
@@ -439,8 +439,13 @@
 								<AbsDimension x = "32" y = "32"/>
 							</Size>
 						</ThumbTexture>
+						<Scripts>
+							<OnLoad>
+								self:OnBackdropLoaded()
+							</OnLoad>
+						</Scripts>
 					</Slider>
-					<Slider name = "TrinketMenu_OptMainScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits="BackdropTemplate">
+					<Slider name = "TrinketMenu_OptMainScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits = "TrinketMenuBackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -454,10 +459,9 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-
-                        <KeyValues>
-                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
-                        </KeyValues>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="TRINKETMENU_SLIDER_BACKDROP" type="global"/>
+						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptMainScaleSliderText" inherits = "GameFontHighlightSmall" text = "Main Scale: 1.0">
@@ -484,8 +488,13 @@
 								<AbsDimension x = "32" y = "32"/>
 							</Size>
 						</ThumbTexture>
+						<Scripts>
+							<OnLoad>
+								self:OnBackdropLoaded()
+							</OnLoad>
+						</Scripts>
 					</Slider>
-					<Slider name = "TrinketMenu_OptMenuScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits="BackdropTemplate">
+					<Slider name = "TrinketMenu_OptMenuScaleSlider" orientation = "HORIZONTAL" enableMouse = "true" minValue = "0.2" maxValue = "2.5" defaultValue = "1.0" valueStep = "0.01" inherits = "TrinketMenuBackdropTemplate">
 						<Size>
 							<AbsDimension x = "104" y = "17"/>
 						</Size>
@@ -499,9 +508,9 @@
 						<HitRectInsets>
 							<AbsInset left = "0" right = "0" top = "-5" bottom = "-5"/>
 						</HitRectInsets>
-                        <KeyValues>
-                            <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
-                        </KeyValues>
+						<KeyValues>
+							<KeyValue key="backdropInfo" value="TRINKETMENU_SLIDER_BACKDROP" type="global"/>
+						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
 								<FontString name = "TrinketMenu_OptMenuScaleSliderText" inherits = "GameFontHighlightSmall" text = "Menu Scale: 1.0">
@@ -528,11 +537,24 @@
 								<AbsDimension x = "32" y = "32"/>
 							</Size>
 						</ThumbTexture>
+						<Scripts>
+							<OnLoad>
+								self:OnBackdropLoaded()
+							</OnLoad>
+						</Scripts>
 					</Slider>
 				</Frames>
+				<Scripts>
+					<OnLoad>
+						self:OnBackdropLoaded()
+					</OnLoad>
+				</Scripts>
 			</Frame>
 		</Frames>
 		<Scripts>
+			<OnLoad>
+				self:OnBackdropLoaded()
+			</OnLoad>
 			<OnMouseDown>
 				self:StartMoving()
 			</OnMouseDown>

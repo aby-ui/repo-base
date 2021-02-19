@@ -235,6 +235,8 @@ function _detalhes:LoadCombatTables()
 						_detalhes.tabela_overall = _detalhes_database.tabela_overall
 						_detalhes:RestauraOverallMetaTables()
 					end
+				else
+					_detalhes.tabela_overall = _detalhes.combate:NovaTabela()
 				end
 				
 			--> re-build all indexes and metatables

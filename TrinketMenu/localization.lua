@@ -1,5 +1,5 @@
 local L = TrinketMenuLocale
-if(not L) then return end --TODO: 版本不对
+if(not L) then return end
 -- luyi7338 汉化
 -- Sharak@BigFoot 增加繁体版数据
 
@@ -8,6 +8,8 @@ if (GetLocale() == "zhCN") then
     L["Priority"] = "优先"
     L["Pause Queue"] = "中断"
     L["TrinketMenu"] = "饰品管理"
+    L["Main Scale: %.2f"] = "饰品按钮缩放: %.2f"
+    L["Menu Scale: %.2f"] = "饰品菜单缩放: %.2f"
     
 	TrinketMenu.CheckOptInfo = {
 		{"ShowIcon","ON","迷你地图按钮","显示或隐藏小地图按钮."},
@@ -30,6 +32,7 @@ if (GetLocale() == "zhCN") then
 		{"StopOnSwap","OFF","被动饰品停止排队","当换上一个被动饰品时停止自动排队.  选中这个选项时, 当一个可点击饰品通过 TrinketMenu 被手动换上时同样会停止自动排队. 当频繁标记饰品为优先时这个选项尤其有用"},
 		{"HideOnLoad","OFF","当配置载入时关闭","当你载入一个配置时关闭这个窗口."},
 		{"RedRange","OFF","射程警告","当有效目标在饰品的射程外时饰品变红警告.  例如, 侏儒死亡射线和侏儒捕网器."},
+        {"HidePetBattle", "ON", "宠物对战时隐藏", "选中以便在宠物战斗中自动隐藏饰品框体."},
 		{"MenuOnRight","OFF","右击菜单","防止菜单出现除非一个警告饰品被右击.\n\n提示: 战斗中不能改变这个选项."}
 	}
 
@@ -46,7 +49,7 @@ if (GetLocale() == "zhCN") then
 		{"TrinketMenu_ProfilesLoad","载入配置","为选中饰品槽载入一个队列.  你也可以双击一个配置来载入它."},
 		{"TrinketMenu_ProfilesSave","保存配置","保存选中饰品槽的队列.  任一饰品槽都可以使用它."},
 		{"TrinketMenu_ProfileName","配置名","为这个配置输入一个名字.  保存后, 你可以载入给任一饰品槽."},
-		{"TrinketMenu_OptBindButton","绑定饰品","单击这里为你的上/下面饰品绑定一个热键."}
+		--{"TrinketMenu_OptBindButton","绑定饰品","单击这里为你的上/下面饰品绑定一个热键."}
 	}
 
 	TrinketMenu.Tooltip1 = "点击: 开关选项窗口\n拖动: 移动设置按钮";

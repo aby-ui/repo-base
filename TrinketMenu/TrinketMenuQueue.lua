@@ -1,6 +1,10 @@
 ﻿--[[ TrinketMenuQueue : auto queue system ]]
 
+TrinketMenuLocale = TrinketMenuLocale or CoreBuildLocale() L = TrinketMenuLocale
+
 local _G, type, string, tonumber, table, pairs, select = _G, type, string, tonumber, table, pairs, select
+
+local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 TrinketMenu.PausedQueue = { } -- 0 or 1 whether queue is paused
 
@@ -15,9 +19,9 @@ function TrinketMenu.QueueInit()
 	TrinketMenu_SubQueueFrame:SetBackdropBorderColor(.3, .3, .3,1)
 	TrinketMenu_ProfilesFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu_ProfilesListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
-	TrinketMenu_SortPriorityText:SetText("Priority")
+	TrinketMenu_SortPriorityText:SetText(L"Priority")
 	TrinketMenu_SortPriorityText:SetTextColor(.95, .95, .95)
-	TrinketMenu_SortKeepEquippedText:SetText("Pause Queue")
+	TrinketMenu_SortKeepEquippedText:SetText(L"Pause Queue")
 	TrinketMenu_SortKeepEquippedText:SetTextColor(.95, .95, .95)
 	TrinketMenu_SortListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu.ReflectQueueEnabled()
@@ -54,7 +58,7 @@ end
 
 function TrinketMenu.GetNameByID(id)
 	if id == 0 then
-		return "-- stop queue here --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
+		return StopQueueHereText1, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
 	else
 		local name, _, quality, _, _, _, _, _, _, texture = GetItemInfo(id or "")
 		return name, texture, quality
@@ -99,7 +103,7 @@ function TrinketMenu.SortScrollFrameUpdate()
 	FauxScrollFrame_Update(TrinketMenu_SortScroll, list and #list or 0, 9, 24)
 	if list and list[1] then
 		local r, g, b, found
-		local texture, name, quality
+		local texture, name, quality, idx
 		local item, itemName, itemIcon
 		for i = 1, 9 do
 			item = _G["TrinketMenu_Sort"..i]
@@ -161,7 +165,7 @@ function TrinketMenu.SortTooltip(self)
 		GameTooltip:SetHyperlink(itemLink)
 		GameTooltip:Show()
 	else
-		TrinketMenu.OnTooltip(self,"Stop Queue Here", "Move this to mark the lowest trinket to auto queue. Sometimes you may want a passive trinket with a click effect to be the end (Burst of Knowledge, Second Wind, etc).")
+		TrinketMenu.OnTooltip(self,StopQueueHereText2, StopQueueHereTooltip)
 	end
 end
 
@@ -329,16 +333,22 @@ function TrinketMenu.ProcessAutoQueue(which)
 	if IsInventoryItemLocked(13 + which) then
 		return
 	end -- leave if slot being swapped
-	if UnitCastingInfo("player") then
+	if IsClassic and (CastingInfo() or ChannelInfo()) or (UnitCastingInfo("player") or UnitChannelInfo("player")) then
 		return
-	end -- leave if player is casting
+	end -- leave if player is casting/channeling
 	if TrinketMenu.PausedQueue[which] then
 		icon:SetVertexColor(1, .5, .5) -- leave if SetQueue(which, "PAUSE")
 		return
 	end
-	local buff = GetItemSpell(id)
-	if buff then
-		if Aby_UnitAura("player",buff) or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
+	local buffName
+	if IsClassic then
+		local _
+		_, buffName = GetItemSpell(id)
+	else
+		buffName = GetItemSpell(id)
+	end
+	if buffName then
+		if AuraUtil.FindAuraByName(buffName, "player", "HELPFUL") or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
 			icon:SetDesaturated(true)
 			return
 		end
@@ -529,7 +539,7 @@ function TrinketMenu.ProfileScrollFrameUpdate()
 	local offset = FauxScrollFrame_GetOffset(TrinketMenu_ProfileScroll)
 	local list = TrinketMenuQueue.Profiles
 	FauxScrollFrame_Update(TrinketMenu_ProfileScroll, #(list) or 0, 7, 20)
-	local item
+	local item, idx
 	for i = 1, 7 do
 		idx = offset + i
 		item = _G["TrinketMenu_Profile"..i]
@@ -546,7 +556,7 @@ function TrinketMenu.ProfileScrollFrameUpdate()
 		end
 	end
 	if #list == 0 then
-		TrinketMenu_Profile1Name:SetText("No profiles saved yet.")
+		TrinketMenu_Profile1Name:SetText(L"No profiles saved yet.")
 		TrinketMenu_Profile1:Show()
 		TrinketMenu_Profile1:UnlockHighlight()
 	end

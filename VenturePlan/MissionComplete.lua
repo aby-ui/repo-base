@@ -1,5 +1,6 @@
 local _, T = ...
-local EV = T.Evie
+local EV, L = T.Evie, T.L
+local MR
 
 local function Rewards_FollowerOnEnter(self)
 	local fi = self.RewardsFollower.info
@@ -11,7 +12,7 @@ local function Rewards_FollowerOnEnter(self)
 		local cxp, clevel = xp+fi.currentXP, fi.level
 		repeat
 			cxp, clevel = cxp - xpTable[clevel+levelsGained], clevel+1
-		until (xpTable[clevel] == nil or 0) == 0 or cxp < xpTable[clevel]
+		until (xpTable[clevel] or 0) == 0 or cxp < xpTable[clevel]
 		levelsGained = clevel - fi.level
 		if (xpTable[clevel] or 0) ~= 0 then
 			xpToNext = xpTable[clevel] - cxp
@@ -31,13 +32,32 @@ local function Rewards_FollowerOnLeave(self)
 		GameTooltip:Hide()
 	end
 end
-local function RewardsScreen_OnPopulate(self, _fi, _mi, _winner)
+local function RewardsScreen_OnPopulate(self, _fi, mi, _winner)
 	for x in self.followerPool:EnumerateActive() do
 		x:SetScript("OnEnter", Rewards_FollowerOnEnter)
 		x:SetScript("OnLeave", Rewards_FollowerOnLeave)
 	end
+	local repNovel, headPrefix, text = T.GetMissionReportInfo(mi.missionID), "", nil
+	MR:SetShown((repNovel or 0) ~= 0)
+	if repNovel == 1 then
+		headPrefix, text = NORMAL_FONT_COLOR_CODE, L'"Everything went as foretold."'
+		MR.RarityBorder:SetAtlas("loottoast-itemborder-gold")
+	elseif repNovel == 2 then
+		headPrefix, text = ITEM_QUALITY_COLORS[2].hex, L'"The outcome was as foretold."'
+		MR.RarityBorder:SetAtlas("loottoast-itemborder-green")
+	elseif repNovel == 3 then
+		headPrefix, text = ITEM_QUALITY_COLORS[3].hex, L'"Nothing went as expected."'
+		MR.RarityBorder:SetAtlas("loottoast-itemborder-blue")
+	end
+	MR.tooltipHeader = headPrefix .. L"Adventure Report"
+	MR.tooltipText = "|cffffffff" .. L"A detailed record of an adventure completed by your companions." .. (text and "\n\n" .. NORMAL_FONT_COLOR_CODE .. text or "")
 end
 
 function EV:I_ADVENTURES_UI_LOADED()
+	local FRP = CovenantMissionFrame.MissionComplete.RewardsScreen.FinalRewardsPanel
+	MR = T.CreateObject("RewardFrame", FRP)
+	MR:SetSize(40, 40)
+	MR.Icon:SetTexture("Interface/Icons/INV_Inscription_80_Scroll")
+	MR:SetPoint("TOPRIGHT", FRP.FinalRewardsLineTop, "BOTTOMRIGHT", -42, -4)
 	hooksecurefunc(CovenantMissionFrame.MissionComplete.RewardsScreen, "PopulateFollowerInfo", RewardsScreen_OnPopulate)
 end

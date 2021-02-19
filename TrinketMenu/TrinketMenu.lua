@@ -1,8 +1,11 @@
-﻿--[[ TrinketMenu 5.0.0 ]]--
+﻿--[[ TrinketMenu 9.0.0 ]]--
 
 TrinketMenu = { }
 
 local _G, math, tonumber, string, type, pairs, ipairs, table, select = _G, math, tonumber, string, type, pairs, ipairs, table, select
+local Masque = LibStub("Masque", true)
+
+local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 -- localized strings required to support engineering bags
 TrinketMenu.BAG = "Bag" -- 7th return of GetItemInfo on a normal bag
@@ -57,7 +60,7 @@ end
 
 --[[ Misc Variables ]]--
 
-TrinketMenu_Version = "5.0.4"
+TrinketMenu_Version = GetAddOnMetadata("TrinketMenu", "Version")
 BINDING_HEADER_TRINKETMENU = "TrinketMenu"
 setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket0:LeftButton", "Use Top Trinket")
 setglobal("BINDING_NAME_CLICK TrinketMenu_Trinket1:LeftButton", "Use Bottom Trinket")
@@ -237,6 +240,17 @@ end
 
 function TrinketMenu.Initialize()
 	local options = TrinketMenuOptions
+	-- Set TrinketMenu Skin
+	if (Masque and not TrinketMenu.MasqueGroup) then
+		local group = Masque:Group("TrinketMenu")
+		TrinketMenu.MasqueGroup = group
+		group:AddButton(TrinketMenu_Trinket0)
+		group:AddButton(TrinketMenu_Trinket1)
+		for i = 1, 30 do
+			_G["TrinketMenu_Menu"..i]:SetFrameLevel(2)
+			group:AddButton(_G["TrinketMenu_Menu"..i])
+		end
+	end
 	options.KeepDocked = options.KeepDocked or "ON" -- new option for 2.1
 	options.Notify = options.Notify or "OFF" -- 2.1
 	options.DisableToggle = options.DisableToggle or "OFF" -- new option for 2.2
@@ -249,6 +263,7 @@ function TrinketMenu.Initialize()
 	options.TinyTooltips = options.TinyTooltips or "OFF" -- 3.0
 	options.SetColumns = options.SetColumns or "OFF" -- 3.0
 	options.Columns = options.Columns or 4 -- 3.0
+	options.CooldownCount = options.CooldownCount or "OFF" -- 3.0
 	options.LargeCooldown = options.LargeCooldown or "OFF" -- 3.0
 	options.ShowHotKeys = options.ShowHotKeys or "OFF" -- 3.0
 	TrinketMenuPerOptions.ItemsUsed = TrinketMenuPerOptions.ItemsUsed or { } -- 3.0
@@ -294,9 +309,9 @@ function TrinketMenu.Initialize()
 	TrinketMenu.UpdateWornTrinkets()
 	TrinketMenu.DockWindows()
 	TrinketMenu.OrientWindows()
-	--if TrinketMenuOptions.NotifyThirty == "ON" or TrinketMenuOptions.Notify == "ON" then
+	if true or TrinketMenuOptions.CooldownCount == "ON" or TrinketMenuOptions.NotifyThirty == "ON" or TrinketMenuOptions.Notify == "ON" then
 		TrinketMenu.StartTimer("CooldownUpdate")
-	--end
+	end
 	TrinketMenu.ReflectRedRange()
 	if TrinketMenuPerOptions.Visible == "ON" and (GetInventoryItemLink("player", 13) or GetInventoryItemLink("player", 14)) then
 		TrinketMenu_MainFrame:Show()
@@ -354,6 +369,9 @@ end
 --[[ Frame Scripts ]]--
 
 function TrinketMenu.OnLoad(self)
+	self:OnBackdropLoaded()
+	self:SetBackdropColor(0.0, 0.0, 0.0)
+	self:SetBackdropBorderColor(0.0, 0.0, 0.0)
 	SlashCmdList["TrinketMenuCOMMAND"] = TrinketMenu.SlashHandler
 	SLASH_TrinketMenuCOMMAND1 = "/trinketmenu"
 	SLASH_TrinketMenuCOMMAND2 = "/trinket"
@@ -366,9 +384,9 @@ function TrinketMenu.OnEvent(self, event, ...)
 		local unitID = ...
 		if unitID == "player" then
 			TrinketMenu.UpdateWornTrinkets()
-        end
-    elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-        TrinketMenu.UpdateWornTrinkets()
+		end
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+		TrinketMenu.UpdateWornTrinkets()
 	elseif event == "ACTIONBAR_UPDATE_COOLDOWN" then
 		TrinketMenu.UpdateWornCooldowns(1)
 	elseif event == "PET_BATTLE_OPENING_START" then
@@ -397,17 +415,20 @@ function TrinketMenu.OnEvent(self, event, ...)
 		TrinketMenu_OptMenuOnRight:Disable()
 	elseif event == "PLAYER_LOGIN" then
 		TrinketMenu.LoadDefaults()
+		TrinketMenu_MainFrame:ClearAllPoints()
 		TrinketMenu.Initialize()
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 		self:RegisterEvent("PLAYER_UNGHOST")
 		self:RegisterEvent("PLAYER_ALIVE")
 		self:RegisterEvent("UNIT_INVENTORY_CHANGED")
-        self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+		self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 		self:RegisterEvent("UPDATE_BINDINGS")
 		self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
-		self:RegisterEvent("PET_BATTLE_OPENING_START")
-		self:RegisterEvent("PET_BATTLE_CLOSE")
+		if not IsClassic then
+			self:RegisterEvent("PET_BATTLE_OPENING_START")
+			self:RegisterEvent("PET_BATTLE_CLOSE")
+		end
 	end
 end
 
@@ -590,6 +611,9 @@ function TrinketMenu.TimersFrame_OnUpdate(elapsed)
 			end
 		end
 	end
+	if TrinketMenu.PeriodicQueueCheck then
+		TrinketMenu.PeriodicQueueCheck()
+	end -- Check for auto queue
 end
 
 function TrinketMenu.TimerDebug()
@@ -660,7 +684,7 @@ function TrinketMenu.MenuTrinket_OnClick(self)
 	else
 		local slot = (arg1 == "LeftButton") and 13 or 14
 		if TrinketMenu.QueueInit then
-			local _, _, canCooldown = GetContainerItemCooldown(TrinketMenu.BaggedTrinkets[self:GetID()].bag,TrinketMenu.BaggedTrinkets[self:GetID()].slot)
+			local _, _, canCooldown = GetContainerItemCooldown(TrinketMenu.BaggedTrinkets[self:GetID()].bag, TrinketMenu.BaggedTrinkets[self:GetID()].slot)
 			if canCooldown == 0 or TrinketMenuOptions.StopOnSwap == "ON" then -- if incoming trinket can't go on cooldown
 				TrinketMenuQueue.Enabled[slot - 13] = nil -- turn off autoqueue
 				TrinketMenu.ReflectQueueEnabled()
@@ -1065,7 +1089,7 @@ end
 function TrinketMenu.CooldownUpdate()
 	local inv, bag, slot, start, duration, name, remain
 	for i in pairs(TrinketMenuPerOptions.ItemsUsed) do
-		start,duration = GetItemCooldown(i)
+		start, duration = GetItemCooldown(i)
 		if start and TrinketMenuPerOptions.ItemsUsed[i] < 3 then
 			TrinketMenuPerOptions.ItemsUsed[i] = TrinketMenuPerOptions.ItemsUsed[i] + 1 -- count for 3 seconds before seeing if this is a real cooldown
 		elseif start then

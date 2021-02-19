@@ -1,15 +1,16 @@
 ## Interface: 90002
 ## Title: Venture Plan
-## Version: 4.09
+## Version: 4.11a
 ## Notes: Interface improvements for Adventures.
 ## Notes-deDE: Schnittstellenverbesserungen für Abenteuer.
-## Notes-esES: Mejoras de Interfaz para Aventuras.
+## Notes-esES: Mejoras de la interfaz para las Aventuras.
 ## Notes-frFR: Améliorations de l'interface pour les aventures.
 ## Notes-itIT: Miglioramenti dell'interfaccia per le Avventure.
 ## Notes-koKR: 모험을 위한 인터페이스 개선
 ## Notes-ruRU: Улучшение интерфейса для Приключений.
-## Notes-zhCN: 改进了冒险页面
+## Notes-zhCN: 改进了冒险界面。
 ## Notes-zhTW: 冒險介面改善
+## Notes-ptBR: Melhorias na interface de Aventuras.
 ## Author: foxlit
 ## License: All rights reserved. Do not modify or redistribute.
 ## X-Website: https://www.townlong-yak.com/addons/venture-plan

@@ -4,8 +4,8 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8203
-		_detalhes.alpha_build_counter = 8203 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8246
+		_detalhes.alpha_build_counter = 8246 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = "v9.0.2"
 		_detalhes.userversion = "v9.0.2." .. _detalhes.build_counter
@@ -29,6 +29,13 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.0.2.8246.144", "February 17th, 2021"},
+		"Added healing done to Coach feature (in testing).",
+		"Ignore Forgeborne Reveries healing done (Necrolords ability).",
+		"Arena enemy deaths now are shown in the Deaths display.",
+		"Guild statistics data has been wiped, this system had a major improvement overall.",
+		"Fixed 'Clear Overall Data' on Logout which wasn't clearing.",
+		
 		{"v9.0.2.8192.144", "January 27th, 2021"},
 		"If you get issues with nicknames, disable any weakaura which modifies this feature.",
 		"Advanced Death Logs plugin got some fixes and should work properly.",
@@ -208,6 +215,8 @@ do
 			_detalhes.encounter_table = {}
 			_detalhes.encounter_counter = {}
 			_detalhes.encounter_dungeons = {}
+		--> unitId dos inimigos dentro de uma arena
+			_detalhes.arena_enemies = {}
 		--> reliable char data sources
 		--> actors that are using details! and sent character data, we don't need query inspect on these actors
 			_detalhes.trusted_characters = {}

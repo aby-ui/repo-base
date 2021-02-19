@@ -605,10 +605,10 @@
 									end
 								end
 							end
-						end                
-					end             
-				end        
-			end    
+						end            
+					end         
+				end    
+			end
 		end
 
 		table.sort (Targets, Details.Sort2)

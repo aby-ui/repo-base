@@ -1248,6 +1248,12 @@ local default_global_data = {
 		},
 		current_exp_raid_encounters = {},
 		
+	--> profile by spec
+		profile_by_spec = {},
+	
+	--> displays by spec
+		displays_by_spec = {},
+		
 	--> death log
 		show_totalhitdamage_on_overkill = false,
 		
@@ -1311,6 +1317,7 @@ local default_global_data = {
 		
 	--> min health done on the death report
 		deathlog_healingdone_min = 1,
+		deathlog_healingdone_min_arena = 400,
 		
 	--> mythic plus config
 		mythic_plus = {

@@ -117,6 +117,8 @@ local function GetCompletedMissionInfo(mid)
 	end
 end
 
+local LR_MissionID, LR_Novelty
+
 local generateCheckpoints do
 	local hex = {}
 	for i=0,12 do hex[i] = ("%x"):format(i) end
@@ -192,19 +194,20 @@ local function checkSim(cr, checkpoints)
 	local sim = T.VSim:New(cr.followers, cr.encounters, envs, cr.missionID, cr.missionScalar, 0)
 	sim:AddFightLogOracles(cr.log)
 	sim:Run()
+	local outcome = (not sim.won) == (not cr.winner)
 	if #checkpoints ~= #sim.checkpoints then
-		return false
+		return false, outcome
 	end
 	for i=0,#checkpoints do
 		if not checkpointMatch(checkpoints[i], sim.checkpoints[i]) then
-			return false
+			return false, outcome
 		end
 	end
-	return true
+	return true, outcome
 end
 local function isNovelLog(cr, checkpoints)
-	local ok, ret = pcall(checkSim, cr, checkpoints)
-	return not (ok and ret)
+	local ok, ret, ret2 = pcall(checkSim, cr, checkpoints)
+	return not (ok and ret), ok, ret2
 end
 local function findReportSlot(logs, st, novel)
 	local nc, oc, nt, ot, ni, oi = 0, 0
@@ -273,9 +276,10 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 	cr.missionName = mi.name
 	local ok, checkpoints = generateCheckpoints(cr)
 	if ok then
-		local st, novel = serialize(cr), isNovelLog(cr, checkpoints)
+		local st, novel, nok, om = serialize(cr), isNovelLog(cr, checkpoints)
 		VP_MissionReports = VP_MissionReports or {}
 		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
+		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
 		EV("I_STORED_LOG_UPDATE")
 	end
 end
@@ -292,4 +296,9 @@ function T.ExportMissionReports()
 		s = (i > 1 and s .. "::" or "") .. VP_MissionReports[i][1]
 	end
 	return (s:gsub(("."):rep(72), "%0 "):gsub(" ?$", ".", 1))
+end
+function T.GetMissionReportInfo(mid)
+	if mid == LR_MissionID then
+		return LR_Novelty
+	end
 end

@@ -1,9 +1,17 @@
 <Ui xmlns = "http://www.blizzard.com/wow/ui/" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation = "http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	<!-- Backdrop Template -->
+	<Frame name="TrinketMenuBackdropTemplate" mixin="TrinketMenuBackdropTemplateMixin" virtual="true">
+		<Scripts>
+			<OnLoad method="OnBackdropLoaded"/>
+			<OnSizeChanged method="OnBackdropSizeChanged"/>
+		</Scripts>
+	</Frame>
 	<!-- Worn trinkets template -->
 	<CheckButton name = "TrinketMenuMainTrinketTemplate" inherits = "ActionButtonTemplate,SecureActionButtonTemplate" virtual = "true">
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("LeftButtonUp","RightButtonUp")
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 			</OnLoad>
 			<PostClick>
 				TrinketMenu.MainTrinket_OnClick(self)
@@ -24,6 +32,7 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 			</OnLoad>
 			<PostClick>
 				TrinketMenu.MenuTrinket_OnClick(self)
@@ -69,10 +78,13 @@
 		</Layers>
 	</Frame>
 	<!-- MainFrame: Equipped Trinkets -->
-	<Frame name = "TrinketMenu_MainFrame" toplevel = "true" frameStrata = "BACKGROUND" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" inherits="BackdropTemplate">
+	<Frame name = "TrinketMenu_MainFrame" toplevel = "true" frameStrata = "BACKGROUND" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size>
 			<AbsDimension x = "91" y = "52" />
 		</Size>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16_16_4444" type="global"/>
+		</KeyValues>
 		<Anchors>
 			<Anchor point = "TOPLEFT" relativeTo = "UIParent" relativePoint = "BOTTOMLEFT">
 				<Offset>
@@ -81,9 +93,6 @@
 			</Anchor>
 		</Anchors>
 
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-        </KeyValues>
 		<Layers>
 			<Layer level = "OVERLAY">
 				<Texture name = "TrinketMenu_MainDock_TOPRIGHT" file = "Interface\Tooltips\UI-Tooltip-Border" alphaMode = "ADD" hidden = "true">
@@ -174,17 +183,18 @@
 		</Scripts>
 	</Frame>
 	<!-- MenuFrame: Bagged Trinkets -->
-	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits="BackdropTemplate">
+	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size>
 			<AbsDimension x = "52" y = "91" />
 		</Size>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16_16_4444" type="global"/>
+		</KeyValues>
 		<Anchors>
 			<Anchor point = "BOTTOMLEFT" relativeTo = "TrinketMenu_MainFrame" relativePoint = "BOTTOMRIGHT"/>
 		</Anchors>
-        <KeyValues>
-            <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
-        </KeyValues>
-        <Layers>
+
+		<Layers>
 			<Layer level = "OVERLAY">
 				<Texture name = "TrinketMenu_MenuDock_TOPRIGHT" file = "Interface\Tooltips\UI-Tooltip-Border" alphaMode = "ADD" hidden = "true">
 					<Size>
@@ -287,6 +297,11 @@
 			<Frame parent = "TrinketMenu_Menu30" inherits = "TrinketMenuTimeTemplate"/>
 		</Frames>
 		<Scripts>
+			<OnLoad>
+				self:OnBackdropLoaded()
+				self:SetBackdropColor(0.0, 0.0, 0.0)
+				self:SetBackdropBorderColor(0.0, 0.0, 0.0)
+			</OnLoad>
 			<OnMouseDown>
 				TrinketMenu.MenuFrame_OnMouseDown(button)
 			</OnMouseDown>

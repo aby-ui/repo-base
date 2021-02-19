@@ -9226,7 +9226,7 @@ function DF:CreateUnitFrame (parent, name, unitFrameSettingsOverride, healthBarS
 	
 	--> overlay frame (widgets that need to stay above the unit frame)
 	local overlayFrame = CreateFrame ("frame", "$parentOverlayFrame", f, "BackdropTemplate")
-	borderFrame:SetFrameLevel (f:GetFrameLevel() + 6)
+	overlayFrame:SetFrameLevel (f:GetFrameLevel() + 6)
 	f.overlayFrame = overlayFrame
 	
 	--> unit frame layers
@@ -10038,13 +10038,16 @@ DF.ListboxFunctions = {
 		for i = 1, totalLines do
 			local index = i + offset
 			local lineData = data[index] --what is shown in the textentries, array
+
 			if (lineData) then
 				local line = self:GetLine(i)
 				line.dataIndex = index
 				line.deleteButton:SetClickFunction(DF.ListboxFunctions.deleteEntry, data, index)
+				line.indexText:SetText(index)
 
 				local amountEntries = #lineData
 				for o = 1, amountEntries do
+					--data
 					local textEntry = line.widgets[o]
 					textEntry.dataTable = lineData
 					textEntry.dataTableIndex = o
@@ -10082,12 +10085,13 @@ DF.ListboxFunctions = {
 		local options = listBox.options
 		line:SetBackdrop(options.line_backdrop)
 		line:SetBackdropColor(unpack(options.line_backdrop_color))
+		line:SetBackdropBorderColor(unpack(options.line_backdrop_border_color))
 
 		DF:Mixin(line, DF.HeaderFunctions)
 
 		line.widgets = {}
 
-		for i = 1, (listBox.headerLength+1) do --+1 to add the delete button
+		for i = 1, (listBox.headerLength+2) do --+2 to add the delete button and index
 			local headerColumn = listBox.headerTable[i]
 
 			if (headerColumn.isDelete) then
@@ -10095,9 +10099,16 @@ DF.ListboxFunctions = {
 				line.deleteButton = deleteButton
 				line:AddFrameToHeaderAlignment(deleteButton)
 
+			elseif (headerColumn.isIndex) then
+				local indexText = DF:CreateLabel(line)
+				line.indexText = indexText
+				line:AddFrameToHeaderAlignment(indexText)
+
 			elseif (headerColumn.text) then
 				local template = DF.table.copy({}, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
-				template.backdropcolor = {0.1, 0.1, 0.1, .7}
+				template.backdropcolor = {.1, .1, .1, .7}
+				template.backdropbordercolor = {.2, .2, .2, .6}
+
 				local textEntry = DF:CreateTextEntry(line, function()end, headerColumn.width, self.lineHeight, nil, nil, nil, template)
 				textEntry:SetHook("OnEditFocusGained", function() textEntry:HighlightText(0) end)
 				textEntry:SetHook("OnEditFocusLost", function()
@@ -10122,6 +10133,7 @@ DF.ListboxFunctions = {
 		end
 
 		frameCanvas.data = newData
+		frameCanvas.scrollBox:SetData(newData)
 		frameCanvas.scrollBox:Refresh()
 	end,
 }
@@ -10132,7 +10144,8 @@ local listbox_options = {
 	auto_width = true,
 	line_height = 16,
 	line_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true},
-	line_backdrop_color = {.3, .3, .3, .8},
+	line_backdrop_color = {.1, .1, .1, .6},
+	line_backdrop_border_color = {0, 0, 0, .5},
 }
 
 --@parent: parent frame
@@ -10165,8 +10178,8 @@ function DF:CreateListBox(parent, name, data, options, headerTable, headerOption
 	--> header
 		--check for default values in the header
 		headerTable = headerTable or {
-			{text = "Spell Name", width = 70},
 			{text = "Spell Id", width = 70},
+			{text = "Spell Name", width = 70},
 		}
 		headerOptions = headerOptions or {
 			padding = 2,
@@ -10176,6 +10189,7 @@ function DF:CreateListBox(parent, name, data, options, headerTable, headerOption
 		frameCanvas.headerLength = #headerTable
 
 		--add the detele line column into the header frame
+		tinsert(headerTable, 1, {text = "#", width = 20, isIndex = true}) --isDelete signals the createScrollLine() to make the delete button for the line 
 		tinsert(headerTable, {text = "Delete", width = 50, isDelete = true}) --isDelete signals the createScrollLine() to make the delete button for the line 
 		
 		local header = DF:CreateHeader(frameCanvas, headerTable, headerOptions)
@@ -10206,7 +10220,8 @@ function DF:CreateListBox(parent, name, data, options, headerTable, headerOption
 
 	--> scroll frame
 		local lineHeight = frameCanvas.options.line_height
-		local lineAmount = floor(height / lineHeight)
+		--calc the size of the space occupied by the add button, header etc
+		local lineAmount = floor((height - 60) / lineHeight)
 
 		-- -12 is padding: 5 on top, 7 bottom, 2 header scrollbar blank space | -24 to leave space to the add button
 		local scrollBox = DF:CreateScrollBox(frameCanvas, "$parentScrollbox", frameCanvas.scrollRefresh, data, width-4, height - header:GetHeight() - 12 - 24, lineAmount, lineHeight)

@@ -98,6 +98,11 @@ do
 			if (spec > 600) then --hack to new spec ids on new leveling zones from level 1-10
 				spec = 65
 			end
+			
+			if (spec == 0) then
+				return [[Interface\AddOns\Details\images\classes_small]], unpack (_detalhes.class_coords["UNKNOW"])
+			end
+
 			if (useAlpha) then
 				return [[Interface\AddOns\Details\images\spec_icons_normal_alpha]], unpack (_detalhes.class_specs_coords [spec])
 			else

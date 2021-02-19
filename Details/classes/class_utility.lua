@@ -229,6 +229,8 @@ function _detalhes:ToolTipDead (instancia, morte, esta_barra, keydown)
 		local time = event [4]
 		local source = event [6]
 
+		local combatObject = instancia:GetShowingCombat()
+
 		if (time + 12 > hora_da_morte) then
 			if (type (evtype) == "boolean") then
 				--> is damage or heal
@@ -263,9 +265,17 @@ function _detalhes:ToolTipDead (instancia, morte, esta_barra, keydown)
 				else
 					--> heal
 					if (amount > _detalhes.deathlog_healingdone_min) then
-						GameCooltip:AddLine ("" .. _cstr ("%.1f", time - hora_da_morte) .. "s " .. spellname .. " (|cFFC6B0D9" .. source .. "|r)", "+" .. _detalhes:ToK (amount) .. " (" .. hp .. "%)", 1, "white", "white")
-						GameCooltip:AddIcon (spellicon)
-						GameCooltip:AddStatusBar (hp, 1, "green", true) --, backgroud_bar_heal
+						if (combatObject.is_arena) then
+							if (amount > _detalhes.deathlog_healingdone_min_arena) then
+								GameCooltip:AddLine ("" .. _cstr ("%.1f", time - hora_da_morte) .. "s " .. spellname .. " (|cFFC6B0D9" .. source .. "|r)", "+" .. _detalhes:ToK (amount) .. " (" .. hp .. "%)", 1, "white", "white")
+								GameCooltip:AddIcon (spellicon)
+								GameCooltip:AddStatusBar (hp, 1, "green", true)
+							end
+						else
+							GameCooltip:AddLine ("" .. _cstr ("%.1f", time - hora_da_morte) .. "s " .. spellname .. " (|cFFC6B0D9" .. source .. "|r)", "+" .. _detalhes:ToK (amount) .. " (" .. hp .. "%)", 1, "white", "white")
+							GameCooltip:AddIcon (spellicon)
+							GameCooltip:AddStatusBar (hp, 1, "green", true)
+						end
 					end
 				end
 				
@@ -574,6 +584,8 @@ function atributo_misc:DeadAtualizarBarra (morte, whichRowLine, colocacao, insta
 	end
 	
 	esta_barra.lineText1:SetText (colocacao .. ". " .. morte [3]:gsub (("%-.*"), ""))
+	esta_barra.lineText2:SetText("")
+	esta_barra.lineText3:SetText("")
 	esta_barra.lineText4:SetText (morte [6])
 	
 	esta_barra:SetValue (100)

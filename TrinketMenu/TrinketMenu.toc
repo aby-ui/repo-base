@@ -1,11 +1,14 @@
 ## Interface: 90002
-## Title: TrinketMenu |cFF99CC01rev|r |cFFFF00007.3.2|r
-## Version: 7.3.2
+## Title: TrinketMenu 9.0.0
+## Version: 9.0.0
 ## Author: Gello, Resike
 ## Notes: Addon to manage trinkets.
 ## SavedVariables: TrinketMenuOptions
 ## SavedVariablesPerCharacter: TrinketMenuPerOptions, TrinketMenuQueue
 
+#Libs\LibStub\LibStub.lua
+
+TrinketMenuGlobals.lua
 TrinketMenu.lua
 TrinketMenu.xml
 TrinketMenuOpt.lua
