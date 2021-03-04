@@ -20,7 +20,7 @@ end
 markEnhancedDesc = E.FormatConcat(markEnhancedDesc, "%s\n")
 
 local highlight = {
-	name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t" .. HIGHLIGHTING,
+	name = HIGHLIGHTING,
 	order = 35,
 	type = "group",
 	get = function(info) return E.DB.profile.Party[info[2]].highlight[info[#info]] end,
@@ -90,7 +90,7 @@ local highlight = {
 						end
 					end,
 					values = E.L_HIGHLIGHTS,
-					descStyle = "inline",
+					--descStyle = "inline",
 				},
 			}
 		},
@@ -115,7 +115,7 @@ local highlight = {
 					desc = L["%d: spellID.\n%d-%d: spellID-talentID (Mark spell if talent is selected)."] .. "\n\n" .. L["Use a semi-colon(;) to seperate multiple IDs."],
 					order = 2,
 					type = "input",
-					multiline = 1,
+					--multiline = 1, -- no support for this yet
 					width = "full",
 					get = function(info)
 						local t = E.DB.profile.Party[info[2]].highlight.markedSpells.str

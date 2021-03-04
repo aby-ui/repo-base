@@ -146,7 +146,8 @@ local progressBarColorInfo = {
 		name = "",
 		order = 1,
 		type = "color",
-		hasAlpha = function(info) return info[#info-1] == "bgColors" end,
+		dialogControl = "ColorPicker-OmniCD",
+		hasAlpha = function(info) return info[#info-1] ~= "textColors" end,
 		width = 0.35,
 
 	},
@@ -154,7 +155,8 @@ local progressBarColorInfo = {
 		name = "",
 		order = 2,
 		type = "color",
-		hasAlpha = function(info) return info[#info-1] == "bgColors" end,
+		dialogControl = "ColorPicker-OmniCD",
+		hasAlpha = function(info) return info[#info-1] ~= "textColors" end,
 		width = 0.35,
 	},
 	inactiveColor = {
@@ -165,7 +167,8 @@ local progressBarColorInfo = {
 		name = "",
 		order = 3,
 		type = "color",
-		hasAlpha = function(info) return info[#info-1] == "barColors" end,
+		dialogControl = "ColorPicker-OmniCD",
+		hasAlpha = function(info) return info[#info-1] == "barColors" end, -- bgColors is disabled
 		width = 0.35,
 	},
 	classColor = {
@@ -264,6 +267,7 @@ local extraBarsInfo = {
 		desc = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "vertical" and L["Set the number of icons per column"] or L["Set the number of icons per row"] end,
 		order = 13,
 		type = "range",
+		dialogControl = "Slider-OmniCD",
 		min = 1, max = 100, softMax = 20, step = 1,
 	},
 	paddingX = {
@@ -271,6 +275,7 @@ local extraBarsInfo = {
 		desc = L["Set the padding space between icon columns"],
 		order = 14,
 		type = "range",
+		dialogControl = "Slider-OmniCD",
 		min = -5, max = 100, softMax = 10, step = 1,
 	},
 	paddingY = {
@@ -278,6 +283,7 @@ local extraBarsInfo = {
 		desc = L["Set the padding space between icon rows"],
 		order = 15,
 		type = "range",
+		dialogControl = "Slider-OmniCD",
 		min = -5, max = 100, softMax = 10, step = 1,
 	},
 	scale = {
@@ -285,6 +291,7 @@ local extraBarsInfo = {
 		desc = L["Set the size of icons"],
 		order = 16,
 		type = "range",
+		dialogControl = "Slider-OmniCD",
 		min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 	},
 	showName = {
@@ -375,6 +382,7 @@ local extraBarsInfo = {
 				desc = L["Set the status bar width. Adjust height with \'Icon Size\'."] .. "\n\n" .. E.STR.MAX_RANGE,
 				order = 50,
 				type = "range",
+				dialogControl = "Slider-OmniCD",
 				min = 100, max = 999, softMax = 300, step = 1,
 			},
 			reverseFill = {

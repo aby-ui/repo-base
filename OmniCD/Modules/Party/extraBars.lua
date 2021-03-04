@@ -94,7 +94,7 @@ end
 function P:UpdateExPositionValues()
 	for key, f in pairs(self.extraBars) do
 		local db = E.db.extraBars[key]
-		local px = E.NumPixels / db.scale
+		local px = E.PixelMult / db.scale
 		local isProgressBarShown = db.enabled and db.progressBar
 		local growUpward = db.growUpward
 		local growY = growUpward and 1 or -1
@@ -283,7 +283,7 @@ end
 function P:SetExBorder(icon, key)
 	local db = E.db.extraBars[key]
 	local db_icon = E.db.icons
-	local edgeSize = db_icon.borderPixels * E.NumPixels / db.scale
+	local edgeSize = db_icon.borderPixels * E.PixelMult / db.scale
 	local r, g, b = db_icon.borderColor.r, db_icon.borderColor.g, db_icon.borderColor.b
 	local isProgressBarShown = db.layout == "vertical" and db.progressBar
 
@@ -369,7 +369,7 @@ function P:SetExStatusBarColor(icon, key)
 	local db_bar = db.barColors.inactiveColor
 	local alpha = db.useIconAlpha and 1 or db_bar.a
 	if P.groupInfo[icon.guid].preActiveIcons[icon.spellID] then -- [81]
-		r, g, b = 0.7, 0.7, 0.7
+		r, g, b, a = 0.7, 0.7, 0.7, alpha -- [A]
 	elseif db.barColors.classColor then
 		r, g, b, a = c.r, c.g, c.b, alpha
 	else

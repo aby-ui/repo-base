@@ -11,16 +11,16 @@ local CASTING_BAR_ALPHA_STEP = 0.05;
 local CASTING_BAR_FLASH_STEP = 0.2;
 local CASTING_BAR_HOLD_TIME = 1;
 
-local function CastingBarFrame_SetStartCastColor(self, r, g, b)
-	self.startCastColor = CreateColor(r, g, b);
+local function CastingBarFrame_SetStartCastColor(self, r, g, b, a) -- [A]
+	self.startCastColor = CreateColor(r, g, b, a);
 end
 
-local function CastingBarFrame_SetStartChannelColor(self, r, g, b)
-	self.startChannelColor = CreateColor(r, g, b);
+local function CastingBarFrame_SetStartChannelColor(self, r, g, b, a) -- [A]
+	self.startChannelColor = CreateColor(r, g, b, a);
 end
 
-local function CastingBarFrame_SetStartRechargeColor(self, r, g, b)
-	self.startRechargeColor = CreateColor(r, g, b);
+local function CastingBarFrame_SetStartRechargeColor(self, r, g, b, a) -- [A]
+	self.startRechargeColor = CreateColor(r, g, b, a);
 end
 
 local function CastingBarFrame_SetFinishedCastColor(self, r, g, b)
@@ -111,13 +111,13 @@ local function CastingBarFrame_OnLoad(self, key, icon)
 	else
 		active, recharge = db_bar.activeColor, db_bar.rechargeColor
 	end
-	CastingBarFrame_SetStartRechargeColor(self, recharge.r, recharge.g, recharge.b);
+	CastingBarFrame_SetStartRechargeColor(self, recharge.r, recharge.g, recharge.b, db_bar.rechargeColor.a); -- [A]
 
-	CastingBarFrame_SetStartCastColor(self, active.r, active.g, active.b);
-	CastingBarFrame_SetStartChannelColor(self, active.r, active.g, active.b);
+	CastingBarFrame_SetStartCastColor(self, active.r, active.g, active.b, db_bar.activeColor.a); -- [A]
+	CastingBarFrame_SetStartChannelColor(self, active.r, active.g, active.b, db_bar.activeColor.a); -- [A]
 	CastingBarFrame_SetFinishedCastColor(self, 0.0, 1.0, 0.0);
 	CastingBarFrame_SetNonInterruptibleCastColor(self, 0.7, 0.7, 0.7);
-	CastingBarFrame_SetFailedCastColor(self, 1.0, 0.0, 0.0);
+	CastingBarFrame_SetFailedCastColor(self, .55, .27, 1.0); -- 1.0, 0.0, 0.0
 
 	CastingBarFrame_SetUseStartColorForFinished(self, true);
 	CastingBarFrame_SetUseStartColorForFlash(self, true);
@@ -367,7 +367,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 		end
 
 		local startColor, startBGColor, startTextColor = CastingBarFrame_GetEffectiveStartColor(self, false, notInterruptible);
-		self:SetStatusBarColor(startColor:GetRGB());
+		self:SetStatusBarColor(startColor:GetRGBA()); -- [A]
 		self.BG:SetVertexColor(startBGColor:GetRGBA())
 		self.Text:SetTextColor(startTextColor:GetRGB())
 		--[[if self.flashColorSameAsStart then
@@ -446,7 +446,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 	elseif ( event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED" ) then
 		if ( self:IsShown() and (self.casting or self.channeling) and not self.fadeOut ) then -- [67]
 			self:SetValue(self.maxValue);
-			self:SetStatusBarColor(self.failedCastColor:GetRGB());
+			self:SetStatusBarColor(self.failedCastColor:GetRGB()); -- SetStatusBarColor alpha needs a time gap to update reliably
 			if ( self.Spark ) then
 				self.Spark:Hide();
 			end
@@ -517,7 +517,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 		else
 			self.Flash:SetVertexColor(1, 1, 1);
 		end]]
-		self:SetStatusBarColor(startColor:GetRGB());
+		self:SetStatusBarColor(startColor:GetRGBA()); -- [A]
 		self.BG:SetVertexColor(startBGColor:GetRGBA())
 		self.Text:SetTextColor(startTextColor:GetRGB())
 

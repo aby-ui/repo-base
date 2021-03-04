@@ -1,11 +1,9 @@
 local E, L, C = select(2, ...):unpack()
 
+C["loginMsg"] = false
+C["notifyNew"] = false
+
 C["Party"] = {
-	sync = true,
-	general = {
-		["loginMsg"] = false,
-		["notifyNew"] = false,
-	},
 	visibility = {
 		["arena"] = true,
 		["pvp"] = false,
@@ -38,7 +36,6 @@ C["Party"] = {
 			["growUpward"] = false,
 			["detached"] = false,
 		},
-		manualPos = {},
 		icons = {
 			["showCounter"] = true,
 			["reverse"] = false,
@@ -113,8 +110,8 @@ C["Party"] = {
 					["classColor"] = false,
 				},
 				["barColors"] = {
-					["activeColor"] = {r=1,g=0,b=0},
-					["rechargeColor"] = {r=1,g=0.7,b=0},
+					["activeColor"] = {r=1,g=0,b=0,a=1}, -- A
+					["rechargeColor"] = {r=1,g=0.7,b=0,a=1}, -- A
 					["inactiveColor"] = {r=0,g=1,b=0,a=0.9},
 					["classColor"] = true,
 				},
@@ -166,9 +163,11 @@ C["Party"] = {
 		},
 		spells = {},
 		raidCDS = {},
+		manualPos = {},
 	},
 	noneZoneSetting = "arena",
 	scenarioZoneSetting = "arena",
+	sync = true,
 	customPriority = {},
 }
 

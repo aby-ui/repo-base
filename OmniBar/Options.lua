@@ -31,6 +31,10 @@ local function IsSpellEnabled(info)
 	local key = info[2]
 	return OmniBar_IsSpellEnabled(_G[key], OmniBar.options.args.bars.args[key].args.spells.args[info[4]].args[info[5]].arg)
 end
+local function IsUnitEnabled(info)
+	local key = info[2]
+	return OmniBar_IsUnitEnabled(_G[key], OmniBar.options.args.bars.args[key].args.units.args[info[4]].args[info[5]].arg)
+end
 
 StaticPopupDialogs["OMNIBAR_DELETE"] = {
 	text = DELETE.." \"%s\"",
@@ -49,7 +53,11 @@ function OmniBar:ToggleLock(button)
 	OmniBar_Position(_G[button.arg])
 	self.options.args.bars.args[button.arg].args.lock.name = self.db.profile.bars[button.arg].locked and L["Unlock"] or L["Lock"]
 end
-
+local function GetBars(key)
+	local bars = {}
+	for k in pairs(OmniBar.db.profile.bars) do if k ~= key then bars[k] = OmniBar.db.profile.bars[k].name end end
+	return bars
+end
 local function GetSpells()
 	local spells = {
 		uncheck = {
@@ -83,6 +91,28 @@ local function GetSpells()
 				OmniBar:Refresh(true)
 			end,
 			order = 2,
+		},
+		copy = {
+			name = "Copy From: ",
+			desc = "Copys all enabled spells from the selected OmniBar",
+			type = "select",
+			width = "normal",
+			values = GetBars(),
+			set = 	function(info, state)
+						local key = info[#info-2]
+						OmniBar.db.profile.bars[key].noDefault = true
+						for spellID, spell in pairs(OmniBar.cooldowns) do
+							if OmniBar.db.profile.bars[key]["spell"..spellID]~=nil then
+								OmniBar.db.profile.bars[key]["spell"..spellID] = nil
+							end
+							if OmniBar_IsSpellEnabled(_G[state], spellID) then
+								OmniBar_CreateIcon(_G[key])
+								OmniBar.db.profile.bars[key]["spell"..spellID] = true
+							end
+						end
+						OmniBar:Refresh(true)
+					end,
+			order = 3,
 		},
 	}
 	local descriptions = {}
@@ -131,6 +161,41 @@ local function GetSpells()
 		end
 	end
 	return spells
+end
+
+local function GetUnits()
+	local units = {
+		AllEnemies = {
+			name = "All Enemies",
+			type = "group",
+			args = {
+				enabled0 = {
+					name = "Enable All Enemies",
+					type = "toggle",
+					get = IsUnitEnabled,
+					width = "full",
+					arg = 0,
+					desc = "Enable All Enemies",
+				} },
+		}
+	}
+	for i = 1, 3 do
+		units["arena"..i] = {
+			name = "arena"..i,
+			type = "group",
+			args = {},
+		}
+		units["arena"..i].args["enabled"..i] = {
+					name = "Enable Arena "..i,
+					type = "toggle",
+					get = IsUnitEnabled,
+					width = "full",
+					arg = i,
+					desc = "Track Cooldowns for Arena "..i,
+				}
+	end
+
+	return units
 end
 
 function OmniBar:AddBarToOptions(key, refresh)
@@ -558,6 +623,19 @@ function OmniBar:AddBarToOptions(key, refresh)
 					local option = info[#info]
 					self.db.profile.bars[key][option] = state
 					OmniBar_CreateIcon(_G[key])
+					self:Refresh(true)
+				end,
+			},
+						units = {
+				name = "Units",
+				type = "group",
+				order = 14,
+				arg = key,
+				args = GetUnits(),
+				set = function(info, state)
+					local option = info[#info]
+					self.db.profile.bars[key][option] = state
+					OmniBar_ToggleUnit(_G[key], option)
 					self:Refresh(true)
 				end,
 			},

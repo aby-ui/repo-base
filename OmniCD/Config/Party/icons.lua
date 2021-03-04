@@ -49,6 +49,7 @@ local icons = {
 			desc = L["Set the size of icons"],
 			order = 10,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 			set = setScale,
 		},
@@ -57,6 +58,7 @@ local icons = {
 			desc = L["Set the size of charge numbers"],
 			order = 11,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0.5, max = 1.5, step = 0.1, isPercent = true,
 		},
 		counterScale = {
@@ -64,6 +66,7 @@ local icons = {
 			desc = L["Set the size of cooldown numbers"],
 			order = 12,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0.1, max = 1, step = 0.05, isPercent = true,
 		},
 		swipeAlpha = {
@@ -71,6 +74,7 @@ local icons = {
 			desc = L["Set the opacity of swipe animations"],
 			order = 13,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		inactiveAlpha = {
@@ -78,6 +82,7 @@ local icons = {
 			desc = L["Set the opacity of icons not on cooldown"],
 			order = 14,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		activeAlpha = {
@@ -85,6 +90,7 @@ local icons = {
 			desc = L["Set the opacity of icons on cooldown"],
 			order = 15,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		lb2 = {
@@ -109,6 +115,7 @@ local icons = {
 					name = L["Border Color"],
 					order = 1,
 					type = "color",
+					dialogControl = "ColorPicker-OmniCD",
 					get = function(info)
 						local key = info[2]
 						return E.DB.profile.Party[key].icons.borderColor.r, E.DB.profile.Party[key].icons.borderColor.g, E.DB.profile.Party[key].icons.borderColor.b
@@ -121,7 +128,7 @@ local icons = {
 
 						P:ConfigIcons(key, "borderColor")
 					end,
-					descStyle = "inline",
+					--descStyle = "inline",
 				},
 				borderPixels = {
 					name = L["Border Thickness"],
@@ -158,6 +165,7 @@ local icons = {
 					desc = L["Set the size of icons"],
 					order = 2,
 					type = "range",
+					dialogControl = "Slider-OmniCD",
 					min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 					set = setScale,
 				},
@@ -166,6 +174,7 @@ local icons = {
 					desc = E.STR.MAX_RANGE,
 					order = 3,
 					type = "range",
+					dialogControl = "Slider-OmniCD",
 					min = 0, max = 999, softMax = 100, step = 1,
 					set = function(info, value) -- should be in position but,
 						local key = info[2]

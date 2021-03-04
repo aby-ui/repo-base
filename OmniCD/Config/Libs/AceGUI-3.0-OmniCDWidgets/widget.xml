@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="InlineInfoWidget.lua"/>
-	<Script file="InlineLinkWidget.lua"/>
+	<Script file="AceGUIWidget-InlineInfo.lua"/>
+	<Script file="AceGUIWidget-InlineLink.lua"/>
+	<Script file="AceGUIWidget-SearchBox.lua"/>
 </Ui>

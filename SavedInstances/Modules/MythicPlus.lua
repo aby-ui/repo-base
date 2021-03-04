@@ -1,5 +1,5 @@
 local SI, L = unpack(select(2, ...))
-local Module = SI:NewModule('MythicPlus', 'AceEvent-3.0')
+local Module = SI:NewModule('MythicPlus', 'AceEvent-3.0', 'AceBucket-3.0')
 
 -- Lua functions
 local _G = _G
@@ -9,9 +9,10 @@ local ipairs, sort, strsplit, tonumber, select, time, wipe = ipairs, sort, strsp
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
 local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
 local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
-local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
+local C_MythicPlus_GetRewardLevelFromKeystoneLevel = C_MythicPlus.GetRewardLevelFromKeystoneLevel
 local C_WeeklyRewards_GetActivities = C_WeeklyRewards.GetActivities
 local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
+local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
 local CreateFrame = CreateFrame
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemLink = GetContainerItemLink
@@ -40,8 +41,10 @@ function Module:OnEnable()
 
   self:RegisterEvent("CHALLENGE_MODE_COMPLETED", C_MythicPlus_RequestMapInfo)
 
-  self:RegisterEvent("WEEKLY_REWARDS_UPDATE", "RefreshMythicWeeklyBestInfo")
-  self:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE", "RefreshMythicWeeklyBestInfo")
+  self:RegisterBucketEvent({
+    "WEEKLY_REWARDS_UPDATE",
+    "CHALLENGE_MODE_MAPS_UPDATE",
+  }, 1, "RefreshMythicWeeklyBestInfo")
 
   C_MythicPlus_RequestMapInfo()
 
@@ -90,23 +93,29 @@ do
   end
 
   local function runCompare(left, right)
-    return left.level > right.level
+    if left.level == right.level then
+      return left.mapChallengeModeID < right.mapChallengeModeID
+    else
+      return left.level > right.level
+    end
   end
 
   function Module:RefreshMythicWeeklyBestInfo()
     local t = SI.db.Toons[SI.thisToon]
 
     t.MythicKeyBest = wipe(t.MythicKeyBest or {})
-    t.MythicKeyBest.rewardWaiting = C_WeeklyRewards_HasAvailableRewards() and C_WeeklyRewards_CanClaimRewards()
+    t.MythicKeyBest.threshold = wipe(t.MythicKeyBest.threshold or {})
+    t.MythicKeyBest.rewardWaiting = C_WeeklyRewards_HasAvailableRewards() or C_WeeklyRewards_CanClaimRewards()
     t.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
 
     local activities = C_WeeklyRewards_GetActivities(Enum_WeeklyRewardChestThresholdType_MythicPlus)
     sort(activities, activityCompare)
 
-    local lastCompletedIndex = 0;
+    local lastCompletedIndex = 0
     for i, activityInfo in ipairs(activities) do
+      t.MythicKeyBest.threshold[i] = activityInfo.threshold
       if activityInfo.progress >= activityInfo.threshold then
-        lastCompletedIndex = i;
+        lastCompletedIndex = i
       end
     end
 
@@ -116,6 +125,11 @@ do
 
     local runHistory = C_MythicPlus_GetRunHistory(false, true)
     sort(runHistory, runCompare)
+    for i = 1, #runHistory do
+      runHistory[i].name = C_ChallengeMode_GetMapUIInfo(runHistory[i].mapChallengeModeID)
+      runHistory[i].rewardLevel = C_MythicPlus_GetRewardLevelFromKeystoneLevel(runHistory[i].level)
+    end
+    t.MythicKeyBest.runHistory = runHistory
 
     for index = 1, lastCompletedIndex do
       if runHistory[activities[index].threshold] then

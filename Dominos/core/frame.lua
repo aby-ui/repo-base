@@ -640,9 +640,14 @@ function Frame:GetSavedPosition()
 end
 
 function Frame:SaveRelativePostiion()
-    local point, relPoint, x, y = FlyPaper.GetBestAnchorForParent(self)
+    local point, relPoint, x, y = self:GetRelativePosition()
 
     self:SavePosition(point, relPoint, x, y)
+end
+
+function Frame:GetRelativePosition()
+    local point, relPoint, x, y = FlyPaper.GetBestAnchorForParent(self)
+    return point, relPoint, x, y
 end
 
 function Frame:RestorePosition()
@@ -805,7 +810,9 @@ Frame.stickyTolerance = 8
 function Frame:Stick()
     -- only do sticky code if the alt key is not currently down
     if Addon:Sticky() and not IsModifiedClick("DOMINOS_IGNORE_STICKY_FRAMES") then
-        return self:StickToFrame() or self:StickToEdge() or self:StickToGrid()
+        if self:StickToFrame() or self:StickToGrid() or self:StickToEdge() then
+            return true
+        end
     end
 
     self:ClearSavedAnchor()

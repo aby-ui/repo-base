@@ -32,21 +32,27 @@ function TalkingHeadBar:GetDisplayLevel()
 end
 
 function TalkingHeadBar:Layout()
-    local frame = TalkingHeadFrame
     local width, height
 
-    if frame then
-        frame:ClearAllPoints()
-        frame:SetPoint('CENTER', self)
-        frame:SetParent(self)
-
-        width, height = frame:GetSize()
+    if TalkingHeadFrame then
+        self:RepositionTalkingHeadFrame()
+        width, height = TalkingHeadFrame:GetSize()
     else
         width, height = 570, 155
     end
 
     local pW, pH = self:GetPadding()
     self:SetSize(width + pW, height + pH)
+end
+
+function TalkingHeadBar:RepositionTalkingHeadFrame()
+    local frame = TalkingHeadFrame
+    if frame then
+        frame:ClearAllPoints()
+        frame:SetPoint('CENTER', self)
+        frame:SetParent(self)
+        return true
+    end
 end
 
 function TalkingHeadBar:OnCreateMenu(menu)
@@ -110,7 +116,7 @@ end
 function TalkingHeadBarModule:OnTalkingHeadUILoaded()
     TalkingHeadFrame.ignoreFramePositionManager = true
 
-    -- onshow/hide call UpdateManagedFramePositions on the blizzard end so
+    -- OnShow/OnHide call UpdateManagedFramePositions on the blizzard end so
     -- turn that bit off
     TalkingHeadFrame:SetScript("OnShow", nil)
     TalkingHeadFrame:SetScript("OnHide", nil)
@@ -123,6 +129,12 @@ function TalkingHeadBarModule:OnTalkingHeadUILoaded()
         if TalkingHeadFrame.voHandle then
             StopSound(TalkingHeadFrame.voHandle, 0)
             TalkingHeadFrame.voHandle = nil
+        end
+    end)
+
+    hooksecurefunc(AlertFrame, "UpdateAnchors", function()
+        if self.frame then
+            self.frame:RepositionTalkingHeadFrame()
         end
     end)
 

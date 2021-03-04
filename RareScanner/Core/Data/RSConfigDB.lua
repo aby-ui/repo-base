@@ -103,6 +103,14 @@ function RSConfigDB.SetSoundVolume(value)
 	private.db.sound.soundVolume = value
 end
 
+function RSConfigDB.GetSoundChannel()
+	return private.db.sound.soundChannel
+end
+
+function RSConfigDB.SetSoundChannel(value)
+	private.db.sound.soundChannel = value
+end
+
 ---============================================================================
 -- Display options database
 ---============================================================================
@@ -784,6 +792,26 @@ end
 
 function RSConfigDB.SetFilteringConduitItems(value)
 	private.db.loot.filterConduitItems = value
+end
+
+---============================================================================
+-- Loot tooltips
+---============================================================================
+
+function RSConfigDB.IsShowingLootTooltipsCommands()
+	return private.db.loot.tooltipsCommands
+end
+
+function RSConfigDB.SetShowingLootTooltipsCommands(value)
+	private.db.loot.tooltipsCommands = value
+end
+
+function RSConfigDB.IsShowingLootCanimogitTooltip()
+	return private.db.loot.tooltipsCanImogit
+end
+
+function RSConfigDB.SetShowingLootCanimogitTooltip(value)
+	private.db.loot.tooltipsCanImogit = value
 end
 
 ---============================================================================

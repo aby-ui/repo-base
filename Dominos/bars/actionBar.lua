@@ -74,6 +74,7 @@ ActionBar:Extend('OnAcquire', function(self)
     self:SetRightClickUnit(Addon:GetRightClickUnit())
     self:UpdateGrid()
     self:UpdateTransparent(true)
+    self:UpdateFlyoutDirection()
 end)
 
 -- TODO: change the position code to be based more on the number of action bars
@@ -282,26 +283,28 @@ end
 function ActionBar:GetFlyoutDirection()
     local direction = self.sets.flyoutDirection or 'auto'
 
-    if direction ~= 'auto' then
-        return direction
+    if direction == 'auto' then
+        return self:GetCalculatedFlyoutDirection()
     end
 
-    local w, h = self:GetSize()
-    local isVertical = w < h
-    local anchor = self:GetPoint()
+    return direction
+end
 
-    if isVertical then
-        if anchor and anchor:match('LEFT') then
-            return 'RIGHT'
+function ActionBar:GetCalculatedFlyoutDirection()
+    local width, height = self:GetSize()
+    local _, relPoint = self:GetRelativePosition()
+
+    if width < height then
+        if relPoint:match('RIGHT') then
+            return 'LEFT'
         end
 
-        return 'LEFT'
+        return 'RIGHT'
     end
 
-    if anchor and anchor:match('TOP') then
+    if relPoint and relPoint:match('TOP') then
         return 'DOWN'
     end
-
     return 'UP'
 end
 
@@ -321,6 +324,5 @@ end
 
 ActionBar:Extend("Layout", ActionBar.UpdateFlyoutDirection)
 ActionBar:Extend("Stick", ActionBar.UpdateFlyoutDirection)
-
 -- exports
 Addon.ActionBar = ActionBar

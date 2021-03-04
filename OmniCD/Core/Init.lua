@@ -13,14 +13,18 @@ function NS:unpack()
 	return self[1], self[2], self[3], self[4]
 end
 
-function AddOn:SetNumPixels()
+function AddOn:SetPixelMult()
 	local _, screenheight = GetPhysicalScreenSize()
 	local uiUnitFactor = 768 / screenheight
 	local uiScale = UIParent:GetScale()
-	self.NumPixels = uiUnitFactor / uiScale
+	self.PixelMult = uiUnitFactor / uiScale
 end
 
-NS[1]:SetNumPixels()
+NS[1].lib = {}
+NS[1].lib.ACD = LibStub("AceConfigDialog-3.0-OmniCD")
+NS[1].lib.ACR = LibStub("AceConfigRegistry-3.0")
+
+NS[1]:SetPixelMult()
 NS[1].userGUID = UnitGUID("player")
 NS[1].userName = UnitName("player")
 NS[1].userRealm = GetRealmName()

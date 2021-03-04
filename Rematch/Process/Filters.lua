@@ -302,77 +302,77 @@ end
 -- then by sort stat filled during filter
 -- then by name pulled on demand (compromise between memory vs speed)
 -- and lastly by the raw petID so order remains fixed
-function roster.SortPets(pet1,pet2)
+-- function roster.SortPets(pet1,pet2)
 
-	-- first sort by the existence of a pet
-	if pet1 and not pet2 then return true
-	elseif pet2 and not pet1 then return false
-	elseif not pet1 and not pet2 then return false
-	end
+-- 	-- first sort by the existence of a pet
+-- 	if pet1 and not pet2 then return true
+-- 	elseif pet2 and not pet1 then return false
+-- 	elseif not pet1 and not pet2 then return false
+-- 	end
 
-	local o1,o2 = type(pet1)=="string", type(pet2)=="string" -- owned pets always list first
-	if o1 and not o2 then return true
-	elseif o2 and not o1 then return false
-	end
+-- 	local o1,o2 = type(pet1)=="string", type(pet2)=="string" -- owned pets always list first
+-- 	if o1 and not o2 then return true
+-- 	elseif o2 and not o1 then return false
+-- 	end
 
-	local f1,f2 = roster.favorites[pet1], roster.favorites[pet2] -- favorites
-	if f1 and not f2 then return true -- f1/f2 only true if FavoritesFirst true
-	elseif f2 and not f1 then return false
-	end
+-- 	local f1,f2 = roster.favorites[pet1], roster.favorites[pet2] -- favorites
+-- 	if f1 and not f2 then return true -- f1/f2 only true if FavoritesFirst true
+-- 	elseif f2 and not f1 then return false
+-- 	end
 
-	local s1,s2 = roster.sortStats[pet1], roster.sortStats[pet2] -- chosen sort stat existence
-	if s1 and not s2 then return true
-	elseif s2 and not s1 then return false
-	elseif not s1 and not s2 then return false
-	end
+-- 	local s1,s2 = roster.sortStats[pet1], roster.sortStats[pet2] -- chosen sort stat existence
+-- 	if s1 and not s2 then return true
+-- 	elseif s2 and not s1 then return false
+-- 	elseif not s1 and not s2 then return false
+-- 	end
 
-	-- both pets have a sort stat here; sort them depending on sortLowToHigh
-	if roster.sortLowToHigh then
-		if s1<s2 then return true
-		elseif s2<s1 then return false
-		end
-	else -- level, rarity, health, power and speed sort in descending value (25-1)
-		if s1>s2 then return true
-		elseif s2>s1 then return false
-		end
-	end
+-- 	-- both pets have a sort stat here; sort them depending on sortLowToHigh
+-- 	if roster.sortLowToHigh then
+-- 		if s1<s2 then return true
+-- 		elseif s2<s1 then return false
+-- 		end
+-- 	else -- level, rarity, health, power and speed sort in descending value (25-1)
+-- 		if s1>s2 then return true
+-- 		elseif s2>s1 then return false
+-- 		end
+-- 	end
 
-	-- if we're still here, the two pets have the same sort stat
+-- 	-- if we're still here, the two pets have the same sort stat
 
-	-- gather name and level of the two pets
-	local n1,n2,l1,l2,c1,c2,_
-	if o1 then -- these are owned pets
-		_,c1,l1,_,_,_,_,n1 = C_PetJournal.GetPetInfoByPetID(pet1)
-		_,c2,l2,_,_,_,_,n2 = C_PetJournal.GetPetInfoByPetID(pet2)
-	else -- unowned pets (0 level)
-		l1,n1 = 0,C_PetJournal.GetPetInfoBySpeciesID(pet1)
-		l2,n2 = 0,C_PetJournal.GetPetInfoBySpeciesID(pet2)
-	end
+-- 	-- gather name and level of the two pets
+-- 	local n1,n2,l1,l2,c1,c2,_
+-- 	if o1 then -- these are owned pets
+-- 		_,c1,l1,_,_,_,_,n1 = C_PetJournal.GetPetInfoByPetID(pet1)
+-- 		_,c2,l2,_,_,_,_,n2 = C_PetJournal.GetPetInfoByPetID(pet2)
+-- 	else -- unowned pets (0 level)
+-- 		l1,n1 = 0,C_PetJournal.GetPetInfoBySpeciesID(pet1)
+-- 		l2,n2 = 0,C_PetJournal.GetPetInfoBySpeciesID(pet2)
+-- 	end
 
-	-- if SortByNickname enabled, use customName instead of actual name
-	if settings.SortByNickname then
-		n1 = c1 or n1
-		n2 = c2 or n2
-	end
+-- 	-- if SortByNickname enabled, use customName instead of actual name
+-- 	if settings.SortByNickname then
+-- 		n1 = c1 or n1
+-- 		n2 = c2 or n2
+-- 	end
 
-	-- if sorting by rarity, then do a secondary sort by level
-	if settings.Sort.Order==3 then
-		if l1~=l2 then
-			return l1>l2 -- always descending level
-		end
-	end
+-- 	-- if sorting by rarity, then do a secondary sort by level
+-- 	if settings.Sort.Order==3 then
+-- 		if l1~=l2 then
+-- 			return l1>l2 -- always descending level
+-- 		end
+-- 	end
 
-	-- sort stats are identical, sort by name first
---	local n1 = o1 and select(8,C_PetJournal.GetPetInfoByPetID(pet1)) or C_PetJournal.GetPetInfoBySpeciesID(pet1)
---	local n2 = o2 and select(8,C_PetJournal.GetPetInfoByPetID(pet2)) or C_PetJournal.GetPetInfoBySpeciesID(pet2)
+-- 	-- sort stats are identical, sort by name first
+-- --	local n1 = o1 and select(8,C_PetJournal.GetPetInfoByPetID(pet1)) or C_PetJournal.GetPetInfoBySpeciesID(pet1)
+-- --	local n2 = o2 and select(8,C_PetJournal.GetPetInfoByPetID(pet2)) or C_PetJournal.GetPetInfoBySpeciesID(pet2)
 
-	-- final sort: by name (or by petID if name is identical)
-	if n1==n2 then
-		return pet1<pet2 -- names identical; sort by petID so sort order remains fixed
-	else
-		return n1<n2 -- names are different; sort by name
-	end
-end
+-- 	-- final sort: by name (or by petID if name is identical)
+-- 	if n1==n2 then
+-- 		return pet1<pet2 -- names identical; sort by petID so sort order remains fixed
+-- 	else
+-- 		return n1<n2 -- names are different; sort by name
+-- 	end
+-- end
 
 --[[ Similar ]]
 

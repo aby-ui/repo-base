@@ -333,7 +333,7 @@ function TrinketMenu.ProcessAutoQueue(which)
 	if IsInventoryItemLocked(13 + which) then
 		return
 	end -- leave if slot being swapped
-	if IsClassic and (CastingInfo() or ChannelInfo()) or (UnitCastingInfo("player") or UnitChannelInfo("player")) then
+	if (IsClassic and (CastingInfo() or ChannelInfo())) or (not IsClassic and (UnitCastingInfo("player") or UnitChannelInfo("player"))) then
 		return
 	end -- leave if player is casting/channeling
 	if TrinketMenu.PausedQueue[which] then

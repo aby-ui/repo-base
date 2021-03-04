@@ -165,7 +165,7 @@ function P:UpdatePositionValues()
 
 	local growUpward = db.growUpward
 	local growY = growUpward and 1 or -1
-	local px = E.NumPixels / E.db.icons.scale
+	local px = E.PixelMult / E.db.icons.scale
 	if db.layout == "vertical" then
 		self.point2 = growUpward and "BOTTOMRIGHT" or "TOPRIGHT"
 		self.relativePoint2 = growUpward and "TOPRIGHT" or "BOTTOMRIGHT"
@@ -280,15 +280,8 @@ function P:IsDeBuffActive(unit, spellID)
 	end
 end
 
-function P:ConfirmReload(text, data, arg)
-	local dialog = StaticPopup_Show("OMNICD_RELOADUI", text)
-	dialog.data = data
-	dialog.data2 = arg
-	dialog:SetFrameStrata("TOOLTIP")
-end
-
 function P:UI_SCALE_CHANGED() -- [61]
-	E:SetNumPixels()
+	E:SetPixelMult()
 	self:ConfigSize(nil, true)
 	for key in pairs(self.extraBars) do
 		self:ConfigExSize(key, true)

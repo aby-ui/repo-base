@@ -20,7 +20,7 @@ local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 -- Internal Data
 local Plates, PlatesVisible, PlatesFading, GUID = {}, {}, {}, {}	            	-- Plate Lists
 local PlatesByUnit = {}
-local nameplate, extended, bars, regions, visual, carrier, plateid, threatborder    -- Temp/Local References
+local nameplate, extended, bars, regions, visual, carrier, plateid, threatborder	-- Temp/Local References
 local unit, unitcache, style, stylename, unitchanged				    			-- Temp/Local References
 local numChildren = -1                                                              -- Cache the current number of plates
 local activetheme = {}                                                              -- Table Placeholder
@@ -578,7 +578,7 @@ do
 	function UpdateUnitCondition(plate, unitid)
 		UpdateReferences(plate)
         if not unitid then return end
-        UpdateUnitTarget(plate, unitid)
+        --abyui9 UpdateUnitTarget(plate, unitid)
 
 		unit.level = UnitEffectiveLevel(unitid)
 
@@ -671,10 +671,24 @@ do
 
 	-- UpdateIndicator_Level:
 	function UpdateIndicator_Level()
-		if unit.isBoss and style.skullicon.show then visual.level:Hide(); visual.skullicon:Show() else visual.skullicon:Hide() end
+        if not style.level.show then
+            visual.level:Hide()
+            visual.skullicon:Hide()
+            return
+        end
 
-		if unit.level < 0 then visual.level:SetText("")
-		else visual.level:SetText(unit.level) end
+		if unit.isBoss and style.skullicon.show then
+            visual.level:Hide()
+            visual.skullicon:Show()
+        else
+            visual.skullicon:Hide()
+        end
+
+		if unit.level < 0 then
+            visual.level:SetText("")
+		else
+            visual.level:SetText(unit.level)
+        end
 		visual.level:SetTextColor(unit.levelcolorRed, unit.levelcolorGreen, unit.levelcolorBlue)
 	end
 
@@ -707,14 +721,15 @@ do
 	function UpdateIndicator_RaidIcon()
 		if unit.isMarked and style.raidicon.show then
 			visual.raidicon:Show()
-			local iconCoord = RaidIconCoordinate[unit.raidIcon]
-            if not iconCoord then
-                if DEBUG_MODE then u1debug(unit.raidIcon) end
-                visual.raidicon:Hide()
-            else
+            local iconCoord = RaidIconCoordinate[unit.raidIcon]
+            if iconCoord then
                 visual.raidicon:SetTexCoord(iconCoord.x, iconCoord.x + 0.25, iconCoord.y,  iconCoord.y + 0.25)
+			else
+				visual.raidicon:Hide()
             end
-		else visual.raidicon:Hide() end
+        else
+            visual.raidicon:Hide()
+        end
 	end
 
 
@@ -981,9 +996,8 @@ do
         if not plate.isModified then
             plate.isModified = true
             hooksecurefunc(plate.UnitFrame, "Show", function(self)
-                if UnitIsUnit("player", self.unit or "") then return end --abyui 个人资源有问题
-                if self.unit ~= "player" and not UnitNameplateShowsWidgetsOnly(self.unit) then
-                    if not self:IsForbidden() then self:Hide() end
+                if not UnitIsUnit(self.unit or "", "player") and not UnitNameplateShowsWidgetsOnly(self.unit) then
+                    if not self:IsForbidden() then self:Hide() end --abyui 个人资源有问题
                 end
             end)
         end
@@ -991,8 +1005,7 @@ do
 
 	function CoreEvents:NAME_PLATE_UNIT_ADDED(...)
 		local unitid = ...
-        local plate = GetNamePlateForUnit(unitid);
-        
+        local plate = GetNamePlateForUnit(unitid)
 		-- We're not going to theme the personal unit bar
 		if plate and not UnitIsUnit("player", unitid) and not UnitNameplateShowsWidgetsOnly(unitid) then
             if plate.UnitFrame then
@@ -1005,7 +1018,7 @@ do
 
 	function CoreEvents:NAME_PLATE_UNIT_REMOVED(...)
 		local unitid = ...
-		local plate = GetNamePlateForUnit(unitid);
+		local plate = GetNamePlateForUnit(unitid)
 
 		OnHideNameplate(plate, unitid)
 	end

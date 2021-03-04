@@ -31,7 +31,7 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
-## Version: r138
+## Version: r138-1-g842885b
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

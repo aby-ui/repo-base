@@ -1,6 +1,6 @@
 ## Interface: 90002
 ## Title: OmniCD
-## Version: 2.5.12
+## Version: 2.5.19beta
 ## Author: Treebonker
 ## Notes: Tracks party cooldowns. Use /oc or /omnicd to open options
 ## X-Credits:
@@ -10,7 +10,7 @@
 ## DefaultState: Enabled
 ## SavedVariables: OmniCDDB
 
-#Libs\embeds.xml
+Libs\embeds.xml
 Locales\locales.xml
 Core\init.lua
 Core\core.xml

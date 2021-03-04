@@ -21,8 +21,9 @@ for k, v in pairs(E.L_PRIORITY) do
 		order = 30 - C.Party.arena.priority[k],
 		width = "double",
 		type = "range",
+		dialogControl = "Slider-OmniCD",
 		min = 1, max = 20, step = 1,
-		descStyle = "inline",
+		--descStyle = "inline",
 	}
 end
 

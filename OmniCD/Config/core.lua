@@ -1,7 +1,5 @@
 local E, L, C = select(2, ...):unpack()
 
-local AceDialog = LibStub("AceConfigDialog-3.0")
-
 E.moduleOptions = {}
 E.optionsFrames = {}
 
@@ -74,10 +72,10 @@ local function GetOptions()
 			name = E.AddOn,
 			type = "group",
 			args = {
-				home = {
-					icon = "Interface\\AddOns\\OmniCD\\Media\\logo64",
-					iconCoords = {0, 1, 0.1, 1.1},
-					name = E.AddOn,
+				Home = {
+					--icon = "Interface\\AddOns\\OmniCD\\Media\\omnicd-logo64",
+					--iconCoords = {0, 1, 0, 1},
+					name = format("|T%s:18|t %s", "Interface\\AddOns\\OmniCD\\Media\\omnicd-logo64", E.AddOn),
 					order = 0,
 					type = "group",
 					childGroups = "tab",
@@ -85,7 +83,7 @@ local function GetOptions()
 					set = function(info, value) E.DB.profile[info[#info]] = value end,
 					args = {
 						title = {
-							image = "Interface\\AddOns\\OmniCD\\Media\\logo64", imageWidth = 64, imageHeight = 64, imageCoords = { 0, 1, 0, 1 },
+							image = "Interface\\AddOns\\OmniCD\\Media\\omnicd-logo64", imageWidth = 64, imageHeight = 64, imageCoords = { 0, 1, 0, 1 },
 							name = E.AddOn,
 							order = 0,
 							type = "description",
@@ -109,7 +107,7 @@ local function GetOptions()
 							type = "toggle",
 						},
 						pd3 = {
-							name = "\n", order = 13, type = "description",
+							name = "\n\n", order = 19, type = "description",
 						},
 						changelog = {
 							name = L["Changelog"],
@@ -158,16 +156,16 @@ local function GetOptions()
 									desc = COPY_URL,
 									order = 1,
 									type = "input",
-									get = function(info) return "https://www.curseforge.com/wow/addons/omnicd/issues" end,
 									dialogControl = "Link-OmniCD",
+									get = function(info) return "https://www.curseforge.com/wow/addons/omnicd/issues" end,
 								},
 								translate = {
 									name = L["Help Translate"],
 									desc = COPY_URL,
 									order = 2,
 									type = "input",
-									get = function() return "https://www.curseforge.com/wow/addons/omnicd/localization" end,
 									dialogControl = "Link-OmniCD",
+									get = function() return "https://www.curseforge.com/wow/addons/omnicd/localization" end,
 								},
 							}
 						},
@@ -184,14 +182,14 @@ local function GetOptions()
 		for i = 1, #labels do
 			local label = labels[i]
 			if i > 4 then
-				E.options.args.home.args.slashCommands.args[label] = {
+				E.options.args.Home.args.slashCommands.args[label] = {
 					name = E.HEX_C.PERFORMANCE_BLUE .. label,
 					order = i,
 					type = "input",
 					dialogControl = "Info-OmniCD",
 				}
 			else
-				E.options.args.home.args[label] = {
+				E.options.args.Home.args[label] = {
 					name = L[label] or label,
 					order = i,
 					type = "input",
@@ -211,11 +209,18 @@ local function GetOptions()
 				fontSize = "large",
 			}
 
+			E.options.args[k].args.hd1 = {
+				name = "\n",
+				order = 1,
+				type = "description",
+			}
+
+			--[[ TODO: remove exec name refresh
 			E.options.args[k].args["enable"] = {
 				disabled = false,
 				name = E.GetModuleEnabled(k) and DISABLE or ENABLE,
 				desc = L["Toggle module on and off"],
-				order = 1,
+				order = 2,
 				type = "execute",
 				func = function()
 					local state = E.GetModuleEnabled(k)
@@ -223,26 +228,36 @@ local function GetOptions()
 					E.options.args[k].args.enable.name = not state and DISABLE or ENABLE
 				end,
 			}
-			E.options.args[k].args.hd1 = {
-				name = "",
+			]]
+			E.options.args[k].args["enable"] = {
+				disabled = false,
+				name = ENABLE,
+				desc = L["Toggle module on and off"],
+				descStyle = "inline",
 				order = 2,
-				type = "header",
+				type = "toggle",
+				get = function() return E.GetModuleEnabled(k) end,
+				set = function()
+					local state = E.GetModuleEnabled(k)
+					E.SetModuleEnabled(k, not state)
+				end,
 			}
 		end
 
 		E:AddGeneral()
 		E:AddSpellEditor()
+		E:AddProfileSharing()
 	end
 
 	return E.options
 end
 
 function E:SetupOptions()
-	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(E.AddOn, GetOptions, true) -- [46]
-	self.optionsFrames.OmniCD = AceDialog:AddToBlizOptions(E.AddOn)
+	self.lib.ACR:RegisterOptionsTable(self.AddOn, GetOptions, true) -- [46]
+	--self.optionsFrames.OmniCD = self.lib.ACD:AddToBlizOptions(self.AddOn)
 
 	self.optionsFrames.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.DB)
-	self.optionsFrames.profiles.order = 2000
+	self.optionsFrames.profiles.order = 1000
 	self.optionsFrames.profiles.args.title = {
 		name = "|cffffd200" .. self.optionsFrames.profiles.name,
 		order = 0,
@@ -253,9 +268,48 @@ function E:SetupOptions()
 	local LDS = LibStub("LibDualSpec-1.0")
 	LDS:EnhanceDatabase(self.DB, "OmniCDDB")
 	LDS:EnhanceOptions(self.optionsFrames.profiles, self.DB)
+
+	for k,v in ipairs(E.LSM:List("font")) do
+		E.LSM_Font[v] = v
+	end
+	for k,v in ipairs(E.LSM:List("statusbar")) do
+		E.LSM_Statusbar[v] = v
+	end
+
+	self.SetupOptions = nil
 end
 
 function E:RegisterModuleOptions(name, optionTbl, displayName, uproot)
 	self.moduleOptions[name] = optionTbl
-	self.optionsFrames[name] = uproot and AceDialog:AddToBlizOptions(E.AddOn, displayName, E.AddOn, name)
+	self.optionsFrames[name] = uproot and self.lib.ACD:AddToBlizOptions(self.AddOn, displayName, self.AddOn, name)
 end
+
+local interfaceOptionPanel = CreateFrame("Frame", nil, UIParent)
+interfaceOptionPanel.name = "OmniCD"
+interfaceOptionPanel:Hide()
+
+interfaceOptionPanel:SetScript("OnShow", function(self)
+	local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	title:SetPoint("TOPLEFT", 10, -15)
+	title:SetText("OmniCD")
+
+	local context = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	context:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -40)
+	context:SetText("Type /oc or /omnicd to open the option panel.")
+
+	local open = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
+	open:SetText("Open Option Panel")
+	open:SetWidth(177)
+	open:SetHeight(24)
+	open:SetPoint("TOPLEFT", context, "BOTTOMLEFT", 0, -20)
+	open.tooltipText = ""
+	open:SetScript("OnClick", function()
+		InterfaceOptionsFrame:Hide();
+		--if not InCombatLockdown() then HideUIPanel(GameMenuFrame); end
+		E.OpenOptionPanel()
+	end)
+
+	self:SetScript("OnShow", nil)
+end)
+
+InterfaceOptions_AddCategory(interfaceOptionPanel)

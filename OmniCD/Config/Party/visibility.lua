@@ -35,7 +35,7 @@ local visibility = {
 			type = "multiselect",
 			width = "full",
 			values = E.L_ZONE,
-			descStyle = "inline",
+			--descStyle = "inline",
 			get = function(_, k) return E.DB.profile.Party.visibility[k] end,
 			set = function(_, k, value)
 				E.DB.profile.Party.visibility[k] = value
@@ -68,8 +68,9 @@ local visibility = {
 					name = L["Max number of group members"],
 					width = "double",
 					type = "range",
+					dialogControl = "Slider-OmniCD",
 					min = 2, max = 40, step = 1,
-					descStyle = "inline",
+					--descStyle = "inline",
 					set = ConfigGroupSize,
 				},
 			}

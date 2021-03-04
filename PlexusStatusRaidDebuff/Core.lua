@@ -182,18 +182,19 @@ GridStatusRaidDebuff.defaultDB = {
             [GetSpellInfo(332443)] = { disable = true, }, --地基
         },
         --9.0傲慢
-        [C_Map.GetMapInfo(1683).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
-        [C_Map.GetMapInfo(1674).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
-        [C_Map.GetMapInfo(1669).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1683).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1674).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1669).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
         [C_Map.GetMapInfo(1679).name] = {
             [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 },
             [GetSpellInfo(323687)] = { c_prior = 9, i_prior = 9, timer = true }, --商人闪电
             [GetSpellInfo(323692)] = { c_prior = 8, i_prior = 8, timer = true }, --商人奥术易伤
+            [GetSpellInfo(240559)] = { disabled = true },
         },
-        [C_Map.GetMapInfo(1693).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
-        [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
-        [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
-        [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, },
+        [C_Map.GetMapInfo(1693).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
     },
 	["detected_debuff"] = {},
 }

@@ -278,6 +278,15 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				--pin:SetIgnoreGlobalPinScale(true)
 				
 				pin:SetShown(taxiNodeData.state ~= Enum.FlightPathState.Unreachable); -- Only show if part of a route, handled in the route building functions
+
+				for poiPin in self:GetMap():EnumeratePinsByTemplate("FlightPointPinTemplate") do
+					if poiPin.name == taxiNodeData.name and playAnim then
+						poiPin:Hide()
+					else
+						poiPin:ClearNudgeSettings()
+						poiPin:ApplyCurrentPosition()
+					end
+				end
 			end
 		end
 	end

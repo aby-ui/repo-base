@@ -1343,11 +1343,11 @@ end
 
 function scanner_button:PlaySoundAlert(atlasName)
 	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
-		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
-		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "Master", false)
+		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
+		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], RSConfigDB.GetSoundChannel(), false)
 	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
-		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), "Master")
-		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "Master", false)
+		--PlaySoundFile(string.gsub(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
+		PlaySound(private.SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], RSConfigDB.GetSoundChannel(), false)
 	end
 end
 

@@ -4,7 +4,7 @@
 		<Size x="205" y="36"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="BG" setAllPoints="true" file="Interface\AddOns\OmniCD\Media\texture_flat"/>
+				<Texture parentKey="BG" setAllPoints="true" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 			</Layer>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
@@ -33,14 +33,14 @@
 			<OnUpdate function="OmniCDCastingBarFrame_OnUpdate" />
 			<OnShow function="OmniCDCastingBarFrame_OnShow" />
 		</Scripts>
-		<BarTexture file="Interface\AddOns\OmniCD\Media\texture_flat"/>
+		<BarTexture file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 		<BarColor r="1.0" g="1.0" b="1.0" a="1"/>
 	</StatusBar>
 	<Button name="OmniCDStatusBar" frameStrata="LOW" hidden="true" virtual="true">
 		<Size x="205" y="36"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture setAllPoints="true" parentKey="BG" file="Interface\AddOns\OmniCD\Media\texture_flat"/>
+				<Texture setAllPoints="true" parentKey="BG" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="3" y="0"/>

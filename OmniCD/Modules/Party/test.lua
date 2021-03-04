@@ -73,7 +73,7 @@ function TestMod:SetAnchor(key)
 	if not indicator then return end
 	E.SetFontObj(indicator.anchor.text, E.profile.General.fonts.anchor)
 	if key then
-		indicator.anchor.text:SetText(L["Test"] .. "-" .. E.L_ZONE[key])
+		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
 	end
 	E.SetWidth(indicator.anchor)
 end
@@ -99,7 +99,7 @@ function TestMod:Test(key)
 				CompactRaidFrameManager:Show()
 				CompactRaidFrameContainer:Show()
 			elseif not E.db.position.detached then
-				P:ConfirmReload(E.STR.ENABLE_BLIZZARD_CRF, true)
+				E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 
 				P.test = false
 				return
@@ -122,7 +122,7 @@ function TestMod:Test(key)
 			end)
 			E.SetFontObj(indicator.anchor.text, E.profile.General.fonts.anchor)
 		end
-		indicator.anchor.text:SetText(L["Test"] .. "-" .. E.L_ZONE[key])
+		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
 		E.SetWidth(indicator.anchor)
 
 		self:RegisterEvent("PLAYER_LEAVING_WORLD")
@@ -177,12 +177,12 @@ function TestMod:EndTestOOC()
 end
 
 function TestMod:PLAYER_REGEN_ENABLED()
-	if E.customUF.active == "blizz" then
+	if not E.customUF.active or E.customUF.active == "blizz" then
 		if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") and (P:GetEffectiveNumGroupMembers() == 0 or not P:IsCRFActive()) then
 			CompactRaidFrameManager:Hide()
 			CompactRaidFrameContainer:Hide()
 		end
-	else
+	elseif E.customUF.active == "Cell" then
 		Cell:Fire("UpdateVisibility", "solo")
 	end
 

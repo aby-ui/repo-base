@@ -193,44 +193,47 @@ function OverlayUI:UpdateGrid()
     end
 end
 
--- this is derived from Ben Walker's Alignment Grid addon
 function OverlayUI:DrawGrid()
     self:ClearGrid()
 
-    local verticalLines, horizontalLines = ParentAddon:GetAlignmentGridScale()
-    local width, height = self.frame:GetSize()
-    -- convert to an even number, so that we can highlight the middle point
-    local xOffset = width / verticalLines
-    local yOffset = height / horizontalLines
+    local cx = (GetScreenWidth() / 2)
+    local cy = (GetScreenHeight() / 2)
+	local w = (GetScreenHeight() / ParentAddon:GetAlignmentGridSize())
 
-    for i = 0, verticalLines do
-        local line = self:AcquireGridLine()
+    local cvLine = self:AcquireGridLine()
+    cvLine:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
+    cvLine:SetStartPoint('TOPLEFT', cx, 0)
+    cvLine:SetEndPoint('BOTTOMLEFT', cx, 0)
 
-        line:SetThickness(GRID_THICKNESS)
+    local vLine
+    for i = w, cx, w do
+        vLine = self:AcquireGridLine()
+        vLine:SetColorTexture(GRID_COLOR:GetRGBA())
+        vLine:SetStartPoint('TOPLEFT', cx + i, 0)
+        vLine:SetEndPoint('BOTTOMLEFT', cx + i, 0)
 
-        if i == (verticalLines / 2) then
-            line:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
-        else
-            line:SetColorTexture(GRID_COLOR:GetRGBA())
-        end
-
-        line:SetStartPoint("TOPLEFT", xOffset * i, 0)
-        line:SetEndPoint("BOTTOMLEFT", xOffset * i, 0)
+        vLine = self:AcquireGridLine()
+        vLine:SetColorTexture(GRID_COLOR:GetRGBA())
+        vLine:SetStartPoint('TOPLEFT', cx - i, 0)
+        vLine:SetEndPoint('BOTTOMLEFT', cx - i, 0)
     end
 
-    for i = 0, horizontalLines do
-        local line = self:AcquireGridLine()
+    local chLine = self:AcquireGridLine()
+    chLine:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
+    chLine:SetStartPoint('BOTTOMLEFT', 0, cy)
+    chLine:SetEndPoint('BOTTOMRIGHT', 0, cy)
 
-        line:SetThickness(GRID_THICKNESS)
+    local hLine
+    for i = w, cy, w do
+        hLine = self:AcquireGridLine()
+        hLine:SetColorTexture(GRID_COLOR:GetRGBA())
+        hLine:SetStartPoint('BOTTOMLEFT', 0, cy + i)
+        hLine:SetEndPoint('BOTTOMRIGHT', 0, cy + i)
 
-        if i == (horizontalLines / 2) then
-            line:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
-        else
-            line:SetColorTexture(GRID_COLOR:GetRGBA())
-        end
-
-        line:SetStartPoint("BOTTOMLEFT", 0, yOffset * i)
-        line:SetEndPoint("BOTTOMRIGHT", 0, yOffset * i)
+        hLine = self:AcquireGridLine()
+        hLine:SetColorTexture(GRID_COLOR:GetRGBA())
+        hLine:SetStartPoint('BOTTOMLEFT', 0, cy - i)
+        hLine:SetEndPoint('BOTTOMRIGHT', 0, cy - i)
     end
 end
 
@@ -265,6 +268,7 @@ function OverlayUI:AcquireGridLine()
         self.activeGridLines = { line }
     end
 
+    line:SetThickness(1)
     line:Show()
     return line
 end

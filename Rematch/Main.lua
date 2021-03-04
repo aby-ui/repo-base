@@ -560,7 +560,7 @@ end
 -- when learning a new pet, or when attempting to send a team to someone offline
 local patternPlayerOffline = format("^%s$",ERR_CHAT_PLAYER_NOT_FOUND_S:gsub("%%s","(.+)"))
 local patternNewPet = format("^%s$",BATTLE_PET_NEW_PET:gsub("%%s","(.+)"))
-function rematch:CHAT_MSG_SYSTEM(message)
+function rematch:CHAT_MSG_SYSTEM(message,...)
 	-- pattern matching for offling players only happens while there's a sideline with recipient context
 	local recipient = rematch:GetSidelineContext("recipient")
 	if recipient then
@@ -599,8 +599,15 @@ function rematch:CHAT_MSG_SYSTEM(message)
 				end
 				if addID then
 					rematch:InsertPetToQueue(#settings.LevelingQueue+1,addID)
-					local info = ChatTypeInfo["SYSTEM"]
-					print(format("%s \124cff%02x%02x%02x%s",petLink,info.r*255,info.g*255,info.b*255,L["has also been added to your leveling queue!"]))
+					--local info = ChatTypeInfo["SYSTEM"]
+					--print(format("%s \124cff%02x%02x%02x%s",petLink,info.r*255,info.g*255,info.b*255,L["has also been added to your leveling queue!"]))
+					local text = format(L["%s has also been added to your leveling queue!"],petLink)
+					for i=1,NUM_CHAT_WINDOWS do
+						local frame = _G["ChatFrame"..i]
+						if frame and frame:IsEventRegistered("CHAT_MSG_SYSTEM") then
+							ChatFrame_MessageEventHandler(frame,"CHAT_MSG_SYSTEM",text,"","","","","",0,0,"",0,0,nil,0)
+						end
+					end
 				end
 			end
 		end

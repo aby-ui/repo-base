@@ -236,7 +236,7 @@ local HealerSpells = {
         -- Druid
         ---------
 		[18562] = "DRUID", -- Swiftmend
-        [17116] = "DRUID", -- Nature's Swiftness
+        [132158] = "DRUID", -- Nature's Swiftness
         [48438] = "DRUID", -- Wild Growth
         [33891] = "DRUID", -- Tree of Life
 

@@ -255,6 +255,11 @@ function rematch:ShowPetCard(parent,petID,force)
 			-- only PrepareForFanfare if fanfare ever observed to avoid loading Blizzard_Collections
 			if petInfo.needsFanfare then
 				middle.ModelScene:PrepareForFanfare(petInfo.needsFanfare)
+			else -- if pet was previous wrapped and no longer needs fanfare, hide wrapped actor
+				local wrappedActor = middle.ModelScene:GetActorByTag("wrapped")
+				if wrappedActor then
+					wrappedActor:Hide()
+				end
 			end
 		end
 	end

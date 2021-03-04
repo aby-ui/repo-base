@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 
 -- Inline label with description field widget for AceGUI-3.0
--- Written as part of OmniCD by Treebonker S.M.L
+-- Written as part of OmniCD by Treebonker
 
 -- Parameters:
 -- hidden = boolean,
@@ -50,7 +50,7 @@ local methods = {
 			self.label:SetText("")
 			self.label:Hide()
 		end
-		self:SetHeight(self.label:GetStringHeight() + 2)
+		self:SetHeight(self.label:GetStringHeight() + 4) -- 2 for GameFontNormal
 	end,
 }
 
@@ -61,13 +61,13 @@ local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:Hide()
 
-	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-	label:SetPoint("TOPLEFT")
-	label:SetPoint("BOTTOMLEFT")
+	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall-OmniCD")
+	label:SetPoint("TOPLEFT", 4, 0)
+	label:SetPoint("BOTTOMLEFT", 4, 0)
 	label:SetJustifyH("LEFT")
 	label:SetWidth(100)
 
-	local field = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	local field = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall-OmniCD")
 	field:SetPoint("TOPLEFT", label, "TOPRIGHT", 10, 0)
 	field:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -10, 0)
 	field:SetJustifyH("LEFT")

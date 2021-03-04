@@ -192,7 +192,16 @@ SI.defaultDB = {
   -- ResetTime: expiry
   -- [1-3]: number
   -- lastCompletedIndex: number
+  -- threshold[1-3]: number
   -- rewardWaiting: boolean
+  -- [runHistory]: [
+  --   completed,
+  --   thisWeek,
+  --   mapChallengeModeID,
+  --   level,
+  --   name,
+  --   rewardLevel,
+  -- }
 
   -- REMOVED
   -- DailyWorldQuest
@@ -1423,6 +1432,7 @@ function SI:UpdateToonData()
       ti.MythicKeyBest[2] = nil
       ti.MythicKeyBest[3] = nil
       ti.MythicKeyBest.lastCompletedIndex = nil
+      ti.MythicKeyBest.runHistory = nil
       ti.MythicKeyBest.ResetTime = SI:GetNextWeeklyResetTime()
     end
   end
@@ -1870,6 +1880,36 @@ hoverTooltip.ShowParagonTooltip = function (cell, arg, ...)
     local name = GetFactionInfoByID(v)
     indicatortip:AddLine()
     indicatortip:SetCell(k + 1, 1, name, "RIGHT", 2)
+  end
+  finishIndicator()
+end
+
+hoverTooltip.ShowMythicPlusTooltip = function (cell, arg, ...)
+  local toon, keydesc = unpack(arg)
+  local t = SI.db.Toons[toon]
+  if not t or not t.MythicKeyBest then
+    return
+  end
+  openIndicator(2, "LEFT", "RIGHT")
+  local text = keydesc or ""
+  indicatortip:AddHeader(ClassColorise(t.Class, toon), text)
+  if t.MythicKeyBest.runHistory and #t.MythicKeyBest.runHistory > 0 then
+    local maxThreshold = t.MythicKeyBest.threshold and t.MythicKeyBest.threshold[#t.MythicKeyBest.threshold]
+    local displayNumber = min(#t.MythicKeyBest.runHistory, maxThreshold or 10)
+    indicatortip:AddLine()
+    indicatortip:SetCell(2, 1, format(WEEKLY_REWARDS_MYTHIC_TOP_RUNS, displayNumber), "LEFT", 2)
+    for i = 1, displayNumber do
+      local runInfo = t.MythicKeyBest.runHistory[i]
+      if runInfo.level and runInfo.name and runInfo.rewardLevel then
+        indicatortip:AddLine()
+        text = string.format("(%3$d) %1$d - %2$s", runInfo.level, runInfo.name, runInfo.rewardLevel)
+        -- these are the thresholds that will populate the great vault
+        if t.MythicKeyBest.threshold and tContains(t.MythicKeyBest.threshold, i) then
+          text = GREENFONT..text..FONTEND
+        end
+        indicatortip:SetCell(2 + i, 1, text, "LEFT", 2)
+      end
+    end
   end
   finishIndicator()
 end
@@ -2424,7 +2464,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.5-23-gc1f9239" then
+  if versionString == "9.0.6" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -3904,7 +3944,7 @@ function SI:ShowTooltip(anchorframe)
       end
     end
     if show then
-      if SI.db.Tooltip.CategorySpaces then
+      if SI.db.Tooltip.CategorySpaces and not (SI.db.Tooltip.MythicKey or showall) then
         addsep()
       end
       show = tooltip:AddLine(YELLOWFONT .. L["Mythic Key Best"] .. FONTEND)
@@ -3921,13 +3961,16 @@ function SI:ShowTooltip(anchorframe)
         end
         if t.MythicKeyBest.rewardWaiting then
           if keydesc == "" then
-            keydesc = "0"
+            keydesc = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
+          else
+            keydesc = keydesc .. "(\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t)"
           end
-          keydesc = keydesc .. "(\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t)"
         end
         if keydesc ~= "" then
           local col = columns[toon..1]
-          tooltip:SetCell(show, col, keydesc , "CENTER",maxcol)
+          tooltip:SetCell(show, col, keydesc, "CENTER", maxcol)
+          tooltip:SetCellScript(show, col, "OnEnter", hoverTooltip.ShowMythicPlusTooltip, {toon, keydesc})
+          tooltip:SetCellScript(show, col, "OnLeave", CloseTooltips)
         end
       end
     end
@@ -4066,14 +4109,13 @@ function SI:ShowTooltip(anchorframe)
 
   if SI.db.Tooltip.Calling or showall then
     local show
-    for toon, t in cpairs(SI.db.Toons, true) do
-      if t.Calling and t.Calling.unlocked then
-        for day = 1, 3 do
+    for day = 1, 3 do
+      for toon, t in cpairs(SI.db.Toons, true) do
+        if t.Calling and t.Calling.unlocked then
           if showall or SI.db.Tooltip.CallingShowCompleted or (t.Calling[day] and not t.Calling[day].isCompleted) then
             if not show then show = {} end
-            if not show[day] or show[day] == true then
-              show[day] = t.Calling[day] and t.Calling[day].title or true
-            end
+            show[day] = true
+            break
           end
         end
       end
@@ -4118,10 +4160,12 @@ function SI:ShowTooltip(anchorframe)
         end
         for day = 1, 3 do
           if show[day] then
-            local name = show[day]
-            if name == true then
-              -- fail to fetch quest title
-              name = L["Calling Missing"]
+            local name = L["Calling Missing"]
+            -- try current toon first
+            local t = SI.db.Toons[SI.thisToon]
+            if t and t.Calling and t.Calling[day] and t.Calling[day].title then
+              name = t.Calling[day].title
+            else
               for _, t in pairs(SI.db.Toons) do
                 if t.Calling and t.Calling[day] and t.Calling[day].title then
                   name = t.Calling[day].title

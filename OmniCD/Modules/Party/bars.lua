@@ -40,6 +40,9 @@ function OmniCD_BarOnHide(self)
 	for i = #bars, 1, -1 do -- [31]
 		local f = bars[i]
 		if f == self then
+			if f.timer_inCombatTicker then
+				f.timer_inCombatTicker:Cancel()
+			end
 			tremove(bars, i)
 			break
 		end

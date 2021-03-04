@@ -77,11 +77,11 @@ function HelpDialog:OnLoad(owner)
 	local slider = Addon.Slider:New({
 		name = L.GridDensity,
 
-        min = 8,
+        min = 4,
 
-        max = 128,
+        max = 64,
 
-        step = 8,
+        step = 4,
 
 		get = function()
 			return Addon:GetParent():GetAlignmentGridSize()

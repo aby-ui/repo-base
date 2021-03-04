@@ -146,33 +146,55 @@ Threat Value
 
 local function StyleNameDelegate(unit)
 
-	if LocalVars.StyleForceBarsOnTargets and (unit.isTarget or (LocalVars.FocusAsTarget and unit.isFocus)) then return "Default" end
-	if LocalVars.StyleHeadlineOutOfCombat and (not InCombatLockdown()) then return "NameOnly" end
-	if LocalVars.StyleHeadlineMiniMobs and unit.isMini then return "NameOnly" end
+	if LocalVars.StyleForceBarsOnTargets and (unit.isTarget or (LocalVars.FocusAsTarget and unit.isFocus)) then
+        return "Default"
+    end
+	if LocalVars.StyleHeadlineOutOfCombat and (not InCombatLockdown()) then
+        return "NameOnly"
+    end
+	if LocalVars.StyleHeadlineMiniMobs and unit.isMini then
+        return "NameOnly"
+    end
 
 	-- Friendly and Hostile
 	if unit.reaction == "FRIENDLY" then
-		if IsUnitActive(unit) and LocalVars.StyleFriendlyBarsOnActive then return "Default"
-		elseif unit.isElite and LocalVars.StyleFriendlyBarsOnElite then return "Default"
-		elseif unit.type == "PLAYER" and LocalVars.StyleFriendlyBarsOnPlayers then return "Default"
+		if IsUnitActive(unit) and LocalVars.StyleFriendlyBarsOnActive then
+            return "Default"
+		elseif unit.isElite and LocalVars.StyleFriendlyBarsOnElite then
+            return "Default"
+		elseif unit.type == "PLAYER" and LocalVars.StyleFriendlyBarsOnPlayers then
+            return "Default"
 		elseif unit.type ~= "PLAYER" and LocalVars.StyleFriendlyBarsOnNPC then
-			if LocalVars.StyleFriendlyBarsInstanceMode and IsInInstance() then return "NameOnly"
-			else return "Default" end
+			if LocalVars.StyleFriendlyBarsInstanceMode and IsInInstance() then
+                return "NameOnly"
+			else
+                return "Default"
+            end
 		end
 	elseif unit.reaction == "NEUTRAL" then
 		-- if IsUnitActive(unit) and LocalVars.StyleEnemyBarsOnActive then return "Default" end
-		if unit.threatValue > 1 then return "Default"
-		elseif LocalVars.StyleHeadlineNeutral then return "NameOnly"
-		elseif IsUnitActive(unit) and LocalVars.StyleEnemyBarsOnActive then return "Default"
-		elseif LocalVars.StyleEnemyBarsOnNPC then return "Default"
+		if unit.threatValue > 1 then
+            return "Default"
+		elseif LocalVars.StyleHeadlineNeutral and not (LocalVars.StyleHeadlineNeutralCombatOverride and InCombatLockdown()) then
+            return "NameOnly"
+		elseif IsUnitActive(unit) and LocalVars.StyleEnemyBarsOnActive then
+            return "Default"
+		elseif LocalVars.StyleEnemyBarsOnNPC then
+            return "Default"
 		end
 	else
-		if IsUnitActive(unit) and LocalVars.StyleEnemyBarsOnActive then return "Default"
-		elseif unit.isElite and LocalVars.StyleEnemyBarsOnElite then return "Default"
-		elseif unit.type == "PLAYER" and LocalVars.StyleEnemyBarsOnPlayers then return "Default"
+		if IsUnitActive(unit) and LocalVars.StyleEnemyBarsOnActive then
+            return "Default"
+		elseif unit.isElite and LocalVars.StyleEnemyBarsOnElite then
+            return "Default"
+		elseif unit.type == "PLAYER" and LocalVars.StyleEnemyBarsOnPlayers then
+            return "Default"
 		elseif unit.type ~= "PLAYER" and LocalVars.StyleEnemyBarsOnNPC then
-			if LocalVars.StyleEnemyBarsInstanceMode and IsInInstance() then return "NameOnly"
-			else return "Default" end
+			if LocalVars.StyleEnemyBarsInstanceMode and IsInInstance() then
+                return "NameOnly"
+			else
+                return "Default"
+            end
 		end
 	end
 

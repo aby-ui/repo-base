@@ -33,7 +33,8 @@ P.zoneEvents = {
 }
 
 do
-	local timer
+	local rosterTimer
+	local anchorTimer
 
 	local function SendRequestSync() -- [58]
 		local success = E.Comms:InspectPlayer()
@@ -41,13 +42,13 @@ do
 			E.Comms:RequestSync()
 			P.groupJoined = false
 		else
-			C_Timer.After(5, SendRequestSync)
+			C_Timer.After(3, SendRequestSync)
 		end
 	end
 
 	local function updateRosterInfo(force)
 		if not force then
-			timer = nil
+			rosterTimer = nil
 		end
 
 		local size = P:GetEffectiveNumGroupMembers()
@@ -134,7 +135,7 @@ do
 				local _,_, race = UnitRace(unit)
 				local name = GetUnitName(unit, true)
 				local level = UnitLevel(unit)
-				if level == 0 then
+				if level == 0 then -- TODO: this isn't updated for synced units
 					level = 200
 				end
 				P.groupInfo[guid] = {
@@ -166,16 +167,22 @@ do
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
 		if P.groupJoined or force then
-			SendRequestSync()
+			if anchorTimer then -- TODO: Temp Fix, VuhDo
+				anchorTimer:Cancel()
+			end
+			anchorTimer = C_Timer.NewTicker(5, P.UpdatePosition, 3)
+
+			C_Timer.After(3, SendRequestSync) -- [101]
 		end
 	end
 
-	function P:GROUP_ROSTER_UPDATE(force) -- [50]
-		local n = GetNumGroupMembers()
-		if force or n == 0 then
+	function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh) -- [50]
+		if ( isRefresh or GetNumGroupMembers() == 0 ) then
 			updateRosterInfo(true)
-		elseif not timer then
-			timer = E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo)
+		elseif ( isPEW ) then
+			 E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo, true) -- Plexus, Grid2
+		elseif ( not rosterTimer) then
+			rosterTimer = E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo)
 		end
 	end
 end
@@ -187,7 +194,7 @@ function P:GROUP_JOINED(arg)
 	self.groupJoined = true
 end
 
-function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, refresh)
+function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	local _, instanceType = IsInInstance()
 	self.zone = instanceType
 	self.isInArena = instanceType == "arena"
@@ -195,7 +202,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, refresh)
 	self.isInPvPInstance = self.isInArena or self.isInBG
 	self.isInDungeon = instanceType == "party"
 
-	if not refresh and self.test then
+	if not isRefresh and self.test then
 		self:Test()
 	end
 
@@ -205,7 +212,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, refresh)
 		return
 	end
 
-	-- TODO: if zone changed or refresh or first run
+	-- TODO: if zone changed or isRefresh or first run
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
@@ -222,16 +229,13 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, refresh)
 	E.RegisterEvents(self, self.zoneEvents[instanceType])
 
 	self.isPvP = self.isInPvPInstance or (instanceType == "none" and C_PvP.IsWarModeDesired())
-	--
+	--//
 
 	if self.isInPvPInstance then
-		self:ResetAllIcons()
+		self:ResetAllIcons("joinedPvP")
 	end
 
-	if IsInGroup() or refresh then -- [37]
-		self.groupJoined = true
-		self:GROUP_ROSTER_UPDATE(true)
-	end
+	self:GROUP_ROSTER_UPDATE(true, isRefresh) -- [37]
 end
 
 function P:CHAT_MSG_BG_SYSTEM_NEUTRAL(arg1)
@@ -282,6 +286,6 @@ end
 
 function P:ENCOUNTER_END(encounterID, encounterName, difficultyID, groupSize, success)
 	if groupSize > 5 then
-		self:ResetAllIcons(true)
+		self:ResetAllIcons("encounterEnd")
 	end
 end

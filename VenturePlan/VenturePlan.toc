@@ -1,9 +1,10 @@
 ## Interface: 90002
 ## Title: Venture Plan
-## Version: 4.11a
+## Version: 4.12a
 ## Notes: Interface improvements for Adventures.
 ## Notes-deDE: Schnittstellenverbesserungen für Abenteuer.
-## Notes-esES: Mejoras de la interfaz para las Aventuras.
+## Notes-esES: Mejoras de la interfaz para las aventuras.
+## Notes-esMX: Mejoras de la interfaz para las Aventuras.
 ## Notes-frFR: Améliorations de l'interface pour les aventures.
 ## Notes-itIT: Miglioramenti dell'interfaccia per le Avventure.
 ## Notes-koKR: 모험을 위한 인터페이스 개선

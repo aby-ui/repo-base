@@ -44,9 +44,9 @@ function Comms:Disable()
 end
 
 function Comms:PLAYER_SPECIALIZATION_CHANGED()
-	E.Comms:InspectPlayer()
-	E.Comms:SendSync()
-	E.Comms:RegisterEventUnitPower()
+	self:InspectPlayer()
+	self:SendSync()
+	self:RegisterEventUnitPower()
 end
 
 function Comms:UNIT_PET(unit) -- [73]

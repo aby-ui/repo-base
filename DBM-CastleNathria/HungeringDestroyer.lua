@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2428, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210127004858")
+mod:SetRevision("20210224082525")
 mod:SetCreatureID(164261)
 mod:SetEncounterID(2383)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -63,7 +63,6 @@ local berserkTimer								= mod:NewBerserkTimer(600)
 --mod:AddRangeFrameOption(10, 310277)
 mod:AddSetIconOption("SetIconOnGluttonousMiasma", 329298, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconOnVolatileEjection2", 334266, true, false, {5, 6, 7, 8})--Will still break if people missing BW/DBM, but it's too important to have off by default
---mod:AddNamePlateOption("NPAuraOnVolatileCorruption", 312595)
 mod:AddInfoFrameOption(334755, true)
 mod:AddBoolOption("SortDesc", false)
 mod:AddBoolOption("ShowTimeNotStacks", false)
@@ -194,12 +193,6 @@ function mod:OnCombatStart(delay)
 			berserkTimer:Start(420-delay)
 		end
 	end
---	if self.Options.NPAuraOnVolatileCorruption then
---		DBM:FireEvent("BossMod_EnableHostileNameplates")
---	end
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Show(4)
---	end
 --	berserkTimer:Start(-delay)
 	if self:IsMythic() then
 		for uId in DBM:GetGroupMembers() do
@@ -242,12 +235,6 @@ function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
---	if self.Options.NPAuraOnVolatileCorruption then
---		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
---	end
 end
 
 function mod:SPELL_CAST_START(args)

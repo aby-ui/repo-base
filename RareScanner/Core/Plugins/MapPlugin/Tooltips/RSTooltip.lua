@@ -99,8 +99,17 @@ local function showItemToolTip(cell, args)
 	local itemID, itemLink, itemClassID, itemSubClassID = unpack(args)
 	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT", -10)
 	ItemToolTip:SetHyperlink(itemLink)
-	ItemToolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)), 1,1,0)
-	ItemToolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
+		
+	-- Other addons support
+	if (CanIMogIt and RSConfigDB.IsShowingLootCanimogitTooltip()) then
+		ItemToolTip:AddLine(CanIMogIt:GetTooltipText(itemLink))
+	end
+		
+	if (RSConfigDB.IsShowingLootTooltipsCommands()) then
+		ItemToolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)), 1,1,0)
+		ItemToolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
+	end
+	
 	if (RSConstants.DEBUG_MODE) then
 		ItemToolTip:AddLine(itemID, 1,1,0)
 	end

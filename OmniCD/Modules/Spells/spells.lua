@@ -375,7 +375,7 @@ E.spell_db = {
 		{ spellID = 255937, duration = 45,  type = "offensive", spec = {70}     },
 		{ spellID = 327193, duration = 90,  type = "offensive", spec = true     },
 		{ spellID = 210256, duration = 45,  type = "counterCC", spec = true     },
-		{ spellID = 210294, duration = 30,  type = "counterCC", spec = true     },
+		{ spellID = 210294, duration = 30,  type = "counterCC", spec = true     },  -- Jan. 25. 2021 Hotfix 25->30s
 		{ spellID = 1044,   duration = 25,  type = "other"  },
 		{ spellID = 190784, duration = 45,  type = "other"  },
 		{ spellID = 183218, duration = 30,  type = "other",     spec = {70}     },

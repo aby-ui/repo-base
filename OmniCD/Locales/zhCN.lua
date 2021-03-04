@@ -88,6 +88,8 @@ L["Copy selected zone settings to the current zone"] = "Copy selected zone setti
 --[[Translation missing --]]
 L["Copy Settings From:"] = "Copy Settings From:"
 --[[Translation missing --]]
+L["Copy Zone Segments"] = "Copy Zone Segments"
+--[[Translation missing --]]
 L["Counter CC"] = "Counter CC"
 L["Counter Color"] = "计数器颜色"
 L["Counter Size"] = "框体尺寸"
@@ -108,11 +110,21 @@ L["Custom Priority"] = "Custom Priority"
 --[[Translation missing --]]
 L["Custom Spells"] = "Custom Spells"
 L["Custom UI"] = "自定UI"
+--[[Translation missing --]]
+L["Decode"] = "Decode"
+--[[Translation missing --]]
+L["Decode failed!"] = "Decode failed!"
+--[[Translation missing --]]
+L["Decompress failed!"] = "Decompress failed!"
 L["Default spells are reverted back to original values and removed from the list only"] = "默认技能将恢复初始值并从列表中删除"
 L["Defensive"] = "防御"
 L["Desaturate Colors"] = "降低颜色"
 L["Desaturate colors on active icons"] = "降低冷却图标上的颜色"
 L["Descending"] = "降序"
+--[[Translation missing --]]
+L["Deserialize failed!"] = "Deserialize failed!"
+--[[Translation missing --]]
+L["Destination Profile"] = "Destination Profile"
 L["Detach from raid frames and set position manually"] = "脱离团队框架并手动设置位置"
 L["Disable Popup"] = "不需要确认"
 L["Disable Reload UI confirmation when using Pixel Perfect borders"] = "使用完美像素边框时，无需确认立即重新加载界面"
@@ -143,7 +155,11 @@ L["Enter talent ID if the spell is a talent ability in any of the class speciali
 --[[Translation missing --]]
 L["Enter value to set a custom spell priority. This value is applied to all zones."] = "Enter value to set a custom spell priority. This value is applied to all zones."
 --[[Translation missing --]]
+L["Export"] = "Export"
+--[[Translation missing --]]
 L["Export Profile"] = "Export Profile"
+--[[Translation missing --]]
+L["Exports your currently active profile."] = "Exports your currently active profile."
 --[[Translation missing --]]
 L["Extra Bars"] = "Extra Bars"
 L["Fade In Time"] = "淡入时间"
@@ -186,7 +202,15 @@ L["Icon size auto adjusts as a percentage of the anchored frame height"] = "根�
 L["Icons"] = "图标"
 L["Immunity"] = "免疫"
 --[[Translation missing --]]
+L["Import"] = "Import"
+--[[Translation missing --]]
 L["Import Profile"] = "Import Profile"
+--[[Translation missing --]]
+L["Importing `%s` will create a new profile."] = "Importing `%s` will create a new profile."
+--[[Translation missing --]]
+L["Importing `%s` will merge new spells to your list and overwrite same spells."] = "Importing `%s` will merge new spells to your list and overwrite same spells."
+--[[Translation missing --]]
+L["Importing Custom Spells will reload UI. Press Cancel to abort."] = "Importing Custom Spells will reload UI. Press Cancel to abort."
 --[[Translation missing --]]
 L["Inactive"] = "Inactive"
 L["Inactive Icon Opacity"] = "不在冷却中的图标透明度"
@@ -209,6 +233,8 @@ L["Login Message"] = "登录信息"
 --[[Translation missing --]]
 L["Major update"] = "Major update"
 L["Manual Mode"] = "手动模式"
+--[[Translation missing --]]
+L["Manual Position"] = "Manual Position"
 L["Mark Enhanced Spells"] = "标记增强法术"
 L["Mark icons with a red dot to indicate enhanced spells"] = "用红点标记图标以指示增强法术"
 L["Max number of group members"] = "队伍最大成员数量"
@@ -218,6 +244,8 @@ L["Minor update"] = "Minor update"
 L["Move your group's Interrupt spells to the Interrupt Bar."] = "Move your group's Interrupt spells to the Interrupt Bar."
 --[[Translation missing --]]
 L["Move your group's Raid Cooldowns to the Raid Bar."] = "Move your group's Raid Cooldowns to the Raid Bar."
+--[[Translation missing --]]
+L["Not an OmniCD profile!"] = "Not an OmniCD profile!"
 L["Notes"] = "说明"
 --[[Translation missing --]]
 L["Notify Updates"] = "Notify Updates"
@@ -227,19 +255,39 @@ L["Offset Y"] = "垂直偏移"
 L["Padding"] = "间距"
 L["Padding X"] = "水平填充"
 L["Padding Y"] = "垂直填充"
+--[[Translation missing --]]
+L["Pending user input..."] = "Pending user input..."
 L["Pixel Perfect"] = "完美像素"
 L["Pixel Perfect ON."] = "完美像素开启"
 L["Player Frame in Party"] = "小队中的玩家框体"
 L["Position"] = "位置"
 --[[Translation missing --]]
+L["Press Accept to save profile %s. Addon will switch to the imported profile."] = "Press Accept to save profile %s. Addon will switch to the imported profile."
+--[[Translation missing --]]
 L["Press Ctrl+C to copy profile"] = "Press Ctrl+C to copy profile"
 --[[Translation missing --]]
 L["Press Ctrl+C to copy URL"] = "Press Ctrl+C to copy URL"
+--[[Translation missing --]]
+L["Press Ctrl+V to paste profile"] = "Press Ctrl+V to paste profile"
 L["Priority"] = "优先级"
 --[[Translation missing --]]
 L["Profile"] = "Profile"
 --[[Translation missing --]]
+L["Profile decoded successfully!"] = "Profile decoded successfully!"
+--[[Translation missing --]]
+L["Profile import cancelled!"] = "Profile import cancelled!"
+--[[Translation missing --]]
+L["Profile imported successfully!"] = "Profile imported successfully!"
+--[[Translation missing --]]
+L["Profile is empty!"] = "Profile is empty!"
+--[[Translation missing --]]
 L["Profile Sharing"] = "Profile Sharing"
+--[[Translation missing --]]
+L["Profile Type"] = "Profile Type"
+--[[Translation missing --]]
+L["Profile Type: %s%s|r"] = "Profile Type: %s%s|r"
+--[[Translation missing --]]
+L["Profile unchanged from default!"] = "Profile unchanged from default!"
 --[[Translation missing --]]
 L["Raid Bar"] = "Raid Bar"
 --[[Translation missing --]]
@@ -284,6 +332,8 @@ L["Select the zone you want to copy settings from."] = "Select the zone you want
 L["Select your default party frame layout"] = "选择默认的团队框架布局"
 --[[Translation missing --]]
 L["Send a chat message when a newer version is found."] = "Send a chat message when a newer version is found."
+--[[Translation missing --]]
+L["Serialize failed!"] = "Serialize failed!"
 L["Set the anchor attachement point. Icon grow direction will auto adjust"] = "设置附加锚点。自动调整图标增长方向"
 L["Set the anchor attachment point on the party/raid frame"] = "将锚点固定在小队/团队框架上"
 L["Set the anchor point on the spell bar"] = "在法术条上设置锚点"
@@ -329,6 +379,8 @@ L["Slash Commands"] = "Slash Commands"
 --[[Translation missing --]]
 L["Sort Direction"] = "Sort Direction"
 L["Sort Order"] = "排列顺序"
+--[[Translation missing --]]
+L["Source Profile"] = "Source Profile"
 L["Spacing"] = "间距"
 L["Spell Editor"] = "技能编辑"
 L["Spell ID"] = "法术ID"
@@ -363,6 +415,8 @@ L["Toggle raid-style party frame and player spell bar for testing"] = "切换团
 L["Toggle test frames for current zone."] = "Toggle test frames for current zone."
 L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"] = "切换冷却数字。只有当充能数为0时开始显示冷却。"
 L["Toggle the grow direction of icon rows"] = "切换图标行的增长方向"
+--[[Translation missing --]]
+L["Tool to copy portions of a profile to another existing profile."] = "Tool to copy portions of a profile to another existing profile."
 L["TOP"] = "上"
 L["TOPLEFT"] = "左上"
 L["TOPRIGHT"] = "右上"
@@ -383,6 +437,8 @@ L["Use this setting for all group sizes"] = "这个设置作用于所有组大�
 L["Use Zone Settings From:"] = "Use Zone Settings From:"
 --[[Translation missing --]]
 L["Utils"] = "Utils"
+--[[Translation missing --]]
+L["Value 'Manual Position' includes Interrupt and Raid Bar's saved positions."] = "Value 'Manual Position' includes Interrupt and Raid Bar's saved positions."
 L["Version"] = "版本"
 --[[Translation missing --]]
 L["Vertical"] = "Vertical"

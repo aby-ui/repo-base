@@ -28,6 +28,12 @@ local order = {
 local resets = addon.Resets
 
 -- Defaults
+local units = {
+	enabled0 = {default = true},
+	enabled1 = {default = true},
+	enabled2 = {default = true},
+	enabled3 = {default = true},
+}
 local defaults = {
 	size                 = 40,
 	columns              = 8,
@@ -462,9 +468,17 @@ function OmniBar_OnEvent(self, event)
 					if self.active[i] and self.active[i].spellID and self.active[i].sourceGUID and self.active[i].sourceGUID == sourceGUID and self.active[i].cooldown:IsVisible() then
 						-- cooldown belongs to this source
 						for j = 1, #resets[spellID] do
-							if resets[spellID][j] == self.active[i].spellID then
-								self.active[i].cooldown:Hide()
-								OmniBar_CooldownFinish(self.active[i].cooldown, true)
+							if resets[spellID][j].spell == self.active[i].spellID then
+								local startTime, startDuration = self.active[i].cooldown:GetCooldownTimes()
+								local currCD = (startDuration - (GetTime()*1000 - startTime))/1000
+								local newDuration = currCD - resets[spellID][j].amount
+								if (newDuration <= 0) then
+									self.active[i].cooldown:Hide()
+									OmniBar_CooldownFinish(self.active[i].cooldown, true)
+								else
+									self.active[i].cooldown:SetCooldown(GetTime(), newDuration)
+									self.active[i].cooldown.finish = GetTime() + newDuration
+								end
 								return
 							end
 						end
@@ -598,6 +612,20 @@ function OmniBar_IsSpellEnabled(self, spellID)
 		return true
 	end
 end
+function OmniBar_IsUnitEnabled(self, unitID)
+	if not unitID then return end
+	-- Check for an explicit rule
+	local key = "enabled"..unitID
+	if type(self.settings[key]) == "boolean" then
+		if self.settings[key] then
+			return true
+		end
+	elseif not self.settings.noDefault and units[key].default then
+		-- Not user-set, but a default cooldown
+		return true
+	end
+	return false
+end
 
 function OmniBar_Center(self)
 	local parentWidth = UIParent:GetWidth()
@@ -691,8 +719,21 @@ function OmniBar_AddIcon(self, spellID, sourceGUID, sourceName, init, test, spec
 	-- Check for parent spellID
 	local originalSpellID = spellID
 	if cooldowns[spellID].parent then spellID = cooldowns[spellID].parent end
+	local unitID = 0
+	if sourceGUID ~= nil then
+		if UnitGUID("arena1") == sourceGUID or sourceGUID == 1 then
+			unitID = 1
+			else if UnitGUID("arena2") == sourceGUID or sourceGUID == 2 then
+				unitID = 2
+				else if UnitGUID("arena3") == sourceGUID or sourceGUID == 3 then
+					unitID = 3
+				end
+			end
+		end
+	end
 
 	if not OmniBar_IsSpellEnabled(self, spellID) then return end
+	if not test then if not OmniBar_IsUnitEnabled(self, unitID) then return end end
 
 	local icon, duplicate
 
@@ -943,7 +984,8 @@ function OmniBar_Position(self)
 	end
 	OmniBar_ShowAnchor(self)
 end
-
+function OmniBar_ToggleUnit(self, unitID)
+end
 function OmniBar:Test()
 	for key,_ in pairs(self.db.profile.bars) do
 		OmniBar_Test(_G[key])

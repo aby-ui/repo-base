@@ -1761,8 +1761,7 @@ La["Wrath of the Jailer"] = "Wrath of the Jailer"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puedes combinar iconos y texto en un mismo indicador. Selecciona un icono y escribe \"ICON\" en el cuadro de texto para indicar dónde deseas que aparezca el icono."
 
 elseif locale == "zhTW" then
-  --[[Translation missing --]]
-La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open weekly rewards"
+  La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00點擊|r來開啟每週獎勵"
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00左鍵|r 分離滑鼠提示"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00中鍵|r 顯示暴雪的團隊資訊"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00右鍵|r 設定 SavedInstances"
@@ -1837,14 +1836,10 @@ La["Guild"] = "公會"
 La["HOA"] = "贖罪"
 La["Hold Alt to show all data"] = "按住 Alt 顯示所有資料"
 La["Hover mouse on indicator for details"] = "滑鼠指向顯示詳細內容"
---[[Translation missing --]]
-La["Hunt: Death Elementals"] = "Hunt: Death Elementals"
---[[Translation missing --]]
-La["Hunt: Shadehounds"] = "Hunt: Shadehounds"
---[[Translation missing --]]
-La["Hunt: Soul Eaters"] = "Hunt: Soul Eaters"
---[[Translation missing --]]
-La["Hunt: Winged Soul Eaters"] = "Hunt: Winged Soul Eaters"
+La["Hunt: Death Elementals"] = "獵殺：死亡元素"
+La["Hunt: Shadehounds"] = "獵殺：暗影獵犬"
+La["Hunt: Soul Eaters"] = "獵殺：靈魂吞噬者"
+La["Hunt: Winged Soul Eaters"] = "獵殺：飛翼靈魂噬者"
 La["Ignore"] = "忽略"
 La["Indicators"] = "指示器"
 --[[Translation missing --]]
@@ -1895,8 +1890,7 @@ La["SD"] = "血紅"
 La["Set All"] = "設定全部"
 La["Show all emissary names"] = "顯示所有特使名稱"
 La["Show both factions' emissay name"] = "顯示雙方陣營特使名稱"
---[[Translation missing --]]
-La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
+La["Show calling line when all quests completed"] = "完成所有任務後顯示召喚線"
 La["Show category names"] = "顯示分類名稱"
 La["Show category names in the tooltip"] = "在滑鼠提示中顯示分類名稱"
 La["Show cooldown for characters to use battleground system"] = "顯示角色可以使用戰場系統的冷卻時間"

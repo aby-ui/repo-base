@@ -249,6 +249,12 @@ local QuestExceptions = {
   [62214] = "Weekly", -- Forces of Perdition
   [62234] = "Weekly", -- Power of the Colossus
   [63206] = "Weekly", -- Soulless Husks
+  -- Queen's Conservatory
+  [62441] = "Weekly", -- Fair Exchange for a Soul
+  [62445] = "Weekly", -- A Spirit's Pride
+  [62449] = "Weekly", -- A Spirit's Duty
+  [62450] = "Weekly", -- A Spirit's Heart
+  [62452] = "Weekly", -- A Spirit's Might
 
   -- General
   -- Darkmoon Faire

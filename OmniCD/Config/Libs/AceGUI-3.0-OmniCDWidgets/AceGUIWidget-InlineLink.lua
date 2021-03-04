@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 
 -- Inline label with highlighted URL field widget for AceGUI-3.0
--- Written as part of OmniCD by Treebonker S.M.L
+-- Written as part of OmniCD by Treebonker
 
 -- Parameters:
 -- hidden = boolean,
@@ -52,6 +52,12 @@ local function EditBox_OnTextChanged(frame, isUserInput)
 		self.editbox:SetText(self.lasttext or "")
 		self.editbox:HighlightText()
 	end
+end
+
+local function EditBox_OnChar(frame)
+	local self = frame.obj
+	self.editbox:SetText(self.lasttext or "")
+	self.editbox:HighlightText()
 end
 
 local function EditBox_OnFocusGained(frame)
@@ -140,7 +146,7 @@ local function Constructor()
 	frame:Hide()
 	frame:SetHeight(26)
 
-	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall-OmniCD") --GameFontNormalSmall
 	label:SetPoint("TOPLEFT")
 	label:SetJustifyH("LEFT")
 	label:SetWidth(100)
@@ -148,14 +154,14 @@ local function Constructor()
 
 	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox-OmniCD"..num, frame, "BackdropTemplate")
 	editbox:SetAutoFocus(false)
-	editbox:SetFontObject(ChatFontNormal)
+	editbox:SetFontObject("GameFontHighlight-OmniCD") --ChatFontNormal
 	editbox:SetScript("OnEnter", Control_OnEnter)
 	editbox:SetScript("OnLeave", Control_OnLeave)
 	editbox:SetScript("OnEscapePressed", EditBox_OnEscapePressed)
 	editbox:SetScript("OnTextChanged", EditBox_OnTextChanged)
+	editbox:SetScript("OnChar", EditBox_OnChar) -- prevent blinking
 	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
 
-	-- Set Backdrop instead of inheriting InputBoxTemplate as it's not skinned by ElvUI
 	editbox:SetScript("OnEditFocusLost", EditBox_OnFocusLost)
 	editbox:SetTextInsets(0, 0, 3, 3)
 	editbox:SetMaxLetters(256)
@@ -166,7 +172,7 @@ local function Constructor()
 		edgeFile = "Interface\\BUTTONS\\White8x8", edgeSize = OmniCD and OmniCD[1].NumPixels or 0.836,
 	})
 	editbox:SetBackdropColor(1, 1, 1, 0.05)
-	editbox:SetBackdropBorderColor(0, 0, 0, 1)
+	editbox:SetBackdropBorderColor(0, 0, 0)
 
 	local widget = {
 		editbox     = editbox,

@@ -86,8 +86,10 @@ local function BuildHubPanel(panel)
 
 	panel.StyleHeadlineLabel, F = CreateQuickItemLabel(nil, "强制标题模式:", AlignmentColumn, F, 0, 2)
 	panel.StyleHeadlineNeutral, F = CreateQuickCheckbutton(objectName.."StyleHeadlineNeutral", "中立单位", AlignmentColumn, F, 16, 2)
-	panel.StyleHeadlineOutOfCombat, F = CreateQuickCheckbutton(objectName.."StyleHeadlineOutOfCombat", "非战斗时", AlignmentColumn, F, 16, 0)
-	panel.StyleHeadlineMiniMobs, F = CreateQuickCheckbutton(objectName.."StyleHeadlineMiniMobs", "杂兵", AlignmentColumn, F, 16, 0)
+    panel.StyleHeadlineNeutralCombatOverride, F = CreateQuickCheckbutton(objectName.."StyleHeadlineNeutralCombatOverride", "在战斗时忽略", AlignmentColumn, F, 40, 0)
+    panel.StyleHeadlineNeutralCombatOverride:SetScale(.8)
+	panel.StyleHeadlineOutOfCombat, F = CreateQuickCheckbutton(objectName.."StyleHeadlineOutOfCombat", "战斗外强制标题模式", AlignmentColumn, F, 16, 0)
+	panel.StyleHeadlineMiniMobs, F = CreateQuickCheckbutton(objectName.."StyleHeadlineMiniMobs", "杂兵强制标题模式", AlignmentColumn, F, 16, 0)
 
 	------------------------------
     -- Health Bars

@@ -28,6 +28,7 @@ local order = {
     buffs_offensive = 5,
     buffs_other = 6,
     roots = 7,
+    buffs_speed_boost = 8,
 }
 local SpellNames = {}
 local SpellIcons = {}
@@ -847,6 +848,13 @@ function BigDebuffs:SetupOptions()
                                 desc = L["Show Roots on the unit frames"],
                                 order = 8,
                             },
+                            buffs_speed_boost = {
+                                type = "toggle",
+                                width = "normal",
+                                name = L["buffs_speed_boost"],
+                                desc = L["Show Speed Boosts on the unit frames"],
+                                order = 9,
+                            },
                         },
                     },
                 }
@@ -997,6 +1005,13 @@ function BigDebuffs:SetupOptions()
                                 name = L["roots"],
                                 desc = L["Show Roots on nameplates"],
                                 order = 8,
+                            },
+                            buffs_speed_boost = {
+                                type = "toggle",
+                                width = "normal",
+                                name = L["buffs_speed_boost"],
+                                desc = L["Show Speed Boosts on nameplates"],
+                                order = 9,
                             },
                         },
                     },
@@ -1278,6 +1293,16 @@ function BigDebuffs:SetupOptions()
                 max = 100,
                 step = 1,
                 order = 17,
+            },
+            buffs_speed_boost = {
+                type = "range",
+                width = "double",
+                name = L["buffs_speed_boost"],
+                desc = L["Higher priority spells will take precedence regardless of duration"],
+                min = 1,
+                max = 100,
+                step = 1,
+                order = 18,
             },
         },
     }

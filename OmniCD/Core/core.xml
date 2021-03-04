@@ -7,4 +7,5 @@
 	<Script file="commands.lua"/>
 	<Script file="dialogs.lua"/>
 	<Script file="API.lua"/>
+	<Script file="profileSharing.lua"/>
 </Ui>

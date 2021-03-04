@@ -1282,7 +1282,7 @@ ToughCrowdHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 			if VWQL and VWQL.DisableToughCrowd then
 				return
 			end
-			print("World Quests List: Tough Crowd helper loaded")
+			print("World Quests List: 乌合之众自动标记助手已加载")
 			ToughCrowdHelper_count = 8
 			self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 		end

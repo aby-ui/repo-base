@@ -752,18 +752,18 @@ do
 
 	local removeIcyVeins = function(info, srcGUID, spellID, destGUID)
 		info = groupInfo[srcGUID]
-		if info and info.auras.isIcyVeins then
-			info.auras.isIcyVeins = nil
+		if info and info.auras.isIcyPropulsion then
+			info.auras.isIcyPropulsion = nil
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
 	end
 	registeredEvents.SPELL_AURA_REMOVED[ICY_VEINS] = function(info, srcGUID, spellID, destGUID)
-		info.auras.isIcyVeins = nil
+		info.auras.isIcyPropulsion = nil
 		RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 	end
 	registeredEvents.SPELL_AURA_APPLIED[ICY_VEINS] = function(info, srcGUID, spellID, destGUID)
 		if info.spellIcons[ICY_VEINS] and info.talentData[336522] then
-			info.auras.isIcyVeins = true
+			info.auras.isIcyPropulsion = true
 			E.TimerAfter(20.1, removeIcyVeins, nil, srcGUID, spellID, destGUID)
 		end
 	end
@@ -1705,7 +1705,7 @@ function CD:COMBAT_LOG_EVENT_UNFILTERED()
 						P:UpdateCooldown(icon, 1)
 					end
 				end
-			elseif specID == 64 and info.auras.isIcyVeins then
+			elseif specID == 64 and info.auras.isIcyPropulsion then
 				local rankValue = info.talentData[336522]
 				if rankValue then
 					local icon = info.spellIcons[12472]

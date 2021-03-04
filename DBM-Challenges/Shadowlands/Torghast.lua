@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210216220640")
+mod:SetRevision("20210223182948")
 
 mod:RegisterCombat("scenario", 2162)--1911-1912 are outdoor areas
 mod.noStatistics = true
@@ -148,7 +148,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 329909 and self:AntiSpam(4, 1) then
 		specWarnCrushingStomp:Show()
 		specWarnCrushingStomp:Play("justrun")
-	elseif spellId == 296523 and self:AntiSpam(4, 5) then
+	elseif (spellId == 296523 or spellId == 318995) and self:AntiSpam(4, 5) then
 		specWarnDeafeningHowl:Show()
 		specWarnDeafeningHowl:Play("stopcast")
 	elseif spellId == 288210 and self:CheckInterruptFilter(args.sourceGUID, false, true) then

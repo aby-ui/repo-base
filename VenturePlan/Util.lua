@@ -14,7 +14,7 @@ local overdesc = {
 	[198]={L"For two turns, reduces the damage dealt by incoming attacks by 1 and retaliates for {}.", "thornsATK"},
 	[52]={L"Inflicts {} damage to all enemies at range.", "damageATK"},
 	[125]={L"Inflicts {} damage to a random enemy.", "damageATK"},
-	[229]=L"Reduces damage taken by a random ally by 50%. Forever.",
+	[229]=L"Reduces all damage taken by a random ally by 50%. Forever.",
 	[301]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "damagePerc"},
 	[227]={L"Every other turn, a random enemy is attacked for {}% of their maximum health.", "damagePerc"},
 	[25]={L"Inflicts {} damage to all enemies in melee, and increases own damage dealt by 20% for three turns.", "damageATK"},
@@ -22,8 +22,11 @@ local overdesc = {
 	[107]={L"Debuffs all enemies, dealing {} damage this turn and during each of the next three turns.", "damageATK",
 	       L"Increases all damage taken by the nearest enemy by {} for three turns.", "plusDamageTakenATK"},
 	[194]={L"Increases damage dealt by the closest ally by {} for two turns.", "plusDamageDealtATK",
-	       L"Reduces damage taken by the closest ally by {}% for two turns.", "modDamageTaken",
+	       L"Reduces all damage taken by the closest ally by {}% for two turns.", "modDamageTaken",
 	       L"Inflicts {} damage to self.","damageATK"},
+	[242]={L"Heals the closest ally for {}.", "healATK",
+	       L"Increases all damage taken by the closest ally by {}% for two turns.", "modDamageTaken"},
+	[251]={L"Reduces all enemies' damage dealt by {}% for two turns.", "modDamageDealt"},
 }
 local overdescUnscaledKeys = {damagePerc=1, modDamageDealt=1, modDamageTaken=1}
 local covenFastHealingTalentID = {1078, 1081, 1075, 1084}
@@ -347,14 +350,16 @@ do -- completeQueue
 			EV("I_COMPLETE_QUEUE_UPDATE", "NEXT")
 			if mi.completed then
 				curState, delayIndex, delayMID = "BONUS", curIndex, mi.missionID
+				C_Garrison.RegenerateCombatLog(delayMID)
 				delayRoll(... ~= "IMMEDIATE" and 0.2)
 			else
 				curState, delayIndex, delayMID = "COMPLETE", curIndex, mi.missionID
 				delayOpen(... ~= "IMMEDIATE" and 0.2)
 			end
 		elseif curState == "COMPLETE" and ev == "GARRISON_MISSION_COMPLETE_RESPONSE" then
-			local mid, cc, ok, _brOK = ...
+			local mid, cc, ok, _brOK, _fd, acr = ...
 			if mid ~= mi.missionID and not cc then return end
+			if not (acr and acr.combatLog and #acr.combatLog > 0) then return end
 			if mid == mi.missionID or securecall(error, whineAboutUnexpectedState("Unexpected mission completion", mid, (cc and "C" or "c") .. (ok and "K" or "k")), 2) then
 				if ok then
 					curState = "BONUS"
@@ -416,9 +421,13 @@ function U.GetTimeStringFromSeconds(sec, shorter, roundUp, disallowSeconds)
 		return (shorter and COOLDOWN_DURATION_DAYS or INT_GENERAL_DURATION_DAYS):format(h(sec/84600))
 	end
 end
+function U.GetCompanionRecoveryTime(missingShare)
+	local fastHealing = C_Garrison.GetTalentInfo(covenFastHealingTalentID[C_Covenants.GetActiveCovenantID()] or 1075)
+	return missingShare * (fastHealing and fastHealing.researched and 49600 or 60000)
+end
 function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantStats, mid, boardIndex, boardMask, showHealthFooter)
 	local mhp, hp, atk, role, aat, level
-	autoCombatantStats = autoCombatantStats or info and info.autoCombatantStats
+	autoCombatantStats = autoCombatantStats or info and (info.followerID and C_Garrison.GetFollowerAutoCombatStats(info.followerID) or info.autoCombatantStats)
 	if info then
 		role, level = info.role, info.level and ("|cffa8a8a8" .. UNIT_LEVEL_TEMPLATE:format(info.level)) or ""
 	end
@@ -459,8 +468,7 @@ function U.SetFollowerInfo(GameTooltip, info, autoCombatSpells, autoCombatantSta
 	end
 
 	if showHealthFooter and info and info.status ~= GARRISON_FOLLOWER_ON_MISSION and autoCombatantStats and autoCombatantStats.currentHealth < autoCombatantStats.maxHealth then
-		local fastHealing = C_Garrison.GetTalentInfo(covenFastHealingTalentID[C_Covenants.GetActiveCovenantID()] or 1075)
-		local rt = (1-(autoCombatantStats.currentHealth/autoCombatantStats.maxHealth)) * (fastHealing and fastHealing.researched and 49600 or 60000)
+		local rt = U.GetCompanionRecoveryTime(1 - (autoCombatantStats.currentHealth/autoCombatantStats.maxHealth))
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("|cffffd926" .. (L"Full recovery in %s"):format(U.GetTimeStringFromSeconds(rt, false, true, true)), 1, 0.85, 0.15, 1)
 	end

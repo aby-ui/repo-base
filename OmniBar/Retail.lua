@@ -6,7 +6,8 @@ addon.Resets = {
     --[[ Grimoire: Felhunter
          - Spell Lock
       ]]
-    [111897] = { 119910 },
+    [111897] = { {spell = 119910, amount = 24} },
+    [133] = { {spell = 190319, amount = 3} }
 }
 
 addon.Cooldowns = {
@@ -523,7 +524,7 @@ addon.Cooldowns = {
         [108853] = { duration = 12, class = "MAGE", specID = { 63 }, charges = 2 }, -- Fire Blast
         [153561] = { duration = 45, class = "MAGE", specID = { 63 } }, -- Meteor
         [157981] = { duration = 25, class = "MAGE", specID = { 63 } }, -- Blast Wave
-        [190319] = { duration = 115, class = "MAGE", specID = { 63 } }, -- Combustion
+        [190319] = { duration = 120, class = "MAGE", specID = { 63 } }, -- Combustion
         [194466] = { duration = 45, class = "MAGE", specID = { 63 }, charges = 3 }, -- Phoenix's Flames
         [205029] = { duration = 45, class = "MAGE", specID = { 63 } }, -- Flame On
 

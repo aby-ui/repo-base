@@ -436,17 +436,20 @@ local function addThemeOptions(owner, theme, id)
                             }
                         }
                     },
-                    drawSwipes = {
-                        type = 'toggle',
-                        name = L.EnableCooldownSwipes,
-                        desc = L.EnableCooldownSwipesDesc,
+                    swipeOpacity = {
+                        type = 'range',
+                        name = L.CooldownOpacity,
+                        desc = L.CooldownOpacityDesc,
                         order = 300,
+                        isPercent = true,
+                        min = 0,
+                        max = 1,
                         width = 'full',
                         get = function()
-                            return theme.drawSwipes
+                            return theme.cooldownOpacity
                         end,
-                        set = function(_, enable)
-                            theme.drawSwipes = enable
+                        set = function(_, value)
+                            theme.cooldownOpacity = value
                             OmniCC.Cooldown:ForAll('UpdateStyle')
                         end
                     }

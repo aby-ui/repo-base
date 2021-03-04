@@ -62,13 +62,13 @@ function P:SetOffset(f)
 end
 
 function P:UpdatePosition()
-	if self.disabled then
+	if P.disabled then
 		return
 	end
 
-	self:HideBars() -- [63]
+	P:HideBars() -- [63]
 
-	for guid, info in pairs(self.groupInfo) do
+	for guid, info in pairs(P.groupInfo) do
 		local f = info.bar
 		if E.db.position.detached then
 			E.LoadPosition(f)
@@ -80,13 +80,13 @@ function P:UpdatePosition()
                 local EUF = idx and _G["EUF_PartyFrame"..idx.."HP"]
                 local ox = EUF and EUF:IsVisible() and (self.relativePoint or ""):find("RIGHT") and 70 or idx and 12 or 0
 				f:ClearAllPoints()
-				f:SetPoint(self.point, frame, self.relativePoint, ox, 0) --abyui adapt EUF
+				f:SetPoint(P.point, frame, P.relativePoint, ox, 0) --abyui adapt EUF
 				f:Show()
 			end
 		end
 
-		self:SetAnchorPosition(f)
-		self:SetOffset(f)
+		P:SetAnchorPosition(f)
+		P:SetOffset(f)
 	end
 end
 

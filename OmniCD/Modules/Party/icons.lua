@@ -176,9 +176,9 @@ function P:SetBorder(icon)
 		icon.borderRight:ClearAllPoints()
 		icon.borderLeft:ClearAllPoints()
 
-		local edgeSize = db.borderPixels * E.NumPixels / db.scale
+		local edgeSize = db.borderPixels * E.PixelMult / db.scale
 		--[[ xml
-		local edgeSize = db.borderPixels * E.NumPixels / (isModRow and db.modRowScale * db.scale or db.scale)
+		local edgeSize = db.borderPixels * E.PixelMult / (isModRow and db.modRowScale * db.scale or db.scale)
 		--]]
 		icon.borderTop:SetPoint("TOPLEFT", icon, "TOPLEFT")
 		icon.borderTop:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT", 0, -edgeSize)
@@ -222,7 +222,7 @@ function P:SetMarker(icon)
 		local mark = E.spell_marked[spellID] or E.db.highlight.markedSpells[spellID]
 		if mark and (mark == true or self:IsTalent(mark, icon.guid)) then
 			hotkey:SetText(RANGE_INDICATOR)
-			hotkey:SetTextColor(0.0, 0.901, 0.796) -- 2.5.8
+			hotkey:SetTextColor(0.125, 1.0, 0.125) -- 2.5.20
 			hotkey:Show()
 		else
 			hotkey:Hide()

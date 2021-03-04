@@ -765,17 +765,12 @@ function Addon:GetAlignmentGridSize()
 end
 
 function Addon:GetAlignmentGridScale()
-    local gridSize = self:GetAlignmentGridSize()
-    if gridSize <= 0 then
-        return 0, 0
-    end
-
-    local aspectRatio = GetScreenWidth() / GetScreenHeight()
-    local xScale = _G.Round(gridSize / 2) * 2
-    local yScale = _G.Round((xScale / aspectRatio) / 2) * 2
-
-    return xScale, yScale
+	--due to changes in Dominos_Config\overlay\ui.lua to
+	--function "DrawGrid", grid now displays with perfectly square subdivisions.
+	local gridScale = GetScreenHeight() / (Addon:GetAlignmentGridSize() * 2)
+    return gridScale, gridScale
 end
+
 --------------------------------------------------------------------------------
 -- Utility Methods
 --------------------------------------------------------------------------------

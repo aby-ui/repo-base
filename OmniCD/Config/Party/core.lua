@@ -6,7 +6,7 @@ local P = E[modname]
 P.options = {
 	disabled = function(info) return info[2] and not E.GetModuleEnabled(modname) end,
 	name = FRIENDLY,
-	order = 30,
+	order = 200,
 	type = "group",
 	get = function(info) return E.DB.profile.Party[info[#info]] end,
 	set = function(info, value) E.DB.profile.Party[info[#info]] = value end,

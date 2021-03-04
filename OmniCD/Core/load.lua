@@ -35,6 +35,17 @@ function E:OnInitialize()
 	self.profile = self.DB.profile
 	self.db = self.DB.profile.Party.arena
 
+	E.GameFontNormal = CreateFont("GameFontNormal-OmniCD")
+	E.GameFontNormal:CopyFontObject("GameFontNormal")
+	E.GameFontHighlight = CreateFont("GameFontHighlight-OmniCD")
+	E.GameFontHighlight:CopyFontObject("GameFontHighlight")
+	E.GameFontDisabled = CreateFont("GameFontDisable-OmniCD")
+	E.GameFontDisabled:CopyFontObject("GameFontDisable")
+	E.GameFontNormalSmall = CreateFont("GameFontNormalSmall-OmniCD")
+	E.GameFontNormalSmall:CopyFontObject("GameFontNormalSmall")
+	E.GameFontHighlightSmall = CreateFont("GameFontHighlightSmall-OmniCD")
+	E.GameFontHighlightSmall:CopyFontObject("GameFontHighlightSmall")
+
 	self:UpdateSpellList(true)
 	self:SetupOptions()
 	self:EnableVersionCheck()
@@ -56,6 +67,19 @@ end
 
 function E:Refresh(arg)
 	self.profile = self.DB.profile
+
+	local optionFont = E.DB.profile.General.fonts.option
+	local ACD_Tooltip = E.lib.ACD.tooltip
+	E.SetFontObj(ACD_Tooltip.TextLeft1,  optionFont)
+	E.SetFontObj(ACD_Tooltip.TextLeft2,  optionFont)
+	E.SetFontObj(ACD_Tooltip.TextRight1, optionFont)
+	E.SetFontObj(ACD_Tooltip.TextRight2, optionFont)
+	E.SetFontObj(E.GameFontNormal, optionFont)
+	E.SetFontObj(E.GameFontHighlight, optionFont)
+	E.SetFontObj(E.GameFontDisabled, optionFont)
+	local optionFontSmall = E.DB.profile.General.fonts.optionSmall
+	E.SetFontObj(E.GameFontNormalSmall, optionFontSmall)
+	E.SetFontObj(E.GameFontHighlightSmall, optionFontSmall)
 
 	for k in pairs(self.moduleOptions) do
 		local module = self[k]
@@ -79,7 +103,7 @@ function E:Refresh(arg)
 	self.TooltipID:SetHooks()
 
 	if arg == "OnProfileReset" then
-		--self.global.disableElvMsg = nil
+		self.global.disableElvMsg = nil
 	end
 end
 
@@ -118,7 +142,8 @@ do
 
 			local ver = tonumber(message)
 			if ver and ver > version then
-				local text = ver - version > 999 and L["Major update"] or (ver - version > 99 and L["Minor update"]) or L["Hotfix"]
+				local diff = ver - version
+				local text = diff > 10 and L["Major update"] or (diff > 1 and L["Minor update"]) or L["Hotfix"]
 				text = format("|cfff16436 " .. L["A new update is available. (%s)"], text)
 				if E.DB.profile.notifyNew then
 					E.Write(text)
@@ -169,6 +194,7 @@ do
 	end
 end
 
+-- TODO: Merge this
 do
 	local function ShowHideAllBars_OnEvent(f, event)
 		if event == "PET_BATTLE_OPENING_START" then

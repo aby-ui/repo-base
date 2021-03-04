@@ -138,7 +138,7 @@ local TP = {} do
 		},
 		[3]={
 			[0]="23104", "03421", "03214", "20143", "31204",
-			"56a79b8c", "5a7b698c", "56bac798", "7685a9bc",
+			"56a79b8c", "5a7b698c", "65bac798", "7685a9bc",
 			"56a79b8c", "96b57a8c", "a57c69b8", "56a79b8c"
 		},
 		[4]={
@@ -186,7 +186,7 @@ local TP = {} do
 		[0x41]=1, [0x43]=1,
 	}
 	local stt = {}
-	local function GetTargets(source, tt, board, targ)
+	local function GetTargets(source, tt, board)
 		local ni, su, tl, lo, taunt = 1, board[source], targetLists[tt], source < 5 and source >= 0
 		taunt, tl = su and su.taunt, tl and tl[source]
 		if tl then
@@ -226,15 +226,6 @@ local TP = {} do
 					stt[ni], ni = i, ni + 1
 				end
 			end
-		elseif tt == "mark" then
-			local m, p = 2, 1
-			for i=0,targ and 12 or -1 do
-				local tu = board[i]
-				if tu and tu.curHP > 0 and targ % m >= p then
-					stt[ni], ni = i, ni + 1
-				end
-				m, p = m+m, m
-			end
 		elseif tt == "friend-surround" then
 			local f = source*16
 			for i=0,12 do
@@ -253,41 +244,36 @@ local TP = {} do
 				end
 			end
 		elseif tt == "cone" then
-			if taunt then
-				if source == 4 then
-					tl = targetLists[0][source]
-					for i=1,#tl do
-						local t = tl[i]
-						local tu = board[t]
-						if tu and tu.curHP > 0 and not tu.shroud then
-							if t ~= taunt then
-								tu = board[0]
-								t = tu and tu.curHP > 0 and not tu.shroud and 0 or nil
-								if taunt == 6 and t == nil then
-									local t1, t2 = board[1], board[2]
-									if not (t1 and t1.curHP > 0 and not t1.shroud) and (t2 and t2.curHP > 0 and not t2.shroud) then
-										stt[1], ni = 2, 2
-										for i=5,6 do
-											tu = board[i]
-											if tu and tu.curHP > 0 and not tu.shroud then
-												stt[ni], ni = i, ni + 1
-											end
-										end
-										return stt
-									end
-								end
+			local ot
+			tl = targetLists[0][source]
+			for i=1,#tl do
+				i = tl[i]
+				local tu = board[i]
+				if tu and tu.curHP > 0 and not tu.shroud then
+					stt[1], ot, ni = taunt or i, i, 2
+					break
+				end
+			end
+			if taunt == 6 and source == 4 and ot ~= taunt then
+				local tu = board[0]
+				if tu and tu.curHP > 0 and not tu.shroud then
+					stt[1], ni, ot = 0, 2
+				else
+					local t1, t2 = board[1], board[2]
+					if not (t1 and t1.curHP > 0 and not t1.shroud) and (t2 and t2.curHP > 0 and not t2.shroud) then
+						stt[1], ni, ot = 2, 2
+						for i=5,6 do
+							tu = board[i]
+							if tu and tu.curHP > 0 and not tu.shroud then
+								stt[ni], ni = i, ni + 1
 							end
-							stt[ni], ni = t, t and 2 or 1
-							break
 						end
 					end
-				else
-					stt[1], ni = taunt, 2
 				end
-			elseif GetTargets(source, 0, board) and #stt > 0 then
-				ni = 2
+			end
+			if ot then
 				local f = stt[1]*16
-				for i=0,12 do
+				for i=lo and 5 or 0, lo and 12 or 4 do
 					if coneCleave[f+i] then
 						local tu = board[i]
 						if tu and tu.curHP > 0 and not tu.shroud then
@@ -298,9 +284,7 @@ local TP = {} do
 			end
 		elseif tt == "cleave" then
 			local coa = adjCleaveN[source]
-			if taunt then
-				stt[1], ni = taunt, 2
-			elseif coa then
+			if coa then
 				for i=1,#coa do
 					i = coa[i]
 					if i <= 12 then
@@ -312,6 +296,13 @@ local TP = {} do
 						break
 					end
 				end
+				if taunt and (ni < 2 or stt[1] ~= taunt) then
+					stt[1], ni = taunt, 2
+				elseif taunt and ni > 3 then
+					ni = 3
+				end
+			elseif taunt then
+				stt[1], ni = taunt, 2
 			else
 				GetTargets(source, 0, board)
 				if #stt > 0 then
@@ -623,7 +614,10 @@ function mu:die(sourceIndex, deadIndex, causeTag, eDNE)
 	local k, board, wasOver = deadIndex < 5 and "liveFriends" or "liveEnemies", self.board, self.over
 	self[k], self.ftc = self[k] - 1, nil
 	if self[k] == 0 and not self.over then
-		self.over, self.dne, self.won = true, eDNE or nil, self.liveFriends > 0
+		self.over, self.dne = true, eDNE or nil
+		if causeTag ~= "Thorn" and sourceIndex ~= deadIndex and self.won == nil then
+			self.won = deadIndex > 4
+		end
 	end
 	local ds = 0
 	for i=0,12 do
@@ -982,7 +976,7 @@ local function prepareTurn(self)
 					end
 					local fc, fb = self:Clone()
 					if fc then
-						fc.turn, fb, fc.saoSkip, fc.unfinishedTurn = turn-1, fc.board, b*16+i
+						fc.turn, fb, fc.saoSkip = turn-1, fc.board, b*16+i
 						resolveRange(not bFirst, fb[b], fb[i], bh, bl, fh, fl)
 					end
 					resolveRange(bFirst, e, f, bh, bl, fh, fl)
@@ -1002,7 +996,7 @@ local function prepareTurn(self)
 					end
 					local fc = self:Clone()
 					if fc then
-						fc.turn, fc.saoSkip, fc.unfinishedTurn = turn-1, b*16+i
+						fc.turn, fc.saoSkip = turn-1, b*16+i
 						resolveDeath(fc.board, b, i, not bFirst)
 					end
 					resolveDeath(board, b, i, bFirst)
@@ -1013,7 +1007,6 @@ local function prepareTurn(self)
 	self.saoSkip = nil
 end
 local function sortAttackOrder(self, q)
-	prepareTurn(self)
 	local board, bo, bom = self.board, self.boardOrder, self.bom
 	for b=0,12 do
 		local e = board[b]
@@ -1035,27 +1028,36 @@ local function sortAttackOrder(self, q)
 		return ac > bc
 	end)
 end
-local function registerTraceResult(self)
+local function registerTraceResult(self, stopCB)
 	local prime = self.prime or self
 	local ch = self.checkpoints
 	if ch[#ch] == ch[#ch-1] then
 		ch[#ch] = nil
 	end
-	if not prime.res then
-		prime.res = {min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, n=0}
+	for _, a in pairs(self.queue) do
+		for _, qi in pairs(a) do
+			if qi[1] == "statDelta" then
+				mu[qi[1]](self, unpack(qi, 2))
+			end
+		end
+	end
+	self.over, self.queue, self.sq, self.sqh, self.sqt = "r", nil
+	if self.won == nil then
+		self.won = self.liveFriends > 0
 	end
 	local tHP1, tHP2, ns, res, inf = 0, 0, 0, prime.res, math.huge
+	local wHP1, wHP2, wmask = 0,0, self.wmask or 31
 	res[self.won and "hadWins" or "hadLosses"] = true
-	res.hadDrops = res.hadDrops or prime.droppedTraces
 	res.n = res.n + 1
 	res.isFinished = res.n > #(prime.forks or "")
-	res.min[17] = math.min(res.min[17] or inf, self.turn)
-	res.max[17] = math.max(res.max[17] or 0, self.turn)
 	for i=0,12 do
 		local e = self.board[i]
 		if e then
 			local hp1, hp2 = e.curHP-e.hpR, e.curHP
-			tHP1, tHP2, ns = tHP1 + hp1, tHP2 + hp2, ns + 1
+			tHP1, tHP2, ns = tHP1 + hp1, tHP2 + hp2, ns + (e.curHP > 0 and 1 or 0)
+			if wmask and band(wmask, 2^i) > 0 then
+				wHP1, wHP2 = wHP1 + hp1, wHP2 + hp2
+			end
 			res.min[i] = math.min(res.min[i] or inf, hp1)
 			res.max[i] = math.max(res.max[i] or 0, hp2)
 		end
@@ -1066,8 +1068,15 @@ local function registerTraceResult(self)
 			tHP1, tHP2, ns = 0, 0, 0
 		end
 	end
+	res.min[17] = math.min(res.min[17] or inf, self.turn)
+	res.max[17] = math.max(res.max[17] or 0, self.turn)
+	res.min[18] = math.min(res.min[18] or inf, wHP1)
+	res.max[18] = math.min(res.max[18] or 0, wHP2)
 	if self.forkID and self.dropForks then
 		self.forks[self.forkID] = not not self.won
+	end
+	if stopCB and self.forks and #self.forks >= res.n and stopCB(prime, res.n, 1+#self.forks, self) then
+		return true
 	end
 end
 local function storeShallowCopy(r, s)
@@ -1078,9 +1087,9 @@ local function storeShallowCopy(r, s)
 	r[s] = d
 end
 
-function VSI:Turn(isResumed)
+function VSI:Turn()
 	local sq, sqh, q, turn = self.sq, self.sqh
-	if isResumed then
+	if self.unfinishedTurn then
 		turn = self.turn
 		q = self.queue[turn]
 		while sqh <= self.sqt do
@@ -1092,7 +1101,9 @@ function VSI:Turn(isResumed)
 	else
 		turn = self.turn + 1
 		q, self.turn = self.queue[turn], turn
+		prepareTurn(self)
 		sortAttackOrder(self, q)
+		self.unfinishedTurn = true
 	end
 	local qi, at
 	for i=#q, 1, -1 do
@@ -1112,7 +1123,7 @@ function VSI:Turn(isResumed)
 			else
 				for j=i-1,1,-1 do
 					if q[j][2] == qi[2] and q[j][1] == "statDelta" then
-						qi = q[j]
+						qi, q[j] = q[j], nil
 						mu[qi[1]](self, unpack(qi, 2))
 						break
 					end
@@ -1125,28 +1136,27 @@ function VSI:Turn(isResumed)
 		self.over, self.overnext = true
 	end
 	self.checkpoints[turn] = self:CheckpointBoard()
-	self.queue[turn] = nil
+	self.queue[turn], self.unfinishedTurn = next(q) and q, nil
 end
 function VSI:Run(stopCB)
-	if not self.over then
+	if self.over ~= "r" then
 		if self.unfinishedTurn then
-			self.unfinishedTurn = nil
-			self:Turn(true)
+			self:Turn()
 		end
 		while not self.over do
 			self:Turn()
 		end
-		self.queue, self.sq, self.sqh, self.sqt = nil
-		registerTraceResult(self)
+		if registerTraceResult(self, stopCB) then
+			return true
+		end
 	end
 	if self.forks and not self.prime then
 		local i, forks = self.res.n, self.forks
 		while i <= #forks do
-			forks[i]:Run()
-			i = i + 1
-			if i <= #forks and stopCB and stopCB(self, i, #forks) then
-				break
+			if forks[i]:Run(stopCB) then
+				return true
 			end
+			i = i + 1
 		end
 	end
 end
@@ -1165,7 +1175,7 @@ end
 function VSI:Clone()
 	local lim, forks = self.forkLimit, self.forks
 	if lim and lim <= (forks and #forks or 0) then
-		(self.prime or self).droppedTraces = true
+		self.res.hadDrops = true
 		return
 	elseif forks == nil then
 		forks = {[0]=self}
@@ -1173,7 +1183,7 @@ function VSI:Clone()
 	local n = setmetatable({}, VSIm)
 	local q, r, s, d = {}, {[self]=n}, self, n
 	self.forks, forks[#forks+1] = forks, n
-	r[self.prime or 0], r[forks] = self.prime, forks
+	r[self.prime or 0], r[self.res or 0], r[forks] = self.prime, self.res, forks
 	r[0] = nil
 	if s.sq then
 		storeShallowCopy(r, s.sq)
@@ -1203,7 +1213,7 @@ function VSI:Clone()
 		q[s] = nil
 		s, d = next(q)
 	end
-	n.prime, n.unfinishedTurn, n.forkID, n.forkOracle = self.prime or self, true, #forks
+	n.prime, n.forkID, n.forkOracle = self.prime or self, #forks
 	return n
 end
 function VSI:AddFightLogOracles(log)
@@ -1239,9 +1249,17 @@ function VSI:AddFightLogOracles(log)
 		for i=1,la and #la or 0 do
 			local li = la[i]
 			local c, t = li.casterBoardIndex, li.type
-			if (c == a or c == b) and t ~= 9 then
+			if t == 9 then
+				local tt = li.targetInfo
+				for i=1,tt and #tt or 0 do
+					local di = tt[i].boardIndex
+					if di == a or di == b then
+						return nil
+					end
+				end
+			elseif (c == a or c == b) then
 				local si = SpellInfo[li.spellID]
-				if (li.type == 7 or not (si and si.thornsATK)) and (li.type ~= 8 or not (si and si.type == "passive"))  then
+				if (t == 7 or not (si and si.thornsATK)) and (t ~= 8 or not (si and si.type == "passive"))  then
 					return c == a
 				end
 			end
@@ -1263,11 +1281,11 @@ local function addActorProps(a)
 end
 function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 	local q, board, nf, pmask, missingSpells = {}, {}, 0, 0
-	for _, f in pairs(team) do
+	for slot, f in pairs(team) do
 		if f.stats then
 			f.attack, f.health, f.maxHealth = f.stats.attack, f.stats.currentHealth, f.stats.maxHealth
 		end
-		local rf = {maxHP=f.maxHealth, curHP=math.max(1,f.health), atk=f.attack, slot=f.boardIndex, name=f.name}
+		local rf = {maxHP=f.maxHealth, curHP=math.max(1,f.health), atk=f.attack, slot=f.boardIndex or slot, name=f.name}
 		for i=1,#f.spells do
 			local s = f.spells[i]
 			local sid = s.autoCombatSpellID
@@ -1340,6 +1358,7 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 		board=board, turn=0, queue=q, sq={}, sqh=1, sqt=0,
 		liveFriends=nf, liveEnemies=#encounters, over=nf == 0,
 		checkpoints={}, boardOrder=boardOrder, bom={[-1]=14},
+		res={min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, n=0},
 		pmask=pmask,
 		forkLimit=forkLimit,
 	}, VSIm)

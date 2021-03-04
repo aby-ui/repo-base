@@ -31,18 +31,18 @@ E.IsTableExact = function(a, b)
 	return true
 end
 
-E.RemoveTableDuplicates = function(dest, src)
+E.RemoveEmptyDuplicateTables = function(dest, src)
 	local copy = {}
 	for k, v in pairs(dest) do
 		local srcV = src[k]
 		if type(v) == 'table' and type(srcV) == 'table' then
-			copy[k] = E.RemoveTableDuplicates(v, srcV)
+			copy[k] = E.RemoveEmptyDuplicateTables(v, srcV)
 		elseif v ~= srcV then
 			copy[k] = v
 		end
 	end
 
-	return copy
+	return next(copy) and copy
 end
 
 E.GetModuleEnabled = function(k)
@@ -129,7 +129,7 @@ function OmniCD_AnchorOnMouseUp(self)
 	local bar = self:GetParent()
 	bar:StopMovingOrSizing()
 	SavePosition(bar)
-	LibStub("AceConfigRegistry-3.0"):NotifyChange("OmniCD")
+	E.lib.ACR:NotifyChange("OmniCD")
 end
 
 E.SetWidth = function(anchor)
@@ -239,4 +239,37 @@ E.UnregisterEvents = function(f, t)
 	end
 end
 
-E.noop = function() end
+E.Noop = function() end
+
+-- BackdropTemplate
+do
+	local RegisteredBackdropFrames = {}
+	local backdropStyle = {}
+
+	E.BackdropTemplate = function(frame, style, bgFile, edgeFile, edgeSize, update)
+		style = style or "default"
+		bgFile = bgFile or E.TEXTURES.White8x8
+		edgeFile = edgeFile or E.TEXTURES.White8x8
+		edgeSize = edgeSize or 1 -- for testing
+
+		local backdrop = backdropStyle[style]
+		if not backdrop or update then
+			backdrop = {
+				bgFile = bgFile,
+				edgeFile = bgFile,
+				edgeSize = edgeSize * E.PixelMult,
+			}
+			backdropStyle[style] = backdrop
+		end
+		RegisteredBackdropFrames[frame] = backdrop
+
+		return backdrop
+	end
+
+	E.UpdateBackdrops = function() -- Fix Pixel
+		for frame, template in pairs(RegisteredBackdropFrames) do
+			template.edgeSize = E.PixelMult / (E.DB.profile.optionPanelScale or 1)
+			frame:SetBackdrop(template)
+		end
+	end
+end

@@ -26,7 +26,8 @@ local extraBarInfo = {
 		desc = L["Jump to Extra Bars settings"],
 		order = 3,
 		type = "execute",
-		func = function(info) LibStub("AceConfigDialog-3.0"):SelectGroup("OmniCD", "Party", info[2], "extraBars", info[#info-1]) end,
+		dialogControl = "Button-OmniCD",
+		func = function(info) E.lib.ACD:SelectGroup("OmniCD", "Party", info[2], "extraBars", info[#info-1]) end,
 	},
 }
 
@@ -72,7 +73,7 @@ local position = {
 				local key = info[2]
 				if E.db == E.DB.profile.Party[key] then
 					if value == "blizz" and not E.DB.profile.Party[key].position.detached and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
-						P:ConfirmReload(E.STR.ENABLE_BLIZZARD_CRF, true)
+						E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 					else
 						if P.test then
 							P:Test()
@@ -116,6 +117,7 @@ local position = {
 			desc = E.STR.MAX_RANGE,
 			order = 5,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = -999, max = 999, softMin = -100, softMax = 100, step = 1,
 		},
 		offsetY = {
@@ -123,6 +125,7 @@ local position = {
 			desc = E.STR.MAX_RANGE,
 			order = 6,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = -999, max = 999, softMin = -100, softMax = 100, step = 1,
 		},
 		lb1 = {
@@ -149,6 +152,7 @@ local position = {
 			desc = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Set the number of icons per column"] or L["Set the number of icons per row"] end,
 			order = 12,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = 1, max = 100, softMax = 20, step = 1,
 		},
 		paddingX = {
@@ -156,6 +160,7 @@ local position = {
 			desc = L["Set the padding space between icon columns"],
 			order = 13,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = -5, max = 100, softMax = 10, step = 1,
 		},
 		paddingY = {
@@ -163,6 +168,7 @@ local position = {
 			desc = L["Set the padding space between icon rows"],
 			order = 14,
 			type = "range",
+			dialogControl = "Slider-OmniCD",
 			min = -5, max = 100, softMax = 10, step = 1,
 		},
 		displayInactive = {
@@ -198,7 +204,7 @@ local position = {
 
 						if E.db == E.DB.profile.Party[key] then
 							if not state and E.customUF.active == "blizz" and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
-								P:ConfirmReload(E.STR.ENABLE_BLIZZARD_CRF, true)
+								E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 							end
 							P:ConfigBars(key, "detached") -- [48]
 							P:UpdatePosition()
@@ -216,6 +222,7 @@ local position = {
 					desc = L["Reset frame position"],
 					order = 3,
 					type = "execute",
+					dialogControl = "Button-OmniCD",
 					func = function(info)
 						local key = info[2]
 						for k, v in pairs(E.DB.profile.Party[key].manualPos) do

@@ -6,6 +6,7 @@
 	<Script file="core.lua"/>
 	<Script file="general.lua"/>
 	<Script file="spellEditor.lua"/>
+	<Script file="profileSharing.lua"/>
 
 	<!-- Party -->
 	<Script file="Party\core.lua"/>
