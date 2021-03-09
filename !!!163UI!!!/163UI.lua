@@ -26,29 +26,9 @@ CoreAddEvent("INIT_COMPLETED")
 
 local addonToLoad = {}
 
--- Plexus插件必须依赖Grid或Plexus之一，否则报错，暴雪没有这种语义
-local SpecialDependencies = {
-    ["PlexusStatusRaidDebuff"] = { "Grid", "Plexus" }
-}
-local ForceDisables = {}
-for addon, deps in pairs(SpecialDependencies) do
-    if select(5, GetAddOnInfo(addon)) ~= "MISSING" then
-        local mustDisable = true
-        for _, dep in ipairs(deps) do
-            if GetAddOnEnableState(UnitName("player"), dep) ~= 0 then
-                mustDisable = false
-                break
-            end
-        end
-        if mustDisable then
-            ForceDisables[addon:lower()] = true
-            DisableAddOn(addon)
-        end
-    end
-end
-
 local defaultDB = {
     --checkVendor = 1, --无爱不易标记的插件但是在整合包列表中，是否算爱不易的。现在用 UI163_USER_MODE
+    first_run = true,
     selectedTag = UI163_USER_MODE and "ALL" or "ABYUI",
     showOrigin = nil, --插件原名
     disableLaterLoading = false,
@@ -1511,7 +1491,6 @@ local function processAceDBs()
     end
 end
 
-
 local function processDefaultEnable()
     --2020.10 似乎暴雪在版本或插件TOC版本号改变时会强制设置全部插件为开启状态
     -- 所以如果发现之前的buildinfo和现在的buildinfo不一样，则强制使用db的插件开启状态
@@ -1589,6 +1568,31 @@ local function processDefaultEnable()
     end
 end
 
+-- PlexusStatusRaidDebuff必须依赖Grid或Plexus之一，否则报错，暴雪没有这种语义
+local function processSpecialDeps()
+    local SpecialDependencies = {
+        ["PlexusStatusRaidDebuff"] = { "Grid", "Plexus" }
+    }
+    local ForceDisables = {}
+    for addon, deps in pairs(SpecialDependencies) do
+        if select(5, GetAddOnInfo(addon)) ~= "MISSING" then
+            local mustDisable = true
+            for _, dep in ipairs(deps) do
+                if GetAddOnEnableState(UnitName("player"), dep) ~= 0 then
+                    mustDisable = false
+                    break
+                end
+            end
+            if mustDisable then
+                ForceDisables[addon:lower()] = true
+                if GetAddOnEnableState(UnitName("player"), addon) ~= 0 then
+                    DisableAddOn(addon)
+                end
+            end
+        end
+    end
+end
+
 local EnableOrLoadDependencies
 
 function U1:ADDON_LOADED(event, name)
@@ -1657,8 +1661,22 @@ function U1:ADDON_LOADED(event, name)
             for j=1,#pageself do deepLoad(pageself[j]) end
         end
 
+        --新用户第一次用的时候关闭全部单体插件，经测试(2021.3)，暴雪角色A修改插件设置进角色B，仍然是默认值，但是如果在任务选择界面选中角色然后修改插件，则能生效
+        if U1DB.first_run then
+            U1DB.first_run = nil
+            for k, info in pairs(addonInfo) do
+                if not info.registered then
+                    DisableAddOn(k)
+                    info.originEnabled = true
+                end
+            end
+        end
+
         -- Deal with info.defaultEnable property
         processDefaultEnable()
+
+        -- Must be called after processDefaultEnable
+        processSpecialDeps()
 
         --这里再打开
         for name,info in pairs(addonInfo) do

@@ -209,7 +209,7 @@ function TidyPlatesUtility.GetUnitQuestInfo(unit)
                 isGroup = true
             end
 
-            local progText = nextIsProgess and nextText or TooltipScanner:GetNextLine()
+            local progText = nextIsProgess and nextText or TooltipScanner:GetNextLine() or ""
             quest.progress = progText:match("(%d+/%d+)")
                              or progText:match("([%d%.]+%%)")
                              or progText

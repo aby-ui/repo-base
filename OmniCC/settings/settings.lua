@@ -142,6 +142,7 @@ function Addon:UpgradeDB()
     if dbVersion ~= DB_VERSION then
         if dbVersion == nil then
             self:MigrateLegacySettings(_G[LEGACY_DB_NAME])
+            dbVersion = DB_VERSION
         end
 
         if dbVersion < 6 then
