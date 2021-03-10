@@ -733,7 +733,6 @@ end
 
 OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\MiniMap"):Point("TOPLEFT",15,5):Size(140,140):Color(.9,.9,.9,1)
 OptionsFrame.image2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\ExRT\\media\\Aura73","BORDER"):Point("CENTER",OptionsFrame.image,"CENTER",0,0):Size(140*2,140*2):Color(.9,.9,.45,1)
-
 OptionsFrame.image2:SetAlpha(0)
 OptionsFrame.title = ELib:Text(OptionsFrame,"Exorsus Raid Tools",28):Point("LEFT",OptionsFrame.image,"RIGHT",20,0):Color()
 

@@ -1,4 +1,4 @@
-﻿## Interface: 90002
+﻿## Interface: 90005
 ## Title: SwingBar
 ## Notes: Shows the progress of the normal attack
 ## Author: 独孤傲雪,Warbaby

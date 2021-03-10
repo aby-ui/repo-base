@@ -210,7 +210,7 @@ local GetDistance_Point = DF.GetDistance_Point
 			end
 
 			--hook onclick from the start group button
-			LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnClick", function(self)
+			LFGListSearchPanelScrollFrameScrollChild.StartGroupButton:HookScript("OnClick", function(self)
 				--only work for category quest
 				local selectedCategory = LFGListFrame.SearchPanel.categoryID
 				if (selectedCategory ~= 1 and selectedCategory ~= 6) then
@@ -368,7 +368,7 @@ local GetDistance_Point = DF.GetDistance_Point
 				restoreFrames()
 			end)
 
-			LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnClick", function()
+			LFGListSearchPanelScrollFrameScrollChild.StartGroupButton:HookScript("OnClick", function()
 
 				--hide the ff
 				ff.WasLFGWindowOpened = true
@@ -1590,3 +1590,221 @@ end
 		end
 		GameCooltip:AddMenu (2, ff.SetGroupLeaveTimeoutFunc, 60)
 	end
+
+--> anti spam
+
+local kspam = CreateFrame("frame")
+
+function kspam.OnClickConfigButton()
+
+	if (WorldQuestTrackerKspamOptionsFrame) then
+		if (WorldQuestTrackerKspamOptionsFrame:IsShown()) then
+			WorldQuestTrackerKspamOptionsFrame:Hide()
+			return
+		end
+
+		WorldQuestTrackerKspamOptionsFrame:Show()
+		return
+	end
+
+	local kspamOptions = WorldQuestTrackerKspamOptionsFrame or CreateFrame("frame", "WorldQuestTrackerKspamOptionsFrame", UIParent, "BackdropTemplate")
+	kspamOptions:SetSize(250, 200)
+	kspamOptions:SetPoint("center", UIParent, "center", 0, 0)
+	kspamOptions:SetFrameStrata("FULLSCREEN")
+	kspamOptions:SetMovable(true)
+	kspamOptions:EnableMouse(true)
+	kspamOptions:RegisterForDrag()
+
+	--skin
+	DF:ApplyStandardBackdrop(kspamOptions)
+
+	--title
+	kspamOptions.titleBar = DF:CreateTitleBar(kspamOptions, "World  Quest Tracker Dungeon")
+
+	local options = {
+		--filter #ads (default enabled)
+		{
+			type = "toggle",
+			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.enabled end,
+			set = function (self, fixedparam, value)
+				WorldQuestTracker.db.profile.groupfinder.kfilter.enabled = value
+			end,
+			name = "Ad-Blocker Enabled",
+			desc = "Ad-Blocker Enabled",
+		},
+
+		--auto ignore leader
+		{
+			type = "toggle",
+			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_leaders_enabled end,
+			set = function (self, fixedparam, value)
+				WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_leaders_enabled = value
+			end,
+			name = "Ignore Leader From Ads",
+			desc = "Ignore Leader From Ads",
+		},
+
+		--purge list of banned leaders
+		{
+			type = "execute",
+			func = function()
+				table.wipe(WorldQuestTracker.db.profile.groupfinder.kfilter.leaders_ignored)
+				--feedback
+				WorldQuestTracker:Msg("Leaders list wiped.")
+			end,
+			name = "Wipe Leaders Ignored",
+			desc = "Wipe Leaders Ignored",
+		},
+
+		{type = "blank"},
+		
+		--ignore group by time since the group creation
+		{
+			type = "range",
+			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_by_time end,
+			set = function (self, fixedparam, value)
+				WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_by_time = value
+			end,
+			min = 1,
+			max = 60,
+			step = 1,
+			name = "Time Limit in Minutes",
+			desc = "Don't show groups where created time is bigger than 'X' minutes ago.",
+		},
+
+		{type = "blank"},
+
+		--[=[]]
+		{
+			type = "toggle",
+			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.show_button end,
+			set = function (self, fixedparam, value)
+				WorldQuestTracker.db.profile.groupfinder.kfilter.show_button = value
+			end,
+			name = "Show Options Button",
+			desc = "Show Options Button",
+		},
+		--]=]
+		
+	}
+
+	local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
+	local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+	local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+	local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
+	local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+
+	DF:BuildMenu(kspamOptions, options, 5, -30, 360, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+end
+
+local configButton = DF:CreateButton(LFGListFrame.SearchPanel, kspam.OnClickConfigButton, 70, 20, "options")
+local options_button_template = DF.table.copy({}, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+options_button_template.backdropcolor = {.2, .2, .2, .6}
+options_button_template.backdropbordercolor = {0, 0, 0, 1}
+configButton:SetTemplate(options_button_template)
+
+if (UsePFGButton) then
+	configButton:SetPoint("right", UsePFGButton, "left", -8, 0)
+else
+	configButton:SetPoint("right", LFGListFrame.SearchPanel.RefreshButton, "left", -5, 0)
+end
+configButton:Hide()
+
+kspam:SetScript("OnUpdate", function()
+	if (LFGListFrame:IsShown()) then
+		local selectedCategory = LFGListFrame.SearchPanel.categoryID
+		if (selectedCategory == 2) then
+			configButton:Show()
+		else
+			configButton:Hide()
+		end
+	end
+end)
+
+function kspam.OnSortResults(results)
+	--check if the feature is enabled
+	if (not WorldQuestTracker.db.profile.groupfinder.kfilter.enabled) then
+		return
+	end
+
+	--check if the result received is from the dungeon section
+	local selectedCategory = LFGListFrame.SearchPanel.categoryID
+	if (selectedCategory ~= 2) then
+		return
+	end
+
+	return kspam.FilterSortedResult(results)
+end
+
+function kspam.FilterSortedResult(results)
+
+	local maxAge = WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_by_time * 60
+
+	for i = #results, 1, -1 do
+		--get the result id
+		local resultId = results[i]
+		--get the search result info
+		local searchResultInfo1 = C_LFGList.GetSearchResultInfo(resultId)
+		--get the leader name
+		local leaderName = searchResultInfo1.leaderName
+		local leaderLevel = searchResultInfo1.leaderLevel
+
+		local canAdd = true
+
+		--cut immediatelly if the leader isn't at level 60
+		if (leaderLevel and leaderLevel < 60) then
+			tremove(results, i)
+			canAdd = false
+		end
+
+		--check if this character isn't in the black list
+		if (WorldQuestTracker.db.profile.groupfinder.kfilter.leaders_ignored[leaderName]) then
+			tremove(results, i)
+			canAdd = false
+		end
+
+		if (searchResultInfo1 and not searchResultInfo1.isDelisted and canAdd) then
+			--cut by age (default 30 minutes)
+			if (searchResultInfo1.age > maxAge) then
+				canAdd = false
+			
+			elseif (searchResultInfo1.voiceChat ~= "") then
+				canAdd = false
+			end
+
+			if (not canAdd) then
+				tremove(results, i)
+				if (searchResultInfo1.leaderName) then
+					if (WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_leaders_enabled) then
+						WorldQuestTracker.db.profile.groupfinder.kfilter.leaders_ignored[searchResultInfo1.leaderName] = true
+					end
+				end
+			end
+
+			--[[ searchResultInfo1 members
+				.name
+				.autoAccept
+				.age
+				.comment
+				.numGuildMates
+				.leaderName
+				.leaderLevel
+				.activityID
+				.numBNetFriends
+				.numMembers
+				.requiredItemLevel
+				.searchResultID
+				.voiceChat
+				.requiredHonorLevel
+				.isDelisted
+				.numCharFriends
+			--]]
+		end
+	end
+end
+
+hooksecurefunc("LFGListUtil_SortSearchResults", kspam.OnSortResults)
+
+
+
+

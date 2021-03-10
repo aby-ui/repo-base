@@ -91,6 +91,8 @@
 	
 	local tooltip_temp_table = {}
 
+	local OBJECT_TYPE_FRIENDLY_NPC 	=	0x00000A18
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> exported functions
 
@@ -201,6 +203,20 @@
 							return false
 						end
 						return true
+					end
+				end
+				return false
+			end
+
+			function Details:IsFriendlyNpc()
+				local flag = self.flag_original
+				if (flag) then
+					if (bit.band(flag, 0x00000008) ~= 0) then
+						if (bit.band(flag, 0x00000010) ~= 0) then
+							if (bit.band(flag, 0x00000800) ~= 0) then
+								return true
+							end
+						end
 					end
 				end
 				return false

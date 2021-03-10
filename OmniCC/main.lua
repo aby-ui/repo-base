@@ -73,6 +73,8 @@ function Addon:PLAYER_ENTERING_WORLD()
 end
 
 function Addon:PLAYER_LOGIN()
+    if not self.db.global.disableBlizzardCooldownText then return end
+
     -- disable and preserve the user's blizzard cooldown count setting
     self.countdownForCooldowns = GetCVar('countdownForCooldowns')
     if self.countdownForCooldowns ~= '0' then
@@ -81,6 +83,8 @@ function Addon:PLAYER_LOGIN()
 end
 
 function Addon:PLAYER_LOGOUT()
+    if not self.db.global.disableBlizzardCooldownText then return end
+
     -- return the setting to whatever it was originally on logout
     -- so that the user can uninstall omnicc and go back to what they had
     local countdownForCooldowns = GetCVar('countdownForCooldowns')

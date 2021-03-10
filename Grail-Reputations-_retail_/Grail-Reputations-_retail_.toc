@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Grail |cff69ccf0Reputations |r|cff0000ffRetail|r
 ## Author: Scott M Harrison
 ## Notes: Provides reputation award information to Grail for Retail

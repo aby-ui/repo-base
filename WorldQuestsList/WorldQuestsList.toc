@@ -1,7 +1,7 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: World Quests List
 ## Author: ykiigor
-## Version: 99
+## Version: 100
 ## SavedVariables: VWQL
 db.lua
 util.lua

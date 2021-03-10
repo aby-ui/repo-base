@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Shadowed Unit Frames
 ## Notes: Moooooooooooooooooo
 ## Author: Shadowed

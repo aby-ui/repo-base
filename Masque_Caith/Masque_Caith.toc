@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Masque: Caith
 
 ## Notes: Caith skin for Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Caith для Masque.
 ## Notes-zhTW: Masque的Caith皮膚。
 
-## Version: 9.0.1
+## Version: 9.0.5
 ## Author: StormFX
 ## Dependencies: Masque
 

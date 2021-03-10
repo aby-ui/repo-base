@@ -1,8 +1,9 @@
-local Lib = LibStub and LibStub("DRList-1.0")
+local Lib, version = LibStub("DRList-1.0")
+if Lib.spellList and version >= 20 then return end
 
 if Lib.gameExpansion == "retail" then
 
-    -- SpellID list for Retail WoW
+    -- SpellID list for Retail WoW (always latest expansion)
     Lib.spellList = {
         -- Disorients
         [207167]  = "disorient",       -- Blinding Sleet
@@ -205,7 +206,7 @@ if Lib.gameExpansion == "retail" then
 --      [287712]  = "knockback",        -- Haywire (Kul'Tiran Racial)
     }
 
-else
+elseif Lib.gameExpansion == "classic" then
 
     -- Spell list for Classic (WIP)
     -- In Classic the spell ID payload is gone from the combat log, so we need the key here to be
@@ -303,6 +304,10 @@ else
         [GetSpellInfo(13181)]   = { category = "mind_control", spellID = 13181 },  -- Gnomish Mind Control Cap
         [GetSpellInfo(8056)]    = { category = "frost_shock", spellID = 8056 },    -- Frost Shock
     }
+elseif Lib.gameExpansion == "tbc" then
+    Lib.spellList = {}
+else
+    error("DRList-1.0: Unsupported game expansion loaded.")
 end
 
 -- Alias for DRData-1.0

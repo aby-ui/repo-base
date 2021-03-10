@@ -604,13 +604,26 @@ function atributo_misc:DeadAtualizarBarra (morte, whichRowLine, colocacao, insta
 			esta_barra.icone_classe:SetTexture (instancia.row_info.spec_file)
 			esta_barra.icone_classe:SetTexCoord (_unpack (_detalhes.class_specs_coords [spec]))
 		else
-			esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
-			esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [morte[4]]))
+			if (CLASS_ICON_TCOORDS [morte[4]]) then
+				esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
+				esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [morte[4]]))
+			else
+				local texture, l, r, t, b = Details:GetUnknownClassIcon()
+				esta_barra.icone_classe:SetTexture(texture)
+				esta_barra.icone_classe:SetTexCoord(l, r, t, b)
+			end
 		end
 	else
-		esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
-		esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [morte[4]]))
+		if (CLASS_ICON_TCOORDS [morte[4]]) then
+			esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
+			esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [morte[4]]))
+		else
+			local texture, l, r, t, b = Details:GetUnknownClassIcon()
+			esta_barra.icone_classe:SetTexture(texture)
+			esta_barra.icone_classe:SetTexCoord(l, r, t, b)
+		end
 	end
+	
 	esta_barra.icone_classe:SetVertexColor (1, 1, 1)
 	
 	if (esta_barra.mouse_over and not instancia.baseframe.isMoving) then --> precisa atualizar o tooltip

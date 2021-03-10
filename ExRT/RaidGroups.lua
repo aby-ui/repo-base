@@ -283,7 +283,7 @@ function module.options:Load()
 		end
 
 		--reports saying that too many swap events can trigger disconnect on classic, unconfirmed cause: other addons or pure swap events
-		if ExRT.isClassic and not IsShiftKeyDown() then
+		if ExRT.isClassic and not VExRT.RaidGroups.KeepPosInGroup then
 			wipe(needPosInGroup)
 		end
 
@@ -297,6 +297,14 @@ function module.options:Load()
 
 		module:ProcessRoster()
 	end) 
+
+	self.keepPosCheck = ELib:Check(self,L.RaidGroupsKeepPosInGroup,VExRT.RaidGroups.KeepPosInGroup):Point("BOTTOMLEFT",self.processRoster,"BOTTOMRIGHT",5,0):OnClick(function(self) 
+		if self:GetChecked() then
+			VExRT.RaidGroups.KeepPosInGroup = true
+		else
+			VExRT.RaidGroups.KeepPosInGroup = nil
+		end
+	end):Shown(ExRT.isClassic)
 
 	self.presetList = ELib:ScrollList(self):Size(190,505):Point("TOPRIGHT",-10,-40):AddDrag()
 	ELib:Text(self,L.RaidGroupsQuickLoad..":"):Point("BOTTOMLEFT",self.presetList,"TOPLEFT",5,3):Color():Shadow()

@@ -814,6 +814,14 @@ function RSConfigDB.SetShowingLootCanimogitTooltip(value)
 	private.db.loot.tooltipsCanImogit = value
 end
 
+function RSConfigDB.IsShowingCovenantRequirement()
+	return private.db.loot.covenantRequirement
+end
+
+function RSConfigDB.SetShowingCovenantRequirement(value)
+	private.db.loot.covenantRequirement = value
+end
+
 ---============================================================================
 -- Navigator options
 ---============================================================================

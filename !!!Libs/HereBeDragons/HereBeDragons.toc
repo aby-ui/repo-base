@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Lib: HereBeDragons
 ## Notes: HereBeDragons is a data API for the World of Warcraft mapping system
 ## Author: Nevcairiel

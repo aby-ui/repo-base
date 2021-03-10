@@ -217,7 +217,7 @@ local function InspectNext()
 end
 
 local function InspectQueue()
-	if ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
+	if RaidInCombat() or ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
 		return
 	end
 	local n = GetNumGroupMembers() or 0
@@ -570,6 +570,7 @@ do
 		end
 		cooldownsModule:UpdateAllData()
 	end
+	module.InspectItems = InspectItems
 end
 
 hooksecurefunc("NotifyInspect", function() module.db.inspectID = GetTime() module.db.inspectCleared = nil end)
@@ -725,103 +726,137 @@ end
 do
 	local lastInspectTime = {}
 	function module.main:INSPECT_READY(arg)
-		if not module.db.inspectCleared then
-			ExRT.F.dprint('INSPECT_READY',arg)
-			if not arg then 
+		if module.db.inspectCleared or RaidInCombat() then
+			return
+		end
+		ExRT.F.dprint('INSPECT_READY',arg)
+		if not arg then 
+			return
+		end
+		local currTime = GetTime()
+		if lastInspectTime[arg] and (currTime - lastInspectTime[arg]) < 0.2 then
+			return
+		end
+		lastInspectTime[arg] = currTime
+		local _,_,_,race,_,name,realm = GetPlayerInfoByGUID(arg)
+		if name then
+			if realm and realm ~= "" then name = name.."-"..realm end
+			local inspectedName = name
+			if UnitName("target") == DelUnitNameServer(name) then 
+				inspectedName = "target"
+			elseif not UnitName(name) then
 				return
 			end
-			local currTime = GetTime()
-			if lastInspectTime[arg] and (currTime - lastInspectTime[arg]) < 0.2 then
-				return
+			module:ResetTimer()
+			local _,class,classID = UnitClass(inspectedName)
+
+			for i,slotID in pairs(module.db.itemsSlotTable) do
+				local link = GetInventoryItemLink(inspectedName, slotID)
 			end
-			lastInspectTime[arg] = currTime
-			local _,_,_,race,_,name,realm = GetPlayerInfoByGUID(arg)
-			if name then
-				if realm and realm ~= "" then name = name.."-"..realm end
-				local inspectedName = name
-				if UnitName("target") == DelUnitNameServer(name) then 
-					inspectedName = "target"
-				elseif not UnitName(name) then
-					return
-				end
-				module:ResetTimer()
-				local _,class,classID = UnitClass(inspectedName)
+			ScheduleTimer(InspectItems, inspectForce and 0.65 or 1.3, name, inspectedName, module.db.inspectID)
+			if not inspectForce then
+				--ScheduleTimer(InspectItems, 2.3, name, inspectedName, module.db.inspectID)
+			end
 
-				for i,slotID in pairs(module.db.itemsSlotTable) do
-					local link = GetInventoryItemLink(inspectedName, slotID)
-				end
-				ScheduleTimer(InspectItems, inspectForce and 0.65 or 1.3, name, inspectedName, module.db.inspectID)
-				if not inspectForce then
-					--ScheduleTimer(InspectItems, 2.3, name, inspectedName, module.db.inspectID)
-				end
-
-				if module.db.inspectDB[name] and module.db.inspectItemsOnly[name] and not module.db.inspectNotItemsOnly[name] then
-					module.db.inspectItemsOnly[name] = nil
-					return
-				end
+			if module.db.inspectDB[name] and module.db.inspectItemsOnly[name] and not module.db.inspectNotItemsOnly[name] then
 				module.db.inspectItemsOnly[name] = nil
-				module.db.inspectNotItemsOnly[name] = nil
+				return
+			end
+			module.db.inspectItemsOnly[name] = nil
+			module.db.inspectNotItemsOnly[name] = nil
 
-				if module.db.inspectDB[name] then
-					wipe(module.db.inspectDB[name])
-				else
-					module.db.inspectDB[name] = {}
+			if module.db.inspectDB[name] then
+				wipe(module.db.inspectDB[name])
+			else
+				module.db.inspectDB[name] = {}
+			end
+			local data = module.db.inspectDB[name]
+
+			data.spec = floor( GetInspectSpecialization(inspectedName) + 0.5 )
+			if data.spec < 1000 then
+				VExRT.ExCD2.gnGUIDs[name] = data.spec
+			end
+			data.class = class
+			data.classID = classID
+			data.level = UnitLevel(inspectedName)
+			data.race = race
+			data.time = time()
+			data.GUID = UnitGUID(inspectedName)
+			data.lastUpdate = currTime
+			data.lastUpdateTime = time()
+
+			local specIndex = 1
+			for i=1,GetNumSpecializationsForClassID(classID) do
+				if GetSpecializationInfoForClassID(classID,i) == data.spec then
+					specIndex = i
+					break
 				end
-				local data = module.db.inspectDB[name]
+			end
+			data.specIndex = specIndex
 
-				data.spec = floor( GetInspectSpecialization(inspectedName) + 0.5 )
-				if data.spec < 1000 then
-					VExRT.ExCD2.gnGUIDs[name] = data.spec
-				end
-				data.class = class
-				data.classID = classID
-				data.level = UnitLevel(inspectedName)
-				data.race = race
-				data.time = time()
-				data.GUID = UnitGUID(inspectedName)
-				data.lastUpdate = currTime
-				data.lastUpdateTime = time()
+			for i=1,7 do
+				data[i] = 0
+			end
+			data.talentsIDs = {}
 
-				local specIndex = 1
-				for i=1,GetNumSpecializationsForClassID(classID) do
-					if GetSpecializationInfoForClassID(classID,i) == data.spec then
-						specIndex = i
-						break
+			local classTalents = cooldownsModule.db.spell_talentsList[class]
+			if classTalents then
+				for _,list in pairs(classTalents) do
+					for _,spellID in pairs(list) do
+						cooldownsModule.db.session_gGUIDs[name] = -spellID
 					end
 				end
-				data.specIndex = specIndex
+			end
+			cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
 
-				for i=1,7 do
-					data[i] = 0
+			for spellID,specID in pairs(cooldownsModule.db.spell_autoTalent) do
+				if specID == data.spec then
+					cooldownsModule.db.session_gGUIDs[name] = {spellID,"autotalent"}
 				end
-				data.talentsIDs = {}
+			end
 
-				local classTalents = cooldownsModule.db.spell_talentsList[class]
-				if classTalents then
-					for _,list in pairs(classTalents) do
-						for _,spellID in pairs(list) do
-							cooldownsModule.db.session_gGUIDs[name] = -spellID
+			for i=0,20 do
+				local row,col = (i-i%3)/3+1,i%3+1
+
+				local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(row,col,specIndex,true,inspectedName)
+				if selected then
+					data[row] = col
+					data.talentsIDs[row] = talentID
+				end
+
+				--------> ExCD2
+				if spellID then
+					local list = cooldownsModule.db.spell_talentsList[class]
+					if not list then
+						list = {}
+						cooldownsModule.db.spell_talentsList[class] = list
+					end
+
+					list[specIndex] = list[specIndex] or {}
+
+					list[specIndex][i+1] = spellID
+					if selected or grantedByAura then
+						cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+
+						if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+							for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+								cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+							end
 						end
 					end
+
+					cooldownsModule.db.spell_isTalent[spellID] = true
 				end
-				cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
+				--------> /ExCD2
+			end
 
-				for spellID,specID in pairs(cooldownsModule.db.spell_autoTalent) do
-					if specID == data.spec then
-						cooldownsModule.db.session_gGUIDs[name] = {spellID,"autotalent"}
-					end
-				end
+			for i=1,4 do
+				local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
+				if talentID then
+					data[i+7] = 1
+					data.talentsIDs[i+7] = talentID
 
-				for i=0,20 do
-					local row,col = (i-i%3)/3+1,i%3+1
-
-					local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(row,col,specIndex,true,inspectedName)
-					if selected then
-						data[row] = col
-						data.talentsIDs[row] = talentID
-					end
-
-					--------> ExCD2
+					local _, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetPvpTalentInfoByID(talentID)
 					if spellID then
 						local list = cooldownsModule.db.spell_talentsList[class]
 						if not list then
@@ -829,53 +864,20 @@ do
 							cooldownsModule.db.spell_talentsList[class] = list
 						end
 
-						list[specIndex] = list[specIndex] or {}
+						list[-1] = list[-1] or {}
 
-						list[specIndex][i+1] = spellID
-						if selected or grantedByAura then
-							cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+						list[-1][spellID] = spellID
 
-							if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
-								for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
-									cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
-								end
-							end
-						end
+						cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
 
-						cooldownsModule.db.spell_isTalent[spellID] = true
-					end
-					--------> /ExCD2
-				end
-
-				for i=1,4 do
-					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
-					if talentID then
-						data[i+7] = 1
-						data.talentsIDs[i+7] = talentID
-
-						local _, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetPvpTalentInfoByID(talentID)
-						if spellID then
-							local list = cooldownsModule.db.spell_talentsList[class]
-							if not list then
-								list = {}
-								cooldownsModule.db.spell_talentsList[class] = list
-							end
-
-							list[-1] = list[-1] or {}
-
-							list[-1][spellID] = spellID
-
-							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
-
-							--cooldownsModule.db.spell_isTalent[spellID] = true
-							cooldownsModule.db.spell_isPvpTalent[spellID] = true
-						end
+						--cooldownsModule.db.spell_isTalent[spellID] = true
+						cooldownsModule.db.spell_isPvpTalent[spellID] = true
 					end
 				end
-				InspectItems(name, inspectedName, module.db.inspectID)
-
-				cooldownsModule:UpdateAllData() 	--------> ExCD2
 			end
+			InspectItems(name, inspectedName, module.db.inspectID)
+
+			cooldownsModule:UpdateAllData() 	--------> ExCD2
 		end
 	end
 end
@@ -884,6 +886,9 @@ do
 	local lastInspectTime,lastInspectGUID = 0
 	module.db.acivementsIDs = {} 
 	function module.main:INSPECT_ACHIEVEMENT_READY(guid)
+		if RaidInCombat() then
+			return
+		end
 		ExRT.F.dprint('INSPECT_ACHIEVEMENT_READY',guid)
 		if module.db.achievementCleared then
 			C_Timer.NewTimer(.3,ClearAchievementComparisonUnit)	--prevent client crash on opening statistic 
@@ -1198,7 +1203,9 @@ function module.main:ENCOUNTER_START_SIM()
 end
 
 function module:ParseSoulbind(sender,main)
-	cooldownsModule:ClearSessionDataReason(sender,"soulbind")
+	if cooldownsModule:IsEnabled() then
+		cooldownsModule:ClearSessionDataReason(sender,"soulbind")
+	end
 
 	local inspectData = module.db.inspectDB[sender]
 	if inspectData then
@@ -1209,14 +1216,18 @@ function module:ParseSoulbind(sender,main)
 
 	local _,covenantID,soulbindID,tree = strsplit(":",main,4)
 	covenantID = tonumber(covenantID)
-	cooldownsModule:AddCovenant(sender,covenantID)
+	if cooldownsModule:IsEnabled() then
+		cooldownsModule:AddCovenant(sender,covenantID)
+	end
 	while tree do
 		local powerStr,on = strsplit(":",tree,2)
 		tree = on
 
 		local spellID = tonumber(powerStr)
 		if spellID then
-			cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+			if cooldownsModule:IsEnabled() then
+				cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+			end
 			if inspectData then
 				inspectData[spellID] = 1
 			end
@@ -1228,8 +1239,10 @@ function module:ParseSoulbind(sender,main)
 				conduitRank = tonumber(conduitRank) or 0
 				spellID = C_Soulbinds.GetConduitSpellID(conduitID,conduitRank)
 
-				cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
-				cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
+				if cooldownsModule:IsEnabled() then
+					cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
+					cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
+				end
 				if inspectData then
 					inspectData[spellID] = conduitRank
 				end
@@ -1252,36 +1265,40 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 
 				local key = main:sub(1,1)
 				if key == "E" then
-					cooldownsModule:ClearSessionDataReason(sender,"essence")
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"essence")
 
-					local essencePowers = module:GetEssenceDataByKey()
-
-					local _,tiers,list = strsplit(":",main,3)
-					local count = 0
-					while list do
-						local now,on = strsplit(":",list,2)
-						list = on
-						count = count + 1
-						local tier = tiers:sub(count,count)
-						now = tonumber(now)
-						tier = tonumber(tier)
-						local e = essencePowers[now]
-						if e then
-							if count == 1 then	--major
+						local essencePowers = module:GetEssenceDataByKey()
+	
+						local _,tiers,list = strsplit(":",main,3)
+						local count = 0
+						while list do
+							local now,on = strsplit(":",list,2)
+							list = on
+							count = count + 1
+							local tier = tiers:sub(count,count)
+							now = tonumber(now)
+							tier = tonumber(tier)
+							local e = essencePowers[now]
+							if e then
+								if count == 1 then	--major
+									for l=tier,1,-1 do
+										local ess = e[l]
+										cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
+									end
+								end
 								for l=tier,1,-1 do
-									local ess = e[l]
+									local ess = e[l*(-1)]
 									cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
 								end
+								--print(sender,'added essence',e.id,e.name)
 							end
-							for l=tier,1,-1 do
-								local ess = e[l*(-1)]
-								cooldownsModule.db.session_gGUIDs[sender] = {ess.spellID,"essence"}
-							end
-							--print(sender,'added essence',e.id,e.name)
 						end
 					end
 				elseif key == "T" then
-					cooldownsModule:ClearSessionDataReason(sender,"talent")
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"talent")
+					end
 
 					local inspectData = module.db.inspectDB[sender]
 					local row = 0
@@ -1293,7 +1310,7 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 
 						spellID = tonumber(spellID or "?")
 						if spellID then
-							if spellID ~= 0 then
+							if spellID ~= 0 and cooldownsModule:IsEnabled() then
 								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
 								cooldownsModule.db.spell_isTalent[spellID] = true
 								--print(sender,'added talent',spellID)
@@ -1308,35 +1325,39 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						end
 					end
 				elseif key == "A" then
-					cooldownsModule:ClearSessionDataReason(sender,"azerite")
-
-					local _,list = strsplit(":",main,2)
-					while list do
-						local powerID,on = strsplit(":",list,2)
-						list = on
-
-						powerID = tonumber(powerID or "?")
-						if powerID and powerID ~= 0 then
-							local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
-							if powerData then
-								local spellID = powerData.spellID
-								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"azerite"}
-								cooldownsModule.db.spell_isAzeriteTalent[spellID] = true
-								--print(sender,'added azerite',powerID)
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"azerite")
+	
+						local _,list = strsplit(":",main,2)
+						while list do
+							local powerID,on = strsplit(":",list,2)
+							list = on
+	
+							powerID = tonumber(powerID or "?")
+							if powerID and powerID ~= 0 then
+								local powerData = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
+								if powerData then
+									local spellID = powerData.spellID
+									cooldownsModule.db.session_gGUIDs[sender] = {spellID,"azerite"}
+									cooldownsModule.db.spell_isAzeriteTalent[spellID] = true
+									--print(sender,'added azerite',powerID)
+								end
 							end
 						end
 					end
 				elseif key == "L" then
-					cooldownsModule:ClearSessionDataReason(sender,"legendary")
-
-					local _,list = strsplit(":",main,2)
-					while list do
-						local spellID,on = strsplit(":",list,2)
-						list = on
-
-						spellID = tonumber(spellID or "?")
-						if spellID and spellID ~= 0 then
-							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"legendary"}
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"legendary")
+	
+						local _,list = strsplit(":",main,2)
+						while list do
+							local spellID,on = strsplit(":",list,2)
+							list = on
+	
+							spellID = tonumber(spellID or "?")
+							if spellID and spellID ~= 0 then
+								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"legendary"}
+							end
 						end
 					end
 				elseif key == "S" then
@@ -1353,7 +1374,9 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 
 					VExRT.Inspect.Soulbinds[senderFull] = time()..main:sub(2)
 				elseif key == "t" and ExRT.isClassic then
-					cooldownsModule:ClearSessionDataReason(sender,"talent")
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"talent")
+					end
 
 					local _,list = strsplit(":",main,2)
 					while list do
@@ -1361,7 +1384,7 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						list = on
 
 						spellID = tonumber(spellID or "?")
-						if spellID and spellID ~= 0 then
+						if spellID and spellID ~= 0 and cooldownsModule:IsEnabled() then
 							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
 							--cooldownsModule.db.spell_isTalent[spellID] = true
 						end

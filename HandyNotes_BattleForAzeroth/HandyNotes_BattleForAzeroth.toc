@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: HandyNotes: Battle for Azeroth
 ## Version: 4
 ## Notes: Battle for Azeroth Notes

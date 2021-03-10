@@ -11,6 +11,10 @@ do
 	local _unpack = unpack
 
 	local unknown_class_coords = {0.75, 1, 0.75, 1}
+
+	function Details:GetUnknownClassIcon()
+		return [[Interface\AddOns\Details\images\classes_small]], unpack(unknown_class_coords)
+	end
 	
 	function _detalhes:GetIconTexture (iconType, withAlpha)
 		iconType = string.lower (iconType)

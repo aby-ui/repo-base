@@ -1787,13 +1787,11 @@ La["Bonus rolls"] = "額外骰子"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[缺少這個進度的首領擊殺資訊。
 這是暴雪的 BUG，會影響舊團隊。]=]
---[[Translation missing --]]
-La["Calling Missing"] = "Calling Missing"
+La["Calling Missing"] = "沒有使命"
 La["Categories"] = "分類"
 La["Characters"] = "角色"
 La["Color currency by cap"] = "依據數量上限顯示兌換通貨顏色"
---[[Translation missing --]]
-La["Combine Callings"] = "Combine Callings"
+La["Combine Callings"] = "合併使命"
 La["Combine Emissaries"] = "合併特使"
 La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"

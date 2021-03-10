@@ -3,7 +3,7 @@ local Module = SI:NewModule('MythicPlus', 'AceEvent-3.0', 'AceBucket-3.0')
 
 -- Lua functions
 local _G = _G
-local ipairs, sort, strsplit, tonumber, select, time, wipe = ipairs, sort, strsplit, tonumber, select, time, wipe
+local ipairs, sort, strsplit, tonumber, select, wipe = ipairs, sort, strsplit, tonumber, select, wipe
 
 -- WoW API / Variables
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo

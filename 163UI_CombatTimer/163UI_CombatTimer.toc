@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 
 ## Title: |cff880303[爱不易]|r AbyUI 战斗提示计时
 ## Author: 桂花猫猫-暗影之月

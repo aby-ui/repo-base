@@ -106,6 +106,12 @@ do
 	function _detalhes:GetName (actor)
 		return self.nome or actor and actor.nome
 	end
+
+	function _detalhes:GetNameNoRealm(actor)
+		local name = self.nome or actor and actor.nome
+		return Details:GetOnlyName(name)
+	end
+
 	function _detalhes:GetDisplayName (actor)
 		return self.displayName or actor and actor.displayName
 	end

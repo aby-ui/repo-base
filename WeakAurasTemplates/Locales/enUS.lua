@@ -28,6 +28,7 @@ local L = WeakAuras.L
 	L["Always shows the aura, turns grey if the ability is not usable."] = "Always shows the aura, turns grey if the ability is not usable."
 	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "Always shows the aura, turns red when out of range, blue on insufficient resources."
 	L["Always shows the aura, turns red when out of range."] = "Always shows the aura, turns red when out of range."
+	L["Always shows the aura."] = "Always shows the aura."
 	L["Back"] = "Back"
 	L["Basic Show On Cooldown"] = "Basic Show On Cooldown"
 	L["Basic Show On Ready"] = "Basic Show On Ready"
@@ -78,6 +79,7 @@ local L = WeakAuras.L
 	L["Only shows the aura if the target has the buff."] = "Only shows the aura if the target has the buff."
 	L["Only shows the aura when the ability is on cooldown."] = "Only shows the aura when the ability is on cooldown."
 	L["Only shows the aura when the ability is ready to use."] = "Only shows the aura when the ability is ready to use."
+	L["Other cooldown"] = "Other cooldown"
 	L["Pet alive"] = "Pet alive"
 	L["Pet Behavior"] = "Pet Behavior"
 	L["PvP Talents"] = "PvP Talents"
@@ -85,6 +87,7 @@ local L = WeakAuras.L
 	L["Replace Triggers"] = "Replace Triggers"
 	L["Resources"] = "Resources"
 	L["Resources and Shapeshift Form"] = "Resources and Shapeshift Form"
+	L["Rogue cooldown"] = "Rogue cooldown"
 	L["Runes"] = "Runes"
 	L["Shapeshift Form"] = "Shapeshift Form"
 	L["Show Always, Glow on Missing"] = "Show Always, Glow on Missing"
@@ -127,6 +130,7 @@ local L = WeakAuras.L
 	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."
 	L["Unknown Item"] = "Unknown Item"
 	L["Unknown Spell"] = "Unknown Spell"
+	L["Warrior cooldown"] = "Warrior cooldown"
 
 
 -- Make missing translations available

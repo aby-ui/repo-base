@@ -383,6 +383,7 @@ GTFO.SpellID["320991"] = {
 GTFO.SpellID["334921"] = {
   --desc = "Umbral Crash (Insatiable Brute)";
   sound = 3;
+  damageMinimum = 20000;
   test = true;
 };
 
@@ -581,6 +582,7 @@ GTFO.SpellID["317605"] = {
 GTFO.SpellID["332708"] = {
   --desc = "Ground Smash (Heavin the Breaker)";
   sound = 3;
+  damageMinimum = 20000;
   test = true;
 };
 
@@ -664,12 +666,6 @@ GTFO.SpellID["324323"] = {
 GTFO.SpellID["324391"] = {
   --desc = "Grave Spikes (Skeletal Monstrosity)";
   sound = 3;
-};
-
-GTFO.SpellID["321253"] = {
-  --desc = "Final Harvest (Amarth)";
-  sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["320365"] = {
@@ -996,6 +992,7 @@ GTFO.SpellID["335298"] = {
   --desc = "Giant Fists (Sludgefist)";
   sound = 3;
   tankSound = 0;
+  test = true;
 };
 
 GTFO.SpellID["332572"] = {

@@ -226,24 +226,35 @@ end
 
 NAMES:UpdateClassColors()
 
--- This tag is registered with LibDogTag-Unit-3.0's namespace instead of TMW's namespace because it requires the event processing that is provided by the Unit namespace
-DogTag:AddTag("Unit", "TMWName", {
-	code = function(unit, color, server)
-		if NAMES.dogTag_forceUncolored then
-			color = false
-		end
-		
-		return NAMES:TryToAcquireName(unit, color, not server)
-	end,
-	arg = {
-		'unit', 'string;undef', 'player',
-		'color', 'boolean', true,
-		'server', 'boolean', true,
-	},
-	ret = "string",
-	events = "UNIT_NAME_UPDATE#$unit",
-	noDoc = true,
-})
+TMW:RegisterCallback("TMW_GLOBAL_UPDATE", function()
+
+	-- This tag is registered with LibDogTag-Unit-3.0's namespace instead of TMW's namespace 
+	-- because it requires the event processing that is provided by the Unit namespace.
+
+	-- We re-check for its registration on global update because
+	-- if another addon (like ThreatPlates) loads LDT-Unit after TMW,
+	-- and if this other addon has a newer version of LDT-Unit than what
+	-- was already loaded (by TMW or some other addon),
+	-- then it'll wipe out this tag when it ugprades itself.
+	if DogTag.Tags.Unit.TMWName then return end
+	DogTag:AddTag("Unit", "TMWName", {
+		code = function(unit, color, server)
+			if NAMES.dogTag_forceUncolored then
+				color = false
+			end
+			
+			return NAMES:TryToAcquireName(unit, color, not server)
+		end,
+		arg = {
+			'unit', 'string;undef', 'player',
+			'color', 'boolean', true,
+			'server', 'boolean', true,
+		},
+		ret = "string",
+		events = "UNIT_NAME_UPDATE#$unit",
+		noDoc = true,
+	})
+end)
 DogTag:AddTag("TMW", "Name", {
 	alias = "TMWName(unit=unit, color=color, server=server)",
 	arg = {

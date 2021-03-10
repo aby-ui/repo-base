@@ -6,6 +6,10 @@
 local _, Addon = ...
 local L = _G.LibStub("AceLocale-3.0"):GetLocale(Addon:GetParent():GetName())
 
+local GRID_SIZE_MINIMUM = 2
+local GRID_SIZE_MAXIMUM = 128
+local GRID_SIZE_STEP = 2
+
 local HelpDialog = _G.CreateFrame('Frame', nil, nil, _G.BackdropTemplateMixin and 'BackdropTemplate')
 
 HelpDialog:Hide()
@@ -77,11 +81,9 @@ function HelpDialog:OnLoad(owner)
 	local slider = Addon.Slider:New({
 		name = L.GridDensity,
 
-        min = 4,
-
-        max = 64,
-
-        step = 4,
+        min = GRID_SIZE_MINIMUM,
+        max = GRID_SIZE_MAXIMUM,
+        step = GRID_SIZE_STEP,
 
 		get = function()
 			return Addon:GetParent():GetAlignmentGridSize()

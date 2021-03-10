@@ -121,43 +121,67 @@ function module.main:ADDON_LOADED()
 	module.frame:SetFrameStrata(VExRT.BattleRes.Strata)
 end
 
-function module:timer(elapsed)
-	local charges, maxCharges, started, duration = GetSpellCharges(20484)
-	if not charges then
-		if VExRT.BattleRes.fix then
-			module.frame:Hide()
-		end
-		module.frame.time:SetText("")
-		module.frame.charge:SetText("")
-		module.frame.cooldown:Hide()
-		return
-	else
-		module.frame:Show()
-		module.frame.cooldown:Show()
-	end
-
-	if maxCharges == charges then
-		module.frame.time:SetFormattedText("")
-		module.frame.charge:SetText(charges)
-		if not module.frame.cooldown.is0 then
-			module.frame.cooldown:Hide()
-			module.frame.cooldown.is0 = true
-		end
-	else
-		local time = duration - (GetTime() - started)
-
-		module.frame.time:SetFormattedText("%d:%02d", floor(time/60), time%60)
-		module.frame.charge:SetText(charges)
-		if module.frame.cooldown.is0 then
+do
+	local stateHidden
+	local is0Charges
+	local isCooldownHidden
+	local cooldownStarted, cooldownDur, chargesNow
+	function module:timer(elapsed)
+		local charges, maxCharges, started, duration = GetSpellCharges(20484)
+		if not charges then
+			if not stateHidden then
+				if VExRT.BattleRes.fix then
+					module.frame:Hide()
+				end
+				module.frame.time:SetText("")
+				module.frame.charge:SetText("")
+				module.frame.cooldown:Hide()
+				chargesNow = nil
+				isCooldownHidden = true
+				stateHidden = true
+			end
+			return
+		elseif stateHidden then
+			module.frame:Show()
 			module.frame.cooldown:Show()
-			module.frame.cooldown.is0 = nil
+			stateHidden = false
 		end
-		module.frame.cooldown:SetCooldown(started,duration)
-	end
-	if charges == 0 then
-		module.frame.charge:SetTextColor(1,0,0,1)
-	else
-		module.frame.charge:SetTextColor(1,1,1,1)
+	
+		if maxCharges == charges then
+			module.frame.time:SetFormattedText("")
+			if chargesNow ~= charges then
+				module.frame.charge:SetText(charges)
+				chargesNow = charges
+			end
+			if not isCooldownHidden then
+				module.frame.cooldown:Hide()
+				isCooldownHidden = true
+			end
+		else
+			local time = duration - (GetTime() - started)
+	
+			module.frame.time:SetFormattedText("%d:%02d", floor(time/60), time%60)
+			if chargesNow ~= charges then
+				module.frame.charge:SetText(charges)
+				chargesNow = charges
+			end
+			if isCooldownHidden then
+				module.frame.cooldown:Show()
+				isCooldownHidden = false
+			end
+			if cooldownStarted ~= started and cooldownDur ~= duration then
+				module.frame.cooldown:SetCooldown(started,duration)
+				cooldownStarted = cooldownStarted
+				cooldownDur = duration
+			end
+		end
+		if charges == 0 and not is0Charges then
+			module.frame.charge:SetTextColor(1,0,0,1)
+			is0Charges = true
+		elseif charges ~= 0 and is0Charges then
+			module.frame.charge:SetTextColor(1,1,1,1)
+			is0Charges = false
+		end
 	end
 end
 

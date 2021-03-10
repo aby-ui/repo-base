@@ -939,16 +939,16 @@
 				local name = GetUnitName ("player", true)
 				Details.arena_table [name] = {role = role}
 			end
-			if (Details.debug) then
-				Details:Msg ("(debug) Found", oponentes, "enemies and", aliados, "allies")
-			end
 
 			--enemies
 			local enemiesAmount = GetNumArenaOpponentSpecs()
 			table.wipe(_detalhes.arena_enemies)
 
 			for i = 1, enemiesAmount do
-				_detalhes.arena_enemies[GetUnitName("arena" .. i, true)] = "arena" .. i
+				local enemyName = _G.GetUnitName("arena" .. i, true)
+				if (enemyName) then
+					_detalhes.arena_enemies[enemyName] = "arena" .. i
+				end
 			end
 		end
 		

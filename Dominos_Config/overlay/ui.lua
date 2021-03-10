@@ -11,7 +11,7 @@ local GRID_COLOR = _G.CreateColor(0.4, 0.4, 0.4, 0.5)
 -- #731abc
 local GRID_HIGHLIGHT_COLOR = _G.CreateColor(0.451, 0.102, 0.737, 0.5)
 
-local GRID_THICKNESS = 1
+local GRID_LINE_THICKNESS = 2
 
 local OverlayUI = Addon:NewModule('OverlayUI', 'AceEvent-3.0')
 
@@ -193,47 +193,78 @@ function OverlayUI:UpdateGrid()
     end
 end
 
+local function SetLinePoint(line, point, relFrame, relPoint, x, y)
+    if PixelUtil then
+        PixelUtil.SetPoint(line, point, relFrame, relPoint, x, y)
+    else
+        line:SetPoint(point, relFrame, relPoint, x, y)
+    end
+end
+
+local function SetLineWidth(line, width)
+    if PixelUtil then
+        PixelUtil.SetWidth(line, width, 1)
+    else
+        line:SetWidth(width)
+    end
+end
+
+local function SetLineHeight(line, height)
+    if PixelUtil then
+        PixelUtil.SetHeight(line, height, 1)
+    else
+        line:SetHeight(height)
+    end
+end
+
 function OverlayUI:DrawGrid()
     self:ClearGrid()
 
-    local cx = (GetScreenWidth() / 2)
-    local cy = (GetScreenHeight() / 2)
-	local w = (GetScreenHeight() / ParentAddon:GetAlignmentGridSize())
+    local parent = self.frame
+    local cx, cy = parent:GetCenter()
+	local spacing = (parent:GetHeight() / ParentAddon:GetAlignmentGridSize())
 
+    -- draw center lines
     local cvLine = self:AcquireGridLine()
     cvLine:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
-    cvLine:SetStartPoint('TOPLEFT', cx, 0)
-    cvLine:SetEndPoint('BOTTOMLEFT', cx, 0)
-
-    local vLine
-    for i = w, cx, w do
-        vLine = self:AcquireGridLine()
-        vLine:SetColorTexture(GRID_COLOR:GetRGBA())
-        vLine:SetStartPoint('TOPLEFT', cx + i, 0)
-        vLine:SetEndPoint('BOTTOMLEFT', cx + i, 0)
-
-        vLine = self:AcquireGridLine()
-        vLine:SetColorTexture(GRID_COLOR:GetRGBA())
-        vLine:SetStartPoint('TOPLEFT', cx - i, 0)
-        vLine:SetEndPoint('BOTTOMLEFT', cx - i, 0)
-    end
+    SetLineWidth(cvLine, GRID_LINE_THICKNESS)
+    SetLinePoint(cvLine, 'TOP', parent, 'TOPLEFT', cx, 0)
+    SetLinePoint(cvLine, 'BOTTOM', parent, 'BOTTOMLEFT', cx, 0)
 
     local chLine = self:AcquireGridLine()
     chLine:SetColorTexture(GRID_HIGHLIGHT_COLOR:GetRGBA())
-    chLine:SetStartPoint('BOTTOMLEFT', 0, cy)
-    chLine:SetEndPoint('BOTTOMRIGHT', 0, cy)
+    SetLineHeight(chLine, GRID_LINE_THICKNESS)
+    SetLinePoint(chLine, 'LEFT', parent, 'BOTTOMLEFT', 0, cy)
+    SetLinePoint(chLine, 'RIGHT', parent, 'BOTTOMRIGHT', 0, cy)
 
-    local hLine
-    for i = w, cy, w do
-        hLine = self:AcquireGridLine()
-        hLine:SetColorTexture(GRID_COLOR:GetRGBA())
-        hLine:SetStartPoint('BOTTOMLEFT', 0, cy + i)
-        hLine:SetEndPoint('BOTTOMRIGHT', 0, cy + i)
+    -- draw vertical lines
+    for x = spacing, cx, spacing do
+        local line = self:AcquireGridLine()
+        line:SetColorTexture(GRID_COLOR:GetRGBA())
+        SetLineWidth(line, GRID_LINE_THICKNESS)
+        SetLinePoint(line, 'TOP', parent, 'TOPLEFT', cx + x, 0)
+        SetLinePoint(line, 'BOTTOM', parent, 'BOTTOMLEFT', cx + x, 0)
 
-        hLine = self:AcquireGridLine()
-        hLine:SetColorTexture(GRID_COLOR:GetRGBA())
-        hLine:SetStartPoint('BOTTOMLEFT', 0, cy - i)
-        hLine:SetEndPoint('BOTTOMRIGHT', 0, cy - i)
+        line = self:AcquireGridLine()
+        line:SetColorTexture(GRID_COLOR:GetRGBA())
+        SetLineWidth(line, GRID_LINE_THICKNESS)
+        SetLinePoint(line, 'TOP', parent, 'TOPLEFT', cx - x, 0)
+        SetLinePoint(line, 'BOTTOM', parent, 'BOTTOMLEFT', cx - x, 0)
+    end
+
+    -- draw horizontal lines
+    for y = spacing, cy, spacing do
+        local line = self:AcquireGridLine()
+        line:SetColorTexture(GRID_COLOR:GetRGBA())
+        SetLineHeight(line, GRID_LINE_THICKNESS)
+        SetLinePoint(line, 'LEFT', parent, 'BOTTOMLEFT', 0, cy + y)
+        SetLinePoint(line, 'RIGHT', parent, 'BOTTOMRIGHT', 0, cy + y)
+
+        line = self:AcquireGridLine()
+        line:SetColorTexture(GRID_COLOR:GetRGBA())
+        SetLineHeight(line, GRID_LINE_THICKNESS)
+        SetLinePoint(line, 'LEFT', parent, 'BOTTOMLEFT', 0, cy - y)
+        SetLinePoint(line, 'RIGHT', parent, 'BOTTOMRIGHT', 0, cy - y)
     end
 end
 
@@ -256,8 +287,7 @@ function OverlayUI:AcquireGridLine()
     if line then
         inactiveLines[#inactiveLines] = nil
     else
-        line = self.frame:CreateLine()
-        line:SetDrawLayer('BACKGROUND', 7)
+        line = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
     end
 
     -- add
@@ -268,12 +298,12 @@ function OverlayUI:AcquireGridLine()
         self.activeGridLines = { line }
     end
 
-    line:SetThickness(1)
     line:Show()
     return line
 end
 
 function OverlayUI:ReleaseGridLine(line)
+    line:ClearAllPoints()
     line:Hide()
 
     local inactiveLines = self.inactiveGridLines

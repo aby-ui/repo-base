@@ -470,6 +470,7 @@
 		
 		--> players in the raid
 		esta_tabela.raid_roster = {}
+		esta_tabela.raid_roster_indexed = {}
 		
 		--> frags
 		esta_tabela.frags = {}

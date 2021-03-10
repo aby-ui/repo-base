@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20210212013835")
 mod:SetCreatureID(114329, 114522, 114330, 114328)
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END
@@ -102,7 +102,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDrenched:Show(burningBlaze)
 		end
 	elseif spellId == 228221 then
-		timerSevereDustingCD:Start()
+		timerSevereDustingCD:Update(0, 12)
 		if args:IsPlayer() then
 			specWarnSevereDusting:Show()
 			specWarnSevereDusting:Play("justrun")

@@ -1,7 +1,7 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 3.1.9
+## Version: 3.2.1
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras

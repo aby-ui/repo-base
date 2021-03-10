@@ -1,9 +1,9 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트
 ## Author: Tuller
-## Version: 9.0.6-beta1
+## Version: 9.0.7
 ## SavedVariables: OmniCCDB, OmniCC4Config
 #embeds.xml
 localization\localization.xml

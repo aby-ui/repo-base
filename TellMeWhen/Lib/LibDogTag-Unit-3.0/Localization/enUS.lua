@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20201129180239"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
 
 _G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
 
@@ -86,6 +86,7 @@ DogTag_Unit.L = {
 	["Party member #%d"] = "Party member #%d",
 	["Raid member #%d"] = "Raid member #%d",
 	["Boss #%d"] = "Boss #%d",
+	["Nameplate #%d"] = "Nameplate #%d",
 	["Arena enemy #%d"] = "Arena enemy #%d",
 
 	-- classifications

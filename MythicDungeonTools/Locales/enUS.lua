@@ -1028,6 +1028,10 @@ L["plaguefallDevotedNote"] = "Plaguefall Devoted which have already been transfo
 L["ConnectedTip"] = "Group connections in MDT do not reflect if NPCs are linked together in the game world."
 L["theaterOfPain_miniBossNote"] = "Only one duelist will be alive."
 
+L["Heavin the Breaker"] = "Heavin the Breaker"
+L["Nekthara the Mangler"] = "Nekthara the Mangler"
+L["Rek the Hardened"] = "Rek the Hardened"
+
 
 L["Mythic Dungeon Tools"] = ""
 L["MDI"] = "MDI"

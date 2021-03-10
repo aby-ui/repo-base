@@ -731,6 +731,7 @@ function TEXT:LoadConfig()
 
 			-- Set it as the tooltip title and the label text on the editbox.
 			frame.EditBox:SetTexts(display_N_stringName, L["TEXTLAYOUTS_SETTEXT_DESC"])
+			frame.EditBox:SetLabel(display_N_stringName)
 
 			frame.EditBox:SetText(text)
 			

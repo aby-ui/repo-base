@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Details!: Storage
 ## Notes: Stores information for Details! Damage Meter
 ## DefaultState: Enabled

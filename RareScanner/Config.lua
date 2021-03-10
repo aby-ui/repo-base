@@ -40,11 +40,11 @@ private.SOUNDS = {
 }
 
 private.CHANNELS = {
-	["Master"] = "Master",
-	["SFX"] = "SFX",
-	["Music"] = "Music",
-	["Ambience"] = "Ambience",
-	["Dialog"] = "Dialog",
+	["Master"] = AL["CHANNEL_MASTER"],
+	["SFX"] = AL["CHANNEL_SFX"],
+	["Music"] = AL["CHANNEL_MUSIC"],
+	["Ambience"] = AL["CHANNEL_AMBIENCE"],
+	["Dialog"] = AL["CHANNEL_DIALOG"],
 }
 
 private.MARKERS = {
@@ -2135,8 +2135,20 @@ local function GetLootFilterOptions()
 							width = "full",
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 						},
-						canImogit = {
+						covenantRequirement = {
 							order = 2,
+							type = "toggle",
+							name = AL["LOOT_TOOLTIPS_COVENANT"],
+							desc = AL["LOOT_TOOLTIPS_COVENANT_DESC"],
+							get = function() return RSConfigDB.IsShowingCovenantRequirement() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingCovenantRequirement(value)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+						},
+						canImogit = {
+							order = 3,
 							type = "toggle",
 							name = AL["LOOT_TOOLTIPS_CANIMOGIT"],
 							desc = AL["LOOT_TOOLTIPS_CANIMOGIT_DESC"],

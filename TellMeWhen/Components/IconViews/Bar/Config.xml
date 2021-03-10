@@ -68,9 +68,9 @@
 						self:SetTexts(TMW.L["UIPANEL_BAR_PADDING"], TMW.L["UIPANEL_BAR_PADDING_DESC"])
 						self:SetSetting("Padding")
 						
+						self:SetMode(self.MODE_ADJUSTING)
 						self:SetMinMaxValues(0, math.huge)
 						self:SetRange(10)
-						self:SetMode(self.MODE_ADJUSTING)
 						self:SetValueStep(0.1)
 						self:SetWheelStep(0.5)
 

@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Masque
 
 ## Notes: A skinning engine for button-based add-ons.
@@ -8,7 +8,7 @@
 ## Notes-zhCN: 一款基于按钮的外观美化插件。
 ## Notes-zhTW: 一個基於按鈕的外觀美化插件。
 
-## Version: 9.0.4
+## Version: 9.0.5
 ## Author: StormFX, JJSheets
 ## SavedVariables: MasqueDB
 ## OptionalDeps: Ace3, AceGUI-3.0_SFX-Widgets, LibDBIcon-1.0, LibDualSpec-1.0

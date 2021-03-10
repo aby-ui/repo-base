@@ -1,9 +1,9 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Exorsus Raid Tools
 ## Author: ykiigor
 ## Notes: Exorsus Raid Tools
 ## SavedVariables: VExRT
-## Version: 4460
+## Version: 4480
 core.lua
 Functions.lua
 embeds.xml

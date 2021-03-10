@@ -29,9 +29,6 @@ L["config_banker_desc"] = "Show the banker locations."
 L["config_barber"] = "Barber"
 L["config_barber_desc"] = "Show the barber location."
 
-L["config_greatvault"] = "The Great Vault"
-L["config_greatvault_desc"] = "Show the great vault location."
-
 L["config_guildvault"] = "Guild Vault"
 L["config_guildvault_desc"] = "Show the guild vault location."
 

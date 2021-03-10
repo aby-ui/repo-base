@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: ToyPlus
 ## Version: 1.7.2
 ## Author: distnz

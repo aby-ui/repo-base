@@ -1,20 +1,22 @@
-## Interface: 90002
+## Interface: 90005
 ## classic ## Interface: 11306
 ## Title: TomTom
-## Author: jnwhiteh
-## Version: v90002-1.2.0
+## Author: jnwhiteh, lortiz
+## Version: v90005-1.2.1
 ## License: All Rights Reserved
 ## Notes: Acts as your portable navigation assistant
 ## Notes-frFR: Agit comme un assistant de navigation portable
 ## Notes-zhCN:一个简单的导航助手。
 ## Notes-ruRU: Удобный портативный навигатор по игровой карте
 ## Notes-deDE: Dient dir als portabler Navigationsassistent.
-## Author: Cladhaire
+## Author: Cladhaire, Ludovicus
 ## SavedVariables: TomTomDB, TomTomWaypoints, TomTomWaypointsM
 ## OptionalDeps: HereBeDragons-2.0
 
 ## X-Localizations: enUS, enGB, deDE, frFR, zhCN, ruRU, zhTW
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, esMX, zhCN, zhTW, koKR, ruRU
+## X-Curse-Project-ID: 18808
+## X-WoWI-ID: 7032
 
 AddonCore.lua
 

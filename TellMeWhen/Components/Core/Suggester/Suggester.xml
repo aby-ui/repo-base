@@ -275,18 +275,11 @@
 				</Scripts>
 			</Frame>
 
-			<Button parentKey="Help" inherits="MainMenuBarMicroButton" hidden="false">
+			<Button parentKey="Help" inherits="UIPanelInfoButton" hidden="false">
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-5" y="16"/>
+					<Anchor point="TOPRIGHT" x="-5" y="-4"/>
 				</Anchors>
 				<Scripts>
-					<OnLoad>
-						self:SetNormalTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
-						self:SetPushedTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
-						self:SetDisabledTexture("Interface\\Buttons\\UI-MicroButton-Help-Up")
-						self:SetHighlightTexture("Interface\\Buttons\\UI-MicroButton-Hilight")
-						self:SetScale(.58)
-					</OnLoad>
 					<OnEnter>
 						TMW.SUG:ColorHelp(self)
 					</OnEnter>

@@ -1,7 +1,7 @@
 local _, U1 = ...;
 U1.ABBR={
     ["tellmewhen"] = "tmw",
-    ["weakauras2"] = "wa",
+    ["weakauras"] = "wa2",
     ["eventalertmod"] = "eam",
     ["worldquestslist"] = "wql",
     ["worldquesttracker"] = "wqt",

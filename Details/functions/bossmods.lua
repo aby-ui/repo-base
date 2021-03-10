@@ -104,8 +104,8 @@ function Details:BossModsLink()
     
     if (BigWigsLoader and not _G.DBM) then
 
+        --Bigwigs change the phase of an encounter
         function Details:BigWigs_SetStage (event, module, phase)
-            --print(" ===== BigWigs_SetStage ===== ", event, module, phase)
             phase = tonumber(phase)
 
             if (phase and type (phase) == "number" and Details.encounter_table.phase ~= phase) then
@@ -120,38 +120,11 @@ function Details:BossModsLink()
                 end
                 
                 Details:SendEvent ("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
-                Details:Msg ("Current phase is now:", phase)
-            end
-        end
-
-        function Details:BigWigs_Message (event, module, key, text, ...)
-            
-            if (key == "stages") then
-
-                local phase = module:GetStage()
-                --print("BW new stage:", phase)
-
-                --local phase = text:gsub (".*%s", "")
-                --phase = tonumber (phase)
-                
-                if (phase and type (phase) == "number" and Details.encounter_table.phase ~= phase) then
-                    Details:OnCombatPhaseChanged()
-                    
-                    Details.encounter_table.phase = phase
-                    
-                    local cur_combat = Details:GetCurrentCombat()
-                    local time = cur_combat:GetCombatTime()
-                    if (time > 5) then
-                        tinsert (cur_combat.PhaseData, {phase, time})
-                    end
-                    
-                    Details:SendEvent ("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
-                end
+                --Details:Msg ("Current phase is now:", phase)
             end
         end
 
         if (BigWigsLoader.RegisterMessage) then
-            BigWigsLoader.RegisterMessage (Details, "BigWigs_Message")
             BigWigsLoader.RegisterMessage (Details, "BigWigs_SetStage")
         end
     end
@@ -214,6 +187,9 @@ function Details:CreateCallbackListeners()
         end
         DBM:RegisterCallback ("DBM_TimerStart", dbm_timer_callback)
     end
+
+    --record Bigwigs timers shown at /details spells.
+    --this is also usage to create weakauras directly from details!
     function Details:RegisterBigWigsCallBack()
         if (BigWigsLoader) then
             function Details:BigWigs_StartBar (event, module, spellid, bar_text, time, icon, ...)
@@ -229,5 +205,4 @@ function Details:CreateCallbackListeners()
     end
 
     Details.Schedules.NewTimer(5, Details.RegisterBigWigsCallBack, Details)
-    --Details:ScheduleTimer ("RegisterBigWigsCallBack", 5)
 end

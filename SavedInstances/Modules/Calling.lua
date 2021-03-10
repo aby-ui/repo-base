@@ -2,7 +2,7 @@ local SI, L = unpack(select(2, ...))
 local Module = SI:NewModule('Calling', 'AceEvent-3.0')
 
 -- Lua functions
-local floor, ipairs, pairs, time, tonumber = floor, ipairs, pairs, time, tonumber
+local floor, ipairs, pairs, time, tonumber, wipe = floor, ipairs, pairs, time, tonumber, wipe
 
 -- WoW API / Variables
 local C_CovenantCallings_AreCallingsUnlocked = C_CovenantCallings.AreCallingsUnlocked

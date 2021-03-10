@@ -35,13 +35,6 @@ MDT.mapPOIs[dungeonIndex] = {
             ["template"] = "MapLinkPinTemplate";
             ["type"] = "mapLink";
         };
-        [2] = {
-            ["y"] = -270.11632931514;
-            ["x"] = 441.15319581097;
-            ["template"] = "MapLinkPinTemplate";
-            ["text"] = L["plaguefallDevotedNote"];
-            ["type"] = "generalNote";
-        };
     };
 };
 
@@ -1241,7 +1234,31 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["x"] = 414.47648780488;
                 ["sublevel"] = 1;
             };
-            [4] = {
+        };
+        ["id"] = 168396;
+        ["spells"] = {
+            [326868] = {};
+            [288865] = {};
+            [327581] = {};
+            [340358] = {};
+            [132951] = {};
+            [327594] = {};
+            [327233] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+        };
+        ["count"] = 12;
+        ["health"] = 128160;
+        ["displayId"] = 96244;
+        ["creatureType"] = "Aberration";
+        ["level"] = 60;
+        ["name"] = "Plaguebelcher";
+        ["scale"] = 1.5;
+    };
+    [37] = {
+        ["clones"] = {
+            [1] = {
                 ["y"] = -392.81631844775;
                 ["x"] = 440.5917807123;
                 ["g"] = 42;
@@ -1261,7 +1278,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["characteristics"] = {
             ["Taunt"] = true;
         };
-        ["count"] = 12;
+        ["count"] = 0;
         ["health"] = 128160;
         ["displayId"] = 96244;
         ["creatureType"] = "Aberration";
@@ -2095,22 +2112,16 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
             [10] = {
-                ["y"] = -389.41260322269;
-                ["x"] = 478.08531722173;
-                ["g"] = 43;
-                ["sublevel"] = 1;
-            };
-            [11] = {
                 ["y"] = -152.87597632885;
                 ["x"] = 524.29847405256;
                 ["sublevel"] = 1;
             };
-            [12] = {
+            [11] = {
                 ["y"] = -165.24711273585;
                 ["x"] = 529.15854710293;
                 ["sublevel"] = 1;
             };
-            [13] = {
+            [12] = {
                 ["y"] = -136.89367950848;
                 ["x"] = 546.28603163461;
                 ["sublevel"] = 1;
@@ -2146,6 +2157,52 @@ MDT.dungeonEnemies[dungeonIndex] = {
             ["Fear"] = true;
         };
         ["count"] = 10;
+        ["health"] = 88110;
+        ["displayId"] = 95688;
+        ["creatureType"] = "Aberration";
+        ["level"] = 60;
+        ["name"] = "Slime Tentacle";
+        ["scale"] = 1.5;
+    };
+    [36] = {
+        ["clones"] = {
+            [1] = {
+                ["y"] = -389.41260322269;
+                ["x"] = 478.08531722173;
+                ["g"] = 43;
+                ["sublevel"] = 1;
+            };
+        };
+        ["id"] = 168907;
+        ["spells"] = {
+            [288865] = {};
+            [336449] = {};
+            [317898] = {};
+            [328432] = {};
+            [329224] = {};
+            [132951] = {};
+            [326868] = {};
+            [328175] = {};
+            [345429] = {};
+            [340358] = {};
+            [328429] = {};
+            [329226] = {};
+            [319898] = {};
+        };
+        ["characteristics"] = {
+            ["Taunt"] = true;
+            ["Incapacitate"] = true;
+            ["Root"] = true;
+            ["Banish"] = true;
+            ["Polymorph"] = true;
+            ["Disorient"] = true;
+            ["Mind Control"] = true;
+            ["Stun"] = true;
+            ["Slow"] = true;
+            ["Silence"] = true;
+            ["Fear"] = true;
+        };
+        ["count"] = 0;
         ["health"] = 88110;
         ["displayId"] = 95688;
         ["creatureType"] = "Aberration";
@@ -2273,25 +2330,13 @@ MDT.dungeonEnemies[dungeonIndex] = {
                 ["sublevel"] = 1;
             };
             [8] = {
-                ["y"] = -387.26549352455;
-                ["x"] = 442.68409756098;
-                ["g"] = 42;
-                ["sublevel"] = 1;
-            };
-            [9] = {
-                ["y"] = -383.7990172015;
-                ["x"] = 475.33192660477;
-                ["g"] = 43;
-                ["sublevel"] = 1;
-            };
-            [10] = {
                 ["sublevel"] = 1;
                 ["inspiring"] = true;
                 ["y"] = -401.43858988635;
                 ["g"] = 45;
                 ["x"] = 473.86816353298;
             };
-            [11] = {
+            [9] = {
                 ["y"] = -406.22566854897;
                 ["x"] = 455.94611505295;
                 ["g"] = 44;

@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: DuowanChat
 # Title-zhCN: 聊天增强
 # Title-zhTW: 聊天增强

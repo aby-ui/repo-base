@@ -3,14 +3,14 @@ Name: DRList-1.0
 Description: Diminishing returns database. Fork of DRData-1.0.
 Website: https://www.curseforge.com/wow/addons/drlist-1-0
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: v1.1.11
+Version: v1.1.12
 Dependencies: LibStub
 License: MIT
 ]]
 
 --- DRList-1.0
 -- @module DRList-1.0
-local MAJOR, MINOR = "DRList-1.0", 19
+local MAJOR, MINOR = "DRList-1.0", 20
 local Lib = assert(LibStub, MAJOR .. " requires LibStub."):NewLibrary(MAJOR, MINOR)
 if not Lib then return end -- already loaded
 
@@ -33,9 +33,9 @@ L["TAUNTS"] = "Taunts"
 L["FEARS"] = "Fears"
 L["RANDOM_ROOTS"] = "Random roots"
 L["RANDOM_STUNS"] = "Random stuns"
-L["MIND_CONTROL"] = GetSpellInfo(605)
-L["FROST_SHOCK"] = GetSpellInfo(8056) or GetSpellInfo(196840)
-L["KIDNEY_SHOT"] = GetSpellInfo(408)
+L["MIND_CONTROL"] = GetSpellInfo(605) or "Mind Control"
+L["FROST_SHOCK"] = GetSpellInfo(8056) or GetSpellInfo(196840) or "Frost Shock"
+L["KIDNEY_SHOT"] = GetSpellInfo(408) or "Kidney Shot"
 
 -- luacheck: push ignore 542
 local locale = GetLocale()
@@ -121,8 +121,16 @@ end
 -- luacheck: pop
 -------------------------------------------------------------------------------
 
--- Whether we're running Classic or Retail WoW
-Lib.gameExpansion = select(4, GetBuildInfo()) < 80000 and "classic" or "retail"
+-- Check which game version we're running
+do
+    local expansions = {
+        [WOW_PROJECT_MAINLINE] = "retail",
+        [WOW_PROJECT_CLASSIC] = "classic",
+        [WOW_PROJECT_TBC or 3] = "tbc",
+    }
+
+    Lib.gameExpansion = expansions[WOW_PROJECT_ID] or "unknown"
+end
 
 -- How long it takes for a DR to expire
 Lib.resetTimes = {
@@ -133,6 +141,11 @@ Lib.resetTimes = {
     },
 
     classic = {
+        ["default"] = 18.5,
+        ["npc"] = 23.0,
+    },
+
+    tbc = {
         ["default"] = 18.5,
         ["npc"] = 23.0,
     },
@@ -165,10 +178,13 @@ Lib.categoryNames = {
         ["frost_shock"] = L.FROST_SHOCK,
         ["kidney_shot"] = L.KIDNEY_SHOT,
     },
+
+    tbc = {},
 }
 
--- Categories that have DR against mobs (not pets).
--- Note that only elites and quest bosses usually have root/taunt DR.
+-- Categories that have DR against mobs (not player pets).
+-- Note that only elites and quest bosses have DR on all categories.
+-- Normal mobs only have a stun and taunt DR.
 Lib.categoriesPvE = {
     retail = {
         ["taunt"] = L.TAUNTS,
@@ -179,6 +195,10 @@ Lib.categoriesPvE = {
     classic = {
         ["stun"] = L.STUNS,
         ["kidney_shot"] = L.KIDNEY_SHOT,
+    },
+
+    tbc = {
+        ["stun"] = L.STUNS,
     },
 }
 
@@ -194,6 +214,10 @@ Lib.diminishedDurations = {
     },
 
     classic = {
+        ["default"] = { 0.50, 0.25 },
+    },
+
+    tbc = {
         ["default"] = { 0.50, 0.25 },
     },
 }
@@ -242,12 +266,14 @@ end
 -- @treturn[1] string|nil The category name.
 -- @treturn[2] number|nil The spell ID. (Classic only)
 function Lib:GetCategoryBySpellID(spellID)
-    if Lib.gameExpansion == "retail" then
-        return Lib.spellList[spellID]
+    if Lib.gameExpansion == "classic" then
+        -- special case for classic as CLEU doesn't provide spellIDs
+        local data = Lib.spellList[spellID]
+        if not data then return end
+        return data.category, data.spellID
     end
 
-    local data = Lib.spellList[spellID]
-    if data then return data.category, data.spellID end
+    return Lib.spellList[spellID]
 end
 
 --- Get localized category from unlocalized category name, case sensitive.
@@ -259,7 +285,7 @@ end
 
 --- Check if a category has DR against mobs.
 -- Note that this is only for mobs, player pets have DR on all categories.
--- Also taunt, root & cyclone only have DR against special mobs.
+-- Also taunt, root, disorient & incap only have DR against special mobs.
 -- See UnitClassification() and UnitIsQuestBoss().
 -- @tparam string category Unlocalized category name
 -- @treturn bool

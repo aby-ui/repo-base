@@ -838,9 +838,6 @@ function Private.Modernize(data)
       end
     end
 
-    -- To convert:
-    -- * actions
-    -- * conditions
     data.progressPrecision = nil
     data.totalPrecision = nil
   end
@@ -1041,6 +1038,191 @@ function Private.Modernize(data)
     end
     data.information.ignoreOptionsEventErrors = data.ignoreOptionsEventErrors
     data.ignoreOptionsEventErrors = nil
+  end
+
+  if data.internalVersion < 41 then
+    local newTypes = {
+      ["Cooldown Ready (Spell)"] = "spell",
+      ["Queued Action"] = "spell",
+      ["Charges Changed"] = "spell",
+      ["Action Usable"] = "spell",
+      ["Chat Message"] = "event",
+      ["Unit Characteristics"] = "unit",
+      ["Cooldown Progress (Spell)"] = "spell",
+      ["Power"] = "unit",
+      ["PvP Talent Selected"] = "unit",
+      ["Combat Log"] = "combatlog",
+      ["Item Set"] = "item",
+      ["Health"] = "unit",
+      ["Cooldown Progress (Item)"] = "item",
+      ["Conditions"] = "unit",
+      ["Spell Known"] = "spell",
+      ["Cooldown Ready (Item)"] = "item",
+      ["Faction Reputation"] = "unit",
+      ["Pet Behavior"] = "unit",
+      ["Range Check"] = "unit",
+      ["Character Stats"] = "unit",
+      ["Talent Known"] = "unit",
+      ["Threat Situation"] = "unit",
+      ["Equipment Set"] = "item",
+      ["Death Knight Rune"] = "unit",
+      ["Cast"] = "unit",
+      ["Item Count"] = "item",
+      ["BigWigs Timer"] = "addons",
+      ["Spell Activation Overlay"] = "spell",
+      ["DBM Timer"] = "addons",
+      ["Item Type Equipped"] = "item",
+      ["Alternate Power"] = "unit",
+      ["Item Equipped"] = "item",
+      ["Item Bonus Id Equipped"] = "item",
+      ["DBM Announce"] = "addons",
+      ["Swing Timer"] = "unit",
+      ["Totem"] = "spell",
+      ["Ready Check"] = "event",
+      ["BigWigs Message"] = "addons",
+      ["Class/Spec"] = "unit",
+      ["Stance/Form/Aura"] = "unit",
+      ["Weapon Enchant"] = "item",
+      ["Global Cooldown"] = "spell",
+      ["Experience"] = "unit",
+      ["GTFO"] = "addons",
+      ["Cooldown Ready (Equipment Slot)"] = "item",
+      ["Crowd Controlled"] = "unit",
+      ["Cooldown Progress (Equipment Slot)"] = "item",
+      ["Combat Events"] = "event",
+    }
+
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "status" or triggerData.trigger.type == "event" then
+        local newType = newTypes[triggerData.trigger.event]
+        if newType then
+          triggerData.trigger.type = newType
+        else
+          WeakAuras.prettyPrint("Unknown trigger type found in, please report: ", data.id, triggerData.trigger.event)
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 43 then
+    -- The merging of zone ids and group ids went a bit wrong,
+    -- fourtunately that was caught before a actual release
+    -- still try to recover the data
+    if data.internalVersion == 42 then
+      if data.load.zoneIds then
+        local newstring = ""
+        local first = true
+        for id in data.load.zoneIds:gmatch("%d+") do
+          if not first then
+            newstring = newstring .. ", "
+          end
+
+          -- If the id is potentially a group, assume it is a group
+          if C_Map.GetMapGroupMembersInfo(tonumber(id)) then
+            newstring = newstring .. "g" .. id
+          else
+            newstring = newstring .. id
+          end
+          first = false
+        end
+        data.load.zoneIds = newstring
+      end
+    else
+      if data.load.use_zoneId == data.load.use_zonegroupId then
+        data.load.use_zoneIds = data.load.use_zoneId
+
+        local zoneIds = strtrim(data.load.zoneId or "")
+        local zoneGroupIds = strtrim(data.load.zonegroupId or "")
+
+        zoneGroupIds = zoneGroupIds:gsub("(%d+)", "g%1")
+
+        if zoneIds ~= "" or zoneGroupIds ~= "" then
+          data.load.zoneIds = zoneIds .. ", " .. zoneGroupIds
+        else
+          -- One of them is empty
+          data.load.zoneIds = zoneIds .. zoneGroupIds
+        end
+      elseif data.load.use_zoneId then
+        data.load.use_zoneIds = true
+        data.load.zoneIds = data.load.zoneId
+      elseif data.load.use_zonegroupId then
+        data.load.use_zoneIds = true
+        local zoneGroupIds = strtrim(data.load.zonegroupId or "")
+        zoneGroupIds = zoneGroupIds:gsub("(%d+)", "g%1")
+        data.load.zoneIds = zoneGroupIds
+      end
+      data.load.use_zoneId = nil
+      data.load.use_zonegroupId = nil
+      data.load.zoneId = nil
+      data.load.zonegroupId = nil
+    end
+  end
+
+  if data.internalVersion < 44 then
+    local function fixUp(data, prefix)
+      local pattern = prefix .. "(.*)_format"
+
+      local found = false
+      for property in pairs(data) do
+        local symbol = property:match(pattern)
+        if symbol then
+          found = true
+          break
+        end
+      end
+
+      if not found then
+        return
+      end
+
+      local old = CopyTable(data)
+      for property in pairs(old) do
+        local symbol = property:match(pattern)
+        if symbol then
+          if data[property] == "timed" then
+            data[prefix .. symbol .. "_time_format"] = 0
+
+            local oldDynamic = data[prefix .. symbol .. "_time_dynamic"]
+            data[prefix .. symbol .. "_time_dynamic_threshold"] = oldDynamic and 3 or 60
+          end
+          data[prefix .. symbol .. "_time_dynamic"] = nil
+          if data[prefix .. symbol .. "_time_precision"] == 0 then
+            data[prefix .. symbol .. "_time_precision"] = 1
+            data[prefix .. symbol .. "_time_dynamic_threshold"] = 0
+          end
+        end
+      end
+    end
+
+    if data.regionType == "text" then
+      fixUp(data, "displayText_format_")
+    end
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtext" then
+          fixUp(subRegionData, "text_text_format_")
+        end
+      end
+    end
+
+    if data.actions then
+      for _, when in ipairs{ "start", "finish" } do
+        if data.actions[when] then
+          fixUp(data.actions[when], "message_format_")
+        end
+      end
+    end
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            fixUp(change.value, "message_format_")
+          end
+        end
+      end
+    end
   end
 
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());

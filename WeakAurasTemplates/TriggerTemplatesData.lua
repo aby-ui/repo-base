@@ -38,13 +38,20 @@ local templates =
     },
   }
 
+local manaIcon = WeakAuras.IsClassic() and "Interface\\Icons\\spell_frost_manarecharge.blp"
+                                        or "Interface\\Icons\\inv_elemental_mote_mana"
+local rageIcon = WeakAuras.IsClassic() and "Interface\\Icons\\ability_racial_bloodrage.blp"
+                                        or "Interface\\Icons\\spell_misc_emotionangry"
+local comboPointsIcon = WeakAuras.IsClassic() and "Interface\\Icons\\ability_backstab"
+                                        or "Interface\\Icons\\inv_mace_2h_pvp410_c_01"
+
 local powerTypes =
   {
-    [0] = { name = POWER_TYPE_MANA, icon = "Interface\\Icons\\inv_elemental_mote_mana" },
-    [1] = { name = POWER_TYPE_RED_POWER, icon = "Interface\\Icons\\spell_misc_emotionangry"},
+    [0] = { name = POWER_TYPE_MANA, icon = manaIcon },
+    [1] = { name = POWER_TYPE_RED_POWER, icon = rageIcon},
     [2] = { name = POWER_TYPE_FOCUS, icon = "Interface\\Icons\\ability_hunter_focusfire"},
     [3] = { name = POWER_TYPE_ENERGY, icon = "Interface\\Icons\\spell_shadow_shadowworddominate"},
-    [4] = { name = COMBO_POINTS, icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01"},
+    [4] = { name = COMBO_POINTS, icon = comboPointsIcon},
     [6] = { name = RUNIC_POWER, icon = "Interface\\Icons\\inv_sword_62"},
     [7] = { name = SOUL_SHARDS_POWER, icon = "Interface\\Icons\\inv_misc_gem_amethyst_02"},
     [8] = { name = POWER_TYPE_LUNAR_POWER, icon = "Interface\\Icons\\ability_druid_eclipseorange"},
@@ -147,7 +154,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_misc_emotionangry",
+        icon = rageIcon,
       }
     }
   }
@@ -182,7 +189,7 @@ if WeakAuras.IsClassic() then
           { spell = 879, type = "ability", requiresTarget = true, usable = true}, -- Exorcism
           { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
           { spell = 1044, type = "ability", buff = true}, -- Blessing of Freedom
-          { spell = 1052, type = "ability"}, -- Purify
+          { spell = 1152, type = "ability"}, -- Purify
           { spell = 2812, type = "ability"}, -- Holy Wrath
           { spell = 4987, type = "ability"}, -- Cleanse
           { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
@@ -211,7 +218,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     }
   }
@@ -291,7 +298,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\ability_hunter_focusfire",
+        icon = manaIcon,
       },
     }
   }
@@ -362,7 +369,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
+        icon = comboPointsIcon,
       },
     }
   }
@@ -423,7 +430,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     }
   }
@@ -434,7 +441,6 @@ if WeakAuras.IsClassic() then
         title = L["Buffs"],
         args = {
           { spell = 546, type = "buff", unit = "player"}, -- Water Walking
-          { spell = 974, type = "buff", unit = "player", talent = 8}, -- Earth Shield
           { spell = 16256, type = "buff", unit = "player", talent = 30}, -- Flurry
         },
         icon = 135863
@@ -461,7 +467,6 @@ if WeakAuras.IsClassic() then
           { spell = 2008, type = "ability"}, -- Ancestral Spirit
           { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
           { spell = 2645, type = "ability", buff = true}, -- Ghost Wolf
-          { spell = 2825, type = "ability", buff = true}, -- Bloodlust
           { spell = 3599, type = "ability", totem = true}, -- Searing Totem
           { spell = 5394, type = "ability", totem = true}, -- Healing Stream Totem
           { spell = 5675, type = "ability", totem = true}, -- Mana Spring Totem
@@ -520,9 +525,9 @@ if WeakAuras.IsClassic() then
           { spell = 1459, type = "buff", unit = "player"}, -- Arcane Intellect
           { spell = 1463, type = "buff", unit = "player"}, -- Mana Shield
           { spell = 6143, type = "buff", unit = "player"}, -- Frost Ward
+          { spell = 11958, type = "buff", unit = "player"}, -- Ice Block
           { spell = 12042, type = "buff", unit = "player"}, -- Arcane Power
           { spell = 12536, type = "buff", unit = "player"}, -- Clearcasting
-          { spell = 45438, type = "buff", unit = "player"}, -- Ice Block
         },
         icon = 136096
       },
@@ -578,7 +583,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_arcane_arcane01",
+        icon = manaIcon,
       },
     }
   }
@@ -749,7 +754,7 @@ if WeakAuras.IsClassic() then
         title = L["Resources and Shapeshift Form"],
         args = {
         },
-        icon = "Interface\\Icons\\ability_druid_eclipseorange",
+        icon = manaIcon,
       },
     }
   }
@@ -874,7 +879,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_misc_emotionangry",
+        icon = rageIcon,
       },
     },
     [2] = { -- Fury
@@ -982,7 +987,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_misc_emotionangry",
+        icon = rageIcon,
       },
     },
     [3] = { -- Protection
@@ -1091,7 +1096,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_misc_emotionangry",
+        icon = rageIcon,
       }
     }
   }
@@ -1200,7 +1205,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [2] = { -- Protection
@@ -1305,7 +1310,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [3] = { -- Retribution
@@ -1916,7 +1921,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
+        icon = comboPointsIcon,
       },
     },
     [2] = { -- Outlaw
@@ -2045,7 +2050,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
+        icon = comboPointsIcon,
       },
     },
     [3] = { -- Subtlety
@@ -2166,7 +2171,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
+        icon = comboPointsIcon,
       },
     },
   }
@@ -2278,7 +2283,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [2] = { -- Holy
@@ -2399,7 +2404,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [3] = { -- Shadow
@@ -2892,7 +2897,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
   }
@@ -3103,7 +3108,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [3] = { -- Frost
@@ -3212,7 +3217,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
   }
@@ -3861,7 +3866,7 @@ else
         title = L["Resources"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
     [3] = { -- Windwalker
@@ -4261,7 +4266,7 @@ else
         title = L["Resources and Shapeshift Form"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_mace_2h_pvp410_c_01",
+        icon = comboPointsIcon,
       },
     },
     [3] = { -- Guardian
@@ -4405,7 +4410,7 @@ else
         title = L["Resources and Shapeshift Form"],
         args = {
         },
-        icon = "Interface\\Icons\\spell_misc_emotionangry",
+        icon = rageIcon,
       },
     },
     [4] = { -- Restoration
@@ -4550,7 +4555,7 @@ else
         title = L["Resources and Shapeshift Form"],
         args = {
         },
-        icon = "Interface\\Icons\\inv_elemental_mote_mana",
+        icon = manaIcon,
       },
     },
   }
@@ -5106,7 +5111,7 @@ end
 -- General Section
 tinsert(templates.general.args, {
   title = L["Health"],
-  icon = "Interface\\Icons\\inv_alchemy_70_red",
+  icon = WeakAuras.IsClassic() and "Interface\\Icons\\inv_potion_54" or "Interface\\Icons\\inv_alchemy_70_red",
   type = "health"
 });
 tinsert(templates.general.args, {
@@ -5117,28 +5122,40 @@ tinsert(templates.general.args, {
 tinsert(templates.general.args, {
   title = L["Always Active"],
   icon = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura78",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_alwaystrue = true}}}
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    event = "Conditions",
+    use_alwaystrue = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet alive"],
   icon = "Interface\\Icons\\ability_hunter_pet_raptor",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_HasPet = true}}}
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    event = "Conditions",
+    use_HasPet = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet Behavior"],
-  icon = "Interface\\Icons\\Ability_hunter_pet_assist",
-  triggers = {[1] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
+  icon = WeakAuras.IsClassic() and "Interface\\Icons\\ability_defend.blp" or "Interface\\Icons\\Ability_hunter_pet_assist",
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Pet Behavior"),
+    event = "Pet Behavior",
+    use_behavior = true,
+    behavior = "assist"}}}
 });
 
-tinsert(templates.general.args, {
-  spell = 2825, type = "buff", unit = "player",
-  forceOwnOnly = true,
-  ownOnly = nil,
-  overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 264667}}
-);
+if not WeakAuras.IsClassic() then
+  tinsert(templates.general.args, {
+    spell = 2825, type = "buff", unit = "player",
+    forceOwnOnly = true,
+    ownOnly = nil,
+    overideTitle = L["Bloodlust/Heroism"],
+    spellIds = {2825, 32182, 80353, 264667}}
+  );
+end
 
 -- Meta template for Power triggers
 local function createSimplePowerTemplate(powertype)
@@ -5219,7 +5236,10 @@ if not WeakAuras.IsClassic() then
     tinsert(templates.class.DRUID[i][resourceSection].args, {
       title = L["Shapeshift Form"],
       icon = 132276,
-      triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+      triggers = {[1] = { trigger = {
+        type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+        event = "Stance/Form/Aura",
+        }}}
     });
   end
   for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
@@ -5232,9 +5252,8 @@ if not WeakAuras.IsClassic() then
           triggers = {
             [1] = {
               trigger = {
-                type = "status",
+                type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
                 event = "Stance/Form/Aura",
-                unevent = "auto",
                 use_form = true,
                 form = { single = j }
               }
@@ -5269,7 +5288,9 @@ if not WeakAuras.IsClassic() then
     tinsert(templates.class.DEATHKNIGHT[i][resourceSection].args, {
       title = L["Runes"],
       icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
-      triggers = {[1] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
+      triggers = {[1] = { trigger = {
+        type = WeakAuras.GetTriggerCategoryFor("Death Knight Rune"),
+        event = "Death Knight Rune"}}}
     });
   end
 else
@@ -5280,7 +5301,9 @@ else
   tinsert(templates.class.WARRIOR[1][8].args, {
     title = L["Stance"],
     icon = 132349,
-    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+    triggers = {[1] = { trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+      event = "Stance/Form/Aura"}}}
   })
   for j, id in ipairs({2457, 71, 2458}) do
     local title, _, icon = GetSpellInfo(id)
@@ -5291,9 +5314,8 @@ else
         triggers = {
           [1] = {
             trigger = {
-              type = "status",
+              type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
               event = "Stance/Form/Aura",
-              unevent = "auto",
               use_form = true,
               form = { single = j }
             }
@@ -5321,7 +5343,9 @@ else
   tinsert(templates.class.DRUID[1][8].args, {
     title = L["Shapeshift Form"],
     icon = 132276,
-    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+    triggers = {[1] = { trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+      event = "Stance/Form/Aura"}}}
   });
   for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
     local title, _, icon = GetSpellInfo(id)
@@ -5332,9 +5356,8 @@ else
         triggers = {
           [1] = {
             trigger = {
-              type = "status",
+              type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
               event = "Stance/Form/Aura",
-              unevent = "auto",
               use_form = true,
               form = { single = j }
             }
@@ -5906,86 +5929,117 @@ end
 ------------------------------
 -- Hardcoded race templates
 -------------------------------
+if WeakAuras.IsClassic() then
+  -- Every Man for Himself
+  tinsert(templates.race.Human, { spell = 20600, type = "ability" });
+  -- Stoneform
+  tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Dwarf, { spell = 20594, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Shadow Meld
+  tinsert(templates.race.NightElf, { spell = 20580, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.NightElf, { spell = 20580, type = "buff", titleSuffix = L["buff"]});
+  -- Escape Artist
+  tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
 
--- Every Man for Himself
-tinsert(templates.race.Human, { spell = 59752, type = "ability" });
--- Stoneform
-tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Dwarf, { spell = 65116, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Shadow Meld
-tinsert(templates.race.NightElf, { spell = 58984, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["buff"]});
--- Escape Artist
-tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
--- Gift of the Naaru
-tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Dark Flight
-tinsert(templates.race.Worgen, { spell = 68992, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Worgen, { spell = 68992, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Quaking Palm
-tinsert(templates.race.Pandaren, { spell = 107079, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Pandaren, { spell = 107079, type = "buff", titleSuffix = L["buff"]});
--- Blood Fury
-tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
---Cannibalize
-tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- War Stomp
-tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Tauren, { spell = 20549, type = "buff", titleSuffix = L["buff"]});
---Beserking
-tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.Troll, { spell = 26297, type = "buff", unit = "player", titleSuffix = L["buff"]});
--- Arcane Torment
-tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.BloodElf, { spell = 69179, type = "buff", titleSuffix = L["buff"]});
--- Pack Hobgoblin
-tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
--- Rocket Barrage
-tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
+  -- Blood Fury
+  tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  --Cannibalize
+  tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Will of the Forsaken
+  tinsert(templates.race.Scourge, { spell = 7744, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Scourge, { spell = 7744, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- War Stomp
+  tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Tauren, { spell = 20549, type = "debuff", titleSuffix = L["debuff"]});
+  --Beserking
+  tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["Rogue cooldown"]});
+  tinsert(templates.race.Troll, { spell = 26296, type = "ability", titleSuffix = L["Warrior cooldown"]});
+  tinsert(templates.race.Troll, { spell = 20554, type = "ability", titleSuffix = L["Other cooldown"]});
+  tinsert(templates.race.Troll, { spell = 26635, type = "buff", unit = "player", titleSuffix = L["buff"]});
+else
+  -- Every Man for Himself
+  tinsert(templates.race.Human, { spell = 59752, type = "ability" });
+  -- Stoneform
+  tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Dwarf, { spell = 65116, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Shadow Meld
+  tinsert(templates.race.NightElf, { spell = 58984, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["buff"]});
+  -- Escape Artist
+  tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
+  -- Gift of the Naaru
+  tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Dark Flight
+  tinsert(templates.race.Worgen, { spell = 68992, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Worgen, { spell = 68992, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Quaking Palm
+  tinsert(templates.race.Pandaren, { spell = 107079, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Pandaren, { spell = 107079, type = "buff", titleSuffix = L["buff"]});
+  -- Blood Fury
+  tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  --Cannibalize
+  tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- War Stomp
+  tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Tauren, { spell = 20549, type = "debuff", titleSuffix = L["debuff"]});
+  --Beserking
+  tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["cooldown"]});
+  tinsert(templates.race.Troll, { spell = 26297, type = "buff", unit = "player", titleSuffix = L["buff"]});
+  -- Arcane Torrent
+  tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]});
+  -- Pack Hobgoblin
+  tinsert(templates.race.Goblin, { spell = 69046, type = "ability" });
+  -- Rocket Barrage
+  tinsert(templates.race.Goblin, { spell = 69041, type = "ability" });
 
--- Arcane Pulse
-tinsert(templates.race.Nightborne, { spell = 260364, type = "ability" });
--- Cantrips
-tinsert(templates.race.Nightborne, { spell = 255661, type = "ability" });
--- Light's Judgment
-tinsert(templates.race.LightforgedDraenei, { spell = 255647, type = "ability" });
--- Forge of Light
-tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" });
--- Bull Rush
-tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
---Spatial Rift
-tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
--- Fireblood
-tinsert(templates.race.DarkIronDwarf, { spell = 265221, type = "ability" });
--- Mole Machine
-tinsert(templates.race.DarkIronDwarf, { spell = 265225, type = "ability" });
---Haymaker
-tinsert(templates.race.KulTiran, { spell = 287712, type = "ability", requiresTarget = true });
--- Brush it Off
-tinsert(templates.race.KulTiran, { spell = 291843, type = "buff"});
--- Hyper Organic Light Originator
-tinsert(templates.race.Mechagnome, { spell = 312924, type = "ability" });
--- Combat Anlysis
-tinsert(templates.race.Mechagnome, { spell = 313424, type = "buff" });
--- Recently Failed
-tinsert(templates.race.Mechagnome, { spell = 313015, type = "debuff" });
--- Ancestral Call
-tinsert(templates.race.MagharOrc, { spell = 274738, type = "ability" });
--- ZandalariTroll = {}
--- Pterrordax Swoop
-tinsert(templates.race.ZandalariTroll, { spell = 281954, type = "ability" });
--- Regenratin'
-tinsert(templates.race.ZandalariTroll, { spell = 291944, type = "ability" });
--- Embrace of the Loa
-tinsert(templates.race.ZandalariTroll, { spell = 292752, type = "ability" });
--- Vulpera = {}
--- Bag of Tricks
-tinsert(templates.race.Vulpera, { spell = 312411, type = "ability" });
--- Make Camp
-tinsert(templates.race.Vulpera, { spell = 312370, type = "ability" });
+  -- Arcane Pulse
+  tinsert(templates.race.Nightborne, { spell = 260364, type = "ability" });
+  -- Cantrips
+  tinsert(templates.race.Nightborne, { spell = 255661, type = "ability" });
+  -- Light's Judgment
+  tinsert(templates.race.LightforgedDraenei, { spell = 255647, type = "ability" });
+  -- Forge of Light
+  tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" });
+  -- Bull Rush
+  tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
+  --Spatial Rift
+  tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
+  -- Fireblood
+  tinsert(templates.race.DarkIronDwarf, { spell = 265221, type = "ability" });
+  -- Mole Machine
+  tinsert(templates.race.DarkIronDwarf, { spell = 265225, type = "ability" });
+  --Haymaker
+  tinsert(templates.race.KulTiran, { spell = 287712, type = "ability", requiresTarget = true });
+  -- Brush it Off
+  tinsert(templates.race.KulTiran, { spell = 291843, type = "buff"});
+  -- Hyper Organic Light Originator
+  tinsert(templates.race.Mechagnome, { spell = 312924, type = "ability" });
+  -- Combat Anlysis
+  tinsert(templates.race.Mechagnome, { spell = 313424, type = "buff" });
+  -- Recently Failed
+  tinsert(templates.race.Mechagnome, { spell = 313015, type = "debuff" });
+  -- Ancestral Call
+  tinsert(templates.race.MagharOrc, { spell = 274738, type = "ability" });
+  -- ZandalariTroll = {}
+  -- Pterrordax Swoop
+  tinsert(templates.race.ZandalariTroll, { spell = 281954, type = "ability" });
+  -- Regenratin'
+  tinsert(templates.race.ZandalariTroll, { spell = 291944, type = "ability" });
+  -- Embrace of the Loa
+  tinsert(templates.race.ZandalariTroll, { spell = 292752, type = "ability" });
+  -- Vulpera = {}
+  -- Bag of Tricks
+  tinsert(templates.race.Vulpera, { spell = 312411, type = "ability" });
+  -- Make Camp
+  tinsert(templates.race.Vulpera, { spell = 312370, type = "ability" });
+end
+
+
 
 ------------------------------
 -- Helper code for options

@@ -117,6 +117,26 @@ function atributo_heal:NovaTabela (serial, nome, link)
 end
 
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> npc healing taken
+
+--local npchealingtaken_tooltip_background = {value = 100, color = {0.1960, 0.1960, 0.1960, 0.9097}, texture = [[Interface\AddOns\Details\images\bar_background2]]}
+
+--tooltip function
+
+
+local function RefreshNpcHealingTakenBar(tabela, barra, instancia)
+	atributo_damage:UpdateNpcHealingTaken(tabela, tabela.minha_barra, barra.colocacao, instancia)
+end
+
+local on_switch_NHT_show = function(instance) --npc healing taken
+	instance:TrocaTabela(instance, true, 1, 8)
+	return true
+end
+
+--local NHT_search_code = [[]]
+
+
 function _detalhes.SortGroupHeal (container, keyName2)
 	keyName = keyName2
 	return _table_sort (container, _detalhes.SortKeyGroupHeal)

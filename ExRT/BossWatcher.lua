@@ -17,7 +17,6 @@ local UnitInRaid = UnitInRaid
 local UnitIsPlayerOrPet = ExRT.F.UnitIsPlayerOrPet
 local GUIDtoID = ExRT.F.GUIDtoID
 local GetUnitTypeByGUID = ExRT.F.GetUnitTypeByGUID
-local UnitIsFeignDeath = UnitIsFeignDeath
 local pairs = pairs
 local GetTime = GetTime
 local UnitIsFriendlyByUnitFlag = ExRT.F.UnitIsFriendlyByUnitFlag
@@ -25,14 +24,16 @@ local wipe = wipe
 local bit_band = bit.band
 local tremove = tremove
 local strsplit = strsplit
-local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local type = type
 local UnitGroupRolesAssigned = ExRT.isClassic and ExRT.NULLfunc or UnitGroupRolesAssigned
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local VExRT = nil
 
 local module = ExRT:New("BossWatcher",ExRT.L.BossWatcher)
 local ELib,L = ExRT.lib,ExRT.L
+
+module.CLEUNotInList = true
 
 module.db.data = {}
 
@@ -178,7 +179,7 @@ local ReductionAurasFunctions = {
 }
 module.db.reductionAuras = {
 	--Paladin
-	[210320] = {0.8,nil,function(auraVar) return (100+auraVar)/100 end},	--Devotion Aura
+	--[465] = {0.8,nil,function(auraVar) return (100+auraVar)/100 end},	--Devotion Aura
 	[498] = 0.8,		--Divine Protection
 	[86659] = 0.5,		--Guardian of Ancient Kings
 	[31850] = 0.8,		--Ardent Defender
@@ -373,7 +374,7 @@ function module.options:Load()
 		end
 	end)
 
-	self.sliderNum = ELib:Slider(self,L.BossWatcherOptionsFightsSave):Size(300):Point(20,-125):Range(1,15):SetTo(VExRT.BossWatcher.fightsNum or 1):OnChange(function(self,event) 
+	self.sliderNum = ELib:Slider(self,L.BossWatcherOptionsFightsSave):Size(300):Point(20,-125):Range(1,25):SetTo(VExRT.BossWatcher.fightsNum or 1):OnChange(function(self,event) 
 		event = ExRT.F.Round(event)
 		VExRT.BossWatcher.fightsNum = event
 		self.tooltipText = event
@@ -993,7 +994,7 @@ do
 	function module:timer(elapsed)
 		--------------> Graphs
 		_graphSectionTimer = _graphSectionTimer + elapsed
-		local nowTimer = ceil(_graphSectionTimer)
+		local nowTimer = _graphSectionTimer - _graphSectionTimer % 1 + 1
 		if _graphSectionTimerRounded ~= nowTimer then
 			_graphSectionTimerRounded = nowTimer
 			local data = {}
@@ -1265,6 +1266,7 @@ local function AddNotRealDeath(destGUID,timestamp,spellID)
 	end
 	destData.sch = C_Timer.NewTimer(1,destData.schFunc)
 end
+module.AddNotRealDeath = AddNotRealDeath
 
 local EnvironmentalTypeToSpellID = {
 	["Falling"] = 110122,
@@ -1281,85 +1283,120 @@ local DeathLogBlackList = {
 	[157452] = true, --Nzoth spine
 }
 
-if ExRT.isClassic then
-	local _CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
-	function CombatLogGetCurrentEventInfo()
-		local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
-				= _CombatLogGetCurrentEventInfo()
-		if event ~= "SWING_DAMAGE" and event ~= "SWING_MISSED" then
-			val1 = val2
-			if event == "SPELL_PERIODIC_DAMAGE" then event = "SPELL_DAMAGE"
-			elseif event == "SPELL_PERIODIC_HEAL" then event = "SPELL_HEAL" 
-			elseif event == "SPELL_PERIODIC_MISSED" then event = "SPELL_MISSED" end
+local CLEUParser, CLEU
+
+function module.main.SPELL_DAMAGE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+	--[[
+		val1	spellID
+		val2	_
+		val3	_
+		val4	amount
+		val5	overkill
+		val6	school
+		val7	resisted
+		val8	blocked
+		val9	absorbed
+		val10	critical
+		val11	glancing
+		val12	crushing
+		val13	isOffHand
+		val14	missType
+			--Note, missType param added by myself for tracking function
+	]]
+
+	--------------> Add damage
+	local destTable = fightData_damage[destGUID]	--destTable
+	if not destTable then
+		fightData_damage_seen[destGUID] = timestamp
+		destTable = {
+			[destFlags]={
+				[sourceGUID]={
+					[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]={
+						[active_segment] = {
+							amount = 0,
+							count = 0,
+							overkill = 0,
+							blocked = 0,
+							absorbed = 0,
+							crit = 0,
+							critcount = 0,
+							critmax = 0,
+							critover = 0,
+							hitmax = 0,
+							parry = 0,
+							dodge = 0,
+							miss = 0,
+						}
+					}
+				}
+			}
+		}
+		fightData_damage[destGUID] = destTable
+		if val6 then
+			spellsSchool[val1] = val6
 		end
-		return timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
 	end
-end
 
-local function CLEUParser(self,_,ptimestamp,...)
-	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14
-				= CombatLogGetCurrentEventInfo()
-	if ptimestamp then
-		timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-		val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14 = ptimestamp, ...
+	local destReaction = destTable[destFlags]	--destReaction
+	if not destReaction then
+		destReaction = {
+			[sourceGUID]={
+				[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]={
+					[active_segment] = {
+						amount = 0,
+						count = 0,
+						overkill = 0,
+						blocked = 0,
+						absorbed = 0,
+						crit = 0,
+						critcount = 0,
+						critmax = 0,
+						critover = 0,
+						hitmax = 0,
+						parry = 0,
+						dodge = 0,
+						miss = 0,
+					}
+				}
+			}
+		}
+		destTable[destFlags] = destReaction
+		if val6 then
+			spellsSchool[val1] = val6
+		end
 	end
 
-	if not guidData[sourceGUID] then guidData[sourceGUID] = sourceName or "nil" end
-	if not guidData[destGUID] then guidData[destGUID] = destName or "nil" end
+	local sourceTable = destReaction[sourceGUID]	--sourceTable
+	if not sourceTable then
+		sourceTable = {
+			[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]={
+				[active_segment] = {
+					amount = 0,
+					count = 0,
+					overkill = 0,
+					blocked = 0,
+					absorbed = 0,
+					crit = 0,
+					critcount = 0,
+					critmax = 0,
+					critover = 0,
+					hitmax = 0,
+					parry = 0,
+					dodge = 0,
+					miss = 0,
+				}
+			}
+		}
+		destReaction[sourceGUID] = sourceTable
+		if val6 then
+			spellsSchool[val1] = val6
+		end
+	end
 
-	reactionData[sourceGUID] = sourceFlags
-	reactionData[destGUID] = destFlags
-
-	---------------------------------
-	------ damage
-	---------------------------------
-	if event == "SPELL_DAMAGE" or event == "SPELL_PERIODIC_DAMAGE" then
-		--[[
-			val1	spellID
-			val2	_
-			val3	_
-			val4	amount
-			val5	overkill
-			val6	school
-			val7	resisted
-			val8	blocked
-			val9	absorbed
-			val10	critical
-			val11	glancing
-			val12	crushing
-			val13	isOffHand
-			val14	missType
-				--Note, missType param added by myself for tracking function
-		]]
-
-		--------------> Add damage
-		local activeTable = fightData_damage[destGUID]	--destTable
-		if not activeTable then
-			fightData_damage_seen[destGUID] = timestamp
-			activeTable = {}
-			fightData_damage[destGUID] = activeTable
-		end
-		local activeTable2 = activeTable[destFlags]	--destReaction
-		if not activeTable2 then
-			activeTable2 = {}
-			activeTable[destFlags] = activeTable2
-		end
-		activeTable = activeTable2[sourceGUID]	--sourceTable
-		if not activeTable then
-			activeTable = {}
-			activeTable2[sourceGUID] = activeTable
-		end
-		activeTable2 = activeTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]	--segmentsTable
-		if not activeTable2 then
-			activeTable2 = {}
-			activeTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1] = activeTable2
-		end
-		local spellTable = activeTable2[active_segment]	--spellTable
-		if not spellTable then
-			spellTable = {
+	local segmentsTable = sourceTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1]	--segmentsTable
+	if not segmentsTable then
+		segmentsTable = {
+			[active_segment] = {
 				amount = 0,
 				count = 0,
 				overkill = 0,
@@ -1374,928 +1411,59 @@ local function CLEUParser(self,_,ptimestamp,...)
 				dodge = 0,
 				miss = 0,
 			}
-			activeTable2[active_segment] = spellTable
-			if val6 then
-				spellsSchool[val1] = val6
-			end
+		}
+		sourceTable[event == "SPELL_PERIODIC_DAMAGE" and -val1 or val1] = segmentsTable
+		if val6 then
+			spellsSchool[val1] = val6
 		end
-		spellTable.amount = spellTable.amount + val4
-		spellTable.count = spellTable.count + 1
-		if val5 > 0 then
-			spellTable.overkill = spellTable.overkill + val5
+	end
+
+	local spellTable = segmentsTable[active_segment]	--spellTable
+	if not spellTable then
+		spellTable = {
+			amount = 0,
+			count = 0,
+			overkill = 0,
+			blocked = 0,
+			absorbed = 0,
+			crit = 0,
+			critcount = 0,
+			critmax = 0,
+			critover = 0,
+			hitmax = 0,
+			parry = 0,
+			dodge = 0,
+			miss = 0,
+		}
+		segmentsTable[active_segment] = spellTable
+	end
+	spellTable.amount = spellTable.amount + val4
+	spellTable.count = spellTable.count + 1
+	if val5 > 0 then
+		spellTable.overkill = spellTable.overkill + val5
+	end
+	if val8 then
+		spellTable.blocked = spellTable.blocked + val8
+	end
+	if val9 then
+		spellTable.absorbed = spellTable.absorbed + val9
+	end
+	if val10 then
+		spellTable.crit = spellTable.crit + val4
+		spellTable.critcount = spellTable.critcount + 1
+		if spellTable.critmax < val4 then
+			spellTable.critmax = val4
 		end
-		if val8 then
-			spellTable.blocked = spellTable.blocked + val8
-		end
-		if val9 then
-			spellTable.absorbed = spellTable.absorbed + val9
-		end
-		if val10 then
-			spellTable.crit = spellTable.crit + val4
-			spellTable.critcount = spellTable.critcount + 1
-			if spellTable.critmax < val4 then
-				spellTable.critmax = val4
-			end
-			spellTable.critover = spellTable.critover + (val5 > 0 and val5 or 0) + (val8 and val8 or 0) + (val9 and val9 or 0)
-		elseif spellTable.hitmax < val4 then
-			spellTable.hitmax = val4
-		end
-
-
-
-		--------------> Add death
-		local mobID = GUIDtoID(destGUID)
-		if not DeathLogBlackList[mobID] then
-			activeTable2 = deathLog[destGUID]	--destData
-			if not activeTable2 then
-				activeTable2 = {c=0}
-				deathLog[destGUID] = activeTable2
-			end
-			local tmpVar = activeTable2.c + 1
-			if tmpVar > deathMaxEvents then
-				tmpVar = 1
-			end
-			activeTable2.c = tmpVar
-			activeTable = activeTable2[tmpVar]
-			if not activeTable then
-				activeTable = {}
-				activeTable2[tmpVar] = activeTable
-			end
-			activeTable.t = 1
-			activeTable.s = sourceGUID
-			activeTable.ti = timestamp
-			activeTable.sp = val1
-			activeTable.a = val4
-			activeTable.o = val5
-			activeTable.sc = val6
-			activeTable.b = val8
-			activeTable.ab = val9
-			activeTable.c = val10
-			activeTable.ia = nil
-			activeTable.sm = sourceFlags2
-			activeTable.dm = destFlags2
-			tmpVar = raidGUIDs[ destGUID ]
-			if tmpVar then
-				activeTable.h = UnitHealth( tmpVar )
-				activeTable.hm = UnitHealthMax( tmpVar )
-			end
-		end
-
-
-		--------------> Add reduction
-		activeTable = var_reductionCurrent[destGUID]
-		if activeTable then
-			local reduction = fightData_reduction[destGUID]
-			if not reduction then
-				reduction = {}
-				fightData_reduction[destGUID] = reduction
-			end
-			local reduction2 = reduction[sourceGUID]
-			if not reduction2 then
-				reduction2 = {}
-				reduction[sourceGUID] = reduction2
-			end
-			reduction = reduction2[val1]
-			if not reduction then
-				reduction = {}
-				reduction2[val1] = reduction
-			end
-
-			for i=1,#activeTable do
-				local reductionSubtable = activeTable[i]
-
-				local amount2 = val4+(val9 or 0)+(val8 or 0)+val5
-
-				local isCheck = reductionSubtable.f
-				if not isCheck then
-					isCheck = true
-				elseif isCheck == 1 then --physical
-					isCheck = val6 == 1
-				elseif isCheck == 2 then --magic
-					isCheck = bit_band(val6 or 0,1) == 0
-				elseif isCheck == 3 then --feintCheck
-					isCheck = module.db.reductionIsNotAoe[val1]
-				elseif isCheck == 4 then --dampenHarmCheck
-					local unitHealthMax = UnitHealthMax(destName or "?")
-					unitHealthMax = unitHealthMax == 0 and 1400000 or unitHealthMax
-					isCheck = (amount2 / unitHealthMax) >= 0.15
-				end
-
-				if isCheck then
-					local reductionGUID = reductionSubtable.g
-					reduction2 = reduction[reductionGUID]
-					if not reduction2 then
-						reduction2 = {}
-						reduction[reductionGUID] = reduction2
-					end
-					local reductionSpell = reductionSubtable.s
-
-					local amount = amount2 * reductionSubtable.c
-
-					local reductionSpellData = reduction2[reductionSpell]
-					if not reductionSpellData then
-						reductionSpellData = {}
-						reduction2[reductionSpell] = reductionSpellData
-					end
-
-					reductionSpellData[active_segment] = (reductionSpellData[active_segment] or 0)+amount
-				end
-			end
-		end
-
-
-
-		--------------> Add switch
-		activeTable = fightData_switch[destGUID]
-		if not activeTable then
-			activeTable = {
-				[1]={},	--cast
-				[2]={},	--target
-				seen=timestamp,
-			}
-			fightData_switch[destGUID] = activeTable
-		end
-		activeTable2 = activeTable[1]
-		if not activeTable2[sourceGUID] then
-			activeTable2[sourceGUID] = {timestamp,val1,1}
-		end
-
-
-
-		--------------> Add special spells [tracking]
-		if var_trackingDamageSpells[val1] then
-			fightData.tracking[#fightData.tracking + 1] = {timestamp,sourceGUID,sourceFlags2,destGUID,destFlags2,val1,val4,val5,val6,val8,val9,val10,val14,s = active_segment}
-		end
-
-
-		--------------> Other
-		if val1 == 196917 then	-- Light of the Martyr: effective healing fix
-			local lotmData = spellFix_LotM[sourceGUID]
-			if lotmData then
-				local damageTaken = val4 + val5 + (val9 or 0)
-				if damageTaken < (lotmData[1] + lotmData[2]) and (timestamp - lotmData[5]) < 0.2 then
-					local spellTable = lotmData[3]
-					if lotmData[2] == 0 then
-						spellTable.amount = spellTable.amount - damageTaken
-					elseif lotmData[2] >= damageTaken then
-						spellTable.absorbed = spellTable.absorbed - damageTaken
-					else
-						spellTable.absorbed = spellTable.absorbed - lotmData[2]
-						spellTable.amount = spellTable.amount - damageTaken + lotmData[2]
-					end
-					if lotmData[4] then
-						spellTable.crit = spellTable.crit - damageTaken
-					end
-				end
-			end
-		--[[
-		elseif val1 == 186439 then	-- Shadow Mend
-			local spellTable = spellFix_SM[destGUID]
-			if spellTable then
-				local damageTaken = val4 + val5 + (val9 or 0)
-				local amount = spellTable.amount
-				if amount < damageTaken then
-					spellTable.amount = 0
-				else
-					spellTable.amount = amount - damageTaken
-				end
-			end
-		]]
-		end
-
-
-		if val14 then
-			return spellTable
-		end
-	---------------------------------
-	------ heal
-	---------------------------------
-	elseif event == "SPELL_HEAL" or event == "SPELL_PERIODIC_HEAL" then
-		--[[
-		Note about healing:
-		amount = healing + overhealing
-		absorbed = if spell absorbed by ability (ex. DK's egg, Koragh shadow phase)
-		absorbs = if spell is absorb (ex. PW:S, HPally mastery, BloodDK mastery)
-		]]
-		--[[
-			val1	spellID
-			val2	_
-			val3	school
-			val4	amount
-			val5	overhealing
-			val6	absorbed
-			val7	critical
-		]]
-		if val6 < 0 then return end	--Fix 8.2 boss
-
-		--------------> Add heal
-		local activeTable = fightData_heal[sourceGUID]	--sourceTable
-		if not activeTable then
-			activeTable = {}
-			fightData_heal[sourceGUID] = activeTable
-		end
-		local activeTable2 = activeTable[destGUID]		--destTable
-		if not activeTable2 then
-			activeTable2 = {}
-			activeTable[destGUID] = activeTable2
-		end
-		activeTable = activeTable2[destFlags]	--destReactTable
-		if not activeTable then
-			activeTable = {}
-			activeTable2[destFlags] = activeTable
-		end
-		activeTable2 = activeTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1]		--segmentsTable
-		if not activeTable2 then
-			activeTable2 = {}
-			activeTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = activeTable2
-		end
-		local spellTable = activeTable2[active_segment]
-		if not spellTable then
-			spellTable = {
-				amount = 0,
-				over = 0,
-				absorbed = 0,
-				count = 0,
-				crit = 0,
-				critcount = 0,
-				critmax = 0,
-				critover = 0,
-				hitmax = 0,
-				absorbs = 0,
-			}
-			activeTable2[active_segment] = spellTable
-			if val3 then
-				spellsSchool[val1] = val3
-			end
-		end
-		spellTable.amount = spellTable.amount + val4
-		spellTable.over = spellTable.over + val5
-		spellTable.absorbed = spellTable.absorbed + val6
-		spellTable.count = spellTable.count + 1
-		if val7 then
-			spellTable.crit = spellTable.crit + val4 + val6
-			spellTable.critcount = spellTable.critcount + 1
-			if spellTable.critmax < val4 then
-				spellTable.critmax = val4
-			end
-			spellTable.critover = spellTable.critover + val5
-		elseif spellTable.hitmax < val4 then
-			spellTable.hitmax = val4
-		end
-
-
-
-		--------------> Add death
-		activeTable2 = deathLog[destGUID]
-		if not activeTable2 then
-			activeTable2 = {c=0}
-			deathLog[destGUID] = activeTable2
-		end
-		local tmpVar = activeTable2.c + 1
-		if tmpVar > deathMaxEvents then
-			tmpVar = 1
-		end
-		activeTable2.c = tmpVar
-		activeTable = activeTable2[tmpVar]
-		if not activeTable then
-			activeTable = {}
-			activeTable2[tmpVar] = activeTable
-		end
-		activeTable.t = 2
-		activeTable.s = sourceGUID
-		activeTable.ti = timestamp
-		activeTable.sp = val1
-		activeTable.a = val4
-		activeTable.o = val5
-		activeTable.sc = val3
-		activeTable.b = nil
-		activeTable.ab = val6
-		activeTable.c = val7
-		activeTable.ia = nil
-		activeTable.sm = sourceFlags2
-		activeTable.dm = destFlags2
-		activeTable2 = raidGUIDs[ destGUID ]
-		if activeTable2 then
-			activeTable.h = UnitHealth( activeTable2 )
-			activeTable.hm = UnitHealthMax( activeTable2 )
-		end
-
-
-		--------------> Other
-		--[[
-		if negateHealing[destGUID] then
-			spellTable.amount = spellTable.amount - val4
-			spellTable.over = spellTable.over + val4 + val6
-			spellTable.absorbed = spellTable.absorbed - val6
-			if val7 then
-				spellTable.crit = spellTable.crit - val4 - val6
-				spellTable.critcount = spellTable.critcount - 1
-				spellTable.critover = spellTable.critover - val5
-			end
-		end
-		]]
-		if val1 == 183998 then	--Light of the Martyr: effective healing fix
-			local lotmData = spellFix_LotM[sourceGUID]
-			if not lotmData then
-				lotmData = {}
-				spellFix_LotM[sourceGUID] = lotmData
-			end
-			lotmData[1] = val4 - val5
-			lotmData[2] = val6
-			lotmData[3] = spellTable
-			lotmData[4] = val7
-			lotmData[5] = timestamp
-		elseif val1 == 186263 then	--Shadow Mend: effective healing fix, remove damage from debuff
-			spellFix_SM[destGUID] = spellTable
-		elseif val1 == 213313 then	--Paladin: Divine intervention
-			AddNotRealDeath(destGUID,timestamp,val1)
-		end
-
-	---------------------------------
-	------ auras
-	---------------------------------
-	elseif event == "SPELL_AURA_APPLIED" then
-		local spellID,spellName,school,auraType = val1,val2,val3,val4
-
-		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,1,1,s = active_segment}
-		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,1,1,s = active_segment}
-
-		--------------> Add reduction
-		local reduction = var_reductionAuras[spellID]
-		if reduction then
-			if spellID == 81782 then
-				sourceGUID = module.db.reductionPowerWordBarrierCaster or sourceGUID
-			elseif spellID == 194384 then
-				reduction = reductionAtonement[sourceGUID] or 1
-				--[[
-				if ExRT.A.Inspect then
-					local db = ExRT.A.Inspect.db.inspectDB
-					for k,v in pairs(db) do
-						if v.GUID == sourceGUID then
-							if v[7] == 1 then
-								reduction = 0.97
-							end
-							break
-						end
-					end
-				end
-				]]
-			end
-
-			local destData = var_reductionCurrent[ destGUID ]
-			if not destData then
-				destData = {}
-				var_reductionCurrent[ destGUID ] = destData
-			end
-			local destCount = #destData
-
-			local func,funcAura,reductionTable = nil
-			if type(reduction)=="table" then
-				reductionTable = reduction
-				funcAura = reduction[3]
-				func = reduction[2]
-				reduction = reduction[1]
-			end
-
-			if funcAura then
-				for i=1,40 do
-					local auraName,_,count,_,_,_,_,_,_,_,_,_,_,_,_,val1,val2,val3,val4,val5 = UnitAura(destName or "?",i)
-					if auraName == spellName then
-						if val1 then
-							reduction, func = funcAura(val1 or 0,val2 or 0,val3 or 0,val4 or 0,val5 or 0)
-							if not reduction then
-								reduction = reductionTable[1]
-								func = reductionTable[2]
-								funcAura = nil
-							end
-							--ExRT.F.dprint(format("%s > %s: %s [%d%%]",sourceName,destName,spellName,(reduction or 0)*100))
-						else
-							funcAura = nil
-						end
-						break
-					elseif not auraName then
-						break
-					end
-				end
-			end
-
-			if reduction == 1 then
-				return
-			end
-
-
-			for i=1,destCount do
-				if destData[i].s == spellID then
-					local destSpell = destData[i]
-
-					destSpell.r = reduction
-
-					local from,fromMagic,fromPhysical = 1,1,1
-					for j=1,i-1 do
-						if destData[j].f == ReductionAurasFunctions.magic then
-							fromMagic = fromMagic * destData[j].r
-						elseif destData[j].f == ReductionAurasFunctions.physical then
-							fromPhysical = fromPhysical * destData[j].r
-						else
-							from = from * destData[j].r
-						end
-					end
-
-					for j=i,destCount do
-						local currReduction
-						if destData[j].f == ReductionAurasFunctions.magic then
-							currReduction = 1 / (1 - (fromMagic - fromMagic * destData[j].r))
-							fromMagic = fromMagic * destData[j].r
-						elseif destData[j].f == ReductionAurasFunctions.physical then
-							currReduction = 1 / (1 - (fromPhysical - fromPhysical * destData[j].r))
-							fromPhysical = fromPhysical * destData[j].r
-						else
-							currReduction = 1 / (1 - (from - from * destData[j].r))
-							from = from * destData[j].r
-						end
-						destData[j].c = currReduction
-					end
-
-					return
-				end
-			end
-
-			local from = 1
-			if func == ReductionAurasFunctions.magic then
-				for i=1,destCount do
-					if destData[i].f ~= ReductionAurasFunctions.physical then
-						from = from * destData[i].r
-					end
-				end
-			elseif func == ReductionAurasFunctions.physical then
-				for i=1,destCount do
-					if destData[i].f ~= ReductionAurasFunctions.magic then
-						from = from * destData[i].r
-					end
-				end
-			else
-				for i=1,destCount do
-					from = from * destData[i].r
-				end
-			end
-
-			local currReduction = 1 / (1 - (from - from * reduction))
-			destData[destCount + 1] = {
-				s = spellID,
-				r = reduction,
-				c = (currReduction - 1),
-				g = sourceGUID,
-				f = func,
-			}
-
-			--debug_CurrentReductionToChat(destData)
-
-			if school then
-				spellsSchool[spellID] = school
-			end
-		end
-
-
-		if spellID == 45181 or spellID == 211336 or spellID == 87024 or spellID == 229333 or spellID == 116888 or spellID == 209261 then	--Cheated Death, Archbishop Benedictus' Restitution, Cauterize, Sands of Time (Trinket), Shroud of Purgatory, Uncontained Fel 
-			AddNotRealDeath(destGUID,timestamp,spellID)
-		--elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
-		--	negateHealing[destGUID] = true
-		end
-
-
-	elseif event == "SPELL_AURA_REMOVED" then
-		local spellID,_,school,auraType,amount = val1,val2,val3,val4,val5
-
-		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,2,1,s = active_segment}
-		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,2,1,s = active_segment}
-
-		if amount and amount > 0 and 
-			spellID ~= 284663 --BfD: Conclave: Bwonsamdi
-		then
-			CLEUParser(self,nil,timestamp,"SPELL_HEAL",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,school,amount,amount,0)
-		end
-
-
-		--------------> Add reduction
-		local reduction = var_reductionAuras[spellID]
-		if reduction then
-			local destData = var_reductionCurrent[ destGUID ]
-			if not destData then
-				return
-			end
-			for i=1,#destData do
-				if destData[i] and destData[i].s == spellID and (destData[i].g == sourceGUID or spellID == 81782) then
-					tremove(destData,i)
-				end
-			end
-
-			local from,fromPhysical,fromMagic = 1,1,1
-			for i=1,#destData do
-				local spellData = destData[i]
-				local currReduction = nil
-				if spellData.f == ReductionAurasFunctions.magic then
-					currReduction = 1 / (1 - (fromMagic - fromMagic * spellData.r))
-					fromMagic = fromMagic * spellData.r
-				elseif spellData.f == ReductionAurasFunctions.physical then
-					currReduction = 1 / (1 - (fromPhysical - fromPhysical * spellData.r))
-					fromPhysical = fromPhysical * spellData.r
-				else
-					currReduction = 1 / (1 - (from - from * spellData.r))
-					fromPhysical = fromPhysical * spellData.r
-					fromMagic = fromMagic * spellData.r
-				end
-				from = from * spellData.r
-				spellData.c = currReduction - 1
-			end
-
-			--debug_CurrentReductionToChat(destData)
-		end
-
-
-		--------------> Other
-		if spellID == 187464 then	--Shadow Mend
-			spellFix_SM[destGUID] = nil
-		--elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
-		--	negateHealing[destGUID] = nil
-		end
-
-	---------------------------------
-	------ casts
-	---------------------------------
-	elseif event == "SPELL_CAST_SUCCESS" then
-		local spellID = val1
-
-		--------------> Add cast
-		local sourceTable = fightData_cast[sourceGUID]
-		if not sourceTable then
-			sourceTable = {}
-			fightData_cast[sourceGUID] = sourceTable
-		end
-		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,1,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
-
-		if val3 then
-			spellsSchool[val1] = val3
-		end
-
-
-		--------------> Add switch
-		local targetTable = fightData_switch[destGUID]
-		if not targetTable then
-			targetTable = {
-				[1]={},	--cast
-				[2]={},	--target
-				seen=timestamp,
-			}
-			fightData_switch[destGUID] = targetTable
-		end
-		local targetCastTable = targetTable[1]
-		if not targetCastTable[sourceGUID] then
-			targetCastTable[sourceGUID] = {timestamp,spellID,2}
-		end
-
-
-		--------------> Other
-		if spellID == 62618 then	--PW:B caster fix
-			module.db.reductionPowerWordBarrierCaster = sourceGUID
-		elseif spellID == 98008 then	--SLT Totem
-			if SLTReductionUnregTimer then
-				SLTReductionUnregTimer:Cancel()
-			end
-			SLTReductionUnregTimer = C_Timer.NewTimer(10,SLTReductionUnreg)
-			SLTReductionReg(sourceGUID)
-		elseif spellID == 209471 then	--Illgynoth blossom death-cast
-			return CLEUParser(self,nil,timestamp,"UNIT_DIED",true,"",nil,0,0,sourceGUID,sourceName,sourceFlags,sourceFlags2)
-		end
-
-	---------------------------------
-	------ powers
-	---------------------------------
-	elseif event == "SPELL_ENERGIZE" or event == "SPELL_PERIODIC_ENERGIZE" then
-		local spellID, _, _, amount, overEnergize, powerType, alternatePowerType = val1,val2,val3,val4,val5,val6,val7
-
-		local sourceData = fightData_power[destGUID]
-		if not sourceData then
-			sourceData = {}
-			fightData_power[destGUID] = sourceData
-		end
-		local powerData = sourceData[powerType or 0]
-		if not powerData then
-			powerData = {}
-			sourceData[powerType or 0] = powerData
-		end
-		local spellData = powerData[spellID]
-		if not spellData then
-			spellData = {0,0}
-			powerData[spellID] = spellData
-		end
-		spellData[1] = spellData[1] + amount
-		spellData[2] = spellData[2] + 1
-	---------------------------------
-	------ swing
-	---------------------------------
-	elseif event == "SWING_DAMAGE" then
-		return CLEUParser(self,nil,timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,nil,nil,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
-	---------------------------------
-	------ aura (stacks)
-	---------------------------------
-	elseif event == "SPELL_AURA_APPLIED_DOSE" then
-		local spellID,_,_,type,stack = val1,val2,val3,val4,val5
-
-		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,type,3,stack,s = active_segment}
-		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,type,3,stack,s = active_segment}
-	---------------------------------
-	------ cast (start)
-	---------------------------------
-	elseif event == "SPELL_CAST_START" then
-		local spellID = val1
-
-		--------------> Add cast
-		local sourceTable = fightData_cast[sourceGUID]
-		if not sourceTable then
-			sourceTable = {}
-			fightData_cast[sourceGUID] = sourceTable
-		end
-		sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,2,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
-
-		if val3 then
-			spellsSchool[val1] = val3
-		end
-
-
-		--------------> Add switch
-		if sourceName and GetUnitInfoByUnitFlag(sourceFlags,1) == 1024 then
-			local unitID = UnitInRaid(sourceName)
-			if unitID then
-				unitID = "raid"..unitID
-				local targetGUID = UnitGUID(unitID.."target")
-				if targetGUID and not UnitIsPlayerOrPet(targetGUID) then
-					-- Switch code
-					local targetTable = fightData_switch[targetGUID]
-					if not targetTable then
-						targetTable = {
-							[1]={},	--cast
-							[2]={},	--target
-							seen=timestamp,
-						}
-						fightData_switch[targetGUID] = targetTable
-					end
-					local targetCastTable = targetTable[1]
-					if not targetCastTable[sourceGUID] then
-						targetCastTable[sourceGUID] = {timestamp,spellID,3}
-					end
-					-- / Switch code
-				end
-			end
-		end
-	---------------------------------
-	------ absorbs
-	---------------------------------
-	elseif event == "SPELL_ABSORBED" then
-		--[[
-		SPELL_ABSORBED event info:
-			for SWING
-		timestamp,attackerGUID,attackerName,attackerFlags,attackerFlags2,destGUID,destName,destFlags,destFlags2,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
-			OR for SPELL
-		timestamp,attackerGUID,attackerName,attackerFlags,attackerFlags2,destGUID,destName,destFlags,destFlags2,attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
-		]]
-
-		local attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
-		if not val11 then
-			sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount = val1,val2,val3,val4,val5,val6,val7,val8
-			attackerSpellId = 6603
-		else
-			attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount = val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11
-		end
-		if spellID == 20711 or spellID == 115069 or spellID == 157533 then	--Not real absorbs spells
-			return
-		end
-
-
-		--------------> Add heal
-		local sourceTable = fightData_heal[sourceGUID]
-		if not sourceTable then
-			sourceTable = {}
-			fightData_heal[sourceGUID] = sourceTable
-		end
-		local destTable = sourceTable[destGUID]
-		if not destTable then
-			destTable = {}
-			sourceTable[destGUID] = destTable
-		end
-		local destReactTable = destTable[destFlags]
-		if not destReactTable then
-			destReactTable = {}
-			destTable[destFlags] = destReactTable
-		end
-		local segmentsTable = destReactTable[spellID]
-		if not segmentsTable then
-			segmentsTable = {}
-			destReactTable[spellID] = segmentsTable
-		end
-		local spellTable = segmentsTable[active_segment]
-		if not spellTable then
-			spellTable = {
-				amount = 0,
-				over = 0,
-				absorbed = 0,
-				count = 0,
-				crit = 0,
-				critcount = 0,
-				critmax = 0,
-				critover = 0,
-				hitmax = 0,
-				absorbs = 0,
-			}
-			segmentsTable[active_segment] = spellTable
-			spellsSchool[spellID] = school
-		end
-		spellTable.amount = spellTable.amount + amount
-		spellTable.absorbs = spellTable.absorbs + amount
-		spellTable.count = spellTable.count + 1
-		if spellTable.hitmax < amount then
-			spellTable.hitmax = amount
-		end
-
-
-
-		--------------> Add death
-		local destData = deathLog[destGUID]
-		if not destData then
-			destData = {c=0}
-			deathLog[destGUID] = destData
-		end
-		local pos = destData.c + 1
-		if pos > deathMaxEvents then
-			pos = 1
-		end
-		local deathLine = destData[pos]
-		if not deathLine then
-			deathLine = {}
-			destData[pos] = deathLine
-		end
-		deathLine.t = 2
-		deathLine.s = sourceGUID
-		deathLine.ti = timestamp
-		deathLine.sp = spellID
-		deathLine.a = amount
-		deathLine.o = 0
-		deathLine.sc = school
-		deathLine.b = nil
-		deathLine.ab = nil
-		deathLine.c = nil
-		deathLine.ia = amount
-		deathLine.sm = sourceFlags2
-		deathLine.dm = destFlags2
-		local player = raidGUIDs[ destGUID ]
-		if player then
-			deathLine.h = UnitHealth( player )
-			deathLine.hm = UnitHealthMax( player )
-		end
-		destData.c = pos
-
-
-		if spellID == 213313 then	--Paladin: Divine intervention
-			AddNotRealDeath(destGUID,timestamp,spellID)
-		end
-
-	---------------------------------
-	------ miss
-	---------------------------------
-	elseif event == "SPELL_MISSED" or event == "RANGE_MISSED" or event == "SPELL_PERIODIC_MISSED" then
-		local spellID,_,school,missType,isOffHand,amountMissed,critical = val1,val2,val3,val4,val5,val6,val7
-		local newEvent = event == "SPELL_PERIODIC_MISSED" and "SPELL_PERIODIC_DAMAGE" or "SPELL_DAMAGE"
-		if missType == "ABSORB" then
-			CLEUParser(self,nil,timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,amountMissed,critical,nil,nil,isOffHand)
-		elseif missType == "BLOCK" then
-			CLEUParser(self,nil,timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,amountMissed,nil,critical,nil,nil,isOffHand)
-		elseif missType == "PARRY" then
-			local spellTable = CLEUParser(self,nil,timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
-			spellTable.parry = spellTable.parry + 1
-		elseif missType == "DODGE" then
-			local spellTable = CLEUParser(self,nil,timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
-			spellTable.dodge = spellTable.dodge + 1
-		else
-			local spellTable = CLEUParser(self,nil,timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
-			spellTable.miss = spellTable.miss + 1
-		end
-	elseif event == "SWING_MISSED" then
-		return CLEUParser(self,nil,timestamp,"SPELL_MISSED",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,nil,0x1,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
-	---------------------------------
-	------ range damage
-	---------------------------------
-	elseif event == "RANGE_DAMAGE" then
-		return CLEUParser(self,nil,timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
-	---------------------------------
-	------ aura (stacks)
-	---------------------------------
-	elseif event == "SPELL_AURA_REMOVED_DOSE" then
-		local spellID,_,_,type,stack = val1,val2,val3,val4,val5
-
-		--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,type,4,stack,s = active_segment}
-		fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,type,4,stack,s = active_segment}
-	---------------------------------
-	------ dies
-	---------------------------------
-	elseif event == "UNIT_DIED" or event == "UNIT_DESTROYED" then
-		if destName and UnitIsFeignDeath(destName) then
-			return
-		end
-
-		fightData.dies[#fightData.dies+1] = {destGUID,destFlags,timestamp,destFlags2,s = active_segment}
-
-		if DeathLogBlackList[GUIDtoID(destGUID)] then
-			return
-		end
-		--[[
-		Death line type:
-		1: damage
-		2: heal
-		3: death
-		4: insta kill
-		5: death simulation (fd, sor proc)
-		]]
-
-		local destData = deathLog[destGUID]
-		if not destData then
-			destData = {c=0}
-			deathLog[destGUID] = destData
-		end
-
-		if destData.sch then
-			destData.sch:Cancel()
-			destData.schFunc()
-
-			destData.sch = nil
-			destData.schFunc = nil
-		end
-
-		fightData_deathLog[#fightData_deathLog + 1] = destData
-		deathLog[destGUID] = nil
-
-		destData.h = {3,destGUID,timestamp,active_segment}
-
-		return destData
-	---------------------------------
-	------ summons
-	---------------------------------
-	elseif event == "SPELL_SUMMON" or event == "SPELL_CREATE" then
-		local spellID = val1
-		fightData.summons[#fightData.summons+1]={sourceGUID,destGUID,spellID,timestamp,sourceFlags2,destFlags2,s = active_segment}
-	---------------------------------
-	------ dispels
-	---------------------------------
-	elseif event == "SPELL_DISPEL" or event == "SPELL_STOLEN" then
-		local spellID,_,_,destSpell = val1,val2,val3,val4
-
-		fightData.dispels[#fightData.dispels+1]={sourceGUID,destGUID,spellID,destSpell,timestamp,sourceFlags2,destFlags2,s = active_segment}
-	---------------------------------
-	------ cc break
-	---------------------------------
-	elseif event == "SPELL_AURA_BROKEN_SPELL" or event == "SPELL_AURA_BROKEN" then
-		local spellID,_,_,extraSpellId,_,_,auraType = val1,val2,val3,val4,val5,val6,val7
-
-		if not auraType then
-			auraType = extraSpellId		--SPELL_AURA_BROKEN instead SPELL_AURA_BROKEN_SPELL
-			extraSpellId = 6603
-		end
-		fightData.aurabroken[#fightData.aurabroken+1]={sourceGUID,destGUID,spellID,extraSpellId,timestamp,auraType,sourceFlags2,destFlags2,s = active_segment}
-
-	---------------------------------
-	------ environmental damage
-	---------------------------------
-	elseif event == "ENVIRONMENTAL_DAMAGE" then
-		local environmentalType,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand = val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11
-		local environmentalSpellID = environmentalType and EnvironmentalTypeToSpellID[environmentalType] or 48360
-
-		return CLEUParser(self,nil,timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,environmentalSpellID,nil,nil,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand)
-	---------------------------------
-	------ interrupt
-	---------------------------------
-	elseif event == "SPELL_INTERRUPT" then
-		local spellID,_,_,destSpell = val1,val2,val3,val4
-
-		fightData.interrupts[#fightData.interrupts+1]={sourceGUID,destGUID,spellID,destSpell,timestamp,sourceFlags2,destFlags2,s = active_segment}
-	---------------------------------
-	------ other
-	---------------------------------
-	elseif event == "DAMAGE_SPLIT" then
-		return CLEUParser(self,nil,timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
-	elseif event == "SPELL_RESURRECT" then
-		local spellID = val1
-
-		fightData.resurrests[#fightData.resurrests+1]={sourceGUID,destGUID,spellID,timestamp,s = active_segment}
-	elseif event == "SPELL_DRAIN" or event == "SPELL_PERIODIC_DRAIN" then
-		local spellID,_,_,amount,powerType = val1,val2,val3,val4,val5
-		return CLEUParser(self,nil,timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,-amount,powerType)
-	elseif event == "SPELL_LEECH" or event == "SPELL_PERIODIC_LEECH" then
-		local spellID,_,_,amount,powerType,extraAmount = val1,val2,val3,val4,val5,val6
-		if extraAmount then
-			CLEUParser(self,nil,timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,extraAmount,powerType)
-		end
-		return CLEUParser(self,nil,timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,-amount,powerType)
-	elseif event == "SPELL_INSTAKILL" then
-		local spellID,_,school = val1,val2,val3
-
+		spellTable.critover = spellTable.critover + (val5 > 0 and val5 or 0) + (val8 and val8 or 0) + (val9 and val9 or 0)
+	elseif spellTable.hitmax < val4 then
+		spellTable.hitmax = val4
+	end
+
+
+	--------------> Add death
+	--local mobID = GUIDtoID(destGUID)
+	--if not DeathLogBlackList[mobID] then
+	do
 		local destData = deathLog[destGUID]	--destData
 		if not destData then
 			destData = {c=0}
@@ -2306,24 +1474,977 @@ local function CLEUParser(self,_,ptimestamp,...)
 			tmpVar = 1
 		end
 		destData.c = tmpVar
-		local destLine = destData[tmpVar]
-		if not destLine then
-			destLine = {}
-			destData[tmpVar] = destLine
+		local activeTable = destData[tmpVar]
+		if not activeTable then
+			activeTable = {}
+			destData[tmpVar] = activeTable
 		end
-		destLine.t = 4
-		destLine.s = sourceGUID
-		destLine.ti = timestamp
-		destLine.sp = spellID
-		destLine.a = nil
-		destLine.o = nil
-		destLine.sc = nil
-		destLine.b = nil
-		destLine.ab = nil
-		destLine.c = nil
-		destLine.ia = nil
-		destLine.sm = sourceFlags2
-		destLine.dm = destFlags2
+		activeTable.t = 1
+		activeTable.s = sourceGUID
+		activeTable.ti = timestamp
+		activeTable.sp = val1
+		activeTable.a = val4
+		activeTable.o = val5
+		activeTable.sc = val6
+		activeTable.b = val8
+		activeTable.ab = val9
+		activeTable.c = val10
+		activeTable.ia = nil
+		activeTable.sm = sourceFlags2
+		activeTable.dm = destFlags2
+
+		local raidunit = raidGUIDs[ destGUID ]
+		if raidunit then
+			activeTable.h = UnitHealth( raidunit )
+			activeTable.hm = UnitHealthMax( raidunit )
+		end
+	end
+
+
+	--------------> Add reduction
+	local reductionTable = var_reductionCurrent[destGUID]
+	if reductionTable then
+		local reduction = fightData_reduction[destGUID]
+		if not reduction then
+			reduction = {}
+			fightData_reduction[destGUID] = reduction
+		end
+		local reduction2 = reduction[sourceGUID]
+		if not reduction2 then
+			reduction2 = {}
+			reduction[sourceGUID] = reduction2
+		end
+		reduction = reduction2[val1]
+		if not reduction then
+			reduction = {}
+			reduction2[val1] = reduction
+		end
+
+		for i=1,#reductionTable do
+			local reductionSubtable = reductionTable[i]
+
+			local amount2 = val4+(val9 or 0)+(val8 or 0)+val5
+
+			local isCheck = reductionSubtable.f
+			if not isCheck then
+				isCheck = true
+			elseif isCheck == 1 then --physical
+				isCheck = val6 == 1
+			elseif isCheck == 2 then --magic
+				isCheck = bit_band(val6 or 0,1) == 0
+			elseif isCheck == 3 then --feintCheck
+				isCheck = module.db.reductionIsNotAoe[val1]
+			elseif isCheck == 4 then --dampenHarmCheck
+				local unitHealthMax = UnitHealthMax(destName or "?")
+				unitHealthMax = unitHealthMax == 0 and 1400000 or unitHealthMax
+				isCheck = (amount2 / unitHealthMax) >= 0.15
+			end
+
+			if isCheck then
+				local reductionGUID = reductionSubtable.g
+				reduction2 = reduction[reductionGUID]
+				if not reduction2 then
+					reduction2 = {}
+					reduction[reductionGUID] = reduction2
+				end
+				local reductionSpell = reductionSubtable.s
+
+				local amount = amount2 * reductionSubtable.c
+
+				local reductionSpellData = reduction2[reductionSpell]
+				if not reductionSpellData then
+					reductionSpellData = {}
+					reduction2[reductionSpell] = reductionSpellData
+				end
+
+				reductionSpellData[active_segment] = (reductionSpellData[active_segment] or 0)+amount
+			end
+		end
+	end
+
+
+
+	--------------> Add switch
+	local switchTable = fightData_switch[destGUID]
+	if not switchTable then
+		switchTable = {
+			[1]={},	--cast
+			[2]={},	--target
+			seen=timestamp,
+		}
+		fightData_switch[destGUID] = switchTable
+	end
+	local switchTableCLEU = switchTable[1]
+	if not switchTableCLEU[sourceGUID] then
+		switchTableCLEU[sourceGUID] = {timestamp,val1,1}
+	end
+
+
+
+	--------------> Add special spells [tracking]
+	if var_trackingDamageSpells[val1] then
+		fightData.tracking[#fightData.tracking + 1] = {timestamp,sourceGUID,sourceFlags2,destGUID,destFlags2,val1,val4,val5,val6,val8,val9,val10,val14,s = active_segment}
+	end
+
+
+	--------------> Other
+	if val1 == 196917 then	-- Light of the Martyr: effective healing fix
+		local lotmData = spellFix_LotM[sourceGUID]
+		if lotmData then
+			local damageTaken = val4 + val5 + (val9 or 0)
+			if damageTaken < (lotmData[1] + lotmData[2]) and (timestamp - lotmData[5]) < 0.2 then
+				local spellTable = lotmData[3]
+				if lotmData[2] == 0 then
+					spellTable.amount = spellTable.amount - damageTaken
+				elseif lotmData[2] >= damageTaken then
+					spellTable.absorbed = spellTable.absorbed - damageTaken
+				else
+					spellTable.absorbed = spellTable.absorbed - lotmData[2]
+					spellTable.amount = spellTable.amount - damageTaken + lotmData[2]
+				end
+				if lotmData[4] then
+					spellTable.crit = spellTable.crit - damageTaken
+				end
+			end
+		end
+	--[[
+	elseif val1 == 186439 then	-- Shadow Mend
+		local spellTable = spellFix_SM[destGUID]
+		if spellTable then
+			local damageTaken = val4 + val5 + (val9 or 0)
+			local amount = spellTable.amount
+			if amount < damageTaken then
+				spellTable.amount = 0
+			else
+				spellTable.amount = amount - damageTaken
+			end
+		end
+	]]
+	end
+
+	if val14 then
+		return spellTable
+	end
+end
+function module.main.SPELL_HEAL(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7)
+	--[[
+	Note about healing:
+	amount = healing + overhealing
+	absorbed = if spell absorbed by ability (ex. DK's egg, Koragh shadow phase)
+	absorbs = if spell is absorb (ex. PW:S, HPally mastery, BloodDK mastery)
+	]]
+	--[[
+		val1	spellID
+		val2	_
+		val3	school
+		val4	amount
+		val5	overhealing
+		val6	absorbed
+		val7	critical
+	]]
+	if val6 < 0 then return end	--Fix 8.2 boss
+
+	--------------> Add heal
+	local sourceTable = fightData_heal[sourceGUID]	--sourceTable
+	if not sourceTable then
+		sourceTable = {
+			[destGUID] = {
+				[destFlags] = {
+					[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = {
+						[active_segment] = {
+							amount = 0,
+							over = 0,
+							absorbed = 0,
+							count = 0,
+							crit = 0,
+							critcount = 0,
+							critmax = 0,
+							critover = 0,
+							hitmax = 0,
+							absorbs = 0,
+						}
+					}
+				}
+			}
+		}
+		fightData_heal[sourceGUID] = sourceTable
+		if val3 then
+			spellsSchool[val1] = val3
+		end
+	end
+
+	local destTable = sourceTable[destGUID]		--destTable
+	if not destTable then
+		destTable = {
+			[destFlags] = {
+				[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = {
+					[active_segment] = {
+						amount = 0,
+						over = 0,
+						absorbed = 0,
+						count = 0,
+						crit = 0,
+						critcount = 0,
+						critmax = 0,
+						critover = 0,
+						hitmax = 0,
+						absorbs = 0,
+					}
+				}
+			}
+		}
+		sourceTable[destGUID] = destTable
+		if val3 then
+			spellsSchool[val1] = val3
+		end
+	end
+
+	local destReactTable = destTable[destFlags]	--destReactTable
+	if not destReactTable then
+		destReactTable = {
+			[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = {
+				[active_segment] = {
+					amount = 0,
+					over = 0,
+					absorbed = 0,
+					count = 0,
+					crit = 0,
+					critcount = 0,
+					critmax = 0,
+					critover = 0,
+					hitmax = 0,
+					absorbs = 0,
+				}
+			}
+		}
+		destTable[destFlags] = destReactTable
+		if val3 then
+			spellsSchool[val1] = val3
+		end
+	end
+
+	local segmentsTable = destReactTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1]		--segmentsTable
+	if not segmentsTable then
+		segmentsTable = {
+			[active_segment] = {
+				amount = 0,
+				over = 0,
+				absorbed = 0,
+				count = 0,
+				crit = 0,
+				critcount = 0,
+				critmax = 0,
+				critover = 0,
+				hitmax = 0,
+				absorbs = 0,
+			}
+		}
+		destReactTable[event == "SPELL_PERIODIC_HEAL" and -val1 or val1] = segmentsTable
+		if val3 then
+			spellsSchool[val1] = val3
+		end
+	end
+
+	local spellTable = segmentsTable[active_segment]
+	if not spellTable then
+		spellTable = {
+			amount = 0,
+			over = 0,
+			absorbed = 0,
+			count = 0,
+			crit = 0,
+			critcount = 0,
+			critmax = 0,
+			critover = 0,
+			hitmax = 0,
+			absorbs = 0,
+		}
+		segmentsTable[active_segment] = spellTable
+		if val3 then
+			spellsSchool[val1] = val3
+		end
+	end
+	spellTable.amount = spellTable.amount + val4
+	spellTable.over = spellTable.over + val5
+	spellTable.absorbed = spellTable.absorbed + val6
+	spellTable.count = spellTable.count + 1
+	if val7 then
+		spellTable.crit = spellTable.crit + val4 + val6
+		spellTable.critcount = spellTable.critcount + 1
+		if spellTable.critmax < val4 then
+			spellTable.critmax = val4
+		end
+		spellTable.critover = spellTable.critover + val5
+	elseif spellTable.hitmax < val4 then
+		spellTable.hitmax = val4
+	end
+
+
+
+	--------------> Add death
+	local destData = deathLog[destGUID]
+	if not destData then
+		destData = {c=0}
+		deathLog[destGUID] = destData
+	end
+	local tmpVar = destData.c + 1
+	if tmpVar > deathMaxEvents then
+		tmpVar = 1
+	end
+	destData.c = tmpVar
+	local activeTable = destData[tmpVar]
+	if not activeTable then
+		activeTable = {}
+		destData[tmpVar] = activeTable
+	end
+	activeTable.t = 2
+	activeTable.s = sourceGUID
+	activeTable.ti = timestamp
+	activeTable.sp = val1
+	activeTable.a = val4
+	activeTable.o = val5
+	activeTable.sc = val3
+	activeTable.b = nil
+	activeTable.ab = val6
+	activeTable.c = val7
+	activeTable.ia = nil
+	activeTable.sm = sourceFlags2
+	activeTable.dm = destFlags2
+
+	local raidunit = raidGUIDs[ destGUID ]
+	if raidunit then
+		activeTable.h = UnitHealth( raidunit )
+		activeTable.hm = UnitHealthMax( raidunit )
+	end
+
+
+	--------------> Other
+	--[[
+	if negateHealing[destGUID] then
+		spellTable.amount = spellTable.amount - val4
+		spellTable.over = spellTable.over + val4 + val6
+		spellTable.absorbed = spellTable.absorbed - val6
+		if val7 then
+			spellTable.crit = spellTable.crit - val4 - val6
+			spellTable.critcount = spellTable.critcount - 1
+			spellTable.critover = spellTable.critover - val5
+		end
+	end
+	]]
+	if val1 == 183998 then	--Light of the Martyr: effective healing fix
+		local lotmData = spellFix_LotM[sourceGUID]
+		if not lotmData then
+			lotmData = {}
+			spellFix_LotM[sourceGUID] = lotmData
+		end
+		lotmData[1] = val4 - val5
+		lotmData[2] = val6
+		lotmData[3] = spellTable
+		lotmData[4] = val7
+		lotmData[5] = timestamp
+	elseif val1 == 186263 then	--Shadow Mend: effective healing fix, remove damage from debuff
+		spellFix_SM[destGUID] = spellTable
+	elseif val1 == 213313 then	--Paladin: Divine intervention
+		AddNotRealDeath(destGUID,timestamp,val1)
+	end
+
+end
+function module.main.SPELL_AURA_APPLIED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,spellName,school,auraType)
+	--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,1,1,s = active_segment}
+	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,1,1,s = active_segment}
+
+	--------------> Add reduction
+	local reduction = var_reductionAuras[spellID]
+	if reduction then
+		if spellID == 81782 then
+			sourceGUID = module.db.reductionPowerWordBarrierCaster or sourceGUID
+		elseif spellID == 194384 then
+			reduction = reductionAtonement[sourceGUID] or 1
+			--[[
+			if ExRT.A.Inspect then
+				local db = ExRT.A.Inspect.db.inspectDB
+				for k,v in pairs(db) do
+					if v.GUID == sourceGUID then
+						if v[7] == 1 then
+							reduction = 0.97
+						end
+						break
+					end
+				end
+			end
+			]]
+		end
+
+		local destData = var_reductionCurrent[ destGUID ]
+		if not destData then
+			destData = {}
+			var_reductionCurrent[ destGUID ] = destData
+		end
+		local destCount = #destData
+
+		local func,funcAura,reductionTable = nil
+		if type(reduction)=="table" then
+			reductionTable = reduction
+			funcAura = reduction[3]
+			func = reduction[2]
+			reduction = reduction[1]
+		end
+
+		if funcAura then
+			for i=1,40 do
+				local auraName,_,count,_,_,_,_,_,_,_,_,_,_,_,_,val1,val2,val3,val4,val5 = UnitAura(destName or "?",i)
+				if auraName == spellName then
+					if val1 then
+						reduction, func = funcAura(val1 or 0,val2 or 0,val3 or 0,val4 or 0,val5 or 0)
+						if not reduction then
+							reduction = reductionTable[1]
+							func = reductionTable[2]
+							funcAura = nil
+						end
+						--ExRT.F.dprint(format("%s > %s: %s [%d%%]",sourceName,destName,spellName,(reduction or 0)*100))
+					else
+						funcAura = nil
+					end
+					break
+				elseif not auraName then
+					break
+				end
+			end
+		end
+
+		if reduction == 1 then
+			return
+		end
+
+
+		for i=1,destCount do
+			if destData[i].s == spellID then
+				local destSpell = destData[i]
+
+				destSpell.r = reduction
+
+				local from,fromMagic,fromPhysical = 1,1,1
+				for j=1,i-1 do
+					if destData[j].f == ReductionAurasFunctions.magic then
+						fromMagic = fromMagic * destData[j].r
+					elseif destData[j].f == ReductionAurasFunctions.physical then
+						fromPhysical = fromPhysical * destData[j].r
+					else
+						from = from * destData[j].r
+					end
+				end
+
+				for j=i,destCount do
+					local currReduction
+					if destData[j].f == ReductionAurasFunctions.magic then
+						currReduction = 1 / (1 - (fromMagic - fromMagic * destData[j].r))
+						fromMagic = fromMagic * destData[j].r
+					elseif destData[j].f == ReductionAurasFunctions.physical then
+						currReduction = 1 / (1 - (fromPhysical - fromPhysical * destData[j].r))
+						fromPhysical = fromPhysical * destData[j].r
+					else
+						currReduction = 1 / (1 - (from - from * destData[j].r))
+						from = from * destData[j].r
+					end
+					destData[j].c = currReduction
+				end
+
+				return
+			end
+		end
+
+		local from = 1
+		if func == ReductionAurasFunctions.magic then
+			for i=1,destCount do
+				if destData[i].f ~= ReductionAurasFunctions.physical then
+					from = from * destData[i].r
+				end
+			end
+		elseif func == ReductionAurasFunctions.physical then
+			for i=1,destCount do
+				if destData[i].f ~= ReductionAurasFunctions.magic then
+					from = from * destData[i].r
+				end
+			end
+		else
+			for i=1,destCount do
+				from = from * destData[i].r
+			end
+		end
+
+		local currReduction = 1 / (1 - (from - from * reduction))
+		destData[destCount + 1] = {
+			s = spellID,
+			r = reduction,
+			c = (currReduction - 1),
+			g = sourceGUID,
+			f = func,
+		}
+
+		--debug_CurrentReductionToChat(destData)
+
+		if school then
+			spellsSchool[spellID] = school
+		end
+	end
+
+
+	if spellID == 45181 or spellID == 211319 or spellID == 87024 or spellID == 344907 or spellID == 116888 or spellID == 209261 then	--Cheated Death, Archbishop Benedictus' Restitution, Cauterize, Sands of Time (Trinket), Shroud of Purgatory, Uncontained Fel 
+		AddNotRealDeath(destGUID,timestamp,spellID)
+	--elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
+	--	negateHealing[destGUID] = true
+	end
+end
+function module.main.SPELL_AURA_REMOVED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,school,auraType,amount)
+	--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,2,1,s = active_segment}
+	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,2,1,s = active_segment}
+
+	if amount and amount > 0 and 
+		spellID ~= 284663 --BfD: Conclave: Bwonsamdi
+	then
+		CLEU["SPELL_HEAL"](timestamp,"SPELL_HEAL",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,school,amount,amount,0)
+	end
+
+
+	--------------> Add reduction
+	local reduction = var_reductionAuras[spellID]
+	if reduction then
+		local destData = var_reductionCurrent[ destGUID ]
+		if not destData then
+			return
+		end
+		for i=1,#destData do
+			if destData[i] and destData[i].s == spellID and (destData[i].g == sourceGUID or spellID == 81782) then
+				tremove(destData,i)
+			end
+		end
+
+		local from,fromPhysical,fromMagic = 1,1,1
+		for i=1,#destData do
+			local spellData = destData[i]
+			local currReduction = nil
+			if spellData.f == ReductionAurasFunctions.magic then
+				currReduction = 1 / (1 - (fromMagic - fromMagic * spellData.r))
+				fromMagic = fromMagic * spellData.r
+			elseif spellData.f == ReductionAurasFunctions.physical then
+				currReduction = 1 / (1 - (fromPhysical - fromPhysical * spellData.r))
+				fromPhysical = fromPhysical * spellData.r
+			else
+				currReduction = 1 / (1 - (from - from * spellData.r))
+				fromPhysical = fromPhysical * spellData.r
+				fromMagic = fromMagic * spellData.r
+			end
+			from = from * spellData.r
+			spellData.c = currReduction - 1
+		end
+
+		--debug_CurrentReductionToChat(destData)
+	end
+
+
+	--------------> Other
+	if spellID == 187464 then	--Shadow Mend
+		spellFix_SM[destGUID] = nil
+	--elseif spellID == 243961 then	--Varimatras Disable Healing Debuff
+	--	negateHealing[destGUID] = nil
+	end
+end
+function module.main.SPELL_CAST_SUCCESS(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,spellName,spellSchool)
+	--------------> Add cast
+	local sourceTable = fightData_cast[sourceGUID]
+	if not sourceTable then
+		sourceTable = {}
+		fightData_cast[sourceGUID] = sourceTable
+	end
+	sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,1,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
+
+	if spellSchool then
+		spellsSchool[spellID] = spellSchool
+	end
+
+
+	--------------> Add switch
+	local targetTable = fightData_switch[destGUID]
+	if not targetTable then
+		targetTable = {
+			[1]={},	--cast
+			[2]={},	--target
+			seen=timestamp,
+		}
+		fightData_switch[destGUID] = targetTable
+	end
+	local targetCastTable = targetTable[1]
+	if not targetCastTable[sourceGUID] then
+		targetCastTable[sourceGUID] = {timestamp,spellID,2}
+	end
+
+
+	--------------> Other
+	if spellID == 62618 then	--PW:B caster fix
+		module.db.reductionPowerWordBarrierCaster = sourceGUID
+	elseif spellID == 98008 then	--SLT Totem
+		if SLTReductionUnregTimer then
+			SLTReductionUnregTimer:Cancel()
+		end
+		SLTReductionUnregTimer = C_Timer.NewTimer(8,SLTReductionUnreg)
+		SLTReductionReg(sourceGUID)
+	elseif spellID == 209471 then	--Illgynoth blossom death-cast
+		return CLEU["UNIT_DIED"](timestamp,"UNIT_DIED",true,"",nil,0,0,sourceGUID,sourceName,sourceFlags,sourceFlags2)
+	end
+end
+function module.main.SPELL_ENERGIZE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID, _, _, amount, overEnergize, powerType, alternatePowerType)
+	local sourceData = fightData_power[destGUID]
+	if not sourceData then
+		sourceData = {}
+		fightData_power[destGUID] = sourceData
+	end
+	local powerData = sourceData[powerType or 0]
+	if not powerData then
+		powerData = {}
+		sourceData[powerType or 0] = powerData
+	end
+	local spellData = powerData[spellID]
+	if not spellData then
+		spellData = {0,0}
+		powerData[spellID] = spellData
+	end
+	spellData[1] = spellData[1] + amount
+	spellData[2] = spellData[2] + 1
+end
+function module.main.SWING_DAMAGE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10)
+	return CLEU["SPELL_DAMAGE"](timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,nil,1,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10)
+end
+function module.main.SPELL_AURA_APPLIED_DOSE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,type,stack)
+	--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,type,3,stack,s = active_segment}
+	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,type,3,stack,s = active_segment}
+end
+function module.main.SPELL_CAST_START(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,spellName,spellSchool)
+	--------------> Add cast
+	local sourceTable = fightData_cast[sourceGUID]
+	if not sourceTable then
+		sourceTable = {}
+		fightData_cast[sourceGUID] = sourceTable
+	end
+	sourceTable[ #sourceTable + 1 ] = {timestamp,spellID,2,destGUID,destFlags2,sourceFlags2,sourceFlags,s = active_segment}
+
+	if spellSchool then
+		spellsSchool[spellID] = spellSchool
+	end
+
+
+	--------------> Add switch
+	if sourceName and GetUnitInfoByUnitFlag(sourceFlags,1) == 1024 then
+		local unitID = UnitInRaid(sourceName)
+		if unitID then
+			unitID = "raid"..unitID
+			local targetGUID = UnitGUID(unitID.."target")
+			if targetGUID and not UnitIsPlayerOrPet(targetGUID) then
+				-- Switch code
+				local targetTable = fightData_switch[targetGUID]
+				if not targetTable then
+					targetTable = {
+						[1]={},	--cast
+						[2]={},	--target
+						seen=timestamp,
+					}
+					fightData_switch[targetGUID] = targetTable
+				end
+				local targetCastTable = targetTable[1]
+				if not targetCastTable[sourceGUID] then
+					targetCastTable[sourceGUID] = {timestamp,spellID,3}
+				end
+				-- / Switch code
+			end
+		end
+	end
+end
+function module.main.SPELL_ABSORBED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11)
+	--[[
+	SPELL_ABSORBED event info:
+		for SWING
+	timestamp,attackerGUID,attackerName,attackerFlags,attackerFlags2,destGUID,destName,destFlags,destFlags2,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
+		OR for SPELL
+	timestamp,attackerGUID,attackerName,attackerFlags,attackerFlags2,destGUID,destName,destFlags,destFlags2,attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
+	]]
+
+	local attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount
+	if not val11 then
+		sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount = val1,val2,val3,val4,val5,val6,val7,val8
+		attackerSpellId = 6603
+	else
+		attackerSpellId,attackerSpellName,attackerSchool,sourceGUID,sourceName,sourceFlags,sourceFlags2,spellID,spellName,school,amount = val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11
+	end
+	if spellID == 20711 or spellID == 115069 or spellID == 157533 then	--Not real absorbs spells
+		return
+	end
+
+
+	--------------> Add heal
+	local sourceTable = fightData_heal[sourceGUID]
+	if not sourceTable then
+		sourceTable = {}
+		fightData_heal[sourceGUID] = sourceTable
+	end
+	local destTable = sourceTable[destGUID]
+	if not destTable then
+		destTable = {}
+		sourceTable[destGUID] = destTable
+	end
+	local destReactTable = destTable[destFlags]
+	if not destReactTable then
+		destReactTable = {}
+		destTable[destFlags] = destReactTable
+	end
+	local segmentsTable = destReactTable[spellID]
+	if not segmentsTable then
+		segmentsTable = {}
+		destReactTable[spellID] = segmentsTable
+	end
+	local spellTable = segmentsTable[active_segment]
+	if not spellTable then
+		spellTable = {
+			amount = 0,
+			over = 0,
+			absorbed = 0,
+			count = 0,
+			crit = 0,
+			critcount = 0,
+			critmax = 0,
+			critover = 0,
+			hitmax = 0,
+			absorbs = 0,
+		}
+		segmentsTable[active_segment] = spellTable
+		spellsSchool[spellID] = school
+	end
+	spellTable.amount = spellTable.amount + amount
+	spellTable.absorbs = spellTable.absorbs + amount
+	spellTable.count = spellTable.count + 1
+	if spellTable.hitmax < amount then
+		spellTable.hitmax = amount
+	end
+
+
+
+	--------------> Add death
+	local destData = deathLog[destGUID]
+	if not destData then
+		destData = {c=0}
+		deathLog[destGUID] = destData
+	end
+	local pos = destData.c + 1
+	if pos > deathMaxEvents then
+		pos = 1
+	end
+	local deathLine = destData[pos]
+	if not deathLine then
+		deathLine = {}
+		destData[pos] = deathLine
+	end
+	deathLine.t = 2
+	deathLine.s = sourceGUID
+	deathLine.ti = timestamp
+	deathLine.sp = spellID
+	deathLine.a = amount
+	deathLine.o = 0
+	deathLine.sc = school
+	deathLine.b = nil
+	deathLine.ab = nil
+	deathLine.c = nil
+	deathLine.ia = amount
+	deathLine.sm = sourceFlags2
+	deathLine.dm = destFlags2
+	local player = raidGUIDs[ destGUID ]
+	if player then
+		deathLine.h = UnitHealth( player )
+		deathLine.hm = UnitHealthMax( player )
+	end
+	destData.c = pos
+end
+function module.main.SPELL_MISSED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,school,missType,isOffHand,amountMissed,critical)
+	local newEvent = event == "SPELL_PERIODIC_MISSED" and "SPELL_PERIODIC_DAMAGE" or "SPELL_DAMAGE"
+	if missType == "ABSORB" then
+		return CLEU[newEvent](timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,amountMissed,critical,nil,nil,isOffHand)
+	elseif missType == "BLOCK" then
+		return CLEU[newEvent](timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,amountMissed,nil,critical,nil,nil,isOffHand)
+	elseif missType == "PARRY" then
+		local spellTable = CLEU[newEvent](timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
+		spellTable.parry = spellTable.parry + 1
+	elseif missType == "DODGE" then
+		local spellTable = CLEU[newEvent](timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
+		spellTable.dodge = spellTable.dodge + 1
+	else
+		local spellTable = CLEU[newEvent](timestamp,newEvent,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,0,0,school,nil,nil,nil,critical,nil,nil,isOffHand,missType)
+		spellTable.miss = spellTable.miss + 1
+	end
+end
+function module.main.SWING_MISSED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+	return CLEU["SPELL_MISSED"](timestamp,"SPELL_MISSED",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,nil,0x1,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+end
+function module.main.RANGE_DAMAGE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+	return CLEU["SPELL_DAMAGE"](timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+end
+function module.main.SPELL_AURA_REMOVED_DOSE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,type,stack)
+	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,type,4,stack,s = active_segment}
+end
+function module.main.UNIT_DIED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2)
+	fightData.dies[#fightData.dies+1] = {destGUID,destFlags,timestamp,destFlags2,s = active_segment}
+
+	--if DeathLogBlackList[GUIDtoID(destGUID)] then	return end
+	--[[
+	Death line type:
+	1: damage
+	2: heal
+	3: death
+	4: insta kill
+	5: death simulation (fd, sor proc)
+	]]
+
+	local destData = deathLog[destGUID]
+	if not destData then
+		destData = {c=0}
+		deathLog[destGUID] = destData
+	end
+
+	if destData.sch then
+		destData.sch:Cancel()
+		destData.schFunc()
+
+		destData.sch = nil
+		destData.schFunc = nil
+	end
+
+	fightData_deathLog[#fightData_deathLog + 1] = destData
+	deathLog[destGUID] = nil
+
+	destData.h = {3,destGUID,timestamp,active_segment}
+
+	return destData
+
+end
+function module.main.SPELL_SUMMON(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID)
+	fightData.summons[#fightData.summons+1]={sourceGUID,destGUID,spellID,timestamp,sourceFlags2,destFlags2,s = active_segment}
+end
+function module.main.SPELL_DISPEL(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,destSpell)
+	fightData.dispels[#fightData.dispels+1]={sourceGUID,destGUID,spellID,destSpell,timestamp,sourceFlags2,destFlags2,s = active_segment}
+end
+function module.main.SPELL_AURA_BROKEN_SPELL(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,extraSpellId,_,_,auraType)
+	if not auraType then
+		auraType = extraSpellId		--SPELL_AURA_BROKEN instead SPELL_AURA_BROKEN_SPELL
+		extraSpellId = 6603
+	end
+	fightData.aurabroken[#fightData.aurabroken+1]={sourceGUID,destGUID,spellID,extraSpellId,timestamp,auraType,sourceFlags2,destFlags2,s = active_segment}
+end
+function module.main.ENVIRONMENTAL_DAMAGE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,environmentalType,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand)
+	local environmentalSpellID = environmentalType and EnvironmentalTypeToSpellID[environmentalType] or 48360
+
+	return CLEU["SPELL_DAMAGE"](timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,environmentalSpellID,nil,nil,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand)
+end
+function module.main.SPELL_INTERRUPT(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,destSpell)
+	fightData.interrupts[#fightData.interrupts+1]={sourceGUID,destGUID,spellID,destSpell,timestamp,sourceFlags2,destFlags2,s = active_segment}
+end
+function module.main.DAMAGE_SPLIT(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+	return CLEU["SPELL_DAMAGE"](timestamp,"SPELL_DAMAGE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14)
+end
+function module.main.SPELL_RESURRECT(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID)
+	fightData.resurrests[#fightData.resurrests+1]={sourceGUID,destGUID,spellID,timestamp,s = active_segment}
+end
+function module.main.SPELL_DRAIN(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,amount,powerType)
+	return CLEU["SPELL_ENERGIZE"](timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,-amount,powerType)
+end
+function module.main.SPELL_LEECH(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,_,amount,powerType,extraAmount)
+	if extraAmount then
+		CLEU["SPELL_ENERGIZE"](timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,extraAmount,powerType)
+	end
+	return CLEU["SPELL_ENERGIZE"](timestamp,"SPELL_ENERGIZE",hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,nil,nil,-amount,powerType)
+end
+function module.main.SPELL_INSTAKILL(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,school)
+	local destData = deathLog[destGUID]	--destData
+	if not destData then
+		destData = {c=0}
+		deathLog[destGUID] = destData
+	end
+	local tmpVar = destData.c + 1
+	if tmpVar > deathMaxEvents then
+		tmpVar = 1
+	end
+	destData.c = tmpVar
+	local destLine = destData[tmpVar]
+	if not destLine then
+		destLine = {}
+		destData[tmpVar] = destLine
+	end
+	destLine.t = 4
+	destLine.s = sourceGUID
+	destLine.ti = timestamp
+	destLine.sp = spellID
+	destLine.a = nil
+	destLine.o = nil
+	destLine.sc = nil
+	destLine.b = nil
+	destLine.ab = nil
+	destLine.c = nil
+	destLine.ia = nil
+	destLine.sm = sourceFlags2
+	destLine.dm = destFlags2
+end
+
+
+CLEU = {
+	SPELL_DAMAGE = module.main.SPELL_DAMAGE,
+	SPELL_PERIODIC_DAMAGE = module.main.SPELL_DAMAGE,
+	SPELL_HEAL = module.main.SPELL_HEAL,
+	SPELL_PERIODIC_HEAL = module.main.SPELL_HEAL,
+	SPELL_AURA_APPLIED = module.main.SPELL_AURA_APPLIED,
+	SPELL_AURA_REMOVED = module.main.SPELL_AURA_REMOVED,
+	SPELL_CAST_SUCCESS = module.main.SPELL_CAST_SUCCESS,
+	SPELL_ENERGIZE = module.main.SPELL_ENERGIZE,
+	SPELL_PERIODIC_ENERGIZE = module.main.SPELL_ENERGIZE,
+	SWING_DAMAGE = module.main.SWING_DAMAGE,
+	SPELL_AURA_APPLIED_DOSE = module.main.SPELL_AURA_APPLIED_DOSE,
+	SPELL_CAST_START = module.main.SPELL_CAST_START,
+	SPELL_ABSORBED = module.main.SPELL_ABSORBED,
+	SPELL_MISSED = module.main.SPELL_MISSED,
+	RANGE_MISSED = module.main.SPELL_MISSED,
+	SPELL_PERIODIC_MISSED = module.main.SPELL_MISSED,
+	SWING_MISSED = module.main.SWING_MISSED,
+	RANGE_DAMAGE = module.main.RANGE_DAMAGE,
+	SPELL_AURA_REMOVED_DOSE = module.main.SPELL_AURA_REMOVED_DOSE,
+	UNIT_DIED = module.main.UNIT_DIED,
+	UNIT_DESTROYED = module.main.UNIT_DIED,
+	SPELL_SUMMON = module.main.SPELL_SUMMON,
+	SPELL_CREATE = module.main.SPELL_SUMMON,
+	SPELL_DISPEL = module.main.SPELL_DISPEL,
+	SPELL_STOLEN = module.main.SPELL_DISPEL,
+	SPELL_AURA_BROKEN_SPELL = module.main.SPELL_AURA_BROKEN_SPELL,
+	SPELL_AURA_BROKEN = module.main.SPELL_AURA_BROKEN_SPELL,
+	ENVIRONMENTAL_DAMAGE = module.main.ENVIRONMENTAL_DAMAGE,
+	SPELL_INTERRUPT = module.main.SPELL_INTERRUPT,
+	DAMAGE_SPLIT = module.main.DAMAGE_SPLIT,
+	SPELL_RESURRECT = module.main.SPELL_RESURRECT,
+	SPELL_DRAIN = module.main.SPELL_DRAIN,
+	SPELL_PERIODIC_DRAIN = module.main.SPELL_DRAIN,
+	SPELL_LEECH = module.main.SPELL_LEECH,
+	SPELL_PERIODIC_LEECH = module.main.SPELL_LEECH,
+	SPELL_INSTAKILL = module.main.SPELL_INSTAKILL,
+}
+
+CLEUParser = function()
+	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+			val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13
+					= CombatLogGetCurrentEventInfo()
+
+	if not guidData[sourceGUID] then guidData[sourceGUID] = sourceName or "nil" end
+	if not guidData[destGUID] then guidData[destGUID] = destName or "nil" end
+
+	reactionData[sourceGUID] = sourceFlags
+	reactionData[destGUID] = destFlags
+
+	local func = CLEU[event]
+	if func then
+		return func(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13)
+	else
+		return
 	end
 
 	-- DAMAGE_SHIELD
@@ -2332,14 +2453,44 @@ local function CLEUParser(self,_,ptimestamp,...)
 	-- SPELL_BUILDING_DAMAGE
 	-- SPELL_BUILDING_HEAL
 end
+if ExRT.isClassic then
+	CLEUParser = function()
+		local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
+				val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13
+						= CombatLogGetCurrentEventInfo()
 
-function module.main:COMBAT_LOG_EVENT_UNFILTERED(_,timestamp,...)
+		if event ~= "SWING_DAMAGE" and event ~= "SWING_MISSED" then
+			val1 = val2
+			if event == "SPELL_PERIODIC_DAMAGE" then event = "SPELL_DAMAGE"
+			elseif event == "SPELL_PERIODIC_HEAL" then event = "SPELL_HEAL" 
+			elseif event == "SPELL_PERIODIC_MISSED" then event = "SPELL_MISSED" end
+		end
+
+		if not guidData[sourceGUID] then guidData[sourceGUID] = sourceName or "nil" end
+		if not guidData[destGUID] then guidData[destGUID] = destName or "nil" end
+	
+		reactionData[sourceGUID] = sourceFlags
+		reactionData[destGUID] = destFlags
+	
+		local func = CLEU[event]
+		if func then
+			return func(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13)
+		else
+			return
+		end
+	end
+end
+
+module.main.COMBAT_LOG_EVENT_UNFILTERED2 = CLEUParser
+
+function module.main.COMBAT_LOG_EVENT_UNFILTERED()
 	local timestamp = CombatLogGetCurrentEventInfo()
 	if not module.db.timeFix then
 		module.db.timeFix = {GetTime(),timestamp}
 	end
 	module.main.COMBAT_LOG_EVENT_UNFILTERED = CLEUParser
-	CLEUParser(self)
+	module.main.COMBAT_LOG_EVENT_UNFILTERED2 = nil
+	CLEUParser(CombatLogGetCurrentEventInfo())
 	module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 end
 
@@ -10357,6 +10508,7 @@ function BWInterfaceFrameLoad()
 
 	local DeathTab_Variables = {	--Use this because limit 200 local vars
 		isEnemy = false,
+		onlyPlayers = true,
 		isBuffs = false,
 		isDebuffs = false,
 		isBlack = false,
@@ -10609,10 +10761,10 @@ function BWInterfaceFrameLoad()
 			local header = deathData.header or deathData[1]
 			local GUID = header[2]
 			local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[GUID])
-			if ((isFriendly and not DeathTab_Variables.isEnemy) or (not isFriendly and DeathTab_Variables.isEnemy)) and (deathData[2] and deathData[2][1]) then
+			local isPlayer = ExRT.F.GetUnitTypeByGUID(GUID) == 0
+			if ((isFriendly and not DeathTab_Variables.isEnemy and (not DeathTab_Variables.onlyPlayers or isPlayer)) or (not isFriendly and DeathTab_Variables.isEnemy)) and (deathData[2] and deathData[2][1]) then
 				counter = counter + 1
 				local classColor = "|cffbbbbbb"
-				local isPlayer = ExRT.F.GetUnitTypeByGUID(GUID) == 0
 				if isPlayer then
 					classColor = "|c"..ExRT.F.classColorByGUID(GUID)
 				end
@@ -10658,9 +10810,9 @@ function BWInterfaceFrameLoad()
 			local header = deathData.header or deathData[1]
 			local GUID = header[2]
 			local isFriendly = ExRT.F.UnitIsFriendlyByUnitFlag2(CurrentFight.reaction[GUID])
-			if ((isFriendly and not DeathTab_Variables.isEnemy) or (not isFriendly and DeathTab_Variables.isEnemy)) and (deathData[2] and deathData[2][1]) then
+			local isPlayer = ExRT.F.GetUnitTypeByGUID(GUID) == 0
+			if ((isFriendly and not DeathTab_Variables.isEnemy and (not DeathTab_Variables.onlyPlayers or isPlayer)) or (not isFriendly and DeathTab_Variables.isEnemy)) and (deathData[2] and deathData[2][1]) then
 				local classColor = ""
-				local isPlayer = ExRT.F.GetUnitTypeByGUID(GUID) == 0
 				if isPlayer then
 					classColor = "|c"..ExRT.F.classColorByGUID(GUID)
 				elseif isFriendly then
@@ -10687,23 +10839,34 @@ function BWInterfaceFrameLoad()
 		DeathTab_Variables.SetDeath_Last_Arg = nil
 	end
 
-	tab.chkFriendly = ELib:Radio(tab,L.BossWatcherFriendly,true):Point(15,-52):AddButton():OnClick(function(self) 
+	tab.chkFriendlyOnlyPlayers = ELib:Radio(tab,L.BossWatcherFriendly.." ("..TUTORIAL_TITLE19..")",true):Point(15,-50):AddButton():OnClick(function(self) 
 		DeathTab_Variables.isEnemy = false
-		deathTab.chkEnemy:SetChecked(false)
+		DeathTab_Variables.onlyPlayers = true
 		self:SetChecked(true)
+		deathTab.chkFriendly:SetChecked(false)
+		deathTab.chkEnemy:SetChecked(false)
 		DeathTab_UpdatePage()
 	end)
-	tab.chkEnemy = ELib:Radio(tab,L.BossWatcherHostile):Point(150,-52):AddButton():OnClick(function(self) 
+	tab.chkFriendly = ELib:Radio(tab,L.BossWatcherFriendly):Point("LEFT",tab.chkFriendlyOnlyPlayers,"LEFT",200,0):AddButton():OnClick(function(self) 
+		DeathTab_Variables.isEnemy = false
+		DeathTab_Variables.onlyPlayers = false
+		deathTab.chkFriendlyOnlyPlayers:SetChecked(false)
+		self:SetChecked(true)
+		deathTab.chkEnemy:SetChecked(false)
+		DeathTab_UpdatePage()
+	end)
+	tab.chkEnemy = ELib:Radio(tab,L.BossWatcherHostile):Point("LEFT",tab.chkFriendly,"LEFT",200,0):AddButton():OnClick(function(self) 
 		DeathTab_Variables.isEnemy = true
+		DeathTab_Variables.onlyPlayers = false
+		deathTab.chkFriendlyOnlyPlayers:SetChecked(false)
 		deathTab.chkFriendly:SetChecked(false)
 		self:SetChecked(true)
 		DeathTab_UpdatePage()
 	end)
 
-	tab.sourceDropDown = ELib:DropDown(tab,250,20):Size(180):Point(335,-50):SetText(L.BossWatcherSelect)
-	tab.sourceText = ELib:Text(tab,L.BossWatcherTarget..":",12):Size(100,20):Point("TOPRIGHT",tab.sourceDropDown,"TOPLEFT",-6,0):Right():Color():Shadow()
+	tab.sourceDropDown = ELib:DropDown(tab,250,20):Size(180):Point("TOPLEFT",tab.chkEnemy,"TOPLEFT",200,0):SetText(L.BossWatcherSelect):AddText(L.BossWatcherTarget..":")
 
-	tab.showBuffsChk = ELib:Check(tab,L.BossWatcherDeathBuffsShow):Point(530,-50):OnClick(function (self)
+	tab.showBuffsChk = ELib:Check(tab,L.BossWatcherDeathBuffsShow):Point(15,-75):OnClick(function (self)
 		if self:GetChecked() then
 			DeathTab_Variables.isBuffs = true
 		else
@@ -10714,7 +10877,7 @@ function BWInterfaceFrameLoad()
 		end
 	end)
 
-	tab.showDebuffsChk = ELib:Check(tab,L.BossWatcherDeathDebuffsShow):Point(680,-50):OnClick(function (self)
+	tab.showDebuffsChk = ELib:Check(tab,L.BossWatcherDeathDebuffsShow):Point("LEFT",tab.showBuffsChk,"LEFT",200,0):OnClick(function (self)
 		if self:GetChecked() then
 			DeathTab_Variables.isDebuffs = true
 		else
@@ -10725,7 +10888,7 @@ function BWInterfaceFrameLoad()
 		end
 	end)
 
-	tab.buffsblacklistChk = ELib:Check(tab,""):Point(833,-50):Tooltip(L.BossWatcherDeathBlacklist):OnClick(function (self)
+	tab.buffsblacklistChk = ELib:Check(tab,L.BossWatcherDeathBlacklist):Point("LEFT",tab.showDebuffsChk,"LEFT",200,0):OnClick(function (self)
 		if self:GetChecked() then
 			DeathTab_Variables.isBlack = true
 		else
@@ -10768,7 +10931,7 @@ function BWInterfaceFrameLoad()
 		local name = self.text:GetText()
 		DeathTab_SetDeath(nil,self.clickToLog,name:match("(.-)|r"),nil)
 	end
-	tab.scroll = ELib:ScrollFrame(tab):Size(835,508):Point("TOP",0,-80)
+	tab.scroll = ELib:ScrollFrame(tab):Size(835,508-25):Point("TOP",0,-105)
 	tab.lines = {}
 	function DeathTab_SetLine(i,textTime,textText,gradientR,gradientG,gradientB,spellID,clickToLog,arrowPos)
 		local line = deathTab.lines[i]

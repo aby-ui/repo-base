@@ -1379,6 +1379,7 @@ function module.options:Load()
 					end
 					line.time:Show()
 					line.time:SetText(L.InspectViewerNoData)
+					line.time2:SetText("")
 
 					line.otherInfo:Hide()
 					line.otherInfoTooltipFrame:Hide()

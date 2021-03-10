@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Details!: Streamer (plugin)
 ## Notes: Show which spells you are casting, viewers can see what are you doing and follow your steps.
 ## RequiredDeps: Details

@@ -319,7 +319,7 @@ TMW.BE = {
 			 278961, -- Decaying Mind                       (Underrot dungeon)
 			 280605, -- Brain Freeze                        (Motherload dungeon)
 			 287254, -- Dead of Winter                      (death knight, frost)
-			-305484, -- Lightning Lasso						(shaman, elemental)
+			-305484, -- Lightning Lasso                     (shaman, elemental)
 		},
 	},
 	buffs = {
@@ -360,7 +360,7 @@ TMW.BE = {
 			-276112, -- Divine Steed                        (paladin, general)
 			 287827, -- Fight or Flight                     (azerite trait, general)
 			 290244, -- Gilded Path                         (Boots of the Gilded Path, Battle of Dazar'alor raid)
-			 310143, -- Soulshape							(Night Fae)
+			 310143, -- Soulshape                           (Night Fae)
 		},
 		ImmuneToStun = {
 			    642, -- Divine Shield                       (paladin)
@@ -430,7 +430,7 @@ TMW.BE = {
 			-228049, -- Guardian of the Forgotten Queen     (paladin, protection)
 			 223658, -- Safeguard                           (warrior, protection)
 			 287081, -- Lichborne                           (frost/unholy, PVP talent)
-			 319217, -- Podtender						 	(night fae)
+			 319217, -- Podtender                           (night fae)
 		},
 		DamageBuffs = {
 			   1719, -- Recklessness                        (warrior, arms)
@@ -471,13 +471,14 @@ TMW.BE = {
 			    -17, -- Power Word: Shield                  (priest, disc/shadow)
 			 -11426, -- Ice Barrier                         (mage, frost)
 			  48707, -- Anti-Magic Shell                    (death knight, general)
-			 -50324, -- Bone Armor							(generic NPC ability)
+			 -50324, -- Bone Armor                          (generic NPC ability)
 			  77535, -- Blood Shield                        (death knight, blood)
 			 108008, -- Indomitable                         (old Dragon Soul PVE trinket)
 			 108366, -- Soul Leech                          (warlock, general)
 			 108416, -- Dark Pact                           (warlock, PVE talent, general)
 			 116849, -- Life Cocoon                         (monk, mistweaver)
 			 145441, -- Yu'lon's Barrier                    (old MOP legendary cape effect)
+			 157128, -- Saved by the Light                  (paladin, holy, talent)
 			 169373, -- Boulder Shield                      (WOD world item effect)
 			 173260, -- Shieldtronic Shield                 (WOD engineering item)
 			 184662, -- Shield of Vengeance                 (paladin, retribution)
@@ -517,7 +518,8 @@ TMW.BE = {
 			 295431, -- Ephemeral Vigor                     (Abyssal Speaker's Gauntlets, Crucible of Storms raid)
 			 311444, -- Indomitable Deck                    (Shadowlands tank darkmoon deck)
 			 322507, -- Celestial Brew                      (Monk, brewmaster)
-			 324867, -- Fleshcraft							(Necrolord)
+			 324867, -- Fleshcraft                          (Necrolord)
+			 330927, -- Cleansing Rites                     (Kyrian?)
 		},
 		ImmuneToMagicCC = {
 			    642, -- Divine Shield                       (paladin, general)

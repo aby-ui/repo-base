@@ -4977,6 +4977,32 @@ do
         end
 
         Details.options.UpdateAutoHideSettings(currentInstance)
+
+        --> profile by spec
+        
+        --[=[]]
+        local spec1Table = {}
+        local playerSpecs = DF.ClassSpecIds [select (2, UnitClass("player"))]
+        for specID, _ in pairs (playerSpecs) do
+            local spec_id, specName, spec_description, spec_icon = GetSpecializationInfoByID(specID)
+            tinsert (spec1Table, {
+                type = "select",
+                get = function() 
+                    local specProfile = Details.profile_by_spec[specID]
+                    return specProfile
+                end,
+                values = function()
+                    local t = {}
+                    for profileName in pairs (__profiles) do
+                        t[#t+1] = profileName
+                    end
+                    return t
+                end,
+                name = specName,
+                desc = specName,
+            })
+        end
+        --]=]
     end
 
     tinsert(Details.optionsSection, buildSection)

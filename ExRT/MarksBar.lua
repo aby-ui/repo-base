@@ -9,27 +9,8 @@ local ELib,L = ExRT.lib,ExRT.L
 
 module.db.perma = {}
 module.db.clearnum = -1
-module.db.iconsList = {
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_1",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_3",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_4",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_5",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_6",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
-}
-module.db.worldMarksList = {
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_6",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_4",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_3",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_7",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_1",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_2",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_5",
-	"Interface\\TargetingFrame\\UI-RaidTargetingIcon_8",
-	"Interface\\AddOns\\ExRT\\media\\flare_del.blp",
-}
+module.db.worldMarksList = {6,4,3,7,1,2,5,8}
+
 module.db.wm_color ={
 	{ r = 4/255, g = 149/255, b = 255/255},
 	{ r = 15/255, g = 155/255 , b = 12/255},
@@ -346,7 +327,11 @@ do
 		end
 	
 		frame.t = frame:CreateTexture(nil, "BACKGROUND")
-		frame.t:SetTexture(module.db.worldMarksList[i])
+		if i < 9 then
+			frame.t:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..module.db.worldMarksList[i])
+		else
+			frame.t:SetTexture("Interface\\AddOns\\ExRT\\media\\flare_del")
+		end
 		frame.t:SetSize(10,10)
 		frame.t:SetPoint("CENTER",frame, "CENTER", 0,0)
 	end
@@ -382,7 +367,7 @@ for i=1,9 do
 	frame:SetSize(18,18)
 	frame.t = frame:CreateTexture(nil, "BACKGROUND")
 	if i == 9 then
-		frame.t:SetTexture(module.db.worldMarksList[i])
+		frame.t:SetTexture("Interface\\AddOns\\ExRT\\media\\flare_del")
 	else
 		frame.t:SetTexture("Interface\\AddOns\\ExRT\\media\\blip")
 	end

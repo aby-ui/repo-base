@@ -1,7 +1,7 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: |cFF74D06CRE|rCrystallize
 ## Notes: Provide Auction House scanner and add item prices to tooltips.
-## Version: 1.10.0
+## Version: 1.10.1
 ## Author: AcidWeb
 ## SavedVariables: RECrystallizeSettings, RECrystallizeDatabase
 ## X-Website: https://www.curseforge.com/wow/addons/recrystallize-auction-house-scanner

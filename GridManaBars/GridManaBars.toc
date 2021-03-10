@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: GridManaBars
 ## Notes: Adds manabars to the sides of Grid frames.
 ## Notes-ruRU: Добовляет полоски маны в фрейм Gridа.

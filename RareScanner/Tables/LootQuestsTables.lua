@@ -324,4 +324,5 @@ private.LOOT_QUEST_IDS = {
 	[180796] = { 61156 }; --Shimmerflight Quill
 	[180785] = { 61146 }; --Condensed Essence
 	[183436] = { 62362 }; --Animated Catalyst
+	[183061] = { 63158 }; --Wailing Coin
 }

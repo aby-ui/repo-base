@@ -113,11 +113,6 @@ local function UpdateFrame()
 	description:ClearAllPoints()
 	description:SetPoint("TOP", weeklyChest, "TOP", 0, 75)
 
-	local legacyWeeklyChest = ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest
-	legacyWeeklyChest:ClearAllPoints()
-	legacyWeeklyChest:SetPoint("TOP", weeklyChest, "TOP", 0, 50)
-    local t = ChallengesFrame.WeeklyInfo.Child.LegacyWeeklyChest.RunStatus if t then t:SetWidth(260) end --abyui
-
 	local currentKeystoneName = GetNameForKeystone(C_MythicPlus.GetOwnedKeystoneChallengeMapID(), C_MythicPlus.GetOwnedKeystoneLevel())
 	if currentKeystoneName then
 		Mod.KeystoneText:Show()

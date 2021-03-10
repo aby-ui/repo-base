@@ -195,7 +195,7 @@
 				end
 			end
 			instance:EsconderScrollBar()
-			return _detalhes:EndRefresh (instance, total, combat, combat [container_index])
+			return _detalhes:EndRefresh (instance, total, combat, nil)
 		end
 		
 		if (amount > #instance_container._ActorTable) then
@@ -495,63 +495,77 @@
 	local actor_class_color_r, actor_class_color_g, actor_class_color_b
 	
 	function atributo_custom:UpdateBar (row_container, index, percentage_type, rank, total, top, instance, is_forced, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
-	
+
 		local row = row_container [index]
-		
+
 		local previous_table = row.minha_tabela
 		row.colocacao = rank
 		row.minha_tabela = self
 		self.minha_barra = row
-		
+
 		local percent
 		local okey
-		
-		if (percent_script) then
-			--local value, top, total, combat, instance = ...
-			okey, percent = _pcall (percent_script, self.value, top, total, combat, instance, self)
-			if (not okey) then
-				_detalhes:Msg ("|cFFFF9900error on custom display function|r:", percent)
-				return _detalhes:EndRefresh (instance, 0, combat, combat [1])
-			end
-		else
-			if (percentage_type == 1) then
-				percent = _cstr ("%.1f", self.value / total * 100)
-			elseif (percentage_type == 2) then
-				percent = _cstr ("%.1f", self.value / top * 100)
-			end
-		end
 
-		if (not bars_show_data [3]) then
-			percent = ""
-		else
-			if (percent) then
-				percent = percent .. "%"
+		--> percent
+			if (percent_script) then
+				--local value, top, total, combat, instance = ...
+				okey, percent = _pcall (percent_script, self.value, top, total, combat, instance, self)
+				if (not okey) then
+					_detalhes:Msg ("|cFFFF9900error on custom display function|r:", percent)
+					return _detalhes:EndRefresh (instance, 0, combat, combat [1])
+				end
 			else
+				if (percentage_type == 1) then
+					percent = format("%.1f", self.value / total * 100) .. "%"
+				elseif (percentage_type == 2) then
+					percent = format("%.1f", self.value / top * 100) .. "%"
+				end
+			end
+
+			if (not percent) then
 				percent = ""
 			end
-		end
 
-		if (total_script) then
-			local okey, value = _pcall (total_script, self.value, top, total, combat, instance, self)
-			if (not okey) then
-				_detalhes:Msg ("|cFFFF9900error on custom display function|r:", value)
-				return _detalhes:EndRefresh (instance, 0, combat, combat [1])
-			end
-			if (type (value) == "number") then
-				row.lineText4:SetText (SelectedToKFunction (_, value) .. bars_brackets[1] .. percent .. bars_brackets[2])
-				
+		--> total done
+			if (total_script) then
+				local okey, value = _pcall (total_script, self.value, top, total, combat, instance, self)
+				if (not okey) then
+					_detalhes:Msg ("|cFFFF9900error on custom display function|r:", value)
+					return _detalhes:EndRefresh (instance, 0, combat, combat [1])
+				end
+
+				if (instance.use_multi_fontstrings) then
+					if (type(value) == "string") then
+						Details:SetTextsOnLine(row, "", value, percent) --usando essa linha
+					else
+						Details:SetTextsOnLine(row, "", SelectedToKFunction(_, value), percent)
+					end
+
+				else
+					if (type (value) == "number") then
+						row.lineText4:SetText (SelectedToKFunction (_, value) .. bars_brackets[1] .. percent .. bars_brackets[2])
+					else
+						row.lineText4:SetText (value .. bars_brackets[1] .. percent .. bars_brackets[2])
+					end
+					row.lineText3:SetText("")
+					row.lineText2:SetText("")
+				end
 			else
-				row.lineText4:SetText (value .. bars_brackets[1] .. percent .. bars_brackets[2])
+				local formated_value = SelectedToKFunction (_, self.value)
+				local rightText = formated_value .. bars_brackets[1] .. percent .. bars_brackets[2]
+
+				if (UsingCustomRightText) then
+					row.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
+				else
+					if (instance.use_multi_fontstrings) then
+						Details:SetTextsOnLine(row, "", formated_value, percent)
+					else
+						row.lineText4:SetText (rightText)
+						row.lineText3:SetText("")
+						row.lineText2:SetText("")
+					end
+				end
 			end
-		else
-			local formated_value = SelectedToKFunction (_, self.value)
-			local rightText = formated_value .. bars_brackets[1] .. percent .. bars_brackets[2]
-			if (UsingCustomRightText) then
-				row.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
-			else
-				row.lineText4:SetText (rightText)
-			end
-		end
 		
 		local row_value = _math_floor ((self.value / top) * 100)
 
@@ -821,7 +835,6 @@
 				actor.nome = spellname
 				actor.name = spellname
 				actor.classe = actor.spellschool
-				actor.class = actor.spellschool
 				class = actor.spellschool
 				
 				local index = self._NameIndexTable [actor.nome]
@@ -2270,49 +2283,50 @@
 			desc = "Show overall damage done on the fly.",
 			source = false,
 			target = false,
-			script_version = 5,
+			script_version = 6,
 			script = [[
 				--init:
 				local combat, instance_container, instance = ...
 				local total, top, amount = 0, 0, 0
-
+				
 				--get the overall combat
 				local OverallCombat = Details:GetCombat (-1)
 				--get the current combat
 				local CurrentCombat = Details:GetCombat (0)
-
+				
 				if (not OverallCombat.GetActorList or not CurrentCombat.GetActorList) then
-				    return 0, 0, 0
+					return 0, 0, 0
 				end
-
+				
 				--get the damage actor container for overall
 				local damage_container_overall = OverallCombat:GetActorList ( DETAILS_ATTRIBUTE_DAMAGE )
 				--get the damage actor container for current
 				local damage_container_current = CurrentCombat:GetActorList ( DETAILS_ATTRIBUTE_DAMAGE )
-
+				
 				--do the loop:
 				for _, player in ipairs ( damage_container_overall ) do 
-				    --only player in group
-				    if (player:IsGroupPlayer()) then
-					instance_container:AddValue (player, player.total)
-				    end
-				end
-
-				if (Details.in_combat) then
-				    for _, player in ipairs ( damage_container_current ) do 
 					--only player in group
 					if (player:IsGroupPlayer()) then
-					    instance_container:AddValue (player, player.total)        
+						instance_container:AddValue (player, player.total)
 					end
-				    end
 				end
-
+				
+				if (Details.in_combat) then
+					for _, player in ipairs ( damage_container_current ) do 
+						--only player in group
+						if (player:IsGroupPlayer()) then
+							instance_container:AddValue (player, player.total)        
+						end
+					end
+				end
+				
 				total, top =  instance_container:GetTotalAndHighestValue()
 				amount =  instance_container:GetNumActors()
-
+				
 				--return:
 				return total, top, amount
 			]],
+
 			tooltip = [[
 				--get the parameters passed
 				local actor, combat, instance = ...
@@ -2328,16 +2342,20 @@
 
 				local AllSpells = {}
 
+				local playerTotal = 0
+
 				--overall
 				local player = OverallCombat [1]:GetActor (actor.nome)
+				playerTotal = playerTotal + player.total
 				local playerSpells = player:GetSpellList()
 				for spellID, spellTable in pairs (playerSpells) do
-				    AllSpells [spellID] = spellTable.total
+					AllSpells [spellID] = spellTable.total
 				end
 
 				--current
 				local player = CurrentCombat [1]:GetActor (actor.nome)
 				if (player) then
+					playerTotal = playerTotal + player.total
 					local playerSpells = player:GetSpellList()
 					for spellID, spellTable in pairs (playerSpells) do
 						AllSpells [spellID] = (AllSpells [spellID] or 0) + (spellTable.total or 0)
@@ -2346,47 +2364,61 @@
 
 				local sortedList = {}
 				for spellID, total in pairs (AllSpells) do
-				    tinsert (sortedList, {spellID, total})
+					tinsert (sortedList, {spellID, total})
 				end
 				table.sort (sortedList, Details.Sort2)
 
 				local format_func = Details:GetCurrentToKFunction()
 
 				--build the tooltip
+
+				local topSpellTotal = sortedList and sortedList[1] and sortedList[1][2] or 0
+
 				for i, t in ipairs (sortedList) do
-				    local spellID, total = unpack (t)
-				    if (total > 1) then
-					local spellName, _, spellIcon = Details.GetSpellInfo (spellID)
-					
-					GameCooltip:AddLine (spellName, format_func (_, total))
-					Details:AddTooltipBackgroundStatusbar()
-					GameCooltip:AddIcon (spellIcon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-				    end
+					local spellID, total = unpack (t)
+					if (total > 1) then
+						local spellName, _, spellIcon = Details.GetSpellInfo (spellID)
+						
+						local spellPercent = total / playerTotal * 100
+						local formatedSpellPercent = format("%.1f", spellPercent)
+						
+						if (string.len(formatedSpellPercent) < 4) then
+							formatedSpellPercent = formatedSpellPercent  .. "0"
+						end
+						
+						GameCooltip:AddLine (spellName, format_func (_, total) .. "    " .. formatedSpellPercent  .. "%")
+						
+						Details:AddTooltipBackgroundStatusbar(false, total / topSpellTotal * 100)
+						GameCooltip:AddIcon (spellIcon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height, 0.078125, 0.921875, 0.078125, 0.921875)
+						
+					end
 				end
 			]],
 			
 			total_script = [[
 				local value, top, total, combat, instance = ...
+				return value
+			]],
+
+			percent_script = [[
+				local value, top, total, combat, instance = ...
 
 				--get the time of overall combat
 				local OverallCombatTime = Details:GetCombat (-1):GetCombatTime()
-
+				
 				--get the time of current combat if the player is in combat
 				if (Details.in_combat) then
-				    local CurrentCombatTime = Details:GetCombat (0):GetCombatTime()
-				    OverallCombatTime = OverallCombatTime + CurrentCombatTime
+					local CurrentCombatTime = Details:GetCombat (0):GetCombatTime()
+					OverallCombatTime = OverallCombatTime + CurrentCombatTime
 				end
-
+				
+				--calculate the DPS and return it as percent
+				local totalValue = value
+				
 				--build the string
 				local ToK = Details:GetCurrentToKFunction()
 				local s = ToK (_, value / OverallCombatTime)
 				
-				if (instance.row_info.textR_show_data[3]) then
-				    s = ToK (_, value) .. " (" .. s .. ", "
-				else
-				    s = ToK (_, value) .. " (" .. s
-				end
-
 				return s
 			]],
 		}

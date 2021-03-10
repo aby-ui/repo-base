@@ -6,6 +6,7 @@ local BUFF_DEFENSIVE = "buffs_defensive"
 local BUFF_OFFENSIVE = "buffs_offensive"
 local BUFF_OTHER = "buffs_other"
 local BUFF_SPEED_BOOST = "buffs_speed_boost"
+local DEBUFF_OFFENSIVE = "debuffs_offensive"
 local INTERRUPT = "interrupts"
 local CROWD_CONTROL = "cc"
 local ROOT = "roots"
@@ -32,22 +33,16 @@ addon.Units = {
 addon.WarningDebuffs = {
     212183, -- Smoke Bomb
     81261, -- Solar Beam
-    233490, -- Unstable Affliction
-    233496, -- Unstable Affliction
-    233497, -- Unstable Affliction
-    233498, -- Unstable Affliction
-    233499, -- Unstable Affliction
+    316099, -- Unstable Affliction
+    342938, -- Unstable Affliction
     34914, -- Vampiric Touch
     323673, -- Mindgames
 }
 
 -- Make sure we always see these debuffs, but don't make them bigger
 addon.PriorityDebuffs = {
-    233490, -- Unstable Affliction
-    233496, -- Unstable Affliction
-    233497, -- Unstable Affliction
-    233498, -- Unstable Affliction
-    233499, -- Unstable Affliction
+    316099, -- Unstable Affliction
+    342938, -- Unstable Affliction
     34914, -- Vampiric Touch
     102355, -- Faerie Swarm
     117405, -- Binding Shot
@@ -92,7 +87,7 @@ addon.Spells = {
     [81256] = { type = BUFF_DEFENSIVE }, -- Dancing Rune Weapon
     [51271] = { type = BUFF_OFFENSIVE }, -- Pillar of Frost
     [55233] = { type = BUFF_DEFENSIVE }, -- Vampiric Blood
-    [77606] = { type = BUFF_OTHER }, -- Dark Simulacrum
+    [77606] = { type = DEBUFF_OFFENSIVE }, -- Dark Simulacrum
     [91797] = { type = CROWD_CONTROL }, -- Monstrous Blow
     [91800] = { type = CROWD_CONTROL }, -- Gnaw
     [108194] = { type = CROWD_CONTROL }, -- Asphyxiate
@@ -112,7 +107,7 @@ addon.Spells = {
         [212337] = { type = CROWD_CONTROL, parent = 212332 }, -- Powerful Smash
     [212552] = { type = BUFF_SPEED_BOOST }, -- Wraith Walk
     [219809] = { type = BUFF_DEFENSIVE }, -- Tombstone
-    [223929] = { type = BUFF_OTHER }, -- Necrotic Wound
+    [223929] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Necrotic Wound
     [321995] = { type = BUFF_OFFENSIVE }, -- Hypothermic Presence
     [334693] = { type = CROWD_CONTROL }, -- Absolute Zero
 
@@ -120,12 +115,11 @@ addon.Spells = {
 
     [179057] = { type = CROWD_CONTROL }, -- Chaos Nova
     [187827] = { type = BUFF_DEFENSIVE }, -- Metamorphosis
-    [188499] = { type = BUFF_DEFENSIVE }, -- Blade Dance
     [188501] = { type = BUFF_OFFENSIVE }, -- Spectral Sight
     [204490] = { type = CROWD_CONTROL }, -- Sigil of Silence
     [205629] = { type = BUFF_DEFENSIVE }, -- Demonic Trample
     [205630] = { type = CROWD_CONTROL }, -- Illidan's Grasp
-    [206649] = { type = BUFF_OTHER }, -- Eye of Leotheras
+    [206649] = { type = DEBUFF_OFFENSIVE }, -- Eye of Leotheras
     [206804] = { type = BUFF_OFFENSIVE }, -- Rain from Above
     [207685] = { type = CROWD_CONTROL }, -- Sigil of Misery
     [207810] = { type = BUFF_DEFENSIVE }, -- Nether Bond
@@ -192,8 +186,8 @@ addon.Spells = {
     [54216] = { type = BUFF_DEFENSIVE }, -- Master's Call
     [117526] = { type = ROOT }, -- Binding Shot
     [118922] = { type = BUFF_SPEED_BOOST }, -- Posthaste
-    [131894] = { type = BUFF_OFFENSIVE }, -- A Murder of Crows (Beast Mastery, Marksmanship)
-        [206505] = { type = BUFF_OFFENSIVE, parent = 131894 }, -- A Murder of Crows (Survival)
+    [131894] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- A Murder of Crows (Beast Mastery, Marksmanship)
+        [206505] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true, parent = 131894 }, -- A Murder of Crows (Survival)
     [162480] = { type = ROOT }, -- Steel Trap
     [186257] = { type = BUFF_SPEED_BOOST }, -- Aspect of the Cheetah
     [186265] = { type = BUFF_DEFENSIVE }, -- Aspect of the Turtle
@@ -210,6 +204,7 @@ addon.Spells = {
     [212638] = { type = ROOT }, -- Tracker's Net
     [213691] = { type = CROWD_CONTROL }, -- Scatter Shot
     [260402] = { type = BUFF_OFFENSIVE }, -- Double Tap
+    [264667] = { type = BUFF_OFFENSIVE }, -- Primal Rage
     [266779] = { type = BUFF_OFFENSIVE }, -- Coordinated Assault
     [288613] = { type = BUFF_OFFENSIVE }, -- Trueshot
 
@@ -256,7 +251,7 @@ addon.Spells = {
         [198065] = { type = BUFF_DEFENSIVE, parent = 198064 }, -- Prismatic Cloak
     [205025] = { type = BUFF_OFFENSIVE }, -- Presence of Mind
     [228600] = { type = ROOT }, -- Glacial Spike Root
-    [317589] = { type = BUFF_OTHER }, -- Tormenting Backlash (Venthyr Ability)
+    [317589] = { type = CROWD_CONTROL }, -- Tormenting Backlash (Venthyr Ability)
 
     -- Monk
 
@@ -281,6 +276,7 @@ addon.Spells = {
     [209584] = { type = BUFF_DEFENSIVE }, -- Zen Focus Tea
     [233759] = { type = CROWD_CONTROL }, -- Grapple Weapon
     [247483] = { type = BUFF_OFFENSIVE }, -- Tigereye Brew
+    [310454] = { type = BUFF_OFFENSIVE }, -- Weapons of Order (Kyrian Ability)
 
     -- Paladin
 
@@ -313,7 +309,7 @@ addon.Spells = {
     [199545] = { type = BUFF_DEFENSIVE }, -- Steed of Glory (Protection Honor Talent)
     [205191] = { type = BUFF_DEFENSIVE }, -- Eye for an Eye
     [210256] = { type = BUFF_DEFENSIVE }, -- Blessing of Sanctuary
-    [210294] = { type = IMMUNITY_SPELL }, -- Divine Favor
+    [210294] = { type = BUFF_DEFENSIVE }, -- Divine Favor
     [215652] = { type = BUFF_OFFENSIVE }, -- Shield of Virtue (Buff)
         [217824] = { type = CROWD_CONTROL, parent = 215652 }, -- Shield of Virtue (Debuff)
     [221883] = { type = BUFF_SPEED_BOOST }, -- Divine Steed (Human?) (Each race has its own buff, pulled from wowhead - some might be incorrect)
@@ -326,6 +322,7 @@ addon.Spells = {
         [254474] = { type = BUFF_SPEED_BOOST, parent =  221883}, -- Divine Steed (?)
         [276111] = { type = BUFF_SPEED_BOOST, parent =  221883}, -- Divine Steed (Dwarf?)
         [276112] = { type = BUFF_SPEED_BOOST, parent =  221883}, -- Divine Steed (Dark Iron Dwarf?)
+    [343721] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Final Reckoning
 
     -- Priest
 
@@ -359,19 +356,20 @@ addon.Spells = {
     [215769] = { type = BUFF_DEFENSIVE }, -- Spirit of Redemption
     [289655] = { type = BUFF_DEFENSIVE }, -- Holy Word: Concentration
     [319952] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
-    [322431] = { type = BUFF_OFFENSIVE }, -- Thoughtsteal (Buff)
-    [322459] = { type = BUFF_OFFENSIVE }, -- Thoughtstolen (Shaman)
-        [322464] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Mage)
-        [322442] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Druid)
-        [322462] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Holy)
-        [322457] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Paladin)
-        [322463] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Warlock)
-        [322461] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Discipline)
-        [322458] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Monk)
-        [322460] = { type = BUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Shadow)
-        [323673] = { type = BUFF_OTHER }, -- Mindgames
+    [322431] = { type = BUFF_OFFENSIVE, nounitFrames = true, noraidFrames = true, nonameplates = true }, -- Thoughtsteal (Buff)
+    [322459] = { type = DEBUFF_OFFENSIVE }, -- Thoughtstolen (Shaman)
+        [322464] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Mage)
+        [322442] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Druid)
+        [322462] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Holy)
+        [322457] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Paladin)
+        [322463] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Warlock)
+        [322461] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Discipline)
+        [322458] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Monk)
+        [322460] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Shadow)
+    [323673] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Mindgames
     [329543] = { type = BUFF_DEFENSIVE }, -- Divine Ascension
         [328530] = { type = IMMUNITY, parent = 329543 }, -- Divine Ascension
+    [335467] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Devouring Plague
 
     -- Rogue
 
@@ -389,7 +387,7 @@ addon.Spells = {
     [31224] = { type = IMMUNITY_SPELL }, -- Cloak of Shadows
     [45182] = { type = BUFF_DEFENSIVE }, -- Cheating Death
     [51690] = { type = BUFF_OFFENSIVE }, -- Killing Spree
-    [79140] = { type = BUFF_OFFENSIVE }, -- Vendetta
+    [79140] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Vendetta
     [121471] = { type = BUFF_OFFENSIVE }, -- Shadow Blades
     [185422] = { type = BUFF_OFFENSIVE }, -- Shadow Dance
     [207736] = { type = BUFF_OFFENSIVE }, -- Shadowy Duel
@@ -398,7 +396,7 @@ addon.Spells = {
 
     -- Shaman
 
-    [2645] = { type = BUFF_SPEED_BOOST }, -- Ghost Wolf
+    [2645] = { type = BUFF_SPEED_BOOST, nounitFrames = true, nonameplates = true }, -- Ghost Wolf
     [2825] = { type = BUFF_OFFENSIVE }, -- Bloodlust
         [32182] = { type = BUFF_OFFENSIVE, parent = 2825 }, -- Heroism
     [8178] = { type = IMMUNITY_SPELL }, -- Grounding Totem
@@ -446,13 +444,13 @@ addon.Spells = {
     [6358] = { type = CROWD_CONTROL }, -- Seduction
         [115268] = { type = CROWD_CONTROL, parent = 6358 }, -- Mesmerize
     [6789] = { type = CROWD_CONTROL }, -- Mortal Coil
-    [20707] = { type = BUFF_DEFENSIVE }, -- Soulstone
+    [20707] = { type = BUFF_OTHER }, -- Soulstone
     [22703] = { type = CROWD_CONTROL }, -- Infernal Awakening
     [30283] = { type = CROWD_CONTROL }, -- Shadowfury
     [89751] = { type = BUFF_OFFENSIVE }, -- Felstorm
         [115831] = { type = BUFF_OFFENSIVE, parent = 89751 }, -- Wrathstorm
     [89766] = { type = CROWD_CONTROL }, -- Axe Toss
-    [104773] = { type = IMMUNITY_SPELL }, -- Unending Resolve
+    [104773] = { type = BUFF_DEFENSIVE }, -- Unending Resolve
     [108416] = { type = BUFF_DEFENSIVE }, -- Dark Pact
     [111400] = { type = BUFF_SPEED_BOOST }, -- Burning Rush
     [113860] = { type = BUFF_OFFENSIVE }, -- Dark Soul: Misery (Affliction)
@@ -484,6 +482,7 @@ addon.Spells = {
     [184364] = { type = BUFF_DEFENSIVE }, -- Enraged Regeneration
     [197690] = { type = BUFF_DEFENSIVE }, -- Defensive Stance
     [199261] = { type = BUFF_OFFENSIVE }, -- Death Wish
+    [208086] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Colossus Smash
     [213871] = { type = BUFF_DEFENSIVE }, -- Bodyguard
     [227847] = { type = IMMUNITY }, -- Bladestorm (Arms)
         [46924] = { type = IMMUNITY, parent = 227847 }, -- Bladestorm (Fury)
@@ -508,6 +507,9 @@ addon.Spells = {
     [310143] = { type = BUFF_SPEED_BOOST }, -- Soulshape
     [320224] = { type = BUFF_DEFENSIVE }, -- Podtender
     [323524] = { type = IMMUNITY }, -- Ultimate Form (Necrolord Fleshcraft)
+    [324263] = { type = CROWD_CONTROL }, -- Sulfuric Emission (Necrolord - Emeni Trait)
+    [327140] = { type = BUFF_OTHER }, -- Forgeborne Reveries (Necrolord - Bonesmith Heirmir Trait)
+    [329776] = { type = BUFF_DEFENSIVE }, -- Ascendant Phial (Kyrian - Kleia Trait)
     [331866] = { type = CROWD_CONTROL }, -- Agent of Chaos (Venthyr Door of Shadows)
     [332505] = { type = BUFF_DEFENSIVE }, -- Soulsteel Clamps (Kyrian - Mikanikos Trait)
     [345231] = { type = BUFF_DEFENSIVE }, -- Gladiator's Emblem

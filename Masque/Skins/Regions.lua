@@ -226,7 +226,7 @@ local Legacy = {
 	},
 	-- [ OVERLAY (2) ]
 	IconOverlay2 = {
-		Key = "IconOverlay",
+		Key = "IconOverlay2",
 		Type = "Texture",
 		Iterate = true,
 		NoColor = true,

@@ -1,8 +1,8 @@
 local GlobalAddonName, ExRT = ...
 
-local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, CombatLogGetCurrentEventInfo = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, CombatLogGetCurrentEventInfo
+local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges
 local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort, select = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort, select
-local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason
+local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura
 
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
 local GetEncounterTime, UnitCombatlogname, GetUnitInfoByUnitFlag, ScheduleTimer, CancelTimer, GetRaidDiffMaxGroup, table_wipe2, dtime, utf8sub = ExRT.F.GetEncounterTime, ExRT.F.UnitCombatlogname, ExRT.F.GetUnitInfoByUnitFlag, ExRT.F.ScheduleTimer, ExRT.F.CancelTimer, ExRT.F.GetRaidDiffMaxGroup, ExRT.F.table_wipe, ExRT.F.dtime, ExRT.F.utf8sub
@@ -42,9 +42,9 @@ module.db.findspecspells = {
 	[23881] = 72, [184367] = 72,
 	[6572] = 73, [6343] = 73,
 
-	[202770] = 102, [102560] = 102, 
+	[202770] = 102, [102560] = 102, [194223] = 102,
 	[202028] = 103, [5217] = 103, 
-	--104
+	[50334] = 104,
 	[145205] = 105, [157982] = 105,
 
 	[50842] = 250, [206930] = 250, 
@@ -501,7 +501,7 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[190784] = {335424,3,199542,2,339268,{"*1.50","*1.55","*1.60","*1.65","*1.70","*1.75","*1.80","*1.85","*1.90","*1.95","*2.00","*2.05","*2.10","*2.15","*2.20"}},
 	[324220] = {336999,{6,6.6,7.2,7.8,8.4,9,9.6,10.2,10.8,11.4,12,12.6,13.2,13.8,14.4}},
 	[266779] = {341350,{4,4.5,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,10.5,11}},
-	[288613] = {339920,{"*1.20","*1.22","*1.24","*1.27","*1.29","*1.31","*1.33","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48","*1.50"}},
+	[288613] = {336849,3,339920,{"*1.20","*1.22","*1.24","*1.27","*1.29","*1.31","*1.33","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48","*1.50"}},
 	[328231] = {339109,3},
 	[106898] = {341450,{"*1.15","*1.165","*1.18","*1.195","*1.21","*1.225","*1.24","*1.255","*1.27","*1.285","*1.30","*1.315","*1.33","*1.345","*1.36"}},
 	[194223] = {340706,{5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0,11.5,12.0}},
@@ -559,7 +559,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[77764] = {288826,-60},
 	[77761] = {288826,-60},
 	[109304] = {287938,-15},
-	[116849] = {277667,-20,202424,-25},
+	[116849] = {277667,-20,202424,-40},
 
 	[34433] = {296320,"*0.80"},
 	[123040] = {296320,"*0.80"},
@@ -632,7 +632,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[73325] = {337678,{-20.0,-22.0,-24.0,-26.0,-28.0,-30.0,-32.0,-34.0,-36.0,-38.0,-40.0,-42.0,-44.0,-46.0,-48.0}},
 	[328923] = {339183,{-25.0,-26.0,-27.0,-28.0,-29.0,-30.0,-31.0,-33.0,-34.0,-35.0,-36.0,-37.0,-38.0,-39.0,-40.0},333348,-15},
 
-	[32379] = {336133,-8},
+	[32379] = {336133,-12},
 	[49576] = {334724,-3},
 	[279302] = {334692,"*0.5"},
 	[195072] = {337685,"*0.7"},
@@ -671,6 +671,8 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[339] = {202226,6},
 	[202138] = {211489,"*0.75"},
 	[217832] = {205506,15},
+
+	[31821] = {199324,-60},
 }
 
 module.db.spell_cdByTalent_scalable_data = {
@@ -837,6 +839,7 @@ module.db.spell_resetOtherSpells = {	--Заклинания, которые от
 	[191427]={198013,188499},
 	[328923]={{51533,333352}},
 	[122]={{120,206431}},
+	[217200]={{34026,336830}},
 }
 module.db.spell_sharingCD = {		--Заклинания, которые запускают кд на другие заклинания 	[spellID] = {[otherSpellID] = CD}
 	[90633] = {[90632]=120,[90631]=120},
@@ -880,9 +883,11 @@ do
 		{295337,299345,299347},	--Purification Protocol
 		{298452,299376,299378},	--The Unbound Force
 
-		{328282,328622,328620,328281},	--Blessing of Fae
-		{330325,5308},	--Execute
-		{336471,73325},	--Leap of Faith
+		{328282,328622,328620,328281},	--paladin: Blessing of Fae
+		{330325,5308},	--warrior: Execute
+		{336471,73325},	--priest: Leap of Faith
+		{108293,108291,319454},	--druid: HotW
+		{119910,19647},	--warlock: pet kick
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -931,7 +936,7 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	[259387]={{109304,270581},-1.5},
 	[259391]={{109304,270581},-0.75},
 	[196819]={185313,-7.5,{185313,238104},-5,280719,-5},
-	[408]={{185313,1,261},-7.5,{185313,238104},-5,280719,-5,{79140,340084},-0.5},
+	[408]={{185313,1,261},-7.5,{185313,238104},-5,280719,-5,{79140,340084},-0.5*1.667},
 	[195452]={185313,-7.5,{185313,238104},-5,280719,-5},
 	[280719]={185313,-7.5,{185313,238104},-5,280719,-5},
 	[585]={88625,-4,{88625,196985},-1.333,{88625,200183,nil,200183},-12,{88625,338345},{-0.24,-0.352,-0.384,-0.416,-0.448,-0.48,-0.512,-0.544,-0.576,-0.608,-0.64,-0.672,-0.704,-0.736,-0.768},{88625,338345,nil,200183},{-0.72,-1.056,-1.152,-1.248,-1.344,-1.44,-1.536,-1.632,-1.728,-1.824,-1.92,-2.016,-2.112,-2.208,-2.304}},
@@ -969,7 +974,6 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	[106830]={{102543,340053,103},-0.2,{106951,340053,103},-0.2},
 	[202028]={{102543,340053,103},-0.2,{106951,340053,103},-0.2},
 	[274837]={{102543,340053,103},-0.2,{106951,340053,103},-0.2},
-	[217200]={{34026,336830},-5},
 	[53385]={{1044,337600},-3,{1022,337600},-3,{6940,337600},-3,{204018,337600},-3},
 	[85256]={{1044,337600},-3,{1022,337600},-3,{6940,337600},-3,{204018,337600},-3},
 	[85222]={{1044,337600},-3,{1022,337600},-3,{6940,337600},-3,{204018,337600},-3},
@@ -991,25 +995,25 @@ module.db.spell_reduceCdCast = {	--Заклинания, применение к
 	[324536] = {{205180,337020},-2,{1122,337020},-0.6,{1122,337020},-1.5},
 	[27243] = {{205180,337020},-2,{1122,337020},-0.6,{1122,337020},-1.5},
 	[278350] = {{205180,337020},-2,{1122,337020},-0.6,{1122,337020},-1.5},
-	[8676] = {{79140,340084},-1},
-	[2094] = {{79140,340084},-0.3},
-	[1833] = {{79140,340084},-0.8},
-	[185311] = {{79140,340084},-0.4},
-	[1725] = {{79140,340084},-0.6},
-	[1966] = {{79140,340084},-0.7},
-	[6770] = {{79140,340084},-0.7},
-	[5938] = {{79140,340084},-0.4},
-	[315496] = {{79140,340084},-0.5},
-	[32645] = {{79140,340084},-0.7},
-	[51723] = {{79140,340084},-0.7},
-	[703] = {{79140,340084},-0.9},
-	[1329] = {{79140,340084},-1},
-	[185565] = {{79140,340084},-0.8},
-	[1943] = {{79140,340084},-0.5},
-	[200806] = {{79140,340084},-0.5},
-	[121411] = {{79140,340084},-0.7},
+	[8676] = {{79140,340084},-1*1.667},
+	[2094] = {{79140,340084},-0.3*1.667},
+	[1833] = {{79140,340084},-0.8*1.667},
+	[185311] = {{79140,340084},-0.4*1.667},
+	[1725] = {{79140,340084},-0.6*1.667},
+	[1966] = {{79140,340084},-0.7*1.667},
+	[6770] = {{79140,340084},-0.7*1.667},
+	[5938] = {{79140,340084},-0.4*1.667},
+	[315496] = {{79140,340084},-0.5*1.667},
+	[32645] = {{79140,340084},-0.7*1.667},
+	[51723] = {{79140,340084},-0.7*1.667},
+	[703] = {{79140,340084},-0.9*1.667},
+	[1329] = {{79140,340084},-1*1.667},
+	[185565] = {{79140,340084},-0.8*1.667},
+	[1943] = {{79140,340084},-0.5*1.667},
+	[200806] = {{79140,340084},-0.5*1.667},
+	[121411] = {{79140,340084},-0.7*1.667},
 	[23922] = {{871,335239},-5},
-	[133] = {{190319,203283},-5},
+	[133] = {{190319,203283},-3},
 }
 module.db.spell_increaseDurationCast = {	--Заклинания, продляющие время действия
 	[23922]={{2565,203177},1},
@@ -1055,10 +1059,14 @@ module.db.spell_startCDbyAuraApplied = {	--Заклинания, кд котор
 module.db.spell_startCDbyAuraApplied_fix = {}
 for _,spellID in pairs(module.db.spell_startCDbyAuraApplied) do module.db.spell_startCDbyAuraApplied_fix[spellID] = true end
 
-module.db.spell_reduceCdByAuraFade = {	--Заклинания, кд которых уменьшается при спадении ауры до окончания времени действия. !Важно обязательное время действия для таких заклинаний
+module.db.spell_reduceCdByAuraFade = {	--Заклинания, кд которых уменьшается при спадении ауры по окончании времени действия. !Важно обязательное время действия для таких заклинаний
 	[47788]={{47788,200209},-110},
+	[31850]={{31850,337838},"*0.6"},
+}
+module.db.spell_reduceCdByAuraFadeBefore = {	--Заклинания, кд которых уменьшается при спадении ауры до окончания времени действия. !Важно обязательное время действия для таких заклинаний
 	[328305]={328305,-30},
 }
+
 module.db.spell_battleRes = {		--Заклинания-воскрешения [WOD]
 	[20484]=true,
 	[20707]=true,
@@ -1377,6 +1385,8 @@ module.db.itemsBonusToSpell = {
 	[6965] = 335582,
 	[6957] = 335239,
 	[6956] = 335229,
+	[7061] = 337838,
+	[7011] = 336849,
 }
 
 if ExRT.isClassic then
@@ -1400,18 +1410,14 @@ module.db.vars = {
 	berserk = {},
 	faerie = {},
 	faerieSpells = {
-		[200174]=true,[123040]=true,[64843]=true,
-		[47568]=true,[42650]=true,[55233]=true,
-		[102558]=true,[106951]=true,[740]=true,[194223]=true,
-		[193530]=true,[288613]=true,[266779]=true,
-		[190319]=true,[12472]=true,[12042]=true,
-		[132578]=true,[115310]=true,[137639]=true,[152173]=true,
-		[31884]=true,
-		[121471]=true,[13750]=true,[79140]=true,
-		[108280]=true,[198067]=true,[192249]=true,[51533]=true,
-		[205180]=true,[265187]=true,[1122]=true,
-		[107574]=true,[1719]=true,[152277]=true,
-		[191427]=true,
+		[740]=true,[1122]=true,[1719]=true,[12042]=true,[12472]=true,[13750]=true,
+		[31884]=true,[47536]=true,[47568]=true,[50334]=true,[51533]=true,[55233]=true,
+		[61336]=true,[64843]=true,[79140]=true,[102543]=true,[102560]=true,[106951]=true,
+		[107574]=true,[108280]=true,[109964]=true,[115203]=true,[115310]=true,[121471]=true,
+		[137639]=true,[152173]=true,[152277]=true,[187827]=true,[190319]=true,[191427]=true,
+		[192249]=true,[193530]=true,[194223]=true,[194249]=true,[198067]=true,[198144]=true,
+		[205180]=true,[216331]=true,[227847]=true,[228260]=true,[231895]=true,[265187]=true,
+		[266779]=true,[275699]=true,[288613]=true,[297850]=true,[333957]=true,[335235]=true,
 	},
 	isWarlock = {},
 	isRogue = {},
@@ -1600,6 +1606,10 @@ do
 	_mainFrame = frame
 end
 
+local gsub_data = {}
+local gsub_func = function(a)
+	return gsub_data[a]
+end
 local function BarUpdateText(self)
 	local barParent = self.parent
 
@@ -1643,12 +1653,49 @@ local function BarUpdateText(self)
 	local offStatus = self.disStatus or ""
 	local chargesCount = self.curr_charges and "("..self.curr_charges..")" or ""
 
+	--[[
 	self.textLeft:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateLeft,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
 	self.textRight:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateRight,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
 	self.textCenter:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateCenter,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
+	]]
 
-	if barParent.optionIconName then
+	gsub_data.time = longtime
+	gsub_data.stime = shorttime
+	gsub_data.name = name
+	gsub_data.name_time = name_time
+	gsub_data.name_stime = name_stime
+	gsub_data.spell = spellName
+	gsub_data.status = offStatus
+	gsub_data.charge = chargesCount
+
+	local left = string_trim(barParent.textTemplateLeft:gsub("%%([^%%]+)%%",gsub_func),nil)
+	if self.textLeft.text ~= left then
+		self.textLeft:SetText(left)
+		self.textLeft.text = left
+	end
+
+	local right = string_trim(barParent.textTemplateRight:gsub("%%([^%%]+)%%",gsub_func),nil)
+	if self.textRight.text ~= right then
+		self.textRight:SetText(right)
+		self.textRight.text = right
+	end
+
+	local center = string_trim(barParent.textTemplateCenter:gsub("%%([^%%]+)%%",gsub_func),nil)
+	if self.textCenter.text ~= center then
+		self.textCenter:SetText(center)
+		self.textCenter.text = center
+	end
+
+	--[[
+	self.textLeft:SetText(barParent.textTemplateLeft:gsub("%%([^%%]+)%%",gsub_func))
+	self.textRight:SetText(barParent.textTemplateRight:gsub("%%([^%%]+)%%",gsub_func))
+	self.textCenter:SetText(barParent.textTemplateCenter:gsub("%%([^%%]+)%%",gsub_func))
+	]]
+
+	if barParent.optionIconName and (self.textIcon.name ~= barData.name or self.textIcon.numChars ~= barParent.textIconNameChars) then
 		self.textIcon:SetText(utf8sub(barData.name,1,barParent.textIconNameChars))
+		self.textIcon.name = barData.name
+		self.textIcon.numChars = barParent.textIconNameChars
 	end
 end
 
@@ -1743,6 +1790,8 @@ local function UpdateBar(self)
 	self:UpdateText()
 	if self.parent.optionIconName then
 		self.textIcon:SetText(data.name)
+		self.textIcon.name = data.name
+		self.textIcon.numChars = nil
 	end
 end
 
@@ -2150,9 +2199,13 @@ local function BarCreateTitle(self)
 	self.icon:ClearAllPoints()	self.icon:SetSize(height,height)
 
 	self.textLeft:SetText("")
+	self.textLeft.text = nil
 	self.textRight:SetText("")
+	self.textRight.text = nil
 	self.textCenter:SetText("")
+	self.textCenter.text = nil
 	self.textIcon:SetText("")
+	self.textIcon.name = nil
 
 	if parent.optionIconPosition == 2 then
 		self.icon:Show()
@@ -2344,6 +2397,7 @@ local function UpdateBarStyle(self)
 	self.cooldown:SetDrawEdge(parent.optionCooldownShowSwipe and true or false)
 
 	self.textIcon:SetText("")
+	self.textIcon.name = nil
 
 	if parent.glowStop ~= self.glowStop then
 		self.glowStop(self.icon)
@@ -2375,12 +2429,15 @@ local function UpdateBarStyle(self)
 	if parent.methodsLineClick and parent.methodsLineClickWhisper then
 		self.clickFrame:SetScript("OnClick",LineIconOnClickBoth)
 		self.clickFrame:Show()
+		self.clickFrame:SetFrameLevel(1000)
 	elseif parent.methodsLineClick then
 		self.clickFrame:SetScript("OnClick",LineIconOnClick)
 		self.clickFrame:Show()
+		self.clickFrame:SetFrameLevel(1000)
 	elseif parent.methodsLineClickWhisper then
 		self.clickFrame:SetScript("OnClick",LineIconOnClickWhisper)
 		self.clickFrame:Show()
+		self.clickFrame:SetFrameLevel(1000)
 	else
 		self.clickFrame:SetScript("OnClick",nil)
 		self.clickFrame:Hide()
@@ -2456,7 +2513,7 @@ local function CreateBar(parent)
 	anim:SetLooping("REPEAT")
 	anim.c = 0
 	anim.timer = anim:CreateAnimation()
-	anim.timer:SetDuration(0.04)
+	anim.timer:SetDuration(0.05)
 	anim:SetScript("OnLoop",BarAnimation)
 	anim.bar = self
 	self.anim = anim
@@ -2523,6 +2580,19 @@ local function CreateBar(parent)
 
 	return self
 end
+module.db.debugBarFuncs = {
+	Stop = StopBar,
+	Update = UpdateBar,
+	UpdateStyle = UpdateBarStyle,
+	UpdateText = BarUpdateText,
+	UpdateStatus = UpdateBarStatus,
+	CreateTitle = BarCreateTitle,
+	BarAnimation = BarAnimation,
+	BarAnimation_Reverse = BarAnimation_Reverse,
+	BarAnimation_NoAnimation = BarAnimation_NoAnimation,
+	BarStateAnimation = BarStateAnimation,
+	BarStateAnimationFinished = BarStateAnimationFinished,
+}
 
 local function FixFontsOnLoad(self)
 	local defGameFont = GameFontWhite:GetFont()
@@ -2770,6 +2840,10 @@ do
 	local def_col = _db.def_col
 	local columnsTable = _mainFrame.colFrame
 
+	local _CV = {}
+	local _CV_Len = 0
+	module.db._CV = _CV
+
 	local playerName = ExRT.SDB.charName
 
 	local IsPvpTalentsOn = module.IsPvpTalentsOn
@@ -2804,10 +2878,14 @@ do
 	local LGFReady, LGF = pcall(LibStub,"LibGetFrame-1.0")
 	local LGFNullOpt = {}
 
+	local SortAllData2
 	function SortAllData()
+		
+	end
+	function SortAllData2()
 		local currTime = GetTime()
-	  	for i=1,#_C do
-	  		local data = _C[i]
+	  	for i=1,_CV_Len do
+	  		local data = _CV[i]
 			local columnFrame = columnsTable[data.column]
 			if columnFrame.methodsSortByAvailability then
 				local cd = data.lastUse + data.cd - currTime
@@ -2845,9 +2923,10 @@ do
 			end
 			data.rsort = columnFrame.methodsReverseSorting
 	  	end
-		sort(_C,sort_f)
+		sort(_CV,sort_f)
 	end
 	module.SortAllData = SortAllData
+	module.SortAllData2 = SortAllData2
 
 	local function TalentReplaceOtherCheck(spellID,name)
 		local spellData = spell_talentReplaceOther[spellID]
@@ -2871,6 +2950,8 @@ do
 		local isTestMode = _db.testMode
 		local CDECol = VExRT.ExCD2.CDECol
 		local currTime = GetTime()
+		wipe(_CV)
+		_CV_Len = 0
 		for i=1,#_C do
 			local data = _C[i]
 			local db = data.db
@@ -2996,14 +3077,17 @@ do
 					data.bar:UpdateStatus()
 				end
 
+				_CV_Len = _CV_Len + 1
+				_CV[_CV_Len] = data
 			else
 				data.vis = nil
 			end
 		end
+		SortAllData2()
 	end
 	module.UpdateAllData = UpdateAllData
 
-	local statusTimer1,statusTimer2 = 0,0
+	local statusTimer2 = 0
 	local timerATFRepos = 0
 
 	function module:timer(elapsed)
@@ -3032,67 +3116,60 @@ do
 		statusTimer2 = statusTimer2 + elapsed
 		if statusTimer2 > 0.25 then
 			statusTimer2 = 0
-			statusTimer1 = statusTimer1 + 1
-			local doOtherChecks = statusTimer1 > 1
-			for i=1,#status_UnitsToCheck do
-				local unit = status_UnitsToCheck[i]
+			for i,unit in pairs(status_UnitsToCheck) do
 				local inRange,isRange = UnitInRange(unit)
 				local outOfRange = isRange and not inRange
 				if status_UnitIsOutOfRange[ unit ] ~= outOfRange then
 					forceUpdateAllData = true
+					status_UnitIsOutOfRange[ unit ] = outOfRange
 				end
-				status_UnitIsOutOfRange[ unit ] = outOfRange
-				if doOtherChecks then
-					local isDead = UnitIsDeadOrGhost(unit)
-					if isDead ~= status_UnitIsDead[ unit ] then
-						forceUpdateAllData = true
-						forceSortAllData = true
-					end
-					status_UnitIsDead[ unit ] = isDead
 
-					local isOffline = not UnitIsConnected(unit)
-					if isOffline ~= status_UnitIsDisconnected[ unit ] then
-						forceUpdateAllData = true
-						forceSortAllData = true
-					end
-					status_UnitIsDisconnected[ unit ] = not UnitIsConnected(unit)
-				end
-			end
-			if doOtherChecks then
-				statusTimer1 = 0
-
-				local charges,_,started,duration = GetSpellCharges(20484)
-				if charges ~= lastBattleResChargesStatus then
-					local charge = nil
-					if charges then
-						if charges > 0 then
-							charge = started
-							started = 0
-						end
-					else
-						started = 0
-						duration = 0
-						charge = nil
-					end
-					for i=1,#_C do
-						local data = _C[i]
-						if module.db.spell_battleRes[ data.db[1] ] then
-							data.lastUse = started
-							data.cd = duration
-							data.charge = charge
-
-							local bar = data.bar
-							if bar and bar.data == data then
-								bar:UpdateStatus()
-							end
-						end
-					end
+				local isDead = UnitIsDeadOrGhost(unit)
+				if isDead ~= status_UnitIsDead[ unit ] then
 					forceUpdateAllData = true
 					forceSortAllData = true
+					status_UnitIsDead[ unit ] = isDead
+				end
 
-					if charges and lastBattleResChargesStatus and charges < lastBattleResChargesStatus then		--Add resurrect to history
-						module.db.historyUsage[#module.db.historyUsage + 1] = {time(),20484,"*",GetEncounterTime()}
+				local isOffline = not UnitIsConnected(unit)
+				if isOffline ~= status_UnitIsDisconnected[ unit ] then
+					forceUpdateAllData = true
+					forceSortAllData = true
+					status_UnitIsDisconnected[ unit ] = isOffline
+				end
+			end
+
+			local charges,_,started,duration = GetSpellCharges(20484)
+			if charges ~= lastBattleResChargesStatus then
+				local charge = nil
+				if charges then
+					if charges > 0 then
+						charge = started
+						started = 0
 					end
+				else
+					started = 0
+					duration = 0
+					charge = nil
+				end
+				for i=1,_CV_Len do
+					local data = _CV[i]
+					if module.db.spell_battleRes[ data.db[1] ] then
+						data.lastUse = started
+						data.cd = duration
+						data.charge = charge
+
+						local bar = data.bar
+						if bar and bar.data == data then
+							bar:UpdateStatus()
+						end
+					end
+				end
+				forceUpdateAllData = true
+				forceSortAllData = true
+
+				if charges and lastBattleResChargesStatus and charges < lastBattleResChargesStatus then		--Add resurrect to history
+					module.db.historyUsage[#module.db.historyUsage + 1] = {time(),20484,"*",GetEncounterTime()}
 				end
 				lastBattleResChargesStatus = charges
 			end
@@ -3108,16 +3185,17 @@ do
 			inColsCount[i] = 0 
 			columnsTable[i].lastSpell = nil
 		end
-		for i=1,#_C do
-			local data = _C[i]
+		for i=1,_CV_Len do
+			local data = _CV[i]
 			if data.vis then
 				local col = data.column
 				local numberInCol = inColsCount[col] + 1
-				local spellID = data.db[1]
 
 				local barParent = columnsTable[col]
 
 				if numberInCol <= barParent.optionLinesMax then
+					local spellID = data.db[1]
+
 					if barParent.methodsNewSpellNewLine and barParent.lastSpell ~= spellID then
 						local fix = 0
 						for j=numberInCol,maxLinesInCol do
@@ -3183,11 +3261,10 @@ do
 		for i=1,maxColumns do
 			local col = columnsTable[i]
 			if col.IsColumnEnabled then
-				local y = col.optionLinesMax
-				if inColsCount[i] > y then
-					inColsCount[i] = y
-				end
 				local start = inColsCount[i]
+				if start > col.optionLinesMax then
+					start = col.optionLinesMa
+				end
 				for j=start+1,col.NumberLastLinesActive do
 					local bar = col.lines[j]
 					if bar and bar.data then
@@ -3229,6 +3306,10 @@ do
 									bar.ATFPrevLine = bar
 								end
 								prevLineForGUID[guid] = bar
+
+								if frame:GetFrameStrata() ~= col:GetFrameStrata() then
+									col:SetFrameStrata(frame:GetFrameStrata())
+								end
 							else
 								bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
 							end
@@ -3240,7 +3321,7 @@ do
 
 		saveDataTimer = saveDataTimer + elapsed
 		if saveDataTimer > 2 then
-			saveDataTimer = 0
+			saveDataTimer = saveDataTimer % 2
 			SaveCDtoVar()
 		end
 	end
@@ -3357,6 +3438,23 @@ local lineFuncs = {
 	end,
 	SetCD = function(line,time,delayUpdate)
 		line.cd = time
+		if line.cd < 0 then 
+			line.cd = 0 
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+			SortAllData()
+		end
+	end,
+	ModCD = function(line,modVal,delayUpdate)
+		if type(modVal) == "number" then
+			line.cd = line.cd + modVal
+		elseif type(modVal) == "string" then
+			line.cd = line.cd * tonumber( modVal:sub(2) )
+		end
 		if line.cd < 0 then 
 			line.cd = 0 
 		end
@@ -3854,6 +3952,7 @@ do
 
 		_db.historyUsage[#_db.historyUsage + 1] = {time(),data.db[uSpecID][1],fullName,GetEncounterTime()}
 	end
+	module.CLEUstartCD = CLEUstartCD
 end
 
 function module:Enable()
@@ -3893,6 +3992,14 @@ function module:Disable()
 
 	module:UnregisterTimer()
 	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END','ARENA_COOLDOWNS_UPDATE','UNIT_AURA')
+end
+
+function module:IsEnabled()
+	if module.frame.IsEnabled then
+		return true
+	else
+		return false
+	end
 end
 
 function module.main:ADDON_LOADED()
@@ -4165,6 +4272,7 @@ local hotfixTableNameToType = {
 	spell_startCDbyAuraFadeExt = 2,
 	spell_startCDbyAuraApplied = 2,
 	spell_reduceCdByAuraFade = 3,
+	spell_reduceCdByAuraFadeBefore = 3,
 	spell_battleRes = 2,
 	spell_isRacial = 2,
 	differentIcons = 2,
@@ -4352,6 +4460,7 @@ do
 	--upvaules
 	local spell_startCDbyAuraApplied = _db.spell_startCDbyAuraApplied
 	local spell_reduceCdByAuraFade = _db.spell_reduceCdByAuraFade
+	local spell_reduceCdByAuraFadeBefore = _db.spell_reduceCdByAuraFadeBefore
 	local spell_aura_list = _db.spell_aura_list
 	local spell_startCDbyAuraFade = _db.spell_startCDbyAuraFade
 	local spell_startCDbyAuraFadeExt = _db.spell_startCDbyAuraFadeExt
@@ -4398,30 +4507,27 @@ do
 		end
 	end
 
-	function module.main:COMBAT_LOG_EVENT_UNFILTERED()
-		--dtime()
-		local _,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,_,_,missType,overhealing,_,criticalSwing,_,_,critical = CombatLogGetCurrentEventInfo()
-
+	function module.main.COMBAT_LOG_EVENT_UNFILTERED(_,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,_,_,missType,overhealing,_,criticalSwing,_,_,critical)
 		local func = eventsView[event]
 		if func then
-			func(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType,overhealing,criticalSwing)
+			return func(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType,overhealing,criticalSwing)
+		else
+			return
 		end
 		--dtime(ExRT.Debug,'ExCD2',event)
 	end
 	if ExRT.isClassic then
-		function module.main:COMBAT_LOG_EVENT_UNFILTERED()
-			--dtime()
-			local _,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,spellName,_,missType,overhealing,_,criticalSwing,_,_,critical = CombatLogGetCurrentEventInfo()
-
+		function module.main.COMBAT_LOG_EVENT_UNFILTERED(_,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,spellName,_,missType,overhealing,_,criticalSwing,_,_,critical)
 			local func = eventsView[event]
 			if func then
-				func(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellName,critical,missType,overhealing,criticalSwing)
+				return func(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellName,critical,missType,overhealing,criticalSwing)
+			else
+				return
 			end
-			--dtime(ExRT.Debug,'ExCD2',event)
 		end
 	end
 
-	function module.main:SPELL_AURA_APPLIED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_AURA_APPLIED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if not sourceName then
 			return
 		end
@@ -4622,7 +4728,7 @@ do
 		end
 	end
 
-	function module.main:SPELL_AURA_APPLIED_DOSE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,stack)
+	function module.main.SPELL_AURA_APPLIED_DOSE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,stack)
 		if not sourceName then
 			return
 		elseif spellID == 187881 and session_gGUIDs[sourceName][335897] then
@@ -4635,7 +4741,7 @@ do
 		end
 	end
 
-	function module.main:SPELL_AURA_REMOVED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_AURA_REMOVED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if not sourceName then
 			return
 		end
@@ -4647,16 +4753,38 @@ do
 			local CDspellID = modifData[1]
 			if type(CDspellID) ~= "table" then
 				local line = CDList[sourceName][CDspellID]
-				if line and (GetTime() - line.lastUse - line.duration) > -0.5 then
-					line:ChangeCD(modifData[2],true)
+				if line and abs(GetTime() - line.lastUse - line.duration) < 0.5 then
+					line:ModCD(modifData[2],true)
 					forceUpdateAllData = true
 					forceSortAllData = true
 				end
 			else
 				if session_gGUIDs[sourceName][ CDspellID[2] ] then
 					local line = CDList[sourceName][ CDspellID[1] ]
-					if line and (GetTime() - line.lastUse - line.duration) > -0.5 then
-						line:ChangeCD(modifData[2],true)
+					if line and abs(GetTime() - line.lastUse - line.duration) < 0.5 then
+						line:ModCD(modifData[2],true)
+						forceUpdateAllData = true
+						forceSortAllData = true
+					end
+				end
+			end
+		end
+
+		local modifData = spell_reduceCdByAuraFadeBefore[spellID]
+		if modifData then
+			local CDspellID = modifData[1]
+			if type(CDspellID) ~= "table" then
+				local line = CDList[sourceName][CDspellID]
+				if line and abs(GetTime() - line.lastUse - line.duration) > 0.5 then
+					line:ModCD(modifData[2],true)
+					forceUpdateAllData = true
+					forceSortAllData = true
+				end
+			else
+				if session_gGUIDs[sourceName][ CDspellID[2] ] then
+					local line = CDList[sourceName][ CDspellID[1] ]
+					if line and abs(GetTime() - line.lastUse - line.duration) > 0.5 then
+						line:ModCD(modifData[2],true)
 						forceUpdateAllData = true
 						forceSortAllData = true
 					end
@@ -4750,7 +4878,7 @@ do
 		elseif spellID == 195181 and session_gGUIDs[sourceName][334525] then	--Bone Shield
 			local line = CDList[sourceName][49028]
 			if line then
-				line:ReduceCD(3,true)
+				line:ReduceCD(5,true)
 				forceUpdateAllData = true
 				forceSortAllData = true
 			end
@@ -4777,7 +4905,7 @@ do
 			SortAllData()
 		end
 	end
-	function module.main:SPELL_AURA_REMOVED_DOSE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_AURA_REMOVED_DOSE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if spellID == 195181 and session_gGUIDs[sourceName][334525] then	--Bone Shield
 			local line = CDList[sourceName][49028]
 			if line then
@@ -4787,7 +4915,7 @@ do
 	end
 
 	local isSpellDuplicateDisabled = false
-	function module.main:SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if not sourceName then
 			return
 		end
@@ -4941,7 +5069,7 @@ do
 					end
 					]]
 					isSpellDuplicateDisabled = true
-					module.main:SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,sameSpellID)
+					module.main.SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,sameSpellID)
 					isSpellDuplicateDisabled = false
 				end
 			end
@@ -5013,7 +5141,7 @@ do
 			SortAllData()
 		end
 	end
-	function module.main:SPELL_DISPEL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
+	function module.main.SPELL_DISPEL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
 		if spell_dispellsList[spellID] and sourceName then
 			_db.spell_dispellsFix[ sourceName ] = true
 		end
@@ -5028,7 +5156,7 @@ do
 		end
 	end
 
-	function module.main:SPELL_SUMMON(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_SUMMON(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if sourceName and spellID == 192058 then
 			CapacitorMain[destGUID] = sourceName
 		end 
@@ -5072,7 +5200,7 @@ do
 	local spell338741_var = {}
 	local spell335229_var = {}
 	local spell155148_var1,spell155148_var2 = nil
-	function module.main:SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overkill)
+	function module.main.SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overkill)
 		if destGUID and isWarlock[destGUID] and destName and session_gGUIDs[destName][339272] then
 			local maxHP = UnitHealthMax(destName)
 			if maxHP ~= 0 and ((amount / maxHP) > 0.05) then
@@ -5200,7 +5328,7 @@ do
 		elseif spellID == 107428 and critical and session_gGUIDs[sourceName][337481] then
 			local line = CDList[sourceName][113656]
 			if line then
-				line:ReduceCD(2.5)
+				line:ReduceCD(5)
 			end
 		elseif spellID == 188389 and critical and session_gGUIDs[sourceName][336734] then
 			local line = CDList[sourceName][192249]
@@ -5238,8 +5366,8 @@ do
 			end
 		end
 	end
-	function module.main:SWING_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,amount,_,_,_,critical)
-		return module.main:SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,6603,critical,amount)
+	function module.main.SWING_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,amount,_,_,_,critical)
+		return module.main.SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,6603,critical,amount)
 	end
 
 	local spellHeal_trackedSpells = {
@@ -5260,7 +5388,7 @@ do
 	}
 	local spell207778_var = {0,0}
 	local spell337295_var = {0,0}
-	function module.main:SPELL_HEAL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overhealing)
+	function module.main.SPELL_HEAL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overhealing)
 		if not spellHeal_trackedSpells[spellID] or not sourceName then
 			return
 		elseif spellID == 207778 and session_gGUIDs[sourceName][207778] then
@@ -5331,7 +5459,7 @@ do
 	local spellMiss_trackedSpells_Register = {
 		[5277] = true,
 	}
-	function module.main:SPELL_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType)
+	function module.main.SPELL_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType)
 		if destGUID and isRogue[destGUID] and destName and session_gGUIDs[destName][341535] and missType == "DODGE" then
 			local line = CDList[destName][5277]
 			if line then
@@ -5344,8 +5472,8 @@ do
 			avengershield_var[destGUID] = GetTime()
 		end
 	end
-	function module.main:SWING_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType)
-		module.main:SPELL_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,6603,critical,spellID)
+	function module.main.SWING_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,missType)
+		module.main.SPELL_MISSED(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,6603,critical,spellID)
 	end
 
 	local spellKick_trackedSpells_Register = {
@@ -5355,7 +5483,7 @@ do
 		[61336] = true,
 		[106898] = true,
 	}
-	function module.main:SPELL_INTERRUPT(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
+	function module.main.SPELL_INTERRUPT(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
 		if sourceGUID and isRogue[sourceGUID] and sourceName and session_gGUIDs[sourceName][341535] and spellID == 1766 then
 			local line = CDList[sourceName][31224]
 			if line then
@@ -5392,7 +5520,7 @@ do
 	local spellEnergy_trackedSpells_Register = {
 		[121471] = true,
 	}
-	function module.main:SPELL_ENERGIZE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,amount)
+	function module.main.SPELL_ENERGIZE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,amount)
 		if destGUID and isRogue[destGUID] and destName and session_gGUIDs[sourceName][341559] and spellID == 196911 then
 			local line = CDList[destName][121471]
 			if line then
@@ -9797,6 +9925,8 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 		columnFrame.IsColumnEnabled = false
 	end
 
+	columnFrame:SetFrameStrata("MEDIUM")
+
 	local frameAlpha = (not currColOpt.frameGeneral and currColOpt.frameAlpha) or (currColOpt.frameGeneral and generalOpt.frameAlpha) or defOpt.frameAlpha
 	columnFrame:SetAlpha(frameAlpha/100) 
 
@@ -10630,7 +10760,7 @@ module.db.AllSpells = {
 	{278350,"WARLOCK",		3,	nil,			{278350,20,	0},	nil,			nil,			},	--Vile Taint
 	{132409,"WARLOCK,KICK",		3,	nil,			{132409,24,	0},	nil,			{132409,24,	0},	},	--Kick with Grimoire
 	
-	{328774,"WARLOCK,PVP",		3,	{328774,45,	0},	nil,			nil,			nil,			},	--Amplify Curse
+	{328774,"WARLOCK,PVP",		3,	{328774,30,	0},	nil,			nil,			nil,			},	--Amplify Curse
 	{199954,"WARLOCK,PVP",		3,	{199954,45,	10},	nil,			nil,			nil,			},	--Bane of Fragility
 	{200546,"WARLOCK,PVP",		3,	nil,			nil,			nil,			{200546,45,	12},	},	--Bane of Havoc
 	{234877,"WARLOCK,PVP",		3,	nil,			{234877,30,	0},	nil,			nil,			},	--Bane of Shadows
@@ -10731,7 +10861,7 @@ module.db.AllSpells = {
 	{197721,"DRUID,HEAL",		3,	nil,			nil,			nil,			nil,			{197721,90,	8},	},	--Flourish
 	{205636,"DRUID,UTIL",		3,	nil,			{205636,60,	10},	nil,			nil,			nil,			},	--Force of Nature
 	{202770,"DRUID",		3,	nil,			{202770,60,	8},	nil,			nil,			nil,			},	--Fury of Elune
-	{319454,"DRUID",		3,	{319454,300,	45},	nil,			nil,			nil,			nil,			},	--Heart of the Wild
+	{319454,"DRUID",		3,	{108293,300,	45},	nil,			nil,			nil,			nil,			},	--Heart of the Wild
 	{102560,"DRUID,DPS",		3,	nil,			{102560,180,	30},	nil,			nil,			nil,			},	--Incarnation: Chosen of Elune
 	{102558,"DRUID,DEFTANK",	3,	nil,			nil,			nil,			{102558,180,	30},	nil,			},	--Incarnation: Guardian of Ursoc
 	{102543,"DRUID,DPS",		3,	nil,			nil,			{102543,180,	30},	nil,			nil,			},	--Incarnation: King of the Jungle
@@ -10908,14 +11038,14 @@ module.db.AllSpells = {
 	{326434,"COVENANTS,DRUID",	3,	{326434,0,	0},	},
 	{306830,"COVENANTS,DEMONHUNTER",3,	{306830,60,	2},	},
 	{312202,"COVENANTS,DEATHKNIGHT",3,	{312202,60,	0},	},
-	{324143,"COVENANTS,WARRIOR",	3,	{324143,180,	20},	},
+	{324143,"COVENANTS,WARRIOR",	3,	{324143,120,	15},	},
 	{325289,"COVENANTS,WARLOCK",	3,	{325289,45,	0},	},
 	{326059,"COVENANTS,SHAMAN",	3,	{326059,45,	0},	},
 	{328547,"COVENANTS,ROGUE",	3,	{328547,30,	0},	},
 	{324724,"COVENANTS,PRIEST",	3,	{324724,60,	15},	},
 	{328204,"COVENANTS,PALADIN",	3,	{328204,30,	0},	},
 	{325216,"COVENANTS,MONK",	3,	{325216,60,	10},	},
-	{324220,"COVENANTS,MAGE",	3,	{324220,180,	20},	},
+	{324220,"COVENANTS,MAGE",	3,	{324220,180,	25},	},
 	{325028,"COVENANTS,HUNTER",	3,	{325028,45,	0},	},
 	{325727,"COVENANTS,DRUID",	3,	{325727,25,	0},	},
 	{329554,"COVENANTS,DEMONHUNTER",3,	{329554,120,	30},	},
@@ -10935,7 +11065,7 @@ module.db.AllSpells = {
 	{317320,"COVENANTS,WARRIOR",	3,	{317320,0,	0},	},
 	{321792,"COVENANTS,WARLOCK",	3,	{321792,60,	0},	},
 	{320674,"COVENANTS,SHAMAN",	3,	{320674,90,	0},	},
-	{323654,"COVENANTS,ROGUE",	3,	{323654,90,	20},	},
+	{323654,"COVENANTS,ROGUE",	3,	{323654,90,	12},	},
 	{323673,"COVENANTS,PRIEST",	3,	{323673,45,	5},	},
 	{316958,"COVENANTS,PALADIN",	1,	{316958,240,	30},	},
 	{326860,"COVENANTS,MONK",	3,	{326860,180,	24},	},

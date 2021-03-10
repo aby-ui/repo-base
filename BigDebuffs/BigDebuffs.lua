@@ -1,5 +1,5 @@
---print("|cff00dfff[BigDebuffs-v4.9]|rԭ����|c00FF9900Curse:Jordon|r,��|c00FF9900NGA:������|r��7.23�շ����޸�,����|cff33ff99/bd|r����.")
---���뺺���޸ģ�NGA  @������  barristan@sina.com  http://bbs.ngacn.cc/nuke.php?func=ucp&uid=7350579
+--print("|cff00dfff[BigDebuffs-v4.9]|r原作者|c00FF9900Curse:Jordon|r,由|c00FF9900NGA:伊甸外|r于7.23日翻译修改,输入|cff33ff99/bd|r设置.")
+--翻译汉化修改：NGA  @伊甸外  barristan@sina.com  http://bbs.ngacn.cc/nuke.php?func=ucp&uid=7350579
 -- BigDebuffs by Jordon
 
 local addonName, addon = ...
@@ -32,13 +32,15 @@ local defaults = {
             interrupts = 55,
             roots = 40,
             warning = 30,
+            debuffs_offensive = 30,
             default = 30,
             special = 30,
             pve = 50,
             warningList = {
                 [212183] = true, -- Smoke Bomb
                 [81261] = true, -- Solar Beam
-                [233490] = true, -- Unstable Affliction
+                [316099] = true, -- Unstable Affliction
+                [342938] = true, -- Unstable Affliction
                 [34914] = true, -- Vampiric Touch
             },
             inRaid = {
@@ -80,6 +82,7 @@ local defaults = {
             buffs_defensive = true,
             buffs_offensive = true,
             buffs_other = true,
+            debuffs_offensive = true,
             roots = true,
             buffs_speed_boost = true,
         },
@@ -104,6 +107,7 @@ local defaults = {
             buffs_defensive = true,
             buffs_offensive = true,
             buffs_other = true,
+            debuffs_offensive = true,
             roots = true,
             buffs_speed_boost = true,
 		},
@@ -114,6 +118,7 @@ local defaults = {
             interrupts = 55,
             buffs_defensive = 50,
             buffs_offensive = 40,
+            debuffs_offensive = 35,
             buffs_other = 30,
             roots = 51,
             special = 19,
@@ -761,10 +766,12 @@ function BigDebuffs:OnEnable()
 
     InsertTestDebuff(8122, "Magic") -- Psychic Scream
     InsertTestDebuff(408, nil) -- Kidney Shot
+    InsertTestDebuff(1766, nil) -- Kick
 
     if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-        InsertTestDebuff(233490, "Magic") -- Unstable Affliction
-        InsertTestDebuff(114404, nil) -- Void Tendrils
+        InsertTestDebuff(51514, "Curse") -- Hex
+        InsertTestDebuff(316099, "Magic") -- Unstable Affliction
+        InsertTestDebuff(208086, nil) -- Colossus Smash
     end
 
     InsertTestDebuff(339, "Magic") -- Entangling Roots
@@ -1054,7 +1061,7 @@ function BigDebuffs:GetNameplatesPriority(id)
         if self.db.profile.spells[id].priority then return self.db.profile.spells[id].priority end
     end
 
-    if self.Spells[id].nounitFrames and
+    if self.Spells[id].nonameplates and
         (not self.db.profile.spells[id] or not self.db.profile.spells[id].nameplates)
     then
         return

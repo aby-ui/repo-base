@@ -738,11 +738,11 @@
 
 										self:SetTexts(TMW.L["UIPANEL_FONT_SHADOW"], TMW.L["UIPANEL_FONT_SHADOW_DESC"])
 										self:SetSetting("Shadow")
+										self:SetMode(self.MODE_ADJUSTING)
 										self:SetMinMaxValues(0, math.huge)
 										self:SetRange(3)
 										self:SetValueStep(0.1)
 										self:SetWheelStep(0.5)
-										self:SetMode(self.MODE_ADJUSTING)
 
 										self:SetTextFormatter(TMW.C.Formatter.PIXELS, TMW.C.Formatter.F_0)
 									</OnLoad>
@@ -817,10 +817,10 @@
 
 										self:SetTexts(TMW.L["UIPANEL_FONT_WIDTH"], TMW.L["UIPANEL_FONT_WIDTH_DESC"])
 										self:SetSetting("Width")
+										self:SetMode(self.MODE_ADJUSTING)
 										self:SetMinMaxValues(0, math.huge)
 										self:SetRange(100)
 										self:SetValueStep(1)
-										self:SetMode(self.MODE_ADJUSTING)
 
 										local formatter = TMW.C.Formatter:New(function(value)
 											if value == 0 then
@@ -846,10 +846,10 @@
 
 										self:SetTexts(TMW.L["UIPANEL_FONT_HEIGHT"], TMW.L["UIPANEL_FONT_HEIGHT_DESC"])
 										self:SetSetting("Height")
+										self:SetMode(self.MODE_ADJUSTING)
 										self:SetMinMaxValues(0, math.huge)
 										self:SetRange(100)
 										self:SetValueStep(1)
-										self:SetMode(self.MODE_ADJUSTING)
 
 										local formatter = TMW.C.Formatter:New(function(value)
 											if value == 0 then
@@ -966,7 +966,7 @@
 
 	<!--
 		A single text display in the icon editor.
-		Contains the editbox, the copy menu, and the rest to default button.
+		Contains the editbox, the copy menu, and the reset to default button.
 		
 		Height of this frame is adjusted based on the height of the editbox.
 		Height of TellMeWhen_TextDisplayOptions is adjusted based on heights of these frames.

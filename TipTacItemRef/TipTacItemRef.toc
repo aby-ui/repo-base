@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Version: 20.10.31
 ## Title: TipTacItemRef
 ## Author: Aezay (Earthen Ring EU)

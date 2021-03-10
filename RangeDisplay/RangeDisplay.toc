@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: RangeDisplay
 ## Author: mitch0
 ## Version: v4.9.5

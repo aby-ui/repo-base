@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (BfA)|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (BfA)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0아제로스 (격아)|r
@@ -27,7 +27,7 @@
 ## X-DBM-Mod-MinExpansion: 7
 ## X-Curse-Project-ID: 420275
 ## X-WoWI-ID: 25779
-## Version: r1-11-gfac10b0
+## Version: r2
 localization.en.lua
 localization.cn.lua
 localization.tw.lua

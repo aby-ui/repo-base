@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: HandyNotes_Legion R & T
 ## Version: 1.1
 ## Notes: Shows location of treasures and rares in Legion

@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 40
+local internalVersion = 44
 
 -- Lua APIs
 local insert = table.insert
@@ -584,9 +584,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             end
           elseif(arg.type == "tristatestring") then
             if(trigger["use_"..name] == false) then
-              test = "("..name.. "~=".. (number or string.format("%q", trigger[name] or "")) .. ")"
+              test = "("..name.. "~=".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
             elseif(trigger["use_"..name]) then
-              test = "("..name.. "==".. (number or string.format("%q", trigger[name] or "")) .. ")"
+              test = "("..name.. "==".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
             end
           elseif(arg.type == "multiselect") then
             if(trigger["use_"..name] == false) then -- multi selection
@@ -597,7 +597,11 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                   if not arg.test then
                     test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
                   else
-                    test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                    if arg.extraOption then
+                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]", trigger[name .. "_extraOption"] or 0).." or ";
+                    else
+                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                    end
                   end
                   any = true;
                 end
@@ -606,7 +610,16 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                 else
                   test = "(false";
                 end
-                test = test..")";
+                test = test..")"
+                if arg.inverse then
+                  if type(arg.inverse) == "boolean" then
+                    test = "not " .. test
+                  elseif type(arg.inverse) == "function" then
+                    if arg.inverse(trigger) then
+                      test = "not " .. test
+                    end
+                  end
+                end
               end
             elseif(trigger["use_"..name]) then -- single selection
               local value = trigger[name] and trigger[name].single;
@@ -637,6 +650,10 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               test = "("..name.."==[["..trigger[name].."]])";
             else
               test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
+            end
+          elseif(arg.type == "number") then
+            if number then
+              test = "("..name..(trigger[name.."_operator"] or "==").. number ..")";
             end
           else
             if(type(trigger[name]) == "table") then
@@ -1187,15 +1204,13 @@ function WeakAuras.IsPaused()
 end
 
 function Private.Pause()
-  --do return end
-  -- Forcibly hide all displays, and clear all trigger information (it will be restored on .Resume() due to forced events)
-  for id, region in pairs(regions) do
-    region.region:Collapse(); -- ticket 366
-  end
-
-  for id, cloneList in pairs(clones) do
-    for cloneId, clone in pairs(cloneList) do
-      clone:Collapse();
+  for id, states in pairs(triggerState) do
+    local changed
+    for triggernum in ipairs(states) do
+      changed = Private.SetAllStatesHidden(id, triggernum) or changed
+    end
+    if changed then
+      Private.UpdatedTriggerState(id)
     end
   end
 
@@ -1404,6 +1419,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local _, class = UnitClass("player")
   local inCombat = UnitAffectingCombat("player")
   local inEncounter = encounter_id ~= 0;
+  local alive = not UnitIsDeadOrGhost('player')
 
   if WeakAuras.IsClassic() then
     local raidID = UnitInRaid("player")
@@ -1457,11 +1473,11 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
       else
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1552,6 +1568,9 @@ loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
 loadFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
 loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+loadFrame:RegisterEvent("PLAYER_DEAD")
+loadFrame:RegisterEvent("PLAYER_ALIVE")
+loadFrame:RegisterEvent("PLAYER_UNGHOST")
 
 local unitLoadFrame = CreateFrame("FRAME");
 WeakAuras.unitLoadFrame = unitLoadFrame;
@@ -2894,7 +2913,6 @@ local function EnsureClone(id, cloneId)
   if not(clones[id][cloneId]) then
     local data = WeakAuras.GetData(id);
     WeakAuras.SetRegion(data, cloneId);
-    clones[id][cloneId].justCreated = true;
   end
   return clones[id][cloneId];
 end
@@ -4161,10 +4179,6 @@ local function ContainsPlaceHolders(textStr, symbolFunc)
     return false
   end
 
-  if textStr:find("\\n") then
-    return true
-  end
-
   local endPos = textStr:len();
   local state = 0
   local currentPos = 1
@@ -5214,6 +5228,41 @@ function WeakAuras.ParseNameCheck(name)
   return matches
 end
 
+function WeakAuras.ParseZoneCheck(input)
+  if not input then return end
+
+  local matcher = {
+    Check = function(self, zoneId, zonegroupId)
+      return self.zoneIds[zoneId] or self.zoneGroupIds[zonegroupId]
+    end,
+    AddId = function(self, input, start, last)
+      local id = tonumber(strtrim(input:sub(start, last)))
+      if id then
+        local prevChar = input:sub(start - 1, start - 1)
+        if prevChar == 'g' or prevChar == 'G' then
+          self.zoneGroupIds[id] = true
+        else
+          self.zoneIds[id] = true
+        end
+      end
+    end,
+    zoneIds = {},
+    zoneGroupIds = {}
+  }
+
+  local start = input:find('%d', 1)
+  local last = input:find('%D', start)
+  while (last) do
+    matcher:AddId(input, start, last - 1)
+    start = input:find('%d', last + 1)
+    last = input:find('%D', start)
+  end
+
+  last = #input
+  matcher:AddId(input, start, last)
+  return matcher
+end
+
 function WeakAuras.IsAuraLoaded(id)
   return Private.loaded[id]
 end
@@ -5228,4 +5277,24 @@ function Private.IconSources(data)
     values[i] = string.format(L["Trigger %i"], i)
   end
   return values
+end
+
+-- This should be used instead of string.format("...%q...", input)
+-- e.g. string.format("...%s...", Private.QuotedString(input))
+-- If the string is passed to loadstring.
+-- It escapes --, which loadstring would otherwise interpret as comment starts
+function Private.QuotedString(input)
+  local str = string.format("%q", input)
+  return (str:gsub("%-%-", "-\\-"))
+end
+
+-- Helper function to make the templates not care, how the generic triggers
+-- are categorized
+function WeakAuras.GetTriggerCategoryFor(triggerType)
+  local prototype = Private.event_prototypes[triggerType]
+  return prototype and prototype.type
+end
+
+function WeakAuras.UnitStagger(unit)
+  return UnitStagger(unit) or 0
 end

@@ -495,6 +495,8 @@ L["Heart Guardian"] = "心脏守卫"
 L["Heartsbane Runeweaver"] = "毒心织符者"
 L["Heartsbane Soulcharmer"] = "毒心诱魂者"
 L["Heartsbane Vinetwister"] = "毒心藤蔓扭曲者"
+--[[Translation missing --]]
+--[[ L["Heavin the Breaker"] = ""--]] 
 L["Heavy Scrapbot"] = "重装拳机"
 L["Helmouth Cliffs"] = "獄喉山崖"
 L["helpPlateDungeon"] = "自訂地城選項"
@@ -725,6 +727,8 @@ L["Naeno Megacrash"] = "耐诺·万坠"
 L["Necrotic"] = "壞死"
 --[[Translation missing --]]
 --[[ L["Nefarious Darkspeaker"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Nekthara the Mangler"] = ""--]] 
 L["Neltharion's Lair"] = "奈薩里奧巢穴"
 L["Neltharion's Lair Sublevel"] = "奈薩里奧巢穴"
 L["Netherspace"] = "虛空空間"
@@ -858,6 +862,8 @@ L["Redo"] = "重做"
 L["Refreshment Vendor"] = "零食商贩"
 --[[Translation missing --]]
 --[[ L["Regal Mistdancer"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Rek the Hardened"] = ""--]] 
 L["Relentless"] = "無情"
 --[[Translation missing --]]
 --[[ L["Remnant of Fury"] = ""--]] 

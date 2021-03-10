@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 38
-RSConstants.CURRENT_LOOT_DB_VERSION = 50
+RSConstants.CURRENT_DB_VERSION = 39
+RSConstants.CURRENT_LOOT_DB_VERSION = 51
 
 ---============================================================================
 -- Special events
@@ -59,7 +59,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			scanInstances = true,
 			scanOnTaxi = true,
 			scanOnPetBattle = true,
-			scanWorldmapVignette = true,
+			scanWorldmapVignette = false,
 			filteredRares = {},
 			filteredContainers = {},
 			filteredZones = {},
@@ -150,7 +150,8 @@ RSConstants.PROFILE_DEFAULTS = {
 			numItems = 10,
 			numItemsPerRow = 10,
 			tooltipsCommands = true,
-			tooltipsCanImogit = false
+			tooltipsCanImogit = false,
+			covenantRequirement = true
 		}
 	}
 }
@@ -242,6 +243,14 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373 }
 RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154330, 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577, 158025, 158278 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
+
+---============================================================================
+-- ItemIDs
+---============================================================================
+
+RSConstants.ITEMS_REQUIRE_NECROLORD = { 181815, 182080 }
+RSConstants.ITEMS_REQUIRE_NIGHT_FAE = { 180730 }
+RSConstants.ITEMS_REQUIRE_VENTHYR = { 180581, 180461 }
 
 ---============================================================================
 -- Garrison cache

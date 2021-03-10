@@ -1,10 +1,10 @@
-## Interface: 90002
+## Interface: 90005
 ## Title: Angry Keystones
 ## Notes: Displays additional information for Mythic Keystone dungeons
 ## Author: Ermad
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
-## X-Packaged-Version: v0.19.8
+## X-Packaged-Version: v0.19.9
 
 Core.lua
 Locale.lua

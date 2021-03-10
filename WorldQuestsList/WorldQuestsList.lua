@@ -1,4 +1,4 @@
-local VERSION = 99
+local VERSION = 100
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -304,6 +304,9 @@ Updated german translation (by sunflow72)
 
 Added Tough Crowd helper
 Minor fixes
+
+9.0.5 update
+Added warmode bonus for shadowlands quests
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -2280,6 +2283,7 @@ do
 		[59803] = 14516, -- Impressing Zo'Sorg (For Honor)
 		[59658] = 14516, -- Impressing Zo'Sorg (Express Dominance)
 		[60231] = 14516, -- Impressing Zo'Sorg (State of Decay)
+		[59705] = 14737,
 	}
 	function WorldQuestList:IsQuestForAchievement(questID)
 		if questID and questToAchievement[questID] then
@@ -6234,7 +6238,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 						if DEBUG then
 							debugLine = debugLine .. "Currency: "..name..";|T"..texture..":0|t;"..numItems..";ID:"..currencyID.."|n"
 						end
-						if isWarModeOn and C_QuestLog.QuestHasWarModeBonus(questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) then
+						if isWarModeOn and C_QuestLog.QuestCanHaveWarModeBonus(questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) then
 							numItems = floor(numItems * WAR_MODE_BONUS + .5)
 						end
 						local text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(texture, numItems, name)
@@ -6425,6 +6429,15 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							if type(isAnimaItem)=='number' then
 								numItems = (numItems or 0) * isAnimaItem
 							end
+							if isWarModeOn and C_QuestLog.QuestCanHaveWarModeBonus(questID) then
+								local bonus = floor(numItems * (WAR_MODE_BONUS - 1) + .5)
+								--if isAnimaItem <= 35 then
+									bonus = bonus - bonus % 3
+								--else
+								--	bonus = bonus - bonus % 5
+								--end
+								numItems = numItems + bonus
+							end
 							if isValidLine ~= 0 then
 								totalAnima = totalAnima + (numItems or 0)
 							end
@@ -6526,7 +6539,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 					-- money
 					local money = GetQuestLogRewardMoney(questID)
 					if ( money > 0 ) then
-						if isWarModeOn and C_QuestLog.QuestHasWarModeBonus(questID) then
+						if isWarModeOn and C_QuestLog.QuestCanHaveWarModeBonus(questID) then
 							money = money * WAR_MODE_BONUS
 							money = money - money % 100
 						end
@@ -8625,32 +8638,35 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 	end
 end)
 
-LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnClick",function()
-	if isAfterSearch then
-		PVEFrame_ToggleFrame()
-		WQL_LFG_StartQuest(searchQuestID)
-	elseif autoCreateQuestID then
-		C_Timer.After(.5,function()
-			if not C_LFGList.GetActiveEntryInfo() and GroupFinderFrame:IsVisible() and LFGListFrame.EntryCreation:IsVisible() then
-				if autoCreateQuestID then
-					LFGListFrameSearchPanelTryWithQuestID.questID = autoCreateQuestID
-					LFGListFrameSearchPanelTryWithQuestID:Show()
+do
+	local button = LFGListSearchPanelScrollFrame.ScrollChild and LFGListSearchPanelScrollFrame.ScrollChild.StartGroupButton or LFGListSearchPanelScrollFrame.StartGroupButton
+	button:HookScript("OnClick",function()
+		if isAfterSearch then
+			PVEFrame_ToggleFrame()
+			WQL_LFG_StartQuest(searchQuestID)
+		elseif autoCreateQuestID then
+			C_Timer.After(.5,function()
+				if not C_LFGList.GetActiveEntryInfo() and GroupFinderFrame:IsVisible() and LFGListFrame.EntryCreation:IsVisible() then
+					if autoCreateQuestID then
+						LFGListFrameSearchPanelTryWithQuestID.questID = autoCreateQuestID
+						LFGListFrameSearchPanelTryWithQuestID:Show()
+					end
+					autoCreateQuestID = nil
 				end
-				autoCreateQuestID = nil
-			end
-		end)
-	end
-	isAfterSearch = nil
-	searchQuestID = nil
-end)
-LFGListSearchPanelScrollFrame.StartGroupButton:HookScript("OnHide",function()
-	if isAfterSearch then
-		C_Timer.After(0.1,function()
-			isAfterSearch = nil
-			searchQuestID = nil
-		end)
-	end
-end)
+			end)
+		end
+		isAfterSearch = nil
+		searchQuestID = nil
+	end)
+	button:HookScript("OnHide",function()
+		if isAfterSearch then
+			C_Timer.After(0.1,function()
+				isAfterSearch = nil
+				searchQuestID = nil
+			end)
+		end
+	end)
+end
 
 local objectiveTrackerButtons = {}
 WorldQuestList.LFG_objectiveTrackerButtons = objectiveTrackerButtons
@@ -9037,7 +9053,7 @@ do
 					local money = GetQuestLogRewardMoney(obj.questID)
 					if money > 0 then
 						iconAtlas = "Auctioneer"
-						amount = floor(money / 10000 * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and warModeBonus or 1))
+						amount = floor(money / 10000 * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and warModeBonus or 1))
 					end
 
 					-- currency
@@ -9047,14 +9063,14 @@ do
 							iconTexture = texture
 							ajustMask = true
 							ajustSize = 8
-							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							amount = floor(numItems * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
 							if not (currencyID == 1717 or currencyID == 1716) then
 								break
 							end
 						elseif currencyID == 1553 then	--azerite
 							--iconAtlas = "Islands-AzeriteChest"
 							iconAtlas = "AzeriteReady"
-							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							amount = floor(numItems * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
 							ajustSize = 5
 							iconTexture, ajustMask = nil
 							if WorldQuestList:IsAzeriteItemAtMaxLevel() then
@@ -9064,7 +9080,7 @@ do
 						elseif currencyID == 1220 or currencyID == 1560 then	--OR
 							iconAtlas = "legionmission-icon-currency"
 							ajustSize = 5
-							amount = floor(numItems * (warMode and C_QuestLog.QuestHasWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
+							amount = floor(numItems * (warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) and C_CurrencyInfo.DoesWarModeBonusApply(currencyID) and warModeBonus or 1))
 							iconTexture, ajustMask = nil
 							break
 						elseif WorldQuestList:IsFactionCurrency(currencyID or 0) then
@@ -9163,6 +9179,15 @@ do
 								ajustMask = true
 								ajustSize = 10
 								amount = numItems * CacheIsAnimaItem[itemID]
+								if warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) then
+									local bonus = floor(amount * (warModeBonus - 1) + .5)
+									--if CacheIsAnimaItem[itemID] <= 35 then
+										bonus = bonus - bonus % 3
+									--else
+									--	bonus = bonus - bonus % 5
+									--end
+									amount = amount + bonus
+								end
 							elseif select(2,GetItemInfoInstant(itemID)) == MISCELLANEOUS then
 								inspectScantip:SetQuestLogItem("reward", 1, obj.questID)
 								local isAnima
@@ -9185,6 +9210,15 @@ do
 									ajustMask = true
 									ajustSize = 10
 									amount = numItems * isAnima
+									if warMode and C_QuestLog.QuestCanHaveWarModeBonus(obj.questID) then
+										local bonus = floor(amount * (warModeBonus - 1) + .5)
+										--if isAnima <= 35 then
+											bonus = bonus - bonus % 3
+										--else
+										--	bonus = bonus - bonus % 5
+										--end
+										amount = amount + bonus
+									end
 								end
 								inspectScantip:ClearLines()
 							end

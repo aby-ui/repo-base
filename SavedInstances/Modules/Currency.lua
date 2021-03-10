@@ -36,7 +36,6 @@ local currency = {
   1149, -- Sightless Eye
   1155, -- Ancient Mana
   1166, -- Timewarped Badge
-  1191, -- Valor Points
 
   -- Legion
   1220, -- Order Resources
@@ -65,6 +64,7 @@ local currency = {
 
   -- Shadowlands
   1754, -- Argent Commendation
+  1191, -- Valor
   1602, -- Conquest
   1792, -- Honor
   1822, -- Renown

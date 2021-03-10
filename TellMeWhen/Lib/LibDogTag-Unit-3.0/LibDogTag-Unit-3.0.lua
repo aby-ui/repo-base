@@ -7,7 +7,7 @@ Description: A library to provide a markup syntax
 ]]
 
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20201129180239"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -108,6 +108,10 @@ setmetatable(UnitToLocale, {__index=function(self, unit)
 			local num = unit:match("^boss(%d)$")
 			self[unit] = L["Boss #%d"]:format(num)
 			return self[unit]
+		elseif unit:find("^nameplate%d$") then
+			local num = unit:match("^nameplate(%d)$")
+			self[unit] = L["Nameplate #%d"]:format(num)
+			return self[unit]
 		elseif unit:find("^partypet%d$") then
 			local num = unit:match("^partypet(%d)$")
 			self[unit] = UnitToLocale["party" .. num .. "pet"]
@@ -137,7 +141,7 @@ DogTag.IsLegitimateUnit = IsLegitimateUnit
 local IsNormalUnit = { player = true, target = true, focus = true, pet = true, playerpet = true, mouseover = true }
 local WACKY_UNITS = { targettarget = true, playertargettarget = true, targettargettarget = true, playertargettargettarget = true, pettarget = true, playerpettarget = true, pettargettarget = true, playerpettargettarget = true }
 DogTag.IsNormalUnit = IsNormalUnit
-for i = 1, 4 do
+for i = 1, MAX_PARTY_MEMBERS do
 	IsLegitimateUnit["party" .. i] = true
 	IsLegitimateUnit["partypet" .. i] = true
 	IsLegitimateUnit["party" .. i .. "pet"] = true
@@ -151,7 +155,7 @@ for i = 1, 4 do
 	WACKY_UNITS["partypet" .. i .. "targettarget"] = true
 	WACKY_UNITS["party" .. i .. "pettargettarget"] = true
 end
-for i = 1, 40 do
+for i = 1, MAX_RAID_MEMBERS do
 	IsLegitimateUnit["raid" .. i] = true
 	IsNormalUnit["raid" .. i] = true
 	IsLegitimateUnit["raidpet" .. i] = true
@@ -161,6 +165,14 @@ for i = 1, 40 do
 	WACKY_UNITS["raid" .. i .. "pet"] = true
 	WACKY_UNITS["raidpet" .. i .. "target"] = true
 	WACKY_UNITS["raid" .. i .. "pettarget"] = true
+end
+for i = 1, 40 do
+	-- There is no const for max nameplate units,
+	-- but it currently appears to be 40 based on in-game testing
+	-- (i.e. "pull everything in stockades")
+	-- (at some point in the past it used to be 30).
+	IsLegitimateUnit["nameplate" .. i] = true
+	IsNormalUnit["nameplate" .. i] = true
 end
 for i = 1, MAX_BOSS_FRAMES do
 	IsLegitimateUnit["boss" .. i] = true
@@ -459,6 +471,16 @@ DogTag:AddEventHandler("Unit", "UNIT_TARGET", function(event, unit)
 end)
 
 DogTag:AddEventHandler("Unit", "UNIT_TARGETABLE_CHANGED", function(event, unit)
+	refreshGUID(unit)
+	DogTag:FireEvent("UnitChanged", unit)
+end)
+
+DogTag:AddEventHandler("Unit", "NAME_PLATE_UNIT_ADDED", function(event, unit)
+	refreshGUID(unit)
+	DogTag:FireEvent("UnitChanged", unit)
+end)
+
+DogTag:AddEventHandler("Unit", "NAME_PLATE_UNIT_REMOVED", function(event, unit)
 	refreshGUID(unit)
 	DogTag:FireEvent("UnitChanged", unit)
 end)

@@ -274,9 +274,14 @@
 	local SPELLID_KYRIAN_DRUID_HEAL = 327149
 	local SPELLID_KYRIAN_DRUID_TANK = 327037
 
-	local SPELLID_BARGAST_DEBUFF = 334695
+	local SPELLID_SANGUINE_HEAL = 226510
+
+	local SPELLID_BARGAST_DEBUFF = 334695 --REMOVE ON 10.0
 	local bargastBuffs = {}
-	
+
+	local SPELLID_NECROMANCER_CHEAT_DEATH = 327676 --REMOVE ON 10.0
+	local necro_cheat_deaths = {}
+
 	--> spells with special treatment
 	local special_damage_spells = {
 		[SPELLID_SHAMAN_SLT] = true, --> Spirit Link Toten
@@ -834,41 +839,42 @@
 			if (not t) then
 				t = _current_combat:CreateLastEventsTable (alvo_name)
 			end
-			
-			local i = t.n
-			
-			local this_event = t [i]
-			this_event [1] = true --> true if this is a damage || false for healing
-			this_event [2] = spellid --> spellid || false if this is a battle ress line
-			this_event [3] = amount --> amount of damage or healing
-			this_event [4] = time --> parser time
 
-			--> current unit heal
-			if (arena_enemies[alvo_name]) then
-				--this is an arena enemy, get the heal with the unit Id
-				this_event [5] = _UnitHealth(_detalhes.arena_enemies[alvo_name]) 
-			else
-				this_event [5] = _UnitHealth(alvo_name)
-			end
+			if (not necro_cheat_deaths[alvo_serial]) then --remove on 10.0
+				local i = t.n
+				
+				local this_event = t [i]
+				this_event [1] = true --> true if this is a damage || false for healing
+				this_event [2] = spellid --> spellid || false if this is a battle ress line
+				this_event [3] = amount --> amount of damage or healing
+				this_event [4] = time --> parser time
 
-			this_event [6] = who_name --> source name
-			this_event [7] = absorbed
-			this_event [8] = spelltype or school
-			this_event [9] = false
-			this_event [10] = overkill
-			
-			i = i + 1
-			
-			if (i == _death_event_amt+1) then
-				t.n = 1
-			else
-				t.n = i
+				--> current unit heal
+				if (arena_enemies[alvo_name]) then
+					--this is an arena enemy, get the heal with the unit Id
+					this_event [5] = _UnitHealth(_detalhes.arena_enemies[alvo_name]) 
+				else
+					this_event [5] = _UnitHealth(alvo_name)
+				end
+
+				this_event [6] = who_name --> source name
+				this_event [7] = absorbed
+				this_event [8] = spelltype or school
+				this_event [9] = false
+				this_event [10] = overkill
+				
+				i = i + 1
+				
+				if (i == _death_event_amt+1) then
+					t.n = 1
+				else
+					t.n = i
+				end
 			end
-			
 		end
 		
 	------------------------------------------------------------------------------------------------
-	--> time start 
+	--> time start
 
 		if (not este_jogador.dps_started) then
 		
@@ -1597,7 +1603,7 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------
-	--> HEALING 	serach key: ~heal											|
+	--> HEALING 	serach key: ~healing											|
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -1830,10 +1836,16 @@
 		
 		este_jogador.last_event = _tempo
 
+
 	------------------------------------------------------------------------------------------------
 	--> an enemy healing enemy or an player actor healing a enemy
 
-		if (_bit_band (alvo_flags, REACTION_FRIENDLY) == 0 and not _detalhes.is_in_arena and not _detalhes.is_in_battleground) then
+		if (spellid == SPELLID_SANGUINE_HEAL) then --sanguine ichor (heal enemies)
+			who_name = GetSpellInfo(SPELLID_SANGUINE_HEAL)
+			who_flags = 0x518
+			este_jogador.grupo = true
+
+		elseif (_bit_band (alvo_flags, REACTION_FRIENDLY) == 0 and not _detalhes.is_in_arena and not _detalhes.is_in_battleground) then
 			if (not este_jogador.heal_enemy [spellid]) then 
 				este_jogador.heal_enemy [spellid] = cura_efetiva
 			else
@@ -1854,32 +1866,33 @@
 		end
 		
 		if (jogador_alvo.grupo) then
-		
-			local t = last_events_cache [alvo_name]
-			
-			if (not t) then
-				t = _current_combat:CreateLastEventsTable (alvo_name)
-			end
-			
-			local i = t.n
-			
-			local this_event = t [i]
-			
-			this_event [1] = false --> true if this is a damage || false for healing
-			this_event [2] = spellid --> spellid || false if this is a battle ress line
-			this_event [3] = amount --> amount of damage or healing
-			this_event [4] = time --> parser time
-			this_event [5] = _UnitHealth (alvo_name) --> current unit heal
-			this_event [6] = who_name --> source name
-			this_event [7] = is_shield
-			this_event [8] = absorbed
-			
-			i = i + 1
-			
-			if (i == _death_event_amt+1) then
-				t.n = 1
-			else
-				t.n = i
+			if (not necro_cheat_deaths[alvo_serial]) then --remove on 10.0
+				local t = last_events_cache [alvo_name]
+				
+				if (not t) then
+					t = _current_combat:CreateLastEventsTable (alvo_name)
+				end
+				
+				local i = t.n
+				
+				local this_event = t [i]
+				
+				this_event [1] = false --> true if this is a damage || false for healing
+				this_event [2] = spellid --> spellid || false if this is a battle ress line
+				this_event [3] = amount --> amount of damage or healing
+				this_event [4] = time --> parser time
+				this_event [5] = _UnitHealth (alvo_name) --> current unit heal
+				this_event [6] = who_name --> source name
+				this_event [7] = is_shield
+				this_event [8] = absorbed
+				
+				i = i + 1
+				
+				if (i == _death_event_amt+1) then
+					t.n = 1
+				else
+					t.n = i
+				end
 			end
 			
 		end
@@ -2117,7 +2130,9 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 				elseif (spellid == SPELLID_MONK_GUARD) then
 					--> BfA monk talent
 					monk_guard_talent [who_serial] = amount
-					
+				
+				elseif (spellid == SPELLID_NECROMANCER_CHEAT_DEATH) then
+					necro_cheat_deaths[who_serial] = true
 				end
 
 				if (_recording_buffs_and_debuffs) then
@@ -2507,6 +2522,10 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 						local damage_prevented = monk_guard_talent [who_serial] - (amount or 0)
 						parser:heal (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spellschool, damage_prevented, _math_ceil (amount or 0), 0, 0, true)
 					end
+				
+				elseif (spellid == SPELLID_NECROMANCER_CHEAT_DEATH) then --remove on 10.0
+					necro_cheat_deaths[who_serial] = nil
+
 				end
 
 				--druid kyrian empower bounds (9.0 kyrian covenant - probably remove on 10.0)
@@ -2706,40 +2725,42 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 				
 				--death log
 					--> record death log
-					local t = last_events_cache [alvo_name]
-					
-					if (not t) then
-						t = _current_combat:CreateLastEventsTable (alvo_name)
+					if (not necro_cheat_deaths[alvo_serial]) then --remove on 10.0
+						local t = last_events_cache [alvo_name]
+						
+						if (not t) then
+							t = _current_combat:CreateLastEventsTable (alvo_name)
+						end
+						
+						local i = t.n
+						
+						local this_event = t [i]
+						
+						if (not this_event) then
+							return print ("Parser Event Error -> Set to 16 DeathLogs and /reload", i, _death_event_amt)
+						end
+						
+						--print ("DebuffIN", ">", "Added to the DeathLog")
+						
+						this_event [1] = 4 --> 4 = debuff aplication
+						this_event [2] = spellid --> spellid
+						this_event [3] = 1
+						this_event [4] = time --> parser time
+						this_event [5] = _UnitHealth (alvo_name) --> current unit heal
+						this_event [6] = who_name --> source name
+						this_event [7] = false
+						this_event [8] = false
+						this_event [9] = false
+						this_event [10] = false
+						
+						i = i + 1
+						
+						if (i == _death_event_amt+1) then
+							t.n = 1
+						else
+							t.n = i
+						end				
 					end
-					
-					local i = t.n
-					
-					local this_event = t [i]
-					
-					if (not this_event) then
-						return print ("Parser Event Error -> Set to 16 DeathLogs and /reload", i, _death_event_amt)
-					end
-					
-					--print ("DebuffIN", ">", "Added to the DeathLog")
-					
-					this_event [1] = 4 --> 4 = debuff aplication
-					this_event [2] = spellid --> spellid
-					this_event [3] = 1
-					this_event [4] = time --> parser time
-					this_event [5] = _UnitHealth (alvo_name) --> current unit heal
-					this_event [6] = who_name --> source name
-					this_event [7] = false
-					this_event [8] = false
-					this_event [9] = false
-					this_event [10] = false
-					
-					i = i + 1
-					
-					if (i == _death_event_amt+1) then
-						t.n = 1
-					else
-						t.n = i
-					end				
 				
 			elseif (in_out == "DEBUFF_UPTIME_REFRESH") then
 				if (este_alvo.actived_at and este_alvo.actived) then
@@ -2753,9 +2774,9 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 					
 					--local name, texture, count, debuffType, duration, expirationTime, caster, canStealOrPurge, nameplateShowPersonal, spellId = UnitAura (alvo_name, spellname, nil, "HARMFUL")
 					--UnitAura ("Kastfall", "Gulp Frog Toxin", nil, "HARMFUL")
-					
-					--if (name) then
-						--> record death log
+
+					--> record death log
+					if (not necro_cheat_deaths[alvo_serial]) then --remove on 10.0
 						local t = last_events_cache [alvo_name]
 						
 						if (not t) then
@@ -2790,7 +2811,7 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 						else
 							t.n = i
 						end
-					--end
+					end
 				
 			elseif (in_out == "DEBUFF_UPTIME_OUT") then
 				if (este_alvo.actived_at and este_alvo.actived) then
@@ -3048,9 +3069,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	
 	------------------------------------------------------------------------------------------------
 	--> early checks and fixes
-
-		--print (who_name, alvo_name, spellid, spellname, spelltype, amount, powertype)
-	
 		if (not who_name) then
 			who_name = "[*] "..spellname
 		elseif (not alvo_name) then
@@ -3269,13 +3287,17 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		return spell_misc_func (spell, alvo_serial, alvo_name, alvo_flags, who_name, token, "BUFF_OR_DEBUFF", "COOLDOWN")
 	end
-
 	
 	--serach key: ~interrupts
 	function parser:interrupt (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)
 
 	------------------------------------------------------------------------------------------------
 	--> early checks and fixes
+
+		--quake affix from mythic+
+		if (spellid == 240448) then
+			return
+		end
 
 		if (not who_name) then
 			who_name = "[*] "..spellname
@@ -4650,6 +4672,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		_table_wipe (_detalhes.encounter_table)
 		_table_wipe (bargastBuffs) --remove on 10.0
+		_table_wipe (necro_cheat_deaths) --remove on 10.0
 		
 		return true
 	end
@@ -5516,6 +5539,16 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				auto_regen_cache [name] = auto_regen_power_specs [_detalhes.cached_specs [_UnitGUID ("player")]]
 			end
 		end
+
+		local orderNames = {}
+		for playerName in pairs(roster) do
+			orderNames[#orderNames+1] = playerName
+		end
+		table.sort(orderNames, function(name1, name2)
+			return string.len(name1) > string.len(name2)
+		end)
+		_detalhes.tabela_vigente.raid_roster_indexed = orderNames
+
 		
 		if (_detalhes.iam_a_tank) then
 			tanks_members_cache [_UnitGUID ("player")] = true
