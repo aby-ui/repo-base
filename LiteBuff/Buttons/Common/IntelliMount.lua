@@ -144,7 +144,7 @@ local function UpdateMountsData()
                     mountsData[spellId].groundOnly = 1
                 end
             end
-            if mountID == 1304 or mountID == 1442 then table.insert(maw, (isFavorite and -1 or 1) * mountID) end --渊誓猎魂犬 1304 --回廊潜行猎犬 1442
+            if mountID == 1304 or mountID == 1442 or mountID == 1441 then table.insert(maw, (isFavorite and -1 or 1) * mountID) end --渊誓猎魂犬 1304 --回廊潜行猎犬 1442 --被缚的影犬 1441
         end
     end
     --tricky if any < 0, remove x>0 and revert x<0, else all > 0, no proc
