@@ -300,6 +300,7 @@ local function GSUB_Time(preText,t,msg,newlinesym)
 	local anyType
 	local now = GetTime()
 	local waEventID
+	local addGlow
 	
 	local optNow
 	while opts do
@@ -335,6 +336,10 @@ local function GSUB_Time(preText,t,msg,newlinesym)
 					anyType = 2
 				end			
 			end
+		elseif optNow == "glow" then
+			addGlow = 1
+		elseif optNow == "glowall" then
+			addGlow = 2
 		else
 			local prefix, arg1 = strsplit(":", optNow, 2)
 			if prefix == "wa" then
@@ -380,7 +385,7 @@ local function GSUB_Time(preText,t,msg,newlinesym)
 			return preText.."|cff555555"..(prefixText or "")..msg:gsub("|c........",""):gsub("|r","").."|r"..newlinesym
 		end
 	else
-		if time <= 5 and msg:find(ExRT.SDB.charName) then
+		if time <= 5 and ((msg:find(ExRT.SDB.charName) and (VExRT.Note.TimerGlow or addGlow == 1)) or (addGlow == 2)) then
 			module.db.glowStatus = true
 		end
 		return preText.."|cff00ff00"..(prefixText or "")..format("%d:%02d ",floor(time/60),time % 60)..msg:gsub("|c........",""):gsub("|r",""):gsub(ExRT.SDB.charName,"|r|cffff0000>%1<|r|cff00ff00").."|r"..newlinesym
@@ -2425,7 +2430,7 @@ do
 	local SAA = module.db.encounter_counters.SAA
 	local SAR = module.db.encounter_counters.SAR
 	local function AddCounter(table,tableName,spellID)
-		table[spellID] = SCC[spellID] + 1
+		table[spellID] = table[spellID] + 1
 
 		local key_w_counter = tableName..":"..spellID..":"..table[spellID]
 		local key_wo_counter = tableName..":"..spellID..":"..0

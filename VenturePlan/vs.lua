@@ -2,7 +2,7 @@ local _, T = ...
 local SpellInfo = T.KnownSpells
 
 local band, bor, floor = bit.band, bit.bor, math.floor
-local f32_ne, f32_perc, f32_pim do
+local f32_ne, f32_perc, f32_pim, f32_fpim do
 	local frexp, lt = math.frexp, {
 		[-80]=-0xcccccd*2^-24,
 		[-60]=-0x99999a*2^-24,
@@ -45,6 +45,9 @@ local f32_ne, f32_perc, f32_pim do
 	function f32_pim(p, i)
 		i = f32_ne(i * (lt[p] or f32_ne(p/100)))
 		return i - i%1
+	end
+	function f32_fpim(p, i)
+		return f32_ne(i * (lt[p] or f32_ne(p/100)))
 	end
 end
 local f32_sr do
@@ -123,7 +126,7 @@ end
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
 local TP = {} do
-	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
+	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [1213]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -481,11 +484,11 @@ function mu:damage(sourceIndex, targetIndex, baseDamage, causeTag, causeSID, eDN
 	end
 	local basepoints = floor(baseDamage) + su.plusDamageDealt
 	local points = icast(f32_ne(basepoints * su_mdd)) + tu.plusDamageTaken
-	points = icast(f32_ne(points * tu_mdt))
+	points = icast(f32_ne(f32_ne(points) * tu_mdt))
 	local pointsR, points2 = 0, points
 	if su_mdd ~= su_hmdd or tu_mdt ~= tu_hmdt then
 		points2 = icast(f32_ne(basepoints * su_hmdd)) + tu.plusDamageTaken
-		points2 = icast(f32_ne(points2 * tu_hmdt))
+		points2 = icast(f32_ne(f32_ne(points2) * tu_hmdt))
 		if points > points2 then
 			points, points2, pointsR = points2, points, points-points2
 		elseif points < points2 then
@@ -740,7 +743,7 @@ function mu:aura(sourceIndex, targetIndex, targetSeq, ord, si, sid, eid)
 	local thornsp = thornsa and f32_pim(thornsa, tu.atk)
 	local hasDamage, hasHeal = si.damageATK or si.damagePerc, si.healATK or si.healPerc
 	local modHPP, modHPA = si.modMaxHP, si.modMaxHPATK
-	local pdd, pdt = pdda and (pdda*su.atk/100) or si.plusDamageDealtA, pdta and (pdta*su.atk/100) or si.plusDamageTakenA
+	local pdd, pdt = pdda and f32_fpim(pdda, su.atk) or si.plusDamageDealtA, pdta and f32_fpim(pdta, su.atk) or si.plusDamageTakenA
 	local ordt, ordf, fadeTurn = ord-100+targetSeq, ord-80, self.turn+duration
 	if mdd then
 		mu.modDamageDealt(self, sourceIndex, targetIndex, mdd, sid)
@@ -1145,6 +1148,9 @@ function VSI:Run(stopCB)
 		end
 		while not self.over do
 			self:Turn()
+			if stopCB and self.turn % 100 == 0 and not self.over and stopCB(self.prime or self) then
+				return true
+			end
 		end
 		if registerTraceResult(self, stopCB) then
 			return true
@@ -1367,6 +1373,9 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 		registerTraceResult(ii)
 	end
 	return ii, missingSpells
+end
+function VS:SetSpellInfo(t)
+	SpellInfo = t
 end
 
 

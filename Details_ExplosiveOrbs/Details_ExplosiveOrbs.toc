@@ -3,7 +3,7 @@
 ## Notes: Show how many explosive orbs players target and hit.
 ## RequiredDeps: Details
 ## Author: LiangYuxuan
-## Version: v9.0.6
+## Version: v9.0.7
 ## X-License: MIT
 ## X-Curse-Project-ID: 352367
 ## SavedVariablesPerCharacter: ExplosiveOrbsLog

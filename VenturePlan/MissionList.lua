@@ -155,7 +155,7 @@ local function ConfigureMission(me, mi, isAvailable, haveSpareCompanions, availA
 	local isMissionActive = not not (mi.completed or mi.timeLeftSeconds)
 	local veilShade = mi.timeLeftSeconds and 0.65 or 1
 	local showDoomRun = haveSpareCompanions and not isMissionActive and isSufficientAnima and not mi.hasTentativeGroup
-	local showTentative = not not mi.hasTentativeGroup
+	local showTentative = not not mi.hasTentativeGroup and not isMissionActive
 	local shiftView = showDoomRun or showTentative
 	ms.Veil:SetShown(isMissionActive)
 	ms.ProgressBar:SetShown(isMissionActive and not mi.isFakeStart)
@@ -213,6 +213,10 @@ local function cmpMissionInfo(a,b)
 	if ac ~= bc then
 		return ac
 	end
+	ac, bc = a.sortGroup, b.sortGroup
+	if ac ~= bc then
+		return ac and ac > (bc or -1)
+	end
 	ac, bc = a.offerEndTime, b.offerEndTime
 	if ac and bc and ac ~= bc then
 		return ac < bc
@@ -229,7 +233,7 @@ local function UpdateMissions()
 	local missions = C_Garrison.GetAvailableMissions(123) or {}
 	local inProgressMissions = C_Garrison.GetInProgressMissions(123)
 	local cMissions = C_Garrison.GetCompleteMissions(123)
-	local numFreeCompanions, numFreeCompanionsL = 0, 0 do
+	local numFreeCompanions, numFreeCompanionsL, haveRookies = 0, 0, false do
 		local ft = C_Garrison.GetFollowers(123)
 		EV("I_MARK_FALSESTART_FOLLOWERS", ft)
 		for i=1,#ft do
@@ -240,6 +244,7 @@ local function UpdateMissions()
 					numFreeCompanionsL = numFreeCompanionsL + 1
 				end
 			end
+			haveRookies = haveRookies or (fi.isCollected and not fi.isMaxLevel)
 		end
 	end
 	for i=1,#missions do
@@ -247,6 +252,17 @@ local function UpdateMissions()
 		local mid = m.missionID
 		if startedMissions[mid] and not m.timeLeftSeconds then
 			m.timeLeftSeconds, m.offerEndTime = m.durationSeconds
+		else
+			local rs = 0
+			for i=1, m.rewards and #m.rewards or 0 do
+				i = m.rewards[i]
+				if haveRookies and i.followerXP and rs < 1 then
+					rs = 1
+				elseif i.currencyID == 1828 and rs < 2 then
+					rs = 2
+				end
+			end
+			m.sortGroup = rs
 		end
 		m.hasTentativeGroup = U.MissionHasTentativeGroup(mid)
 	end
@@ -334,7 +350,6 @@ local function MissionComplete_Toast(_, mid, won, mi)
 	end
 	toast.Detail:SetText(mi and mi.name or C_Garrison.GetMissionName(mid))
 	toast.Icon:SetTexture("Interface/Icons/Temp")
-	toast.IconBorder:Hide()
 	for i=1, mi and mi.rewards and #mi.rewards or 0 do
 		local rew = mi.rewards[i]
 		if rew.icon then
@@ -343,8 +358,6 @@ local function MissionComplete_Toast(_, mid, won, mi)
 			toast.Icon:SetTexture(GetItemIcon(rew.itemID))
 		end
 		if rew.currencyID then
-			toast.IconBorder:SetAtlas("loottoast-itemborder-gold")
-			toast.IconBorder:Show()
 			local ci = C_CurrencyInfo.GetCurrencyContainerInfo(rew.currencyID, rew.quantity)
 			if ci then
 				toast.Icon:SetTexture(ci.icon)
@@ -359,7 +372,6 @@ local function MissionComplete_Toast(_, mid, won, mi)
 			break
 		elseif rew.itemID or rew.itemLink then
 			local r = select(3,GetItemInfo(rew.itemLink or rew.itemID)) or select(3,GetItemInfo(rew.itemID))
-			toast.IconBorder:Show()
 			if r and r > 1 then
 				toast.IconBorder:SetAtlas(
 					(r == 2) and "loottoast-itemborder-green"
@@ -367,10 +379,24 @@ local function MissionComplete_Toast(_, mid, won, mi)
 					or r == 4 and "loottoast-itemborder-purple"
 					or "loottoast-itemborder-orange"
 				)
-			else
-				toast.IconBorder:Hide()
 			end
 			break
+		end
+	end
+	local nct = 0
+	for i=1, mi.followerInfo and #mi.followerInfo or 0 do
+		local fi = mi.followerInfo[i]
+		if fi.newLevel then
+			nct = nct + 1
+			C_Timer.After(0.075*nct, function()
+				local toast = MissionPage:AcquireToast(true)
+				toast.Sheen:SetVertexColor(0, 0.55, 1)
+				toast.PreGlow:SetVertexColor(1, 0.90, 0.90)
+				toast.Outcome:SetText(UNIT_LEVEL_TEMPLATE:format(fi.newLevel))
+				toast.Detail:SetText(fi.name)
+				toast.Portrait:SetTexture(fi.portraitIconID)
+				PlaySound(167127, nil, false)
+			end)
 		end
 	end
 end

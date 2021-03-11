@@ -1093,6 +1093,10 @@ function module.options:Load()
 		end
 	end)
 
+	self.chkReadyCheckConsumablesOnlyCuadFlask = ELib:Check(self.tab.tabs[3],L.RaidCheckOnlyCauldron,VExRT.RaidCheck.DisableNotCauldronFlask):Point("TOPLEFT",self.chkReadyCheckConsumables,"BOTTOMLEFT",0,-5):OnClick(function(self) 
+		VExRT.RaidCheck.DisableNotCauldronFlask = self:GetChecked()
+	end)
+
 	if ExRT.isClassic then
 		self.tab.tabs[3].button:Hide()
 		self.tab.tabs[1].button:Hide()
@@ -2806,7 +2810,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	end
 	
 	function module.consumables:Enable()
-		self:RegisterEvent("READY_CHECK")
+		self:RegisterEvent("READY_CHECK","READY_CHECK_FINISHED")
 		self:Show()
 	end
 	function module.consumables:Disable()
@@ -2825,7 +2829,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 		local isWarlockInRaid
-		for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole in ExRT.F.IterateRoster, ExRT.F.GetRaidDiffMaxGroup() do
+		for _, name, _, class in ExRT.F.IterateRoster, ExRT.F.GetRaidDiffMaxGroup() do
 			if class == "WARLOCK" then
 				isWarlockInRaid = true
 				break
@@ -2897,7 +2901,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 		local flaskCount = GetItemCount(171276,false,false)
 		local flaskCanCount = GetItemCount(171280,false,false)
-		if not isFlask and ((flaskCount and flaskCount > 0) or (flaskCanCount and flaskCanCount > 0)) then
+		if not isFlask and ((flaskCount and flaskCount > 0 and not VExRT.RaidCheck.DisableNotCauldronFlask) or (flaskCanCount and flaskCanCount > 0)) then
 			if not InCombatLockdown() then
 				local itemID = (flaskCanCount and flaskCanCount > 0) and 171280 or 171276
 				local itemName = GetItemInfo(itemID)
@@ -2918,7 +2922,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 		self.buttons.flask.count:SetFormattedText("%d%s",flaskCount,flaskCanCount > 0 and "+|cff00ff00"..flaskCanCount or "")
 		if LCG then
-			if not isFlask and ((flaskCount and flaskCount > 0) or (flaskCanCount and flaskCanCount > 0)) then
+			if not isFlask and ((flaskCount and flaskCount > 0 and not VExRT.RaidCheck.DisableNotCauldronFlask) or (flaskCanCount and flaskCanCount > 0)) then
 				LCG.PixelGlow_Start(self.buttons.flask)
 			else
 				LCG.PixelGlow_Stop(self.buttons.flask)
@@ -3066,11 +3070,29 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 	end
 
-	module.consumables:SetScript("OnEvent",function(self,event,arg1)
+	function module.consumables:OnHide()
+		self:UnregisterEvent("UNIT_AURA")
+		self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+		if self.cancelDelay then
+			self.cancelDelay:Cancel()
+			self.cancelDelay = nil
+		end
+	end
+
+	module.consumables:SetScript("OnEvent",function(self,event,arg1,arg2)
 		if event == "READY_CHECK" then
 			self:Update()
 			self:RegisterEvent("UNIT_AURA")
 			self:RegisterEvent("UNIT_INVENTORY_CHANGED")
+			if self.cancelDelay then
+				self.cancelDelay:Cancel()
+			end
+			self.cancelDelay = C_Timer.NewTimer(arg2 or 40,function()
+				self:UnregisterEvent("UNIT_AURA")
+				self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+			end)
+		elseif event == "READY_CHECK_FINISHED" then
+			module.consumables:OnHide()
 		elseif event == "UNIT_AURA" then
 			if arg1 == "player" then
 				self:Update()
@@ -3085,8 +3107,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	end)
 
 	module.consumables:SetScript("OnHide",function(self)
-		self:UnregisterEvent("UNIT_AURA")
-		self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+		module.consumables:OnHide()
 	end)
 
 	module.consumables.Test = function()
@@ -3097,7 +3118,3 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	end
 	--/run GExRT.A.RaidCheck.consumables.Test()
 end
-
---[[
-spell 307157
-]]

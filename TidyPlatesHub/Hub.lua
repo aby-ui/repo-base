@@ -113,6 +113,7 @@ local function BuildHubPanel(panel)
 
 	-- Other
 	panel.TextShowLevel, F = CreateQuickCheckbutton(objectName.."TextShowLevel", "血条左上方固定显示等级", AlignmentColumn, F, 0, 2)
+    panel.TextShowPercent = CreateQuickCheckbutton(objectName.."TextShowPercent", "改为血量百分比", AlignmentColumn, F, 220, -13)
     panel.TextShowOnlyOnTargets, F = CreateQuickCheckbutton(objectName.."TextShowOnlyOnTargets", "血条上文字仅当前目标或鼠标指向时显示", AlignmentColumn, F, 0)
     panel.TextShowOnlyOnActive, F = CreateQuickCheckbutton(objectName.."TextShowOnlyOnActive", "血条上文字仅当单位在战斗或受伤时显示", AlignmentColumn, F, 0)
 

@@ -1,6 +1,6 @@
 ## Interface: 90005
 ## Title: Venture Plan
-## Version: 4.12a
+## Version: 4.13
 ## Notes: Interface improvements for Adventures.
 ## Notes-deDE: Schnittstellenverbesserungen für Abenteuer.
 ## Notes-esES: Mejoras de la interfaz para las aventuras.

@@ -158,6 +158,7 @@ SI.defaultDB = {
   -- weeklyMax: integer
   -- totalMax: integer
   -- season: integer
+  -- totalEarned: integer
   -- relatedItemCount: integer
 
   -- Quests:  key: QuestID  value:
@@ -2271,12 +2272,18 @@ hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
     end
     indicatortip:AddLine(format(CURRENCY_WEEKLY_CAP, "", CurrencyColor(ci.earnedThisWeek or 0, ci.weeklyMax), SI:formatNumber(ci.weeklyMax)))
   end
-  if ci.totalMax and ci.totalMax > 0 then
+  if ci.totalEarned and ci.totalEarned > 0 and ci.totalMax and ci.totalMax > 0 then
     if not spacer then
       indicatortip:AddLine(" ")
       spacer = true
     end
-    indicatortip:AddLine(format(CURRENCY_TOTAL_CAP, "", CurrencyColor(ci.amount or 0,ci.totalMax), SI:formatNumber(ci.totalMax)))
+    indicatortip:AddLine(format(CURRENCY_TOTAL_CAP, "", CurrencyColor(ci.totalEarned or 0, ci.totalMax), SI:formatNumber(ci.totalMax)))
+  elseif ci.totalMax and ci.totalMax > 0 then
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
+    indicatortip:AddLine(format(CURRENCY_TOTAL_CAP, "", CurrencyColor(ci.amount or 0, ci.totalMax), SI:formatNumber(ci.totalMax)))
   end
   if SI.specialCurrency[idx] and SI.specialCurrency[idx].relatedItem then
     if not spacer then
@@ -2464,7 +2471,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.7" then
+  if versionString == "9.0.7-1-g6b7ecf5" then
     versionString = "Dev"
   end
   --@end-debug@]==]

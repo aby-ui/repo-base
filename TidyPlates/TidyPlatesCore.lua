@@ -649,6 +649,20 @@ do
 		local healthRange = unit.healthmax + unit.absorbmax
 		visual.healthbar:SetMinMaxValues(0, healthRange)
 		visual.healthbar:SetValue(unit.health, unit.absorb)
+
+        if style.levelShowHealth then
+            visual.skullicon:Hide()
+            visual.level:Show()
+            local pt = unit.health / unit.healthmax * 100
+            if pt >= 100 then
+                visual.level:SetText("")
+            else
+                visual.level:SetText(format(unit.isBoss and "%.1f" or "%d", pt))
+                local r,g,b = 1,.82,0
+                if pt < 20 then r,g,b=0,1,0 end
+                visual.level:SetTextColor(r,g,b)
+            end
+        end
 	end
 
 
@@ -671,6 +685,7 @@ do
 
 	-- UpdateIndicator_Level:
 	function UpdateIndicator_Level()
+        if style.levelShowHealth then return end --abyui
         if not style.level.show then
             visual.level:Hide()
             visual.skullicon:Hide()

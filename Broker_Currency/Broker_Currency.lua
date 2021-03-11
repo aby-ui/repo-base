@@ -458,8 +458,8 @@ do
 --							concatList[#concatList + 1] = displayIcon:format(("%s/%s"):format((count), (totalMax)), size, size)
 --						else
 							--concatList[#concatList + 1] = string.format(displayIcon, _G.BreakUpLargeNumbers(count), size, size)
-							concatList[#concatList + 1] = string.format(displayIcon:sub(4) .. "%s ", size, size, (count)) --163ui
-                            if currencyID == CURRENCY_IDS_BY_NAME.PVP_CONQUER then
+							concatList[#concatList + 1] = string.format(displayIcon:sub(4) .. "%s ", size, size, (count)) --abyui
+                            if currencyID == CURRENCY_IDS_BY_NAME.PVP_CONQUER or currencyID == CURRENCY_IDS_BY_NAME.VALOR then
                                 concatList[#concatList] = concatList[#concatList]:sub(1, -2) .. "/" .. (count+totalMax-CURRENCY_TOTAL_EARNED[currencyID])
                             end
 --						end

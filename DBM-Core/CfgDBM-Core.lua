@@ -82,7 +82,6 @@ U1RegisterAddon("DBM-Core", {
 --模块插件必须设置成protected否则加载DBM时如果模块未启用，则无法显示选项
 U1RegisterAddon("DBM-StatusBarTimers", { title = "状态条计时器", load = "NORMAL", protected = nil, defaultEnable = 1, hide = 1, });
 U1RegisterAddon("DBM-GUI", { title = "配置选项模块", });
-U1RegisterAddon("DBM-DefaultSkin", { title = "默认皮肤", load = "NORMAL" });
 U1RegisterAddon("DBM-Brawlers", { title = '搏击俱乐部', });
 U1RegisterAddon("DBM-DMF", { title = '暗月马戏团', });
 U1RegisterAddon("DBM-WorldEvents", { title = "世界事件模块", });

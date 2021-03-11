@@ -91,7 +91,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         return format(line, i, drop, level)
     end
     local chest = ChallengesFrame.WeeklyInfo.Child.WeeklyChest
-    chest:HookScript("OnMouseUp", ShowWeeklyRewards)
+    --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
     chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
@@ -113,8 +113,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 end
             end
 
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("点击查看宏伟宝库（爱不易提供）", 0, 1, 0)
+            --GameTooltip:AddLine(" ")
+            --GameTooltip:AddLine("点击查看宏伟宝库（爱不易提供）", 0, 1, 0)
             --[[
             GameTooltip:AddLine("9.0低保机制改为最多从9个箱子里选择1个", 1, 1, 1)
             GameTooltip:AddLine("其中通过打大秘境最多可以得到3个箱子：", 1, 1, 1)
@@ -218,7 +218,7 @@ CoreDependCall("Blizzard_PVPUI", function()
     local title    = { "休闲者", "争斗者", "挑战者", "竞争者", "决斗者", "精　锐" }
 
     for _, chest in ipairs({ PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest, PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest}) do
-        chest:HookScript("OnMouseUp", ShowWeeklyRewards)
+        --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
         chest:HookScript("OnEnter", function(self)
             if GameTooltip:IsVisible() then
                 GameTooltip:AddLine(" ")
@@ -227,8 +227,8 @@ CoreDependCall("Blizzard_PVPUI", function()
                 local line = " %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s"
                     GameTooltip:AddLine(format(line, ratings[i], title[i], tostring(upgrade[i])))
                 end
-                GameTooltip:AddLine(" ")
-                GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
+                --GameTooltip:AddLine(" ")
+                --GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
                 GameTooltip:Show()
             end
         end)

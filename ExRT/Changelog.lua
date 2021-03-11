@@ -1,6 +1,13 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4490
+* Raid Check: fixed Sharpened & Weighted weapon buffs
+* Raid Check: added option "Use only flask from cauldron"
+* Raid cooldowns: fixed frame strata for icons that attaches to raidframes
+* Note: added support for glow syntax (ex. {time:1:30,glow} - shows non-disabled glow if players name is in line and timer is less than 5 seconds, {time:1:30,glowall} - shows non-disabled glow for all players if timer is less than 5 seconds)
+* Bugfixes
+
 v.4480
 * 9.0.5 update
 * Note: added support for multiple WA events per line with timer (ex. {time:1:30,SCC:17:2,wa:eventName1,wa:eventName2})

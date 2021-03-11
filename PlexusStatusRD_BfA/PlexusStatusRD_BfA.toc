@@ -4,7 +4,7 @@
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: Doadin
 ## Grid Author: Pastamancer & Maia
-## Dependencies: Plexus, PlexusStatusRaidDebuff
+## Dependencies: PlexusStatusRaidDebuff
 ## X-Curse-Project-ID: 300448
 
 Uldir.lua

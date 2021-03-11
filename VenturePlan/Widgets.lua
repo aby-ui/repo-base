@@ -716,8 +716,8 @@ local function DoomRun_OnEnter(self)
 end
 local function DoomRun_OnClick(self, button)
 	local mid = S[self:GetParent()].missionID
-	local g = self.group
-	if not (mid and g) then return end
+	local g, st = self.group, self.showTime
+	if not (mid and g and st) or (GetTime()-st < 0.25) then return end
 	if GameTooltip:IsOwned(self) then
 		GameTooltip:Hide()
 	end
@@ -727,6 +727,9 @@ local function DoomRun_OnClick(self, button)
 		U.SendMissionGroup(mid, g)
 	end
 	EV("I_MISSION_LIST_UPDATE")
+end
+local function DoomRun_OnShow(self)
+	self.showTime = GetTime()
 end
 local function TentativeGroupClear_OnClick(self)
 	local mid = S[self:GetParent()].missionID
@@ -853,7 +856,7 @@ local function Toast_OnClick(self, button)
 		self:Hide()
 	end
 end
-local function MissionPage_AcquireToast(self)
+local function MissionPage_AcquireToast(self, followerMode)
 	local toasts, toast = self.Toasts
 	for i=1,#toasts do
 		toast = toasts[i]
@@ -867,7 +870,13 @@ local function MissionPage_AcquireToast(self)
 		toast:SetPoint("TOP", toasts[#toasts], "BOTTOM", 0, -5)
 		toasts[#toasts+1] = toast
 	end
+	followerMode = not not followerMode
+	toast.Icon:SetShown(not followerMode)
+	toast.IconBorder:SetShown(not followerMode)
+	toast.Portrait:SetShown(followerMode)
+	toast.PortraitFrame:SetShown(followerMode)
 	toast.Icon:SetTexCoord(4/64, 60/64, 4/64, 60/64)
+	toast.IconBorder:SetAtlas("loottoast-itemborder-gold")
 	toast.animStart, toast.animPhase = nil
 	toast:Show()
 	return toast
@@ -1046,7 +1055,7 @@ function Factory.CopyBoxUI(parent)
 	t:SetPoint("BOTTOM", ub, "TOP", 0, 6)
 	f.FirstInputBox = ub
 	f.FirstInputBoxLabel = t
-	
+
 	local cb = CreateObject("LockedCopyInputBox", f)
 	cb:SetPoint("TOP", ub, "TOP", 0, -50)
 	cb:SetText("Much fire!")
@@ -1082,7 +1091,7 @@ function Factory.CopyBoxUI(parent)
 
 	f.soundKitOnHide = 170568
 	f:SetScript("OnHide", PlaySoundKitAndHide)
-	
+
 	return f
 end
 function Factory.MissionPage(parent)
@@ -1134,7 +1143,7 @@ end
 function Factory.MissionList(parent)
 	local coven = C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 1)
 	CovenKit = coven and coven.textureKit or "NightFae"
-	
+
 	local missionList = CreateFrame("ScrollFrame", nil, parent)
 	local s = CreateObject("Shadow", missionList)
 	missionList:SetSize(892, 524)
@@ -1298,7 +1307,7 @@ function Factory.MissionButton(parent)
 	b:SetPoint("LEFT", a, "RIGHT", 2, 0)
 	s.duration = b
 	s.statLine = t
-	
+
 	t = CreateObject("ProgressBar", cf)
 	t:SetWidth(cf:GetWidth()-50)
 	t:SetPoint("BOTTOM", 0, 16)
@@ -1319,6 +1328,7 @@ function Factory.MissionButton(parent)
 	t:SetScript("OnEnter", DoomRun_OnEnter)
 	t:SetScript("OnLeave", HideOwnGameTooltip)
 	t:SetScript("OnClick", DoomRun_OnClick)
+	t:SetScript("OnShow", DoomRun_OnShow)
 	t, s.DoomRunButton = CreateFrame("Button", nil, cf, "UIPanelButtonTemplate"), t
 	t:SetAllPoints(s.DoomRunButton)
 	t:SetText("|TInterface/Buttons/UI-StopButton:0|t")
@@ -1329,7 +1339,7 @@ function Factory.MissionButton(parent)
 	t:SetTextColor(0.97, 0.94, 0.70)
 	t:SetPoint("TOPLEFT", 16, -38)
 	s.TagText = t
-	
+
 	return cf
 end
 function Factory.RewardFrame(parent)
@@ -1722,7 +1732,7 @@ function Factory.FollowerList(parent)
 	t:SetPoint("TOPLEFT", 0, -84)
 	t:SetPoint("BOTTOMRIGHT", 0, 84)
 	t:SetTexCoord(0,1,50/311,261/311)
-	
+
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	t:SetText(FOLLOWERLIST_LABEL_TROOPS)
 	t:SetPoint("TOPLEFT", 12, -14)
@@ -1747,7 +1757,7 @@ function Factory.FollowerList(parent)
 		s.companions[i] = t
 	end
 	f:SetPoint("LEFT", UIParent, "LEFT", 20, 0)
-	
+
 	f.Refresh = FollowerList_Refresh
 	f.SyncToBoard = FollowerList_SyncToBoard
 	f.SyncXPGain = FollowerList_SyncXPGain
@@ -1767,7 +1777,7 @@ function Factory.InfoButton(parent)
 	f:GetHighlightTexture():SetAlpha(0.25)
 	return f
 end
-function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,y2,y3, xS,yS, oT,oR,oB,oL)
+function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,y2,y3, xS,yS, oT,oR,oB,oL, mL)
 	local r, ni, t = CreateObject("ObjectGroup"), 1
 	for i=1,yS == 0 and 3 or 9 do
 		r[i] = parent:CreateTexture(nil, layer, nil, subLevel)
@@ -1778,7 +1788,7 @@ function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,
 	y0,y1,y2,y3=y0/tH,y1/tH,y2/tH,y3/tH
 	if yS > 0 then
 		t, ni = r[ni], ni + 1
-		t:SetTexCoord(x0, x1, y0, y1)
+		t:SetTexCoord(mL and x3 or x0, mL and x2 or x1, y0, y1)
 		t:SetPoint("TOPLEFT", -oL, oT)
 		t:SetSize(xS, yS)
 		t, ni = r[ni], ni + 1
@@ -1791,7 +1801,7 @@ function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,
 		t:SetSize(xS, yS)
 	end
 	t, ni = r[ni], ni + 1
-	t:SetTexCoord(x0, x1, y1, y2)
+	t:SetTexCoord(mL and x3 or x0, mL and x2 or x1, y1, y2)
 	t:SetPoint("TOPLEFT", -oL, oT-yS)
 	t:SetPoint("BOTTOMRIGHT", parent, "BOTTOMLEFT", xS-oL, yS-oB)
 	t, ni = r[ni], ni + 1
@@ -1804,7 +1814,7 @@ function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,
 	t:SetPoint("BOTTOMRIGHT", oR, yS-oB)
 	if yS > 0 then
 		t, ni = r[ni], ni + 1
-		t:SetTexCoord(x0, x1, y2, y3)
+		t:SetTexCoord(mL and x3 or x0, mL and x2 or x1, y2, y3)
 		t:SetPoint("BOTTOMLEFT", -oL, -oB)
 		t:SetSize(xS, yS)
 		t, ni = r[ni], ni + 1
@@ -1816,7 +1826,7 @@ function Factory.TexSlice(parent, layer,subLevel, tex,tW,tH, x0,x1,x2,x3, y0,y1,
 		t:SetPoint("BOTTOMRIGHT", oR, -oB)
 		t:SetSize(xS, yS)
 	end
-	
+
 	return r
 end
 function Factory.MissionToast(parent)
@@ -1827,7 +1837,7 @@ function Factory.MissionToast(parent)
 	f:RegisterForClicks("RightButtonUp")
 	f:SetScript("OnUpdate", Toast_Animate)
 	f:SetScript("OnClick", Toast_OnClick)
-	f.Background = CreateObject("TexSlice", f, "BACKGROUND", 0, "Interface/LootFrame/LootToast",1024,256, 578,638,763,823, 0,3,69,0, 45,0, 5,0,5,0)
+	f.Background = CreateObject("TexSlice", f, "BACKGROUND", 0, "Interface/LootFrame/LootToast",1024,256, 578,638,763,823, 0,3,69,0, 45,0, 5,0,5,0, true)
 	t = f:CreateTexture(nil, "ARTWORK")
 	t:SetAtlas("loottoast-sheen")
 	t:SetBlendMode("ADD")
@@ -1857,7 +1867,16 @@ function Factory.MissionToast(parent)
 	t:SetSize(34, 34)
 	t:SetPoint("CENTER", f.Icon, "CENTER")
 	t:SetAtlas("loottoast-itemborder-gold")
-	f.Background[#f.Background+1], f.IconBorder = t, t
+	t, f.Background[#f.Background+1], f.IconBorder = f:CreateTexture(nil, "ARTWORK", nil, 0), t, t
+	t:SetSize(28, 28)
+	t:SetPoint("LEFT", 12, -1)
+	t:SetTexture(1605024)
+	t, f.Portrait = f:CreateTexture(nil, "ARTWORK", nil, 1), t
+	t:SetSize(34,34)
+	t:SetAtlas("adventurers-followers-frame")
+	t:SetPoint("CENTER", f.Portrait, "CENTER")
+	f.PortraitFrame = t
+
 	f:Hide()
 	return f
 end

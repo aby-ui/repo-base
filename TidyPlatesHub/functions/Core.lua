@@ -213,7 +213,8 @@ end
 
 local function ApplyStyleCustomization(style, defaults)
 	if not style then return end
-	style.level.show = (LocalVars.TextShowLevel == true)
+    style.levelShowHealth = (LocalVars.TextShowPercent == true) --abyui
+	style.level.show = (LocalVars.TextShowLevel == true or LocalVars.TextShowPercent == true)
 	style.target.show = (LocalVars.WidgetTargetHighlight == true)
 	style.eliteicon.show = (LocalVars.WidgetEliteIndicator == true)
 

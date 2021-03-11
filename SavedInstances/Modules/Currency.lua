@@ -176,13 +176,15 @@ function Module:UpdateCurrency()
   t.currency = wipe(t.currency or {})
   for _,idx in ipairs(currency) do
     local data = C_CurrencyInfo_GetCurrencyInfo(idx)
-    local amount, earnedThisWeek, weeklyMax, totalMax, discovered =
-      data.quantity, data.quantityEarnedThisWeek, data.maxWeeklyQuantity, data.maxQuantity, data.discovered
-    if not discovered then
+    if not data.discovered then
       t.currency[idx] = nil
     else
       local ci = t.currency[idx] or {}
-      ci.amount, ci.earnedThisWeek, ci.weeklyMax, ci.totalMax = amount, earnedThisWeek, weeklyMax, totalMax
+      ci.amount = data.quantity
+      ci.totalMax = data.maxQuantity
+      ci.earnedThisWeek = data.quantityEarnedThisWeek
+      ci.weeklyMax = data.maxWeeklyQuantity
+      ci.totalEarned = data.totalEarned
       -- handle special currency
       if specialCurrency[idx] then
         local tbl = specialCurrency[idx]
@@ -204,9 +206,11 @@ function Module:UpdateCurrency()
         ci.totalMax = ci.totalMax + 1
       end
       ci.season = GetSeasonCurrency(idx)
-      if ci.weeklyMax == 0 then ci.weeklyMax = nil end -- don't store useless info
-      if ci.totalMax == 0 then ci.totalMax = nil end -- don't store useless info
-      if ci.earnedThisWeek == 0 then ci.earnedThisWeek = nil end -- don't store useless info
+      -- don't store useless info
+      if ci.weeklyMax == 0 then ci.weeklyMax = nil end
+      if ci.totalMax == 0 then ci.totalMax = nil end
+      if ci.earnedThisWeek == 0 then ci.earnedThisWeek = nil end
+      if ci.totalEarned == 0 then ci.totalEarned = nil end
       t.currency[idx] = ci
     end
   end

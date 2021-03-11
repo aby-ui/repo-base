@@ -2875,6 +2875,17 @@ do
 	local prevLineForGUID,prevLineForGUID_wiped = {}
 	local reviewID = 0
 
+	local strataToStrata = {
+		["BACKGROUND"]="LOW",
+		["LOW"]="MEDIUM",
+		["MEDIUM"]="HIGH",
+		["HIGH"]="DIALOG",
+		["DIALOG"]="FULLSCREEN",
+		["FULLSCREEN"]="FULLSCREEN_DIALOG",
+		["FULLSCREEN_DIALOG"]="TOOLTIP",
+		["TOOLTIP"]="TOOLTIP",
+	}
+
 	local LGFReady, LGF = pcall(LibStub,"LibGetFrame-1.0")
 	local LGFNullOpt = {}
 
@@ -3307,8 +3318,10 @@ do
 								end
 								prevLineForGUID[guid] = bar
 
-								if frame:GetFrameStrata() ~= col:GetFrameStrata() then
-									col:SetFrameStrata(frame:GetFrameStrata())
+								if frame:GetFrameStrata() ~= col.FrameStrata then
+									local strata = frame:GetFrameStrata()
+									col:SetFrameStrata(strataToStrata[strata] or strata)
+									col.FrameStrata = strata
 								end
 							else
 								bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
@@ -9926,6 +9939,7 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	end
 
 	columnFrame:SetFrameStrata("MEDIUM")
+	columnFrame.FrameStrata = nil
 
 	local frameAlpha = (not currColOpt.frameGeneral and currColOpt.frameAlpha) or (currColOpt.frameGeneral and generalOpt.frameAlpha) or defOpt.frameAlpha
 	columnFrame:SetAlpha(frameAlpha/100) 

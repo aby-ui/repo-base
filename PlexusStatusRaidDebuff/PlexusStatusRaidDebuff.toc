@@ -7,7 +7,7 @@
 ## Author: Azelkeeber(KR-Tirion),Toadkiller,Stassart,Doadin
 ## Version: r86
 ## Grid Author: Pastamancer & Maia
-## Dependencies: Plexus
+## Dependencies: Grid
 ## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0
 ## X-Category: UnitFrame
 ## X-Curse-Project-ID: 42578

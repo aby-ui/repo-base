@@ -476,7 +476,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 	local res = sim.res
 	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
 	local inProgress = not res.isFinished and not rngModel
-	local oodBuild = GetBuildInfo() ~= "9.0.2"
+	local oodBuild = GetBuildInfo() ~= "9.0.5"
 	local hprefix = (oodBuild or incompleteModel) and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or ""
 	if inProgress then
 		hprefix = hprefix .. "|cffff3300" .. L"Preliminary:" .. "|r "
@@ -606,8 +606,10 @@ local function MissionGroup_OnUpdate()
 	FollowerList:SyncToBoard()
 end
 local function MissionRewards_OnShow(self)
-	local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
+	local MP = CovenantMissionFrame.MissionTab.MissionPage
+	local mi = MP.missionInfo
 	local d = mi and mi.duration
+	MP.Stage.Title:SetText(mi and mi.name or "")
 	self.Rewards:SetRewards(mi and mi.xp, mi and mi.rewards)
 	self.Duration:SetText(d and L"Duration:" .. " |cffffffff" .. d or "")
 	local xp = mi and mi.xp or 0

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210302014355")
+mod:SetRevision("20210311043607")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -784,7 +784,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnDarkRecital:Play("gather")
 				playerIsInPair = true
 			end
-			if playerIsInPair then--Only repeat yell on mythic and mythic+
+			if playerIsInPair then--Only repeat yell on mythic and mythic
 				self:Unschedule(darkRecitalYellRepeater)
 				if type(icon) == "number" then icon = DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION:format(icon, "") end
 				self:Schedule(2, darkRecitalYellRepeater, self, icon, 0)

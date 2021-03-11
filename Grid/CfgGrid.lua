@@ -97,9 +97,10 @@ U1RegisterAddon("GridStatusTankCooldown", {title = "状态：坦克救命技能"
 U1RegisterAddon("PlexusStatusRaidDebuff", {title = "状态：团队减益", protected = nil, hide = false, load="NORMAL", parent="Grid", defaultEnable=1,
     desc = "提供副本Boss的主要Debuff技能的提示。"
 });
-U1RegisterAddon("PlexusStatusRD_BfA", {title = "争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
-U1RegisterAddon("PlexusStatusRD_Legion", {title = "军团再临", protected = nil, hide = nil, load="NORMAL",});
-U1RegisterAddon("PlexusStatusRD_Dungeon", {title = "9.0五人副本减益", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_SL", {title = "团队减益：暗影之地", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_BfA", {title = "团队减益：争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_Legion", {title = "团队减益：军团再临", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusRD_Dungeon", {title = "团队减益：五人副本", protected = nil, hide = nil, load="NORMAL",});
 
 
 
