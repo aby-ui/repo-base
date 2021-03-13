@@ -48,11 +48,11 @@ function Module:COVENANT_CALLINGS_UPDATED(_, callings)
 
   for _, data in ipairs(callings) do
       local timeLeft = C_TaskQuest_GetQuestTimeLeftMinutes(data.questID)
-      if not timeLeft then
+      local day = tonumber(floor((timeLeft or 0) / 1440) + 1) -- [1, 2, 3]
+      if not timeLeft or not day or not t.Calling[day] then
         C_CovenantCallings_RequestCallings()
         return
       end
-      local day = tonumber(floor(timeLeft / 1440) + 1) -- [1, 2, 3]
 
       local isOnQuest = C_QuestLog_IsOnQuest(data.questID)
       local title = C_QuestLog_GetTitleForQuestID(data.questID)

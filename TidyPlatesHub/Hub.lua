@@ -421,7 +421,7 @@ local function BuildHubPanel(panel)
 	panel.ClassEnemyIcon = CreateQuickCheckbutton(objectName.."ClassEnemyIcon", "显示敌对职业图标", AlignmentColumn, panel.WidgetEliteIndicator)
 	panel.ClassPartyIcon = CreateQuickCheckbutton(objectName.."ClassPartyIcon", "显示友好职业图标", AlignmentColumn, panel.ClassEnemyIcon)
 	panel.WidgetsTotemIcon = CreateQuickCheckbutton(objectName.."WidgetsTotemIcon", "显示图腾图标", AlignmentColumn, panel.ClassPartyIcon)
-	panel.WidgetsComboPoints = CreateQuickCheckbutton(objectName.."WidgetsComboPoints", "显示连击点", AlignmentColumn, panel.WidgetsTotemIcon)
+	panel.WidgetsComboPoints2 = CreateQuickCheckbutton(objectName.."WidgetsComboPoints2", "显示连击点（注意，选中会隐藏暴雪自带的连击点）", AlignmentColumn, panel.WidgetsTotemIcon)
 
 	--panel.WidgetsEnableExternal = CreateQuickCheckbutton(objectName.."WidgetsEnableExternal", "Enable External Widgets", AlignmentColumn, panel.WidgetsComboPoints)
 
@@ -432,7 +432,7 @@ local function BuildHubPanel(panel)
 	------------------------------
 	-- Advanced
 	------------------------------
-	panel.AdvancedLabel, F = CreateQuickHeadingLabel(nil, "高级设置", AlignmentColumn, panel.WidgetsComboPoints, 0, 5)
+	panel.AdvancedLabel, F = CreateQuickHeadingLabel(nil, "高级设置", AlignmentColumn, panel.WidgetsComboPoints2, 0, 5)
 	panel.TextUseBlizzardFont, F = CreateQuickCheckbutton(objectName.."TextUseBlizzardFont", "使用暴雪默认字体", AlignmentColumn, F, 0)
 	panel.FocusAsTarget, F = CreateQuickCheckbutton(objectName.."FocusAsTarget", "将焦点单位视为一个目标", AlignmentColumn, F, 0)
 	panel.AdvancedEnableUnitCache, F = CreateQuickCheckbutton(objectName.."AdvancedEnableUnitCache", "启用头衔缓存", AlignmentColumn, F)

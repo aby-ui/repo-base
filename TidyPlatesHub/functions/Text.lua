@@ -42,7 +42,7 @@ local WhiteColor = { r = 250/255, g = 250/255, b = 250/255, }
 
 local function GetLevelDescription(unit)
 	local description = ""
-	description = "Level "..unit.level
+	description = "Level "..(unit.level or "?")
 	if unit.isElite then description = description.." (Elite)" end
 	return description
 end

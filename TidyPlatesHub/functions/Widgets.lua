@@ -271,7 +271,7 @@ local function OnInitializeWidgets(extended, configTable)
 
 	local EnableClassWidget = (LocalVars.ClassEnemyIcon or LocalVars.ClassPartyIcon)
 	local EnableTotemWidget = LocalVars.WidgetsTotemIcon
-	local EnableComboWidget = LocalVars.WidgetsComboPoints
+	local EnableComboWidget = LocalVars.WidgetsComboPoints2
 	local EnableThreatWidget = LocalVars.WidgetsThreatIndicator
 	local EnableAuraWidget = LocalVars.WidgetsDebuff
 
@@ -292,7 +292,7 @@ local function OnContextUpdateDelegate(extended, unit)
     if not extended then return end
 	local widgets = extended.widgets
 
-	if LocalVars.WidgetsComboPoints and widgets.ComboWidgetHub then
+	if LocalVars.WidgetsComboPoints2 and widgets.ComboWidgetHub then
 		widgets.ComboWidgetHub:UpdateContext(unit) end
 
 	if LocalVars.WidgetsThreatIndicator and widgets.ThreatWidgetHub then

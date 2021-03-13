@@ -70,8 +70,8 @@ end
 local isEnabled = false
 
 function TidyPlatesWidgets.CreateComboPointWidget(parent)
-    --TODO abyui
-    if true then
+    if false then
+        --abyui
         local widgetAnchorFrame = CreateFrame("Frame", nil, parent)
         widgetAnchorFrame.UpdateContext = function() end
         widgetAnchorFrame.Update = function() end
