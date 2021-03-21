@@ -111,7 +111,8 @@ local L = WeakAuras.L
 	L["At a position a bit left of Right HUD position"] = "比右方 HUD 更右一點的位置"
 	L["At the same position as Blizzard's spell alert"] = "和暴雪法術警告效果相同的位置"
 	L[ [=[Aura is
-Off Screen]=] ] = "提醒效果不在畫面上 / 跑出畫面"
+Off Screen]=] ] = [=[提醒效果
+跑出畫面]=]
 	L["Aura Name"] = "光環名稱"
 	L["Aura Name Pattern"] = "光環名稱模式 (Pattern)"
 	L["Aura Type"] = "光環類型"

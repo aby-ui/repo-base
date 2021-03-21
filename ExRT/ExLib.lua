@@ -163,7 +163,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "ExRT"
 
-local libVersion = 40
+local libVersion = 41
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -2836,10 +2836,21 @@ do
 			self.ScrollBar:SetValue(val - delta)
 		end
 	end
+	local function CheckHideScroll(self)
+		if not self.HideOnNoScroll then
+			return
+		end
+		if not self.buttonUP:IsEnabled() and not self.buttonDown:IsEnabled() then
+			self:Hide()
+		else
+			self:Show()
+		end
+	end
 	local function ScrollFrameScrollBarValueChanged(self,value)
 		local parent = self:GetParent():GetParent()
 		parent:SetVerticalScroll(value) 
 		self:UpdateButtons()
+		CheckHideScroll(self)
 	end
 	local function ScrollFrameScrollBarValueChangedH(self,value)
 		local parent = self:GetParent():GetParent()
@@ -2850,6 +2861,7 @@ do
 		self.content:SetHeight(newHeight)
 		self.ScrollBar:Range(0,max(newHeight-self:GetHeight(),0),nil,true)
 		self.ScrollBar:UpdateButtons()
+		CheckHideScroll(self.ScrollBar)
 
 		return self
 	end
@@ -2872,6 +2884,13 @@ do
 		self.SetNewWidth = ScrollFrameChangeWidth
 		self.Width = ScrollFrameChangeWidth
 
+		return self
+	end
+
+	local function Widget_HideScrollOnNoScroll(self)
+		self.ScrollBar.HideOnNoScroll = true
+		self.ScrollBar:UpdateButtons()
+		CheckHideScroll(self.ScrollBar)
 		return self
 	end
 
@@ -2909,6 +2928,7 @@ do
 		self.Height = ScrollFrameChangeHeight
 
 		self.AddHorizontal = Widget_AddHorizontal
+		self.HideScrollOnNoScroll = Widget_HideScrollOnNoScroll
 
 		Mod(self)
 		self._Size = self.Size
@@ -3225,6 +3245,15 @@ do
 end
 
 do
+	local function CheckBoxOnEnter(self)
+		local tooltipTitle = self.text:GetText()
+		local tooltipText = self.tooltipText
+		if tooltipTitle == "" or not tooltipTitle then
+			tooltipTitle = tooltipText
+			tooltipText = nil
+		end
+		ELib.Tooltip.Show(self,"ANCHOR_TOP",tooltipTitle,{tooltipText,1,1,1,true})
+	end
 	local function Click(self)
 		self:GetParent():Click()
 	end
@@ -3243,6 +3272,12 @@ do
 		self.Button:SetScript("OnLeave",ButtonOnLeave)
 		return self
 	end
+	local function Widget_Tooltip(self,text)
+		self.tooltipText = text
+		self:SetScript("OnEnter",CheckBoxOnEnter)
+		self:SetScript("OnLeave",ELib.Tooltip.Hide)
+		return self
+	end
 	function ELib:Radio(parent,text,checked,template)
 		if template == 0 then
 			template = "UIRadioButtonTemplate"
@@ -3256,6 +3291,7 @@ do
 
 		Mod(self)
 		self.AddButton = Widget_TextToButton
+		self.Tooltip = Widget_Tooltip
 
 		return self
 	end
@@ -4445,6 +4481,7 @@ function ELib.ScrollDropDown:Reload(level)
 					button.leaveFunc = data.leaveFunc
 					button.hoverArg = data.hoverArg
 					button.checkFunc = data.checkFunc
+					button.tooltip = data.tooltip
 
 					if not data.checkFunc then
 						button.checkFunc = ScrollDropDown_DefaultCheckFunc
@@ -4507,6 +4544,11 @@ function ELib.ScrollDropDown.OnButtonEnter(self)
 	if func then
 		func(self,self.hoverArg)
 	end
+	if self.tooltip then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(self.tooltip)
+		GameTooltip:Show()
+	end
 	ELib.ScrollDropDown:CloseSecondLevel(self.Level)
 	if self.subMenu then
 		if IsDropDownCustom then
@@ -4520,6 +4562,9 @@ function ELib.ScrollDropDown.OnButtonLeave(self)
 	local func = self.leaveFunc
 	if func then
 		func(self)
+	end
+	if self.tooltip then
+		GameTooltip_Hide()
 	end
 end
 

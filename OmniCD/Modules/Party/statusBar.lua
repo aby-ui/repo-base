@@ -86,33 +86,20 @@ local function CastingBarFrame_OnLoad(self, key, icon)
 	local c = RAID_CLASS_COLORS[icon.class]
 
 	local db_bg = db.bgColors
-	if db_bg.classColor then
-		active, recharge = c, c
-	else
-		active, recharge = db_bg.activeColor, db_bg.rechargeColor
-	end
+	active, recharge = db_bg.useClassColor.active and c or db_bg.activeColor, db_bg.useClassColor.recharge and c or db_bg.rechargeColor
 	CastingBarFrame_SetStartCastBGColor(self, active.r, active.g, active.b, db_bg.activeColor.a);
 	CastingBarFrame_SetStartChannelBGColor(self, active.r, active.g, active.b, db_bg.activeColor.a);
 	CastingBarFrame_SetStartRechargeBGColor(self, recharge.r, recharge.g, recharge.b, db_bg.rechargeColor.a);
 
 	local db_text = db.textColors
-	if db_text.classColor then
-		active, recharge = c, c
-	else
-		active, recharge = db_text.activeColor, db_text.rechargeColor
-	end
+	active, recharge = db_text.useClassColor.active and c or db_text.activeColor, db_text.useClassColor.recharge and c or db_text.rechargeColor
 	CastingBarFrame_SetStartCastTextColor(self, active.r, active.g, active.b);
 	CastingBarFrame_SetStartChannelTextColor(self, active.r, active.g, active.b);
 	CastingBarFrame_SetStartRechargeTextColor(self, recharge.r, recharge.g, recharge.b);
 
 	local db_bar = db.barColors
-	if db_bar.classColor then
-		active, recharge = c, c
-	else
-		active, recharge = db_bar.activeColor, db_bar.rechargeColor
-	end
+	active, recharge = db_bar.useClassColor.active and c or db_bar.activeColor, db_bar.useClassColor.recharge and c or db_bar.rechargeColor
 	CastingBarFrame_SetStartRechargeColor(self, recharge.r, recharge.g, recharge.b, db_bar.rechargeColor.a); -- [A]
-
 	CastingBarFrame_SetStartCastColor(self, active.r, active.g, active.b, db_bar.activeColor.a); -- [A]
 	CastingBarFrame_SetStartChannelColor(self, active.r, active.g, active.b, db_bar.activeColor.a); -- [A]
 	CastingBarFrame_SetFinishedCastColor(self, 0.0, 1.0, 0.0);
@@ -131,12 +118,16 @@ local function CastingBarFrame_OnLoad(self, key, icon)
 		self.Spark.offsetY = offsetY;
 	end
 
+	self.isSparkEnabled = not db.hideSpark
+
 	if P.groupInfo[icon.guid].active[icon.spellID] then -- [67] [81]
+		self.nextTextUpdate = 0
 		P.OmniCDCastingBarFrame_OnEvent(self, E.db.extraBars[key].reverseFill and  "UNIT_SPELLCAST_CHANNEL_START" or "UNIT_SPELLCAST_START")
+		self.Spark:SetShown(self.isSparkEnabled)
 	end
 end
 
-function P.GetStatusBar(icon, key) -- [35]
+function P.GetStatusBar(icon, key) -- [35]!
 	local f = tremove(unusedStatusBars)
 	if not f then
 		numStatusBars = numStatusBars + 1
@@ -144,14 +135,14 @@ function P.GetStatusBar(icon, key) -- [35]
 		f.CastingBar.statusBar = f
 
 		local db = E.profile.General.fonts.statusBar
-		E.SetFontObj(f.Text, db)
-		E.SetFontObj(f.CastingBar.Text, db)
-		E.SetFontObj(f.CastingBar.Timer, db)
+		E.SetFont(f.Text, db)
+		E.SetFont(f.CastingBar.Text, db)
+		E.SetFont(f.CastingBar.Timer, db)
 
-		local texture = E.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.bar)
+		local texture = E.Libs.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.bar)
 		f.BG:SetTexture(texture)
 		f.CastingBar:SetStatusBarTexture(texture)
-		f.CastingBar.BG:SetTexture(E.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.BG))
+		f.CastingBar.BG:SetTexture(E.Libs.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.BG))
 	end
 
 	local name = gsub(P.groupInfo[icon.guid].name, "%-(.*)", "")
@@ -182,7 +173,7 @@ function P.CastingBarFrame_FinishSpell(self)
 	if not self.finishedColorSameAsStart then
 		self:SetStatusBarColor(self.finishedCastColor:GetRGB());
 	end
-	if ( self.Spark ) then
+	if ( self.isSparkEnabled ) then
 		self.Spark:Hide();
 	end
 	--[[if ( self.Flash ) then
@@ -237,6 +228,22 @@ local function CastingBarFrame_ApplyAlpha(self, alpha)
 	end]]
 end
 
+local SECONDS_PER_MIN = 60
+
+local function TimeFormat(value)
+	if value > SECONDS_PER_MIN then
+		if value <= P.mmss then -- MM:SS
+			local sec = value%SECONDS_PER_MIN
+			local nextTextUpdate = sec%1 + 0.01
+			return format("%d:%02d", floor(value/SECONDS_PER_MIN), ceil(sec)), nextTextUpdate
+		else -- MM
+			return format("%dm", ceil(value/SECONDS_PER_MIN)), value - P.mmss + 0.01
+		end
+	else
+		return ceil(value), value%1 + 0.01
+	end
+end
+
 function OmniCDCastingBarFrame_OnUpdate(self, elapsed)
 	if ( self.casting ) then
 		self.value = self.value + elapsed;
@@ -249,12 +256,18 @@ function OmniCDCastingBarFrame_OnUpdate(self, elapsed)
 		--[[if ( self.Flash ) then
 			self.Flash:Hide();
 		end]]
-		if ( self.Spark ) then
+		if ( self.isSparkEnabled ) then
 			local sparkPosition = (self.value / self.maxValue) * self:GetWidth();
 			self.Spark:SetPoint("CENTER", self, "LEFT", sparkPosition, self.Spark.offsetY or 2);
 		end
 
-		local counter = self.statusBar.key == "raidCDBar" and date("%M:%S", self.maxValue - self.value) or ceil(self.maxValue - self.value) -- [67]
+		--local counter = self.statusBar.key == "raidCDBar" and date("%M:%S", self.maxValue - self.value) or ceil(self.maxValue - self.value) -- [67]
+		if self.nextTextUpdate and self.nextTextUpdate > 0 then
+			self.nextTextUpdate = self.nextTextUpdate - elapsed
+			return
+		end
+		local counter, nextTextUpdate = TimeFormat(self.maxValue - self.value)
+		self.nextTextUpdate = nextTextUpdate
 		self.Timer:SetText(counter)
 	elseif ( self.channeling ) then
 		self.value = self.value - elapsed;
@@ -267,12 +280,19 @@ function OmniCDCastingBarFrame_OnUpdate(self, elapsed)
 			self.Flash:Hide();
 		end]]
 
-		local counter = self.statusBar.key == "raidCDBar" and date("%M:%S", self.value) or ceil(self.value) -- [67]
-		self.Timer:SetText(counter)
-		if ( self.Spark ) then
+		if ( self.isSparkEnabled ) then
 			local sparkPosition = (self.value / self.maxValue) * self:GetWidth();
 			self.Spark:SetPoint("CENTER", self, "LEFT", sparkPosition, self.Spark.offsetY or 2);
 		end
+
+		--local counter = self.statusBar.key == "raidCDBar" and date("%M:%S", self.value) or ceil(self.value) -- [67]
+		if self.nextTextUpdate and self.nextTextUpdate > 0 then
+			self.nextTextUpdate = self.nextTextUpdate - elapsed
+			return
+		end
+		local counter, nextTextUpdate = TimeFormat(self.value)
+		self.nextTextUpdate = nextTextUpdate
+		self.Timer:SetText(counter)
 	elseif ( GetTime() < self.holdTime ) then
 		return;
 	--[[elseif ( self.flash ) then
@@ -376,7 +396,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			self.Flash:SetVertexColor(1, 1, 1);
 		end]]
 
-		if ( self.Spark ) then
+		if ( self.isSparkEnabled ) then
 			self.Spark:Show();
 		end
 		self.value = (GetTime() - startTime);
@@ -423,7 +443,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 				return
 			end
 
-			if ( self.Spark ) then
+			if ( self.isSparkEnabled ) then
 				self.Spark:Hide();
 			end
 			--[[if ( self.Flash ) then
@@ -442,12 +462,13 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			--self.flash = true;
 			self.fadeOut = true;
 			self.holdTime = 0;
+			self.nextTextUpdate = 0
 		end
-	elseif ( event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED" ) then
+	elseif ( event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED" ) then -- RESET
 		if ( self:IsShown() and (self.casting or self.channeling) and not self.fadeOut ) then -- [67]
 			self:SetValue(self.maxValue);
 			self:SetStatusBarColor(self.failedCastColor:GetRGB()); -- SetStatusBarColor alpha needs a time gap to update reliably
-			if ( self.Spark ) then
+			if ( self.isSparkEnabled ) then
 				self.Spark:Hide();
 			end
 			if ( self.Text ) then
@@ -464,8 +485,9 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			self.channeling = nil;
 			self.fadeOut = true;
 			self.holdTime = GetTime() + CASTING_BAR_HOLD_TIME;
+			self.nextTextUpdate = 0
 		end
-	elseif ( event == "UNIT_SPELLCAST_DELAYED" ) then
+	elseif ( event == "UNIT_SPELLCAST_DELAYED" ) then -- NYI
 		if ( self:IsShown() ) then
 			local notInterruptible
 			local startTime, endTime = FindStartEndTime(self)
@@ -478,7 +500,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			self:SetMinMaxValues(0, self.maxValue);
 			if ( not self.casting ) then
 				self:SetStatusBarColor(CastingBarFrame_GetEffectiveStartColor(self, false, notInterruptible):GetRGB());
-				if ( self.Spark ) then
+				if ( self.isSparkEnabled ) then
 					self.Spark:Show();
 				end
 				--[[if ( self.Flash ) then
@@ -502,6 +524,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			self.maxValue = (endTime - startTime)
 			self:SetMinMaxValues(0, self.maxValue);
 			self:SetValue(self.value);
+			self.nextTextUpdate = 0
 		end
 	elseif ( event == "UNIT_SPELLCAST_CHANNEL_START" ) then
 		local text, texture, notInterruptible = self.name
@@ -531,7 +554,7 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 		--[[if ( self.Icon ) then
 			self.Icon:SetTexture(texture);
 		end]]
-		if ( self.Spark ) then
+		if ( self.isSparkEnabled ) then
 			self.Spark:Show();
 		end
 		CastingBarFrame_ApplyAlpha(self, 1.0);
@@ -566,8 +589,9 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event, ...)
 			self.maxValue = endTime - startTime
 			self:SetMinMaxValues(0, self.maxValue);
 			self:SetValue(self.value);
+			self.nextTextUpdate = 0
 		end
-	elseif ( event == "UNIT_SPELLCAST_INTERRUPTIBLE" or event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" ) then
+	elseif ( event == "UNIT_SPELLCAST_INTERRUPTIBLE" or event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE" ) then -- NYI
 		CastingBarFrame_UpdateInterruptibleState(self, event == "UNIT_SPELLCAST_NOT_INTERRUPTIBLE");
 	end
 end

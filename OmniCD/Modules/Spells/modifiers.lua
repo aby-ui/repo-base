@@ -687,7 +687,7 @@ E.cd_reduce_interrupts = {
 	[1766]   = { 341535,    0,      31224,  2   }
 }
 
--- TODO: cba...
+-- TODO: cba... (seems not all apellbook abilities are affected)
 E.cdrr_heartStopAura_blackList = {
 	[320137] = true,    -- Stormkeeper
 }

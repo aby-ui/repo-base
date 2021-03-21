@@ -1619,7 +1619,7 @@ function kspam.OnClickConfigButton()
 	DF:ApplyStandardBackdrop(kspamOptions)
 
 	--title
-	kspamOptions.titleBar = DF:CreateTitleBar(kspamOptions, "World  Quest Tracker Dungeon")
+	kspamOptions.titleBar = DF:CreateTitleBar(kspamOptions, "World  Quest Tracker Ad-Blocker")
 
 	local options = {
 		--filter #ads (default enabled)
@@ -1633,15 +1633,15 @@ function kspam.OnClickConfigButton()
 			desc = "Ad-Blocker Enabled",
 		},
 
-		--auto ignore leader
+		{type = "blank"},
 		{
 			type = "toggle",
-			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_leaders_enabled end,
+			get = function() return WorldQuestTracker.db.profile.groupfinder.kfilter.dont_show_ignored_leaders end,
 			set = function (self, fixedparam, value)
-				WorldQuestTracker.db.profile.groupfinder.kfilter.ignore_leaders_enabled = value
+				WorldQuestTracker.db.profile.groupfinder.kfilter.dont_show_ignored_leaders = value
 			end,
-			name = "Ignore Leader From Ads",
-			desc = "Ignore Leader From Ads",
+			name = "Don't Show Blacklisted Leaders",
+			desc = "Won't show groups where the leader previously got caught doing an Ad.",
 		},
 
 		--purge list of banned leaders
@@ -1652,8 +1652,8 @@ function kspam.OnClickConfigButton()
 				--feedback
 				WorldQuestTracker:Msg("Leaders list wiped.")
 			end,
-			name = "Wipe Leaders Ignored",
-			desc = "Wipe Leaders Ignored",
+			name = "Wipe Blacklisted Leaders",
+			desc = "Wipe Blacklisted Leaders",
 		},
 
 		{type = "blank"},
@@ -1713,7 +1713,7 @@ configButton:Hide()
 kspam:SetScript("OnUpdate", function()
 	if (LFGListFrame:IsShown()) then
 		local selectedCategory = LFGListFrame.SearchPanel.categoryID
-		if (selectedCategory == 2) then
+		if (selectedCategory == 2 or selectedCategory == 3) then --dungeon | raid
 			configButton:Show()
 		else
 			configButton:Hide()
@@ -1729,7 +1729,7 @@ function kspam.OnSortResults(results)
 
 	--check if the result received is from the dungeon section
 	local selectedCategory = LFGListFrame.SearchPanel.categoryID
-	if (selectedCategory ~= 2) then
+	if (selectedCategory ~= 2 and selectedCategory ~= 3) then --dungeon | raid
 		return
 	end
 
@@ -1758,7 +1758,7 @@ function kspam.FilterSortedResult(results)
 		end
 
 		--check if this character isn't in the black list
-		if (WorldQuestTracker.db.profile.groupfinder.kfilter.leaders_ignored[leaderName]) then
+		if (WorldQuestTracker.db.profile.groupfinder.kfilter.dont_show_ignored_leaders and WorldQuestTracker.db.profile.groupfinder.kfilter.leaders_ignored[leaderName]) then
 			tremove(results, i)
 			canAdd = false
 		end

@@ -132,13 +132,20 @@ function TalkingHeadBarModule:OnTalkingHeadUILoaded()
         end
     end)
 
-    hooksecurefunc(AlertFrame, "UpdateAnchors", function()
-        if self.frame then
-            self.frame:RepositionTalkingHeadFrame()
-        end
+    hooksecurefunc(AlertFrame, 'UpdateAnchors', function()
+        self:OnAlertFrameAnchorsUpdated()
     end)
 
-    if not InCombatLockdown() then
-        self.frame:Layout()
+    self.frame:RepositionTalkingHeadFrame()
+end
+
+-- reposition the talking head frame when it moves
+function TalkingHeadBarModule:OnAlertFrameAnchorsUpdated()
+    if (not self.frame) then return end
+
+    local _, relFrame = TalkingHeadFrame:GetPoint()
+
+    if self.frame ~= relFrame then
+        self.frame:RepositionTalkingHeadFrame()
     end
 end

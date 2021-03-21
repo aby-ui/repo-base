@@ -683,6 +683,7 @@ map.nodes[46914169] = NPC({
         ns.reward.Spacer(),
         Item({item=184620, quest=63202, note=L["Apprehensive"]}), -- Vessel of Unforunate Spirits
         Item({item=184615, quest=63183, note=L["Apprehensive"]}), -- Extradimensional Pockets
+        Item({item=184901, quest=63523, note=L["Apprehensive"]}), -- Broker Traversal Enhancer
         Item({item=184617, quest=63193, note=L["Tentative"]}), -- Bangle of Seniority
         Item({item=184621, quest=63204, note=L["Ambivalent"]}), -- Ritual Prism of Fortune
         Item({item=184618, quest=63200, note=L["Cordial"]}), -- Rank Insignia: Acquisitionist

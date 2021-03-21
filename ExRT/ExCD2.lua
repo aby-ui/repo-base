@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges
+local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime
 local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort, select = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort, select
 local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura
 
@@ -12,10 +12,6 @@ local GetSpellLevelLearned = GetSpellLevelLearned
 if ExRT.isClassic then
 	GetSpellLevelLearned = function () return 1 end
 end
-
---[[
-ToDo:
-]]
 
 local VExRT, VExRT_CDE = nil
 
@@ -476,6 +472,8 @@ module.db.spell_charge_fix = {		--Спелы с зарядами
 	[2050] = 235587,
 	[205234]=1,
 	[205629]=1,
+
+	--[17]=1,
 }
 
 module.db.spell_durationByTalent_fix = {	--Изменение длительности талантом\глифом   вид: [спелл] = {spellid глифа\таланта, изменение времени (-10;10;*0.5;*1.5)}
@@ -1454,6 +1452,7 @@ module.db.colsDefaults = {
 	frameColumns = 1,
 	frameBetweenLines = 0,
 	frameBlackBack = 0,
+	frameStrata = "MEDIUM",
 	methodsStyleAnimation = 1,
 	methodsTimeLineAnimation = 1,
 	methodsSortingRules = 1,
@@ -1484,6 +1483,7 @@ module.db.colsDefaults = {
 	textTemplateCenter = "",
 	
 	textIconNameChars = 50,
+	textIconCDStyle = 7,
 
 	blacklistText = "",
 	whitelistText = "",
@@ -1616,6 +1616,9 @@ local function BarUpdateText(self)
 	local barData = self.data
 
 	local time = (self.curr_end or 0) - GetTime() + 1
+	if barParent.methodsTextIgnoreActive then
+		time = (self.curr_end_cd or 0) - GetTime() + 1
+	end
 
 	if barData.specialTimer then
 		local newTime = barData.specialTimer()
@@ -1653,12 +1656,6 @@ local function BarUpdateText(self)
 	local offStatus = self.disStatus or ""
 	local chargesCount = self.curr_charges and "("..self.curr_charges..")" or ""
 
-	--[[
-	self.textLeft:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateLeft,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
-	self.textRight:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateRight,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
-	self.textCenter:SetText(string_trim(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(string_gsub(barParent.textTemplateCenter,"%%time%%",longtime),"%%stime%%",shorttime),"%%name%%",name),"%%name_time%%",name_time),"%%name_stime%%",name_stime),"%%spell%%",spellName),"%%status%%",offStatus),"%%charge%%",chargesCount),nil))
-	]]
-
 	gsub_data.time = longtime
 	gsub_data.stime = shorttime
 	gsub_data.name = name
@@ -1670,14 +1667,16 @@ local function BarUpdateText(self)
 
 	local left = string_trim(barParent.textTemplateLeft:gsub("%%([^%%]+)%%",gsub_func),nil)
 	if self.textLeft.text ~= left then
-		self.textLeft:SetText(left)
 		self.textLeft.text = left
+		if left == "" then left = " " end
+		self.textLeft:SetText(left)
 	end
 
 	local right = string_trim(barParent.textTemplateRight:gsub("%%([^%%]+)%%",gsub_func),nil)
 	if self.textRight.text ~= right then
-		self.textRight:SetText(right)
 		self.textRight.text = right
+		if right == "" then right = " " end
+		self.textRight:SetText(right)
 	end
 
 	local center = string_trim(barParent.textTemplateCenter:gsub("%%([^%%]+)%%",gsub_func),nil)
@@ -1686,16 +1685,39 @@ local function BarUpdateText(self)
 		self.textCenter.text = center
 	end
 
-	--[[
-	self.textLeft:SetText(barParent.textTemplateLeft:gsub("%%([^%%]+)%%",gsub_func))
-	self.textRight:SetText(barParent.textTemplateRight:gsub("%%([^%%]+)%%",gsub_func))
-	self.textCenter:SetText(barParent.textTemplateCenter:gsub("%%([^%%]+)%%",gsub_func))
-	]]
-
 	if barParent.optionIconName and (self.textIcon.name ~= barData.name or self.textIcon.numChars ~= barParent.textIconNameChars) then
 		self.textIcon:SetText(utf8sub(barData.name,1,barParent.textIconNameChars))
 		self.textIcon.name = barData.name
 		self.textIcon.numChars = barParent.textIconNameChars
+	end
+
+	local cdText
+	if barParent.optionCooldownUseExRT then
+		local style = barParent.textIconCDStyle
+		time = time - 1
+		if  time <= 0 then
+			cdText = ""
+		elseif time < 60 then
+			if style == 1 or style == 2 or style == 5 or style == 7 or style == 8 then
+				cdText = ceil(time)
+			elseif style == 3 or style == 4 or style == 6 or style == 9 or style == 10 then
+				cdText = format("%.1f",time)
+			end
+		elseif style == 1 or style == 3 then
+			cdText = SecondsToTime(time, true)
+		elseif style == 2 or style == 4 then
+			cdText = SecondsToTime(time+60, true)
+		elseif style == 5 or style == 6 then
+			cdText = format("%d:%02d",time/60,time%60)
+		elseif style == 7 or style == 9 then
+			cdText = format("%dm",time/60)
+		elseif style == 8 or style == 10 then
+			cdText = format("%dm",time/60+1)
+		end
+	end
+	if self.textIconCD.text ~= cdText then
+		self.textIconCD:SetText(cdText or "")
+		self.textIconCD.text = cdText
 	end
 end
 
@@ -1788,11 +1810,6 @@ local function UpdateBar(self)
 
 	self.iconTexture:SetTexture(data.icon)
 	self:UpdateText()
-	if self.parent.optionIconName then
-		self.textIcon:SetText(data.name)
-		self.textIcon.name = data.name
-		self.textIcon.numChars = nil
-	end
 end
 
 local function BarStateAnimation(self)
@@ -1812,6 +1829,7 @@ local function BarStateAnimation(self)
 		bar.textRight:SetTextColor(t.r + bar.curr_anim_t_r*progress,t.g + bar.curr_anim_t_g*progress,t.b + bar.curr_anim_t_b*progress)
 		bar.textCenter:SetTextColor(t.r + bar.curr_anim_t_r*progress,t.g + bar.curr_anim_t_g*progress,t.b + bar.curr_anim_t_b*progress)
 		bar.textIcon:SetTextColor(t.r + bar.curr_anim_t_r*progress,t.g + bar.curr_anim_t_g*progress,t.b + bar.curr_anim_t_b*progress)
+		bar.textIconCD:SetTextColor(t.r + bar.curr_anim_t_r*progress,t.g + bar.curr_anim_t_g*progress,t.b + bar.curr_anim_t_b*progress)
 	end
 end
 local function BarStateAnimationFinished(self)
@@ -1845,6 +1863,7 @@ local function UpdateBarStatus(self,isTitle)
 	local isActive = (active - currTime) > 0
 	local isCooldown = (cooldown - currTime) > 0
 	local t = (isActive and active) or (isCooldown and cooldown)
+	local tOnlyCD = (isCooldown and cooldown)
 
 	local isDisabled = data.disabled
 	if isDisabled then
@@ -1883,6 +1902,7 @@ local function UpdateBarStatus(self,isTitle)
 			elseif data.charge > currTime and not isActive then
 				lastUse = data.charge - data.cd
 				t = data.charge
+				tOnlyCD = t
 
 				isCooldown = true
 
@@ -1912,6 +1932,7 @@ local function UpdateBarStatus(self,isTitle)
 		self.curr_start = lastUse
 		self.curr_end = t
 		self.curr_dur = t - lastUse
+		self.curr_end_cd = tOnlyCD
 
 		self.timeline.SetWidth = self.timeline._SetWidth
 		self.timeline.SetShown = self.timeline._SetShown
@@ -1922,6 +1943,7 @@ local function UpdateBarStatus(self,isTitle)
 		self.curr_start = 0
 		self.curr_end = 1
 		self.curr_dur = 1
+		self.curr_end_cd = 1
 
 		self.timeline.SetWidth = self.timeline._SetWidth
 		self.timeline.SetShown = self.timeline._SetShown
@@ -2053,6 +2075,7 @@ local function UpdateBarStatus(self,isTitle)
 			self.textRight:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 			self.textCenter:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 			self.textIcon:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
+			self.textIconCD:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 		end
 
 		if isActive and self.curr_anim_state ~= 1 then
@@ -2114,6 +2137,7 @@ local function UpdateBarStatus(self,isTitle)
 		self.textRight:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 		self.textCenter:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 		self.textIcon:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
+		self.textIconCD:SetTextColor(colorTable.r,colorTable.g,colorTable.b)
 	end
 	self.afterAnimFix = nil
 
@@ -2206,6 +2230,7 @@ local function BarCreateTitle(self)
 	self.textCenter.text = nil
 	self.textIcon:SetText("")
 	self.textIcon.name = nil
+	self.textIconCD:SetText("")
 
 	if parent.optionIconPosition == 2 then
 		self.icon:Show()
@@ -2254,6 +2279,31 @@ local function LineIconOnHover(self)
 	GameTooltip:SetHyperlink("spell:"..parent.data.db[1])
 	GameTooltip:Show()
 end
+
+local function LineClickFrameOnHover_OnUpdate(self)
+	if not self:IsMouseOver() then
+		self:SetScript("OnUpdate",nil)
+		if self.IconIsHovered then
+			GameTooltip_Hide()
+			self.IconIsHovered = nil
+		end
+		return
+	end
+	local isHover = self:GetParent().icon:IsMouseOver()
+	if isHover and not self.IconIsHovered then
+		LineIconOnHover(self)
+		self.IconIsHovered = true
+	elseif not isHover and self.IconIsHovered then
+		GameTooltip_Hide()
+		self.IconIsHovered = nil
+	end
+end
+
+local function LineClickFrameOnHover(self)
+	self.IconIsHovered = nil
+	self:SetScript("OnUpdate",LineClickFrameOnHover_OnUpdate)
+end
+
 local function LineIconOnClick(self)
 	local parent = self:GetParent()
 	if not parent.data then	return end
@@ -2353,6 +2403,12 @@ local function UpdateBarStyle(self)
 
 		self.textCenter:SetPoint("LEFT",self.textLeft,"RIGHT",0,0)
 		self.textCenter:SetPoint("RIGHT",self.statusbar,0,0)
+	elseif parent.textTemplateCenter:find("time%%") then
+		self.textLeft:SetPoint("LEFT",self.statusbar,1,0)
+		self.textRight:SetPoint("RIGHT",self.statusbar,-1+fontOutlineFix,0)
+
+		self.textCenter:SetPoint("LEFT",self.statusbar,0,0)
+		self.textCenter:SetPoint("RIGHT",self.statusbar,0,0)		
 	else
 		self.textRight:SetPoint("RIGHT",self.statusbar,-1+fontOutlineFix,0)
 		self.textLeft:SetPoint("LEFT",self.statusbar,1,0)
@@ -2378,12 +2434,14 @@ local function UpdateBarStyle(self)
 	self.textRight:SetFont(parent.fontRightName,parent.fontRightSize,parent.fontRightOutline and "OUTLINE")
 	self.textCenter:SetFont(parent.fontCenterName,parent.fontCenterSize,parent.fontCenterOutline and "OUTLINE")
 	self.textIcon:SetFont(parent.fontIconName,parent.fontIconSize,parent.fontIconOutline and "OUTLINE")
+	self.textIconCD:SetFont(parent.fontIconCDName,parent.fontIconCDSize,parent.fontIconCDOutline and "OUTLINE")
 
 	local fontOffset = 0
 	fontOffset = parent.fontLeftShadow and 1 or 0	self.textLeft:SetShadowOffset(1*fontOffset,-1*fontOffset)
 	fontOffset = parent.fontRightShadow and 1 or 0	self.textRight:SetShadowOffset(1*fontOffset,-1*fontOffset)
 	fontOffset = parent.fontCenterShadow and 1 or 0	self.textCenter:SetShadowOffset(1*fontOffset,-1*fontOffset)
 	fontOffset = parent.fontIconShadow and 1 or 0	self.textIcon:SetShadowOffset(1*fontOffset,-1*fontOffset)
+	fontOffset = parent.fontIconCDShadow and 1 or 0	self.textIconCD:SetShadowOffset(1*fontOffset,-1*fontOffset)
 
 	local cdFont = self.cooldown:GetRegions()
 	cdFont:SetFont(cdFont:GetFont(),parent.fontCDSize or 16,"OUTLINE")
@@ -2398,6 +2456,12 @@ local function UpdateBarStyle(self)
 
 	self.textIcon:SetText("")
 	self.textIcon.name = nil
+
+	if parent.optionCooldownUseExRT then
+		self.textIconCD:Show()
+	else
+		self.textIconCD:Hide()
+	end
 
 	if parent.glowStop ~= self.glowStop then
 		self.glowStop(self.icon)
@@ -2417,15 +2481,6 @@ local function UpdateBarStyle(self)
 		self.timeline:Hide()
 	end
 
-	if parent.methodsIconTooltip then
-		self.icon:SetScript("OnEnter",LineIconOnHover)
-		self.icon:SetScript("OnLeave",GameTooltip_Hide)
-	else
-		self.icon:SetScript("OnEnter",nil)
-		self.icon:SetScript("OnLeave",nil)
-	end
-
-
 	if parent.methodsLineClick and parent.methodsLineClickWhisper then
 		self.clickFrame:SetScript("OnClick",LineIconOnClickBoth)
 		self.clickFrame:Show()
@@ -2441,6 +2496,16 @@ local function UpdateBarStyle(self)
 	else
 		self.clickFrame:SetScript("OnClick",nil)
 		self.clickFrame:Hide()
+	end
+	if parent.methodsIconTooltip then
+		if not self.clickFrame:IsShown() then
+			self.clickFrame:Show()
+			self.clickFrame:SetFrameLevel(1000)			
+		end
+		self.clickFrame:SetScript("OnEnter",LineClickFrameOnHover)
+	else
+		self.clickFrame:SetScript("OnEnter",nil)
+		self.clickFrame:SetScript("OnUpdate",nil)
 	end
 
 	local borderSize = parent.textureBorderSize
@@ -2550,8 +2615,10 @@ local function CreateBar(parent)
 	self.textRight = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Size(40,0):Point("TOPRIGHT",1,0):Right():Color()
 	self.textCenter = ELib:Text(self.statusbar,nil,nil,"GameFontNormal"):Point(0,0):Center():Color()
 	self.textIcon = ELib:Text(icon,nil,nil,"GameFontNormal"):Point(0,0):Center():Bottom():Color()
+	self.textIconCD = ELib:Text(cooldown,nil,nil,"GameFontNormal"):Point("CENTER"):Center():Middle():Color()
 
 	self.textIcon:SetDrawLayer("ARTWORK",3)
+	self.textIconCD:SetDrawLayer("ARTWORK",3)
 
 	self.glowStart = ExRT.NULLfunc
 	self.glowStop = ExRT.NULLfunc
@@ -2603,6 +2670,7 @@ local function FixFontsOnLoad(self)
 		bar.textRight:SetFont(defGameFont,self.fontRightSize - 1)
 		bar.textCenter:SetFont(defGameFont,self.fontCenterSize - 1)
 		bar.textIcon:SetFont(defGameFont,self.fontIconSize - 1)
+		bar.textIconCD:SetFont(defGameFont,self.fontIconSize - 1)
 
 		bar:UpdateStyle()
 	end
@@ -2889,6 +2957,8 @@ do
 	local LGFReady, LGF = pcall(LibStub,"LibGetFrame-1.0")
 	local LGFNullOpt = {}
 
+	local needReposAttached
+
 	local SortAllData2
 	function SortAllData()
 		
@@ -3037,7 +3107,7 @@ do
 				local prevDisabledStatus = data.disabled
 				local isDead = status_UnitIsDead[ name ]
 				local isOffline = status_UnitIsDisconnected[ name ]
-				if isDead or isOffline then
+				if (isDead or isOffline) and not columnFrame.methodsCDOnlyTime then
 					data.disabled = isOffline and 2 or 1
 				else
 					data.disabled = nil
@@ -3086,6 +3156,10 @@ do
 				local bar = data.bar
 				if bar and bar.data == data and (data.disabled ~= prevDisabledStatus or data.outofrange ~= prevOutOfRange or forceUpdate) then
 					data.bar:UpdateStatus()
+				end
+
+				if columnFrame.ATFenabled then
+					needReposAttached = true
 				end
 
 				_CV_Len = _CV_Len + 1
@@ -3262,8 +3336,9 @@ do
 
 		timerATFRepos = timerATFRepos + elapsed
 		local ATFProcess
-		if timerATFRepos > 1 then
+		if timerATFRepos > 1 or needReposAttached then
 			timerATFRepos = 0
+			needReposAttached = false
 			if LGFReady then
 				ATFProcess = true
 			end
@@ -3274,7 +3349,7 @@ do
 			if col.IsColumnEnabled then
 				local start = inColsCount[i]
 				if start > col.optionLinesMax then
-					start = col.optionLinesMa
+					start = col.optionLinesMax
 				end
 				for j=start+1,col.NumberLastLinesActive do
 					local bar = col.lines[j]
@@ -3318,8 +3393,8 @@ do
 								end
 								prevLineForGUID[guid] = bar
 
-								if frame:GetFrameStrata() ~= col.FrameStrata then
-									local strata = frame:GetFrameStrata()
+								local strata = frame:GetFrameStrata()
+								if strata ~= col.FrameStrata then
 									col:SetFrameStrata(strataToStrata[strata] or strata)
 									col.FrameStrata = strata
 								end
@@ -7307,13 +7382,14 @@ function module.options:Load()
 		optColSet.sliderColsInCol:SetValue(VColOpt.frameColumns or defOpt.frameColumns)
 		optColSet.sliderBetweenLines:SetValue(VColOpt.frameBetweenLines or defOpt.frameBetweenLines)
 		optColSet.sliderBlackBack:SetValue(VColOpt.frameBlackBack or defOpt.frameBlackBack)
+		optColSet.dropDownStrata:SetText(VColOpt.frameStrata or defOpt.frameStrata)
 
 		optColSet.chkGeneral:doAlphas()
 
 		optColSet.sliderHeight:SetValue(VColOpt.iconSize or defOpt.iconSize)
 		optColSet.chkGray:SetChecked(VColOpt.iconGray)
 		optColSet.chkCooldown:SetChecked(VColOpt.methodsCooldown)
-		optColSet.chkCooldownHideNumbers:SetChecked(VColOpt.iconCooldownHideNumbers)
+		optColSet:chkCooldownTextUpdate()
 		optColSet.chkCooldownShowSwipe:SetChecked(VColOpt.iconCooldownShowSwipe)
 		optColSet.chkShowTitles:SetChecked(VColOpt.iconTitles)
 		optColSet.chkHideBlizzardEdges:SetChecked(VColOpt.iconHideBlizzardEdges)
@@ -7378,6 +7454,10 @@ function module.options:Load()
 		optColSet.textCenterTemEdit:SetText(VColOpt.textTemplateCenter or defOpt.textTemplateCenter)
 		optColSet.chkIconName:SetChecked(VColOpt.textIconName)
 		optColSet.sliderIconNameChars:SetValue(VColOpt.textIconNameChars or defOpt.textIconNameChars)
+		do
+			local deftextIconCDStyle = VColOpt.textIconCDStyle or defOpt.textIconCDStyle
+			optColSet.dropDownIconCDStyle:SetText(optColSet.dropDownIconCDStyle.Styles[deftextIconCDStyle])
+		end
 
 		optColSet.chkGeneralText:SetChecked(VColOpt.textGeneral)
 
@@ -7408,6 +7488,8 @@ function module.options:Load()
 		optColSet.chkSortByAvailability:SetChecked(VColOpt.methodsSortByAvailability)
 		optColSet.chkSortByAvailability_activeToTop:SetChecked(VColOpt.methodsSortActiveToTop)
 		optColSet.chkReverseSorting:SetChecked(VColOpt.methodsReverseSorting)
+		optColSet.chkCDOnlyTimer:SetChecked(VColOpt.methodsCDOnlyTime)
+		optColSet.chkTextIgnoreActive:SetChecked(VColOpt.methodsTextIgnoreActive)
 
 		optColSet.chkGeneralMethods:doAlphas()
 
@@ -7591,7 +7673,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneral:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.sliderLinesNum,module.options.optColSet.sliderAlpha,module.options.optColSet.sliderScale,module.options.optColSet.sliderWidth,module.options.optColSet.sliderColsInCol,module.options.optColSet.sliderBetweenLines,module.options.optColSet.sliderBlackBack,module.options.optColSet.butToCenter)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].frameGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.sliderLinesNum,module.options.optColSet.sliderAlpha,module.options.optColSet.sliderScale,module.options.optColSet.sliderWidth,module.options.optColSet.sliderColsInCol,module.options.optColSet.sliderBetweenLines,module.options.optColSet.sliderBlackBack,module.options.optColSet.butToCenter,module.options.optColSet.dropDownStrata,module.options.optColSet.textdropDownStrata)
 	end
 
 	self.optColSet.sliderLinesNum = ELib:Slider(self.optColSet.superTabFrame.tab[1],L.cd2lines):Size(400):Point("TOP",0,-50):Range(1,module.db.maxLinesInCol):SetObey(true):OnChange(function(self,event) 
@@ -7650,7 +7732,23 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.butToCenter = ELib:Button(self.optColSet.superTabFrame.tab[1],L.cd2ColSetResetPos):Size(200,20):Point("TOP",0,-295):OnClick(function(self) 
+	self.optColSet.dropDownStrata = ELib:DropDown(self.optColSet.superTabFrame.tab[1],230,8):Point("TOPLEFT",198,-295):Size(230)
+	self.optColSet.textdropDownStrata = ELib:Text(self.optColSet.superTabFrame.tab[1],L.cd2ColStrata..":",11):Size(200,20):Point("TOPLEFT",27,-295)
+	for i,strataString in ipairs({"BACKGROUND","LOW","MEDIUM","HIGH","DIALOG","FULLSCREEN","FULLSCREEN_DIALOG","TOOLTIP"}) do
+		self.optColSet.dropDownStrata.List[i] = {
+			text = strataString,
+			arg1 = strataString,
+			func = function (self,arg)
+				ELib:DropDownClose()
+				currColOpt.frameStrata = arg
+				module:ReloadAllSplits()
+				self:GetParent().parent:SetText(arg)
+			end,
+			tooltip = strataString == "Auto" and L.cd2ColStrataAutoTooltip,
+		}
+	end
+
+	self.optColSet.butToCenter = ELib:Button(self.optColSet.superTabFrame.tab[1],L.cd2ColSetResetPos):Size(200,20):Point("TOP",0,-330):OnClick(function(self) 
 		if (module.db.maxColumns + 1) == module.options.optColTabs.selected then
 			module.frame:ClearAllPoints()
 			module.frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
@@ -7704,14 +7802,41 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkCooldownHideNumbers = ELib:Check(self.optColSet.superTabFrame.tab[2],L.BattleResHideTime):Point("TOPLEFT",self.optColSet.chkCooldown,25,-25):Tooltip(L.BattleResHideTimeTooltip):OnClick(function(self) 
-		if self:GetChecked() then
-			currColOpt.iconCooldownHideNumbers = true
-		else
-			currColOpt.iconCooldownHideNumbers = nil
-		end
+	self.optColSet.chkCooldownTextDef = ELib:Radio(self.optColSet.superTabFrame.tab[2],L.cd2ColSetCDTimeDef):Point("TOPLEFT",self.optColSet.chkCooldown,25,-25):Tooltip(L.cd2ColSetCDTimeDefTooltip):OnClick(function(self) 
+		currColOpt.iconCooldownHideNumbers = nil
+		currColOpt.iconCooldownExRTNumbers = nil
+		module.options.optColSet:chkCooldownTextUpdate()
 		module:ReloadAllSplits()
 	end)
+
+	self.optColSet.chkCooldownExRTNumbers = ELib:Radio(self.optColSet.superTabFrame.tab[2],L.cd2ColSetCDTimeExRT):Point("TOPLEFT",self.optColSet.chkCooldownTextDef,0,-25):Tooltip(L.cd2ColSetCDTimeExRTTooltip):OnClick(function(self) 
+		currColOpt.iconCooldownHideNumbers = nil
+		currColOpt.iconCooldownExRTNumbers = true
+		module.options.optColSet:chkCooldownTextUpdate()
+		module:ReloadAllSplits()
+	end)
+
+	self.optColSet.chkCooldownHideNumbers = ELib:Radio(self.optColSet.superTabFrame.tab[2],L.BattleResHideTime):Point("TOPLEFT",self.optColSet.chkCooldownExRTNumbers,0,-25):Tooltip(L.BattleResHideTimeTooltip):OnClick(function(self) 
+		currColOpt.iconCooldownHideNumbers = true
+		currColOpt.iconCooldownExRTNumbers = nil
+		module.options.optColSet:chkCooldownTextUpdate()
+		module:ReloadAllSplits()
+	end)	
+
+	self.optColSet.chkCooldownTextUpdate = function(self)
+		local v1,v2,v3
+		local currColOpt = VExRT.ExCD2.colSet[module.options.optColTabs.selected]
+		if currColOpt.iconCooldownExRTNumbers then
+			v3 = true
+		elseif currColOpt.iconCooldownHideNumbers then
+			v2 = true
+		else
+			v1 = true
+		end
+		module.options.optColSet.chkCooldownTextDef:SetChecked(v1)
+		module.options.optColSet.chkCooldownHideNumbers:SetChecked(v2)
+		module.options.optColSet.chkCooldownExRTNumbers:SetChecked(v3)
+	end
 
 	self.optColSet.chkCooldownShowSwipe = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ShowEgde):Point("TOPLEFT",self.optColSet.chkCooldownHideNumbers,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
@@ -7737,7 +7862,7 @@ function module.options:Load()
 		}
 	end
 
-	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-100):OnClick(function(self) 
+	self.optColSet.chkShowTitles = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetShowTitles):Point("TOPLEFT",self.optColSet.chkCooldown,0,-150):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.iconTitles = true
 		else
@@ -7765,7 +7890,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralIcons:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers,module.options.optColSet.textIconPos, module.options.optColSet.textGlowType, module.options.optColSet.dropDownCooldownGlowType)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers,module.options.optColSet.textIconPos, module.options.optColSet.textGlowType, module.options.optColSet.dropDownCooldownGlowType,module.options.optColSet.chkCooldownTextDef,module.options.optColSet.chkCooldownExRTNumbers)
 	end
 
 	--> Texture and colors Options
@@ -7995,6 +8120,7 @@ function module.options:Load()
 	end)
 
 	function self:showColorFrame()
+		local currColOpt = VExRT.ExCD2.colSet[module.options.optColTabs.selected]
 		for j=1,3 do
 			for i=1,3 do
 				local this = module.options.colorSetupFrame[ "color"..colorSetupFrameColorsObjectsNames[i]..colorSetupFrameColorsNames[j] ]
@@ -8031,7 +8157,7 @@ function module.options:Load()
 
 	self.optColSet.superTabFrame.tab[4].decorationLine = ELib:DecorationLine(self.optColSet.superTabFrame.tab[4],true,"BACKGROUND"):Point("TOPLEFT",self.optColSet.superTabFrame.tab[4],0,-35):Point("BOTTOMRIGHT",self.optColSet.superTabFrame.tab[4],"TOPRIGHT",0,-55)
 
-	self.optColSet.fontsTab = ELib:Tabs(self.optColSet.superTabFrame.tab[4],0,L.cd2ColSetFontPosGeneral,L.cd2ColSetFontPosRight,L.cd2ColSetFontPosCenter,L.cd2ColSetFontPosIcon):Size(455,160):Point(0,-55)
+	self.optColSet.fontsTab = ELib:Tabs(self.optColSet.superTabFrame.tab[4],0,L.cd2ColSetFontPosGeneral,L.cd2ColSetFontPosRight,L.cd2ColSetFontPosCenter,L.cd2ColSetFontPosIcon,L.cd2ColSetFontPosIconCD):Size(455,160):Point(0,-55)
 	self.optColSet.fontsTab:SetBackdropBorderColor(0,0,0,0)
 	self.optColSet.fontsTab:SetBackdropColor(0,0,0,0)
 	local function fontsTabButtonClick(self)
@@ -8050,21 +8176,21 @@ function module.options:Load()
 		module.options.optColSet.chkFontOutline:SetChecked(VExRT.ExCD2.colSet[i][self.fontMark.."Outline"])
 		module.options.optColSet.chkFontShadow:SetChecked(VExRT.ExCD2.colSet[i][self.fontMark.."Shadow"])
 	end
-	for i=1,4 do
+	for i=1,5 do
 		self.optColSet.fontsTab.tabs[i].button:SetScript("OnClick",fontsTabButtonClick)
 	end
-	local fontOtherAvailableTable = {"Left","Right","Center","Icon"}
+	local fontOtherAvailableTable = {"Left","Right","Center","Icon","IconCD"}
 	function self.fontOtherAvailable(isAvailable)
 		if isAvailable then
-			for i=2,4 do
+			for i=2,5 do
 				self.optColSet.fontsTab.tabs[i].button:Show()
 			end
 			self.optColSet.fontsTab.tabs[1].button:SetText(L.cd2ColSetFontPosLeft)
-			for i=1,4 do
+			for i=1,5 do
 				self.optColSet.fontsTab.tabs[i].button.fontMark = "font"..fontOtherAvailableTable[i]
 			end
 		else
-			for i=2,4 do
+			for i=2,5 do
 				self.optColSet.fontsTab.tabs[i].button:Hide()
 			end
 			self.optColSet.fontsTab.tabs[1].button:SetText(L.cd2ColSetFontPosGeneral)
@@ -8206,7 +8332,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.sliderIconNameChars = ELib:Slider(self.optColSet.superTabFrame.tab[5],"Максимальная длинна"):Size(140):Point("TOP",self.optColSet.chkIconName,0,-8):Point("LEFT",self.optColSet.chkIconName.text,"RIGHT",20,0):Range(1,50):OnChange(function(self,event) 
+	self.optColSet.sliderIconNameChars = ELib:Slider(self.optColSet.superTabFrame.tab[5],L.cd2ColSetMaxLength):Size(140):Point("TOP",self.optColSet.chkIconName,0,-8):Point("LEFT",self.optColSet.chkIconName.text,"RIGHT",20,0):Range(1,50):OnChange(function(self,event) 
 		event = event - event%1
 		currColOpt.textIconNameChars = event
 		module:ReloadAllSplits()
@@ -8215,6 +8341,35 @@ function module.options:Load()
 	end)
 	self.optColSet.sliderIconNameChars.Low:SetText("")
 	self.optColSet.sliderIconNameChars.High:SetText("")
+
+
+	self.optColSet.dropDownIconCDStyle = ELib:DropDown(self.optColSet.superTabFrame.tab[5],350):Size(230):Point("TOPLEFT",self.optColSet.chkIconName,170,-30)
+	self.optColSet.textdropDownIconCDStyle = ELib:Text(self.optColSet.superTabFrame.tab[5],L.cd2ColSetCDTimeStyle..":",11):Size(200,20):Point("TOPLEFT",self.optColSet.chkIconName,0,-30)
+	self.optColSet.dropDownIconCDStyle.Styles = {
+		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff00"..SecondsToTime(95,true).."|r - 120+:|cff00ff00"..SecondsToTime(125,true).."|r",
+		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff00"..SecondsToTime(95+60,true).."|r - 120+:|cff00ff00"..SecondsToTime(125+60,true).."|r",
+		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff00"..SecondsToTime(95,true).."|r - 120+:|cff00ff00"..SecondsToTime(125,true).."|r",
+		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff00"..SecondsToTime(95+60,true).."|r - 120+:|cff00ff00"..SecondsToTime(125+60,true).."|r",
+		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff001:35|r - 120+:|cff00ff002:05|r",
+		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff001:35|r - 120+:|cff00ff002:05|r",
+		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff001m|r - 120+:|cff00ff002m|r",
+		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff002m|r - 120+:|cff00ff003m|r",
+		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff001m|r - 120+:|cff00ff002m|r",
+		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff002m|r - 120+:|cff00ff003m|r",
+	}
+	for i=1,#self.optColSet.dropDownIconCDStyle.Styles do
+		self.optColSet.dropDownIconCDStyle.List[i] = {
+			text = self.optColSet.dropDownIconCDStyle.Styles[i],
+			arg1 = i,
+			arg2 = self.optColSet.dropDownIconCDStyle.Styles[i],
+			func = function (self,arg,arg2)
+				ELib:DropDownClose()
+				currColOpt.textIconCDStyle = arg
+				module:ReloadAllSplits()
+				self:GetParent().parent:SetText(arg2)
+			end
+		}
+	end
 
 	self.optColSet.chkGeneralText = ELib:Check(self.optColSet.superTabFrame.tab[5],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
@@ -8226,12 +8381,17 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralText:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton,module.options.optColSet.sliderIconNameChars)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].textGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.textLeftTemEdit,module.options.optColSet.textRightTemEdit,module.options.optColSet.textCenterTemEdit,module.options.optColSet.chkIconName,module.options.optColSet.textAllTemplates,module.options.optColSet.textLeftTemText,module.options.optColSet.textRightTemText,module.options.optColSet.textCenterTemText,module.options.optColSet.textResetButton,module.options.optColSet.sliderIconNameChars,module.options.optColSet.dropDownIconCDStyle,module.options.optColSet.textdropDownIconCDStyle)
 	end
 
 	--> Method options
 
-	self.optColSet.chkShowOnlyOnCD = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetOnlyOnCD):Point(10,-30):OnClick(function(self) 
+	self.optColSet.superTabFrame.tab[6].scroll = ELib:ScrollFrame(self.optColSet.superTabFrame.tab[6]):Point("TOP"):Size(456,444):Height(485)
+	ELib:Border(self.optColSet.superTabFrame.tab[6].scroll,0)
+	self.optColSet.col6scroll = self.optColSet.superTabFrame.tab[6].scroll.C
+	self.optColSet.col6scroll:SetWidth(456 - 16)
+
+	self.optColSet.chkShowOnlyOnCD = ELib:Check(self.optColSet.col6scroll,L.cd2OtherSetOnlyOnCD):Point(10,-30):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsShownOnCD = true
 		else
@@ -8240,7 +8400,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkBotToTop = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetBotToTop):Point(10,-55):OnClick(function(self) 
+	self.optColSet.chkBotToTop = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetBotToTop):Point(10,-55):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.frameAnchorBottom = true
 		else
@@ -8249,8 +8409,8 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.textStyleAnimation = ELib:Text(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetStyleAnimation..":",11):Size(200,20):Point(10,-80)
-	self.optColSet.dropDownStyleAnimation = ELib:DropDown(self.optColSet.superTabFrame.tab[6],205,2):Size(220):Point(180,-80)
+	self.optColSet.textStyleAnimation = ELib:Text(self.optColSet.col6scroll,L.cd2OtherSetStyleAnimation..":",11):Size(200,20):Point(10,-80)
+	self.optColSet.dropDownStyleAnimation = ELib:DropDown(self.optColSet.col6scroll,205,2):Size(220):Point(180,-80)
 	self.optColSet.dropDownStyleAnimation.Styles = {L.cd2OtherSetStyleAnimation1,L.cd2OtherSetStyleAnimation2}
 	for i=1,#self.optColSet.dropDownStyleAnimation.Styles do
 		self.optColSet.dropDownStyleAnimation.List[i] = {
@@ -8265,8 +8425,8 @@ function module.options:Load()
 		}
 	end
 
-	self.optColSet.textTimeLineAnimation = ELib:Text(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetTimeLineAnimation..":",11):Size(200,20):Point(10,-105)
-	self.optColSet.dropDownTimeLineAnimation = ELib:DropDown(self.optColSet.superTabFrame.tab[6],205,2):Size(220):Point(180,-105)
+	self.optColSet.textTimeLineAnimation = ELib:Text(self.optColSet.col6scroll,L.cd2OtherSetTimeLineAnimation..":",11):Size(200,20):Point(10,-105)
+	self.optColSet.dropDownTimeLineAnimation = ELib:DropDown(self.optColSet.col6scroll,205,2):Size(220):Point(180,-105)
 	self.optColSet.dropDownTimeLineAnimation.Styles = {L.cd2OtherSetTimeLineAnimation1,L.cd2OtherSetTimeLineAnimation2}
 	for i=1,#self.optColSet.dropDownTimeLineAnimation.Styles do
 		self.optColSet.dropDownTimeLineAnimation.List[i] = {
@@ -8281,7 +8441,7 @@ function module.options:Load()
 		}
 	end
 
-	self.optColSet.chkIconTooltip = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetIconToolip):Point(10,-130):OnClick(function(self) 
+	self.optColSet.chkIconTooltip = ELib:Check(self.optColSet.col6scroll,L.cd2OtherSetIconToolip):Point(10,-130):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsIconTooltip = true
 		else
@@ -8290,7 +8450,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkLineClick = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetLineClick):Point(10,-155):OnClick(function(self) 
+	self.optColSet.chkLineClick = ELib:Check(self.optColSet.col6scroll,L.cd2OtherSetLineClick):Point(10,-155):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsLineClick = true
 		else
@@ -8299,7 +8459,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkLineClickWhisper = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2OtherSetLineClickWhisper):Point(10,-180):OnClick(function(self) 
+	self.optColSet.chkLineClickWhisper = ELib:Check(self.optColSet.col6scroll,L.cd2OtherSetLineClickWhisper):Point(10,-180):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsLineClickWhisper = true
 		else
@@ -8308,7 +8468,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkNewSpellNewLine = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2NewSpellNewLine):Point(10,-205):Tooltip(L.cd2NewSpellNewLineTooltip):OnClick(function(self) 
+	self.optColSet.chkNewSpellNewLine = ELib:Check(self.optColSet.col6scroll,L.cd2NewSpellNewLine):Point(10,-205):Tooltip(L.cd2NewSpellNewLineTooltip):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsNewSpellNewLine = true
 		else
@@ -8317,8 +8477,8 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.textSortingRules= ELib:Text(self.optColSet.superTabFrame.tab[6],L.cd2MethodsSortingRules..":",11):Size(200,20):Point(10,-230)
-	self.optColSet.dropDownSortingRules = ELib:DropDown(self.optColSet.superTabFrame.tab[6],405,6):Size(220):Point(180,-230)
+	self.optColSet.textSortingRules= ELib:Text(self.optColSet.col6scroll,L.cd2MethodsSortingRules..":",11):Size(200,20):Point(10,-230)
+	self.optColSet.dropDownSortingRules = ELib:DropDown(self.optColSet.col6scroll,405,6):Size(220):Point(180,-230)
 	self.optColSet.dropDownSortingRules.Rules = {L.cd2MethodsSortingRules1,L.cd2MethodsSortingRules2,L.cd2MethodsSortingRules3,L.cd2MethodsSortingRules4,L.cd2MethodsSortingRules5,L.cd2MethodsSortingRules6}
 	for i=1,#self.optColSet.dropDownSortingRules.Rules do
 		self.optColSet.dropDownSortingRules.List[i] = {
@@ -8334,7 +8494,7 @@ function module.options:Load()
 		}
 	end
 
-	self.optColSet.chkHideOwnSpells = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2MethodsDisableOwn):Point(10,-255):OnClick(function(self) 
+	self.optColSet.chkHideOwnSpells = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsDisableOwn):Point(10,-255):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsHideOwnSpells = true
 		else
@@ -8343,7 +8503,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkAlphaNotInRange = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2MethodsAlphaNotInRange):Point(10,-280):OnClick(function(self) 
+	self.optColSet.chkAlphaNotInRange = ELib:Check(self.optColSet.col6scroll,L.cd2MethodsAlphaNotInRange):Point(10,-280):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsAlphaNotInRange = true
 		else
@@ -8352,7 +8512,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.sliderAlphaNotInRange = ELib:Slider(self.optColSet.superTabFrame.tab[6],""):Size(140):Point("TOPLEFT",self.optColSet.chkAlphaNotInRange,270,-3):Range(0,100):OnChange(function(self,event) 
+	self.optColSet.sliderAlphaNotInRange = ELib:Slider(self.optColSet.col6scroll,""):Size(140):Point("TOPLEFT",self.optColSet.chkAlphaNotInRange,270,-3):Range(0,100):OnChange(function(self,event) 
 		event = event - event%1
 		currColOpt.methodsAlphaNotInRangeNum = event
 		module:ReloadAllSplits()
@@ -8360,7 +8520,7 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 
-	self.optColSet.chkDisableActive = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetDisableActive):Point(10,-305):OnClick(function(self) 
+	self.optColSet.chkDisableActive = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetDisableActive):Point(10,-305):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsDisableActive = true
 		else
@@ -8369,7 +8529,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
-	self.optColSet.chkOneSpellPerCol = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetOneSpellPerCol):Point(10,-330):OnClick(function(self) 
+	self.optColSet.chkOneSpellPerCol = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetOneSpellPerCol):Point(10,-330):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsOneSpellPerCol = true
 		else
@@ -8378,7 +8538,7 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end):Tooltip(L.cd2ColSetOneSpellPerColTooltip)
 
-	self.optColSet.chkSortByAvailability = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2SortByAvailability):Point(10,-355):OnClick(function(self) 
+	self.optColSet.chkSortByAvailability = ELib:Check(self.optColSet.col6scroll,L.cd2SortByAvailability):Point(10,-355):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsSortByAvailability = true
 		else
@@ -8388,7 +8548,7 @@ function module.options:Load()
 		module.main:GROUP_ROSTER_UPDATE()
 	end)
 
-	self.optColSet.chkSortByAvailability_activeToTop = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2SortByAvailabilityActiveToTop):Point("TOPLEFT",self.optColSet.chkSortByAvailability,0,-25):Tooltip(L.cd2SortByAvailabilityActiveToTopTooltip):OnClick(function(self) 
+	self.optColSet.chkSortByAvailability_activeToTop = ELib:Check(self.optColSet.col6scroll,L.cd2SortByAvailabilityActiveToTop):Point("TOPLEFT",self.optColSet.chkSortByAvailability,0,-25):Tooltip(L.cd2SortByAvailabilityActiveToTopTooltip):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsSortActiveToTop = true
 		else
@@ -8398,7 +8558,7 @@ function module.options:Load()
 		module.main:GROUP_ROSTER_UPDATE()
 	end)
 
-	self.optColSet.chkReverseSorting = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ReverseSorting):Point("TOPLEFT",self.optColSet.chkSortByAvailability_activeToTop,0,-25):OnClick(function(self) 
+	self.optColSet.chkReverseSorting = ELib:Check(self.optColSet.col6scroll,L.cd2ReverseSorting):Point("TOPLEFT",self.optColSet.chkSortByAvailability_activeToTop,0,-25):OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsReverseSorting = true
 		else
@@ -8408,7 +8568,27 @@ function module.options:Load()
 		module.main:GROUP_ROSTER_UPDATE()
 	end)
 
-	self.optColSet.chkGeneralMethods = ELib:Check(self.optColSet.superTabFrame.tab[6],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
+	self.optColSet.chkCDOnlyTimer = ELib:Check(self.optColSet.col6scroll,L.cd2CDOnlyTimer):Point("TOPLEFT",self.optColSet.chkReverseSorting,0,-25):Tooltip(L.cd2CDOnlyTimerTooltip):OnClick(function(self) 
+		if self:GetChecked() then
+			currColOpt.methodsCDOnlyTime = true
+		else
+			currColOpt.methodsCDOnlyTime = nil
+		end
+		module:ReloadAllSplits()
+		module.main:GROUP_ROSTER_UPDATE()
+	end)
+
+	self.optColSet.chkTextIgnoreActive = ELib:Check(self.optColSet.col6scroll,L.cd2TextIgnoreActive):Point("TOPLEFT",self.optColSet.chkCDOnlyTimer,0,-25):Tooltip(L.cd2TextIgnoreActiveTooltip):OnClick(function(self) 
+		if self:GetChecked() then
+			currColOpt.methodsTextIgnoreActive = true
+		else
+			currColOpt.methodsTextIgnoreActive = nil
+		end
+		module:ReloadAllSplits()
+		module.main:GROUP_ROSTER_UPDATE()
+	end)
+
+	self.optColSet.chkGeneralMethods = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsGeneral = true
 		else
@@ -8418,8 +8598,9 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 
+
 	function self.optColSet.chkGeneralMethods:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting, module.options.optColSet.chkCDOnlyTimer, module.options.optColSet.chkTextIgnoreActive)
 	end
 
 
@@ -9912,9 +10093,9 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	local linesShown = (not currColOpt.frameGeneral and currColOpt.frameLines) or (currColOpt.frameGeneral and generalOpt.frameLines) or defOpt.frameLines
 	linesShown = ceil(linesShown / frameColumns)
 	columnFrame.GlinesShown = linesShown
-	local linesTotal = linesShown * frameColumns
+	local linesTotal = min(linesShown * frameColumns,module.db.maxLinesInCol)
 	if currColOpt.ATF then
-		linesTotal = 100
+		linesTotal = 150
 	end
 	if VExRT.ExCD2.SplitOpt then 
 		columnFrame.Gheight = columnFrame.iconSize*linesShown+frameBetweenLines*(linesShown-1)
@@ -9923,7 +10104,7 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 		columnFrame.Gheight = columnFrame.iconSize*linesShown
 		columnFrame:SetHeight(columnFrame.iconSize*linesShown)
 	end
-	columnFrame.NumberLastLinesActive = module.db.maxLinesInCol
+	columnFrame.NumberLastLinesActive = max(linesTotal,module.db.maxLinesInCol,#columnFrame.lines)
 
 	if currColOpt.enabled then
 		for j=1,linesTotal do
@@ -9938,7 +10119,8 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 		columnFrame.IsColumnEnabled = false
 	end
 
-	columnFrame:SetFrameStrata("MEDIUM")
+	local frameStrata = (not currColOpt.frameGeneral and currColOpt.frameStrata) or (currColOpt.frameGeneral and generalOpt.frameStrata) or defOpt.frameStrata
+	columnFrame:SetFrameStrata(frameStrata)
 	columnFrame.FrameStrata = nil
 
 	local frameAlpha = (not currColOpt.frameGeneral and currColOpt.frameAlpha) or (currColOpt.frameGeneral and generalOpt.frameAlpha) or defOpt.frameAlpha
@@ -9967,13 +10149,15 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.optionSmoothAnimation = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimation) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimation)
 	columnFrame.optionSmoothAnimationDuration = (not currColOpt.textureGeneral and currColOpt.textureSmoothAnimationDuration) or (currColOpt.textureGeneral and generalOpt.textureSmoothAnimationDuration) or defOpt.textureSmoothAnimationDuration
 		columnFrame.optionSmoothAnimationDuration = columnFrame.optionSmoothAnimationDuration / 200
-	columnFrame.optionLinesMax = min(linesShown*frameColumns,module.db.maxLinesInCol)
+	columnFrame.optionLinesMax = linesTotal
 	columnFrame.optionShownOnCD = (not currColOpt.methodsGeneral and currColOpt.methodsShownOnCD) or (currColOpt.methodsGeneral and generalOpt.methodsShownOnCD)
 	columnFrame.optionIconPosition = (not currColOpt.iconGeneral and currColOpt.iconPosition) or (currColOpt.iconGeneral and generalOpt.iconPosition) or defOpt.iconPosition
 	columnFrame.optionStyleAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsStyleAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsStyleAnimation) or defOpt.methodsStyleAnimation
 	columnFrame.optionTimeLineAnimation = (not currColOpt.methodsGeneral and currColOpt.methodsTimeLineAnimation) or (currColOpt.methodsGeneral and generalOpt.methodsTimeLineAnimation) or defOpt.methodsTimeLineAnimation
 	columnFrame.optionCooldown = (not currColOpt.iconGeneral and currColOpt.methodsCooldown) or (currColOpt.iconGeneral and generalOpt.methodsCooldown)
 	columnFrame.optionCooldownHideNumbers = (not currColOpt.iconGeneral and currColOpt.iconCooldownHideNumbers) or (currColOpt.iconGeneral and generalOpt.iconCooldownHideNumbers)
+	columnFrame.optionCooldownUseExRT = (not currColOpt.iconGeneral and currColOpt.iconCooldownExRTNumbers) or (currColOpt.iconGeneral and generalOpt.iconCooldownExRTNumbers)
+		if columnFrame.optionCooldownUseExRT then columnFrame.optionCooldownHideNumbers = true end
 	columnFrame.optionCooldownShowSwipe = (not currColOpt.iconGeneral and currColOpt.iconCooldownShowSwipe) or (currColOpt.iconGeneral and generalOpt.iconCooldownShowSwipe)
 	columnFrame.optionIconName = (not currColOpt.textGeneral and currColOpt.textIconName) or (currColOpt.textGeneral and generalOpt.textIconName)
 	columnFrame.optionHideSpark = (not currColOpt.textureGeneral and currColOpt.textureHideSpark) or (currColOpt.textureGeneral and generalOpt.textureHideSpark)
@@ -10013,6 +10197,9 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.methodsSortByAvailability = (not currColOpt.methodsGeneral and currColOpt.methodsSortByAvailability) or (currColOpt.methodsGeneral and generalOpt.methodsSortByAvailability)
 	columnFrame.methodsSortActiveToTop = (not currColOpt.methodsGeneral and currColOpt.methodsSortActiveToTop) or (currColOpt.methodsGeneral and generalOpt.methodsSortActiveToTop)
 	columnFrame.methodsReverseSorting = (not currColOpt.methodsGeneral and currColOpt.methodsReverseSorting) or (currColOpt.methodsGeneral and generalOpt.methodsReverseSorting)
+	columnFrame.methodsReverseSorting = (not currColOpt.methodsGeneral and currColOpt.methodsReverseSorting) or (currColOpt.methodsGeneral and generalOpt.methodsReverseSorting)
+	columnFrame.methodsCDOnlyTime = (not currColOpt.methodsGeneral and currColOpt.methodsCDOnlyTime) or (currColOpt.methodsGeneral and generalOpt.methodsCDOnlyTime)
+	columnFrame.methodsTextIgnoreActive = (not currColOpt.methodsGeneral and currColOpt.methodsTextIgnoreActive) or (currColOpt.methodsGeneral and generalOpt.methodsTextIgnoreActive)
 
 	columnFrame.methodsOnlyInCombat = (not currColOpt.visibilityGeneral and currColOpt.methodsOnlyInCombat) or (currColOpt.visibilityGeneral and generalOpt.methodsOnlyInCombat)
 	columnFrame.visibilityPartyType = (not currColOpt.visibilityGeneral and currColOpt.visibilityPartyType) or (currColOpt.visibilityGeneral and generalOpt.visibilityPartyType)
@@ -10028,6 +10215,7 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.textTemplateCenter = (not currColOpt.textGeneral and currColOpt.textTemplateCenter) or (currColOpt.textGeneral and generalOpt.textTemplateCenter) or defOpt.textTemplateCenter
 
 	columnFrame.textIconNameChars = (not currColOpt.textGeneral and currColOpt.textIconNameChars) or (currColOpt.textGeneral and generalOpt.textIconNameChars) or defOpt.textIconNameChars
+	columnFrame.textIconCDStyle = (not currColOpt.textGeneral and currColOpt.textIconCDStyle) or (currColOpt.textGeneral and generalOpt.textIconCDStyle) or defOpt.textIconCDStyle
 
 	local blacklistText = (not currColOpt.blacklistGeneral and currColOpt.blacklistText) or (currColOpt.blacklistGeneral and generalOpt.blacklistText) or defOpt.blacklistText
 	columnFrame.BlackList = CreateBlackList(blacklistText)
@@ -10072,6 +10260,11 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.fontIconName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
 	columnFrame.fontIconOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
 	columnFrame.fontIconShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
+
+	columnFrame.fontIconCDSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontIconCDSize) or (currColOpt.fontGeneral and generalOpt.fontIconSize) or defOpt.fontSize
+	columnFrame.fontIconCDName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconCDName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
+	columnFrame.fontIconCDOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconCDOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
+	columnFrame.fontIconCDShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconCDShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
 
 	columnFrame.fontCDSize = (not currColOpt.fontGeneral and currColOpt.fontCDSize) or (currColOpt.fontGeneral and generalOpt.fontCDSize) or defOpt.fontCDSize
 
@@ -10263,11 +10456,11 @@ function module:ReloadAllSplits(argScaleFix)
 	local Width = 0
 	local maxHeight = 0
 
+	local generalOpt = VExRT_ColumnOptions[module.db.maxColumns+1]
+	local defOpt = module.db.colsDefaults
 	for i=1,module.db.maxColumns do 
 		local columnFrame = module.frame.colFrame[i]
 		local currColOpt = VExRT_ColumnOptions[i]
-		local generalOpt = VExRT_ColumnOptions[module.db.maxColumns+1]
-		local defOpt = module.db.colsDefaults
 
 		module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,Width,argScaleFix)
 
@@ -10280,12 +10473,13 @@ function module:ReloadAllSplits(argScaleFix)
 	end
 	module.frame:SetWidth(Width)
 	module.frame:SetHeight(maxHeight)
-	module.frame:SetAlpha((VExRT_ColumnOptions[module.db.maxColumns+1].frameAlpha or module.db.colsDefaults.frameAlpha)/100)
+	module.frame:SetAlpha((generalOpt.frameAlpha or defOpt.frameAlpha)/100)
 	if argScaleFix == "ScaleFix" then
-		ExRT.F.SetScaleFix(module.frame,(VExRT_ColumnOptions[module.db.maxColumns+1].frameScale or module.db.colsDefaults.frameScale)/100)
+		ExRT.F.SetScaleFix(module.frame,(generalOpt.frameScale or defOpt.frameScale)/100)
 	else
-		module.frame:SetScale((VExRT_ColumnOptions[module.db.maxColumns+1].frameScale or module.db.colsDefaults.frameScale)/100) 
+		module.frame:SetScale((generalOpt.frameScale or defOpt.frameScale)/100) 
 	end
+	module.frame:SetFrameStrata(generalOpt.frameStrata or defOpt.frameStrata)
 
 	module:updateCombatVisibility()
 
@@ -10757,8 +10951,8 @@ module.db.AllSpells = {
 	{152108,"WARLOCK",		3,	nil,			nil,			nil,			{152108,30,	0},	},	--Cataclysm
 	{196447,"WARLOCK",		3,	nil,			nil,			nil,			{196447,25,	0},	},	--Channel Demonfire
 	{108416,"WARLOCK,DEF",		3,	{108416,60,	0},	nil,			nil,			nil,			},	--Dark Pact
-	{113858,"WARLOCK,DPS",		3,	nil,			nil,			nil,			{113858,120,	0},	},	--Dark Soul: Instability
-	{113860,"WARLOCK,DPS",		3,	nil,			{113860,120,	0},	nil,			nil,			},	--Dark Soul: Misery
+	{113858,"WARLOCK,DPS",		3,	nil,			nil,			nil,			{113858,120,	20},	},	--Dark Soul: Instability
+	{113860,"WARLOCK,DPS",		3,	nil,			{113860,120,	20},	nil,			nil,			},	--Dark Soul: Misery
 	{267171,"WARLOCK",		3,	nil,			nil,			{267171,60,	0},	nil,			},	--Demonic Strength
 	{108503,"WARLOCK",		3,	nil,			{108503,30,	0},	nil,			{108503,30,	0},	},	--Grimoire of Sacrifice
 	{111898,"WARLOCK",		3,	nil,			nil,			{111898,120,	0},	nil,			},	--Grimoire: Felguard

@@ -337,7 +337,7 @@ local function CreatePluginFrames()
 
 		if (castInfo and castInfo.Interrupted and castInfo.InterruptedPct) then
 			CooldownFrame_SetDisplayAsPercentage(square.cooldown, abs(castInfo.InterruptedPct - 1))
-			square.interruptedTexture:Show()
+			--square.interruptedTexture:Show()
 			return
 		end
 
@@ -372,6 +372,7 @@ local function CreatePluginFrames()
 		f.interruptedTexture = f:CreateTexture(nil, "overlay")
 		f.interruptedTexture:SetColorTexture(1, 0, 0, 0.4)
 		f.interruptedTexture:SetAllPoints()
+		f.interruptedTexture:Hide()
 
 		local cooldownFrame = CreateFrame("cooldown", "$parentCooldown", f, "CooldownFrameTemplate, BackdropTemplate")
 		cooldownFrame:SetAllPoints()
@@ -427,7 +428,7 @@ local function CreatePluginFrames()
 			StreamOverlay:UpdateCooldownFrame(square, true, startTime, endTime, castinfo)
 			
 			if (castinfo.Interrupted) then
-				square.interruptedTexture:Show()
+				--square.interruptedTexture:Show()
 			else
 				square.interruptedTexture:Hide()
 			end

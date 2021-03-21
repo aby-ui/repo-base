@@ -12,7 +12,7 @@ QualityFilter.Button = Addon.QualityButton
 
 function QualityFilter:New(parent)
 	local f = self:Super(QualityFilter):New(parent)
-	f:SetSize(self.Button.SIZE * (Addon.IsRetail and 7 or 6), self.Button.SIZE)
+	f:SetSize(self.Button.SIZE * (Addon.IsRetail and 8 or 6), self.Button.SIZE)
 	f:AddQualityButton(0)
 	f:AddQualityButton(1)
 	f:AddQualityButton(2)
@@ -21,14 +21,15 @@ function QualityFilter:New(parent)
 	f:AddQualityButton(5)
 
 	if Addon.IsRetail then
-		f:AddQualityButton(7, 6)
+		f:AddQualityButton(6)
+		f:AddQualityButton(7)
 	end
 
 	return f
 end
 
 function QualityFilter:AddQualityButton(quality, color)
-	local button = self.Button:New(self, quality, color or quality)
+	local button = self.Button:New(self, quality)
 	if self.prev then
 		button:SetPoint('LEFT', self.prev, 'RIGHT', 1, 0)
 	else

@@ -1092,5 +1092,7 @@ function module:slash(arg)
 		if module.options.chkEnable then
 			module.options.chkEnable:SetChecked(VExRT.MarksBar.enabled)
 		end
+	elseif arg == "help" then
+		print("|cff00ff00/rt mb|r - enable/disable marks bar")
 	end
 end

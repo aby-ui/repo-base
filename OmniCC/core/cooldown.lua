@@ -232,8 +232,11 @@ function Cooldown:UpdateStyle()
         return
     end
 
-    if self:GetAlpha() ~= settings.cooldownOpacity then
-        self:SetAlpha(settings.cooldownOpacity)
+    local opacity = tonumber(settings.cooldownOpacity) or 1
+    if opacity < 1 then
+        if self:GetAlpha() ~= opacity then
+            self:SetAlpha(opacity)
+        end
     end
 end
 

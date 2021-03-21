@@ -392,7 +392,8 @@ end
 				if (playerTable) then
 					local line = self:GetLine (i)
 					if (line) then
-						local thisPlayerInfo = playerInfo[playerTable.Name]
+						
+						local thisPlayerInfo = playerInfo[playerTable.UnitNameRealm]
 						if (thisPlayerInfo) then
 							local playerCovenantId = thisPlayerInfo.covenantId
 							if (playerCovenantId > 0) then
@@ -406,7 +407,7 @@ end
 						end
 
 						--repair status
-						local thisPlayerGearInfo = gearInfo[playerTable.Name]
+						local thisPlayerGearInfo = gearInfo[playerTable.UnitNameRealm]
 						if (thisPlayerGearInfo) then
 							line.RepairStatus:SetText(thisPlayerGearInfo.durability .. "%")
 						else
@@ -639,6 +640,7 @@ end
 			for i = 1, iterateAmount do
 				local unitID = groupTypeID .. i
 				local unitName = UnitName (unitID)
+				local unitNameWithRealm = GetUnitName(unitID, true)
 				local cleuName = _detalhes:GetCLName (unitID)
 				local unitSerial = UnitGUID (unitID)
 				local _, unitClass, unitClassID = UnitClass (unitID)
@@ -652,6 +654,7 @@ end
 				
 				tinsert (PlayerData, {unitName, unitClassID,
 					Name = unitName,
+					UnitNameRealm = unitNameWithRealm,
 					Class = unitClass,
 					Serial = unitSerial,
 					Role = unitRole,

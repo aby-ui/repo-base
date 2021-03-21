@@ -795,6 +795,9 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 			db [spellID] = nil
 			db ["".. (spellID or "")] = nil -- cleanup...
 			parent [member]:DoRefresh()
+			if (removeFunc) then
+				DF:QuickDispatch (removeFunc)
+			end
 		end
 		
 		local createLineFunc = function (self, index)
@@ -872,11 +875,27 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		return scroll
 	end
 	
-	local buff_tracked = createAuraScrollBox (f_auto, "$parentBuffTracked", "BuffTrackerScroll", f.LocTexts.BUFFS_TRACKED, f.db.aura_tracker.buff_tracked, function()end)
-	local debuff_tracked = createAuraScrollBox (f_auto, "$parentDebuffTracked", "DebuffTrackerScroll", f.LocTexts.DEBUFFS_TRACKED, f.db.aura_tracker.debuff_tracked, function()end)
+	local buff_tracked = createAuraScrollBox (f_auto, "$parentBuffTracked", "BuffTrackerScroll", f.LocTexts.BUFFS_TRACKED, f.db.aura_tracker.buff_tracked, function() 
+		if (change_callback) then
+			DF:QuickDispatch (change_callback)
+		end
+	end)
+	local debuff_tracked = createAuraScrollBox (f_auto, "$parentDebuffTracked", "DebuffTrackerScroll", f.LocTexts.DEBUFFS_TRACKED, f.db.aura_tracker.debuff_tracked, function() 
+		if (change_callback) then
+			DF:QuickDispatch (change_callback)
+		end
+	end)
 	
-	local buff_ignored = createAuraScrollBox (f_auto, "$parentBuffIgnored", "BuffIgnoredScroll", f.LocTexts.BUFFS_IGNORED, f.db.aura_tracker.buff_banned, function()end)
-	local debuff_ignored = createAuraScrollBox (f_auto, "$parentDebuffIgnored", "DebuffIgnoredScroll", f.LocTexts.DEBUFFS_IGNORED, f.db.aura_tracker.debuff_banned, function()end)
+	local buff_ignored = createAuraScrollBox (f_auto, "$parentBuffIgnored", "BuffIgnoredScroll", f.LocTexts.BUFFS_IGNORED, f.db.aura_tracker.buff_banned, function() 
+		if (change_callback) then
+			DF:QuickDispatch (change_callback)
+		end
+	end)
+	local debuff_ignored = createAuraScrollBox (f_auto, "$parentDebuffIgnored", "DebuffIgnoredScroll", f.LocTexts.DEBUFFS_IGNORED, f.db.aura_tracker.debuff_banned, function() 
+		if (change_callback) then
+			DF:QuickDispatch (change_callback)
+		end
+	end)
 	
 	local xLocation = 140
 	scrollWidth = scrollWidth + 20

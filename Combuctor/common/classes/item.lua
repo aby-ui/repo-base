@@ -244,7 +244,7 @@ function Item:UpdateBorder()
 		elseif Addon.sets.glowUnusable and Unfit:IsItemUnusable(id) then
 			r,g,b = RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b
 		elseif Addon.sets.glowSets and Search:InSet(link) then
-	  	r,g,b = .1, 1, 1
+	  	r,g,b = .2, 1, .8
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
 		end
@@ -436,8 +436,9 @@ function Item:IsQuestItem()
 end
 
 function Item:IsUpgrade()
-	if IsContainerItemAnUpgrade then -- difference bettween nil and false
-		return IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
+	if criteria then -- difference bettween nil and false
+		return criteria(self:GetBag(), self:GetID())
 	end
 end
 

@@ -73,8 +73,11 @@ function Frame:ListMenuButtons()
 	self:Super(Frame):ListMenuButtons()
 end
 
+function Frame:SortItems()
+	Addon.Sorting:Start(self:GetOwner(), {GetCurrentGuildBankTab()})
+end
+
 function Frame:HasOwnerSelector() end
-function Frame:HasSortButton() end
 function Frame:HasBagToggle() end
 function Frame:IsBagGroupShown()
 	return true

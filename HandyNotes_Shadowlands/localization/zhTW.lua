@@ -15,7 +15,7 @@ L["anima_channeled"] = "靈魄連接到 %s"
 
 L["deifir_note"] = "騎上圈內的稀有並使用 {spell:319566} 和 {spell:319575} 使其減速和昏迷。"
 L["faeflayer_note"] = "瀑布後面隱藏的小洞穴內。"
-L["gormbore_note"] = nil
+L["gormbore_note"] = "在顫動的地面上擊殺 {npc:165420} 來刷新稀有"
 L["gormtamer_tizo_note"] = "在霧紗密林擊殺豎果妖精直到 {npc:164110} 刷新。"
 L["humongozz_note"] = "種植一個 {item:175247} 到潮濕的沃土後將刷新 {npc:164122}。區域內的許多怪物都會掉落蘑菇。"
 L["lehgo_note"] = "摧毀顫動的果姆蛋並擊殺 {npc:171827} 直到他出現。在洞穴內（入口在東南黃塵地穴內）"

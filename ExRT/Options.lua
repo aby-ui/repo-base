@@ -877,16 +877,43 @@ OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(680,180):Point("TOP
 			return "|rv."..ver
 		end
 	end)
+	if #text > 8192 then
+		local lennow = 0
+		local texts = {""}
+		local c = 1
+		for w in string.gmatch(text,"[^\n]+\n*") do
+			lennow = lennow + #w
+			if lennow > 8192 then
+				c = c + 1
+				texts[c] = ""
+				lennow = #w
+			end
+			texts[c] = texts[c] .. w
+		end
+		for i=2,c do
+			self["Text"..i] = ELib:Text(self.C,texts[i],12):Point("LEFT",3,0):Point("RIGHT",-3,0):Point("TOP",self["Text"..(i-1)] or self.Text,"BOTTOM",0,0):Left():Color(1,1,1)
+		end
+		text = texts[1]
+	end
 	self.Text:SetText(text)
 	self:Height(self.Text:GetStringHeight()+50)
-	self:OnShow()
+	self:OnShow(function()
+		local height = 6 + self.Text:GetStringHeight()
+		local c = 2
+		while self["Text"..c] do
+			height = height + self["Text"..c]:GetStringHeight()
+			c = c + 1
+		end
+		self:Height(height)
+		self:OnShow()
+	end,true)
 end,true)
 ELib:Border(OptionsFrame.Changelog,0)
 
 ELib:DecorationLine(OptionsFrame):Point("BOTTOM",OptionsFrame.Changelog,"TOP",0,0):Point("LEFT",OptionsFrame):Point("RIGHT",OptionsFrame):Size(0,1)
 ELib:DecorationLine(OptionsFrame):Point("TOP",OptionsFrame.Changelog,"BOTTOM",0,0):Point("LEFT",OptionsFrame):Point("RIGHT",OptionsFrame):Size(0,1)
 
-OptionsFrame.Changelog.Text = ELib:Text(OptionsFrame.Changelog.C,"",12):Point("TOPLEFT",5,0):Point("TOPRIGHT",-5,0):Left():Color(1,1,1)
+OptionsFrame.Changelog.Text = ELib:Text(OptionsFrame.Changelog.C,"",12):Point("TOPLEFT",3,-3):Point("TOPRIGHT",-3,-3):Left():Color(1,1,1)
 OptionsFrame.Changelog.Header = ELib:Text(OptionsFrame.Changelog,"Changelog",12):Point("BOTTOMLEFT",OptionsFrame.Changelog,"TOPLEFT",0,2):Left()
 
 local VersionCheckReqSended = {}

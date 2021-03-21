@@ -2611,13 +2611,15 @@ do
     local now = GetTime()
     nextExpire = nil
     for id, bar in pairs(bars) do
-      if bar.expirationTime < now then
-        bars[id] = nil
-        WeakAuras.ScanEvents("DBM_TimerStop", id)
-      elseif nextExpire == nil then
-        nextExpire = bar.expirationTime
-      elseif bar.expirationTime < nextExpire then
-        nextExpire = bar.expirationTime
+      if not bar.paused then
+        if bar.expirationTime < now then
+          bars[id] = nil
+          WeakAuras.ScanEvents("DBM_TimerStop", id)
+        elseif nextExpire == nil then
+          nextExpire = bar.expirationTime
+        elseif bar.expirationTime < nextExpire then
+          nextExpire = bar.expirationTime
+        end
       end
     end
 
@@ -2642,7 +2644,7 @@ do
       bar.count = msg:match("(%d+)") or "0"
       bar.dbmType = dbmType
 
-      local barOptions = DBM.Bars.options
+      local barOptions = DBT.Options or DBM.Bars.options
       local r, g, b = 0, 0, 0
       if dbmType == 1 then
         r, g, b = barOptions.StartColorAR, barOptions.StartColorAG, barOptions.StartColorAB
@@ -2678,8 +2680,36 @@ do
       WeakAuras.ScanEvents("DBM_TimerStop", id)
     elseif event == "kill" or event == "wipe" then -- Wipe or kill, removing all timers
       local id = ...
-      bars = {}
+      wipe(bars)
       WeakAuras.ScanEvents("DBM_TimerStopAll", id)
+    elseif event == "DBM_TimerPause" then
+      local id = ...
+      local bar = bars[id]
+      if bar then
+        bar.paused = true
+        bar.remaining = bar.expirationTime - GetTime()
+        WeakAuras.ScanEvents("DBM_TimerPause", id)
+        if recheckTimer then
+          timer:CancelTimer(recheckTimer)
+        end
+        dbmRecheckTimers()
+      end
+    elseif event == "DBM_TimerResume" then
+      local id = ...
+      local bar = bars[id]
+      if bar then
+        bar.paused = nil
+        bar.expirationTime = GetTime() + bar.remaining
+        bar.remaining = nil
+        WeakAuras.ScanEvents("DBM_TimerResume", id)
+        if nextExpire == nil then
+          recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, bar.expirationTime - GetTime())
+        elseif bar.expirationTime < nextExpire then
+          timer:CancelTimer(recheckTimer)
+          recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, bar.expirationTime - GetTime())
+          nextExpire = bar.expirationTime
+        end
+      end
     elseif event == "DBM_TimerUpdate" then
       local id, elapsed, duration = ...
       local now = GetTime()
@@ -2779,6 +2809,8 @@ do
     if extendTimer ~= 0 then
       state.autoHide = true
     end
+    state.paused = bar.paused
+    state.remaining = bar.remaining
   end
 
   function WeakAuras.RegisterDBMCallback(event)
@@ -2819,13 +2851,15 @@ do
     local now = GetTime()
     nextExpire = nil
     for id, bar in pairs(bars) do
-      if bar.expirationTime < now then
-        bars[id] = nil
-        WeakAuras.ScanEvents("BigWigs_StopBar", id)
-      elseif nextExpire == nil then
-        nextExpire = bar.expirationTime
-      elseif bar.expirationTime < nextExpire then
-        nextExpire = bar.expirationTime
+      if not bar.paused then
+        if bar.expirationTime < now then
+          bars[id] = nil
+          WeakAuras.ScanEvents("BigWigs_StopBar", id)
+        elseif nextExpire == nil then
+          nextExpire = bar.expirationTime
+        elseif bar.expirationTime < nextExpire then
+          nextExpire = bar.expirationTime
+        end
       end
     end
 
@@ -2873,6 +2907,34 @@ do
         bars[text] = nil
         WeakAuras.ScanEvents("BigWigs_StopBar", text)
       end
+    elseif event == "BigWigs_PauseBar" then
+      local addon, text = ...
+      local bar = bars[text]
+      if bar then
+        bar.paused = true
+        bar.remaining = bar.expirationTime - GetTime()
+        WeakAuras.ScanEvents("BigWigs_PauseBar", text)
+        if recheckTimer then
+          timer:CancelTimer(recheckTimer)
+        end
+        recheckTimers()
+      end
+    elseif event == "BigWigs_ResumeBar" then
+      local addon, text = ...
+      local bar = bars[text]
+      if bar then
+        bar.paused = nil
+        bar.expirationTime = GetTime() + bar.remaining
+        bar.remaining = nil
+        WeakAuras.ScanEvents("BigWigs_ResumeBar", text)
+        if nextExpire == nil then
+          recheckTimer = timer:ScheduleTimerFixed(recheckTimers, bar.expirationTime - GetTime())
+        elseif bar.expirationTime < nextExpire then
+          timer:CancelTimer(recheckTimer)
+          recheckTimer = timer:ScheduleTimerFixed(recheckTimers, bar.expirationTime - GetTime())
+          nextExpire = bar.expirationTime
+        end
+      end
     elseif event == "BigWigs_StopBars"
     or event == "BigWigs_OnBossDisable"
     or event == "BigWigs_OnPluginDisable"
@@ -2902,6 +2964,8 @@ do
     WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar")
     WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars")
     WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_PauseBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_ResumeBar")
   end
 
   function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
@@ -2928,6 +2992,8 @@ do
     if extendTimer ~= 0 then
       state.autoHide = true
     end
+    state.paused = bar.paused
+    state.remaining = bar.remaining
   end
 
   function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, count, cast)

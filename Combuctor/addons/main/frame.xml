@@ -90,7 +90,7 @@
 			<Layer level="OVERLAY">
 				<Texture inherits="UI-Frame-BtnDivMiddle"> <!-- Separator -->
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="145" y="2"/>
+						<Anchor point="BOTTOMLEFT" x="160" y="2"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -99,16 +99,16 @@
 				<Texture file="Interface\MerchantFrame\UI-Merchant-BotLeft"> <!-- Left -->
 					<Size x="64" y="24"/>
 					<Anchors>
-						<Anchor point="BOTTOMLEFT" x="156" y="2"/>
+						<Anchor point="BOTTOMLEFT" x="171" y="2"/>
 					</Anchors>
 					<TexCoords left="0.72" right="1" top="0.675" bottom=".754"/>
 				</Texture>
 
-				<Texture file="Interface\MerchantFrame\UI-Merchant-BotRight">
+				<Texture file="Interface\MerchantFrame\UI-Merchant-BotRight"> <!-- Flexible -->
 					<Size x="64" y="24"/>
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT" x="-30" y="2"/>
-						<Anchor point="BOTTOMLEFT" x="220" y="2"/>
+						<Anchor point="BOTTOMLEFT" x="235" y="2"/>
 					</Anchors>
 					<TexCoords left="0" right="0.5" top="0.675" bottom=".754"/>
 				</Texture>

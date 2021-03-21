@@ -52,13 +52,6 @@ function P:SetOffset(f)
 	f.container:ClearAllPoints()
 	--f.container:SetPoint(self.point, f, self.containerOfsX, self.containerOfsY)
 	f.container:SetPoint("TOPLEFT", f, self.containerOfsX, self.containerOfsY)
-
-	--[[ xml
-	if self.doubleRow and E.db.icons.modRowEnabled then
-		f.bottomRow:ClearAllPoints()
-		f.bottomRow:SetPoint("TOPLEFT", f.container, self.modRowOfsX, self.modRowOfsY)
-	end
-	--]]
 end
 
 function P:UpdatePosition()

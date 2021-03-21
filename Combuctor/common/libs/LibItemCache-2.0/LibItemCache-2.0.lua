@@ -1,5 +1,5 @@
 --[[
-Copyright 2013-2020 João Cardoso
+Copyright 2013-2021 João Cardoso
 LibItemCache is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this library give you permission to embed it
 with independent modules to produce an addon, regardless of the license terms of these
@@ -18,14 +18,15 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 28)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 29)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS
 local COMPLETE_LINK = '|c.+|H.+|h.+|h|r'
-local PET_LINK = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
+local PET_LINK = '|c.+|Hbattlepet:.+|h.+|h|r'
+local PET_LINK_FORMAT = '|c%s|Hbattlepet:%sx0|h[%s]|h|r'
 local PET_STRING = '^' .. strrep('%d+:', 7) .. '%d+$'
-local KEYSTONE_LINK  = '|c%s|Hkeystone:%sx0|h[%s]|h|r'
+local KEYSTONE_LINK  = '|c.+|Hkeystone:.+|h.+|h|r'
 local KEYSTONE_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
 
@@ -255,7 +256,7 @@ function Lib:PickupItem(owner, bag, slot)
 
 	if not cached then
 		if isguild then
-			PickupGuildBankItem(slot)
+			PickupGuildBankItem(bag, slot)
 		elseif bag == 'equip' then
 			PickupInventoryItem(slot)
 		elseif bag == 'vault' then
@@ -304,10 +305,40 @@ function Lib:IsBagCached(realm, name, isguild, bag)
 end
 
 function Lib:RestoreItemData(item)
-	local link, id, quality, icon, equip, class, subclass, name, level, minLevel, stack, price, bind, expac, set, crafting = Lib:RestoreLinkData(item.link or item.id)
+	local link, id = item.link, item.id
+	local query = link or id
+	local bind, class, complete, crafting, equip, expac, icon, level, minLevel, name, price, quality, stack, set, subclass
 
-	item.link = link
+	if type(link) == 'string' then
+		complete = link:find(COMPLETE_LINK)
+
+		if complete then
+			if link:find(PET_LINK) then
+				id, level, quality, name, icon = self:RestorePetLinkData(link)
+				class, subclass, query = LE_ITEM_CLASS_BATTLEPET, 0
+			elseif link:find(KEYSTONE_LINK) then
+				query = 138019
+			end
+		else
+			if link:sub(1,9) == 'battlepet' or link:find(PET_STRING) then
+				id, level, quality, name, icon = self:RestorePetLinkData(link)
+				link = PET_LINK_FORMAT:format(select(4, GetItemQualityColor(quality)), link, name)
+				class, subclass, query = LE_ITEM_CLASS_BATTLEPET, 0
+			elseif link:sub(1,8) == 'keystone' or link:find(KEYSTONE_STRING) then
+				query = 138019
+			elseif link:sub(1,5) ~= 'item:' then
+				query = 'item:' .. link
+			end
+		end
+	end
+
+	if query then
+		id, _, _, equip, icon, class, subclass = GetItemInfoInstant(query)
+		name, link, quality, level, minLevel, _, _, stack, _,_, price, _,_, bind, expac, set, crafting = GetItemInfo(query)
+	end
+
 	item.id = item.id or id
+	item.link = complete and item.link or link
 	item.family = item.family or item.id and GetItemFamily(item.id) or 0
 	item.quality = (item.quality and item.quality >= 0 and item.quality) or quality
 
@@ -334,30 +365,10 @@ function Lib:RestoreItemData(item)
 	return item
 end
 
-function Lib:RestoreLinkData(input)
-	local isString = type(input) == 'string'
-	local complete = isString and input:find(COMPLETE_LINK)
-
-	if isString and not complete then
-		if input:sub(1,9) == 'battlepet' or input:find(PET_STRING) then
-			local id, quality = input:match('(%d+):%d+:(%d+)')
-			local id, quality = tonumber(id), tonumber(quality)
-			local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
-			local color = select(4, GetItemQualityColor(quality))
-
-			return PET_LINK:format(color, input, name), id, quality, icon
-		elseif input:sub(1,9) == 'keystone' or input:find(KEYSTONE_STRING) then
-			input = 138019
-		elseif input:sub(1,5) ~= 'item:' then
-			input = 'item:' .. input
-		end
-	end
-
-	if input then
-		local id, _, _, equip, icon, class, subclass = GetItemInfoInstant(input)
-		local name, link, quality, level, minLevel, _, _, stack, _,_, price, _,_, bind, expac, set, crafting = GetItemInfo(input)
-		return complete and input or link, id, quality, icon, equip, class, subclass, name, level, minLevel, stack, price, bind, expac, set, crafting
-	end
+function Lib:RestorePetLinkData(link)
+	local id, level, quality = link:match('(%d+):(%d+):(%d+)')
+	local name, icon = C_PetJournal.GetPetInfoBySpeciesID(id)
+	return tonumber(id), tonumber(level), tonumber(quality), name, icon
 end
 
 

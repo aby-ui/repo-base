@@ -12,7 +12,7 @@ local function GetLocalization()
 	localization = localization:gsub("enUS", ENUS):gsub("deDE", DEDE)
 	localization = localization:gsub("esES", ESES):gsub("esMX", ESMX)
 	localization = localization:gsub("frFR", FRFR):gsub("koKR", KOKR)
-	localization = localization:gsub("ruRU", RURU):gsub("zhCN", ZHCN)
+	localization = localization:gsub("ruRU", RURU):gsub("zhCN", "")--ZHCN)
 	localization = localization:gsub("zhTW", ZHTW)
 	localization = localization:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
 	localization = localization:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
@@ -21,12 +21,14 @@ local function GetLocalization()
 end
 
 L["Localizations"] = LANGUAGES_LABEL
+L["Translations"] = BUG_CATEGORY15
 
 local labels = {
 	"Version",
 	"Author",
 	"Supported UI",
 	"Localizations",
+	"Translations",
 	"/oc t:",
 	"/oc rl:",
 	"/oc rt:",
@@ -35,6 +37,7 @@ local labels = {
 
 local fields = {
 	["Localizations"] = GetLocalization(),
+	["Translations"] = format("%s (%s), %s (%s)", RURU, "Void_OW - \"The OG\"", ZHTW, "RainbowUI"),
 	["/oc t:"] = L["Toggle test frames for current zone."],
 	["/oc rl:"] = L["Reload addon."],
 	["/oc rt:"] = L["Reset all cooldown timers."],
@@ -73,6 +76,7 @@ local function GetOptions()
 			type = "group",
 			args = {
 				Home = {
+					-- Use escape sequence in case we backdrop the image on tree group
 					--icon = "Interface\\AddOns\\OmniCD\\Media\\omnicd-logo64",
 					--iconCoords = {0, 1, 0, 1},
 					name = format("|T%s:18|t %s", "Interface\\AddOns\\OmniCD\\Media\\omnicd-logo64", E.AddOn),
@@ -107,29 +111,43 @@ local function GetOptions()
 							type = "toggle",
 						},
 						pd3 = {
-							name = "\n\n", order = 19, type = "description",
+							name = "\n", order = 13, type = "description",
+						},
+						notice = {
+							image = "Interface\\AddOns\\OmniCD\\Media\\omnicd-recent", imageWidth = 32, imageHeight = 16, imageCoords = { 0.13, 1.13, 0.25, 0.75 },
+							name = " ",
+							order = 14,
+							type = "description",
+						},
+						notice1 = {
+							name = "|cffff2020 " .. L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."],
+							order = 15,
+							type = "description",
+						},
+						notice2 = {
+							name = "|cffff2020 " .. L["Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."],
+							order = 16,
+							type = "description",
+						},
+						notice3 = {
+							name = "|cffff2020 " .. L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."],
+							order = 17,
+							type = "description",
+						},
+						pd4 = {
+							name = "\n", order = 18, type = "description",
 						},
 						changelog = {
 							name = L["Changelog"],
 							order = 20,
 							type = "group",
 							args = {
-								notice = {
-									name = L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."],
-									order = 0,
-									type = "description",
-								},
-								notice2 = {
-									name = "|cffff2020None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated.",
-									order = 1,
-									type = "description",
-								},
 								lb1 = {
-									name = "\n", order = 2, type = "description",
+									name = "\n", order = 0, type = "description",
 								},
 								changelog = {
 									name = changelog,
-									order = 3,
+									order = 1,
 									type = "description",
 								},
 							}
@@ -181,7 +199,7 @@ local function GetOptions()
 
 		for i = 1, #labels do
 			local label = labels[i]
-			if i > 4 then
+			if i > 5 then
 				E.options.args.Home.args.slashCommands.args[label] = {
 					name = E.HEX_C.PERFORMANCE_BLUE .. label,
 					order = i,
@@ -215,20 +233,6 @@ local function GetOptions()
 				type = "description",
 			}
 
-			--[[ TODO: remove exec name refresh
-			E.options.args[k].args["enable"] = {
-				disabled = false,
-				name = E.GetModuleEnabled(k) and DISABLE or ENABLE,
-				desc = L["Toggle module on and off"],
-				order = 2,
-				type = "execute",
-				func = function()
-					local state = E.GetModuleEnabled(k)
-					E.SetModuleEnabled(k, not state)
-					E.options.args[k].args.enable.name = not state and DISABLE or ENABLE
-				end,
-			}
-			]]
 			E.options.args[k].args["enable"] = {
 				disabled = false,
 				name = ENABLE,
@@ -253,8 +257,8 @@ local function GetOptions()
 end
 
 function E:SetupOptions()
-	self.lib.ACR:RegisterOptionsTable(self.AddOn, GetOptions, true) -- [46]
-	--self.optionsFrames.OmniCD = self.lib.ACD:AddToBlizOptions(self.AddOn)
+	self.Libs.ACR:RegisterOptionsTable(self.AddOn, GetOptions, true) -- [46]
+	--self.optionsFrames.OmniCD = self.Libs.ACD:AddToBlizOptions(self.AddOn) -- no longer adding to blizzard's option panel
 
 	self.optionsFrames.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.DB)
 	self.optionsFrames.profiles.order = 1000
@@ -269,19 +273,12 @@ function E:SetupOptions()
 	LDS:EnhanceDatabase(self.DB, "OmniCDDB")
 	LDS:EnhanceOptions(self.optionsFrames.profiles, self.DB)
 
-	for k,v in ipairs(E.LSM:List("font")) do
-		E.LSM_Font[v] = v
-	end
-	for k,v in ipairs(E.LSM:List("statusbar")) do
-		E.LSM_Statusbar[v] = v
-	end
-
 	self.SetupOptions = nil
 end
 
 function E:RegisterModuleOptions(name, optionTbl, displayName, uproot)
 	self.moduleOptions[name] = optionTbl
-	self.optionsFrames[name] = uproot and self.lib.ACD:AddToBlizOptions(self.AddOn, displayName, self.AddOn, name)
+	self.optionsFrames[name] = uproot and self.Libs.ACD:AddToBlizOptions(self.AddOn, displayName, self.AddOn, name)
 end
 
 local interfaceOptionPanel = CreateFrame("Frame", nil, UIParent)
@@ -290,18 +287,18 @@ interfaceOptionPanel:Hide()
 
 interfaceOptionPanel:SetScript("OnShow", function(self)
 	local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-	title:SetPoint("TOPLEFT", 10, -15)
+	title:SetPoint("TOPLEFT", 16, -16)
 	title:SetText("OmniCD")
 
-	local context = self:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	context:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -40)
+	local context = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+	context:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
 	context:SetText("Type /oc or /omnicd to open the option panel.")
 
 	local open = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
 	open:SetText("Open Option Panel")
 	open:SetWidth(177)
 	open:SetHeight(24)
-	open:SetPoint("TOPLEFT", context, "BOTTOMLEFT", 0, -20)
+	open:SetPoint("TOPLEFT", context, "BOTTOMLEFT", 0, -30)
 	open.tooltipText = ""
 	open:SetScript("OnClick", function()
 		InterfaceOptionsFrame:Hide();

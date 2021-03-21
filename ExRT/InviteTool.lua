@@ -810,5 +810,10 @@ function module:slash(arg)
 	elseif arg and arg:find("^invlist %d") then
 		local listnum = arg:match("%d")
 		InviteList(CreateInviteList(VExRT.InviteTool["ListInv"..listnum]))
+	elseif arg == "help" then
+		print("|cff00ff00/rt inv|r - run autoinvite feature")
+		print("|cff00ff00/rt dis|r - disband raid")
+		print("|cff00ff00/rt reinv|r - disband & reinvite raid")
+		print("|cff00ff00/rt invlist X|r - invite people from X predefined list")
 	end
 end

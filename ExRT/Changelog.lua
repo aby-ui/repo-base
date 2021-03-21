@@ -1,9 +1,19 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4500
+* Raid cooldowns: Added options for custom (customizable) cooldown text on icons
+* Raid cooldowns: Added option "Ignore active time for texts"
+* Raid cooldowns: Added option "Column strata"
+* Raid cooldowns: Added option "Unavailable only via timer"
+* Raid Check: added option for soulstone buff for raid overview window
+* Note: WA firing events are unique by line data now instead only by name (this will be possible now: {time:1:30,wa:defCD} Def CD {time:3:00,wa:defCD} Def CD)
+* Added "/rt help" command for list all chat commands
+* Bugfixes
+
 v.4490
 * Raid Check: fixed Sharpened & Weighted weapon buffs
-* Raid Check: added option "Use only flask from cauldron"
+* Raid Check: added option "Use flask only from cauldron"
 * Raid cooldowns: fixed frame strata for icons that attaches to raidframes
 * Note: added support for glow syntax (ex. {time:1:30,glow} - shows non-disabled glow if players name is in line and timer is less than 5 seconds, {time:1:30,glowall} - shows non-disabled glow for all players if timer is less than 5 seconds)
 * Bugfixes
@@ -365,5 +375,4 @@ v.3940
 
 v.3930
 * BFA Update
-
 ]=]

@@ -13,7 +13,6 @@ local Sushi = LibStub('Sushi-3.1')
 Frame.Title = L.TitleVault
 Frame.OpenSound = SOUNDKIT.UI_ETHEREAL_WINDOW_OPEN
 Frame.CloseSound = SOUNDKIT.UI_ETHEREAL_WINDOW_CLOSE
-Frame.SortEvent = 'VOID_STORAGE_CONTENTS_UPDATE'
 Frame.ItemGroup = Addon.VaultItemGroup
 Frame.MoneyFrame = Addon.TransferButton
 Frame.MoneySpacing = 30

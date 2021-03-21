@@ -224,6 +224,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	E.UpdateEnabledSpells(self)
 	self:UpdatePositionValues()
 	self:UpdateExPositionValues()
+	self:UpdateRaidPriority()
 
 	E.UnregisterEvents(self, self.zoneEvents.all)
 	E.RegisterEvents(self, self.zoneEvents[instanceType])

@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2020 João Cardoso
+Copyright 2008-2021 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 4, 'Frame')
+local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 5, 'Frame')
 if not Drop then return end
 
 
@@ -82,7 +82,7 @@ function Drop:OnUpdate()
   local time = GetTime()
   if self.done then
     self:Release()
-  elseif MouseIsOver(self) or MouseIsOver(self:GetParent()) then
+  elseif self:IsMouseInteracting() then
     self.expires = time + 5
   elseif time >= self.expires then
     self:Release()
@@ -90,7 +90,7 @@ function Drop:OnUpdate()
 end
 
 function Drop:OnGlobalMouse()
-  if not MouseIsOver(self) and not MouseIsOver(self:GetParent()) then
+  if not self:IsMouseInteracting() then
     self.done = true
   end
 end
@@ -141,6 +141,22 @@ function Drop:SetBackdrop(backdrop)
   self.Bg:SetBackdropBorderColor(data.backdropBorderColor:GetRGB())
   self.Bg:SetPoint('BOTTOMLEFT', -padding, -11 - padding)
   self.Bg:SetPoint('TOPRIGHT', padding, 11 + padding)
+end
+
+function Drop:IsMouseInteracting()
+  local function step(frame)
+    if frame:IsMouseOver() then
+      return true
+    end
+
+    for i, child in ipairs {frame:GetChildren()} do
+      if step(child) then
+        return true
+      end
+    end
+  end
+
+  return step(self:GetParent())
 end
 
 

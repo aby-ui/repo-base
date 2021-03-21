@@ -8,6 +8,7 @@ local Search = LibStub('LibItemSearch-1.2')
 local Sort = Addon:NewModule('Sorting', 'MutexDelay-1.0')
 
 Sort.Proprieties = {
+  'set',
   'class', 'subclass', 'equip',
   'quality',
   'icon',
@@ -18,13 +19,12 @@ Sort.Proprieties = {
 
 --[[ Process ]]--
 
-function Sort:Start(owner, bags, event)
+function Sort:Start(owner, bags)
   if not self:CanRun() then
     return
   end
 
-  self.owner, self.bags, self.event = owner, bags, event
-  self:RegisterEvent('PLAYER_REGEN_DISABLED', 'Stop')
+  self.owner, self.bags = owner, bags
   self:SendSignal('SORTING_STATUS', owner, bags)
   self:Run()
 end
@@ -39,7 +39,6 @@ function Sort:Run()
 end
 
 function Sort:Iterate()
-  local todo = false
   local spaces = self:GetSpaces()
   local families = self:GetFamilies(spaces)
 
@@ -55,7 +54,8 @@ function Sort:Iterate()
         local other = from.item
 
         if item.id == other.id and stackable(other) then
-          todo = not self:Move(from, target) or todo
+          self:Move(from, target)
+          self:Delay(0.05, 'Run')
         end
       end
     end
@@ -85,23 +85,21 @@ function Sort:Iterate()
           end
         end
 
-        todo = not self:Move(item.space, goal) or todo
+        self:Move(item.space, goal)
+        self:Delay(0.05, 'Run')
       else
         item.placed = true
       end
     end
   end
 
-  if todo then
-    self:RegisterEvent(self.event, function() self:Delay(0.01, 'Run') end)
-  else
+  if not self:Delaying('Run') then
     self:Stop()
   end
 end
 
 function Sort:Stop()
   self:SendSignal('SORTING_STATUS')
-  self:UnregisterAllEvents()
 end
 
 
@@ -117,6 +115,7 @@ function Sort:GetSpaces()
       tinsert(spaces, {index = #spaces, bag = bag, slot = slot, family = container.family, item = item})
 
       item.class = item.link and Search:ForQuest(item.link) and LE_ITEM_CLASS_QUESTITEM or item.class
+      item.set = item.link and Search:InSet(item.link) and 0 or 1
       item.space = spaces[#spaces]
     end
   end

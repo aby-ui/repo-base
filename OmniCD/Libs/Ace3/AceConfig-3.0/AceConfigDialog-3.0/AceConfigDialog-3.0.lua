@@ -1,3 +1,12 @@
+---------------------------------------------------------------------------------
+
+-- Customized for OmniCD by permission of the copyright owner.
+
+-- Parameter to add tooltip line (ID:#) to hyperlinks:
+-- arg = spellID,
+
+---------------------------------------------------------------------------------
+
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
@@ -15,10 +24,7 @@ if not AceConfigDialog then return end
 AceConfigDialog.OpenFrames = AceConfigDialog.OpenFrames or {}
 AceConfigDialog.Status = AceConfigDialog.Status or {}
 AceConfigDialog.frame = AceConfigDialog.frame or CreateFrame("Frame")
---AceConfigDialog.tooltip = AceConfigDialog.tooltip or CreateFrame("GameTooltip", "AceConfigDialogTooltip", UIParent, "GameTooltipTemplate")
 
----[[ OmniCD: ^r
--- Copy blizzard function so it doesn't reset backdrop onHide
 local function GameTooltip_OnHide(self)
 	self.needsReset = true;
 	self.waitingForData = false;
@@ -45,20 +51,17 @@ local function GameTooltip_OnHide(self)
 	end
 	self:SetPadding(0, 0, 0, 0);
 end
--- Precreate so we can update font obj
 AceConfigDialog.tooltip = AceConfigDialog.tooltip or CreateFrame("GameTooltip", "AceConfigDialogTooltip-OmniCD", UIParent, "GameTooltipTemplate")
 AceConfigDialog.tooltip:SetScript("OnHide", GameTooltip_OnHide)
 
--- Update backdrop if we haven't
 local isTooltipBackropUpdated
 local function UpdateTooltipBackdrop()
 	local tooltip = AceConfigDialog.tooltip
-	tooltip:SetBackdrop(OmniCD[1].BackdropTemplate(tooltip))
+	OmniCD[1].BackdropTemplate(tooltip)
 	tooltip:SetBackdropColor(0, 0, 0)
 	tooltip:SetBackdropBorderColor(0.3, 0.3, 0.3)
 	isTooltipBackropUpdated = true
 end
---]]
 
 AceConfigDialog.frame.apps = AceConfigDialog.frame.apps or {}
 AceConfigDialog.frame.closing = AceConfigDialog.frame.closing or {}
@@ -541,16 +544,6 @@ function AceConfigDialog:SelectGroup(appName, ...)
 	reg:NotifyChange(appName)
 end
 
--- OmniCD: b
---[=[
-local tooltipBackdrop = {
-	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-	edgeFile = [[Interface\BUTTONS\White8x8]],
-	edgeSize = 1,
-}
---//
-]=]
-
 local function OptionOnMouseOver(widget, event)
 	--show a tooltip/set the status bar to the desc text
 	local user = widget:GetUserDataTable()
@@ -560,7 +553,6 @@ local function OptionOnMouseOver(widget, event)
 	local appName = user.appName
 	local tooltip = AceConfigDialog.tooltip
 
-	-- OmniCD: b
 	if not isTooltipBackropUpdated then
 		UpdateTooltipBackdrop()
 	end
@@ -578,16 +570,16 @@ local function OptionOnMouseOver(widget, event)
 	if opt.type == "multiselect" then
 		tooltip:AddLine(user.text, 0.5, 0.5, 0.8, true)
 	end
-	-- OmniCD: r (Hyperlink support)
-	--[[
-	if type(desc) == "string" then
-		tooltip:AddLine(desc, 1, 1, 1, true)
-	end
-	]]
+
 	if type(desc) == "string" then
 		local linktype = desc:match(".*|H(%a+):.+|h.+|h.*")
 		if linktype then
 			tooltip:SetHyperlink(desc)
+			--local spellID = strmatch(desc, "spell:(%d+):")
+			local spellID = opt.arg -- == GetOptionsMemberValue("arg", opt, options, path, appName)
+			if spellID then
+				tooltip:AddLine("\nID: " .. spellID, 1, 1, 1, true)
+			end
 		else
 			tooltip:AddLine(desc, 1, 1, 1, true)
 		end
@@ -612,81 +604,14 @@ local function GetFuncName(option)
 		return "set"
 	end
 end
---[==[ OmniCD: -r (replacing)
-do
-	local frame = AceConfigDialog.popup
-	if not frame then
-		frame = CreateFrame("Frame", nil, UIParent)
-		AceConfigDialog.popup = frame
-		frame:Hide()
-		frame:SetPoint("CENTER", UIParent, "CENTER")
-		frame:SetSize(320, 72)
-		frame:SetFrameStrata("TOOLTIP")
-		frame:SetScript("OnKeyDown", function(self, key)
-			if key == "ESCAPE" then
-				self:SetPropagateKeyboardInput(false)
-				if self.cancel:IsShown() then
-					self.cancel:Click()
-				else -- Showing a validation error
-					self:Hide()
-				end
-			else
-				self:SetPropagateKeyboardInput(true)
-			end
-		end)
 
-		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-			frame:SetBackdrop({
-				bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
-				edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
-				tile = true,
-				tileSize = 32,
-				edgeSize = 32,
-				insets = { left = 11, right = 11, top = 11, bottom = 11 },
-			})
-		else
-			local border = CreateFrame("Frame", nil, frame, "DialogBorderDarkTemplate")
-			border:SetAllPoints(frame)
-		end
-
-		local text = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-		text:SetSize(290, 0)
-		text:SetPoint("TOP", 0, -16)
-		frame.text = text
-
-		local function newButton(text)
-			local button = CreateFrame("Button", nil, frame)
-			button:SetSize(128, 21)
-			button:SetNormalFontObject(GameFontNormal)
-			button:SetHighlightFontObject(GameFontHighlight)
-			button:SetNormalTexture(130763) -- "Interface\\Buttons\\UI-DialogBox-Button-Up"
-			button:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-			button:SetPushedTexture(130761) -- "Interface\\Buttons\\UI-DialogBox-Button-Down"
-			button:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-			button:SetHighlightTexture(130762) -- "Interface\\Buttons\\UI-DialogBox-Button-Highlight"
-			button:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-			button:SetText(text)
-			return button
-		end
-
-		local accept = newButton(ACCEPT)
-		accept:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -6, 16)
-		frame.accept = accept
-
-		local cancel = newButton(CANCEL)
-		cancel:SetPoint("LEFT", accept, "RIGHT", 13, 0)
-		frame.cancel = cancel
-	end
-end
-]==]
 local function confirmPopup(appName, rootframe, basepath, info, message, func, ...)
 	local frame = AceConfigDialog.popup
-	-- OmniCD: b (replacing popup with our own)
 	if not frame then
 		frame = OmniCD[1].GetStaticPopup()
 		AceConfigDialog.popup = frame
 	end
-	--//
+
 	frame:Show()
 	frame.text:SetText(message)
 	-- From StaticPopup.lua
@@ -1296,8 +1221,13 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							control:SetImage(image)
 						end
 					end
+
+					local arg = GetOptionsMemberValue("arg", v, options, path, appName)
+					if arg and GetSpellInfo(arg) then
+						control:SetArg(arg)
+					end
 				elseif v.type == "range" then
-					control = CreateControl(v.dialogControl or v.control, "Slider")
+					control = CreateControl(v.dialogControl or v.control, "Slider-OmniCD")
 					control:SetLabel(name)
 					control:SetSliderValues(v.softMin or v.min or 0, v.softMax or v.max or 100, v.bigStep or v.step or 0)
 					control:SetIsPercent(v.isPercent)
@@ -1370,6 +1300,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						end
 						control:SetValue(value)
 						control:SetCallback("OnValueChanged", ActivateControl)
+
+						local item = GetOptionsMemberValue("disabledItem", v, options, path, appName)
+						if item then
+							control:SetItemDisabled(item, true)
+						end
 					end
 
 				elseif v.type == "multiselect" then
@@ -1396,6 +1331,10 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						control:SetLabel(name)
 						control:SetList(values)
 						control:SetDisabled(disabled)
+						local item = GetOptionsMemberValue("disabledItem", v, options, path, appName)
+						if item then
+							control:SetItemDisabled(item, true)
+						end
 						control:SetCallback("OnValueChanged",ActivateControl)
 						control:SetCallback("OnClosed", MultiControlOnClosed)
 						local width = GetOptionsMemberValue("width",v,options,path,appName)
@@ -1417,6 +1356,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							control:SetItemValue(key,value)
 						end
 					else
+
 						control = gui:Create("InlineGroup-OmniCD")
 						control:SetLayout("Flow")
 						control:SetTitle(name)
@@ -1484,7 +1424,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					if fontSize == "medium" then
 						control:SetFontObject(_G["GameFontHighlight-OmniCD"])
 					elseif fontSize == "large" then
-						control:SetFontObject(GameFontHighlightLarge) -- TODO
+						control:SetFontObject(GameFontHighlightLarge) -- TODO:
 					else -- small or invalid
 						control:SetFontObject(_G["GameFontHighlightSmall-OmniCD"])
 					end
@@ -1567,7 +1507,6 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 	local appName = user.appName
 	local tooltip = AceConfigDialog.tooltip
 
-	-- OmniCD: b
 	if not isTooltipBackropUpdated then
 		UpdateTooltipBackdrop()
 	end

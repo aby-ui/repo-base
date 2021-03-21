@@ -511,6 +511,9 @@ function Details:StartMeUp() --I'll never stop!
 	Details.boss_mods_timers.encounter_timers_dbm = Details.boss_mods_timers.encounter_timers_dbm or {}
 	Details.boss_mods_timers.encounter_timers_bw = Details.boss_mods_timers.encounter_timers_bw or {}
 
+	Details.segments_amount = 40
+	Details.segments_amount_to_save = 40
+
 	--clear overall data on new session
 	if (_detalhes.overall_clear_logout) then
 		_detalhes.tabela_overall = _detalhes.combate:NovaTabela()

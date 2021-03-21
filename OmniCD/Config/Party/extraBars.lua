@@ -21,10 +21,10 @@ do
 		local f = self.extraBars[key]
 		f.container:SetScale(db.scale)
 
-		if db.layout == "vertical" and db.progressBar or E.db.icons.displayBorder then
+		if db.layout ~= "horizontal" and db.progressBar or E.db.icons.displayBorder then
 			if slider then
 				if not timers[key] then
-					timers[key] = E.TimerAfter(0.5, updatePixelObj, key)
+					timers[key] = E.TimerAfter(0.5, updatePixelObj, key) -- this feels fine, as it's just the border and padding
 				end
 			else
 				updatePixelObj(key, true)
@@ -40,7 +40,7 @@ local function ConfigExBar(key, arg)
 		local icon = f.icons[i]
 		if arg == "layout" or arg == "progressBar" then
 			local statusBar = icon.statusBar
-			if db.layout == "vertical" and db.progressBar then
+			if db.layout ~= "horizontal" and db.progressBar then
 				statusBar = statusBar or P.GetStatusBar(icon, key)
 				P:SetExBorder(icon, key)
 				P:SetExStatusBarWidth(statusBar, key)
@@ -56,7 +56,7 @@ local function ConfigExBar(key, arg)
 		elseif arg == "useIconAlpha" then
 			P:SetExStatusBarColor(icon, key) -- [79]
 			P:SetAlpha(icon)
-		elseif arg == "barColors" or arg == "bgColors" or arg == "textColors" or arg == "reverseFill" then
+		elseif arg == "barColors" or arg == "bgColors" or arg == "textColors" or arg == "reverseFill" or arg == "hideSpark" then
 			local CastingBar = icon.statusBar.CastingBar
 			P.CastingBarFrame_OnLoad(CastingBar, key, icon)
 			P:SetExStatusBarColor(icon, key)
@@ -66,11 +66,12 @@ local function ConfigExBar(key, arg)
 		end
 	end
 
-	local sortOrder = arg == "sortBy" or arg == "growUpward" or arg == "sortDirection"
+	local sortOrder = arg == "sortBy" or arg == "growUpward" or arg == "sortDirection" or arg == "layout" -- added layout for multicolumn
 	local noDelay = arg == "layout" or sortOrder
-	if noDelay or arg == "progressBar" or arg == "columns" or arg == "paddingX" or arg == "paddingY" or arg == "statusBarWidth" then
+	if noDelay or arg == "progressBar" or arg == "columns" or arg == "paddingX" or arg == "paddingY" or arg == "statusBarWidth" or "groupPadding" then
 		P:UpdateExPositionValues()
-		P:SetExIconLayout(key, noDelay, sortOrder, true)
+		--P:SetExIconLayout(key, noDelay, sortOrder, true)
+		P:SetExIconLayout(key, true, sortOrder, true)  -- changed to nodelay. we don't want a slouchy response
 	end
 end
 
@@ -124,16 +125,22 @@ local temp = {
 
 local sortByValues = {
 	interruptBar = {
-		[1] = L["Cooldown"] ..  " > " .. CLASS .. " > " .. NAME,
-		[2] = L["Cooldown Remaining"] .. " > " ..  L["Cooldown"] ..  " > " .. CLASS .. " > " .. NAME,
+		[1] = format("%s > %s > %s", L["Cooldown"], CLASS, NAME),
+		[2] = format("%s > %s > %s > %s", L["Cooldown Remaining"], L["Cooldown"], CLASS, NAME),
 	},
 	raidCDBar = {
-		[3] = L["Priority"] .. " > " .. CLASS .. " > " .. L["Spell ID"],
-		[4] = CLASS .. " > " .. L["Priority"] .. " > " .. L["Spell ID"],
+		[3] = format("%s > %s > %s > %s", L["Priority"], CLASS, L["Spell ID"], NAME),
+		[4] = format("%s > %s > %s > %s", CLASS, L["Priority"], L["Spell ID"], NAME),
 	}
 }
 local interruptBarDesc = sortByValues.interruptBar[1] .. ".\n" .. sortByValues.interruptBar[2] .. "."
 local raidCDBarDesc = sortByValues.raidCDBar[3] .. ".\n" .. sortByValues.raidCDBar[4] .. "."
+
+local classColorValues = {
+	active = L["Active"],
+	inactive = L["Inactive"],
+	recharge = L["Recharge"],
+}
 
 local progressBarColorInfo = {
 	lb1 = {
@@ -171,20 +178,22 @@ local progressBarColorInfo = {
 		hasAlpha = function(info) return info[#info-1] == "barColors" end, -- bgColors is disabled
 		width = 0.35,
 	},
-	classColor = {
+	useClassColor = { -- reminent db 'classColor'
 		name = "",
 		order = 4,
-		type = "toggle",
-		width = 0.4,
-		get = function(info) return E.DB.profile.Party[info[2]].extraBars[info[4]][info[#info-1]].classColor end,
-		set = function(info, state)
+		type = "multiselect",
+		dialogControl = "Dropdown-OmniCD",
+		values = classColorValues,
+		get = function(info, k) return E.DB.profile.Party[info[2]].extraBars[info[4]][info[#info-1]].useClassColor[k] end,
+		set = function(info, k, value)
 			local key, bar = info[2], info[4]
-			E.DB.profile.Party[key].extraBars[bar][info[#info-1]].classColor = state
+			E.DB.profile.Party[key].extraBars[bar][info[#info-1]].useClassColor[k] = value
 
 			if E.db == E.DB.profile.Party[key] then
 				ConfigExBar(bar, "barColors")
 			end
 		end,
+		disabledItem = function(info) return info[#info-1] == "bgColors" and "inactive" end,
 	},
 }
 
@@ -196,7 +205,8 @@ P.extraBarDesc = function(info)
 	end
 end
 
-local isRaidCDBar = function(info) return info[#info-1] ~= "interruptBar" end
+local isRaidCDBar = function(info) return info[4] ~= "interruptBar" end
+local isRaidMultline = function(info) local bar = info[4] return bar == "raidCDBar" and E.DB.profile.Party[info[2]].extraBars[bar].layout == "multicolumn" end
 
 local extraBarsInfo = {
 	enabled = {
@@ -236,16 +246,22 @@ local extraBarsInfo = {
 		name = "\n", order = 4, type = "description"
 	},
 	layout = {
-		name = L["Layout"],
+		name = function(info) return info[4] == "raidCDBar" and L["Layout"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t" or L["Layout"] end,
 		desc = L["Select the icon layout"],
 		order = 10,
 		type = "select",
 		values = {
 			horizontal = L["Horizontal"],
 			vertical = L["Vertical"],
+			multicolumn = L["New Column per Group"],
 		},
+		disabledItem = function(info) return not isRaidCDBar(info) and "multicolumn" end,
 	},
 	sortBy = {
+		disabled = function(info)
+			local db = E.DB.profile.Party[info[2]].extraBars[info[4]]
+			return not db.enabled or (info[4] == "raidCDBar" and db.layout == "multicolumn")
+		end,
 		name = COMPACT_UNIT_FRAME_PROFILE_SORTBY,
 		desc = function(info) return info[#info-1] == "interruptBar" and interruptBarDesc or raidCDBarDesc end,
 		order = 11,
@@ -263,56 +279,104 @@ local extraBarsInfo = {
 		}
 	},
 	columns = {
-		name = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "vertical" and L["Rows"] or L["Columns"] end,
-		desc = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "vertical" and L["Set the number of icons per column"] or L["Set the number of icons per row"] end,
+		--[=[ use in combination
+		disabled = function(info)
+			local db = E.DB.profile.Party[info[2]].extraBars[info[4]]
+			return not db.enabled or (info[4] == "raidCDBar" and db.layout == "multicolumn")
+		end,
+		--]=]
+		name = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "horizontal" and L["Columns"] or L["Rows"] end,
+		desc = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "horizontal" and L["Set the number of icons per row"] or L["Set the number of icons per column"] end,
 		order = 13,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
-		min = 1, max = 100, softMax = 20, step = 1,
+		min = 1, max = 100, softMax = 30, step = 1,
+	},
+	groupColumns = {
+		hidden = function(info) return not isRaidCDBar(info) end,
+		disabled = function(info)
+			local db = E.DB.profile.Party[info[2]].extraBars[info[4]]
+			return not db.enabled or (info[4] == "raidCDBar" and db.layout ~= "multicolumn")
+		end,
+		name = "",
+		order = 20,
+		type ="group",
+		inline = true,
+		get = function(info, k) return E.DB.profile.Party[info[2]].extraBars[info[4]][info[#info]][k] end,
+		set = function(info, k, value)
+			local key, bar, opt = info[2], info[4], info[#info]
+			-- don't disableItem, instead overwrite selection on other groups
+			if value then
+				E.DB.profile.Party[key].extraBars[bar][opt][k] = value
+				for i = 1, 8 do
+					local col = "group" .. i
+					if col ~= opt then
+						E.DB.profile.Party[key].extraBars[bar][col][k] = nil
+					end
+				end
+
+				local column = gsub(opt, "group", "")
+				column = tonumber(column)
+				P:UpdateRaidPriority(k, column)
+			else
+				E.DB.profile.Party[key].extraBars[bar][opt][k] = nil
+				P:UpdateRaidPriority(k, nil)
+			end
+
+			if E.db == E.DB.profile.Party[key] then
+				ConfigExBar(bar, "layout")
+			end
+		end,
+		args = {},
+	},
+	groupPadding = {
+		hidden = function(info) return not isRaidCDBar(info) end,
+		disabled = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.layout ~= "multicolumn" end,
+		name = L["Group Padding"],
+		desc = L["Set the padding space between group columns"],
+		order = 30,
+		type = "range",
+		min = 0, max = 100, step = 1,
 	},
 	paddingX = {
 		name = L["Padding X"],
 		desc = L["Set the padding space between icon columns"],
-		order = 14,
+		order = 31,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
-		min = -5, max = 100, softMax = 10, step = 1,
+		min = -1, max = 100, softMax = 10, step = 1,
 	},
 	paddingY = {
 		name = L["Padding Y"],
 		desc = L["Set the padding space between icon rows"],
-		order = 15,
+		order = 32,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
-		min = -5, max = 100, softMax = 10, step = 1,
+		min = -1, max = 100, softMax = 10, step = 1,
 	},
 	scale = {
 		name = L["Icon Size"],
 		desc = L["Set the size of icons"],
-		order = 16,
+		order = 33,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 	},
 	showName = {
 		disabled = function(info)
 			local db = E.DB.profile.Party[info[2]].extraBars[info[4]]
-			return not db.enabled or (db.layout == "vertical" and db.progressBar)
+			return not db.enabled or (db.layout ~= "horizontal" and db.progressBar)
 		end,
 		name = NAME,
 		desc = L["Show name on icons"],
-		order = 17,
+		order = 34,
 		type = "toggle",
 	},
 	growUpward = {
 		hidden = isRaidCDBar,
 		name = L["Grow Rows Upward"],
 		desc = L["Toggle the grow direction of icon rows"],
-		order = 18,
+		order = 35,
 		type = "toggle",
 	},
 	lb2 = {
-		name = "\n", order = 19, type = "description"
+		name = "\n", order = 39, type = "description"
 	},
 	progressBar = {
 		disabled = function(info)
@@ -320,7 +384,7 @@ local extraBarsInfo = {
 			return not db.enabled or not db.progressBar or db.layout == "horizontal"
 		end,
 		name = L["Status Bar Timer"],
-		order = 20,
+		order = 40,
 		type = "group",
 		inline = true,
 		args = {
@@ -347,7 +411,7 @@ local extraBarsInfo = {
 					lb1 = { name = L["Active"], order = 1, type = "description", width = 0.35},
 					lb2 = { name = L["Recharge"], order = 2, type = "description", width = 0.35},
 					lb3 = { name = L["Inactive"], order = 3, type = "description", width = 0.35},
-					lb4 = { name = CLASS_COLORS, order = 4, type = "description", width = 0.4},
+					lb4 = { name = format("%s (%s)", CLASS_COLORS, L["Multiselect"]), order = 4, type = "description", width = 1},
 				}
 			},
 			textColors = {
@@ -377,12 +441,14 @@ local extraBarsInfo = {
 				set = setColor,
 				args = progressBarColorInfo,
 			},
+			lb2 = {
+				name = "\n\n", order = 41, type = "description"
+			},
 			statusBarWidth = {
 				name = L["Bar width"],
 				desc = L["Set the status bar width. Adjust height with \'Icon Size\'."] .. "\n\n" .. E.STR.MAX_RANGE,
 				order = 50,
 				type = "range",
-				dialogControl = "Slider-OmniCD",
 				min = 100, max = 999, softMax = 300, step = 1,
 			},
 			reverseFill = {
@@ -397,8 +463,15 @@ local extraBarsInfo = {
 				order = 52,
 				type = "toggle",
 			},
-			lb2 = {
-				name = "\n\n", order = 53, type = "description"
+			hideSpark = {
+				name = L["Hide Spark"],
+				desc = L["Hide the leading spark texture."],
+				order = 53,
+				type = "toggle",
+				width = 0.8, -- cram this in
+			},
+			lb3 = {
+				name = "\n\n", order = 59, type = "description"
 			},
 			resetBar = {
 				name = RESET_TO_DEFAULT,
@@ -423,8 +496,21 @@ local extraBarsInfo = {
 	}
 }
 
+for i = 1, 8 do
+	local name = format(GROUP_NUMBER, i)
+	local key = "group" .. i
+	extraBarsInfo.groupColumns.args[key] = {
+		name = name,
+		desc = format("|cffff2020[%s]|r %s", L["Multiselect"], L["Select the spell types you want to display on this column."]),
+		order = i,
+		type = "multiselect",
+		dialogControl = "Dropdown-OmniCD",
+		values = E.L_PRIORITY,
+	}
+end
+
 local extraBars = {
-	name = L["Extra Bars"],
+	name = L["Extra Bars"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
 	type = "group",
 	childGroups = "tab",
 	order = 70,
@@ -440,7 +526,7 @@ local extraBars = {
 		},
 		raidCDBar = {
 			disabled = P.isExBarDisabled,
-			name = L["Raid Bar"],
+			name = L["Raid Bar"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
 			order = 20,
 			type = "group",
 			args = extraBarsInfo

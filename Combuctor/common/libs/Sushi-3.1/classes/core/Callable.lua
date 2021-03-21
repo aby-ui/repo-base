@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2020 João Cardoso
+Copyright 2008-2021 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Callable = LibStub('Sushi-3.1').Base:NewSushi('Callable', 1)
+local Callable = LibStub('Sushi-3.1').Base:NewSushi('Callable', 2)
 if not Callable then return end
 
 function Callable:New(...)
@@ -27,6 +27,7 @@ function Callable:New(...)
 end
 
 function Callable:Reset()
+	self:FireCalls('OnReset')
 	self:Super(Callable):Reset()
 
 	for k, v in pairs(self) do

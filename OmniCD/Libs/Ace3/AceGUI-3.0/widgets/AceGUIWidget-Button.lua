@@ -1,3 +1,9 @@
+---------------------------------------------------------------------------------
+
+-- Customized for OmniCD by permission of the copyright owner.
+
+---------------------------------------------------------------------------------
+
 --[[-----------------------------------------------------------------------------
 Button Widget
 Graphical Button.
@@ -25,7 +31,6 @@ end
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
 
-	-- OmniCD: b
 	PlaySound(1217)
 	local fadeOut = frame.fadeOut
 	if fadeOut:IsPlaying() then
@@ -37,7 +42,6 @@ end
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
 
-	-- OmniCD: b
 	local fadeIn = frame.fadeIn
 	if fadeIn:IsPlaying() then
 		fadeIn:Stop()
@@ -51,8 +55,8 @@ Methods
 local methods = {
 	["OnAcquire"] = function(self)
 		-- restore default values
-		self:SetHeight(22) -- OmniCD: -r 24>default 22
-		self:SetWidth(200) -- this does nothing with ACD fixed at width_multiplier: 170
+		self:SetHeight(22)
+		self:SetWidth(200)
 		self:SetDisabled(false)
 		self:SetAutoWidth(false)
 		self:SetText()
@@ -78,10 +82,10 @@ local methods = {
 		self.disabled = disabled
 		if disabled then
 			self.frame:Disable()
-			self.frame:SetBackdropColor(0.2, 0.2, 0.2) -- OmniCD: l
+			self.frame:SetBackdropColor(0.2, 0.2, 0.2)
 		else
 			self.frame:Enable()
-			self.frame:SetBackdropColor(0.725, 0.008, 0.008) -- OmniCD: l
+			self.frame:SetBackdropColor(0.725, 0.008, 0.008)
 		end
 	end
 }
@@ -91,7 +95,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
 	local name = "AceGUI30Button-OmniCD" .. AceGUI:GetNextWidgetNum(Type)
-	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate, BackdropTemplate") -- OmniCD: c +backdrop
+	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate, BackdropTemplate")
 	frame:Hide()
 
 	frame:EnableMouse(true)
@@ -105,19 +109,18 @@ local function Constructor()
 	text:SetPoint("BOTTOMRIGHT", -15, 1)
 	text:SetJustifyV("MIDDLE")
 
-	-- OmniCD: b
-	-- inherits UIPanelButtonNoTooltipTemplate
-	frame.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
+	frame.Left:Hide()
 	frame.Right:Hide()
 	frame.Middle:Hide()
 	frame:SetHighlightTexture(nil)
-	frame:SetBackdrop(OmniCD[1].BackdropTemplate(frame))
+	OmniCD[1].BackdropTemplate(frame)
 	frame:SetBackdropColor(0.725, 0.008, 0.008)
 	frame:SetBackdropBorderColor(0, 0, 0)
 	frame:SetNormalFontObject("GameFontHighlight-OmniCD")
 	frame:SetHighlightFontObject("GameFontHighlight-OmniCD")
 	frame:SetDisabledFontObject("GameFontDisable-OmniCD")
 	frame.bg = frame:CreateTexture(nil, "BORDER")
+	OmniCD[1].DisablePixelSnap(frame.bg)
 	frame.bg:SetPoint("TOPLEFT", frame.TopEdge, "BOTTOMLEFT")
 	frame.bg:SetPoint("BOTTOMRIGHT", frame.BottomEdge, "TOPRIGHT")
 	frame.bg:SetColorTexture(0.0, 0.6, 0.4)
@@ -138,7 +141,6 @@ local function Constructor()
 	fadeOut:SetToAlpha(0)
 	fadeOut:SetDuration(0.3)
 	fadeOut:SetSmoothing("OUT")
-	--//
 
 	local widget = {
 		text  = text,

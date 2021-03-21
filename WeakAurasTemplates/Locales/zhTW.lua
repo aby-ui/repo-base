@@ -32,8 +32,7 @@ local L = WeakAuras.L
 	L["Always shows the aura, turns grey if the ability is not usable."] = "永遠顯示提醒效果，技能不可使用時變成灰色。"
 	L["Always shows the aura, turns red when out of range, blue on insufficient resources."] = "永遠顯示提醒效果，超出範圍時變成紅色，資源不足時變成藍色。"
 	L["Always shows the aura, turns red when out of range."] = "永遠顯示提醒效果，超出範圍時變成紅色。"
-	--[[Translation missing --]]
-	L["Always shows the aura."] = "Always shows the aura."
+	L["Always shows the aura."] = "永遠顯示提醒效果。"
 	L["Back"] = "上一步"
 	L["Basic Show On Cooldown"] = "基本冷卻中顯示"
 	L["Basic Show On Ready"] = "可使用時基本顯示"
@@ -84,8 +83,7 @@ local L = WeakAuras.L
 	L["Only shows the aura if the target has the buff."] = "只在選取目標有增益時才顯示提醒效果。"
 	L["Only shows the aura when the ability is on cooldown."] = "只有技能在冷卻中才顯示提醒效果。"
 	L["Only shows the aura when the ability is ready to use."] = "只有在技能準備好可以使用時才顯示提醒效果。"
-	--[[Translation missing --]]
-	L["Other cooldown"] = "Other cooldown"
+	L["Other cooldown"] = "其他冷卻時間"
 	L["Pet alive"] = "寵物活著"
 	L["Pet Behavior"] = "寵物動作"
 	L["PvP Talents"] = "PVP 天賦"
@@ -93,8 +91,7 @@ local L = WeakAuras.L
 	L["Replace Triggers"] = "取代觸發"
 	L["Resources"] = "職業特殊資源"
 	L["Resources and Shapeshift Form"] = "職業特殊資源和變身形態"
-	--[[Translation missing --]]
-	L["Rogue cooldown"] = "Rogue cooldown"
+	L["Rogue cooldown"] = "盜賊冷卻時間"
 	L["Runes"] = "符文"
 	L["Shapeshift Form"] = "變身形態"
 	L["Show Always, Glow on Missing"] = "永遠顯示，缺少時發光"
@@ -137,6 +134,5 @@ local L = WeakAuras.L
 	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "追蹤法術的可用次數和持續時間，法術作用時顯著標示，資源不足時變成藍色。"
 	L["Unknown Item"] = "未知的物品"
 	L["Unknown Spell"] = "未知法術"
-	--[[Translation missing --]]
-	L["Warrior cooldown"] = "Warrior cooldown"
+	L["Warrior cooldown"] = "戰士冷卻時間"
 

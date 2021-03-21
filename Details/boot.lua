@@ -4,11 +4,11 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8316
-		_detalhes.alpha_build_counter = 8316 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8357
+		_detalhes.alpha_build_counter = 8357 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
-		_detalhes.game_version = "v9.0.2"
-		_detalhes.userversion = "v9.0.2." .. _detalhes.build_counter
+		_detalhes.game_version = "v9.0.5"
+		_detalhes.userversion = "v9.0.5." .. _detalhes.build_counter
 		_detalhes.realversion = 144 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
@@ -29,6 +29,20 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.0.5.8357.144", "March 15th, 2021"},
+		"Max amount of segments raised to 40, was 30.",
+		"Added a 'Sanguine Heal' actor to show how much the void zone healed enemies, shown on Everything mode.",
+		"Death events are now ignore after the necrolord triggers Forgeborne Reveries.",
+		"Mythic dungeon settings are reset after importing a profile.",
+		"Scripts now support Inline text feature.",
+		"Fixed a rare bug when exporting a profile would result into a bug.",
+		"Fixed an issue with Spirit Shell overhealing.",
+		"Fixed a rare bug on dispel toooltips giving errors.",
+		"Fixed a bug on exporting scripts.",
+		"Fixed an error given when an a battleground opponent die.",
+		"Fixed an issue where sometimes entering an arena cause errors.",
+		"Fixed some issues with pet detection.",
+
 		{"v9.0.2.8246.144", "February 17th, 2021"},
 		"Added healing done to Coach feature (in testing).",
 		"Ignore Forgeborne Reveries healing done (Necrolords ability).",

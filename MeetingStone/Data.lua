@@ -97,9 +97,6 @@ PROVING_GROUND_DATA = {
     },
 }
 
--- last activity 491
--- last group 134
-
 CATEGORY = {
     [0] = {
         groups = {
@@ -328,6 +325,23 @@ CATEGORY = {
         },
         activities = {
             [723] = true, --世界首领
+        },
+    },
+    [8] = {
+        groups = {
+            [259]=true,
+            [260]=true,
+            [261]=true,
+            [262]=true,
+            [263]=true,
+            [264]=true,
+            [265]=true,
+            [266]=true,
+            [267]=true,
+            [269]=true,
+            [270]=true,
+        },
+        activities = {
         },
     }
 }

@@ -71,7 +71,7 @@ end
 function E.CreateFlashButton(parent, text, width, height)
 	local Button = CreateFrame("Button", nil, parent, "BackdropTemplate")
 	Button:SetSize(width or 80, height or 20)
-	Button:SetBackdrop(E.BackdropTemplate(Button))
+	E.BackdropTemplate(Button)
 	Button:SetBackdropColor(0.725, 0.008, 0.008)
 	Button:SetBackdropBorderColor(0, 0, 0)
 	Button:SetScript("OnEnter", Button_OnEnter)
@@ -81,6 +81,7 @@ function E.CreateFlashButton(parent, text, width, height)
 	Button:SetText(text or "")
 
 	Button.bg = Button:CreateTexture(nil, "BORDER")
+	E.DisablePixelSnap(Button.bg)
 	Button.bg:SetPoint("TOPLEFT", Button.TopEdge, "BOTTOMLEFT")
 	Button.bg:SetPoint("BOTTOMRIGHT", Button.BottomEdge, "TOPRIGHT")
 	Button.bg:SetColorTexture(0.0, 0.6, 0.4)
@@ -111,7 +112,7 @@ function PS.ShowProfileDialog(text)
 		Dialog:SetPoint("CENTER")
 		Dialog:SetSize(600, 400)
 		Dialog:SetFrameStrata("FULLSCREEN_DIALOG")
-		Dialog:SetBackdrop(E.BackdropTemplate(Dialog))
+		E.BackdropTemplate(Dialog)
 		Dialog:SetBackdropColor(0.05, 0.05, 0.05, 0.9)
 		Dialog:SetBackdropBorderColor(0.3, 0.3, 0.3)
 		Dialog:SetMovable(true)
@@ -155,11 +156,20 @@ function PS.ShowProfileDialog(text)
 
 		-- Resizer
 		local Resizer = CreateFrame("Button", "OmniCD_ProfileDialogResizeButton", Dialog)
+		--[[
 		Resizer:SetPoint("BOTTOMRIGHT", -6, 7)
 		Resizer:SetSize(16, 16)
 		Resizer:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
 		Resizer:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
 		Resizer:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+		]]
+		-- TODO:
+		Resizer:SetPoint("BOTTOMRIGHT", -8, 8)
+		Resizer:SetSize(16, 16)
+		Resizer:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bullet-resizer]]) -- 8x8
+		local Resizer_Normal = Resizer:GetNormalTexture()
+		Resizer_Normal:SetPoint("BOTTOMRIGHT")
+		Resizer_Normal:SetPoint("TOPLEFT", Resizer, "CENTER")
 		Resizer:SetScript("OnMouseDown", function(_, button)
 			if button == "LeftButton" then
 				Dialog:StartSizing("BOTTOMRIGHT")
@@ -168,14 +178,14 @@ function PS.ShowProfileDialog(text)
 		end)
 		Resizer:SetScript("OnMouseUp", function(self, button)
 			Dialog:StopMovingOrSizing()
-			self:GetHighlightTexture():Show()
+			--self:GetHighlightTexture():Show()
 		end)
 
 		-- ScrollContainer
 		local ScrollContainer = CreateFrame("Frame", "OmniCD_ProfileDialogScrollContainer", Dialog, "BackdropTemplate")
 		ScrollContainer:SetPoint("TOPLEFT", 18, -28)
 		ScrollContainer:SetPoint("BOTTOMRIGHT", -38, 50)
-		ScrollContainer:SetBackdrop(E.BackdropTemplate(ScrollContainer))
+		E.BackdropTemplate(ScrollContainer)
 		ScrollContainer:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
 		ScrollContainer:SetBackdropBorderColor(0, 0, 0)
 

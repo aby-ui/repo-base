@@ -71,7 +71,7 @@ end
 
 function TestMod:SetAnchor(key)
 	if not indicator then return end
-	E.SetFontObj(indicator.anchor.text, E.profile.General.fonts.anchor)
+	E.SetFont(indicator.anchor.text, E.profile.General.fonts.anchor)
 	if key then
 		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
 	end
@@ -120,7 +120,7 @@ function TestMod:Test(key)
 			self:SetScript("OnEvent", function(self, event, ...)
 				self[event](self, ...)
 			end)
-			E.SetFontObj(indicator.anchor.text, E.profile.General.fonts.anchor)
+			E.SetFont(indicator.anchor.text, E.profile.General.fonts.anchor)
 		end
 		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
 		E.SetWidth(indicator.anchor)
@@ -144,9 +144,6 @@ function TestMod:Test(key)
 				newItemAnim:Stop();
 			end
 			if icon:IsVisible() then
-			--[[ xml
-			if icon:IsVisible() and not icon.isCropped then
-			--]]
 				flash:Play();
 				newItemAnim:Play();
 			end

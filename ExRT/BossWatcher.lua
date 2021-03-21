@@ -26,14 +26,11 @@ local tremove = tremove
 local strsplit = strsplit
 local type = type
 local UnitGroupRolesAssigned = ExRT.isClassic and ExRT.NULLfunc or UnitGroupRolesAssigned
-local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 
 local VExRT = nil
 
 local module = ExRT:New("BossWatcher",ExRT.L.BossWatcher)
 local ELib,L = ExRT.lib,ExRT.L
-
-module.CLEUNotInList = true
 
 module.db.data = {}
 
@@ -1850,6 +1847,10 @@ function module.main.SPELL_HEAL(timestamp,event,hideCaster,sourceGUID,sourceName
 
 end
 function module.main.SPELL_AURA_APPLIED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,spellName,school,auraType)
+	if spellID == 465 then	--HPal devo is broken and can spam 2000 events / sec
+		return
+	end
+
 	--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,1,1,s = active_segment}
 	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,1,1,s = active_segment}
 
@@ -1996,6 +1997,10 @@ function module.main.SPELL_AURA_APPLIED(timestamp,event,hideCaster,sourceGUID,so
 	end
 end
 function module.main.SPELL_AURA_REMOVED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,spellID,_,school,auraType,amount)
+	if spellID == 465 then	--HPal devo is broken and can spam 2000 events / sec
+		return
+	end
+
 	--fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,UnitIsFriendlyByUnitFlag(sourceFlags),UnitIsFriendlyByUnitFlag(destFlags),spellID,auraType,2,1,s = active_segment}
 	fightData_auras[ #fightData_auras + 1 ] = {timestamp,sourceGUID,destGUID,bit_band(sourceFlags or 0,240) == 16,bit_band(destFlags or 0,240) == 16,spellID,auraType,2,1,s = active_segment}
 
@@ -2429,11 +2434,7 @@ CLEU = {
 	SPELL_INSTAKILL = module.main.SPELL_INSTAKILL,
 }
 
-CLEUParser = function()
-	local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-			val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13
-					= CombatLogGetCurrentEventInfo()
-
+CLEUParser = function(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13)
 	if not guidData[sourceGUID] then guidData[sourceGUID] = sourceName or "nil" end
 	if not guidData[destGUID] then guidData[destGUID] = destName or "nil" end
 
@@ -2454,11 +2455,7 @@ CLEUParser = function()
 	-- SPELL_BUILDING_HEAL
 end
 if ExRT.isClassic then
-	CLEUParser = function()
-		local timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,
-				val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13
-						= CombatLogGetCurrentEventInfo()
-
+	CLEUParser = function(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13)
 		if event ~= "SWING_DAMAGE" and event ~= "SWING_MISSED" then
 			val1 = val2
 			if event == "SPELL_PERIODIC_DAMAGE" then event = "SPELL_DAMAGE"
@@ -2483,14 +2480,13 @@ end
 
 module.main.COMBAT_LOG_EVENT_UNFILTERED2 = CLEUParser
 
-function module.main.COMBAT_LOG_EVENT_UNFILTERED()
-	local timestamp = CombatLogGetCurrentEventInfo()
+function module.main.COMBAT_LOG_EVENT_UNFILTERED(timestamp,...)
 	if not module.db.timeFix then
 		module.db.timeFix = {GetTime(),timestamp}
 	end
 	module.main.COMBAT_LOG_EVENT_UNFILTERED = CLEUParser
 	module.main.COMBAT_LOG_EVENT_UNFILTERED2 = nil
-	CLEUParser(CombatLogGetCurrentEventInfo())
+	CLEUParser(timestamp,...)
 	module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
 end
 
@@ -2588,6 +2584,10 @@ function module:slash(arg)
 		end
 	elseif arg:find("^bw ") or arg:find("^fl ") then
 		ExRT.F:FightLog_Open()
+	elseif arg == "help" then
+		print("|cff00ff00/rt fl|r - open fight log tab")
+		print("|cff00ff00/rt fl s|r - manual start logging fight for fight log")
+		print("|cff00ff00/rt fl e|r - manual stop logging fight for fight log")
 	end
 end
 
@@ -11563,6 +11563,12 @@ function BWInterfaceFrameLoad()
 	tab.targetsList = ELib:ScrollTableList(tab.headerTab.tabs[1],80,0):Size(625,510):Point("TOPLEFT",tab.spellsList,"TOPRIGHT",10,0)
 
 	tab.spellsList.D = {}
+
+	function tab.spellsList:UpdateAdditional()
+		for i=1,#self.List do
+			self.List[i]:SetEnabled(true)
+		end
+	end
 
 	function tab.spellsList:SetListValue(index)
 		wipe(trackingTab.targetsList.L)

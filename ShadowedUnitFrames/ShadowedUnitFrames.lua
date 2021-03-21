@@ -5,7 +5,7 @@
 ShadowUF = select(2, ...)
 
 local L = ShadowUF.L
-ShadowUF.dbRevision = 61
+ShadowUF.dbRevision = 62
 ShadowUF.playerUnit = "player"
 ShadowUF.enabledUnits = {}
 ShadowUF.modules = {}
@@ -112,6 +112,11 @@ end
 
 function ShadowUF:CheckUpgrade()
 	local revision = self.db.profile.revision or self.dbRevision
+	if (revision <= 61 ) then
+		if self.db.profile.bars.texture == "Smooth" then
+			self.db.profile.bars.texture = "Smoother"
+		end
+	end
 	if (revision <= 60 ) then
 		for unit, config in pairs(self.db.profile.units) do
 			if( unit == "player" or unit == "party" or unit == "target" or unit == "raid" or unit == "focus" or unit == "mainassist" or unit == "maintank" ) then

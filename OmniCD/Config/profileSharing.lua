@@ -15,7 +15,7 @@ PS.profileTypeValues = {
 local ProfileValues = function() return E.DB:GetProfiles(tbl) end
 
 local ProfileSharing = {
-	name = title,
+	name = title .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
 	order = -1,
 	type = "group",
 	args = {
@@ -144,11 +144,10 @@ local ProfileSharing = {
 					values = ProfileValues,
 					get = function() return selectedProfileDest end,
 					set = function(_, value) selectedProfileDest = value end,
+					disabledItem = function() return selectedProfileSrc end,
 				},
 				copy = {
-					disabled = function() return not selectedProfileSrc or
-						not selectedProfileZone or not selectedProfileOption or
-						not selectedProfileDest or selectedProfileSrc == selectedProfileDest end,
+					disabled = function() return not selectedProfileSrc or not selectedProfileZone or not selectedProfileOption or not selectedProfileDest end,
 					name = L["Copy"],
 					order = 5,
 					type = "execute",
@@ -177,7 +176,7 @@ local ProfileSharing = {
 							end
 						end
 
-						if dest == current then -- bypass same name check in DBObjectLib:SetProfile(name) to update profile.
+						if dest == current then -- bypass same name check in DBObjectLib:SetProfile(name) to update profile. Credit goes to ElvUI.
 							E.DB.keys.profile = current .. "_"
 							E.DB:SetProfile(current)
 						end

@@ -68,7 +68,6 @@ local visibility = {
 					name = L["Max number of group members"],
 					width = "double",
 					type = "range",
-					dialogControl = "Slider-OmniCD",
 					min = 2, max = 40, step = 1,
 					--descStyle = "inline",
 					set = ConfigGroupSize,

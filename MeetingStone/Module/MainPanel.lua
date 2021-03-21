@@ -34,8 +34,9 @@ function MainPanel:OnInitialize()
     PVEFrame:UnregisterEvent('AJ_PVP_LFG_ACTION')
 
     local AnnBlocker = self:NewBlocker('AnnBlocker', 1) do
+        self.AnnBlocker = AnnBlocker
         AnnBlocker:SetCallback('OnCheck', function()
-            return DataCache:GetObject('AnnData'):IsNew()
+            return DataCache:GetObject('AnnList'):IsNew()
         end)
         AnnBlocker:SetCallback('OnInit', function(AnnBlocker)
             local Label = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'QuestFont_Super_Huge') do
@@ -51,9 +52,9 @@ function MainPanel:OnInitialize()
                 Line:SetPoint('TOP', Label, 'BOTTOM', 0, -20)
             end
 
-            local Title = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'QuestFont_Super_Huge') do
-                Title:SetPoint('TOPLEFT', 100, -130)
-                Title:SetTextColor(GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(AnnBlocker) do
+                SummaryHtml:SetPoint('TOPLEFT', 190, -130)
+                SummaryHtml:SetSize(450, 200)
             end
 
             local Button = CreateFrame('Button', nil, AnnBlocker, 'UIPanelButtonTemplate') do
@@ -61,33 +62,39 @@ function MainPanel:OnInitialize()
                 Button:SetPoint('BOTTOM', 0, 30)
                 Button:SetText(L['我知道了'])
                 Button:SetScript('OnClick', function()
-                    DataCache:GetObject('AnnData'):SetIsNew(false)
+                    DataCache:GetObject('AnnList'):SetIsNew(false)
                     AnnBlocker:Hide()
+                    self:SendMessage('MEETINGSTONE_ANNOUNCEMENT_UPDATED', false)
                 end)
             end
 
-            local Content = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'GameFontNormalLargeLeftTop') do
-                Content:SetTextColor(1, 1, 1)
-                Content:SetPoint('TOPLEFT', Title, 'BOTTOMLEFT', 0, -20)
-                Content:SetPoint('BOTTOM', Button, 'TOP', 0, 20)
-                Content:SetPoint('RIGHT', -100, 0)
-            end
+            AnnBlocker.SummaryHtml = SummaryHtml
 
-            AnnBlocker.Title = Title
-            AnnBlocker.Content = Content
+            self:RegisterMessage('MEETINGSTONE_ANNOUNCEMENT_UPDATED', function(_, isNew)
+                if isNew then
+                    AnnBlocker:Fire('OnFormat')
+                end
+            end)
         end)
         AnnBlocker:SetCallback('OnFormat', function(AnnBlocker)
-            local annData = DataCache:GetObject('AnnData'):GetData()
+            local annData = DataCache:GetObject('AnnList'):GetData()
+            local tpl = [[<html><body>%s</body></html>]]
+            local lines = {}
             if not annData then
-                AnnBlocker.Title:SetText(L['暂无公告'])
-                AnnBlocker.Content:SetText('')
+                table.insert(lines, format('<h2>|cffffffff%s|r</h2>', L['暂无公告']))
             else
-                AnnBlocker.Title:SetText(annData.title)
-                AnnBlocker.Content:SetText(annData.content)
+                for i, v in ipairs(annData) do
+                    if v.t then
+                        if v.u then
+                            table.insert(lines, format('<h2>|cffffffff%s. %s|r |Hurl:%s|h|cff00ffff[%s]|r|h</h2>', i, v.t, v.u, L['查看更多']))
+                        else
+                            table.insert(lines, format('<h2>|cffffffff%s. %s|r</h2>', i, v.t))
+                        end
+                    end
+                end
             end
-        end)
-        AnnBlocker:SetCallback('OnCheck', function(AnnBlocker)
-            return DataCache:GetObject('AnnData'):IsNew()
+            local html = format(tpl, table.concat(lines, '<br /><br />'))
+            AnnBlocker.SummaryHtml:SetText(html)
         end)
     end
 

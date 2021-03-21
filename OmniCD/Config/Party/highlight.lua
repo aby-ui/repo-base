@@ -95,13 +95,13 @@ local highlight = {
 			}
 		},
 		markEnhanced = {
-			disabled = function(info) return E.DB.profile.Party[info[2]].highlight.markEnhanced end,
+			disabled = function(info) return not E.DB.profile.Party[info[2]].icons.markEnhanced end,
 			name = L["Mark Enhanced Spells"],
 			order = 30,
 			type = "group",
 			inline = true,
 			args = {
-				markEnhanced = {
+				markEnhanced = { -- exists under icons, not highlight
 					disabled = false,
 					name = ENABLE,
 					desc = L["Mark icons with a red dot to indicate enhanced spells"] .. "\n\n" .. markEnhancedDesc,

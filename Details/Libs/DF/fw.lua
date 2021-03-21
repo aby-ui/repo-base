@@ -1,6 +1,6 @@
 
 
-local dversion = 236
+local dversion = 237
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -328,7 +328,6 @@ end
 --> copy from table2 to table1 overwriting values but do not copy data that cannot be compressed
 function DF.table.copytocompress (t1, t2)
 	for key, value in pairs (t2) do
-		print (key, value)
 		if (key ~= "__index" and type(value) ~= "function") then
 			if (type (value) == "table") then
 				t1 [key] = t1 [key] or {}

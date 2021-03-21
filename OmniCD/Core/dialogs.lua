@@ -1,7 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
--- TODO:
--- Protected function C_UI.Reload has been blocked in the PTR 9.0.5. Check if this goes live
+-- TODO: Protected function C_UI.Reload has been blocked in the PTR 9.0.5. Check if this goes live
 
 E.StaticPopupDialogs = {} -- upvalue global to switch
 
@@ -63,7 +62,7 @@ E.StaticPopupDialogs["OMNICD_IMPORT_PROFILE"] = {
 	OnAccept = function(_, data)
 		E.ProfileSharing.CopyProfile(data.profileType, data.profileKey, data.profileData)
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile imported successfully!"])
-		E.lib.ACR:NotifyChange("OmniCD")
+		E.Libs.ACR:NotifyChange("OmniCD")
 	end,
 	OnCancel = function()
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile import cancelled!"])
@@ -89,7 +88,7 @@ function E.GetStaticPopup()
 	frame:SetPoint("CENTER", UIParent, "CENTER")
 	frame:SetSize(320, 72)
 	frame:SetFrameStrata("TOOLTIP")
-	frame:SetBackdrop(E.BackdropTemplate(frame, "dialog", [[Interface\DialogFrame\UI-DialogBox-Background-Dark]]))
+	E.BackdropTemplate(frame, "dialog", [[Interface\DialogFrame\UI-DialogBox-Background-Dark]])
 	frame:SetBackdropBorderColor(0, 0, 0)
 	frame:SetScript("OnKeyDown", function(self, key)
 		if key == "ESCAPE" then
@@ -112,7 +111,7 @@ function E.GetStaticPopup()
 	local function newButton(name)
 		local button = CreateFrame("Button", nil, frame, "BackdropTemplate")
 		button:SetSize(128, 21)
-		button:SetBackdrop(E.BackdropTemplate(button))
+		E.BackdropTemplate(button)
 		button:SetBackdropColor(0.2, 0.2, 0.2, 1)
 		button:SetBackdropBorderColor(0, 0, 0, 1)
 		button:SetScript("OnEnter", Button_OnEnter)

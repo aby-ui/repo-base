@@ -226,6 +226,13 @@ function module:slash(arg,msgDeformatted)
 			module.db.timertopull = time_needed
 			CreateTimers(time_needed,L.timerattack)
 		end	
+	elseif arg == "help" then
+		print("|cff00ff00/rt pull|r - run pull timer with 10 seconds")
+		print("|cff00ff00/rt pull X|r - run pull timer with X seconds")
+		print("|cff00ff00/rt afk X|r - run afk timer with X minutes")
+		print("|cff00ff00/rt timer TIMERNAME X|r - run custom timer with name TIMERNAME and X seconds")
+		print("|cff00ff00/rt mytimer X|r - set countdown for timer frame with X seconds")
+		print("|cff00ff00/rt dpt|r - run dynamic pull timer")
 	end
 end
 

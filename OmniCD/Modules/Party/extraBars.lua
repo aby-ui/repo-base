@@ -5,6 +5,37 @@ local tremove = table.remove
 local P = E["Party"]
 
 P.extraBars = {}
+P.raidGroup = {}
+P.raidPriority = {}
+
+function P:UpdateRaidPriority(spellType, column)
+	local db = E.db.priority
+	if spellType then
+		if not column then
+			P.raidGroup[spellType] = nil
+			P.raidPriority[spellType] = 100
+		else
+			P.raidGroup[spellType] = column
+			P.raidPriority[spellType] = 900 - 100 * column + db[spellType]
+		end
+	else
+		wipe(P.raidGroup)
+
+		for k in pairs(db) do
+			P.raidPriority[k] = 100
+		end
+
+		for i = 1, 8 do
+			local group = E.db.extraBars.raidCDBar["group" .. i]
+			for k, v  in pairs(group) do
+				if v then -- we nil this in options but whatever
+					P.raidGroup[k] = i
+					P.raidPriority[k] = 900 - 100 * i + db[k]
+				end
+			end
+		end
+	end
+end
 
 local function OmniCD_ExBarOnHide(self)
 	local key = self.key
@@ -34,9 +65,10 @@ local function CreateBar(key)
 	f:SetScript("OnShow", nil)
 	f:SetScript("OnHide", OmniCD_ExBarOnHide)
 
-	E.SetFontObj(f.anchor.text, E.profile.General.fonts.anchor)
+	E.SetFont(f.anchor.text, E.profile.General.fonts.anchor)
 	local name = key == "interruptBar" and L["Interrupts"] or L["Raid CD"]
 	f.anchor.text:SetText(name)
+	--f.anchor.text:SetTextColor(1, 0.824, 0) -- #ffd200
 	E.SetWidth(f.anchor)
 	f.anchor.background:SetColorTexture(0, 0, 0, 1)
 	f.anchor.background:SetGradientAlpha("Horizontal", 1, 1, 1, 1, 1, 1, 1, 0)
@@ -74,7 +106,7 @@ function P:UpdateExBar(bar)
 					icon:SetParent(f_container)
 
 					local statusBar = icon.statusBar -- always nil
-					if db.layout == "vertical" and db.progressBar then
+					if f.isProgressBarShown then
 						statusBar = statusBar or self.GetStatusBar(icon, key)
 					elseif statusBar then
 						P.RemoveStatusBar(statusBar)
@@ -110,6 +142,7 @@ function P:UpdateExPositionValues()
 			if key == "interruptBar" then
 				self.rearrangeInterrupts = nil
 			end
+			f.isProgressBarShown = nil
 		else
 			f.point = growUpward and "BOTTOMLEFT" or "TOPLEFT"
 			f.relat = growUpward and "TOPLEFT" or "BOTTOMLEFT"
@@ -120,6 +153,7 @@ function P:UpdateExPositionValues()
 			if key == "interruptBar" then
 				self.rearrangeInterrupts = isProgressBarShown and db.sortBy == 2
 			end
+			f.isProgressBarShown = isProgressBarShown
 		end
 	end
 end
@@ -161,6 +195,9 @@ do
 			if aprio == bprio then
 				local aclass, bclass = a.class, b.class
 				if aclass == bclass then
+					if a.spellID == b.spellID then
+						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name -- end with name so we don't see it shuffling around
+					end
 					return a.spellID < b.spellID
 				end
 				return aclass < bclass
@@ -172,11 +209,32 @@ do
 			if aclass == bclass then
 				local aprio, bprio = E.db.priority[a.type], E.db.priority[b.type]
 				if aprio == bprio then
+					if a.spellID == b.spellID then
+						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name
+					end
 					return a.spellID < b.spellID
 				end
 				return aprio > bprio
 			end
 			return aclass < bclass
+		end,
+		function(a, b) -- reserved for multicolumn layout
+			local aRprio, bRprio = P.raidPriority[a.type], P.raidPriority[b.type]
+			if aRprio == bRprio then
+				local aprio, bprio = E.db.priority[a.type], E.db.priority[b.type]
+				if aprio == bprio then
+					local aclass, bclass = a.class, b.class
+					if aclass == bclass then
+						if a.spellID == b.spellID then
+							return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name
+						end
+						return a.spellID < b.spellID
+					end
+					return aclass < bclass
+				end
+				return aprio > bprio
+			end
+			return aRprio > bRprio
 		end,
 	}
 
@@ -187,6 +245,7 @@ do
 	local updateLayout = function(key, noDelay, sortOrder, updateSettings)
 		local f = P.extraBars[key]
 		local db = E.db.extraBars[key]
+		local isMulticolumn = db.layout == "multicolumn"
 
 		local n = 0
 		for i = f.numIcons, 1, -1 do
@@ -202,12 +261,12 @@ do
 		end
 		f.numIcons = f.numIcons - n
 
-		local sortFunc = db.sortDirection == "dsc" and reverseSort or sorters[db.sortBy]
 		if sortOrder then
+			local sortFunc = isMulticolumn and sorters[5] or (db.sortDirection == "dsc" and reverseSort or sorters[db.sortBy])
 			sort(f.icons, sortFunc)
 		end
 
-		local count, rows = 0, 1
+		local count, rows, groups = 0, 1, 1
 		local columns = db.columns
 		for i = 1, f.numIcons do
 			local icon = f.icons[i]
@@ -216,15 +275,26 @@ do
 
 			if i > 1 then
 				count = count + 1
-				if count == columns then
-					icon:SetPoint(f.startPoint, f.container, f.ofsX1 * rows, f.ofsY1 * rows)
+				--[=[
+				if (isMulticolumn and P.raidGroup[icon.type] ~= P.raidGroup[f.icons[i-1].type]) or count == columns then
+					icon:SetPoint(f.point, f.container, f.ofsX1 * rows, f.ofsY1 * rows)
+					count = 0
+					rows = rows + 1
+				]=]
+				if isMulticolumn and P.raidGroup[icon.type] ~= P.raidGroup[f.icons[i-1].type] then
+					icon:SetPoint(f.point, f.container, f.ofsX1 * rows + db.groupPadding * groups, 0)
+					count = 0
+					rows = rows + 1
+					groups = groups + 1
+				elseif count == columns then
+					icon:SetPoint(f.point, f.container, isMulticolumn and (f.ofsX1 * rows + db.groupPadding * (groups-1)) or f.ofsX1 * rows, f.ofsY1 * rows)
 					count = 0
 					rows = rows + 1
 				else
 					icon:SetPoint(f.point, f.icons[i-1], f.relat, f.ofsX2, f.ofsY2)
 				end
 			else
-				icon:SetPoint(f.startPoint, f.container)
+				icon:SetPoint(f.point, f.container)
 			end
 
 			icon:Show()
@@ -237,7 +307,12 @@ do
 		timers[key] = nil
 	end
 
-	function P:SetExIconLayout(key, noDelay, sortOrder, updateSettings)
+
+	function P:SetExIconLayout(key, noDelay, sortOrder, updateSettings) -- removed all delay from options. we don't want a slouchy response
+		if self.disabled then -- [102]
+			return
+		end
+
 		if noDelay then
 			updateLayout(key, noDelay, sortOrder, updateSettings)
 		else
@@ -275,7 +350,7 @@ function P:SetExScale(key)
 	local f = self.extraBars[key]
 	local db = E.db.extraBars[key]
 	f.container:SetScale(db.scale)
-	if db.layout == "vertical" and db.progressBar or E.db.icons.displayBorder then
+	if db.layout ~= "horizontal" and db.progressBar or E.db.icons.displayBorder then
 		self:UpdateExBarBackdrop(f, key)
 	end
 end
@@ -285,7 +360,7 @@ function P:SetExBorder(icon, key)
 	local db_icon = E.db.icons
 	local edgeSize = db_icon.borderPixels * E.PixelMult / db.scale
 	local r, g, b = db_icon.borderColor.r, db_icon.borderColor.g, db_icon.borderColor.b
-	local isProgressBarShown = db.layout == "vertical" and db.progressBar
+	local isProgressBarShown = self.extraBars[key].isProgressBarShown
 
 	if isProgressBarShown or db_icon.displayBorder then
 		icon.borderTop:ClearAllPoints()
@@ -322,11 +397,6 @@ function P:SetExBorder(icon, key)
 		icon.icon:SetTexCoord(0, 1, 0, 1)
 	end
 
-	--[[ xml
-	icon:SetHeight(36)
-	icon.isCropped = nil
-	--]]
-
 	if isProgressBarShown then
 		local statusBar = icon.statusBar
 		statusBar.borderTop:ClearAllPoints()
@@ -353,7 +423,7 @@ end
 
 function P:SetExIconName(icon, key)
 	local db = E.db.extraBars[key]
-	if db.layout == "vertical" and db.progressBar or not db.showName then
+	if self.extraBars[key].isProgressBarShown or not db.showName then
 		icon.Name:Hide()
 	else
 		icon.Name:SetText(P.groupInfo[icon.guid].name)
@@ -366,24 +436,30 @@ function P:SetExStatusBarColor(icon, key)
 	local c, r, g, b, a = RAID_CLASS_COLORS[icon.class]
 	local statusBar = icon.statusBar
 
+	-- inactive bg doesn't exist
+
+	-- inactive bar
 	local db_bar = db.barColors.inactiveColor
 	local alpha = db.useIconAlpha and 1 or db_bar.a
 	if P.groupInfo[icon.guid].preActiveIcons[icon.spellID] then -- [81]
 		r, g, b, a = 0.7, 0.7, 0.7, alpha -- [A]
-	elseif db.barColors.classColor then
+	elseif db.barColors.useClassColor.inactive then
 		r, g, b, a = c.r, c.g, c.b, alpha
 	else
 		r, g, b, a =  db_bar.r, db_bar.g, db_bar.b, alpha
 	end
 	statusBar.BG:SetVertexColor(r, g, b, a)
 
-	if db.textColors.classColor then
+	-- inactive text
+	if db.textColors.useClassColor.inactive then
 		r, g, b = c.r, c.g, c.b
 	else
 		local db_text = db.textColors.inactiveColor
 		r, g, b = db_text.r, db_text.g, db_text.b
 	end
 	statusBar.Text:SetTextColor(r, g, b)
+
+	--> active & recharge done in CastingBarFrame_OnLoad
 end
 
 function P:ApplyExSettings(key)

@@ -293,20 +293,6 @@ function DragFrame:OnMouseUp()
     self:SetMoving(false)
 end
 
-function DragFrame:OnClick(button)
-    if button == 'RightButton' then
-        if IsModifierKeyDown() then
-            self:SetOwnerShown(not self:IsOwnerShown())
-        else
-            self:ShowOwnerContextMenu()
-        end
-    elseif button == 'MiddleButton' then
-        self:SetOwnerShown(not self:IsOwnerShown())
-    end
-
-    self:UpdateState()
-end
-
 function DragFrame:OnMouseWheel(delta)
     self:IncrementOpacity(delta)
 end

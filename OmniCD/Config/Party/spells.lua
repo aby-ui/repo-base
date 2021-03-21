@@ -9,9 +9,9 @@ local isRaidOptDisabledID = function(info)
 	local key = info[2]
 	-- Edit
 	--[[ TODO: add additional members
-	return info[3] ~= "spells" and E.DB.profile.Party[key].raidCDS.hideDiabledSpells and not P.IsEnabledSpell(info[#info]:gsub("E", ""), key)
+	return info[3] ~= "spells" and E.DB.profile.Party[key].extraBars.raidCDBar.hideDisabledSpells and not P.IsEnabledSpell(info[#info]:gsub("E", ""), key)
 	--]]
-	return info[3] ~= "spells" and E.DB.profile.Party[key].raidCDS.hideDiabledSpells and not P.IsEnabledSpell(info[#info], key)
+	return info[3] ~= "spells" and E.DB.profile.Party[key].extraBars.raidCDBar.hideDisabledSpells and not P.IsEnabledSpell(info[#info], key)
 end
 
 local runClearAllDefault = function(info)
@@ -112,15 +112,16 @@ local spells = {
 		-- TODO: Shows the type group of the searched spell. If we want to show a single spell we need to wrap it in a simple-group
 		---[[
 		searchBox = {
+			hidden = isRaidCDOption,
 			disabled = true,
 			name = "",
 			desc = "Enter spell name.",
 			order = 3,
 			type = "input",
 			dialogControl = "SearchBox-OmniCD",
-			get = E.Noop,
+			get = function() return "    NYI" end,
 			set = function()
-				E.lib.ACD:SelectGroup(E.AddOn, "Party", "arena", "spells", "DRUID", "cc")
+				E.Libs.ACD:SelectGroup(E.AddOn, "Party", "arena", "spells", "DRUID", "cc")
 			end,
 		},
 		--]]
@@ -133,15 +134,14 @@ local spells = {
 			get = P.getIcons,
 			set = P.setIcons,
 		},
-		hideDiabledSpells = {
+		hideDisabledSpells = {
 			hidden = isSpellsOption,
 			name = L["Hide Disabled Spells"],
 			desc = L["Hide spells that are not enabled in the \'Spells\' menu."],
 			order = 5,
 			type = "toggle",
-			set = function(info, state)
-				E.DB.profile.Party[info[2]].raidCDS.hideDiabledSpells = state
-			end,
+			get = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells end,
+			set = function(info, state) E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells = state end,
 		},
 	}
 }
@@ -149,21 +149,24 @@ local spells = {
 --[[
 spells.args.classHeader = {
 	disabled = true,
-	name = E.HEX_C.TWITCH_PURPLE .. CLASS,
+	name = "```",
 	order = 0,
 	type = "group",
 	args = {}
 }
 ]]
 
+local borderlessCoords = {0.07, 0.93, 0.07, 0.93}
+
 for i = 1, MAX_CLASSES do
 	local class = CLASS_SORT_ORDER[i]
-	--local iconCoords = CLASS_ICON_TCOORDS[class]
+	--local iconCoords = CLASS_ICON_TCOORDS[class] -- back to individual class icons for tree frame
 	local name = LOCALIZED_CLASS_NAMES_MALE[class]
 	spells.args[class] = {
 		--icon = E.ICO.CLASS,
 		icon = E.ICO.CLASS .. class,
 		--iconCoords = iconCoords,
+		iconCoords = borderlessCoords,
 		name = name,
 		type = "group",
 		args = {}
@@ -171,8 +174,10 @@ for i = 1, MAX_CLASSES do
 end
 
 spells.args.othersHeader = {
+	---[[ Make the group a line break
 	disabled = true,
-	name = "", --E.HEX_C.TWITCH_PURPLE .. OTHER,
+	name = "```",
+	--]]
 	order = 2000, -- default: 1000
 	type = "group",
 	args = {}
@@ -185,6 +190,7 @@ for i = 1, numOthers do
 	local name = E.L_CATAGORY_OTHER[class]
 	spells.args[class] = {
 		icon = icon,
+		iconCoords = borderlessCoords,
 		name = name,
 		order = 2000 + i,
 		type = "group",
@@ -212,7 +218,7 @@ end
 function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 	local sId = tostring(id)
 
-	if oldClass or force then -- delete, add new custom, class,type change
+	if oldClass or force then -- oldClass(delete, class/type change), force(add new custom)
 		if oldClass then
 			spells.args[oldClass].args[oldType].args[sId] = nil
 			-- Edit
@@ -224,7 +230,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 			end
 		end
 
-		if not class then
+		if not class then -- deleted custom only (default needs to be reverted)
 			return
 		end
 
@@ -264,11 +270,12 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					t[sId] = {
 						hidden = isRaidOptDisabledID,
 						image =  icon,
-						imageCoords = {0.07, 0.93, 0.07, 0.93},
+						imageCoords = {0, 1, 0, 1},
 						name = name,
 						desc = link,
 						order = order,
 						type = "toggle",
+						arg = spellID,
 					}
 
 					-- Edit
@@ -285,7 +292,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					--]]
 				end
 
-				order = order + 2
+				order = order + 1
 			end
 		end
 	end
@@ -320,11 +327,12 @@ function P:AddSpellPickerSpells()
 				t[vtype].args[sId] = {
 					hidden = isRaidOptDisabledID,
 					image = icon,
-					imageCoords = {0.05, 0.95, 0.1, 0.6},
+					imageCoords = {0, 1, 0, 1}, -- values doesn't matter, just needs to be added
 					name = name,
 					desc = link,
 					order = order,
 					type = "toggle",
+					arg = spellID,
 				}
 
 				--[==[
@@ -348,7 +356,7 @@ function P:AddSpellPickerSpells()
 					end)
 				end
 
-				order = order + 2
+				order = order + 1
 			end
 		end
 	end

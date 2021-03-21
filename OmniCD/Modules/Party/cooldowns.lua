@@ -341,9 +341,6 @@ function P:StartCooldown(icon, cd, recharge, noGlow)
 		end
 	end
 
-	--[[ xml
-	noGlow = noGlow or icon.isCropped
-	--]]
 	if E.OmniCC and not icon.isHighlighted or (not E.OmniCC and not self:HighlightIcon(icon)) then
 		if not recharge and not noGlow then
 			self:SetGlow(icon)

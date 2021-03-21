@@ -35,11 +35,11 @@ E.SlashHandler = function(msg)
 		elseif (value == "pf" or value == "profile") then
 			E.DB:ResetProfile()
 			E.Write("Profile reset.")
-			E.lib.ACR:NotifyChange("OmniCD")
+			E.Libs.ACR:NotifyChange("OmniCD")
 		elseif E.L_ZONE[value] then
 			P:ResetOptions(value)
 			E.Write(value, "-settings reset.")
-			E.lib.ACR:NotifyChange("OmniCD")
+			E.Libs.ACR:NotifyChange("OmniCD")
 		else
 			E.Write("Invalid <value>.", value)
 		end
@@ -56,7 +56,7 @@ E.SlashHandler = function(msg)
 		local state = E.DB.profile.Party[key].position.detached and VIDEO_OPTIONS_ENABLED or VIDEO_OPTIONS_DISABLED
 		E.Write(key, L["Manual Mode"], state)
 		P:Refresh()
-		E.lib.ACR:NotifyChange("OmniCD")
+		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif (command == "devsync") then -- toggle sync for CDR by power spent only.
 		E.DB.profile.Party.sync = not E.DB.profile.Party.sync
 		local state = E.DB.profile.Party.sync and VIDEO_OPTIONS_ENABLED or VIDEO_OPTIONS_DISABLED
@@ -64,9 +64,10 @@ E.SlashHandler = function(msg)
 		if E.Comms.enabled then
 			E.Comms:RegisterEventUnitPower()
 		end
-		E.lib.ACR:NotifyChange("OmniCD")
+		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif (command == "s" or command == "spell" or E.CFG_ZONE[command]) then
 		local zone = E.CFG_ZONE[command] and command or "arena"
+		value = value and string.lower(value)
 		if value == "?" then
 			if not spelltypeStr then
 				for k in pairs(E.L_PRIORITY) do
@@ -103,9 +104,10 @@ E.SlashHandler = function(msg)
 					local spell = v[i]
 					local spellID = spell.spellID
 					local sid = tostring(spellID)
-					if not spell.hide and (value == "all" or value == spell.type) then
+					local stype = string.lower(spell.type)
+					if not spell.hide and (value == "all" or value == stype) then
 						E.DB.profile.Party[zone].spells[sid] = true
-					elseif removeType == spell.type then
+					elseif removeType == stype then
 						E.DB.profile.Party[zone].spells[sid] = false
 					end
 				end
@@ -113,10 +115,11 @@ E.SlashHandler = function(msg)
 		end
 		E.UpdateEnabledSpells(P)
 		P:Refresh()
-		E.lib.ACR:NotifyChange("OmniCD")
+		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif (command == "r" or command == "raidcd" or E.CFG_ZONE[gsub(command, "^r", "")]) then
 		local zone = gsub(command, "^r", "")
 		zone = E.CFG_ZONE[zone] and zone or "arena"
+		value = string.lower(value)
 		if value == "clear" then
 			wipe(E.DB.profile.Party[zone].raidCDS)
 			for i = 1, #E.raidDefaults do
@@ -133,9 +136,10 @@ E.SlashHandler = function(msg)
 					local spell = v[i]
 					local spellID = spell.spellID
 					local sid = tostring(spellID)
-					if not spell.hide and (value == "all" or value == spell.type) then
+					local stype = string.lower(spell.type)
+					if not spell.hide and (value == "all" or value == stype) then
 						E.DB.profile.Party[zone].raidCDS[sid] = true
-					elseif removeType == spell.type then
+					elseif removeType == stype then
 						E.DB.profile.Party[zone].raidCDS[sid] = false
 					end
 				end
@@ -143,7 +147,7 @@ E.SlashHandler = function(msg)
 		end
 		E.UpdateEnabledSpells(P)
 		P:Refresh()
-		E.lib.ACR:NotifyChange("OmniCD")
+		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif addOnCommands[command] then
 		addOnCommands[command](value)
 	else
@@ -152,13 +156,13 @@ E.SlashHandler = function(msg)
 end
 
 E.OpenOptionPanel = function()
-	E.lib.ACD:SetDefaultSize("OmniCD", 960,650)
-	E.lib.ACD:Open("OmniCD")
+	E.Libs.ACD:SetDefaultSize("OmniCD", 960, 650)
+	E.Libs.ACD:Open("OmniCD")
 
 	for modName in pairs(E.moduleOptions) do -- [47]*
-		E.lib.ACD:SelectGroup(E.AddOn, modName)
+		E.Libs.ACD:SelectGroup(E.AddOn, modName)
 	end
-	E.lib.ACD:SelectGroup(E.AddOn, "")
+	E.Libs.ACD:SelectGroup(E.AddOn, "")
 end
 
 SLASH_OmniCD1 = "/oc"

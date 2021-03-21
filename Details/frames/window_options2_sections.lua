@@ -374,7 +374,7 @@ do
                     afterUpdate()
                 end,
                 min = 1,
-                max = 30,
+                max = 40,
                 step = 1,
                 name = Loc ["STRING_OPTIONS_MAXSEGMENTS"],
                 desc = Loc ["STRING_OPTIONS_MAXSEGMENTS_DESC"],
@@ -388,7 +388,7 @@ do
                     afterUpdate()
                 end,
                 min = 1,
-                max = 30,
+                max = 40,
                 step = 1,
                 name = Loc ["STRING_OPTIONS_SEGMENTSSAVE"],
                 desc = Loc ["STRING_OPTIONS_SEGMENTSSAVE_DESC"],
@@ -656,7 +656,7 @@ do
 
         }
 
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection) --optionsSection is declared on boot.lua
@@ -6280,6 +6280,7 @@ do
     tinsert(Details.optionsSection, buildSection)
 end
 
+-- ~18 - mythic dungeon section
 do
     local buildSection = function(sectionFrame)
 

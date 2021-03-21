@@ -104,5 +104,7 @@ end
 function module:slash(arg)
 	if arg == "loot" then
 		LootLink(true)
+	elseif arg == "help" then
+		print("|cff00ff00/rt loot|r - link items from lootwindow to chat")
 	end
 end

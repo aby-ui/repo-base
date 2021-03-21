@@ -154,6 +154,8 @@ SML:Register(SML.MediaType.BORDER, "Square Clean", "Interface\\AddOns\\ShadowedU
 SML:Register(SML.MediaType.BACKGROUND, "Chat Frame", "Interface\\ChatFrame\\ChatFrameBackground")
 SML:Register(SML.MediaType.STATUSBAR, "BantoBar", "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\banto")
 SML:Register(SML.MediaType.STATUSBAR, "Smooth",   "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\smooth")
+SML:Register(SML.MediaType.STATUSBAR, "Smooth v2","Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\Smoothv2")
+SML:Register(SML.MediaType.STATUSBAR, "Smoother", "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\smoother")
 SML:Register(SML.MediaType.STATUSBAR, "Perl",     "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\perl")
 SML:Register(SML.MediaType.STATUSBAR, "Glaze",    "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\glaze")
 SML:Register(SML.MediaType.STATUSBAR, "Charcoal", "Interface\\AddOns\\ShadowedUnitFrames\\media\\textures\\Charcoal")

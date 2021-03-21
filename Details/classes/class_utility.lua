@@ -1130,7 +1130,11 @@ function atributo_misc:ToolTipDispell (instancia, numero, barra)
 --> habilidade usada para dispelar
 	local meus_dispells = {}
 	for _spellid, _tabela in _pairs (habilidades) do
-		meus_dispells [#meus_dispells+1] = {_spellid, _math_floor (_tabela.dispell)}
+		if (_tabela.dispell) then
+			meus_dispells [#meus_dispells+1] = {_spellid, _math_floor (_tabela.dispell)} --_math_floor valor é nil, uma magia na tabela de dispel, sem dispel?
+		else
+			Details:Msg("D! table.dispell is invalid. spellId:", _spellid)
+		end
 	end
 	_table_sort (meus_dispells, _detalhes.Sort2)
 	

@@ -34,9 +34,9 @@ function Frames:Populate()
 			if Config.components then
 				if self.frame ~= 'guild' then
 					self:AddCheck('bagToggle')
-					self:AddCheck('sort')
 				end
 
+        self:AddCheck('sort')
 				self:AddCheck('search')
 				self:AddCheck('options')
 				self:AddCheck('broker')

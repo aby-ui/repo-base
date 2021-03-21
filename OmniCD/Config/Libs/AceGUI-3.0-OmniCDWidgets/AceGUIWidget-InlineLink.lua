@@ -167,10 +167,7 @@ local function Constructor()
 	editbox:SetMaxLetters(256)
 	editbox:SetPoint("TOPLEFT", label, "TOPRIGHT", 10, 0)
 	editbox:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -10, 0)
-	editbox:SetBackdrop({
-		bgFile = "Interface\\BUTTONS\\White8x8", tile = true, tileSize = 16,
-		edgeFile = "Interface\\BUTTONS\\White8x8", edgeSize = OmniCD and OmniCD[1].NumPixels or 0.836,
-	})
+	OmniCD[1].BackdropTemplate(editbox)
 	editbox:SetBackdropColor(1, 1, 1, 0.05)
 	editbox:SetBackdropBorderColor(0, 0, 0)
 

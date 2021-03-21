@@ -77,21 +77,27 @@ local encounter_time_c = module.db.encounter_time_c
 local encounter_time_wa_uids = module.db.encounter_time_wa_uids
 local encounter_id = module.db.encounter_id
 
-local predefSpellIcons = {	--some talents replace icons for basic spells
+local predefSpellIcons = {	--some talents can replace icons for basic spells
 	[47536] = 237548,
 	[1022] = 135964,
 }
 
-local function GSUB_Icon(spellID)
+local function GSUB_Icon(spellID,iconSize)
 	spellID = tonumber(spellID)
+
+	if not iconSize or iconSize == "" then
+		iconSize = 16
+	else
+		iconSize = min(tonumber(iconSize),40)
+	end
 
 	local preicon = predefSpellIcons[spellID]
 	if preicon then
-		return "|T"..preicon..":16|t"
+		return "|T"..preicon..":"..iconSize.."|t"
 	end
 
 	local spellTexture = select(3,GetSpellInfo(spellID))
-	return "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
+	return "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":"..iconSize.."|t"
 end
 
 local function GSUB_Player(anti,list,msg)
@@ -365,7 +371,7 @@ local function GSUB_Time(preText,t,msg,newlinesym)
 		local timeleft = time < 0 and 0 or ceil(time)
 		if timeleft <= 5 or timeleft % 5 == 0 then
 			for waEventIDnow in string_gmatch(waEventID, "[^,]+") do
-				local wa_event_uid_cache = timeleft..":"..waEventIDnow
+				local wa_event_uid_cache = waEventIDnow..":"..timeleft..":"..preText..t..msg..newlinesym
 				if not encounter_time_wa_uids[wa_event_uid_cache] then
 					encounter_time_wa_uids[wa_event_uid_cache] = true
 					if WeakAuras.ScanEvents and type(WeakAuras.ScanEvents)=="function" then
@@ -465,7 +471,7 @@ do
 				:gsub("{[Ee]:([^}]+)}(.-){/[Ee]}",GSUB_Encounter)
 				:gsub("{(!?)[Pp]([^}:][^}]*)}(.-){/[Pp]}",GSUB_Phase)
 				:gsub("{icon:([^}]+)}","|T%1:16|t")
-				:gsub("{spell:(%d+)}",GSUB_Icon)
+				:gsub("{spell:(%d+):?(%d*)}",GSUB_Icon)
 				:gsub("%b{}",GSUB_RaidIcon)
 				:gsub("||([cr])","|%1")
 				:gsub( "\n+$", "")
@@ -1739,16 +1745,30 @@ function module.options:Load()
 	):Point("TOPLEFT",10,-20):Point("TOPRIGHT",-10,-20):Color()
 
 	self.advancedHelp = ELib:Button(self.tab.tabs[3],L.NoteHelpAdvanced):Size(400,20):Point("TOP",self.textHelp,"BOTTOM",0,-20):OnClick(function() 
-		module.options.textHelpAdv:SetShown(not module.options.textHelpAdv:IsShown())
+		--module.options.textHelpAdv:SetShown(not module.options.textHelpAdv:IsShown())
+		module.options.advancedScroll:SetShown(not module.options.advancedScroll:IsShown())
 	end):Shown(not ExRT.isClassic)
 
-	self.textHelpAdv = ELib:Text(self.tab.tabs[3],
+	self.advancedScroll = ELib:ScrollFrame(self.tab.tabs[3]):Size(850,100):Point("TOP",self.advancedHelp,"BOTTOM",0,-20):Point("BOTTOM",self.tab.tabs[3],"BOTTOM",0,0):Height(400):Shown(false)
+	self.advancedScroll.C:SetWidth(850 - 16)
+	ELib:Border(self.advancedScroll,0)
+	ELib:DecorationLine(self.advancedScroll):Point("TOPLEFT",0,1):Point("BOTTOMRIGHT",'x',"TOPRIGHT",0,0)
+
+	self.textHelpAdv = ELib:Text(self.advancedScroll.C,
 		"|cffffff00{time:|r|cff00ff001:06,p2|r|cffffff00}|r - "..L.NoteHelpAdv1..
 		"|n|cffffff00{time:|r|cff00ff000:30,SCC:17:2|r|cffffff00}|r - "..L.NoteHelpAdv2..
 		"|n|cffffff00{time:|r|cff00ff002:00,e,customevent|r|cffffff00}|r - "..L.NoteHelpAdv3..
+		"|n|cffffff00{time:|r|cff00ff003:40,glowall|r|cffffff00}|r - "..L.NoteHelpAdv6..
+		"|n|cffffff00{time:|r|cff00ff004:15,glow|r|cffffff00}|r - "..L.NoteHelpAdv7..
 		"|n|cffffff00{time:|r|cff00ff000:45,wa:nzoth_hs1|r|cffffff00}|r - "..L.NoteHelpAdv4..
-		"|n"..L.NoteHelpAdv5.."|cffe6ff15{time:0:30,SCC:17:2,wa:eventName1,wa:eventName2}|r |cffff9f05{time:1:40,p:Shade of Kael'thas}|r |cffe6ff15{p,SCC:17:2}Until end of the fight{/p}|r |cffff9f05{p,SCC:17:2,SCC:17:3}Until second condition{/p}|r |cffe6ff15{pShade of Kael'thas}Phase with name{/p}|r"
-	):Point("LEFT",10,0):Point("RIGHT",-10,0):Point("TOP",self.advancedHelp,"BOTTOM",0,-20):Color():Shown(false)
+		"|n   WA Function example:|n   Events: |cffffff00EXRT_NOTE_TIME_EVENT|r|n   |cffff8bf3function(event,...)|n     if event == \"EXRT_NOTE_TIME_EVENT\" then|n       local timerName, timeLeft, noteText = ...|n       if timerName == \"nzoth_hs1\" and timeLeft == 3 then|n         return true|n       end|n     end|n   end|r|n"..
+		"|n"..L.NoteHelpAdv5.."|n |cffe6ff15{time:0:30,SCC:17:2,wa:eventName1,wa:eventName2}|r|n |cffff9f05{time:1:40,p:Shade of Kael'thas}|r|n |cffe6ff15{p,SCC:17:2}Until end of the fight{/p}|r|n |cffff9f05{p,SCC:17:2,SCC:17:3}Until second condition{/p}|r|n |cffe6ff15{pShade of Kael'thas}Phase with name{/p}|r|n |cffff9f05{time:0:20,p2,wa:use_hs,glowall}|r"
+	):Point("LEFT",10,0):Point("RIGHT",-10,0):Point("TOP",0,-5):Color()
+
+	local height = self.textHelpAdv:GetHeight()
+	if height and height > 100 then
+		self.advancedScroll:Height(height + 10)
+	end
 
 	module:RegisterEvents("GROUP_ROSTER_UPDATE")
 
@@ -2521,6 +2541,12 @@ function module:slash(arg)
 				end
 			end
 		end
+	elseif arg == "help" then
+		print("|cff00ff00/rt note|r - hide/show note")
+		print("|cff00ff00/rt editnote|r - open notes tab")
+		print("|cff00ff00/rt note set |cffffff00NOTENAME|r|r - set & send note with NOTENAME name")
+		print("|cff00ff00/rt note timer|r - simulate boss encounter start [for timers feature]")
+		print("|cff00ff00/rt note starttimer |cffffff00TIMERNAME|r|r - start custom timer")
 	end
 end
 

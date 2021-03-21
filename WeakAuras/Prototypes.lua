@@ -4460,7 +4460,12 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      return "";
+      local item = GetInventoryItemID("player", trigger.itemSlot or 0);
+      if (item) then
+        return GetItemInfo(item)
+      else
+        return ""
+      end
     end,
     iconFunc = function(trigger)
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
@@ -4539,7 +4544,7 @@ Private.event_prototypes = {
     type = "addons",
     events = {},
     internal_events = {
-      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
+      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
     },
     force_events = "DBM_TimerForce",
     name = L["DBM Timer"],
@@ -4547,6 +4552,8 @@ Private.event_prototypes = {
     triggerFunction = function(trigger)
       WeakAuras.RegisterDBMCallback("DBM_TimerStart")
       WeakAuras.RegisterDBMCallback("DBM_TimerStop")
+      WeakAuras.RegisterDBMCallback("DBM_TimerPause")
+      WeakAuras.RegisterDBMCallback("DBM_TimerResume")
       WeakAuras.RegisterDBMCallback("DBM_TimerUpdate")
       WeakAuras.RegisterDBMCallback("wipe")
       WeakAuras.RegisterDBMCallback("kill")
@@ -4587,7 +4594,10 @@ Private.event_prototypes = {
           end
 
           if useClone then
-            if event == "DBM_TimerStart" then
+            if event == "DBM_TimerStart"
+            or event == "DBM_TimerPause"
+            or event == "DBM_TimerResume"
+            then
               if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
@@ -4786,7 +4796,7 @@ Private.event_prototypes = {
     type = "addons",
     events = {},
     internal_events = {
-      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update",
+      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update", "BigWigs_PauseBar", "BigWigs_ResumeBar"
     },
     force_events = "BigWigs_Timer_Force",
     name = L["BigWigs Timer"],
@@ -4828,7 +4838,10 @@ Private.event_prototypes = {
           end
 
           if useClone then
-            if event == "BigWigs_StartBar" then
+            if event == "BigWigs_StartBar"
+            or event == "BigWigs_PauseBar"
+            or event == "BigWigs_ResumeBar"
+            then
               if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
@@ -8217,6 +8230,10 @@ Private.dynamic_texts = {
         return state.value or nil
       end
       if state.progressType == "timed" then
+        if state.paused then
+          return state.remaining and state.remaining >= 0 and state.remaining or nil
+        end
+
         if not state.expirationTime or not state.duration then
           return nil
         end

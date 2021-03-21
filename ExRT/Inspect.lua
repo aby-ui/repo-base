@@ -758,6 +758,7 @@ do
 				--ScheduleTimer(InspectItems, 2.3, name, inspectedName, module.db.inspectID)
 			end
 
+			lastCheckNext[name] = nil
 			if module.db.inspectDB[name] and module.db.inspectItemsOnly[name] and not module.db.inspectNotItemsOnly[name] then
 				module.db.inspectItemsOnly[name] = nil
 				return

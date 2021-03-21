@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210311043607"),
-	DisplayVersion = "9.0.23 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 3, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210320081708"),
+	DisplayVersion = "9.0.24 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 3, 15) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -100,8 +100,11 @@ function DBM:GetTOC()
 	return wowTOC, testBuild, wowVersionString, wowBuild
 end
 
-function DBM:IsShadowlands()
-	return self:GetTOC() >= 90001 -- 9.0.x
+do
+	local isShadowlandsClient = BackdropTemplateMixin and true or false
+	function DBM:IsShadowlands()
+		return isShadowlandsClient
+	end
 end
 
 -- dual profile setup
@@ -328,7 +331,7 @@ DBM.DefaultOptions = {
 	SilentMode = false,
 }
 
-DBM.Bars = DBT:New()
+DBM.Bars = DBT -- TODO: Can we migrate to just using DBT?
 DBM.Mods = {}
 DBM.ModLists = {}
 DBM.Counts = {
@@ -12275,7 +12278,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210311043607" then
+	if not revision or revision == "20210320081708" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

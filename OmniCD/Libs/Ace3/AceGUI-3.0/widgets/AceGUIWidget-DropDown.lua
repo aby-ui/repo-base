@@ -1,3 +1,17 @@
+---------------------------------------------------------------------------------
+
+-- Customized for OmniCD by permission of the copyright owner.
+
+-- Parameters for dropdown with disable item support:
+-- type = "select",
+-- disabledItem = function() return key end, -- must be a function
+
+-- type = "multiselect",
+-- dialogControl = "Dropdown-OmniCD",
+-- disabledItem = function() return key end, -- key can be a string or table(multiple items)
+
+---------------------------------------------------------------------------------
+
 --[[ $Id: AceGUIWidget-DropDown.lua 1239 2020-09-20 10:22:02Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -42,17 +56,6 @@ do
 	local widgetVersion = 5
 
 	--[[ Static data ]]--
-
-	--[[ OmniCD: -r
-	local backdrop = {
-		bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-		edgeSize = 32,
-		tileSize = 32,
-		tile = true,
-		insets = { left = 11, right = 12, top = 12, bottom = 11 },
-	}
-	]]
 
 	local sliderBackdrop  = {
 		bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
@@ -151,7 +154,7 @@ do
 			if value < 1000 then
 				child:ClearAllPoints()
 				child:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, offset)
-				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, offset)
+				child:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -17, offset)
 				status.offset = offset
 			end
 		end
@@ -289,19 +292,13 @@ do
 
 		self.maxHeight = defaultMaxHeight
 
-		--[[ OmniCD: r
-		frame:SetBackdrop(backdrop)
-		frame:SetBackdropColor(1, 0, 0)
-		]]
-		frame:SetBackdrop(OmniCD[1].BackdropTemplate(frame))
+		OmniCD[1].BackdropTemplate(frame)
 		frame:SetBackdropColor(0.12, 0.12, 0.17)
 		frame:SetBackdropBorderColor(0, 0, 0)
-		--//
 		frame:SetFrameStrata("FULLSCREEN_DIALOG")
 		frame:SetClampedToScreen(true)
 		frame:SetWidth(defaultWidth)
 		frame:SetHeight(self.maxHeight)
-		--frame:SetToplevel(true)
 
 		-- NOTE: The whole scroll frame code is copied from the AceGUI-3.0 widget ScrollFrame
 		local scrollFrame = CreateFrame("ScrollFrame", nil, frame)
@@ -315,10 +312,16 @@ do
 
 		local slider = CreateFrame("Slider", "AceGUI30PulloutScrollbar-OmniCD"..count, scrollFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		slider:SetOrientation("VERTICAL")
-		slider:SetHitRectInsets(0, 0, -10, 0)
-		slider:SetBackdrop(sliderBackdrop)
-		slider:SetWidth(8)
-		slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Vertical")
+		slider:SetHitRectInsets(0, -6, -10, 0)
+		OmniCD[1].BackdropTemplate(slider)
+		slider:SetBackdropColor(0, 0, 0, 0.4)
+		slider:SetBackdropBorderColor(0, 0, 0)
+		slider:SetWidth(12)
+		slider:SetThumbTexture([[Interface\BUTTONS\White8x8]])
+		local thumbTexture = slider:GetThumbTexture()
+		thumbTexture:SetSize(12, 24)
+		thumbTexture:SetColorTexture(0.3, 0.3, 0.3) -- red is too much
+
 		slider:SetFrameStrata("FULLSCREEN_DIALOG")
 		self.slider = slider
 		slider.obj = self
@@ -333,13 +336,13 @@ do
 		scrollFrame:SetFrameStrata("FULLSCREEN_DIALOG")
 
 		itemFrame:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, 0)
-		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -12, 0)
+		itemFrame:SetPoint("TOPRIGHT", scrollFrame, "TOPRIGHT", -17, 0)
 		itemFrame:SetHeight(400)
 		itemFrame:SetToplevel(true)
 		itemFrame:SetFrameStrata("FULLSCREEN_DIALOG")
 
-		slider:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", -16, 0)
-		slider:SetPoint("BOTTOMLEFT", scrollFrame, "BOTTOMRIGHT", -16, 0)
+		slider:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", -12, 0)
+		slider:SetPoint("BOTTOMLEFT", scrollFrame, "BOTTOMRIGHT", -12, 0)
 		slider:SetScript("OnValueChanged", OnScrollValueChanged)
 		slider:SetMinMaxValues(0, 1000)
 		slider:SetValueStep(1)
@@ -367,11 +370,9 @@ do
 	--[[ UI event handler ]]--
 
 	local function Control_OnEnter(this)
-		-- OmniCD: b (highlight enabled only)
 		if this.obj.disabled then
 			return
 		end
-		--//
 		this.obj.button:LockHighlight()
 		this.obj:Fire("OnEnter")
 	end
@@ -531,13 +532,13 @@ do
 		if text and text ~= "" then
 			self.label:SetText(text)
 			self.label:Show()
-			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-15) -- OmniCD: c -15,-14>0,-15
+			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-15)
 			self:SetHeight(40)
 			self.alignoffset = 26
 		else
 			self.label:SetText("")
 			self.label:Hide()
-			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-1) -- OmniCD: c -15,0>0,-1
+			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-1)
 			self:SetHeight(26)
 			self.alignoffset = 12
 		end
@@ -570,7 +571,8 @@ do
 	-- exported
 	local function SetItemDisabled(self, item, disabled)
 		for i, widget in self.pullout:IterateItems() do
-			if widget.userdata.value == item then
+			local value = widget.userdata.value
+			if type(item) == "table" and item[value] or value == item then
 				widget:SetDisabled(disabled)
 			end
 		end
@@ -591,8 +593,8 @@ do
 
 	local function AddCloseButton(self)
 		if not self.hasClose then
-			local close = AceGUI:Create("Dropdown-Item-Execute")
-			close:SetText(CLOSE)
+			local close = AceGUI:Create("Dropdown-Item-Execute-OmniCD")
+			close:SetText("|cffff2020" .. CLOSE)
 			self.pullout:AddItem(close)
 			self.hasClose = true
 		end
@@ -664,7 +666,7 @@ do
 	local function Constructor()
 		local count = AceGUI:GetNextWidgetNum(widgetType)
 		local frame = CreateFrame("Frame", nil, UIParent)
-		local dropdown = CreateFrame("Frame", "AceGUI30DropDown-OmniCD"..count, frame, "UIDropDownMenuTemplate, BackdropTemplate") -- OmniCD: c +backdrop
+		local dropdown = CreateFrame("Frame", "AceGUI30DropDown-OmniCD"..count, frame, "UIDropDownMenuTemplate, BackdropTemplate")
 
 		local self = {}
 		self.type = widgetType
@@ -696,23 +698,6 @@ do
 
 		frame:SetScript("OnHide",Dropdown_OnHide)
 
-		--[[ OmniCD: r
-		dropdown:ClearAllPoints()
-		dropdown:SetPoint("TOPLEFT",frame,"TOPLEFT",-15,0)
-		dropdown:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",17,0)
-		dropdown:SetScript("OnHide", nil)
-
-		local left = _G[dropdown:GetName() .. "Left"]
-		local middle = _G[dropdown:GetName() .. "Middle"]
-		local right = _G[dropdown:GetName() .. "Right"]
-
-		middle:ClearAllPoints()
-		right:ClearAllPoints()
-
-		middle:SetPoint("LEFT", left, "RIGHT", 0, 0)
-		middle:SetPoint("RIGHT", right, "LEFT", 0, 0)
-		right:SetPoint("TOPRIGHT", dropdown, "TOPRIGHT", 0, 17)
-		]]
 		dropdown:ClearAllPoints()
 		dropdown:SetPoint("TOPLEFT",frame,"TOPLEFT",0,1)
 		dropdown:SetPoint("BOTTOMRIGHT",frame,"BOTTOMRIGHT",0,3)
@@ -721,10 +706,9 @@ do
 		dropdown.Left:Hide()
 		dropdown.Right:Hide()
 		dropdown.Middle:Hide()
-		dropdown:SetBackdrop(OmniCD[1].BackdropTemplate(dropdown))
+		OmniCD[1].BackdropTemplate(dropdown)
 		dropdown:SetBackdropColor(0.15, 0.15, 0.2)
-		dropdown:SetBackdropBorderColor(0, 0, 0) -- px X
-		--//
+		dropdown:SetBackdropBorderColor(0, 0, 0)
 
 		local button = _G[dropdown:GetName() .. "Button"]
 		self.button = button
@@ -732,7 +716,6 @@ do
 		button:SetScript("OnEnter",Control_OnEnter)
 		button:SetScript("OnLeave",Control_OnLeave)
 		button:SetScript("OnClick",Dropdown_TogglePullout)
-		-- OmniCD: b
 		button:ClearAllPoints()
 		button:SetPoint("RIGHT")
 		button:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn.tga]])
@@ -744,7 +727,6 @@ do
 		button:SetDisabledTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn-b.tga]])
 		button.DisabledTexture:SetSize(16, 16)
 		button.DisabledTexture:SetPoint("RIGHT")
-		--//
 
 		local button_cover = CreateFrame("BUTTON",nil,self.frame) -- Whats this for?
 		self.button_cover = button_cover
@@ -759,10 +741,6 @@ do
 		self.text = text
 		text.obj = self
 		text:ClearAllPoints()
-		--[[ OmniCD: r
-		text:SetPoint("RIGHT", right, "RIGHT" ,-43, 2)
-		text:SetPoint("LEFT", left, "LEFT", 25, 2)
-		]]
 		text:SetPoint("LEFT", dropdown, 5, 0)
 		text:SetPoint("RIGHT", button, "LEFT")
 		text:SetFontObject("GameFontNormalSmall-OmniCD")

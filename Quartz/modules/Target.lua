@@ -94,7 +94,7 @@ end
 function Target:OnEnable()
 	self.Bar:RegisterEvents()
 	self.Bar:RegisterEvent("PLAYER_TARGET_CHANGED")
-	self:SecureHook("Target_Spellbar_OnEvent")
+	self:HookScript(TargetFrameSpellBar, "OnEvent", "Target_Spellbar_OnEvent")
 	self.Bar.PLAYER_TARGET_CHANGED = self.Bar.UpdateUnit
 	self.lastNotInterruptible = false
 	self:ApplySettings()
@@ -115,28 +115,13 @@ end
 function Target:ApplySettings()
 	db = self.db.profile
 
-	-- obey the hideblizz setting no matter if disabled or not
-	if db.hideblizz then
-		TargetFrameSpellBar.RegisterEvent = function() end
-		TargetFrameSpellBar:UnregisterAllEvents()
+	if self:IsEnabled() and db.hideblizz then
+		TargetFrameSpellBar.showCastbar = false
 		TargetFrameSpellBar:Hide()
 	else
-		TargetFrameSpellBar.RegisterEvent = nil
-		TargetFrameSpellBar:UnregisterAllEvents()
-		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_START", "target")
-		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "target")
-		TargetFrameSpellBar:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "target")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-		TargetFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-		TargetFrameSpellBar:RegisterEvent("PLAYER_ENTERING_WORLD")
-		TargetFrameSpellBar:RegisterEvent("PLAYER_TARGET_CHANGED")
-		TargetFrameSpellBar:RegisterEvent("CVAR_UPDATE")
-		TargetFrameSpellBar:RegisterEvent("VARIABLES_LOADED")
+		if GetCVar("showTargetCastbar") ~= "0" then
+			TargetFrameSpellBar.showCastbar = true
+		end
 	end
 
 	self.Bar:SetConfig(db)
@@ -145,8 +130,8 @@ function Target:ApplySettings()
 	end
 end
 
-function Target:Target_Spellbar_OnEvent()
-	if db.hideblizz then
+function Target:Target_Spellbar_OnEvent(frame, event, arg1)
+	if (event == "VARIABLES_LOADED" or (event == "CVAR_UPDATE" and arg1 == "SHOW_TARGET_CASTBAR")) and self:IsEnabled() and db.hideblizz then
 		TargetFrameSpellBar.showCastbar = false
 		TargetFrameSpellBar:Hide()
 	end

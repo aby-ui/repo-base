@@ -8,16 +8,10 @@ local setScale = function(info, value)
 	E.DB.profile.Party[key].icons[option] = value
 
 	P:ConfigSize(key, true)
-	--[[ xml
-	P:ConfigSize(key, option == "scale" or option == "modRowScale")
-	--]]
 end
 
 local icons = {
 	name = L["Icons"],
-	--[[ xml
-	name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t" .. L["Icons"],
-	--]]
 	order = 30,
 	type = "group",
 	get = P.getIcons,
@@ -49,7 +43,6 @@ local icons = {
 			desc = L["Set the size of icons"],
 			order = 10,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 			set = setScale,
 		},
@@ -58,7 +51,6 @@ local icons = {
 			desc = L["Set the size of charge numbers"],
 			order = 11,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0.5, max = 1.5, step = 0.1, isPercent = true,
 		},
 		counterScale = {
@@ -66,7 +58,6 @@ local icons = {
 			desc = L["Set the size of cooldown numbers"],
 			order = 12,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0.1, max = 1, step = 0.05, isPercent = true,
 		},
 		swipeAlpha = {
@@ -74,7 +65,6 @@ local icons = {
 			desc = L["Set the opacity of swipe animations"],
 			order = 13,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		inactiveAlpha = {
@@ -82,7 +72,6 @@ local icons = {
 			desc = L["Set the opacity of icons not on cooldown"],
 			order = 14,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		activeAlpha = {
@@ -90,7 +79,6 @@ local icons = {
 			desc = L["Set the opacity of icons on cooldown"],
 			order = 15,
 			type = "range",
-			dialogControl = "Slider-OmniCD",
 			min = 0, max = 1, step = 0.1,
 		},
 		lb2 = {
@@ -165,7 +153,6 @@ local icons = {
 					desc = L["Set the size of icons"],
 					order = 2,
 					type = "range",
-					dialogControl = "Slider-OmniCD",
 					min = 0.2, max = 2.0, step = 0.01, isPercent = true,
 					set = setScale,
 				},
@@ -174,7 +161,6 @@ local icons = {
 					desc = E.STR.MAX_RANGE,
 					order = 3,
 					type = "range",
-					dialogControl = "Slider-OmniCD",
 					min = 0, max = 999, softMax = 100, step = 1,
 					set = function(info, value) -- should be in position but,
 						local key = info[2]

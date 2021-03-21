@@ -1,11 +1,11 @@
 local E, L, C = select(2, ...):unpack()
 
 local LSM = LibStub("LibSharedMedia-3.0")
---LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf", bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU))
+E.Libs.LSM = LSM
 LSM:Register("statusbar", "OmniCD Flat", "Interface\\Addons\\OmniCD\\Media\\omnicd-texture_flat.blp")
-E.LSM = LSM
-E.LSM_Font = {}
-E.LSM_Statusbar = {}
+--LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf", bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU))
+LSM_Font = {}
+LSM_Statusbar = {}
 
 local title = GENERAL
 
@@ -23,38 +23,53 @@ local defaultFonts = {
 local defaultFonts = {}
 
 if (LOCALE_koKR) then
-	defaultFonts.statusBar = {"2002", 22, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"2002", 10, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.anchor = {"2002", 12, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.option = {"2002", 12, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.optionSmall = {"2002", 11, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.statusBar = {"2002", 20, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"2002", 10, "OUTLINE", 0, 0, 0, 1, -1}
+	defaultFonts.anchor = {"2002", 11, "NONE", 0, 0, 0, 1, -1} -- 12
+	defaultFonts.option = {"2002", 11, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.optionSmall = {"2002", 10, "NONE", 0, 0, 0, 1, -1}
 elseif (LOCALE_zhCN) then
 	defaultFonts.statusBar = {"默认", 22, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"默认", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 elseif (LOCALE_zhTW) then
 	defaultFonts.statusBar = {"預設", 22, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"預設", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 elseif (LOCALE_ruRU) then
 	defaultFonts.statusBar = {"PT Sans Narrow Bold", 22, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"PT Sans Narrow Bold", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"PT Sans Narrow Bold", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"PT Sans Narrow Bold", 10, "NONE", 0, 0, 0, 1, -1}
 else
 	defaultFonts.statusBar = {"PT Sans Narrow Bold", 22, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"PT Sans Narrow Bold", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"PT Sans Narrow Bold", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"PT Sans Narrow Bold", 10, "NONE", 0, 0, 0, 1, -1}
 end
 
-C["General"] = { fonts = {}, textures = { statusBar = { bar = "OmniCD Flat", BG = "OmniCD Flat" } } }
+C["General"] = {
+	fonts = {},
+	textures = {
+		statusBar = {
+			bar = "OmniCD Flat",
+			BG = "OmniCD Flat",
+		},
+	},
+	cooldownText = {
+		statusBar = {
+			mmss = 120,
+			mmColor = {r=1, g=1, b=1},
+			mmssColor = {r=1, g=1, b=1},
+		},
+	}
+}
 
 for k, v in pairs(defaultFonts) do
 	C.General.fonts[k] = {}
@@ -68,7 +83,7 @@ for k, v in pairs(defaultFonts) do
 	C.General.fonts[k].ofsY = v[8]
 end
 
-function E.SetFontObj(fontString, db, size)
+function E.SetFont(fontString, db, size)
 	local flag = db.flag
 	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, db.font == "Homespun" and "MONOCHROMEOUTLINE" or flag)
 
@@ -108,13 +123,12 @@ local fontInfo = {
 		type = "select",
 		--dialogControl = 'LSM30_Font',
 		--values = AceGUIWidgetLSMlists.font,
-		values = E.LSM_Font,
+		values = LSM_Font,
 	},
 	size = {
 		name = FONT_SIZE,
 		order = 2,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 8, max = 32, step = 1,
 	},
 	flag = {
@@ -148,8 +162,7 @@ local General = {
 			order = 10,
 			type = "group",
 			get = function(info) return E.DB.profile.General.fonts[info[3]][info[#info]] end,
-			-- TODO: remove configfonts !
-			set = function(info, value) E.DB.profile.General.fonts[info[3]][info[#info]] = value E:ConfigFonts(info[3]) E:Refresh() end,
+			set = function(info, value) E.DB.profile.General.fonts[info[3]][info[#info]] = value E:ConfigFonts(info[3]) end,
 			args ={
 				anchor = {
 					name = L["Anchor"],
@@ -210,7 +223,7 @@ local General = {
 							type = "select",
 							--dialogControl = 'LSM30_Statusbar',
 							--values = AceGUIWidgetLSMlists.statusbar,
-							values = E.LSM_Statusbar,
+							values = LSM_Statusbar,
 						},
 						BG = {
 							name = L["BG"],
@@ -218,15 +231,99 @@ local General = {
 							type = "select",
 							--dialogControl = 'LSM30_Statusbar',
 							--values = AceGUIWidgetLSMlists.statusbar,
-							values = E.LSM_Statusbar,
+							values = LSM_Statusbar,
 						},
 					}
 				},
 			}
 		},
+		cooldownText = {
+			name = L["Timers"],
+			order = 30,
+			type = "group",
+			get = function(info) return E.DB.profile.General.cooldownText[info[3]][info[#info]] end,
+			set = function(info, value) E.DB.profile.General.cooldownText[info[3]][info[#info]] = value E:Refresh() end, -- TODO: temp refresh func
+			args = {
+				statusBar = {
+					name = L["Status Bar"],
+					order = 100,
+					type = "group",
+					inline = true,
+					args = {
+						minute = {
+							name = L["> 1 minute"],
+							order = 10,
+							type = "group",
+							inline = true,
+							args = {
+								mmss = {
+									name = L["MM:SS Threshold"],
+									desc = L["Threshold at which the timer transitions from MM to MM:SS format."],
+									order = 1,
+									type = "range",
+									min = 61, max = 300, step = 5,
+								},
+								mmColor = {
+									disabled = true, -- TODO:
+									name = L["MM:SS Color"],
+									order = 2,
+									type = "color",
+									dialogControl = "ColorPicker-OmniCD",
+									get = function(info)
+										local db = E.DB.profile.General.cooldownText[info[3]].mmColor
+										return db.r, db.g, db.b
+									end,
+									set = function(info, r, g, b)
+										local db = E.DB.profile.General.cooldownText[info[3]].mmColor
+										db.r = r
+										db.g = g
+										db.b = b
+
+										E:Refresh()
+									end,
+								},
+								mmssColor = {
+									disabled = true,
+									name = L["MM Color"],
+									order = 3,
+									type = "color",
+									dialogControl = "ColorPicker-OmniCD",
+									get = function(info)
+										local db = E.DB.profile.General.cooldownText[info[3]].mmssColor
+										return db.r, db.g, db.b
+									end,
+									set = function(info, r, g, b)
+										local db = E.DB.profile.General.cooldownText[info[3]].mmssColor
+										db.r = r
+										db.g = g
+										db.b = b
+
+										E:Refresh()
+									end,
+								},
+							}
+						},
+					}
+				},
+			}
+		}
 	}
 }
 
 function E:AddGeneral()
+	-- preload fonts to prevent blank text on font change
+	E.dummyFrame.text = E.dummyFrame.text or E.dummyFrame:CreateFontString() -- if we need to hook dynamic updates
+	for fontName, fontPath in pairs(LSM:HashTable("font")) do
+		E.dummyFrame.text:SetFont(fontPath, 22)
+	end
+
+	-- convert table to something ACD can use as the values member
+	for _, fontName in ipairs(LSM:List("font")) do
+		LSM_Font[fontName] = fontName
+	end
+	for _, fontName in ipairs(LSM:List("statusbar")) do
+		LSM_Statusbar[fontName] = fontName
+	end
+
 	self.options.args["General"] = General
 end

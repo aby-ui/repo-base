@@ -10,6 +10,8 @@ L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" 
 --[[Translation missing --]]
 L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."
 --[[Translation missing --]]
+L["> 1 minute"] = "> 1 minute"
+--[[Translation missing --]]
 L["2nd Row Icons (Double Row Layout)"] = "2nd Row Icons (Double Row Layout)"
 L["2px Border"] = "2px边框"
 --[[Translation missing --]]
@@ -59,6 +61,8 @@ L["Borders retain 1px width regardless of the UI scale. Need to reload the UI wh
 L["BOTTOM"] = "下"
 L["BOTTOMLEFT"] = "左下"
 L["BOTTOMRIGHT"] = "右下"
+--[[Translation missing --]]
+L["Breakpoint"] = "Breakpoint"
 L["Buff ID (Optional)"] = "Buff ID (可选)"
 L["Cannot edit protected spell"] = "无法编辑受保护的技能"
 L["Cannot test while in combat"] = "无法再战斗中进行测试"
@@ -161,6 +165,8 @@ L["Export Profile"] = "Export Profile"
 --[[Translation missing --]]
 L["Exports your currently active profile."] = "Exports your currently active profile."
 --[[Translation missing --]]
+L["External Defensive"] = "External Defensive"
+--[[Translation missing --]]
 L["Extra Bars"] = "Extra Bars"
 L["Fade In Time"] = "淡入时间"
 L["Fade Out Time"] = "淡出时间"
@@ -173,6 +179,8 @@ L["Font Outline"] = "Font Outline"
 --[[Translation missing --]]
 L["Fonts"] = "Fonts"
 L["Glow Icons"] = "图标闪光"
+--[[Translation missing --]]
+L["Group Padding"] = "Group Padding"
 L["Group Size"] = "团队规模"
 L["Group Type"] = "团队类型"
 L["Grow Rows Upward"] = "向上增长"
@@ -183,7 +191,11 @@ L["Help Translate"] = "Help Translate"
 --[[Translation missing --]]
 L["Hide Disabled Spells"] = "Hide Disabled Spells"
 --[[Translation missing --]]
+L["Hide Spark"] = "Hide Spark"
+--[[Translation missing --]]
 L["Hide spells that are not enabled in the 'Spells' menu."] = "Hide spells that are not enabled in the 'Spells' menu."
+--[[Translation missing --]]
+L["Hide the leading spark texture."] = "Hide the leading spark texture."
 L["Highlight"] = "高亮"
 L["Highlight Icons"] = "高亮图标"
 L["Highlight the icon when a buffing spell is used until the buff falls off"] = "激活buff法术时高亮图标，直到buff消失"
@@ -241,9 +253,21 @@ L["Max number of group members"] = "队伍最大成员数量"
 --[[Translation missing --]]
 L["Minor update"] = "Minor update"
 --[[Translation missing --]]
+L["MM Color"] = "MM Color"
+--[[Translation missing --]]
+L["MM:SS Color"] = "MM:SS Color"
+--[[Translation missing --]]
+L["MM:SS Threshold"] = "MM:SS Threshold"
+--[[Translation missing --]]
 L["Move your group's Interrupt spells to the Interrupt Bar."] = "Move your group's Interrupt spells to the Interrupt Bar."
 --[[Translation missing --]]
 L["Move your group's Raid Cooldowns to the Raid Bar."] = "Move your group's Raid Cooldowns to the Raid Bar."
+--[[Translation missing --]]
+L["Multiselect"] = "Multiselect"
+--[[Translation missing --]]
+L["New Column per Group"] = "New Column per Group"
+--[[Translation missing --]]
+L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."] = "None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."
 --[[Translation missing --]]
 L["Not an OmniCD profile!"] = "Not an OmniCD profile!"
 L["Notes"] = "说明"
@@ -297,6 +321,8 @@ L["Raid Defensive"] = "Raid Defensive"
 --[[Translation missing --]]
 L["Raid Frames for testing doesn't exist for %s. If it fails to load, configure OmniCD while in a group or temporarily set it to 'Manual Mode'."] = "Raid Frames for testing doesn't exist for %s. If it fails to load, configure OmniCD while in a group or temporarily set it to 'Manual Mode'."
 --[[Translation missing --]]
+L["Raid Movement"] = "Raid Movement"
+--[[Translation missing --]]
 L["Recharge"] = "Recharge"
 --[[Translation missing --]]
 L["Reload addon."] = "Reload addon."
@@ -324,7 +350,11 @@ L["Select how the player frame is displayed inside the party frame"] = "选择�
 L["Select the group size for which you want to set the spell bar position"] = "选择法术条位置的队伍大小"
 L["Select the highest priority spell type to use as the start of the 2nd row"] = "选择优先级最高的法术类型用作第二行的开始"
 --[[Translation missing --]]
+L["Select the highest priority spell type to use as the start of the 3rd row"] = "Select the highest priority spell type to use as the start of the 3rd row"
+--[[Translation missing --]]
 L["Select the icon layout"] = "Select the icon layout"
+--[[Translation missing --]]
+L["Select the spell types you want to display on this column."] = "Select the spell types you want to display on this column."
 --[[Translation missing --]]
 L["Select the zone setting to use for this zone."] = "Select the zone setting to use for this zone."
 --[[Translation missing --]]
@@ -343,6 +373,8 @@ L["Set the opacity of icons"] = "设置图标透明度"
 L["Set the opacity of icons not on cooldown"] = "设置不在冷却中图标的不透明度"
 L["Set the opacity of icons on cooldown"] = "设置图标在冷却时透明度"
 L["Set the opacity of swipe animations"] = "设置滑动动画的不透明度"
+--[[Translation missing --]]
+L["Set the padding space between group columns"] = "Set the padding space between group columns"
 L["Set the padding space between icon columns"] = "设置在图标列之间的填充空间"
 L["Set the padding space between icon rows"] = "设置在图标行之间的填充空间"
 L["Set the padding space between icons"] = "设置图标之间间隔"
@@ -407,7 +439,11 @@ L["Test frames will be hidden once player is out of combat"] = "玩家退出战�
 L["Test Mode Disabled: Non-Blizzard party frames"] = "测试模式已禁用：非暴雪队伍框架"
 L["Text Alignment"] = "文字对齐"
 --[[Translation missing --]]
+L["Threshold at which the timer transitions from MM to MM:SS format."] = "Threshold at which the timer transitions from MM to MM:SS format."
+--[[Translation missing --]]
 L["Timer will progress from right to left"] = "Timer will progress from right to left"
+--[[Translation missing --]]
+L["Timers"] = "Timers"
 L["Toggle \"Show Spell ID in Tooltips\" to retrieve item IDs"] = "启用“在鼠标提示中显示法术 ID”来取得物品 ID"
 L["Toggle module on and off"] = "打开和关闭模块"
 L["Toggle raid-style party frame and player spell bar for testing"] = "切换团本模式团队框架和玩家施法条为测试模式"
@@ -424,15 +460,23 @@ L["Trinket and Racial abilities are excluded from sorting"] = "饰品和种族�
 L["Trinket Items"] = "饰品"
 L["UI Scale Changed."] = "UI比例已更改"
 --[[Translation missing --]]
+L["Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."] = "Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."
+--[[Translation missing --]]
 L["Usage:"] = "Usage:"
 --[[Translation missing --]]
 L["Use a semi-colon(;) to seperate multiple IDs."] = "Use a semi-colon(;) to seperate multiple IDs."
 L["Use Default"] = "使用默认"
+--[[Translation missing --]]
+L["Use Double Column"] = "Use Double Column"
 L["Use Double Row"] = "使用双排"
 --[[Translation missing --]]
 L["Use Icon Alpha"] = "Use Icon Alpha"
 L["Use Relative Size"] = "使用相对大小"
 L["Use this setting for all group sizes"] = "这个设置作用于所有组大小"
+--[[Translation missing --]]
+L["Use Triple Column"] = "Use Triple Column"
+--[[Translation missing --]]
+L["Use Triple Row"] = "Use Triple Row"
 --[[Translation missing --]]
 L["Use Zone Settings From:"] = "Use Zone Settings From:"
 --[[Translation missing --]]

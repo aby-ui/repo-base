@@ -20,8 +20,8 @@ end
 
 --[[ Constructor ]]--
 
-function QualityButton:New(parent, quality, qualityColor)
-	local R,G,B = GetItemQualityColor(qualityColor)
+function QualityButton:New(parent, quality)
+	local R,G,B = GetItemQualityColor(quality)
 	local b = self:Super(QualityButton):New(parent)
 	local bg = b:CreateTexture(nil, 'ARTWORK', nil, 2)
 	bg:SetColorTexture(R,G,B)
@@ -30,7 +30,6 @@ function QualityButton:New(parent, quality, qualityColor)
 
 	b.bg = bg
 	b.quality = quality
-	b.qualityColor = qualityColor
 	b.flag = self.Flags[quality]
 
 	b:RegisterFrameSignal('QUALITY_CHANGED', 'UpdateHighlight')
@@ -68,7 +67,7 @@ end
 
 function QualityButton:OnEnter()
 	GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-	GameTooltip:SetText(_G['ITEM_QUALITY'..self.quality..'_DESC'], GetItemQualityColor(self.qualityColor))
+	GameTooltip:SetText(_G['ITEM_QUALITY'..self.quality..'_DESC'], GetItemQualityColor(self.quality))
 	GameTooltip:Show()
 end
 

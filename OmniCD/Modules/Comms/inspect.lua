@@ -145,7 +145,9 @@ function Comms:EnqueueInspect(force, guid)
 			queueEntries[guid] = added
 		end
 	else
-		if #P.pendingQueue == 0 then return end
+		if #P.pendingQueue == 0 then
+			return
+		end
 
 		for i = #P.pendingQueue, 1, -1 do
 			local guid = P.pendingQueue[i]

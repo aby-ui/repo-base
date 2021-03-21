@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210311043607")
+mod:SetRevision("20210314154043")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -356,7 +356,7 @@ local function phaseChange(self, adjustment)
 	end
 end
 
---/run DBM:GetModByName(2426):TestRestart(20)
+--/run DBM:GetModByName(2426):TestRestart(60)
 function mod:TestRestart(amount)
 	timerDutifulAttendantCD:Start(amount)
 	timerDualistsRiposteCD:Start(amount)
@@ -598,16 +598,6 @@ function mod:SPELL_CAST_START(args)
 		else
 			warnDreadboltVolley:Show(count)
 		end
---		if args:GetSrcCreatureID() == 166969 then--Main boss
---			local timer = self.vb.volleyCast == 3 and 12 or 4
-			--Phase 2 always 12, phase 1 is 4 between 3 set then 12 til next set
---			timerDreadboltVolleyCD:Start(self.vb.phase == 1 and timer or self.vb.phase == 2 and 12)
---		else
-			--When dead, it's set of 3, 3.5 apart then 30 or 35 between sets, based on which phase it is
---			local timer = self.vb.phase == 2 and 35 or 30
---			timerDreadboltVolleyCD:Start(self.vb.volleyCast == 3 and timer or 3.25)
---			timerDreadboltVolleyCD:UpdateInline(DBM_CORE_L.MYTHIC_ICON)
---		end
 	elseif spellId == 346657 then
 		specWarnPridefulEruption:Show()
 		specWarnPridefulEruption:Play("scatter")

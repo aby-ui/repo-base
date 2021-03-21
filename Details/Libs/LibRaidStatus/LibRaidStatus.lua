@@ -1,6 +1,6 @@
 
 local major = "LibRaidStatus-1.0"
-local CONST_LIB_VERSION = 14
+local CONST_LIB_VERSION = 15
 LIB_RAID_STATUS_CAN_LOAD = false
 
 --declae the library within the LibStub
@@ -14,7 +14,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
 --default values
     raidStatusLib.inGroup = false
-    raidStatusLib.CanReceiveComms = false
 
     --print failures (when the function return an error) results to chat
     local CONST_DIAGNOSTIC_ERRORS = false
@@ -128,7 +127,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --return true if the lib is allowed to receive comms from other players
     function raidStatusLib.IsCommAllowed()
-        return raidStatusLib.CanReceiveComms
+        return IsInGroup() or IsInRaid()
     end
 
     --stract some indexes of a table
@@ -497,7 +496,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
                 --the group has changed, trigger a long timer to send full data
                 --as the timer is unique, a new change to the group will replace and refresh the time
                 --using random time, players won't trigger all at the same time
-                local randomTime = 4.0 + math.random(1.0, 4.5)
+                local randomTime = 1.0 + math.random(1.0, 5.5)
                 raidStatusLib.Schedules.NewUniqueTimer(randomTime, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
             end
         end,
@@ -581,7 +580,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
         --the game client is fully loadded and all information is available
         if (raidStatusLib.IsInGroup()) then
             raidStatusLib.Schedules.NewUniqueTimer(1.0, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
-            raidStatusLib.CanReceiveComms = true
         end
     end
 
@@ -589,7 +587,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
         --the player entered in a group
         --schedule to send data
         raidStatusLib.Schedules.NewUniqueTimer(1.0, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
-        raidStatusLib.CanReceiveComms = true
     end
 
     raidStatusLib.mainControl.OnLeftGroup = function()
@@ -603,7 +600,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
         table.wipe(raidStatusLib.mainControl.playerAliveStatus)
 
         --toggle off comms
-        raidStatusLib.CanReceiveComms = false
     end
 
     raidStatusLib.mainControl.OnPlayerDeath = function()

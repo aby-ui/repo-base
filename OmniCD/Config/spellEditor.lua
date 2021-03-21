@@ -28,6 +28,7 @@ local function GetClassIndexBySpellID(id)
 	end
 end
 
+-- TODO: clean this up. gives me a headache everytime.
 function E:UpdateSpell(id, isInit, oldClass, oldType) -- [39]
 	local class, i = GetClassIndexBySpellID(id)
 	local v = OmniCDDB.cooldowns[id]
@@ -35,9 +36,9 @@ function E:UpdateSpell(id, isInit, oldClass, oldType) -- [39]
 	if v then
 		vclass, vtype = v.class, v.type
 		if class ~= vclass then -- custom spell
-			if class then -- class change
+			if class then -- class change custom
 				tremove(spell_db[class], i)
-			else -- add new
+			else -- add new custom
 				force = true
 			end
 			spell_db[vclass][#spell_db[vclass] + 1] = v
@@ -48,7 +49,7 @@ function E:UpdateSpell(id, isInit, oldClass, oldType) -- [39]
 				self.Cooldowns:RegisterRemoveHighlightByCLEU(v.buff or id)
 			end
 			return
-		else -- type change etc for both
+		else -- type change etc for default/custom
 			spell_db[class][i] = v
 		end
 
@@ -215,7 +216,6 @@ local customSpellInfo = {
 		desc = E.STR.MAX_RANGE,
 		order = 5,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 1, max = 999, softMax = 300, step = 1,
 		get = getGlobalDurationCharge,
 		set = setGlobalDurationCharge,
@@ -228,7 +228,6 @@ local customSpellInfo = {
 		end,
 		order = 6,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 1, max = 10, step = 1,
 		get = getGlobalDurationCharge,
 		set = setGlobalDurationCharge,
@@ -426,14 +425,12 @@ local customSpellSpecInfo = {
 		desc = L["Set to override the global cooldown setting for this specialization"],
 		order = 3,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 1, max = 999, softMax = 300, step = 1,
 	},
 	charges = {
 		name = L["Charges"],
 		order = 4,
 		type = "range",
-		dialogControl = "Slider-OmniCD",
 		min = 1, max = 10, step = 1,
 	},
 }
@@ -495,7 +492,7 @@ E.EditSpell = function(_, value)
 	end
 
 	if OmniCDDB.cooldowns[id] then
-		return E.lib.ACD:SelectGroup(E.AddOn, "SpellEditor", "editor", value)
+		return E.Libs.ACD:SelectGroup(E.AddOn, "SpellEditor", "editor", value)
 	end
 
 	local class, i = GetClassIndexBySpellID(id)
@@ -530,7 +527,7 @@ E.EditSpell = function(_, value)
 	E.options.args.SpellEditor.args.editor.args[value] = customSpellGroup
 
 	E:UpdateSpell(id)
-	E.lib.ACD:SelectGroup(E.AddOn, "SpellEditor", "editor", value)
+	E.Libs.ACD:SelectGroup(E.AddOn, "SpellEditor", "editor", value)
 end
 
 local SpellEditor = {

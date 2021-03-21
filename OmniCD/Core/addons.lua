@@ -199,9 +199,8 @@ function E:UnitFrames()
 			--E.StaticPopup_Show("OMNICD_Elv_MSG")
 		end
 
-		self:SetPixelMult() -- set after UFs load
+		self:SetPixelMult() -- set after addon load
 	end
-	self:SetPixelMult() -- set after UFs load
 end
 
 function E:LoadAddOns()

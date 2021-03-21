@@ -24,7 +24,8 @@ local general = {
 			values = E.CFG_ZONE,
 			set = function(info, value)
 				E.DB.profile.Party[info[2]].general.zoneSelected = value
-			end
+			end,
+			disabledItem = function(info) return info[2] end,
 		},
 		copySelected = {
 			disabled = function(info)

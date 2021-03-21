@@ -16,6 +16,7 @@
   <Script file="AppFollowQueryPanel.lua" />
   <Script file="AppFollowPanel.lua" />
   <Script file="RecentPanel.lua" />
+  <Script file="WalkthroughPanel.lua" />
   <Script file="OptionPanel.lua" />
   <Script file="PlayerInfoDialog.lua" />
   <Script file="AppQrDialog.lua" />

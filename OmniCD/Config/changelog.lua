@@ -1,14 +1,19 @@
 local E, L, C = select(2, ...):unpack()
 
 E.changelog = [=[
-v2.5.19beta
+v2.5.20 - Toc ver 90005
 Bug Fixes
     ADDON_ACTION_BLOCKED error from taint fixed.
     Minor bug fixes.
 Feature Updates
-    New Profile sharing option.
-    Alpha option for active status bar.
-    InvenRaidFrame3, Lime, and ShestakUI support added.
+    Unit Bar: Triple row/column layout added.
+    Raid Bar: Multi-column layout added.
+    Spells: Class and Other category tabs were merged and the Edit button removed.
+    Raid CD: Empty spell groups are now hidden.
+    Status Bar: Added alpha setting to active bar, disable spark, and class color based on status.
+    Status Bar Timer: Changed to Blizzard's timer format.
+    New Profile sharing option added.
+    InvenRaidFrame3 (fix), Lime, and ShestakUI support added.
 
 v2.5.12
 Blizzard PvP Hotfixes
@@ -36,6 +41,7 @@ Bug Fixes
     Cooldown reduction by spending resources will correctly apply to synced players.
     Combustion's CD reduction fixed.
     Heartstop Aura (Frost DK - PvP Talent) will correctly apply reduced CD recovery rate. (Arena only)
+    |cffff2020None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated.|r
 Feature Updates
     New Font and Texture option added.
     Highlighting: Added a weaker glow effect and removed Animate option.

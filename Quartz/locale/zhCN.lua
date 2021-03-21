@@ -19,6 +19,7 @@ L["Adjust the Y position of the name text"] = "调整名称文本的 Y 值位置
 L["Adjust the Y position of the time text"] = "调整时间文本的 Y 值位置"
 L["Alpha"] = "透明度"
 L["Anchor Frame"] = "锚点框架"
+L["Anchor point"] = "锚点"
 L["AOE Rez"] = "群体复活"
 L["Background"] = "背景"
 L["Background Alpha"] = "背景透明度"

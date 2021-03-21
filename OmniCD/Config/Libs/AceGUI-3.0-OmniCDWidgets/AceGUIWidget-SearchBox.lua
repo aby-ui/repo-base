@@ -41,12 +41,12 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
-	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5, 1) -- OmniCD: l (match range slider editbox)
+	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5, 1) -- match range slider editbox
 end
 
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
-	frame.obj.editbox:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8) -- OmniCD: l (match range slider editbox)
+	frame.obj.editbox:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
 end
 
 local function Frame_OnShowFocus(frame)
@@ -112,7 +112,6 @@ end
 local function Button_OnLeave(frame)
 	frame:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
 end
-
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -208,7 +207,7 @@ local function Constructor()
 	editbox.Left:SetTexture(nil)
 	editbox.Right:SetTexture(nil)
 	editbox.Middle:SetTexture(nil)
-	editbox:SetBackdrop(OmniCD[1].BackdropTemplate(editbox))
+	OmniCD[1].BackdropTemplate(editbox)
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
 	editbox:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
 	editbox:SetFontObject("GameFontHighlight-OmniCD")
@@ -234,10 +233,11 @@ local function Constructor()
 	button:SetWidth(22)
 	button:SetPoint("TOPRIGHT")
 	button:SetPoint("BOTTOMRIGHT")
-	button:SetBackdrop(OmniCD[1].BackdropTemplate(button))
+	OmniCD[1].BackdropTemplate(button)
 	button:SetBackdropColor(0, 0, 0, 0)
 	button:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
 	button.bg = button:CreateTexture(nil, "ARTWORK")
+	OmniCD[1].DisablePixelSnap(button.bg)
 	button.bg:SetPoint("TOPLEFT", button.TopEdge, "BOTTOMLEFT")
 	button.bg:SetPoint("BOTTOMRIGHT", button.BottomEdge, "TOPRIGHT")
 	button.bg:SetTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-search-on]])

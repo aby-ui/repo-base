@@ -2328,9 +2328,12 @@ end
 function Details:CompressData (data, dataType)
 	local LibDeflate = LibStub:GetLibrary ("LibDeflate")
 	local LibAceSerializer = LibStub:GetLibrary ("AceSerializer-3.0")
-	
+
+	--check if there isn't funtions in the data to export
+	local dataCopied = DetailsFramework.table.copytocompress({}, data)
+
 	if (LibDeflate and LibAceSerializer) then
-		local dataSerialized = LibAceSerializer:Serialize (data)
+		local dataSerialized = LibAceSerializer:Serialize (dataCopied)
 		if (dataSerialized) then
 			local dataCompressed = LibDeflate:CompressDeflate (dataSerialized, {level = 9})
 			if (dataCompressed) then

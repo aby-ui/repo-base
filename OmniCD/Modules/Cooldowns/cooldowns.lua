@@ -42,7 +42,7 @@ local userGUID = E.userGUID
 local BOOKTYPE_CATEGORY = E.BOOKTYPE_CATEGORY
 local SPELL_AVATAR = 107574
 local SPELL_FEIGN_DEATH = 5384
---local DEBUFF_HEARTSTOP_AURA = 214975
+--local DEBUFF_HEARTSTOP_AURA = 214975 -- Blizzard changed this and no longer fires any CLEU
 
 local _
 local isUserDisabled -- [82]
@@ -1539,9 +1539,11 @@ do
 		else
 			local destInfo = groupInfo[destGUID]
 			if destInfo then
-				UpdateCDRR(groupInfo[destGUID], 1/1.3)
+				UpdateCDRR(destInfo, 1/1.3)
 			end
-			UpdateCDRR(info, 1/1.3)
+			if info then -- userevent srcInfo is nil
+				UpdateCDRR(info, 1/1.3)
+			end
 		end
 	end
 

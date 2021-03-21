@@ -148,18 +148,11 @@ local function GetBar()
 	if not f then
 		numBars = numBars + 1
 		f = CreateFrame("Frame", "OmniCD" .. numBars, UIParent, "OmniCDTemplate")
-		--[[ xml
-		f.bottomRow = CreateFrame("Frame", nil, f.container)
-		f.bottomRow:SetSize(1, 1)
-		f.bottomRow.container = CreateFrame("Frame", nil, f.bottomRow)
-		f.bottomRow.container:SetSize(1, 1)
-		f.bottomRow.container:SetAllPoints(f.bottomRow)
-		--]]
 		f.modname = "Party"
 		f.icons = {}
 		f.numIcons = 0
 		f.anchor:Hide()
-		E.SetFontObj(f.anchor.text, E.profile.General.fonts.anchor)
+		E.SetFont(f.anchor.text, E.profile.General.fonts.anchor)
 		f:SetScript("OnEvent", CooldownBarFrame_OnEvent)
 	end
 
@@ -174,14 +167,38 @@ function P:HideBars()
 	end
 end
 
+local textureUVs = {
+	"borderTop",
+	"borderBottom",
+	"borderRight",
+	"borderLeft",
+}
+
 local function GetIcon(f, iconIndex)
 	local icon = tremove(unusedIcons)
 	if not icon then
 		numIcons = numIcons + 1
 		icon = CreateFrame("Button", "OmniCDIcon" .. numIcons, UIParent, "OmniCDButtonTemplate")
 		icon.counter = icon.cooldown:GetRegions()
-		E.SetFontObj(icon.Name, E.profile.General.fonts.icon)
+		for _, pieceName in ipairs(textureUVs) do -- statusbars doesn't seem to be affected
+			local region = icon[pieceName];
+			if region then
+				E.DisablePixelSnap(region)
+			end
+		end
+		E.DisablePixelSnap(icon.icon)
+
+		--[[
+		<FontString name="$parentName" parentKey="Name" inherits="GameFontHighlightSmallOutline">
+			<Size x="36" y="10"/>
+			<Anchors>
+				<Anchor point="BOTTOM" x="0" y="2"/>
+			</Anchors>
+		</FontString>
+		]]
+		E.SetFont(icon.Name, E.profile.General.fonts.icon)
 	end
+
 	icon:SetParent(f.container)
 	icon.Name:Hide()
 

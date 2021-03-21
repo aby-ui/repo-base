@@ -1,12 +1,14 @@
 
-DETAILS_STORAGE_VERSION = 4
+DETAILS_STORAGE_VERSION = 5
 
 function _detalhes:CreateStorageDB()
 	DetailsDataStorage = {
 		VERSION = DETAILS_STORAGE_VERSION, 
-		[14] = {}, --normal mode
-		[15] = {}, --heroic mode
-		[16] = {}, --mythic mode
+		[14] = {}, --normal mode (raid)
+		[15] = {}, --heroic mode (raid)
+		[16] = {}, --mythic mode (raid)
+		["mythic_plus"] = {}, --(dungeons)
+		["saved_encounters"] = {}, --(a segment)
 	}
 	return DetailsDataStorage
 end
@@ -23,7 +25,7 @@ f:SetScript ("OnEvent", function (self, event, addonName)
 		
 		if (DetailsDataStorage.VERSION < DETAILS_STORAGE_VERSION) then
 			--> do revisions
-			if (DetailsDataStorage.VERSION < 4) then
+			if (DetailsDataStorage.VERSION < 5) then
 				table.wipe (DetailsDataStorage)
 				DetailsDataStorage = _detalhes:CreateStorageDB()
 			end

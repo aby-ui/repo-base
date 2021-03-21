@@ -181,17 +181,13 @@ function AppParent:OnEnable()
         FollowButton:SetSize(64, 32)
         FollowButton:SetText(L['关注'])
         FollowButton:SetScript('OnEnter', function()
-            if PlayerLinkList then
+            if PlayerLinkList and PlayerLink_StopCount then
                 PlayerLink_StopCount()
-            else
-                UIDropDownMenu_StopCounting(DropDownList1)
             end
         end)
         FollowButton:SetScript('OnLeave', function()
-            if PlayerLinkList then
+            if PlayerLinkList and PlayerLink_StartCount then
                 PlayerLink_StartCount()
-            else
-                UIDropDownMenu_StartCounting(DropDownList1)
             end
         end)
         FollowButton:SetScript('OnClick', function(FollowButton)
@@ -248,18 +244,16 @@ function AppParent:FriendsFrame_ShowBNDropdown(_, connected, _, _, _, _, bnetIDA
     if not connected then
         return
     end
-    local _, _, _, _, _, bnetIDGameAccount, client, isOnline = BNGetFriendInfoByID(bnetIDAccount)
-    if not isOnline or client ~= BNET_CLIENT_WOW then
+
+    local accountInfo = C_BattleNet.GetAccountInfoByID(bnetIDAccount)
+    if not accountInfo.gameAccountInfo or accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW then
         return
     end
-    local _, characterName, client, realmName, _, faction = BNGetGameAccountInfo(bnetIDGameAccount)
-    if client ~= BNET_CLIENT_WOW then
+
+    if accountInfo.gameAccountInfo.factionName ~= UnitFactionGroup('player') then
         return
     end
-    if faction ~= UnitFactionGroup('player') then
-        return
-    end
-    self:OpenFollowButton(GetFullName(characterName, realmName))
+    self:OpenFollowButton(GetFullName(accountInfo.gameAccountInfo.characterName, accountInfo.gameAccountInfo.realmName))
 end
 
 function AppParent.Invoke:OpenFollowButton(name, guid)

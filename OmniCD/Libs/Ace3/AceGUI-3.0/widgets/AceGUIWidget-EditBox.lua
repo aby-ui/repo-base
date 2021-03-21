@@ -1,3 +1,9 @@
+---------------------------------------------------------------------------------
+
+-- Customized for OmniCD by permission of the copyright owner.
+
+---------------------------------------------------------------------------------
+
 --[[-----------------------------------------------------------------------------
 EditBox Widget
 -------------------------------------------------------------------------------]]
@@ -38,21 +44,13 @@ end
 
 local function ShowButton(self)
 	if not self.disablebutton then
-		--[[ OmniCD: r
-		self.button:Show()
-		self.editbox:SetTextInsets(3, 20, 3, 3) -- OmniCD: c 0,20,3,3>3,20,3,3 (not hiding anymore)
-		]]
 		self.button:SetBackdropColor(0.725, 0.008, 0.008)
 		self.button.Text:SetTextColor(1, 1, 1)
 		self.button:EnableMouse(true)
 	end
 end
 
-local function HideButton(self) -- this is used as 'Disabled' instead
-	--[[ OmniCD: r
-	self.button:Hide()
-	self.editbox:SetTextInsets(3, 0, 3, 3) -- OmniCD: c 0,0,3,3>3,0,3,3
-	]]
+local function HideButton(self)
 	self.button:SetBackdropColor(0.2, 0.2, 0.2)
 	self.button.Text:SetTextColor(0.5, 0.5, 0.5)
 	self.button:EnableMouse(false)
@@ -63,12 +61,12 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
-	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5, 1) -- OmniCD: l (match range slider editbox)
+	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5)
 end
 
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
-	frame.obj.editbox:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8) -- OmniCD: l (match range slider editbox)
+	frame.obj.editbox:SetBackdropBorderColor(0.2, 0.2, 0.25)
 end
 
 local function Frame_OnShowFocus(frame)
@@ -84,12 +82,6 @@ local function EditBox_OnEnterPressed(frame)
 	local self = frame.obj
 	local value = frame:GetText()
 	local cancel = self:Fire("OnEnterPressed", value)
-	--[[ OmniCD: r
-	if not cancel then
-		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
-		HideButton(self)
-	end
-	]]
 	if not cancel then
 		self.lasttext = value -- now we can update
 		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
@@ -120,18 +112,10 @@ end
 local function EditBox_OnTextChanged(frame)
 	local self = frame.obj
 	local value = frame:GetText()
-	--[[ OmniCD: r
-	if tostring(value) ~= tostring(self.lasttext) then
-		self:Fire("OnTextChanged", value)
-		self.lasttext = value
-		ShowButton(self)
-	end
-	]]
-	-- update lastetext when we hit enter/okay -> more intuituve (atleast for non-multitext; edits)
 	if tostring(value) ~= tostring(self.lasttext) then
 		self:Fire("OnTextChanged", value)
 		ShowButton(self)
-	else -- rehide if we end up with the same initial text
+	else
 		HideButton(self)
 	end
 end
@@ -193,15 +177,13 @@ local methods = {
 		if text and text ~= "" then
 			self.label:SetText(text)
 			self.label:Show()
-			--self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",7,-18)
-			self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-19) -- OmniCD: ^r
+			self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-19)
 			self:SetHeight(44)
 			self.alignoffset = 30
 		else
 			self.label:SetText("")
 			self.label:Hide()
-			--self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",7,0)
-			self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-1) -- OmniCD: ^r
+			self.editbox:SetPoint("TOPLEFT",self.frame,"TOPLEFT",0,-1)
 			self:SetHeight(26)
 			self.alignoffset = 12
 		end
@@ -210,13 +192,8 @@ local methods = {
 	["DisableButton"] = function(self, disabled)
 		self.disablebutton = disabled
 		if disabled then
-			--[[ OmniCD: r
-			--HideButton(self)
-			]]
 			self.button:SetBackdropColor(0.2, 0.2, 0.2)
-			--self.button.Text:SetTextColor(0.5, 0.5, 0.5)
 			self.button:enableMouse(false)
-			--//
 		end
 	end,
 
@@ -249,9 +226,9 @@ local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:Hide()
 
-	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox-OmniCD"..num, frame, "InputBoxTemplate, BackdropTemplate") -- OmniCD: c +backdrop
+	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox-OmniCD"..num, frame, "InputBoxTemplate, BackdropTemplate")
 	editbox:SetAutoFocus(false)
-	editbox:SetFontObject("GameFontHighlight-OmniCD") -- OmniCD: c (ChatFontNormal)
+	editbox:SetFontObject("GameFontHighlight-OmniCD")
 	editbox:SetScript("OnEnter", Control_OnEnter)
 	editbox:SetScript("OnLeave", Control_OnLeave)
 	editbox:SetScript("OnEscapePressed", EditBox_OnEscapePressed)
@@ -260,22 +237,15 @@ local function Constructor()
 	editbox:SetScript("OnReceiveDrag", EditBox_OnReceiveDrag)
 	editbox:SetScript("OnMouseDown", EditBox_OnReceiveDrag)
 	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
-	--editbox:SetTextInsets(0, 0, 3, 3)
-	editbox:SetTextInsets(3, 20, 3, 3) -- OmniCD: ^r (instead of hiding button, we're changing backdropcolor)
+	editbox:SetTextInsets(3, 20, 3, 3)
 	editbox:SetMaxLetters(256)
-	--[[ OmniCD: r
-	editbox:SetPoint("BOTTOMLEFT", 6, 0)
-	editbox:SetPoint("BOTTOMRIGHT")
-	editbox:SetHeight(19)
-	]]
 	editbox:SetPoint("BOTTOMRIGHT", 0, 3) -- TOPLEFT done in SetLabel
 	editbox.Left:SetTexture(nil)
 	editbox.Right:SetTexture(nil)
 	editbox.Middle:SetTexture(nil)
-	editbox:SetBackdrop(OmniCD[1].BackdropTemplate(editbox))
+	OmniCD[1].BackdropTemplate(editbox)
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
-	editbox:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
-	--//
+	editbox:SetBackdropBorderColor(0.2, 0.2, 0.25)
 
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall-OmniCD")
 	label:SetPoint("TOPLEFT", 0, -2)
@@ -283,32 +253,23 @@ local function Constructor()
 	label:SetJustifyH("LEFT")
 	label:SetHeight(18)
 
-	local button = CreateFrame("Button", nil, editbox, "UIPanelButtonTemplate, BackdropTemplate") -- OmniCD: c +backdrop
+	local button = CreateFrame("Button", nil, editbox, "UIPanelButtonTemplate, BackdropTemplate")
 	button:SetWidth(40)
-	--[[ OmniCD: r
-	button:SetHeight(20)
-	button:SetPoint("RIGHT", -2, 0)
-	]]
-	-- inherits UIPanelButtonNoTooltipTemplate <Size x="40" y="22"/>
 	button:SetPoint("TOPRIGHT")
 	button:SetPoint("BOTTOMRIGHT")
-	--//
 	button:SetText(OKAY)
 	button:SetScript("OnClick", Button_OnClick)
-	--button:Hide() -- OmniCD: -r (we're no longer hiding)
-	-- OmniCD: b
-	-- inherits UIPanelButtonNoTooltipTemplate (combination of Lt, Rt, Mid, and Highlight texture)
-	button.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
+
+	button.Left:Hide()
 	button.Right:Hide()
 	button.Middle:Hide()
 	button:SetHighlightTexture(nil)
-	button:SetBackdrop(OmniCD[1].BackdropTemplate(button))
+	OmniCD[1].BackdropTemplate(button)
 	button:SetBackdropColor(0.725, 0.008, 0.008)
-	button:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
+	button:SetBackdropBorderColor(0.2, 0.2, 0.25)
 	button:SetNormalFontObject("GameFontHighlight-OmniCD")
 	button:SetHighlightFontObject("GameFontHighlight-OmniCD")
 	button:SetDisabledFontObject("GameFontDisable-OmniCD")
-	-- TODO: add flash or onenter/leave border
 
 	local widget = {
 		alignoffset = 30,

@@ -120,7 +120,7 @@ local VIGNETTES = {
     [4577] = SILVER_STRONGBOX
 }
 
-hooksecurefunc(GameTooltip, 'SetText', function(self)
+hooksecurefunc(GameTooltip, 'Show', function(self)
     local owner = self:GetOwner()
     if owner and owner.vignetteID then
         local rewards = VIGNETTES[owner.vignetteID]

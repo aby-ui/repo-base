@@ -1,3 +1,9 @@
+---------------------------------------------------------------------------------
+
+-- Customized for OmniCD by permission of the copyright owner.
+
+---------------------------------------------------------------------------------
+
 --[[-----------------------------------------------------------------------------
 Slider Widget
 Graphical Slider, like, for Range values.
@@ -46,10 +52,14 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
+	frame.handleRight:Show()
+	frame.Thumb:SetColorTexture(1, 1, 1)
 end
 
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
+	frame.handleRight:Hide()
+	frame.Thumb:SetColorTexture(0.8, 0.624, 0)
 end
 
 local function Frame_OnMouseDown(frame)
@@ -114,11 +124,11 @@ local function EditBox_OnEnterPressed(frame)
 end
 
 local function EditBox_OnEnter(frame)
-	frame:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+	frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
 end
 
 local function EditBox_OnLeave(frame)
-	frame:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
+	frame:SetBackdropBorderColor(0.2, 0.2, 0.25)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -148,7 +158,8 @@ local methods = {
 			self.editbox:SetTextColor(.5, .5, .5)
 			self.editbox:EnableMouse(false)
 			self.editbox:ClearFocus()
-			self.slider.Thumb:SetColorTexture(.5, .5, .5) -- OmniCD: l
+			self.slider.Thumb:SetColorTexture(.5, .5, .5)
+			self.slider.handleLeft:SetColorTexture(.5, .5, .5)
 		else
 			self.slider:EnableMouse(true)
 			self.label:SetTextColor(1, .82, 0)
@@ -157,7 +168,8 @@ local methods = {
 			--self.valuetext:SetTextColor(1, 1, 1)
 			self.editbox:SetTextColor(1, 1, 1)
 			self.editbox:EnableMouse(true)
-			self.slider.Thumb:SetColorTexture(0.8, 0.624, 0) -- OmniCD: l
+			self.slider.Thumb:SetColorTexture(0.8, 0.624, 0)
+			self.slider.handleLeft:SetColorTexture(0.8, 0.624, 0)
 		end
 	end,
 
@@ -202,20 +214,6 @@ local methods = {
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
---[[ OmniCD: -r
-local SliderBackdrop  = {
-	bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
-	edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
-	tile = true, tileSize = 8, edgeSize = 8,
-	insets = { left = 3, right = 3, top = 6, bottom = 6 }
-}
-
-local ManualBackdrop = {
-	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-	edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
-	tile = true, edgeSize = 1, tileSize = 5,
-}
-]]
 
 local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
@@ -229,30 +227,37 @@ local function Constructor()
 	label:SetJustifyH("CENTER")
 	label:SetHeight(15)
 
-	local slider = CreateFrame("Slider", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	local slider = CreateFrame("Slider", nil, frame)
 	slider:SetOrientation("HORIZONTAL")
-	--[[ OmniCD: r
-	slider:SetHeight(15)
+	slider:SetHeight(10)
 	slider:SetHitRectInsets(0, 0, -10, 0)
-	slider:SetBackdrop(SliderBackdrop)
-	]]
-	slider:SetHeight(6)
-	slider:SetHitRectInsets(0, 0, -10, 0)
-	slider:SetBackdrop(OmniCD[1].BackdropTemplate(slider))
-	slider:SetBackdropColor(0.15, 0.15, 0.2)
-	slider:SetBackdropBorderColor(0, 0, 0)
-	--//
-	--[[ OmniCD: r
-	slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
-	slider:SetPoint("TOP", label, "BOTTOM")
-	]]
+	slider.bg = slider:CreateTexture(nil, "BACKGROUND")
+	OmniCD[1].DisablePixelSnap(slider.bg)
+	slider.bg:SetColorTexture(0.2, 0.2, 0.25)
+	slider.bg:SetHeight(2 * OmniCD[1].PixelMult)
+	slider.bg:SetPoint("LEFT")
+	slider.bg:SetPoint("RIGHT")
+
 	slider.Thumb = slider:CreateTexture(nil, "Artwork")
 	slider.Thumb:SetSize(4, 8)
-	slider.Thumb:SetTexture([[Interface\BUTTONS\White8x8]])
 	slider.Thumb:SetColorTexture(0.8, 0.624, 0)
 	slider:SetThumbTexture(slider.Thumb)
-	slider:SetPoint("TOP", label, "BOTTOM", 0, -2)
-	--//
+	slider:SetPoint("TOP", label, "BOTTOM")
+
+	slider.handleLeft = slider:CreateTexture(nil, "Artwork")
+	OmniCD[1].DisablePixelSnap(slider.handleLeft)
+	slider.handleLeft:SetColorTexture(0.8, 0.624, 0)
+	slider.handleLeft:SetPoint("TOPLEFT", slider.bg)
+	slider.handleLeft:SetPoint("BOTTOMLEFT", slider.bg)
+	slider.handleLeft:SetPoint("RIGHT", slider.Thumb, "LEFT")
+	slider.handleRight = slider:CreateTexture(nil, "Artwork")
+	OmniCD[1].DisablePixelSnap(slider.handleRight)
+	slider.handleRight:SetColorTexture(0.5, 0.5, 0.5)
+	slider.handleRight:SetPoint("TOPRIGHT", slider.bg)
+	slider.handleRight:SetPoint("BOTTOMRIGHT", slider.bg)
+	slider.handleRight:SetPoint("LEFT", slider.Thumb, "RIGHT")
+	slider.handleRight:Hide()
+
 	slider:SetPoint("LEFT", 3, 0)
 	slider:SetPoint("RIGHT", -3, 0)
 	slider:SetValue(0)
@@ -263,24 +268,22 @@ local function Constructor()
 	slider:SetScript("OnMouseWheel", Slider_OnMouseWheel)
 
 	local lowtext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
-	lowtext:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 2, -1) -- OmniCD: c 2,3>2,-1
+	lowtext:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 2, -1)
 
 	local hightext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
-	hightext:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -2, -1) -- OmniCD: c -2,3>-2,-1
+	hightext:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -2, -1)
 
 	local editbox = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	editbox:SetAutoFocus(false)
 	editbox:SetFontObject("GameFontHighlightSmall-OmniCD")
-	--editbox:SetPoint("TOP", slider, "BOTTOM")
-	editbox:SetPoint("TOP", slider, "BOTTOM", 0, -4) -- OmniCD: ^r
+	editbox:SetPoint("TOP", slider, "BOTTOM")
 	editbox:SetHeight(14)
 	editbox:SetWidth(70)
 	editbox:SetJustifyH("CENTER")
 	editbox:EnableMouse(true)
-	--editbox:SetBackdrop(ManualBackdrop)
-	editbox:SetBackdrop(OmniCD[1].BackdropTemplate(editbox)) -- OmniCD: ^r
+	OmniCD[1].BackdropTemplate(editbox)
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
-	editbox:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
+	editbox:SetBackdropBorderColor(0.2, 0.2, 0.25)
 	editbox:SetScript("OnEnter", EditBox_OnEnter)
 	editbox:SetScript("OnLeave", EditBox_OnLeave)
 	editbox:SetScript("OnEnterPressed", EditBox_OnEnterPressed)

@@ -150,9 +150,6 @@ end
 
 function P:HighlightIcon(icon, isRefresh)
 	if not E.db.highlight.glowBuffs or not E.db.highlight.glowBuffTypes[icon.type] then
-	--[[ xml
-	if icon.isCropped or not E.db.highlight.glowBuffs or not E.db.highlight.glowBuffTypes[icon.type] then
-	--]]
 		return
 	end
 

@@ -20,9 +20,9 @@ function AddOn:SetPixelMult()
 	self.PixelMult = uiUnitFactor / uiScale
 end
 
-NS[1].lib = {}
-NS[1].lib.ACD = LibStub("AceConfigDialog-3.0-OmniCD")
-NS[1].lib.ACR = LibStub("AceConfigRegistry-3.0")
+NS[1].Libs = {}
+NS[1].Libs.ACD = LibStub("AceConfigDialog-3.0-OmniCD")
+NS[1].Libs.ACR = LibStub("AceConfigRegistry-3.0")
 
 NS[1]:SetPixelMult()
 NS[1].userGUID = UnitGUID("player")

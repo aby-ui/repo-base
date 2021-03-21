@@ -4,6 +4,21 @@ local DBT = DBT
 local BarSetupPanel = DBM_GUI.Cat_Timers:CreateNewPanel(L.Panel_Appearance, "option")
 
 local BarSetup = BarSetupPanel:CreateArea(L.AreaTitle_BarSetup)
+local movemebutton = BarSetup:CreateButton(L.MoveMe, 100, 16)
+movemebutton:SetPoint("TOPRIGHT", BarSetup.frame, "TOPRIGHT", -2, -4)
+movemebutton:SetNormalFontObject(GameFontNormalSmall)
+movemebutton:SetHighlightFontObject(GameFontNormalSmall)
+movemebutton:SetScript("OnClick", function()
+	DBM.Bars:ShowMovableBar()
+end)
+
+local testmebutton = BarSetup:CreateButton(L.Button_TestBars, 100, 16)
+testmebutton:SetPoint("BOTTOMRIGHT", BarSetup.frame, "BOTTOMRIGHT", -2, 4)
+testmebutton:SetNormalFontObject(GameFontNormalSmall)
+testmebutton:SetHighlightFontObject(GameFontNormalSmall)
+testmebutton:SetScript("OnClick", function()
+	DBM:DemoMode()
+end)
 
 local color1 = BarSetup:CreateColorSelect(64)
 local color2 = BarSetup:CreateColorSelect(64)
@@ -237,7 +252,7 @@ DisableBarFade.myheight = 50 -- Extra padding because right buttons are offset f
 --[[
 Temporarily disabled while skinning system is being worked on.
 local skins = {}
-for id, skin in pairs(DBM.Bars:GetSkins()) do
+for id, skin in pairs(DBT:GetSkins()) do
 	table.insert(skins, {
 		text	= skin.name,
 		value	= id
@@ -245,8 +260,7 @@ for id, skin in pairs(DBM.Bars:GetSkins()) do
 end
 if #skins > 1 then
 	local BarSkin = BarSetup:CreateDropdown(L.BarSkin, skins, "DBT", "Skin", function(value)
-		DBM.Bars:SetOption("Skin", value)
-		DBM.Bars:SetSkin(value)
+		DBT:SetSkin(value)
 	end, 210)
 	BarSkin:SetPoint("TOPLEFT", DisableBarFade, "BOTTOMLEFT", -20, -10)
 	BarSkin.myheight = 45

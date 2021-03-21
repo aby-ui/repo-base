@@ -95,8 +95,8 @@ function historico:adicionar_overall (tabela)
 	
 	tinsert (_detalhes.tabela_overall.segments_added, 1, {name = combatName, elapsed = combatTime, clock = this_clock, type = combatType})
 
-	if (#_detalhes.tabela_overall.segments_added > 30) then
-		tremove (_detalhes.tabela_overall.segments_added, 31)
+	if (#_detalhes.tabela_overall.segments_added > 40) then
+		tremove (_detalhes.tabela_overall.segments_added, 41)
 	end
 	
 	if (_detalhes.debug) then

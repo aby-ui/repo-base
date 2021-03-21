@@ -105,6 +105,9 @@ E.L_LAYOUT = {
 	["horizontal"] = L["Horizontal"],
 	["vertical"] = L["Vertical"],
 	["doubleRow"] = L["Use Double Row"],
+	["doubleColumn"] = L["Use Double Column"],
+	["tripleRow"] = L["Use Triple Row"],
+	["tripleColumn"] = L["Use Triple Column"],
 }
 
 E.L_ALIGN = {
@@ -132,10 +135,12 @@ E.L_PRIORITY = {
 	["cc"] = L["Crowd Control"],
 	["disarm"] = DISARMROOTSILENCE,
 	["immunity"] = L["Immunity"],
+	["externalDefensive"] = L["External Defensive"],
 	["defensive"] = L["Defensive"],
 	["raidDefensive"] = L["Raid Defensive"],
 	["offensive"] = L["Offensive"],
 	["counterCC"] = L["Counter CC"],
+	["raidMovement"] = L["Raid Movement"],
 	["other"] = OTHER,
 }
 
@@ -150,10 +155,12 @@ E.L_GLOW_ATLAS ={
 
 E.L_HIGHLIGHTS = {
 	["immunity"] = L["Immunity"],
+	["externalDefensive"] = L["External Defensive"],
 	["defensive"] = L["Defensive"],
 	["raidDefensive"] = L["Raid Defensive"],
 	["offensive"] = L["Offensive"],
 	["counterCC"] = L["Counter CC"],
+	["raidMovement"] = L["Raid Movement"],
 	["other"] = OTHER,
 }
 
@@ -269,8 +276,9 @@ E.HEX_C = {
 }
 
 -- tree/tab maroon  0.412, 0.0, 0.043
--- checkbox green   0.008, 0.725, 0.008
+-- checkbox maroon  0.536, 0.0, 0.056
 -- checkbox red     0.725, 0.008, 0.008
+-- checkbox green   0.008, 0.725, 0.008
 -- checkbox yellow  0.8, 0.624, 0
 -- flash btn green  0, 0.6, 0.4
 -- flash btn red    0.725, 0.008, 0.008
