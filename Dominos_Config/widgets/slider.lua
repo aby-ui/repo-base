@@ -97,7 +97,7 @@ do
 		editBox:SetScript('OnEditFocusLost', editBox_OnEditFocusLost)
 		editBox:SetScript('OnEscapePressed', editBox_OnEscapePressed)
 
-		-- clear focus whenenter is pressed (minor quality of life preference)
+		-- clear focus when enter is pressed (minor quality of life preference)
 		editBox:SetScript('OnEnterPressed', editBox_OnEscapePressed)
 		editBox:SetScript('OnTabPressed', editBox_OnTabPressed)
 
@@ -217,8 +217,15 @@ do
 	end
 
 	function Slider:UpdateText(value)
-		self.valText:SetText(self.format and format(self.format, value or self:GetSavedValue()) or
-								 (value or self:GetSavedValue()))
+		value = value or self:GetSavedValue()
+
+		if type(self.format) == "function" then
+			self.valText:SetText(self:format(value))
+		elseif type(self.format) == "string" then
+			self.valText:SetText(self.format:format(value))
+		else
+			self.valText:SetText(value)
+		end
 	end
 
 	function Slider:SetEnabled(enable)

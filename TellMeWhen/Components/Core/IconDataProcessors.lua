@@ -506,6 +506,22 @@ do
 					return durationA*order < durationB*order
 				end
 			end)
+			
+			IconPosition_Sortable:RegisterIconSorter("start", {
+				DefaultOrder = 1,
+				[1] = L["UIPANEL_GROUPSORT_start_1"],
+				[-1] = L["UIPANEL_GROUPSORT_start_-1"],
+			}, function(iconA, iconB, attributesA, attributesB, order)
+				local startA = attributesA.start
+				local startB = attributesB.start
+
+				startA = iconA:OnGCD(attributesA.duration) and 0 or startA
+				startB = iconB:OnGCD(attributesB.duration) and 0 or startB
+
+				if startA ~= startB then
+					return startA*order < startB*order
+				end
+			end)
 
 			IconPosition_Sortable:RegisterIconSortPreset(L["UIPANEL_GROUP_QUICKSORT_DURATION"], {
 				{ Method = "shown", Order = -1 },

@@ -18,6 +18,7 @@ function TalkingHeadBar:GetDefaults()
         point = 'BOTTOM',
         x = 0,
         y = 74,
+        displayLayer = 'LOW',
         showInPetBattleUI = true,
         showInOverrideUI = true
     }
@@ -25,10 +26,6 @@ end
 
 function TalkingHeadBar:GetDisplayName()
 	return GetLocale():sub(1,2)=='zh' and '剧情对话' or 'Talking Heads'
-end
-
-function TalkingHeadBar:GetDisplayLevel()
-    return 'LOW'
 end
 
 function TalkingHeadBar:Layout()
@@ -73,8 +70,9 @@ function TalkingHeadBar:AddLayoutPanel(menu)
 		set = function(_, enable) panel.owner:SetMuteSounds(enable) end
 	}
 
-    panel.scaleSlider = panel:NewScaleSlider()
-    panel.paddingSlider = panel:NewPaddingSlider()
+    panel:AddBasicLayoutOptions()
+
+    return panel
 end
 
 function TalkingHeadBar:SetMuteSounds(enable)
@@ -96,7 +94,12 @@ local TalkingHeadBarModule = Dominos:NewModule('TalkingHeadBar', 'AceEvent-3.0')
 
 function TalkingHeadBarModule:Load()
     self.frame = TalkingHeadBar:New()
-    self:RegisterEvent("ADDON_LOADED")
+
+    if IsAddOnLoaded("Blizzard_TalkingHeadUI") then
+        self:OnTalkingHeadUILoaded()
+    elseif not self.loaded then
+        self:RegisterEvent("ADDON_LOADED")
+    end
 end
 
 function TalkingHeadBarModule:Unload()
@@ -114,6 +117,10 @@ function TalkingHeadBarModule:ADDON_LOADED(event, addon)
 end
 
 function TalkingHeadBarModule:OnTalkingHeadUILoaded()
+    if self.loaded then
+        return
+    end
+
     TalkingHeadFrame.ignoreFramePositionManager = true
 
     -- OnShow/OnHide call UpdateManagedFramePositions on the blizzard end so
@@ -135,8 +142,6 @@ function TalkingHeadBarModule:OnTalkingHeadUILoaded()
     hooksecurefunc(AlertFrame, 'UpdateAnchors', function()
         self:OnAlertFrameAnchorsUpdated()
     end)
-
-    self.frame:RepositionTalkingHeadFrame()
 end
 
 -- reposition the talking head frame when it moves

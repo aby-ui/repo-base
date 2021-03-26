@@ -1056,7 +1056,7 @@ TMW:RegisterCallback("TMW_CNDT_GROUP_DRAWGROUP", function(event, CndtGroup, cond
 		CndtGroup.BitFlagsSelectedText:Show()
 
 		CndtGroup.BitFlagsCheck:SetChecked(conditionSettings.Checked)
-		CndtGroup.BitFlags:SetText(conditionData.bitFlagTitle)
+		CndtGroup.BitFlags:SetText(conditionData.bitFlagTitle or L["CONDITIONPANEL_BITFLAGS_CHOOSEMENU_VALUES"])
 
 		CndtGroup.BitFlags:ClearAllPoints()
 		if CndtGroup.Unit:IsShown() then

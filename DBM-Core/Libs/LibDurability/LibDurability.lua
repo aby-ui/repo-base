@@ -1,5 +1,5 @@
 
-local LD = LibStub:NewLibrary("LibDurability", 1)
+local LD = LibStub:NewLibrary("LibDurability", 2)
 if not LD then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -38,8 +38,12 @@ local function GetDurability()
 			end
 		end
 	end
-	local percent = curTotal / maxTotal * 100
-	return percent, broken
+	if maxTotal == 0 then
+		return 0, 0
+	else
+		local percent = curTotal / maxTotal * 100
+		return percent, broken
+	end
 end
 LD.GetDurability = GetDurability
 

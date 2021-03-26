@@ -208,7 +208,17 @@ function DEATH_ANNOUNCE_CLEU(...)
         if DEATH_ANNOUNCE_IMPORTANT_SPELLS[spellId] then
             if sourceGUID == playerGUID and U1GetCfgValue and U1GetCfgValue("deathannounce/yell_spell") then
                 if destGUID ~= playerGUID then
-                    if IsInInstance() then SendChatMessage(string.format("%s -> %s", GetSpellLink(spellId), destName), "YELL") end
+                    if IsInInstance() then
+                        local config = DEATH_ANNOUNCE_IMPORTANT_SPELLS[spellId]
+                        if config == "WHISPER" then config = 1 end
+                        if type(config) == "number" then
+                            for i=1, config do
+                                SendChatMessage(string.format("我给你%s了!", GetSpellLink(spellId)), "WHISPER", nil, destName)
+                            end
+                        else
+                            SendChatMessage(string.format("%s -> %s", GetSpellLink(spellId), destName), "YELL")
+                        end
+                    end
                 end
             else
                 if RaidAlerter_SET and RaidAlerter_SET.Paladin_Intervention then return end

@@ -33,10 +33,10 @@ if wow_classic then
 	return
 end
 
-TELLMEWHEN_VERSION = "9.0.5"
+TELLMEWHEN_VERSION = "9.0.6"
 
 TELLMEWHEN_VERSION_MINOR = ""
-local projectVersion = "9.0.5" -- comes out like "6.2.2-21-g4e91cee"
+local projectVersion = "9.0.6" -- comes out like "6.2.2-21-g4e91cee"
 if projectVersion:find("project%-version") then
 	TELLMEWHEN_VERSION_MINOR = "dev"
 elseif strmatch(projectVersion, "%-%d+%-") then
@@ -44,7 +44,7 @@ elseif strmatch(projectVersion, "%-%d+%-") then
 end
 
 TELLMEWHEN_VERSION_FULL = TELLMEWHEN_VERSION .. " " .. TELLMEWHEN_VERSION_MINOR
-TELLMEWHEN_VERSIONNUMBER = 90501 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
+TELLMEWHEN_VERSIONNUMBER = 90601 -- NEVER DECREASE THIS NUMBER (duh?).  IT IS ALSO ONLY INTERNAL (for versioning of)
 
 TELLMEWHEN_FORCECHANGELOG = 86005 -- if the user hasn't seen the changelog until at least this version, show it to them.
 
@@ -3127,6 +3127,14 @@ function TMW:SlashCommand(str)
 		else
 			TMW:Print("Bad syntax. Usage: /tmw [enable||disable||toggle] [profile||global] groupID iconID")
 		end
+	elseif cmd == "counter" then
+		local name, operation, value = arg2, arg3, tonumber(arg4)
+		if value == nil or arg2 == nil or arg3 == nil then
+			TMW:Print("Usage: /tmw counter counter-name [+||-||/||*||=] number. E.g. '/tmw counter casts + 1'")
+			return
+		end
+		TMW:ChangeCounter(name, operation, value)
+
 	elseif cmd == "cpu" then
 		if arg2 == "reset" then
 			TMW:CpuProfileReset()

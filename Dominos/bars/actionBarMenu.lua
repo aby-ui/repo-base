@@ -81,8 +81,7 @@ function Addon.ActionBar:OnCreateMenu(menu)
     local function addLayoutPanel()
         local panel = menu:NewPanel(L.Layout)
 
-        panel.sizeSlizer =
-            panel:NewSlider {
+        panel.sizeSlizer = panel:NewSlider {
             name = L.Size,
             min = 1,
             max = function()

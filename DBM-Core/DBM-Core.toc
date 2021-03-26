@@ -21,7 +21,7 @@
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
-## Version: 9.0.23-9-g20bb68a
+## Version: 9.0.24-7-ged88431
 
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml

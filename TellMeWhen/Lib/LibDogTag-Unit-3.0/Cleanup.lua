@@ -1,6 +1,6 @@
 local DOGTAG_MAJOR_VERSION = "LibDogTag-3.0"
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -17,9 +17,11 @@ if not DogTag_Unit then
 	return
 end
 
-local DogTag = LibStub:GetLibrary(DOGTAG_MAJOR_VERSION)
+local DogTag, DogTag_Minor = LibStub:GetLibrary(DOGTAG_MAJOR_VERSION)
 if not DogTag then
 	error(("Cannot load %s without first loading %s"):format(MAJOR_VERSION, DOGTAG_MAJOR_VERSION))
+elseif DogTag_Minor < 20210319000000 then
+	error(("%s requires a newer version of %s"):format(MAJOR_VERSION, DOGTAG_MAJOR_VERSION))
 end
 
 if oldMinor then

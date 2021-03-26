@@ -1,6 +1,9 @@
 local E, L, C = select(2, ...):unpack()
 
 E.changelog = [=[
+v2.5.21
+Bug Fixes - Ignorance is Bliss
+
 v2.5.20 - Toc ver 90005
 Bug Fixes
     ADDON_ACTION_BLOCKED error from taint fixed.

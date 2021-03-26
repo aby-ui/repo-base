@@ -6,9 +6,9 @@
 local _, Addon = ...
 local L = _G.LibStub("AceLocale-3.0"):GetLocale(Addon:GetParent():GetName())
 
-local GRID_SIZE_MINIMUM = 2
+local GRID_SIZE_MINIMUM = 1
 local GRID_SIZE_MAXIMUM = 128
-local GRID_SIZE_STEP = 2
+local GRID_SIZE_STEP = 1
 
 local HelpDialog = _G.CreateFrame('Frame', nil, nil, _G.BackdropTemplateMixin and 'BackdropTemplate')
 

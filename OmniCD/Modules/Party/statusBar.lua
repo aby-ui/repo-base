@@ -118,12 +118,14 @@ local function CastingBarFrame_OnLoad(self, key, icon)
 		self.Spark.offsetY = offsetY;
 	end
 
+	-- more problems sharing frames with int and raid
 	self.isSparkEnabled = not db.hideSpark
+	self.Spark:SetShown(self.isSparkEnabled)
+	self.nextTextUpdate = 0
 
 	if P.groupInfo[icon.guid].active[icon.spellID] then -- [67] [81]
 		self.nextTextUpdate = 0
 		P.OmniCDCastingBarFrame_OnEvent(self, E.db.extraBars[key].reverseFill and  "UNIT_SPELLCAST_CHANNEL_START" or "UNIT_SPELLCAST_START")
-		self.Spark:SetShown(self.isSparkEnabled)
 	end
 end
 
@@ -230,17 +232,21 @@ end
 
 local SECONDS_PER_MIN = 60
 
-local function TimeFormat(value)
+local function TimeFormat(value) -- TODO: temp fix
 	if value > SECONDS_PER_MIN then
 		if value <= P.mmss then -- MM:SS
-			local sec = value%SECONDS_PER_MIN
-			local nextTextUpdate = sec%1 + 0.01
-			return format("%d:%02d", floor(value/SECONDS_PER_MIN), ceil(sec)), nextTextUpdate
+			local secRemaining = value%SECONDS_PER_MIN
+			local sec = ceil(secRemaining)
+			if sec == SECONDS_PER_MIN then
+				return format("%d:%02d", floor(value/SECONDS_PER_MIN) + 1, 0), secRemaining%1
+			else
+				return format("%d:%02d", floor(value/SECONDS_PER_MIN), sec), secRemaining%1
+			end
 		else -- MM
-			return format("%dm", ceil(value/SECONDS_PER_MIN)), value - P.mmss + 0.01
+			return format("%dm", ceil(value/SECONDS_PER_MIN)), min(value%SECONDS_PER_MIN, value - P.mmss)
 		end
 	else
-		return ceil(value), value%1 + 0.01
+		return ceil(value), value%1
 	end
 end
 

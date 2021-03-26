@@ -293,11 +293,22 @@ function Postal_BlackBook:OnChar(editbox, ...)
 	if not newname and db.AutoCompleteFriends then
 		local numBNetTotal, numBNetOnline = BNGetNumFriends()
 		for i = 1, numBNetOnline do
-			local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
-			if (accountInfo.gameAccountInfo.characterName and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo) and accountInfo.gameAccountInfo.wowProjectID == 1 ) then
-				if strfind(strupper(accountInfo.gameAccountInfo.characterName), text, 1, 1) == 1 then
-					newname = accountInfo.gameAccountInfo.characterName
-					break
+			if Postal.WOWRetail then
+				local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
+				if (accountInfo.gameAccountInfo.characterName and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and CanCooperateWithGameAccount(accountInfo) and accountInfo.gameAccountInfo.wowProjectID == 1 ) then
+					if strfind(strupper(accountInfo.gameAccountInfo.characterName), text, 1, 1) == 1 then
+						newname = accountInfo.gameAccountInfo.characterName
+						break
+					end
+				end
+			end
+			if Postal.WOWClassic then
+				local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
+				if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(toonID)) then
+					if strfind(strupper(toonName), text, 1, 1) == 1 then
+						newname = toonName
+						break
+					end
 				end
 			end
 		end

@@ -26,6 +26,12 @@ ButtonBar:Extend(
     end
 )
 
+function ButtonBar:OnCreateMenu(menu)
+    menu:AddLayoutPanel()
+    menu:AddFadingPanel()
+    menu:AddAdvancedPanel()
+end
+
 function ButtonBar:AcquireButton(index)
     error(("Bar %s has not implemented Acquire Button"):format(self.id), 2)
 end

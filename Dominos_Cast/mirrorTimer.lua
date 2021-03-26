@@ -1,6 +1,8 @@
 local _, Addon = ...
 local Dominos = LibStub('AceAddon-3.0'):GetAddon('Dominos')
 local LSM = LibStub('LibSharedMedia-3.0')
+local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
+
 local GetMirrorTimerProgress = _G.GetMirrorTimerProgress
 
 local MirrorTimer = Dominos:CreateClass('Frame', Dominos.Frame)
@@ -20,7 +22,6 @@ end
 function MirrorTimer:OnCreate()
     MirrorTimer.proto.OnCreate(self)
 
-    self:SetFrameStrata('HIGH')
     self:SetScript('OnEvent', self.OnEvent)
 
     self.props = {}
@@ -59,6 +60,7 @@ function MirrorTimer:GetDefaults()
         h = 26,
         font = LSM:GetDefault(LSM.MediaType.FONT),
         texture = LSM:GetDefault(LSM.MediaType.STATUSBAR),
+        displayLayer = 'HIGH',
         display = {
             label = true,
             time = false,
@@ -69,13 +71,7 @@ function MirrorTimer:GetDefaults()
 end
 
 function MirrorTimer:GetDisplayName()
-    local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-CastBar")
-
     return L.MirrorTimerDisplayName:format(self.timerID)
-end
-
-function MirrorTimer:GetDisplayLevel()
-	return 'HIGH'
 end
 
 ---@param event string
@@ -269,6 +265,8 @@ function MirrorTimer:OnCreateMenu(menu)
     self:AddLayoutPanel(menu)
     self:AddTexturePanel(menu)
     self:AddFontPanel(menu)
+	menu:AddFadingPanel()
+	menu:AddAdvancedPanel(true)
 
     self.menu = menu
 
@@ -291,12 +289,10 @@ end
 function MirrorTimer:AddLayoutPanel(menu)
     local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
 
-    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-
     for i, part in pairs({'label', 'time', 'border'}) do
         panel:NewCheckButton(
             {
-                name = l['Display_' .. part],
+                name = L['Display_' .. part],
                 get = function()
                     return panel.owner:Displaying(part)
                 end,
@@ -310,7 +306,7 @@ function MirrorTimer:AddLayoutPanel(menu)
     panel.widthSlider =
         panel:NewSlider(
         {
-            name = l.Width,
+            name = L.Width,
             min = 1,
             max = function()
                 return math.ceil(_G.UIParent:GetWidth() / panel.owner:GetScale())
@@ -327,7 +323,7 @@ function MirrorTimer:AddLayoutPanel(menu)
     panel.heightSlider =
         panel:NewSlider(
         {
-            name = l.Height,
+            name = L.Height,
             min = 1,
             max = function()
                 return math.ceil(_G.UIParent:GetHeight() / panel.owner:GetScale())
@@ -341,16 +337,12 @@ function MirrorTimer:AddLayoutPanel(menu)
         }
     )
 
-    panel.paddingSlider = panel:NewPaddingSlider()
-    panel.scaleSlider = panel:NewScaleSlider()
-    panel.opacitySlider = panel:NewOpacitySlider()
-    panel.fadeSlider = panel:NewFadeSlider()
+    panel:AddBasicLayoutOptions()
 end
 
 ---@param menu table
 function MirrorTimer:AddFontPanel(menu)
-    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-    local panel = menu:NewPanel(l.Font)
+    local panel = menu:NewPanel(L.Font)
 
     panel.fontSelector =
         Dominos.Options.FontSelector:New(
@@ -368,8 +360,7 @@ end
 
 ---@param menu table
 function MirrorTimer:AddTexturePanel(menu)
-    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
-    local panel = menu:NewPanel(l.Texture)
+    local panel = menu:NewPanel(L.Texture)
 
     panel.textureSelector =
         Dominos.Options.TextureSelector:New(

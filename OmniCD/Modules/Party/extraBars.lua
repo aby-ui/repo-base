@@ -441,7 +441,8 @@ function P:SetExStatusBarColor(icon, key)
 	-- inactive bar
 	local db_bar = db.barColors.inactiveColor
 	local alpha = db.useIconAlpha and 1 or db_bar.a
-	if P.groupInfo[icon.guid].preActiveIcons[icon.spellID] then -- [81]
+	local spellID = icon.spellID
+	if P.groupInfo[icon.guid].preActiveIcons[spellID] and spellID ~= 1022 and spellID ~= 204018 then -- [81] filter BOP/BOS
 		r, g, b, a = 0.7, 0.7, 0.7, alpha -- [A]
 	elseif db.barColors.useClassColor.inactive then
 		r, g, b, a = c.r, c.g, c.b, alpha

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.6
+Version 2.4.9.7
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.6";
+local VERSION = "2.4.9.7";
 
 local ADDON_NAME, T = ...;
 
@@ -98,9 +98,9 @@ T._tocversion = tocversion;
 T.HHTD = LibStub("AceAddon-3.0"):NewAddon("H.H.T.D.", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0");
 local HHTD = T.HHTD;
 
---[===[@debug@
+--[==[@debug@
 _HHTD_DEBUG = HHTD;
---@end-debug@]===]
+--@end-debug@]==]
 
 HHTD.Localized_Text = LibStub("AceLocale-3.0"):GetLocale("H.H.T.D.", true);
 
@@ -257,11 +257,11 @@ function HHTD:HHTD_HEALER_BORN(selfevent, isFriend, healer)
     HHTD.Registry_by_GUID[isFriend][healer.guid] = healer;
     HHTD.Registry_by_Name[isFriend][healer.name] = healer;
 
-    --[===[@alpha@
+    --[=[@alpha@
     if InCombatLockdown() then
         self:AddDelayedFunctionCall('test', self.Debug, self, INFO2, "After combat lock down test");
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
     -- if the player is human and friendly and is part of our group, set his/her role to HEALER
     if self.db.global.SetFriendlyHealersRole and not HHTD_C.WOWC then
@@ -344,14 +344,14 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         [116849] = "MONK", -- Life Cocoon
         -- [119611] = "MONK", -- Renewing mist
 
-        --[===[@debug@
+        --[==[@debug@
         -- test bad spell mitigation
         -- those are not healer specific
         -- [031842] = "PALADIN", -- Avenging Wrath - removed in WOW8
         [019750] = "PALADIN", -- Flash of light
         [002061] = "PRIEST",  -- Flash Heal
         -- [005185] = "DRUID",   -- Healing Touch - removed in WOW8
-        --@end-debug@]===]
+        --@end-debug@]==]
     };
 
     if HHTD_C.WOWC then
@@ -554,7 +554,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.6,', L["RELEASE_DATE"], '2020-10-18T22:18:16Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.7,', L["RELEASE_DATE"], '2021-03-20T23:32:54Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -572,7 +572,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.6 -- ' .. L["RELEASE_DATE"] .. ' 2020-10-18T22:18:16Z',
+                        name = L["VERSION"] .. ' 2.4.9.7 -- ' .. L["RELEASE_DATE"] .. ' 2021-03-20T23:32:54Z',
                         order = 1,
                     },
                     Pve = {
@@ -829,10 +829,10 @@ local DEFAULT__CONFIGURATION = {
         Enabled = true,
         Debug = false,
         DebugLevel = 1,
-        --[===[@alpha@
+        --[=[@alpha@
         Debug = true,
         DebugLevel = 2,
-        --@end-alpha@]===]
+        --@end-alpha@]=]
         Log = false,
         Pve = true,
         PvpHSpecsOnly = false,
@@ -1173,9 +1173,9 @@ do
     };
 
     function HHTD:UPDATE_BATTLEFIELD_SCORE()
-        --[===[@alpha@
+        --[=[@alpha@
         self:Debug(INFO, "UPDATE_BATTLEFIELD_SCORE")
-        --@end-alpha@]===]
+        --@end-alpha@]=]
 
         WIPRBSD[1] = false
     end
@@ -1313,9 +1313,9 @@ do
                 -- to happen randomly but quite rarely. Letting this for
                 -- unpackaged debug mode only.
 
-                --[===[@debug@
+                --[==[@debug@
                 HHTD:Debug(ERROR, "Still waiting for UPDATE_BATTLEFIELD_SCORE after 30s...")
-                --@end-debug@]===]
+                --@end-debug@]==]
             end
 
             return nil
@@ -1348,9 +1348,9 @@ do
                 -- special case for DK's Dark Simulacrum
                 -- From some debug reports, Hunters seem to have a similar ability...
                 if classTag == "DEATHKNIGHT" or classTag == "HUNTER" then
-                    --[===[@debug@
+                    --[==[@debug@
                     HHTD:Debug(ERROR, "Dark Simulacrum-like detected for", PlayerName, classTag)
-                    --@end-debug@]===]
+                    --@end-debug@]==]
                     return false
                 end
 
@@ -1505,9 +1505,9 @@ do
 
             if not HHTD.Registry_by_GUID[isFriend][guid] then
                 -- Dispatch the news
-                --[===[@debug@
+                --[==[@debug@
                 HHTD:Debug(INFO, "Healer detected:", sourceName, 'uhmhap:', configRef.UHMHAP, 'healdone:', record.healDone, 'threshold:', HHTD.HealThreshold);
-                --@end-debug@]===]
+                --@end-debug@]==]
                 HHTD:HHTD_HEALER_BORN("HHTD_HEALER_BORN", isFriend, record); -- make sure ours is the first to be called
                 HHTD:SendMessage("HHTD_HEALER_BORN", isFriend, record);
             end
@@ -1600,11 +1600,11 @@ do
     -- http://www.wowpedia.org/API_COMBAT_LOG_EVENT
     function HHTD:COMBAT_LOG_EVENT_UNFILTERED(e, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, _spellID, spellNAME, _spellSCHOOL, _amount)
 
-        --[===[@debug@
+        --[==[@debug@
         --if hideCaster then
            --self:Debug(ERROR, e, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, _spellID, spellNAME, _spellSCHOOL, _amount);
         --end
-        --@end-debug@]===]
+        --@end-debug@]==]
 
         if HHTD_C.WOW8 and event == nil then
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, _spellID, spellNAME, _spellSCHOOL, _amount = CombatLogGetCurrentEventInfo()
@@ -1616,9 +1616,9 @@ do
 
             if event == "UNIT_DIED" and self.Friendly_Healers_Attacked_by_GUID[destGUID] then
                 self.Friendly_Healers_Attacked_by_GUID[destGUID] = nil;
-        --[===[@debug@
+        --[==[@debug@
             self:Debug(ERROR, e, timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, _spellID, spellNAME, _spellSCHOOL, _amount);
-        --@end-debug@]===]
+        --@end-debug@]==]
             end
 
             return
@@ -1628,13 +1628,13 @@ do
         -- Escape if bad target (not human nor npc) {{{
         -- Healers are only those caring for other players or NPC
         if band(destFlags, ACCEPTABLE_TARGETS) == 0 then
-            --[===[@debug@
+            --[==[@debug@
             --[[
             if self.db.global.Debug and event:sub(-5) == "_HEAL" and sourceGUID ~= destGUID then
                 self:Debug(INFO2, "Bad target", sourceName, destName);
             end
             --]]
-            --@end-debug@]===]
+            --@end-debug@]==]
             return;
         end -- }}}
 
@@ -1705,11 +1705,11 @@ do
                         lastAttack_amount_lastAlert[1] = prTime + (_amount / self.ProtectDamageThreshold > .5 and 5 or 0)
                     end
 
-                    --[===[@debug@
+                    --[==[@debug@
                     if _amount / self.ProtectDamageThreshold > .5 then
                         self:Debug(WARNING, "amount is huge:", _amount, _amount / self.ProtectDamageThreshold > .5 and 5 or 0);
                     end
-                    --@end-debug@]===]
+                    --@end-debug@]==]
 
                     -- last alert was more than 30s ago and threshold is reached
                     if prTime - lastAttack_amount_lastAlert[3] > 30 and lastAttack_amount_lastAlert[2] > self.ProtectDamageThreshold then
@@ -1718,9 +1718,9 @@ do
                         lastAttack_amount_lastAlert[3] = GetTime();
                     end
 
-                    --[===[@debug@
+                    --[==[@debug@
                     self:Debug(WARNING, "amount:", _amount, lastAttack_amount_lastAlert[2], event, prTime - lastAttack_amount_lastAlert[3] > 30, lastAttack_amount_lastAlert[2] > self.ProtectDamageThreshold, _amount / self.ProtectDamageThreshold > .5 and 5 or 0);
-                    --@end-debug@]===]
+                    --@end-debug@]==]
 
                 end
             end
@@ -1744,9 +1744,9 @@ do
 
         -- Escape if Source_Is_Human and scanning for pure healing specs and the spell doesn't match and the healer is not known as a true healer {{{
         if Source_Is_Human and (configRef.PvpHSpecsOnly and not HHTD_C.Healers_Only_Spells_ByName[spellNAME] and (not registered or not registered.isTrueHeal)) then
-            --[===[@debug@
+            --[==[@debug@
             --self:Debug(INFO2, "Spell", spellNAME, "is not a healer' spell");
-            --@end-debug@]===]
+            --@end-debug@]==]
             return;
         end -- }}}
 
@@ -1759,11 +1759,11 @@ do
 
         -- Esacpe if it's a heal spell toward a unit hostile to the source
         if isHealSpell and ( Source_Is_Friendly and band(destFlags, HOSTILE)~=0 or not Source_Is_Friendly and band(destFlags, FRIENDLY)~=0 ) then
-            --[===[@debug@
+            --[==[@debug@
             self:Debug(INFO2, "Spell", spellNAME, "source and destination awkwardness", sourceName, destName,
                 (Source_Is_Friendly and band(destFlags, HOSTILE)),
                 (not Source_Is_Friendly and band(destFlags, FRIENDLY)));
-            --@end-debug@]===]
+            --@end-debug@]==]
             return;
         end
 
@@ -1795,9 +1795,9 @@ do
      local Time = GetTime();
 
      local Registry_by_GUID = HHTD.Registry_by_GUID;
-     --[===[@debug@
+     --[==[@debug@
      --self:Debug(INFO2, "cleaning...");
-     --@end-debug@]===]
+     --@end-debug@]==]
 
      -- clean attacked healers {{{
      -- should also be cleaned when such healer leaves combat -- no event for those...

@@ -78,6 +78,8 @@ function OverlayUI:OnEnable()
     ParentAddon.RegisterCallback(self, 'CONFIG_MODE_DISABLED')
     ParentAddon.RegisterCallback(self, 'LAYOUT_UNLOADED')
     ParentAddon.RegisterCallback(self, 'LAYOUT_LOADED')
+    ParentAddon.RegisterCallback(self, 'BAR_DISPLAY_LAYER_UPDATED', 'OnBarDisplayLevelChanged')
+    ParentAddon.RegisterCallback(self, 'BAR_DISPLAY_LEVEL_UPDATED', 'OnBarDisplayLevelChanged')
 
     self:SetVisible(not (ParentAddon:Locked() or _G.InCombatLockdown()))
 end
@@ -100,6 +102,18 @@ end
 function OverlayUI:OnFadeOutFinished()
     self.frame:Hide()
     self:HideDragFrames()
+end
+
+function OverlayUI:OnBarDisplayLevelChanged(msg, bar)
+    local activeDragFrames = self.activeDragFrames
+
+    if activeDragFrames then
+        for i = #activeDragFrames, 1, -1 do
+            if activeDragFrames[i].owner == bar then
+                activeDragFrames[i]:UpdateFrameLevel()
+            end
+        end
+    end
 end
 
 function OverlayUI:CONFIG_MODE_ENABLED()

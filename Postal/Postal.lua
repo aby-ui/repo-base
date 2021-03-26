@@ -62,6 +62,9 @@ local _G = getfenv(0)
 local t = {}
 Postal.keepFreeOptions = {0, 1, 2, 3, 5, 10, 15, 20, 25, 30}
 
+Postal.WOWClassic = false
+Postal.WOWRetail = false
+
 -- Use a common frame and setup some common functions for the Postal dropdown menus
 local Postal_DropDownMenu = CreateFrame("Frame", "Postal_DropDownMenu")
 Postal_DropDownMenu.displayMode = "MENU"
@@ -98,6 +101,12 @@ end
 function Postal:OnInitialize()
 
 	--print("Postal is Active and Running");
+
+	-- Detect which release of WOW is running and set appropriate flags
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then Postal.WOWRetail = true end
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then Postal.WOWClassic = true end
+--	if Postal.WOWClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Classic", 0.0, 0.69, 0.94) end
+--	if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Retail", 0.0, 0.69, 0.94) end
 
 	-- Version number
 	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end

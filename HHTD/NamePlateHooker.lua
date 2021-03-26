@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.6
+Version 2.4.9.7
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -452,9 +452,9 @@ end
 
 -- }}}
 
---[===[@alpha@
+--[=[@alpha@
 local callbacks_consisistency_check = {};
---@end-alpha@]===]
+--@end-alpha@]=]
 
 
 -- Name Plates CallBacks {{{
@@ -463,7 +463,7 @@ function NPH:LNR_ON_NEW_PLATE(selfevent, plate, data)
     local plateName = data.name;
     local isFriend = (data.reaction == "FRIENDLY") and true or false;
 
-    --[===[@alpha@
+    --[=[@alpha@
 
     if not callbacks_consisistency_check[plate] then
         callbacks_consisistency_check[plate] = 1;
@@ -475,11 +475,11 @@ function NPH:LNR_ON_NEW_PLATE(selfevent, plate, data)
         self:Debug(ERROR, 'LNR_ON_NEW_PLATE() called but no recycling occured for plate, ccc:', callbacks_consisistency_check[plate]);
         error('LNR_ON_NEW_PLATE() called but no recycling occured for _FRIENDLY_ plate' .. callbacks_consisistency_check[plate]);
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
-    --[===[@debug@
+    --[==[@debug@
     -- self:Debug(INFO2, "new plate LNP:IsTarget()?|cff00ff00", LNP:IsTarget(plate) , "|rname:", plateName, 'isFriend?', isFriend, 'alpha:', plate:GetAlpha(),'plate.alpha:', plate.alpha, "plate.unit.alpha:", plate.unit and plate.unit.alpha or nil);
-    --@end-debug@]===]
+    --@end-debug@]==]
 
     -- test for uniqueness of the nameplate
     if not Plate_Name_Count[plateName] then
@@ -498,7 +498,7 @@ function NPH:LNR_ON_NEW_PLATE(selfevent, plate, data)
         if not self.db.global.sPve or HHTD.Registry_by_GUID[isFriend][data.GUID] then
             self:AddCrossToPlate(plate, isFriend, plateName, data.GUID, HHTD.Registry_by_Name[isFriend][plateName]);
         end
-        --[===[@alpha@
+        --[=[@alpha@
     else -- it's not a healer
         local plateAdditions = plate.HHTD and plate.HHTD.NPH;
 
@@ -510,33 +510,33 @@ function NPH:LNR_ON_NEW_PLATE(selfevent, plate, data)
             --  New_plate fires before recycle
             --  HideCross fails
         end
-        --@end-alpha@]===]
+        --@end-alpha@]=]
     end
 end
 
 function NPH:LNR_ON_RECYCLE_PLATE(selfevent, plate, data)
 
    --x if LNP.fakePlate[plate] then
-        --[===[@debug@
+        --[==[@debug@
         --self:Debug(INFO2, "LNR_ON_RECYCLE_PLATE(): unused frame received for:", self:GetPlateName(plate));
-        --@end-debug@]===]
+        --@end-debug@]==]
       --x  return;
     --x end
 
     local plateName = data.name;
 
 
-    --[===[@alpha@
+    --[=[@alpha@
     if not callbacks_consisistency_check[plate] then
         callbacks_consisistency_check[plate] = 0;
     else
         callbacks_consisistency_check[plate] = callbacks_consisistency_check[plate] - 1;
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
-    --[===[@debug@
+    --[==[@debug@
     -- self:Debug(INFO, "LNR_ON_RECYCLE_PLATE():", plateName);
-    --@end-debug@]===]
+    --@end-debug@]==]
 
     -- unfortunately a plate can change of faction without being hidden first (if a unit gets mind controlled)
     -- so we have to check both sides
@@ -678,12 +678,12 @@ do
     end
 
     local function SetRank ()  -- ONCE
-        --[===[@alpha@
+        --[=[@alpha@
         assert(PlateAdditions, 'PlateAdditions is not defined'); -- to diagnose issue repoted on 2012-09-07
         assert(PlateAdditions.rankFont, "rankFont is invalid"); -- to diagnose issue repoted on 2012-09-07
         assert(PlateAdditions.rankFont.SetText, "rankFont.SetText is invalid"); -- to diagnose issue repoted on 2012-10-17
         assert(IsFriend == true or IsFriend == false, "IsFriend is invalid"); -- to diagnose issue repoted on 2012-09-07
-        --@end-alpha@]===]
+        --@end-alpha@]=]
 
         if NPH.db.global.displayHealerRanks then
             if not Guid then
@@ -766,12 +766,12 @@ do
             return false;
         end
 
-        --[===[@alpha@
+        --[=[@alpha@
         if plateName ~= self:GetPlateName(plate) then
             self:Debug(ERROR, 'AddCrossToPlate(): plateName ~= :GetPlateName(plate):', plateName, '-_-', self:GetPlateName(plate));
             error('AddCrossToPlate(): plateName ~= :GetPlateName(plate)');
         end
-        --@end-alpha@]===]
+        --@end-alpha@]=]
 
         -- export useful data
         IsFriend        = isFriend;
@@ -810,14 +810,14 @@ do
 
         self.DisplayedPlates_byFrameTID[plate] = plate; -- used later to update what was created above
 
-        --[===[@alpha@
+        --[=[@alpha@
         -- IsFriend        = nil;
         -- Guid            = nil;
         -- Plate           = nil;
         -- PlateName       = nil;
         -- PlateAdditions  = nil;
         -- HealerClass     = nil;
-        --@end-alpha@]===]
+        --@end-alpha@]=]
 
     end -- }}}
 
@@ -837,10 +837,10 @@ do
 
         end
 
-        --[===[@alpha@
+        --[=[@alpha@
         PlateAdditions  = nil;
         PlateName       = nil;
-        --@end-alpha@]===]
+        --@end-alpha@]=]
     end
 
     function NPH:UpdateRanks ()
@@ -856,40 +856,40 @@ do
             AdjustTexCoord(PlateAdditions.texture);
         end
 
-        --[===[@alpha@
+        --[=[@alpha@
         IsFriend        = nil;
         Plate           = nil;
         PlateName       = nil;
         PlateAdditions  = nil;
         HealerClass     = nil;
-        --@end-alpha@]===]
+        --@end-alpha@]=]
     end
 
 end
 
 function NPH:HideCrossFromPlate(plate, plateName, caller) -- {{{
 
-    --[===[@alpha@
+    --[=[@alpha@
     if not plate then
         self:Debug(ERROR, "HideCrossFromPlate(), plate is not defined");
         error("'Plate' is not defined");
         return;
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
     local plateAdditions = plate.HHTD and plate.HHTD.NPH;
 
-    --[===[@alpha@
+    --[=[@alpha@
     local testCase1 = false;
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
     if plateAdditions and plateAdditions.IsShown then
 
-        --[===[@alpha@
+        --[=[@alpha@
         if plateName and plateName ~= plateAdditions.plateName then
             testCase1 = true;
         end
-        --@end-alpha@]===]
+        --@end-alpha@]=]
 
         plateAdditions.texture:Hide();
         plateAdditions.rankFont:Hide();
@@ -901,12 +901,12 @@ function NPH:HideCrossFromPlate(plate, plateName, caller) -- {{{
 
     self.DisplayedPlates_byFrameTID[plate] = nil;
 
-    --[===[@alpha@
+    --[=[@alpha@
     if testCase1 then
         self:Debug(ERROR, "plateAdditions.plateName ~= plateName:", plateAdditions.plateName, "-__-",  plateName, 'CALLER:', caller);
         --error("plateAdditions.plateName ~= plateName, caller:" .. caller);
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
 end -- }}}
 

@@ -41,7 +41,7 @@ TMW.IE:RegisterDatabaseDefaults{
 	},
 }
 
-TMW.IE:RegisterUpgrade(90403, {
+TMW.IE:RegisterUpgrade(90601, {
 	locale = function(self, locale)
 		locale.ItemCache = nil
 		locale.XPac_ItemCache = nil
@@ -141,7 +141,7 @@ local function cacheItem(itemID, link)
 	-- LEAVE suffixID alone (makes sure that the name is correct)
 	-- strip out uniqueID (not an important distinction for TMW)
 	-- strip out linkLevel,specializationId
-	link = link:gsub("(item:%d+):%-?%d*:%-?%d*:%-?%d*:%-?%d*:%-?%d*:(%-?%d*):%-?%d*:%-?%d*:%-?%d*", "%1:::::%2::::")
+	link = link:gsub("(item:%d+):%-?%d*:%-?%d*:%-?%d*:%-?%d*:%-?%d*:(%-?%d*):%-?%d*:%-?%d*:%-?%d*", "%1::::::%2:::")
 
 	if link:find("|h%[%]|h") then
 		-- Links that don't have the item name loaded

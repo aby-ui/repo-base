@@ -47,21 +47,6 @@ function VehicleBar:Layout()
     self:TrySetSize(w + pW, h + pH)
 end
 
-function VehicleBar:OnCreateMenu(menu)
-    self:AddLayoutPanel(menu)
-
-    menu:AddFadingPanel()
-    menu:AddAdvancedPanel(true)
-end
-
-function VehicleBar:AddLayoutPanel(menu)
-    local l = LibStub('AceLocale-3.0'):GetLocale('Dominos-Config')
-
-    local panel = menu:NewPanel(l.Layout)
-
-    panel.scaleSlider = panel:NewScaleSlider()
-    panel.paddingSlider = panel:NewPaddingSlider()
-end
 
 -- module
 local VehicleBarModule = Addon:NewModule('VehicleBar', 'AceEvent-3.0')

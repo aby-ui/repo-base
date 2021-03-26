@@ -137,7 +137,7 @@ DogTag:AddCompilationStep("TMW", "finish", function(t, ast, kwargTypes, extraKwa
 			end
 		end
 
-		-- Remove the IsLegitimateUnit check thet makes sure the return from the Unit tag is a valid unit.
+		-- Remove the IsLegitimateUnit check that makes sure the return from the Unit tag is a valid unit.
 		for i = 1, #t do
 			if t[i] == [=[if ]=]
 

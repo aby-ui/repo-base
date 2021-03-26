@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -13,18 +13,10 @@ DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 
 local L = DogTag_Unit.L
 
--- Unfortunatelly there is no way to determine the pair mob/unit who's threat changed,
--- so we just fire Threat event for now to update all tags.
 
--- Fired when mob's threat list changed
-DogTag:AddEventHandler( "Unit", "UNIT_THREAT_LIST_UPDATE", function( event, mobId )
-	DogTag:FireEvent( "Threat" )
-end )
-
--- Fired when unit's threat situation changed, not on raw threat value changes
-DogTag:AddEventHandler( "Unit", "UNIT_THREAT_SITUATION_UPDATE", function( event, unitId )
-	DogTag:FireEvent( "Threat" )
-end )
+-- UNIT_THREAT_LIST_UPDATE fires with the unitID of the hostile unit who's threat info changed.
+-- UNIT_THREAT_SITUATION_UPDATE fires with the unitID of a unit that has just begun or just ceased tanking something.
+local threatEvents = "UNIT_THREAT_LIST_UPDATE#$unit;UNIT_THREAT_SITUATION_UPDATE#$unit;UNIT_THREAT_SITUATION_UPDATE#player"
 
 DogTag:AddTag( "Unit", "IsTanking", {
 	code = function( unit )
@@ -42,7 +34,7 @@ DogTag:AddTag( "Unit", "IsTanking", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "nil;number",
-	events = "Threat",
+	events = threatEvents,
 	doc = L["Return True if you are the primary tank of the enemy unit or if friendly unit is the primary tank of your target."],
 	example = ('[IsTanking] => %q; [IsTanking] => ""'):format(L["True"]),
 	category = L["Threat"]
@@ -64,7 +56,7 @@ DogTag:AddTag( "Unit", "ThreatStatus", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "nil;number",
-	events = "Threat",
+	events = threatEvents,
 	doc = L["Return your threat status for enemy unit or threat status of friendly unit for your target as integer number (3 = securely tanking, 2 = insecurely tanking, 1 = not tanking but higher threat than tank, 0 = not tanking and lower threat than tank)."],
 	example = '[ThreatStatus] => "2"; [ThreatStatus] => ""',
 	category = L["Threat"]
@@ -125,6 +117,7 @@ DogTag:AddTag( "Unit", "UnitThreatStatusColor", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "string;nil",
+	events = threatEvents,
 	doc = L["Return the color or wrap value with the color associated with unit's threat status."],
 	example = '["100%":UnitThreatStatusColor] => "|cffff0000100%|r"; [UnitThreatStatusColor( "50%" )] => "|cffffffff50%"',
 	category = L["Threat"]
@@ -146,7 +139,7 @@ DogTag:AddTag( "Unit", "PercentThreat", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "nil;number",
-	events = "Threat",
+	events = threatEvents,
 	doc = L["Return the current threat that you have against enemy unit or that friendly unit has against your target as a percentage of the amount required to pull aggro, scaled according to the range from the mob."],
 	example = '[PercentThreat] => "50"',
 	category = L["Threat"]
@@ -168,7 +161,7 @@ DogTag:AddTag( "Unit", "RawPercentThreat", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "nil;number",
-	events = "Threat",
+	events = threatEvents,
 	doc = L["Return the current threat that you have against enemy unit or that friendly unit has against your target as a percentage of tank's current threat."],
 	example = '[RawPercentThreat] => "115"',
 	category = L["Threat"]

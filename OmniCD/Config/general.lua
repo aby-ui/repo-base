@@ -261,7 +261,7 @@ local General = {
 									desc = L["Threshold at which the timer transitions from MM to MM:SS format."],
 									order = 1,
 									type = "range",
-									min = 61, max = 300, step = 5,
+									min = 60, max = 300, step = 5,
 								},
 								mmColor = {
 									disabled = true, -- TODO:

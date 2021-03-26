@@ -42,29 +42,35 @@ function Counter:ProcessIconEventSettings(event, eventSettings)
 	return eventSettings.Counter ~= ""
 end
 
+function TMW:ChangeCounter(name, operation, value)
+	name = Counter:SanitizeCounterName(name)
+
+	if operation == "+" then
+		COUNTERS[name] = COUNTERS[name] + value
+	elseif operation == "-" then
+		COUNTERS[name] = COUNTERS[name] - value
+	elseif operation == "/" and value ~= 0 then
+		COUNTERS[name] = COUNTERS[name] / value
+	elseif operation == "*" then
+		COUNTERS[name] = COUNTERS[name] * value
+	elseif operation == "=" then
+		COUNTERS[name] = value
+	else
+		TMW:Error("Unknown counter operation '" .. operation .. "'")
+		return
+	end
+	
+	TMW:Fire("TMW_COUNTER_MODIFIED", name)
+
+	return true
+end
+
 function Counter:HandleEvent(icon, eventSettings)
 	local Counter = eventSettings.Counter
 	local CounterOperation = eventSettings.CounterOperation
 	local CounterAmt = eventSettings.CounterAmt
 
-	if CounterOperation == "+" then
-		COUNTERS[Counter] = COUNTERS[Counter] + CounterAmt
-	elseif CounterOperation == "-" then
-		COUNTERS[Counter] = COUNTERS[Counter] - CounterAmt
-	elseif CounterOperation == "/" and CounterAmt ~= 0 then
-		COUNTERS[Counter] = COUNTERS[Counter] / CounterAmt
-	elseif CounterOperation == "*" then
-		COUNTERS[Counter] = COUNTERS[Counter] * CounterAmt
-	elseif CounterOperation == "=" then
-		COUNTERS[Counter] = CounterAmt
-	else
-		TMW:Error("Bad counter operation: " .. tostring(icon) .. " " .. Counter .. ": " .. CounterOperation .. " " .. CounterAmt)
-		return
-	end
-	
-	TMW:Fire("TMW_COUNTER_MODIFIED", Counter)
-
-	return true
+	return TMW:ChangeCounter(Counter, CounterOperation, CounterAmt)
 end
 
 function Counter:OnRegisterEventHandlerDataTable()

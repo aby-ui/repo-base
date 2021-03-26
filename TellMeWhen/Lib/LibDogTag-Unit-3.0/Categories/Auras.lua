@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -13,17 +13,11 @@ DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 
 local L = DogTag_Unit.L
 
-local newList = DogTag.newList
-
-local hasEvent = DogTag.hasEvent
-
-local IsNormalUnit = DogTag.IsNormalUnit
+local IsNormalUnit = DogTag_Unit.IsNormalUnit
 local newList, del = DogTag.newList, DogTag.del
 
 local currentAuras, currentDebuffTypes, currentAuraTimes, currentNumDebuffs
 
--- Parnic: support for cataclysm; Divine Intervention was removed
-local wow_400 = select(4, GetBuildInfo()) >= 40000
 local wow_700 = select(4, GetBuildInfo()) >= 70000
 local wow_800 = select(4, GetBuildInfo()) >= 80000
 
@@ -91,121 +85,126 @@ currentAuraTimes = setmetatable({}, mt)
 currentNumDebuffs = setmetatable({}, mt)
 mt = nil
 
-local auraQueue = {}
+local auraQueue
+DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
+	if event ~= "Aura" or auraQueue then return end
+	auraQueue = {}
 
-local nextAuraUpdate = 0
-local nextWackyAuraUpdate = 0
-DogTag:AddTimerHandler("Unit", function(num, currentTime)
-	if currentTime >= nextAuraUpdate and hasEvent('Aura') then
-		nextAuraUpdate = currentTime + 0.5
-		if currentTime >= nextWackyAuraUpdate then
-			nextWackyAuraUpdate = currentTime + 2
-			for unit, v in pairs(currentAuras) do
-				if not IsNormalUnit[unit] then
-					currentAuras[unit] = del(v)
-					currentDebuffTypes[unit] = del(currentDebuffTypes[unit])
-					currentAuraTimes[unit] = del(currentAuraTimes[unit])
-					currentNumDebuffs[unit] = nil
+	local nextAuraUpdate = 0
+	local nextWackyAuraUpdate = 0
+	DogTag:AddTimerHandler("Unit", function(num, currentTime)
+		if currentTime >= nextAuraUpdate and DogTag.hasEvent('Aura') then
+			nextAuraUpdate = currentTime + 0.5
+			if currentTime >= nextWackyAuraUpdate then
+				nextWackyAuraUpdate = currentTime + 2
+				for unit, v in pairs(currentAuras) do
+					if not IsNormalUnit[unit] then
+						currentAuras[unit] = del(v)
+						currentDebuffTypes[unit] = del(currentDebuffTypes[unit])
+						currentAuraTimes[unit] = del(currentAuraTimes[unit])
+						currentNumDebuffs[unit] = nil
+					end
+				end
+			end
+			for unit in pairs(auraQueue) do
+				auraQueue[unit] = nil
+				local t = newList()
+				local u = newList()
+				local v = newList()
+				for i = 1, 40 do
+					local name, count, expirationTime, _
+					if wow_800 then
+						name, _, count, _, _, expirationTime = UnitAura(unit, i, "HELPFUL")
+					else
+						name, _, _, count, _, _, expirationTime = UnitAura(unit, i, "HELPFUL")
+					end
+					if not name then
+						break
+					end
+					if count == 0 then
+						count = 1
+					end
+					t[name] = (t[name] or 0) + count
+					if expirationTime and expirationTime > 0 and (not v[name] or v[name] > expirationTime) then
+						v[name] = expirationTime
+					end
+				end
+				local numDebuffs = 0
+				local isFriend = UnitIsFriend("player", unit)
+				for i = 1, 40 do
+					local name, count, dispelType, expirationTime, _
+					if wow_800 then
+						name, _, count, dispelType, _, expirationTime = UnitAura(unit, i, "HARMFUL")
+					else
+						name, _, _, count, dispelType, _, expirationTime = UnitAura(unit, i, "HARMFUL")
+					end
+					if not name then
+						break
+					end
+					if count == 0 then
+						count = 1
+					end
+					numDebuffs = numDebuffs + 1
+					t[name] = (t[name] or 0) + count
+					if isFriend and dispelType then
+						u[dispelType] = true
+					end
+					if expirationTime and expirationTime > 0 and (not v[name] or v[name] > expirationTime) then
+						v[name] = expirationTime
+					end
+				end
+				local old = rawget(currentAuras, unit) or newList()
+				local oldType = rawget(currentDebuffTypes, unit) or newList()
+				local oldTimes = rawget(currentAuraTimes, unit) or newList()
+				local changed = false
+				for k, num in pairs(t) do
+					if not old[k] then
+						changed = true
+						break
+					end
+					if num ~= old[k] then
+						changed = true
+						break
+					end
+					old[k] = nil
+				end
+				if not changed then
+					for k in pairs(old) do
+						changed = true
+						break
+					end
+				end
+				currentAuras[unit] = t
+				currentDebuffTypes[unit] = u
+				currentAuraTimes[unit] = v
+				local oldNumDebuffs = rawget(currentNumDebuffs, unit)
+				currentNumDebuffs[unit] = numDebuffs
+				old = del(old)
+				oldType = del(oldType)
+				oldTimes = del(oldTimes)
+				if changed or oldNumDebuffs ~= numDebuffs then
+					DogTag:FireEvent("Aura", unit)
 				end
 			end
 		end
-		for unit in pairs(auraQueue) do
-			auraQueue[unit] = nil
-			local t = newList()
-			local u = newList()
-			local v = newList()
-			for i = 1, 40 do
-				local name, count, expirationTime, _
-				if wow_800 then
-					name, _, count, _, _, expirationTime = UnitAura(unit, i, "HELPFUL")
-				else
-					name, _, _, count, _, _, expirationTime = UnitAura(unit, i, "HELPFUL")
-				end
-				if not name then
-					break
-				end
-				if count == 0 then
-					count = 1
-				end
-				t[name] = (t[name] or 0) + count
-				if expirationTime and expirationTime > 0 and (not v[name] or v[name] > expirationTime) then
-					v[name] = expirationTime
-				end
-			end
-			local numDebuffs = 0
-			local isFriend = UnitIsFriend("player", unit)
-			for i = 1, 40 do
-				local name, count, dispelType, expirationTime, _
-				if wow_800 then
-					name, _, count, dispelType, _, expirationTime = UnitAura(unit, i, "HARMFUL")
-				else
-					name, _, _, count, dispelType, _, expirationTime = UnitAura(unit, i, "HARMFUL")
-				end
-				if not name then
-					break
-				end
-				if count == 0 then
-					count = 1
-				end
-				numDebuffs = numDebuffs + 1
-				t[name] = (t[name] or 0) + count
-				if isFriend and dispelType then
-					u[dispelType] = true
-				end
-				if expirationTime and expirationTime > 0 and (not v[name] or v[name] > expirationTime) then
-					v[name] = expirationTime
-				end
-			end
-			local old = rawget(currentAuras, unit) or newList()
-			local oldType = rawget(currentDebuffTypes, unit) or newList()
-			local oldTimes = rawget(currentAuraTimes, unit) or newList()
-			local changed = false
-			for k, num in pairs(t) do
-				if not old[k] then
-					changed = true
-					break
-				end
-				if num ~= old[k] then
-					changed = true
-					break
-				end
-				old[k] = nil
-			end
-			if not changed then
-				for k in pairs(old) do
-					changed = true
-					break
-				end
-			end
-			currentAuras[unit] = t
-			currentDebuffTypes[unit] = u
-			currentAuraTimes[unit] = v
-			local oldNumDebuffs = rawget(currentNumDebuffs, unit)
-			currentNumDebuffs[unit] = numDebuffs
-			old = del(old)
-			oldType = del(oldType)
-			oldTimes = del(oldTimes)
-			if changed or oldNumDebuffs ~= numDebuffs then
-				DogTag:FireEvent("Aura", unit)
-			end
+	end)
+	
+	
+	DogTag:AddEventHandler("Unit", "UnitChanged", function(event, unit)
+		if rawget(currentAuras, unit) then
+			currentAuras[unit] = del(currentAuras[unit])
+			currentDebuffTypes[unit] = del(currentDebuffTypes[unit])
+			currentAuraTimes[unit] = del(currentAuraTimes[unit])
+			currentNumDebuffs[unit] = nil
+			auraQueue[unit] = true
 		end
-	end
-end)
-
-
-DogTag:AddEventHandler("Unit", "UnitChanged", function(event, unit)
-	if rawget(currentAuras, unit) then
-		currentAuras[unit] = del(currentAuras[unit])
-		currentDebuffTypes[unit] = del(currentDebuffTypes[unit])
-		currentAuraTimes[unit] = del(currentAuraTimes[unit])
-		currentNumDebuffs[unit] = nil
+	end)
+	
+	DogTag:AddEventHandler("Unit", "UNIT_AURA", function(event, unit)
 		auraQueue[unit] = true
-	end
+	end)
 end)
 
-DogTag:AddEventHandler("Unit", "UNIT_AURA", function(event, unit)
-	auraQueue[unit] = true
-end)
 
 DogTag:AddTag("Unit", "HasAura", {
 	code = function(aura, unit)

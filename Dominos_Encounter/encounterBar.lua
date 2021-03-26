@@ -21,11 +21,7 @@ function EncounterBar:New()
 end
 
 function EncounterBar:GetDefaults()
-	return { point = 'CENTER' }
-end
-
-function EncounterBar:GetDisplayLevel()
-    return 'HIGH'
+	return { point = 'CENTER', displayLayer = 'HIGH' }
 end
 
 -- always reparent + position the bar due to UIParent.lua moving it whenever its shown
@@ -61,21 +57,6 @@ function EncounterBar:InitPlayerPowerBarAlt()
 
 		self.__PlayerPowerBarAlt = bar
 	end
-end
-
-function EncounterBar:OnCreateMenu(menu)
-	self:AddLayoutPanel(menu)
-	menu:AddAdvancedPanel(true)
-	menu:AddFadingPanel()
-end
-
-function EncounterBar:AddLayoutPanel(menu)
-	local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
-
-	panel.scaleSlider = panel:NewScaleSlider()
-	panel.paddingSlider = panel:NewPaddingSlider()
-
-	return panel
 end
 
 -- module

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -156,54 +156,65 @@ DogTag:AddAddonFinder("Unit", "_G", "CT_RAOptions_UpdateMTs", function(v)
 	end)
 end)
 
-local first = true
-DogTag:AddTimerHandler("Unit", function(currentTime, num)
-	if first then
-		first = false
-		PARTY_MEMBERS_CHANGED()
-	end
-	for guid in pairs(offlineTimes) do
-		for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-			DogTag:FireEvent("OfflineDuration", unit)
-		end
-	end
-	for unit, guid in iterateGroupMembers() do
-		if UnitIsDeadOrGhost(unit) then
-			if not deadTimes[guid] then
-				deadTimes[guid] = GetTime()
-			end
-		else
-			if deadTimes[guid] then
-				deadTimes[guid] = nil
-				for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-					DogTag:FireEvent("DeadDuration", unit)
-				end
-			end
-		end
+local durationEventNames = {
+	OfflineDuration = true,
+	DeadDuration = true,
+	AFKDuration = true,
+}
+local durationEventsAreSetup = false
+DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
+	if not durationEventNames[event] or durationEventsAreSetup then return end
+	durationEventsAreSetup = true
 
-		if UnitIsAFK(unit) then
-			if not afkTimes[guid] then
-				afkTimes[guid] = GetTime()
+	local first = true
+	DogTag:AddTimerHandler("Unit", function(currentTime, num)
+		if first then
+			first = false
+			PARTY_MEMBERS_CHANGED()
+		end
+		for guid in pairs(offlineTimes) do
+			for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+				DogTag:FireEvent("OfflineDuration", unit)
 			end
-		else
-			if afkTimes[guid] then
-				afkTimes[guid] = nil
-				for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-					DogTag:FireEvent("AFKDuration", unit)
+		end
+		for unit, guid in iterateGroupMembers() do
+			if UnitIsDeadOrGhost(unit) then
+				if not deadTimes[guid] then
+					deadTimes[guid] = GetTime()
+				end
+			else
+				if deadTimes[guid] then
+					deadTimes[guid] = nil
+					for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+						DogTag:FireEvent("DeadDuration", unit)
+					end
+				end
+			end
+
+			if UnitIsAFK(unit) then
+				if not afkTimes[guid] then
+					afkTimes[guid] = GetTime()
+				end
+			else
+				if afkTimes[guid] then
+					afkTimes[guid] = nil
+					for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+						DogTag:FireEvent("AFKDuration", unit)
+					end
 				end
 			end
 		end
-	end
-	for guid in pairs(deadTimes) do
-		for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-			DogTag:FireEvent("DeadDuration", unit)
+		for guid in pairs(deadTimes) do
+			for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+				DogTag:FireEvent("DeadDuration", unit)
+			end
 		end
-	end
-	for guid in pairs(afkTimes) do
-		for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-			DogTag:FireEvent("AFKDuration", unit)
+		for guid in pairs(afkTimes) do
+			for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+				DogTag:FireEvent("AFKDuration", unit)
+			end
 		end
-	end
+	end)
 end)
 
 DogTag:AddTag("Unit", "OfflineDuration", {
@@ -928,7 +939,7 @@ DogTag:AddTag("Unit", "StatusColor", {
 		'unit', 'string;undef', 'player'
 	},
 	ret = "string;nil",
-	events = "DeadDuration#$unit",
+	events = "DeadDuration#$unit;OfflineDuration#$unit",
 	doc = L["Return the color or wrap value with the color associated with unit's current status"],
 	example = '["Hello":StatusColor] => "|cff7f7f7fHello|r"; [StatusColor "Hello")] => "|cff7f7f7fHello"',
 	category = L["Status"]

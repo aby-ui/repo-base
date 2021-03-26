@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.6
+Version 2.4.9.7
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -295,7 +295,7 @@ function HHTD:MakeError(something)
     errorf();
 end
 
---[===[@debug@
+--[==[@debug@
 function HHTD:Hickup(mul)
     if not mul then mul = 1 end
     local t = 0;
@@ -306,7 +306,7 @@ function HHTD:Hickup(mul)
 
     self:Debug(WARNING, 'Hickup ', t);
 end
---@end-debug@]===]
+--@end-debug@]==]
 
 
 function HHTD:FatalError (TheError)

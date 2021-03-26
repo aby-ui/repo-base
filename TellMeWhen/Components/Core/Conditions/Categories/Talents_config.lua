@@ -158,12 +158,6 @@ Module.noMin = true
 Module.showColorHelp = false
 Module.helpText = L["SUG_TOOLTIPTITLE_GENERIC"]
 Module.table = {}
-local covenantIcons = {
-	[1] = GetSpellTexture(321076),
-	[2] = GetSpellTexture(321079),
-	[3] = GetSpellTexture(299206),
-	[4] = GetSpellTexture(321078),
-}
 function Module:OnInitialize()
 	-- nothing
 end
@@ -204,6 +198,6 @@ function Module:Entry_AddToList_1(f, id)
 	f.insert = info.name
 	f.insert2 = id
 
-	f.Icon:SetTexture(covenantIcons[info.covenantID])
+	f.Icon:SetTexture(TMW.CovenantIcons[info.covenantID])
 end
 Module.Entry_Colorize_1 = TMW.NULLFUNC

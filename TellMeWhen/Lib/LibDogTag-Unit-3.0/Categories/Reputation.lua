@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -49,7 +49,7 @@ do
 		return wrap(iter)
 	end
 end
-DogTag.IterateFactions = IterateFactions
+DogTag_Unit.IterateFactions = IterateFactions
 
 DogTag:AddTag("Unit", "Reputation", {
 	code = function(faction)

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.6
+Version 2.4.9.7
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -438,9 +438,9 @@ do
             LastAnnounce = GetTime();
         else
             self:Error(L["CHAT_POST_NO_HEALERS"]);
-            --[===[@debug@
+            --[==[@debug@
             Post(L["CHAT_POST_NO_HEALERS"]);
-            --@end-debug@]===]
+            --@end-debug@]==]
         end
 
         return true;

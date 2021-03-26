@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210314154043")
+mod:SetRevision("20210325141425")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
-mod:SetUsedIcons(8)
+mod:SetUsedIcons(8,6)
 mod:SetHotfixNoticeRev(20210216000000)--2021, 02, 16
 mod:SetMinSyncRevision(20210216000000)
 --mod.respawnTime = 29
@@ -48,6 +48,7 @@ mod:RegisterEventsInCombat(
 --https://www.warcraftlogs.com/reports/ahyp8WPMnFcA96Vg#fight=last&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20330965%20or%20ability.id%20%3D%20330978%20or%20ability.id%20%3D%20327497%20or%20ability.id%20%3D%20346654%20or%20ability.id%20%3D%20337110%20or%20ability.id%20%3D%20346657%20or%20ability.id%20%3D%20346762%20or%20ability.id%20%3D%20346698%20or%20ability.id%20%3D%20346690%20or%20ability.id%20%3D%20346800)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20331634)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20332535%20or%20ability.id%20%3D%20330959%20or%20ability.id%20%3D%20332538%20or%20abiity.id%20%3D%20331918%20or%20ability.id%20%3D%20346709%20%20or%20(ability.id%20%3D%20330964%20or%20ability.id%20%3D%20335773)%20and%20type%20%3D%20%22cast%22%20%20or%20(target.id%20%3D%20166971%20or%20target.id%20%3D%20166969%20or%20target.id%20%3D%20166970)%20and%20type%20%3D%20%22death%22%20%20or%20ability.id%20%3D%20347350%20and%20type%20%3D%20%22applydebuff%22%20%20or%20ability.id%20%3D%20346303%20and%20type%20%3D%20%22begincast%22
 --https://www.warcraftlogs.com/reports/cNrfpg1XZt89Aa4R#fight=last&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20330965%20or%20ability.id%20%3D%20330978%20or%20ability.id%20%3D%20327497%20or%20ability.id%20%3D%20346654%20or%20ability.id%20%3D%20337110%20or%20ability.id%20%3D%20346657%20or%20ability.id%20%3D%20346762%20or%20ability.id%20%3D%20346698%20or%20ability.id%20%3D%20346690%20or%20ability.id%20%3D%20346800)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20331634)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20332535%20or%20ability.id%20%3D%20330959%20or%20ability.id%20%3D%20332538%20or%20abiity.id%20%3D%20331918%20or%20ability.id%20%3D%20346709%20%20or%20(ability.id%20%3D%20330964%20or%20ability.id%20%3D%20335773)%20and%20type%20%3D%20%22cast%22%20%20or%20(target.id%20%3D%20166971%20or%20target.id%20%3D%20166969%20or%20target.id%20%3D%20166970)%20and%20type%20%3D%20%22death%22%20%20or%20ability.id%20%3D%20347350%20and%20type%20%3D%20%22applydebuff%22%20%20or%20ability.id%20%3D%20346303%20and%20type%20%3D%20%22begincast%22
 --https://www.warcraftlogs.com/reports/zHM8mJ4hxX6TaVdG#fight=9&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20330965%20or%20ability.id%20%3D%20330978%20or%20ability.id%20%3D%20327497%20or%20ability.id%20%3D%20346654%20or%20ability.id%20%3D%20337110%20or%20ability.id%20%3D%20346657%20or%20ability.id%20%3D%20346762%20or%20ability.id%20%3D%20346698%20or%20ability.id%20%3D%20346690%20or%20ability.id%20%3D%20346800)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20331634)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20332535%20or%20ability.id%20%3D%20330959%20or%20ability.id%20%3D%20332538%20or%20abiity.id%20%3D%20331918%20or%20ability.id%20%3D%20346709%20%20or%20(ability.id%20%3D%20330964%20or%20ability.id%20%3D%20335773)%20and%20type%20%3D%20%22cast%22%20%20or%20(target.id%20%3D%20166971%20or%20target.id%20%3D%20166969%20or%20target.id%20%3D%20166970)%20and%20type%20%3D%20%22death%22%20%20or%20ability.id%20%3D%20347350%20and%20type%20%3D%20%22applydebuff%22%20%20or%20ability.id%20%3D%20346303%20and%20type%20%3D%20%22begincast%22
+local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Castellan Niklaus
 local warnDualistsRiposte						= mod:NewStackAnnounce(346690, 2, nil, "Tank|Healer")
 local warnDutifulAttendant						= mod:NewSpellAnnounce(346698, 2)
@@ -122,6 +123,7 @@ local timerDancingFeverCD						= mod:NewCDCountTimer(60, 347350, nil, nil, nil, 
 mod:AddRangeFrameOption(8, 346657)
 mod:AddInfoFrameOption(347350, true)
 mod:AddSetIconOption("SetIconOnDutiful", 346698, true, true, {8})
+mod:AddSetIconOption("SetIconOnImage", 337110, true, true, {6})
 mod:AddSetIconOption("SetIconOnDancingFools", 346826, true, true, {8})--Attempts to set icon only on killable one, not yet tested
 mod:AddNamePlateOption("NPAuraOnFixate", 330967)
 mod:AddNamePlateOption("NPAuraOnShield", 346694)
@@ -273,6 +275,8 @@ local function phaseChange(self, adjustment)
 		DBM:AddMsg("Some timers may be incorrect this phase. This usually happens when Infusion/Empowered buff misses remaining boss, causing timers not to correctly reset")
 	end
 	if self.vb.phase == 3 then--Two Dead
+		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
+		warnPhase:Play("pthree")
 		--Castellan Niklaus
 		timerDualistsRiposteCD:Stop()
 		timerDutifulAttendantCD:Stop()
@@ -315,6 +319,8 @@ local function phaseChange(self, adjustment)
 			timerWaltzofBloodCD:Start((self:IsMythic() and 54.4 or self:IsLFR() and 44.4 or 62.1)-adjustment)--START (LFR iffy, dance correction makes murky)
 		end
 	else--One Dead (Phase 2)
+		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
+		warnPhase:Play("ptwo")
 		--Castellan Niklaus
 		timerDredgerServantsCD:Stop()
 		timerDualistsRiposteCD:Stop()
@@ -585,7 +591,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.volleyCast = self.vb.volleyCast + 1
 		local count = self.vb.volleyCast
 		if self.Options.SpecWarn337110interruptcount then
-			specWarnDreadboltVolley:Show(count)
+			specWarnDreadboltVolley:Show(args.sourceName, count)
 			if count == 1 then
 				specWarnDreadboltVolley:Play("kick1r")
 			elseif count == 2 then
@@ -976,6 +982,9 @@ end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 	if msg:find("spell:337110") then
+		if self.Options.SetIconOnImage  then
+			self:ScanForMobs(172803, 2, 6, 1, 0.2, 10, "SetIconOnImage")--creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName
+		end
 		local timer = allTimers[difficultyName][337110][self.vb.phase]
 		if timer then
 			timerDreadboltVolleyCD:Start(timer)

@@ -7,6 +7,10 @@ local Frame = Addon:CreateClass('Frame')
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local FlyPaper = LibStub('LibFlyPaper-2.0')
 
+local function fireBarCallback(bar, callback, ...)
+    Addon.callbacks:Fire(callback, bar, bar.id, ...)
+end
+
 local active = {}
 local unused = {}
 
@@ -90,12 +94,6 @@ function Frame:Create(id)
 
     frame:SetClampedToScreen(true)
     frame:SetMovable(true)
-
-    -- compatibility:
-    -- in old versions of dominos, frames had an extra header frame to control
-    -- visibility, which pushed things up by one frame level
-    -- so increase the frame level of frames to account for that
-    frame:SetFrameLevel(frame:GetFrameLevel() + 1)
 
     frame.id = id
 
@@ -195,8 +193,9 @@ function Frame:LoadSettings()
     self.sets = Addon:GetFrameSets(self.id)
              or Addon:SetFrameSets(self.id, self:GetDefaults())
 
+    self:UpdateDisplayLayer()
+    self:UpdateDisplayLevel()
     self:RestorePosition()
-
     self:RestoreAnchor()
 
     if self.sets.hidden then
@@ -657,6 +656,10 @@ function Frame:RestorePosition()
     self:ClearAllPoints()
     self:SetScale(scale)
     self:SetPoint(point, self:GetParent() or _G.UIParent, relPoint, x, y)
+
+    --adding this here, as it will be be called by all frames, and Tuller seems to be considering layering to be a form of position now. ~Goranaws
+    self:UpdateDisplayLevel()
+
     return true
 end
 
@@ -907,7 +910,7 @@ function Frame:CreateMenu()
 end
 
 function Frame:OnCreateMenu(menu)
-    menu:AddLayoutPanel()
+    menu:AddBasicLayoutPanel()
     menu:AddFadingPanel()
     menu:AddAdvancedPanel(true)
 end
@@ -939,8 +942,38 @@ function Frame:GetDescription()
     return
 end
 
+function Frame:GetDisplayLayer()
+    return self.sets.displayLayer or 'MEDIUM'
+end
+
+function Frame:SetDisplayLayer(layer)
+    self.sets.displayLayer = layer
+	self:UpdateDisplayLayer()
+end
+
+function Frame:UpdateDisplayLayer()
+    local layer = self:GetDisplayLayer()
+
+	self:SetFrameStrata(layer)
+
+    fireBarCallback(self, 'BAR_DISPLAY_LAYER_UPDATED', layer)
+end
+
 function Frame:GetDisplayLevel()
-    return 'MEDIUM'
+    return self.sets.displayLevel or 1
+end
+
+function Frame:SetDisplayLevel(level)
+    self.sets.displayLevel = tonumber(level) or 0
+	self:UpdateDisplayLevel()
+end
+
+function Frame:UpdateDisplayLevel()
+    local level = self:GetDisplayLevel()
+
+	self:SetFrameLevel(level)
+
+    fireBarCallback(self, 'BAR_DISPLAY_LEVEL_UPDATED', level)
 end
 
 --------------------------------------------------------------------------------

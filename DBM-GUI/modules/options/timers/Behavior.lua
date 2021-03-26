@@ -8,7 +8,7 @@ movemebutton:SetPoint("TOPRIGHT", BarBehaviors.frame, "TOPRIGHT", -2, -4)
 movemebutton:SetNormalFontObject(GameFontNormalSmall)
 movemebutton:SetHighlightFontObject(GameFontNormalSmall)
 movemebutton:SetScript("OnClick", function()
-	DBM.Bars:ShowMovableBar()
+	DBT:ShowMovableBar()
 end)
 
 local testmebutton = BarBehaviors:CreateButton(L.Button_TestBars, 100, 16)
@@ -22,7 +22,7 @@ end)
 -- Functions for bar setup
 local function createDBTOnValueChangedHandler(option)
 	return function(self)
-		DBM.Bars:SetOption(option, self:GetValue())
+		DBT:SetOption(option, self:GetValue())
 		self:SetValue(DBT.Options[option])
 	end
 end
@@ -38,11 +38,30 @@ EnlargeTimeSlider:SetValue(DBT.Options.EnlargeBarTime)
 EnlargeTimeSlider:HookScript("OnValueChanged", createDBTOnValueChangedHandler("EnlargeBarTime"))
 EnlargeTimeSlider.myheight = 0
 
+local Sorts = {
+	{
+		text	= "None",
+		value	= "None"
+	},
+	{
+		text	= "Highest at top",
+		value	= "Sort"
+	},
+	{
+		text	= "Lowest at top",
+		value	= "Invert"
+	}
+}
+
+local SortDropDown = BarBehaviors:CreateDropdown(L.BarSort, Sorts, "DBT", "Sort", function(value)
+	DBT:SetOption("Sort", value)
+end)
+SortDropDown:SetPoint("TOPLEFT", DecimalSlider, "BOTTOMLEFT", -20, -25)
+
 local ClickThrough = BarBehaviors:CreateCheckButton(L.ClickThrough, true, nil, nil, "ClickThrough")
-ClickThrough:SetPoint("TOPLEFT", DecimalSlider, "BOTTOMLEFT", 0, -15)
+ClickThrough:SetPoint("TOPLEFT", SortDropDown, "BOTTOMLEFT", 20, -5)
 ClickThrough.myheight = 25
 
-BarBehaviors:CreateCheckButton(L.BarSort, true, nil, nil, "Sort")
 BarBehaviors:CreateCheckButton(L.ShortTimerText, true, nil, "ShortTimerText")
 BarBehaviors:CreateCheckButton(L.StripTimerText, true, nil, nil, "StripCDText")
 BarBehaviors:CreateCheckButton(L.KeepBar, true, nil, nil, "KeepBars")

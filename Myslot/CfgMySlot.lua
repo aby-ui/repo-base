@@ -86,7 +86,7 @@ CoreDependCall("MySlot", function()
         CoreUIEnableTooltip(deleteMacros, "请注意", "MySlot导出时会保存全部宏。但导入时，只会覆盖同名宏，不会删除已有宏。如果宏的位置不够，就无法全部导入。所以导入前可以用这个按钮删除当前所有的宏，然后再导入。但是注意，后来创建的宏也就被删除而且无法恢复了（当然，你可以再导出一个备份）")
         --]]
 
-        --[[ --TODO 先隐藏，日后再删除U1DB.configs['myslot/save1']
+        ---[[ --TODO 先隐藏，日后再删除U1DB.configs['myslot/save1']
         local ct = WW:Frame("$parent_ct", MYSLOT_ReportFrame):Size(1,1):TL("$parent", "BL", 0, 0):un()
         for i = 1, 3 do
             --欺骗CtlRegularSaveValue用的
@@ -110,6 +110,13 @@ CoreDependCall("MySlot", function()
                 CoreScheduleTimer(false, 0.1, function() MYSLOT_ScrollFrame:SetVerticalScroll(0) end)
             end):un()
         end
+        SetOrHookScript(MYSLOT_ReportFrame, "OnShow", function()
+            for i = 1, 3 do
+                local show = MYSLOT3SHOW ~= nil
+                CoreUIShowOrHide(_G["MYSLOT_ReportFrame_ct_save" .. i], show)
+                CoreUIShowOrHide(_G["MYSLOT_ReportFrame_ct_load" .. i], show)
+            end
+        end)
         --]]
     end)
 end)

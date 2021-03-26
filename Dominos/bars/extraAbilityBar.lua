@@ -21,10 +21,6 @@ function ExtraAbilityBar:New()
     return bar
 end
 
-function ExtraAbilityBar:GetDisplayLevel()
-    return 'HIGH'
-end
-
 function ExtraAbilityBar:GetDisplayName()
     return L.ExtraBarDisplayName
 end
@@ -79,6 +75,7 @@ end
 function ExtraAbilityBar:GetDefaults()
     return {
         point = 'CENTER',
+        displayLayer = 'HIGH',
         x = 0,
         y = -244,
         showInPetBattleUI = true,
@@ -115,8 +112,7 @@ function ExtraAbilityBar:AddLayoutPanel(menu)
         end
     }
 
-    panel.scaleSlider = panel:NewScaleSlider()
-    panel.paddingSlider = panel:NewPaddingSlider()
+    panel:AddBasicLayoutOptions()
 end
 
 function ExtraAbilityBar:ShowBlizzardTexture(show)

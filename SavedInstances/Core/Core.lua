@@ -142,6 +142,7 @@ SI.defaultDB = {
   -- Warmode: boolean
   -- Artifact: string REMOVED
   -- Cloak: string REMOVED
+  -- Covenant: number
   -- Paragon: table
   -- oRace: string
   -- isResting: boolean
@@ -1470,6 +1471,7 @@ function SI:UpdateToonData()
     end
     t.Warmode = C_PvP.IsWarModeDesired()
   end
+  t.Covenant = C_Covenants.GetActiveCovenantID()
 
   t.LastSeen = time()
 end
@@ -1601,6 +1603,13 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
     indicatortip:AddLine(COMBAT_XP_GAIN, format("%.0f%% + %.0f%%", t.XP / t.MaxXP * 100, percent))
   end
   indicatortip:AddLine(STAT_AVERAGE_ITEM_LEVEL,("%d "):format(t.IL or 0)..STAT_AVERAGE_ITEM_LEVEL_EQUIPPED:format(t.ILe or 0))
+  if t.Covenant and t.Covenant > 0 then
+    local data = C_Covenants.GetCovenantData(t.Covenant)
+    local name = data and data.name
+    if name then
+      indicatortip:AddLine(L["Covenant"], name)
+    end
+  end
   if t.Arena2v2rating and t.Arena2v2rating > 0 then
     indicatortip:AddLine(ARENA_2V2 .. ARENA_RATING, t.Arena2v2rating)
   end
@@ -2471,7 +2480,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.7-2-ge8c7869" then
+  if versionString == "9.0.7-5-g80ebb0f" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2579,6 +2588,7 @@ function SI:OnEnable()
   self:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN", "UpdateToonData")
   self:RegisterEvent("PLAYER_UPDATE_RESTING", "UpdateToonData")
   self:RegisterEvent("PVP_RATED_STATS_UPDATE", "UpdateToonData")
+  self:RegisterEvent("COVENANT_CHOSEN", "UpdateToonData")
   self:RegisterEvent("ZONE_CHANGED_NEW_AREA", RequestRatedInfo)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function()
     RequestRatedInfo()

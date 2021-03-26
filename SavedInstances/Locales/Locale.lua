@@ -59,6 +59,7 @@ Ld["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 Ld["Combine LFR"] = "Combine LFR"
 Ld["Combine World Bosses"] = "Combine World Bosses"
 Ld["Connected Realms"] = "Connected Realms"
+Ld["Covenant"] = "Covenant"
 Ld["Currency settings"] = "Currency settings"
 Ld["Cursed Coffer"] = "Cursed Coffer"
 Ld["Daily Quests"] = "Daily Quests"
@@ -253,6 +254,8 @@ La["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 La["Combine LFR"] = "Fusionner les RdR"
 La["Combine World Bosses"] = "Fusionner les boss extérieurs"
 La["Connected Realms"] = "Royaumes connectés"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Monnaies"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -487,6 +490,8 @@ La["Combine emissaries of same expansion"] = "Kombiniert die Abgesandten der sel
 La["Combine LFR"] = "LFR/Flex zusammenfassen"
 La["Combine World Bosses"] = "Weltbosse zusammenfassen"
 La["Connected Realms"] = "Verknüpfte Realms"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Abzeicheneinstellungen"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -698,6 +703,8 @@ La["Combine emissaries of same expansion"] = "확팩별 사절퀘 모음"
 La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
 La["Connected Realms"] = "연동 서버"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "화폐 설정"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -905,6 +912,8 @@ La["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 La["Combine LFR"] = "Combinar BDB"
 La["Combine World Bosses"] = "Combinar Jefes del Mundo"
 La["Connected Realms"] = "Reinos Conectados"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Opciones de Monedas"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1156,6 +1165,8 @@ La["Combine emissaries of same expansion"] = "Объединить эмисса�
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
 La["Connected Realms"] = "Соединенные сервера"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Настройки валюты"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1350,6 +1361,8 @@ La["Combine emissaries of same expansion"] = "合并同一个资料片的大使�
 La["Combine LFR"] = "合并显示随机团本"
 La["Combine World Bosses"] = "合并世界首领"
 La["Connected Realms"] = "已合并服务器"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "货币设置"
 La["Cursed Coffer"] = "被诅咒的箱子"
 La["Daily Quests"] = "日常任务"
@@ -1549,6 +1562,8 @@ La["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 La["Combine LFR"] = "Combinar BdG"
 La["Combine World Bosses"] = "Combinar jefes del mundo"
 La["Connected Realms"] = "Reinos conectados"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Ajustes de moneda"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1797,6 +1812,8 @@ La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
 La["Connected Realms"] = "連結伺服器"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "兌換通貨設定"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1999,6 +2016,8 @@ La["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 La["Combine LFR"] = "Combinar LdR"
 La["Combine World Bosses"] = "Agrupar chefes mundiais"
 La["Connected Realms"] = "Reinos conectados"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Configuração de moedas"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -2246,6 +2265,8 @@ La["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 La["Combine LFR"] = "Unisci le riceche spedizioni"
 La["Combine World Bosses"] = "Unisci i boss mondiali"
 La["Connected Realms"] = "Reami connessi"
+--[[Translation missing --]]
+La["Covenant"] = "Covenant"
 La["Currency settings"] = "Impostazioni delle valute"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"

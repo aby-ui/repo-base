@@ -32,7 +32,6 @@ function ProgressBar:New(id, modes, ...)
 	end
 
 	bar.modes = modes
-	bar:SetFrameStrata(bar.sets.strata or 'BACKGROUND')
 	bar:UpdateFont()
 	bar:UpdateAlwaysShowText()
 	bar:UpdateMode()
@@ -42,8 +41,6 @@ end
 
 function ProgressBar:OnCreate(...)
 	ProgressBar.proto.OnCreate(self, ...)
-
-	self:SetFrameStrata('BACKGROUND')
 
 	self.colors = {
 		base = {0, 0, 0},
@@ -62,7 +59,10 @@ function ProgressBar:OnCreate(...)
 	click:SetScript('OnLeave', function(_, ...) self:OnLeave(...) end)
 	click:RegisterForClicks('anyUp')
 	click:SetAllPoints(self)
-	click:SetFrameStrata('LOW')
+
+	-- push the click frame higher so that it shows up over the
+	-- status bar segments
+	click:SetFrameLevel(7)
 
 	local text = click:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightSmall')
 	text:SetPoint('CENTER')
@@ -96,6 +96,7 @@ function ProgressBar:GetDefaults()
 			bonus = true
 		},
         width = 600,
+		displayLayer = 'BACKGROUND',		
 		alwaysShowText = true,
 		lockMode = true
 	}
@@ -781,8 +782,8 @@ do
         }
 
 		panel.spacingSlider = panel:NewSpacingSlider()
-		panel.paddingSlider = panel:NewPaddingSlider()
-		panel.scaleSlider = panel:NewScaleSlider()
+
+		panel:AddBasicLayoutOptions()
 	end
 
 	function ProgressBar:AddTextPanel(menu)

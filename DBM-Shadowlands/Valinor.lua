@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2430, "DBM-Shadowlands", nil, 1192)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210127154738")
+mod:SetRevision("20210324013931")
 mod:SetCreatureID(167524)
 mod:SetEncounterID(2411)
 mod:SetUsedIcons(8)
@@ -67,6 +67,7 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 327274 then
 		specWarnUnleashedAnima:Show()
+		specWarnUnleashedAnima:Play("watchstep")
 		timerUnleashedAnimaCD:Start()
 	elseif spellId == 327280 then--Recharge Anima
 		timerVentAnimaCD:Stop()

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -17,7 +17,7 @@ local newList = DogTag.newList
 local del = DogTag.del
 local castData = {}
 local UnitGUID = UnitGUID
-local IsNormalUnit = DogTag.IsNormalUnit
+local IsNormalUnit = DogTag_Unit.IsNormalUnit
 
 local wow_ver = select(4, GetBuildInfo())
 local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
@@ -28,174 +28,181 @@ DogTag:AddEventHandler("Unit", "PLAYER_LOGIN", function()
 	playerGuid = UnitGUID("player")
 end)
 
-local nextSpell, nextRank, nextTarget
-local function updateInfo(event, unit)
-	local guid = UnitGUID(unit)
-	if not guid then
-		return
-	end
-	local data = castData[guid]
-	if not data then
-		data = newList()
-		castData[guid] = data
-	end
-	
-	local spell, rank, displayName, icon, startTime, endTime
-	local channeling = false
-	if wow_800 then
-		spell, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
-		rank = nil
-		if not spell then
-			spell, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
-			channeling = true
+local castEventIsSetup = false
+DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
+	if event ~= "Cast" or castEventIsSetup then return end
+	castEventIsSetup = true
+		
+	local nextSpell, nextRank, nextTarget
+	local function updateInfo(event, unit)
+		local guid = UnitGUID(unit)
+		if not guid then
+			return
 		end
-	elseif wow_classic then
-		-- Classic only has an API for player spellcasts. No API for arbitrary units.
-		if unit == "player" then
-			spell, displayName, icon, startTime, endTime = CastingInfo()
+		local data = castData[guid]
+		if not data then
+			data = newList()
+			castData[guid] = data
+		end
+		
+		local spell, rank, displayName, icon, startTime, endTime
+		local channeling = false
+		if wow_800 then
+			spell, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
 			rank = nil
 			if not spell then
-				spell, displayName, icon, startTime, endTime = ChannelInfo()
+				spell, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
+				channeling = true
+			end
+		elseif wow_classic then
+			-- Classic only has an API for player spellcasts. No API for arbitrary units.
+			if unit == "player" then
+				spell, displayName, icon, startTime, endTime = CastingInfo()
+				rank = nil
+				if not spell then
+					spell, displayName, icon, startTime, endTime = ChannelInfo()
+					channeling = true
+				end
+			end
+		else
+			spell, rank, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
+			if not spell then
+				spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
 				channeling = true
 			end
 		end
-	else
-		spell, rank, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
-		if not spell then
-			spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
-			channeling = true
-		end
-	end
 
-	if spell then
-		data.spell = spell
-		rank = rank and tonumber(rank:match("%d+"))
-		data.rank = rank
-		local oldStart = data.startTime
-		startTime = startTime * 0.001
-		data.startTime = startTime
-		data.endTime = endTime * 0.001
-		if event == "UNIT_SPELLCAST_DELAYED" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
-			data.delay = (data.delay or 0) + (startTime - (oldStart or startTime))
-		else
-			data.delay = 0
-		end
-		if guid == playerGuid and spell == nextSpell and rank == nextRank then
-			data.target = nextTarget
-		end
-		data.casting = not channeling
-		data.channeling = channeling
-		data.fadeOut = false
-		data.stopTime = nil
-		data.stopMessage = nil
-		DogTag:FireEvent("Cast", unit)
-		return
-	end
-	
-	if not data.spell then
-		castData[guid] = del(data)
-		DogTag:FireEvent("Cast", unit)
-		return
-	end
-	
-	if event == "UNIT_SPELLCAST_FAILED" then
-		data.stopMessage = _G.FAILED
-	elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
-		data.stopMessage = _G.INTERRUPTED
-	end
-	
-	data.casting = false
-	data.channeling = false
-	data.fadeOut = true
-	if not data.stopTime then
-		data.stopTime = GetTime()
-	end
-	DogTag:FireEvent("Cast", unit)
-end
-
-local guidsToFire, unitsToUpdate = {}, {}
-local function fixCastData()
-	local frame
-	local currentTime = GetTime()
-	for guid, data in pairs(castData) do
-		if data.casting then
-			if currentTime > data.endTime and playerGuid ~= guid then
-				data.casting = false
-				data.fadeOut = true
-				data.stopTime = currentTime
+		if spell then
+			data.spell = spell
+			rank = rank and tonumber(rank:match("%d+"))
+			data.rank = rank
+			local oldStart = data.startTime
+			startTime = startTime * 0.001
+			data.startTime = startTime
+			data.endTime = endTime * 0.001
+			if event == "UNIT_SPELLCAST_DELAYED" or event == "UNIT_SPELLCAST_CHANNEL_UPDATE" then
+				data.delay = (data.delay or 0) + (startTime - (oldStart or startTime))
+			else
+				data.delay = 0
 			end
-		elseif data.channeling then
-			if currentTime > data.endTime then
-				data.channeling = false
-				data.fadeOut = true
-				data.stopTime = currentTime
+			if guid == playerGuid and spell == nextSpell and rank == nextRank then
+				data.target = nextTarget
 			end
-		elseif data.fadeOut then
-			local alpha = 0
-			local stopTime = data.stopTime
-			if stopTime then
-				alpha = stopTime - currentTime + 1
-			end
-		
-			if alpha <= 0 then
-				castData[guid] = del(data)
-			end
-		else
-			castData[guid] = del(data)
-		end
-		local found = false
-		local normal = false
-		for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
-			found = unit
-			if IsNormalUnit[unit] then
-				normal = true
-				break
-			end
-		end
-		if not found then
-			if castData[guid] then
-				castData[guid] = del(data)
-			end
-		else
-			if not normal then
-				unitsToUpdate[found] = true
-			end
-			
-			guidsToFire[guid] = true
-		end
-	end
-	for unit in pairs(unitsToUpdate) do
-		updateInfo(nil, unit)
-	end
-	wipe(unitsToUpdate)
-	for guid in pairs(guidsToFire) do
-		for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+			data.casting = not channeling
+			data.channeling = channeling
+			data.fadeOut = false
+			data.stopTime = nil
+			data.stopMessage = nil
 			DogTag:FireEvent("Cast", unit)
+			return
 		end
+		
+		if not data.spell then
+			castData[guid] = del(data)
+			DogTag:FireEvent("Cast", unit)
+			return
+		end
+		
+		if event == "UNIT_SPELLCAST_FAILED" then
+			data.stopMessage = _G.FAILED
+		elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
+			data.stopMessage = _G.INTERRUPTED
+		end
+		
+		data.casting = false
+		data.channeling = false
+		data.fadeOut = true
+		if not data.stopTime then
+			data.stopTime = GetTime()
+		end
+		DogTag:FireEvent("Cast", unit)
 	end
-	wipe(guidsToFire)
-end
-DogTag:AddTimerHandler("Unit", fixCastData)
 
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_START", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_START", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_STOP", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_FAILED", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_INTERRUPTED", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_DELAYED", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_UPDATE", updateInfo)
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_STOP", updateInfo)
-DogTag:AddEventHandler("Unit", "UnitChanged", updateInfo)
-
-DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_SENT", function(event, unit, spell, rank, target)
-	
-	-- The purpose of this event is to predict the next spell target.
-	-- This seems to be removed in at least wow_800
-	if unit == "player" and not wow_800 then
-		nextSpell = spell
-		nextRank = rank and tonumber(rank:match("%d+"))
-		nextTarget = target ~= "" and target or nil
+	local guidsToFire, unitsToUpdate = {}, {}
+	local function fixCastData()
+		local frame
+		local currentTime = GetTime()
+		for guid, data in pairs(castData) do
+			if data.casting then
+				if currentTime > data.endTime and playerGuid ~= guid then
+					data.casting = false
+					data.fadeOut = true
+					data.stopTime = currentTime
+				end
+			elseif data.channeling then
+				if currentTime > data.endTime then
+					data.channeling = false
+					data.fadeOut = true
+					data.stopTime = currentTime
+				end
+			elseif data.fadeOut then
+				local alpha = 0
+				local stopTime = data.stopTime
+				if stopTime then
+					alpha = stopTime - currentTime + 1
+				end
+			
+				if alpha <= 0 then
+					castData[guid] = del(data)
+				end
+			else
+				castData[guid] = del(data)
+			end
+			local found = false
+			local normal = false
+			for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+				found = unit
+				if IsNormalUnit[unit] then
+					normal = true
+					break
+				end
+			end
+			if not found then
+				if castData[guid] then
+					castData[guid] = del(data)
+				end
+			else
+				if not normal then
+					unitsToUpdate[found] = true
+				end
+				
+				guidsToFire[guid] = true
+			end
+		end
+		for unit in pairs(unitsToUpdate) do
+			updateInfo(nil, unit)
+		end
+		wipe(unitsToUpdate)
+		for guid in pairs(guidsToFire) do
+			for unit in DogTag_Unit.IterateUnitsWithGUID(guid) do
+				DogTag:FireEvent("Cast", unit)
+			end
+		end
+		wipe(guidsToFire)
 	end
+	DogTag:AddTimerHandler("Unit", fixCastData)
+
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_START", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_START", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_STOP", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_FAILED", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_INTERRUPTED", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_DELAYED", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_UPDATE", updateInfo)
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_CHANNEL_STOP", updateInfo)
+	DogTag:AddEventHandler("Unit", "UnitChanged", updateInfo)
+
+	DogTag:AddEventHandler("Unit", "UNIT_SPELLCAST_SENT", function(event, unit, spell, rank, target)
+		
+		-- The purpose of this event is to predict the next spell target.
+		-- This seems to be removed in at least wow_800
+		if unit == "player" and not wow_800 then
+			nextSpell = spell
+			nextRank = rank and tonumber(rank:match("%d+"))
+			nextTarget = target ~= "" and target or nil
+		end
+	end)
+
 end)
 
 local blank = {}

@@ -7,7 +7,7 @@ Description: A library to provide a markup syntax
 ]]
 
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210228032115"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -41,6 +41,16 @@ else
 	frame = CreateFrame("Frame")
 end
 DogTag_Unit.frame = frame
+
+local usedEvents = {}
+DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
+	if not usedEvents[event] then
+		usedEvents[event] = true
+		pcall(frame.RegisterEvent, frame, event)
+	end
+end)
+
+
 local normalUnitsWackyDependents = {}
 
 local function fireEventForDependents(event, unit, ...)
@@ -51,7 +61,7 @@ local function fireEventForDependents(event, unit, ...)
 		end
 	end
 end
-frame:RegisterAllEvents()
+
 frame:SetScript("OnEvent", function(this, event, unit, ...)
 	fireEventForDependents(event, unit, ...)
 	if unit == "target" then
@@ -70,6 +80,13 @@ frame:SetScript("OnEvent", function(this, event, unit, ...)
 			DogTag:FireEvent(event, "party" .. num .. "pet", ...)
 			fireEventForDependents(event, "party" .. num .. "pet", ...)
 		end
+	else
+		-- event must not be a unit event, so we can unregister it
+		-- as the only purpose of this is to replay unit events
+		-- with different unit IDs. AFAIK there are no unit events
+		-- that are ever fired without a unitid, so this shouldn't
+		-- have any false positives.
+		frame:UnregisterEvent(event)
 	end
 end)
 
@@ -132,15 +149,15 @@ setmetatable(UnitToLocale, {__index=function(self, unit)
 	self[unit] = L["%s's target"]:format(self[nonTarget])
 	return self[unit]
 end})
-DogTag.UnitToLocale = UnitToLocale
+DogTag_Unit.UnitToLocale = UnitToLocale
 
 -- [""] = true added 8/26 by Cybeloras. TellMeWhen icons (which implement DogTag) don't always check a unit, in which case they fall back on "", not "player".
 -- Falling back on "player" (in TellMeWhen) is counter-intuitive. Falling back on "" doesn't seem to cause any issues.
 local IsLegitimateUnit = { [""] = true, player = true, target = true, focus = true, pet = true, playerpet = true, mouseover = true, npc = true, NPC = true, vehicle = true }
-DogTag.IsLegitimateUnit = IsLegitimateUnit
+DogTag_Unit.IsLegitimateUnit = IsLegitimateUnit
 local IsNormalUnit = { player = true, target = true, focus = true, pet = true, playerpet = true, mouseover = true }
 local WACKY_UNITS = { targettarget = true, playertargettarget = true, targettargettarget = true, playertargettargettarget = true, pettarget = true, playerpettarget = true, pettargettarget = true, playerpettargettarget = true }
-DogTag.IsNormalUnit = IsNormalUnit
+DogTag_Unit.IsNormalUnit = IsNormalUnit
 for i = 1, MAX_PARTY_MEMBERS do
 	IsLegitimateUnit["party" .. i] = true
 	IsLegitimateUnit["partypet" .. i] = true
@@ -207,6 +224,13 @@ setmetatable(IsLegitimateUnit, { __index = function(self, key)
 end, __call = function(self, key)
 	return self[key]
 end})
+
+-- Setting these on the DogTag lib root for backwards-compat with addons that are peeking at internals, e.g ThreatPlates:
+-- https://github.com/Backupiseasy/ThreatPlates/blob/79c933e25dbc3bb0b99b63f34eec97d0be9dc64d/Init.lua#L127
+-- However, they could get nulled out if a newer version of LibDogTag-3.0 is loaded later.
+DogTag.IsNormalUnit = IsNormalUnit
+DogTag.IsLegitimateUnit = IsLegitimateUnit
+DogTag.UnitToLocale = UnitToLocale
 
 local unitToGUID = {}
 local guidToUnits = {}
@@ -338,7 +362,17 @@ local function searchForNameTag(ast)
 	return false
 end
 
+
 DogTag:AddCompilationStep("Unit", "start", function(t, ast, kwargTypes, extraKwargs)
+
+	-- Since DogTag_Unit isn't upvalued in the same way that DogTag is
+	-- in the function compilation, we instead copy the functions from DogTag_Unit
+	-- that we need onto DogTag so we can used them in here.
+	-- This copy is necessary on every compilation because if a newer version 
+	-- of LibDogTag-3.0 is loaded, it will wipe the DogTag lib object.
+	DogTag.IsLegitimateUnit = DogTag_Unit.IsLegitimateUnit
+	DogTag.UnitToLocale = DogTag_Unit.UnitToLocale
+
 	if kwargTypes["unit"] then
 		t[#t+1] = [=[if not DogTag.IsLegitimateUnit[]=]
 		t[#t+1] = extraKwargs["unit"][1]
@@ -504,14 +538,15 @@ DogTag:AddEventHandler("Unit", "INSTANCE_ENCOUNTER_ENGAGE_UNIT", function(event,
 	end
 end)
 
+-- These 4 tables are safe to upvalue from DogTag
+-- because the same tables are reused across DogTag upgrades:
 local fsToKwargs = DogTag.fsToKwargs
 local fsToNSList = DogTag.fsToNSList
 local fsNeedUpdate = DogTag.fsNeedUpdate
 local fsNeedQuickUpdate = DogTag.fsNeedQuickUpdate
-local unpackNamespaceList = DogTag.unpackNamespaceList
 
 local nsListHasUnit = setmetatable({}, { __index = function(self, key)
-	for _, ns in ipairs(unpackNamespaceList[key]) do
+	for _, ns in ipairs(DogTag.unpackNamespaceList[key]) do
 		if ns == "Unit" then
 			self[key] = true
 			return true
@@ -520,13 +555,6 @@ local nsListHasUnit = setmetatable({}, { __index = function(self, key)
 	self[key] = false
 	return false
 end })
-
-local checkYield = DogTag.checkYield
-if not checkYield then
-	-- If LibDogTag doesn't include checkYield (old version)
-	-- Then just make checkYield an empty function to prevent errors.
-	checkYield = function() end
-end
 
 local nextRefreshGUIDsTime = 0
 DogTag:AddTimerHandler("Unit", function(num, currentTime)
@@ -546,6 +574,7 @@ DogTag:AddTimerHandler("Unit", function(num, currentTime)
 		DogTag:FireEvent("UnitChanged", "mouseover")
 	end
 	if currentTime >= nextUpdateWackyUnitsTime then
+		local checkYield = DogTag.checkYield
 		for unit in pairs(WACKY_UNITS) do
 			local oldGUID = unitToGUID[unit]
 			refreshGUID(unit)

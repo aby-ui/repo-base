@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.6
+Version 2.4.9.7
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -692,13 +692,13 @@ end
 
 function CM:HideMarkerFromPlate(plate, plateName, caller) -- {{{
 
-    --[===[@alpha@
+    --[=[@alpha@
     if not plate then
         self:Debug(ERROR, "HideMarkerFromPlate(), plate is not defined");
         error("'Plate' is not defined");
         return;
     end
-    --@end-alpha@]===]
+    --@end-alpha@]=]
 
     local plateAdditions = plate.HHTD and plate.HHTD.CM;
 

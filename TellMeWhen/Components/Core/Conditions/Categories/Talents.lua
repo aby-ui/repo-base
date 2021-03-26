@@ -523,7 +523,45 @@ ConditionCategory:RegisterCondition(21, "ANIMAPOW", {
 	end,
 })
 
-ConditionCategory:RegisterCondition(21, "SOULBIND", {
+TMW.CovenantIcons = {
+	[1] = GetSpellTexture(321076),
+	[2] = GetSpellTexture(321079),
+	[3] = GetSpellTexture(299206),
+	[4] = GetSpellTexture(321078),
+}
+ConditionCategory:RegisterCondition(22, "COVENANT", {
+	text = L["CONDITIONPANEL_COVENANT"],
+	unit = PLAYER,
+
+	bitFlags = (function()
+		local t = {}
+		for i, id in pairs(C_Covenants.GetCovenantIDs()) do
+			local data = C_Covenants.GetCovenantData(id);
+			t[i] = {
+				order = i,
+				text = data.name,
+				icon = TMW.CovenantIcons[id],
+				tcoords = CNDT.COMMON.standardtcoords,
+			}
+		end
+		return t
+	end)(),
+
+	icon = 3257748,
+	tcoords = CNDT.COMMON.standardtcoords,
+	Env = {
+		GetActiveCovenantID = C_Covenants.GetActiveCovenantID,
+	},
+	funcstr = function(c)
+		return [[ BITFLAGSMAPANDCHECK( GetActiveCovenantID() or 0 ) ]]
+	end,
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("COVENANT_CHOSEN")
+	end,
+})
+
+ConditionCategory:RegisterCondition(23, "SOULBIND", {
 	text = L["CONDITIONPANEL_SOULBIND"],
 	bool = true,
 	unit = PLAYER,
