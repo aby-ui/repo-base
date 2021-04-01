@@ -127,17 +127,17 @@ end
 -- Ace3 callbacks
 --------
 function ChocolateBar:OnInitialize()
-	
-	
+
+
 	self.db = LibStub("AceDB-3.0"):New("ChocolateBarDB", self:getDefaults(), "Default")
 	self.db.RegisterCallback(self, "OnDatabaseShutdown", "OnDatabaseShutdown")
-	
+
 	self:RegisterChatCommand("chocolatebar", "ChatCommand")
 	db = self.db.profile
 
 	debug("addonVersion=", addonVersion)
 	debug("isNewInstall()=", self:isNewInstall())
-	
+
 	local AceCfgDlg = LibStub("AceConfigDialog-3.0")
 	AceCfgDlg:AddToBlizOptions("ChocolateBar", "ChocolateBar")
 
@@ -153,10 +153,10 @@ function ChocolateBar:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED","OnEnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED","OnLeaveCombat")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","OnEnterWorld")
-	--self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
-	--self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
+	self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
+	self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
 	self:RegisterEvent("ADDON_LOADED",function(event, addonName)
-	
+
 	if self[addonName] then self[addonName](self) end
 	end)
 
@@ -207,7 +207,7 @@ end
 function ChocolateBar:OnDatabaseShutdown()
 	ChocolateBarDB.addonVersion = addonVersion
 end
- 
+
 
 function ChocolateBar:NewModule(name, moduleDefaults, options, optionsKey)
 	local module = self.modules[name] or {}
@@ -223,7 +223,7 @@ function ChocolateBar:Blizzard_OrderHallUI()
 	--hookOrderHallCommandBar(self)
 	if not self.hookedOrderHallCommandBar and db.hideOrderHallCommandBar then
 			local orderHallCommandBar = _G.OrderHallCommandBar
-			
+
 			if orderHallCommandBar then
 				orderHallCommandBar:HookScript("OnShow", function() ChocolateBar:ToggleOrderHallCommandBar() end)
 				orderHallCommandBar:Hide()
@@ -334,7 +334,7 @@ end
 --------
 function ChocolateBar:LibDataBroker_DataObjectCreated(event, name, obj, noupdate)
 	local t = obj.type
-	
+
 	if t == "data source" or t == "launcher" then
 		if db.objSettings[name].enabled then
 			self:EnableDataObject(name, obj, noupdate)
@@ -386,7 +386,7 @@ function ChocolateBar:EnableDataObject(name, obj, noupdate)
 	local choco = Chocolate:New(name, obj, settings, db)
 	chocolateObjects[name] = choco
 
-	
+
 	local bar = chocolateBars[barName]
 	if bar then
 		bar:AddChocolatePiece(choco, name,noupdate)

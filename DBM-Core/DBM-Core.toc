@@ -21,11 +21,12 @@
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
-## Version: 9.0.24-7-ged88431
+## Version: 9.0.25-4-gda15217
 
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml
 Libs\LibSerialize\lib.xml
+#@end-no-lib-strip@
 
 localization.en.lua
 localization.cn.lua

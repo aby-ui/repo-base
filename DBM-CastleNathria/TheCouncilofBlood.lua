@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210325141425")
+mod:SetRevision("20210330155402")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -123,7 +123,7 @@ local timerDancingFeverCD						= mod:NewCDCountTimer(60, 347350, nil, nil, nil, 
 mod:AddRangeFrameOption(8, 346657)
 mod:AddInfoFrameOption(347350, true)
 mod:AddSetIconOption("SetIconOnDutiful", 346698, true, true, {8})
-mod:AddSetIconOption("SetIconOnImage", 337110, true, true, {6})
+mod:AddSetIconOption("SetIconOnImage", "ej22433", true, true, {6})
 mod:AddSetIconOption("SetIconOnDancingFools", 346826, true, true, {8})--Attempts to set icon only on killable one, not yet tested
 mod:AddNamePlateOption("NPAuraOnFixate", 330967)
 mod:AddNamePlateOption("NPAuraOnShield", 346694)
@@ -246,7 +246,7 @@ local allTimers = {
 		--Dark Recital (Living)
 		[331634] = {44.9, 59.9, 20},
 		--Dark Recital (Dead)
-		[331635] = {0, 0, 36.9},
+		[331635] = {0, 60, 36.9},
 		--Waltz of Blood (P2+)
 		[346800] = {0, 60, 60},
 		--Dancing Fools (P3+)

@@ -117,6 +117,7 @@ addon.Cooldowns = {
     [586] = { duration = 30, class = "PRIEST" }, -- Fade
         [213602] = { parent = 586 }, -- Greater Fade
     [32375] = { duration = 45, class = "PRIEST" }, -- Mass Dispel
+	[323673] = { duration = 45, class = "PRIEST" }, -- Mindgames
 
         -- Discipline
 
@@ -174,6 +175,7 @@ addon.Cooldowns = {
         [224668] = { parent = 31884 }, -- Crusade
         [231895] = { parent = 31884 }, -- Crusade
     [115750] = { duration = 90, class = "PALADIN" }, -- Blinding Light
+	[304971] = { duration = 60, class = "PALADIN" }, -- Divine Toll
 
         -- Holy
 
@@ -217,6 +219,7 @@ addon.Cooldowns = {
     [102359] = { duration = 30, class = "DRUID" }, -- Mass Entanglement
     [102401] = { duration = 15, class = "DRUID" }, -- Wild Charge
     [132469] = { duration = 30, class = "DRUID" }, -- Typhoon
+	[323764] = { duration = 120, class = "DRUID" }, -- Convoke the Spirits
 
         -- Balance
 
@@ -413,6 +416,7 @@ addon.Cooldowns = {
         [198103] = { duration = 120, class = "SHAMAN", specID = { 262 } }, -- Earth Elemental
         [204437] = { duration = 30, class = "SHAMAN", specID = { 262 } }, -- Lightning Lasso
         [191634] = { duration = 60, class = "SHAMAN", specID = { 262 } }, -- Stormkeeper
+		[326059] = { duration = 45, class = "SHAMAN", specID = { 262 } }, -- Primordial Wave
 
         -- Enhancement
 
@@ -422,6 +426,7 @@ addon.Cooldowns = {
         [201898] = { duration = 45, class = "SHAMAN", specID = { 263 } }, -- Windsong
         [204366] = { duration = 45, class = "SHAMAN", specID = { 263 } }, -- Thundercharge
         [204945] = { duration = 60, class = "SHAMAN", specID = { 263 } }, -- Doom Winds
+		[320674] = { duration = 90, class = "SHAMAN", specID = { 263 } }, -- Chain Harvest
 
         -- Restoration
 

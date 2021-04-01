@@ -1361,8 +1361,7 @@ La["Combine emissaries of same expansion"] = "合并同一个资料片的大使�
 La["Combine LFR"] = "合并显示随机团本"
 La["Combine World Bosses"] = "合并世界首领"
 La["Connected Realms"] = "已合并服务器"
---[[Translation missing --]]
-La["Covenant"] = "Covenant"
+La["Covenant"] = "盟约"
 La["Currency settings"] = "货币设置"
 La["Cursed Coffer"] = "被诅咒的箱子"
 La["Daily Quests"] = "日常任务"

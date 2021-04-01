@@ -1470,8 +1470,8 @@ function SI:UpdateToonData()
       t.RestXP = nil
     end
     t.Warmode = C_PvP.IsWarModeDesired()
+    t.Covenant = C_Covenants.GetActiveCovenantID()
   end
-  t.Covenant = C_Covenants.GetActiveCovenantID()
 
   t.LastSeen = time()
 end
@@ -2480,7 +2480,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.0.7-5-g80ebb0f" then
+  if versionString == "9.0.7-6-g12ae6d8" then
     versionString = "Dev"
   end
   --@end-debug@]==]

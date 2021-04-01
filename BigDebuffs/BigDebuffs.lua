@@ -509,6 +509,11 @@ local anchors = {
             party2 = "ElvUF_PartyGroup1UnitButton3",
             party3 = "ElvUF_PartyGroup1UnitButton4",
             party4 = "ElvUF_PartyGroup1UnitButton5",
+            arena1 = "ElvUF_Arena1",
+            arena2 = "ElvUF_Arena2",
+            arena3 = "ElvUF_Arena3",
+            arena4 = "ElvUF_Arena4",
+            arena5 = "ElvUF_Arena5",
         },
     },
     ["bUnitFrames"] = {
@@ -1790,7 +1795,8 @@ end
 
 function BigDebuffs:UNIT_AURA(unit)
     if not self.db.profile.unitFrames.enabled or
-        not self.db.profile.unitFrames[unit:gsub("%d", "")].enabled
+        not self.db.profile.unitFrames[unit:gsub("%d", "")].enabled or
+        (GetNumGroupMembers() > 5 and unit:match("party"))
     then
         return
     end

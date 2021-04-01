@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210224082525")
+mod:SetRevision("20210331041228")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -24,8 +24,8 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_MISSED",
 	"UNIT_DIED",
 	"RAID_BOSS_WHISPER",
-	"UNIT_SPELLCAST_START boss1 boss2",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
+	"UNIT_SPELLCAST_START boss1 boss2 boss3 boss4 boss5",
+	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3 boss4 boss5"
 )
 
 --TODO, review more of timers with some bug fixes to fight as well as just a better version of transcriptor recording it., especailly P3 timers after intermission 2
