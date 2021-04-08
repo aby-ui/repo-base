@@ -511,13 +511,22 @@ function Details:StartMeUp() --I'll never stop!
 	Details.boss_mods_timers.encounter_timers_dbm = Details.boss_mods_timers.encounter_timers_dbm or {}
 	Details.boss_mods_timers.encounter_timers_bw = Details.boss_mods_timers.encounter_timers_bw or {}
 
-	Details.segments_amount = 40
-	Details.segments_amount_to_save = 40
-
 	--clear overall data on new session
 	if (_detalhes.overall_clear_logout) then
 		_detalhes.tabela_overall = _detalhes.combate:NovaTabela()
 	end
+
+	--wipe overall on torghast - REMOVE ON 10.0
+	local torghastTracker = CreateFrame("frame")
+	torghastTracker:RegisterEvent("JAILERS_TOWER_LEVEL_UPDATE")
+	torghastTracker:SetScript("OnEvent", function(self, event, level, towerType)
+		if (level == 1) then
+			if (Details.overall_clear_newtorghast) then
+				Details.historico:resetar_overall()
+				Details:Msg ("overall data are now reset.") --localize-me
+			end
+		end
+	end)
 
 	function Details:InstallOkey()
 		return true

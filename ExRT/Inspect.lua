@@ -20,7 +20,7 @@ end
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Inspect",nil,true)
+local module = ExRT:New("Inspect",nil,true)
 local ELib,L = ExRT.lib,ExRT.L
 
 local cooldownsModule = ExRT.A.ExCD2
@@ -244,7 +244,7 @@ local InspectItems = nil
 do
 	local ITEM_LEVEL = (ITEM_LEVEL or "NO DATA FOR ITEM_LEVEL"):gsub("%%d","(%%d+)")
 	local dataNames = {'tiersets','items','items_ilvl','azerite','essence'}
-	function InspectItems(name,inspectedName,inspectSavedID)
+	function InspectItems(name,inspectedName,inspectSavedID,onlyPrepCall)
 		if module.db.inspectCleared or module.db.inspectID ~= inspectSavedID then
 			return
 		end
@@ -569,6 +569,10 @@ do
 			end
 		end
 		cooldownsModule:UpdateAllData()
+
+		if not onlyPrepCall then
+			ExRT.F:FireCallback("InspectItems", name, inspectData)
+		end
 	end
 	module.InspectItems = InspectItems
 end
@@ -876,7 +880,7 @@ do
 					end
 				end
 			end
-			InspectItems(name, inspectedName, module.db.inspectID)
+			InspectItems(name, inspectedName, module.db.inspectID, true)
 
 			cooldownsModule:UpdateAllData() 	--------> ExCD2
 		end
@@ -1211,14 +1215,18 @@ function module:ParseSoulbind(sender,main)
 	local inspectData = module.db.inspectDB[sender]
 	if inspectData then
 		inspectData.soulbinds = inspectData.soulbinds or {}	
-		inspectData = inspectData.soulbinds
-		wipe(inspectData)
+		wipe(inspectData.soulbinds)
 	end
 
 	local _,covenantID,soulbindID,tree = strsplit(":",main,4)
 	covenantID = tonumber(covenantID)
+	soulbindID = tonumber(soulbindID or "")
 	if cooldownsModule:IsEnabled() then
 		cooldownsModule:AddCovenant(sender,covenantID)
+	end
+	if inspectData then
+		inspectData.covenantID = covenantID
+		inspectData.soulbindID = soulbindID
 	end
 	while tree do
 		local powerStr,on = strsplit(":",tree,2)
@@ -1230,7 +1238,7 @@ function module:ParseSoulbind(sender,main)
 				cooldownsModule.db.session_gGUIDs[sender] = {spellID,"soulbind"}
 			end
 			if inspectData then
-				inspectData[spellID] = 1
+				inspectData.soulbinds[spellID] = 1
 			end
 		else
 			local conduitID,conduitRank,conduitType = strsplit("-",powerStr,3)
@@ -1245,11 +1253,13 @@ function module:ParseSoulbind(sender,main)
 					cooldownsModule:SetSoulbindRank(sender,spellID,conduitRank)
 				end
 				if inspectData then
-					inspectData[spellID] = conduitRank
+					inspectData.soulbinds[spellID] = conduitRank
 				end
 			end
 		end
 	end
+
+	ExRT.F:FireCallback("InspectSoulbind", sender, covenantID, soulbindID, inspectData and inspectData.soulbinds, inspectData, main)
 end
 
 function module:addonMessage(sender, prefix, subPrefix, ...)

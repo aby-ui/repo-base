@@ -362,12 +362,16 @@ local launcher = LDB:NewDataObject( MODNAME, {
 	OnClick = function(clickedframe, button)
 				if tooltip then
 					-- tooltip:SetScript("OnEnter", nil)
-					-- tooltip:SetScript("OnLeave", nil)
+					-- tooltip:SetScript("OnLeave", nil)GetMacroInfo
 					tooltip:Release(tooltip)
 					tooltip = nil
 				end
 				if button == "RightButton" then
+                    if InCombatLockdown() and not (IsControlKeyDown() and IsAltKeyDown()) then
+                        U1Message("战斗中请按住CTRL+ALT点击右键进行设置")
+                    else
 						InterfaceOptionsFrame_OpenToCategory("Broker RaidSave")
+                    end
 				elseif button == "LeftButton" then
                     if InCombatLockdown() then
                         DEFAULT_CHAT_FRAME:AddMessage("战斗中无法自动打开团队面板。")

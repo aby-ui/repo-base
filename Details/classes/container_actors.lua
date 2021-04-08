@@ -506,6 +506,7 @@
 		
 		if (container_pets [serial]) then --> � um pet reconhecido
 			--[[statistics]]-- _detalhes.statistics.container_pet_calls = _detalhes.statistics.container_pet_calls + 1
+
 			local nome_dele, dono_nome, dono_serial, dono_flag = _detalhes.tabela_pets:PegaDono (serial, nome, flag)
 			if (nome_dele and dono_nome) then
 				nome = nome_dele

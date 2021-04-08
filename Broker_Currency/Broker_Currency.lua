@@ -781,7 +781,11 @@ Broker_Currency.ldb = LDB:NewDataObject("Broker Currency", {
 	text = "Initializing...",
 	OnClick = function(_, button)
 		if button == "RightButton" then
-			_G.InterfaceOptionsFrame_OpenToCategory(Broker_Currency.menu)
+            if InCombatLockdown() and not (IsControlKeyDown() and IsAltKeyDown()) then
+                U1Message("战斗中请按住CTRL+ALT点击右键进行设置")
+            else
+			    _G.InterfaceOptionsFrame_OpenToCategory(Broker_Currency.menu)
+            end
 		end
 	end,
 	OnEnter = OnEnter,

@@ -1,7 +1,7 @@
 local _, T = ...
 
 T.KnownSpells = {
-	[90]={phase=0, type="passive", target="friend-surround", modDamageDealt=20},
+	[90]={type="passive", target="friend-surround", modDamageDealt=20},
 	[53]={type="aura", target="all-enemies", duration=6, period=2, modDamageDealt=-20, damageATK=10},
 	[89]={type="aura", target=1, duration=3, damageATK=40, nore=true},
 	[96]={type="aura", target=1, duration=2, damageATK1=60, modDamageDealt=-30},

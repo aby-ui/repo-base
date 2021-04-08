@@ -24,6 +24,11 @@ local IsActionInRange = _G.IsActionInRange
 local IsUsableAction = _G.IsUsableAction
 local GetPetActionInfo = _G.GetPetActionInfo
 local GetPetActionSlotUsable = _G.GetPetActionSlotUsable
+local GetActionInfo = _G.GetActionInfo
+local GetMacroInfo = _G.GetMacroInfo
+local GetMacroSpell = _G.GetMacroSpell
+local GetSpellPowerCost = _G.GetSpellPowerCost
+local UnitPower = _G.UnitPower
 
 --------------------------------------------------------------------------------
 -- Event Handlers
@@ -295,27 +300,58 @@ function Addon:UpdateButtonStates(force)
     return updatedButtons
 end
 
--- action button specific methods
-
--- gets the current state of the action button
 function Addon:GetActionButtonState(button)
     local action = button.action
-    local isUsable, notEnoughMana = IsUsableAction(action)
-    local inRange = IsActionInRange(action)
+    local actionType, actionTypeId = GetActionInfo(action)
 
-    -- usable (ignoring target information)
-    if isUsable then
-        -- but out of range
-        if inRange == false then
-            return 'oor'
-        else
-            return 'normal'
+    if not actionType then
+        return 'normal'
+    end
+
+    -- for macros with names that start with a #, we prioritize the OOM check
+    -- using a spell cost strategy over other ones to better clarify if the
+    -- macro is actually usable or not
+    if actionType == 'macro' then
+        local name = GetMacroInfo(actionTypeId)
+
+        if name and name:sub(1, 1) == '#' then
+            local spellId = GetMacroSpell(actionTypeId)
+
+            -- only run the check for spell macros
+            if spellId then
+                local costs = GetSpellPowerCost(spellId)
+
+                for _, cost in ipairs(costs) do
+                    if UnitPower('player', cost.type) < cost.minCost then
+                        return 'oom'
+                    end
+                end
+
+                if IsActionInRange(action) == false then
+                    return 'oor'
+                end
+
+                return 'normal'
+            end
         end
-    elseif notEnoughMana then
-        return 'oom'
-    else
+    end
+
+    local isUsable, notEnoughMana = IsUsableAction(action)
+    if not isUsable then
+        if notEnoughMana then
+            return 'oom'
+        end
         return 'unusable'
     end
+
+    -- we do == false here because IsActionInRange can return one of true
+    -- (has range, in range), false (has range, out of range), and nil (does
+    -- not have range) and we explicitly want to know about (has range, oor)
+    if IsActionInRange(action) == false then
+        return 'oor'
+    end
+
+    return 'normal'
 end
 
 function Addon:UpdateActionButtonState(button, force)
@@ -403,9 +439,7 @@ function Addon:StartButtonFlashing(button)
         if self.flashAnimations then
             self.flashAnimations[button] = animation
         else
-            self.flashAnimations = {
-                [button] = animation
-            }
+            self.flashAnimations = {[button] = animation}
         end
     end
 

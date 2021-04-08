@@ -9194,6 +9194,7 @@ end
 	}
 
 -- ~unitframe
+local globalBaseFrameLevel = 1 -- to be increased + used across each new plate
 function DF:CreateUnitFrame (parent, name, unitFrameSettingsOverride, healthBarSettingsOverride, castBarSettingsOverride, powerBarSettingsOverride)
 	
 	local parentName = name or ("DetailsFrameworkUnitFrame" .. tostring (math.random (1, 100000000)))
@@ -9202,7 +9203,11 @@ function DF:CreateUnitFrame (parent, name, unitFrameSettingsOverride, healthBarS
 	local f = CreateFrame ("button", parentName, parent, "BackdropTemplate")
 	
 	--> base level
-	local baseFrameLevel = f:GetFrameLevel()
+	--local baseFrameLevel = f:GetFrameLevel()
+	local baseFrameLevel = globalBaseFrameLevel
+	globalBaseFrameLevel = globalBaseFrameLevel + 50
+	
+	f:SetFrameLevel (baseFrameLevel)
 	
 	--> create the healthBar
 	local healthBar = DF:CreateHealthBar (f, false, healthBarSettingsOverride)

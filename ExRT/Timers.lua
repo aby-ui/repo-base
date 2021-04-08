@@ -4,7 +4,7 @@ local math_ceil, IsEncounterInProgress, abs, UnitHealth, UnitHealthMax, GetTime,
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local VExRT = nil
 
-local module = ExRT.mod:New("Timers",ExRT.L.timers)
+local module = ExRT:New("Timers",ExRT.L.timers)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.lasttimertopull = 0

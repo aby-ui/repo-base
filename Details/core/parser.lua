@@ -727,7 +727,7 @@
 
 		if (not jogador_alvo) then
 			local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
-			Details:Msg("Report 0x885488", alvo_name, instanceName, instanceId, damage_cache[alvo_serial] and "true")
+			Details:Msg("D! Report 0x885488", alvo_name, instanceName, instanceId, damage_cache[alvo_serial] and "true")
 			return
 		end
 		
@@ -1581,8 +1581,21 @@
 			return
 		end
 		
+--print(token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellName)
+--Player-3209-083BBABE Kastfall 1297 Creature-0-4229-1642-17-69792-00005E1CC4 Earth Spirit 8465 0 138121 Storm, Earth, and Fire
+--Player-3209-083BBABE Kastfall 1297 Creature-0-4229-1642-17-69791-00005E1CC4 Fire Spirit 8465 0 138123 Storm, Earth, and Fire
+
 		if (not who_name) then
 			who_name = "[*] " .. spellName
+		end
+
+		local npcId = _tonumber(_select (6, _strsplit ("-", alvo_serial)) or 0)
+
+		--rename monk's "Storm, Earth, and Fire" adds
+		if (npcId == 69792) then 
+			alvo_name = "Earth Spirit"
+		elseif (npcId == 69791) then
+			alvo_name = "Fire Spirit"
 		end
 	
 		--> pet summon another pet

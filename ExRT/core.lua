@@ -1,8 +1,8 @@
---	17.03.2021
+--	02.04.2021
 
 local GlobalAddonName, ExRT = ...
 
-ExRT.V = 4500
+ExRT.V = 4520
 ExRT.T = "R"
 
 ExRT.OnUpdate = {}		--> таймеры, OnUpdate функции
@@ -76,7 +76,6 @@ ExRT.NULL = {}
 ExRT.NULLfunc = function() end
 ---------------> Modules <---------------
 ExRT.mod = {}
-ExRT.mod.__index = ExRT.mod
 
 do
 	local function mod_LoadOptions(this)
@@ -91,12 +90,12 @@ do
 	local function mod_Options_CreateTitle(self)
 		self.title = ExRT.lib:Text(self,self.name,20):Point(15,6):Top()
 	end
-	function ExRT.mod:New(moduleName,localizatedName,disableOptions)
+	function ExRT:New(moduleName,localizatedName,disableOptions)
 		if ExRT.A[moduleName] then
 			return false
 		end
 		local self = {}
-		setmetatable(self, ExRT.mod)
+		for k,v in pairs(ExRT.mod) do self[k] = v end
 		
 		if not disableOptions then
 			self.options = ExRT.Options:Add(moduleName,localizatedName)
@@ -134,12 +133,10 @@ do
 		
 		return self
 	end
-
-	ExRT.New = ExRT.mod.New
 end
 
 function ExRT.mod:Event(event,...)
-	self[event](self,...)
+	return self[event](self,...)
 end
 if ExRT.T == "DU" then
 	local ExRTDebug = ExRT.Debug
@@ -179,7 +176,7 @@ local function CLEU_OnEvent_Unreg()
 				tremove(CLEUList, j)
 				break
 			end
-		end		
+		end
 	end
 	wipe(CLEUListToUnreg)
 
@@ -200,18 +197,29 @@ function ExRT.mod:RegisterEvents(...)
 	for i=1,select("#", ...) do
 		local event = select(i,...)
 		if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-			self.main:RegisterEvent(event)
+			if not ExRT.isClassic then
+				self.main:RegisterEvent(event)
+			else
+				pcall(self.main.RegisterEvent,self.main,event)
+			end
 		elseif self.CLEUNotInList then
 			if not self.CLEU then self.CLEU = CreateFrame("Frame") end
 			self.CLEU:SetScript("OnEvent",self.main.COMBAT_LOG_EVENT_UNFILTERED)
 			self.CLEU:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 		else
 			if CLEUModuleToList[self] then
-				self:UnregisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
+				for j=1,#CLEUList do
+					if CLEUList[j] == CLEUModuleToList[self] then
+						CLEUList[j] = self.main.COMBAT_LOG_EVENT_UNFILTERED
+						break
+					end
+				end
+			else
+				CLEUListLen = #CLEUList + 1
+				CLEUList[CLEUListLen] = self.main.COMBAT_LOG_EVENT_UNFILTERED
 			end
 			CLEUFrame:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-			CLEUListLen = #CLEUList + 1
-			CLEUList[CLEUListLen] = self.main.COMBAT_LOG_EVENT_UNFILTERED
+			
 			CLEUModuleToList[self] = self.main.COMBAT_LOG_EVENT_UNFILTERED
 		end
 		self.main.events[event] = true
@@ -223,7 +231,11 @@ function ExRT.mod:UnregisterEvents(...)
 	for i=1,select("#", ...) do
 		local event = select(i,...)
 		if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-			self.main:UnregisterEvent(event)
+			if not ExRT.isClassic then
+				self.main:UnregisterEvent(event)
+			else
+				pcall(self.main.UnregisterEvent,self.main,event)
+			end
 		elseif self.CLEUNotInList then
 			if self.CLEU then
 				self.CLEU:SetScript("OnEvent",nil)
@@ -239,45 +251,6 @@ function ExRT.mod:UnregisterEvents(...)
 		end
 		self.main.events[event] = nil
 		ExRT.F.dprint(self.name,'UnregisterEvent',event)
-	end
-end
-
-if ExRT.isClassic then
-	function ExRT.mod:RegisterEvents(...)
-		for i=1,select("#", ...) do
-			local event = select(i,...)
-			if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-				pcall(self.main.RegisterEvent,self.main,event)
-			else
-				CLEUFrame:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-				if CLEUModuleToList[self] then
-					self:UnregisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
-				end
-				CLEUListLen = #CLEUList + 1
-				CLEUList[CLEUListLen] = self.main.COMBAT_LOG_EVENT_UNFILTERED
-				CLEUModuleToList[self] = self.main.COMBAT_LOG_EVENT_UNFILTERED
-			end
-			self.main.events[event] = true
-			ExRT.F.dprint(self.name,'RegisterEvent',event)
-		end
-	end
-	
-	function ExRT.mod:UnregisterEvents(...)
-		for i=1,select("#", ...) do
-			local event = select(i,...)
-			if event ~= "COMBAT_LOG_EVENT_UNFILTERED" then
-				pcall(self.main.UnregisterEvent,self.main,event)
-			else
-				if CLEUModuleToList[self] then
-					CLEUListToUnreg[ CLEUModuleToList[self] ] = true
-					CLEUModuleToList[self] = nil
-	
-					CLEUFrame:SetScript("OnEvent",CLEU_OnEvent_Unreg)
-				end
-			end
-			self.main.events[event] = nil
-			ExRT.F.dprint(self.name,'UnregisterEvent',event)
-		end
 	end
 end
 
@@ -302,14 +275,6 @@ end
 
 function ExRT.mod:UnregisterAddonMessage()
 	ExRT.OnAddonMessage[self.name] = nil
-end
-
-function ExRT.mod:RegisterEgg()
-	ExRT.Eggs[self.name] = self
-end
-
-function ExRT.mod:UnregisterEgg()
-	ExRT.Eggs[self.name] = nil
 end
 
 function ExRT.mod:RegisterMiniMapMenu()
@@ -458,6 +423,40 @@ end
 local isVersionCheckCallback = nil
 local function DisableVersionCheckCallback()
 	isVersionCheckCallback = nil
+end
+
+-------------> Callbacks <-------------
+
+local callbacks = {}
+function ExRT.F:RegisterCallback(eventName, func)
+	if not callbacks[eventName] then
+		callbacks[eventName] = {}
+	end
+	tinsert(callbacks[eventName], func)
+end
+function ExRT.F:UnregisterCallback(eventName, func)
+	if not callbacks[eventName] then
+		return
+	end
+	for i=1,#callbacks[eventName] do
+		if callbacks[eventName][i] == func then
+			tremove(callbacks[eventName], i)
+			break
+		end
+	end
+end
+
+local function CallbackErrorHandler(err)
+	print ("Callback Error", err)
+end
+
+function ExRT.F:FireCallback(eventName, ...)
+	if not callbacks[eventName] then
+		return
+	end
+	for _,func in pairs(callbacks[eventName]) do
+		xpcall(func, CallbackErrorHandler, eventName, ...)
+	end
 end
 
 ---------------> Slash <---------------
@@ -635,7 +634,7 @@ do
 					tremove(ExRT_OnUpdate, j)
 					break
 				end
-			end		
+			end
 		end
 		wipe(ListToUnreg)
 	
@@ -648,7 +647,8 @@ do
 
 	function ExRT.mod:RegisterTimer()
 		if ExRT_OnUpdate_Pos[self] then
-			ExRT.mod.UnregisterTimer(self)
+			ExRT_OnUpdate_Pos[self][1] = self.timer
+			return
 		end
 
 		local pos = #ExRT_OnUpdate + 1

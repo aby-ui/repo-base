@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT.mod:New("Profiles",ExRT.L.Profiles)
+local module = ExRT:New("Profiles",ExRT.L.Profiles)
 local ELib,L = ExRT.lib,ExRT.L
 
 local LibDeflate = LibStub:GetLibrary("LibDeflate")

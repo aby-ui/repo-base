@@ -345,7 +345,11 @@ addon.obj = ldb:NewDataObject(MODNAME, {
 	iconCoords = REPAIR_ICON_COORDS,
 	OnClick = function(frame, msg)
 		if msg == "RightButton" then
-			addon:ShowConfig()
+            if InCombatLockdown() and not (IsControlKeyDown() and IsAltKeyDown()) then
+                U1Message("战斗中请按住CTRL+ALT点击右键进行设置")
+            else
+                addon:ShowConfig()
+            end
 		end
 		addon:MainUpdate()
 	end,

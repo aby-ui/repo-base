@@ -2,7 +2,7 @@ local GlobalAddonName, ExRT = ...
 
 local VExRT = nil
 
-local module = ExRT.mod:New("RaidAttendance",ExRT.L.Attendance)
+local module = ExRT:New("RaidAttendance",ExRT.L.Attendance)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.diffNames = {

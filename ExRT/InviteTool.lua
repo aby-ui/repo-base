@@ -4,7 +4,7 @@ local UnitInGuild, IsInRaid = ExRT.F.UnitInGuild, IsInRaid
 
 local VExRT = nil
 
-local module = ExRT.mod:New("InviteTool",ExRT.L.invite)
+local module = ExRT:New("InviteTool",ExRT.L.invite)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.converttoraid = false
@@ -347,7 +347,7 @@ function module.options:Load()
 	end)
 
 
-	self.wordsInput = ELib:Edit(self):Size(650,20):Point("TOPLEFT",self.chkInvByChatSay,"BOTTOMLEFT",0,-5):Tooltip(L.invitewordstooltip):Text(VExRT.InviteTool.Words):OnChange(function(self)
+	self.wordsInput = ELib:Edit(self):Size(650,20):Point("TOPLEFT",self.chkInvByChatSay,"BOTTOMLEFT",0,-5):Tooltip(L.invitewordstooltip.."\n"..L.invitewordstooltipany):Text(VExRT.InviteTool.Words):OnChange(function(self)
 		VExRT.InviteTool.Words = self:GetText()
 		createInvWordsArray()
 	end) 
@@ -588,12 +588,12 @@ function module.main:CHAT_MSG_WHISPER(msg, user, special)
 		return
 	end
 	msg = string.lower(msg)
-	if (msg and module.db.invWordsArray[msg]) and (not VExRT.InviteTool.OnlyGuild or UnitInGuild(user)) then
+	if ((msg and module.db.invWordsArray[msg]) or (module.db.invWordsArray["ANYKEYWORD"] and not UnitName(user))) and (not VExRT.InviteTool.OnlyGuild or UnitInGuild(user)) then
 		if not IsInRaid() and GetNumGroupMembers() == 5 then 
 			C_PartyInfo.ConvertToRaid()
 		end
 		InviteUnit(user)
-	elseif (msg and module.db.invWordsArray[msg]) and VExRT.InviteTool.OnlyGuild and (GetNumGuildMembers() or 0) == 0 and special ~= -578 then
+	elseif ((msg and module.db.invWordsArray[msg]) or (module.db.invWordsArray["ANYKEYWORD"] and not UnitName(user))) and VExRT.InviteTool.OnlyGuild and (GetNumGuildMembers() or 0) == 0 and special ~= -578 then
 		C_GuildInfo.GuildRoster()
 		C_Timer.After(2,function()
 			module.main:CHAT_MSG_WHISPER(msg, user, -578)
@@ -606,7 +606,7 @@ module.main.CHAT_MSG_YELL = module.main.CHAT_MSG_WHISPER
 
 function module.main:CHAT_MSG_BN_WHISPER(msg,sender,_,_,_,_,_,_,_,_,_,_,senderBnetIDAccount)
 	msg = string.lower(msg)
-	if not (msg and module.db.invWordsArray[msg]) then
+	if not ((msg and module.db.invWordsArray[msg]) or module.db.invWordsArray["ANYKEYWORD"]) then
 		return
 	end
 	if not IsInRaid() and GetNumGroupMembers() == 5 then 

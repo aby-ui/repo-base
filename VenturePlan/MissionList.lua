@@ -40,7 +40,7 @@ end
 local MissionPage, MissionList
 
 local startedMissions, finishedMissions, FlagMissionFinish, GetReservedAnima = {}, {} do
-	local followerLock, costLock, lockedCosts = {}, {}, 0
+	local followerLock, followerLockMission, costLock, lockedCosts = {}, {}, {}, 0
 	hooksecurefunc(C_Garrison, "StartMission", function(mid)
 		if not mid or C_Garrison.GetFollowerTypeByMissionID(mid) ~= 123 then return end
 		startedMissions[mid] = 1
@@ -53,10 +53,13 @@ local startedMissions, finishedMissions, FlagMissionFinish, GetReservedAnima = {
 		end
 		lockedCosts, costLock[mid] = lockedCosts - (costLock[mid] or 0) + (mi and mi.cost or 0), mi and mi.cost or nil
 	end)
-	function EV:ADVENTURE_MAP_CLOSE()
+	function EV:GARRISON_MISSION_NPC_CLOSED(ft)
+		if ft ~= 123 then
+			return
+		end
 		startedMissions = {}
 		finishedMissions = {}
-		followerLock = {}
+		followerLock, followerLockMission = {}, {}
 		costLock, lockedCosts = {}, 0
 		if MissionList then
 			S[MissionList]:ReturnToTop()
@@ -69,6 +72,11 @@ local startedMissions, finishedMissions, FlagMissionFinish, GetReservedAnima = {
 		if costLock[mid] then
 			lockedCosts, costLock[mid] = lockedCosts - costLock[mid], nil
 		end
+		for k, v in pairs(followerLockMission) do
+			if v == mid then
+				followerLockMission[k], followerLock[k] = nil
+			end
+		end
 	end
 	function EV:I_MARK_FALSESTART_FOLLOWERS(fa)
 		for i=1,fa and #fa or 0 do
@@ -78,6 +86,11 @@ local startedMissions, finishedMissions, FlagMissionFinish, GetReservedAnima = {
 				fi.status = GARRISON_FOLLOWER_ON_MISSION
 				fi.missionTimeEnd = et
 			end
+		end
+	end
+	function EV:I_RELEASE_FALSESTART_FOLLOWERS()
+		for k in pairs(followerLock) do
+			followerLock[k], followerLockMission[k] = nil
 		end
 	end
 	function FlagMissionFinish(mid)
@@ -161,6 +174,7 @@ local function ConfigureMission(me, mi, isAvailable, haveSpareCompanions, availA
 	ms.ProgressBar:SetShown(isMissionActive and not mi.isFakeStart)
 	ms.ViewButton:SetShown(not isMissionActive)
 	ms.ViewButton:SetText(isSufficientAnima and (showTentative and L"Edit party" or L"Select adventurers") or L"Insufficient anima")
+	ms.DoomRunButton:Hide()
 	ms.DoomRunButton:SetShown(showDoomRun)
 	ms.TentativeClear:SetShown(showTentative)
 	ms.ViewButton:SetPoint("BOTTOM", shiftView and 20 or 0, 12)
@@ -256,10 +270,12 @@ local function UpdateMissions()
 			local rs = 0
 			for i=1, m.rewards and #m.rewards or 0 do
 				i = m.rewards[i]
-				if haveRookies and i.followerXP and rs < 1 then
-					rs = 1
-				elseif i.currencyID == 1828 and rs < 2 then
+				if haveRookies and i.followerXP and rs < 2 then
 					rs = 2
+				elseif i.currencyID == 1828 and rs < 3 then
+					rs = 3
+				elseif i.itemID and C_Item.IsAnimaItemByID(i.itemID) and rs < 1 then
+					rs = 1
 				end
 			end
 			m.sortGroup = rs
@@ -308,10 +324,10 @@ local function CheckRewardCache()
 		if w:IsShown() then
 			for j=2,3 do
 				local rw = S[w].Rewards[j]
-				if rw:IsShown() and rw.itemID and rw.itemLink and rw.itemLink:match("|h%[%]|h") then
+				if rw:IsShown() and rw.itemID and (not rw.itemLink or rw.itemLink:match("|h%[%]|h")) then
 					local mi = C_Garrison.GetBasicMissionInfo(S[w].missionID)
 					S[w].Rewards:SetRewards(mi.xp, mi.rewards)
-					isCleared = nil
+					isCleared = isCleared and GetItemInfo(rw.itemLink or rw.itemID) ~= nil
 					break
 				end
 			end
@@ -370,6 +386,8 @@ local function MissionComplete_Toast(_, mid, won, mi)
 				toast.IconBorder:SetAtlas("loottoast-itemborder-orange")
 			end
 			break
+		elseif rew.followerXP then
+			toast.IconBorder:SetAtlas("loottoast-itemborder-green")
 		elseif rew.itemID or rew.itemLink then
 			local r = select(3,GetItemInfo(rew.itemLink or rew.itemID)) or select(3,GetItemInfo(rew.itemID))
 			if r and r > 1 then
@@ -432,6 +450,7 @@ function EV:I_ADVENTURES_UI_LOADED()
 	EV.I_TENTATIVE_GROUPS_CHANGED = UBSync
 	EV.I_MISSION_QUEUE_CHANGED = UBSync
 	EV.I_COMPLETE_QUEUE_UPDATE = UBSync
+	EV.I_DELAYED_START_UPDATE = UBSync
 	EV.I_MISSION_COMPLETION_STEP = MissionComplete_Toast
 	MissionPage.CopyBox.ResetButton:SetScript("OnClick", function(self)
 		EV("I_RESET_STORED_LOGS")

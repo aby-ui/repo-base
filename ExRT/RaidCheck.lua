@@ -4,7 +4,7 @@ local IsEncounterInProgress, GetTime = IsEncounterInProgress, GetTime
 
 local VExRT = nil
 
-local module = ExRT.mod:New("RaidCheck",ExRT.L.raidcheck)
+local module = ExRT:New("RaidCheck",ExRT.L.raidcheck)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.tableFood = not ExRT.isClassic and {
@@ -2799,7 +2799,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	local consumables_size = 44
 
 	local lastWeaponEnchantItem
-	
+
 	module.consumables = CreateFrame("Frame","ExRTConsumables",ReadyCheckListenerFrame)
 	module.consumables:SetPoint("BOTTOM",ReadyCheckListenerFrame,"TOP",0,5)
 	module.consumables:SetSize(consumables_size*5,consumables_size)
@@ -2815,8 +2815,8 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 	module.consumables.state = CreateFrame('Frame', nil, nil, 'SecureHandlerStateTemplate')
 	module.consumables.state:SetAttribute('_onstate-combat', [=[
-		for i=1,6 do
-			if i == 2 or i == 3 or i == 4 or i == 5 then
+		for i=1,7 do
+			if i == 2 or i == 3 or i == 4 or i == 5 or i == 7 then
 				if self:GetFrameRef("Button"..i) then
 					if newstate == 'hide' then
 						self:GetFrameRef("Button"..i):Hide()
@@ -2831,11 +2831,15 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	]=])
 	RegisterStateDriver(module.consumables.state, 'combat', '[combat] hide; [nocombat] show')
 
-	for i=1,6 do
+	for i=1,7 do
 		local button = CreateFrame("Frame",nil,module.consumables)
 		module.consumables.buttons[i] = button
 		button:SetSize(consumables_size,consumables_size)
-		button:SetPoint("LEFT",(i-1)*consumables_size,0)
+		if i == 1 then
+			button:SetPoint("LEFT",0,0)
+		else
+			button:SetPoint("LEFT",module.consumables.buttons[i-1],"RIGHT",0,0)
+		end
 	
 		button.texture = button:CreateTexture()
 		button.texture:SetAllPoints()
@@ -2854,12 +2858,17 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		button.count:SetFont(button.timeleft:GetFont(),10,"OUTLINE")
 		--button.count:SetTextColor(0,1,0,1)
 
-		if i == 2 or i == 3 or i == 4 or i == 5 then
+		if i == 2 or i == 3 or i == 4 or i == 5 or i == 7 then
 			button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
 			button.click:SetAllPoints()
 			button.click:Hide()
 			button.click:RegisterForClicks("AnyDown")
-			button.click:SetAttribute("type", "macro")
+			if i == 4 or i == 7 then
+				button.click:SetAttribute("type", "item")
+				button.click:SetAttribute("target-slot", i == 4 and "16" or "17")
+			else
+				button.click:SetAttribute("type", "macro")
+			end
 	
 			button.click:SetScript("OnEnter",ButtonOnEnter)
 			button.click:SetScript("OnLeave",ButtonOnLeave)
@@ -2885,6 +2894,10 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		elseif i == 6 then
 			button.texture:SetTexture(538745)
 			module.consumables.buttons.hs = button
+		elseif i == 7 then
+			button.texture:SetTexture(463543)
+			module.consumables.buttons.oiloh = button
+			button:Hide()
 		end
 	end
 	
@@ -2920,9 +2933,6 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		else
 			if not InCombatLockdown() then self.buttons.hs:Hide() end
 			totalButtons = totalButtons - 1
-		end
-		if not InCombatLockdown() then
-			self:SetWidth(consumables_size*totalButtons)
 		end
 
 		for i=1,#self.buttons do
@@ -3047,11 +3057,34 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 
 		lastWeaponEnchantItem = lastWeaponEnchantItem or VExRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey]
 
-		local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID = GetWeaponEnchantInfo()
+		local offhandCanBeEnchanted
+		local offhandItemID = GetInventoryItemID("player", 17)
+		if offhandItemID then
+			local _, _, _, _, _, itemClassID, itemSubClassID = GetItemInfoInstant(offhandItemID)
+			if itemClassID == 2 then
+				offhandCanBeEnchanted = true
+			end
+		end
+		if not InCombatLockdown() then
+			if offhandCanBeEnchanted then
+				self.buttons.oiloh:Show()
+				totalButtons = totalButtons + 1
+				self.buttons.oiloh:ClearAllPoints()
+				self.buttons.oiloh:SetPoint("LEFT",self.buttons.oil,"RIGHT",0,0)
+				self.buttons.rune:ClearAllPoints()
+				self.buttons.rune:SetPoint("LEFT",self.buttons.oiloh,"RIGHT",0,0)
+			else
+				self.buttons.oiloh:Hide()
+				self.buttons.rune:ClearAllPoints()
+				self.buttons.rune:SetPoint("LEFT",self.buttons.oil,"RIGHT",0,0)
+			end
+		end
+
+		local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID = GetWeaponEnchantInfo()
 		if hasMainHandEnchant then
 			self.buttons.oil.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
 			self.buttons.oil.texture:SetDesaturated(false)
-			self.buttons.oil.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil(mainHandExpiration/1000/60))
+			self.buttons.oil.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((mainHandExpiration or 0)/1000/60))
 
 			if mainHandEnchantID == 6190 then
 				lastWeaponEnchantItem = 171286
@@ -3067,18 +3100,29 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 				lastWeaponEnchantItem = 171438
 			end
 		end
+		if offhandCanBeEnchanted and hasOffHandEnchant then
+			self.buttons.oiloh.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+			self.buttons.oiloh.texture:SetDesaturated(false)
+			self.buttons.oiloh.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((offHandExpiration or 0)/1000/60))
+		end
 		if lastWeaponEnchantItem == 171286 then
 			self.buttons.oil.texture:SetTexture(463544)
+			self.buttons.oiloh.texture:SetTexture(463544)
 		elseif lastWeaponEnchantItem == 171285 then
 			self.buttons.oil.texture:SetTexture(463543)
+			self.buttons.oiloh.texture:SetTexture(463543)
 		elseif lastWeaponEnchantItem == 171437 then
 			self.buttons.oil.texture:SetTexture(3528422)
+			self.buttons.oiloh.texture:SetTexture(3528422)
 		elseif lastWeaponEnchantItem == 171436 then
 			self.buttons.oil.texture:SetTexture(3528424)
+			self.buttons.oiloh.texture:SetTexture(3528424)
 		elseif lastWeaponEnchantItem == 171439 then
 			self.buttons.oil.texture:SetTexture(3528423)
+			self.buttons.oiloh.texture:SetTexture(3528423)
 		elseif lastWeaponEnchantItem == 171438 then
 			self.buttons.oil.texture:SetTexture(3528425)
+			self.buttons.oiloh.texture:SetTexture(3528425)
 		end
 
 		VExRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey] = lastWeaponEnchantItem
@@ -3086,26 +3130,39 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		if lastWeaponEnchantItem then
 			local oilCount = GetItemCount(lastWeaponEnchantItem,false,true)
 			self.buttons.oil.count:SetText(oilCount)
+			self.buttons.oiloh.count:SetText(oilCount)
 			if oilCount and oilCount > 0 then
 				if not InCombatLockdown() then
 					local itemName = GetItemInfo(lastWeaponEnchantItem)
 					if itemName then
-						if mainHandExpiration and mainHandExpiration <= 300000 then
-							self.buttons.oil.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
-						else
-							self.buttons.oil.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
-						end
+						self.buttons.oil.click:SetAttribute("item", itemName)
 						self.buttons.oil.click:Show()
 						self.buttons.oil.click.IsON = true
+						if 
+							mainHandExpiration and 
+							(lastWeaponEnchantItem == 171285 or lastWeaponEnchantItem == 171286) and
+							offhandItemID and not offhandCanBeEnchanted
+						then
+							self.buttons.oil.click:SetAttribute("type", "cancelaura")
+						else
+							self.buttons.oil.click:SetAttribute("type", "item")
+						end
+						self.buttons.oiloh.click:SetAttribute("item", itemName)
+						self.buttons.oiloh.click:Show()
+						self.buttons.oiloh.click.IsON = true
 					else
 						self.buttons.oil.click:Hide()
 						self.buttons.oil.click.IsON = false
+						self.buttons.oiloh.click:Hide()
+						self.buttons.oiloh.click.IsON = false
 					end
 				end
 			else
 				if not InCombatLockdown() then
 					self.buttons.oil.click:Hide()
 					self.buttons.oil.click.IsON = false
+					self.buttons.oiloh.click:Hide()
+					self.buttons.oiloh.click.IsON = false
 				end
 			end
 
@@ -3114,6 +3171,11 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 					LCG.PixelGlow_Start(self.buttons.oil)
 				else
 					LCG.PixelGlow_Stop(self.buttons.oil)
+				end
+				if oilCount and oilCount > 0 and (not hasOffHandEnchant or (offHandExpiration and offHandExpiration <= 300000)) then
+					LCG.PixelGlow_Start(self.buttons.oiloh)
+				else
+					LCG.PixelGlow_Stop(self.buttons.oiloh)
 				end
 			end
 		end
@@ -3146,6 +3208,11 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 			else
 				LCG.PixelGlow_Stop(self.buttons.rune)
 			end
+		end
+
+
+		if not InCombatLockdown() then
+			self:SetWidth(consumables_size*totalButtons)
 		end
 	end
 

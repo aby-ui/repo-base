@@ -1234,6 +1234,7 @@ do
 		if not alertWindow then
 			CreateWindow()
 		end
+		alertWindow.OK:Enable()
 		alertWindow.title:SetText(text)
 		alertWindow.EditBox:SetScript("OnTextChanged",funcOnEdit)
 		alertWindow.EditBox:SetText(defText or "")

@@ -4,7 +4,7 @@ local UnitName, GetRaidTargetIndex, SetRaidTargetIcon = UnitName, GetRaidTargetI
 
 local VExRT = nil
 
-local module = ExRT.mod:New("Marks",ExRT.L.Marks)
+local module = ExRT:New("Marks",ExRT.L.Marks)
 local ELib,L = ExRT.lib,ExRT.L
 
 function module.main:ADDON_LOADED()

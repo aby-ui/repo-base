@@ -6,7 +6,7 @@ local db
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local ReportPlayedTimeToChat = true
 
-local function RequestTimePlayed() 
+local function RequestTimePlayed()
 	ReportPlayedTimeToChat = false
 	return _G.RequestTimePlayed()
 end
@@ -22,12 +22,13 @@ local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("PlayedTime", {
 acetimer:ScheduleTimer(function()
 			debug("ScheduleTimer")
 			RequestTimePlayed()
-		end, 60)	
+		end, 60)
 
 function dataobj:OnTooltipShow()
 RequestTimePlayed()
 	self:AddLine("PlayedTime")
 	local totaltime = 0
+	table.sort(db, function(a,b) return b.total < a.total end)
 	for k, v in pairs(db) do
 			local time = v.total and v.total or 1
 			--self:AddLine(string.format("%s: %s", k, formatTime(time)))
@@ -40,7 +41,10 @@ end
 
 local function getPlayerIdentifier()
   local _, engClass, _, _, _, name, server = GetPlayerInfoByGUID(UnitGUID("player"))
-  return string.format("%s-%s", name, server)
+	if server == "" then
+		server = GetNormalizedRealmName()
+	end
+	return string.format("%s-%s", name, server)
 end
 
 local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
@@ -55,7 +59,8 @@ function formatTime(time)
   local days = floor(time/86400)
   local hours = floor(mod(time, 86400)/3600)
   local minutes = floor(mod(time,3600)/60)
-  return format("%d days %d hours %d minutes", days, hours, minutes)
+  --return format("%d d %d h %d m", days, hours, minutes)
+	return format("%d|cffffd200d|r %d|cffffd200h|r %d|cffffd200m|r", days, hours, minutes)
 end
 
 local function onEnteringWorld()

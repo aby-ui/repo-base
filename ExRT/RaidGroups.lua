@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT.mod:New("RaidGroups",ExRT.L.RaidGroups)
+local module = ExRT:New("RaidGroups",ExRT.L.RaidGroups)
 local ELib,L = ExRT.lib,ExRT.L
 
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
@@ -12,6 +12,8 @@ function module.main:ADDON_LOADED()
 
 	VExRT.RaidGroups = VExRT.RaidGroups or {}
 	VExRT.RaidGroups.profiles = VExRT.RaidGroups.profiles or {}
+
+	module:RegisterSlash()
 end
 
 function module.options:Load()
@@ -239,63 +241,11 @@ function module.options:Load()
 	end) 
 
 	self.processRoster = ELib:Button(self,L.RaidGroupsSetGroups):Size(315,30):Point("TOP",self.updateRoster,"BOTTOM",0,-5):OnClick(function(self) 
-		if not IsInRaid() then
-			return
-		end
-		local UnitsInCombat
+		local list = {}
 		for i=1,40 do
-			local unit = "raid"..i
-			if UnitAffectingCombat(unit) then
-				UnitsInCombat = (UnitsInCombat or "") .. (UnitsInCombat and "," or "") .. UnitName(unit)
-			end
+			list[i] = module.options.edits[i]:GetText()
 		end
-		if UnitsInCombat then
-			print("|cffff0000"..ERROR_CAPS..".|r "..L.RaidGroupsPlayersInCombat..": "..UnitsInCombat)
-			return
-		end
-
-		local needGroup = {}
-		local needPosInGroup = {}
-		local lockedUnit = {}
-
-		local RLName,_,RLGroup = GetRaidRosterInfo(1)
-		local isRLfound = false
-		for i=1,8 do 
-			local pos = 1
-			for j=1,5 do
-				local name = module.options.edits[(i-1)*5+j]:GetText()
-				if name == RLName then
-					needGroup[name] = i
-					needPosInGroup[name] = pos
-					pos = pos + 1
-					isRLfound = true
-					break
-				end
-			end
-			for j=1,5 do
-				local name = module.options.edits[(i-1)*5+j]:GetText()
-				if name and name ~= RLName and UnitName(name) then
-					needGroup[name] = i
-					needPosInGroup[name] = pos
-					pos = pos + 1
-				end
-			end
-		end
-
-		--reports saying that too many swap events can trigger disconnect on classic, unconfirmed cause: other addons or pure swap events
-		if ExRT.isClassic and not VExRT.RaidGroups.KeepPosInGroup then
-			wipe(needPosInGroup)
-		end
-
-		module.db.needGroup = needGroup
-		module.db.needPosInGroup = needPosInGroup
-		module.db.lockedUnit = lockedUnit
-		module.db.groupsReady = false
-		module.db.groupWithRL = isRLfound and 0 or RLGroup
-
-		self:Disable()
-
-		module:ProcessRoster()
+		module:ApplyGroups(list)
 	end) 
 
 	self.keepPosCheck = ELib:Check(self,L.RaidGroupsKeepPosInGroup,VExRT.RaidGroups.KeepPosInGroup):Point("BOTTOMLEFT",self.processRoster,"BOTTOMRIGHT",5,0):OnClick(function(self) 
@@ -812,6 +762,68 @@ function module.options:Load()
 	end)
 end
 
+function module:ApplyGroups(list)
+	if not IsInRaid() then
+		return
+	end
+	local UnitsInCombat
+	for i=1,40 do
+		local unit = "raid"..i
+		if UnitAffectingCombat(unit) then
+			UnitsInCombat = (UnitsInCombat or "") .. (UnitsInCombat and "," or "") .. UnitName(unit)
+		end
+	end
+	if UnitsInCombat then
+		print("|cffff0000"..ERROR_CAPS..".|r "..L.RaidGroupsPlayersInCombat..": "..UnitsInCombat)
+		return
+	end
+
+	local needGroup = {}
+	local needPosInGroup = {}
+	local lockedUnit = {}
+
+	local RLName,_,RLGroup = GetRaidRosterInfo(1)
+	local isRLfound = false
+	for i=1,8 do 
+		local pos = 1
+		for j=1,5 do
+			local name = list[(i-1)*5+j]
+			if name == RLName then
+				needGroup[name] = i
+				needPosInGroup[name] = pos
+				pos = pos + 1
+				isRLfound = true
+				break
+			end
+		end
+		for j=1,5 do
+			local name = list[(i-1)*5+j]
+			if name and name ~= RLName and UnitName(name) then
+				needGroup[name] = i
+				needPosInGroup[name] = pos
+				pos = pos + 1
+			end
+		end
+	end
+
+	--reports saying that too many swap events can trigger disconnect on classic, unconfirmed cause: other addons or pure swap events
+	if ExRT.isClassic and not VExRT.RaidGroups.KeepPosInGroup then
+		wipe(needPosInGroup)
+	end
+
+	module.db.needGroup = needGroup
+	module.db.needPosInGroup = needPosInGroup
+	module.db.lockedUnit = lockedUnit
+	module.db.groupsReady = false
+	module.db.groupWithRL = isRLfound and 0 or RLGroup
+
+	if module.options.processRoster then
+		module.options.processRoster:Disable()
+	end
+
+	module:ProcessRoster()
+end
+
 local function Debug(currentGroup,currentPos,needGroup,needPosInGroup)
 	local s = ""
 	for k,v in pairs(currentGroup) do
@@ -833,7 +845,9 @@ function module:ProcessRoster()
 
 		module.db.needGroup = nil
 	
-		module.options.processRoster:Enable()
+		if module.options.processRoster then
+			module.options.processRoster:Enable()
+		end
 		module:UnregisterEvents('GROUP_ROSTER_UPDATE')
 		return
 	end
@@ -959,7 +973,9 @@ function module:ProcessRoster()
 
 	module.db.needGroup = nil
 
-	module.options.processRoster:Enable()
+	if module.options.processRoster then
+		module.options.processRoster:Enable()
+	end
 	module:UnregisterEvents('GROUP_ROSTER_UPDATE')
 end
 
@@ -971,4 +987,21 @@ function module.main:GROUP_ROSTER_UPDATE()
 		self.timer = nil
 		module:ProcessRoster()
 	end)
+end
+
+function module:slash(arg)
+	if arg and arg:find("^raidgroup ") then
+		local name = arg:match("^raidgroup (.-)$")
+		if name then
+			for i=#VExRT.RaidGroups.profiles,1,-1 do
+				local entry = VExRT.RaidGroups.profiles[i]
+				if entry.name == name then
+					module:ApplyGroups(entry)
+					return
+				end
+			end
+		end
+	elseif arg == "help" then
+		print("|cff00ff00/rt raidgroup |cffffff00GROUPNAME|r|r - apply raid groups with name GROUPNAME")
+	end
 end

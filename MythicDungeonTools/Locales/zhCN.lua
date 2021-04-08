@@ -185,8 +185,7 @@ L["Cutwater Striker"] = "破浪打击者"
 L["Dark Acolyte"] = "黑暗助祭"
 L["Darkheart Thicket"] = "黑心林地"
 L["Darkheart Thicket Sublevel"] = "黑心林地"
---[[Translation missing --]]
---[[ L["DataImportButtonTooltip"] = ""--]] 
+L["DataImportButtonTooltip"] = "导入外部NPC数据."
 L["Dazar'ai Augur"] = "达萨莱占卜师"
 L["Dazar'ai Colossus"] = "达萨莱巨像"
 L["Dazar'ai Confessor"] = "达萨莱神官"
@@ -252,8 +251,7 @@ L["Drust Boughbreaker"] = "德鲁斯特碎枝者"
 L["Drust Harvester"] = "德鲁斯特收割者"
 L["Drust Soulcleaver"] = "德鲁斯特斩魂者"
 L["Drust Spiteclaw"] = "德鲁斯特恶爪者"
---[[Translation missing --]]
---[[ L["Dungeon Data Missing"] = ""--]] 
+L["Dungeon Data Missing"] = "地下城数据丢失"
 L["Dungeon Level"] = "地下城层数"
 L["Earlier Version"] = "你有一个名称为'%s'%s的早期版本路线, 你希望更新或者创建一个新的副本?%s%s%s"
 L["Earthrager"] = "地怒者"
@@ -395,8 +393,7 @@ L["Heart Guardian"] = "心脏守卫"
 L["Heartsbane Runeweaver"] = "毒心织符者"
 L["Heartsbane Soulcharmer"] = "毒心诱魂者"
 L["Heartsbane Vinetwister"] = "毒心藤蔓扭曲者"
---[[Translation missing --]]
---[[ L["Heavin the Breaker"] = ""--]] 
+L["Heavin the Breaker"] = "粉碎者赫文"
 L["Heavy Scrapbot"] = "重装拳机"
 L["Helmouth Cliffs"] = "冥口峭壁"
 L["helpPlateDungeon"] = "自定义地下城选项"
@@ -420,8 +417,7 @@ L["If the Minimap Button is enabled"] = "如果启用小地图按钮"
 L["Imbued Stormcaller"] = "灌注能量的唤雷者"
 L["Import"] = "导入"
 L["Import a preset from a text string"] = "从文本字符串导入路线"
---[[Translation missing --]]
---[[ L["Import Data"] = ""--]] 
+L["Import Data"] = "导入数据"
 L["Import Preset"] = "导入路线"
 L["Imprison"] = "禁锢"
 L["In the bottom right corner"] = "右下角"
@@ -563,8 +559,7 @@ L["Mistveil Defender"] = "纱雾防御者"
 L["Mistveil Gorgegullet"] = "纱雾噬喉者"
 L["Mistveil Guardian"] = "纱雾守护者"
 L["Mistveil Matriarch"] = "纱雾龙母"
---[[Translation missing --]]
---[[ L["Mistveil Nightblossom"] = ""--]] 
+L["Mistveil Nightblossom"] = "纱雾夜花"
 L["Mistveil Shaper"] = "纱雾塑形者"
 L["Mistveil Stalker"] = "纱雾追猎者"
 L["Mistveil Stinger"] = "纱雾钉刺蛾"
@@ -586,8 +581,7 @@ L["Nalthor the Rimebinder"] = "缚霜者纳尔佐"
 L["Nar'zudah"] = "纳祖达"
 L["Necrotic"] = "死疽"
 L["Nefarious Darkspeaker"] = "卑劣的暗语者"
---[[Translation missing --]]
---[[ L["Nekthara the Mangler"] = ""--]] 
+L["Nekthara the Mangler"] = "裂伤者耐克萨拉"
 L["Neltharion's Lair"] = "奈萨里奥的巢穴"
 L["Neltharion's Lair Sublevel"] = "奈萨里奥的巢穴"
 L["Netherspace"] = "虚空异界"
@@ -597,12 +591,9 @@ L["New Patrol Waypoint at Cursor Position"] = "在光标位置新增传送路线
 L["New Preset"] = "新路线"
 L["Next to the NPC"] = "NPC旁"
 L["Noble Skirmisher"] = "贵族散兵"
---[[Translation missing --]]
---[[ L["noDungeonData1"] = ""--]] 
---[[Translation missing --]]
---[[ L["noDungeonData2"] = ""--]] 
---[[Translation missing --]]
---[[ L["noDungeonData3"] = ""--]] 
+L["noDungeonData1"] = "看来你还没有地下城的数据."
+L["noDungeonData2"] = "通过/mdt devmode创建自己的数据."
+L["noDungeonData3"] = "或者在这里学习如何获得可选的地下城数据:"
 L["Not specified"] = "未分类"
 L["Note Text:"] = "注释文本:"
 L["Off-Duty Laborer"] = "下班的劳工"
@@ -633,8 +624,7 @@ L["Plague Doctor"] = "瘟疫博士"
 L["Plaguebelcher"] = "魔药喷吐者"
 L["Plaguebinder"] = "魔药束缚者"
 L["Plagueborer"] = "钻凋者"
---[[Translation missing --]]
---[[ L["Plaguebound"] = ""--]] 
+L["Plaguebound"] = "凋缚者"
 L["Plaguebound Devoted"] = "凋缚狂热者"
 L["Plaguebound Fallen"] = "凋缚陨落者"
 L["Plaguefall"] = "凋魂之殇"
@@ -695,8 +685,7 @@ L["Red, Green and Blue"] = "红绿蓝"
 L["Redo"] = "重做"
 L["Refreshment Vendor"] = "零食商贩"
 L["Regal Mistdancer"] = "皇家舞雾者"
---[[Translation missing --]]
---[[ L["Rek the Hardened"] = ""--]] 
+L["Rek the Hardened"] = "老练的里克"
 L["Relentless"] = "无情"
 L["Remnant of Fury"] = "愤怒残余"
 L["Rename"] = "重命名"

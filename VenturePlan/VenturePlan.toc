@@ -1,6 +1,6 @@
 ## Interface: 90005
 ## Title: Venture Plan
-## Version: 4.13
+## Version: 4.14a
 ## Notes: Interface improvements for Adventures.
 ## Notes-deDE: Schnittstellenverbesserungen für Abenteuer.
 ## Notes-esES: Mejoras de la interfaz para las aventuras.
@@ -9,7 +9,7 @@
 ## Notes-itIT: Miglioramenti dell'interfaccia per le Avventure.
 ## Notes-koKR: 모험을 위한 인터페이스 개선
 ## Notes-ruRU: Улучшение интерфейса для Приключений.
-## Notes-zhCN: 改进了冒险界面。
+## Notes-zhCN: 冒险界面改进。
 ## Notes-zhTW: 冒險介面改善
 ## Notes-ptBR: Melhorias na interface de Aventuras.
 ## Author: foxlit

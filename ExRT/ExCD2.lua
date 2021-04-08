@@ -1,7 +1,7 @@
 local GlobalAddonName, ExRT = ...
 
-local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime
-local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort, select = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort, select
+local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime, IsInJailersTower = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime, IsInJailersTower
+local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort, select, Enum = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort, select, Enum
 local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason, UnitAura
 
 local RaidInCombat, ClassColorNum, GetDifficultyForCooldownReset, DelUnitNameServer, NumberInRange = ExRT.F.RaidInCombat, ExRT.F.classColorNum, ExRT.F.GetDifficultyForCooldownReset, ExRT.F.delUnitNameServer, ExRT.F.NumberInRange
@@ -13,7 +13,7 @@ if ExRT.isClassic then
 	GetSpellLevelLearned = function () return 1 end
 end
 
-local VExRT, VExRT_CDE = nil
+local VExRT = nil
 
 local module = ExRT:New("ExCD2",ExRT.L.cd2)
 local ELib,L = ExRT.lib,ExRT.L
@@ -164,6 +164,7 @@ local cdsNav_wipe,cdsNav_set = nil
 do
 	local cdsNavData = {}
 	local nilData = {}
+	module.db.cdsNavData = cdsNavData
 	module.db.cdsNav = setmetatable({}, {
 		__index = function (t,k) 
 			return cdsNavData[k] or nilData
@@ -623,7 +624,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[198589] = {338671,{-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-20}},
 	[204021] = {338671,{-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-20}},
 	[317009] = {340028,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}},
-	[300728] = {336147,30,342801,-3},
+	[300728] = {336147,30,342801,-6},
 	[310143] = {320658,-15,342789,-30},
 	[46968] = {339948,{-5,-6,-6,-7,-7,-8,-8,-9,-9,-10,-10,-11,-11,-12,-12}},
 	[12323] = {339948,{-5,-6,-6,-7,-7,-8,-8,-9,-9,-10,-10,-11,-11,-12,-12}},
@@ -886,6 +887,8 @@ do
 		{336471,73325},	--priest: Leap of Faith
 		{108293,108291,319454},	--druid: HotW
 		{119910,19647},	--warlock: pet kick
+
+		{307192,213664,216431,216802,216468,338447,301308},	--Healing Potion
 	}
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
@@ -1407,6 +1410,7 @@ module.db.vars = {
 	blessingcdr = {},
 	berserk = {},
 	faerie = {},
+	faerieCond = {},
 	faerieSpells = {
 		[740]=true,[1122]=true,[1719]=true,[12042]=true,[12472]=true,[13750]=true,
 		[31884]=true,[47536]=true,[47568]=true,[50334]=true,[51533]=true,[55233]=true,
@@ -1426,6 +1430,48 @@ module.db.vars = {
 }
 
 module.db.plugin = {}
+
+module.db.rframes = {
+	{text = L.cd2Autoselect},
+	{name = "VuhDo", opts = {"^Vd1", "^Vd2", "^Vd3", "^Vd4", "^Vd5", "^Vd"}},
+	{name = "HealBot", opts = {"^HealBot"}},
+	{name = "Grid", opts = {"^GridLayout","^Grid2Layout"}},
+	{name = "ElvUI", opts = {"^ElvUF_RaidGroup","^ElvUF_PartyGroup"}},
+	{name = "SUF", opts = {"^SUFHeaderraid","^SUFHeaderparty"}},
+	{name = "Blizzard", opts = {"^CompactRaid","^CompactParty"}},
+}
+module.db.rframes_def = {	--copy from LibGetFrame
+	-- raid frames
+	"^Vd1", -- vuhdo
+	"^Vd2", -- vuhdo
+	"^Vd3", -- vuhdo
+	"^Vd4", -- vuhdo
+	"^Vd5", -- vuhdo
+	"^Vd", -- vuhdo
+	"^HealBot", -- healbot
+	"^GridLayout", -- grid
+	"^Grid2Layout", -- grid2
+	"^PlexusLayout", -- plexus
+	"^ElvUF_RaidGroup", -- elv
+	"^oUF_bdGrid", -- bdgrid
+	"^oUF_.-Raid", -- generic oUF
+	"^LimeGroup", -- lime
+	"^SUFHeaderraid", -- suf
+	-- party frames
+	"^AleaUI_GroupHeader", -- Alea
+	"^SUFHeaderparty", --suf
+	"^ElvUF_PartyGroup", -- elv
+	"^oUF_.-Party", -- generic oUF
+	"^PitBull4_Groups_Party", -- pitbull4
+	"^CompactRaid", -- blizz
+	"^CompactParty", -- blizz
+	-- player frame
+	"^SUFUnitplayer",
+	"^PitBull4_Frames_Player",
+	"^ElvUF_Player",
+	"^oUF_.-Player",
+	"^PlayerFrame",
+}
 
 module.db.notAClass = { r = 0.8, g = 0.8, b = 0.8, colorStr = "ffcccccc" }
 
@@ -1522,13 +1568,12 @@ module.db.status_UnitIsOutOfRange = {}
 
 -- Local functions vaules; other upvaules
 
-local UpdateAllData,SortAllData = nil
+local UpdateAllData = nil
 local SaveCDtoVar = nil
 local CLEUstartCD = nil
-local RaidResurrectSpecialCheck,RaidResurrectSpecialText,RaidResurrectSpecialStatus = nil
 
 local L_Offline,L_Dead = L.cd2StatusOffline, L.cd2StatusDead
-local _C, _db, _mainFrame = module._C, module.db
+local _C, _db = module._C, module.db
 
 local status_UnitsToCheck,status_UnitIsDead,status_UnitIsDisconnected,status_UnitIsOutOfRange = module.db.status_UnitsToCheck,module.db.status_UnitIsDead,module.db.status_UnitIsDisconnected,module.db.status_UnitIsOutOfRange
 
@@ -1575,12 +1620,12 @@ function module:UpdateSpellDB(fullUpdate)
 		module:UpdateRoster()
 	end
 	UpdateAllData()
-	SortAllData()
 end
 
 do
 	local frame = CreateFrame("Frame",nil,UIParent)
 	module.frame = frame
+	frame:Hide()
 	frame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
@@ -1601,9 +1646,6 @@ do
 	module:RegisterHideOnPetBattle(frame)
 
 	frame.colFrame = {}
-
-	--upvaule
-	_mainFrame = frame
 end
 
 local gsub_data = {}
@@ -1698,7 +1740,7 @@ local function BarUpdateText(self)
 		if  time <= 0 then
 			cdText = ""
 		elseif time < 60 then
-			if style == 1 or style == 2 or style == 5 or style == 7 or style == 8 then
+			if style == 1 or style == 2 or style == 5 or style == 7 or style == 8 or style == 11 then
 				cdText = ceil(time)
 			elseif style == 3 or style == 4 or style == 6 or style == 9 or style == 10 then
 				cdText = format("%.1f",time)
@@ -1713,6 +1755,12 @@ local function BarUpdateText(self)
 			cdText = format("%dm",time/60)
 		elseif style == 8 or style == 10 then
 			cdText = format("%dm",time/60+1)
+		elseif style == 11 then
+			if time <= 99 then
+				cdText = ceil(time)
+			else
+				cdText = format("%dm",time/60)
+			end
 		end
 	end
 	if self.textIconCD.text ~= cdText then
@@ -1789,12 +1837,12 @@ local function BarAnimation_NoAnimation(self)
 end
 
 local function StopBar(self)
+	if self.curr_end == 0 then
+		return
+	end
   	self.anim:Stop()
   	self.spark:Hide()
  	self:UpdateStatus()
- 	if self.parent.methodsSortByAvailability then
- 		SortAllData()
- 	end
  	UpdateAllData()
 end
 
@@ -1870,7 +1918,11 @@ local function UpdateBarStatus(self,isTitle)
 		isCooldown = true
 	end
 	if data.specialStatus then
-		local var1,var2,var3,var4 = data.specialStatus()
+		local var1,var2,var3,var4,var5 = data.specialStatus(data)
+		if var5 then
+			isCooldown = true
+			isDisabled = true
+		end
 		if var2 then
 			if var1 then
 				isCooldown = true
@@ -2454,6 +2506,12 @@ local function UpdateBarStyle(self)
 	self.cooldown:SetHideCountdownNumbers(parent.optionCooldownHideNumbers and true or false)
 	self.cooldown:SetDrawEdge(parent.optionCooldownShowSwipe and true or false)
 
+	if parent.optionCooldownUseExRT or (not parent.optionCooldownHideNumbers and GetCVar("countdownForCooldowns") == "1") then
+		self.cooldown.noCooldownCount = true	--hide OmniCC time on cooldown
+	else
+		self.cooldown.noCooldownCount = nil
+	end
+
 	self.textIcon:SetText("")
 	self.textIcon.name = nil
 
@@ -2484,15 +2542,15 @@ local function UpdateBarStyle(self)
 	if parent.methodsLineClick and parent.methodsLineClickWhisper then
 		self.clickFrame:SetScript("OnClick",LineIconOnClickBoth)
 		self.clickFrame:Show()
-		self.clickFrame:SetFrameLevel(1000)
+		self.clickFrame:SetFrameLevel(9000)
 	elseif parent.methodsLineClick then
 		self.clickFrame:SetScript("OnClick",LineIconOnClick)
 		self.clickFrame:Show()
-		self.clickFrame:SetFrameLevel(1000)
+		self.clickFrame:SetFrameLevel(9000)
 	elseif parent.methodsLineClickWhisper then
 		self.clickFrame:SetScript("OnClick",LineIconOnClickWhisper)
 		self.clickFrame:Show()
-		self.clickFrame:SetFrameLevel(1000)
+		self.clickFrame:SetFrameLevel(9000)
 	else
 		self.clickFrame:SetScript("OnClick",nil)
 		self.clickFrame:Hide()
@@ -2500,7 +2558,7 @@ local function UpdateBarStyle(self)
 	if parent.methodsIconTooltip then
 		if not self.clickFrame:IsShown() then
 			self.clickFrame:Show()
-			self.clickFrame:SetFrameLevel(1000)			
+			self.clickFrame:SetFrameLevel(9000)
 		end
 		self.clickFrame:SetScript("OnEnter",LineClickFrameOnHover)
 	else
@@ -2544,6 +2602,9 @@ local function UpdateBarStyle(self)
 	end
 
 	self.anim_state.timer:SetDuration(parent.optionSmoothAnimationDuration)
+
+	self.atf = nil
+	self.atf2 = nil
 
 	if module.db.plugin and type(module.db.plugin.UpdateBarStyle)=="function" then
 		module.db.plugin.UpdateBarStyle(self)
@@ -2838,6 +2899,10 @@ local function AfterCombatResetFunction(isArena)
 				unitSpellData.lastUse = 0 
 				unitSpellData.charge = nil 
 
+				if unitSpellData.specialAfterCombatReset then
+					unitSpellData.specialAfterCombatReset(unitSpellData)
+				end
+
 				if unitSpellData.bar and unitSpellData.bar.data == unitSpellData then
 					unitSpellData.bar:UpdateStatus()
 				end
@@ -2871,7 +2936,6 @@ local function TestMode(h)
 		end
 	end
 	UpdateAllData()
-	SortAllData()
 end
 
 function module.IsPvpTalentsOn(unit)
@@ -2906,7 +2970,7 @@ do
 	local spell_talentReplaceOther = _db.spell_talentReplaceOther
 	local spell_charge_fix = _db.spell_charge_fix
 	local def_col = _db.def_col
-	local columnsTable = _mainFrame.colFrame
+	local columnsTable = module.frame.colFrame
 
 	local _CV = {}
 	local _CV_Len = 0
@@ -2959,11 +3023,9 @@ do
 
 	local needReposAttached
 
-	local SortAllData2
-	function SortAllData()
-		
-	end
-	function SortAllData2()
+	local HiddenOnCD = {}	--for "Show only without cd" option, hidden cds can't fire updateall event
+
+	local function SortAllData()
 		local currTime = GetTime()
 	  	for i=1,_CV_Len do
 	  		local data = _CV[i]
@@ -2982,6 +3044,8 @@ do
 	
 				if data.disabled then
 					cd = cd > 0 and cd or 49999
+				elseif data.disable_oncd then
+					cd = 49999
 				end
 				if cd > 0 then
 					cd = cd + 50000
@@ -3007,7 +3071,6 @@ do
 		sort(_CV,sort_f)
 	end
 	module.SortAllData = SortAllData
-	module.SortAllData2 = SortAllData2
 
 	local function TalentReplaceOtherCheck(spellID,name)
 		local spellData = spell_talentReplaceOther[spellID]
@@ -3024,12 +3087,23 @@ do
 		end
 		return false
 	end
+	local function IsOnCD(data)
+		local currTime = GetTime()
+
+		local isOnCD = not data.isCharge and (data.lastUse + data.cd) > currTime
+		if data.disable_oncd then
+			isOnCD = true
+		end
+
+		return isOnCD or (data.isCharge and data.charge and data.charge > currTime)
+	end
 
 	function UpdateAllData()
 		reviewID = reviewID + 1
 		--print('UpdateAllData',GetTime())
 		local isTestMode = _db.testMode
 		local CDECol = VExRT.ExCD2.CDECol
+		local VExRT_CDE = VExRT.ExCD2.CDE
 		local currTime = GetTime()
 		wipe(_CV)
 		_CV_Len = 0
@@ -3084,9 +3158,18 @@ do
 				local columnFrame = columnsTable[col]
 
 				local isOnCD = not isCharge and (data.lastUse + data.cd) > currTime
+				if data.disable_oncd then
+					isOnCD = true
+				end
 
-				if columnFrame.optionShownOnCD and not ((isCharge and data.charge and data.charge > currTime) or isOnCD) then
+				local isOnCDWithCharge = isOnCD or (isCharge and data.charge and data.charge > currTime)
+
+				if columnFrame.optionShownOnCD and not isOnCDWithCharge then
 					data.vis = nil
+				end
+				if columnFrame.methodsOnlyNotOnCD and isOnCDWithCharge then
+					data.vis = nil
+					HiddenOnCD[data] = true
 				end
 				if columnFrame.methodsHideOwnSpells and name == playerName then
 					data.vis = nil
@@ -3168,15 +3251,21 @@ do
 				data.vis = nil
 			end
 		end
-		SortAllData2()
+		SortAllData()
 	end
 	module.UpdateAllData = UpdateAllData
 
 	local statusTimer2 = 0
 	local timerATFRepos = 0
+	local timerATFReset = 15
+	local ATFFrames = {}
+
+	function module:ATFFrameDataReset()
+		timerATFReset = 100
+	end
 
 	function module:timer(elapsed)
-		local forceUpdateAllData,forceSortAllData = false,false
+		local forceUpdateAllData
 
 		if not _db.isEncounter and IsEncounterInProgress() then
 			_db.isEncounter = true
@@ -3191,7 +3280,6 @@ do
 			if GetDifficultyForCooldownReset() and not module.db.disableCDresetting then
 				AfterCombatResetFunction()
 				forceUpdateAllData = true
-				forceSortAllData = true
 			end
 			module:toggleCombatVisibility(false,1)
 		end
@@ -3212,14 +3300,12 @@ do
 				local isDead = UnitIsDeadOrGhost(unit)
 				if isDead ~= status_UnitIsDead[ unit ] then
 					forceUpdateAllData = true
-					forceSortAllData = true
 					status_UnitIsDead[ unit ] = isDead
 				end
 
 				local isOffline = not UnitIsConnected(unit)
 				if isOffline ~= status_UnitIsDisconnected[ unit ] then
 					forceUpdateAllData = true
-					forceSortAllData = true
 					status_UnitIsDisconnected[ unit ] = isOffline
 				end
 			end
@@ -3251,19 +3337,23 @@ do
 					end
 				end
 				forceUpdateAllData = true
-				forceSortAllData = true
 
 				if charges and lastBattleResChargesStatus and charges < lastBattleResChargesStatus then		--Add resurrect to history
 					module.db.historyUsage[#module.db.historyUsage + 1] = {time(),20484,"*",GetEncounterTime()}
 				end
 				lastBattleResChargesStatus = charges
 			end
+
+			for data in pairs(HiddenOnCD) do
+				if not IsOnCD(data) then
+					forceUpdateAllData = true
+					HiddenOnCD[data] = nil
+				end
+			end
 		end
+
 		if forceUpdateAllData then
 			UpdateAllData()
-		end
-		if forceSortAllData then
-			SortAllData()
 		end
 
 		for i=1,maxColumns do 
@@ -3344,6 +3434,16 @@ do
 			end
 		end
 
+		--Reset data for predefined
+		timerATFReset = timerATFReset + elapsed
+		if timerATFReset > 20 then
+			timerATFReset = 0
+
+			for _,v in pairs(ATFFrames) do
+				wipe(v)
+			end
+		end
+
 		for i=1,maxColumns do
 			local col = columnsTable[i]
 			if col.IsColumnEnabled then
@@ -3365,10 +3465,19 @@ do
 					for j=1,start do
 						local bar = col.lines[j]
 						if bar.data then
-							local guid = bar.data.guid
-							bar:ClearAllPoints()
-							local frame = LGF.GetFrame(guid, LGFNullOpt)
-							if frame then
+							local guid = bar.data.guid or "unk"
+							local optList = col.ATFFramePrior or LGFNullOpt
+							if not ATFFrames[optList] then
+								ATFFrames[optList] = {}
+							end
+							local frame = ATFFrames[optList][guid]
+							if not frame then
+								--Try to find frame or set 0 to skip calls for players not on frames (i.e. 6-8 groups)
+								--Reset db every 20 sec or 1 sec after GROUP_ROSTER_UPDATE
+								frame = LGF.GetFrame(guid, optList) or 0
+								ATFFrames[optList][guid] = frame
+							end
+							if frame ~= 0 then
 								if not prevLineForGUID_wiped then
 									prevLineForGUID_wiped = true
 									wipe(prevLineForGUID)
@@ -3378,17 +3487,36 @@ do
 								if prevBar then
 									bar.ATFcounter = prevBar.ATFcounter + 1
 									if bar.ATFcounter > col.ATFMax then
-										bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
+										if bar.atf ~= 0 then
+											bar:ClearAllPoints()
+											bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
+											bar.atf = 0
+										end
 									elseif (bar.ATFcounter - 1) % col.ATFCol == 0 then
-										bar:SetPoint(col.ATFPointLine1,prevBar.ATFPrevLine,col.ATFPointLine2,0,col.ATFBetweenLinesLine)
+										if bar.atf ~= 1 or bar.atf2 ~= prevBar.ATFPrevLine then
+											bar:ClearAllPoints()
+											bar:SetPoint(col.ATFPointLine1,prevBar.ATFPrevLine,col.ATFPointLine2,0,col.ATFBetweenLinesLine)
+											bar.atf = 1
+											bar.atf2 = prevBar.ATFPrevLine
+										end
 										bar.ATFPrevLine = bar
 									else
-										bar:SetPoint(col.ATFPointCol1,prevBar,col.ATFPointCol2,col.ATFBetweenLinesCol,0)
+										if bar.atf ~= 2 or bar.atf2 ~= prevBar then
+											bar:ClearAllPoints()
+											bar:SetPoint(col.ATFPointCol1,prevBar,col.ATFPointCol2,col.ATFBetweenLinesCol,0)
+											bar.atf = 2
+											bar.atf2 = prevBar
+										end
 										bar.ATFPrevLine = prevBar.ATFPrevLine
 									end
 								else
 									bar.ATFcounter = 1
-									bar:SetPoint(col.ATFPoint1,frame,col.ATFPoint2,col.ATFOffsetX,col.ATFOffsetY)
+									if bar.atf ~= 3 or bar.atf2 ~= frame then
+										bar:ClearAllPoints()
+										bar:SetPoint(col.ATFPoint1,frame,col.ATFPoint2,col.ATFOffsetX,col.ATFOffsetY)
+										bar.atf = 3
+										bar.atf2 = frame
+									end
 									bar.ATFPrevLine = bar
 								end
 								prevLineForGUID[guid] = bar
@@ -3399,7 +3527,11 @@ do
 									col.FrameStrata = strata
 								end
 							else
-								bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
+								if bar.atf ~= 0 then
+									bar:ClearAllPoints()
+									bar:SetPoint("RIGHT",UIParent,"LEFT",-2000,0)
+									bar.atf = 0
+								end
 							end
 						end
 					end
@@ -3471,19 +3603,19 @@ local function GetRaidRosterInfoFix(j)
 	end
 end
 
-function RaidResurrectSpecialCheck()
+local function RaidResurrectSpecialCheck()
 	local _,_,difficulty = GetInstanceInfo()
 	if difficulty == 14 or difficulty == 15 or difficulty == 16 or difficulty == 7 or difficulty == 17 or difficulty == 8 then
 		return true
 	end
 end
-function RaidResurrectSpecialText()
+local function RaidResurrectSpecialText()
 	local charges, maxCharges, started, duration = GetSpellCharges(20484)
 	if (charges or 0) > 1 then
 		return " ("..charges..")"
 	end
 end
-function RaidResurrectSpecialStatus()
+local function RaidResurrectSpecialStatus()
 	local charges, maxCharges, started, duration = GetSpellCharges(20484)
 	if charges then
 		if charges > 0 then
@@ -3491,6 +3623,44 @@ function RaidResurrectSpecialStatus()
 		else
 			return true,started,duration,false
 		end
+	end
+end
+
+local function StartAfterCombat_SpecialStatus(data)
+	if data.disable_oncd then
+		return true,0,0,nil,true
+	end
+end
+local function StartAfterCombat_SpecialStart(data)
+	if data.disable_ticker then
+		data.disable_ticker:Cancel()
+		data.disable_ticker = nil
+		data.disable_oncd = nil
+	end
+
+	if UnitAffectingCombat(data.fullName) then
+		data.disable_oncd = true
+		data.disable_ticker = C_Timer.NewTicker(1,function(self)
+			if not UnitAffectingCombat(data.fullName) then
+				self.count = (self.count or 0) + 1
+			end
+			if self.count and self.count >= 3 then
+				self:Cancel()
+				data.disable_ticker = nil
+				data.disable_oncd = nil
+				data.lastUse = GetTime()
+				if data.bar and data.bar.data == data then
+					data.bar:UpdateStatus()
+				end
+			end
+		end)
+	end
+end
+local function StartAfterCombat_SpecialAfterCombatReset(data)
+	if data.disable_ticker then
+		data.disable_ticker:Cancel()
+		data.disable_ticker = nil
+		data.disable_oncd = nil
 	end
 end
 
@@ -3505,7 +3675,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	ReduceCD = function(line,time,delayUpdate)
@@ -3521,7 +3690,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	SetCD = function(line,time,delayUpdate)
@@ -3534,7 +3702,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	ModCD = function(line,modVal,delayUpdate)
@@ -3551,7 +3718,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	ResetCD = function(line,delayUpdate)
@@ -3564,7 +3730,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	ChangeDur = function(line,time,delayUpdate)
@@ -3577,7 +3742,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 	SetDur = function(line,time,delayUpdate)
@@ -3590,7 +3754,6 @@ local lineFuncs = {
 		end
 		if not delayUpdate then
 			UpdateAllData()
-			SortAllData()
 		end
 	end,
 }
@@ -3671,7 +3834,7 @@ local function UpdateRoster()
 						local uSpecID = _db.specInDBase[_specID] or 4
 						local spellColumn = VExRT.ExCD2.CDECol[SpellID..";"..(uSpecID-3)] or VExRT.ExCD2.CDECol[SpellID..";1"] or _db.def_col[SpellID..";"..(uSpecID-3)] or _db.def_col[SpellID..";1"] or spellData[3] or 1
 
-						local getSpellColumn = _mainFrame.colFrame[spellColumn]
+						local getSpellColumn = module.frame.colFrame[spellColumn]
 						local prior = nil
 						--[[
 							1: 00AABBBBBBCCDDDD
@@ -3751,7 +3914,7 @@ local function UpdateRoster()
 						if not alreadyInCds then
 							local guid = UnitGUID(name)
 
-							_C [#_C + 1] = {
+							local new = {
 								name = shownName,
 								fullName = name,
 								loweredName = shownName:lower(),
@@ -3767,6 +3930,16 @@ local function UpdateRoster()
 								column = spellColumn,
 								guid = guid,
 							}
+							_C [#_C + 1] = new
+
+							if 
+								SpellID == 323436 or --Kyrian pot
+								SpellID == 6262 --Healthstone
+							then
+								new.specialStatus = StartAfterCombat_SpecialStatus
+								new.specialStart = StartAfterCombat_SpecialStart
+								new.specialAfterCombatReset = StartAfterCombat_SpecialAfterCombatReset
+							end
 
 							if spellClass == "WARLOCK" and guid then
 								_db.vars.isWarlock[guid] = true
@@ -3798,7 +3971,7 @@ local function UpdateRoster()
 				priorCounter = priorCounter + 1
 
 				local spellColumn = VExRT.ExCD2.CDECol["161642;1"] or _db.def_col["161642;1"] or spellData[3] or 1
-				local getSpellColumn = _mainFrame.colFrame[spellColumn]
+				local getSpellColumn = module.frame.colFrame[spellColumn]
 				if not getSpellColumn or getSpellColumn.methodsSortingRules == 1 then
 					prior = (VExRT.ExCD2.Priority[161642] or 50) * 1000000000000 + 161642 * 1000000 + priorCounter
 				elseif getSpellColumn.methodsSortingRules == 2 then
@@ -3890,7 +4063,6 @@ local function UpdateRoster()
 		end
 	end
 	UpdateAllData()
-	SortAllData()
 end
 module.UpdateRoster = UpdateRoster
 
@@ -4031,31 +4203,124 @@ do
 		if data.cd > 45000 then data.cd = 45000 end
 		if data.duration > 45000 then data.duration = 45000 end
 
+		if data.specialStart then
+			data.specialStart(data)
+		end
+
 		if data.bar and data.bar.data == data then
 			data.bar:UpdateStatus()
 		end
 
 		UpdateAllData()
-		SortAllData()
 
 		_db.historyUsage[#_db.historyUsage + 1] = {time(),data.db[uSpecID][1],fullName,GetEncounterTime()}
 	end
 	module.CLEUstartCD = CLEUstartCD
 end
 
-function module:Enable()
-	VExRT.ExCD2.enabled = true
-	if not VExRT.ExCD2.SplitOpt then 
-		module.frame:Show()
-		module:ReloadAllSplits()
-	else
-		module:ReloadAllSplits()
+do
+	local IGNORE_PROFILE_KEYS = {
+		["Profiles"] = true,
+	}
+	function module:SaveCurrentProfiletoDB()
+		local profileName = VExRT.ExCD2.Profiles.Now
+
+		local saveDB = {}
+		VExRT.ExCD2.Profiles.List[ profileName ] = saveDB
+		
+		for key,val in pairs(VExRT.ExCD2) do
+			if not IGNORE_PROFILE_KEYS[key] then
+				if type(val) == "table" then
+					saveDB[key] = ExRT.F.table_copy2(val)
+				else
+					saveDB[key] = val
+				end
+			end
+		end
+	end
+	function module:SelectProfile(name)
+		if name == VExRT.ExCD2.Profiles.Now or not name then
+			return
+		end
+		if not VExRT.ExCD2.Profiles.List[name] then
+			return
+		end
+		module:SaveCurrentProfiletoDB()
+
+		local savedKeys = {}
+		for key in pairs(IGNORE_PROFILE_KEYS) do
+			if VExRT.ExCD2[key] then
+				savedKeys[key] = VExRT.ExCD2[key]
+			end
+		end
+		ExRT.F.table_rewrite(VExRT.ExCD2,VExRT.ExCD2.Profiles.List[name])
+		for key,val in pairs(savedKeys) do
+			VExRT.ExCD2[key] = val
+		end
+
+		VExRT.ExCD2.Profiles.Now = name
+
+		module:ReloadProfile()
+
+		VExRT.ExCD2.Profiles.List[name] = nil	--remove data only if reload is successful
+
+		return true
+	end
+	function module:ReloadProfile()
+		module.main:ADDON_LOADED()
+		if module.options.isLoaded then
+			module.options.chkLock:SetChecked(VExRT.ExCD2.lock)
+			module.options.chkEnable:SetChecked(VExRT.ExCD2.enabled)
+			module.options.chkEnable:ColorState()
+			module.options.chkSplit:SetChecked(VExRT.ExCD2.SplitOpt)
+			module.options.chkNoRaid:SetChecked(VExRT.ExCD2.NoRaid)	
+			module.options.categories:Update()
+			module.options.categories.buttons[1]:Click()
+			module.options.optColTabs.tabs[module.db.maxColumns+3].currentName:UpdateText()
+			module.options.optColTabs.tabs[module.db.maxColumns+3]:UpdateAutoTexts()
+			if module.options.optColTabs.selected <= module.db.maxColumns + 1 then
+				module.options:selectColumnTab()
+			end
+		end
 	end
 
+	function module:CheckZoneProfiles()
+		local _, zoneType = GetInstanceInfo()
+
+		if zoneType == "arena" then
+			if VExRT.ExCD2.Profiles.Arena then
+				module:SelectProfile(VExRT.ExCD2.Profiles.Arena)
+			end
+		elseif zoneType == "party" then
+			if VExRT.ExCD2.Profiles.Dung then
+				module:SelectProfile(VExRT.ExCD2.Profiles.Dung)
+			end
+		elseif zoneType == "raid" then
+			if VExRT.ExCD2.Profiles.Raid then
+				module:SelectProfile(VExRT.ExCD2.Profiles.Raid)
+			end
+		elseif zoneType == "pvp" then
+			if VExRT.ExCD2.Profiles.BG then
+				module:SelectProfile(VExRT.ExCD2.Profiles.BG)
+			end
+		else
+			if VExRT.ExCD2.Profiles.Other then
+				module:SelectProfile(VExRT.ExCD2.Profiles.Other)
+			end
+		end
+	end
+end
+
+function module:Enable()
+	VExRT.ExCD2.enabled = true
 	module.frame.IsEnabled = true
 
+	module:UpdateLockState()
+	module:SplitExCD2Window() 
+	module:ReloadAllSplits()
+
 	module:RegisterTimer()
-	module:RegisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END')
+	module:RegisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END')
 
 	module:CreateSpellDB()
 
@@ -4068,6 +4333,7 @@ end
 
 function module:Disable()
 	VExRT.ExCD2.enabled = nil
+	module.frame.IsEnabled = false
 	if not VExRT.ExCD2.SplitOpt then 
 		module.frame:Hide()
 	else
@@ -4076,10 +4342,8 @@ function module:Disable()
 		end 
 	end
 
-	module.frame.IsEnabled = false
-
 	module:UnregisterTimer()
-	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END','ARENA_COOLDOWNS_UPDATE','UNIT_AURA')
+	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END','ARENA_COOLDOWNS_UPDATE','UNIT_AURA')
 end
 
 function module:IsEnabled()
@@ -4090,9 +4354,18 @@ function module:IsEnabled()
 	end
 end
 
+local NewVExRTTableData = {
+	NoRaid = true,
+	upd4380 = true,
+}
+
 function module.main:ADDON_LOADED()
 	VExRT = _G.VExRT
-	VExRT.ExCD2 = VExRT.ExCD2 or {NoRaid = true}
+	VExRT.ExCD2 = VExRT.ExCD2 or ExRT.F.table_copy2(NewVExRTTableData)
+
+	VExRT.ExCD2.Profiles = VExRT.ExCD2.Profiles or {}
+	VExRT.ExCD2.Profiles.List = VExRT.ExCD2.Profiles.List or {}
+	VExRT.ExCD2.Profiles.Now = VExRT.ExCD2.Profiles.Now or "default"
 
 	if VExRT.Addon.Version < 4235 then
 		if VExRT.ExCD2.Priority then
@@ -4134,8 +4407,6 @@ function module.main:ADDON_LOADED()
 	VExRT.ExCD2.CDE = VExRT.ExCD2.CDE or {}
 	VExRT.ExCD2.CDECol = VExRT.ExCD2.CDECol or {}
 
-	VExRT_CDE = VExRT.ExCD2.CDE
-
 	if not VExRT.ExCD2.colSet then
 		VExRT.ExCD2.colSet = {}
 		for i=1,module.db.maxColumns+1 do
@@ -4174,29 +4445,12 @@ function module.main:ADDON_LOADED()
 
 	VExRT.ExCD2.OptFav = VExRT.ExCD2.OptFav or {}
 
-	if VExRT.ExCD2.lock then
-		module.frame.texture:SetColorTexture(0, 0, 0, 0)
-		module.frame:EnableMouse(false)
-		ExRT.lib.AddShadowComment(module.frame,1)
-	else
-		module.frame.texture:SetColorTexture(0, 0, 0, 0.3)
-		module.frame:EnableMouse(true)
-		ExRT.lib.AddShadowComment(module.frame,nil,L.cd2)
-	end
-
-	module:SplitExCD2Window() 
-	--module:ReloadAllSplits()
-
 	VExRT.ExCD2.Save = VExRT.ExCD2.Save or {}
 
+	module:RegisterEvents('ZONE_CHANGED_NEW_AREA')
 	if not VExRT.ExCD2.enabled then
-		if not VExRT.ExCD2.SplitOpt then 
-			module.frame:Hide() 
-		else
-			for i=1,module.db.maxColumns do 
-				module.frame.colFrame[i]:Hide() 
-			end 
-		end
+		module:Disable()
+		C_Timer.After(2,module.CheckZoneProfiles)
 	else
 		module:Enable()
 		ScheduleTimer(UpdateRoster,10)
@@ -4220,7 +4474,6 @@ end
 function module.main:SCENARIO_UPDATE()
 	AfterCombatResetFunction()
 	UpdateAllData()
-	SortAllData()
 end
 module.main.CHALLENGE_MODE_RESET = module.main.SCENARIO_UPDATE
 
@@ -4238,10 +4491,12 @@ do
 		scheduledUpdateRoster = nil
 		UpdateRoster()
 		module:updateCombatVisibility()
+		module:ATFFrameDataReset()
 	end
+
 	function module.main:GROUP_ROSTER_UPDATE()
 		if not scheduledUpdateRoster then
-			scheduledUpdateRoster = ScheduleTimer(funcScheduledUpdate,2)
+			scheduledUpdateRoster = ScheduleTimer(funcScheduledUpdate,1)
 		end
 	end
 end
@@ -4250,6 +4505,9 @@ do
 	local scheduledUpdateRoster = nil
 	local function funcScheduledUpdate()
 		scheduledUpdateRoster = nil
+		if not module:IsEnabled() then	--module can be disabled after function already scheduled
+			return
+		end
 		UpdateRoster()
 	end
 
@@ -4258,6 +4516,9 @@ do
 	local scheduledVisibility = nil
 	local function funcScheduledVisibility()
 		scheduledVisibility = nil
+		if not module:IsEnabled() then	--module can be disabled after function already scheduled
+			return
+		end
 		module:updateCombatVisibility()
 
 		local _,_,diff = GetInstanceInfo()
@@ -4274,29 +4535,35 @@ do
 	end
 
 	function module.main:ZONE_CHANGED_NEW_AREA()
-		if select(2, IsInInstance()) == "arena" then
-			AfterCombatResetFunction(true)
-			UpdateAllData()
-			SortAllData()
-		end
-		if not scheduledVisibility then
-			scheduledVisibility = ScheduleTimer(funcScheduledVisibility,2)
-		end
-		if not scheduledUpdateRoster then
-			scheduledUpdateRoster = ScheduleTimer(funcScheduledUpdate,10)
+		C_Timer.After(1,module.CheckZoneProfiles)
+		
+		if module:IsEnabled() then
+			if select(2, IsInInstance()) == "arena" then
+				AfterCombatResetFunction(true)
+				UpdateAllData()
+			end
+			if not scheduledVisibility then
+				scheduledVisibility = ScheduleTimer(funcScheduledVisibility,2)
+			end
+			if not scheduledUpdateRoster then
+				scheduledUpdateRoster = ScheduleTimer(funcScheduledUpdate,10)
+			end
 		end
 	end
 end
 
-function module.main:UNIT_AURA(arg)
-	if IsInJailersTower() then
-		local name,realm = UnitName(arg)
+local FD_GUIDs = {}
+local ScheduledUnitAura
+function module.main:UNIT_AURA(unitID)
+	local isInTorghast = IsInJailersTower()
+	if isInTorghast then
+		local name,realm = UnitName(unitID)
 		if realm then
 			name = name .. "-" .. realm
 		end
 		--cooldownsModule:ClearSessionDataReason(name,"torghast")
 		for i=1,60 do
-			local _, _, count, _, _, _, _, _, _, spellId = UnitAura(arg, i, "MAW")
+			local _, _, count, _, _, _, _, _, _, spellId = UnitAura(unitID, i, "MAW")
 			if not spellId then
 				break
 			else
@@ -4304,6 +4571,40 @@ function module.main:UNIT_AURA(arg)
 					count = nil
 				end
 				_db.session_gGUIDs[name] = {spellId,"torghast",count}
+			end
+		end
+	end
+	local guid = UnitGUID(unitID)
+	if guid and FD_GUIDs[guid] then
+		local FD_Found
+		for i=1,60 do
+			local _, _, _, _, _, _, _, _, _, spellId = UnitAura(unitID, i)
+			if not spellId then
+				break
+			elseif spellId == 5384 then
+				FD_Found = true
+			end
+		end
+		if not FD_Found then
+			local line = _db.cdsNav[UnitName(unitID)][5384]
+			if line then
+				CLEUstartCD(line)
+			end
+
+			FD_GUIDs[guid] = nil
+			if not isInTorghast then
+				local anyFound
+				for _ in pairs(FD_GUIDs) do
+					anyFound = true
+					break
+				end
+				if not anyFound then
+					if ScheduledUnitAura then
+						ScheduledUnitAura:Cancel()
+						ScheduledUnitAura = nil
+					end
+					module:UnregisterEvents("UNIT_AURA")
+				end
 			end
 		end
 	end
@@ -4639,7 +4940,6 @@ do
 				session_gGUIDs[sourceName] = {talentFromAura,"aura"}
 			end
 			UpdateAllData()
-			SortAllData()
 		end
 
 		if spellID == 118905 and sourceGUID and CapacitorMain[sourceGUID] then
@@ -4681,7 +4981,6 @@ do
 				end
 				if updateReq then
 					UpdateAllData()
-					SortAllData()
 				end
 			end, 30)
 		elseif spellID == 204366 and destName then	--Thundercharge
@@ -4709,29 +5008,29 @@ do
 				end
 				if updateReq then
 					UpdateAllData()
-					SortAllData()
 				end
 			end, 10)
-		elseif spellID == 327710 and destName and sourceName then	--Benevolent Faerie
-			if _db.vars.faerie[sourceName..":"..destName] then
-				_db.vars.faerie[sourceName..":"..destName]:Cancel()
+		elseif (spellID == 327710 or spellID == 345453) and destName and sourceName then	--Benevolent Faerie
+			local db = spellID == 327710 and _db.vars.faerie or _db.vars.faerieCond
+			local mod = spellID == 327710 and 1 or 0.8
+			if db[sourceName..":"..destName] then
+				db[sourceName..":"..destName]:Cancel()
 			end
-			_db.vars.faerie[sourceName..":"..destName] = C_Timer.NewTicker(1,function(self)
+			db[sourceName..":"..destName] = C_Timer.NewTicker(1,function(self)
 				local updateReq
 				for j=1,#_C do
 					local line = _C[j]
 					if line.fullName == destName and line.db and _db.vars.faerieSpells[ line.db[1] ] then
-						line:ReduceCD(1,true)
+						line:ReduceCD(1*mod,true)
 						updateReq = true
 					end
 				end
 				self.last = GetTime()
 				if updateReq then
 					UpdateAllData()
-					SortAllData()
 				end
 			end, 30)
-			_db.vars.faerie[sourceName..":"..destName].OnCancel = function(self)
+			db[sourceName..":"..destName].OnCancel = function(self)
 				local now = GetTime()
 				if not self.last or ((now - self.last) < 0.2) then
 					return
@@ -4740,13 +5039,12 @@ do
 				for j=1,#_C do
 					local line = _C[j]
 					if line.fullName == destName and line.db and _db.vars.faerieSpells[ line.db[1] ] then
-						line:ReduceCD(now - self.last,true)
+						line:ReduceCD((now - self.last)*mod,true)
 						updateReq = true
 					end
 				end
 				if updateReq then
 					UpdateAllData()
-					SortAllData()
 				end
 			end
 		elseif spellID == 50334 and destName then	--Berserk
@@ -4783,7 +5081,6 @@ do
 				end
 				if updateReq then
 					UpdateAllData()
-					SortAllData()
 				end
 			end, 4)
 			_db.vars.shiftingpower[sourceName].t_end = GetTime() + len
@@ -4833,8 +5130,7 @@ do
 		if not sourceName then
 			return
 		end
-		local forceUpdateAllData = false
-		local forceSortAllData = false
+		local forceUpdateAllData
 
 		local modifData = spell_reduceCdByAuraFade[spellID]
 		if modifData then
@@ -4844,7 +5140,6 @@ do
 				if line and abs(GetTime() - line.lastUse - line.duration) < 0.5 then
 					line:ModCD(modifData[2],true)
 					forceUpdateAllData = true
-					forceSortAllData = true
 				end
 			else
 				if session_gGUIDs[sourceName][ CDspellID[2] ] then
@@ -4852,7 +5147,6 @@ do
 					if line and abs(GetTime() - line.lastUse - line.duration) < 0.5 then
 						line:ModCD(modifData[2],true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 			end
@@ -4866,7 +5160,6 @@ do
 				if line and abs(GetTime() - line.lastUse - line.duration) > 0.5 then
 					line:ModCD(modifData[2],true)
 					forceUpdateAllData = true
-					forceSortAllData = true
 				end
 			else
 				if session_gGUIDs[sourceName][ CDspellID[2] ] then
@@ -4874,7 +5167,6 @@ do
 					if line and abs(GetTime() - line.lastUse - line.duration) > 0.5 then
 						line:ModCD(modifData[2],true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 			end
@@ -4889,7 +5181,6 @@ do
 			if line then
 				line:SetDur(0,true)
 				forceUpdateAllData = true
-				forceSortAllData = true
 			end
 		end
 
@@ -4921,20 +5212,16 @@ do
 				session_gGUIDs[sourceName] = -talentFromAura
 			end
 			forceUpdateAllData = true
-			forceSortAllData = true
 		end
 
 		if spellID == 206005 then	--Xavius: Dream Simulacrum
 			for i=1,#_C do
 				local unitSpellData = _C[i]
 				if unitSpellData.fullName == destName then
-					unitSpellData.cd = 0
-					unitSpellData.duration = 0
+					unitSpellData:SetCD(0,true)
+					unitSpellData:SetDur(0,true)
 
-					if unitSpellData.bar and unitSpellData.bar.data == unitSpellData then
-						unitSpellData.bar:UpdateStatus()
-						forceSortAllData = true
-					end
+					forceUpdateAllData = true
 				end
 			end
 			UpdateAllData()
@@ -4950,11 +5237,12 @@ do
 					_db.vars.thundercharge[destName]:Cancel()
 				end
 			end)
-		elseif spellID == 327710 and destName then	--Benevolent Faerie
+		elseif (spellID == 327710  or spellID == 345453) and destName then	--Benevolent Faerie
+			local db = spellID == 327710 and _db.vars.faerie or _db.vars.faerieCond
 			C_Timer.After(0.1,function()
-				if _db.vars.faerie[sourceName..":"..destName] then
-					_db.vars.faerie[sourceName..":"..destName]:OnCancel()
-					_db.vars.faerie[sourceName..":"..destName]:Cancel()
+				if db[sourceName..":"..destName] then
+					db[sourceName..":"..destName]:OnCancel()
+					db[sourceName..":"..destName]:Cancel()
 				end
 			end)
 		elseif spellID == 50334 and destName then	--Berserk
@@ -4968,7 +5256,6 @@ do
 			if line then
 				line:ReduceCD(5,true)
 				forceUpdateAllData = true
-				forceSortAllData = true
 			end
 		elseif spellID == 314791 then	--Shifting Power
 			if _db.vars.shiftingpower[sourceName] then
@@ -4989,9 +5276,6 @@ do
 		if forceUpdateAllData then
 			UpdateAllData()
 		end
-		if forceSortAllData then
-			SortAllData()
-		end
 	end
 	function module.main.SPELL_AURA_REMOVED_DOSE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
 		if spellID == 195181 and session_gGUIDs[sourceName][334525] then	--Bone Shield
@@ -5007,7 +5291,7 @@ do
 		if not sourceName then
 			return
 		end
-		local forceSortAllData,forceUpdateAllData = nil
+		local forceUpdateAllData
 
 		if spell_isPetAbility[spellID] then
 			sourceName = session_PetOwner[sourceGUID] or sourceName
@@ -5052,7 +5336,6 @@ do
 						line:SetCD(0,true)
 
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 			end
@@ -5073,7 +5356,6 @@ do
 							line.bar:UpdateStatus()
 						end
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 			end
@@ -5090,7 +5372,6 @@ do
 					if line then
 						line:ReduceCD(-reduceTime * cdr_mod,true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				else
 					local specReduceCD = reduceSpellID[3]
@@ -5107,7 +5388,6 @@ do
 						if line then
 							line:ReduceCD(-reduceTime * cdr_mod,true)
 							forceUpdateAllData = true
-							forceSortAllData = true
 						end
 					end
 				end
@@ -5123,7 +5403,6 @@ do
 					if line and (GetTime() - line.lastUse) < line.duration  then
 						line:ChangeDur(modifData[i+1],true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				else
 					if session_gGUIDs[sourceName][ increaseSpellID[2] ] then
@@ -5138,7 +5417,6 @@ do
 						if line and (GetTime() - line.lastUse) < line.duration then
 							line:ChangeDur(incTime,true)
 							forceUpdateAllData = true
-							forceSortAllData = true
 						end
 					end
 				end
@@ -5150,12 +5428,6 @@ do
 			for i=1,#modifData do
 				local sameSpellID = modifData[i]
 				if sameSpellID ~= spellID then
-					--[[
-					local line = CDList[sourceName][ sameSpellID ]
-					if line then
-						CLEUstartCD(line)
-					end
-					]]
 					isSpellDuplicateDisabled = true
 					module.main.SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,sameSpellID)
 					isSpellDuplicateDisabled = false
@@ -5172,7 +5444,6 @@ do
 				line:ChangeCD(-timeReduce,true)
 
 				forceUpdateAllData = true
-				forceSortAllData = true
 			end
 		elseif spellID == 53595 then	--Hammer of the Righteous
 			avengershield_var[sourceGUID] = GetTime()
@@ -5192,7 +5463,6 @@ do
 				if line.fullName == sourceName and line.db[1] ~= 1856 then
 					line:ReduceCD(20,true)
 					forceUpdateAllData = true
-					forceSortAllData = true
 				end
 			end
 		elseif spellID == 36554 then
@@ -5202,7 +5472,6 @@ do
 					if line then
 						line:ChangeCD(-20,true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 				if bit.band(destFlags or 0,240) == 16 then
@@ -5210,7 +5479,6 @@ do
 					if line then
 						line:ChangeCD(-15,true)
 						forceUpdateAllData = true
-						forceSortAllData = true
 					end
 				end
 			end
@@ -5224,9 +5492,6 @@ do
 
 		if forceUpdateAllData then
 			UpdateAllData()
-		end
-		if forceSortAllData then
-			SortAllData()
 		end
 	end
 	function module.main.SPELL_DISPEL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
@@ -5621,7 +5886,6 @@ do
 	end
 
 	function module.main:ARENA_COOLDOWNS_UPDATE(unitID)
-		if not unitID then return end
 		local guid = UnitGUID(unitID)
 		if not guid then return end
 		if isPaladin[guid] then
@@ -5636,6 +5900,41 @@ do
 					if line then
 						line:ResetCD()
 					end
+				end
+			end
+		end
+	end
+
+	local SCSSpells = {}
+	local SCSBlack = {}
+	function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,castGUID,spellID)
+		if SCSSpells[spellID] then
+			if SCSBlack[castGUID] then
+				return
+			end
+			SCSBlack[castGUID] = true
+			
+			local guid = UnitGUID(unitID)
+			local name = UnitName(unitID)
+
+			module.main.SPELL_CAST_SUCCESS(guid,name,0,nil,nil,0,spellID)
+			if spellID == 5384 then
+				local line = CDList[name][5384]
+				if line then
+					line:SetCD(360)
+				end
+
+				FD_GUIDs[guid] = true
+
+				if not IsInJailersTower() then
+					module:RegisterEvents('UNIT_AURA')
+					if ScheduledUnitAura then
+						ScheduledUnitAura:Cancel()
+					end
+					ScheduledUnitAura = ScheduleTimer(function()
+						ScheduledUnitAura = nil
+						module:UnregisterEvents('UNIT_AURA')
+					end,361)
 				end
 			end
 		end
@@ -5658,6 +5957,7 @@ do
 	local isSpellKickAdded = nil
 	local isSpellEnergyAdded = nil
 	local isACUAdded = nil
+	local isSCSAdded = nil
 	function module:AddCLEUSpellDamage(spellID)
 		if spellDamage_trackedSpells_Register[spellID] and not isSpellDamageAdded then
 			eventsView.SPELL_DAMAGE = module.main.SPELL_DAMAGE
@@ -5694,6 +5994,10 @@ do
 			eventsView.RANGE_MISSED = module.main.SPELL_MISSED
 			eventsView.SPELL_PERIODIC_MISSED = module.main.SPELL_MISSED
 			isACUAdded = true
+		elseif spellID == 5384 and not isSCSAdded then
+			module:RegisterEvents('UNIT_SPELLCAST_SUCCEEDED')
+			isSCSAdded = true
+			SCSSpells[5384] = true
 		end
 	end
 end
@@ -5714,25 +6018,10 @@ function module.options:Load()
 	self.chkLock = ELib:Check(self,L.cd2fix,VExRT.ExCD2.lock):Point(590,-26):Size(18,18):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.ExCD2.lock = true
-			ExRT.F.LockMove(module.frame,nil,module.frame.texture)
-			ExRT.lib.AddShadowComment(module.frame,1)
-			if VExRT.ExCD2.SplitOpt then 
-				for i=1,module.db.maxColumns do 
-					ExRT.F.LockMove(module.frame.colFrame[i],nil,module.frame.colFrame[i].lockTexture)
-					ExRT.lib.AddShadowComment(module.frame.colFrame[i],1)
-				end 
-			end
 		else
 			VExRT.ExCD2.lock = nil
-			ExRT.F.LockMove(module.frame,true,module.frame.texture)
-			ExRT.lib.AddShadowComment(module.frame,nil,L.cd2)
-			if VExRT.ExCD2.SplitOpt then 
-				for i=1,module.db.maxColumns do 
-					ExRT.F.LockMove(module.frame.colFrame[i],true,module.frame.colFrame[i].lockTexture)
-					ExRT.lib.AddShadowComment(module.frame.colFrame[i],nil,L.cd2,i,72,"OUTLINE")
-				end 
-			end
 		end
+		module:UpdateLockState()
 	end)
 
 	self.tab = ELib:Tabs(self,0,L.cd2Spells,L.cd2Appearance,L.cd2History):Point(0,-45):Size(850,589):SetTo(1)
@@ -6739,6 +7028,15 @@ function module.options:Load()
 			end
 			self.list = newList
 			self.extraData = extraData
+		elseif categoryNow == "ITEMS" and #list > 0 then
+			local header = list[1]
+			tremove(list, 1)
+			local listLen = #list
+			for i=1,#list/2 do
+				list[i], list[listLen-i+1] = list[listLen-i+1], list[i]
+				extraData[i], extraData[listLen-i+1] = extraData[listLen-i+1], extraData[i]
+			end
+			tinsert(list, 1, header)
 		end
 	end
 	function self.list:Update()
@@ -7490,6 +7788,7 @@ function module.options:Load()
 		optColSet.chkReverseSorting:SetChecked(VColOpt.methodsReverseSorting)
 		optColSet.chkCDOnlyTimer:SetChecked(VColOpt.methodsCDOnlyTime)
 		optColSet.chkTextIgnoreActive:SetChecked(VColOpt.methodsTextIgnoreActive)
+		optColSet.chkShowOnlyNotOnCD:SetChecked(VColOpt.methodsOnlyNotOnCD)
 
 		optColSet.chkGeneralMethods:doAlphas()
 
@@ -7523,6 +7822,7 @@ function module.options:Load()
 			optColSet.ATFRadiosCheck()
 			optColSet.ATFTypeGrowth1:SetChecked(VColOpt.ATFGrowth == 1 or not VColOpt.ATFGrowth)
 			optColSet.ATFTypeGrowth2:SetChecked(VColOpt.ATFGrowth == 2)
+			optColSet.dropDownATFFramePrior:Update(VColOpt.ATFFramePrior)
 		end
 
 
@@ -7567,7 +7867,18 @@ function module.options:Load()
 		end
 		tmpArr[module.db.maxColumns+1] = L.cd2GeneralSet
 		tmpArr[#tmpArr+1] = ADVANCED_LABEL
+		tmpArr[#tmpArr+1] = L.Profiles
 		self.optColTabs = ELib:Tabs(self.tab.tabs[2],0,unpack(tmpArr)):Size(660,417):Point("TOP",0,-48):SetTo(module.db.maxColumns+1)
+
+		local profilesBut = self.optColTabs.tabs[module.db.maxColumns+3].button
+		profilesBut.colID = module.db.maxColumns+3
+		profilesBut:SetScript("OnClick", function(self)
+			module.options.optColTabs.selected = self.colID
+			module.options.optColTabs:UpdateTabs()
+			module.options.optColSet.superTabFrame:Hide()
+		end)
+		profilesBut:ClearAllPoints()
+		profilesBut:SetPoint("TOPRIGHT", -10, 24)
 
 		local advColBut = self.optColTabs.tabs[module.db.maxColumns+2].button
 		advColBut.colID = module.db.maxColumns+2
@@ -7577,7 +7888,7 @@ function module.options:Load()
 			module.options.optColSet.superTabFrame:Hide()
 		end)
 		advColBut:ClearAllPoints()
-		advColBut:SetPoint("TOPRIGHT", -10, 24)
+		advColBut:SetPoint("RIGHT", profilesBut, "LEFT", 0, 0)
 	end
 	for i=1,module.db.maxColumns+1 do
 		self.optColTabs.tabs[i].button.colID = i
@@ -8282,7 +8593,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralFont:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.dropDownFont,module.options.optColSet.sliderFont,module.options.optColSet.chkFontOutline,module.options.optColSet.chkFontShadow)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].fontGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.dropDownFont,module.options.optColSet.sliderFont,module.options.optColSet.chkFontOutline,module.options.optColSet.chkFontShadow,module.options.optColSet.chkFontOtherAvailable)
 	end
 
 	--> Text options
@@ -8356,6 +8667,7 @@ function module.options:Load()
 		"<10: |cff00ff009|r - <60: |cff00ff0046|r - 60+: |cff00ff002m|r - 120+:|cff00ff003m|r",
 		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff001m|r - 120+:|cff00ff002m|r",
 		"<10: |cff00ff008.5|r - <60: |cff00ff0046|r - 60+: |cff00ff002m|r - 120+:|cff00ff003m|r",
+		"<10: |cff00ff008|r - <100: |cff00ff0046|r - 100+: |cff00ff001m|r - 120+:|cff00ff002m|r",
 	}
 	for i=1,#self.optColSet.dropDownIconCDStyle.Styles do
 		self.optColSet.dropDownIconCDStyle.List[i] = {
@@ -8386,7 +8698,7 @@ function module.options:Load()
 
 	--> Method options
 
-	self.optColSet.superTabFrame.tab[6].scroll = ELib:ScrollFrame(self.optColSet.superTabFrame.tab[6]):Point("TOP"):Size(456,444):Height(485)
+	self.optColSet.superTabFrame.tab[6].scroll = ELib:ScrollFrame(self.optColSet.superTabFrame.tab[6]):Point("TOP"):Size(456,444):Height(510)
 	ELib:Border(self.optColSet.superTabFrame.tab[6].scroll,0)
 	self.optColSet.col6scroll = self.optColSet.superTabFrame.tab[6].scroll.C
 	self.optColSet.col6scroll:SetWidth(456 - 16)
@@ -8588,6 +8900,15 @@ function module.options:Load()
 		module.main:GROUP_ROSTER_UPDATE()
 	end)
 
+	self.optColSet.chkShowOnlyNotOnCD = ELib:Check(self.optColSet.col6scroll,L.cd2OtherSetOnlyNotOnCD):Point("TOPLEFT",self.optColSet.chkTextIgnoreActive,0,-25):OnClick(function(self) 
+		if self:GetChecked() then
+			currColOpt.methodsOnlyNotOnCD = true
+		else
+			currColOpt.methodsOnlyNotOnCD = nil
+		end
+		module:ReloadAllSplits()
+	end)
+
 	self.optColSet.chkGeneralMethods = ELib:Check(self.optColSet.col6scroll,L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.methodsGeneral = true
@@ -8600,7 +8921,7 @@ function module.options:Load()
 
 
 	function self.optColSet.chkGeneralMethods:doAlphas()
-		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting, module.options.optColSet.chkCDOnlyTimer, module.options.optColSet.chkTextIgnoreActive)
+		ExRT.lib.SetAlphas(VExRT.ExCD2.colSet[module.options.optColTabs.selected].methodsGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkShowOnlyOnCD,module.options.optColSet.chkBotToTop,module.options.optColSet.dropDownStyleAnimation,module.options.optColSet.dropDownTimeLineAnimation,module.options.optColSet.chkIconTooltip,module.options.optColSet.chkLineClick,module.options.optColSet.chkNewSpellNewLine,module.options.optColSet.dropDownSortingRules,module.options.optColSet.textSortingRules,module.options.optColSet.textStyleAnimation,module.options.optColSet.textTimeLineAnimation,module.options.optColSet.chkHideOwnSpells,module.options.optColSet.chkAlphaNotInRange,module.options.optColSet.sliderAlphaNotInRange,module.options.optColSet.chkDisableActive,module.options.optColSet.chkOneSpellPerCol,module.options.optColSet.chkLineClickWhisper,module.options.optColSet.chkSortByAvailability, module.options.optColSet.chkSortByAvailability_activeToTop, module.options.optColSet.chkReverseSorting, module.options.optColSet.chkCDOnlyTimer, module.options.optColSet.chkTextIgnoreActive, module.options.optColSet.chkShowOnlyNotOnCD)
 	end
 
 
@@ -9714,7 +10035,29 @@ function module.options:Load()
 		self:tooltipReload(self)
 	end)
 
-
+	self.optColSet.dropDownATFFramePrior = ELib:DropDown(self.optColSet.superTabFrame.tab[10],350,-1):Size(230):Point("TOPLEFT",180,-370):Tooltip(L.cd2FramePriorTooltip)
+	self.optColSet.textdropDownATFFramePrior = ELib:Text(self.optColSet.superTabFrame.tab[10],L.cd2FramePrior..":",11):Size(200,20):Point("LEFT",10,0):Point("TOP",self.optColSet.dropDownATFFramePrior,0,0)
+	for i=1,#module.db.rframes do
+		self.optColSet.dropDownATFFramePrior.List[i] = {
+			text = module.db.rframes[i].text or module.db.rframes[i].name,
+			arg1 = module.db.rframes[i].name,
+			func = function (self,arg,arg2)
+				ELib:DropDownClose()
+				currColOpt.ATFFramePrior = arg
+				module:ReloadAllSplits()
+				self:GetParent().parent:Update()
+			end
+		}
+	end
+	function self.optColSet.dropDownATFFramePrior:Update(opt)
+		opt = opt or currColOpt.ATFFramePrior
+		local optData = ExRT.F.table_find3(module.db.rframes, opt, "name")
+		if optData then
+			self:SetText(optData.text or optData.name or "")
+		else
+			self:SetText("")
+		end
+	end
 
 
 	do
@@ -9743,9 +10086,136 @@ function module.options:Load()
 	end)
 
 
-	advTab.importWindow, advTab.exportWindow = ExRT.F.CreateImportExportWindows()
+	--> Profiles
 
-	function advTab.importWindow:ImportFunc(str)
+	local profilesTab = self.optColTabs.tabs[module.db.maxColumns+3]
+
+	local function GetCurrentProfileName()
+		return VExRT.ExCD2.Profiles.Now=="default" and L.ProfilesDefault or VExRT.ExCD2.Profiles.Now
+	end
+
+	profilesTab.currentText = ELib:Text(profilesTab,L.ProfilesCurrent,11):Size(650,200):Point(15,-20):Top():Color()
+	profilesTab.currentName = ELib:Text(profilesTab,"",14):Size(650,200):Point(210,-20):Top():Color(1,1,0)
+
+	profilesTab.currentName.UpdateText = function(self)
+		self:SetText(GetCurrentProfileName())
+	end
+	profilesTab.currentName:UpdateText()
+
+	profilesTab.choseText = ELib:Text(profilesTab,L.ProfilesChooseDesc,11):Size(650,200):Point(15,-60):Top():Color()
+	
+	profilesTab.choseNewText = ELib:Text(profilesTab,L.ProfilesNew,11):Size(650,200):Point(15,-88):Top()
+	profilesTab.choseNew = ELib:Edit(profilesTab):Size(170,20):Point(10,-100)
+	
+	profilesTab.choseNewButton = ELib:Button(profilesTab,L.ProfilesAdd):Size(70,20):Point("LEFT",profilesTab.choseNew,"RIGHT",0,0):OnClick(function (self)
+		local text = profilesTab.choseNew:GetText()
+		profilesTab.choseNew:SetText("")
+		if text == "" or text == "default" or VExRT.ExCD2.Profiles.List[text] or text == VExRT.ExCD2.Profiles.Now then
+			return
+		end
+		VExRT.ExCD2.Profiles.List[text] = ExRT.F.table_copy2(NewVExRTTableData)
+		
+		StaticPopupDialogs["EXRT_EXCD_ACTIVATENEW"] = {
+			text = L.ProfilesActivateAlert,
+			button1 = L.YesText,
+			button2 = L.NoText,
+			OnAccept = function()
+				module:SelectProfile(text)
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+			preferredIndex = 3,
+		}
+		StaticPopup_Show("EXRT_EXCD_ACTIVATENEW")
+	end)
+	
+	profilesTab.choseSelectText = ELib:Text(profilesTab,L.ProfilesSelect,11):Size(605,200):Point(335,-88):Top()
+	profilesTab.choseSelectDropDown = ELib:DropDown(profilesTab,220,10):Point(330,-100):Size(235):SetText(LFG_LIST_SELECT)
+
+	local function GetCurrentProfilesList(func)
+		local list = {
+			{ text = GetCurrentProfileName(), func = func, arg1 = VExRT.ExCD2.Profiles.Now, _sort = "0" },
+		}
+		for name,_ in pairs(VExRT.ExCD2.Profiles.List) do
+			if name ~= VExRT.ExCD2.Profiles.Now then
+				list[#list + 1] = { text = name == "default" and L.ProfilesDefault or name, func = func, arg1 = name, _sort = "1"..name }
+			end
+		end
+		sort(list,function(a,b) return a._sort < b._sort end)
+		return list
+	end
+
+	function profilesTab.choseSelectDropDown:ToggleUpadte()
+		self.List = GetCurrentProfilesList(function(_,arg1)
+			ELib:DropDownClose()
+			module:SelectProfile(arg1)
+		end)
+	end
+	
+	local function CopyProfile(name)
+		local newdb = VExRT.ExCD2.Profiles.List[name]
+		local currname = VExRT.ExCD2.Profiles.Now
+		if module:SelectProfile(name) then
+			VExRT.ExCD2.Profiles.List[name] = newdb
+			VExRT.ExCD2.Profiles.Now = currname
+
+			profilesTab.currentName:UpdateText()
+
+			print(L.cd2ProfileCopySuccess:format(name))
+		end
+	end
+	profilesTab.copyText = ELib:Text(profilesTab,L.ProfilesCopy,11):Size(605,200):Point(15,-138):Top()
+	profilesTab.copyDropDown = ELib:DropDown(profilesTab,220,10):Point(10,-150):Size(235)
+	function profilesTab.copyDropDown:ToggleUpadte()
+		self.List = GetCurrentProfilesList(function(_,arg1)
+			ELib:DropDownClose()
+			CopyProfile(arg1)
+		end)
+		for i=1,#self.List do
+			if self.List[i].arg1 == VExRT.ExCD2.Profiles.Now then
+				tremove(self.List, i)
+				break
+			end
+		end
+	end
+	
+	local function DeleteProfile(name)
+		StaticPopupDialogs["EXRT_EXCD_PROFILES_REMOVE"] = {
+			text = L.ProfilesDeleteAlert,
+			button1 = L.YesText,
+			button2 = L.NoText,
+			OnAccept = function()
+				VExRT.ExCD2.Profiles.List[name] = nil
+				profilesTab:UpdateAutoTexts()
+			end,
+			timeout = 0,
+			whileDead = true,
+			hideOnEscape = true,
+			preferredIndex = 3,
+		}
+		StaticPopup_Show("EXRT_EXCD_PROFILES_REMOVE")
+	end
+	profilesTab.deleteText = ELib:Text(profilesTab,L.ProfilesDelete,11):Size(605,200):Point(15,-188):Top()
+	profilesTab.deleteDropDown = ELib:DropDown(profilesTab,220,10):Point(10,-200):Size(235)
+	function profilesTab.deleteDropDown:ToggleUpadte()
+		self.List = GetCurrentProfilesList(function(_,arg1)
+			ELib:DropDownClose()
+			DeleteProfile(arg1)
+		end)
+		for i=#self.List,1,-1 do
+			if self.List[i].arg1 == VExRT.ExCD2.Profiles.Now then
+				tremove(self.List, i)
+			elseif self.List[i].arg1 == "default" then
+				tremove(self.List, i)
+			end
+		end
+	end
+
+
+	profilesTab.importWindow, profilesTab.exportWindow = ExRT.F.CreateImportExportWindows()
+
+	function profilesTab.importWindow:ImportFunc(str)
 		local header = str:sub(1,8)
 		if header:sub(1,7) ~= "EXRTCDP" or (header:sub(8,8) ~= "0" and header:sub(8,8) ~= "1") then
 			StaticPopupDialogs["EXRT_EXCD_IMPORT"] = {
@@ -9760,23 +10230,28 @@ function module.options:Load()
 			return
 		end
 
-		advTab:TextToProfile(str:sub(9),header:sub(8,8)=="0")
+		profilesTab:TextToProfile(str:sub(9),header:sub(8,8)=="0")
 	end
 	
-	advTab.exportButton = ELib:Button(advTab,L.ProfilesExport):Size(235,25):Point("TOPLEFT",advTab.hotfixEdit,"BOTTOMLEFT",0,-30):OnClick(function (self)
-		advTab.exportWindow:NewPoint("CENTER",UIParent,0,0)
-		advTab:ProfileToText()
+	profilesTab.exportButton = ELib:Button(profilesTab,L.ProfilesExport):Size(235,25):Point(10,-250):OnClick(function (self)
+		profilesTab.exportWindow:NewPoint("CENTER",UIParent,0,0)
+		profilesTab:ProfileToText()
 	end)
 
-	advTab.importButton = ELib:Button(advTab,L.ProfilesImport):Size(235,25):Point("LEFT",advTab.exportButton,"RIGHT",85,0):OnClick(function (self)
-		advTab.importWindow:NewPoint("CENTER",UIParent,0,0)
-		advTab.importWindow:Show()
+	profilesTab.importButton = ELib:Button(profilesTab,L.ProfilesImport):Size(235,25):Point("LEFT",profilesTab.exportButton,"RIGHT",85,0):OnClick(function (self)
+		profilesTab.importWindow:NewPoint("CENTER",UIParent,0,0)
+		profilesTab.importWindow:Show()
 	end)
 
-	function advTab:ProfileToText()
+	local IGNORE_PROFILE_KEYS = {
+		["Profiles"] = true,
+	}
+	function profilesTab:ProfileToText()
 		local new = {}
 		for key,val in pairs(VExRT.ExCD2) do
-			new[key] = val
+			if not IGNORE_PROFILE_KEYS[key] then
+				new[key] = val
+			end
 		end
 		local strlist = ExRT.F.TableToText(new)
 		strlist[1] = "0,"..strlist[1]
@@ -9793,11 +10268,36 @@ function module.options:Load()
 		if ExRT.isDev then
 			module.db.exportTable = new
 		end
-		advTab.exportWindow.Edit:SetText(encoded)
-		advTab.exportWindow:Show()
+		profilesTab.exportWindow.Edit:SetText(encoded)
+		profilesTab.exportWindow:Show()
 	end
 
-	function advTab:OnlyVisualFilter(res)
+	function profilesTab:SaveDataFilter(res)
+		local KeysToSave = {
+			["Profiles"] = true,
+		}
+		local R = {
+			data = {},
+			Restore = function(self,t) 
+				for k,v in pairs(self.data) do
+					t[k] = v
+				end
+			end
+		}
+		for k,v in pairs(KeysToSave) do
+			R.data[k] = res[k]
+		end
+		return R
+	end
+	function profilesTab:LockedFilter(res)
+		local KeysToErase = {
+			["Profiles"] = true,
+		}
+		for k,v in pairs(KeysToErase) do
+			res[k] = nil
+		end
+	end
+	function profilesTab:OnlyVisualFilter(res)
 		local KeysToErase = {
 			["Hotfixes"] = true,
 			["Priority"] = true,
@@ -9813,7 +10313,7 @@ function module.options:Load()
 		end
 	end
 
-	function advTab:TextToProfile(str,uncompressed)
+	function profilesTab:TextToProfile(str,uncompressed)
 		local decoded = LibDeflate:DecodeForPrint(str)
 		local decompressed
 		if uncompressed then
@@ -9835,36 +10335,48 @@ function module.options:Load()
 			end
 		end
 		if successful and res then
+			profilesTab:LockedFilter(res)
 			StaticPopupDialogs["EXRT_EXCD_IMPORT"] = {
 				text = L.cd2ProfileRewriteAlert,
 				button1 = APPLY,
 				button2 = L.cd2ImportOnlyVisual,
-				button3 = CANCEL,
+				button3 = L.ProfilesSaveAsNew,
+				button4 = CANCEL,
 				selectCallbackByIndex = true,
 				OnButton1 = function()
+					local saved = profilesTab:SaveDataFilter(VExRT.ExCD2)
 					ExRT.F.table_rewrite(VExRT.ExCD2,res)
-					module.main:ADDON_LOADED()
-					module:ReloadAllSplits()
-					module.options.chkLock:SetChecked(VExRT.ExCD2.lock)
-					module.options.chkEnable:SetChecked(VExRT.ExCD2.enabled)
-					module.options.chkEnable:ColorState()
-					module.options.categories:Update()
-					module.options.categories.buttons[1]:Click()
+					saved:Restore(VExRT.ExCD2)
+					module:ReloadProfile()
 					res = nil
 				end,
 				OnButton2 = function()
-					advTab:OnlyVisualFilter(res)
+					profilesTab:OnlyVisualFilter(res)
+					local saved = profilesTab:SaveDataFilter(VExRT.ExCD2)
 					ExRT.F.table_rewrite(VExRT.ExCD2,res)
-					module.main:ADDON_LOADED()
-					module:ReloadAllSplits()
-					module.options.chkLock:SetChecked(VExRT.ExCD2.lock)
-					module.options.chkEnable:SetChecked(VExRT.ExCD2.enabled)
-					module.options.chkEnable:ColorState()
-					module.options.categories:Update()
-					module.options.categories.buttons[1]:Click()
+					saved:Restore(VExRT.ExCD2)
+					module:ReloadProfile()
 					res = nil
 				end,
 				OnButton3 = function()
+					ExRT.F.ShowInput(L.ProfilesNewProfile,function(_,name)
+						if name == "" or VExRT.ExCD2.Profiles.List[name] or name == "default" or name == VExRT.ExCD2.Profiles.Now then
+							res = nil
+							return
+						end
+						VExRT.ExCD2.Profiles.List[name] = res
+						module:SelectProfile(name)
+						res = nil
+					end,nil,nil,nil,function(self)
+						local name = self:GetText()
+						if name == "" or VExRT.ExCD2.Profiles.List[name] or name == "default" or name == VExRT.ExCD2.Profiles.Now then
+							self:GetParent().OK:Disable()
+						else
+							self:GetParent().OK:Enable()
+						end
+					end)
+				end,
+				OnButton4 = function()
 					res = nil
 				end,
 				timeout = 0,
@@ -9887,6 +10399,63 @@ function module.options:Load()
 	end
 
 
+	profilesTab.autoText = ELib:Text(profilesTab,L.cd2AutoChangeTooltip,12):Size(605,200):Point(10,-300):Top():Color()
+
+	local function GetTextProfileName(profileName)
+		if not profileName then
+			return
+		end
+		local prefix
+		if profileName == VExRT.ExCD2.Profiles.Now then
+			prefix = "|cff00ff00"
+		elseif not VExRT.ExCD2.Profiles.List[profileName] then
+			prefix = "|cffff0000"
+		end
+		if profileName == "default" then
+			profileName = L.ProfilesDefault
+		end
+		return (prefix or "")..profileName
+	end
+	function profilesTab:UpdateAutoTexts()
+		self.autoRaidDown:SetText(GetTextProfileName(VExRT.ExCD2.Profiles.Raid) or "|cff999999"..L.cd2DontChange)
+		self.autoDungDown:SetText(GetTextProfileName(VExRT.ExCD2.Profiles.Dung) or "|cff999999"..L.cd2DontChange)
+		self.autoArenaDown:SetText(GetTextProfileName(VExRT.ExCD2.Profiles.Arena) or "|cff999999"..L.cd2DontChange)
+		self.autoBGDown:SetText(GetTextProfileName(VExRT.ExCD2.Profiles.BG) or "|cff999999"..L.cd2DontChange)
+		self.autoOtherDown:SetText(GetTextProfileName(VExRT.ExCD2.Profiles.Other) or "|cff999999"..L.cd2DontChange)
+	end
+
+	local function AutoDropDown_ToggleUpadte(self)
+		local func = function(_,arg1)
+			ELib:DropDownClose()
+			VExRT.ExCD2.Profiles[self.OptKey] = arg1
+			profilesTab:UpdateAutoTexts()
+		end
+		self.List = GetCurrentProfilesList(func)
+		tinsert(self.List,1,{text = L.cd2DontChange, func = func})
+	end
+
+	profilesTab.autoRaidDown = ELib:DropDown(profilesTab,220,10):Point(10,-335):Size(235):AddText(RAID,11,function(self)self:NewPoint("TOPLEFT",'x',5,12):Color(1,.82,0,1) end)
+	profilesTab.autoRaidDown.OptKey = "Raid"
+	profilesTab.autoRaidDown.ToggleUpadte = AutoDropDown_ToggleUpadte
+
+	profilesTab.autoDungDown = ELib:DropDown(profilesTab,220,10):Point("TOPLEFT",profilesTab.autoRaidDown,0,-40):Size(235):AddText(CALENDAR_TYPE_DUNGEON,11,function(self)self:NewPoint("TOPLEFT",'x',5,12):Color(1,.82,0,1) end)
+	profilesTab.autoDungDown.OptKey = "Dung"
+	profilesTab.autoDungDown.ToggleUpadte = AutoDropDown_ToggleUpadte
+
+	profilesTab.autoArenaDown = ELib:DropDown(profilesTab,220,10):Point("TOPLEFT",profilesTab.autoRaidDown,320,0):Size(235):AddText(ARENA,11,function(self)self:NewPoint("TOPLEFT",'x',5,12):Color(1,.82,0,1) end)
+	profilesTab.autoArenaDown.OptKey = "Arena"
+	profilesTab.autoArenaDown.ToggleUpadte = AutoDropDown_ToggleUpadte
+
+	profilesTab.autoBGDown = ELib:DropDown(profilesTab,220,10):Point("TOPLEFT",profilesTab.autoArenaDown,0,-40):Size(235):AddText(BATTLEGROUND,11,function(self)self:NewPoint("TOPLEFT",'x',5,12):Color(1,.82,0,1) end)
+	profilesTab.autoBGDown.OptKey = "BG"
+	profilesTab.autoBGDown.ToggleUpadte = AutoDropDown_ToggleUpadte
+
+	profilesTab.autoOtherDown = ELib:DropDown(profilesTab,220,10):Point("TOPLEFT",profilesTab.autoDungDown,0,-40):Size(235):AddText(OTHER,11,function(self)self:NewPoint("TOPLEFT",'x',5,12):Color(1,.82,0,1) end)
+	profilesTab.autoOtherDown.OptKey = "Other"
+	profilesTab.autoOtherDown.ToggleUpadte = AutoDropDown_ToggleUpadte
+
+	profilesTab:UpdateAutoTexts()
+
 
 	--> Other setts
 	self.optSetTab = ELib:OneTab(self.tab.tabs[2],L.cd2OtherSet):Size(652,34):Point("TOP",0,-532)
@@ -9897,6 +10466,7 @@ function module.options:Load()
 		else
 			VExRT.ExCD2.SplitOpt = nil
 		end
+		module:UpdateLockState()
 		module:SplitExCD2Window()
 		module:ReloadAllSplits()
 	end)
@@ -9907,7 +10477,7 @@ function module.options:Load()
 		else
 			VExRT.ExCD2.NoRaid = nil
 		end
-		UpdateRoster()
+		module:UpdateRoster()
 	end)
 
 	self.testMode = ELib:Check(self.optSetTab,L.cd2GeneralSetTestMode,module.db.testMode):Point("LEFT",325,0):Tooltip(L.cd2HelpTestButton):OnClick(function(self,event)
@@ -10200,6 +10770,7 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	columnFrame.methodsReverseSorting = (not currColOpt.methodsGeneral and currColOpt.methodsReverseSorting) or (currColOpt.methodsGeneral and generalOpt.methodsReverseSorting)
 	columnFrame.methodsCDOnlyTime = (not currColOpt.methodsGeneral and currColOpt.methodsCDOnlyTime) or (currColOpt.methodsGeneral and generalOpt.methodsCDOnlyTime)
 	columnFrame.methodsTextIgnoreActive = (not currColOpt.methodsGeneral and currColOpt.methodsTextIgnoreActive) or (currColOpt.methodsGeneral and generalOpt.methodsTextIgnoreActive)
+	columnFrame.methodsOnlyNotOnCD = (not currColOpt.methodsGeneral and currColOpt.methodsOnlyNotOnCD) or (currColOpt.methodsGeneral and generalOpt.methodsOnlyNotOnCD)
 
 	columnFrame.methodsOnlyInCombat = (not currColOpt.visibilityGeneral and currColOpt.methodsOnlyInCombat) or (currColOpt.visibilityGeneral and generalOpt.methodsOnlyInCombat)
 	columnFrame.visibilityPartyType = (not currColOpt.visibilityGeneral and currColOpt.visibilityPartyType) or (currColOpt.visibilityGeneral and generalOpt.visibilityPartyType)
@@ -10241,30 +10812,32 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 
 	local fontOtherAvailable = (not currColOpt.fontGeneral and currColOpt.fontOtherAvailable) or (currColOpt.fontGeneral and generalOpt.fontOtherAvailable)
 
-	columnFrame.fontLeftSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontLeftSize) or (currColOpt.fontGeneral and generalOpt.fontLeftSize) or defOpt.fontSize
-	columnFrame.fontLeftName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontLeftName) or (currColOpt.fontGeneral and generalOpt.fontLeftName) or defOpt.fontName
-	columnFrame.fontLeftOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftOutline) or (currColOpt.fontGeneral and generalOpt.fontLeftOutline)))
-	columnFrame.fontLeftShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontLeftShadow) or (currColOpt.fontGeneral and generalOpt.fontLeftShadow)))
+	local fontOpts = (not currColOpt.fontGeneral and currColOpt) or (currColOpt.fontGeneral and generalOpt)
 
-	columnFrame.fontRightSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontRightSize) or (currColOpt.fontGeneral and generalOpt.fontRightSize) or defOpt.fontSize
-	columnFrame.fontRightName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontRightName) or (currColOpt.fontGeneral and generalOpt.fontRightName) or defOpt.fontName
-	columnFrame.fontRightOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightOutline) or (currColOpt.fontGeneral and generalOpt.fontRightOutline)))
-	columnFrame.fontRightShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontRightShadow) or (currColOpt.fontGeneral and generalOpt.fontRightShadow)))
+	columnFrame.fontLeftSize = (not fontOtherAvailable and fontOpts.fontSize) or (fontOtherAvailable and fontOpts.fontLeftSize) or defOpt.fontSize
+	columnFrame.fontLeftName = (not fontOtherAvailable and fontOpts.fontName) or (fontOtherAvailable and fontOpts.fontLeftName) or defOpt.fontName
+	columnFrame.fontLeftOutline = (not fontOtherAvailable and fontOpts.fontOutline) or (fontOtherAvailable and fontOpts.fontLeftOutline)
+	columnFrame.fontLeftShadow = (not fontOtherAvailable and fontOpts.fontShadow) or (fontOtherAvailable and fontOpts.fontLeftShadow)
 
-	columnFrame.fontCenterSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontCenterSize) or (currColOpt.fontGeneral and generalOpt.fontCenterSize) or defOpt.fontSize
-	columnFrame.fontCenterName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontCenterName) or (currColOpt.fontGeneral and generalOpt.fontCenterName) or defOpt.fontName
-	columnFrame.fontCenterOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterOutline) or (currColOpt.fontGeneral and generalOpt.fontCenterOutline)))
-	columnFrame.fontCenterShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontCenterShadow) or (currColOpt.fontGeneral and generalOpt.fontCenterShadow)))
+	columnFrame.fontRightSize = (not fontOtherAvailable and fontOpts.fontSize) or (fontOtherAvailable and fontOpts.fontRightSize) or defOpt.fontSize
+	columnFrame.fontRightName = (not fontOtherAvailable and fontOpts.fontName) or (fontOtherAvailable and fontOpts.fontRightName) or defOpt.fontName
+	columnFrame.fontRightOutline = (not fontOtherAvailable and fontOpts.fontOutline) or (fontOtherAvailable and fontOpts.fontRightOutline)
+	columnFrame.fontRightShadow = (not fontOtherAvailable and fontOpts.fontShadow) or (fontOtherAvailable and fontOpts.fontRightShadow)
 
-	columnFrame.fontIconSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontIconSize) or (currColOpt.fontGeneral and generalOpt.fontIconSize) or defOpt.fontSize
-	columnFrame.fontIconName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
-	columnFrame.fontIconOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
-	columnFrame.fontIconShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
+	columnFrame.fontCenterSize = (not fontOtherAvailable and fontOpts.fontSize) or (fontOtherAvailable and fontOpts.fontCenterSize) or defOpt.fontSize
+	columnFrame.fontCenterName = (not fontOtherAvailable and fontOpts.fontName) or (fontOtherAvailable and fontOpts.fontCenterName) or defOpt.fontName
+	columnFrame.fontCenterOutline = (not fontOtherAvailable and fontOpts.fontOutline) or (fontOtherAvailable and fontOpts.fontCenterOutline)
+	columnFrame.fontCenterShadow = (not fontOtherAvailable and fontOpts.fontShadow) or (fontOtherAvailable and fontOpts.fontCenterShadow)
 
-	columnFrame.fontIconCDSize = (not fontOtherAvailable and columnFrame.fontSize) or (not currColOpt.fontGeneral and currColOpt.fontIconCDSize) or (currColOpt.fontGeneral and generalOpt.fontIconSize) or defOpt.fontSize
-	columnFrame.fontIconCDName = (not fontOtherAvailable and columnFrame.fontName) or (not currColOpt.fontGeneral and currColOpt.fontIconCDName) or (currColOpt.fontGeneral and generalOpt.fontIconName) or defOpt.fontName
-	columnFrame.fontIconCDOutline = (not fontOtherAvailable and columnFrame.fontOutline) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconCDOutline) or (currColOpt.fontGeneral and generalOpt.fontIconOutline)))
-	columnFrame.fontIconCDShadow = (not fontOtherAvailable and columnFrame.fontShadow) or (fontOtherAvailable and ((not currColOpt.fontGeneral and currColOpt.fontIconCDShadow) or (currColOpt.fontGeneral and generalOpt.fontIconShadow)))
+	columnFrame.fontIconSize = (not fontOtherAvailable and fontOpts.fontSize) or (fontOtherAvailable and fontOpts.fontIconSize) or defOpt.fontSize
+	columnFrame.fontIconName = (not fontOtherAvailable and fontOpts.fontName) or (fontOtherAvailable and fontOpts.fontIconName) or defOpt.fontName
+	columnFrame.fontIconOutline = (not fontOtherAvailable and fontOpts.fontOutline) or (fontOtherAvailable and fontOpts.fontIconOutline)
+	columnFrame.fontIconShadow = (not fontOtherAvailable and fontOpts.fontShadow) or (fontOtherAvailable and fontOpts.fontIconShadow)
+
+	columnFrame.fontIconCDSize = (not fontOtherAvailable and fontOpts.fontSize) or (fontOtherAvailable and fontOpts.fontIconCDSize) or defOpt.fontSize
+	columnFrame.fontIconCDName = (not fontOtherAvailable and fontOpts.fontName) or (fontOtherAvailable and fontOpts.fontIconCDName) or defOpt.fontName
+	columnFrame.fontIconCDOutline = (not fontOtherAvailable and fontOpts.fontOutline) or (fontOtherAvailable and fontOpts.fontIconCDOutline)
+	columnFrame.fontIconCDShadow = (not fontOtherAvailable and fontOpts.fontShadow) or (fontOtherAvailable and fontOpts.fontIconCDShadow)
 
 	columnFrame.fontCDSize = (not currColOpt.fontGeneral and currColOpt.fontCDSize) or (currColOpt.fontGeneral and generalOpt.fontCDSize) or defOpt.fontCDSize
 
@@ -10361,6 +10934,24 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 
 		columnFrame.ATFGrowth = ATFGrowth
 
+		local framePriorOpt
+		if currColOpt.ATFFramePrior then
+			local new = ExRT.F.table_find3(module.db.rframes, currColOpt.ATFFramePrior, "name")
+			if new then
+				new = new.opts
+
+				framePriorOpt = ExRT.F.table_copy2(module.db.rframes_def)
+
+				for j=#new,1,-1 do
+					tinsert(framePriorOpt,1,new[j])
+				end
+
+				framePriorOpt = {
+					framePriorities = framePriorOpt,
+				}
+			end
+		end
+		columnFrame.ATFFramePrior = framePriorOpt
 
 		--rewrite something for fix
 		columnFrame.optionCooldown = true
@@ -10452,15 +11043,14 @@ function module:ReloadAllSplits(argScaleFix)
 		return
 	end
 	lastSplitsReload = _ctime + 0.05
-	local VExRT_ColumnOptions = VExRT.ExCD2.colSet
 	local Width = 0
 	local maxHeight = 0
 
-	local generalOpt = VExRT_ColumnOptions[module.db.maxColumns+1]
+	local generalOpt = VExRT.ExCD2.colSet[module.db.maxColumns+1]
 	local defOpt = module.db.colsDefaults
 	for i=1,module.db.maxColumns do 
 		local columnFrame = module.frame.colFrame[i]
-		local currColOpt = VExRT_ColumnOptions[i]
+		local currColOpt = VExRT.ExCD2.colSet[i]
 
 		module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,Width,argScaleFix)
 
@@ -10483,7 +11073,6 @@ function module:ReloadAllSplits(argScaleFix)
 
 	module:updateCombatVisibility()
 
- 	SortAllData()
  	UpdateAllData()
 end
 
@@ -10492,11 +11081,6 @@ function module:SplitExCD2Window()
 		for i=1,module.db.maxColumns do 
 			module.frame.colFrame[i]:SetParent(UIParent)
 			module.frame.colFrame[i]:EnableMouse(false)
-
-			if not VExRT.ExCD2.lock then 
-				ExRT.F.LockMove(module.frame.colFrame[i],true,module.frame.colFrame[i].lockTexture)
-				ExRT.lib.AddShadowComment(module.frame.colFrame[i],nil,L.cd2,i,72,"OUTLINE")
-			end
 		end
 		module.frame:Hide()
 	else
@@ -10507,7 +11091,28 @@ function module:SplitExCD2Window()
 		end
 		module.frame:Show()
 	end
+end
 
+function module:UpdateLockState()
+	if VExRT.ExCD2.lock then
+		ExRT.F.LockMove(module.frame,nil,module.frame.texture)
+		ExRT.lib.AddShadowComment(module.frame,1)
+		if VExRT.ExCD2.SplitOpt then 
+			for i=1,module.db.maxColumns do 
+				ExRT.F.LockMove(module.frame.colFrame[i],nil,module.frame.colFrame[i].lockTexture)
+				ExRT.lib.AddShadowComment(module.frame.colFrame[i],1)
+			end 
+		end
+	else
+		ExRT.F.LockMove(module.frame,true,module.frame.texture)
+		ExRT.lib.AddShadowComment(module.frame,nil,L.cd2)
+		if VExRT.ExCD2.SplitOpt then 
+			for i=1,module.db.maxColumns do 
+				ExRT.F.LockMove(module.frame.colFrame[i],true,module.frame.colFrame[i].lockTexture)
+				ExRT.lib.AddShadowComment(module.frame.colFrame[i],nil,L.cd2,i,72,"OUTLINE")
+			end 
+		end
+	end
 end
 
 function module:slash(arg1,arg2)
@@ -10577,12 +11182,12 @@ module.db.AllSpells = {
 	{197690,"WARRIOR",		4,	nil,			{197690,6,	0},	nil,			nil,			},	--Defensive Stance
 	{118000,"WARRIOR",		3,	nil,			nil,			{118000,30,	0},	{118000,30,	0},	},	--Dragon Roar
 	{202168,"WARRIOR,DEF",		3,	{202168,30,	0},	nil,			nil,			nil,			},	--Impending Victory
-	{228920,"WARRIOR,DPS",		3,	nil,			nil,			nil,			{228920,45,	0},	},	--Ravager
-	{152277,"WARRIOR,DPS",		3,	nil,			{152277,45,	0},	nil,			nil,			},	--Ravager
+	{228920,"WARRIOR,DPS",		3,	nil,			nil,			nil,			{228920,45,	10},	},	--Ravager
+	{152277,"WARRIOR,DPS",		3,	nil,			{152277,45,	10},	nil,			nil,			},	--Ravager
 	{280772,"WARRIOR",		3,	nil,			nil,			{280772,30,	10},	nil,			},	--Siegebreaker
 	{260643,"WARRIOR",		3,	nil,			{260643,21,	0},	nil,			nil,			},	--Skullsplitter
 	{107570,"WARRIOR,CC",		3,	{107570,30,	0},	nil,			nil,			nil,			},	--Storm Bolt
-	{262161,"WARRIOR,DPS",		3,	nil,			{262161,45,	0},	nil,			nil,			},	--Warbreaker
+	{262161,"WARRIOR,DPS",		3,	nil,			{262161,45,	10},	nil,			nil,			},	--Warbreaker
 	{329038,"WARRIOR,PVP",		3,	nil,			nil,			{329038,20,	4},	nil,			},	--Bloodrage
 	{213871,"WARRIOR,PVP",		3,	nil,			nil,			nil,			{213871,15,	0},	},	--Bodyguard
 	{199261,"WARRIOR,PVP",		3,	nil,			nil,			{199261,5,	0},	nil,			},	--Death Wish
@@ -10695,7 +11300,7 @@ module.db.AllSpells = {
 	{31224,	"ROGUE,DEF",		4,	{31224,	120,	5},	nil,			nil,			nil,			},	--Cloak of Shadows
 	{185311,"ROGUE,DEF",		4,	{185311,30,	6},	nil,			nil,			nil,			},	--Crimson Vial
 	{1725,	"ROGUE",		3,	{1725,	30,	10},	nil,			nil,			nil,			},	--Distract
-	{5277,	"ROGUE,DEF",		4,	{5277,	120,	0},	nil,			nil,			nil,			},	--Evasion
+	{5277,	"ROGUE,DEF",		4,	{5277,	120,	10},	nil,			nil,			nil,			},	--Evasion
 	{1966,	"ROGUE,DEF",		4,	{1966,	15,	5},	nil,			nil,			nil,			},	--Feint
 	{1776,	"ROGUE,CC",		3,	nil,			nil,			{1776,	15,	0},	nil,			},	--Gouge
 	{195457,"ROGUE,MOVE",		3,	nil,			nil,			{195457,45,	0},	nil,			},	--Grappling Hook
@@ -10761,7 +11366,7 @@ module.db.AllSpells = {
 	{246287,"PRIEST,HEAL",		3,	nil,			{246287,90,	0},	nil,			nil,			},	--Evangelism
 	{120517,"PRIEST",		3,	nil,			{120517,40,	0},	{120517,40,	0},	nil,			},	--Halo
 	{265202,"PRIEST,RAID",		1,	nil,			nil,			{265202,720,	0},	nil,			},	--Holy Word: Salvation
-	{205369,"PRIEST,AOECC",		3,	nil,			nil,			nil,			{205369,30,	0},	},	--Mind Bomb
+	{205369,"PRIEST,AOECC",		3,	nil,			nil,			nil,			{205369,30,	2},	},	--Mind Bomb
 	{200174,"PRIEST",		3,	nil,			nil,			nil,			{200174,60,	15},	},	--Mindbender
 	{123040,"PRIEST",		3,	nil,			{123040,60,	12},	nil,			nil,			},	--Mindbender
 	{129250,"PRIEST",		3,	nil,			{129250,15,	0},	nil,			nil,			},	--Power Word: Solace
@@ -10770,7 +11375,7 @@ module.db.AllSpells = {
 	{314867,"PRIEST",		3,	nil,			{314867,30,	9},	nil,			nil,			},	--Shadow Covenant
 	{204263,"PRIEST,UTIL",		3,	nil,			{204263,45,	0},	{204263,45,	0},	nil,			},	--Shining Force
 	{109964,"PRIEST,HEAL",		3,	nil,			{109964,60,	10},	nil,			nil,			},	--Spirit Shell
-	{319952,"PRIEST,DPS",		3,	nil,			nil,			nil,			{319952,90,	0},	},	--Surrender to Madness
+	{319952,"PRIEST,DPS",		3,	nil,			nil,			nil,			{319952,90,	25},	},	--Surrender to Madness
 	{263165,"PRIEST",		3,	nil,			nil,			nil,			{263165,45,	4},	},	--Void Torrent
 	{197862,"PRIEST,PVP",		3,	nil,			{197862,60,	15},	nil,			nil,			},	--Archangel
 	{197871,"PRIEST,PVP",		3,	nil,			{197871,60,	8},	nil,			nil,			},	--Dark Archangel
@@ -10923,7 +11528,7 @@ module.db.AllSpells = {
 	{44457,	"MAGE",			3,	nil,			nil,			{44457,	12,	0},	nil,			},	--Living Bomb
 	{153561,"MAGE",			3,	nil,			nil,			{153561,45,	0},	nil,			},	--Meteor
 	{205021,"MAGE",			3,	nil,			nil,			nil,			{205021,75,	0},	},	--Ray of Frost
-	{113724,"MAGE,AOECC",		3,	{113724,45,	0},	nil,			nil,			nil,			},	--Ring of Frost
+	{113724,"MAGE,AOECC",		3,	{113724,45,	10},	nil,			nil,			nil,			},	--Ring of Frost
 	{116011,"MAGE,DPS",		3,	{116011,45,	15},	nil,			nil,			nil,			},	--Rune of Power
 	{157980,"MAGE",			3,	nil,			{157980,25,	0},	nil,			nil,			},	--Supernova
 	{203286,"MAGE,PVP",		3,	nil,			nil,			{203286,15,	0},	nil,			},	--Greater Pyroblast
@@ -10938,7 +11543,7 @@ module.db.AllSpells = {
 	{48020,	"WARLOCK",		3,	{48020,	30,	0},	nil,			nil,			nil,			},	--Demonic Circle: Teleport
 	{111771,"WARLOCK",		3,	{111771,10,	0},	nil,			nil,			nil,			},	--Demonic Gateway
 	{333889,"WARLOCK",		3,	{333889,180,	0},	nil,			nil,			nil,			},	--Fel Domination
-	{80240,	"WARLOCK,DPS",		3,	nil,			nil,			nil,			{80240,	30,	0},	},	--Havoc
+	{80240,	"WARLOCK,DPS",		3,	nil,			nil,			nil,			{80240,	30,	10},	},	--Havoc
 	{342601,"WARLOCK",		3,	{342601,3600,	0},	nil,			nil,			nil,			},	--Ritual of Doom
 	{698,	"WARLOCK",		3,	{698,	120,	0},	nil,			nil,			nil,			},	--Ritual of Summoning
 	{30283,	"WARLOCK,AOECC",	1,	{30283,	60,	3},	nil,			nil,			nil,			},	--Shadowfury
@@ -11055,7 +11660,7 @@ module.db.AllSpells = {
 	{106839,"DRUID,KICK",		5,	nil,			nil,			{106839,15,	0},	{106839,15,	0},	nil,			},	--Skull Bash
 	{78675,	"DRUID,KICK",		5,	nil,			{78675,	60,	8},	nil,			nil,			nil,			},	--Solar Beam
 	{2908,	"DRUID",		5,	{2908,	10,	0},	nil,			nil,			nil,			nil,			},	--Soothe
-	{106898,"DRUID,RAIDSPEED",	1,	{106898,120,	0},	nil,			nil,			nil,			nil,			},	--Stampeding Roar
+	{106898,"DRUID,RAIDSPEED",	1,	{106898,120,	8},	nil,			nil,			nil,			nil,			},	--Stampeding Roar
 	{61336,	"DRUID,DEFTANK,DEF",	3,	nil,			nil,			{61336,	180,	6},	{61336,	180,	6},	nil,			},	--Survival Instincts
 	{18562,	"DRUID",		3,	nil,			nil,			nil,			nil,			{18562,	15,	0},	},	--Swiftmend
 	{5217,	"DRUID,DPS",		3,	nil,			nil,			{5217,	30,	10},	nil,			nil,			},	--Tiger's Fury
@@ -11207,6 +11812,8 @@ module.db.AllSpells = {
 	{345228,"ITEMS",	3,	{345228,60,	15},	},	--Sinful Gladiator's Badge of Ferocity	175921
 	{345231,"ITEMS",	3,	{345231,120,	20},	},	--Sinful Gladiator's Emblem	178447
 	{336126,"ITEMS",	3,	{336126,120,	0},	},	--Sinful Gladiator's Medallion	181333
+	{307192,"ITEMS",	3,	{307192,300,	0},	},	--Spiritual Healing Potion	171267
+	{6262,	"ITEMS",	3,	{6262,	60,	0},	},	--Healthstone		5512
 
 	{295373,"ESSENCES",	3,	{295373,30,	0},	},	--The Crucible of Flame
 	{295186,"ESSENCES",	3,	{295186,60,	0},	},	--Worldvein Resonance
@@ -11290,10 +11897,12 @@ if ExRT.isClassic then
 		{20748,	"DRUID",	1,	{20748,	1800,	0}},	--BR
 		{6795,	"DRUID",	1,	{6795,	10,	0}},	--Taunt
 		{9863,	"DRUID",	1,	{9863,	300,	10}},	--Tranq
+		{5209,	"DRUID",	1,	{5209,	600,	6}},	--Challenging Roar
 
 		{355,	"WARRIOR",	1,	{355,	10,	0}},	--Taunt
 		{12975,	"WARRIOR",	1,	{12975,	600,	20}},	--Last stand
 		{871,	"WARRIOR",	1,	{871,	1800,	10}},	--SW
+		{1161,	"WARRIOR",	1,	{1161,	600,	6}},	--Challenging Shout
 
 		{11958,	"MAGE",		1,	{11958,	480,	40}},	--IB
 

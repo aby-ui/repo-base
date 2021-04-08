@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local module = ExRT.mod:New("WAChecker",ExRT.L.WAChecker)
+local module = ExRT:New("WAChecker",ExRT.L.WAChecker)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.responces = {}

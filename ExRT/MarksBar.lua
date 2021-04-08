@@ -4,7 +4,7 @@ local GetTime, GetRaidTargetIndex, SetRaidTarget, UnitName, SetRaidTargetIcon = 
 
 local VExRT = nil
 
-local module = ExRT.mod:New("MarksBar",ExRT.L.marksbar)
+local module = ExRT:New("MarksBar",ExRT.L.marksbar)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.perma = {}

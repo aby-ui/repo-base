@@ -100,12 +100,13 @@ local function EnvironmentEffect_OnEnter(self)
 	if not info then return end
 	local sid = info.autoCombatSpellID
 	local pfx = T.KnownSpells[sid] and "" or "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t "
+	local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
 	GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -8, 0)
 	GameTooltip:ClearLines()
 	GameTooltip:AddDoubleLine(pfx .. "|T" .. info.icon .. ":0:0:0:0:64:64:4:60:4:60|t " .. info.name, "|cffa8a8a8" .. (L"[CD: %dT]"):format(info.cooldown) .. "|r")
 	local guideLine = U.GetAbilityGuide(sid, -1, GenBoardMask(), false)
-	local od = U.GetAbilityDescriptionOverride(info and info.autoCombatSpellID)
+	local od = U.GetAbilityDescriptionOverride(info and info.autoCombatSpellID, nil, mi and mi.missionScalar)
 	local dc = od and 0.60 or 0.95
 	GameTooltip:AddLine(info.description, dc, dc, dc, 1)
 	if od then
@@ -168,18 +169,19 @@ local CAG, SetSimResultHint = {} do
 	local function qdeadlineorloss(root)
 		return debugprofilestop() > deadline or root.res.hadLosses
 	end
-	local function isDone(res)
-		return res and (res.isFinished or (res.hadWins and res.hadLosses))
+	local function isDone(res, endOnAnyLoss)
+		return res and (res.isFinished or ((res.hadWins or endOnAnyLoss) and res.hadLosses))
 	end
 	local function setupRetry()
 		if reSim then
+			state.reCount = state.reCount + reSim.res.n
 			state[reSim.res.hadLosses and "reLow" or "reHigh"], state.reTry, reSim = state.reTry, nil
 		end
 		if not (state.reRange and state.reLow < state.reRange) or (state.reHigh and state.reHigh - state.reLow < 2^-11) then
 			if state.reHigh then
-				state.reFinish = state.reStart+U.GetCompanionRecoveryTime(state.reHigh)
+				state.reFinish = state.reStart + state.reRangeT*state.reHigh
 			end
-			reSim, state.reTry, state.reLow, state.reHigh, state.reTeam, state.reStart, state.reRange = nil
+			reSim, state.reTry, state.reLow, state.reHigh, state.reTeam, state.reStart, state.reRange, state.reRangeT = nil
 			return
 		end
 		local rteam, tryRe = state.reTeam
@@ -210,7 +212,7 @@ local CAG, SetSimResultHint = {} do
 		return true
 	end
 	function CAG:GatherMissionData()
-		local team, reRange = {}, 0 do
+		local team, reRange, reRangeT = {}, 0, 0 do
 			local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 			for i=0,4 do
 				local ii = f[i].info
@@ -218,7 +220,8 @@ local CAG, SetSimResultHint = {} do
 					local acs = C_Garrison.GetFollowerAutoCombatStats(ii.followerID)
 					team[#team+1] = {boardIndex=i, role=ii.role, stats=acs, spells=f[i].autoCombatSpells}
 					if acs.currentHealth < acs.maxHealth then
-						reRange = math.max(reRange or 0, 1 - acs.currentHealth/acs.maxHealth)
+						reRange = math.max(reRange, 1 - acs.currentHealth/acs.maxHealth)
+						reRangeT = math.max(reRangeT, acs.minutesHealingRemaining or 0)
 					end
 				end
 			end
@@ -227,8 +230,9 @@ local CAG, SetSimResultHint = {} do
 		local eei = C_Garrison.GetAutoMissionEnvironmentEffect(mi.missionID)
 		local mdi = C_Garrison.GetMissionDeploymentInfo(mi.missionID)
 		local espell = eei and eei.autoCombatSpellInfo
+		reRangeT = reRange > 0 and 60*reRangeT/reRange or nil
 		return {team=team, enemies=mdi.enemies, espell=espell, mid=mi.missionID, msc=mi.missionScalar,
-			reStart=reRange > 0 and GetServerTime() or nil, reRange=reRange > 0 and reRange or nil, reLow=0}
+			reStart=reRange > 0 and GetServerTime() or nil, reRange=reRange > 0 and reRange or nil, reRangeT=reRangeT, reCount=reRange > 0 and 0 or nil, reLow=0}
 	end
 	function CAG:Start()
 		local tag, rtag = GetGroupTags()
@@ -236,7 +240,7 @@ local CAG, SetSimResultHint = {} do
 			local os, md, ms = state, CAG:GatherMissionData()
 			state, md.tag, md.rtag, reSim = md, tag, rtag, nil
 			if os and os.rtag == rtag and os.reFinish and md.reStart then
-				md.reFinish, md.reStart, md.reRange, md.reLow = os.reFinish, nil
+				md.reFinish, md.reStart, md.reRange, md.reRangeT, md.reLow = os.reFinish, nil, nil
 			end
 			simArch, ms = T.VSim:New(md.team, md.enemies, md.espell, md.mid, md.msc)
 			md.missingSpells, simArch.dropForks = ms and next(ms) and true or nil, true
@@ -252,7 +256,7 @@ local CAG, SetSimResultHint = {} do
 		end
 		deadline = debugprofilestop() + 12
 		if reSim then
-			if isDone(reSim.res) then
+			if isDone(reSim.res, true) then
 				return not setupRetry()
 			else
 				reSim:Run(qdeadlineorloss)
@@ -265,7 +269,11 @@ local CAG, SetSimResultHint = {} do
 		end
 	end
 	function CAG:GetResult()
-		return simArch, state and state.missingSpells, state and (state.reFinish or state.reStart and true) or nil
+		local rc = state and state.reCount
+		if rc and reSim then
+			rc = rc + reSim.res.n
+		end
+		return simArch, state and state.missingSpells, state and (state.reFinish or state.reStart and true) or nil, rc, (state and state.reHigh and state.reHigh*state.reRangeT)
 	end
 	function CAG:Reset()
 		simArch, reSim, state = nil
@@ -471,7 +479,7 @@ local function Predictor_OnEnter(self)
 	GameTooltip:AddLine(L'"Do not believe its lies! Balance druids are not emergency rations."', 1, 0.835, 0.09, 1)
 	GameTooltip:Show()
 end
-local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
+local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, recoverFutures, recoverHighBound)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 	local res = sim.res
 	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
@@ -550,7 +558,8 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 		end
 		if not incompleteModel then
 			if inProgress then
-				flavor = (L'"%s possible futures and counting..."'):format(BreakUpLargeNumbers(res.n or 0))
+				GameTooltip:AddLine(L"Futures considered:" .. " |cffffffff" .. BreakUpLargeNumbers(res.n or 0), c.r, c.g, c.b)
+				flavor = L'"... or not. Better read this thing to the end."'
 			elseif lo[sim.won and 13 or 15] == 0 then
 				flavor = sim.won and L'"Snatch victory from the jaws of defeat!"' or L'"So close, and yet so far."'
 			else
@@ -563,10 +572,24 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil)
 	end
 	if res.hadLosses and recoverUntil and not inProgress then
 		if recoverUntil == true then
+			local nc = NORMAL_FONT_COLOR
+			if recoverFutures > 0 or recoverHighBound then
+				GameTooltip:AddLine(" ")
+			end
 			GameTooltip:AddLine(L"Checking health recovery...", 0.45, 1, 0)
+			if recoverFutures > 0 then
+				GameTooltip:AddDoubleLine(L"Futures considered:", BreakUpLargeNumbers(recoverFutures), nc.r, nc.g, nc.b, 1,1,1)
+			end
+			if recoverHighBound then
+				local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
+				local cc = recoverHighBound < (mi and mi.offerEndTime and mi.offerEndTime-GetTime() or 0) and "|cffffffff" or "|cffe86000"
+				GameTooltip:AddLine((L"Would win if started in: %s"):format("|cffffffff <= |r" .. cc .. U.GetTimeStringFromSeconds(recoverHighBound, false, true, true) .. "|r"), nc.r, nc.g, nc.b)
+			end
 		else
 			local rl = math.max(0, recoverUntil - GetServerTime())
-			GameTooltip:AddLine((L"Would win if started in: %s"):format("|cffffffff" .. U.GetTimeStringFromSeconds(rl, false, true, true) .. "|r"), 0.45, 1, 0.15, 1)
+			local mi = CovenantMissionFrame.MissionTab.MissionPage.missionInfo
+			local cc = rl < (mi and mi.offerEndTime and mi.offerEndTime-GetTime() or 0) and "|cffffffff" or "|cffe86000"
+			GameTooltip:AddLine((L"Would win if started in: %s"):format(cc .. U.GetTimeStringFromSeconds(rl, false, true, true) .. "|r"), 0.45, 1, 0.15)
 		end
 	end
 	if flavor then
@@ -600,8 +623,14 @@ end
 local function MissionGroup_OnUpdate()
 	Tact:CheckBoard(true)
 	local o = GameTooltip:IsVisible() and GameTooltip:GetOwner() or GetMouseFocus()
-	if o and not o:IsForbidden() and o:GetScript("OnEnter") and o:GetParent():GetParent() == CovenantMissionFrame.MissionTab.MissionPage.Board then
-		o:GetScript("OnEnter")(o)
+	if o and not o:IsForbidden() and o.GetScript then
+		local l, p, t = 3, o, CovenantMissionFrame.MissionTab.MissionPage.Board
+		while p and p ~= t and l > 0 and p.GetParent and p.IsForbidden and not p:IsForbidden() do
+			l, p = l-1, p:GetParent()
+		end
+		if p == t then
+			o:GetScript("OnEnter")(o)
+		end
 	end
 	FollowerList:SyncToBoard()
 end
@@ -644,12 +673,8 @@ local function MissionView_OnHide()
 	CovenantMissionFrameFollowers.MaterialFrame:SetParent(CovenantMissionFrameFollowers)
 	CovenantMissionFrameFollowers.HealAllButton:SetParent(CovenantMissionFrameFollowers)
 end
-local function Mission_StoreTentativeGroup()
-	if IsAltKeyDown() then
-		return
-	end
+local function MissionView_GetGroup()
 	local g, hc = {}, false
-	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
 	local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 	for i=0,5 do
 		local fi = f[i]
@@ -657,14 +682,33 @@ local function Mission_StoreTentativeGroup()
 			g[i], hc = fi.info.followerID, hc or not fi.info.isAutoTroop
 		end
 	end
+	return g, hc
+end
+local function Mission_StoreTentativeGroup()
+	if IsAltKeyDown() then
+		return
+	end
+	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
+	local g, hc = MissionView_GetGroup()
 	if hc then
 		U.StoreMissionGroup(mid, g, true)
 	end
 end
-local function Shuffler_OnEnter(self)
+local function Mission_Start()
+	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
+	local g, hc = MissionView_GetGroup()
+	if hc then
+		U.StartMissionWithDelay(mid, g)
+		PlaySound(158565)
+		CovenantMissionFrame:CloseMission()
+	end
+end
+local function Shuffler_OnEnter(self, source)
 	GameTooltip:Hide()
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 	GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. L"Cursed Tactical Guide")
+	local sb = T.CreateObject("SharedTooltipProgressBar")
+	sb:Hide()
 	local isRunning, a1, a2, a3, a4 = Tact:IsRunning()
 	if isRunning then
 		local nc = NORMAL_FONT_COLOR
@@ -672,9 +716,9 @@ local function Shuffler_OnEnter(self)
 		if a4 then
 			GameTooltip:AddLine(L"Use: Interrupt the guide's deliberations.", 0, 1, 0, 1)
 		end
-		T.CreateObject("SharedTooltipProgressBar"):Activate(GameTooltip, a1, a2)
+		sb:Activate(GameTooltip, a1, a2)
 		return
-	elseif a1 and not a2 then -- finished, no group
+	elseif (a1 and not a2) or source == "update" then -- finished, no group
 		GameTooltip:AddLine(L"Victory could not be guaranteed.", 1,1,1)
 	else -- not running, not finished
 		GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1, 1)
@@ -711,7 +755,7 @@ local function Shuffler_OnUpdate(self)
 		end
 	end
 	if GameTooltip:IsOwned(self) then
-		Shuffler_OnEnter(self)
+		Shuffler_OnEnter(self, "update")
 	end
 end
 local function Shuffler_OnClick(self)
@@ -765,6 +809,7 @@ function EV:I_ADVENTURES_UI_LOADED()
 	hooksecurefunc(CovenantMissionFrame, "AssignFollowerToMission", MissionGroup_OnUpdate)
 	hooksecurefunc(CovenantMissionFrame, "RemoveFollowerFromMission", MissionGroup_OnUpdate)
 	MP.CloseButton:HookScript("PreClick", Mission_StoreTentativeGroup)
+	MP.StartMissionButton:SetScript("OnClick", Mission_Start)
 	local s = CovenantMissionFrame.MissionTab.MissionPage.Stage
 	s.Title:SetPoint("LEFT", s.Header, "LEFT", 100, 9)
 	local ir = T.CreateObject("InlineRewardBlock", s)

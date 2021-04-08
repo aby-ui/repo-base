@@ -27,7 +27,7 @@ dataobj = ldb:NewDataObject(addonName, {
 	label = "Launchers",
 	text  = "Launchers",
 	OnClick = function(self, button, ...)
-  
+
     if button == "RightButton" then
 			if _G.IsModifierKeyDown() then
 				mainmenu(self, button, ...)
@@ -85,10 +85,12 @@ function dataobj:OnEnter()
 
   for name, choco in pairs(ChocolateBar:GetChocolates()) do
     local obj = choco.obj
-    local y, x = tooltip:AddLine()
-    tooltip:SetCell(y, 1, obj.icon, myProvider)
-    tooltip:SetCell(y, 2, name)
-  	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, choco)
+		if obj.type == "launcher" then
+	    local y, x = tooltip:AddLine()
+	    tooltip:SetCell(y, 1, obj.icon, myProvider)
+	    tooltip:SetCell(y, 2, name)
+	  	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, choco)
+		end
 	end
 
 	tooltip:SetAutoHideDelay(0.001, self)

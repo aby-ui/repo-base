@@ -2,7 +2,7 @@ local GlobalAddonName, ExRT = ...
 
 local VExRT = nil
 
-local module = ExRT.mod:New("AutoLogging",ExRT.L.Logging)
+local module = ExRT:New("AutoLogging",ExRT.L.Logging)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.minRaidMapID = 1861
@@ -149,6 +149,7 @@ local function GetCurrentMapForLogging()
 	end
 	return false
 end
+module.GetCurrentMapForLogging = GetCurrentMapForLogging
 
 local prevZone = false
 local function ZoneNewFunction()

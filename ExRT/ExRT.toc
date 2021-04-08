@@ -3,7 +3,7 @@
 ## Author: ykiigor
 ## Notes: Exorsus Raid Tools
 ## SavedVariables: VExRT
-## Version: 4500
+## Version: 4520
 core.lua
 Functions.lua
 embeds.xml
@@ -27,7 +27,6 @@ MarksBar.lua
 Marks.lua
 BattleRes.lua
 Timers.lua
-Coins.lua
 RaidAttendance.lua
 Encounter.lua
 LootHistory.lua

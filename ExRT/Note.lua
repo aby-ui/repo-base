@@ -405,7 +405,7 @@ local function GSUB_Phase(anti,phase,msg)
 		local isPhase
 		local phaseNum = tonumber(phase)
 		if phaseNum then
-			isPhase = encounter_time_p[phaseNum]
+			isPhase = encounter_time_p[phase]
 		elseif phase:sub(1,1) == "," then
 			local cond1,cond2 = strsplit(",",phase:sub(2),nil)
 			isPhase = cond1 and module.db.encounter_counters_time[cond1] and (not cond2 or not module.db.encounter_counters_time[cond2])
@@ -968,7 +968,7 @@ function module.options:Load()
 			BlackNoteNow = BlackNoteNow - 1
 		end
 		module.options.NotesList:SetListValue(2+BlackNoteNow)
-		module.options.NotesList.selected = 2+BlackNoteNow
+		module.options.NotesList.selected = 2+(BlackNoteNow or 0)	--blacknote_id can be nil if all blacks are removed
 		module.options.NotesList:Update()
 	end)
 	self.RemoveDraft:HideBorders()
@@ -1638,24 +1638,24 @@ function module.options:Load()
 		module.frame:SetPoint("CENTER",UIParent, "CENTER", 0, 0)
 	end) 
 
-	ELib:DecorationLine(self.tab.tabs[2]):Point("LEFT",0,0):Point("RIGHT",0,0):Size(0,1):Point("TOP",self.ButtonToCenter,"BOTTOM",0,-5)
-	ELib:Text(self.tab.tabs[2],L.NoteTimers,14):Point("TOP",self.ButtonToCenter,"BOTTOM",0,-9):Point("LEFT",20,0):Color()
+	ELib:DecorationLine(self.tab.tabs[2]):Point("LEFT",0,0):Point("RIGHT",0,0):Size(0,1):Point("TOP",self.ButtonToCenter,"BOTTOM",0,-5):Shown(not ExRT.isClassic)
+	ELib:Text(self.tab.tabs[2],L.NoteTimers,14):Point("TOP",self.ButtonToCenter,"BOTTOM",0,-9):Point("LEFT",20,0):Color():Shown(not ExRT.isClassic)
 
-	self.chkTimersHIdePassed = ELib:Check(self.tab.tabs[2],L.NoteTimersHidePassed,VExRT.Note.TimerPassedHide):Point("TOPLEFT",self.ButtonToCenter,"BOTTOMLEFT",0,-25):OnClick(function(self) 
+	self.chkTimersHidePassed = ELib:Check(self.tab.tabs[2],L.NoteTimersHidePassed,VExRT.Note.TimerPassedHide):Point("TOPLEFT",self.ButtonToCenter,"BOTTOMLEFT",0,-25):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Note.TimerPassedHide = true
 		else
 			VExRT.Note.TimerPassedHide = nil
 		end
-	end) 
+	end):Shown(not ExRT.isClassic)
 
-	self.chkTimersGlow = ELib:Check(self.tab.tabs[2],L.NoteTimersGlow,VExRT.Note.TimerGlow):Point("TOPLEFT",self.chkTimersHIdePassed,"BOTTOMLEFT",0,-5):OnClick(function(self) 
+	self.chkTimersGlow = ELib:Check(self.tab.tabs[2],L.NoteTimersGlow,VExRT.Note.TimerGlow):Point("TOPLEFT",self.chkTimersHidePassed,"BOTTOMLEFT",0,-5):OnClick(function(self) 
 		if self:GetChecked() then
 			VExRT.Note.TimerGlow = true
 		else
 			VExRT.Note.TimerGlow = nil
 		end
-	end) 
+	end):Shown(not ExRT.isClassic)
 
 	local testGlowDelay
 	local function TestGlow()
@@ -1676,7 +1676,7 @@ function module.options:Load()
 		VExRT.Note.TimerGlowType = 1
 
 		TestGlow()
-	end)
+	end):Shown(not ExRT.isClassic)
 	self.frameTypeGlow1.f = CreateFrame("Frame",nil,self.frameTypeGlow1)
 	self.frameTypeGlow1.f:SetPoint("LEFT",self.frameTypeGlow1,"RIGHT",5,0)
 	self.frameTypeGlow1.f:SetSize(40,15)
@@ -1688,7 +1688,7 @@ function module.options:Load()
 		VExRT.Note.TimerGlowType = 2
 
 		TestGlow()
-	end)
+	end):Shown(not ExRT.isClassic)
 	self.frameTypeGlow2.f = CreateFrame("Frame",nil,self.frameTypeGlow2)
 	self.frameTypeGlow2.f:SetPoint("LEFT",self.frameTypeGlow2,"RIGHT",5,0)
 	self.frameTypeGlow2.f:SetSize(40,15)
@@ -1700,7 +1700,7 @@ function module.options:Load()
 		VExRT.Note.TimerGlowType = 3
 
 		TestGlow()
-	end)
+	end):Shown(not ExRT.isClassic)
 	self.frameTypeGlow3.f = CreateFrame("Frame",nil,self.frameTypeGlow3)
 	self.frameTypeGlow3.f:SetPoint("LEFT",self.frameTypeGlow3,"RIGHT",5,0)
 	self.frameTypeGlow3.f:SetSize(40,15)
@@ -2327,7 +2327,9 @@ do
 					local phase = text:match("%d+") or phase
 					if phase then
 						wipe(encounter_time_p)
-						encounter_time_p[phase] = GetTime()
+						local t = GetTime()
+						encounter_time_p[phase] = t
+						encounter_time_p[text] = t
 						if module.frame:IsShown() then
 							module.frame:UpdateText()
 						end
@@ -2344,7 +2346,9 @@ do
 					local phase = message:match("%d+") or message
 					if phase then
 						wipe(encounter_time_p)
-						encounter_time_p[phase] = GetTime()
+						local t = GetTime()
+						encounter_time_p[phase] = t
+						encounter_time_p[message] = t
 						if module.frame:IsShown() then
 							module.frame:UpdateText()
 						end
@@ -2539,6 +2543,16 @@ function module:slash(arg)
 					module.frame:Save(i)
 					return
 				end
+			end
+		end
+	elseif arg and arg:find("^note phase ") then
+		local phase = arg:match("^note phase (.-)$")
+		if phase then
+			wipe(encounter_time_p)
+			encounter_time_p[phase] = GetTime()
+			print("Set phase",phase)
+			if module.frame:IsShown() then
+				module.frame:UpdateText()
 			end
 		end
 	elseif arg == "help" then

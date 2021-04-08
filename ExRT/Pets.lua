@@ -2,7 +2,7 @@ local GlobalAddonName, ExRT = ...
 
 local UnitGUID, UnitCombatlogname = UnitGUID, ExRT.F.UnitCombatlogname
 
-local module = ExRT.mod:New("Pets",nil,true)
+local module = ExRT:New("Pets",nil,true)
 module.db.petsDB = {}
 local petsDB = module.db.petsDB
 

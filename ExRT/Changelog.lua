@@ -1,6 +1,27 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4520
+* Raid cooldowns: Added profiles options
+* Raid cooldowns: Added option "Autochange profile in zones"
+* Raid cooldowns: Added option "Priority frames" for attached icons
+* Raid cooldowns: Fixed "Feign death" cooldown
+* Raid cooldowns: Fixed "Phial of Serenity" (kyrian pot), now it must be on cooldown until combat ends
+* Raid cooldowns: Added "Healthstone" and "Healing potion" cooldowns
+* Raid cooldowns: Added option "Show only without cd"
+* Raid Check: consumables on ready check: added button for offhand enchant
+* Raid Check: consumables on ready check: clicking on weapon enchant with low time remaining now cancel enchant (i.e. double click for re-enchant) (only for shadowcore/embalmer oil and one-handed weapons with shield/offhand)
+* Note: fixed numeric phase condition
+* Invite tools: added option to invite by any message (via "ANYKEYWORD" keyword)
+* Minor fixes
+
+v.4520-Classic
+* Raid Groups: added option "Keep positions in groups"
+* Raid Groups: added chat command "/rt raidgroup GROUPNAME"
+* Invite tools: added option to invite by any message (via "ANYKEYWORD" keyword)
+* Added "/rt help" command for list all chat commands
+* Minor fixes
+
 v.4500
 * Raid cooldowns: Added options for custom (customizable) cooldown text on icons
 * Raid cooldowns: Added option "Ignore active time for texts"
@@ -27,10 +48,6 @@ v.4480
 * Note: added option "Glowing note with own timer less than 5 seconds"
 * Raid cooldowns: fixed frame strata for icons that attaches to raidframes
 * Raid Check: added option for chat report for missing armor kits and weapon temporary enchants (players without an addon will be marked as "no addon", but included to missing list)
-* Minor fixes
-
-v.4480-Classic
-* Raid Groups: added option "Keep positions in groups"
 * Minor fixes
 
 v.4460

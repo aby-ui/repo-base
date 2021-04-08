@@ -20,6 +20,7 @@
 			[272819] = "drinking",
 			[279739] = "drinking",
 			--Was I drunk when I did this??
+			[345231] = "battlemaster",
 
 			-- Covenant Abilities
 			[310143] = "soulshape", -- Nightfae Signature
@@ -359,6 +360,7 @@
 			[147833] = "interveneDown",
 			[323095] = "UltimateFormDown", -- Necrolord
 			[323524] = "UltimateFormDown",
+			[345231] = "battlemasterDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature

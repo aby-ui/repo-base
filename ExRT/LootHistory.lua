@@ -4,7 +4,7 @@ if ExRT.isClassic then
 	return
 end
 
-local module = ExRT.mod:New("LootHistory",ExRT.L.LootHistory)
+local module = ExRT:New("LootHistory",ExRT.L.LootHistory)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.allowedDiff = {

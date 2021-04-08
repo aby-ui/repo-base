@@ -8,7 +8,7 @@ local VExRT = nil
 
 local GetSpellCharges, GetTime, floor = GetSpellCharges, GetTime, floor
 
-local module = ExRT.mod:New("BattleRes",ExRT.L.BattleRes)
+local module = ExRT:New("BattleRes",ExRT.L.BattleRes)
 local ELib,L = ExRT.lib,ExRT.L
 
 function module.options:Load()
@@ -87,6 +87,11 @@ function module.options:Load()
 end
 
 function module:Enable()
+	if not VExRT.BattleRes.HideTimer then
+		module.frame.cooldown.noCooldownCount = true
+	else
+		module.frame.cooldown.noCooldownCount = nil
+	end
 	module:RegisterTimer()
 	if not VExRT.BattleRes.fix then
 		module:ResetStates()
@@ -174,7 +179,7 @@ do
 				module.frame.cooldown:Show()
 				isCooldownHidden = false
 			end
-			if cooldownStarted ~= started or cooldownDur ~= duration then
+			if (cooldownStarted ~= started) or (cooldownDur ~= duration) then
 				module.frame.cooldown:SetCooldown(started,duration)
 				cooldownStarted = started
 				cooldownDur = duration

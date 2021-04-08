@@ -2,7 +2,7 @@ local GlobalAddonName, ExRT = ...
 
 local VExRT = nil
 
-local module = ExRT.mod:New("WhoPulled",ExRT.L.WhoPulled)
+local module = ExRT:New("WhoPulled",ExRT.L.WhoPulled)
 local ELib,L = ExRT.lib,ExRT.L
 
 local UnitAffectingCombat, string_find = UnitAffectingCombat, string.find

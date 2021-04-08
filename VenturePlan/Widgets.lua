@@ -3,6 +3,7 @@ local C, EV, L, U, S = C_Garrison, T.Evie, T.L, T.Util, {}
 local PROGRESS_MIN_STEP = 0.2
 local CovenKit = "NightFae"
 local tooltipSharedPB, tooltipShopWatch
+local UIBUTTON_HEIGHT = ({zhCN=24, zhTW=24, koKR=24})[GetLocale()] or 22
 
 local CreateObject do
 	local skip, peekO = {SharedTooltipProgressBar=1, ObjectGroup=1, TexSlice=1, CommonHoverTooltip=1, Shadow=1}
@@ -163,6 +164,19 @@ local function CommonTooltip_OnEnter(self)
 		CreateObject("SharedTooltipProgressBar"):Activate(GameTooltip, cur, max, label, q1)
 	end
 end
+local function CommonTooltip_DelayedRefresh_OnUpdate(self, elapsed)
+	local tl = self.tooltipRefreshDelay - (elapsed or 0)
+	if not GameTooltip:IsOwned(self) then
+		self:SetScript("OnUpdate", nil)
+		self.tooltipRefreshDelay = nil
+	elseif tl > 0 then
+		self.tooltipRefreshDelay = tl
+	else
+		self:SetScript("OnUpdate", nil)
+		self.tooltipRefreshDelay = nil
+		self:GetScript("OnEnter")(self)
+	end
+end
 local function CommonLinkable_OnClick(self)
 	if self.itemLink then
 		HandleModifiedItemClick(self.itemLink)
@@ -275,6 +289,8 @@ local function TooltipProgressBar_Activate(self, tip, cur, max, label, q1)
 	self.v2 = math.max(0.00001, math.min(1-self.pv, (q1 or 0)/max))
 	self.Bar.Text:SetText(label)
 	self.Fill2:SetAtlas((cur+ (q1 or 0)) > max and "UI-Frame-Bar-Fill-Green" or "UI-Frame-Bar-Fill-Yellow")
+	local tl = (q1 or 0)/max
+	self.Fill2:SetTexCoord(tl, tl+self.v2, 0, 1)
 	self:SetParent(tip)
 	local lastLine = _G[tip:GetName() .. "TextLeft" .. tip:NumLines()]
 	self:SetPoint("TOPLEFT", lastLine, "BOTTOMLEFT", 0, -2)
@@ -286,13 +302,6 @@ local function TooltipProgressBar_OnHide(self)
 	self:Hide()
 	self:SetParent(nil)
 	self:ClearAllPoints()
-end
-local function PlaySoundKitAndHide(self)
-	if self:IsShown() then
-		self:Hide()
-	else
-		PlaySound(self.soundKitOnHide)
-	end
 end
 local function CountdownText_OnUpdate(self)
 	local now = GetTime()
@@ -366,6 +375,8 @@ local RewardButton_SetReward do
 		elseif rew.itemID then
 			self.Icon:SetTexture(GetItemIcon(rew.itemID))
 		end
+		self.RarityBorder:SetDesaturated(false)
+		self.RarityBorder:SetVertexColor(1,1,1)
 		if rew.currencyID then
 			self.RarityBorder:SetAtlas("loottoast-itemborder-gold")
 			if rew.currencyID == 0 then
@@ -389,13 +400,20 @@ local RewardButton_SetReward do
 			end
 		elseif rew.itemID then
 			q = rew.quantity == 1 and "" or rew.quantity or ""
-			local r = select(3,GetItemInfo(rew.itemLink or rew.itemID)) or select(3,GetItemInfo(rew.itemID))
+			local r = select(3,GetItemInfo(rew.itemLink or rew.itemID)) or select(3,GetItemInfo(rew.itemID)) or 2
 			self.RarityBorder:SetAtlas(
-				((r or 2) <= 2) and "loottoast-itemborder-green"
+				r <= 1 and "loottoast-itemborder-gold"
+				or r == 2 and "loottoast-itemborder-green"
 				or r == 3 and "loottoast-itemborder-blue"
 				or r == 4 and "loottoast-itemborder-purple"
 				or "loottoast-itemborder-orange"
 			)
+			if r <= 1 then
+				self.RarityBorder:SetDesaturated(true)
+				if r < 1 then
+					self.RarityBorder:SetVertexColor(0.65, 0.65, 0.65)
+				end
+			end
 		elseif rew.followerXP then
 			q, tooltipTitle, tooltipText = BreakUpLargeNumbers(rew.followerXP), rew.title, rew.tooltip
 			self.RarityBorder:SetAtlas(rew.qualityAtlas or "loottoast-itemborder-green")
@@ -717,7 +735,8 @@ end
 local function DoomRun_OnClick(self, button)
 	local mid = S[self:GetParent()].missionID
 	local g, st = self.group, self.showTime
-	if not (mid and g and st) or (GetTime()-st < 0.25) then return end
+	local inShowCooldown = (GetTime()-st < 0.25)
+	if not (mid and g and st) or inShowCooldown then return end
 	if GameTooltip:IsOwned(self) then
 		GameTooltip:Hide()
 	end
@@ -737,6 +756,7 @@ local function TentativeGroupClear_OnClick(self)
 	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
 end
 local function UButton_Sync(self)
+	local idm = U.HasDelayedStartMissions()
 	local ism = U.IsStartingMissions()
 	local icm = U.IsCompletingMissions()
 	local ps = S[self:GetParent()]
@@ -744,6 +764,9 @@ local function UButton_Sync(self)
 	if ism then
 		self:SetFormattedText(L"%d |4party:parties; remaining...", ism)
 		self.mode = "stop-send"
+	elseif idm then
+		self:SetFormattedText(L"Starting soon...")
+		self.mode = "stop-delayed-send"
 	elseif icm then
 		self:SetFormattedText(L"%d |4adventure:adventures; remaining...", icm)
 		self.mode = "stop-complete"
@@ -759,10 +782,13 @@ local function UButton_Sync(self)
 		local anima = C_CurrencyInfo.GetCurrencyInfo(1813)
 		self.mode = anima and anima.quantity and anima.quantity >= tco and "start-send" or "start-cost"
 	else
-		self.mode = nil
+		self.mode, self.clickWithEscape = nil, nil
 		self:Hide()
 	end
+	local ocwe = self.clickWithEscape
 	self.clickKey = self.mode ~= "start-send" and "SPACE" or nil
+	self.clickWithEscape = self.mode and self.mode:match("^stop%-") and true or nil
+	self.eatEscapeUntil = math.max(self.eatEscapeUntil or -math.huge, ocwe and self.clickWithEscape ~= ocwe and GetTime()+0.5 or -math.huge)
 	if GameTooltip:IsOwned(self) then
 		local oe = self:GetScript("OnEnter")
 		if not self:IsVisible() then
@@ -779,15 +805,22 @@ local function UButton_OnEnter(self)
 		GameTooltip:AddLine(L"Send Tentative Parties")
 		local cb = C_CurrencyInfo.GetBasicCurrencyInfo(1813)
 		local curIco = cb and cb.icon and " |T" .. cb.icon .. ":0|t" or ""
-		for mid, nt in U.EnumerateTentativeGroups() do
+		local hadZH, hourglass = false, "|Tinterface/common/mini-hourglass:0:0:0:0:1:1:0:1:0:1:255:80:0|t "
+		for mid, nt, zeroHealth in U.EnumerateTentativeGroups() do
 			local co = C_Garrison.GetMissionCost(mid) or 0
-			GameTooltip:AddDoubleLine(C_Garrison.GetMissionName(mid), (co+nt) .. curIco, 1,1,1, 1,1,1)
+			hadZH = hadZH or zeroHealth
+			GameTooltip:AddDoubleLine((zeroHealth and hourglass or "") .. C_Garrison.GetMissionName(mid), (co+nt) .. curIco, 1,1,1, 1,1,1)
 		end
+		GameTooltip:AddLine(" ")
 		if m == "start-cost" then
 			GameTooltip:AddLine(L"Insufficient anima", 1, 0.5, 0)
-		else
-			GameTooltip:AddLine("|TInterface/TUTORIALFRAME/UI-TUTORIAL-FRAME:14:12:0:-1:512:512:10:70:330:410|t " .. L"Clear all tentative parties", 0.5, 0.8, 1)
 		end
+		if hadZH then
+			GameTooltip:AddLine(hourglass .. "|cffff8000" .. COVENANT_MISSIONS_COMPANIONS_MISSING_HEALTH, 1, 0.5, 0)
+			self.tooltipRefreshDelay = 10
+			self:SetScript("OnUpdate", CommonTooltip_DelayedRefresh_OnUpdate)
+		end
+		GameTooltip:AddLine("|TInterface/TUTORIALFRAME/UI-TUTORIAL-FRAME:14:12:0:-1:512:512:10:70:330:410|t " .. L"Clear all tentative parties", 0.5, 0.8, 1)
 		GameTooltip:Show()
 	end
 end
@@ -797,6 +830,9 @@ local function UButton_OnClick(self, button)
 		U.StopStartingMissions()
 	elseif U.IsCompletingMissions() and m == "stop-complete" then
 		U.StopCompletingMissions()
+	elseif m == "stop-delayed-send" then
+		U.ClearDelayedStartMissions()
+		U.StopStartingMissions()
 	elseif m == "start-complete" then
 		U.StartCompletingMissions()
 	elseif U.HaveTentativeGroups() and m == "start-send" then
@@ -808,6 +844,18 @@ local function UButton_OnClick(self, button)
 	end
 	PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON)
 	UButton_Sync(self)
+end
+local function UButton_OnKeyDown(self, button)
+	if self:GetParent().keyFocus then
+		return
+	end
+	local click = button and button == self.clickKey
+	local abort = button == "ESCAPE" and self.clickWithEscape
+	local eatEsc = button == "ESCAPE" and self.eatEscapeUntil and self.eatEscapeUntil >= GetTime()
+	self:SetPropagateKeyboardInput(not (click or abort or eatEsc))
+	if click or abort then
+		self:Click()
+	end
 end
 local function Toast_Animate(self, elapsed)
 	local now, as, ap, d = GetTime(), self.animStart, self.animPhase
@@ -881,13 +929,6 @@ local function MissionPage_AcquireToast(self, followerMode)
 	toast:Show()
 	return toast
 end
-local function ClickWithSpace(self, button)
-	local click = button and button == self.clickKey
-	self:SetPropagateKeyboardInput(not click)
-	if click then
-		self:Click()
-	end
-end
 local function cmpTimeLeft(a, b)
 	if a.timeLeft ~= b.timeLeft then
 		return a.timeLeft < b.timeLeft
@@ -943,6 +984,12 @@ do -- Factory.ObjectGroup
 	end
 end
 
+function Factory.PanelButton(parent)
+	local r = CreateFrame("Button", nil, parent, "UIPanelButtonNoTooltipTemplate")
+	r:SetHeight(UIBUTTON_HEIGHT)
+	r:SetPushedTextOffset(-1, -1)
+	return r
+end
 function Factory.RaisedBorder(parent)
 	local border = CreateFrame("Frame", nil, parent)
 	border:SetPoint("TOPLEFT", 0, 8)
@@ -1075,8 +1122,8 @@ function Factory.CopyBoxUI(parent)
 		end
 	end)
 
-	t = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-	t:SetPoint("BOTTOM", 0, 34)
+	t = CreateObject("PanelButton", f)
+	t:SetPoint("BOTTOM", 0, 34 + (UIBUTTON_HEIGHT-22)/2)
 	t:SetWidth(216)
 	t:SetText("Reset")
 	t, f.ResetButton = CreateFrame("Button", nil, f, "UIPanelCloseButtonNoScripts"), t
@@ -1089,8 +1136,19 @@ function Factory.CopyBoxUI(parent)
 	t:SetText(GetAddOnMetadata(AN, "Title") .. " v" .. GetAddOnMetadata(AN, "Version"))
 	f.VersionText = t
 
-	f.soundKitOnHide = 170568
-	f:SetScript("OnHide", PlaySoundKitAndHide)
+	f:SetScript("OnHide", function(self)
+		if self:IsShown() then
+			self:Hide()
+		else
+			PlaySound(170568)
+		end
+		if self:GetParent().keyFocus == self then
+			self:GetParent().keyFocus = nil
+		end
+	end)
+	f:SetScript("OnShow", function(self)
+		self:GetParent().keyFocus = self
+	end)
 
 	return f
 end
@@ -1123,7 +1181,7 @@ function Factory.MissionPage(parent)
 		logsButton.Icon:SetTexture("Interface/Icons/INV_Inscription_80_Scroll")
 		logsButton:SetPoint("RIGHT", prButton, "LEFT", -35, 0)
 	end
-	local uButton = CreateFrame("Button", nil, f, "UIPanelButtonTemplate") do
+	local uButton = CreateObject("PanelButton", f) do
 		s.UnButton = uButton
 		uButton:SetWidth(200)
 		uButton:SetPoint("TOPLEFT", 200, -34)
@@ -1132,7 +1190,7 @@ function Factory.MissionPage(parent)
 		uButton:SetScript("OnEnter", UButton_OnEnter)
 		uButton:SetScript("OnClick", UButton_OnClick)
 		uButton:SetScript("OnLeave", HideOwnGameTooltip)
-		uButton:SetScript("OnKeyDown", ClickWithSpace)
+		uButton:SetScript("OnKeyDown", UButton_OnKeyDown)
 		uButton.Sync = UButton_Sync
 	end
 	s.Toasts = {CreateObject("MissionToast", f)}
@@ -1225,7 +1283,7 @@ end
 function Factory.MissionButton(parent)
 	local cf, t = CreateFrame("Button", nil, parent)
 	local s = CreateObject("Shadow", cf)
-	cf:SetSize(290, 190)
+	cf:SetSize(290, 194)
 	cf:SetScript("OnClick", MissionButton_OnClick)
 	t = cf:CreateTexture(nil, "BACKGROUND", nil, -2)
 	t:SetAtlas("UI-Frame-"..CovenKit.."-CardParchmentWider")
@@ -1240,7 +1298,7 @@ function Factory.MissionButton(parent)
 	Mirror(t, true)
 	t, s.Veil = cf:CreateFontString(nil, "BACKGROUND", "GameFontHighlightLarge"), t
 	t:SetText("Beast Beneath the Hydrant")
-	t:SetPoint("TOP", 0, -54)
+	t:SetPoint("TOP", 0, -55.5)
 	t:SetWidth(276)
 	t:SetTextColor(0.97, 0.94, 0.70)
 	t, s.Name = cf:CreateTexture(nil, "BACKGROUND", nil, 2), t
@@ -1249,10 +1307,10 @@ function Factory.MissionButton(parent)
 	t:SetVertexColor(divC / 2^24, divC/256 % 256 / 255, divC%256/255)
 	t:SetWidth(286)
 	t:SetPoint("TOP", s.Name, 0, 6)
-	t:SetPoint("BOTTOM", s.Name, "BOTTOM", 0, -3)
+	t:SetPoint("BOTTOM", s.Name, "BOTTOM", 0, -5)
 	t = cf:CreateFontString(nil, "OVERLAY", "GameFontBlack")
 	t:SetWidth(262)
-	t:SetPoint("TOP", s.Name, "BOTTOM", 0, -26)
+	t:SetPoint("TOP", s.Name, "BOTTOM", 0, -28.5)
 	t:SetText("Nyar!")
 	t, s.Description = CreateObject("CommonHoverTooltip", CreateFrame("Button", nil, cf)), t
 	t:SetNormalFontObject(GameFontBlack)
@@ -1278,7 +1336,7 @@ function Factory.MissionButton(parent)
 	s.AchievementReward = t
 
 	t = CreateFrame("Frame", nil, cf)
-	t:SetPoint("TOP", s.Name, "BOTTOM", 0, -4)
+	t:SetPoint("TOP", s.Name, "BOTTOM", 0, -6)
 	t:SetSize(224, 20)
 	local a, b = cf:CreateTexture(nil, "BACKGROUND", nil, 2)
 	a:SetAtlas("ui_adv_health", true)
@@ -1313,15 +1371,15 @@ function Factory.MissionButton(parent)
 	t:SetPoint("BOTTOM", 0, 16)
 	t.Fill:SetAtlas("UI-Frame-Bar-Fill-Blue")
 	s.ProgressBar = t
-	local gb = CreateFrame("Button", nil, cf, "UIPanelButtonTemplate")
+	local gb = CreateObject("PanelButton", cf)
 	gb:SetPoint("BOTTOM", 20, 12)
 	gb:SetText("Buttons!")
-	gb:SetSize(165, 21)
+	gb:SetWidth(165)
 	gb:SetScript("OnClick", MissionButton_OnViewClick)
 	s.ViewButton = gb
-	t = CreateFrame("Button", nil, cf, "UIPanelButtonTemplate")
+	t = CreateObject("PanelButton", cf)
 	t:SetPoint("RIGHT", s.ViewButton, "LEFT", -8)
-	t:SetSize(24,21)
+	t:SetWidth(24)
 	t:SetText("|TInterface/EncounterJournal/UI-EJ-HeroicTextIcon:0|t")
 	t:SetPushedTextOffset(-1, -1)
 	t:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -1329,7 +1387,7 @@ function Factory.MissionButton(parent)
 	t:SetScript("OnLeave", HideOwnGameTooltip)
 	t:SetScript("OnClick", DoomRun_OnClick)
 	t:SetScript("OnShow", DoomRun_OnShow)
-	t, s.DoomRunButton = CreateFrame("Button", nil, cf, "UIPanelButtonTemplate"), t
+	t, s.DoomRunButton = CreateObject("PanelButton", cf), t
 	t:SetAllPoints(s.DoomRunButton)
 	t:SetText("|TInterface/Buttons/UI-StopButton:0|t")
 	t:SetScript("OnClick", TentativeGroupClear_OnClick)
