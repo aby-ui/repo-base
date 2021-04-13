@@ -320,30 +320,13 @@ CATEGORY = {
             [265] = true,
             [266] = true,
             [267] = true,
-            --[269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
-            --[270] = true, --暗影国度
+            [269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
+            [270] = true, --暗影国度
         },
         activities = {
             [723] = true, --世界首领
         },
     },
-    [8] = {
-        groups = {
-            [259]=true,
-            [260]=true,
-            [261]=true,
-            [262]=true,
-            [263]=true,
-            [264]=true,
-            [265]=true,
-            [266]=true,
-            [267]=true,
-            [269]=true,
-            [270]=true,
-        },
-        activities = {
-        },
-    }
 }
 
 --/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))

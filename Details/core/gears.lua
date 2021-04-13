@@ -14,7 +14,7 @@ local ItemUpgradeInfo = LibStub ("LibItemUpgradeInfo-1.0")
 local ItemUpgradeInfo
 local LibGroupInSpecT
 
-if (DetailsFramework.IsClassicWow()) then
+if (DetailsFramework.IsTimewalkWoW()) then
 	ItemUpgradeInfo = false
 	LibGroupInSpecT = false
 end
@@ -1960,7 +1960,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 		local spec
 		local talents = {}
 		
-		if (not DetailsFramework.IsClassicWow()) then
+		if (not DetailsFramework.IsTimewalkWoW()) then
 			spec = GetInspectSpecialization (unitid)
 			if (spec and spec ~= 0) then
 				_detalhes.cached_specs [guid] = spec

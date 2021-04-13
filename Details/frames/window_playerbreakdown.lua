@@ -3278,8 +3278,13 @@ function gump:CriaJanelaInfo()
 					--main player - seta no primeiro box
 						local spellid = data [1].id
 						local name, _, icon = _GetSpellInfo (spellid)
+
+						if (not name) then
+							--no spell found? - tbc problem
+							return
+						end
+
 						local petName = data [3]
-						
 						bar [1]:SetTexture (icon) --bar[1] = spellicon bar[2] = statusbar
 						bar [1]:SetTexCoord (unpack (IconTexCoord)) --bar[1] = spellicon bar[2] = statusbar
 

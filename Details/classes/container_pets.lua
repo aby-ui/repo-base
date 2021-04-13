@@ -52,7 +52,8 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 			pet_nome = pet_nome .. " <".. ownerName ..">"
 		end
 		
-		return busca[6] or pet_nome, busca[1], busca[2], busca[3] --> [1] dono nome [2] dono serial [3] dono flag
+		--return busca[6] or pet_nome, busca[1], busca[2], busca[3] --> busca[6] poderia estar causando problemas
+		return pet_nome, busca[1], busca[2], busca[3] --> [1] dono nome [2] dono serial [3] dono flag
 	end
 	
 	--> buscar pelo pet na raide

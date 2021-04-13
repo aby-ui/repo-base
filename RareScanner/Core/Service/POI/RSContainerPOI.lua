@@ -24,7 +24,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 
 ---============================================================================
 -- Not discovered entities
---- In order to avoid long process time, it caches these list on load
+--- In order to avoid long process time, it caches this list on load
 ---============================================================================
 
 local notDiscoveredContainerIDs = {}
@@ -62,7 +62,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isOpened = RSContainerDB.IsContainerOpened(containerID)
-	POI.isDiscovered = POI.isOpened or alreadyFoundInfo
+	POI.isDiscovered = POI.isOpened or alreadyFoundInfo ~= nil
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(containerID, mapID)
 	if (containerInfo) then
 		POI.worldmap = containerInfo.worldmap

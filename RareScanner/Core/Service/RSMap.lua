@@ -110,19 +110,19 @@ local function GetMapNotDiscoveredPOIs(mapID, questTitles, vignetteGUIDs, onWorl
 	end
 
 	-- Add icons
-	local notDiscoveredNpcPOIs = RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, onWorldMap, onMinimap)
+	local notDiscoveredNpcPOIs = RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, onWorldMap, onMiniMap)
 	if (notDiscoveredNpcPOIs) then
 		for _, POI in ipairs (notDiscoveredNpcPOIs) do
 			tinsert(MapPOIs,POI)
 		end
 	end
-	local notDiscoveredContainerPOIs = RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, vignetteGUIDs, onWorldMap, onMinimap)
+	local notDiscoveredContainerPOIs = RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, vignetteGUIDs, onWorldMap, onMiniMap)
 	if (notDiscoveredContainerPOIs) then
 		for _, POI in ipairs (notDiscoveredContainerPOIs) do
 			tinsert(MapPOIs,POI)
 		end
 	end
-	local notDiscoveredEventPOIs = RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMap, onMinimap)
+	local notDiscoveredEventPOIs = RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMap, onMiniMap)
 	if (notDiscoveredEventPOIs) then
 		for _, POI in ipairs (notDiscoveredEventPOIs) do
 			tinsert(MapPOIs,POI)

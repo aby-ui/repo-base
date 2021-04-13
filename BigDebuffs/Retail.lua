@@ -140,7 +140,7 @@ addon.Spells = {
 
     [99] = { type = CROWD_CONTROL }, -- Incapacitating Roar
     [339] = { type = ROOT }, -- Entangling Roots
-        [170855] = { type = ROOT, parent = 339 }, -- Entangling Roots
+        [170855] = { type = ROOT, parent = 339 }, -- Entangling Roots (Nature's Grasp)
     [740] = { type = BUFF_DEFENSIVE }, -- Tranquility
     [1850] = { type = BUFF_SPEED_BOOST }, -- Dash
         [252216] = { type = BUFF_SPEED_BOOST, parent = 1850 }, -- Tiger Dash
@@ -170,8 +170,7 @@ addon.Spells = {
     [209749] = { type = CROWD_CONTROL }, -- Faerie Swarm (Slow/Disarm)
     [22570] = { type = CROWD_CONTROL }, -- Maim
         [203123] = { type = CROWD_CONTROL, parent = 22570 }, -- Maim
-    [236696] = { type = BUFF_DEFENSIVE }, -- Thorns (PvP Talent)
-        [305497] = { type = BUFF_DEFENSIVE, parent = 236696 }, -- Thorns (PvP Talent)
+    [305497] = { type = BUFF_DEFENSIVE }, -- Thorns (PvP Talent)
     [50334] = { type = BUFF_DEFENSIVE }, -- Berserk (Guardian)
     [127797] = { type = CROWD_CONTROL, nounitFrames = true, nonameplates = true }, -- Ursol's Vortex
     [202244] = { type = CROWD_CONTROL }, -- Overrun (Guardian PvP Talent)
@@ -185,13 +184,14 @@ addon.Spells = {
         [108293] = { type = BUFF_OFFENSIVE, parent = 319454 }, -- with Guardian Affinity
         [108294] = { type = BUFF_OFFENSIVE, parent = 319454 }, -- with Resto Affinity
     [5215] = { type = BUFF_OTHER }, -- Prowl
+    [323764] = { type = BUFF_OFFENSIVE }, -- Convoke the Spirits
 
     -- Hunter
 
     [136] = { type = BUFF_DEFENSIVE }, -- Mend Pet
     [1513] = { type = CROWD_CONTROL }, -- Scare Beast
     [3355] = { type = CROWD_CONTROL }, -- Freezing Trap
-        [203337] = { type = CROWD_CONTROL, parent = 3355 }, -- Diamond Ice (Survival Honor Talent)
+        [203337] = { type = CROWD_CONTROL, parent = 3355 }, -- Diamond Ice (Survival PvP Talent)
     [5384] = { type = BUFF_DEFENSIVE }, -- Feign Death
     [19574] = { type = BUFF_OFFENSIVE }, -- Bestial Wrath
         [186254] = { type = BUFF_OFFENSIVE, parent = 19574 }, -- Bestial Wrath buff on the pet
@@ -247,7 +247,7 @@ addon.Spells = {
         [277792] = { type = CROWD_CONTROL, parent = 118 }, -- Polymorph Bumblebee
     [122] = { type = ROOT }, -- Frost Nova
     [33395] = { type = ROOT }, -- Freeze
-    [11426] = { type = BUFF_DEFENSIVE }, -- Ice Barrier
+    --[11426] = { type = BUFF_DEFENSIVE }, -- Ice Barrier (covers up combustion, doesn't provide much information)
     [12042] = { type = BUFF_OFFENSIVE }, -- Arcane Power
     [12051] = { type = BUFF_OFFENSIVE }, -- Evocation
     [12472] = { type = BUFF_OFFENSIVE }, -- Icy Veins
@@ -313,7 +313,7 @@ addon.Spells = {
     [1044] = { type = BUFF_DEFENSIVE }, -- Blessing of Freedom
         [305395] = { type = BUFF_DEFENSIVE, parent = 1044 }, -- Blessing of Freedom with Unbound Freedom (PvP Talent)
     [6940] = { type = BUFF_DEFENSIVE }, -- Blessing of Sacrifice
-        [199448] = { type = BUFF_DEFENSIVE, parent = 6940 }, -- Blessing of Sacrifice (Ultimate Sacrifice Honor Talent)
+        [199448] = { type = BUFF_DEFENSIVE, parent = 6940 }, -- Blessing of Sacrifice (Ultimate Sacrifice PvP Talent)
         [199450] = { type = BUFF_DEFENSIVE, parent = 6940 }, -- Blessing of Sacrifice (Ultimate Sacrifice Damage)
     [20066] = { type = CROWD_CONTROL }, -- Repentance
     [25771] = { type = BUFF_OTHER }, -- Forbearance
@@ -331,7 +331,7 @@ addon.Spells = {
         [105421] = { type = CROWD_CONTROL, parent = 115750 }, -- Blinding Light
     [152262] = { type = BUFF_OFFENSIVE }, -- Seraphim
     [184662] = { type = BUFF_DEFENSIVE }, -- Shield of Vengeance
-    [199545] = { type = BUFF_DEFENSIVE }, -- Steed of Glory (Protection Honor Talent)
+    [199545] = { type = BUFF_DEFENSIVE }, -- Steed of Glory (Protection PvP Talent)
     [205191] = { type = BUFF_DEFENSIVE }, -- Eye for an Eye
     [210256] = { type = BUFF_DEFENSIVE }, -- Blessing of Sanctuary
     [210294] = { type = BUFF_DEFENSIVE }, -- Divine Favor
@@ -353,8 +353,7 @@ addon.Spells = {
 
     -- Priest
 
-    --[586] = { type = BUFF_DEFENSIVE }, -- Fade - the spell itself doesn't do much in combat
-    [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image - Fade defensive Conduit
+    [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image (Fade defensive Conduit)
     [213602] = { type = BUFF_DEFENSIVE }, -- Greater Fade
     [605] = { type = CROWD_CONTROL, priority = true }, -- Mind Control
     [8122] = { type = CROWD_CONTROL }, -- Psychic Scream
@@ -374,7 +373,7 @@ addon.Spells = {
     [232707] = { type = BUFF_DEFENSIVE }, -- Ray of Hope
     [197862] = { type = BUFF_DEFENSIVE }, -- Archangel
     [197871] = { type = BUFF_OFFENSIVE }, -- Dark Archangel (on the priest)
-        --[197874] = { type = BUFF_OFFENSIVE, parent = 197871 }, -- Dark Archangel (on others), might make it harder to see other offensives being used
+    [197874] = { type = BUFF_OFFENSIVE }, -- Dark Archangel (on others)
     [200183] = { type = BUFF_DEFENSIVE }, -- Apotheosis
     [200196] = { type = CROWD_CONTROL }, -- Holy Word: Chastise
         [200200] = { type = CROWD_CONTROL, parent = 200196 }, -- Holy Word: Chastise (Stun)
@@ -383,6 +382,7 @@ addon.Spells = {
     [213610] = { type = BUFF_DEFENSIVE }, -- Holy Ward
     [27827] = { type = BUFF_DEFENSIVE }, -- Spirit of Redemption
         [215769] = { type = BUFF_DEFENSIVE, parent = 27827 }, -- Spirit of the Redeemer PvP Talent
+    [211336] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Holy Priest Revive Legendary)
     [289655] = { type = BUFF_DEFENSIVE }, -- Holy Word: Concentration
     [319952] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
     [322431] = { type = BUFF_OFFENSIVE, nounitFrames = true, noraidFrames = true, nonameplates = true }, -- Thoughtsteal (Buff)
@@ -459,7 +459,7 @@ addon.Spells = {
     [64695] = { type = ROOT }, -- Earthgrab Totem
     [77505] = { type = CROWD_CONTROL }, -- Earthquake (Stun)
     [325174] = { type = BUFF_DEFENSIVE }, -- Spirit Link Totem
-        [204293] = { type = BUFF_DEFENSIVE, parent = 325174 }, -- Spirit Link (Honor Talent)
+        [204293] = { type = BUFF_DEFENSIVE, parent = 325174 }, -- Spirit Link (PvP Talent)
     [108271] = { type = BUFF_DEFENSIVE }, -- Astral Shift
         [210918] = { type = BUFF_DEFENSIVE, parent = 108271 }, -- Ethereal Form
     [114050] = { type = BUFF_DEFENSIVE }, -- Ascendance (Elemental)
@@ -475,10 +475,8 @@ addon.Spells = {
     [204945] = { type = BUFF_OFFENSIVE }, -- Doom Winds
     [260878] = { type = BUFF_DEFENSIVE }, -- Spirit Wolf
     [290641] = { type = BUFF_DEFENSIVE }, -- Ancestral Gift
-    [204437] = { type = CROWD_CONTROL }, -- Lightning Lasso
-          [305483] = { type = CROWD_CONTROL, parent = 204437 },
-          [305484] = { type = CROWD_CONTROL, parent = 204437 },
-          [305485] = { type = CROWD_CONTROL, parent = 204437 },
+    [305485] = { type = CROWD_CONTROL }, -- Lightning Lasso (Player)
+          [305484] = { type = CROWD_CONTROL, parent = 305485 }, -- Lightning Lasso (NPC)
     [320125] = { type = BUFF_OFFENSIVE }, -- Echoing Shock
     [546] = { type = BUFF_OTHER }, -- Water Walking
     [333957] = { type = BUFF_OFFENSIVE }, -- Feral Spirit
@@ -585,7 +583,6 @@ addon.Spells = {
 
     -- Legacy (may be deprecated)
 
-    [178858] = { type = BUFF_DEFENSIVE }, -- Contender (Draenor Garrison Ability)
     [305252] = { type = CROWD_CONTROL }, -- Gladiator's Maledict
     [313148] = { type = CROWD_CONTROL }, -- Forbidden Obsidian Claw
 

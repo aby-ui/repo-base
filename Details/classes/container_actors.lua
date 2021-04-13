@@ -270,7 +270,7 @@
 				
 				if (_detalhes.is_in_arena) then
 				
-					local my_team_color = GetBattlefieldArenaFaction()
+					local my_team_color = GetBattlefieldArenaFaction and GetBattlefieldArenaFaction() or 0
 				
 					if (novo_objeto.grupo) then --> is ally
 						novo_objeto.arena_ally = true
@@ -287,18 +287,18 @@
 						novo_objeto.role = arena_props.role
 						
 						if (arena_props.role == "NONE") then
-							local role = UnitGroupRolesAssigned (nome)
-							if (role ~= "NONE") then
+							local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned(nome)
+							if (role and role ~= "NONE") then
 								novo_objeto.role = role
 							end
 						end
 					else
-						local oponentes = GetNumArenaOpponentSpecs()
+						local oponentes = GetNumArenaOpponentSpecs and GetNumArenaOpponentSpecs() or 5
 						local found = false
 						for i = 1, oponentes do
 							local name = GetUnitName ("arena" .. i, true)
 							if (name == nome) then
-								local spec = GetArenaOpponentSpec (i)
+								local spec = GetArenaOpponentSpec and GetArenaOpponentSpec (i)
 								if (spec) then
 									local id, name, description, icon, role, class = DetailsFramework.GetSpecializationInfoByID (spec) --thanks pas06
 									novo_objeto.role = role
@@ -310,15 +310,15 @@
 							end
 						end
 						
-						local role = UnitGroupRolesAssigned (nome)
-						if (role ~= "NONE") then
+						local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned (nome)
+						if (role and role ~= "NONE") then
 							novo_objeto.role = role
 							found = true
 						end
 						
-						if (not found and nome == _detalhes.playername) then						
+						if (not found and nome == _detalhes.playername) then
 							local role = UnitGroupRolesAssigned ("player")
-							if (role ~= "NONE") then
+							if (role and role ~= "NONE") then
 								novo_objeto.role = role
 							end
 						end
@@ -434,8 +434,8 @@
 		local line1 = _G ["DetailsPetOwnerFinderTextLeft2"]
 		local text1 = line1 and line1:GetText()
 		if (text1 and text1 ~= "") then
-			for _, playerName in ipairs(Details.tabela_vigente.raid_roster_indexed) do
-			--for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
+			--for _, playerName in ipairs(Details.tabela_vigente.raid_roster_indexed) do
+			for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
 				local pName = playerName
 				playerName = playerName:gsub ("%-.*", "") --remove realm name
 
@@ -462,8 +462,8 @@
 		local line2 = _G ["DetailsPetOwnerFinderTextLeft3"]
 		local text2 = line2 and line2:GetText()
 		if (text2 and text2 ~= "") then
-			--for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
-			for _, playerName in ipairs(Details.tabela_vigente.raid_roster_indexed) do
+			for playerName, _ in _pairs (_detalhes.tabela_vigente.raid_roster) do
+			--for _, playerName in ipairs(Details.tabela_vigente.raid_roster_indexed) do
 				local pName = playerName
 				playerName = playerName:gsub ("%-.*", "") --remove realm name
 
@@ -519,7 +519,6 @@
 		
 			--> try to find the owner
 			if (flag and _bit_band (flag, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
-			
 				--[[statistics]]-- _detalhes.statistics.container_unknow_pet = _detalhes.statistics.container_unknow_pet + 1
 				local find_nome, find_owner = find_pet_owner (serial, nome, flag, self)
 				if (find_nome and find_owner) then

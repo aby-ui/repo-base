@@ -175,9 +175,13 @@ function RSContainerDB.GetContainerLoot(containerID)
 	return nil
 end
 
+function RSContainerDB.GetAllInteralContainerLoot()
+	return private.CONTAINER_LOOT
+end
+
 function RSContainerDB.GetInteralContainerLoot(containerID)
 	if (containerID) then
-		return private.CONTAINER_LOOT[containerID]
+		return RSContainerDB.GetAllInteralContainerLoot()[containerID]
 	end
 
 	return nil

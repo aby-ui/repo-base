@@ -3065,7 +3065,7 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				Details:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 			end
 			
-			local topAbility = ActorSkillsSortTable [1] and ActorSkillsSortTable [1][2] or 0
+			local topAbility = ActorSkillsSortTable [1] and ActorSkillsSortTable [1][2] or 0.0001
 			
 			if (#ActorSkillsSortTable > 0) then
 				for i = 1, _math_min (tooltip_max_abilities, #ActorSkillsSortTable) do

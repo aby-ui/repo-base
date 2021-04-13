@@ -21,7 +21,7 @@ local DetailsMythicPlusFrame = _G.CreateFrame ("frame", "DetailsMythicPlusFrame"
 DetailsMythicPlusFrame.DevelopmentDebug = false
 
 --disabling the mythic+ feature if the user is playing in wow classic
-if (not DF.IsClassicWow()) then
+if (not DF.IsTimewalkWoW()) then
     DetailsMythicPlusFrame:RegisterEvent ("CHALLENGE_MODE_START")
     DetailsMythicPlusFrame:RegisterEvent ("CHALLENGE_MODE_COMPLETED")
     DetailsMythicPlusFrame:RegisterEvent ("ZONE_CHANGED_NEW_AREA")

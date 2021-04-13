@@ -1,9 +1,14 @@
 -----------------------------------------------------------------------
 -- AddOn namespace.
 -----------------------------------------------------------------------
+local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
 local RSConfigDB = private.NewLib("RareScannerConfigDB")
+
+
+-- Locales
+local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
@@ -13,6 +18,7 @@ local RSEventDB = private.ImportLib("RareScannerEventDB")
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
+local RSUtils = private.ImportLib("RareScannerUtils")
 
 
 ---============================================================================
@@ -389,6 +395,12 @@ function RSConfigDB.SetNpcFiltered(npcID, value)
 	end
 end
 
+function RSConfigDB.FilterAllNPCs()
+	for npcID, _ in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
+		RSConfigDB.SetNpcFiltered(npcID, false)
+	end
+end
+
 function RSConfigDB.IsNpcFilteredOnlyOnWorldMap()
 	return private.db.rareFilters.filterOnlyMap
 end
@@ -497,6 +509,12 @@ function RSConfigDB.SetContainerFiltered(containerID, value)
 		else
 			private.db.general.filteredContainers[containerID] = nil
 		end
+	end
+end
+
+function RSConfigDB.FilterAllContainers()
+	for containerID, _ in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
+		RSConfigDB.SetContainerFiltered(containerID, false)
 	end
 end
 
@@ -792,6 +810,112 @@ end
 
 function RSConfigDB.SetFilteringConduitItems(value)
 	private.db.loot.filterConduitItems = value
+end
+
+---============================================================================
+-- Collection filters
+---============================================================================
+
+function RSConfigDB.SetCollectionsFilteredOnlyOnWorldMap(value)
+	private.db.collections.filteredOnlyOnWorldMap = value
+end
+
+function RSConfigDB.IsCollectionsFilteredOnlyOnWorldMap()
+	return private.db.collections.filteredOnlyOnWorldMap
+end
+
+function RSConfigDB.SetAutoFilteringOnCollect(value)
+	private.db.collections.autoFilteringOnCollect = value
+end
+
+function RSConfigDB.IsAutoFilteringOnCollect()
+	return private.db.collections.autoFilteringOnCollect
+end
+
+function RSConfigDB.SetCreateProfileBackup(value)
+	private.db.collections.createProfileBackup = value
+end
+
+function RSConfigDB.IsCreateProfileBackup()
+	return private.db.collections.createProfileBackup
+end
+
+function RSConfigDB.SetSearchingPets(value)
+	private.db.collections.searchingPets = value
+end
+
+function RSConfigDB.IsSearchingPets()
+	return private.db.collections.searchingPets
+end
+
+function RSConfigDB.SetSearchingMounts(value)
+	private.db.collections.searchingMounts = value
+end
+
+function RSConfigDB.IsSearchingMounts()
+	return private.db.collections.searchingMounts
+end
+
+function RSConfigDB.SetSearchingToys(value)
+	private.db.collections.searchingToys = value
+end
+
+function RSConfigDB.IsSearchingToys()
+	return private.db.collections.searchingToys
+end
+
+function RSConfigDB.SetSearchingAppearances(value)
+	private.db.collections.searchingAppearances = value
+end
+
+function RSConfigDB.IsSearchingAppearances()
+	return private.db.collections.searchingAppearances
+end
+
+function RSConfigDB.ApplyCollectionsLootFilters()
+	-- Quality Uncommon and supperior
+	RSConfigDB.SetLootFilterMinQuality(Enum.ItemQuality.Uncommon)
+	
+	-- Type/Subtype
+	for mainTypeID, subtypesIDs in pairs(private.ITEM_CLASSES) do
+		-- Everything else
+		if (RSUtils.Contains({ LE_ITEM_CLASS_CONSUMABLE, LE_ITEM_CLASS_CONTAINER, LE_ITEM_CLASS_GEM, LE_ITEM_CLASS_REAGENT, LE_ITEM_CLASS_PROJECTILE, LE_ITEM_CLASS_TRADEGOODS, LE_ITEM_CLASS_ITEM_ENHANCEMENT, LE_ITEM_CLASS_RECIPE, LE_ITEM_CLASS_QUIVER, LE_ITEM_CLASS_QUESTITEM, LE_ITEM_CLASS_KEY, LE_ITEM_CLASS_GLYPH, LE_ITEM_CLASS_BATTLEPET, LE_ITEM_CLASS_WOW_TOKEN }, mainTypeID)) then
+			for _, typeID in pairs (subtypesIDs) do
+				RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
+			end
+		-- Armor and weapons
+		elseif (RSUtils.Contains({ LE_ITEM_CLASS_WEAPON, LE_ITEM_CLASS_ARMOR }, mainTypeID)) then
+			for _, typeID in pairs (subtypesIDs) do
+				-- Rings/necklaces/trinkets
+				if (not RSConfigDB.IsSearchingAppearances() or (mainTypeID == LE_ITEM_CLASS_ARMOR and typeID == LE_ITEM_ARMOR_GENERIC)) then
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
+				else
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)
+				end
+			end
+		-- Miscellaneous
+		elseif (mainTypeID == LE_ITEM_CLASS_MISCELLANEOUS) then
+			for _, typeID in pairs (subtypesIDs) do
+				-- Toys are usually in the next types, but the filter by category doesn't apply to toys (who wants to filter toys??)
+				if (RSUtils.Contains({ LE_ITEM_MISCELLANEOUS_JUNK, LE_ITEM_MISCELLANEOUS_REAGENT, LE_ITEM_MISCELLANEOUS_OTHER }, typeID)) then
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
+				elseif (not RSConfigDB.IsSearchingMounts() and typeID == LE_ITEM_MISCELLANEOUS_MOUNT) then
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
+				elseif (not RSConfigDB.IsSearchingPets() and typeID == LE_ITEM_MISCELLANEOUS_COMPANION_PET) then
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
+				else
+					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)
+				end
+			end
+		end
+	end
+	
+	-- Custom filters
+	RSConfigDB.SetFilteringLootByNotEquipableItems(true)
+	RSConfigDB.SetFilteringLootByTransmog(true)
+	RSConfigDB.SetFilteringByCollected(true)
+	RSConfigDB.SetFilteringLootByNotMatchingClass(false)
+	RSConfigDB.SetFilteringLootByNotMatchingFaction(false)
 end
 
 ---============================================================================

@@ -305,6 +305,9 @@
 	
 	--> is parser allowed to replace spellIDs?
 		local is_using_spellId_override = false
+
+	--> is this a timewalking exp?
+		local is_timewalk_exp = DetailsFramework.IsTimewalkWoW()
 	
 	--> recording data options flags
 		local _recording_self_buffs = false
@@ -466,16 +469,14 @@
 	end
 	
 	function parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected)
-	
-	------------------------------------------------------------------------------------------------
-	--> early checks and fixes
 
+		------------------------------------------------------------------------------------------------
+		--> early checks and fixes
 		if (who_serial == "") then
 			if (who_flags and _bit_band (who_flags, OBJECT_TYPE_PETS) ~= 0) then --> � um pet
 				--> pets must have a serial
 				return
 			end
-			--who_serial = nil
 		end
 
 		if (not alvo_name) then
@@ -493,18 +494,24 @@
 		if (damage_spells_to_ignore [spellid]) then
 			return
 		end
-		
+
+		if (is_timewalk_exp) then
+			spellid = spellname
+
+		else --retail
+			--REMOVE ON 10.0
+			if (spellid == SPELLID_KYRIAN_DRUID_DAMAGE) then
+				local ownerTable = druid_kyrian_bounds[who_name]
+				if (ownerTable) then
+					who_serial, who_name, who_flags = unpack(ownerTable)
+				end
+			end
+		end
+
 		--check if the target actor isn't in the temp blacklist
 		--if (ignore_actors [alvo_serial]) then
 		--	return
 		--end
-
-		if (spellid == SPELLID_KYRIAN_DRUID_DAMAGE) then
-			local ownerTable = druid_kyrian_bounds[who_name]
-			if (ownerTable) then
-				who_serial, who_name, who_flags = unpack(ownerTable)
-			end
-		end
 
 		------------------------------------------------------------------------------------------------
 		--> spell reflection
@@ -1592,10 +1599,11 @@
 		local npcId = _tonumber(_select (6, _strsplit ("-", alvo_serial)) or 0)
 
 		--rename monk's "Storm, Earth, and Fire" adds
+		--desligado pois poderia estar causando problemas
 		if (npcId == 69792) then 
-			alvo_name = "Earth Spirit"
+			--alvo_name = "Earth Spirit"
 		elseif (npcId == 69791) then
-			alvo_name = "Fire Spirit"
+			--alvo_name = "Fire Spirit"
 		end
 	
 		--> pet summon another pet
@@ -1717,14 +1725,37 @@
 	
 	function parser:heal_absorb (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount)
 		--[[statistics]]-- _detalhes.statistics.absorbs_calls = _detalhes.statistics.absorbs_calls + 1
-		
-		if (_type(shieldname) == "boolean") then
-			owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
+
+		if (is_timewalk_exp) then
+			if (not amount) then
+				--melee
+				owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
+			end
+
+			--normal: is this for melee?
+			--token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, playerGUID, playerName, flag, flag2, AbsorbedSpellId, AbsorbedSpellName, school, absorbedAmount, nil, nil, nil
+
+			--new: is this for spells?
+			--token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellId?, spellName, "32", playerGUID, playerName, flag, flag2, AbsorbedSpellId, AbsorbedSpellName, school, absorbedAmount
+
+			--17 parameters on tbc beta on april 1st, shieldname isn't boolean but the parameters need to be arranged
+			--owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
+
+			spellid = spellname
+			shieldid = shieldname
+
+			parser:heal (token, time, owner_serial, owner_name, owner_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, shieldid, shieldname, shieldtype, amount, 0, 0, nil, true)
+			return
+		else
+			--retail
+			if (_type(shieldname) == "boolean") then
+				owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
+			end
 		end
-	
+
 		if (ignored_shields [shieldid]) then
 			return
-		
+
 		elseif (shieldid == 110913) then
 			--dark bargain
 			local max_health = _UnitHealthMax (owner_name)
@@ -1732,7 +1763,7 @@
 				return
 			end
 		end
-		
+
 		--> diminuir o escudo nas tabelas de escudos
 		local shields_on_target = escudo [alvo_name]
 		if (shields_on_target) then
@@ -1746,12 +1777,12 @@
 		end
 		
 		--> chamar a fun��o de cura pra contar a cura
-		return parser:heal (token, time, owner_serial, owner_name, owner_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, shieldid, shieldname, shieldtype, amount, 0, 0, nil, true)
+		parser:heal (token, time, owner_serial, owner_name, owner_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, shieldid, shieldname, shieldtype, amount, 0, 0, nil, true)
 		
 	end
 
 	function parser:heal (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overhealing, absorbed, critical, is_shield)
-
+		
 	------------------------------------------------------------------------------------------------
 	--> early checks and fixes
 	
@@ -1786,6 +1817,10 @@
 			return
 		end
 		
+		if (is_timewalk_exp) then
+			spellid = spellname
+		end
+
 		--> spirit link toten
 		if (spellid == SPELLID_SHAMAN_SLT) then
 			return parser:SLT_healing (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overhealing, absorbed, critical, is_shield)
@@ -2431,7 +2466,6 @@ SPELL_HEAL,Player-3209-0A79112C,"Symantec-Azralon",0x511,0x0,Player-3209-065BAED
 	--> recording debuffs applied by player
 
 		elseif (tipo == "DEBUFF") then
-		--print ("debuff - ", token, spellname)
 
 			--Eye of Corruption 8.3 REMOVE ON 9.0
 			if (spellid == 315161) then
@@ -4200,7 +4234,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	function _detalhes:CaptureEnable (capture_type)
 
 		capture_type = string.lower (capture_type)
-		
+		--retail
 		if (capture_type == "damage") then
 			token_list ["SPELL_PERIODIC_DAMAGE"] = parser.spell_dmg
 			token_list ["SPELL_EXTRA_ATTACKS"] = parser.spell_dmg_extra_attacks
@@ -4255,7 +4289,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			token_list ["UNIT_DESTROYED"] = parser.dead
 			
 		end
-
 	end
 
 	parser.original_functions = {
@@ -4420,7 +4453,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	
 	function _detalhes:Check_ZONE_CHANGED_NEW_AREA (...)
 		local zoneName, zoneType, _, _, _, _, _, zoneMapID = _GetInstanceInfo()
-		--print (GetInstanceInfo())
 		
 		_detalhes.zone_type = zoneType
 		_detalhes.zone_id = zoneMapID
@@ -4984,7 +5016,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	function _detalhes.parser_functions:PLAYER_SPECIALIZATION_CHANGED()
 	
 		--some parts of details! does call this function, check first for past expansions
-		if (DetailsFramework.IsClassicWow()) then
+		if (DetailsFramework.IsTimewalkWoW()) then
 			return
 		end
 	
@@ -5353,7 +5385,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		local funcao = token_list [token]
 		if (funcao) then
-			return funcao (nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
+			funcao (nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
 		else
 			return
 		end

@@ -14,10 +14,51 @@ do
 	local _GetSpellInfo =	GetSpellInfo
 	local _unpack	=	unpack
 
+	--> is this a timewalking exp?
+	local is_timewalk_exp = DetailsFramework.IsTimewalkWoW()
+
 	--> default container
 	_detalhes.spellcache =	{}
 	local unknowSpell = {Loc ["STRING_UNKNOWSPELL"], _, "Interface\\Icons\\Ability_Druid_Eclipse"} --> localize-me
 	
+	local AllSpellNames
+	if (is_timewalk_exp) then
+		AllSpellNames = {}
+		local GetSpellInfo = GetSpellInfo
+		for i = 1, 60000 do
+			local name, _, icon = GetSpellInfo(i)
+			if name and icon and icon ~= 136235 and not AllSpellNames[name] then
+				AllSpellNames[name] = icon
+			end
+		end
+	end
+
+	local GetSpellInfoTimewalk = function(spell)
+		local spellName, _, spellIcon
+
+		if (spell == 0) then
+			spellName = ATTACK or "It's Blizzard Fault!"
+			spellIcon = [[Interface\ICONS\INV_Sword_04]]
+
+		elseif (spell == "!Melee" or spell == 1) then
+			spellName = ATTACK or "It's Blizzard Fault!"
+			spellIcon = [[Interface\ICONS\INV_Sword_04]]
+
+		elseif (spell == "!Autoshot" or spell == 2) then
+			spellName = Loc ["STRING_AUTOSHOT"]
+			spellIcon = [[Interface\ICONS\INV_Weapon_Bow_07]]
+
+		else
+			spellName, _, spellIcon = GetSpellInfo (spell)
+		end
+		
+		if (not spellName) then
+			return spell, _, AllSpellNames [spell] or defaultSpellIcon
+		end
+		
+		return spellName, _, AllSpellNames [spell] or spellIcon
+	end
+
 	--> reset spell cache
 	function _detalhes:ClearSpellCache()
 		_detalhes.spellcache = _setmetatable ({}, 
@@ -29,7 +70,12 @@ do
 
 					--> should save only icon and name, other values are not used
 					if (valor) then --> check if spell is valid before
-						local cache = {_GetSpellInfo (valor)}
+						local cache
+						if (is_timewalk_exp) then
+							cache = {GetSpellInfoTimewalk(valor)}
+						else
+							cache = {_GetSpellInfo (valor)}
+						end
 						tabela [valor] = cache
 						return cache
 					else
@@ -72,6 +118,19 @@ do
 			[7] = {name = Loc ["STRING_ENVIRONMENTAL_LAVA"], icon = [[Interface\ICONS\Ability_Rhyolith_Volcano]]},
 			[8] = {name = Loc ["STRING_ENVIRONMENTAL_SLIME"], icon = [[Interface\ICONS\Ability_Creature_Poison_02]]},
 		}
+
+	elseif (DetailsFramework.IsTBCWow()) then
+		default_user_spells = {
+			[1] = {name = Loc ["STRING_MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
+			[2] = {name = Loc ["STRING_AUTOSHOT"], icon = [[Interface\ICONS\INV_Weapon_Bow_07]]},
+			[3] = {name = Loc ["STRING_ENVIRONMENTAL_FALLING"], icon = [[Interface\ICONS\Spell_Magic_FeatherFall]]},
+			[4] = {name = Loc ["STRING_ENVIRONMENTAL_DROWNING"], icon = [[Interface\ICONS\Ability_Suffocate]]},
+			[5] = {name = Loc ["STRING_ENVIRONMENTAL_FATIGUE"], icon = [[Interface\ICONS\Spell_Arcane_MindMastery]]},
+			[6] = {name = Loc ["STRING_ENVIRONMENTAL_FIRE"], icon = [[Interface\ICONS\INV_SummerFest_FireSpirit]]},
+			[7] = {name = Loc ["STRING_ENVIRONMENTAL_LAVA"], icon = [[Interface\ICONS\Ability_Rhyolith_Volcano]]},
+			[8] = {name = Loc ["STRING_ENVIRONMENTAL_SLIME"], icon = [[Interface\ICONS\Ability_Creature_Poison_02]]},
+		}
+
 	else
 		default_user_spells = {
 			[1] = {name = Loc ["STRING_MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
@@ -236,8 +295,9 @@ do
 		return false
 	end
 	
-	--> overwrite for API GetSpellInfo function 
-	_detalhes.getspellinfo = function (spellid) return _unpack (_detalhes.spellcache[spellid]) end 
+	--> overwrite for API GetSpellInfo function
+	
+	_detalhes.getspellinfo = function (spellid) return _unpack (_detalhes.spellcache[spellid]) end
 	_detalhes.GetSpellInfo = _detalhes.getspellinfo
 
 	--> overwrite SpellInfo if the spell is a DoT, so Details.GetSpellInfo will return the name modified

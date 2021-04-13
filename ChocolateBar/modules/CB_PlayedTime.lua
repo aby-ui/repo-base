@@ -1,22 +1,31 @@
--- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
+﻿-- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
 local LibStub = LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local acetimer = LibStub("AceTimer-3.0")
-local db
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local ReportPlayedTimeToChat = true
+local dataobj,db
 
 local function RequestTimePlayed()
 	ReportPlayedTimeToChat = false
 	return _G.RequestTimePlayed()
 end
 
-local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("PlayedTime", {
+dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("CB_PlayedTime", {
 	type = "data source",
 	--icon = "Interface\\AddOns\\ChocolateBar\\pics\\ChocolatePiece",
 	label = "Played Time",
 	text  = "---",
-	enabled = true,
+	defauldDisabled = true,
+	OnClick = function(self, button, ...)
+		if button == "RightButton" then
+			--CB_PlayedTime:OpenOptions()
+			--LibStub("AceConfigDialog-3.0"):Open("CB_PlayedTime")
+			dataobj:OpenOptions()
+		end
+		--LibQTip:Release(tooltip)
+		tooltip = nil
+	end
 })
 
 acetimer:ScheduleTimer(function()
@@ -25,10 +34,10 @@ acetimer:ScheduleTimer(function()
 		end, 60)
 
 function dataobj:OnTooltipShow()
-RequestTimePlayed()
+	RequestTimePlayed()
 	self:AddLine("PlayedTime")
 	local totaltime = 0
-	table.sort(db, function(a,b) return b.total < a.total end)
+	--table.sort(db, function(a,b) return b.total < a.total end)
 	for k, v in pairs(db) do
 			local time = v.total and v.total or 1
 			--self:AddLine(string.format("%s: %s", k, formatTime(time)))
@@ -36,6 +45,7 @@ RequestTimePlayed()
 			totaltime = totaltime + time
 	end
 	self:AddLine(" ")
+	self:AddLine()
 	self:AddLine(string.format("Total: %s", formatTime(totaltime)))
 end
 
@@ -52,7 +62,13 @@ local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
 	local dbChar = db[getPlayerIdentifier()]
 	local days = totalTimeInSeconds / 3600 / 24
 	dbChar.total = totalTimeInSeconds
-	dataobj.text  =  string.format("Played: %s", formatTime(totalTimeInSeconds))
+	if UnitLevel("player") == GetMaxLevelForPlayerExpansion() then
+		dataobj.text  =  string.format("%s", formatTime(totalTimeInSeconds))
+		dataobj.label = "Played Time"
+	else
+		dataobj.text  =  string.format("%s", formatTime(timeAtThisLevel))
+		dataobj.label = "Time On Level"
+	end
 end
 
 function formatTime(time)
@@ -60,13 +76,29 @@ function formatTime(time)
   local hours = floor(mod(time, 86400)/3600)
   local minutes = floor(mod(time,3600)/60)
   --return format("%d d %d h %d m", days, hours, minutes)
-	return format("%d|cffffd200d|r %d|cffffd200h|r %d|cffffd200m|r", days, hours, minutes)
+	if days > 0 then
+		return format("%d|cffffd200d|r %d|cffffd200h|r %d|cffffd200m|r", days, hours, minutes)
+	else
+		return format("%d|cffffd200h|r %d|cffffd200m|r", hours, minutes)
+	end
 end
+
+
+local frame2 = CreateFrame("Frame")
 
 local function onEnteringWorld()
 	db = CB_PlayedTime and CB_PlayedTime or {}
 	CB_PlayedTime = db
 	RequestTimePlayed()
+	dataobj:RegisterOptions()
+	frame2:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+
+
+function dataobj:Reset()
+	CB_PlayedTime = {}
+	db = CB_PlayedTime
 end
 
 local hookedChatFrame_DisplayTimePlayed = ChatFrame_DisplayTimePlayed
@@ -81,6 +113,5 @@ end
 local frame = CreateFrame("Frame")
 frame:SetScript("OnEvent", playedTimeEvent)
 frame:RegisterEvent("TIME_PLAYED_MSG")
-local frame2 = CreateFrame("Frame")
-frame2:SetScript("OnEvent", onEnteringWorld)
 frame2:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame2:SetScript("OnEvent", onEnteringWorld)

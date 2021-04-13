@@ -3,6 +3,8 @@ local _
 
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 	local _detalhes = _G._detalhes
+	local PixelUtil = PixelUtil or DFPixelUtil
+
 	DETAILSPLUGIN_ALWAYSENABLED = 0x1
 	
 	--> consts
@@ -12,7 +14,6 @@ local _
 		local CONST_PLUGINWINDOW_MENU_Y = -26
 		local CONST_PLUGINWINDOW_WIDTH = 925
 		local CONST_PLUGINWINDOW_HEIGHT = 600
-	
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> details api functions

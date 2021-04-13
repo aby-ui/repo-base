@@ -8,4 +8,6 @@
 	<Script file="AchievementTables.lua"/>
 	<Script file="LootQuestsTables.lua"/>
 	<Script file="Conduits.lua"/>
+	<Script file="Mounts.lua"/>
+	<Script file="Pets.lua"/>
 </Ui>

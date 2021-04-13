@@ -63,9 +63,12 @@ local function GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isCompleted = RSEventDB.IsEventCompleted(eventID)
-	POI.isDiscovered = POI.isCompleted or alreadyFoundInfo
+	POI.isDiscovered = POI.isCompleted or alreadyFoundInfo ~= nil
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(eventID, mapID)
-
+	if (eventInfo) then
+		POI.worldmap = eventInfo.worldmap
+	end
+	
 	-- Textures
 	if (POI.isCompleted) then
 		POI.Texture = RSConstants.BLUE_EVENT_TEXTURE

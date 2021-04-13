@@ -49,8 +49,19 @@ LIB_RAID_STATUS_CAN_LOAD = false
         end
     end
 
+    local isTimewalkWoW = function()
+        local gameVersion = GetBuildInfo()
+        if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2") then
+            return true
+        end
+    end
+
     --return the current specId of the player
     function raidStatusLib.GetPlayerSpecId()
+        if (isTimewalkWoW()) then
+            return 0
+        end
+
         local spec = GetSpecialization()
         if (spec) then
             local specId = GetSpecializationInfo(spec)
@@ -541,8 +552,12 @@ LIB_RAID_STATUS_CAN_LOAD = false
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
     eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+
     --eventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-    eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+    if (not isTimewalkWoW()) then
+        eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+    end
+    
     eventFrame:RegisterEvent("PLAYER_DEAD")
     eventFrame:RegisterEvent("PLAYER_ALIVE")
     eventFrame:RegisterEvent("PLAYER_UNGHOST")
@@ -550,8 +565,6 @@ LIB_RAID_STATUS_CAN_LOAD = false
     eventFrame:SetScript("OnEvent", function(self, event, ...)
         eventFunctions[event](...)
     end)
-
-
 
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~main ~control
@@ -1098,8 +1111,13 @@ end)
         end
 
         --item level
-            local _, itemLevel = GetAverageItemLevel()
-            itemLevel = floor(itemLevel)
+            local itemLevel
+            if (_G.GetAverageItemLevel) then
+                local _, _itemLevel = GetAverageItemLevel()
+                itemLevel = floor(_itemLevel)
+            else
+                itemLevel = 0
+            end
 
         --repair status
             local gearDurability = raidStatusLib.gearManager.GetGearDurability()
@@ -1342,6 +1360,12 @@ end
 
 function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
     local playerInfo = {}
+
+    if (isTimewalkWoW()) then
+        --indexes: specId, renown, covenant, talent, conduits
+        --return a placeholder table
+        return {0, 0, 0, {0, 0, 0, 0, 0, 0, 0}, {0, 0}}
+    end
 
     --spec
     local specId = 0

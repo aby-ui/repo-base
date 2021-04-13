@@ -29,7 +29,7 @@ end
 --auto run frame to dispatch scrtips for some events that details! doesn't handle
 local autoRunCodeEventFrame = _G.CreateFrame("frame")
 
-if (not _G.DetailsFramework.IsClassicWow()) then
+if (not _G.DetailsFramework.IsTimewalkWoW()) then
     autoRunCodeEventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 end
 

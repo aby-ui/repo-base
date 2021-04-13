@@ -41,7 +41,7 @@ function ChocolateBar:Debug(...)
 	debug(self, ...)
 end
 
-local oldDefaults = {
+local defaults = {
 	profile = {
 		petBattleHideBars = true, combatopacity = 1, scale = 1,
 		height = 21, iconSize = 0.75, moveFrames = true, adjustCenter = true,
@@ -71,7 +71,7 @@ local oldDefaults = {
 		objSettings = {
 			['*'] = {
 				barName = "", align = "left", enabled = true, showText = true,  showLabel = false,
-				showIcon = true, index = 500, width = 0,
+				showIcon = true, index = 500, width = 0, isNew = true
 			},
 		},
 	},
@@ -80,62 +80,19 @@ local oldDefaults = {
 	}
 }
 
-local newDefaults = {
-	profile = {
-		petBattleHideBars = true, combatopacity = 1, scale = 1,
-		height = 21, iconSize = 0.75, moveFrames = true, adjustCenter = true,
-		strata = "BACKGROUND", barRightClick = "OPTIONS",
-		gap = 30, textOffset = 1, moreBar = "none", moreBarDelay = 4,
-		fontPath = " ", fontSize = 12, labelColor = {r=1, g=0.82, b=0, a=1},
-		background = {
-			textureName = "ChocolateBar Gray",
-			texture = "Interface\\AddOns\\ChocolateBar\\pics\\chocolatebargray",
-			borderTexture = "Tooltip-Border",
-			color = {r = 0.38, g = 0.36, b = 0.4, a = .94,},
-			borderColor = {r = 0, g = 0, b = 0, a = 0,},
-			tileSize = 130,
-			edgeSize = 8,
-			barInset = 3,
-		},
-		moduleOptions = {
-		},
-		barSettings = {
-			['*'] = {
-				barName = "ChocolateBar1", align = "top", enabled = true, index = 10, width = 0,
-			},
-			['ChocolateBar1'] = {
-				barName = "ChocolateBar1", align = "top", enabled = true, index = 1, width = 0,
-			},
-		},
-		objSettings = {
-			['*'] = {
-				barName = "", align = "left", enabled = true, showText = true,  showLabel = true,
-				showIcon = true, index = 500, width = 0,
-			},
-		},
-	},
-	char = {
-		debug = false,
-	}
-}
-
-
-function ChocolateBar:getDefaults()
-	return self:isNewInstall() and newDefaults or oldDefaults
-end
 --------
 -- Ace3 callbacks
 --------
 function ChocolateBar:OnInitialize()
 
 
-	self.db = LibStub("AceDB-3.0"):New("ChocolateBarDB", self:getDefaults(), "Default")
+	self.db = LibStub("AceDB-3.0"):New("ChocolateBarDB", defaults, "Default")
 	self.db.RegisterCallback(self, "OnDatabaseShutdown", "OnDatabaseShutdown")
 
 	self:RegisterChatCommand("chocolatebar", "ChatCommand")
 	db = self.db.profile
 
-	debug("addonVersion=", addonVersion)
+	debug("ChocolateBarDB.addonVersion=", ChocolateBarDB.addonVersion)
 	debug("isNewInstall()=", self:isNewInstall())
 
 	local AceCfgDlg = LibStub("AceConfigDialog-3.0")
@@ -159,6 +116,8 @@ function ChocolateBar:OnInitialize()
 
 	if self[addonName] then self[addonName](self) end
 	end)
+
+	--self:ShowUpdatePanel()
 
 	--fix frame strata for 8.0
 	if not self.db.profile.fixedStrata then
@@ -211,9 +170,9 @@ end
 
 function ChocolateBar:NewModule(name, moduleDefaults, options, optionsKey)
 	local module = self.modules[name] or {}
-	module.default = self:getDefaults()
+	module.default = default
 	module.options = options
-	self:getDefaults().profile.moduleOptions[name] = moduleDefaults
+	defaults.profile.moduleOptions[name] = moduleDefaults
 	self.modules[name] = module
 	return module
 end
@@ -232,6 +191,36 @@ function ChocolateBar:Blizzard_OrderHallUI()
 	end
 end
 
+function ChocolateBar:ShowUpdatePanel()
+		--"ChocolateBar Update"
+		--"This version of ChocolateBar has a new options for:"
+		--
+		--I like the new options,
+		local widgetAPI = LibStub("AceGUI-3.0");
+		local container = widgetAPI:Create("Frame");
+		container:SetTitle("ChocolateBar Update");
+		--container:SetFullWidth(true);
+		--container:SetLayout("Fill");
+
+		--local heading = widgetAPI:Create("Heading");
+		--container:AddChild(heading);
+		--heading:SetText("This version of ChocolateBar has a new options for:");
+
+
+		local input = widgetAPI:Create("EditBox");
+		container:AddChild(input);
+		input:SetLabel("Enter Name");
+		input:SetMaxLetters(25);
+		--input:OnEnterPressed = function(text)
+		 --  print(text);
+		--end
+
+		local input2 = widgetAPI:Create("EditBox");
+		container:AddChild(input2);
+		input2:SetLabel("Enter Name");
+		input2:SetMaxLetters(25);
+end
+
 function ChocolateBar:UpdateJostle()
 	for name, bar in pairs(chocolateBars) do
 		bar:UpdateJostle(db)
@@ -239,8 +228,7 @@ function ChocolateBar:UpdateJostle()
 end
 
 function ChocolateBar:isNewInstall()
-	--return ChocolateBarDB.addonVersion and true or false
-	return false
+	return ChocolateBarDB.addonVersion < GetAddOnMetadata("ChocolateBar", "Version") and true or false
 end
 
 function ChocolateBar:ToggleOrderHallCommandBar()
@@ -336,6 +324,11 @@ function ChocolateBar:LibDataBroker_DataObjectCreated(event, name, obj, noupdate
 	local t = obj.type
 
 	if t == "data source" or t == "launcher" then
+		if db.objSettings[name].isNew then
+			db.objSettings[name].isNew = false
+			if obj.defauldDisabled then db.objSettings[name].enabled = false end
+		end
+
 		if db.objSettings[name].enabled then
 			self:EnableDataObject(name, obj, noupdate)
 		end

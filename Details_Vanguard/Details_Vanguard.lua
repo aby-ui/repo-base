@@ -939,7 +939,7 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 			
 			if (_G._detalhes) then
 			
-				if (DetailsFramework.IsClassicWow()) then
+				if (DetailsFramework.IsTimewalkWoW()) then
 					return
 				end
 				

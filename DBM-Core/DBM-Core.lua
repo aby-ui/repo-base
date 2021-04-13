@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210404202432"),
+	Revision = parseCurseDate("20210410134719"),
 	DisplayVersion = "9.0.26 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2021, 3, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -8661,6 +8661,7 @@ do
 			["RangedDps"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+			["MagicDispeller"] = true,
 			["RemoveEnrage"] = true,
 		},
 		[254] = {	--Markmanship Hunter Hunter
@@ -8669,6 +8670,7 @@ do
 			["RangedDps"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+			["MagicDispeller"] = true,
 			["RemoveEnrage"] = true,
 		},
 		[255] = {	--Survival Hunter (Legion+)
@@ -8677,6 +8679,7 @@ do
 			["MeleeDps"] = true,
 			["Physical"] = true,
 			["HasInterrupt"] = true,
+			["MagicDispeller"] = true,
 			["RemoveEnrage"] = true,
 		},
 		[1448] = {	--Initial Hunter (used in exiles reach tutorial mode). Treated as hybrid. Utility disabled because that'd require checking tutorial progress
@@ -12287,7 +12290,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210404202432" then
+	if not revision or revision == "20210410134719" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

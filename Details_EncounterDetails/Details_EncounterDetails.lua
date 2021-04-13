@@ -2168,7 +2168,7 @@ function EncounterDetails:OnEvent (_, event, ...)
 			
 			if (_G._detalhes and _G._detalhes.InstallOkey) then
 				
-				if (DetailsFramework.IsClassicWow()) then
+				if (DetailsFramework.IsTimewalkWoW()) then
 					return
 				end
 				

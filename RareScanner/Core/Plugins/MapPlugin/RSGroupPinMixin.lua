@@ -77,7 +77,7 @@ function RSGroupPinMixin:ShowOverlay(childPOI)
 	if (overlay) then
 		for _, coordinates in ipairs (overlay) do
 			local x, y = strsplit("-", coordinates)
-			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), self);
+			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), childPOI);
 		end
 		RSGeneralDB.SetOverlayActive(childPOI.entityID)
 	else

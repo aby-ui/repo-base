@@ -34,7 +34,12 @@ function RSOverlayMixin:OnMouseEnter()
 	end
 
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-	GameTooltip:SetText(self.pin.POI.name)
+	
+	if (self.pin.POI) then
+		GameTooltip:SetText(self.pin.POI.name)
+	else
+		GameTooltip:SetText(self.pin.name)
+	end
 	GameTooltip:Show()
 end
 

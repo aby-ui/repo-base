@@ -948,7 +948,7 @@ end
 				
 				if (_G._detalhes) then
 
-					if (DetailsFramework.IsClassicWow()) then
+					if (DetailsFramework.IsTimewalkWoW()) then
 						return
 					end
 				

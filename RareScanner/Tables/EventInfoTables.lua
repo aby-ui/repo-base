@@ -142,4 +142,5 @@ private.EVENT_INFO = {
 	[158718] = { zoneID = 1527, artID = { 1343 }, x = 0.5057405829429626, y = 0.8829352855682373, zoneQuestId = { 57157 }, questID = { 57359 } }; 
 	[158720] = { zoneID = 1527, artID = { 1343 }, x = 0.5520068407058716, y = 0.793234646320343, zoneQuestId = { 57157 }, questID = { 57621 } }; 
 	[170899] = { zoneID = 1533, artID = { 1321 }, x = 0.5362, y = 0.8822,  questID = { 60933 } }; 
+	[356756] = { zoneID = 1533, artID = { 1321 }, x = 0.4163994, y = 0.54530585, questID = { 60314 }, worldmap = true }; --Horn of Courage
 }

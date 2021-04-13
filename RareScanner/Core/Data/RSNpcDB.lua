@@ -340,9 +340,13 @@ end
 ----- Stores NPC loot included with the addon
 ---============================================================================
 
+function RSNpcDB.GetAllInteralNpcLoot()
+	return private.NPC_LOOT
+end
+
 function RSNpcDB.GetInteralNpcLoot(npcID)
 	if (npcID) then
-		return private.NPC_LOOT[npcID]
+		return RSNpcDB.GetAllInteralNpcLoot()[npcID]
 	end
 
 	return nil

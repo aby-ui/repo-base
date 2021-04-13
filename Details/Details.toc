@@ -120,6 +120,7 @@ core\meta.lua
 core\network.lua
 
 core\parser.lua
+#core\parser_timewalk.lua
 
 functions\loaddata.lua
 

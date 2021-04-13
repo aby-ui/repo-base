@@ -1475,7 +1475,7 @@ end
 function _detalhes:RestoreState_CurrentMythicDungeonRun()
 
 	--no need to check for mythic+ if the user is playing on classic wow
-	if (DetailsFramework.IsClassicWow()) then
+	if (DetailsFramework.IsTimewalkWoW()) then
 		return
 	end
 

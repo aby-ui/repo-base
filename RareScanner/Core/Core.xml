@@ -20,6 +20,7 @@
 	<Include file="Data\RSAchievementDB.lua"/>
 	<Include file="Data\RSLootDB.lua"/>
 	<Include file="Data\RSGuideDB.lua"/>
+	<Include file="Data\RSCollectionsDB.lua"/>
 	
 	<!-- POIs -->
 	<Include file="Service\POI\RSNpcPOI.lua"/>
@@ -47,4 +48,7 @@
 	
 	<!-- Providers -->
 	<Include file="Providers\RareScannerMapProvider.lua"/>
+	
+	<!-- Static popups -->
+	<Include file="Libs\RSStaticPopups.lua"/>
 </Ui>

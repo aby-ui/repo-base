@@ -67,122 +67,88 @@ private.TOOLTIP_POSITIONS = {
 }
 
 private.ITEM_QUALITY = {
-	[0] = ITEM_QUALITY0_DESC,
-	[1] = ITEM_QUALITY1_DESC,
-	[2] = ITEM_QUALITY2_DESC,
-	[3] = ITEM_QUALITY3_DESC,
-	[4] = ITEM_QUALITY4_DESC,
-	[5] = ITEM_QUALITY5_DESC,
-	[6] = ITEM_QUALITY6_DESC,
-	[7] = ITEM_QUALITY7_DESC,
+	[Enum.ItemQuality.Poor] = ITEM_QUALITY0_DESC,
+	[Enum.ItemQuality.Common] = ITEM_QUALITY1_DESC,
+	[Enum.ItemQuality.Uncommon] = ITEM_QUALITY2_DESC,
+	[Enum.ItemQuality.Rare] = ITEM_QUALITY3_DESC,
+	[Enum.ItemQuality.Epic] = ITEM_QUALITY4_DESC,
+	[Enum.ItemQuality.Legendary] = ITEM_QUALITY5_DESC,
+	[Enum.ItemQuality.Artifact] = ITEM_QUALITY6_DESC,
+	[Enum.ItemQuality.Heirloom] = ITEM_QUALITY7_DESC,
 }
 
-local WEAPONS_ID = 2
-local ONEH_AXES_ID = 0
-local TWOH_AXES_ID = 1
-local BOW_ID = 2
-local GUNS_ID = 3
-local ONEH_MACE_ID = 4
-local TWOH_MACE_ID = 5
-local POLEARMS_ID = 6
-local ONEH_SWORD_ID = 7
-local TWOH_SWORD_ID = 8
-local WAR_GLAIVES_ID = 9
-local STAVES_ID = 10
-local BEAR_PAWS_ID = 11 --CHECK (druid?)
-local TWOH_EXOTIC_ID = 12 --CHECK (none uses it)
-local FIST_ID = 13
-local MISC_ID = 14
-local DAGGER_ID = 15
-local THROW_WEAPON_ID = 16 --CHECK (none uses it)
 local SPEAR_ID = 17 --CHECK (none uses it)
-local CROSSBOW_ID = 18
-local WANDS_ID = 19
-local FISHPOLE_ID = 20
-
-local ARMOR_ID = 4
-local ARMOR_MISC_ID = 0
-local CLOTH_ID = 1
-local LEATHER_ID = 2
-local MAIL_ID = 3
-local PLATE_ID = 4
-local COSMETIC_ID = 5
-local SHIELD_ID = 6
-local LIBRAM_ID = 7 --CHECK (none uses it)
-local IDOL_ID = 8 --CHECK (none uses it)
-local TOTEM_ID = 9 --CHECK (none uses it)
-local SIGIL_ID = 10 --CHECK (none uses it)
-local ARTIFACT_ID = 11
 
 private.ITEM_CLASSES = {
-	[0] = { 0, 1, 2, 3, 5, 7, 8, 9 }, --consumables
-	[1] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, --bags
-	[WEAPONS_ID] = { ONEH_AXES_ID, TWOH_AXES_ID, BOW_ID, GUNS_ID, ONEH_MACE_ID, TWOH_MACE_ID, POLEARMS_ID, ONEH_SWORD_ID, TWOH_SWORD_ID, WAR_GLAIVES_ID, STAVES_ID, BEAR_PAWS_ID, TWOH_EXOTIC_ID, FIST_ID, MISC_ID, DAGGER_ID, THROW_WEAPON_ID, SPEAR_ID, CROSSBOW_ID, WANDS_ID, FISHPOLE_ID }, --weapons
-	[3] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, --gemes
-	[ARMOR_ID] = { ARMOR_MISC_ID, CLOTH_ID, LEATHER_ID, MAIL_ID, PLATE_ID, COSMETIC_ID, SHIELD_ID, LIBRAM_ID, IDOL_ID, TOTEM_ID, SIGIL_ID, ARTIFACT_ID }, --armor
-	[5] = { 0, 1 }, --consumable
-	[6] = { 2, 3 }, --projectile
-	[7] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16 }, --tradeables
-	[8] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }, --object improvements
-	[9] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, --recipes
+	[LE_ITEM_CLASS_CONSUMABLE] = { 0, 1, 2, 3, 5, 7, 8, 9 }, --consumables
+	[LE_ITEM_CLASS_CONTAINER] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, --bags
+	[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_WARGLAIVE, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_BEARCLAW, LE_ITEM_WEAPON_CATCLAW, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_GENERIC, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_THROWN, SPEAR_ID, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_WAND, LE_ITEM_WEAPON_FISHINGPOLE }, --weapons
+	[LE_ITEM_CLASS_GEM] = { LE_ITEM_GEM_INTELLECT, LE_ITEM_GEM_AGILITY, LE_ITEM_GEM_STRENGTH, LE_ITEM_GEM_STAMINA, LE_ITEM_GEM_SPIRIT, LE_ITEM_GEM_CRITICALSTRIKE, LE_ITEM_GEM_MASTERY, LE_ITEM_GEM_HASTE, LE_ITEM_GEM_VERSATILITY, 9, LE_ITEM_GEM_MULTIPLESTATS, LE_ITEM_GEM_ARTIFACTRELIC }, --gemes
+	[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_LEATHER, LE_ITEM_ARMOR_MAIL, LE_ITEM_ARMOR_PLATE, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_SHIELD, LE_ITEM_ARMOR_LIBRAM, LE_ITEM_ARMOR_IDOL, LE_ITEM_ARMOR_TOTEM, LE_ITEM_ARMOR_SIGIL, LE_ITEM_ARMOR_RELIC }, --armor
+	[LE_ITEM_CLASS_REAGENT] = { 0, 1 }, --consumable
+	[LE_ITEM_CLASS_PROJECTILE] = { 2, 3 }, --projectile
+	[LE_ITEM_CLASS_TRADEGOODS] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16 }, --tradeables
+	[LE_ITEM_CLASS_ITEM_ENHANCEMENT] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }, --object improvements
+	[LE_ITEM_CLASS_RECIPE] = { LE_ITEM_RECIPE_BOOK, LE_ITEM_RECIPE_LEATHERWORKING, LE_ITEM_RECIPE_TAILORING, LE_ITEM_RECIPE_ENGINEERING, LE_ITEM_RECIPE_BLACKSMITHING, LE_ITEM_RECIPE_COOKING, LE_ITEM_RECIPE_ALCHEMY, LE_ITEM_RECIPE_FIRST_AID, LE_ITEM_RECIPE_ENCHANTING, LE_ITEM_RECIPE_FISHING, LE_ITEM_RECIPE_JEWELCRAFTING, LE_ITEM_RECIPE_INSCRIPTION }, --recipes
 	-- [10] = { }, --money (obsolete)
-	-- [11] = { 0 }, --quiver  (obsolete)
-	[12] = { 0 }, --quests
-	[13] = { 0, 1 }, --keys
+	-- [LE_ITEM_CLASS_QUIVER] = { 0 }, --quiver  (obsolete)
+	[LE_ITEM_CLASS_QUESTITEM] = { 0 }, --quests
+	[LE_ITEM_CLASS_KEY] = { 0, 1 }, --keys
 	-- [14] = { }, --permanent (obsolete)
-	[15] = { 0, 1, 2, 3, 4, 5 }, --miscellaneous
-	--[16] = { 0 }, --glyphs
-	[17] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, --battle pets
+	[LE_ITEM_CLASS_MISCELLANEOUS] = { LE_ITEM_MISCELLANEOUS_JUNK, LE_ITEM_MISCELLANEOUS_REAGENT, LE_ITEM_MISCELLANEOUS_COMPANION_PET, LE_ITEM_MISCELLANEOUS_HOLIDAY, LE_ITEM_MISCELLANEOUS_OTHER, LE_ITEM_MISCELLANEOUS_MOUNT }, --miscellaneous
+	--[LE_ITEM_CLASS_GLYPH] = { 0 }, --glyphs
+	[LE_ITEM_CLASS_BATTLEPET] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, --battle pets
+	--[LE_ITEM_CLASS_WOW_TOKEN] = { 0 }, --wow token
 }
 
 private.CLASS_PROFICIENCIES = {
 	[1] = { --Warrior
-		[WEAPONS_ID] = { BOW_ID, POLEARMS_ID, GUNS_ID, FIST_ID, CROSSBOW_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, PLATE_ID, SHIELD_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_PLATE, LE_ITEM_ARMOR_SHIELD, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[2] = { --Paladin
-		[WEAPONS_ID] = { POLEARMS_ID, FISHPOLE_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, PLATE_ID, SHIELD_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_PLATE, LE_ITEM_ARMOR_SHIELD, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[3] = { --Hunter
-		[WEAPONS_ID] = { BOW_ID, POLEARMS_ID, GUNS_ID, FIST_ID, CROSSBOW_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, MAIL_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_MAIL, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[4] = { --Rogue
-		[WEAPONS_ID] = { BOW_ID, GUNS_ID, FIST_ID, CROSSBOW_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, ONEH_AXES_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_BOWS, LE_ITEM_WEAPON_GUNS, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_CROSSBOW, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_LEATHER, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[5] = { --Priest
-		[WEAPONS_ID] = { STAVES_ID, FISHPOLE_ID, DAGGER_ID, ONEH_MACE_ID, MISC_ID, WANDS_ID },
-		[ARMOR_ID] = { CLOTH_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC, LE_ITEM_WEAPON_WAND },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[6] = { --DeathKnight
-		[WEAPONS_ID] = { POLEARMS_ID, FISHPOLE_ID, TWOH_SWORD_ID, ONEH_SWORD_ID, TWOH_AXES_ID, ONEH_AXES_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, PLATE_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_SWORD2H, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_PLATE, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[7] = { --Shaman
-		[WEAPONS_ID] = { FIST_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, TWOH_AXES_ID, ONEH_AXES_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, MAIL_ID, SHIELD_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_AXE2H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_MAIL, LE_ITEM_ARMOR_SHIELD, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[8] = { --Mage
-		[WEAPONS_ID] = { STAVES_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, MISC_ID, WANDS_ID },
-		[ARMOR_ID] = { CLOTH_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_GENERIC, LE_ITEM_WEAPON_WAND },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[9] = { --Warlock
-		[WEAPONS_ID] = { STAVES_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, MISC_ID, WANDS_ID },
-		[ARMOR_ID] = { CLOTH_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_GENERIC, LE_ITEM_WEAPON_WAND },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[10] = { --Monk
-		[WEAPONS_ID] = { POLEARMS_ID, FIST_ID, STAVES_ID, FISHPOLE_ID, ONEH_SWORD_ID, ONEH_AXES_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_LEATHER, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[11] = { --Druid
-		[WEAPONS_ID] = { POLEARMS_ID, FIST_ID, STAVES_ID, FISHPOLE_ID, DAGGER_ID, BEAR_PAWS_ID, TWOH_MACE_ID, ONEH_MACE_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_POLEARM, LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_STAFF, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_BEARCLAW, LE_ITEM_WEAPON_MACE2H, LE_ITEM_WEAPON_MACE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_LEATHER, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 	[12] = { --Demon Hunter
-		[WEAPONS_ID] = { FIST_ID, FISHPOLE_ID, DAGGER_ID, ONEH_SWORD_ID, WAR_GLAIVES_ID, ONEH_AXES_ID, MISC_ID },
-		[ARMOR_ID] = { CLOTH_ID, LEATHER_ID, COSMETIC_ID, ARMOR_MISC_ID, ARTIFACT_ID }
+		[LE_ITEM_CLASS_WEAPON] = { LE_ITEM_WEAPON_UNARMED, LE_ITEM_WEAPON_FISHINGPOLE, LE_ITEM_WEAPON_DAGGER, LE_ITEM_WEAPON_SWORD1H, LE_ITEM_WEAPON_WARGLAIVE, LE_ITEM_WEAPON_AXE1H, LE_ITEM_WEAPON_GENERIC },
+		[LE_ITEM_CLASS_ARMOR] = { LE_ITEM_ARMOR_CLOTH, LE_ITEM_ARMOR_LEATHER, LE_ITEM_ARMOR_COSMETIC, LE_ITEM_ARMOR_GENERIC, LE_ITEM_ARMOR_RELIC }
 	};
 }
 
@@ -969,8 +935,6 @@ local function GetFilterOptions()
 
 	return filter_options
 end
-
-
 
 local custom_npcs_options
 
@@ -1771,6 +1735,140 @@ local function GetZonesFilterOptions()
 	return zones_filter_options
 end
 
+local collection_filters
+
+local function GetCollectionFilters()
+	if not collection_filters then
+		collection_filters = {
+			type = "group",
+			order = 1,
+			name = AL["COLLECTION_FILTERS"],
+			handler = RareScanner,
+			desc = AL["COLLECTION_FILTERS"],
+			args = {
+				description1 = {
+					order = 1,
+					type = "description",
+					name = string.format(AL["COLLECTION_FILTERS_TEXT1"], AL["COLLECTION_FILTERS_APPLY"]),
+				},
+				description2 = {
+					order = 2,
+					type = "description",
+					name = AL["COLLECTION_FILTERS_TEXT2"],
+				},
+				description3 = {
+					order = 3,
+					type = "description",
+					name = string.format(AL["COLLECTION_FILTERS_TEXT3"], AL["FILTER"], AL["CONTAINER_FILTER"]),
+				},
+				separator1 = {
+					order = 4,
+					type = "header",
+					name = "",
+				},
+				filterOnlyMap = {
+					order = 5,
+					type = "toggle",
+					name = AL["FILTER_NPCS_ONLY_MAP"],
+					desc = AL["COLLECTION_FILTERS_ONLY_MAP_DESC"],
+					get = function() return RSConfigDB.IsCollectionsFilteredOnlyOnWorldMap() end,
+					set = function(_, value)
+						RSConfigDB.SetCollectionsFilteredOnlyOnWorldMap(value)
+					end,
+					width = "full",
+				},
+				autoFilterOnCollect = {
+					order = 6,
+					type = "toggle",
+					name = AL["COLLECTIONS_AUTO_FILTER_ON_COLLECT"],
+					desc = AL["COLLECTIONS_AUTO_FILTER_ON_COLLECT_DESC"],
+					get = function() return RSConfigDB.IsAutoFilteringOnCollect() end,
+					set = function(_, value)
+						RSConfigDB.SetAutoFilteringOnCollect(value)
+					end,
+					width = "full",
+				},
+				profileBackup = {
+					order = 7,
+					type = "toggle",
+					name = AL["COLLECTION_FILTERS_PROFILE_BACKUP"],
+					desc = AL["COLLECTION_FILTERS_PROFILE_BACKUP_DESC"],
+					get = function() return RSConfigDB.IsCreateProfileBackup() end,
+					set = function(_, value)
+						RSConfigDB.SetCreateProfileBackup(value)
+					end,
+					width = "full",
+				},
+				separator2 = {
+					order = 8,
+					type = "header",
+					name = AL["COLLECTION_FILTERS_TYPES"],
+				},
+				pets = {
+					order = 9.1,
+					type = "toggle",
+					name = AL["COLLECTION_FILTERS_PETS"],
+					desc = string.format(AL["COLLECTION_FILTERS_GLOBAL_TYPE_DESC"], AL["COLLECTION_FILTERS_PETS"]),
+					get = function() return RSConfigDB.IsSearchingPets() end,
+					set = function(_, value)
+						RSConfigDB.SetSearchingPets(value)
+					end,
+					width = "normal",
+				},
+				mounts = {
+					order = 9.2,
+					type = "toggle",
+					name = AL["COLLECTION_FILTERS_MOUNTS"],
+					desc = string.format(AL["COLLECTION_FILTERS_GLOBAL_TYPE_DESC"], AL["COLLECTION_FILTERS_MOUNTS"]),
+					get = function() return RSConfigDB.IsSearchingMounts() end,
+					set = function(_, value)
+						RSConfigDB.SetSearchingMounts(value)
+					end,
+					width = "normal",
+				},
+				toys = {
+					order = 9.3,
+					type = "toggle",
+					name = AL["COLLECTION_FILTERS_TOYS"],
+					desc = string.format(AL["COLLECTION_FILTERS_GLOBAL_TYPE_DESC"], AL["COLLECTION_FILTERS_TOYS"]),
+					get = function() return RSConfigDB.IsSearchingToys() end,
+					set = function(_, value)
+						RSConfigDB.SetSearchingToys(value)
+					end,
+					width = "normal",
+				},
+				appearances = {
+					order = 10,
+					type = "toggle",
+					name = AL["COLLECTION_FILTERS_APPEARENCE"],
+					desc = AL["COLLECTION_FILTERS_APPEARENCE_DESC"],
+					get = function() return RSConfigDB.IsSearchingAppearances() end,
+					set = function(_, value)
+						RSConfigDB.SetSearchingAppearances(value)
+					end,
+					width = "full",
+				},
+				separator3 = {
+					order = 11,
+					type = "header",
+					name = "",
+				},
+				test = {
+					order = 12,
+					name = AL["COLLECTION_FILTERS_APPLY"],
+					desc = AL["COLLECTION_FILTERS_APPLY_DESC"],
+					type = "execute",
+					func = function() StaticPopup_Show(RSConstants.START_COLLECTIONS_SCAN) end,
+					width = "normal",
+					disabled = function() return (not RSConfigDB.IsSearchingPets() and not RSConfigDB.IsSearchingMounts() and not RSConfigDB.IsSearchingToys() and not RSConfigDB.IsSearchingAppearances()) end,
+				},
+			},
+		}
+	end
+
+	return collection_filters
+end
+
 local loot_filter_options
 
 local function GetLootFilterOptions()
@@ -1778,7 +1876,7 @@ local function GetLootFilterOptions()
 	for k, v in pairs(private.ITEM_CLASSES) do
 		MAIN_CATEGORIES[k] = GetItemClassInfo(k)
 	end
-	local filter_loot_category
+	local mainCategoryID
 	local toggleAll = true
 
 	local loadSubCategory = function(mainClassID)
@@ -1903,17 +2001,17 @@ local function GetLootFilterOptions()
 							values = MAIN_CATEGORIES,
 							get = function(_, key)
 								-- initialize
-								if (not filter_loot_category) then
-									filter_loot_category = DEFAULT_MAIN_CATEGORY
+								if (not mainCategoryID) then
+									mainCategoryID = DEFAULT_MAIN_CATEGORY
 
 									-- load subcategory combo
-									loadSubCategory(filter_loot_category)
+									loadSubCategory(mainCategoryID)
 								end
 
-								return filter_loot_category
+								return mainCategoryID
 							end,
 							set = function(_, key, value)
-								filter_loot_category = key
+								mainCategoryID = key
 
 								-- load subcategory combo
 								loadSubCategory(key)
@@ -1939,7 +2037,7 @@ local function GetLootFilterOptions()
 								end
 
 								for _, v in pairs(loot_filter_options.args.category_filters.args.lootFilters.values) do
-									private.db.loot.filteredLootCategories[filter_loot_category][v] = toggleAll
+									RSConfigDB.SetLootFilterByCategory(mainCategoryID, v, toggleAll)
 								end
 							end,
 							width = "full",
@@ -1951,10 +2049,10 @@ local function GetLootFilterOptions()
 							name = AL["LOOT_FILTER_SUBCATEGORY_LIST"],
 							desc = AL["LOOT_FILTER_SUBCATEGORY_DESC"],
 							values = {},
-							get = function(_, key) return private.db.loot.filteredLootCategories[filter_loot_category][key] end,
+							get = function(_, key) return RSConfigDB.GetLootFilterByCategory(mainCategoryID, key) end,
 							set = function(_, key, value)
-								RSLogger:PrintDebugMessage("DEBUG: Cambiando el valor de ClassID "..filter_loot_category..", SubClassID "..key)
-								private.db.loot.filteredLootCategories[filter_loot_category][key] = value;
+								RSLogger:PrintDebugMessage(string.format("Cambiando el valor de ClassID [%s], SubClassID [%s]", mainCategoryID, key))
+								RSConfigDB.SetLootFilterByCategory(mainCategoryID, key, value);
 							end,
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 						}
@@ -2614,6 +2712,7 @@ function RareScanner:SetupOptions()
 	RSAC:RegisterOptionsTable("RareScanner NPC Filter", GetFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Container Filter", GetContainerFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Zone Filter", GetZonesFilterOptions)
+	RSAC:RegisterOptionsTable("RareScanner Collection Filters", GetCollectionFilters)
 	RSAC:RegisterOptionsTable("RareScanner Loot Options", GetLootFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Map", GetMapOptions)
 	RSAC:RegisterOptionsTable("RareScanner Profiles", RareScanner:GetOptionsTable())
@@ -2626,6 +2725,7 @@ function RareScanner:SetupOptions()
 	RSACD:AddToBlizOptions("RareScanner NPC Filter", AL["FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Container Filter", AL["CONTAINER_FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Zone Filter", AL["ZONES_FILTER"], "RareScanner")
+	RSACD:AddToBlizOptions("RareScanner Collection Filters", AL["COLLECTION_FILTERS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Loot Options", AL["LOOT_OPTIONS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Map", AL["MAP_OPTIONS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Profiles", AL["PROFILES"], "RareScanner")

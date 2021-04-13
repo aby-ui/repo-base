@@ -65,7 +65,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
-	POI.isDiscovered = POI.isDead or alreadyFoundInfo
+	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
 	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
 	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(npcID, mapID)
 	if (npcInfo) then

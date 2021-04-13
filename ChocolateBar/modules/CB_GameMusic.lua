@@ -1,4 +1,4 @@
-local LibStub = LibStub
+﻿local LibStub = LibStub
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local debug = ChocolateBar and ChocolateBar.debug or function() end
 
@@ -11,7 +11,8 @@ local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
 	label = addonName,
 	text  = "Volume: ---",
 	OnClick = OnClick,
-	OnMouseWheel = OnMouseWheel
+	OnMouseWheel = OnMouseWheel,
+	ChocolateBar = true
 })
 
 local function mute(self)
@@ -42,7 +43,7 @@ end
 local function showList(self)
 	local LibQTip = LibStub("LibQTip-1.0")
 	if tooltip then	LibQTip:Release(tooltip) end
-	
+
 	dataobj.frame = self
 
 	tooltip = LibQTip:Acquire(addonName.."Tooltip", 2, "LEFT", "LEFT")
@@ -61,4 +62,3 @@ local function showList(self)
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()
 end
-

@@ -567,7 +567,7 @@ local movement_onupdate = function (self, elapsed)
 			show_instance_ids()
 			instance_ids_shown = nil
 			
-			if (need_show_group_guide and not DetailsFramework.IsClassicWow()) then
+			if (need_show_group_guide and not DetailsFramework.IsTimewalkWoW()) then
 				_detalhes.MicroButtonAlert.Text:SetText (Loc ["STRING_WINDOW1ATACH_DESC"])
 				_detalhes.MicroButtonAlert:SetPoint ("bottom", need_show_group_guide.baseframe, "top", 0, 30)
 				_detalhes.MicroButtonAlert:SetHeight (320)
@@ -703,7 +703,7 @@ local movement_onupdate = function (self, elapsed)
 							instancia_alvo:SnapAlert()
 							_detalhes.snap_alert.playing = true
 							
-							if (not DetailsFramework.IsClassicWow()) then
+							if (not DetailsFramework.IsTimewalkWoW()) then
 								_detalhes.MicroButtonAlert.Text:SetText (string.format (Loc ["STRING_ATACH_DESC"], self.instance.meu_id, instancia_alvo.meu_id))
 								_detalhes.MicroButtonAlert:SetPoint ("bottom", instancia_alvo.baseframe.cabecalho.modo_selecao.widget, "top", 0, 18)
 								_detalhes.MicroButtonAlert:SetHeight (200)
@@ -975,7 +975,7 @@ local function move_janela (baseframe, iniciando, instancia, just_updating)
 		_detalhes.snap_alert.animIn:Stop()
 		_detalhes.snap_alert.animOut:Play()
 		
-		if (not DetailsFramework.IsClassicWow()) then
+		if (not DetailsFramework.IsTimewalkWoW()) then
 			_detalhes.MicroButtonAlert:Hide()
 		end
 

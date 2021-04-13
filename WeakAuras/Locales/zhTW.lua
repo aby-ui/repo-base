@@ -742,6 +742,10 @@ L["Range"] = "距離範圍"
 L["Range Check"] = "距離範圍檢查"
 L["Rare"] = "稀有"
 L["Rare Elite"] = "稀有精英"
+--[[Translation missing --]]
+L["Rated Arena"] = "Rated Arena"
+--[[Translation missing --]]
+L["Rated Battleground"] = "Rated Battleground"
 L["Raw Threat Percent"] = "原始仇恨百分比"
 L["Razorgore the Untamed"] = "狂野的拉佐格爾"
 L["Ready Check"] = "團隊確認"

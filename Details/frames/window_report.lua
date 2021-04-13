@@ -354,17 +354,19 @@ local function cria_drop_down (este_gump)
 				reportChannelsTable [#reportChannelsTable + 1] = {iconsize = iconsize, value = "CHANNEL|"..channels [i+1], label = channels [i]..". "..channels [i+1], onclick = on_click, icon = [[Interface\FriendsFrame\UI-Toast-ToastIcons]], texcoord = {0.3046875, 0.4453125, 0.109375, 0.390625}, iconcolor = {149/255, 112/255, 112/255}}
 			end
 			
-			local _, numBNetOnline = BNGetNumFriends()
-			for i = 1, numBNetOnline do
-				local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
-				local gameAccountInfo = accountInfo and accountInfo.gameAccountInfo
+			if (not DetailsFramework.IsTimewalkWoW()) then
+				local _, numBNetOnline = BNGetNumFriends()
+				for i = 1, numBNetOnline do
+					local accountInfo = C_BattleNet.GetFriendAccountInfo(i)
+					local gameAccountInfo = accountInfo and accountInfo.gameAccountInfo
 
-				if (gameAccountInfo) then
-					local isOnline = gameAccountInfo.isOnline
-					if (isOnline) then
-						local bTag = accountInfo.battleTag
-						local bTagNoNumber = bTag:gsub("#.*", "")
-						reportChannelsTable[#reportChannelsTable + 1] = {iconsize = iconsize, value = "REALID|" .. accountInfo.bnetAccountID, label = bTagNoNumber, onclick = on_click, icon = [[Interface\FriendsFrame\Battlenet-Battleneticon]], texcoord = {0.125, 0.875, 0.125, 0.875}, iconcolor = {1, 1, 1}}
+					if (gameAccountInfo) then
+						local isOnline = gameAccountInfo.isOnline
+						if (isOnline) then
+							local bTag = accountInfo.battleTag
+							local bTagNoNumber = bTag:gsub("#.*", "")
+							reportChannelsTable[#reportChannelsTable + 1] = {iconsize = iconsize, value = "REALID|" .. accountInfo.bnetAccountID, label = bTagNoNumber, onclick = on_click, icon = [[Interface\FriendsFrame\Battlenet-Battleneticon]], texcoord = {0.125, 0.875, 0.125, 0.875}, iconcolor = {1, 1, 1}}
+						end
 					end
 				end
 			end

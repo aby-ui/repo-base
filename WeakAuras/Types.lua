@@ -1667,6 +1667,10 @@ Private.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_30px.tga"] = "Ring 30px",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_40px.tga"] = "Ring 40px",
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient.tga"] = "Square Alpha Gradient",
+
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_1px.tga"] = "Square Border 1px",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_5px.tga"] = "Square Border 5px",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_10px.tga"] = "Square Border 10px",
   },
   ["Sparks"] = {
     ["130877"] = "Blizzard Spark",
@@ -2079,8 +2083,16 @@ Private.instance_types = {
   fortyman = L["40 Man Raid"],
   flexible = L["Flex Raid"],
   pvp = L["Battleground"],
-  arena = L["Arena"]
+  arena = L["Arena"],
+  ratedpvp = L["Rated Battleground"],
+  ratedarena = L["Rated Arena"]
 }
+
+if WeakAuras.IsClassic() then
+  Private.instance_types["ratedpvp"] = nil
+  Private.instance_types["arena"] = nil
+  Private.instance_types["ratedarena"] = nil
+end
 
 Private.instance_difficulty_types = {
 

@@ -88,7 +88,7 @@
 			return
 		end
 		
-		if (DetailsFramework.IsClassicWow()) then
+		if (DetailsFramework.IsTimewalkWoW()) then
 			--average item level doesn't exists
 			--talent information is very different
 			return

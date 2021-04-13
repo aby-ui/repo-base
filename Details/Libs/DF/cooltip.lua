@@ -22,6 +22,8 @@ local _GetScreenHeight = GetScreenHeight
 local _UIParent = UIParent
 local _CreateFrame = CreateFrame
 
+local PixelUtil = PixelUtil or DFPixelUtil
+
 local version = 2
 
 function DF:CreateCoolTip()

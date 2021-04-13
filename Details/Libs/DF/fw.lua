@@ -1,6 +1,6 @@
 
 
-local dversion = 238
+local dversion = 241
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -35,10 +35,11 @@ DF.AuthorInfo = {
 	Discord = "https://discord.gg/AGSzAZX",
 }
 
+local PixelUtil = PixelUtil or DFPixelUtil
 if (not PixelUtil) then
-	--check if is in classic wow, if it is, build a replacement for PixelUtil
+	--check if is in classic or TBC wow, if it is, build a replacement for PixelUtil
 	local gameVersion = GetBuildInfo()
-	if (gameVersion:match("%d") == "1") then
+	if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2") then
 		PixelUtil = {
 			SetWidth = function (self, width) self:SetWidth (width) end,
 			SetHeight = function (self, height) self:SetHeight (height) end,
@@ -48,9 +49,21 @@ if (not PixelUtil) then
 	end
 end
 
+function DF.IsTimewalkWoW()
+	return DF.IsClassicWow() or DF.IsTBCWow()
+end
+
 function DF.IsClassicWow()
 	local gameVersion = GetBuildInfo()
 	if (gameVersion:match ("%d") == "1") then
+		return true
+	end
+	return false
+end
+
+function DF.IsTBCWow()
+	local gameVersion = GetBuildInfo()
+	if (gameVersion:match ("%d") == "2") then
 		return true
 	end
 	return false
