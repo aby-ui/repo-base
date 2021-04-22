@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2020-03-19T23:14:08Z
+    This file was last updated on 2021-02-21T13:26:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1466,13 +1466,13 @@ do
                     PrioChanged = true;
                 end
 
-                SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
 
                 -- Test if the spell we are going to use is in range
                 -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
                 -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
                 -- So we test before calling this api that we can still cure this debuff type
                 if Status.CuringSpells[DebuffType] then
+                    SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
                     RangeStatus = SpellID > 0 and IsSpellInRange(Status.CuringSpells[DebuffType], Unit) or D:isItemUsable(-1 * SpellID) and IsItemInRange(-1 * SpellID, Unit);
                 else
                     RangeStatus = false;
@@ -1865,6 +1865,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.8";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.8.1";
 
 -- Heresy

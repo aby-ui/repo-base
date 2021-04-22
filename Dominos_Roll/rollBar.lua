@@ -74,14 +74,20 @@ function AlertsBarModule:OnInitialize()
 		AlertFrame.ignoreFramePositionManager = true
 
 		hooksecurefunc(AlertFrame, "UpdateAnchors", function()
-			if self.rollBar then
-				self.rollBar:RepositionChildFrame()
+			if self.alertsBar then
+				self.alertsBar:RepositionChildFrame()
 			end
 		end)
 	end
 
 	if GroupLootContainer then
 		GroupLootContainer.ignoreFramePositionManager = true
+
+		hooksecurefunc(AlertFrame, "UpdateAnchors", function()
+			if self.rollBar then
+				self.rollBar:RepositionChildFrame()
+			end
+		end)
 	end
 end
 

@@ -60,7 +60,7 @@ function Launcher:CreateDataBrokerObject()
                     GameTooltip_AddInstructionLine(tooltip, L.ShowOptionsTip)
                 end
 
-                if Addon:IsBuild('Classic') then
+                if Addon:IsBuild('bc', 'classic') then
                     GameTooltip_AddBlankLinesToTooltip(tooltip, 1)
 
                     local _, _, latencyHome, latencyWorld = GetNetStats()

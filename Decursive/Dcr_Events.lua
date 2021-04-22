@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-08-28T10:16:57Z
+    This file was last updated on 2020-12-09T00:26:42Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -754,7 +754,7 @@ do -- Combat log event handling {{{1
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -774,7 +774,7 @@ do -- Combat log event handling {{{1
             if event == "SPELL_CAST_FAILED" and not self.Status.ClickedMF.SPELL_CAST_SUCCESS then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName), auraTYPE_failTYPE);
 
                 if (auraTYPE_failTYPE == SPELL_FAILED_LINE_OF_SIGHT or auraTYPE_failTYPE == SPELL_FAILED_BAD_TARGETS) then
 
@@ -795,7 +795,7 @@ do -- Combat log event handling {{{1
             elseif event == "SPELL_MISSED" or event == "SPELL_DISPEL_FAILED" then
                 destName = self:PetUnitName( self.Status.ClickedMF.CurrUnit, true);
 
-                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "[WoW8.0-unknown]", self:MakePlayerName(destName), auraTYPE_failTYPE);
+                self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName), auraTYPE_failTYPE);
                 self:SafePlaySoundFile(DC.FailedSound);
                 self.Status.ClickedMF = false;
                 --[=[@alpha@
@@ -1182,6 +1182,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.8";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.8.1";
 
 -- The Great Below

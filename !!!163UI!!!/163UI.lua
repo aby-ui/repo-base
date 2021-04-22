@@ -1547,9 +1547,7 @@ local function processDefaultEnable()
                     if not enabled and info.originEnabled then
                         DisableAddOn(name)
                     elseif enabled and not info.originEnabled then
-                        if not ForceDisables[name] then
-                            EnableAddOn(name)
-                        end
+                        EnableAddOn(name) --forceDisables will be handled in processSpecialDeps
                     end
                 end
             else
@@ -1573,7 +1571,7 @@ local function processSpecialDeps()
     local SpecialDependencies = {
         ["PlexusStatusRaidDebuff"] = { "Grid", "Plexus" }
     }
-    local ForceDisables = {}
+    local forceDisables = {}
     for addon, deps in pairs(SpecialDependencies) do
         if select(5, GetAddOnInfo(addon)) ~= "MISSING" then
             local mustDisable = true
@@ -1584,7 +1582,8 @@ local function processSpecialDeps()
                 end
             end
             if mustDisable then
-                ForceDisables[addon:lower()] = true
+                --print("must disable", addon, GetAddOnEnableState(UnitName("player"), addon) ~= 0)
+                forceDisables[addon:lower()] = true
                 if GetAddOnEnableState(UnitName("player"), addon) ~= 0 then
                     DisableAddOn(addon)
                 end

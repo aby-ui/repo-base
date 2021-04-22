@@ -1,7 +1,7 @@
 ﻿--[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhCN.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhCN");
 
 if not L then
-    T._LoadedFiles["zhCN.lua"] = "2.7.8";
+    T._LoadedFiles["zhCN.lua"] = "2.7.8.1";
     return;
 end;
 
@@ -195,6 +195,10 @@ L["NEW_VERSION_ALERT"] = [=[检测到 Decursive 新版本：|cFFEE7722%q|r 发�
 --------]=]
 L["NORMAL"] = "一般"
 L["NOSPELL"] = "没有相关技能"
+L["NOTICE_FRAME_TEMPLATE"] = [=[|cFFFF0000Decursive - 通知|r
+
+%s
+]=]
 L["OPT_ABOLISHCHECK_DESC"] = "设置是否显示和净化带有“驱毒术”增益效果的玩家"
 L["OPT_ABOUT"] = "关于"
 L["OPT_ADD_A_CUSTOM_SPELL"] = "添加一个自定义法术/物品"
@@ -499,4 +503,4 @@ L["UNSTABLERELEASE"] = "不稳定版本"
 
 
 
-T._LoadedFiles["zhCN.lua"] = "2.7.8";
+T._LoadedFiles["zhCN.lua"] = "2.7.8.1";

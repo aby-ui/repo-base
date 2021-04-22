@@ -207,36 +207,17 @@ function Addon:GetDatabaseDefaults()
             showTooltipsCombat = true,
             useOverrideUI = not self:IsBuild('classic'),
 
-            minimap = {
-				minimapPos = 10,
-                hide = false
-            },
+            minimap = {minimapPos = 10, hide = false},
 
-            ab = {
-                count = 10,
-                showgrid = true,
-                rightClickUnit = 'player'
-            },
+            ab = {count = 10, showgrid = true, rightClickUnit = 'player'},
 
-            frames = {
-                bags = {
-                    point = 'BOTTOMRIGHT',
-                    oneBag = false,
-                    keyRing = true,
-                    spacing = 2
-                }
-            },
+            frames = {bags = {point = 'BOTTOMRIGHT', oneBag = false, keyRing = true, spacing = 2}},
 
-            alignmentGrid = {
-                enabled = true,
-                size = 32
-            },
+            alignmentGrid = {enabled = true, size = 32},
 
             -- what modules are enabled
             -- module[id] = enabled
-            modules = {
-                ['**'] = true
-            }
+            modules = {['**'] = true}
         }
     }
 end
@@ -765,9 +746,9 @@ function Addon:GetAlignmentGridSize()
 end
 
 function Addon:GetAlignmentGridScale()
-	--due to changes in Dominos_Config\overlay\ui.lua to
-	--function "DrawGrid", grid now displays with perfectly square subdivisions.
-	local gridScale = GetScreenHeight() / (Addon:GetAlignmentGridSize() * 2)
+    -- due to changes in Dominos_Config\overlay\ui.lua to
+    -- function "DrawGrid", grid now displays with perfectly square subdivisions.
+    local gridScale = GetScreenHeight() / (Addon:GetAlignmentGridSize() * 2)
     return gridScale, gridScale
 end
 
@@ -786,9 +767,9 @@ function Addon:GetWowBuild()
 
     if project == WOW_PROJECT_CLASSIC then
         return 'classic'
-    end
-
-    if project == WOW_PROJECT_MAINLINE then
+    elseif project == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+        return 'bc'
+    elseif project == WOW_PROJECT_MAINLINE then
         return 'retail'
     end
 

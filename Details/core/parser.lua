@@ -307,6 +307,7 @@
 		local is_using_spellId_override = false
 
 	--> is this a timewalking exp?
+		local is_classic_exp = DetailsFramework.IsClassicWow()
 		local is_timewalk_exp = DetailsFramework.IsTimewalkWoW()
 	
 	--> recording data options flags
@@ -371,7 +372,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 	function parser:swing (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
-		return parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, 1, "Corpo-a-Corpo", 00000001, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand) --> localize-me
+		return parser:spell_dmg (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, 1, _G["MELEE"], 00000001, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand) --> localize-me
 																		--spellid, spellname, spelltype
 	end
 
@@ -495,7 +496,7 @@
 			return
 		end
 
-		if (is_timewalk_exp) then
+		if (is_classic_exp) then
 			spellid = spellname
 
 		else --retail
@@ -1741,8 +1742,8 @@
 			--17 parameters on tbc beta on april 1st, shieldname isn't boolean but the parameters need to be arranged
 			--owner_serial, owner_name, owner_flags, owner_flags2, shieldid, shieldname, shieldtype, amount = spellid, spellname, spellschool, owner_serial, owner_name, owner_flags, owner_flags2, shieldid
 
-			spellid = spellname
-			shieldid = shieldname
+			--spellid = spellname --not necessary anymore on tbc beta
+			--shieldid = shieldname
 
 			parser:heal (token, time, owner_serial, owner_name, owner_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, shieldid, shieldname, shieldtype, amount, 0, 0, nil, true)
 			return
@@ -1817,7 +1818,7 @@
 			return
 		end
 		
-		if (is_timewalk_exp) then
+		if (is_classic_exp) then
 			spellid = spellname
 		end
 

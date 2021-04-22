@@ -1,7 +1,8 @@
-﻿-- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
+-- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
 local LibStub = LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local acetimer = LibStub("AceTimer-3.0")
+local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local ReportPlayedTimeToChat = true
 local dataobj,db
@@ -55,6 +56,10 @@ local function getPlayerIdentifier()
 		server = GetNormalizedRealmName()
 	end
 	return string.format("%s-%s", name, server)
+end
+
+local function GetMaxLevelForPlayerExpansion()
+	return ChocolateBar and ChocolateBar.isClassicWoW and 60 or _G.GetMaxLevelForPlayerExpansion()
 end
 
 local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)

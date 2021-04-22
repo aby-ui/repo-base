@@ -3,7 +3,7 @@
     <!--
     This file is part of Decursive.
 
-    Decursive (v 2.7.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.1) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -57,21 +57,23 @@
         end
     </Script>
 
+    <Frame name="DecursiveBackDropTemplate"  mixin="DecursiveTemplateMixin" virtual="true">
+        <Scripts>
+            <OnLoad method="OnBackdropLoaded"/>
+            <OnSizeChanged method="OnBackdropSizeChanged"/>
+        </Scripts>
+    </Frame>
+
     <!-- =================The DEBUGGING FRAME======================= {{{ -->
     <!-- Inspired from BugSack error report frame-->
 
     <Frame name="DecursiveDebuggingFrame" parent="UIParent" inherits="DialogBoxFrame" hidden="true">
-        <Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-            <BackgroundInsets>
-                <AbsInset left="5" right="5" top="5" bottom="5"/>
-            </BackgroundInsets>
-            <TileSize>
-                <AbsValue val="16"/>
-            </TileSize>
-            <EdgeSize>
-                <AbsValue val="16"/>
-            </EdgeSize>
-        </Backdrop>
+
+        <Scripts>
+            <OnLoad>
+                self:SetBackdrop(DecursiveRootTable._C.UI_BACKDROP)
+            </OnLoad>
+        </Scripts>
         <Size>
             <AbsDimension x="500" y="400"/>
         </Size>
@@ -141,6 +143,6 @@
     <Script>
         local T = DecursiveRootTable or {};
 
-        T._LoadedFiles["Dcr_DIAG.xml"] = "2.7.8";
+        T._LoadedFiles["Dcr_DIAG.xml"] = "2.7.8.1";
     </Script>
 </Ui>

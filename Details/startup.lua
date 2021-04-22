@@ -533,7 +533,7 @@ function Details:StartMeUp() --I'll never stop!
 	end
 
 	if (DetailsFramework.IsTimewalkWoW()) then
-		Details:Msg("TBC Beta Version: 0009")
+		Details:Msg("TBC Beta Version: 0011")
 	end
 
 	if (DetailsFramework.IsTBCWow()) then

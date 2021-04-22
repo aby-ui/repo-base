@@ -43,7 +43,7 @@ function BagBar:SetShowKeyRing(enable)
 end
 
 function BagBar:ShowKeyRing()
-    if Addon:IsBuild('classic') then
+    if Addon:IsBuild('bc', 'classic') then
         return self.sets.keyRing
     end
 end
@@ -103,7 +103,7 @@ function BagBar:OnCreateMenu(menu)
         end
     }
 
-    if Addon:IsBuild('Classic') then
+    if Addon:IsBuild('bc', 'classic') then
         layoutPanel:NewCheckButton {
             name = L.BagBarShowKeyRing,
             get = function()
@@ -134,7 +134,7 @@ function BagBarModule:OnInitialize()
         self:RegisterButton(('CharacterBag%dSlot'):format(slot))
     end
 
-    if Addon:IsBuild('Classic') then
+    if Addon:IsBuild('bc', 'classic') then
         -- force hide the old keyring button
         KeyRingButton:Hide()
 
@@ -240,7 +240,7 @@ function BagBarModule:RegisterButton(name)
 
     button:Hide()
 
-    if Addon:IsBuild('Retail') then
+    if Addon:IsBuild('retail') then
         resize(button, 36)
         resize(button.IconBorder, 37)
         resize(button.IconOverlay, 37)

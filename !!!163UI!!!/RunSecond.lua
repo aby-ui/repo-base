@@ -514,3 +514,25 @@ CoreOnEvent("PLAYER_ENTERING_WORLD", function()
     end
     return true
 end)
+
+--[[------------------------------------------------------------
+9.0 拍卖钓鱼价
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_AuctionHouseUI", function()
+    local sellFrame = AuctionHouseFrame.CommoditiesSellFrame
+    hooksecurefunc(sellFrame, "UpdatePriceSelection", function(self)
+        local itemLocation = self:GetItem();
+        if itemLocation then
+            local firstSearchResult = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 1);
+            if firstSearchResult and self:GetUnitPrice() == firstSearchResult.unitPrice then
+                if firstSearchResult.quantity <= 3 then
+                    local sr2 = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 2);
+                    if sr2 and sr2.unitPrice >  firstSearchResult.unitPrice * 1.1 then
+                        self:GetCommoditiesSellList():SetSelectedEntry(sr2);
+                        U1Message(format("%s %s(卖家:|cffff0000%s|r)疑似钓鱼价，已为您避开", C_Item.GetItemLink(itemLocation), GetMoneyString(firstSearchResult.unitPrice), firstSearchResult.owners[1]))
+                    end
+                end
+            end
+        end
+    end)
+end)

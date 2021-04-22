@@ -120,7 +120,10 @@ local VIGNETTES = {
     [4577] = SILVER_STRONGBOX
 }
 
+local vignetteHandled = false
+
 hooksecurefunc(GameTooltip, 'Show', function(self)
+    if vignetteHandled then return end
     local owner = self:GetOwner()
     if owner and owner.vignetteID then
         local rewards = VIGNETTES[owner.vignetteID]
@@ -131,9 +134,16 @@ hooksecurefunc(GameTooltip, 'Show', function(self)
                     reward:Render(self)
                 end
             end
-        end
+            vignetteHandled = true
+            self:Show()
+       end
     end
 end)
+
+hooksecurefunc(GameTooltip, 'ClearLines', function(self)
+    vignetteHandled = false
+end)
+
 
 -------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------
@@ -189,6 +199,7 @@ ns.groups.GRAPPLES = Group('grapples', 'peg_bk', {defaults=ns.GROUP_HIDDEN})
 ns.groups.HYMNS = Group('hymns', 'scroll', {defaults=ns.GROUP_HIDDEN})
 ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
 ns.groups.MAW_LORE = Group('maw_lore', 'chest_gy')
+ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_b')
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})

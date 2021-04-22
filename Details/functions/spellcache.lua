@@ -15,14 +15,14 @@ do
 	local _unpack	=	unpack
 
 	--> is this a timewalking exp?
-	local is_timewalk_exp = DetailsFramework.IsTimewalkWoW()
+	local is_classic_exp = DetailsFramework.IsClassicWow()
 
 	--> default container
 	_detalhes.spellcache =	{}
 	local unknowSpell = {Loc ["STRING_UNKNOWSPELL"], _, "Interface\\Icons\\Ability_Druid_Eclipse"} --> localize-me
 	
 	local AllSpellNames
-	if (is_timewalk_exp) then
+	if (is_classic_exp) then
 		AllSpellNames = {}
 		local GetSpellInfo = GetSpellInfo
 		for i = 1, 60000 do
@@ -33,7 +33,7 @@ do
 		end
 	end
 
-	local GetSpellInfoTimewalk = function(spell)
+	local GetSpellInfoClassic = function(spell)
 		local spellName, _, spellIcon
 
 		if (spell == 0) then
@@ -71,8 +71,8 @@ do
 					--> should save only icon and name, other values are not used
 					if (valor) then --> check if spell is valid before
 						local cache
-						if (is_timewalk_exp) then
-							cache = {GetSpellInfoTimewalk(valor)}
+						if (is_classic_exp) then
+							cache = {GetSpellInfoClassic(valor)}
 						else
 							cache = {_GetSpellInfo (valor)}
 						end
@@ -121,7 +121,7 @@ do
 
 	elseif (DetailsFramework.IsTBCWow()) then
 		default_user_spells = {
-			[1] = {name = Loc ["STRING_MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
+			[1] = {name = _G["MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
 			[2] = {name = Loc ["STRING_AUTOSHOT"], icon = [[Interface\ICONS\INV_Weapon_Bow_07]]},
 			[3] = {name = Loc ["STRING_ENVIRONMENTAL_FALLING"], icon = [[Interface\ICONS\Spell_Magic_FeatherFall]]},
 			[4] = {name = Loc ["STRING_ENVIRONMENTAL_DROWNING"], icon = [[Interface\ICONS\Ability_Suffocate]]},

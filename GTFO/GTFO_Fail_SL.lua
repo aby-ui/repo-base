@@ -229,6 +229,16 @@ GTFO.SpellID["342494"] = {
   sound = 3;
 };
 
+GTFO.SpellID["353404"] = {
+  --desc = "Residual Blast";
+  sound = 3;
+};
+
+GTFO.SpellID["340770"] = {
+  --desc = "Glacial Ray (Glimmerdust, As Jaina)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -296,7 +306,6 @@ GTFO.SpellID["336945"] = {
   --desc = "Hurl Boulders (Unbreakable Urtz)";
   sound = 3;
 };
-
 
 --- **************
 --- * Plaguefall *
@@ -934,6 +943,12 @@ GTFO.SpellID["345425"] = {
   sound = 3;
 };
 
+GTFO.SpellID["343024"] = {
+  --desc = "Horrified (Shriekwing)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 GTFO.SpellID["341441"] = {
   --desc = "Ground Smash (Hulking Gargon)";
   sound = 3;
@@ -973,6 +988,11 @@ GTFO.SpellID["341404"] = {
 
 GTFO.SpellID["329518"] = {
   --desc = "Blazing Surge (Shade of Kael'thas)";
+  sound = 3;
+};
+
+GTFO.SpellID["345775"] = {
+  --desc = "Scorching Entrance (Shade of Kael'thas)";
   sound = 3;
 };
 
@@ -1052,6 +1072,11 @@ GTFO.SpellID["327464"] = {
 
 GTFO.SpellID["336162"] = {
   --desc = "Crescendo (Crimson Cabalist)";
+  sound = 3;
+};
+
+GTFO.SpellID["330137"] = {
+  --desc = "Massacre (Sire Denathrius)";
   sound = 3;
 };
 

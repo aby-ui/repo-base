@@ -97,19 +97,23 @@ do
         addState('class', 'prowl', '[bonusbar:1,stealth]', GetSpellInfo(5215))
         addState('class', 'cat', '[bonusbar:1]', GetSpellInfo(768))
 
-        if Addon:IsBuild('classic') then
+        if Addon:IsBuild('bc', 'classic') then
             addState('class', 'moonkin', newFormConditionLookup(24858), GetSpellInfo(24858))
 
-            addState('class', 'travel', newFormConditionLookup(783), GetSpellInfo(783))
+            if Addon:IsBuild('bc') then
+                addState('class', 'tree', newFormConditionLookup(33891), GetSpellInfo(33891))
+            end
 
+            addState('class', 'travel', newFormConditionLookup(783), GetSpellInfo(783))
             addState('class', 'aquatic', newFormConditionLookup(1066), GetSpellInfo(1066))
+
+            if Addon:IsBuild('bc') then
+                addState('class', 'flight', newFormConditionLookup(33943), GetSpellInfo(33943))
+            end
         else
             addState('class', 'moonkin', '[bonusbar:4]', GetSpellInfo(24858))
-
             addState('class', 'tree', newFormConditionLookup(114282), GetSpellInfo(114282))
-
             addState('class', 'travel', newFormConditionLookup(783), GetSpellInfo(783))
-
             addState('class', 'stag', newFormConditionLookup(210053), GetSpellInfo(210053))
         end
     elseif class == 'ROGUE' then
@@ -120,7 +124,7 @@ do
         addState('class', 'stealth', '[bonusbar:1]', GetSpellInfo(1784))
     elseif class == 'WARRIOR' then
         -- paladin auras
-        if Addon:IsBuild('classic') then
+        if Addon:IsBuild('bc', 'classic') then
             addState('class', 'battle', '[bonusbar:1]', GetSpellInfo(2457))
             addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
             addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
@@ -135,8 +139,16 @@ do
             addState('class', 'concentration', newFormConditionLookup(317920), GetSpellInfo(317920))
 
             addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
+        elseif Addon:IsBuild('bc') then
+            addState('class', 'crusader', newFormConditionLookup(32223), GetSpellInfo(32223))
+            addState('class', 'devotion', newFormConditionLookup(10292), GetSpellInfo(10292))
+            addState('class', 'retribution', newFormConditionLookup(10301), GetSpellInfo(10301))
+            addState('class', 'concentration', newFormConditionLookup(19746), GetSpellInfo(19746))
+            addState('class', 'shadow', newFormConditionLookup(19896), GetSpellInfo(19896))
+            addState('class', 'frost', newFormConditionLookup(19898), GetSpellInfo(19898))
+            addState('class', 'fire', newFormConditionLookup(19899), GetSpellInfo(19899))
         end
-    elseif class == 'PRIEST' and Addon:IsBuild('classic') then
+    elseif class == 'PRIEST' and Addon:IsBuild('bc', 'classic') then
         addState('class', 'shadowform', '[form:1]', GetSpellInfo(16592))
     end
 end

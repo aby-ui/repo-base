@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210325191506")
+mod:SetRevision("20210415024021")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()--kael gets stuck on boss frames well after encounter has ended, therefor must not re-engage boss off this bug
@@ -467,7 +467,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnBlazingSurge:Show()
 		specWarnBlazingSurge:Play("shockwave")
 		timerBlazingSurgeCD:Start()
-		--self:BossTargetScanner(args.sourceGUID, "BlazingSurgeTarget", 0.1, 12)
 	elseif spellId == 328885 then
 		timerGreaterCastigationCD:Start()
 	elseif spellId == 325440 then

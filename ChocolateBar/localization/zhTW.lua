@@ -134,3 +134,4 @@ L["Unlock to to move the bar anywhere you want."] = "解鎖移動條例到你想
 L["Update Center Position"] = "更新中心位置"
 L["Vertical Offset"] = "垂直距離"
 L["Width Behavior"] = "寬度規範"
+

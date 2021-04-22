@@ -34,7 +34,7 @@ function PetBar:GetDisplayName()
     return L.PetBarDisplayName
 end
 
-if Addon:IsBuild("classic") then
+if Addon:IsBuild('bc', 'classic') then
     function PetBar:GetDisplayConditions()
         return '[pet]show;hide'
     end

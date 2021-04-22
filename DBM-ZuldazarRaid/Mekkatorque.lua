@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210421144719")
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -365,7 +365,7 @@ function mod:OnCombatStart(delay)
 	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(286105))
-		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false, false)
+		DBM.InfoFrame:Show(8, "function", updateInfoFrame, false)
 	end
 end
 

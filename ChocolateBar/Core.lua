@@ -110,8 +110,11 @@ function ChocolateBar:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED","OnEnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED","OnLeaveCombat")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","OnEnterWorld")
-	self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
-	self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
+	if not ChocolateBar.isClassicWoW then
+		self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
+		self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
+	end
+
 	self:RegisterEvent("ADDON_LOADED",function(event, addonName)
 
 	if self[addonName] then self[addonName](self) end

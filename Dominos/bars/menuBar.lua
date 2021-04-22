@@ -10,7 +10,7 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local MICRO_BUTTONS
 
-if Addon:IsBuild('classic') then
+if Addon:IsBuild('bc', 'classic') then
     MICRO_BUTTONS = {
         'CharacterMicroButton',
         'SpellbookMicroButton',

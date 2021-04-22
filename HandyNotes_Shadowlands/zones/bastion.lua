@@ -293,7 +293,8 @@ map.nodes[22432285] = Rare({
    note=L["sotiros_orstus_note"],
    rewards={
        Achievement({id=14307, criteria=50618}),
-       Transmog({item=184365, slot=L["shield"]}) -- Aegis of Salvation
+       Transmog({item=184365, slot=L["shield"]}), -- Aegis of Salvation
+       Pet({item=184401, id=3063}) -- Larion Pouncer
    }
 }) -- Orstus and Sotiros
 

@@ -77,7 +77,12 @@
 			if (specIcon) then
 				self.specIcon:SetTexture(specIcon)
 				self.specIcon:SetTexCoord(L, R, T, B)
-				specId, specName, specDescription, specIconId, specRole, specClass = _G.GetSpecializationInfoByID(self.playerObject.spec)
+
+				if (DetailsFramework.IsTimewalkWoW()) then
+					specRole = "NONE"
+				else
+					specId, specName, specDescription, specIconId, specRole, specClass = _G.GetSpecializationInfoByID(self.playerObject.spec)
+				end
 			else
 				self.specIcon:SetTexture(nil)
 			end

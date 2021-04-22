@@ -9,6 +9,18 @@ local TimerBar = {}
 
 function TimerBar:OnLoad()
     self.border:SetFrameLevel(self.statusBar:GetFrameLevel() + 3)
+
+    if type(BackdropTemplateMixin) == "table" then
+        Mixin(self.border, BackdropTemplateMixin)
+    end
+
+    self.border:SetBackdrop{
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tileEdge = true,
+        edgeSize = 16,
+        insets = { left = 5, right = 5, top = 5, bottom = 5 },
+    }
+
     self.Layout = Dominos:Defer(TimerBar.Layout, 0.1, self)
 end
 

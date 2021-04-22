@@ -79,7 +79,7 @@ GTFO.SpellID["334562"] = {
 
 GTFO.SpellID["323811"] = {
   --desc = "Pulsing Bile (Bubbleblood)";
-  sound = 1;
+  sound = 2;
 };
 
 GTFO.SpellID["338789"] = {
@@ -146,6 +146,12 @@ GTFO.SpellID["346597"] = {
   --desc = "Soul Bomb (Anima Devourer)";
   sound = 1;
 };
+
+GTFO.SpellID["351068"] = {
+  --desc = "Eye of the Jailer";
+  sound = 1;
+};
+
 
 --- **********************
 --- * Halls of Atonement *
