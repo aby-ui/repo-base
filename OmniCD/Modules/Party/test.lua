@@ -69,15 +69,6 @@ addOnTestMode.Cell = function(isTestEnabled)
 	Cell:Fire("UpdateVisibility", "solo")
 end
 
-function TestMod:SetAnchor(key)
-	if not indicator then return end
-	E.SetFont(indicator.anchor.text, E.profile.General.fonts.anchor)
-	if key then
-		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
-	end
-	E.SetWidth(indicator.anchor)
-end
-
 function TestMod:Test(key)
 	local active = E.customUF.active or "blizz"
 	local groupSize = GetNumGroupMembers()
@@ -120,7 +111,7 @@ function TestMod:Test(key)
 			self:SetScript("OnEvent", function(self, event, ...)
 				self[event](self, ...)
 			end)
-			E.SetFont(indicator.anchor.text, E.profile.General.fonts.anchor)
+			indicator.anchor.text:SetFontObject(E.AnchorFont)
 		end
 		indicator.anchor.text:SetFormattedText("%s - %s", L["Test"], E.L_ZONE[key])
 		E.SetWidth(indicator.anchor)

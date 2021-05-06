@@ -1,21 +1,20 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
 end
 
-local wow_ver = select(4, GetBuildInfo())
-local wow_500 = wow_ver >= 50000
 
 local _G, table, setmetatable, rawget = _G, table, setmetatable, rawget
-local UnitName, GetActiveTalentGroup, GetTalentTabInfo, UnitIsPlayer, GetNumTalentTabs =
-	  UnitName, GetActiveTalentGroup, GetTalentTabInfo, UnitIsPlayer, GetNumTalentTabs
+local UnitName, GetActiveTalentGroup, GetTalentTabInfo, UnitIsPlayer =
+	  UnitName, GetActiveTalentGroup, GetTalentTabInfo, UnitIsPlayer
+local GetSpecialization, GetSpecializationInfo
+	= GetSpecialization, GetSpecializationInfo
 
-if wow_500 then
+if GetActiveSpecGroup then
 	GetActiveTalentGroup = GetActiveSpecGroup
 	GetTalentTabInfo = GetSpecializationInfo
-	GetNumTalentTabs = GetNumSpecializations
 end
 
 DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
@@ -53,7 +52,7 @@ DogTag:AddAddonFinder("Unit", "LibStub", "LibTalentQuery-1.0", function(LibTalen
 	LibTalentQuery.RegisterCallback(DogTag_Unit, "TalentQuery_Ready", function(event, name, realm, unitId)
 		local fullName = realm and name .. "-" .. realm or name
 
-		if wow_500 then
+		if GetInspectSpecialization then
 			local inspectSpec = GetInspectSpecialization(unitId)
 			local roleById = GetSpecializationInfoByID(inspectSpec)
 			if roleById ~= nil then
@@ -80,7 +79,7 @@ DogTag:AddAddonFinder("Unit", "LibStub", "LibTalentQuery-1.0", function(LibTalen
 	local lastUnit
 	local function func(self, name)
 		if name == playerName then
-			if wow_500 then
+			if GetSpecialization then
 				talentSpecNames[playerName] = select(2, GetSpecializationInfo(GetSpecialization()))
 				return
 			end

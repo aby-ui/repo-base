@@ -121,7 +121,7 @@ function P:SetMarker(icon)
 		local mark = E.spell_marked[spellID] or E.db.highlight.markedSpells[spellID]
 		if mark and (mark == true or self:IsTalent(mark, icon.guid)) then
 			hotkey:SetText(RANGE_INDICATOR)
-			hotkey:SetTextColor(1, 1, 1) -- 2.5.20
+			hotkey:SetTextColor(1, 1, 1) -- 2.5.20+
 			hotkey:Show()
 		else
 			hotkey:Hide()

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -18,7 +18,6 @@ local newList, del = DogTag.newList, DogTag.del
 
 local currentAuras, currentDebuffTypes, currentAuraTimes, currentNumDebuffs
 
-local wow_700 = select(4, GetBuildInfo()) >= 70000
 local wow_800 = select(4, GetBuildInfo()) >= 80000
 
 local mt = {__index=function(self, unit)
@@ -404,8 +403,8 @@ DogTag:AddTag("Unit", "AuraDuration", {
 	category = L["Auras"],
 })
 
-local SHADOWFORM = GetSpellInfo(15473)
-if not wow_700 then
+local SHADOWFORM = GetSpellInfo(15473) or GetSpellInfo(232698)
+if SHADOWFORM then
 DogTag:AddTag("Unit", "IsShadowform", {
 	alias = ("HasAura(aura=%q, unit=unit)"):format(SHADOWFORM),
 	arg = {
@@ -418,7 +417,11 @@ DogTag:AddTag("Unit", "IsShadowform", {
 end
 
 local STEALTH = GetSpellInfo(1784)
-local SHADOWMELD = GetSpellInfo(58984) or GetSpellInfo(743) -- 58984 is the ID in BFA, 743 is the ID in Classic.
+local SHADOWMELD =
+	GetSpellInfo(58984)  -- BFA
+	or GetSpellInfo(20580)  -- Classic TBC
+	or GetSpellInfo(743) -- Classic Vanilla
+
 local PROWL = GetSpellInfo(5215)
 DogTag:AddTag("Unit", "IsStealthed", {
 	alias = ("HasAura(aura=%q, unit=unit) or HasAura(aura=%q, unit=unit) or HasAura(aura=%q, unit=unit)"):format(STEALTH, SHADOWMELD, PROWL),

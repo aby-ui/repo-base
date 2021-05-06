@@ -428,5 +428,5 @@ function toolbar:PetCountOnEnter()
 			missing = missing + 1
 		end
 	end
-	rematch.ShowTooltip(self.PetCount,BATTLE_PETS_TOTAL_PETS,format(L["%s\n\nPets At Max Level: %s%d\124r\nPets Not Collected: %s%d\124r\n\n%s Click to display more about your collection."],format(BATTLE_PETS_TOTAL_PETS_TOOLTIP,C_PetJournal.GetNumMaxPets()),rematch.hexWhite,at25,rematch.hexWhite,missing,rematch.LMB))
+	rematch.ShowTooltip(self.PetCount,BATTLE_PETS_TOTAL_PETS,format(L["%s\n\nPets At Max Level: %s%d\124r\nPets Not Collected: %s%d\124r\n\n%s Click to display more about your collection."],format(BATTLE_PETS_TOTAL_PETS_TOOLTIP,C_PetJournal.GetNumMaxPets and C_PetJournal.GetNumMaxPets() or ""),rematch.hexWhite,at25,rematch.hexWhite,missing,rematch.LMB))
 end

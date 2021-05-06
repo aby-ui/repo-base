@@ -7,10 +7,6 @@ local isRaidCDOption = function(info) return info[3] ~= "spells" end -- cf:> inf
 local isSpellsOption = function(info) return not isRaidCDOption(info) end
 local isRaidOptDisabledID = function(info)
 	local key = info[2]
-	-- Edit
-	--[[ TODO: add additional members
-	return info[3] ~= "spells" and E.DB.profile.Party[key].extraBars.raidCDBar.hideDisabledSpells and not P.IsEnabledSpell(info[#info]:gsub("E", ""), key)
-	--]]
 	return info[3] ~= "spells" and E.DB.profile.Party[key].extraBars.raidCDBar.hideDisabledSpells and not P.IsEnabledSpell(info[#info], key)
 end
 
@@ -146,16 +142,6 @@ local spells = {
 	}
 }
 
---[[
-spells.args.classHeader = {
-	disabled = true,
-	name = "```",
-	order = 0,
-	type = "group",
-	args = {}
-}
-]]
-
 local borderlessCoords = {0.07, 0.93, 0.07, 0.93}
 
 for i = 1, MAX_CLASSES do
@@ -215,6 +201,9 @@ local function SortSpellList()
 	end
 end
 
+local getSpellType = function(info) end
+local setSpellType = function(info) end
+
 function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 	local sId = tostring(id)
 
@@ -231,6 +220,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 		end
 
 		if not class then -- deleted custom only (default needs to be reverted)
+			self:Refresh()
 			return
 		end
 
@@ -281,10 +271,10 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					-- Edit
 					--[[
 					t[sId .. "E"] = {
-						hidden = isRaidOptDisabledID,
-						name = "+",
+						hidden = isRaidCDOption,
+						name = "E",
 						desc = "Edit spell",
-						order = order + 1,
+						order = order + 2,
 						type = "execute",
 						func = function(info) E.EditSpell(nil, info[#info]:gsub("E", "")) end,
 						width = 0.25,
@@ -335,13 +325,13 @@ function P:AddSpellPickerSpells()
 					arg = spellID,
 				}
 
-				--[==[
 				-- Edit
+				--[==[
 				t[vtype].args[sId .. "E"] = {
-					hidden = isRaidOptDisabledID,
+					hidden = isRaidCDOption,
 					name = "E",
 					desc = "Edit spell",
-					order = order + 1,
+					order = order + 2,
 					type = "execute",
 					func = function(info) E.EditSpell(nil, info[#info]:gsub("E", "")) end,
 					width = 0.25, -- lags

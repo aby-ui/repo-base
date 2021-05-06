@@ -1,8 +1,22 @@
 local E, L, C = select(2, ...):unpack()
 
 E.changelog = [=[
+v2.5.22
+Bug Fixes
+    iss#208: HealBot anchoring fixed.
+    iss#220: Group member's pet spell will correctly go on cooldown.
+    iss#221: Fixed inconsistent CDR on Guardian Spirit when Guardian Angel is talented.
+    iss#223: Fixed Icy Vein CDR by Icy-Propulsion (Conduit) when Thermal Void is talented.
+    iss#224: Fixed Unending Resolve CDR by Resolute Barrier (Conduit).
+    CD bars will update immediately when a user added spell is deleted.
+    Default fonts settings will display correctly for koKR locale.
+Feature Updates
+    Raid Bar: Grow Upward option added.
+
 v2.5.21
-Bug Fixes - Ignorance is Bliss
+Bug Fixes
+    Temp Fix applied to statusbar timer text not updating correctly.
+    Fixed statusbar leading spark showing on cast while disabled.
 
 v2.5.20 - Toc ver 90005
 Bug Fixes

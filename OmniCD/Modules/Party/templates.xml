@@ -196,11 +196,11 @@
 		<CheckedTexture/>
 		<Scripts>
 			<OnEnter>
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-				GameTooltip:SetSpellByID(self.spellID);
+				_G["AceConfigDialogTooltip-OmniCD"]:SetOwner(self, "ANCHOR_RIGHT");
+				_G["AceConfigDialogTooltip-OmniCD"]:SetSpellByID(self.spellID);
 			</OnEnter>
 			<OnLeave>
-				GameTooltip:Hide();
+				_G["AceConfigDialogTooltip-OmniCD"]:Hide();
 			</OnLeave>
 		</Scripts>
 	</Button>

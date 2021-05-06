@@ -147,7 +147,7 @@ local progressBarColorInfo = {
 		name = function(info) return temp[info[#info-1]] end,
 		order = 0,
 		type = "description",
-		width = 0.4
+		width = 0.5
 	},
 	activeColor = {
 		name = "",
@@ -155,7 +155,7 @@ local progressBarColorInfo = {
 		type = "color",
 		dialogControl = "ColorPicker-OmniCD",
 		hasAlpha = function(info) return info[#info-1] ~= "textColors" end,
-		width = 0.35,
+		width = 0.5,
 
 	},
 	rechargeColor = {
@@ -164,7 +164,7 @@ local progressBarColorInfo = {
 		type = "color",
 		dialogControl = "ColorPicker-OmniCD",
 		hasAlpha = function(info) return info[#info-1] ~= "textColors" end,
-		width = 0.35,
+		width = 0.5,
 	},
 	inactiveColor = {
 		disabled = function(info)
@@ -176,7 +176,7 @@ local progressBarColorInfo = {
 		type = "color",
 		dialogControl = "ColorPicker-OmniCD",
 		hasAlpha = function(info) return info[#info-1] == "barColors" end, -- bgColors is disabled
-		width = 0.35,
+		width = 0.5,
 	},
 	useClassColor = { -- reminent db 'classColor'
 		name = "",
@@ -205,6 +205,7 @@ P.extraBarDesc = function(info)
 	end
 end
 
+local isInterruptBar = function(info) return info[4] == "interruptBar" end
 local isRaidCDBar = function(info) return info[4] ~= "interruptBar" end
 local isRaidMultline = function(info) local bar = info[4] return bar == "raidCDBar" and E.DB.profile.Party[info[2]].extraBars[bar].layout == "multicolumn" end
 
@@ -246,7 +247,7 @@ local extraBarsInfo = {
 		name = "\n", order = 4, type = "description"
 	},
 	layout = {
-		name = function(info) return info[4] == "raidCDBar" and L["Layout"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t" or L["Layout"] end,
+		name = function(info) return info[4] == "raidCDBar" and L["Layout"] or L["Layout"] end,
 		desc = L["Select the icon layout"],
 		order = 10,
 		type = "select",
@@ -285,14 +286,14 @@ local extraBarsInfo = {
 			return not db.enabled or (info[4] == "raidCDBar" and db.layout == "multicolumn")
 		end,
 		--]=]
-		name = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "horizontal" and L["Columns"] or L["Rows"] end,
+		name = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "horizontal" and L["Column"] or L["Row"] end,
 		desc = function(info) return E.DB.profile.Party[info[2]].extraBars[info[#info-1]].layout == "horizontal" and L["Set the number of icons per row"] or L["Set the number of icons per column"] end,
 		order = 13,
 		type = "range",
 		min = 1, max = 100, softMax = 30, step = 1,
 	},
 	groupColumns = {
-		hidden = function(info) return not isRaidCDBar(info) end,
+		hidden = isInterruptBar,
 		disabled = function(info)
 			local db = E.DB.profile.Party[info[2]].extraBars[info[4]]
 			return not db.enabled or (info[4] == "raidCDBar" and db.layout ~= "multicolumn")
@@ -326,16 +327,40 @@ local extraBarsInfo = {
 				ConfigExBar(bar, "layout")
 			end
 		end,
-		args = {},
-	},
-	groupPadding = {
-		hidden = function(info) return not isRaidCDBar(info) end,
-		disabled = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.layout ~= "multicolumn" end,
-		name = L["Group Padding"],
-		desc = L["Set the padding space between group columns"],
-		order = 30,
-		type = "range",
-		min = 0, max = 100, step = 1,
+		args = {
+			-- TODO:
+			--[==[
+			groupDetached = {
+				hidden = isInterruptBar,
+				name = "Detach Group(s)" .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+				desc = format("|cffff2020[%s]|r %s", L["Multiselect"], "Select the group(s) you want to detach."),
+				order = 11,
+				type = "multiselect",
+				dialogControl = "Dropdown-OmniCD",
+				values = {[0] = ALL, 1, 2, 3, 4, 5, 6, 7, 8},
+				get = function(info, k) return E.DB.profile.Party[info[2]].extraBars[info[4]].groupDetached[k] end,
+				set = function(info, k, value)
+					local key, bar = info[2], info[4]
+					E.DB.profile.Party[key].extraBars[bar].groupDetached[k] = value
+
+					if E.db == E.DB.profile.Party[key] then
+						ConfigExBar(bar, "layout")
+					end
+				end,
+			},
+			--]==]
+			groupPadding = {
+				hidden = isInterruptBar,
+				disabled = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.layout ~= "multicolumn" end,
+				name = L["Group Padding"],
+				desc = L["Set the padding space between group columns"],
+				order = 12,
+				type = "range",
+				min = 0, max = 100, step = 1,
+				get = P.getExBar,
+				set = P.setExBar,
+			},
+		},
 	},
 	paddingX = {
 		name = L["Padding X"],
@@ -369,7 +394,6 @@ local extraBarsInfo = {
 		type = "toggle",
 	},
 	growUpward = {
-		hidden = isRaidCDBar,
 		name = L["Grow Rows Upward"],
 		desc = L["Toggle the grow direction of icon rows"],
 		order = 35,
@@ -407,10 +431,10 @@ local extraBarsInfo = {
 				type = "group",
 				inline = true,
 				args = {
-					lb0 = { name = "", order = 0, type = "description", width = 0.4},
-					lb1 = { name = L["Active"], order = 1, type = "description", width = 0.35},
-					lb2 = { name = L["Recharge"], order = 2, type = "description", width = 0.35},
-					lb3 = { name = L["Inactive"], order = 3, type = "description", width = 0.35},
+					lb0 = { name = "", order = 0, type = "description", width = 0.5},
+					lb1 = { name = L["Active"], order = 1, type = "description", width = 0.5},
+					lb2 = { name = L["Recharge"], order = 2, type = "description", width = 0.5},
+					lb3 = { name = L["Inactive"], order = 3, type = "description", width = 0.5},
 					lb4 = { name = format("%s (%s)", CLASS_COLORS, L["Multiselect"]), order = 4, type = "description", width = 1},
 				}
 			},
@@ -497,7 +521,7 @@ local extraBarsInfo = {
 }
 
 for i = 1, 8 do
-	local name = format(GROUP_NUMBER, i)
+	local name = format("%s %s", i, L["Column"])
 	local key = "group" .. i
 	extraBarsInfo.groupColumns.args[key] = {
 		name = name,
@@ -510,7 +534,7 @@ for i = 1, 8 do
 end
 
 local extraBars = {
-	name = L["Extra Bars"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+	name = L["Extra Bars"],
 	type = "group",
 	childGroups = "tab",
 	order = 70,
@@ -526,7 +550,7 @@ local extraBars = {
 		},
 		raidCDBar = {
 			disabled = P.isExBarDisabled,
-			name = L["Raid Bar"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+			name = L["Raid Bar"],
 			order = 20,
 			type = "group",
 			args = extraBarsInfo

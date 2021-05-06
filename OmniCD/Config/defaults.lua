@@ -2,6 +2,7 @@ local E, L, C = select(2, ...):unpack()
 
 C["loginMsg"] = false
 C["notifyNew"] = false
+--C["optionScale"] = 1 -- opt scale
 
 C["Party"] = {
 	visibility = {
@@ -151,11 +152,13 @@ C["Party"] = {
 				["group6"] = {},
 				["group7"] = {},
 				["group8"] = {},
+				--["groupDetached"] = {},
 				["groupPadding"] = 0,
 				["scale"] = 0.5,
 				["paddingX"] = -1,
 				["paddingY"] = -1,
 				["showName"] = true,
+				["growUpward"] = false,
 				["progressBar"] = true,
 				["textColors"] = {
 					["activeColor"] = {r=1,g=1,b=1},

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -9,8 +9,6 @@ local _G, unpack = _G, unpack
 local UnitHealth, UnitHealthMax, UnitIsGhost, UnitGetTotalAbsorbs = 
 	  UnitHealth, UnitHealthMax, UnitIsGhost, UnitGetTotalAbsorbs
 
--- Support for new UnitGetTotalAbsorbs functionality
-local wow_502 = select(4, GetBuildInfo()) >= 50200
 
 DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 
@@ -94,7 +92,7 @@ DogTag:AddTag("Unit", "IsMaxHP", {
 	category = L["Health"]
 })
 
-if wow_502 then
+if UnitGetTotalAbsorbs then
 	DogTag:AddTag("Unit", "TotalAbsorb", {
 		code = UnitGetTotalAbsorbs,
 		arg = {

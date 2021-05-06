@@ -5,7 +5,6 @@ local _G, pairs, ipairs, table, string, tostring = _G, pairs, ipairs, table, str
 local select, strjoin, CreateFrame = select, strjoin, CreateFrame
 
 local _, _, _, tocversion = GetBuildInfo()
-if tocversion < 80200 then ChocolateBar.isClassicWoW = true end
 
 local addonVersion = GetAddOnMetadata("ChocolateBar", "Version")
 
@@ -27,7 +26,7 @@ local db --reference to ChocolateBar.db.profile
 -- utility functions
 --------
 local function debug(...)
-	if ChocolateBar.db.char.debug then
+	if not ChocolateBar.db or ChocolateBar.db.char.debug then
 	 	local s = "ChocolateBar debug:"
 		for i=1,select("#", ...) do
 			local x = select(i, ...)
@@ -80,6 +79,14 @@ local defaults = {
 	}
 }
 
+function ChocolateBar:IsRetail()
+ return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+end
+
+function ChocolateBar:IsClassic()
+ return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+end
+
 --------
 -- Ace3 callbacks
 --------
@@ -110,7 +117,7 @@ function ChocolateBar:OnInitialize()
 	self:RegisterEvent("PLAYER_REGEN_DISABLED","OnEnterCombat")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED","OnLeaveCombat")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD","OnEnterWorld")
-	if not ChocolateBar.isClassicWoW then
+	if ChocolateBar:IsRetail() then
 		self:RegisterEvent("PET_BATTLE_OPENING_START","OnPetBattleOpen")
 		self:RegisterEvent("PET_BATTLE_CLOSE","OnPetBattleOver")
 	end

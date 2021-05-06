@@ -3,6 +3,11 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v9.0.7
+## Bug Fixes
+* Fixed #1886 - invalid key to "next" (new version of LibDogTag-Unit-3.0 should resolve this).
+* Fixed #1889 - error thrown when attempting to import corrupted strings
+
 ## v9.0.6
 * New Condition: Covenant Membership
 * New group sort option: Timer start

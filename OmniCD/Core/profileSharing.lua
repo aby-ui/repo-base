@@ -1,6 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 
 local PS = CreateFrame("Frame")
+local Tooltip = E.Libs.ACD.tooltip
 local Dialog
 
 LibStub("AceSerializer-3.0"):Embed(PS)
@@ -59,13 +60,13 @@ local function EditBox_OnChar(self)
 end
 
 local function ExportEditBox_OnEnter()
-	GameTooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
-	GameTooltip:SetText(L["Press Ctrl+C to copy profile"])
+	Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
+	Tooltip:SetText(L["Press Ctrl+C to copy profile"])
 end
 
 local function ImportEditBox_OnEnter()
-	GameTooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
-	GameTooltip:SetText(L["Press Ctrl+V to paste profile"])
+	Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
+	Tooltip:SetText(L["Press Ctrl+V to paste profile"])
 end
 
 function E.CreateFlashButton(parent, text, width, height)
@@ -202,7 +203,7 @@ function PS.ShowProfileDialog(text)
 			end
 		end)
 		ScrollFrame:SetScript("OnLeave", function()
-			GameTooltip:Hide()
+			Tooltip:Hide()
 		end)
 
 		-- ScrollBar
@@ -242,7 +243,7 @@ function PS.ShowProfileDialog(text)
 			self:HighlightText(0, 0)
 		end)
 		EditBox:SetScript("OnLeave", function()
-			GameTooltip:Hide()
+			Tooltip:Hide()
 		end)
 		ScrollFrame:SetScrollChild(EditBox)
 

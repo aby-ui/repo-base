@@ -65,7 +65,7 @@ local function CreateBar(key)
 	f:SetScript("OnShow", nil)
 	f:SetScript("OnHide", OmniCD_ExBarOnHide)
 
-	E.SetFont(f.anchor.text, E.profile.General.fonts.anchor)
+	f.anchor.text:SetFontObject(E.AnchorFont)
 	local name = key == "interruptBar" and L["Interrupts"] or L["Raid CD"]
 	f.anchor.text:SetText(name)
 	--f.anchor.text:SetTextColor(1, 0.824, 0) -- #ffd200
@@ -86,7 +86,7 @@ function P:CreateExBars()
 	end
 end
 
-function P:UpdateExBar(bar)
+function P:UpdateExBar(bar, isGRU)
 	for i = 1, 2 do
 		local key = i == 1 and "interruptBar" or "raidCDBar"
 		local f = self.extraBars[key]
@@ -118,7 +118,9 @@ function P:UpdateExBar(bar)
 			bar.numIcons = bar.numIcons - n
 			f.numIcons = f.numIcons + n
 
-			self:SetExIconLayout(key, nil, true, true)
+			if not isGRU then -- prevent updating for every roster on GRU (inspect is still per roster)
+				self:SetExIconLayout(key, nil, true, true)
+			end
 		end
 	end
 end
@@ -131,7 +133,6 @@ function P:UpdateExPositionValues()
 		local growUpward = db.growUpward
 		local growY = growUpward and 1 or -1
 
-		f.startPoint = growUpward and "BOTTOMLEFT" or "TOPLEFT"
 		if db.layout == "horizontal" then
 			f.point = "TOPLEFT"
 			f.relat = "TOPRIGHT"
@@ -275,12 +276,6 @@ do
 
 			if i > 1 then
 				count = count + 1
-				--[=[
-				if (isMulticolumn and P.raidGroup[icon.type] ~= P.raidGroup[f.icons[i-1].type]) or count == columns then
-					icon:SetPoint(f.point, f.container, f.ofsX1 * rows, f.ofsY1 * rows)
-					count = 0
-					rows = rows + 1
-				]=]
 				if isMulticolumn and P.raidGroup[icon.type] ~= P.raidGroup[f.icons[i-1].type] then
 					icon:SetPoint(f.point, f.container, f.ofsX1 * rows + db.groupPadding * groups, 0)
 					count = 0
@@ -494,6 +489,7 @@ function P:UpdateExPosition()
 
 	for key, f in pairs(self.extraBars) do
 		if E.db.extraBars[key].enabled then
+			self:SetExIconLayout(key, nil, true, true)
 			E.LoadPosition(f)
 			f:Show()
 		else

@@ -34,7 +34,7 @@ local extraBarInfo = {
 }
 
 local position = {
-	name = L["Position"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+	name = L["Position"],
 	type = "group",
 	order = 20,
 	get = function(info) return E.DB.profile.Party[info[2]].position[info[#info]] end,
@@ -132,7 +132,7 @@ local position = {
 			name = "\n", order = 7, type = "description",
 		},
 		layout = {
-			name = L["Layout"] .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+			name = L["Layout"],
 			desc = L["Select the icon layout"],
 			order = 10,
 			type = "select",
@@ -140,7 +140,7 @@ local position = {
 		},
 		columns = {
 			disabled = isMultiline,
-			name = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Rows"] or L["Columns"] end,
+			name = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Row"] or L["Column"] end,
 			desc = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Set the number of icons per column"] or L["Set the number of icons per row"] end,
 			order = 11,
 			type = "range",

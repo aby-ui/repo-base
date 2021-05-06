@@ -211,38 +211,6 @@ P.setIcons = function(info, value)
 	P:ConfigIcons(key, option)
 end
 
-function P:ConfigFonts(arg)
-	if arg == "anchor" then
-		local db_anchor = E.DB.profile.General.fonts.anchor
-		for _, info in pairs(self.groupInfo) do
-			local f = info.bar
-			E.SetFont(f.anchor.text, db_anchor)
-		end
-
-		for _, f in pairs(self.extraBars) do
-			E.SetFont(f.anchor.text, db_anchor)
-			E.SetWidth(f.anchor)
-		end
-
-		self.TestMod:SetAnchor(self.testZone)
-	else
-		local db_icon = E.DB.profile.General.fonts.icon
-		local db_statusBar = E.DB.profile.General.fonts.statusBar
-		for _, info in pairs(self.groupInfo) do
-			local icons = info.spellIcons
-			for _, icon in pairs(icons) do
-				local statusBar = icon.statusBar
-				if statusBar then
-					E.SetFont(statusBar.Text, db_statusBar)
-					E.SetFont(statusBar.CastingBar.Text, db_statusBar)
-					E.SetFont(statusBar.CastingBar.Timer, db_statusBar)
-				end
-				E.SetFont(icon.Name, db_icon)
-			end
-		end
-	end
-end
-
 function P:ConfigTextures()
 	local texture = E.Libs.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.bar)
 	for _, f in pairs(self.extraBars) do

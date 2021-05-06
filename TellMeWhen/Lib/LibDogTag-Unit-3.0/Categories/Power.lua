@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -19,10 +19,8 @@ DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 local L = DogTag_Unit.L
 
 local wow_700 = select(4, GetBuildInfo()) >= 70000
-local wow_800 = select(4, GetBuildInfo()) >= 80000
-local mpEvents = "UNIT_POWER_FREQUENT#$unit;UNIT_MAXPOWER#$unit;UNIT_DISPLAYPOWER#$unit"
 
-if wow_800 then
+if Enum and Enum.PowerType then
 	SPELL_POWER_MANA, SPELL_POWER_RUNES, SPELL_POWER_CHI, SPELL_POWER_ECLIPSE, SPELL_POWER_SOUL_SHARDS, SPELL_POWER_ARCANE_CHARGES =
 	Enum.PowerType.Mana, Enum.PowerType.Runes, Enum.PowerType.Chi, Enum.PowerType.LunarPower, Enum.PowerType.SoulShards, Enum.PowerType.ArcaneCharges
 	SPELL_POWER_BURNING_EMBERS, SPELL_POWER_HOLY_POWER, SPELL_POWER_LIGHT_FORCE, SPELL_POWER_SHADOW_ORBS =
@@ -325,7 +323,8 @@ if RUNIC_POWER then
 	})
 end
 
-if wow_700 then
+if GetRuneCooldown then
+	local GetRuneCooldown = GetRuneCooldown
 	DogTag:AddTag("Unit", "RunesAvailable", {
 		code = function(unit)
 			local numAvailable = 0
@@ -423,7 +422,6 @@ DogTag:AddTag("Unit", "PowerColor", {
 })
 
 
-local wow_501 = select(4, GetBuildInfo()) >= 50100
 local specialPowers = {
 	{
 		class = "WARLOCK",
@@ -448,7 +446,7 @@ local specialPowers = {
 		class = "MONK",
 		tag = "Chi",
 		arg2 = SPELL_POWER_CHI or SPELL_POWER_LIGHT_FORCE,
-		eventPowerIdentifier = wow_501 and "CHI" or "LIGHT_FORCE",
+		eventPowerIdentifier = SPELL_POWER_CHI and "CHI" or "LIGHT_FORCE",
 	},
 }
 if not wow_700 then -- Parnic: shadow orbs are no more in 7.0

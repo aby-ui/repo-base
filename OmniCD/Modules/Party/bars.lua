@@ -152,7 +152,7 @@ local function GetBar()
 		f.icons = {}
 		f.numIcons = 0
 		f.anchor:Hide()
-		E.SetFont(f.anchor.text, E.profile.General.fonts.anchor)
+		f.anchor.text:SetFontObject(E.AnchorFont)
 		f:SetScript("OnEvent", CooldownBarFrame_OnEvent)
 	end
 
@@ -188,15 +188,7 @@ local function GetIcon(f, iconIndex)
 		end
 		E.DisablePixelSnap(icon.icon)
 
-		--[[
-		<FontString name="$parentName" parentKey="Name" inherits="GameFontHighlightSmallOutline">
-			<Size x="36" y="10"/>
-			<Anchors>
-				<Anchor point="BOTTOM" x="0" y="2"/>
-			</Anchors>
-		</FontString>
-		]]
-		E.SetFont(icon.Name, E.profile.General.fonts.icon)
+		icon.Name:SetFontObject(E.IconFont)
 	end
 
 	icon:SetParent(f.container)
@@ -254,7 +246,7 @@ local function IsSpellSpecTalent(guid, spec, spellID)
 	end
 end
 
-function P:UpdateUnitBar(guid)
+function P:UpdateUnitBar(guid, isGRU)
 	local info = self.groupInfo[guid]
 	local class = info.class
 	local raceID = info.raceID
@@ -283,7 +275,7 @@ function P:UpdateUnitBar(guid)
 	if guid ~= E.userGUID then -- [96]
 		f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 	end
-	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unit == "player" and "pet" or unit .. "pet") -- [41]
+	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]
 
 	local isInspectedUnit = info.spec
 	local lvl = info.level
@@ -471,7 +463,7 @@ function P:UpdateUnitBar(guid)
 
 	self:RemoveUnusedIcons(f, iconIndex + 1)
 
-	self:UpdateExBar(f) -- [26]
+	self:UpdateExBar(f, isGRU) -- [26]
 
 	if guid ~= E.userGUID or not self.isUserHidden then -- [82]
 		self:ApplySettings(f)
@@ -483,7 +475,7 @@ function P:UpdateBars()
 	self:HideExBars(true) -- [27]
 
 	for guid in pairs(self.groupInfo) do
-		self:UpdateUnitBar(guid)
+		self:UpdateUnitBar(guid, true)
 	end
 end
 

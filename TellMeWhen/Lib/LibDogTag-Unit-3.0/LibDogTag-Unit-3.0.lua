@@ -1,13 +1,12 @@
 --[[
-Name: LibDogTag-3.0
-Revision: $Rev$
-Author: Cameron Kenneth Knight (ckknight@gmail.com)
-Website: http://www.wowace.com/
-Description: A library to provide a markup syntax
+Name: LibDogTag-Unit-3.0
+Revision: 1
+Website: https://www.wowace.com/projects/libdogtag-unit-3-0
+Description: A library to provide a markup syntax - unit-specific tags
 ]]
 
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -23,10 +22,9 @@ local L = DogTag_Unit.L
 local newList = DogTag.newList
 local del = DogTag.del
 
-local wow_ver = select(4, GetBuildInfo())
-local wow_500 = wow_ver >= 50000
 local PartyChangedEvent = "PARTY_MEMBERS_CHANGED"
-if wow_500 then
+if UnitIsGroupLeader then
+	-- Changed in wow 5.0
 	PartyChangedEvent = "GROUP_ROSTER_UPDATE"
 end
 
@@ -56,8 +54,11 @@ local normalUnitsWackyDependents = {}
 local function fireEventForDependents(event, unit, ...)
 	local wackyDependents = normalUnitsWackyDependents[unit]
 	if wackyDependents then
-		for unit in pairs(wackyDependents) do
+		unit = next(wackyDependents, nil)
+		while unit ~= nil do
+			local nextUnit = next(wackyDependents, unit)
 			DogTag:FireEvent(event, unit, ...)
+			unit = nextUnit
 		end
 	end
 end

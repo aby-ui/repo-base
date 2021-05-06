@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -12,6 +12,8 @@ local UnitExists, UnitGUID, UnitAffectingCombat, UnitIsAFK, UnitIsDeadOrGhost, U
 	  UnitExists, UnitGUID, UnitAffectingCombat, UnitIsAFK, UnitIsDeadOrGhost, UnitIsGhost, UnitIsDead, UnitIsDND, UnitIsPVP, UnitIsPVPFreeForAll
 local GetNumRaidMembers, GetNumPartyMembers, GetPetHappiness, GetRaidTargetIndex, UnitIsTapped, GetBindingText, GetBindingKey, GetRaidRosterInfo =
 	  GetNumRaidMembers, GetNumPartyMembers, GetPetHappiness, GetRaidTargetIndex, UnitIsTapped, GetBindingText, GetBindingKey, GetRaidRosterInfo
+local UnitIsGroupLeader, GetNumGroupMembers =
+	  UnitIsGroupLeader, GetNumGroupMembers
 local UnitName, UnitInRaid, UnitFactionGroup, GetPVPTimer, IsPVPTimerRunning, GetSpellInfo, IsResting =
 	  UnitName, UnitInRaid, UnitFactionGroup, GetPVPTimer, IsPVPTimerRunning, GetSpellInfo, IsResting
 
@@ -24,29 +26,15 @@ local offlineTimes = {}
 local afkTimes = {}
 local deadTimes = {}
 
--- Parnic: support for cataclysm; Divine Intervention was removed
-local wow_ver = select(4, GetBuildInfo())
-local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local wow_400 = wow_ver >= 40000
-local wow_500 = wow_ver >= 50000
-local wow_600 = wow_ver >= 60000
-local wow_700 = wow_ver >= 70000
-local petHappinessEvent = "UNIT_POWER_UPDATE"
 local partyChangedEvent = "PARTY_MEMBERS_CHANGED"
-if wow_500 or wow_classic then
+
+if UnitIsGroupLeader then
 	UnitIsPartyLeader = UnitIsGroupLeader
 	partyChangedEvent = "GROUP_ROSTER_UPDATE"
 end
 
--- Parnic: pet happiness removed in 4.1
-local wow_401 = wow_ver >= 40100
--- ...and back in Classic
-if wow_classic then
-	petHappinessEvent = "UNIT_HAPPINESS"
-end
-
 -- Parnic: GetNumRaidMembers/GetNumPartyMembers removed in 6.0
-if wow_600 or wow_classic then
+if GetNumGroupMembers then
 	GetNumRaidMembers = GetNumGroupMembers
 	GetNumPartyMembers = GetNumGroupMembers
 end
@@ -63,14 +51,14 @@ _G.iterateGroupMembers = iterateGroupMembers
 local tmp = {}
 local function PARTY_MEMBERS_CHANGED(event)
 	local prefix, min, max = "raid", 1, 0
-	if wow_500 then
+	if GetNumGroupMembers then
 		max = GetNumGroupMembers()
 	else
 		max = GetNumRaidMembers()
 	end
-	if wow_500 and max <= 5 or (not wow_500 and max == 0) then
+	if GetNumGroupMembers and max <= 5 or (not GetNumGroupMembers and max == 0) then
 		prefix, min = "party", 0
-		if not wow_500 then
+		if not GetNumGroupMembers then
 			max = GetNumPartyMembers()
 		end
 	end
@@ -468,13 +456,13 @@ DogTag:AddTag("Unit", "IsFeignedDeath", {
 })
 
 -- Parnic: pet happiness removed in 4.1
-if not wow_401 then
+if GetPetHappiness then
 DogTag:AddTag("Unit", "HappyNum", {
 	code = function()
 		return GetPetHappiness() or 0
 	end,
 	ret = "number",
-	events = petHappinessEvent,
+	events = "UNIT_HAPPINESS",
 	doc = L["Return the happiness number of your pet"],
 	example = '[HappyNum] => "3"',
 	category = L["Status"]
@@ -485,7 +473,7 @@ DogTag:AddTag("Unit", "HappyText", {
 		return _G["PET_HAPPINESS" .. (GetPetHappiness() or 0)]
 	end,
 	ret = "string;nil",
-	events = petHappinessEvent,
+	events = "UNIT_HAPPINESS",
 	doc = L["Return a description of how happy your pet is"],
 	example = ('[HappyText] => %q'):format(_G.PET_HAPPINESS3),
 	category = L["Status"]
@@ -508,7 +496,7 @@ DogTag:AddTag("Unit", "HappyIcon", {
 		'unhappy', 'string', 'B(',
 	},
 	ret = "string;nil",
-	events = petHappinessEvent,
+	events = "UNIT_HAPPINESS",
 	doc = L["Return an icon representative of how happy your pet is"],
 	example = ('[HappyIcon] => ":D"; [HappyIcon] => ":I"; [HappyIcon] => "B("'),
 	category = L["Status"]
@@ -535,7 +523,7 @@ DogTag:AddTag("Unit", "RaidIcon", {
 	category = L["Status"]
 })
 
-if wow_700 or wow_classic then
+if UnitIsTapDenied then
 	DogTag:AddTag("Unit", "IsNotTappableByMe", {
 		code = UnitIsTapDenied,
 		arg = {
@@ -946,7 +934,7 @@ DogTag:AddTag("Unit", "StatusColor", {
 })
 
 -- Parnic: pet happiness removed in 4.1
-if not wow_401 then
+if GetPetHappiness then
 DogTag:AddTag("Unit", "HappyColor", {
 	code = function(value)
 		local x = GetPetHappiness()
@@ -972,7 +960,7 @@ DogTag:AddTag("Unit", "HappyColor", {
 		'value', 'string;undef', "@undef",
 	},
 	ret = "nil;string",
-	events = petHappinessEvent,
+	events = "UNIT_HAPPINESS",
 	doc = L["Return the color or wrap value with the color associated with your pet's happiness"],
 	example = '["Hello":HappyColor] => "|cff00ff00Hello|r"; [HappyColor "Hello"] => "|cff00ff00Hello"',
 	category = L["Status"]
@@ -980,8 +968,8 @@ DogTag:AddTag("Unit", "HappyColor", {
 end
 
 -- Parnic: DI removed in Cataclysm
-if not wow_400 then
 local DIVINE_INTERVENTION = GetSpellInfo(19752)
+if DIVINE_INTERVENTION then
 DogTag:AddTag("Unit", "Status", {
 	alias = ("Offline(unit=unit) or (HasDivineIntervention(unit=unit) ? %q) or (IsFeignedDeath(unit=unit) ? %q) or [if Dead(unit=unit) then ((HasSoulstone(unit=unit) ? %q) or Dead(unit=unit))]"):format(DIVINE_INTERVENTION, L["Feigned Death"], L["Soulstoned"]),
 	arg = {

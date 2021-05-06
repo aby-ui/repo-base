@@ -2,8 +2,8 @@
 ## Title: SavedInstances
 ## Notes: Tracks Raid, Instance, World Boss lockouts for all your characters, daily/weekly quests, currencies, trade cooldowns, and more!
 ## Author: oscarucb and the Saved Instances Community
-## Version: 9.0.7-6-g12ae6d8
-## X-ReleaseDate: 2021-03-26T09:10:18Z
+## Version: 9.0.7-10-g2446c91
+## X-ReleaseDate: 2021-04-28T02:30:54Z
 ## X-License: All Rights Reserved
 ## X-Category: Raid
 ## X-LoadOn-Always: delayed

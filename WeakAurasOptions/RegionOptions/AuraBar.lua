@@ -184,12 +184,8 @@ local function createOptions(id, data)
       func = function()
         local path = {"displayIcon"}
         local paths = {}
-        if data.controlledChildren then
-          for i, childId in pairs(data.controlledChildren) do
-            paths[childId] = path
-          end
-        else
-          paths[data.id] = path
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          paths[child.id] = path
         end
         OptionsPrivate.OpenIconPicker(data, paths)
       end,
@@ -787,14 +783,16 @@ local function subCreateOptions(parentData, data, index, subIndex)
     __title = L["Foreground"],
     __order = 1,
     __up = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "aurabar_bar")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+        OptionsPrivate.MoveSubRegionUp(child, index, "aurabar_bar")
       end
+      WeakAuras.ClearAndUpdateOptions(parentData.id)
     end,
     __down = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "aurabar_bar")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+        OptionsPrivate.MoveSubRegionDown(child, index, "aurabar_bar")
       end
+      WeakAuras.ClearAndUpdateOptions(parentData.id)
     end,
     __notcollapsable = true
   }

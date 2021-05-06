@@ -230,6 +230,7 @@ end
 function Comms:InspectUnit(guid)
 	local info = P.groupInfo[guid]
 	if not info or self.syncGUIDS[guid] then -- [85]
+		ClearInspectPlayer()
 		return
 	end
 

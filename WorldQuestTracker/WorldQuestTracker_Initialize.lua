@@ -131,6 +131,7 @@ do
 					ignore_by_time = 30,
 					show_button = true,
 					dont_show_ignored_leaders = true,
+					wipe_counter = 0,
 				},
 			},
 

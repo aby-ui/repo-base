@@ -136,10 +136,9 @@ function P.GetStatusBar(icon, key) -- [35]!
 		f = CreateFrame("Frame", "OmniCDStatusBar" .. numStatusBars, UIParent, "OmniCDStatusBar")
 		f.CastingBar.statusBar = f
 
-		local db = E.profile.General.fonts.statusBar
-		E.SetFont(f.Text, db)
-		E.SetFont(f.CastingBar.Text, db)
-		E.SetFont(f.CastingBar.Timer, db)
+		f.Text:SetFontObject(E.StatusBarFont)
+		f.CastingBar.Text:SetFontObject(E.StatusBarFont)
+		f.CastingBar.Timer:SetFontObject(E.StatusBarFont)
 
 		local texture = E.Libs.LSM:Fetch("statusbar", E.DB.profile.General.textures.statusBar.bar)
 		f.BG:SetTexture(texture)

@@ -12,7 +12,7 @@ local title = GENERAL
 -- LSM:GetDefault("font") returns name for current locale
 --[[
 local defaultFonts = {
-	["2002"] = "Fonts\\2002.TTF",
+	["기본 글꼴"] = "Fonts\\2002.TTF",
 	["默认"] = "Fonts\\ARKai_T.ttf",
 	["預設"] = "Fonts\\blei00d.TTF",
 	["Friz Quadrata TT"] = "Fonts\\FRIZQT__.TTF",
@@ -23,11 +23,11 @@ local defaultFonts = {
 local defaultFonts = {}
 
 if (LOCALE_koKR) then
-	defaultFonts.statusBar = {"2002", 20, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.icon = {"2002", 10, "OUTLINE", 0, 0, 0, 1, -1}
-	defaultFonts.anchor = {"2002", 11, "NONE", 0, 0, 0, 1, -1} -- 12
-	defaultFonts.option = {"2002", 11, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.optionSmall = {"2002", 10, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.statusBar = {"기본 글꼴", 22, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.icon = {"기본 글꼴", 11, "OUTLINE", 0, 0, 0, 1, -1}
+	defaultFonts.anchor = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.option = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.optionSmall = {"기본 글꼴", 11, "NONE", 0, 0, 0, 1, -1}
 elseif (LOCALE_zhCN) then
 	defaultFonts.statusBar = {"默认", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"默认", 15, "OUTLINE", 0, 0, 0, 1, -1}
@@ -96,16 +96,6 @@ function E.SetFont(fontString, db, size)
 	end
 end
 
-function E:ConfigFonts(arg)
-	for k in pairs(self.moduleOptions) do
-		local module = self[k]
-		local func = module.ConfigFonts
-		if func then
-			func(module, arg)
-		end
-	end
-end
-
 function E:ConfigTextures()
 	for k in pairs(self.moduleOptions) do
 		local module = self[k]
@@ -162,7 +152,7 @@ local General = {
 			order = 10,
 			type = "group",
 			get = function(info) return E.DB.profile.General.fonts[info[3]][info[#info]] end,
-			set = function(info, value) E.DB.profile.General.fonts[info[3]][info[#info]] = value E:ConfigFonts(info[3]) end,
+			set = function(info, value) E.DB.profile.General.fonts[info[3]][info[#info]] = value E:UpdateFontObjects() end,
 			args ={
 				anchor = {
 					name = L["Anchor"],
@@ -185,23 +175,22 @@ local General = {
 					inline = true,
 					args = fontInfo
 				},
-				-- TODO: remove after testing
+				---[=[
 				option = {
-					disabled = true,
 					name = OPTIONS,
 					order = 4,
 					type = "group",
 					inline = true,
-					args = fontInfo
+					args = fontInfo,
 				},
 				optionSmall = {
-					disabled = true,
 					name = format("%s (%s)", OPTIONS, SMALL),
 					order = 4,
 					type = "group",
 					inline = true,
-					args = fontInfo
+					args = fontInfo,
 				},
+				--]=]
 			}
 		},
 		textures = {
@@ -318,7 +307,7 @@ function E:AddGeneral()
 	end
 
 	-- convert table to something ACD can use as the values member
-	for _, fontName in ipairs(LSM:List("font")) do
+	for k, fontName in pairs(LSM:List("font")) do
 		LSM_Font[fontName] = fontName
 	end
 	for _, fontName in ipairs(LSM:List("statusbar")) do

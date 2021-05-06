@@ -473,6 +473,15 @@
 								<Texture parentKey="MiddleBG" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true" setAllPoints="true"/>
 							</Layer>
 							<Layer level="BACKGROUND" textureSubLevel="1">
+								<Texture parentKey="ExpansionBackground" file="Interface\GLUES\AccountUpgrade\AccountUpgradeBanners" alpha="0.2" hidden="true">
+									<Size x="248" y="124"/>
+									<Anchors>
+										<Anchor point="TOPLEFT"/>
+									</Anchors>
+									<TexCoords left="0" right="0.1953125" top="0" bottom="0.390625"/>
+								</Texture>
+							</Layer>							
+							<Layer level="BACKGROUND" textureSubLevel="2">
 								<Texture file="Interface\Common\ShadowOverlay-Corner" setAllPoints="true">
 									<TexCoords left="0" right="1" top="1" bottom="0"/>
 								</Texture>

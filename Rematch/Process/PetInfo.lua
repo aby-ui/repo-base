@@ -532,6 +532,10 @@ local queryAPIs = {
    Expansion = function(self)
       local speciesID = self.speciesID
       local expansionID
+      local idType = self.idType
+      if idType=="leveling" or idType=="random" or idType=="ignored" then
+         return
+      end
       -- first check if this is one of the species that doesn't fit into an expansion's range
       if expansionOutliers[speciesID] then
          expansionID = expansionOutliers[speciesID]

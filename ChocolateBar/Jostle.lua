@@ -6,6 +6,7 @@ Jostle.hooks = {}
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local JostleUpdate = CreateFrame("Frame")
 local _G, pairs = _G, pairs
+local UnitInVehicle = UnitInVehicle and UnitInVehicle or function() end
 local UnitHasVehicleUI = UnitHasVehicleUI and UnitHasVehicleUI or function() end
 
 local blizzardFrames = {
@@ -75,7 +76,9 @@ JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
 JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-if not ChocolateBar.isClassicWoW then
+--ChocolateBar:Debug("ChocolateBar:IsRetail()", ChocolateBar:IsRetail())
+if ChocolateBar:IsRetail() then
+	--ChocolateBar:Debug("ChocolateBar:IsRetail()", ChocolateBar:IsRetail())
 	JostleFrame:RegisterEvent("UNIT_EXITING_VEHICLE")
 	JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
 end
@@ -158,13 +161,15 @@ local function LockMainMenuBar()
 end
 
 function Jostle:UNIT_EXITING_VEHICLE()
+	ChocolateBar:Debug("UNIT_EXITING_VEHICLE")
 	MainMenuBar:SetMovable(true)
 	MainMenuBar:SetUserPlaced(false)
-	ChocolateBar:Debug("SetUserPlaced false triggerd by UNIT_EXITING_VEHICLE")
+	ChocolateBar:Debug("SetUserPlaced(false)")
 	MainMenuBar:SetMovable(false)
 end
 
 function Jostle:UNIT_EXITED_VEHICLE()
+	ChocolateBar:Debug("UNIT_EXITED_VEHICLE")
 	self:Refresh(MainMenuBar, PlayerFrame)
 end
 

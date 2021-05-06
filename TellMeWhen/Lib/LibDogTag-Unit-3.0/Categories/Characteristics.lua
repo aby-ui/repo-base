@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -17,17 +17,12 @@ DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 
 local L = DogTag_Unit.L
 
--- Pre 3.2.0 compatability support
-local wow_320 = select(4, GetBuildInfo()) >= 30200
-local wow_700 = select(4, GetBuildInfo()) >= 70000
-local wow_800 = select(4, GetBuildInfo()) >= 80000
-local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local GetQuestDifficultyColor
-if not wow_320 and not wow_classic then
-	GetQuestDifficultyColor = _G.GetDifficultyColor
-else
-	GetQuestDifficultyColor = _G.GetQuestDifficultyColor
-end
+local wow_build = select(4, GetBuildInfo())
+local wow_800 = wow_build >= 80000
+-- The mere presence of WOW_PROJECT_ID tells us how "modern" the client is.
+local WOW_PROJECT_ID = _G.WOW_PROJECT_ID
+
+local GetQuestDifficultyColor = GetQuestDifficultyColor or GetDifficultyColor
 
 DogTag:AddTag("Unit", "IsFriend", {
 	code = function(unit)
@@ -186,7 +181,7 @@ local function Class(unit)
 	if UnitIsPlayer(unit) then
 		return UnitClass(unit) or UNKNOWN
 	else
-		if wow_800 then
+		if wow_800 or WOW_PROJECT_ID then
 			local classbase, classindex = UnitClassBase(unit)
 			return classbase and GetClassInfo(classindex) or UNKNOWN
 		else
@@ -552,7 +547,11 @@ DogTag:AddTag("Unit", "HostileColor", {
 				-- either enemy or friend, no violence
 				r, g, b = unpack(DogTag.__colors.civilian)
 			end
-		elseif (not wow_700 and not wow_classic and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) or ((wow_700 or wow_classic) and UnitIsTapDenied(unit)) or UnitIsDead(unit) then
+		elseif
+			(UnitIsTapDenied and UnitIsTapDenied(unit)) or
+			(UnitIsTapped and UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) or
+			UnitIsDead(unit) 
+		then
 			r, g, b = unpack(DogTag.__colors.tapped)
 		else
 			local reaction = UnitReaction(unit, "player")

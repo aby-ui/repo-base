@@ -20,7 +20,6 @@ local L = WeakAuras.L
 local displayButtons = WeakAuras.displayButtons
 local regionOptions = WeakAuras.regionOptions
 local tempGroup = OptionsPrivate.tempGroup
-local prettyPrint = WeakAuras.prettyPrint
 local aceOptions = {}
 
 local function CreateDecoration(frame)
@@ -708,6 +707,27 @@ function OptionsPrivate.CreateFrame()
     frame.addonsButton = addonsButton
   end
 
+  local pendingImportButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingImportButton:SetText(L["Ready to Import"])
+  pendingImportButton:Disable()
+  pendingImportButton:EnableExpand()
+  if odb.pendingImportCollapse then
+    pendingImportButton:Collapse()
+  else
+    pendingImportButton:Expand()
+  end
+  pendingImportButton:SetOnExpandCollapse(function()
+    if pendingImportButton:GetExpanded() then
+      odb.pendingImportCollapse = nil
+    else
+      odb.pendingImportCollapse = true
+    end
+    WeakAuras.SortDisplayButtons()
+  end)
+  pendingImportButton:SetExpandDescription(L["Expand all Pending Import"])
+  pendingImportButton:SetCollapseDescription(L["Collapse all Pending Import"])
+  frame.pendingImportButton = pendingImportButton
+
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   loadedButton:SetText(L["Loaded"])
   loadedButton:Disable()
@@ -854,10 +874,8 @@ function OptionsPrivate.CreateFrame()
         data = tempGroup
       end
 
-      if data.controlledChildren then
-        for _, id in ipairs(data.controlledChildren) do
-          frame:ClearOptions(id)
-        end
+      for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+        frame:ClearOptions(child.id)
       end
     end
     if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)

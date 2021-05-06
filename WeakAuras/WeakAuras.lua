@@ -139,18 +139,6 @@ end
 
 if not WeakAuras.IsCorrectVersion() then return end
 
-function Private.ApplyToDataOrChildData(data, func, ...)
-  if data.controlledChildren then
-    for index, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      func(childData, ...)
-    end
-    return true
-  else
-    func(data, ...)
-  end
-end
-
 function Private.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
@@ -750,7 +738,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() or WeakAuras.IsBC() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -1089,7 +1077,7 @@ loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 else
@@ -1357,7 +1345,7 @@ local function GetInstanceTypeAndSize()
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
     else
-      if not WeakAuras.IsClassic() then
+      if WeakAuras.IsRetail() then
         if size == "arena" then
           if C_PvP.IsRatedArena() and not IsArenaSkirmish() then
             size = "ratedarena"
@@ -1433,7 +1421,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local inEncounter = encounter_id ~= 0;
   local alive = not UnitIsDeadOrGhost('player')
 
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() or WeakAuras.IsBC() then
     local raidID = UnitInRaid("player")
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
@@ -1468,7 +1456,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local group = WeakAuras.GroupType()
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
-  if not WeakAuras.IsClassic() then
+  if WeakAuras.IsRetail() then
     effectiveLevel = UnitEffectiveLevel("player")
     affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
     warmodeActive = C_PvP.IsWarModeDesired();
@@ -1484,7 +1472,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      if WeakAuras.IsClassic() then
+      if not WeakAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
       else
@@ -1554,7 +1542,7 @@ WeakAuras.frames["Display Load Handling"] = loadFrame;
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
@@ -1589,7 +1577,7 @@ WeakAuras.unitLoadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
@@ -5055,7 +5043,7 @@ function WeakAuras.FindUnusedId(prefix)
 end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  if WeakAuras.IsClassic() then
+  if not WeakAuras.IsRetail() then
     if isDisplayInfo then
       pcall(frame.SetDisplayInfo, frame, tonumber(model_path))
     elseif isUnit then
@@ -5310,3 +5298,81 @@ end
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
+
+do
+  local function shouldInclude(data, includeGroups, includeLeafs)
+    if data.controlledChildren then
+      return includeGroups
+    else
+      return includeLeafs
+    end
+  end
+
+  local function Traverse(data, includeSelf, includeGroups, includeLeafs)
+    if includeSelf and shouldInclude(data, includeGroups, includeLeafs) then
+      coroutine.yield(data)
+    end
+
+    if data.controlledChildren then
+      for _, children in ipairs(data.controlledChildren) do
+        Traverse(WeakAuras.GetData(children), true, includeGroups, includeLeafs)
+      end
+    end
+  end
+
+  local function TraverseLeafs(data)
+    return Traverse(data, false, false, true)
+  end
+
+  local function TraverseLeafsOrAura(data)
+    return Traverse(data, true, false, true)
+  end
+
+  local function TraverseGroups(data)
+    return Traverse(data, true, true, false)
+  end
+
+  local function TraverseSubGroups(data)
+    return Traverse(data, false, true, false)
+  end
+
+  local function TraverseAllChildren(data)
+    return Traverse(data, false, true, true)
+  end
+
+  local function TraverseAll(data)
+    return Traverse(data, true, true, true)
+  end
+
+  -- Only non-group auras, not include self
+  function Private.TraverseLeafs(data)
+    return coroutine.wrap(TraverseLeafs), data
+  end
+
+  -- The root if it is a non-group, otherwise non-group childrens
+  function Private.TraverseLeafsOrAura(data)
+    return coroutine.wrap(TraverseLeafsOrAura), data
+  end
+
+  -- All groups, includes self
+  function Private.TraverseGroups(data)
+    return coroutine.wrap(TraverseGroups), data
+  end
+
+  -- All groups, excludes self
+  function Private.TraverseSubGroups(data)
+    return coroutine.wrap(TraverseSubGroups), data
+  end
+
+  -- All Children, excludes self
+  function Private.TraverseAllChildren(data)
+    return coroutine.wrap(TraverseAllChildren), data
+  end
+
+  -- All Children and self
+  function Private.TraverseAll(data)
+    return coroutine.wrap(TraverseAll), data
+  end
+end
+
+

@@ -170,6 +170,8 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Collapse"] = "折叠"
 	L["Collapse all loaded displays"] = "折叠所有载入的图示"
 	L["Collapse all non-loaded displays"] = "折叠所有未载入的图示"
+	--[[Translation missing --]]
+	L["Collapse all Pending Import"] = "Collapse all Pending Import"
 	L["Collapsible Group"] = "可折叠的组"
 	L["color"] = "颜色"
 	L["Color"] = "颜色"
@@ -301,6 +303,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Expand"] = "展开"
 	L["Expand all loaded displays"] = "展开所有载入的图示"
 	L["Expand all non-loaded displays"] = "展开所有未载入的图示"
+	--[[Translation missing --]]
+	L["Expand all Pending Import"] = "Expand all Pending Import"
 	L["Expansion is disabled because this group has no children"] = "由于此组没有子项目，所以无法进行扩展"
 	L["Export to Lua table..."] = "导出为 Lua 表格..."
 	L["Export to string..."] = "导出为字符串"
@@ -557,6 +561,8 @@ Supports multiple entries, separated by commas
 	L["Put this display in a group"] = "将此显示内容放到组中"
 	L["Radius"] = "半径"
 	L["Raid Role"] = "团队角色"
+	--[[Translation missing --]]
+	L["Ready to Import"] = "Ready to Import"
 	L["Re-center X"] = "到中心 X 偏移"
 	L["Re-center Y"] = "到中心 Y 偏移"
 	L["Regions of type \"%s\" are not supported."] = "%s 区域类型不被支持。"

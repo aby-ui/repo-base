@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = 90000 + (tonumber(("20210321163916"):match("%d+")) or 33333333333333)
+local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -20,8 +20,7 @@ local UnitGUID = UnitGUID
 local IsNormalUnit = DogTag_Unit.IsNormalUnit
 
 local wow_ver = select(4, GetBuildInfo())
-local wow_classic = WOW_PROJECT_ID and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local wow_800 = wow_ver >= 80000
+local cast_api_has_ranks = wow_ver < 80000 and WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 
 local playerGuid = nil
 DogTag:AddEventHandler("Unit", "PLAYER_LOGIN", function()
@@ -47,14 +46,22 @@ DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
 		
 		local spell, rank, displayName, icon, startTime, endTime
 		local channeling = false
-		if wow_800 then
-			spell, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
-			rank = nil
-			if not spell then
-				spell, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
-				channeling = true
+		if UnitCastingInfo then
+			if cast_api_has_ranks then
+				spell, rank, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
+				if not spell then
+					spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
+					channeling = true
+				end
+			else
+				spell, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
+				rank = nil
+				if not spell then
+					spell, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
+					channeling = true
+				end
 			end
-		elseif wow_classic then
+		elseif CastingInfo then
 			-- Classic only has an API for player spellcasts. No API for arbitrary units.
 			if unit == "player" then
 				spell, displayName, icon, startTime, endTime = CastingInfo()
@@ -63,12 +70,6 @@ DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
 					spell, displayName, icon, startTime, endTime = ChannelInfo()
 					channeling = true
 				end
-			end
-		else
-			spell, rank, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
-			if not spell then
-				spell, rank, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
-				channeling = true
 			end
 		end
 
@@ -196,7 +197,7 @@ DogTag:AddEventHandler("Unit", "EventRequested", function(_, event)
 		
 		-- The purpose of this event is to predict the next spell target.
 		-- This seems to be removed in at least wow_800
-		if unit == "player" and not wow_800 then
+		if unit == "player" and cast_api_has_ranks then
 			nextSpell = spell
 			nextRank = rank and tonumber(rank:match("%d+"))
 			nextTarget = target ~= "" and target or nil

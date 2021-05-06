@@ -3,7 +3,6 @@ local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
-local prettyPrint = WeakAuras.prettyPrint
 
 local LCD
 if WeakAuras.IsClassic() then
@@ -169,6 +168,7 @@ local blockedFunctions = {
   GuildDisband = true,
   GuildUninvite = true,
   securecall = true,
+  DeleteCursorItem = true,
 }
 
 local blockedTables = {

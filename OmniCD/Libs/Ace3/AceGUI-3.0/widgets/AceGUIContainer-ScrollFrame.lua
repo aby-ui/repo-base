@@ -143,7 +143,7 @@ local methods = {
 			end
 
 			if height > 0 then
-				local thumbHeight = min( height*0.8, (height^2) / viewheight )
+				local thumbHeight = min( height*0.5, (height^2) / viewheight )
 				self.scrollbar.ThumbTexture:SetHeight(thumbHeight)
 			end
 

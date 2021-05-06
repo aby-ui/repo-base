@@ -20,7 +20,7 @@
 ## X-Curse-Project-ID: 8025
 ## X-WoWI-ID: 10855
 
-## Version: 9.0.6
+## Version: 9.0.7
 ## Author: Cybeloras of Aerie Peak
 
 ## Notes: Provides visual, auditory, and textual notifications about cooldowns, buffs, and pretty much every other element of combat.
@@ -38,6 +38,7 @@
 ## X-Embeds: LibStub, Ace3, LibSharedMedia-3.0, LibDataBroker-1.1, DRList-1.0, LibDogTag-3.0, LibDogTag-Unit-3.0, LibDogTag-Stats-3.0, LibSpellRange-1.0, LibOO-1.0, LibRangeCheck-2.0, LibBabble-CreatureType-3.0, LibBabble-Race-3.0
 ## X-Category: Combat
 
+#@no-lib-strip@
 #Lib\LibStub\LibStub.lua
 #Lib\CallbackHandler-1.0\CallbackHandler-1.0.xml
 Lib\LibOO-1.0\LibOO-1.0.lua
@@ -63,6 +64,7 @@ Lib\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
 Lib\LibBabble-CreatureType-3.0\LibBabble-3.0.lua
 Lib\LibBabble-CreatureType-3.0\LibBabble-CreatureType-3.0.lua
 Lib\LibBabble-Race-3.0\LibBabble-Race-3.0.lua
+#@end-no-lib-strip@
 
 Localization\TellMeWhen-enUS.lua
 Localization\TellMeWhen-zhCN.lua

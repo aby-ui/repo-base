@@ -34,6 +34,18 @@ acetimer:ScheduleTimer(function()
 			RequestTimePlayed()
 		end, 60)
 
+local function formatTime(time)
+  local days = floor(time/86400)
+  local hours = floor(mod(time, 86400)/3600)
+  local minutes = floor(mod(time,3600)/60)
+  --return format("%d d %d h %d m", days, hours, minutes)
+	if days > 0 then
+		return format("%d|cffffd200d|r %d|cffffd200h|r %d|cffffd200m|r", days, hours, minutes)
+	else
+		return format("%d|cffffd200h|r %d|cffffd200m|r", hours, minutes)
+	end
+end
+
 function dataobj:OnTooltipShow()
 	RequestTimePlayed()
 	self:AddLine("PlayedTime")
@@ -59,7 +71,7 @@ local function getPlayerIdentifier()
 end
 
 local function GetMaxLevelForPlayerExpansion()
-	return ChocolateBar and ChocolateBar.isClassicWoW and 60 or _G.GetMaxLevelForPlayerExpansion()
+	return not ChocolateBar:IsRetail() and 60 or _G.GetMaxLevelForPlayerExpansion()
 end
 
 local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
@@ -75,19 +87,6 @@ local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
 		dataobj.label = "Time On Level"
 	end
 end
-
-function formatTime(time)
-  local days = floor(time/86400)
-  local hours = floor(mod(time, 86400)/3600)
-  local minutes = floor(mod(time,3600)/60)
-  --return format("%d d %d h %d m", days, hours, minutes)
-	if days > 0 then
-		return format("%d|cffffd200d|r %d|cffffd200h|r %d|cffffd200m|r", days, hours, minutes)
-	else
-		return format("%d|cffffd200h|r %d|cffffd200m|r", hours, minutes)
-	end
-end
-
 
 local frame2 = CreateFrame("Frame")
 

@@ -1,3 +1,5 @@
+-- Comments stripped
+
 local E, L, C = select(2, ...):unpack()
 
 local _G = _G
@@ -42,7 +44,7 @@ local userGUID = E.userGUID
 local BOOKTYPE_CATEGORY = E.BOOKTYPE_CATEGORY
 local SPELL_AVATAR = 107574
 local SPELL_FEIGN_DEATH = 5384
---local DEBUFF_HEARTSTOP_AURA = 214975 -- Blizzard changed this and no longer fires any CLEU
+
 
 local _
 local isUserDisabled -- [82]
@@ -284,7 +286,7 @@ local function ProcessSpell(spellID, guid)
 			end
 		end
 
-		if isSync and isUser and spellID == 315341 and icon and icon.active then
+		if isSync and isUser and spellID == 315341 and icon and icon.active then -- [45] BTE
 			local reducedTime = E.Comms.spentPower
 			if reducedTime then
 				P:UpdateCooldown(icon, isTrueBearing and reducedTime * 2 or reducedTime)
@@ -308,7 +310,7 @@ for k in pairs(spell_highlighted) do
 end
 
 function CD:RegisterRemoveHighlightByCLEU(spellID)
-	if not registeredEvents.SPELL_AURA_REMOVED[spellID] then
+	if not registeredEvents.SPELL_AURA_REMOVED[spellID] then -- [38]
 		registeredEvents.SPELL_AURA_REMOVED[spellID] = RemoveHighlightByCLEU
 	end
 end
@@ -478,7 +480,6 @@ end
 
 
 
-
 do
 	local BLOOD_TAP = 221699
 	local DANCING_RUNE_WEAPON = 49028
@@ -619,7 +620,6 @@ end
 
 
 
-
 do
 	local FRENZIED_REGEN = 22842
 
@@ -648,8 +648,6 @@ do
 	end
 
 end
-
-
 
 
 
@@ -707,7 +705,6 @@ registeredEvents.SPELL_DAMAGE[236777] = ReduceDisengageCD
 
 
 
-
 do
 	local ARCANE_PRODIGY = 336873
 	local ARCANE_POWER = 12042
@@ -750,11 +747,16 @@ end
 do
 	local ICY_VEINS = 12472
 
-	local removeIcyVeins = function(info, srcGUID, spellID, destGUID)
+	CD.removeIcyVeins = function(info, srcGUID, spellID, destGUID)
 		info = groupInfo[srcGUID]
-		if info and info.auras.isIcyPropulsion then
-			info.auras.isIcyPropulsion = nil
-			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
+		if info then
+			local duration = P:GetBuffDuration(info.unit, ICY_VEINS)
+			if duration then
+				E.TimerAfter(duration + 0.1, CD.removeIcyVeins, nil, srcGUID, spellID, destGUID)
+			elseif info.auras.isIcyPropulsion then
+				info.auras.isIcyPropulsion = nil
+				RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
+			end
 		end
 	end
 	registeredEvents.SPELL_AURA_REMOVED[ICY_VEINS] = function(info, srcGUID, spellID, destGUID)
@@ -764,7 +766,7 @@ do
 	registeredEvents.SPELL_AURA_APPLIED[ICY_VEINS] = function(info, srcGUID, spellID, destGUID)
 		if info.spellIcons[ICY_VEINS] and info.talentData[336522] then
 			info.auras.isIcyPropulsion = true
-			E.TimerAfter(20.1, removeIcyVeins, nil, srcGUID, spellID, destGUID)
+			E.TimerAfter(20.1, CD.removeIcyVeins, nil, srcGUID, spellID, destGUID)
 		end
 	end
 end
@@ -807,10 +809,11 @@ registeredEvents.SPELL_AURA_REMOVED[342246] = function(info, srcGUID, spellID, d
 	RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 end
 
--- Cache Phoenix Flame main target
+
 registeredEvents.SPELL_CAST_SUCCESS[257541] = function(info, _,_, destGUID)
 	info.auras.phoenixFlameTargetGUID = destGUID
 end
+
 
 
 
@@ -853,7 +856,6 @@ registeredEvents.SPELL_AURA_REMOVED[310454] = function(info, srcGUID, spellID, d
 	info.auras.isWeaponsOfOrder = nil
 	RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 end
-
 
 
 
@@ -918,7 +920,6 @@ end
 
 
 
-
 do
 	local APOTHEOSIS = 200183
 
@@ -943,7 +944,8 @@ end
 do
 	local GUARDIAN_SPIRIT = 47788
 
-	registeredEvents.SPELL_AURA_REMOVED[GUARDIAN_SPIRIT] = function(info, srcGUID, spellID, destGUID)
+	local onGSRemoval = function(srcGUID, spellID, destGUID)
+		local info = groupInfo[srcGUID]
 		local icon = info.spellIcons[GUARDIAN_SPIRIT]
 		if icon then
 			if info.auras.isSavedByGS then
@@ -954,6 +956,11 @@ do
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
 	end
+
+	registeredEvents.SPELL_AURA_REMOVED[GUARDIAN_SPIRIT] = function(info, srcGUID, spellID, destGUID)
+		E.TimerAfter(0.1, onGSRemoval, srcGUID, spellID, destGUID)
+	end
+
 
 	registeredEvents.SPELL_HEAL[48153] = function(info)
 		if info.spellIcons[GUARDIAN_SPIRIT] then
@@ -1089,7 +1096,7 @@ end
 do
 	local TRICKS_OT_TRADE = 57934
 
-	registeredEvents.SPELL_AURA_REMOVED[TRICKS_OT_TRADE] = function(info)
+	registeredEvents.SPELL_AURA_REMOVED[TRICKS_OT_TRADE] = function(info) -- [51]
 		local icon = info.spellIcons[TRICKS_OT_TRADE]
 		if icon then
 			local statusBar = icon.statusBar
@@ -1129,7 +1136,6 @@ registeredEvents.SPELL_AURA_REMOVED[328305] = function(info)
 		end
 	end
 end
-
 
 
 
@@ -1201,7 +1207,6 @@ end
 
 
 
-
 do
 	local SCOURING_TITHE = 312321
 
@@ -1230,7 +1235,6 @@ do
 		end
 	end
 end
-
 
 
 
@@ -1323,7 +1327,7 @@ local startSoulIgniterCD = function(srcGUID)
 	end
 end
 registeredEvents.SPELL_AURA_REMOVED[345211] = function(_, srcGUID)
-	E.TimerAfter(0.05, startSoulIgniterCD, srcGUID)
+	E.TimerAfter(0.05, startSoulIgniterCD, srcGUID) -- [56]
 end
 
 
@@ -1505,7 +1509,7 @@ do
 			info.auras.isThunderChargeSelfCast = nil
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		else
-			--UpdateCDRR(info, spellID == DEBUFF_HEARTSTOP_AURA and 0.7 or 1.3)
+
 			UpdateCDRR(info, 1.3)
 		end
 	end
@@ -1521,7 +1525,7 @@ do
 		if spellID == BENEVOLENT_FAERIE then
 			UpdateIconRR(info, 0.5)
 		elseif spellID ~= THUNDERCHARGE or srcGUID ~= destGUID then
-			--UpdateCDRR(info, spellID == DEBUFF_HEARTSTOP_AURA and 1/0.7 or 1/1.3)
+
 			UpdateCDRR(info, 1/1.3)
 		end
 	end
@@ -1533,7 +1537,7 @@ do
 	registeredEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE] = RemoveModRate
 	registeredEvents.SPELL_AURA_REMOVED[THUNDERCHARGE] = RemoveModRate
 	registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = function(info, srcGUID, spellID, destGUID)
-		if srcGUID == destGUID then -- never userevent
+		if srcGUID == destGUID then
 			info.auras.isThunderChargeSelfCast = true
 			UpdateCDRR(info, 1/1.7)
 		else
@@ -1541,13 +1545,13 @@ do
 			if destInfo then
 				UpdateCDRR(destInfo, 1/1.3)
 			end
-			if info then -- userevent srcInfo is nil
+			if info then
 				UpdateCDRR(info, 1/1.3)
 			end
 		end
 	end
 
-	registeredUserEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate -- TODO: 30s duration. cache aura and add backup timer
+	registeredUserEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BLESSING_OF_AUTUMN] = RemoveModRate
 	registeredUserEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE] = RemoveModRate
@@ -1555,13 +1559,13 @@ do
 	registeredUserEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE]
 
 
-	--registeredHostileEvents.SPELL_AURA_APPLIED[DEBUFF_HEARTSTOP_AURA] = UpdateModRate
-	--registeredHostileEvents.SPELL_AURA_REMOVED[DEBUFF_HEARTSTOP_AURA] = RemoveModRate
+
+
 end
 
 
-local function ReduceEvasionCD(destInfo, _, spellID, _,_, missType)
-	if missType ~= "DODGE" and spellID ~= "DODGE" then
+local function ReduceEvasionCD(destInfo, _,_, missType)
+	if missType ~= "DODGE" then
 		return
 	end
 
@@ -1577,9 +1581,9 @@ local function ReduceEvasionCD(destInfo, _, spellID, _,_, missType)
 		end
 	end
 end
-registeredHostileEvents.SWING_MISSED.ROGUE = ReduceEvasionCD
+registeredHostileEvents.SWING_MISSED.ROGUE = function(destInfo, _, spellID) ReduceEvasionCD(destInfo, nil, nil, spellID) end
+registeredHostileEvents.RANGE_MISSED.ROGUE = ReduceEvasionCD
 registeredHostileEvents.SPELL_MISSED.ROGUE = ReduceEvasionCD
-
 
 do
 	local removeVoidForm = function(srcGUID, spellID, destGUID)
@@ -1593,7 +1597,7 @@ do
 		info.auras.isVoidForm = nil
 		RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 	end
-	registeredEvents.SPELL_AURA_APPLIED[194249] = function(info)
+	registeredEvents.SPELL_AURA_APPLIED[194249] = function(info, srcGUID, spellID, destGUID)
 		if info.spellIcons[228260] then
 			info.auras.isVoidForm = true
 			E.TimerAfter(15.1, removeVoidForm, srcGUID, spellID, destGUID)
@@ -1623,7 +1627,7 @@ do
 end
 
 
-local function ReduceUnendingResolveCD(destInfo, _, spellID, _, destName, amount)
+local function ReduceUnendingResolveCD(destInfo, destName, _, amount)
 	local rankValue = destInfo.talentData[339272]
 	if rankValue then
 		local icon = destInfo.spellIcons[104773]
@@ -1639,7 +1643,7 @@ local function ReduceUnendingResolveCD(destInfo, _, spellID, _, destName, amount
 		end
 	end
 end
-registeredHostileEvents.SWING_DAMAGE.WARLOCK = function(destInfo, _, spellID, _, destName) ReduceUnendingResolveCD(destInfo, destName, spellID) end
+registeredHostileEvents.SWING_DAMAGE.WARLOCK = function(destInfo, destName, spellID) ReduceUnendingResolveCD(destInfo, destName, nil, spellID) end
 registeredHostileEvents.RANGE_DAMAGE.WARLOCK = ReduceUnendingResolveCD
 registeredHostileEvents.SPELL_DAMAGE.WARLOCK = ReduceUnendingResolveCD
 
@@ -1675,12 +1679,12 @@ function CD:COMBAT_LOG_EVENT_UNFILTERED()
 			return
 		end
 
-		local func = registeredHostileEvents[event] and (registeredHostileEvents[event][spellID] or registeredHostileEvents[event][destInfo.class])
+		local func = registeredHostileEvents[event] and registeredHostileEvents[event][destInfo.class]
 		if func then
-			func(destInfo, srcGUID, spellID, destGUID, destName, amount)
+			func(destInfo, destName, spellID, amount)
 		end
 	elseif band(srcFlags, player) > 0 then
-		if band(srcFlags, mine) > 0 and isUserDisabled then -- [82]
+		if band(srcFlags, mine) > 0 and isUserDisabled then -- [17] [82]
 			local func = registeredUserEvents[event] and registeredUserEvents[event][spellID]
 			if func and destGUID ~= userGUID then
 				func(nil, srcGUID, spellID, destGUID)

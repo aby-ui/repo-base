@@ -1,7 +1,7 @@
 ## Interface: 90005
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 3.2.3
+## Version: 3.3.0
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
@@ -18,14 +18,17 @@
 ## SavedVariables: WeakAurasSaved
 ## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0
 
-# external code + initialization
+# External code + initialization
 embeds.xml
+
+# Client flavor specific libs
+
 Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
-# core files
+# Core files
 Prototypes.lua
 Types.lua
 Profiling.lua
@@ -36,14 +39,14 @@ Modernize.lua
 Animations.lua
 Conditions.lua
 
-# trigger systems
+# Trigger systems
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 AuraWarnings.lua
 AuraEnvironment.lua
 
-# region support
+# Region support
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
 RegionTypes\Texture.lua
@@ -55,14 +58,14 @@ RegionTypes\DynamicGroup.lua
 RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
-# sub region support
+# Sub-region support
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\BarModel.lua
 
-# misc
+# Misc
 Legendaries.lua
 
 

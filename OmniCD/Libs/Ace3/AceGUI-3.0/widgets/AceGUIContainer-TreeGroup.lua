@@ -568,7 +568,7 @@ local methods = {
 		else
 			local viewheight = DEFAULT_TAB_HEIGHT * numlines
 			if height > 0 then
-				local thumbHeight = min( height*0.7, (height^2) / viewheight )
+				local thumbHeight = min( height*0.5, (height^2) / viewheight )
 				self.scrollbar.ThumbTexture:SetHeight(thumbHeight)
 			end
 

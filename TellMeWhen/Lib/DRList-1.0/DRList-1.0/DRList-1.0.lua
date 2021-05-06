@@ -3,14 +3,14 @@ Name: DRList-1.0
 Description: Diminishing returns database. Fork of DRData-1.0.
 Website: https://www.curseforge.com/wow/addons/drlist-1-0
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: v1.1.12
+Version: v1.2.3
 Dependencies: LibStub
 License: MIT
 ]]
 
 --- DRList-1.0
 -- @module DRList-1.0
-local MAJOR, MINOR = "DRList-1.0", 20
+local MAJOR, MINOR = "DRList-1.0", 22
 local Lib = assert(LibStub, MAJOR .. " requires LibStub."):NewLibrary(MAJOR, MINOR)
 if not Lib then return end -- already loaded
 
@@ -36,6 +36,9 @@ L["RANDOM_STUNS"] = "Random stuns"
 L["MIND_CONTROL"] = GetSpellInfo(605) or "Mind Control"
 L["FROST_SHOCK"] = GetSpellInfo(8056) or GetSpellInfo(196840) or "Frost Shock"
 L["KIDNEY_SHOT"] = GetSpellInfo(408) or "Kidney Shot"
+L["SLEEPS"] = GetSpellInfo(1090) or "Sleeps"
+L["DEATH_COIL"] = GetSpellInfo(27223) or GetSpellInfo(47541) or "Death Coil"
+L["UNSTABLE_AFFLICTION"] = GetSpellInfo(31117) or "Unstable Affliction"
 
 -- luacheck: push ignore 542
 local locale = GetLocale()
@@ -126,9 +129,8 @@ do
     local expansions = {
         [WOW_PROJECT_MAINLINE] = "retail",
         [WOW_PROJECT_CLASSIC] = "classic",
-        [WOW_PROJECT_TBC or 3] = "tbc",
+        [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "tbc",
     }
-
     Lib.gameExpansion = expansions[WOW_PROJECT_ID] or "unknown"
 end
 
@@ -168,7 +170,6 @@ Lib.categoryNames = {
 
     classic = {
         ["incapacitate"] = L.INCAPACITATES,
-        ["silence"] = L.SILENCES,
         ["stun"] = L.STUNS, -- controlled stun
         ["root"] = L.ROOTS, -- controlled root
         ["random_stun"] = L.RANDOM_STUNS, -- random proc stun, usually short (<3s)
@@ -179,11 +180,24 @@ Lib.categoryNames = {
         ["kidney_shot"] = L.KIDNEY_SHOT,
     },
 
-    tbc = {},
+    tbc = {
+        ["disorient"] = L.DISORIENTS,
+        ["incapacitate"] = L.INCAPACITATES,
+        ["stun"] = L.STUNS,
+        ["random_stun"] = L.RANDOM_STUNS,
+        ["root"] = L.ROOTS,
+        ["disarm"] = L.DISARMS,
+        ["sleep"] = L.SLEEPS,
+        ["fear"] = L.FEARS,
+        ["mind_control"] = L.MIND_CONTROL,
+        ["kidney_shot"] = L.KIDNEY_SHOT,
+        ["death_coil"] = L.DEATH_COIL,
+        ["unstable_affliction"] = L.UNSTABLE_AFFLICTION,
+    },
 }
 
--- Categories that have DR against mobs (not player pets).
--- Note that only elites and quest bosses have DR on all categories.
+-- Categories that have DR against normal mobs (not player pets).
+-- Note that elites and quest bosses have DR on ALL categories.
 -- Normal mobs only have a stun and taunt DR.
 Lib.categoriesPvE = {
     retail = {
@@ -199,6 +213,7 @@ Lib.categoriesPvE = {
 
     tbc = {
         ["stun"] = L.STUNS,
+        ["kidney_shot"] = L.KIDNEY_SHOT,
     },
 }
 

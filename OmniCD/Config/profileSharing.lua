@@ -15,7 +15,7 @@ PS.profileTypeValues = {
 local ProfileValues = function() return E.DB:GetProfiles(tbl) end
 
 local ProfileSharing = {
-	name = title .. "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t",
+	name = title,
 	order = -1,
 	type = "group",
 	args = {

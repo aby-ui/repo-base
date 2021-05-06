@@ -71,7 +71,7 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
+local UnitGroupRolesAssigned = WeakAuras.IsRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -1631,6 +1631,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       end
     end
   elseif event == "GROUP_ROSTER_UPDATE" then
+    unitVisible = {}
     local unitsToCheck = {}
     for unit in GetAllUnits("group", true) do
       RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
@@ -1683,7 +1684,9 @@ frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  if WeakAuras.IsRetail() then
+    frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  end
   frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
   frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 else

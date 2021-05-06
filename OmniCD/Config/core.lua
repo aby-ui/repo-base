@@ -94,10 +94,10 @@ local function GetOptions()
 							fontSize = "large",
 						},
 						pd1 = {
-							name = "\n\n\n\n", order = 0.5, type = "description",
+							name = "\n\n\n", order = 0.5, type = "description",
 						},
 						pd2 = {
-							name = "\n\n\n", order = 10, type = "description",
+							name = "\n\n", order = 10, type = "description",
 						},
 						loginMsg = {
 							name = L["Login Message"],
@@ -110,32 +110,50 @@ local function GetOptions()
 							order = 12,
 							type = "toggle",
 						},
+						--[[ opt scale
+						-- slider fret. parent frame or toggle or auto adjust to 0.8 if UI < 0.65
+						optionScale = {
+							name = "Option Scale",
+							order = 13,
+							type = "range",
+							min = 0.5, max = 1.5, step = 0.1,
+							set = function(info, value)
+								E.DB.profile.optionScale = value
+
+								local f = E.Libs.ACD.OpenFrames.OmniCD.frame
+								if f then
+									f:SetScale(value)
+									-- TODO: update dackdrop
+								end
+							end,
+						},
+						--]]
 						pd3 = {
-							name = "\n", order = 13, type = "description",
+							name = "\n", order = 14, type = "description",
 						},
 						notice = {
 							image = "Interface\\AddOns\\OmniCD\\Media\\omnicd-recent", imageWidth = 32, imageHeight = 16, imageCoords = { 0.13, 1.13, 0.25, 0.75 },
 							name = " ",
-							order = 14,
+							order = 15,
 							type = "description",
 						},
 						notice1 = {
 							name = "|cffff2020 " .. L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."],
-							order = 15,
+							order = 16,
 							type = "description",
 						},
 						notice2 = {
 							name = "|cffff2020 " .. L["Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."],
-							order = 16,
+							order = 17,
 							type = "description",
 						},
 						notice3 = {
 							name = "|cffff2020 " .. L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."],
-							order = 17,
+							order = 18,
 							type = "description",
 						},
 						pd4 = {
-							name = "\n", order = 18, type = "description",
+							name = "\n", order = 19, type = "description",
 						},
 						changelog = {
 							name = L["Changelog"],

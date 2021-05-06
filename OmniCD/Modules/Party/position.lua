@@ -13,12 +13,12 @@ local function FindAnchorFrame(guid) --[87]
 	if E.customUF.enabled and E.db.position.uf ~= "blizz" then
 		if not P.isInDungeon and GetNumGroupMembers() > 5 then return end -- MDI
 
-		for i = 1, 5 do
+		for i = 1, E.customUF.index do
 			local f = _G[E.customUF.frame .. i]
-			if f and f:GetPoint() then -- [93]
+			if f then -- [93]
 				local unit = f[E.customUF.unit]
                 if unit == nil and f.GetAttribute then unit = f:GetAttribute("unit") end
-				if unit and UnitGUID(unit) == guid then return f end
+				if unit and (E.db.position.uf ~= "HealBot" or (unit ~="target" and unit ~= "focus")) and UnitGUID(unit) == guid then return f end
 			end
 		end
 

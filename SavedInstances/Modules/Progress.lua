@@ -350,6 +350,12 @@ Module.TrackedQuest = {
       {2929, 2940}, -- The Upper Reaches
     },
   },
+  {
+    name = L["The World Awaits"],
+    weekly = true,
+    quest = 62631,
+    relatedQuest = {62631},
+  },
 }
 
 function Module:OnEnable()
@@ -421,13 +427,15 @@ function Module:OnWeeklyReset(toon)
         tbl.resetFunc(toon, i)
       else
         local prev = t.Progress[i]
-        t.Progress[i] = {
-          unlocked = prev.unlocked,
-          isComplete = false,
-          isFinish = false,
-          numFulfilled = 0,
-          numRequired = prev.numRequired,
-        }
+        if prev then
+          t.Progress[i] = {
+            unlocked = prev.unlocked,
+            isComplete = false,
+            isFinish = false,
+            numFulfilled = 0,
+            numRequired = prev.numRequired,
+          }
+        end
       end
     end
   end

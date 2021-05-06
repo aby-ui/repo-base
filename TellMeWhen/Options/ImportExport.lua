@@ -1016,7 +1016,7 @@ String.displayText = function()
 end
 String.displayDisabled = function()
 	local t = strtrim(EDITBOX:GetText())
-	return not (t ~= "" and TMW:DeserializeData(t))
+	return not (t ~= "" and TMW:DeserializeData(t, true))
 end
 String.displayDescription = L["IMPORT_FROMSTRING_DESC"]
 

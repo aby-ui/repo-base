@@ -57,7 +57,7 @@ local function SendComm(...)
 end
 
 function Comms:RequestSync()
-	wipe(self.syncGUIDS)
+	--wipe(self.syncGUIDS)
 	SendComm(MSG_INFO_REQUEST, E.syncData)
 end
 
@@ -77,10 +77,6 @@ end
 function Comms:Desync()
 	wipe(self.syncGUIDS)
 	SendComm(MSG_DESYNC, userGUID, 1)
-end
-
-local req_onTimerEnd = function(sender)
-	Comms:SendSync(sender)
 end
 
 function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
@@ -108,7 +104,6 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 		end
 		return
 	elseif header == MSG_INFO_REQUEST then
-		--E.TimerAfter(2, req_onTimerEnd, sender) -- request delay should be enough
 		self:SendSync(sender)
 	elseif header == MSG_INFO_UPDATE then
 		if not isSyncedUnit then

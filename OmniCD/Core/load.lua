@@ -46,7 +46,7 @@ function E:OnEnable()
 	--[AC] C_ChatInfo.RegisterAddonMessagePrefix("OmniCD")
 	E.Comms:RegisterComm("OmniCD", "CHAT_MSG_ADDON")
 
-	-- dummy lines to set font (2 doublelines exists as default)
+	-- 15 dummy lines to set font (2 doublelines exists as default)
 	for i = 1, 13 do
 		if i > 3 then
 			ACD_Tooltip:AddLine(".")
@@ -225,6 +225,13 @@ function E:CreateFontObjects()
 	self.GameFontNormalSmall:CopyFontObject("GameFontNormalSmall")
 	self.GameFontHighlightSmall = CreateFont("GameFontHighlightSmall-OmniCD")
 	self.GameFontHighlightSmall:CopyFontObject("GameFontHighlightSmall")
+
+	self.IconFont = CreateFont("IconFont-OmniCD")
+	self.IconFont:CopyFontObject("GameFontHighlightSmallOutline")
+	self.AnchorFont = CreateFont("AnchorFont-OmniCD")
+	self.AnchorFont:CopyFontObject("GameFontNormal")
+	self.StatusBarFont = CreateFont("StatusBarFont-OmniCD")
+	self.StatusBarFont:CopyFontObject("GameFontHighlightHuge")
 end
 
 function E:UpdateFontObjects()
@@ -242,8 +249,11 @@ function E:UpdateFontObjects()
 	self.SetFont(self.GameFontNormal, optionFont)
 	self.SetFont(self.GameFontHighlight, optionFont)
 	self.SetFont(self.GameFontDisabled, optionFont)
-
 	local optionFontSmall = self.profile.General.fonts.optionSmall
 	self.SetFont(self.GameFontNormalSmall, optionFontSmall)
 	self.SetFont(self.GameFontHighlightSmall, optionFontSmall)
+
+	self.SetFont(self.AnchorFont, self.profile.General.fonts.anchor)
+	self.SetFont(self.IconFont, self.profile.General.fonts.icon)
+	self.SetFont(self.StatusBarFont, self.profile.General.fonts.statusBar)
 end

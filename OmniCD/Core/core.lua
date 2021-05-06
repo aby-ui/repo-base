@@ -290,8 +290,8 @@ do
 	end
 
 	E.UpdateBackdrops = function()
-		for frame in pairs(backdropFrames) do
-			E.BackdropTemplate(frame)
+		for frame, backdrop in pairs(backdropFrames) do
+			-- TODO: update Ace backdrop for opt scale
 		end
 	end
 end

@@ -5,7 +5,7 @@ U1RegisterAddon("OmniCD", {
     --optdeps = { "Grid", "CompactRaid", "ShadowedUnitFrames" },
 
     tags = { TAG_COMBATINFO, },
-    icon = [[Interface\AddOns\OmniCD\Media\logo64]],
+    icon = [[Interface\AddOns\OmniCD\Media\omnicd-logo64]],
 
     desc = "在小队框架或独立显示队友的打断爆发等重要技能冷却计时，部分功能和ExRT重复。",
     toggle = function(name, info, enable, justload)

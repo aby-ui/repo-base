@@ -1,5 +1,5 @@
 local Lib, version = LibStub("DRList-1.0")
-if Lib.spellList and version >= 20 then return end
+if Lib.spellList and version >= 22 then return end
 
 if Lib.gameExpansion == "retail" then
 
@@ -206,6 +206,173 @@ if Lib.gameExpansion == "retail" then
 --      [287712]  = "knockback",        -- Haywire (Kul'Tiran Racial)
     }
 
+elseif Lib.gameExpansion == "tbc" then
+
+
+    -- Spells for TBC, including each rank.
+    -- Note: categories are still largely unconfirmed.
+    Lib.spellList = {
+        -- Incaps:
+        [22570] = "incapacitate", -- Maim
+        [3355]  = "incapacitate", -- Freezing Trap Effect (Rank 1)
+        [14308] = "incapacitate", -- Freezing Trap Effect (Rank 2)
+        [14309] = "incapacitate", -- Freezing Trap Effect (Rank 3)
+        [118]   = "incapacitate", -- Polymorph (Rank 1)
+        [12824] = "incapacitate", -- Polymorph (Rank 2)
+        [12825] = "incapacitate", -- Polymorph (Rank 3)
+        [28271] = "incapacitate", -- Polymorph: Turtle
+        [28272] = "incapacitate", -- Polymorph: Pig
+        [20066] = "incapacitate", -- Repentance
+        [6770]  = "incapacitate", -- Sap (Rank 1)
+        [2070]  = "incapacitate", -- Sap (Rank 2)
+        [11297] = "incapacitate", -- Sap (Rank 3)
+        [1776]  = "incapacitate", -- Gouge (Rank 1)
+        [1777]  = "incapacitate", -- Gouge (Rank 2)
+        [8629]  = "incapacitate", -- Gouge (Rank 3)
+        [11285] = "incapacitate", -- Gouge (Rank 4)
+        [11286] = "incapacitate", -- Gouge (Rank 5)
+        [38764] = "incapacitate", -- Gouge (Rank 6)
+        [13327] = "incapacitate", -- Reckless Charge (Rocket Helmet)
+
+        -- Disorients
+        [33786] = "disorient", -- Cyclone
+        [19503] = "disorient", -- Scatter Shot -- TODO: confirm category
+        [31661] = "disorient", -- Dragon's Breath (Rank 1) -- TODO: confirm category
+        [33041] = "disorient", -- Dragon's Breath (Rank 2)
+        [33042] = "disorient", -- Dragon's Breath (Rank 3)
+        [33043] = "disorient", -- Dragon's Breath (Rank 4)
+        [2094]  = "disorient", -- Blind
+
+        -- Controlled Stuns
+        [5211]  = "stun", -- Bash (Rank 1)
+        [6798]  = "stun", -- Bash (Rank 2)
+        [8983]  = "stun", -- Bash (Rank 3)
+        [9005]  = "stun", -- Pounce (Rank 1)
+        [9823]  = "stun", -- Pounce (Rank 2)
+        [9827]  = "stun", -- Pounce (Rank 3)
+        [27006] = "stun", -- Pounce (Rank 4)
+        [24394] = "stun", -- Intimidation
+        [853]   = "stun", -- Hammer of Justice (Rank 1)
+        [5588]  = "stun", -- Hammer of Justice (Rank 2)
+        [5589]  = "stun", -- Hammer of Justice (Rank 3)
+        [10308] = "stun", -- Hammer of Justice (Rank 4)
+        [1833]  = "stun", -- Cheap Shot
+        [30283] = "stun", -- Shadowfury (Rank 1)
+        [30413] = "stun", -- Shadowfury (Rank 2)
+        [30414] = "stun", -- Shadowfury (Rank 3)
+        [22703] = "stun", -- Inferno Effect
+        [12809] = "stun", -- Concussion Blow
+        [30153] = "stun", -- Intercept Stun (Rank 1)
+        [30195] = "stun", -- Intercept Stun (Rank 2)
+        [30197] = "stun", -- Intercept Stun (Rank 3)
+        [20549] = "stun", -- War Stomp (Racial)
+        [4064]  = "stun", -- Rough Copper Bomb
+        [4065]  = "stun", -- Large Copper Bomb
+        [4066]  = "stun", -- Small Bronze Bomb
+        [4067]  = "stun", -- Big Bronze Bomb
+        [4068]  = "stun", -- Iron Grenade
+        [12421] = "stun", -- Mithril Frag Bomb
+        [4069]  = "stun", -- Big Iron Bomb
+        [12562] = "stun", -- The Big One
+        [12543] = "stun", -- Hi-Explosive Bomb
+        [19769] = "stun", -- Thorium Grenade
+        [19784] = "stun", -- Dark Iron Bomb
+        [30216] = "stun", -- Fel Iron Bomb
+        [30461] = "stun", -- The Bigger One
+        [30217] = "stun", -- Adamantite Grenade
+        [13237] = "stun", -- Goblin Mortar
+        [835]   = "stun", -- Tidal Charm
+
+        -- Random/short stuns
+        [19410]   = "random_stun",  -- Improved Concussive Shot
+        [12355]   = "random_stun",  -- Impact
+        [20170]   = "random_stun",  -- Seal of Justice Stun
+        [15269]   = "random_stun",  -- Blackout
+        [18093]   = "random_stun",  -- Pyroclasm
+        [12798]   = "random_stun",  -- Revenge Stun
+        [5530]    = "random_stun",  -- Mace Stun Effect (Mace Specialization)
+        [15283]   = "random_stun",  -- Stunning Blow (Weapon Proc)
+        [56]      = "random_stun",  -- Stun (Weapon Proc)
+
+        -- Sleep Effects
+        [1090]  = "sleep", -- Sleep
+        [2637]  = "sleep", -- Hibernate (Rank 1)
+        [18657] = "sleep", -- Hibernate (Rank 2)
+        [18658] = "sleep", -- Hibernate (Rank 3)
+        [19386] = "sleep", -- Wyvern Sting (Rank 1)
+        [24132] = "sleep", -- Wyvern Sting (Rank 2)
+        [24133] = "sleep", -- Wyvern Sting (Rank 3)
+        [27068] = "sleep", -- Wyvern Sting (Rank 4)
+
+        -- Fears
+        [8122]  = "fear", -- Psychic Scream (Rank 1)
+        [8124]  = "fear", -- Psychic Scream (Rank 2)
+        [10888] = "fear", -- Psychic Scream (Rank 3)
+        [10890] = "fear", -- Psychic Scream (Rank 4)
+        [5782]  = "fear", -- Fear (Rank 1)
+        [6213]  = "fear", -- Fear (Rank 2)
+        [6215]  = "fear", -- Fear (Rank 3)
+        [6358]  = "fear", -- Seduction (Succubus)
+        [5484]  = "fear", -- Howl of Terror (Rank 1)
+        [17928] = "fear", -- Howl of Terror (Rank 2)
+        [1513]  = "fear", -- Scare Beast (Rank 1)
+        [14326] = "fear", -- Scare Beast (Rank 1)
+        [14327] = "fear", -- Scare Beast (Rank 1)
+        [5246]  = "fear", -- Intimidating Shout
+        [5134]  = "fear", -- Flash Bomb Fear
+
+        -- Roots
+        [339]   = "root", -- Entangling Roots (Rank 1)
+        [1062]  = "root", -- Entangling Roots (Rank 2)
+        [5195]  = "root", -- Entangling Roots (Rank 3)
+        [5196]  = "root", -- Entangling Roots (Rank 4)
+        [9852]  = "root", -- Entangling Roots (Rank 5)
+        [9853]  = "root", -- Entangling Roots (Rank 6)
+        [26989] = "root", -- Entangling Roots (Rank 7)
+        [19975] = "root", -- Nature's Grasp (Rank 1)
+        [19974] = "root", -- Nature's Grasp (Rank 2)
+        [19973] = "root", -- Nature's Grasp (Rank 3)
+        [19972] = "root", -- Nature's Grasp (Rank 4)
+        [19971] = "root", -- Nature's Grasp (Rank 5)
+        [19970] = "root", -- Nature's Grasp (Rank 6)
+        [27010] = "root", -- Nature's Grasp (Rank 7)
+        [16979] = "root", -- Feral Charge
+        [19306] = "root", -- Counterattack (Rank 1)
+        [20909] = "root", -- Counterattack (Rank 2)
+        [20910] = "root", -- Counterattack (Rank 3)
+        [27067] = "root", -- Counterattack (Rank 4)
+        [19185] = "root", -- Entrapment
+        [122]   = "root", -- Frost Nova (Rank 1)
+        [865]   = "root", -- Frost Nova (Rank 2)
+        [6131]  = "root", -- Frost Nova (Rank 3)
+        [10230] = "root", -- Frost Nova (Rank 4)
+        [27088] = "root", -- Frost Nova (Rank 5)
+        [33395] = "root", -- Freeze (Water Elemental)
+        [12494] = "root", -- Frostbite TODO: confirm
+        --[44047] = "root", -- Chastise TODO: confirm
+        [39965] = "root", -- Frost Grenade
+
+        -- Mind Controls
+        [605]   = "mind_control", -- Mind Control (Rank 1)
+        [10911] = "mind_control", -- Mind Control (Rank 2)
+        [10912] = "mind_control", -- Mind Control (Rank 3)
+        [13181] = "mind_control", -- Gnomish Mind Control Cap
+
+        -- Disarms
+        [41392] = "disarm", -- Riposte
+        [676]   = "disarm", -- Disarm
+
+        -- Spells that DR with itself only
+        [408]   = "kidney_shot",         -- Kidney Shot (Rank 1)
+        [8643]  = "kidney_shot",         -- Kidney Shot (Rank 2)
+        [43523] = "unstable_affliction", -- Unstable Affliction 1
+        [31117] = "unstable_affliction", -- Unstable Affliction 2
+        [6789]  = "death_coil", -- Death Coil (Rank 1)
+        [17925] = "death_coil", -- Death Coil (Rank 2)
+        [17926] = "death_coil", -- Death Coil (Rank 3)
+        [27223] = "death_coil", -- Death Coil (Rank 4)
+    }
+
 elseif Lib.gameExpansion == "classic" then
 
     -- Spell list for Classic (WIP)
@@ -230,7 +397,7 @@ elseif Lib.gameExpansion == "classic" then
         [GetSpellInfo(1833)]    = { category = "stun", spellID = 1833 },     -- Cheap Shot
         [GetSpellInfo(12809)]   = { category = "stun", spellID = 12809 },    -- Concussion Blow
         [GetSpellInfo(20253)]   = { category = "stun", spellID = 20253 },    -- Intercept Stun
-        [GetSpellInfo(7922)]    = { category = "stun", spellID = 7922 },     -- Charge Stun (Afaik this now DRs with stuns but it shouldn't? may be a bug)
+        [GetSpellInfo(7922)]    = { category = "stun", spellID = 7922 },     -- Charge Stun
         [GetSpellInfo(20549)]   = { category = "stun", spellID = 20549 },    -- War Stomp (Racial)
         [GetSpellInfo(4068)]    = { category = "stun", spellID = 4068 },     -- Iron Grenade
         [GetSpellInfo(19769)]   = { category = "stun", spellID = 19769 },    -- Thorium Grenade
@@ -289,23 +456,12 @@ elseif Lib.gameExpansion == "classic" then
         [GetSpellInfo(56)]      = { category = "random_stun", spellID = 56 },      -- Stun (Weapon Proc)
         [GetSpellInfo(21152)]   = { category = "random_stun", spellID = 21152 },   -- Earthshaker (Weapon Proc)
 
-        -- Silences (TODO: confirm category exists)
-        [GetSpellInfo(18469)]   = { category = "silence", spellID = 18469 },      -- Counterspell - Silenced
-        [GetSpellInfo(15487)]   = { category = "silence", spellID = 15487 },      -- Silence
-        [GetSpellInfo(18425)]   = { category = "silence", spellID = 18425 },      -- Kick - Silenced
-        [GetSpellInfo(24259)]   = { category = "silence", spellID = 24259 },      -- Spell Lock
-        [GetSpellInfo(18498)]   = { category = "silence", spellID = 18498 },      -- Shield Bash - Silenced
-        [GetSpellInfo(19821)]   = { category = "silence", spellID = 19821 },      -- Arcane Bomb Silence
-
         -- Spells that DRs with itself only
-        --[GetSpellInfo(19675)] = { category = "feral_charge", spellID = 19675 },  -- Feral Charge Effect
         [GetSpellInfo(408)]     = { category = "kidney_shot", spellID = 408 },     -- Kidney Shot
         [GetSpellInfo(605)]     = { category = "mind_control", spellID = 605 },    -- Mind Control
         [GetSpellInfo(13181)]   = { category = "mind_control", spellID = 13181 },  -- Gnomish Mind Control Cap
         [GetSpellInfo(8056)]    = { category = "frost_shock", spellID = 8056 },    -- Frost Shock
     }
-elseif Lib.gameExpansion == "tbc" then
-    Lib.spellList = {}
 else
     error("DRList-1.0: Unsupported game expansion loaded.")
 end

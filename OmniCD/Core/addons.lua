@@ -77,6 +77,7 @@ local unitFrameData = {
 		[2] = "HealBot_Action_HealUnit",
 		[3] = "unit",
 		[4] = 1,
+		[5] = 50,
 	},
 	{   [1] = "Cell",
 		[2] = "CellPartyFrameMember",
@@ -98,8 +99,14 @@ local unitFrameData = {
 		[3] = "unit",
 		[4] = 1,
 	},
+	{   [1] = "ShadowUF-Raid",
+		[2] = "SUFHeaderraidUnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 50,
+	},
 	{   [1] = "ShadowUF-Raid1",
-		[2] = "SUFHeaderraid1UnitButton", -- Must enable 'Raid/Visibility/Separate raid frames' in SUF
+		[2] = "SUFHeaderraid1UnitButton", -- For Group 1 with 'Separate raid frames' enabled in SUF
 		[3] = "unit",
 		[4] = 1,
 	},
@@ -151,6 +158,7 @@ function E:SetActiveUnitFrameData()
 			self.customUF.frame = enabled.frame
 			self.customUF.unit = enabled.unit
 			self.customUF.delay = enabled.delay
+			self.customUF.index = enabled.index
 		end
 		self.customUF.active = active
 	end
@@ -175,6 +183,7 @@ function E:UnitFrames()
 				["frame"] = unitFrame[2],
 				["unit"] = unitFrame[3],
 				["delay"] = unitFrame[4],
+				["index"] = unitFrame[5] or 5,
 			}
 
 			self.customUF.optionTable[name] = name
@@ -199,7 +208,7 @@ function E:UnitFrames()
 			--E.StaticPopup_Show("OMNICD_Elv_MSG")
 		end
 
-		self:SetPixelMult() -- set after addon load
+		self:SetPixelMult() -- set after addons load
 	end
 end
 

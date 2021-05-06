@@ -33,14 +33,21 @@ P.zoneEvents = {
 }
 
 do
-	local rosterTimer
 	local anchorTimer
+	local rosterTimer
+	local syncTimer
+
+	local function AnchorFix()
+		P.UpdatePosition()
+		anchorTimer = nil
+	end
 
 	local function SendRequestSync() -- [58]
 		local success = E.Comms:InspectPlayer()
 		if success then
 			E.Comms:RequestSync()
 			P.groupJoined = false
+			syncTimer = nil
 		else
 			C_Timer.After(3, SendRequestSync)
 		end
@@ -57,7 +64,7 @@ do
 			(size == 1 and P.isUserDisabled) or -- [82]
 			(GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) == 0 and not E.profile.Party.visibility.finder) or
 			(size > E.profile.Party.visibility.size) or
-			(size > 5 and not P.isInDungeon and E.customUF.enabled and E.db.position.uf ~= "blizz" and not E.db.extraBars.raidCDBar.enabled))
+			(size > 5 and not P.isInDungeon and E.customUF.enabled and E.db.position.uf ~= "blizz" and not E.db.extraBars.raidCDBar.enabled)) --> FindAnchorFrame
 		if P.disabled then
 			if oldDisabled == false then
 				P:ResetModule()
@@ -116,11 +123,11 @@ do
 					if guid ~= E.userGUID then -- [96]
 						info.bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 					end
-					info.bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unit == "player" and "pet" or unit .. "pet") -- [41]*
+					info.bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]*
 				end
 				if force then -- [37]*
 					P.pendingQueue[#P.pendingQueue + 1] = guid
-					P:UpdateUnitBar(guid)
+					P:UpdateUnitBar(guid, true)
 				end
 			elseif guid == E.userGUID then
 				if not P.isUserDisabled then -- [82]
@@ -129,7 +136,7 @@ do
 					P.groupInfo[guid].unit = unit
 					P.groupInfo[guid].petGUID = pet
 
-					P:UpdateUnitBar(guid) -- [49]
+					P:UpdateUnitBar(guid, true) -- [49]
 				end
 			elseif class then -- [32]
 				local _,_, race = UnitRace(unit)
@@ -157,7 +164,7 @@ do
 				}
 
 				P.pendingQueue[#P.pendingQueue + 1] = guid
-				P:UpdateUnitBar(guid)
+				P:UpdateUnitBar(guid, true)
 			else
 				E.TimerAfter(3, updateRosterInfo, true) -- [97]
 			end
@@ -166,13 +173,17 @@ do
 		P:UpdatePosition()
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
-		if P.groupJoined or force then
+
+		if P.groupJoined or force then -- [101]
 			if anchorTimer then -- TODO: Temp Fix, VuhDo
 				anchorTimer:Cancel()
 			end
-			anchorTimer = C_Timer.NewTicker(5, P.UpdatePosition, 3)
+			anchorTimer = C_Timer.NewTicker(10, AnchorFix, 1)
 
-			C_Timer.After(3, SendRequestSync) -- [101]
+			if syncTimer then
+				syncTimer:Cancel()
+			end
+			syncTimer = C_Timer.NewTicker(3, SendRequestSync, 1)
 		end
 	end
 
@@ -180,7 +191,7 @@ do
 		if ( isRefresh or GetNumGroupMembers() == 0 ) then
 			updateRosterInfo(true)
 		elseif ( isPEW ) then
-			 E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo, true) -- Plexus, Grid2
+			 E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo, true)
 		elseif ( not rosterTimer) then
 			rosterTimer = E.TimerAfter(E.customUF.delay or 0.5, updateRosterInfo)
 		end

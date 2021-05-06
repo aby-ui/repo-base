@@ -74,7 +74,7 @@ function P:Refresh(full)
 	E.db = E.profile.Party[key]
 
 	if full then
-		self:UpdateFonts() -- TODO: shared frames still needs to be updated on every call
+		--self:UpdateFonts() -- TODO: shared frames still needs to be updated on every call
 		self:UpdateTextures()
 		self:UpateTimerFormat()
 		self:PLAYER_ENTERING_WORLD(nil, nil, true)
@@ -86,53 +86,6 @@ function P:Refresh(full)
 		self:UpdateBars()
 		self:UpdatePosition()
 		self:UpdateExPosition()
-	end
-end
-
-function P:UpdateFonts()
-	local db_anchor = E.profile.General.fonts.anchor
-	for i = 1, #self.bars do
-		local f = self.bars[i]
-		E.SetFont(f.anchor.text, db_anchor)
-	end
-
-	for i = 1, #self.unusedBars do
-		local f = self.unusedBars[i]
-		E.SetFont(f.anchor.text, db_anchor)
-	end
-
-	for _, f in pairs(self.extraBars) do
-		E.SetFont(f.anchor.text, db_anchor)
-		E.SetWidth(f.anchor)
-	end
-
-	self.TestMod:SetAnchor(self.testZone)
-
-	local db_icon = E.profile.General.fonts.icon
-	local db_statusBar = E.profile.General.fonts.statusBar
-	for _, info in pairs(self.groupInfo) do
-		local icons = info.spellIcons
-		for _, icon in pairs(icons) do
-			local statusBar = icon.statusBar
-			if statusBar then
-				E.SetFont(statusBar.Text, db_statusBar)
-				E.SetFont(statusBar.CastingBar.Text, db_statusBar)
-				E.SetFont(statusBar.CastingBar.Timer, db_statusBar)
-			end
-			E.SetFont(icon.Name, db_icon)
-		end
-	end
-
-	for i = 1, #self.unusedIcons do
-		local icon = self.unusedIcons[i]
-		E.SetFont(icon.Name, db_icon)
-	end
-
-	for i = 1, #self.unusedStatusBars do
-		local statusBar = self.unusedStatusBars[i]
-		E.SetFont(statusBar.Text, db_statusBar)
-		E.SetFont(statusBar.CastingBar.Text, db_statusBar)
-		E.SetFont(statusBar.CastingBar.Timer, db_statusBar)
 	end
 end
 
