@@ -93,12 +93,12 @@ function BaseActivity:UpdateCustomData(comment, title)
 
         local check = proto:GetCheck()
         if check ~= nil and check ~= format('%s-%s-%s', self:GetModeText(), self:GetLootText(), self:GetName()) then
-            
+            debug('invalid check', check)
             return false
         end
 
         if title ~= format('%s-%s-%s-%s', L['集合石'], self:GetLootText(), self:GetModeText(), self:GetName()) then
-            
+            debug('invalid title', title)
             return false
         end
 

@@ -26,7 +26,7 @@ function Object:Define(k, checker)
     elseif t == 'function' then
         set = function(self, value)
             if not checker(value) then
-                
+                error(format('Bad argument #1 to `Set%s`', k), 2)
                 return
             end
             self[key] = value
@@ -40,7 +40,7 @@ function Object:Define(k, checker)
         end
         set = function(self, value)
             if not types[type(value)] then
-                
+                error(format('Bad argument #1 to `Set%s` (%s expected, got %s)', k, checker, type(value)), 2)
                 return
             end
             self[key] = value

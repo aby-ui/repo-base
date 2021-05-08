@@ -1,64 +1,66 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-  <FontFamily virtual="true" name="NetEaseFontBaseSmall">
-    <Member alphabet="roman">
-      <Font font="Fonts\FRIZQT__.TTF" height="12">
-        <Shadow>
-          <Offset>
-            <AbsDimension x="1" y="-1" />
-          </Offset>
-          <Color b="0" g="0" r="0" />
-        </Shadow>
-      </Font>
-    </Member>
-    <Member alphabet="korean">
-      <Font height="12" font="Fonts\2002.TTF" name="NetEaseFontBaseNormal">
-        <Shadow>
-          <Offset>
-            <AbsDimension x="1" y="-1" />
-          </Offset>
-          <Color b="0" g="0" r="0" />
-        </Shadow>
-      </Font>
-    </Member>
-    <Member alphabet="simplifiedchinese">
-      <Font height="13" font="Fonts\ARKai_T.ttf" name="NetEaseFontBaseNormal">
-        <Shadow>
-          <Offset>
-            <AbsDimension x="1" y="-1" />
-          </Offset>
-          <Color b="0" g="0" r="0" />
-        </Shadow>
-      </Font>
-    </Member>
-    <Member alphabet="traditionalchinese">
-      <Font height="13" font="Fonts\blei00d.TTF" name="NetEaseFontBaseNormal">
-        <Shadow>
-          <Offset>
-            <AbsDimension x="1" y="-1" />
-          </Offset>
-          <Color b="0" g="0" r="0" />
-        </Shadow>
-      </Font>
-    </Member>
-    <Member alphabet="russian">
-      <Font height="12" font="Fonts\FRIZQT___CYR.TTF" name="NetEaseFontBaseNormal">
-        <Shadow>
-          <Offset>
-            <AbsDimension x="1" y="-1" />
-          </Offset>
-          <Color b="0" g="0" r="0" />
-        </Shadow>
-      </Font>
-    </Member>
-  </FontFamily>
-  <Font inherits="NetEaseFontBaseSmall" virtual="true" name="NetEaseFontNormalSmall">
-    <Color b="0" g="0.82" r="1.0" />
-  </Font>
-  <Font inherits="NetEaseFontBaseSmall" virtual="true" name="NetEaseFontHighlightSmall">
-    <Color b="1.0" g="1.0" r="1.0" />
-  </Font>
-  <Font inherits="NetEaseFontBaseSmall" virtual="true" name="NetEaseFontDisableSmall">
-    <Color b="0.5" g="0.5" r="0.5" />
-  </Font>
+    <FontFamily name="NetEaseFontBaseSmall" virtual="true">
+        <Member alphabet="roman">
+            <Font font="Fonts\FRIZQT__.TTF" height="12">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="korean">
+            <Font name="NetEaseFontBaseNormal" font="Fonts\2002.TTF" height="12">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="simplifiedchinese">
+            <Font name="NetEaseFontBaseNormal" font="Fonts\ARKai_T.ttf" height="13">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="traditionalchinese">
+            <Font name="NetEaseFontBaseNormal" font="Fonts\blei00d.TTF" height="13">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+        <Member alphabet="russian">
+            <Font name="NetEaseFontBaseNormal" font="Fonts\FRIZQT___CYR.TTF" height="12">
+                <Shadow>
+                    <Offset>
+                        <AbsDimension x="1" y="-1"/>
+                    </Offset>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </Font>
+        </Member>
+    </FontFamily>
+
+
+    <Font name="NetEaseFontNormalSmall" inherits="NetEaseFontBaseSmall" virtual="true">
+        <Color r="1.0" g="0.82" b="0"/>
+    </Font>
+    <Font name="NetEaseFontHighlightSmall" inherits="NetEaseFontBaseSmall" virtual="true">
+        <Color r="1.0" g="1.0" b="1.0"/>
+    </Font>
+    <Font name="NetEaseFontDisableSmall" inherits="NetEaseFontBaseSmall" virtual="true">
+        <Color r="0.5" g="0.5" b="0.5"/>
+    </Font>
 </Ui>

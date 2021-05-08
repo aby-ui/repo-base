@@ -1,0 +1,11 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="2\QuestData.lua" />
+    <Include file="2\QuestPanel.xml" />
+    <Script file="2\Quest.lua" />
+    <Script file="2\QuestGroup.lua" />
+    <Script file="2\QuestItem.lua" />
+    <Script file="2\QuestPanel.lua" />
+    <Script file="2\QuestPanel2.lua" />
+    <Script file="2\QuestServies.lua" />
+</Ui>

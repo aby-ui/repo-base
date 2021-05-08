@@ -1,6 +1,5 @@
-
 local GUI = LibStub('NetEaseGUI-2.0')
-local View = GUI:NewEmbed('View', 1)
+local View = GUI:NewEmbed('View', 2)
 if not View then
     return
 end
@@ -63,27 +62,24 @@ function View:GetShownCount()
 end
 
 function View:SetPadding(...)
-    self.leftPadding,
-    self.rightPadding,
-    self.topPadding,
-    self.botPadding = ...
+    self.leftPadding, self.rightPadding, self.topPadding, self.botPadding = ...
 end
 
 function View:GetPadding()
-    return  self.leftPadding or 0,
-            self.rightPadding or self.leftPadding or 0,
-            self.topPadding or self.leftPadding or 0,
-            self.botPadding or self.leftPadding or 0
+    return self.leftPadding or 0, self.rightPadding or self.leftPadding or 0, self.topPadding or self.leftPadding or 0,
+           self.botPadding or self.leftPadding or 0
 end
 
 function View:GetButton(i)
     if not self.buttons[i] then
         local parent = self.GetScrollChild and self:GetScrollChild() or self
-        local button = self:GetItemClass():New(parent, self.highlightWithoutChecked)
+        local itemClass = self:GetItemClass()
+        local itemNew = itemClass.Create or itemClass.New
+        local button = itemNew(itemClass, parent, self.highlightWithoutChecked)
 
         button:Hide()
         button:SetOwner(self)
-        button:SetFrameLevel(parent:GetFrameLevel()+1)
+        button:SetFrameLevel(parent:GetFrameLevel() + 1)
 
         self.buttons[i] = button
         self:UpdateItemPosition(i)

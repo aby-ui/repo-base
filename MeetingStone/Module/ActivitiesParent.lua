@@ -1,17 +1,18 @@
-
 BuildEnv(...)
 
 if not ADDON_REGIONSUPPORT then
     return
 end
 
-ActivitiesParent = Addon:NewModule(GUI:GetClass('LeftTabPanel'):New(MainPanel), 'ActivitiesParent', 'AceEvent-3.0', 'AceTimer-3.0')
+ActivitiesParent = Addon:NewModule(GUI:GetClass('LeftTabPanel'):New(MainPanel), 'ActivitiesParent', 'AceEvent-3.0',
+                                   'AceTimer-3.0')
 GUI:Embed(ActivitiesParent, 'Refresh')
 
 function ActivitiesParent:OnInitialize()
     MainPanel:RegisterPanel(L['最新活动'], self)
 
-    local ScoreButton = Addon:GetClass('Button'):New(self) do
+    local ScoreButton = Addon:GetClass('Button'):New(self)
+    do
         ScoreButton:Hide()
         ScoreButton:SetPoint('TOPRIGHT', MainPanel, 'TOPRIGHT', -130, -30)
         ScoreButton:SetText(L['活动点数：'] .. 'NaN')
@@ -31,7 +32,8 @@ function ActivitiesParent:OnInitialize()
         end)
     end
 
-    local PlayerInfoButton = Addon:GetClass('Button'):New(self) do
+    local PlayerInfoButton = Addon:GetClass('Button'):New(self)
+    do
         PlayerInfoButton:SetPoint('TOPRIGHT', MainPanel, 'TOPRIGHT', -90, -30)
         PlayerInfoButton:SetText(L['联系方式'])
         PlayerInfoButton:SetIcon([[Interface\ICONS\INV_Letter_05]])
@@ -40,14 +42,20 @@ function ActivitiesParent:OnInitialize()
         end)
     end
 
-    local Blocker = MainPanel:NewBlocker('ActivitiesWaitConnect', 3) do
+    local Blocker = MainPanel:NewBlocker('ActivitiesWaitConnect', 3)
+    do
         Blocker:SetParent(self)
         Blocker:Show()
         Blocker:Hide()
         Blocker.SetText = nop
 
         Blocker:SetCallback('OnCheck', function()
-            if not Activities:IsConnected() then
+            --[===[@debug@
+            -- if true then
+            --     return
+            -- end
+            --@end-debug@]===]
+            if not Activities:IsConnected() or not QuestServies:IsConnected() then
                 return true
             elseif not Activities:IsReady() then
                 return true
@@ -58,8 +66,7 @@ function ActivitiesParent:OnInitialize()
             end
         end)
         Blocker:SetCallback('OnFormat', function(Blocker)
-            if not Blocker or not Blocker.SetText then return end
-            if not Activities:IsConnected() then
+            if not Activities:IsConnected() or not QuestServies:IsConnected() then
                 Blocker:SetText(L['服务器连线中，请稍候'])
             elseif not Activities:IsReady() then
                 Blocker:SetText(L['正在获取活动信息，请稍候'])
@@ -73,18 +80,21 @@ function ActivitiesParent:OnInitialize()
             end
         end)
         Blocker:SetCallback('OnInit', function(Blocker)
-            local Html = GUI:GetClass('SummaryHtml'):New(Blocker) do
+            local Html = GUI:GetClass('SummaryHtml'):New(Blocker)
+            do
                 Html:SetPoint('CENTER', 0, 20)
                 Html:SetSize(500, 40)
             end
 
-            local Text = Blocker:CreateFontString(nil, 'OVERLAY', 'GameFontNormal') do
+            local Text = Blocker:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+            do
                 Text:Hide()
                 Text:SetWidth(500)
                 Text:SetWordWrap(true)
             end
 
-            local Spinner = CreateFrame('Frame', nil, Blocker, 'LoadingSpinnerTemplate') do
+            local Spinner = CreateFrame('Frame', nil, Blocker, 'LoadingSpinnerTemplate')
+            do
                 Spinner:SetPoint('BOTTOM', Html, 'TOP', 0, 16)
                 Spinner.Anim:Play()
             end
@@ -105,6 +115,8 @@ function ActivitiesParent:OnInitialize()
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_QUERY_SENDING')
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_QUERY_TIMEOUT', 'OnShow')
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_SERVER_CONNECTED', 'OnShow')
+    self:RegisterMessage('MEETINGSTONE_QUEST_CONNECTED', 'OnShow')
+    self:RegisterMessage('MEETINGSTONE_QUEST_FETCHED')
 
     self.Blocker = Blocker
     self.ScoreButton = ScoreButton
@@ -121,14 +133,41 @@ function ActivitiesParent:Update()
     MainPanel:UpdateBlockers()
 end
 
+local orig_RegisterPanel = ActivitiesParent.RegisterPanel
+function ActivitiesParent:RegisterPanel(name, ...)
+    if not self:IsPanelRegistered(name) then
+        orig_RegisterPanel(self, name, ...)
+    end
+end
+
+function ActivitiesParent:MEETINGSTONE_QUEST_FETCHED()
+    if QuestServies:IsActive() then
+        self:RegisterPanel(L['个人地下城周常'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
+                           QuestPanel, {before = L['魔兽主播活动']})
+        self:RegisterPanel(L['队伍地下城挑战'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
+                           QuestPanel2, {before = L['魔兽主播活动']})
+        self:SelectPanel(QuestPanel)
+
+    else
+        self:UnregisterPanel(L['个人地下城周常'])
+        self:UnregisterPanel(L['队伍地下城挑战'])
+    end
+end
+
 function ActivitiesParent:MEETINGSTONE_ACTIVITIES_QUERY_SENDING()
     self.ScoreButton:Disable()
     self:Refresh()
 end
 
 function ActivitiesParent:OnShow()
-    if self:IsVisible() and Activities:IsConnected() and not Activities:GetPersonInfo() then
+    if not self:IsVisible() then
+        return
+    end
+    if Activities:IsConnected() and not Activities:GetPersonInfo() then
         Activities:QueryPersonInfo()
+    end
+    if QuestServies:IsConnected() then
+        QuestServies:QueryQuestList()
     end
     self:Refresh()
     DataCache:GetObject('ActivitiesData'):SetIsNew(false)
@@ -145,20 +184,20 @@ function ActivitiesParent:MEETINGSTONE_ACTIVITIES_PERSONINFO_UPDATE()
 end
 
 function ActivitiesParent:MEETINGSTONE_ACTIVITIES_DATA_UPDATED(_, data)
-    if data.tabMall then
-        if not self:IsPanelRegistered(L['限时秒杀']) then
-            self:RegisterPanel(L['限时秒杀'], [[Interface\ICONS\SPELL_HOLY_BORROWEDTIME]], ActivitiesMall, 6)
-        end
-    else
-        self:UnregisterPanel(L['限时秒杀'])
-    end
-    if data.tabLottery then
-        if not self:IsPanelRegistered(L['活动抽奖']) then
-            self:RegisterPanel(L['活动抽奖'], [[Interface\ICONS\INV_Misc_Gift_01]], ActivitiesLottery, 6)
-        end
-    else
-        self:UnregisterPanel(L['活动抽奖'])
-    end
+    -- if data.tabMall then
+    --     if not self:IsPanelRegistered(L['限时秒杀']) then
+    --         self:RegisterPanel(L['限时秒杀'], [[Interface\ICONS\SPELL_HOLY_BORROWEDTIME]], ActivitiesMall, 6)
+    --     end
+    -- else
+    --     self:UnregisterPanel(L['限时秒杀'])
+    -- end
+    -- if data.tabLottery then
+    --     if not self:IsPanelRegistered(L['活动抽奖']) then
+    --         self:RegisterPanel(L['活动抽奖'], [[Interface\ICONS\INV_Misc_Gift_01]], ActivitiesLottery, 6)
+    --     end
+    -- else
+    --     self:UnregisterPanel(L['活动抽奖'])
+    -- end
     self.TabFrame:Refresh()
     self:Refresh()
 end

@@ -3,10 +3,7 @@
 @Author  : DengSir (ldz5@qq.com)
 @Link    : https://dengsir.github.io
 @Version : $Id$
-]]
-
-
-BuildEnv(...)
+]] BuildEnv(...)
 
 AppSupport = Addon:NewModule('AppSupport', 'AceEvent-3.0', 'AceHook-3.0', 'AceBucket-3.0', 'AceTimer-3.0')
 AppSupport:Disable()
@@ -222,20 +219,18 @@ function AppSupport:GetGroupLeader(groupType)
 end
 
 function AppSupport:GetGroupType()
-    return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and LE_PARTY_CATEGORY_INSTANCE or IsInGroup(LE_PARTY_CATEGORY_HOME) and LE_PARTY_CATEGORY_HOME
+    return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and LE_PARTY_CATEGORY_INSTANCE or IsInGroup(LE_PARTY_CATEGORY_HOME) and
+               LE_PARTY_CATEGORY_HOME
 end
 
 function AppSupport:APP_GROUP_MEMBER()
     if not next(self.groupMembers) then
         return
     end
-    local list = {} do
+    local list = {}
+    do
         for _, v in pairs(self.groupMembers) do
-            tinsert(list, {
-                name = v.name,
-                role = v.role,
-                guid = self:FindMemberGUID(v.name),
-            })
+            tinsert(list, {name = v.name, role = v.role, guid = self:FindMemberGUID(v.name)})
         end
     end
     App:SendServer('APP_GROUP_MEMBER', list)
@@ -272,10 +267,7 @@ end
 function AppSupport:SaveMember(target, is_inviter)
     local role = is_inviter and 1 or 2
     local key = format('%s:%d', target, role)
-    self.groupMembers[key] = {
-        name = target,
-        role = role,
-    }
+    self.groupMembers[key] = {name = target, role = role}
     self:SendMessage('APP_GROUP_MEMBER')
 end
 
@@ -296,8 +288,9 @@ end
 
 ----
 
-local UnitRole do
-    local ROLE_TYPES = { TANK = 1, HEALER = 2, DAMAGER = 3, }
+local UnitRole
+do
+    local ROLE_TYPES = {TANK = 1, HEALER = 2, DAMAGER = 3}
     function UnitRole(unit)
         return ROLE_TYPES[UnitGroupRolesAssigned(unit)] or 0
     end
@@ -308,12 +301,13 @@ function AppSupport:CHALLENGE_MODE_COMPLETED()
     local mapId = C_ChallengeMode.GetActiveChallengeMapID() or self.lastMapId
 
     local class = select(3, UnitClass('player'))
-    local itemLevel = math.floor( select(2, GetAverageItemLevel()) )
+    local itemLevel = math.floor(select(2, GetAverageItemLevel()))
     local combatData = CombatStat:GetCombatData()
 
-    
+    debug(mapId, level, time, combatData.dd, combatData.hd, combatData.dt, combatData.dps, combatData.hps)
 
-    App:SendServer('APP_CHALLENGE2', mapId, level, time, class, itemLevel, UnitRole('player'), self:GetChallengeMembers(), combatData)
+    App:SendServer('APP_CHALLENGE2', mapId, level, time, class, itemLevel, UnitRole('player'),
+                   self:GetChallengeMembers(), combatData)
     CombatStat:Disable()
     self.lastMapId = nil
 end
@@ -329,11 +323,11 @@ function AppSupport:GetChallengeMembers()
     for i = 1, 4 do
         local unit = 'party' .. i
         if UnitExists(unit) then
-            local name  = UnitFullName(unit)
+            local name = UnitFullName(unit)
             local class = select(3, UnitClass(unit))
-            local role  = UnitRole(unit)
-            local guid  = UnitGUID(unit)
-            local item  = format('%s.%d.%d.%s', name, class, role, guid)
+            local role = UnitRole(unit)
+            local guid = UnitGUID(unit)
+            local item = format('%s.%d.%d.%s', name, class, role, guid)
 
             tinsert(members, item)
         end
@@ -363,13 +357,13 @@ end
 
 function AppSupport:ENCOUNTER_START(_, id, name, difficulty, size)
     if not self:GetInstanceId() then
-        
+        debug('invalid', id, name, difficulty, size)
         return
     end
     CombatStat:Reset()
     CombatStat:Enable()
     self.encounterStartStamp = time()
-    
+    debug('ENCOUNTER_START', id, name, difficulty, size, self:GetRaidInfo())
 end
 
 function AppSupport:ENCOUNTER_END(_, bossId, name, difficulty, maxPlayers, status)
@@ -379,12 +373,12 @@ function AppSupport:ENCOUNTER_END(_, bossId, name, difficulty, maxPlayers, statu
     end
     if status == 1 then
         local class = select(3, UnitClass('player'))
-        local itemLevel = math.floor( select(2, GetAverageItemLevel()) )
+        local itemLevel = math.floor(select(2, GetAverageItemLevel()))
         local combatData = CombatStat:GetCombatData()
         local hash, leaderGuid = self:GetRaidInfo()
 
-        App:SendServer('APP_RAID', instanceId, bossId, difficulty, maxPlayers, class, itemLevel, hash, leaderGuid, combatData, UnitRole('player'), time() - self.encounterStartStamp)
-        
+        App:SendServer('APP_RAID', instanceId, bossId, difficulty, maxPlayers, class, itemLevel, hash, leaderGuid,
+                       combatData, UnitRole('player'), time() - self.encounterStartStamp)
     end
     CombatStat:Disable()
 end

@@ -1,36 +1,42 @@
-
 BuildEnv(...)
 
 if not ADDON_REGIONSUPPORT then
     return
 end
 
-ActivitiesSummary = Addon:NewModule(CreateFrame('Frame'), 'ActivitiesSummary', 'AceEvent-3.0')
+ActivitiesSummary = Addon:NewModule(CreateFrame('Frame', nil, nil, 'InsetFrameTemplate'), 'ActivitiesSummary',
+                                    'AceEvent-3.0')
 
 function ActivitiesSummary:OnInitialize()
     GUI:Embed(self, 'Owner', 'Refresh')
-    ActivitiesParent:RegisterPanel(L['活动简介'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]], self, 6)
+    ActivitiesParent:RegisterPanel(L['魔兽主播活动'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
+                                   self)
 
-    local Banner = CreateFrame('Frame', nil, self) do
-        Banner:SetPoint('TOPLEFT')
-        Banner:SetPoint('TOPRIGHT')
+    local Banner = CreateFrame('Frame', nil, self)
+    do
+        Banner:SetPoint('TOPLEFT', 6, -6)
+        Banner:SetPoint('TOPRIGHT', -6, -6)
         Banner:SetHeight(220)
     end
 
-    local Background = Banner:CreateTexture(nil, 'BACKGROUND') do
+    local Background = Banner:CreateTexture(nil, 'BACKGROUND')
+    do
         Background:SetAllPoints(Banner)
     end
 
-    local Title = Banner:CreateFontString(nil, 'ARTWORK', 'QuestFont_Super_Huge') do
+    local Title = Banner:CreateFontString(nil, 'ARTWORK', 'QuestFont_Super_Huge')
+    do
         Title:SetPoint('TOPLEFT', 20, -20)
         Title:SetTextColor(1, 1, 1)
     end
 
-    local Target = Banner:CreateFontString(nil, 'ARTWORK', 'GameFontNormalLarge') do
+    local Target = Banner:CreateFontString(nil, 'ARTWORK', 'GameFontNormalLarge')
+    do
         Target:SetPoint('TOPLEFT', Title, 'BOTTOMLEFT', 0, -30)
     end
 
-    local GiftButton = Addon:GetClass('Button'):New(Banner) do
+    local GiftButton = Addon:GetClass('Button'):New(Banner)
+    do
         GiftButton:SetText(L['每日礼包'])
         GiftButton:SetIcon([[Interface\ICONS\INV_Misc_Gift_02]])
         GiftButton:SetCooldown(SERVER_TIMEOUT)
@@ -41,7 +47,8 @@ function ActivitiesSummary:OnInitialize()
         end)
     end
 
-    local MemberButton = Addon:GetClass('Button'):New(Banner) do
+    local MemberButton = Addon:GetClass('Button'):New(Banner)
+    do
         MemberButton:SetText(L['我想了解'])
         MemberButton:SetIcon([[Interface\ICONS\Raf-Icon]])
         MemberButton:Hide()
@@ -50,7 +57,8 @@ function ActivitiesSummary:OnInitialize()
         end)
     end
 
-    local LeaderButton = Addon:GetClass('Button'):New(Banner) do
+    local LeaderButton = Addon:GetClass('Button'):New(Banner)
+    do
         LeaderButton:SetText(L['团长申请'])
         LeaderButton:SetIcon([[Interface\ICONS\Spell_Holy_ReviveChampion]])
         LeaderButton:Hide()
@@ -59,19 +67,22 @@ function ActivitiesSummary:OnInitialize()
         end)
     end
 
-    local SummaryWidget = GUI:GetClass('TitleWidget'):New(self) do
-        SummaryWidget:SetPoint('BOTTOMLEFT')
-        SummaryWidget:SetPoint('BOTTOMRIGHT')
+    local SummaryWidget = GUI:GetClass('TitleWidget'):New(self)
+    do
+        SummaryWidget:SetPoint('BOTTOMLEFT', 6, 6)
+        SummaryWidget:SetPoint('BOTTOMRIGHT', -6, 6)
         SummaryWidget:SetPoint('TOP', Banner, 'BOTTOM', 0, -3)
         SummaryWidget:SetText(L['活动说明'])
     end
 
-    local Summary = GUI:GetClass('ScrollSummaryHtml'):New(SummaryWidget) do
+    local Summary = GUI:GetClass('ScrollSummaryHtml'):New(SummaryWidget)
+    do
         SummaryWidget:SetObject(Summary, 20, 5, 10, 0)
         Summary:SetSpacing('p', 3)
     end
 
-    local ScrollTimerBar = CreateFrame('StatusBar', nil, Banner) do
+    local ScrollTimerBar = CreateFrame('StatusBar', nil, Banner)
+    do
         ScrollTimerBar:SetPoint('BOTTOMLEFT')
         ScrollTimerBar:SetPoint('BOTTOMRIGHT')
         ScrollTimerBar:SetHeight(2)
@@ -79,7 +90,8 @@ function ActivitiesSummary:OnInitialize()
         ScrollTimerBar:SetMinMaxValues(0, 5)
     end
 
-    local ScrollControl = GUI:GetClass('GridView'):New(self) do
+    local ScrollControl = GUI:GetClass('GridView'):New(self)
+    do
         ScrollControl:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', 0, -26)
         ScrollControl:SetSize(16, 16)
         ScrollControl:SetAutoSize(true)
@@ -99,7 +111,8 @@ function ActivitiesSummary:OnInitialize()
         end)
     end
 
-    local ScrollTimer = CreateFrame('Frame', nil, self) do
+    local ScrollTimer = CreateFrame('Frame', nil, self)
+    do
         ScrollTimer:Hide()
         ScrollTimer.timer = 5
         ScrollTimer:SetScript('OnUpdate', function(timer, elapsed)

@@ -5,7 +5,7 @@
 @Version : $Id$
 ]]
 
-local WIDGET, VERSION = 'LeftTabPanel', 2
+local WIDGET, VERSION = 'LeftTabPanel', 3
 
 local GUI = LibStub('NetEaseGUI-2.0')
 local LeftTabPanel = GUI:NewClass(WIDGET, 'Frame', VERSION, 'TabPanel')
@@ -139,7 +139,7 @@ function LeftTabPanel:Constructor()
         end
     end
 
-    local Inset = CreateFrame('Frame', nil, self, 'InsetFrameTemplate') do
+    local Inset = CreateFrame('Frame', nil, self) do
         Inset:SetPoint('BOTTOMRIGHT', 0, 22)
         Inset:SetPoint('TOPLEFT', LBackground, 'TOPRIGHT', 10, -48)
     end

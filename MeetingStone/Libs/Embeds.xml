@@ -1,15 +1,41 @@
-<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/">
-  <Script file="Env\Env.lua" />
-  <Include file="LibClass-2.0\LibClass-2.0.xml" />
-  <Include file="LibInvoke-1.0\LibInvoke-1.0.xml" />
-  <Include file="LibModule-1.0\LibModule-1.0.xml" />
-  <Include file="LibInvoke-1.0\LibInvoke-1.0.xml" />
-  <Include file="NetEaseBase64-1.0\NetEaseBase64-1.0.xml" />
-  <Include file="NetEaseSocketMiddleware-2.0\NetEaseSocketMiddleware-2.0.xml" />
-  <Include file="NetEaseBroadMiddleware-2.0\NetEaseBroadMiddleware-2.0.xml" />
-  <Include file="NetEaseSocket-2.0\NetEaseSocket-2.0.xml" />
-  <Include file="NetEasePinyin-1.0\NetEasePinyin-1.0.xml" />
-  <Include file="NetEaseGUI-2.0\NetEaseGUI-2.0.xml" />
-  <Script file="crc32\crc32.lua" />
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+<!--
+    <Script file="LibStub\LibStub.lua" />
+    <Include file="CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <Include file="AceAddon-3.0\AceAddon-3.0.xml" />
+    <Include file="AceEvent-3.0\AceEvent-3.0.xml" />
+    <Include file="AceTimer-3.0\AceTimer-3.0.xml" />
+    <Include file="AceBucket-3.0\AceBucket-3.0.xml" />
+    <Include file="AceHook-3.0\AceHook-3.0.xml" />
+    <Include file="AceDB-3.0\AceDB-3.0.xml" />
+    <Include file="AceLocale-3.0\AceLocale-3.0.xml" />
+    <Include file="AceComm-3.0\AceComm-3.0.xml" />
+    <Include file="AceSerializer-3.0\AceSerializer-3.0.xml" />
+    <Include file="AceGUI-3.0\AceGUI-3.0.xml" />
+    <Include file="AceConfig-3.0\AceConfig-3.0.xml" />
+-->
+
+    <Script file="Env\Env.lua" />
+    <Include file="LibClass-2.0\LibClass-2.0.xml" />
+    <Include file="LibInvoke-1.0\LibInvoke-1.0.xml" />
+    <Include file="LibModule-1.0\LibModule-1.0.xml" />
+    <Include file="LibInvoke-1.0\LibInvoke-1.0.xml" />
+    <Include file="NetEaseBase64-1.0\NetEaseBase64-1.0.xml" />
+    <Include file="NetEaseSocketMiddleware-2.0\NetEaseSocketMiddleware-2.0.xml" />
+    <Include file="NetEaseBroadMiddleware-2.0\NetEaseBroadMiddleware-2.0.xml" />
+    <Include file="NetEaseSocket-2.0\NetEaseSocket-2.0.xml" />
+    <Include file="NetEasePinyin-1.0\NetEasePinyin-1.0.xml" />
+    <!-- <Include file="NetEaseSocketRepeater-2.0\NetEaseSocketRepeater-2.0.xml" /> -->
+    <!-- <Include file="NetEaseTextFilter-1.0\NetEaseTextFilter-1.0.xml" /> -->
+
+    <Include file="NetEaseGUI-2.0\NetEaseGUI-2.0.xml" />
+
+    <Script file="crc32\crc32.lua" />
+<!--
+    <Script file="LibDataBroker-1.1\LibDataBroker-1.1.lua" />
+    <Script file="LibDBIcon-1.0\LibDBIcon-1.0.lua" />
+    <Script file="LibWindow-1.1\LibWindow-1.1.lua" />
+-->    
+    <!-- <Include file="NetEaseMinimap-1.0\NetEaseMinimap-1.0.xml" /> -->
 </Ui>

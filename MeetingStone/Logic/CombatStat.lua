@@ -29,13 +29,13 @@ function CombatStat:OnEnable()
     self:UpdateGroupUnits()
     self:OnCombatTimer()
     self.combatTimer = self:ScheduleRepeatingTimer('OnCombatTimer', 3)
-    
+    debug('CombatStat Enabled')
 end
 
 function CombatStat:Reset()
     self.combatTick = nil
     self.data = Profile:ResetCombatData()
-    
+    debug('CombatStat Reset')
 end
 
 function CombatStat:OnDisable()
@@ -43,7 +43,7 @@ function CombatStat:OnDisable()
     self.units = {}
     self.groupUnits = {}
     self:CancelTimer(self.combatTimer)
-    
+    debug('CombatStat Disabled')
 end
 
 function CombatStat:UpdateGroupUnits()
@@ -141,7 +141,7 @@ function CombatStat:SPELL_HEAL(timestamp, srcGuid, srcFlags, destGuid, destFlags
     if bit.band(srcFlags, COMBATLOG_OBJECT_CONTROL_PLAYER) ~= 0 and bit.band(srcFlags, destFlags, COMBATLOG_OBJECT_REACTION_MASK) ~= 0 then
         local amount = amount - overhealing
         if amount > 0 then
-            
+            debug('healing', srcGuid, srcFlags, destGuid, destFlags, amount, overhealing, spellId, spellName)
             return self:Touch('hd', amount)
         end
     end

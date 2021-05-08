@@ -1,4 +1,3 @@
-
 BuildEnv(...)
 
 MainPanel = Addon:NewModule(GUI:GetClass('Panel'):New(UIParent), 'MainPanel', 'AceEvent-3.0', 'AceBucket-3.0')
@@ -33,31 +32,36 @@ function MainPanel:OnInitialize()
     PVEFrame:UnregisterEvent('AJ_PVE_LFG_ACTION')
     PVEFrame:UnregisterEvent('AJ_PVP_LFG_ACTION')
 
-    local AnnBlocker = self:NewBlocker('AnnBlocker', 1) do
+    local AnnBlocker = self:NewBlocker('AnnBlocker', 1)
+    do
         self.AnnBlocker = AnnBlocker
         AnnBlocker:SetCallback('OnCheck', function()
             return DataCache:GetObject('AnnList'):IsNew()
         end)
         AnnBlocker:SetCallback('OnInit', function(AnnBlocker)
-            local Label = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'QuestFont_Super_Huge') do
+            local Label = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'QuestFont_Super_Huge')
+            do
                 Label:SetFont(STANDARD_TEXT_FONT, 32, 'OUTLINE')
                 Label:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
                 Label:SetPoint('TOP', 0, -35)
                 Label:SetText(L['公告'])
             end
 
-            local Line = AnnBlocker:CreateTexture(nil, 'OVERLAY') do
+            local Line = AnnBlocker:CreateTexture(nil, 'OVERLAY')
+            do
                 Line:SetTexture([[INTERFACE\QUESTFRAME\UI-QuestTitleHighlight]])
                 Line:SetSize(200, 1)
                 Line:SetPoint('TOP', Label, 'BOTTOM', 0, -20)
             end
 
-            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(AnnBlocker) do
+            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(AnnBlocker)
+            do
                 SummaryHtml:SetPoint('TOPLEFT', 190, -130)
                 SummaryHtml:SetSize(450, 200)
             end
 
-            local Button = CreateFrame('Button', nil, AnnBlocker, 'UIPanelButtonTemplate') do
+            local Button = CreateFrame('Button', nil, AnnBlocker, 'UIPanelButtonTemplate')
+            do
                 Button:SetSize(120, 36)
                 Button:SetPoint('BOTTOM', 0, 30)
                 Button:SetText(L['我知道了'])
@@ -86,7 +90,8 @@ function MainPanel:OnInitialize()
                 for i, v in ipairs(annData) do
                     if v.t then
                         if v.u then
-                            table.insert(lines, format('<h2>|cffffffff%s. %s|r |Hurl:%s|h|cff00ffff[%s]|r|h</h2>', i, v.t, v.u, L['查看更多']))
+                            table.insert(lines, format('<h2>|cffffffff%s. %s|r |Hurl:%s|h|cff00ffff[%s]|r|h</h2>', i,
+                                                       v.t, v.u, L['查看更多']))
                         else
                             table.insert(lines, format('<h2>|cffffffff%s. %s|r</h2>', i, v.t))
                         end
@@ -98,7 +103,8 @@ function MainPanel:OnInitialize()
         end)
     end
 
-    local HelpBlocker = self:NewBlocker('HelpBlocker', 2) do
+    local HelpBlocker = self:NewBlocker('HelpBlocker', 2)
+    do
         HelpBlocker:SetCallback('OnCheck', function()
             return Profile:IsNewVersion() or (self.newVersion and not self.newVersionReaded)
         end)
@@ -113,27 +119,31 @@ function MainPanel:OnInitialize()
             end
         end)
         HelpBlocker:SetCallback('OnInit', function(HelpBlocker)
-            local Icon = HelpBlocker:CreateTexture(nil, 'ARTWORK') do
+            local Icon = HelpBlocker:CreateTexture(nil, 'ARTWORK')
+            do
                 Icon:SetPoint('TOPLEFT', 50, -50)
                 Icon:SetSize(64, 64)
                 Icon:SetTexture([[Interface\AddOns\MeetingStone\Media\Mark\0]])
             end
 
-            local Label = HelpBlocker:CreateFontString(nil, 'ARTWORK') do
+            local Label = HelpBlocker:CreateFontString(nil, 'ARTWORK')
+            do
                 Label:SetFont(STANDARD_TEXT_FONT, 32, 'OUTLINE')
                 Label:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
                 Label:SetPoint('LEFT', Icon, 'RIGHT', 0, 0)
                 Label:SetText(L['集合石'])
             end
 
-            local Content = HelpBlocker:CreateFontString(nil, 'ARTWORK', 'GameFontDisableLarge') do
+            local Content = HelpBlocker:CreateFontString(nil, 'ARTWORK', 'GameFontDisableLarge')
+            do
                 Content:SetPoint('TOPLEFT', Icon, 'BOTTOMLEFT', 10, -20)
                 Content:SetJustifyH('LEFT')
                 Content:SetJustifyV('TOP')
                 Content:SetText(L['当前版本：'] .. ADDON_VERSION)
             end
 
-            local NewVersion = HelpBlocker:CreateFontString(nil, 'ARTWORK', 'GameFontDisableLarge') do
+            local NewVersion = HelpBlocker:CreateFontString(nil, 'ARTWORK', 'GameFontDisableLarge')
+            do
                 NewVersion:SetPoint('TOPLEFT', Content, 'BOTTOMLEFT', 0, -10)
                 NewVersion:SetJustifyH('LEFT')
                 NewVersion:SetJustifyV('TOP')
@@ -141,7 +151,8 @@ function MainPanel:OnInitialize()
                 NewVersion:Hide()
             end
 
-            local NewVersionFlash = GUI:GetClass('AlphaFlash'):New(HelpBlocker) do
+            local NewVersionFlash = GUI:GetClass('AlphaFlash'):New(HelpBlocker)
+            do
                 NewVersionFlash:Hide()
                 NewVersionFlash:SetPoint('BOTTOM', NewVersion, 'BOTTOM', 0, -5)
                 NewVersionFlash:SetPoint('LEFT', NewVersion)
@@ -152,7 +163,8 @@ function MainPanel:OnInitialize()
                 NewVersionFlash:SetBlendMode('ADD')
             end
 
-            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(HelpBlocker) do
+            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(HelpBlocker)
+            do
                 SummaryHtml:SetPoint('TOPLEFT', 360, -15)
                 SummaryHtml:SetPoint('BOTTOMRIGHT', -20, 20)
                 SummaryHtml:SetSpacing('h2', 20)
@@ -160,7 +172,8 @@ function MainPanel:OnInitialize()
                 SummaryHtml:SetText(ADDON_SUMMARY)
             end
 
-            local EnterButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate') do
+            local EnterButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate')
+            do
                 EnterButton:SetPoint('BOTTOMLEFT', 50, 30)
                 EnterButton:SetSize(120, 26)
                 EnterButton:SetText(L['开始体验'])
@@ -171,7 +184,8 @@ function MainPanel:OnInitialize()
                 end)
             end
 
-            local HelpButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate') do
+            local HelpButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate')
+            do
                 HelpButton:SetPoint('BOTTOMLEFT', EnterButton, 'TOPLEFT', 0, 10)
                 HelpButton:SetSize(120, 26)
                 HelpButton:SetText(L['新手指引'])
@@ -184,7 +198,8 @@ function MainPanel:OnInitialize()
                 end)
             end
 
-            local ChangeLogButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate') do
+            local ChangeLogButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate')
+            do
                 ChangeLogButton:SetPoint('BOTTOMLEFT', HelpButton, 'TOPLEFT', 0, 10)
                 ChangeLogButton:SetSize(120, 26)
                 ChangeLogButton:SetText(L['更新日志'])
@@ -193,7 +208,8 @@ function MainPanel:OnInitialize()
                 end)
             end
 
-            local SummaryButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate') do
+            local SummaryButton = CreateFrame('Button', nil, HelpBlocker, 'UIPanelButtonTemplate')
+            do
                 SummaryButton:SetPoint('BOTTOMLEFT', ChangeLogButton, 'TOPLEFT', 0, 10)
                 SummaryButton:SetSize(120, 26)
                 SummaryButton:SetText(L['插件简介'])
@@ -211,31 +227,31 @@ function MainPanel:OnInitialize()
         self:CreateTitleButton{
             title = L['意见建议'],
             texture = [[Interface\AddOns\MeetingStone\Media\RaidbuilderIcons]],
-            coords = {0, 32/256, 0, 0.5},
+            coords = {0, 32 / 256, 0, 0.5},
             callback = function()
                 GUI:CallFeedbackDialog(ADDON_NAME, function(result, text)
                     Logic:SendServer('SFEEDBACK', ADDON_NAME, ADDON_VERSION, text)
                 end)
-            end
+            end,
         }
 
         self:CreateTitleButton{
             title = L['公告'],
             texture = [[Interface\AddOns\MeetingStone\Media\RaidbuilderIcons]],
-            coords = {96/256, 128/256, 0, 0.5},
+            coords = {96 / 256, 128 / 256, 0, 0.5},
             callback = function()
                 self:ToggleBlocker('AnnBlocker')
-            end
+            end,
         }
     end
 
     self:CreateTitleButton{
         title = L['插件简介'],
         texture = [[Interface\AddOns\MeetingStone\Media\RaidbuilderIcons]],
-        coords = {224/256, 1, 0.5, 1},
+        coords = {224 / 256, 1, 0.5, 1},
         callback = function()
             self:ToggleBlocker('HelpBlocker')
-        end
+        end,
     }
 
     self.GameTooltip = GUI:GetClass('Tooltip'):New(self)
@@ -308,7 +324,8 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         for i = 1, activity:GetNumMembers() do
             local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
             local classColor = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
-            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_CLASS_ROLE, classLocalized, _G[role]), classColor.r, classColor.g, classColor.b)
+            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_CLASS_ROLE, classLocalized, _G[role]), classColor.r,
+                            classColor.g, classColor.b)
         end
     else
         --[[ Added
@@ -347,7 +364,8 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         local memberCounts = C_LFGList.GetSearchResultMemberCounts(activity:GetID())
         if memberCounts then
             tooltip:AddSepatator()
-            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_MEMBERS, activity:GetNumMembers(), memberCounts.TANK, memberCounts.HEALER, memberCounts.DAMAGER))
+            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_MEMBERS, activity:GetNumMembers(), memberCounts.TANK,
+                                          memberCounts.HEALER, memberCounts.DAMAGER))
         end
     end
 
@@ -385,13 +403,24 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         tooltip:AddDoubleLine(' ', GetFullVersion(version), 1, 1, 1, 0.5, 0.5, 0.5)
     end
 
+    --[===[@debug@
+    if activity:IsMeetingStone() then
+        local source = activity:GetSource() or 1
+        tooltip:AddLine(
+            source == 0 and '单体' or source == 1 and '大脚' or source == 2 and '有爱' or source == 4 and '多玩' or
+                source == 8 and 'EUI')
+    end
 
+    tooltip:AddLine('ID: ' .. activity:GetID())
+    tooltip:AddLine('Loot: ' .. tostring(activity:GetLoot()))
+    tooltip:AddLine('Mode: ' .. tostring(activity:GetMode()))
+    --@end-debug@]===]
 
     tooltip:Show()
 end
 
 function MainPanel:OpenApplicantTooltip(applicant)
-    local GameTooltip =  self.GameTooltip
+    local GameTooltip = self.GameTooltip
     local name = applicant:GetName()
     local class = applicant:GetClass()
     local level = applicant:GetLevel()
@@ -422,7 +451,8 @@ function MainPanel:OpenApplicantTooltip(applicant)
     end
 
     -- Add statistics
-    local stats = C_LFGList.GetApplicantMemberStats(applicant:GetID(), applicant:GetIndex()) or {} do
+    local stats = C_LFGList.GetApplicantMemberStats(applicant:GetID(), applicant:GetIndex()) or {}
+    do
         for k, v in pairs(stats) do
             if v == 0 then
                 stats[k] = nil

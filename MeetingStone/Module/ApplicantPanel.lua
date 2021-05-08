@@ -346,7 +346,7 @@ function ApplicantPanel:StartInvite()
     for i, v in ipairs(list) do
         if self:CanInvite(v) then
             if self:Invite(v:GetID(), v:GetNumMembers()) then
-                
+                debug('invite: ' .. v:GetName() .. ' ' .. v:GetLocalizedClass())
             end
             break
         end

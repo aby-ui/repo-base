@@ -2,9 +2,9 @@ HideParentPanelAby = function(self) if self:GetParent() then self:GetParent():Hi
 
 BuildEnv(...)
 
-local memorize      = require('NetEaseMemorize-1.0')
-local nepy          = require('NetEasePinyin-1.0')
-local Base64        = LibStub('NetEaseBase64-1.0')
+local memorize = require('NetEaseMemorize-1.0')
+local nepy = require('NetEasePinyin-1.0')
+local Base64 = LibStub('NetEaseBase64-1.0')
 local AceSerializer = LibStub('AceSerializer-3.0')
 
 function GetClassColorText(className, text)
@@ -13,7 +13,7 @@ function GetClassColorText(className, text)
 end
 
 function IsGroupLeader()
-    return  not IsInGroup(LE_PARTY_CATEGORY_HOME) or UnitIsGroupLeader('player', LE_PARTY_CATEGORY_HOME)
+    return not IsInGroup(LE_PARTY_CATEGORY_HOME) or UnitIsGroupLeader('player', LE_PARTY_CATEGORY_HOME)
 end
 
 function GetFullName(name, realm)
@@ -32,7 +32,8 @@ function UnitFullName(unit)
 end
 
 function IsActivityManager()
-    return UnitIsGroupLeader('player', LE_PARTY_CATEGORY_HOME) or (IsInRaid(LE_PARTY_CATEGORY_HOME) and UnitIsGroupAssistant('player', LE_PARTY_CATEGORY_HOME))
+    return UnitIsGroupLeader('player', LE_PARTY_CATEGORY_HOME) or
+               (IsInRaid(LE_PARTY_CATEGORY_HOME) and UnitIsGroupAssistant('player', LE_PARTY_CATEGORY_HOME))
 end
 
 function ToggleCreatePanel(...)
@@ -102,46 +103,31 @@ end
 function CodeCommentData(activity)
     local activityId = activity:GetActivityID()
     local customId = activity:GetCustomID()
-    local data = format('(%s)', AceSerializer:Serialize(
-        CompressNumber(customId),
-        ADDON_VERSION_SHORT,
-        activity:GetMode(),
-        activity:GetLoot(),
-        GetPlayerClass(),
-        GetPlayerItemLevel(activity:IsUseHonorLevel()),
-        GetPlayerRaidProgression(activityId, customId),
-        GetPlayerPvPRating(activityId),
-        CompressNumber(activity:GetMinLevel()),
-        CompressNumber(activity:GetMaxLevel()),
-        CompressNumber(activity:GetPvPRating()),
-        GetAddonSource(),
-        GetPlayerFullName(),
-        GetPlayerSavedInstance(customId),
-        nil,
-        CompressNumber(activity:IsUseHonorLevel() and UnitHonorLevel('player') or nil)
-    ))
+    local data = format('(%s)',
+                        AceSerializer:Serialize(CompressNumber(customId), ADDON_VERSION_SHORT, activity:GetMode(),
+                                                activity:GetLoot(), GetPlayerClass(),
+                                                GetPlayerItemLevel(activity:IsUseHonorLevel()),
+                                                GetPlayerRaidProgression(activityId, customId),
+                                                GetPlayerPvPRating(activityId), CompressNumber(activity:GetMinLevel()),
+                                                CompressNumber(activity:GetMaxLevel()),
+                                                CompressNumber(activity:GetPvPRating()), GetAddonSource(),
+                                                GetPlayerFullName(), GetPlayerSavedInstance(customId), nil,
+                                                CompressNumber(
+                                                    activity:IsUseHonorLevel() and UnitHonorLevel('player') or nil)))
     return data
 end
 
 function GetSafeSummaryLength(activityId, customId, mode, loot)
-    local data = format('(%s)', AceSerializer:Serialize(
-        customId,
-        ADDON_VERSION_SHORT,
-        mode,
-        loot,
-        GetPlayerClass(),
-        GetPlayerItemLevel(IsUseHonorLevel(activityId)),
-        GetPlayerRaidProgression(activityId, customId),
-        GetPlayerPvPRating(activityId),
-        999,
-        999,
-        IsUsePvPRating(activityId) and 9999 or nil,
-        GetAddonSource(),
-        GetPlayerFullName(),
-        GetPlayerSavedInstance(customId),
-        format('%s-%s-%s', GetModeName(mode), GetLootName(loot), GetActivityName(activityId, customId)),
-        CompressNumber(IsUseHonorLevel(activityId) and UnitHonorLevel('player') or nil)
-    ))
+    local data = format('(%s)', AceSerializer:Serialize(customId, ADDON_VERSION_SHORT, mode, loot, GetPlayerClass(),
+                                                        GetPlayerItemLevel(IsUseHonorLevel(activityId)),
+                                                        GetPlayerRaidProgression(activityId, customId),
+                                                        GetPlayerPvPRating(activityId), 999, 999,
+                                                        IsUsePvPRating(activityId) and 9999 or nil, GetAddonSource(),
+                                                        GetPlayerFullName(), GetPlayerSavedInstance(customId), format(
+                                                            '%s-%s-%s', GetModeName(mode), GetLootName(loot),
+                                                            GetActivityName(activityId, customId)), CompressNumber(
+                                                            IsUseHonorLevel(activityId) and UnitHonorLevel('player') or
+                                                                nil)))
     return min(MAX_MEETINGSTONE_SUMMARY_LETTERS, MAX_SUMMARY_LETTERS - strlenutf8(data))
 end
 
@@ -154,7 +140,9 @@ function CodeDescriptionData(activity)
         return nil, 0
     else
         local activityId = activity:GetActivityID()
-        local data = format('(%s)', AceSerializer:Serialize(GetPlayerRaidProgression(activityId, activity:GetCustomID()), GetPlayerPvPRating(activityId), GetAddonSource()))
+        local data = format('(%s)',
+                            AceSerializer:Serialize(GetPlayerRaidProgression(activityId, activity:GetCustomID()),
+                                                    GetPlayerPvPRating(activityId), GetAddonSource()))
         return data, strlenutf8(data)
     end
 end
@@ -189,20 +177,11 @@ function GetActivityCode(activityId, customId, categoryId, groupId)
     return format('%d-%d-%d-%d', categoryId or 0, groupId or 0, activityId or 0, customId or 0)
 end
 
-function GetRaidBossNames(eventCode)
-    return _RAID_DATA[eventCode].bossNames
-end
-
 function IsUseHonorLevel(activityId)
     return activityId and select(11, C_LFGList.GetActivityInfo(activityId))
 end
 
-local PVP_INDEXS = {
-    [6]  = 1,
-    [7]  = 1,
-    [8]  = 1,
-    [19] = 2,
-}
+local PVP_INDEXS = {[6] = 1, [7] = 1, [8] = 1, [19] = 2}
 
 function IsUsePvPRating(activityId)
     return PVP_INDEXS[activityId]
@@ -251,7 +230,8 @@ function GetPlayerSavedInstance(customId)
     end
 
     for i = 1, GetNumSavedInstances() do
-        local name, id, _, difficulty, locked, extended, _, _, _, difficultyName, numEncounters = GetSavedInstanceInfo(i)
+        local name, id, _, difficulty, locked, extended, _, _, _, difficultyName, numEncounters =
+            GetSavedInstanceInfo(i)
         if name == data.instance and (not data.difficulty or data.difficulty == difficultyName) then
             local result = 0
             for bossIndex = 1, numEncounters do
@@ -265,9 +245,10 @@ function GetPlayerSavedInstance(customId)
 end
 
 function GetProgressionTex(value, bossIndex)
-    local killed = bit.band(value, bit.lshift(1, bossIndex-1)) > 0
+    local killed = bit.band(value, bit.lshift(1, bossIndex - 1)) > 0
 
-    return killed and [[|TINTERFACE\FriendsFrame\StatusIcon-Online:16|t]] or [[|TINTERFACE\FriendsFrame\StatusIcon-Offline:16|t]]
+    return killed and [[|TINTERFACE\FriendsFrame\StatusIcon-Online:16|t]] or
+               [[|TINTERFACE\FriendsFrame\StatusIcon-Offline:16|t]]
 end
 
 function GetActivityName(activityId, customId)
@@ -291,7 +272,8 @@ function GetLootShortName(loot)
 end
 
 function CodeActivityTitle(activityId, customId, mode, loot)
-    return format('%s-%s-%s-%s', L['集合石'], GetLootName(loot), GetModeName(mode), GetActivityName(activityId, customId))
+    return format('%s-%s-%s-%s', L['集合石'], GetLootName(loot), GetModeName(mode),
+                  GetActivityName(activityId, customId))
 end
 
 function GetFullVersion(version)
@@ -373,13 +355,15 @@ function IsSoloCustomID(customId)
     return customId == SOLO_HIDDEN_CUSTOM_ID or customId == SOLO_VISIBLE_CUSTOM_ID
 end
 
-local RAID_UNITS = {} do
+local RAID_UNITS = {}
+do
     for i = 1, 40 do
         tinsert(RAID_UNITS, 'raid' .. i)
     end
 end
 
-local PARTY_UNITS = {} do
+local PARTY_UNITS = {}
+do
     for i = 1, 4 do
         tinsert(PARTY_UNITS, 'party' .. i)
     end
@@ -397,7 +381,9 @@ function IterateGroupUnits()
 end
 
 function GetAddonSource()
-    for line in gmatch('\066\105\103\070\111\111\116\058\049\010\033\033\033\049\054\051\085\073\033\033\033\058\050\010\068\117\111\119\097\110\058\052\010\069\108\118\085\073\058\056', '[^\r\n]+') do
+    for line in gmatch(
+                    '\066\105\103\070\111\111\116\058\049\010\033\033\033\049\054\051\085\073\033\033\033\058\050\010\068\117\111\119\097\110\058\052\010\069\108\118\085\073\058\056',
+                    '[^\r\n]+') do
         local n, v = line:match('^(.+):(%d+)$')
         if IsAddOnLoaded(n) then
             return tonumber(v)
@@ -406,6 +392,10 @@ function GetAddonSource()
     return 0
 end
 
+--[[@bigfoot@
+function GetAddonSource()
+end
+--@end-bigfoot@]]
 
 function GetGuildName()
     local name, _, _, realm = GetGuildInfo('player')
@@ -443,28 +433,50 @@ function UnpackIds(data)
             offset = offset + 1
         end
     end
-    
     return list
 end
 
 function ListToMap(list)
-    local map = {} do
-        for i,v in ipairs(list) do
+    local map = {}
+    do
+        for i, v in pairs(list) do
             map[v] = true
         end
     end
     return map
 end
 
-GetAutoCompleteItem = setmetatable({}, {__index = function(t, activityId)
-    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType = C_LFGList.GetActivityInfo(activityId)
-    t[activityId] = {
-        name       = name,
-        order      = 0xffff - (ACTIVITY_ORDER.A[activityId] or ACTIVITY_ORDER.G[group] or 0),
-        activityId = activityId,
-        code       = GetActivityCode(activityId, nil, category, group),
-    }
-    return t[activityId]
-end, __call = function(t, activityId)
-    return t[activityId]
-end})
+GetAutoCompleteItem = setmetatable({}, {
+    __index = function(t, activityId)
+        local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType =
+            C_LFGList.GetActivityInfo(activityId)
+        t[activityId] = {
+            name = name,
+            order = 0xffff - (ACTIVITY_ORDER.A[activityId] or ACTIVITY_ORDER.G[group] or 0),
+            activityId = activityId,
+            code = GetActivityCode(activityId, nil, category, group),
+        }
+        return t[activityId]
+    end,
+    __call = function(t, activityId)
+        return t[activityId]
+    end,
+})
+
+function FormatSummary(text, tbl)
+    return text:gsub('{{([%w_]+)}}', function(key)
+        if type(tbl[key]) == 'function' then
+            return tbl[key](tbl) or ''
+        end
+        return tbl[key] or ''
+    end)
+end
+
+local function UrlButtonOnClick(self)
+    GUI:CallUrlDialog(self.url)
+end
+
+function ApplyUrlButton(button, url)
+    button:SetScript('OnClick', UrlButtonOnClick)
+    button.url = url
+end

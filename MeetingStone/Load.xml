@@ -1,20 +1,32 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-  <Include file="Libs\Embeds.xml" />
-  <Include file="Localization\Localization.xml" />
-  <Script file="Custom.lua" />
-  <Script file="ChangeLog.lua" />
-  <Script file="Data.lua" />
-  <Script file="Memorize.lua" />
-  <Script file="API.lua" />
-  <Script file="AppData.lua" />
-  <Script file="MenuTableAPI.lua" />
-  <Script file="Main.lua" />
-  <Script file="Profile.lua" />
-  <Include file="Cache\Cache.xml" />
-  <Include file="Class\Class.xml" />
-  <Include file="Logic\Logic.xml" />
-  <Include file="Widget\Widget.xml" />
-  <Include file="Module\Module.xml" />
-  <Script file="System.lua" />
+    <Include file="Libs\Embeds.xml" />
+    <Include file="Localization\Localization.xml" />
+
+    <Script file="Custom.lua" />
+    <Script file="ChangeLog.lua" />
+    <Script file="Data.lua" />
+    <Script file="Memorize.lua" />
+    <Script file="API.lua" />
+    <Script file="AppData.lua" />
+    <!-- <Script file="FixBlizzardBug.lua" /> -->
+    <Script file="MenuTableAPI.lua" />
+    <Script file="Main.lua" />
+    <Script file="Profile.lua" />
+
+    <Include file="Cache\Cache.xml" />
+    <Include file="Class\Class.xml" />
+    <Include file="Logic\Logic.xml" />
+
+    <Include file="Widget\Widget.xml" />
+    <Include file="Module\Module.xml" />
+
+    <Script file="System.lua" />
+    <Include file="Quest\Quest.xml" />
+    <!-- <Script file="Report.lua" build="debug" /> -->
+
+    <!-- <Include file="Blizzard\Blizzard.xml" /> -->
+
+    <!-- <Script file="Debug.lua" build="debug" /> -->
+    <!-- <Script file="Alpha.lua" build="alpha" /> -->
 </Ui>

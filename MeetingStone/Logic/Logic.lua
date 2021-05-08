@@ -1,4 +1,3 @@
-
 BuildEnv(...)
 
 Logic = Addon:NewModule('Logic', 'AceEvent-3.0', 'NetEaseSocket-2.0', 'AceSerializer-3.0')
@@ -73,7 +72,8 @@ function Logic:SOCKET_VERSION(_, ...)
 end
 
 function Logic:SERVER_CONNECTED()
-    self:SendServer('SLOGIN', ADDON_VERSION, UnitGUID('player'), GetAddonSource(), select(2, BNGetInfo()), DataCache:GetQueryData())
+    self:SendServer('SLOGIN', ADDON_VERSION, UnitGUID('player'), GetAddonSource(), select(2, BNGetInfo()),
+                    DataCache:GetQueryData())
     self:SendMessage('MEETINGSTONE_SERVER_STATUS_UPDATED', true)
 end
 
@@ -85,22 +85,22 @@ end
 
 function Logic:MallPurchase(id, price, confirm)
     if not id then
-        
+        debug('MallPurchase args #1 is null', 2)
         return
     end
 
     self:SendServer('MALLPURCHASE', id, UnitGUID('player'), ADDON_VERSION_SHORT, confirm, price)
-    
+    debug(format('MALLPURCHASE: %s %s', id, price))
 end
 
 function Logic:Exchange(text)
     if not text or text == '' then
-        
+        debug('code is null', 2)
         return
     end
 
     self:SendServer('EXCHANGE', text, UnitGUID('player'), ADDON_VERSION_SHORT)
-    
+    debug('EXCHANGE: ' .. text)
 end
 
 function Logic:SEI(activity, title, summary)
@@ -111,20 +111,9 @@ function Logic:SEI(activity, title, summary)
     title = title or ''
     summary = summary or ''
 
-    
-
-    self:SendServer('SEI',
-        UnitGUID('player'),
-        GetPlayerBattleTag(),
-        ADDON_VERSION,
-        activity:GetActivityID(),
-        activity:GetCustomID(),
-        activity:GetMode(),
-        activity:GetLoot(),
-        title .. ' ' .. summary,
-        activity:GetItemLevel(),
-        activity:GetPvPRating(),
-        (select(3, UnitClass('player'))))
+    self:SendServer('SEI', UnitGUID('player'), GetPlayerBattleTag(), ADDON_VERSION, activity:GetActivityID(),
+                    activity:GetCustomID(), activity:GetMode(), activity:GetLoot(), title .. ' ' .. summary,
+                    activity:GetItemLevel(), activity:GetPvPRating(), (select(3, UnitClass('player'))))
 end
 
 function Logic:SEJ(activity, comment, tank, healer, damager)
@@ -132,19 +121,9 @@ function Logic:SEJ(activity, comment, tank, healer, damager)
         return
     end
 
-    self:SendServer('SEJ',
-        UnitGUID('player'),
-        GetPlayerBattleTag(),
-        ADDON_VERSION,
-        activity:GetLeader(),
-        activity:IsMeetingStone(),
-        activity:GetActivityID(),
-        activity:GetCustomID(),
-        comment,
-        tank,
-        healer,
-        damager,
-        activity:GetLeaderClass())
+    self:SendServer('SEJ', UnitGUID('player'), GetPlayerBattleTag(), ADDON_VERSION, activity:GetLeader(),
+                    activity:IsMeetingStone(), activity:GetActivityID(), activity:GetCustomID(), comment, tank, healer,
+                    damager, activity:GetLeaderClass())
 end
 
 function Logic:AddIgnore(name, msg)
@@ -152,12 +131,7 @@ function Logic:AddIgnore(name, msg)
         return
     end
 
-    self:SendServer('IGNORE',
-        name,
-        msg,
-        UnitGUID('player'),
-        GetPlayerBattleTag(),
-        ADDON_VERSION)
+    self:SendServer('IGNORE', name, msg, UnitGUID('player'), GetPlayerBattleTag(), ADDON_VERSION)
 end
 
 function Logic:SendCommand(cmd, ...)

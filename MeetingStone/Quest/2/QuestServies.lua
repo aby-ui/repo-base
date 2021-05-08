@@ -1,0 +1,95 @@
+-- QuestServies.lua
+-- @Author : Dencer (tdaddon@163.com)
+-- @Link   : https://dengsir.github.io
+-- @Date   : 3/3/2021, 1:43:41 PM
+--
+BuildEnv(...)
+
+
+QuestServies = Addon:NewModule('QuestServies', 'NetEaseSocket-2.0', 'AceEvent-3.0')
+
+function QuestServies:OnInitialize()
+    self:ListenSocket('NERB', ADDON_SERVER)
+    self:ConnectServer()
+end
+
+function QuestServies:OnEnable()
+    self:RegisterServer('QSQ')
+    self:RegisterServer('QSP')
+    self:RegisterServer('QSF')
+    self:RegisterServer('SERVER_CONNECTED')
+end
+
+function QuestServies:SERVER_CONNECTED()
+    self.connected = true
+    self:SendMessage('MEETINGSTONE_QUEST_CONNECTED')
+end
+
+function QuestServies:IsConnected()
+    return self.connected
+end
+
+function QuestServies:IsQuering()
+    return self.quering
+end
+
+function QuestServies:IsActive()
+    return self.active
+end
+
+function QuestServies:QSQ(_, active, questGroupData, progressData)
+    self.active = active
+    self.questGroup = QuestGroup:FromProto(questGroupData)
+
+    if progressData then
+        self:QSP(nil, progressData)
+    else
+        self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+    end
+
+    self.fetched = true
+    self.quering = nil
+    if self.queringTimer then
+        self.queringTimer:Cancel()
+        self.queringTimer = nil
+    end
+
+    self:SendMessage('MEETINGSTONE_QUEST_FETCHED')
+end
+
+function QuestServies:QSP(_, progress)
+    for _, p in ipairs(progress) do
+        local quest = self.questGroup:GetQuest(p[1])
+        quest:UpdateProgress(unpack(p, 2))
+    end
+
+    self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+end
+
+function QuestServies:QSF(_, err, id)
+    if err == 0 then
+        local quest = self.questGroup.questMap[id]
+        if quest then
+            quest.rewarded = true
+            self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+        end
+    end
+end
+
+function QuestServies:QueryQuestList()
+    if not self.connected or self.fetched or self.quering then
+        return
+    end
+
+    self.quering = true
+    self.queringTimer = C_Timer.NewTimer(10, function()
+        self.quering = nil
+        self.queringTimer = nil
+    end)
+
+    self:SendServer('QCQ', UnitGUID('player'))
+end
+
+function QuestServies:QueryQuestProgress()
+    self:SendServer('QCP', UnitGUID('player'))
+end

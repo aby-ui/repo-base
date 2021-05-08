@@ -54,8 +54,6 @@ local APPLICANT_ALREADY_TOUGHT = {
 }
 
 function Applicant:Constructor(id, index, activityId)
-    -- local id, status, pendingStatus, numMembers, isNew, comment, orderID = C_LFGList.GetApplicantInfo(id)
-    
     local info = C_LFGList.GetApplicantInfo(id)
     local status = info.applicationStatus
     local pendingStatus = info.pendingApplicationStatus
