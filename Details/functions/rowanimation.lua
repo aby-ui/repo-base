@@ -58,9 +58,9 @@
 	do
 		local fade_func = function (row, state) 
 			if (state) then
-				_detalhes.gump:Fade (row, "out")
+				Details.FadeHandler.Fader (row, "out")
 			else
-				_detalhes.gump:Fade (row, "in")
+				Details.FadeHandler.Fader (row, "in")
 			end
 		end
 		local fade_desc = "Default animation, makes the bar fade in or fade out when showing or hiding in the window"

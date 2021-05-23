@@ -20,7 +20,7 @@ if not ({
     ROGUE = true,
     SHAMAN = false,
     WARLOCK = false,
-    WARRIOR = Addon:IsBuild('bc', 'classic')
+    WARRIOR = Addon:IsBuild('bcc', 'classic')
 })[UnitClassBase('player')] then
     return
 end

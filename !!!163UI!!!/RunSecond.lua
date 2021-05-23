@@ -529,7 +529,7 @@ CoreDependCall("Blizzard_AuctionHouseUI", function()
                     local sr2 = C_AuctionHouse.GetCommoditySearchResultInfo(C_Item.GetItemID(itemLocation), 2);
                     if sr2 and sr2.unitPrice >  firstSearchResult.unitPrice * 1.1 then
                         self:GetCommoditiesSellList():SetSelectedEntry(sr2);
-                        U1Message(format("%s %s(卖家:|cffff0000%s|r)疑似钓鱼价，已为您避开", C_Item.GetItemLink(itemLocation), GetMoneyString(firstSearchResult.unitPrice), firstSearchResult.owners[1]))
+                        U1Message(format("%s %s(卖家:|cffff0000%s|r)疑似钓鱼价，已为您避开", C_Item.GetItemLink(itemLocation) or "拍卖品", GetMoneyString(firstSearchResult.unitPrice), firstSearchResult.owners[1] or UNKNOWN))
                     end
                 end
             end

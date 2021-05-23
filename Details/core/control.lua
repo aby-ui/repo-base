@@ -698,7 +698,7 @@
 						Details.last_encounter = Details.tabela_vigente.is_boss.name
 
 						if (Details.pre_pot_used) then
-							Details.last_combat_pre_pot_used = table_deepcopy (Details.pre_pot_used)
+							Details.last_combat_pre_pot_used = Details.CopyTable (Details.pre_pot_used)
 						end
 						
 						if (Details.pre_pot_used and Details.announce_prepots.enabled) then
@@ -1005,7 +1005,6 @@
 		]]
 		
 		function Details:CreateArenaSegment()
-		
 			Details:GetPlayersInArena()
 		
 			Details.arena_begun = true
@@ -1028,26 +1027,25 @@
 			--> sinaliza que esse combate � arena
 			Details.tabela_vigente.arena = true
 			Details.tabela_vigente.is_arena = {name = Details.zone_name, zone = Details.zone_name, mapid = Details.zone_id}
-		
-			Details:SendEvent ("COMBAT_ARENA_START")
+
+			Details:SendEvent("COMBAT_ARENA_START")
 		end
 		
-		function Details:StartArenaSegment (...)
+		function Details:StartArenaSegment(...)
 			if (Details.debug) then
-				Details:Msg ("(debug) starting a new arena segment.")
+				Details:Msg("(debug) starting a new arena segment.")
 			end
-			
-			local timerType, timeSeconds, totalTime = select (1, ...)
-			
+
+			local _, timeSeconds = select(1, ...)
+
 			if (Details.start_arena) then
-				Details:CancelTimer (Details.start_arena, true)
+				Details:CancelTimer(Details.start_arena, true)
 			end
-			Details.start_arena = Details:ScheduleTimer ("CreateArenaSegment", timeSeconds)
+			Details.start_arena = Details:ScheduleTimer("CreateArenaSegment", timeSeconds)
 			Details:GetPlayersInArena()
 		end
 
 		function Details:EnteredInArena()
-
 			if (Details.debug) then
 				Details:Msg ("(debug) the player EnteredInArena().")
 			end
@@ -1058,7 +1056,6 @@
 		end
 		
 		function Details:LeftArena()
-		
 			if (Details.debug) then
 				Details:Msg ("(debug) player LeftArena().")
 			end
@@ -1083,6 +1080,7 @@
 			[220893] = {class = "ROGUE", spec = 261, maxPercent = 0.075, container = 1, commID = "MISSDATA_ROGUE_SOULRIP"},
 			--[11366] = {class = "MAGE", spec = 63, maxPercent = 0.9, container = 1, commID = "MISSDATA_ROGUE_SOULRIP"},
 		}
+		
 		function Details:CanSendMissData()
 			if (not IsInRaid() and not IsInGroup()) then
 				return
@@ -1514,7 +1512,7 @@
 				instancia._postponing_current = nil
 				instancia.showing = Details.tabela_vigente
 				instancia:ResetaGump()
-				Details.gump:Fade (instancia, "in", nil, "barras")
+				Details.FadeHandler.Fader (instancia, "in", nil, "barras")
 			end
 		end
 		
@@ -1729,7 +1727,7 @@
 				if (instancia.v_barras) then
 					--print ("mostrando", instancia.rows_showing, instancia.rows_created)
 					for barra_numero = instancia.rows_showing+1, instancia.rows_created do
-						Details.gump:Fade (instancia.barras[barra_numero], "in")
+						Details.FadeHandler.Fader (instancia.barras[barra_numero], "in")
 					end
 					instancia.v_barras = false
 					

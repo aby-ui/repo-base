@@ -743,7 +743,7 @@
 			if (not A) then --> primeira vez que o resize esta sendo usado, no caso no startup do addon ou ao criar uma nova inst�ncia
 				--> hida as barras n�o usadas
 				for i = 1, self.rows_created, 1 do
-					gump:Fade (self.barras [i], 1)
+					Details.FadeHandler.Fader (self.barras [i], 1)
 					self.barras [i].on = false
 				end
 				return
@@ -778,13 +778,13 @@
 					local barra = self.barras[index]
 					if (barra) then
 						if (index <= X) then
-							--gump:Fade (barra, 0)
-							gump:Fade (barra, "out")
+							--Details.FadeHandler.Fader (barra, 0)
+							Details.FadeHandler.Fader (barra, "out")
 						else
 							--if (self.baseframe.isStretching or self.auto_resize) then
-								gump:Fade (barra, 1)
+								Details.FadeHandler.Fader (barra, 1)
 							--else
-							--	gump:Fade (barra, 1)
+							--	Details.FadeHandler.Fader (barra, 1)
 							--end
 						end
 					end
@@ -812,10 +812,10 @@
 						local barra = self.barras[index]
 						if (barra) then
 							if (self.baseframe.isStretching or self.auto_resize) then
-								gump:Fade (barra, 1)
+								Details.FadeHandler.Fader (barra, 1)
 							else	
-								--gump:Fade (barra, "in", 0.1)
-								gump:Fade (barra, 1)
+								--Details.FadeHandler.Fader (barra, "in", 0.1)
+								Details.FadeHandler.Fader (barra, 1)
 							end
 						end
 					end

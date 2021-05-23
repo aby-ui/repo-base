@@ -1,6 +1,6 @@
 ## Interface: 90005
-## Title: Masque
 
+## Title: Masque
 ## Notes: A skinning engine for button-based add-ons.
 ## Notes-esMX: Un sistema de cambio de apariencia para los add-ons de botones.
 ## Notes-esES: Un sistema de cambio de apariencia para los add-ons de botones.
@@ -8,7 +8,7 @@
 ## Notes-zhCN: 一款基于按钮的外观美化插件。
 ## Notes-zhTW: 一個基於按鈕的外觀美化插件。
 
-## Version: 9.0.5
+## Version: 9.0.6
 ## Author: StormFX, JJSheets
 ## SavedVariables: MasqueDB
 ## OptionalDeps: Ace3, AceGUI-3.0_SFX-Widgets, LibDBIcon-1.0, LibDualSpec-1.0
@@ -16,10 +16,12 @@
 ## X-Website: https://github.com/SFX-WoW/Masque
 ## X-Category: Interface Enhancements
 ## X-Curse-Project-ID: 13592
+## X-Wago-ID: kRNLgpGo
 ## X-WoWI-ID: 12097
 
 # Libraries
 Libs\Libs.xml
+Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
 
 # Locales
 Locales\Locales.xml

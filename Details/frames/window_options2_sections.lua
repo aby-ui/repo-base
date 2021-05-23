@@ -710,7 +710,7 @@ do
                 for key, value in pairs (currentInstance) do
                     if (_detalhes.instance_defaults[key] ~= nil) then
                         if (type (value) == "table") then
-                            savedObject[key] = table_deepcopy(value)
+                            savedObject[key] = Details.CopyTable(value)
                         else
                             savedObject[key] = value
                         end
@@ -737,7 +737,7 @@ do
                 for key, value in pairs (skinObject) do
                     if (key ~= "skin" and not _detalhes.instance_skin_ignored_values[key]) then
                         if (type (value) == "table") then
-                            instance[key] = table_deepcopy (value)
+                            instance[key] = Details.CopyTable (value)
                         else
                             instance[key] = value
                         end

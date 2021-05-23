@@ -15,7 +15,7 @@ local LibDeflate = LibStub("LibDeflate")
 
 do -- boilerplate & static values
 	Archivist.buildDate = "@build-time@"
-	Archivist.version = "v1.0.6"
+	Archivist.version = "v1.0.8"
 	--[==[@debug@
 		Archivist.debug = true
 	--@end-debug@]==]

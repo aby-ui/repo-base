@@ -1,6 +1,8 @@
 local addonName, addon = ...
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
+if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
+
+addon.MAX_ARENA_SIZE = 3
 
 addon.Resets = {
     --[[ Grimoire: Felhunter
@@ -25,7 +27,6 @@ addon.Cooldowns = {
 
         -- Blood
 
-        [43265] = { duration = 30, class = "DEATHKNIGHT", specID = { 250, 252 } }, -- Death and Decay
         [47476] = { duration = 60, class = "DEATHKNIGHT", specID = { 250 } }, -- Strangulate
         [49028] = { duration = 120, class = "DEATHKNIGHT", specID = { 250 } }, -- Dancing Rune Weapon
         [55233] = { duration = 90, class = "DEATHKNIGHT", specID = { 250 } }, -- Vampiric Blood
@@ -290,7 +291,7 @@ addon.Cooldowns = {
 
         [5246] = { duration = 90, class = "WARRIOR", specID = { 71, 72 } }, -- Intimidating Shout
         [97462] = { duration = 180, class = "WARRIOR", specID = { 71, 72, 73 } }, -- Rallying Cry
-        [118038] = { duration = 180, class = "WARRIOR", specID = { 71 } }, -- Die by the Sword
+        [118038] = { duration = 120, class = "WARRIOR", specID = { 71 } }, -- Die by the Sword
         [167105] = { duration = 45, class = "WARRIOR", specID = { 71 } }, -- Colossus Smash
             [262161] = { parent = 167105 }, -- Warbreaker
         [197690] = { duration = 10, class = "WARRIOR", specID = { 71 } }, -- Defensive Stance
@@ -311,7 +312,6 @@ addon.Cooldowns = {
         [1160] = { duration = 45, class = "WARRIOR", specID = { 73 } }, -- Demoralizing Shout
         [12975] = { duration = 180, class = "WARRIOR", specID = { 73 } }, -- Last Stand
         [118000] = { duration = 35, class = "WARRIOR", specID = { 73 } }, -- Dragon Roar
-        [198304] = { duration = 20, class = "WARRIOR", specID = { 73 }, charges = 2 }, -- Intercept
         [206572] = { duration = 20, class = "WARRIOR", specID = { 73 } }, -- Dragon Charge
         [213871] = { duration = 15, class = "WARRIOR", specID = { 73 } }, -- Bodyguard
         [228920] = { duration = 60, class = "WARRIOR", specID = { 73 } }, -- Ravager
@@ -397,9 +397,9 @@ addon.Cooldowns = {
     [108271] = { duration = 90, class = "SHAMAN" }, -- Astral Shift
         [210918] = { parent = 108271, duration = 45 }, -- Ethereal Form
     [114049] = { duration = 180, class = "SHAMAN" }, -- Ascendance
-        [114050] = { parent = 114050 }, -- Ascendance (Elemental)
-        [114051] = { parent = 114050 }, -- Ascendance (Enhancement)
-        [114052] = { parent = 114050 }, -- Ascendance (Restoration)
+        [114050] = { parent = 114049 }, -- Ascendance (Elemental)
+        [114051] = { parent = 114049 }, -- Ascendance (Enhancement)
+        [114052] = { parent = 114049 }, -- Ascendance (Restoration)
     [192058] = { duration = 60, class = "SHAMAN" }, -- Capacitor
     [192077] = { duration = 120, class = "SHAMAN" }, -- Wind Rush Totem
     [204330] = { duration = 45, class = "SHAMAN" }, -- Skyfury Totem

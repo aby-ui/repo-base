@@ -47,7 +47,7 @@ function ProgressBarModule:OnEnable()
 end
 
 function ProgressBarModule:Load()
-	if Dominos:IsBuild("bc", "classic") then
+	if Dominos:IsBuild("bcc", "classic") then
 		self.bars = {
 			Addon.ProgressBar:New("exp", {"xp", "reputation", "gold"})
 		}

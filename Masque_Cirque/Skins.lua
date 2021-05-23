@@ -28,8 +28,9 @@ local L = Core.Locale
 local Version = GetAddOnMetadata(AddOn, "Version")
 local Websites = {
 	"https://github.com/SFX-WoW/Masque_Cirque",
-	"https://www.wowace.com/projects/masque-cirque",
 	"https://www.curseforge.com/wow/addons/masque-cirque",
+	"https://addons.wago.io/addons/masque-cirque",
+	"https://www.wowace.com/projects/masque-cirque",
 	"https://www.wowinterface.com/downloads/info24410",
 }
 

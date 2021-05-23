@@ -51,11 +51,15 @@ local refreshEventScheduled = false
 local refreshTimer
 
 local function IsClassicWow()
-	local gameVersion = GetBuildInfo()
-	if (gameVersion:match ("%d") == "1") then
-		return true
-	end
-	return false
+	return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+end
+
+local function IsTBCWow()
+	return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+end
+
+local function IsRetailWow()
+	return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
 local colorMap = {
@@ -304,7 +308,7 @@ function GridStatusRaidDebuff:ZoneCheck()
 	self:UpdateAllUnits()
 	self:CheckDetectZone()
 
-if not IsClassicWow() then
+if IsRetailWow() then
 	if myClass == "PALADIN" or myClass == "DRUID" or myClass == "SHAMAN" or myClass == "PRIEST" or
 	   myClass == "MONK" then
 		self:RegisterEvent("PLAYER_TALENT_UPDATE")

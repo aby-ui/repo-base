@@ -1975,7 +1975,7 @@ function BigDebuffs:SetupOptions()
 
     self.options.plugins.profiles = { profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db) }
 
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         local LibDualSpec = LibStub('LibDualSpec-1.0')
         LibDualSpec:EnhanceDatabase(self.db, "BigDebuffsDB")
         LibDualSpec:EnhanceOptions(self.options.plugins.profiles.profiles, self.db)

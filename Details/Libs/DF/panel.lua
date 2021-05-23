@@ -6006,13 +6006,13 @@ local default_load_conditions_frame_options = {
 function DF:CreateLoadFilterParser (callback)
 	local f = CreateFrame ("frame")
 	f:RegisterEvent ("PLAYER_ENTERING_WORLD")
-	if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 		f:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
 		f:RegisterEvent ("PLAYER_TALENT_UPDATE")
 	end
 	f:RegisterEvent ("PLAYER_ROLES_ASSIGNED")
 	f:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
-	if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 		f:RegisterEvent ("CHALLENGE_MODE_START")
 	end
 	f:RegisterEvent ("ENCOUNTER_START")
@@ -7200,10 +7200,10 @@ DF.StatusBarFunctions = {
 		{"PLAYER_ENTERING_WORLD"},
 		{"UNIT_HEALTH", true},
 		{"UNIT_MAXHEALTH", true},
-		--{"UNIT_HEALTH_FREQUENT", true},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and "UNIT_HEAL_PREDICTION", true},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and "UNIT_ABSORB_AMOUNT_CHANGED", true},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and "UNIT_HEAL_ABSORB_AMOUNT_CHANGED", true},
+		{(WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and "UNIT_HEALTH_FREQUENT", true}, -- this one is classic-only...
+		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_HEAL_PREDICTION", true},
+		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_ABSORB_AMOUNT_CHANGED", true},
+		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_HEAL_ABSORB_AMOUNT_CHANGED", true},
 	}
 	
 	--> setup the castbar to be used by another unit
@@ -7232,7 +7232,7 @@ DF.StatusBarFunctions = {
 				
 				--> check for settings and update some events
 				if (not self.Settings.ShowHealingPrediction) then
-					if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+					if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 						self:UnregisterEvent ("UNIT_HEAL_PREDICTION")
 						self:UnregisterEvent ("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
 					end
@@ -7240,7 +7240,7 @@ DF.StatusBarFunctions = {
 					self.healAbsorbIndicator:Hide()
 				end
 				if (not self.Settings.ShowShields) then
-					if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+					if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 						self:UnregisterEvent ("UNIT_ABSORB_AMOUNT_CHANGED")
 					end
 					self.shieldAbsorbIndicator:Hide()
@@ -7333,7 +7333,7 @@ DF.StatusBarFunctions = {
 	
 	--health and absorbs prediction
 	healthBarMetaFunctions.UpdateHealPrediction = function (self)
-		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then return end
+		if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
 		local currentHealth = self.currentHealth
 		local currentHealthMax = self.currentHealthMax
 		local healthPercent = currentHealth / currentHealthMax
@@ -7789,8 +7789,8 @@ DF.CastFrameFunctions = {
 		{"UNIT_SPELLCAST_CHANNEL_START"},
 		{"UNIT_SPELLCAST_CHANNEL_UPDATE"},
 		{"UNIT_SPELLCAST_CHANNEL_STOP"},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and "UNIT_SPELLCAST_INTERRUPTIBLE"},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"},
+		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_INTERRUPTIBLE"},
+		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"},
 		{"PLAYER_ENTERING_WORLD"},
 		{"UNIT_SPELLCAST_START", true},
 		{"UNIT_SPELLCAST_STOP", true},
@@ -8321,7 +8321,7 @@ DF.CastFrameFunctions = {
 	UNIT_SPELLCAST_START = function (self, unit)
 
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
-		if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, castID, spellID = UnitCastingInfo (unit)
@@ -8382,7 +8382,7 @@ DF.CastFrameFunctions = {
 	
 	UNIT_SPELLCAST_CHANNEL_START = function (self, unit, ...)
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID
-		if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo (unit)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, spellID = UnitChannelInfo (unit)
@@ -8993,7 +8993,7 @@ end
 		--> todo: see what 'UnitTargetsVehicleInRaidUI' is, there's a call for this in the CompactUnitFrame.lua but zero documentation
 		CheckVehiclePossession = function (self)
 			--> this unit is possessing a vehicle?
-			local unitPossessVehicle = (WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC) and UnitHasVehicleUI (self.unit)	or false
+			local unitPossessVehicle = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and UnitHasVehicleUI (self.unit)	or false
 			if (unitPossessVehicle) then
 				if (not self.unitInVehicle) then
 					if (UnitIsUnit ("player", self.unit)) then

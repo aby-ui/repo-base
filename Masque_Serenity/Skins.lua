@@ -29,8 +29,9 @@ local Version = GetAddOnMetadata(AddOn, "Version")
 local Authors = {"StormFX", "|cff999999Sairen|r"}
 local Websites = {
 	"https://github.com/SFX-WoW/Masque_Serenity",
-	"https://www.wowace.com/projects/masque-serenity",
 	"https://www.curseforge.com/wow/addons/masque-serenity",
+	"https://addons.wago.io/addons/masque-serenity",
+	"https://www.wowace.com/projects/masque-serenity",
 	"https://www.wowinterface.com/downloads/info8875",
 }
 

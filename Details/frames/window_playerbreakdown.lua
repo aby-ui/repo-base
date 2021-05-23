@@ -242,7 +242,7 @@ function _detalhes:AbreJanelaInfo (jogador, from_att_change, refresh, ShiftKeyDo
 	end
 	
 	info:ShowTabs()
-	gump:Fade (info, 0)
+	Details.FadeHandler.Fader (info, 0)
 	Details:UpdateBreakdownPlayerList()
 	
 	--check which tab was selected and reopen that tab
@@ -397,9 +397,9 @@ function _detalhes:FechaJanelaInfo (fromEscape)
 	if (info.ativo) then --> se a janela tiver aberta
 		--playerDetailWindow:Hide()
 		if (fromEscape) then
-			gump:Fade (info, "in")
+			Details.FadeHandler.Fader (info, "in")
 		else
-			gump:Fade (info, 1)
+			Details.FadeHandler.Fader (info, 1)
 		end
 		info.ativo = false --> sinaliza o addon que a janela esta agora fechada
 		
@@ -506,22 +506,22 @@ end
 ------------------------------------------------------------------------------------------------------------------------------
 
 local detalhe_infobg_onenter = function (self)
-	gump:Fade (self.overlay, "OUT") 
-	gump:Fade (self.reportar, "OUT")
+	Details.FadeHandler.Fader (self.overlay, "OUT") 
+	Details.FadeHandler.Fader (self.reportar, "OUT")
 end
 
 local detalhe_infobg_onleave = function (self)
-	gump:Fade (self.overlay, "IN")
-	gump:Fade (self.reportar, "IN")
+	Details.FadeHandler.Fader (self.overlay, "IN")
+	Details.FadeHandler.Fader (self.reportar, "IN")
 end
 
 local detalhes_inforeport_onenter = function (self)
-	gump:Fade (self:GetParent().overlay, "OUT")
-	gump:Fade (self, "OUT")
+	Details.FadeHandler.Fader (self:GetParent().overlay, "OUT")
+	Details.FadeHandler.Fader (self, "OUT")
 end
 local detalhes_inforeport_onleave = function (self)
-	gump:Fade (self:GetParent().overlay, "IN")
-	gump:Fade (self, "IN")
+	Details.FadeHandler.Fader (self:GetParent().overlay, "IN")
+	Details.FadeHandler.Fader (self, "IN")
 end
 
 function gump:CriaDetalheInfo (index)
@@ -546,12 +546,12 @@ function gump:CriaDetalheInfo (index)
 	info.bg.overlay:SetWidth (341)
 	info.bg.overlay:SetHeight (61)
 	info.bg.overlay:SetPoint ("TOPLEFT", info.bg, "TOPLEFT", -7, 6)
-	gump:Fade (info.bg.overlay, 1)
+	Details.FadeHandler.Fader (info.bg.overlay, 1)
 	
 	info.bg.reportar = gump:NewDetailsButton (info.bg, nil, nil, _detalhes.Reportar, _detalhes.playerDetailWindow, 10+index, 16, 16,
 	"Interface\\COMMON\\VOICECHAT-ON", "Interface\\COMMON\\VOICECHAT-ON", "Interface\\COMMON\\VOICECHAT-ON", "Interface\\COMMON\\VOICECHAT-ON", nil, "DetailsJanelaInfoReport1")
 	info.bg.reportar:SetPoint ("BOTTOMLEFT", info.bg.overlay, "BOTTOMRIGHT",  -33, 10)
-	gump:Fade (info.bg.reportar, 1)
+	Details.FadeHandler.Fader (info.bg.reportar, 1)
 	
 	info.bg:SetScript ("OnEnter", detalhe_infobg_onenter)
 	info.bg:SetScript ("OnLeave", detalhe_infobg_onleave)
@@ -679,7 +679,7 @@ function gump:SetaDetalheInfoTexto (index, p, arg1, arg2, arg3, arg4, arg5, arg6
 		info.bg.PetIcon:Hide()
 		info.bg.PetText:Hide()
 		info.bg.PetDps:Hide()
-		gump:Fade (info.bg.overlay, "IN")
+		Details.FadeHandler.Fader (info.bg.overlay, "IN")
 		info.IsPet = false
 	end
 	

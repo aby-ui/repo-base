@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.7
+Version 2.4.9.8
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.7";
+local VERSION = "2.4.9.8";
 
 local ADDON_NAME, T = ...;
 
@@ -108,8 +108,7 @@ local L = HHTD.Localized_Text;
 
 HHTD.Constants = {};
 local HHTD_C = HHTD.Constants;
-HHTD_C.WOWC = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-HHTD_C.WOW8 = (tocversion >= 80000) or HHTD_C.WOWC
+HHTD_C.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 
 --[=[
 HHTD_C.Healing_Classes = { -- unused
@@ -554,7 +553,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.7,', L["RELEASE_DATE"], '2021-03-20T23:32:54Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.8,', L["RELEASE_DATE"], '2021-05-20T08:25:05Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -572,7 +571,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.7 -- ' .. L["RELEASE_DATE"] .. ' 2021-03-20T23:32:54Z',
+                        name = L["VERSION"] .. ' 2.4.9.8 -- ' .. L["RELEASE_DATE"] .. ' 2021-05-20T08:25:05Z',
                         order = 1,
                     },
                     Pve = {
@@ -1606,7 +1605,7 @@ do
         --end
         --@end-debug@]==]
 
-        if HHTD_C.WOW8 and event == nil then
+        if event == nil then
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, _spellID, spellNAME, _spellSCHOOL, _amount = CombatLogGetCurrentEventInfo()
         end
 

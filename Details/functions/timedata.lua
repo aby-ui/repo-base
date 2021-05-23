@@ -192,7 +192,7 @@
 					local func, errortext = loadstring (t [INDEX_FUNCTION])
 					if (func) then
 						DetailsFramework:SetEnvironment(func)
-						tinsert (exec, { func = func, data = data, attributes = table_deepcopy (t [INDEX_MATRIX]), is_user = true })
+						tinsert (exec, { func = func, data = data, attributes = Details.CopyTable (t [INDEX_MATRIX]), is_user = true })
 					else
 						_detalhes:Msg ("|cFFFF9900error compiling script for time data (charts)|r: ", errortext)
 					end
@@ -200,7 +200,7 @@
 					--> plugin
 					local func = t [INDEX_FUNCTION]
 					DetailsFramework:SetEnvironment(func)
-					tinsert (exec, { func = func, data = data, attributes = table_deepcopy (t [INDEX_MATRIX]) })
+					tinsert (exec, { func = func, data = data, attributes = Details.CopyTable (t [INDEX_MATRIX]) })
 				end
 			
 			end

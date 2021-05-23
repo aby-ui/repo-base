@@ -36,7 +36,7 @@ local function CorrectSpellName(input)
     else
       return nil;
     end
-  elseif (WeakAuras.IsClassic() or WeakAuras.IsBC()) and input then
+  elseif (WeakAuras.IsClassic() or WeakAuras.IsBCC()) and input then
     local name, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
@@ -564,7 +564,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 return nil;
               end
             elseif(arg.type == "spell") then
-              local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname]) or arg.forceExactOption
+              local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname])
               if(trigger["use_"..realname]) then
                 if (trigger[realname] and trigger[realname] ~= "") then
                   if useExactSpellId then

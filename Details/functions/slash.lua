@@ -383,7 +383,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes.tabela_historico:adicionar (combat)
 	
-		_detalhes:InstanciaCallFunction (_detalhes.gump.Fade, "in", nil, "barras")
+		_detalhes:InstanciaCallFunction (Details.FadeHandler.Fader, "in", nil, "barras")
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos) -- atualiza o instancia.showing para as novas tabelas criadas
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset) -- verifica se precisa zerar as tabela da janela solo mode
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
@@ -553,11 +553,11 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes.ResetButton:SetBackdropColor (0, 0, 1, 1)
 		
-		--vardump (_detalhes.ResetButton)
+		--Details.VarDump (_detalhes.ResetButton)
 	
 	elseif (command == "mini") then
 		local instance = _detalhes.tabela_instancias [1]
-		--vardump ()
+		--Details.VarDump ()
 		--print (instance, instance.StatusBar.options, instance.StatusBar.left)
 		print (instance.StatusBar.options [instance.StatusBar.left.mainPlugin.real_name].textSize)
 		print (instance.StatusBar.left.options.textSize)
@@ -693,8 +693,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local f = MacroFrameTextBackground
 		local backdrop = MacroFrameTextBackground:GetBackdrop()
 		
-		vardump (backdrop)
-		vardump (backdrop.insets)
+		Details.VarDump (backdrop)
+		Details.VarDump (backdrop.insets)
 		
 		print ("bgcolor:",f:GetBackdropColor())
 		print ("bordercolor",f:GetBackdropBorderColor())
@@ -1433,7 +1433,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		--> clear memory
 		collectgarbage()		
 
-		_detalhes:InstanciaCallFunction (_detalhes.gump.Fade, "in", nil, "barras")
+		_detalhes:InstanciaCallFunction (Details.FadeHandler.Fader, "in", nil, "barras")
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos)
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset)
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump)

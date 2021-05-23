@@ -202,7 +202,7 @@ function _detalhes:OpenWelcomeWindow()
 		for key, value in pairs (instance) do
 			if (_detalhes.instance_defaults [key] ~= nil) then	
 				if (type (value) == "table") then
-					savedObject [key] = table_deepcopy (value)
+					savedObject [key] = Details.CopyTable (value)
 				else
 					savedObject [key] = value
 				end

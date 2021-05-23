@@ -28,8 +28,9 @@ local L = Core.Locale
 local Version = GetAddOnMetadata(AddOn, "Version")
 local Websites = {
 	"https://github.com/SFX-WoW/Masque_Entropy",
-	"https://www.wowace.com/projects/masque-entropy",
 	"https://www.curseforge.com/wow/addons/masque-entropy",
+	"https://addons.wago.io/addons/masque-entropy",
+	"https://www.wowace.com/projects/masque-entropy",
 	"https://www.wowinterface.com/downloads/info8873",
 }
 

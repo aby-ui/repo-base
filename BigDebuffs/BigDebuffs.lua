@@ -345,6 +345,19 @@ local GetAnchor = {
             return
         end
 
+        if unit and ( unit:match("arena") or unit:match("arena") ) then
+            local unitGUID = UnitGUID(unit)
+            for i = 1,5,1 do
+                local elvUIFrame = _G["ElvUF_Arena"..i]
+                if elvUIFrame and elvUIFrame:IsVisible() and elvUIFrame.unit then
+                    if unitGUID == UnitGUID(elvUIFrame.unit) then
+                        return elvUIFrame
+                    end
+                end
+            end
+            return
+        end
+
         return _G[anchor]
     end,
     ShadowedUnitFrames = function(anchor)
@@ -884,10 +897,13 @@ function BigDebuffs:OnEnable()
     self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 	self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         self:RegisterEvent("PLAYER_TALENT_UPDATE")
-        self:RegisterEvent("PLAYER_FOCUS_CHANGED")
         self:PLAYER_TALENT_UPDATE()
+    end
+
+    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+        self:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
 
     InsertTestDebuff(8122, "Magic") -- Psychic Scream
@@ -1059,7 +1075,7 @@ hooksecurefunc("CompactUnitFrame_UpdateAll", function(frame)
     end
 end)
 
-if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     function BigDebuffs:PLAYER_TALENT_UPDATE()
         local specID = GetSpecializationInfo(GetSpecialization() or 1)
         self.specDispel = specID and self.specDispelTypes[specID] and self.specDispelTypes[specID]
@@ -1293,184 +1309,7 @@ local function CompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, 
     debuffFrame:Show();
 end
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-    local Default_CompactUnitFrame_UtilIsPriorityDebuff = CompactUnitFrame_UtilIsPriorityDebuff
-
-    local function CompactUnitFrame_UtilIsPriorityDebuff(...)
-        local _,_,_,_,_,_,_,_,_, spellId = UnitDebuff(...)
-        return BigDebuffs:IsPriorityDebuff(spellId) or Default_CompactUnitFrame_UtilIsPriorityDebuff(...)
-    end
-
-    local Default_SpellGetVisibilityInfo = SpellGetVisibilityInfo
-
-    local function CompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)
-        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura = UnitBuff(unit, index, filter);
-
-        local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
-
-        local showAllClassBuffs = BigDebuffs.db.profile.raidFrames.showAllClassBuffs and canApplyAura
-
-        if ( hasCustom ) then
-            return showForMySpec or (alwaysShowMine and (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
-        else
-            return (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and not SpellIsSelfBuff(spellId);
-        end
-    end
-
-    local function CompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
-        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura = UnitDebuff(unit, index, filter);
-
-        local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
-
-        local showAllClassBuffs = BigDebuffs.db.profile.raidFrames.showAllClassBuffs and canApplyAura
-
-        if ( hasCustom ) then
-            return showForMySpec or (alwaysShowMine and (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") );   --Would only be "mine" in the case of something like forbearance.
-        else
-            return true;
-        end
-    end
-
-    hooksecurefunc("CompactUnitFrame_UpdateDebuffs", function(frame)
-        if ( not frame.debuffFrames or not frame.optionTable.displayDebuffs ) then
-            CompactUnitFrame_HideAllDebuffs(frame);
-            return;
-        end
-
-        local index = 1;
-        local frameNum = 1;
-        local filter = nil;
-        local maxDebuffs = frame.maxDebuffs;
-        --Show both Boss buffs & debuffs in the debuff location
-        --First, we go through all the debuffs looking for any boss flagged ones.
-        while ( frameNum <= maxDebuffs ) do
-            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
-            if ( debuffName ) then
-                if ( CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, false) ) then
-                    local debuffFrame = frame.debuffFrames[frameNum];
-                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, true, false);
-                    frameNum = frameNum + 1;
-                    --Boss debuffs are about twice as big as normal debuffs, so display one less.
-                    local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
-                    maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
-                end
-            else
-                break;
-            end
-            index = index + 1;
-        end
-        --Then we go through all the buffs looking for any boss flagged ones.
-        index = 1;
-        while ( frameNum <= maxDebuffs ) do
-            local debuffName = UnitBuff(frame.displayedUnit, index, filter);
-            if ( debuffName ) then
-                if ( CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, true) ) then
-                    local debuffFrame = frame.debuffFrames[frameNum];
-                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, true, true);
-                    frameNum = frameNum + 1;
-                    --Boss debuffs are about twice as big as normal debuffs, so display one less.
-                    local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
-                    maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
-                end
-            else
-                break;
-            end
-            index = index + 1;
-        end
-
-        --Now we go through the debuffs with a priority (e.g. Weakened Soul and Forbearance)
-        index = 1;
-        while ( frameNum <= maxDebuffs ) do
-            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
-            if ( debuffName ) then
-                if ( CompactUnitFrame_UtilIsPriorityDebuff(frame.displayedUnit, index, filter) ) then
-                    local debuffFrame = frame.debuffFrames[frameNum];
-                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, false, false);
-                    frameNum = frameNum + 1;
-                end
-            else
-                break;
-            end
-            index = index + 1;
-        end
-
-        if ( frame.optionTable.displayOnlyDispellableDebuffs ) then
-            filter = "RAID";
-        end
-
-        index = 1;
-        --Now, we display all normal debuffs.
-        if ( frame.optionTable.displayNonBossDebuffs ) then
-        while ( frameNum <= maxDebuffs ) do
-            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
-            if ( debuffName ) then
-                if ( CompactUnitFrame_UtilShouldDisplayDebuff(frame.displayedUnit, index, filter) and not CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, false) and
-                    not CompactUnitFrame_UtilIsPriorityDebuff(frame.displayedUnit, index, filter)) then
-                    local debuffFrame = frame.debuffFrames[frameNum];
-                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, false, false);
-                    frameNum = frameNum + 1;
-                end
-            else
-                break;
-            end
-            index = index + 1;
-        end
-        end
-
-        for i=frameNum, frame.maxDebuffs do
-            local debuffFrame = frame.debuffFrames[i];
-            debuffFrame:Hide();
-        end
-
-        BigDebuffs:ShowBigDebuffs(frame)
-    end)
-
-    -- Show extra buffs
-    local MAX_BUFFS = 6
-    hooksecurefunc("CompactUnitFrame_UpdateBuffs", function(frame)
-        if ( not frame.buffFrames or not frame.optionTable.displayBuffs ) then
-            CompactUnitFrame_HideAllBuffs(frame);
-            return;
-        end
-
-        if not UnitIsPlayer(frame.displayedUnit) then
-            return
-        end
-
-        if (not BigDebuffs.db.profile.raidFrames.increaseBuffs) and
-           (not BigDebuffs.db.profile.raidFrames.showAllClassBuffs)
-        then
-            return
-        end
-
-        local maxBuffs = BigDebuffs.db.profile.raidFrames.increaseBuffs and MAX_BUFFS or frame.maxBuffs
-
-        local index = 1;
-        local frameNum = 1;
-        local filter = nil;
-        while ( frameNum <= maxBuffs ) do
-            local buffName = UnitBuff(frame.displayedUnit, index, filter);
-            if ( buffName ) then
-                if ( CompactUnitFrame_UtilShouldDisplayBuff(frame.displayedUnit, index, filter) and
-                    not CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, true) )
-                then
-                    local buffFrame = frame.buffFrames[frameNum];
-                    if buffFrame then
-                       CompactUnitFrame_UtilSetBuff(buffFrame, frame.displayedUnit, index, filter);
-                       frameNum = frameNum + 1;
-                    end
-                end
-            else
-                break;
-            end
-            index = index + 1;
-        end
-        for i=frameNum, maxBuffs do
-            local buffFrame = frame.buffFrames[i];
-            if buffFrame then buffFrame:Hide() end
-        end
-    end)
-else
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     local Default_CompactUnitFrame_Util_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff
     local function CompactUnitFrame_Util_IsPriorityDebuff(...)
         local default = Default_CompactUnitFrame_Util_IsPriorityDebuff(...)
@@ -1666,6 +1505,182 @@ else
         CompactUnitFrame_HideAllDispelDebuffs(frame, numUsedDispelDebuffs + 1);
 
         BigDebuffs:ShowBigDebuffs(frame)
+    end)
+else
+    local Default_CompactUnitFrame_UtilIsPriorityDebuff = CompactUnitFrame_UtilIsPriorityDebuff
+
+    local function CompactUnitFrame_UtilIsPriorityDebuff(...)
+        local _,_,_,_,_,_,_,_,_, spellId = UnitDebuff(...)
+        return BigDebuffs:IsPriorityDebuff(spellId) or Default_CompactUnitFrame_UtilIsPriorityDebuff(...)
+    end
+
+    local Default_SpellGetVisibilityInfo = SpellGetVisibilityInfo
+
+    local function CompactUnitFrame_UtilShouldDisplayBuff(unit, index, filter)
+        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura = UnitBuff(unit, index, filter);
+
+        local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+
+        local showAllClassBuffs = BigDebuffs.db.profile.raidFrames.showAllClassBuffs and canApplyAura
+
+        if ( hasCustom ) then
+            return showForMySpec or (alwaysShowMine and (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+        else
+            return (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and not SpellIsSelfBuff(spellId);
+        end
+    end
+
+    local function CompactUnitFrame_UtilShouldDisplayDebuff(unit, index, filter)
+        local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _, spellId, canApplyAura, isBossAura = UnitDebuff(unit, index, filter);
+
+        local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellId, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+
+        local showAllClassBuffs = BigDebuffs.db.profile.raidFrames.showAllClassBuffs and canApplyAura
+
+        if ( hasCustom ) then
+            return showForMySpec or (alwaysShowMine and (showAllClassBuffs or unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") );   --Would only be "mine" in the case of something like forbearance.
+        else
+            return true;
+        end
+    end
+
+    hooksecurefunc("CompactUnitFrame_UpdateDebuffs", function(frame)
+        if ( not frame.debuffFrames or not frame.optionTable.displayDebuffs ) then
+            CompactUnitFrame_HideAllDebuffs(frame);
+            return;
+        end
+
+        local index = 1;
+        local frameNum = 1;
+        local filter = nil;
+        local maxDebuffs = frame.maxDebuffs;
+        --Show both Boss buffs & debuffs in the debuff location
+        --First, we go through all the debuffs looking for any boss flagged ones.
+        while ( frameNum <= maxDebuffs ) do
+            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
+            if ( debuffName ) then
+                if ( CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, false) ) then
+                    local debuffFrame = frame.debuffFrames[frameNum];
+                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, true, false);
+                    frameNum = frameNum + 1;
+                    --Boss debuffs are about twice as big as normal debuffs, so display one less.
+                    local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
+                    maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
+                end
+            else
+                break;
+            end
+            index = index + 1;
+        end
+        --Then we go through all the buffs looking for any boss flagged ones.
+        index = 1;
+        while ( frameNum <= maxDebuffs ) do
+            local debuffName = UnitBuff(frame.displayedUnit, index, filter);
+            if ( debuffName ) then
+                if ( CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, true) ) then
+                    local debuffFrame = frame.debuffFrames[frameNum];
+                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, true, true);
+                    frameNum = frameNum + 1;
+                    --Boss debuffs are about twice as big as normal debuffs, so display one less.
+                    local bossDebuffScale = (debuffFrame.baseSize + BOSS_DEBUFF_SIZE_INCREASE)/debuffFrame.baseSize
+                    maxDebuffs = maxDebuffs - (bossDebuffScale - 1);
+                end
+            else
+                break;
+            end
+            index = index + 1;
+        end
+
+        --Now we go through the debuffs with a priority (e.g. Weakened Soul and Forbearance)
+        index = 1;
+        while ( frameNum <= maxDebuffs ) do
+            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
+            if ( debuffName ) then
+                if ( CompactUnitFrame_UtilIsPriorityDebuff(frame.displayedUnit, index, filter) ) then
+                    local debuffFrame = frame.debuffFrames[frameNum];
+                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, false, false);
+                    frameNum = frameNum + 1;
+                end
+            else
+                break;
+            end
+            index = index + 1;
+        end
+
+        if ( frame.optionTable.displayOnlyDispellableDebuffs ) then
+            filter = "RAID";
+        end
+
+        index = 1;
+        --Now, we display all normal debuffs.
+        if ( frame.optionTable.displayNonBossDebuffs ) then
+        while ( frameNum <= maxDebuffs ) do
+            local debuffName = UnitDebuff(frame.displayedUnit, index, filter);
+            if ( debuffName ) then
+                if ( CompactUnitFrame_UtilShouldDisplayDebuff(frame.displayedUnit, index, filter) and not CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, false) and
+                    not CompactUnitFrame_UtilIsPriorityDebuff(frame.displayedUnit, index, filter)) then
+                    local debuffFrame = frame.debuffFrames[frameNum];
+                    CompactUnitFrame_UtilSetDebuff(debuffFrame, frame.displayedUnit, index, filter, false, false);
+                    frameNum = frameNum + 1;
+                end
+            else
+                break;
+            end
+            index = index + 1;
+        end
+        end
+
+        for i=frameNum, frame.maxDebuffs do
+            local debuffFrame = frame.debuffFrames[i];
+            debuffFrame:Hide();
+        end
+
+        BigDebuffs:ShowBigDebuffs(frame)
+    end)
+
+    -- Show extra buffs
+    hooksecurefunc("CompactUnitFrame_UpdateBuffs", function(frame)
+        if ( not frame.buffFrames or not frame.optionTable.displayBuffs ) then
+            CompactUnitFrame_HideAllBuffs(frame);
+            return;
+        end
+
+        if not UnitIsPlayer(frame.displayedUnit) then
+            return
+        end
+
+        if (not BigDebuffs.db.profile.raidFrames.increaseBuffs) and
+           (not BigDebuffs.db.profile.raidFrames.showAllClassBuffs)
+        then
+            return
+        end
+
+        local maxBuffs = BigDebuffs.db.profile.raidFrames.increaseBuffs and MAX_BUFFS or frame.maxBuffs
+
+        local index = 1;
+        local frameNum = 1;
+        local filter = nil;
+        while ( frameNum <= maxBuffs ) do
+            local buffName = UnitBuff(frame.displayedUnit, index, filter);
+            if ( buffName ) then
+                if ( CompactUnitFrame_UtilShouldDisplayBuff(frame.displayedUnit, index, filter) and
+                    not CompactUnitFrame_UtilIsBossAura(frame.displayedUnit, index, filter, true) )
+                then
+                    local buffFrame = frame.buffFrames[frameNum];
+                    if buffFrame then
+                       CompactUnitFrame_UtilSetBuff(buffFrame, frame.displayedUnit, index, filter);
+                       frameNum = frameNum + 1;
+                    end
+                end
+            else
+                break;
+            end
+            index = index + 1;
+        end
+        for i=frameNum, maxBuffs do
+            local buffFrame = frame.buffFrames[i];
+            if buffFrame then buffFrame:Hide() end
+        end
     end)
 end
 

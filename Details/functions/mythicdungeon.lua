@@ -1,6 +1,3 @@
-
-
-
 local Details = _G.Details
 local DF = _G.DetailsFramework
 local C_Timer = _G.C_Timer
@@ -129,12 +126,12 @@ function DetailsMythicPlusFrame.MergeSegmentsOnEnd()
 
     --> immediatly finishes the segment just started
     Details:SairDoCombate()
-    
+
     --> update all windows
-    Details:InstanciaCallFunction (Details.gump.Fade, "in", nil, "barras")
-    Details:InstanciaCallFunction (Details.AtualizaSegmentos)
-    Details:InstanciaCallFunction (Details.AtualizaSoloMode_AfertReset)
-    Details:InstanciaCallFunction (Details.ResetaGump)
+    Details:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
+    Details:InstanciaCallFunction(Details.AtualizaSegmentos)
+    Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
+    Details:InstanciaCallFunction(Details.ResetaGump)
     Details:RefreshMainWindow (-1, true)
     
     if (DetailsMythicPlusFrame.DevelopmentDebug) then
@@ -253,7 +250,7 @@ function DetailsMythicPlusFrame.MergeTrashCleanup (isFromSchedule)
         end
 
         --> update all windows
-        Details:InstanciaCallFunction (Details.gump.Fade, "in", nil, "barras")
+        Details:InstanciaCallFunction (Details.FadeHandler.Fader, "IN", nil, "barras")
         Details:InstanciaCallFunction (Details.AtualizaSegmentos)
         Details:InstanciaCallFunction (Details.AtualizaSoloMode_AfertReset)
         Details:InstanciaCallFunction (Details.ResetaGump)
@@ -351,11 +348,11 @@ function DetailsMythicPlusFrame.MergeRemainingTrashAfterAllBossesDone()
             end
             
             --> update all windows
-            Details:InstanciaCallFunction (Details.gump.Fade, "in", nil, "barras")
-            Details:InstanciaCallFunction (Details.AtualizaSegmentos)
-            Details:InstanciaCallFunction (Details.AtualizaSoloMode_AfertReset)
-            Details:InstanciaCallFunction (Details.ResetaGump)
-            Details:RefreshMainWindow (-1, true)
+            Details:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
+            Details:InstanciaCallFunction(Details.AtualizaSegmentos)
+            Details:InstanciaCallFunction(Details.AtualizaSoloMode_AfertReset)
+            Details:InstanciaCallFunction(Details.ResetaGump)
+            Details:RefreshMainWindow(-1, true)
         end
         
         Details:SendEvent ("DETAILS_DATA_SEGMENTREMOVED")

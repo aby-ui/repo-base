@@ -4,8 +4,8 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8406
-		_detalhes.alpha_build_counter = 8406 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8501
+		_detalhes.alpha_build_counter = 8501 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = "v9.0.5"
 		_detalhes.userversion = "v9.0.5." .. _detalhes.build_counter
@@ -29,6 +29,12 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.0.5.8501.144", "May 17th, 2021"},
+		"Complete overhaul and rerritten on Fade In and Out animations, this should fix all bugs related to animations not being consistent.",
+		"Complete overhaul on the broadcaster tool for arenas 'Current DPS'. It shows now a bar indicating the dps of both teams.",
+		"Yellow arena team now has purple color.",
+		"Several updates on the combat log engine and bug fixes.",
+
 		{"v9.0.5.8357.144", "March 15th, 2021"},
 		"Max amount of segments raised to 40, was 30.",
 		"Added a 'Sanguine Heal' actor to show how much the void zone healed enemies, shown on Everything mode.",
@@ -710,7 +716,7 @@ do
 		SharedMedia:Register ("statusbar", "WorldState Score", [[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 		SharedMedia:Register ("statusbar", "DGround", [[Interface\AddOns\Details\images\bar_background]])
 		SharedMedia:Register ("statusbar", "Details Flat", [[Interface\AddOns\Details\images\bar_background]])
-
+		SharedMedia:Register ("statusbar", "Splitbar", [[Interface\AddOns\Details\images\bar_textures\split_bar]])
 		SharedMedia:Register ("statusbar", "Details2020", [[Interface\AddOns\Details\images\bar_textures\texture2020]])
 		
 		--window bg and bar border
@@ -732,24 +738,24 @@ do
 		SharedMedia:Register ("sound", "d_jedi1", [[Interface\Addons\Details\sounds\sound_jedi1.ogg]])
 		SharedMedia:Register ("sound", "d_whip1", [[Interface\Addons\Details\sounds\sound_whip1.ogg]])
 	
-	--> global 'vardump' for dump table contents over chat panel
-		function vardump (t)
+	--> dump table contents over chat panel
+		function Details.VarDump(t)
 			if (type (t) ~= "table") then
 				return
 			end
-			for a,b in pairs (t) do 
+			for a,b in pairs (t) do
 				print (a,b)
 			end
 		end
-		
-	--> global 'table_deepcopy' copies a full table	
-		function table_deepcopy (orig)
+
+	--> copies a full table
+		function Details.CopyTable(orig)
 			local orig_type = type(orig)
 			local copy
 			if orig_type == 'table' then
 				copy = {}
 				for orig_key, orig_value in next, orig, nil do
-					copy [table_deepcopy (orig_key)] = table_deepcopy (orig_value)
+					copy [Details.CopyTable (orig_key)] = Details.CopyTable (orig_value)
 				end
 			else
 				copy = orig

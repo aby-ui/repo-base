@@ -8,8 +8,7 @@ local Mapster = LibStub("AceAddon-3.0"):NewAddon("Mapster", "AceEvent-3.0", "Ace
 local LibWindow = LibStub("LibWindow-1.1")
 local L = LibStub("AceLocale-3.0"):GetLocale("Mapster")
 
-local WoWClassic = select(4, GetBuildInfo()) < 20000
-local WoWShadowlands = select(4, GetBuildInfo()) >= 90001
+local WoWClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE)
 
 local defaults = {
 	profile = {
@@ -261,7 +260,7 @@ end
 
 function Mapster:QuestPOI_OnAcquired(pin)
 	pin:SetSize(50 * db.poiScale, 50 * db.poiScale)
-	if WoWShadowlands then
+	if not WoWClassic then
 		pin.Display:SetScale(db.poiScale)
 		pin.NormalTexture:SetScale(db.poiScale)
 		pin.PushedTexture:SetScale(db.poiScale)

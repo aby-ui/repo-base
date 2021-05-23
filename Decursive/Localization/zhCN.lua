@@ -1,7 +1,7 @@
 ﻿--[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.1) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.2) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhCN.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhCN");
 
 if not L then
-    T._LoadedFiles["zhCN.lua"] = "2.7.8.1";
+    T._LoadedFiles["zhCN.lua"] = "2.7.8.2";
     return;
 end;
 
@@ -503,4 +503,4 @@ L["UNSTABLERELEASE"] = "不稳定版本"
 
 
 
-T._LoadedFiles["zhCN.lua"] = "2.7.8.1";
+T._LoadedFiles["zhCN.lua"] = "2.7.8.2";

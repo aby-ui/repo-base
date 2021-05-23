@@ -5,7 +5,6 @@ local _GetNumSubgroupMembers = GetNumSubgroupMembers --> wow api
 local _GetNumGroupMembers = GetNumGroupMembers --> wow api
 local _UnitIsFriend = UnitIsFriend --> wow api
 local _UnitName = UnitName --> wow api
-local _UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local _IsInRaid = IsInRaid --> wow api
 local _IsInGroup = IsInGroup --> wow api
 local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --> wow api
@@ -27,6 +26,23 @@ local ThreatMeterFrame = ThreatMeter.Frame
 ThreatMeter:SetPluginDescription ("Small tool for track the threat you and other raid members have in your current target.")
 
 local _
+
+local UnitDetailedThreatSituation = UnitDetailedThreatSituation
+local _UnitDetailedThreatSituation
+
+if (DetailsFramework.IsTimewalkWoW()) then
+	_UnitDetailedThreatSituation = function(source, target)
+		local isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation(source, target)
+
+		if (threatvalue) then
+			threatvalue = floor(threatvalue / 100)
+		end
+
+		return isTanking, status, threatpct, rawthreatpct, threatvalue
+	end
+else
+	_UnitDetailedThreatSituation = UnitDetailedThreatSituation
+end
 
 local function CreatePluginFrames (data)
 	
@@ -374,6 +390,7 @@ local function CreatePluginFrames (data)
 				
 				local topThreat = ThreatMeter.player_list_indexes [1]
 				local aggro = topThreat [6] * (CheckInteractDistance ("target", 3) and 1.1 or 1.3)
+				aggro = max(aggro, 0.001)
 				
 				pullRow:SetLeftText ("Pull Aggro At")
 				local realPercent = _math_floor (aggro / max (topThreat [6], 0.01) * 100)

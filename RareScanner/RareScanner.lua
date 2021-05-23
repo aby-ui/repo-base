@@ -976,28 +976,28 @@ end
 -- Checks if the rare has been found already in the last 5 minutes
 function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	local _, _, _, _, _, id, _ = strsplit("-", vignetteInfo.objectGUID);
-	local npcID = tonumber(id)
+	local entityID = tonumber(id)
 	
-	if (not npcID) then
+	if (not entityID) then
 		return
 	end
 	
 	-- Check if it is an event to summon another NPC. In that case display NPC information instead
 	for eventID, rareNpcID in pairs (RSConstants.NPCS_WITH_PRE_EVENT) do
-		if (eventID == npcID) then
+		if (eventID == entityID) then
 			RSGeneralDB.RemoveAlreadyFoundEntity(eventID)
-			npcID = rareNpcID
+			entityID = rareNpcID
 		end
 	end
 
 	-- Check it it is an entity that use a vignette but it isn't a rare, event or treasure
-	if (RSUtils.Contains(RSConstants.INGNORED_VIGNETTES, npcID)) then
+	if (RSUtils.Contains(RSConstants.INGNORED_VIGNETTES, entityID)) then
 		return
 	end
 
 	-- Check if we have already found this vignette in a short period of time
-	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, npcID)) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de %s minutos", npcID, RSConfigDB.GetRescanTimer()))
+	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, entityID)) then
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de %s minutos", entityID, RSConfigDB.GetRescanTimer()))
 		return
 	end
 
@@ -1009,17 +1009,17 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	end
 
 	-- In Tanaan jungle the icon for elite EVENTs is used for the rare NPCs Deathtalon, Doomroller, Terrorfist, and Vengeance
-	if (vignetteInfo.atlasName == RSConstants.EVENT_ELITE_VIGNETTE and (npcID == RSConstants.DOOMROLLER_ID or npcID == RSConstants.DEATHTALON or npcID == RSConstants.TERRORFIST or npcID == RSConstants.VENGEANCE)) then
+	if (vignetteInfo.atlasName == RSConstants.EVENT_ELITE_VIGNETTE and (entityID == RSConstants.DOOMROLLER_ID or entityID == RSConstants.DEATHTALON or entityID == RSConstants.TERRORFIST or entityID == RSConstants.VENGEANCE)) then
 		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
 	end
 
 	-- These NPCs are tagged with events
-	if (RSUtils.Contains(RSConstants.NPCS_WITH_EVENT_VIGNETTE, npcID)) then
+	if (RSUtils.Contains(RSConstants.NPCS_WITH_EVENT_VIGNETTE, entityID)) then
 		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
 	end
 
 	-- These containers are tagged with rare NPCs
-	if (npcID == RSConstants.CATACOMBS_CACHE) then
+	if (entityID == RSConstants.CATACOMBS_CACHE) then
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 	end
 
@@ -1029,15 +1029,15 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 			local coordinates = {}
 			coordinates.x = vignetteInfo.x
 			coordinates.y = vignetteInfo.y
-			RareScanner:UpdateRareFound(npcID, vignetteInfo, coordinates)
+			RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
 		else
-			RareScanner:UpdateRareFound(npcID, vignetteInfo)
+			RareScanner:UpdateRareFound(entityID, vignetteInfo)
 		end
 
 		-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
-		if (RSNpcDB.IsNpcKilled(npcID)) then
-			RSLogger:PrintDebugMessage(string.format("El NPC [%s] estaba marcado como muerto, pero lo acabamos de detectar vivo, resucitado!", npcID))
-			RSNpcDB.DeleteNpcKilled(npcID)
+		if (RSNpcDB.IsNpcKilled(entityID)) then
+			RSLogger:PrintDebugMessage(string.format("El NPC [%s] estaba marcado como muerto, pero lo acabamos de detectar vivo, resucitado!", entityID))
+			RSNpcDB.DeleteNpcKilled(entityID)
 		end
 	end
 
@@ -1048,43 +1048,43 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		return
 	-- disable ALL alerts in instances
 	elseif (isInstance == true and not RSConfigDB.IsScanningInInstances()) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en una instancia", npcID))
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en una instancia", entityID))
 		return
 	-- disable alerts while flying
 	elseif (UnitOnTaxi("player") and not RSConfigDB.IsScanningWhileOnTaxi()) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar montado en un transporte", npcID))
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar montado en un transporte", entityID))
 		return
 	-- disable alerts while in pet combat
 	elseif (C_PetBattles.IsInBattle() and not RSConfigDB.IsScanningWhileOnPetBattle()) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en medio de un combate de mascotas", npcID))
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por estar en medio de un combate de mascotas", entityID))
 		return
 	-- disable scanning for every entity that is not treasure, event or rare
 	elseif (not RSConstants.IsScanneableAtlas(vignetteInfo.atlasName)) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por tener el atlas [%s] que no es escaneable", npcID, vignetteInfo.atlasName))
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por tener el atlas [%s] que no es escaneable", entityID, vignetteInfo.atlasName))
 		return
 	-- disable ALL alerts for containers
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForContainers()) then
-		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por haber deshabilitado alertas de contenedores", npcID))
+		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por haber deshabilitado alertas de contenedores", entityID))
 		return
 	-- disable alerts for filtered containers. Check if the container is filtered, in which case we don't show anything
-	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and RSConfigDB.IsContainerFiltered(npcID)) then
-		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por estar filtrado", npcID))
+	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and RSConfigDB.IsContainerFiltered(entityID) and not RSConfigDB.IsContainerFilteredOnlyOnWorldMap()) then
+		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por estar filtrado", entityID))
 		return
 	-- disable alerts for rare NPCs
 	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForNpcs()) then
-		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por haber deshabilitado alertas de NPCs", npcID))
+		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por haber deshabilitado alertas de NPCs", entityID))
 		return
 	-- disable alerts for filtered rare NPCs. Check if the NPC is filtered, in which case we don't show anything
-	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsNpcFilteredOnlyOnWorldMap() and RSConfigDB.IsNpcFiltered(npcID)) then
-		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por estar filtrado", npcID))
+	elseif (RSConstants.IsNpcAtlas(vignetteInfo.atlasName) and RSConfigDB.IsNpcFiltered(entityID) and not RSConfigDB.IsNpcFilteredOnlyOnWorldMap()) then
+		RSLogger:PrintDebugMessage(string.format("El NPC [%s] se ignora por estar filtrado", entityID))
 		return
 	-- disable alerts for events
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForEvents()) then
-		RSLogger:PrintDebugMessage(string.format("El evento [%s] se ignora por haber deshabilitado alertas de eventos", npcID))
+		RSLogger:PrintDebugMessage(string.format("El evento [%s] se ignora por haber deshabilitado alertas de eventos", entityID))
 		return
 	-- disable alerts for filtered zones
-	elseif (not RSConfigDB.IsZoneFilteredOnlyOnWorldMap() and (RSConfigDB.IsZoneFiltered(mapID) or RSConfigDB.IsEntityZoneFiltered(npcID, vignetteInfo.atlasName))) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por pertenecer a una zona filtrada", npcID))
+	elseif (not RSConfigDB.IsZoneFilteredOnlyOnWorldMap() and (RSConfigDB.IsZoneFiltered(mapID) or RSConfigDB.IsEntityZoneFiltered(entityID, vignetteInfo.atlasName))) then
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por pertenecer a una zona filtrada", entityID))
 		return
 	-- extra checkings for containers
 	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
@@ -1094,21 +1094,21 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		end
 		
 		-- save containers to show it on the world map
-		RSContainerDB.SetContainerName(npcID, vignetteInfo.name)
+		RSContainerDB.SetContainerName(entityID, vignetteInfo.name)
 
 		-- some containers belong to places where rares die forever
 		-- and anyway, this containers can respawn every day
 		-- so if this is the case, mark it as an exception
-		if (RSContainerDB.IsContainerOpened(npcID)) then
-			RSContainerDB.SetContainerReseteable(npcID)
-			RSContainerDB.DeleteContainerOpened(npcID)
-			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Detectado como reseteable (cuando no lo estaba)", npcID))
+		if (RSContainerDB.IsContainerOpened(entityID)) then
+			RSContainerDB.SetContainerReseteable(entityID)
+			RSContainerDB.DeleteContainerOpened(entityID)
+			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Detectado como reseteable (cuando no lo estaba)", entityID))
 		end
 
 		-- disable garrison container alert
 		if (not RSConfigDB.IsShowingGarrisonCache()) then
 			-- check if the container is the garrison cache
-			if (RSUtils.Contains(RSConstants.GARRISON_CACHE_IDS, npcID)) then
+			if (RSUtils.Contains(RSConstants.GARRISON_CACHE_IDS, entityID)) then
 				RSLogger:PrintDebugMessage("Contenedor de la ciudadela filtrado")
 				return
 			end
@@ -1116,7 +1116,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 
 		-- disable button alert for containers
 		if (not RSConfigDB.IsButtonDisplayingForContainers()) then
-			RSGeneralDB.SetRecentlySeen(npcID)
+			RSGeneralDB.SetRecentlySeen(entityID)
 
 			-- If navigation disabled, control Tomtom waypoint externally
 			if (not RSConfigDB.IsDisplayingNavigationArrows()) then
@@ -1124,11 +1124,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 				RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 			end
 
-			if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, false, npcID)) then
-				RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", npcID))
+			if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, false, entityID)) then
+				RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", entityID))
 				return
 			else
-				RareScanner:SetVignetteFound(vignetteInfo.id, false, npcID)
+				RareScanner:SetVignetteFound(vignetteInfo.id, false, entityID)
 				FlashClientIcon()
 				self:PlaySoundAlert(vignetteInfo.atlasName)
 				self:DisplayMessages(vignetteInfo.name)
@@ -1138,20 +1138,20 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	-- extra checkings for events
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName)) then
 		-- check just in case its an NPC
-		if (not RSNpcDB.GetNpcName(npcID)) then
-			RSEventDB.SetEventName(npcID, vignetteInfo.name)
+		if (not RSNpcDB.GetNpcName(entityID)) then
+			RSEventDB.SetEventName(entityID, vignetteInfo.name)
 		end
 	end
 
 	-- Check if we have already found this vignette in a short period of time
 	-- We checked this already at the beggining, but check again just in case two alerts where received at the same time
-	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, npcID)) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", npcID))
+	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, entityID)) then
+		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", entityID))
 		return
 	end
 
 	-- Sets the current vignette as new found
-	RareScanner:SetVignetteFound(vignetteInfo.id, isNavigating, npcID)
+	RareScanner:SetVignetteFound(vignetteInfo.id, isNavigating, entityID)
 
 	--------------------------------
 	-- show messages and play alarm
@@ -1173,11 +1173,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 
 		-- Show the button
 		if (not self:IsShown() or isNavigating or not RSConfigDB.IsDisplayingNavigationArrows() or not RSConfigDB.IsNavigationLockEnabled()) then
-			self.npcID = npcID
+			self.npcID = entityID
 			self.name = vignetteInfo.name
 			self.atlasName = vignetteInfo.atlasName
 
-			local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+			local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
 			self.displayID = npcInfo and npcInfo.displayID or nil
 
 			-- Show button / miniature / loot bar if not in combat
@@ -1216,12 +1216,12 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	end
 
 	if (not isNavigating) then
-		RSGeneralDB.SetRecentlySeen(npcID)
+		RSGeneralDB.SetRecentlySeen(entityID)
 	end
 
 	-- timer to reset already found NPC
 	C_Timer.After(RSConfigDB.GetRescanTimer() * 60, function()
-		RareScanner:RemoveVignetteFound(vignetteInfo.id, npcID)
+		RareScanner:RemoveVignetteFound(vignetteInfo.id, entityID)
 		RSMinimap.RefreshAllData(true)
 	end)
 

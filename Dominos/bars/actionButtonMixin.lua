@@ -96,7 +96,7 @@ end
 
 -- in classic, blizzard action buttons don't use a mixin
 -- so define some methods that we'd expect
-if Addon:IsBuild('bc', 'classic') then
+if Addon:IsBuild('bcc', 'classic') then
     ActionButtonMixin.HideGrid = ActionButton_HideGrid
     ActionButtonMixin.ShowGrid = ActionButton_ShowGrid
     ActionButtonMixin.UpdateState = ActionButton_UpdateState

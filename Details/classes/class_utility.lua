@@ -590,7 +590,7 @@ function atributo_misc:DeadAtualizarBarra (morte, whichRowLine, colocacao, insta
 	
 	esta_barra:SetValue (100)
 	if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
-		gump:Fade (esta_barra, "out")
+		Details.FadeHandler.Fader (esta_barra, "out")
 	end
 	
 	--> seta a cor da barra e a cor do texto caso eles esteja mostrando com a cor da classe
@@ -864,7 +864,7 @@ function atributo_misc:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 	if (forcar) then
 		if (instancia.modo == 2) then --> group
 			for i = whichRowLine, instancia.rows_fit_in_window  do
-				gump:Fade (instancia.barras [i], "in", 0.3)
+				Details.FadeHandler.Fader (instancia.barras [i], "in", Details.fade_speed)
 			end
 		end
 	end
@@ -943,7 +943,7 @@ function atributo_misc:RefreshBarra2 (esta_barra, instancia, tabela_anterior, fo
 			esta_barra:SetValue (100)
 			
 			if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
-				gump:Fade (esta_barra, "out")
+				Details.FadeHandler.Fader (esta_barra, "out")
 			end
 			
 			return self:RefreshBarra (esta_barra, instancia)
@@ -961,7 +961,7 @@ function atributo_misc:RefreshBarra2 (esta_barra, instancia, tabela_anterior, fo
 				esta_barra.animacao_ignorar = true
 			end
 			
-			gump:Fade (esta_barra, "out")
+			Details.FadeHandler.Fader (esta_barra, "out")
 			
 			if (instancia.row_info.texture_class_colors) then
 				esta_barra.textura:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)

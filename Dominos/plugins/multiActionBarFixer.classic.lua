@@ -8,7 +8,7 @@
 --]]
 local _, Addon = ...
 
-if not Addon:IsBuild('bc', 'classic') then
+if not Addon:IsBuild('bcc', 'classic') then
     return
 end
 

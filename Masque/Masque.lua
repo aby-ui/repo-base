@@ -30,12 +30,12 @@ Masque.Core = Core
 -- @ Locales\enUS
 local L = Core.Locale
 
--- Client Version
-local WOW_RETAIL = (select(4, GetBuildInfo()) > 20000) and true or nil
-Core.WOW_RETAIL = WOW_RETAIL
+-- Game Version
+local WOW_VERSION = select(4, GetBuildInfo()) or 0
+Core.WOW_VERSION = WOW_VERSION
 
--- Classic-Compatible New Line
-Core.CRLF = "\n "
+-- Retail
+Core.WOW_RETAIL = (WOW_VERSION > 90000 and true) or nil
 
 ----------------------------------------
 -- API
@@ -60,8 +60,9 @@ do
 	}
 	Core.Websites = {
 		"https://github.com/SFX-WoW/Masque",
-		"https://www.wowace.com/projects/masque",
 		"https://www.curseforge.com/wow/addons/masque",
+		"https://addons.wago.io/addons/masque",
+		"https://www.wowace.com/projects/masque",
 		"https://www.wowinterface.com/downloads/info12097",
 	}
 end
@@ -103,9 +104,10 @@ function Masque:OnInitialize()
 	db.RegisterCallback(Core, "OnProfileReset", "UpdateProfile")
 	Core.db = db
 
-	local LDS = WOW_RETAIL and LibStub("LibDualSpec-1.0", true)
+	local LDS = (WOW_VERSION > 30000) and LibStub("LibDualSpec-1.0", true)
 	if LDS then
 		LDS:EnhanceDatabase(Core.db, MASQUE)
+		Core.USE_LDS = true
 	end
 
 	SLASH_MASQUE1 = "/msq"

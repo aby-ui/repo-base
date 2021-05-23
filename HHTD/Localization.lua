@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.7
+Version 2.4.9.8
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -223,7 +223,6 @@ L["YOU_GOT_HIM"] = "You got %shim|r!"
 L["YOU_GOT_IT"] = "You got %sit|r!"
 
 
-        
 
     end
 

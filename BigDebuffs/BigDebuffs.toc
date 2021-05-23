@@ -1,7 +1,7 @@
 ## Interface: 90005
 ## Title: BigDebuffs
 ## Notes: Increases the debuff size of crowd control effects on the Blizzard raid frames
-## Version: v9.20
+## Version: v10.0
 ## Author: Jordon
 ## DefaultState: Enabled
 ## SavedVariables: BigDebuffsDB
@@ -11,6 +11,7 @@
 Locales\Locales.xml
 BigDebuffs.xml
 Retail.lua
+#BurningCrusade.lua
 #Classic.lua
 BigDebuffs.lua
 Options.lua

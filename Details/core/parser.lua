@@ -4010,7 +4010,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					local max_health = _UnitHealthMax (alvo_name)
 
 					for _, func in _ipairs (_hook_deaths_container) do 
-						local copiedDeathTable = table_deepcopy(t)
+						local copiedDeathTable = Details.CopyTable(t)
 						local successful, errortext = pcall(func, nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, copiedDeathTable, este_jogador.last_cooldown, death_at, max_health)
 						if (not successful) then
 							_detalhes:Msg ("error occurred on a death hook function:", errortext)
@@ -4490,7 +4490,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes:LeftArena()
 		end
 		if (_detalhes.is_in_battleground and zoneType ~= "pvp") then
-			_detalhes.pvp_parser_frame:StopBgUpdater()
+			--_detalhes.pvp_parser_frame:StopBgUpdater()
 			_detalhes.is_in_battleground = nil
 			_detalhes.time_type = _detalhes.time_type_original
 		end
@@ -4519,7 +4519,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					_detalhes.time_type_original = 1
 					_detalhes.time_type = 2
 				end
-				_detalhes.pvp_parser_frame:StartBgUpdater()
+				--_detalhes.pvp_parser_frame:StartBgUpdater() --battleground parser has been disbled
 			else
 				if (_detalhes.force_activity_time_pvp) then
 					_detalhes.time_type_original = _detalhes.time_type
@@ -5165,38 +5165,35 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:SchedulePetUpdate (6)
 	end
 
-	function _detalhes.parser_functions:START_TIMER (...)
+	function _detalhes.parser_functions:START_TIMER(...)
 	
 		if (_detalhes.debug) then
-			_detalhes:Msg ("(debug) found a timer.")
+			_detalhes:Msg("(debug) found a timer.")
 		end
-	
-		--if (C_Scenario.IsChallengeMode() and _detalhes.overall_clear_newchallenge) then
---		if (_detalhes.overall_clear_newchallenge) then --C_Scenario.IsChallengeMode() and  parece que n�o existe mais
---			_detalhes.historico:resetar_overall()
---			if (_detalhes.debug) then
---				_detalhes:Msg ("(debug) timer is a challenge mode start.")
---			end
-		
-	
-		if (_detalhes.is_in_arena) then
+
+		local _, zoneType = _GetInstanceInfo()
+
+		--check if the player is inside an arena
+		if (zoneType == "arena") then
 			if (_detalhes.debug) then
 				_detalhes:Msg ("(debug) timer is an arena countdown.")
 			end
+
 			_detalhes:StartArenaSegment (...)
 		
-		elseif (_detalhes.is_in_battleground) then
+		--check if the player is inside a battleground
+		elseif (zoneType == "battleground") then
 			if (_detalhes.debug) then
 				_detalhes:Msg ("(debug) timer is a battleground countdown.")
 			end
 			
-			local timerType, timeSeconds, totalTime = select (1, ...)
+			local _, timeSeconds = select (1, ...)
 			
 			if (_detalhes.start_battleground) then
-				_detalhes:CancelTimer (_detalhes.start_battleground, true)
+				_detalhes:CancelTimer(_detalhes.start_battleground, true)
 			end
 			
-			_detalhes.start_battleground = _detalhes:ScheduleTimer ("CreateBattlegroundSegment", timeSeconds)
+			_detalhes.start_battleground = _detalhes:ScheduleTimer("CreateBattlegroundSegment", timeSeconds)
 		end
 	end
 	
@@ -5373,7 +5370,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		--> save the nicktag cache
 			tinsert (_detalhes_global.exit_log, "8 - Saving nicktag cache.")
-			_detalhes_database.nick_tag_cache = table_deepcopy (_detalhes_database.nick_tag_cache)
+			_detalhes_database.nick_tag_cache = Details.CopyTable (_detalhes_database.nick_tag_cache)
 	end)
 	
 	--> end
@@ -5788,7 +5785,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> battleground parser
 	
-	
+	--[=[
 	
 	_detalhes.pvp_parser_frame:SetScript ("OnEvent", function (self, event)
 		self:ReadPvPData()
@@ -5881,5 +5878,5 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 	end
-	
+	--]=]
 	

@@ -260,7 +260,7 @@ function atributo_energy:AtualizarResources (whichRowLine, colocacao, instancia)
 	esta_barra:SetValue (100)
 	
 	if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
-		gump:Fade (esta_barra, "out")
+		Details.FadeHandler.Fader (esta_barra, "out")
 	end
 	
 	--> texture color
@@ -353,7 +353,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 		if (forcar) then
 			if (instancia.modo == 2) then --> group
 				for i = whichRowLine, instancia.rows_fit_in_window  do
-					gump:Fade (instancia.barras [i], "in", 0.3)
+					Details.FadeHandler.Fader (instancia.barras [i], "in", Details.fade_speed)
 				end
 			end
 		end
@@ -538,7 +538,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			row1.icone_classe:SetTexture (instancia.total_bar.icon)
 			row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
 			
-			gump:Fade (row1, "out")
+			Details.FadeHandler.Fader (row1, "out")
 			
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
 				for i = instancia.barraS[1], iter_last-1, 1 do --> vai atualizar s� o range que esta sendo mostrado
@@ -599,7 +599,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			row1.icone_classe:SetTexture (instancia.total_bar.icon)
 			row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
 			
-			gump:Fade (row1, "out")
+			Details.FadeHandler.Fader (row1, "out")
 			
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
 				conteudo[myPos]:RefreshLine (instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) --> inst�ncia, index, total, valor da 1� barra
@@ -639,7 +639,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 	if (forcar) then
 		if (instancia.modo == 2) then --> group
 			for i = whichRowLine, instancia.rows_fit_in_window  do
-				gump:Fade (instancia.barras [i], "in", 0.3)
+				Details.FadeHandler.Fader (instancia.barras [i], "in", Details.fade_speed)
 			end
 		end
 	end
@@ -716,7 +716,7 @@ function atributo_energy:RefreshBarra2 (esta_barra, instancia, tabela_anterior, 
 			esta_barra:SetValue (100)
 			
 			if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
-				gump:Fade (esta_barra, "out")
+				Details.FadeHandler.Fader (esta_barra, "out")
 			end
 			
 			return self:RefreshBarra (esta_barra, instancia)
@@ -734,7 +734,7 @@ function atributo_energy:RefreshBarra2 (esta_barra, instancia, tabela_anterior, 
 				esta_barra.animacao_ignorar = true
 			end
 			
-			gump:Fade (esta_barra, "out")
+			Details.FadeHandler.Fader (esta_barra, "out")
 			
 			if (instancia.row_info.texture_class_colors) then
 				esta_barra.textura:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)

@@ -12,7 +12,7 @@ local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 local HBDMigrate = LibStub("HereBeDragons-Migrate")
 
-local WoWClassic = select(4, GetBuildInfo()) < 20000
+local WoWClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE)
 
 ---------------------------------------------------------
 -- Our db upvalue and db defaults
@@ -180,10 +180,12 @@ end
 local continentZoneList = WoWClassic and {
 	[1414] = true, -- Kalimdor
 	[1415] = true, -- Eastern Kingdoms
+	[1945] = true, -- Outlands
 
 	-- mapFile compat entries
 	["Kalimdor"]              = 1414,
 	["Azeroth"]               = 1415,
+	["Expansion01"]           = 1945,
 }
 or {
 	[12]  = true, -- Kalimdor

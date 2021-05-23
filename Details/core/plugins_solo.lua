@@ -95,7 +95,7 @@
 				self.need_rolagem = false
 
 				self.baseframe:EnableMouseWheel (false)
-				gump:Fade (self, 1, nil, "barras") --> escondendo a janela da inst�ncia [inst�ncia [force hide [velocidade [hidar o que]]]]
+				Details.FadeHandler.Fader (self, 1, nil, "barras") --> escondendo a janela da inst�ncia [inst�ncia [force hide [velocidade [hidar o que]]]]
 				self.mostrando = "solo"
 			end
 			
@@ -161,8 +161,8 @@
 				_detalhes:CancelWaitForPlugin()
 			end
 
-			gump:Fade (self, 1, nil, "barras")
-			gump:Fade (self.scroll, 0)
+			Details.FadeHandler.Fader (self, 1, nil, "barras")
+			Details.FadeHandler.Fader (self.scroll, 0)
 			
 			if (self.need_rolagem) then
 				self:MostrarScrollBar (true)

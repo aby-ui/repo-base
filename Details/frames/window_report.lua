@@ -130,7 +130,7 @@ local _UIParent = UIParent --> wow api locals
 		_detalhes.janela_report.ativa = true
 		_detalhes.janela_report.enviar:SetScript ("OnClick", function() func (_G ["Details_Report_CB_1"]:GetChecked(), _G ["Details_Report_CB_2"]:GetChecked(), _detalhes.report_lines) end)
 		
-		gump:Fade (_detalhes.janela_report, 0)
+		Details.FadeHandler.Fader (_detalhes.janela_report, 0)
 		
 		return true
 	end
@@ -233,7 +233,7 @@ local _UIParent = UIParent --> wow api locals
 		end
 		
 		_detalhes.janela_report.ativa = true
-		gump:Fade (_detalhes.janela_report, 0)
+		Details.FadeHandler.Fader (_detalhes.janela_report, 0)
 	end
 	
 --> build report frame gump -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1074,7 +1074,7 @@ local function cria_drop_down (este_gump)
 		--> close button
 		window.fechar = CreateFrame ("Button", nil, window, "UIPanelCloseButton")
 		window.fechar:SetScript ("OnClick", function()
-			gump:Fade (window, 1)
+			Details.FadeHandler.Fader (window, 1)
 			_detalhes.janela_report.ativa = false
 		end)	
 
@@ -1094,7 +1094,7 @@ local function cria_drop_down (este_gump)
 		window.enviar:SetHeight (15)
 		window.enviar:SetText (Loc ["STRING_REPORTFRAME_SEND"])
 
-		gump:Fade (window, 1)
+		Details.FadeHandler.Fader (window, 1)
 		gump:CreateFlashAnimation (window)
 		
 		--apply the current skin

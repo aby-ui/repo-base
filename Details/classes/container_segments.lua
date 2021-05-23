@@ -539,10 +539,10 @@ function historico:resetar()
 		_detalhes.schedule_hard_garbage_collect = true
 	end
 	
-	_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos) -- atualiza o instancia.showing para as novas tabelas criadas
-	_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset) -- verifica se precisa zerar as tabela da janela solo mode
-	_detalhes:InstanciaCallFunction (_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
-	_detalhes:InstanciaCallFunction (gump.Fade, "in", nil, "barras")
+	_detalhes:InstanciaCallFunction(_detalhes.AtualizaSegmentos) -- atualiza o instancia.showing para as novas tabelas criadas
+	_detalhes:InstanciaCallFunction(_detalhes.AtualizaSoloMode_AfertReset) -- verifica se precisa zerar as tabela da janela solo mode
+	_detalhes:InstanciaCallFunction(_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
+	_detalhes:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
 	
 	_detalhes:RefreshMainWindow (-1) --atualiza todas as instancias
 	

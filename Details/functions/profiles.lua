@@ -37,7 +37,7 @@ function _detalhes:CreateProfile (name)
 		end
 		
 	--> copy the default table
-		local new_profile = table_deepcopy (_detalhes.default_profile)
+		local new_profile = Details.CopyTable (_detalhes.default_profile)
 		new_profile.instances = {}
 	
 	--> add to global container
@@ -126,7 +126,7 @@ function _detalhes:SetProfileCProp (name, cprop, value)
 	
 	if (profile) then
 		if (type (value) == "table") then
-			rawset (profile, cprop, table_deepcopy (value))
+			rawset (profile, cprop, Details.CopyTable (value))
 		else
 			rawset (profile, cprop, value)
 		end
@@ -171,7 +171,7 @@ function _detalhes:ResetProfile (profile_name)
 		local instance = _detalhes:GetInstance (1)
 		local exported = instance:ExportSkin()
 		exported.__was_opened = instance:IsEnabled()
-		exported.__pos = table_deepcopy (instance:GetPosition())
+		exported.__pos = Details.CopyTable (instance:GetPosition())
 		exported.__locked = instance.isLocked
 		exported.__snap = {}
 		exported.__snapH = false
@@ -239,7 +239,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			--> the entire key doesn't exist
 			if (profile [key] == nil) then
 				if (type (value) == "table") then
-					profile [key] = table_deepcopy (_detalhes.default_profile [key])
+					profile [key] = Details.CopyTable (_detalhes.default_profile [key])
 				else
 					profile [key] = value
 				end
@@ -257,10 +257,10 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
 			if (type (value) == "table") then
 				if (key == "class_specs_coords") then
-					value = table_deepcopy (_detalhes.default_profile.class_specs_coords)
+					value = Details.CopyTable (_detalhes.default_profile.class_specs_coords)
 				end
 			
-				local ctable = table_deepcopy (value)
+				local ctable = Details.CopyTable (value)
 				_detalhes [key] = ctable
 			else
 				_detalhes [key] = value
@@ -341,7 +341,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				--> copy skin
 				for key, value in pairs (skin) do
 					if (type (value) == "table") then
-						instance [key] = table_deepcopy (value)
+						instance [key] = Details.CopyTable (value)
 					else
 						instance [key] = value
 					end
@@ -374,7 +374,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				if (_detalhes.profile_save_pos) then
 					--print ("is profile save pos", skin.__pos.normal.x, skin.__pos.normal.y)
 					if (skin.__pos) then
-						instance.posicao = table_deepcopy (skin.__pos)
+						instance.posicao = Details.CopyTable (skin.__pos)
 					else
 						if (not instance.posicao) then
 							print ("|cFFFF2222Details!: Position for a window wasn't found! Moving it to the center of the screen.|r\nType '/details exitlog' to check for errors.")
@@ -386,7 +386,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 					end
 
 					instance.isLocked = skin.__locked
-					instance.snap = table_deepcopy (skin.__snap) or {}
+					instance.snap = Details.CopyTable (skin.__snap) or {}
 					instance.horizontalSnap = skin.__snapH
 					instance.verticalSnap = skin.__snapV
 				else
@@ -534,7 +534,7 @@ function _detalhes:SaveProfile (saveas)
 			local current_value = _detalhes [key]
 
 			if (type (current_value) == "table") then
-				local ctable = table_deepcopy (current_value)
+				local ctable = Details.CopyTable (current_value)
 				profile [key] = ctable
 			else
 				profile [key] = current_value
@@ -548,9 +548,9 @@ function _detalhes:SaveProfile (saveas)
 			for index, instance in ipairs (_detalhes.tabela_instancias) do
 				local exported = instance:ExportSkin()
 				exported.__was_opened = instance:IsEnabled()
-				exported.__pos = table_deepcopy (instance:GetPosition())
+				exported.__pos = Details.CopyTable (instance:GetPosition())
 				exported.__locked = instance.isLocked
-				exported.__snap = table_deepcopy (instance.snap)
+				exported.__snap = Details.CopyTable (instance.snap)
 				exported.__snapH = instance.horizontalSnap
 				exported.__snapV = instance.verticalSnap
 				profile.instances [index] = exported
@@ -836,6 +836,8 @@ local default_profile = {
 				0, -- [3]
 			},
 		},
+
+	fade_speed = 0.15,
 
 	--> minimap
 		minimap = {hide = false, radius = 160, minimapPos = 220, onclick_what_todo = 1, text_type = 1, text_format = 3},
@@ -1420,7 +1422,7 @@ function _detalhes:SaveProfileSpecial()
 			local current_value = _detalhes_database [key] or _detalhes_global [key] or _detalhes.default_player_data [key] or _detalhes.default_global_data [key]
 
 			if (type (current_value) == "table") then
-				local ctable = table_deepcopy (current_value)
+				local ctable = Details.CopyTable (current_value)
 				profile [key] = ctable
 			else
 				profile [key] = current_value

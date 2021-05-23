@@ -56,6 +56,10 @@ local function UpdateEntityCollection(itemID, entityID, source)
 		-- Removes the entity filter
 		if (source == ITEM_SOURCE.NPC) then
 			RSConfigDB.SetNpcFiltered(entityID, true)
+			
+			if (RSConstants.NPCS_WITH_PRE_NPCS[entityID]) then
+				RSConfigDB.SetNpcFiltered(RSConstants.NPCS_WITH_PRE_NPCS[entityID], true)
+			end
 		else
 			RSConfigDB.SetContainerFiltered(entityID, true)
 		end

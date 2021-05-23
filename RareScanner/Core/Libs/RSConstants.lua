@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 40
-RSConstants.CURRENT_LOOT_DB_VERSION = 52
+RSConstants.CURRENT_DB_VERSION = 41
+RSConstants.CURRENT_LOOT_DB_VERSION = 53
 
 ---============================================================================
 -- Special events
@@ -119,15 +119,15 @@ RSConstants.PROFILE_DEFAULTS = {
 			disableLastSeenFilter = false,
 			displayFriendlyNpcIcons = false,
 			displayNotDiscoveredMapIcons = true,
-			displayOldNotDiscoveredMapIcons = false,
+			displayOldNotDiscoveredMapIcons = true,
 			keepShowingAfterDead = false,
 			keepShowingAfterDeadReseteable = false,
 			keepShowingAfterCollected = false,
 			keepShowingAfterCompleted = false,
 			maxSeenTime = 0,
-			maxSeenTimeContainer = 5,
+			maxSeenTimeContainer = 0,
 			maxSeenTimeEvent = 5,
-			scale = 1.0,
+			scale = 0.8,
 			minimapscale = 0.7,
 			showingWorldMapSearcher = true,
 			cleanWorldMapSearcherOnChange = true,
@@ -241,10 +241,22 @@ RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
 RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
 RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314, 352998 }
+
+-- NPCs that spawn after completing an event
 RSConstants.NPCS_WITH_PRE_EVENT = {
 	[164102] = 164093;
 	[167874] = 167851;
 	[168053] = 167721;
+	[165206] = 165230;
+	[160675] = 176347;
+}
+
+-- NPCs that spawn after killing another NPC
+RSConstants.NPCS_WITH_PRE_NPCS = {
+	[165175] = 165152;
+	[165206] = 165230;
+	[166521] = 166483;
+	[160675] = 176347;
 }
 	
 -- 156480 Next door entity inside Torghast

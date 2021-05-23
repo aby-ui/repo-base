@@ -67,7 +67,7 @@
 		instance.modo = modo_raid
 		
 		--> hide rows, scrollbar
-		gump:Fade (instance, 1, nil, "barras")
+		Details.FadeHandler.Fader (instance, 1, nil, "barras")
 		if (instance.rolagem) then
 			instance:EsconderScrollBar (true) --> hida a scrollbar
 		end

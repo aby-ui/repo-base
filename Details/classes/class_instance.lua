@@ -103,7 +103,7 @@ end
 function _detalhes:InstanciaCallFunction (funcao, ...)
 	for index, instancia in _ipairs (_detalhes.tabela_instancias) do
 		if (instancia:IsAtiva()) then --> s� reabre se ela estiver ativa
-			funcao (_, instancia, ...) 
+			funcao (_, instancia, ...)
 		end
 	end
 end
@@ -330,7 +330,7 @@ end
 		if (config) then
 		
 			if (not _detalhes.profile_save_pos) then
-				self.posicao = table_deepcopy (config.pos)
+				self.posicao = Details.CopyTable (config.pos)
 			end
 			
 			if (_type (config.attribute) ~= "number") then
@@ -348,10 +348,10 @@ end
 			self.sub_atributo = config.sub_attribute
 			self.modo = config.mode
 			self.segmento = config.segment
-			self.snap = config.snap and table_deepcopy (config.snap) or {}
+			self.snap = config.snap and Details.CopyTable (config.snap) or {}
 			self.horizontalSnap = config.horizontalSnap
 			self.verticalSnap = config.verticalSnap
-			self.sub_atributo_last = table_deepcopy (config.sub_atributo_last)
+			self.sub_atributo_last = Details.CopyTable (config.sub_atributo_last)
 			self.isLocked = config.isLocked
 			self.last_raid_plugin = config.last_raid_plugin
 		end
@@ -408,15 +408,10 @@ end
 		
 		self:ResetaGump()
 		
-		--gump:Fade (self.baseframe.cabecalho.atributo_icon, _unpack (_detalhes.windows_fade_in))
-		--gump:Fade (self.baseframe.cabecalho.ball, _unpack (_detalhes.windows_fade_in))
-		--gump:Fade (self.baseframe, _unpack (_detalhes.windows_fade_in))
-		--gump:Fade (self.rowframe, _unpack (_detalhes.windows_fade_in))
-		
-		gump:Fade (self.baseframe.cabecalho.ball, 1)
-		gump:Fade (self.baseframe, 1)
-		gump:Fade (self.rowframe, 1)
-		gump:Fade (self.windowSwitchButton, 1)
+		Details.FadeHandler.Fader (self.baseframe.cabecalho.ball, 1)
+		Details.FadeHandler.Fader (self.baseframe, 1)
+		Details.FadeHandler.Fader (self.rowframe, 1)
+		Details.FadeHandler.Fader (self.windowSwitchButton, 1)
 		
 		self:Desagrupar (-1)
 		
@@ -440,10 +435,10 @@ end
 		local _fadeType, _fadeSpeed = _unpack (_detalhes.row_fade_in)
 		if (segmento) then
 			if (instancia.segmento == segmento) then
-				return gump:Fade (instancia, _fadeType, _fadeSpeed, "barras")
+				return Details.FadeHandler.Fader (instancia, _fadeType, _fadeSpeed, "barras")
 			end
 		else
-			return gump:Fade (instancia, _fadeType, _fadeSpeed, "barras")
+			return Details.FadeHandler.Fader (instancia, _fadeType, _fadeSpeed, "barras")
 		end
 	end
 
@@ -620,15 +615,15 @@ end
 		_detalhes:TrocaTabela (self, nil, nil, nil, true)
 
 		if (self.hide_icon) then
-			gump:Fade (self.baseframe.cabecalho.atributo_icon, 1)
+			Details.FadeHandler.Fader (self.baseframe.cabecalho.atributo_icon, 1)
 		else
-			gump:Fade (self.baseframe.cabecalho.atributo_icon, 0)
+			Details.FadeHandler.Fader (self.baseframe.cabecalho.atributo_icon, 0)
 		end
 		
-		gump:Fade (self.baseframe.cabecalho.ball, 0)
-		gump:Fade (self.baseframe, 0)
-		gump:Fade (self.rowframe, 0)
-		gump:Fade (self.windowSwitchButton, 0)
+		Details.FadeHandler.Fader (self.baseframe.cabecalho.ball, 0)
+		Details.FadeHandler.Fader (self.baseframe, 0)
+		Details.FadeHandler.Fader (self.rowframe, 0)
+		Details.FadeHandler.Fader (self.windowSwitchButton, 0)
 		
 		self:SetMenuAlpha()
 		self.baseframe.cabecalho.fechar:Enable()
@@ -760,7 +755,7 @@ end
 			if (_detalhes.standard_skin) then
 				for key, value in pairs (_detalhes.standard_skin) do
 					if (type (value) == "table") then
-						new_instance [key] = table_deepcopy (value)
+						new_instance [key] = Details.CopyTable (value)
 					else
 						new_instance [key] = value
 					end
@@ -782,7 +777,7 @@ end
 					for key, value in pairs (copy_from) do 
 						if (_detalhes.instance_defaults [key] ~= nil) then
 							if (type (value) == "table") then
-								new_instance [key] = table_deepcopy (value)
+								new_instance [key] = Details.CopyTable (value)
 							else
 								new_instance [key] = value
 							end
@@ -1426,7 +1421,7 @@ end
 				for key, value in pairs (style) do
 					if (key ~= "skin") then
 						if (type (value) == "table") then
-							instance [key] = table_deepcopy (value)
+							instance [key] = Details.CopyTable (value)
 						else
 							instance [key] = value
 						end
@@ -1730,7 +1725,7 @@ function _detalhes:ExportSkin()
 	for key, value in pairs (self) do
 		if (_detalhes.instance_defaults [key] ~= nil) then	
 			if (type (value) == "table") then
-				exported [key] = table_deepcopy (value)
+				exported [key] = Details.CopyTable (value)
 			else
 				exported [key] = value
 			end
@@ -1752,13 +1747,13 @@ function _detalhes:ExportSkin()
 			["right"] = self.StatusBar.right.real_name or "NONE",
 		}
 		exported.StatusBarSaved.options = {
-			[exported.StatusBarSaved.left] = table_deepcopy (self.StatusBar.left.options),
-			[exported.StatusBarSaved.center] = table_deepcopy (self.StatusBar.center.options),
-			[exported.StatusBarSaved.right] = table_deepcopy (self.StatusBar.right.options)
+			[exported.StatusBarSaved.left] = Details.CopyTable (self.StatusBar.left.options),
+			[exported.StatusBarSaved.center] = Details.CopyTable (self.StatusBar.center.options),
+			[exported.StatusBarSaved.right] = Details.CopyTable (self.StatusBar.right.options)
 		}
 
 	elseif (self.StatusBarSaved) then
-		exported.StatusBarSaved = table_deepcopy (self.StatusBarSaved)
+		exported.StatusBarSaved = Details.CopyTable (self.StatusBarSaved)
 		
 	end
 
@@ -1781,7 +1776,7 @@ function _detalhes:ApplySavedSkin (style)
 	for key, value in pairs (style) do
 		if (key ~= "skin") then
 			if (type (value) == "table") then
-				self [key] = table_deepcopy (value)
+				self [key] = Details.CopyTable (value)
 			else
 				self [key] = value
 			end
@@ -1794,7 +1789,7 @@ function _detalhes:ApplySavedSkin (style)
 			for key2, value2 in pairs (value) do 
 				if (self [key] [key2] == nil) then
 					if (type (value2) == "table") then
-						self [key] [key2] = table_deepcopy (_detalhes.instance_defaults [key] [key2])
+						self [key] [key2] = Details.CopyTable (_detalhes.instance_defaults [key] [key2])
 					else
 						self [key] [key2] = value2
 					end
@@ -1803,7 +1798,7 @@ function _detalhes:ApplySavedSkin (style)
 		end
 	end	
 	
-	self.StatusBarSaved = style.StatusBarSaved and table_deepcopy (style.StatusBarSaved) or {options = {}}
+	self.StatusBarSaved = style.StatusBarSaved and Details.CopyTable (style.StatusBarSaved) or {options = {}}
 	self.StatusBar.options = self.StatusBarSaved.options
 	_detalhes.StatusBar:UpdateChilds (self)
 	
@@ -1815,7 +1810,7 @@ function _detalhes:ApplySavedSkin (style)
 		self.posicao = style.posicao
 		self:RestoreMainWindowPosition()
 	else
-		self.posicao = table_deepcopy (self.posicao)
+		self.posicao = Details.CopyTable (self.posicao)
 	end
 	
 end
@@ -1826,7 +1821,7 @@ function _detalhes:InstanceReset (instance)
 	if (instance) then
 		self = instance
 	end
-	_detalhes.gump:Fade (self, "in", nil, "barras")
+	Details.FadeHandler.Fader (self, "in", nil, "barras")
 	self:AtualizaSegmentos (self)
 	self:AtualizaSoloMode_AfertReset()
 	self:ResetaGump()
@@ -1978,7 +1973,7 @@ function _detalhes:Freeze (instancia)
 
 	if (not _detalhes.initializing) then
 		instancia:ResetaGump()
-		gump:Fade (instancia, "in", nil, "barras")
+		Details.FadeHandler.Fader (instancia, "in", nil, "barras")
 	end
 	
 	instancia:InstanceMsg (Loc ["STRING_FREEZE"], [[Interface\CHARACTERFRAME\Disconnect-Icon]], "silver")
@@ -2039,7 +2034,7 @@ function _detalhes:AtualizaSegmentos_AfterCombat (instancia, historico)
 	if (segmento == _detalhes.segments_amount) then --> significa que o index [5] passou a ser [6] com a entrada da nova tabela
 		instancia.showing = historico.tabelas [_detalhes.segments_amount] --> ent�o ele volta a pegar o index [5] que antes era o index [4]
 		--print ("==> Changing the Segment now! - classe_instancia.lua 1942")
-		gump:Fade (instancia, _fadeType, _fadeSpeed, "barras")
+		Details.FadeHandler.Fader (instancia, _fadeType, _fadeSpeed, "barras")
 		instancia.showing[instancia.atributo].need_refresh = true
 		instancia.v_barras = true
 		instancia:ResetaGump()
@@ -2050,7 +2045,7 @@ function _detalhes:AtualizaSegmentos_AfterCombat (instancia, historico)
 		instancia.showing = historico.tabelas [segmento]
 		--print ("==> Changing the Segment now! - classe_instancia.lua 1952")
 		
-		gump:Fade (instancia, _fadeType, _fadeSpeed, "barras") --"in", nil
+		Details.FadeHandler.Fader (instancia, _fadeType, _fadeSpeed, "barras") --"in", nil
 		instancia.showing[instancia.atributo].need_refresh = true
 		instancia.v_barras = true
 		instancia:ResetaGump()
@@ -2806,7 +2801,7 @@ function _detalhes:AlteraModo (instancia, qual, from_mode_menu)
 		end
 		
 		_detalhes:ResetaGump (instancia)
-		--gump:Fade (instancia, 1, nil, "barras")
+		--Details.FadeHandler.Fader (instancia, 1, nil, "barras")
 		
 		instancia.modo = modo_grupo
 		instancia:ChangeIcon()

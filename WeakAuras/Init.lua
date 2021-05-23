@@ -8,12 +8,12 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "3.3.0"
-local buildTime = "20210426140850"
+local versionString = "3.4.1"
+local buildTime = "20210519002314"
 local isDevVersion = false
 
 --[==[@debug@
-if versionStringFromToc == "3.3.0" then
+if versionStringFromToc == "3.4.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
   isDevVersion = true
@@ -26,9 +26,9 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 --[====[@version-classic@
 intendedWoWProject = WOW_PROJECT_CLASSIC
 --@end-version-classic@]====]
---[====[@version-bc@
+--[====[@version-bcc@
 intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5 -- TODO: Remove when every flavor build has the constant
---@end-version-bc@]====]
+--@end-version-bcc@]====]
 --@end-non-version-retail@]===]
 
 WeakAuras.versionString = versionStringFromToc
@@ -40,7 +40,7 @@ function WeakAuras.IsClassic()
   return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
-function WeakAuras.IsBC()
+function WeakAuras.IsBCC()
   return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 end
 
@@ -59,7 +59,7 @@ end
 local intendedWoWProjectName = {
   [WOW_PROJECT_MAINLINE] = "Retail",
   [WOW_PROJECT_CLASSIC] = "Classic",
-  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade" -- TODO: Remove when every flavor build has the constant
+  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic" -- TODO: Remove when every flavor build has the constant
 }
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..

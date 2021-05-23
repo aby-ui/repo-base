@@ -768,7 +768,7 @@ function Addon:GetWowBuild()
     if project == WOW_PROJECT_CLASSIC then
         return 'classic'
     elseif project == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-        return 'bc'
+        return 'bcc'
     elseif project == WOW_PROJECT_MAINLINE then
         return 'retail'
     end

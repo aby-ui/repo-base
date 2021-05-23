@@ -256,13 +256,13 @@
 
 		instance.StatusBar [anchor] = chosenChild
 		--> copia os atributos do current para o chosen
-		local options_current = table_deepcopy (current_child.options)
+		local options_current = Details.CopyTable (current_child.options)
 		
 		if (chosenChild.anchor) then
 			--o widget escolhido ja estava sendo mostrado...
 			-- copia os atributos do chosen para o current
 			
-			current_child.options = table_deepcopy (chosenChild.options)
+			current_child.options = Details.CopyTable (chosenChild.options)
 			instance.StatusBar [chosenChild.anchor] = current_child
 		end
 		
@@ -435,13 +435,13 @@
 		ChoosePlugin (nil, nil, right_index, instance.StatusBar.right, "right")
 		
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [left]) then
-			instance.StatusBar.left.options = table_deepcopy (instance.StatusBarSaved.options [left])
+			instance.StatusBar.left.options = Details.CopyTable (instance.StatusBarSaved.options [left])
 		end
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [center]) then
-			instance.StatusBar.center.options = table_deepcopy (instance.StatusBarSaved.options [center])
+			instance.StatusBar.center.options = Details.CopyTable (instance.StatusBarSaved.options [center])
 		end
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [right]) then
-			instance.StatusBar.right.options = table_deepcopy (instance.StatusBarSaved.options [right])
+			instance.StatusBar.right.options = Details.CopyTable (instance.StatusBarSaved.options [right])
 		end
 		
 		_detalhes.StatusBar:ApplyOptions (instance.StatusBar.left, "textcolor")

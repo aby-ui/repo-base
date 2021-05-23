@@ -62,8 +62,7 @@ local default_attack_icon = [[Interface\CURSOR\UnableAttack]]
 local function CreatePluginFrames()
 
 	--> shortcut for details fade function
-	local fader = StreamOverlay.gump.Fade
-	
+	local fader = Details.FadeHandler.Fader
 
 	function StreamOverlay:OnDetailsEvent (event, ...)
 		if (event == "HIDE") then --> plugin hidded, disabled

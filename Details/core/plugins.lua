@@ -94,7 +94,7 @@ local _
 		for key, value in pairs (default) do 
 			if (type (value) == "table") then
 				if (type (current [key]) ~= "table") then
-					current [key] = table_deepcopy (value)
+					current [key] = Details.CopyTable (value)
 				else
 					_detalhes:CheckDefaultTable (current [key], value)
 				end

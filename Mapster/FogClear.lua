@@ -95,7 +95,7 @@ function FogClear:Refresh()
 	end
 end
 
-local FogData = MapsterFogClearData
+local FogData = MapsterFogClearData or {}
 function FogClear:MapExplorationPin_RefreshOverlays(pin, fullUpdate)
 	local mapID = pin:GetMap():GetMapID()
 	if not mapID then return end

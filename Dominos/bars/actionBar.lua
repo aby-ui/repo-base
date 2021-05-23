@@ -45,11 +45,11 @@ ActionBar.mainbarOffsets = {
         elseif i == 'ROGUE' then
             pages.stealth = 6
             pages.shadowdance = 6
-        elseif i == 'WARRIOR' and Addon:IsBuild('bc', 'classic') then
+        elseif i == 'WARRIOR' and Addon:IsBuild('bcc', 'classic') then
             pages.battle = 6
             pages.defensive = 7
             pages.berserker = 8
-        elseif i == 'PRIEST' and Addon:IsBuild('bc', 'classic') then
+        elseif i == 'PRIEST' and Addon:IsBuild('bcc', 'classic') then
             pages.shadowform = 6
         end
 

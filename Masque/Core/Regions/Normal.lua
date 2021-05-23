@@ -109,9 +109,10 @@ end
 
 -- Skins the 'Normal' layer of a button and sets up the hooks.
 function Core.SkinNormal(Region, Button, Skin, Color, xScale, yScale)
-	Region = Region or Button:GetNormalTexture()
-
+	local IsButton = Button.GetNormalTexture
 	local Custom = Button.__MSQ_NewNormal
+
+	Region = Region or (IsButton and Button:GetNormalTexture())
 
 	-- States Enabled
 	if Skin.UseStates then
@@ -179,7 +180,7 @@ function Core.SkinNormal(Region, Button, Skin, Color, xScale, yScale)
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 	Region:Show()
 
-	if Button.__MSQ_EmptyType and not Button.__MSQ_NormalHook then
+	if IsButton and Button.__MSQ_EmptyType and not Button.__MSQ_NormalHook then
 		hooksecurefunc(Button, "SetNormalTexture", Hook_SetNormalTexture)
 		Button.__MSQ_NormalHook = true
 	end

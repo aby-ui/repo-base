@@ -225,13 +225,6 @@ local Legacy = {
 		NoTexture = true,
 	},
 	-- [ OVERLAY (2) ]
-	IconOverlay2 = {
-		Key = "IconOverlay2",
-		Type = "Texture",
-		Iterate = true,
-		NoColor = true,
-		NoTexture = true,
-	},
 	NewItem = {
 		Key = "NewItemTexture",
 		Type = "Texture",
@@ -295,6 +288,14 @@ local Legacy = {
 ---
 
 if WOW_RETAIL then
+	-- [ OVERLAY (2) ]
+	Legacy.IconOverlay2 = {
+		Key = "IconOverlay2",
+		Type = "Texture",
+		Iterate = true,
+		NoColor = true,
+		NoTexture = true,
+	}
 	-- [ OVERLAY (4) ]
 	Legacy.ContextOverlay = {
 		Key = "ItemContextOverlay",

@@ -1369,8 +1369,7 @@ L["STRING_RIGHTCLICK_CLOSE_SHORT"] = "右键单击关闭。"
 L["STRING_RIGHTCLICK_TYPEVALUE"] = "右键单击输入值"
 L["STRING_SCORE_BEST"] = "你得到了 |cFFFFFF00%s|r 分，这是你的最佳得分，恭喜！"
 L["STRING_SCORE_NOTBEST"] = "你获得了 |cFFFFFF00%s|r，你的最好成绩是 |cFFFFFF00%s|r ，在 %s 装等 %d "
---[[Translation missing --]]
---[[ L["STRING_SCRIPTS_TITLE"] = ""--]] 
+L["STRING_SCRIPTS_TITLE"] = "代码"
 L["STRING_SEE_BELOW"] = "见下文"
 L["STRING_SEGMENT"] = "片段"
 L["STRING_SEGMENT_EMPTY"] = "片段为空"
@@ -1450,7 +1449,7 @@ L["STRING_UNLOCK"] = [=[取消组合窗口
 在这个按钮]=]
 L["STRING_UNLOCK_WINDOW"] = "解锁"
 L["STRING_UPTADING"] = "更新中"
-L["STRING_VERSION_AVAILABLE"] = "有新版本可用，请从Twitch或Curse上下载。"
+L["STRING_VERSION_AVAILABLE"] = "有新版本可用，请从Curse Forge或Curse上下载。"
 L["STRING_VERSION_UPDATE"] = "新版本：有什么改变？ 点击这里"
 L["STRING_VOIDZONE_TOOLTIP"] = "伤害和时间："
 L["STRING_WAITPLUGIN"] = [=[等待

@@ -1,6 +1,6 @@
 ## Interface: 90005
-## Title: Masque: Serenity
 
+## Title: Masque: Serenity
 ## Notes: Serenity skins for Masque.
 ## Notes-deDE: Serenity-Skin für Masque.
 ## Notes-esMX: Skins Serenity para Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Serenity для Masque.
 ## Notes-zhTW: Masque的Serenity皮膚。
 
-## Version: 9.0.5
+## Version: 9.0.7
 ## Author: StormFX
 ## Dependencies: Masque
 
@@ -18,6 +18,7 @@
 ## X-Category: Interface Enhancements
 ## X-Credits: Sairen
 ## X-Curse-Project-ID: 13601
+## X-Wago-ID: kaNePnG2
 ## X-WoWI-ID: 8875
 
 # Locales

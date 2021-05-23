@@ -188,7 +188,7 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.716, y = 0.40, comment = AL["GUIDE_ABUSE_OF_POWER"] };
 		[RSConstants.FLAG..2] = { x = 0.76, y = 0.518, comment = AL["GUIDE_SINSTONE_QUEST"] };
 	}; --High Inquisitor Magda
-	[165206] = { [RSConstants.FLAG] = { x = 0.654, y = 0.6008, comment = AL["NOTE_165206_1"] } }; --Endlurker
+	[165206] = { [RSConstants.FLAG] = { x = 0.6667, y = 0.5931, comment = AL["NOTE_165206_1"] } }; --Endlurker
 	[170048] = { [RSConstants.FLAG] = { x = 0.49, y = 0.348, comment = AL["NOTE_170048_1"] } }; --Manifestation of Wrath
 	[157964] = { [RSConstants.PATH_START] = { x = 0.235, y = 0.347 } }; --Adjutant Dekaris
 	[172577] = { [RSConstants.FLAG] = { x = 0.268, y = 0.293, comment = AL["NOTE_172577_1"] } }; --Adjutant Dekaris
@@ -208,7 +208,8 @@ private.NPC_GUIDE = {
 		[RSConstants.STEP7..1] = { x = 0.6628, y = 0.4352, comment = AL["NOTE_171014_7"] }; 
 		[RSConstants.STEP7..2] = { x = 0.6542, y = 0.4451, comment = AL["NOTE_171014_7"] }; 
 		[RSConstants.STEP7..3] = { x = 0.6507, y = 0.4138, comment = AL["NOTE_171014_7"] }; 
-		[RSConstants.STEP7..3] = { x = 0.6581, y = 0.445, comment = AL["NOTE_171014_7"] }; 
+		[RSConstants.STEP7..4] = { x = 0.6581, y = 0.445, comment = AL["NOTE_171014_7"] }; 
+		[RSConstants.STEP7..5] = { x = 0.6538, y = 0.4291, comment = AL["NOTE_171014_7"] }; 
 	}; --Collector Astorestes
 	[173468] = { 
 		[RSConstants.STEP1] = { x = 0.6845, y = 0.6041, comment = AL["NOTE_173468_1"] };
@@ -237,6 +238,7 @@ private.NPC_GUIDE = {
 		[RSConstants.DOT..8] = { x = 0.39, y = 0.6, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
 		[RSConstants.DOT..9] = { x = 0.3, y = 0.36, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
 	};
+	[160770] = { [RSConstants.ENTRANCE] = { x = 0.593, y = 0.517 } }; --Darithis the Bleak
 }
 
 ---============================================================================

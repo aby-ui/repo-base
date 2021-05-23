@@ -812,7 +812,7 @@
 				for key, value in pairs (custom_object) do
 					if (object_keys [key]) then
 						if (type (value) == "table") then
-							export_object [key] = table_deepcopy (value)
+							export_object [key] = Details.CopyTable (value)
 						else
 							export_object [key] = value
 						end

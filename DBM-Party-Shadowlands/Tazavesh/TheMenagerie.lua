@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2454, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210416201335")
+mod:SetRevision("20210517143201")
 mod:SetCreatureID(176556, 176555, 176705)
 mod:SetEncounterID(2441)
 mod:SetUsedIcons(1)
@@ -38,7 +38,7 @@ local specWarnGraspoftheDead		= mod:NewSpecialWarningSwitch(350101, "-Healer", n
 local yellGraspoftheDead			= mod:NewYell(350101, nil, nil, nil, "YELL")
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(320366, nil, nil, nil, 1, 8)
 
---Alcruuxxxx
+--Alcruux
 local timerGripofHungerCD			= mod:NewAITimer(11, 349663, nil, nil, nil, 2)
 local timerGrandconsumptionCD		= mod:NewAITimer(11, 349797, nil, nil, nil, 3)
 --Achillite
