@@ -101,7 +101,7 @@ PlaySoundFile = function(file, channel, ...)
     if type(file) == "number" and file < 500000 then --bigwigs 569200 只能用 PlaySoundFile
         return PlaySound(file, channel, false) --soundKitID [, channel, forceNoDuplicates, runFinishCallback]
     else
-        playSoundFileOrigin(file, channel, ...)
+        return playSoundFileOrigin(file, channel, ...)
     end
 end
 
