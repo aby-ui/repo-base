@@ -7,7 +7,7 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame-OmniCD", 27
+local Type, Version = "Frame-OmniCD", 28
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -74,6 +74,7 @@ local function SizerSE_OnMouseDown(frame)
 	AceGUI:ClearFocus()
 end
 
+
 local function StatusBar_OnEnter(frame)
 	frame.obj:Fire("OnEnterStatusBar")
 end
@@ -89,6 +90,7 @@ local methods = {
 	["OnAcquire"] = function(self)
 		self.frame:SetParent(UIParent)
 		self.frame:SetFrameStrata("FULLSCREEN_DIALOG")
+		self.frame:SetFrameLevel(100) -- Lots of room to draw under it
 		self:SetTitle()
 		self:SetStatusText()
 		self:ApplyStatus()
@@ -177,8 +179,9 @@ local function Constructor()
 	frame:SetMovable(true)
 	frame:SetResizable(true)
 	frame:SetFrameStrata("FULLSCREEN_DIALOG")
+	frame:SetFrameLevel(100) -- Lots of room to draw under it
 	OmniCD[1].BackdropTemplate(frame)
-	frame:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR
+	frame:SetBackdropColor(0.05, 0.05, 0.05, 0.75)
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
@@ -220,7 +223,7 @@ local function Constructor()
 	local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal-OmniCD")
 	titletext:SetPoint("CENTER")
 
-	local sizer_se = CreateFrame("Button", nil, frame)
+	local sizer_se = CreateFrame("Frame", nil, frame)
 	sizer_se:SetPoint("BOTTOMRIGHT")
 	sizer_se:SetWidth(25)
 	sizer_se:SetHeight(25)

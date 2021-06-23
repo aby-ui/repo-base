@@ -57,6 +57,7 @@ local function spellOption(order, spellID, ...)
                 local GameTooltip = AceConfigDialog.tooltip
 				GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
 				GameTooltip:SetHyperlink(GetSpellLink(spellID))
+				--GameTooltip:SetSpellByID(spellID)
 				GameTooltip:Show()
 				--print(GetSpellInfo((spellID)))
 			end, -- https://i.imgur.com/ChzUb.jpg
@@ -502,7 +503,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFF7D0ADruid|r"],
 								order = 70,
-								args = listOption({102560,102543,102558,33891,61336,22812,252216,1850,69369,102342,102351,155835,29166,194223,236696,305497,163505,106951,108291,108292.108293,108294,323546,22842},"auraApplied"),
+								args = listOption({102560,102543,102558,33891,61336,22812,252216,1850,69369,102342,102351,155835,29166,194223,236696,305497,163505,106951,108291,108292.108293,108294,323546,22842,132158},"auraApplied"),
 							},
 							hunter = { -- AuraApplied
 								type = 'group',
@@ -622,7 +623,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFF7D0ADruid|r"],
 								order = 60,
-								args = listOption({102560,102543,102558,33891,117679,236696,29166,108291,108292.108293,108294},"auraRemoved"),
+								args = listOption({102560,102543,102558,33891,117679,236696,29166,108291,108292.108293,108294,132158},"auraRemoved"),
 							},
 							hunter = { -- AuraRemoved
 								type = 'group',
@@ -899,14 +900,14 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cffFF7D0ADruid|r"],
 								order = 70,
-								args = listOption({740,108238,99,5211,102359,102417,102383,49376,16979,102416,102401,203651,201664,61391,132469,5215,236026,22570,209749,2908,202246,102793,197721,325727,327071,327022,327037,323764},"castSuccess"),
+								args = listOption({740,108238,99,5211,102359,102417,102383,49376,16979,102416,102401,203651,201664,61391,132469,5215,236026,22570,209749,2908,202246,102793,197721,325727,327071,327022,327037,323764,18562},"castSuccess"),
 							},
 							hunter = { -- CastSuccess
 								type = 'group',
 								inline = true,
 								name = L["|cffABD473Hunter|r"],
 								order = 80,
-								args = listOption({109248,109304,131894,202914,208652,205691,201430,213691,187650,186387,1543,199483,236776,248518,325028,308491,257284,19577,324149,328231},"castSuccess"),
+								args = listOption({109248,109304,131894,202914,208652,205691,201430,213691,187650,186387,1543,199483,236776,248518,325028,308491,257284,19577,324149,328231,212431},"castSuccess"),
 							},
 							mage = { -- CastSuccess
 								type = 'group',
@@ -920,7 +921,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cFF00FF96Monk|r"],
 								order = 100,
-								args = listOption({116841,119381,123904,115078,119996,137639,115310,132578,115080,233759,122470,116844,233759,202370,325197,322118,325216,327104,326860},"castSuccess"),
+								args = listOption({116841,119381,123904,115078,101643,119996,137639,115310,132578,115080,233759,122470,116844,233759,202370,325197,322118,325216,327104,326860},"castSuccess"),
 							},
 							paladin = { -- CastSuccess
 								type = 'group',

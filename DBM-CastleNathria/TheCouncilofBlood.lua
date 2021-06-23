@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210517143201")
+mod:SetRevision("20210614184808")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -129,7 +129,6 @@ mod:AddNamePlateOption("NPAuraOnFixate", 330967)
 mod:AddNamePlateOption("NPAuraOnShield", 346694)
 mod:AddNamePlateOption("NPAuraOnUproar", 346303)
 
-mod.vb.phase = 1
 mod.vb.feversActive = 0
 mod.vb.volleyCast = 0
 mod.vb.drainCount = 0
@@ -270,7 +269,7 @@ local function phaseChange(self, adjustment)
 	--Bump phase and stop all timers since regardless of kills, phase changes reset anyone that's still up
 	local bossesDead = (self.vb.nikDead and 1 or 0) + (self.vb.friedaDead and 1 or 0) + (self.vb.stavrosDead and 1 or 0)
 	if (bossesDead+1) == self.vb.phase then return end--Somehow phaseChange ran more than once for same phase change, force abort
-	self.vb.phase = self.vb.phase + 1
+	self:SetStage(0)
 	if adjustment > 0 then
 		DBM:AddMsg("Some timers may be incorrect this phase. This usually happens when Infusion/Empowered buff misses remaining boss, causing timers not to correctly reset")
 	end
@@ -448,7 +447,7 @@ function mod:TestResume()
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.feversActive = 0
 	self.vb.volleyCast = 1
 	self.vb.drainCount = 0
@@ -649,7 +648,7 @@ function mod:SPELL_CAST_START(args)
 			timerDutifulAttendantCD:UpdateInline(DBM_CORE_L.MYTHIC_ICON)
 		end
 		if self.Options.SetIconOnDutiful then
-			self:ScanForMobs(175992, 2, 8, 1, 0.2, 10, "SetIconOnDutiful")--creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName
+			self:ScanForMobs(175992, 2, 8, 1, 0.2, 25, "SetIconOnDutiful")--creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName
 		end
 	elseif spellId == 346800 then
 		specWarnWaltzofBlood:Show()

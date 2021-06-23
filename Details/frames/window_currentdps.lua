@@ -389,6 +389,9 @@ function Details:CreateCurrentDpsFrame(parent, name)
 		labelYellowTeam_DPS:SetPoint ("right", barFrame.splitBar.widget, "right", -4, 0)
 		
 		function f.SwapArenaTeamColors()
+			green_team_color = Details.class_colors.ARENA_GREEN
+			yellow_team_color = Details.class_colors.ARENA_YELLOW
+
 			if (f.PlayerTeam == 0) then
 				labelPlayerTeam:SetTextColor (unpack (yellow_team_color))
 				labelYellowTeam:SetTextColor (unpack (green_team_color))

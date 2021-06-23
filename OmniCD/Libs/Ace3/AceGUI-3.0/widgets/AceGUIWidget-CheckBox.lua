@@ -23,7 +23,7 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 -- GLOBALS: SetDesaturation, GameFontHighlight
 
 local IMAGED_CHECKBOX_SIZE = 14
-local DEFAULT_ICON_SIZE = 21 -- 1.5 crop
+local DEFAULT_ICON_SIZE = 21
 local USE_ICON_BACKDROP = true
 local USE_ICON_CROP = true
 
@@ -36,7 +36,6 @@ local function AlignImage(self)
 	if not img then
 		self.text:SetPoint("LEFT", self.checkbg, "RIGHT", 5, 0)
 		self.text:SetPoint("RIGHT")
-
 		if USE_ICON_BACKDROP then
 			self.imagebg:Hide()
 		end
@@ -67,7 +66,6 @@ local function Control_OnLeave(frame)
 end
 
 local mouseOverFrame
-local cursorArg
 
 local function CheckBox_OnMouseDown(frame)
 	local self = frame.obj
@@ -79,7 +77,6 @@ local function CheckBox_OnMouseDown(frame)
 		end
 
 		mouseOverFrame = GetMouseFocus();
-		cursorArg = self.arg
 	end
 	AceGUI:ClearFocus()
 end
@@ -102,7 +99,6 @@ local function CheckBox_OnMouseUp(frame)
 	end
 
 	mouseOverFrame = nil
-	cursorArg = nil
 end
 
 --[[-----------------------------------------------------------------------------
@@ -118,7 +114,6 @@ local methods = {
 		self:SetImage()
 		self:SetDisabled(nil)
 		self:SetDescription(nil)
-		self:SetArg(nil)
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -189,7 +184,6 @@ local methods = {
 	["SetType"] = function(self, type)
 		local checkbg = self.checkbg
 		local check = self.check
-		--local highlight = self.highlight -- s -r
 
 		local size
 		if type == "radio" then
@@ -199,26 +193,11 @@ local methods = {
 			check:SetTexture(130843) -- Interface\\Buttons\\UI-RadioButton
 			check:SetTexCoord(0.25, 0.5, 0, 1)
 			check:SetBlendMode("ADD")
-			--[[ s -r
-			highlight:SetTexture(130843) -- Interface\\Buttons\\UI-RadioButton
-			highlight:SetTexCoord(0.5, 0.75, 0, 1)
-			]]
 		else
-			--[[ s r
-			size = 24
-			checkbg:SetTexture(130755) -- Interface\\Buttons\\UI-CheckBox-Up
-			checkbg:SetTexCoord(0, 1, 0, 1)
+			size = 14
 			check:SetTexture(130751) -- Interface\\Buttons\\UI-CheckBox-Check
 			check:SetTexCoord(0, 1, 0, 1)
 			check:SetBlendMode("BLEND")
-			highlight:SetTexture(130753) -- Interface\\Buttons\\UI-CheckBox-Highlight
-			highlight:SetTexCoord(0, 1, 0, 1)
-			]]
-			size = 14 -- No img info yet, set box size on SetImage
-			check:SetTexture(130751) -- Interface\\Buttons\\UI-CheckBox-Check
-			check:SetTexCoord(0, 1, 0, 1)
-			check:SetBlendMode("BLEND")
-			-- e
 		end
 
 		checkbg:SetHeight(size)
@@ -278,7 +257,7 @@ local methods = {
 		if image:GetTexture() then
 			local n = select("#", ...)
 			if n == 4 or n == 8 then
-				if USE_ICON_BACKDROP then -- override
+				if USE_ICON_BACKDROP then
 					if USE_ICON_CROP then
 						self.imagebg:SetHeight(DEFAULT_ICON_SIZE/1.5)
 						image:SetTexCoord(0.05, 0.95, 0.1, 0.6)
@@ -295,10 +274,6 @@ local methods = {
 		end
 		AlignImage(self)
 	end,
-
-	["SetArg"] = function(self, arg)
-		self.arg = arg
-	end
 }
 
 --[[-----------------------------------------------------------------------------
@@ -338,7 +313,7 @@ local function Constructor()
 	local imagebg, image
 	if USE_ICON_BACKDROP then
 		imagebg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-		imagebg:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
+		imagebg:SetHeight(DEFAULT_ICON_SIZE)
 		imagebg:SetWidth(DEFAULT_ICON_SIZE)
 		imagebg:SetPoint("LEFT", checkbg, "RIGHT", 2, 0)
 		OmniCD[1].BackdropTemplate(imagebg)
@@ -358,7 +333,6 @@ local function Constructor()
 		checkbg   = checkbg,
 		check     = check,
 		text      = text,
-		--highlight = highlight, -- s -r
 		image     = image,
 		frame     = frame,
 		type      = Type,

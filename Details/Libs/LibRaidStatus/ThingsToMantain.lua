@@ -629,6 +629,7 @@ LIB_RAID_STATUS_COOLDOWNS_INFO = {
 	[30283] = {cooldown = 60, duration = 3, talent = false, charges = 1, class = "WARLOCK", type = 5}, --Shadowfury
 	[333889] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "WARLOCK", type = 5}, --Fel Domination
 	--[6789] = {cooldown = 45, duration = 3, talent = 19291, charges = 1, class = "WARLOCK", type = 5}, --Mortal Coil (talent)
+	[5484] = {cooldown = 40, duration = 20, talent = 23465, charges = 1, class = "WARLOCK", type = 5}, --Howl of Terror (talent)
 
 	--> shaman
 	[198067] = {cooldown = 150, duration = 30, talent = false, charges = 1, class = "SHAMAN", type = 1}, --Fire Elemental

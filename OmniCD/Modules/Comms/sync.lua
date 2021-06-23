@@ -117,6 +117,7 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 
 	local s, e, v = 1
 	local i = 0
+	local isInvSlot = false
 
 	while true do
 		s, e, v = strfind(body, "([^,]+)", s)
@@ -127,38 +128,58 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 		s = e + 1
 		i = i + 1
 
-		if i > 16 then
-			local conduitID, conduitRank = strsplit("-", v)
-			conduitID = tonumber(conduitID)
-			conduitRank = tonumber(conduitRank)
-			if conduitRank then
-				local spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank)
-				local rankValue = soulbind_conduits_rank[spellID] and (soulbind_conduits_rank[spellID][conduitRank] or soulbind_conduits_rank[spellID][1])
-				info.shadowlandsData[conduitID] = conduitRank
-				info.talentData[spellID] = rankValue
-			elseif conduitID then
-				info.shadowlandsData[conduitID] = 0
-				info.talentData[conduitID] = 0
-			end
-		elseif v ~= "0" then
-			v = tonumber(v)
-			if i == 16 then
-				info.shadowlandsData.soulbindID = v
-			elseif i == 15 then
-				local covenantSpellID = covenant_IDToSpellID[v]
-				if covenantSpellID then
-					info.shadowlandsData.covenantID = covenantSpellID
-					info.talentData[covenantSpellID] = "C"
-				end
-			elseif i == 14 then
-				info.shadowlandsData.runeforgeDescID = v
-				info.talentData[v] = "R"
-			elseif i > 11 then
-				info.invSlotData[v] = true
-			elseif i > 1 then
-				info.talentData[v] = i > 8 and "PVP" or true
+		if E.isBCC then
+			if v == "|" then
+				isInvSlot = true
 			else
-				info.spec = v
+				v = tonumber(v)
+
+				if isInvSlot then
+					info.invSlotData[v] = true
+				elseif i > 1 then
+					if v < 1 then
+						info.RAS = -v
+					else
+						info.talentData[v] = true
+					end
+				else
+					info.spec = v
+				end
+			end
+		else
+			if i > 16 then
+				local conduitID, conduitRank = strsplit("-", v)
+				conduitID = tonumber(conduitID)
+				conduitRank = tonumber(conduitRank)
+				if conduitRank then
+					local spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank)
+					local rankValue = soulbind_conduits_rank[spellID] and (soulbind_conduits_rank[spellID][conduitRank] or soulbind_conduits_rank[spellID][1])
+					info.shadowlandsData[conduitID] = conduitRank
+					info.talentData[spellID] = rankValue
+				elseif conduitID then
+					info.shadowlandsData[conduitID] = 0
+					info.talentData[conduitID] = 0
+				end
+			elseif v ~= "0" then
+				v = tonumber(v)
+				if i == 16 then
+					info.shadowlandsData.soulbindID = v
+				elseif i == 15 then
+					local covenantSpellID = covenant_IDToSpellID[v]
+					if covenantSpellID then
+						info.shadowlandsData.covenantID = covenantSpellID
+						info.talentData[covenantSpellID] = "C"
+					end
+				elseif i == 14 then
+					info.shadowlandsData.runeforgeDescID = v
+					info.talentData[v] = "R"
+				elseif i > 11 then
+					info.invSlotData[v] = true
+				elseif i > 1 then
+					info.talentData[v] = i > 8 and "PVP" or true
+				else
+					info.spec = v
+				end
 			end
 		end
 	end
@@ -168,6 +189,30 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 
 	P:UpdateUnitBar(guid)
 end
+
+local sendUpdatedSyncInfo = function()
+	Comms:InspectPlayer()
+	Comms:SendSync()
+end
+
+do
+	local timer
+
+	local onTimerEnd = function()
+		sendUpdatedSyncInfo()
+		timer = nil
+	end
+
+	function Comms:PLAYER_EQUIPMENT_CHANGED(slotID)
+		if timer or slotID > 15 then
+			return
+		end
+
+		timer = C_Timer.NewTicker(0.1, onTimerEnd, 1)
+	end
+end
+
+if E.isBCC then return end
 
 do
 	local lastPower = 0
@@ -224,28 +269,6 @@ function Comms:RegisterEventUnitPower()
 		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 	else
 		self:UnregisterEvent("UNIT_POWER_UPDATE")
-	end
-end
-
-local sendUpdatedSyncInfo = function()
-	Comms:InspectPlayer()
-	Comms:SendSync()
-end
-
-do
-	local timer
-
-	local onTimerEnd = function()
-		sendUpdatedSyncInfo()
-		timer = nil
-	end
-
-	function Comms:PLAYER_EQUIPMENT_CHANGED(slotID)
-		if timer or slotID > 15 then
-			return
-		end
-
-		timer = C_Timer.NewTicker(0.1, onTimerEnd, 1)
 	end
 end
 

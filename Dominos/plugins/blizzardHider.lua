@@ -98,6 +98,11 @@ if ReputationWatchBar then
     )
 end
 
+if MainMenuBarMaxLevelBar then
+    MainMenuBarMaxLevelBar:UnregisterAllEvents()
+    hide(MainMenuBarMaxLevelBar)
+end
+
 if VerticalMultiBarsContainer then
     VerticalMultiBarsContainer:UnregisterAllEvents()
     hide(VerticalMultiBarsContainer)

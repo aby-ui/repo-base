@@ -60,9 +60,14 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self:RegisterEvent("ADDON_LOADED")
+				LibStub("AceEvent-3.0"):Embed(self)
+				self.SpellCast = OmniBar_SpellCast
+				self:RegisterMessage("OmniBar_SpellCast", "SpellCast")
+				self.Refresh = OmniBar_Refresh
+				self:RegisterMessage("OmniBar_ResetSpellCast", "Refresh")
+				self.SpecUpdated = OmniBar_SpecUpdated
+				self:RegisterMessage("OmniBar_SpecUpdated", "SpecUpdated")
 			</OnLoad>
-			<OnEvent function="OmniBar_OnEvent"/>
 		</Scripts>
 	</Frame>
 	<Button name="OmniBarButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
@@ -79,6 +84,13 @@
 				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.4"/>
 				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.4" toAlpha="1"/>
 				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
+				<Scripts>
+					<OnFinished>
+						local icon = self:GetParent()
+						local bar = icon:GetParent():GetParent()
+ 						OmniBar_UpdateBorder(bar, icon)
+					</OnFinished>
+				</Scripts>
 			</AnimationGroup>
 			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
 				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1" fromAlpha="1" toAlpha="0"/>
@@ -161,7 +173,7 @@
 				local bar = self:GetParent():GetParent()
 				table.insert(bar.active, self)
 				OmniBar_Position(bar)
-				OmniBar_UpdateBorders(bar)
+				OmniBar_UpdateAllBorders(bar)
 			</OnShow>
 			<OnHide>
 				local bar = self:GetParent():GetParent()

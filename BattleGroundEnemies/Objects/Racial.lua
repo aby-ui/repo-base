@@ -1,10 +1,26 @@
 local BattleGroundEnemies = BattleGroundEnemies
 local addonName, Data = ...
+local GetTime = GetTime
+
 BattleGroundEnemies.Objects.Racial = {}
 
 function BattleGroundEnemies.Objects.Racial.New(playerButton)
 				-- trinket
 	local Racial = CreateFrame("Frame", nil, playerButton)
+
+	Racial:HookScript("OnEnter", function(self)
+		if self.SpellID then
+			BattleGroundEnemies:ShowTooltip(self, function() 
+				GameTooltip:SetSpellByID(self.SpellID)
+			end)
+		end
+	end)
+	
+	Racial:HookScript("OnLeave", function(self)
+		if GameTooltip:IsOwned(self) then
+			GameTooltip:Hide()
+		end
+	end)
 
 	
 	Racial.Icon = Racial:CreateTexture()
@@ -47,12 +63,14 @@ function BattleGroundEnemies.Objects.Racial.New(playerButton)
 		
 		if config.RacialFiltering_Enabled and not config.RacialFiltering_Filterlist[spellID] then return end
 		
+		self.SpellID = spellID
 		self.Icon:SetTexture(Data.TriggerSpellIDToDisplayFileId[spellID])
 		self.Cooldown:SetCooldown(GetTime(), Data.RacialSpellIDtoCooldown[spellID])
 	end
 	
 	Racial.Reset = function(self)
 		self.Icon:SetTexture(nil)
+		self.SpellID = false
 		self.Cooldown:Clear()	--reset Racial Cooldown
 	end
 

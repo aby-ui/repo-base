@@ -167,7 +167,7 @@ detailsOnDeathMenu.enduranceButton.CoolTip = {
 		--GameCooltip2:AddLine (" ")
 		
 		if (not Details:GetPlugin ("DETAILS_PLUGIN_DEATH_GRAPHICS")) then
-			GameCooltip2:AddLine ("Advanced Death Logs plugin is disabled or not installed, check the Addon Control Panel or download it from the Twitch APP.", "", 1, "red")
+			GameCooltip2:AddLine ("Advanced Death Logs plugin is disabled or not installed, check the Addon Control Panel or download it from the Curseforge APP.", "", 1, "red")
 		end
 
 	end, --> called when user mouse over the frame

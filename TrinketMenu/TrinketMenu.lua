@@ -1,11 +1,12 @@
-﻿--[[ TrinketMenu 9.0.0 ]]--
+--[[ TrinketMenu 9.0.0 ]]--
 
 TrinketMenu = { }
 
 local _G, math, tonumber, string, type, pairs, ipairs, table, select = _G, math, tonumber, string, type, pairs, ipairs, table, select
 local Masque = LibStub("Masque", true)
 
-local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsClassic = WOW_PROJECT_ID >= WOW_PROJECT_CLASSIC
+local IsVanillaClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 -- localized strings required to support engineering bags
 TrinketMenu.BAG = "Bag" -- 7th return of GetItemInfo on a normal bag
@@ -136,6 +137,10 @@ function TrinketMenu.OrientWindows()
 		TrinketMenu_MainFrame:SetWidth(52)
 		TrinketMenu_MainFrame:SetHeight(92)
 	end
+end
+
+function TrinketMenu.ScaleFrame(scale)
+	TrinketMenu.FrameToScale:SetScale(scale)
 end
 
 -- scan inventory and build MenuFrame
@@ -302,9 +307,10 @@ function TrinketMenu.Initialize()
 	TrinketMenu.CreateTimer("MenuMouseover", TrinketMenu.MenuMouseover, .25, 1)
 	TrinketMenu.CreateTimer("TooltipUpdate", TrinketMenu.TooltipUpdate, 1, 1)
 	TrinketMenu.CreateTimer("CooldownUpdate", TrinketMenu.CooldownUpdate, 1, 1)
+	TrinketMenu.CreateTimer("QueueUpdate", TrinketMenu.QueueUpdate, 1, 1)
 	TrinketMenu.CreateTimer("RedRange", TrinketMenu.RedRangeUpdate, .33, 1)
-	--hooksecurefunc("UseInventoryItem", TrinketMenu.newUseInventoryItem)
-	--hooksecurefunc("UseAction", TrinketMenu.newUseAction)
+	hooksecurefunc("UseInventoryItem", TrinketMenu.newUseInventoryItem)
+	hooksecurefunc("UseAction", TrinketMenu.newUseAction)
 	TrinketMenu.InitOptions()
 	TrinketMenu.UpdateWornTrinkets()
 	TrinketMenu.DockWindows()
@@ -312,6 +318,10 @@ function TrinketMenu.Initialize()
 	if true or TrinketMenuOptions.CooldownCount == "ON" or TrinketMenuOptions.NotifyThirty == "ON" or TrinketMenuOptions.Notify == "ON" then
 		TrinketMenu.StartTimer("CooldownUpdate")
 	end
+	if TrinketMenu.PeriodicQueueCheck then
+		TrinketMenu.PeriodicQueueCheck()
+	end
+	--TrinketMenu.StartTimer("QueueUpdate")
 	TrinketMenu.ReflectRedRange()
 	if TrinketMenuPerOptions.Visible == "ON" and (GetInventoryItemLink("player", 13) or GetInventoryItemLink("player", 14)) then
 		TrinketMenu_MainFrame:Show()
@@ -334,7 +344,7 @@ end
 
 -- returns true if the player is really dead or ghost, not merely FD
 function TrinketMenu.IsPlayerReallyDead()
-	return UnitIsDeadOrGhost("player")
+	return IsVanillaClassic and (UnitIsDeadOrGhost("player") and not UnitIsFeignDeath("player")) or UnitIsDeadOrGhost("player")
 end
 
 function TrinketMenu.ItemInfo(slot)
@@ -1004,7 +1014,7 @@ function TrinketMenu.EquipTrinketByName(name, slot)
 			local _, _, isLocked = GetContainerItemInfo(b, s)
 			if not isLocked and not IsInventoryItemLocked(slot) then
 				-- neither container item nor inventory item locked, perform swap
-				local directSwap = 1 -- assume a direct swap will happen
+				local directSwap = true -- assume a direct swap will happen
 				if (select(7, GetItemInfo(GetInventoryItemLink("player", 19 + b) or ""))) == TrinketMenu.ENGINEERING_BAG then
 					-- incoming trinket is in an engineering bag
 					if not TrinketMenu.IsEngineered(slot) then
@@ -1133,6 +1143,9 @@ function TrinketMenu.CooldownUpdate()
 			TrinketMenu.WriteMenuCooldowns()
 		end
 	end
+end
+
+function TrinketMenu.QueueUpdate()
 	if TrinketMenu.PeriodicQueueCheck then
 		TrinketMenu.PeriodicQueueCheck()
 	end

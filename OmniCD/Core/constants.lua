@@ -1,7 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 
-local L_PVP_TRINKET = GetSpellInfo(283167)
-local RACIAL_TRAITS = gsub(RACIAL_TRAITS, ":", "")
+local L_PVP_TRINKET = GetSpellInfo(42292) or GetSpellInfo(283167)
+local RACIAL_TRAITS = RACIAL_TRAITS and gsub(RACIAL_TRAITS, ":", "") or L["Racial Traits"]
 local DISARMROOTSILENCE = format("%s, %s, %s",LOC_TYPE_DISARM, LOC_TYPE_ROOT, LOC_TYPE_SILENCE)
 
 E.BASE_ICON_SIZE = 36
@@ -89,7 +89,7 @@ E.CFG_ZONE = {
 E.L_PRESETS = {
 	["TOPLEFT"] = L["LEFT"],
 	["TOPRIGHT"] = L["RIGHT"],
-	["manual"] = LFG_LIST_MORE,
+	["manual"] = LFG_LIST_MORE or "More...",
 }
 
 E.L_POINTS = {
@@ -190,7 +190,7 @@ E.L_CATAGORY_OTHER = {
 	["PVPTRINKET"] = L_PVP_TRINKET,
 	["RACIAL"] = RACIAL_TRAITS,
 	["TRINKET"] = INVTYPE_TRINKET,
-	["COVENANT"] = format("%s (%s)", COVENANT_PREVIEW_RACIAL_ABILITY, L["Covenant"]),
+	["COVENANT"] = COVENANT_PREVIEW_RACIAL_ABILITY and format("%s (%s)", COVENANT_PREVIEW_RACIAL_ABILITY, L["Covenant"]) or "Covenant Signature Ability",
 }
 
 E.ICO = {
@@ -201,6 +201,14 @@ E.ICO = {
 	["TRINKET"] = "Interface\\Icons\\inv_60pvp_trinket2d",
 	["COVENANT"] = 3257750,
 }
+
+if E.isBCC then
+	E.OTHER_SORT_ORDER[4] = nil
+
+	E.ICO.PVPTRINKET = "Interface\\Icons\\inv_jewelry_trinketpvp_01" -- inv_jewelry_trinketpvp_02 (horde)
+	E.ICO.RACIAL = "Interface\\Icons\\achievement_character_troll_male"
+	E.ICO.TRINKET = "Interface\\Icons\\inv_misc_armorkit_10"
+end
 
 E.STR = {
 	["RELOAD_UI"] = L["Reload UI?"],
@@ -273,6 +281,9 @@ E.HEX_C = {
 	PERFORMANCE_BLUE = "|cff99cdff", -- 0.596, 0.808, 1.0
 	OMNICD_RED = "|cffc10003", -- 0.757, 0.0, 0.012
 	OMNICD_MAROON = "|cff69000b", -- 0.412, 0.0, 0.043
+	[1] = "|cff99cdff", -- WOW_PROJECT_MAINLINE
+	[2] = "|cff0291b0", -- WOW_PROJECT_CLASSIC
+	[5] = "|cff7bbb4e", -- WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 }
 
 -- tree/tab maroon  0.412, 0.0, 0.043

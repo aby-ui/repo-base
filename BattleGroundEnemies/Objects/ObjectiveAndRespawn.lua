@@ -1,5 +1,7 @@
 local BattleGroundEnemies = BattleGroundEnemies
 local addonName, Data = ...
+local GetTime = GetTime
+
 BattleGroundEnemies.Objects.ObjectiveAndRespawn = {}
 
 
@@ -27,14 +29,17 @@ function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 	ObjectiveAndRespawn.Cooldown:SetScript("OnHide", function() 
 		ObjectiveAndRespawn:Reset()
 	end)
+	-- ObjectiveAndRespawn.Cooldown:SetScript("OnCooldownDone", function() 
+	-- 	ObjectiveAndRespawn:Reset()
+	-- end)
 	ObjectiveAndRespawn:SetScript("OnHide", function(self) 
-		--BattleGroundEnemies:Debug("ObjectiveAndRespawn hidden")
-		self:SetWidth(0.01)
+		BattleGroundEnemies:Debug("ObjectiveAndRespawn hidden")
+		self:SetAlpha(0)
 	end)
 	
 	ObjectiveAndRespawn:SetScript("OnShow", function(self) 
-		--BattleGroundEnemies:Debug("ObjectiveAndRespawn shown")
-		self:SetWidth(playerButton.bgSizeConfig.ObjectiveAndRespawn_Width)
+		BattleGroundEnemies:Debug("ObjectiveAndRespawn shown")
+		self:SetAlpha(1)
 	end)
 	
 	ObjectiveAndRespawn.SetPosition = function(self)
@@ -57,19 +62,10 @@ function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 			self.AuraText:SetTextColor(unpack(conf.ObjectiveAndRespawn_Textcolor))
 			self.AuraText:ApplyFontStringSettings(conf.ObjectiveAndRespawn_Fontsize, conf.ObjectiveAndRespawn_Outline, conf.ObjectiveAndRespawn_EnableTextshadow, conf.ObjectiveAndRespawn_TextShadowcolor)
 			
-			self.Cooldown:ApplyCooldownSettings(conf.ObjectiveAndRespawn_ShowNumbers, true, true, {0, 0, 0, 0.75})
-			self.Cooldown.Text:ApplyFontStringSettings(conf.ObjectiveAndRespawn_Cooldown_Fontsize, conf.ObjectiveAndRespawn_Cooldown_Outline, conf.ObjectiveAndRespawn_Cooldown_EnableTextshadow, conf.ObjectiveAndRespawn_Cooldown_TextShadowcolor)
+			self.Cooldown:ApplyCooldownSettings(BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_ShowNumbers, true, true, {0, 0, 0, 0.75})
+			self.Cooldown.Text:ApplyFontStringSettings(BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_Cooldown_Fontsize, BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_Cooldown_Outline, BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_Cooldown_EnableTextshadow, BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_Cooldown_TextShadowcolor)
 			
 			self:SetPosition()
-		
-		
-			self:SetWidth(conf.ObjectiveAndRespawn_Width)			
-			
-			self.AuraText:SetTextColor(unpack(conf.ObjectiveAndRespawn_Textcolor))
-			self.AuraText:ApplyFontStringSettings(conf.ObjectiveAndRespawn_Fontsize, conf.ObjectiveAndRespawn_Outline, conf.ObjectiveAndRespawn_EnableTextshadow, conf.ObjectiveAndRespawn_TextShadowcolor)
-			
-			self.Cooldown:ApplyCooldownSettings(conf.ObjectiveAndRespawn_ShowNumbers, true, true, {0, 0, 0, 0.75})
-			self.Cooldown.Text:ApplyFontStringSettings(conf.ObjectiveAndRespawn_Cooldown_Fontsize, conf.ObjectiveAndRespawn_Cooldown_Outline, conf.ObjectiveAndRespawn_Cooldown_EnableTextshadow, conf.ObjectiveAndRespawn_Cooldown_TextShadowcolor)
 		end
 	end
 
@@ -86,7 +82,8 @@ function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 		
 	ObjectiveAndRespawn.PlayerDied = function(self)	
 		--dead
-		if (BattleGroundEnemies.IsRatedBG or BattleGroundEnemies.TestmodeActive) and playerButton.bgSizeConfig.ObjectiveAndRespawn_RespawnEnabled  then
+		playerButton.healthBar:SetValue(0)
+		if (BattleGroundEnemies.IsRatedBG or (BattleGroundEnemies.TestmodeActive and BattleGroundEnemies.BGSize == 15)) and BattleGroundEnemies.db.profile.RBG.ObjectiveAndRespawn_RespawnEnabled  then
 		--BattleGroundEnemies:Debug("UnitIsDead SetCooldown")
 			if not self.ActiveRespawnTimer then
 				self:Show()

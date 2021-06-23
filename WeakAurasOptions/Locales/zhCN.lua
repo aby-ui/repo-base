@@ -8,8 +8,7 @@ local L = WeakAuras.L
 
 -- WeakAuras/Options
 	L[" and |cFFFF0000mirrored|r"] = "并且|cFFFF0000镜像|r"
-	--[[Translation missing --]]
-	L["-- Do not remove this comment, it is part of this aura: "] = "-- Do not remove this comment, it is part of this aura: "
+	L["-- Do not remove this comment, it is part of this aura: "] = "-- 不要移除此注释，这是此光环的一部分："
 	L[" rotated |cFFFF0000%s|r degrees"] = "旋转|cFFFF0000%s|r度"
 	L["% of Progress"] = "进度%"
 	L["%i auras selected"] = "已选中%i个光环"
@@ -171,8 +170,7 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Collapse"] = "折叠"
 	L["Collapse all loaded displays"] = "折叠所有载入的图示"
 	L["Collapse all non-loaded displays"] = "折叠所有未载入的图示"
-	--[[Translation missing --]]
-	L["Collapse all pending Import"] = "Collapse all pending Import"
+	L["Collapse all pending Import"] = "折叠所有待定的导入"
 	L["Collapsible Group"] = "可折叠的组"
 	L["color"] = "颜色"
 	L["Color"] = "颜色"
@@ -255,8 +253,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Distribute Horizontally"] = "横向分布"
 	L["Distribute Vertically"] = "纵向分布"
 	L["Do not group this display"] = "不要将此图示编组"
-	--[[Translation missing --]]
-	L["Do you want to ignore all future updates for this aura"] = "Do you want to ignore all future updates for this aura"
+	L["Do you want to ignore all future updates for this aura"] = "你想忽略此光环未来的所有更新吗"
 	L["Documentation"] = "文档"
 	L["Done"] = "完成"
 	L["Drag to move"] = "拖拽来移动"
@@ -305,8 +302,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Expand"] = "展开"
 	L["Expand all loaded displays"] = "展开所有载入的图示"
 	L["Expand all non-loaded displays"] = "展开所有未载入的图示"
-	--[[Translation missing --]]
-	L["Expand all pending Import"] = "Expand all pending Import"
+	L["Expand all pending Import"] = "展开所有待定的导入"
 	L["Expansion is disabled because this group has no children"] = "由于此组没有子项目，所以无法进行扩展"
 	L["Export to Lua table..."] = "导出为 Lua 表格..."
 	L["Export to string..."] = "导出为字符串"
@@ -318,6 +314,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "后备图标"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
+	--[[Translation missing --]]
+	L["Filter by Arena Spec"] = "Filter by Arena Spec"
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
 	L["Filter by Nameplate Type"] = "根据姓名版类型过滤"
@@ -416,8 +414,7 @@ Supports multiple entries, separated by commas
 	L["Ignore out of checking range"] = "忽略超出检查范围"
 	L["Ignore Self"] = "忽略自身"
 	L["Ignore self"] = "忽略自身"
-	--[[Translation missing --]]
-	L["Ignore updates"] = "Ignore updates"
+	L["Ignore updates"] = "忽略更新"
 	L["Ignored"] = "被忽略"
 	L["Ignored Aura Name"] = "忽略光环名称"
 	L["Ignored Exact Spell ID(s)"] = "忽略精确法术 ID"
@@ -449,8 +446,7 @@ Supports multiple entries, separated by commas
 	L["Length of |cFFFF0000%s|r"] = "长度|cFFFF0000%s|r"
 	L["Limit"] = "限制"
 	L["Lines & Particles"] = "线条和粒子"
-	--[[Translation missing --]]
-	L["Linked aura: "] = "Linked aura: "
+	L["Linked aura: "] = "关联光环："
 	L["Load"] = "载入"
 	L["Loaded"] = "已载入"
 	L["Lock Positions"] = "锁定位置"
@@ -564,10 +560,8 @@ Supports multiple entries, separated by commas
 	L["Put this display in a group"] = "将此显示内容放到组中"
 	L["Radius"] = "半径"
 	L["Raid Role"] = "团队角色"
-	--[[Translation missing --]]
-	L["Ready for Install"] = "Ready for Install"
-	--[[Translation missing --]]
-	L["Ready for Update"] = "Ready for Update"
+	L["Ready for Install"] = "准备安装"
+	L["Ready for Update"] = "准备更新"
 	L["Re-center X"] = "到中心 X 偏移"
 	L["Re-center Y"] = "到中心 Y 偏移"
 	L["Regions of type \"%s\" are not supported."] = "%s 区域类型不被支持。"
@@ -664,6 +658,8 @@ Supports multiple entries, separated by commas
 	L["Spark"] = "闪光"
 	L["Spark Settings"] = "闪光设置"
 	L["Spark Texture"] = "闪光材质"
+	--[[Translation missing --]]
+	L["Specialization"] = "Specialization"
 	L["Specific Unit"] = "指定单位"
 	L["Spell ID"] = "法术ID"
 	L["Stack Count"] = "层数"
@@ -742,8 +738,7 @@ Supports multiple entries, separated by commas
 	L["UnitName Filter"] = "单位名称过滤"
 	L["Unknown property '%s' found in '%s'"] = "发现'%2$s'的未知属性'%1$s'"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同于开始或结束动画，主动画将不停循环，直到图示被隐藏。"
-	--[[Translation missing --]]
-	L["Update"] = "Update"
+	L["Update"] = "更新"
 	L["Update Auras"] = "更新光环"
 	L["Update Custom Text On..."] = "更新自定义文字于"
 	L["URL"] = "URL"
@@ -777,8 +772,7 @@ Supports multiple entries, separated by commas
 	L["Y Rotation"] = "Y轴旋转"
 	L["Y Scale"] = "长度比例"
 	L["Yellow Rune"] = "黄色符文"
-	--[[Translation missing --]]
-	L["Yes"] = "Yes"
+	L["Yes"] = "是"
 	L["y-Offset"] = "Y偏移"
 	L["Y-Offset"] = "Y 偏移"
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "正在删除 %d 个光环，|cFFFF0000此操作无法被撤销！|r真的要删除吗?"

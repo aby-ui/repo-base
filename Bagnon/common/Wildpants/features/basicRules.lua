@@ -46,7 +46,7 @@ end
 
 Addon.Rules:New('all', ALL, 'Interface/Icons/INV_Misc_EngGizmos_17')
 Addon.Rules:New('all/normal', VOICE_CHAT_NORMAL, nil, function(_,_,_, bag) return bag.family == 0 end)
-Addon.Rules:New('all/trade', TRADE, nil, function(_,_,_, bag) return bag.family > 3 end)
+Addon.Rules:New('all/trade', TRADE_SKILLS, nil, function(_,_,_, bag) return bag.family > 3 end)
 
 if Addon.IsRetail then
 	Addon.Rules:New('all/reagent', MINIMAP_TRACKING_VENDOR_REAGENT, nil, function(_,_,_, bag) return bag.family == -3 end)
@@ -66,7 +66,7 @@ ClassRule('misc', GetItemClassInfo(Misc), 'Interface/Icons/INV_Misc_Rune_01', {M
 ClassRule('use', USABLE_ITEMS, 'Interface/Icons/INV_Potion_93', {Consumable, ItemEnhance})
 ClassSubrule('use/consume', Consumable)
 
-ClassRule('trade', TRADE, 'Interface/Icons/INV_Fabric_Silk_02', {TradeGoods, Recipe, Gem, Glyph})
+ClassRule('trade', TRADE_SKILLS, 'Interface/Icons/INV_Fabric_Silk_02', {TradeGoods, Recipe, Gem, Glyph})
 ClassSubrule('trade/goods', TradeGoods)
 ClassSubrule('trade/recipe', Recipe)
 

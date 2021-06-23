@@ -93,6 +93,7 @@ U1RegisterAddon("DBM-VPYike", { title = "夏一可語音包", load = "NORMAL", p
 U1RegisterAddon("DBM-Party-Shadowlands", { title = "暗影国度5人副本", });
 U1RegisterAddon("DBM-Shadowlands", { title = "暗影国度世界BOSS", });
 U1RegisterAddon("DBM-CastleNathria", { title = "纳斯利亚堡模块", });
+U1RegisterAddon("DBM-SanctumOfDomination", { title = "统御圣所模块", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });

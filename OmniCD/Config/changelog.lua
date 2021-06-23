@@ -1,6 +1,33 @@
 local E, L, C = select(2, ...):unpack()
 
-E.changelog = [=[
+if E.isBCC then
+    E.changelog = [=[
+v2.6.03
+    Highlighting will now work with all spell ranks.
+    Rogue ability - Sprint (Rank 3) will correctly go on CD when used.
+
+v2.6.02
+    Fixed abilities with shared cooldown not starting it's timer.
+
+v2.6.01
+    Initial release for WoW: Burning Crusade Classic.
+]=]
+else
+    E.changelog = [=[
+v2.6.03
+    Highlighting will now work with merged spells.
+    Hunter ability - Misdirect will correctly be highlighted.
+    Fixed nil error on certain raid frame addons.
+    Localization updated for ruRU, zhTW, koKR
+
+v2.6.02
+    Glow animation changed.
+    Backend updates for enemy CD tracking.
+    Minor bug fixes.
+
+v2.6.01
+    Compatibility updates for WoW: Burning Crusade Classic.
+
 v2.5.22
 Bug Fixes
     iss#208: HealBot anchoring fixed.
@@ -177,3 +204,4 @@ Known Issues (from Blizzard)
     Thundercharge CD recovery rate doubling when casted on player. (temp fix applied)
     Shifting Power's CD reduction not applying to Alter time for Arcane Mage. (temp fix applied)
 ]=]
+end

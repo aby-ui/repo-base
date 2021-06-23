@@ -4,11 +4,14 @@
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
 		
-		_detalhes.build_counter = 8501
-		_detalhes.alpha_build_counter = 8501 --if this is higher than the regular counter, use it instead
+		local version, build, date, tocversion = GetBuildInfo()
+
+		_detalhes.build_counter = 8516
+		_detalhes.alpha_build_counter = 8516 --if this is higher than the regular counter, use it instead
+		_detalhes.bcc_counter = 16
 		_detalhes.dont_open_news = true
-		_detalhes.game_version = "v9.0.5"
-		_detalhes.userversion = "v9.0.5." .. _detalhes.build_counter
+		_detalhes.game_version = version
+		_detalhes.userversion = version .. _detalhes.build_counter
 		_detalhes.realversion = 144 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
@@ -20,6 +23,7 @@
 		
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> initialization stuff
+local _
 
 do
 	local _detalhes = _G._detalhes
@@ -29,6 +33,11 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.0.5.8502.144", "May 21th, 2021"},
+		"Added options to change the color of each team during an arena match.",
+		"Fixed One Segment Battleground.",
+		"Fixed an error with Howl of Terror on Demo Warlocks.",
+
 		{"v9.0.5.8501.144", "May 17th, 2021"},
 		"Complete overhaul and rerritten on Fade In and Out animations, this should fix all bugs related to animations not being consistent.",
 		"Complete overhaul on the broadcaster tool for arenas 'Current DPS'. It shows now a bar indicating the dps of both teams.",

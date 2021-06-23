@@ -96,6 +96,7 @@
 			[108294] = "heartOfTheWild", -- Heart of the Wild
 			[323546] = "ravenousfrenzy", -- Venthyr
 			[22842] = "FrenziedRegen",
+			[132158] = "naturesSwiftness",
 
 			-- Hunter (Aura Applied)
 			[19263] = "deterrence",
@@ -365,6 +366,7 @@
 			[323524] = "UltimateFormDown",
 			[345231] = "battlemasterDown",
 			[330752] = "AscendantPhialDown", -- Kleia's nonsense
+			[132158] = "swiftnessDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -740,6 +742,7 @@
 			[327071] = "kindredfocus", -- Kyrian 1
 			[327022] = "kindredempowerment", -- Kyrian 2
 			[327037] = "kindredprotection", -- Kyrian 3
+			[18562] = "swiftmend",
 			
 			-- Hunter (Cast Success)
 			[147362] = "counterShot",
@@ -769,6 +772,7 @@
 			[19577] = "intimidation", -- Intimidation
 			[324149] = "flayedshot", -- Venthyr
 			[328231] = "wildspirits", -- Nightfae
+			[212431] = "explosiveShot",
 			
 			-- Mage (Cast Success)
 			[2139] = "counterspell", 

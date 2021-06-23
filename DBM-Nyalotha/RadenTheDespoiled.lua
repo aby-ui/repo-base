@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -148,7 +148,6 @@ mod.vb.corruptedExistenceCount = 0
 mod.vb.bondsCount = 0
 mod.vb.bondsTarget = nil
 mod.vb.gorgedCount = 0
-mod.vb.phase = 1
 local playerHasVita, playerHasNightmare = false, false
 local ExposureTargets = {}
 local consumingVoid = DBM:GetSpellInfo(306645)
@@ -342,7 +341,7 @@ function mod:OnCombatStart(delay)
 	self.vb.currentNightmare = nil
 	self.vb.lastLowest = "^^ No DBM"
 	self.vb.bondsTarget = nil
-	self.vb.phase = 1
+	self:SetStage(1)
 	playerHasVita, playerHasNightmare = false, false
 	table.wipe(ExposureTargets)
 	table.wipe(ChargedBondsTargets)
@@ -586,7 +585,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 309852 and self.vb.phase < 2 then--Ruin (CLEU event, 10 seconds slower than UNIT event)
 		self.vb.callActive = false
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.corruptedExistenceCount = 0
 		self.vb.bondsCount = 0
 		self.vb.gorgedCount = 0
@@ -748,7 +747,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	--"<247.41 21:41:45> [CLEU] SPELL_AURA_APPLIED#Vehicle-0-3137-2217-16824-156866-000027B54E#Ra-den#Vehicle-0-3137-2217-16824-156866-000027B54E#Ra-den#309852#Ruin#BUFF#nil", -- [6249]
 	elseif spellId == 317123 then--Phase 2 Transition
 		self.vb.callActive = false
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.corruptedExistenceCount = 0
 		self.vb.bondsCount = 0
 		self.vb.gorgedCount = 0

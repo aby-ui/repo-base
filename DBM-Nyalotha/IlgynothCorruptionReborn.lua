@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2374, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(158328)
 mod:SetEncounterID(2345)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -74,7 +74,6 @@ mod:AddBoolOption("SetIconOnlyOnce", true)--If disabled, as long as living oozes
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 mod:AddDropdownOption("InterruptBehavior", {"Two", "Three", "Four", "Five"}, "Two", "misc")
 
---mod.vb.phase = 1
 mod.vb.TouchofCorruptorIcon = 1
 mod.vb.IchorCount = 0
 mod.vb.interruptBehavior = "Two"
@@ -137,7 +136,6 @@ function mod:OnCombatStart(delay)
 	self.vb.bossLeft = 4--Ilgynoth plus 3 organs
 	self.numBoss = 4--^^
 	--Regular Variables
-	--self.vb.phase = 1
 	self.vb.TouchofCorruptorIcon = 1
 	self.vb.IchorCount = 0
 	self.vb.bloodIcon = 1
@@ -377,7 +375,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	--SPELL_CAST_SUCCESS 319005 appears in combat log for phase change on mythic, but don't be fooled, it doesn't exist on non mythic. Parry exists in all modes
 	if spellId == 110470 and self:AntiSpam(3, 1) then--Reduce Parry and Block Chance 100% (Organ phase begin)
 		self.vb.organPhase = true
-		--self.vb.phase = self.vb.phase + 0.5
 		timerCorruptorsGazeCD:Stop()
 		timerTouchoftheCorruptorCD:Stop()
 		timerEyeofNZothCD:Stop()
@@ -390,7 +387,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 311577 then--Damaged Organ (organs "dying")
 		self.vb.organPhase = false
 		self.vb.bossLeft = self.vb.bossLeft - 1
-		--self.vb.phase = self.vb.phase + 0.5
 	elseif spellId == 310433 then--Corruptor's Gaze
 		specWarnCorruptorsGaze:Show()
 		specWarnCorruptorsGaze:Play("watchstep")

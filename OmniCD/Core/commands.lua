@@ -113,7 +113,7 @@ E.SlashHandler = function(msg)
 				end
 			end
 		end
-		E.UpdateEnabledSpells(P)
+		P:UpdateEnabledSpells()
 		P:Refresh()
 		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif (command == "r" or command == "raidcd" or E.CFG_ZONE[gsub(command, "^r", "")]) then
@@ -145,7 +145,7 @@ E.SlashHandler = function(msg)
 				end
 			end
 		end
-		E.UpdateEnabledSpells(P)
+		P:UpdateEnabledSpells()
 		P:Refresh()
 		E.Libs.ACR:NotifyChange("OmniCD")
 	elseif addOnCommands[command] then

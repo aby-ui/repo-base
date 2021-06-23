@@ -462,9 +462,10 @@ addon.Spells = {
         [204293] = { type = BUFF_DEFENSIVE, parent = 325174 }, -- Spirit Link (PvP Talent)
     [108271] = { type = BUFF_DEFENSIVE }, -- Astral Shift
         [210918] = { type = BUFF_DEFENSIVE, parent = 108271 }, -- Ethereal Form
-    [114050] = { type = BUFF_DEFENSIVE }, -- Ascendance (Elemental)
-        [114051] = { type = BUFF_OFFENSIVE, parent = 114050 }, -- Ascendance (Enhancement)
-        [114052] = { type = BUFF_DEFENSIVE, parent = 114050 }, -- Ascendance (Restoration)
+    [114049] = { type = BUFF_OFFENSIVE }, -- Ascendance
+        [114050] = { type = BUFF_DEFENSIVE, parent = 114049 }, -- Ascendance (Elemental)
+        [114051] = { type = BUFF_OFFENSIVE, parent = 114049 }, -- Ascendance (Enhancement)
+        [114052] = { type = BUFF_DEFENSIVE, parent = 114049 }, -- Ascendance (Restoration)
     [118345] = { type = CROWD_CONTROL }, -- Pulverize
     [118905] = { type = CROWD_CONTROL }, -- Static Charge
     [191634] = { type = BUFF_OFFENSIVE }, -- Stormkeeper (Ele)

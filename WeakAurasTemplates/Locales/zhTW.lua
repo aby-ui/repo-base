@@ -63,8 +63,7 @@ local L = WeakAuras.L
 	L["Frost"] = "冰霜"
 	L["General"] = "一般"
 	L["Health"] = "血量"
-	--[[Translation missing --]]
-	L["Highlight while action is queued."] = "Highlight while action is queued."
+	L["Highlight while action is queued."] = "當動作佇列中時高亮。"
 	L["Highlight while active, red when out of range."] = "作用時顯著標示，超出範圍時變成紅色。"
 	L["Highlight while active."] = "作用時顯著標示。"
 	L["Highlight while buffed, red when out of range."] = "有增益時顯著標示，超出範圍時變成紅色。"
@@ -101,8 +100,7 @@ local L = WeakAuras.L
 	L["Show Charges with Proc Tracking"] = "顯示包含機率觸發監控的次數"
 	L["Show Charges with Range Tracking"] = "顯示包含範圍監控的次數"
 	L["Show Charges with Usable Check"] = "顯示包含檢查是否可用的次數"
-	--[[Translation missing --]]
-	L["Show Cooldown and Action Queued"] = "Show Cooldown and Action Queued"
+	L["Show Cooldown and Action Queued"] = "顯示冷卻時間以及動作的佇列"
 	L["Show Cooldown and Buff"] = "顯示冷卻和增益"
 	L["Show Cooldown and Buff and Check for Target"] = "顯示冷卻和增益並檢查選取目標"
 	L["Show Cooldown and Buff and Check Usable"] = "顯示冷卻和增益並檢查是否可用"

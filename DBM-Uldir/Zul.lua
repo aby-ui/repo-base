@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2195, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(138967)
 mod:SetEncounterID(2145)
 mod:DisableESCombatDetection()--ES fires moment you throw out CC, so it can't be trusted for combatstart
@@ -91,7 +91,6 @@ mod:AddSetIconOption("SetIconOnDecay", 276434, true, true, {8})
 mod:AddSetIconOption("SetIconDarkRev", 273365, true, false, {1, 2})
 mod:AddDropdownOption("TauntBehavior", {"TwoHardThreeEasy", "TwoAlways", "ThreeAlways"}, "TwoHardThreeEasy", "misc")
 
-mod.vb.phase = 1
 mod.vb.darkRevCount = 0
 mod.vb.poolCount = 0
 mod.vb.CrawgSpawnCount = 0
@@ -160,7 +159,7 @@ end
 
 function mod:OnCombatStart(delay)
 	table.wipe(corruptedBloodTarget)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.poolCount = 0
 	self.vb.darkRevCount = 0
 	self.vb.CrawgSpawnCount = 0
@@ -256,7 +255,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 274358 then
 		timerRupturingBloodCD:Start()
 	elseif spellId == 274168 and self:AntiSpam(5, 2) then--Apparently requires antispam for something that fire ONCE in combat log, no idea why.
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
 		timerDarkRevolationCD:Stop()

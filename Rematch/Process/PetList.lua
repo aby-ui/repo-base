@@ -474,7 +474,7 @@ function roster:RunSearchMatch(mask)
 			end
 			-- if cached is false, we know this ability doesn't match the mask;
 			-- but another ability may return a hit. just ignore this ability.
-		elseif not cached then -- we haven't examined this ability yet
+		elseif not cached and abilityID then -- we haven't examined this ability yet
 			local _,name,_,_,description = C_PetBattles.GetAbilityInfoByID(abilityID)
 			relevance = matchRelevance(speciesID,mask,name,7) or matchRelevance(speciesID,mask,description,7)
 			if relevance then

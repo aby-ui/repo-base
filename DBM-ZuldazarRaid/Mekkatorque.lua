@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210421144719")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -87,7 +87,6 @@ mod:AddSetIconOption("SetIconGigaVolt", 286646, true, false, {1, 2, 3})
 mod:AddSetIconOption("SetIconBot", 288410, true, true, {4, 5, 6, 7, 8})
 mod:AddInfoFrameOption(286105, true)
 
-mod.vb.phase = 1
 --Count variables for every timer, because stupid sequence mod
 mod.vb.botCount = 0
 mod.vb.cannonCount = 0
@@ -327,7 +326,7 @@ do
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.botCount = 0
 	self.vb.cannonCount = 0
 	self.vb.blastOffcount = 0
@@ -423,7 +422,7 @@ function mod:SPELL_CAST_START(args)
 			timerDeploySparkBotCD:Start(timer, self.vb.botCount+1)
 		end
 	elseif spellId == 287751 then--Evasive Maneuvers (intermission Start)
-		self.vb.phase = 1.5
+		self:SetStage(1.5)
 		--These happen in intermission too so intermission counters needed
 		self.vb.botCount = 0
 		self.vb.ripperCount = 0
@@ -456,7 +455,7 @@ function mod:SPELL_CAST_START(args)
 		end
 		timerIntermission:Start(64.8)
 	elseif spellId == 287797 then--Crash Down (intermission end)
-		self.vb.phase = 2
+		self:SetStage(2)
 		--Reset everything but sheep, for next ground phase
 		self.vb.botCount = 0
 		self.vb.cannonCount = 0

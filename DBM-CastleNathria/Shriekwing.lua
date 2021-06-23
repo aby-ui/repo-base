@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2393, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210120015156")
+mod:SetRevision("20210614184808")
 mod:SetCreatureID(164406)
 mod:SetEncounterID(2398)
 mod:SetUsedIcons(1, 2, 3)
@@ -87,6 +87,7 @@ mod.vb.waveCount = 0
 function mod:OnCombatStart(delay)
 	table.wipe(ExsanguinatedStacks)
 	playerDebuff = false
+	self:SetStage(1)
 	self.vb.EchoIcon = 1
 	self.vb.waveCount = 0
 	timerExsanguinatingBiteCD:Start(8.1-delay)
@@ -204,6 +205,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 341684 then
 		warnBloodLantern:Show(args.destName)
 	elseif spellId == 328921 then
+		self:SetStage(2)
 		specWarnBloodshroud:Show()
 		specWarnBloodshroud:Play("phasechange")
 		timerExsanguinatingBiteCD:Stop()
@@ -224,6 +226,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 328921 then--Bloodshroud removed
 		self.vb.waveCount = 0
+		self:SetStage(1)
 		timerEarsplittingShriekCD:Stop()
 		timerEchoingSonar:Stop()
 		timerEarsplittingShriek:Stop()

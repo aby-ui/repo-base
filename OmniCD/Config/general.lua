@@ -307,7 +307,7 @@ function E:AddGeneral()
 	end
 
 	-- convert table to something ACD can use as the values member
-	for k, fontName in pairs(LSM:List("font")) do
+	for _, fontName in pairs(LSM:List("font")) do
 		LSM_Font[fontName] = fontName
 	end
 	for _, fontName in ipairs(LSM:List("statusbar")) do

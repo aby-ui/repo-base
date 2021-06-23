@@ -977,7 +977,7 @@
 				if (func) then
 					
 				end
-				local okey, errortext = _pcall (func, actor, instance.showing, instance)
+				local okey, errortext = _pcall (func, actor, instance.showing, instance, keydown)
 				if (not okey) then
 					_detalhes:Msg ("|cFFFF9900error on custom display tooltip function|r:", errortext)
 					return false

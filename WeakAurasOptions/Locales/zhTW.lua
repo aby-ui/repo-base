@@ -8,8 +8,7 @@ local L = WeakAuras.L
 
 -- WeakAuras/Options
 	L[" and |cFFFF0000mirrored|r"] = "以及 |cFFFF0000鏡像|r"
-	--[[Translation missing --]]
-	L["-- Do not remove this comment, it is part of this aura: "] = "-- Do not remove this comment, it is part of this aura: "
+	L["-- Do not remove this comment, it is part of this aura: "] = "不要刪除此註解，這是此光環的一部分："
 	L[" rotated |cFFFF0000%s|r degrees"] = "旋轉 |cFFFF0000%s|r 度"
 	L["% of Progress"] = "進度%"
 	L["%i auras selected"] = "已選擇 %i 個提醒效果"
@@ -173,8 +172,7 @@ Off Screen]=] ] = [=[提醒效果
 	L["Collapse"] = "收合"
 	L["Collapse all loaded displays"] = "收合所有已載入的提醒效果"
 	L["Collapse all non-loaded displays"] = "收合所有未載入的提醒效果"
-	--[[Translation missing --]]
-	L["Collapse all pending Import"] = "Collapse all pending Import"
+	L["Collapse all pending Import"] = "收合所有等待匯入的內容"
 	L["Collapsible Group"] = "可收合群組"
 	L["color"] = "顏色"
 	L["Color"] = "顏色"
@@ -257,8 +255,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Distribute Horizontally"] = "水平分佈"
 	L["Distribute Vertically"] = "垂直分佈"
 	L["Do not group this display"] = "不要群組這個提醒效果"
-	--[[Translation missing --]]
-	L["Do you want to ignore all future updates for this aura"] = "Do you want to ignore all future updates for this aura"
+	L["Do you want to ignore all future updates for this aura"] = "您是否要忽略此光環的所有未來更新"
 	L["Documentation"] = "文件"
 	L["Done"] = "完成"
 	L["Drag to move"] = "滑鼠拖曳來移動"
@@ -307,8 +304,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Expand"] = "展開"
 	L["Expand all loaded displays"] = "展開所有已載入的提醒效果"
 	L["Expand all non-loaded displays"] = "展開所有未載入的提醒效果"
-	--[[Translation missing --]]
-	L["Expand all pending Import"] = "Expand all pending Import"
+	L["Expand all pending Import"] = "展開所有等待匯入的內容"
 	L["Expansion is disabled because this group has no children"] = "無法展開，因為這個群組沒有子項目"
 	L["Export to Lua table..."] = "匯出成 Lua table..."
 	L["Export to string..."] = "匯出成文字字串..."
@@ -320,6 +316,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "缺少圖示時要顯示的圖示"
 	L["False"] = "否 (False)"
 	L["Fetch Affected/Unaffected Names"] = "取得受影響/未受影響的名字"
+	--[[Translation missing --]]
+	L["Filter by Arena Spec"] = "Filter by Arena Spec"
 	L["Filter by Class"] = "依職業過濾"
 	L["Filter by Group Role"] = "依角色職責過濾"
 	L["Filter by Nameplate Type"] = "依名條類型過濾"
@@ -419,8 +417,7 @@ Supports multiple entries, separated by commas
 	L["Ignore out of checking range"] = "忽略超出檢查範圍"
 	L["Ignore Self"] = "忽略自己"
 	L["Ignore self"] = "忽略自己"
-	--[[Translation missing --]]
-	L["Ignore updates"] = "Ignore updates"
+	L["Ignore updates"] = "忽略更新"
 	L["Ignored"] = "忽略"
 	L["Ignored Aura Name"] = "忽略的光環名稱"
 	L["Ignored Exact Spell ID(s)"] = "忽略的正確法術 ID"
@@ -452,8 +449,7 @@ Supports multiple entries, separated by commas
 	L["Length of |cFFFF0000%s|r"] = "|cFFFF0000%s|r的長度"
 	L["Limit"] = "限制"
 	L["Lines & Particles"] = "直線 & 粒子"
-	--[[Translation missing --]]
-	L["Linked aura: "] = "Linked aura: "
+	L["Linked aura: "] = "已連結光環："
 	L["Load"] = "載入"
 	L["Loaded"] = "已載入"
 	L["Lock Positions"] = "鎖定位置"
@@ -567,10 +563,8 @@ Supports multiple entries, separated by commas
 	L["Put this display in a group"] = "將這個提醒效果放入群組中"
 	L["Radius"] = "半徑"
 	L["Raid Role"] = "團隊職責"
-	--[[Translation missing --]]
-	L["Ready for Install"] = "Ready for Install"
-	--[[Translation missing --]]
-	L["Ready for Update"] = "Ready for Update"
+	L["Ready for Install"] = "準備好安裝了"
+	L["Ready for Update"] = "準備好更新了"
 	L["Re-center X"] = "重新水平置中"
 	L["Re-center Y"] = "重新垂直置中"
 	L["Regions of type \"%s\" are not supported."] = "不支援區域類型 \"%s\"。"
@@ -667,6 +661,8 @@ Supports multiple entries, separated by commas
 	L["Spark"] = "亮點"
 	L["Spark Settings"] = "亮點設定"
 	L["Spark Texture"] = "亮點材質"
+	--[[Translation missing --]]
+	L["Specialization"] = "Specialization"
 	L["Specific Unit"] = "指定單位"
 	L["Spell ID"] = "法術 ID"
 	L["Stack Count"] = "堆疊層數"
@@ -745,8 +741,7 @@ Supports multiple entries, separated by commas
 	L["UnitName Filter"] = "單位名字過濾方式"
 	L["Unknown property '%s' found in '%s'"] = "發現未知屬性 '%s'，在 '%s'"
 	L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "不同於開始或結束時的動畫，主要動畫將重複循環直到提醒效果被隱藏。"
-	--[[Translation missing --]]
-	L["Update"] = "Update"
+	L["Update"] = "更新"
 	L["Update Auras"] = "更新提醒效果"
 	L["Update Custom Text On..."] = "更新自訂文字於..."
 	L["URL"] = "URL"
@@ -780,8 +775,7 @@ Supports multiple entries, separated by commas
 	L["Y Rotation"] = "垂直旋轉"
 	L["Y Scale"] = "垂直縮放"
 	L["Yellow Rune"] = "黃色符文"
-	--[[Translation missing --]]
-	L["Yes"] = "Yes"
+	L["Yes"] = "是"
 	L["y-Offset"] = "垂直位置偏移"
 	L["Y-Offset"] = "垂直位置"
 	L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"] = "你正準備要刪除 %d 個提醒效果，刪除後將|cFFFF0000無法還原!|r 請問是否要繼續?"

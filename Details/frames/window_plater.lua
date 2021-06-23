@@ -441,7 +441,7 @@ function Details.OpenPlaterIntegrationWindow()
                 end
             end
             
-            local PlaterDisabled1 = DF:CreateLabel (f, "Plater isn't installed! you may download it from the Twitch app.", 16, "red")
+            local PlaterDisabled1 = DF:CreateLabel (f, "Plater isn't installed! you may download it from the Curseforge app.", 16, "red")
             PlaterDisabled1:SetPoint (10, -330)
         end
         

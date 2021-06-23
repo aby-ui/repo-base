@@ -11,8 +11,7 @@ for k, v in pairs(E.spell_marked) do
 		--E.Write("Removing Invalid ID (Enhanced): |cffffd200" .. k)
 	else
 		local id = v == true and k or v
-		local name = GetSpellInfo(id)
-		local icon = GetSpellTexture(id)
+		local name, _, icon = GetSpellInfo(id)
 		name = format("|T%s:18|t %s", icon, name)
 		markEnhancedDesc[#markEnhancedDesc + 1] = name
 	end
@@ -45,12 +44,14 @@ local highlight = {
 					order = 1,
 					type = "toggle",
 				},
+				--[[
 				glowColor = {
 					name = COLOR,
 					order = 2,
 					type = "select",
 					values = E.L_GLOW_ATLAS,
 				},
+				]]
 			}
 		},
 		highlight = {

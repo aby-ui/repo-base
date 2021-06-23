@@ -1,13 +1,16 @@
 ## Interface: 90005
 ## Title: BattleGroundEnemies
-## Version: 9.0.2.7
+## Version: 9.0.5.5
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
-## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, LibPlayerSpells-1.0
+## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibPlayerSpells-1.0
 
 ## X-Curse-Project-ID: 274066
+## X-Wago-ID: nQN5aoNB
 
+#@no-lib-strip@
 embeds.xml
+#@end-no-lib-strip@
 
 Locales\enUS.lua
 Locales\zhCN.lua
@@ -16,10 +19,11 @@ Locales\zhTW.lua
 Data.lua
 Defaults.lua
 Main.lua
+Messaging.lua
+TargetCall.lua
 
-Objects\Auras.lua
-Objects\Buffs.lua
-Objects\Debuffs.lua
+
+Objects\Auracontainer.lua
 Objects\DR.lua
 Objects\ObjectiveAndRespawn.lua
 Objects\Racial.lua

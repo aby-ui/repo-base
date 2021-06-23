@@ -5,7 +5,7 @@
 GTFO Spell List - Lich King
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 GTFO.SpellID["62548"] = {
 	--desc = "Scorch (Ignis-10)";

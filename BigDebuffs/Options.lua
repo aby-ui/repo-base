@@ -244,7 +244,7 @@ function BigDebuffs:SetupOptions()
             desc = {
                 order = 2,
                 type = "description",
-                name = "|cffffd700 "..L["Author"].."|r Jordon |cffffd700 ·­ÒëÐÞ¸Ä|r NGA-ÒÁµéÍâ\n",
+                name = "|cffffd700 "..L["Author"].."|r Jordon |cffffd700 ç¿»è¯‘ä¿®æ”¹|r NGA-ä¼Šç”¸å¤–\n",
                 cmdHidden = true
             },
             test = {

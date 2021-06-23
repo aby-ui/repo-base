@@ -13,6 +13,21 @@ Data.defaultSettings = {
         MyTarget_Color = {1, 1, 1, 1},
         MyFocus_Color = {0, 0.988235294117647, 0.729411764705882, 1},
         Highlight_Color = {1, 1, 0.5, 1},
+        ShowTooltips = true,
+
+        RBG = {       
+            ObjectiveAndRespawn_RespawnEnabled = true,
+
+            ObjectiveAndRespawn_ShowNumbers = true,
+            
+            ObjectiveAndRespawn_Cooldown_Fontsize = 12,
+            ObjectiveAndRespawn_Cooldown_Outline = "OUTLINE",
+            ObjectiveAndRespawn_Cooldown_EnableTextshadow = false,
+            ObjectiveAndRespawn_Cooldown_TextShadowcolor = {0, 0, 0, 1},
+
+            TargetCalling_SetMark = false,
+            TargetCalling_NotificationEnable = false
+        },
     
         Enemies = {
             Enabled = true,
@@ -71,6 +86,10 @@ Data.defaultSettings = {
                 RoleIcon_Enabled = true,
                 RoleIcon_Size = 13,
                 RoleIcon_VerticalPosition = 2,
+
+                CovenantIcon_Enabled = true,
+                CovenantIcon_Size = 20,
+                CovenantIcon_VerticalPosition = 3,
                 
                 PlayerCount_Enabled = true,
                 PlayerCount_Fontsize = 14,
@@ -125,7 +144,6 @@ Data.defaultSettings = {
                 
                 
                 Auras_Enabled = true,
-                Auras_ShowTooltips = false,
                 
                 Auras_Buffs_Enabled = false,
                 Auras_Buffs_Size = 15,
@@ -154,7 +172,8 @@ Data.defaultSettings = {
                 Auras_Buffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Buffs_Filtering_Enabled = true,
-                Auras_Buffs_OnlyShowMine = true,
+                Auras_Buffs_Filtering_Blizzlike = false,
+                Auras_Buffs_ShowMine = true,
                 Auras_Buffs_SpellIDFiltering_Enabled = false,
                 Auras_Buffs_SpellIDFiltering_Filterlist = {},
                 
@@ -187,33 +206,12 @@ Data.defaultSettings = {
                 Auras_Debuffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Debuffs_Filtering_Enabled = true,
-                Auras_Debuffs_OnlyShowMine = true,
+                Auras_Debuffs_Filtering_Blizzlike = false,
+                Auras_Debuffs_ShowMine = true,
                 Auras_Debuffs_DebuffTypeFiltering_Enabled = false,
                 Auras_Debuffs_DebuffTypeFiltering_Filterlist = {},
                 Auras_Debuffs_SpellIDFiltering_Enabled = false,
                 Auras_Debuffs_SpellIDFiltering_Filterlist = {},
-
-                ObjectiveAndRespawn_ObjectiveEnabled = true,
-                ObjectiveAndRespawn_Width = 36,
-                ObjectiveAndRespawn_BasicPoint = "RIGHT",
-                ObjectiveAndRespawn_RelativeTo = "NumericTargetindicator",
-                ObjectiveAndRespawn_RelativePoint = "LEFT",
-                ObjectiveAndRespawn_OffsetX = -2,
-                
-                ObjectiveAndRespawn_RespawnEnabled = true,
-                
-                ObjectiveAndRespawn_Fontsize = 17,
-                ObjectiveAndRespawn_Outline = "THICKOUTLINE",
-                ObjectiveAndRespawn_Textcolor = {1, 1, 1, 1},
-                ObjectiveAndRespawn_EnableTextshadow = false,
-                ObjectiveAndRespawn_TextShadowcolor = {0, 0, 0, 1},
-                
-                ObjectiveAndRespawn_ShowNumbers = true,
-                
-                ObjectiveAndRespawn_Cooldown_Fontsize = 12,
-                ObjectiveAndRespawn_Cooldown_Outline = "OUTLINE",
-                ObjectiveAndRespawn_Cooldown_EnableTextshadow = false,
-                ObjectiveAndRespawn_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Trinket_Enabled = true,
                 Trinket_BasicPoint = "LEFT",
@@ -243,8 +241,23 @@ Data.defaultSettings = {
 
                 RacialFiltering_Enabled = false,
                 RacialFiltering_Filterlist = {}, --key = spellID, value = spellName or false
+
+                ObjectiveAndRespawn_ObjectiveEnabled = true,
+                ObjectiveAndRespawn_Width = 36,
+                ObjectiveAndRespawn_BasicPoint = "RIGHT",
+                ObjectiveAndRespawn_RelativeTo = "NumericTargetindicator",
+                ObjectiveAndRespawn_RelativePoint = "LEFT",
+                ObjectiveAndRespawn_OffsetX = -2,
                 
-                Notifications_Enabled = true,
+                
+                
+                ObjectiveAndRespawn_Fontsize = 17,
+                ObjectiveAndRespawn_Outline = "THICKOUTLINE",
+                ObjectiveAndRespawn_Textcolor = {1, 1, 1, 1},
+                ObjectiveAndRespawn_EnableTextshadow = false,
+                ObjectiveAndRespawn_TextShadowcolor = {0, 0, 0, 1}
+                
+                
                 -- PositiveSound = [[Interface\AddOns\WeakAuras\Media\Sounds\BatmanPunch.ogg]],
                 -- NegativeSound = [[Sound\Interface\UI_BattlegroundCountdown_Timer.ogg]],
             },
@@ -260,7 +273,7 @@ Data.defaultSettings = {
                 Position_X = false,
                 Position_Y = false,
                 BarWidth = 220,
-                BarHeight = 28,
+                BarHeight = 22,
                 BarVerticalGrowdirection = "downwards",
                 BarVerticalSpacing = 1,
                 BarColumns = 1,
@@ -279,6 +292,10 @@ Data.defaultSettings = {
                 RoleIcon_Enabled = true,
                 RoleIcon_Size = 13,
                 RoleIcon_VerticalPosition = 2,
+
+                CovenantIcon_Enabled = true,
+                CovenantIcon_Size = 20,
+                CovenantIcon_VerticalPosition = 3,
                 
                 PlayerCount_Enabled = true,
                 PlayerCount_Fontsize = 14,
@@ -333,7 +350,6 @@ Data.defaultSettings = {
                 
                 
                 Auras_Enabled = true,
-                Auras_ShowTooltips = false,
                 
                 Auras_Buffs_Enabled = true,
                 Auras_Buffs_Size = 15,
@@ -362,7 +378,8 @@ Data.defaultSettings = {
                 Auras_Buffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Buffs_Filtering_Enabled = true,
-                Auras_Buffs_OnlyShowMine = true,
+                Auras_Buffs_Filtering_Blizzlike = false,
+                Auras_Buffs_ShowMine = true,
                 Auras_Buffs_SpellIDFiltering_Enabled = false,
                 Auras_Buffs_SpellIDFiltering_Filterlist = {},
                 
@@ -395,7 +412,8 @@ Data.defaultSettings = {
                 Auras_Debuffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Debuffs_Filtering_Enabled = true,
-                Auras_Debuffs_OnlyShowMine = true,
+                Auras_Debuffs_Filtering_Blizzlike = false,
+                Auras_Debuffs_ShowMine = true,
                 Auras_Debuffs_DebuffTypeFiltering_Enabled = true,
                 Auras_Debuffs_DebuffTypeFiltering_Filterlist = {},
                 Auras_Debuffs_SpellIDFiltering_Enabled = false,
@@ -489,6 +507,10 @@ Data.defaultSettings = {
                 RoleIcon_Enabled = true,
                 RoleIcon_Size = 13,
                 RoleIcon_VerticalPosition = 2,
+
+                CovenantIcon_Enabled = true,
+                CovenantIcon_Size = 20,
+                CovenantIcon_VerticalPosition = 3,
                 
                 PlayerCount_Enabled = true,
                 PlayerCount_Fontsize = 14,
@@ -543,7 +565,6 @@ Data.defaultSettings = {
                 
                 
                 Auras_Enabled = false,
-                Auras_ShowTooltips = false,
                 
                 Auras_Buffs_Enabled = false,
                 Auras_Buffs_Size = 15,
@@ -572,7 +593,8 @@ Data.defaultSettings = {
                 Auras_Buffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Buffs_Filtering_Enabled = true,
-                Auras_Buffs_OnlyShowMine = true,
+                Auras_Buffs_Filtering_Blizzlike = false,
+                Auras_Buffs_ShowMine = true,
                 Auras_Buffs_SpellIDFiltering_Enabled = false,
                 Auras_Buffs_SpellIDFiltering_Filterlist = {},
                 
@@ -605,36 +627,12 @@ Data.defaultSettings = {
                 Auras_Debuffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Debuffs_Filtering_Enabled = true,
-                Auras_Debuffs_OnlyShowMine = true,
+                Auras_Debuffs_Filtering_Blizzlike = false,
+                Auras_Debuffs_ShowMine = true,
                 Auras_Debuffs_DebuffTypeFiltering_Enabled = true,
                 Auras_Debuffs_DebuffTypeFiltering_Filterlist = {},
                 Auras_Debuffs_SpellIDFiltering_Enabled = false,
                 Auras_Debuffs_SpellIDFiltering_Filterlist = {},
-
-                ObjectiveAndRespawn_ObjectiveEnabled = true,
-                ObjectiveAndRespawn_Width = 36,
-                ObjectiveAndRespawn_BasicPoint = "RIGHT",
-                ObjectiveAndRespawn_RelativeTo = "NumericTargetindicator",
-                ObjectiveAndRespawn_RelativePoint = "LEFT",
-                ObjectiveAndRespawn_OffsetX = -2,
-                
-                ObjectiveAndRespawn_Width = 36,
-                ObjectiveAndRespawn_Position = "LEFT",
-                
-                ObjectiveAndRespawn_RespawnEnabled = true,
-                
-                ObjectiveAndRespawn_Fontsize = 17,
-                ObjectiveAndRespawn_Outline = "THICKOUTLINE",
-                ObjectiveAndRespawn_Textcolor = {1, 1, 1, 1},
-                ObjectiveAndRespawn_EnableTextshadow = false,
-                ObjectiveAndRespawn_TextShadowcolor = {0, 0, 0, 1},
-                
-                ObjectiveAndRespawn_ShowNumbers = true,
-                
-                ObjectiveAndRespawn_Cooldown_Fontsize = 12,
-                ObjectiveAndRespawn_Cooldown_Outline = "OUTLINE",
-                ObjectiveAndRespawn_Cooldown_EnableTextshadow = false,
-                ObjectiveAndRespawn_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Trinket_Enabled = true,
                 Trinket_BasicPoint = "RIGHT",
@@ -664,10 +662,23 @@ Data.defaultSettings = {
 
                 RacialFiltering_Enabled = false,
                 RacialFiltering_Filterlist = {}, --key = spellID, value = spellName or false
-                
-                Notifications_Enabled = true,
-                -- PositiveSound = [[Interface\AddOns\WeakAuras\Media\Sounds\BatmanPunch.ogg]],
+                                -- PositiveSound = [[Interface\AddOns\WeakAuras\Media\Sounds\BatmanPunch.ogg]],
                 -- NegativeSound = [[Sound\Interface\UI_BattlegroundCountdown_Timer.ogg]],
+
+                ObjectiveAndRespawn_ObjectiveEnabled = true,
+                ObjectiveAndRespawn_Width = 36,
+                ObjectiveAndRespawn_BasicPoint = "RIGHT",
+                ObjectiveAndRespawn_RelativeTo = "NumericTargetindicator",
+                ObjectiveAndRespawn_RelativePoint = "LEFT",
+                ObjectiveAndRespawn_OffsetX = -2,
+                
+                
+                
+                ObjectiveAndRespawn_Fontsize = 17,
+                ObjectiveAndRespawn_Outline = "THICKOUTLINE",
+                ObjectiveAndRespawn_Textcolor = {1, 1, 1, 1},
+                ObjectiveAndRespawn_EnableTextshadow = false,
+                ObjectiveAndRespawn_TextShadowcolor = {0, 0, 0, 1}
             },
             ["40"] = {
                 Enabled = true,
@@ -681,7 +692,7 @@ Data.defaultSettings = {
                 Position_X = false,
                 Position_Y = false,
                 BarWidth = 220,
-                BarHeight = 28,
+                BarHeight = 22,
                 BarVerticalGrowdirection = "downwards",
                 BarVerticalSpacing = 1,
                 BarColumns = 1,
@@ -700,6 +711,10 @@ Data.defaultSettings = {
                 RoleIcon_Enabled = true,
                 RoleIcon_Size = 13,
                 RoleIcon_VerticalPosition = 2,
+
+                CovenantIcon_Enabled = true,
+                CovenantIcon_Size = 20,
+                CovenantIcon_VerticalPosition = 3,
                 
                 PlayerCount_Enabled = true,
                 PlayerCount_Fontsize = 14,
@@ -754,7 +769,6 @@ Data.defaultSettings = {
                 
                 
                 Auras_Enabled = false,
-                Auras_ShowTooltips = false,
                 
                 Auras_Buffs_Enabled = true,
                 Auras_Buffs_Size = 15,
@@ -783,7 +797,8 @@ Data.defaultSettings = {
                 Auras_Buffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Buffs_Filtering_Enabled = true,
-                Auras_Buffs_OnlyShowMine = true,
+                Auras_Buffs_Filtering_Blizzlike = false,
+                Auras_Buffs_ShowMine = true,
                 Auras_Buffs_SpellIDFiltering_Enabled = false,
                 Auras_Buffs_SpellIDFiltering_Filterlist = {},
                 
@@ -816,7 +831,8 @@ Data.defaultSettings = {
                 Auras_Debuffs_Cooldown_TextShadowcolor = {0, 0, 0, 1},
                 
                 Auras_Debuffs_Filtering_Enabled = true,
-                Auras_Debuffs_OnlyShowMine = true,
+                Auras_Debuffs_Filtering_Blizzlike = false,
+                Auras_Debuffs_ShowMine = true,
                 Auras_Debuffs_DebuffTypeFiltering_Enabled = true,
                 Auras_Debuffs_DebuffTypeFiltering_Filterlist = {},
                 Auras_Debuffs_SpellIDFiltering_Enabled = false,

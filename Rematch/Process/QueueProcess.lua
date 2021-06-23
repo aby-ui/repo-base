@@ -146,7 +146,10 @@ function rematch:ProcessQueue()
 	for _,petID in ipairs(queue) do
 		if #rematch.topPicks<3 then
 			if not tContains(rematch.topPicks,petID) then
-				tinsert(rematch.topPicks,petID)
+				local isSummonable,reason = C_PetJournal.GetPetSummonInfo(petID)
+				if isSummonable or reason==Enum.PetJournalError.PetIsDead then
+					tinsert(rematch.topPicks,petID)
+				end
 			end
 		else
 			break -- don't need to run through rest of queue if top 3 chosen
@@ -195,7 +198,9 @@ function rematch:IsPetPickable(petID)
 		return false
 	end
 	local health,maxHealth = C_PetJournal.GetPetStats(petID)
-	if C_PetJournal.PetIsSummonable(petID) or (health and health<1) then
+	local isSummonable,reason = C_PetJournal.GetPetSummonInfo(petID)
+	if isSummonable or reason==Enum.PetJournalError.PetIsDead then
+--	if C_PetJournal.PetIsSummonable(petID) or (health and health<1) then
 		-- passed first test, pet is summonable (or dead)
 
 		if health and settings.QueueSkipDead then

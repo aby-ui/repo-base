@@ -117,14 +117,14 @@ local defaults = {
 			friendly = true,
 			npc = true,
             enemyAnchor = {
-                anchor = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and "TOP" or "RIGHT",
+                anchor = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "RIGHT" or "TOP",
                 size = 24,
                 x = 0,
                 y = 0,
             },
             friendlyAnchor = {
                 friendlyAnchorEnabled = false,
-                anchor = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and "TOP" or "RIGHT",
+                anchor = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "RIGHT" or "TOP",
                 size = 24,
                 x = 0,
                 y = 0,
@@ -167,6 +167,114 @@ if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
     for id, value in pairs(BigDebuffs.Spells) do
         if not value.parent then spellIdByName[GetSpellInfo(id)] = id end
     end
+else
+    defaults.profile.unitFrames.focus = {
+        enabled = true,
+        anchor = "auto",
+        anchorPoint = "auto",
+        relativePoint = "auto",
+        x = 0,
+        y = 0,
+        matchFrameHeight = true,
+        size = 50,
+    }
+
+    defaults.profile.unitFrames.arena = {
+        enabled = true,
+        anchor = "auto",
+        anchorPoint = "auto",
+        relativePoint = "auto",
+        x = 0,
+        y = 0,
+        matchFrameHeight = true,
+        size = 50,
+    }
+end
+
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    BigDebuffs.specDispelTypes = {
+            [62] = { -- Arcane Mage
+                Curse = true,
+            },
+            [63] = { -- Fire Mage
+                Curse = true,
+            },
+            [64] = { -- Frost Mage
+                Curse = true,
+            },
+            [65] = { -- Holy Paladin
+                Magic = true,
+                Poison = true,
+                Disease = true,
+            },
+            [66] = { -- Protection Paladin
+                Poison = true,
+                Disease = true,
+            },
+            [70] = { -- Retribution Paladin
+                Poison = true,
+                Disease = true,
+            },
+            [102] = { -- Balance Druid
+                Curse = true,
+                Poison = true,
+            },
+            [103] = { -- Feral Druid
+                Curse = true,
+                Poison = true,
+            },
+            [104] = { -- Guardian Druid
+                Curse = true,
+                Poison = true,
+            },
+            [105] = { -- Restoration Druid
+                Magic = true,
+                Curse = true,
+                Poison = true,
+            },
+            [256] = { -- Discipline Priest
+                Magic = true,
+                Disease = true,
+            },
+            [257] = { -- Holy Priest
+                Magic = true,
+                Disease = true,
+            },
+            [258] = { -- Shadow Priest
+                Magic = true,
+                Disease = true,
+            },
+            [262] = { -- Elemental Shaman
+                Curse = true,
+            },
+            [263] = { -- Enhancement Shaman
+                Curse = true,
+            },
+            [264] = { -- Restoration Shaman
+                Magic = true,
+                Curse = true,
+            },
+            [268] = { -- Brewmaster Monk
+                Poison = true,
+                Disease = true,
+            },
+            [269] = { -- Windwalker Monk
+                Poison = true,
+                Disease = true,
+            },
+            [270] = { -- Mistweaver Monk
+                Magic = true,
+                Poison = true,
+                Disease = true,
+            },
+            [577] = {
+                Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
+            },
+            [581] = {
+                Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
+            },
+        }
+else
     local classDispel = {
         PRIEST = {
             Magic = true,
@@ -193,113 +301,8 @@ if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
             Magic = function() return IsUsableSpell(GetSpellInfo(19736)) or IsUsableSpell(GetSpellInfo(19476)) end,
         },
     }
-    local _, class = UnitClass(PLAYER)
+    local _, class = UnitClass("player")
     BigDebuffs.dispelTypes = classDispel[class]
-else
-    defaults.profile.unitFrames.focus = {
-        enabled = true,
-        anchor = "auto",
-        anchorPoint = "auto",
-        relativePoint = "auto",
-        x = 0,
-        y = 0,
-        matchFrameHeight = true,
-        size = 50,
-    }
-
-    defaults.profile.unitFrames.arena = {
-        enabled = true,
-        anchor = "auto",
-        anchorPoint = "auto",
-        relativePoint = "auto",
-        x = 0,
-        y = 0,
-        matchFrameHeight = true,
-        size = 50,
-    }
-
-    BigDebuffs.specDispelTypes = {
-        [62] = { -- Arcane Mage
-            Curse = true,
-        },
-        [63] = { -- Fire Mage
-            Curse = true,
-        },
-        [64] = { -- Frost Mage
-            Curse = true,
-        },
-        [65] = { -- Holy Paladin
-            Magic = true,
-            Poison = true,
-            Disease = true,
-        },
-        [66] = { -- Protection Paladin
-            Poison = true,
-            Disease = true,
-        },
-        [70] = { -- Retribution Paladin
-            Poison = true,
-            Disease = true,
-        },
-        [102] = { -- Balance Druid
-            Curse = true,
-            Poison = true,
-        },
-        [103] = { -- Feral Druid
-            Curse = true,
-            Poison = true,
-        },
-        [104] = { -- Guardian Druid
-            Curse = true,
-            Poison = true,
-        },
-        [105] = { -- Restoration Druid
-            Magic = true,
-            Curse = true,
-            Poison = true,
-        },
-        [256] = { -- Discipline Priest
-            Magic = true,
-            Disease = true,
-        },
-        [257] = { -- Holy Priest
-            Magic = true,
-            Disease = true,
-        },
-        [258] = { -- Shadow Priest
-            Magic = true,
-            Disease = true,
-        },
-        [262] = { -- Elemental Shaman
-            Curse = true,
-        },
-        [263] = { -- Enhancement Shaman
-            Curse = true,
-        },
-        [264] = { -- Restoration Shaman
-            Magic = true,
-            Curse = true,
-        },
-        [268] = { -- Brewmaster Monk
-            Poison = true,
-            Disease = true,
-        },
-        [269] = { -- Windwalker Monk
-            Poison = true,
-            Disease = true,
-        },
-        [270] = { -- Mistweaver Monk
-            Magic = true,
-            Poison = true,
-            Disease = true,
-        },
-        [577] = {
-            Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
-        },
-        [581] = {
-            Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
-        },
-    }
 end
 
 BigDebuffs.PriorityDebuffs = addon.PriorityDebuffs
@@ -1100,8 +1103,7 @@ end
 hooksecurefunc("CompactUnitFrame_HideAllDebuffs", HideBigDebuffs)
 
 function BigDebuffs:IsDispellable(unit, dispelType)
-    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-        -- if stoneform is usable and it's on player
+    if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then
         if (not dispelType) or (not self.dispelTypes) then return end
         if type(self.dispelTypes[dispelType]) == "function" then return self.dispelTypes[dispelType]() end
 

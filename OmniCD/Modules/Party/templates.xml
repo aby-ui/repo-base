@@ -79,29 +79,7 @@
 					<Color r="0" g="0" b="0"/>
 				</Texture>
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture parentKey="flash" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
-					<Anchors>
-						<Anchor point="CENTER"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
-					<Anchors>
-						<Anchor point="CENTER"/>
-					</Anchors>
-				</Texture>
-			</Layer>
 		</Layers>
-		<Animations>
-			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true" looping="NONE">
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.2"/>
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.2" toAlpha="1"/>
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
-			</AnimationGroup>
-			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
-				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1.1" fromAlpha="1" toAlpha="0"/>
-			</AnimationGroup>
-		</Animations>
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawBling="false" drawEdge="false" hidden="true">
 				<SwipeTexture>
@@ -141,7 +119,7 @@
 			</Frame>
 			<Frame parentKey="AnimFrame" setAllPoints="true" hidden="true">
 				<Layers>
-					<Layer level="ARTWORK">
+					<Layer level="OVERLAY">
 						<Texture parentKey="Glow" file="Interface\Transmogrify\Textures.png" alpha="0">
 							<Size x="58" y="57"/>
 							<Anchors>
@@ -149,7 +127,7 @@
 							</Anchors>
 							<TexCoords left="0.52343750" right="0.97656250" top="0.38476563" bottom="0.49609375"/>
 						</Texture>
-						<Texture parentKey="Transition" file="Interface\Transmogrify\Textures.png" hidden="true">
+						<Texture parentKey="Transition" file="Interface\Transmogrify\Textures.png" hidden="false">
 							<Size x="42" y="41"/>
 							<Anchors>
 								<Anchor point="CENTER"/>

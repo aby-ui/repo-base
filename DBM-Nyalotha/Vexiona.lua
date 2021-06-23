@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(157354)
 mod:SetEncounterID(2336)
 mod:SetHotfixNoticeRev(20200128000000)--2020, 1, 28
@@ -106,7 +106,6 @@ local seenAdds = {}
 local enforcerCount = 0
 local playerName = UnitName("player")
 mod.vb.gatewayCount = 0
-mod.vb.phase = 1
 mod.vb.TwilightDCasts = 0
 mod.vb.darknessCasts = 0
 
@@ -121,7 +120,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(seenAdds)
 	enforcerCount = 0
 	self.vb.gatewayCount = 0
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.TwilightDCasts = 0
 	self.vb.darknessCasts = 0
 	timerTwilightBreathCD:Start(7.2-delay)
@@ -237,7 +236,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	--TODO, i want to say there was a reason i was using SUCCESS instead of START, DO gateway or something persist until this spell finishes?
 	elseif spellId == 307453 then
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.TwilightDCasts = 0
 		warnPhase3:Show()
 		warnPhase3:Play("pthree")
@@ -378,7 +377,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if uId == "boss1" then
 		if spellId == 310225 and self.vb.phase ~= 3 then--Twilight Decimator
 			if self.vb.phase == 1 then
-				self.vb.phase = 2
+				self:SetStage(2)
 				self.vb.TwilightDCasts = 0
 				timerEncroachingShadowsCD:Stop()--Cast immediately when she goes up
 				--timerEncroachingShadowsCD:Start(2)
@@ -388,7 +387,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			end
 			self.vb.TwilightDCasts = self.vb.TwilightDCasts + 1
 			if self.vb.TwilightDCasts == 4 then--4th time doesn't actually cast a breath, it's phase ending
-				self.vb.phase = 1
+				self:SetStage(1)
 				self.vb.gatewayCount = 0
 				timerEncroachingShadowsCD:Start(7.7)
 				timerDarkGatewayCD:Start(12.2, 1)

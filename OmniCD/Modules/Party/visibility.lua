@@ -32,6 +32,12 @@ P.zoneEvents = {
 	all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "PLAYER_FLAGS_CHANGED", "CHALLENGE_MODE_START", "ENCOUNTER_END" },
 }
 
+if E.isBCC then
+	P.zoneEvents.none = nil
+	P.zoneEvents.party = nil
+	P.zoneEvents.all = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "ENCOUNTER_END" }
+end
+
 do
 	local anchorTimer
 	local rosterTimer
@@ -120,7 +126,7 @@ do
 					info.bar.key = index
 					info.bar.unit = unit
 					info.bar.anchor.text:SetText(index)
-					if guid ~= E.userGUID then -- [96]
+					if not E.isBCC and guid ~= E.userGUID then -- [96]
 						info.bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 					end
 					info.bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]*
@@ -175,7 +181,7 @@ do
 		E.Comms:EnqueueInspect()
 
 		if P.groupJoined or force then -- [101]
-			if anchorTimer then -- TODO: Temp Fix, VuhDo
+			if anchorTimer then -- TODO: Temp Fix Healbot on RL, VuhDo w/ Group+Invert
 				anchorTimer:Cancel()
 			end
 			anchorTimer = C_Timer.NewTicker(10, AnchorFix, 1)
@@ -223,16 +229,19 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		return
 	end
 
+	-- TODO: remove showPlayerEx option and enable it by default
 	-- TODO: if zone changed or isRefresh or first run
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
+	P.profile = E.profile.Party
+	P.db = E.db
 	self.isUserHidden = not self.test and not E.db.general.showPlayer
 	self.isUserDisabled = self.isUserHidden and (not E.db.general.showPlayerEx or (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled)) -- [82]
 
 	E.Cooldowns:UpdateCombatLogVar()
 	E:SetActiveUnitFrameData()
-	E.UpdateEnabledSpells(self)
+	self:UpdateEnabledSpells()
 	self:UpdatePositionValues()
 	self:UpdateExPositionValues()
 	self:UpdateRaidPriority()
@@ -240,7 +249,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	E.UnregisterEvents(self, self.zoneEvents.all)
 	E.RegisterEvents(self, self.zoneEvents[instanceType])
 
-	self.isPvP = self.isInPvPInstance or (instanceType == "none" and C_PvP.IsWarModeDesired())
+	self.isPvP = E.isBCC and true or (self.isInPvPInstance or (instanceType == "none" and C_PvP.IsWarModeDesired()))
 	--//
 
 	if self.isInPvPInstance then
@@ -285,7 +294,7 @@ function P:PLAYER_FLAGS_CHANGED()
 	self.isPvP = C_PvP.IsWarModeDesired()
 	if oldpvp ~= self.isPvP then
 		self:UpdateBars()
-		self:UpdateExPosition()
+		self:UpdateExPosition() -- update layout
 		E.Comms:EnqueueInspect(true)
 	end
 end

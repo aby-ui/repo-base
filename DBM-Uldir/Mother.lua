@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2167, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(135452)--136429 Chamber 01, 137022 Chamber 02, 137023 Chamber 03
 mod:SetEncounterID(2141)
 mod:DisableESCombatDetection()--ES breaks if you pull boss through door to skip trash. Then after that the trash bugs and continues to throw ES events even after mother is defeated
@@ -52,7 +52,6 @@ local timerCleansingFlameCD				= mod:NewCastSourceTimer(180, 268095, nil, nil, n
 mod:AddInfoFrameOption(268095, true)
 mod:AddRangeFrameOption(5, 272407)
 
-mod.vb.phase = 1
 mod.vb.bossInICD = false
 mod.vb.nextLaser = 1--1 side 2 top
 
@@ -154,7 +153,7 @@ do
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.bossInICD = false
 	self.vb.nextLaser = 1--1 side 2 top
 	timerSanitizingStrikeCD:Start(5.9-delay)
@@ -268,11 +267,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		local cid = self:GetCIDFromGUID(args.destGUID)
 		local time = self:IsMythic() and 123 or 180
 		if cid == 136429 then
-			self.vb.phase = 1
+			self:SetStage(1)
 			timerCleansingFlameCD:Stop(1)
 			timerCleansingFlameCD:Start(time, 1)
 		elseif cid == 137022 then
-			self.vb.phase = 2
+			self:SetStage(2)
 			timerCleansingFlameCD:Start(time, 2)
 			--Example of no strike delay. It's almost always 10 though because of current dps timing and her being in ICD when she transitions, delaying first beam by 5+ seconds
 			--However, I'm an overachiever and figured this out first :)
@@ -284,7 +283,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				timerSurgicalBeamCD:Start(10, DBM_CORE_L.SIDE)
 			end
 		elseif cid == 137023 then
-			self.vb.phase = 3
+			self:SetStage(3)
 			self.vb.nextLaser = 1
 			timerSurgicalBeamCD:Stop()--Resets, kinda
 			timerSurgicalBeamCD:Start(15, DBM_CORE_L.SIDE)--15 if delayed by nothing, but can be longer if flames ICD gets triggered

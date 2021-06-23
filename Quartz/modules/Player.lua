@@ -24,6 +24,8 @@ local Player = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 
 local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
 
+local WoWBC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+
 ----------------------------
 -- Upvalues
 -- GLOBALS: CastingBarFrame
@@ -93,7 +95,9 @@ end
 
 
 function Player:OnEnable()
-	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UpdateChannelingTicks")
+	if not WoWBC then
+		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UpdateChannelingTicks")
+	end
 
 	self.Bar:RegisterEvents()
 	self:ApplySettings()
@@ -192,7 +196,8 @@ local function setBarTicks(ticknum, duration, ticks)
 	end
 end
 
-local channelingTicks = {
+local channelingTicks = WoWBC and {} or
+{
 	-- warlock
 	[GetSpellInfo(234153)] = 5, -- drain life
 	[GetSpellInfo(198590)] = 5, -- drain soul

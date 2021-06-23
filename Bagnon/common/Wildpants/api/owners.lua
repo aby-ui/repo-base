@@ -12,14 +12,7 @@ local ALLIANCE_BANNER = 'Interface/Icons/inv_bannerpvp_02'
 local HORDE_BANNER = 'Interface/Icons/inv_bannerpvp_01'
 local RACE_TEXTURE, RACE_TABLE
 
-if Addon.IsRetail then
-	RACE_TABLE = {
-		highmountaintauren = 'highmountain',
-		lightforgeddraenei = 'lightforged',
-		scourge = 'undead',
-		zandalaritroll = 'zandalari',
-	}
-else
+if Addon.IsClassic then
 	RACE_TEXTURE = 'Interface/Glues/CharacterCreate/UI-CharacterCreate-Races'
 	RACE_TABLE = {
 		HUMAN_MALE		= {0, 0.25, 0, 0.25},
@@ -38,6 +31,13 @@ else
 		SCOURGE_FEMALE	= {0.25, 0.5, 0.75, 1.0},
 		TROLL_FEMALE	= {0.5, 0.75, 0.75, 1.0},
 		ORC_FEMALE		= {0.75, 1.0, 0.75, 1.0},
+	}
+else
+	RACE_TABLE = {
+		highmountaintauren = 'highmountain',
+		lightforgeddraenei = 'lightforged',
+		scourge = 'undead',
+		zandalaritroll = 'zandalari',
 	}
 end
 

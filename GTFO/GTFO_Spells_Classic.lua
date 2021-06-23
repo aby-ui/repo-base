@@ -5,7 +5,7 @@
 GTFO Spell List - Classic
 ]]--
 
-if (GTFO.ClassicMode) then
+if (GTFO.ClassicMode or GTFO.BurningCrusadeMode) then
 
 GTFO.SpellID["17742"] = {
 	--desc = "Cloud of Disease (Scholomance - Old)";

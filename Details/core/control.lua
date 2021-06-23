@@ -454,9 +454,7 @@
 		end
 		
 		function Details:EndCombat()
-			if (Details.in_combat) then
-				Details:SairDoCombate()
-			end
+			return Details:SairDoCombate()
 		end
 		
 		-- ~end ~leave

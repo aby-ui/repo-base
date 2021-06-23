@@ -126,6 +126,7 @@ function TestMod:Test(key)
 		indicator.anchor:SetPoint("TOPLEFT", f.anchor, "TOPRIGHT")
 		indicator:Show()
 
+		--[[
 		for i = 1, f.numIcons do
 			local icon = f.icons[i]
 			local flash = icon.flashAnim
@@ -137,6 +138,14 @@ function TestMod:Test(key)
 			if icon:IsVisible() then
 				flash:Play();
 				newItemAnim:Play();
+			end
+		end
+		]]
+		for i = 1, f.numIcons do
+			local icon = f.icons[i]
+			if not icon.AnimFrame:IsVisible() then
+				icon.AnimFrame:Show()
+				icon.AnimFrame.Anim:Play()
 			end
 		end
 	else

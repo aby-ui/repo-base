@@ -5,7 +5,7 @@
 GTFO Spell List - Shadowlands
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 --- ***********************
 --- * Shadowlands (World) *
@@ -588,6 +588,69 @@ GTFO.SpellID["332734"] = {
 
 GTFO.SpellID["335873"] = {
   --desc = "Rancor (Remornia)";
+  sound = 1;
+};
+
+--- *************************
+--- * Sanctum of Domination *
+--- *************************
+
+GTFO.SpellID["350809"] = {
+  --desc = "Jailer's Misery (Deathseeker Eye)";
+  sound = 1;
+};
+
+GTFO.SpellID["355077"] = {
+  --desc = "Wracking Agony (Mawsworn Darkcaster)";
+  sound = 1;
+};
+
+GTFO.SpellID["353023"] = {
+  --desc = "Torment (Soulrender Dormazain)";
+  sound = 1;
+};
+
+GTFO.SpellID["353429"] = {
+  --desc = "Tormented (Soulrender Dormazain)";
+  negatingDebuffSpellID = 350647; -- Brand of Torment
+  sound = 4;
+};
+
+GTFO.SpellID["350851"] = {
+  --desc = "Vessel of Torment (Soulrender Dormazain)";
+  sound = 1;
+};
+
+GTFO.SpellID["356952"] = {
+  --desc = "Perpetual Torment (Tortured Amalgamation)";
+  sound = 1;
+};
+
+--- *******************************
+--- * Tazavesh, the Veiled Market *
+--- *******************************
+
+GTFO.SpellID["355487"] = {
+  --desc = "Lethal Force";
+  applicationOnly = true;
+  test = true;
+  sound = 4;
+};
+
+GTFO.SpellID["355581"] = {
+  --desc = "Crackle (Stormforged Guardian)";
+  sound = 1;
+};
+
+GTFO.SpellID["346961"] = {
+  --desc = "Purging Field (Hylbrande)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["354497"] = {
+  --desc = "Deadly Seas";
+  applicationOnly = true;
   sound = 1;
 };
 

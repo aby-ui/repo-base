@@ -24,10 +24,11 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.62.1"; -- Version number (text format)
+	Version = "4.63"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 46201; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 46000; -- Numeric version number for checking out-of-date clients (classic)
+	RetailVersionNumber = 46300; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 46300; -- Numeric version number for checking out-of-date clients (classic)
+	BurningCrusadeVersionNumber = 46300; -- Numeric version number for checking out-of-date clients (TBC classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -67,6 +68,7 @@ GTFO = {
 	};
 	BetaMode = nil; -- WoW Beta/PTR client detection
 	ClassicMode = nil; -- WoW Classic client detection
+	BurningCrusadeMode = nil; -- WoW TBC client detection
 	SoundChannels = { 
 		{ Code = "Master", Name = _G.MASTER },
 		{ Code = "SFX", Name = _G.SOUND_VOLUME, CVar = "Sound_EnableSFX" },
@@ -79,12 +81,17 @@ GTFO = {
 
 GTFOData = {};
 
-if (select(4, GetBuildInfo()) >= 90100) then
+local buildNumber = select(4, GetBuildInfo());
+
+if (buildNumber >= 90100) then
 	GTFO.BetaMode = true;
 end
-if (select(4, GetBuildInfo()) <= 20000) then
+if (buildNumber <= 20000) then
 	GTFO.ClassicMode = true;
 	GTFO.VersionNumber = GTFO.ClassicVersionNumber;
+elseif (buildNumber <= 30000) then
+	GTFO.BurningCrusadeMode = true;
+	GTFO.VersionNumber = GTFO.BurningCrusadeVersionNumber;
 else
 	GTFO.VersionNumber = GTFO.RetailVersionNumber;
 end
@@ -1468,13 +1475,13 @@ function GTFO_CheckTankMode()
 				--GTFO_DebugPrint("Bear Form found - tank mode activated");
 				return true;
 			end
-		elseif ((not GTFO.ClassicMode) and (class == "MONK" or class == "DEMONHUNTER" or class == "WARRIOR" or class == "DEATHKNIGHT" or class == "PALADIN")) then
+		elseif ((not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) and (class == "MONK" or class == "DEMONHUNTER" or class == "WARRIOR" or class == "DEATHKNIGHT" or class == "PALADIN")) then
 			local spec = GetSpecialization();
 			if (spec and GetSpecializationRole(spec) == "TANK") then
 				--GTFO_DebugPrint("Tank spec found - tank mode activated");
 				return true;
 			end
-		elseif ((GTFO.ClassicMode) and (class == "WARRIOR" or class == "PALADIN")) then
+		elseif ((GTFO.ClassicMode or GTFO.BurningCrusadeMode) and (class == "WARRIOR" or class == "PALADIN")) then
 			GTFO.CanTank = true;
 		else
 			--GTFO_DebugPrint("Failed Tank Mode - This code shouldn't have ran");
@@ -1493,7 +1500,7 @@ function GTFO_CheckCasterMode()
 			return true;
 		end
 
-		if not (GTFO.ClassicMode) then
+		if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode) then
 			local spec = GetSpecialization();
 			if (spec) then
 				local role = GetSpecializationRole(spec);
@@ -1580,7 +1587,7 @@ function GTFO_RegisterTankEvents()
 end
 
 function GTFO_RegisterCasterEvents()
-	if not (GTFO.ClassicMode) then
+	if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode) then
 		GTFOFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
 		GTFOFrame:RegisterEvent("PLAYER_TALENT_UPDATE");	
 	end

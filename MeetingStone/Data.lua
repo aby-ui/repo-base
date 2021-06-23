@@ -287,7 +287,9 @@ CATEGORY = {
             [269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
             [270] = true, --暗影国度
         },
-        activities = {},
+        activities = {
+            [723] = true, --世界首领
+        },
     },
 }
 

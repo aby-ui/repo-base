@@ -57,13 +57,6 @@ do
 
 	--[[ Static data ]]--
 
-	local sliderBackdrop  = {
-		bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
-		edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
-		tile = true, tileSize = 8, edgeSize = 8,
-		insets = { left = 3, right = 3, top = 3, bottom = 3 }
-	}
-
 	local defaultWidth = 200
 	local defaultMaxHeight = 600
 
@@ -299,6 +292,7 @@ do
 		frame:SetClampedToScreen(true)
 		frame:SetWidth(defaultWidth)
 		frame:SetHeight(self.maxHeight)
+		--frame:SetToplevel(true)
 
 		-- NOTE: The whole scroll frame code is copied from the AceGUI-3.0 widget ScrollFrame
 		local scrollFrame = CreateFrame("ScrollFrame", nil, frame)
@@ -320,8 +314,7 @@ do
 		slider:SetThumbTexture([[Interface\BUTTONS\White8x8]])
 		local thumbTexture = slider:GetThumbTexture()
 		thumbTexture:SetSize(12, 24)
-		thumbTexture:SetColorTexture(0.3, 0.3, 0.3) -- red is too much
-
+		thumbTexture:SetColorTexture(0.3, 0.3, 0.3)
 		slider:SetFrameStrata("FULLSCREEN_DIALOG")
 		self.slider = slider
 		slider.obj = self
@@ -721,14 +714,14 @@ do
 		button:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn.tga]])
 		button.NormalTexture:SetSize(16, 16)
 		button.NormalTexture:SetPoint("RIGHT")
-		button:SetPushedTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn.tga]]) -- TODO:
+		button:SetPushedTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn.tga]])
 		button.PushedTexture:SetSize(16, 16)
 		button.PushedTexture:SetPoint("RIGHT")
 		button:SetDisabledTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-dn-b.tga]])
 		button.DisabledTexture:SetSize(16, 16)
 		button.DisabledTexture:SetPoint("RIGHT")
 
-		local button_cover = CreateFrame("BUTTON",nil,self.frame) -- Whats this for?
+		local button_cover = CreateFrame("BUTTON",nil,self.frame)
 		self.button_cover = button_cover
 		button_cover.obj = self
 		button_cover:SetPoint("TOPLEFT",self.frame,"BOTTOMLEFT",0,25)

@@ -5,6 +5,7 @@
 	<Script file="addon.lua"/>
 	<Script file="colors.lua"/>
 	<Script file="help.lua"/>
+	<Script file="schedules.lua"/>
 	<Script file="label.lua"/>
 	<Script file="picture.lua"/>
 	<Script file="slider.lua"/>

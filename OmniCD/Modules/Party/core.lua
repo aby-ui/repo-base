@@ -72,6 +72,8 @@ function P:Refresh(full)
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
+	P.profile = E.profile.Party -- TODO: migrate
+	P.db = E.db
 
 	if full then
 		--self:UpdateFonts() -- TODO: shared frames still needs to be updated on every call
@@ -107,6 +109,21 @@ function P:UpateTimerFormat()
 	self.ss = db.ss
 	self.mmssColor = db.mmssColor
 	self.ssColor = db.ssColor
+end
+
+function P:UpdateEnabledSpells()
+	wipe(self.spell_enabled) -- wipe upvalue
+
+	for _, v in pairs(E.spell_db) do
+		local n = #v
+		for i = 1, n do
+			local t = v[i]
+			local id = t.spellID
+			if self.IsEnabledSpell(id) then
+				self.spell_enabled[id] = true
+			end
+		end
+	end
 end
 
 function P:UpdatePositionValues()
@@ -196,6 +213,7 @@ function P:IsTalent(talentID, guid)
 		return false
 	end
 
+	-- TODO: move to inspect (warmode)
 	if talent == "PVP" then
 		return self.isPvP
 	elseif talent == "R" then
@@ -240,6 +258,7 @@ function P:UI_SCALE_CHANGED() -- [61]
 	for key in pairs(self.extraBars) do
 		self:ConfigExSize(key, true)
 	end
+	--E.UpdateBackdrops() -- TODO: doesn't fix ace
 end
 
 E["Party"] = P

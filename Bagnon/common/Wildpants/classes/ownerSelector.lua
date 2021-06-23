@@ -51,12 +51,6 @@ function OwnerSelector:OnClick(button)
 										text = L.ConfirmDelete:format(name), button1 = OKAY, button2 = CANCEL,
 										whileDead = 1, exclusive = 1, hideOnEscape = 1,
 										OnAccept = function()
-											--[[for i, frame in Addon.Frames:Iterate() do
-												if frame:GetOwner() == id then
-													frame:SetOwner(nil)
-												end
-											end]]--
-
 											Addon:DeleteOwnerInfo(id)
 											Addon:SendSignal('OWNER_DELETED', id)
 										end

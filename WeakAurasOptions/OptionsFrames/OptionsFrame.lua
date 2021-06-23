@@ -543,7 +543,7 @@ function OptionsPrivate.CreateFrame()
   local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
-    WeakAuras.SortDisplayButtons(filterInput:GetText())
+    OptionsPrivate.SortDisplayButtons(filterInput:GetText())
   end)
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
@@ -724,7 +724,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.pendingImportCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   pendingInstallButton:SetExpandDescription(L["Expand all pending Import"])
   pendingInstallButton:SetCollapseDescription(L["Collapse all pending Import"])
@@ -747,7 +747,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.pendingUpdateCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   pendingUpdateButton:SetExpandDescription(L["Expand all pending Import"])
   pendingUpdateButton:SetCollapseDescription(L["Collapse all pending Import"])
@@ -769,7 +769,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.loadedCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   loadedButton:SetExpandDescription(L["Expand all loaded displays"])
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
@@ -829,7 +829,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.unloadedCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"])
   unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
@@ -1111,7 +1111,7 @@ function OptionsPrivate.CreateFrame()
       button:SetDescription(L["Offer a guided way to create auras for your character"])
       button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
       button:SetClick(function()
-        WeakAuras.OpenTriggerTemplate(nil, targetId)
+        OptionsPrivate.OpenTriggerTemplate(nil, targetId)
       end)
       containerScroll:AddChild(button)
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -100,7 +100,6 @@ mod:AddSetIconOption("SetIconDread", 292963, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconDreadScream", 303543, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconManicDreadScream", 296018, true, false, {1, 2, 3, 4})
 
-mod.vb.phase = 1
 mod.vb.dreadIcon = 1
 mod.vb.DeliriumsDescentCount = 0
 local HysteriaStacks = {}
@@ -108,7 +107,7 @@ local playerDRealm = false
 
 function mod:OnCombatStart(delay)
 	table.wipe(HysteriaStacks)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.dreadIcon = 1
 	self.vb.DeliriumsDescentCount = 0
 	if not self:IsLFR() then
@@ -146,7 +145,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 303543 or spellId == 296018 or spellId == 292963 then--302503 and 302504 excluded (LFR ids)
 		self.vb.dreadIcon = 1
 	elseif spellId == 296257 and self.vb.phase < 2 then--Opening Fear Realm
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
 		--Timers that never stop, but might need time added to them if they come off cd during transition
@@ -157,7 +156,7 @@ function mod:SPELL_CAST_START(args)
 		--timerMaddeningEruptionCD:Start(1)--1-3 seconds after this cast
 	elseif spellId == 304733 then--Delirium's Descent
 		if self.vb.phase < 3 then
-			self.vb.phase = 3
+			self:SetStage(3)
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			warnPhase:Play("pthree")
 			--Timers don't stop/reset here, but they will be extended if below a threshold
@@ -380,7 +379,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	--"<198.45 13:47:00> [UNIT_SPELLCAST_SUCCEEDED] Za'qul(Rumpapotimus) -Energy Tracker- [[boss1:Cast-3-3883-2164-252-296465-000D24D314:296465]]", -- [4621]
 	--"<200.84 13:47:02> [CLEU] SPELL_AURA_APPLIED##nil#Creature-0-3883-2164-252-152604-000024D311#First Arcanist Thalyssra#300584#Reality Portal#DEBUFF#nil", -- [4659]
 	elseif spellId == 296465 and self.vb.phase < 4 then--Energy Tracker (should work on all)
-		self.vb.phase = 4
+		self:SetStage(4)
 		timerDeliriumsDescentCD:Stop()
 		timerHorrificSummonerCD:SetFade(false)--Unfade, they can start spawning again
 		--Update P4 timers (which is a bit complicated, it's not a hard reset, but severa calculated adjustments based on min timer thresholds)

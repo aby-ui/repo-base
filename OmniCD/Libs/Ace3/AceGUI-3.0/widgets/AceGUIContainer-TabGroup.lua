@@ -36,7 +36,7 @@ local function UpdateTabLook(frame)
 	if frame.disabled then
 		PanelTemplates_SetDisabledTabState(frame)
 		frame.bg:Hide()
-		frame:SetDisabledFontObject("GameFontDisable-OmniCD") -- override blizzard setting font obj in PanelTemplates_
+		frame:SetDisabledFontObject("GameFontDisable-OmniCD")
 	elseif frame.selected then
 		PanelTemplates_SelectTab(frame)
 		frame.bg:Show()
@@ -85,7 +85,6 @@ local function Tab_OnEnter(frame)
 	self:Fire("OnTabEnter", self.tabs[frame.id].value, frame)
 
 	if not frame.selected then
-		--PlaySound(1217)
 		local fadeOut = frame.fadeOut
 		if fadeOut:IsPlaying() then
 			fadeOut:Stop()
@@ -106,6 +105,7 @@ local function Tab_OnLeave(frame)
 		frame.fadeOut:Play()
 	end
 end
+
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -134,7 +134,7 @@ local methods = {
 
 		Mixin(tab, BackdropTemplateMixin)
 		OmniCD[1].BackdropTemplate(tab)
-		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab btn) - match tree nav btn
+		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
 		tab:SetBackdropBorderColor(0, 0, 0)
 		tab:SetHighlightTexture(nil)
 
@@ -380,7 +380,7 @@ local function Constructor()
 	border:SetPoint("TOPLEFT", 0, -27)
 	border:SetPoint("BOTTOMRIGHT", 0, 3)
 	OmniCD[1].BackdropTemplate(border)
-	border:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab content bg)
+	border:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
 	border:SetBackdropBorderColor(0, 0, 0)
 
 	local content = CreateFrame("Frame", nil, border)

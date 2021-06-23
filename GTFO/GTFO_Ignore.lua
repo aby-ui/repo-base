@@ -12,7 +12,7 @@ GTFO.IgnoreSpellCategory["Fatigue"] = {
 	override = true
 }
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 	GTFO.IgnoreSpellCategory["HagaraWateryEntrenchment"] = {
 		-- mobID = 55689; -- Hagara the Stormbinder
@@ -78,5 +78,5 @@ GTFO.IgnoreScan["334909"] = true; -- Oppressive Atmosphere
 GTFO.IgnoreScan["332444"] = true; -- Crumbling Foundation
 GTFO.IgnoreScan["335298"] = true; -- Giant Fists
 GTFO.IgnoreScan["326469"] = true; -- Torment: Soulforge heat
-
+GTFO.IgnoreScan["347668"] = true; -- Grasp of Death
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 mod:SetHotfixNoticeRev(18336)
@@ -131,7 +131,6 @@ mod:AddRangeFrameOption(8, 285349)
 mod:AddInfoFrameOption(285195, true)
 mod:AddBoolOption("AnnounceAlternatePhase", false, "announce")
 
-mod.vb.phase = 1
 mod.vb.scorchingDetCount = 0
 mod.vb.InevitableEndCount = 0
 local playerDeathPhase = false
@@ -156,7 +155,7 @@ function mod:MeteorLeapTarget(targetname, uId, bossuid, scanningTime)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.scorchingDetCount = 0
 	self.vb.InevitableEndCount = 0
 	playerDeathPhase = false
@@ -313,7 +312,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerSerpentTotemCD:Start()
 	elseif spellId == 284521 then--Spirit Expulsion
 		playerDeathPhase = false
-		self.vb.phase = 4
+		self:SetStage(4)
 		self.vb.scorchingDetCount = 0
 		self.vb.InevitableEndCount = 0
 		--
@@ -414,7 +413,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	--"<66.15 22:33:35> [CLEU] SPELL_AURA_REMOVED#Vehicle-0-3019-2070-28900-145616-0000493177#King Rastakhan#Vehicle-0-3019-2070-28900-145616-0000493177#King Rastakhan#284276#Bind Souls#BUFF#nil", -- [1068]
 	--"<73.39 22:33:42> [CLEU] SPELL_AURA_APPLIED#Vehicle-0-3019-2070-28900-145644-0000493216#Unknown#Pet-0-3019-2070-28900-25867-04035496FD#Apok#284376#Death's Presence#DEBUFF#nil", -- [1197]
 	elseif spellId == 284376 and self.vb.phase < 2 then--Bind Souls (P2 Start)
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.scorchingDetCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
@@ -437,7 +436,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.InfoFrame:Show(5, "table", infoframeTable, 1)
 		end
 	elseif spellId == 284446 and self.vb.phase < 3 then--Bwonsamdi's Boon (shouldn't be needed but good to have)
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.scorchingDetCount = 0
 		self.vb.InevitableEndCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
@@ -584,7 +583,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	--"<195.03 22:35:44> [UNIT_SPELLCAST_SUCCEEDED] King Rastakhan(Towelliee) -King Rastakhan P2 -> P3 Conversation [DO NOT TRANSLATE]- [[boss1:Cast-3-3019-2070-28900-290801-000C493290:290801]]", -- [3752]
 	--"<201.14 22:35:50> [CLEU] SPELL_CAST_SUCCESS#Vehicle-0-3019-2070-28900-145644-0000493216#Bwonsamdi#Vehicle-0-3019-2070-28900-145616-0000493177#King Rastakhan#284446#Bwonsamdi's Boon#nil#nil", -- [3850]
 	if spellId == 290801 then--King Rastakhan P2 -> P3 Conversation [DO NOT TRANSLATE] (Only one faster than CLEU)
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.scorchingDetCount = 0
 		self.vb.InevitableEndCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))

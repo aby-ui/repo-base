@@ -166,8 +166,8 @@ end
 function Sort:FitsIn(id, family)
   return
     family == 0 or
-    (Addon.IsRetail and bit.band(GetItemFamily(id), family) > 0 or GetItemFamily(id) == family) and
-    select(9, GetItemInfo(id)) ~= 'INVTYPE_BAG'
+    (family == 9 and GetItemFamily(id) == 256) or
+    (Addon.IsRetail and bit.band(GetItemFamily(id), family) > 0 or GetItemFamily(id) == family) and select(9, GetItemInfo(id)) ~= 'INVTYPE_BAG'
 end
 
 function Sort.Rule(a, b)

@@ -1,6 +1,6 @@
 local addonName, Data = ...
 
-local L = LibStub("AceLocale-3.0"):GetLocale("BattleGroundEnemies")
+local L = Data.L
 local DRList = LibStub("DRList-1.0")
 
 local GetClassInfo = GetClassInfo
@@ -8,6 +8,9 @@ local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local GetSpellInfo = GetSpellInfo
 local GetSpellTexture = GetSpellTexture
+
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local isTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
 Data.CyrillicToRomanian = { -- source Wikipedia: https://en.wikipedia.org/wiki/Romanization_of_Russian
 	["А"] = "a",
@@ -144,7 +147,8 @@ Data.RangeFrames = {
 	ObjectiveAndRespawn = L.ObjectiveAndRespawnSettings,
 	Racial = L.RacialSettings,
 	Trinket = L.TrinketSettings,
-	Power = L.HealthBarSettings.." "..L.AND.." "..L.PowerBarSettings,
+	healthBar = L.HealthBarSettings,
+	Power = L.PowerBarSettings,
 	Spec = L.SpecSettings,
 	BuffContainer = L.BuffContainer,
 	DebuffContainer = L.DebuffContainer,
@@ -206,13 +210,6 @@ Data.Interruptdurations = {
 	-- Data.SpellPriorities[spellID] = 4
 -- end
 
-
--- pvp talents that reduce lockouts by 70%
-Data.PvPTalentsReducingInterruptTime = { 
-	[GetSpellInfo(221404)] = 0.7, --  [Mage] Burning Determination, 70% reduction
-	[GetSpellInfo(221677)] = 0.5, --  [Shaman] Calming Waters, 50% reduction
-	[GetSpellInfo(221660)] = 0.7, --  [Priest] Holy Concentration, 70% reduction
-}
 
 Data.RandomDrCategory = {} --key = number, value = categorieName, used for Testmode
 Data.DrCategoryToSpell = {} --key = categorieName, value = table with key = number and value = spellID
@@ -410,6 +407,10 @@ Data.BattlegroundspezificBuffs = { --key = mapID, value = table with key = facti
 		[0] = 156621, 					-- Alliance Flag
 		[1] = 156618 					-- Horde Flag	
 	}, 
+	[1460] = {						-- Warsong Gulch, used in Classic, TBCC
+		[0] = 301091, 					-- Alliance Flag
+		[1] = 301089 					-- Horde Flag	
+	}, 
 	[112] = {						-- Eye of the Storm, used to be mapID 482 before BFA
 		[0] = 34976,  					-- Netherstorm Flag
 		[1] = 34976						-- Netherstorm Flag
@@ -454,18 +455,104 @@ Data.BattlegroundspezificDebuffs = { --key = mapID, value = table with key = num
 
 Data.TriggerSpellIDToTrinketnumber = {--key = which first row honor talent, value = fileID(used for SetTexture())
 	[195710] = 1, 	-- 1: Honorable Medallion, 3. min. CD, detected by Combatlog
+	[42292]  = 2,   -- 2: Medallion of the Alliance, Medallion of the Horde used in Classic, TBC, and probably some other Expansions  2 min. CD, detected by Combatlog
 	[208683] = 2, 	-- 2: Gladiator's Medallion, 2 min. CD, detected by Combatlog
 	[336126] = 2,   -- 2: Gladiator's Medallion, 2 min. CD, Shadowlands Update
 	[195901] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901
 	[214027] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901, for the Arena_cooldownupdate
 	[336135] = 3, 	-- 3: Adaptation, 1 min. CD, Shadowlands Update
+	[336139] = 3,   -- 3: Adapted, 1 min. CD, Shadowlands Update
 	[196029] = 4, 	-- 4: Relentless, passive, no CD
 	[336128] = 4 	-- 4: Relentless, passive, no CD, Shadowlands Update
 }
 		
 	
-local TrinketTriggerSpellIDtoDisplayspellID = {
-	[195901] = 214027 --Adapted, should display as Adaptation
+local TrinketTriggerSpellIDtoDisplayfileID = {
+	[42292]  = select(10, GetItemInfo(37865)),   	--PvP Trinket should show as Medaillon; used in TBC etc
+	[195901] = GetSpellTexture(214027),				--Adapted, should display as Adaptation
+	[336139] = GetSpellTexture(214027) 				--Adapted, should display as Adaptation, Shadowlands
+}
+
+
+
+--see for covenant colors SharedXML/SharedColorConstants.lua
+
+Data.CovenantIcons = {
+	[1] = GetSpellTexture(324739), --Kyrian
+	[2] = GetSpellTexture(300728), --Ventyr
+	[3] = GetSpellTexture(310143), --Night Fae
+	[4] = GetSpellTexture(324631), --Necrolord
+}
+
+
+--C_Covenants.GetCovenantData()
+Data.CovenantSpells = {
+	--Kyrian
+	[324739] = 1,--Summon Steward 				All Classes
+
+	[312202] = 1,--Shackle the Unworthy 		Death Knight
+	[306830] = 1,--Elysian Decree 				Demon Hunter
+	[326434] = 1,--Kindred Spirits 				Druid
+	[308491] = 1,--Resonating Arrow 			Hunter
+	[307443] = 1,--Radiant Spark 				Mage
+	[310454] = 1,--Weapons of Order 			Monk
+	[304971] = 1,--Divine Toll 					Paladin
+	[325013] = 1,--Boon of the Ascended 		Priest
+	[323547] = 1,--Echoing Reprimand 			Rogue
+	[324386] = 1,--Vesper Totem 				Shaman
+	[312321] = 1,--Scouring Tithe 				Warrior
+	[307865] = 1,--Spear of Bastion 			Warlock
+
+
+	--Ventyr
+	[300728] = 2, --Door of Shadows 			All Classes
+
+	[311648] = 2,--Swarming Mist 				Death Knight
+	[317009] = 2,--Sinful Brand  				Demon Hunter
+	[323546] = 2,--Ravenous Frenzy				Druid
+	[324149] = 2,--Flayed Shot 					Hunter
+	[314793] = 2,--Mirrors of Torment 			Mage
+	[326860] = 2,--Fallen Order 				Monk
+	[316958] = 2,--Ashen Hallow 				Paladin
+	[323673] = 2,--Mindgames 					Priest
+	[323654] = 2,--Flagellation 				Rogue
+	[320674] = 2,--Chain Harvest 				Shaman
+	[321792] = 2,--Impending Catastrophe  		Warrior
+	[317349] = 2,--Condemn 						Warlock
+
+
+	--Night Fae
+	[310143] = 3, --Soulshape 					All Classes
+
+	[324128] = 3,--Death's Due 					Death Knight
+	[323639] = 3,--The Hunt (ability)  			Demon Hunter
+	[323764] = 3,--Convoke the Spirits 			Druid
+	[328231] = 3,--Wild Spirits 				Hunter
+	[314791] = 3,--Shifting Power 				Mage
+	[327104] = 3,--Faeline Stomp				Monk
+	[328278] = 3,--Blessing of the Seasons 		Paladin
+	[327661] = 3,--Fae Guardians 				Priest
+	[328305] = 3,--Sepsis 						Rogue
+	[328923] = 3,--Fae Transfusion				Shaman
+	[325640] = 3,--Soul Rot						Warrior
+	[325886] = 3,--Ancient Aftershock 			Warlock
+
+
+	--Necrolord
+	[324631] = 4, --Fleshcraft					All Classes
+
+	[315443] = 4,--Abomination Limb				Death Knight
+	[329554] = 4,--Fodder to the Flame  		Demon Hunter
+	[325727] = 4,--Adaptive Swarm 				Druid
+	[325028] = 4,--Death Chakram 				Hunter
+	[324220] = 4,--Deathborne 					Mage
+	[325216] = 4,--Bonedust Brew 				Monk
+	[328204] = 4,--Vanquisher's Hammer 			Paladin
+	[324724] = 4,--Unholy Nova 					Priest
+	[328547] = 4,--Serrated Bone Spike 			Rogue
+	[326059] = 4,--Primordial Wave 				Shaman
+	[325289] = 4,--Decimating Bolt  			Warrior
+	[324143] = 4,--Conqueror's Banner 			Warlock
 }
 
 Data.RacialSpellIDtoCooldown = {
@@ -505,8 +592,8 @@ Data.RacialSpellIDtoCooldown = {
 
 Data.TriggerSpellIDToDisplayFileId = {}
 for triggerSpellID in pairs(Data.TriggerSpellIDToTrinketnumber) do
-	if TrinketTriggerSpellIDtoDisplayspellID[triggerSpellID] then
-		Data.TriggerSpellIDToDisplayFileId[triggerSpellID] = GetSpellTexture(TrinketTriggerSpellIDtoDisplayspellID[triggerSpellID])
+	if TrinketTriggerSpellIDtoDisplayfileID[triggerSpellID] then
+		Data.TriggerSpellIDToDisplayFileId[triggerSpellID] = TrinketTriggerSpellIDtoDisplayfileID[triggerSpellID]
 	else
 		Data.TriggerSpellIDToDisplayFileId[triggerSpellID] = GetSpellTexture(triggerSpellID)
 	end
@@ -517,11 +604,14 @@ Data.Racialnames = {}
 for spellID in pairs(Data.RacialSpellIDtoCooldown) do
 	Data.TriggerSpellIDToDisplayFileId[spellID] = GetSpellTexture(spellID)
 	local racialName = GetSpellInfo(spellID)
-	if not Data.RacialNameToSpellIDs[racialName] then
-		Data.RacialNameToSpellIDs[racialName] = {}
-		Data.Racialnames[GetSpellInfo(spellID)] = GetSpellInfo(spellID)
+	if racialName then
+		if not Data.RacialNameToSpellIDs[racialName] then
+			Data.RacialNameToSpellIDs[racialName] = {}
+			Data.Racialnames[GetSpellInfo(spellID)] = GetSpellInfo(spellID)
+		end
+		Data.RacialNameToSpellIDs[racialName][spellID] = true
 	end
-	Data.RacialNameToSpellIDs[racialName][spellID] = true
+	
 end
 
 Data.TrinketTriggerSpellIDtoCooldown = {
@@ -592,6 +682,7 @@ end
 
 Data.Classes = {}
 Data.RolesToSpec = {HEALER = {}, TANK = {}, DAMAGER = {}} --for Testmode only
+Data.ClassList = {} -- For TBCC Testmode only
 
 do
 	local roleNameToRoleNumber = {
@@ -649,21 +740,39 @@ do
 		[72] = "RAGE",			--Fury
 		[73] = "RAGE"			--Protection
 	}
+
+	local ClassRessources = { --used for TBCC
+		WARRIOR = "RAGE",
+		PALADIN = "MANA",
+		HUNTER = "MANA",
+		ROGUE = "ENERGY",
+		PRIEST = "MANA",
+		SHAMAN = "MANA", 
+		MAGE = "MANA", 
+		WARLOCK = "MANA",
+		DRUID = "MANA"
+	}
 	
 	
-	for classID = 1, MAX_CLASSES do --example classes[EnglishClass][SpecName].
+	for classID = 1, GetNumClasses() do --example classes[EnglishClass][SpecName].
 		local _, classTag = GetClassInfo(classID)
-		Data.Classes[classTag] = {}
-		for i = 1, GetNumSpecializationsForClassID(classID) do
-			
-			local specID,maleSpecName,_,icon,role = GetSpecializationInfoForClassID(classID, i, 2) -- male version
-			Data.Classes[classTag][maleSpecName] = {roleNumber = roleNameToRoleNumber[role], roleID = role, specID = specID, specIcon = icon, Ressource = specIdToRessource[specID]}
-			table.insert(Data.RolesToSpec[role], {classTag = classTag, specName = maleSpecName}) --for testmode
-			
-			--if specName == "Танцующий с ветром" then specName = "Танцующая с ветром" end -- fix for russian bug, fix added on 2017.08.27
-			local specID,specName,_,icon,role = GetSpecializationInfoForClassID(classID, i, 3) -- female version	
-			if not Data.Classes[classTag][specName] then --there is a female version of that specName
-				Data.Classes[classTag][specName] = Data.Classes[classTag][maleSpecName]
+		if classTag then
+			Data.Classes[classTag] = {}
+			if isTBCC then 
+				Data.Classes[classTag] = {Ressource = ClassRessources[classTag]}
+				table.insert(Data.ClassList, classTag)
+			else
+				for i = 1, GetNumSpecializationsForClassID(classID) do
+					local specID,maleSpecName,_,icon,role = GetSpecializationInfoForClassID(classID, i, 2) -- male version
+					Data.Classes[classTag][maleSpecName] = {roleNumber = roleNameToRoleNumber[role], roleID = role, specID = specID, specIcon = icon, Ressource = specIdToRessource[specID]}
+					table.insert(Data.RolesToSpec[role], {classTag = classTag, specName = maleSpecName}) --for testmode
+					
+					--if specName == "Танцующий с ветром" then specName = "Танцующая с ветром" end -- fix for russian bug, fix added on 2017.08.27
+					local specID,specName,_,icon,role = GetSpecializationInfoForClassID(classID, i, 3) -- female version	
+					if not Data.Classes[classTag][specName] then --there is a female version of that specName
+						Data.Classes[classTag][specName] = Data.Classes[classTag][maleSpecName]
+					end
+				end
 			end
 		end
 	end

@@ -20,7 +20,7 @@ along with LibPlayerSpells-1.0. If not, see <http://www.gnu.org/licenses/>.
 
 local lib = LibStub('LibPlayerSpells-1.0')
 if not lib then return end
-lib:__RegisterSpells('WARLOCK', 90001, 3, {
+lib:__RegisterSpells('WARLOCK', 90002, 1, {
 	COOLDOWN = {
 		   698, -- Ritual of Summoning
 		  6353, -- Soul Fire (Destruction talent)
@@ -210,7 +210,11 @@ lib:__RegisterSpells('WARLOCK', 90001, 3, {
 	[342938] = 335052, -- Unstable Affliction <- Rampant Afflictions (Affliction honor talent)
 }, {
 	-- map aura to modified spell(s)
-	[ 32390] =  232670, -- Shadow Embrace (Affliction talent) -> Shadow Bolt
+	[ 32390] = { -- Shadow Embrace (Affliction)
+		 48181, -- Haunt (Affliction talent)
+		198590, -- Drain Soul (Affliction talent)
+		232670, -- Shadow Bolt
+	},
 	[117828] = { -- Backdraft (Destruction)
 		 29722, -- Incinerate
 		116858, -- Chaos Bolt

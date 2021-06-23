@@ -3,6 +3,8 @@ local _
 local Details = _G.Details
 local DF = _G.DetailsFramework
 
+local _
+
 function Details:InitializeMacrosWindow()
     local DetailsMacrosPanel = DF:CreateSimplePanel (UIParent, 700, 480, "Details! Useful Macros", "DetailsMacrosPanel")
     DetailsMacrosPanel.Frame = DetailsMacrosPanel

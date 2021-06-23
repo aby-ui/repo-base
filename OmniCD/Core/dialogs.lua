@@ -1,7 +1,5 @@
 local E, L, C = select(2, ...):unpack()
 
--- TODO: Protected function C_UI.Reload has been blocked in the PTR 9.0.5. Check if this goes live
-
 E.StaticPopupDialogs = {} -- upvalue global to switch
 
 E.StaticPopupDialogs["OMNICD_Elv_MSG"] = {

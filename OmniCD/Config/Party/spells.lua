@@ -1,51 +1,81 @@
 local E, L, C = select(2, ...):unpack()
 
 local P = E["Party"]
-local SPELLS = type(SPELLS) == "string" and SPELLS or L["Spells"] -- TODO: remove
+local SPELLS = type(SPELLS) == "string" and SPELLS or L["Spells"]
 
-local isRaidCDOption = function(info) return info[3] ~= "spells" end -- cf:> info[3] == extraBars info[4] == raidCDS
-local isSpellsOption = function(info) return not isRaidCDOption(info) end
-local isRaidOptDisabledID = function(info)
-	local key = info[2]
-	return info[3] ~= "spells" and E.DB.profile.Party[key].extraBars.raidCDBar.hideDisabledSpells and not P.IsEnabledSpell(info[#info], key)
+P.getSpell = function(info)
+	local tab = info[3] == "spells" and "spells" or "raidCDS"
+	return E.DB.profile.Party[info[2]][tab][info[#info]]
 end
 
-local runClearAllDefault = function(info)
-	local modName = info[1]
-	local module = E[modName]
+P.setSpell = function(info, state)
+	local tab = info[3] == "spells" and "spells" or "raidCDS"
+	local db = E.DB.profile.Party[info[2]]
+	db[tab][info[#info]] = state
+
+	if db == E.db then
+		P:UpdateEnabledSpells()
+		P:Refresh()
+	end
+end
+
+P.ClearAllDefault = function(info)
 	local key = info[2]
-	local db = modName == "Party" and E.DB.profile.Party[key] or module.profile[key]
-	if isRaidCDOption(info) then
-		if info[#info] == "default" then
-			P:ResetOptions(key, "raidCDS")
-		else
-			wipe(db.raidCDS)
-			for i = 1, #E.raidDefaults do
-				local id = E.raidDefaults[i]
-				id = tostring(id)
-				db.raidCDS[id] = false
-			end
-		end
+	local isSpellsOption = info[3] == "spells"
+	local tab = isSpellsOption and info[3] or info[4] -- spells, raidCDS
+	local db = E.DB.profile.Party[key]
+	local db_defaults = isSpellsOption and E.spellDefaults or E.raidDefaults
+
+	if info[#info] == "default" then
+		P:ResetOptions(key, tab)
 	else
-		if info[#info] == "default" then
-			module:ResetOptions(key, "spells")
-		else
-			wipe(db.spells)
-			for i = 1, #E.spellDefaults do
-				local id = E.spellDefaults[i]
-				id = tostring(id)
-				db.spells[id] = false
-			end
+		wipe(db[tab]) -- same tree level in db
+
+		for i = 1, #db_defaults do
+			local id = db_defaults[i]
+			id = tostring(id)
+			db[tab][id] = false
 		end
 	end
 
 	if db == E.db then
-		E.UpdateEnabledSpells(P)
+		P:UpdateEnabledSpells()
 		P:Refresh()
-	elseif db == module.db then
-		E.UpdateEnabledSpells(module)
-		module:Refresh()
 	end
+end
+
+local runClearAllDefault = function(info) E[info[1]].ClearAllDefault(info) end
+
+local isSpellsOption = function(info) return info[3] == "spells" end
+local isRaidCDOption = function(info) return info[4] == "raidCDS" end
+local isntSpellsOption = function(info) return info[3] ~= "spells" end
+local isntRaidCDOption = function(info) return info[4] ~= "raidCDS" end
+
+P.setQuickSelect = function(info, value)
+	local key = info[2]
+	for _, v in pairs(E.spell_db) do
+		for i = 1, #v do
+			local spell = v[i]
+			local spellID = spell.spellID
+			local sId = tostring(spellID)
+			local stype = spell.type
+			if not spell.hide and value == stype then
+				E.DB.profile.Party[key].raidCDS[sId] = true
+			end
+		end
+	end
+
+	if E.db == E.DB.profile.Party[key] then
+		P:Refresh()
+	end
+end
+
+P.getHideDisabledSpells = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells end
+P.setHideDisabledSpells = function(info, state) E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells = state end
+
+local isRaidOptDisabledID = function(info)
+	local module = E[info[1]]
+	return info[3] ~= "spells" and module.getHideDisabledSpells(info) and not module.IsEnabledSpell(info[#info], info[2])
 end
 
 local spells = {
@@ -53,37 +83,11 @@ local spells = {
 	order = 60,
 	type = "group",
 	--childGroups = "tab",
-	get = function(info)
-		local modName = info[1]
-		local module = E[modName]
-		if isRaidCDOption(info) then
-			return E.DB.profile.Party[info[2]].raidCDS[info[#info]]
-		else
-			return module.IsEnabledSpell(info[#info], info[2])
-		end
-	end,
-	set = function(info, state)
-		local modName = info[1]
-		local module = E[modName]
-		local key = info[2]
-		local db = modName == "Party" and E.DB.profile.Party[key] or module.profile[key]
-		if isRaidCDOption(info) then
-			E.DB.profile.Party[key].raidCDS[info[#info]] = state
-		else
-			db.spells[info[#info]] = state
-		end
-
-		if db == E.db then
-			E.UpdateEnabledSpells(P)
-			P:Refresh()
-		elseif db == module.db then
-			E.UpdateEnabledSpells(module)
-			module:Refresh()
-		end
-	end,
+	get = function(info) return E[info[1]].getSpell(info) end,
+	set = function(info, state) E[info[1]].setSpell(info, state) end,
 	args = {
 		raidDesc = {
-			hidden = isSpellsOption,
+			hidden = isntRaidCDOption,
 			name = L["Assign Raid Cooldowns."],
 			order = 0,
 			type = "description",
@@ -97,7 +101,7 @@ local spells = {
 			--descStyle = "inline",
 		},
 		default = {
-			hidden = isRaidCDOption,
+			hidden = function(info) return isntSpellsOption(info) and isntRaidCDOption(info) end,
 			name = RESET_TO_DEFAULT,
 			order = 2,
 			type = "execute",
@@ -106,9 +110,9 @@ local spells = {
 			--descStyle = "inline",
 		},
 		-- TODO: Shows the type group of the searched spell. If we want to show a single spell we need to wrap it in a simple-group
-		---[[
+		--[[
 		searchBox = {
-			hidden = isRaidCDOption,
+			hidden = isntSpellsOption,
 			disabled = true,
 			name = "",
 			desc = "Enter spell name.",
@@ -122,22 +126,34 @@ local spells = {
 		},
 		--]]
 		showForbearanceCounter = {
-			hidden = function(info) return info[1] ~= "Party" or info[3] ~= "spells" end,
+			hidden = isntSpellsOption,
 			name = L["Show Forbearance CD"],
 			desc = L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"],
 			order = 4,
 			type = "toggle",
-			get = P.getIcons,
-			set = P.setIcons,
+			--get = P.getIcons,
+			--set = P.setIcons,
+			get = function(info) return E[info[1]].db.icons.showForbearanceCounter end, -- use P.db
+			set = function(info, state) E[info[1]].db.icons.showForbearanceCounter = state end,
+		},
+		quickSelect = {
+			hidden = isSpellsOption,
+			name = L["Quick Select"],
+			desc = L["Select a spell type to enable all spells in that category for all classes"],
+			order = 5,
+			type = "select",
+			values = E.L_PRIORITY,
+			get = E.Noop,
+			set = function(info, state) E[info[1]].setQuickSelect(info, state) end,
 		},
 		hideDisabledSpells = {
 			hidden = isSpellsOption,
 			name = L["Hide Disabled Spells"],
 			desc = L["Hide spells that are not enabled in the \'Spells\' menu."],
-			order = 5,
+			order = 6,
 			type = "toggle",
-			get = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells end,
-			set = function(info, state) E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells = state end,
+			get = function(info) return E[info[1]].getHideDisabledSpells(info) end,
+			set = function(info, state) E[info[1]].setHideDisabledSpells(info, state) end,
 		},
 	}
 }
@@ -201,9 +217,6 @@ local function SortSpellList()
 	end
 end
 
-local getSpellType = function(info) end
-local setSpellType = function(info) end
-
 function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 	local sId = tostring(id)
 
@@ -265,13 +278,12 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 						desc = link,
 						order = order,
 						type = "toggle",
-						arg = spellID,
 					}
 
 					-- Edit
 					--[[
 					t[sId .. "E"] = {
-						hidden = isRaidCDOption,
+						hidden = isntSpellsOption,
 						name = "E",
 						desc = "Edit spell",
 						order = order + 2,
@@ -287,7 +299,12 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 		end
 	end
 
-	self:Refresh()
+	for k in pairs(E.moduleOptions) do
+		local module = E[k]
+		if module.AddSpellPicker then
+			module:Refresh()
+		end
+	end
 end
 
 function P:AddSpellPickerSpells()
@@ -317,18 +334,17 @@ function P:AddSpellPickerSpells()
 				t[vtype].args[sId] = {
 					hidden = isRaidOptDisabledID,
 					image = icon,
-					imageCoords = {0, 1, 0, 1}, -- values doesn't matter, just needs to be added
+					imageCoords = {0, 1, 0, 1}, -- values doesn't matter, just needs to be added to crop
 					name = name,
 					desc = link,
 					order = order,
 					type = "toggle",
-					arg = spellID,
 				}
 
 				-- Edit
 				--[==[
 				t[vtype].args[sId .. "E"] = {
-					hidden = isRaidCDOption,
+					hidden = isntSpellsOption,
 					name = "E",
 					desc = "Edit spell",
 					order = order + 2,
@@ -340,10 +356,12 @@ function P:AddSpellPickerSpells()
 
 				if v.item then -- SpellMixin not working for Covenant and Trinkets has been Hotfixed
 					local item = Item:CreateFromItemID(v.item)
-					item:ContinueOnItemLoad(function()
-						local itemName = item:GetItemName()
-						t[vtype].args[sId].name = itemName
-					end)
+					if item then -- deprecate itemID check
+						item:ContinueOnItemLoad(function()
+							local itemName = item:GetItemName()
+							t[vtype].args[sId].name = itemName
+						end)
+					end
 				end
 
 				order = order + 1
@@ -353,7 +371,7 @@ function P:AddSpellPickerSpells()
 end
 
 function P:AddSpellPicker()
-	SortSpellList()
+	SortSpellList() -- we don't have trinket names at this point :(
 	self:AddSpellPickerSpells()
 
 	for key in pairs(E.CFG_ZONE) do

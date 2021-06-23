@@ -18,8 +18,11 @@ local _math_floor = math.floor
 local _math_abs = math.abs
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 
+
+
 --> Create the plugin Object
 local ThreatMeter = _detalhes:NewPluginObject ("Details_TinyThreat")
+
 --> Main Frame
 local ThreatMeterFrame = ThreatMeter.Frame
 
@@ -185,8 +188,8 @@ local function CreatePluginFrames (data)
 		local w, h = instance:GetSize()
 		ThreatMeterFrame:SetWidth (w)
 		ThreatMeterFrame:SetHeight (h)
-		
-		ThreatMeter.CanShow = math.floor ( h / (ThreatMeter.RowHeight+1))
+		ThreatMeter.RowHeight = instance.row_info.height
+		ThreatMeter.CanShow = math.floor ( h / (instance.row_info.height+1))
 
 		for i = #ThreatMeter.Rows+1, ThreatMeter.CanShow do
 			ThreatMeter:NewRow (i)
@@ -195,7 +198,7 @@ local function CreatePluginFrames (data)
 		ThreatMeter.ShownRows = {}
 		
 		for i = 1, ThreatMeter.CanShow do
-			ThreatMeter.ShownRows [#ThreatMeter.ShownRows+1] = ThreatMeter.Rows[i]
+			ThreatMeter.ShownRows [i] = ThreatMeter.Rows[i]
 			if (_detalhes.in_combat) then
 				ThreatMeter.Rows[i]:Show()
 			end
@@ -223,6 +226,12 @@ local function CreatePluginFrames (data)
 			row.shadow = instance.row_info.textL_outline
 			
 			row.width = instance.baseframe:GetWidth()-5
+			row.height = instance.row_info.height
+			local rowHeight = - ( (row.rowId -1) * (instance.row_info.height + 1) )
+			row:ClearAllPoints()
+      row:SetPoint ("topleft", ThreatMeterFrame, "topleft", 1, rowHeight)
+      row:SetPoint ("topright", ThreatMeterFrame, "topright", -1, rowHeight)
+			
 		end
 	end
 	
@@ -233,13 +242,14 @@ local function CreatePluginFrames (data)
 	end
 	
 	function ThreatMeter:NewRow (i)
-		local newrow = DetailsFrameWork:NewBar (ThreatMeterFrame, nil, "DetailsThreatRow"..i, nil, 300, 14)
-		newrow:SetPoint (3, -((i-1)*15))
+		local newrow = DetailsFrameWork:NewBar (ThreatMeterFrame, nil, "DetailsThreatRow"..i, nil, 300, ThreatMeter.RowHeight)
+		newrow:SetPoint (3, -((i-1)*(ThreatMeter.RowHeight+1)))
 		newrow.lefttext = "bar " .. i
 		newrow.color = "skyblue"
 		newrow.fontsize = 9.9
 		newrow.fontface = "GameFontHighlightSmall"
 		newrow:SetIcon ("Interface\\LFGFRAME\\UI-LFG-ICON-PORTRAITROLES", RoleIconCoord ["DAMAGER"])
+		newrow.rowId = i
 		ThreatMeter.Rows [#ThreatMeter.Rows+1] = newrow
 		
 		ThreatMeter:RefreshRow (newrow)
@@ -384,7 +394,6 @@ local function CreatePluginFrames (data)
 			local pullRow = ThreatMeter.ShownRows [1]
 			local me = ThreatMeter.player_list_indexes [ ThreatMeter.player_list_hash [player] ]
 			if (me) then
-			
 				local myThreat = me [6] or 0
 				local myRole = me [4]
 				
@@ -405,13 +414,13 @@ local function CreatePluginFrames (data)
 				pullRow._icon:SetTexture ([[Interface\PVPFrame\Icon-Combat]])
 				--pullRow._icon:SetVertexColor (r, g, 0)
 				pullRow._icon:SetTexCoord (0, 1, 0, 1)
-				
 				pullRow:Show()
 			else
 				if (pullRow) then
 					pullRow:Hide()
 				end
 			end
+			
 			
 			for index = 2, #ThreatMeter.ShownRows do
 				local thisRow = ThreatMeter.ShownRows [index]
@@ -667,7 +676,7 @@ function ThreatMeter:OnEvent (_, event, ...)
 				local MINIMAL_DETAILS_VERSION_REQUIRED = 1
 				
 				--> Install
-				local install, saveddata = _G._detalhes:InstallPlugin ("RAID", Loc ["STRING_PLUGIN_NAME"], "Interface\\Icons\\Ability_Paladin_ShieldofVengeance", ThreatMeter, "DETAILS_PLUGIN_TINY_THREAT", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", "v1.07")
+				local install, saveddata = _G._detalhes:InstallPlugin ("RAID", Loc ["STRING_PLUGIN_NAME"], "Interface\\Icons\\Ability_Druid_Cower", ThreatMeter, "DETAILS_PLUGIN_TINY_THREAT", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", "v1.07")
 				if (type (install) == "table" and install.error) then
 					print (install.error)
 				end

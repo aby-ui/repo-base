@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -185,7 +185,6 @@ mod:AddBoolOption("HideDead", true)
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 mod:AddDropdownOption("InterruptBehavior", {"Four", "Five", "Six", "NoReset"}, "Five", "misc")
 
-mod.vb.phase = 0
 mod.vb.BasherCount = 0
 mod.vb.egoCount = 0
 mod.vb.evokeAnguishCount = 0
@@ -485,7 +484,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(ParanoiaTargets)
 	harvesterDebugTriggered = 0
 	if self:IsMythic() then
-		self.vb.phase = 1
+		self:SetStage(1)
 		difficultyName = "mythic"
 		timerParanoiaCD:Start(15.5, 1)--SUCCESS
 		timerEternalTormentCD:Start(25, 1)
@@ -565,7 +564,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 311176 then
-		self.vb.phase = 1--Non Mythic
+		self:SetStage(1)--Non Mythic
 		--Start P1 timers here, more accurate, especially if boss forgets to cast this :D
 		if not self.vb.egoActive then
 			timerVoidGazeCD:Start(14.7)
@@ -720,7 +719,7 @@ function mod:SPELL_CAST_START(args)
 		timerMindgateCD:Stop()
 		timerParanoiaCD:Stop()
 		if self:IsMythic() then
-			self.vb.phase = 2
+			self:SetStage(2)
 			self.vb.paranoiaCount = 0
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 			warnPhase:Play("ptwo")
@@ -733,7 +732,7 @@ function mod:SPELL_CAST_START(args)
 			timerMindgraspCD:Start(58.5)
 			timerSummongateway:Start(153.9)
 		else
-			self.vb.phase = 3
+			self:SetStage(3)
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			warnPhase:Play("pthree")
 			timerEvokeAnguishCD:Start(15, 1)
@@ -814,7 +813,7 @@ function mod:SPELL_SUMMON(args)
 			self.vb.cleansingCastCount = 0
 			self.vb.annihilateCastCount = 0
 			self.vb.eternalTormentCount = 0
-			self.vb.phase = 3
+			self:SetStage(3)
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 			warnPhase:Play("pthree")
 			timerEternalTormentCD:Start(20, 1)
@@ -905,7 +904,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnShatteredEgo:Show(args.destName)
 		timerShatteredEgo:Start(30)
 		if not self:IsMythic() and self.vb.phase == 1 then
-			self.vb.phase = 2
+			self:SetStage(2)
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 			warnPhase:Play("ptwo")
 		end

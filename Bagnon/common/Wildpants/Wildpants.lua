@@ -6,6 +6,7 @@
 local ADDON, Addon = ...
 local Addon = LibStub('WildAddon-1.0'):NewAddon(ADDON, Addon, 'LibItemCache-2.0')
 Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+Addon.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 Addon.Version = GetAddOnMetadata(ADDON, 'Version')
 
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)

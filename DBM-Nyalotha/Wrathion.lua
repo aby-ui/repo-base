@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetUsedIcons(1, 2, 3)--Unknown number of burning targets, guessed for now
@@ -72,7 +72,6 @@ mod:AddNamePlateOption("NPAuraOnHardenedCore", 313175)
 mod.vb.cataCast = 0
 mod.vb.incinerateCount = 0
 mod.vb.galeCount = 0
-mod.vb.phase = 1
 local burningMadnessTargets = {}
 local incinerateTimers = {9.1, 19.5, 44.8, 19.4, 21.9}--Lowest in the variations
 local mythicincinerateTimers = {28.6, 71.6}
@@ -137,7 +136,7 @@ function mod:OnCombatStart(delay)
 	self.vb.cataCast = 0
 	self.vb.galeCount = 0
 	self.vb.incinerateCount = 0
-	self.vb.phase = 1
+	self:SetStage(1)
 	table.wipe(burningMadnessTargets)
 	timerSearingBreathCD:Start(7-delay)--7-13
 	if self:IsMythic() then
@@ -192,7 +191,7 @@ function mod:SPELL_CAST_START(args)
 			timerBurningCataclysmCD:Start(75.6, 2)--75-77.32
 		end
 	elseif spellId == 306995 and self.vb.phase == 1 then--P2 Smoke and Mirrors
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("phasechange")
 		timerSearingBreathCD:Stop()
@@ -298,7 +297,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			self:SetIcon(args.destName, 0)
 		end
 	elseif spellId == 306995 then
-		self.vb.phase = 1
+		self:SetStage(1)
 		self.vb.cataCast = 0
 		self.vb.galeCount = 0
 		self.vb.incinerateCount = 0

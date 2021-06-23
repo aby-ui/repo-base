@@ -1,10 +1,10 @@
-﻿--[[ TrinketMenuQueue : auto queue system ]]
+--[[ TrinketMenuQueue : auto queue system ]]
 
 TrinketMenuLocale = TrinketMenuLocale or CoreBuildLocale() L = TrinketMenuLocale
 
 local _G, type, string, tonumber, table, pairs, select = _G, type, string, tonumber, table, pairs, select
 
-local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsClassic = WOW_PROJECT_ID >= WOW_PROJECT_CLASSIC
 
 TrinketMenu.PausedQueue = { } -- 0 or 1 whether queue is paused
 
@@ -310,6 +310,11 @@ end
 
 -- this function quickly checks if conditions are right for a possible ProcessAutoQueue
 function TrinketMenu.PeriodicQueueCheck()
+	if not TrinketMenuQueue.Enabled[0] and not TrinketMenuQueue.Enabled[1] then
+		TrinketMenu.StopTimer("QueueUpdate")
+		return
+	end
+	TrinketMenu.StartTimer("QueueUpdate")
 	for i = 0, 1 do
 		if TrinketMenuQueue.Enabled[i] then
 			TrinketMenu.ProcessAutoQueue(i)
@@ -348,9 +353,22 @@ function TrinketMenu.ProcessAutoQueue(which)
 		buffName = GetItemSpell(id)
 	end
 	if buffName then
-		if AuraUtil.FindAuraByName(buffName, "player", "HELPFUL") or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
-			icon:SetDesaturated(true)
-			return
+		if IsClassic then
+			local i = 1
+			local buff
+			while UnitAura("player", i, "HELPFUL") do
+				buff = UnitAura("player", i, "HELPFUL")
+				if buffName == buff or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
+					icon:SetDesaturated(true)
+					return
+				end
+				i = i + 1
+			end
+		else
+			if AuraUtil.FindAuraByName(buffName, "player", "HELPFUL") or (start > 0 and (duration - timeLeft) > 30 and timeLeft < 1) then
+				icon:SetDesaturated(true)
+				return
+			end
 		end
 	end
 	if TrinketMenuQueue.Stats[id] then

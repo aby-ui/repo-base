@@ -472,7 +472,7 @@ DF.CooldownsBySpec = {
 
 		},
 		--restoration
-		[263] = {
+		[264] = {
 			[108271] = 2, --Astral Shift
 			[114052] = 2, --Ascendance (talent)
 			[98008] = 4, --Spirit Link Totem
@@ -484,6 +484,202 @@ DF.CooldownsBySpec = {
 			[65992] = 5, --Tremor Totem
 		},
 }
+
+--additional CDs / modifications for classic
+if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) then
+	--WARRIOR
+	--Arms
+	DF.CooldownsBySpec[71][12292] = 1 --Death Wish (BCC)
+	
+	--ROGUE
+	--Outlaw
+	DF.CooldownsBySpec[260][13877] = 1 --Blade Flurry (talent) (BBC)
+	
+	--MAGE
+	--fire
+	DF.CooldownsBySpec[63][28682] = 1 --Combustion (talent) (BCC)
+
+	--HUNTER
+	--marksmanship
+	DF.CooldownsBySpec[254][3045] = 1 --Rapid Fire (BCC)
+	DF.CooldownsBySpec[254][34471] = 1 --The Beast Within (talent) (BCC)
+	
+	--auto-generated spell-ranks
+	--SHAMAN - 262
+	--SHAMAN - 263
+	--SHAMAN - 264
+
+	--WARRIOR - 71
+	--WARRIOR - 72
+	--WARRIOR - 73
+
+	--HUNTER - 253
+	--HUNTER - 254
+	--HUNTER - 255
+
+	--MAGE - 62
+	--MAGE - 63
+	--MAGE - 64
+	DF.CooldownsBySpec[64][13031] = 5 --ice barrier Rank 2
+	DF.CooldownsBySpec[64][13032] = 5 --ice barrier Rank 3
+	DF.CooldownsBySpec[64][13033] = 5 --ice barrier Rank 4
+	DF.CooldownsBySpec[64][27134] = 5 --ice barrier Rank 5
+	DF.CooldownsBySpec[64][33405] = 5 --ice barrier Rank 6
+
+	--PALADIN - 65
+	DF.CooldownsBySpec[65][1020] = 2 --divine shield Rank 2
+	DF.CooldownsBySpec[65][2800] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[65][9257] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[65][10310] = 3 --lay on hands Rank 3
+	DF.CooldownsBySpec[65][20236] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[65][27154] = 3 --lay on hands Rank 4
+	DF.CooldownsBySpec[65][5588] = 5 --hammer of justice Rank 2
+	DF.CooldownsBySpec[65][5589] = 5 --hammer of justice Rank 3
+	DF.CooldownsBySpec[65][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[65][20729] = 3 --blessing of sacrifice Rank 2
+	DF.CooldownsBySpec[65][27147] = 3 --blessing of sacrifice Rank 3
+	DF.CooldownsBySpec[65][27148] = 3 --blessing of sacrifice Rank 4
+	DF.CooldownsBySpec[65][5573] = 2 --divine protection Rank 2
+	DF.CooldownsBySpec[65][5599] = 3 --blessing of protection Rank 2
+	DF.CooldownsBySpec[65][10278] = 3 --blessing of protection Rank 3
+
+	--PALADIN - 66
+	DF.CooldownsBySpec[66][31851] = 2 --ardent defender Rank 2
+	DF.CooldownsBySpec[66][31852] = 2 --ardent defender Rank 3
+	DF.CooldownsBySpec[66][31853] = 2 --ardent defender Rank 4
+	DF.CooldownsBySpec[66][31854] = 2 --ardent defender Rank 5
+	DF.CooldownsBySpec[66][20729] = 3 --blessing of sacrifice Rank 2
+	DF.CooldownsBySpec[66][27147] = 3 --blessing of sacrifice Rank 3
+	DF.CooldownsBySpec[66][27148] = 3 --blessing of sacrifice Rank 4
+	DF.CooldownsBySpec[66][5588] = 5 --hammer of justice Rank 2
+	DF.CooldownsBySpec[66][5589] = 5 --hammer of justice Rank 3
+	DF.CooldownsBySpec[66][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[66][5599] = 3 --blessing of protection Rank 2
+	DF.CooldownsBySpec[66][10278] = 3 --blessing of protection Rank 3
+
+	--PALADIN - 70
+	DF.CooldownsBySpec[70][1020] = 2 --divine shield Rank 2
+	DF.CooldownsBySpec[70][2800] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[70][9257] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[70][10310] = 3 --lay on hands Rank 3
+	DF.CooldownsBySpec[70][20236] = 3 --lay on hands Rank 2
+	DF.CooldownsBySpec[70][27154] = 3 --lay on hands Rank 4
+	DF.CooldownsBySpec[70][5588] = 5 --hammer of justice Rank 2
+	DF.CooldownsBySpec[70][5589] = 5 --hammer of justice Rank 3
+	DF.CooldownsBySpec[70][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[70][5599] = 3 --blessing of protection Rank 2
+	DF.CooldownsBySpec[70][10278] = 3 --blessing of protection Rank 3
+	DF.CooldownsBySpec[70][20729] = 3 --blessing of sacrifice Rank 2
+	DF.CooldownsBySpec[70][27147] = 3 --blessing of sacrifice Rank 3
+	DF.CooldownsBySpec[70][27148] = 3 --blessing of sacrifice Rank 4
+
+	--PRIEST - 256
+	DF.CooldownsBySpec[256][8124] = 5 --psychic scream Rank 2
+	DF.CooldownsBySpec[256][10888] = 5 --psychic scream Rank 3
+	DF.CooldownsBySpec[256][10890] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[256][27610] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[256][19236] = 5 --desperate prayer Rank 2
+	DF.CooldownsBySpec[256][19238] = 5 --desperate prayer Rank 3
+	DF.CooldownsBySpec[256][19240] = 5 --desperate prayer Rank 4
+	DF.CooldownsBySpec[256][19241] = 5 --desperate prayer Rank 5
+	DF.CooldownsBySpec[256][19242] = 5 --desperate prayer Rank 6
+	DF.CooldownsBySpec[256][19243] = 5 --desperate prayer Rank 7
+	DF.CooldownsBySpec[256][25437] = 5 --desperate prayer Rank 8
+
+	--PRIEST - 257
+	DF.CooldownsBySpec[257][2052] = 5 --lesser heal Rank 2
+	DF.CooldownsBySpec[257][2053] = 5 --lesser heal Rank 3
+	DF.CooldownsBySpec[257][34863] = 5 --circle of healing Rank 2
+	DF.CooldownsBySpec[257][34864] = 5 --circle of healing Rank 3
+	DF.CooldownsBySpec[257][34865] = 5 --circle of healing Rank 4
+	DF.CooldownsBySpec[257][34866] = 5 --circle of healing Rank 5
+	DF.CooldownsBySpec[257][8124] = 5 --psychic scream Rank 2
+	DF.CooldownsBySpec[257][10888] = 5 --psychic scream Rank 3
+	DF.CooldownsBySpec[257][10890] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[257][27610] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[257][19236] = 5 --desperate prayer Rank 2
+	DF.CooldownsBySpec[257][19238] = 5 --desperate prayer Rank 3
+	DF.CooldownsBySpec[257][19240] = 5 --desperate prayer Rank 4
+	DF.CooldownsBySpec[257][19241] = 5 --desperate prayer Rank 5
+	DF.CooldownsBySpec[257][19242] = 5 --desperate prayer Rank 6
+	DF.CooldownsBySpec[257][19243] = 5 --desperate prayer Rank 7
+	DF.CooldownsBySpec[257][25437] = 5 --desperate prayer Rank 8
+
+	--PRIEST - 258
+	DF.CooldownsBySpec[258][8124] = 5 --psychic scream Rank 2
+	DF.CooldownsBySpec[258][10888] = 5 --psychic scream Rank 3
+	DF.CooldownsBySpec[258][10890] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[258][27610] = 5 --psychic scream Rank 4
+	DF.CooldownsBySpec[258][19236] = 5 --desperate prayer Rank 2
+	DF.CooldownsBySpec[258][19238] = 5 --desperate prayer Rank 3
+	DF.CooldownsBySpec[258][19240] = 5 --desperate prayer Rank 4
+	DF.CooldownsBySpec[258][19241] = 5 --desperate prayer Rank 5
+	DF.CooldownsBySpec[258][19242] = 5 --desperate prayer Rank 6
+	DF.CooldownsBySpec[258][19243] = 5 --desperate prayer Rank 7
+	DF.CooldownsBySpec[258][25437] = 5 --desperate prayer Rank 8
+
+	--ROGUE - 259
+	DF.CooldownsBySpec[259][1857] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[259][11329] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[259][26888] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[259][26889] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[259][27617] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[259][26669] = 2 --evasion Rank 2
+
+	--ROGUE - 260
+	DF.CooldownsBySpec[260][1857] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[260][11329] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[260][26888] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[260][26889] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[260][27617] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[260][26669] = 2 --evasion Rank 2
+
+	--ROGUE - 261
+	DF.CooldownsBySpec[261][1857] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[261][11329] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[261][26888] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[261][26889] = 2 --vanish Rank 3
+	DF.CooldownsBySpec[261][27617] = 2 --vanish Rank 2
+	DF.CooldownsBySpec[261][26669] = 2 --evasion Rank 2
+
+	--WARLOCK - 265
+	DF.CooldownsBySpec[265][30413] = 5 --shadowfury Rank 2
+	DF.CooldownsBySpec[265][30414] = 5 --shadowfury Rank 3
+	DF.CooldownsBySpec[265][17928] = 5 --howl of terror Rank 2
+	DF.CooldownsBySpec[265][17925] = 5 --death coil Rank 2
+	DF.CooldownsBySpec[265][17926] = 5 --death coil Rank 3
+	DF.CooldownsBySpec[265][27223] = 5 --death coil Rank 4
+
+	--WARLOCK - 266
+	DF.CooldownsBySpec[266][30413] = 5 --shadowfury Rank 2
+	DF.CooldownsBySpec[266][30414] = 5 --shadowfury Rank 3
+	DF.CooldownsBySpec[266][17928] = 5 --howl of terror Rank 2
+	DF.CooldownsBySpec[266][17925] = 5 --death coil Rank 2
+	DF.CooldownsBySpec[266][17926] = 5 --death coil Rank 3
+	DF.CooldownsBySpec[266][27223] = 5 --death coil Rank 4
+
+	--WARLOCK - 267
+	DF.CooldownsBySpec[267][17925] = 5 --death coil Rank 2
+	DF.CooldownsBySpec[267][17926] = 5 --death coil Rank 3
+	DF.CooldownsBySpec[267][27223] = 5 --death coil Rank 4
+	DF.CooldownsBySpec[267][17928] = 5 --howl of terror Rank 2
+	DF.CooldownsBySpec[267][30413] = 5 --shadowfury Rank 2
+	DF.CooldownsBySpec[267][30414] = 5 --shadowfury Rank 3
+
+	--DRUID - 102
+	DF.CooldownsBySpec[102][99] = nil --demoralizing roar disabled, no CC in tbc
+
+	--DRUID - 103
+	--DRUID - 104
+	DF.CooldownsBySpec[104][99] = nil --demoralizing roar disabled, no CC in tbc
+
+	--DRUID - 105
+	DF.CooldownsBySpec[105][8918] = 4 --tranquility Rank 2
+	DF.CooldownsBySpec[105][9862] = 4 --tranquility Rank 3
+	DF.CooldownsBySpec[105][9863] = 4 --tranquility Rank 4
+	DF.CooldownsBySpec[105][26983] = 4 --tranquility Rank 5
+	
+end
 
 -->  tells the duration, requirements and cooldown of a cooldown
 DF.CooldownsInfo = {
@@ -812,6 +1008,82 @@ DF.CrowdControlSpells = {
 	[331866] = "COVENANT|VENTHYR", --Agent of Chaos (Nadia soulbind)
 }
 
+-- additionals for classic
+if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) then
+	DF.CrowdControlSpells[99] = nil --demoralizing roar disabled, no CC in tbc
+	
+	--auto-generated
+	DF.CrowdControlSpells[18657] = "DRUID" --hibernate Rank 2
+	DF.CrowdControlSpells[18658] = "DRUID" --hibernate Rank 3
+	DF.CrowdControlSpells[6798] = "DRUID" --bash Rank 2
+	DF.CrowdControlSpells[8983] = "DRUID" --bash Rank 3
+	DF.CrowdControlSpells[1062] = "DRUID" --entangling roots Rank 2
+	DF.CrowdControlSpells[5195] = "DRUID" --entangling roots Rank 3
+	DF.CrowdControlSpells[5196] = "DRUID" --entangling roots Rank 4
+	DF.CrowdControlSpells[9852] = "DRUID" --entangling roots Rank 5
+	DF.CrowdControlSpells[9853] = "DRUID" --entangling roots Rank 6
+	DF.CrowdControlSpells[19970] = "DRUID" --entangling roots Rank 6
+	DF.CrowdControlSpells[19971] = "DRUID" --entangling roots Rank 5
+	DF.CrowdControlSpells[19972] = "DRUID" --entangling roots Rank 4
+	DF.CrowdControlSpells[19973] = "DRUID" --entangling roots Rank 3
+	DF.CrowdControlSpells[19974] = "DRUID" --entangling roots Rank 2
+	DF.CrowdControlSpells[26989] = "DRUID" --entangling roots Rank 7
+	DF.CrowdControlSpells[27010] = "DRUID" --entangling roots Rank 7
+
+	DF.CrowdControlSpells[14310] = "HUNTER" --freezing trap Rank 2
+	DF.CrowdControlSpells[14311] = "HUNTER" --freezing trap Rank 3
+	DF.CrowdControlSpells[27753] = "HUNTER" --freezing trap Rank 3
+	DF.CrowdControlSpells[14308] = "HUNTER" --freezing trap effect Rank 2
+	DF.CrowdControlSpells[14309] = "HUNTER" --freezing trap effect Rank 3
+
+	DF.CrowdControlSpells[865] = "MAGE" --frost nova Rank 2
+	DF.CrowdControlSpells[6131] = "MAGE" --frost nova Rank 3
+	DF.CrowdControlSpells[9915] = "MAGE" --frost nova Rank 3
+	DF.CrowdControlSpells[10230] = "MAGE" --frost nova Rank 4
+	DF.CrowdControlSpells[27088] = "MAGE" --frost nova Rank 5
+	DF.CrowdControlSpells[33041] = "MAGE" --dragon's breath Rank 2
+	DF.CrowdControlSpells[33042] = "MAGE" --dragon's breath Rank 3
+	DF.CrowdControlSpells[33043] = "MAGE" --dragon's breath Rank 4
+	DF.CrowdControlSpells[12824] = "MAGE" --polymorph Rank 2
+	DF.CrowdControlSpells[12825] = "MAGE" --polymorph Rank 3
+	DF.CrowdControlSpells[12826] = "MAGE" --polymorph Rank 4
+	DF.CrowdControlSpells[1090] = "MAGE" --sleep Rank 2
+
+	DF.CrowdControlSpells[5588] = "PALADIN" --hammer of justice Rank 2
+	DF.CrowdControlSpells[5589] = "PALADIN" --hammer of justice Rank 3
+	DF.CrowdControlSpells[10308] = "PALADIN" --hammer of justice Rank 4
+
+	DF.CrowdControlSpells[8124] = "PRIEST" --psychic scream Rank 2
+	DF.CrowdControlSpells[10888] = "PRIEST" --psychic scream Rank 3
+	DF.CrowdControlSpells[10890] = "PRIEST" --psychic scream Rank 4
+	DF.CrowdControlSpells[27610] = "PRIEST" --psychic scream Rank 4
+	DF.CrowdControlSpells[9485] = "PRIEST" --shackle undead Rank 2
+	DF.CrowdControlSpells[10955] = "PRIEST" --shackle undead Rank 3
+	DF.CrowdControlSpells[10911] = "PRIEST" --mind control Rank 2
+	DF.CrowdControlSpells[10912] = "PRIEST" --mind control Rank 3
+
+	DF.CrowdControlSpells[1777] = "ROGUE" --gouge Rank 2
+	DF.CrowdControlSpells[8629] = "ROGUE" --gouge Rank 3
+	DF.CrowdControlSpells[11285] = "ROGUE" --gouge Rank 4
+	DF.CrowdControlSpells[11286] = "ROGUE" --gouge Rank 5
+	DF.CrowdControlSpells[38764] = "ROGUE" --gouge Rank 6
+	DF.CrowdControlSpells[2070] = "ROGUE" --sap Rank 2
+	DF.CrowdControlSpells[11297] = "ROGUE" --sap Rank 3
+	DF.CrowdControlSpells[8643] = "ROGUE" --kidney shot Rank 2
+	DF.CrowdControlSpells[27615] = "ROGUE" --kidney shot Rank 2
+	DF.CrowdControlSpells[30621] = "ROGUE" --kidney shot Rank 2
+
+	DF.CrowdControlSpells[17925] = "WARLOCK" --death coil Rank 2
+	DF.CrowdControlSpells[17926] = "WARLOCK" --death coil Rank 3
+	DF.CrowdControlSpells[27223] = "WARLOCK" --death coil Rank 4
+	DF.CrowdControlSpells[18647] = "WARLOCK" --banish Rank 2
+	DF.CrowdControlSpells[30413] = "WARLOCK" --shadowfury Rank 2
+	DF.CrowdControlSpells[30414] = "WARLOCK" --shadowfury Rank 3
+	DF.CrowdControlSpells[6213] = "WARLOCK" --fear Rank 2
+	DF.CrowdControlSpells[6215] = "WARLOCK" --fear Rank 3
+	DF.CrowdControlSpells[17928] = "WARLOCK" --howl of terror Rank 2
+end
+
 DF.SpecIds = {
 	[577] = "DEMONHUNTER",
 	[581] = "DEMONHUNTER",
@@ -843,7 +1115,7 @@ DF.SpecIds = {
 
 	[262] = "SHAMAN",
 	[263] = "SHAMAN",
-	[254] = "SHAMAN",
+	[264] = "SHAMAN",
 
 	[256] = "PRIEST",
 	[257] = "PRIEST",
@@ -958,7 +1230,7 @@ for specId, cooldownTable in pairs (DF.CooldownsBySpec) do
 			
 		end
 		
-		DF.CooldownToClass [spellId] = DF.SpecIds [spellId]
+		DF.CooldownToClass [spellId] = DF.SpecIds [specId]
 	end
 end
 

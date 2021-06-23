@@ -68,8 +68,7 @@ function P:SetAnchor(f)
 end
 
 function P:SetIconScale(f)
-	local db = E.db.icons
-	local scale = db.scale
+	local scale = E.db.icons.scale
 	f.anchor:SetScale(math.min(math.max(0.7, scale), 1))
 	f.container:SetScale(scale)
 end
@@ -170,11 +169,13 @@ function P:SetTooltip(icon)
 	icon:EnableMouse(E.db.icons.showTooltip)
 end
 
+--[[
 function P:SetAtlas(icon)
 	if E.db.highlight.glow then
 		icon.NewItemTexture:SetAtlas(E.db.highlight.glowColor)
 	end
 end
+]]
 
 function P:ApplySettings(f)
 	self:SetAnchor(f)
@@ -189,6 +190,6 @@ function P:ApplySettings(f)
 		self:SetCounter(icon)
 		self:SetChargeScale(icon)
 		self:SetTooltip(icon)
-		self:SetAtlas(icon)
+		--self:SetAtlas(icon)
 	end
 end

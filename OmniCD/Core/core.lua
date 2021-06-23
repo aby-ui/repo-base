@@ -35,7 +35,7 @@ E.RemoveEmptyDuplicateTables = function(dest, src)
 	local copy = {}
 	for k, v in pairs(dest) do
 		local srcV = src[k]
-		if type(v) == 'table' and type(srcV) == 'table' then
+		if type(v) == "table" and type(srcV) == "table" then
 			copy[k] = E.RemoveEmptyDuplicateTables(v, srcV)
 		elseif v ~= srcV then
 			copy[k] = v
@@ -57,21 +57,6 @@ E.SetModuleEnabled = function(k, v)
 		module:Enable()
 	else
 		module:Disable()
-	end
-end
-
-E.UpdateEnabledSpells = function(module)
-	wipe(module.spell_enabled)
-
-	for _, v in pairs(E.spell_db) do
-		local n = #v
-		for i = 1, n do
-			local t = v[i]
-			local id = t.spellID
-			if module.IsEnabledSpell(id) then
-				module.spell_enabled[id] = true
-			end
-		end
 	end
 end
 
@@ -106,18 +91,6 @@ E.LoadPosition = function(f, key)
 		y = y / s
 		f:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y)
 	end
-end
-
-E.UpdatePosition = function(f)
-	if not f.isExBar then return end
-
-	E.LoadPosition(f)
-
-	local parentWidth = UIParent:GetWidth()
-	local clamp = f.db.center and (1 - parentWidth)/2 or 0
-	f:SetClampRectInsets(clamp, -clamp, 0, 0)
-	clamp = f.db.center and (f.anchor:GetWidth() - parentWidth)/2 or 0
-	f.anchor:SetClampRectInsets(clamp, -clamp, 0, 0)
 end
 
 function OmniCD_AnchorOnMouseDown(self)
@@ -261,23 +234,19 @@ do
 		obj:SetSnapToPixelGrid(false)
 	end
 
-	E.BackdropTemplate = function(frame, style, bgFile, edgeFile, edgeSize, update)
+	E.BackdropTemplate = function(frame, style, bgFile, edgeFile, edgeSize)
 		style = style or "default"
-		bgFile = bgFile or E.TEXTURES.White8x8
-		edgeFile = edgeFile or E.TEXTURES.White8x8
-		edgeSize = edgeSize or 1
 
 		local backdrop = backdropStyle[style]
-		if not backdrop or update then
+		if not backdrop then
 			backdrop = {
-				bgFile = bgFile,
-				edgeFile = edgeFile,
-				edgeSize = edgeSize * E.PixelMult,
+				bgFile = bgFile or E.TEXTURES.White8x8,
+				edgeFile = edgeFile or E.TEXTURES.White8x8,
+				edgeSize = (edgeSize or 1) * E.PixelMult,
 			}
+
 			backdropStyle[style] = backdrop
 		end
-
-		backdropFrames[frame] = backdrop
 
 		frame:SetBackdrop(backdrop)
 
@@ -287,11 +256,16 @@ do
 				E.DisablePixelSnap(region)
 			end
 		end
+
+		backdropFrames[frame] = backdrop
 	end
 
 	E.UpdateBackdrops = function()
+		for style, backdrop in pairs(backdropStyle) do
+			backdrop.edgeSize = E.PixelMult
+		end
 		for frame, backdrop in pairs(backdropFrames) do
-			-- TODO: update Ace backdrop for opt scale
+			frame:SetBackdrop(backdrop)
 		end
 	end
 end

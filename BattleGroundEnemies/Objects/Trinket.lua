@@ -1,10 +1,26 @@
 local BattleGroundEnemies = BattleGroundEnemies
 local addonName, Data = ...
+local GetTime = GetTime
+
 BattleGroundEnemies.Objects.Trinket = {}
 
 function BattleGroundEnemies.Objects.Trinket.New(playerButton)
 				-- trinket
 	local Trinket = CreateFrame("Frame", nil, playerButton)
+
+	Trinket:HookScript("OnEnter", function(self)
+		if self.SpellID then
+			BattleGroundEnemies:ShowTooltip(self, function() 
+				GameTooltip:SetSpellByID(self.SpellID)
+			end)
+		end
+	end)
+	
+	Trinket:HookScript("OnLeave", function(self)
+		if GameTooltip:IsOwned(self) then
+			GameTooltip:Hide()
+		end
+	end)
 
 	
 	Trinket.Icon = Trinket:CreateTexture()
@@ -42,6 +58,7 @@ function BattleGroundEnemies.Objects.Trinket.New(playerButton)
 	end
 	
 	Trinket.DisplayTrinket = function(self, spellID, cooldown)
+		self.SpellID = spellID
 		self.HasTrinket = Data.TriggerSpellIDToTrinketnumber[spellID]
 		self.Icon:SetTexture(Data.TriggerSpellIDToDisplayFileId[spellID])
 		if cooldown then
@@ -51,6 +68,7 @@ function BattleGroundEnemies.Objects.Trinket.New(playerButton)
 	
 	Trinket.Reset = function(self)
 		self.HasTrinket = nil
+		self.SpellID = false
 		self.Icon:SetTexture(nil)
 		self.Cooldown:Clear()	--reset Trinket Cooldown
 	end

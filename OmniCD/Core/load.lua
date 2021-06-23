@@ -4,6 +4,8 @@ local ACD_Tooltip = E.Libs.ACD.tooltip
 local DB_VERSION = 2.51
 
 function E:OnInitialize()
+	-- make changes to profile import on db updates
+
 	if not OmniCDDB or not OmniCDDB.version or OmniCDDB.version < 2.5 then
 		OmniCDDB = { version = DB_VERSION }
 	elseif OmniCDDB.version < DB_VERSION then
@@ -44,7 +46,7 @@ end
 
 function E:OnEnable()
 	--[AC] C_ChatInfo.RegisterAddonMessagePrefix("OmniCD")
-	E.Comms:RegisterComm("OmniCD", "CHAT_MSG_ADDON")
+	self.Comms:RegisterComm("OmniCD", "CHAT_MSG_ADDON")
 
 	-- 15 dummy lines to set font (2 doublelines exists as default)
 	for i = 1, 13 do
@@ -59,7 +61,7 @@ function E:OnEnable()
 	self:Refresh()
 
 	if self.DB.profile.loginMsg then
-		print(E.LoginMessage)
+		print(self.LoginMessage)
 	end
 
 	self.enabled = true
@@ -68,7 +70,7 @@ end
 function E:Refresh(arg)
 	self.profile = self.DB.profile
 
-	E:UpdateFontObjects()
+	self:UpdateFontObjects()
 
 	for k in pairs(self.moduleOptions) do
 		local module = self[k]
@@ -158,15 +160,15 @@ do
 			return
 		end
 
-		local ver = E.DB.global.oodVer
+		local ver = self.DB.global.oodVer
 		if ver then
 			if ver > version then
-				if E.DB.profile.notifyNew then
-					E.Write(E.DB.global.oodMsg)
+				if self.DB.profile.notifyNew then
+					self.Write(self.DB.global.oodMsg)
 				end
 				return
 			end
-			E.DB.global.oodMsg = nil
+			self.DB.global.oodMsg = nil
 		end
 
 		enabled = C_ChatInfo.RegisterAddonMessagePrefix("OMNICD_VERSION")

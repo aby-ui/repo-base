@@ -257,6 +257,11 @@ local function ProgressBar_SetValue(self, percent)
 			self.ReapingFrame:Hide()
 			self.ReapingFrame.Icon:Hide()
 		end
+	else
+		if self.ReapingFrame then
+			self.ReapingFrame:Hide()
+			self.ReapingFrame.Icon:Hide()
+		end
 	end
 end
 

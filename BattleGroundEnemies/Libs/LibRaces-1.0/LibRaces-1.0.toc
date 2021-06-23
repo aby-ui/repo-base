@@ -2,8 +2,10 @@
 ## Title: Lib: LibRaces-1.0
 ## Notes: A library to easy translate localized race names to generic token like strings
 ## Author: Hizuro
-## Version: 1.5.2-release
+## Version: 1.5.5-release
 ## OptionalDeps: LibStub, CallbackHandler-1.0
+
+## X-Curse-Project-ID: 269683
 
 
 LibRaces-1.0.lua

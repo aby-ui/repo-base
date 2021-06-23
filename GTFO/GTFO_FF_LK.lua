@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Wrath of the Lich King
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 GTFO.FFSpellID["71447"] = {
 	--desc = "Bloodbolt Splash (Blood Queen Lana'thel - 10)";

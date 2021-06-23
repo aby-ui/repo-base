@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -112,7 +112,6 @@ mod:AddSetIconOption("SetIconOnBloodHost", 267813, true, false, {7})
 mod:AddSetIconOption("SetIconOnBurstingBoil", 277007, true, false, {1, 2, 3, 4, 5, 6})
 mod:AddSetIconOption("SetIconOnExplosiveCorruption", 272506, false, false, {1, 2, 3, 4, 5, 6, 7, 8})
 
-mod.vb.phase = 1
 mod.vb.mawCastCount = 0
 mod.vb.matrixCount = 0
 mod.vb.matrixSide = DBM_CORE_L.RIGHT
@@ -243,7 +242,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(seenAdds)
 	table.wipe(castsPerGUID)
 	self.vb.bloodFeastTarget = nil
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.mawCastCount = 0
 	self.vb.matrixCount = 0
 	self.vb.explosiveCount = 0
@@ -391,7 +390,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif (spellId == 263482 or spellId == 263503) then
 		timerReOrgBlast:Start()
 		if self.vb.phase < 2 then--Phase 1 to Phase 2 Transition
-			self.vb.phase = 2
+			self:SetStage(2)
 			self.vb.explosiveCount = 0
 			timerThousandMawsCD:Stop()
 			timerExplosiveCorruptionCD:Stop()
@@ -432,7 +431,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerWaveofCorruptionCD:Start(timer, self.vb.waveCast+1)
 		end
 	elseif spellId == 276839 then
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.explosiveCount = 0
 		self.vb.waveCast = 0
 		specWarnCollapse:Show()

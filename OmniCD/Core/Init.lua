@@ -40,5 +40,6 @@ NS[1].Notes = GetAddOnMetadata(AddOnName, "Notes")
 NS[1].License = GetAddOnMetadata(AddOnName, "X-License")
 NS[1].WoWPatch, NS[1].WoWBuild, NS[1].WoWPatchReleaseDate, NS[1].TocVersion = GetBuildInfo()
 NS[1].LoginMessage = NS[1].userClassHexColor .. AddOnName .. " v" .. NS[1].Version .. "|r - /oc"
+NS[1].isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
 OmniCD = NS

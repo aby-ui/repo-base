@@ -4,6 +4,8 @@
 	<Script file="Spells\core.lua"/>
 	<Script file="Spells\spells.lua"/>
 	<Script file="Spells\modifiers.lua"/>
+	<!--<Script file="Spells\spells-bcc.lua"/>-->
+	<!--<Script file="Spells\modifiers-bcc.lua"/>-->
 
 	<!-- Party -->
 	<Include file="Party\templates.xml"/>

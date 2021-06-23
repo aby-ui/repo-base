@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Cataclysm
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 GTFO.FFSpellID["86631"] = {
 	--desc = "Engulfing Magic (Theralion, BoT)";

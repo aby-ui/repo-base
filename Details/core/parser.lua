@@ -4448,11 +4448,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	function _detalhes:GetZoneType()
 		return _detalhes.zone_type
 	end
+
 	function _detalhes.parser_functions:ZONE_CHANGED_NEW_AREA (...)
-		return _detalhes:ScheduleTimer ("Check_ZONE_CHANGED_NEW_AREA", 0.5)
+		return Details.Schedules.After(1, Details.Check_ZONE_CHANGED_NEW_AREA)
 	end
 	
-	function _detalhes:Check_ZONE_CHANGED_NEW_AREA (...)
+	function _detalhes:Check_ZONE_CHANGED_NEW_AREA()
+
 		local zoneName, zoneType, _, _, _, _, _, zoneMapID = _GetInstanceInfo()
 		
 		_detalhes.zone_type = zoneType
@@ -4489,8 +4491,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (_detalhes.is_in_arena and zoneType ~= "arena") then
 			_detalhes:LeftArena()
 		end
+
+		--check if the player left a battleground
 		if (_detalhes.is_in_battleground and zoneType ~= "pvp") then
-			--_detalhes.pvp_parser_frame:StopBgUpdater()
+			_detalhes.pvp_parser_frame:StopBgUpdater()
 			_detalhes.is_in_battleground = nil
 			_detalhes.time_type = _detalhes.time_type_original
 		end
@@ -4519,7 +4523,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					_detalhes.time_type_original = 1
 					_detalhes.time_type = 2
 				end
-				--_detalhes.pvp_parser_frame:StartBgUpdater() --battleground parser has been disbled
+				_detalhes.pvp_parser_frame:StartBgUpdater()
 			else
 				if (_detalhes.force_activity_time_pvp) then
 					_detalhes.time_type_original = _detalhes.time_type
@@ -4576,12 +4580,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:CheckForPerformanceProfile()
 	end
 	
-	function _detalhes.parser_functions:PLAYER_ENTERING_WORLD (...)
-		return _detalhes.parser_functions:ZONE_CHANGED_NEW_AREA (...)
+	function _detalhes.parser_functions:PLAYER_ENTERING_WORLD ()
+		return _detalhes.parser_functions:ZONE_CHANGED_NEW_AREA()
 	end
 	
 	-- ~encounter
-	function _detalhes.parser_functions:ENCOUNTER_START (...)
+	function _detalhes.parser_functions:ENCOUNTER_START(...)
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) |cFFFFFF00ENCOUNTER_START|r event triggered.")
 		end
@@ -5183,32 +5187,34 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		--check if the player is inside a battleground
 		elseif (zoneType == "battleground") then
-			if (_detalhes.debug) then
-				_detalhes:Msg ("(debug) timer is a battleground countdown.")
+			if (Details.debug) then
+				Details:Msg ("(debug) timer is a battleground countdown.")
 			end
 			
 			local _, timeSeconds = select (1, ...)
 			
-			if (_detalhes.start_battleground) then
-				_detalhes:CancelTimer(_detalhes.start_battleground, true)
+			if (Details.start_battleground) then
+				Details.Schedules.Cancel(Details.start_battleground)
 			end
-			
-			_detalhes.start_battleground = _detalhes:ScheduleTimer("CreateBattlegroundSegment", timeSeconds)
+
+			--create new schedule
+			Details.start_battleground = Details.Schedules.NewTimer(timeSeconds, Details.CreateBattlegroundSegment)
+			Details.Schedules.SetName(Details.start_battleground, "Battleground Start Timer")
 		end
 	end
 	
-	function _detalhes:CreateBattlegroundSegment()
+	function Details:CreateBattlegroundSegment()
 		if (_in_combat) then
 			_detalhes.tabela_vigente.discard_segment = true
-			_detalhes:SairDoCombate()
+			Details:EndCombat()
 		end
-		_detalhes:EntrarEmCombate()
+		Details:StartCombat()
 	end
 
 	-- ~load
 	local start_details = function()
 		if (not _detalhes.gump) then
-			--> failed to load the framework.
+			--> failed to load the framework
 			
 			if (not _detalhes.instance_load_failed) then
 				_detalhes:CreatePanicWarning()
@@ -5784,9 +5790,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> battleground parser
-	
-	--[=[
-	
+
 	_detalhes.pvp_parser_frame:SetScript ("OnEvent", function (self, event)
 		self:ReadPvPData()
 	end)
@@ -5795,30 +5799,37 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		RequestBattlefieldScoreData()
 	end
 	
+	--start the virtual parser
 	function _detalhes.pvp_parser_frame:StartBgUpdater()
-	
-		_detalhes.pvp_parser_frame:RegisterEvent ("UPDATE_BATTLEFIELD_SCORE")
+		_detalhes.pvp_parser_frame:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")
+
 		if (_detalhes.pvp_parser_frame.ticker) then
-			_detalhes:CancelTimer (_detalhes.pvp_parser_frame.ticker)
+			Details.Schedules.Cancel(_detalhes.pvp_parser_frame.ticker)
 		end
-		_detalhes.pvp_parser_frame.ticker = _detalhes:ScheduleRepeatingTimer ("BgScoreUpdate", 10)
+		_detalhes.pvp_parser_frame.ticker = Details.Schedules.NewTicker(10, Details.BgScoreUpdate)
+		Details.Schedules.SetName(_detalhes.pvp_parser_frame.ticker, "Battleground Updater")
 	end
 	
+	--stop the virtual parser
 	function _detalhes.pvp_parser_frame:StopBgUpdater()
-		_detalhes.pvp_parser_frame:UnregisterEvent ("UPDATE_BATTLEFIELD_SCORE")
-		_detalhes:CancelTimer (_detalhes.pvp_parser_frame.ticker)
+		_detalhes.pvp_parser_frame:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE")
+		Details.Schedules.Cancel(_detalhes.pvp_parser_frame.ticker)
 		_detalhes.pvp_parser_frame.ticker = nil
 	end
 	
 	function _detalhes.pvp_parser_frame:ReadPvPData()
-	
 		local players = GetNumBattlefieldScores()
 
 		for i = 1, players do
-		
-			local name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore (i)
+			local name, killingBlows, honorableKills, deaths, honorGained, faction, race, rank, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec
+			if (DetailsFramework.IsTBCWow()) then
+				name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
+			else
+				name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
+			end
 			
-			local actor = _detalhes.tabela_vigente (1, name)
+			--damage done
+			local actor = _detalhes.tabela_vigente(1, name)
 			if (actor) then
 				if (damageDone == 0) then
 					damageDone = damageDone + _detalhes:GetOrderNumber()
@@ -5846,7 +5857,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				end
 			end
 			
-			local actor = _detalhes.tabela_vigente (2, name)
+			--healing done
+			local actor = _detalhes.tabela_vigente(2, name)
 			if (actor) then
 				if (healingDone == 0) then
 					healingDone = healingDone + _detalhes:GetOrderNumber()
@@ -5874,9 +5886,5 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					end
 				end
 			end
-			
 		end
-		
 	end
-	--]=]
-	

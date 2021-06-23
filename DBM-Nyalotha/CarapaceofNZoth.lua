@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetUsedIcons(1, 2, 3)
@@ -108,7 +108,6 @@ mod:AddNamePlateOption("NPAuraOnMembrane2", 306990, false)
 mod.vb.TentacleCount = 0
 mod.vb.gazeCount = 0
 mod.vb.DarknessCount = 0
-mod.vb.phase = 1
 mod.vb.anchorCount = 0
 mod.vb.adaptiveCount = 0
 mod.vb.adaptiveIcon = 1
@@ -140,7 +139,7 @@ function mod:OnCombatStart(delay)
 	self.vb.TentacleCount = 0
 	self.vb.gazeCount = 0
 	self.vb.DarknessCount = 0
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.anchorCount = 0
 	self.vb.adaptiveCount = 0
 	self.vb.adaptiveIcon = 1
@@ -391,7 +390,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 12)
 		end
 	elseif spellId == 307079 and self.vb.phase < 2 then--Synthesis
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.adaptiveCount = 0
 		self.vb.madnessBombCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
@@ -572,7 +571,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		elseif (self.vb.anchorCount == 2 and self:IsMythic()) or self.vb.anchorCount == 3 then
 			--Boon of Black Prince can be used as a backup but it's NOT as consistent and introduces a 3 second variation to elements. Should only be used if this can't be
 			--It may be wise to move timer canceling for phase 2/2.5 to boon but timer starting stay at anchor event
-			self.vb.phase = 3
+			self:SetStage(3)
 			self.vb.adaptiveCount = 0
 			self.vb.TentacleCount = 0
 			self.vb.DarknessCount = 0
@@ -621,7 +620,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			end
 		else
 			--he hangs around in tunnel for 10%
-			self.vb.phase = 2.5
+			self:SetStage(2.5)
 			self.vb.adaptiveCount = 0
 			self.vb.madnessBombCount = 0
 			warnSynthesisOver:Show()

@@ -6075,7 +6075,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--spec
-	if (loadTable.spec.Enabled) then
+	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.spec.Enabled) then
 		local canCheckTalents = true
 		
 		if (passLoadClass) then
@@ -6116,7 +6116,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--talents
-	if (loadTable.talent.Enabled) then
+	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.talent.Enabled) then
 		local talentsInUse = DF:GetCharacterTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
@@ -6131,7 +6131,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--pvptalent
-	if (loadTable.pvptalent.Enabled) then
+	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.pvptalent.Enabled) then
 		local talentsInUse = DF:GetCharacterPvPTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
@@ -6168,7 +6168,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--affix
-	if (loadTable.affix.Enabled) then
+	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.affix.Enabled) then
 		local isInMythicDungeon = C_ChallengeMode.IsChallengeModeActive()
 		if (not isInMythicDungeon) then
 			return false
@@ -6318,21 +6318,23 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, classGroup)
 		
 		--create the radio group for character spec
-			local specs = {}
-			for _, specID in ipairs (DF:GetClassSpecIDs (select (2, UnitClass ("player")))) do
-				local specID, specName, specDescription, specIcon, specBackground, specRole, specClass = DetailsFramework.GetSpecializationInfoByID (specID)
-				tinsert (specs, {
-					name = specName,
-					set = f.OnRadioCheckboxClick,
-					param = specID,
-					get = function() return f.OptionsTable.spec [specID] or f.OptionsTable.spec [specID..""] end,
-					texture = specIcon,
-				})
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+				local specs = {}
+				for _, specID in ipairs (DF:GetClassSpecIDs (select (2, UnitClass ("player")))) do
+					local specID, specName, specDescription, specIcon, specBackground, specRole, specClass = DetailsFramework.GetSpecializationInfoByID (specID)
+					tinsert (specs, {
+						name = specName,
+						set = f.OnRadioCheckboxClick,
+						param = specID,
+						get = function() return f.OptionsTable.spec [specID] or f.OptionsTable.spec [specID..""] end,
+						texture = specIcon,
+					})
+				end
+				local specGroup = DF:CreateRadionGroup (f, specs, name, {width = 200, height = 200, title = "Character Spec"}, {offset_x = 130, amount_per_line = 4})
+				specGroup:SetPoint ("topleft", f, "topleft", anchorPositions.spec [1], anchorPositions.spec [2])
+				specGroup.DBKey = "spec"
+				tinsert (f.AllRadioGroups, specGroup)
 			end
-			local specGroup = DF:CreateRadionGroup (f, specs, name, {width = 200, height = 200, title = "Character Spec"}, {offset_x = 130, amount_per_line = 4})
-			specGroup:SetPoint ("topleft", f, "topleft", anchorPositions.spec [1], anchorPositions.spec [2])
-			specGroup.DBKey = "spec"
-			tinsert (f.AllRadioGroups, specGroup)
 			
 		--create radio group for character races
 			local raceList = {}
@@ -6350,198 +6352,202 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, raceGroup)
 			
 		--create radio group for talents
-			local talentList = {}
-			for _, talentTable in ipairs (DF:GetCharacterTalents()) do
-				tinsert (talentList, {
-					name = talentTable.Name, 
-					set = f.OnRadioCheckboxClick,
-					param = talentTable.ID,
-					get = function() return f.OptionsTable.talent [talentTable.ID] or f.OptionsTable.talent [talentTable.ID .. ""] end,
-					texture = talentTable.Texture,
-				})
-			end
-			local talentGroup = DF:CreateRadionGroup (f, talentList, name, {width = 200, height = 200, title = "Characer Talents"}, {offset_x = 150, amount_per_line = 3})
-			talentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.talent [1], anchorPositions.talent [2])
-			talentGroup.DBKey = "talent"
-			tinsert (f.AllRadioGroups, talentGroup)
-			f.TalentGroup = talentGroup
-			
-			do
-				--create a frame to show talents selected in other specs or characters
-				local otherTalents = CreateFrame ("frame", nil, f, "BackdropTemplate")
-				otherTalents:SetSize (26, 26)
-				otherTalents:SetPoint ("left", talentGroup.Title.widget, "right", 10, -2)
-				otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
-				otherTalents.Texture:SetAllPoints()
-				
-				local removeTalent = function (_, _, talentID)
-					f.OptionsTable.talent [talentID] = nil
-					GameCooltip2:Hide()
-					f.OnRadioStateChanged (talentGroup, f.OptionsTable [talentGroup.DBKey])
-					f.CanShowTalentWarning()
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+				local talentList = {}
+				for _, talentTable in ipairs (DF:GetCharacterTalents()) do
+					tinsert (talentList, {
+						name = talentTable.Name, 
+						set = f.OnRadioCheckboxClick,
+						param = talentTable.ID,
+						get = function() return f.OptionsTable.talent [talentTable.ID] or f.OptionsTable.talent [talentTable.ID .. ""] end,
+						texture = talentTable.Texture,
+					})
 				end
-				
-				local buildTalentMenu = function()
-					local playerTalents = DF:GetCharacterTalents()
-					local indexedTalents = {}
-					for _, talentTable in ipairs (playerTalents) do
-						tinsert (indexedTalents, talentTable.ID)
+				local talentGroup = DF:CreateRadionGroup (f, talentList, name, {width = 200, height = 200, title = "Characer Talents"}, {offset_x = 150, amount_per_line = 3})
+				talentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.talent [1], anchorPositions.talent [2])
+				talentGroup.DBKey = "talent"
+				tinsert (f.AllRadioGroups, talentGroup)
+				f.TalentGroup = talentGroup
+			
+				do
+					--create a frame to show talents selected in other specs or characters
+					local otherTalents = CreateFrame ("frame", nil, f, "BackdropTemplate")
+					otherTalents:SetSize (26, 26)
+					otherTalents:SetPoint ("left", talentGroup.Title.widget, "right", 10, -2)
+					otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
+					otherTalents.Texture:SetAllPoints()
+					
+					local removeTalent = function (_, _, talentID)
+						f.OptionsTable.talent [talentID] = nil
+						GameCooltip2:Hide()
+						f.OnRadioStateChanged (talentGroup, f.OptionsTable [talentGroup.DBKey])
+						f.CanShowTalentWarning()
 					end
 					
-					--talents selected to load
-					GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
-					GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
-					
-					for talentID, _ in pairs (f.OptionsTable.talent) do
-						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
-							local talentID, name, texture, selected, available = GetTalentInfoByID (talentID)
-							if (name) then
-								GameCooltip2:AddLine (name)
-								GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
-								GameCooltip2:AddMenu (1, removeTalent, talentID)
+					local buildTalentMenu = function()
+						local playerTalents = DF:GetCharacterTalents()
+						local indexedTalents = {}
+						for _, talentTable in ipairs (playerTalents) do
+							tinsert (indexedTalents, talentTable.ID)
+						end
+						
+						--talents selected to load
+						GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
+						GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
+						
+						for talentID, _ in pairs (f.OptionsTable.talent) do
+							if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+								local talentID, name, texture, selected, available = GetTalentInfoByID (talentID)
+								if (name) then
+									GameCooltip2:AddLine (name)
+									GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
+									GameCooltip2:AddMenu (1, removeTalent, talentID)
+								end
 							end
 						end
 					end
-				end
+					
+					otherTalents.CoolTip = {
+						Type = "menu",
+						BuildFunc = buildTalentMenu,
+						OnEnterFunc = function (self) end,
+						OnLeaveFunc = function (self) end,
+						FixedValue = "none",
+						ShowSpeed = 0.05,
+						Options = function()
+							GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
+							GameCooltip2:SetOption ("TextColor", "orange")
+							GameCooltip2:SetOption ("TextSize", 12)
+							GameCooltip2:SetOption ("FixedWidth", 220)
+							GameCooltip2:SetOption ("ButtonsYMod", -4)
+							GameCooltip2:SetOption ("YSpacingMod", -4)
+							GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
+							
+							GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
+							
+							local preset2_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+							local gray_table = {0.37, 0.37, 0.37, 0.95}
+							local black_table = {0.2, 0.2, 0.2, 1}
+							GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
+							GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
+						end,
+					}
+					GameCooltip2:CoolTipInject (otherTalents)
 				
-				otherTalents.CoolTip = {
-					Type = "menu",
-					BuildFunc = buildTalentMenu,
-					OnEnterFunc = function (self) end,
-					OnLeaveFunc = function (self) end,
-					FixedValue = "none",
-					ShowSpeed = 0.05,
-					Options = function()
-						GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
-						GameCooltip2:SetOption ("TextColor", "orange")
-						GameCooltip2:SetOption ("TextSize", 12)
-						GameCooltip2:SetOption ("FixedWidth", 220)
-						GameCooltip2:SetOption ("ButtonsYMod", -4)
-						GameCooltip2:SetOption ("YSpacingMod", -4)
-						GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
-						
-						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
-						
-						local preset2_backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
-						local gray_table = {0.37, 0.37, 0.37, 0.95}
-						local black_table = {0.2, 0.2, 0.2, 1}
-						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
-						GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
-					end,
-				}
-				GameCooltip2:CoolTipInject (otherTalents)
-			
-				function f.CanShowTalentWarning()
-					local playerTalents = DF:GetCharacterTalents()
-					local indexedTalents = {}
-					for _, talentTable in ipairs (playerTalents) do
-						tinsert (indexedTalents, talentTable.ID)
-					end
-					for talentID, _ in pairs (f.OptionsTable.talent) do
-						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
-							otherTalents:Show()
-							return
+					function f.CanShowTalentWarning()
+						local playerTalents = DF:GetCharacterTalents()
+						local indexedTalents = {}
+						for _, talentTable in ipairs (playerTalents) do
+							tinsert (indexedTalents, talentTable.ID)
 						end
+						for talentID, _ in pairs (f.OptionsTable.talent) do
+							if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+								otherTalents:Show()
+								return
+							end
+						end
+						otherTalents:Hide()
 					end
-					otherTalents:Hide()
 				end
 			end
 			
 		--create radio group for pvp talents
-			local pvpTalentList = {}
-			for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
-				tinsert (pvpTalentList, {
-					name = talentTable.Name, 
-					set = f.OnRadioCheckboxClick,
-					param = talentTable.ID,
-					get = function() return f.OptionsTable.pvptalent [talentTable.ID] or f.OptionsTable.pvptalent [talentTable.ID .. ""] end,
-					texture = talentTable.Texture,
-				})
-			end
-			local pvpTalentGroup = DF:CreateRadionGroup (f, pvpTalentList, name, {width = 200, height = 200, title = "Characer PvP Talents"}, {offset_x = 150, amount_per_line = 3})
-			pvpTalentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.pvptalent [1], anchorPositions.pvptalent [2])
-			pvpTalentGroup.DBKey = "pvptalent"
-			tinsert (f.AllRadioGroups, pvpTalentGroup)
-			f.PvPTalentGroup = pvpTalentGroup
-			
-			do
-				--create a frame to show talents selected in other specs or characters
-				local otherTalents = CreateFrame ("frame", nil, f, "BackdropTemplate")
-				otherTalents:SetSize (26, 26)
-				otherTalents:SetPoint ("left", pvpTalentGroup.Title.widget, "right", 10, -2)
-				otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
-				otherTalents.Texture:SetAllPoints()
-				
-				local removeTalent = function (_, _, talentID)
-					f.OptionsTable.pvptalent [talentID] = nil
-					GameCooltip2:Hide()
-					f.OnRadioStateChanged (pvpTalentGroup, f.OptionsTable [pvpTalentGroup.DBKey])
-					f.CanShowPvPTalentWarning()
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+				local pvpTalentList = {}
+				for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
+					tinsert (pvpTalentList, {
+						name = talentTable.Name, 
+						set = f.OnRadioCheckboxClick,
+						param = talentTable.ID,
+						get = function() return f.OptionsTable.pvptalent [talentTable.ID] or f.OptionsTable.pvptalent [talentTable.ID .. ""] end,
+						texture = talentTable.Texture,
+					})
 				end
+				local pvpTalentGroup = DF:CreateRadionGroup (f, pvpTalentList, name, {width = 200, height = 200, title = "Characer PvP Talents"}, {offset_x = 150, amount_per_line = 3})
+				pvpTalentGroup:SetPoint ("topleft", f, "topleft", anchorPositions.pvptalent [1], anchorPositions.pvptalent [2])
+				pvpTalentGroup.DBKey = "pvptalent"
+				tinsert (f.AllRadioGroups, pvpTalentGroup)
+				f.PvPTalentGroup = pvpTalentGroup
 				
-				local buildTalentMenu = function()
-					local playerTalents = DF:GetCharacterPvPTalents()
-					local indexedTalents = {}
-					for _, talentTable in ipairs (playerTalents) do
-						tinsert (indexedTalents, talentTable.ID)
+				do
+					--create a frame to show talents selected in other specs or characters
+					local otherTalents = CreateFrame ("frame", nil, f, "BackdropTemplate")
+					otherTalents:SetSize (26, 26)
+					otherTalents:SetPoint ("left", pvpTalentGroup.Title.widget, "right", 10, -2)
+					otherTalents.Texture = DF:CreateImage (otherTalents, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 24, 24)
+					otherTalents.Texture:SetAllPoints()
+					
+					local removeTalent = function (_, _, talentID)
+						f.OptionsTable.pvptalent [talentID] = nil
+						GameCooltip2:Hide()
+						f.OnRadioStateChanged (pvpTalentGroup, f.OptionsTable [pvpTalentGroup.DBKey])
+						f.CanShowPvPTalentWarning()
 					end
 					
-					--talents selected to load
-					GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
-					GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
-					
-					for talentID, _ in pairs (f.OptionsTable.pvptalent) do
-						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
-							local _, name, texture = GetPvpTalentInfoByID (talentID)
-							if (name) then
-								GameCooltip2:AddLine (name)
-								GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
-								GameCooltip2:AddMenu (1, removeTalent, talentID)
+					local buildTalentMenu = function()
+						local playerTalents = DF:GetCharacterPvPTalents()
+						local indexedTalents = {}
+						for _, talentTable in ipairs (playerTalents) do
+							tinsert (indexedTalents, talentTable.ID)
+						end
+						
+						--talents selected to load
+						GameCooltip2:AddLine ("select a talent to remove it (added from a different spec or character)", "", 1, "orange", "orange", 9)
+						GameCooltip2:AddLine ("$div", nil, nil, -1, -1)
+						
+						for talentID, _ in pairs (f.OptionsTable.pvptalent) do
+							if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+								local _, name, texture = GetPvpTalentInfoByID (talentID)
+								if (name) then
+									GameCooltip2:AddLine (name)
+									GameCooltip2:AddIcon (texture, 1, 1, 16, 16, .1, .9, .1, .9)
+									GameCooltip2:AddMenu (1, removeTalent, talentID)
+								end
 							end
 						end
 					end
-				end
+					
+					otherTalents.CoolTip = {
+						Type = "menu",
+						BuildFunc = buildTalentMenu,
+						OnEnterFunc = function (self) end,
+						OnLeaveFunc = function (self) end,
+						FixedValue = "none",
+						ShowSpeed = 0.05,
+						Options = function()
+							GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
+							GameCooltip2:SetOption ("TextColor", "orange")
+							GameCooltip2:SetOption ("TextSize", 12)
+							GameCooltip2:SetOption ("FixedWidth", 220)
+							GameCooltip2:SetOption ("ButtonsYMod", -4)
+							GameCooltip2:SetOption ("YSpacingMod", -4)
+							GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
+							
+							GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
+							
+							local preset2_backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
+							local gray_table = {0.37, 0.37, 0.37, 0.95}
+							local black_table = {0.2, 0.2, 0.2, 1}
+							GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
+							GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
+						end,
+					}
+					GameCooltip2:CoolTipInject (otherTalents)
 				
-				otherTalents.CoolTip = {
-					Type = "menu",
-					BuildFunc = buildTalentMenu,
-					OnEnterFunc = function (self) end,
-					OnLeaveFunc = function (self) end,
-					FixedValue = "none",
-					ShowSpeed = 0.05,
-					Options = function()
-						GameCooltip2:SetOption ("TextFont", "Friz Quadrata TT")
-						GameCooltip2:SetOption ("TextColor", "orange")
-						GameCooltip2:SetOption ("TextSize", 12)
-						GameCooltip2:SetOption ("FixedWidth", 220)
-						GameCooltip2:SetOption ("ButtonsYMod", -4)
-						GameCooltip2:SetOption ("YSpacingMod", -4)
-						GameCooltip2:SetOption ("IgnoreButtonAutoHeight", true)
-						
-						GameCooltip2:SetColor (1, 0.5, 0.5, 0.5, 0)
-						
-						local preset2_backdrop = {edgeFile = [[Interface\Buttons\WHITE8X8]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile = true, edgeSize = 1, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
-						local gray_table = {0.37, 0.37, 0.37, 0.95}
-						local black_table = {0.2, 0.2, 0.2, 1}
-						GameCooltip2:SetBackdrop (1, preset2_backdrop, gray_table, black_table)
-						GameCooltip2:SetBackdrop (2, preset2_backdrop, gray_table, black_table)
-					end,
-				}
-				GameCooltip2:CoolTipInject (otherTalents)
-			
-				function f.CanShowPvPTalentWarning()
-					local playerTalents = DF:GetCharacterPvPTalents()
-					local indexedTalents = {}
-					for _, talentTable in ipairs (playerTalents) do
-						tinsert (indexedTalents, talentTable.ID)
-					end
-					for talentID, _ in pairs (f.OptionsTable.pvptalent) do
-						if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
-							otherTalents:Show()
-							return
+					function f.CanShowPvPTalentWarning()
+						local playerTalents = DF:GetCharacterPvPTalents()
+						local indexedTalents = {}
+						for _, talentTable in ipairs (playerTalents) do
+							tinsert (indexedTalents, talentTable.ID)
 						end
+						for talentID, _ in pairs (f.OptionsTable.pvptalent) do
+							if (type (talentID) == "number" and not DF.table.find (indexedTalents, talentID)) then
+								otherTalents:Show()
+								return
+							end
+						end
+						otherTalents:Hide()
 					end
-					otherTalents:Hide()
 				end
 			end
 
@@ -6576,23 +6582,25 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, roleTypesGroup)
 		
 		--create radio group for mythic+ affixes
-			local affixes = {}
-			for i = 2, 1000 do
-				local affixName, desc, texture = C_ChallengeMode.GetAffixInfo (i)
-				if (affixName) then
-					tinsert (affixes, {
-						name = affixName, 
-						set = f.OnRadioCheckboxClick,
-						param = i, 
-						get = function() return f.OptionsTable.affix [i] or f.OptionsTable.affix [i .. ""] end,
-						texture = texture,
-					})
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+				local affixes = {}
+				for i = 2, 1000 do
+					local affixName, desc, texture = C_ChallengeMode.GetAffixInfo (i)
+					if (affixName) then
+						tinsert (affixes, {
+							name = affixName, 
+							set = f.OnRadioCheckboxClick,
+							param = i, 
+							get = function() return f.OptionsTable.affix [i] or f.OptionsTable.affix [i .. ""] end,
+							texture = texture,
+						})
+					end
 				end
+				local affixTypesGroup = DF:CreateRadionGroup (f, affixes, name, {width = 200, height = 200, title = "M+ Affixes"})
+				affixTypesGroup:SetPoint ("topleft", f, "topleft", anchorPositions.affix [1], anchorPositions.affix [2])
+				affixTypesGroup.DBKey = "affix"
+				tinsert (f.AllRadioGroups, affixTypesGroup)
 			end
-			local affixTypesGroup = DF:CreateRadionGroup (f, affixes, name, {width = 200, height = 200, title = "M+ Affixes"})
-			affixTypesGroup:SetPoint ("topleft", f, "topleft", anchorPositions.affix [1], anchorPositions.affix [2])
-			affixTypesGroup.DBKey = "affix"
-			tinsert (f.AllRadioGroups, affixTypesGroup)
 		
 		--text entries functions
 			local textEntryRefresh = function (self)
@@ -6644,7 +6652,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllTextEntries, mapIDEditbox)
 
 		function f.Refresh (self)
-			do
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 				--update the talents (might have changed if the player changed its specialization)
 				local talentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterTalents()) do
@@ -6659,7 +6667,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 				DetailsFrameworkLoadConditionsPanel.TalentGroup:SetOptions (talentList)
 			end
 			
-			do
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 				local pvpTalentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
 					tinsert (pvpTalentList, {
@@ -6684,8 +6692,10 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 				textEntry:Refresh()
 			end
 			
-			DetailsFrameworkLoadConditionsPanel.CanShowTalentWarning()
-			DetailsFrameworkLoadConditionsPanel.CanShowPvPTalentWarning()
+			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+				DetailsFrameworkLoadConditionsPanel.CanShowTalentWarning()
+				DetailsFrameworkLoadConditionsPanel.CanShowPvPTalentWarning()
+			end
 		end
 			
 	end
@@ -7646,8 +7656,8 @@ DF.PowerFrameFunctions = {
 	end,
 	
 	--> when a event different from unit_power_update is triggered, update which type of power the unit should show
-	UpdatePowerInfo = function (self)
-		if (self.Settings.ShowAlternatePower) then
+	UpdatePowerInfo = function (self)		
+		if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and self.Settings.ShowAlternatePower) then -- not available in classic
 			local barID = UnitPowerBarID(self.displayedUnit)
 			local barInfo = GetUnitPowerBarInfoByID(barID)
 			--local name, tooltip, cost = GetUnitPowerBarStringsByID(barID);
@@ -8320,11 +8330,12 @@ DF.CastFrameFunctions = {
 	
 	UNIT_SPELLCAST_START = function (self, unit)
 
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
+		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
 		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
 			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, castID, spellID = UnitCastingInfo (unit)
+			notInterruptible = false
 		end
 		
 		--> is valid?

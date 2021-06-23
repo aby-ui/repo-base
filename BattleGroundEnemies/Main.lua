@@ -1,12 +1,22 @@
 local addonName, Data = ...
-local L = LibStub("AceLocale-3.0"):GetLocale("BattleGroundEnemies")
+local L = Data.L
 local LSM = LibStub("LibSharedMedia-3.0")
 local DRList = LibStub("DRList-1.0")
 local LibRaces = LibStub("LibRaces-1.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 --LSM:Register("font", "PT Sans Narrow Bold", [[Interface\AddOns\BattleGroundEnemies\Fonts\PT Sans Narrow Bold.ttf]])
 LSM:Register("statusbar", "UI-StatusBar", "Interface\\TargetingFrame\\UI-StatusBar")
 
 local BattleGroundEnemies = CreateFrame("Frame", "BattleGroundEnemies")
+BattleGroundEnemies.Counter = {}
+
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local isTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+
+
+
+-- for Clique Support
+ClickCastFrames = ClickCastFrames or {}
 
 
 --upvalues
@@ -22,8 +32,9 @@ local random = math.random
 local tinsert = table.insert
 local tremove = table.remove
 
-
+local C_Covenants = C_Covenants
 local C_PvP = C_PvP
+local CompactUnitFrame_UpdateHealPrediction = CompactUnitFrame_UpdateHealPrediction
 local GetArenaCrowdControlInfo = C_PvP.GetArenaCrowdControlInfo
 local RequestCrowdControlSpell = C_PvP.RequestCrowdControlSpell
 local IsInBrawl = C_PvP.IsInBrawl
@@ -32,6 +43,7 @@ local GetBattlefieldArenaFaction = GetBattlefieldArenaFaction
 local GetBattlefieldScore = GetBattlefieldScore
 local GetBattlefieldTeamInfo = GetBattlefieldTeamInfo
 local GetBestMapForUnit = C_Map.GetBestMapForUnit
+local GetMaxPlayerLevel = GetMaxPlayerLevel
 local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetNumGroupMembers = GetNumGroupMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
@@ -39,7 +51,9 @@ local GetSpellInfo = GetSpellInfo
 local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
 local InCombatLockdown = InCombatLockdown
+local isInGroup =  IsInGroup
 local IsInInstance = IsInInstance
+local IsInRaid = IsInRaid
 local IsItemInRange = IsItemInRange
 local IsRatedBattleground = C_PvP.IsRatedBattleground
 local PlaySound = PlaySound
@@ -47,10 +61,15 @@ local PowerBarColor = PowerBarColor --table
 local RaidNotice_AddMessage = RaidNotice_AddMessage
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
-local SetMapToCurrentZone = SetMapToCurrentZone
+local SetRaidTargetIconTexture = SetRaidTargetIconTexture
+local SpellGetVisibilityInfo = SpellGetVisibilityInfo
+local SpellIsPriorityAura = SpellIsPriorityAura
+local SpellIsSelfBuff = SpellIsSelfBuff
+local UnitAffectingCombat = UnitAffectingCombat
 local UnitDebuff = UnitDebuff
 local UnitExists = UnitExists
 --local UnitGUID = UnitGUID
+local UnitFactionGroup = UnitFactionGroup
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitIsDead = UnitIsDead
@@ -65,7 +84,6 @@ local UnitName = UnitName
 BattleGroundEnemies.BattleGroundDebuffs = {} --contains battleground specific enemy debbuffs to watchout for of the current active battlefield
 --BattleGroundEnemies.IsRatedBG
 local playerFaction = UnitFactionGroup("player")
-local PlayerDetails = {}
 local PlayerButton
 local PlayerLevel = UnitLevel("player")
 local MaxLevel = GetMaxPlayerLevel()
@@ -75,12 +93,55 @@ local CurrentMapID --contains the map id of the current active battleground
 
 
 
-
 BattleGroundEnemies:SetScript("OnEvent", function(self, event, ...)
+	self.Counter[event] = (self.Counter[event] or 0) + 1
 	BattleGroundEnemies:Debug("BattleGroundEnemies OnEvent", event, ...)
 	self[event](self, ...) 
 end)
 BattleGroundEnemies:Hide()
+
+function BattleGroundEnemies:ShowTooltip(owner, func)
+	if self.db.profile.ShowTooltips then
+		GameTooltip:SetOwner(owner, "ANCHOR_RIGHT", 0, 0)
+		func()
+		GameTooltip:Show()
+	end
+end
+
+
+function BattleGroundEnemies:GetColoredName(playerDetails)
+	local name = playerDetails.PlayerName
+	local classTag = playerDetails.PlayerClass
+	local tbl = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[classTag] or RAID_CLASS_COLORS[classTag] or GRAY_FONT_COLOR
+	return ("|cFF%02x%02x%02x%s|r"):format(tbl.r*255, tbl.g*255, tbl.b*255, name)
+end
+
+local function FindAuraBySpellID(unitID, spellID, filter)
+	if not unitID or not spellID then return end
+
+	for i = 1, 40 do
+		local name, _, amount, debuffType, duration, expirationTime, unitCaster, _, _, id, _, _, _, _, _, value2, value3, value4 = UnitAura(unitID, i, filter)
+		if not id then return end -- no more auras
+
+		if spellID == id then
+			return i, name, _, amount, debuffType, duration, expirationTime, unitCaster, _, _, id, _, _, _, _, _, value2, value3, value4
+		end
+	end
+end
+
+function BattleGroundEnemies:ShowAuraTooltip(unitID, spellID, filter)
+	if unitID and filter then
+		local index = FindAuraBySpellID(unitID, spellID, filter)
+		if index then 
+			return GameTooltip:SetUnitAura(unitID, index, filter)
+		end
+	else
+		GameTooltip:SetSpellByID(spellID)
+	end
+end
+
+
+
 
 
 
@@ -119,30 +180,45 @@ local function CreatedebugFrame()
 	return f
 end
 
-BattleGroundEnemies.ArenaEnemyIDToPlayerButton = {} --key = arenaID: arenaX, value = playerButton of that unitID
+BattleGroundEnemies.ArenaIDToPlayerButton = {} --key = arenaID: arenaX, value = playerButton of that unitID
 
 BattleGroundEnemies.Enemies = CreateFrame("Frame", nil, BattleGroundEnemies)
+BattleGroundEnemies.Enemies.Counter = {}
+
+
 BattleGroundEnemies.Enemies.OnUpdate = {} --key = number from 1 to x, value = enemyButton
 BattleGroundEnemies.Enemies:Hide()
 BattleGroundEnemies.Enemies:SetScript("OnEvent", function(self, event, ...)
+	self.Counter[event] = (self.Counter[event] or 0) + 1
 	BattleGroundEnemies:Debug("Enemies OnEvent", event, ...)
 	self[event](self, ...)
 end)
 
 
 BattleGroundEnemies.Allies = CreateFrame("Frame", nil, BattleGroundEnemies) --index = name, value = table
+BattleGroundEnemies.Allies.Counter = {}
+BattleGroundEnemies.Allies.groupMembers = {}
+BattleGroundEnemies.Allies.GuidToGroupMember = {}
+
+
 BattleGroundEnemies.Allies:Hide()
-BattleGroundEnemies.Allies.UnitIDToAllyButton = {} --index = unitID ("raid"..i) of raidmember, value = Allytable of that group member
 BattleGroundEnemies.Allies:SetScript("OnEvent", function(self, event, ...)
+	self.Counter[event] = (self.Counter[event] or 0) + 1
+
 	BattleGroundEnemies:Debug("Allies OnEvent", event, ...)
 	self[event](self, ...)
 end)
 
 
 
-BattleGroundEnemies:RegisterEvent("PLAYER_LOGIN")
-BattleGroundEnemies:RegisterEvent("PLAYER_ENTERING_WORLD")
+BattleGroundEnemies:RegisterEvent("PLAYER_LOGIN") --Fired on reload UI and on initial loading screen
+BattleGroundEnemies:RegisterEvent("PLAYER_ENTERING_WORLD") -- fired on reload UI and on every loading screen (for switching zones, intances etc)
+BattleGroundEnemies:RegisterEvent("GROUP_ROSTER_UPDATE")
+BattleGroundEnemies:RegisterEvent("PARTY_LEADER_CHANGED")
 BattleGroundEnemies:RegisterEvent("UI_SCALE_CHANGED")
+
+
+
 
 function BattleGroundEnemies:UI_SCALE_CHANGED()
 	if not InCombatLockdown() then 
@@ -162,6 +238,7 @@ BattleGroundEnemies:SetScale(UIParent:GetScale())
 
 BattleGroundEnemies:SetScript("OnShow", function(self) 
 	if not self.TestmodeActive then
+		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")--stopping the onupdate script should do it but other addons make "UPDATE_BATTLEFIELD_SCORE" trigger aswell
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -169,17 +246,31 @@ BattleGroundEnemies:SetScript("OnShow", function(self)
 		self:RegisterEvent("ARENA_OPPONENT_UPDATE")
 		self:RegisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE")
 		self:RegisterEvent("ARENA_COOLDOWNS_UPDATE")
+		self:RegisterEvent("RAID_TARGET_UPDATE")
+		
 		-- self:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 		self:RegisterEvent("UNIT_TARGET")
 		self:RegisterEvent("PLAYER_ALIVE")
 		self:RegisterEvent("PLAYER_UNGHOST")
+
+		self:RegisterEvent("UNIT_HEALTH")
+		if isTBCC then 
+			self:RegisterEvent("UNIT_HEALTH_FREQUENT")
+		else
+			self:RegisterEvent("UNIT_HEAL_PREDICTION")
+			self:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+			self:RegisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
+		end
+		self:RegisterEvent("UNIT_MAXHEALTH")
+		self:RegisterEvent("UNIT_POWER_FREQUENT") 
+
 		
 		RequestFrame:Show()
-		self:RegisterEvent("UPDATE_BATTLEFIELD_SCORE")--stopping the onupdate script should do it but other addons make "UPDATE_BATTLEFIELD_SCORE" trigger aswell
 	else
 		RequestFrame:Hide()
 	end
 end)
+
 
 BattleGroundEnemies:SetScript("OnHide", function(self)
 	self:UnregisterEvent("UPDATE_BATTLEFIELD_SCORE")--stopping the onupdate script should do it but other addons make "UPDATE_BATTLEFIELD_SCORE" trigger aswell
@@ -187,15 +278,27 @@ BattleGroundEnemies:SetScript("OnHide", function(self)
 	self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
 	self:UnregisterEvent("PLAYER_TARGET_CHANGED")
 	self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
-	
 	self:UnregisterEvent("ARENA_OPPONENT_UPDATE")--fires when a arena enemy appears and a frame is ready to be shown
 	self:UnregisterEvent("ARENA_CROWD_CONTROL_SPELL_UPDATE") --fires when data requested by C_PvP.RequestCrowdControlSpell(unitID) is available
 	self:UnregisterEvent("ARENA_COOLDOWNS_UPDATE") --fires when a arenaX enemy used a trinket or racial to break cc, C_PvP.GetArenaCrowdControlInfo(unitID) shoudl be called afterwards to get used CCs
+	self:UnregisterEvent("RAID_TARGET_UPDATE")
 
 	-- self:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	self:UnregisterEvent("UNIT_TARGET")
 	self:UnregisterEvent("PLAYER_ALIVE")
 	self:UnregisterEvent("PLAYER_UNGHOST")
+	
+	self:UnregisterEvent("UNIT_HEALTH")
+	if isTBCC then 
+		self:UnregisterEvent("UNIT_HEALTH_FREQUENT")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+		self:UnregisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+		self:UnregisterEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
+	end
+	self:UnregisterEvent("UNIT_MAXHEALTH")
+	self:UnregisterEvent("UNIT_POWER_FREQUENT") 
+
 	self.BGSize = false
 end)
 
@@ -203,23 +306,26 @@ do
 	local TimeSinceLastOnUpdate = 0
 	local UpdatePeroid = 0.1 --update every 0.1 seconds
 	function BattleGroundEnemies.Enemies:RealPlayersOnUpdate(elapsed)
-		--BattleGroundEnemies:Debug("läuft")
 		TimeSinceLastOnUpdate = TimeSinceLastOnUpdate + elapsed
 		if TimeSinceLastOnUpdate > UpdatePeroid then
 			if BattleGroundEnemies.PlayerIsAlive then
+
 				local onUpdate = self.OnUpdate
 				for i = 1, #onUpdate do
 					local enemyButton = onUpdate[i]
 					local unitIDs = enemyButton.UnitIDs
 					local activeUnitID = unitIDs.Active
-					if not unitIDs.CheckIfUnitExists or UnitExists(activeUnitID) then 
-					 
-						if unitIDs.UpdateHealth then
-							if unitIDs.UpdatePower then
-								enemyButton:UpdatePower(activeUnitID)
-							end
+
+					if UnitExists(activeUnitID) then 
+
+
+						-- we don't get health update events of targets of allies, so we have to use a onUpdate for that
+						if unitIDs.HasAllyUnitID then
+							enemyButton:UpdatePower(activeUnitID)
 							enemyButton:UpdateHealth(activeUnitID)
 						end
+
+						--Updates stuff that don't have events
 						enemyButton:UpdateRange(IsItemInRange(self.config.RangeIndicator_Range, activeUnitID))
 						enemyButton:UpdateTargets()
 					end
@@ -232,8 +338,6 @@ end
 
 BattleGroundEnemies.Enemies:SetScript("OnShow", function(self) 
 	if not BattleGroundEnemies.TestmodeActive then
-		self:RegisterEvent("UNIT_HEALTH") --fires when health of player, target, focus, nameplateX, arenaX, raidX updates
-		if self.bgSizeConfig.PowerBar_Enabled then self:RegisterEvent("UNIT_POWER_FREQUENT") end --fires when health of player, target, focus, nameplateX, arenaX, raidX updates
 		self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 		self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 		self:SetScript("OnUpdate", self.RealPlayersOnUpdate)
@@ -267,7 +371,6 @@ end
 BattleGroundEnemies.Allies:SetScript("OnShow", function(self) 
 	if not BattleGroundEnemies.TestmodeActive then
 		self:SetScript("OnUpdate", self.RealPlayersOnUpdate)
-		self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	else
 		self:SetScript("OnUpdate", nil)
 	end
@@ -277,89 +380,8 @@ BattleGroundEnemies.Allies:SetScript("OnHide", BattleGroundEnemies.Allies.Unregi
 
 
 -- if lets say raid1 leaves all remaining players get shifted up, so raid2 is the new raid1, raid 3 gets raid2 etc.
-function BattleGroundEnemies.Allies:GROUP_ROSTER_UPDATE()
-	
-	if not self then self = BattleGroundEnemies.Allies end -- for the C_Timer.After call
-	if InCombatLockdown() then C_Timer.After(1, self.GROUP_ROSTER_UPDATE) end--recheck in 1 second end
-	
-	wipe(self.UnitIDToAllyButton)
-	
-	local numGroupMembers = GetNumGroupMembers()
-	if numGroupMembers > 0 then
-		for i = 1, numGroupMembers do
-			
-			local allyName, _, _, _, _, classTag = GetRaidRosterInfo(i)
-			if allyName and classTag then
-			
-				local allyButton = self.Players[allyName]
-			
-				if allyName ~= PlayerDetails.PlayerName then
-				
-					local unit = "raid"..i --it happens that numGroupMembers is higher than the value of the maximal players for that battleground, for example 15 in a 10 man bg, thats why we wipe AllyUnitIDToAllyDetails
-					local targetUnitID = unit.."target"
-					
-					if allyButton and allyButton.unit ~= unit then -- ally has a new unitID now
-						
-						local targetEnemyButton = allyButton.Target
-						if targetEnemyButton then
-							--self:Debug("player", allyName, "has a new unit and targeted something")
-							if targetEnemyButton.UnitIDs.Active == allyButton.TargetUnitID then
-								targetEnemyButton.UnitIDs.Active = targetUnitID
-							end
-							if targetEnemyButton.UnitIDs.Ally == allyButton.TargetUnitID then
-								targetEnemyButton.UnitIDs.Ally = targetUnitID
-							end
-						end
-						
-						allyButton:SetLevel(UnitLevel(unit))
-						allyButton.unit = unit
-						if not InCombatLockdown() then
-							allyButton:SetAttribute('unit', unit)
-						else
-							C_Timer.After(1, self.GROUP_ROSTER_UPDATE)
-						end
-						
-						allyButton.TargetUnitID = targetUnitID
-						self.UnitIDToAllyButton[unit] = allyButton
-						allyButton:RegisterUnitEvent("UNIT_HEALTH", unit) --fires when health of player, target, focus, nameplateX, arenaX, raidX updates
-						allyButton:RegisterUnitEvent("UNIT_POWER_FREQUENT", unit) --fires when health of player, target, focus, nameplateX, arenaX, raidX updates
-						--allyButton:RegisterUnitEvent("UNIT_AURA", unit)
-					end
-					
-				else -- its the player
-					if allyButton and not allyButton:IsEventRegistered("UNIT_HEALTH") then
-						
-						if not InCombatLockdown() then
-							allyButton:SetAttribute('unit', "player")
-						else
-							C_Timer.After(1, self.GROUP_ROSTER_UPDATE)
-						end
-					
-						allyButton.unit = "player"
-						allyButton.TargetUnitID = "target"
-						
-						allyButton:RegisterUnitEvent("UNIT_HEALTH", "player") --fires when health of player, target, focus, nameplateX, arenaX, raidX updates
-						allyButton:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
-						--allyButton:RegisterUnitEvent("UNIT_AURA", "player")
-						
-						PlayerButton = allyButton
-					end					
-				end
-				
-			else
-				C_Timer.After(1, self.GROUP_ROSTER_UPDATE) --recheck in 1 second
-			end
-		end
-	end
-end
 
-function BattleGroundEnemies.Allies:GetAllybuttonByUnitID(unitID)
-	local uName, realm = UnitName(unitID)
-	if realm then
-		uName = uName.."-"..realm
-	end
-	return self.Players[uName]
-end
+
 
 BattleGroundEnemies.SetBasicPosition = function(frame, basicPoint, relativeTo, relativePoint, space)
 	frame:ClearAllPoints()
@@ -373,6 +395,8 @@ BattleGroundEnemies.SetBasicPosition = function(frame, basicPoint, relativeTo, r
 	frame:SetPoint('BOTTOM'..basicPoint, relativeTo, 'BOTTOM'..relativePoint, space, 0)
 end
 
+
+
 local function EnableShadowColor(fontString, enableShadow, shadowColor)
 	if shadowColor then fontString:SetShadowColor(unpack(shadowColor)) end
 	if enableShadow then 
@@ -382,7 +406,7 @@ local function EnableShadowColor(fontString, enableShadow, shadowColor)
 	end
 end
 
-function BattleGroundEnemies.CropImage(texture, width, height)
+function BattleGroundEnemies.CropImage(texture, width, height, hasTexcoords)
 	local left, right, top, bottom = 0.075, 0.925, 0.075, 0.925
 	local ratio = height / width
 	if ratio > 1 then --crop the sides
@@ -461,14 +485,15 @@ end
 
 local enemyButtonFunctions = {}
 do
-	function enemyButtonFunctions:RegisterForOnUpdate() --Add to OnUpdate
+	function enemyButtonFunctions:HasUnitID() --Add to OnUpdate
 		local unitIDs = self.UnitIDs
 		if not unitIDs.OnUpdate then
 			local i = #BattleGroundEnemies.Enemies.OnUpdate + 1
 			BattleGroundEnemies.Enemies.OnUpdate[i] = self
 			self.UnitIDs.OnUpdate = i
 		end
-		if unitIDs.CheckIfUnitExists and not UnitExists(unitIDs.Active) then return end
+		if not UnitExists(unitIDs.Active) then return end
+		self:UpdateRaidTargetIcon()
 		self:UpdateHealth(unitIDs.Active)
 		self:UpdatePower(unitIDs.Active)
 		self:SetLevel(UnitLevel(unitIDs.Active))
@@ -478,12 +503,8 @@ do
 		local unitIDs = self.UnitIDs
 		if unitIDs.Ally then 
 			unitIDs.Active = unitIDs.Ally
-			unitIDs.UpdateHealth = true
-			if self.config.PowerBar_Enabled then
-				unitIDs.UpdatePower = true
-			end
-			unitIDs.CheckIfUnitExists = true
-			self:RegisterForOnUpdate()
+			unitIDs.HasAllyUnitID = true
+			self:HasUnitID()
 		else
 			self:DeleteActiveUnitID()
 		end 
@@ -499,9 +520,7 @@ do
 		local onUpdate = unitIDs.OnUpdate
 		if onUpdate then
 			unitIDs.OnUpdate = false
-			unitIDs.UpdateHealth = false
-			unitIDs.UpdatePower = false
-			unitIDs.CheckIfUnitExists = false
+			unitIDs.HasAllyUnitID = false
 			local BGEEnemieOnUpdate = BattleGroundEnemies.Enemies.OnUpdate
 			tremove(BGEEnemieOnUpdate, onUpdate)
 			for i = onUpdate, #BGEEnemieOnUpdate do
@@ -513,31 +532,21 @@ do
 	
 	function enemyButtonFunctions:FetchAnotherUnitID()
 		local unitIDs = self.UnitIDs
-		unitIDs.CheckIfUnitExists = false -- we need to do UnitExists() for allytargets and Arena-UnitIDs since there is a delay of like 1 second
-		
-		if unitIDs.Arena then
-			unitIDs.Active = unitIDs.Arena
-			unitIDs.CheckIfUnitExists = true
-			self:RegisterForOnUpdate()
+
+		unitIDs.Active = unitIDs.Arena or unitIDs.Nameplate or unitIDs.Target or unitIDs.Focus
+		if unitIDs.Active then
+			self:HasUnitID()
 		else
-			unitIDs.Active = unitIDs.Nameplate or unitIDs.Target or unitIDs.Focus
-			if unitIDs.Active then
-				self:RegisterForOnUpdate()
-			else
-				self:FetchAnAllyUnitID()
-			end
+			self:FetchAnAllyUnitID()
 		end
 	end
 	
 	function enemyButtonFunctions:NowTargetedBy(allyButton)
 		local unitIDs = self.UnitIDs
 		local targetUnitID = allyButton.TargetUnitID
-		if not unitIDs.Active then 
-			unitIDs.Active = targetUnitID
-			self:RegisterForOnUpdate() 
-		end
 		if not unitIDs.Ally then
 			unitIDs.Ally = targetUnitID
+			self:FetchAnAllyUnitID()
 		end
 		
 		unitIDs.TargetedByEnemy[allyButton] = true
@@ -576,13 +585,6 @@ do
 		return BattleGroundEnemies.db.profile.Locked or self:GetParent():StartMoving()
 	end	
 	
-	function buttonFunctions:OnEnter()
-		self.SelectionHighlight:Show()
-	end	
-	
-	function buttonFunctions:OnLeave()
-		self.SelectionHighlight:Hide()
-	end	
 	
 	function buttonFunctions:OnDragStop()
 		local parent = self:GetParent()
@@ -607,27 +609,59 @@ do
 			self.Level:SetWidth(0)
 			self.Level:SetText(self.PlayerLevel)
 		else
-			self.Level:SetWidth(0.01)
+			self.Level:SetWidth(0.01) --we do that because the name is anhored right to the level and with this method the name moves more towards the edge
 		end
 	end
 	
 	function buttonFunctions:SetSpecAndRole()
-		local specData = Data.Classes[self.PlayerClass][self.PlayerSpecName]
-		self.PlayerRoleNumber = specData.roleNumber
-		self.PlayerRoleID = specData.roleID
-		self.Role.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(self.PlayerRoleID))
-		self.Spec.Icon:SetTexture(specData.specIcon)
-		self.PlayerSpecID = specData.specID
+		if isTBCC then
+			self.Spec.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.PlayerClass]))
+			self.Spec.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+		else
+			local specData = Data.Classes[self.PlayerClass][self.PlayerSpecName]
+			self.PlayerRoleNumber = specData.roleNumber
+			self.PlayerRoleID = specData.roleID
+			self.Role.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(self.PlayerRoleID))
+			self.Spec.Icon:SetTexture(specData.specIcon)
+			self.PlayerSpecID = specData.specID
+		end
 	end
 
+	function buttonFunctions:UpdateRaidTargetIcon()
+		local unit = self:GetUnitID()
+		if unit then
+			local index = GetRaidTargetIndex(unit)
+			if index then
+				SetRaidTargetIconTexture(self.RaidTargetIcon.Icon, index)
+				self.RaidTargetIcon:Show()
+				if index == 8 and (not self.RaidTargetIcon.HasIcon or self.RaidTargetIcon.HasIcon ~= 8) then
+					if BattleGroundEnemies.IsRatedBG and BattleGroundEnemies.db.profile.RBG.TargetCalling_NotificationEnable then
+						local path = LSM:Fetch("sound", BattleGroundEnemies.db.profile.RBG.TargetCalling_NotificationSound, true)
+						if path then
+							PlaySoundFile(path, "Master")
+						end
+					end 
+				end
+
+				self.RaidTargetIcon.HasIcon = index
+			else
+				self.RaidTargetIcon:Hide()
+				self.RaidTargetIcon.HasIcon = false
+			end
+		end
+	end
+
+
+
 	function buttonFunctions:ApplyButtonSettings()
+		self.config = self:GetParent().config
 		self.bgSizeConfig = self:GetParent().bgSizeConfig
 		local conf = self.bgSizeConfig
 		
 		self:SetWidth(conf.BarWidth)
 		self:SetHeight(conf.BarHeight)
 		
-		self:SetRangeIncicatorFrame()
+		self:ApplyRangeIndicatorSettings()
 		
 		--spec
 		self.Spec:ApplySettings()
@@ -638,19 +672,22 @@ do
 		
 		-- power
 		self.Power:SetHeight(conf.PowerBar_Enabled and conf.PowerBar_Height or 0.01)
-		self.Power:SetStatusBarTexture(LSM:Fetch("statusbar", conf.PowerBar_Texture))--self.Health:SetStatusBarTexture(137012)
+		self.Power:SetStatusBarTexture(LSM:Fetch("statusbar", conf.PowerBar_Texture))--self.healthBar:SetStatusBarTexture(137012)
 		self.Power.Background:SetVertexColor(unpack(conf.PowerBar_Background))
 		
 		-- health
-		self.Health:SetStatusBarTexture(LSM:Fetch("statusbar", conf.HealthBar_Texture))--self.Health:SetStatusBarTexture(137012)
-		self.Health.Background:SetVertexColor(unpack(conf.HealthBar_Background))
+		self.healthBar:SetStatusBarTexture(LSM:Fetch("statusbar", conf.HealthBar_Texture))--self.healthBar:SetStatusBarTexture(137012)
+		self.healthBar.Background:SetVertexColor(unpack(conf.HealthBar_Background))
 		
 		-- role
 		self.Role:ApplySettings()
+
+		-- role
+		self.Covenant:ApplySettings()
 		
 		-- level
-		
 		self.Level:ApplyFontStringSettings(self.config.LevelText_Fontsize, self.config.LevelText_Outline, self.config.LevelText_EnableTextshadow, self.config.LevelText_TextShadowcolor)
+		self.Level:SetTextColor(unpack(self.config.LevelText_Textcolor))
 		self:DisplayLevel()
 		
 	
@@ -659,9 +696,6 @@ do
 		
 		--MyFocus, indicating the current focus of the player
 		self.MyFocus:SetBackdropBorderColor(unpack(BattleGroundEnemies.db.profile.MyFocus_Color))
-		
-		--SelectionHighlight, highlighting the frame the mouse is currently on
-		self.SelectionHighlight:SetColorTexture(unpack(BattleGroundEnemies.db.profile.Highlight_Color))
 		
 		-- numerical target indicator
 		self.NumericTargetindicator:SetShown(conf.NumericTargetindicator_Enabled) 
@@ -682,7 +716,6 @@ do
 		self.Racial:ApplySettings()
 
 		-- objective and respawn
-		
 		self.ObjectiveAndRespawn:ApplySettings()
 		
 		--Dr Tracking
@@ -744,81 +777,119 @@ do
 		}
 		
 		function buttonFunctions:SetBindings()
-			
-			for i = 1, 3 do
-				local bindingType = self.config[mouseButtonNumberToBindingType[i]]
-			
-				if bindingType == "Target" then
-					self:SetAttribute('macrotext'..i,
-						'/cleartarget\n'..
-						'/targetexact '..self.PlayerName
-					)
-				elseif bindingType == "Focus" then
-					self:SetAttribute('macrotext'..i,
-						'/targetexact '..self.PlayerName..'\n'..
-						'/focus\n'..
-						'/targetlasttarget'
-					)
+
+			if not self.PlayerIsEnemy and BattleGroundEnemies.db.profile[self.PlayerType].UseClique then
+				BattleGroundEnemies:Debug("Clique used")
+				ClickCastFrames[self] = true
+			else
+				if ClickCastFrames[self] then
+					ClickCastFrames[self] = nil
+				end
 				
-				else -- Custom
-					local macrotext = BattleGroundEnemies.db.profile[self.PlayerType][mouseButtonNumberToBindingMacro[i]]:gsub("%%n", self.PlayerName)
-					self:SetAttribute('macrotext'..i, macrotext)
+				for i = 1, 3 do
+
+					self:RegisterForClicks('AnyUp')
+					self:SetAttribute('type1','macro')-- type1 = LEFT-Click
+					self:SetAttribute('type2','macro')-- type2 = Right-Click
+					self:SetAttribute('type3','macro')-- type3 = Middle-Click
+
+					local bindingType = self.config[mouseButtonNumberToBindingType[i]]
+				
+					if bindingType == "Target" then
+						self:SetAttribute('macrotext'..i,
+							'/cleartarget\n'..
+							'/targetexact '..self.PlayerName
+						)
+					elseif bindingType == "Focus" then
+						self:SetAttribute('macrotext'..i,
+							'/targetexact '..self.PlayerName..'\n'..
+							'/focus\n'..
+							'/targetlasttarget'
+						)
+					
+					else -- Custom
+						local macrotext = BattleGroundEnemies.db.profile[self.PlayerType][mouseButtonNumberToBindingMacro[i]]:gsub("%%n", self.PlayerName)
+						self:SetAttribute('macrotext'..i, macrotext)
+					end
 				end
 			end
 		end
 	end
 	
 	function buttonFunctions:UpdateHealth(unitID)
+		BattleGroundEnemies.Counter.UpdateHealth = (BattleGroundEnemies.Counter.UpdateHealth or 0) + 1
+
 		if UnitIsDeadOrGhost(unitID) then
 			BattleGroundEnemies:Debug("UpdateHealth", UnitName(unitID), "UnitIsDead")
 			self.ObjectiveAndRespawn:PlayerDied()
 		elseif self.ObjectiveAndRespawn.ActiveRespawnTimer then --player is alive again
 			self.ObjectiveAndRespawn.Cooldown:Clear()
 		end
-		self.Health:SetValue(UnitHealth(unitID)/UnitHealthMax(unitID))
+		self.healthBar:SetMinMaxValues(0, UnitHealthMax(unitID))
+		self.healthBar:SetValue(UnitHealth(unitID))
 	end
 
-	function buttonFunctions:SetRangeIncicatorFrame()
-		if self.config.RangeIndicator_Everything then
-			self.RangeIndicator = self
-		else
-			self.RangeIndicator = self.RangeIndicator_Frame
-			for frameName, enableRange in pairs(self.config.RangeIndicator_Frames) do
-				if enableRange then
-					self[frameName]:SetParent(self.RangeIndicator)
-				else
-					self[frameName]:SetParent(self)
+	function buttonFunctions:ApplyRangeIndicatorSettings()
+		if self.config.RangeIndicator_Enabled then
+			if self.config.RangeIndicator_Everything then
+				for frameName, enableRange in pairs(self.config.RangeIndicator_Frames) do
+					self[frameName]:SetAlpha(1)
 				end
+				self:SetAlpha(self.wasInRange and 1 or self.config.RangeIndicator_Alpha)
+			else
+				for frameName, enableRange in pairs(self.config.RangeIndicator_Frames) do
+					if enableRange then
+						self[frameName]:SetAlpha(self.wasInRange and 1 or self.config.RangeIndicator_Alpha)
+					else
+						self[frameName]:SetAlpha(1)
+					end
+				end
+				self:SetAlpha(1)
+			end
+		else
+			for frameName, enableRange in pairs(self.config.RangeIndicator_Frames) do
 				self[frameName]:SetAlpha(1)
 			end
+			self:SetAlpha(1)
 		end
-		self:SetAlpha(1)
 	end
 
 	function buttonFunctions:ArenaOpponentShown(unitID)
 		if self.bgSizeConfig.ObjectiveAndRespawn_ObjectiveEnabled then
 			self.ObjectiveAndRespawn:ShowObjective()
 		
-			self:RegisterUnitEvent("UNIT_AURA", unitID)
-			BattleGroundEnemies.ArenaEnemyIDToPlayerButton[unitID] = self
 			
+			BattleGroundEnemies.ArenaIDToPlayerButton[unitID] = self
+			self.UnitIDs.Arena = unitID
+
 			if self.PlayerIsEnemy then
+				self:RegisterUnitEvent("UNIT_AURA", unitID)
 				self:FetchAnotherUnitID()
 			end
-			self.UnitIDs.Arena = unitID
+			
 		end
 		RequestCrowdControlSpell(unitID)
 	end
 	
 	-- Shows/Hides targeting indicators for a button
 	function buttonFunctions:UpdateTargetIndicators()
-	
+		BattleGroundEnemies.Counter.UpdateTargetIndicators = (BattleGroundEnemies.Counter.UpdateTargetIndicators or 0) + 1
+
+		local isAlly = false
+		local isPlayer = false
+
+		if self == PlayerButton then
+			isPlayer = true
+		elseif not self.PlayerIsEnemy then 
+			isAlly = true 
+		end
+
 		local i = 1
 		for enemyButton in pairs(self.UnitIDs.TargetedByEnemy) do
 			if self.bgSizeConfig.SymbolicTargetindicator_Enabled then
 				local indicator = self.TargetIndicators[i]
 				if not indicator then
-					indicator = CreateFrame("frame", nil, self.Health, BackdropTemplateMixin and "BackdropTemplate")
+					indicator = CreateFrame("frame", nil, self.healthBar, BackdropTemplateMixin and "BackdropTemplate")
 					indicator:SetSize(8,10)
 					indicator:SetPoint("TOP",floor(i/2)*(i%2==0 and -10 or 10), 0) --1: 0, 0 2: -10, 0 3: 10, 0 4: -20, 0 > i = even > left, uneven > right
 					indicator:SetBackdrop({
@@ -835,8 +906,34 @@ do
 			end
 			i = i + 1
 		end
+
+		local enemyTargets = i - 1
+
+		if BattleGroundEnemies.IsRatedBG then
+			if isAlly then
+				if BattleGroundEnemies.db.profile.RBG.EnemiesTargetingAllies_Enabled then
+					if enemyTargets >= BattleGroundEnemies.db.profile.RBG.EnemiesTargetingAllies_Amount  then
+						local path = LSM:Fetch("sound", BattleGroundEnemies.db.profile.RBG.EnemiesTargetingAllies_Sound, true)
+						if path then
+							PlaySoundFile(path, "Master")
+						end
+					end
+				end			
+			end
+			if isPlayer then
+				if BattleGroundEnemies.db.profile.RBG.EnemiesTargetingMe_Enabled then
+					if enemyTargets >= BattleGroundEnemies.db.profile.RBG.EnemiesTargetingMe_Amount  then
+						local path = LSM:Fetch("sound", BattleGroundEnemies.db.profile.RBG.EnemiesTargetingMe_Sound, true)
+						if path then
+							PlaySoundFile(path, "Master")
+						end
+					end
+				end
+			end
+		end
+
 		if self.bgSizeConfig.NumericTargetindicator_Enabled then 
-			self.NumericTargetindicator:SetText(i - 1)
+			self.NumericTargetindicator:SetText(enemyTargets)
 		end
 		while self.TargetIndicators[i] do --hide no longer used ones
 			self.TargetIndicators[i]:Hide()
@@ -855,6 +952,9 @@ do
 	end
 
 	function buttonFunctions:UpdatePower(unitID, powerToken)
+		if not self.bgSizeConfig.PowerBar_Enabled then return end
+		BattleGroundEnemies.Counter.UpdatePower = (BattleGroundEnemies.Counter.UpdateRange or 0) + 1
+
 		if powerToken then
 			self:CheckForNewPowerColor(powerToken)
 		else
@@ -863,47 +963,52 @@ do
 		end
 		self.Power:SetValue(UnitPower(unitID)/UnitPowerMax(unitID))
 	end
+
+	function buttonFunctions:SetAlphaOfRangeFrames(alpha)
+		
+	end
 	
 	function buttonFunctions:UpdateRange(inRange)
-		if self.config.RangeIndicator_Enabled and not inRange then
-			self.RangeIndicator:SetAlpha(self.config.RangeIndicator_Alpha)
-		else
-			self.RangeIndicator:SetAlpha(1)
+		BattleGroundEnemies.Counter.UpdateRange = (BattleGroundEnemies.Counter.UpdateRange or 0) + 1
+		--BattleGroundEnemies:Information("UpdateRange", inRange, self.PlayerName, self.config.RangeIndicator_Enabled, self.config.RangeIndicator_Alpha)
+
+		if not self.config.RangeIndicator_Enabled then return end
+
+		if inRange ~= self.wasInRange then
+			if self.config.RangeIndicator_Everything then
+				self:SetAlpha(inRange and 1 or self.config.RangeIndicator_Alpha)
+			else
+				for frameName, enableRange in pairs(self.config.RangeIndicator_Frames) do
+					if enableRange then
+						self[frameName]:SetAlpha(inRange and 1 or self.config.RangeIndicator_Alpha)
+					else
+						self[frameName]:SetAlpha(1)
+					end
+				end
+			end
+			self.wasInRange = inRange
 		end
 	end
+
+	function buttonFunctions:GetUnitID()
+		return (self.PlayerIsEnemy and self.UnitIDs.Active) or self.unit
+	end
+
 	
 	function buttonFunctions:UpdateAll(unitID)
 		self:UpdateRange(IsItemInRange(self.config.RangeIndicator_Range, unitID))
 		self:UpdateHealth(unitID)
-		if self.config.PowerBar_Enabled then self:UpdatePower(unitID) end
+		self:UpdatePower(unitID)
 	end
-		
-	local UAspellIDs = {
-		[233490] = true,
-		[233496] = true,
-		[233497] = true,
-		[233498] = true,
-		[233499] = true,	
-	}
 	
-	local function FindAuraBySpellID(unitID, spellID, filter)
-		
-		if not unitID or not spellID then return end
-
-		for i = 1, 40 do
-			local name, _, count, debuffType, actualDuration, endTime, _, _, _, id, _, _, _, _, _, value2, value3, value4 = UnitAura(unitID, i, filter)
-			if not id then return end -- no more auras
-
-			if spellID == id then
-				return name, _, count, debuffType, actualDuration, endTime, _, _, _, id, _, _, _, _, _, value2, value3, value4
-			end
-		end
-	end
 
 	function buttonFunctions:AuraApplied(spellID, spellName, srcName, auraType, amount)
+		BattleGroundEnemies.Counter.AuraApplied = (BattleGroundEnemies.Counter.AuraApplied or 0) + 1
 		local config = self.bgSizeConfig
 		
-		local isMine = srcName == PlayerDetails.PlayerName
+		local debuffType, duration, expirationTime, unitCaster, canApplyAura
+
+		local isMine = srcName == BattleGroundEnemies.PlayerDetails.PlayerName
 		local isDebuff, filter, aurasEnabled
 		if auraType == "DEBUFF" then
 			isDebuff = true
@@ -920,92 +1025,65 @@ do
 		local showAurasOnSpecicon = config.Spec_AuraDisplay_Enabled
 		local drTrackingEnabled = drCat and config.DrTracking_Enabled and (not config.DrTrackingFiltering_Enabled or config.DrTrackingFiltering_Filterlist[drCat])
 		local relentlessCheck = drCat and config.Trinket_Enabled and not self.Trinket.HasTrinket and Data.cCduration[drCat] and Data.cCduration[drCat][spellID]
-		local isAdaptation = isDebuff and spellID == 195901
 		
 		--if srcName == PlayerDetails.PlayerName then BattleGroundEnemies:Debug(aurasEnabled, config.Auras_Enabled, config.AurasFiltering_Enabled, config.AurasFiltering_Filterlist[spellID]) end
 		if not (showAurasOnSpecicon or drTrackingEnabled or aurasEnabled or relentlessCheck) then return end
 		
 
-		local count, actualDuration, endTime, debuffType, _
+		local amount, index, _
 		
 		if BattleGroundEnemies.TestmodeActive then
-			actualDuration = Data.cCdurationBySpellID[spellID] or random(10, 15)
+			duration = Data.cCdurationBySpellID[spellID] or random(10, 15)
 			amount = random(1, 20)
 			debuffType = Data.RandomDebuffType[random(1, #Data.RandomDebuffType)]
-			if drCat and self.DRContainer.DR[drCat] then
-				actualDuration = actualDuration/2^self.DRContainer.DR[drCat].status
+			if drCat and self.DRContainer.DRFrames[drCat] then
+				duration = duration/2^self.DRContainer.DRFrames[drCat].status
 			end
-			endTime = GetTime() + actualDuration
+			expirationTime = GetTime() + duration
 			
 		elseif spellName then 
-			local unitIDs = self.UnitIDs
-			local activeUnitID 
-			-- we can't get Buffs from nameplates(we only use nameplates for enemies) > find another unitID for that enemy if auraType is a buff and the active unitID is a nameplate
-			if self.PlayerIsEnemy then
-				if isDebuff then
-					activeUnitID = unitIDs.Active
-				else
-					if unitIDs.Active ~= unitIDs.Nameplate then
-						activeUnitID = unitIDs.Active
-					else
-						activeUnitID = unitIDs.Target or unitIDs.Focus or unitIDs.Ally
-					end
-				end
-			else
-				activeUnitID = self.unit
-			end
+			if not (duration or expirationTime) then
+
+				local unitIDs = self.UnitIDs
+				local activeUnitID 
+
+				-- it seems to be possible to get Buffs from nameplates now :))))
+				-- we can't get Buffs from nameplates(we only use nameplates for enemies) > find another unitID for that enemy if auraType is a buff and the active unitID is a nameplate
 			
-			if not activeUnitID then return end
-			if isMine then
-				if UAspellIDs[spellID] then --more expensier way since we need to iterate through all debuffs
+				local activeUnitID = self:GetUnitID()
+
+				
+				if not activeUnitID then return end
+				if isMine then
+					index, _, _, amount, debuffType , duration, expirationTime, unitCaster, _, _, _, canApplyAura, _, _, _, _, _, _, _ = FindAuraBySpellID(activeUnitID, spellID, "PLAYER|" .. filter)
+				else
 					for i = 1, 40 do
 						local _spellID
-						_, _, count, debuffType , actualDuration, endTime, _, _, _, _spellID, _, _, _, _, _, _, _, _ = UnitDebuff(activeUnitID, i, "PLAYER")
-						if spellID == _spellID then
-							break
-						end
-					end
-				else
-					_, _, count, debuffType , actualDuration, endTime, _, _, _, _, _, _, _, _, _, _, _, _ = FindAuraBySpellID(activeUnitID, spellID, "PLAYER|" .. filter)
-				end
-			else
-				for i = 1, 40 do
-					local _spellID, unitCaster
-					_, _, count, debuffType , actualDuration, endTime, unitCaster, _, _, _spellID, _, _, _, _, _, _, _, _ = UnitDebuff(activeUnitID, i)
-					if spellID == _spellID and unitCaster then
-						local uName, realm = UnitName(unitCaster)
-						if realm then
-							uName = uName.."-"..realm
-						end
-						if uName == srcName then
-							break
+						_, _, amount, debuffType , duration, expirationTime, unitCaster, _, _, _spellID, canApplyAura, _, _, _, _, _, _, _ = UnitAura(activeUnitID, i, filter)
+						if spellID == _spellID and unitCaster then
+							local uName, realm = UnitName(unitCaster)
+							if realm then
+								uName = uName.."-"..realm
+							end
+							if uName == srcName then
+								break
+							end
 						end
 					end
 				end
 			end
 		end
-		--if srcName == PlayerDetails.PlayerName then BattleGroundEnemies:Debug(aurasEnabled, config.Auras_Enabled, config.AurasFiltering_Enabled, config.AurasFiltering_Filterlist[spellID], actualDuration) end
+		--if srcName == PlayerDetails.PlayerName then BattleGroundEnemies:Debug(aurasEnabled, config.Auras_Enabled, config.AurasFiltering_Enabled, config.AurasFiltering_Filterlist[spellID], duration) end
 		
-		if actualDuration and actualDuration > 0 then
-			if showAurasOnSpecicon then 
-				local priority = Data.SpellPriorities[spellID]
-				if priority then
-					self.Spec_AuraDisplay:NewAura(spellID, srcName, actualDuration, endTime, priority)
-				end
-			end
+		if duration and duration > 0 then
+		
+			self:ShouldShowAura(filter, spellID, srcName, unitCaster, canApplyAura, amount, duration, expirationTime, debuffType)
+		
 			if drTrackingEnabled then
-				self.DRContainer:DisplayDR(drCat, spellID, actualDuration)
-				self.DRContainer.DR[drCat]:IncreaseDRState()
+				self.DRContainer:DisplayDR(drCat, spellID, duration)
+				self.DRContainer.DRFrames[drCat]:IncreaseDRState()
 			end
-			if aurasEnabled then
-				if isDebuff then
-					if not config.Auras_Debuffs_Filtering_Enabled or ((not config.Auras_Debuffs_OnlyShowMine or isMine) and ((not config.Auras_Debuffs_DebuffTypeFiltering_Enabled or config.Auras_Debuffs_DebuffTypeFiltering_Filterlist[debuffType]) or (config.Auras_Debuffs_SpellIDFiltering_Enabled and config.Auras_Debuffs_SpellIDFiltering_Filterlist[spellID]))) then
-						self.DebuffContainer:DisplayAura(spellID, srcName, amount or count, actualDuration, endTime, debuffType)
-					end
-				elseif not config.Auras_Buffs_Filtering_Enabled or ((not config.Auras_Buffs_OnlyShowMine or isMine) and (not config.Auras_Buffs_SpellIDFiltering_Enabled or config.Auras_Buffs_SpellIDFiltering_Filterlist[spellID])) then
-					self.BuffContainer:DisplayAura(spellID, srcName, amount or count, actualDuration, endTime)
-				end
-			end
+		
 			if relentlessCheck then
 
 				local Racefaktor = 1
@@ -1016,54 +1094,54 @@ do
 
 				
 				--local diminish = actualduraion/(Racefaktor * normalDuration * Trinketfaktor)
-				--local trinketFaktor * diminish = actualDuration/(Racefaktor * normalDuration) 
+				--local trinketFaktor * diminish = duration/(Racefaktor * normalDuration) 
 				--trinketTimesDiminish = trinketFaktor * diminish
 				--trinketTimesDiminish = without relentless : 1, 0.5, 0.25, with relentless: 0.8, 0.4, 0.2
 
-				local trinketTimesDiminish = actualDuration/(Racefaktor * relentlessCheck)
+				local trinketTimesDiminish = duration/(Racefaktor * relentlessCheck)
 				
 				if trinketTimesDiminish == 0.8 or trinketTimesDiminish == 0.4 or trinketTimesDiminish == 0.2 then --Relentless
 					self.Trinket.HasTrinket = 4
 					self.Trinket.Icon:SetTexture(GetSpellTexture(196029))
 				end
 			end
-			if isAdaptation then
-				self.Trinket:DisplayTrinket(spellID, actualDuration)
+			if isDebuff and spellID == 336139 then --adaptation
+				self.Trinket:DisplayTrinket(spellID, duration)
 			end
 		end
 	end
-
-	function buttonFunctions:AuraRemoved(spellID, srcName)
+	function buttonFunctions:AuraRemoved(auraCertainlyRemoved, spellID, srcName)
+		BattleGroundEnemies.Counter.AuraRemoved = (BattleGroundEnemies.Counter.AuraRemoved or 0) + 1
 		srcName = srcName or ""
 		local config = self.bgSizeConfig
-		local drCat = DRList:GetCategoryBySpellID(spellID)
+
 		--BattleGroundEnemies:Debug(operation, spellID)
-		local showAurasOnSpecicon = config.Spec_AuraDisplay_Enabled
+
+		if config.Spec_AuraDisplay_Enabled then 
+			local identifier = spellID..(srcName)
+			if self.ActiveAuras then self.ActiveAuras[identifier] = nil end
+			if self.Spec_AuraDisplay.DisplayedAura and self.Spec_AuraDisplay.DisplayedAura.identifier == identifier then
+				--Look for another one
+				self.Spec_AuraDisplay:ActiveAuraRemoved()
+			end
+		end
+
+		local AuraFrame = self.BuffContainer.Active[spellID..srcName] or self.DebuffContainer.Active[spellID..srcName]
+		if AuraFrame then
+			AuraFrame.Cooldown:Clear()
+		end
+
+		local drCat = DRList:GetCategoryBySpellID(spellID)
+	
 		local drTrackingEnabled = drCat and config.DrTracking_Enabled and (not config.DrTrackingFiltering_Enabled or config.DrTrackingFiltering_Filterlist[drCat])
-		
-		
-		if not (showAurasOnSpecicon or drTrackingEnabled) then return end
-			
-		if drTrackingEnabled then
+					
+		if auraCertainlyRemoved and drTrackingEnabled then
 			self.DRContainer:DisplayDR(drCat, spellID, 0)
-			local drFrame = self.DRContainer.DR[drCat]
+			local drFrame = self.DRContainer.DRFrames[drCat]
 			if drFrame.status == 0 then -- we didn't get the applied, so we set the color and increase the dr state
 				--BattleGroundEnemies:Debug("DR Problem")
 				drFrame:IncreaseDRState()
 			end
-		end
-		if showAurasOnSpecicon then 
-			local identifier = spellID..(srcName)
-			local auraFrame = self.Spec_AuraDisplay
-			if self.ActiveAuras then self.ActiveAuras[identifier] = nil end
-			if auraFrame.DisplayedAura and auraFrame.DisplayedAura.identifier == identifier then
-				--Look for another one
-				auraFrame:ActiveAuraRemoved()
-			end
-		end
-		local AuraFrame = self.BuffContainer.Active[spellID..srcName] or self.DebuffContainer.Active[spellID..srcName]
-		if AuraFrame then
-			AuraFrame.Cooldown:Clear()
 		end
 	end
 	
@@ -1072,7 +1150,7 @@ do
 		--BattleGroundEnemies:Debug("Läüft")
 		local battleGroundDebuffs = BattleGroundEnemies.BattleGroundDebuffs
 		for i = 1, #battleGroundDebuffs do
-			local name, _, count, _, _, _, _, _, _, spellID, _, _, _, _, _, value2, value3, value4 = FindAuraBySpellID(unitID, battleGroundDebuffs[i], 'HARMFUL')
+			local index, name, _, amount, _, _, _, _, _, _, spellID, _, _, _, _, _, value2, value3, value4 = FindAuraBySpellID(unitID, battleGroundDebuffs[i], 'HARMFUL')
 			--values for orb debuff:
 			--BattleGroundEnemies:Debug(value0, value1, value2, value3, value4, value5)
 			-- value2 = Reduces healing received by value2
@@ -1098,19 +1176,19 @@ do
 	function buttonFunctions:NotKotmogu(unitID)
 		local objective = self.ObjectiveAndRespawn
 		local battleGroundDebuffs = BattleGroundEnemies.BattleGroundDebuffs
-		local name, count, _
+		local name, amount, index, _
 		for i = 1, #battleGroundDebuffs do
-			name, _, count = FindAuraBySpellID(unitID, battleGroundDebuffs[i], 'HARMFUL')
+			index, name, _, amount = FindAuraBySpellID(unitID, battleGroundDebuffs[i], 'HARMFUL')
 			--values for orb debuff:
 			--BattleGroundEnemies:Debug(value0, value1, value2, value3, value4, value5)
 			-- value2 = Reduces healing received by value2
 			-- value3 = Increases damage taken by value3
 			-- value4 = Increases damage done by value4
 			
-			if count then -- Focused Assault, Brutal Assault
-				if count ~= objective.Value then
-					objective.AuraText:SetText(count)
-					objective.Value = count
+			if amount then -- Focused Assault, Brutal Assault
+				if amount ~= objective.Value then
+					objective.AuraText:SetText(amount)
+					objective.Value = amount
 				end
 				return
 			end
@@ -1118,38 +1196,241 @@ do
 	end 
 	
 	function buttonFunctions:UNIT_AURA(unitID)
-		if BattleGroundEnemies.BattleGroundDebuffs then
-			if CurrentMapID == 417 then --417 is kotmogu
-				self:Kotmoguorbs(unitID)
-			else
-				self:NotKotmogu(unitID)
+
+		
+		--BattleGroundEnemies:Information("UNIT_AURA", unitID, self.PlayerName, self.PlayerIsEnemy)
+		if self.UnitIDs.Arena then -- this player is shown on the arena frame and is carrying a flag, orb, etc.. 
+			if BattleGroundEnemies.BattleGroundDebuffs then
+				if CurrentMapID == 417 then --417 is kotmogu
+					self:Kotmoguorbs(unitID)
+				else
+					self:NotKotmogu(unitID)
+				end
+			end
+		end
+
+		local time = GetTime()
+		if time - (self.lastAuraScan or 0) < 3 then return end
+		self.lastAuraScan = time
+
+
+		--if true then return end -- too cpu intensive to do the rest in this function
+		if not self.PlayerIsEnemy then -- its an ally, we scan all auras in this case to update the frame more reguraly because we might not get all the changes with the combatlog events
+
+			local filters = {"HELPFUL", "HARMFUL"}
+			local config = self.bgSizeConfig
+
+			for curFilter = 1, #filters do
+
+				local filter = filters[curFilter]
+				local aurasEnabled
+				if filter == "HARMFUL" then
+					aurasEnabled = config.Auras_Enabled and config.Auras_Debuffs_Enabled
+
+					-- remove all shown debuffs
+					self.DebuffContainer:Reset()
+				else
+					aurasEnabled = config.Auras_Enabled and config.Auras_Buffs_Enabled 
+
+					-- remove all shown buffs
+					self.BuffContainer:Reset()
+				end
+		
+
+				if not (aurasEnabled or config.Spec_AuraDisplay_Enabled) then return end
+
+
+				for i = 1, 40 do
+					local name, icon, amount, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, _ , spellID, canApplyAura, _, casterIsPlayer, nameplateShowAll = UnitAura(unitID, i, filter)
+					if not spellID then 
+						break
+					end
+					if unitCaster then
+						local srcName, realm = UnitName(unitCaster)
+						if realm then
+							srcName = srcName.."-"..realm
+						end		
+						--BattleGroundEnemies:Debug(operation, spellID)
+						
+						--if srcName == PlayerDetails.PlayerName then BattleGroundEnemies:Debug(aurasEnabled, config.Auras_Enabled, config.AurasFiltering_Enabled, config.AurasFiltering_Filterlist[spellID]) end
+				
+						
+						self:ShouldShowAura(filter, spellID, srcName, unitCaster, canApplyAura, amount, duration, expirationTime, debuffType)
+					end
+				end
+
 			end
 		end
 	end
 	
 	function buttonFunctions:UpdateTargets()
-	--self:Debug(unitID, "target changed")
+		BattleGroundEnemies.Counter.UpdateTargets = (BattleGroundEnemies.Counter.UpdateTargets or 0) + 1
 		
 		local oldTargetPlayerButton = self.Target
 		local newTargetPlayerButton
 
-		if oldTargetPlayerButton then
-			oldTargetPlayerButton:NoLongerTargetedBy(self)
-			--self:Debug(oldTargetEnemyButton.DisplayedName, "is not targeted by", unitID, "anymore")
-		end
+		
 		
 		if self.PlayerIsEnemy then
 			newTargetPlayerButton = BattleGroundEnemies.Allies:GetPlayerbuttonByUnitID((self.UnitIDs.Active or "") .."target")
 		else
 			newTargetPlayerButton = BattleGroundEnemies.Enemies:GetPlayerbuttonByUnitID(self.TargetUnitID or "")
 		end
+
+		if newTargetPlayerButton and oldTargetPlayerButton == newTargetPlayerButton then return end
+
+		if oldTargetPlayerButton then
+			oldTargetPlayerButton:NoLongerTargetedBy(self)
+		end
 		
-		if newTargetPlayerButton then --ally targets an existing enemy
+		if newTargetPlayerButton then --player targets an existing player and not for example a pet or a NPC
 			newTargetPlayerButton:NowTargetedBy(self)
 			self.Target = newTargetPlayerButton
-			--self:Debug(newTargetEnemyButton.DisplayedName, "is now targeted by", unitID)
+			--print(newTargetPlayerButton.DisplayedName, "is now targeted by", self.PlayerName)
 		else
 			self.Target = false
+		end
+	end
+	--Utility Functions copy from CompactUnitFrame_UtilShouldDisplayBuff and mofified
+	local function ShouldDisplayBuffBlizzLike(unitCaster, spellID, canApplyAura)
+	
+		local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellID, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+	
+		if ( hasCustom ) then
+			return showForMySpec or (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle"));
+		else
+			return (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") and canApplyAura and not SpellIsSelfBuff(spellID);
+		end
+	end
+
+	-- CompactUnitFrame_Util_IsPriorityDebuff
+	local function IsPriorityDebuff(spellID)
+		if BattleGroundEnemies.PlayerDetails.PlayerClass == "PALADIN" then
+			local isForbearance = (spellID == 25771)
+			return isForbearance or SpellIsPriorityAura(spellID);
+		else
+			return SpellIsPriorityAura(spellID)
+		end
+	end
+	
+
+	-- CompactUnitFrame_Util_ShouldDisplayDebuff
+	local function ShouldDisplayDebuffBlizzLike(unitCaster, spellID, canApplyAura)
+
+		if IsPriorityDebuff(spellID) then return true end
+	
+		local hasCustom, alwaysShowMine, showForMySpec = SpellGetVisibilityInfo(spellID, UnitAffectingCombat("player") and "RAID_INCOMBAT" or "RAID_OUTOFCOMBAT");
+		if ( hasCustom ) then
+			return showForMySpec or (alwaysShowMine and (unitCaster == "player" or unitCaster == "pet" or unitCaster == "vehicle") );	--Would only be "mine" in the case of something like forbearance.
+		else
+			return true;
+		end
+	end
+
+	local conditionFuncs = {
+		All = function (conditions)
+			for k,v in pairs(conditions) do 
+				if not v then return false end
+			end
+			return true
+		end,
+		Any =  function (conditions)
+			for k,v in pairs(conditions) do 
+				if v then return true end
+			end
+		end
+	}
+
+	local function MyBuffFiltering(config, isMine)
+		return config.Auras_Buffs_ShowMine and isMine					
+	end
+
+	local function MyDebuffFiltering(config, isMine)
+		return config.Auras_Debuffs_ShowMine and isMine					
+	end
+
+	local function debuffTypeFiltering(config, debuffType)
+		return config.Auras_Debuffs_DebuffTypeFiltering_Filterlist[debuffType] 
+	end
+
+	local function debuffSpellIDFiltering(config, spellID)
+		return config.Auras_Debuffs_SpellIDFiltering_Filterlist[spellID] 
+	end
+
+	local function buffSpellIDFiltering(config, spellID)
+		return config.Auras_Buffs_SpellIDFiltering_Filterlist[spellID] 
+	end
+
+	function buttonFunctions:ShouldShowAura(filter, spellID, srcName, unitCaster, canApplyAura, amount, duration, expirationTime, debuffType)
+		BattleGroundEnemies.Counter.ShouldShowAura = (BattleGroundEnemies.Counter.ShouldShowAura or 0) + 1
+
+		local config = self.bgSizeConfig
+		local aurasEnabled, isDebuff
+
+		if filter == "HARMFUL" then
+			isDebuff = true
+			aurasEnabled = config.Auras_Enabled and config.Auras_Debuffs_Enabled
+		else
+			isDebuff = false
+			aurasEnabled = config.Auras_Enabled and config.Auras_Buffs_Enabled 
+		end
+		if duration and duration > 0 then
+			if config.Spec_AuraDisplay_Enabled then 
+				local priority = Data.SpellPriorities[spellID]
+				if priority then
+					self.Spec_AuraDisplay:NewAura(filter, spellID, srcName, duration, expirationTime, priority)
+				end
+			end
+			--self:Debug(unitID, "target changed")
+
+
+			-- todo: whitelisting system, user can  choose conditions and decide if teh aura must match all conditions or if the auro should shown if only one condition is met
+
+
+			if aurasEnabled then
+				local isMine = srcName == BattleGroundEnemies.PlayerDetails.PlayerName
+				if isDebuff then
+					if not config.Auras_Debuffs_Filtering_Enabled then 
+						return self.DebuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime, debuffType)
+					end
+					if config.Auras_Debuffs_Filtering_Mode == "Blizz" then
+						if ShouldDisplayDebuffBlizzLike(unitCaster, spellID, canApplyAura) then
+							return self.DebuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime, debuffType)
+						end
+					else
+						local conditions = {}
+						table.insert(conditions, MyDebuffFiltering(config, isMine))
+						if config.Auras_Debuffs_SpellIDFiltering_Enabled then
+							table.insert(conditions, debuffSpellIDFiltering(config, spellID))
+						end
+						if config.Auras_Debuffs_DebuffTypeFiltering_Enabled then
+							table.insert(conditions, debuffTypeFiltering(config, spellID))
+						end
+						if conditionFuncs[config.Auras_Debuffs_CustomFiltering_ConditionsMode] and conditionFuncs[config.Auras_Debuffs_CustomFiltering_ConditionsMode](conditions) then
+							return self.DebuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime, debuffType)
+						end
+					end
+				else
+					if not config.Auras_Buffs_Filtering_Enabled then 
+						return self.BuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime)
+					end
+					if config.Auras_Buffs_Filtering_Mode == "Blizz" then
+						if ShouldDisplayBuffBlizzLike(unitCaster, spellID, canApplyAura) then
+							return self.BuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime)
+						end
+					else
+						local conditions = {}
+						table.insert(conditions, MyBuffFiltering(config, isMine))
+
+						if config.Auras_Buffs_SpellIDFiltering_Enabled then
+							table.insert(conditions, buffSpellIDFiltering(config, spellID))
+						end
+						if conditionFuncs[config.Auras_Buffs_CustomFiltering_ConditionsMode] and conditionFuncs[config.Auras_Buffs_CustomFiltering_ConditionsMode](conditions) then
+							return self.BuffContainer:DisplayAura(spellID, srcName, amount, duration, expirationTime)
+						end
+					end
+				end
+			end
 		end
 	end
 end
@@ -1158,89 +1439,26 @@ local allyButtonFunctions = {}
 do
 	
 	function allyButtonFunctions:NowTargetedBy(enemyButton)
-		local unitIDs = self.UnitIDs
-		unitIDs.TargetedByEnemy[enemyButton] = true
+		self.UnitIDs.TargetedByEnemy[enemyButton] = true
 		self:UpdateTargetIndicators()
 	end
 
 	function allyButtonFunctions:NoLongerTargetedBy(enemyButton)
-		local unitIDs = self.UnitIDs
-		unitIDs.TargetedByEnemy[enemyButton] = nil
+		self.UnitIDs.TargetedByEnemy[enemyButton] = nil
 		self:UpdateTargetIndicators()
 	end
-	
-	allyButtonFunctions.UNIT_HEALTH = buttonFunctions.UpdateHealth
-	allyButtonFunctions.UNIT_POWER_FREQUENT = buttonFunctions.UpdatePower
-	
-	-- function allyButtonFunctions:UNIT_AURA()
-		-- local unitID = self.unit
-		-- for i = 1, 40 do
-			-- local _spellID
-			-- _, _, _, count, debuffType , actualDuration, endTime, _, _, _, _spellID, _, _, _, _, _, _, _, _ = UnitDebuff(unitID, i, "PLAYER")
-			-- if spellID == _spellID then
-				-- break
-			-- end
-		-- end
-	-- end
-end
 
--- functions for aura on spec icon
-local AuraFrameFunctions = {}
-function AuraFrameFunctions:ActiveAuraRemoved()
-	local activeAuras = self.ActiveAuras
-	if self.DisplayedAura then
-		activeAuras[self.DisplayedAura.identifier] = nil
-		self.DisplayedAura = false
-	end
-	
-	
-	local highestPrioritySpell
-	
-	for identifier, spellDetails in pairs(activeAuras) do
-		
-		if spellDetails.endTime > GetTime() then
-			activeAuras[identifier] = nil
+	function allyButtonFunctions:NewUnitID(unitID)
+		self.unit = unitID
+		if not InCombatLockdown() then
+			self:SetAttribute('unit', unitID)
 		else
-			if not highestPrioritySpell or spellDetails.priority > highestPrioritySpell.priority then 
-				highestPrioritySpell = spellDetails
-			end
+			C_Timer.After(1, BattleGroundEnemies.GROUP_ROSTER_UPDATE)
 		end
-	end
-	if highestPrioritySpell then
-		self:DisplayNewAura(highestPrioritySpell)
-	else
-		self:Hide()
+		
+		self:RegisterUnitEvent("UNIT_AURA", unitID)
 	end
 end
-
-function AuraFrameFunctions:GotInterrupted(spellID, interruptDuration)
-	if self.HasAdditionalReducedInterruptTime then
-		interruptDuration = interruptDuration * (1 - self.HasAdditionalReducedInterruptTime)
-	end
-	self:NewAura(spellID, nil, interruptDuration, GetTime() + interruptDuration, 4)
-end		
-
-function AuraFrameFunctions:NewAura(spellID, srcName, actualDuration, endTime, priority)
-	local identifier = spellID..(srcName or "")
-	if not self.ActiveAuras[identifier] then self.ActiveAuras[identifier] = {} end
-	local activAuraSpell = self.ActiveAuras[identifier]
-	activAuraSpell.identifier = identifier
-	activAuraSpell.spellID = spellID
-	activAuraSpell.duration = actualDuration
-	activAuraSpell.endTime = endTime
-	activAuraSpell.priority = priority
-	if not self.DisplayedAura or priority > self.DisplayedAura.priority then
-		self:DisplayNewAura(activAuraSpell)
-	end
-end
-
-function AuraFrameFunctions:DisplayNewAura(spellDetails)
-	self.DisplayedAura = spellDetails
-	self:Show()
-	self.Icon:SetTexture(GetSpellTexture(spellDetails.spellID))
-	self.Cooldown:SetCooldown(spellDetails.endTime - spellDetails.duration, spellDetails.duration)
-end
-
 
 local MainFrameFunctions = {}
 do
@@ -1251,6 +1469,9 @@ do
 	end
 	
 	function MainFrameFunctions:ApplyBGSizeSettings()
+		if InCombatLockdown() then 
+			return C_Timer.After(1, function() self:ApplyBGSizeSettings() end)
+		end
 		self.bgSizeConfig = self.config[tostring(BattleGroundEnemies.BGSize)]
 		local conf = self.bgSizeConfig
 
@@ -1272,6 +1493,7 @@ do
 	
 		for name, playerButton in pairs(self.Players) do
 			playerButton:ApplyButtonSettings()
+
 			playerButton:SetName()
 			playerButton:SetBindings()
 		end
@@ -1281,7 +1503,7 @@ do
 			playerButton:ApplyButtonSettings()
 		end
 		
-
+		self:UpdatePlayerCount()
 		self:CheckIfShouldShow()
 	end
 	
@@ -1303,20 +1525,26 @@ do
 		
 		local oldCount = self.PlayerCount.oldPlayerNumber or 0
 		if oldCount ~= currentCount then
-			if BattleGroundEnemies.IsRatedBG and self.bgSizeConfig.Notifications_Enabled then
-				if currentCount < oldCount then
-					RaidNotice_AddMessage(RaidWarningFrame, L[isEnemy and "EnemyLeft" or "AllyLeft"], ChatTypeInfo["RAID_WARNING"]) 
-					PlaySound(isEnemy and 124 or 8959) --LEVELUPSOUND
-				else -- currentCount > oldCount
-					RaidNotice_AddMessage(RaidWarningFrame, L[isEnemy and "EnemyJoined" or "AllyJoined"], ChatTypeInfo["RAID_WARNING"]) 
-					PlaySound(isEnemy and 8959 or 124) --RaidWarning
-				end
-			end
-			if self.bgSizeConfig.PlayerCount_Enabled then
-				self.PlayerCount:SetText(format(isEnemy == (enemyFaction == 0) and PLAYER_COUNT_HORDE or PLAYER_COUNT_ALLIANCE, currentCount))
-			end
+			-- if BattleGroundEnemies.IsRatedBG and self.config.RBG.Notifications_Enabled then
+			-- 	if currentCount < oldCount then
+			-- 		RaidNotice_AddMessage(RaidWarningFrame, L[isEnemy and "EnemyLeft" or "AllyLeft"], ChatTypeInfo["RAID_WARNING"]) 
+			-- 		PlaySound(isEnemy and 124 or 8959) --LEVELUPSOUND
+			-- 	else -- currentCount > oldCount
+			-- 		RaidNotice_AddMessage(RaidWarningFrame, L[isEnemy and "EnemyJoined" or "AllyJoined"], ChatTypeInfo["RAID_WARNING"]) 
+			-- 		PlaySound(isEnemy and 8959 or 124) --RaidWarning
+			-- 	end
+			-- end
+			
+
 			self.PlayerCount.oldPlayerNumber = currentCount
 		end
+		if self.bgSizeConfig.PlayerCount_Enabled then
+			self.PlayerCount:Show()
+			self.PlayerCount:SetText(format(isEnemy == (enemyFaction == 0) and PLAYER_COUNT_HORDE or PLAYER_COUNT_ALLIANCE, currentCount))
+		else
+			self.PlayerCount:Hide()
+		end
+
 	end
 	
 	function MainFrameFunctions:GetPlayerbuttonByUnitID(unitID)
@@ -1342,7 +1570,6 @@ do
 			
 			tremove(self.InactivePlayerButtons, #self.InactivePlayerButtons)
 			--Cleanup previous shown stuff of another player
-			playerButton.RangeIndicator:SetAlpha(self.config.RangeIndicator_Alpha)
 			playerButton.Trinket:Reset()
 			playerButton.Racial:Reset()
 			playerButton.MyTarget:Hide()	--reset possible shown target indicator frame
@@ -1350,7 +1577,7 @@ do
 			playerButton.BuffContainer:Reset()
 			playerButton.DebuffContainer:Reset()
 			playerButton.DRContainer:Reset()
-			playerButton.SelectionHighlight:Hide()
+			playerButton.Covenant:Reset()
 			playerButton.NumericTargetindicator:SetText(0) --reset testmode
 
 			if playerButton.UnitIDs and playerButton.PlayerIsEnemy then  --check because of testmode
@@ -1359,12 +1586,22 @@ do
 				playerButton:DeleteActiveUnitID()
 			end
 
+			playerButton.unit = nil
+
+
 		else --no recycleable buttons remaining => create a new one
 			playerButton = CreateFrame('Button', nil, self, 'SecureUnitButtonTemplate')
+			playerButton:Hide()
 			-- setmetatable(playerButton, self)
 			-- self.__index = self
+
+			
+			
+
 			playerButton.PlayerType = self.PlayerType
 			playerButton.PlayerIsEnemy = playerButton.PlayerType == "Enemies" and true or false
+
+		
 			
 			playerButton.config = self.config
 			playerButton.bgSizeConfig = self.bgSizeConfig
@@ -1373,6 +1610,7 @@ do
 				self.DRContainer:SetWidthOfAuraFrames(height)
 				playerButton.Level:SetHeight(height)
 				playerButton:DisplayLevel()
+				playerButton.RaidTargetIcon:SetWidth(height)
 			end)
 			
 			for functionName, func in pairs(buttonFunctions) do
@@ -1391,22 +1629,25 @@ do
 				
 			end
 			
-			playerButton:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
-			playerButton:SetScript("OnHide", playerButton.UnregisterAllEvents)
+			playerButton.Counter = {}
+			playerButton:SetScript("OnEvent", function(self, event, ...) 
+				self.Counter[event] = (self.Counter[event] or 0) + 1
+				self[event](self, ...) end)
+			playerButton:SetScript("OnShow", function() 
+				playerButton.isShown = true
+			end)
+			playerButton:SetScript("OnHide", function() 
+				playerButton:UnregisterAllEvents()
+				playerButton.isShown = false
+			end)
 					
 			-- events/scripts
-			playerButton:RegisterForClicks('AnyUp')
 			playerButton:RegisterForDrag('LeftButton')
-			playerButton:SetAttribute('type1','macro')-- type1 = LEFT-Click
-			playerButton:SetAttribute('type2','macro')-- type2 = Right-Click
-			playerButton:SetAttribute('type3','macro')-- type3 = Middle-Click
 
 			playerButton:SetScript('OnDragStart', playerButton.OnDragStart)
 			playerButton:SetScript('OnDragStop', playerButton.OnDragStop)
-			playerButton:SetScript('OnEnter', playerButton.OnEnter)
-			playerButton:SetScript('OnLeave', playerButton.OnLeave)
-			
-			
+
+
 			playerButton.RangeIndicator_Frame = CreateFrame("Frame", nil, playerButton)
 			--playerButton.RangeIndicator_Frame:SetFrameLevel(playerButton:GetFrameLevel())
 			-- playerButton.RangeIndicator = playerButton.RangeIndicator_Frame
@@ -1421,7 +1662,7 @@ do
 				else
 					--dont SetWidth before Hide() otherwise it won't work as aimed
 					self:Hide()
-					self:SetWidth(0.01)
+					self:SetWidth(0.01) --we do that because the level is anchored right to this and the name is anhored right to the level
 				end
 			end
 			
@@ -1429,19 +1670,103 @@ do
 			playerButton.Spec:SetPoint('BOTTOMLEFT' , playerButton, 'BOTTOMLEFT', 0, 0)
 			
 			playerButton.Spec:SetScript("OnSizeChanged", function(self, width, height)
-				BattleGroundEnemies.CropImage(self.Icon, width, height)
+				if not isTBCC then
+					BattleGroundEnemies.CropImage(self.Icon, width, height)
+				end
 				BattleGroundEnemies.CropImage(playerButton.Spec_AuraDisplay.Icon, width, height)
 			end)
+
+			playerButton.Spec:HookScript("OnEnter", function(self)
+				BattleGroundEnemies:ShowTooltip(self, function()
+					if isTBCC then return end 
+					GameTooltip:SetText(playerButton.PlayerSpecName)
+				end)
+			end)
 			
-			playerButton.Spec.Icon = playerButton.Spec:CreateTexture(nil, 'BACKGROUND')
+			playerButton.Spec:HookScript("OnLeave", function(self)
+				if GameTooltip:IsOwned(self) then
+					GameTooltip:Hide()
+				end
+			end)
+			
+			playerButton.Spec.Background = playerButton.Spec:CreateTexture(nil, 'BACKGROUND')
+			playerButton.Spec.Background:SetAllPoints()
+			playerButton.Spec.Background:SetColorTexture(0,0,0,0.8)
+
+			playerButton.Spec.Icon = playerButton.Spec:CreateTexture(nil, 'OVERLAY')
 			playerButton.Spec.Icon:SetAllPoints()
 					
 			
 			playerButton.Spec_AuraDisplay = CreateFrame("Frame", nil, playerButton.Spec)
+			playerButton.Spec_AuraDisplay:HookScript("OnEnter", function(self)
+				BattleGroundEnemies:ShowTooltip(self, function()
+					local unitID = playerButton.unit or playerButton.UnitIDs and playerButton.UnitIDs.Active
+					BattleGroundEnemies:ShowAuraTooltip(unitID, self.DisplayedAura.spellID, self.DisplayedAura.filter)
+				end)
+			end)
+			
+			playerButton.Spec_AuraDisplay:HookScript("OnLeave", function(self)
+				if GameTooltip:IsOwned(self) then
+					GameTooltip:Hide()
+				end
+			end)
+
 			playerButton.Spec_AuraDisplay:Hide()
-			for funcName, func in pairs(AuraFrameFunctions) do
-				playerButton.Spec_AuraDisplay[funcName] = func
+
+			
+			function playerButton.Spec_AuraDisplay:ActiveAuraRemoved()
+				local activeAuras = self.ActiveAuras
+				if self.DisplayedAura then
+					activeAuras[self.DisplayedAura.identifier] = nil
+					self.DisplayedAura = false
+				end
+				
+				
+				local highestPrioritySpell
+				
+				for identifier, spellDetails in pairs(activeAuras) do
+					
+					if spellDetails.expirationTime > GetTime() then
+						activeAuras[identifier] = nil
+					else
+						if not highestPrioritySpell or spellDetails.priority > highestPrioritySpell.priority then 
+							highestPrioritySpell = spellDetails
+						end
+					end
+				end
+				if highestPrioritySpell then
+					self:DisplayNewAura(highestPrioritySpell)
+				else
+					self:Hide()
+				end
 			end
+
+			function playerButton.Spec_AuraDisplay:GotInterrupted(spellID, interruptDuration)
+				self:NewAura(nil, spellID, nil, interruptDuration, GetTime() + interruptDuration, 4)
+			end		
+
+			function playerButton.Spec_AuraDisplay:NewAura(filter, spellID, srcName, duration, expirationTime, priority)
+				local identifier = spellID..(srcName or "")
+				if not self.ActiveAuras[identifier] then self.ActiveAuras[identifier] = {} end
+				local activAuraSpell = self.ActiveAuras[identifier]
+				activAuraSpell.filter = filter
+				activAuraSpell.identifier = identifier
+				activAuraSpell.spellID = spellID
+				activAuraSpell.duration = duration
+				activAuraSpell.expirationTime = expirationTime
+				activAuraSpell.priority = priority
+				if not self.DisplayedAura or priority > self.DisplayedAura.priority then
+					self:DisplayNewAura(activAuraSpell)
+				end
+			end
+
+			function playerButton.Spec_AuraDisplay:DisplayNewAura(spellDetails)
+				self.DisplayedAura = spellDetails
+				self:Show()
+				self.Icon:SetTexture(GetSpellTexture(spellDetails.spellID))
+				self.Cooldown:SetCooldown(spellDetails.expirationTime - spellDetails.duration, spellDetails.duration)
+			end
+
 			playerButton.Spec_AuraDisplay:SetAllPoints()
 			playerButton.Spec_AuraDisplay:SetFrameLevel(playerButton.Spec:GetFrameLevel() + 1)
 			playerButton.Spec_AuraDisplay.ActiveAuras = {}
@@ -1450,42 +1775,93 @@ do
 			playerButton.Spec_AuraDisplay.Cooldown = BattleGroundEnemies.MyCreateCooldown(playerButton.Spec_AuraDisplay)
 			
 			playerButton.Spec_AuraDisplay.Cooldown:SetScript("OnHide", function(self) 
-				--self:Debug("ObjectiveAndRespawn.Cooldown hidden")
+				BattleGroundEnemies:Debug("ObjectiveAndRespawn.Cooldown hidden")
 				self:GetParent():ActiveAuraRemoved()
 			end)
+			-- playerButton.Spec_AuraDisplay.Cooldown:SetScript("OnCooldownDone", function(self) 
+			-- 	--self:Debug("ObjectiveAndRespawn.Cooldown hidden")
+			-- 	self:GetParent():ActiveAuraRemoved()
+			-- end)
 			
 			-- power
 			playerButton.Power = CreateFrame('StatusBar', nil, playerButton)
-			playerButton.Power:SetPoint('BOTTOMLEFT', playerButton.Spec, "BOTTOMRIGHT", 1, 1)
-			playerButton.Power:SetPoint('BOTTOMRIGHT', playerButton, "BOTTOMRIGHT", -1, 1)
+			playerButton.Power:SetPoint('BOTTOMLEFT', playerButton.Spec, "BOTTOMRIGHT")
+			playerButton.Power:SetPoint('BOTTOMRIGHT', playerButton, "BOTTOMRIGHT")
 			playerButton.Power:SetMinMaxValues(0, 1)
 
 			
 			--playerButton.Power.Background = playerButton.Power:CreateTexture(nil, 'BACKGROUND', nil, 2)
-			playerButton.Power.Background = playerButton.Power:CreateTexture(nil, 'BACKGROUND')
+			playerButton.Power.Background = playerButton.Power:CreateTexture(nil, 'BACKGROUND', nil, 2)
 			playerButton.Power.Background:SetAllPoints()
 			playerButton.Power.Background:SetTexture("Interface/Buttons/WHITE8X8")
 			
-			-- health
-			playerButton.Health = CreateFrame('StatusBar', nil, playerButton.Power)
-			playerButton.Health:SetPoint('BOTTOMLEFT', playerButton.Power, "TOPLEFT", 0, 0)
-			playerButton.Health:SetPoint('TOPRIGHT', playerButton, "TOPRIGHT", -1, -1)
-			playerButton.Health:SetMinMaxValues(0, 1)
+			-- health name it healthBar, to use Blizzard code from UnitFrame.lua  CompactUnitFrame_UpdateHealPrediction
+			playerButton.healthBar = CreateFrame('StatusBar', nil, playerButton)
+			playerButton.healthBar:SetPoint('BOTTOMLEFT', playerButton.Power, "TOPLEFT")
+			playerButton.healthBar:SetPoint('TOPRIGHT', playerButton, "TOPRIGHT")
+			playerButton.healthBar:SetMinMaxValues(0, 1)
+
+			playerButton.myHealPrediction = playerButton.healthBar:CreateTexture(nil, "BORDER", nil, 5)
+			playerButton.myHealPrediction:ClearAllPoints();
+			playerButton.myHealPrediction:SetColorTexture(1,1,1);
+			playerButton.myHealPrediction:SetGradient("VERTICAL", 8/255, 93/255, 72/255, 11/255, 136/255, 105/255);
+			playerButton.myHealPrediction:SetVertexColor(0.0, 0.659, 0.608);
 			
-			--playerButton.Health.Background = playerButton.Health:CreateTexture(nil, 'BACKGROUND', nil, 2)
-			playerButton.Health.Background = playerButton.Health:CreateTexture(nil, 'BACKGROUND')
-			playerButton.Health.Background:SetAllPoints()
-			playerButton.Health.Background:SetTexture("Interface/Buttons/WHITE8X8")
+
+			playerButton.myHealAbsorb = playerButton.healthBar:CreateTexture(nil, "ARTWORK", nil, 1)
+			playerButton.myHealAbsorb:ClearAllPoints();
+			playerButton.myHealAbsorb:SetTexture("Interface\\RaidFrame\\Absorb-Fill", true, true);
+
+			playerButton.myHealAbsorbLeftShadow = playerButton.healthBar:CreateTexture(nil, "ARTWORK", nil, 1)
+			playerButton.myHealAbsorbLeftShadow:ClearAllPoints();
+
+			playerButton.myHealAbsorbRightShadow = playerButton.healthBar:CreateTexture(nil, "ARTWORK", nil, 1)
+			playerButton.myHealAbsorbRightShadow:ClearAllPoints();
+
+			playerButton.otherHealPrediction = playerButton.healthBar:CreateTexture(nil, "BORDER", nil, 5)
+			playerButton.otherHealPrediction:SetColorTexture(1,1,1);
+			playerButton.otherHealPrediction:SetGradient("VERTICAL", 11/255, 53/255, 43/255, 21/255, 89/255, 72/255);
+
+		
+			playerButton.totalAbsorbOverlay = playerButton.healthBar:CreateTexture(nil, "BORDER", nil, 6)
+			playerButton.totalAbsorbOverlay:SetTexture("Interface\\RaidFrame\\Shield-Overlay", true, true);	--Tile both vertically and horizontally
+			playerButton.totalAbsorbOverlay.tileSize = 20;
+
+			playerButton.totalAbsorb = playerButton.healthBar:CreateTexture(nil, "BORDER", nil, 5)
+			playerButton.totalAbsorb:SetTexture("Interface\\RaidFrame\\Shield-Fill");
+			playerButton.totalAbsorb.overlay = playerButton.totalAbsorbOverlay
+			playerButton.totalAbsorbOverlay:SetAllPoints(playerButton.totalAbsorb);
+
+			playerButton.overAbsorbGlow = playerButton.healthBar:CreateTexture(nil, "ARTWORK", nil, 2)
+			playerButton.overAbsorbGlow:SetTexture("Interface\\RaidFrame\\Shield-Overshield");
+			playerButton.overAbsorbGlow:SetBlendMode("ADD");
+			playerButton.overAbsorbGlow:SetPoint("BOTTOMLEFT", playerButton.healthBar, "BOTTOMRIGHT", -7, 0);
+			playerButton.overAbsorbGlow:SetPoint("TOPLEFT", playerButton.healthBar, "TOPRIGHT", -7, 0);
+			playerButton.overAbsorbGlow:SetWidth(16);
+			playerButton.overAbsorbGlow:Hide()
+
+			playerButton.overHealAbsorbGlow = playerButton.healthBar:CreateTexture(nil, "ARTWORK", nil, 2)
+			playerButton.overHealAbsorbGlow:SetTexture("Interface\\RaidFrame\\Absorb-Overabsorb");
+			playerButton.overHealAbsorbGlow:SetBlendMode("ADD");
+			playerButton.overHealAbsorbGlow:SetPoint("BOTTOMRIGHT", playerButton.healthBar, "BOTTOMLEFT", 7, 0);
+			playerButton.overHealAbsorbGlow:SetPoint("TOPRIGHT", playerButton.healthBar, "TOPLEFT", 7, 0);
+			playerButton.overHealAbsorbGlow:SetWidth(16);
+			playerButton.overHealAbsorbGlow:Hide()
+
+
+			playerButton.healthBar.Background = playerButton.healthBar:CreateTexture(nil, 'BACKGROUND', nil, 2)
+			playerButton.healthBar.Background:SetAllPoints()
+			playerButton.healthBar.Background:SetTexture("Interface/Buttons/WHITE8X8")
 			
 			-- role
-			playerButton.Role = CreateFrame("Frame", nil, playerButton.Health)
+			playerButton.Role = CreateFrame("Frame", nil, playerButton.healthBar)
 			playerButton.Role:SetPoint("TOPLEFT")
 			playerButton.Role:SetPoint("BOTTOMLEFT")
 			playerButton.Role.Icon = playerButton.Role:CreateTexture(nil, 'OVERLAY')
 			playerButton.Role.Icon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
-			
+
 			playerButton.Role.ApplySettings = function(self)
-				if playerButton.bgSizeConfig.RoleIcon_Enabled then 
+				if not isTBCC and playerButton.bgSizeConfig.RoleIcon_Enabled then 
 					self:SetWidth(playerButton.bgSizeConfig.RoleIcon_Size)
 					self.Icon:SetSize(playerButton.bgSizeConfig.RoleIcon_Size, playerButton.bgSizeConfig.RoleIcon_Size)
 					self.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 2, -playerButton.bgSizeConfig.RoleIcon_VerticalPosition)
@@ -1496,11 +1872,80 @@ do
 				end
 			end
 
+			-- Covenant Icon
+			playerButton.Covenant = CreateFrame("Frame", nil, playerButton.healthBar)
+
+			playerButton.Covenant:HookScript("OnEnter", function(self)
+				BattleGroundEnemies:ShowTooltip(self, function() 
+					if self.covenantID then
+						GameTooltip:SetText(C_Covenants.GetCovenantData(self.covenantID).name)
+					end
+				end)
+			end)
 			
+			playerButton.Covenant:HookScript("OnLeave", function(self)
+				if GameTooltip:IsOwned(self) then
+					GameTooltip:Hide()
+				end
+			end)
+
+			playerButton.Covenant:SetPoint("TOPLEFT", playerButton.Role, "TOPRIGHT")
+			playerButton.Covenant:SetPoint("BOTTOMLEFT", playerButton.Role, "BOTTOMRIGHT")
+			playerButton.Covenant:SetWidth(0.001)
+			playerButton.Covenant.covenantID = false
+			playerButton.Covenant.Icon = playerButton.Covenant:CreateTexture(nil, 'OVERLAY')
+
+			playerButton.Covenant.DisplayCovenant = function(self, covenantID)
+				if not playerButton.bgSizeConfig.CovenantIcon_Enabled then return end
+				self.covenantID = covenantID
+				self:SetWidth(playerButton.bgSizeConfig.CovenantIcon_Size)
+				self.Icon:SetSize(playerButton.bgSizeConfig.CovenantIcon_Size, playerButton.bgSizeConfig.CovenantIcon_Size)
+				self.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 2, -playerButton.bgSizeConfig.CovenantIcon_VerticalPosition)
+				self.Icon:SetTexture(Data.CovenantIcons[covenantID])
+				self:Show()
+			end
+
+			playerButton.Covenant.Reset = function(self)
+				self.covenantID = false
+				self:Hide()
+			end
+
+			playerButton.Covenant.ApplySettings = function(self)
+				if playerButton.bgSizeConfig.CovenantIcon_Enabled then 
+					self:SetWidth(playerButton.bgSizeConfig.CovenantIcon_Size)
+					self.Icon:SetSize(playerButton.bgSizeConfig.CovenantIcon_Size, playerButton.bgSizeConfig.CovenantIcon_Size)
+					self.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 2, -playerButton.bgSizeConfig.CovenantIcon_VerticalPosition)
+					self:Show()
+				else
+					self:Hide()
+					self:SetSize(0.01, 0.01)
+				end
+			end
+
+			-- level
+			playerButton.Level = BattleGroundEnemies.MyCreateFontString(playerButton.healthBar)
+			playerButton.Level:SetPoint("TOPLEFT", playerButton.Covenant, "TOPRIGHT", 2, 2)
+			playerButton.Level:SetJustifyH("LEFT")
+
+
+			-- numerical target indicator
+			playerButton.NumericTargetindicator = BattleGroundEnemies.MyCreateFontString(playerButton.healthBar)
+			playerButton.NumericTargetindicator:SetPoint('TOPRIGHT', playerButton, "TOPRIGHT", -5, 0)
+			playerButton.NumericTargetindicator:SetPoint('BOTTOMRIGHT', playerButton, "BOTTOMRIGHT", -5, 0)
+			playerButton.NumericTargetindicator:SetJustifyH("RIGHT")
+
+
+			-- name
+			playerButton.Name = BattleGroundEnemies.MyCreateFontString(playerButton.healthBar)
+			playerButton.Name:SetPoint('TOPLEFT', playerButton.Level, "TOPRIGHT", 5, 2)
+			playerButton.Name:SetPoint('BOTTOMRIGHT', playerButton.NumericTargetindicator, "BOTTOMLEFT", 0, 0)
+			playerButton.Name:SetJustifyH("LEFT")
+
+
 			--MyTarget, indicating the current target of the player
-			playerButton.MyTarget = CreateFrame('Frame', nil, playerButton.Health, BackdropTemplateMixin and "BackdropTemplate")
-			playerButton.MyTarget:SetPoint("TOPLEFT", playerButton.Health, "TOPLEFT", -1, 1)
-			playerButton.MyTarget:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT", 1, -1)
+			playerButton.MyTarget = CreateFrame('Frame', nil, playerButton.healthBar, BackdropTemplateMixin and "BackdropTemplate")
+			playerButton.MyTarget:SetPoint("TOPLEFT", playerButton.healthBar, "TOPLEFT")
+			playerButton.MyTarget:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT")
 			playerButton.MyTarget:SetBackdrop({
 				bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
 				edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
@@ -1510,9 +1955,9 @@ do
 			playerButton.MyTarget:Hide()
 			
 			--MyFocus, indicating the current focus of the player
-			playerButton.MyFocus = CreateFrame('Frame', nil, playerButton.Health, BackdropTemplateMixin and "BackdropTemplate")
-			playerButton.MyFocus:SetPoint("TOPLEFT", playerButton.Health, "TOPLEFT", -1, 1)
-			playerButton.MyFocus:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT", 1, -1)
+			playerButton.MyFocus = CreateFrame('Frame', nil, playerButton.healthBar, BackdropTemplateMixin and "BackdropTemplate")
+			playerButton.MyFocus:SetPoint("TOPLEFT", playerButton.healthBar, "TOPLEFT")
+			playerButton.MyFocus:SetPoint("BOTTOMRIGHT", playerButton.Power, "BOTTOMRIGHT")
 			playerButton.MyFocus:SetBackdrop({
 				bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
 				edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
@@ -1521,31 +1966,22 @@ do
 			playerButton.MyFocus:SetBackdropColor(0, 0, 0, 0)
 			playerButton.MyFocus:Hide()
 			
-			-- selection highlight
-			playerButton.SelectionHighlight = playerButton:CreateTexture(nil, 'HIGHLIGHT')
-			playerButton.SelectionHighlight:SetPoint("TOPLEFT", playerButton.MyTarget)
-			playerButton.SelectionHighlight:SetPoint("BOTTOMRIGHT", playerButton.MyTarget)
-			playerButton.SelectionHighlight:Hide()
-			
-			-- level
-			playerButton.Level = BattleGroundEnemies.MyCreateFontString(playerButton.Health)
-			playerButton.Level:SetPoint("TOPLEFT", playerButton.Role, "TOPRIGHT", 2, 2)
-			playerButton.Level:SetJustifyH("LEFT")
-			
-			-- numerical target indicator
-			playerButton.NumericTargetindicator = BattleGroundEnemies.MyCreateFontString(playerButton.Health)
-			playerButton.NumericTargetindicator:SetPoint('TOPRIGHT', playerButton, "TOPRIGHT", -5, 0)
-			playerButton.NumericTargetindicator:SetPoint('BOTTOMRIGHT', playerButton, "BOTTOMRIGHT", -5, 0)
-			playerButton.NumericTargetindicator:SetJustifyH("RIGHT")
+		
+
+			playerButton.RaidTargetIcon = CreateFrame('Frame', nil, playerButton.healthBar, BackdropTemplateMixin and "BackdropTemplate")
+			playerButton.RaidTargetIcon:SetPoint("TOP")
+			playerButton.RaidTargetIcon:SetPoint("BOTTOM")
+			playerButton.RaidTargetIcon:SetWidth(30)
+			playerButton.RaidTargetIcon.Icon = playerButton.RaidTargetIcon:CreateTexture(nil, "OVERLAY")
+			playerButton.RaidTargetIcon.Icon:SetTexture("Interface/TargetingFrame/UI-RaidTargetingIcons")
+			playerButton.RaidTargetIcon.Icon:SetAllPoints()
+			playerButton.RaidTargetIcon:Hide()
+
 			
 			-- symbolic target indicator
 			playerButton.TargetIndicators = {}
 
-			-- name
-			playerButton.Name = BattleGroundEnemies.MyCreateFontString(playerButton.Health)
-			playerButton.Name:SetPoint('TOPLEFT', playerButton.Level, "TOPRIGHT", 5, 2)
-			playerButton.Name:SetPoint('BOTTOMRIGHT', playerButton.NumericTargetindicator, "BOTTOMLEFT", 0, 0)
-			playerButton.Name:SetJustifyH("LEFT")
+		
 			
 			-- trinket
 			playerButton.Trinket = BattleGroundEnemies.Objects.Trinket.New(playerButton)
@@ -1561,8 +1997,10 @@ do
 			playerButton.DRContainer = BattleGroundEnemies.Objects.DR.New(playerButton)
 			
 			-- Auras
-			playerButton.BuffContainer = BattleGroundEnemies.Objects.Buffs.New(playerButton)
-			playerButton.DebuffContainer = BattleGroundEnemies.Objects.Debuffs.New(playerButton)
+			--playerButton.PriorizedAuras = BattleGroundEnemies.Object.AuraContainer.New(playerButton)
+			
+			playerButton.BuffContainer = BattleGroundEnemies.Objects.AuraContainer.New(playerButton, "buff")
+			playerButton.DebuffContainer = BattleGroundEnemies.Objects.AuraContainer.New(playerButton, "debuff")
 			
 			playerButton:ApplyButtonSettings()
 		end
@@ -1571,22 +2009,37 @@ do
 			playerButton[detail] = value
 		end
 		
-		
 		playerButton:SetSpecAndRole()
 		
-		playerButton.Spec_AuraDisplay.HasAdditionalReducedInterruptTime = false
 		
+				
 		-- level
 		if playerButton.PlayerLevel then playerButton:SetLevel(playerButton.PlayerLevel) end --for testmode
 
 		
 		local color = playerButton.PlayerClassColor
-		playerButton.Health:SetStatusBarColor(color.r,color.g,color.b)
-		playerButton.Health:SetValue(1)
+		playerButton.healthBar:SetStatusBarColor(color.r,color.g,color.b)
+		playerButton.healthBar:SetMinMaxValues(0, 1)
+		playerButton.healthBar:SetValue(1)
+
+		playerButton.totalAbsorbOverlay:Hide()
+		playerButton.totalAbsorb:Hide()
 		
-		color = PowerBarColor[Data.Classes[playerButton.PlayerClass][playerButton.PlayerSpecName].Ressource]
+		if isTBCC then
+			color = PowerBarColor[Data.Classes[playerButton.PlayerClass].Ressource]
+		else
+			color = PowerBarColor[Data.Classes[playerButton.PlayerClass][playerButton.PlayerSpecName].Ressource]
+		end
+		
 		playerButton.Power:SetStatusBarColor(color.r, color.g, color.b)
-		
+			
+		playerButton.UnitIDs = {TargetedByEnemy = {}}
+		if playerButton.PlayerIsEnemy then 
+			playerButton:UpdateRange(false)
+		else
+			playerButton:UpdateRange(true)
+		end
+
 		playerButton:SetName()
 		playerButton:SetBindings()
 		
@@ -1675,16 +2128,18 @@ do
 		
 		local playerButton = self.Players[name]
 		if playerButton then	--already existing
-			if playerButton.PlayerSpecName ~= specName then--its possible to change specName in battleground
-				playerButton.PlayerSpecName = specName
-				playerButton:SetSpecAndRole()
-				self.resort = true
+			if not isTBCC then 
+				if playerButton.PlayerSpecName ~= specName then--its possible to change specName in battleground
+					playerButton.PlayerSpecName = specName
+					playerButton:SetSpecAndRole()
+					self.resort = true
+				end
 			end
 			
 			playerButton.Status = 1 --1 means found, already existing
 		else
 			self.NewPlayerDetails[name] = { -- details of this new player
-				PlayerClass = classTag,
+				PlayerClass = string.upper(classTag), --apparently it can happen that we get a lowercase "druid" from GetBattlefieldScore() in TBCC, isTBCC
 				PlayerName = name,
 				PlayerRace = LibRaces:GetRaceToken(race), --delifers are local independent token for relentless check
 				PlayerSpecName = specName,
@@ -1716,18 +2171,7 @@ do
 		for name, playerDetails in pairs(self.NewPlayerDetails) do
 			local playerButton = self:SetupButtonForNewPlayer(playerDetails)
 			
-			-- set data for real players
 			playerButton.Status = 2
-			
-			playerButton.UnitIDs = {TargetedByEnemy = {}}
-			if playerButton.PlayerIsEnemy then 
-				playerButton:UpdateRange(false)
-			else
-				playerButton:UpdateRange(true)
-			end
-			
-		
-			-- end set data for real enemies
 		end
 
 		if self.resort then
@@ -1735,7 +2179,7 @@ do
 		end
 		
 		if self.PlayerType == "Allies" then
-			self:GROUP_ROSTER_UPDATE()
+			BattleGroundEnemies:GROUP_ROSTER_UPDATE()
 		end
 	end
 
@@ -1794,14 +2238,21 @@ do
 			-- user was looking at another tab than all players
 			SetBattlefieldScoreFaction() -- request a UPDATE_BATTLEFIELD_SCORE
 		end
-
 	end
 
 
 
 	
 	function BattleGroundEnemies:PLAYER_LOGIN()
-		PlayerDetails.PlayerName = UnitName("player")
+		self.PlayerDetails = {
+			PlayerName = UnitName("player"),
+			PlayerClass = select(2, UnitClass("player")),
+			IsGroupLeader = UnitIsGroupLeader("player"),
+			isGroupAssistant = UnitIsGroupAssistant("player"),
+			unitID = "player",
+			GUID = UnitGUID("player")
+		}
+		
 		
 		self.db = LibStub("AceDB-3.0"):New("BattleGroundEnemiesDB", Data.defaultSettings, true)
 
@@ -1814,9 +2265,18 @@ do
 		
 		self:SetupOptions()
 
-		PVPMatchScoreboard:HookScript("OnHide", PVPMatchScoreboard_OnHide)
+		AceConfigDialog:SetDefaultSize("BattleGroundEnemies", 709, 532)
+		AceConfigDialog:AddToBlizOptions("BattleGroundEnemies", "BattleGroundEnemies")
+
+		if PVPMatchScoreboard then -- for TBCC, isTBCC
+			PVPMatchScoreboard:HookScript("OnHide", PVPMatchScoreboard_OnHide)
+		end
 		
 		--DBObjectLib:ResetProfile(noChildren, noCallbacks)
+
+		if IsInGroup() and #self.Allies.groupMembers == 0 then
+			self:GROUP_ROSTER_UPDATE()  --Scan again, the user probably reloaded the UI so GROUP_ROSTER_UPDATE didnt fire
+		end
 	
 		
 		self:UnregisterEvent("PLAYER_LOGIN")
@@ -1841,19 +2301,7 @@ function BattleGroundEnemies.Enemies:NAME_PLATE_UNIT_REMOVED(unitID)
 	end
 end	
 
-function BattleGroundEnemies.Enemies:UNIT_HEALTH(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
-	local enemyButton = self:GetPlayerbuttonByUnitID(unitID)
-	if enemyButton then --unit is a shown enemy
-		enemyButton:UpdateHealth(unitID)
-	end
-end
 
-function BattleGroundEnemies.Enemies:UNIT_POWER_FREQUENT(unitID, powerToken) --gets power of nameplates, player, target, focus, raid1 to raid40, partymember
-	local enemyButton = self:GetPlayerbuttonByUnitID(unitID)
-	if enemyButton then --unit is a shown enemy
-		enemyButton:UpdatePower(unitID, powerToken)
-	end
-end
 
 
 
@@ -1869,6 +2317,7 @@ end
 
 
 function BattleGroundEnemies:ProfileChanged()
+	self:SetupOptions()
 	self.Enemies:ApplyAllSettings()
 	self.Allies:ApplyAllSettings()
 end
@@ -1897,9 +2346,7 @@ function BattleGroundEnemies:Debug(...)
 end
 
 function BattleGroundEnemies:Information(...)
-	
-	print("BGE:", ...) 
-
+	print("|cff0099ffBattleGroundEnemies:|r", ...) 
 end
 
 
@@ -1910,17 +2357,16 @@ function BattleGroundEnemies:ARENA_OPPONENT_UPDATE(unitID, unitEvent)
 	--self:Debug("ARENA_OPPONENT_UPDATE", unitID, unitEvent, UnitName(unitID))
 	
 	if unitEvent == "cleared" then --"unseen", "cleared" or "destroyed"
-		local playerButton = self.ArenaEnemyIDToPlayerButton[unitID]
+		local playerButton = self.ArenaIDToPlayerButton[unitID]
 		if playerButton then
 			--BattleGroundEnemies:Debug("ARENA_OPPONENT_UPDATE", playerButton.DisplayedName, "ObjectiveLost")
 			
-			self.ArenaEnemyIDToPlayerButton[unitID] = nil
-			playerButton.UnitIDs.Arena = false
-			playerButton:UnregisterEvent("UNIT_AURA")
-			
+			self.ArenaIDToPlayerButton[unitID] = nil
 			playerButton.ObjectiveAndRespawn:Reset()
+			playerButton.UnitIDs.Arena = false
 			
 			if playerButton.PlayerIsEnemy then -- then this button is an ally button
+				playerButton:UnregisterEvent("UNIT_AURA")
 				playerButton:FetchAnotherUnitID()
 			end
 		end
@@ -1943,48 +2389,51 @@ function BattleGroundEnemies:GetPlayerbuttonByUnitID(unitID)
 end
 
 local CombatLogevents = {}
+BattleGroundEnemies.CombatLogevents = CombatLogevents
 
-function CombatLogevents.SPELL_AURA_APPLIED(self, srcName, destName, spellID, spellName, auraType)
+function CombatLogevents.SPELL_AURA_APPLIED(self, srcName, destName, spellID, spellName, auraType, amount)
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
-		playerButton:AuraApplied(spellID, spellName, srcName, auraType)
-		if Data.PvPTalentsReducingInterruptTime[spellName] then
-			playerButton.Spec_AuraDisplay.HasAdditionalReducedInterruptTime = Data.PvPTalentsReducingInterruptTime[spellName]
-		end
-	end
-end
-
-function CombatLogevents.SPELL_AURA_APPLIED_DOSE(self, srcName, destName, spellID, spellName, auraType, amount)
-	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
+	if playerButton and playerButton.isShown then
 		playerButton:AuraApplied(spellID, spellName, srcName, auraType, amount)
 	end
 end
 
-function CombatLogevents.SPELL_AURA_REFRESH(self, srcName, destName, spellID, spellName, auraType)
+-- fires when the stack of a aura increases
+function CombatLogevents.SPELL_AURA_APPLIED_DOSE(self, srcName, destName, spellID, spellName, auraType, amount)
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
-		playerButton:AuraRemoved(spellID, srcName)
-		playerButton:AuraApplied(spellID, spellName, srcName, auraType)
+	if playerButton and playerButton.isShown then
+		playerButton:AuraApplied(spellID, spellName, srcName, auraType, amount)
+	end
+end
+-- fires when the stack of a aura increases
+function CombatLogevents.SPELL_AURA_REMOVED_DOSE(self, srcName, destName, spellID, spellName, auraType, amount)
+	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
+	if playerButton and playerButton.isShown then
+		playerButton:AuraApplied(spellID, spellName, srcName, auraType, amount)
+	end
+end
+
+
+function CombatLogevents.SPELL_AURA_REFRESH(self, srcName, destName, spellID, spellName, auraType, amount)
+	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
+	if playerButton and playerButton.isShown then
+		playerButton:AuraRemoved(true, spellID, srcName)
+		playerButton:AuraApplied(spellID, spellName, srcName, auraType, amount)
 	end
 end
 
 function CombatLogevents.SPELL_AURA_REMOVED(self, srcName, destName, spellID, spellName, auraType)
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
-		playerButton:AuraRemoved(spellID, srcName)
-		if Data.PvPTalentsReducingInterruptTime[spellName] then
-			playerButton.Spec_AuraDisplay.HasAdditionalReducedInterruptTime = false
-		end
+	if playerButton and playerButton.isShown then
+		playerButton:AuraRemoved(true, spellID, srcName)
 	end
 end
 
 --CombatLogevents.SPELL_DISPEL = CombatLogevents.SPELL_AURA_REMOVED
 
 function CombatLogevents.SPELL_CAST_SUCCESS(self, srcName, destName, spellID)
-
 	local playerButton = self.Enemies.Players[srcName] or self.Allies.Players[srcName]
-	if playerButton then
+	if playerButton and playerButton.isShown then
 		if Data.RacialSpellIDtoCooldown[spellID] then --racial used, maybe?
 			playerButton.Racial:RacialUsed(spellID)
 		else
@@ -1993,22 +2442,21 @@ function CombatLogevents.SPELL_CAST_SUCCESS(self, srcName, destName, spellID)
 	end
 	
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
+	if playerButton and playerButton.isShown then
 		local defaultInterruptDuration = Data.Interruptdurations[spellID]
 		if defaultInterruptDuration then -- check if enemy got interupted
 			if playerButton.PlayerIsEnemy then 
-				local unitIDs = playerButton.UnitIDs
-				local activeUnitID = unitIDs.Active
+				local activeUnitID = playerButton.UnitIDs.Active
 				if activeUnitID then
-					if not unitIDs.CheckIfUnitExists or UnitExists(activeUnitID) then
-						local _,_,_,_,_,_,_, notInterruptible = UnitChannelInfo(activeUnitID)
+					if UnitExists(activeUnitID) then
+						local _,_,_,_,_,_,_, notInterruptible = UnitChannelInfo(activeUnitID)  --This guy was channeling something and we casted a interrupt on him
 						if notInterruptible == false then --spell is interruptable
 							playerButton.Spec_AuraDisplay:GotInterrupted(spellID, defaultInterruptDuration)
 						end
 					end
 				end
 			elseif playerButton.unit then -- its an ally, check if it has an unitID assigned
-				local _,_,_,_,_,_,_, notInterruptible = UnitChannelInfo(playerButton.unit)
+				local _,_,_,_,_,_,_, notInterruptible = UnitChannelInfo(playerButton.unit) --This guy was channeling something and we casted a interrupt on him
 				if notInterruptible == false then --spell is interruptable
 					playerButton.Spec_AuraDisplay:GotInterrupted(spellID, defaultInterruptDuration)
 				end
@@ -2019,7 +2467,7 @@ end
 
 function CombatLogevents.SPELL_INTERRUPT(self, _, destName, spellID, _, _)
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
-	if playerButton then
+	if playerButton and playerButton.isShown then
 		local defaultInterruptDuration = Data.Interruptdurations[spellID]
 		if defaultInterruptDuration then
 			playerButton.Spec_AuraDisplay:GotInterrupted(spellID, defaultInterruptDuration)
@@ -2027,6 +2475,7 @@ function CombatLogevents.SPELL_INTERRUPT(self, _, destName, spellID, _, _)
 	end
 end
 
+CombatLogevents.Counter = {}
 function CombatLogevents.UNIT_DIED(self, _, destName, _, _, _)
 	--self:Debug("subevent", destName, "UNIT_DIED")
 	local playerButton = self.Enemies.Players[destName] or self.Allies.Players[destName]
@@ -2038,9 +2487,24 @@ end
 
 function BattleGroundEnemies:COMBAT_LOG_EVENT_UNFILTERED()
 	local timestamp,subevent,hide,srcGUID,srcName,srcF1,srcF2,destGUID,destName,destF1,destF2,spellID,spellName,spellSchool, auraType = CombatLogGetCurrentEventInfo()
-	if CombatLogevents[subevent] then return CombatLogevents[subevent](self, srcName, destName, spellID, spellName, auraType) end
+	self:Debug(timestamp,subevent,hide,srcGUID,srcName,srcF1,srcF2,destGUID,destName,destF1,destF2,spellID,spellName,spellSchool, auraType)
+	local covenantID = Data.CovenantSpells[spellID]
+	if covenantID then
+		local playerButton = self.Enemies.Players[srcName] or self.Allies.Players[srcName]
+		if playerButton then
+			-- this player used a covenant ability show an icon for that
+			playerButton.Covenant:DisplayCovenant(covenantID)
+		end 
+	end
+	if CombatLogevents[subevent] then 
+		CombatLogevents.Counter[subevent] = (CombatLogevents.Counter[subevent] or 0) + 1
+		return CombatLogevents[subevent](self, srcName, destName, spellID, spellName, auraType) 
+	end
 end
 
+local function IamTargetcaller()
+	return (BattleGroundEnemies.PlayerDetails.isGroupLeader and #BattleGroundEnemies.Allies.assistants == 0) or (not BattleGroundEnemies.PlayerDetails.isGroupLeader and BattleGroundEnemies.PlayerDetails.isGroupAssistant) 
+end
 
 do
 	local oldTarget
@@ -2066,6 +2530,11 @@ do
 			end
 			playerButton.MyTarget:Show()
 			oldTarget = playerButton
+ 
+
+			if BattleGroundEnemies.IsRatedBG and self.db.profile.RBG.TargetCalling_SetMark and IamTargetcaller() then  -- i am the target caller
+				SetRaidTarget("target", 8)
+			end
 		else
 			oldTarget = false
 		end
@@ -2122,6 +2591,9 @@ end
 function BattleGroundEnemies:ARENA_CROWD_CONTROL_SPELL_UPDATE(unitID, spellID)
 	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
 	if playerButton  then
+		if not Data.TriggerSpellIDToTrinketnumber[spellID] and spellID ~= 0 then
+			self:Information("ARENA_CROWD_CONTROL_SPELL_UPDATE spellID not found:", spellID)
+		end
 		playerButton.Trinket:TrinketCheck(spellID, false)
 	end
 	--if spellID ~= 72757 then --cogwheel (30 sec cooldown trigger by racial)
@@ -2148,11 +2620,75 @@ function BattleGroundEnemies:ARENA_COOLDOWNS_UPDATE()
 	end
 end
 
+function BattleGroundEnemies:RAID_TARGET_UPDATE()
+	for name, playerButton in pairs(self.Allies.Players) do
+		playerButton:UpdateRaidTargetIcon()
+	end
+	for name, playerButton in pairs(self.Enemies.Players) do
+		playerButton:UpdateRaidTargetIcon()
+	end
+end
+
+
+
+function BattleGroundEnemies:UNIT_HEALTH(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown player
+		playerButton:UpdateHealth(unitID)
+		playerButton.displayedUnit = unitID
+		playerButton.optionTable = {displayHealPrediction = playerButton.bgSizeConfig.HealthBar_HealthPrediction_Enabled}
+		if not isTBCC then CompactUnitFrame_UpdateHealPrediction(playerButton) end
+	end
+end
+
+BattleGroundEnemies.UNIT_HEALTH_FREQUENT = BattleGroundEnemies.UNIT_HEALTH --TBC compability, isTBCC
+
+function BattleGroundEnemies:UNIT_MAXHEALTH(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown enemy
+		playerButton:UpdateHealth(unitID)
+		playerButton.displayedUnit = unitID
+		playerButton.optionTable = {displayHealPrediction = playerButton.bgSizeConfig.HealthBar_HealthPrediction_Enabled}
+		if not isTBCC then CompactUnitFrame_UpdateHealPrediction(playerButton) end
+	end
+end
+
+function BattleGroundEnemies:UNIT_HEAL_PREDICTION(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown enemy
+		playerButton.displayedUnit = unitID
+		playerButton.optionTable = {displayHealPrediction = playerButton.bgSizeConfig.HealthBar_HealthPrediction_Enabled}
+		if not isTBCC then CompactUnitFrame_UpdateHealPrediction(playerButton) end
+	end
+end
+
+function BattleGroundEnemies:UNIT_ABSORB_AMOUNT_CHANGED(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown enemy
+		playerButton.displayedUnit = unitID
+		playerButton.optionTable = {displayHealPrediction = playerButton.bgSizeConfig.HealthBar_HealthPrediction_Enabled}
+		if not isTBCC then CompactUnitFrame_UpdateHealPrediction(playerButton) end
+	end
+end
+
+function BattleGroundEnemies:UNIT_HEAL_ABSORB_AMOUNT_CHANGED(unitID) --gets health of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown enemy
+		playerButton.displayedUnit = unitID
+		playerButton.optionTable = {displayHealPrediction = playerButton.bgSizeConfig.HealthBar_HealthPrediction_Enabled} 
+		if not isTBCC then CompactUnitFrame_UpdateHealPrediction(playerButton) end
+	end
+end
+
+
+function BattleGroundEnemies:UNIT_POWER_FREQUENT(unitID, powerToken) --gets power of nameplates, player, target, focus, raid1 to raid40, partymember
+	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
+	if playerButton and playerButton.isShown then --unit is a shown enemy
+		playerButton:UpdatePower(unitID, powerToken)
+	end
+end
+
 function BattleGroundEnemies:PlayerAlive()
-	self:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED")
-	self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-	self:RegisterEvent("UNIT_TARGET")
 	--recheck the targets of groupmembers
 	for allyName, allyButton in pairs(self.Allies.Players) do
 		allyButton:UpdateTargets()
@@ -2162,22 +2698,18 @@ end
 
 function BattleGroundEnemies:PLAYER_ALIVE()
 	if UnitIsGhost("player") then --Releases his ghost to a graveyard.
-		self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
-		self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-		self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
-		self:UnregisterEvent("UNIT_TARGET")
 		self.PlayerIsAlive = false
-	else --alive (resed while not being a ghost)
+	else --alive (revived while not being a ghost)
 		self:PlayerAlive()
 	end
 end
 
 function BattleGroundEnemies:UNIT_TARGET(unitID)
-	--self:Debug("unitID:", unitID, "unit:", UnitName(unitID), "unittarget:", UnitName(unitID.."target"))
+	self:Debug("unitID:", unitID, "unit:", UnitName(unitID), "unittarget:", UnitName(unitID.."target"))
 	
 	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
 	if playerButton and playerButton ~= PlayerButton then
-		playerButton:UpdateTargets(unitID)
+		playerButton:UpdateTargets()
 	end
 end
 
@@ -2221,16 +2753,18 @@ do
 					if self.db.profile.DisableArenaFrames then
 						if CurrentMapID then
 							if not fakeParent then
-								for i = 1, 5 do
-									local arenaFrame = _G["ArenaEnemyFrame"..i]
-									usersParent[i] = arenaFrame:GetParent() 
-									arenaFrame:SetParent(fakeFrame)
-									local arenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
-									usersPetParent[i] = arenaPetFrame:GetParent() 
-									arenaPetFrame:SetParent(fakeFrame)
+								if ArenaEnemyFrames then
+									for i = 1, 5 do
+										local arenaFrame = _G["ArenaEnemyFrame"..i]
+										usersParent[i] = arenaFrame:GetParent() 
+										arenaFrame:SetParent(fakeFrame)
+										local arenaPetFrame = _G["ArenaEnemyFrame"..i.."PetFrame"]
+										usersPetParent[i] = arenaPetFrame:GetParent() 
+										arenaPetFrame:SetParent(fakeFrame)
+									end
+									fakeParent = true
+									fakeFrame:Hide()
 								end
-								fakeParent = true
-								fakeFrame:Hide()
 							end
 						elseif fakeParent then
 							restoreUsersParent()
@@ -2261,8 +2795,6 @@ do
 				C_Timer.After(2, ArenaEnemiesAtBeginn)
 			end
 		end
-
-		local wrongSelectedTab = 0
 
 		function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 
@@ -2295,15 +2827,19 @@ do
 					return
 				end
 				
-				
-				local MyBgFaction = GetBattlefieldArenaFaction()  -- returns the playered faction 0 for horde, 1 for alliance
-				self:Debug("MyBgFaction:", MyBgFaction)
-				if MyBgFaction == 0 then -- i am Horde
-					self.EnemyFaction = 1 --Enemy is Alliance
-					self.AllyFaction = 0
+				if not isTBCC then
+					local MyBgFaction = GetBattlefieldArenaFaction()  -- returns the playered faction 0 for horde, 1 for alliance, doesnt exist in TBC
+					self:Debug("MyBgFaction:", MyBgFaction)
+					if MyBgFaction == 0 then -- i am Horde
+						self.EnemyFaction = 1 --Enemy is Alliance
+						self.AllyFaction = 0
+					else
+						self.EnemyFaction = 0 --Enemy is Horde
+						self.AllyFaction = 1
+					end
 				else
-					self.EnemyFaction = 0 --Enemy is Horde
-					self.AllyFaction = 1
+					self.EnemyFaction = 0 -- set a dummy value, we get data later from GetBattlefieldScore()
+					self.AllyFaction = 1 -- set a dummy value, we get data later from GetBattlefieldScore()
 				end
 				
 				if Data.BattlegroundspezificBuffs[CurrentMapID] then
@@ -2321,9 +2857,11 @@ do
 				
 				BattleGroundEnemies:ToggleArenaFrames()
 				
-				C_Timer.After(5, function() --Delay this check, since its happening sometimes that this data is not ready yet
-					self.IsRatedBG = IsRatedBattleground()
-				end)
+				if not isTBCC then
+					C_Timer.After(5, function() --Delay this check, since its happening sometimes that this data is not ready yet
+						self.IsRatedBG = IsRatedBattleground()
+					end)
+				end
 				
 				--self:Debug("IsRatedBG", IsRatedBG)
 			end
@@ -2356,14 +2894,21 @@ do
 			local foundAllies = 0
 			local foundEnemies = 0
 			for i = 1, numScores do
-				local name,_,_,_,_,faction,race, _, classTag,_,_,_,_,_,_,specName = GetBattlefieldScore(i)
+				local name, faction, race, classTag, specName
+				if isTBCC then
+					--name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone = GetBattlefieldScore(index)
+					name, _, _, _, _, faction, _, race, _, classTag = GetBattlefieldScore(i)
+				else
+					name, _, _, _, _, faction, race, _, classTag, _, _, _, _, _, _, specName = GetBattlefieldScore(i)
+				end
+				
 				self:Debug("player", "name:", name, "faction:", faction, "race:", race, "classTag:", classTag, "specName:", specName)
 				--name = name-realm, faction = 0 or 1, race = localized race e.g. "Mensch",classTag = e.g. "PALADIN", spec = localized specname e.g. "holy"
 				--locale dependent are: race, specName
 				
-				if faction and name and race and classTag and specName and specName ~= "" then
+				if faction and name and race and classTag and (isTBCC or (specName and specName ~= ""))  then
 					--if name == PlayerDetails.PlayerName then EnemyFaction = EnemyFaction == 1 and 0 or 1 return end --support for the new brawl because GetBattlefieldArenaFaction() returns wrong data on that BG
-					 if name == PlayerDetails.PlayerName and faction == self.EnemyFaction then 
+					 if name == self.PlayerDetails.PlayerName and faction == self.EnemyFaction then 
 						self.EnemyFaction = self.AllyFaction
 						self.AllyFaction = faction
 						
@@ -2397,11 +2942,133 @@ do
 			
 		end--functions end
 	end-- do-end block end for locals of the function UPDATE_BATTLEFIELD_SCORE
+
+
+	function BattleGroundEnemies.Allies:AddGroupMember(name, isLeader, isAssistant, classTag, unitID, GUID)
+		self.groupMembers[name] = {
+			PlayerName = name,
+			isGroupLeader = isLeader,
+			isGroupAssistant = isAssistant,
+			PlayerClass = classTag, --0 = normal member, 1 = assistant, 2 = group leader
+			unitID = unitID,
+			GUID = GUID
+		}
+
+		self.GuidToGroupMember[GUID] = self.groupMembers[name]
+
+		self:UpdateGroupMemberButton(self.groupMembers[name])
+	
+		if isLeader then
+			self.groupLeader = name
+		end
+		if isAssistant then
+			table.insert(self.assistants, name)
+		end
+	end
+
+	function BattleGroundEnemies.Allies:UpdateGroupMemberButton(groupMember)
+		local allyButton = self.Players[groupMember.PlayerName]
+
+		if allyButton then
+			
+
+			if groupMember.PlayerName ~= BattleGroundEnemies.PlayerDetails.PlayerName then
+				local unit = groupMember.unitID
+
+
+				if allyButton.unit ~= unit then --it happens that numGroupMembers is higher than the value of the maximal players for that battleground, for example 15 in a 10 man bg, thats why we wipe AllyUnitIDToAllyDetails
+					-- ally has a new unitID now
+					local targetUnitID = unit.."target"
+
+					--self:Debug("player", groupMember.PlayerName, "has a new unit and targeted something")
+				
+					local targetEnemyButton = allyButton.Target
+					if targetEnemyButton then
+					
+						--self:Debug("player", groupMember.PlayerName, "has a new unit and targeted something")
+						if targetEnemyButton.UnitIDs.Active == allyButton.TargetUnitID then
+							targetEnemyButton.UnitIDs.Active = targetUnitID
+						end
+						if targetEnemyButton.UnitIDs.Ally == allyButton.TargetUnitID then
+							targetEnemyButton.UnitIDs.Ally = targetUnitID
+						end
+					end
+
+
+					allyButton:SetLevel(UnitLevel(unit))
+
+					allyButton.TargetUnitID = targetUnitID
+					allyButton:NewUnitID(unit)
+				end
+			else
+				allyButton.TargetUnitID = "target"
+				allyButton:NewUnitID("player")
+				PlayerButton = allyButton
+			end
+		end
+	end
+
+	
+
+	function BattleGroundEnemies:GROUP_ROSTER_UPDATE()
+
+		
+
+		if not self then self = BattleGroundEnemies end -- for the C_Timer.After call
+
+
+	
+		wipe(self.Allies.groupMembers)
+		wipe(self.Allies.GuidToGroupMember)
+		self.Allies.groupLeader = nil
+		self.Allies.assistants = {}  
+
+		if not IsInGroup() then return end  --IsInGroup returns true when user is in a Raid and In a 5 man group
+
+		self:RequestEverythingFromGroupmembers()
+				
+		-- GetRaidRosterInfo also works when in a party (not raid) but i am not 100% sure how the party unitID maps to the index in GetRaidRosterInfo()
+
+		if IsInRaid() then 
+			for i = 1, GetNumGroupMembers() do -- the player itself only shows up here when he is in a raid		
+				local name, rank, subgroup, level, localizedClass, classTag, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
+				
+				if name and rank and classTag then 
+					self.Allies:AddGroupMember(name, rank == 2, rank == 1, classTag, "raid"..i, UnitGUID("raid"..i))
+				end
+			end
+		else
+			-- we are in a party, 5 man group
+			local unitIDPrefix = "party"
+			
+			for i = 1, GetNumGroupMembers() do
+
+				local unitID = unitIDPrefix..i
+				local name, realm = UnitName(unitID)
+				if name then
+					if realm then 
+						name = name.."-"..realm
+					end
+		
+					self.Allies:AddGroupMember(name, UnitIsGroupLeader(unitID), UnitIsGroupAssistant(unitID), select(2, UnitClass(unitID)), unitID, UnitGUID(unitID))
+				end
+			end
+
+			self.PlayerDetails.isGroupLeader = UnitIsGroupLeader("player")
+			self.PlayerDetails.isGroupAssistant = UnitIsGroupAssistant("player")
+			self.Allies:AddGroupMember(self.PlayerDetails.PlayerName, self.PlayerDetails.isGroupLeader, self.PlayerDetails.isGroupAssistant, self.PlayerDetails.PlayerClass, "player", self.PlayerDetails.GUID)
+		end
+	end
+
+	BattleGroundEnemies.PARTY_LEADER_CHANGED = BattleGroundEnemies.GROUP_ROSTER_UPDATE
+
 	
 	function BattleGroundEnemies:PLAYER_ENTERING_WORLD()
 		if self.TestmodeActive then --disable testmode
 			self:DisableTestMode()
 		end
+
+		
 		
 		CurrentMapID = false
 	

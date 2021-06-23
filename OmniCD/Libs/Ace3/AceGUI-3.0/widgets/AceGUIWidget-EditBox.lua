@@ -50,7 +50,7 @@ local function ShowButton(self)
 	end
 end
 
-local function HideButton(self)
+local function HideButton(self) -- this is used as 'Disabled' instead
 	self.button:SetBackdropColor(0.2, 0.2, 0.2)
 	self.button.Text:SetTextColor(0.5, 0.5, 0.5)
 	self.button:EnableMouse(false)
@@ -83,7 +83,7 @@ local function EditBox_OnEnterPressed(frame)
 	local value = frame:GetText()
 	local cancel = self:Fire("OnEnterPressed", value)
 	if not cancel then
-		self.lasttext = value -- now we can update
+		self.lasttext = value
 		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
 		HideButton(self)
 	end
@@ -239,7 +239,7 @@ local function Constructor()
 	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
 	editbox:SetTextInsets(3, 20, 3, 3)
 	editbox:SetMaxLetters(256)
-	editbox:SetPoint("BOTTOMRIGHT", 0, 3) -- TOPLEFT done in SetLabel
+	editbox:SetPoint("BOTTOMRIGHT", 0, 3)
 	editbox.Left:SetTexture(nil)
 	editbox.Right:SetTexture(nil)
 	editbox.Middle:SetTexture(nil)

@@ -254,7 +254,7 @@ do
 			local icon = icons[i]
 			local info = P.groupInfo[icon.guid]
 			local spellIcon = info and info.spellIcons[icon.spellID]
-			if icon ~= spellIcon then
+			if icon ~= spellIcon then -- [104]
 				P:RemoveIcon(icon)
 				tremove(icons, i)
 				n = n + 1
@@ -478,7 +478,7 @@ function P:ApplyExSettings(key)
 		self:SetCounter(icon)
 		self:SetChargeScale(icon)
 		self:SetTooltip(icon)
-		self:SetAtlas(icon)
+		--self:SetAtlas(icon)
 	end
 end
 
@@ -489,7 +489,7 @@ function P:UpdateExPosition()
 
 	for key, f in pairs(self.extraBars) do
 		if E.db.extraBars[key].enabled then
-			self:SetExIconLayout(key, nil, true, true)
+			self:SetExIconLayout(key, true, true, true) -- [105]
 			E.LoadPosition(f)
 			f:Show()
 		else

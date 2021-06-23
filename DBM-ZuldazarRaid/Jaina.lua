@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetUsedIcons(1, 2, 3)
@@ -145,7 +145,6 @@ mod:AddBoolOption("SetWeather", true)
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 mod:AddDropdownOption("InterruptBehavior", {"Three", "Four", "Five"}, "Three", "misc")
 
-mod.vb.phase = 1
 mod.vb.corsairCount = 0
 mod.vb.imageCount = 0
 mod.vb.ringofFrostCount = 0
@@ -222,7 +221,7 @@ local function graspCollection(self, finish)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.corsairCount = 0
 	self.vb.imageCount = 0
 	self.vb.ringofFrostCount = 0
@@ -352,7 +351,7 @@ function mod:SPELL_CAST_START(args)
 		timerIcefallCD:Start(self:IsMythic() and 36.5 or self.vb.phase == 2 and (self:IsLFR() and 52.1 or 42.8) or 62, self.vb.iceFallCount+1)
 		--timerIcefall:Start()
 	elseif spellId == 288719 then--Flash Freeze
-		self.vb.phase = 2.5
+		self:SetStage(2.5)
 		self.vb.waterboltVolleyCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2.5))
 		warnPhase:Play("phasechange")
@@ -507,7 +506,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--specWarGraspofFrost:ScheduleVoice(1, "helpdispel")
 	elseif spellId == 288199 then--Howling Winds (secondary 1.5 trigger)
 		if self.vb.phase == 1 then
-			self.vb.phase = 1.5
+			self:SetStage(1.5)
 			warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 			warnPhase:Play("phasechange")
 		end
@@ -612,7 +611,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
 		end
 	elseif spellId == 288199 and self.vb.phase < 2 and self:IsInCombat()  then--Howling Winds
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
 		timerBroadsideCD:Start(3.2, 1)--SUCCESS
@@ -643,7 +642,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			yellSiegebreakerFades:Cancel()
 		end
 	elseif spellId == 290001 and self:IsInCombat() then--Arcane Barrage
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.iceFallCount = 0
 		self.vb.broadsideCount = 0
 		self.vb.siegeCount = 0
@@ -734,7 +733,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnCorsairSoon:Play("mobsoon")
 		timerCorsairCD:Start(12.3)
 	elseif spellId == 290681 then--Transition Visual 1
-		self.vb.phase = 1.5
+		self:SetStage(1.5)
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 		warnPhase:Play("phasechange")
 		timerCorsairCD:Stop()

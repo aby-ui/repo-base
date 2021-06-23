@@ -63,9 +63,8 @@ local L = WeakAuras.L
 	L["Frost"] = "冰霜"
 	L["General"] = "一般"
 	L["Health"] = "生命值"
-	--[[Translation missing --]]
-	L["Highlight while action is queued."] = "Highlight while action is queued."
-	L["Highlight while active, red when out of range."] = "激活时高亮，超出距离是变红"
+	L["Highlight while action is queued."] = "动作在队列中时高亮"
+	L["Highlight while active, red when out of range."] = "激活时高亮，超出距离时变红"
 	L["Highlight while active."] = "激活时高亮"
 	L["Highlight while buffed, red when out of range."] = "获得增益效果时高亮，超出范围变红显示"
 	L["Highlight while buffed."] = "获得增益效果时高亮"
@@ -101,8 +100,7 @@ local L = WeakAuras.L
 	L["Show Charges with Proc Tracking"] = "显示可用次数充能和触发追踪"
 	L["Show Charges with Range Tracking"] = "显示可用次数充能和距离追踪"
 	L["Show Charges with Usable Check"] = "显示可用次数充能和可用性检测结果"
-	--[[Translation missing --]]
-	L["Show Cooldown and Action Queued"] = "Show Cooldown and Action Queued"
+	L["Show Cooldown and Action Queued"] = "显示冷却和动作队列中"
 	L["Show Cooldown and Buff"] = "显示冷却和增益效果"
 	L["Show Cooldown and Buff and Check for Target"] = "显示冷却和增益效果并检查是否有选中的目标"
 	L["Show Cooldown and Buff and Check Usable"] = "显示冷却和增益效果并检查可用性"

@@ -16,7 +16,7 @@ GTFO.MobID["12345"] = {
 
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 GTFO.MobID["38508"] = {
 	--desc = "Blood Beast - Valithria Dreamwalker - ICC";

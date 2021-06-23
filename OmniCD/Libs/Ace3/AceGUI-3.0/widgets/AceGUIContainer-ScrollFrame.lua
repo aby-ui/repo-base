@@ -212,7 +212,7 @@ local function Constructor()
 	scrollbar.ScrollDownButton:Hide()
 	scrollbar.ThumbTexture:SetTexture([[Interface\BUTTONS\White8x8]])
 	scrollbar.ThumbTexture:SetSize(16, 32)
-	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3) -- red is too much
+	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3)
 	scrollbar:SetScript("OnEnter", Thumb_OnEnter)
 	scrollbar:SetScript("OnLeave", Thumb_OnLeave)
 	scrollbar:SetScript("OnMouseDown", Thumb_OnMouseDown)

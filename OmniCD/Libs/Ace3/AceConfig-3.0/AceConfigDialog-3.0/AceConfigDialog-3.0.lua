@@ -2,21 +2,18 @@
 
 -- Customized for OmniCD by permission of the copyright owner.
 
--- Parameter to add tooltip line (ID:#) to hyperlinks:
--- arg = spellID,
-
 ---------------------------------------------------------------------------------
 
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
--- @release $Id: AceConfigDialog-3.0.lua 1232 2020-04-14 22:21:22Z nevcairiel $
+-- @release $Id: AceConfigDialog-3.0.lua 1248 2021-02-05 14:27:49Z funkehdude $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 79
+local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 81
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -28,7 +25,6 @@ AceConfigDialog.frame = AceConfigDialog.frame or CreateFrame("Frame")
 local function GameTooltip_OnHide(self)
 	self.needsReset = true;
 	self.waitingForData = false;
-	--SharedTooltip_SetBackdropStyle(self, self.IsEmbedded and GAME_TOOLTIP_BACKDROP_STYLE_EMBEDDED or TOOLTIP_BACKDROP_STYLE_DEFAULT);
 	GameTooltip_ClearMoney(self);
 	GameTooltip_ClearStatusBars(self);
 	GameTooltip_ClearProgressBars(self);
@@ -51,6 +47,7 @@ local function GameTooltip_OnHide(self)
 	end
 	self:SetPadding(0, 0, 0, 0);
 end
+
 AceConfigDialog.tooltip = AceConfigDialog.tooltip or CreateFrame("GameTooltip", "AceConfigDialogTooltip-OmniCD", UIParent, "GameTooltipTemplate")
 AceConfigDialog.tooltip:SetScript("OnHide", GameTooltip_OnHide)
 
@@ -68,7 +65,7 @@ AceConfigDialog.frame.closing = AceConfigDialog.frame.closing or {}
 AceConfigDialog.frame.closeAllOverride = AceConfigDialog.frame.closeAllOverride or {}
 
 -- Lua APIs
-local tinsert, tsort, tremove = table.insert, table.sort, table.remove
+local tinsert, tsort, tremove, wipe = table.insert, table.sort, table.remove, table.wipe
 local strmatch, format = string.match, string.format
 local error = error
 local pairs, next, select, type, unpack, wipe, ipairs = pairs, next, select, type, unpack, wipe, ipairs
@@ -570,13 +567,11 @@ local function OptionOnMouseOver(widget, event)
 	if opt.type == "multiselect" then
 		tooltip:AddLine(user.text, 0.5, 0.5, 0.8, true)
 	end
-
 	if type(desc) == "string" then
 		local linktype = desc:match(".*|H(%a+):.+|h.+|h.*")
 		if linktype then
 			tooltip:SetHyperlink(desc)
-			--local spellID = strmatch(desc, "spell:(%d+):")
-			local spellID = opt.arg -- == GetOptionsMemberValue("arg", opt, options, path, appName)
+			local spellID = strmatch(desc, "spell:(%d+):")
 			if spellID then
 				tooltip:AddLine("\nID: " .. spellID, 1, 1, 1, true)
 			end
@@ -611,7 +606,6 @@ local function confirmPopup(appName, rootframe, basepath, info, message, func, .
 		frame = OmniCD[1].GetStaticPopup()
 		AceConfigDialog.popup = frame
 	end
-
 	frame:Show()
 	frame.text:SetText(message)
 	-- From StaticPopup.lua
@@ -1158,7 +1152,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					local image, width, height = GetOptionsMemberValue("image",v, options, path, appName)
 
 					local iconControl = type(image) == "string" or type(image) == "number"
-					control = CreateControl(v.dialogControl or v.control, iconControl and "Icon" or "Button-OmniCD") -- for 'Profiles'
+					control = CreateControl(v.dialogControl or v.control, iconControl and "Icon" or "Button-OmniCD")
 					if iconControl then
 						if not width then
 							width = GetOptionsMemberValue("imageWidth",v, options, path, appName)
@@ -1185,7 +1179,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					control:SetCallback("OnClick",ActivateControl)
 
 				elseif v.type == "input" then
-					control = CreateControl(v.dialogControl or v.control, v.multiline and "MultiLineEditBox" or "EditBox-OmniCD") -- for 'Profiles'
+					control = CreateControl(v.dialogControl or v.control, v.multiline and "MultiLineEditBox" or "EditBox-OmniCD")
 
 					if v.multiline and control.SetNumLines then
 						control:SetNumLines(tonumber(v.multiline) or 4)
@@ -1199,7 +1193,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					control:SetText(text)
 
 				elseif v.type == "toggle" then
-					control = CreateControl(v.dialogControl or v.control, "CheckBox-OmniCD") -- for 'Profiles'
+					control = CreateControl(v.dialogControl or v.control, "CheckBox-OmniCD")
 					control:SetLabel(name)
 					control:SetTriState(v.tristate)
 					local value = GetOptionsMemberValue("get",v, options, path, appName)
@@ -1220,11 +1214,6 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						else
 							control:SetImage(image)
 						end
-					end
-
-					local arg = GetOptionsMemberValue("arg", v, options, path, appName)
-					if arg and GetSpellInfo(arg) then
-						control:SetArg(arg)
 					end
 				elseif v.type == "range" then
 					control = CreateControl(v.dialogControl or v.control, "Slider-OmniCD")
@@ -1286,7 +1275,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						control:ResumeLayout()
 						control:DoLayout()
 					else
-						control = CreateControl(v.dialogControl or v.control, "Dropdown-OmniCD") -- for 'Profiles'
+						control = CreateControl(v.dialogControl or v.control, "Dropdown-OmniCD")
 						local itemType = v.itemControl
 						if itemType and not gui:GetWidgetVersion(itemType) then
 							geterrorhandler()(("Invalid Custom Item Type - %s"):format(tostring(itemType)))
@@ -1536,7 +1525,7 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 
 	tooltip:SetText(name, 1, .82, 0, true)
 
-	if type(desc) == "string" then -- we don't need hyperlink here
+	if type(desc) == "string" then
 		tooltip:AddLine(desc, 1, 1, 1, true)
 	end
 

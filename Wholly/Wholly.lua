@@ -416,6 +416,8 @@
 --			Adds the ability to display quest types for biweekly, threat and calling quests.
 --			Adds the ability to display covenant talent prerequisites.
 --			Adds the ability to display custom achivements Grail supports.
+--		083	Adds the ability to display the expansion associated with the quest.
+--			Changes interface to 90005 (and 20501 for Classic Burning Crusade).
 --
 --	Known Issues
 --
@@ -2681,11 +2683,12 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			elseif questCode == 'L' or questCode == 'l' then
 				local lessThanString = (questCode == 'l') and "<" or ""
 				return format("|c%s%s %s%d|r", colorCode, self.s.LEVEL, lessThanString, numeric)
-			elseif questCode == 'N' then
+			elseif questCode == 'N' or questCode == 'n' then
 				local englishName = Grail.classMapping[subcode]
 				local localizedGenderClassName = Grail:CreateClassNameLocalizedGenderized(englishName)
 				local classColor = RAID_CLASS_COLORS[englishName]
-				return format("|c%s%s |r|cff%.2x%.2x%.2x%s|r", colorCode, CLASS, classColor.r*255, classColor.g*255, classColor.b*255, localizedGenderClassName)
+				local notString = questCode == 'n' and "!" or ""
+				return format("|c%s%s |r|cff%.2x%.2x%.2x%s%s|r", colorCode, CLASS, classColor.r*255, classColor.g*255, classColor.b*255, notString, localizedGenderClassName)
 			elseif questCode == 'P' then
 				local meetsRequirement, actualSkillLevel = GRAIL:ProfessionExceeds(subcode, numeric)
 				local levelCode
@@ -2748,8 +2751,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			elseif questCode == '*' then
 				return format("|c%s%s - %s <|r", colorCode, LANDING_PAGE_RENOWN_LABEL, C_Covenants.GetCovenantData(subcode).name or "???", numeric)
 			elseif questCode == '%' then
-				local _, mainTitle, title = Grail:_GarrisonTalentResearched(numeric)
-				return format("|c%s%s - %s|r", colorCode, mainTitle, title)
+				return format("|c%s%s|r", colorCode, self:_QuestName(400000 + numeric))
 			else
 				questId = numeric
 				local typeString = ""
@@ -2866,6 +2868,9 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			end
 
 			questId = aliasQuestId or questId	-- remap to the alias now that the Blizzard interaction is done
+			if GetQuestExpansion then
+				self:_AddLine(EXPANSION_FILTER_TEXT, Grail:_ExpansionName(GetQuestExpansion(questId)))
+			end
 			local obtainersCode = Grail:CodeObtainers(questId)
 			local obtainersRaceCode = Grail:CodeObtainersRace(questId)
 			local holidayCode = Grail:CodeHoliday(questId)
@@ -4995,7 +5000,7 @@ end
 		S["OAC"] = "On acceptance complete quests:"
 		S["OCC"] = "Requisiti richiesti per completare la missione"
 		S["OTC"] = "On turn in complete quests:"
-		S["OTHER"] = "altro"
+		S["OTHER"] = "Altro"
 		S["OTHER_PREFERENCE"] = "Altre"
 		S["PANEL_UPDATES"] = "Aggiorna il pannello log quest quando cambia zona"
 		S["PLOT"] = "Plot"

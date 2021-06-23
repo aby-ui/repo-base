@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2337, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(146251, 146253, 146256)--Sister Katherine 146251, Brother Joseph 146253, Laminaria 146256
 mod:SetEncounterID(2280)
 mod:SetBossHPInfoToHighest()
@@ -106,7 +106,6 @@ mod:AddSetIconOption("SetIconWail", 285350, true, false, {1, 2, 3})
 mod:AddRangeFrameOption(5, 285118)
 mod:AddInfoFrameOption(284760, true)
 
-mod.vb.phase = 1
 mod.vb.bossesDied = 0
 mod.vb.cracklingCast = 0
 mod.vb.sirenCount = 0
@@ -188,7 +187,7 @@ end
 
 function mod:OnCombatStart(delay)
 	table.wipe(stormTargets)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.bossesDied = 0
 	self.vb.cracklingCast = 0
 	self.vb.sirenCount = 0
@@ -524,7 +523,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 function mod:SPELL_INTERRUPT(args)
 	if type(args.extraSpellId) == "number" and args.extraSpellId == 288696 then
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.sirenCount = 0
 		self.vb.voltaicFlashCount = 0
 		timerSeaSwellCD:Stop()

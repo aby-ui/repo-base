@@ -5,7 +5,7 @@
 GTFO Fail List - Shadowlands
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 --- ***********************
 --- * Shadowlands (World) *
@@ -1077,6 +1077,98 @@ GTFO.SpellID["336162"] = {
 
 GTFO.SpellID["330137"] = {
   --desc = "Massacre (Sire Denathrius)";
+  sound = 3;
+};
+
+--- *************************
+--- * Sanctum of Domination *
+--- *************************
+
+GTFO.SpellID["347671"] = {
+  --desc = "Hungering Mist (The Tarragrue)";
+  sound = 3;
+};
+
+GTFO.SpellID["347737"] = {
+  --desc = "Hungering Mist (The Tarragrue)";
+  sound = 3;
+};
+
+GTFO.SpellID["350217"] = {
+  --desc = "Torment (Soulrender Dormazain)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+--- *******************************
+--- * Tazavesh, the Veiled Market *
+--- *******************************
+
+GTFO.SpellID["355903"] = {
+  --desc = "Disruption Grenade (Customs Security)";
+  sound = 3;
+};
+
+GTFO.SpellID["356482"] = {
+  --desc = "Rotten Vegetable (Unruly Patron)";
+  sound = 3;
+};
+
+GTFO.SpellID["355502"] = {
+  --desc = "Shocklight Barrier";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["355476"] = {
+  --desc = "Shock Mines (Commander Zo'far)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["347481"] = {
+  --desc = "Shuri (So'azmi)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["355584"] = {
+  --desc = "Charged Pulse (Stormforged Guardian)";
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["346828"] = {
+  --desc = "Sanitizing Field (Hylbrande)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["347422"] = {
+  --desc = "Deadly Seas";
+  sound = 3;
+};
+
+GTFO.SpellID["347149"] = {
+  --desc = "Infinite Breath (Timecap'n Hooktail)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["354334"] = {
+  --desc = "Hook'd! (Timecap'n Hooktail)";
+  sound = 3;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["347370"] = {
+  --desc = "Grapeshot (Hourglass Cannon)";
+  sound = 3;
+};
+
+GTFO.SpellID["351101"] = {
+  --desc = "Energy Fragmentation (So'leah)";
+  applicationOnly = true;
   sound = 3;
 };
 

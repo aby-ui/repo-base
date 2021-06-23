@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 5, 'Frame')
+local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 6, 'Frame')
 if not Drop then return end
 
 
@@ -29,7 +29,7 @@ function Drop:Construct()
   bg:SetFrameLevel(f:GetFrameLevel())
   bg:EnableMouse(true)
 
-  if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+  if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     f:SetScript('OnHide', f.OnHide)
     f:SetScript('OnEvent', f.OnGlobalMouse)
     f:RegisterEvent('GLOBAL_MOUSE_DOWN')
@@ -162,7 +162,7 @@ end
 
 --[[ Proprieties ]]--
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and not Drop.ButtonClass then
+if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not Drop.ButtonClass then
   hooksecurefunc('ToggleDropDownMenu', function() Drop:Clear() end)
   hooksecurefunc('CloseDropDownMenus', function() Drop:Clear() end)
 end

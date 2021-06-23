@@ -5,7 +5,7 @@
 GTFO Spell List - Legion
 ]]--
 
-if (not GTFO.ClassicMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
 
 --- ********************
 --- * The Broken Isles *

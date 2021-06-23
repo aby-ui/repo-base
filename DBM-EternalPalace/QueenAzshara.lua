@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetUsedIcons(4, 3, 2, 1)
@@ -166,7 +166,6 @@ mod:AddBoolOption("SortDesc", false)
 mod:AddBoolOption("ShowTimeNotStacks", false)
 mod:AddSetIconOption("SetIconOnArcaneBurst", 303657, true, false, {1, 2, 3, 4})
 
-mod.vb.phase = 1
 mod.vb.stageOneBossesLeft = 2
 mod.vb.arcaneOrbCount = 0
 mod.vb.maxDecree = 1
@@ -312,7 +311,7 @@ local function decreeYellRepeater(self)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.stageOneBossesLeft = 2
 	self.vb.arcaneOrbCount = 0
 	self.vb.beckonCast = 0
@@ -432,7 +431,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 299250 and self:AntiSpam(4, 5) then--In rare cases she stutter casts it, causing double warnings
 		warnQueensDecree:Show()
 	elseif spellId == 299178 and self.vb.phase < 2 then--Ward of Power
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.arcaneBurstCount = 0
 		self.vb.arcaneOrbCount = 0
 		self.vb.beckonCast = 0
@@ -874,7 +873,7 @@ do
 	--"<144.22 23:55:33> [UNIT_SPELLCAST_SUCCEEDED] Aethanel(??) -Bow to the Queen- [[boss1:Cast-3-2083-2164-3398-299963-000C686854:299963]]", -- [4155]
 	--"<146.16 23:55:35> [CLEU] UNIT_DIED##nil#Creature-0-2083-2164-3398-153059-000068674A#Aethanel#-1#false#nil#nil", -- [4209]
 	local function startIntermissionOne(self)
-		self.vb.phase = 1.5
+		self:SetStage(1.5)
 		self.vb.arcaneOrbCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 		warnPhase:Play("phasechange")
@@ -955,7 +954,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 			if cid == 153090 or cid == 153091 then--Phase 3 Sirens becoming active
 				--timerStaticShockCD:Start(97.9, GUID)
 				if self.vb.phase < 3 then
-					self.vb.phase = 3
+					self:SetStage(3)
 					warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 					warnPhase:Play("pthree")
 					if self:IsMythic() then
@@ -976,7 +975,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 end
 
 local function startIntermissionTwo(self)
-	self.vb.phase = 2.5
+	self:SetStage(2.5)
 	self.vb.reversalCount = 0
 	self.vb.arcaneBurstCount = 0
 	self.vb.arcaneDetonation = 0
@@ -1030,7 +1029,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		--"<343.15 14:18:51> [CHAT_MSG_MONSTER_YELL] Coax the power from these ancient wards! Rattle the chains that bind him!#Queen Azshara###Omegall##0#0##0#2192#nil#0#false#false#false#false", -- [6362]
 		self:Schedule(4.3, startIntermissionTwo, self)--Needed, because timers don't cancel until yell
 	elseif spellId == 302860 then --Queen Azshara (P4 trigger)
-		self.vb.phase = 4
+		self:SetStage(4)
 		self.vb.reversalCount = 0
 		self.vb.arcaneBurstCount = 0
 		self.vb.arcaneDetonation = 0

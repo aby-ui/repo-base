@@ -1101,39 +1101,48 @@ end
 		_detalhes:TimeDataTick()
 		_detalhes:BrokerTick()
 		_detalhes:HealthTick()
-		
+
+		local _, zoneType = GetInstanceInfo()
+
 		if (Details.Coach.Server.IsEnabled()) then
 			if (Details.debug) then
 				print("coach server is enabled, can't leave combat...")
 			end
 			return true
 
-		elseif ((_detalhes.zonetype == "pvp" and _detalhes.use_battleground_server_parser) or _detalhes.zonetype == "arena" or _InCombatLockdown()) then
+		--battleground
+		elseif (zoneType == "pvp" and _detalhes.use_battleground_server_parser) then
 			return true
-			
-		elseif (_UnitAffectingCombat("player")) then
+
+		--arena
+		elseif (zoneType == "arena" or _InCombatLockdown()) then
 			return true
-			
-		elseif (_IsInRaid()) then
-			for i = 1, _GetNumGroupMembers(), 1 do
-				if (_UnitAffectingCombat ("raid"..i)) then
-					return true
+
+		--is in combat
+			elseif (_UnitAffectingCombat("player")) then
+				return true
+
+			elseif (_IsInRaid()) then
+				for i = 1, _GetNumGroupMembers(), 1 do
+					if (_UnitAffectingCombat ("raid"..i)) then
+						return true
+					end
+				end
+
+			elseif (_IsInGroup()) then
+				for i = 1, _GetNumGroupMembers()-1, 1 do
+					if (_UnitAffectingCombat ("party"..i)) then
+						return true
+					end
 				end
 			end
-			
-		elseif (_IsInGroup()) then
-			for i = 1, _GetNumGroupMembers()-1, 1 do
-				if (_UnitAffectingCombat ("party"..i)) then
-					return true
-				end
-			end
-		end
-		
-		--mythic dungeon test
+
+		--mythic dungeon always in combat
 		if (_detalhes.MythicPlus.Started and _detalhes.mythic_plus.always_in_combat) then
 			return true
 		end
 
+		--coach feature
 		if (not Details.Coach.Server.IsEnabled()) then
 			if (Details.debug) then
 				Details:Msg("coach is disabled, the combat is now over!")
@@ -1142,7 +1151,7 @@ end
 
 		_detalhes:SairDoCombate()
 	end
-	
+
 	function _detalhes:FindGUIDFromName (name)
 		if (_IsInRaid()) then
 			for i = 1, _GetNumGroupMembers(), 1 do

@@ -87,7 +87,7 @@ local function Constructor()
 	border:SetPoint("TOPLEFT", 0, -17)
 	border:SetPoint("BOTTOMRIGHT", -1, 3)
 	OmniCD[1].BackdropTemplate(border)
-	border:SetBackdropColor(0, 0, 0, 0.25) -- BDR (group bg) re-darken
+	border:SetBackdropColor(0, 0, 0, 0.25)
 	border:SetBackdropBorderColor(0, 0, 0)
 
 	--Container Support

@@ -20,11 +20,11 @@ along with LibPlayerSpells-1.0. If not, see <http://www.gnu.org/licenses/>.
 
 local lib = LibStub('LibPlayerSpells-1.0')
 if not lib then return end
-lib:__RegisterSpells('PRIEST', 80200, 2, {
+lib:__RegisterSpells('PRIEST', 90002, 3, {
 	COOLDOWN = {
 		   2050, -- Holy Word: Serenity (Holy)
-		   8092, -- Mind Blast (Shadow)
-		  32379, -- Shadow Word: Death (Shadow talent)
+		   8092, -- Mind Blast
+		  32379, -- Shadow Word: Death
 		  34433, -- Shadowfiend (Discipline/Shadow)
 		  34861, -- Holy Word: Sanctify (Holy)
 		  73325, -- Leap of Faith
@@ -33,7 +33,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 		 120517, -- Halo (Discipline/Holy talent)
 		 123040, -- Mindbender (Discipline talent)
 		 129250, -- Power Word: Solace (Discipline talent)
-		 204883, -- Circle of Healing (Holy talent)
+		 204883, -- Circle of Healing
 		 205351, -- Shadow Word: Void (Shadow talent)
 		 205385, -- Shadow Crash (Shadow talent)
 		 205448, -- Void Bolt (Shadow)
@@ -42,13 +42,16 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 		 265202, -- Holy Word: Salvation (Holy talent)
 		 280711, -- Dark Ascension (Shadow talent)
 		 305498, -- Premonition (Discipline honor talent)
+		 341374, -- Damnation (Shadow talent)
 		[ 15487] = 'INTERRUPT', -- Silence (Shadow)
 		AURA = {
 			HARMFUL = {
+				   453, -- Mind Soothe
 				 14914, -- Holy Fire (Holy)
 				205369, -- Mind Bomb (Shadow talent)
 				214621, -- Schism (Discipline talent)
 				263165, -- Void Torrent (Shadow talent)
+				323673, -- Mindgames (Venthyr covenant ability)
 				CROWD_CTRL = {
 					[200196] = 'INCAPACITATE', -- Holy Word: Chastise
 					DISORIENT = {
@@ -67,6 +70,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 			},
 			HELPFUL = {
 				     17, -- Power Word: Shield (Discipline/Shadow)
+				  10060, -- Power Infusion
 				  41635, -- Prayer of Mending (Holy)
 				  64844, -- Divine Hymn (Holy)
 				 121557, -- Angelic Feather (Discipline/Holy talent)
@@ -86,7 +90,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 					 33206, -- Pain Suppression (Discipline)
 					 47788, -- Guardian Spirit (Holy)
 					 81782, -- Power Word: Barrier (Discipline)
-					271466, -- Luminous Barrier (Discipline talent)
+					109964, -- Spirit Shell (Discipline talent)
 				},
 			},
 			PERSONAL = {
@@ -102,7 +106,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 					197871, -- Dark Archangel (Discipline honor talent)
 				},
 				SURVIVAL = {
-					 19236, -- Desperate Prayer (Discipline/Holy)
+					 19236, -- Desperate Prayer
 					 47585, -- Dispersion (Shadow)
 					196773, -- Inner Focus (Holy honor talent)
 					213602, -- Greater Fade (Holy/Shadow honor talent)
@@ -116,11 +120,12 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 	},
 	AURA = {
 		HARMFUL = {
-			   589, -- Shadow Word: Pain (Discipline/Shadow)
+			   589, -- Shadow Word: Pain
 			 34914, -- Vampiric Touch (Shadow)
 			 48045, -- Mind Sear (Shadow)
 			204213, -- Purge the Wicked (Discipline talent)
 			208772, -- Smite (Discipline)
+			335467, -- Devouring Plague (Shadow)
 			CROWD_CTRL = {
 				[ 605] = 'DISORIENT', -- Mind Control
 				[9484] = 'INCAPACITATE', -- Shackle Undead
@@ -148,6 +153,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 			198069, -- Power of the Dark Side (Discipline)
 			232698, -- Shadowform (Shadow)
 			247776, -- Mind Trauma (Shadow honor talent)
+			341205, -- Dark Thoughts (Shadow)
 		},
 	},
 	DISPEL = {
@@ -161,8 +167,8 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 		},
 	},
 }, { -- map aura to provider(s)
-	[   589] = { -- Shadow Word: Pain (Discipline/Shadow)
-		   589, -- Shadow Word: Pain (Discipline/Shadow)
+	[   589] = { -- Shadow Word: Pain
+		   589, -- Shadow Word: Pain
 		263346, -- Dark Void (Shadow talent)
 	},
 	[  6788] =     17, -- Weakened Soul <- Power Word: shield
@@ -197,6 +203,7 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 	[247776] = 199445, -- Mind Trauma (Shadow honor talent)
 	[263406] = 193223, -- Surrendered to Madness <- Surrender to Madness (Shadow talent)
 	[289655] = 289657, -- Holy Word: Concentration (Holy honor talent)
+	[341207] = 341205, -- Dark Thoughts (Shadow)
 }, { -- map aura(s) to modified spell(s)
 	[ 65081] = { -- Body and Soul (Discipline/Shadow talent)
 		   17, -- Power Word: Shield (Discipline/Shadow)
@@ -227,4 +234,5 @@ lib:__RegisterSpells('PRIEST', 80200, 2, {
 	[215769] = 215769, -- Spirit of Redemption (Holy honor talent)
 	[215962] =   2060, -- Inspiration (Holy honor talent) -> Heal
 	[247776] =  15407, -- Mind Trauma (Shadow honor talent) -> Mind Flay
+	[341207] =   8092, -- Dark Thoughts (Shadow) -> Mind Blast
 })

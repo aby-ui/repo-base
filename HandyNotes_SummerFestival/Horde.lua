@@ -87,13 +87,6 @@ points[50] = { -- "StranglethornJungle"
 	[51676329] = "28910:D",	-- Fort Livingston
 }
 
-points[224] = {
-	[44223306] = "28924:H",	-- Grom'gol Base Camp, Northern Stranglethorn
-	[51164079] = "28910:D",	-- Fort Livingston, Northern Stranglethorn
-	[44467604] = "11761:D",	-- Wild Shore (north), Southern Stranglethorn
-	[43627791] = "11837:H",	-- Wild Shore (south), Southern Stranglethorn
-}
-
 points[51] = {
 	[76361376] = "11857:H",	-- Bogpaddle (west)
 	[70181427] = "28916:D",	-- Bogpaddle (east)
@@ -324,10 +317,6 @@ points[241] = { -- "TwilightHighlands"
 points[249] = { -- "Uldum"
 	[53393182] = "28947:D",	-- Ramkahen (north)
 	[53163454] = "28949:H",	-- Ramkahen (south)
-}
-
-points[203] = { -- "Vashjir"
-	[64315167] = "29031:H",	-- Silver Tide Hollow
 }
 
 points[205] = { -- "VashjirRuins"

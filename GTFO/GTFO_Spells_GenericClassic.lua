@@ -39,7 +39,7 @@ Sample:
 		
 ]]--
 
-if (GTFO.ClassicMode) then
+if (GTFO.ClassicMode or GTFO.BurningCrusadeMode) then
 
 -- Paladin
 GTFO.SpellID["26573"] = {

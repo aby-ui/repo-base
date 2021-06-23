@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2168, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20210616003223")
 mod:SetCreatureID(137119)--Taloc
 mod:SetEncounterID(2144)
 --mod:SetHotfixNoticeRev(16950)
@@ -66,7 +66,6 @@ local ignoreGTFO = false
 mod.vb.plasmaCast = 0
 mod.vb.cudgelCount = 0
 mod.vb.enlargedCount = 0
-mod.vb.phase = 1
 
 function mod:StaticTarget(targetname)
 	if not targetname then return end
@@ -84,7 +83,7 @@ function mod:OnCombatStart(delay)
 	self.vb.plasmaCast = 0
 	self.vb.cudgelCount = 0
 	self.vb.enlargedCount = 0
-	self.vb.phase = 1
+	self:SetStage(1)
 	timerPlasmaDischargeCD:Start(5.9-delay, 1)
 	timerSanguineStaticCD:Start(18-delay)
 	timerCudgelOfGoreCD:Start(31.2-delay, 1)
@@ -219,7 +218,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.plasmaCast = 0
 		self.vb.cudgelCount = 0
 		self.vb.enlargedCount = 0
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPoweringDownOver:Show()
 		warnPoweringDownOver:Play("phasechange")
 		timerPoweredDown:Stop()

@@ -313,6 +313,10 @@ L["Profile Type: %s%s|r"] = "Profile Type: %s%s|r"
 --[[Translation missing --]]
 L["Profile unchanged from default!"] = "Profile unchanged from default!"
 --[[Translation missing --]]
+L["Quick Select"] = "Quick Select"
+--[[Translation missing --]]
+L["Racial Traits"] = "Racial Traits"
+--[[Translation missing --]]
 L["Raid Bar"] = "Raid Bar"
 --[[Translation missing --]]
 L["Raid CD"] = "Raid CD"
@@ -345,6 +349,8 @@ L["RIGHT"] = "向右"
 L["Row Breakpoint"] = "行断点"
 L["Row"] = "行"
 L["Same category units are sorted alphabetically in ascending order"] = "相同的类别单位​​按字母升序排序"
+--[[Translation missing --]]
+L["Select a spell type to enable all spells in that category for all classes"] = "Select a spell type to enable all spells in that category for all classes"
 L["Select addon to override auto anchoring"] = "选择要对齐到的插件"
 L["Select how the player frame is displayed inside the party frame"] = "选择玩家框架在小队中的展示方式"
 L["Select the group size for which you want to set the spell bar position"] = "选择法术条位置的队伍大小"

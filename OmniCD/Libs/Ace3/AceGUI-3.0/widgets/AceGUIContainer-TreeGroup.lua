@@ -49,7 +49,7 @@ do
 	end
 end
 
-local DEFAULT_TREE_WIDTH = 150
+local DEFAULT_TREE_WIDTH = 145
 local DEFAULT_TREE_SIZABLE = false
 
 local DEFAULT_ICON_SIZE = 18
@@ -99,13 +99,13 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	else
 		button:SetNormalFontObject("GameFontHighlight-OmniCD")
 		button:SetHighlightFontObject("GameFontHighlight-OmniCD")
-		button.text:SetPoint("LEFT", (icon and DEFAULT_ICON_SIZE + ((DEFAULT_TAB_HEIGHT - DEFAULT_ICON_SIZE)/2) or 0) + 8, 0) -- Change if using more than 2 levels
+		button.text:SetPoint("LEFT", (icon and DEFAULT_ICON_SIZE + ((DEFAULT_TAB_HEIGHT - DEFAULT_ICON_SIZE)/2) or 0) + 8, 0)
 	end
 
 	if disabled then
 		button:EnableMouse(false)
 		if text == "```" then
-			button.text:SetText("") -- refresh old name
+			button.text:SetText("")
 			button:SetHeight(OmniCD[1].PixelMult)
 			button.borderBottom:SetColorTexture(0.569, 0.275, 1.0)
 		else
@@ -258,7 +258,6 @@ local function Button_OnEnter(frame)
 	end
 
 	if not frame.selected then
-		--PlaySound(1217)
 		local fadeOut = frame.fadeOut
 		if fadeOut:IsPlaying() then
 			fadeOut:Stop()
@@ -401,7 +400,6 @@ local methods = {
 		local button = CreateFrame("Button", ("AceGUI30TreeButton%d-OmniCD"):format(num), self.treeframe, "OptionsListButtonTemplate")
 		button.obj = self
 
-		-- OptionsListButtonTemplate <AbsDimension x="175" y="18"/>
 		button:SetWidth(150)
 		button:SetHeight(DEFAULT_TAB_HEIGHT)
 		button:SetHighlightTexture("")
@@ -438,7 +436,7 @@ local methods = {
 		local icon
 		if USE_ICON_BACKDROP then
 			icon = CreateFrame("Frame", nil, button, "BackdropTemplate")
-			icon:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
+			icon:SetHeight(DEFAULT_ICON_SIZE)
 			icon:SetWidth(DEFAULT_ICON_SIZE)
 			OmniCD[1].BackdropTemplate(icon)
 			icon:SetBackdropBorderColor(0.5, 0.5, 0.5)
@@ -773,9 +771,9 @@ local function Constructor()
 	treeframe:SetWidth(DEFAULT_TREE_WIDTH)
 	treeframe:EnableMouseWheel(true)
 	OmniCD[1].BackdropTemplate(treeframe)
-	treeframe:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR (tree nav bg)
+	treeframe:SetBackdropColor(0.05, 0.05, 0.05, 0.75)
 	treeframe:SetBackdropBorderColor(0, 0, 0)
-	treeframe:SetResizable(false) -- OmniCD: c true (resizing disabled)
+	treeframe:SetResizable(false)
 	treeframe:SetMinResize(100, 1)
 	treeframe:SetMaxResize(400, 1600)
 	treeframe:SetScript("OnUpdate", FirstFrameUpdate)
@@ -821,7 +819,7 @@ local function Constructor()
 	border:SetPoint("TOPLEFT", treeframe, "TOPRIGHT")
 	border:SetPoint("BOTTOMRIGHT")
 	OmniCD[1].BackdropTemplate(border)
-	border:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR (tree content bg)
+	border:SetBackdropColor(0.05, 0.05, 0.05, 0.75)
 	border:SetBackdropBorderColor(0, 0, 0)
 
 	--Container Support

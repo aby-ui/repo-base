@@ -1,6 +1,6 @@
 
 
-local dversion = 244
+local dversion = 256
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -1118,369 +1118,371 @@ end
 		height = height*-1
 
 		for index, widget_table in ipairs(menu) do
+			if (not widget_table.hidden) then
 
-			local widget_created
-			if (latestInlineWidget) then
-				if (not widget_table.inline) then
-					latestInlineWidget = nil
-					cur_y = cur_y - 20
-				end
-			end
-
-			if (not widget_table.novolatile) then
-
-				--step a line
-				if (widget_table.type == "blank" or widget_table.type == "space") then
-					-- do nothing
-
-				elseif (widget_table.type == "label" or widget_table.type == "text") then
-
-					local label = getMenuWidgetVolative(parent, "label", widgetIndexes)
-					widget_created = label
-
-					label.text = widget_table.get() or widget_table.text or ""
-					label.color = widget_table.color
-
-					if (widget_table.font) then
-						label.fontface = widget_table.font
-					end
-
-					if (widget_table.text_template or text_template) then
-						label:SetTemplate(widget_table.text_template or text_template)
-					else
-						label.fontsize = widget_table.size or 10
-					end
-
-					label._get = widget_table.get
-					label.widget_type = "label"
-					label:ClearAllPoints()
-					label:SetPoint (cur_x, cur_y)
-
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = label
-					end
-
-				--dropdowns
-				elseif (widget_table.type == "select" or widget_table.type == "dropdown") then
-
-					local dropdown = getMenuWidgetVolative(parent, "dropdown", widgetIndexes)
-					widget_created = dropdown
-
-					dropdown:SetFunction(widget_table.values)
-					dropdown:Refresh()
-					dropdown:Select (widget_table.get())
-					dropdown:SetTemplate (dropdown_template)
-
-					dropdown.tooltip = widget_table.desc
-					dropdown._get = widget_table.get
-					dropdown.widget_type = "select"
-
-
-					dropdown.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
-					dropdown.hasLabel:SetTemplate(widget_table.text_template or text_template)
-					dropdown:ClearAllPoints()
-					dropdown:SetPoint ("left", dropdown.hasLabel, "right", 2)
-					dropdown.hasLabel:ClearAllPoints()
-					dropdown.hasLabel:SetPoint (cur_x, cur_y)
-
-					--> global callback
-					if (value_change_hook) then
-						dropdown:SetHook ("OnOptionSelected", value_change_hook)
-					end
-					
-					--> hook list (hook list is wiped when getting the widget)
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							dropdown:SetHook (hookName, hookFunc)
-						end
-					end
-
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = dropdown
-					end
-					
-					local size = dropdown.hasLabel.widget:GetStringWidth() + 140 + 4
-					if (size > max_x) then
-						max_x = size
-					end
-
-				--switchs
-				elseif (widget_table.type == "toggle" or widget_table.type == "switch") then
-
-					local switch = getMenuWidgetVolative(parent, "switch", widgetIndexes)
-					widget_created = switch
-
-					switch:SetValue(widget_table.get())
-					switch:SetTemplate(switch_template)
-					switch:SetAsCheckBox() --it's always a checkbox on volatile menu
-
-					switch.tooltip = widget_table.desc
-					switch._get = widget_table.get
-					switch.widget_type = "toggle"
-					switch.OnSwitch = widget_table.set
-					
-					if (value_change_hook) then
-						switch:SetHook ("OnSwitch", value_change_hook)
-					end
-					
-					--> hook list
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							switch:SetHook (hookName, hookFunc)
-						end
-					end
-
-					if (widget_table.width) then
-						switch:SetWidth(widget_table.width)
-					end
-					if (widget_table.height) then
-						switch:SetHeight(widget_table.height)
-					end
-
-					switch.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
-					switch.hasLabel:SetTemplate(widget_table.text_template or text_template)
-
-					switch:ClearAllPoints()
-					switch.hasLabel:ClearAllPoints()
-
-					if (widget_table.boxfirst) then
-						switch:SetPoint (cur_x, cur_y)
-						switch.hasLabel:SetPoint ("left", switch, "right", 2)
-					else
-						switch.hasLabel:SetPoint (cur_x, cur_y)
-						switch:SetPoint ("left", switch.hasLabel, "right", 2)
-					end
-
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = switch
-					end
-					
-					local size = switch.hasLabel:GetStringWidth() + 60 + 4
-					if (size > max_x) then
-						max_x = size
-					end
-
-				--slider
-				elseif (widget_table.type == "range" or widget_table.type == "slider") then
-
-					local slider = getMenuWidgetVolative(parent, "slider", widgetIndexes)
-					widget_created = slider
-
-					if (widget_table.usedecimals) then
-						slider.slider:SetValueStep (0.01)
-					else
-						slider.slider:SetValueStep (widget_table.step)
-					end
-					slider.useDecimals = widget_table.usedecimals
-
-					slider.slider:SetMinMaxValues (widget_table.min, widget_table.max)
-					slider.slider:SetValue (widget_table.get())
-					slider.ivalue = slider.slider:GetValue()
-
-					slider:SetTemplate(slider_template)
-
-					slider.tooltip = widget_table.desc
-					slider._get = widget_table.get
-					slider.widget_type = "range"
-					slider:SetHook ("OnValueChange", widget_table.set)
-
-					if (value_change_hook) then
-						slider:SetHook ("OnValueChange", value_change_hook)
-					end
-					
-					if (widget_table.thumbscale) then
-						slider:SetThumbSize (slider.thumb.originalWidth * widget_table.thumbscale, nil)
-					else
-						slider:SetThumbSize (slider.thumb.originalWidth * 1.3, nil)
-					end
-
-					--> hook list
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							slider:SetHook (hookName, hookFunc)
-						end
-					end
-
-					slider.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
-					slider.hasLabel:SetTemplate(widget_table.text_template or text_template)
-					
-					slider:SetPoint ("left", slider.hasLabel, "right", 2)
-					slider.hasLabel:SetPoint (cur_x, cur_y)
-					
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = slider
-					end
-
-					local size = slider.hasLabel:GetStringWidth() + 140 + 6
-					if (size > max_x) then
-						max_x = size
-					end
-
-				--color
-				elseif (widget_table.type == "color" or widget_table.type == "color") then
-
-					local colorpick = getMenuWidgetVolative(parent, "color", widgetIndexes)
-					widget_created = colorpick
-
-					colorpick.color_callback = widget_table.set --callback
-					colorpick:SetTemplate(button_template)
-
-					colorpick.tooltip = widget_table.desc
-					colorpick._get = widget_table.get
-					colorpick.widget_type = "color"
-
-					local default_value, g, b, a = widget_table.get()
-					if (type (default_value) == "table") then
-						colorpick:SetColor (unpack (default_value))
-					else
-						colorpick:SetColor (default_value, g, b, a)
-					end
-					
-					if (value_change_hook) then
-						colorpick:SetHook ("OnColorChanged", value_change_hook)
-					end
-					
-					--> hook list
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							colorpick:SetHook (hookName, hookFunc)
-						end
-					end
-
-					colorpick.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
-					colorpick.hasLabel:SetTemplate(widget_table.text_template or text_template)
-					
-					colorpick:SetPoint ("left", colorpick.hasLabel, "right", 2)
-					colorpick.hasLabel:SetPoint (cur_x, cur_y)
-					
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = colorpick
-					end
-
-					local size = colorpick.hasLabel:GetStringWidth() + 60 + 4
-					if (size > max_x) then
-						max_x = size
-					end
-
-				--button
-				elseif (widget_table.type == "execute" or widget_table.type == "button") then
-					
-					local button = getMenuWidgetVolative(parent, "button", widgetIndexes)
-					widget_created = button
-
-					button:SetTemplate(button_template)
-					button:SetSize(widget_table.width or 120, widget_table.height or 18)
-					button:SetClickFunction(widget_table.func, widget_table.param1, widget_table.param2)
-
-					local textTemplate = widget_table.text_template or text_template or DF.font_templates ["ORANGE_FONT_TEMPLATE"]
-					button.textcolor = textTemplate.color
-					button.textfont = textTemplate.font
-					button.textsize = textTemplate.size
-					button.text = widget_table.name
-
-					if (widget_table.inline) then
-						if (latestInlineWidget) then
-							button:SetPoint ("left", latestInlineWidget, "right", 2, 0)
-							latestInlineWidget = button
-						else
-							button:SetPoint (cur_x, cur_y)
-							latestInlineWidget = button
-						end
-					else
-						button:SetPoint (cur_x, cur_y)
-					end
-
-					button.tooltip = widget_table.desc
-					button.widget_type = "execute"
-					
-					--> execute doesn't trigger global callback
-					
-					--> hook list
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							button:SetHook (hookName, hookFunc)
-						end
-					end
-
-					if (widget_table.width) then
-						button:SetWidth(widget_table.width)
-					end
-					if (widget_table.height) then
-						button:SetHeight(widget_table.height)
-					end
-
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = button
-					end
-					
-					local size = button:GetWidth() + 4
-					if (size > max_x) then
-						max_x = size
-					end
-
-				--textentry
-				elseif (widget_table.type == "textentry") then
-
-					local textentry = getMenuWidgetVolative(parent, "textentry", widgetIndexes)
-					widget_created = textentry
-
-					textentry:SetCommitFunction(widget_table.func or widget_table.set)
-					textentry:SetTemplate(widget_table.template or widget_table.button_template or button_template)
-					textentry:SetSize(widget_table.width or 120, widget_table.height or 18)
-
-					textentry.tooltip = widget_table.desc
-					textentry.text = widget_table.get()
-					textentry._get = widget_table.get
-					textentry.widget_type = "textentry"
-					textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
-					textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
-
-					textentry.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
-					textentry.hasLabel:SetTemplate(widget_table.text_template or text_template)
-					textentry:SetPoint ("left", textentry.hasLabel, "right", 2)
-					textentry.hasLabel:SetPoint (cur_x, cur_y)
-
-					--> text entry doesn't trigger global callback
-					
-					--> hook list
-					if (widget_table.hooks) then
-						for hookName, hookFunc in pairs (widget_table.hooks) do
-							textentry:SetHook (hookName, hookFunc)
-						end
-					end
-
-					if (widget_table.id) then
-						parent.widgetids [widget_table.id] = textentry
-					end
-					
-					local size = textentry.hasLabel:GetStringWidth() + 60 + 4
-					if (size > max_x) then
-						max_x = size
-					end
-
-				end --end loop
-
-				if (widget_table.nocombat) then
-					tinsert (disable_on_combat, widget_created)
-				end
-			
-				if (not widget_table.inline) then
-					if (widget_table.spacement) then
-						cur_y = cur_y - 30
-					else
+				local widget_created
+				if (latestInlineWidget) then
+					if (not widget_table.inline) then
+						latestInlineWidget = nil
 						cur_y = cur_y - 20
 					end
 				end
-				
-				if (widget_table.type == "breakline" or cur_y < height) then
-					cur_y = y_offset
-					cur_x = cur_x + max_x + 30
-					line_widgets_created = 0
-					max_x = 0
-				end
 
-				if widget_created then
-					widget_created:Show()
+				if (not widget_table.novolatile) then
+
+					--step a line
+					if (widget_table.type == "blank" or widget_table.type == "space") then
+						-- do nothing
+
+					elseif (widget_table.type == "label" or widget_table.type == "text") then
+
+						local label = getMenuWidgetVolative(parent, "label", widgetIndexes)
+						widget_created = label
+
+						label.text = widget_table.get() or widget_table.text or ""
+						label.color = widget_table.color
+
+						if (widget_table.font) then
+							label.fontface = widget_table.font
+						end
+
+						if (widget_table.text_template or text_template) then
+							label:SetTemplate(widget_table.text_template or text_template)
+						else
+							label.fontsize = widget_table.size or 10
+						end
+
+						label._get = widget_table.get
+						label.widget_type = "label"
+						label:ClearAllPoints()
+						label:SetPoint (cur_x, cur_y)
+
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = label
+						end
+
+					--dropdowns
+					elseif (widget_table.type == "select" or widget_table.type == "dropdown") then
+
+						local dropdown = getMenuWidgetVolative(parent, "dropdown", widgetIndexes)
+						widget_created = dropdown
+
+						dropdown:SetFunction(widget_table.values)
+						dropdown:Refresh()
+						dropdown:Select (widget_table.get())
+						dropdown:SetTemplate (dropdown_template)
+
+						dropdown.tooltip = widget_table.desc
+						dropdown._get = widget_table.get
+						dropdown.widget_type = "select"
+
+
+						dropdown.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
+						dropdown.hasLabel:SetTemplate(widget_table.text_template or text_template)
+						dropdown:ClearAllPoints()
+						dropdown:SetPoint ("left", dropdown.hasLabel, "right", 2)
+						dropdown.hasLabel:ClearAllPoints()
+						dropdown.hasLabel:SetPoint (cur_x, cur_y)
+
+						--> global callback
+						if (value_change_hook) then
+							dropdown:SetHook ("OnOptionSelected", value_change_hook)
+						end
+						
+						--> hook list (hook list is wiped when getting the widget)
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								dropdown:SetHook (hookName, hookFunc)
+							end
+						end
+
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = dropdown
+						end
+						
+						local size = dropdown.hasLabel.widget:GetStringWidth() + 140 + 4
+						if (size > max_x) then
+							max_x = size
+						end
+
+					--switchs
+					elseif (widget_table.type == "toggle" or widget_table.type == "switch") then
+
+						local switch = getMenuWidgetVolative(parent, "switch", widgetIndexes)
+						widget_created = switch
+
+						switch:SetValue(widget_table.get())
+						switch:SetTemplate(switch_template)
+						switch:SetAsCheckBox() --it's always a checkbox on volatile menu
+
+						switch.tooltip = widget_table.desc
+						switch._get = widget_table.get
+						switch.widget_type = "toggle"
+						switch.OnSwitch = widget_table.set
+						
+						if (value_change_hook) then
+							switch:SetHook ("OnSwitch", value_change_hook)
+						end
+						
+						--> hook list
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								switch:SetHook (hookName, hookFunc)
+							end
+						end
+
+						if (widget_table.width) then
+							switch:SetWidth(widget_table.width)
+						end
+						if (widget_table.height) then
+							switch:SetHeight(widget_table.height)
+						end
+
+						switch.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
+						switch.hasLabel:SetTemplate(widget_table.text_template or text_template)
+
+						switch:ClearAllPoints()
+						switch.hasLabel:ClearAllPoints()
+
+						if (widget_table.boxfirst) then
+							switch:SetPoint (cur_x, cur_y)
+							switch.hasLabel:SetPoint ("left", switch, "right", 2)
+						else
+							switch.hasLabel:SetPoint (cur_x, cur_y)
+							switch:SetPoint ("left", switch.hasLabel, "right", 2)
+						end
+
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = switch
+						end
+						
+						local size = switch.hasLabel:GetStringWidth() + 60 + 4
+						if (size > max_x) then
+							max_x = size
+						end
+
+					--slider
+					elseif (widget_table.type == "range" or widget_table.type == "slider") then
+
+						local slider = getMenuWidgetVolative(parent, "slider", widgetIndexes)
+						widget_created = slider
+
+						if (widget_table.usedecimals) then
+							slider.slider:SetValueStep (0.01)
+						else
+							slider.slider:SetValueStep (widget_table.step)
+						end
+						slider.useDecimals = widget_table.usedecimals
+
+						slider.slider:SetMinMaxValues (widget_table.min, widget_table.max)
+						slider.slider:SetValue (widget_table.get())
+						slider.ivalue = slider.slider:GetValue()
+
+						slider:SetTemplate(slider_template)
+
+						slider.tooltip = widget_table.desc
+						slider._get = widget_table.get
+						slider.widget_type = "range"
+						slider:SetHook ("OnValueChange", widget_table.set)
+
+						if (value_change_hook) then
+							slider:SetHook ("OnValueChange", value_change_hook)
+						end
+						
+						if (widget_table.thumbscale) then
+							slider:SetThumbSize (slider.thumb.originalWidth * widget_table.thumbscale, nil)
+						else
+							slider:SetThumbSize (slider.thumb.originalWidth * 1.3, nil)
+						end
+
+						--> hook list
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								slider:SetHook (hookName, hookFunc)
+							end
+						end
+
+						slider.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
+						slider.hasLabel:SetTemplate(widget_table.text_template or text_template)
+						
+						slider:SetPoint ("left", slider.hasLabel, "right", 2)
+						slider.hasLabel:SetPoint (cur_x, cur_y)
+						
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = slider
+						end
+
+						local size = slider.hasLabel:GetStringWidth() + 140 + 6
+						if (size > max_x) then
+							max_x = size
+						end
+
+					--color
+					elseif (widget_table.type == "color" or widget_table.type == "color") then
+
+						local colorpick = getMenuWidgetVolative(parent, "color", widgetIndexes)
+						widget_created = colorpick
+
+						colorpick.color_callback = widget_table.set --callback
+						colorpick:SetTemplate(button_template)
+
+						colorpick.tooltip = widget_table.desc
+						colorpick._get = widget_table.get
+						colorpick.widget_type = "color"
+
+						local default_value, g, b, a = widget_table.get()
+						if (type (default_value) == "table") then
+							colorpick:SetColor (unpack (default_value))
+						else
+							colorpick:SetColor (default_value, g, b, a)
+						end
+						
+						if (value_change_hook) then
+							colorpick:SetHook ("OnColorChanged", value_change_hook)
+						end
+						
+						--> hook list
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								colorpick:SetHook (hookName, hookFunc)
+							end
+						end
+
+						colorpick.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
+						colorpick.hasLabel:SetTemplate(widget_table.text_template or text_template)
+						
+						colorpick:SetPoint ("left", colorpick.hasLabel, "right", 2)
+						colorpick.hasLabel:SetPoint (cur_x, cur_y)
+						
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = colorpick
+						end
+
+						local size = colorpick.hasLabel:GetStringWidth() + 60 + 4
+						if (size > max_x) then
+							max_x = size
+						end
+
+					--button
+					elseif (widget_table.type == "execute" or widget_table.type == "button") then
+						
+						local button = getMenuWidgetVolative(parent, "button", widgetIndexes)
+						widget_created = button
+
+						button:SetTemplate(button_template)
+						button:SetSize(widget_table.width or 120, widget_table.height or 18)
+						button:SetClickFunction(widget_table.func, widget_table.param1, widget_table.param2)
+
+						local textTemplate = widget_table.text_template or text_template or DF.font_templates ["ORANGE_FONT_TEMPLATE"]
+						button.textcolor = textTemplate.color
+						button.textfont = textTemplate.font
+						button.textsize = textTemplate.size
+						button.text = widget_table.name
+
+						if (widget_table.inline) then
+							if (latestInlineWidget) then
+								button:SetPoint ("left", latestInlineWidget, "right", 2, 0)
+								latestInlineWidget = button
+							else
+								button:SetPoint (cur_x, cur_y)
+								latestInlineWidget = button
+							end
+						else
+							button:SetPoint (cur_x, cur_y)
+						end
+
+						button.tooltip = widget_table.desc
+						button.widget_type = "execute"
+						
+						--> execute doesn't trigger global callback
+						
+						--> hook list
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								button:SetHook (hookName, hookFunc)
+							end
+						end
+
+						if (widget_table.width) then
+							button:SetWidth(widget_table.width)
+						end
+						if (widget_table.height) then
+							button:SetHeight(widget_table.height)
+						end
+
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = button
+						end
+						
+						local size = button:GetWidth() + 4
+						if (size > max_x) then
+							max_x = size
+						end
+
+					--textentry
+					elseif (widget_table.type == "textentry") then
+
+						local textentry = getMenuWidgetVolative(parent, "textentry", widgetIndexes)
+						widget_created = textentry
+
+						textentry:SetCommitFunction(widget_table.func or widget_table.set)
+						textentry:SetTemplate(widget_table.template or widget_table.button_template or button_template)
+						textentry:SetSize(widget_table.width or 120, widget_table.height or 18)
+
+						textentry.tooltip = widget_table.desc
+						textentry.text = widget_table.get()
+						textentry._get = widget_table.get
+						textentry.widget_type = "textentry"
+						textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
+						textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
+
+						textentry.hasLabel.text = widget_table.name .. (use_two_points and ": " or "")
+						textentry.hasLabel:SetTemplate(widget_table.text_template or text_template)
+						textentry:SetPoint ("left", textentry.hasLabel, "right", 2)
+						textentry.hasLabel:SetPoint (cur_x, cur_y)
+
+						--> text entry doesn't trigger global callback
+						
+						--> hook list
+						if (widget_table.hooks) then
+							for hookName, hookFunc in pairs (widget_table.hooks) do
+								textentry:SetHook (hookName, hookFunc)
+							end
+						end
+
+						if (widget_table.id) then
+							parent.widgetids [widget_table.id] = textentry
+						end
+						
+						local size = textentry.hasLabel:GetStringWidth() + 60 + 4
+						if (size > max_x) then
+							max_x = size
+						end
+
+					end --end loop
+
+					if (widget_table.nocombat) then
+						tinsert (disable_on_combat, widget_created)
+					end
+				
+					if (not widget_table.inline) then
+						if (widget_table.spacement) then
+							cur_y = cur_y - 30
+						else
+							cur_y = cur_y - 20
+						end
+					end
+					
+					if (widget_table.type == "breakline" or cur_y < height) then
+						cur_y = y_offset
+						cur_x = cur_x + max_x + 30
+						line_widgets_created = 0
+						max_x = 0
+					end
+
+					if widget_created then
+						widget_created:Show()
+					end
 				end
 			end
 		end
@@ -1503,346 +1505,347 @@ end
 
 		height = abs ((height or parent:GetHeight()) - abs (y_offset) + 20)
 		height = height*-1
-		
+
 		for index, widget_table in ipairs (menu) do
-		
-			local widget_created
-			if (latestInlineWidget) then
-				if (not widget_table.inline) then
-					latestInlineWidget = nil
-					cur_y = cur_y - 28
-				end
-			end
-		
-			if (widget_table.type == "blank" or widget_table.type == "space") then
-				-- do nothing
+			if (not widget_table.hidden) then
 
-			elseif (widget_table.type == "label" or widget_table.type == "text") then
-				local label = DF:CreateLabel (parent, widget_table.get() or widget_table.text, widget_table.text_template or text_template or widget_table.size, widget_table.color, widget_table.font, nil, "$parentWidget" .. index, "overlay")
-				label._get = widget_table.get
-				label.widget_type = "label"
-				label:SetPoint (cur_x, cur_y)
-
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, label)
-				tinsert (parent.widget_list_by_type.label, label)
-
-				line_widgets_created = line_widgets_created + 1
-
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = label
-				end
-			
-			elseif (widget_table.type == "select" or widget_table.type == "dropdown") then
-				local dropdown = DF:NewDropDown (parent, nil, "$parentWidget" .. index, nil, 140, 18, widget_table.values, widget_table.get(), dropdown_template)
-				dropdown.tooltip = widget_table.desc
-				dropdown._get = widget_table.get
-				dropdown.widget_type = "select"
-
-				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				dropdown:SetPoint ("left", label, "right", 2)
-				label:SetPoint (cur_x, cur_y)
-				dropdown.hasLabel = label
-				
-				--> global callback
-				if (value_change_hook) then
-					dropdown:SetHook ("OnOptionSelected", value_change_hook)
-				end
-				
-				--> hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						dropdown:SetHook (hookName, hookFunc)
+				local widget_created
+				if (latestInlineWidget) then
+					if (not widget_table.inline) then
+						latestInlineWidget = nil
+						cur_y = cur_y - 28
 					end
 				end
 
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = dropdown
-				end
-				
-				local size = label.widget:GetStringWidth() + 140 + 4
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, dropdown)
-				tinsert (parent.widget_list_by_type.dropdown, dropdown)
+				if (widget_table.type == "blank" or widget_table.type == "space") then
+					-- do nothing
 
-				widget_created = dropdown
-				line_widgets_created = line_widgets_created + 1
-				
-			elseif (widget_table.type == "toggle" or widget_table.type == "switch") then
-				local switch = DF:NewSwitch (parent, nil, "$parentWidget" .. index, nil, 60, 20, nil, nil, widget_table.get(), nil, nil, nil, nil, switch_template)
-				switch.tooltip = widget_table.desc
-				switch._get = widget_table.get
-				switch.widget_type = "toggle"
-				switch.OnSwitch = widget_table.set
-				
-				if (switch_is_box) then
-					switch:SetAsCheckBox()
-				end
-				
-				if (value_change_hook) then
-					switch:SetHook ("OnSwitch", value_change_hook)
-				end
-				
-				--> hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						switch:SetHook (hookName, hookFunc)
-					end
-				end
-
-				if (widget_table.width) then
-					switch:SetWidth(widget_table.width)
-				end
-				if (widget_table.height) then
-					switch:SetHeight(widget_table.height)
-				end
-
-				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				if (widget_table.boxfirst) then
-					switch:SetPoint (cur_x, cur_y)
-					label:SetPoint ("left", switch, "right", 2)
-				else
+				elseif (widget_table.type == "label" or widget_table.type == "text") then
+					local label = DF:CreateLabel (parent, widget_table.get() or widget_table.text, widget_table.text_template or text_template or widget_table.size, widget_table.color, widget_table.font, nil, "$parentWidget" .. index, "overlay")
+					label._get = widget_table.get
+					label.widget_type = "label"
 					label:SetPoint (cur_x, cur_y)
-					switch:SetPoint ("left", label, "right", 2)
-				end
-				switch.hasLabel = label
 
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = switch
-				end
-				
-				local size = label.widget:GetStringWidth() + 60 + 4
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, switch)
-				tinsert (parent.widget_list_by_type.switch, switch)
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, label)
+					tinsert (parent.widget_list_by_type.label, label)
 
-				widget_created = switch
-				line_widgets_created = line_widgets_created + 1
-				
-			elseif (widget_table.type == "range" or widget_table.type == "slider") then
-				local is_decimanls = widget_table.usedecimals
-				local slider = DF:NewSlider (parent, nil, "$parentWidget" .. index, nil, 140, 20, widget_table.min, widget_table.max, widget_table.step, widget_table.get(),  is_decimanls, nil, nil, slider_template)
-				slider.tooltip = widget_table.desc
-				slider._get = widget_table.get
-				slider.widget_type = "range"
-				slider:SetHook ("OnValueChange", widget_table.set)
-				
-				if (widget_table.thumbscale) then
-					slider:SetThumbSize (slider.thumb:GetWidth()*widget_table.thumbscale, nil)
-				else
-					slider:SetThumbSize (slider.thumb:GetWidth()*1.3, nil)
-				end
-				
-				if (value_change_hook) then
-					slider:SetHook ("OnValueChange", value_change_hook)
-				end
-				
-				--> hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						slider:SetHook (hookName, hookFunc)
+					line_widgets_created = line_widgets_created + 1
+
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = label
 					end
-				end
 				
-				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				slider:SetPoint ("left", label, "right", 2)
-				label:SetPoint (cur_x, cur_y)
-				slider.hasLabel = label
-				
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = slider
-				end
+				elseif (widget_table.type == "select" or widget_table.type == "dropdown") then
+					local dropdown = DF:NewDropDown (parent, nil, "$parentWidget" .. index, nil, 140, 18, widget_table.values, widget_table.get(), dropdown_template)
+					dropdown.tooltip = widget_table.desc
+					dropdown._get = widget_table.get
+					dropdown.widget_type = "select"
 
-				local size = label.widget:GetStringWidth() + 140 + 6
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, slider)
-				tinsert (parent.widget_list_by_type.slider, slider)
-
-				widget_created = slider
-				line_widgets_created = line_widgets_created + 1
-				
-			elseif (widget_table.type == "color" or widget_table.type == "color") then
-				local colorpick = DF:NewColorPickButton (parent, "$parentWidget" .. index, nil, widget_table.set, nil, button_template)
-				colorpick.tooltip = widget_table.desc
-				colorpick._get = widget_table.get
-				colorpick.widget_type = "color"
-
-				local default_value, g, b, a = widget_table.get()
-				if (type (default_value) == "table") then
-					colorpick:SetColor (unpack (default_value))
-				else
-					colorpick:SetColor (default_value, g, b, a)
-				end
-				
-				if (value_change_hook) then
-					colorpick:SetHook ("OnColorChanged", value_change_hook)
-				end
-				
-				--> hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						colorpick:SetHook (hookName, hookFunc)
+					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
+					dropdown:SetPoint ("left", label, "right", 2)
+					label:SetPoint (cur_x, cur_y)
+					dropdown.hasLabel = label
+					
+					--> global callback
+					if (value_change_hook) then
+						dropdown:SetHook ("OnOptionSelected", value_change_hook)
 					end
-				end
-				
-				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				colorpick:SetPoint ("left", label, "right", 2)
-				label:SetPoint (cur_x, cur_y)
-				colorpick.hasLabel = label
-				
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = colorpick
-				end
+					
+					--> hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							dropdown:SetHook (hookName, hookFunc)
+						end
+					end
 
-				local size = label.widget:GetStringWidth() + 60 + 4
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, colorpick)
-				tinsert (parent.widget_list_by_type.color, colorpick)
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = dropdown
+					end
+					
+					local size = label.widget:GetStringWidth() + 140 + 4
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, dropdown)
+					tinsert (parent.widget_list_by_type.dropdown, dropdown)
 
-				widget_created = colorpick
-				line_widgets_created = line_widgets_created + 1
-				
-			elseif (widget_table.type == "execute" or widget_table.type == "button") then
-			
-				local button = DF:NewButton (parent, nil, "$parentWidget" .. index, nil, 120, 18, widget_table.func, widget_table.param1, widget_table.param2, nil, widget_table.name, nil, button_template, text_template)
-				if (not button_template) then
-					button:InstallCustomTexture()
-				end
+					widget_created = dropdown
+					line_widgets_created = line_widgets_created + 1
+					
+				elseif (widget_table.type == "toggle" or widget_table.type == "switch") then
+					local switch = DF:NewSwitch (parent, nil, "$parentWidget" .. index, nil, 60, 20, nil, nil, widget_table.get(), nil, nil, nil, nil, switch_template)
+					switch.tooltip = widget_table.desc
+					switch._get = widget_table.get
+					switch.widget_type = "toggle"
+					switch.OnSwitch = widget_table.set
+					
+					if (switch_is_box) then
+						switch:SetAsCheckBox()
+					end
+					
+					if (value_change_hook) then
+						switch:SetHook ("OnSwitch", value_change_hook)
+					end
+					
+					--> hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							switch:SetHook (hookName, hookFunc)
+						end
+					end
 
-				if (widget_table.inline) then
-					if (latestInlineWidget) then
-						button:SetPoint ("left", latestInlineWidget, "right", 2, 0)
-						latestInlineWidget = button
+					if (widget_table.width) then
+						switch:SetWidth(widget_table.width)
+					end
+					if (widget_table.height) then
+						switch:SetHeight(widget_table.height)
+					end
+
+					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
+					if (widget_table.boxfirst) then
+						switch:SetPoint (cur_x, cur_y)
+						label:SetPoint ("left", switch, "right", 2)
+					else
+						label:SetPoint (cur_x, cur_y)
+						switch:SetPoint ("left", label, "right", 2)
+					end
+					switch.hasLabel = label
+
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = switch
+					end
+					
+					local size = label.widget:GetStringWidth() + 60 + 4
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, switch)
+					tinsert (parent.widget_list_by_type.switch, switch)
+
+					widget_created = switch
+					line_widgets_created = line_widgets_created + 1
+					
+				elseif (widget_table.type == "range" or widget_table.type == "slider") then
+					local is_decimanls = widget_table.usedecimals
+					local slider = DF:NewSlider (parent, nil, "$parentWidget" .. index, nil, 140, 20, widget_table.min, widget_table.max, widget_table.step, widget_table.get(),  is_decimanls, nil, nil, slider_template)
+					slider.tooltip = widget_table.desc
+					slider._get = widget_table.get
+					slider.widget_type = "range"
+					slider:SetHook ("OnValueChange", widget_table.set)
+					
+					if (widget_table.thumbscale) then
+						slider:SetThumbSize (slider.thumb:GetWidth()*widget_table.thumbscale, nil)
+					else
+						slider:SetThumbSize (slider.thumb:GetWidth()*1.3, nil)
+					end
+					
+					if (value_change_hook) then
+						slider:SetHook ("OnValueChange", value_change_hook)
+					end
+					
+					--> hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							slider:SetHook (hookName, hookFunc)
+						end
+					end
+					
+					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
+					slider:SetPoint ("left", label, "right", 2)
+					label:SetPoint (cur_x, cur_y)
+					slider.hasLabel = label
+					
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = slider
+					end
+
+					local size = label.widget:GetStringWidth() + 140 + 6
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, slider)
+					tinsert (parent.widget_list_by_type.slider, slider)
+
+					widget_created = slider
+					line_widgets_created = line_widgets_created + 1
+					
+				elseif (widget_table.type == "color" or widget_table.type == "color") then
+					local colorpick = DF:NewColorPickButton (parent, "$parentWidget" .. index, nil, widget_table.set, nil, button_template)
+					colorpick.tooltip = widget_table.desc
+					colorpick._get = widget_table.get
+					colorpick.widget_type = "color"
+
+					local default_value, g, b, a = widget_table.get()
+					if (type (default_value) == "table") then
+						colorpick:SetColor (unpack (default_value))
+					else
+						colorpick:SetColor (default_value, g, b, a)
+					end
+					
+					if (value_change_hook) then
+						colorpick:SetHook ("OnColorChanged", value_change_hook)
+					end
+					
+					--> hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							colorpick:SetHook (hookName, hookFunc)
+						end
+					end
+					
+					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
+					colorpick:SetPoint ("left", label, "right", 2)
+					label:SetPoint (cur_x, cur_y)
+					colorpick.hasLabel = label
+					
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = colorpick
+					end
+
+					local size = label.widget:GetStringWidth() + 60 + 4
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, colorpick)
+					tinsert (parent.widget_list_by_type.color, colorpick)
+
+					widget_created = colorpick
+					line_widgets_created = line_widgets_created + 1
+					
+				elseif (widget_table.type == "execute" or widget_table.type == "button") then
+				
+					local button = DF:NewButton (parent, nil, "$parentWidget" .. index, nil, 120, 18, widget_table.func, widget_table.param1, widget_table.param2, nil, widget_table.name, nil, button_template, text_template)
+					if (not button_template) then
+						button:InstallCustomTexture()
+					end
+
+					if (widget_table.inline) then
+						if (latestInlineWidget) then
+							button:SetPoint ("left", latestInlineWidget, "right", 2, 0)
+							latestInlineWidget = button
+						else
+							button:SetPoint (cur_x, cur_y)
+							latestInlineWidget = button
+						end
 					else
 						button:SetPoint (cur_x, cur_y)
-						latestInlineWidget = button
 					end
-				else
-					button:SetPoint (cur_x, cur_y)
+
+					button.tooltip = widget_table.desc
+					button.widget_type = "execute"
+					
+					--notice: execute doesn't trigger global callback
+					
+					--button icon
+					if (widget_table.icontexture) then
+						button:SetIcon(widget_table.icontexture, nil, nil, nil, widget_table.icontexcoords, nil, nil, 2)
+					end
+
+					--hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							button:SetHook (hookName, hookFunc)
+						end
+					end
+
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = button
+					end
+
+					if (widget_table.width) then
+						button:SetWidth(widget_table.width)
+					end
+					if (widget_table.height) then
+						button:SetHeight(widget_table.height)
+					end
+					
+					local size = button:GetWidth() + 4
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, button)
+					tinsert (parent.widget_list_by_type.button, button)
+
+					widget_created = button
+					line_widgets_created = line_widgets_created + 1
+					
+				elseif (widget_table.type == "textentry") then
+					local textentry = DF:CreateTextEntry (parent, widget_table.func or widget_table.set, 120, 18, nil, "$parentWidget" .. index, nil, button_template)
+					textentry.tooltip = widget_table.desc
+					textentry.text = widget_table.get()
+					textentry._get = widget_table.get
+					textentry.widget_type = "textentry"
+					textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
+					textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
+
+					local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
+					textentry:SetPoint ("left", label, "right", 2)
+					label:SetPoint (cur_x, cur_y)
+					textentry.hasLabel = label
+
+					--> text entry doesn't trigger global callback
+					
+					--> hook list
+					if (widget_table.hooks) then
+						for hookName, hookFunc in pairs (widget_table.hooks) do
+							textentry:SetHook (hookName, hookFunc)
+						end
+					end
+
+					if (widget_table.id) then
+						parent.widgetids [widget_table.id] = textentry
+					end
+					
+					local size = label.widget:GetStringWidth() + 60 + 4
+					if (size > max_x) then
+						max_x = size
+					end
+					
+					--store the widget created into the overall table and the widget by type
+					tinsert (parent.widget_list, textentry)
+					tinsert (parent.widget_list_by_type.textentry, textentry)
+
+					widget_created = textentry
+					line_widgets_created = line_widgets_created + 1
+					
 				end
 
-				button.tooltip = widget_table.desc
-				button.widget_type = "execute"
-				
-				--notice: execute doesn't trigger global callback
-				
-				--button icon
-				if (widget_table.icontexture) then
-					button:SetIcon(widget_table.icontexture, nil, nil, nil, widget_table.icontexcoords, nil, nil, 2)
+				if (widget_table.nocombat) then
+					tinsert (disable_on_combat, widget_created)
 				end
 
-				--hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						button:SetHook (hookName, hookFunc)
+				if (not widget_table.inline) then
+					if (widget_table.spacement) then
+						cur_y = cur_y - 30
+					else
+						cur_y = cur_y - 20
 					end
 				end
 
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = button
-				end
-
-				if (widget_table.width) then
-					button:SetWidth(widget_table.width)
-				end
-				if (widget_table.height) then
-					button:SetHeight(widget_table.height)
-				end
-				
-				local size = button:GetWidth() + 4
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, button)
-				tinsert (parent.widget_list_by_type.button, button)
-
-				widget_created = button
-				line_widgets_created = line_widgets_created + 1
-				
-			elseif (widget_table.type == "textentry") then
-				local textentry = DF:CreateTextEntry (parent, widget_table.func or widget_table.set, 120, 18, nil, "$parentWidget" .. index, nil, button_template)
-				textentry.tooltip = widget_table.desc
-				textentry.text = widget_table.get()
-				textentry._get = widget_table.get
-				textentry.widget_type = "textentry"
-				textentry:SetHook ("OnEnterPressed", widget_table.func or widget_table.set)
-				textentry:SetHook ("OnEditFocusLost", widget_table.func or widget_table.set)
-
-				local label = DF:NewLabel (parent, nil, "$parentLabel" .. index, nil, widget_table.name .. (use_two_points and ": " or ""), "GameFontNormal", widget_table.text_template or text_template or 12)
-				textentry:SetPoint ("left", label, "right", 2)
-				label:SetPoint (cur_x, cur_y)
-				textentry.hasLabel = label
-
-				--> text entry doesn't trigger global callback
-				
-				--> hook list
-				if (widget_table.hooks) then
-					for hookName, hookFunc in pairs (widget_table.hooks) do
-						textentry:SetHook (hookName, hookFunc)
-					end
-				end
-
-				if (widget_table.id) then
-					parent.widgetids [widget_table.id] = textentry
-				end
-				
-				local size = label.widget:GetStringWidth() + 60 + 4
-				if (size > max_x) then
-					max_x = size
-				end
-				
-				--store the widget created into the overall table and the widget by type
-				tinsert (parent.widget_list, textentry)
-				tinsert (parent.widget_list_by_type.textentry, textentry)
-
-				widget_created = textentry
-				line_widgets_created = line_widgets_created + 1
-				
-			end
-			
-			if (widget_table.nocombat) then
-				tinsert (disable_on_combat, widget_created)
-			end
-		
-			if (not widget_table.inline) then
-				if (widget_table.spacement) then
-					cur_y = cur_y - 30
-				else
-					cur_y = cur_y - 20
+				if (widget_table.type == "breakline" or cur_y < height) then
+					cur_y = y_offset
+					cur_x = cur_x + max_x + 30
+					line_widgets_created = 0
+					max_x = 0
 				end
 			end
-			
-			if (widget_table.type == "breakline" or cur_y < height) then
-				cur_y = y_offset
-				cur_x = cur_x + max_x + 30
-				line_widgets_created = 0
-				max_x = 0
-			end
-		
 		end
-		
+
 		DF.RefreshUnsafeOptionsWidgets()
-		
+
 	end
-	
+
 	local lock_notsafe_widgets = function()
 		for _, widget in ipairs (disable_on_combat) do
 			widget:Disable()
@@ -3087,6 +3090,95 @@ function DF:CreateBorder (parent, alpha1, alpha2, alpha3)
 	
 end
 
+--DFNamePlateBorder as copy from "NameplateFullBorderTemplate" -> DF:CreateFullBorder (name, parent)
+local DFNamePlateBorderTemplateMixin = {};
+
+function DFNamePlateBorderTemplateMixin:SetVertexColor(r, g, b, a)
+	for i, texture in ipairs(self.Textures) do
+		texture:SetVertexColor(r, g, b, a);
+	end
+end
+
+function DFNamePlateBorderTemplateMixin:SetBorderSizes(borderSize, borderSizeMinPixels, upwardExtendHeightPixels, upwardExtendHeightMinPixels)
+	self.borderSize = borderSize;
+	self.borderSizeMinPixels = borderSizeMinPixels;
+	self.upwardExtendHeightPixels = upwardExtendHeightPixels;
+	self.upwardExtendHeightMinPixels = upwardExtendHeightMinPixels;
+end
+
+function DFNamePlateBorderTemplateMixin:UpdateSizes()
+	local borderSize = self.borderSize or 1;
+	local minPixels = self.borderSizeMinPixels or 2;
+
+	local upwardExtendHeightPixels = self.upwardExtendHeightPixels or borderSize;
+	local upwardExtendHeightMinPixels = self.upwardExtendHeightMinPixels or minPixels;
+
+	PixelUtil.SetWidth(self.Left, borderSize, minPixels);
+	PixelUtil.SetPoint(self.Left, "TOPRIGHT", self, "TOPLEFT", 0, upwardExtendHeightPixels, 0, upwardExtendHeightMinPixels);
+	PixelUtil.SetPoint(self.Left, "BOTTOMRIGHT", self, "BOTTOMLEFT", 0, -borderSize, 0, minPixels);
+
+	PixelUtil.SetWidth(self.Right, borderSize, minPixels);
+	PixelUtil.SetPoint(self.Right, "TOPLEFT", self, "TOPRIGHT", 0, upwardExtendHeightPixels, 0, upwardExtendHeightMinPixels);
+	PixelUtil.SetPoint(self.Right, "BOTTOMLEFT", self, "BOTTOMRIGHT", 0, -borderSize, 0, minPixels);
+
+	PixelUtil.SetHeight(self.Bottom, borderSize, minPixels);
+	PixelUtil.SetPoint(self.Bottom, "TOPLEFT", self, "BOTTOMLEFT", 0, 0);
+	PixelUtil.SetPoint(self.Bottom, "TOPRIGHT", self, "BOTTOMRIGHT", 0, 0);
+
+	if self.Top then
+		PixelUtil.SetHeight(self.Top, borderSize, minPixels);
+		PixelUtil.SetPoint(self.Top, "BOTTOMLEFT", self, "TOPLEFT", 0, 0);
+		PixelUtil.SetPoint(self.Top, "BOTTOMRIGHT", self, "TOPRIGHT", 0, 0);
+	end
+end
+
+function DF:CreateFullBorder (name, parent)
+	local border = CreateFrame("Frame", name, parent)
+	border:SetAllPoints()
+	border:SetIgnoreParentScale(true)
+	border:SetFrameLevel(border:GetParent():GetFrameLevel())
+	border.Textures = {}
+	Mixin(border, DFNamePlateBorderTemplateMixin)
+	
+	local left = border:CreateTexture("$parentLeft", "BACKGROUND", nil, -8)
+	--left:SetDrawLayer("BACKGROUND", -8)
+	left:SetColorTexture(1, 1, 1, 1)
+	left:SetWidth(1.0)
+	left:SetPoint("TOPRIGHT", border, "TOPLEFT", 0, 1.0)
+	left:SetPoint("BOTTOMRIGHT", border, "BOTTOMLEFT", 0, -1.0)
+	border.Left = left
+	tinsert(border.Textures, left)
+	
+	local right = border:CreateTexture("$parentRight", "BACKGROUND", nil, -8)
+	--right:SetDrawLayer("BACKGROUND", -8)
+	right:SetColorTexture(1, 1, 1, 1)
+	right:SetWidth(1.0)
+	right:SetPoint("TOPLEFT", border, "TOPRIGHT", 0, 1.0)
+	right:SetPoint("BOTTOMLEFT", border, "BOTTOMRIGHT", 0, -1.0)
+	border.Right = right
+	tinsert(border.Textures, right)
+	
+	local bottom = border:CreateTexture("$parentBottom", "BACKGROUND", nil, -8)
+	--bottom:SetDrawLayer("BACKGROUND", -8)
+	bottom:SetColorTexture(1, 1, 1, 1)
+	bottom:SetHeight(1.0)
+	bottom:SetPoint("TOPLEFT", border, "BOTTOMLEFT", 0, 0)
+	bottom:SetPoint("TOPRIGHT", border, "BOTTOMRIGHT", 0, 0)
+	border.Bottom = bottom
+	tinsert(border.Textures, bottom)
+	
+	local top = border:CreateTexture("$parentTop", "BACKGROUND", nil, -8)
+	--top:SetDrawLayer("BACKGROUND", -8)
+	top:SetColorTexture(1, 1, 1, 1)
+	top:SetHeight(1.0)
+	top:SetPoint("BOTTOMLEFT", border, "TOPLEFT", 0, 0)
+	top:SetPoint("BOTTOMRIGHT", border, "TOPRIGHT", 0, 0)
+	border.Top = top
+	tinsert(border.Textures, top)
+	
+	return border
+end
+
 function DF:CreateBorderSolid (parent, size)
 
 end
@@ -3490,14 +3582,16 @@ function DF:GetClassList()
 	
 	for className, classIndex in pairs (DF.ClassFileNameToIndex) do
 		local classTable = C_CreatureInfo.GetClassInfo (classIndex)
-		local t = {
-			ID = classIndex,
-			Name = classTable.className,
-			Texture = [[Interface\GLUES\CHARACTERCREATE\UI-CharacterCreate-Classes]],
-			TexCoord = CLASS_ICON_TCOORDS [className],
-			FileString = className,
-		}
-		tinsert (DF.ClassCache, t)
+		if classTable then
+			local t = {
+				ID = classIndex,
+				Name = classTable.className,
+				Texture = [[Interface\GLUES\CHARACTERCREATE\UI-CharacterCreate-Classes]],
+				TexCoord = CLASS_ICON_TCOORDS [className],
+				FileString = className,
+			}
+			tinsert (DF.ClassCache, t)
+		end
 	end
 	
 	return DF.ClassCache
@@ -3570,9 +3664,11 @@ function DF:GetCharacterRaceList (fullList)
 			tinsert (DF.RaceCache, {Name = raceInfo.raceName, FileString = raceInfo.clientFileString})
 		end
 		
-		local alliedRaceInfo = C_AlliedRaces.GetRaceInfoByID (i)
-		if (alliedRaceInfo and DF.AlliedRaceList [alliedRaceInfo.raceID]) then
-			tinsert (DF.RaceCache, {Name = alliedRaceInfo.maleName, FileString = alliedRaceInfo.raceFileString})
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			local alliedRaceInfo = C_AlliedRaces.GetRaceInfoByID (i)
+			if (alliedRaceInfo and DF.AlliedRaceList [alliedRaceInfo.raceID]) then
+				tinsert (DF.RaceCache, {Name = alliedRaceInfo.maleName, FileString = alliedRaceInfo.raceFileString})
+			end
 		end
 	end
 	
@@ -3695,7 +3791,7 @@ DF.CLEncounterID = {
 }
 
 function DF:GetPlayerRole()
-	local assignedRole = UnitGroupRolesAssigned ("player")
+	local assignedRole = DF.UnitGroupRolesAssigned ("player")
 	if (assignedRole == "NONE") then
 		local spec = DF.GetSpecialization()
 		return spec and DF.GetSpecializationRole (spec) or "NONE"

@@ -6,8 +6,9 @@ local UnitGUID = UnitGUID
 local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 local select = select
 local floor = floor
-
 local GetNumGroupMembers = GetNumGroupMembers
+
+local CONST_INSPECT_ACHIEVEMENT_DISTANCE = 1 --Compare Achievements, 28 yards
 
 local ItemUpgradeInfo = LibStub ("LibItemUpgradeInfo-1.0")
 --local LibGroupInSpecT = LibStub ("LibGroupInSpecT-1.1") --disabled due to classic wow
@@ -1906,7 +1907,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 		unitid = unitid [1]
 	end
 
-	if (CheckInteractDistance (unitid, 1)) then
+	if (unitid and CanInspect(unitid) and UnitPlayerControlled(unitid) and CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE)) then
 
 		--> 16 = all itens including main and off hand
 		local item_amount = 16
@@ -2049,11 +2050,17 @@ end
 
 function ilvl_core:GetItemLevel (unitid, guid, is_forced, try_number)
 
+	--disable for timewalk wow ~timewalk
+	if (DetailsFramework.IsTimewalkWoW()) then
+		return
+	end
+
 	--> ddouble check
 	if (not is_forced and (UnitAffectingCombat ("player") or InCombatLockdown())) then
 		return
 	end
-	if (not unitid or not CanInspect (unitid) or not CheckInteractDistance (unitid, 1)) then
+
+	if (not unitid or not CanInspect(unitid) or not UnitPlayerControlled(unitid) or not CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE)) then
 		if (is_forced) then
 			try_number = try_number or 0
 			if (try_number > 18) then

@@ -8,7 +8,7 @@
 SimpleGroup Container
 Simple container widget that just groups widgets.
 -------------------------------------------------------------------------------]]
-local Type, Version = "SimpleGroup-OmniCD", 20 -- Block skins
+local Type, Version = "SimpleGroup-OmniCD", 20
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 

@@ -89,7 +89,11 @@ function Tradeskill:OnEnable()
 	self:RegisterEvent("UNIT_SPELLCAST_STOP")
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-	self:SecureHook(C_TradeSkillUI, "CraftRecipe", "DoTradeSkill")
+	if C_TradeSkillUI then
+		self:SecureHook(C_TradeSkillUI, "CraftRecipe", "DoTradeSkill")
+	else
+		self:SecureHook("DoTradeSkill")
+	end
 end
 
 function Tradeskill:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)

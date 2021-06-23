@@ -157,12 +157,13 @@ function P:HighlightIcon(icon, isRefresh)
 	if buff == 0 then
 		return
 	end
+
 	local info = self.groupInfo[icon.guid]
 	local unit = info.unit
 	local duration = info and self:GetBuffDuration(unit, buff)
 
 	if duration then
-		if E.buffFixNoCLEU[buff] and not self.isInArena then
+		if E.buffFixNoCLEU[buff] and (E.isBCC or not P.isInArena) then
 			local f = info.bar
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 		end
@@ -177,9 +178,8 @@ function P:HighlightIcon(icon, isRefresh)
 	end
 end
 
+--[[
 function P:SetGlow(icon)
-	if not E.db.highlight.glow then return end
-
 	local flash = icon.flashAnim
 	local newItemAnim = icon.newitemglowAnim
 	if not flash:IsPlaying() and not newItemAnim:IsPlaying() then
@@ -187,3 +187,5 @@ function P:SetGlow(icon)
 		newItemAnim:Play()
 	end
 end
+]]
+

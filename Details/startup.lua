@@ -466,11 +466,6 @@ function Details:StartMeUp() --I'll never stop!
 	--coach feature startup
 	Details.Coach.StartUp()
 
-	--make the green color in arena be purple
-	Details.class_colors.ARENA_GREEN[1] = 175/255 --r
-	Details.class_colors.ARENA_GREEN[2] = 98/255 --g
-	Details.class_colors.ARENA_GREEN[3] = 255/255 --b
-
 	--force the group edit be always enabled when Details! starts
 	_detalhes.options_group_edit = true
 
@@ -492,7 +487,7 @@ function Details:StartMeUp() --I'll never stop!
 	
 	--show warning message about classic beta
 	if (not DetailsFramework.IsClassicWow()) then
-		--print ("|CFFFFFF00[Details!]: Details! now has a separated version for Classic, Twitch app should give the right version, any issues report at Discord (/details discord).")
+
 	else
 		print ("|CFFFFFF00[Details!]: you're using Details! for RETAIL on Classic WOW, please get the classic version (Details! Damage Meter Classic WoW), if you need help see our Discord (/details discord).")
 	end
@@ -537,10 +532,6 @@ function Details:StartMeUp() --I'll never stop!
 				end
 			end
 		end)
-	end
-
-	if (DetailsFramework.IsTimewalkWoW()) then
-		Details:Msg("TBC Beta Version: 0013")
 	end
 
 	if (DetailsFramework.IsTBCWow()) then

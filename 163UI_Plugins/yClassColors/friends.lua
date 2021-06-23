@@ -1,3 +1,4 @@
+WOW_PROJECT_BURNING_CRUSADE_CLASSIC = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5
 
 local _, ns = ...
 local ycc = ns.ycc
@@ -8,6 +9,10 @@ local FRIENDS_LEVEL_TEMPLATE = FRIENDS_LEVEL_TEMPLATE:gsub('%%d', '%%s')
 FRIENDS_LEVEL_TEMPLATE = FRIENDS_LEVEL_TEMPLATE:gsub('%$d', '%$s') -- '%2$s %1$d-го уровня'
 
 local CLASS_ENG = {} for i=1, GetNumClasses() do local loc, eng = GetClassInfo(i) CLASS_ENG[loc] = eng end
+
+local playerRealmID = GetRealmID();
+local playerRealmName = GetRealmName();
+local playerFactionGroup = UnitFactionGroup("player");
 local function ShowRichPresenceOnly(client, wowProjectID, faction, realmID)
 	if (client ~= BNET_CLIENT_WOW) or (wowProjectID ~= WOW_PROJECT_ID) then
 		-- If they are not in wow or in a different version of wow, always show rich presence only
@@ -36,7 +41,7 @@ local function FriendsListButtonMixin_OnEnter_HOOK(self)
 
 	if self.buttonType == FRIENDS_BUTTON_TYPE_BNET then
 		local accountInfo = C_BattleNet.GetFriendAccountInfo(self.id);
-		if accountInfo and accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+		if accountInfo and (true or accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_CLASSIC) and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
 			local noCharacterName = true;
 			local nameText, nameColor = FriendsFrame_GetBNetAccountNameAndStatus(accountInfo, noCharacterName);
 
@@ -102,7 +107,7 @@ local function friendsFrame()
             elseif (button.buttonType == FRIENDS_BUTTON_TYPE_BNET) then
                 local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id);
                 local gameInfo = accountInfo and accountInfo.gameAccountInfo
-                if gameInfo and gameInfo.className then
+                if gameInfo and gameInfo.clientProgram == BNET_CLIENT_WOW and gameInfo.className then
                     local class = CLASS_ENG[gameInfo.className]
                     if accountInfo.gameAccountInfo.isOnline and gameInfo.areaName == playerArea then
                         if ShowRichPresenceOnly(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.wowProjectID, accountInfo.gameAccountInfo.factionName, accountInfo.gameAccountInfo.realmID) then
@@ -113,7 +118,9 @@ local function friendsFrame()
                         nameText = BNet_GetBNetAccountName(accountInfo) .. ' ' .. FRIENDS_WOW_NAME_COLOR_CODE..'('.. FONT_COLOR_CODE_CLOSE
                                 .. ycc.classColor[class] .. (gameInfo.characterName or "") .. FONT_COLOR_CODE_CLOSE .. FRIENDS_WOW_NAME_COLOR_CODE .. ')' .. FONT_COLOR_CODE_CLOSE
                         if gameInfo.wowProjectID == WOW_PROJECT_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-                            infoText = "|cff880303怀旧服|r" .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
+                            infoText = "|cffaa0303经典怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
+                        elseif gameInfo.wowProjectID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+                            infoText = "|cff03aa03TBC怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
                         end
                     end
                 end
@@ -131,4 +138,79 @@ end
 hooksecurefunc(FriendsListFrameScrollFrame, 'update', friendsFrame)
 hooksecurefunc('FriendsFrame_UpdateFriends', friendsFrame)
 
+if FriendsTooltip then
+
+    --没有其他好办法
+    SetOrHookScript(FriendsTooltip, "OnHide", function()
+        for i=1, FRIENDS_TOOLTIP_MAX_GAME_ACCOUNTS do
+            local line = _G["FriendsTooltipGameAccount"..i.."Name"];
+            line:SetWidth(176)
+        end
+    end)
+
+    hooksecurefunc(FriendsTooltip, "Show", function(self)
+        if self._showByAby then self._showByAby = nil return end
+
+        local button = self.button
+        if not button and FriendsListFrameScrollFrameScrollChild and button:GetParent() == FriendsListFrameScrollFrameScrollChild then
+            return
+        end
+
+        if not button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+            return
+        end
+
+        local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id);
+        local gameInfo = accountInfo and accountInfo.gameAccountInfo
+        if not accountInfo.gameAccountInfo.isOnline then
+            return
+        end
+
+        local maxWidth = self.maxWidth or 0
+        local numGameAccounts = C_BattleNet.GetFriendNumGameAccounts(button.id);
+        local gameAccountIndex = 0;
+        for i = 1, numGameAccounts do
+            local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(button.id, i);
+            if (true or not gameAccountInfo.hasFocus) and (gameAccountInfo.clientProgram ~= BNET_CLIENT_APP) and (gameAccountInfo.clientProgram ~= BNET_CLIENT_CLNT) then
+                gameAccountIndex = gameAccountIndex + 1;
+                if ( gameAccountIndex > FRIENDS_TOOLTIP_MAX_GAME_ACCOUNTS ) then
+                    break;
+                end
+                local characterNameString = _G["FriendsTooltipGameAccount"..gameAccountIndex.."Name"];
+                local gameAccountInfoString = _G["FriendsTooltipGameAccount"..gameAccountIndex.."Info"];
+
+                if (gameAccountInfo.clientProgram == BNET_CLIENT_WOW) then
+                    -- 把系统显示的角色名称加上颜色
+                    local class = gameAccountInfo and CLASS_ENG[gameAccountInfo.className]
+                    if class then
+                        local old = characterNameString:GetText() or ""
+                        local colored = ycc.classColor[class] .. gameAccountInfo.characterName .. FONT_COLOR_CODE_CLOSE
+                        if old:find(gameAccountInfo.characterName .. "$") then
+                            old = old:gsub(gameAccountInfo.characterName .. "$", colored)
+                            characterNameString:SetText(old)
+                        elseif old:find(gameAccountInfo.characterName .. "[^\124]") then
+                            old = old:gsub(gameAccountInfo.characterName .. "([^\124])", colored .. "%1")
+                            characterNameString:SetText(old)
+                        end
+                    end
+
+                    -- 不同版本的魔兽额外显示等级 种族 地区
+                    if gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID then
+                        local raceName = accountInfo.gameAccountInfo.raceName or UNKNOWN;
+                        local areaName = accountInfo.gameAccountInfo.areaName or "";
+                        local line = characterNameString
+                        --line:SetWordWrap(false)
+                        local old = line:GetText()
+                        line:SetText(old .. " " .. accountInfo.gameAccountInfo.characterLevel .. " " .. raceName .. " " .. areaName)
+                        local width = line:GetStringWidth()
+                        line:SetWidth(width)
+                        if width + FRIENDS_TOOLTIP_MARGIN_WIDTH*2 > self:GetWidth() then
+                            self:SetWidth(width + FRIENDS_TOOLTIP_MARGIN_WIDTH*2)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
 

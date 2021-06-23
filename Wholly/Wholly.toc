@@ -1,9 +1,9 @@
 ## Interface: 90005
-## ClassicInterface: 11304
+## ClassicInterface: 20501
 ## Title: Wholly
 ## Author: Scott M Harrison
 ## Notes: Shows quest database and map pins
-## Version: 082
+## Version: 083
 ## Dependencies: Grail
 ## OptionalDeps: LibStub, LibDataBroker, TomTom, Gatherer, Questie
 ## SavedVariablesPerCharacter: WhollyDatabase

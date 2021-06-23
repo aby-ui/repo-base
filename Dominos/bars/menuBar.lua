@@ -11,16 +11,7 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local MICRO_BUTTONS
 
 if Addon:IsBuild('bcc', 'classic') then
-    MICRO_BUTTONS = {
-        'CharacterMicroButton',
-        'SpellbookMicroButton',
-        'TalentMicroButton',
-        'QuestLogMicroButton',
-        'SocialsMicroButton',
-        'WorldMapMicroButton',
-        'MainMenuMicroButton',
-        'HelpMicroButton'
-    }
+    MICRO_BUTTONS = _G.MICRO_BUTTONS
 else
     MICRO_BUTTONS = {
         'CharacterMicroButton',
@@ -83,13 +74,7 @@ MenuBar:Extend(
             end
         end
 
-        local requestLayoutUpdate =
-            Addon:Defer(
-            function()
-                self:Layout()
-            end,
-            0.1
-        )
+        local requestLayoutUpdate = Addon:Defer(function() self:Layout() end, 0)
 
         hooksecurefunc('UpdateMicroButtons', requestLayoutUpdate)
 

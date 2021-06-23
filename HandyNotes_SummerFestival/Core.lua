@@ -21,11 +21,14 @@ local continents = {
 	[13]  = true, -- Eastern Kingdoms
 	[101] = true, -- Outland
 	[113] = true, -- Northrend
+	[203] = true, -- Vashj'ir
+	[224] = true, -- Stranglethorn Vale
 	[424] = true, -- Pandaria
 	[572] = true, -- Draenor
 	[619] = true, -- Broken Isles
 	[875] = true, -- Zandalar
 	[876] = true, -- Kul Tiras
+	[947] = true, -- Azeroth
 }
 
 local notes = {
@@ -64,18 +67,18 @@ local notes = {
 
 
 -- upvalues
-local C_Timer_After = C_Timer.After
-local C_Calendar = C_Calendar
-local GameTooltip = GameTooltip
-local GetGameTime = GetGameTime
-local GetQuestsCompleted = AbyGetQuestsCompleted
-local IsControlKeyDown = IsControlKeyDown
-local LibStub = LibStub
-local next = next
-local UIParent = UIParent
+local C_Calendar = _G.C_Calendar
+local C_DateAndTime = _G.C_DateAndTime
+local C_Map = _G.C_Map
+local C_QuestLog = _G.C_QuestLog
+local C_Timer_After = _G.C_Timer.After
+local GameTooltip = _G.GameTooltip
+local IsControlKeyDown = _G.IsControlKeyDown
+local UIParent = _G.UIParent
 
-local HandyNotes = HandyNotes
-local TomTom = TomTom
+local LibStub = _G.LibStub
+local HandyNotes = _G.HandyNotes
+local TomTom = _G.TomTom
 
 local completedQuests = {}
 local points = SummerFestival.points
@@ -183,7 +186,7 @@ do
 		end
 	end
 
-	function SummerFestival:GetNodes2(mapID, minimap)
+	function SummerFestival:GetNodes2(mapID)
 		return iterator, points[mapID]
 	end
 end
@@ -238,6 +241,7 @@ local setEnabled = false
 local function CheckEventActive()
 	local calendar = C_DateAndTime.GetCurrentCalendarTime()
 	local month, day, year = calendar.month, calendar.monthDay, calendar.year
+	local hour, minute = calendar.hour, calendar.minute
 
 	local monthInfo = C_Calendar.GetMonthInfo()
 	local curMonth, curYear = monthInfo.month, monthInfo.year
@@ -249,8 +253,6 @@ local function CheckEventActive()
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i)
 
 		if event.iconTexture == 235472 or event.iconTexture == 235473 or event.iconTexture == 235474 then
-			local hour, minute = GetGameTime()
-
 			setEnabled = event.sequenceType == "ONGOING" -- or event.sequenceType == "INFO"
 
 			if event.sequenceType == "START" then
@@ -262,7 +264,9 @@ local function CheckEventActive()
 	end
 
 	if setEnabled and not SummerFestival.isEnabled then
-		completedQuests = GetQuestsCompleted(completedQuests)
+		for _, id in ipairs(C_QuestLog.GetAllCompletedQuestIDs()) do
+			completedQuests[id] = true
+		end
 
 		SummerFestival.isEnabled = true
 		SummerFestival:Refresh()
@@ -294,8 +298,20 @@ function SummerFestival:OnEnable()
 		return
 	end
 
+	-- special treatment for Teldrassil as C_Map.GetMapChildrenInfo() isn't recognising it as a "child zone" of Kalimdor at the moment
+	if UnitFactionGroup("player") == "Alliance" then
+		points[12] = {
+			[43611031] = "11824:H", -- Dolanaar
+		}
+	elseif UnitFactionGroup("player") == "Horde" then
+		points[12] = {
+			[43541026] = "11753:D", -- Dolanaar
+			[40370935] = "9332:C",  -- Stealing Darnassus' Flame
+		}
+	end
+
 	for continentMapID in next, continents do
-		local children = C_Map.GetMapChildrenInfo(continentMapID)
+		local children = C_Map.GetMapChildrenInfo(continentMapID, nil, true)
 		for _, map in next, children do
 			local coords = points[map.mapID]
 			if coords then
@@ -309,14 +325,6 @@ function SummerFestival:OnEnable()
 				end
 			end
 		end
-	end
-
-	-- special treatment for Teldrassil as the HereBeDragons-2.0 library isn't recognising it as a "child zone" of Kalimdor at the moment
-	if UnitFactionGroup("player") == "Alliance" then
-		points[12][43611031] = "11824:H" -- Dolanaar
-	elseif UnitFactionGroup("player") == "Horde" then
-		points[12][43541026] = "11753:D" -- Dolanaar
-		points[12][40370935] = "9332:C"  -- Stealing Darnassus' Flame
 	end
 
 	local calendar = C_DateAndTime.GetCurrentCalendarTime()
