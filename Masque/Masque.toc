@@ -21,7 +21,7 @@
 
 # Libraries
 Libs\Libs.xml
-Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
+#Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua
 
 # Locales
 Locales\Locales.xml

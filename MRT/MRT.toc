@@ -43,5 +43,5 @@ Profiles.lua
 Changelog.lua
 
 
-## Title: |cff880303[爱不易]|r ExRT 团长工具
+## Title: |cff880303[鐖变笉鏄揮|r MRT 鍥㈤暱宸ュ叿(鍘烢xRT)
 ## X-Vendor: AbyUI
