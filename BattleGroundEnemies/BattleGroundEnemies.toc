@@ -1,6 +1,6 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: BattleGroundEnemies
-## Version: 9.0.5.5
+## Version: 9.0.5.6
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
 ## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibPlayerSpells-1.0
@@ -21,6 +21,7 @@ Defaults.lua
 Main.lua
 Messaging.lua
 TargetCall.lua
+Changelog.lua
 
 
 Objects\Auracontainer.lua

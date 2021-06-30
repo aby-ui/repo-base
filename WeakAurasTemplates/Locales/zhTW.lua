@@ -72,6 +72,8 @@ local L = WeakAuras.L
 	L["Highlight while debuffed."] = "有減益時顯著標示。"
 	L["Highlight while spell is active."] = "法術作用時顯著標示。"
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 鍵一次建立多個提醒效果"
+	--[[Translation missing --]]
+	L["Initial Buff"] = "Initial Buff"
 	L["Keeps existing triggers intact"] = "完整保留已經存在的觸發事件"
 	L["Legendaries"] = "傳說"
 	L["Meteor Ready"] = "隕石可使用"
@@ -87,14 +89,20 @@ local L = WeakAuras.L
 	L["Other cooldown"] = "其他冷卻時間"
 	L["Pet alive"] = "寵物活著"
 	L["Pet Behavior"] = "寵物動作"
+	--[[Translation missing --]]
+	L["Preparation"] = "Preparation"
 	L["PvP Talents"] = "PVP 天賦"
 	L["Replace all existing triggers"] = "取代所有已經存在的觸發"
 	L["Replace Triggers"] = "取代觸發"
 	L["Resources"] = "職業特殊資源"
 	L["Resources and Shapeshift Form"] = "職業特殊資源和變身形態"
 	L["Rogue cooldown"] = "盜賊冷卻時間"
+	--[[Translation missing --]]
+	L["Root"] = "Root"
 	L["Runes"] = "符文"
 	L["Shapeshift Form"] = "變身形態"
+	--[[Translation missing --]]
+	L["Shards Of Domination"] = "Shards Of Domination"
 	L["Show Always, Glow on Missing"] = "永遠顯示，缺少時發光"
 	L["Show Charges and Check Usable"] = "顯示次數和檢查是否可用"
 	L["Show Charges with Proc Tracking"] = "顯示包含機率觸發監控的次數"
@@ -126,6 +134,8 @@ local L = WeakAuras.L
 	L["Show Totem and Charge Information"] = "顯示圖騰和次數資訊"
 	L["Slow"] = "慢"
 	L["slow debuff"] = "緩速減益"
+	--[[Translation missing --]]
+	L["Sprint"] = "Sprint"
 	L["Stance"] = "姿勢/形態"
 	L["stun debuff"] = "暈眩減益"
 	L["Stun Debuff"] = "昏迷減益"

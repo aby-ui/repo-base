@@ -6,7 +6,7 @@ Description: A library to provide a markup syntax
 ]]
 
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = tonumber(("20210410135615"):match("%d+")) or 33333333333333
+local MINOR_VERSION = tonumber(("20210628175745"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_MINOR_VERSION then
 	_G.DogTag_MINOR_VERSION = MINOR_VERSION

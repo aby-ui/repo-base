@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: Dominos Config
 ## Title-zhCN: |cFF0099FFDominos|r 设置
 ## Title-zhTW: |cFF0099FFDominos|r 設置

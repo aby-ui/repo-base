@@ -1,0 +1,18 @@
+<Bindings>
+	<Binding name="EXRT_OPEN" header="ExRT" category="Method Raid Tools">
+		GMRT.Options:Open()
+	</Binding>
+	<Binding name="EXRT_FIGHTLOG_OPEN" category="Method Raid Tools">
+		GMRT.F.FightLog_Open()
+	</Binding>
+	<Binding name="CLICK EXRTWM1:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM2:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM3:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM4:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM5:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM6:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM7:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTWM8:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTCWM:LeftButton" category="Method Raid Tools" />
+	<Binding name="CLICK EXRTTOGGLENOTE:LeftButton" category="Method Raid Tools" />
+</Bindings>

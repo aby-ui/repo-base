@@ -4,6 +4,10 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local DRList = LibStub("DRList-1.0")
 local LibRaces = LibStub("LibRaces-1.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local LibChangelog = LibStub("LibChangelog")
+
+
+
 --LSM:Register("font", "PT Sans Narrow Bold", [[Interface\AddOns\BattleGroundEnemies\Fonts\PT Sans Narrow Bold.ttf]])
 LSM:Register("statusbar", "UI-StatusBar", "Interface\\TargetingFrame\\UI-StatusBar")
 
@@ -2259,6 +2263,13 @@ do
 		self.db.RegisterCallback(self, "OnProfileChanged", "ProfileChanged")
 		self.db.RegisterCallback(self, "OnProfileCopied", "ProfileChanged")
 		self.db.RegisterCallback(self, "OnProfileReset", "ProfileChanged")
+
+
+
+		LibChangelog:Register(addonName, Data.changelog, self.db.profile, "lastReadVersion", "onlyShowWhenNewVersion")
+
+		--LibChangelog:ShowChangelog(addonName)
+
 		
 		CreateMainFrame("Allies")
 		CreateMainFrame("Enemies")

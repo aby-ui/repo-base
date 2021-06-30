@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Challenges|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Herausforderungen|r
@@ -32,7 +32,7 @@
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
 ## X-Wago-ID: Rn6VLLGd
-## Version: r139-7-g4aefb4d
+## Version: r140
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

@@ -1,3 +1,8 @@
+--[[
+local abytfm = WW:Button("AbyTotemFrameMover", UIParent):Size(100,40):SetFrameStrata("BACKGROUND"):SetPoint(TotemFrame:GetPoint(1))
+:CreateTexture():SetColorTexture(0,1,0,0.5):ALL():up():un()
+CoreUIEnableTooltip(abytfm, "面板移动","按住SHIFT拖动\nCtrl点击保存位置\nCtrl滚轮缩放\nC+S+A点击重置")
+]]
 -- BlizzMmove, move the blizzard frames by yess
 local db = nil
 local frame = CreateFrame("Frame")
@@ -118,10 +123,10 @@ local function OnHide(self)
 end
 
 local running = {} --已经记录的
-local function runOnNext(self)
+local function runOnNext(self, ...)
     if not self.__blizzMove then
         self.__blizzMove = 1
-        saveDefaultPos(self)
+        --saveDefaultPos(self) --要在hooks SetPoint的时候设置
         if self:IsProtected() and InCombatLockdown() then
             --CoreLeaveCombatCall(self, nil, OnShow)
         else
@@ -133,6 +138,7 @@ local function runOnNext(self)
 end
 local function hookSetPoint(self, point, parent, relative, offsetx, offsety)
     if not self.__blizzMove then
+        saveDefaultPos(self) --其他插件设置位置，更新默认位置
         if not running[self] then
             running[self] = 1
             RunOnNextFrame(runOnNext, self)
@@ -191,16 +197,15 @@ local function OnMouseWheel(self, value, ...)
             end
         end
         frameToMove.__blizzMove = 1
-        CoreUISetScale(frameToMove, scale)
-        --frameToMove:SetScale(scale)
-        frameToMove.__blizzMove = nil
+        CoreUISetScale(frameToMove, scale) --frameToMove:SetScale(scale)
         if frameToMove.settings then
             frameToMove.settings.scale = scale
         end
         if frameToMove:IsMovable() then
-            frameToMove:StartMoving();
+            --frameToMove:StartMoving(); --这句会导致飘. 如果没有这句reload后的位置不对, 修改CoreUISetScale支持anchor=nil后, 去掉这句没问题
             OnDragStop(self); --因为位置有调整，所以要执行一下，但实际上不需要，因为CoreUISetScale修改了当前的Point，再移动后的相对位置由暴雪计算完成。
         end
+        frameToMove.__blizzMove = nil
         --Debug("scroll", arg1, scale, frameToMove:GetScale())
     end
 end
@@ -446,8 +451,23 @@ local function OnEvent(self, event, arg1, arg2)
             --BM_SetMoveHandler(RuneFrame)
             for i=1,6 do BM_SetMoveHandler(RuneFrame, RuneFrame["Rune"..i], true) end
 
+            --[[ --诡异的问题, 拖动之后，hooksecurefunc("TotemFrame_Update")无输出,但实际是运行到了的,怀疑是安全环境导致的,不能拖动TotemFrame本身,只能用锚点定位
             BM_SetMoveHandler(TotemFrame)
             for i=1,4 do BM_SetMoveHandler(TotemFrame, _G["TotemFrameTotem"..i], true) end
+            --]]
+
+            if AbyTotemFrameMover then
+                BM_SetMoveHandler(AbyTotemFrameMover)
+                hooksecurefunc(TotemFrame, "SetPoint", function()
+                    if TotemFrame.__settingByAby then return end
+                    AbyTotemFrameMover:SetSize(TotemFrame:GetSize())
+                    TotemFrame.__settingByAby = true
+                    TotemFrame:ClearAllPoints()
+                    TotemFrame:SetPoint("TOPLEFT", AbyTotemFrameMover)
+                    TotemFrame.__settingByAby = nil
+                    TotemFrame:SetScale(AbyTotemFrameMover:GetScale())
+                end)
+            end
 
             --7.0.3
             --BM_SetMoveHandler(InsanityBarFrame)

@@ -340,12 +340,16 @@ function ns.CreateGroupOptions (map, group)
     if _INITIALIZED[group.name..map.id] then return end
     _INITIALIZED[group.name..map.id] = true
 
+    -- Check if map info exists (ignore if PTR/beta zone)
+    local map_info = C_Map.GetMapInfo(map.id)
+    if not map_info then return end
+
     -- Create map options group under zones tab
     local options = ns.options.args.ZonesTab.args['Zone_'..map.id]
     if not options then
         options = {
             type = "group",
-            name = C_Map.GetMapInfo(map.id).name,
+            name = map_info.name,
             args = {
                 OpenWorldMap = {
                     type = "execute",

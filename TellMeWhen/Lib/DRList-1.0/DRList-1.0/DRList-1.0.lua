@@ -3,14 +3,14 @@ Name: DRList-1.0
 Description: Diminishing returns database. Fork of DRData-1.0.
 Website: https://www.curseforge.com/wow/addons/drlist-1-0
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: v1.2.3
+Version: a0bc478
 Dependencies: LibStub
 License: MIT
 ]]
 
 --- DRList-1.0
 -- @module DRList-1.0
-local MAJOR, MINOR = "DRList-1.0", 22
+local MAJOR, MINOR = "DRList-1.0", 23
 local Lib = assert(LibStub, MAJOR .. " requires LibStub."):NewLibrary(MAJOR, MINOR)
 if not Lib then return end -- already loaded
 
@@ -29,7 +29,7 @@ L["SILENCES"] = "Silences"
 L["STUNS"] = "Stuns"
 L["TAUNTS"] = "Taunts"
 
--- Classic
+-- Classic & TBC
 L["FEARS"] = "Fears"
 L["RANDOM_ROOTS"] = "Random roots"
 L["RANDOM_STUNS"] = "Random stuns"
@@ -39,6 +39,8 @@ L["KIDNEY_SHOT"] = GetSpellInfo(408) or "Kidney Shot"
 L["SLEEPS"] = GetSpellInfo(1090) or "Sleeps"
 L["DEATH_COIL"] = GetSpellInfo(27223) or GetSpellInfo(47541) or "Death Coil"
 L["UNSTABLE_AFFLICTION"] = GetSpellInfo(31117) or "Unstable Affliction"
+L["FREEZING_TRAP"] = GetSpellInfo(1499) or GetSpellInfo(187650) or "Freezing Trap"
+L["SCATTER_SHOT"] = GetSpellInfo(19503) or GetSpellInfo(213691) or "Scatter Shot"
 
 -- luacheck: push ignore 542
 local locale = GetLocale()
@@ -143,12 +145,12 @@ Lib.resetTimes = {
     },
 
     classic = {
-        ["default"] = 18.5,
+        ["default"] = 19, -- dynamic between 15 and 20s
         ["npc"] = 23.0,
     },
 
     tbc = {
-        ["default"] = 18.5,
+        ["default"] = 19, -- dynamic between 15 and 20s
         ["npc"] = 23.0,
     },
 }
@@ -185,6 +187,7 @@ Lib.categoryNames = {
         ["incapacitate"] = L.INCAPACITATES,
         ["stun"] = L.STUNS,
         ["random_stun"] = L.RANDOM_STUNS,
+        ["random_root"] = L.RANDOM_ROOTS,
         ["root"] = L.ROOTS,
         ["disarm"] = L.DISARMS,
         ["sleep"] = L.SLEEPS,
@@ -193,6 +196,8 @@ Lib.categoryNames = {
         ["kidney_shot"] = L.KIDNEY_SHOT,
         ["death_coil"] = L.DEATH_COIL,
         ["unstable_affliction"] = L.UNSTABLE_AFFLICTION,
+        ["freezing_trap"] = L.FREEZING_TRAP,
+        ["scatter_shot"] = L.SCATTER_SHOT,
     },
 }
 
@@ -213,6 +218,7 @@ Lib.categoriesPvE = {
 
     tbc = {
         ["stun"] = L.STUNS,
+        ["random_stun"] = L.RANDOM_STUNS,
         ["kidney_shot"] = L.KIDNEY_SHOT,
     },
 }

@@ -105,6 +105,9 @@ rematch.targetData = {
 
     -- expansionID 8: Shadowlands
 
+    -- mapID 424: Pandaria
+    {8,424,176655,63435,4,25,3089,3090,3091}, -- Anthea (Temple Throwdown)
+
     -- mapID 1533: Bastion
     {8,1533,173131,61784,4,25,2972,2973,2974}, -- Stratios (Cliffs of Bastion)
     {8,1533,173133,61783,4,25,2968}, -- Jawbone (Mega Bite)

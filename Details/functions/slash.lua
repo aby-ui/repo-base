@@ -1540,10 +1540,18 @@ function SlashCmdList.DETAILS (msg, editbox)
 		end
 	
 	--BFA BETA
-	elseif (msg == "update") then
-		_detalhes:CopyPaste ([[https://www.wowinterface.com/downloads/info23056-DetailsDamageMeter8.07.3.5.html]])
+	--elseif (msg == "update") then
+	--	_detalhes:CopyPaste ([[https://www.wowinterface.com/downloads/info23056-DetailsDamageMeter8.07.3.5.html]])
 	
 	
+	elseif (msg == "ec") then
+		if (rest and tonumber(rest)) then
+			local combatToErase = tonumber(rest)
+			tremove(_detalhes.tabela_historico.tabelas, combatToErase)
+			Details:Msg("combat erased.")
+		end
+		return
+
 	elseif (msg == "share") then
 	
 		local f = {}
@@ -1659,6 +1667,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 			end
 			
 		end
+
+		print("|", msg)
 		
 		print (" ")
 		--local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)

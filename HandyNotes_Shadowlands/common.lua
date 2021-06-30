@@ -9,6 +9,7 @@ local L = ns.locale
 
 local Map = ns.Map
 
+local Item  = ns.reward.Item
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Reward = ns.reward.Reward
@@ -144,7 +145,6 @@ hooksecurefunc(GameTooltip, 'ClearLines', function(self)
     vignetteHandled = false
 end)
 
-
 -------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------
 -------------------------------------------------------------------------------
@@ -189,8 +189,8 @@ end
 
 ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b', {defaults=ns.GROUP_HIDDEN})
 ns.groups.BLESSINGS = Group('blessings', 1022951, {defaults=ns.GROUP_HIDDEN})
-ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd')
-ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_yw')
+ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd', {defaults=ns.GROUP_HIDDEN})
+ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_yw', {defaults=ns.GROUP_HIDDEN})
 ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.FAERIE_TALES = Group('faerie_tales', 355498, {defaults=ns.GROUP_HIDDEN})
@@ -198,13 +198,24 @@ ns.groups.FUGITIVES = Group('fugitives', 236247, {defaults=ns.GROUP_HIDDEN})
 ns.groups.GRAPPLES = Group('grapples', 'peg_bk', {defaults=ns.GROUP_HIDDEN})
 ns.groups.HYMNS = Group('hymns', 'scroll', {defaults=ns.GROUP_HIDDEN})
 ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
+ns.groups.INVASIVE_MAWSHROOM = Group('invasive_mawshroom', 134534, {defaults=ns.GROUP_HIDDEN75})
+ns.groups.KORTHIA_SHARED = Group('korthia_dailies', 1506458, {defaults=ns.GROUP_HIDDEN75})
 ns.groups.MAW_LORE = Group('maw_lore', 'chest_gy')
-ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN})
+ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814, {defaults=ns.GROUP_HIDDEN75})
+ns.groups.NEST_MATERIALS = Group('nest_materials', 136064, {defaults=ns.GROUP_HIDDEN75})
+ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724, {defaults=ns.GROUP_HIDDEN75})
+ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN75})
+ns.groups.RELIC = Group('relic', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_b')
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
 ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
 ns.groups.VESPERS = Group('vespers', 3536181, {defaults=ns.GROUP_HIDDEN})
+
+function ns.groups.RELIC:IsEnabled()
+    if select(3,GetFactionInfoByID(2472)) < 2 then return false end
+    return Group.IsEnabled(self)
+end
 
 -------------------------------------------------------------------------------
 ------------------------------------ MAPS -------------------------------------
@@ -238,3 +249,11 @@ function Venari:IsMet()
 end
 
 ns.requirement.Venari = Venari
+
+-------------------------------------------------------------------------------
+----------------------------- RELIC RESEARCH ITEMS ----------------------------
+-------------------------------------------------------------------------------
+
+ns.relics = {
+    relic_fragment = Item({item=186685, note=L["num_research"]:format(1)}) -- relic fragment
+}

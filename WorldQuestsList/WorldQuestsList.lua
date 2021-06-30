@@ -1,4 +1,4 @@
-local VERSION = 100
+local VERSION = 101
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -307,6 +307,8 @@ Minor fixes
 
 9.0.5 update
 Added warmode bonus for shadowlands quests
+
+Wago update
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -3334,7 +3336,7 @@ do
 	list[#list+1] = {text = LOCALE.gear,			func = SetFilter,	arg1 = 1,					checkable = true,				}
 	list[#list+1] = {text = LE.ARTIFACT_POWER,		func = SetFilter,	arg1 = 2,					checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = LE.AZERITE,			func = SetFilterType,	arg1 = "azerite",				checkable = true,	shownFunc = NOT_LEGION	}
-	list[#list+1] = {text = ANIMA,				func = SetFilterType,	arg1 = "anima",					checkable = true,	shownFunc = SL		}
+	list[#list+1] = {text = WORLD_QUEST_REWARD_FILTERS_ANIMA,func = SetFilterType,	arg1 = "anima",					checkable = true,	shownFunc = SL		}
 	list[#list+1] = {text = LE.ORDER_RESOURCES_NAME_LEGION,	func = SetFilter,	arg1 = 3,					checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = LE.ORDER_RESOURCES_NAME_BFA,	func = SetFilterType,	arg1 = "bfa_orderres",				checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = LOCALE.blood,			func = SetFilter,	arg1 = 4,					checkable = true,	shownFunc = LEGION	}
@@ -3368,7 +3370,7 @@ do
 	list[#list+1] = {text = LOCALE.bountyIgnoreFilter,		func = SetIgnoreFilter,	arg1 = "bountyIgnoreFilter",		checkable = true,				}
 	list[#list+1] = {text = LE.ARTIFACT_POWER,			func = SetIgnoreFilter,	arg1 = "apIgnoreFilter",		checkable = true,	shownFunc = LEGION	}
 	list[#list+1] = {text = LE.AZERITE,				func = SetIgnoreFilter,	arg1 = "azeriteIgnoreFilter",		checkable = true,	shownFunc = NOT_LEGION	}
-	list[#list+1] = {text = ANIMA,					func = SetIgnoreFilter,	arg1 = "animaIgnoreFilter",		checkable = true,	shownFunc = SL		}
+	list[#list+1] = {text = WORLD_QUEST_REWARD_FILTERS_ANIMA,	func = SetIgnoreFilter,	arg1 = "animaIgnoreFilter",		checkable = true,	shownFunc = SL		}
 	list[#list+1] = {text = GetCurrencyInfo(1721),			func = SetIgnoreFilter,	arg1 = "manapearlIgnoreFilter",		checkable = true,	shownFunc = NOT_LEGION	}
 	list[#list+1] = {text = LOCALE.honorIgnoreFilter,		func = SetIgnoreFilter,	arg1 = "honorIgnoreFilter",		checkable = true,				}
 	list[#list+1] = {text = SHOW_PET_BATTLES_ON_MAP_TEXT,		func = SetIgnoreFilter,	arg1 = "petIgnoreFilter",		checkable = true,				}
@@ -6407,7 +6409,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 									end
 								elseif text and text:find(LE.ITEM_BIND_ON_EQUIP) and j<=4 then
 									isBoeItem = true
-								elseif text and text:find(ANIMA.."|r$") then
+								elseif text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
 									isAnimaItem = true
 								elseif text and isAnimaItem and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
 									local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")
@@ -6445,7 +6447,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							RewardListColor[#RewardListStrings] = LE.BAG_ITEM_QUALITY_COLORS[6]
 							RewardListType[#RewardListStrings] = (VWQL.SortPrio.anima or defSortPrio.anima)
 
-							RewardListStrings[#RewardListStrings] = numItems .. " ".. ANIMA
+							RewardListStrings[#RewardListStrings] = numItems .. " ".. WORLD_QUEST_REWARD_FILTERS_ANIMA
 							RewardListSort[#RewardListStrings] = (numItems or 0) + (itemID / 1000000)
 						end
 
@@ -7064,7 +7066,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 	end
 
 	if WorldQuestList:IsShadowlandsZone(mapAreaID) then
-		WorldQuestList.footer.ap:SetText(ANIMA..": "..totalAnima)
+		WorldQuestList.footer.ap:SetText(WORLD_QUEST_REWARD_FILTERS_ANIMA..": "..totalAnima)
 		WorldQuestList.footer.OR:SetText("")
 	elseif WorldQuestList:IsLegionZone(mapAreaID) then
 		local name,_,icon = GetCurrencyInfo(1533)
@@ -7588,7 +7590,7 @@ WorldQuestList.SortPriorWindow:SetScript("OnShow", function(self)
 
 		local list = {
 			{"bounty_cache","8.3 Chest",133572},
-			{"anima",ANIMA,613397},
+			{"anima",WORLD_QUEST_REWARD_FILTERS_ANIMA,613397},
 			{"azerite",C_CurrencyInfo.GetBasicCurrencyInfo(1553).name,C_CurrencyInfo.GetCurrencyContainerInfo(1553, 3000).icon},
 			{"curr1560","|T"..C_CurrencyInfo.GetBasicCurrencyInfo(1560).icon..":18|t "..C_CurrencyInfo.GetBasicCurrencyInfo(1560).name.." / ".."|T"..C_CurrencyInfo.GetBasicCurrencyInfo(1220).icon..":18|t "..C_CurrencyInfo.GetBasicCurrencyInfo(1220).name},	--War Resources
 			{"curr1508",C_CurrencyInfo.GetBasicCurrencyInfo(1508).name,C_CurrencyInfo.GetBasicCurrencyInfo(1508).icon},	--Veiled Argunite
@@ -9194,7 +9196,7 @@ do
 								for j=2, inspectScantip:NumLines() do
 									local tooltipLine = _G[GlobalAddonName.."WorldQuestListInspectScanningTooltipTextLeft"..j]
 									local text = tooltipLine:GetText()
-									if text and text:find(ANIMA.."|r$") then
+									if text and text:find(WORLD_QUEST_REWARD_FILTERS_ANIMA.."|r$") then
 										isAnima = 1
 									elseif text and isAnima and text:find("^"..LE.ITEM_SPELL_TRIGGER_ONUSE) then
 										local num = text:gsub("(%d+)[ %.,]+(%d+)","%1%2"):match("%d+")

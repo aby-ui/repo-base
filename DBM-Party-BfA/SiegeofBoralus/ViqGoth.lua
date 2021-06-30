@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2140, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(120553)
 mod:SetEncounterID(2100)
 
@@ -31,12 +31,11 @@ local timerDemolisherTerrorCD		= mod:NewCDTimer(20, 270605, nil, nil, nil, 1, ni
 
 mod:AddRangeFrameOption(5, 275014)
 
-mod.vb.phase = 1
 local seenAdds = {}
 
 function mod:OnCombatStart(delay)
 	table.wipe(seenAdds)
-	self.vb.phase = 1
+	self:SetStage(1)
 	timerPutridWatersCD:Start(3.4-delay)
 	--timerCalloftheDeepCD:Start(6.4-delay)
 	--timerDemolisherTerrorCD:Start(19.9-delay)--Should be started by IEEU event
@@ -117,7 +116,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	elseif spellId == 269984 then--Damage Boss 35% (can use SPELL_CAST_START of 269456 alternatively)
 		--Might actually be at Repair event instead (269366)
 		if self.vb.phase < 3 then
-			self.vb.phase = self.vb.phase + 1
+			self:SetStage(0)
 		end
 	end
 end

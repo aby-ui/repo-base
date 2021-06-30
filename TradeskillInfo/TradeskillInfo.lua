@@ -484,7 +484,12 @@ function TradeskillInfo:TradeSkillFrame_SetSelection(id)
 		-- no, I don't like this either.
 		local numReagents = C_TradeSkillUI.GetRecipeNumReagents(TradeSkillFrame.DetailsFrame.selectedRecipeID)
 
-		if numReagents > 0 then
+        --abyui from Blizzard_TradeSkillDetails.lua
+        local optionalReagentSlots = C_TradeSkillUI.GetOptionalReagentInfo(TradeSkillFrame.DetailsFrame.selectedRecipeID)
+        local numOptionalReagentSlots = #optionalReagentSlots;
+        if numOptionalReagentSlots > 0 then
+            TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.OptionalReagents[numOptionalReagentSlots], "BOTTOM", 0, -15)
+		elseif numReagents > 0 then
             if not TradeSkillFrame.DetailsFrame.Contents.SourceText:IsShown() then --abyui
 			TradeSkillFrame.DetailsFrame.Contents.SourceText:SetPoint("TOP", TradeSkillFrame.DetailsFrame.Contents.Reagents[numReagents], "BOTTOM", 0, -15)
             end

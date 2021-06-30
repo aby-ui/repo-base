@@ -638,7 +638,10 @@ function ShadowUF:ProfilesChanged()
 		self:LoadDefaultLayout()
 	else
 		self:CheckUpgrade()
+		self:CheckBuild()
 	end
+
+	self.db.profile.revision = self.dbRevision
 
 	self:FireModuleEvent("OnProfileChange")
 	self:LoadUnits()

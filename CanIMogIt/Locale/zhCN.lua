@@ -1,6 +1,6 @@
 local L = {}
 L["(Experimental)"] = "(实验)"
-L["Adds tooltips to items showing if you have learned a transmog appearance."] = "当你解锁幻化外观时，将添加一个提示到物品信息。"
+L["Adds tooltips to items showing if you have learned a transmog appearance."] = "物品信息显示你是否已解锁幻化外观"
 L["Also shows a summary in the Appearance Sets UI of how many pieces of a transmog set you have collected."] = "在外观套装界面上显示有多少部分幻化套装已被收集。"
 L["Another class can learn this item."] = "其他职业可以解锁"
 L["Appearances updated: "] = "外观已更新："
@@ -17,13 +17,11 @@ L["Cannot determine status on other characters."] = "无法确认其他角色状
 L["Cannot learn:"] = "无法解锁："
 L["Cannot learn: Soulbound"] = "无法解锁：已绑定"
 L["Center"] = "中间"
---[[Translation missing --]]
---[[ L["Changes saved!"] = ""--]] 
+L["Changes saved!"] = "变更已保存！"
 L["Database migrated to:"] = "数据库迁移到:"
 L["Database Scanning chat messages"] = "数据库扫描聊天信息"
-L["Debug Tooltip"] = "调试工具提示"
---[[Translation missing --]]
---[[ L["Default"] = ""--]] 
+L["Debug Tooltip"] = "调试鼠标提示"
+L["Default"] = "默认"
 L["Detailed information for debug purposes. Use this when sending bug reports."] = "显示详细的装备提示"
 L["Does not affect Quests or Adventure Journal."] = "不修改任务及冒险手册"
 L["Equippable Items Only"] = "只提示可装备的物品"
@@ -43,7 +41,7 @@ L["Okay, I'll go log onto all of my toons!"] = "好的，我将登陆所有关�
 L["Only show on items that can be equipped."] = "只对装备进行提示"
 L["Only show on items that can be transmoggrified."] = "只对可幻化的物品进行提示"
 L["Only show on items that you haven't learned."] = "只对未解锁的物品进行提示"
-L["Please note that this may not always be correct as Blizzard's information is incomplete."] = "请注意，这可能并不总正确的，因为暴雪的信息不完整。"
+L["Please note that this may not always be correct as Blizzard's information is incomplete."] = "请注意，这可能并不总是正确的，因为暴雪的信息不完整。"
 L["Reload to apply"] = "重载生效"
 L["Requires /reload to take effect."] = "需要 /reload 使其生效。"
 L["Right"] = "右侧"
@@ -59,8 +57,7 @@ L["Shows the icon directly on the item in your bag."] = "在背包物品上显�
 L["Sorry! Your database has corrupted entries. This will cause errors and give incorrect results. Please click below to reset the database."] = "抱歉！你的数据库条目已损坏。这将会输出错误的结果。请点击重置以便重建数据库。"
 L["Top"] = "顶部"
 L["Top Left"] = "顶部左侧"
---[[Translation missing --]]
---[[ L["Top Right"] = ""--]] 
+L["Top Right"] = "顶部右侧"
 L["Top Right (default)"] = "顶部右侧（默认）"
 L["Transmoggable Items Only"] = "只提示可幻化物品"
 L["Unknown Items Only"] = "只提示未解锁的物品"

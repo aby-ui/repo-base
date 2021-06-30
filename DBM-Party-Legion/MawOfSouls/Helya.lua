@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1663, "DBM-Party-Legion", 8, 727)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(96759)
 mod:SetEncounterID(1824)
 
@@ -31,10 +31,8 @@ local timerSubmerged					= mod:NewBuffFadesTimer(15, 196947, nil, nil, nil, 6)
 local timerBreathCD						= mod:NewNextTimer(22, 227233, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 local timerTorrentCD					= mod:NewCDTimer(9.7, 198495, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--often delayed and after breath so often will see 12-14
 
-mod.vb.phase = 1
-
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	timerPiercingTentacleCD:Start(8.5)
 end
 
@@ -67,7 +65,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnSubmerged:Show(args.destName)
 		timerSubmerged:Start()
 		if self.vb.phase == 1 then
-			self.vb.phase = 2
+			self:SetStage(2)
 		end
 	elseif spellId == 197262 then
 		warnTaintofSea:Show(args.destName)

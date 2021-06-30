@@ -228,18 +228,18 @@ MDT.scaleMultiplier = {}
 --https://www.wowhead.com/affixes
 --lvl 4 affix, lvl 7 affix, tyrannical/fortified, seasonal affix
 local affixWeeks = {
-    [1] =  {[1]=11,[2]=3,[3]=10,[4]=121}, -->>Bursting, Volcanic, Fortified
-    [2] =  {[1]=7,[2]=124,[3]=9,[4]=121}, -->>Bolstering, Storming, Tyrannical
-    [3] =  {[1]=123,[2]=12,[3]=10,[4]=121}, -->>Spiteful, Grievous, Fortified
-    [4] =  {[1]=122,[2]=4,[3]=9,[4]=121}, -->>Inspiring, Necrotic, Tyrannical
-    [5] =  {[1]=8,[2]=14,[3]=10,[4]=121}, -->>Sanguine, Quaking, Fortified
-    [6] =  {[1]=6,[2]=13,[3]=9,[4]=121}, -->>Raging, Explosive, Tyrannical
-    [7] =  {[1]=123,[2]=3,[3]=10,[4]=121}, -->>Spiteful, Volcanic, Fortified
-    [8] =  {[1]=7,[2]=4,[3]=9,[4]=121},  -->>Bolstering, Necrotic, Tyrannical
-    [9] =  {[1]=122,[2]=124,[3]=10,[4]=121},   -->>Inspiring, Storming, Fortified
-    [10] = {[1]=11,[2]=13,[3]=9,[4]=121},  -->>Bursting, Explosive, Tyrannical
-    [11] = {[1]=8,[2]=12,[3]=10,[4]=121},      -->>Sanguine, Grievous, Fortified
-    [12] = {[1]=6,[2]=14,[3]=9,[4]=121},   -->>Raging, Quaking, Tyrannical
+    [1] =  {11,124,10,121}, --bursting storming fortified prideful
+    [2] =  {0,0,9,128},
+    [3] =  {0,0,10,128},
+    [4] =  {0,0,9,128},
+    [5] =  {0,0,10,128},
+    [6] =  {0,0,9,128},
+    [7] =  {0,0,10,128},
+    [8] =  {0,0,9,128},
+    [9] =  {0,0,10,128},
+    [10] = {0,0,9,128},
+    [11] = {0,0,10,128},
+    [12] = {0,0,9,128},
 }
 
 local dungeonList = {
@@ -2604,8 +2604,8 @@ function MDT:CalculateEnemyHealth(boss, baseHealth, level, ignoreFortified)
     local tyrannical = MDT:IsCurrentPresetTyrannical()
 	local mult = 1
 	if boss == false and fortified == true and (not ignoreFortified) then mult = 1.2 end
-	if boss == true and tyrannical == true then mult = 1.4 end
-	mult = round((1.10^math.max(level-2,0))*mult,2)
+	if boss == true and tyrannical == true then mult = 1.3 end
+	mult = round((1.08^math.max(level-2,0))*mult,2)
 	return round(mult*baseHealth,0)
 end
 
@@ -2615,8 +2615,8 @@ function MDT:ReverseCalcEnemyHealth(unit, level, boss)
     local tyrannical = MDT:IsCurrentPresetTyrannical()
     local mult = 1
     if boss == false and fortified == true then mult = 1.2 end
-    if boss == true and tyrannical == true then mult = 1.4 end
-    mult = round((1.10^math.max(level-2,0))*mult,2)
+    if boss == true and tyrannical == true then mult = 1.3 end
+    mult = round((1.08^math.max(level-2,0))*mult,2)
     local baseHealth = health/mult
     return baseHealth
 end
@@ -4035,6 +4035,12 @@ function MDT:UpdatePullButtonNPCData(idx)
         frame.newPullButtons[idx]:ShowPridefulIcon(true,currentPercent,oldPercent)
     else
         frame.newPullButtons[idx]:ShowPridefulIcon(false,currentPercent,oldPercent)
+    end
+    --count per health
+    if pullForces>0 then
+        frame.newPullButtons[idx]:ShowCountPerHealth(true,pullForces,totalForcesMax)
+    else
+        frame.newPullButtons[idx]:ShowCountPerHealth(true,pullForces,totalForcesMax)
     end
 end
 

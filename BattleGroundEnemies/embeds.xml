@@ -3,4 +3,5 @@
 	<Script file="Libs\LibDDI-1.0\lib.lua"/>
 	<Include file="Libs\DRList-1.0\DRList-1.0.xml"/>
 	<Include file="Libs\LibPlayerSpells-1.0\lib.xml"/>
+	<Include file="Libs\LibChangelog\LibChangelog.xml"/>
 </Ui>

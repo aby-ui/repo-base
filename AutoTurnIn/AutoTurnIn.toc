@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: AutoTurnIn
 ## Version: 7.5.1
 ## Author: Alexandr Shubert

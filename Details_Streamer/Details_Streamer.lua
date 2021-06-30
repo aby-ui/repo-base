@@ -5,12 +5,16 @@ local LDBIcon = LDB and LibStub ("LibDBIcon-1.0", true)
 local LibWindow = LibStub ("LibWindow-1.1")
 local _
 
+
+---need cleanup Loc ["STRING_MEMORY_ALERT_BUTTON"],
+
 --> create the plugin object
 -- "Details_StreamOverlay" is the old name
 local StreamOverlay = _detalhes:NewPluginObject ("Details_Streamer", DETAILSPLUGIN_ALWAYSENABLED)
 --tinsert (UISpecialFrames, "Details_StreamOverlays")
 --> main frame (shortcut)
 local SOF = StreamOverlay.Frame
+
 --> shortcut for details framework
 local fw = StreamOverlay.gump 
 local player_name
@@ -1255,16 +1259,18 @@ function listener:RegisterMyEvents()
 	listener:RegisterEvent ("UNIT_SPELLCAST_SENT")
 	listener:RegisterEvent ("UNIT_SPELLCAST_SUCCEEDED")
 	listener:RegisterEvent ("UNIT_SPELLCAST_INTERRUPTED")
-
 	listener:RegisterEvent ("UNIT_SPELLCAST_FAILED_QUIET")
 	listener:RegisterEvent ("UNIT_SPELLCAST_FAILED")
-	listener:RegisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-	listener:RegisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
 	listener:RegisterEvent ("UNIT_SPELLCAST_DELAYED")
 	listener:RegisterEvent ("UNIT_SPELLCAST_CHANNEL_START")
 	listener:RegisterEvent ("UNIT_SPELLCAST_CHANNEL_STOP")
 	listener:RegisterEvent ("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	listener:RegisterEvent ("UNIT_SPELLCAST_STOP")
+
+	if (not DetailsFramework.IsTBCWow()) then
+		listener:RegisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
+		listener:RegisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+	end
 end
 
 function listener:UnregisterMyEvents()
@@ -1272,16 +1278,18 @@ function listener:UnregisterMyEvents()
 	listener:UnregisterEvent ("UNIT_SPELLCAST_SENT")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_SUCCEEDED")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_INTERRUPTED")
-
 	listener:UnregisterEvent ("UNIT_SPELLCAST_FAILED_QUIET")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_FAILED")
-	listener:UnregisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-	listener:UnregisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_DELAYED")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_CHANNEL_START")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_CHANNEL_STOP")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_STOP")
+
+	if (not DetailsFramework.IsTBCWow()) then
+		listener:UnregisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
+		listener:UnregisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+	end
 end
 
 local lastspell, lastcastid, lastchannelid, ischanneling, lastspellID
@@ -1659,7 +1667,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		options_frame:SetBackdropColor (0, 0, 0, 0.5)
 		options_frame:SetBackdropBorderColor (0, 0, 0, 1)
 		options_frame:SetWidth (520)
-		options_frame:SetHeight (500)
+		options_frame:SetHeight (520)
 		
 		-- select texture
 		local set_row_texture = function (_, _, value)
@@ -2079,7 +2087,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			
 		}
 		
-		fw:BuildMenu (options_frame, options, 15, -100, 540, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+		fw:BuildMenu (options_frame, options, 15, -120, 560, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 		
 		--select profile dropdown
 		local select_profile = function (_, _, profileName)
@@ -2129,7 +2137,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		local label_profile = Details.gump:CreateLabel (options_frame, "Profile" .. ": ", Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		local dropdown_profile = Details.gump:CreateDropDown (options_frame, select_profile_fill, nil, 160, 20, "dropdown_profile", nil, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		dropdown_profile:SetPoint ("left", label_profile, "right", 2, 0)
-		label_profile:SetPoint ("topleft", options_frame, "topleft", 15, -65)
+		label_profile:SetPoint ("topleft", options_frame, "topleft", 15, -75)
 		
 		local pname = UnitName ("player") .. " - " .. GetRealmName()
 		dropdown_profile:Select (Details_StreamerDB.characters [pname])
@@ -2161,6 +2169,34 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			options_frame.NewProfileButton:SetPoint ("left", dropdown_profile, "right", 4, 0)
 		end
 		
+		--enable / disable plugin button
+		local toggle_OnOff = function()
+			local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
+			local pluginObject = Details:GetPlugin("DETAILS_PLUGIN_STREAM_OVERLAY")
+
+			if (pluginStable.enabled) then
+                pluginStable.enabled = false
+                pluginObject.__enabled = false
+				Details:SendEvent("PLUGIN_DISABLED", pluginObject)
+				options_frame.toggleButton.text = "Start Plugin"
+
+			else
+                pluginStable.enabled = true
+                pluginObject.__enabled = true
+				Details:SendEvent("PLUGIN_ENABLED", pluginObject)
+				options_frame.toggleButton.text = "Disable Plugin"
+			end
+		end
+
+		--get the plugin state
+		local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
+
+		local toggleButton = DetailsFramework:CreateButton(options_frame, toggle_OnOff, 120, 20, pluginStable.enabled and "Disable Plugin" or "Start Plugin")
+		toggleButton:SetPoint ("topleft", options_frame, "topleft", 15, -45)
+		toggleButton:SetTemplate(DetailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+
+		options_frame.toggleButton = toggleButton
+
 		options_frame:SetScript ("OnHide", function()
 			if (StreamOverlay.FromOptionsPanel) then
 				--> reopen the options panel
@@ -2192,7 +2228,7 @@ function StreamOverlay:OnEvent (_, event, ...)
 		if (AddonName == "Details_Streamer") then
 			
 			player_name = UnitName ("player")
-			
+
 			if (_G._detalhes) then
 			
 				if (DetailsFramework.IsClassicWow()) then
@@ -2250,7 +2286,7 @@ function StreamOverlay:OnEvent (_, event, ...)
 				StreamOverlay.DefaultConfigTable = default_options_table
 				
 				--> Install
-				local install, saveddata = _G._detalhes:InstallPlugin ("TOOLBAR", "Action Tracker", [[Interface\MINIMAP\MOVIERECORDINGICON]], StreamOverlay, "DETAILS_PLUGIN_STREAM_OVERLAY", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", StreamOverlay.CurrentVersion, default_options_table)
+				local install, saveddata = _G._detalhes:InstallPlugin ("TOOLBAR", "Action Tracker", [[Interface\MINIMAP\MOVIERECORDINGICON]], StreamOverlay, "DETAILS_PLUGIN_STREAM_OVERLAY", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", StreamOverlay.CurrentVersion, default_options_table)
 				if (type (install) == "table" and install.error) then
 					print (install.error)
 				end
@@ -2285,7 +2321,8 @@ function StreamOverlay:OnEvent (_, event, ...)
 						welcome_window:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
 						welcome_window:SetBackdropColor (0, 0, 0, 0.5)
 						welcome_window:SetBackdropBorderColor (0, 0, 0, 1)
-						welcome_window:SetSize (800, 270)
+						welcome_window:SetSize (740, 270)
+						DetailsFramework:ApplyStandardBackdrop(welcome_window)
 						
 						local icon = welcome_window:CreateTexture (nil, "overlay")
 						icon:SetTexture ([[Interface\MINIMAP\MOVIERECORDINGICON]])
@@ -2294,16 +2331,24 @@ function StreamOverlay:OnEvent (_, event, ...)
 						StreamOverlay:SetFontSize (title, 20)
 						
 						local text1 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						text1:SetText ("If you are a Streamer or Youtuber, you might want to take a look at the Details! Action Tracker plugin.")
+						text1:SetText ("If you are a Streamer or Youtuber, \nthis plugin shows to your audience the spells you're casting,\nhence they can follow your steps and learn together.")
 						local text2 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
-						text2:SetText ("Go to Options Panel -> Plugin Management and enable the Action Tracker plugin.")
+						text2:SetText ("Use the command:")
+						local text3 = welcome_window:CreateFontString (nil, "overlay", "GameFontNormal")
+						text3:SetText ("/streamer")
+						DetailsFramework:SetFontSize(text3, 16)
 						
-						icon:SetPoint ("topleft", welcome_window, "topleft", 10, -60)
-						
+						icon:SetPoint ("topleft", welcome_window, "topleft", 10, -20)
 						title:SetPoint ("left", icon, "right", 10, 0)
 						
-						text1:SetPoint ("topleft", welcome_window, "topleft", 10, -120)
-						text2:SetPoint ("topleft", welcome_window, "topleft", 10, -140)
+						text1:SetPoint ("topleft", welcome_window, "topleft", 10, -70)
+						text2:SetPoint ("center", text1, "center", 0, -50)
+						text3:SetPoint ("center", text2, "center", 0, -16)
+
+						local image1 = welcome_window:CreateTexture(nil, "overlay")
+						image1:SetTexture([[Interface\AddOns\Details_Streamer\streamer_plugin_lines]])
+						image1:SetPoint("topleft", welcome_window, "topleft", 410, -6)
+						image1:SetSize(512, 256)
 						
 						local close_func = function()
 							StreamOverlay.db.is_first_run = false
@@ -2311,8 +2356,8 @@ function StreamOverlay:OnEvent (_, event, ...)
 							welcome_window:Hide()
 						end
 						
-						local close = Details.gump:CreateButton (welcome_window, close_func, 127, 20, Loc ["STRING_MEMORY_ALERT_BUTTON"], nil, nil, nil, nil, nil, nil, Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-						close:SetPoint ("topleft", welcome_window, "topleft", 10, -200)
+						local close = Details.gump:CreateButton (welcome_window, close_func, 120, 20, "Okay", nil, nil, nil, nil, nil, nil, Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+						close:SetPoint ("center", text3, "center", 0, -50)
 					end
 					
 					StreamOverlay.ShowWelcomeFrame = C_Timer.NewTicker (5, show_frame)
@@ -2323,8 +2368,9 @@ function StreamOverlay:OnEvent (_, event, ...)
 				SOF:RegisterEvent ("PLAYER_LOGOUT")
 				
 				--profile name
-				SOF.PlayerNameProfile = UnitName ("player") .. " - " .. GetRealmName()
+				SOF.PlayerNameProfile = UnitName("player") .. " - " .. GetRealmName()
 				local pname = SOF.PlayerNameProfile
+
 				--default if is first run
 				local next_pname = next (Details_StreamerDB.profiles or {})
 				Details_StreamerDB.characters [pname] = Details_StreamerDB.characters [pname] or next_pname or pname
@@ -2339,7 +2385,8 @@ function StreamOverlay:OnEvent (_, event, ...)
 		end
 		
 	elseif (event == "PLAYER_LOGOUT") then
-		local pname = SOF.PlayerNameProfile
+		local pname = UnitName("player") .. " - " .. GetRealmName()
+		--print(Details_Streamer.PlayerNameProfile)
 		Details_StreamerDB.profiles [ Details_StreamerDB.characters [pname] ] = StreamOverlay.db
 	end
 end

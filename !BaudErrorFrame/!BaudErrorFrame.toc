@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: !BaudErrorFrame
 ## Notes: 收集和汇总错误信息
 ## Author: Baudzilla

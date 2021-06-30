@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: WorldFlightMap
 ## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar

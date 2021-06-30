@@ -1,4 +1,4 @@
-﻿## Interface: 90005
+﻿## Interface: 90100
 ## Title: Achievements|cff7fff7fReminder|r - shows achievements by location
 ## Notes: Shows list of achieves that are avaible in a zone and tactics for them
 ## Author: Shurshik

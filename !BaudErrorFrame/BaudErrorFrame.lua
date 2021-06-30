@@ -62,7 +62,7 @@ EventFuncs = {
         end
     end,
 
-    --[[ abyui 8.2.0 by hook DisplayInterfaceActionBlockedMessage
+    -- abyui 8.2.0 by hook DisplayInterfaceActionBlockedMessage, 9.0 not work
     ADDON_ACTION_BLOCKED = function(AddOn, FuncName)
         if Config.Taint then
             BaudErrorFrameAdd(format("插件[%s]对接口'%s'的调用导致界面行为失效", AddOn, FuncName), 4);
@@ -74,7 +74,7 @@ EventFuncs = {
             BaudErrorFrameAdd(format("宏代码对接口'%s'的调用导致界面行为失效", FuncName), 4);
         end
     end,
-    --]]
+    --
 
     ADDON_ACTION_FORBIDDEN = function(AddOn,FuncName)
         if Config.Taint then
@@ -105,6 +105,7 @@ function BaudErrorFrame_OnLoad(self)
         EventFuncs[event](...);
     end);
     seterrorhandler(BaudErrorFrameHandler);
+    --[[
     if DisplayInterfaceActionBlockedMessage then
         hooksecurefunc("DisplayInterfaceActionBlockedMessage", function()
             if Config.Taint then
@@ -112,6 +113,7 @@ function BaudErrorFrame_OnLoad(self)
             end
         end)
     end
+    ]]
 
     UIParent:UnregisterEvent("MACRO_ACTION_BLOCKED");
     UIParent:UnregisterEvent("ADDON_ACTION_BLOCKED");

@@ -439,30 +439,32 @@ function EV:FXUI_GARRISON_FOLLOWER_LIST_SHOW_FOLLOWER(tab, followerID)
 	end
 	for i=1, #ab do
 		local button = ab[i]
-		local abid, isFree = button.IconButton.abilityID
-		if not (abid and abid > 0 and ct and at) then
-			if abid and abid > 0 then
-				button.Name:SetText(C_Garrison.GetFollowerAbilityName(abid))
-			end
-			button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,1)
-		else
-			if C_Garrison.GetFollowerAbilityIsTrait(abid) then
-				isFree = ct[et[abid] or abid]
-			else
-				isFree = at[C_Garrison.GetFollowerAbilityCounterMechanicInfo(abid)]
-			end
-			if not isFree then
-				button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:255:120:100|t]]..C_Garrison.GetFollowerAbilityName(abid))
-				button.IconButton.ValidSpellHighlight:SetVertexColor(1,0.8,0.8)
-			elseif T.LockTraits[et[abid] or abid] or T.LockTraits[abid] then
-				button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:220:220:160|t]]..C_Garrison.GetFollowerAbilityName(abid))
-				button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,1)
-			elseif isFree == "soft" then
-				button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:120:240:160|t]]..C_Garrison.GetFollowerAbilityName(abid))
+		if button.IconButton then
+			local abid, isFree = button.IconButton.abilityID
+			if not (abid and abid > 0 and ct and at) then
+				if abid and abid > 0 then
+					button.Name:SetText(C_Garrison.GetFollowerAbilityName(abid))
+				end
 				button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,1)
 			else
-				button.Name:SetText([[|TInterface\Buttons\UI-RefreshButton:10:10:-2:2:16:16:16:0:16:0:120:255:0|t]]..C_Garrison.GetFollowerAbilityName(abid))
-				button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,0)
+				if C_Garrison.GetFollowerAbilityIsTrait(abid) then
+					isFree = ct[et[abid] or abid]
+				else
+					isFree = at[C_Garrison.GetFollowerAbilityCounterMechanicInfo(abid)]
+				end
+				if not isFree then
+					button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:255:120:100|t]]..C_Garrison.GetFollowerAbilityName(abid))
+					button.IconButton.ValidSpellHighlight:SetVertexColor(1,0.8,0.8)
+				elseif T.LockTraits[et[abid] or abid] or T.LockTraits[abid] then
+					button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:220:220:160|t]]..C_Garrison.GetFollowerAbilityName(abid))
+					button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,1)
+				elseif isFree == "soft" then
+					button.Name:SetText([[|TInterface\PetBattles\PetBattle-LockIcon:11:10:-2:1:32:32:4:28:2:30:120:240:160|t]]..C_Garrison.GetFollowerAbilityName(abid))
+					button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,1)
+				else
+					button.Name:SetText([[|TInterface\Buttons\UI-RefreshButton:10:10:-2:2:16:16:16:0:16:0:120:255:0|t]]..C_Garrison.GetFollowerAbilityName(abid))
+					button.IconButton.ValidSpellHighlight:SetVertexColor(1,1,0)
+				end
 			end
 		end
 	end
@@ -814,8 +816,11 @@ end
 function EV:FXUI_GARRISON_FOLLOWER_LIST_SHOW_FOLLOWER(followerTab)
 	local af = followerTab.AbilitiesFrame.Abilities
 	for i=1,#af do
-		af[i].IconButton:SetScript("OnEnter", FollowerPageAbility_OnEnter)
-		af[i].IconButton:SetScript("OnLeave", RecruitAbility_OnLeave)
+		local ib = af[i].IconButton
+		if ib then
+			ib:SetScript("OnEnter", FollowerPageAbility_OnEnter)
+			ib:SetScript("OnLeave", RecruitAbility_OnLeave)
+		end
 	end
 end
 

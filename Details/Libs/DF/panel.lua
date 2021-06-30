@@ -14,6 +14,9 @@ local _type = type --> lua local
 local _math_floor = math.floor --> lua local
 local loadstring = loadstring --> lua local
 
+local IS_WOW_PROJECT_MAINLINE = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local IS_WOW_PROJECT_NOT_MAINLINE = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
+
 local PixelUtil = PixelUtil or DFPixelUtil
 
 local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
@@ -662,7 +665,7 @@ function DF:NewPanel (parent, container, name, member, w, h, backdrop, backdropc
 					["OnEnter"] = {0.3, 0.3, 0.3, 0.5},
 					["OnLeave"] = {0.9, 0.7, 0.7, 1}
 	}
-	PanelObject.frame:SetBackdrop ({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]], edgeFile = "Interface\DialogFrame\UI-DialogBox-Border", edgeSize = 10, tileSize = 64, tile = true})
+	PanelObject.frame:SetBackdrop ({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]], edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", edgeSize = 10, tileSize = 64, tile = true})
 	
 	PanelObject.widget = PanelObject.frame
 	
@@ -6006,13 +6009,13 @@ local default_load_conditions_frame_options = {
 function DF:CreateLoadFilterParser (callback)
 	local f = CreateFrame ("frame")
 	f:RegisterEvent ("PLAYER_ENTERING_WORLD")
-	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	if IS_WOW_PROJECT_MAINLINE then
 		f:RegisterEvent ("PLAYER_SPECIALIZATION_CHANGED")
 		f:RegisterEvent ("PLAYER_TALENT_UPDATE")
 	end
 	f:RegisterEvent ("PLAYER_ROLES_ASSIGNED")
 	f:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
-	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	if IS_WOW_PROJECT_MAINLINE then
 		f:RegisterEvent ("CHALLENGE_MODE_START")
 	end
 	f:RegisterEvent ("ENCOUNTER_START")
@@ -6075,7 +6078,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--spec
-	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.spec.Enabled) then
+	if (IS_WOW_PROJECT_MAINLINE and loadTable.spec.Enabled) then
 		local canCheckTalents = true
 		
 		if (passLoadClass) then
@@ -6116,7 +6119,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--talents
-	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.talent.Enabled) then
+	if (IS_WOW_PROJECT_MAINLINE and loadTable.talent.Enabled) then
 		local talentsInUse = DF:GetCharacterTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
@@ -6131,7 +6134,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--pvptalent
-	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.pvptalent.Enabled) then
+	if (IS_WOW_PROJECT_MAINLINE and loadTable.pvptalent.Enabled) then
 		local talentsInUse = DF:GetCharacterPvPTalents (false, true)
 		local hasTalent
 		for talentID, _ in pairs (talentsInUse) do
@@ -6168,7 +6171,7 @@ function DF:PassLoadFilters (loadTable, encounterID)
 	end
 	
 	--affix
-	if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and loadTable.affix.Enabled) then
+	if (IS_WOW_PROJECT_MAINLINE and loadTable.affix.Enabled) then
 		local isInMythicDungeon = C_ChallengeMode.IsChallengeModeActive()
 		if (not isInMythicDungeon) then
 			return false
@@ -6318,7 +6321,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, classGroup)
 		
 		--create the radio group for character spec
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				local specs = {}
 				for _, specID in ipairs (DF:GetClassSpecIDs (select (2, UnitClass ("player")))) do
 					local specID, specName, specDescription, specIcon, specBackground, specRole, specClass = DetailsFramework.GetSpecializationInfoByID (specID)
@@ -6352,7 +6355,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, raceGroup)
 			
 		--create radio group for talents
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				local talentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterTalents()) do
 					tinsert (talentList, {
@@ -6452,7 +6455,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			end
 			
 		--create radio group for pvp talents
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				local pvpTalentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
 					tinsert (pvpTalentList, {
@@ -6582,7 +6585,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllRadioGroups, roleTypesGroup)
 		
 		--create radio group for mythic+ affixes
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				local affixes = {}
 				for i = 2, 1000 do
 					local affixName, desc, texture = C_ChallengeMode.GetAffixInfo (i)
@@ -6652,7 +6655,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 			tinsert (f.AllTextEntries, mapIDEditbox)
 
 		function f.Refresh (self)
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				--update the talents (might have changed if the player changed its specialization)
 				local talentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterTalents()) do
@@ -6667,7 +6670,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 				DetailsFrameworkLoadConditionsPanel.TalentGroup:SetOptions (talentList)
 			end
 			
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				local pvpTalentList = {}
 				for _, talentTable in ipairs (DF:GetCharacterPvPTalents()) do
 					tinsert (pvpTalentList, {
@@ -6692,7 +6695,7 @@ function DF:OpenLoadConditionsPanel (optionsTable, callback, frameOptions)
 				textEntry:Refresh()
 			end
 			
-			if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+			if IS_WOW_PROJECT_MAINLINE then
 				DetailsFrameworkLoadConditionsPanel.CanShowTalentWarning()
 				DetailsFrameworkLoadConditionsPanel.CanShowPvPTalentWarning()
 			end
@@ -7210,10 +7213,10 @@ DF.StatusBarFunctions = {
 		{"PLAYER_ENTERING_WORLD"},
 		{"UNIT_HEALTH", true},
 		{"UNIT_MAXHEALTH", true},
-		{(WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and "UNIT_HEALTH_FREQUENT", true}, -- this one is classic-only...
-		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_HEAL_PREDICTION", true},
-		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_ABSORB_AMOUNT_CHANGED", true},
-		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_HEAL_ABSORB_AMOUNT_CHANGED", true},
+		{(IS_WOW_PROJECT_NOT_MAINLINE) and "UNIT_HEALTH_FREQUENT", true}, -- this one is classic-only...
+		{(IS_WOW_PROJECT_MAINLINE) and "UNIT_HEAL_PREDICTION", true},
+		{(IS_WOW_PROJECT_MAINLINE) and "UNIT_ABSORB_AMOUNT_CHANGED", true},
+		{(IS_WOW_PROJECT_MAINLINE) and "UNIT_HEAL_ABSORB_AMOUNT_CHANGED", true},
 	}
 	
 	--> setup the castbar to be used by another unit
@@ -7242,7 +7245,7 @@ DF.StatusBarFunctions = {
 				
 				--> check for settings and update some events
 				if (not self.Settings.ShowHealingPrediction) then
-					if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+					if IS_WOW_PROJECT_MAINLINE then
 						self:UnregisterEvent ("UNIT_HEAL_PREDICTION")
 						self:UnregisterEvent ("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
 					end
@@ -7250,7 +7253,7 @@ DF.StatusBarFunctions = {
 					self.healAbsorbIndicator:Hide()
 				end
 				if (not self.Settings.ShowShields) then
-					if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+					if IS_WOW_PROJECT_MAINLINE then
 						self:UnregisterEvent ("UNIT_ABSORB_AMOUNT_CHANGED")
 					end
 					self.shieldAbsorbIndicator:Hide()
@@ -7343,7 +7346,7 @@ DF.StatusBarFunctions = {
 	
 	--health and absorbs prediction
 	healthBarMetaFunctions.UpdateHealPrediction = function (self)
-		if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
+		if IS_WOW_PROJECT_NOT_MAINLINE then return end
 		local currentHealth = self.currentHealth
 		local currentHealthMax = self.currentHealthMax
 		local healthPercent = currentHealth / currentHealthMax
@@ -7657,7 +7660,7 @@ DF.PowerFrameFunctions = {
 	
 	--> when a event different from unit_power_update is triggered, update which type of power the unit should show
 	UpdatePowerInfo = function (self)		
-		if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and self.Settings.ShowAlternatePower) then -- not available in classic
+		if (IS_WOW_PROJECT_MAINLINE and self.Settings.ShowAlternatePower) then -- not available in classic
 			local barID = UnitPowerBarID(self.displayedUnit)
 			local barInfo = GetUnitPowerBarInfoByID(barID)
 			--local name, tooltip, cost = GetUnitPowerBarStringsByID(barID);
@@ -7799,8 +7802,8 @@ DF.CastFrameFunctions = {
 		{"UNIT_SPELLCAST_CHANNEL_START"},
 		{"UNIT_SPELLCAST_CHANNEL_UPDATE"},
 		{"UNIT_SPELLCAST_CHANNEL_STOP"},
-		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_INTERRUPTIBLE"},
-		{(WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"},
+		{(IS_WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_INTERRUPTIBLE"},
+		{(IS_WOW_PROJECT_MAINLINE) and "UNIT_SPELLCAST_NOT_INTERRUPTIBLE"},
 		{"PLAYER_ENTERING_WORLD"},
 		{"UNIT_SPELLCAST_START", true},
 		{"UNIT_SPELLCAST_STOP", true},
@@ -8331,7 +8334,7 @@ DF.CastFrameFunctions = {
 	UNIT_SPELLCAST_START = function (self, unit)
 
 		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+		if IS_WOW_PROJECT_MAINLINE then
 			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, castID, spellID = UnitCastingInfo (unit)
@@ -8393,7 +8396,7 @@ DF.CastFrameFunctions = {
 	
 	UNIT_SPELLCAST_CHANNEL_START = function (self, unit, ...)
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID
-		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+		if IS_WOW_PROJECT_MAINLINE then
 			name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = UnitChannelInfo (unit)
 		else
 			name, text, texture, startTime, endTime, isTradeSkill, spellID = UnitChannelInfo (unit)
@@ -9004,7 +9007,7 @@ end
 		--> todo: see what 'UnitTargetsVehicleInRaidUI' is, there's a call for this in the CompactUnitFrame.lua but zero documentation
 		CheckVehiclePossession = function (self)
 			--> this unit is possessing a vehicle?
-			local unitPossessVehicle = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) and UnitHasVehicleUI (self.unit)	or false
+			local unitPossessVehicle = (IS_WOW_PROJECT_MAINLINE) and UnitHasVehicleUI (self.unit)	or false
 			if (unitPossessVehicle) then
 				if (not self.unitInVehicle) then
 					if (UnitIsUnit ("player", self.unit)) then

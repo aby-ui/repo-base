@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614184808")
+mod:SetRevision("20210625003647")
 mod:SetCreatureID(178423)--ID taken from Banshee Form, so should be right
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(5, 6, 7, 8)
@@ -26,7 +26,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, do what with the combo of attacks of windrunner? IE https://ptr.wowhead.com/spell=347928/withering-fire
---TODO infoframe on barbed stacks useful? add more stuff to it like banshees bane in phase 3 and adds/orbs monitors in phase 2?
+--TODO, infoframe on barbed stacks useful? add more stuff to it like banshees bane in phase 3 and adds/orbs monitors in phase 2?
 --TODO, do more with Ranger's Heartseeker? Currently just guestiate timer between casts and stack monitor
 --TODO, determine add warnings/timers for phase 2
 --TODO, icons for crushing dread? Depends on number of debuffs and number of adds etc

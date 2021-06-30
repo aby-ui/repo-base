@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(104215)
 mod:SetEncounterID(1868)
 
@@ -24,10 +24,8 @@ local timerResonantSlashCD			= mod:NewCDTimer(12.1, 207261, nil, nil, nil, 3)
 local timerArcaneLockdownCD			= mod:NewCDTimer(30, 207278, nil, nil, nil, 3)
 local timerSignalBeaconCD			= mod:NewCDTimer(20, 207806, nil, nil, nil, 1)
 
-mod.vb.phase = 1
-
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	timerResonantSlashCD:Start(7-delay)
 	timerArcaneLockdownCD:Start(15-delay)
 	timerSignalBeaconCD:Start(20-delay)--Iffy
@@ -44,7 +42,7 @@ function mod:SPELL_CAST_START(args)
 			timerResonantSlashCD:Start()
 		end
 	elseif spellId == 207815 then
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnFlask:Show()
 	elseif spellId == 207806 then
 		specWarnBeacon:Show()

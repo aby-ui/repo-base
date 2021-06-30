@@ -310,7 +310,6 @@ function historico:adicionar (tabela)
 		end
 		
 		if (_detalhes.trash_auto_remove) then
-		
 			local _terceiro_combate = self.tabelas[3]
 		
 			if (_terceiro_combate and not _terceiro_combate.is_mythic_dungeon_segment) then
@@ -390,7 +389,6 @@ function historico:adicionar (tabela)
 		--> remover
 		_table_remove (self.tabelas, combat_index)
 		_detalhes:SendEvent ("DETAILS_DATA_SEGMENTREMOVED")
-		
 	end
 	
 	--> chama a fun��o que ir� atualizar as inst�ncias com segmentos no hist�rico

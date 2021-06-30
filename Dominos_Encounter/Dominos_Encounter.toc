@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: Dominos Extras
 ## Title-zhCN: |cFF0099FFDominos|r Extras 模块
 ## Notes: Makes additional frames movable

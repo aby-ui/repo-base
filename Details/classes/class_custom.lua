@@ -723,7 +723,7 @@
 				esta_barra.icone_classe:SetTexture (self.icon)
 			else
 				if (instancia.row_info.use_spec_icons) then
-					if (self.spec or self.my_actor.spec) then
+					if ((self.spec and self.spec ~= 0) or (self.my_actor.spec and self.my_actor.spec ~= 0)) then
 						esta_barra.icone_classe:SetTexture (instancia.row_info.spec_file)
 						esta_barra.icone_classe:SetTexCoord (_unpack (_detalhes.class_specs_coords [self.spec or self.my_actor.spec]))
 					else

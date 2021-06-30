@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: oGlow
 ## Author: Haste
 ## Version: 2.2.2

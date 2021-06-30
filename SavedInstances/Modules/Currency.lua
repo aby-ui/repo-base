@@ -74,8 +74,13 @@ local currency = {
   1820, -- Infused Ruby
   1885, -- Grateful Offering
   1889, -- Adventure Campaign Progress
+  1904, -- Tower Knowledge
+  1906, -- Soul Cinders
+  1931, -- Cataloged Research
+  1977, -- Stygian Ember
 }
 SI.currency = currency
+for i = #currency, 1 do if C_CurrencyInfo_GetCurrencyInfo(currency[i]) == nil then table.remove(currency, i) end end
 
 local currencySorted = {}
 for _, idx in ipairs(currency) do

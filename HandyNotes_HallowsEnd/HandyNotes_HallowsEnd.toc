@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: HandyNotes_HallowsEnd
 ## Notes: Displays the locations of Hallow's End candy buckets.
 ## Author: Ravendwyr

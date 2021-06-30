@@ -15,6 +15,7 @@ U1.ABBR={
     ["theburningtrade"] = "tbt",
     ["tidyplates"] = "tp",
     ["mythicdungeontools"] = "mdt",
+    ["mrt"] = "exrt",
 }
 U1.PINYIN={
 	['DBM:军团5人本']={'dbmjuntuanrenben','dbm:jt5rb'},

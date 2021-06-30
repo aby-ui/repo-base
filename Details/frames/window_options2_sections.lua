@@ -335,11 +335,12 @@ do
                 name = Loc ["STRING_OPTIONS_ED"],
                 desc = Loc ["STRING_OPTIONS_ED_DESC"],
             },
+
             {--auto erase trash segments
                 type = "toggle",
-                get = function() return _detalhes.overall_clear_logout end,
+                get = function() return _detalhes.trash_auto_remove end,
                 set = function (self, fixedparam, value)
-                    _detalhes:SetOverallResetOptions(nil, nil, value)
+                    _detalhes.trash_auto_remove = value
                     afterUpdate()
                 end,
                 name = Loc ["STRING_OPTIONS_CLEANUP"],

@@ -240,6 +240,23 @@ GTFO.SpellID["340770"] = {
   sound = 3;
 };
 
+GTFO.SpellID["357236"] = {
+  --desc = "Tormenting Flames (Kroke the Tormented)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["358316"] = {
+  --desc = "Focused Conduit (Ve'rayn)";
+  sound = 3;
+};
+
+GTFO.SpellID["357871"] = {
+  --desc = "Death Wave (Dominated Protector)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

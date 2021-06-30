@@ -821,6 +821,11 @@ CNDT.Substitutions = {
 	rep = function(conditionData, conditionSettings, name, name2)
 		return strWrap(name)
 	end,
+},{
+	src = "c.Spells",
+	rep = function(conditionData, conditionSettings, name, name2)
+		return CNDT:GetTableSubstitution(TMW:GetSpells(name))
+	end,
 },
 
 {

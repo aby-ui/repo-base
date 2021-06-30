@@ -1,6 +1,6 @@
 ## Title: Comergy Redux
 ## Version: r32
-## Interface: 90005
+## Interface: 90100
 ## Author: Asymptote
 ## Notes: Simple, nice-looking power bar addon for all classes.
 ## DefaultState: Enabled

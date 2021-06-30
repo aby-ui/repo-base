@@ -48,6 +48,7 @@
 	local CONST_ROGUE_SR = "SR" --soul rip from akaari's soul (LEGION ONLY)
 
 	DETAILS_PREFIX_COACH = "CO" --coach feature
+	DETAILS_PREFIX_TBC_DATA = "BC" --tbc data
 	
 	_detalhes.network.ids = {
 		["HIGHFIVE_REQUEST"] = CONST_HIGHFIVE_REQUEST,
@@ -71,6 +72,8 @@
 		["CLOUD_SHAREDATA"] = CONST_CLOUD_SHAREDATA,
 
 		["COACH_FEATURE"] = DETAILS_PREFIX_COACH, --ask the raid leader is the coach is enbaled
+
+		["TBC_DATA"] = DETAILS_PREFIX_TBC_DATA, --get basic information about the player
 	}
 	
 	local plugins_registred = {}
@@ -89,8 +92,10 @@
 		end
 		
 		if (DetailsFramework.IsTimewalkWoW()) then
-			--average item level doesn't exists
-			--talent information is very different
+			if (DetailsFramework.IsTBCWow()) then
+				--detect my spec
+				
+			end
 			return
 		end
 		
@@ -383,6 +388,46 @@
 		
 	end
 	
+
+	function _detalhes.network.TBCData(player, realm, coreVersion, data)
+		if (not IsInRaid() and not IsInGroup()) then
+			return
+		end
+
+		local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")
+		local dataCompressed = LibDeflate:DecodeForWoWAddonChannel(data)
+		local dataSerialized = LibDeflate:DecompressDeflate(dataCompressed)
+		local dataTable = {Details:Deserialize(dataSerialized)}
+		tremove(dataTable, 1)
+		local dataTable = dataTable[1]
+
+		local playerRole = dataTable[1]
+		local spec = dataTable[2]
+		local itemLevel = dataTable[3]
+		local talents = dataTable[4]
+		local guid = dataTable[5]
+
+		--[=[
+		print("Details! Received TBC Comm Data:")
+		print("From:", player)
+		print("spec:", spec)
+		print("role:", playerRole)
+		print("item level:", itemLevel)
+		print("guid:", guid)
+		--]=]
+
+		_detalhes.cached_talents[guid] = talents
+		if (spec and spec ~= 0)  then
+			_detalhes.cached_specs[guid] = spec
+		end
+		_detalhes.cached_roles[guid] = playerRole
+		_detalhes.item_level_pool[guid] = {
+			name = player,
+			ilvl = itemLevel,
+			time = time()
+		}
+	end
+
 	--"CIEA" Coach Is Enabled Ask (client > server)
 	--"CIER" Coach Is Enabled Response (server > client)
 	--"CCS" Coach Combat Start (client > server)
@@ -573,6 +618,7 @@
 		[CONST_PVP_ENEMY] = _detalhes.network.ReceivedEnemyPlayer,
 
 		[DETAILS_PREFIX_COACH] = _detalhes.network.Coach, --coach feature
+		[DETAILS_PREFIX_TBC_DATA] = _detalhes.network.TBCData
 	}
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -294,7 +294,7 @@ map.nodes[22432285] = Rare({
    rewards={
        Achievement({id=14307, criteria=50618}),
        Transmog({item=184365, slot=L["shield"]}), -- Aegis of Salvation
-       Pet({item=184401, id=3063}) -- Larion Pouncer
+       Pet({item=184401, id=3063, covenant=KYRIAN}) -- Larion Pouncer
    }
 }) -- Orstus and Sotiros
 

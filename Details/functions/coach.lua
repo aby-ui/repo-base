@@ -82,7 +82,14 @@ function Details.Coach.Client.SendDataToRL()
         print("Details Coach sending data to RL.")
     end
 
-    local data = Details.packFunctions.GetAllData()
+    --local data = Details.packFunctions.GetAllData()
+    local okay, data = pcall(Details.packFunctions.GetAllData)
+    if (not okay) then
+        Details:Msg("Error on GetAllData():", data)
+        Details.Coach.Client.UpdateTicker:Cancel()
+        return
+    end
+
     if (data and Details.Coach.Client.coachName) then
         Details:SendCommMessage(_G.DETAILS_PREFIX_NETWORK, Details:Serialize(_G.DETAILS_PREFIX_COACH, UnitName("player"), GetRealmName(), Details.realversion, "CDT", data), "WHISPER", Details.Coach.Client.coachName)
     end
@@ -134,6 +141,15 @@ function Details.Coach.StartUp()
     end
 
     function eventListener.OnEnterCombat()
+        --[=[  --debug solo
+            Details.Coach.SendRLCombatStartNotify("Ditador")
+            --start a timer to send data to the coach
+            if (Details.Coach.Client.UpdateTicker) then
+                Details.Coach.Client.UpdateTicker:Cancel()
+            end
+            Details.Coach.Client.UpdateTicker = Details.Schedules.NewTicker(1.5, Details.Coach.Client.SendDataToRL)
+        --]=]
+
         --send a notify to coach telling a new combat has started
         if (Details.Coach.Client.IsEnabled()) then
             if (IsInRaid() and isInRaidZone()) then

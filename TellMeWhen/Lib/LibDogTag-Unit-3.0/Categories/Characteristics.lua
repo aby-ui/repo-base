@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = tonumber(("20210424201506"):match("%d+")) or 33333333333333
+local MINOR_VERSION = tonumber(("20210629130945"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -181,11 +181,17 @@ local function Class(unit)
 	if UnitIsPlayer(unit) then
 		return UnitClass(unit) or UNKNOWN
 	else
-		if wow_800 or WOW_PROJECT_ID then
-			local classbase, classindex = UnitClassBase(unit)
+		local classbase, classindex = UnitClassBase(unit)
+		if GetClassInfo then
 			return classbase and GetClassInfo(classindex) or UNKNOWN
+		elseif LOCALIZED_CLASS_NAMES_MALE and LOCALIZED_CLASS_NAMES_FEMALE then
+			if UnitSex and UnitSex(unit) == 3 then
+				return LOCALIZED_CLASS_NAMES_FEMALE[classbase] or UNKNOWN
+			else
+				return LOCALIZED_CLASS_NAMES_MALE[classbase] or UNKNOWN
+			end
 		else
-			return UnitClassBase(unit) or UNKNOWN
+			return classbase or UNKNOWN
 		end
 	end
 end

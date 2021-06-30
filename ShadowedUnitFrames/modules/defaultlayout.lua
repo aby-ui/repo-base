@@ -38,7 +38,7 @@ local function finalizeData(config, useMerge)
 	-- Set everything
 	for unit, child in pairs(config.units) do
 		if( self.defaults.profile.units[unit] ) then
-			if( not useMerge or ( useMerge and not self.db.profile.units[unit].enabled and self.db.profile.units[unit].height == 0 and self.db.profile.units[unit].width == 0 and self.db.profile.positions[unit].anchorPoint == "" and self.db.profile.positions[unit].point == "" ) ) then
+			if( not useMerge or ( useMerge and self.db.profile.units[unit].height == 0 and self.db.profile.units[unit].width == 0 and self.db.profile.positions[unit].anchorPoint == "" and self.db.profile.positions[unit].point == "" ) ) then
 				-- Merge the primary parent table
 				mergeToChild(config.parentUnit, child)
 				-- Strip any invalid tables

@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: SwitchSwitch
 ## Author: Geloch, Riukka (Sanguino - EU Horde)
 ## Version: 1.68

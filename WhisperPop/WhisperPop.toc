@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: WhisperPop
 ## Version: 4.30
 ## Author: Abin

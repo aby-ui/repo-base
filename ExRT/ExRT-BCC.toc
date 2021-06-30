@@ -1,0 +1,7 @@
+## Interface: 20501
+## Title: Method Raid Tools [Storage]
+## SavedVariables: VExRT
+## Notes: Required for data migration
+
+# deprecated after addon rebranding
+# used for variables migration

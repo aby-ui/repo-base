@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: PlexusStatusRaidDebuff
 ## Notes: Adds a status to Plexus for debuffs applied by Raid Bosses.
 ## Notes-ruRU: Дополнительный модуль для Plexus, отображает дебаффы рейдовых боссов.

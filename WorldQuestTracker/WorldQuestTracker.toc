@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: World Quest Tracker
 ## Notes: Make more easy to see world quests
 ## SavedVariables: WQTrackerDB

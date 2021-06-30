@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "mythic,challenge"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(114895)
 mod:SetEncounterID(2031)
 mod:SetUsedIcons(1)
@@ -50,13 +50,12 @@ local timerFearCD					= mod:NewCDTimer(43, 228837, nil, nil, nil, 2)--43-46
 mod:AddSetIconOption("SetIconOnIgnite", 228796, true, false, {1})
 mod:AddInfoFrameOption(228829, true)
 
-mod.vb.phase = 1
 mod.vb.interruptCount = 0
 
 local charredEarth, burningBones, filteredDebuff = DBM:GetSpellInfo(228808), DBM:GetSpellInfo(228829), DBM:GetSpellInfo(228796)
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.interruptCount = 0
 	timerBreathCD:Start(8.5-delay)
 	timerCharredEarthCD:Start(15-delay)
@@ -78,7 +77,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 228839 then--Phase 2 (can be detected earlier with yell, but this is better than localizing)
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase2:Show()
 		timerIgniteSoulCD:Stop()
 		timerBurningBonesCD:Stop()
@@ -154,7 +153,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 114903 then--Bonecurse
-		self.vb.phase = 3
+		self:SetStage(3)
 		self.vb.interruptCount = 0
 		warnPhase3:Show()
 		timerBreathCD:Start(12)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1982, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(124870)--124745 Greater Rift Warden
 mod:SetEncounterID(2068)
 
@@ -31,10 +31,8 @@ local timerGrandShiftCD					= mod:NewCDTimer(14.6, 249009, nil, nil, nil, 3, nil
 local timerUmbralCadenceCD				= mod:NewCDTimer(10.9, 247930, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
 local timerBacklash						= mod:NewBuffActiveTimer(12.5, 247816, nil, nil, nil, 6)
 
-mod.vb.phase = 1
-
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	--timerCalltoVoidCD:Start(1-delay)--Done instantly
 end
 

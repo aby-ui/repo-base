@@ -1582,8 +1582,14 @@ L["STRING_UPTADING"] = "updating"
 L["STRING_VERSION_AVAILABLE"] = "a new version is available, download it from Curse Forge app or website."
 L["STRING_VERSION_UPDATE"] = "new version: what's changed? click here"
 L["STRING_VOIDZONE_TOOLTIP"] = "Damage and Time"
-L["STRING_WAITPLUGIN"] = [=[waiting for
-plugins]=]
+L["STRING_WAITPLUGIN"] = [=[  Plugin not Available, Please Check:
+
+- Esc > Addons > if is enabled there.
+- Plugins page in Details! options.
+- Plugin opened in another window.
+- Plugin in use in a closed window.
+
+]=]
 L["STRING_WAVE"] = "wave"
 L["STRING_WELCOME_1"] = [=[|cFFFFFFFFWelcome to Details! Quick Setup Wizard|r
 

@@ -337,7 +337,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(5384)]      = 1,    -- Feign Death
 		[GetSpellInfo(145629)]    = 1,    -- Anti-Magic Zone
 		[GetSpellInfo(81782)]     = 1,    -- Disc Barrier
-		[GetSpellInfo(204293)]    = 1,    -- Spirit Link
+		[GetSpellInfo(204293) or ""]    = 1,    -- Spirit Link --TODO:aby91
 		[GetSpellInfo(98007)]     = 1,    -- Spirit Link Totem
 		[GetSpellInfo(212183)]    = 1,    -- Smoke Bomb
 		[GetSpellInfo(202797)]    = 1,    -- Viper Sting

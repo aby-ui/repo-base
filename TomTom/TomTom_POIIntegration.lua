@@ -1,7 +1,7 @@
 local addonName, addon = ...
 local hbd = LibStub("HereBeDragons-2.0")
 
-if addon.CLASSIC then
+if (not addon.WOW_MAINLINE) then
     return
 end
 

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(114790)
 mod:SetEncounterID(2017)
 mod:SetUsedIcons(1, 2, 3)
@@ -52,7 +52,6 @@ mod:AddSetIconOption("SetIconOnShadows", 229159, true, false, {1, 2, 3})
 mod:AddRangeFrameOption(6, 230066)
 --mod:AddInfoFrameOption(198108, false)
 
-mod.vb.phase = 1
 mod.vb.kickCount = 0
 local chaoticShadowsTargets = {}
 --local laserWarned = false--What was this for? need to finish this mod one day
@@ -63,7 +62,7 @@ local function breakShadows(self)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.kickCount = 0
 	--laserWarned = false
 	table.wipe(chaoticShadowsTargets)
@@ -101,7 +100,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 229610 then--Demonic Portal (both times or just once?)
-		self.vb.phase = self.vb.phase + 1
+		self:SetStage(0)
 		self.vb.kickCount = 0
 		--Cancel stuff
 		timerDisintegrateCD:Stop()

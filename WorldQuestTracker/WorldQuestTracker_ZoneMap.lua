@@ -225,13 +225,15 @@ function WorldQuestTracker.CreateZoneWidget (index, name, parent, pinTemplate) -
 				local currentScale = self.ModifiedScale
 				local originalScale = self.OriginalScale
 				
-				if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
-					self.OnLeaveAnimation.ScaleAnimation:SetFromScale (currentScale, currentScale)
-					self.OnLeaveAnimation.ScaleAnimation:SetToScale (originalScale, originalScale)
-				
-				elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
-					self.OnLeaveAnimation.ScaleAnimation:SetFromScale (currentScale, currentScale)
-					self.OnLeaveAnimation.ScaleAnimation:SetToScale (1, 1)
+				if (currentScale and originalScale) then
+					if (WorldQuestTrackerAddon.GetCurrentZoneType() == "zone") then
+						self.OnLeaveAnimation.ScaleAnimation:SetFromScale (currentScale, currentScale)
+						self.OnLeaveAnimation.ScaleAnimation:SetToScale (originalScale, originalScale)
+					
+					elseif (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
+						self.OnLeaveAnimation.ScaleAnimation:SetFromScale (currentScale, currentScale)
+						self.OnLeaveAnimation.ScaleAnimation:SetToScale (1, 1)
+					end
 				end
 				
 				self.OnLeaveAnimation:Play()

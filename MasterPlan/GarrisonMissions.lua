@@ -200,7 +200,7 @@ function EV:FXUI_GARRISON_FOLLOWER_LIST_UPDATE(frame)
 		local btn = buttons[i]
 		if btn.Follower then btn = btn.Follower end
 		local follower = btn.info
-		if btn:IsShown() and follower then
+		if btn:IsShown() and follower and (follower.followerTypeID or 4) < 3 and btn.XPBar then
 			local st = btn.XPBar.statusText
 			if not st then
 				st = btn:CreateFontString(nil, "ARTWORK", "TextStatusBarText")

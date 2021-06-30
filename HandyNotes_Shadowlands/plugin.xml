@@ -2,6 +2,7 @@
   <Script file="common.lua"/>
   <Script file="zones\ardenweald.lua"/>
   <Script file="zones\bastion.lua"/>
+  <Script file="zones\korthia.lua"/>
   <Script file="zones\maldraxxus.lua"/>
   <Script file="zones\revendreth.lua"/>
   <Script file="zones\the_maw.lua"/>

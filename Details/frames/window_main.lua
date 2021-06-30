@@ -2165,8 +2165,8 @@ local icon_frame_on_enter = function (self)
 			local talent_string = ""
 			if (talents) then
 				for i = 1, #talents do
-					local talentID, name, texture, selected, available = GetTalentInfoByID (talents [i])
-					talent_string = talent_string ..  " |T" .. texture .. ":" .. 24 .. ":" .. 24 ..":0:0:64:64:4:60:4:60|t"
+					--local talentID, name, texture, selected, available = GetTalentInfoByID (talents [i])
+					--talent_string = talent_string ..  " |T" .. texture .. ":" .. 24 .. ":" .. 24 ..":0:0:64:64:4:60:4:60|t"
 				end
 			end
 			
@@ -5809,40 +5809,28 @@ local build_mode_list = function (self, elapsed)
 		CoolTip:AddMenu (1, instancia.AlteraModo, 3, true)
 		CoolTip:AddIcon ([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 32/256*2, 32/256*3, 0, 1)
 	
-		CoolTip:AddLine (Loc ["STRING_MODE_RAID"])
+		CoolTip:AddLine (Loc ["STRING_OPTIONS_PLUGINS"])
 		CoolTip:AddMenu (1, instancia.AlteraModo, 4, true)
 		CoolTip:AddIcon ([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 32/256*3, 32/256*4, 0, 1)
 
 		--build raid plugins list
-		local available_plugins = _detalhes.RaidTables:GetAvailablePlugins()
-
-		if (#available_plugins >= 0) then
-			local amt = 0
-			
-			for index, ptable in _ipairs (available_plugins) do
-				if (ptable [3].__enabled) then
-					CoolTip:AddMenu (2, _detalhes.RaidTables.EnableRaidMode, instancia, ptable [4], true, ptable [1], ptable [2], true) --PluginName, PluginIcon, PluginObject, PluginAbsoluteName
-					amt = amt + 1
+		local raidPlugins = _detalhes.RaidTables:GetAvailablePlugins()
+		if (#raidPlugins >= 0) then
+			for index, ptable in _ipairs (raidPlugins) do
+				--if a plugin has the member 'NoMenu', it won't be shown on menus to select plugins
+				if (ptable[3].__enabled and not ptable[3].NoMenu) then
+					--PluginName, PluginIcon, PluginObject, PluginAbsoluteName
+					CoolTip:AddMenu (2, _detalhes.RaidTables.EnableRaidMode, instancia, ptable[4], true, ptable[1], ptable[2], true)
 				end
 			end
-			
-			--CoolTip:SetWallpaper (2, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
 		end
-
-		CoolTip:AddLine (Loc ["STRING_MODE_SELF"])
-		CoolTip:AddMenu (1, instancia.AlteraModo, 1, true)
-		CoolTip:AddIcon ([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 0, 32/256, 0, 1)
-		
 		--build self plugins list
-		
-		--pega a list de plugins solo:
 		if (#_detalhes.SoloTables.Menu > 0) then
-			for index, ptable in _ipairs (_detalhes.SoloTables.Menu) do 
-				if (ptable [3].__enabled) then
-					CoolTip:AddMenu (2, _detalhes.SoloTables.EnableSoloMode, instancia, ptable [4], true, ptable [1], ptable [2], true)
+			for index, ptable in _ipairs (_detalhes.SoloTables.Menu) do
+				if (ptable[3].__enabled and not ptable[3].NoMenu) then
+					CoolTip:AddMenu (2, _detalhes.SoloTables.EnableSoloMode, instancia, ptable[4], true, ptable[1], ptable[2], true)
 				end
 			end
-			--CoolTip:SetWallpaper (2, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
 		end
 		
 		--> window control

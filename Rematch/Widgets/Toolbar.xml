@@ -26,6 +26,7 @@
 					self.defaultIcon = nil
 				end
 				self:RegisterForClicks("AnyUp")
+                self:RegisterForDrag("LeftButton")
 			</OnLoad>
 			<OnEnter>
 				RematchToolbar.ButtonOnEnter(self)
@@ -39,6 +40,9 @@
 			<PostClick>
 				RematchToolbar.ButtonPostClick(self,button)
 			</PostClick>
+            <OnDragStart>
+                RematchToolbar.ButtonOnDragStart(self)
+            </OnDragStart>
 		</Scripts>
 	</Button>
 

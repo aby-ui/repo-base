@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: Details!: Encounter Breakdown (plugin)
 ## Notes: Show detailed information about a boss encounter. Also provide damage per phase, graphic charts, easy weakauras creation.
 ## RequiredDeps: Details

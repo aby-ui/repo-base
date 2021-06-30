@@ -234,6 +234,54 @@ L["thenia_note"] = "如此壮丽而开阔的平原。多么光荣的战场。你
 L["zolla_note"] = "我们非常重视自身的防御。无论规模大小，我们都将全力维护和训练让晋升堡垒得以稳固的资源。"
 
 -------------------------------------------------------------------------------
+----------------------------------- KORTHIA -----------------------------------
+-------------------------------------------------------------------------------
+
+L["chamber_note"] = "使用从 {npc:178257} 得到的 {item:186718} 在远古传送器。使用已修复的远古传送器到达宝箱。"
+L["corpse_heap_note"] = "和 {npc:180079} 交谈开始收集事件。"
+L["darkmaul_note"] = "从侵入蘑菇收集 {item:187153} 并喂食给 {npc:180063}。你必须完成事件6次获得坐骑。"
+L["dislodged_nest_note"] = "点击附近的剧毒之蛾获得 {spell:355181}。使用 {spell:355131} 额外动作按钮给 {npc:178547} 来获得控制和骑上它进入巢所在的树中。"
+L["flayedwing_transporter_note"] = "点击 {npc:178633} 飞向和飞离绝密宝库。"
+L["forgotten_feather_note"] = "从守护者的休憩跳下来到漂浮的一个小岛上。"
+L["hunting_hunter_note"] = "和 {npc:179729} 交谈获得 {spell:355078} 并跟随脚印直到你找到肉质残留。"
+L["konthrogz_note"] = "在吞噬者的传送门事件中出现。"
+L["maelie_wanderer"] = "{npc:179912} 将在当天固定位置出现。一旦你使用 {spell:355862} 给他不同的6天后回到 {npc:179930} 获得坐骑。"
+L["no_stoneborne_note"] = "和 {npc:179974} 交谈开始事件。"
+L["offering_box_note"] = "需要 {item:187033}，可以在附近废墟的西侧墙顶部找到。"
+L["pop_quiz_note"] = "突击测验事件将在地图上随机出现。点击被遗弃的帷幕法杖并回答 {npc:180162} 的问题。"
+L["popo_note"] = "和 {npc:180028} 交谈触发护送事件。"
+L["razorwing_note"] = "交付从吞噬者掉落的 {item:187054}。"
+L["reliwik_note"] = "点击未腐化的刃翼卵并击杀它。"
+L["riftbound_cache"] = "裂隙宝箱"
+L["spectral_bound_chest"] = "点击附近的3个幽魂钥匙解锁宝箱。"
+L["spectral_bound_note"] = "魂缚宝箱"
+L["towering_exterminator_note"] = "在渊誓传送门事件出现。"
+L["wilderling_note"] = "点击 {npc:180014} 开始驯服事件。"
+
+L["archivist_key_note"] = "从 {npc:178257} 购买 {item:186984} 解锁。"
+L["korthia_rift_note"] = "从 {npc:178257} 购买 {item:186731} 可以进入裂隙。"
+L["korthian_shrine_note"] = "点击神龛获得 {spell:352367} 可以看到隐藏的路径到达alter。"
+L["num_research"] = "%d 研究"
+L["options_icons_relic"] = "{achievement:15066}"
+L["options_icons_relic_desc"] = "显示成就中全部20个圣物的位置。"
+
+L["invasive_mawshroom"] = "侵入蘑菇"
+L["mawsworn_cache"] = "渊誓宝箱"
+L["pile_of_bones"] = "一堆白骨"
+L["relic_cache"] = "圣物宝箱"
+L["shardhide_stash"] = "碎片藏匿处"
+L["shared_note"] = "你可以每天收集5个宝箱。"
+L["unusual_nest"] = "不寻常材料的巢穴"
+L["options_icons_invasive_mawshroom_desc"] = nil
+L["options_icons_invasive_mawshroom"] = nil
+L["options_icons_korthia_dailies_desc"] = nil
+L["options_icons_korthia_dailies"] = nil
+L["options_icons_mawsworn_cache_desc"] = nil
+L["options_icons_mawsworn_cache"] = nil
+L["options_icons_nest_materials_desc"] = nil
+L["options_icons_nest_materials"] = nil
+
+-------------------------------------------------------------------------------
 --------------------------------- MALDRAXXUS ----------------------------------
 -------------------------------------------------------------------------------
 
@@ -404,9 +452,14 @@ L["maw_intro_note"] = "从 {npc:162804} 开始指引任务线以解锁噬渊的�
 
 L["apholeias_note"] = "和3名其他玩家，站在平台的角落并施放 {spell:331783} 召唤稀有。"
 L["dekaris_note"] = "在一块凸起的大岩石上。"
+L["deomen_note"] = nil
 L["drifting_sorrow_note"] = "在悬浮宝珠附近击杀 {npc:175246} 激活首领。"
 L["ekphoras_note"] = "和3名其他玩家，站在平台的角落并施放 {spell:330650} 召唤稀有。"
+L["etherwyrm_label"] = nil
+L["etherwyrm_note"] = nil
+L["fallen_charger_note"] = nil
 L["ikras_note"] = "在破灭堡飞来飞去。这里是攻击他的好位置。"
+L["lilabom_note"] = nil
 L["orophea_note"] = "从东南方的拾取 {spell:337143} 并提供给 {npc:172577} 激活。"
 L["sanngror_note"] = "如果他是不可攻击，等待直到他不再灵魂实验。"
 L["talaporas_note"] = "和3名其他玩家，站在平台的角落并施放 {spell:331800} 召唤稀有。"
@@ -448,6 +501,62 @@ L["box_of_torments_note"] = "在特玛库伦下面打开 {npc:173837}。"
 L["tormentors_notes_note"] = "拾取 {npc:173811} 的尸体。"
 L["words_of_warden_note"] = "检查一些罐子后面岩石上的 {npc:173841}。"
 
+-- Locations given relative to a map area name
+L["nexus_area_calcis_branch"] = nil
+L["nexus_area_calcis_crystals"] = nil
+L["nexus_area_cradle_bridge"] = nil
+L["nexus_area_domination_bridge"] = nil
+L["nexus_area_domination_edge"] = nil
+L["nexus_area_domination_room"] = nil
+L["nexus_area_domination_stairs"] = nil
+L["nexus_area_gorgoa_bank"] = nil
+L["nexus_area_gorgoa_middle"] = nil
+L["nexus_area_gorgoa_mouth"] = nil
+L["nexus_area_perdition_wall"] = nil
+L["nexus_area_torment_rock"] = nil
+L["nexus_area_zone_edge"] = nil
+L["nexus_area_zovaal_wall"] = nil
+-- Locations given relative to a named cave/cavern
+L["nexus_cave_anguish_lower"] = nil
+L["nexus_cave_anguish_outside"] = nil
+L["nexus_cave_anguish_upper"] = nil
+L["nexus_cave_desmotaeron"] = nil
+L["nexus_cave_echoing_outside"] = nil
+L["nexus_cave_forlorn"] = nil
+L["nexus_cave_howl_outside"] = nil
+L["nexus_cave_howl"] = nil
+L["nexus_cave_ledge"] = nil
+L["nexus_cave_mothers"] = nil
+L["nexus_cave_prodigum"] = nil
+L["nexus_cave_raveners"] = nil
+L["nexus_cave_soulstained"] = nil
+L["nexus_cave_torturer"] = nil
+-- Locations given relative to a named NPC
+L["nexus_npc_akros"] = nil
+L["nexus_npc_dolos"] = nil
+L["nexus_npc_ekphoras"] = nil
+L["nexus_npc_incinerator"] = nil
+L["nexus_npc_orophea"] = nil
+L["nexus_npc_orrholyn"] = nil
+L["nexus_npc_portal"] = nil
+L["nexus_npc_talaporas"] = nil
+L["nexus_npc_thanassos"] = nil
+L["nexus_npc_willbreaker"] = nil
+-- Locations given relative to the main path/road nearby
+L["nexus_road_below"] = nil
+L["nexus_road_cave"] = nil
+L["nexus_road_mawrats"] = nil
+L["nexus_road_next"] = nil
+L["nexus_room_ramparts"] = nil
+-- Random locations described as best as possible
+L["nexus_misc_crystal_ledge"] = nil
+L["nexus_misc_floating_cage"] = nil
+L["nexus_misc_below_ramparts"] = nil
+L["nexus_misc_grapple_ramparts"] = nil
+L["nexus_misc_grapple_rock"] = nil
+L["nexus_misc_ledge_below"] = nil
+L["nexus_misc_three_chains"] = nil
+
 L["options_icons_bonus_boss"] = "奖励精英"
 L["options_icons_bonus_boss_desc"] = "显示奖励精英位置。"
 L["options_icons_bonus_event"] = "奖励事件"
@@ -462,3 +571,14 @@ L["options_icons_stygia_nexus"] = "冥殇枢纽"
 L["options_icons_stygia_nexus_desc"] = "显示 {item:184168} 坐骑所需的枢纽位置。"
 L["options_icons_stygian_caches"] = "冥殇宝箱"
 L["options_icons_stygian_caches_desc"] = "显示获取额外冥殇的宝箱位置。"
+
+L["domination_chest"] = nil
+L["domination_chest_note"] = nil
+L["gold_band_note"] = nil
+L["harrower_key_ring"] = nil
+L["harrower_key_note"] = nil
+L["helgarde_supply"] = nil
+L["maw_mad_note"] = nil
+L["nilganihmaht_note"] = nil
+L["options_icons_nilganihmaht"] = nil
+L["options_icons_nilganihmaht_desc"] = nil

@@ -13,7 +13,9 @@ local addonName, addon = ...
 local TomTom = addon
 
 addon.hbd = hbd
-addon.CLASSIC = math.floor(select(4, GetBuildInfo() ) / 100) == 113
+addon.WOW_MAINLINE = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+addon.WOW_CLASSIC = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+addon.WOW_BURNING_CRUSADE_CLASSIC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 
 -- Local definitions
 local GetCurrentCursorPosition
@@ -159,11 +161,11 @@ function TomTom:Initialize(event, addon)
     -- Since we are now using just (map, x, y), register a new protocol number
     C_ChatInfo.RegisterAddonMessagePrefix("TOMTOM4")
 
-	-- Watch for pet battle start/end so we can hide/show the arrow
-	if not self.CLASSIC then
-	    self:RegisterEvent("PET_BATTLE_OPENING_START", "ShowHideCrazyArrow")
-	    self:RegisterEvent("PET_BATTLE_CLOSE", "ShowHideCrazyArrow")
-	end
+    -- Watch for pet battle start/end so we can hide/show the arrow
+    if self.WOW_MAINLINE then
+        self:RegisterEvent("PET_BATTLE_OPENING_START", "ShowHideCrazyArrow")
+        self:RegisterEvent("PET_BATTLE_CLOSE", "ShowHideCrazyArrow")
+    end
 
     self:ReloadOptions()
 
@@ -199,7 +201,7 @@ function TomTom:Initialize(event, addon)
 end
 
 function TomTom:Enable(addon)
-    if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
+    if self.WOW_MAINLINE then
         self:EnableDisablePOIIntegration()
     end
     self:ReloadWaypoints()
@@ -418,7 +420,7 @@ function TomTom:ShowHideCoordBlock()
             TomTomBlock:SetScript("OnDragStop", Block_OnDragStop)
             TomTomBlock:SetScript("OnDragStart", Block_OnDragStart)
             TomTomBlock:RegisterEvent("PLAYER_ENTERING_WORLD")
-            if not self.CLASSIC then
+            if self.WOW_MAINLINE then
                 TomTomBlock:RegisterEvent("PET_BATTLE_OPENING_START")
                 TomTomBlock:RegisterEvent("PET_BATTLE_CLOSE")
             end

@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Notes: Wowhead Data dump for GatherMate2
 ## Title: GatherMate2Data
 ## Author: kagaro, Xinhuan

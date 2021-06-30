@@ -1,4 +1,4 @@
- -- --------------------
+-- --------------------
 -- TellMeWhen
 -- Originally by Nephthys of Hyjal <lieandswell@yahoo.com>
 
@@ -257,12 +257,6 @@ local __index_old = nil
 
 
 TMW:NewClass("SpellSet"){
-	instancesByName = {
-		-- Keyed here by allowRenaming
-		[true] = setmetatable({}, {__mode='kv'}),
-		[false] = setmetatable({}, {__mode='kv'}),
-	},
-
 	OnFirstInstance = function(self)
 		self:MakeInstancesWeak()
 
@@ -281,10 +275,6 @@ TMW:NewClass("SpellSet"){
 
 		self.Name = name
 		self.AllowRenaming = allowRenaming
-
-		if name then
-			self.instancesByName[allowRenaming][name] = self
-		end
 		
 		setmetatable(self, self.betterMeta)
 	end,
@@ -315,6 +305,8 @@ TMW:NewClass("SpellSet"){
 		end
 	end,
 }
+
+TMW:MakeNArgFunctionCached(2, TMW.C.SpellSet, "New")
 
 TMW:RegisterCallback("TMW_GLOBAL_UPDATE", function()
 	-- We need to wipe the stored objects/strings on every TMW_GLOBAL_UPDATE because of issues with
@@ -351,9 +343,12 @@ function TMW:GetSpells(spellString, allowRenaming)
 	-- Make sure that allowRenaming is a boolean.
 	allowRenaming = not not allowRenaming
 
-	return TMW.C.SpellSet.instancesByName[allowRenaming][spellString] or TMW.C.SpellSet:New(spellString, allowRenaming)
+	return TMW.C.SpellSet:New(spellString, allowRenaming)
 end
 
+-- Slightly redunant with the caching on SpellSet:New,
+-- but also makes things slightly faster by skipping a stack level or two.
+TMW:MakeNArgFunctionCached(2, TMW, "GetSpells")
 
 
 

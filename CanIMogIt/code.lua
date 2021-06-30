@@ -1032,21 +1032,28 @@ function CanIMogIt:GetSourceID(itemLink)
 
     local cached_source = CanIMogIt.cache:GetDressUpModelSource(itemLink)
     if cached_source then
-        return cached_source, "DressUpModel:GetSlotTransmogSources cache"
+        return cached_source, "DressUpModel:GetItemTransmogInfo cache"
     end
     CanIMogIt.DressUpModel:SetUnit('player')
     CanIMogIt.DressUpModel:Undress()
     for i, slot in pairs(slots) do
         CanIMogIt.DressUpModel:TryOn(itemLink, slot)
-        sourceID = CanIMogIt.DressUpModel:GetSlotTransmogSources(slot)
-        if sourceID ~= nil and sourceID ~= 0 then
+        local transmogInfo = CanIMogIt.DressUpModel:GetItemTransmogInfo(slot)
+        if transmogInfo and 
+            transmogInfo.appearanceID ~= nil and
+            transmogInfo.appearanceID ~= 0 then
+            -- Yes, that's right, we are setting `appearanceID` to the `sourceID`. Blizzard messed
+            -- up the DressUpModel functions, so _they_ don't even know what they do anymore.
+            -- The `appearanceID` field from `DressUpModel:GetItemTransmogInfo` is actually its
+            -- source ID, not it's appearance ID.
+            sourceID = transmogInfo.appearanceID
             if not CanIMogIt:IsSourceIDFromItemLink(sourceID, itemLink) then
                 -- This likely means that the game hasn't finished loading things
                 -- yet, so let's wait until we get good data before caching it.
                 return
             end
             CanIMogIt.cache:SetDressUpModelSource(itemLink, sourceID)
-            return sourceID, "DressUpModel:GetSlotTransmogSources"
+            return sourceID, "DressUpModel:GetItemTransmogInfo"
         end
     end
 end
@@ -1194,7 +1201,7 @@ function CanIMogIt:IsTransmogable(itemLink)
     local itemID, _, _, slotName = GetItemInfoInstant(itemLink)
 
     -- See if the game considers it transmoggable
-    local transmoggable = select(3, C_Transmog.GetItemInfo(itemID))
+    local transmoggable = select(3, C_Transmog.CanTransmogItem(itemID))
     if transmoggable == false then
         return false
     end

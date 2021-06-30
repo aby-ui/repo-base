@@ -3,6 +3,10 @@ if not TMW then return end
 TMW.CHANGELOG_LASTVER="7.4.0"
 
 TMW.CHANGELOG = [==[
+## v9.1.0
+* Version bump for WoW 9.1
+* Minor performance improvements
+
 ## v9.0.7
 ## Bug Fixes
 * Fixed #1886 - invalid key to "next" (new version of LibDogTag-Unit-3.0 should resolve this).

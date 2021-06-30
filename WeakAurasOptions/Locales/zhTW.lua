@@ -316,8 +316,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "缺少圖示時要顯示的圖示"
 	L["False"] = "否 (False)"
 	L["Fetch Affected/Unaffected Names"] = "取得受影響/未受影響的名字"
-	--[[Translation missing --]]
-	L["Filter by Arena Spec"] = "Filter by Arena Spec"
+	L["Filter by Arena Spec"] = "依據競技場專精過濾"
 	L["Filter by Class"] = "依職業過濾"
 	L["Filter by Group Role"] = "依角色職責過濾"
 	L["Filter by Nameplate Type"] = "依名條類型過濾"
@@ -661,8 +660,7 @@ Supports multiple entries, separated by commas
 	L["Spark"] = "亮點"
 	L["Spark Settings"] = "亮點設定"
 	L["Spark Texture"] = "亮點材質"
-	--[[Translation missing --]]
-	L["Specialization"] = "Specialization"
+	L["Specialization"] = "專精"
 	L["Specific Unit"] = "指定單位"
 	L["Spell ID"] = "法術 ID"
 	L["Stack Count"] = "堆疊層數"

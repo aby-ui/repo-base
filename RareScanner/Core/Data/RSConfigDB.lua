@@ -879,29 +879,29 @@ function RSConfigDB.ApplyCollectionsLootFilters()
 	-- Type/Subtype
 	for mainTypeID, subtypesIDs in pairs(private.ITEM_CLASSES) do
 		-- Everything else
-		if (RSUtils.Contains({ LE_ITEM_CLASS_CONSUMABLE, LE_ITEM_CLASS_CONTAINER, LE_ITEM_CLASS_GEM, LE_ITEM_CLASS_REAGENT, LE_ITEM_CLASS_PROJECTILE, LE_ITEM_CLASS_TRADEGOODS, LE_ITEM_CLASS_ITEM_ENHANCEMENT, LE_ITEM_CLASS_RECIPE, LE_ITEM_CLASS_QUIVER, LE_ITEM_CLASS_QUESTITEM, LE_ITEM_CLASS_KEY, LE_ITEM_CLASS_GLYPH, LE_ITEM_CLASS_BATTLEPET, LE_ITEM_CLASS_WOW_TOKEN }, mainTypeID)) then
+		if (RSUtils.Contains({ Enum.ItemClass.Consumable, Enum.ItemClass.Container, Enum.ItemClass.Gem, Enum.ItemClass.Reagent, Enum.ItemClass.Projectile, Enum.ItemClass.Tradegoods, Enum.ItemClass.ItemEnhancement, Enum.ItemClass.Recipe, Enum.ItemClass.Quiver, Enum.ItemClass.Questitem, Enum.ItemClass.Key, Enum.ItemClass.Glyph, Enum.ItemClass.Battlepet, Enum.ItemClass.WowToken }, mainTypeID)) then
 			for _, typeID in pairs (subtypesIDs) do
 				RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
 			end
 		-- Armor and weapons
-		elseif (RSUtils.Contains({ LE_ITEM_CLASS_WEAPON, LE_ITEM_CLASS_ARMOR }, mainTypeID)) then
+		elseif (RSUtils.Contains({ Enum.ItemClass.Weapon, Enum.ItemClass.Armor }, mainTypeID)) then
 			for _, typeID in pairs (subtypesIDs) do
 				-- Rings/necklaces/trinkets
-				if (not RSConfigDB.IsSearchingAppearances() or (mainTypeID == LE_ITEM_CLASS_ARMOR and typeID == LE_ITEM_ARMOR_GENERIC)) then
+				if (not RSConfigDB.IsSearchingAppearances() or (mainTypeID == Enum.ItemClass.Armor and typeID == Enum.ItemArmorSubclass.Generic)) then
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
 				else
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)
 				end
 			end
 		-- Miscellaneous
-		elseif (mainTypeID == LE_ITEM_CLASS_MISCELLANEOUS) then
+		elseif (mainTypeID == Enum.ItemClass.Miscellaneous) then
 			for _, typeID in pairs (subtypesIDs) do
 				-- Toys are usually in the next types, but the filter by category doesn't apply to toys (who wants to filter toys??)
-				if (RSUtils.Contains({ LE_ITEM_MISCELLANEOUS_JUNK, LE_ITEM_MISCELLANEOUS_REAGENT, LE_ITEM_MISCELLANEOUS_OTHER }, typeID)) then
+				if (RSUtils.Contains({ Enum.ItemMiscellaneousSubclass.Junk, Enum.ItemMiscellaneousSubclass.Reagent, Enum.ItemMiscellaneousSubclass.Other }, typeID)) then
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				elseif (not RSConfigDB.IsSearchingMounts() and typeID == LE_ITEM_MISCELLANEOUS_MOUNT) then
+				elseif (not RSConfigDB.IsSearchingMounts() and typeID == Enum.ItemMiscellaneousSubclass.Mount) then
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				elseif (not RSConfigDB.IsSearchingPets() and typeID == LE_ITEM_MISCELLANEOUS_COMPANION_PET) then
+				elseif (not RSConfigDB.IsSearchingPets() and typeID == Enum.ItemMiscellaneousSubclass.CompanionPet) then
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
 				else
 					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)

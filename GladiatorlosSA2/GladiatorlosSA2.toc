@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: GladiatorlosSA
 ## Notes: PvP Sound Alerter
 ## Notes-zhTW: PVP技能語音提示

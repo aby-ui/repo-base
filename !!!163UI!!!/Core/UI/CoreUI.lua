@@ -412,7 +412,7 @@ function CoreUISetScale(frame, scale)
         local y = frame:GetTop() * frame:GetScale() / scale;
         frame:SetScale(scale);
         frame:ClearAllPoints();
-        frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y);
+        frame:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", x, y);
     else
         frame:SetScale(scale)
     end

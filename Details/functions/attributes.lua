@@ -113,7 +113,7 @@ do
 			Loc ["STRING_ATTRIBUTE_HEAL"],	--> Healing
 			Loc ["STRING_ATTRIBUTE_ENERGY"],	--> Energy
 			Loc ["STRING_ATTRIBUTE_MISC"],	--> Misc
-			Loc ["STRING_ATTRIBUTE_CUSTOM"]	--> Custom
+			Loc ["STRING_SCRIPTS_TITLE"]	--> Custom
 		}
 	}
 

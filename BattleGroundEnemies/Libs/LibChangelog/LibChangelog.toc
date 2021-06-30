@@ -1,0 +1,10 @@
+## Interface: 90005
+## Interface-Retail: 90005
+## Interface-BCC: 20501
+## Title: LibChangelog
+## Version: 1.0.1
+## Author: Bullsei
+
+## X-Curse-Project-ID: 497698
+
+LibChangelog.xml

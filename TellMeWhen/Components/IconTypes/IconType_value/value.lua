@@ -252,27 +252,27 @@ function Type:Setup(icon)
 	-- Event-based updates have the added downside of
 	-- not being quite as responsive to rapidly-changing values.
 
-	--if icon.UnitSet.allUnitsChangeOnEvent then
-	--	icon:SetUpdateMethod("manual")
+	if icon.UnitSet.allUnitsChangeOnEvent then
+		icon:SetUpdateMethod("manual")
 		
-	--	if icon.PowerType == -3 then
-	--		icon:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
-	--		icon:RegisterEvent("UNIT_MAXHEALTH")
-	--	elseif icon.PowerType == -1 then
-	--		icon:RegisterEvent("UNIT_HEALTH_FREQUENT")
-	--		icon:RegisterEvent("UNIT_MAXHEALTH")
-	--	elseif icon.PowerType == -2 then
-	--		icon:RegisterEvent("UNIT_POWER_FREQUENT")
-	--		icon:RegisterEvent("UNIT_MAXPOWER")
-	--		icon:RegisterEvent("UNIT_DISPLAYPOWER")
-	--	else
-	--		icon:RegisterEvent("UNIT_POWER_FREQUENT")
-	--		icon:RegisterEvent("UNIT_MAXPOWER")
-	--	end
+		if icon.PowerType == -3 then
+			icon:RegisterEvent("UNIT_ABSORB_AMOUNT_CHANGED")
+			icon:RegisterEvent("UNIT_MAXHEALTH")
+		elseif icon.PowerType == -1 then
+			icon:RegisterEvent("UNIT_HEALTH")
+			icon:RegisterEvent("UNIT_MAXHEALTH")
+		elseif icon.PowerType == -2 then
+			icon:RegisterEvent("UNIT_POWER_FREQUENT")
+			icon:RegisterEvent("UNIT_MAXPOWER")
+			icon:RegisterEvent("UNIT_DISPLAYPOWER")
+		else
+			icon:RegisterEvent("UNIT_POWER_FREQUENT")
+			icon:RegisterEvent("UNIT_MAXPOWER")
+		end
 	
-	--	icon:SetScript("OnEvent", Value_OnEvent)
-	--	TMW:RegisterCallback("TMW_UNITSET_UPDATED", Value_OnEvent, icon)
-	--end
+		icon:SetScript("OnEvent", Value_OnEvent)
+		TMW:RegisterCallback("TMW_UNITSET_UPDATED", Value_OnEvent, icon)
+	end
 	
 	icon:SetUpdateFunction(Value_OnUpdate)
 	

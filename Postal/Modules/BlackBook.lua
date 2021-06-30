@@ -302,7 +302,7 @@ function Postal_BlackBook:OnChar(editbox, ...)
 					end
 				end
 			end
-			if Postal.WOWClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic then
 				local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText, noteText, isRIDFriend, messageTime, canSoR = BNGetFriendInfo(i)
 				if (toonName and client == BNET_CLIENT_WOW and CanCooperateWithGameAccount(toonID)) then
 					if strfind(strupper(toonName), text, 1, 1) == 1 then

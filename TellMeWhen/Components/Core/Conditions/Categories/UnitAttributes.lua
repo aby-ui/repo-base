@@ -604,8 +604,15 @@ ConditionCategory:RegisterCondition(17,   "THREATSCALED", {
 		UnitDetailedThreatSituation = UnitDetailedThreatSituation,
 	},
 	funcstr = [[UnitExists(c.Unit) and ((select(3, UnitDetailedThreatSituation("player", c.Unit)) or 0) c.Operator c.Level)]],
-	-- events = absolutely no events
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_LIST_UPDATE", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_SITUATION_UPDATE", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_SITUATION_UPDATE", "player")
+	end,
 })
+
 
 ConditionCategory:RegisterCondition(18,   "THREATRAW", {
 	text = L["CONDITIONPANEL_THREAT_RAW"],
@@ -621,5 +628,11 @@ ConditionCategory:RegisterCondition(18,   "THREATRAW", {
 		UnitDetailedThreatSituation = UnitDetailedThreatSituation,
 	},
 	funcstr = [[UnitExists(c.Unit) and ((select(4, UnitDetailedThreatSituation("player", c.Unit)) or 0) c.Operator c.Level)]],
-	-- events = absolutely no events
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GetUnitChangedEventString(CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_LIST_UPDATE", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_SITUATION_UPDATE", CNDT:GetUnit(c.Unit)),
+			ConditionObject:GenerateNormalEventString("UNIT_THREAT_SITUATION_UPDATE", "player")
+	end,
 })

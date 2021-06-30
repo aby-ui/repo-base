@@ -1,8 +1,7 @@
-## Interface: 90005
-## Title: Exorsus Raid Tools
-## Author: ykiigor
-## Notes: Exorsus Raid Tools
+## Interface: 90100
+## Title: Method Raid Tools [Storage]
 ## SavedVariables: VExRT
+<<<<<<<<<<< C:\code\lua\163ui.beta\fetch-merge\ExRT\ExRT-Exorsus-Raid-Tools-v.4520.163ui.zip!/ExRT/ExRT.toc
 ## Version: 4520
 core.lua
 Functions.lua
@@ -44,3 +43,50 @@ Changelog.lua
 
 ## Title: |cff880303[爱不易]|r ExRT 团长工具
 ## X-Vendor: AbyUI
+||||||||||| C:\code\lua\163ui.beta\fetch-merge\ExRT\ExRT-Exorsus-Raid-Tools-v.4520.zip!/ExRT/ExRT.toc
+## Version: 4520
+core.lua
+Functions.lua
+embeds.xml
+ExLib.lua
+localization\localization.ru.lua
+localization\localization.en.lua
+localization\localization.de.lua
+localization\localization.cn.lua
+localization\localization.tw.lua
+localization\localization.kr.lua
+localization\localization.lua
+BlizzFix.lua
+Options.lua
+Note.lua
+ExCD2.lua
+Inspect.lua
+VisNote.lua
+BossWatcher.lua
+InspectViewer.lua
+RaidCheck.lua
+InviteTool.lua
+RaidGroups.lua
+MarksBar.lua
+Marks.lua
+BattleRes.lua
+Timers.lua
+RaidAttendance.lua
+Encounter.lua
+LootHistory.lua
+WhoPulled.lua
+Pets.lua
+AutoLogging.lua
+LootLink.lua
+WAChecker.lua
+Bindings.lua
+Bindings.xml
+Blank.lua
+Profiles.lua
+Changelog.lua
+===========
+## Notes: Required for data migration
+
+# deprecated after addon rebranding
+# used for variables migration
+>>>>>>>>>>> C:\code\lua\163ui.beta\fetch-merge\ExRT\ExRT-Method-Raid-Tools-v.4550.zip!/ExRT/ExRT.toc

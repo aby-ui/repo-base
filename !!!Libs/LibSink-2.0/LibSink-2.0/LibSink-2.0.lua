@@ -1,6 +1,6 @@
 --[[
 Name: Sink-2.0
-Revision: $Rev: 130 $
+Revision: $Rev: 134 $
 Author(s): Funkydude
 Description: Library that handles chat output.
 Dependencies: LibStub, SharedMedia-3.0 (optional)
@@ -39,7 +39,7 @@ sink.stickyAddons = sink.stickyAddons or {
 -- Upgrade complete
 
 local _G = _G
-local format, gsub, wipe, next, select = string.format, string.gsub, wipe, next, select
+local format, gsub, wipe, next, select = string.format, string.gsub, table.wipe, next, select
 local IsInRaid, IsInGroup, SendChatMessage = IsInRaid, IsInGroup, SendChatMessage
 
 local L = {}

@@ -303,6 +303,13 @@ function OmniBar:Initialize(key, name)
 	f.settings.units = nil
 	if (not f.settings.trackUnit) then f.settings.trackUnit = "ENEMY" end
 
+	-- Remove invalid spells
+	if f.settings.spells then
+		for k,_ in pairs(f.settings.spells) do
+			if (not addon.Cooldowns[k]) or addon.Cooldowns[k].parent then f.settings.spells[k] = nil end
+		end
+	end
+
 	f.adaptive = OmniBar_IsAdaptive(f)
 
 	-- Upgrade custom spells
@@ -924,10 +931,14 @@ function OmniBar:GetSpecs()
 		self.specs[PLAYER_NAME] = GetSpecializationInfo(GetSpecialization())
 		self:SendMessage("OmniBar_SpecUpdated", PLAYER_NAME)
 	end
+	if self.lastInspect and GetTime() - self.lastInspect < 3 then
+		return
+	end
 	for i = 1, GetNumGroupMembers() do
 		local name, _,_,_,_, class = GetRaidRosterInfo(i)
 		if name and (not self.specs[name]) and (not UnitIsUnit("player", name)) and CanInspect(name) then
 			self.inspectUnit = name
+			self.lastInspect = GetTime()
 			self:RegisterEvent("INSPECT_READY")
 			NotifyInspect(name)
 			return
@@ -1289,7 +1300,8 @@ function OmniBar_Position(self)
 	if self.settings.showUnused then
 		table.sort(self.active, function(a, b)
 			local x, y = a.ownerName or a.sourceName or "", b.ownerName or b.sourceName or ""
-			if a.class == b.class then
+			local aClass, bClass = a.class or 0, b.class or 0
+			if aClass == bClass then
 				-- if we are tracking a single unit we don't need to sort by name
 				if self.settings.trackUnit ~= "ENEMY" and self.settings.trackUnit ~= "GROUP" then
 					return a.spellID < b.spellID
@@ -1297,7 +1309,7 @@ function OmniBar_Position(self)
 				if x < y then return true end
 				if x == y then return a.spellID < b.spellID end
 			end
-			return CLASS_ORDER[a.class] < CLASS_ORDER[b.class]
+			return CLASS_ORDER[aClass] < CLASS_ORDER[bClass]
 		end)
 	else
 		-- if we aren't showing unused, just sort by added time

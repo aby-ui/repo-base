@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: ErrorFilter
 ## Notes: Filters the errors displayed in the UIErrorsFrame.
 ## Version: v3.7

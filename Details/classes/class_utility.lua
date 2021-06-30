@@ -600,9 +600,9 @@ function atributo_misc:DeadAtualizarBarra (morte, whichRowLine, colocacao, insta
 	if (instancia.row_info.use_spec_icons) then
 		local nome = morte[3]
 		local spec = instancia.showing (1, nome) and instancia.showing (1, nome).spec or (instancia.showing (2, nome) and instancia.showing (2, nome).spec)
-		if (spec) then
+		if (spec and spec ~= 0) then
 			esta_barra.icone_classe:SetTexture (instancia.row_info.spec_file)
-			esta_barra.icone_classe:SetTexCoord (_unpack (_detalhes.class_specs_coords [spec]))
+			esta_barra.icone_classe:SetTexCoord (_unpack (_detalhes.class_specs_coords[spec]))
 		else
 			if (CLASS_ICON_TCOORDS [morte[4]]) then
 				esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)

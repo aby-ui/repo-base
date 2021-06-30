@@ -948,7 +948,7 @@ end
 				
 				if (_G._detalhes) then
 
-					if (DetailsFramework.IsTimewalkWoW()) then
+					if (DetailsFramework.IsClassicWow()) then
 						return
 					end
 				
@@ -974,7 +974,7 @@ end
 					--make it load after the other plugins
 					C_Timer.After(1, function()
 						--> install
-						local install, saveddata, is_enabled = _G._detalhes:InstallPlugin ("TOOLBAR", Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\Buttons\UI-CheckBox-Check]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", version, default_settings)
+						local install, saveddata, is_enabled = _G._detalhes:InstallPlugin ("TOOLBAR", Loc ["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\Buttons\UI-CheckBox-Check]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", version, default_settings)
 						if (type (install) == "table" and install.error) then
 							return print (install.error)
 						end

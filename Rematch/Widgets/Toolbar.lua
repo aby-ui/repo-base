@@ -359,6 +359,21 @@ function toolbar:ButtonOnClick(button)
 	end
 end
 
+function toolbar:ButtonOnDragStart()
+    local attribType = self:GetAttribute("type")
+    local attribValue = attribType and self:GetAttribute(attribType)
+    if self==toolbar.SummonRandom then
+        C_PetJournal.PickupSummonRandomPet()
+    elseif self==toolbar.SafariHat then
+        C_ToyBox.PickupToyBoxItem(92738)
+    elseif attribType=="spell" then
+        PickupSpell(attribValue)
+    elseif attribType=="item" then
+        PickupItem(attribValue)
+    end
+end
+
+
 function toolbar:UpdateItemButton(button,itemID,showTimeLeft)
 	local count = GetItemCount(itemID)
 	button.Count:SetText(count)

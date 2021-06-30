@@ -1018,8 +1018,13 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
 	end
 
+	-- These NPCs are tagged with containers
+	if (RSUtils.Contains(RSConstants.NPCS_WITH_CONTAINER_VIGNETTE, entityID)) then
+		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
+	end
+
 	-- These containers are tagged with rare NPCs
-	if (entityID == RSConstants.CATACOMBS_CACHE) then
+	if (entityID == RSConstants.CATACOMBS_CACHE or RSUtils.Contains(RSConstants.CONTAINERS_WITH_NPC_VIGNETTE, entityID)) then
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 	end
 

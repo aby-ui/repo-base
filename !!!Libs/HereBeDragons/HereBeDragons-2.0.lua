@@ -1,6 +1,6 @@
 -- HereBeDragons is a data API for the World of Warcraft mapping system
 
-local MAJOR, MINOR = "HereBeDragons-2.0", 15
+local MAJOR, MINOR = "HereBeDragons-2.0", 16
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -15,7 +15,8 @@ HereBeDragons.worldMapData     = HereBeDragons.worldMapData or {}
 HereBeDragons.transforms       = HereBeDragons.transforms or {}
 HereBeDragons.callbacks        = HereBeDragons.callbacks or CBH:New(HereBeDragons, nil, nil, false)
 
-local WoWClassic = select(4, GetBuildInfo()) < 20000
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+local WoWBC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 
 -- Data Constants
 local COSMIC_MAP_ID = 946
@@ -81,7 +82,7 @@ local function overrideInstance(instance) return instanceIDOverrides[instance] o
 HereBeDragons.___DIIDO = dynamicInstanceIDOverrides
 
 -- gather map info, but only if this isn't an upgrade (or the upgrade version forces a re-map)
-if not oldversion or oldversion < 15 then
+if not oldversion or oldversion < 16 then
     -- wipe old data, if required, otherwise the upgrade path isn't triggered
     if oldversion then
         wipe(mapData)
@@ -91,16 +92,24 @@ if not oldversion or oldversion < 15 then
 
     -- map transform data extracted from UIMapAssignment.db2 (see HereBeDragons-Scripts on GitHub)
     -- format: instanceID, newInstanceID, minY, maxY, minX, maxX, offsetY, offsetX
-    local transformData = {
-        { 530, 1, -6933.33, 533.33, -16000, -8000, 9916, 17600 },
-        { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2400 },
-        { 732, 0, -3200, 533.3, -533.3, 2666.7, -611.8, 3904.3 },
-        { 1064, 870, 5391, 8148, 3518, 7655, -2134.2, -2286.6 },
-        { 1208, 1116, -2666, -2133, -2133, -1600, 10210.7, 2411.4 },
-        { 1460, 1220, -1066.7, 2133.3, 0, 3200, -2333.9, 966.7 },
-        { 1599, 1, 4800, 5866.7, -4266.7, -3200, -490.6, -0.4 },
-        { 1609, 571, 6400, 8533.3, -1600, 533.3, 512.8, 545.3 },
-    }
+    local transformData
+    if WoWBC then
+        transformData = {
+            { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2662.8 },
+            { 530, 1, -6933.33, 533.33, -16000, -8000, 10339.7, 17600 },
+        }
+    else
+        transformData = {
+            { 530, 1, -6933.33, 533.33, -16000, -8000, 9916, 17600 },
+            { 530, 0, 4800, 16000, -10133.3, -2666.67, -2400, 2400 },
+            { 732, 0, -3200, 533.3, -533.3, 2666.7, -611.8, 3904.3 },
+            { 1064, 870, 5391, 8148, 3518, 7655, -2134.2, -2286.6 },
+            { 1208, 1116, -2666, -2133, -2133, -1600, 10210.7, 2411.4 },
+            { 1460, 1220, -1066.7, 2133.3, 0, 3200, -2333.9, 966.7 },
+            { 1599, 1, 4800, 5866.7, -4266.7, -3200, -490.6, -0.4 },
+            { 1609, 571, 6400, 8533.3, -1600, 533.3, 512.8, 545.3 },
+        }
+    end
 
     local function processTransforms()
         for _, transform in pairs(transformData) do
@@ -195,8 +204,11 @@ if not oldversion or oldversion < 15 then
 
         -- data for the azeroth world map
         if WoWClassic then
-            worldMapData[0] = { 44688.53, 29795.11, 32601.04, 9894.93 }
-            worldMapData[1] = { 44878.66, 29916.10, 8723.96, 14824.53 }
+            worldMapData[0] = { 44688.53, 29795.11, 32601.04,  9894.93 }
+            worldMapData[1] = { 44878.66, 29916.10,  8723.96, 14824.53 }
+        elseif WoWBC then
+            worldMapData[0] = { 44688.53, 29791.24, 32681.47, 11479.44 }
+            worldMapData[1] = { 44878.66, 29916.10,  8723.96, 14824.53 }
         else
             worldMapData[0] = { 76153.14, 50748.62, 65008.24, 23827.51 }
             worldMapData[1] = { 77803.77, 51854.98, 13157.6, 28030.61 }

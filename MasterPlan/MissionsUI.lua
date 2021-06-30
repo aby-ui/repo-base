@@ -196,9 +196,6 @@ MISSION_PAGE_FRAME.StartMissionButton:SetScript("OnClick", function()
 	PlaySound(SOUNDKIT.UI_GARRISON_COMMAND_TABLE_MISSION_START)
 	GarrisonMissionFrame:CloseMission()
 	RefreshAvailMissionsView(true)
-	if (not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_GARRISON_LANDING)) and GarrisonLandingPageTutorialBox then
-		GarrisonLandingPageTutorialBox:Show()
-	end
 end)
 
 do -- CreateLoader(parent, W, G, H)
@@ -2841,7 +2838,8 @@ do -- availMissionsHandle
 		local function sortMissions(missions, nf, nr)
 			local order, horizon = T.config.availableMissionSort, T.config.timeHorizon
 			local field = fields[order] or 1
-			local groupCache = G.GetSuggestedGroupsForAllMissions(1, order, roamingParty:GetFollowers())
+			local naf = C_Garrison.GetNumActiveFollowers(1)
+			local groupCache = naf <= 25 and G.GetSuggestedGroupsForAllMissions(1, order, roamingParty:GetFollowers()) or {}
 			local checkReq = (nf < 3 or nr < 100) and T.config.availableMissionSort ~= "expire"
 			local p1, p2, p3 = api.roamingParty:GetFollowers()
 			p1 = not (p2 and p3) and p1
@@ -2861,7 +2859,7 @@ do -- availMissionsHandle
 			for i=1, #missions do
 				local mi, g = missions[i]
 				local mid, sr = mi.missionID, G.HasSignificantRewards(mi)
-				local sg = groupCache[mid]
+				local sg = groupCache[mid] or {}
 				mi.groups, g = sg, sg[1] and not G.GetMissionGroupDeparture(sg[1], mi) and sg[1] or eg
 				mi.ord1 = (cw[g[9]] or cw[sr] or (sr and 8) or 0) * 1e16 + g[1]*g[3]*1e3 + (sr and g[1] or 0)
 				

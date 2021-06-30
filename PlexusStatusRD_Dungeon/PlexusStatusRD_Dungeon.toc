@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Version: v9.1.6
 ## Title: PlexusStatusDungeonDebuff
 ## Notes: Complete Debuff List Up To BfA

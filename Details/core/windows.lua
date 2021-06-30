@@ -966,44 +966,53 @@
 	
 		local WaitForPluginFrame = CreateFrame ("frame", "DetailsWaitForPluginFrame" .. self.meu_id, UIParent,"BackdropTemplate")
 		local WaitTexture = WaitForPluginFrame:CreateTexture (nil, "overlay")
-		WaitTexture:SetTexture ("Interface\\UNITPOWERBARALT\\Mechanical_Circular_Frame")
-		WaitTexture:SetPoint ("center", WaitForPluginFrame)
-		WaitTexture:SetWidth (180)
-		WaitTexture:SetHeight (180)
+		WaitTexture:SetTexture ("Interface\\CHARACTERFRAME\\Disconnect-Icon")
+		WaitTexture:SetWidth(64/2)
+		WaitTexture:SetHeight(64/2)
+		--WaitTexture:SetDesaturated(true)
+		--WaitTexture:SetVertexColor(1, 1, 1, 0.3)
 		WaitForPluginFrame.wheel = WaitTexture
 		local RotateAnimGroup = WaitForPluginFrame:CreateAnimationGroup()
-		local rotate = RotateAnimGroup:CreateAnimation ("Rotation")
-		rotate:SetDegrees (360)
-		rotate:SetDuration (60)
-		RotateAnimGroup:SetLooping ("repeat")
+		local rotate = RotateAnimGroup:CreateAnimation ("Alpha")
+		--rotate:SetDegrees (360)
+		--rotate:SetDuration (5)
+		rotate:SetFromAlpha(0.8)
+		rotate:SetToAlpha(1)
+		--RotateAnimGroup:SetLooping ("repeat")
+		rotate:SetTarget(WaitTexture)
 		
-		local bgpanel = gump:NewPanel (UIParent, UIParent, "DetailsWaitFrameBG"..self.meu_id, nil, 120, 30, false, false, false)
+		local bgpanel = gump:NewPanel (WaitForPluginFrame, WaitForPluginFrame, "DetailsWaitFrameBG"..self.meu_id, nil, 120, 30, false, false, false)
 		bgpanel:SetPoint ("center", WaitForPluginFrame, "center")
 		bgpanel:SetBackdrop ({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"})
 		bgpanel:SetBackdropColor (.2, .2, .2, 1)
 		
-		local label = gump:NewLabel (UIParent, UIParent, nil, nil, Loc ["STRING_WAITPLUGIN"]) --> localize-me
-		label.color = "silver"
+		local label = gump:NewLabel (bgpanel, bgpanel, nil, nil, Loc ["STRING_WAITPLUGIN"])
+		label.color = "white"
 		label:SetPoint ("center", WaitForPluginFrame, "center")
-		label:SetJustifyH ("center")
+		label:SetJustifyH ("left")
 		label:Hide()
+		WaitTexture:SetPoint("right", label.widget, "topleft", 12, -7)
 
-		WaitForPluginFrame:Hide()	
+		WaitForPluginFrame:Hide()
 		self.wait_for_plugin_created = true
 		
 		function self:WaitForPlugin()
 		
 			self:ChangeIcon ([[Interface\GossipFrame\ActiveQuestIcon]])
 		
-			if (WaitForPluginFrame:IsShown() and WaitForPluginFrame:GetParent() == self.baseframe) then
-				self.waiting_pid = self:ScheduleTimer ("ExecDelayedPlugin1", 5, self)
-			end
+			--if (WaitForPluginFrame:IsShown() and WaitForPluginFrame:GetParent() == self.baseframe) then
+			--	self.waiting_pid = self:ScheduleTimer ("ExecDelayedPlugin1", 5, self)
+			--end
 		
 			WaitForPluginFrame:SetParent (self.baseframe)
 			WaitForPluginFrame:SetAllPoints (self.baseframe)
-			local size = math.max (self.baseframe:GetHeight()* 0.35, 100)
-			WaitForPluginFrame.wheel:SetWidth (size)
-			WaitForPluginFrame.wheel:SetHeight (size)
+			bgpanel:ClearAllPoints()
+			bgpanel:SetPoint("topleft", self.baseframe, 0, 0)
+			bgpanel:SetPoint("bottomright", self.baseframe, 0, 0)
+
+			--local size = math.max (self.baseframe:GetHeight()* 0.35, 100)
+			--WaitForPluginFrame.wheel:SetWidth (size)
+			--WaitForPluginFrame.wheel:SetHeight (size)
 			WaitForPluginFrame:Show()
 			label:Show()
 			bgpanel:Show()

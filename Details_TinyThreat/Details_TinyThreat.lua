@@ -632,6 +632,19 @@ local build_options_panel = function()
 			desc = "When enabled, threat bars uses the class color of the character.",
 			name = "Use Class Colors"
 		},
+
+		{type = "blank"},
+--[=[
+		{
+			type = "toggle",
+			get = function() return ThreatMeter.saveddata.playSound end,
+			set = function (self, fixedparam, value) ThreatMeter.saveddata.playSound = value end,
+			desc = "Except for tanks",
+			name = "Play Audio On High Threat"
+		},
+--]=]
+
+
 	}
 	
 	_detalhes.gump:BuildMenu (options_frame, menu, 15, -65, 260)
@@ -676,7 +689,7 @@ function ThreatMeter:OnEvent (_, event, ...)
 				local MINIMAL_DETAILS_VERSION_REQUIRED = 1
 				
 				--> Install
-				local install, saveddata = _G._detalhes:InstallPlugin ("RAID", Loc ["STRING_PLUGIN_NAME"], "Interface\\Icons\\Ability_Druid_Cower", ThreatMeter, "DETAILS_PLUGIN_TINY_THREAT", MINIMAL_DETAILS_VERSION_REQUIRED, "Details! Team", "v1.07")
+				local install, saveddata = _G._detalhes:InstallPlugin ("RAID", Loc ["STRING_PLUGIN_NAME"], "Interface\\Icons\\Ability_Druid_Cower", ThreatMeter, "DETAILS_PLUGIN_TINY_THREAT", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", "v2.01")
 				if (type (install) == "table" and install.error) then
 					print (install.error)
 				end
@@ -703,6 +716,9 @@ function ThreatMeter:OnEvent (_, event, ...)
 				ThreatMeter.saveddata.useplayercolor = ThreatMeter.saveddata.useplayercolor or false
 				ThreatMeter.saveddata.playercolor = ThreatMeter.saveddata.playercolor or {1, 1, 1}
 				ThreatMeter.saveddata.useclasscolors = ThreatMeter.saveddata.useclasscolors or false
+
+				ThreatMeter.saveddata.playSound = ThreatMeter.saveddata.playSound or false
+				ThreatMeter.saveddata.playSoundFile = ThreatMeter.saveddata.playSoundFile or "Details Threat Warning Volume 3"
 
 				ThreatMeter.options = ThreatMeter.saveddata
 				

@@ -36,8 +36,8 @@ local function createconfig()
 			TomTom:ShowHideWorldCoords()
 		elseif ns == "arrow" then
 			TomTom:ShowHideCrazyArrow()
-        elseif ns == "poi" and (not TomTom.CLASSIC) then
-            TomTom:EnableDisablePOIIntegration()
+		elseif ns == "poi" and TomTom.WOW_MAINLINE then
+			TomTom:EnableDisablePOIIntegration()
 		elseif opt == "otherzone" then
 			TomTom:ReloadWaypoints()
 		elseif info.arg == "minimap.enable" or info.arg == "worldmap.enable" then
@@ -896,7 +896,7 @@ local function createBlizzOptions()
 	dialog:AddToBlizOptions("TomTom-Feeds", options.args.feeds.name, "TomTom")
 
 	-- POI Options
-	if not TomTom.CLASSIC then
+	if TomTom.WOW_MAINLINE then
 		config:RegisterOptionsTable("TomTom-POI", options.args.poi)
 		dialog:AddToBlizOptions("TomTom-POI", options.args.poi.name, "TomTom")
 	end

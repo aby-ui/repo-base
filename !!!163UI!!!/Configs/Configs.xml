@@ -44,7 +44,7 @@
     <Include file="..\..\Ellipsis\CfgEllipsis.lua"/>
     <Include file="..\..\ErrorFilter\CfgErrorFilter.lua"/>
     <Include file="..\..\EventAlertMod\CfgEventAlertMod.lua"/>
-    <Include file="..\..\ExRT\CfgExRT.lua"/>
+    <Include file="..\..\MRT\CfgMRT.lua"/>
     <Include file="..\..\ExtraActionBar\CfgExtraActionBar.lua"/>
     <Include file="..\..\Fizzle\CfgFizzle.lua"/>
     <Include file="..\..\FriendsMenuXP\CfgFriendsMenuXP.lua"/>

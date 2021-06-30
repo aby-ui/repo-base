@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: Masque_CleanUI
 ## Author: Seharad
 ## Version: 9.0.2

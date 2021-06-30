@@ -147,6 +147,7 @@ function RE:OnEvent(self, event, ...)
 			RE.AHButton:SetWidth(139)
 			RE.AHButton:SetCallback("OnClick", RE.StartScan)
 			RE.AHButton.frame:SetParent(_G.AuctionHouseFrame)
+			RE.AHButton.frame:ClearAllPoints()
 			if RE.IsSkinned then
 				RE.AHButton.frame:SetPoint("TOPLEFT", _G.AuctionHouseFrame, "TOPLEFT", 10, -37)
 			else

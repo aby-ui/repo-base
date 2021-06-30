@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: TradeSkillInfo
 ## Notes: Complete tradeskill information.
 ## Notes-zhTW: 完整的商業技能百科

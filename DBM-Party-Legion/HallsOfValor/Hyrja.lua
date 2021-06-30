@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1486, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(95833)
 mod:SetEncounterID(1806)
 
@@ -36,10 +36,9 @@ local timerSpecialCD				= mod:NewNextTimer(30, 200736, nil, nil, nil, 2, 200901,
 mod:AddRangeFrameOption(8, 192048)
 
 local eyeShortName = DBM:GetSpellInfo(91320)--Inner Eye
-mod.vb.phase = 1
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 end
 
 function mod:OnCombatEnd()
@@ -98,7 +97,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
 	local spellId = legacySpellId or bfaSpellId
 	if spellId == 192130 then
-		self.vb.phase = 2
+		self:SetStage(2)
 		warnPhase2:Show()
 		warnPhase2:Play("ptwo")
 		timerSpecialCD:Start(8.5)

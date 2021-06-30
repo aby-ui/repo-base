@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: OmniCD
 ## Version: 2.6.03
 ## Author: Treebonker

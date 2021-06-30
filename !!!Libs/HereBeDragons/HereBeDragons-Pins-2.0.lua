@@ -8,7 +8,7 @@ if not pins then return end
 
 local HBD = LibStub("HereBeDragons-2.0")
 
-local WoW90 = select(4, GetBuildInfo()) >= 90000
+local MinimapRadiusAPI = C_Minimap and C_Minimap.GetViewRadius
 
 pins.updateFrame          = pins.updateFrame or CreateFrame("Frame")
 
@@ -218,7 +218,7 @@ local function UpdateMinimapPins(force)
         minimapShape = GetMinimapShape and minimap_shapes[GetMinimapShape() or "ROUND"]
         minimapWidth = pins.Minimap:GetWidth() / 2
         minimapHeight = pins.Minimap:GetHeight() / 2
-        if WoW90 then
+        if MinimapRadiusAPI then
             mapRadius = C_Minimap.GetViewRadius()
         else
             mapRadius = minimap_size[indoors][zoom] / 2
@@ -295,7 +295,7 @@ local function UpdateMinimapIconPosition()
 
     if x ~= lastXY or y ~= lastYY or facing ~= lastFacing or refresh then
         -- update radius of the map
-        if WoW90 then
+        if MinimapRadiusAPI then
             mapRadius = C_Minimap.GetViewRadius()
         else
             mapRadius = minimap_size[indoors][zoom] / 2
@@ -318,7 +318,7 @@ local function UpdateMinimapIconPosition()
 end
 
 local function UpdateMinimapZoom()
-    if not WoW90 then
+    if not MinimapRadiusAPI then
         local zoom = pins.Minimap:GetZoom()
         if GetCVar("minimapZoom") == GetCVar("minimapInsideZoom") then
             pins.Minimap:SetZoom(zoom < 2 and zoom + 1 or zoom - 1)

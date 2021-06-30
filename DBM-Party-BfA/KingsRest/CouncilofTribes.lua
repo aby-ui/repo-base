@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2170, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(135475, 135470, 135472)
 mod:SetEncounterID(2140)
 mod:SetUsedIcons(1, 2)
@@ -56,7 +56,6 @@ local timerTotemsCD					= mod:NewCDTimer(53.5, 267060, nil, nil, nil, 1, nil, DB
 mod:AddSetIconOption("SetIconOnBarrel", 266951, true, false, {1})
 mod:AddSetIconOption("SetIconOnAxe", 266231, false, false, {2})
 
-mod.vb.phase = 1
 mod.vb.bossOne = 0
 mod.vb.bossTwo = 0
 mod.vb.earthTotemActive = false
@@ -83,7 +82,7 @@ local function whoDat(self, delay)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.bossOne = 0
 	self.vb.bossTwo = 0
 	self.vb.bossName = "nil"
@@ -207,7 +206,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerDebilitatingBackhandCD:Stop()
 		timerPoisonNovaCD:Stop()
 		timerTotemsCD:Stop()
-		self.vb.phase = self.vb.phase + 1
+		self:SetStage(0)
 		local cid = self:GetUnitCreatureId(uId)
 		if self.vb.phase == 2 then
 			self.vb.bossOne = cid

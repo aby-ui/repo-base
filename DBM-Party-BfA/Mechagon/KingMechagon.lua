@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2331, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20210614230033")
 mod:SetCreatureID(150396, 144249, 150397)
 mod:SetEncounterID(2260)
 mod:SetBossHPInfoToHighest()
@@ -53,7 +53,6 @@ local timerHardModeCD				= mod:NewCDTimer(42.5, 292750, nil, nil, nil, 5, nil, D
 
 --mod:AddRangeFrameOption(5, 194966)
 
-mod.vb.phase = 1
 mod.vb.recalibrateCount = 0
 mod.vb.zapCount = 0
 local P1RecalibrateTimers = {5.9, 12, 27.9, 15.6, 19.4}
@@ -74,7 +73,7 @@ function mod:ZapTarget(targetname)
 end
 
 function mod:OnCombatStart(delay)
-	self.vb.phase = 1
+	self:SetStage(1)
 	self.vb.recalibrateCount = 0
 	self.vb.zapCount = 0
 	timerRecalibrateCD:Start(5.9-delay, 1)
@@ -145,7 +144,7 @@ function mod:UNIT_DIED(args)
 		timerTakeOffCD:Stop()
 		timerCuttingBeam:Stop()
 	elseif cid == 144249 then--Omega Buster
-		self.vb.phase = 3
+		self:SetStage(3)
 		timerRecalibrateCD:Stop()
 		timerGigaZapCD:Stop()
 		timerMagnetoArmCD:Stop()
@@ -154,7 +153,7 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 296323 then--Activate Omega Buster (Needed? Stage 2 should already be started by stage 1 boss death)
-		self.vb.phase = 2
+		self:SetStage(2)
 		self.vb.zapCount = 0
 		self.vb.recalibrateCount = 0
 		warnPhase2:Show()

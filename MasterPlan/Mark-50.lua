@@ -8,6 +8,10 @@ hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(f
 		fr.XP:Hide()
 		fr.XPBar:Hide()
 		fr.XPBarBackground:Hide()
+	elseif fr and data and data.followerTypeID and data.followerTypeID < 3 and (data.level < T.FOLLOWER_LEVEL_CAP or data.quality <= 3) then
+		fr.XP:Show()
+		fr.XPBar:Show()
+		fr.XPBarBackground:Show()
 	end
 end)
 

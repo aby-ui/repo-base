@@ -926,7 +926,7 @@ local default_profile = {
 		memory_ram = 64,
 		remove_realm_from_name = true,
 		trash_concatenate = false,
-		trash_auto_remove = true,
+		trash_auto_remove = false,
 		world_combat_is_trash = false,
 		
 	--> death log
@@ -1128,6 +1128,7 @@ local default_player_data = {
 	--> current combat number
 		cached_specs = {},
 		cached_talents = {},
+		cached_roles = {},
 	
 		last_day = date ("%d"),
 	

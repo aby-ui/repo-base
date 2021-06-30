@@ -110,6 +110,11 @@ local LFRInstances = {
   [2091] = { total=3, base=4,  parent=2095, minLvl=60, remap={ 1, 2, 3 } }, -- Castle Nathria: Reliquary of Opulence
   [2092] = { total=3, base=7,  parent=2095, minLvl=60, remap={ 1, 2, 3 } }, -- Castle Nathria: Blood from Stone
   [2096] = { total=1, base=10, parent=2095, minLvl=60, remap={ 1 } }, -- Castle Nathria: An Audience with Arrogance
+
+  [2221] = { total=3, base=1,  parent=2450, minLvl=60, remap={ 1, 2, 3 } }, -- Sanctum of Domination: The Jailer's Vanguard
+  [2222] = { total=3, base=4,  parent=2450, minLvl=60, remap={ 1, 2, 3 } }, -- Sanctum of Domination: The Dark Bastille
+  [2223] = { total=3, base=7,  parent=2450, minLvl=60, remap={ 1, 2, 3 } }, -- Sanctum of Domination: Shackles of Fate
+  [2224] = { total=3, base=10, parent=2450, minLvl=60, remap={ 1 } }, -- Sanctum of Domination: The Reckoning
 }
 
 local tbl = {}

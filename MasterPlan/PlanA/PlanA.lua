@@ -89,6 +89,13 @@ end
 do
 	local function ShowLanding(_, page)
 		HideUIPanel(GarrisonLandingPage)
+		local b = GarrisonLandingPageFollowerList.listScroll.buttons
+		if ((page or C_Garrison.GetLandingPageGarrisonType()) == 111) ~= (b and b[1] and not b[1].DownArrow) then
+			for i=1,#b do
+				b[i]:Hide()
+			end
+			GarrisonLandingPageFollowerList.listScroll.buttons = nil
+		end
 		ShowGarrisonLandingPage(page)
 	end
 	local function MaybeStopSound(sound)
@@ -103,6 +110,10 @@ do
 			local closeOK, closeID = PlaySound(SOUNDKIT.UI_GARRISON_GARRISON_REPORT_CLOSE)
 			self.openSoundID = openOK and openID
 			self.closeSoundID = closeOK and closeID
+			local openOK, openID = PlaySound(SOUNDKIT.UI_GARRISON_9_0_OPEN_LANDING_PAGE)
+			local closeOK, closeID = PlaySound(SOUNDKIT.UI_GARRISON_9_0_CLOSE_LANDING_PAGE)
+			self.openSoundID2 = openOK and openID
+			self.closeSoundID2 = closeOK and closeID
 		end
 	end)
 	GarrisonLandingPageMinimapButton:HookScript("OnClick", function(self, b)
@@ -120,6 +131,8 @@ do
 				end
 				MaybeStopSound(self.openSoundID)
 				MaybeStopSound(self.closeSoundID)
+				MaybeStopSound(self.openSoundID2)
+				MaybeStopSound(self.closeSoundID2)
 				if not landingChoiceMenu then
 					landingChoiceMenu = CreateFrame("Frame", "WPLandingChoicesDrop", UIParent, "UIDropDownMenuTemplate")
 				end
@@ -131,22 +144,61 @@ do
 				GameTooltip:Hide()
 				EasyMenu(landingChoices, landingChoiceMenu, "cursor", 0, 0, "MENU", 4)
 				DropDownList1:ClearAllPoints()
-				DropDownList1:SetPoint("TOPRIGHT", self, "TOPLEFT", 10, -4)
+				local x, y = self:GetCenter()
+				local w, h = UIParent:GetSize()
+				local u, r = y*2 > h, x*2 > w
+				local p1 = (u and "TOP" or "BOTTOM") .. (r and "RIGHT" or "LEFT")
+				local p2 = (u and "TOP" or "BOTTOM") .. (r and "LEFT" or "RIGHT")
+				DropDownList1:SetPoint(p1, self, p2, r and 10 or -10, u and -8 or 8)
 			elseif GarrisonLandingPage.garrTypeID == 3 then
 				ShowLanding(nil, 2)
 				MaybeStopSound(self.closeSoundID)
+				MaybeStopSound(self.closeSoundID2)
 			end
 		end
 	end)
 	GarrisonLandingPageMinimapButton:HookScript("PostClick", function(self)
-		self.closeSoundID, self.openSoundID = nil, nil
+		self.closeSoundID, self.openSoundID, self.closeSoundID2, self.openSoundID2 = nil
 	end)
 end
 hooksecurefunc("ShowGarrisonLandingPage", function(pg)
-	if (pg or C_Garrison.GetLandingPageGarrisonType() or 0) < 3 then
+	pg = (pg or C_Garrison.GetLandingPageGarrisonType() or 0)
+	if pg < 3 and pg > 0 then
 		LoadMP()
 	end
 end)
+if (GARRISON_LANDING_COVIEW_PATCH_VERSION or 0) < 1 then
+	GARRISON_LANDING_COVIEW_PATCH_VERSION = 1
+	local lastNineMode = nil
+	hooksecurefunc("ShowGarrisonLandingPage", function(pg)
+		if GARRISON_LANDING_COVIEW_PATCH_VERSION ~= 1 then
+			return
+		end
+		pg = (pg or C_Garrison.GetLandingPageGarrisonType() or 0)
+		local thisNineMode = pg == 111 and 9 or 8
+		if thisNineMode ~= 9 and GarrisonLandingPage.SoulbindPanel then
+			GarrisonLandingPage.FollowerTab.autoSpellPool:ReleaseAll()
+			GarrisonLandingPage.FollowerTab.autoCombatStatsPool:ReleaseAll()
+			GarrisonLandingPage.FollowerTab.AbilitiesFrame:Layout()
+			GarrisonLandingPage.FollowerTab.CovenantFollowerPortraitFrame:Hide()
+		end
+		if pg > 2 and GarrisonThreatCountersFrame then
+			GarrisonThreatCountersFrame:Hide()
+		end
+		if lastNineMode and thisNineMode ~= lastNineMode then
+			for i=1,#GarrisonLandingPageFollowerList.listScroll.buttons do
+				GarrisonLandingPageFollowerList.listScroll.buttons[i]:Hide()
+			end
+			wipe(GarrisonLandingPageFollowerList.listScroll.buttons)
+			GarrisonLandingPageFollowerList.listScroll.buttons = nil
+			GarrisonLandingPageFollowerList:Initialize(GarrisonLandingPageFollowerList.followerType)
+		end
+		if GarrisonLandingPageReport.Sections then
+			GarrisonLandingPageReport.Sections:SetShown(thisNineMode == 9)
+		end
+		lastNineMode = thisNineMode
+	end)
+end
 
 function E:ADDON_LOADED(addon)
 	if addon == addonName then

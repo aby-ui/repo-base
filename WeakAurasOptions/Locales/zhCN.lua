@@ -314,8 +314,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "后备图标"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
-	--[[Translation missing --]]
-	L["Filter by Arena Spec"] = "Filter by Arena Spec"
+	L["Filter by Arena Spec"] = "根据竞技场专精过滤"
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
 	L["Filter by Nameplate Type"] = "根据姓名版类型过滤"
@@ -658,8 +657,7 @@ Supports multiple entries, separated by commas
 	L["Spark"] = "闪光"
 	L["Spark Settings"] = "闪光设置"
 	L["Spark Texture"] = "闪光材质"
-	--[[Translation missing --]]
-	L["Specialization"] = "Specialization"
+	L["Specialization"] = "专精"
 	L["Specific Unit"] = "指定单位"
 	L["Spell ID"] = "法术ID"
 	L["Stack Count"] = "层数"

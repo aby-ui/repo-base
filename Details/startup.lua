@@ -535,6 +535,11 @@ function Details:StartMeUp() --I'll never stop!
 	end
 
 	if (DetailsFramework.IsTBCWow()) then
+
+		--remover isso em versões mais atualizadas
+		if (_detalhes.bcc_counter == 18 or _detalhes.bcc_counter == 19) then
+			_detalhes.trash_auto_remove = false
+		end
 		
 		local originalPosition
 		local isOnOriginalPosition = true

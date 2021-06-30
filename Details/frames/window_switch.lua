@@ -143,7 +143,7 @@ do
 	local all_switch = CreateFrame ("frame", "DetailsAllAttributesFrame", UIParent,"BackdropTemplate")
 	all_switch:SetFrameStrata ("tooltip")
 	all_switch:Hide()
-	all_switch:SetSize (400, 150)
+	all_switch:SetSize(600, 150)
 	all_switch:SetClampedToScreen (true)
 	all_switch:SetBackdrop ({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16 })
 	all_switch:SetBackdropColor (0.05, 0.05, 0.05, 0.3)
@@ -196,40 +196,6 @@ do
 	DetailsSwitchPanel.all_switch = all_switch
 	
 	function _detalhes:ShowAllSwitch()
-	
-	--[=[ --tutorial removed, I don't think is necessary anymore, July 2019
-		--_detalhes:SetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED", false)
-		if (not _detalhes:GetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED")) then
-			_detalhes:SetTutorialCVar ("SWITCH_PANEL_FIRST_OPENED", true)
-			local fake_window = _detalhes:CreateFakeWindow()
-			fake_window:SetPoint ("bottomleft", all_switch, "topleft", 0, 10)
-			
-			local all_switch_titlebar_help = CreateFrame ("frame", "DetailsSwitchAllPopUp1", fake_window, "DetailsHelpBoxTemplate")
-			all_switch_titlebar_help.ArrowUP:Show()
-			all_switch_titlebar_help.ArrowGlowUP:Show()
-			all_switch_titlebar_help.Text:SetText ("Right click on Title Bar to open all displays menu.")
-			all_switch_titlebar_help:SetPoint ("bottom", fake_window.TitleBar, "top", 0, 30)
-			all_switch_titlebar_help:Show()
-			
-			local all_switch_titlebar2_help = CreateFrame ("frame", "DetailsSwitchAllPopUp1", fake_window, "DetailsHelpBoxTemplate")
-			all_switch_titlebar2_help.ArrowLEFT:Show()
-			all_switch_titlebar2_help.ArrowGlowLEFT:Show()
-			all_switch_titlebar2_help.Text:SetText ("Right clicking anywhere else opens your Bookmarks.")
-			all_switch_titlebar2_help:SetPoint ("right", fake_window, "left", -30, 0)
-			all_switch_titlebar2_help:Show()
-			
-			local close = CreateFrame ("button", nil, fake_window)
-			close:SetPoint ("bottomright", fake_window, "bottomright", -10, 10)
-			close:SetScript ("OnClick", function() fake_window:Hide(); all_switch_titlebar2_help:Hide(); all_switch_titlebar_help:Hide() end)
-			close:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16 })
-			close:SetBackdropColor (0.7, 0.7, 0.7, 0.4)
-			close:SetSize (100, 20)
-			local t = close:CreateFontString (nil, "overlay", "GameFontNormal")
-			t:SetPoint ("center", 0, 0)
-			t:SetText ("CLOSE")
-		end
-	--]=]
-	
 		if (all_switch:IsShown()) then
 			return all_switch:Hide()
 		end
@@ -238,8 +204,7 @@ do
 		GameCooltip:Hide()
 		all_switch:ClearAllPoints()
 		all_switch:SetPoint ("bottom", self.baseframe.UPFrame, "top", 4)
-		
-		--all_switch.ShowAnimation:Play()
+
 		all_switch:Show()
 		
 		if (_detalhes.switch.frame:IsShown()) then
@@ -253,6 +218,20 @@ do
 			local sub_attribute = self.sub_attribute
 			local instance = all_switch.instance
 			
+			--check if is a plugin button
+			if (self.isPlugin) then
+				if (_detalhes.RaidTables.NameTable[self.pluginName]) then
+					_detalhes.RaidTables:EnableRaidMode (instance, self.pluginName)
+				elseif (_detalhes.SoloTables.NameTable [self.pluginName]) then
+					_detalhes.SoloTables:EnableSoloMode (instance, self.pluginName)
+				else
+					_detalhes:Msg ("Plugin not found.")
+				end
+
+				all_switch:Hide()
+				return
+			end
+
 			if (instance.modo == _detalhes._detalhes_props["MODO_ALONE"] or instance.modo == _detalhes._detalhes_props["MODO_RAID"]) then
 				instance:AlteraModo (instance, 2)
 			end
@@ -281,7 +260,6 @@ do
 		hover_over_texture:ClearAllPoints()
 		hover_over_texture:SetPoint ("topleft", self, "topleft", -2, 1)
 		hover_over_texture:Show()
-		--self.texture:SetSize (icon_size+1, icon_size+1)
 	end
 	
 	local on_leave_all_switch_button = function (self)
@@ -289,7 +267,6 @@ do
 		all_switch.interacting = false
 		all_switch.last_up = GetTime()
 		hover_over_texture:Hide()
-		--self.texture:SetSize (icon_size, icon_size)
 	end
 
 	local on_enter_all_switch_button_icon = function (self)
@@ -343,7 +320,7 @@ do
 		button:RegisterForClicks ("LeftButtonDown", "RightButtonDown")
 
 		return button
-	end	
+	end
 	
 	all_switch:SetScript ("OnShow", function()
 		
@@ -351,7 +328,7 @@ do
 			local x, y = 8, -8
 			all_switch.higher_counter = 0
 
-			for attribute = 1, _detalhes.atributos[0] do 
+			for attribute = 1, _detalhes.atributos[0] do
 				--> localized attribute name
 				local loc_attribute_name = _detalhes.atributos.lista [attribute]
 
@@ -388,28 +365,42 @@ do
 				y = -8
 			end
 			
-			--> prepare for customs
+			--> prepare for scripts
 			all_switch.x = x
 			all_switch.y = -8
 			all_switch.buttons [_detalhes.atributos[0]+1] = {}
 			
 			local title_icon = all_switch:CreateTexture (nil, "overlay")
 			local texture, l, r, t, b = _detalhes:GetAttributeIcon (_detalhes.atributos[0]+1)
-			title_icon:SetTexture (texture)
-			title_icon:SetTexCoord (l, r, t, b)
-			title_icon:SetSize (18, 18)
+			title_icon:SetTexture([[Interface\AddOns\Details\images\icons]])
+			title_icon:SetTexCoord(412/512, 441/512, 43/512, 79/512)
+			title_icon:SetVertexColor(.7, .6, .5, 1)
+			title_icon:SetSize(16, 16)
 			local title_str = all_switch:CreateFontString (nil, "overlay", "GameFontNormal")
 			title_str:SetPoint ("left", title_icon, "right", 2, 0)
-			title_str:SetText (_detalhes.atributos.lista [_detalhes.atributos[0]+1])
+			title_str:SetText ("Scripts")
 			
 			title_icon:SetPoint ("topleft", all_switch.x, all_switch.y)
 			all_switch.y = all_switch.y - 20
 			all_switch.title_custom = title_icon
 			
 			all_switch.already_built = true
+
+			--> prepare for plugins
+				all_switch.buttons[6] = {}
+				local title_icon = all_switch:CreateTexture(nil, "overlay")
+				title_icon:SetTexture ([[Interface\AddOns\Details\images\modo_icones]])
+				title_icon:SetTexCoord (32/256*3, 32/256*4, 0, 1)
+				title_icon:SetSize (16, 16)
+
+				local title_str = all_switch:CreateFontString(nil, "overlay", "GameFontNormal")
+				title_str:SetPoint("left", title_icon, "right", 2, 0)
+				title_str:SetText(Loc["STRING_OPTIONS_PLUGINS"])
+				title_icon:SetPoint("topleft", all_switch.x + 130, -8)
+				all_switch.title_scripts = title_icon
 		end
 		
-		--> update customs
+		--> update scripts
 		local custom_index = _detalhes.atributos[0]+1
 		for _, button in ipairs (all_switch.buttons [custom_index]) do
 			button:Hide()
@@ -437,34 +428,65 @@ do
 		if (#_detalhes.custom > all_switch.higher_counter) then
 			all_switch.higher_counter = #_detalhes.custom
 		end
-		
+
+		--> update plugins
+			local script_index = _detalhes.atributos[0]+2
+			local button_index = 1
+			all_switch.x = all_switch.x + 130
+			all_switch.y = -28
+
+			for _, button in ipairs (all_switch.buttons[script_index]) do
+				button:Hide()
+			end
+
+			--build raid plugins list
+			local raidPlugins = _detalhes.RaidTables:GetAvailablePlugins()
+			if (#raidPlugins >= 0) then
+				for i, ptable in ipairs (raidPlugins) do
+					--if a plugin has the member 'NoMenu', it won't be shown on menus to select plugins
+					if (ptable[3].__enabled and not ptable[3].NoMenu) then
+						--PluginName, PluginIcon, PluginObject, PluginAbsoluteName
+						local button = all_switch.buttons [script_index] [button_index]
+						if (not button) then
+							button = create_all_switch_button(script_index, button_index, all_switch.x, all_switch.y)
+							tinsert (all_switch.buttons [script_index], button)
+							all_switch.y = all_switch.y - 17
+						end
+
+						--set the button to select the plugin
+						button.isPlugin = true
+						button.pluginName = ptable[4]
+
+						button.text:SetText(ptable[1])
+						all_switch.check_text_size(button.text)
+						button.texture:SetTexture (ptable[2])
+						button.texture:SetTexCoord (0.078125, 0.921875, 0.078125, 0.921875)
+						button:Show()
+						
+						button_index = button_index + 1
+					end
+				end
+			end
+
+			--check if the plugins list is the biggest list
+			button_index = button_index - 1
+			if (button_index > all_switch.higher_counter) then
+				all_switch.higher_counter = button_index
+			end
+	
 		all_switch:SetHeight ((all_switch.higher_counter * 17) + 20 + 16)
-		all_switch:SetWidth ((120 * 5) + (5 * 2) + (12*4))
+		all_switch:SetWidth ((120 * 6) + (6 * 2) + (12*4))
 		
 		all_switch.last_up = GetTime()
 		local cursor_x, cursor_y = GetCursorPosition()
 		all_switch.cursor_x, all_switch.cursor_y = floor (cursor_x), floor (cursor_y)
 		all_switch:SetScript ("OnUpdate", on_update_all_switch)
 		
-		--[=[
-		all_switch.wallpaper:SetTexture (_detalhes.tooltip.menus_bg_texture)
-		all_switch.wallpaper:SetTexCoord (unpack (_detalhes.tooltip.menus_bg_coords))
-		all_switch.wallpaper:SetVertexColor (unpack (_detalhes.tooltip.menus_bg_color))
-		all_switch.wallpaper:SetDesaturated (true)
-		--]=]
-		
-		--[=[
-		all_switch:SetBackdrop (_detalhes.tooltip_backdrop)
-		all_switch:SetBackdropColor (0.09019, 0.09019, 0.18823, 1)
-		all_switch:SetBackdropBorderColor (unpack (_detalhes.tooltip_border_color))
-		--]=]
-		
 		--updated colors (these colors are set inside the janela_principal file
 		all_switch:SetBackdrop (_detalhes.menu_backdrop_config.menus_backdrop)
 		all_switch:SetBackdropColor (unpack (_detalhes.menu_backdrop_config.menus_backdropcolor))
 		all_switch:SetBackdropBorderColor (unpack (_detalhes.menu_backdrop_config.menus_bordercolor))
-		
-	end) 
+	end)
 	
 ---------------------------------------------------------------------------------------------------------------------------	
 
@@ -603,9 +625,6 @@ _detalhes.switch.table = _detalhes.switch.table or {}
 _detalhes.switch.current_instancia = nil
 _detalhes.switch.current_button = nil
 _detalhes.switch.height_necessary = (_detalhes.switch.button_height * _detalhes.switch.slots) / 2
-
-local right_click_text = {text = Loc ["STRING_SHORTCUT_RIGHTCLICK"], size = 9, color = {.9, .9, .9}}
-local right_click_texture = {[[Interface\TUTORIALFRAME\UI-TUTORIAL-FRAME]], 14, 14, 0.0019531, 0.1484375, 0.6269531, 0.8222656}
 
 function _detalhes.switch:HideAllBookmarks()
 	for _, bookmark in ipairs (_detalhes.switch.buttons) do
@@ -924,60 +943,12 @@ function _detalhes.switch:ShowMe (instancia)
 	
 	_detalhes.switch.frame:SetScale (instancia.window_scale)
 	_detalhes.switch.frame:Show()
-	--_detalhes.switch.frame.ShowAnimation:Play()
-	
-	--[=[ --removed bookmark tutorials July 2019
-	if (not _detalhes.tutorial.bookmark_tutorial) then
-	
-		if (not SwitchPanelTutorial) then
-			local tutorial_frame = CreateFrame ("frame", "SwitchPanelTutorial", _detalhes.switch.frame)
-			tutorial_frame:SetFrameStrata ("FULLSCREEN_DIALOG")
-			tutorial_frame:SetAllPoints()
-			tutorial_frame:EnableMouse (true)
-			tutorial_frame:SetBackdrop ({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16 })
-			tutorial_frame:SetBackdropColor (0.05, 0.05, 0.05, 0.95)
-
-			tutorial_frame.info_label = tutorial_frame:CreateFontString (nil, "overlay", "GameFontNormal")
-			tutorial_frame.info_label:SetPoint ("topleft", tutorial_frame, "topleft", 10, -10)
-			tutorial_frame.info_label:SetText (Loc ["STRING_MINITUTORIAL_BOOKMARK2"])
-			tutorial_frame.info_label:SetJustifyH ("left")
-			
-			tutorial_frame.mouse = tutorial_frame:CreateTexture (nil, "overlay")
-			tutorial_frame.mouse:SetTexture ([[Interface\TUTORIALFRAME\UI-TUTORIAL-FRAME]])
-			tutorial_frame.mouse:SetTexCoord (0.0019531, 0.1484375, 0.6269531, 0.8222656)
-			tutorial_frame.mouse:SetSize (20, 22)
-			tutorial_frame.mouse:SetPoint ("topleft", tutorial_frame.info_label, "bottomleft", -3, -10)
-
-			tutorial_frame.close_label = tutorial_frame:CreateFontString (nil, "overlay", "GameFontHighlightSmall")
-			tutorial_frame.close_label:SetPoint ("left", tutorial_frame.mouse, "right", 4, 0)
-			tutorial_frame.close_label:SetText (Loc ["STRING_MINITUTORIAL_BOOKMARK3"])
-			tutorial_frame.close_label:SetJustifyH ("left")
-			
-			local checkbox = CreateFrame ("CheckButton", "SwitchPanelTutorialCheckBox", tutorial_frame, "ChatConfigCheckButtonTemplate")
-			checkbox:SetPoint ("topleft", tutorial_frame.mouse, "bottomleft", -1, -5)
-			_G [checkbox:GetName().."Text"]:SetText (Loc ["STRING_MINITUTORIAL_BOOKMARK4"])
-			
-			tutorial_frame:SetScript ("OnMouseDown", function()
-				if (checkbox:GetChecked()) then
-					_detalhes.tutorial.bookmark_tutorial = true
-				end
-				tutorial_frame:Hide()
-			end)
-		end
-		
-		SwitchPanelTutorial:Show()
-		SwitchPanelTutorial.info_label:SetWidth (_detalhes.switch.frame:GetWidth()-30)
-		SwitchPanelTutorial.close_label:SetWidth (_detalhes.switch.frame:GetWidth()-30)
-	end
-	--]=]
 	
 	_detalhes.switch:Resize (precisa_mostrar)
-	--instancia:StatusBarAlert (right_click_text, right_click_texture) --icon, color, time
 	
 	if (DetailsSwitchPanel.all_switch:IsShown()) then
 		return DetailsSwitchPanel.all_switch:Hide()
 	end
-	
 end
 
 -- ~setting
@@ -1025,10 +996,7 @@ end
 		end
 		
 		_detalhes:FastSwitch (nil, bookmark, number)
-		
-		--return _detalhes:FastSwitch (paramTable)
 	end
-	
 end
 
 function _detalhes:FastSwitch (button, bookmark, bookmark_number, select_new)
@@ -1050,41 +1018,34 @@ function _detalhes:FastSwitch (button, bookmark, bookmark_number, select_new)
 		_detalhes:MontaAtributosOption (_detalhes.switch.current_instancia, _detalhes.switch.Config)
 		
 			--> build raid plugins list
-			GameCooltip:AddLine (Loc ["STRING_MODE_RAID"])
-			GameCooltip:AddMenu (1, function() end, 4, true)
-			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 32/256*3, 32/256*4, 0, 1)
+			GameCooltip:AddLine(Loc["STRING_MODE_PLUGINS"])
+			GameCooltip:AddMenu(1, function() end, 4, true)
+			GameCooltip:AddIcon([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 32/256*3, 32/256*4, 0, 1)
 			
 			local available_plugins = _detalhes.RaidTables:GetAvailablePlugins()
+			local amt = 0
 
 			if (#available_plugins >= 0) then
-				local amt = 0
-				
 				for index, ptable in ipairs (available_plugins) do
-					if (ptable [3].__enabled) then
+					if (ptable [3].__enabled and not ptable[3].NoMenu) then
 						GameCooltip:AddMenu (2, _detalhes.switch.Config, _detalhes.switch.current_instancia, ptable [4], true, ptable [1], ptable [2], true) --PluginName, PluginIcon, PluginObject, PluginAbsoluteName
 						amt = amt + 1
 					end
 				end
-				
 				GameCooltip:SetWallpaper (2, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
-				
-				if (amt <= 3) then
-					GameCooltip:SetOption ("SubFollowButton", true)
-				end
 			end
-
-			--> build self plugins list
-			GameCooltip:AddLine (Loc ["STRING_MODE_SELF"])
-			GameCooltip:AddMenu (1, function() end, 1, true)
-			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\modo_icones]], 1, 1, 20, 20, 0, 32/256, 0, 1)
 
 			if (#_detalhes.SoloTables.Menu > 0) then
 				for index, ptable in ipairs (_detalhes.SoloTables.Menu) do 
-					if (ptable [3].__enabled) then
+					if (ptable [3].__enabled and not ptable[3].NoMenu) then
 						GameCooltip:AddMenu (2, _detalhes.switch.Config, _detalhes.switch.current_instancia, ptable [4], true, ptable [1], ptable [2], true)
 					end
 				end
 				GameCooltip:SetWallpaper (2, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
+			end
+
+			if (amt <= 3) then
+				GameCooltip:SetOption ("SubFollowButton", true)
 			end
 		
 		GameCooltip:SetColor (1, {.1, .1, .1, .3})
@@ -1115,9 +1076,27 @@ function _detalhes:FastSwitch (button, bookmark, bookmark_number, select_new)
 	end
 	
 	if (bookmark.atributo == "plugin") then
+
 		--> is a plugin, check if is a raid or solo plugin
 		if (_detalhes.RaidTables.NameTable [bookmark.sub_atributo]) then
-			_detalhes.RaidTables:EnableRaidMode (_detalhes.switch.current_instancia, bookmark.sub_atributo)
+
+			local raidPlugins = _detalhes.RaidTables:GetAvailablePlugins()
+			local isAvailable = false
+			if (#raidPlugins >= 0) then
+				for i, ptable in ipairs (raidPlugins) do
+					--check if the plugin is available
+					if (ptable[4] == bookmark.sub_atributo) then
+						isAvailable = true
+					end
+				end
+			end
+
+			if (isAvailable) then
+				_detalhes.RaidTables:EnableRaidMode (_detalhes.switch.current_instancia, bookmark.sub_atributo)
+			else
+				Details:Msg("plugin already in use in another window. If you are wondering where, check the Orange Gear > Window Control.") --localize-me
+			end
+
 		elseif (_detalhes.SoloTables.NameTable [bookmark.sub_atributo]) then
 			_detalhes.SoloTables:EnableSoloMode (_detalhes.switch.current_instancia, bookmark.sub_atributo)
 		else
@@ -1205,6 +1184,7 @@ function _detalhes.switch:Update()
 		local name
 		local vcolor
 		local add
+		local textColor = "white"
 		
 		if (options and options.sub_atributo) then
 			if (options.atributo == 5) then --> custom
@@ -1223,12 +1203,31 @@ function _detalhes.switch:Update()
 				end
 				
 			elseif (options.atributo == "plugin") then --> plugin
+
 				local plugin = _detalhes:GetPlugin (options.sub_atributo)
 				if (plugin) then
+
+					local raidPlugins = _detalhes.RaidTables:GetAvailablePlugins()
+					local isAvailable = false
+					if (#raidPlugins >= 0) then
+						for i, ptable in ipairs (raidPlugins) do
+							--check if the plugin is available
+							if (ptable[4] == plugin.real_name) then
+								isAvailable = true
+							end
+						end
+					end
+
+					if (isAvailable) then
+						vcolor = vertex_color_default
+					else
+						vcolor = {.35, .35, .35, .35}
+						textColor = "gray"
+					end
 					icone =  plugin.__icon
 					coords = default_coords
 					name = plugin.__name
-					vcolor = vertex_color_default
+
 				else
 					icone = [[Interface\AddOns\Details\images\icons]]
 					coords = add_coords
@@ -1268,6 +1267,7 @@ function _detalhes.switch:Update()
 		end
 		
 		button.button2.texto:SetSize (width, height)
+		DetailsFramework:SetFontColor(button.button2.texto, textColor)
 		
 		button.textureNormal:SetTexture (icone, true)
 		button.textureNormal:SetTexCoord (_unpack (coords))
@@ -1436,7 +1436,7 @@ local onenter = function (self)
 	if (not _detalhes.switch.table [self.id].atributo) then
 		GameCooltip:Reset()
 		_detalhes:CooltipPreset (1)
-		GameCooltip:AddLine ("add bookmark")
+		GameCooltip:AddLine (Loc["STRING_SWITCH_CLICKME"]) --add bookmark
 		GameCooltip:AddIcon ([[Interface\Glues\CharacterSelect\Glues-AddOn-Icons]], 1, 1, 16, 16, 0.75, 1, 0, 1, {0, 1, 0})
 
 		GameCooltip:SetOwner (self)
@@ -1513,7 +1513,7 @@ end
 local left_box_on_click = function (self, button)
 	if (button == "RightButton") then
 		--select another bookmark
-		_detalhes:FastSwitch (self, bookmark, self.bookmark_number, true)
+		_detalhes:FastSwitch (self, nil, self.bookmark_number, true)
 	else
 		--change the display
 		local bookmark = _detalhes.switch.table [self.bookmark_number]
@@ -1550,14 +1550,6 @@ local change_icon = function (self, icon1, icon2, icon3, icon4)
 end
 	
 function _detalhes.switch:NewSwitchButton (frame, index, x, y, rightButton)
-
-	local paramTable = {
-			["instancia"] = _detalhes.switch.current_instancia, 
-			["button"] = index, 
-			["atributo"] = nil, 
-			["sub_atributo"] = nil
-		}
-
 	--botao dentro da caixa
 	local button = CreateFrame ("button", "DetailsSwitchPanelButton_1_"..index, frame, "BackdropTemplate") --botao com o icone
 	button:SetSize (15, 24) 
@@ -1637,4 +1629,4 @@ function _detalhes.switch:NewSwitchButton (frame, index, x, y, rightButton)
 	
 	return button
 end
---doa
+

@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: BagBrother
 ## Notes: Stores data about your characters inventory, bank, vault and guild bank, so that you may view them from anywhere.
 ## Author: Jaliborc (João Cardoso)

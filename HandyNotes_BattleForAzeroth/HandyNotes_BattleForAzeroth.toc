@@ -1,13 +1,13 @@
-## Interface: 90005
+## Interface: 90100
 ## Title: HandyNotes: Battle for Azeroth
-## Version: 5
+## Version: 6
 ## Notes: Battle for Azeroth Notes
 ## OptionalDeps: Ace3
 ## RequiredDeps: HandyNotes
 ## X-Embeds: Ace3
 ## SavedVariables: HandyNotes_BattleForAzerothDB
 
-#embeds.xml
+embeds.xml
 core\core.xml
 plugin.xml
 

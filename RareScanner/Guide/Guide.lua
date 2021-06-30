@@ -239,6 +239,20 @@ private.NPC_GUIDE = {
 		[RSConstants.DOT..9] = { x = 0.3, y = 0.36, comment = AL["NOTE_164547_1"] }; --Mystic Rainbowhorn
 	};
 	[160770] = { [RSConstants.ENTRANCE] = { x = 0.593, y = 0.517 } }; --Darithis the Bleak
+	[180028] = { [RSConstants.FLAG] = { x = 0.4693, y = 0.3465, comment = AL["NOTE_180028_1"] } }; --Popo
+	[180032] = { [RSConstants.FLAG] = { x = 0.567, y = 0.3218, comment = AL["NOTE_180032_1"] } }; --Wild Worldcracker
+	[177336] = { [RSConstants.ENTRANCE] = { x = 0.3028, y = 0.55 } }; --Zelnithop
+	[179931] = { [RSConstants.FLAG] = { x = 0.29, y = 0.4463, comment = AL["NOTE_179931_1"] } }; --Relic Breaker Krelva
+	[179684] = { [RSConstants.FLAG] = { x = 0.6066, y = 0.231, comment = AL["NOTE_179684_1"] } }; --Malbog
+	[180246] = { [RSConstants.FLAG] = { x = 0.6521, y = 0.8446, comment = AL["NOTE_180246_1"] } }; --Carriage Crusher
+	[179883] = { [RSConstants.FLAG] = { x = 0.4473, y = 0.5142, comment = AL["NOTE_179883_1"] } }; --Zovaal's Vault
+	[180160] = { [RSConstants.FLAG] = { x = 0.5627, y = 0.6618, comment = AL["NOTE_180160_1"] } }; --Zovaal's Vault
+	[180162] = { [RSConstants.ENTRANCE] = { x = 0.4349, y = 0.5754 } }; --Zelnithop
+	[179791] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6686, y = 0.5632 }; 
+		[RSConstants.STEP1] = { x = 0.6559, y = 0.5864, comment = AL["NOTE_179791_1"] }; 
+		[RSConstants.STEP2] = { x = 0.6685, y = 0.5934, comment = AL["NOTE_179791_1"] }; 
+	}; --Zelnithop
 }
 
 ---============================================================================
@@ -534,6 +548,34 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.FLAG..2] = { x = 0.3823, y = 0.4376, itemID = 179823 };
 	}; --La cosecha
 	[354206] = { [RSConstants.PATH_START] = { x = 0.4102, y = 0.3753 } }; --Greedstone
+	[369148] = { [RSConstants.FLAG..1] = { x = 0.3815, y = 0.4161, comment = AL["NOTE_369148_1"] } }; --Glitering nest material
+	[369225] = { [RSConstants.ENTRANCE] = { x = 0.4250, y = 0.5606 } }; --Infected vestige
+	[179772] = {
+		[RSConstants.STEP1..1] = { x = 0.6101, y = 0.5869, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64250 };
+		[RSConstants.STEP1..2] = { x = 0.6218, y = 0.5771, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64250 };
+		[RSConstants.STEP1..3] = { x = 0.6011, y = 0.5652, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64250 };
+		[RSConstants.STEP1..4] = { x = 0.5921, y = 0.5679, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64250 };
+		[RSConstants.STEP2..1] = { x = 0.5236, y = 0.5326, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64249 };
+		[RSConstants.STEP2..2] = { x = 0.505, y = 0.537, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64249 };
+		[RSConstants.STEP2..3] = { x = 0.526, y = 0.497, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64249 };
+		[RSConstants.STEP2..4] = { x = 0.5418, y = 0.506, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64249 };
+		[RSConstants.STEP3..1] = { x = 0.575, y = 0.4932, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64248 };
+		[RSConstants.STEP3..2] = { x = 0.5909, y = 0.4868, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64248 };
+		[RSConstants.STEP3..3] = { x = 0.6119, y = 0.4761, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64248 };
+		[RSConstants.STEP3..4] = { x = 0.6282, y = 0.5132, comment = AL["GUIDE_SPECTRAL_KEY"], questID = 64248 };
+	}; --Spectral bound chest
+	[368648] = { [RSConstants.ENTRANCE] = { x = 0.2553, y = 0.3255 } }; --Rift hidden cache
+	[368653] = { [RSConstants.ENTRANCE] = { x = 0.208, y = 0.3933 } }; --Etherwyrm Cage
+	[369262] = { [RSConstants.FLAG] = { x = 0.6192, y = 0.6302, comment = AL["NOTE_369262_1"] } }; --Zovaal's Vault
+	[369232] = { [RSConstants.FLAG] = { x = 0.4355, y = 0.677, itemID = 187033, comment = AL["NOTE_369232_1"] } }; --Offering Box
+	[369183] = {
+		[RSConstants.DOT..1] = { x = 0.4887, y = 0.3058, comment = AL["NOTE_369183_1"] };
+		[RSConstants.DOT..2] = { x = 0.4411, y = 0.3086, comment = AL["NOTE_369183_1"] };
+	}; --Dislodged Nest
+	[369149] = { 
+		[RSConstants.PATH_START] = { x = 0.6379, y = 0.2712 };
+		[RSConstants.FLAG] = { x = 0.6611, y = 0.2825, comment = AL["NOTE_369149_1"] };
+	}; --Forgotten Feather
 }
 
 ---============================================================================
@@ -541,5 +583,5 @@ private.CONTAINER_GUIDE = {
 ---============================================================================
 
 private.EVENT_GUIDE = {
-
-	}
+	[179729] = { [RSConstants.FLAG] = { x = 0.4439, y = 0.3141, comment = AL["NOTE_179729_1"]  } }; --Hunting the Hunter
+}
