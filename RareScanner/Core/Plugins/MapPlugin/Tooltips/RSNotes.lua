@@ -77,6 +77,9 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Requires entering the rift
 	elseif (RSUtils.Contains(RSConstants.RIFT_NPCS, entityID)) then
 		return AL["NOTE_RIFT_NPCS"]
+	-- Requires entering the rift in the maw
+	elseif (RSUtils.Contains(RSConstants.RIFT_NPCS_MAW, entityID)) then
+		return AL["NOTE_RIFT_NPCS_MAW"]
 	end
 	-- Rune of constructs Containers
 	if (RSUtils.Contains(RSConstants.RUNE_CONSTRUCTS_CONTAINERS, entityID)) then

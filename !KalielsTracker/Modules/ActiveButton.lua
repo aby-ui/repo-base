@@ -187,7 +187,7 @@ local function SetFrames()
 			dbChar.activeButtonPosition = { self:GetPoint() }
 		end)
 		overlay:SetScript("OnMouseUp", function(self, button)
-			if button == "RightButton" then
+			if button == "RightButton" and dbChar.activeButtonPosition then
 				dbChar.activeButtonPosition = nil
 				ActiveFrame_Update()
 				self:ClearAllPoints()

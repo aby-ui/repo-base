@@ -233,6 +233,58 @@ do
         whileDead = 1,
     }
 
+    --[[9.1邀请按钮提示 ERR_TRAVEL_PASS_DIFFERENT_REGION 不同的地区]]
+    local INVITE_RESTRICTION_NONE = 9;
+    local INVITE_RESTRICTION_MOBILE = 10;
+    local INVITE_RESTRICTION_REGION = 11;
+    hooksecurefunc("FriendsFrame_UpdateFriendButton", function(button)
+        if button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+            local restriction = FriendsFrame_GetInviteRestriction(button.id);
+            if restriction == INVITE_RESTRICTION_NONE or restriction == INVITE_RESTRICTION_REGION then
+                button.travelPassButton:Enable();
+                if not button.travelPassButton.__hookedOnEnter then
+                    button.travelPassButton.__hookedOnEnter = true
+                    button.travelPassButton:HookScript("OnEnter", function(self)
+                    	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                    	local restriction = FriendsFrame_GetInviteRestriction(self:GetParent().id);
+                    	if ( restriction == INVITE_RESTRICTION_REGION ) then
+                    		local guid = FriendsFrame_GetPlayerGUIDFromIndex(self:GetParent().id);
+                    		local inviteType = GetDisplayedInviteType(guid);
+                    		if ( inviteType == "INVITE" ) then
+                    			GameTooltip:SetText(TRAVEL_PASS_INVITE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+                    		elseif ( inviteType == "SUGGEST_INVITE" ) then
+                    			GameTooltip:SetText(SUGGEST_INVITE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+                    		else --inviteType == "REQUEST_INVITE"
+                    			GameTooltip:SetText(REQUEST_INVITE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+                    			--For REQUEST_INVITE, we'll display other members in the group if there are any.
+                    			local group = C_SocialQueue.GetGroupForPlayer(guid);
+                    			local members = C_SocialQueue.GetGroupMembers(group);
+                    			local numDisplayed = 0;
+                    			for i=1, #members do
+                    				if ( members[i].guid ~= guid ) then
+                    					if ( numDisplayed == 0 ) then
+                    						GameTooltip:AddLine(SOCIAL_QUEUE_ALSO_IN_GROUP);
+                    					elseif ( numDisplayed >= 7 ) then
+                    						GameTooltip:AddLine(SOCIAL_QUEUE_AND_MORE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, 1);
+                    						break;
+                    					end
+                    					local name, color = SocialQueueUtil_GetRelationshipInfo(members[i].guid, nil, members[i].clubId);
+                    					GameTooltip:AddLine(color..name..FONT_COLOR_CODE_CLOSE);
+
+                    					numDisplayed = numDisplayed + 1;
+                    				end
+                    			end
+                            end
+                            GameTooltip:Show();
+                        end
+                    end)
+                end
+            else
+                button.travelPassButton:Disable();
+            end
+        end
+    end)
+
     if GameMenuButtonHelp then
         SetOrHookScript(HelpFrame, "OnShow", function()
             if(U1GetCfgValue("163UI_MoreOptions", 'profanityFilter')) then

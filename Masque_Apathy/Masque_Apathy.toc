@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Apathy для Masque.
 ## Notes-zhTW: Masque的Apathy皮膚。
 
-## Version: 9.0.6
+## Version: 9.1.0
 ## Author: StormFX
 ## Dependencies: Masque
 

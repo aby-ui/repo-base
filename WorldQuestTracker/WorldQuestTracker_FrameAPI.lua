@@ -309,7 +309,6 @@ end
 
 --atualiza a borda nas squares do world map e no mapa da zona ~border
 function WorldQuestTracker.UpdateBorder(self, rarity, worldQuestType, mapID, isCriteria, isElite, conduitType, borderTexture, borderColor, itemLink)
-
 	if (self.isWorldMapWidget) then
 	
 		rarity = rarity or self.Rarity

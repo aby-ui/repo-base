@@ -500,8 +500,8 @@ end
 
 local function UpdateNotCollectedAppearanceItemIDs()
 	private.dbchar.not_colleted_appearances_item_ids = {}
-	local numCategories = RSUtils.GetTableLength(Enum.TransmogCollectionType) + 1
-	for i = 1, numCategories + 1 do
+	local numCategories = RSUtils.GetTableLength(Enum.TransmogCollectionType)
+	for i = 1, numCategories - 1 do
 		local visualsList = C_TransmogCollection.GetCategoryAppearances(i)
 		if (visualsList) then
 			for j = 1, #visualsList do

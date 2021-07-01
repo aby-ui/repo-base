@@ -5,7 +5,7 @@
 ## Notes-zhCN: [Plexus] 在 Plexus 添加团队减益状态提示。
 ## Notes-zhTW: [Plexus] 在 Plexus 添加團隊減益狀態提示。
 ## Author: Azelkeeber(KR-Tirion),Toadkiller,Stassart,Doadin
-## Version: r88
+## Version: r89
 ## Grid Author: Pastamancer & Maia
 ## Dependencies: Grid
 ## OptionalDeps: LibBabble-Zone-3.0, LibBabble-Boss-3.0, AceLocale-3.0

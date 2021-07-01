@@ -295,7 +295,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v90002-1.2.0") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v3.0.2") and db.addonTomTom)
 
 	if self.isLoaded then
 		KT:Alert_IncompatibleAddon("TomTom", "v90002-1.1.9")

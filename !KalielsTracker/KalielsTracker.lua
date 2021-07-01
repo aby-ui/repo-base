@@ -1027,8 +1027,8 @@ local function SetHooks()
 	ObjectiveTracker_AddBlock = function(block)
 		if block.module == SCENARIO_CONTENT_TRACKER_MODULE then
 			if block.currentBlock then
-				if ScenarioWidgetContainerBlock.height < 16.5 then
-					block.height = block.contentsHeight - ScenarioWidgetContainerBlock.height
+				if BottomScenarioWidgetContainerBlock.height < 16.5 then
+					block.height = block.contentsHeight - BottomScenarioWidgetContainerBlock.height
 					block:SetHeight(block.height)
 				end
 			end
@@ -1450,10 +1450,12 @@ local function SetHooks()
 
 			if not HaveQuestRewardData(questID) then
 				GameTooltip:AddLine(RETRIEVING_DATA, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
+				GameTooltip_SetTooltipWaitingForData(GameTooltip, true);
 			else
 				GameTooltip:SetHyperlink(questLink)
 				if db.tooltipShowRewards then
 					KT.GameTooltip_AddQuestRewardsToTooltip(GameTooltip, questID, true)
+					GameTooltip_SetTooltipWaitingForData(GameTooltip, false);
 				end
 				if db.tooltipShowID then
 					GameTooltip:AddLine(" ")
@@ -2011,6 +2013,40 @@ local function SetHooks()
 	end)
 
 	-- Torghast
+	hooksecurefunc(UIWidgetTemplateStatusBarMixin, "Setup", function(self, widgetInfo, widgetContainer)
+		if self.isJailersTowerBar then
+			if not self.KTskinned then
+				local bck_Bar_OnEnter = self.Bar:GetScript("OnEnter")
+				self.Bar:SetScript("OnEnter", function(self)
+					if KTF.anchorLeft then
+						self:SetTooltipLocation(Enum.UIWidgetTooltipLocation.Right)
+						self.tooltipXOffset = 17
+					else
+						self:SetTooltipLocation(Enum.UIWidgetTooltipLocation.Left)
+						self.tooltipXOffset = -19
+					end
+					self.tooltipYOffset = 0
+					bck_Bar_OnEnter(self)
+				end)
+				self.KTskinned = true
+			end
+		end
+	end)
+
+	hooksecurefunc(UIWidgetTemplateStatusBarMixin, "EvaluateTutorials", function(self)
+		if self.isJailersTowerBar then
+			HelpTip:Hide(self, TORGHAST_DOMINANCE_BAR_TIP)
+			HelpTip:Hide(self, TORGHAST_DOMINANCE_BAR_CUTOFF_TIP)
+		end
+	end)
+
+	local bck_UIWidgetTemplateSpacerMixin_Setup = UIWidgetTemplateSpacerMixin.Setup
+	function UIWidgetTemplateSpacerMixin:Setup(widgetInfo, widgetContainer)
+		if widgetContainer.widgetSetID ~= 252 then
+			bck_UIWidgetTemplateSpacerMixin_Setup(self, widgetInfo, widgetContainer)
+		end
+	end
+
 	MawBuffs.List:SetScript("OnShow", function(self)  -- R
 		self.button:SetPushedAtlas("jailerstower-animapowerbutton-normalpressed", true)
 		self.button:SetHighlightAtlas("jailerstower-animapowerbutton-highlight", true)
@@ -2569,7 +2605,6 @@ function KT:OnInitialize()
 	--KT:Alert_ResetIncompatibleProfiles("4.2.5")
 
 	-- Blizzard frame resets
-	OTF.IsUserPlaced = function() return true end
 	OTF.KTSetParent = OTF.SetParent
 	OTF.SetParent = function() end
 	OTF.SetFrameStrata = function() end
@@ -2584,13 +2619,17 @@ function KT:OnInitialize()
 	OTF.ClearAllPoints = function() end
 	OTF.SetAllPoints = function() end
 	OTF.KTSetPoint = OTF.SetPoint
-	OTF.SetPoint = function() end
-	OTF:Show()
 	OTF.SetShown = function() end
+	OTF:Show()
 end
 
 function KT:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
+
+	-- Blizzard frame resets
+	OTF.IsUserPlaced = function() return true end
+	OTF.SetPoint = function() end
+
 	SetFrames()
 	SetHooks()
 

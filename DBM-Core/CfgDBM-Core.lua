@@ -30,7 +30,7 @@ U1RegisterAddon("DBM-Core", {
         tip="说明`显示一个窗口显示和其他团员之间的距离。右键点击窗口可以设置距离、雷达模式等选项。",
         callback = function(cfg, v, loading) if(v)then DBM.RangeCheck:Show(nil, nil, true) else DBM.RangeCheck:Hide(true) end end,
     },
-    {
+    --[[ 9.1没有DBM.Bars了, 在DBT里统一设置, 暂时不好改 {
         var="hugebar",
         text="开启大型计时条",
         default = nil,
@@ -39,7 +39,7 @@ U1RegisterAddon("DBM-Core", {
         callback = function(cfg, v, loading)
             DBM.Bars:SetOption("HugeBarsEnabled", not not v)
         end,
-    },
+    },]]
     {
         var="voice",
         text="使用额外语音包",

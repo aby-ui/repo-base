@@ -83,7 +83,7 @@ private.CONTAINER_INFO = {
 	[279352] = { zoneID = {
 				[863] = { x = 0.199, y = 0.518, artID = { 888 }, overlay = { "0.19-0.51","0.22-0.46","0.24-0.45","0.24-0.71","0.24-0.72","0.24-0.59","0.25-0.37","0.26-0.88","0.26-0.86","0.27-0.40","0.27-0.38","0.27-0.39","0.29-0.88","0.30-0.35","0.31-0.37" } };
 				[864] = { x = 0.67976254, y = 0.86172414, artID = { 889 }, overlay = { "0.67-0.86" } };
-			  }, questReset = true }; --Treasure Chest
+			  }, questReset = true }; --Arqueta
 	[279366] = { zoneID = 863, artID = { 888 }, x = 0.4044965, y = 0.33283067, overlay = { "0.35-0.29","0.36-0.29","0.37-0.27","0.38-0.26","0.38-0.33","0.39-0.26","0.39-0.25","0.39-0.34","0.40-0.27","0.40-0.33","0.40-0.26","0.43-0.3" }, questReset = true }; --Treasure Chest
 	[279367] = { zoneID = 863, artID = { 888 }, x = 0.53267807, y = 0.35422665, overlay = { "0.48-0.35","0.49-0.33","0.49-0.36","0.49-0.29","0.49-0.37","0.49-0.39","0.49-0.30","0.50-0.29","0.51-0.31","0.52-0.30","0.52-0.36","0.53-0.35","0.54-0.29" }, questReset = true }; --Treasure Chest
 	[279373] = { zoneID = 863, artID = { 888 }, x = 0.4227148, y = 0.5915461, overlay = { "0.39-0.54","0.40-0.57","0.40-0.56","0.41-0.51","0.41-0.52","0.41-0.58","0.41-0.5","0.41-0.50","0.41-0.65","0.41-0.61","0.42-0.59","0.43-0.48","0.45-0.48","0.46-0.48" }, questReset = true }; --Treasure Chest
@@ -186,7 +186,7 @@ private.CONTAINER_INFO = {
 	[284469] = { zoneID = {
 				[895] = { x = 0.7189534, y = 0.39691684, artID = { 920 }, overlay = { "0.71-0.39" } };
 				[1161] = { x = 0.59400004, y = 0.869, artID = { 1138 }, overlay = { "0.59-0.86","0.60-0.82","0.61-0.78","0.63-0.75","0.64-0.75","0.66-0.80","0.67-0.85","0.67-0.86","0.70-0.85","0.71-0.82" } };
-			  }, questReset = true }; --Small Treasure Chest
+			  }, questReset = true }; --Arqueta pequeña
 	[293852] = { zoneID = 895, artID = { 920 }, x = 0.55, y = 0.461, overlay = { "0.55-0.46" } }; --Buried Treasure Chest
 	[293880] = { zoneID = 895, artID = { 920 }, x = 0.29299998, y = 0.253, overlay = { "0.29-0.25" } }; --Buried Treasure Chest
 	[293881] = { zoneID = 895, artID = { 920 }, x = 0.905, y = 0.754, overlay = { "0.90-0.75" } }; --Buried Treasure Chest
@@ -476,7 +476,7 @@ private.CONTAINER_INFO = {
 	[352596] = { zoneID = 1536, artID = { 1323 }, x = 0.39983404, y = 0.43978482, overlay = { "0.34-0.54","0.36-0.45","0.36-0.49","0.36-0.42","0.37-0.55","0.38-0.47","0.39-0.51","0.4-0.43","0.40-0.47","0.40-0.54","0.39-0.43" }, questReset = true, questID = { 60556 }, worldmap = true }; --Sprouting Growth
 	[353231] = { zoneID = 1536, artID = { 1323 }, x = 0.40119708, y = 0.7503559, overlay = { "0.30-0.77","0.33-0.81","0.33-0.76","0.36-0.81","0.40-0.75" }, questReset = true, questID = { 60662 }, worldmap = true }; --Bonebound Chest
 	[353380] = { zoneID = 1536, artID = { 1323 }, x = 0.3079218, y = 0.28749505, overlay = { "0.30-0.28" }, questID = { 60730 } }; --Halis's Lunch Pail
-	[353626] = { zoneID = 1536, artID = { 1323 }, x = 0.38099998, y = 0.42700002, overlay = { "0.38-0.42" } }; --Locked Toolbox
+	[353626] = { zoneID = 1536, artID = { 1323 }, x = 0.38148838, y = 0.42582628, overlay = { "0.38-0.42" } }; --Locked Toolbox
 	[354852] = { zoneID = 1536, artID = { 1323 }, x = 0.7098209, y = 0.5071981, overlay = { "0.65-0.49","0.66-0.43","0.68-0.47","0.71-0.50","0.73-0.49","0.75-0.45","0.76-0.49","0.70-0.50" }, questReset = true, questID = { 61090 }, worldmap = true }; --Sprouting Growth
 	[354853] = { zoneID = 1536, artID = { 1323 }, x = 0.47682464, y = 0.3592143, overlay = { "0.40-0.31","0.40-0.25","0.41-0.38","0.44-0.22","0.45-0.35","0.46-0.31","0.47-0.35","0.47-0.29" }, questReset = true, questID = { 61089 }, worldmap = true }; --Sprouting Growth
 	[354856] = { zoneID = 1536, artID = { 1323 }, x = 0.6711283, y = 0.7850557, overlay = { "0.65-0.82","0.65-0.75","0.65-0.88","0.67-0.78","0.68-0.86","0.68-0.79","0.69-0.85","0.70-0.75","0.72-0.88" }, questReset = true, questID = { 61093 }, worldmap = true }; --Slime-Coated Crate
@@ -491,22 +491,22 @@ private.CONTAINER_INFO = {
 	[355980] = { zoneID = 1536, artID = { 1323 }, x = 0.6466931, y = 0.24756162, overlay = { "0.64-0.24" }, questID = { 61539 } }; --Ritualist's Cache
 	[356535] = { zoneID = 1536, artID = { 1323 }, x = 0.31736317, y = 0.7003526, overlay = { "0.31-0.7","0.31-0.70" }, questID = { 61491 } }; --Runespeaker's Trove
 	[364531] = { zoneID = 1536, artID = { 1323 }, x = 0.2723739, y = 0.46015033, overlay = { "0.27-0.46","0.28-0.34","0.32-0.37","0.32-0.25","0.34-0.30" }, questReset = true, questID = { 61115 }, worldmap = true }; --Runebound Coffer
-	[368205] = { zoneID = 1543, artID = { 1329 }, x = 0.304, y = 0.56, overlay = { "0.30-0.56","0.32-0.67" }, questID = { 63815 } }; --Mawsworn Cache
-	[368206] = { zoneID = 1543, artID = { 1329 }, x = 0.30200002, y = 0.65, overlay = { "0.30-0.65" } }; --Mawsworn Cache
-	[368208] = { zoneID = 1543, artID = { 1329 }, x = 0.335, y = 0.704, overlay = { "0.33-0.70" }, questID = { 63818 } }; --Mawsworn Cache
-	[368213] = { zoneID = 1543, artID = { 1329 }, x = 0.32799998, y = 0.65, overlay = { "0.32-0.65" }, questID = { 63825 } }; --Mawsworn Cache
-	[368214] = { zoneID = 1543, artID = { 1329 }, x = 0.32099998, y = 0.564, overlay = { "0.32-0.56" } }; --Mawsworn Cache
-	[368645] = { zoneID = 1543, artID = { 1329 }, x = 0.191, y = 0.462, overlay = { "0.19-0.46","0.20-0.47" }, questID = { 63993 } }; --Rift Hidden Cache
-	[368646] = { zoneID = 1543, artID = { 1329 }, x = 0.254, y = 0.492, overlay = { "0.25-0.49" }, questID = { 63995 } }; --Rift Hidden Cache
-	[368647] = { zoneID = 1543, artID = { 1329 }, x = 0.20799999, y = 0.29799998, overlay = { "0.20-0.29","0.25-0.27" }, questID = { 63996 } }; --Rift Hidden Cache
-	[368648] = { zoneID = 1543, artID = { 1329 }, x = 0.24583757, y = 0.36914524, overlay = { "0.24-0.36","0.26-0.37" }, questID = { 63997 } }; --Rift Hidden Cache
-	[368649] = { zoneID = 1543, artID = { 1329 }, x = 0.191, y = 0.335, overlay = { "0.19-0.33","0.19-0.43" }, questID = { 63998 } }; --Rift Hidden Cache
-	[368650] = { zoneID = 1543, artID = { 1329 }, x = 0.29700002, y = 0.43, overlay = { "0.29-0.43" }, questID = { 63999 } }; --Rift Hidden Cache
-	[368653] = { zoneID = 1543, artID = { 1693 }, x = 0.23187229, y = 0.42384025, overlay = { "0.23-0.42" }, zoneQuestId = { 63823 }, questID = { 64000 } }; --Etherwyrm Cage
-	[369141] = { zoneID = 1543, artID = { 1329 }, x = 0.278, y = 0.617, overlay = { "0.27-0.61","0.35-0.69" }, questID = { 64209 } }; --Mawsworn Cache
-	[369216] = { zoneID = 1543, artID = { 1329 }, x = 0.66, y = 0.48400003, overlay = { "0.66-0.48","0.69-0.45" }, questID = { 64256 } }; --Helsworn Chest
-	[369224] = { zoneID = 1543, artID = { 1329 }, x = 0.665, y = 0.622, overlay = { "0.66-0.62" }, questID = { 64261 } }; --Jeweled Heart of Ezekiel
-	[369262] = { zoneID = 1543, artID = { 1329 }, x = 0.445, y = 0.514, overlay = { "0.44-0.51" }, questID = { 64283 } }; --Zovaal's Vault
+	[368205] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.304, y = 0.56, overlay = { "0.30-0.56","0.32-0.67" }, questID = { 63815 } }; --Mawsworn Cache
+	[368206] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.30200002, y = 0.65, overlay = { "0.30-0.65" } }; --Mawsworn Cache
+	[368208] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.335, y = 0.704, overlay = { "0.33-0.70" }, questID = { 63818 } }; --Mawsworn Cache
+	[368213] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.32799998, y = 0.65, overlay = { "0.32-0.65" }, questID = { 63825 } }; --Mawsworn Cache
+	[368214] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.32099998, y = 0.564, overlay = { "0.32-0.56" } }; --Mawsworn Cache
+	[368645] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.19079283, y = 0.4626801, overlay = { "0.19-0.46","0.20-0.47" }, questID = { 63993 } }; --Rift Hidden Cache
+	[368646] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.25298768, y = 0.49193957, overlay = { "0.25-0.49" }, questID = { 63995 } }; --Rift Hidden Cache
+	[368647] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.2509279, y = 0.2703388, overlay = { "0.20-0.29","0.25-0.27" }, questID = { 63996 } }; --Rift Hidden Cache
+	[368648] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.26281217, y = 0.3767039, overlay = { "0.24-0.36","0.26-0.37" }, questID = { 63997 } }; --Rift Hidden Cache
+	[368649] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.19039944, y = 0.3339778, overlay = { "0.19-0.33","0.19-0.43" }, questID = { 63998 } }; --Rift Hidden Cache
+	[368650] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.297465, y = 0.42833155, overlay = { "0.29-0.43","0.29-0.42" }, questID = { 63999 } }; --Rift Hidden Cache
+	[368653] = { zoneID = 1543, artID = { 1693 }, x = 0.23187229, y = 0.42384025, overlay = { "0.23-0.42" }, questID = { 64000 } }; --Etherwyrm Cage
+	[369141] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.278, y = 0.617, overlay = { "0.27-0.61","0.35-0.69" }, questID = { 64209 } }; --Mawsworn Cache
+	[369216] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.66, y = 0.48400003, overlay = { "0.66-0.48","0.69-0.45" }, questID = { 64256 } }; --Helsworn Chest
+	[369224] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.66497165, y = 0.6227036, overlay = { "0.66-0.62" }, questID = { 64261 } }; --Jeweled Heart of Ezekiel
+	[369262] = { zoneID = 1543, artID = { 1329,1693 }, x = 0.445, y = 0.514, overlay = { "0.44-0.51" }, questID = { 64283 } }; --Zovaal's Vault
 	[170406] = { zoneID = 1565, artID = { 1338 }, x = 0.51455516, y = 0.24058335, overlay = { "0.29-0.47","0.31-0.37","0.53-0.60","0.31-0.38","0.62-0.39","0.51-0.24","0.52-0.59","0.28-0.47","0.62-0.40" }, questReset = true, questID = { 60829 }, worldmap = true }; --Objects
 	[171156] = { zoneID = 1565, artID = { 1338 }, x = 0.560167, y = 0.2101537, overlay = { "0.56-0.21" }, questID = { 61072 } }; --Objects
 	[171484] = { zoneID = 1565, artID = { 1338 }, x = 0.41954315, y = 0.32668573, overlay = { "0.41-0.32" }, questID = { 61147 } }; --Objects
@@ -551,26 +551,26 @@ private.CONTAINER_INFO = {
 	[352433] = { zoneID = 1650, artID = { 1614 }, x = 0.62312657, y = 0.713999, overlay = { "0.62-0.71" } }; --Cache of Eyes
 	[164624] = { zoneID = 1805, artID = { 1514 }, x = 0.5309303, y = 0.51479477, overlay = { "0.54-0.33","0.53-0.51" } }; --Objects
 	[179772] = { zoneID = 1961, artID = { 1648 }, x = 0.6205013, y = 0.5550579, overlay = { "0.62-0.55" }, questID = { 64247 } }; --Objects
-	[369148] = { zoneID = 1961, artID = { 1648 }, x = 0.384, y = 0.42900002, overlay = { "0.38-0.42" }, questID = { 64222 } }; --Glittering Nest Material
-	[369149] = { zoneID = 1961, artID = { 1648 }, x = 0.689, y = 0.3, overlay = { "0.68-0.3" }, questID = { 64234 } }; --Forgotten Feather
-	[369172] = { zoneID = 1961, artID = { 1648 }, x = 0.53, y = 0.148, overlay = { "0.53-0.14" }, questID = { 64238 } }; --Lost Memento
+	[369148] = { zoneID = 1961, artID = { 1648 }, x = 0.3834687, y = 0.42937312, overlay = { "0.38-0.42" }, questID = { 64222 } }; --Glittering Nest Material
+	[369149] = { zoneID = 1961, artID = { 1648 }, x = 0.68964726, y = 0.29888245, overlay = { "0.68-0.3","0.68-0.29" }, questID = { 64234 } }; --Forgotten Feather
+	[369172] = { zoneID = 1961, artID = { 1648 }, x = 0.5299515, y = 0.14755002, overlay = { "0.53-0.14","0.52-0.14" }, questID = { 64238 } }; --Lost Memento
 	[369183] = { zoneID = 1961, artID = { 1648 }, x = 0.474, y = 0.291, overlay = { "0.47-0.29" }, questID = { 64241 } }; --Dislodged Nest
-	[369194] = { zoneID = 1961, artID = { 1648 }, x = 0.29587767, y = 0.5341892, overlay = { "0.29-0.53" }, questID = { 64244 } }; --Anima Laden Egg
-	[369200] = { zoneID = 1961, artID = { 1648 }, x = 0.621, y = 0.553, overlay = { "0.62-0.55" }, questID = { 64247 } }; --Spectral Bound Chest
+	[369194] = { zoneID = 1961, artID = { 1648 }, x = 0.295877, y = 0.53418905, overlay = { "0.29-0.53" }, questID = { 64244 } }; --Anima Laden Egg
+	[369200] = { zoneID = 1961, artID = { 1648 }, x = 0.6205013, y = 0.5550579, overlay = { "0.62-0.55" }, questID = { 64247 } }; --Spectral Bound Chest
 	[369204] = { zoneID = 1961, artID = { 1648 }, x = 0.505, y = 0.84300005, overlay = { "0.50-0.84" } }; --Displaced Relic
-	[369225] = { zoneID = 1961, artID = { 1648 }, x = 0.402, y = 0.588, overlay = { "0.40-0.58" }, questID = { 64264 } }; --Infested Vestige
+	[369225] = { zoneID = 1961, artID = { 1648 }, x = 0.40133613, y = 0.5892598, overlay = { "0.40-0.58" }, questID = { 64264 } }; --Infested Vestige
 	[369232] = { zoneID = 1961, artID = { 1648 }, x = 0.4536096, y = 0.6716001, overlay = { "0.45-0.67" }, questID = { 64268 } }; --Offering Box
-	[369327] = { zoneID = 1961, artID = { 1648 }, x = 0.5420824, y = 0.41102922, overlay = { "0.54-0.41" }, questID = { 64351 } }; --Invasive Mawshroom
-	[369329] = { zoneID = 1961, artID = { 1648 }, x = 0.5145985, y = 0.46837917, overlay = { "0.49-0.32","0.53-0.37","0.51-0.46" }, questID = { 64354 } }; --Invasive Mawshroom
-	[369330] = { zoneID = 1961, artID = { 1648 }, x = 0.45599997, y = 0.343, overlay = { "0.45-0.34" }, questID = { 64355 } }; --Invasive Mawshroom
-	[369331] = { zoneID = 1961, artID = { 1648 }, x = 0.357, y = 0.311, overlay = { "0.35-0.31","0.39-0.34" }, questID = { 64356 } }; --Invasive Mawshroom
-	[369332] = { zoneID = 1961, artID = { 1648 }, x = 0.398, y = 0.301, overlay = { "0.39-0.30" }, questID = { 64357 } }; --Invasive Mawshroom
-	[369333] = { zoneID = 1961, artID = { 1648 }, x = 0.41, y = 0.39400002, overlay = { "0.41-0.39" }, questID = { 64358 } }; --Nest of Unusual Materials
-	[369334] = { zoneID = 1961, artID = { 1648 }, x = 0.42299998, y = 0.559, overlay = { "0.42-0.55","0.42-0.54" } }; --Nest of Unusual Materials
+	[369327] = { zoneID = 1961, artID = { 1648 }, x = 0.5696228, y = 0.5164746, overlay = { "0.54-0.41","0.56-0.51" }, questID = { 64351 } }; --Invasive Mawshroom
+	[369329] = { zoneID = 1961, artID = { 1648 }, x = 0.49885038, y = 0.32482576, overlay = { "0.49-0.32","0.53-0.37","0.51-0.46" }, questID = { 64354 } }; --Invasive Mawshroom
+	[369330] = { zoneID = 1961, artID = { 1648 }, x = 0.43647793, y = 0.36681825, overlay = { "0.45-0.34","0.43-0.36" }, questID = { 64355 } }; --Invasive Mawshroom
+	[369331] = { zoneID = 1961, artID = { 1648 }, x = 0.39771217, y = 0.3503529, overlay = { "0.35-0.31","0.39-0.34","0.39-0.35" }, questID = { 64356 } }; --Invasive Mawshroom
+	[369332] = { zoneID = 1961, artID = { 1648 }, x = 0.46524972, y = 0.4851041, overlay = { "0.39-0.30","0.46-0.48" }, questID = { 64357 } }; --Invasive Mawshroom
+	[369333] = { zoneID = 1961, artID = { 1648 }, x = 0.4099017, y = 0.39664787, overlay = { "0.41-0.39","0.40-0.39" }, questID = { 64358 } }; --Nest of Unusual Materials
+	[369334] = { zoneID = 1961, artID = { 1648 }, x = 0.42165434, y = 0.5598996, overlay = { "0.42-0.55","0.42-0.54" }, questID = { 64359 } }; --Nest of Unusual Materials
 	[369335] = { zoneID = 1961, artID = { 1648 }, x = 0.51864487, y = 0.43931636, overlay = { "0.52-0.44","0.51-0.43" }, questID = { 64360 } }; --Nest of Unusual Materials
-	[369336] = { zoneID = 1961, artID = { 1648 }, x = 0.637, y = 0.314, overlay = { "0.63-0.31" }, questID = { 64361 } }; --Nest of Unusual Materials
+	[369336] = { zoneID = 1961, artID = { 1648 }, x = 0.6376555, y = 0.31668985, overlay = { "0.63-0.31" }, questID = { 64361 } }; --Nest of Unusual Materials
 	[369337] = { zoneID = 1961, artID = { 1648 }, x = 0.524, y = 0.726, overlay = { "0.52-0.72" }, questID = { 64362 } }; --Nest of Unusual Materials
-	[369339] = { zoneID = 1961, artID = { 1648 }, x = 0.569, y = 0.561, overlay = { "0.56-0.56","0.58-0.52","0.61-0.51","0.61-0.57","0.62-0.58" }, questID = { 64363 } }; --Mawsworn Cache
+	[369339] = { zoneID = 1961, artID = { 1648 }, x = 0.5684559, y = 0.5609966, overlay = { "0.56-0.56","0.58-0.52","0.61-0.51","0.61-0.57","0.62-0.58" }, questID = { 64363 } }; --Mawsworn Cache
 	[369341] = { zoneID = 1961, artID = { 1648 }, x = 0.431, y = 0.314, overlay = { "0.43-0.31","0.47-0.74","0.47-0.66","0.51-0.64","0.54-0.72","0.56-0.69","0.56-0.74" }, questID = { 64364 } }; --Mawsworn Cache
 	[369435] = { zoneID = 1961, artID = { 1648 }, x = 0.5627102, y = 0.6618555, overlay = { "0.56-0.66" }, questID = { 64455 } }; --Uncorrupted Razorwing Egg
 }

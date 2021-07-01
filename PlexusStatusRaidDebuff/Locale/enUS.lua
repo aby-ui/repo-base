@@ -1,8 +1,5 @@
 local ignore_missing = true
---[==[@debug@
-ignore_missing = false
---@end-debug@]==]
-
+local LibStub = _G.LibStub
 local L = LibStub("AceLocale-3.0"):NewLocale("GridStatusRaidDebuff", "enUS", true, ignore_missing)
 if not L then return end
 

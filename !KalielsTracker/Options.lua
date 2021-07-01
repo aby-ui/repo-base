@@ -1357,12 +1357,6 @@ local options = {
 							disabled = true,
 							order = 2.5,
 						},
-						svui = {
-							name = "SuperVillain UI",
-							type = "toggle",
-							disabled = true,
-							order = 2.6,
-						},
 					},
 				},
 			},

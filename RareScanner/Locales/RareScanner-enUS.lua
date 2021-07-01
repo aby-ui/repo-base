@@ -524,6 +524,7 @@ if AL then
 	AL["NOTE_173488"] = "You have to pay 99x[Infused Ruby]. This coin is obtained completing world quests and killing mobs around the Halls of Atonement."
 	AL["NOTE_173704"] = "You have to spend 30x[Infused Ruby]. This coin is obtained completing world quests and killing mobs around the Halls of Atonement."
 	AL["NOTE_177336"] = "It is in a cave."
+	AL["NOTE_179464"] = "After this event [Konthrogz the Obliterator] will show up."
 	AL["NOTE_179684"] = "You have to complete the event [Hunting the Hunter] to spawn him."
 	AL["NOTE_179684_1"] = "[Hunting the Hunter] starts here."
 	AL["NOTE_179729"] = "Complete this event to summon [Malbog]."
@@ -534,8 +535,8 @@ if AL then
 	AL["NOTE_179779"] = "This is the liberated version."
 	AL["NOTE_179791"] = "This is the imprisoned version. You can free him using the [Lock control]s to open the gates."
 	AL["NOTE_179791_1"] = "Lock control"
-	AL["NOTE_179802"] = "You have to buy a [Teleporter Repair Kit] from [Archivist Roh-Suir] to reach him."
-	AL["NOTE_179859"] = "You have to buy a [Teleporter Repair Kit] from [Archivist Roh-Suir] to reach him."
+	AL["NOTE_179802"] = "You have to buy a [Teleporter Repair Kit] from [Archivist Roh-Suir] and use it on the [Ancient Teleporter] to access its chamber."
+	AL["NOTE_179859"] = "You have to buy a [Teleporter Repair Kit] from [Archivist Roh-Suir] and use it on the [Ancient Teleporter] to access its chamber."
 	AL["NOTE_179883"] = "Only visible when using the item [Unbalanced Riftstone] that is part of the quest [A Shady Place] or using the item [Repaired Riftkey] on a [Rift Portal] in Korthia and walking all the way here. Bring it to [Ve'nari] to unlock it."
 	AL["NOTE_179883_1"] = "Ve'nari"
 	AL["NOTE_179912"] = "This NPC requires nameplates on to be scannable by RareScanner. You have to find her and click on her for six days in total."
@@ -551,6 +552,8 @@ if AL then
 	AL["NOTE_180032_1"] = "Popo"
 	AL["NOTE_180042"] = "He appears after completing the event [Corpse Heap]."
 	AL["NOTE_180064"] = "Once you complete this event [Fleshwing] will show up. Only [Necrolord] players can start this event."
+	AL["NOTE_180144"] = "This is the entrance to the chamber where you will find [Yarxhov the Pillager]"
+	AL["NOTE_180145"] = "This is the entrance to the chamber where you will find [Xyraxz the Unknowable]"
 	AL["NOTE_180160"] = "In order to attack him you have to interact with [Uncorrupted razorwing egg] so he comes closer to you."
 	AL["NOTE_180160_1"] = "Uncorrupted razorwing egg"
 	AL["NOTE_180162"] = "It is in a cave."
@@ -744,6 +747,7 @@ if AL then
 	AL["NOTE_ORATOR_KLOE_NPCS"] = "You have to talk to [Orator Kloe] to start the event. Every time you talk to him a different rare NPC will show up, appearing in this order: [Aethon], [Cloudtail], [Nemaeus] and [Sigilback]."
 	AL["NOTE_RIFT_HIDDEN_CONTAINERS"] = "Only visible when using the item [Unbalanced Riftstone] that is part of the quest [A Shady Place] or using the item [Repaired Riftkey] on a [Rift Portal] in Korthia and walking all the way here."
 	AL["NOTE_RIFT_NPCS"] = "You have to buy a [Repaired Riftkey] from [Archivist Roh-Suir]. Use the key with a [Rift Portal] to enter [The Rift]."
+	AL["NOTE_RIFT_NPCS_MAW"] = "You have to buy a [Repaired Riftkey] from [Archivist Roh-Suir]. Use the key with a [Rift Portal] to enter [The Rift]. Then walk all the way back here to find him."
 	AL["NOTE_RIPE_PURIAN_CONTAINERS"] = "You have to bring a [Ripe Purian] and place it in the tribute bowl. An [Appreciative Steward] will show up and will give you a [Steward's Silver Key] to unlock the treasure."
 	AL["NOTE_RUNE_CONSTRUCTS_CONTAINERS"] = "You have to disable 3x[Rune of constructs] that are around the area (they are tiles on the floors and walls). As soon as you disable the last one the chest will be unlock."
 	AL["NOTE_SWELLING_TEAR_NPCS"] = "It appears only when the event [Swelling Tear] is active."
@@ -796,7 +800,7 @@ if AL then
 	AL["ZONE_943"] = "%s (Warfront)"
 	AL["ZONES_FILTER"] = "Zone filters"
 	AL["ZONES_FILTERS_SEARCH_DESC"] = "Type the name of the zone to filter the list below"
-	
+
 	-- CONTINENT names
 	AL["ZONES_CONTINENT_LIST"] = {
 		[9999] = "Class Halls"; --Class Halls

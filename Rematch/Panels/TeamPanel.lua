@@ -419,6 +419,10 @@ function rematch:ShowTeam(key)
 			settings.Minimized = nil
 			settings.ActivePanel = 2
 			rematch.Frame:ConfigureFrame()
+		elseif rematch.Journal:IsVisible() then
+			settings.JournalPanel = 1
+			rematch:SelectPanelTab(rematch.Journal.PanelTabs,1)
+			rematch.Journal:ConfigureJournal()
 		else
 			return -- neither frame or journal on screen
 		end

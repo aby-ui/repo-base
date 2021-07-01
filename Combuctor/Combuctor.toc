@@ -4,7 +4,7 @@
 ## Notes: Single window displays for your inventory and bank
 ## OptionalDeps: BagBrother, WoWUnit
 ## SavedVariables: Combuctor_Sets
-## Version: 9.0.4
+## Version: 9.1.0
 
 addons\main\main.xml
 

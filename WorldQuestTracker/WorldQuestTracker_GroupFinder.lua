@@ -766,9 +766,8 @@ end
 		end
 	end)
 
-function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
+local playerEnteredWorldQuestZone = function(questID, npcID, npcName)
 	--> update the frame
-
 	local title, isNpc, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex
 	if (npcID) then
 		--> check if the group finder can search for rares
@@ -811,6 +810,7 @@ function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
 		
 		if (type (questID) == "number") then
 			title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
+
 			if (isElite) then
 				groupButtons_OpenGroupFinder:Disable()
 				C_Timer.After (3, function()
@@ -882,6 +882,13 @@ function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
 			ff.QuestCancelledHidingTimer:Cancel()
 		end
 	end
+end
+
+function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
+	C_Timer.After(0.6, function()
+		--delay the call for the enter zone
+		playerEnteredWorldQuestZone(questID, npcID, npcName)
+	end)
 end
 
 function ff:PlayerLeftWorldQuestZone (questID, questCompleted)
