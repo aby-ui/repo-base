@@ -245,9 +245,9 @@ do
                 if not button.travelPassButton.__hookedOnEnter then
                     button.travelPassButton.__hookedOnEnter = true
                     button.travelPassButton:HookScript("OnEnter", function(self)
-                    	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
                     	local restriction = FriendsFrame_GetInviteRestriction(self:GetParent().id);
                     	if ( restriction == INVITE_RESTRICTION_REGION ) then
+                            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
                     		local guid = FriendsFrame_GetPlayerGUIDFromIndex(self:GetParent().id);
                     		local inviteType = GetDisplayedInviteType(guid);
                     		if ( inviteType == "INVITE" ) then
