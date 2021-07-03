@@ -103,6 +103,10 @@ local function RenderLinks(str, nameOnly)
                     return '|T'..info.iconFileID..':0:0:1:-1|t '..link
                 end
             end
+        elseif type == 'faction' then
+            local name = GetFactionInfoByID(id)
+            if nameOnly then return name end
+            return ns.color.NPC(name) -- TODO: colorize based on standing?
         elseif type == 'item' then
             local name, link, _, _, _, _, _, _, _, icon = GetItemInfo(id)
             if link and icon then

@@ -1,6 +1,6 @@
 BuildEnv(...)
 
-
+---@class CountdownButton: Button
 CountdownButton = Addon:NewClass('UI.CountdownButton', 'Button')
 
 function CountdownButton:Constructor()

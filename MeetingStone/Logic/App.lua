@@ -3,18 +3,18 @@
 @Author  : DengSir (ldz5@qq.com)
 @Link    : https://dengsir.github.io
 @Version : $Id$
-]==]
-
-BuildEnv(...)
+]==] BuildEnv(...)
 
 App = Addon:NewModule('App', 'NetEaseSocket-2.0', 'AceHook-3.0', 'AceTimer-3.0', 'AceEvent-3.0', 'AceBucket-3.0')
 
 function App:OnInitialize()
+    if not ADDON_REGIONSUPPORT then
+        return
+    end
+
     self:ListenSocket('NERB', ADDON_SERVER)
     self:ConnectServer()
-end
 
-function App:OnEnable()
     self.appWhispers = {}
     -- self:RegisterServer('APP_WHISPER')
     -- self:RegisterServer('APP_WHISPER_FAILED')

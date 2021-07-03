@@ -7,6 +7,10 @@
 
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 AppParent = Addon:NewModule(GUI:GetClass('LeftTabPanel'):New(MainPanel), 'AppParent', 'AceEvent-3.0', 'AceHook-3.0', 'LibInvoke-1.0')
 AppParent:Disable()
 AppParent:Hide()

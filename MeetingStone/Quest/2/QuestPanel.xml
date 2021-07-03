@@ -1,4 +1,4 @@
-<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Button name="MeetingStoneQuestItemTemplate" virtual="true">
         <Frames>
@@ -56,7 +56,7 @@
         <HighlightTexture parentKey="HighlightTexture" setAllPoints="true" file="Interface\PVPFrame\PvPMegaQueue" alphaMode="ADD">
             <Anchors>
                 <Anchor point="TOPLEFT" x="10" y="-7"/>
-                <Anchor point="BOTTOMRIGHT" x="-10" y="5" />
+                <Anchor point="BOTTOMRIGHT" x="-10" y="5"/>
             </Anchors>
             <TexCoords left="0.00195313" right="0.63867188" top="0.70703125" bottom="0.76757813"/>
         </HighlightTexture>
@@ -64,7 +64,7 @@
     <Frame name="MeetingStoneQuestPanelTemplate" hidden="true" virtual="true">
         <Frames>
             <Frame parentKey="Body" inherits="InsetFrameTemplate">
-                <Size y="220" />
+                <Size y="220"/>
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
                     <Anchor point="TOPRIGHT"/>
@@ -77,7 +77,7 @@
                     <Layer level="ARTWORK">
                         <FontString parentKey="Time" inherits="GameFontNormal" text="活动时间">
                             <Anchors>
-                                <Anchor point="TOPRIGHT" x="-10" y="-10" />
+                                <Anchor point="TOPRIGHT" x="-10" y="-10"/>
                             </Anchors>
                         </FontString>
                     </Layer>
@@ -105,19 +105,19 @@
             <Frame parentKey="Summary" inherits="InsetFrameTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.Body" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
-                    <Anchor point="BOTTOMRIGHT" x="0" y="-20" />
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-20"/>
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
                         <FontString inherits="GameFontNormal" text="活动说明">
                             <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="5" />
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="5"/>
                             </Anchors>
                         </FontString>
                         <FontString parentKey="Text" justifyV="TOP" inherits="GameFontHighlightLeft">
                             <Anchors>
-                                <Anchor point="TOPLEFT" x="10" y="-10" />
-                                <Anchor point="BOTTOMRIGHT" x="-10" y="10" />
+                                <Anchor point="TOPLEFT" x="10" y="-10"/>
+                                <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
                             </Anchors>
                         </FontString>
                     </Layer>
@@ -125,8 +125,8 @@
                 <Frames>
                     <ScrollFrame inherits="UIPanelScrollFrameTemplate">
                         <Anchors>
-                            <Anchor point="TOPLEFT" x="10" y="-10" />
-                            <Anchor point="BOTTOMRIGHT" x="-30" y="10" />
+                            <Anchor point="TOPLEFT" x="10" y="-10"/>
+                            <Anchor point="BOTTOMRIGHT" x="-30" y="10"/>
                         </Anchors>
                         <ScrollChild>
                             <Frame>
@@ -138,8 +138,8 @@
                                     <Layer level="ARTWORK">
                                         <FontString parentKey="Text" justifyV="TOP" wordwrap="true" inherits="GameFontHighlightLeft">
                                             <Anchors>
-                                                <Anchor point="TOPLEFT" />
-                                                <Anchor point="TOPRIGHT" />
+                                                <Anchor point="TOPLEFT"/>
+                                                <Anchor point="TOPRIGHT"/>
                                             </Anchors>
                                         </FontString>
                                     </Layer>
@@ -164,7 +164,7 @@
     <Frame name="MeetingStoneQuestPanelTemplate2" hidden="true" virtual="true">
         <Frames>
             <Frame parentKey="Body" inherits="InsetFrameTemplate">
-                <Size y="220" />
+                <Size y="220"/>
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
                     <Anchor point="TOPRIGHT"/>
@@ -177,18 +177,18 @@
                     <Layer level="ARTWORK">
                         <FontString parentKey="Time" inherits="GameFontNormal" text="活动时间">
                             <Anchors>
-                                <Anchor point="TOPRIGHT" x="-10" y="-10" />
+                                <Anchor point="TOPRIGHT" x="-10" y="-10"/>
                             </Anchors>
                         </FontString>
                         <FontString parentKey="Label1" inherits="GameFontNormalLargeLeft" text="活动介绍：">
                             <Anchors>
-                                <Anchor point="TOPLEFT" x="10" y="-40" />
+                                <Anchor point="TOPLEFT" x="10" y="-40"/>
                             </Anchors>
                         </FontString>
                         <FontString parentKey="Label2" inherits="GameFontHighlightSmallLeft" text="赛事活动期间内固定小队报名并完成指定史诗钥石地下城挑战任务，冲榜获得稀有宠物奖励！">
                             <Anchors>
-                                <Anchor point="TOPLEFT" relativeKey="$parent.Label1" relativePoint="BOTTOMLEFT" x="0" y="-5" />
-                                <Anchor point="RIGHT" x="-10" y="0" />
+                                <Anchor point="TOPLEFT" relativeKey="$parent.Label1" relativePoint="BOTTOMLEFT" x="0" y="-5"/>
+                                <Anchor point="RIGHT" x="-10" y="0"/>
                             </Anchors>
                         </FontString>
                     </Layer>
@@ -222,19 +222,19 @@
             <Frame parentKey="Summary" inherits="InsetFrameTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.Body" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
-                    <Anchor point="BOTTOMRIGHT" x="0" y="-20" />
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-20"/>
                 </Anchors>
                 <Layers>
                     <Layer level="ARTWORK">
                         <FontString inherits="GameFontNormal" text="活动说明">
                             <Anchors>
-                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="5" />
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="5"/>
                             </Anchors>
                         </FontString>
                         <FontString parentKey="Text" justifyV="TOP" inherits="GameFontHighlightLeft">
                             <Anchors>
-                                <Anchor point="TOPLEFT" x="10" y="-10" />
-                                <Anchor point="BOTTOMRIGHT" x="-10" y="10" />
+                                <Anchor point="TOPLEFT" x="10" y="-10"/>
+                                <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
                             </Anchors>
                         </FontString>
                     </Layer>
@@ -242,8 +242,8 @@
                 <Frames>
                     <ScrollFrame inherits="UIPanelScrollFrameTemplate">
                         <Anchors>
-                            <Anchor point="TOPLEFT" x="10" y="-10" />
-                            <Anchor point="BOTTOMRIGHT" x="-30" y="10" />
+                            <Anchor point="TOPLEFT" x="10" y="-10"/>
+                            <Anchor point="BOTTOMRIGHT" x="-30" y="10"/>
                         </Anchors>
                         <ScrollChild>
                             <Frame>
@@ -255,8 +255,8 @@
                                     <Layer level="ARTWORK">
                                         <FontString parentKey="Text" justifyV="TOP" wordwrap="true" inherits="GameFontHighlightLeft">
                                             <Anchors>
-                                                <Anchor point="TOPLEFT" />
-                                                <Anchor point="TOPRIGHT" />
+                                                <Anchor point="TOPLEFT"/>
+                                                <Anchor point="TOPRIGHT"/>
                                             </Anchors>
                                         </FontString>
                                     </Layer>

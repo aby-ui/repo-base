@@ -2664,7 +2664,7 @@ if (DetailsFramework.IsTBCWow()) then
 		DruidFeralCombat = 103,
 		DruidRestoration = 105,
 
-		HunterBeastMaster = 253,
+		HunterBeastMastery = 253,
 		HunterMarksmanship = 254,
 		HunterSurvival = 255,
 
@@ -2704,7 +2704,7 @@ if (DetailsFramework.IsTBCWow()) then
 		[103] = "DruidFeralCombat",
 		[105] = "DruidRestoration",
 
-		[253] = "HunterBeastMaster",
+		[253] = "HunterBeastMastery",
 		[254] = "HunterMarksmanship",
 		[255] = "HunterSurvival",
 
@@ -2743,6 +2743,6 @@ if (DetailsFramework.IsTBCWow()) then
 	end
 
 	function Details.GetClassicSpecByTalentTexture (talentTexture)
-		return Details.textureToSpec [talentTexture] or 0
+		return Details.textureToSpec [talentTexture] or nil
 	end
 end

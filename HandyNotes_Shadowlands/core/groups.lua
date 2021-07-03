@@ -40,6 +40,15 @@ function Group:Initialize(name, icon, attrs)
     self.defaults.display = self.defaults.display ~= false
 end
 
+function Group:HasEnabledNodes(map)
+    for coord, node in pairs(map.nodes) do
+        if node.group == self and map:CanDisplay(node, coord) then
+            return true
+        end
+    end
+    return false
+end
+
 -- Override to hide this group in the UI under certain circumstances
 function Group:IsEnabled()
     if self.class and self.class ~= ns.class then return false end

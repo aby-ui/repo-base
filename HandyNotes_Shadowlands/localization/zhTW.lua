@@ -238,32 +238,45 @@ L["zolla_note"] = "我們非常嚴肅看待我們的防禦。無論大小，我�
 -------------------------------------------------------------------------------
 
 L["chamber_note"] = "使用從 {npc:178257} 取得的 {item:186718} 來修理古老傳送器. 使用維修好的古老傳送器來進入房間."
+L["consumption_note"] = nil
 L["corpse_heap_note"] = "和 {npc:180079} 對話來開始收集事件."
 L["darkmaul_note"] = "從入侵的淵喉菇收集 {item:187153} 並且餵給 {npc:180063}. 你必須要完成此事件6次來取得坐騎."
 L["dislodged_nest_note"] = "點選附近的劇毒飛蛾拿到 {spell:355181}. 對 {npc:178547} 使用額外動作按鈕上的 {spell:355131} 來騎上牠並操縱牠去撞巢穴所在的樹."
 L["flayedwing_transporter_note"] = "點選 {npc:178633} 來進入或離開玄秘寶庫."
 L["forgotten_feather_note"] = "在一個可以從守衛者歇息地跳下去的漂浮小島上."
-L["hunting_hunter_note"] = "和 {npc:179729} 說話來拿到 {spell:355078} 接著跟隨著足跡直到你找到 fleshy remains."
+L["hunting_hunter_note"] = "和 {npc:179729} 說話來拿到 {spell:355078} 接著跟隨著足跡直到你找到血肉殘駭."
 L["konthrogz_note"] = "從一個吞食者傳送門事件中刷新."
 L["maelie_wanderer"] = "{npc:179912} 會刷新在所標註的位置. 當你點選牠後會對牠使用 {spell:355862} 持續使用六天後，回去找 {npc:179930} 來取得坐騎."
 L["no_stoneborne_note"] = "和 {npc:179974} 交談來開始事件."
-L["offering_box_note"] = "需要一隻在附近廢墟西邊牆頂可以找到的 {item:187033}"
+L["offering_box_note"] = "需要 {item:187033}, 可以在附近廢墟西邊牆頂找到."
 L["pop_quiz_note"] = "猜謎比賽會隨機刷新在地圖上. 點選被遺棄的帷幕法杖並回答 {npc:180162} 的問題."
 L["popo_note"] = "和 {npc:180028} 交談來觸發護送事件."
-L["razorwing_note"] = "交出吞食者掉落的 {item:187054}."
+L["razorwing_note"] = "交出吞食者掉落的 {item:187054}, 需6次."
 L["reliwik_note"] = "點選未腐化的刃翼蛋來拉他下來."
-L["riftbound_cache"] = "隙縛寶箱"
 L["spectral_bound_chest"] = "點選3個附近的 {item:179369} 來解鎖箱子."
 L["spectral_bound_note"] = "靈縛寶箱"
 L["towering_exterminator_note"] = "從淵誓傳送門事件中刷新."
 L["wilderling_note"] = "點選 {npc:180014} 來開始馴服事件."
 
-L["archivist_key_note"] = "從 {npc:178257} 購買 {item:186984} 來解鎖."
-L["korthia_rift_note"] = "從 {npc:178257} 購買 {item:186731} 來進入裂痕."
+L["archivist_key_note"] = "從 {npc:178257} 購買 %s 來解鎖."
 L["korthian_shrine_note"] = "點選祭壇以取得 {spell:352367} 來看到通往 alter 的隱藏路徑."
 L["num_research"] = "%d 編目研究"
 L["options_icons_relic"] = "{achievement:15066}"
-L["options_icons_relic_desc"] = "顯示成就的所有20個遺物位置."
+L["options_icons_relic_desc"] = "顯示成就的所有20個文物位置."
+
+L["rift_portal_note"] = [[
+進入 |cFFFFFF00裂隙|r, 一個科西亞和淵喉存在的備用位面, 有額外的稀有, 文物和寶箱.
+
+需要使用 {item:186731}, 當你 {faction:2472} 達到等級4時可以在 {npc:178257} 處購買. 此鑰匙也有很低的機率從此區域的稀有掉落或是從寶箱開出.
+
+|cFFFF8C00並非所有裂隙傳送門在任何時間都是啟動的.|r
+]]
+L["options_icons_rift_portal"] = "{npc:179595}"
+L["options_icons_rift_portal_desc"] = "顯示用來進入 |cFFFFFF00裂隙|r 的 {npc:179595} 位置"
+
+L["riftbound_cache"] = "隙縛寶箱"
+L["options_icons_riftbound_cache"] = "隙縛寶箱"
+L["options_icons_riftbound_cache_desc"] = "顯示在 |cFFFFFF00裂隙|r 內的寶箱位置."
 
 L["invasive_mawshroom"] = "入侵的淵喉菇"
 L["mawsworn_cache"] = "淵誓儲物箱"
@@ -272,14 +285,14 @@ L["relic_cache"] = "文物箱"
 L["shardhide_stash"] = "晶皮儲藏物"
 L["shared_note"] = "你一天可以收集5個這些寶藏"
 L["unusual_nest"] = "不尋常材料之巢"
-L["options_icons_invasive_mawshroom_desc"] = nil
-L["options_icons_invasive_mawshroom"] = nil
-L["options_icons_korthia_dailies_desc"] = nil
-L["options_icons_korthia_dailies"] = nil
-L["options_icons_mawsworn_cache_desc"] = nil
-L["options_icons_mawsworn_cache"] = nil
-L["options_icons_nest_materials_desc"] = nil
-L["options_icons_nest_materials"] = nil
+L["options_icons_invasive_mawshroom_desc"] = "顯示入侵的淵喉菇的位置"
+L["options_icons_invasive_mawshroom"] = "入侵的淵喉菇 (每日)"
+L["options_icons_korthia_dailies_desc"] = "顯示沒有標記的寶箱位置"
+L["options_icons_korthia_dailies"] = "隱藏寶箱 (每日)"
+L["options_icons_mawsworn_cache_desc"] = "顯示淵誓儲物箱的位置"
+L["options_icons_mawsworn_cache"] = "淵誓儲物箱 (每日)"
+L["options_icons_nest_materials_desc"] = "顯示不尋常材料之巢的位置"
+L["options_icons_nest_materials"] = "不尋常材料之巢 (每日)"
 
 -------------------------------------------------------------------------------
 --------------------------------- MALDRAXXUS ----------------------------------
@@ -452,14 +465,14 @@ L["maw_intro_note"] = "從 {npc:162804} 開始指引任務線以解鎖淵喉的�
 
 L["apholeias_note"] = "和3名其他玩家，站在平臺的角落並施放 {spell:331783} 召喚稀有。"
 L["dekaris_note"] = "在一個大型的突出岩石上。"
-L["deomen_note"] = nil
+L["deomen_note"] = "進入南邊的地窖，開啟牆壁上兩邊的控制桿來開啟他的籠子."
 L["drifting_sorrow_note"] = "在懸浮寶珠附近殺死 {npc:175246} 來啟動首領。"
 L["ekphoras_note"] = "和3名其他玩家，站在平臺的角落並施放 {spell:330650} 召喚稀有。"
-L["etherwyrm_label"] = nil
-L["etherwyrm_note"] = nil
-L["fallen_charger_note"] = nil
+L["etherwyrm_label"] = "翼靈蛇牢籠"
+L["etherwyrm_note"] = "需要暗夜妖精進攻戰進行中. 在裂隙時擊殺 {npc:179030} 來獲得 {item:186190}. 在荒寂谷地洞穴對翼靈蛇牢籠使用鑰匙 ({npc:175821} 只存在現實位面)."
+L["fallen_charger_note"] = "在全地圖大喊後, 他會沿者兩條路線中的一條移動, 如果沒有被人撞到則在到達科西亞後消失."
 L["ikras_note"] = "環繞墮滅堡飛行。這是個攻擊他的好位置。"
-L["lilabom_note"] = nil
+L["lilabom_note"] = "收集全部5個部份來完成寵物"
 L["orophea_note"] = "從東南方的拾取 {spell:337143} 並提供給 {npc:172577} 啟動。"
 L["sanngror_note"] = "如果他是無法攻擊的，等到她停止對靈魂做實驗即可。"
 L["talaporas_note"] = "和3名其他玩家，站在平台的角落並施放 {spell:331800} 召喚稀有。"
@@ -476,16 +489,12 @@ L["exos_note"] = [[
 組合全部三個刻印製造 {item:182329}，可以用來在統禦祭壇召喚稀有。使用 {npc:173892} 到達上層。
 ]]
 
-L["soul_well_note"] = "接住從靈魂之井爆發出來的冥魄。"
-L["obliterated_soul_shards_note"] = "在橋上收集 {item:177834}。"
-
 L["animaflow_teleporter_note"] = "啟動即可直接旅行到淵喉的其他位置"
 L["chaotic_riftstone_note"] ="啟動 {spell:344157} 來快速穿越淵喉。"
 L["venari_note"] = [[
 使用 {currency:1767} 購買淵喉和托迦司升級。
 
-|cFFFF8C00在分身上，帳號通用的托迦司升級將顯示未完成|r
-|cFFFF8C00解鎖後，下面的完成狀態將更新！|r
+|cFFFF8C00帳號通用的托迦司升級在分身上會顯示為未完成!|r
 ]]
 L["venari_upgrade"] = "{npc:162804} 升級"
 L["torghast"] = "托迦司"
@@ -516,6 +525,7 @@ L["nexus_area_gorgoa_mouth"] = nil
 L["nexus_area_perdition_wall"] = nil
 L["nexus_area_torment_rock"] = nil
 L["nexus_area_zone_edge"] = nil
+L["nexus_area_zovaal_edge"] = nil
 L["nexus_area_zovaal_wall"] = nil
 -- Locations given relative to a named cave/cavern
 L["nexus_cave_anguish_lower"] = nil
@@ -527,13 +537,12 @@ L["nexus_cave_forlorn"] = nil
 L["nexus_cave_howl_outside"] = nil
 L["nexus_cave_howl"] = nil
 L["nexus_cave_ledge"] = nil
-L["nexus_cave_mothers"] = nil
 L["nexus_cave_prodigum"] = nil
-L["nexus_cave_raveners"] = nil
 L["nexus_cave_soulstained"] = nil
 L["nexus_cave_torturer"] = nil
 -- Locations given relative to a named NPC
 L["nexus_npc_akros"] = nil
+L["nexus_npc_dekaris"] = nil
 L["nexus_npc_dolos"] = nil
 L["nexus_npc_ekphoras"] = nil
 L["nexus_npc_incinerator"] = nil
@@ -558,10 +567,12 @@ L["nexus_misc_grapple_rock"] = nil
 L["nexus_misc_ledge_below"] = nil
 L["nexus_misc_three_chains"] = nil
 
+L["rift_hidden_cache"] = "裂隙隱藏寶箱"
+L["options_icons_rift_hidden_cache"] = "裂隙隱藏寶箱"
+L["options_icons_rift_hidden_cache_desc"] = "顯示在 |cFFFFFF00裂隙|r 內的寶箱位置"
+
 L["options_icons_bonus_boss"] = "獎勵精英"
 L["options_icons_bonus_boss_desc"] = "顯示獎勵精英位置。"
-L["options_icons_bonus_event"] = "獎勵事件"
-L["options_icons_bonus_event_desc"] = "顯示獎勵事件位置。"
 L["options_icons_riftstone"] = "{npc:174962}"
 L["options_icons_riftstone_desc"] = "顯示混亂裂隙石傳送者位置。"
 L["options_icons_grapples"] = "{npc:176308}"
@@ -573,13 +584,13 @@ L["options_icons_stygia_nexus_desc"] = "顯示 {item:184168} 坐騎所需的冥�
 L["options_icons_stygian_caches"] = "冥魄儲藏箱"
 L["options_icons_stygian_caches_desc"] = "顯示含有額外冥魄寶箱的位置"
 
-L["domination_chest"] = nil
-L["domination_chest_note"] = nil
-L["gold_band_note"] = nil
-L["harrower_key_ring"] = nil
-L["harrower_key_note"] = nil
-L["helgarde_supply"] = nil
-L["maw_mad_note"] = nil
-L["nilganihmaht_note"] = nil
-L["options_icons_nilganihmaht"] = nil
-L["options_icons_nilganihmaht_desc"] = nil
+L["domination_chest"] = "統御寶箱"
+L["domination_chest_note"] = "需要4個 {item:186727} 來打開全部封印"
+L["gold_band_note"] = "在山頂的一個尖端上"
+L["harrower_key_ring"] = "Harrower's Key Ring"
+L["harrower_key_note"] = "在 {npc:178311} 旁邊的牆上."
+L["helgarde_supply"] = "黑爾嘉德補給箱"
+L["maw_mad_note"] = "在墮滅堡附近隨機奔跑, 總是在這裡重生."
+L["nilganihmaht_note"] = "你必須蒐集5個戒指, 並且把它們帶給在裂隙中的 {npc:179572} ."
+L["options_icons_nilganihmaht"] = "{npc:179572}"
+L["options_icons_nilganihmaht_desc"] = "顯示 {spell:354354} 坐騎部件的位置."

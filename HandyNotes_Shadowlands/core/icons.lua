@@ -53,10 +53,11 @@ ns.icons = { -- name => path
     peg_rd = {Icon('peg_red'), Glow('peg')},
     peg_yw = {Icon('peg_yellow'), Glow('peg')},
 
-    portal_b = {Icon('portal_blue'), Glow('portal')},
-    portal_g = {Icon('portal_green'), Glow('portal')},
-    portal_p = {Icon('portal_purple'), Glow('portal')},
-    portal_r = {Icon('portal_red'), Glow('portal')},
+    portal_bl = {Icon('portal_blue'), Glow('portal')},
+    portal_gy = {Icon('portal_gray'), Glow('portal')},
+    portal_gn = {Icon('portal_green'), Glow('portal')},
+    portal_pp = {Icon('portal_purple'), Glow('portal')},
+    portal_rd = {Icon('portal_red'), Glow('portal')},
 
     quest_ab = {Icon('quest_available_blue'), Glow('quest_available')},
     quest_ag = {Icon('quest_available_green'), Glow('quest_available')},

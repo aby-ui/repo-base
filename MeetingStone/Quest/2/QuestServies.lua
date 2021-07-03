@@ -5,7 +5,11 @@
 --
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
 
+---@class QuestServies: AceAddon, AceEvent
 QuestServies = Addon:NewModule('QuestServies', 'NetEaseSocket-2.0', 'AceEvent-3.0')
 
 function QuestServies:OnInitialize()

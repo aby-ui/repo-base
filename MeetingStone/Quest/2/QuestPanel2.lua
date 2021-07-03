@@ -5,9 +5,13 @@
 --
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 local Frame = CreateFrame('Frame', nil, nil, 'MeetingStoneQuestPanelTemplate2')
 
-
+---@class QuestPanel2: AceAddon,AceEvent,Frame
 QuestPanel2 = Addon:NewModule(Frame, 'QuestPanel2', 'AceEvent-3.0')
 
 function QuestPanel2:OnInitialize()

@@ -56,9 +56,29 @@ local APPLICANT_LIST_HEADER = {
     },
     {
         key = 'Level',
-        text = L['等级'],
-        width = 40,
+        text = L['等级或分数'],
+        width = 40 + 50,
         showHandler = function(applicant)
+            --abyui
+            local score = applicant:GetDungeonScore()
+            if applicant:IsMythicPlusActivity() or score > 0 then
+                if applicant:GetResult() and score > 0 then
+                    local colorAll = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+                    local scoreText
+                    local info = applicant:GetBestDungeonScore()
+                    if info and info.mapScore and info.mapScore > 0 then
+                        local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(info.mapScore) or HIGHLIGHT_FONT_COLOR
+                        --local levelText = format(info.finishedSuccess and "|cff00ff00%d层|r" or "|cff7f7f7f%d层|r", info.bestRunLevel or 0)
+                        scoreText = format("%s / %s", colorAll:WrapTextInColorCode(score), color:WrapTextInColorCode(info.mapScore))
+                    else
+                        scoreText = format("%s / %s", colorAll:WrapTextInColorCode(score), "|cff7f7f7f无|r")
+                    end
+                    return scoreText
+                else
+                    return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
+                end
+                return
+            end
             local level = applicant:GetLevel()
             if applicant:GetResult() then
                 local activity = CreatePanel:GetCurrentActivity()
@@ -72,7 +92,12 @@ local APPLICANT_LIST_HEADER = {
             end
         end,
         sortHandler = function(applicant)
-            return _PartySortHandler(applicant) or tostring(999 - applicant:GetLevel())
+            local score = applicant:GetDungeonScore()
+            if applicant:IsMythicPlusActivity() or score > 0 then
+                return _PartySortHandler(applicant) or tostring(9999 - score)
+            else
+                return _PartySortHandler(applicant) or tostring(999 - applicant:GetLevel())
+            end
         end
     },
     {
@@ -233,10 +258,12 @@ function ApplicantPanel:UpdateApplicantsList()
     local applicants = C_LFGList.GetApplicants()
 
     if applicants and C_LFGList.HasActiveEntryInfo() then
+        local activityID = C_LFGList.GetActiveEntryInfo().activityID
+        local isMythicPlusActivity = select(13, C_LFGList.GetActivityInfo(activityID))
         for i, id in ipairs(applicants) do
             local numMembers = C_LFGList.GetApplicantInfo(id).numMembers
             for i = 1, numMembers do
-                tinsert(list, Applicant:New(id, i, C_LFGList.GetActiveEntryInfo().activityID))
+                tinsert(list, Applicant:New(id, i, activityID, isMythicPlusActivity))
             end
         end
 

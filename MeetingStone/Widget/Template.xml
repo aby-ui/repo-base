@@ -1,4 +1,4 @@
-<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Frame name="NetEaseCoverAnimation" virtual="true">
         <Layers>
@@ -38,5 +38,111 @@
                 self.WaitAnim:Play();
             </OnLoad>
         </Scripts>
+    </Frame>
+    <Frame name="MeetingStoneNoticeActivityTemplete" parentArray="notices" virtual="true">
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Size x="258" y="218"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture atlas="ui-frame-necrolord-cardparchmentwider" useAtlasSize="false" setAllPoints="true"/>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture file="interface\archeology\archrare-clockworkgnome" parentKey="ImageTitle">
+                    <Size x="172" y="86"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-13"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="Text" inherits="QuestFont" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent.ImageTitle" relativePoint="BOTTOM" y="-5"/>
+                        <Anchor point="LEFT" x="38"/>
+                        <Anchor point="RIGHT" x="-34"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="LookDetail" text="[查看详情]">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" x="-37" y="26"/>
+                </Anchors>
+                <Size x="59" y="11"/>
+                <ButtonText parentKey="Text" inherits="GameFontNormal">
+                </ButtonText>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                if self.texture then
+                    self.ImageTitle:SetTexture(self.texture)
+                end
+            </OnLoad>
+        </Scripts>
+    </Frame>
+    <Frame name="MeetingStoneNoticeTemplate" virtual="true">
+        <Size x="793" y="349"/>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Header" atlas="ui-frame-necrolord-ribbon" useAtlasSize="false">
+                    <Size x="140" y="42"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <FontString text="游戏公告" inherits="QuestTitleFont">
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.Header" relativePoint="CENTER"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame parentKey="NoticeContainer">
+                <Anchors>
+                    <Anchor point="CENTER" x="0" y="5"/>
+                </Anchors>
+                <Size x="793" y="218"/>
+                <Frames>
+                    <Frame parentKey="notice1" inherits="MeetingStoneNoticeActivityTemplete">
+                        <KeyValues>
+                            <KeyValue key="texture" value="interface\archeology\archrare-chalicemountainkings" type="string"/>
+                        </KeyValues>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="notice2" inherits="MeetingStoneNoticeActivityTemplete">
+                        <KeyValues>
+                            <KeyValue key="texture" value="interface\archeology\archrare-clockworkgnome" type="string"/>
+                        </KeyValues>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.notice1" relativePoint="TOPRIGHT" x="10"/>
+                        </Anchors>
+                    </Frame>
+                    <Frame parentKey="notice3" inherits="MeetingStoneNoticeActivityTemplete">
+                        <KeyValues>
+                            <KeyValue key="texture" value="interface\archeology\archrare-chalicemountainkings" type="string"/>
+                        </KeyValues>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.notice2" relativePoint="TOPRIGHT" x="10"/>
+                        </Anchors>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Frames>
+            <Button parentKey="btnKnow" text="我知道了" inherits="UIPanelButtonTemplate">
+                <Size x="169" y="48"/>
+                <Anchors>
+                    <Anchor point="BOTTOM"/>
+                </Anchors>
+            </Button>
+        </Frames>
     </Frame>
 </Ui>

@@ -392,10 +392,10 @@ function GetAddonSource()
     return 0
 end
 
---[[@bigfoot@
+--[=[@bigfoot@
 function GetAddonSource()
 end
---@end-bigfoot@]]
+--@end-bigfoot@]=]
 
 function GetGuildName()
     local name, _, _, realm = GetGuildInfo('player')

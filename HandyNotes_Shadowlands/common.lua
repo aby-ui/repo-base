@@ -36,6 +36,16 @@ ns.icons.cov_sigil_vn = {Icon('covenant_venthyr'), nil}
 ---------------------------------- CALLBACKS ----------------------------------
 -------------------------------------------------------------------------------
 
+ns.addon:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function ()
+    -- Listen for aura applied/removed events so we can refresh when the player
+    -- enters and exits the rift in Korthia and the Maw
+    local _,e,_,_,_,_,_,_,t,_,_,s  = CombatLogGetCurrentEventInfo()
+    if (e == 'SPELL_AURA_APPLIED' or e == 'SPELL_AURA_REMOVED') and
+        t == UnitName('player') and (s == 352795 or s == 354870) then
+        C_Timer.After(1, function() ns.addon:Refresh() end)
+    end
+end)
+
 ns.addon:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED', function (...)
     -- Watch for a spellcast event that signals the kitten was pet.
     -- https://www.wowhead.com/spell=321337/petting
@@ -190,7 +200,6 @@ end
 ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b', {defaults=ns.GROUP_HIDDEN})
 ns.groups.BLESSINGS = Group('blessings', 1022951, {defaults=ns.GROUP_HIDDEN})
 ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd', {defaults=ns.GROUP_HIDDEN})
-ns.groups.BONUS_EVENT = Group('bonus_event', 'peg_yw', {defaults=ns.GROUP_HIDDEN})
 ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
 ns.groups.FAERIE_TALES = Group('faerie_tales', 355498, {defaults=ns.GROUP_HIDDEN})
@@ -205,15 +214,19 @@ ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814, {defaults=ns.GROUP_H
 ns.groups.NEST_MATERIALS = Group('nest_materials', 136064, {defaults=ns.GROUP_HIDDEN75})
 ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724, {defaults=ns.GROUP_HIDDEN75})
 ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.RELIC = Group('relic', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
-ns.groups.RIFTSTONE = Group('riftstone', 'portal_b')
+ns.groups.RELIC = Group('relic', 'star_chest_b', {defaults=ns.GROUP_ALPHA75})
+ns.groups.RIFTSTONE = Group('riftstone', 'portal_bl')
+ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk', {defaults=ns.GROUP_HIDDEN75})
+ns.groups.RIFT_HIDDEN_CACHE = Group('rift_hidden_cache', 'chest_bk', {defaults=ns.GROUP_HIDDEN75})
+ns.groups.RIFT_PORTAL = Group('rift_portal', 'portal_gy')
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
 ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
 ns.groups.VESPERS = Group('vespers', 3536181, {defaults=ns.GROUP_HIDDEN})
 
 function ns.groups.RELIC:IsEnabled()
-    if select(3,GetFactionInfoByID(2472)) < 2 then return false end
+    -- Relics cannot be collected until the quest "What Must Be Found" is completed
+    if not C_QuestLog.IsQuestFlaggedCompleted(64506) then return false end
     return Group.IsEnabled(self)
 end
 
@@ -232,6 +245,30 @@ function SLMap:Prepare ()
 end
 
 ns.Map = SLMap
+
+-------------------------------------------------------------------------------
+
+local RiftMap = Class('RiftMap', SLMap)
+
+function RiftMap:Prepare()
+    Map.Prepare(self)
+
+    self.rifted = false
+    for i, spellID in ipairs{352795, 354870} do
+        if AuraUtil.FindAuraByName(GetSpellInfo(spellID), 'player') then
+            self.rifted = true
+        end
+    end
+end
+
+function RiftMap:CanDisplay(node, coord, minimap)
+    -- check node's rift availability (nil=no, 1=yes, 2=both)
+    if self.rifted and not node.rift then return false end
+    if not self.rifted and node.rift == 1 then return false end
+    return Map.CanDisplay(self, node, coord, minimap)
+end
+
+ns.RiftMap = RiftMap
 
 -------------------------------------------------------------------------------
 --------------------------------- REQUIREMENTS --------------------------------

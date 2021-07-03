@@ -5,12 +5,12 @@
 --
 BuildEnv(...)
 
-
+---@class ProtoBase: Object
 ProtoBase = Addon:NewClass('ProtoBase')
 
-
-
-
+---@param proto string[]
+---@param data any[]
+---@param offset? number
 function ProtoBase:ApplyProto(proto, data, offset)
     offset = offset or 0
 

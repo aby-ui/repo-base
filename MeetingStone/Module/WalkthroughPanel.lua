@@ -9,17 +9,36 @@ local WalkthroughPanel = Addon:NewModule(GUI:GetClass('InTabPanel'):New(MainPane
 
 function WalkthroughPanel:OnInitialize()
     GUI:Embed(self, 'Owner', 'Tab', 'Refresh')
-
-    MainPanel:RegisterPanel(L['攻略'], self, 0, 70)
+    MainPanel:RegisterPanel(L['攻略'], self, 0, 70,nil,true)
 
     local CategoryWidget = GUI:GetClass('TitleWidget'):New(self) do
         CategoryWidget:SetPoint('TOPLEFT', 5, -5)
         CategoryWidget:SetPoint('BOTTOMLEFT', 0, 5)
-        CategoryWidget:SetWidth(200)
+        CategoryWidget:SetWidth(195)
+
+        CategoryWidget.Bg:SetAtlas("questlogbackground",false)
+        
+        local backdrop = CreateFrame("Frame",nil, CategoryWidget, "InsetFrameTemplate") do
+            backdrop:SetAllPoints(CategoryWidget.Bg)
+        end
+
+        local imageTitle = CategoryWidget:CreateTexture(nil, "ARTWORK") do
+            imageTitle:SetTexture(894600)
+            imageTitle:SetSize(190,36)
+            imageTitle:SetTexCoord(5.0/1024,260.0/1024,932.0/1024,991.0/1024)
+            imageTitle:SetPoint("TOP",0,-6)
+        end
+
+        local txtTitle = CategoryWidget:CreateFontString(nil, "OVERLAY", "GameFontNormalLeft") do
+            txtTitle:SetText("攻略")
+            txtTitle:SetTextColor(1,174.0/255,0)
+            txtTitle:SetPoint("TOPLEFT", 20,-13)
+        end
     end
 
     local CategoryList = GUI:GetClass('GridView'):New(CategoryWidget) do
-        CategoryList:SetPoint('TOPLEFT', 0, -20)
+
+        CategoryList:SetPoint('TOPLEFT', 0, -40)
         CategoryList:SetPoint('BOTTOMRIGHT', 0, 0)
         CategoryList:SetItemClass(Addon:GetClass('WalkthroughModeItem'))
         CategoryList:SetItemHeight(20)
@@ -27,6 +46,7 @@ function WalkthroughPanel:OnInitialize()
         CategoryList:SetSelectMode('RADIO')
         CategoryList:SetItemHighlightWithoutChecked(true)
         CategoryList:SetCallback('OnItemFormatted', function(CategoryList, button, data)
+            button:SetNormalFontObject(CategoryList:IsSelected(button:GetID()) and 'GameFontHighlightSmall' or 'GameFontDisableSmall')
             button:SetText(data.title)
             button:SetIcon(data.icon)
         end)
@@ -37,8 +57,12 @@ function WalkthroughPanel:OnInitialize()
     end
 
     local ItemWidget = GUI:GetClass('TitleWidget'):New(self) do
-        ItemWidget:SetPoint('TOPLEFT', CategoryWidget, 'TOPRIGHT', 2, 0)
+        ItemWidget:SetPoint('TOPLEFT', CategoryWidget, 'TOPRIGHT', 5, 0)
         ItemWidget:SetPoint('BOTTOMRIGHT', -5, 5)
+        ItemWidget.Bg:SetAlpha(0)
+        local backdrop = CreateFrame("Frame",nil, ItemWidget, "InsetFrameTemplate") do
+            backdrop:SetAllPoints(ItemWidget.Bg)
+        end
     end
 
     local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(ItemWidget) do
@@ -55,8 +79,8 @@ end
 function WalkthroughPanel:Update()
     
     self.CategoryList:SetItemList({
-        {title = L.WalkthroughItem1.title, content = L.WalkthroughItem1.content, icon = 3},
-        {title = L.WalkthroughItem2.title, content = L.WalkthroughItem2.content, icon = 3},
+        {title = L.WalkthroughItem1.title, content = L.WalkthroughItem1.content, icon = 4},
+        {title = L.WalkthroughItem2.title, content = L.WalkthroughItem2.content, icon = 4},
     })
     self.CategoryList:SetSelected(1)
 end
@@ -65,26 +89,28 @@ local WalkthroughModeItem = Addon:NewClass('WalkthroughModeItem', GUI:GetClass('
 
 function WalkthroughModeItem:Constructor()
 
-
     local Icon = self:CreateTexture(nil, 'ARTWORK')
     Icon:SetSize(16, 16)
     Icon:SetPoint('LEFT', 5, 0)
 
-    local Text = self:CreateFontString(nil, 'OVERLAY')
+    local Text = self:CreateFontString(nil, 'OVERLAY',"GameFontHighlight")
     Text:SetPoint('LEFT', Icon, 'RIGHT', 2, 0)
     Text:SetJustifyH('LEFT')
     self:SetFontString(Text)
-    
-    self:SetCheckedTexture("Interface\\Buttons\\UI-RadioButton")
-    local radio = self:GetCheckedTexture()
-    radio:SetTexCoord(0.25, 0.5, 0, 1)
-    radio:ClearAllPoints()
-    radio:SetPoint('LEFT', Text, 'RIGHT', 0, 0)
-    radio:SetSize(16, 16)
 
-    self:SetNormalFontObject('GameFontNormalSmall')
+    
+    self:SetCheckedTexture("Interface/QuestFrame/QuestMapLogAtlas")
+    local radio = self:GetCheckedTexture()
+    radio:SetTexCoord(300.0/1024,530.0/1024,770.0/1024,793.0/1024)
+    radio:SetSize(260,10)
+    radio:ClearAllPoints()
+    radio:SetPoint('LEFT', Text, 'BOTTOMLEFT', 0, 0)
+    radio:SetPoint('RIGHT', Text, 'BOTTOMRIGHT', 0, 0)
+    radio:SetPoint('BOTTOM', Text, 'BOTTOM', 0,-5)
+
+    self:SetNormalFontObject('GameFontDisableSmall')
     self:SetHighlightFontObject('GameFontHighlightSmall')
-    self:SetDisabledFontObject('GameFontDisableSmall')
+    self:SetDisabledFontObject('GameFontHighlightSmall')
 
     self.Text = Text
     self.Icon = Icon
@@ -98,6 +124,8 @@ function WalkthroughModeItem:SetIcon(id)
         tex = [[Interface\GossipFrame\AvailableLegendaryQuestIcon]]
     elseif id == 3 then
         tex = [[Interface\GossipFrame\DailyQuestIcon]]
+    elseif id == 4 then
+        tex = [[Interface\questframe\ui-questlog-bookicon]]
     else
         tex = [[Interface\GossipFrame\DailyActiveQuestIcon]]
     end

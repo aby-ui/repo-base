@@ -51,7 +51,7 @@ function BrowsePanel:OnInitialize()
                 key = 'Title',
                 text = L['活动标题'],
                 style = 'LEFT',
-                width = 170,
+                width = 150,
                 showHandler = function(activity)
                     if activity:IsUnusable() then
                         return activity:GetSummary(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
@@ -66,7 +66,7 @@ function BrowsePanel:OnInitialize()
                 key = 'ActivityName',
                 text = L['活动类型'],
                 style = 'LEFT',
-                width = 170,
+                width = 150,
                 showHandler = function(activity)
                     if activity:IsUnusable() then
                         return activity:GetName(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
@@ -158,7 +158,7 @@ function BrowsePanel:OnInitialize()
             {
                 key = 'ItemLeave',
                 text = L['要求'],
-                width = 60,
+                width = 55,
                 textHandler = function(activity)
                     if activity:IsArenaActivity() then
                         local pvpRating = activity:GetPvPRating()
@@ -197,9 +197,25 @@ function BrowsePanel:OnInitialize()
                     end
                 end,
             }, {
+                key = 'LeaderScore',
+                text = L['分数'],
+                width = 55,
+                textHandler = function(activity)
+                    local score = activity:GetLeaderOverallDungeonScore()
+                    if not score or score == 0 then
+                        return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
+                    else
+                        local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+                        return score, color.r, color.g, color.b
+                    end
+                end,
+                sortHandler = function(activity)
+                    return 0xFFFF - activity:GetLeaderOverallDungeonScore()
+                end,
+            }, {
                 key = 'Summary',
                 text = L['说明'],
-                width = 170,
+                width = 160,
                 class = Addon:GetClass('SummaryGrid'),
                 formatHandler = function(grid, activity)
                     grid:SetActivity(activity)
@@ -217,12 +233,12 @@ function BrowsePanel:OnInitialize()
         ActivityList:SetCallback('OnSelectChanged', function(_, _, activity)
             self:UpdateSignUpButton(activity)
 
-            --[===[@debug@
+            --[=[@debug@
             local info = C_LFGList.GetSearchResultInfo(activity:GetID())
 
             DebugDataView.Text:SetText(info.comment)
             DebugDataView:Show()
-            --@end-debug@]===]
+            --@end-debug@]=]
         end)
         ActivityList:SetCallback('OnRefresh', function(ActivityList)
             local shownCount = ActivityList:GetShownCount()

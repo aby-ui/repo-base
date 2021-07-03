@@ -50,11 +50,11 @@ function ActivitiesParent:OnInitialize()
         Blocker.SetText = nop
 
         Blocker:SetCallback('OnCheck', function()
-            --[===[@debug@
+            --[=[@debug@
             -- if true then
             --     return
             -- end
-            --@end-debug@]===]
+            --@end-debug@]=]
             if not Activities:IsConnected() or not QuestServies:IsConnected() then
                 return true
             elseif not Activities:IsReady() then
@@ -106,6 +106,8 @@ function ActivitiesParent:OnInitialize()
             Blocker.Icon = Spinner
         end)
     end
+    
+    MainPanel:FlashTabByPanel(self, true)
 
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_PERSONINFO_UPDATE')
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_DATA_UPDATED')
@@ -171,6 +173,11 @@ function ActivitiesParent:OnShow()
     end
     self:Refresh()
     DataCache:GetObject('ActivitiesData'):SetIsNew(false)
+    
+    if not self.isFlash then
+        MainPanel:FlashTabByPanel(self, false)
+        self.isFlash = true
+    end
 end
 
 function ActivitiesParent:MEETINGSTONE_ACTIVITIES_PERSONINFO_UPDATE()

@@ -128,12 +128,12 @@ function Details.CooldownTracking.ProcessUnitCooldowns(unitId, statusBarFrameId,
         return
     end
 
-    local playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo()
+    local allPlayersInfo = raidStatusLib.playerInfoManager.GetAllPlayersInfo()
     local allCooldownsFromLib = LIB_RAID_STATUS_COOLDOWNS_BY_SPEC
     local cooldownsEnabled = Details.ocd_tracker.cooldowns
 
     local unitName = UnitName(unitId)
-    local thisPlayerInfo = playerInfo[unitName]
+    local thisPlayerInfo = allPlayersInfo[unitName]
     local GUID = UnitGUID(unitId)
     local _, unitClassEng, classId = UnitClass(unitId)
     local unitSpec = (thisPlayerInfo and thisPlayerInfo.specId) or (Details:GetSpecFromSerial(GUID)) or 0
@@ -261,7 +261,7 @@ function Details.CooldownTracking.RefreshCooldowns()
 
     --local cache saved with the character savedVariables
     local cooldownCache = screenPanel.cooldownCache
-    local cooldownStatus = raidStatusLib.cooldownManager.GetCooldownTable()
+    local cooldownStatus = raidStatusLib.cooldownManager.GetAllPlayersCooldown()
     local cooldownIndex = 1
 
     for unitName, allPlayerCooldowns in pairs(cooldownStatus) do

@@ -527,7 +527,7 @@ local buildTooltip = function (self)
 		WorldQuestTracker:Msg("no tagInfo(2) for quest", questID)
 	end
 
-	local color = WORLD_QUEST_QUALITY_COLORS [tagInfo.quality]
+	local color = WORLD_QUEST_QUALITY_COLORS [tagInfo.quality or LE_WORLD_QUEST_QUALITY_COMMON]
 	GameTooltip:SetText (title, color.r, color.g, color.b)
 
 	--belongs to what faction

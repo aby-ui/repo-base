@@ -7,6 +7,10 @@
 
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 AppFollowQueryPanel = Addon:NewModule(CreateFrame('Frame'), 'AppFollowQueryPanel', 'AceEvent-3.0')
 
 function AppFollowQueryPanel:OnInitialize()

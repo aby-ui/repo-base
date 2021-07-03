@@ -5,12 +5,16 @@
 --
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
 
-
-
-
-
-
+---@class QuestGroup: ProtoBase
+---@field id number
+---@field quests Quest[]
+---@field questMap table<number, Quest>
+---@field private startTime number
+---@field private endTime number
 QuestGroup = Addon:NewClass('QuestGroup', ProtoBase)
 
 QuestGroup.PROTO = {'id', 'startTime', 'endTime', '_quests'}
@@ -26,10 +30,10 @@ function QuestGroup:GetQuest(id)
     return self.questMap[id]
 end
 
-
-
-
-
+---@generic T
+---@param self T
+---@param data any[]
+---@return T
 function QuestGroup:FromProto(data)
     local group = QuestGroup:New()
     group:ApplyProto(self.PROTO, data)

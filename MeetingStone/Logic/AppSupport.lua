@@ -3,7 +3,13 @@
 @Author  : DengSir (ldz5@qq.com)
 @Link    : https://dengsir.github.io
 @Version : $Id$
-]] BuildEnv(...)
+]] --
+--
+BuildEnv(...)
+
+if not ADDON_REGIONSUPPORT then
+    return
+end
 
 AppSupport = Addon:NewModule('AppSupport', 'AceEvent-3.0', 'AceHook-3.0', 'AceBucket-3.0', 'AceTimer-3.0')
 AppSupport:Disable()

@@ -5,7 +5,7 @@
 local ADDON_NAME, ns = ...
 local Class = ns.Class
 local L = ns.locale
-local Map = ns.Map
+local Map = ns.RiftMap
 
 local NPC = ns.node.NPC
 local Rare = ns.node.Rare
@@ -36,6 +36,16 @@ function map:Prepare ()
     self.phased = C_QuestLog.IsQuestFlaggedCompleted(62907)
 end
 
+function map:CanDisplay(node, coord, minimap)
+    local ass = node.assault or node.noassault
+    if ass then
+        local ass_active = C_TaskQuest.GetQuestTimeLeftMinutes(ass) or C_QuestLog.IsQuestFlaggedCompleted(ass)
+        if node.assault and not ass_active then return false end
+        if node.noassault and ass_active then return false end
+    end
+    return Map.CanDisplay(self, node, coord, minimap)
+end
+
 local pitu = Map({id=1820}) -- Pit of Anguish (upper)
 local pitl = Map({id=1821}) -- Pit of Anguish (lower)
 
@@ -64,11 +74,10 @@ map.nodes[80306280] = map.intro
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
 
--- TODO: Add Fallen Adventurer's Cache rewards?
-
 map.nodes[25923116] = Rare({
     id=157964,
     quest=57482,
+    noassault=63823,
     note=L["dekaris_note"],
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
@@ -79,6 +88,7 @@ map.nodes[25923116] = Rare({
 map.nodes[19324172] = Rare({
     id=170301,
     quest=60788,
+    noassault=63823,
     note=L["apholeias_note"],
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
@@ -87,17 +97,6 @@ map.nodes[19324172] = Rare({
         Item({item=182327}) -- Dominion Etching: Loss
     }
 }) -- Apholeias, Herald of Loss
-
-map.nodes[34564206] = Rare({
-    id=179853,
-    quest=64276,
-    requires=ns.requirement.Item(186731),
-    note=L["korthia_rift_note"],
-    rewards={
-        Achievement({id=15107, criteria=52297}),
-        Item({item=187406, note=L["ring"]}) -- Band of Blinding Shadows
-    }
-}) -- Blinding Shadow
 
 map.nodes[39014119] = Rare({
     id=157833,
@@ -162,6 +161,7 @@ map.nodes[28086058] = Rare({
 map.nodes[23765341] = Rare({
     id=170774,
     quest=60915,
+    noassault=63823,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49848})
@@ -183,6 +183,7 @@ map.nodes[42342108] = Rare({
 map.nodes[19194608] = Rare({ -- was 27584966
     id=154330,
     quest=57509,
+    noassault=63823,
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49850}),
@@ -234,28 +235,6 @@ map.nodes[17714953] = Rare({
     }
 }) -- Fallen Charger
 
-map.nodes[49307274] = Rare({
-    id=179851,
-    quest=64272,
-    requires=ns.requirement.Item(186731),
-    note=L["korthia_rift_note"],
-    rewards={
-        Achievement({id=15107, criteria=52293})
-    },
-    pois={
-        Path({
-            49307274, 49497182, 49587131, 49667100, 49777062, 49907029,
-            50206988, 50506945, 50686900, 50856866, 51076832, 51336810,
-            51536800, 51756789, 51986776, 52366778, 52616791, 52936806,
-            53176811, 53396846, 53626889, 53886923, 54266978, 54297040,
-            54287097, 54077141, 53757172, 53447210, 53277241, 53047280,
-            52747323, 52477358, 52207388, 51817431, 51527461, 51287494,
-            51047546, 50777520, 50547510, 50277500, 50027471, 49867442,
-            49717414, 49497367, 49307274
-        })
-    }
-}) -- Guard Orguluus
-
 map.nodes[30775000] = Rare({
     id=175012,
     quest=62788,
@@ -269,6 +248,7 @@ map.nodes[30775000] = Rare({
 map.nodes[16945102] = Rare({
     id=162849,
     quest=60987,
+    noassault=63823,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49852}),
@@ -351,18 +331,6 @@ map.nodes[27397152] = Rare({
     }
 }) -- Thanassos <Death's Voice>
 
-map.nodes[27672526] = Rare({
-    id=179735,
-    quest=64232,
-    requires=ns.requirement.Item(186731),
-    note=L["korthia_rift_note"],
-    fgroup='nilganihmaht_group',
-    rewards={
-        Achievement({id=15107, criteria=52284}),
-        Item({item=186605}) -- Nilganihmaht's Runed Band
-    }
-}) -- Torglluun
-
 map.nodes[69044897] = Rare({
     id=179805,
     quest=64258, -- 64439?
@@ -394,11 +362,57 @@ map.nodes[66404400] = Rare({
     fgroup='nilganihmaht_group',
     rewards={
         Achievement({id=15107, criteria=52287}),
+        Achievement({id=14943, criteria=51681}),
         Transmog({item=187359, slot=L["shield"]}), -- Ylva's Water Dish
+        Transmog({item=186217, slot=L["leather"]}), -- Supple Helhound Leather Pants
         Item({item=186970, quest=62683, note="{item:186727}"}) -- Feeder's Hand and Key / Seal Breaker Key
     }
 }) -- Ylva, Mate of Guarm
 
+-------------------------------------------------------------------------------
+
+map.nodes[34564206] = Rare({
+    id=179853,
+    quest=64276,
+    rift=1,
+    rewards={
+        Achievement({id=15107, criteria=52297}),
+        Item({item=187406, note=L["ring"]}) -- Band of Blinding Shadows
+    }
+}) -- Blinding Shadow
+
+map.nodes[49307274] = Rare({
+    id=179851,
+    quest=64272,
+    rewards={
+        Achievement({id=15107, criteria=52293})
+    },
+    rift=1,
+    pois={
+        Path({
+            49307274, 49497182, 49587131, 49667100, 49777062, 49907029,
+            50206988, 50506945, 50686900, 50856866, 51076832, 51336810,
+            51536800, 51756789, 51986776, 52366778, 52616791, 52936806,
+            53176811, 53396846, 53626889, 53886923, 54266978, 54297040,
+            54287097, 54077141, 53757172, 53447210, 53277241, 53047280,
+            52747323, 52477358, 52207388, 51817431, 51527461, 51287494,
+            51047546, 50777520, 50547510, 50277500, 50027471, 49867442,
+            49717414, 49497367, 49307274
+        })
+    }
+}) -- Guard Orguluus
+
+map.nodes[27672526] = Rare({
+    id=179735,
+    quest=64232,
+    fgroup='nilganihmaht_group',
+    rift=1,
+    rewards={
+        Achievement({id=15107, criteria=52284}),
+        Item({item=186605}), -- Nilganihmaht's Runed Band
+        Toy({item=187139}) -- Bottled Shade Heart
+    }
+}) -- Torglluun
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -407,7 +421,8 @@ map.nodes[66404400] = Rare({
 map.nodes[69214521] = Treasure({
     quest=64256,
     rewards={
-        Achievement({id=15099, criteria=52243})
+        Achievement({id=15099, criteria=52243}),
+        Transmog({item=187018, slot=L["cosmetic"]}) -- Ritualist's Shoulder Scythes
     }
 }) -- Helsworn Chest
 
@@ -426,7 +441,7 @@ map.nodes[32215608] = Treasure({
     note=L['lilabom_note'],
     rewards={
         Item({item=186183}), -- Lil'Abom Head
-        Pet({item=186188, id=3099}) -- Lil'Abom
+        Pet({item=186188, id=3098}) -- Lil'Abom
     }
 }) -- Lil'Abom Head
 
@@ -436,7 +451,7 @@ map.nodes[39906260] = Treasure({
     note=L['lilabom_note'],
     rewards={
         Item({item=186184}), -- Lil'Abom Torso
-        Pet({item=186188, id=3099}) -- Lil'Abom
+        Pet({item=186188, id=3098}) -- Lil'Abom
     }
 }) -- Lil'Abom Torso
 
@@ -446,7 +461,7 @@ map.nodes[29376732] = Treasure({
     note=L['lilabom_note'],
     rewards={
         Item({item=186185}), -- Lil'Abom Legs
-        Pet({item=186188, id=3099}) -- Lil'Abom
+        Pet({item=186188, id=3098}) -- Lil'Abom
     }
 }) -- Lil'Abom Legs
 
@@ -456,7 +471,7 @@ map.nodes[38505850] = Treasure({
     note=L['lilabom_note'],
     rewards={
         Item({item=186186}), -- Lil'Abom Right Hand
-        Pet({item=186188, id=3099}) -- Lil'Abom
+        Pet({item=186188, id=3098}) -- Lil'Abom
     }
 }) -- Lil'Abom Right Hand
 
@@ -466,7 +481,7 @@ map.nodes[39286648] = Treasure({
     note=L['lilabom_note'],
     rewards={
         Item({item=186187}), -- Lil'Abom Spare Arm
-        Pet({item=186188, id=3099}) -- Lil'Abom
+        Pet({item=186188, id=3098}) -- Lil'Abom
     }
 }) -- Lil'Abom Spare Arm
 
@@ -517,6 +532,7 @@ map.nodes[25831479] = BonusBoss({
 map.nodes[19205740] = BonusBoss({
     id=162844,
     quest=61140,
+    noassault=63823,
     rewards={
         Achievement({id=14660, criteria=50410}),
         Item({item=183066, quest=63160}), -- Korrath's Grimoire: Aleketh
@@ -545,6 +561,7 @@ map.nodes[60456478] = BonusBoss({
 map.nodes[20782968] = BonusBoss({
     id=162965,
     quest=58918,
+    noassault=63823,
     rewards={
         Achievement({id=14660, criteria=49481})
     }
@@ -587,6 +604,7 @@ map.nodes[25364875] = BonusBoss({
 map.nodes[22674223] = BonusBoss({
     id=175821,
     quest=63044, -- 63388 ??
+    noassault=63823,
     note=L["in_cave"],
     rewards={
         Achievement({id=14660, criteria=51058})
@@ -617,16 +635,14 @@ map.nodes[55626318] = BonusBoss({
     }
 }) -- Sanngror the Torturer
 
-map.nodes[61737795] = BonusBoss({
+pitu.nodes[41767921] = BonusBoss({
     id=172524,
     quest=62211,
-    note=L["in_cave"],
+    note=L["nexus_cave_anguish_upper"],
     rewards={
         Achievement({id=14660, criteria=49491})
     },
-    pois={
-        POI({59268001}) -- Cave entrance
-    }
+    parent=map.id
 }) -- Skittering Broodmother
 
 map.nodes[36253744] = BonusBoss({
@@ -655,24 +671,6 @@ map.nodes[40705959] = BonusBoss({
 }) -- Valis the Cruel
 
 -------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE EVENTS ---------------------------
--------------------------------------------------------------------------------
-
-local BonusEvent = Class('BonusEvent', ns.node.Quest, {
-    icon = 'peg_yw',
-    scale = 1.8,
-    group = ns.groups.BONUS_EVENT,
-    note = ''
-})
-
-local SOUL_WELL = BonusEvent({ quest=59007, note=L["soul_well_note"] })
-
-map.nodes[21573436] = SOUL_WELL
-map.nodes[30394255] = SOUL_WELL
-map.nodes[32401771] = SOUL_WELL
--- map.nodes[27446463] = BonusEvent({ quest=59784, note=L["obliterated_soul_shards_note"] })
-
--------------------------------------------------------------------------------
 ------------------------------ CHAOTIC RIFTSTONES -----------------------------
 -------------------------------------------------------------------------------
 
@@ -687,33 +685,33 @@ local Riftstone = Class('Riftstone', ns.node.NPC, {
 -------------------------------------------------------------------------------
 
 map.nodes[19184778] = Riftstone({
-    icon='portal_r',
+    icon='portal_rd',
     fgroup='riftstone1',
     pois={Line({19184778, 25211784})}
 })
 
 map.nodes[25211784] = Riftstone({
-    icon='portal_r',
+    icon='portal_rd',
     fgroup='riftstone1'
 })
 
 -------------------------------------------------------------------------------
 
 map.nodes[23433121] = Riftstone({
-    icon='portal_b',
+    icon='portal_bl',
     fgroup='riftstone2',
     pois={Line({23433121, 34804362})}
 })
 
 map.nodes[34804362] = Riftstone({
-    icon='portal_b',
+    icon='portal_bl',
     fgroup='riftstone2'
 })
 
 -------------------------------------------------------------------------------
 
 map.nodes[19776617] = Riftstone({
-    icon='portal_p',
+    icon='portal_pp',
     pois={Arrow({19776617, 34794350})}
 })
 
@@ -721,7 +719,7 @@ map.nodes[19776617] = Riftstone({
 
 map.nodes[48284145] = NPC({
     group=ns.groups.RIFTSTONE,
-    icon='portal_b',
+    icon='portal_bl',
     id=172925,
     minimap=false,
     note=L["animaflow_teleporter_note"],
@@ -869,7 +867,8 @@ local Nexus = Class('StygiaNexus', NPC, {
     icon='peg_gn',
     id=177632,
     requires=ns.requirement.Item(184870),
-    scale=1.25
+    scale=1.25,
+    rift=2 -- can see in both phases
 })
 
 map.nodes[16015170] = Nexus({note=L["nexus_npc_portal"]})
@@ -901,6 +900,7 @@ map.nodes[25156553] = Nexus({note=L["nexus_misc_grapple_ramparts"]})
 map.nodes[25255011] = Nexus({note=L["nexus_npc_orrholyn"]})
 map.nodes[25623699] = Nexus({note=L["nexus_cave_forlorn"]})
 map.nodes[26004499] = Nexus({note=L["nexus_misc_crystal_ledge"]})
+map.nodes[26153094] = Nexus({note=L["nexus_npc_dekaris"]})
 map.nodes[26336859] = Nexus({note=L["nexus_misc_grapple_ramparts"]})
 map.nodes[26842748] = Nexus({note=L["nexus_misc_grapple_rock"]})
 map.nodes[27392598] = Nexus({note=L["nexus_misc_floating_cage"]})
@@ -909,6 +909,8 @@ map.nodes[27541273] = Nexus({note=L["nexus_npc_talaporas"]})
 map.nodes[27906041] = Nexus({note=L["nexus_npc_dolos"]})
 map.nodes[28573090] = Nexus({note=L["nexus_area_torment_rock"]})
 map.nodes[28674931] = Nexus({note=L["nexus_misc_grapple_rock"]})
+map.nodes[32266739] = Nexus({note=L["nexus_misc_grapple_ramparts"]})
+map.nodes[32506541] = Nexus({note=L["nexus_room_ramparts"]})
 map.nodes[33064239] = Nexus({note=L["nexus_area_zovaal_wall"]})
 map.nodes[33156479] = Nexus({note=L["nexus_area_perdition_wall"]})
 map.nodes[33647481] = Nexus({note=L["nexus_npc_akros"]})
@@ -917,6 +919,7 @@ map.nodes[34076193] = Nexus({note=L["nexus_room_ramparts"]})
 map.nodes[35446747] = Nexus({note=L["nexus_misc_grapple_ramparts"]})
 map.nodes[37504334] = Nexus({note=L["nexus_npc_incinerator"]})
 map.nodes[37544368] = Nexus({note=L["nexus_npc_incinerator"]})
+map.nodes[37814484] = Nexus({note=L["nexus_area_zovaal_edge"]})
 map.nodes[39462356] = Nexus({note=L["nexus_area_gorgoa_middle"]})
 map.nodes[40444906] = Nexus({note=L["nexus_misc_grapple_rock"]})
 map.nodes[41234967] = Nexus({note=L["nexus_misc_floating_cage"]})
@@ -937,6 +940,7 @@ map.nodes[52018189] = Nexus({note=L["nexus_misc_ledge_below"]})
 map.nodes[52167619] = Nexus({note=L["nexus_misc_floating_cage"]})
 map.nodes[53167848] = Nexus({note=L["nexus_misc_floating_cage"]})
 map.nodes[53338024] = Nexus({note=L["nexus_cave_anguish_outside"]})
+map.nodes[53877701] = Nexus({note=L["nexus_misc_floating_cage"]})
 map.nodes[53975865] = Nexus({note=L["nexus_road_cave"]})
 map.nodes[54328482] = Nexus({note=L["nexus_road_mawrats"]})
 map.nodes[54556720] = Nexus({note=L["nexus_misc_floating_cage"]})
@@ -944,19 +948,53 @@ map.nodes[54967623] = Nexus({note=L["nexus_misc_grapple_rock"]})
 map.nodes[55026349] = Nexus({note=L["nexus_cave_torturer"]})
 map.nodes[55527722] = Nexus({note=L["nexus_cave_prodigum"]})
 map.nodes[56677080] = Nexus({note=L["nexus_cave_soulstained"]})
-map.nodes[57668561] = Nexus({note=L["nexus_cave_raveners"]})
 map.nodes[58435196] = Nexus({note=L["nexus_cave_echoing_outside"]})
 map.nodes[59007837] = Nexus({note=L["nexus_road_next"]})
 map.nodes[59056108] = Nexus({note=L["nexus_cave_desmotaeron"]})
 map.nodes[60866755] = Nexus({note=L["nexus_road_next"]})
-map.nodes[61567704] = Nexus({note=L["nexus_cave_mothers"]})
+map.nodes[60927687] = Nexus({note=L["nexus_area_zone_edge"]})
 
+pitu.nodes[53376624] = Nexus({note=L["nexus_cave_anguish_upper"], parent=map.id})
 pitu.nodes[66355542] = Nexus({note=L["nexus_cave_anguish_upper"], parent=map.id})
 pitl.nodes[45526802] = Nexus({note=L["nexus_cave_anguish_lower"], parent=map.id})
 pitl.nodes[67185536] = Nexus({note=L["nexus_cave_anguish_lower"], parent=map.id})
 
 -------------------------------------------------------------------------------
----------------------------------- NILGANIHMAHT -------------------------------
+----------------------------- RIFT HIDDEN CACHES ------------------------------
+-------------------------------------------------------------------------------
+
+local RiftCache = Class('RiftCache', Treasure, {
+    label=L["rift_hidden_cache"],
+    group=ns.groups.RIFT_HIDDEN_CACHE,
+    rift=1,
+    rewards={
+        Transmog({item=187251, slot=L["cosmetic"]}) -- Shaded Skull Shoulderguards
+    }
+})
+
+local RIFT_CACHE1 = RiftCache({quest=63995, icon='chest_rd'})
+local RIFT_CACHE2 = RiftCache({quest=63997, icon='chest_bl'})
+local RIFT_CACHE3 = RiftCache({quest=63998, icon='chest_yw'})
+local RIFT_CACHE4 = RiftCache({quest=63996, icon='chest_pp'})
+local RIFT_CACHE5 = RiftCache({quest=63999, icon='chest_gn'})
+local RIFT_CACHE6 = RiftCache({quest=63993, icon='chest_pk'})
+
+map.nodes[25304918] = RIFT_CACHE1
+map.nodes[24583690] = RIFT_CACHE2
+map.nodes[26403760] = RIFT_CACHE2
+map.nodes[18903970] = RIFT_CACHE3
+map.nodes[19143337] = RIFT_CACHE3
+map.nodes[19044400] = RIFT_CACHE3
+map.nodes[23203580] = RIFT_CACHE3
+map.nodes[20712981] = RIFT_CACHE4
+map.nodes[25092704] = RIFT_CACHE4
+map.nodes[29744282] = RIFT_CACHE5
+map.nodes[19104620] = RIFT_CACHE6
+map.nodes[20604740] = RIFT_CACHE6
+map.nodes[22624623] = RIFT_CACHE6
+
+-------------------------------------------------------------------------------
+-------------------------------- NILGANIHMAHT ---------------------------------
 -------------------------------------------------------------------------------
 
 local Nilganihmaht = Class('Nilganihmaht', ns.node.Rare, {
@@ -1032,7 +1070,7 @@ local Helgarde = Class('Helgarde', Treasure, {
     }
 })
 map.nodes[65706121] = Helgarde()
-map.nodes[67705310] = Helgarde()
+map.nodes[67535568] = Helgarde()
 map.nodes[68204810] = Helgarde()
 map.nodes[62475528] = Helgarde()
 
@@ -1066,17 +1104,13 @@ local MawswornC = Class('MawswornC', Treasure, {
     label=L["mawsworn_cache"],
     fgroup='nilganihmaht_group',
     group=ns.groups.NILGANIHMAHT_MOUNT,
+    assault=63543,
     rewards={
         Achievement({id=15039, criteria={id=1, qty=true}}),
         ns.reward.Currency({id=1767, note='20'}),
         Item({item=186573, quest=63594}), --Defense Plans
     }
 })
-
-function MawswornC:PrerequisiteCompleted()
-    -- Timed events that are not active today return nil here
-    return C_TaskQuest.GetQuestTimeLeftMinutes(63543)
-end
 
 map.nodes[30295581] = MawswornC({quest=63815})
 map.nodes[27806170] = MawswornC({quest=63815})
@@ -1090,17 +1124,17 @@ local Etherwyrm = Class('Etherwyrm', Treasure, {
     requires=ns.requirement.Item(186190),
     label=L["etherwyrm_label"],
     note=L["etherwyrm_note"],
+    assault=63823,
+    rift=2,
     rewards={
         Pet({item=186191, id=3099}) -- Infused Etherwyrm
+    },
+    pois={
+        POI({19214376, 19903240, 23604040}) -- Elusive Keybinder
     }
 }) -- Infused Etherwyrm
 
-function Etherwyrm:PrerequisiteCompleted()
-    -- Timed events that are not active today return nil here
-    return C_TaskQuest.GetQuestTimeLeftMinutes(63823)
-end
-
-map.nodes[23594190] = Etherwyrm({pois={POI({19143337})}})
+map.nodes[23184238] = Etherwyrm()
 
 -------------------------------------------------------------------------------
 ----------------------------------- VE'NARI -----------------------------------

@@ -1283,9 +1283,15 @@ end)
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function WorldQuestTracker.InitiateFlyMasterTracker()
+	--get the location
+	--/dump C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
 	--flymaster npc location
 	local flymasterX = 0.60903662443161 -- -1906.8000488281
 	local flymasterY = 0.6869769692421 -- 1210.3000488281
+	--korthia portal location
+	local korthiaPortalX = 0.35661220550537 --0.31601178646088
+	local korthiaPortalY = 0.30656772851944 --0.24368673563004
+
 	--upper oribos map id
 	local secondFloormapId = 1671
 	local isFlymasterTrakcerEnabled = false
@@ -1295,31 +1301,56 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 
 	local oribosFlyMasterFrame = CreateFrame("frame", "WorldQuestTrackerOribosFlyMasterFrame", UIParent, "BackdropTemplate")
 	oribosFlyMasterFrame:SetPoint("center", "UIParent", "center", 0, 0)
-	oribosFlyMasterFrame:SetSize(86, 50)
+	oribosFlyMasterFrame:SetSize(116, 60)
 	DetailsFramework:ApplyStandardBackdrop(oribosFlyMasterFrame)
 	oribosFlyMasterFrame:Hide()
 
+	oribosFlyMasterFrame.statusBar = CreateFrame("frame", "WorldQuestTrackerOribosFlyMasterFrameStatusBar", oribosFlyMasterFrame, "BackdropTemplate")
+	oribosFlyMasterFrame.statusBar:SetPoint("bottomleft", oribosFlyMasterFrame, "bottomleft", 0, 0)
+	oribosFlyMasterFrame.statusBar:SetPoint("bottomright", oribosFlyMasterFrame, "bottomright", 0, 0)
+	oribosFlyMasterFrame.statusBar:SetHeight(12)
+	DetailsFramework:ApplyStandardBackdrop(oribosFlyMasterFrame.statusBar)
+
+	oribosFlyMasterFrame.FlightMasterIcon = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
+	oribosFlyMasterFrame.FlightMasterIcon:SetPoint("topleft", oribosFlyMasterFrame, "topleft", 35, -3)
+	oribosFlyMasterFrame.FlightMasterIcon:SetSize(16, 16)
+	oribosFlyMasterFrame.FlightMasterIcon:SetAlpha(0.7)
+	oribosFlyMasterFrame.FlightMasterIcon:SetTexture([[Interface\TAXIFRAME\UI-Taxi-Icon-White]])
+
+	oribosFlyMasterFrame.KorthiaIcon = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
+	oribosFlyMasterFrame.KorthiaIcon:SetPoint("topleft", oribosFlyMasterFrame.FlightMasterIcon, "topright", 15, 0)
+	oribosFlyMasterFrame.KorthiaIcon:SetSize(16, 16)
+	oribosFlyMasterFrame.KorthiaIcon:SetAlpha(0.7)
+	oribosFlyMasterFrame.KorthiaIcon:SetBlendMode("ADD")
+	oribosFlyMasterFrame.KorthiaIcon:SetTexture([[Interface\AddOns\WorldQuestTracker\media\korthia_portal_icon]])
+
 	oribosFlyMasterFrame.Arrow = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
-	oribosFlyMasterFrame.Arrow:SetPoint("center", oribosFlyMasterFrame, "center", 4, -9)
+	oribosFlyMasterFrame.Arrow:SetPoint("top", oribosFlyMasterFrame.FlightMasterIcon, "bottom", 6, 1)
 	oribosFlyMasterFrame.Arrow:SetSize(32, 32)
 	oribosFlyMasterFrame.Arrow:SetAlpha(1)
 	oribosFlyMasterFrame.Arrow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]])
+
+	oribosFlyMasterFrame.KorthiaArrow = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
+	oribosFlyMasterFrame.KorthiaArrow:SetPoint("topleft", oribosFlyMasterFrame.Arrow, "topright", 0, 0)
+	oribosFlyMasterFrame.KorthiaArrow:SetSize(32, 32)
+	oribosFlyMasterFrame.KorthiaArrow:SetAlpha(1)
+	oribosFlyMasterFrame.KorthiaArrow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]])
 
 	local onCloseButton = function()
 		oribosFlyMasterFrame:Hide()
 		WorldQuestTracker.db.profile.flymaster_tracker_enabled = false
 	end
 	oribosFlyMasterFrame.CloseButton = DF:CreateButton(oribosFlyMasterFrame, onCloseButton, 20, 20, "X", -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "WQT_NEWS_BUTTON"), DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
-	oribosFlyMasterFrame.CloseButton:SetPoint("bottomleft", oribosFlyMasterFrame, "bottomleft", 5, 7)
+	oribosFlyMasterFrame.CloseButton:SetPoint("topleft", oribosFlyMasterFrame, "topleft", 1, -1)
 	oribosFlyMasterFrame.CloseButton:SetSize(20, 20)
 	oribosFlyMasterFrame.CloseButton:SetAlpha(.2)
 
 	oribosFlyMasterFrame.CloseButton.have_tooltip = "Disable this window, can be enabled again in the World Quest Tracker options."
 
-	oribosFlyMasterFrame.Title = DF:CreateLabel(oribosFlyMasterFrame, "Flight Master")
-	oribosFlyMasterFrame.Title:SetPoint("center", oribosFlyMasterFrame, "top", 0, -10)
+	oribosFlyMasterFrame.Title = DF:CreateLabel(oribosFlyMasterFrame.statusBar, "World Quest Tracker")
+	oribosFlyMasterFrame.Title:SetPoint("bottom", oribosFlyMasterFrame, "bottom", 0, 1)
 	oribosFlyMasterFrame.Title.align =  "|"
-	oribosFlyMasterFrame.Title.textcolor = {1, 1, 1, .7}
+	oribosFlyMasterFrame.Title.textcolor = {.8, .8, .8, .35}
 
 	local trackerOnTick = function(self, deltaTime)
 		--update the player position
@@ -1329,22 +1360,44 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 		end
 		currentPlayerX, currentPlayerY = mapPosition.x, mapPosition.y
 
-		local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, flymasterX, flymasterY) + (math.pi/2)) % (math.pi*2)
-		local playerYaw = GetPlayerFacing() or 0
-		local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
-		local imageIndex = 1+(floor (DF.MapRangeClamped (_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
-		local line = ceil (imageIndex / 12)
-		local coord = (imageIndex - ((line-1) * 12)) / 12
-		self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
+		--update flight master arrow
+			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, flymasterX, flymasterY) + (math.pi/2)) % (math.pi*2)
+			local playerYaw = GetPlayerFacing() or 0
+			local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
+			local imageIndex = 1+(floor (DF.MapRangeClamped (_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
+			local line = ceil (imageIndex / 12)
+			local coord = (imageIndex - ((line-1) * 12)) / 12
+			self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
 
-		local distance = CalculateDistance(currentPlayerX, currentPlayerY, flymasterX, flymasterY)
-		if (distance < 0.1) then
-			local alpha = DF:GetRangePercent(0, 0.1, distance)
-			oribosFlyMasterFrame:SetAlpha(alpha)
-		else
-			oribosFlyMasterFrame:SetAlpha(1)
-		end
-		
+			--[=[
+				local distance = CalculateDistance(currentPlayerX, currentPlayerY, flymasterX, flymasterY)
+				if (distance < 0.1) then
+					local alpha = DF:GetRangePercent(0, 0.1, distance)
+					oribosFlyMasterFrame:SetAlpha(alpha)
+				else
+					oribosFlyMasterFrame:SetAlpha(1)
+				end
+			--]=]
+
+		--update korthia arrow
+			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, korthiaPortalX, korthiaPortalY) + (math.pi/2)) % (math.pi*2)
+			local playerYaw = GetPlayerFacing() or 0
+			local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
+			local imageIndex = 1+(floor (DF.MapRangeClamped (_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
+			local line = ceil (imageIndex / 12)
+			local coord = (imageIndex - ((line-1) * 12)) / 12
+			self.KorthiaArrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
+
+			--[=[
+				local distance = CalculateDistance(currentPlayerX, currentPlayerY, korthiaPortalX, korthiaPortalY)
+				if (distance < 0.1) then
+					local alpha = DF:GetRangePercent(0, 0.1, distance)
+					oribosFlyMasterFrame:SetAlpha(alpha)
+				else
+					oribosFlyMasterFrame:SetAlpha(1)
+				end
+			--]=]
+
 		if (UnitOnTaxi("player")) then
 			oribosFlyMasterFrame.disableFlymasterTracker()
 			return

@@ -24,6 +24,10 @@ Activity:InitAttr{
     'DisplayType',
     'MaxMembers',
     'KilledBossCount',
+
+    'IsMythicPlusActivity',
+    'LeaderOverallDungeonScore',
+    'LeaderDungeonScoreInfo',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -60,6 +64,9 @@ function Activity:Update()
     local isDelisted = info.isDelisted
     local leader = info.leaderName
     local numMembers = info.numMembers
+    --9.1
+    local leaderOverallDungeonScore = info.leaderOverallDungeonScore
+    local leaderDungeonScoreInfo = info.leaderDungeonScoreInfo
 
     if not activityId then
         return false
@@ -68,7 +75,7 @@ function Activity:Update()
         iLvl = 0
     end
 
-    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType = C_LFGList.GetActivityInfo(activityId)
+    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType, orderIndex, useHonorLevel, showQuickJoin, isMythicPlusActivity = C_LFGList.GetActivityInfo(activityId)
     local _, appStatus, pendingStatus, appDuration = C_LFGList.GetApplicationInfo(id)
 
     if leader then
@@ -96,6 +103,10 @@ function Activity:Update()
     self:SetPendingStatus(pendingStatus)
     self:SetApplicationDuration(appDuration)
     self:SetApplicationExpiration(GetTime() + appDuration)
+
+    self:SetIsMythicPlusActivity(isMythicPlusActivity)
+    self:SetLeaderOverallDungeonScore(leaderOverallDungeonScore or 0)
+    self:SetLeaderDungeonScoreInfo(leaderDungeonScoreInfo)
 
     if not self:UpdateCustomData(comment, title) then
         return false

@@ -534,7 +534,7 @@ function Details:StartMeUp() --I'll never stop!
 		end)
 	end
 
-	if (DetailsFramework.IsTBCWow()) then
+	if (DetailsFramework.IsTBCWow() and not _G.CONFIG_OPTION_DONT_MOVE_BATTLEGROUND_MINIMAP_ICON_ON_ERROR) then
 
 		--remover isso em versões mais atualizadas
 		if (_detalhes.bcc_counter == 18 or _detalhes.bcc_counter == 19) then
@@ -565,7 +565,7 @@ function Details:StartMeUp() --I'll never stop!
 	
 					taintWarning:Show()
 					taintWarning:SetPoint ("topleft", StaticPopup1, "bottomleft", 0, -10)
-					if (MiniMapBattlefieldFrame:IsShown())then
+					if (MiniMapBattlefieldFrame:IsShown() and not Details.DontMoveMininapIconOnBattlegroundError)then
 
 						if (not originalPosition) then
 							local a = {}

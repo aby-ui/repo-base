@@ -7,6 +7,10 @@
 
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 local AppEmptyBlocker = Addon:NewClass('AppEmptyBlocker', 'Frame')
 
 function AppEmptyBlocker:Constructor()

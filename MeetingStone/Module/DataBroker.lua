@@ -29,7 +29,7 @@ function DataBroker:OnInitialize()
             local label = item and format(L['“%s”总数'], item.text) or L['活动总数']
             GameTooltip:AddDoubleLine(ICON2 .. label, self.activityCount or 0, 1, 1, 1, 1, 1, 1)
 
-            if App:HasApp() then
+            if App and App:HasApp() then
                 GameTooltip:AddDoubleLine(ICON3 .. L['关注请求'], self.followQueryCount or 0, 1, 1, 1, 1, 1, 1)
             end
 
@@ -218,7 +218,7 @@ local flashs = {
             return App:IsFirstLogin() or App:HasNewFollower()
         end,
         shown = function()
-            return AppFollowQueryPanel:IsVisible()
+            return AppFollowQueryPanel and AppFollowQueryPanel:IsVisible()
         end,
         panel = AppParent,
     },

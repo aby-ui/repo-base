@@ -1,6 +1,10 @@
 
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 PlayerInfoDialog = GUI:GetClass('TitlePanel'):New(UIParent) do
     GUI:Embed(PlayerInfoDialog, 'Tab')
     PlayerInfoDialog:Hide()

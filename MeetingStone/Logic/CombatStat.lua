@@ -5,6 +5,10 @@
 
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 CombatStat = Addon:NewModule('CombatStat', 'AceEvent-3.0', 'AceTimer-3.0')
 CombatStat:Disable()
 

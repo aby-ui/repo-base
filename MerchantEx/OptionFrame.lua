@@ -39,18 +39,18 @@ frame:AnchorToTopLeft(group, 0, 30)
 group:AddButton(L["repair"], "repair")
 group:AddButton(L["guild repair"], "guild") -- char only
 group:AddButton(L["sell"], "sell")
+group:AddButton("保留9.1新宠物需要的灰色物品", "keep910")
 group:AddButton(L["details"], "details")
 group:AddButton(L["buy"], "buy")
 --group:AddButton(L["overbuy"], "overbuy")
 
+group[1]:SetHitRectInsets(0, -50, 0, 0) group[1].text:SetWidth(100)
+group[3]:SetHitRectInsets(0, -50, 0, 0) group[3].text:SetWidth(100)
 group[3]:ClearAllPoints()
 group[3]:SetPoint("TOPLEFT", group[1], "BOTTOMLEFT")
-group[4]:ClearAllPoints()
-group[4]:SetPoint("TOPLEFT", group[2], "BOTTOMLEFT")
+group[5]:SetHitRectInsets(0, -50, 0, 0) group[5].text:SetWidth(100)
 group[5]:ClearAllPoints()
 group[5]:SetPoint("TOPLEFT", group[3], "BOTTOMLEFT")
---group[6]:ClearAllPoints()
---group[6]:SetPoint("TOPLEFT", group[4], "BOTTOMLEFT")
 
 function group:OnCheckInit(value)
 	return addon.db.option[value]
@@ -458,8 +458,13 @@ frame:SetScript("OnEvent", function(self, event)
 		end
 
 		if type(MerchantExDB.option) ~= "table" then
-			MerchantExDB.option = { repair = 1, sell = 1, buy = 1 }
-		end
+			MerchantExDB.option = { repair = 1, sell = 1, buy = 1, keep910 = 1 }
+        end
+
+        if MerchantExDB.version ~= "20210703" then
+            MerchantExDB.version = "20210703"
+            MerchantExDB.option.keep910 = 1
+        end
 
 		if type(MerchantExDB.exception) ~= "table" then
 			MerchantExDB.exception = {}

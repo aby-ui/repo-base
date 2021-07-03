@@ -1,10 +1,10 @@
-<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+<Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <Script file="Logic.lua" />
-    <Script file="Activities.lua" />
-    <Script file="App.lua" />
-    <Script file="AppSupport.lua" />
-    <Script file="Recent.lua" />
-    <Script file="CombatStat.lua" />
-    <Script file="LfgService.lua" />
+    <Script file="Logic.lua"/>
+    <Script file="Activities.lua"/>
+    <Script file="App.lua"/>
+    <Script file="AppSupport.lua"/>
+    <Script file="Recent.lua"/>
+    <Script file="CombatStat.lua"/>
+    <Script file="LfgService.lua"/>
 </Ui>

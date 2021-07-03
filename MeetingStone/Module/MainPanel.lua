@@ -39,40 +39,67 @@ function MainPanel:OnInitialize()
             return DataCache:GetObject('AnnList'):IsNew()
         end)
         AnnBlocker:SetCallback('OnInit', function(AnnBlocker)
-            local Label = AnnBlocker:CreateFontString(nil, 'OVERLAY', 'QuestFont_Super_Huge')
+            local width, height = AnnBlocker:GetSize()
+            local topWidth, topHeight = width / 3, width / 3;
+            local botWidth, botHeight = topWidth, height - topHeight;
+
+            local BTLT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
             do
-                Label:SetFont(STANDARD_TEXT_FONT, 32, 'OUTLINE')
-                Label:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-                Label:SetPoint('TOP', 0, -35)
-                Label:SetText(L['公告'])
+                BTLT:SetSize(topWidth, topHeight)
+                BTLT:SetPoint('TOPLEFT')
+                BTLT:SetTexture([[Interface\GLUES\CREDITS\gatetga1]])
+                BTLT:SetAlpha(0.4)
             end
 
-            local Line = AnnBlocker:CreateTexture(nil, 'OVERLAY')
+            local BTT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
             do
-                Line:SetTexture([[INTERFACE\QUESTFRAME\UI-QuestTitleHighlight]])
-                Line:SetSize(200, 1)
-                Line:SetPoint('TOP', Label, 'BOTTOM', 0, -20)
+                BTT:SetSize(topWidth, topHeight)
+                BTT:SetPoint('LEFT', BTLT, 'RIGHT')
+                BTT:SetTexture([[Interface\GLUES\CREDITS\gatetga2]])
+                BTT:SetAlpha(0.4)
             end
 
-            local SummaryHtml = GUI:GetClass('ScrollSummaryHtml'):New(AnnBlocker)
+            local BTRT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
             do
-                SummaryHtml:SetPoint('TOPLEFT', 190, -130)
-                SummaryHtml:SetSize(450, 200)
+                BTRT:SetSize(topWidth, topHeight)
+                BTRT:SetPoint('LEFT', BTT, 'RIGHT')
+                BTRT:SetTexture([[Interface\GLUES\CREDITS\gatetga3]])
+                BTRT:SetAlpha(0.4)
             end
 
-            local Button = CreateFrame('Button', nil, AnnBlocker, 'UIPanelButtonTemplate')
+            local BBLT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
             do
-                Button:SetSize(120, 36)
-                Button:SetPoint('BOTTOM', 0, 30)
-                Button:SetText(L['我知道了'])
-                Button:SetScript('OnClick', function()
-                    DataCache:GetObject('AnnList'):SetIsNew(false)
-                    AnnBlocker:Hide()
-                    self:SendMessage('MEETINGSTONE_ANNOUNCEMENT_UPDATED', false)
-                end)
+                BBLT:SetSize(botWidth, botHeight)
+                BBLT:SetPoint('TOP', BTLT, 'BOTTOM')
+                BBLT:SetTexture([[Interface\GLUES\CREDITS\gatetga5]])
+                BBLT:SetTexCoord(0, 1, 0, botHeight / topHeight)
+                BBLT:SetAlpha(0.4)
             end
 
-            AnnBlocker.SummaryHtml = SummaryHtml
+            local BBT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
+            do
+                BBT:SetSize(botWidth, botHeight)
+                BBT:SetPoint('LEFT', BBLT, 'RIGHT')
+                BBT:SetTexture([[Interface\GLUES\CREDITS\gatetga6]])
+                BBT:SetTexCoord(0, 1, 0, botHeight / topHeight)
+                BBT:SetAlpha(0.4)
+            end
+
+            local BBRT = AnnBlocker:CreateTexture(nil, 'BORDER', nil, 1)
+            do
+                BBRT:SetSize(botWidth, botHeight)
+                BBRT:SetPoint('LEFT', BBT, 'RIGHT')
+                BBRT:SetTexture([[Interface\GLUES\CREDITS\gatetga7]])
+                BBRT:SetTexCoord(0, 1, 0, botHeight / topHeight)
+                BBRT:SetAlpha(0.4)
+            end
+
+            local NoticeFrame = CreateFrame('Frame', nil, AnnBlocker, 'MeetingStoneNoticeTemplate')
+            NoticeFrame.btnKnow:SetScript('OnClick', function()
+                DataCache:GetObject('AnnList'):SetIsNew(false)
+                AnnBlocker:Hide()
+            end)
+            AnnBlocker.NoticeContainer = NoticeFrame.NoticeContainer
 
             self:RegisterMessage('MEETINGSTONE_ANNOUNCEMENT_UPDATED', function(_, isNew)
                 if isNew then
@@ -80,26 +107,24 @@ function MainPanel:OnInitialize()
                 end
             end)
         end)
+
         AnnBlocker:SetCallback('OnFormat', function(AnnBlocker)
-            local annData = DataCache:GetObject('AnnList'):GetData()
-            local tpl = [[<html><body>%s</body></html>]]
-            local lines = {}
-            if not annData then
-                table.insert(lines, format('<h2>|cffffffff%s|r</h2>', L['暂无公告']))
-            else
-                for i, v in ipairs(annData) do
-                    if v.t then
-                        if v.u then
-                            table.insert(lines, format('<h2>|cffffffff%s. %s|r |Hurl:%s|h|cff00ffff[%s]|r|h</h2>', i,
-                                                       v.t, v.u, L['查看更多']))
-                        else
-                            table.insert(lines, format('<h2>|cffffffff%s. %s|r</h2>', i, v.t))
-                        end
-                    end
+            local annData = DataCache:GetObject('AnnList'):GetData() or {}
+            local NoticeContainer = AnnBlocker.NoticeContainer
+
+            local width = NoticeContainer.notices[1]:GetWidth()
+            NoticeContainer:SetWidth((width + 10) * #annData - 10)
+
+            for i, notice in ipairs(NoticeContainer.notices) do
+                local v = annData[i]
+                if v then
+                    notice.Text:SetText(v.t or '')
+                    notice.LookDetail:SetShown(v.u)
+                    ApplyUrlButton(notice.LookDetail, v.u)
+                else
+                    notice:Hide()
                 end
             end
-            local html = format(tpl, table.concat(lines, '<br /><br />'))
-            AnnBlocker.SummaryHtml:SetText(html)
         end)
     end
 
@@ -302,6 +327,20 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         if activity:GetLeaderPvPRating() then
             tooltip:AddLine(format(L['队长PvP 等级：|cffffffff%s|r'], activity:GetLeaderPvPRating()))
         end
+
+        local score = activity:GetLeaderOverallDungeonScore() or 0
+        if activity:IsMythicPlusActivity() or score > 0 then
+            local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+            tooltip:AddLine(format(L['队长大秘评分：%s'], color:WrapTextInColorCode(score)))
+            local info = activity:GetLeaderDungeonScoreInfo()
+            if info and info.mapScore and info.mapScore > 0 then
+                local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(info.mapScore) or HIGHLIGHT_FONT_COLOR
+                local levelText = format(info.finishedSuccess and "|cff00ff00%d层|r" or "|cff7f7f7f%d层|r", info.bestRunLevel or 0)
+                tooltip:AddLine(format("队长当前副本: %s / %s", color:WrapTextInColorCode(info.mapScore), levelText))
+            else
+                tooltip:AddLine(format("队长当前副本: |cff7f7f7f 无信息|r"))
+            end
+        end
         tooltip:AddSepatator()
     end
 
@@ -342,15 +381,17 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         local classInfo = {}
         for i = 1, activity:GetNumMembers() do
             local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
-            classInfo[class] = {
-                name = classLocalized,
-                color = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
-            }
-            if not roles[role] then roles[role] = {} end
-            if not roles[role][class] then roles[role][class] = 0 end
-            roles[role][class] = roles[role][class] + 1
+            if (class) then
+                classInfo[class] = {
+                    name = classLocalized,
+                    color = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
+                }
+                if not roles[role] then roles[role] = {} end
+                if not roles[role][class] then roles[role][class] = 0 end
+                roles[role][class] = roles[role][class] + 1
+            end
         end
-
+    
         for role, classes in pairs(roles) do
             tooltip:AddLine(_G[role]..": ")
             for class, count in pairs(classes) do
@@ -443,6 +484,20 @@ function MainPanel:OpenApplicantTooltip(applicant)
 
     if useHonorLevel then
         GameTooltip:AddLine(string.format(LFG_LIST_HONOR_LEVEL_CURRENT_PVP, applicant:GetHonorLevel()), 1, 1, 1)
+    end
+
+    local score = applicant:GetDungeonScore() or 0
+    if applicant:IsMythicPlusActivity() or score > 0 then
+        local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+        GameTooltip:AddLine(format(L['大秘评分：%s'], color:WrapTextInColorCode(score)))
+        local info = applicant:GetBestDungeonScore()
+        if info and info.mapScore and info.mapScore > 0 then
+            local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(info.mapScore) or HIGHLIGHT_FONT_COLOR
+            local levelText = format(info.finishedSuccess and "|cff00ff00%d层|r" or "|cff7f7f7f%d层|r", info.bestRunLevel or 0)
+            GameTooltip:AddLine(format("当前副本: %s / %s", color:WrapTextInColorCode(info.mapScore), levelText))
+        else
+            GameTooltip:AddLine(format("当前副本: |cff7f7f7f 无信息|r"))
+        end
     end
 
     if comment and comment ~= '' then

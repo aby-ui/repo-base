@@ -4,17 +4,21 @@
 -- @Date   : 3/3/2021, 1:07:57 PM
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
 
-
-
-
-
-
-
-
-
-
-
+---@class Quest: ProtoBase
+---@field private baseTitle string
+---@field private title string
+---@field id number
+---@field cfgId number
+---@field progressMaxValue number
+---@field progressValue number
+---@field style number
+---@field startTime number
+---@field endTime number
+---@field timeLimit boolean
 Quest = Addon:NewClass('Quest', ProtoBase)
 
 Quest.PROTO = {'id', 'cfgId', 'progressMaxValue', '_rewards'}
@@ -23,10 +27,10 @@ function Quest:Constructor()
     self.progressValue = 0
 end
 
-
-
-
-
+---@generic T
+---@param self T
+---@param data any[]
+---@return T
 function Quest:FromProto(data)
     local quest = Quest:New()
 

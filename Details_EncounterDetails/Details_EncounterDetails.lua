@@ -1480,7 +1480,8 @@ function EncounterDetails:OpenAndRefresh (_, segment)
 		local jaFoi = {}
 		
 		for id, tabela in _pairs (habilidades_usadas) do 
-			local spellname = GetSpellInfo (tabela [4])
+			local spellname = Details.GetSpellInfo(tabela [4])
+			
 			if (not jaFoi [spellname]) then
 				tabela [5] = spellname
 				tabela_em_ordem [#tabela_em_ordem+1] = tabela

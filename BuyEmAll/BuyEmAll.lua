@@ -9,8 +9,6 @@ local L = BUYEMALL_LOCALS;
 BUYEMALL_MAX = L.MAX;
 BUYEMALL_STACK = L.STACK;
 
--- It's ALIVE!!! Muahahahahhahahaa!!!!!
-
 function BuyEmAll:OnLoad()
     -- Set up confirmation dialog.
 
@@ -177,8 +175,9 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
         self.AltCurrencyMode = false;
         self.AtVendor = true; -- Currently at the vendor, for later purchase interruption.
 
-        local name, texture, price, quantity, numAvailable =
-        GetMerchantItemInfo(self.itemIndex);
+        local name, texture, price, quantity, numAvailable, _, _, hasExtendedCostInfo =
+            GetMerchantItemInfo(self.itemIndex);
+        
         self.itemName = name;
         self.price = price;
         self.preset = quantity;
@@ -195,7 +194,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
         end
 
         -- Buying a currency with a currency! Thanks to recent changes, this should cover all cases.
-        if ((strmatch(self.itemLink, "currency")) and (self.price == 0)) then
+        if ((strmatch(self.itemLink, "currency")) and (self.price <= 0 or self.price == nil)) then
             local totalMax = C_CurrencyInfo.GetCurrencyInfoFromLink(self.itemLink).maxQuantity;
 			self.fit = (totalMax <= 0 and 10000000 or totalMax);
             self.stack = self.preset;
@@ -217,7 +216,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
             self.partialFit = 0; -- Currencies don't have stacks, so there can't be a partial stack.
         end
 
-        if ((select(8, GetMerchantItemInfo(self.itemIndex)) == true) and (self.price == 0)) then -- Checks for alternate currency information then passes purchase to handler.
+        if ((hasExtendedCostInfo == true) and (self.price <= 0 or self.price == nil)) then -- Checks for alternate currency information then passes purchase to handler.
             self:AltCurrencyHandling(self.itemIndex, frame);
             return
         end
@@ -232,7 +231,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
 
         if (self.itemID ~= nil and BuyEmAll:ItemIsUnique(self.itemLink)) then
             self.afford = 1
-        elseif (self.price == 0) then
+        elseif (self.price <= 0 or self.price == nil) then
             self.afford = self.fit;
         else
             self.afford = floor(GetMoney() / ceil(self.price / self.preset));
@@ -270,20 +269,23 @@ function BuyEmAll:AltCurrencyHandling(itemIndex, frame)
     self.AltCurrTex = {};
     self.AltCurrPrice = {};
     self.AltCurrAfford = {};
-    
-    for i = 1, self.NumAltCurrency do
-        self.AltCurrPrice[i] = select(2, GetMerchantItemCostItem(itemIndex, i));
-        local Link = select(3, GetMerchantItemCostItem(itemIndex, i));
-        if (strmatch(Link, "currency")) then -- Item/Currency link check
-            self.AltCurrTex[i] = select(1, GetMerchantItemCostItem(itemIndex, i)); -- Get the currency texture for later display.
-            self.AltCurrAfford[i] = floor(C_CurrencyInfo.GetCurrencyInfoFromLink(Link).quantity / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
-        else
-            self.AltCurrTex[i] = select(1, GetMerchantItemCostItem(itemIndex, i)); -- Get the currency texture for later display.
-            self.AltCurrAfford[i] = floor((GetItemCount(tonumber(strmatch(Link, "item:(%d+):")), true)) / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
+
+    if(self.NumAltCurrency <= 0) then
+        self.afford = self.fit;
+    else
+        for i = 1, self.NumAltCurrency do
+            local altCurrTex, altCurrPrice, altCurrLink = GetMerchantItemCostItem(itemIndex, i);
+            self.AltCurrTex[i] = altCurrTex;
+            self.AltCurrPrice[i] = altCurrPrice;
+
+            if (strmatch(altCurrLink, "currency")) then -- Item/Currency link check
+                self.AltCurrAfford[i] = floor(C_CurrencyInfo.GetCurrencyInfoFromLink(altCurrLink).quantity / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
+            else
+                self.AltCurrAfford[i] = floor((GetItemCount(tonumber(strmatch(altCurrLink, "item:(%d+):")), true)) / self.AltCurrPrice[i]) * self.preset; -- Calculate how many can be purchased.
+            end
         end
-    end
-    
     self.afford = self.AltCurrAfford[1];
+    end
 
     if(self.itemID ~= nil and BuyEmAll:ItemIsUnique(self.itemLink)) then
         self.afford = 1;
@@ -477,8 +479,8 @@ function BuyEmAll:UpdateDisplay()
         BuyEmAllCurrencyAmt1:SetText(gold);
         BuyEmAllCurrencyAmt2:SetText(silver);
         BuyEmAllCurrencyAmt3:SetText(copper);
-    else
-        
+    
+    elseif (#self.AltCurrPrice >= 1) then  
         local amount = self:AltCurrRounding(purchase);
         self.AltNumPurchases = amount / self.preset; -- Adjustment for not being able to buy less than the preset of items using alternate currency.
         

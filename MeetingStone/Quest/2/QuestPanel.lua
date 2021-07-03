@@ -5,9 +5,13 @@
 --
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
+
 local Frame = CreateFrame('Frame', nil, nil, 'MeetingStoneQuestPanelTemplate')
 
-
+---@class QuestPanel: AceAddon,AceEvent,Frame
 QuestPanel = Addon:NewModule(Frame, 'QuestPanel', 'AceEvent-3.0')
 
 function QuestPanel:OnInitialize()
@@ -17,7 +21,7 @@ function QuestPanel:OnInitialize()
     self.Quests:SetCallback('OnItemFormatted', function(_, button, item)
         button:SetQuest(item)
     end)
-    
+    ---@param item Quest
     self.Quests:SetCallback('OnItemRewardClick', function(_, button, item)
         if item:IsCompleted() and not item.rewarded then
             QuestServies:SendServer('QCF', UnitGUID('player'), item.id)

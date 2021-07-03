@@ -79,11 +79,14 @@ function Map:AddNode(coord, node)
         -- Calculate world coordinates for the node
         local x, y = HandyNotes:getXY(coord)
         local wx, wy = HBD:GetWorldCoordinatesFromZone(x, y, self.id)
+        if not (wx and wy) then
+            error(format('Missing world coords: (%d: %d) => ???', self.id, coord))
+        end
         for i, parent in ipairs(node.parent) do
             -- Calculate parent zone coordinates and add node
             local px, py = HBD:GetZoneCoordinatesFromWorld(wx, wy, parent.id)
             if not (px and py) then
-                error(format('No parent coords for node: %d %s %d', coord, tostring(node), parent.id))
+                error(format('Missing map coords: (%d: %d) => (%d: ???)', self.id, coord, parent.id))
             end
             local map = ns.maps[parent.id] or Map({id=parent.id})
             map.nodes[HandyNotes:getCoord(px, py)] = ns.Clone(node, {pois=(parent.pois or false)})
@@ -109,23 +112,30 @@ function Map:CanFocus(node)
     return false
 end
 
-function Map:IsNodeEnabled(node, coord, minimap)
-    local db = ns.addon.db
-
-    -- Check for dev force enable
-    if ns:GetOpt('force_nodes') or ns.dev_force then return true end
-
+function Map:CanDisplay(node, coord, minimap)
     -- Check if the zone is still phased
     if node ~= self.intro and not self.phased then return false end
-
-    -- Check if we've been hidden by the user
-    if db.char[self.id..'_coord_'..coord] then return false end
 
     -- Minimap may be disabled for this node
     if not node.minimap and minimap then return false end
 
     -- Node may be faction restricted
     if node.faction and node.faction ~= ns.faction then return false end
+
+    return true
+end
+
+function Map:IsNodeEnabled(node, coord, minimap)
+    local db = ns.addon.db
+
+    -- Check for dev force enable
+    if ns:GetOpt('force_nodes') or ns.dev_force then return true end
+
+    -- Check if we've been hidden by the user
+    if db.char[self.id..'_coord_'..coord] then return false end
+
+    -- Check if the node is disabled in the current context
+    if not self:CanDisplay(node, coord, minimap) then return false end
 
     -- Check if node's group is disabled
     if not node.group:IsEnabled() then return false end
@@ -223,7 +233,9 @@ function MinimapDataProvider:RefreshAllData()
             -- Render any POIs this icon has registered
             if node.pois and (node._focus or node._hover) then
                 for i, poi in ipairs(node.pois) do
-                    poi:Render(self, MinimapPinTemplate)
+                    if not poi.quest or not C_QuestLog.IsQuestFlaggedCompleted(poi.quest) then
+                        poi:Render(self, MinimapPinTemplate)
+                    end
                 end
             end
         end
@@ -323,7 +335,9 @@ function WorldMapDataProvider:RefreshAllData(fromOnShow)
             -- Render any POIs this icon has registered
             if node.pois and (node._focus or node._hover) then
                 for i, poi in ipairs(node.pois) do
-                    poi:Render(self:GetMap(), WorldMapPinTemplate)
+                    if not poi.quest or not C_QuestLog.IsQuestFlaggedCompleted(poi.quest) then
+                        poi:Render(self:GetMap(), WorldMapPinTemplate)
+                    end
                 end
             end
         end

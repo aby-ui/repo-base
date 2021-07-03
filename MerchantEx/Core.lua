@@ -120,6 +120,21 @@ local function CheckAndSellItem(bag, slot)
 	end
 
 	local isException = addon.db.exception[id] or addon.db.myexception[id]
+    if addon.db.option.keep910 and quality == 0 then
+        local keep910ids = {
+            [11406] = 1,
+            [11944] = 1,
+            [25402] = 1,
+            [3300] = 1,
+            [3670] = 1,
+            [6150] = 1,
+            [36812] = 1,
+            [62072] = 1,
+            [67410] = 1,
+        }
+        isException = isException or keep910ids[id]
+    end
+
 	if (quality == 0 and not isException) or (quality == 1 and isException) then
 		local _, count = GetContainerItemInfo(bag, slot)
 		vendorPrice = vendorPrice * count

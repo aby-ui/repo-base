@@ -87,7 +87,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
         })
 
         for i, group in ipairs(map.groups) do
-            if group:IsEnabled() then
+            if group:IsEnabled() and group:HasEnabledNodes(map) then
                 icon = group.icon
                 if group.name == 'misc' then
                     -- find an icon from the misc nodes in the map

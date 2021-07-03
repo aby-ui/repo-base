@@ -5,7 +5,11 @@
 --
 BuildEnv(...)
 
+if not ADDON_REGIONSUPPORT then
+    return
+end
 
+---@class QuestItem: Object,Frame
 QuestItem = Addon:NewClass('QuestItem', GUI:GetClass('ItemButton'))
 
 function QuestItem:Create(parent, ...)
@@ -24,7 +28,7 @@ function QuestItem:Constructor()
     self.Reward:SetCountdownObject(QuestItem)
 end
 
-
+---@param quest Quest
 function QuestItem:SetQuest(quest)
     self.Text:SetText(quest:GetTitle())
     self.Reward:SetShown(quest.rewards)

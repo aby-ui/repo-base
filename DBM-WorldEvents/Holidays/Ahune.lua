@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d286", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20210702161552")
 mod:SetCreatureID(25740)--25740 Ahune, 25755, 25756 the two types of adds
 mod:SetModelID(23447)--Frozen Core, ahunes looks pretty bad.
 
@@ -20,21 +20,23 @@ local warnEmerged				= mod:NewAnnounce("Emerged", 2, "Interface\\AddOns\\DBM-Cor
 local specWarnAttack			= mod:NewSpecialWarning("specWarnAttack", nil, nil, nil, 1, 2)
 
 local timerEmerge				= mod:NewTimer(33.5, "EmergeTimer", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp", nil, nil, 6)
-local timerSubmerge				= mod:NewTimer(92, "SubmergTimer", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp", nil, nil, 6)--Variable, 92-96
+local timerSubmerge				= mod:NewTimer(92, "SubmergeTimer", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp", nil, nil, 6)--Variable, 92-96
 
 function mod:OnCombatStart(delay)
-	timerSubmerge:Start(95-delay)--first is 95, rest are 92
+	if self:AntiSpam(4, 1) then
+		timerSubmerge:Start(95-delay)--first is 95, rest are 92
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 45954 then				-- Ahunes Shield
+	if args.spellId == 45954 and self:AntiSpam(4, 1) then -- Ahunes Shield
 		warnEmerged:Show()
 		timerSubmerge:Start()
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
-	if args.spellId == 45954 then				-- Ahunes Shield
+	if args.spellId == 45954 then -- Ahunes Shield
 		warnSubmerged:Show()
 		timerEmerge:Start()
 		specWarnAttack:Show()

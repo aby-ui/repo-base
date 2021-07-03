@@ -1465,7 +1465,7 @@ do
             },
 
             {type = "blank"},
-            {type = "label", get = function() return "Inline Text (need better name)" end, text_template = subSectionTitleTextTemplate}, --localize-me
+            {type = "label", get = function() return "Aligned Text Columns" end, text_template = subSectionTitleTextTemplate}, --localize-me
 
             {--inline text enabled
                 type = "toggle",
@@ -1491,8 +1491,8 @@ do
                 min = 0,
                 max = 125,
                 step = 1,
-                name = "Text 1 Position",
-                desc = "Text 1 Position",
+                name = "Text 1 Offset",
+                desc = "Offset from right border",
             },
 
             {--lineText3 (in the middle)
@@ -1506,8 +1506,8 @@ do
                 min = 0,
                 max = 75,
                 step = 1,
-                name = "Text 2 Position",
-                desc = "Text 2 Position",
+                name = "Text 2 Offset",
+                desc = "Offset from right border",
             },
 
             {--lineText4 (closest to the right)
@@ -1521,8 +1521,8 @@ do
                 min = 0,
                 max = 50,
                 step = 1,
-                name = "Text 3 Position",
-                desc = "Text 3 Position",
+                name = "Text 3 Offset",
+                desc = "Offset from right border",
             },
 
             {type = "blank"},
