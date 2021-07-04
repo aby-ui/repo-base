@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 41
-RSConstants.CURRENT_LOOT_DB_VERSION = 53
+RSConstants.CURRENT_DB_VERSION = 42
+RSConstants.CURRENT_LOOT_DB_VERSION = 54
 
 ---============================================================================
 -- Special events
@@ -242,7 +242,7 @@ RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
 RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314, 352998 }
 RSConstants.RIFT_HIDDEN_ENTITIES = { 179883, 368645, 368646, 368647, 368648, 368649, 368650 }
-RSConstants.RIFT_NPCS = { 179608, 179911, 179913 }
+RSConstants.RIFT_NPCS = { 179608, 179911, 179913, 369437, 369438, 369440 }
 RSConstants.RIFT_NPCS_MAW = { 179735, 179853, 179851 }
 
 -- NPCs that spawn after completing an event

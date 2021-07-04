@@ -251,7 +251,7 @@ ns.Map = SLMap
 local RiftMap = Class('RiftMap', SLMap)
 
 function RiftMap:Prepare()
-    Map.Prepare(self)
+    SLMap.Prepare(self)
 
     self.rifted = false
     for i, spellID in ipairs{352795, 354870} do
@@ -265,7 +265,7 @@ function RiftMap:CanDisplay(node, coord, minimap)
     -- check node's rift availability (nil=no, 1=yes, 2=both)
     if self.rifted and not node.rift then return false end
     if not self.rifted and node.rift == 1 then return false end
-    return Map.CanDisplay(self, node, coord, minimap)
+    return SLMap.CanDisplay(self, node, coord, minimap)
 end
 
 ns.RiftMap = RiftMap

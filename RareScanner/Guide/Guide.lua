@@ -253,6 +253,11 @@ private.NPC_GUIDE = {
 		[RSConstants.STEP1] = { x = 0.6559, y = 0.5864, comment = AL["NOTE_179791_1"] }; 
 		[RSConstants.STEP2] = { x = 0.6685, y = 0.5934, comment = AL["NOTE_179791_1"] }; 
 	}; --Zelnithop
+	[179802] = { [RSConstants.TRANSPORT] = { x = 0.3935, y = 0.524 } }; --Yarxhov the Pillager
+	[179859] = { [RSConstants.TRANSPORT] = { x = 0.4499, y = 0.3558 } }; --Xyraxz the Unknowable
+	[179608] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Screaming Shade
+	[179911] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Silent Soulstalker
+	[179913] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Deadsoul Hatcher
 }
 
 ---============================================================================

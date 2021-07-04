@@ -22,7 +22,7 @@ local affixSchedule = {
 	[12] = {[1]=6,  [2]=14, [3]=9}, --12 Raging Quaking Tyrannical
 }
 
-local affixScheduleUnknown = false
+local affixScheduleUnknown = true
 local currentWeek
 local currentKeystoneMapID
 local currentKeystoneLevel

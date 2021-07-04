@@ -516,6 +516,50 @@ function U1_MMBCreateCoordsButton()
     tex:SetAllPoints(btn)
     local fot= btn:CreateFontString(nil,"ARTWORK","NumberFontNormalYellow")
     fot:SetPoint("CENTER", 0, 0.5)
+
+    --位面ID
+    local function getPhaseIdFromGUID(guid)
+        if not guid then return end
+        local unit_type, zero, server_id, instance_id, zone_uid, npc_id, spawn_uid = strsplit("-", guid)
+        if unit_type and unit_type ~= "Player" and unit_type ~= "Pet" then
+            return zone_uid
+        end
+    end
+
+    btn.pht = btn:CreateFontString(nil, "ARTWORK","NumberFontNormal")
+    btn.pht:SetPoint("TOP", btn, "BOTTOM", 0, 0)
+    btn.pht:SetFont(btn.pht:GetFont(), 11, "OUTLINE")
+    btn.pht:SetText("-----")
+    local resetEvents = { ["GROUP_JOINED"] = 1, ["GROUP_LEFT"] = 1, ["PLAYER_ENTERING_WORLD"] = 1, ["ZONE_CHANGED_NEW_AREA"] = 1 }
+    for k, _ in pairs(resetEvents) do btn:RegisterEvent(k) end
+    btn:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+    btn:RegisterEvent("PLAYER_TARGET_CHANGED")
+    btn:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    btn:SetScript("OnEvent", function(self, event, arg1)
+        if event == "PLAYER_ENTERING_WORLD" then
+            CoreUIShowOrHide(btn.pht, not U1DBG.MMBPhaseHide)
+            if U1DB.MinimapPhaseId then btn.pht:SetText(U1DB.MinimapPhaseId) end
+        end
+        if resetEvents[event] then
+            btn.TBD = true btn.pht:SetTextColor(.5, .5, .5)
+        end
+        if btn.TBD then
+            local phId
+            local unit = event == "UPDATE_MOUSEOVER_UNIT" and "mouseover" or event == "PLAYER_TARGET_CHANGED" and "target" or event == "NAME_PLATE_UNIT_ADDED" and arg1 or nil
+            phId = unit and getPhaseIdFromGUID(UnitGUID(unit))
+            if not phId then
+                for k, v in pairs(C_NamePlate.GetNamePlates()) do
+                    phId = getPhaseIdFromGUID(v.namePlateUnitGUID)
+                    if phId then break end
+                end
+            end
+            if phId then
+                btn.TBD = false btn.pht:SetText(phId) btn.pht:SetTextColor(1, 1, 1)
+                U1DB.MinimapPhaseId = phId
+            end
+        end
+    end)
+
     local HBD = LibStub("HereBeDragons-2.0")
     local function MinimapCoordsButton_OnUpdate()
         local px, py, mapId = HBD:GetPlayerZonePosition(false)
@@ -530,8 +574,14 @@ function U1_MMBCreateCoordsButton()
             fot:SetFormattedText("%.1f-%.1f", px * 100, py * 100);
         end
     end
-    CoreUIEnableTooltip(btn, "当前坐标", "点击左键发送到聊天框")
-    btn:SetScript("OnClick", function(self)
+    CoreUIEnableTooltip(btn, "当前坐标", "双击左键发送到聊天框\n\n坐标框下数字为位面ID, 点击右键可隐藏。变灰时表示不确定，鼠标随便划过一个NPC或怪可确定位面ID")
+    btn:SetScript("OnClick", function(self, button)
+        if button ~= "RightButton" then return end
+        U1DBG.MMBPhaseHide = btn.pht:IsShown()
+        CoreUIShowOrHide(btn.pht, not U1DBG.MMBPhaseHide)
+    end)
+    btn:SetScript("OnDoubleClick", function(self, button)
+        if button ~= "LeftButton" then return end
         local px, py, mapID = HBD:GetPlayerZonePosition(false)
         if not px or not py or not mapID then return end
         local info = C_Map.GetMapInfo(mapID)
@@ -545,6 +595,7 @@ function U1_MMBCreateCoordsButton()
             text = text .. C_Map.GetUserWaypointHyperlink() .. " "
         end
         text = text .. name
+        if btn.TBD == false then text = text.. "（位面"..U1DB.MinimapPhaseId.."）" end
         CoreUIChatEdit_Insert(text)
         if oldPoint then
             C_Map.SetUserWaypoint(oldPoint)
