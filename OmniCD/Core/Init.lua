@@ -32,6 +32,7 @@ NS[1].userNameWithRealm = NS[1].userName .. "-" .. NS[1].userRealm
 NS[1].userClass = select(2, UnitClass("player"))
 NS[1].userRaceID = select(3, UnitRace("player"))
 NS[1].userLevel = UnitLevel("player")
+NS[1].userFaction = UnitFactionGroup("player")
 NS[1].userClassHexColor = "|c" .. select(4, GetClassColor(NS[1].userClass))
 NS[1].AddOn = AddOnName
 NS[1].Version = GetAddOnMetadata(AddOnName, "Version")

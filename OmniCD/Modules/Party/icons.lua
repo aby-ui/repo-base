@@ -93,7 +93,12 @@ function P:SetBorder(icon)
 		icon.borderRight:SetPoint("TOPRIGHT", icon, "TOPRIGHT")
 		icon.borderRight:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", -edgeSize, 0)
 
-		local r, g, b = db.borderColor.r, db.borderColor.g, db.borderColor.b
+		local r, g, b
+		if icon.spellID == 355589 then
+			r, g, b = 1.0, 0.50196, 0.0
+		else
+			r, g, b = db.borderColor.r, db.borderColor.g, db.borderColor.b
+		end
 		icon.borderTop:SetColorTexture(r, g, b)
 		icon.borderBottom:SetColorTexture(r, g, b)
 		icon.borderRight:SetColorTexture(r, g, b)

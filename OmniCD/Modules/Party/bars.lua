@@ -24,7 +24,9 @@ local spell_modifiers = E.spell_modifiers
 local cd_start_dispels = E.cd_start_dispels
 local FEIGN_DEATH = 5384
 local TOUCH_OF_KARMA = 125174
-local DEBUFF_HEARTSTOP_AURA = 214975
+--local DEBUFF_HEARTSTOP_AURA = 214975 -- Patch 9.1 removed
+local INTIMIDATION_TACTICS = 352415
+local DOOR_OF_SHADOWS = 300728
 
 local bars = {}
 local unusedBars = {}
@@ -82,6 +84,30 @@ function OmniCD_BarOnHide(self)
 	end
 end
 
+local function UpdateDoorIconRR(info, active, modRate)
+	local newRate = (info.isIntTactics or 1) * modRate
+	local isRemoved = abs(1 - newRate) < 0.05
+	local now = GetTime()
+
+	local icon = info.spellIcons[DOOR_OF_SHADOWS]
+	if icon then
+		local elapsed = (now - active.startTime) * modRate
+		local newTime = now - elapsed
+		local cd = (active.duration * modRate)
+
+		icon.cooldown:SetCooldown(newTime, cd, newRate * (info.modRate or 1))
+		active.startTime = newTime
+		active.duration = cd
+
+		local statusBar = icon.statusBar
+		if statusBar and isRemoved then
+			P.OmniCDCastingBarFrame_OnEvent(statusBar.CastingBar, E.db.extraBars[statusBar.key].reverseFill and "UNIT_SPELLCAST_CHANNEL_UPDATE" or "UNIT_SPELLCAST_CAST_UPDATE")
+		end
+	end
+
+	info.isIntTactics = not isRemoved and newRate
+end
+
 local function CooldownBarFrame_OnEvent(self, event, ...)
 	local guid = self.guid
 	local info = P.groupInfo[guid]
@@ -94,14 +120,41 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 		if (spell_enabled[spellID] or spell_modifiers[spellID]) and not cd_start_dispels[spellID] then
 			E.ProcessSpell(spellID, guid)
 		end
+	elseif event == "UNIT_HEALTH" then
+		local unit = ...
+		if unit ~= info.unit then
+			return
+		end
+
+		if not info.maxHealth or info.maxHealth == 0 or not info.talentData[INTIMIDATION_TACTICS] then
+			self:UnregisterEvent(event)
+
+			return
+		end
+
+		local active = info.active[DOOR_OF_SHADOWS]
+		if not active then
+			return
+		end
+
+		local currentHealth = UnitHealth(unit)
+		if (currentHealth / info.maxHealth) < 0.5 then
+			if not info.isIntTactics then
+				UpdateDoorIconRR(info, active, 1/1.5)
+			end
+		else
+			if info.isIntTactics then
+				UpdateDoorIconRR(info, active, 1.5)
+			end
+		end
 	elseif event == "UNIT_AURA" then
 		local unit = ...
 		if unit ~= info.unit then -- [94]
 			return
 		end
 
-		---[[ -- Patch 9.1 removed (Finally...)
-		-- remove all arena check (E.isBCC or not P.isInArena)
+		-- Patch 9.1 HSA removed
+		--[[
 		if not E.isBCC and P.isInArena then -- [95] -- HSA + Thundercharge tested
 			if P:IsDeBuffActive(unit, DEBUFF_HEARTSTOP_AURA) then
 				if not info.auras.isHeartStopped then
@@ -123,9 +176,13 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 				if icon then
 					P:RemoveHighlight(icon)
 				end
+				-- Patch 9.1 HSA removed
+				--[[
 				if E.isBCC or not P.isInArena then
 					self:UnregisterEvent(event)
 				end
+				]]
+				self:UnregisterEvent(event)
 			end
 		elseif info.preActiveIcons[FEIGN_DEATH] then
 			if not P:GetBuffDuration(unit, FEIGN_DEATH) then
@@ -136,11 +193,16 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 					icon.icon:SetVertexColor(1, 1, 1)
 					P:StartCooldown(icon, icon.duration)
 				end
+				-- Patch 9.1 HSA removed
+				--[[
 				if E.isBCC or not P.isInArena then
 					self:UnregisterEvent(event)
 				end
+				]]
+				self:UnregisterEvent(event)
 			end
-		elseif E.isBCC or not P.isInArena then
+		--elseif E.isBCC or not P.isInArena then
+		else
 			self:UnregisterEvent(event)
 		end
 	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then -- player handled by Comms
@@ -280,13 +342,14 @@ function P:UpdateUnitBar(guid, isGRU)
 	f.anchor.text:SetText(index)
 
 	if not E.isBCC then
-		-- Patch 9.1 removed (DKHSA)
+		-- Patch 9.1 HSA removed
+		--[[
 		if self.isInArena then
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 		else
 			f:UnregisterEvent("UNIT_AURA")
 		end
-
+		]]
 		if isntUser then -- [96]
 			f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 		end

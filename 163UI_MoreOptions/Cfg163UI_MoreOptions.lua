@@ -233,7 +233,7 @@ do
         whileDead = 1,
     }
 
-    --[[9.1邀请按钮提示 ERR_TRAVEL_PASS_DIFFERENT_REGION 不同的地区]]
+    --[==[ 9.1邀请按钮提示 ERR_TRAVEL_PASS_DIFFERENT_REGION 不同的地区, 没法修改下拉框等，作废
     local INVITE_RESTRICTION_NONE = 9;
     local INVITE_RESTRICTION_MOBILE = 10;
     local INVITE_RESTRICTION_REGION = 11;
@@ -281,6 +281,24 @@ do
                 end
             else
                 button.travelPassButton:Disable();
+            end
+        end
+    end)
+    ]==]
+    hooksecurefunc("ConsoleExec", function(msg)
+        if FriendsFrame_GetInviteRestriction_Origin then return end
+        local portal = type(msg) == "string" and select(3, msg:lower():find("set portal (.+)"))
+        if portal and portal ~= GetCVar("portal"):lower() then
+            FriendsFrame_GetInviteRestriction_Origin = FriendsFrame_GetInviteRestriction
+            local INVITE_RESTRICTION_REGION = 11;
+            local INVITE_RESTRICTION_NONE = 9;
+            FriendsFrame_GetInviteRestriction = function(index)
+                local restriction = FriendsFrame_GetInviteRestriction_Origin(index)
+                if restriction == INVITE_RESTRICTION_REGION then
+                    return INVITE_RESTRICTION_NONE
+                else
+                    return restriction
+                end
             end
         end
     end)

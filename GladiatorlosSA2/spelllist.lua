@@ -114,6 +114,8 @@
 			[202748] = "survivalTactics", -- Survival Tactics (Honor Talent Feign Death Passive)
 			[212704] = "beastWithin", -- The Beast Within; Beastial Wrath Fear/Horror Immunity Honor Talent
 			[260402] = "doubletap",
+			[356727] = "spiderSting",
+			[357021] = "concussion", -- Consecutive Concussion
 
 			-- Mage (Aura Applied)
 			[45438] = "iceBlock",
@@ -146,6 +148,7 @@
 			[209584] = "zenFocusTea",
 			[202335] = "doubleBarrel", -- Double Barrel (Brewmaster Honor Talent that stuns)
 			[310454] = "weaponoforder", -- Kyrian
+			[353361] = "dematerialize",
 						
 			-- Paladin (Aura Applied)
 			[1022] = "handOfProtection", 
@@ -208,6 +211,7 @@
 			[6770] = "sap",
 			[207736] = "shadowyDuel",
 			[1966] = "Feint", -- Feint
+			[199027] = "veilOfMidnight",
 			
 			-- Shaman (Aura Applied)
 			--[204288] = "earthShield",
@@ -219,6 +223,8 @@
 			[210918] = "etherealForm",
 			[108271] = "astralShift",
 			--[204293] = "spiritLink",
+			[335903] = "doomWinds",
+
 			
 			-- Warlock (Aura Applied)
 			[108416] = "darkPact",
@@ -295,8 +301,8 @@
 			[184662] = "vengeanceShieldDown",	--Vengeance Shield
 			[213610] = "wardDown",				--Holy Ward
 			[197268] = "hopeDown",				--Ray of Hope
-			[193223] = "madnessDown",			--Surrender to Madness
-			[319952] = "madnessDown",			-- It's baaaack
+			--[193223] = "madnessDown",			--Surrender to Madness
+			--[319952] = "madnessDown",			-- It's baaaack
 			[210918] = "etherealDown",			--Ethereal Form
 			[212295] = "netherWardDown",		--Nether Ward
 			[86659] = "kingsDown",				--Guardian of Ancient Kings
@@ -367,6 +373,9 @@
 			[345231] = "battlemasterDown",
 			[330752] = "AscendantPhialDown", -- Kleia's nonsense
 			[132158] = "swiftnessDown",
+			[10060] = "infusionDown", -- Power Infusion
+			[335903] = "doomwindsDown",
+			[199027] = "veilOfMidnight",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -426,6 +435,7 @@
 			[274282] = "middleMoon",
 			[274283] = "fullMoon",
 			[2637] = "hibernate", -- Hibernate
+			[329042] = "emeraldSlumber",
 			
 			-- Hunter (Spell Casting)
 			[982] = "revivePet",
@@ -452,25 +462,24 @@
 			[203286] = "greaterPyro",
 			[199786] = "glacialSpike",
 			[113724] = "ringOfFrost",
-			--[224968] = "_PHmarkOfAluneth",
 			[257537] = "ebonbolt",
 			[314793] = "mirrorsOfTorment",
 			[307443] = "radiantspark", -- Kyrian
+			[353082] = "ringOfFire", -- and it burns burns burns
+			[353128] = "arcanosphere",
+			[352278] = "iceWall",
 			
 			-- Monk (Spell Casting)
-			--[205406] = "sheilunsGift",
 			[198898] = "craneSong",
 
 			-- Paladin (Spell Casting)
 			[20066] = "repentance",
 			[10326] = "turnEvil",
-			--[200652] = "tyrsDeliverance",
 			
 			-- Priest (Spell Casting)
 			[9484] = "shackleUndead", 
 			[605] = "MindControl",
 			[32375] = "massDispell",
-			--[207946] = "lightsWrath",
 			[265202] = "holyWordSalvation", -- Holy Word Salvation
 			[289666] = "greaterHeal", -- >:(
 			[325013] = "boonOfTheAscended",
@@ -489,7 +498,6 @@
 			[277778] = "hex", -- Zandalari Tendonripper
 			[277784] = "hex", -- Wicker Mongrel
 			[309328] = "hex", -- Living Honey
-			--[207778] = "giftOfTheQueen",
 			[191634] = "stormkeeper",
 			[320137] = "stormkeeper",
 			[210714] = "Icefury", -- Icefury
@@ -518,7 +526,6 @@
 			[116858] = "chaosBolt",
 			[6358] = "seduction",
 			[115268] = "seduction",
-			--[211714] = "_PHthalkiel",
 			[265187] = "DemonicTyrant", -- Summon Demonic Tyrant
 			[29893] = "CreateHealthstone",
 			[183601] = "CreateHealthstone",
@@ -527,6 +534,8 @@
 			[321792] = "impendingcatastrophe", -- Venthyr
 			[325640] = "soulrot", -- Nightfae
 			[264106] = "deathbolt",
+			[6353] = "soulFire",
+			[353753] = "bondsOfFel",
 
 			-- Warrior (Spell Casting)
 			[64382] = "shatteringthrow",
@@ -655,7 +664,7 @@
 			[47476] = "strangulate",
 			[47568] = "runeWeapon", -- Empowered Rune Weapon
 			[207127] = "runeWeapon", -- Hungering Rune Weapon
-			[207289] = "runeWeapon", -- Unholy Assault (Unholy)
+			[207289] = "unholyAssault", -- Unholy Assault (Unholy)
 			[49206] = "gargoyle", 			-- Summon Gargoyle
 			[207349] = "gargoyle",			-- Dark Arbiter
 			[77606] = "darkSimulacrum",
@@ -743,6 +752,7 @@
 			[327022] = "kindredempowerment", -- Kyrian 2
 			[327037] = "kindredprotection", -- Kyrian 3
 			[18562] = "swiftmend",
+			[354654] = "groveProtection",
 			
 			-- Hunter (Cast Success)
 			[147362] = "counterShot",
@@ -751,7 +761,6 @@
 			[131894] = "murderOfCrows",
 			[121818] = "stampede",
 			[201430] = "stampede",
-			[202914] = "spiderSting",
 			[208652] = "direHawk",
 			[205691] = "direBasilisk",
 			[187707] = "muzzle",
@@ -773,6 +782,10 @@
 			[324149] = "flayedshot", -- Venthyr
 			[328231] = "wildspirits", -- Nightfae
 			[212431] = "explosiveShot",
+			[19574] = "bestialWrath",
+			[356719] = "chimaeralSting",
+			[356707] = "wildKingdom",
+			[136] = "mendPet",
 			
 			-- Mage (Cast Success)
 			[2139] = "counterspell", 
@@ -885,7 +898,6 @@
 			[79140] = "vendetta",
 			[207777] = "dismantle",
 			[200806] = "exsanguinate",
-			[198529] = "plunderArmor",
 			[408] = "kidney",
 			[199804] = "kidney",
 			--[185767] = "cannonballBarrage",
@@ -900,6 +912,7 @@
 			[323547] = "echoingreprimand", -- Kyrian
 			[323654] = "flagellation", -- Venthyr
 			[328547] = "serratedbonespikes", -- Necrolord
+			[5938] = "shiv",
 
 			-- Shaman (Cast Success)
 			[108281] = "ancestralGuidance",
@@ -913,6 +926,8 @@
 			[51490] = "thunderstorm",
 			[320125] = "echoingshock",
 			[326059] = "primordialwave", -- Necrolord
+			[356824] = "unleashWater", -- Unleash Shield (Water)
+			[356738] = "unleashEarth", -- Unleash Shield (Earth)
 			
 			-- Shaman (Totems)
 			[98008] = "spiritLinkTotem",
@@ -933,6 +948,7 @@
 			[8143] = "TremorTotem", -- Tremor Totem!
 			[16191] = "manaTideTotem",
 			[324386] = "vesperTotem",
+			[355580] = "staticFieldTotem",
 			
 			-- Warlock (Cast Success)
 			[6789] = "mortalCoil",
@@ -971,6 +987,9 @@
 			[205179] = "phantomsingularity",
 			[344566] = "RapidContagion",
 			[234153] = "DrainLife",
+			[328774] = "amplifyCurse",
+			[353294] = "shadowRift",
+			[353601] = "felObelisk",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",

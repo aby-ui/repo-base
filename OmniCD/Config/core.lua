@@ -110,24 +110,6 @@ local function GetOptions()
 							order = 12,
 							type = "toggle",
 						},
-						--[[ opt scale
-						-- slider fret. parent frame or toggle or auto adjust to 0.8 if UI < 0.65
-						optionScale = {
-							name = "Option Scale",
-							order = 13,
-							type = "range",
-							min = 0.5, max = 1.5, step = 0.1,
-							set = function(info, value)
-								E.DB.profile.optionScale = value
-
-								local f = E.Libs.ACD.OpenFrames.OmniCD.frame
-								if f then
-									f:SetScale(value)
-									-- TODO: update dackdrop
-								end
-							end,
-						},
-						--]]
 						pd3 = {
 							name = "\n", order = 14, type = "description",
 						},

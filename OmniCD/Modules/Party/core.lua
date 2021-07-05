@@ -213,7 +213,7 @@ function P:IsTalent(talentID, guid)
 		return false
 	end
 
-	-- TODO: move to inspect (warmode)
+	-- TODO: move to inspect? (warmode)
 	if talent == "PVP" then
 		return self.isPvP
 	elseif talent == "R" then
@@ -224,13 +224,13 @@ function P:IsTalent(talentID, guid)
 	end
 end
 
-function P:IsEquipped(itemID, guid, item2)
-	if not itemID then
+function P:IsEquipped(item, guid, item2)
+	if not item then
 		return true
 	end
 
 	local invSlotData = self.groupInfo[guid].invSlotData
-	if invSlotData[itemID] then
+	if invSlotData[item] then
 		return true
 	end
 	return invSlotData[item2]

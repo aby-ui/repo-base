@@ -140,9 +140,11 @@ function P:UpdateExPositionValues()
 			f.ofsY1 = growY * (E.BASE_ICON_SIZE + db.paddingY * px)
 			f.ofsX2 = db.paddingX * px
 			f.ofsY2 = 0
+			--[[ #iss259 let the user decide
 			if key == "interruptBar" then
 				self.rearrangeInterrupts = nil
 			end
+			]]
 			f.isProgressBarShown = nil
 		else
 			f.point = growUpward and "BOTTOMLEFT" or "TOPLEFT"
@@ -151,10 +153,16 @@ function P:UpdateExPositionValues()
 			f.ofsY1 = 0
 			f.ofsX2 = 0
 			f.ofsY2 = growY * db.paddingY * px
+			--[[ #iss259
 			if key == "interruptBar" then
 				self.rearrangeInterrupts = isProgressBarShown and db.sortBy == 2
 			end
+			]]
 			f.isProgressBarShown = isProgressBarShown
+		end
+
+		if key == "interruptBar" then -- #iss259
+			self.rearrangeInterrupts = db.sortBy == 2
 		end
 	end
 end

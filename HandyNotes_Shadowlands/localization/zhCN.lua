@@ -239,14 +239,14 @@ L["zolla_note"] = "我们非常重视自身的防御。无论规模大小，我�
 
 L["chamber_note"] = "使用从 {npc:178257} 得到的 {item:186718} 在远古传送器。使用已修复的远古传送器到达宝箱。"
 L["consumption_note"] = [[
-此稀有吞噬40个 {npc:179344} 后变为蓝色阴影形态（稀有）后才会有掉落。
+此稀有吞噬40个 {npc:179758} 后变为蓝色阴影形态（稀有）后才会有掉落。
 
-此稀有*继续*吞噬40个 {npc:179344} 后变为绿色阴影形态（稀有精英）将掉落额外的研究物品。
+此稀有*继续*吞噬40个 {npc:179758} 后变为绿色阴影形态（稀有精英）将掉落额外的研究物品。
 
-|cFFFF0000*{npc:179344} 未在战斗中吞噬时此稀有将不会出现。*|r
+|cFFFF0000*{npc:179758} 在此稀有战斗中将不会刷新并被吞噬。*|r
 ]]
 L["corpse_heap_note"] = "和 {npc:180079} 交谈开始收集事件。"
-L["darkmaul_note"] = "从入侵的渊菇收集 {item:187153} 并喂食给 {npc:180063}。你必须完成事件6次获得坐骑。"
+L["darkmaul_note"] = "从入侵的渊菇收集 {item:187153} 并喂食给 {npc:180063}。你必须完成事件10次获得坐骑。"
 L["dislodged_nest_note"] = "点击附近的剧毒之蛾获得 {spell:355181}。使用 {spell:355131} 额外动作按钮给 {npc:178547} 来获得控制和骑上它进入巢所在的树中。"
 L["flayedwing_transporter_note"] = "点击 {npc:178633} 飞向和飞离绝密宝库。"
 L["forgotten_feather_note"] = "从守护者的休憩跳下来到漂浮的一个小岛上。"
@@ -257,8 +257,8 @@ L["no_stoneborne_note"] = "和 {npc:179974} 交谈开始事件。"
 L["offering_box_note"] = "需要 {item:187033}，可以在附近废墟的西侧墙顶部找到。"
 L["pop_quiz_note"] = "突击测验事件将在地图上随机出现。点击废弃的帷幕之杖并回答 {npc:180162} 的问题。"
 L["popo_note"] = "和 {npc:180028} 交谈触发护送事件。"
-L["razorwing_note"] = "交付从吞噬者掉落的6个 {item:187054}。"
-L["reliwik_note"] = "点击未腐化的刃翼卵并击杀它。"
+L["razorwing_note"] = "交付从吞噬者掉落的10个 {item:187054}。"
+L["reliwik_note"] = "点击纯净的的刀翼兽之卵并击杀它。"
 L["spectral_bound_chest"] = "点击附近的3个幽魂钥匙解锁宝箱。"
 L["spectral_bound_note"] = "幽魂束缚宝箱"
 L["towering_exterminator_note"] = "在渊誓传送门事件出现。事件可能在刻希亚许多地方出现。"
@@ -277,6 +277,8 @@ L["rift_portal_note"] = [[
 
 |cFFFF8C00并非所有裂隙传送门在任何时间都处于激活状态。|r
 ]]
+L["rift_rare_only_note"] = "此稀有只在 |cFFFFFF00裂隙|r 位面内可以见到和击杀。"
+L["rift_rare_exit_note"] = "在裂隙位面内和此稀有互动将使其离开 |cFFFFFF00裂隙|r。"
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "显示 {npc:179595} 的位置可以进入 |cFFFFFF00裂隙|r。"
 

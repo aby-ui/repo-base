@@ -374,7 +374,9 @@ map.nodes[66404400] = Rare({
 map.nodes[34564206] = Rare({
     id=179853,
     quest=64276,
-    rift=1,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_only_note"],
+    rift=2,
     rewards={
         Achievement({id=15107, criteria=52297}),
         Item({item=187406, note=L["ring"]}) -- Band of Blinding Shadows
@@ -384,10 +386,12 @@ map.nodes[34564206] = Rare({
 map.nodes[49307274] = Rare({
     id=179851,
     quest=64272,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_only_note"],
     rewards={
         Achievement({id=15107, criteria=52293})
     },
-    rift=1,
+    rift=2,
     pois={
         Path({
             49307274, 49497182, 49587131, 49667100, 49777062, 49907029,
@@ -405,8 +409,10 @@ map.nodes[49307274] = Rare({
 map.nodes[27672526] = Rare({
     id=179735,
     quest=64232,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_only_note"],
     fgroup='nilganihmaht_group',
-    rift=1,
+    rift=2,
     rewards={
         Achievement({id=15107, criteria=52284}),
         Item({item=186605}), -- Nilganihmaht's Runed Band

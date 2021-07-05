@@ -20,6 +20,8 @@ local ElwynnForest = GetMapNames(13, 37)
 local RingTransference = L["To Ring of Transference"]
 local RingFates = L["To Ring of Fates"]
 local IntoTheMaw = L["Into the Maw"]
+local Korthia = GetMapNames(1543, 1961)
+local KeepersRespite = L["To Keeper's Respite"]
 
 local guildvault = L["config_guildvault"]
 local mailbox = L["Mailbox"]
@@ -123,6 +125,7 @@ DB.points = {
 
 [1671] = { -- Ring of Transference
     [49525107] = { icon="portal", label=IntoTheMaw },
+    [30702319] = { icon="portal", label=KeepersRespite, note=Korthia, quest=63665 },
     [49504243] = { icon="tpplatform", label=RingFates },
     [55735162] = { icon="tpplatform", label=RingFates },
     [49506073] = { icon="tpplatform", label=RingFates },

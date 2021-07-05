@@ -106,16 +106,8 @@ local GetPointInfo = function(point)
     local icon
     if point then
         local label = GetCreatureNamebyID(point.npc) or point.label or UNKNOWN
-        if (point.portal and (point.lvl or point.quest)) then
-            if (point.lvl and (UnitLevel("player") < point.lvl)) and (point.quest and not IsQuestCompleted(point.quest)) then
-                icon = private.constants.icon["MagePortalHorde"]
-            elseif (point.lvl and (UnitLevel("player") < point.lvl)) then
-                icon = private.constants.icon["MagePortalHorde"]
-            elseif (point.quest and not IsQuestCompleted(point.quest)) then
-                icon = private.constants.icon["MagePortalHorde"]
-            else
-                icon = SetIcon(point)
-            end
+        if (point.icon == "portal" and point.quest and not IsQuestCompleted(point.quest)) then
+            icon = private.constants.icon["MagePortalHorde"]
         else
             icon = SetIcon(point)
         end

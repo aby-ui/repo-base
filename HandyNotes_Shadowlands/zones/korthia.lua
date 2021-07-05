@@ -53,7 +53,7 @@ map.nodes[58211773] = Rare({
     rewards={
         Achievement({id=15107, criteria=52290}),
         Transmog({item=187370, slot=L["cloth"]}), -- Carriage Crusher's Padded Slippers
-        Transmog({item=187391, slot=L["plate"]}) -- Yarxhov's Rib-Cage
+        Transmog({item=187399, slot=L["leather"]}) -- Maw Construct's Shoulderguards
     }
 }) -- Assault Supply Carriage
 
@@ -66,6 +66,7 @@ map.nodes[39405240] = Rare({
         Achievement({id=15107, criteria=52295}),
         Achievement({id=15066, criteria=52262}),
         Item({item=187103, quest=63917}), -- Everliving Statuette
+        Transmog({item=187391, slot=L["plate"]}), -- Yarxhov's Rib-Cage
         Transmog({item=187366, slot=L["polearm"]}) -- Fallen Vault Guardian's Spire
     }
 }) -- Chamber of Knowledge
@@ -80,6 +81,7 @@ map.nodes[44983552] = Rare({
         Achievement({id=15066, criteria=52263}),
         Pet({item=186538, id=3140}), -- Gnashtooth
         Item({item=187104, quest=63918}), -- Obelisk of Dark Tidings
+        Transmog({item=187368, slot=L["staff"]}), -- Xyraxz's Controlling Rod
         Transmog({item=187387, slot=L["mail"]}) -- Pauldrons of the Unknown Beyond
     }
 }) -- Chamber of Wisdom
@@ -90,6 +92,7 @@ map.nodes[51164167] = Rare({
     note=L["consumption_note"],
     rewards={
         Achievement({id=15107, criteria=52285}),
+        Item({item=187402, note=L["ring"]}), -- All-Consuming Loop
         Transmog({item=187245, slot=L["cosmetic"]}), -- Death-Enveloped Spires
         Transmog({item=187246, slot=L["cosmetic"]}), -- Death-Enveloped Pauldrons
         Transmog({item=187247, slot=L["cosmetic"]}) -- Death-Enveloped Shoulder Spikes
@@ -113,7 +116,7 @@ map.nodes[51822081] = Rare({
     quest=63830,
     rewards={
         Achievement({id=15107, criteria=52277}),
-        Transmog({item=187390, slot=L["plate"]}), -- Dominated Protector's Helm
+        Transmog({item=187390, slot=L["plate"]}) -- Dominated Protector's Helm
     }
 }) -- Dominated Protector
 
@@ -134,7 +137,8 @@ map.nodes[44222950] = Rare({
     note=L["hunting_hunter_note"],
     rewards={
         Achievement({id=15107, criteria=52283}),
-        Mount({item=186645, id=1506}) -- Crimson Shardhide
+        Mount({item=186645, id=1506}), -- Crimson Shardhide
+        Transmog({item=187377, slot=L["leather"]}) -- Malbog's Paws
     },
     pois={
         POI({60652315}) -- Caretaker Kah-Kay
@@ -165,7 +169,7 @@ map.nodes[46507959] = Rare({
     note=L["no_stoneborne_note"],
     rewards={
         Achievement({id=15107, criteria=52276}),
-        Transmog({item=184790,slot=L["leather"]}) -- Archdruid Van-Yali's Greenthumbs
+        Transmog({item=184790, slot=L["leather"]}) -- Archdruid Van-Yali's Greenthumbs
         -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing
     }
 }) -- Stygian Stonecrusher
@@ -187,7 +191,7 @@ map.nodes[22604140] = Rare({
     quest=64291,
     rewards={
         Achievement({id=15107, criteria=52291}),
-        Transmog({item=187403,slot=L["cloak"]}) -- Relic Breaker's Drape
+        Transmog({item=187403, slot=L["cloak"]}) -- Relic Breaker's Drape
     }
 }) -- Relic Breaker Krelva
 
@@ -207,7 +211,8 @@ map.nodes[27755885] = Rare({
     note=L["in_cave"],
     rewards={
         Achievement({id=15107, criteria=52301}),
-        Pet({item=186542, id=3136}) -- Korthian Specimen
+        Pet({item=186542, id=3136}), -- Korthian Specimen
+        Transmog({item=187371, slote=L["cloth"]}) -- Velvet Gromit Handwraps
     },
     pois={
         POI({30385480}) -- Entrance
@@ -240,8 +245,11 @@ map.nodes[16007500] = Rare({
         Achievement({id=15107, criteria=52302}),
         Transmog({item=187373, slot=L["cloth"]}), -- Soul-Enveloping Leggings
         Transmog({item=187376, slot=L["leather"]}), -- Mawsworn Lieutenant's Treads
+        Transmog({item=187382, slot=L["mail"]}), -- Mawsworn Exterminator's Hauberk
+        Transmog({item=187392, slot=L["plate"]}), -- Sabatons of the Towering Construct
         Transmog({item=187241, slot=L["cosmetic"]}), -- Watchful Eye of the Damned
-        Transmog({item=187242, slot=L["cosmetic"]}) -- Exterminator's Crest of the Damned
+        Transmog({item=187242, slot=L["cosmetic"]}), -- Exterminator's Crest of the Damned
+        Transmog({item=187035, slot=L["cosmetic"]}) -- Cold Burden of the Damned
     }
 }) -- Towering Exterminator
 
@@ -252,9 +260,9 @@ map.nodes[14507900] = Rare({
     note=L["pop_quiz_note"],
     rewards={
         Achievement({id=15107, criteria=52319}),
-        Transmog({item=187369,slot=L["cloth"]}), -- Ve'rayn's Formal Robes
+        Item({item=187264, quest=64513}), -- Ve'rayn's Head
         Item({item=187404, note=L["neck"]}), -- Cartel Ve Amulet
-        Item({item=187264, quest=64513}) -- Ve'rayn's Head
+        Transmog({item=187369, slot=L["cloth"]}) -- Ve'rayn's Formal Robes
     }
 }) -- Ve'rayn
 
@@ -263,9 +271,13 @@ map.nodes[14507900] = Rare({
 map.nodes[59335221] = Rare({
     id=179913,
     quest=64285,
-    rift=1,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_exit_note"],
+    rift=2,
     rewards={
         Achievement({id=15107, criteria=52275}),
+        Item({item=187401, note=L["ring"]}), -- Band of the Shaded Rift
+        Transmog({item=187396, slot=L["plate"]}), -- Girdle of the Deadsoul
         Toy({item=187174}) -- Shaded Judgement Stone
     }
 }) -- Deadsoul Hatcher
@@ -273,9 +285,13 @@ map.nodes[59335221] = Rare({
 map.nodes[50307590] = Rare({
     id=179914,
     quest=64369,
-    rift=1,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_only_note"],
+    rift=2,
     rewards={
         Achievement({id=15107, criteria=52294}),
+        Item({item=187405, note=L["neck"]}), -- Choker of the Hidden Observer
+        Transmog({item=187365, slot=L["1h_axe"]}), -- Rift Splitter
         Toy({item=187420}) -- Maw-Ocular Viewfinder
     }
 }) -- Observer Yorik
@@ -283,16 +299,21 @@ map.nodes[50307590] = Rare({
 map.nodes[44604240] = Rare({
     id=179608,
     quest=64263,
-    rift=1,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_exit_note"],
+    rift=2,
     rewards={
-        Achievement({id=15107, criteria=52273})
+        Achievement({id=15107, criteria=52273}),
+        Transmog({item=187400, slot=L["cloth"]}) -- Mantle of Screaming Shadows
     }
 }) -- Screaming Shade
 
 map.nodes[57607040] = Rare({
     id=179911,
     quest=64284,
-    rift=1,
+    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    note=L["rift_rare_exit_note"],
+    rift=2,
     rewards={
         Achievement({id=15107, criteria=52274})
     }
@@ -693,8 +714,8 @@ local Mawshroom = Class('Mawshroom', Treasure, {
     group=ns.groups.INVASIVE_MAWSHROOM,
     label=L["invasive_mawshroom"],
     rewards={
-        Item({item=187153, quest=64376}), --Tasty Mawshroom
-        Item({item=185963, quest=638892}), --Diviner's Rune Chit
+        Item({item=187153, quest=64376}), -- Tasty Mawshroom
+        Item({item=185963, quest=63892}), -- Diviner's Rune Chit
         Item({item=186017}), -- Korthite Crystal
         ns.relics.relic_fragment
     }
@@ -743,8 +764,8 @@ local UMNest = Class('UMNest', Treasure, {
     icon='chest_bn',
     fgroup='nest_materials',
     rewards={
-        Item({item=187442, note=L["bag"]}), --Scholar's Ancient Pack
-        Item({item=185963, quest=638892}), --Diviner's Rune Chit
+        Item({item=187442, note=L["bag"]}), -- Scholar's Ancient Pack
+        Item({item=185963, quest=63892}), -- Diviner's Rune Chit
         Item({item=186017}), -- Korthite Crystal
         ns.relics.relic_fragment
     }
@@ -838,18 +859,34 @@ local maelie = Class('Maelie', Collectible, {
 
 map.nodes[60682192] = maelie
 
-map.nodes[42873269] = Collectible({
+local function GetDarkmaulStatus ()
+    local count = select(4, GetQuestObjectiveInfo(64376, 0, false))
+    if count ~= nil then return ns.status.Gray(tostring(count)..'/10') end
+end
+
+local darkmaul = Class('Darkmaul', Collectible, {
     id=180063,
     icon=3931157,
     quest=64376,
     note=L["darkmaul_note"],
-    rewards={Mount({item=186646, id=1507})} -- Darkmaul
-})
+    rewards={Mount({item=186646, id=1507})}, -- Darkmaul
+    getters={rlabel=GetDarkmaulStatus}
+})()
 
-map.nodes[25725108] = Collectible({
+map.nodes[42873269] = darkmaul
+
+local function GetDusklightStatus ()
+    local count = select(4, GetQuestObjectiveInfo(64274, 0, false))
+    if count ~= nil then return ns.status.Gray(tostring(count)..'/10') end
+end
+
+local dusklight = Class('Dusklight', Collectible, {
     id=179871,
     icon=3897746,
     quest=64274,
     note=L["razorwing_note"],
-    rewards={Mount({item=186651, id=1510})}-- Dusklight Razorwing
-}) -- Razorwing Nest
+    rewards={Mount({item=186651, id=1510})}, -- Dusklight Razorwing
+    getters={rlabel=GetDusklightStatus}
+})() -- Razorwing Nest
+
+map.nodes[25725108] = dusklight

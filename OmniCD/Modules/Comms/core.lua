@@ -14,6 +14,7 @@ function Comms:Enable()
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	if not E.isBCC then
 		self:RegisterEventUnitPower()
+		self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 		self:RegisterEvent("UNIT_PET")
 		self:RegisterEvent("COVENANT_CHOSEN")
 		self:RegisterEvent("SOULBIND_ACTIVATED")
@@ -22,7 +23,7 @@ function Comms:Enable()
 		self:RegisterEvent("SOULBIND_NODE_UPDATED")
 		self:RegisterEvent("SOULBIND_CONDUIT_INSTALLED")
 		self:RegisterEvent("SOULBIND_PATH_CHANGED")
-		self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
+		self:RegisterEvent("COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED")
 	end
 	self:SetScript("OnEvent", function(self, event, ...)
 		self[event](self, ...)
@@ -71,6 +72,11 @@ function Comms:UNIT_PET(unit) -- [73]
 			E.Cooldowns.petGUIDS[petGUID] = guid
 		end
 	end
+end
+
+function Comms:COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED()
+	self:InspectPlayer()
+	self:SendSync()
 end
 
 E["Comms"] = Comms

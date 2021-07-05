@@ -215,6 +215,7 @@ E.STR = {
 	["ENABLE_BLIZZARD_CRF"] = L["Blizzard Raid Frames has been disabled by your AddOn(s). Enable and reload UI?"],
 	["UNSUPPORTED_ADDON"] = L["Raid Frames for testing doesn't exist for %s. If it fails to load, configure OmniCD while in a group or temporarily set it to \'Manual Mode\'."],
 	["MAX_RANGE"] = MAXIMUM .. ": 999",
+	["MAX_RANGE_3600"] = MAXIMUM .. ": 3600",
 }
 
 E.TEXTURES = {

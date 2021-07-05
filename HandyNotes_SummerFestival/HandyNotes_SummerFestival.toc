@@ -2,7 +2,7 @@
 ## Title: HandyNotes_SummerFestival
 ## Notes: Displays the locations of Summer Festival bonfires.
 ## Author: Ravendwyr
-## Version: v1.7
+## Version: v1.7.1
 ## X-Category: Map & Minimap
 ## X-Curse-Project-ID: 45903
 ## X-Wago-ID: Xb6Xxw6p

@@ -31,11 +31,10 @@ P.zoneEvents = {
 	raid  = { "ENCOUNTER_END" },
 	all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "PLAYER_FLAGS_CHANGED", "CHALLENGE_MODE_START", "ENCOUNTER_END" },
 }
-
 if E.isBCC then
 	P.zoneEvents.none = nil
 	P.zoneEvents.party = nil
-	P.zoneEvents.all = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "ENCOUNTER_END" }
+	P.zoneEvents.all = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" }
 end
 
 do
@@ -126,8 +125,16 @@ do
 					info.bar.key = index
 					info.bar.unit = unit
 					info.bar.anchor.text:SetText(index)
-					if not E.isBCC and guid ~= E.userGUID then -- [96]
-						info.bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
+
+					-- update event unitIDs
+					if not E.isBCC then
+						if guid ~= E.userGUID then -- [96]
+							info.bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
+						end
+
+						if info.maxHealth then
+							f:RegisterUnitEvent("UNIT_HEALTH", unit, unit)
+						end
 					end
 					info.bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]*
 				end

@@ -30,9 +30,9 @@ local function SyncRemainingCD(guid, spentPower)
 	end
 
 	for k, t in pairs(spell_cdmod_powerSpent) do
-		local talent, duration, base = t[1], t[2], t[3]
+		local talent, duration, base, aura = t[1], t[2], t[3], t[4]
 		local icon = info.spellIcons[k] -- [1]
-		if icon and icon.active then
+		if icon and icon.active and (not aura or info.auras[aura]) then
 			local reducedTime = P:IsTalent(talent, guid) and P:GetValueByType(duration, guid) or base
 			if reducedTime then
 				reducedTime = reducedTime * spentPower
@@ -163,7 +163,11 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 			elseif v ~= "0" then
 				v = tonumber(v)
 				if i == 16 then
-					info.shadowlandsData.soulbindID = v
+					if info.shadowlandsData.covenantID then
+						info.shadowlandsData.soulbindID = v
+					else -- backwards compatibile. no active soulbind, add snowflake
+						info.talentData[v] = true
+					end
 				elseif i == 15 then
 					local covenantSpellID = covenant_IDToSpellID[v]
 					if covenantSpellID then
@@ -204,7 +208,7 @@ do
 	end
 
 	function Comms:PLAYER_EQUIPMENT_CHANGED(slotID)
-		if timer or slotID > 15 then
+		if timer or slotID > 16 then -- snow flake
 			return
 		end
 

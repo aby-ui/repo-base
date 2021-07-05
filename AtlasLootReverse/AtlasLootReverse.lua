@@ -153,6 +153,7 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
                 end
                 --有可能有多个来源, 不考虑了
                 db.whoTable[info.itemID] = source_id
+                if index == 4 and i==1 then print(select(2, GetItemInfo(info.itemID)), source, source_id) end
             end
             print(instance_name, count)
         end

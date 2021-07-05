@@ -354,7 +354,7 @@ function P:AddSpellPickerSpells()
 				}
 				--]==]
 
-				if v.item then -- SpellMixin not working for Covenant and Trinkets has been Hotfixed
+				if class == "TRINKET" and v.item then -- SpellMixin not working for Covenant and Trinkets has been Hotfixed
 					local item = Item:CreateFromItemID(v.item)
 					if item then -- deprecate itemID check
 						item:ContinueOnItemLoad(function()

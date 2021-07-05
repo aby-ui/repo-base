@@ -239,14 +239,14 @@ L["zolla_note"] = "We take our defenses very seriously. Whether small or large, 
 
 L["chamber_note"] = "Use a {item:186718} from {npc:178257} on the Ancient Teleporter. Use the repaired Ancient Teleporter to access the chamber."
 L["consumption_note"] = [[
-This rare will not drop loot until after it consumes 40x {npc:179344} to transform into its blue-shaded form (Rare).
+This rare will not drop loot until after it consumes 40x {npc:179758} to transform into its blue-shaded form (Rare).
 
-This rare will drop extra research items after it consumes *another* 40x {npc:179344} to transform into its green-shaded form (Rare Elite).
+This rare will drop extra research items after it consumes *another* 40x {npc:179758} to transform into its green-shaded form (Rare Elite).
 
-|cFFFF0000THE RARE WILL NOT SPAWN {npc:179344} TO CONSUME WHILE IN COMBAT.|r
+|cFFFF0000THE RARE WILL NOT SPAWN {npc:179758} TO CONSUME WHILE IN COMBAT.|r
 ]]
 L["corpse_heap_note"] = "Talk to {npc:180079} to start the collection event."
-L["darkmaul_note"] = "Collect {item:187153} from Invasive Mawshrooms and feed them to {npc:180063}. You must complete the event 6 times to obtain the mount."
+L["darkmaul_note"] = "Collect {item:187153} from Invasive Mawshrooms and feed them to {npc:180063}. You must complete the event 10 times to obtain the mount."
 L["dislodged_nest_note"] = "Click on a nearby Noxious Moth to gain {spell:355181}. Use the {spell:355131} extra action button on {npc:178547} to gain control and ride it into the tree the nest is in."
 L["flayedwing_transporter_note"] = "Click on {npc:178633} to fly to or from the Vault of Secrets."
 L["forgotten_feather_note"] = "Floating on a small island accessed by jumping down from Keeper's Respite."
@@ -257,7 +257,7 @@ L["no_stoneborne_note"] = "Talk to {npc:179974} to start the event."
 L["offering_box_note"] = "Requires Small Offering Key which can be found on the top of the west side wall of the near by ruins."
 L["pop_quiz_note"] = "The Pop Quiz event will spawn randomly on the map. Click on the Abandoned Veilstaff and answer the questions from {npc:180162}."
 L["popo_note"] = "Talk to {npc:180028} to trigger the escort event."
-L["razorwing_note"] = "Hand in 6x {item:187054} dropped by devourers in the area."
+L["razorwing_note"] = "Hand in 10x {item:187054} dropped by devourers in the area."
 L["reliwik_note"] = "Click on the uncorrupted razorwing egg to pull him down."
 L["spectral_bound_chest"] = "Spectral Bound Chest"
 L["spectral_bound_note"] = "Click on 3 nearby Spectral Keys to unlock the chest."
@@ -277,6 +277,8 @@ Requires a {item:186731}, which can be purchased from {npc:178257} once you reac
 
 |cFFFF8C00Not all rift portals are active at any given time.|r
 ]]
+L["rift_rare_only_note"] = "This rare can only be seen and killed inside |cFFFFFF00The Rift|r phase."
+L["rift_rare_exit_note"] = "This rare will exit |cFFFFFF00The Rift|r phase once interacted with inside the rift."
 L["options_icons_rift_portal"] = "{npc:179595s}"
 L["options_icons_rift_portal_desc"] = "Display the locations of {npc:179595s} used to enter |cFFFFFF00The Rift|r."
 

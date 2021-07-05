@@ -163,7 +163,8 @@ function P:HighlightIcon(icon, isRefresh)
 	local duration = info and self:GetBuffDuration(unit, buff)
 
 	if duration then
-		if E.buffFixNoCLEU[buff] and (E.isBCC or not P.isInArena) then
+		--if E.buffFixNoCLEU[buff] and (E.isBCC or not P.isInArena) then -- Patch 9.1 HSA removed
+		if E.buffFixNoCLEU[buff] then
 			local f = info.bar
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 		end

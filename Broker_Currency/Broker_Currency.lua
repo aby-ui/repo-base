@@ -830,51 +830,34 @@ do
 			summaryGold = true,
 			["iconSize"] = 12,
 			["iconSizeGold"] = 12,
-			["show1220"] = false,  --职业大厅
-            ["show1226"] = false,  --虚空碎片
-            ["show1342"] = false, --物资
-			["show1155"] = false, --魔力
-			["show1273"] = false,  --破碎命运
-            ["show1508"] = false,  --暗淡水晶
-            ["show1533"] = false,  --觉醒精华
-            ["show1560"] = true,  --8.0物资
-            ["show1580"] = true,  --8.0印记
-            ["show1718"] = false,  --8.1泰坦
-            ["show1716"] = true,  --8.1PVP
-            ["show1717"] = true,  --8.1PVP
-            ["show1721"] = false,  --8.2珍珠
-            ["show1755"] = true,  --8.3凝结幻象
-			["summary1560"] = true,
-            ["summary1580"] = true,
-            ["summary1716"] = true,
-            ["summary1717"] = true,
-            ["summary1755"] = true,
 			summaryColorDark = { r = 0, g = 0, b = 0, a = 0 },
 			summaryColorLight = { r = 1, g = 1, b = 1, a = .3 },
-            update810 = true,
         }
 
-        if not Broker_CurrencyCharDB.update900 then
-            Broker_CurrencyCharDB.update900 = true
-            Broker_CurrencyCharDB.show1767 = true
-            Broker_CurrencyCharDB.summary1767 = true
-            Broker_CurrencyCharDB.show1813 = true
-            Broker_CurrencyCharDB.summary1813 = true
-            Broker_CurrencyCharDB.show1719 = false
-            Broker_CurrencyCharDB.summary1719 = false
-            Broker_CurrencyCharDB.show1803 = false
-            Broker_CurrencyCharDB.summary1803 = false
-            Broker_CurrencyCharDB.show1718 = false
-            Broker_CurrencyCharDB.summary1718 = false
-            Broker_CurrencyCharDB.show1755 = false
-            Broker_CurrencyCharDB.summary1755 = false
-            Broker_CurrencyCharDB.show1560 = false
-            Broker_CurrencyCharDB.summary1560 = false
-        end
-        if not Broker_CurrencyCharDB.update901 then
-            Broker_CurrencyCharDB.update901 = true
-            Broker_CurrencyCharDB.show1828 = true
-            Broker_CurrencyCharDB.summary1828 = true
+        if not Broker_CurrencyCharDB.update910 then
+            Mixin(Broker_CurrencyCharDB, {
+                update910 = true,
+                show1828 = true, summary1828 = true, --灰烬
+                show1191 = true, summary1191 = true, --勇气
+                show1977 = true, summary1977 = true, --冥河灰烬
+                show1906 = true, summary1906 = true, --灵魂薪尘
+                --show1931 = true, summary1931 = true, --编集研究
+                show1792 = true, summary1792 = true, --PVP荣誉
+                show1602 = true, summary1602 = true, --PVP征服
+
+                show1767 = false, summary1767 = false, --冥殇
+                show1813 = false, summary1813 = false, --心能
+                ["show1560"] = false,  --8.0物资
+                ["show1580"] = false,  --8.0印记
+                ["show1716"] = false,  --8.1PVP
+                ["show1717"] = false,  --8.1PVP
+                ["show1755"] = false,  --8.3凝结幻象
+                ["summary1560"] = false,
+                ["summary1580"] = false,
+                ["summary1716"] = false,
+                ["summary1717"] = false,
+                ["summary1755"] = false,
+            })
         end
 
 		-- ----------------------------------------------------------------------------

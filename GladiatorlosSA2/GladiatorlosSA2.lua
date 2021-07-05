@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 3.8.1 |r(|cff9482C99.0.5 Shadowlands|r)"
+ local GSA_VERSION = "|cffFF7D0A 3.9.1 |r(|cff9482C99.1 Shadowlands|r)"
  local GSA_TEST_BRANCH = ""
  local GSA_AUTHOR = " "
  local gsadb
@@ -257,8 +257,10 @@
 		spellID == 163505 or 		-- Rake Stun
 		spellID == 199086 or 		-- Warpath Stun
 		spellID == 202335 or 		-- Double Barrel Stun
-		spellID == 215652 or 		-- Shield of Virtue silence
-		spellID == 287254 then		-- Remorseless Winter
+		spellID == 215652 or 		-- Shield of Virtue silence (Paladin)
+		spellID == 287254 or		-- Remorseless Winter (Death Knight)
+		spellID == 357021 or		-- Consecutive Concussion (Hunter)
+		spellID == 356727 then		-- Spider Sting (Hunter)
 		return true
 	end
 end

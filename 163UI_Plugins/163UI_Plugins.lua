@@ -272,3 +272,26 @@ CoreDependCall("Blizzard_QuestNavigation", function()
     --]]
 end)
 end
+
+
+--[[------------------------------------------------------------
+9.1 临时处理地图卡顿
+---------------------------------------------------------------]]
+U1PLUG["FixMapGlitch"] = function()
+    if C_TaskQuest.GetQuestsForPlayerByMapID then
+        U1Message("暴雪9.1界面问题导致地图卡顿，已临时处理，如果遇到问题可以在小功能集合中关闭。详情参见 https://bbs.nga.cn/read.php?tid=27466594")
+        local origin = C_TaskQuest.GetQuestsForPlayerByMapID
+        local lastTime = {}
+        local lastResult = {}
+        C_TaskQuest.GetQuestsForPlayerByMapID = function(mapId)
+            if GetTime() - (lastTime[mapId] or 0) <= 1.5 then
+                return lastResult[mapId]
+            else
+                local r = origin(mapId)
+                lastResult[mapId] = r
+                lastTime[mapId] = GetTime()
+                return r
+            end
+        end
+    end
+end

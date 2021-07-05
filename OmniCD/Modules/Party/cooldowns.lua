@@ -4,6 +4,7 @@ local P = E["Party"]
 local spell_cdmod_aura_temp = E.spell_cdmod_aura_temp
 local selfLimitedMinMaxReducer = E.selfLimitedMinMaxReducer
 local spell_benevolentFaeMajorCD = E.spell_benevolentFaeMajorCD
+local spell_symbolOfHopeMajorCD = E.spell_symbolOfHopeMajorCD
 local BOOKTYPE_CATEGORY = E.BOOKTYPE_CATEGORY
 
 function OmniCD_CooldownOnHide(self)
@@ -194,13 +195,15 @@ function P:UpdateCooldown(icon, reducedTime, updateUnitBarCharges, mult)
 
 	local startTime = active.startTime
 	local duration = active.duration
-	local modRate
+	local modRate = info.modRate or 1
 	if BOOKTYPE_CATEGORY[icon.category] then
-		local majorCD = spell_benevolentFaeMajorCD[spellID]
+		local majorCD = spell_symbolOfHopeMajorCD[spellID]
+		if majorCD and (majorCD == true or majorCD == info.spec) and info.auras.symbol then
+			modRate = modRate * info.auras.symbol
+		end
+		majorCD = spell_benevolentFaeMajorCD[spellID]
 		if majorCD and (majorCD == true or majorCD == info.spec) and info.auras.benevolent then
-			modRate = info.auras.benevolent * (info.modRate or 1)
-		else
-			modRate = info.modRate
+			modRate = modRate * info.auras.benevolent
 		end
 	end
 
@@ -263,18 +266,18 @@ function P:StartCooldown(icon, cd, recharge, noGlow)
 	local charges = active.charges or icon.maxcharges
 	local now = GetTime()
 
-	local modRate
+	local modRate = info.modRate or 1
 	if BOOKTYPE_CATEGORY[icon.category] then
-		local majorCD = spell_benevolentFaeMajorCD[spellID]
+		local majorCD = spell_symbolOfHopeMajorCD[spellID]
+		if majorCD and (majorCD == true or majorCD == info.spec) and info.auras.symbol then
+			modRate = modRate * info.auras.symbol
+		end
+		majorCD = spell_benevolentFaeMajorCD[spellID]
 		if majorCD and (majorCD == true or majorCD == info.spec) and info.auras.benevolent then
-			modRate = info.auras.benevolent * (info.modRate or 1)
-		else
-			modRate = info.modRate
+			modRate = modRate * info.auras.benevolent
 		end
 
-		if modRate then
-			cd = cd * modRate -- [23]
-		end
+		cd = cd * modRate -- [23]
 	end
 
 	local auraMult = spell_cdmod_aura_temp[spellID] -- [9]

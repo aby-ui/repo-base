@@ -104,7 +104,7 @@ end
 
 local isClassCategory = function(info)
 	local id = GetSpellID(info)
-	return OmniCDDB.cooldowns[id].class ~= "TRINKET" and OmniCDDB.cooldowns[id].class ~= "PVPTRINKET"
+	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- and OmniCDDB.cooldowns[id].class ~= "PVPTRINKET" -- 9.1 pvp-trinket itemID are merged
 end
 
 local getGlobalDurationCharge = function(info)
@@ -222,10 +222,10 @@ local customSpellInfo = {
 	},
 	duration = {
 		name = L["Cooldown"],
-		desc = E.STR.MAX_RANGE,
+		desc = E.STR.MAX_RANGE_3600,
 		order = 5,
 		type = "range",
-		min = 1, max = 999, softMax = 300, step = 1,
+		min = 1, max = 3600, softMax = 300, step = 1,
 		get = getGlobalDurationCharge,
 		set = setGlobalDurationCharge,
 	},

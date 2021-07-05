@@ -2,7 +2,6 @@ local E, L, C = select(2, ...):unpack()
 
 C["loginMsg"] = false
 C["notifyNew"] = false
---C["optionScale"] = 1 -- opt scale
 
 C["Party"] = {
 	visibility = {
