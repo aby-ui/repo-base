@@ -258,7 +258,9 @@ function Item:GetText()
 end
 
 function Item:GetStatus()
-    if self.quest then
+    if self.status then
+        return format('(%s)', self.status)
+    elseif self.quest then
         local completed = C_QuestLog.IsQuestFlaggedCompleted(self.quest)
         return completed and Green(L['completed']) or Red(L['incomplete'])
     elseif self.weekly then

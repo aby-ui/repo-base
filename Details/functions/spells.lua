@@ -1209,57 +1209,57 @@ do
 		[71]    =       73,     --      Vanguard
 
 	}
-
-		_detalhes.SpecIDToClass = {
-			[577] = "DEMONHUNTER", -- Havoc Demon Hunter
-			[581] = "DEMONHUNTER", -- Vengeance Demon Hunter
-
-			[252] = "DEATHKNIGHT", -- Unholy Death Knight
-			[251] = "DEATHKNIGHT", -- Frost Death Knight
-			[250] = "DEATHKNIGHT", -- Blood Death Knight
-			
-			[102] = "DRUID", -- Balance Druid
-			[103] = "DRUID", -- Feral Druid
-			[104] = "DRUID", -- Guardian Druid
-			[105] = "DRUID", -- Restoration Druid
-			
-			[253] = "HUNTER", -- Beast Mastery Hunter
-			[254] = "HUNTER", -- Marksmanship Hunter
-			[255] = "HUNTER", -- Survival Hunter
-			
-			[62] = "MAGE", -- Arcane Mage
-			[63] = "MAGE", -- Fire Mage
-			[64] = "MAGE", -- Frost Mage
-
-			[268] = "MONK", -- Brewmaster Monk
-			[269] = "MONK", -- Windwalker Monk
-			[270] = "MONK", -- Mistweaver Monk
-			
-			[65] = "PALADIN", -- Holy Paladin
-			[66] = "PALADIN", -- Protection Paladin
-			[70] = "PALADIN", -- Retribution Paladin
-			
-			[256] = "PRIEST", -- Discipline Priest
-			[257] = "PRIEST", -- Holy Priest
-			[258] = "PRIEST", -- Shadow Priest
-			
-			[259] = "ROGUE", -- Assassination Rogue
-			[260] = "ROGUE", -- Outlaw Rogue
-			[261] = "ROGUE", -- Subtlety Rogue
-			
-			[262] = "SHAMAN", -- Elemental Shaman
-			[263] = "SHAMAN", -- Enhancement Shaman
-			[264] = "SHAMAN", -- Restoration Shaman
-			
-			[265] = "WARLOCK", -- Affliction Warlock
-			[266] = "WARLOCK", -- Demonology Warlock
-			[267] = "WARLOCK", -- Destruction Warlock
-			
-			[71] = "WARRIOR", -- Arms Warrior
-			[72] = "WARRIOR", -- Fury Warrior
-			[73] = "WARRIOR", -- Protection Warrior
-		}
 	end
+
+	_detalhes.SpecIDToClass = {
+		[577] = "DEMONHUNTER", -- Havoc Demon Hunter
+		[581] = "DEMONHUNTER", -- Vengeance Demon Hunter
+
+		[252] = "DEATHKNIGHT", -- Unholy Death Knight
+		[251] = "DEATHKNIGHT", -- Frost Death Knight
+		[250] = "DEATHKNIGHT", -- Blood Death Knight
+		
+		[102] = "DRUID", -- Balance Druid
+		[103] = "DRUID", -- Feral Druid
+		[104] = "DRUID", -- Guardian Druid
+		[105] = "DRUID", -- Restoration Druid
+		
+		[253] = "HUNTER", -- Beast Mastery Hunter
+		[254] = "HUNTER", -- Marksmanship Hunter
+		[255] = "HUNTER", -- Survival Hunter
+		
+		[62] = "MAGE", -- Arcane Mage
+		[63] = "MAGE", -- Fire Mage
+		[64] = "MAGE", -- Frost Mage
+
+		[268] = "MONK", -- Brewmaster Monk
+		[269] = "MONK", -- Windwalker Monk
+		[270] = "MONK", -- Mistweaver Monk
+		
+		[65] = "PALADIN", -- Holy Paladin
+		[66] = "PALADIN", -- Protection Paladin
+		[70] = "PALADIN", -- Retribution Paladin
+		
+		[256] = "PRIEST", -- Discipline Priest
+		[257] = "PRIEST", -- Holy Priest
+		[258] = "PRIEST", -- Shadow Priest
+		
+		[259] = "ROGUE", -- Assassination Rogue
+		[260] = "ROGUE", -- Outlaw Rogue
+		[261] = "ROGUE", -- Subtlety Rogue
+		
+		[262] = "SHAMAN", -- Elemental Shaman
+		[263] = "SHAMAN", -- Enhancement Shaman
+		[264] = "SHAMAN", -- Restoration Shaman
+		
+		[265] = "WARLOCK", -- Affliction Warlock
+		[266] = "WARLOCK", -- Demonology Warlock
+		[267] = "WARLOCK", -- Destruction Warlock
+		
+		[71] = "WARRIOR", -- Arms Warrior
+		[72] = "WARRIOR", -- Fury Warrior
+		[73] = "WARRIOR", -- Protection Warrior
+	}
 
 	_detalhes.ClassSpellList = {
 

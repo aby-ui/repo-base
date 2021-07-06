@@ -25,6 +25,11 @@ local Line = ns.poi.Line
 local Path = ns.poi.Path
 local POI = ns.poi.POI
 
+-- local KYRIAN = ns.covenants.KYR
+local NECROLORD = ns.covenants.NEC
+local NIGHTFAE = ns.covenants.FAE
+local VENTHYR = ns.covenants.VEN
+
 -------------------------------------------------------------------------------
 ------------------------------------- MAP -------------------------------------
 -------------------------------------------------------------------------------
@@ -37,15 +42,17 @@ function map:Prepare ()
 end
 
 function map:CanDisplay(node, coord, minimap)
-    local ass = node.assault or node.noassault
-    if ass then
-        local ass_active = C_TaskQuest.GetQuestTimeLeftMinutes(ass) or C_QuestLog.IsQuestFlaggedCompleted(ass)
-        if node.assault and not ass_active then return false end
-        if node.noassault and ass_active then return false end
+    local covenant = node.assault or node.noassault
+    if covenant then
+        local quest = covenant.assault
+        local active = C_TaskQuest.GetQuestTimeLeftMinutes(quest) or C_QuestLog.IsQuestFlaggedCompleted(quest)
+        if node.assault and not active then return false end
+        if node.noassault and active then return false end
     end
     return Map.CanDisplay(self, node, coord, minimap)
 end
 
+local ext = Map({id=1822}) -- Extractor's Sanatorium
 local pitu = Map({id=1820}) -- Pit of Anguish (upper)
 local pitl = Map({id=1821}) -- Pit of Anguish (lower)
 
@@ -77,7 +84,7 @@ map.nodes[80306280] = map.intro
 map.nodes[25923116] = Rare({
     id=157964,
     quest=57482,
-    noassault=63823,
+    noassault=NIGHTFAE,
     note=L["dekaris_note"],
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
@@ -88,7 +95,7 @@ map.nodes[25923116] = Rare({
 map.nodes[19324172] = Rare({
     id=170301,
     quest=60788,
-    noassault=63823,
+    noassault=NIGHTFAE,
     note=L["apholeias_note"],
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
@@ -111,6 +118,7 @@ map.nodes[39014119] = Rare({
 map.nodes[27731305] = Rare({
     id=171317,
     quest=61106,
+    noassault=VENTHYR,
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49844}),
@@ -142,7 +150,9 @@ map.nodes[61334129] = Rare({
     quest=64251,
     note=L["deomen_note"],
     rewards={
-        Achievement({id=15107, criteria=52286})
+        Achievement({id=15107, criteria=52286}),
+        Transmog({item=187385, slot=L["mail"]}), -- Vortex Piercing Headgear
+        Transmog({item=187367, slot=L["1h_sword"]}) -- Deomen's Vortex Blade
     },
     pois={
         POI({63274368}) -- Entrance
@@ -161,7 +171,7 @@ map.nodes[28086058] = Rare({
 map.nodes[23765341] = Rare({
     id=170774,
     quest=60915,
-    noassault=63823,
+    noassault=NIGHTFAE,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49848})
@@ -183,7 +193,7 @@ map.nodes[42342108] = Rare({
 map.nodes[19194608] = Rare({ -- was 27584966
     id=154330,
     quest=57509,
-    noassault=63823,
+    noassault=NIGHTFAE,
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49850}),
@@ -248,7 +258,7 @@ map.nodes[30775000] = Rare({
 map.nodes[16945102] = Rare({
     id=162849,
     quest=60987,
-    noassault=63823,
+    noassault=NIGHTFAE,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49852}),
@@ -314,6 +324,7 @@ map.nodes[28701204] = Rare({
     id=170302,
     quest=60789, -- 62722?
     note=L["talaporas_note"],
+    noassault=VENTHYR,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49858}),
@@ -336,7 +347,7 @@ map.nodes[69044897] = Rare({
     quest=64258, -- 64439?
     rewards={
         Achievement({id=15107, criteria=52289}),
-        Transmog({item=187374, slot=L["cloth"]}) -- Balthier's Waistcord
+        Transmog({item=187374, slot=L["cloth"]}) -- Balthier's Waistcord (no drop on live)
     }
 }) -- Traitor Balthier
 
@@ -365,6 +376,7 @@ map.nodes[66404400] = Rare({
         Achievement({id=14943, criteria=51681}),
         Transmog({item=187359, slot=L["shield"]}), -- Ylva's Water Dish
         Transmog({item=186217, slot=L["leather"]}), -- Supple Helhound Leather Pants
+        Transmog({item=187393, slot=L["plate"]}), -- Sterling Hound-Handler's Gauntlets
         Item({item=186970, quest=62683, note="{item:186727}"}) -- Feeder's Hand and Key / Seal Breaker Key
     }
 }) -- Ylva, Mate of Guarm
@@ -389,7 +401,8 @@ map.nodes[49307274] = Rare({
     rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_only_note"],
     rewards={
-        Achievement({id=15107, criteria=52293})
+        Achievement({id=15107, criteria=52293}),
+        Transmog({item=187398, slot=L["leather"]}) -- Chestguard of the Shadeguard
     },
     rift=2,
     pois={
@@ -416,6 +429,7 @@ map.nodes[27672526] = Rare({
     rewards={
         Achievement({id=15107, criteria=52284}),
         Item({item=186605}), -- Nilganihmaht's Runed Band
+        Transmog({item=187360, slot=L["offhand"]}), -- Orb of Enveloping Rifts
         Toy({item=187139}) -- Bottled Shade Heart
     }
 }) -- Torglluun
@@ -491,6 +505,13 @@ map.nodes[39286648] = Treasure({
     }
 }) -- Lil'Abom Spare Arm
 
+ext.nodes[62263305] = Treasure({
+    quest=64575,
+    label=L["hidden_anima_cache"],
+    rift=1,
+    parent=map.id
+}) -- Hidden Anima Cache
+
 -------------------------------------------------------------------------------
 ---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
 -------------------------------------------------------------------------------
@@ -538,7 +559,7 @@ map.nodes[25831479] = BonusBoss({
 map.nodes[19205740] = BonusBoss({
     id=162844,
     quest=61140,
-    noassault=63823,
+    noassault=NIGHTFAE,
     rewards={
         Achievement({id=14660, criteria=50410}),
         Item({item=183066, quest=63160}), -- Korrath's Grimoire: Aleketh
@@ -567,7 +588,7 @@ map.nodes[60456478] = BonusBoss({
 map.nodes[20782968] = BonusBoss({
     id=162965,
     quest=58918,
-    noassault=63823,
+    noassault=NIGHTFAE,
     rewards={
         Achievement({id=14660, criteria=49481})
     }
@@ -610,7 +631,7 @@ map.nodes[25364875] = BonusBoss({
 map.nodes[22674223] = BonusBoss({
     id=175821,
     quest=63044, -- 63388 ??
-    noassault=63823,
+    noassault=NIGHTFAE,
     note=L["in_cave"],
     rewards={
         Achievement({id=14660, criteria=51058})
@@ -783,7 +804,7 @@ local Lore = Class('MawLore', Treasure, {
     end
 })
 
-Map({id=1822}).nodes[73121659] = Lore({
+ext.nodes[73121659] = Lore({
     quest=63157,
     note=L["box_of_torments_note"],
     parent={ id=map.id, pois={POI({27702020})} },
@@ -966,6 +987,60 @@ pitl.nodes[45526802] = Nexus({note=L["nexus_cave_anguish_lower"], parent=map.id}
 pitl.nodes[67185536] = Nexus({note=L["nexus_cave_anguish_lower"], parent=map.id})
 
 -------------------------------------------------------------------------------
+-------------------------------- ANIMA VESSELS --------------------------------
+-------------------------------------------------------------------------------
+
+local Vessel = Class('AnimaVessel', Treasure, {
+    label=L["stolen_anima_vessel"],
+    group=ns.groups.ANIMA_VESSEL,
+    rewards={
+        ns.relics.relic_fragment
+    }
+})
+
+-- In the rift
+local VESSEL1 = Vessel({icon='chest_rd', fgroup='vessel1', quest=64265, rift=1}) -- object=369227
+local VESSEL2 = Vessel({icon='chest_bl', fgroup='vessel2', quest=64269, rift=1}) -- object=369235
+local VESSEL3 = Vessel({icon='chest_yw', fgroup='vessel3', quest=64270, rift=1}) -- object=369236
+-- Night Fae assault
+local VESSEL4 = Vessel({icon='chest_rd', fgroup='vessel4', quest=nil, assault=NIGHTFAE}) -- object=368952
+local VESSEL5 = Vessel({icon='chest_bl', fgroup='vessel5', quest=nil, assault=NIGHTFAE}) -- object=368953
+-- Venthyr assault
+local VESSEL6 = Vessel({icon='chest_rd', fgroup='vessel6', quest=64055, assault=VENTHYR}) -- object=368948
+local VESSEL7 = Vessel({icon='chest_bl', fgroup='vessel7', quest=64056, assault=VENTHYR}) -- object=368949
+
+-- In the rift
+map.nodes[47437620] = ns.Clone(VESSEL1, {note=L["in_cave"]})
+map.nodes[47798651] = ns.Clone(VESSEL1, {note=L["nexus_cave_roar"]})
+map.nodes[51008544] = ns.Clone(VESSEL1, {note=L["nexus_cave_howl"]})
+map.nodes[32404309] = VESSEL2
+map.nodes[35704620] = VESSEL2
+map.nodes[36264215] = VESSEL2
+map.nodes[38474846] = ns.Clone(VESSEL2, {note=L["in_cave"]})
+map.nodes[44554761] = VESSEL2
+map.nodes[27464950] = VESSEL3
+-- Night Fae assault
+map.nodes[25303330] = VESSEL4
+map.nodes[25303820] = VESSEL4
+map.nodes[27804180] = VESSEL4
+map.nodes[17304780] = VESSEL5
+map.nodes[18604260] = VESSEL5
+map.nodes[18905030] = VESSEL5
+map.nodes[22704850] = VESSEL5
+-- Venthyr Assault
+map.nodes[23431665] = VESSEL6
+map.nodes[25201250] = VESSEL6
+map.nodes[27401650] = VESSEL6
+map.nodes[27801950] = VESSEL6
+map.nodes[26201960] = VESSEL7
+map.nodes[29601160] = VESSEL7
+map.nodes[32701480] = VESSEL7
+ext.nodes[73685062] = ns.Clone(VESSEL7, {parent=map.id})
+
+-- Zovaal's Vault 47257968
+-- Zovaal's Vault 62176427
+
+-------------------------------------------------------------------------------
 ----------------------------- RIFT HIDDEN CACHES ------------------------------
 -------------------------------------------------------------------------------
 
@@ -973,6 +1048,7 @@ local RiftCache = Class('RiftCache', Treasure, {
     label=L["rift_hidden_cache"],
     group=ns.groups.RIFT_HIDDEN_CACHE,
     rift=1,
+    assault=NIGHTFAE,
     rewards={
         Transmog({item=187251, slot=L["cosmetic"]}) -- Shaded Skull Shoulderguards
     }
@@ -1014,11 +1090,14 @@ local Nilganihmaht = Class('Nilganihmaht', ns.node.Rare, {
             ns.requirement.Item(186607) --Silver Ring
     },
     group=ns.groups.NILGANIHMAHT_MOUNT,
-    note=L["nilganihmaht_note"],
+    note=L["in_cave"]..' '..L["nilganihmaht_note"],
     icon=1391724,
     fgroup='nilganihmaht_group',
     rewards={
         Mount({item=186713, id=1503}) -- Hand of Nilganihmaht
+    },
+    pois={
+        POI({25603260}) -- Cave entrance
     }
 })
 
@@ -1080,10 +1159,11 @@ map.nodes[67535568] = Helgarde()
 map.nodes[68204810] = Helgarde()
 map.nodes[62475528] = Helgarde()
 
-local MawMadConstruct = Class('MawMadConstruct', NPC, {
+map.nodes[29105850] = NPC({
     id=179601,
     quest=64197,
     icon='skull_w',
+    assault=NECROLORD,
     group=ns.groups.NILGANIHMAHT_MOUNT,
     requires=ns.requirement.Item(186600),
     note=L["maw_mad_note"],
@@ -1091,14 +1171,7 @@ local MawMadConstruct = Class('MawMadConstruct', NPC, {
     rewards={
         Item({item=186602}) -- Quartered Stone Ring
     }
-}) -- Maw Mad Construct
-
-function MawMadConstruct:PrerequisiteCompleted()
-    -- Timed events that are not active today return nil here
-    return C_TaskQuest.GetQuestTimeLeftMinutes(63543)
-end
-
-map.nodes[29105850] = MawMadConstruct()
+})
 
 --Add Locations for Quartered Stone Ring(186604), requires Necro Assault and at least 1 ring and is randomly located on the ground in peridition hold.
 
@@ -1110,7 +1183,7 @@ local MawswornC = Class('MawswornC', Treasure, {
     label=L["mawsworn_cache"],
     fgroup='nilganihmaht_group',
     group=ns.groups.NILGANIHMAHT_MOUNT,
-    assault=63543,
+    assault=NECROLORD,
     rewards={
         Achievement({id=15039, criteria={id=1, qty=true}}),
         ns.reward.Currency({id=1767, note='20'}),
@@ -1130,7 +1203,7 @@ local Etherwyrm = Class('Etherwyrm', Treasure, {
     requires=ns.requirement.Item(186190),
     label=L["etherwyrm_label"],
     note=L["etherwyrm_note"],
-    assault=63823,
+    assault=NIGHTFAE,
     rift=2,
     rewards={
         Pet({item=186191, id=3099}) -- Infused Etherwyrm

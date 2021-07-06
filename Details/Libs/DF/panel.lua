@@ -1988,7 +1988,7 @@ function DF:CreateScaleBar (frame, config)
 		frame:SetScale (config.scale)
 	end)
 	
-	scaleBar:SetAlpha (0.2)
+	scaleBar:SetAlpha (0.5)
 	
 	return scaleBar
 end

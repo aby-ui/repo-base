@@ -160,24 +160,24 @@ end)
 -------------------------------------------------------------------------------
 
 ns.covenants = {
-    KYR = { id = 1, icon = 'cov_sigil_ky' },
-    VEN = { id = 2, icon = 'cov_sigil_vn' },
-    FAE = { id = 3, icon = 'cov_sigil_nf' },
-    NEC = { id = 4, icon = 'cov_sigil_nl' }
+    KYR = { id = 1, icon = 'cov_sigil_ky', assault=63824 },
+    VEN = { id = 2, icon = 'cov_sigil_vn', assault=63822 },
+    FAE = { id = 3, icon = 'cov_sigil_nf', assault=63823 },
+    NEC = { id = 4, icon = 'cov_sigil_nl', assault=63543 }
 }
 
 local function ProcessCovenant (node)
-    if node.covenant == nil then return end
-    local data = C_Covenants.GetCovenantData(node.covenant.id)
+    local covenant = node.covenant or node.assault
+    if not covenant then return end
+    if node._covenantProcessed then return end
 
-    -- Add covenant sigil to top-right corner of tooltip
-    node.rlabel = ns.GetIconLink(node.covenant.icon, 13)
+    local name = C_Covenants.GetCovenantData(covenant.id).name
+    local str = node.covenant and L["covenant_required"] or L["cov_assault_only"]
+    local subl = ns.color.Orange(string.format(str, name))
 
-    if not node._covenantProcessed then
-        local subl = ns.color.Orange(string.format(L["covenant_required"], data.name))
-        node.sublabel = node.sublabel and subl..'\n'..node.sublabel or subl
-        node._covenantProcessed = true
-    end
+    node.rlabel = ns.GetIconLink(covenant.icon, 13)
+    node.sublabel = node.sublabel and subl..'\n'..node.sublabel or subl
+    node._covenantProcessed = true
 end
 
 function Reward:GetCategoryIcon()
@@ -214,21 +214,33 @@ ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814, {defaults=ns.GROUP_H
 ns.groups.NEST_MATERIALS = Group('nest_materials', 136064, {defaults=ns.GROUP_HIDDEN75})
 ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724, {defaults=ns.GROUP_HIDDEN75})
 ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.RELIC = Group('relic', 'star_chest_b', {defaults=ns.GROUP_ALPHA75})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_bl')
-ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.RIFT_HIDDEN_CACHE = Group('rift_hidden_cache', 'chest_bk', {defaults=ns.GROUP_HIDDEN75})
+ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk', {defaults=ns.GROUP_ALPHA75})
+ns.groups.RIFT_HIDDEN_CACHE = Group('rift_hidden_cache', 'chest_bk', {defaults=ns.GROUP_ALPHA75})
 ns.groups.RIFT_PORTAL = Group('rift_portal', 'portal_gy')
 ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
 ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
 ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv', {defaults=ns.GROUP_HIDDEN})
 ns.groups.VESPERS = Group('vespers', 3536181, {defaults=ns.GROUP_HIDDEN})
 
-function ns.groups.RELIC:IsEnabled()
-    -- Relics cannot be collected until the quest "What Must Be Found" is completed
-    if not C_QuestLog.IsQuestFlaggedCompleted(64506) then return false end
-    return Group.IsEnabled(self)
-end
+ns.groups.ANIMA_VESSEL = Group('anima_vessel', 'chest_tl', {
+    defaults=ns.GROUP_ALPHA75,
+    IsEnabled=function (self)
+        -- Anima vessels and caches cannot be seen until the "Vault Anima Tracker"
+        -- upgrade is purchased from the Death's Advance quartermaster
+        if not C_QuestLog.IsQuestFlaggedCompleted(64061) then return false end
+        return Group.IsEnabled(self)
+    end
+})
+
+ns.groups.RELIC = Group('relic', 'star_chest_b', {
+    defaults=ns.GROUP_ALPHA75,
+    IsEnabled=function (self)
+        -- Relics cannot be collected until the quest "What Must Be Found" is completed
+        if not C_QuestLog.IsQuestFlaggedCompleted(64506) then return false end
+        return Group.IsEnabled(self)
+    end
+})
 
 -------------------------------------------------------------------------------
 ------------------------------------ MAPS -------------------------------------
@@ -292,5 +304,5 @@ ns.requirement.Venari = Venari
 -------------------------------------------------------------------------------
 
 ns.relics = {
-    relic_fragment = Item({item=186685, note=L["num_research"]:format(1)}) -- relic fragment
+    relic_fragment = Item({item=186685, status=L["num_research"]:format(1)}) -- relic fragment
 }

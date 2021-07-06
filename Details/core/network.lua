@@ -176,6 +176,10 @@
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) received version alert ", build_number)
 		end
+
+		if (_detalhes.streamer_config.no_alerts) then
+			return
+		end
 	
 		build_number = tonumber (build_number)
 	

@@ -237,32 +237,44 @@ L["zolla_note"] = "We take our defenses very seriously. Whether small or large, 
 ----------------------------------- KORTHIA -----------------------------------
 -------------------------------------------------------------------------------
 
-L["chamber_note"] = "Use a {item:186718} from {npc:178257} on the Ancient Teleporter. Use the repaired Ancient Teleporter to access the chamber."
+L["carriage_crusher_note"] = "Follow the {npc:180182} into the Maw and defend it until the {npc:180246} attacks."
+L["chamber_note"] = "Use a {item:186718} from {npc:178257} on the Ancient Teleporter to access the chamber."
 L["consumption_note"] = [[
 This rare will not drop loot until after it consumes 40x {npc:179758} to transform into its blue-shaded form (Rare).
 
 This rare will drop extra research items after it consumes *another* 40x {npc:179758} to transform into its green-shaded form (Rare Elite).
 
-|cFFFF0000THE RARE WILL NOT SPAWN {npc:179758} TO CONSUME WHILE IN COMBAT.|r
+|cFFFF0000The rare will not spawn {npc:179758} to consume while in combat.|r
 ]]
-L["corpse_heap_note"] = "Talk to {npc:180079} to start the collection event."
-L["darkmaul_note"] = "Collect {item:187153} from Invasive Mawshrooms and feed them to {npc:180063}. You must complete the event 10 times to obtain the mount."
+L["darkmaul_note"] = [[
+Collect {item:187153} from Invasive Mawshrooms and feed them to {npc:180063}. You must complete the event 10 times to obtain the mount.
+
+|cFFFF8C00Progress will not be counted if you are in a raid group!|r
+]]
 L["dislodged_nest_note"] = "Click on a nearby Noxious Moth to gain {spell:355181}. Use the {spell:355131} extra action button on {npc:178547} to gain control and ride it into the tree the nest is in."
+L["escaped_wilderling_note"] = "Click on the {npc:180014} to start the taming event."
 L["flayedwing_transporter_note"] = "Click on {npc:178633} to fly to or from the Vault of Secrets."
+L["fleshwing_note"] = "Talk to {npc:180079} to start the collection event."
 L["forgotten_feather_note"] = "Floating on a small island accessed by jumping down from Keeper's Respite."
-L["hunting_hunter_note"] = "Talk to {npc:179729} to gain {spell:355078} and follow the foot prints until you find the fleshy remains."
 L["konthrogz_note"] = "Spawns from a devourer's portal event. The event can appear in many places throughout Korthia."
+L["korthia_limited_rare"] = "|cFFFF8C00This rare is not available on some days.|r"
+L["krelva_note"] = "Moves to another platform at 80%, then moves to the mainland at 60%. |cFFFF8C00You must tag the rare after 60% to get kill credit!|r"
+L["kroke_note"] = "Slay {npc:179029s} in the area until he appears. Cannot spawn on days when {npc:179029s} are missing."
 L["maelie_wanderer"] = "{npc:179912} will spawn in a set location for the day. Once you have used {spell:355862} on her 6 different days return to {npc:179930} to earn the mount."
-L["no_stoneborne_note"] = "Talk to {npc:179974} to start the event."
+L["malbog_note"] = "Talk to {npc:179729} to gain {spell:355078} and follow the foot prints until you find the fleshy remains."
 L["offering_box_note"] = "Requires Small Offering Key which can be found on the top of the west side wall of the near by ruins."
 L["pop_quiz_note"] = "The Pop Quiz event will spawn randomly on the map. Click on the Abandoned Veilstaff and answer the questions from {npc:180162}."
-L["popo_note"] = "Talk to {npc:180028} to trigger the escort event."
-L["razorwing_note"] = "Hand in 10x {item:187054} dropped by devourers in the area."
+L["razorwing_note"] = [[
+Hand in 10x {item:187054} dropped by devourers in the area.
+
+|cFFFF8C00Progress will not be counted if you are in a raid group!|r
+]]
 L["reliwik_note"] = "Click on the uncorrupted razorwing egg to pull him down."
 L["spectral_bound_chest"] = "Spectral Bound Chest"
 L["spectral_bound_note"] = "Click on 3 nearby Spectral Keys to unlock the chest."
+L["stonecrusher_note"] = "Talk to {npc:179974} to start the event."
 L["towering_exterminator_note"] = "Spawns from a mawsworn portal event. The event can appear in many places throughout Korthia."
-L["wilderling_note"] = "Click on the {npc:180014} to start the taming event."
+L["worldcracker_note"] = "Talk to {npc:180028} to trigger the escort event."
 
 L["archivist_key_note"] = "Purchase %s from {npc:178257} to unlock."
 L["korthian_shrine_note"] = "Click on the shrine to gain {spell:352367} to see the hidden path to the alter."
@@ -283,16 +295,21 @@ L["options_icons_rift_portal"] = "{npc:179595s}"
 L["options_icons_rift_portal_desc"] = "Display the locations of {npc:179595s} used to enter |cFFFFFF00The Rift|r."
 
 L["riftbound_cache"] = "Riftbound Cache"
+L["riftbound_cache_note"] = "There are 4 unique caches that can each appear at set locations inside the rift."
 L["options_icons_riftbound_cache"] = "Riftbound Caches"
 L["options_icons_riftbound_cache_desc"] = "Display the locations of caches inside |cFFFFFF00The Rift|r."
 
 L["invasive_mawshroom"] = "Invasive Mawshroom"
+L["invasive_mawshroom_note"] = "There are 5 unique mawshrooms that can each appear at set locations."
 L["mawsworn_cache"] = "Mawsworn Cache"
+L["mawsworn_cache_note"] = "There are 3 unique caches that can each appear at set locations."
 L["pile_of_bones"] = "Pile of Bones"
 L["relic_cache"] = "Relic Cache"
 L["shardhide_stash"] = "Shardhide Stash"
-L["shared_note"] = "You can collect 5 of these treasures per day."
+L["korthia_shared_chest_note"] = "You can collect relics from these treasures 5 times a day. Additional chests may contain legendary crystals and BOA gear tokens."
 L["unusual_nest"] = "Nest of Unusual Materials"
+L["unusual_nest_note"] = "All 5 nest locations can be looted each day."
+
 L["options_icons_invasive_mawshroom_desc"] = "Display the locations of Invasive Mawshrooms."
 L["options_icons_invasive_mawshroom"] = "Invasive Mawshrooms (Daily)"
 L["options_icons_korthia_dailies_desc"] = "Display the locations of unmarked daily treasures."
@@ -544,6 +561,7 @@ L["nexus_cave_echoing_outside"] = "Outside the Echoing Caverns"
 L["nexus_cave_forlorn"] = "Inside the Forlorn Respite cavern"
 L["nexus_cave_howl_outside"] = "On the ground outside the Death's Howl cavern"
 L["nexus_cave_howl"] = "Inside the Death's Howl cavern"
+L["nexus_cave_roar"] = "Inside the Death's Roar cavern"
 L["nexus_cave_ledge"] = "In a small cave below a ledge"
 L["nexus_cave_prodigum"] = "In a small cave in the Prodigum"
 L["nexus_cave_soulstained"] = "In a small cave in the Soulstained Fields"
@@ -575,6 +593,11 @@ L["nexus_misc_grapple_rock"] = "By a grapple point on a rock"
 L["nexus_misc_ledge_below"] = "On the ground under a ledge"
 L["nexus_misc_three_chains"] = "On the ground by three chains"
 
+L["stolen_anima_vessel"] = "Stolen Anima Vessel"
+L["hidden_anima_cache"] = "Hidden Anima Cache"
+L["options_icons_anima_vessel"] = "Stolen Anima Vessels"
+L["options_icons_anima_vessel_desc"] = "Display the locations of anima vessels inside |cFFFFFF00The Rift|r."
+
 L["rift_hidden_cache"] = "Rift Hidden Cache"
 L["options_icons_rift_hidden_cache"] = "Rift Hidden Caches"
 L["options_icons_rift_hidden_cache_desc"] = "Display the locations of caches inside |cFFFFFF00The Rift|r."
@@ -592,6 +615,7 @@ L["options_icons_stygia_nexus_desc"] = "Display nexus locations needed for the {
 L["options_icons_stygian_caches"] = "Stygian Caches"
 L["options_icons_stygian_caches_desc"] = "Display cache locations containing extra Stygia."
 
+L["cov_assault_only"] = "Only available during the %s assault."
 L["domination_chest"] = "Domination Chest"
 L["domination_chest_note"] = "Requires 4 {item:186727} to open all the seals."
 L["gold_band_note"] = "On the top of the mountain on a spike."

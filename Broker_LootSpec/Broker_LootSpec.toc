@@ -1,6 +1,6 @@
 ## Interface: 90100
-## Version: 1.6
-## X-Date: 2019-10-02T17:32:10Z
+## Version: 1.6.1
+## X-Date: 2021-07-05T20:55:15Z
 ## X-Website: https://www.wowace.com/projects/broker-lootspec
 ## X-License: MIT License
 ## X-Category: Boss Encounters, Loot, Gear, Data-Broker

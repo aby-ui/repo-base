@@ -19,6 +19,17 @@ local GAME_LOCALE = GetLocale()
 --abyuiPW
 local abyuiAppend = {
     --/dumpt EncounterJournal.encounterID
+    -- 9.1
+    ["The Tarragrue"] = EJ_GetEncounterInfo(2435),
+    ["The Eye of the Jailer"] = EJ_GetEncounterInfo(2442),
+    ["The Nine"] = EJ_GetEncounterInfo(2439),
+    ["Remnant of Ner'zhul"] = EJ_GetEncounterInfo(2444),
+    ["Soulrender of Dormazain"] = EJ_GetEncounterInfo(2445),
+    ["Painsmith Raznal"] = EJ_GetEncounterInfo(2443),
+    ["Guardian of the First Ones"] = EJ_GetEncounterInfo(2446),
+    ["Fatescribe Roh-Kalo"] = EJ_GetEncounterInfo(2447),
+    ["Kel'Thuzad"] = EJ_GetEncounterInfo(2440),
+    ["Sylvanas Windrunner"] = EJ_GetEncounterInfo(2441),
     -- 9.0
     ["Shriekwing"] = EJ_GetEncounterInfo(2393),
     ["Huntsman Altimor"] = EJ_GetEncounterInfo(2429),

@@ -1,5 +1,5 @@
 ## Interface: 90100
-## Version: v1.1.4
+## Version: v1.1.5
 ## Title: PlexusStatusRD(Shadowlands)
 ## Notes: Debuff List for Shadowlands
 ## Author: Doadin
@@ -9,6 +9,7 @@
 ## X-Curse-Project-ID: 411702
 
 CastleNathria.lua
+SanctumofDomination.lua
 
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益9.0

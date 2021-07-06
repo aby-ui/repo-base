@@ -94,12 +94,16 @@ function D:GenerateStatText(detail)
     --local loc = C_AzeriteItem.FindActiveAzeriteItem()
     --if loc then addLine("艾心%d级", C_AzeriteItem.GetPowerLevel(loc)) end
     --addLine("神器%d级", select(6, C_ArtifactUI.GetEquippedArtifactInfo()))
+    local score = C_ChallengeMode.GetOverallDungeonScore()
+    if score > 0 then
+        addLine("评分%s", score)
+    end
     local cid = C_Covenants.GetActiveCovenantID()
     if cid and cid > 0 then
         local lvl = C_CovenantSanctumUI.GetRenownLevel() or 0
         --local sbid = C_Soulbinds.GetActiveSoulbindID()
         --local sbname = C_Soulbinds.GetSoulbindData(sbid).name)
-        addLine("盟约%s", format(lvl > 0 and "%s("..lvl..")" or "%s", C_Covenants.GetCovenantData(cid).name))
+        addLine("%s", format(lvl > 0 and "%s("..lvl..")" or "%s", C_Covenants.GetCovenantData(cid).name))
     end
     addLine("血量%d", UnitHealthMax("player"))
     local primaryName = pid==LE_UNIT_STAT_STRENGTH and ITEM_MOD_STRENGTH_SHORT or pid==LE_UNIT_STAT_AGILITY and ITEM_MOD_AGILITY_SHORT or ITEM_MOD_INTELLECT_SHORT

@@ -193,6 +193,7 @@ Ld["Time Left"] = "Time Left"
 Ld["Tooltip Scale"] = "Tooltip Scale"
 Ld["TOP"] = "TOP"
 Ld["Torghast"] = "Torghast"
+Ld["Tormentors of Torghast"] = "Tormentors of Torghast"
 Ld["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 Ld["Track Mythic keystone best run"] = "Track Mythic keystone best run"
 Ld["Trade Skill Cooldowns"] = "Trade Skill Cooldowns"
@@ -430,6 +431,8 @@ La["Tooltip Scale"] = "Taille de l'infobulle"
 La["TOP"] = "TOP"
 --[[Translation missing --]]
 La["Torghast"] = "Torghast"
+--[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "Suivre l'acquisition de clé de donjon mythique"
 La["Track Mythic keystone best run"] = "Suivre le meilleur temps pour la clé de donjon mythique"
 La["Trade Skill Cooldowns"] = "Échéances des métiers"
@@ -642,6 +645,7 @@ La["Tooltip Scale"] = "Tooltip-Skalierung"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
 La["Torghast"] = "Torghast"
+La["Tormentors of Torghast"] = "Peiniger von Torghast"
 La["Track Mythic keystone acquisition"] = "Verfolge die erhaltenen Schlüsselsteine"
 La["Track Mythic keystone best run"] = "Verfolge den besten mythischen Durchlauf"
 La["Trade Skill Cooldowns"] = "Abklingzeiten der Berufsfertigkeiten"
@@ -844,6 +848,7 @@ La["Time Left"] = "남은 시간"
 La["Tooltip Scale"] = "툴팁 크기"
 La["TOP"] = "투기장"
 La["Torghast"] = "토르가스트"
+La["Tormentors of Torghast"] = "토르가스트의 고문관"
 La["Track Mythic keystone acquisition"] = "쐐기돌 추적"
 La["Track Mythic keystone best run"] = "쐐기 단수 기록"
 La["Trade Skill Cooldowns"] = "전문 기술 재사용 대기시간"
@@ -1101,6 +1106,8 @@ La["TOP"] = "TOP"
 --[[Translation missing --]]
 La["Torghast"] = "Torghast"
 --[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
+--[[Translation missing --]]
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
 La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
@@ -1310,6 +1317,8 @@ La["Time Left"] = "Обновится через"
 La["Tooltip Scale"] = "Масштаб подсказки"
 La["TOP"] = "Театр"
 La["Torghast"] = "Торгаст"
+--[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "Отслеживать полученные эпохальные ключи"
 La["Track Mythic keystone best run"] = "Отслеживать лучший заход на эпохальный ключ"
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
@@ -1498,6 +1507,7 @@ La["Time Left"] = "剩余时间"
 La["Tooltip Scale"] = "提示框缩放"
 La["TOP"] = "剧场"
 La["Torghast"] = "托加斯特"
+La["Tormentors of Torghast"] = "托加斯特的折磨者"
 La["Track Mythic keystone acquisition"] = "追踪史诗钥石"
 La["Track Mythic keystone best run"] = "追踪史诗钥石每周最佳记录"
 La["Trade Skill Cooldowns"] = "商业技能冷却"
@@ -1755,6 +1765,8 @@ La["TOP"] = "TOP"
 --[[Translation missing --]]
 La["Torghast"] = "Torghast"
 --[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
+--[[Translation missing --]]
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
 La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
@@ -1954,6 +1966,8 @@ La["Time Left"] = "剩餘時間"
 La["Tooltip Scale"] = "滑鼠提示縮放大小"
 La["TOP"] = "劇場"
 La["Torghast"] = "托迦司"
+--[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "追蹤獲得的傳奇鑰石"
 La["Track Mythic keystone best run"] = "追蹤傳奇鑰石最佳紀錄"
 La["Trade Skill Cooldowns"] = "專業技能冷卻時間"
@@ -2199,6 +2213,8 @@ La["Tooltip Scale"] = "Escala da janela"
 La["TOP"] = "TOP"
 --[[Translation missing --]]
 La["Torghast"] = "Torghast"
+--[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
 --[[Translation missing --]]
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
@@ -2457,6 +2473,8 @@ La["Tooltip Scale"] = "Zoom del tooltip"
 La["TOP"] = "TOP"
 --[[Translation missing --]]
 La["Torghast"] = "Torghast"
+--[[Translation missing --]]
+La["Tormentors of Torghast"] = "Tormentors of Torghast"
 --[[Translation missing --]]
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]

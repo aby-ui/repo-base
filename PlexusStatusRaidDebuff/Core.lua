@@ -1,6 +1,7 @@
 local zoneOrder = { -- /dump WorldMapFrame.mapID
-    [C_Map.GetMapInfo(1735).name] = 10-9.1,         --ÄÉË¹ÀûÑÇ±¤
-    [C_Map.GetMapInfo(1683).name] = 10-9.01,         --9.0Ð¡¸±±¾
+    [C_Map.GetMapInfo(1998).name] = 10-9.2,         --纳斯利亚堡
+    [C_Map.GetMapInfo(1735).name] = 10-9.1,         --纳斯利亚堡
+    [C_Map.GetMapInfo(1683).name] = 10-9.01,         --9.0小副本
     [C_Map.GetMapInfo(1674).name] = 10-9.02,
     [C_Map.GetMapInfo(1669).name] = 10-9.03,
     [C_Map.GetMapInfo(1679).name] = 10-9.04,
@@ -8,12 +9,12 @@ local zoneOrder = { -- /dump WorldMapFrame.mapID
     [C_Map.GetMapInfo(1663).name] = 10-9.06,
     [C_Map.GetMapInfo(1675).name] = 10-9.07,
     [C_Map.GetMapInfo(1666).name] = 10-9.08,
-    [C_Map.GetMapInfo(1581).name] = 10-8.5,         --Äá°ÂÈøÂÞ
-    [C_Map.GetMapInfo(1512).name] = 10-8.4,         --ÓÀºãÍõ¹¬
-    [C_Map.GetMapInfo(1345).name] = 10-8.3,         --·ç±©ÈÛÂ¯
-    [C_Map.GetMapInfo(1358).name] = 10-8.2,         --´ïÈøÂÞÖ®Õ½
-    [C_Map.GetMapInfo(1148).name] = 10-8.1,         --°ÂµÏ¶û
-    [C_Map.GetMapInfo(1162).name] = 10-8.01,        --8.0Ð¡¸±±¾
+    [C_Map.GetMapInfo(1581).name] = 10-8.5,         --尼奥萨罗
+    [C_Map.GetMapInfo(1512).name] = 10-8.4,         --永恒王宫
+    [C_Map.GetMapInfo(1345).name] = 10-8.3,         --风暴熔炉
+    [C_Map.GetMapInfo(1358).name] = 10-8.2,         --达萨罗之战
+    [C_Map.GetMapInfo(1148).name] = 10-8.1,         --奥迪尔
+    [C_Map.GetMapInfo(1162).name] = 10-8.01,        --8.0小副本
     [C_Map.GetMapInfo(1041).name] = 10-8.02,
     [C_Map.GetMapInfo(1038).name] = 10-8.03,
     [C_Map.GetMapInfo(974).name]  = 10-8.04,
@@ -23,11 +24,11 @@ local zoneOrder = { -- /dump WorldMapFrame.mapID
     [C_Map.GetMapInfo(1004).name] = 10-8.08,
     [C_Map.GetMapInfo(934).name]  = 10-8.09,
     [C_Map.GetMapInfo(1039).name] = 10-8.091,
-    [C_Map.GetMapInfo(909).name] = 10-7.5,          --Íõ×ù
-    [C_Map.GetMapInfo(850).name] = 10-7.4,          --ÈøÄ¹
-    [C_Map.GetMapInfo(764).name] = 10-7.3,          --°µÒ¹ÒªÈû
-    [C_Map.GetMapInfo(807).name] = 10-7.2,          --ÓÂÆøÊÔÁ¶
-    [C_Map.GetMapInfo(777).name] = 10-7.1,          --ôä´äÃÎ÷Ê
+    [C_Map.GetMapInfo(909).name] = 10-7.5,          --王座
+    [C_Map.GetMapInfo(850).name] = 10-7.4,          --萨墓
+    [C_Map.GetMapInfo(764).name] = 10-7.3,          --暗夜要塞
+    [C_Map.GetMapInfo(807).name] = 10-7.2,          --勇气试炼
+    [C_Map.GetMapInfo(777).name] = 10-7.1,          --翡翠梦魇
 }
 
 --luacheck: no max line length

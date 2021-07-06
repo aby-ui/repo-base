@@ -1426,6 +1426,11 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local targetsSize =      tonumber(combatData[spellIndex+2]) --[3]
 
                         local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+2, true)
+
+                        if (not actorObject.cooldowns_defensive_spells) then
+                            actorObject.cooldowns_defensive_spells = Details.container_habilidades:NovoContainer(Details.container_type.CONTAINER_MISC_CLASS)
+                        end
+
                         local spellObject = actorObject.cooldowns_defensive_spells:GetOrCreateSpell(spellId, true)
 
                         spellObject.counter = spellTotal
@@ -1468,6 +1473,10 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local targetsSize =      tonumber(combatData[spellIndex+2]) --[3]
 
                         local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+2, true)
+
+                        if (not actorObject.interrupt_spells) then
+                            actorObject.interrupt_spells = Details.container_habilidades:NovoContainer(Details.container_type.CONTAINER_MISC_CLASS)
+                        end
                         local spellObject = actorObject.interrupt_spells:GetOrCreateSpell(spellId, true)
 
                         spellObject.counter = spellTotal
@@ -1521,6 +1530,10 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local targetsSize =      tonumber(combatData[spellIndex+2]) --[3]
 
                         local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+2, true)
+
+                        if (not actorObject.cc_break_spells) then
+                            actorObject.cc_break_spells = Details.container_habilidades:NovoContainer(Details.container_type.CONTAINER_MISC_CLASS)
+                        end
                         local spellObject = actorObject.cc_break_spells:GetOrCreateSpell(spellId, true)
 
                         spellObject.cc_break = spellTotal
@@ -1574,6 +1587,10 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local targetsSize =      tonumber(combatData[spellIndex+2]) --[3]
 
                         local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+2, true)
+
+                        if (not actorObject.dispell_spells) then
+                            actorObject.dispell_spells = Details.container_habilidades:NovoContainer(Details.container_type.CONTAINER_MISC_CLASS)
+                        end
                         local spellObject = actorObject.dispell_spells:GetOrCreateSpell(spellId, true)
 
                         spellObject.dispell = spellTotal
@@ -1628,6 +1645,10 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local targetsSize =      tonumber(combatData[spellIndex+2]) --[3]
 
                         local targetTable = Details.packFunctions.UnpackTable(combatData, spellIndex+2, true)
+
+                        if (not actorObject.ress_spells) then
+                            actorObject.ress_spells = Details.container_habilidades:NovoContainer(Details.container_type.CONTAINER_MISC_CLASS)
+                        end
                         local spellObject = actorObject.ress_spells:GetOrCreateSpell(spellId, true)
 
                         spellObject.ress = spellTotal

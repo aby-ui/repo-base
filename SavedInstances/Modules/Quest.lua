@@ -257,6 +257,11 @@ local QuestExceptions = {
   [62449] = "Weekly", -- A Spirit's Duty
   [62450] = "Weekly", -- A Spirit's Heart
   [62452] = "Weekly", -- A Spirit's Might
+  -- Covenant Assaults
+  [63543] = "Weekly", -- Necrolord Assault
+  [63822] = "Weekly", -- Venthyr Assault
+  [63823] = "Weekly", -- Night Fae Assault
+  [63824] = "Weekly", -- Kyrian Assault
 
   -- General
   -- Darkmoon Faire

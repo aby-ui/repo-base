@@ -50,6 +50,10 @@ function ChallengesFrameGuildBestMixin:SetUp(leaders)
     end
 end
 --[[------------- end copied from 7.3.0 --------------]]
+
+--[[------------------------------------------------------------
+点击打开宝库奖励，暴雪已自带
+---------------------------------------------------------------]]
 local ShowWeeklyRewards = function()
     if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
         LoadAddOn("Blizzard_WeeklyRewards");
@@ -80,8 +84,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
     --levels          1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-    local drops  = { nil, 187, 190, 194, 194, 197, 200, 200, 200, 203, 203, 207, 207, 207, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210, 210 }
-    local levels = { nil, 200, 203, 207, 210, 210, 213, 216, 216, 220, 220, 223, 223, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226, 226 }
+    local drops  = { nil, 210, 213, 216, 220, 223, 223, 226, 226, 229, 229, 233, 233, 236, 236, 236, 236, 236, 236, 236, 236,  }
+    local levels = { nil, 226, 226, 226, 229, 229, 233, 236, 236, 239, 242, 246, 246, 249, 252, 252, 252, 252, 252, 252, 252,  }
     local function getline(i, curr)
         if not levels[i] then return "" end
         local line = "% 2d层 |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s"
@@ -94,6 +98,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
     chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("温馨提示：7月8日第2赛季第1周，大米掉落最高229。7月15日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
             GameTooltip:AddLine(" ")
             local header = "层数   掉落  周箱"
             GameTooltip:AddDoubleLine(header, header, 1, 1, 1, 1, 1, 1)
@@ -130,102 +136,24 @@ CoreDependCall("Blizzard_ChallengesUI", function()
 end)
 
 --[[------------------------------------------------------------
-大米赛季光辉事迹
----------------------------------------------------------------]]
-CoreDependCall("Blizzard_ChallengesUI", function()
-    local aID10, aID15 = 14531, 14532 --s4: 14144, 14145 --s3: 13780, 13781 --s2: 13448, 13449 --s1: 13079, 13080
-    --/run for i, icon in pairs(ChallengesFrame.DungeonIcons) do print(C_ChallengeMode.GetMapUIInfo(icon.mapID), icon.mapID) end
-    --/run for i=1,12 do print(GetAchievementCriteriaInfo(14144,i),GetAchievementCriteriaInfo(14145,i)) end
-    local crits_to_mapid = { 375, 380, 381, 376, 382, 378, 379, 377 }
-    local crits_name_to_map_name = {}
-    local debug_unmapped = {
-        ["麦卡贡车间"] = true,
-        ["麦卡贡垃圾场"] = true,
-    }
-    local crits, numCrits = {}, GetAchievementNumCriteria(aID15)
-    hooksecurefunc("ChallengesFrame_Update", function(self)
-        table.wipe(crits)
-        local ar10 = select(4, GetAchievementInfo(aID10))
-        local ar15 = select(4, GetAchievementInfo(aID15))
-        for i=1, numCrits do
-            local name, _, _, complete = GetAchievementCriteriaInfo(aID15, i)
-            if crits_to_mapid[i] then
-                crits_name_to_map_name[name] = C_ChallengeMode.GetMapUIInfo(crits_to_mapid[i])
-            end
-            if complete == 1 then
-                crits[name] = 15
-            else
-                crits[name] = 0
-                name, _, _, complete = GetAchievementCriteriaInfo(aID10, i)
-                if complete == 1 then crits[name] = 10 else crits[name] = 0 end
-            end
-        end
-        -- 没匹配上的会映射名称
-        for crit_name, map_name in pairs(crits_name_to_map_name) do
-            if crits[map_name] == nil then
-                if not debug_unmapped[crit_name] then u1debug("映射成就名", crit_name, "到地图名", map_name) end
-                crits[map_name] = crits[crit_name]
-                debug_unmapped[crit_name] = true
-            end
-        end
-
-        for i, icon in pairs(ChallengesFrame.DungeonIcons) do
-            local mapName = C_ChallengeMode.GetMapUIInfo(icon.mapID)
-            if DEBUG_MODE and crits[mapName] == nil and not debug_unmapped[mapName] then
-                debug_unmapped[mapName] = true
-                local names for nn in pairs(crits) do names = (names and names .. "," or "") ..  nn end
-                u1log("无法对应地图名称", mapName, names)
-            end
-            if not icon.tex then
-                WW(icon):CreateTexture():SetSize(24,24):BOTTOM(0, -3):Key("tex"):up():un()
-                SetOrHookScript(icon, "OnEnter", function()
-                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                    GameTooltip:AddLine("爱不易提供：")
-                    --https://wow.tools/dbc/?dbc=uitextureatlasmember&build=8.3.0.33237#search=VignetteKillElite&page=1
-                    --https://wow.tools/dbc/?dbc=manifestinterfacedata&build=8.3.0.33237#search=1121272&page=1
-                    local atlas = C_Texture.GetAtlasInfo("VignetteKill")
-                    local texCoord = format("%d:%d:%d:%d", atlas.leftTexCoord*1024,atlas.rightTexCoord*1024,atlas.topTexCoord*512,atlas.bottomTexCoord*512)
-                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:"..texCoord.."\124t 表示已限时10层")
-                    local atlas = C_Texture.GetAtlasInfo("VignetteKillElite")
-                    local texCoord = format("%d:%d:%d:%d", atlas.leftTexCoord*1024,atlas.rightTexCoord*1024,atlas.topTexCoord*512,atlas.bottomTexCoord*512)
-                    GameTooltip:AddLine("\124TInterface/Minimap/ObjectIconsAtlas:16:16:0:0:1024:512:"..texCoord.."\124t 表示已限时15层")
-                    GameTooltip:Show()
-                end)
-            end
-            local inTimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(icon.mapID);
-            if inTimeInfo then
-                crits[mapName] = math.max(crits[mapName] or 0, inTimeInfo.level or 0)
-            end
-            icon.tex:Show()
-            if ar15 or (crits[mapName] or 0) >= 15 then
-                icon.tex:SetAtlas("VignetteKillElite")
-            elseif ar10 or (crits[mapName] or 0) >= 10 then
-                icon.tex:SetAtlas("VignetteKill")
-            else
-                icon.tex:Hide()
-            end
-        end
-    end)
-    --ChallengesFrame_Update(ChallengesFrame)
-end)
-
---[[------------------------------------------------------------
 PVP每周奖励
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_PVPUI", function()
-    local ratings  = { "0000+",    "1400+", "1600+", "1800+", "2100+", "2400+" }
-    local upgrade  = {  200,    207,     213,     220,     226,     "233(仅武器)" }
-    local title    = { "休闲者", "争斗者", "挑战者", "竞争者", "决斗者", "精　锐" }
+    local ratings  = { "0000+",    "1400+", "1600+", "1800+", "2100+", }
+    local upgrade  = {  220,    226,     233,     240,     246,  }
+    local upgradep = {  233,    239,     246,     253,     259,  }
+    local title    = { "休闲者", "争斗者", "挑战者", "竞争者", "决斗者" }
 
     for _, chest in ipairs({ PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest, PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest}) do
         --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
         chest:HookScript("OnEnter", function(self)
             if GameTooltip:IsVisible() then
                 GameTooltip:AddLine(" ")
-                GameTooltip:AddLine("PVP等级  头衔  可升级到")
+                GameTooltip:AddLine("（以下为第2赛季推测信息, 如有错误以游戏内为准）", nil, nil, nil, true)
+                GameTooltip:AddLine("PVP等级  头衔  可升级到   PVP时装等", 1, 1, 1)
                 for i, v in ipairs(ratings) do
-                local line = " %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s"
-                    GameTooltip:AddLine(format(line, ratings[i], title[i], tostring(upgrade[i])))
+                    local line = " %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:30:0:0:32:32:10:22:10:22|t %s"
+                    GameTooltip:AddLine(format(line, ratings[i], title[i], tostring(upgrade[i]), tostring(upgradep[i])), 1, 1, 1)
                 end
                 --GameTooltip:AddLine(" ")
                 --GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)
@@ -234,3 +162,27 @@ CoreDependCall("Blizzard_PVPUI", function()
         end)
     end
 end)
+
+--[[------------------------------------------------------------
+托加斯特
+---------------------------------------------------------------]]
+EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function()
+    local levels    = {  "08","09",   10,    11,    12, }
+    local firstNew  = { "不掉",  60,  110,   150,   180, }
+    local firstOld  = {   800, 915,  960,  1000,  1030, }
+    local repeatOld = {   160, 183,  192,   200,   206, }
+    if GameTooltip:IsVisible() then
+        GameTooltip:AddLine("难度   薪尘    灰烬  灰烬(重复打)", 1, 1, 1)
+        local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
+        for i, v in ipairs(levels) do
+            GameTooltip:AddLine(format(line, tostring(levels[i]), tostring(firstNew[i]), tostring(firstOld[i]), tostring(repeatOld[i])), 1, 1, 1)
+        end
+
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine("橙装装等  190/ 210/ 225/ 235")
+        GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
+        GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
+        GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1600")
+        GameTooltip:Show()
+    end
+end, {})

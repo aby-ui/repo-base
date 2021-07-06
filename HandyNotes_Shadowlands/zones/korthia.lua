@@ -19,18 +19,19 @@ local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
 
+local Arrow = ns.poi.Arrow
 local Line = ns.poi.Line
 local Path = ns.poi.Path
 local POI = ns.poi.POI
-
--------------------------------------------------------------------------------
-------------------------------------- MAP -------------------------------------
--------------------------------------------------------------------------------
 
 local KYRIAN = ns.covenants.KYR
 local NECROLORD = ns.covenants.NEC
 local NIGHTFAE = ns.covenants.FAE
 local VENTHYR = ns.covenants.VEN
+
+-------------------------------------------------------------------------------
+------------------------------------- MAP -------------------------------------
+-------------------------------------------------------------------------------
 
 local map = Map({ id=1961, settings=true })
 
@@ -50,45 +51,18 @@ end
 map.nodes[58211773] = Rare({
     id=180246,
     quest=64258, -- 64439?
+    note=L["carriage_crusher_note"],
     rewards={
         Achievement({id=15107, criteria=52290}),
         Transmog({item=187370, slot=L["cloth"]}), -- Carriage Crusher's Padded Slippers
         Transmog({item=187399, slot=L["leather"]}) -- Maw Construct's Shoulderguards
     }
-}) -- Assault Supply Carriage
-
-map.nodes[39405240] = Rare({
-    id=179802,
-    quest=64257,
-    requires=ns.requirement.Item(186718),
-    note=L["chamber_note"],
-    rewards={
-        Achievement({id=15107, criteria=52295}),
-        Achievement({id=15066, criteria=52262}),
-        Item({item=187103, quest=63917}), -- Everliving Statuette
-        Transmog({item=187391, slot=L["plate"]}), -- Yarxhov's Rib-Cage
-        Transmog({item=187366, slot=L["polearm"]}) -- Fallen Vault Guardian's Spire
-    }
-}) -- Chamber of Knowledge
-
-map.nodes[44983552] = Rare({
-    id=179859,
-    quest=64278,
-    requires=ns.requirement.Item(186718),
-    note=L["chamber_note"],
-    rewards={
-        Achievement({id=15107, criteria=52296}),
-        Achievement({id=15066, criteria=52263}),
-        Pet({item=186538, id=3140}), -- Gnashtooth
-        Item({item=187104, quest=63918}), -- Obelisk of Dark Tidings
-        Transmog({item=187368, slot=L["staff"]}), -- Xyraxz's Controlling Rod
-        Transmog({item=187387, slot=L["mail"]}) -- Pauldrons of the Unknown Beyond
-    }
-}) -- Chamber of Wisdom
+}) -- Carriage Crusher
 
 map.nodes[51164167] = Rare({
     id=179768,
     quest=64243,
+    sublabel=L["korthia_limited_rare"],
     note=L["consumption_note"],
     rewards={
         Achievement({id=15107, criteria=52285}),
@@ -98,18 +72,6 @@ map.nodes[51164167] = Rare({
         Transmog({item=187247, slot=L["cosmetic"]}) -- Death-Enveloped Shoulder Spikes
     }
 }) -- Consumption
-
-map.nodes[59934371] = Rare({
-    id=180042,
-    quest=64349,
-    covenant=NECROLORD,
-    note=L["corpse_heap_note"],
-    rewards={
-        Achievement({id=15107, criteria=52299}),
-        Transmog({item=187372, slot=L["cloth"]}), -- Miasma Filtering Headpiece
-        Mount({item=186489, id=1449, covenant=NECROLORD}) -- Lord of the Corpseflies
-    }
-}) -- Corpse Heap
 
 map.nodes[51822081] = Rare({
     id=177903,
@@ -124,35 +86,35 @@ map.nodes[33183938] = Rare({
     id=180014,
     quest=64320,
     covenant=NIGHTFAE,
-    note=L["wilderling_note"],
+    note=L["escaped_wilderling_note"],
     rewards={
         Achievement({id=15107, criteria=52298}),
         Mount({item=186492, id=1487, covenant=NIGHTFAE}) -- Summer Wilderling
     }
 }) -- Escaped Wilderling
 
-map.nodes[44222950] = Rare({
-    id=179684,
-    quest=64233,
-    note=L["hunting_hunter_note"],
+map.nodes[59934371] = Rare({
+    id=180042,
+    quest=64349,
+    covenant=NECROLORD,
+    note=L["fleshwing_note"],
     rewards={
-        Achievement({id=15107, criteria=52283}),
-        Mount({item=186645, id=1506}), -- Crimson Shardhide
-        Transmog({item=187377, slot=L["leather"]}) -- Malbog's Paws
-    },
-    pois={
-        POI({60652315}) -- Caretaker Kah-Kay
+        Achievement({id=15107, criteria=52299}),
+        Transmog({item=187372, slot=L["cloth"]}), -- Miasma Filtering Headpiece
+        Mount({item=186489, id=1449, covenant=NECROLORD}) -- Lord of the Corpseflies
     }
-}) -- Hunting the Hunter
+}) -- Fleshwing <Lord of the Heap>
 
 map.nodes[59203580] = Rare({
     id=179108,
     quest=64428,
+    sublabel=L["korthia_limited_rare"],
+    note=L["kroke_note"],
     rewards={
         Achievement({id=15107, criteria=52304}),
         Transmog({item=187394, slot=L["plate"]}), -- Tormented Giant's Legplates
-        Transmog({item=187250, slot=L["cosmetic"]}), -- Kroke's Wingspiked Pauldrons
-        Transmog({item=187248, slot=L["cosmetic"]}) -- Kroke's Gleaming Spaulders
+        Transmog({item=187248, slot=L["cosmetic"]}), -- Kroke's Gleaming Spaulders
+        Transmog({item=187250, slot=L["cosmetic"]}) -- Kroke's Wingspiked Pauldrons
     },
     pois={
         Path({
@@ -162,36 +124,32 @@ map.nodes[59203580] = Rare({
     }
 }) -- Kroke the Tormented
 
-map.nodes[46507959] = Rare({
-    id=179985,
-    quest=64313,
-    covenant=VENTHYR,
-    note=L["no_stoneborne_note"],
+map.nodes[44222950] = Rare({
+    id=179684,
+    quest=64233,
+    note=L["malbog_note"],
     rewards={
-        Achievement({id=15107, criteria=52276}),
-        Transmog({item=184790, slot=L["leather"]}) -- Archdruid Van-Yali's Greenthumbs
-        -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing
+        Achievement({id=15107, criteria=52283}),
+        Transmog({item=187377, slot=L["leather"]}), -- Malbog's Paws
+        Mount({item=186645, id=1506}) -- Crimson Shardhide
+    },
+    pois={
+        POI({60652315}) -- Caretaker Kah-Kay
     }
-}) -- Stygian Stonecrusher
-
-map.nodes[56873237] = Rare({
-    id=180032,
-    quest=64338,
-    covenant=KYRIAN,
-    note=L["popo_note"],
-    rewards={
-        Achievement({id=15107, criteria=52300}),
-        Toy({item=187176}), -- Vesper of Harmony
-        Mount({item=186483, id=1493, covenant=KYRIAN}) -- Foresworn Aquilon
-    }
-}) -- Popo's Potion Patrol
+}) -- Malbog
 
 map.nodes[22604140] = Rare({
     id=179931,
     quest=64291,
+    note=L["krelva_note"],
     rewards={
         Achievement({id=15107, criteria=52291}),
         Transmog({item=187403, slot=L["cloak"]}) -- Relic Breaker's Drape
+    },
+    pois={
+        Arrow({22604140, 28523843}),
+        Arrow({28523843, 29144441}),
+        POI({28523843, 29144441})
     }
 }) -- Relic Breaker Krelva
 
@@ -205,14 +163,68 @@ map.nodes[56276617] = Rare({
     }
 }) -- Reliwik the Defiant
 
+map.nodes[46507959] = Rare({
+    id=179985,
+    quest=64313,
+    covenant=VENTHYR,
+    note=L["stonecrusher_note"],
+    rewards={
+        Achievement({id=15107, criteria=52276}),
+        Transmog({item=184790, slot=L["leather"]}) -- Archdruid Van-Yali's Greenthumbs
+        -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing
+    }
+}) -- Stygian Stonecrusher
+
+map.nodes[56873237] = Rare({
+    id=180032,
+    quest=64338,
+    covenant=KYRIAN,
+    note=L["worldcracker_note"],
+    rewards={
+        Achievement({id=15107, criteria=52300}),
+        Toy({item=187176}), -- Vesper of Harmony
+        Mount({item=186483, id=1493, covenant=KYRIAN}) -- Foresworn Aquilon
+    }
+}) -- Wild Worldcracker
+
+map.nodes[44983552] = Rare({
+    id=179859,
+    quest=64278,
+    requires=ns.requirement.Item(186718),
+    note=L["chamber_note"],
+    rewards={
+        Achievement({id=15107, criteria=52296}),
+        Achievement({id=15066, criteria=52263}),
+        Item({item=187104, quest=63918}), -- Obelisk of Dark Tidings
+        Transmog({item=187387, slot=L["mail"]}), -- Pauldrons of the Unknown Beyond
+        Transmog({item=187368, slot=L["staff"]}) -- Xyraxz's Controlling Rod
+    }
+}) -- Xyraxz the Unknowable (Chamber of Wisdom)
+
+map.nodes[39405240] = Rare({
+    id=179802,
+    quest=64257,
+    requires=ns.requirement.Item(186718),
+    note=L["chamber_note"],
+    rewards={
+        Achievement({id=15107, criteria=52295}),
+        Achievement({id=15066, criteria=52262}),
+        Item({item=187103, quest=63917}), -- Everliving Statuette
+        Transmog({item=187391, slot=L["plate"]}), -- Yarxhov's Rib-Cage
+        Transmog({item=187366, slot=L["polearm"]}) -- Fallen Vault Guardian's Spire
+    }
+}) -- Yarxhov the Pillager (Chamber of Knowledge)
+
+-- GHO: 45296726
 map.nodes[27755885] = Rare({
     id=177336,
     quest=64442,
+    sublabel=L["korthia_limited_rare"],
     note=L["in_cave"],
     rewards={
         Achievement({id=15107, criteria=52301}),
-        Pet({item=186542, id=3136}), -- Korthian Specimen
-        Transmog({item=187371, slote=L["cloth"]}) -- Velvet Gromit Handwraps
+        Transmog({item=187371, slot=L["cloth"]}), -- Velvet Gromit Handwraps
+        Pet({item=186542, id=3136}) -- Korthian Specimen
     },
     pois={
         POI({30385480}) -- Entrance
@@ -228,11 +240,11 @@ map.nodes[13007500] = Rare({
     note=L["konthrogz_note"],
     rewards={
         Achievement({id=15107, criteria=52303}),
-        Mount({item=187183, id=1514}), -- Rampaging Mauler
         Transmog({item=187375, slot=L["cloth"]}), -- Bound Worldeater Tendrils
         Transmog({item=187378, slot=L["leather"]}), -- Visage of the Obliterator
         Transmog({item=187384, slot=L["mail"]}), -- Konthrogz's Scaled Handguards
-        Transmog({item=187397, slot=L["plate"]}) -- Vambraces of the In-Between
+        Transmog({item=187397, slot=L["plate"]}), -- Vambraces of the In-Between
+        Mount({item=187183, id=1514}) -- Rampaging Mauler
     }
 }) -- Konthrogz the Obliterator
 
@@ -247,9 +259,9 @@ map.nodes[16007500] = Rare({
         Transmog({item=187376, slot=L["leather"]}), -- Mawsworn Lieutenant's Treads
         Transmog({item=187382, slot=L["mail"]}), -- Mawsworn Exterminator's Hauberk
         Transmog({item=187392, slot=L["plate"]}), -- Sabatons of the Towering Construct
-        Transmog({item=187241, slot=L["cosmetic"]}), -- Watchful Eye of the Damned
+        Transmog({item=187035, slot=L["cosmetic"]}), -- Cold Burden of the Damned
         Transmog({item=187242, slot=L["cosmetic"]}), -- Exterminator's Crest of the Damned
-        Transmog({item=187035, slot=L["cosmetic"]}) -- Cold Burden of the Damned
+        Transmog({item=187241, slot=L["cosmetic"]}) -- Watchful Eye of the Damned
     }
 }) -- Towering Exterminator
 
@@ -278,7 +290,7 @@ map.nodes[59335221] = Rare({
         Achievement({id=15107, criteria=52275}),
         Item({item=187401, note=L["ring"]}), -- Band of the Shaded Rift
         Transmog({item=187396, slot=L["plate"]}), -- Girdle of the Deadsoul
-        Toy({item=187174}) -- Shaded Judgement Stone
+        Toy({item=187174}) -- Shaded Judgement Stone (XXX: not confirmed on live!)
     }
 }) -- Deadsoul Hatcher
 
@@ -315,7 +327,9 @@ map.nodes[57607040] = Rare({
     note=L["rift_rare_exit_note"],
     rift=2,
     rewards={
-        Achievement({id=15107, criteria=52274})
+        Achievement({id=15107, criteria=52274}),
+        Transmog({item=187381, slot=L["leather"]}), -- Rift-Touched Bindings
+        Transmog({item=187383, slot=L["mail"]}) -- Silent Soulstalker Sabatons
     }
 }) -- Silent Soulstalker
 
@@ -344,7 +358,7 @@ map.nodes[50478446] = Treasure({
     quest=64252,
     rewards={
         Achievement({id=15099, criteria=52242}),
-        Item({item=187350, note=L["num_research"]:format(300)}) --Displaced Relic
+        Item({item=187350, status=L["num_research"]:format(300)}) --Displaced Relic
     }
 }) -- Displaced Relic
 
@@ -401,8 +415,9 @@ map.nodes[62065550] = Treasure({
     note=L["spectral_bound_note"],
     label=L["spectral_bound_chest"],
     rewards={
-        ns.relics.relic_fragment,
-        Transmog({item=187240, slot=L["cosmetic"]}) -- Field Warden's Watchful Eye
+        Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
+        Transmog({item=187240, note=L["cosmetic"]}), -- Field Warden's Watchful Eye
+        ns.relics.relic_fragment
     },
     pois={
         POI({50505370, 52305320, 52604970, 54205060, quest=64249}), -- west
@@ -427,6 +442,7 @@ local Relic = Class('Relic', ns.node.Treasure, {
 
 -------------------------------------------------------------------------------
 
+-- GHO: 40914788
 map.nodes[27305670] = Relic({
     quest=63899,
     questDeps=64506,
@@ -618,30 +634,40 @@ map.nodes[61804460] = RiftPortal()
 
 local RiftCache = Class('RiftCache', Treasure, {
     label=L["riftbound_cache"],
+    note=L["riftbound_cache_note"],
     group=ns.groups.RIFTBOUND_CACHE,
     rift=1,
     rewards={
-        ns.relics.relic_fragment
+        Transmog({item=187251, slot=L["cosmetic"]}), -- Shaded Skull Shoulderguards
+        Transmog({item=187243, slot=L["cosmetic"]}), -- Shadehunter's Crescent
+        Item({item=187276, quest=64522}), -- Stolen Korthian Supplies
+        Item({item=185050, quest=63606, covenant=NIGHTFAE}), -- Spider Soul
+        ns.relics.relic_fragment,
+        Item({item=186017}) -- Korthite Crystal
     }
 })
 
 local RIFT_CACHE1 = RiftCache({quest=64470, icon='chest_rd', note=L["in_cave"]})
-local RIFT_CACHE2 = RiftCache({quest=64471, icon='chest_pp'}) -- (also 64705?)
+local RIFT_CACHE2 = RiftCache({quest=64471, icon='chest_pp'}) -- (also 64705?) <did you loot a relic?
 local RIFT_CACHE3 = RiftCache({quest=64472, icon='chest_yw'})
-local RIFT_CACHE4 = RiftCache({quest=nil, icon='chest_bl'})
+local RIFT_CACHE4 = RiftCache({quest=64456, icon='chest_bl'})
 
-map.nodes[25975582] = RIFT_CACHE1
+map.nodes[25975582] = RIFT_CACHE1 -- GHO: 29433986
+map.nodes[26545638] = RIFT_CACHE1 -- GHO: 34634647
+map.nodes[27555933] = RIFT_CACHE1 -- GHO: 43157372
 map.nodes[54105460] = RIFT_CACHE2
 map.nodes[54904240] = RIFT_CACHE2
 map.nodes[55506510] = RIFT_CACHE2
 map.nodes[60903520] = RIFT_CACHE2
 map.nodes[61775872] = RIFT_CACHE2
 map.nodes[46103190] = RIFT_CACHE3
-map.nodes[50703290] = RIFT_CACHE3
+map.nodes[50763302] = RIFT_CACHE3
 map.nodes[56321850] = RIFT_CACHE3
 map.nodes[64303040] = RIFT_CACHE3
-map.nodes[33503950] = RIFT_CACHE4
+map.nodes[33443929] = RIFT_CACHE4
+map.nodes[35943243] = RIFT_CACHE4
 map.nodes[38003550] = RIFT_CACHE4
+map.nodes[39784299] = RIFT_CACHE4
 
 -------------------------------------------------------------------------------
 ------------------------------ SHARED TREASURES -------------------------------
@@ -652,10 +678,12 @@ local Shared = Class('Shared', ns.node.Treasure, {
     quest={64316,64317,64318,64564,64565},  --Quest IDs 64307/64309 seem to be changed.
     questCount=true,
     scale=0.8,
-    note=L['shared_note'],
+    note=L['korthia_shared_chest_note'],
     fgroup='shared_korthia',
     rewards={
-        ns.relics.relic_fragment
+        Item({item=185963, quest=63892}), -- Diviner's Rune Chit
+        ns.relics.relic_fragment,
+        Item({item=186017}) -- Korthite Crystal
     }
 })
 
@@ -713,11 +741,11 @@ map.nodes[52322701] = Shared({label=L["shardhide_stash"]})
 local Mawshroom = Class('Mawshroom', Treasure, {
     group=ns.groups.INVASIVE_MAWSHROOM,
     label=L["invasive_mawshroom"],
+    note=L["invasive_mawshroom_note"],
     rewards={
-        Item({item=187153, quest=64376}), -- Tasty Mawshroom
         Item({item=185963, quest=63892}), -- Diviner's Rune Chit
-        Item({item=186017}), -- Korthite Crystal
-        ns.relics.relic_fragment
+        ns.relics.relic_fragment,
+        Item({item=186017}) -- Korthite Crystal
     }
 })
 
@@ -761,13 +789,14 @@ map.nodes[54805550] = MAWSH5
 local UMNest = Class('UMNest', Treasure, {
     group=ns.groups.NEST_MATERIALS,
     label=L["unusual_nest"],
+    note=L["unusual_nest_note"],
     icon='chest_bn',
     fgroup='nest_materials',
     rewards={
-        Item({item=187442, note=L["bag"]}), -- Scholar's Ancient Pack
         Item({item=185963, quest=63892}), -- Diviner's Rune Chit
-        Item({item=186017}), -- Korthite Crystal
-        ns.relics.relic_fragment
+        ns.relics.relic_fragment,
+        Item({item=187442, note=L["bag"]}), -- Scholar's Ancient Pack
+        Item({item=186017}) -- Korthite Crystal
     }
 })
 
@@ -782,10 +811,12 @@ map.nodes[52407270] = UMNest({quest=64362})
 local MawswornC = Class('MawswornC', Treasure, {
     group=ns.groups.MAWSWORN_CACHE,
     label=L["mawsworn_cache"],
+    note=L["mawsworn_cache_note"],
     rewards={
-        Transmog({item=187026, note=L["cloak"]}),
-        Item({item=186017}), -- Korthite Crystal
-        ns.relics.relic_fragment
+        Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
+        Transmog({item=187240, note=L["cosmetic"]}), -- Field Warden's Watchful Eye
+        ns.relics.relic_fragment,
+        Item({item=186017}) -- Korthite Crystal
     }
 })
 
