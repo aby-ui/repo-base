@@ -6,8 +6,8 @@
 		
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 8698
-		_detalhes.alpha_build_counter = 8698 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 8700
+		_detalhes.alpha_build_counter = 8700 --if this is higher than the regular counter, use it instead
 		_detalhes.bcc_counter = 25
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
@@ -196,8 +196,9 @@ do
 		--> current instances of the exp (need to maintain)
 			_detalhes.InstancesToStoreData = { --mapId
 				[2296] = true, --castle narnia
+				[2450] = true, --sanctum of domination
 			}
-			
+
 		--> armazena os escudos - Shields information for absorbs
 			_detalhes.escudos = {}
 		--> armazena as fun��es dos frames - Frames functions

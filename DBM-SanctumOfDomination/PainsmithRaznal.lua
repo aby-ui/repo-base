@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2443, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210625004028")
+mod:SetRevision("20210707044144")
 mod:SetCreatureID(176523)
 mod:SetEncounterID(2430)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
-mod:SetHotfixNoticeRev(20210624000000)--2021-06-24
+mod:SetHotfixNoticeRev(20210706000000)--2021-07-06
 mod:SetMinSyncRevision(20210513000000)
 --mod.respawnTime = 29
 
@@ -266,7 +266,14 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 348508 then
+	if spellId == 355505 then
+		if self.Options.SetIconOnChains then
+			self:SetIcon(args.destName, 0)
+		end
+		if args:IsPlayer() then
+			yellShadowsteelChainsFades:Cancel()
+		end
+	elseif spellId == 348508 then
 		if args:IsPlayer() then
 			yellReverberatingHammerFades:Cancel()
 		end

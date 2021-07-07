@@ -87,7 +87,7 @@ local initFrames
 local defaultSavedVars = {
 	global = {
         toolbarExpanded = true,
-        currentSeason = 5,
+        currentSeason = 6,
 		currentExpansion = 3,
         scale = 1,
         enemyForcesFormat = 2,
@@ -228,8 +228,8 @@ MDT.scaleMultiplier = {}
 --https://www.wowhead.com/affixes
 --lvl 4 affix, lvl 7 affix, tyrannical/fortified, seasonal affix
 local affixWeeks = {
-    [1] =  {11,124,10,121}, --bursting storming fortified prideful
-    [2] =  {0,0,9,128},
+    [1] =  {11,124,10,128}, --bursting storming fortified tormented
+    [2] =  {6,3,9,128}, --raging volcanic tyrannical tormented
     [3] =  {0,0,10,128},
     [4] =  {0,0,9,128},
     [5] =  {0,0,10,128},
@@ -4869,6 +4869,7 @@ function MDT:PrintCurrentAffixes()
         [122] =L["Inspiring"],
         [123] =L["Spiteful"],
         [124] =L["Storming"],
+        [128] =L["Tormented"],
     }
     local affixIds = C_MythicPlus.GetCurrentAffixes()
     for idx,data in ipairs(affixIds) do

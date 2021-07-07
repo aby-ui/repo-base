@@ -288,6 +288,7 @@ do
     hooksecurefunc("ConsoleExec", function(msg)
         if FriendsFrame_GetInviteRestriction_Origin then return end
         local portal = type(msg) == "string" and select(3, msg:lower():find("set portal (.+)"))
+                                              or select(3, msg:lower():find("portal (.+)"))
         if portal and portal ~= GetCVar("portal"):lower() then
             FriendsFrame_GetInviteRestriction_Origin = FriendsFrame_GetInviteRestriction
             local INVITE_RESTRICTION_REGION = 11;

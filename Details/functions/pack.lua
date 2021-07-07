@@ -107,17 +107,17 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
     end
 
     if (bit.band(flags, 0x1) ~= 0) then
-        print("pack damage")
+        ---print("pack damage")
         Details.packFunctions.PackDamage(combatObject)
     end
 
     if (bit.band(flags, 0x2) ~= 0) then
-        print("pack heal")
+        --print("pack heal")
         Details.packFunctions.PackHeal(combatObject)
     end
 
     if (bit.band(flags, 0x8) ~= 0) then
-        print("pack utility")
+        --print("pack utility")
         Details.packFunctions.PackUtility(combatObject)
     end
 
@@ -172,7 +172,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
 
         --Details:Dump({exportedString})
 
-        print("EXPORTING STRING FINAL:", exportedString)
+        --print("EXPORTING STRING FINAL:", exportedString)
 
         --compress
         local LibDeflate = _G.LibStub:GetLibrary("LibDeflate")

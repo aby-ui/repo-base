@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2446, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210626002315")
+mod:SetRevision("20210707044144")
 mod:SetCreatureID(175731)
 mod:SetEncounterID(2436)
 mod:SetUsedIcons(1, 2, 3)
@@ -495,13 +495,13 @@ function mod:SPELL_AURA_REMOVED(args)
 			playerSafe = false
 		end
 	elseif spellId == 350496 then
+		if self.Options.SetIconOnThreat then
+			self:SetIcon(args.destName, 0)
+		end
 		if args:IsPlayer() then
 			yellThreatNeutralizationFades:Cancel()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Hide()
-			end
-			if self.Options.SetIconOnThreat then
-				self:SetIcon(args.destName, 0)
 			end
 		end
 	elseif spellId == 350534 then--Purging Protocol disabling

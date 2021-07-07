@@ -742,8 +742,8 @@ local add_row = function (self, t, need_update)
 	local index = #self.rows+1
 	
 	local thisrow = DF:NewPanel (self, self, "$parentHeader_" .. self._name .. index, nil, 1, 20)
-	thisrow.backdrop = {bgFile = [[Interface\DialogFrame\UI-DialogBox-Gold-Background]]}
-	thisrow.color = "silver"
+	thisrow.backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]]}
+	thisrow.color = {.3, .3, .3, .9}
 	thisrow.type = t.type
 	thisrow.func = t.func
 	thisrow.name = t.name
@@ -777,7 +777,7 @@ local align_rows = function (self)
 		end
 	end
 
-	local cur_width = 0
+	local cur_width = 1
 	local row_width = self._width / max (rows_shown, 0.0001)
 	
 
@@ -793,11 +793,11 @@ local align_rows = function (self)
 				else
 					row.width = row_width
 				end
-				row:SetPoint ("topleft", self, "topleft", cur_width, 0)
+				row:SetPoint ("topleft", self, "topleft", cur_width, -1)
 				tinsert (self._anchors, cur_width)
 				cur_width = cur_width + row_width + 1
 			else
-				row:SetPoint ("topleft", self, "topleft", cur_width, 0)
+				row:SetPoint ("topleft", self, "topleft", cur_width, -1)
 				row.width = self._raw_rows [index].width
 				tinsert (self._anchors, cur_width)
 				cur_width = cur_width + self._raw_rows [index].width + 1
@@ -991,7 +991,6 @@ local update_rows = function (self, updated_rows)
 			widget.text:SetText (t.name)
 			DF:SetFontSize (widget.text, raw.textsize or 10)
 			widget.text:SetJustifyH (raw.textalign or "left")
-			
 		end
 	end
 	
@@ -6989,7 +6988,7 @@ end
 ]]
 
 function DF:BuildStatusbarAuthorInfo (f, addonBy, authorsNameString)
-	local authorName = DF:CreateLabel (f, "" .. (addonBy or "An addon by") .. "|cFFFFFFFF" .. (authorsNameString or "Terciob") .. "|r")
+	local authorName = DF:CreateLabel (f, "" .. (addonBy or "An addon by ") .. "|cFFFFFFFF" .. (authorsNameString or "Terciob") .. "|r")
 	authorName.textcolor = "silver"
 	local discordLabel = DF:CreateLabel (f, "Discord: ")
 	discordLabel.textcolor = "silver"

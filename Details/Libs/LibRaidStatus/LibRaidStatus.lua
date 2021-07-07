@@ -1,6 +1,6 @@
 
 local major = "LibRaidStatus-1.0"
-local CONST_LIB_VERSION = 17
+local CONST_LIB_VERSION = 18
 LIB_RAID_STATUS_CAN_LOAD = false
 
 --declae the library within the LibStub
@@ -1344,7 +1344,6 @@ end)
     --@data: table received from comm
     --@source: player name
     function raidStatusLib.playerInfoManager.OnReceivePlayerFullInfo(data, source)
-        --Details:Dump(data)
         local specId = tonumber(data[1])
         local renown = tonumber(data[2])
         local covenantId = tonumber(data[3])
@@ -1353,7 +1352,7 @@ end)
         local conduitsSize = data[conduitsTableIndex]
 
         --unpack the talents data as a ipairs table
-        local talentsTableUnpacked = raidStatusLib.UnpackTable(data, 3, false, false, talentsSize)
+        local talentsTableUnpacked = raidStatusLib.UnpackTable(data, 4, false, false, talentsSize)
 
         --unpack the conduits data as a ipairs table
         local conduitsTableUnpacked = raidStatusLib.UnpackTable(data, conduitsTableIndex, false, false, conduitsSize)
@@ -1454,7 +1453,6 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
                         end
 
                         --local link = C_Soulbinds.GetConduitHyperlink( conduitId,  conduitRank )
-                        --print(link)
                     end
                 end
             end

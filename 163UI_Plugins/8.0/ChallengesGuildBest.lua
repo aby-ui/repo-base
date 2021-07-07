@@ -166,23 +166,25 @@ end)
 --[[------------------------------------------------------------
 托加斯特
 ---------------------------------------------------------------]]
-EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function()
-    local levels    = {  "08","09",   10,    11,    12, }
-    local firstNew  = { "不掉",  60,  110,   150,   180, }
-    local firstOld  = {   800, 915,  960,  1000,  1030, }
-    local repeatOld = {   160, 183,  192,   200,   206, }
-    if GameTooltip:IsVisible() then
-        GameTooltip:AddLine("难度   薪尘    灰烬  灰烬(重复打)", 1, 1, 1)
-        local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
-        for i, v in ipairs(levels) do
-            GameTooltip:AddLine(format(line, tostring(levels[i]), tostring(firstNew[i]), tostring(firstOld[i]), tostring(repeatOld[i])), 1, 1, 1)
-        end
+EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, tooltipShown, areaPoiID, name)
+    if areaPoiID == 6640 then
+        local levels    = {  "08","09",   10,    11,    12, }
+        local firstNew  = { "不掉",  60,  110,   150,   180, }
+        local firstOld  = {   800, 915,  960,  1000,  1030, }
+        local repeatOld = {   160, 183,  192,   200,   206, }
+        if GameTooltip:IsVisible() then
+            GameTooltip:AddLine("难度   薪尘    灰烬  灰烬(重复打)", 1, 1, 1)
+            local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
+            for i, v in ipairs(levels) do
+                GameTooltip:AddLine(format(line, tostring(levels[i]), tostring(firstNew[i]), tostring(firstOld[i]), tostring(repeatOld[i])), 1, 1, 1)
+            end
 
-        GameTooltip:AddLine(" ")
-        GameTooltip:AddLine("橙装装等  190/ 210/ 225/ 235")
-        GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
-        GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
-        GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1600")
-        GameTooltip:Show()
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("橙装装等  190/ 210/ 225/ 235")
+            GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
+            GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
+            GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1600")
+            GameTooltip:Show()
+        end
     end
 end, {})

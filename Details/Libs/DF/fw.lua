@@ -1,6 +1,6 @@
 
 
-local dversion = 258
+local dversion = 260
 
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
@@ -359,9 +359,11 @@ end
 function DF.table.copytocompress (t1, t2)
 	for key, value in pairs (t2) do
 		if (key ~= "__index" and type(value) ~= "function") then
-			if (type (value) == "table") then
-				t1 [key] = t1 [key] or {}
-				DF.table.copytocompress (t1 [key], t2 [key])
+			if (type(value) == "table") then
+				if (not value.GetObjectType) then
+					t1 [key] = t1 [key] or {}
+					DF.table.copytocompress(t1 [key], t2 [key])
+				end
 			else
 				t1 [key] = value
 			end

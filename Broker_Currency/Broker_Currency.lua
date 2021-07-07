@@ -841,11 +841,10 @@ do
                 show1191 = true, summary1191 = true, --勇气
                 show1977 = true, summary1977 = true, --冥河灰烬
                 show1906 = true, summary1906 = true, --灵魂薪尘
-                --show1931 = true, summary1931 = true, --编集研究
+                --[[show1931 = true,]] summary1931 = true, --编集研究
                 show1792 = true, summary1792 = true, --PVP荣誉
                 show1602 = true, summary1602 = true, --PVP征服
-
-                show1767 = false, summary1767 = false, --冥殇
+                --[[show1767 = false,]] summary1767 = true, --冥殇
                 show1813 = false, summary1813 = false, --心能
                 ["show1560"] = false,  --8.0物资
                 ["show1580"] = false,  --8.0印记
