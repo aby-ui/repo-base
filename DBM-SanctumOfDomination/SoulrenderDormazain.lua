@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2445, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210707070246")
+mod:SetRevision("20210708014804")
 mod:SetCreatureID(175727)
 mod:SetEncounterID(2434)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -115,7 +115,7 @@ function mod:OnCombatStart(delay)
 	if self.Options.NPAuraOnDefiance or self.Options.NPAuraOnTormented then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
-	DBM:AddMsg("There is no Hellscream/shackles timer because it wouldn't be accurate. If blizz scripts fight better I'll add a timer")
+	DBM:AddMsg("There is no Hellscream/shackles timer because it wouldn't be accurate. If blizz scripts fight better, I'll add a timer")
 end
 
 function mod:OnCombatEnd()

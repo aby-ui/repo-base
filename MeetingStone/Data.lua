@@ -284,8 +284,10 @@ CATEGORY = {
             [265] = true,
             [266] = true,
             [267] = true,
-            [269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
-            [270] = true, --暗影国度
+            --[269] = true, --世界首领 /dump C_LFGList.GetActivityGroupInfo(269)
+            --[270] = true, --暗影国度
+            [271] = true,   --统御圣所
+            [272] = true,   --塔扎维什
         },
         activities = {
             [723] = true, --世界首领

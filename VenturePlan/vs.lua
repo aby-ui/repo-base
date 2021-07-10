@@ -125,7 +125,7 @@ end
 
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
-local TP = {} do
+do -- targets
 	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [1213]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
@@ -141,8 +141,8 @@ local TP = {} do
 		},
 		[3]={
 			[0]="23104", "03421", "03214", "20143", "31204",
-			"56a79b8c", "5a7b69c8", "65bac798", "768a9bc5",
-			"56a79b8c", "96b57a8c", "a78c69b5", "56a79b8c"
+			"56a79b8c", "5a7b69c8", "6bac8759", "768bc95a",
+			"5a6978bc", "96b57a8c", "a78c69b5", "56a79b8c"
 		},
 		[4]={
 			[0]="0", "1", "2", "3", "4",
@@ -265,8 +265,8 @@ local TP = {} do
 				if tu and tu.curHP > 0 and not tu.shroud then
 					stt[1], ni, ot = 0, 2
 				else
-					local t1, t2 = board[1], board[2]
-					if not (t1 and t1.curHP > 0 and not t1.shroud) and (t2 and t2.curHP > 0 and not t2.shroud) then
+					local t2 = board[2]
+					if t2 and t2.curHP > 0 and not t2.shroud then
 						stt[1], ni, ot = 2, 2
 						for i=5,6 do
 							tu = board[i]
@@ -340,7 +340,7 @@ local TP = {} do
 		elseif tt == "col" then
 			GetTargets(source, 0, board)
 			ni = #stt + 1
-			local ex = lo and ni == 2 and not taunt and (stt[1]+4) or nil
+			local ex = lo and ni == 2 and (stt[1]+4) or nil
 			local exu = board[ex]
 			if exu and exu.curHP > 0 and not exu.shroud then
 				stt[2], ni = ex, ni + 1
@@ -409,14 +409,14 @@ local TP = {} do
 		end
 		return stt
 	end
-	function TP:GetAutoAttack(role, slot, mid, firstSpell)
+	function VS:GetAutoAttack(role, slot, mid, firstSpell)
 		local a1 = slot and mid and overrideAA[4+2*slot+32*mid]
 		local a2 = (slot or 0) < 5 and firstSpell and overrideAA[1+4*firstSpell]
 		return (a1 or a2 or (role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
 	end
-	TP.GetTargets = GetTargets
-	TP.targetLists = targetLists
-	TP.forkTargetMap = forkTargets
+	VS.GetTargets = GetTargets
+	VS.targetLists = targetLists
+	VS.forkTargetMap = forkTargets
 end
 
 local function enq(qs, k, e)
@@ -675,7 +675,7 @@ function mu:passive(source, sid)
 	local onDeath = su.deathUnwind or {}
 	local mdd, mdt, tatk = si.modDamageDealt, si.modDamageTaken, si.thornsATK
 	local td = tatk and f32_pim(tatk, su.atk)
-	local tt = TP.GetTargets(source, si.target, board)
+	local tt = VS.GetTargets(source, si.target, board)
 	for i=1,#tt do
 		i = tt[i]
 		local tu = board[i]
@@ -841,14 +841,14 @@ function mu:qcast(sourceIndex, sid, eid, ord1, forkTarget)
 		local sitt, tt = si.target
 		local ft = forkTargets[sitt]
 		if ft and forkTarget then
-			tt = TP.GetTargets(forkTarget, "self", board)
+			tt = VS.GetTargets(forkTarget, "self", board)
 		elseif ft then
 			local pileOn = band(self.ftc or 0, forkTargetBits[ft]) > 0 and self["ft-" .. ft]
-			pileOn = pileOn and TP.GetTargets(pileOn, "self", board)
+			pileOn = pileOn and VS.GetTargets(pileOn, "self", board)
 			if pileOn and pileOn[1] then
 				tt = pileOn
 			else
-				tt = TP.GetTargets(sourceIndex, ft, board)
+				tt = VS.GetTargets(sourceIndex, ft, board)
 				if #tt > 1 then
 					local oracle = self.forkOracle
 					local ownTarget = oracle and oracle(self.turn, sourceIndex, sid) or tt[math.random(#tt)]
@@ -867,10 +867,10 @@ function mu:qcast(sourceIndex, sid, eid, ord1, forkTarget)
 						f.sq[sqh], f.sqh = {"qcast", sourceIndex, sid, i, ord1, tt[j]}, sqh
 					end
 				end
-				tt = tt[1] and TP.GetTargets(tt[1], "self", board)
+				tt = tt[1] and VS.GetTargets(tt[1], "self", board)
 			end
 		else
-			tt = TP.GetTargets(sourceIndex, sitt, board)
+			tt = VS.GetTargets(sourceIndex, sitt, board)
 		end
 		if ft then
 			self.ftc, self["ft-"..ft] = bor(self.ftc or 0, tt and tt[1] and forkTargetBits[ft] or 0), tt and tt[1] or nil
@@ -1339,14 +1339,14 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 			f.attack, f.health, f.maxHealth = f.stats.attack, f.stats.currentHealth, f.stats.maxHealth
 		end
 		local rf, sa = {maxHP=f.maxHealth, curHP=math.max(1,f.health), atk=f.attack, slot=f.boardIndex or slot, name=f.name}, f.spells
-		local aa = TP:GetAutoAttack(f.role, nil, nil, sa and sa[1] and sa[1].autoCombatSpellID)
+		local aa = VS:GetAutoAttack(f.role, nil, nil, sa and sa[1] and sa[1].autoCombatSpellID)
 		missingSpells, pmask = addCasts(q, rf.slot, sa, aa, missingSpells, pmask)
 		board[rf.slot], nf = addActorProps(rf), nf + 1
 	end
 	for i=1,#encounters do
 		local e = encounters[i]
 		local rf, sa = {maxHP=e.maxHealth, curHP=e.maxHealth, atk=e.attack, slot=e.boardIndex}, e.autoCombatSpells
-		local aa = TP:GetAutoAttack(e.role, rf.slot, mid, sa and sa[1] and sa[1].autoCombatSpellID)
+		local aa = VS:GetAutoAttack(e.role, rf.slot, mid, sa and sa[1] and sa[1].autoCombatSpellID)
 		missingSpells, pmask = addCasts(q, rf.slot, sa, aa, missingSpells, pmask)
 		board[e.boardIndex] = addActorProps(rf)
 	end
@@ -1388,5 +1388,4 @@ function VS:SetSpellInfo(t)
 	SpellInfo = t
 end
 
-
-T.VSim, VS.TP, VS.VSI, VS.mu = VS, TP, VSI, mu
+T.VSim, VS.VSI, VS.mu = VS, VSI, mu

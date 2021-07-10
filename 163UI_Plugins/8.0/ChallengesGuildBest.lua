@@ -184,6 +184,13 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
             GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
             GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
             GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1600")
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine("统御插槽位置：头、肩、胸")
+            GameTooltip:AddLine("布甲：护腕、腰带")
+            GameTooltip:AddLine("皮甲：手套、鞋子")
+            GameTooltip:AddLine("锁甲：腰带、鞋子")
+            GameTooltip:AddLine("板甲：护腕、手套")
+
             GameTooltip:Show()
         end
     end

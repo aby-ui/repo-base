@@ -257,6 +257,28 @@ GTFO.SpellID["357871"] = {
   sound = 3;
 };
 
+GTFO.SpellID["355561"] = {
+  --desc = "Slumber (Slumbering Swarm)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["357951"] = {
+  --desc = "Stygian Rain (Consumption)";
+  sound = 3;
+};
+
+GTFO.SpellID["355458"] = {
+  --desc = "Damnation (Mor'geth)";
+  sound = 3;
+};
+
+GTFO.SpellID["357179"] = {
+  --desc = "Blazing Inferno (Mawforged Construct)";
+  sound = 3;
+};
+
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -1117,6 +1139,94 @@ GTFO.SpellID["350217"] = {
   applicationOnly = true;
 };
 
+GTFO.SpellID["355302"] = {
+  --desc = "Chain Burst (Mawsworn Interceptor)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["358191"] = {
+  --desc = "Soul Emanation (Soul Brazier)";
+  sound = 3;
+};
+
+GTFO.SpellID["357221"] = {
+  --desc = "Release Souls (Shadowsteel Colossus)";
+  sound = 3;
+};
+
+GTFO.SpellID["350031"] = {
+  --desc = "Agatha's Eternal Blade (Agatha)";
+  sound = 3;
+};
+
+GTFO.SpellID["358978"] = {
+  --desc = "Spite (Remnant of Ner'zhul)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["354479"] = {
+  --desc = "Spite (Remnant of Ner'zhul)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["350076"] = {
+  --desc = "Grasp of Malice (Remnant of Ner'zhul)";
+  sound = 3;
+};
+
+GTFO.SpellID["358749"] = {
+  --desc = "Roaring Flames (Borr-Gahn)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["358980"] = {
+  --desc = "Dark Wind (High Torturer)";
+  sound = 3;
+};
+
+GTFO.SpellID["358197"] = {
+  --desc = "Searing Scythe";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["355526"] = {
+  --desc = "Spiked (Painsmith Raznal)";
+  sound = 3;
+};
+
+GTFO.SpellID["348363"] = {
+  --desc = "Spiked Ball (Painsmith Raznal)";
+  sound = 3;
+};
+
+GTFO.SpellID["355535"] = {
+  --desc = "Shadowsteel Embers (Painsmith Raznal)";
+  sound = 3;
+};
+
+GTFO.SpellID["352833"] = {
+  --desc = "Disintegration (Guardian of the First Ones)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["350355"] = {
+  --desc = "Fated Conjunction (Fatescribe Roh-Kalo)";
+  sound = 3;
+};
+
+GTFO.SpellID["353162"] = {
+  --desc = "Fate Fragment (Fatescribe Roh-Kalo)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+
 --- *******************************
 --- * Tazavesh, the Veiled Market *
 --- *******************************
@@ -1188,6 +1298,7 @@ GTFO.SpellID["351101"] = {
   applicationOnly = true;
   sound = 3;
 };
+
 
 end
 

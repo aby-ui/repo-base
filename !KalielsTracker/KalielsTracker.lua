@@ -230,7 +230,7 @@ end
 
 local function SlashHandler(msg, editbox)
 	local cmd, value = msg:match("^(%S*)%s*(.-)$")
-	if cmd == "config" then
+	if cmd == "config" or cmd == "option" then
 		KT:OpenOptions()
 	else
 		ObjectiveTracker_MinimizeButton_OnClick()
@@ -2158,9 +2158,25 @@ function KT:SetSize()
 	end
 end
 
+if CoreDependCall then
+    CoreDependCall("Blizzard_MawBuffs", function()
+        SetOrHookScript(MawBuffsBelowMinimapFrame, "OnShow", function() KT:MoveTracker() end)
+        SetOrHookScript(MawBuffsBelowMinimapFrame, "OnHide", function() KT:MoveTracker() end)
+    end)
+end
+
 function KT:MoveTracker()
 	KTF:ClearAllPoints()
 	KTF:SetPoint(db.anchorPoint, UIParent, db.anchorPoint, db.xOffset, db.yOffset)
+    if MawBuffsBelowMinimapFrame and MawBuffsBelowMinimapFrame:IsShown() then
+        if CoreIsFrameIntersects(MawBuffsBelowMinimapFrame, KTF) then
+            local delta = KTF:GetTop() - MawBuffsBelowMinimapFrame:GetBottom()
+            if delta > 0 and KTF:GetBottom() < MawBuffsBelowMinimapFrame:GetTop() and
+                    (KTF:GetTop() <= MawBuffsBelowMinimapFrame:GetTop() + 50) then
+                KTF:SetPoint(db.anchorPoint, UIParent, db.anchorPoint, db.xOffset, db.yOffset - delta)
+            end
+        end
+    end
 	KTF.directionUp = (db.anchorPoint == "BOTTOMLEFT" or db.anchorPoint == "BOTTOMRIGHT")
 	KTF.anchorLeft = (db.anchorPoint == "TOPLEFT" or db.anchorPoint == "BOTTOMLEFT")
 

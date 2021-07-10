@@ -37,6 +37,9 @@ local MAX_CLASSES = MAX_CLASSES
 local NotifyInspect = NotifyInspect
 local SlashCmdList = SlashCmdList
 local UIParent = UIParent
+local UNITNAME_SUMMON_TITLE1 = UNITNAME_SUMMON_TITLE1
+local UNITNAME_SUMMON_TITLE2 = UNITNAME_SUMMON_TITLE2
+local UNITNAME_SUMMON_TITLE3 = UNITNAME_SUMMON_TITLE3
 local UnitClass = UnitClass
 local UnitGUID = UnitGUID
 local UnitInParty = UnitInParty
@@ -585,24 +588,27 @@ function OmniBar_SetZone(self, refresh)
 
 end
 
+local UNITNAME_SUMMON_TITLES = {
+    UNITNAME_SUMMON_TITLE1,
+    UNITNAME_SUMMON_TITLE2,
+    UNITNAME_SUMMON_TITLE3,
+}
 local tooltip = CreateFrame("GameTooltip", "OmniBarPetTooltip", nil, "GameTooltipTemplate")
 local tooltipText = OmniBarPetTooltipTextLeft2
-local tooltipTextPatterns = {}
-for i = 1, 3 do
-    local constant = _G["UNITNAME_SUMMON_TITLE" .. i]
-    if (not constant) then break end
-    tinsert(tooltipTextPatterns, tostring(constant:gsub("%%s", "(.+)")))
-end
 local function UnitOwnerName(guid)
     if (not guid) then return end
+    for i = 1, 3 do
+        _G["UNITNAME_SUMMON_TITLE" .. i] = "OmniBar %s"
+    end
     tooltip:SetOwner(UIParent, "ANCHOR_NONE")
     tooltip:SetHyperlink("unit:" .. guid)
     local name = tooltipText:GetText()
-    if (not name) then return end
     for i = 1, 3 do
-        local owner = name:match(tooltipTextPatterns[i])
-        if owner then return owner end
+        _G["UNITNAME_SUMMON_TITLE" .. i] = UNITNAME_SUMMON_TITLES[i]
     end
+    if (not name) then return end
+    local owner = name:match("OmniBar (.+)")
+    if owner then return owner end
 end
 
 local function IsSourceHostile(sourceFlags)

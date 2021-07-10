@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210707070739"),
+	Revision = parseCurseDate("20210709064335"),
 	DisplayVersion = "9.1.2 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2021, 6, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -480,7 +480,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 199, "d06bd70"--199.1
+local fakeBWVersion, fakeBWHash = 227, "5438284"--227
 local bwVersionResponseString = "V^%d^%s"
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
 
@@ -12025,7 +12025,7 @@ end
 
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
-	if not revision or revision == "20210707070739" then
+	if not revision or revision == "20210709064335" then
 		-- bad revision: either forgot the svn keyword or using github
 		revision = DBM.Revision
 	end

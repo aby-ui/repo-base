@@ -247,7 +247,6 @@ private.NPC_GUIDE = {
 	[180246] = { [RSConstants.FLAG] = { x = 0.6521, y = 0.8446, comment = AL["NOTE_180246_1"] } }; --Carriage Crusher
 	[179883] = { [RSConstants.FLAG] = { x = 0.4473, y = 0.5142, comment = AL["NOTE_179883_1"] } }; --Zovaal's Vault
 	[180160] = { [RSConstants.FLAG] = { x = 0.5627, y = 0.6618, comment = AL["NOTE_180160_1"] } }; --Zovaal's Vault
-	[180162] = { [RSConstants.ENTRANCE] = { x = 0.4349, y = 0.5754 } }; --Zelnithop
 	[179791] = { 
 		[RSConstants.ENTRANCE] = { x = 0.6686, y = 0.5632 }; 
 		[RSConstants.STEP1] = { x = 0.6559, y = 0.5864, comment = AL["NOTE_179791_1"] }; 
@@ -258,6 +257,8 @@ private.NPC_GUIDE = {
 	[179608] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Screaming Shade
 	[179911] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Silent Soulstalker
 	[179913] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Deadsoul Hatcher
+	[179914] = { [RSConstants.TRANSPORT] = { x = 0.5371, y = 0.7181, comment = AL["NOTE_RIFT_PORTAL"] } }; --Observer Yorik
+	[179911] = { [RSConstants.TRANSPORT] = { x = 0.5371, y = 0.7181, comment = AL["NOTE_RIFT_PORTAL"] } }; --Silent Soulstalker
 }
 
 ---============================================================================
@@ -588,5 +589,5 @@ private.CONTAINER_GUIDE = {
 ---============================================================================
 
 private.EVENT_GUIDE = {
-	[179729] = { [RSConstants.FLAG] = { x = 0.4439, y = 0.3141, comment = AL["NOTE_179729_1"]  } }; --Hunting the Hunter
+	
 }

@@ -14,7 +14,7 @@ local function GenBoardMask()
 	return m
 end
 local function GetIncomingAAMask(slot, bm)
-	local r, TP = 0, T.VSim.TP
+	local r, VS = 0, T.VSim
 	local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
 
@@ -24,8 +24,8 @@ local function GetIncomingAAMask(slot, bm)
 			local i = v.boardIndex
 			local fi = f[i]
 			local s1 = fi.autoCombatSpells and fi.autoCombatSpells[1]
-			local aa = T.KnownSpells[TP:GetAutoAttack(v.role, i, mid, s1 and s1.autoCombatSpellID)]
-			if aa and TP.GetTargets(i, aa.target, board)[1] == slot then
+			local aa = T.KnownSpells[VS:GetAutoAttack(v.role, i, mid, s1 and s1.autoCombatSpellID)]
+			if aa and VS.GetTargets(i, aa.target, board)[1] == slot then
 				r = bit.bor(r, 2^i)
 			end
 		end
@@ -34,8 +34,8 @@ local function GetIncomingAAMask(slot, bm)
 			if bm % 2^(i+1) >= 2^i then
 				local fi = f[i]
 				local v, s1 = fi.info, fi.autoCombatSpells and fi.autoCombatSpells[1]
-				local aa = T.KnownSpells[T.VSim.TP:GetAutoAttack(v.role, nil, nil, s1 and s1.autoCombatSpellID)]
-				if aa and TP.GetTargets(i, aa.target, board)[1] == slot then
+				local aa = T.KnownSpells[VS:GetAutoAttack(v.role, nil, nil, s1 and s1.autoCombatSpellID)]
+				if aa and VS.GetTargets(i, aa.target, board)[1] == slot then
 					r = bit.bor(r, 2^i)
 				end
 			end
@@ -498,7 +498,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 	if incompleteModel then
 		GameTooltip:AddLine(L"Not all abilities have been taken into account.", 0.9,0.25,0.15)
 	elseif oodBuild then
-		GameTooltip:AddLine(L"The Guide may be out of date.", 0.9,0.25,0.15)
+		GameTooltip:AddLine(L"The Guide may be out of date.", 0.9,0.25,0.15, true)
 	end
 	if inProgress then
 		GameTooltip:AddLine(L"Not all outcomes have been examined.", 0.9, 0.25, 0.15, 1)
@@ -519,6 +519,9 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 	else
 		local lo, hi, c = res.min, res.max, NORMAL_FONT_COLOR
 		local turns = lo[17] ~= hi[17] and lo[17] .. " - " .. hi[17] or lo[17]
+		if inProgress and not incompleteModel then
+			GameTooltip:AddLine(L"Futures considered:" .. " |cffffffff" .. BreakUpLargeNumbers(res.n or 0), c.r, c.g, c.b)
+		end
 		if turns then
 			GameTooltip:AddLine((sim.won and L"Turns taken: %s" or L"Turns survived: %s"):format("|cffffffff" .. turns .. "|r"), c.r, c.g, c.b)
 		end
@@ -558,7 +561,6 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 		end
 		if not incompleteModel then
 			if inProgress then
-				GameTooltip:AddLine(L"Futures considered:" .. " |cffffffff" .. BreakUpLargeNumbers(res.n or 0), c.r, c.g, c.b)
 				flavor = L'"... or not. Better read this thing to the end."'
 			elseif lo[sim.won and 13 or 15] == 0 then
 				flavor = sim.won and L'"Snatch victory from the jaws of defeat!"' or L'"So close, and yet so far."'
@@ -653,6 +655,19 @@ local function MissionRewards_OnShow(self)
 		FollowerList:SyncXPGain(xp)
 	end
 end
+local function HealAllButton_OnUpdate(self, elapsed)
+	local tl = (self.timeLeft or 0) - elapsed
+	if tl > 0 then
+		self.timeLeft = tl
+		return
+	end
+	self.timeLeft = 0.125
+	local ff = CovenantMissionFrameFollowers
+	if ff:GetScript("OnUpdate") and not ff:IsShown() then
+		local m = ff.followers and "CalculateHealAllFollowersCost" or "OnShow"
+		ff[m](ff)
+	end
+end
 local function MissionView_OnShow()
 	if not FollowerList then
 		FollowerList = T.CreateObject("FollowerList", CovenantMissionFrame)
@@ -674,33 +689,65 @@ local function MissionView_OnHide()
 	CovenantMissionFrameFollowers.HealAllButton:SetParent(CovenantMissionFrameFollowers)
 end
 local function MissionView_GetGroup()
-	local g, hc = {}, false
+	local g, hc, zh = {}, false, false
 	local f = CovenantMissionFrame.MissionTab.MissionPage.Board.framesByBoardIndex
 	for i=0,5 do
 		local fi = f[i]
 		if fi and fi.name and fi.info and fi:IsShown() then
 			g[i], hc = fi.info.followerID, hc or not fi.info.isAutoTroop
+			if not (zh or fi.info.isAutoTroop) then
+				local cs = C_Garrison.GetFollowerAutoCombatStats(g[i])
+				zh = (cs and cs.currentHealth or 0) == 0
+			end
 		end
 	end
-	return g, hc
+	return g, hc, zh
 end
-local function Mission_StoreTentativeGroup()
-	if IsAltKeyDown() then
+local function MissionPage_OnClick(self, button)
+	if button == "RightButton" then
+		local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
+		local g, hc = MissionView_GetGroup()
+		if mid and hc then
+			U.StoreMissionGroup(mid, g, true)
+		end
+	end
+	GarrisonMissionPage_OnClick(self, button)
+end
+local function MissionPageFollower_OnMouseUp(self, frame, button)
+	if button == "RightButton" and not (frame.GetInfo and frame:GetInfo() or frame.info) then
+		return MissionPage_OnClick(self:GetMissionPage(), button)
+	end
+	return CovenantMissionFrame.OnMouseUpMissionFollower(self, frame, button)
+end
+local function MissionStart_OnClick(_self, button)
+	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
+	local g, hc, zh = MissionView_GetGroup()
+	if not hc then
 		return
-	end
-	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
-	local g, hc = MissionView_GetGroup()
-	if hc then
-		U.StoreMissionGroup(mid, g, true)
-	end
-end
-local function Mission_Start()
-	local mid = CovenantMissionFrame.MissionTab.MissionPage.missionInfo.missionID
-	local g, hc = MissionView_GetGroup()
-	if hc then
+	elseif button == "RightButton" and not zh then
 		U.StartMissionWithDelay(mid, g)
-		PlaySound(158565)
-		CovenantMissionFrame:CloseMission()
+	else
+		U.StoreMissionGroup(mid, g, true)
+		PlaySound(39514)
+	end
+	CovenantMissionFrame:CloseMission()
+end
+local function MissionStart_OnEnter(self)
+	if self:IsEnabled() then
+		local send = NORMAL_FONT_COLOR_CODE .. L"Send Tentative Parties" .. "|r"
+		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 3)
+		GameTooltip:SetText(L"Assign Tentative Party")
+		GameTooltip:AddLine((L"Tentative parties can be changed until you click %s."):format(send), 1,1,1,1)
+		if select(3, MissionView_GetGroup()) then
+			GameTooltip:AddLine("|n|cffff8000" .. COVENANT_MISSIONS_COMPANIONS_MISSING_HEALTH, 1, 0.5, 0)
+		else
+			GameTooltip:AddLine("|n|TInterface/TUTORIALFRAME/UI-TUTORIAL-FRAME:14:12:0:-1:512:512:10:70:330:410|t " .. L"Start the adventure", 0.5, 0.8, 1)
+		end
+		GameTooltip:Show()
+	elseif self.tooltip then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP", 0, 3);
+		GameTooltip:SetText(self.tooltip, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.a, true);
+		GameTooltip:Show();
 	end
 end
 local function Shuffler_OnEnter(self, source)
@@ -750,8 +797,9 @@ local function Shuffler_OnUpdate(self)
 	if fin then
 		self:SetScript("OnUpdate", nil)
 		if g then
+			Shuffler_AssignGroup(g)
 			Shuffler_OnLeave(self)
-			return Shuffler_AssignGroup(g)
+			return
 		end
 	end
 	if GameTooltip:IsOwned(self) then
@@ -774,6 +822,12 @@ end
 local function Shuffler_OnHide()
 	Tact:Reset()
 end
+local function HookOnShow(f, h)
+	f:HookScript("OnShow", h)
+	if f:IsVisible() then
+		h(f)
+	end
+end
 
 function EV:I_ADVENTURES_UI_LOADED()
 	local MP = CovenantMissionFrame.MissionTab.MissionPage
@@ -793,11 +847,13 @@ function EV:I_ADVENTURES_UI_LOADED()
 		end
 	end)
 	local cag = T.CreateObject("IconButton", MP.Board, 64, "Interface/Icons/INV_Misc_Book_01")
+	cag:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	cag:SetPoint("BOTTOMLEFT", 24, 4)
 	cag:SetScript("OnEnter", Predictor_OnEnter)
 	cag:SetScript("OnLeave", Predictor_OnLeave)
 	cag:SetScript("OnClick", Predictor_OnClick)
 	local cat = T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Misc_Book_06")
+	cat:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	cat:SetPoint("TOPLEFT", cag, "TOPRIGHT", 4, 0)
 	cat:SetScript("OnEnter", Shuffler_OnEnter)
 	cat:SetScript("OnLeave", Shuffler_OnLeave)
@@ -808,11 +864,18 @@ function EV:I_ADVENTURES_UI_LOADED()
 	hooksecurefunc(MP.Stage.EnvironmentEffectFrame.Name, "SetText", EnvironmentEffect_OnNameUpdate)
 	hooksecurefunc(CovenantMissionFrame, "AssignFollowerToMission", MissionGroup_OnUpdate)
 	hooksecurefunc(CovenantMissionFrame, "RemoveFollowerFromMission", MissionGroup_OnUpdate)
-	MP.CloseButton:HookScript("PreClick", Mission_StoreTentativeGroup)
-	MP.StartMissionButton:SetScript("OnClick", Mission_Start)
+	MP:SetScript("OnClick", MissionPage_OnClick)
+	HookOnShow(CovenantMissionFrame, function()
+		CovenantMissionFrame:RegisterCallback(CovenantMission.Event.OnFollowerFrameMouseUp, MissionPageFollower_OnMouseUp, CovenantMissionFrame)
+	end)
+	MP.StartMissionButton:SetScript("OnClick", MissionStart_OnClick)
+	MP.StartMissionButton:SetScript("OnEnter", MissionStart_OnEnter)
+	MP.StartMissionButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	MP.StartMissionButton:SetText(L"Assign Party")
+	CovenantMissionFrame.GetSystemSpecificStartMissionFailureMessage = function() end
 	local s = CovenantMissionFrame.MissionTab.MissionPage.Stage
 	s.Title:SetPoint("LEFT", s.Header, "LEFT", 100, 9)
-	local ir = T.CreateObject("InlineRewardBlock", s)
+	local ir = T.CreateObject("InlineRewardBlock", s.MouseOverTitleFrame)
 	MissionRewards = ir
 	ir:SetPoint("LEFT", s.Header, "LEFT", 100, -16)
 	ir.Duration = ir:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -828,6 +891,10 @@ function EV:I_ADVENTURES_UI_LOADED()
 			MissionView_OnShow()
 		end
 	end)
+	local h = CreateFrame("Frame", nil, CovenantMissionFrameFollowers.HealAllButton)
+	h:SetScript("OnUpdate", HealAllButton_OnUpdate)
+	CovenantMissionFrameFollowers:HookScript("OnShow", function() h:Hide() end)
+	CovenantMissionFrameFollowers:HookScript("OnHide", function() h:Show() end)
 	MP.Stage.Title:SetWidth(320)
-	return false
+	return "remove"
 end

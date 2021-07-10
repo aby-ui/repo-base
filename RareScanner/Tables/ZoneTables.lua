@@ -8,7 +8,7 @@ private.CONTINENT_ZONE_IDS = {
 	[619] = { zonefilter = true, npcfilter = true, id = 8, zones = {630,646,625,790,650,634,680,641,649,652} }; --Broken Isles
 	[572] = { zonefilter = true, npcfilter = true, id = 7, zones = {525,534,535,539,542,543,550,582,588,590} }; --Draenor
 	[13] = { zonefilter = true, npcfilter = true, id = 2, zones = {14,15,17,18,21,22,23,25,26,27,32,36,37,47,48,49,50,51,52,56,76,84,201,203,204,205,210,241,425,465,469,943,1470} }; --Eastern Kingdoms
-	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,70,71,76,77,78,80,81,83,103,198,199,249,327,338,1332,1469,1527,1571} }; --Kalimdor
+	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,70,71,76,77,78,80,81,83,97,103,106,198,199,249,327,338,1332,1469,1527,1571} }; --Kalimdor
 	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126} }; --Northrend
 	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554,1530,1570} }; --Pandaria
 	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {94,95,100,102,104,105,106,107,108,109} }; --Outland

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210707044144")
+mod:SetRevision("20210709064335")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -27,20 +27,16 @@ mod:RegisterEventsInCombat(
 
 --TODO, do what with the combo of attacks of windrunner? IE https://ptr.wowhead.com/spell=347928/withering-fire
 --TODO, infoframe on barbed stacks useful? add more stuff to it like banshees bane in phase 3 and adds/orbs monitors in phase 2?
---TODO, do more with Ranger's Heartseeker? Currently just guestiate timer between casts and stack monitor
 --TODO, determine add warnings/timers for phase 2
 --TODO, icons for crushing dread? Depends on number of debuffs and number of adds etc
 --TODO, verify/improve orb auto marking on mythic
 --TODO, do more with https://ptr.wowhead.com/spell=351939/curse-of-lethargy?
---TODO, use shadow dagger timer in phase 1 as well? or any of other windrunner abilities need timers
---TODO, add counts to everything that's kept
 --TODO, chains cast timer for when they land?
 --[[
-(ability.id = 349419 or ability.id = 347609 or ability.id = 352663 or ability.id = 353418 or ability.id = 353417 or ability.id = 348094 or ability.id = 355540 or ability.id = 352271 or ability.id = 354011 or ability.id = 353969 or ability.id = 354068 or ability.id = 353952 or ability.id = 354147 or ability.id = 357102 or ability.id = 347726 or ability.id = 353935 or ability.id = 358704 or ability.id = 358181) and type = "begincast"
+(ability.id = 349419 or ability.id = 347609 or ability.id = 352663 or ability.id = 353418 or ability.id = 353417 or ability.id = 348094 or ability.id = 355540 or ability.id = 352271 or ability.id = 354011 or ability.id = 353969 or ability.id = 354068 or ability.id = 353952 or ability.id = 354147 or ability.id = 357102 or ability.id = 347726 or ability.id = 347741 or ability.id = 354142 or ability.id = 353935 or ability.id = 358704 or ability.id = 358181) and type = "begincast"
  or ability.id = 358433 and type = "cast"
  or (ability.id = 356986 or ability.id = 347504 or ability.id = 350857 or ability.id = 348146) and (type = "begincast" or type = "applydebuff" or type = "applybuff" or type = "removebuff" or type = "removedebuff")
  or (ability.id = 351075 or ability.id = 351117 or ability.id = 351353 or ability.id = 356023 or ability.id = 351589 or ability.id = 351562) and type = "begincast"
- or ability.id = 347704 and type = "applydebuff"
 --]]
 
 --General
@@ -128,6 +124,7 @@ local timerWindrunnerCD								= mod:NewCDCountTimer(50.3, 347504, nil, nil, nil
 local timerDominationChainsCD						= mod:NewCDCountTimer(50.7, 349419, 298213, nil, nil, 3)--Shortname Chains
 local timerVeilofDarknessCD							= mod:NewCDCountTimer(48.8, 347726, 209426, nil, nil, 3)--Shortname Darkness
 local timerWailingArrowCD							= mod:NewCDCountTimer(33.9, 347609, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerBlackArrowCD								= mod:NewAITimer(33.9, 358704, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
 --Intermission: A Monument to our Suffering
 local timerRiveCD									= mod:NewCDCountTimer(48.8, 353418, nil, nil, nil, 3)
@@ -142,6 +139,7 @@ local timerWindsofIcecrown							= mod:NewBuffActiveTimer(35, 356986, nil, nil, 
 --local timerExpulsionCD							= mod:NewAITimer(48.8, 351562, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
 
 --Stage Three: The Freedom of Choice
+local timerBansheesHeartseekerCD					= mod:NewCDCountTimer(33.9, 353969, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
 local timerShadowDaggerCD							= mod:NewCDCountTimer(23, 353935, nil, nil, nil, 3)--Only used in phase 3, in phase 1 it's tied to windrunner
 local timerBaneArrowsCD								= mod:NewCDCountTimer(23, 354011, nil, nil, nil, 3)
 local timerBansheesFuryCD							= mod:NewCDCountTimer(23, 354068, nil, nil, nil, 2)--Short name NOT used since "Fury" also exists on fight
@@ -165,11 +163,13 @@ mod:AddNamePlateOption("NPAuraOnEnflame", 351109)--Mawsworn Hopebreaker
 
 --P1+ variable
 mod.vb.arrowIcon = 1
-mod.vb.winrunnerCount = 0
+mod.vb.windrunnerCount = 0
 mod.vb.dominationChainsCount = 0
 mod.vb.veilofDarknessCount = 0
 mod.vb.wailingArrowCount = 0
+mod.vb.heartseekerCount = 0
 --Intermission (P1.5) variables
+mod.vb.windrunnerActive = 0
 mod.vb.riveCount = 0
 --P2+ variables
 mod.vb.addIcon = 8
@@ -182,23 +182,35 @@ mod.vb.shadowDaggerCount = 0
 mod.vb.bansheeScreamCount = 0
 mod.vb.bansheesFuryCount = 0
 mod.vb.razeCount = 0
+mod.vb.knivesCount = 0
 local BarbedStacks = {}
 local castsPerGUID = {}
 local difficultyName = "None"
-local allTimers = {--Much of table unused, just templated in case earlier difficulties also sequence better
+local allTimers = {
 	["lfr"] = {
 		[1] = {
-
+			--Windrunner
+			[347504] = {},
+			--Ranger's Heartseeker
+			[352663] = {},
+			--Domination Chains
+			[349419] = {},
+			--Wailing Arrow
+			[347609] = {},
+			--Veil of Darkness
+			[347726] = {},
 		},
-		[1.5] = {
+--		[1.5] = {
 
-		},
-		[2] = {
+--		},
+--		[2] = {
 
-		},
+--		},
 		[3] = {
 			--Bane Arrows
 			[354011] = {},
+			--Banshee's Heartseeker
+			[353969] = {},
 			--Shadow Dagger
 			[353935] = {},
 			--Banshee Scream
@@ -206,69 +218,109 @@ local allTimers = {--Much of table unused, just templated in case earlier diffic
 			--Wailing Arrow
 			[347609] = {},
 			--Veil of Darkness
---			[347726] = {},
+			[347726] = {},
+			--Raze
+			[354147] = {},
 		},
 	},
 	["normal"] = {
 		[1] = {
-
+			--Windrunner
+			[347504] = {7.8, 55.5, 55.9, 55.4},
+			--Ranger's Heartseeker
+			[352663] = {22.5, 20.5, 33.3, 16, 19.2, 22.8, 19.8},
+			--Domination Chains
+			[349419] = {25.6, 58.3, 57.4},
+			--Wailing Arrow
+			[347609] = {37.6, 41.8, 35.3, 35.1},
+			--Veil of Darkness
+			[347726] = {52.4, 53.3, 54.8},
 		},
-		[1.5] = {
+--		[1.5] = {
 
-		},
-		[2] = {
+--		},
+--		[2] = {
 
-		},
+--		},
 		[3] = {
 			--Bane Arrows
-			[354011] = {},
+			[354011] = {46.5, 80.4, 76.2, 79.3, 78.6},
+			--Banshee's Heartseeker
+			[353969] = {59.5, 19, 45.3, 4.5, 30.1, 15.3, 23.5, 32.7, 15.3, 38.5, 9.7, 27.3, 30.1, 14.8, 34.4, 12.6},
 			--Shadow Dagger
-			[353935] = {},
+			[353935] = {62.5, 80, 83.6, 76.9, 87.6},
 			--Banshee Scream
-			[353952] = {},
+			[353952] = {111.3, 52.1, 55.7, 55.7, 58.2, 59.8},
 			--Wailing Arrow
-			[347609] = {},
+			[347609] = {91.7, 3, 3, 51.8, 3, 3, 51.7, 3, 3, 52.6, 3, 3, 52.2, 3, 3, 53.3, 3},--Final arrow set was only 2, not 3 casts
 			--Veil of Darkness
---			[347726] = {},
+			[347726] = {56.5, 64.3, 68.6, 46.5, 62.7, 57.5, 61.9},
+			--Raze
+			[354147] = {100.8, 76.1, 78.2, 85.4},
 		},
 	},
 	["heroic"] = {
 		[1] = {
-
-		},
-		[1.5] = {
-
-		},
-		[2] = {
-
-		},
-		[3] = {--Initial numbers not verified, just templates from wowhead
-			--Bane Arrows
-			[354011] = {19.6, 43.3},
-			--Shadow Dagger
-			[353935] = {22.2, 36.2},
-			--Banshee Scream
-			[353952] = {27.8, 7.5},
+			--Windrunner
+			[347504] = {7.2, 52.3, 48.8, 49.2, 52.7},
+			--Ranger's Heartseeker
+			[352663] = {20.2, 19.1, 17.1, 29.9, 4.8, 32.3, 16.9, 12, 25.9, 24.1},
+			--Domination Chains
+			[349419] = {23.2, 54.7, 49.6, 54.1},
 			--Wailing Arrow
-			[347609] = {49, 3, 3},
+			[347609] = {34.9, 38.3, 30.5, 32.3, 37.9, 31.7},
 			--Veil of Darkness
---			[347726] = {46},
-			--Banshees Fury
---			[347726] = {65.6},
+			[347726] = {47.9, 49.4, 49.3, 46.6},
+		},
+--		[1.5] = {
+
+--		},
+--		[2] = {
+
+--		},
+		[3] = {
+			--Bane Arrows
+			[354011] = {43.6, 76.8, 73.6},
+			--Banshee's Heartseeker
+			[353969] = {50.1, 21.1, 50, 3, 16.4, 21.4, 32.6},
+			--Shadow Dagger
+			[353935] = {59.7, 78.1},
+			--Banshee Scream
+			[353952] = {107.9, 47.4},
+			--Wailing Arrow
+			[347609] = {88.3, 3, 3, 50.2, 3, 3},--88.3, 56.1 (did blizz change this since yesterday
+			--Veil of Darkness
+			[347726] = {55.9, 61.6, 50.4},
+			--Banshees Fury (Heroic/Mythic)
+			[354068] = {31.9, 49.4, 49.6, 52.6},
 			--Raze
---			[347726] = {72.6},
+			[354147] = {97.3, 73.6},
 		},
 	},
 	["mythic"] = {
 		[1] = {
-
+			--Windrunner
+			[347504] = {},
+			--Ranger's Heartseeker
+			[352663] = {},
+			--Domination Chains
+			[349419] = {},
+			--Black Arrow (Replaces Wailing Arrow)
+			[358704] = {},
+			--Veil of Darkness
+			[347726] = {},
 		},
-		[2] = {
+--		[1.5] = {
 
-		},
+--		},
+--		[2] = {
+
+--		},
 		[3] = {
 			--Bane Arrows
 			[354011] = {},
+			--Banshee's Heartseeker
+			[353969] = {},
 			--Shadow Dagger
 			[353935] = {},
 			--Banshee Scream
@@ -276,40 +328,65 @@ local allTimers = {--Much of table unused, just templated in case earlier diffic
 			--Wailing Arrow
 			[347609] = {},
 			--Veil of Darkness
---			[347726] = {},
-			--Death Knives
---			[358433] = {},
+			[347726] = {},
+			--Banshees Fury (Heroic/Mythic)
+			[354068] = {},
+			--Raze
+			[354147] = {},
+			--Death Knives (Mythic Only)
+			[358433] = {},
 		},
 	},
 }
+
+--TODO, more than windrunner can delay this
+local function intermissionStart(self, adjust)
+	timerDominationChainsCD:Start(4-adjust, 1)--Practically right away
+	timerRiveCD:Start(13.2-adjust)--Init timer only, for when the spam begins
+	timerNextPhase:Start(55.6-adjust)
+end
 
 function mod:OnCombatStart(delay)
 	table.wipe(BarbedStacks)
 	table.wipe(castsPerGUID)
 	self:SetStage(1)
 	self.vb.arrowIcon = 1
-	self.vb.winrunnerCount = 0
+	self.vb.windrunnerCount = 0
 	self.vb.dominationChainsCount = 0
 	self.vb.veilofDarknessCount = 0
 	self.vb.wailingArrowCount = 0
+	self.vb.heartseekerCount = 0
 	self.vb.addIcon = 8
+	self.vb.windrunnerActive = 0
 	if self:IsMythic() then
 		difficultyName = "mythic"
 		timerBlackArrowCD:Start(1-delay)
+--		timerWindrunnerCD:Start(7.2-delay, 1)
+--		timerRangersHeartseekerCD:Start(22.5, 1)
+--		timerDominationChainsCD:Start(25.6-delay, 1)
+--		timerVeilofDarknessCD:Start(52.4-delay, 1)--Probably shorter to emote
+	elseif self:IsHeroic() then
+		difficultyName = "heroic"
+		timerWindrunnerCD:Start(7.2-delay, 1)
+		timerRangersHeartseekerCD:Start(20.2, 1)
+		timerDominationChainsCD:Start(23.2-delay, 1)
+		timerWailingArrowCD:Start(34.9-delay, 1)
+		timerVeilofDarknessCD:Start(47.9-delay, 1)--Probably shorter to emote
+	elseif self:IsNormal() then
+		difficultyName = "normal"
+		timerWindrunnerCD:Start(8.4-delay, 1)
+		timerRangersHeartseekerCD:Start(22.5, 1)
+		timerDominationChainsCD:Start(25.6-delay, 1)
+		timerWailingArrowCD:Start(37.6-delay, 1)
+		timerVeilofDarknessCD:Start(52.4-delay, 1)--Probably shorter to emote
 	else
-		--timerWailingArrowCD:Start(1-delay)
-		if self:IsHeroic() then
-			difficultyName = "heroic"
-		elseif self:IsNormal() then
-			difficultyName = "normal"
-		else
-			difficultyName = "lfr"
-		end
+		difficultyName = "lfr"
+--		timerWindrunnerCD:Start(8.4-delay, 1)
+--		timerRangersHeartseekerCD:Start(22.5, 1)
+--		timerDominationChainsCD:Start(25.6-delay, 1)
+--		timerWailingArrowCD:Start(37.6-delay, 1)
+--		timerVeilofDarknessCD:Start(52.4-delay, 1)--Probably shorter to emote
 	end
-	timerWindrunnerCD:Start(8.4-delay, 1)
---	timerShadowDaggerCD:Start(-delay)
-	timerDominationChainsCD:Start(28.3-delay, 1)
-	timerVeilofDarknessCD:Start(46.7-delay, 1)
 --	berserkTimer:Start(-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(347807))
@@ -350,8 +427,11 @@ function mod:SPELL_CAST_START(args)
 		self.vb.dominationChainsCount = self.vb.dominationChainsCount + 1
 		specWarnDominationChains:Show(self.vb.dominationChainsCount)
 		specWarnDominationChains:Play("watchstep")
-		timerDominationChainsCD:Start(nil, self.vb.dominationChainsCount+1)
---	elseif spellId == 347726 then
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.dominationChainsCount+1]
+		if timer then
+			timerDominationChainsCD:Start(timer, self.vb.dominationChainsCount+1)
+		end
+--	elseif spellId == 347726 or spellId == 347741 or spellId == 354142 then
 --		self.vb.veilofDarknessCount = self.vb.veilofDarknessCount + 1
 --		timerVeilofDarknessCD:Start()
 	elseif spellId == 347609 then
@@ -359,13 +439,23 @@ function mod:SPELL_CAST_START(args)
 		self.vb.wailingArrowCount = self.vb.wailingArrowCount + 1
 		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
 		if timer then
-			timerWailingArrowCD:Start(timer,  self.vb.wailingArrowCount+1)
+			timerWailingArrowCD:Start(timer, self.vb.wailingArrowCount+1)
 		end
 	elseif spellId == 358704 then
 		self.vb.arrowIcon = 1
-		timerBlackArrowCD:Start()
+		self.vb.wailingArrowCount = self.vb.wailingArrowCount + 1--Replaces this arrow in stage 1, so might as well use same variable
+		timerBlackArrowCD:Start()--Temp, just to utilize AI timer
+--		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
+--		if timer then
+--			timerBlackArrowCD:Start(timer, self.vb.wailingArrowCount+1)
+--		end
 	elseif spellId == 352663 then
+		self.vb.heartseekerCount = self.vb.heartseekerCount + 1
 		warnRangersHeartseeker:Show()
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
+		if timer then
+			timerRangersHeartseekerCD:Start(timer, self.vb.heartseekerCount+1)
+		end
 	elseif (spellId == 353418 or spellId == 353417) then--Rive
 		self.vb.riveCount = self.vb.riveCount + 1
 		warnRive:Show(self.vb.riveCount)
@@ -430,13 +520,21 @@ function mod:SPELL_CAST_START(args)
 		self.vb.baneArrowCount = self.vb.baneArrowCount + 1
 		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.baneArrowCount+1]
 		if timer then
-			timerBaneArrowsCD:Start(timer,  self.vb.baneArrowCount+1)
+			timerBaneArrowsCD:Start(timer, self.vb.baneArrowCount+1)
 		end
 	elseif spellId == 353969 then
+		self.vb.heartseekerCount = self.vb.heartseekerCount + 1
 		warnBansheesHeartseeker:Show()
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
+		if timer then
+			timerBansheesHeartseekerCD:Start(timer, self.vb.heartseekerCount+1)
+		end
 	elseif spellId == 354068 then
 		self.vb.bansheesFuryCount = self.vb.bansheesFuryCount + 1
---		timerBansheesFuryCD:Start()
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.bansheesFuryCount+1]
+		if timer then
+			timerBansheesFuryCD:Start(timer, self.vb.bansheesFuryCount+1)
+		end
 		for uId in DBM:GetGroupMembers() do
 			if DBM:UnitDebuff(uId, 353929, 357882) then
 				local name = DBM:GetUnitFullName(uId)
@@ -459,15 +557,17 @@ function mod:SPELL_CAST_START(args)
 			self.vb.shadowDaggerCount = self.vb.shadowDaggerCount + 1
 			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.shadowDaggerCount+1]
 			if timer then
-				timerShadowDaggerCD:Start(timer,  self.vb.shadowDaggerCount+1)
+				timerShadowDaggerCD:Start(timer, self.vb.shadowDaggerCount+1)
 			end
 		end
 	elseif spellId == 354147 then
 		self.vb.razeCount = self.vb.razeCount + 1
 		specWarnRaze:Show(self.vb.razeCount)
 		specWarnRaze:Play("justrun")
---		timerRazeCD:Start(nil, self.vb.razeCount+1)
-		--TODO, maybe reset cast counts here for each platform, or another specific trigger
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.razeCount+1]
+		if timer then
+			timerRazeCD:Start(timer, self.vb.razeCount+1)
+		end
 	elseif spellId == 357102 then--Raid Portal: Oribos
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
 		warnPhase:Play("pthree")
@@ -479,18 +579,38 @@ function mod:SPELL_CAST_START(args)
 		self.vb.veilofDarknessCount = 0--Used only once per platform but might as well count it
 		self.vb.wailingArrowCount = 0
 		self.vb.razeCount = 0
+		self.vb.heartseekerCount = 0
+		self.vb.knivesCount = 0
 --		timerRuinCD:Stop()
 --		timerHauntingWaveCD:Stop()
 --		timerVeilofDarknessCD:Stop()
-		timerBaneArrowsCD:Start(19.6, 1)
-		timerShadowDaggerCD:Start(22.2, 1)
-		timerBansheesScreamCD:Start(27.8, 1)
-		timerWailingArrowCD:Start(49, 1)
-		timerVeilofDarknessCD:Start(46, 1)
-		timerBansheesFuryCD:Start(65.6, 1)
-		timerRazeCD:Start(72.6, 1)
 		if self:IsMythic() then
-			timerDeathKnivesCD:Start(3)
+--			timerBansheesFuryCD:Start(31.9, 1)--Heroic+
+--			timerBaneArrowsCD:Start(43.6, 1)
+--			timerBansheesHeartseekerCD:Start(50.8, 1)
+--			timerVeilofDarknessCD:Start(55.9, 1)
+--			timerShadowDaggerCD:Start(59.7, 1)
+--			timerWailingArrowCD:Start(88.3, 1)
+--			timerRazeCD:Start(97.3, 1)
+--			timerBansheesScreamCD:Start(107.9, 1)
+			timerDeathKnivesCD:Start(3)--Mythic Only
+		elseif self:IsHeroic() then
+			timerBansheesFuryCD:Start(31.9, 1)--Heroic+
+			timerBaneArrowsCD:Start(43.6, 1)
+			timerBansheesHeartseekerCD:Start(50.8, 1)--Flipped on heroic
+			timerVeilofDarknessCD:Start(55.8, 1)--Flipped on heroic
+			timerShadowDaggerCD:Start(59.7, 1)
+			timerWailingArrowCD:Start(88.3, 1)
+			timerRazeCD:Start(97.3, 1)
+			timerBansheesScreamCD:Start(107.9, 1)
+		else--Normal, LFR assumed
+			timerBaneArrowsCD:Start(46.5, 1)
+			timerVeilofDarknessCD:Start(56.5, 1)
+			timerBansheesHeartseekerCD:Start(59.5, 1)
+			timerShadowDaggerCD:Start(62.5, 1)
+			timerWailingArrowCD:Start(91.7, 1)
+			timerRazeCD:Start(100.8, 1)
+			timerBansheesScreamCD:Start(111.3, 1)
 		end
 	elseif spellId == 351589 then
 		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then
@@ -518,17 +638,26 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 	elseif spellId == 358433 then
 		self.vb.debuffIcon = 1
+		self.vb.knivesCount = self.vb.knivesCount + 1
 		timerDeathKnivesCD:Start()
+--		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.knivesCount+1]
+--		if timer then
+--			timerDeathKnivesCD:Start(timer, self.vb.knivesCount+1)
+--		end
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 347504 then
-		self.vb.winrunnerCount = self.vb.winrunnerCount + 1
-		specWarnWindrunner:Show(self.vb.winrunnerCount)
+		self.vb.windrunnerActive = 1
+		self.vb.windrunnerCount = self.vb.windrunnerCount + 1
+		specWarnWindrunner:Show(self.vb.windrunnerCount)
 		specWarnWindrunner:Play("specialsoon")
-		timerWindrunnerCD:Start(nil, self.vb.winrunnerCount+1)
+		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.windrunnerCount+1]
+		if timer then
+			timerWindrunnerCD:Start(timer, self.vb.windrunnerCount+1)
+		end
 	elseif spellId == 347807 then
 		local amount = args.amount or 1
 		BarbedStacks[args.destName] = amount
@@ -604,9 +733,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerDominationChainsCD:Stop()
 		timerVeilofDarknessCD:Stop()
 		timerBlackArrowCD:Stop()
-		timerDominationChainsCD:Start(1.5, 1)--Practically right away
-		timerRiveCD:Start(11.2)--Init timer only, for when the spam begins
-		timerNextPhase:Start(61)
+		timerRangersHeartseekerCD:Stop()
+		if self.vb.windrunnerActive == 0 then--Only start timers here i windrunner not active
+			intermissionStart(self, 0)
+		elseif self.vb.windrunnerActive == 1 then
+			self.vb.windrunnerActive = 2
+		end
 	elseif spellId == 348146 and self.vb.phase < 2 then
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
 		warnPhase:Play("ptwo")
@@ -614,12 +746,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.veilofDarknessCount = 0
 		self.vb.icecrownCast = 0
 		self.vb.hauntingWavecount = 0
+		timerRiveCD:Stop()
 		timerDominationChainsCD:Stop()
 		timerNextPhase:Stop()
-		--Phase 2 timers a waste of time at this point since it was so buggy
+		--Phase 2 timers still up in the air
 --		timerRuinCD:Start(63.5)
 --		timerHauntingWaveCD:Start(33.1)
---		timerVeilofDarknessCD:Start(3, 1)--Not in combat log in phase 2 and beyond so unless players fuck up mechanic can't get timer for it
+--		timerVeilofDarknessCD:Start(3, 1)
 	elseif spellId == 351109 then
 		if self.Options.NPAuraOnEnflame then
 			DBM.Nameplate:Show(true, args.destGUID, spellId)
@@ -731,6 +864,10 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 347504 then
+		if self.vb.windrunnerActive == 2 then--Execute delayed intermission start
+			intermissionStart(self, 1.5)
+		end
+		self.vb.windrunnerActive = 0
 		warnWindrunnerOver:Show()
 	elseif spellId == 347807 then
 		BarbedStacks[args.destName] = nil
@@ -794,16 +931,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		self.vb.veilofDarknessCount = self.vb.veilofDarknessCount + 1
 		specWarnVeilofDarkness:Show(self.vb.veilofDarknessCount)
 		specWarnVeilofDarkness:Play("watchstep")
-		--Do nothing in phase 2 right now
-		--Phase 2 is a clusterfuck
-		--Phase 3 it's only cast once per platform so doesn't need timer start here either
-		if self.vb.phase == 1 then
-			timerVeilofDarknessCD:Start(48.8, self.vb.wailingArrowCount+1)
---		elseif self.vb.phase == 3 then
---			local timer = allTimers[difficultyName][self.vb.phase][347726][self.vb.veilofDarknessCount+1]
---			if timer then
---				timerVeilofDarknessCD:Start(timer, self.vb.wailingArrowCount+1)
---			end
+		local timer = allTimers[difficultyName][self.vb.phase][347726][self.vb.veilofDarknessCount+1]
+		if timer then
+			timerVeilofDarknessCD:Start(timer, self.vb.wailingArrowCount+1)
 		end
 	end
 end

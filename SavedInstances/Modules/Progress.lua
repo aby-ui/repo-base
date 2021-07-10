@@ -205,7 +205,7 @@ local function TorghastUpdate(index)
 
     if nameInfo and levelInfo then
       local available = nameInfo.shownState == 1
-      local levelText = strmatch(levelInfo.text, '|cFF00FF00.+(%d+).+|r')
+      local levelText = strmatch(levelInfo.text, '|cFF00FF00.-(%d+).+|r')
 
       SI.db.Toons[SI.thisToon].Progress[index]['Available' .. i] = available
       SI.db.Toons[SI.thisToon].Progress[index]['Level' .. i] = levelText

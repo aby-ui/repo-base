@@ -1,5 +1,5 @@
 local _, T = ...
-local EV = T.Evie
+local EV, U = T.Evie, T.Util
 
 local mapOpened, addonLoaded
 function EV:ADVENTURE_MAP_OPEN(followerID)
@@ -36,4 +36,20 @@ function EV:ADDON_LOADED()
 		end
 		return "remove"
 	end
+end
+
+SLASH_VENTUREPLAN1, SLASH_VENTUREPLAN2 = "/ventureplan", "/vp"
+function SlashCmdList.VENTUREPLAN(msg)
+	local v, at, a = msg:match("^%s*(%S+)%s*(.-)$")
+	if v == "set-campaign-progress" then
+		a = tonumber(at)
+		if a and a >= 0 and a <= 20 or at == "nil" then
+			U.SetCurrencyValueShiftTarget(1889, a)
+		end
+		local c = C_CurrencyInfo.GetCurrencyInfo(1889)
+		c = U.GetShiftedCurrencyValue(1889, c and c.quantity) or "{0..20}"
+		print("|cff20a0ff/ventureplan |r|cffffffffset-campaign-progress|r |cff20ff20" .. c .. "|r|cffa0a0a0|||r|cff20ff20nil")
+		return
+	end
+	print("|cff20a0ffVenture Plan |r|cffffffff" .. GetAddOnMetadata("VenturePlan", "Version"))
 end

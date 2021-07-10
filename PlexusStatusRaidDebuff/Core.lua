@@ -142,11 +142,15 @@ local ignore_ids = {
     [197509] = true, -- Bloodworm DK Debuff
     [5215] = true, -- Prowl Druid Debuff
     [115191] = true, -- Stealth Rogue Debuff
-    [195776] = true, -- ÔÂÓðÒß²¡	
-    [304851] = true, -- ÄÉÉ³Ëþ¶ûÖ®Õ½²ÎÕ½Õß
-    [97821] = true, --Ðé¿ÕÖ®´¥
-    [313445] = true, --¶÷×ôË¹ÁìÓò
-    [280661] = true, --¸öÈË»¤¶Ü»ú	
+    [195776] = true, -- 月羽疫病
+    [304851] = true, -- 纳沙塔尔之战参战者
+    [97821] = true, --虚空之触
+    [313445] = true, --恩佐斯领域
+    [280661] = true, --个人护盾机
+    [355711] = true, --9.1大怪的DEBUFF
+    [355719] = true,
+    [355709] = true,
+    [355714] = true,
 }
 
 --local clientVersion

@@ -352,25 +352,23 @@ function BM_CreateBackground(frame, name, ...)
     bg:SetPoint(frame:GetPoint())
     --WW(bg):CreateTexture():ALL():SetColorTexture(0, 1, 0, 0.5):up()
     frame:SetParent(bg)
-    frame:ClearAllPoints()
     local points = { ... }
-    if #points == 0 then
-        frame:SetAllPoints(bg)
-    else
-        for i = 1, #points do frame:SetPoint(points[i], bg, points[i], 0, 0) end
+    local reAnchor = function(frame)
+        frame:ClearAllPoints()
+        if #points == 0 then
+            frame:SetAllPoints(bg)
+        else
+            for i = 1, #points do frame:SetPoint(points[i], bg, points[i], 0, 0) end
+        end
     end
+    reAnchor(frame)
     frame:SetMovable(true)
     if not frame:IsMovable() then return end
-    frame:SetUserPlaced(true)
+    frame:SetUserPlaced(true) --stop UIParentManageFramePositions handler
     if not frame.__blizzMoveHooked then
         frame.originSetPoint = frame.SetPoint
-        hooksecurefunc(frame, "SetPoint", function(self)
-            self:ClearAllPoints()
-            if #points == 0 then
-                frame:SetAllPoints(bg)
-            else
-                for i = 1, #points do frame:originSetPoint(points[i], bg, points[i], 0, 0) end
-            end
+        hooksecurefunc(frame, "SetPoint", function(self, ...)
+            reAnchor(self)
         end)
         frame.__blizzMoveHooked = 1
     end
@@ -408,7 +406,32 @@ local function OnEvent(self, event, arg1, arg2)
         local bg = BM_CreateBackground(ObjectiveTrackerFrame, "ObjectiveTrackerFrame_abyuiBG", "TOPLEFT", "BOTTOMRIGHT")
         BM_SetMoveHandler(bg,OTFMover)
         OTFMover:SetFrameStrata("LOW")
-        --BM_SetMoveHandler(bg,ObjectiveTrackerFrame.HeaderMenu.MinimizeButton)
+        --TODO: this is shit
+        CoreDependCall("Blizzard_MawBuffs", function()
+            local function adjust()
+                if not bg then return end
+                local settings = bg.settings
+                local point, relativeTo, relativePoint, xOfs, yOfs = settings.point,settings.relativeTo, settings.relativePoint, settings.xOfs,settings.yOfs
+                if point == nil and settings.default and #settings.default == 1 then
+                    point, relativeTo, relativePoint, xOfs, yOfs = unpack(settings.default[1])
+                end
+                if point == nil then return end
+                bg.__blizzMove = 1
+                bg:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs)
+                if MawBuffsBelowMinimapFrame and MawBuffsBelowMinimapFrame:IsShown() then
+                    if CoreIsFrameIntersects(MawBuffsBelowMinimapFrame, bg) then
+                        local delta = bg:GetTop() - MawBuffsBelowMinimapFrame:GetBottom()
+                        if delta > 0 and bg:GetBottom() < MawBuffsBelowMinimapFrame:GetTop() and
+                                (bg:GetTop() <= MawBuffsBelowMinimapFrame:GetTop() + 50) then
+                            bg:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs - delta)
+                        end
+                    end
+                end
+                bg.__blizzMove = nil
+            end
+            SetOrHookScript(MawBuffsBelowMinimapFrame, "OnShow", adjust)
+            SetOrHookScript(MawBuffsBelowMinimapFrame, "OnHide", adjust)
+        end)
 
         BM_SetMoveHandler(GameMenuFrame)
         BM_SetMoveHandler(GossipFrame)

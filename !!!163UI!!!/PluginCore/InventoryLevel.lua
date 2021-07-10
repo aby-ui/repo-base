@@ -45,18 +45,22 @@ for i=1, 4 do
 end
 
 local pattern = ITEM_LEVEL:gsub("%%d", "(%%d+)") --ITEM_LEVEL=物品等级%d
-local extractLink = "\124H(item:.-)\124h.-\124h"
+local extractLink = "\124c([0-9a-f]+)\124H(item:.-)\124h.-\124h"
 local cache = {}
+local color2quality = {}
+for i=1, 7 do color2quality[select(4, GetItemQualityColor(i))] = i end
 function U1GetItemLevelByScanTooltip(itemLink, slot)
-    local name, _, quality, ilevel, extract
-    if not slot then
-        -- 如果是武器部位，则直接SetInventoryItem，不走这里
-        name, _, quality, ilevel = GetItemInfo(itemLink)
-        _,_,extract = itemLink:find(extractLink)
-        if not extract then return nil end
-        if cache[extract] then return cache[extract] end   --神器无法缓存
-    else
+    local name, _, quality, ilevel, colorcode, extract
+    if slot then
+        --7.0神器的时候必须用GetInventoryItemLink才准确, 现在已经不会走到这里了
         itemLink = GetInventoryItemLink(itemLink, slot)
+    else
+        -- 如果是武器部位，GetInventoryItemLink，不走这里
+        _ ,_ , colorcode, extract = itemLink:find(extractLink)
+        if not extract then return nil end
+        if cache[extract] then return cache[extract], color2quality[colorcode] end   --神器无法缓存
+        name, _, quality, ilevel = GetItemInfo(itemLink)
+        if quality == nil then quality = color2quality[colorcode] end
     end
     if not itemLink then return end
     --[[
@@ -94,12 +98,12 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
         end
     end
     --safe fallback
-    return ItemUpgradeInfo:GetUpgradedItemLevel(itemLink) or ilevel
+    return ItemUpgradeInfo:GetUpgradedItemLevel(itemLink) or ilevel, quality
 end
 
 ---unit is optional, needed for artifact weapons, value is "player" or inspect unit.
 function U1GetRealItemLevel(link, unit, slot)
-    --artifact, 观察他人的时候另一件神器是750
+    --[[artifact, 观察他人的时候另一件神器是750
     if unit and (slot == 16 or slot == 17) then
         local _, _, quality = GetItemInfo(link)
         if quality == 6 then
@@ -107,7 +111,7 @@ function U1GetRealItemLevel(link, unit, slot)
             local off_hand = U1GetItemLevelByScanTooltip(unit, 17) or 0
             return max(main_hand, off_hand)
         end
-    end
+    end]]
     return U1GetItemLevelByScanTooltip(link)
 end
 
@@ -128,13 +132,16 @@ end
 
 -- /run for a=325, 400, 5 do ChatFrame1:AddMessage(a, U1GetInventoryLevelColor(a)) end
 function U1GetInventoryLevelColor(avgLevel, quality)
-    --STEP3 蓝色，随机团本 STEP4 紫色，英雄团本最高或M团本最低 STEP5 红色，M团本最高 STEP6 橙色
-    --STEP4 应该是低保或比低保低一点，这样大米最高装等不是标准紫色
-    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 100, 132, 171, 200, 226, 233
+    --STEP3 蓝色：随机团本 STEP4 紫色：英雄团本或大秘掉落 STEP5 红色：低保或史诗前面 STEP6 橙色：史诗后面或橙装
+    --STEP4 - STEP5 是紫色过渡到红色，需要区分度
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 132, 168, 200, 226, 252, 259
+    --9.0 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 100, 132, 171, 200, 226, 233
     --8.0 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 190, 296, 430, 460, 481, 481
     --7.0 local STEP1, STEP2, STEP3, STEP4, STEP5 = 780, 865, 950, 985, 1000 --845=166,865=174,885=182,915=195,930=210,945=225,960=240
     --CTM 绿 272-333 蓝 308-359 紫 353-
     --WLK 绿 187 蓝 200 紫 200 - 284
+    --如果带了quality，则灰白绿橙保持原样，仅处理蓝色紫色
+    if quality and (quality < 3 or quality > 4) then return GetItemQualityColor(quality) end
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then
         return 1, 1, 1

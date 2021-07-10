@@ -818,6 +818,16 @@ function CoreEncodeHTML(s, keepColor)
     return s;
 end
 
+function CoreIsFrameIntersects(frame1, frame2)
+    --左下角为0, bottom > top 不向交
+    return not (
+        frame1:GetLeft() > frame2:GetRight() or
+        frame1:GetRight() < frame2:GetLeft() or
+        frame1:GetTop() < frame2:GetBottom() or
+        frame1:GetBottom() > frame2:GetTop()
+    );
+end
+
 --[[------------------------------------------------------------
 protection area
 ---------------------------------------------------------------]]

@@ -1038,6 +1038,14 @@ end
 -- Worldmap tooltips
 ---============================================================================
 
+function RSConfigDB.GetWorldMapTooltipsScale()
+	return private.db.map.tooltipsScale
+end
+
+function RSConfigDB.SetWorldMapTooltipsScale(value)
+	private.db.map.tooltipsScale = value
+end
+
 function RSConfigDB.IsShowingTooltipsOnIngameIcons()
 	return private.db.map.tooltipsOnIngameIcons
 end

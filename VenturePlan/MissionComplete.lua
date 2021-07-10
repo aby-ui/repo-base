@@ -60,4 +60,5 @@ function EV:I_ADVENTURES_UI_LOADED()
 	MR.Icon:SetTexture("Interface/Icons/INV_Inscription_80_Scroll")
 	MR:SetPoint("TOPRIGHT", FRP.FinalRewardsLineTop, "BOTTOMRIGHT", -42, -4)
 	hooksecurefunc(CovenantMissionFrame.MissionComplete.RewardsScreen, "PopulateFollowerInfo", RewardsScreen_OnPopulate)
+	return "remove"
 end

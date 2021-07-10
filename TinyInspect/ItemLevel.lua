@@ -107,7 +107,7 @@ local function SetItemLevelScheduled(button, ItemLevelFrame, link)
         onExecute = function(self)
             local count, level, _, _, quality, _, _, class, _, _, equipSlot = LibItemInfo:GetItemInfo(self.identity)
             if (count == 0) then
-                SetItemLevelString(self.frame.levelString, level > 0 and level or "", quality, self.identity)
+                SetItemLevelString(self.frame.levelString, level > 0 and level or "", quality, self.identity, level)
                 SetItemSlotString(self.frame.slotString, class, equipSlot, link)
                 self.button.OrigItemLevel = (level and level > 0) and level or ""
                 self.button.OrigItemQuality = quality
@@ -124,7 +124,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
     if (not self) then return end
     local frame = GetItemLevelFrame(self, category)
     if (self.OrigItemLink == link) then
-        SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link)
+        --SetItemLevelString(frame.levelString, self.OrigItemLevel, self.OrigItemQuality, link)
         SetItemSlotString(frame.slotString, self.OrigItemClass, self.OrigItemEquipSlot, self.OrigItemLink)
     else
         local level = ""
@@ -290,13 +290,13 @@ if (EquipmentFlyout_DisplayButton) then
         elseif (bags) then
             local link = GetContainerItemLink(bag, slot)
             --SetItemLevel(button, link, "AltEquipment", bag, slot)
-            local ilvl = U1GetRealItemLevel(link)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, link, ilvl)
+            local ilvl, quality = U1GetRealItemLevel(link)
+            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
         else
             local link = GetInventoryItemLink("player", slot)
             --SetItemLevel(button, link, "AltEquipment")
-            local ilvl = U1GetRealItemLevel(link, "player", slot)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, nil, link, ilvl)
+            local ilvl, quality = U1GetRealItemLevel(link, "player", slot)
+            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
         end
     end)
 end
@@ -427,8 +427,8 @@ local function SetPaperDollItemLevel(self, unit)
         if U1GetInventoryLevel then
             local itemLink = GetInventoryItemLink(unit, id)
             if not itemLink then SetItemLevelString(frame.levelString, "") return end
-            local ilvl = U1GetRealItemLevel(itemLink, unit, id)
-            SetItemLevelString(frame.levelString, ilvl, nil, itemLink, ilvl)
+            local ilvl, quality = U1GetRealItemLevel(itemLink, unit, id)
+            SetItemLevelString(frame.levelString, ilvl, quality, itemLink, ilvl)
         else
         local count, level, _, link, quality, _, _, class, _, _, equipSlot = LibItemInfo:GetUnitItemInfo(unit, id)
         SetItemLevelString(frame.levelString, level > 0 and level or "", quality, link)
