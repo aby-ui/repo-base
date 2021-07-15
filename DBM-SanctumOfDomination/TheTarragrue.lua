@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2435, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210707044144")
+mod:SetRevision("20210714022611")
 mod:SetCreatureID(175611)
 mod:SetEncounterID(2423)
 mod:SetUsedIcons(1)
@@ -60,7 +60,7 @@ local timerChainsofEternityCD						= mod:NewCDCountTimer(27.9, 347269, nil, nil,
 local timerPedatorsHowlCD							= mod:NewCDCountTimer(25.5, 347283, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
 local timerHungeringMistCD							= mod:NewNextCountTimer(95.1, 347679, nil, nil, nil, 6, nil, DBM_CORE_L.DEADLY_ICON)
 local timerRemnantofForgottenTormentsCD				= mod:NewCDCountTimer(30.4, 352368, L.Remnant, nil, nil, 2, nil, DBM_CORE_L.HEROIC_ICON)
-local timerGraspofDeathCD							= mod:NewCDCountTimer(27.8, 347668, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerGraspofDeathCD							= mod:NewCDCountTimer(26.7, 347668, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
 local timerFuryoftheAgesCD							= mod:NewCDCountTimer(36.4, 347490, nil, "Tank|RemoveEnrage", nil, 5, nil, DBM_CORE_L.ENRAGE_ICON)
 
 local berserkTimer									= mod:NewBerserkTimer(600)
@@ -86,10 +86,10 @@ function mod:OnCombatStart(delay)
 	self.vb.overpowerCount = 0
 	self.vb.furyCount = 0
 	if self:IsMythic() then--Mythic PTR timers, need checking on live
-		timerPedatorsHowlCD:Start(5.1-delay, 1)
-		timerGraspofDeathCD:Start(7.6-delay, 1)
+		timerPedatorsHowlCD:Start(5-delay, 1)
+		timerGraspofDeathCD:Start(7-delay, 1)
 		timerOverpowerCD:Start(10-delay, 1)
-		timerChainsofEternityCD:Start(13.6-delay, 1)
+		timerChainsofEternityCD:Start(13.5-delay, 1)
 		timerHungeringMistCD:Start(24.2-delay, 1)
 	--	berserkTimer:Start(420-delay)
 	else--Heroic verified on live, might be same as mythic PTR
@@ -153,21 +153,14 @@ function mod:SPELL_CAST_START(args)
 		specWarnHungeringMist:Show()
 		specWarnHungeringMist:Play("watchstep")
 		--Start timers for after
---		if self:IsMythic() then--Likely still same as heroic
---			timerPedatorsHowlCD:Start(21.1, self.vb.howlcount+1)
---			timerOverpowerCD:Start(25.5, self.vb.overpowerCount+1)
---			timerGraspofDeathCD:Start(28, self.vb.graspCount+1)
---			timerRemnantofForgottenTormentsCD:Start(28.3, self.vb.remnantcount+1)--Activation, not pre warning for emote
---			timerFuryoftheAgesCD:Start(32.8, self.vb.furyCount+1)
---			timerChainsofEternityCD:Start(58.3, self.vb.chainsCount+1)
---		else--Most likely the same, but recheck heroic and other modes later
-			timerPedatorsHowlCD:Start(21.1, self.vb.howlcount+1)
-			timerOverpowerCD:Start(25.5, self.vb.overpowerCount+1)
-			timerGraspofDeathCD:Start(28, self.vb.graspCount+1)
+		timerPedatorsHowlCD:Start(21.1, self.vb.howlcount+1)
+		timerOverpowerCD:Start(24.3, self.vb.overpowerCount+1)
+		timerGraspofDeathCD:Start(26.7, self.vb.graspCount+1)
+		if self:IsHard() then
 			timerRemnantofForgottenTormentsCD:Start(28.3, self.vb.remnantcount+1)--Activation, not pre warning for emote
-			timerChainsofEternityCD:Start(31.6, self.vb.chainsCount+1)
-			timerFuryoftheAgesCD:Start(32.8, self.vb.furyCount+1)
---		end
+		end
+		timerChainsofEternityCD:Start(31.5, self.vb.chainsCount+1)
+		timerFuryoftheAgesCD:Start(32.8, self.vb.furyCount+1)
 		timerHungeringMistCD:Start(95, self.vb.mistCount+1)
 	end
 end

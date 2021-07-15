@@ -672,6 +672,12 @@ GTFO.SpellID["358204"] = {
   sound = 1;
 };
 
+GTFO.SpellID["355524"] = {
+  --desc = "Shadowsteel Chains (Painsmith Raznal)";
+  sound = 4;
+  test = true;
+};
+
 GTFO.SpellID["347359"] = {
   --desc = "Suppression Field (Guardian of the First Ones)";
   sound = 1;
@@ -688,10 +694,46 @@ GTFO.SpellID["357353"] = {
   sound = 1;
 };
 
+GTFO.SpellID["356820"] = {
+  --desc = "Deadly Flames";
+  sound = 1;
+};
+
+GTFO.SpellID["354033"] = {
+  --desc = "Frozen Wastes (Kel'Thuzad)";
+  sound = 1;
+};
+
+GTFO.SpellID["354208"] = {
+  --desc = "Howling Blizzard (Kel'Thuzad)";
+  sound = 1;
+};
+
+GTFO.SpellID["347454"] = {
+  --desc = "Oblivion's Echo (Kel'Thuzad)";
+  applicationOnly = true;
+  sound = 4;
+};
+
+GTFO.SpellID["347518"] = {
+  --desc = "Oblivion's Echo (Kel'Thuzad)";
+  applicationOnly = true;
+  sound = 2;
+};
+
+GTFO.SpellID["354639"] = {
+  --desc = "Deep Freeze (Kel'Thuzad)";
+  sound = 1;
+};
 
 --- *******************************
 --- * Tazavesh, the Veiled Market *
 --- *******************************
+
+GTFO.SpellID["358634"] = {
+  --desc = "Miasma (So'danah)";
+  sound = 1;
+};
 
 GTFO.SpellID["355487"] = {
   --desc = "Lethal Force";

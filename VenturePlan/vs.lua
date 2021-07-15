@@ -126,7 +126,7 @@ end
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
 do -- targets
-	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [409]=1, [777]=0, [1213]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
+	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [777]=0, [1213]=0, [1301]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -142,7 +142,7 @@ do -- targets
 		[3]={
 			[0]="23104", "03421", "03214", "20143", "31204",
 			"56a79b8c", "5a7b69c8", "6bac8759", "768bc95a",
-			"5a6978bc", "96b57a8c", "a78c69b5", "56a79b8c"
+			"5a6978bc", "96b57a8c", "a78c69b5", "8b7c65a9"
 		},
 		[4]={
 			[0]="0", "1", "2", "3", "4",
@@ -412,7 +412,7 @@ do -- targets
 	function VS:GetAutoAttack(role, slot, mid, firstSpell)
 		local a1 = slot and mid and overrideAA[4+2*slot+32*mid]
 		local a2 = (slot or 0) < 5 and firstSpell and overrideAA[1+4*firstSpell]
-		return (a1 or a2 or (role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
+		return (a1 or a2 or (firstSpell == 11 or role == 1 or role == 5) and 0 or 1) == 0 and 11 or 15
 	end
 	VS.GetTargets = GetTargets
 	VS.targetLists = targetLists
@@ -829,9 +829,35 @@ function mu:cast(sourceIndex, sid, recast, qe)
 	if si.type == "passive" then
 		return mu.passive(self, sourceIndex, sid)
 	else
-		enqc(self.queue, self.turn+recast, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+		local checkCast = mu.CheckCast(self,sourceIndex,sid)
+		if checkCast then
+			--cast success,enqueue after recast(cooldown) turn
+			enqc(self.queue, self.turn+recast, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+			return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+		else
+			--cast fail,enqueue next turn
+			enqc(self.queue, self.turn+1, {"cast", sourceIndex, sid, recast, ord=ord, ord0=qe.ord0})
+			return
+		end
 	end
-	return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+	--return mu.qcast(self, sourceIndex, sid, si[1] and 1 or 0, ord-1)
+end
+function mu:CheckCast(sourceIndex,sid)
+	local spellInfo,board = SpellInfo[sid], self.board
+	--only heal spell with single effect needs to be check
+	if spellInfo == nil or spellInfo[1] ~= nil or spellInfo.type ~= "heal" then
+		return true
+	end
+	local targets = VS.GetTargets(sourceIndex, spellInfo.target, board)
+	local cast = false
+	for i=1,targets and #targets or 0 do
+		local targetUnit = board[targets[i]]
+		if targetUnit.curHP > 0 and targetUnit.curHP < targetUnit.maxHP then
+			cast = true
+			break
+		end
+	end
+	return cast
 end
 function mu:qcast(sourceIndex, sid, eid, ord1, forkTarget)
 	local si, board = SpellInfo[sid], self.board
@@ -1346,7 +1372,7 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 	for i=1,#encounters do
 		local e = encounters[i]
 		local rf, sa = {maxHP=e.maxHealth, curHP=e.maxHealth, atk=e.attack, slot=e.boardIndex}, e.autoCombatSpells
-		local aa = VS:GetAutoAttack(e.role, rf.slot, mid, sa and sa[1] and sa[1].autoCombatSpellID)
+		local aa = VS:GetAutoAttack(e.role, rf.slot, mid, e.autoCombatAutoAttack and e.autoCombatAutoAttack.autoCombatSpellID)
 		missingSpells, pmask = addCasts(q, rf.slot, sa, aa, missingSpells, pmask)
 		board[e.boardIndex] = addActorProps(rf)
 	end

@@ -26,8 +26,10 @@ module.db.diffNames = {
 	[16] = L.sencounterWODMythic,	-- Mythic,	PLAYER_DIFFICULTY6
 	[23] = DUNGEON_DIFFICULTY_5PLAYER..": "..PLAYER_DIFFICULTY6,
 	[148] = "20ppl raid",
+	[175] = "10 ppl",
+	[176] = "25 ppl",
 }
-module.db.diffPos = ExRT.isBC and {1,148,9,3,4} or ExRT.isClassic and {1,148,9} or {24,1,2,23,8,9,3,4,5,6,7,14,15,16}
+module.db.diffPos = ExRT.isBC and {1,148,9,3,4,175,176} or ExRT.isClassic and {1,148,9} or {24,1,2,23,8,9,3,4,5,6,7,14,15,16}
 module.db.dropDownNow = nil
 module.db.onlyMy = nil
 module.db.scrollPos = 1

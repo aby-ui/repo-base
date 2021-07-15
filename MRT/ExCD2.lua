@@ -473,6 +473,7 @@ module.db.spell_charge_fix = {		--Спелы с зарядами
 	[2050] = 235587,
 	[205234]=1,
 	[205629]=1,
+	[328547]=354731,
 
 	--[17]=1,
 }
@@ -516,6 +517,9 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[22812] = {329800,8},
 	[49028] = {233412,"*0.5"},
 	[191427] = {235893,-15},
+	[307865] = {357996,4},
+	[323546] = {354109,5},
+	[316958] = {355447,"*1.5"},
 }
 
 module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\глифом   вид: [спелл] = {spellid глифа\таланта, изменение времени (-60;60);spellid2,time2;spellid3,time3;...}
@@ -645,7 +649,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[324386] = {333261,-6,314278,-5},
 	[57994] = {329526,-3},
 	[328204] = {336612,-3},
-	[323764] = {335766,-20},
+	[323764] = {354118,"*0.5",335766,-20},
 	[102560] = {329802,-54},
 	[102543] = {329802,-54},
 	[33891] = {329802,-54},
@@ -890,7 +894,11 @@ do
 		{119910,19647},	--warlock: pet kick
 
 		{307192,213664,216431,216802,216468,338447,301308},	--Healing Potion
+		{338142,338018,338035,326462,326446,326647,326434},
 	}
+	if ExRT.isBC then
+		sameSpellsData[#sameSpellsData+1] = {2894,2062}
+	end
 	for i=1,#sameSpellsData do
 		local list = sameSpellsData[i]
 		for j=1,#list do
@@ -1022,6 +1030,7 @@ module.db.spell_increaseDurationCast = {	--Заклинания, продляю�
 	[53600]={{31850,340023},2},
 	[47541]={{63560,334949},1},
 	[24275]={{31884,337594},1,{231895,337594},1,{31884,332806},3,{231895,332806},3},
+	[317349]={{167105,354131},1.5,{1719,354131},1.5,{12975,354131},3},
 }
 module.db.spell_dispellsFix = {}
 module.db.spell_dispellsList = {	--Заклинания-диспелы (мгновенно откатываются, если ничего не диспелят)
@@ -1389,6 +1398,15 @@ module.db.itemsBonusToSpell = {
 	[6956] = 335229,
 	[7061] = 337838,
 	[7011] = 336849,
+	[7470] = 354131,
+	[7730] = 357996,
+	[7474] = 354109,
+	[7571] = 354118,
+	[7703] = 356391,
+	[7728] = 356395,
+	[7701] = 355447,
+	[7573] = 354731,
+	[7708] = 356218,
 }
 
 if ExRT.isClassic then
@@ -1428,6 +1446,12 @@ module.db.vars = {
 	isMage = {},
 	shiftingpower = {},
 	thundercharge = {},
+	symbolofhope = {},
+	symbolofhopeSpells = {
+		[22812]=true,[198589]=true,[48792]=true,[204021]=true,[109304]=true,[55342]=true,
+		[115203]=true,[19236]=true,[108271]=true,[104773]=true,[871]=true,[118038]=true,
+		[184364]=true,[498]=true,[31850]=true,[	184662]=true,
+	},
 }
 
 module.db.plugin = {}
@@ -3822,7 +3846,7 @@ local function UpdateRoster()
 						spellClass = "ALL"
 					end
 
-					if AddThisSpell and (spellClass == class or spellClass == "ALL") then
+					if AddThisSpell and (spellClass == class or spellClass == "ALL") and (not spellData.specialCheck or spellData.specialCheck(SpellID,name,class,race)) then
 						if not ExRT.F.table_find(status_UnitsToCheck,name) then
 							status_UnitsToCheck[#status_UnitsToCheck + 1] = name
 
@@ -4466,6 +4490,9 @@ function module.main:ADDON_LOADED()
 	VMRT.ExCD2.Save = VMRT.ExCD2.Save or {}
 
 	module:RegisterEvents('ZONE_CHANGED_NEW_AREA')
+	if ExRT.isClassic then
+		module:RegisterEvents('LOADING_SCREEN_DISABLED')
+	end
 	if not VMRT.ExCD2.enabled then
 		module:Disable()
 		C_Timer.After(2,module.CheckZoneProfiles)
@@ -4568,6 +4595,7 @@ do
 			end
 		end
 	end
+	module.main.LOADING_SCREEN_DISABLED = module.main.ZONE_CHANGED_NEW_AREA
 end
 
 local FD_GUIDs = {}
@@ -4902,6 +4930,7 @@ do
 	local handOfHind_var = {}
 	local roguepvptal_var = {}
 	local spell336873_var = {}
+	local priestBoon_var = {}
 
 	local function IsAuraActive(unit,spellID)
 		for i=1,40 do
@@ -5001,6 +5030,41 @@ do
 					UpdateAllData()
 				end
 			end, 30)
+		elseif spellID == 64901 and destName and sourceName then	--Symbol of Hope
+			local hymnDur = 5 / (1 + (UnitSpellHaste(sourceName) or 0) /100)
+			local perSec = 60 / hymnDur
+
+			_db.vars.symbolofhope[sourceName..":"..destName] = C_Timer.NewTicker(1,function(self)
+				local line, updateReq
+				for j=1,#_C do
+					line = _C[j]
+					if line.fullName == destName and line.db and _db.vars.symbolofhopeSpells[ line.db[1] ] then
+						line:ReduceCD(perSec,true)
+						updateReq = true
+					end
+				end
+				self.last = GetTime()
+				if updateReq then
+					UpdateAllData()
+				end
+			end, hymnDur)
+			_db.vars.symbolofhope[sourceName..":"..destName].OnCancel = function(self)
+				local now = GetTime()
+				if not self.last or ((now - self.last) < 0.2) then
+					return
+				end
+				local updateReq
+				for j=1,#_C do
+					local line = _C[j]
+					if line.fullName == destName and line.db and _db.vars.symbolofhopeSpells[ line.db[1] ] then
+						line:ReduceCD((now - self.last)*perSec,true)
+						updateReq = true
+					end
+				end
+				if updateReq then
+					UpdateAllData()
+				end
+			end
 		elseif spellID == 204366 and destName then	--Thundercharge
 			if _db.vars.thundercharge[destName] then
 				_db.vars.thundercharge[destName]:Cancel()
@@ -5031,6 +5095,9 @@ do
 		elseif (spellID == 327710 or spellID == 345453) and destName and sourceName then	--Benevolent Faerie
 			local db = spellID == 327710 and _db.vars.faerie or _db.vars.faerieCond
 			local mod = spellID == 327710 and 1 or 0.8
+			if session_gGUIDs[sourceName][356391] then
+				mod = mod * 2
+			end
 			if db[sourceName..":"..destName] then
 				db[sourceName..":"..destName]:Cancel()
 			end
@@ -5141,6 +5208,8 @@ do
 			end
 		elseif spellID == 342801 and destName then
 			session_gGUIDs[destName] = {342801,"torghast",stack}
+		elseif spellID == 325013 then
+			priestBoon_var[sourceName] = stack
 		end
 	end
 
@@ -5263,6 +5332,14 @@ do
 					db[sourceName..":"..destName]:Cancel()
 				end
 			end)
+		elseif spellID == 64901 and destName then	--Symbol of Hope
+			local db = _db.vars.symbolofhope
+			C_Timer.After(0.1,function()
+				if db[sourceName..":"..destName] then
+					db[sourceName..":"..destName]:OnCancel()
+					db[sourceName..":"..destName]:Cancel()
+				end
+			end)
 		elseif spellID == 50334 and destName then	--Berserk
 			C_Timer.After(.5,function()
 				if _db.vars.berserk[destName] then
@@ -5289,6 +5366,18 @@ do
 		elseif spellID == 196099 then
 			session_gGUIDs[sourceName] = -132409
 			forceUpdateAllData = true
+		elseif spellID == 325013 and session_gGUIDs[sourceName][356395] then
+			local max_stack = priestBoon_var[sourceName]
+			if max_stack then
+				local line = CDList[sourceName][325013]
+				if line then
+					local time_reduce = min(max_stack * 3,60)
+
+					line:ReduceCD(time_reduce,true)
+					forceUpdateAllData = true
+				end
+			end
+			priestBoon_var[sourceName] = nil
 		end
 
 		if forceUpdateAllData then
@@ -5549,6 +5638,8 @@ do
 		[6343] = true,
 		[322109] = true,
 		[2948] = true,
+		[328928] = true,
+		[317221] = true,
 	}
 
 	local spellDamage_trackedSpells_Register = {
@@ -5565,12 +5656,17 @@ do
 		[1160] = true,
 		[122470] = true,
 		[257541] = true,
+		[328923] = true,
+		[316958] = true,
 	}
 	local spell46968_var = {}
 	local spell339272_var = {}
 	local spell338741_var = {}
 	local spell335229_var = {}
 	local spell155148_var1,spell155148_var2 = nil
+	local spell356218_var = {}
+	local spellAshenLeggo_var1,spellAshenLeggo_var2 = {},{}
+
 	function module.main.SPELL_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,critical,amount,overkill)
 		if destGUID and isWarlock[destGUID] and destName and session_gGUIDs[destName][339272] then
 			local maxHP = UnitHealthMax(destName)
@@ -5735,6 +5831,47 @@ do
 					line:ReduceCD(60)
 				end
 			end
+		elseif spellID == 328928 and session_gGUIDs[sourceName][356218] then
+			local last = spell356218_var[sourceName] or 0
+			local t = GetTime()
+			if t > last then
+				spell356218_var[sourceName] = t + 0.2
+
+				local line = CDList[sourceName][51533]
+				if line then
+					line:ReduceCD(9)
+				end
+				local line = CDList[sourceName][198067]
+				if line then
+					line:ReduceCD(7)
+				end
+				local line = CDList[sourceName][108280]
+				if line then
+					line:ReduceCD(7)
+				end			
+			end
+		elseif spellID == 317221 and session_gGUIDs[sourceName][355447] then
+			local t = GetTime()
+			spellAshenLeggo_var1[sourceName] = t
+			if not spellAshenLeggo_var2[sourceName] or (t - spellAshenLeggo_var2[sourceName].time > 50) then
+				local ticker = C_Timer.NewTicker(2,function(self)
+					if GetTime() - spellAshenLeggo_var1[sourceName] >= 2 then
+						self:Cancel()
+						local toReduce = (45 - min(max(GetTime() - self.added - 1,0),45)) / 45 * 120
+
+						local line = CDList[sourceName][316958]
+						if line then
+							line:ReduceCD(toReduce)
+							line:SetDur(0)
+						end
+					end
+				end,25)
+				ticker.added = t
+				spellAshenLeggo_var2[sourceName] = {
+					time = t,
+					ticker = ticker,
+				}
+			end
 		end
 	end
 	function module.main.SWING_DAMAGE(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,amount,_,_,_,critical)
@@ -5749,6 +5886,7 @@ do
 		[320751] = true,
 		[325218] = true,
 		[323436] = true,
+		[317223] = true,
 	}
 	local spellHeal_trackedSpells_Register = {
 		[207778] = true,
@@ -5758,6 +5896,7 @@ do
 		[320674] = true,
 		[325216] = true,
 		[323436] = true,
+		[316958] = true,
 	}
 	local spell207778_var = {0,0}
 	local spell337295_var = {0,0}
@@ -5834,6 +5973,28 @@ do
 					CLEUstartCD(line)
 				end
 			end)
+		elseif spellID == 317223 and session_gGUIDs[sourceName][355447] then
+			local t = GetTime()
+			spellAshenLeggo_var1[sourceName] = t
+			if not spellAshenLeggo_var2[sourceName] or (t - spellAshenLeggo_var2[sourceName].time > 50) then
+				local ticker = C_Timer.NewTicker(2,function(self)
+					if GetTime() - spellAshenLeggo_var1[sourceName] >= 2 then
+						self:Cancel()
+						local toReduce = (45 - min(max(GetTime() - self.added - 1,0),45)) / 45 * 120
+
+						local line = CDList[sourceName][316958]
+						if line then
+							line:ReduceCD(toReduce)
+							line:SetDur(0)
+						end
+					end
+				end,25)
+				ticker.added = t
+				spellAshenLeggo_var2[sourceName] = {
+					time = t,
+					ticker = ticker,
+				}
+			end
 		end
 	end
 
@@ -11941,7 +12102,7 @@ module.db.AllSpells = {
 	{310454,"COVENANTS,MONK",	3,	{310454,120,	30},	},
 	{307443,"COVENANTS,MAGE",	3,	{307443,30,	0},	},
 	{308491,"COVENANTS,HUNTER",	3,	{308491,60,	0},	},
-	{326434,"COVENANTS,DRUID",	3,	{326434,0,	0},	},
+	{326434,"COVENANTS,DRUID",	3,	{326434,60,	10},	},
 	{306830,"COVENANTS,DEMONHUNTER",3,	{306830,60,	2},	},
 	{312202,"COVENANTS,DEATHKNIGHT",3,	{312202,60,	0},	},
 	{324143,"COVENANTS,WARRIOR",	3,	{324143,120,	15},	},
@@ -12003,7 +12164,7 @@ if ExRT.isBC then
 		{1020,	"PALADIN",	1,	{1020,	300,	12}},	--DS
 		{10310,	"PALADIN",	1,	{10310,	3600,	0}},	--LoH
 		{19752,	"PALADIN",	1,	{19752,	3600,	180}},	--DI
-		{31884,	"PALADIN",	1,	{31884,	1800,	60}},	--AW
+		{31884,	"PALADIN",	1,	{31884,	180,	20}},	--AW
 
 		{16190,	"SHAMAN",	1,	{16190,	300,	12}},	--MTT
 		{32182,	"SHAMAN",	1,	{32182,	600,	40}},	--BL [A]
@@ -12019,6 +12180,8 @@ if ExRT.isBC then
 		{19577, "HUNTER",	1,	{19577,	60,	3}},	--MD
 		
 		{28275, "PRIEST",	1,	{28275,	360,	180}}, 	--Lightwell
+		{6346, 	"PRIEST",	1,	{6346,	180,	0}}, 	--Fear Ward
+		{32548, "PRIEST",	1,	{32548,	300,	15},	specialCheck=function(_,_,_,r) if r=="Draenei" then return true end end}, 	--Symbol of Hope
 	}
 elseif ExRT.isClassic then
 	module.db.AllSpells = {

@@ -9,6 +9,10 @@ module.db.diffNames = {
 	[14] = L.sencounterWODNormal,	-- Normal,	PLAYER_DIFFICULTY1
 	[15] = L.sencounterWODHeroic,	-- Heroic,	PLAYER_DIFFICULTY2
 	[16] = L.sencounterWODMythic,	-- Mythic,	PLAYER_DIFFICULTY6
+	[175] = "10 ppl",
+	[176] = "25 ppl",
+	[148] = "20 ppl",
+	[9] = "40 ppl",
 }
 
 local classToLetter = {
@@ -887,7 +891,7 @@ end
 local lastStartEvent,lastEndEvent = 0,0
 
 local function EncounterStartLog(encounterID, encounterName, difficultyID, groupSize)
-	if (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148)) then
+	if (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148 or difficultyID == 175 or difficultyID == 176)) then
 		return
 	end
 	if (VMRT.Attendance.enabled == 1 and isFirstEncounterByRaid) or VMRT.Attendance.enabled == 3 or CheckSpecialConditions(encounterID,encounterName,difficultyID) then
@@ -896,7 +900,7 @@ local function EncounterStartLog(encounterID, encounterName, difficultyID, group
 	end
 end
 local function EncounterEndLog(encounterID, encounterName, difficultyID, groupSize, isKill)
-	if not (isKill == 1) or (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148)) then
+	if not (isKill == 1) or (not ExRT.isClassic and not (difficultyID == 14 or difficultyID == 15 or difficultyID == 16)) or (ExRT.isClassic and not (difficultyID == 9 or difficultyID == 148 or difficultyID == 175 or difficultyID == 176)) then
 		return
 	end
 	if (VMRT.Attendance.enabled == 2 and isFirstEncounterByRaid) or VMRT.Attendance.enabled == 4 or CheckSpecialConditions(encounterID,encounterName,difficultyID,isKill==1) then

@@ -2,6 +2,7 @@
 ## Title: Method Raid Tools [Storage]
 ## SavedVariables: VExRT
 ## Notes: Required for data migration
+## Version: 4560
 
 # deprecated after addon rebranding
 # used for variables migration

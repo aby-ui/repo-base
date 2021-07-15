@@ -1,5 +1,5 @@
 --[[------------------------------------------------------------
-公会大米排名
+公会大秘排名
 ---------------------------------------------------------------]]
 
 --[[------------- copied from 7.3.0 --------------]]
@@ -99,7 +99,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("温馨提示：7月8日第2赛季第1周，大米掉落最高229。7月15日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
+            GameTooltip:AddLine("温馨提示：7月8日第2赛季第1周，大秘掉落最高229。7月15日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
             GameTooltip:AddLine(" ")
             local header = "层数   掉落  周箱"
             GameTooltip:AddDoubleLine(header, header, 1, 1, 1, 1, 1, 1)
@@ -128,7 +128,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             GameTooltip:AddLine("第2个箱子的装等对应本周打过第|cff00ff004|r高的层数", 1, 1, 1)
             GameTooltip:AddLine("第3个箱子的装等对应本周打过第|cff00ff0010|r高的层数", 1, 1, 1)
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("例如你本周打了5个大米，层数分别是2 5 7 9 8，那么你下周低保第一个箱子对应9层，第二个箱子对应5层，没有第三个箱子。本周进度可以查看|cff00ff00奥利波斯银行旁边的宏伟宝库|r（那个大台阶就是）", 1, 1, 1, true)
+            GameTooltip:AddLine("例如你本周打了5个大秘，层数分别是2 5 7 9 8，那么你下周低保第一个箱子对应9层，第二个箱子对应5层，没有第三个箱子。本周进度可以查看|cff00ff00奥利波斯银行旁边的宏伟宝库|r（那个大台阶就是）", 1, 1, 1, true)
             --]]
             GameTooltip:Show()
         end
@@ -168,10 +168,11 @@ end)
 ---------------------------------------------------------------]]
 EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, tooltipShown, areaPoiID, name)
     if areaPoiID == 6640 then
-        local levels    = {  "08","09",   10,    11,    12, }
-        local firstNew  = { "不掉",  60,  110,   150,   180, }
-        local firstOld  = {   800, 915,  960,  1000,  1030, }
-        local repeatOld = {   160, 183,  192,   200,   206, }
+        -- https://www.wowhead.com/guides/torghast-updates-patch-9-1-new-scoring-rewards-torments-shadowlands#farmable-soul-ash
+        local levels    = {  "08", "09",   10,    11,    12, }
+        local firstNew  = {    50,   90,  120,   150,   180, }
+        local firstOld  = {   860,  915,  960,  1000,  1030, }
+        local repeatOld = {   172,  183,  192,   200,   206, }
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine("难度   薪尘    灰烬  灰烬(重复打)", 1, 1, 1)
             local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
@@ -183,7 +184,7 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
             GameTooltip:AddLine("橙装装等  190/ 210/ 225/ 235")
             GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
             GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
-            GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1600")
+            GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1650")
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine("统御插槽位置：头、肩、胸")
             GameTooltip:AddLine("布甲：护腕、腰带")

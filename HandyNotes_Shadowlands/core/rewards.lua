@@ -243,6 +243,7 @@ end
 
 function Item:IsObtained()
     if self.quest then return C_QuestLog.IsQuestFlaggedCompleted(self.quest) end
+    if self.bag then return ns.PlayerHasItem(self.item) end
     return true
 end
 
@@ -258,7 +259,10 @@ function Item:GetText()
 end
 
 function Item:GetStatus()
-    if self.status then
+    if self.bag then
+        local collected = ns.PlayerHasItem(self.item)
+        return collected and Green(L['completed']) or Red(L['incomplete'])
+    elseif self.status then
         return format('(%s)', self.status)
     elseif self.quest then
         local completed = C_QuestLog.IsQuestFlaggedCompleted(self.quest)

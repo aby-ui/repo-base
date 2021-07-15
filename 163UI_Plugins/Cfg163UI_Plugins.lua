@@ -21,10 +21,6 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
-        var = "FixMapGlitch", text = U1_NEW_ICON.."临时解决9.1刻希亚地图卡顿", default = true, callback = load, tip = "说明`暴雪9.1客户端问题导致开启世界地图卡顿，已临时通过技术手段改善，但是可能会带来插件被阻止等其他问题，如果不需要此功能请关闭。``详情参见 https://bbs.nga.cn/read.php?tid=27466594``感谢oyg123的研究"
-    },
-
-    {
         var = "MawThreat", text = "噬渊典狱长之眼详细数值", default = true,
         tip = "说明`在噬渊典狱长之眼框体中显示详细进度值",
         callback = function(cfg, v, loading, ...)

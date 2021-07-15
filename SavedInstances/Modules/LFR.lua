@@ -140,8 +140,6 @@ for id, info in pairs(LFRInstances) do
       info.remap = { 3, 5, 7 }
     elseif id == 2092 then -- Castle Nathria: Blood from Stone
       info.remap = { 1, 8, 9 }
-    elseif id == 2222 then -- Sanctum of Domination: The Dark Bastille
-      info.remap = { 5, 4, 6 }
     end
   end
 

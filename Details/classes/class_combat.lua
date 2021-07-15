@@ -337,7 +337,7 @@
 	local tremove = _G.tremove
 
 	--delete an actor from the combat ~delete ~erase ~remove
-	function combate:DeleteActor(attribute, actorName, removeDamageTaken)
+	function combate:DeleteActor(attribute, actorName, removeDamageTaken, cannotRemap)
 		local container = self[attribute]
 		if (container) then
 
@@ -411,7 +411,10 @@
 				tremove(container._ActorTable, index)
 
 				--remap
-				container:Remap()
+				if (not cannotRemap) then
+					container:Remap()
+				end
+				return true
 			end
 		end
 	end

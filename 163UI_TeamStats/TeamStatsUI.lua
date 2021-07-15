@@ -261,12 +261,16 @@ function TS.CreateButtons(f)
         if player and player.selected and (player.gsGot or player.compared) then
             tinsert(annLine, "★");
             tinsert(annLine, player.name);
+            if f.tabIdx == 1 then
             tinsert(annLine, " ");
             tinsert(annLine, player.talent1);
             tinsert(annLine, " ");
             tinsert(annLine, "装等")
             tinsert(annLine, player.gsGot and player.bad and "*" or "")
             tinsert(annLine, player.gsGot and player.gs or "未知")
+            tinsert(annLine, " 大秘评分")
+            tinsert(annLine, player.mscore or "未知")
+            end
             --tinsert(annLine, " 腐蚀")
             --local corrupt = tostring(math.max(0, (player.c_total or 0) - (player.c_resist or 0) - 10))
             --tinsert(annLine, player.c_total and corrupt or "未知")
@@ -293,20 +297,22 @@ function TS.CreateButtons(f)
                 end
                 --]]
                 for i, ids in ipairs(tab.ids) do
-                    if type(ids) == "table" then
-                        local progress, max, total = GetAchievementOrStaticText(player, ids)
-                        if progress and progress ~= 0 then
-                            tinsert(annLine, " ");
-                            tinsert(annLine, tab.names[i])
-                            tinsert(annLine, tab.any_done and "★" or "" .. progress .. "/" .. max .."(" .. total .. ")")
-                        end
-                    else
-                        local text = GetAchievementOrStaticText(player, ids)
-                        if text ~= "?" and text ~= "-" then
-                            tinsert(annLine, " ");
-                            tinsert(annLine, tab.names[i])
-                            tinsert(annLine, "")
-                            tinsert(annLine, text)
+                    if tab.reports == nil or tab.reports[i] then
+                        if type(ids) == "table" then
+                            local progress, max, total = GetAchievementOrStaticText(player, ids)
+                            if progress and progress ~= 0 then
+                                tinsert(annLine, " ");
+                                tinsert(annLine, tab.names[i])
+                                tinsert(annLine, tab.any_done and "★" or "" .. progress .. "/" .. max)
+                            end
+                        else
+                            local text = GetAchievementOrStaticText(player, ids)
+                            if text ~= "?" and text ~= "-" then
+                                tinsert(annLine, " ");
+                                tinsert(annLine, tab.names[i])
+                                tinsert(annLine, "")
+                                tinsert(annLine, text)
+                            end
                         end
                     end
                 end
@@ -569,6 +575,10 @@ local sortFuncs = {
         if currSort > 0 or force then return r else return not r end
     end,
     --]]
+    [6] = function(a,b)
+        local r, equal, force = compare(a, b, "mscore")
+        if currSort > 0 or force then return r else return not r end
+    end,
 }
 
 local function sortNames(self)
@@ -722,12 +732,20 @@ function TS.SetupColumns(f)
         {
             header = L["HeaderGS"],
             headerSpan = 1,
-            width = 50,
-            tip = "身上当前装备的平均物品等级",
+            width = 65,
+            tip = "身上当前装备的平均物品等级，括号内为插槽数量，暂时不统计统御插槽",
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
-                widget:SetText(player.gs and format("%s%.1f", (player.bad and "|cffffd200*|r" or ""), player.gs) or "?")
+                local gems = "|cff7f7f7f(?)|r"
+                if player.gem_info then
+                    local _, _, count = player.gem_info:find("%d/(%d)")
+                    count = count or 0
+                    gems = "|cffffffff("..count..")|r"
+                end
+                widget:SetText(player.gs and format("%s%.1f %s", (player.bad and "|cffffd200*|r" or ""), player.gs, gems) or "?")
+                if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5) else widget:SetTextColor(1,1,1) end
+
                 local r, b, g = U1GetInventoryLevelColor(player.gs)
                 if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5,1) else widget:SetTextColor(r,b,g) end
             end
@@ -794,7 +812,6 @@ function TS.SetupColumns(f)
                 end
             end
         },
-        --]]
         {
             header = "珠宝",
             headerSpan = 1,
@@ -812,7 +829,6 @@ function TS.SetupColumns(f)
                 if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5) else widget:SetTextColor(1,1,1) end
             end
         },
-        --[=[
         {
             header = "橙装",
             headerSpan = 1,
@@ -849,14 +865,14 @@ function TS.SetupColumns(f)
                 end
             end
         },
-        --]=]
+        --]]
 
         {
-            header = "引领潮流",
+            header = "引领",
             headerSpan = 1,
             onlyTab1 = 1,
-            width = 64,
-            tip = "当前版本相关的副本成就，同战网共享，跨角色。绿色为有，红色为没有",
+            width = 48,
+            tip = "当前版本相关的英雄难度通关副本成就（引领潮流），同战网共享，跨角色。绿色为有，红色为没有",
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
@@ -875,6 +891,20 @@ function TS.SetupColumns(f)
                     end
                     widget:SetText(s)
                 end
+            end
+        },
+        {
+            header = "钥石评分",
+            headerSpan = 1,
+            onlyTab1 = 1,
+            width = 64,
+            tip = "角色当前赛季的史诗钥石评分",
+            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
+            update = function(line, widget, idx, colIdx)
+                local player = line.player
+                widget:SetText(player.mscore or "?")
+                local color = C_ChallengeMode.GetDungeonScoreRarityColor(player.mscore or 0)
+                widget:SetTextColor(color.r, color.g, color.b)
             end
         },
     }

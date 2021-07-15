@@ -276,7 +276,6 @@ end
 
 --[[------------------------------------------------------------
 9.1 临时处理地图卡顿
----------------------------------------------------------------]]
 U1PLUG["FixMapGlitch"] = function()
     if C_TaskQuest.GetQuestsForPlayerByMapID then
         U1Message("暴雪9.1界面问题导致地图卡顿，已临时处理，如果遇到问题可以在小功能集合中关闭。详情参见 https://bbs.nga.cn/read.php?tid=27466594")
@@ -295,3 +294,7 @@ U1PLUG["FixMapGlitch"] = function()
         end
     end
 end
+    {
+        var = "FixMapGlitch", text = U1_NEW_ICON.."临时解决9.1刻希亚地图卡顿", default = true, callback = load, tip = "说明`暴雪9.1客户端问题导致开启世界地图卡顿，已临时通过技术手段改善，但是可能会带来插件被阻止等其他问题，如果不需要此功能请关闭。``详情参见 https://bbs.nga.cn/read.php?tid=27466594``感谢oyg123的研究"
+    },
+---------------------------------------------------------------]]

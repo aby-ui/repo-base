@@ -356,6 +356,7 @@ map.nodes[44083989] = Treasure({
     note=L["blackhound_cache_note"],
     covenant=NECROLORD,
     rewards={
+        Transmog({item=183619, slot=L["2h_axe"]}), -- Everlasting Boneforged Greataxe
         Toy({item=184318}) -- Battlecry of Krexus
     }
 }) -- Blackhound Cache

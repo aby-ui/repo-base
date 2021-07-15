@@ -24,9 +24,9 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.63.2"; -- Version number (text format)
+	Version = "4.63.4"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 46302; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 46304; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 46300; -- Numeric version number for checking out-of-date clients (classic)
 	BurningCrusadeVersionNumber = 46300; -- Numeric version number for checking out-of-date clients (TBC classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)

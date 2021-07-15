@@ -86,6 +86,30 @@ function module.options:Load()
 		end
 	end)
 
+	self.arena = ELib:Check(self,ARENA or "Arena",VMRT.Logging.enableArena):Point("TOP", ExRT.isClassic and self.shtml2 or self.torghast,"BOTTOM",0,-5):Point("LEFT",self,15,0):OnClick(function(self)
+		if self:GetChecked() then
+			VMRT.Logging.enableArena = true
+		else
+			VMRT.Logging.enableArena = nil
+		end
+	end)
+
+	self.classic5pplHC = ELib:Check(self,"5 ppl Dungeon Heroic",VMRT.Logging.classic5pplHC):Point("TOP", self.arena,"BOTTOM",0,-5):Point("LEFT",self,15,0):OnClick(function(self)
+		if self:GetChecked() then
+			VMRT.Logging.enableclassic5pplHC = true
+		else
+			VMRT.Logging.enableclassic5pplHC = nil
+		end
+	end):Shown(ExRT.isBC)
+
+	self.classic5pplNormal = ELib:Check(self,"5 ppl Dungeon Normal",VMRT.Logging.enableclassic5pplNormal):Point("TOP", self.classic5pplHC,"BOTTOM",0,-5):Point("LEFT",self,15,0):OnClick(function(self)
+		if self:GetChecked() then
+			VMRT.Logging.enableclassic5pplNormal = true
+		else
+			VMRT.Logging.enableclassic5pplNormal = nil
+		end
+	end):Shown(ExRT.isBC)
+
 	if ExRT.isClassic then
 		self.shtml1:SetText(RAID)
 		self.enable3ppScenario:Hide()
@@ -144,6 +168,12 @@ local function GetCurrentMapForLogging()
 		elseif VMRT.Logging.enableTorghast and difficulty == 167 then
 			return true
 		elseif VMRT.Logging.enable3ppBFA and zoneType == 'scenario' and (maxPlayers or 0) > 1 and (tonumber(mapID) and mapID >= module.db.minPartyMapID) then
+			return true
+		elseif VMRT.Logging.enableArena and (zoneType == "arena" or zoneType == "ratedarena") then
+			return true
+		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplHC and (difficulty == 174 or difficulty == 2) then
+			return true
+		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplNormal and (difficulty == 173 or difficulty == 1) then
 			return true
 		end
 	end

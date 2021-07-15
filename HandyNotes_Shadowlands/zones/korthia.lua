@@ -52,6 +52,7 @@ map.nodes[58211773] = Rare({
     id=180246,
     quest=64258, -- 64439?
     note=L["carriage_crusher_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52290}),
         Transmog({item=187370, slot=L["cloth"]}), -- Carriage Crusher's Padded Slippers
@@ -64,6 +65,7 @@ map.nodes[51164167] = Rare({
     quest=64243,
     sublabel=L["korthia_limited_rare"],
     note=L["consumption_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52285}),
         Item({item=187402, note=L["ring"]}), -- All-Consuming Loop
@@ -76,6 +78,7 @@ map.nodes[51164167] = Rare({
 map.nodes[51822081] = Rare({
     id=177903,
     quest=63830,
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52277}),
         Transmog({item=187390, slot=L["plate"]}) -- Dominated Protector's Helm
@@ -87,8 +90,11 @@ map.nodes[33183938] = Rare({
     quest=64320,
     covenant=NIGHTFAE,
     note=L["escaped_wilderling_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52298}),
+        Item({item=187423, weekly=64549, covenant=NIGHTFAE}), -- Legend of the Animaswell
+        Transmog({item=187395, slot=L["plate"]}), -- Reinforced Stygian Spaulders
         Mount({item=186492, id=1487, covenant=NIGHTFAE}) -- Summer Wilderling
     }
 }) -- Escaped Wilderling
@@ -98,8 +104,10 @@ map.nodes[59934371] = Rare({
     quest=64349,
     covenant=NECROLORD,
     note=L["fleshwing_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52299}),
+        Item({item=187424, weekly=64551, covenant=NECROLORD}), -- Legend of the Animaswell
         Transmog({item=187372, slot=L["cloth"]}), -- Miasma Filtering Headpiece
         Mount({item=186489, id=1449, covenant=NECROLORD}) -- Lord of the Corpseflies
     }
@@ -109,6 +117,7 @@ map.nodes[59203580] = Rare({
     id=179108,
     quest=64428,
     sublabel=L["korthia_limited_rare"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     note=L["kroke_note"],
     rewards={
         Achievement({id=15107, criteria=52304}),
@@ -128,6 +137,7 @@ map.nodes[44222950] = Rare({
     id=179684,
     quest=64233,
     note=L["malbog_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52283}),
         Transmog({item=187377, slot=L["leather"]}), -- Malbog's Paws
@@ -142,6 +152,7 @@ map.nodes[22604140] = Rare({
     id=179931,
     quest=64291,
     note=L["krelva_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52291}),
         Transmog({item=187403, slot=L["cloak"]}) -- Relic Breaker's Drape
@@ -156,9 +167,12 @@ map.nodes[22604140] = Rare({
 map.nodes[56276617] = Rare({
     id=180160,
     quest=64455,
+    sublabel=L["korthia_limited_rare"],
     note=L["reliwik_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52318}),
+        Transmog({item=187388, slot=L["mail"]}), -- Barbed Scale Cinch
         Mount({item=186652, id=1509}) -- Garnet Razorwing
     }
 }) -- Reliwik the Defiant
@@ -168,10 +182,12 @@ map.nodes[46507959] = Rare({
     quest=64313,
     covenant=VENTHYR,
     note=L["stonecrusher_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52276}),
-        Transmog({item=184790, slot=L["leather"]}) -- Archdruid Van-Yali's Greenthumbs
-        -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing
+        Item({item=187428, weekly=64553, covenant=VENTHYR}), -- Legend of the Animaswell
+        Item({item=186479, quest=64530, covenant=VENTHYR})
+        -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing (can learn but not have id and can't show up in book)
     }
 }) -- Stygian Stonecrusher
 
@@ -180,8 +196,11 @@ map.nodes[56873237] = Rare({
     quest=64338,
     covenant=KYRIAN,
     note=L["worldcracker_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52300}),
+        Item({item=187423, weekly=64549, covenant=KYRIAN}), -- Legend of the Animaswell
+        Transmog({item=187380, slot=L["leather"]}), -- Devourer Hide Belt
         Toy({item=187176}), -- Vesper of Harmony
         Mount({item=186483, id=1493, covenant=KYRIAN}) -- Foresworn Aquilon
     }
@@ -192,6 +211,7 @@ map.nodes[44983552] = Rare({
     quest=64278,
     requires=ns.requirement.Item(186718),
     note=L["chamber_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52296}),
         Achievement({id=15066, criteria=52263}),
@@ -206,6 +226,7 @@ map.nodes[39405240] = Rare({
     quest=64257,
     requires=ns.requirement.Item(186718),
     note=L["chamber_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52295}),
         Achievement({id=15066, criteria=52262}),
@@ -221,6 +242,7 @@ map.nodes[27755885] = Rare({
     quest=64442,
     sublabel=L["korthia_limited_rare"],
     note=L["in_cave"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52301}),
         Transmog({item=187371, slot=L["cloth"]}), -- Velvet Gromit Handwraps
@@ -238,6 +260,7 @@ map.nodes[13007500] = Rare({
     quest=64246, -- 64280?
     scale=1.5,
     note=L["konthrogz_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52303}),
         Transmog({item=187375, slot=L["cloth"]}), -- Bound Worldeater Tendrils
@@ -253,6 +276,7 @@ map.nodes[16007500] = Rare({
     quest=64245,
     scale=1.5,
     note=L["towering_exterminator_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52302}),
         Transmog({item=187373, slot=L["cloth"]}), -- Soul-Enveloping Leggings
@@ -270,11 +294,15 @@ map.nodes[14507900] = Rare({
     quest=64457,
     scale=1.5,
     note=L["pop_quiz_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15107, criteria=52319}),
         Item({item=187264, quest=64513}), -- Ve'rayn's Head
         Item({item=187404, note=L["neck"]}), -- Cartel Ve Amulet
         Transmog({item=187369, slot=L["cloth"]}) -- Ve'rayn's Formal Robes
+    },
+    pois={
+        POI({32804320, 42405980, 49002900, 61405780})
     }
 }) -- Ve'rayn
 
@@ -283,7 +311,7 @@ map.nodes[14507900] = Rare({
 map.nodes[59335221] = Rare({
     id=179913,
     quest=64285,
-    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    rlabel=ns.status.LightBlue(L["plus_research"])..ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_exit_note"],
     rift=2,
     rewards={
@@ -297,7 +325,7 @@ map.nodes[59335221] = Rare({
 map.nodes[50307590] = Rare({
     id=179914,
     quest=64369,
-    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    rlabel=ns.status.LightBlue(L["plus_research"])..ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_only_note"],
     rift=2,
     rewards={
@@ -311,7 +339,7 @@ map.nodes[50307590] = Rare({
 map.nodes[44604240] = Rare({
     id=179608,
     quest=64263,
-    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    rlabel=ns.status.LightBlue(L["plus_research"])..ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_exit_note"],
     rift=2,
     rewards={
@@ -323,7 +351,7 @@ map.nodes[44604240] = Rare({
 map.nodes[57607040] = Rare({
     id=179911,
     quest=64284,
-    rlabel=ns.GetIconLink('portal_gy', 20, 4, 1),
+    rlabel=ns.status.LightBlue(L["plus_research"])..ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_exit_note"],
     rift=2,
     rewards={
@@ -339,6 +367,7 @@ map.nodes[57607040] = Rare({
 
 map.nodes[29595342] = Treasure({
     quest=64244,
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15099, criteria=52241}),
         Item({item=187349}) -- Anima Laden Egg
@@ -348,6 +377,7 @@ map.nodes[29595342] = Treasure({
 map.nodes[47502920] = Treasure({
     quest=64241,
     note=L["dislodged_nest_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15099, criteria=52240}),
         Toy({item=187339}) -- Silver Shardhide Whistle
@@ -356,9 +386,10 @@ map.nodes[47502920] = Treasure({
 
 map.nodes[50478446] = Treasure({
     quest=64252,
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15099, criteria=52242}),
-        Item({item=187350, status=L["num_research"]:format(300)}) --Displaced Relic
+        Item({item=187350, status=L["num_research"]:format(300)}) -- Displaced Relic
     }
 }) -- Displaced Relic
 
@@ -373,10 +404,11 @@ map.nodes[68902990] = Treasure({
 
 map.nodes[38344296] = Treasure({
     quest=64222,
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Achievement({id=15099, criteria=52236})
     }
-}) -- Glittering Nest Materials
+}) -- Glittering Nest Material
 
 map.nodes[40145892] = Treasure({
     quest=64264,
@@ -388,14 +420,14 @@ map.nodes[40145892] = Treasure({
     pois={
         POI({42515596}) -- cave entrance
     }
-}) -- Infected Vestige
+}) -- Infested Vestige
 
 map.nodes[52991477] = Treasure({
     quest=64238,
     rewards={
         Achievement({id=15099, criteria=52238})
     }
-}) -- Lost Momento
+}) -- Lost Memento
 
 map.nodes[45336714] = Treasure({
     quest=64268,
@@ -414,10 +446,10 @@ map.nodes[62065550] = Treasure({
     quest=64247,
     note=L["spectral_bound_note"],
     label=L["spectral_bound_chest"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
-        Transmog({item=187240, note=L["cosmetic"]}), -- Field Warden's Watchful Eye
-        ns.relics.relic_fragment
+        Transmog({item=187240, note=L["cosmetic"]})  -- Field Warden's Watchful Eye
     },
     pois={
         POI({50505370, 52305320, 52604970, 54205060, quest=64249}), -- west
@@ -434,6 +466,7 @@ local Relic = Class('Relic', ns.node.Treasure, {
     group=ns.groups.RELIC,
     icon='star_chest_b',
     scale=1.6,
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     IsCompleted=function(self)
         if C_QuestLog.IsOnQuest(self.quest[1]) then return true end
         return Treasure.IsCompleted(self)
@@ -635,23 +668,23 @@ map.nodes[61804460] = RiftPortal()
 local RiftCache = Class('RiftCache', Treasure, {
     label=L["riftbound_cache"],
     note=L["riftbound_cache_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     group=ns.groups.RIFTBOUND_CACHE,
     rift=1,
     rewards={
         Transmog({item=187251, slot=L["cosmetic"]}), -- Shaded Skull Shoulderguards
         Transmog({item=187243, slot=L["cosmetic"]}), -- Shadehunter's Crescent
         Item({item=187276, quest=64522}), -- Stolen Korthian Supplies
-        Item({item=185050, quest=63606, covenant=NIGHTFAE}), -- Spider Soul
-        ns.relics.relic_fragment,
-        Item({item=186017}) -- Korthite Crystal
+        Item({item=185050, quest=63606, covenant=NIGHTFAE}) -- Spider Soul
     }
 })
 
-local RIFT_CACHE1 = RiftCache({quest=64470, icon='chest_rd', note=L["in_cave"]})
-local RIFT_CACHE2 = RiftCache({quest=64471, icon='chest_pp'}) -- (also 64705?) <did you loot a relic?
+local RIFT_CACHE1 = RiftCache({quest=64470, icon='chest_rd'})
+local RIFT_CACHE2 = RiftCache({quest=64471, icon='chest_pp'})
 local RIFT_CACHE3 = RiftCache({quest=64472, icon='chest_yw'})
 local RIFT_CACHE4 = RiftCache({quest=64456, icon='chest_bl'})
 
+map.nodes[24795625] = RIFT_CACHE1
 map.nodes[25975582] = RIFT_CACHE1 -- GHO: 29433986
 map.nodes[26545638] = RIFT_CACHE1 -- GHO: 34634647
 map.nodes[27555933] = RIFT_CACHE1 -- GHO: 43157372
@@ -679,11 +712,10 @@ local Shared = Class('Shared', ns.node.Treasure, {
     questCount=true,
     scale=0.8,
     note=L['korthia_shared_chest_note'],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     fgroup='shared_korthia',
     rewards={
-        Item({item=185963, quest=63892}), -- Diviner's Rune Chit
-        ns.relics.relic_fragment,
-        Item({item=186017}) -- Korthite Crystal
+        Item({item=185963, quest=63892}) -- Diviner's Rune Chit
     }
 })
 
@@ -742,10 +774,9 @@ local Mawshroom = Class('Mawshroom', Treasure, {
     group=ns.groups.INVASIVE_MAWSHROOM,
     label=L["invasive_mawshroom"],
     note=L["invasive_mawshroom_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
-        Item({item=185963, quest=63892}), -- Diviner's Rune Chit
-        ns.relics.relic_fragment,
-        Item({item=186017}) -- Korthite Crystal
+        Item({item=185963, quest=63892}) -- Diviner's Rune Chit
     }
 })
 
@@ -790,13 +821,12 @@ local UMNest = Class('UMNest', Treasure, {
     group=ns.groups.NEST_MATERIALS,
     label=L["unusual_nest"],
     note=L["unusual_nest_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     icon='chest_bn',
     fgroup='nest_materials',
     rewards={
         Item({item=185963, quest=63892}), -- Diviner's Rune Chit
-        ns.relics.relic_fragment,
-        Item({item=187442, note=L["bag"]}), -- Scholar's Ancient Pack
-        Item({item=186017}) -- Korthite Crystal
+        Item({item=187442, note=L["bag"]}) -- Scholar's Ancient Pack
     }
 })
 
@@ -812,11 +842,10 @@ local MawswornC = Class('MawswornC', Treasure, {
     group=ns.groups.MAWSWORN_CACHE,
     label=L["mawsworn_cache"],
     note=L["mawsworn_cache_note"],
+    rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
         Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
-        Transmog({item=187240, note=L["cosmetic"]}), -- Field Warden's Watchful Eye
-        ns.relics.relic_fragment,
-        Item({item=186017}) -- Korthite Crystal
+        Transmog({item=187240, note=L["cosmetic"]}) -- Field Warden's Watchful Eye
     }
 })
 
@@ -835,6 +864,7 @@ map.nodes[61205790] = MAWC2
 map.nodes[62305860] = MAWC2
 map.nodes[47707430] = MAWC3
 map.nodes[47956674] = MAWC3
+map.nodes[51326479] = MAWC3
 map.nodes[54007280] = MAWC3
 map.nodes[56406950] = MAWC3
 map.nodes[56507470] = MAWC3
@@ -881,8 +911,9 @@ local maelie = Class('Maelie', Collectible, {
     questAny=true,
     note=L["maelie_wanderer"],
     pois={POI({
-        41103980, 49304170, 59801510, 43003260, 49304170, 50302290,
-        39703490, 61304040, 30005560, 42806040, 38403140, 41302750
+        30005560, 35904650, 38403140, 39703490, 41103980, 41302750,
+        42806040, 43003260, 43203130, 49304170, 50302290, 59801510,
+        61304040, 62404970, 67502930
     })},
     rewards={Mount({item=186643, id=1511})}, -- Reins of the Wanderer
     getters={rlabel=GetMaelieStatus}

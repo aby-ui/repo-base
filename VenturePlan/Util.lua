@@ -12,7 +12,7 @@ local overdesc = {
 	[ 25]={L"Inflicts {} damage to all enemies in melee, and increases own damage dealt by 20% for three turns.", "damageATK"},
 	[ 52]={L"Inflicts {} damage to all enemies at range.", "damageATK"},
 	[ 85]=L"Reduces the damage taken by the closest ally by 5000% for two turns.",
-	[107]={L"Debuffs all enemies, dealing {1} damage this turn and during each of the next three turns. Additionally, increases all damage taken by the nearest enemy by {2} for three turns.", "damageATK", "plusDamageTakenATK"},
+	--[107]={L"Debuffs all enemies, dealing {1} damage this turn and during each of the next three turns. Additionally, increases all damage taken by the nearest enemy by {2} for three turns.", "damageATK", "plusDamageTakenATK"},
 	[121]={L"Reduces all enemies' damage dealt by {}% during the next turn.", "modDamageDealt"},
 	[125]={L"Inflicts {} damage to a random enemy.", "damageATK"},
 	[194]={L"Buffs the closest ally, increasing all damage dealt by {1} and reducing all damage taken by {2}% for two turns. Inflicts {3} damage to self.", "plusDamageDealtATK", "modDamageTaken", "damageATK"},
@@ -430,8 +430,8 @@ do -- delayStart
 		cancelTicking()
 		stickNext = now
 		tick()
-		stickNext = now+1
-		C_Timer.After(1.01, tick)
+		stickNext = now+0
+		C_Timer.After(0, tick)
 	end
 	function U.HasDelayedStartMissions()
 		return not not delayTime
@@ -449,8 +449,8 @@ do -- delayStart
 			if mi.offerEndTime and (mi.offerEndTime-now) <= 4 then
 				U.SendTentativeGroup(mid)
 			else
-				delayedStart[mid], delayTime = true, now+2
-				C_Timer.After(2.01, checkStart)
+				delayedStart[mid], delayTime = true, now+0
+				C_Timer.After(0, checkStart)
 				startTicking(now)
 				EV("I_DELAYED_START_UPDATE")
 				return true

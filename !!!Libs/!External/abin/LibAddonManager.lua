@@ -1104,20 +1104,26 @@ frame:SetScript("OnEvent", function(self, event, arg1)
 
 		local _, addon
 		for _, addon in ipairs(lib._addonList) do
-			lib.CopyPlayerInfo(addon)
-			Lib_CheckInitDB(addon)
+            if not addon:Initialized() then --abyui
+			    lib.CopyPlayerInfo(addon)
+			    Lib_CheckInitDB(addon)
+            end
 		end
 
 		for _, addon in ipairs(lib._addonList) do
-			Addon_EnumModules(addon, Module_InitializeDB, addon.db, addon.chardb)
+            if not addon:Initialized() then --abyui
+			    Addon_EnumModules(addon, Module_InitializeDB, addon.db, addon.chardb)
+            end
 		end
 
 		for _, addon in ipairs(lib._addonList) do
-			addon[PRIVATE].initDone = 1
+            if not addon:Initialized() then --abyui
+                addon[PRIVATE].initDone = 1
 
-			if type(addon.OnModulesInitDone) == "function" then
-				addon:OnModulesInitDone()
-			end
+                if type(addon.OnModulesInitDone) == "function" then
+                    addon:OnModulesInitDone()
+                end
+            end
 		end
 
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")

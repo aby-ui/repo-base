@@ -8,4 +8,11 @@
     desc = "美化和增强暴雪自带的团队框架，与GIRD功能重复，建议开启后关闭GRID",
     nopic = 1,
 
+    toggle = function(name, info, enable, justload)
+        if justload then
+            if U1IsInitComplete() then
+                LibAddonManager._eventFrame:GetScript("OnEvent")(LibAddonManager._eventFrame, "PLAYER_LOGIN")
+            end
+        end
+    end,
 });

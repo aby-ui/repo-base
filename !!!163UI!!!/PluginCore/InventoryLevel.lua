@@ -314,6 +314,7 @@ do
         EMPTY_SOCKET_PUNCHCARDYELLOW = false,
         EMPTY_SOCKET_PUNCHCARDRED = false,
         EMPTY_SOCKET_PUNCHCARDBLUE = false,
+        EMPTY_SOCKET_DOMINATION = true, --TODO
     }
 
     local _item_stat_tbl = {}
@@ -343,7 +344,7 @@ do
                 slot_s = slot_s + i_slot
                 --print(link:gsub("\124", "/"), i_slot, GetItemGem(link, 1), GetItemGem(link, 2), GetItemGem(link, 3))
 
-                if slot == 'Waist' or i_slot > 0 then
+                if i_slot > 0 then --slot == 'Waist' or
                     for i = 1, 3 do
                         local gemname, gemlink = GetItemGem(link, i)
                         if(gemlink) then
@@ -370,9 +371,11 @@ do
                     end
                 end
 
+                --[[ 7.0腰带打孔
                 if(slot == 'Waist' and i_gem > i_slot) then
                     waist_extra_slot = true
                 end
+                --]]
             end
         end
 

@@ -33,6 +33,37 @@ local POI = Class('POI')
 
 function POI:Initialize(attrs)
     for k, v in pairs(attrs) do self[k] = v end
+
+    -- normalize table values
+    self.quest = ns.AsTable(self.quest)
+    self.questDeps = ns.AsTable(self.questDeps)
+end
+
+function POI:IsCompleted()
+    if self.quest and self.questAny then
+        -- Completed if *any* attached quest ids are true
+        for i, quest in ipairs(self.quest) do
+            if C_QuestLog.IsQuestFlaggedCompleted(quest) then return true end
+        end
+    elseif self.quest then
+        -- Completed only if *all* attached quest ids are true
+        for i, quest in ipairs(self.quest) do
+            if not C_QuestLog.IsQuestFlaggedCompleted(quest) then return false end
+        end
+        return true
+    end
+    return false
+end
+
+function POI:IsEnabled()
+    -- Not enabled if any dependent quest ids are false
+    if self.questDeps then
+        for i, quest in ipairs(self.questDeps) do
+            if not C_QuestLog.IsQuestFlaggedCompleted(quest) then return false end
+        end
+    end
+
+    return not self:IsCompleted()
 end
 
 function POI:Render(map, template)

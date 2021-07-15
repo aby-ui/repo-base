@@ -13,10 +13,16 @@
 ## Notes-zhTW: 冒險介面改善
 ## Notes-ptBR: Melhorias na interface de Aventuras.
 ## Author: foxlit
-## X-Website: https://www.townlong-yak.com/addons/venture-plan
+## Version: 5.5-Beta修改版 2021.7.14
+## Contributors 注: 9.1新版数据贡献者: TekGoNos, Zhavvorsa, PositiveKoodoo, Sehra, Ostjaevel, Ashmelev, Dphennessy, Simca, Legenjerry, Dastey, Zealvurte, LostTemple1990, Gaboros, Many other who posted logs!
+## https://nga.178.com/read.php?tid=24880203
+## https://www.townlong-yak.com/addons/venture-plan
+## https://www.curseforge.com/wow/addons/venture-plan
 ## SavedVariables: VP_MissionReports
 ## SavedVariablesPerCharacter: VP_SPC
-Libs/Evie.lua
+
+Libs\Evie.lua
+libs\LibParse\LibParse.lua
 Locale.lua
 Util.lua
 Widgets.lua

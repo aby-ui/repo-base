@@ -424,19 +424,6 @@ end
 local encounterIDtoEJidChache = {
 }
 
-if GetBuildInfo() == "9.0.5" then
-	encounterIDtoEJidChache[2423] = "The Tarragrue"	--
-	encounterIDtoEJidChache[2433] = "The Eye of the Jailer"	--
-	encounterIDtoEJidChache[2429] = "The Nine"	--
-	encounterIDtoEJidChache[2432] = "Remnant of Ner'zhul"	--
-	encounterIDtoEJidChache[2434] = "Soulrender Dormazain"	--
-	encounterIDtoEJidChache[2430] = "Painsmith Raznal"	--
-	encounterIDtoEJidChache[2436] = "Guardian of the First Ones"	--
-	encounterIDtoEJidChache[2431] = "Fatescribe Roh-Kalo"	--
-	encounterIDtoEJidChache[2422] = "Kel'Thuzad"	--
-	encounterIDtoEJidChache[2435] = "Sylvannas Windrunner"	--
-end
-
 L.bossName = setmetatable({}, {__index=function (t, k)
 	if not encounterIDtoEJidChache[k] then
 		encounterIDtoEJidChache[k] = EJ_GetEncounterInfo(encounterIDtoEJidData[k] or 0) or ""

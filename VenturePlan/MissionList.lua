@@ -36,9 +36,9 @@ local function LogCounter_OnClick()
 	cb.Title:SetText(L"Wanted: Adventure Reports")
 	cb.Intro:SetText(L"The Cursed Adventurer's Guide hungers. Only the tales of your companions' adventures, conveyed in excruciating detail, will satisfy it.")
 	cb.FirstInputBoxLabel:SetText(L"To submit your adventure reports," .. "|n" .. L"1. Visit:")
-	cb.SecondInputBoxLabel:SetText(L"2. Upload the following text in a txt:")
+	cb.SecondInputBoxLabel:SetText(L"2. Upload the following text in the logs channel:")
 	cb.ResetButton:SetText(L"Reset Adventure Reports")
-	cb.FirstInputBox:SetText("https://www.dropbox.com/request/17UUZT5LblGLtOb6Ji1G")
+	cb.FirstInputBox:SetText("https://discord.gg/NKrmT28Nvk")
 	cb.FirstInputBox:SetCursorPosition(0)
 	cb.SecondInputBox:SetText(T.ExportMissionReports())
 	cb.SecondInputBox:SetCursorPosition(0)
@@ -101,6 +101,7 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	ms.DoomRunButton:Hide()
 	ms.DoomRunButton:SetShown(showDoomRun)
 	ms.TentativeClear:SetShown(showTentative)
+	ms.TentativeMarker:SetShown(showTentative)
 	ms.ViewButton:SetPoint("BOTTOM", shiftView and 20 or 0, 12)
 	for i=1,#ms.Rewards do
 		ms.Rewards[i].RarityBorder:SetVertexColor(veilShade, veilShade, veilShade)
@@ -117,7 +118,7 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 		end
 		totalHP, totalATK = totalHP + e.health, totalATK + e.attack
 	end
-	local tag = "[" .. (mi.missionScalar or 0) .. (mi.isElite and "+]" or mi.isRare and "*]" or "]")
+	local tag = "[" .. (mi.missionScalar or 0) .. (mi.isElite and L"Elite".."]" or mi.isRare and L"Rare".."]" or "]")
 	if hasNovelSpells then
 		tag = tag .. " |TInterface/EncounterJournal/UI-EJ-WarningTextIcon:16:16|t"
 	end
@@ -131,8 +132,12 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	
 	me:Show()
 end
-local function cmpMissionInfo(a, b)
-	local ac, bc = a.timeLeftSeconds, b.timeLeftSeconds
+local function cmpMissionInfo(a,b)
+	local ac, bc = a.completed or a.timeLeftSeconds == 0, b.completed or b.timeLeftSeconds == 0
+	if ac ~= bc then
+		return ac
+	end
+	ac, bc = a.timeLeftSeconds, b.timeLeftSeconds
 	if (not ac) ~= (not bc) then
 		return not ac
 	end
@@ -222,12 +227,15 @@ local function UpdateMissions()
 		m.hasTentativeGroup = U.MissionHasTentativeGroup(mid)
 		m.hasPendingStart = U.IsMissionStartingSoon(mid)
 	end
+	for i=1,inProgressMissions and #inProgressMissions or 0 do
+		missions[#missions+1] = inProgressMissions[i]
+	end
 	
 	local ni, anima = 1, C_CurrencyInfo.GetCurrencyInfo(1813)
 	anima = (anima and anima.quantity or 0)
+	ni = pushMissionSet(ni, cMissions, missions, haveUnassignedRookies, anima)
 	ni = pushMissionSet(ni, missions, nil, haveUnassignedRookies, anima)
-	ni = pushMissionSet(ni, cMissions, inProgressMissions, haveUnassignedRookies, anima)
-	ni = pushMissionSet(ni, inProgressMissions, nil, haveUnassignedRookies, anima)
+	ni = pushMissionSet(ni, inProgressMissions, missions, haveUnassignedRookies, anima)
 	MissionList.numMissions = ni-1
 	for i=ni, #MissionList.Missions do
 		MissionList.Missions[i]:Hide()

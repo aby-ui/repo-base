@@ -64,6 +64,12 @@ local _specialQuests = {
   [63198] = { name=L["Hunt: Death Elementals"] },   -- Hunt: Death Elementals
   [63199] = { name=L["Hunt: Soul Eaters"] },        -- Hunt: Soul Eaters
 
+  -- Covenant Assaults
+  [63543] = { zid=1543 }, -- Necrolord Assault
+  [63822] = { zid=1543 }, -- Venthyr Assault
+  [63823] = { zid=1543 }, -- Night Fae Assault
+  [63824] = { zid=1543 }, -- Kyrian Assault
+
   -- Old Vanilla Bosses during Anniversary Event
   [47461] = { daily=true, name=L["Lord Kazzak"] },          -- Lord Kazzak
   [47462] = { daily=true, name=L["Azuregos"] },             -- Azuregos
@@ -257,11 +263,6 @@ local QuestExceptions = {
   [62449] = "Weekly", -- A Spirit's Duty
   [62450] = "Weekly", -- A Spirit's Heart
   [62452] = "Weekly", -- A Spirit's Might
-  -- Covenant Assaults
-  [63543] = "Weekly", -- Necrolord Assault
-  [63822] = "Weekly", -- Venthyr Assault
-  [63823] = "Weekly", -- Night Fae Assault
-  [63824] = "Weekly", -- Kyrian Assault
 
   -- General
   -- Darkmoon Faire

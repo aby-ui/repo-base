@@ -177,6 +177,20 @@ GTFO.SpellID["34190"] = {
 
 -- ******************
 
+GTFO.SpellID["30926"] = {
+	--desc = "Cone of Fire (Nazan - Hellfire Ramparts - Normal)";
+	sound = 3;
+	tankSound = 0;
+	trivialLevel = 80;
+};
+
+GTFO.SpellID["36921"] = {
+	--desc = "Cone of Fire (Nazan - Hellfire Ramparts - Heroic)";
+	sound = 3;
+	tankSound = 0;
+	trivialLevel = 80;
+};
+
 GTFO.SpellID["35311"] = {
 	--desc = "Stream of Machine Fluid (Gatewatchers - Mechanar)";
 	sound = 3;

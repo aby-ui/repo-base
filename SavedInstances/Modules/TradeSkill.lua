@@ -113,6 +113,7 @@ local trade_spells = {
   -- SL
   [307142] = true, -- Shadowghast Ingot
   [307143] = true, -- Shadestone
+  [307144] = true, -- Stones to Ore
 
   -- Enchanting
   [28027]  = "sphere", -- Prismatic Sphere (2-day shared, 5.2.0 verified)

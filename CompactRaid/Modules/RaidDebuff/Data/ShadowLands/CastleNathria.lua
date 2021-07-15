@@ -63,6 +63,7 @@ module:RegisterDebuff(TIER, INSTANCE, BOSS, 346651) -- 吸取精华
 module:RegisterDebuff(TIER, INSTANCE, BOSS, 328334) -- 战术冲锋
 module:RegisterDebuff(TIER, INSTANCE, BOSS, 330848) -- 跳错了
 module:RegisterDebuff(TIER, INSTANCE, BOSS, 331706) -- 红字
+module:RegisterDebuff(TIER, INSTANCE, BOSS, 347434) -- 舞力全开
 module:RegisterDebuff(TIER, INSTANCE, BOSS, 331636) -- 黑暗伴舞
 module:RegisterDebuff(TIER, INSTANCE, BOSS, 331637) -- 黑暗伴舞
 

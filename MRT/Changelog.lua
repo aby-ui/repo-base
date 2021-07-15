@@ -1,6 +1,15 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4560
+* Raid cooldowns: Added support for new covenant legendaries
+* Minor fixes
+
+v.4560-BC
+* Raid Attendance: fixed BC raids to log attendance
+* Saving log: added options for arena/5ppl hc/5ppl normal
+* Bugfixes
+
 v.4550
 * Addon renamed from "Exorsus Raid Tools" to "Method Raid Tools". Be sure that addon "Method Raid Tools [Storage]" is enabled to keep all your saved options/data.
 * 9.1 Update
@@ -226,7 +235,7 @@ v.4300
 * Note: added "{p2}...{/p}" template for specific boss phase
 * Note: added option to change note position in list via drag&drop
 * Note: fixed fps lag for truncated note with a lot timers
-* Note: added dbm supprort for timers with phase
+* Note: added dbm support for timers with phase
 * Note: added help for some timer constructions
 * Note: added "/rt note set notename" command for quick update
 * Bonus Loot: module is planned to be removed in future updates, export data if you need to save it

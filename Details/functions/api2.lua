@@ -504,10 +504,21 @@ function Details.UnitInfo (unitId, segment)
 		return unitInfo
 	end
 	
-	unitInfo.class = playerObject.classe or "UNKNOW"
-	unitInfo.spec = playerObject.spec or 0
-	unitInfo.guid = playerObject.serial or ""
-	unitInfo.role = playerObject.role or "NONE"
+	local specCache = Details.cached_specs
+	local unitSerial = UnitGUID(unitId)
+	local _, class = UnitClass(unitId)
+
+	local playerInfo = {}
+
+	local raidStatusLib = LibStub:GetLibrary("LibRaidStatus-1.0")
+	if (raidStatusLib) then
+		playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo(unitName)
+	end
+
+	unitInfo.class = playerObject.classe or class or "UNKNOW"
+	unitInfo.spec = playerObject.spec or specCache[unitSerial] or playerInfo.spec or 0
+	unitInfo.guid = playerObject.serial or unitSerial or ""
+	unitInfo.role = playerObject.role or  Details.cached_roles[unitSerial] or "NONE"
 	unitInfo.isPlayer = playerObject:IsPlayer()
 	unitInfo.isEnemy = playerObject:IsEnemy()
 	unitInfo.isPet = playerObject:IsPetOrGuardian()

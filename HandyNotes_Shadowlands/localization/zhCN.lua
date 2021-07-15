@@ -246,29 +246,21 @@ L["consumption_note"] = [[
 
 |cFFFF0000*{npc:179758} 在此稀有战斗中将不会刷新并被吞噬。*|r
 ]]
-L["darkmaul_note"] = [[
-从入侵的渊菇收集 {item:187153} 并喂食给 {npc:180063}。你必须完成事件10次获得坐骑。
-
-|cFFFF8C00如果你在团队中进程将不会被计数！|r
-]]
+L["darkmaul_note"] = "从入侵的渊菇收集 {item:187153} 并喂食给 {npc:180063}。你必须完成事件10次获得坐骑。"
 L["dislodged_nest_note"] = "点击附近的剧毒之蛾获得 {spell:355181}。使用 {spell:355131} 额外动作按钮给 {npc:178547} 来获得控制和骑上它进入巢所在的树中。"
 L["escaped_wilderling_note"] = "点击 {npc:180014} 开始驯服事件。"
 L["flayedwing_transporter_note"] = "点击 {npc:178633} 飞向和飞离绝密宝库。"
 L["fleshwing_note"] = "和 {npc:180079} 交谈开始收集事件。"
 L["forgotten_feather_note"] = "从守护者的休憩跳下来到漂浮的一个小岛上。"
 L["konthrogz_note"] = "在吞噬者的传送门事件中出现。事件可能在刻希亚许多地方出现。"
-L["korthia_limited_rare"] = nil
+L["korthia_limited_rare"] = "|cFFFF8C00此稀有某些天不可用。|r"
 L["krelva_note"] = "80% 血量会移动到其它平台，60% 血量会移动到主陆地。|cFFFF8C00你必须击杀稀有 60% 血量才能获得奖励！|r"
 L["kroke_note"] = "击杀区域内 {npc:179029} 直到他出现。{npc:179029} 不在的天内不会刷新。"
 L["maelie_wanderer"] = "{npc:179912} 将在当天固定位置出现。使用 {spell:355862} 他，需要6天交互，然后回到 {npc:179930} 获得坐骑。"
 L["malbog_note"] = "和 {npc:179729} 交谈获得 {spell:355078} 并跟随脚印直到你找到血肉遗骸。"
 L["offering_box_note"] = "需要 {item:187033}，可以在附近废墟的西侧墙顶部找到。"
 L["pop_quiz_note"] = "突击测验事件将在地图上随机出现。点击废弃的帷幕之杖并回答 {npc:180162} 的问题。"
-L["razorwing_note"] = [[
-交付区域内吞噬者掉落的10个 {item:187054}。
-
-|cFFFF8C00如果你在团队中进程将不会被计数！|r
-]]
+L["razorwing_note"] = "交付区域内吞噬者掉落的10个 {item:187054}。"
 L["reliwik_note"] = "点击纯净的的刀翼兽之卵并击杀它。"
 L["spectral_bound_chest"] = "点击附近的3个幽魂钥匙解锁宝箱。"
 L["spectral_bound_note"] = "幽魂束缚宝箱"
@@ -279,6 +271,7 @@ L["worldcracker_note"] = "和 {npc:180028} 交谈触发护送事件。"
 L["archivist_key_note"] = "从 {npc:178257} 购买 %s 解锁。"
 L["korthian_shrine_note"] = "点击神龛获得 {spell:352367} 可以看到隐藏的路径到达alter。"
 L["num_research"] = "%d 研究"
+L["plus_research"] = "+ 研究"
 L["options_icons_relic"] = "{achievement:15066}"
 L["options_icons_relic_desc"] = "显示成就中全部20个圣物的位置。"
 
@@ -290,7 +283,7 @@ L["rift_portal_note"] = [[
 |cFFFF8C00并非所有裂隙传送门在任何时间都处于激活状态。|r
 ]]
 L["rift_rare_only_note"] = "此稀有只在 |cFFFFFF00裂隙|r 位面内可以见到和击杀。"
-L["rift_rare_exit_note"] = "在裂隙位面内和此稀有互动将使其离开 |cFFFFFF00裂隙|r。"
+L["rift_rare_exit_note"] = "此稀有必须有 {spell:354840} 否则会出错！在裂隙位面内和其互动将使其离开 |cFFFFFF00裂隙|r。"
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "显示 {npc:179595} 的位置可以进入 |cFFFFFF00裂隙|r。"
 
@@ -311,13 +304,13 @@ L["unusual_nest"] = "异常材料之巢"
 L["unusual_nest_note"] = "全部5个巢每天都可以拾取。"
 
 L["options_icons_invasive_mawshroom_desc"] = "显示入侵的渊菇的位置。"
-L["options_icons_invasive_mawshroom"] = "入侵的渊菇（日常）"
+L["options_icons_invasive_mawshroom"] = "入侵的渊菇"
 L["options_icons_korthia_dailies_desc"] = "显示未标记日常宝箱的位置。"
-L["options_icons_korthia_dailies"] = "隐藏宝箱（日常）"
+L["options_icons_korthia_dailies"] = "隐藏宝箱"
 L["options_icons_mawsworn_cache_desc"] = "显示渊誓之箱的位置。"
-L["options_icons_mawsworn_cache"] = "渊誓之箱（日常）"
+L["options_icons_mawsworn_cache"] = "渊誓之箱"
 L["options_icons_nest_materials_desc"] = "显示异常材料之巢的位置。"
-L["options_icons_nest_materials"] = "异常材料之巢（日常）"
+L["options_icons_nest_materials"] = "异常材料之巢"
 
 -------------------------------------------------------------------------------
 --------------------------------- MALDRAXXUS ----------------------------------
@@ -497,9 +490,18 @@ L["etherwyrm_label"] = "注能的以太浮蛇囚笼"
 L["etherwyrm_note"] = "需要法夜突袭激活。击杀位于裂隙的 {npc:179030} 获得 {item:186190}。在荒芜洞窟洞穴（裂隙以外）（当突袭未激活时在 {npc:175821} 处）的以太浮蛇囚笼使用钥匙。"
 L["fallen_charger_note"] = "在区域范围内的大喊之后，它会选择两条路径中的任何一条，直到它到达刻希亚并在那里消失。"
 L["ikras_note"] = "在破灭堡飞来飞去。这里是攻击他的好位置。"
-L["lilabom_note"] = "收集全部5个部分完成宠物。"
+L["lilabom_note"] = [[
+收集全部5个部分完成宠物。一些部分可能在多个位置出现。
+
+· {item:186183}
+· {item:186184}
+· {item:186185}
+· {item:186186}
+· {item:186187}
+]]
 L["orophea_note"] = "从东南方的拾取 {spell:337143} 并提供给 {npc:172577} 激活。"
 L["sanngror_note"] = "如果他是不可攻击，等待直到他不再灵魂实验。"
+L["sly_note"] = "和 {npc:179068} 交谈获得 {spell:353322} 增益并在3个不同的格里恩突袭找到 {npc:179096}。"
 L["talaporas_note"] = "和3名其他玩家，站在平台的角落并施放 {spell:331800} 召唤稀有。"
 L["valis_note"] = "按正确顺序点击三个 {npc:174810} 召唤稀有。顺序每次点击都会更换并且错误点击符文会受到伤害和负面效果 {spell:343636}。"
 L["yero_note"] = "靠近 {npc:172862} 然后跟着他进入附近的一个山洞，在那里他变为敌对。"
@@ -558,10 +560,10 @@ L["nexus_cave_anguish_outside"] = "苦楚之洞外"
 L["nexus_cave_anguish_upper"] = "苦楚之洞内（上层）"
 L["nexus_cave_desmotaeron"] = "渊狱外的小洞穴内"
 L["nexus_cave_echoing_outside"] = "回音之洞外"
-L["nexus_cave_forlorn"] = "荒弃之息洞穴内"
+L["nexus_cave_forlorn"] = "荒弃之息洞穴内。"
 L["nexus_cave_howl_outside"] = "死亡之嚎洞穴外的地面上"
 L["nexus_cave_howl"] = "死亡之嚎洞穴内"
-L["nexus_cave_roar"] = nil
+L["nexus_cave_roar"] = "死亡之哮洞穴内"
 L["nexus_cave_ledge"] = "在壁架下方的一个小洞穴中 "
 L["nexus_cave_prodigum"] = "浪骸之所的小洞穴内"
 L["nexus_cave_soulstained"] = "魂渍原野的小洞穴内"
@@ -593,10 +595,10 @@ L["nexus_misc_grapple_rock"] = "通过锚点到岩石上"
 L["nexus_misc_ledge_below"] = "在窗台下的地面上 "
 L["nexus_misc_three_chains"] = "在地上的三个铁链"
 
-L["stolen_anima_vessel"] = "被窃心能容器"
+L["stolen_anima_vessel"] = "失窃的心能容器"
 L["hidden_anima_cache"] = "隐藏心能宝箱"
-L["options_icons_anima_vessel"] = "被窃心能容器"
-L["options_icons_anima_vessel_desc"] = "显示 |cFFFFFF00The Rift|r 中的心能容器位置。"
+L["options_icons_anima_vessel"] = "失窃的心能容器"
+L["options_icons_anima_vessel_desc"] = "显示突袭期间 |cFFFFFF00裂隙|r 中的心能容器位置。"
 
 L["rift_hidden_cache"] = "隙隐宝箱"
 L["options_icons_rift_hidden_cache"] = "隙隐宝箱"
@@ -608,21 +610,37 @@ L["options_icons_riftstone"] = "{npc:174962}"
 L["options_icons_riftstone_desc"] = "显示混乱裂隙石传送者位置。"
 L["options_icons_grapples"] = "{npc:176308}"
 L["options_icons_grapples_desc"] = "显示 {item:184653} 升级 {npc:176308} 的位置。"
-L["options_icons_maw_lore"] = "噬渊学识"
-L["options_icons_maw_lore_desc"] = "显示 {achievement:14761} 成就中噬渊学识的位置。"
 L["options_icons_stygia_nexus"] = "冥殇枢纽"
 L["options_icons_stygia_nexus_desc"] = "显示 {item:184168} 坐骑所需的枢纽位置。"
 L["options_icons_stygian_caches"] = "冥殇宝箱"
 L["options_icons_stygian_caches_desc"] = "显示获取额外冥殇的宝箱位置。"
 
-L["cov_assault_only"] = nil
-L["domination_chest"] = "统御宝箱"
-L["domination_chest_note"] = "需要4个 {item:186727} 打开全部封印。"
-L["gold_band_note"] = "在山顶上的一个尖上。"
-L["harrower_key_ring"] = "掠心者的钥匙链"
-L["harrower_key_note"] = "在 {npc:178311} 旁边的墙上。"
-L["helgarde_supply"] = "赫尔加德补给箱"
-L["maw_mad_note"] = "在破灭堡周围随机奔跑，总是在这里刷新。"
+L["cov_assault_only"] = "只在%s突袭期间可用。"
+
+L["helgarde_supply"] = "冥锋补给箱"
+L["helgarde_supply_note"] = "在渊狱区域各处刷新。你的 {npc:180598} 可以帮助你找到它们。"
+L["options_icons_helgarde_cache"] = "冥锋补给箱"
+L["options_icons_helgarde_cache_desc"] = "显示冥锋补给箱在渊狱区域可能出现的位置。"
+
+L["mawsworn_cache_ramparts_note"] = "此宝箱在城墙顶上。使用锚点或 {npc:177093} 到它们那里。"
+L["mawsworn_cache_tower_note"] = "此宝箱位于塔上并需要 {npc:177093} 到达。使用 {spell:349853} 技能爬上去。"
+L["mawsworn_cache_quest_note"] = "{item:186573} 将只在你完成 {quest:63545} 任务后掉落！"
+
+L["nilg_silver_ring_note"] = "在渊狱收集4个 {item:186727} 并使用它们打开统御封印之箱。"
+L["nilg_silver_ring_note1"] = "击杀 {npc:177444} 并打开 {item:186970}。"
+L["nilg_silver_ring_note2"] = "拾取掠心者的钥匙链，位于地下室房间 {npc:178311} 旁边的墙上。"
+L["nilg_silver_ring_note3"] = "打渊狱区域内的冥锋补给箱。你的 {npc:180598} 可以帮助你找到它们。"
+L["nilg_silver_ring_note4"] = "反复击杀渊狱区域的 {npc:177134}（低掉率）。"
+L["nilg_stone_ring_note"] = "在通灵领主突袭收集4个 {item:186600} 并在佐瓦尔的坩埚的任意 {npc:171492} 组合它们。"
+L["nilg_stone_ring_note1"] = "在破灭堡城墙顶上的渊誓之箱（黄图标）内找到。"
+L["nilg_stone_ring_note2"] = "完成 {quest:63545} 任务，然后拾取渊誓之箱直到你找到任务物品 {item:186573}。此任务可以共享！"
+L["nilg_stone_ring_note3"] = "从破灭堡中央区域的 {npc:179601} 拾取。"
+L["nilg_stone_ring_note4"] = "破灭堡 {npc:170634} 旁的地面上找到。你的 {npc:180598} 可以帮助你找到它们。"
+L["nilg_gold_band_note"] = "使用锚点并跟着路径爬到山顶上。"
 L["nilganihmaht_note"] = "你必须收集5个戒指带给位于裂隙的 {npc:179572}。"
-L["options_icons_nilganihmaht"] = "{npc:179572}"
-L["options_icons_nilganihmaht_desc"] = "显示 {spell:354354} 坐骑的部件位置。"
+L["calcis"] = "白垩之地"
+L["desmotaeron"] = "渊狱"
+
+L["zovault_note"] = "每天拖拽 {npc:179883} 到 {npc:179904} 必给裂隙石。"
+L["options_icons_zovault"] = "{npc:179883}"
+L["options_icons_zovault_desc"] = "显示 {npc:179883} 可能的位置。"

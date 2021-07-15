@@ -250,6 +250,18 @@ GTFO.SpellID["32251"] = {
 	trivialLevel = 80;
 };
 
+GTFO.SpellID["30927"] = {
+	--desc = "Blaze (Vazruden - Hellfire Ramparts)";
+	sound = 1;
+	trivialLevel = 80;
+};
+
+GTFO.SpellID["32492"] = {
+	--desc = "Blaze (Vazruden - Hellfire Ramparts - Heroic)";
+	sound = 1;
+	trivialLevel = 80;
+};
+
 GTFO.SpellID["35057"] = {
 	--desc = "Netherbomb (Mechanar Tinkerer - Mechanar)";
 	sound = 2;
@@ -310,9 +322,18 @@ GTFO.SpellID["36175"] = {
 };
 
 GTFO.SpellID["35767"] = {
-	--desc = "Felfire (Wrath-Scryer Soccothrates - Arcatraz)";
+	--desc = "Felfire (Wrath-Scryer Soccothrates - Arcatraz - Heroic)";
 	sound = 1;
 	trivialLevel = 80;
+};
+
+GTFO.SpellID["36829"] = {
+	--desc = "Hell Rain (Sargeron Hellcaller - Arcatraz - Normal)";
+	sound = 1;
+};
+GTFO.SpellID["38917"] = {
+	--desc = "Hell Rain (Sargeron Hellcaller - Arcatraz - Heroic)";
+	sound = 1;
 };
 
 GTFO.SpellID["44198"] = {

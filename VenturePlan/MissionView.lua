@@ -475,7 +475,7 @@ local function Predictor_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
 	GameTooltip:SetText(ITEM_QUALITY_COLORS[5].hex .. L"Cursed Adventurer's Guide")
 	GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1, 1)
-	GameTooltip:AddLine(L"Use: Read the guide, determining the fate of your adventuring party.", 0, 1, 0, 1)
+	GameTooltip:AddLine(L"Use: Read the guide, determining the fate of your adventuring party.", 0, 0.8, 1, 1)
 	GameTooltip:AddLine(L'"Do not believe its lies! Balance druids are not emergency rations."', 1, 0.835, 0.09, 1)
 	GameTooltip:Show()
 end
@@ -484,7 +484,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 	local res = sim.res
 	local rngModel = res.hadDrops or (res.hadWins and res.hadLosses)
 	local inProgress = not res.isFinished and not rngModel
-	local oodBuild = GetBuildInfo() ~= "9.0.5"
+	local oodBuild = GetBuildInfo() ~= "9.1.0"
 	local hprefix = (oodBuild or incompleteModel) and "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:0|t " or ""
 	if inProgress then
 		hprefix = hprefix .. "|cffff3300" .. L"Preliminary:" .. "|r "
@@ -497,8 +497,8 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 
 	if incompleteModel then
 		GameTooltip:AddLine(L"Not all abilities have been taken into account.", 0.9,0.25,0.15)
-	elseif oodBuild then
-		GameTooltip:AddLine(L"The Guide may be out of date.", 0.9,0.25,0.15, true)
+	--elseif oodBuild then
+		--GameTooltip:AddLine(L"The Guide may be out of date.", 0.9,0.25,0.15)
 	end
 	if inProgress then
 		GameTooltip:AddLine(L"Not all outcomes have been examined.", 0.9, 0.25, 0.15, 1)
@@ -728,7 +728,7 @@ local function MissionStart_OnClick(_self, button)
 		U.StartMissionWithDelay(mid, g)
 	else
 		U.StoreMissionGroup(mid, g, true)
-		PlaySound(39514)
+		PlaySound(165965)
 	end
 	CovenantMissionFrame:CloseMission()
 end
@@ -766,10 +766,10 @@ local function Shuffler_OnEnter(self, source)
 		sb:Activate(GameTooltip, a1, a2)
 		return
 	elseif (a1 and not a2) or source == "update" then -- finished, no group
-		GameTooltip:AddLine(L"Victory could not be guaranteed.", 1,1,1)
+		GameTooltip:AddLine("\124TInterface\\AddOns\\VenturePlan\\Libs\\No.blp:14\124t"..L"Victory could not be guaranteed.", 1,1,1)
 	else -- not running, not finished
 		GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1, 1)
-		GameTooltip:AddLine(L"Use: Let the book select troops and battle tactics.", 0, 1, 0, 1)
+		GameTooltip:AddLine(L"Use: Let the book select troops and battle tactics.", 0, 0.8, 1, 1)
 		local c = a2 and WHITE_FONT_COLOR or RED_FONT_COLOR -- can start?
 		GameTooltip:AddLine(L"Requires a companion in the party", c.r, c.g, c.b)
 		GameTooltip:AddLine(L'"Chapter 1: Mages Must Melee."', 1, 0.835, 0.09, 1)
@@ -846,15 +846,15 @@ function EV:I_ADVENTURES_UI_LOADED()
 			self:Click()
 		end
 	end)
-	local cag = T.CreateObject("IconButton", MP.Board, 64, "Interface/Icons/INV_Misc_Book_01")
+	local cag = T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Misc_Book_01")
 	cag:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	cag:SetPoint("BOTTOMLEFT", 24, 4)
+	cag:SetPoint("BOTTOMLEFT", 20, 15)
 	cag:SetScript("OnEnter", Predictor_OnEnter)
 	cag:SetScript("OnLeave", Predictor_OnLeave)
 	cag:SetScript("OnClick", Predictor_OnClick)
-	local cat = T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Misc_Book_06")
+	local cat = T.CreateObject("IconButton", MP.Board, 46, "Interface/Icons/INV_Misc_Book_06")
 	cat:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	cat:SetPoint("TOPLEFT", cag, "TOPRIGHT", 4, 0)
+	cat:SetPoint("TOPLEFT", cag, "TOPRIGHT", -32, 50)
 	cat:SetScript("OnEnter", Shuffler_OnEnter)
 	cat:SetScript("OnLeave", Shuffler_OnLeave)
 	cat:SetScript("OnClick", Shuffler_OnClick)

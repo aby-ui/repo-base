@@ -299,6 +299,8 @@ function TeamStats:OnUpdateNameTimer()
             player.name = UnitName(unit)
             player.heath = UnitHealthMax(unit)
             player.class = select(2, UnitClass(unit))
+            local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+            player.mscore = summary and summary.currentSeasonScore or player.mscore
             current_names[fullname] = true
         end
     end
@@ -468,6 +470,9 @@ function TeamStats:OnCheck()
 
         local name = UnitFullName(unit)
         local curr = TeamStats.db.players[name]
+        local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+        curr.mscore = summary and summary.currentSeasonScore or curr.mscore
+
         if UnitIsUnit("player", unit) then
             --玩家自身不需要观察直接获取
             if not curr.inspected then
