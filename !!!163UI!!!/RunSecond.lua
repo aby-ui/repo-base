@@ -488,7 +488,6 @@ end)
 
 --[[------------------------------------------------------------
 9.0.1 BossBanner_ConfigureLootFrame -> SetItemButtonQuality -> SetItemButtonOverlay
----------------------------------------------------------------]]
 hooksecurefunc("IsArtifactRelicItem", function()
     if BossBanner and BossBanner.LootFrames then
         local lf = BossBanner.LootFrames[#BossBanner.LootFrames]
@@ -501,6 +500,7 @@ hooksecurefunc("IsArtifactRelicItem", function()
         end
     end
 end)
+---------------------------------------------------------------]]
 
 --[[------------------------------------------------------------
 9.0 噬渊reload显示帮助信息

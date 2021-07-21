@@ -1,6 +1,12 @@
 ELP_CURRENT_TIER = 9 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
-ELP_RING_SLOT = Enum.ItemSlotFilterType.Finger
+ELP_DEFAULT_SLOT = Enum.ItemSlotFilterType.Finger
 ELP_ALL_SLOT = Enum.ItemSlotFilterType.NoFilter
+ELP_ATTRS = {
+    [1] = STAT_CRITICAL_STRIKE,
+    [2] = STAT_HASTE,
+    [3] = STAT_VERSATILITY,
+    [4] = STAT_MASTERY,
+}
 
 if not ELP_LAST_RAID_IDX then
     EJ_SelectTier(ELP_CURRENT_TIER)
@@ -68,7 +74,7 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
         ELPDATA = db
 
         db.ITEMS = db.ITEMS or {}
-        db.range = 0
+        --db.range = 0 --通过正常点击重置而不是强制重置
 
         self:SetScript("OnUpdate", ELP_RetrieveNext)
         CoreDependCall("Blizzard_EncounterJournal", function()
@@ -80,10 +86,13 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
             :LEFT(EncounterJournalInstanceSelectLootJournalTab, "RIGHT", 24, -2)
             :AddFrameLevel(3, CharacterFrameInsetRight)
             :SetScript("OnClick", function()
-                if db.range == 0 then db.range = 5 end
+                if db.range == 0 then db.range = 2 end
+                ELP.display_by_us = true
                 EncounterJournal_DisplayInstance(1187)
                 EncounterJournalEncounterFrameInfoLootTab:Click()
                 EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle:Click()
+                ELP.display_by_us = nil
+                EncounterJournal_OnFilterChanged()
             end)
             :un()
             ELP.initMenus()

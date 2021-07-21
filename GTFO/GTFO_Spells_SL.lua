@@ -750,13 +750,60 @@ GTFO.SpellID["355581"] = {
 GTFO.SpellID["346961"] = {
   --desc = "Purging Field (Hylbrande)";
   sound = 1;
-  test = true;
+};
+
+GTFO.SpellID["346828"] = {
+  --desc = "Sanitizing Field (Hylbrande)";
+  sound = 1;
 };
 
 GTFO.SpellID["354497"] = {
   --desc = "Deadly Seas";
   applicationOnly = true;
   sound = 1;
+};
+
+GTFO.SpellID["356011"] = {
+  --desc = "Beam Splicer (Beam Splicer)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["346028"] = {
+  --desc = "Interrogation (Zo'phex)";
+  sound = 1;
+};
+
+GTFO.SpellID["348366"] = {
+  --desc = "Armed Security (Zo'phex)";
+  sound = 1;
+};
+
+GTFO.SpellID["346329"] = {
+  --desc = "Spilled Liquids (P.O.S.T. Master)";
+  sound = 1;
+};
+
+GTFO.SpellID["350090"] = {
+  --desc = "Whirling Annihilation (Venza Goldfuse)";
+  sound = 1;
+};
+
+GTFO.SpellID["350013"] = {
+  --desc = "Gluttonous Feast";
+  applicationOnly = true;
+  sound = 4;
+};
+
+GTFO.SpellID["358947"] = {
+  --desc = "Burning Tar (Hourglass Cannon)";
+  sound = 1;
+};
+
+GTFO.SpellID["356163"] = {
+  --desc = "Sword Toss (Corsair Officer)";
+  sound = 1;
+  tankSound = 0;
 };
 
 end

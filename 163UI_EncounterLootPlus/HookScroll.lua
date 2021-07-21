@@ -134,12 +134,24 @@ ELP.initScroll = function()
     hooksecurefunc("EncounterJournal_DisplayEncounter", function()
         if not ELP.display_by_us and db.range ~= 0 then
             db.range = 0
+            C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT)
+            EncounterJournal_RefreshSlotFilterText();
+            EncounterJournal_LootUpdate()
+        end
+    end)
+
+    hooksecurefunc("EncounterJournal_DisplayInstance", function()
+        if not ELP.display_by_us and db.range ~= 0 then
+            db.range = 0
+            C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT)
+            EncounterJournal_RefreshSlotFilterText();
             EncounterJournal_LootUpdate()
         end
     end)
 
     hooksecurefunc("EJ_ResetLootFilter", ELP_UpdateItemList)
     hooksecurefunc("ELP_UpdateItemList", function() EncounterJournal.encounter.info.lootScroll.scrollBar:SetValue(0) end)
+    hooksecurefunc("EncounterJournal_UpdateFilterString", ELP_UpdateFilterString)
 
     --fix sometime can't go back
     hooksecurefunc(EncounterJournalNavBarHomeButton, "Disable", function(self, enabled) self:SetEnabled(true) end)
@@ -150,3 +162,33 @@ ELP.initScroll = function()
     EncounterJournalEncounterFrameInfoModelTabSelect:SetPoint("RIGHT", EncounterJournalEncounterFrameInfoModelTab, -6, 0)
 end
 
+--[[------------------------------------------------------------
+append EncounterJournal_UpdateFilterString
+---------------------------------------------------------------]]
+function ELP_UpdateFilterString()
+    if db.range == 0 then return end
+
+    local filter = db.range == 1 and "全部团本"
+            or db.range == 2 and "地下城"
+            or db.range == 3 and "全部副本"
+            or db.range == 4 and "最新团本"
+            or db.range == 5 and "最新副本" or ""
+
+    if db.attr1 ~= 0 then
+        filter = filter .. "：" .. ELP_ATTRS[db.attr1]
+        if db.attr2 ~=0 and db.attr2 ~= db.attr1 then
+            filter = filter .. " " .. ELP_ATTRS[db.attr2]
+        end
+    end
+
+    local banner = EncounterJournal.encounter.info.lootScroll.classClearFilter
+    if banner:IsShown() then
+        local text = banner.text:GetText()
+        local old = text --select(3, text:find((EJ_CLASS_FILTER:gsub("%%s", "(.+)")))) or text
+        banner.text:SetText(old .. "，" .. filter)
+    else
+        banner.text:SetText(filter)
+        EncounterJournal.encounter.info.lootScroll.classClearFilter:Show();
+        EncounterJournal.encounter.info.lootScroll:SetHeight(360);
+    end
+end

@@ -248,15 +248,18 @@ private.NPC_GUIDE = {
 	[179883] = { [RSConstants.FLAG] = { x = 0.4473, y = 0.5142, comment = AL["NOTE_179883_1"] } }; --Zovaal's Vault
 	[180160] = { [RSConstants.FLAG] = { x = 0.5627, y = 0.6618, comment = AL["NOTE_180160_1"] } }; --Zovaal's Vault
 	[179791] = { 
-		[RSConstants.ENTRANCE] = { x = 0.6686, y = 0.5632 }; 
-		[RSConstants.STEP1] = { x = 0.6559, y = 0.5864, comment = AL["NOTE_179791_1"] }; 
-		[RSConstants.STEP2] = { x = 0.6685, y = 0.5934, comment = AL["NOTE_179791_1"] }; 
+		[RSConstants.ENTRANCE..1] = { x = 0.6686, y = 0.5632 }; 
+		[RSConstants.STEP1..1] = { x = 0.6559, y = 0.5864, comment = AL["NOTE_179791_1"] }; 
+		[RSConstants.STEP2..1] = { x = 0.6685, y = 0.5934, comment = AL["NOTE_179791_1"] }; 
+		[RSConstants.ENTRANCE..2] = { x = 0.632, y = 0.4377 }; 
+		[RSConstants.STEP1..2] = { x = 0.6165, y = 0.4507, comment = AL["NOTE_179791_1"] }; 
+		[RSConstants.STEP2..2] = { x = 0.623, y = 0.4612, comment = AL["NOTE_179791_1"] }; 
 	}; --Zelnithop
 	[179802] = { [RSConstants.TRANSPORT] = { x = 0.3935, y = 0.524 } }; --Yarxhov the Pillager
 	[179859] = { [RSConstants.TRANSPORT] = { x = 0.4499, y = 0.3558 } }; --Xyraxz the Unknowable
 	[179608] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Screaming Shade
 	[179911] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Silent Soulstalker
-	[179913] = { [RSConstants.TRANSPORT] = { x = 0.4105, y = 0.4166, comment = AL["NOTE_RIFT_PORTAL"] } }; --Deadsoul Hatcher
+	[179913] = { [RSConstants.TRANSPORT] = { x = 0.5938, y = 0.5378, comment = AL["NOTE_RIFT_PORTAL"] } }; --Deadsoul Hatcher
 	[179914] = { [RSConstants.TRANSPORT] = { x = 0.5371, y = 0.7181, comment = AL["NOTE_RIFT_PORTAL"] } }; --Observer Yorik
 	[179911] = { [RSConstants.TRANSPORT] = { x = 0.5371, y = 0.7181, comment = AL["NOTE_RIFT_PORTAL"] } }; --Silent Soulstalker
 }
@@ -552,6 +555,7 @@ private.CONTAINER_GUIDE = {
 	[352703] = { 
 		[RSConstants.FLAG..1] = { x = 0.4386, y = 0.4148, itemID = 179823 };
 		[RSConstants.FLAG..2] = { x = 0.3823, y = 0.4376, itemID = 179823 };
+		[RSConstants.FLAG..3] = { x = 0.4356, y = 0.3816, itemID = 179823 };
 	}; --La cosecha
 	[354206] = { [RSConstants.PATH_START] = { x = 0.4102, y = 0.3753 } }; --Greedstone
 	[369148] = { [RSConstants.FLAG..1] = { x = 0.3815, y = 0.4161, comment = AL["NOTE_369148_1"] } }; --Glitering nest material

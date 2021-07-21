@@ -18,7 +18,7 @@ local showChange = function(newValue)
     CoreScheduleBucket("AbyMawThreatFade", 2.5, function()
         local duration = 1.5
         UICoreFrameFadeOut(ct.AbyTxtCt.TextAdd, duration, 1.0, 0.0, function() ct.AbyTxtCt.TextAdd:SetText("") end)
-        if newValue - (last or newValue) >= 100 then U1Message("威胁值 +" .. (newValue - (last or newValue))) end
+        --if newValue - (last or newValue) >= 100 then U1Message("威胁值 +" .. (newValue - (last or newValue))) end
         last = newValue
     end)
 end

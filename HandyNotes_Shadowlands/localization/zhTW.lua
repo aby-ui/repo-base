@@ -269,9 +269,9 @@ L["towering_exterminator_note"] = "從淵誓傳送門事件中刷新."
 L["worldcracker_note"] = "和 {npc:180028} 交談來觸發護送事件."
 
 L["archivist_key_note"] = "從 {npc:178257} 購買 %s 來解鎖."
-L["korthian_shrine_note"] = "點選祭壇以取得 {spell:352367} 來看到通往 alter 的隱藏路徑."
-L["num_research"] = "%d 編目研究"
-L["plus_research"] = nil
+L["korthian_shrine_note"] = "點選相移科西亞聖壇獲得 {spell:352367} 增益讓你能看到通往祭壇的隱藏路徑."
+L["num_research"] = "%d 研究"
+L["plus_research"] = "+研究"
 L["options_icons_relic"] = "{achievement:15066}"
 L["options_icons_relic_desc"] = "顯示成就的所有20個文物位置."
 
@@ -283,7 +283,15 @@ L["rift_portal_note"] = [[
 |cFFFF8C00並非所有裂隙傳送門在任何時間都是啟動的.|r
 ]]
 L["rift_rare_only_note"] = "此稀有僅在 |cFFFFFF00裂隙|r 位面內可以看到並被擊殺"
-L["rift_rare_exit_note"] = "此稀有必須有 {spell:354840} 增益否則會出錯! 在裂隙中和其互動後會離開 |cFFFFFF00裂隙|r 位面"
+L["rift_rare_exit_note"] = [[
+此稀有在裂隙中被互動後會離開 |cFFFFFF00裂隙|r 位面.
+
+三個裂隙稀有通常會在20分鐘的間隔後以固定的順序刷新:
+
+  1. {npc:179913}
+  2. {npc:179608}
+  3. {npc:179911}
+]]
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "顯示用來進入 |cFFFFFF00裂隙|r 的 {npc:179595} 位置"
 
@@ -560,7 +568,7 @@ L["nexus_cave_anguish_outside"] = nil
 L["nexus_cave_anguish_upper"] = nil
 L["nexus_cave_desmotaeron"] = nil
 L["nexus_cave_echoing_outside"] = nil
-L["nexus_cave_forlorn"] = nil
+L["nexus_cave_forlorn"] = "在荒棄休息處的山洞內."
 L["nexus_cave_howl_outside"] = nil
 L["nexus_cave_howl"] = nil
 L["nexus_cave_roar"] = nil
@@ -618,28 +626,28 @@ L["options_icons_stygian_caches_desc"] = "顯示含有額外冥魄寶箱的位�
 L["cov_assault_only"] = "僅在 %s進攻戰 時刷新"
 
 L["helgarde_supply"] = "黑爾嘉德補給箱"
-L["helgarde_supply_note"] = nil
-L["options_icons_helgarde_cache"] = nil
-L["options_icons_helgarde_cache_desc"] = nil
+L["helgarde_supply_note"] = "在德司莫泰隆區域刷新, 你的 {npc:180598} 可以幫助你找到它們."
+L["options_icons_helgarde_cache"] = "黑爾嘉德補給箱"
+L["options_icons_helgarde_cache_desc"] = "在德司莫泰隆顯示黑爾嘉德補給箱的可能位置"
 
-L["mawsworn_cache_ramparts_note"] = nil
-L["mawsworn_cache_tower_note"] = nil
-L["mawsworn_cache_quest_note"] = nil
+L["mawsworn_cache_ramparts_note"] = "這個儲物箱在堡壘的頂端. 使用爪鉤或是 {npc:177093} 來到達它們."
+L["mawsworn_cache_tower_note"] = "這個儲物箱在塔的頂端需要使用 {npc:177093} 來到達. 使用 {spell:349853} 技能來往上爬."
+L["mawsworn_cache_quest_note"] = "{item:186573} 只有在你完成 {quest:63545} 任務後才會掉落!"
 
-L["nilg_silver_ring_note"] = "需要4個 {item:186727} 來打開全部封印"
-L["nilg_silver_ring_note1"] = nil
-L["nilg_silver_ring_note2"] = nil
-L["nilg_silver_ring_note3"] = nil
-L["nilg_silver_ring_note4"] = nil
-L["nilg_stone_ring_note"] = nil
-L["nilg_stone_ring_note1"] = nil
-L["nilg_stone_ring_note2"] = nil
-L["nilg_stone_ring_note3"] = nil
-L["nilg_stone_ring_note4"] = nil
-L["nilg_gold_band_note"] = "在山頂的一個尖端上"
-L["nilganihmaht_note"] = "你必須蒐集5個戒指, 並且把它們帶給在裂隙中的 {npc:179572} ."
-L["calcis"] = nil
-L["desmotaeron"] = nil
+L["nilg_silver_ring_note"] = "在德司莫泰隆收集4個 {item:186727} 並使用他們來打開統御寶箱"
+L["nilg_silver_ring_note1"] = "殺死 {npc:177444} 並且打開 {item:186970}."
+L["nilg_silver_ring_note2"] = "在 {npc:178311} 旁邊的地下房間的牆壁上, 拾取折磨專家的鑰匙圈"
+L["nilg_silver_ring_note3"] = "在德司莫泰隆區域開啟黑爾嘉德補給箱. 你的 {npc:180598} 可以幫助你找到它們."
+L["nilg_silver_ring_note4"] = "在德司莫泰隆區域農 {npc:177134} (低調落率)."
+L["nilg_stone_ring_note"] = "在死靈領主進攻戰時收集4個 {item:186600} 並且在佐瓦爾的大釜裡的任何一個 {npc:171492} 重鑄他."
+L["nilg_stone_ring_note1"] = "在墮滅堡堡壘的頂端的某些淵誓儲物箱 (黃色圖標)."
+L["nilg_stone_ring_note2"] = "完成任務 {quest:63545}, 然後拾取淵誓儲物箱直到你找到任務觸發道具{item:186573}. 這個任務是可以被分享的!"
+L["nilg_stone_ring_note3"] = "在墮滅堡的中心區域從 {npc:179601} 拾取."
+L["nilg_stone_ring_note4"] = "在墮滅堡的 {npc:170634} 附近地上. 你的 {npc:180598} 可以幫助你找到它們."
+L["nilg_gold_band_note"] = "使用爪鉤並且沿著路走到山的頂端"
+L["nilganihmaht_note"] = "你必須收集到5個戒指, 並且把它們帶給在裂隙中的 {npc:179572} ."
+L["calcis"] = "卡西斯"
+L["desmotaeron"] = "德司莫泰隆"
 
 L["zovault_note"] = "每天拖曳 {npc:179883} 到 {npc:179904} 處, 保證給予裂隙傳送門石."
 L["options_icons_zovault"] = "{npc:179883}"

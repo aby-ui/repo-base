@@ -2,8 +2,12 @@
 -- AddOn namespace.
 -----------------------------------------------------------------------
 local ADDON_NAME, private = ...
+local LibStub = _G.LibStub
 
 local RSContainerDB = private.NewLib("RareScannerContainerDB")
+
+-- Locales
+local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
 -- RareScanner libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -304,8 +308,19 @@ function RSContainerDB.SetContainerName(containerID, name)
 end
 
 function RSContainerDB.GetContainerName(containerID)
-	if (containerID and private.dbglobal.object_names[GetLocale()][containerID]) then
-		return private.dbglobal.object_names[GetLocale()][containerID]
+	if (containerID) then
+		if (private.dbglobal.object_names[GetLocale()][containerID]) then
+			return private.dbglobal.object_names[GetLocale()][containerID]
+		elseif (RSUtils.Contains(RSConstants.RELIC_CACHE, containerID)) then
+			private.dbglobal.object_names[GetLocale()][containerID] = AL["RELIC_CACHE"]
+			return AL["RELIC_CACHE"]
+		elseif (RSUtils.Contains(RSConstants.PILE_BONES, containerID)) then
+			private.dbglobal.object_names[GetLocale()][containerID] = AL["PILE_BONES"]
+			return AL["PILE_BONES"]
+		elseif (RSUtils.Contains(RSConstants.SHARDHIDE_STASH, containerID)) then
+			private.dbglobal.object_names[GetLocale()][containerID] = AL["SHARDHIDE_STASH"]
+			return AL["SHARDHIDE_STASH"]
+		end
 	end
 
 	return nil

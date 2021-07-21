@@ -1197,8 +1197,8 @@ local elvui_skin = function()
 	window.bg1:SetHorizTile (true)
 	window.bg1:SetSize (PLAYER_DETAILS_WINDOW_WIDTH, PLAYER_DETAILS_WINDOW_HEIGHT)
 	
-	window:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-	window:SetBackdropColor (1, 1, 1, 1)
+	window:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]]})
+	window:SetBackdropColor (1, 1, 1, 0.3)
 	window:SetBackdropBorderColor (0, 0, 0, 1)
 	window.bg_icone_bg:Hide()
 	window.bg_icone:Hide()
@@ -5743,7 +5743,7 @@ function gump:CriaNovaBarraInfo1 (instancia, index)
 	esta_barra.targets.texture:SetAllPoints()
 	esta_barra.targets.texture:SetDesaturated (true)
 	esta_barra.targets:SetAlpha (.7)
-	esta_barra.targets.texture:SetAlpha (.7)
+	esta_barra.targets.texture:SetAlpha (1)
 	esta_barra.targets:SetScript ("OnEnter", target_on_enter)
 	esta_barra.targets:SetScript ("OnLeave", target_on_leave)
 	
@@ -5762,7 +5762,7 @@ function gump:CriaNovaBarraInfo1 (instancia, index)
 	esta_barra.icone:SetHeight (CONST_BAR_HEIGHT)
 	esta_barra.icone:SetPoint ("RIGHT", esta_barra.textura, "LEFT", CONST_BAR_HEIGHT + 2, 0)
 	
-	esta_barra:SetAlpha(0.9)
+	esta_barra:SetAlpha(1)
 	esta_barra.icone:SetAlpha (1)
 	
 	esta_barra.isMain = true

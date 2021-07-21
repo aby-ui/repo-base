@@ -51,16 +51,6 @@ function ChallengesFrameGuildBestMixin:SetUp(leaders)
 end
 --[[------------- end copied from 7.3.0 --------------]]
 
---[[------------------------------------------------------------
-点击打开宝库奖励，暴雪已自带
----------------------------------------------------------------]]
-local ShowWeeklyRewards = function()
-    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
-        LoadAddOn("Blizzard_WeeklyRewards");
-    end
-    CoreUIToggleFrame(WeeklyRewardsFrame)
-end
-
 CoreDependCall("Blizzard_ChallengesUI", function()
     if U1DBG.hideAbyGuildBest then return end
 
@@ -196,3 +186,65 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
         end
     end
 end, {})
+
+--[[------------------------------------------------------------
+点击打开宝库奖励，暴雪已自带
+---------------------------------------------------------------]]
+local ShowWeeklyRewards = function()
+    if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
+        LoadAddOn("Blizzard_WeeklyRewards");
+    end
+    CoreUIToggleFrame(WeeklyRewardsFrame)
+end
+
+--[[------------------------------------------------------------
+始终显示本周史诗地下城记录
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_WeeklyRewards", function()
+    local function showAllMythicHistory()
+        local runHistory = C_MythicPlus.GetRunHistory(false, true);
+        if #runHistory > 0 then
+            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+            local ccount = 0; for _, v in ipairs(runHistory) do ccount = ccount + (v.completed and 1 or 0) end
+            GameTooltip_AddHighlightLine(GameTooltip, string.format("本周共完成|cffffff00%d|r次, 其中限时|cff00ff00%d|r次", #runHistory, ccount), true);
+            --决定不排序，因为需要凑次数的时候用的是系统自带的排序的
+            local half = #runHistory > 16 and math.ceil(#runHistory / 2) or #runHistory
+            for i = 1, half do
+                local runInfo = runHistory[i];
+                local name = C_ChallengeMode.GetMapUIInfo(runInfo.mapChallengeModeID);
+                local runInfo2 = runHistory[i + half];
+                local name2 = runInfo2 and C_ChallengeMode.GetMapUIInfo(runInfo2.mapChallengeModeID)
+                local text2, color2 = "", GREEN_FONT_COLOR
+                if runInfo2 then
+                    text2 = name2 .. " - " .. runInfo2.level
+                    color2 = runInfo2.completed and GREEN_FONT_COLOR or RED_FONT_COLOR
+                end
+                GameTooltip_AddColoredDoubleLine(GameTooltip, runInfo.level .. " - " .. name, text2, runInfo.completed and GREEN_FONT_COLOR or RED_FONT_COLOR, color2, false)
+            end
+            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+        end
+    end
+
+    for i=1, 3 do
+        local act = WeeklyRewardsFrame:GetActivityFrame(Enum.WeeklyRewardChestThresholdType.MythicPlus, i)
+        act.OriginHandlePreviewMythicRewardTooltip = act.HandlePreviewMythicRewardTooltip
+        act.HandlePreviewMythicRewardTooltip = function(self, itemLevel, upgradeItemLevel, nextLevel)
+            if upgradeItemLevel then
+                return self:OriginHandlePreviewMythicRewardTooltip(itemLevel, upgradeItemLevel, nextLevel)
+            else
+                showAllMythicHistory()
+            end
+        end
+
+        act:HookScript("OnEnter", function(self)
+            if not self.unlocked and not C_WeeklyRewards.CanClaimRewards() then
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -7, -11);
+                GameTooltip_SetTitle(GameTooltip, "尚未解锁");
+                self.UpdateTooltip = nil;
+                showAllMythicHistory()
+                GameTooltip_AddNormalLine(GameTooltip, "请继续努力，爱不易祝你开心")
+                GameTooltip:Show();
+            end
+        end)
+    end
+end)

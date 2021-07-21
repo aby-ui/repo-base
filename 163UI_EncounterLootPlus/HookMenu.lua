@@ -61,17 +61,16 @@ local function EncounterJournal_InitLootFilter_Mine(self, level)
         makeSubInfo(info, "全部副本　", 3, "range", level)
     elseif (UIDROPDOWNMENU_MENU_VALUE == "attr1") then
         makeSubInfo(info, "任意", 0, "attr1", level)
-        makeSubInfo(info, "+ " .. STAT_CRITICAL_STRIKE, 1, "attr1", level)
-        makeSubInfo(info, "+ " .. STAT_HASTE,           2, "attr1", level)
-        makeSubInfo(info, "+ " .. STAT_VERSATILITY,     4, "attr1", level)
-        makeSubInfo(info, "+ " .. STAT_MASTERY,         3, "attr1", level)
+        for id, text in pairs(ELP_ATTRS) do
+            makeSubInfo(info, "+ " .. text, id, "attr1", level)
+        end
         info.disabled = nil
     elseif (UIDROPDOWNMENU_MENU_VALUE == "attr2") then
         makeSubInfo(info, "任意", 0, "attr2", level)
-        info.disabled = db.attr1 == 1 makeSubInfo(info, "+ " .. STAT_CRITICAL_STRIKE,   1, "attr2", level)
-        info.disabled = db.attr1 == 2 makeSubInfo(info, "+ " .. STAT_HASTE,             2, "attr2", level)
-        info.disabled = db.attr1 == 4 makeSubInfo(info, "+ " .. STAT_VERSATILITY,       4, "attr2", level)
-        info.disabled = db.attr1 == 3 makeSubInfo(info, "+ " .. STAT_MASTERY,           3, "attr2", level)
+        for id, text in pairs(ELP_ATTRS) do
+            info.disabled = db.attr1 == id
+            makeSubInfo(info, "+ " .. text, id, "attr2", level)
+        end
         info.disabled = nil
     --[[
     elseif (UIDROPDOWNMENU_MENU_VALUE == "forcelevel") then

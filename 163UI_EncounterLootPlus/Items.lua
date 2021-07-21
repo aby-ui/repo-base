@@ -76,8 +76,11 @@ function ELP_UpdateItemList()
     for _, v in ipairs(ELP.currs) do wipe(v) end
     EJ_SelectTier(ELP_CURRENT_TIER)
     -- force slot filter to avoid too many items listed.
-    local forceSlot = db.range > 0 and db.range ~= 4 and C_EncounterJournal.GetSlotFilter() == ELP_ALL_SLOT
-    if forceSlot then C_EncounterJournal.SetSlotFilter(ELP_RING_SLOT) end
+    local forceSlot = db.range > 0 and db.range ~= 4 and C_EncounterJournal.GetSlotFilter() == ELP_ALL_SLOT --4是最新团本
+    if forceSlot then
+        C_EncounterJournal.SetSlotFilter(ELP_DEFAULT_SLOT)
+        EncounterJournal_RefreshSlotFilterText()
+    end
 
     local range, lastRaid = db.range, nil
     if range == 4 or range == 5 then
@@ -111,7 +114,6 @@ function ELP_UpdateItemList()
         end
     end
 
-    if forceSlot then C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT) end
     EncounterJournal:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:RegisterEvent("EJ_DIFFICULTY_UPDATE")
 

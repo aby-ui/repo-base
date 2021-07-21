@@ -1352,21 +1352,21 @@ GTFO.SpellID["355584"] = {
   test = true;
 };
 
-GTFO.SpellID["346828"] = {
-  --desc = "Sanitizing Field (Hylbrande)";
-  applicationOnly = true;
-  sound = 3;
-};
-
 GTFO.SpellID["347422"] = {
   --desc = "Deadly Seas";
   sound = 3;
 };
 
+GTFO.SpellID["346877"] = {
+  --desc = "Shearing Swings (Hylbrande)";
+  sound = 3;
+  tankSound = 0;
+};
+
 GTFO.SpellID["347149"] = {
   --desc = "Infinite Breath (Timecap'n Hooktail)";
   sound = 3;
-  tankSound = 0;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["354334"] = {
@@ -1386,6 +1386,63 @@ GTFO.SpellID["351101"] = {
   sound = 3;
 };
 
+GTFO.SpellID["355306"] = {
+  --desc = "Rift Blast (Portalmancer Zo'honn)";
+  sound = 3;
+};
+
+GTFO.SpellID["357019"] = {
+  --desc = "Lightshard Retreat (Cartel Wiseguy)";
+  sound = 1;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["350921"] = {
+  --desc = "Crowd Control (Zo'gron)";
+  sound = 3;
+};
+
+GTFO.SpellID["355440"] = {
+  --desc = "Suppression Spark (Zo'gron)";
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["349999"] = {
+  --desc = "Anima Detonation (Achillite)";
+  sound = 3;
+};
+
+GTFO.SpellID["349663"] = {
+  --desc = "Grip of Hunger (Alcruux)";
+  sound = 3;
+};
+
+GTFO.SpellID["349801"] = {
+  --desc = "Grand Consumption (Alcruux)";
+  sound = 3;
+};
+
+GTFO.SpellID["356260"] = {
+  --desc = "Tidal Burst (Hourglass Tidesage)";
+  sound = 3;
+};
+
+GTFO.SpellID["357228"] = {
+  --desc = "Drifting Star (Adorned Starseer)";
+  sound = 3;
+};
+
+GTFO.SpellID["357226"] = {
+  --desc = "Drifting Star (Adorned Starseer)";
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["347094"] = {
+  --desc = "Titanic Crash (Hylbrande)";
+  sound = 3;
+};
 
 end
 

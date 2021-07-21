@@ -314,14 +314,14 @@
 		[315197] = true, --> Thing From Beyond --REMOVE ON 9.0
 	}
 
-	local NPCID_SPIKEDBALL = 176581 --remove on 10.0
-	--local NPCID_SPIKEDBALL = 161881 --remove on 10.0 - debug npc
-	local spikeball_cache  = {}
-	spikeball_cache.name_cache = {}
-	spikeball_cache.winners_cache = {}
-	spikeball_cache.spike_counter = 0
-	spikeball_cache.winner_spikeball = false
-	spikeball_cache.ignore_spikeballs = false
+	local NPCID_SPIKEDBALL = 176581 --remove on 10.0 --spikeball npcId
+	--local NPCID_SPIKEDBALL = 161881 --remove on 10.0 - debug npc (maldraxus)
+	--local NPCID_SPIKEDBALL = 167999 --remove on 10.0 - debug npc (echo of sin sire denatrius)
+	--spikeball cache
+	local spikeball_damage_cache  = {
+		npc_cache = {},
+		ignore_spikeballs = 0,
+	}
 
 	local NPCID_KELTHUZAD_FROSTBOUNDDEVOTED = 176703
 	local NPCID_KELTHUZAD_ADDMIMICPLAYERS = 176605
@@ -640,142 +640,79 @@
 			end
 
 			if (npcId == NPCID_SPIKEDBALL) then --remove on 10.0, all this IF block
-				if (spikeball_cache.ignore_spikeballs) then
-					if (spikeball_cache.ignore_spikeballs > GetTime()) then
+				if (spikeball_damage_cache.ignore_spikeballs) then
+					if (spikeball_damage_cache.ignore_spikeballs > GetTime()) then
 						return
 					end
 				end
 
-				--actor name
-				local spikeName = spikeball_cache.name_cache[alvo_serial]
-				if (not spikeName) then
-					spikeball_cache.spike_counter = spikeball_cache.spike_counter + 1
-					spikeName = alvo_name .. " " .. spikeball_cache.spike_counter
-					spikeball_cache.name_cache[alvo_serial] = spikeName
+				local npcDamage = spikeball_damage_cache.npc_cache[alvo_serial]
+				if (not npcDamage) then
+					npcDamage = {}
+					spikeball_damage_cache.npc_cache[alvo_serial] = npcDamage
 				end
 
-				alvo_name = spikeName
+				amount = (amount-overkill)
+
+				local damageTable = npcDamage[who_serial]
+				if (not damageTable) then
+					damageTable = {total = 0, spells = {}}
+					npcDamage[who_serial] = damageTable
+				end
+				
+				damageTable.total = damageTable.total + amount
+				damageTable.spells[spellid] = (damageTable.spells[spellid] or 0) + amount
 
 				--check if this spike ball is a winner
 				if (overkill > -1) then
-					--ignore new spike balls for 20 seconds
-					spikeball_cache.ignore_spikeballs = GetTime()+20
+					--cooldown to kill another spikeball again
+					spikeball_damage_cache.ignore_spikeballs = GetTime()+20
 
-					--merge winner spike balls
-					if (not spikeball_cache.winner_spikeball) then
-						local spikeBallObject = damage_cache[alvo_serial]
-						if (spikeBallObject) then
-							--spikeBallObject.displayName = originalName
-							spikeball_cache.winner_spikeball = spikeBallObject
-						else
-							print(6, "Details! winner spike ball doesn't exists. Nice coding bro!")
-						end
+					local playerNames = {}
+					local totalDamageTaken = 0
 
-						amount = (amount-overkill)
+					--award the damage of the spikeball dead to all players which have done damage to it
+					for playerSerial, damageTable in pairs(npcDamage) do
+						local actorObject = damage_cache[playerSerial]
+						if (actorObject) then
+							playerNames[actorObject.nome] = true
+							totalDamageTaken = totalDamageTaken + damageTable.total
 
-						local playerObject = damage_cache[who_serial]
-						if (playerObject) then
-							playerObject.total = playerObject.total + amount
-							playerObject.targets[alvo_name] = (playerObject.targets[alvo_name] or 0) + amount
-							local spellTable = playerObject.spells._ActorTable[spellid]
-							if (spellTable) then
-								spellTable.total = spellTable.total + amount
-								spellTable.targets[alvo_name] = (spellTable.targets[alvo_name] or 0) + amount
-							end
-						end
-						spikeball_cache.winner_spikeball.damage_taken = spikeball_cache.winner_spikeball.damage_taken + amount
+							actorObject.total = actorObject.total + damageTable.total
+							actorObject.targets[alvo_name] = (actorObject.targets[alvo_name] or 0) + damageTable.total
 
-					else
-						amount = (amount-overkill)
+							for spellid, damageDone in pairs(damageTable.spells) do
+								local spellObject = actorObject.spells._ActorTable[spellid]
 
-						local playerObject = damage_cache[who_serial]
-						if (playerObject) then
-							playerObject.total = playerObject.total + amount
-							playerObject.targets[alvo_name] = (playerObject.targets[alvo_name] or 0) + amount
-							local spellTable = playerObject.spells._ActorTable[spellid]
-							if (spellTable) then
-								spellTable.total = spellTable.total + amount
-								spellTable.targets[alvo_name] = (spellTable.targets[alvo_name] or 0) + amount
-							end
-						end
-						spikeball_cache.winner_spikeball.damage_taken = spikeball_cache.winner_spikeball.damage_taken + amount
+								if (not spellObject) then
+									spellObject = actorObject.spells:PegaHabilidade(spellid, true, token)
+								end
 
-						--there's a second winner ball, merge both
-						local thisRoundWinnerSpikeBall = damage_cache[alvo_serial]
-						local firstWinnerName = spikeball_cache.winner_spikeball.nome
-						local thisRoundWinnerName = thisRoundWinnerSpikeBall.nome
-
-						--copy damage from
-						for damageFromName in pairs(thisRoundWinnerSpikeBall.damage_from) do
-							--the first winner ball get the "damage from" from this winner
-							spikeball_cache.winner_spikeball.damage_from[damageFromName] = true
-
-							local actorObject = _current_combat[1]:GetActor(damageFromName)
-							if (actorObject) then
-								--get the damage done on the winner ball of this round and transfer the damage done into the first winner
-								local damageDone = actorObject.targets[thisRoundWinnerName] or 0
-								actorObject.targets[firstWinnerName] = (actorObject.targets[firstWinnerName] or 0) + damageDone
-								actorObject.targets[thisRoundWinnerName] = nil
-
-								--spells
-								for _, spellTable in pairs(actorObject.spells._ActorTable) do
-									local damageDone = spellTable.targets[thisRoundWinnerName] or 0
-									spellTable.targets[thisRoundWinnerName] =  nil
-									spellTable.targets[firstWinnerName] = (spellTable.targets[firstWinnerName] or 0) + damageDone
+								if (spellObject) then
+									spellObject.total = spellObject.total + damageDone
+									spellObject.targets[alvo_name] = (spellObject.targets[alvo_name] or 0) + damageDone
 								end
 							end
 						end
-
-						spikeball_cache.winner_spikeball.damage_taken = spikeball_cache.winner_spikeball.damage_taken + thisRoundWinnerSpikeBall.damage_taken
-
-						thisRoundWinnerSpikeBall.total = 0
-						thisRoundWinnerSpikeBall.damage_taken = 0
-						spikeball_cache.winners_cache[thisRoundWinnerSpikeBall] = true
 					end
 
-					--/run GameTooltip:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -13, 250) to remove the tooltip above details!
-
-					--delete loser spike balls
-					local container = _current_combat[1]._ActorTable
-					for i = #container, 1, -1 do
-						local spikeBall = container[i]
-						if (spikeBall) then
-							--check if the actor is a spike ball
-							if (tonumber(spikeBall.aID) == npcId) then
-								if (spikeball_cache.winner_spikeball ~= spikeBall and not spikeball_cache.winners_cache[spikeBall]) then
-
-									for actorName in pairs(spikeBall.damage_from) do
-										local actorObject = _current_combat[1]:GetActor(actorName)
-										if (actorObject) then
-											--remove from the damage from
-											spikeBall.damage_from[actorName] = nil
-
-											--remove from targets
-											local damageDone = actorObject.targets[spikeBall.nome] or 0
-											actorObject.targets[spikeBall.nome] = nil
-
-											--remove from damage done
-											actorObject.total = actorObject.total - damageDone
-
-											--reduce from spells
-											for _, spellTable in pairs(actorObject.spells._ActorTable) do
-												local damageDone = spellTable[spikeBall.nome] or 0
-												spellTable.total = spellTable.total - damageDone
-											end
-										end
-									end
-
-									--reset the damage taken amount
-									spikeBall.damage_taken = 0
-									spikeBall.total = 0
-								end
-							end
+					--get or create the spikeball object; add the damage_from and damage taken
+					local spikeBall = damage_cache[alvo_serial]
+					if (not spikeBall) then
+						spikeBall = _current_damage_container:PegarCombatente(alvo_serial, alvo_name, alvo_flags, true)
+						damage_cache[alvo_serial] = spikeBall
+					end
+					if (spikeBall) then
+						spikeBall.damage_taken = spikeBall.damage_taken + totalDamageTaken
+						for playerName in pairs(playerNames) do
+							spikeBall.damage_from[playerName] = true
 						end
 					end
 
 					Details:RefreshMainWindow(-1, true)
-					return
 				end
+
+				return
 			end
 
 			--source
@@ -793,17 +730,6 @@
 			end
 			if (npcId == NPCID_KELTHUZAD_ADDMIMICPLAYERS) then --remove on 10.0
 				who_name = "Tank Add"
-			end
-
-			if (npcId == NPCID_SPIKEDBALL) then --remove on 10.0
-				--actor name
-				local spikeName = spikeball_cache.name_cache[who_serial]
-				if (not spikeName) then
-					spikeball_cache.spike_counter = spikeball_cache.spike_counter + 1
-					spikeName = who_name .. " " .. spikeball_cache.spike_counter
-					spikeball_cache.name_cache[who_serial] = spikeName
-				end
-				who_name = spikeName
 			end
 
 		--> avoid doing spellID checks on each iteration
@@ -4853,12 +4779,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		--remove on 10.0
 			--if (encounterID == 2430) then --Painsmith Raznal
-				_table_wipe(spikeball_cache) 
-				spikeball_cache.name_cache = {}
-				spikeball_cache.winners_cache = {}
-				spikeball_cache.spike_counter = 0
-				spikeball_cache.winner_spikeball = false
-				spikeball_cache.ignore_spikeballs = false
+				spikeball_damage_cache = {
+					npc_cache = {},
+					ignore_spikeballs = 0,
+				}
 			--end
 		--
 
@@ -4958,13 +4882,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (bargastBuffs) --remove on 10.0
 		_table_wipe (necro_cheat_deaths) --remove on 10.0
 
-		_table_wipe(spikeball_cache) --remove on 10.0 spikeball from painsmith
-		spikeball_cache.name_cache = {}
-		spikeball_cache.winners_cache = {}
-		spikeball_cache.spike_counter = 0
-		spikeball_cache.winner_spikeball = false
-		spikeball_cache.ignore_spikeballs = false
-		
+		--remove on 10.0 spikeball from painsmith
+			spikeball_damage_cache  = {
+				npc_cache = {},
+				ignore_spikeballs = 0,
+			}
+		--
+
 		return true
 	end
 	
@@ -5048,16 +4972,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) running scheduled events after combat end.")
 		end
-
-		--remove on 10.0 spikeball from painsmith
-		--[=[
-			_table_wipe(spikeball_cache) 
-			spikeball_cache.name_cache = {}
-			spikeball_cache.winners_cache = {}
-			spikeball_cache.spike_counter = 0
-			spikeball_cache.winner_spikeball = false
-			spikeball_cache.ignore_spikeballs = false
-		--]=]
 	
 		--when the user requested data from the storage but is in combat lockdown
 		if (_detalhes.schedule_storage_load) then

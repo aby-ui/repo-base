@@ -475,6 +475,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 
 				-- If the loot comes from a container that we support
 				if (npcType == "GameObject") then
+					RSLogger:PrintDebugMessage(string.format("Abierto [%s].", id or ""))
 					local containerID = id and tonumber(id) or nil
 
 					-- We support all the containers with vignette plus those ones that are part of achievements (without vignette)
@@ -483,6 +484,8 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 						-- This will happend in the case where the container doesnt have a vignette
 						if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
 							RSGeneralDB.AddAlreadyFoundContainerWithoutVignette(containerID)
+						else
+							RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(containerID)
 						end
 
 						-- Sets the container as opened

@@ -24,10 +24,10 @@ addon.Cooldowns = {
     [61999] = { duration = 600, class = "DEATHKNIGHT" }, -- Raise Ally
     [77606] = { duration = 20, class = "DEATHKNIGHT" }, -- Dark Simulacrum
     [212552] = { duration = 60, class = "DEATHKNIGHT" }, -- Wraith Walk
+    [47476] = { duration = 60, class = "DEATHKNIGHT" }, -- Strangulate
 
         -- Blood
 
-        [47476] = { duration = 60, class = "DEATHKNIGHT", specID = { 250 } }, -- Strangulate
         [49028] = { duration = 120, class = "DEATHKNIGHT", specID = { 250 } }, -- Dancing Rune Weapon
         [55233] = { duration = 90, class = "DEATHKNIGHT", specID = { 250 } }, -- Vampiric Blood
         [108199] = { duration = 120, class = "DEATHKNIGHT", specID = { 250 } }, -- Gorefiend's Grasp
@@ -91,7 +91,7 @@ addon.Cooldowns = {
         [196555] = { parent = 212800, duration = 90 }, -- Netherwalk
     [214743] = { duration = 60, class = "DEMONHUNTER" }, -- Soul Carver
         [207407] = { parent = 214743 }, -- Soul Carver (Vengeance)
-    [221527] = { duration = 60, class = "DEMONHUNTER" }, -- Imprison
+    [221527] = { duration = 45, class = "DEMONHUNTER" }, -- Imprison
     [323639] = { duration = 90, class = "DEMONHUNTER" }, -- The Hunt
 
         -- Havoc
@@ -265,7 +265,7 @@ addon.Cooldowns = {
         [740] = { duration = 180, class = "DRUID", specID = { 105} }, -- Tranquility
         [18562] = { duration = 25, class = "DRUID", specID = { 105}, charges = 2 }, -- Swiftmend
         [33891] = { duration = 180, class = "DRUID", specID = { 105} }, -- Incarnation: Tree of Life
-        [102342] = { duration = 60, class = "DRUID", specID = { 105} }, -- Ironbark
+        [102342] = { duration = 90, class = "DRUID", specID = { 105} }, -- Ironbark
         [102351] = { duration = 30, class = "DRUID", specID = { 105} }, -- Cenarion Ward
         [102793] = { duration = 60, class = "DRUID", specID = { 105} }, -- Ursol's Vortex
         [197721] = { duration = 90, class = "DRUID", specID = { 105} }, -- Flourish
@@ -360,6 +360,7 @@ addon.Cooldowns = {
         [86121] = { duration = 20, class = "WARLOCK", specID = { 265 } }, -- Soul Swap
         [113860] = { duration = 120, class = "WARLOCK", specID = { 265 } }, -- Dark Soul: Misery
         [205179] = { duration = 45, class = "WARLOCK", specID = { 265 } }, -- Phantom Singularity
+        [205180] = { duration = 180, class = "WARLOCK", specID = { 265 } }, -- Summon Darkglare
 
         -- Demonology
 
@@ -367,7 +368,7 @@ addon.Cooldowns = {
             [115831] = { parent = 89751 }, -- Wrathstorm
         [89766] = { duration = 30, class = "WARLOCK", specID = { 266 } }, -- Axe Toss
         [201996] = { duration = 90, class = "WARLOCK", specID = { 266 } }, -- Call Observer
-        [205180] = { duration = 24, class = "WARLOCK", specID = { 266 } }, -- Summon Darkglare
+        [265187] = { duration = 90, class = "WARLOCK", specID = { 266 } }, -- Summon Demonic Tyrant
         [205181] = { duration = 14, class = "WARLOCK", specID = { 266 }, charges = 2 }, -- Shadowflame
         [211714] = { duration = 45, class = "WARLOCK", specID = { 266 } }, -- Thal'kiel's Consumption
         [212459] = { duration = 90, class = "WARLOCK", specID = { 266 } }, -- Call Fel Lord
@@ -518,7 +519,6 @@ addon.Cooldowns = {
     [45438] = { duration = 300, class = "MAGE", charges = 2 }, -- Ice Block
     [55342] = { duration = 120, class = "MAGE" }, -- Mirror Image
     [80353] = { duration = 300, class = "MAGE" }, -- Time Warp
-    [30449] = { duration = 30, class = "MAGE" }, -- Spellsteal (Kleptomania)
     [108839] = { duration = 20, class = "MAGE", charges = 3 }, -- Ice Floes
     [113724] = { duration = 45, class = "MAGE" }, -- Ring of Frost
     [116011] = { duration = 40, class = "MAGE", charges = 2 }, -- Rune of Power
@@ -534,6 +534,7 @@ addon.Cooldowns = {
         [198158] = { duration = 60, class = "MAGE", specID = { 62 } }, -- Mass Invisibility
         [205025] = { duration = 60, class = "MAGE", specID = { 62 } }, -- Presence of Mind
         [224968] = { duration = 60, class = "MAGE", specID = { 62 } }, -- Mark of Aluneth
+        [30449] = { duration = 30, class = "MAGE", specID = { 62 } }, -- Spellsteal (Kleptomania)
 
         -- Fire
 

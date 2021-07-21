@@ -218,6 +218,7 @@ GridStatusRaidDebuff.defaultDB = {
         [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
         [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
         [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1998).name] = { [GetSpellInfo(352394)] = { disabled = true }, },
     },
     ["detected_debuff"] = {},
 }

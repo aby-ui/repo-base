@@ -119,7 +119,7 @@ local function CreateToolButton(id)
             return
         end
 
-        local anchor
+        local anchor, xoff, yoff = nil, 0, 0
         local leftOK = left > 250
         local topOK = (GetScreenHeight() - top) > 250
 
@@ -127,17 +127,17 @@ local function CreateToolButton(id)
             if topOK then
                 anchor = "ANCHOR_LEFT"
             else
-                anchor = "ANCHOR_BOTTOMLEFT"
+                anchor, xoff, yoff = "ANCHOR_BOTTOMLEFT", 0, -25
             end
         else
             if topOK then
                 anchor = "ANCHOR_RIGHT"
             else
-                anchor = "ANCHOR_BOTTOMRIGHT"
+                anchor, xoff, yoff = "ANCHOR_BOTTOMRIGHT", 0, -25
             end
         end
 
-        GameTooltip:SetOwner(self, anchor)
+        GameTooltip:SetOwner(self, anchor, xoff, yoff)
         GameTooltip:ClearLines()
         self:OnEnter()
         GameTooltip:Show()

@@ -269,7 +269,7 @@ L["towering_exterminator_note"] = "在渊誓传送门事件出现。事件可能
 L["worldcracker_note"] = "和 {npc:180028} 交谈触发护送事件。"
 
 L["archivist_key_note"] = "从 {npc:178257} 购买 %s 解锁。"
-L["korthian_shrine_note"] = "点击神龛获得 {spell:352367} 可以看到隐藏的路径到达alter。"
+L["korthian_shrine_note"] = "点击神龛获得 {spell:352367} 可以看到隐藏的路径到达祭坛。"
 L["num_research"] = "%d 研究"
 L["plus_research"] = "+ 研究"
 L["options_icons_relic"] = "{achievement:15066}"
@@ -283,7 +283,15 @@ L["rift_portal_note"] = [[
 |cFFFF8C00并非所有裂隙传送门在任何时间都处于激活状态。|r
 ]]
 L["rift_rare_only_note"] = "此稀有只在 |cFFFFFF00裂隙|r 位面内可以见到和击杀。"
-L["rift_rare_exit_note"] = "此稀有必须有 {spell:354840} 否则会出错！在裂隙位面内和其互动将使其离开 |cFFFFFF00裂隙|r。"
+L["rift_rare_exit_note"] = [[
+在裂隙位面内和此稀有互动将使其离开 |cFFFFFF00裂隙|r。
+
+三个裂隙稀有通常以大约20分钟的间隔按固定顺序刷新：
+
+  1. {npc:179913}
+  2. {npc:179608}
+  3. {npc:179911}
+]]
 L["options_icons_rift_portal"] = "{npc:179595}"
 L["options_icons_rift_portal_desc"] = "显示 {npc:179595} 的位置可以进入 |cFFFFFF00裂隙|r。"
 

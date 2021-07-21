@@ -117,10 +117,10 @@ function RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(entityID)
 	end
 end
 
-function RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
-	if (npcID and private.dbglobal.rares_found[npcID]) then
-		private.dbglobal.rares_found[npcID].foundTime = time();
-		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", npcID, RSGeneralDB.GetAlreadyFoundEntity(npcID).foundTime))
+function RSGeneralDB.UpdateAlreadyFoundEntityTime(entityID)
+	if (entityID and private.dbglobal.rares_found[entityID]) then
+		private.dbglobal.rares_found[entityID].foundTime = time();
+		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityTime[%s]. Nueva estampa de tiempo (%s)", entityID, RSGeneralDB.GetAlreadyFoundEntity(entityID).foundTime))
 	end
 end
 

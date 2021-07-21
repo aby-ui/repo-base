@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2444, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210714030907")
+mod:SetRevision("20210717014958")
 mod:SetCreatureID(175729)
 mod:SetEncounterID(2432)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -59,7 +59,7 @@ local timerSufferingCD							= mod:NewCDTimer(19.4, 350894, nil, nil, nil, 5, ni
 local timerGraspofMaliceCD						= mod:NewCDTimer(20.7, 355123, nil, nil, nil, 3, nil, nil, true)--Malicious Gauntlet
 --local timerBurstofAgonyCD						= mod:NewAITimer(23, 350096, nil, nil, nil, 3)
 
---local berserkTimer							= mod:NewBerserkTimer(600)
+local berserkTimer								= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption("8")
 mod:AddInfoFrameOption(349890, true)
@@ -84,7 +84,7 @@ function mod:OnCombatStart(delay)
 	timerSufferingCD:Start(19.4-delay)
 	timerMalevolenceCD:Start(29.7)--29-48
 	timerGraspofMaliceCD:Start(38)--38-66
---	berserkTimer:Start(-delay)
+	berserkTimer:Start(-delay)
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(328897))
 --		DBM.InfoFrame:Show(10, "table", ExsanguinatedStacks, 1)

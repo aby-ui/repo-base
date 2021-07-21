@@ -2028,7 +2028,6 @@ function atributo_damage:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 	else
 	--/run Details:Dump(Details:GetCurrentCombat():GetActor(1, "Injured Steelspine 1"))
 		if (keyName == "enemies") then
-			--amount, total = Details:ContainerSortEnemies (conteudo, amount, "total")
 			amount, total = Details:ContainerSortEnemies (conteudo, amount, "damage_taken")
 
 			--remove actors with zero damage taken
@@ -2039,7 +2038,13 @@ function atributo_damage:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 					break
 				end
 			end
-			amount = newAmount
+
+			--if all units shown are enemies and all have damage taken, check if newAmount is zero and #conteudo has value bigger than 0
+			if (newAmount == 0 and #conteudo > 0) then
+				amount = amount
+			else
+				amount = newAmount
+			end
 
 			--keyName = "damage_taken"
 			--result of the first actor

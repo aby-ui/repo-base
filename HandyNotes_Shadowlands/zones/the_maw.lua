@@ -274,12 +274,14 @@ map.nodes[30775000] = Rare({
 map.nodes[16945102] = Rare({
     id=162849,
     quest=60987,
-    noassault=NIGHTFAE,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49852}),
         Transmog({item=185892, slot=L["2h_sword"]}), -- Stygia-Etched Decapitator
         Toy({item=184292}) -- Ancient Elethium Coin
+    },
+    pois={
+        POI({18904410}) -- during nightfae assault, change place to here
     }
 }) -- Morguliax <Lord of Decapitation>
 
@@ -1119,6 +1121,7 @@ local RiftCache = Class('RiftCache', Treasure, {
     rift=1,
     assault=NIGHTFAE,
     rewards={
+        Achievement({id=15001, criteria={id=1, qty=true}}),
         Transmog({item=187251, slot=L["cosmetic"]}) -- Shaded Skull Shoulderguards
     }
 })
@@ -1168,8 +1171,8 @@ local VEN_VESSEL2 = Vessel({icon='chest_bl', fgroup='vv2', quest=64056, assault=
 local KYR_VESSEL1 = Vessel({icon='chest_rd', fgroup='kv1', quest=64057, assault=KYRIAN}) -- object=368950
 local KYR_VESSEL2 = Vessel({icon='chest_bl', fgroup='kv2', quest=64058, assault=KYRIAN}) -- object=368951
 -- Night Fae assault
-local FAE_VESSEL1 = Vessel({icon='chest_rd', fgroup='fv1', quest=nil, assault=NIGHTFAE}) -- object=368952
-local FAE_VESSEL2 = Vessel({icon='chest_bl', fgroup='fv2', quest=nil, assault=NIGHTFAE}) -- object=368953
+local FAE_VESSEL1 = Vessel({icon='chest_rd', fgroup='fv1', quest=64059, assault=NIGHTFAE}) -- object=368952
+local FAE_VESSEL2 = Vessel({icon='chest_bl', fgroup='fv2', quest=64060, assault=NIGHTFAE}) -- object=368953
 
 -- In the rift
 map.nodes[47437620] = ns.Clone(RIFT_VESSEL1, {note=L["in_cave"]})

@@ -144,7 +144,15 @@ map.nodes[44222950] = Rare({
         Mount({item=186645, id=1506}) -- Crimson Shardhide
     },
     pois={
-        POI({60652315}) -- Caretaker Kah-Kay
+        POI({60662311}), -- Caretaker Kah-Kay
+        Path({
+            60662311, 60582341, 59822315, 59342274, 58732218, 58322193,
+            58092218, 57942305, 57942378, 57872497, 57602589, 57372692,
+            56732751, 56542834, 56152861, 55372872, 54652882, 54062809,
+            53612790, 53372861, 53362889, 53012896, 52442831, 52172800,
+            51662821, 51172869, 50652940, 49812881, 49372812, 48312755,
+            47262744, 46412755, 45332833, 44572928, 44152953
+        })
     }
 }) -- Malbog
 
@@ -302,7 +310,7 @@ map.nodes[14507900] = Rare({
         Transmog({item=187369, slot=L["cloth"]}) -- Ve'rayn's Formal Robes
     },
     pois={
-        POI({32804320, 42405980, 49002900, 61405780})
+        POI({32804320, 42405980, 43386754, 49002900, 61405780})
     }
 }) -- Ve'rayn
 
@@ -317,14 +325,13 @@ map.nodes[59335221] = Rare({
     rewards={
         Achievement({id=15107, criteria=52275}),
         Item({item=187401, note=L["ring"]}), -- Band of the Shaded Rift
-        Transmog({item=187396, slot=L["plate"]}), -- Girdle of the Deadsoul
-        Toy({item=187174}) -- Shaded Judgement Stone (XXX: not confirmed on live!)
+        Transmog({item=187396, slot=L["plate"]}) -- Girdle of the Deadsoul
     }
 }) -- Deadsoul Hatcher
 
 map.nodes[50307590] = Rare({
     id=179914,
-    quest=64369,
+    quest=64440,
     rlabel=ns.status.LightBlue(L["plus_research"])..ns.GetIconLink('portal_gy', 20, 4, 1),
     note=L["rift_rare_only_note"],
     rift=2,
@@ -699,6 +706,7 @@ map.nodes[56321850] = RIFT_CACHE3
 map.nodes[64303040] = RIFT_CACHE3
 map.nodes[33443929] = RIFT_CACHE4
 map.nodes[35943243] = RIFT_CACHE4
+map.nodes[37954113] = RIFT_CACHE4
 map.nodes[38003550] = RIFT_CACHE4
 map.nodes[39784299] = RIFT_CACHE4
 
@@ -844,6 +852,7 @@ local MawswornC = Class('MawswornC', Treasure, {
     note=L["mawsworn_cache_note"],
     rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
+        Transmog({item=187020, note=L["cosmetic"]}), -- Necrobinder's Shoulderpads
         Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
         Transmog({item=187240, note=L["cosmetic"]}) -- Field Warden's Watchful Eye
     }
@@ -913,7 +922,7 @@ local maelie = Class('Maelie', Collectible, {
     pois={POI({
         30005560, 35904650, 38403140, 39703490, 41103980, 41302750,
         42806040, 43003260, 43203130, 49304170, 50302290, 59801510,
-        61304040, 62404970, 67502930
+        61304040, 62404970, 67502930, 35806220
     })},
     rewards={Mount({item=186643, id=1511})}, -- Reins of the Wanderer
     getters={rlabel=GetMaelieStatus}
