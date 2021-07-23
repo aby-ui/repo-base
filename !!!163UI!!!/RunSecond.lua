@@ -536,3 +536,27 @@ CoreDependCall("Blizzard_AuctionHouseUI", function()
         end
     end)
 end)
+
+CoreDependCall("Blizzard_ItemSocketingUI", function()
+    hooksecurefunc("ItemSocketingFrame_Update", function()
+        if ItemSocketingSocketButton:IsEnabled() then
+            local numSockets = GetNumSockets();
+            for i=1, numSockets do
+                local name, icon = GetExistingSocketInfo(i);
+                if icon and GetSocketTypes(i) == "Domination" then
+                    if not WOYAOCUIHUI then
+                        ItemSocketingSocketButton_Disable()
+                    end
+                    CoreScheduleBucket("PREVENT_SOCKET_DOMINATION", 0.2, function()
+                        if WOYAOCUIHUI then
+                            U1Message("你选择了强制覆盖，会摧毁旧碎片，请慎重", 1, 1, 0)
+                        else
+                            U1Message("为了防止摧毁统御碎片，请先用凿石器取出旧碎片。如果一定要覆盖旧碎片，请输入/run WOYAOCUIHUI=1", 1, 1, 0)
+                        end
+                        PlaySound(8959)
+                    end)
+                end
+            end
+        end
+    end)
+end)
