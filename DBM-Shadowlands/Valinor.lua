@@ -1,11 +1,12 @@
 local mod	= DBM:NewMod(2430, "DBM-Shadowlands", nil, 1192)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210324013931")
+mod:SetRevision("20210721040757")
 mod:SetCreatureID(167524)
 mod:SetEncounterID(2411)
 mod:SetUsedIcons(8)
 mod:SetReCombatTime(20)
+mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 --mod:SetMinSyncRevision(11969)
 
 mod:RegisterCombat("combat")

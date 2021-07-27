@@ -1,9 +1,10 @@
 local mod	= DBM:NewMod(2011, "DBM-BrokenIsles", 2, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201111172146")
+mod:SetRevision("20210721041434")
 mod:SetCreatureID(124625)
 mod:SetEncounterID(2083)
+mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 
 mod:RegisterCombat("combat_yell", L.Pull)
 

@@ -538,23 +538,40 @@ CoreDependCall("Blizzard_AuctionHouseUI", function()
 end)
 
 CoreDependCall("Blizzard_ItemSocketingUI", function()
+
+    -- 只要已插入的宝石是统御碎片，exist就返回true，不判断是否有新宝石
+    local function IsDominationChange(exist_or_new)
+        local numSockets = GetNumSockets();
+        for i = 1, numSockets do
+            local f = exist_or_new == "new" and GetNewSocketInfo or GetExistingSocketInfo
+            local name, icon = f(i)
+            if icon and GetSocketTypes(i) == "Domination" then
+                return true
+            end
+        end
+    end
+
     hooksecurefunc("ItemSocketingFrame_Update", function()
         if ItemSocketingSocketButton:IsEnabled() then
-            local numSockets = GetNumSockets();
-            for i=1, numSockets do
-                local name, icon = GetExistingSocketInfo(i);
-                if icon and GetSocketTypes(i) == "Domination" then
-                    if not WOYAOCUIHUI then
-                        ItemSocketingSocketButton_Disable()
+            if IsDominationChange() then
+                if not WOYAOCUIHUI then
+                    ItemSocketingSocketButton_Disable()
+                end
+                CoreScheduleBucket("PREVENT_SOCKET_DOMINATION", 0.2, function()
+                    if WOYAOCUIHUI then
+                        U1Message("你选择了强制覆盖，会摧毁旧碎片，请慎重", 1, 1, 0)
+                    else
+                        U1Message("为了防止摧毁统御碎片，请先用凿石器取出旧碎片。如果一定要覆盖旧碎片，请输入/run WOYAOCUIHUI=1", 1, 1, 0)
                     end
-                    CoreScheduleBucket("PREVENT_SOCKET_DOMINATION", 0.2, function()
-                        if WOYAOCUIHUI then
-                            U1Message("你选择了强制覆盖，会摧毁旧碎片，请慎重", 1, 1, 0)
-                        else
-                            U1Message("为了防止摧毁统御碎片，请先用凿石器取出旧碎片。如果一定要覆盖旧碎片，请输入/run WOYAOCUIHUI=1", 1, 1, 0)
-                        end
-                        PlaySound(8959)
-                    end)
+                    PlaySound(8959)
+                end)
+            end
+        end
+
+        if ItemSocketingFrame.itemIsBoundTradeable then
+            if not GetSocketItemBoundTradeable() and HasBoundGemProposed() then
+                if IsDominationChange("new") then
+                    ItemSocketingFrame.itemIsBoundTradeable = nil
                 end
             end
         end

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 26
+local MINOR_VERSION = 27
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -78,6 +78,10 @@ local defaultPartyFrames = {
 }
 local defaultPartyTargetFrames = {
     "SUFChildpartytarget%d",
+}
+local defaultFocusFrames = {
+    "ElvUF_FocusTarget",
+    "FocusFrame"
 }
 local defaultRaidFrames = {
     "^Vd",
@@ -203,17 +207,18 @@ local defaultOptions = {
     ignoreTargettargetFrame = true,
     ignorePartyFrame = false,
     ignorePartyTargetFrame = true,
+    ignoreFocusFrame = true,
     ignoreRaidFrame = false,
     playerFrames = defaultPlayerFrames,
     targetFrames = defaultTargetFrames,
     targettargetFrames = defaultTargettargetFrames,
     partyFrames = defaultPartyFrames,
     partyTargetFrames = defaultPartyTargetFrames,
+    focusFrames = defaultFocusFrames,
     raidFrames = defaultRaidFrames,
     ignoreFrames = {
         "PitBull4_Frames_Target's target's target",
         "ElvUF_PartyGroup%dUnitButton%dTarget",
-        "ElvUF_FocusTarget",
         "RavenButton"
     },
     returnAll = false,
@@ -261,6 +266,11 @@ function lib.GetUnitFrame(target, opt)
     end
     if opt.ignorePartyTargetFrame then
         for _,v in pairs(opt.partyTargetFrames) do
+            tinsert(ignoredFrames, v)
+        end
+    end
+    if opt.ignoreFocusFrame then
+        for _,v in pairs(opt.focusFrames) do
             tinsert(ignoredFrames, v)
         end
     end

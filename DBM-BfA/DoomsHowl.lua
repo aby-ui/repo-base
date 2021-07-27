@@ -7,10 +7,11 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-BfA", 3, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201218181040")
+mod:SetRevision("20210721041239")
 mod:SetCreatureID(creatureID)--Dooms Howl 138122, Lion's Roar 137374
 --mod:SetEncounterID(encounterID)
 mod:SetReCombatTime(20)
+mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 --mod:SetMinSyncRevision(11969)
 
 mod:RegisterCombat("combat")

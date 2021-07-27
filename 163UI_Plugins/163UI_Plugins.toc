@@ -21,6 +21,7 @@ Simc.lua
 SlashCommands.lua
 8.0\ChallengesGuildBest.xml
 9.0\MawThreat.lua
+9.0\DominationShards.lua
 
 yClassColors\core.lua
 yClassColors\battlefield.lua

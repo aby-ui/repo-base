@@ -204,7 +204,6 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
     local function showAllMythicHistory()
         local runHistory = C_MythicPlus.GetRunHistory(false, true);
         if #runHistory > 0 then
-            GameTooltip_AddBlankLineToTooltip(GameTooltip);
             local ccount = 0; for _, v in ipairs(runHistory) do ccount = ccount + (v.completed and 1 or 0) end
             GameTooltip_AddHighlightLine(GameTooltip, string.format("本周共完成|cffffff00%d|r次, 其中限时|cff00ff00%d|r次", #runHistory, ccount), true);
             --决定不排序，因为需要凑次数的时候用的是系统自带的排序的
@@ -229,9 +228,8 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
         local act = WeeklyRewardsFrame:GetActivityFrame(Enum.WeeklyRewardChestThresholdType.MythicPlus, i)
         act.OriginHandlePreviewMythicRewardTooltip = act.HandlePreviewMythicRewardTooltip
         act.HandlePreviewMythicRewardTooltip = function(self, itemLevel, upgradeItemLevel, nextLevel)
-            if upgradeItemLevel then
-                return self:OriginHandlePreviewMythicRewardTooltip(itemLevel, upgradeItemLevel, nextLevel)
-            else
+            self:OriginHandlePreviewMythicRewardTooltip(itemLevel, upgradeItemLevel, nextLevel)
+            if not upgradeItemLevel then
                 showAllMythicHistory()
             end
         end
@@ -241,6 +239,7 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -7, -11);
                 GameTooltip_SetTitle(GameTooltip, "尚未解锁");
                 self.UpdateTooltip = nil;
+                GameTooltip_AddBlankLineToTooltip(GameTooltip);
                 showAllMythicHistory()
                 GameTooltip_AddNormalLine(GameTooltip, "请继续努力，爱不易祝你开心")
                 GameTooltip:Show();

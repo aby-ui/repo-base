@@ -48,3 +48,13 @@ U1RegisterAddon("Details_Streamer", { title = "主播模块", });
 U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", });
 U1RegisterAddon("Details_Vanguard", { title = "坦克模块", });
 U1RegisterAddon("Details_ExplosiveOrbs", { title = "爆炸物模块", load = "NORMAL", });
+
+U1RegisterAddon("Details_Covenants", {
+    title = "伤害统计盟约图标",
+    defaultEnable = 1,
+    load = "NORMAL",
+    tags = { TAG_RAID, },
+    icon = [[Interface\AddOns\Details_Covenants\resources\night_fae.tga]],
+    desc = "通过检测盟约特有技能，在Details和Skada的统计条上显示玩家的盟约",
+    pics = 0,
+});

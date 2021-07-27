@@ -83,5 +83,7 @@ GTFO.IgnoreScan["358198"] = true; -- Black Heat
 GTFO.IgnoreScan["355786"] = true; -- Blackened Armor
 GTFO.IgnoreScan["356846"] = true; -- Lingering Flames
 GTFO.IgnoreScan["357231"] = true; -- Anguish
+GTFO.IgnoreScan["356253"] = true; -- Dreadbugs
+GTFO.IgnoreScan["356447"] = true; -- Dreadbugs
 
 

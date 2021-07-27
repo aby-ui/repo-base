@@ -294,6 +294,16 @@ GTFO.SpellID["335447"] = {
   sound = 3;
 };
 
+GTFO.SpellID["358357"] = {
+  --desc = "Effigy of Torment (Towering Exterminator)";
+  sound = 3;
+};
+
+GTFO.SpellID["358091"] = {
+  --desc = "Devouring Rift (Xyraxz the Unknowable)";
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -965,6 +975,12 @@ GTFO.SpellID["330813"] = {
   sound = 3;
 };
 
+GTFO.SpellID["355173"] = {
+  --desc = "Bombardment";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************
@@ -1279,6 +1295,7 @@ GTFO.SpellID["347704"] = {
   --desc = "Veil of Darkness (Sylvanas Windrunner)";
   applicationOnly = true;
   sound = 3;
+  test = true;
 };
 
 GTFO.SpellID["348145"] = {
@@ -1313,6 +1330,27 @@ GTFO.SpellID["357091"] = {
   sound = 3;
   tankSound = 0;
 };
+
+GTFO.SpellID["358747"] = {
+  --desc = "Magma Wave (Borr-Gahn)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["353069"] = {
+  --desc = "Fractured Soul";
+  applicationOnly = true;
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["358205"] = {
+  --desc = "Incinerating Cleave (Screamspike)";
+  applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+};
+
 
 --- *******************************
 --- * Tazavesh, the Veiled Market *

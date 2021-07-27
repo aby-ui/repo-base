@@ -67,6 +67,11 @@ function TBT_ContainerItemPreClick(self, button)
     if(button=="RightButton" and not IsModifierKeyDown()) then
         if(InboxFrame and InboxFrame:IsVisible()) then
             MailFrameTab_OnClick(MailFrameTab2);
+        elseif ItemSocketingSocket1 and ItemSocketingSocket1:IsVisible() then
+            PickupContainerItem(self:GetParent():GetID(), self:GetID());
+            ClickSocketButton(ItemSocketingSocket1:GetID())
+            ClearCursor()
+
         --[[elseif AuctionFrame and AuctionFrame:IsVisible() then
             if(AuctionFrameTab5 and SellItemButton) then
                 AuctionFrameTab_OnClick(AuctionFrameTab3); --or UseContainerItem will use the item!
@@ -211,6 +216,10 @@ function TBTFrame_OnLoad(self)
                     ClickAuctionSellItemButton();
                     AuctionsFrameAuctions_ValidateAuction();
                     if(CursorHasItem()) then ClearCursor(); end;
+                end
+                if ItemSocketingSocket1 and ItemSocketingSocket1:IsVisible() then
+                    PickupContainerItem(bag, item);
+                    ClickSocketButton(ItemSocketingSocket1:GetID())
                 end
             end
 

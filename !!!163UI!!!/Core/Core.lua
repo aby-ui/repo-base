@@ -820,6 +820,9 @@ end
 
 function CoreIsFrameIntersects(frame1, frame2)
     --左下角为0, bottom > top 不向交
+    if frame1:GetLeft() == nil or frame1:GetTop() == nil then return false end
+    if frame2:GetLeft() == nil or frame2:GetTop() == nil then return false end
+
     return not (
         frame1:GetLeft() > frame2:GetRight() or
         frame1:GetRight() < frame2:GetLeft() or

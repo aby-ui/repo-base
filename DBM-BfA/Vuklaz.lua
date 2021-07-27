@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod(2381, "DBM-BfA", 6, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201218181040")
+mod:SetRevision("20210721041239")
 mod:SetCreatureID(160970)
 mod:SetEncounterID(2353)
 mod:SetReCombatTime(20)
+mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 --mod:SetMinSyncRevision(11969)
 
 mod:RegisterCombat("combat")

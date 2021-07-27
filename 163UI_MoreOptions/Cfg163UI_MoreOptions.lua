@@ -119,15 +119,18 @@ U1RegisterAddon("163UI_MoreOptions", {
 
         --makeCVarOption("能量点位于目标姓名板", "nameplateResourceOnTarget", { tip = '连击点等框体显示在目标姓名板上而不是自己脚下', secure = 1 }),
 
-        U1CfgMakeCVarOption("姓名板分散不重叠", "nameplateMotion", nil, { tip = UNIT_NAMEPLATES_TYPE_TOOLTIP_2, secure = 1, callback = function(cfg, v, loading)
+        U1CfgMakeCVarOption("姓名板分散不重叠", "nameplateMotion", nil, { tip = UNIT_NAMEPLATES_TYPE_TOOLTIP_2, callback = function(cfg, v, loading)
             if not loading then
-                SetCVar(cfg.var:gsub("^cvar_", ""), v)
-                local d = InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
-                if d then
-                    local v --= v and 1 or 0 will taint
-                    d.value = v
-                    d.selectedValue = v
+                local function f()
+                    SetCVar(cfg.var:gsub("^cvar_", ""), v)
+                    local d = InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown
+                    if d then
+                        local v --= v and 1 or 0 will taint
+                        d.value = v
+                        d.selectedValue = v
+                    end
                 end
+                CoreLeaveCombatCall("ABY_nameplateMotion", "脱战后会自动更新设置", f)
             end
         end}),
 

@@ -177,6 +177,11 @@ GTFO.SpellID["357414"] = {
   sound = 1;
 };
 
+GTFO.SpellID["350163"] = {
+  --desc = "Melee (Spiteful Shade)";
+  sound = 1;
+  tankSound = 2;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -511,6 +516,17 @@ GTFO.SpellID["328879"] = {
   --desc = "Creeping Sins (Patrician Cromwell)";
   sound = 1;
 };
+
+GTFO.SpellID["353724"] = {
+  --desc = "Doom Lash (Doom Conduit)";
+  sound = 1;
+};
+
+GTFO.SpellID["353633"] = {
+  --desc = "Insect Plague (Vil'thras)";
+  sound = 1;
+};
+
 
 --- ******************
 --- * Castle Nathria *

@@ -2272,6 +2272,7 @@ Private.event_prototypes = {
       local unit = trigger.unit
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
+      AddUnitEventForEvents(result, unit, "UNIT_MAXHEALTH")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if WeakAuras.IsRetail() then
         if trigger.use_showAbsorb then
@@ -4703,6 +4704,30 @@ Private.event_prototypes = {
     timedrequired = true
   },
   -- DBM events
+  ["DBM Stage"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "DBM_SetStage"
+    },
+    name = L["DBM Stage"],
+    init = function(trigger)
+      WeakAuras.RegisterDBMCallback("DBM_SetStage");
+      return ""
+    end,
+    args = {
+      {
+        name = "stage",
+        init = "WeakAuras.GetDBMStage()",
+        display = L["Stage"],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      }
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
   ["DBM Announce"] = {
     type = "addons",
     events = {},
@@ -5249,9 +5274,6 @@ Private.event_prototypes = {
     type = "unit",
     events = {},
     internal_events = {
-      "SWING_TIMER_START",
-      "SWING_TIMER_CHANGE",
-      "SWING_TIMER_END",
       "SWING_TIMER_UPDATE"
     },
     force_events = "SWING_TIMER_UPDATE",
@@ -7681,9 +7703,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_CRIT_MELEE), GetCombatRating(CR_CRIT_RANGED), GetCombatRating(CR_CRIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
       },
       {
         name = "criticalpercent",
@@ -7699,9 +7721,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_HASTE_SPELL)",
         store = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
       },
       {
         name = "hastepercent",
@@ -7893,14 +7915,24 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail()
       },
       {
+        name = "defense",
+        display = L["Defense"],
+        type = "number",
+        init = "UnitDefense('player') + select(2, UnitDefense('player'))",
+        store = true,
+        enable = WeakAuras.IsBCC(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsBCC()
+      },
+      {
         name = "dodgerating",
         display = L["Dodge Rating"],
         type = "number",
         init = "GetCombatRating(CR_DODGE)",
         store = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
       },
       {
         name = "dodgepercent",
@@ -7916,9 +7948,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_PARRY)",
         store = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
       },
       {
         name = "parrypercent",
@@ -7958,11 +7990,11 @@ Private.event_prototypes = {
         name = "armorpercent",
         display = L["Armor (%)"],
         type = "number",
-        init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel('player'))",
+        init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
       },
       {
         name = "armortargetpercent",

@@ -33,7 +33,7 @@ f01:SetScript("OnEvent", function(self)
         SetCVar("nameplateMaxDistance", 60)
     end
     SetCVar("scriptErrors", DEBUG_MODE and 1 or 0)
-    SetCVar("showQuestTrackingTooltips", 1)
+    --SetCVar("showQuestTrackingTooltips", 1) --9.0貌似没有这个了
     self:UnregisterAllEvents()
 end)
 

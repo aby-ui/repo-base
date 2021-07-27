@@ -2102,6 +2102,7 @@ function BigDebuffs:NAME_PLATE_UNIT_ADDED(_, unit)
 		frame.BigDebuffs.cooldown:SetDrawSwipe(true)
 		frame.BigDebuffs.cooldown:SetReverse(true)
 
+        if frame:IsForbidden() then return end
 		frame.BigDebuffs:SetScript("OnEnter", function(self)
 			if ( BigDebuffs.db.profile.nameplates.tooltips ) then
 				NamePlateTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);

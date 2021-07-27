@@ -296,6 +296,7 @@ local function Init()
 	end
 
 	KT:MoveTracker()
+    CoreOnEvent("PLAYER_ENTERING_WORLD", function() KT:MoveTracker() end)
 	KT:SetBackground()
 	KT:SetText()
 

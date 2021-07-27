@@ -23,6 +23,15 @@ U1RegisterAddon("GTFO", {
                     end
                 end
 
+                local timestamp, subEvent, _, _, _, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
+                if (spellID == 324667 or spellID == 318949 or spellID == 356414) and subEvent == "SPELL_CAST_START" then --324667咕团头前 318949凋魂大怪头前 356414冰折磨
+                    if play_handler then
+                        StopSound(play_handler)
+                        play_handler = nil
+                    end
+                    _, play_handler = PlaySoundFile("Interface\\AddOns\\GladiatorlosSA_zhCN\\Voice_zhCN\\shockwave.ogg", "MASTER")
+                end
+
                 --[=[
                 -- 紫圈快躲 3/3 01:31:26.500  SPELL_CAST_START,Creature-0-3911-1864-10934-148894-00007ABE3C,"失落的灵魂",0xa48,0x0,0000000000000000,nil,0x80000000,0x80000000,288694,"暗影碎击",0x20
                 if U1GetCfgValue("GTFO", "purple_circle", true) then

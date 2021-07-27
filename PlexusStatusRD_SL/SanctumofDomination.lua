@@ -92,11 +92,12 @@ GridStatusRaidDebuff:DebuffId(zoneid, 348638, 901, 5, 5, true) -- Return of the 
 GridStatusRaidDebuff:DebuffId(zoneid, 348760, 902, 5, 5, true) -- Frost Blast
 GridStatusRaidDebuff:DebuffId(zoneid, 348978, 903, 5, 5, true) -- Soul Exhaustion
 GridStatusRaidDebuff:DebuffId(zoneid, 346530, 904, 5, 5, true, true) -- Shatter
-GridStatusRaidDebuff:DebuffId(zoneid, 354289, 905, 5, 5, nil, true) -- Necrotic Miasma
+GridStatusRaidDebuff:DebuffId(zoneid, 354289, 905, 5, 5, nil, true, nil, true) -- Necrotic Miasma 359660
 GridStatusRaidDebuff:DebuffId(zoneid, 352316, 906, 5, 5) -- Soul Marked
 GridStatusRaidDebuff:DebuffId(zoneid, 347292, 907, 5, 5, true) -- Oblivion's Echo
 GridStatusRaidDebuff:DebuffId(zoneid, 354208, 908, 5, 5) -- Howling Blizzard
 GridStatusRaidDebuff:DebuffId(zoneid, 354033, 909, 5, 5) -- Frozen Wastes
+--zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon
 
 -- Sylvanas Windrunner
 GridStatusRaidDebuff:BossNameId(zoneid, 1000, "Sylvanas Windrunner")

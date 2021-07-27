@@ -729,6 +729,24 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     }
     order = order + 1;
 
+    args["condition" .. i .. "value" .. j .. "message voice"] = {
+      type = "select",
+      width = WeakAuras.doubleWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType),
+      values = OptionsPrivate.Private.tts_voices,
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_voice;
+      end,
+      set = setValueComplex("message_voice"),
+      hidden = function()
+        return not anyMessageType("TTS");
+      end,
+      desc = L["Available Voices are system specific"]
+    }
+    order = order + 1;
+
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= OptionsPrivate.tempGroup) then
       descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
@@ -842,9 +860,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               else
-                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               end
             end
           }
@@ -1084,6 +1102,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_color"] = {
       type = "color",
+      hasAlpha = true,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),

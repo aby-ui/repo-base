@@ -37,11 +37,13 @@ local item = GetInventoryItemLink("player", 1)
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
 
 local tip = CreateFrame("GameTooltip", "GameTooltipForItemLevel", nil, "ShoppingTooltipTemplate")
-for i=1, 4 do
-    tip:AddFontStrings(
-        tip:CreateFontString( "$parentTextLeft"..i, nil, "GameTooltipText" ),
-        tip:CreateFontString( "$parentTextRight"..i, nil, "GameTooltipText" )
-    )
+for i = 1, 4 do
+    if _G[tip:GetName() .. "Textleft" .. i] == nil then
+        tip:AddFontStrings(
+            tip:CreateFontString( "$parentTextLeft"..i, nil, "GameTooltipText" ),
+            tip:CreateFontString( "$parentTextRight"..i, nil, "GameTooltipText" )
+        )
+    end
 end
 
 local pattern = ITEM_LEVEL:gsub("%%d", "(%%d+)") --ITEM_LEVEL=物品等级%d
@@ -76,9 +78,8 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
 
     tip:SetOwner(WorldFrame, "ANCHOR_NONE")
     for i = 1,4 do
-   		if _G[ tip:GetName() .."Texture"..i] then
-   			_G[ tip:GetName() .."Texture"..i]:SetTexture("")
-   		end
+        local tex = _G[ tip:GetName() .."Texture"..i]
+        if tex then tex:SetTexture("") end
     end
     if slot then
         tip:SetInventoryItem(itemLink, slot)
