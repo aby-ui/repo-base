@@ -69,13 +69,6 @@ local StatScrollFrame = CreateFrame("ScrollFrame", nil, CharacterFrameInsetRight
 
 local DefaultTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
-	{ statKey = "ActiBlizzWalkout" },
-		{ statKey = "BLACK_GIRLS_CODE" },
-		{ statKey = "FUTURES" },
-		{ statKey = "GIRLS_WHO_CODE" },
-		{ statKey = "RAINN" },
-		{ statKey = "WOMEN_IN__ANIMATION" },
-		{ statKey = "WOMEN_IN_GAMES_INTL" },
 	{ statKey = "CorruptionCategory" },
 		{ statKey = "CR_CORRUPTION", hideAt = 0 },
 		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
@@ -139,13 +132,6 @@ local DefaultTankData = DCS_TableData:MergeTable({
 })
 local DefaultNonTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
-	{ statKey = "ActiBlizzWalkout" },
-		{ statKey = "BLACK_GIRLS_CODE" },
-		{ statKey = "FUTURES" },
-		{ statKey = "GIRLS_WHO_CODE" },
-		{ statKey = "RAINN" },
-		{ statKey = "WOMEN_IN__ANIMATION" },
-		{ statKey = "WOMEN_IN_GAMES_INTL" },
 	{ statKey = "CorruptionCategory" },
 		{ statKey = "CR_CORRUPTION", hideAt = 0 },
 		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
@@ -245,9 +231,6 @@ for k, v in pairs(DCS_TableData.StatData) do
 			v.frame.Background:SetHeight(28)
 			if k == "CorruptionCategory" then
 				v.frame.Title:SetText(L["Corruption"])
-			end
-			if k == "ActiBlizzWalkout" then
-				v.frame.Title:SetText(L["#ActiBlizzWalkout |cff00c0ff<3|r"])
 			end
 			if k == "GeneralCategory" then
 				v.frame.Title:SetText(L["General"])
@@ -567,7 +550,6 @@ local function DCS_Table_Relevant()
 			if v.statKey == "CR_CORRUPTION_RESISTANCE" then v.hidden = true end
 			if v.statKey == "CR_TOTAL_CORRUPTION" then v.hidden = true end
 		end
-		--if v.statKey == "ActiBlizzWalkout" then v.hidden = true end
 		--if v.statKey == "GeneralCategory" then v.hidden = true end
 		--if v.statKey == "OffenseCategory" then v.hidden = true end
 		--if v.statKey == "DefenseCategory" then v.hidden = true end

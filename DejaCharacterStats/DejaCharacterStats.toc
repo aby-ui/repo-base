@@ -1,6 +1,6 @@
 ## Interface: 90100
-## Version: 901r2
-## Title: |cff00c0ffDejaCharacterStats <3|r
+## Version: 900r2
+## Title: |cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.
 ## SavedVariables: DejaCharacterStatsDB
