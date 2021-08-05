@@ -12,7 +12,7 @@ local function GetLocalization()
 	localization = localization:gsub("enUS", ENUS):gsub("deDE", DEDE)
 	localization = localization:gsub("esES", ESES):gsub("esMX", ESMX)
 	localization = localization:gsub("frFR", FRFR):gsub("koKR", KOKR)
-	localization = localization:gsub("ruRU", RURU):gsub("zhCN", "")--ZHCN)
+	localization = localization:gsub("ruRU", RURU):gsub("zhCN", ZHCN)
 	localization = localization:gsub("zhTW", ZHTW)
 	localization = localization:gsub("itIT", LFG_LIST_LANGUAGE_ITIT)
 	localization = localization:gsub("ptBR", LFG_LIST_LANGUAGE_PTBR)
@@ -62,7 +62,17 @@ local getField = function(info) local label = info[#info] return fields[label] o
 local COPY_URL =  L["Press Ctrl+C to copy URL"]
 
 local isFound
-local changelog = E.changelog:gsub("^[ \t\n]*", E.HEX_C[WOW_PROJECT_ID]):gsub("\n\nv([%d%.]+)",function(ver)
+local changelog = E.changelog:gsub("^[ \t\n]*", E.HEX_C[WOW_PROJECT_ID]):gsub("v([%d%.]+)([^\n]*).-\n\n", function(ver, xpac)
+	if E.isBCC then
+		local version = ver:gsub("[^%d]", "")
+		version = tonumber(version)
+		if xpac ~= "" and xpac ~= "-bcc" or (version and version < 2600) then
+			return ""
+		end
+	elseif xpac ~= "" and xpac ~= "-sl" then
+		return ""
+	end
+end):gsub("\n\nv([%d%.]+)",function(ver)
 	if not isFound and ver ~= E.Version then
 		isFound = true
 		return "|cff9d9d9d\n\nv"..ver

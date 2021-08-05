@@ -130,6 +130,7 @@
 			[342246] = "alterTime",
 			[108978] = "alterTime",
 			[324220] = "deathborne", -- Necrolord
+			[353128] = "arcanosphere",
 
 			-- Monk (Aura Applied)
 			[122278] = "dampenHarm",
@@ -375,7 +376,7 @@
 			[132158] = "swiftnessDown",
 			[10060] = "infusionDown", -- Power Infusion
 			[335903] = "doomwindsDown",
-			[199027] = "veilOfMidnight",
+			[199027] = "veilOfMidnightDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -466,7 +467,7 @@
 			[314793] = "mirrorsOfTorment",
 			[307443] = "radiantspark", -- Kyrian
 			[353082] = "ringOfFire", -- and it burns burns burns
-			[353128] = "arcanosphere",
+			--[353128] = "arcanosphere",
 			[352278] = "iceWall",
 			
 			-- Monk (Spell Casting)
@@ -654,6 +655,7 @@
 			[256948] = "SpatialRift", -- Spatial Rift (Void Elf)
 			[257040] = "SpatialRift2", -- Spatial Rift Teleport (Spatial Warp) (Void Elf)
 			[255654] = "BullRush", -- Bull Rush (Highmountain Racial)
+			[356567] = "maledict",
 
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature

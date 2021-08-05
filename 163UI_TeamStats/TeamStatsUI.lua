@@ -569,13 +569,17 @@ local sortFuncs = {
         local r, equal, force = compare(a, b, "gs")
         if currSort > 0 or force then return r else return not r end
     end,
-    --[[
     [5] = function(a,b)
+        local r, equal, force = compare(a, b, "ds_counts")
+        if currSort > 0 or force then return r else return not r end
+    end,
+    --[[
+    [6] = function(a,b)
         local r, equal, force = compare(a, b, "corrupt")
         if currSort > 0 or force then return r else return not r end
     end,
     --]]
-    [6] = function(a,b)
+    [7] = function(a,b)
         local r, equal, force = compare(a, b, "mscore")
         if currSort > 0 or force then return r else return not r end
     end,
@@ -596,6 +600,7 @@ function TS.SetupColumns(f)
             if v == self.line.player then
                 self.tooltipLines = self.tooltipLines or {}
                 self.tooltipLines[1] = n
+                self.tooltipLines[2] = "Ctrl点击观察"
                 --self.tooltipLines[2] = "披风抗性    (-" .. (v.c_resist or 0) .. ")"
                 --self.tooltipLines[3] = v.c_text and "|cff946cd0" .. v.c_text .. "|r" or ""
                 --local corrupt = tostring(math.max(0, (v.c_total or 0) - (v.c_resist or 0) - 10))
@@ -664,6 +669,7 @@ function TS.SetupColumns(f)
                         target = CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
                         target.line = line
                         target:SetAttribute("type", "macro")
+                        target:SetAttribute("ctrl-type1", "macro")
                         target:SetFrameStrata("HIGH")
                         line.target = target
                         target:SetScript("OnEnter", targetBtnOnEnter)
@@ -676,6 +682,7 @@ function TS.SetupColumns(f)
                     target:SetPoint("BOTTOMRIGHT", line, 0, 0)
                     if line.player.name then
                         target:SetAttribute("macrotext", "/target "..line.player.name)
+                        target:SetAttribute("ctrl-macrotext1", "/cleartarget\n/target "..line.player.name .. "\n/inspect")
                     end
                     target:Show();
                 end
@@ -732,8 +739,8 @@ function TS.SetupColumns(f)
         {
             header = L["HeaderGS"],
             headerSpan = 1,
-            width = 65,
-            tip = "身上当前装备的平均物品等级，括号内为插槽数量，暂时不统计统御插槽",
+            width = 75,
+            tip = "身上当前装备的平均物品等级，括号内为插槽数量，不统计统御插槽",
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
@@ -748,6 +755,28 @@ function TS.SetupColumns(f)
 
                 local r, b, g = U1GetInventoryLevelColor(player.gs)
                 if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5,1) else widget:SetTextColor(r,b,g) end
+            end
+        },
+        {
+            header = "统御碎片",
+            headerSpan = 1,
+            width = 64,
+            tip = "\124cffff3fff紫色\124r为邪恶碎片，森罗万象（头部）\n\124cff3f3fff蓝色\124r为冰霜碎片，寒冬之风（肩部）\n\124cffff0000红色\124r为鲜血碎片，鲜血连接（胸部）",
+            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
+            update = function(line, widget, idx, colIdx)
+                local player = line.player
+                if player.ds_counts then
+                    local c, s = player.ds_counts, ""
+                    local c3 = c % 10; c = math.floor(c / 10);
+                    local c2 = c % 10; c = math.floor(c / 10);
+                    local c1 = c % 10;
+                    if c1 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cffff3fff" .. c1 .. "\124r" end
+                    if c2 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cff3f3fff" .. c2 .. "\124r" end
+                    if c3 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cffff0000" .. c3 .. "\124r" end
+                    widget:SetText(s)
+                else
+                    widget:SetText(" ")
+                end
             end
         },
         --[[

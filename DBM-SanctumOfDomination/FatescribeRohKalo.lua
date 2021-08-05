@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2447, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210719152123")
+mod:SetRevision("20210802165351")
 mod:SetCreatureID(175730)
 mod:SetEncounterID(2431)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -416,7 +416,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnExtemporaneousFate:Show(self.vb.extemporaneousCount)
 		specWarnExtemporaneousFate:Play("specialsoon")--"157060" if they just happen to be yellow
 		timerDarkestDestiny:Start(30)
-		local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.extemporaneousCount+1]
+		local timer = allTimers[difficultyName][3][spellId][self.vb.extemporaneousCount+1]
 		if timer then
 			timerExtemporaneousFateCD:Start(timer, self.vb.extemporaneousCount+1)
 		end

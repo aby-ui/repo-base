@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 42
-RSConstants.CURRENT_LOOT_DB_VERSION = 54
+RSConstants.CURRENT_DB_VERSION = 43
+RSConstants.CURRENT_LOOT_DB_VERSION = 55
 
 ---============================================================================
 -- Special events
@@ -179,6 +179,7 @@ RSConstants.CMD_TOGGLE_EVENTS = "te"
 RSConstants.CMD_TOGGLE_EVENTS_ALERTS = "tea"
 RSConstants.CMD_TOGGLE_TREASURES = "tt"
 RSConstants.CMD_TOGGLE_TREASURES_ALERTS = "tta"
+RSConstants.CMD_TOGGLE_SCANNING_WORLD_MAP_VIGNETTES = "swmv"
 RSConstants.CMD_TOMTOM_WAYPOINT = "waypoint"
 
 ---============================================================================
@@ -190,12 +191,14 @@ RSConstants.NPC_VIGNETTE_ELITE = "VignetteKillElite"
 RSConstants.NPC_LEGION_VIGNETTE = "DemonInvasion5"
 RSConstants.NPC_NAZJATAR_VIGNETTE = "nazjatar-nagaevent"
 RSConstants.NPC_WARFRONT_NEUTRAL_HERO_VIGNETTE = "Warfront-NeutralHero"
+RSConstants.NPC_TORMENTORS_VIGNETTE = "Tormentors-Boss"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
 
 RSConstants.EVENT_VIGNETTE = "VignetteEvent"
 RSConstants.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
+RSConstants.EVENT_TORMENTORS_VIGNETTE = "Tormentors-Event"
 
 ---============================================================================
 -- MapIDS
@@ -490,11 +493,11 @@ function RSConstants.IsScanneableAtlas(atlasName)
 end
 
 function RSConstants.IsEventAtlas(atlasName)
-	return atlasName == RSConstants.EVENT_VIGNETTE or atlasName == RSConstants.EVENT_ELITE_VIGNETTE
+	return atlasName == RSConstants.EVENT_VIGNETTE or atlasName == RSConstants.EVENT_ELITE_VIGNETTE or atlasName == RSConstants.EVENT_TORMENTORS_VIGNETTE
 end
 
 function RSConstants.IsNpcAtlas(atlasName)
-	return atlasName == RSConstants.NPC_VIGNETTE or atlasName == RSConstants.NPC_LEGION_VIGNETTE or atlasName == RSConstants.NPC_VIGNETTE_ELITE or atlasName == RSConstants.NPC_NAZJATAR_VIGNETTE or atlasName == RSConstants.NPC_WARFRONT_NEUTRAL_HERO_VIGNETTE
+	return atlasName == RSConstants.NPC_VIGNETTE or atlasName == RSConstants.NPC_LEGION_VIGNETTE or atlasName == RSConstants.NPC_VIGNETTE_ELITE or atlasName == RSConstants.NPC_NAZJATAR_VIGNETTE or atlasName == RSConstants.NPC_WARFRONT_NEUTRAL_HERO_VIGNETTE or atlasName == RSConstants.NPC_TORMENTORS_VIGNETTE
 end
 
 function RSConstants.IsContainerAtlas(atlasName)

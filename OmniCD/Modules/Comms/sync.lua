@@ -165,7 +165,7 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- [29]
 				if i == 16 then
 					if info.shadowlandsData.covenantID then
 						info.shadowlandsData.soulbindID = v
-					else -- backwards compatibile. no active soulbind, add snowflake
+					else -- backwards compatible. no active soulbind, add snowflake
 						info.talentData[v] = true
 					end
 				elseif i == 15 then

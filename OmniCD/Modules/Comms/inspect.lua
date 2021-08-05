@@ -338,6 +338,12 @@ function Comms:InspectUnit(guid)
 	ClearInspectPlayer()
 	self:DequeueInspect(guid)
 
+	local covenantID = P.loginsessionData[guid] and P.loginsessionData[guid].covenantID
+	if covenantID then
+		info.shadowlandsData.covenantID = covenantID
+		info.talentData[E.covenant_IDToSpellID[covenantID]] = "C"
+	end
+
 	P:UpdateUnitBar(guid)
 end
 
@@ -493,7 +499,6 @@ function Comms:InspectPlayer()
 	return true
 end
 
-------------------------------------------------------------------------------
 if not E.isBCC then return end
 
 local item_equipBonus = E.item_equipBonus

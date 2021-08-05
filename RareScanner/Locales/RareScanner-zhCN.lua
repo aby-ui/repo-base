@@ -731,6 +731,7 @@ if AL then
 	AL["NOTE_ANIMA_CONDUCTOR"] = "需要成为[%s]盟约的一员。你需要解锁[心能导流器]并将其导向[%s]. %s"
 	AL["NOTE_ASCENDED_COUNCIL_NPCS"] = "该NPC由[晋升者议会]组成。你必须在短时间（几分钟）内敲响五个暮钟才能开始事件。你将会与所有圣杰作战。当你击败他们时，[晋升宝箱]就会出现。"
 	AL["NOTE_BOUNDING_SHROOM"] = "使用[反弹菇]到达那里。"
+	AL["NOTE_CACHEs_SWAGSNOUT_GROMIT"] = "RareScanner 无法提示此宝箱。你需要从 [档案员罗-遂尔] 处购买一个 [训练有素的跃足兽运送者] 并用它来召唤一个跃足兽。 每次他找到容器时都会提示你并用蓝光突出显示"
 	AL["NOTE_CITADEL_LOYALTY"] = "忠诚堡垒"
 	AL["NOTE_CITADEL_LOYALTY_NPCS"] = "你需要和[黑色暮钟]交互召唤他。"
 	AL["NOTE_CRAFTING_NPCS"] = "你需要向池中添加材料，直到完成30/30. %s"

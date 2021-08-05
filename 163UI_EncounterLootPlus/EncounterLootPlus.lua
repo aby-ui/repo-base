@@ -4,8 +4,8 @@ ELP_ALL_SLOT = Enum.ItemSlotFilterType.NoFilter
 ELP_ATTRS = {
     [1] = STAT_CRITICAL_STRIKE,
     [2] = STAT_HASTE,
-    [3] = STAT_VERSATILITY,
-    [4] = STAT_MASTERY,
+    [4] = STAT_VERSATILITY,
+    [3] = STAT_MASTERY,
 }
 
 if not ELP_LAST_RAID_IDX then

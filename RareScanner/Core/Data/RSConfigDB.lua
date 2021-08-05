@@ -816,14 +816,6 @@ end
 -- Collection filters
 ---============================================================================
 
-function RSConfigDB.SetCollectionsFilteredOnlyOnWorldMap(value)
-	private.db.collections.filteredOnlyOnWorldMap = value
-end
-
-function RSConfigDB.IsCollectionsFilteredOnlyOnWorldMap()
-	return private.db.collections.filteredOnlyOnWorldMap
-end
-
 function RSConfigDB.SetAutoFilteringOnCollect(value)
 	private.db.collections.autoFilteringOnCollect = value
 end

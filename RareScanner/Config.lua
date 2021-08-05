@@ -993,25 +993,15 @@ local function GetCustomNpcOptions()
 				handler = RareScanner,
 				desc = RSNpcDB.GetNpcName(tonumber(npcID)),
 				args = {
-					deleteNpc = {
-						order = 1,
-						name = AL["CUSTOM_NPC_DELETE_NPC"],
-						desc = AL["CUSTOM_NPC_DELETE_NPC_DESC"],
-						type = "execute",
-						confirm = true,
-						confirmText = string.format(AL["CUSTOM_NPC_DELETE_NPC_CONFIRM"], RSNpcDB.GetNpcName(tonumber(npcID))),
-						func = function()
-							private.custom_npcs_options[npcID] = nil
-							custom_npcs_options.args[npcID] = nil
-							RSNpcDB.DeleteCustomNpcInfo(npcID)
-							RSGeneralDB.RemoveAlreadyFoundEntity(tonumber(npcID))
-						end,
-						width = "normal",
-					},
 					separatorFindZone = {
-						order = 2,
+						order = 1,
 						type = "header",
 						name = AL["CUSTOM_NPC_FIND_ZONES"],
+					},
+					infoZone = {
+						order = 2,
+						type = "description",
+						name = AL["CUSTOM_NPC_INFO"],
 					},
 					continents = {
 						order = 3.1,
@@ -1068,14 +1058,12 @@ local function GetCustomNpcOptions()
 							if (not private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone]) then
 								if (private.custom_npcs_options[npcID].subzone == RSConstants.ALL_ZONES_CUSTOM_NPC) then
 									private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = AL["ALL_ZONES"]
-									private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
-									
-									-- It won't have coordinates, so add it directly
-									RSNpcDB.SetCustomNpcInfo(npcID, private.custom_npcs_options[npcID])
 								else
 									private.custom_npcs_options[npcID].zones[private.custom_npcs_options[npcID].subzone] = getZoneName(private.custom_npcs_options[npcID].subzone)
-									private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
 								end
+								
+								private.custom_npcs_options[npcID].zone = private.custom_npcs_options[npcID].subzone
+								RSNpcDB.SetCustomNpcInfo(npcID, private.custom_npcs_options[npcID])
 							end
 						end,
 						width = "normal",
@@ -1148,7 +1136,7 @@ local function GetCustomNpcOptions()
 							local coordinatePairs = { strsplit(",", value) }
 							for i, coordinatePair in ipairs(coordinatePairs) do
 								local coordx, coordy = 	strsplit("-", coordinatePair)
-								if (not coordx or tonumber(coordx) == nil or not coordy or tonumber(coordy) == nil) then
+								if (not coordx or string.match(coordx, "^%-?%d+$") == nil or not coordy or string.match(coordy, "^%-?%d+$") == nil) then
 									return string.format(AL["CUSTOM_NPC_VALIDATION_COORD"], coordinatePair)
 								end
 							end
@@ -1233,6 +1221,21 @@ local function GetCustomNpcOptions()
 							return true
 						end,
 						width = "full",
+					},
+					deleteNpc = {
+						order = 11,
+						name = AL["CUSTOM_NPC_DELETE_NPC"],
+						desc = AL["CUSTOM_NPC_DELETE_NPC_DESC"],
+						type = "execute",
+						confirm = true,
+						confirmText = string.format(AL["CUSTOM_NPC_DELETE_NPC_CONFIRM"], RSNpcDB.GetNpcName(tonumber(npcID))),
+						func = function()
+							private.custom_npcs_options[npcID] = nil
+							custom_npcs_options.args[npcID] = nil
+							RSNpcDB.DeleteCustomNpcInfo(npcID)
+							RSGeneralDB.RemoveAlreadyFoundEntity(tonumber(npcID))
+						end,
+						width = "normal",
 					},
 				}
 			}
@@ -1771,9 +1774,10 @@ local function GetCollectionFilters()
 					type = "toggle",
 					name = AL["FILTER_NPCS_ONLY_MAP"],
 					desc = AL["COLLECTION_FILTERS_ONLY_MAP_DESC"],
-					get = function() return RSConfigDB.IsCollectionsFilteredOnlyOnWorldMap() end,
+					get = function() return RSConfigDB.IsNpcFilteredOnlyOnWorldMap() or RSConfigDB.IsContainerFilteredOnlyOnWorldMap() end,
 					set = function(_, value)
-						RSConfigDB.SetCollectionsFilteredOnlyOnWorldMap(value)
+						RSConfigDB.SetNpcFilteredOnlyOnWorldMap(value)
+						RSConfigDB.SetContainerFilteredOnlyOnWorldMap(value)
 					end,
 					width = "full",
 				},

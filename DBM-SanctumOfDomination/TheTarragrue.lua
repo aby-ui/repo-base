@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2435, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210714022611")
+mod:SetRevision("20210802052654")
 mod:SetCreatureID(175611)
 mod:SetEncounterID(2423)
 mod:SetUsedIcons(1)
@@ -210,7 +210,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnPredatorsHowl:Play("range5")
 			yellPredatorsHowl:Yell()
 		end
-	elseif spellId == 347490 then
+	elseif spellId == 347490 and args:IsDestTypeHostile() then
 		specWarnFuryoftheAges:Show(args.destName)
 		specWarnFuryoftheAges:Play("enrage")
 	elseif spellId == 347369 then

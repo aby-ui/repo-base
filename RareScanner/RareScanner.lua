@@ -260,6 +260,7 @@ scanner_button:RegisterEvent("TRANSMOG_COLLECTION_UPDATED")
 -- Captures all events
 local isCinematicPlaying = false
 local hasLoadedCompletely = false
+local alreadySeenWorldMapVignettes = {}
 scanner_button:SetScript("OnEvent", function(self, event, ...)
 	-- Player login
 	if (event == "PLAYER_LOGIN") then
@@ -293,8 +294,10 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
 			if (vignetteInfo and vignetteInfo.onWorldMap) then
 				-- This event fires several times, avoid to capture it in 10 seconds
-				if (not self.lastTimeVignetteUpdated or self.lastTimeVignetteUpdated < time()) then
+				if (not alreadySeenWorldMapVignettes[vignetteGUID] or not self.lastTimeVignetteUpdated or self.lastTimeVignetteUpdated < time()) then
 					self.lastTimeVignetteUpdated = time() + 10 --wait 10 seconds
+					alreadySeenWorldMapVignettes = {}
+					alreadySeenWorldMapVignettes[vignetteGUID] = true
 				else
 					return
 				end
@@ -984,11 +987,16 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (not entityID) then
 		return
 	end
+		
+	-- Overrides name if Torghast vignette
+	if (vignetteInfo.type and vignetteInfo.type == Enum.VignetteType.Torghast) then
+		vignetteInfo.name = RSNpcDB.GetNpcName(entityID)
+	end
 	
 	-- Check if it is an event to summon another NPC. In that case display NPC information instead
 	if (RSConstants.NPCS_WITH_PRE_EVENT[entityID]) then
 		local rareNpcID = RSConstants.NPCS_WITH_PRE_EVENT[entityID]
-		RSGeneralDB.RemoveAlreadyFoundEntity(eventID)
+		RSGeneralDB.RemoveAlreadyFoundEntity(entityID)
 		vignetteInfo.name = RSNpcDB.GetNpcName(rareNpcID)
 		entityID = rareNpcID
 		vignetteInfo.preEvent = true

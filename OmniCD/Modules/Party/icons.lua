@@ -147,16 +147,18 @@ function P:SetAlpha(icon)
 end
 
 function P:SetSwipe(icon)
-	if icon.statusBar then
-		icon.cooldown:SetSwipeColor(0, 0, 0, 0)
+	if icon.statusBar and not E.db.extraBars[icon.statusBar.key].hideBar then
+		icon.cooldown:SetDrawSwipe(false)
 	else
+		local charges = icon.maxcharges and tonumber(icon.Count:GetText())
 		icon.cooldown:SetReverse(E.db.icons.reverse)
-		icon.cooldown:SetSwipeColor(0, 0, 0, E.db.icons.swipeAlpha)
+		icon.cooldown:SetDrawSwipe( not icon.isHighlighted and (not charges or charges < 1) )
 	end
+	icon.cooldown:SetSwipeColor(0, 0, 0, E.db.icons.swipeAlpha)
 end
 
 function P:SetCounter(icon)
-	if icon.statusBar then
+	if icon.statusBar and not E.db.extraBars[icon.statusBar.key].hideBar then
 		icon.cooldown:SetHideCountdownNumbers(true)
 	else
 		local charges = icon.maxcharges and tonumber(icon.Count:GetText())

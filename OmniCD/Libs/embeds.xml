@@ -1,4 +1,5 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-	<Include file="Ace3\AceGUI-3.0\AceGUI-3.0.xml"/>
-	<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Include file="Ace3\AceGUI-3.0\AceGUI-3.0-OmniCD.xml"/>
+	<Include file="Ace3\AceConfig-3.0\AceConfigDialog-3.0\AceConfigDialog-3.0.lua"/>
 </Ui>

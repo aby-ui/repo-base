@@ -102,11 +102,11 @@ function OmniCD_AnchorOnMouseUp(self)
 	local bar = self:GetParent()
 	bar:StopMovingOrSizing()
 	SavePosition(bar)
-	E.Libs.ACR:NotifyChange("OmniCD")
+	--E.Libs.ACR:NotifyChange("OmniCD") -- if we're adding X/Y coordinates in option
 end
 
-E.SetWidth = function(anchor)
-	local width = anchor.text:GetWidth() + 20
+E.SetWidth = function(anchor, padding)
+	local width = anchor.text:GetWidth() + (padding or 20)
 	anchor:SetWidth(width)
 end
 

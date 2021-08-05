@@ -196,7 +196,7 @@ function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
 		if (containerInfo or alreadyFoundInfo) then
 			return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 		end
-	elseif (vignetteType == Enum.VignetteType.Normal) then
+	elseif (vignetteType == Enum.VignetteType.Normal or vignetteType == Enum.VignetteType.Torghast) then
 		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
 		local npcID = tonumber(vignetteObjectID)
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)

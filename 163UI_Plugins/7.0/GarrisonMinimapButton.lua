@@ -77,3 +77,14 @@ CoreOnEvent("VARIABLES_LOADED", function()
 end)
 
 _G.U1_ProcessGarrisonLandingPageMMB = ProcessGarrisonLandingPageMMB
+
+local function hookUIPanel(frame, showOrHide)
+    if frame and InCombatLockdown() then
+        if frame == SoulbindViewer or frame == GarrisonLandingPage then -- frame == CovenantRenownFrame not worked
+            showOrHide(frame)
+        end
+    end
+end
+
+hooksecurefunc("ShowUIPanel", function(frame) hookUIPanel(frame, CoreUIShowUIPanel) end)
+hooksecurefunc("HideUIPanel", function(frame) hookUIPanel(frame, CoreUIHideUIPanel) end)

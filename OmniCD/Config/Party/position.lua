@@ -137,6 +137,7 @@ local position = {
 			order = 10,
 			type = "select",
 			values = E.L_LAYOUT,
+			sorting = {"horizontal", "doubleRow", "tripleRow", "vertical", "doubleColumn", "tripleColumn"},
 		},
 		columns = {
 			disabled = isMultiline,

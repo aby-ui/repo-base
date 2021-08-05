@@ -168,24 +168,20 @@ function P:ConfigIconSettings(f, arg, key)
 			else
 				self:SetBorder(icon)
 			end
-		elseif arg == "borderColor" then
+		elseif arg == "borderColor" then -- border enabled
 			local r, g, b = E.db.icons.borderColor.r, E.db.icons.borderColor.g, E.db.icons.borderColor.b
 			if key then
-				icon.borderTop:SetColorTexture(r, g, b)
-				icon.borderBottom:SetColorTexture(r, g, b)
-				icon.borderRight:SetColorTexture(r, g, b)
-				icon.borderLeft:SetColorTexture(r, g, b)
-
 				local statusBar = icon.statusBar
-				statusBar.borderTop:SetColorTexture(r, g, b)
-				statusBar.borderBottom:SetColorTexture(r, g, b)
-				statusBar.borderRight:SetColorTexture(r, g, b)
-			elseif E.db.icons.displayBorder then
-				icon.borderTop:SetColorTexture(r, g, b)
-				icon.borderBottom:SetColorTexture(r, g, b)
-				icon.borderRight:SetColorTexture(r, g, b)
-				icon.borderLeft:SetColorTexture(r, g, b)
+				if statusBar then
+					statusBar.borderTop:SetColorTexture(r, g, b)
+					statusBar.borderBottom:SetColorTexture(r, g, b)
+					statusBar.borderRight:SetColorTexture(r, g, b)
+				end
 			end
+			icon.borderTop:SetColorTexture(r, g, b)
+			icon.borderBottom:SetColorTexture(r, g, b)
+			icon.borderRight:SetColorTexture(r, g, b)
+			icon.borderLeft:SetColorTexture(r, g, b)
 		elseif arg == "markEnhanced" then
 			self:SetMarker(icon)
 		end

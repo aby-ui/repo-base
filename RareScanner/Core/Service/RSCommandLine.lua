@@ -58,6 +58,8 @@ SlashCmdList["RARESCANNER_CMD"] = function(command, ...)
 		RSCommandLine.CmdToggleTreasures()
 	elseif (command == RSConstants.CMD_TOGGLE_TREASURES_ALERTS) then
 		RSCommandLine.CmdToggleTreasuresAlerts()
+	elseif (command == RSConstants.CMD_TOGGLE_SCANNING_WORLD_MAP_VIGNETTES) then
+		RSCommandLine.CmdToggleScanningWorldmapVignettes()
 	elseif (RSUtils.Contains(command, RSConstants.CMD_TOMTOM_WAYPOINT)) then
 		local _, npcID, name = strsplit(";", command)
 		if (RSConfigDB.IsTomtomSupportEnabled() and not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
@@ -76,6 +78,7 @@ SlashCmdList["RARESCANNER_CMD"] = function(command, ...)
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_SCANNING_WORLD_MAP_VIGNETTES.." |cFF00FFFB"..AL["CMD_HELP10"])
 	end
 end
 
@@ -164,5 +167,15 @@ function RSCommandLine.CmdToggleTreasuresAlerts()
 	else
 		private.db.general.scanContainers = true
 		RSLogger:PrintMessage(AL["CMD_ENABLE_CONTAINERS_ALERTS"])
+	end
+end
+
+function RSCommandLine.CmdToggleScanningWorldmapVignettes()
+	if (private.db.general.scanWorldmapVignette) then
+		private.db.general.scanWorldmapVignette = false
+		RSLogger:PrintMessage(AL["CMD_DISABLE_SCANNING_WORLDMAP_VIGNETTES"])
+	else
+		private.db.general.scanWorldmapVignette = true
+		RSLogger:PrintMessage(AL["CMD_ENABLE_SCANNING_WORLDMAP_VIGNETTES"])
 	end
 end

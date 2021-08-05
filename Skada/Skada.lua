@@ -832,6 +832,7 @@ local function slashHandler(param)
 end
 
 local function sendchat(msg, chan, chantype)
+    msg = msg and msg:gsub("\124T.-\124t", "") or msg
 	if chantype == "self" then
 		-- To self.
 		Skada:Print(msg)

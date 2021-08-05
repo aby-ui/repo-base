@@ -7,8 +7,10 @@ local P = E["Party"]
 
 P.groupInfo = {}
 P.pendingQueue = {}
+P.loginsessionData = {}
 
 P.userData = {
+	guid = E.userGUID,
 	class = E.userClass,
 	raceID = E.userRaceID,
 	name = E.userName,
@@ -34,6 +36,7 @@ P.zoneEvents = {
 if E.isBCC then
 	P.zoneEvents.none = nil
 	P.zoneEvents.party = nil
+	P.zoneEvents.raid = nil
 	P.zoneEvents.all = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" }
 end
 
@@ -159,6 +162,7 @@ do
 					level = 200
 				end
 				P.groupInfo[guid] = {
+					guid = guid,
 					class = class,
 					raceID = race,
 					name = name,
@@ -175,6 +179,8 @@ do
 					invSlotData = {},
 					shadowlandsData = {},
 				}
+
+				P.loginsessionData[guid] = {}
 
 				P.pendingQueue[#P.pendingQueue + 1] = guid
 				P:UpdateUnitBar(guid, true)

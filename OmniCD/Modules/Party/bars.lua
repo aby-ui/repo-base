@@ -19,6 +19,7 @@ local spell_cdmod_conduits_mult = E.spell_cdmod_conduits_mult
 local covenant_cdmod_conduits = E.covenant_cdmod_conduits
 local covenant_chmod_conduits = E.covenant_chmod_conduits
 local covenant_cdmod_items_mult = E.covenant_cdmod_items_mult
+local covenant_abilities = E.covenant_abilities
 local spell_enabled = P.spell_enabled
 local spell_modifiers = E.spell_modifiers
 local cd_start_dispels = E.cd_start_dispels
@@ -50,6 +51,9 @@ function OmniCD_BarOnHide(self)
 		if f == self then
 			if f.timer_inCombatTicker then
 				f.timer_inCombatTicker:Cancel()
+			end
+			if f.timer_ashenHallowTicker then
+				f.timer_ashenHallowTicker:Cancel()
 			end
 			tremove(bars, i)
 			break
@@ -117,6 +121,18 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
 		local unit, _, spellID = ...
+
+		if not info.shadowlandsData.covenantID then -- not checking for covenant changes
+			local covenantID = covenant_abilities[spellID]
+			if covenantID then
+				info.shadowlandsData.covenantID = covenantID
+				info.talentData[E.covenant_IDToSpellID[covenantID]] = "C"
+				P.loginsessionData[info.guid].covenantID = covenantID
+
+				P:UpdateUnitBar(guid)
+			end
+		end
+
 		if (spell_enabled[spellID] or spell_modifiers[spellID]) and not cd_start_dispels[spellID] then
 			E.ProcessSpell(spellID, guid)
 		end
@@ -128,12 +144,12 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 		if not info.maxHealth or info.maxHealth == 0 or not info.talentData[INTIMIDATION_TACTICS] then
 			self:UnregisterEvent(event)
-
 			return
 		end
 
 		local active = info.active[DOOR_OF_SHADOWS]
 		if not active then
+			self:UnregisterEvent(event)
 			return
 		end
 

@@ -317,6 +317,12 @@ DCS_TableData.StatData.ItemLevelFrame = {
     end
 }
 
+DCS_TableData.StatData.ActiBlizzWalkout = {
+    category   = true,
+    frame      = char_ctats_pane.ActiBlizzWalkout,
+    updateFunc = function()	end
+}
+
 DCS_TableData.StatData.GeneralCategory = {
     category   = true,
     frame      = char_ctats_pane.GeneralCategory,
@@ -1018,6 +1024,114 @@ DCS_TableData.StatData.HONOR_LEVEL = {
 		PaperDollFrame_SetLabelAndText(statFrame, L["Honor Level"], honorLevelStr, false, honorLevel);
 		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, L["Honor Level"]).." "..honorLevelStr..font_color_close;
 		statFrame.tooltip2 = _G["STAT_HONOR_LEVEL_TOOLTIP"];
+		statFrame:Show();
+	end
+}
+
+local BGC_format = L['|cffffffffBlack Girls CODE|r'] .." %s"
+DCS_TableData.StatData.BLACK_GIRLS_CODE = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "77"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["Black Girls CODE"]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(BGC_format, ""));
+		statFrame.tooltip2 = ('\n|cffffffff"The future looks like me."|r\n\n|cffffffffhttps://www.blackgirlscode.com|r\n\nWe build pathways for young women of color to embrace the current tech marketplace as builders and creators by introducing them to skills in computer programming and technology.\n\nRadical action is needed if we are to close the opportunity gap for Black women and girls. We lead a global movement to establish equal representation in the tech sector. Black Girls CODE is devoted to showing the world that Black girls can code and do so much more. Together, we are creating stronger economies and more equitable societies—ultimately realizing the true potential of democracy through diversity and inclusion.\n\nWomen and girls make up |cffffffff70%|r of the people living on less than $1/day.\n\nWomen worldwide... perform |cffffffff66%|r of the world\'s work.\n\n|cffffffff41 million|r girls are sill denied a primary education.\n\nWomen make only |cff00c0ff77 cents|r for every dollar made by their male counterparts.\n\nPoverty rate were roughly |cffffffff3x|r for african american and latina girls over thoses of white girls, as of 2010.\n\nWomen hold |cffffffff< 14%|r of executive officer positions of fortune 100 companies and represent |cffffffff< 1%|r of startup founders.\n\nStudents earning degrees in computer science\n|cffffffff<1%|r Latina & Native American Women\n|cffffffff<3%|r African American Women\n|cffffffff18%|r White Women\n\nOver |cffffffff50%|r of middle school girls are interested in computer\nBut high school fewer than |cffffffff2%|r plan to major in computer');
+
+		statFrame:Show();
+	end
+}
+
+local FUTURES_format = L['Futures without Violence'] .." %s"
+DCS_TableData.StatData.FUTURES = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "1/4"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["Futures without Violence"]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(FUTURES_format, ""));
+		statFrame.tooltip2 = ('\n|cff8DB856"Our vision is a future without violence that provides education, safety, justice, and hope."|r\n\n|cffffffffhttps://www.futureswithoutviolence.org|r\n\n|cffffffffOur Mission & Values|r\n\nFor more than 30 years, FUTURES has been providing groundbreaking programs, policies, and campaigns that empower individuals and organizations working to end violence against women and children around the world.\n\nProviding leadership from offices in San Francisco, Washington D.C. and Boston, we’ve established a state-of-the-art Center for Leadership and Action in the Presidio of San Francisco to foster ongoing dialogue about gender-based violence and child abuse.\n\nStriving to reach new audiences and transform social norms, we train professionals such as doctors, nurses, judges, and athletic coaches on improving responses to violence and abuse. We also work with advocates, policymakers, and others to build sustainable community leadership and educate people everywhere about the importance of respect and healthy relationships.\n\nOur vision is a future without violence that provides education, safety, justice, and hope.\n\n|cff00c0ff1 in 4|r US Women has experienced violence by a partner at some point in her life.\n\n|cff00c0ff1 in 4|r teens is harassed or abused through technology.\n\nEach year, |cffffffff15 million|r girls are married before the age of 18.\n\n|cffffffff16 to 20 percent|r of female college students are sexually assaulted while in college.\n\nWomen & girls account for |cffffffff75%|r of trafficking victims globally.\n\nWomen who talk to a provider about abuse are |cffffffff2.6X|r likely to exit an abusive relationship.');
+
+		statFrame:Show();
+	end
+}
+
+local GIRLS_WHO_CODE_format = L['|cffffffffGirls Who Code|r'] .." %s"
+DCS_TableData.StatData.GIRLS_WHO_CODE = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "|cffffffff24%|r"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["Girls Who Code"]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(GIRLS_WHO_CODE_format, ""));
+		statFrame.tooltip2 = ('\n|cff83CDC6"We\'re on a mission\n     to close the gender gap in tech."|r\n\n|cffffffffhttps://girlswhocode.com|r\n\nThe gender gap in computing is getting worse.\nIn 1995, |cffffffff37%|r of computer scientists were women. Today, it’s only |cff00c0ff24%|r. The percent will continue to decline if we do nothing. We know that the biggest drop off of girls in computer science is between the ages of 13 and 17.\n\nGirls Who Code is changing the game\nWe\'re reaching girls around the world and are on track to close the gender gap in new entry-level tech jobs by 2030.\n\n|cffffffff500M|r\nPeople Reached\nThrough our online resources, campaigns, books, and advocacy work - in the U.S. and around the world.\n\n|cffffffff450,000|r\nGirls Served\nThrough our in-person programming including our Summer Immersion Program, Clubs, and College Loops.\n\n|cffffffff50%|r\nHUGs\nHalf of the girls we serve come from historically underrepresented groups, including girls who are Black, Latinx, or from low-income backgrounds.');
+
+		statFrame:Show();
+	end
+}
+
+local RAINN_format = L['RAINN'] .." %s"
+DCS_TableData.StatData.RAINN = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "3,500,000"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["RAINN"]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(RAINN_format, ""));
+		statFrame.tooltip2 = ('\n  |cff00c0ff"We\’re here when you need us."|r\n\n|cffffffffhttps://www.rainn.org|r\n\n|cffffffffRAINN\'S MISSION|r\n\nRAINN (Rape, Abuse & Incest National Network) is the nation\'s largest anti-sexual violence organization. RAINN created and operates the |cffffffffNational Sexual Assault Hotline (800.656.HOPE, online.rainn.org y rainn.org/es)|r in partnership with more than 1,000 local sexual assault service providers across the country and operates the DoD Safe Helpline for the Department of Defense. RAINN also carries out programs to prevent sexual violence, help survivors, and ensure that perpetrators are brought to justice.\n\nIn 26 years RAINN has helped |cff00c0ff3.5 million|r survivors and their loved ones.\n\n|cffffffff95¢|r of every $1 goes to helping survivors and preventing sexual violence."');
+
+		statFrame:Show();
+	end
+}
+
+local WOMEN_IN__ANIMATION_format = L['Women in Animation'] .." %s"
+DCS_TableData.StatData.WOMEN_IN__ANIMATION = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "50/50"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["Women in Animation"]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(WOMEN_IN__ANIMATION_format, ""));
+		statFrame.tooltip2 = ('\n|cffffffffhttps://womeninanimation.org|r\n\n|cffffffffOUR MISSION|r\n\nFounded in 1995, WIA is the only organization dedicated to advancing women in the field of animation. We envision a world where women share equally in the creation, production and rewards of animation, and we provide resources and connections to make it happen.\n\n|cffffffffWHY IT MATTERS|r\n\nAs the popularity of animation has grown, it now reaches audiences of diverse age, gender, ethnicity, and culture. As this growth continues, so does the need to ensure that animation content represents the world as it should be – a world where women are equally represented, both behind the scenes and on the screen, to move culture forward.\n\nWomen are known for the ability to value, tap into, and use our creativity and abilities to influence. And women’s influence in animation is one that rounds out the industry, grows revenues, and contributes to that forward cultural momentum.\n\nJoin the cause with WIA to help realize the goal of |cff00c0ff50/50 by 2025|r.  By working together and bringing awareness to the issue of inequality in the animation industry we can make this happen.');
+
+		statFrame:Show();
+	end
+}
+
+local WOMEN_IN_GAMES_INTL_format = L['Women in Games International'] .." %s"
+DCS_TableData.StatData.WOMEN_IN_GAMES_INTL = {
+    updateFunc = function(statFrame, unit)
+		if ( unit ~= "player" ) then
+			statFrame:Hide();
+			return;
+		end
+		
+		local displayDura = "46%"
+
+		PaperDollFrame_SetLabelAndText(statFrame, (L["Women in Games Intl."]), displayDura, false, "");
+		statFrame.tooltip = highlight_code..dcs_format(doll_tooltip_format, dcs_format(WOMEN_IN_GAMES_INTL_format, ""));
+		statFrame.tooltip2 = ('\n|cffffffffhttps://www.getwigi.com|r\n\n|cffffffffWho We Are|r\n\nWomen in Games International (WIGI) is a 501(c)(3) nonprofit organization based in Los Angeles, California, with a mission to cultivate resources to advance economic equality and diversity in the global games industry.\n\n|cffffffffTurning Interest Into Action|r\n\nWhen women weren\'t recognized for their contributions in the past, they were often omitted from history altogether. Since our inception in 2005, Women in Games International has been committed to investing our expertise and resources to highlight and celebrate women making an impact in the global games industry.\n\nWIGI utilizes seasoned industry professionals to activate and empower a global community of women and allies. Our WIGI Weekly newsletter is distributed to thousands of gaming professionals, promoting our mission, highlighting meaningful partnerships, and elevating job opportunities within the industry.\n\nBy cultivating resources such as advanced knowledge sharing, access to technology, and actionable mentorship programs, Women in Games International works to normalize women in the video game industry through increased representation. In doing so, we aim to create superior products and a stronger industry, with diverse games and greater female representation that reflect the growing population of female gamers.\n\n|cffffffffGaming Industry Conferences|r\n\nWomen in Games International creates conference sessions for video game and tech industry conferences that highlight issues of interest to women in tech and video games. Our conference sessions have covered issues such as how to succeed in a male-dominated workplace, career advancement and salary negotiations, self-advocacy and overcoming imposter syndrome, and how to create diverse content in a globalized market.\n\n|cffffffffThe Why|r\n\nAt |cff00c0ff46%|r, women today make up almost half of gamers worldwide; however, if you look at the 144 executives in the Top 14 gaming companies, only 23 or |cffffffff16%|r are women. According to the 2020 Bryter Female Gamer Survey, |cffffffffmore than half|r of those polled felt that the games industry wasn\'t doing enough to support and welcome women gamers or women interested in gaming careers, and |cffffffff62%|r didn\'t feel women were well-represented in the industry currently.');
+
 		statFrame:Show();
 	end
 }

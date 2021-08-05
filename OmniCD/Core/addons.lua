@@ -12,8 +12,9 @@ local unitFrameData = {
 	--  [2] = Party frame name -%d
 	--  [3] = Party frame unit key
 	--  [4] = Delay
+	--	[5] = Max frame index
 
-	{   [1] = "VuhDo",
+	{   [1] = "VuhDo",  -- frame lvl: toplevel
 		[2] = "Vd1H",
 		[3] = "raidid",
 		[4] = 1,
@@ -38,7 +39,7 @@ local unitFrameData = {
 		[3] = "raidid",
 		[4] = 1,
 	},
-	{   [1] = "Grid2",
+	{   [1] = "Grid2",  -- 3
 		[2] = "Grid2LayoutHeader1UnitButton",
 		[3] = "unit",
 		[4] = 1,
@@ -58,7 +59,7 @@ local unitFrameData = {
 		[3] = "unit",
 		[4] = 1,
 	},
-	{   [1] = "Plexus",
+	{   [1] = "Plexus", -- 7
 		[2] = "PlexusLayoutHeader1UnitButton",
 		[3] = "unit",
 		[4] = 1,
@@ -84,10 +85,29 @@ local unitFrameData = {
 		[3] = "unitid",
 		[4] = 1,
 	},
+	{
+		[1] = "Cell-Raid",
+		[2] = "CellRaidFrameMember",
+		[3] = "unitid",
+		[4] = 1,
+		[5] = 40,
+	},
 	{   [1] = "ElvUI",
 		[2] = "ElvUF_PartyGroup1UnitButton",
 		[3] = "unit",
 		[4] = 1,
+	},
+	{   [1] = "ElvUI-Raid",
+		[2] = "ElvUF_RaidGroup1UnitButton", -- For Group 1 or 'Raid Wide Sorting' enabled
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
+	},
+	{   [1] = "ElvUI-Raid40",
+		[2] = "ElvUF_Raid40Group1UnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
 	},
 	{   [1] = "Tukui",
 		[2] = "TukuiPartyUnitButton",
@@ -106,7 +126,7 @@ local unitFrameData = {
 		[5] = 50,
 	},
 	{   [1] = "ShadowUF-Raid1",
-		[2] = "SUFHeaderraid1UnitButton", -- For Group 1 with 'Separate raid frames' enabled in SUF
+		[2] = "SUFHeaderraid1UnitButton",   -- For Group 1 with 'Separate raid frames' enabled in SUF
 		[3] = "unit",
 		[4] = 1,
 	},
@@ -147,6 +167,25 @@ local unitFrameData = {
 		[2] = "oUF_PartyDPSUnitButton",
 		[3] = "unit",
 		[4] = 1,
+	},
+	{
+		[1] = "GW2_UI",
+		[2] = "GwCompactparty",
+		[3] = "unit",
+		[4] = 1,
+	},
+	{
+		[1] = "GW2_UI-Party",
+		[2] = "GwPartyFrame",
+		[3] = "unit",
+		[4] = 1,
+	},
+	{
+		[1] = "GW2_UI-Raid",
+		[2] = "GwCompactraid",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40
 	},
 }
 

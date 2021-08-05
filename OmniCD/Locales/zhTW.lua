@@ -1,7 +1,8 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("OmniCD", "zhTW")
 
 L = L or {}
-L["%d: spellID.\n%d-%d: spellID-talentID (Mark spell if talent is selected)."] = "%d: 法術 ID。\n%d-%d: 法術 ID-天賦 ID (選擇天賦後標記法術)。"
+L[ [=[%d: spellID.
+%d-%d: spellID-talentID (Mark spell if talent is selected).]=] ] = "%d: 法術 ID。%d-%d: 法術 ID-天賦 ID (選擇天賦後標記法術)。"
 L["|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."] = "|cff9d9d9d * 事件和戶外區域會使用競技場的設定。"
 L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."] = "|cffff2020剪裁過的圖示不會發光和顯著標示，必須啟用 \"邊框\"。"
 L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020重要!|r 只有安裝隊友技能冷卻插件 OmniCD 的隊友才能取得誓盟和靈印資料。"
@@ -47,6 +48,10 @@ L["Breakpoint"] = "換行/排"
 L["Buff ID (Optional)"] = "增益效果 ID (選擇性)"
 L["Cannot edit protected spell"] = "無法編輯受保護的法術"
 L["Cannot test while in combat"] = "戰鬥中無法測試"
+--[[Translation missing --]]
+L["CD-Group %d"] = "CD-Group %d"
+--[[Translation missing --]]
+L["CD-Group Padding"] = "CD-Group Padding"
 L["CENTER"] = "中"
 L["Center Horizontally"] = "水平置中"
 L["Changelog"] = "更新資訊"
@@ -58,7 +63,13 @@ L["Check All"] = "全選"
 L["Check this option if the spell is a talent ability to ensure proper spell detection"] = "如果法術是天賦的技能，請勾選這個選項，以確保使用合適的法術偵測。"
 L["Clean wipe the savedvariable file. |cffff2020Warning|r: This can not be undone!"] = "清空 savedvariable 檔案。|cffff2020警告|r: 刪除後將無法還原!"
 L["Column"] = "行數"
+--[[Translation missing --]]
+L["Column Padding"] = "Column Padding"
 L["Commands:"] = "指令:"
+--[[Translation missing --]]
+L["Convert the status bar timer to a simple name display by disabling all timer functions. The 'Name' color scheme will be retained."] = "Convert the status bar timer to a simple name display by disabling all timer functions. The 'Name' color scheme will be retained."
+--[[Translation missing --]]
+L["Convert to Name Bar"] = "Convert to Name Bar"
 L["Cooldown"] = "冷卻"
 L["Cooldown Remaining"] = "冷卻時間剩餘"
 L["Copy"] = "複製"
@@ -90,6 +101,8 @@ L["Desaturate colors on active icons"] = "冷卻中的圖示去色"
 L["Descending"] = "降冪"
 L["Deserialize failed!"] = "反序列化失敗!"
 L["Destination Profile"] = "目地設定檔"
+--[[Translation missing --]]
+L["Detach CD-Group"] = "Detach CD-Group"
 L["Detach from raid frames and set position manually"] = "與團隊框架分離改由手動設定位置"
 L["Disable Popup"] = "不需要確認"
 L["Disable Reload UI confirmation when using Pixel Perfect borders"] = "使用像素完美邊框時，無須確認立即重新載入介面。"
@@ -127,19 +140,27 @@ L["Glow Icons"] = "圖示發光"
 L["Group Padding"] = "隊伍間距"
 L["Group Size"] = "隊伍大小"
 L["Group Type"] = "隊伍類型"
+--[[Translation missing --]]
+L["Grow Columns Left"] = "Grow Columns Left"
 L["Grow Rows Upward"] = "橫排向上延伸"
 L["Having \"BOTTOM\" in the anchor point, icons grow upward, otherwise downward"] = "對齊下方，圖示往上延伸，否則往下。"
 L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"] = "對齊右側，圖示往左延伸，否則往右。"
 L["Help Translate"] = "請幫忙翻譯"
+--[[Translation missing --]]
+L["Hide Border"] = "Hide Border"
 L["Hide Disabled Spells"] = "隱藏已停用的法術"
 L["Hide Spark"] = "隱藏亮點"
 L["Hide spells that are not enabled in the 'Spells' menu."] = "隱藏在 '法術' 選單中沒有啟用的法術"
+--[[Translation missing --]]
+L["Hide status bar border"] = "Hide status bar border"
 L["Hide the leading spark texture."] = "隱藏開頭的亮光材質。"
 L["Highlight"] = "顯著標示"
 L["Highlight Icons"] = "顯著標示圖示"
 L["Highlight the icon when a buffing spell is used until the buff falls off"] = "開始使用有增強效果的法術，直到效果結束的期間，要顯著標示圖示"
 L["Hold Time"] = "停留時間"
 L["Horizontal"] = "水平"
+--[[Translation missing --]]
+L["Horizontal + CD Groups"] = "Horizontal + CD Groups"
 L["Hotfix"] = "Hotfix"
 L["Icon"] = "圖示"
 L["Icon Alignment"] = "圖示對齊方式"
@@ -182,6 +203,12 @@ L["MM:SS Threshold"] = "MM:SS 分界值"
 L["Move your group's Interrupt spells to the Interrupt Bar."] = "將隊伍的斷法技能移至斷法技能列。"
 L["Move your group's Raid Cooldowns to the Raid Bar."] = "將隊伍的團隊冷卻移至團隊技能列。"
 L["Multiselect"] = "多選"
+--[[Translation missing --]]
+L["Name Bar"] = "Name Bar"
+--[[Translation missing --]]
+L["Name Offset X"] = "Name Offset X"
+--[[Translation missing --]]
+L["Name Offset Y"] = "Name Offset Y"
 L["New Column per Group"] = "每個隊伍一行"
 L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."] = "冷卻計時外觀不支援平滑移動。每當冷卻恢復速率調整時，計時條不會穩定的移動。"
 L["Not an OmniCD profile!"] = "不是隊友技能冷卻監控 OmniCD 的設定檔!"
@@ -237,6 +264,10 @@ L["Same category units are sorted alphabetically in ascending order"] = "相同�
 L["Select a spell type to enable all spells in that category for all classes"] = "選擇法術類型來為全部職業啟用該類別中的所有法術"
 L["Select addon to override auto anchoring"] = "選擇要對齊到的插件"
 L["Select how the player frame is displayed inside the party frame"] = "選擇玩家框架要如何顯示在隊伍框架內"
+--[[Translation missing --]]
+L["Select the column(s) that you want the rows to grow upwards."] = "Select the column(s) that you want the rows to grow upwards."
+--[[Translation missing --]]
+L["Select the column(s) that you want to detach and position manually."] = "Select the column(s) that you want to detach and position manually."
 L["Select the group size for which you want to set the spell bar position"] = "選擇要設定技能列位置的隊伍大小"
 L["Select the highest priority spell type to use as the start of the 2nd row"] = "選擇第二排開頭、優先順序最高的法術類型"
 L["Select the highest priority spell type to use as the start of the 3rd row"] = "選擇第三排開頭、優先順序最高的法術類型"
@@ -256,6 +287,8 @@ L["Set the opacity of icons"] = "設定圖示的不明度"
 L["Set the opacity of icons not on cooldown"] = "設定不在冷卻中圖示的不透明度"
 L["Set the opacity of icons on cooldown"] = "設定冷卻中的圖示不明度"
 L["Set the opacity of swipe animations"] = "設定轉圈動畫的不透明度"
+--[[Translation missing --]]
+L["Set the padding space between CD-groups"] = "Set the padding space between CD-groups"
 L["Set the padding space between group columns"] = "設定隊伍直行間距"
 L["Set the padding space between icon columns"] = "設定圖示直行之間的距離"
 L["Set the padding space between icon rows"] = "設定圖示橫排之間的距離"
@@ -312,6 +345,8 @@ L["Toggle module on and off"] = "切換開關模組"
 L["Toggle raid-style party frame and player spell bar for testing"] = "切換顯示團隊風格的隊伍框架和玩家自己的技能監控列來測試"
 L["Toggle test frames for current zone."] = "切換顯示當前區域的測試框架。"
 L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"] = "切換開關冷卻數字。有使用次數的法術只有在次數為 0 時才會顯示冷卻數字。"
+--[[Translation missing --]]
+L["Toggle the grow direction of icon columns"] = "Toggle the grow direction of icon columns"
 L["Toggle the grow direction of icon rows"] = "切換圖示橫排的延伸方向"
 L["Tool to copy portions of a profile to another existing profile."] = "將設定檔的部分內容複製到另一個現有設定檔的工具。"
 L["TOP"] = "上"
@@ -336,6 +371,8 @@ L["Utils"] = "工具"
 L["Value 'Manual Position' includes Interrupt and Raid Bar's saved positions."] = "'手動調整位置' 包含斷法和團隊技能列的保存位置。"
 L["Version"] = "版本"
 L["Vertical"] = "垂直"
+--[[Translation missing --]]
+L["Vertical + CD Groups"] = "Vertical + CD Groups"
 L["Vertical Groups"] = "垂直隊伍"
 L["Visibility"] = "顯示"
 L["Weak Purple Glow"] = "淡紫色發光"

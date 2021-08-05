@@ -315,7 +315,7 @@ do
         EMPTY_SOCKET_PUNCHCARDYELLOW = false,
         EMPTY_SOCKET_PUNCHCARDRED = false,
         EMPTY_SOCKET_PUNCHCARDBLUE = false,
-        EMPTY_SOCKET_DOMINATION = true, --TODO
+        EMPTY_SOCKET_DOMINATION = false,
     }
 
     local _item_stat_tbl = {}
@@ -554,4 +554,59 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         end
     end
     return stats or 1
+end
+
+--[[------------------------------------------------------------
+9.1 统御碎片相关
+---------------------------------------------------------------]]
+do
+    local DominationShards = {
+        { 187079, 187292, 187301, 187310, 187320, }, --邪恶泽德碎片
+        { 187076, 187291, 187300, 187309, 187319, }, --邪恶欧兹碎片
+        { 187073, 187290, 187299, 187308, 187318, }, --邪恶迪兹碎片
+        { 187071, 187289, 187298, 187307, 187317, }, --冰霜泰尔碎片
+        { 187065, 187288, 187297, 187306, 187316, }, --冰霜基尔碎片
+        { 187063, 187287, 187296, 187305, 187315, }, --冰霜克尔碎片
+        { 187061, 187286, 187295, 187304, 187314, }, --鲜血雷弗碎片
+        { 187059, 187285, 187294, 187303, 187313, }, --鲜血亚斯碎片
+        { 187057, 187284, 187293, 187302, 187312, }, --鲜血贝克碎片
+    }
+
+    local GroupName = { "森罗万象(头)", "寒冬之风(肩)", "鲜血连接(胸)" }
+    local TypeName = { "邪恶", "冰霜", "鲜血" }
+
+    local ShardIdToGroup = {}
+    local ShardIdToType = {}
+    local ShardIdToLevel = {}
+    local ShardIdToIndex = {}
+
+    for i, ids in ipairs(DominationShards) do
+        for level, id in ipairs(ids) do
+            ShardIdToGroup[id] = GroupName[math.floor((i+2)/3)]
+            ShardIdToType[id] = TypeName[math.floor((i+2)/3)]
+            ShardIdToLevel[id] = level
+            ShardIdToIndex[id] = i
+        end
+    end
+
+    function U1GetDominationShardsData()
+        return DominationShards, ShardIdToGroup, ShardIdToType, ShardIdToLevel, ShardIdToIndex
+    end
+
+    local DSSLOTS = { [1]="Head", [3]="Shoulder", [5]="Chest", [6]="Waist", [8]="Feet", [9]="Wrist", [10]="Hands" }
+    function U1GetUnitDominationInfo(unit)
+        local counts = { 0, 0, 0 }
+        for id, slot in next, DSSLOTS do
+            local link = GetInventoryItemLink(unit, id)
+            if link then
+                local _, _, gemID = link:find("item:[0-9]+:[0-9]*:([0-9]+):") --TODO: 如果普通宝石和统御碎片一起
+                local index = gemID and ShardIdToIndex[tonumber(gemID)]
+                if index then
+                    index = math.floor((index+2)/3)
+                    counts[index] = counts[index] + 1
+                end
+            end
+        end
+        return counts
+    end
 end

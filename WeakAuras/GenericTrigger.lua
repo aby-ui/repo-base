@@ -1505,6 +1505,7 @@ do
     elseif(hand == "ranged") then
       lastSwingRange, swingDurationRange = nil, nil;
     end
+    swingTriggerUpdate()
   end
 
   local function swingStart(hand)
@@ -1632,7 +1633,7 @@ do
           swingTriggerUpdate()
         end
       end
-      if Private.reset_ranged_swing_spells[spell] and isAttacking then
+      if Private.reset_ranged_swing_spells[spell] then
         if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
           swingStart("ranged")
         else

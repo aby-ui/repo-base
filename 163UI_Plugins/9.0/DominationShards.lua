@@ -1,35 +1,13 @@
-local DominationShards = {
-    { 187079, 187292, 187301, 187310, 187320, }, --邪恶泽德碎片
-    { 187076, 187291, 187300, 187309, 187319, }, --邪恶欧兹碎片
-    { 187073, 187290, 187299, 187308, 187318, }, --邪恶迪兹碎片
-    { 187071, 187289, 187298, 187307, 187317, }, --冰霜泰尔碎片
-    { 187065, 187288, 187297, 187306, 187316, }, --冰霜基尔碎片
-    { 187063, 187287, 187296, 187305, 187315, }, --冰霜克尔碎片
-    { 187061, 187286, 187295, 187304, 187314, }, --鲜血雷弗碎片
-    { 187059, 187285, 187294, 187303, 187313, }, --鲜血亚斯碎片
-    { 187057, 187284, 187293, 187302, 187312, }, --鲜血贝克碎片
-}
+if not U1GetDominationShardsData then return end
 
-local GroupName = { "森罗万象(头)", "寒冬之风(肩)", "鲜血连接(胸)" }
-local TypeName = { "邪恶", "冰霜", "鲜血" }
-
-local GemIdToGroup = {}
-local GemIdToType = {}
-local GemIdToLevel = {}
-local GemIdToIndex = {}
-for i, ids in ipairs(DominationShards) do
-    for level, id in ipairs(ids) do
-        GemIdToGroup[id] = GroupName[math.floor((i+2)/3)]
-        GemIdToType[id] = TypeName[math.floor((i+2)/3)]
-        GemIdToLevel[id] = level
-        GemIdToIndex[id] = i
-    end
-end
-
-local GemTextures = {}
-for i = 1, 7, 3 do
+local DominationShards, ShardIdToGroup, ShardIdToType, ShardIdToLevel, ShardIdToIndex = U1GetDominationShardsData()
+local ShardTextures = {}
+for i = 1, 9 do
     local tex = select(5, GetItemInfoInstant(DominationShards[i][1]))
-    if tex then GemTextures[tex] = true end
+    if tex then
+        ShardTextures[i] = tex
+        ShardTextures[tex] = true
+    end
 end
 
 local tip = CreateFrame("GameTooltip", "GameTooltipForDomination", nil, "ShoppingTooltipTemplate")
@@ -41,7 +19,6 @@ for i = 1, 7 do
         )
     end
 end
-
 
 local LINE_ABOVE_PATTERN = ITEM_LIMIT_CATEGORY_MULTIPLE:gsub("%%s", ".+"):gsub("%%d", "[0-9]+") --装备唯一：%s （%d）
 
@@ -85,15 +62,15 @@ local hookTooltipSetItem = function(self, link)
     if not link then return end
 
     local id = GetItemInfoInstant(link)
-    if GemIdToGroup[id] then
+    if ShardIdToGroup[id] then
         --gem item
         local descCurr, descLine = findDescLineFromTooltip(self)
         if descCurr then
             descLine:SetText(" ")
-            self:AddLine("套装：" .. GemIdToGroup[id])
-            local level = GemIdToLevel[id]
+            self:AddLine("套装：" .. ShardIdToGroup[id])
+            local level = ShardIdToLevel[id]
             self:AddLine("升级：" .. format("%d / 5", level))
-            local idx = GemIdToIndex[id]
+            local idx = ShardIdToIndex[id]
             for i = 1, 5 do
                 if i == level then
                     GameTooltip_AddNormalLine(self, format("%d级：%s", i, descCurr), true)
@@ -110,13 +87,13 @@ local hookTooltipSetItem = function(self, link)
         --armor with gem socketed
         local _, _, gemID = link:find("item:[0-9]+:[0-9]*:([0-9]+):") --TODO: 如果普通宝石和统御碎片一起
         gemID = gemID and tonumber(gemID)
-        if gemID and GemIdToGroup[gemID] then
+        if gemID and ShardIdToGroup[gemID] then
             local tex = _G[self:GetName() .. "Texture1"]
             local texId = tex and tex:IsShown() and tex:GetTexture()
-            if texId and GemTextures[texId] then
+            if texId and ShardTextures[texId] then
                 local text = select(2, tex:GetPoint())
                 if text then
-                    text:SetText(format("%d级，%s，", GemIdToLevel[gemID], GemIdToType[gemID]) .. text:GetText())
+                    text:SetText(format("%d级，%s，", ShardIdToLevel[gemID], ShardIdToType[gemID]) .. text:GetText())
                 end
             end
         end
@@ -156,7 +133,7 @@ CoreDependCall("Blizzard_ItemSocketingUI", function()
             local slots = GetContainerNumSlots(container)
             for slot = 1, slots do
                 local itemId = GetContainerItemID(container, slot)
-                local idx = GemIdToIndex[itemId]
+                local idx = ShardIdToIndex[itemId]
                 if idx then
                     local btn = _G["AbyUIDominationShards" .. idx]
                     btn.bagID = container
@@ -191,7 +168,7 @@ CoreDependCall("Blizzard_ItemSocketingUI", function()
             ClearCursor()
         end)
         button:SetPoint("TOPLEFT", ItemSocketingFrame, "BOTTOMLEFT", 2 + 36*(i-1) + math.floor((i-1)/3) * 6, -5)
-        button.icon:SetTexture(select(5, GetItemInfoInstant(DominationShards[i][1])))
+        button.icon:SetTexture(ShardTextures[i])
     end
 
     CoreOnEventBucket("BAG_UPDATE", 0.2, refreshButtonList)
@@ -220,7 +197,7 @@ CoreDependCall("Blizzard_ItemSocketingUI", function()
     end
 
     --[[------------------------------------------------------------
-    界面更新, 警告提示在RunSeconds里
+    界面更新
     ---------------------------------------------------------------]]
     hooksecurefunc("ItemSocketingFrame_Update", function()
         refreshButtonList()

@@ -162,9 +162,12 @@ function P:ResetAllIcons(reason)
 end
 
 function P:SetCooldownElements(icon, charges, highlight) -- [92]
-	local noCount = (icon.statusBar and true) or (charges and charges > 0) or highlight or not E.db.icons.showCounter
+	local hideBar = icon.statusBar and E.db.extraBars[icon.statusBar.key].hideBar
+	--local noCount = (icon.statusBar and true) or (charges and charges > 0) or highlight or not E.db.icons.showCounter
+	local noCount = (icon.statusBar and not hideBar and true) or (charges and charges > 0) or highlight or not E.db.icons.showCounter
 	icon.cooldown:SetDrawEdge(charges and charges > -1 or false)
-	icon.cooldown:SetDrawSwipe( not icon.statusBar and not highlight and (not charges or charges < 1) )
+	--icon.cooldown:SetDrawSwipe( not icon.statusBar and not highlight and (not charges or charges < 1) )
+	icon.cooldown:SetDrawSwipe( (not icon.statusBar or hideBar) and not highlight and (not charges or charges < 1) )
 	icon.cooldown:SetHideCountdownNumbers(noCount)
 	if E.OmniCC then
 		icon.cooldown.noCooldownCount = noCount -- [91]

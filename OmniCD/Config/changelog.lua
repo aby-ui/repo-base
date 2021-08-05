@@ -1,27 +1,31 @@
 local E, L, C = select(2, ...):unpack()
 
-if E.isBCC then
-    E.changelog = [=[
-v2.6.10
-    Cooldowns will no longer reset when a raid encounter ends. #iss256
-    Mage ability - Cold Snap will correctly reset Frost/Fire Ward CD.
-    Interrupt bar can be sorted by remaining time when the Status Bar Timer is disabled. #iss259
+E.changelog = [=[
+v2.6.20-sl
+    Feature Updates
+        Tracks Covenant Signature and Class abilities for group members without OmniCD.
+    Bug Fixes
+        Radiant Embers and Spheres' Harmony (Runecarving Power) fix.
 
-v2.6.03
-    Highlighting will now work with all spell ranks.
-    Rogue ability - Sprint (Rank 3) will correctly go on CD when used.
+v2.6.20
+    Feature Updates
+        Ext Bar - CD groups can be selectively detached.
+        Ext Bar - CD groups added to Horizontal layout. <iss#265>
+        Ext Bar - New option to switch the status bar timer to a simple name bar. <iss#247>
+        Ext Bar - New option to grow columns left. <iss#268>
+        Ext Bar - New option to set status bar text offset.
+        Ext Bar - New option to hide status bar borders.
+    Tweaks
+        CD Bar's frame level adjusted to show above Grid2/Plexus raid frames. <iss#272>
+        Truncated names on the status bar will better fit the available space.
+    Bug Fixes
+        Nil error fix - casting Symbol of Hope while self bar is disabled. <iss#275>
+        Typo fix. <iss#260>
+    GW2 UI, ElvUI Raid/Raid40, Cell Raid frame support <iss#270>
+    Localization update for frFR
 
-v2.6.02
-    Fixed abilities with shared cooldown not starting it's timer.
-
-v2.6.01
-    Initial release for WoW: Burning Crusade Classic.
-]=]
-else
-    E.changelog = [=[
-v2.6.10
+v2.6.10-sl
     WoW: Shadowlands - Patch 9.1 Chains of Domination release update.
-
     New Renown rewards that enhance Soulbind's Conduit row implemented.
     New Runecarving powers added.
     New trinkets added.
@@ -29,19 +33,34 @@ v2.6.10
     Cooldown and charge modifiers updated for 9.1.
     Interrupt bar can be sorted by remaining time when the Status Bar Timer is disabled. #iss259
 
-v2.6.03
+v2.6.10-bcc
+    Cooldowns will no longer reset when a raid encounter ends. #iss256
+    Mage ability - Cold Snap will correctly reset Frost/Fire Ward CD.
+    Interrupt bar can be sorted by remaining time when the Status Bar Timer is disabled. #iss259
+
+v2.6.03-sl
     Highlighting will now work with merged spells.
     Hunter ability - Misdirect will correctly be highlighted.
     Fixed nil error on certain raid frame addons.
     Localization updated for ruRU, zhTW, koKR
 
-v2.6.02
+v2.6.03-bcc
+    Highlighting will now work with all spell ranks.
+    Rogue ability - Sprint (Rank 3) will correctly go on CD when used.
+
+v2.6.02-sl
     Glow animation changed.
     Backend updates for enemy CD tracking.
     Minor bug fixes.
 
-v2.6.01
+v2.6.02-bcc
+    Fixed abilities with shared cooldown not starting it's timer.
+
+v2.6.01-sl
     Compatibility updates for WoW: Burning Crusade Classic.
+
+v2.6.01-bcc
+    Initial release for WoW: Burning Crusade Classic.
 
 v2.5.22
     Bug Fixes
@@ -60,7 +79,8 @@ v2.5.21
         Temp Fix applied to statusbar timer text not updating correctly.
         Fixed statusbar leading spark showing on cast while disabled.
 
-v2.5.20 - Toc ver 90005
+v2.5.20
+    Toc ver 90005
     Bug Fixes
         ADDON_ACTION_BLOCKED error from taint fixed.
         Minor bug fixes.
@@ -137,7 +157,6 @@ v2.5.5
 
 v2.5.4
     Trinkets no longer show correctly if your teammate is using version-2.2.3 for BFA.
-
     Bug Fixes
         Fixed an issue that caused the wrong profile to load on zone change.
         Guardian Druid: Berserk will correctly reduce Frenzied Regen's CD while it is active.
@@ -153,7 +172,6 @@ v2.5.2
     TL:DR
         Bug fixes.
         Added option to always show player's CD in the Interrupt/Raid bar.
-
     Bug Fixes
         Pandaren racial will correctly show for Horde factions.
         Party Bars will no longer anchor to hidden frames.
@@ -189,7 +207,6 @@ v2.5.0
         Shadowlands release update.
         New Interrupt and Raid-CD bars.
         Still lighweight with minimal CPU usage.
-
     Feature Updates
         Ex Bars: New Interrupt and Raid-CD bars with optional progress timers added.
         Highlights: Option to disable animation added.
@@ -218,5 +235,5 @@ v2.5.0
         Aspirant's Medallion used while under the effect of Blessing of Autumn results in slower CD recovery when it ends.
         Thundercharge CD recovery rate doubling when casted on player. (temp fix applied)
         Shifting Power's CD reduction not applying to Alter time for Arcane Mage. (temp fix applied)
+
 ]=]
-end

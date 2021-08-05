@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210725004435"),
-	DisplayVersion = "9.1.8 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 7, 24) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210804000023"),
+	DisplayVersion = "9.1.9 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2800,14 +2800,14 @@ do
 	end
 
 	local function linkHook(self, link, string, button, ...)
-		local linkType, arg1, arg2, arg3, arg4, arg5, arg6 = strsplit(":", link)
+		local _, linkType, arg1, arg2, arg3, arg4, arg5, arg6 = strsplit(":", link)
 		if linkType ~= "DBM" then
 			return
 		end
 		if arg1 == "cancel" then
-			DBT:CancelBar(link:match("DBM:cancel:(.+):nil$"))
+			DBT:CancelBar(link:match("garrmission:DBM:cancel:(.+):nil$"))
 		elseif arg1 == "ignore" then
-			cancel = link:match("DBM:ignore:(.+):[^%s:]+$")
+			cancel = link:match("garrmission:DBM:ignore:(.+):[^%s:]+$")
 			ignore = link:match(":([^:]+)$")
 			showPopupConfirmIgnore(ignore, cancel)
 		elseif arg1 == "update" then
@@ -2834,16 +2834,6 @@ do
 			_G["ChatFrame" .. i]:HookScript("OnHyperlinkClick", linkHook)
 		end
 		i = i + 1
-	end
-end
-
-do
-	local old = ItemRefTooltip.SetHyperlink -- we have to hook this function since the default ChatFrame code assumes that all links except for player and channel links are valid arguments for this function
-	function ItemRefTooltip:SetHyperlink(link, ...)
-		if link and link:sub(0, 4) == "DBM:" then
-			return
-		end
-		return old(self, link, ...)
 	end
 end
 
@@ -4510,7 +4500,7 @@ do
 		if mod and modvar and text and text ~= "" then
 			if DBM:AntiSpam(5, modvar) then--Don't allow calling same note more than once per 5 seconds
 				DBM:AddMsg(L.NOTE_SHARE_SUCCESS:format(sender, ability))
-				DBM:AddMsg(("|HDBM:noteshare:%s:%s:%s:%s:%s|h|cff3588ff[%s]|r|h"):format(modid, modvar, ability, text, sender, L.NOTE_SHARE_LINK))
+				DBM:AddMsg(("|Hgarrmission:DBM:noteshare:%s:%s:%s:%s:%s|h|cff3588ff[%s]|r|h"):format(modid, modvar, ability, text, sender, L.NOTE_SHARE_LINK))
 				--DBM:ShowNoteEditor(mod, modvar, ability, text, sender)
 			else
 				DBM:Debug(sender.." is attempting to send too many notes so notes are being throttled")
@@ -12290,11 +12280,11 @@ do
 	"nameplate21", "nameplate22", "nameplate23", "nameplate24", "nameplate25", "nameplate26", "nameplate27", "nameplate28", "nameplate29", "nameplate30",
 	"nameplate31", "nameplate32", "nameplate33", "nameplate34", "nameplate35", "nameplate36", "nameplate37", "nameplate38", "nameplate39", "nameplate40",
 	"mouseover", "target"}
-	function bossModPrototype:ScanForMobs(creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, isFriendly, secondCreatureID, skipMarked)
+	function bossModPrototype:ScanForMobs(creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, isFriendly, secondCreatureID, skipMarked, allAllowed)
 		if not optionName then optionName = self.findFastestComputer[1] end
-		if canSetIcons[optionName] then
+		if canSetIcons[optionName] or allAllowed then
 			--Declare variables.
-			DBM:Debug("canSetIcons true", 2)
+			DBM:Debug("canSetIcons or allAllowed true", 2)
 			local timeNow = GetTime()
 			if not creatureID then--This function must not be used to boss, so remove self.creatureId. Accepts cid, guid and cid table
 				error("DBM:ScanForMobs calld without creatureID")

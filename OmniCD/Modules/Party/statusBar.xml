@@ -7,16 +7,15 @@
 				<Texture parentKey="BG" setAllPoints="true" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
+				<FontString parentKey="Timer" name="$parentTimer" inherits="GameFontHighlightHuge" justifyH="RIGHT">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="3" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="-75" y="0"/>
+						<Anchor point="RIGHT" x="-3" y="0"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="Timer" inherits="GameFontHighlightHuge" justifyH="RIGHT">
+				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="-5" y="0"/>
+						<Anchor point="LEFT" x="3" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentTimer" relativePoint="LEFT" x="-3" y="0"/>
 					</Anchors>
 				</FontString>
 			</Layer>
@@ -43,8 +42,8 @@
 				<Texture setAllPoints="true" parentKey="BG" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="TOPLEFT" x="3" y="0"/>
-						<Anchor point="BOTTOMRIGHT" x="-75" y="0"/>
+						<Anchor point="LEFT" x="3" y="0"/>
+						<Anchor point="RIGHT" x="-3" y="0"/>
 					</Anchors>
 				</FontString>
 			</Layer>
