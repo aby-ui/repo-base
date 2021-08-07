@@ -55,7 +55,6 @@ local function PraseItemSet(text)
 	end 
 end
 
-local trinket82 = GetItemInfo(167555) --口袋计算装置
 local function ScanItemTooltip(unit, slot)
     if not unit then return end
 	tip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -67,9 +66,7 @@ local function ScanItemTooltip(unit, slot)
 	tip:SetInventoryItem(unit, slot);
 	tip:Show();
 
-	local itemLevel, GemsSlotCount, GemsEmptyCount = 0, 0, 0;
-	local itemSet;
-	local ret;
+	local itemLevel, itemSet, ret
 	
 	for i = 2, tip:NumLines() do
 		local text = _G[ tip:GetName() .."TextLeft"..i]:GetText();
@@ -86,27 +83,9 @@ local function ScanItemTooltip(unit, slot)
 		end
 	end
 
-    if _G[ tip:GetName() .."TextLeft1"]:GetText() ~= trinket82 then
-        for i = 1,4 do
-            local texture = _G[ tip:GetName() .."Texture"..i]
-            if ( texture ) then
-                local texture = _G[ tip:GetName() .."Texture"..i]:GetTexture();
-                if ( texture ) then
-                    --if string.find(texture, "gem") then
-                    GemsSlotCount = GemsSlotCount + 1
-                    if string.find(texture, "EmptySocket") or texture == 458977 then
-                        GemsEmptyCount = GemsEmptyCount + 1
-                    end
-                    --end
-                end
-            end
-        end
-    end
-	
 	tip:Hide();
     --if (slot == 16 or slot == 17) and itemLevel ~= 750 and not UnitIsUnit(unit, "player") then itemLevel=itemLevel+15 end
-    if slot == 2 and GetInventoryItemQuality(unit, 2) == 6 then GemsSlotCount,GemsEmptyCount = 0, 0 end --abyui 艾泽拉斯之心有4孔
-	return itemLevel, itemSet, GemsSlotCount, GemsEmptyCount
+	return itemLevel or 0, itemSet
 end
 
 local function SetOrHookScript(frame, scriptName, func)
@@ -140,26 +119,6 @@ function GearStatsSummary_SetupHook()
 	SetOrHookScript(InspectFrame, "OnShow", GearStatsSummary_InspectFrame);
 	SetOrHookScript(InspectFrame, "OnHide", GearStatsSummary_InspectFrame_OnHide);
 	hooksecurefunc("InspectFrame_UnitChanged", GearStatsSummary_InspectFrame_UnitChanged);
-end
-
-local GemSlots = {
-	EMPTY_SOCKET = true,
-	EMPTY_SOCKET_BLUE = true,
-	EMPTY_SOCKET_COGWHEEL = true,
-	EMPTY_SOCKET_HYDRAULIC = true,
-	EMPTY_SOCKET_META = true,
-	EMPTY_SOCKET_NO_COLOR = true,
-	EMPTY_SOCKET_PRISMATIC = true,
-	EMPTY_SOCKET_RED = true,
-	EMPTY_SOCKET_YELLOW = true,
-}
-
-local function AddGem(TblGems, gem, addNum)
-	if TblGems[gem] == nil then
-		TblGems[gem] = addNum or 1
-	else
-		TblGems[gem] = TblGems[gem] + (addNum or 1)
-	end
 end
 
 function GearStatsSummary_UpdateAnchor(doll, insp)
@@ -507,10 +466,12 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
 	end--]]
 	
     local gem_enchant = ""
-	if sum["Gems"] ~= nil then
-		local total_gem, has_gem, missing_gem = sum["Gems"]["GemSlotCount"], sum["Gems"]["GemSlotCount"] - (sum["Gems"]["EmptyGemSlotCount"] or 0), sum["Gems"]["EmptyGemSlotCount"]
-		local gem_info = string.format(((missing_gem == nil or missing_gem == 0) and "%d" or "|cffff0000%d|r")..'/%d',has_gem, total_gem)
-		gem_enchant = RATING_SUMMARY_GEM..': '.. gem_info
+	if U1GetUnitGemInfo then
+        local _, _, gemCount, slotCount = U1GetUnitGemInfo(unit)
+        if slotCount > 0 then
+		    local gem_info = string.format((slotCount == gemCount and "%d" or "|cffff0000%d|r")..'/%d', gemCount, slotCount)
+		    gem_enchant = RATING_SUMMARY_GEM..': '.. gem_info
+        end
 	end
 	local total_enchant, has_enchant, missing_enchant = (sum["CanEnchant"] or 0), (sum["HasEnchant"] or 0), sum["EnchantMissing"]
 	if total_enchant ~= 0 then
@@ -518,6 +479,20 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
 		gem_enchant = gem_enchant .. (#gem_enchant==0 and "" or " ") .. enchant
 	end
     tiptext = tiptext .. '\n\n' .. gem_enchant
+
+    if U1GetUnitDominationInfo then
+        local domi_info
+        local set_index, set_level, details = U1GetUnitDominationInfo(unit)
+        if set_index then
+            local DomiSetColor, _, DomiSetNameShort, _ = U1GetDominationSetData()
+            domi_info = format("|cff%s%s%d级|r", DomiSetColor[set_index], DomiSetNameShort[set_index], set_level) .. " - " .. details
+        else
+            domi_info = details or ""
+        end
+        if domi_info and domi_info ~= "" then
+            tiptext = tiptext .. '\n\n' .. RATING_SUMMARY_DOMINATION .. ': ' .. domi_info
+        end
+    end
 
     local showPercent = UnitLevel(unit) == MAX_PLAYER_LEVEL  --爆击有额外加成，急速和全能是对的，精通受GetMasteryEffect()比例影响
     tiptext = tiptext.."\n\n"..(UnitIsUnit("player", unit) and RS_STATS_ONLY_FROM_GEARS or RS_STATS_ONLY_FROM_GEARS) --"(未计算熔炉+15神器装等)"
@@ -588,7 +563,7 @@ function GearStatsSummary_Sum(inspecting, classID, specID)
 		if (link) and i ~= INVSLOT_BODY and i ~= INVSLOT_TABARD then
 			local itemName, _, quality, lv, _, itemType, itemSubType, _, ItemEquipLoc = GetItemInfo(link); --TO DO: ADD UPGRADES
 			--local iLevel = ItemUpgradeInfo:GetUpgradedItemLevel(link);
-			local iLevel, iSet, GemsSlotCount, GemsEmptyCount = ScanItemTooltip(unit, i);
+			local iLevel, iSet = ScanItemTooltip(unit, i);
 			local r, g, b = 1, 1, 1
 			if quality then
 				r, g, b = GetItemQualityColor(quality);
@@ -625,30 +600,12 @@ function GearStatsSummary_Sum(inspecting, classID, specID)
 				if not GSSJTNum[iSet] then GSSJTNum[iSet] = 1 else GSSJTNum[iSet] = GSSJTNum[iSet] + 1 end
 			end
 			
-			stats["Gems"] = {}
-			stats["Gems"]["GemSlotCount"] = 0
-			
-			if GemsSlotCount then
-				AddGem(stats["Gems"], "GemSlotCount", GemsSlotCount)
-			end
-			if GemsEmptyCount then
-				AddGem(stats["Gems"], "EmptyGemSlotCount", GemsEmptyCount)
-			end
-
-			local check, _, color, Ltype, Id, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Reforge, Upgrade, Name = string.find(link, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%d*)|?h?%[?([^%[%]c]*)%]?|?h?|?r?");
+			local check, _, color, Ltype, Id, Enchant, _, _, _, _, Suffix, Unique, LinkLvl, Reforge, Upgrade, Name = string.find(link, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%d*)|?h?%[?([^%[%]c]*)%]?|?h?|?r?");
 
 			if Enchant ~= nil and tonumber(Enchant) and tonumber(Enchant) > 0 then --func for RS
 				stats["Enchanted"] = 1
 			end
 
-			if (stats["Gems"] ~= nil) then
-				if sum["Gems"] == nil then sum["Gems"] = {} end
-				for k,v in pairs(stats["Gems"]) do
-					if sum["Gems"][k] == nil then sum["Gems"][k] = 0 end
-					sum["Gems"][k] = sum["Gems"][k] + v
-				end
-			end
-			
 			for slot, shortname in next, RATING_SUMMARY_ENCHANTABLES do
 				if i == slot then
 					if sum["CanEnchant"] == nil then sum["CanEnchant"] = 0 end

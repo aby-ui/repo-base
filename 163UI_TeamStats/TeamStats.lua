@@ -85,8 +85,13 @@ local function SaveGearScore(name, unit, isPlayer)
         --player.has_enchant = has_enchant
         --player.missing_enchant = missing_enchant
 
-        local ds_counts = U1GetUnitDominationInfo(unit)
-        player.ds_counts = ds_counts[1] * 100 + ds_counts[2] * 10 + ds_counts[3]
+        local set_index, set_level, shards_level = U1GetUnitDominationInfo(unit)
+        if set_index then
+            local DomiSetColor, _, DomiSetNameShort, _ = U1GetDominationSetData()
+            player.domi_info = format("|cff%s%s%d级|r", DomiSetColor[set_index], DomiSetNameShort[set_index], set_level)
+        else
+            player.domi_info = shards_level or ""
+        end
 
         if(not player.gsGot) then
             --计算腐蚀 U1GetItemStats 要用

@@ -1,6 +1,6 @@
 if not U1GetDominationShardsData then return end
 
-local DominationShards, ShardIdToGroup, ShardIdToType, ShardIdToLevel, ShardIdToIndex = U1GetDominationShardsData()
+local DominationShards, ShardIdToSetName, ShardIdToName, ShardIdToLevel, ShardIdToIndex = U1GetDominationShardsData()
 local ShardTextures = {}
 for i = 1, 9 do
     local tex = select(5, GetItemInfoInstant(DominationShards[i][1]))
@@ -62,12 +62,12 @@ local hookTooltipSetItem = function(self, link)
     if not link then return end
 
     local id = GetItemInfoInstant(link)
-    if ShardIdToGroup[id] then
+    if ShardIdToSetName[id] then
         --gem item
         local descCurr, descLine = findDescLineFromTooltip(self)
         if descCurr then
             descLine:SetText(" ")
-            self:AddLine("套装：" .. ShardIdToGroup[id])
+            self:AddLine("套装：" .. ShardIdToSetName[id])
             local level = ShardIdToLevel[id]
             self:AddLine("升级：" .. format("%d / 5", level))
             local idx = ShardIdToIndex[id]
@@ -87,13 +87,13 @@ local hookTooltipSetItem = function(self, link)
         --armor with gem socketed
         local _, _, gemID = link:find("item:[0-9]+:[0-9]*:([0-9]+):") --TODO: 如果普通宝石和统御碎片一起
         gemID = gemID and tonumber(gemID)
-        if gemID and ShardIdToGroup[gemID] then
+        if gemID and ShardIdToSetName[gemID] then
             local tex = _G[self:GetName() .. "Texture1"]
             local texId = tex and tex:IsShown() and tex:GetTexture()
             if texId and ShardTextures[texId] then
                 local text = select(2, tex:GetPoint())
                 if text then
-                    text:SetText(format("%d级，%s，", ShardIdToLevel[gemID], ShardIdToType[gemID]) .. text:GetText())
+                    text:SetText(format("%d级，%s，", ShardIdToLevel[gemID], ShardIdToName[gemID]) .. text:GetText())
                 end
             end
         end

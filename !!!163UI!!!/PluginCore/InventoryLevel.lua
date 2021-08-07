@@ -398,7 +398,7 @@ do
             res = fmt('%d/%d', gem_s, slot_s)
         end
 
-        return res, waist_extra_slot
+        return res, waist_extra_slot, gem_s, slot_s
     end
 end
 
@@ -572,41 +572,80 @@ do
         { 187057, 187284, 187293, 187302, 187312, }, --鲜血贝克碎片
     }
 
-    local GroupName = { "森罗万象(头)", "寒冬之风(肩)", "鲜血连接(胸)" }
-    local TypeName = { "邪恶", "冰霜", "鲜血" }
+    local DomiSetColor = { "a335ee", "0070ff", "ff0000" } --紫蓝红
+    local DomiSetNameLong = { "森罗万象(头)", "寒冬之风(肩)", "鲜血连接(胸)" }
+    local DomiSetNameShort = { "森罗", "寒冬", "鲜血" }
+    local DomiShardName = { "邪恶", "冰霜", "鲜血" }
 
-    local ShardIdToGroup = {}
-    local ShardIdToType = {}
+    local ShardIdToSetName = {}
+    local ShardIdToName = {}
     local ShardIdToLevel = {}
     local ShardIdToIndex = {}
 
     for i, ids in ipairs(DominationShards) do
         for level, id in ipairs(ids) do
-            ShardIdToGroup[id] = GroupName[math.floor((i+2)/3)]
-            ShardIdToType[id] = TypeName[math.floor((i+2)/3)]
+            local setIdx = math.floor((i+2)/3)
+            ShardIdToSetName[id] = DomiSetNameLong[setIdx]
+            ShardIdToName[id] = DomiShardName[setIdx]
             ShardIdToLevel[id] = level
             ShardIdToIndex[id] = i
         end
     end
 
     function U1GetDominationShardsData()
-        return DominationShards, ShardIdToGroup, ShardIdToType, ShardIdToLevel, ShardIdToIndex
+        return DominationShards, ShardIdToSetName, ShardIdToName, ShardIdToLevel, ShardIdToIndex
+    end
+    function U1GetDominationSetData()
+        return DomiSetColor, DomiSetNameLong, DomiSetNameShort, DomiShardName
     end
 
     local DSSLOTS = { [1]="Head", [3]="Shoulder", [5]="Chest", [6]="Waist", [8]="Feet", [9]="Wrist", [10]="Hands" }
+
+    local shardLevels, setSlot = { {}, {}, {} }, {} -- reuse table
     function U1GetUnitDominationInfo(unit)
-        local counts = { 0, 0, 0 }
+        table.wipe(setSlot)
+        for i = 1, #shardLevels do
+            table.wipe(shardLevels[i])
+        end
         for id, slot in next, DSSLOTS do
             local link = GetInventoryItemLink(unit, id)
             if link then
                 local _, _, gemID = link:find("item:[0-9]+:[0-9]*:([0-9]+):") --TODO: 如果普通宝石和统御碎片一起
-                local index = gemID and ShardIdToIndex[tonumber(gemID)]
-                if index then
-                    index = math.floor((index+2)/3)
-                    counts[index] = counts[index] + 1
+                if gemID then
+                    gemID = tonumber(gemID)
+                    local idx = ShardIdToIndex[gemID]
+                    if idx then
+                        local setIdx = math.floor((idx+2)/3)
+                        local level = ShardIdToLevel[gemID]
+                        table.insert(shardLevels[setIdx], level)
+                        -- 如果对应部位没插碎片则结果会错误, 太特殊不予处理
+                        if slot == "Head" then
+                            setSlot[1] = true
+                        elseif slot == "Shoulder" then
+                            setSlot[2] = true
+                        elseif slot == "Chest" then
+                            setSlot[3] = true
+                        end
+                    end
                 end
             end
         end
-        return counts
+        local set_index, set_level, details
+        for i = 1, 3 do
+            local levels = shardLevels[i]
+            if setSlot[i] and #levels == 3 then
+                local min = 9 for _, lvl in ipairs(levels) do if lvl < min then min = lvl end end
+                set_index, set_level = i, min
+            end
+            if #levels > 0 then
+                local str = "|cff" .. DomiSetColor[i] .. table.concat(levels) .. "|r"
+                if #levels == 3 then
+                    details = str .. (details or "")
+                else
+                    details = (details or "") .. str
+                end
+            end
+        end
+        return set_index, set_level, details -- details is like "33321"
     end
 end

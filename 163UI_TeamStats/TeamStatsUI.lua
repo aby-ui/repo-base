@@ -526,7 +526,7 @@ local BossCountTextUpdater = function(line, widget, idx, colIdx)
 end
 
 --current sort id, currSort < 0 stands for reverse
-local currSort = nil
+local currSort,currSortFunc
 local function compare(n1, n2, prop)
     if TS.names[n1] and not TS.names[n2] then return true, nil, true end
     if TS.names[n2] and not TS.names[n1] then return false, nil, true end
@@ -550,46 +550,13 @@ local function compare(n1, n2, prop)
     if v1 ~= nil and v2 == nil then return true, nil, true end
     return v1 < v2
 end
-local sortFuncs = {
-    [2] = function(a,b)
-        local r, equal, force = compare(a, b, "realm")
-        if equal then
-            r, equal, force = compare(a, b, "name")
-        end
-        if currSort > 0 or force then return r else return not r end
-    end,
-    [3] = function(a,b)
-        local r, equal, force = compare(a, b, "class")
-        if equal then
-            r, equal, force = compare(a, b, "talent1")
-        end
-        if currSort > 0 or force then return r else return not r end
-    end,
-    [4] = function(a,b)
-        local r, equal, force = compare(a, b, "gs")
-        if currSort > 0 or force then return r else return not r end
-    end,
-    [5] = function(a,b)
-        local r, equal, force = compare(a, b, "ds_counts")
-        if currSort > 0 or force then return r else return not r end
-    end,
-    --[[
-    [6] = function(a,b)
-        local r, equal, force = compare(a, b, "corrupt")
-        if currSort > 0 or force then return r else return not r end
-    end,
-    --]]
-    [7] = function(a,b)
-        local r, equal, force = compare(a, b, "mscore")
-        if currSort > 0 or force then return r else return not r end
-    end,
-}
 
 local function sortNames(self)
     local id = self.id
-    if sortFuncs[id] then
+    if self.sortFunc then
         if (currSort==id) then currSort=-id else currSort=id end
-        table.sort(names, sortFuncs[id])
+        currSortFunc = self.sortFunc
+        table.sort(names, self.sortFunc)
         f.scroll.update()
     end
 end
@@ -626,6 +593,7 @@ function TS.SetupColumns(f)
         if ShoppingTooltip1:GetOwner() == self then ShoppingTooltip1:Hide() end
         self.line:UnlockHighlight()
     end
+    local DomiSetColor, DomiSetNameLong, _, DomiShardName = U1GetDominationSetData()
     TS.cols = {
         {
             --复选框
@@ -661,6 +629,11 @@ function TS.SetupColumns(f)
             header = L["HeaderPlayerName"],
             headerSpan = 2,
             width = 100,
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "realm")
+                if equal then r, equal, force = compare(a, b, "name") end
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 if(not InCombatLockdown())then
@@ -696,7 +669,7 @@ function TS.SetupColumns(f)
                     end
                     widget:SetTextColor(0.5, 0.5, 0.5)
                 end
-            end
+            end,
         },
         {
             -- 服务器
@@ -718,6 +691,11 @@ function TS.SetupColumns(f)
             header = L["HeaderClass"],
             headerSpan = 2,
             offset = {3,-2},
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "class")
+                if equal then r, equal, force = compare(a, b, "talent1") end
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:Texture(nil, "ARTWORK", "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"):Size(16, 16) end,
             update = function(line, widget, idx, colIdx)
                 local icon = line.player.class and CLASS_ICON_TCOORDS[line.player.class]
@@ -741,6 +719,10 @@ function TS.SetupColumns(f)
             headerSpan = 1,
             width = 75,
             tip = "身上当前装备的平均物品等级，括号内为插槽数量，不统计统御插槽",
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "gs")
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
@@ -760,23 +742,19 @@ function TS.SetupColumns(f)
         {
             header = "统御碎片",
             headerSpan = 1,
-            width = 64,
-            tip = "\124cffff3fff紫色\124r为邪恶碎片，森罗万象（头部）\n\124cff3f3fff蓝色\124r为冰霜碎片，寒冬之风（肩部）\n\124cffff0000红色\124r为鲜血碎片，鲜血连接（胸部）",
+            width = 70,
+            tip = format("|cff%s紫色|r为%s碎片，%s\n|cff%s蓝色|r为%s碎片，%s\n|cff%s红色|r为%s碎片，%s|r\n未出套装效果会显示各个碎片等级",
+                DomiSetColor[1], DomiShardName[1], DomiSetNameLong[1],
+                DomiSetColor[2], DomiShardName[2], DomiSetNameLong[2],
+                DomiSetColor[3], DomiShardName[3], DomiSetNameLong[3]),
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "domi_info")
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
-                if player.ds_counts then
-                    local c, s = player.ds_counts, ""
-                    local c3 = c % 10; c = math.floor(c / 10);
-                    local c2 = c % 10; c = math.floor(c / 10);
-                    local c1 = c % 10;
-                    if c1 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cffff3fff" .. c1 .. "\124r" end
-                    if c2 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cff3f3fff" .. c2 .. "\124r" end
-                    if c3 > 0 then s = s .. (#s==0 and "" or "+") .. "\124cffff0000" .. c3 .. "\124r" end
-                    widget:SetText(s)
-                else
-                    widget:SetText(" ")
-                end
+                widget:SetText(player.domi_info or "|cff7f7f7f?|r")
             end
         },
         --[[
@@ -820,6 +798,10 @@ function TS.SetupColumns(f)
             headerSpan = 1,
             width = 36,
             tip = "当前腐蚀值，计算了披风抗性并假设有10腐蚀抗性的特质",
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "corrupt")
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
@@ -928,6 +910,10 @@ function TS.SetupColumns(f)
             onlyTab1 = 1,
             width = 64,
             tip = "角色当前赛季的史诗钥石评分",
+            sort = function(a,b)
+                local r, equal, force = compare(a, b, "mscore")
+                if currSort > 0 or force then return r else return not r end
+            end,
             create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
             update = function(line, widget, idx, colIdx)
                 local player = line.player
@@ -963,6 +949,7 @@ function TS.SetupColumns(f)
             local btn = TplColumnButton(f, nil, TS.COLUMN_BUTTON_HEIGHT):SetScript("OnClick", sortNames):un()
             WW(btn:GetFontString()):SetFontHeight(14):un()
             btn.id = id
+            btn.sortFunc = col.sort
             table.insert(f.headers, btn)
 
             if i > TS.NUM_FIX_COLUMNS then
@@ -1037,8 +1024,8 @@ function TS:UIUpdateNames()
     for name, _ in pairs(TS.names) do
         table.insert(names, name)
     end
-    if (currSort) then
-        table.sort(names, sortFuncs[abs(currSort)])
+    if currSort and currSortFunc then
+        table.sort(names, currSortFunc)
     end
     if f():IsVisible() then
         f.scroll.update()
