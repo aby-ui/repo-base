@@ -53,7 +53,7 @@ function Details.options.InitializeOptionsWindow(instance)
     Details:FormatBackground(f)
 
     DF:ApplyStandardBackdrop (f)
-    local titleBar = DF:CreateTitleBar (f, "Options Panel")
+    local titleBar = DF:CreateTitleBar(f, "Options Panel")
     titleBar.Text:Hide()
 
     local titleText = DF:NewLabel(titleBar, nil, "$parentTitleLabel", "title", "Details! " .. Loc ["STRING_OPTIONS_WINDOW"], "GameFontHighlightLeft", 12, {227/255, 186/255, 4/255})
@@ -65,12 +65,14 @@ function Details.options.InitializeOptionsWindow(instance)
     DF:CreateScaleBar(DetailsOptionsWindow, Details.options_window)
     DetailsOptionsWindow:SetScale (Details.options_window.scale)
 
+    --[=[]]
     local closeButton = CreateFrame("button", "DetailsOptionsWindowCloseButton", DetailsOptionsWindow.widget, "UIPanelCloseButton")
     closeButton:SetWidth(32)
     closeButton:SetHeight(32)
     --closeButton:SetPoint("TOPRIGHT", DetailsOptionsWindow.widget, "TOPRIGHT", 0, 0)
     closeButton:SetText("X")
     closeButton:SetFrameLevel(closeButton:GetFrameLevel()+2)
+--]=]
 
     --select the instance to edit
     local onSelectInstance = function (_, _, instanceId)

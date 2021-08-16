@@ -355,8 +355,7 @@ end
 
 local function UnifyCRLF(text)
     text = string.gsub(text, "\r", "")
-    text = string.gsub(text, "\n", MYSLOT_LINE_SEP)
-    return text
+    return strtrim(text)
 end
 
 -- {{{ FindOrCreateMacro
@@ -384,12 +383,12 @@ function MySlot:FindOrCreateMacro(macroInfo)
     local body = macroInfo["body"]
     body = UnifyCRLF(body)
 
+
     local localIndex = localMacro[ name .. "_" .. body] or localMacro[ body ]
 
     if localIndex then
         return localIndex
     else
-
         local numglobal, numperchar = GetNumMacros()
         local perchar = id > MAX_ACCOUNT_MACROS and 2 or 1
 

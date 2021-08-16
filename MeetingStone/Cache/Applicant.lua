@@ -27,9 +27,6 @@ Applicant:InitAttr{
     'IsDamage',
     'IsAssignedRole',
     'Relationship',
-    'IsMythicPlusActivity',
-	'DungeonScore',
-    'BestDungeonScore',
     'PvPRating',
     'Progression',
     'IsMeetingStone',
@@ -40,6 +37,8 @@ Applicant:InitAttr{
     'RoleID',
     'RoleName',
     'ActivityID',
+	'DungeonScore',
+    'BestDungeonScore',
 }
 
 local APPLICANT_HAD_RESULT = {
@@ -56,7 +55,7 @@ local APPLICANT_ALREADY_TOUGHT = {
     invitedeclined = true,
 }
 
-function Applicant:Constructor(id, index, activityId, isMythicPlusActivity)
+function Applicant:Constructor(id, index, activityId)
     local info = C_LFGList.GetApplicantInfo(id)
     local status = info.applicationStatus
     local pendingStatus = info.pendingApplicationStatus
@@ -90,7 +89,6 @@ function Applicant:Constructor(id, index, activityId, isMythicPlusActivity)
     self:SetIsDamage(damage)
     self:SetIsAssignedRole(assignedRole)
     self:SetRelationship(relationship)
-    self:SetIsMythicPlusActivity(isMythicPlusActivity)
     self:SetDungeonScore(dungeonScore or 0)
     self:SetBestDungeonScore(bestDungeonScoreForEntry)
 

@@ -66,10 +66,10 @@ local changelog = E.changelog:gsub("^[ \t\n]*", E.HEX_C[WOW_PROJECT_ID]):gsub("v
 	if E.isBCC then
 		local version = ver:gsub("[^%d]", "")
 		version = tonumber(version)
-		if xpac ~= "" and xpac ~= "-bcc" or (version and version < 2600) then
+		if xpac ~= "" and xpac == "-sl" or (version and version < 2600) then
 			return ""
 		end
-	elseif xpac ~= "" and xpac ~= "-sl" then
+	elseif xpac ~= "" and xpac == "-bcc" then
 		return ""
 	end
 end):gsub("\n\nv([%d%.]+)",function(ver)

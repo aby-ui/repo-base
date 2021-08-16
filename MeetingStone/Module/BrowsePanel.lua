@@ -51,7 +51,7 @@ function BrowsePanel:OnInitialize()
                 key = 'Title',
                 text = L['活动标题'],
                 style = 'LEFT',
-                width = 150,
+                width = 170,
                 showHandler = function(activity)
                     if activity:IsUnusable() then
                         return activity:GetSummary(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
@@ -66,7 +66,7 @@ function BrowsePanel:OnInitialize()
                 key = 'ActivityName',
                 text = L['活动类型'],
                 style = 'LEFT',
-                width = 150,
+                width = 170,
                 showHandler = function(activity)
                     if activity:IsUnusable() then
                         return activity:GetName(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
@@ -158,7 +158,7 @@ function BrowsePanel:OnInitialize()
             {
                 key = 'ItemLeave',
                 text = L['要求'],
-                width = 55,
+                width = 60,
                 textHandler = function(activity)
                     if activity:IsArenaActivity() then
                         local pvpRating = activity:GetPvPRating()
@@ -196,12 +196,13 @@ function BrowsePanel:OnInitialize()
                                HIGHLIGHT_FONT_COLOR.b
                     end
                 end,
-            }, {
+            },{
                 key = 'LeaderScore',
-                text = L['分数'],
-                width = 55,
+                text = L['大秘评分'],
+                --style = 'LEFT',
+                width = 90,
                 textHandler = function(activity)
-                    local score = activity:GetLeaderOverallDungeonScore()
+                    local score = activity:GetLeaderScore()
                     if not score or score == 0 then
                         return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
                     else
@@ -210,12 +211,12 @@ function BrowsePanel:OnInitialize()
                     end
                 end,
                 sortHandler = function(activity)
-                    return 0xFFFF - activity:GetLeaderOverallDungeonScore()
+                    return 1/(activity:GetLeaderScore() + 1)
                 end,
             }, {
                 key = 'Summary',
                 text = L['说明'],
-                width = 160,
+                width = 170,
                 class = Addon:GetClass('SummaryGrid'),
                 formatHandler = function(grid, activity)
                     grid:SetActivity(activity)
@@ -258,6 +259,16 @@ function BrowsePanel:OnInitialize()
         end)
         ActivityList:SetCallback('OnItemMenu', function(_, itemButton, activity)
             self:ToggleActivityMenu(itemButton, activity)
+        end)
+        ActivityList:SetCallback('OnItemDoubleClick', function(_, itemButton, activity)
+            if Profile:GetSetting("DOUBLE_CLICK_JOIN") then
+                local usable, reason = self:CheckSignUpStatus(activity)
+                if usable then
+                    local specId = GetSpecialization()
+                    local role = select(5,GetSpecializationInfo(specId))
+                    C_LFGList.ApplyToGroup(activity:GetID(),role == "TANK",role == "HEALER",role == "DAMAGER")
+                end
+            end
         end)
         ActivityList:SetCallback('OnGridEnter_@', function(_, button, activity)
             if not (activity:IsSelf() or
@@ -363,7 +374,7 @@ function BrowsePanel:OnInitialize()
                 end
             end
             self:StartSet()
-            --self.ActivityDropdown:SetValue(GetActivityCode(nil, nil, data.categoryId))
+            --self.ActivityDropdown:SetValue(GetActivityCode(nil, nil, data.categoryId)) --abyui 最近搜索
             self:EndSet()
         end)
     end
@@ -656,6 +667,26 @@ function BrowsePanel:OnInitialize()
         AutoCompleteFrame:SetFrameLevel(self:GetFrameLevel() + 50)
     end
 
+    local doubleClickJoinCheckBox = GUI:GetClass('CheckBox'):New(self) do
+        doubleClickJoinCheckBox:SetSize(24, 24)
+        doubleClickJoinCheckBox:SetPoint('LEFT', SearchBox, 'RIGHT', 10, 0)
+        doubleClickJoinCheckBox:SetText("双击加入(专精职责)")
+        doubleClickJoinCheckBox:SetChecked(not not Profile:GetSetting("DOUBLE_CLICK_JOIN"))
+        doubleClickJoinCheckBox:SetScript("OnClick", function()
+            Profile:SetSetting("DOUBLE_CLICK_JOIN", doubleClickJoinCheckBox:GetChecked())
+        end)
+    end
+
+    local autoJoinCheckBox = GUI:GetClass('CheckBox'):New(self) do
+        autoJoinCheckBox:SetSize(24, 24)
+        autoJoinCheckBox:SetPoint('TOPLEFT', doubleClickJoinCheckBox, 'TOPLEFT', 0, 24)
+        autoJoinCheckBox:SetText("自动进组")
+        autoJoinCheckBox:SetChecked(not not Profile:GetSetting("AUTO_JOIN"))
+        autoJoinCheckBox:SetScript("OnClick", function()
+            Profile:SetSetting("AUTO_JOIN", autoJoinCheckBox:GetChecked())
+		end)
+    end
+
     self.AutoCompleteFrame = AutoCompleteFrame
     self.ActivityList = ActivityList
     self.ActivityDropdown = ActivityDropdown
@@ -757,6 +788,26 @@ function BrowsePanel:OnInitialize()
 
     LFGListFrame.SearchPanel.AutoCompleteFrame:Hide()
 
+    LFGInvitePopup:SetScript("OnShow",function()
+		if autoJoinCheckBox:GetChecked() then
+            local specId = GetSpecialization()
+            local role = select(5,GetSpecializationInfo(specId))
+			AcceptGroup(role == "TANK", role == "HEALER", role == "DAMAGER");
+            StaticPopupSpecial_Hide(LFGInvitePopup);
+		end
+	end)
+    
+	LFGListInviteDialog:SetScript("OnShow",function(self) 
+		 if autoJoinCheckBox:GetChecked() then
+			local _, status, _, _, role = C_LFGList.GetApplicationInfo(LFGListInviteDialog.resultID)
+			if status=="invited" then
+				LFGListInviteDialog.AcceptButton:Click()
+			end
+			if status=="inviteaccepted" then
+				LFGListInviteDialog.AcknowledgeButton:Click()
+			end
+		 end
+	end)
     -- LFGListApplicationDialog.SignUpButton:SetScript('OnClick', function(self)
     --     local dialog = self:GetParent()
     --     PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 'igMainMenuOptionCheckBoxOn')

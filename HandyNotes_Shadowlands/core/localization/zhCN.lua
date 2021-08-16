@@ -136,6 +136,8 @@ L["options_toy_rewards"] = "显示玩具奖励"
 L["options_toy_rewards_desc"] = "在提示和追踪其收集状态显示玩具奖励。"
 L["options_transmog_rewards"] = "显示幻化奖励"
 L["options_transmog_rewards_desc"] = "在提示和追踪其收集状态显示幻化奖励。"
+L["options_all_transmog_rewards"] = "显示无法获取的幻化奖励"
+L["options_all_transmog_rewards_desc"] = "显示其它职业可以获取的幻化奖励。"
 
 L["options_icons_misc_desc"] = "显示其它未分类项的位置。"
 L["options_icons_misc"] = "杂项"

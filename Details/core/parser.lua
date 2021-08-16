@@ -232,6 +232,8 @@
 			[32175] = 17364, -- shaman Stormstrike (from Turkar on github)
 			[32176] = 17364, -- shaman Stormstrike
 			[45284] = 188196, --shaman lightining bolt overloaded
+
+			[228361] = 228360, --shadow priest void erruption
 		}
 	end
 	

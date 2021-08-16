@@ -265,4 +265,5 @@ U1.PINYIN={
     ['天赋方案切换']={'tianfufanganqiehuan','tffaqh'},
     ['盟约随从任务']={'mengyuesuicongrenwu','myscrw'},
     ['队友技能监控']={'duiyoujinengjiankong','dyjnjk'},
+    ['统御碎片助手']={'tongyusuipianzhushou','tyspzs'},
 }

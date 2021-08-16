@@ -1974,7 +1974,8 @@ local SimplePanel_frame_backdrop_border_color = {0, 0, 0, 1}
 --the slider was anchoring to with_label and here here were anchoring the slider again
 function DF:CreateScaleBar (frame, config)
 	local scaleBar, text = DF:CreateSlider (frame, 120, 14, 0.6, 1.6, 0.1, config.scale, true, "ScaleBar", nil, "Scale:", DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE"), DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
-	--scaleBar:SetPoint ("right", frame.Close, "left", -26, 0)
+	scaleBar.thumb:SetWidth(24)
+
 	text:SetPoint ("topleft", frame, "topleft", 12, -7)
 	scaleBar:SetFrameLevel (DF.FRAMELEVEL_OVERLAY)
 	scaleBar.OnValueChanged = function (_, _, value)
@@ -1987,7 +1988,7 @@ function DF:CreateScaleBar (frame, config)
 		frame:SetScale (config.scale)
 	end)
 	
-	scaleBar:SetAlpha (0.5)
+	scaleBar:SetAlpha (0.70)
 	
 	return scaleBar
 end
@@ -4020,8 +4021,21 @@ function DF:CreateTabContainer (parent, title, frame_name, frame_list, options_t
 	return mainFrame
 end
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- ~right ~click to ~close
 
+function DF:CreateRightClickToClose(parent, xOffset, yOffset, color, fontSize)
+	--default values
+	xOffset = xOffset or 0
+	yOffset = yOffset or 0
+	color = color or "white"
+	fontSize = fontSize or 10
 
+	local label = DF:CreateLabel(parent, "right click to close", fontSize, color)
+	label:SetPoint("bottomright", parent, "bottomright", -4 + xOffset, 5 + yOffset)
+
+	return label
+end
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

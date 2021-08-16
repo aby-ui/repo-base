@@ -410,39 +410,75 @@ function Transmog:Initialize(attrs)
     end
 end
 
-function Transmog:IsObtained()
-    -- Check if the player knows the appearance
+function Transmog:Prepare()
+    Item.Prepare(self)
+    local sourceID = select(2, CTC.GetItemInfo(self.item))
+    if sourceID then CTC.PlayerCanCollectSource(sourceID) end
+    GetItemSpecInfo(self.item)
+    CTC.PlayerHasTransmog(self.item)
+end
+
+function Transmog:IsEnabled()
+    if not Item.IsEnabled(self) then return false end
+    if ns:GetOpt('show_all_transmog_rewards') then return true end
+    if not (self:IsLearnable() and self:IsObtainable()) then return false end
+    return true
+end
+
+function Transmog:IsKnown()
     if CTC.PlayerHasTransmog(self.item) then return true end
+    local appearanceID, sourceID = CTC.GetItemInfo(self.item)
+    if sourceID and CTC.PlayerHasTransmogItemModifiedAppearance(sourceID) then return true end
+    if appearanceID then
+        local sources = CTC.GetAppearanceSources(appearanceID)
+        if sources then
+            for i, source in pairs(sources) do
+                if source.isCollected then return true end
+            end
+        end
+    end
+    return false
+end
 
-    -- Verify the item drops for any of the players specs
-    local specs = GetItemSpecInfo(self.item)
-    if type(specs) == 'table' and #specs == 0 then return true end
-
-    -- Verify the player can learn the item's appearance
+function Transmog:IsLearnable()
     local sourceID = select(2, CTC.GetItemInfo(self.item))
     if sourceID then
         local infoReady, canCollect = CTC.PlayerCanCollectSource(sourceID)
-        if infoReady and not canCollect then return true end
+        if infoReady and not canCollect then return false end
     end
+    return true
+end
 
+function Transmog:IsObtainable()
+    if not Item.IsObtainable(self) then return false end
+    -- Cosmetic cloaks do not behave well with the GetItemSpecInfo() function.
+    -- They return an empty table even though you can get the item to drop.
+    local _, _, _, ilvl, _, _, _, _, equipLoc = GetItemInfo(self.item)
+    if not (ilvl == 1 and equipLoc == 'INVTYPE_CLOAK' and self.slot == L["cosmetic"]) then
+        -- Verify the item drops for any of the players specs
+        local specs = GetItemSpecInfo(self.item)
+        if type(specs) == 'table' and #specs == 0 then return false end
+    end
+    return true
+end
+
+function Transmog:IsObtained()
+    -- Check if the player knows the appearance
+    if self:IsKnown() then return true end
+    -- Verify the player can obtain and learn the item's appearance
+    if not (self:IsObtainable() and self:IsLearnable()) then return true end
     return false
 end
 
 function Transmog:GetStatus()
-    local collected = CTC.PlayerHasTransmog(self.item)
+    local collected = self:IsKnown()
     local status = collected and Green(L["known"]) or Red(L["missing"])
 
     if not collected then
-        -- check if we can't learn this item
-        local sourceID = select(2, CTC.GetItemInfo(self.item))
-        if not (sourceID and select(2, CTC.PlayerCanCollectSource(sourceID))) then
+        if not self:IsLearnable() then
             status = Orange(L["unlearnable"])
-        else
-            -- check if the item doesn't drop
-            local specs = GetItemSpecInfo(self.item)
-            if type(specs) == 'table' and #specs == 0 then
-                status = Orange(L["unobtainable"])
-            end
+        elseif not self:IsObtainable() then
+            status = Orange(L["unobtainable"])
         end
     end
 

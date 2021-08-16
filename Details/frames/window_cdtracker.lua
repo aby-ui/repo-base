@@ -46,7 +46,7 @@ function Details.CooldownTracking.EnableTracker()
     raidStatusLib.RegisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownListWipedFunc")
     raidStatusLib.RegisterCallback(Details.CooldownTracking, "CooldownUpdate", "CooldownUpdateFunc")
 
-    Details.CooldownTracking.RefreshCooldownFrames()
+    --Details.CooldownTracking.RefreshCooldownFrames()
 end
 
 function Details.CooldownTracking.DisableTracker()
@@ -58,23 +58,11 @@ function Details.CooldownTracking.DisableTracker()
     end
 
     --unregister callbacks
-    raidStatusLib.UnregisterCallback(Details.CooldownTracking, "CooldownListUpdate", "CooldownListUpdateFunc")
-    raidStatusLib.UnregisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownListWipedFunc")
+    raidStatusLib.UnregisterCallback(Details.CooldownTracking, "CooldownListUpdate", "CooldownUpdateFunc")
+    raidStatusLib.UnregisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownUpdateFunc")
     raidStatusLib.UnregisterCallback(Details.CooldownTracking, "CooldownUpdate", "CooldownUpdateFunc")
 end
-
-function Details.CooldownTracking.CooldownListUpdateFunc()
-    --print("CooldownListUpdate")
-    Details.CooldownTracking.RefreshCooldowns()
-end
-
-function Details.CooldownTracking.CooldownListWipedFunc()
-    --print("CooldownListWiped")
-    Details.CooldownTracking.RefreshCooldowns()
-end
-
 function Details.CooldownTracking.CooldownUpdateFunc()
-    print("CooldownUpdate")
     Details.CooldownTracking.RefreshCooldowns()
 end
 

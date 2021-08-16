@@ -5,7 +5,7 @@
 ## Notes-zhCN: Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com
 ## Notes-zhTW: Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com
 ## Author: Boshi Lian(farmer1992@gmail.com)
-## Version: v5.5.1
+## Version: v5.6.0
 ## SavedVariables: MyslotExports
 ## SavedVariablesPerCharacter: MyslotSettings
 

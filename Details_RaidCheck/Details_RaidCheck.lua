@@ -10,6 +10,8 @@ local DF = DetailsFramework
 
 local UnitGroupRolesAssigned = DF.UnitGroupRolesAssigned
 
+local version = "95"
+
 --> build the list of buffs to track
 local flask_list = DF.FlaskIDs
 
@@ -67,7 +69,6 @@ end
 	tinsert (UISpecialFrames, "Details_RaidCheck")
 	DetailsRaidCheck:SetPluginDescription (Loc ["STRING_RAIDCHECK_PLUGIN_DESC"])
 
-	local version = "v3.0.1"
 	
 	local debugmode = false
 	--local debugmode = true
@@ -716,7 +717,18 @@ end
 		DetailsRaidCheck.ToolbarButton:SetScript ("OnEnter", function (self)
 			show_panel:Show()
 			show_panel:ClearAllPoints()
-			show_panel:SetPoint ("bottom", DetailsRaidCheck.ToolbarButton, "top", 0, 10)
+
+			local bottomPosition = self:GetBottom()
+			local screenHeight = GetScreenHeight()
+
+			local positionHeightPercent = bottomPosition / screenHeight
+
+			if (positionHeightPercent > 0.7) then
+				show_panel:SetPoint("top", DetailsRaidCheck.ToolbarButton, "bottom", 0, -10)
+			else
+				show_panel:SetPoint("bottom", DetailsRaidCheck.ToolbarButton, "top", 0, 10)
+			end
+
 			show_panel.NextUpdate = UpdateSpeed
 			update_panel (show_panel, 1)
 			show_panel:SetScript ("OnUpdate", update_panel)

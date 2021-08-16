@@ -115,6 +115,7 @@ map.nodes[19324172] = Rare({
 map.nodes[39014119] = Rare({
     id=157833,
     quest=57469,
+    noassault=KYRIAN,
     rlabel=ns.status.LightBlue('+100 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49843}),
@@ -330,13 +331,15 @@ map.nodes[32946646] = Rare({
         Item({item=183066, quest=63160}), -- Korrath's Grimoire: Aleketh
         Item({item=183067, quest=63161}), -- Korrath's Grimoire: Belidir
         Item({item=183068, quest=63162}),  -- Korrath's Grimoire: Gyadrek
-        Transmog({item=185945, slot=L["staff"]}) -- Shadeweaver's Spire
+        Transmog({item=185945, slot=L["staff"]}), -- Shadeweaver's Spire
+        Toy({item=181794}) -- Orophea's Lyre
     }
 }) -- Shadeweaver Zeris
 
 map.nodes[35974156] = Rare({
     id=166398,
     quest=60834,
+    noassault=KYRIAN,
     rlabel=ns.status.LightBlue('+80 '..L["rep"]),
     rewards={
         Achievement({id=14744, criteria=49857}),
@@ -475,9 +478,11 @@ map.nodes[69214521] = Treasure({
     rewards={
         Achievement({id=15099, criteria=52243}),
         Item({item=185902, note=L["trinket"]}), -- Iron Maiden's Toolkit
+        --[[
         Transmog({item=187014, slot=L["cosmetic"]}), -- Shackler's Spiked Shoulders
         Transmog({item=187018, slot=L["cosmetic"]}), -- Ritualist's Shoulder Scythes
         Transmog({item=187019, slot=L["cosmetic"]}), -- Infiltrator's Shoulderguards
+        ]]
         Transmog({item=187026, slot=L["cosmetic"]}), -- Field Warden's Torture Kit
         Transmog({item=187240, slot=L["cosmetic"]}) -- Field Warden's Watchful Eye
     }
@@ -750,6 +755,7 @@ pitu.nodes[41767921] = BonusBoss({
 map.nodes[36253744] = BonusBoss({
     id=165047,
     quest=59441,
+    noassault=KYRIAN,
     rewards={
         Achievement({id=14660, criteria=49482}),
         Transmog({item=186630, slot=L["plate"]}) -- Spark Deflecting Girdle
@@ -759,6 +765,7 @@ map.nodes[36253744] = BonusBoss({
 map.nodes[36844480] = BonusBoss({
     id=156203,
     quest=62539,
+    noassault=KYRIAN,
     rewards={
         Achievement({id=14660, criteria=50409}),
         Item({item=186631, note=L["ring"]}) -- Emberfused Band
@@ -1204,11 +1211,13 @@ ext.nodes[73685062] = ns.Clone(VEN_VESSEL2, {parent=map.id})
 -- Kyrian Assault
 map.nodes[32594092] = KYR_VESSEL1
 map.nodes[32604340] = KYR_VESSEL1
+map.nodes[37504500] = KYR_VESSEL1
 map.nodes[34103580] = KYR_VESSEL2
 map.nodes[36604010] = KYR_VESSEL2
 map.nodes[38364869] = KYR_VESSEL2
 map.nodes[45424774] = KYR_VESSEL2
 -- Night Fae assault
+map.nodes[19103320] = FAE_VESSEL1
 map.nodes[25303330] = FAE_VESSEL1
 map.nodes[25303820] = FAE_VESSEL1
 map.nodes[27804180] = FAE_VESSEL1
@@ -1373,10 +1382,80 @@ end
 map.nodes[66045739] = SilverRing()
 
 -------------------------------------------------------------------------------
+---------------------------------- TORMENTORS ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[85375524] = Class('Tormentor', ns.node.Node, {
+    label=L["tormentors"],
+    note=L["tormentors_note"],
+    icon='tormentor',
+    scale=2.5,
+    rewards={
+        Achievement({id=15054, criteria={
+            52104, -- Kazj the Sentinel
+            51644, -- Promathiz
+            52103, -- Sentinel Shakorzeth
+            51661, -- Intercessor Razzra
+            51653, -- Gruukuuek the Elder
+            52102, -- Algel the Haunter
+            51648, -- Malleus Grakizz
+            51654, -- Gralebboih
+            51639, -- The Mass of Souls
+            52105, -- Manifestation of Pain
+            51655, -- Versya the Damned
+            52101, -- Zul'gath the Flayer
+            52106, -- Golmak the Monstrosity
+            51643, -- Sentinel Pyrophus
+            51660, -- Mugrem the Soul Devourer
+        }}),
+        Transmog({item=186003, slot=L["bow"], note='{npc:177981}'}), -- Versya's Stygian Longbow
+        Transmog({item=186009, slot=L["staff"], note='{npc:177980}'}), -- Corrupted Elder Branch
+        Transmog({item=186006, slot=L["2h_axe"], note='{npc:178882}'}), -- Kazj's Stygian Splitter
+        Transmog({item=186010, slot=L["1h_mace"], note='{npc:178002}'}), -- Lost Attendant's Scepter
+        Transmog({item=186007, slot=L["1h_mace"], note='{npc:177330}'}), -- Cudgel of the Tin Sentinel
+        Transmog({item=186004, slot=L["dagger"], note='{npc:178004}'}), -- Kris of Dark Temptation
+        Transmog({item=186005, slot=L["dagger"], note='{npc:178899}'}), -- Stygian Pain Borer
+        Transmog({item=186012, slot=L["shield"], note='{npc:177972}'}), -- Inferno Blast Shield
+        Transmog({item=186239, slot=L["cloak"], note='{npc:178897}'}), -- Drape of the Phantasm
+        Transmog({item=186213, slot=L["cloth"], note='{npc:178899}'}), -- Bindings of Manifest Pain
+        Transmog({item=186210, slot=L["cloth"], note='{npc:177427}'}), -- Diabolic Soul Veil
+        Transmog({item=186241, slot=L["cloth"], note='{npc:177331}'}), -- Insulated Thermal Leggings
+        Transmog({item=186208, slot=L["cloth"], note='{npc:177330}'}), -- Padded Insouls
+        Transmog({item=186218, slot=L["leather"], note='{npc:177972}'}), -- Fire-Tempered Armor Cinch
+        Transmog({item=186237, slot=L["leather"], note='{npc:177979}'}), -- Gormhide Pauldrons
+        Transmog({item=186219, slot=L["leather"], note='{npc:177331}'}), -- Pyrophus' Wrist Ties
+        Transmog({item=186215, slot=L["leather"], note='{npc:177427}'}), -- Soul Stranglers
+        Transmog({item=186225, slot=L["mail"], note='{npc:178883}'}), -- Shoulder Joint Spindles
+        Transmog({item=186226, slot=L["mail"], note='{npc:177980}'}), -- Cinch of Petrified Vines
+        Transmog({item=186227, slot=L["mail"], note='{npc:178897}'}), -- Jangling Chain Manacles
+        Transmog({item=186242, slot=L["mail"], note='{npc:178886}'}), -- Zul'gath's Chain Coif
+        Transmog({item=186221, slot=L["mail"], note='{npc:178898}'}), -- Seared-Link Sabatons
+        Transmog({item=186231, slot=L["plate"], note='{npc:178004}'}), -- Gloves of Fervent Intercession
+        Transmog({item=186229, slot=L["plate"], note='{npc:178898}'}), -- Lavafused Breastplate
+        Transmog({item=186235, slot=L["plate"], note='{npc:178886}'}), -- Shadow-Wreathed Vambraces
+        Transmog({item=186233, slot=L["plate"], note='{npc:177981}'}), -- Spaulders of the Skyborn Damned
+        Pet({item=186449, id=3117, note='{npc:177979}'}), -- Amaranthine Stinger
+        ns.reward.Spacer(),
+        ns.reward.Section('{item:185972}'), -- Tormentor's Cache
+        Transmog({item=186977, slot=L["cosmetic"], indent=true}), -- Beastcaller's Skull Crescent
+        Transmog({item=186978, slot=L["cosmetic"], indent=true}), -- Borrowed Eye Crescent
+        Transmog({item=186562, slot=L["cosmetic"], indent=true}), -- Tormentor's Manacled Backplate
+        Mount({item=185973, id=1475, indent=true}), -- Chain of Bahmethra
+    },
+    getters = {
+        rlabel = function (self)
+            local completed = C_QuestLog.IsQuestFlaggedCompleted(63854)
+            local color = completed and ns.status.Green or ns.status.Gray
+            return color(L['weekly'])
+        end
+    }
+})()
+
+-------------------------------------------------------------------------------
 -------------------------------- MISCELLANEOUS --------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[42164448] = NPC({ -- https://www.wowhead.com/achievement=15004/a-sly-fox
+map.nodes[42164448] = NPC({
     id=179083,
     quest=64019,
     icon=3072461,
@@ -1387,9 +1466,9 @@ map.nodes[42164448] = NPC({ -- https://www.wowhead.com/achievement=15004/a-sly-f
         Pet({item=186539, id=3101}) -- Sly
     },
     pois={
-        POI({40855166, quest=64024}), -- assault 1
-        POI({38243956, quest=64022, questDeps=64024}), -- assault 2
-        POI({32464324, quest=64023, questDeps=64022}) -- assault 3
+        POI({40715157, quest=64024}), -- assault 1
+        POI({38023973, quest=64022, questDeps=64024}), -- assault 2
+        POI({32904417, quest=64023, questDeps=64022}) -- assault 3
     }
 }) -- Sly
 

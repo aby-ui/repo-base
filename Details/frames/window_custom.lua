@@ -158,7 +158,7 @@
 	
 		if (not _G.DetailsCustomPanel or not DetailsCustomPanel.Initialized) then
 		
-		DetailsPluginContainerWindow.OpenPlugin (DetailsCustomPanel)
+			DetailsPluginContainerWindow.OpenPlugin (DetailsCustomPanel)
 	
 			local GameCooltip = GameCooltip
 			DetailsCustomPanel.Initialized = true
@@ -214,12 +214,14 @@
 				f.Close = CreateFrame ("button", "$parentCloseButton", f)
 				f.Close:SetPoint ("right", titlebar, "right", -2, 0)
 				f.Close:SetSize (16, 16)
-				f.Close:SetNormalTexture (_detalhes.gump.folder .. "icons")
-				f.Close:SetHighlightTexture (_detalhes.gump.folder .. "icons")
-				f.Close:SetPushedTexture (_detalhes.gump.folder .. "icons")
-				f.Close:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
-				f.Close:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
-				f.Close:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
+
+				f.Close:SetNormalTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+				f.Close:SetHighlightTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+				f.Close:SetPushedTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+				f.Close:GetNormalTexture():SetDesaturated(true)
+				f.Close:GetHighlightTexture():SetDesaturated(true)
+				f.Close:GetPushedTexture():SetDesaturated(true)
+
 				f.Close:SetAlpha (0.7)
 				f.Close:SetScript ("OnClick", function() _detalhes:CloseCustomDisplayWindow() end)			
 				f.Close:SetScript ("OnHide", function()

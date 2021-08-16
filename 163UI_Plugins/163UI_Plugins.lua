@@ -61,7 +61,7 @@ do
                     C_GossipInfo.SelectOption(1)
                 end
             end
-            if scanner_button and scanner_button:IsShown() then
+            if scanner_button and scanner_button:IsShown() and not InCombatLockdown() then
                 scanner_button:Hide()
             end
         end

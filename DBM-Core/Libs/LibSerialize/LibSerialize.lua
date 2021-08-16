@@ -351,7 +351,8 @@ local table_sort = table.sort
 
 local defaultOptions = {
     errorOnUnserializableType = true,
-    stable = false
+    stable = false,
+    filter = nil,
 }
 
 local canSerializeFnOptions = {
@@ -450,7 +451,6 @@ end
 -- or the reverse to disable them again.
 local DebugPrint = function(...)
     print(...)
-    -- ABGP:WriteLogged("SERIALIZE", table_concat({tostringall(...)}, " "))
 end
 
 
@@ -622,29 +622,74 @@ end
 
 
 --[[---------------------------------------------------------------------------
-    Object reuse:
-    As strings/tables are serialized or deserialized, they are stored in this lookup
-    table in case they're encountered again, at which point they can be referenced
-    by their index into this table rather than repeating the string contents.
+    Internal functionality:
+    The `LibSerializeInt` table contains internal, immutable state (functions, tables)
+    that is copied to a new table each time serialization/deserialization is
+    invoked, so that each invocation has its own state encapsulated. Copying the
+    state is preferred to a metatable, since we don't want to pay the cost of the
+    indirection overhead every time we access one of the copied keys.
 --]]---------------------------------------------------------------------------
 
-local refsDirty = false
-local stringRefs = {}
-local tableRefs = {}
+local LibSerializeInt = {}
 
-function LibSerialize:_AddReference(refs, value)
-    refsDirty = true
+local function CreateSerializer(opts)
+    local state = {}
 
+    -- Copy the state from LibSerializeInt.
+    for k, v in pairs(LibSerializeInt) do
+        state[k] = v
+    end
+
+    -- Initialize string/table reference storage.
+    state._stringRefs = {}
+    state._tableRefs = {}
+
+    -- Create the writer functions.
+    state._writeString, state._flushWriter = CreateWriter()
+
+    -- Create a combined options table, starting with the defaults
+    -- and then overwriting any user-supplied keys.
+    state._opts = {}
+    for k, v in pairs(defaultOptions) do
+        state._opts[k] = v
+    end
+    for k, v in pairs(opts) do
+        state._opts[k] = v
+    end
+
+    return state
+end
+
+local function CreateDeserializer(input)
+    local state = {}
+
+    -- Copy the state from LibSerializeInt.
+    for k, v in pairs(LibSerializeInt) do
+        state[k] = v
+    end
+
+    -- Initialize string/table reference storage.
+    state._stringRefs = {}
+    state._tableRefs = {}
+
+    -- Create the reader functions.
+    state._readBytes, state._readerBytesLeft = CreateReader(input)
+
+    return state
+end
+
+
+--[[---------------------------------------------------------------------------
+    Object reuse:
+    As strings/tables are serialized or deserialized, they are stored in a lookup
+    table in case they're encountered again, at which point they can be referenced
+    by their index into their table rather than repeating the string contents.
+--]]---------------------------------------------------------------------------
+
+function LibSerializeInt:_AddReference(refs, value)
     local ref = #refs + 1
     refs[ref] = value
     refs[value] = ref
-end
-
-function LibSerialize:_ClearReferences()
-    if refsDirty then
-        stringRefs = {}
-        tableRefs = {}
-    end
 end
 
 
@@ -652,7 +697,7 @@ end
     Read (deserialization) support.
 --]]---------------------------------------------------------------------------
 
-function LibSerialize:_ReadObject()
+function LibSerializeInt:_ReadObject()
     local value = self:_ReadByte()
 
     if value % 2 == 1 then
@@ -692,12 +737,12 @@ function LibSerialize:_ReadObject()
     return self._ReaderTable[typ](self)
 end
 
-function LibSerialize:_ReadTable(entryCount, value)
+function LibSerializeInt:_ReadTable(entryCount, value)
     -- DebugPrint("Extracting keys/values for table:", entryCount)
 
     if value == nil then
         value = {}
-        self:_AddReference(tableRefs, value)
+        self:_AddReference(self._tableRefs, value)
     end
 
     for _ = 1, entryCount do
@@ -708,12 +753,12 @@ function LibSerialize:_ReadTable(entryCount, value)
     return value
 end
 
-function LibSerialize:_ReadArray(entryCount, value)
+function LibSerializeInt:_ReadArray(entryCount, value)
     -- DebugPrint("Extracting values for array:", entryCount)
 
     if value == nil then
         value = {}
-        self:_AddReference(tableRefs, value)
+        self:_AddReference(self._tableRefs, value)
     end
 
     for i = 1, entryCount do
@@ -723,11 +768,11 @@ function LibSerialize:_ReadArray(entryCount, value)
     return value
 end
 
-function LibSerialize:_ReadMixed(arrayCount, mapCount)
+function LibSerializeInt:_ReadMixed(arrayCount, mapCount)
     -- DebugPrint("Extracting values for mixed table:", arrayCount, mapCount)
 
     local value = {}
-    self:_AddReference(tableRefs, value)
+    self:_AddReference(self._tableRefs, value)
 
     self:_ReadArray(arrayCount, value)
     self:_ReadTable(mapCount, value)
@@ -735,29 +780,29 @@ function LibSerialize:_ReadMixed(arrayCount, mapCount)
     return value
 end
 
-function LibSerialize:_ReadString(len)
+function LibSerializeInt:_ReadString(len)
     -- DebugPrint("Reading string,", len)
 
     local value = self._readBytes(len)
     if len > 2 then
-        self:_AddReference(stringRefs, value)
+        self:_AddReference(self._stringRefs, value)
     end
     return value
 end
 
-function LibSerialize:_ReadByte()
+function LibSerializeInt:_ReadByte()
     -- DebugPrint("Reading byte")
 
     return self:_ReadInt(1)
 end
 
-function LibSerialize:_ReadInt(required)
+function LibSerializeInt:_ReadInt(required)
     -- DebugPrint("Reading int", required)
 
     return StringToInt(self._readBytes(required), required)
 end
 
-function LibSerialize:_ReadPair(fn, ...)
+function LibSerializeInt:_ReadPair(fn, ...)
     local first = fn(self, ...)
     local second = fn(self, ...)
     return first, second
@@ -765,22 +810,22 @@ end
 
 local embeddedIndexShift = 4
 local embeddedCountShift = 16
-LibSerialize._EmbeddedIndex = {
+LibSerializeInt._EmbeddedIndex = {
     STRING = 0,
     TABLE = 1,
     ARRAY = 2,
     MIXED = 3,
 }
-LibSerialize._EmbeddedReaderTable = {
-    [LibSerialize._EmbeddedIndex.STRING] = function(self, c) return self:_ReadString(c) end,
-    [LibSerialize._EmbeddedIndex.TABLE] =  function(self, c) return self:_ReadTable(c) end,
-    [LibSerialize._EmbeddedIndex.ARRAY] =  function(self, c) return self:_ReadArray(c) end,
+LibSerializeInt._EmbeddedReaderTable = {
+    [LibSerializeInt._EmbeddedIndex.STRING] = function(self, c) return self:_ReadString(c) end,
+    [LibSerializeInt._EmbeddedIndex.TABLE] =  function(self, c) return self:_ReadTable(c) end,
+    [LibSerializeInt._EmbeddedIndex.ARRAY] =  function(self, c) return self:_ReadArray(c) end,
     -- For MIXED, the 4-bit count contains two 2-bit counts that are one less than the true count.
-    [LibSerialize._EmbeddedIndex.MIXED] =  function(self, c) return self:_ReadMixed((c % 4) + 1, floor(c / 4) + 1) end,
+    [LibSerializeInt._EmbeddedIndex.MIXED] =  function(self, c) return self:_ReadMixed((c % 4) + 1, floor(c / 4) + 1) end,
 }
 
 local readerIndexShift = 8
-LibSerialize._ReaderIndex = {
+LibSerializeInt._ReaderIndex = {
     NIL = 0,
 
     NUM_16_POS = 1,
@@ -822,56 +867,56 @@ LibSerialize._ReaderIndex = {
     TABLEREF_16 = 30,
     TABLEREF_24 = 31,
 }
-LibSerialize._ReaderTable = {
+LibSerializeInt._ReaderTable = {
     -- Nil
-    [LibSerialize._ReaderIndex.NIL]  = function(self) return nil end,
+    [LibSerializeInt._ReaderIndex.NIL]  = function(self) return nil end,
 
     -- Numbers (ones requiring <=12 bits are handled separately)
-    [LibSerialize._ReaderIndex.NUM_16_POS] = function(self) return self:_ReadInt(2) end,
-    [LibSerialize._ReaderIndex.NUM_16_NEG] = function(self) return -self:_ReadInt(2) end,
-    [LibSerialize._ReaderIndex.NUM_24_POS] = function(self) return self:_ReadInt(3) end,
-    [LibSerialize._ReaderIndex.NUM_24_NEG] = function(self) return -self:_ReadInt(3) end,
-    [LibSerialize._ReaderIndex.NUM_32_POS] = function(self) return self:_ReadInt(4) end,
-    [LibSerialize._ReaderIndex.NUM_32_NEG] = function(self) return -self:_ReadInt(4) end,
-    [LibSerialize._ReaderIndex.NUM_64_POS] = function(self) return self:_ReadInt(7) end,
-    [LibSerialize._ReaderIndex.NUM_64_NEG] = function(self) return -self:_ReadInt(7) end,
-    [LibSerialize._ReaderIndex.NUM_FLOAT]  = function(self) return StringToFloat(self._readBytes(8)) end,
-    [LibSerialize._ReaderIndex.NUM_FLOATSTR_POS]  = function(self) return tonumber(self._readBytes(self:_ReadByte())) end,
-    [LibSerialize._ReaderIndex.NUM_FLOATSTR_NEG]  = function(self) return -tonumber(self._readBytes(self:_ReadByte())) end,
+    [LibSerializeInt._ReaderIndex.NUM_16_POS] = function(self) return self:_ReadInt(2) end,
+    [LibSerializeInt._ReaderIndex.NUM_16_NEG] = function(self) return -self:_ReadInt(2) end,
+    [LibSerializeInt._ReaderIndex.NUM_24_POS] = function(self) return self:_ReadInt(3) end,
+    [LibSerializeInt._ReaderIndex.NUM_24_NEG] = function(self) return -self:_ReadInt(3) end,
+    [LibSerializeInt._ReaderIndex.NUM_32_POS] = function(self) return self:_ReadInt(4) end,
+    [LibSerializeInt._ReaderIndex.NUM_32_NEG] = function(self) return -self:_ReadInt(4) end,
+    [LibSerializeInt._ReaderIndex.NUM_64_POS] = function(self) return self:_ReadInt(7) end,
+    [LibSerializeInt._ReaderIndex.NUM_64_NEG] = function(self) return -self:_ReadInt(7) end,
+    [LibSerializeInt._ReaderIndex.NUM_FLOAT]  = function(self) return StringToFloat(self._readBytes(8)) end,
+    [LibSerializeInt._ReaderIndex.NUM_FLOATSTR_POS]  = function(self) return tonumber(self._readBytes(self:_ReadByte())) end,
+    [LibSerializeInt._ReaderIndex.NUM_FLOATSTR_NEG]  = function(self) return -tonumber(self._readBytes(self:_ReadByte())) end,
 
     -- Booleans
-    [LibSerialize._ReaderIndex.BOOL_T] = function(self) return true end,
-    [LibSerialize._ReaderIndex.BOOL_F] = function(self) return false end,
+    [LibSerializeInt._ReaderIndex.BOOL_T] = function(self) return true end,
+    [LibSerializeInt._ReaderIndex.BOOL_F] = function(self) return false end,
 
     -- Strings (encoded as size + buffer)
-    [LibSerialize._ReaderIndex.STR_8]  = function(self) return self:_ReadString(self:_ReadByte()) end,
-    [LibSerialize._ReaderIndex.STR_16] = function(self) return self:_ReadString(self:_ReadInt(2)) end,
-    [LibSerialize._ReaderIndex.STR_24] = function(self) return self:_ReadString(self:_ReadInt(3)) end,
+    [LibSerializeInt._ReaderIndex.STR_8]  = function(self) return self:_ReadString(self:_ReadByte()) end,
+    [LibSerializeInt._ReaderIndex.STR_16] = function(self) return self:_ReadString(self:_ReadInt(2)) end,
+    [LibSerializeInt._ReaderIndex.STR_24] = function(self) return self:_ReadString(self:_ReadInt(3)) end,
 
     -- Tables (encoded as count + key/value pairs)
-    [LibSerialize._ReaderIndex.TABLE_8]  = function(self) return self:_ReadTable(self:_ReadByte()) end,
-    [LibSerialize._ReaderIndex.TABLE_16] = function(self) return self:_ReadTable(self:_ReadInt(2)) end,
-    [LibSerialize._ReaderIndex.TABLE_24] = function(self) return self:_ReadTable(self:_ReadInt(3)) end,
+    [LibSerializeInt._ReaderIndex.TABLE_8]  = function(self) return self:_ReadTable(self:_ReadByte()) end,
+    [LibSerializeInt._ReaderIndex.TABLE_16] = function(self) return self:_ReadTable(self:_ReadInt(2)) end,
+    [LibSerializeInt._ReaderIndex.TABLE_24] = function(self) return self:_ReadTable(self:_ReadInt(3)) end,
 
     -- Arrays (encoded as count + values)
-    [LibSerialize._ReaderIndex.ARRAY_8]  = function(self) return self:_ReadArray(self:_ReadByte()) end,
-    [LibSerialize._ReaderIndex.ARRAY_16] = function(self) return self:_ReadArray(self:_ReadInt(2)) end,
-    [LibSerialize._ReaderIndex.ARRAY_24] = function(self) return self:_ReadArray(self:_ReadInt(3)) end,
+    [LibSerializeInt._ReaderIndex.ARRAY_8]  = function(self) return self:_ReadArray(self:_ReadByte()) end,
+    [LibSerializeInt._ReaderIndex.ARRAY_16] = function(self) return self:_ReadArray(self:_ReadInt(2)) end,
+    [LibSerializeInt._ReaderIndex.ARRAY_24] = function(self) return self:_ReadArray(self:_ReadInt(3)) end,
 
     -- Mixed arrays/maps (encoded as arrayCount + mapCount + arrayValues + key/value pairs)
-    [LibSerialize._ReaderIndex.MIXED_8]  = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadByte)) end,
-    [LibSerialize._ReaderIndex.MIXED_16] = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadInt, 2)) end,
-    [LibSerialize._ReaderIndex.MIXED_24] = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadInt, 3)) end,
+    [LibSerializeInt._ReaderIndex.MIXED_8]  = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadByte)) end,
+    [LibSerializeInt._ReaderIndex.MIXED_16] = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadInt, 2)) end,
+    [LibSerializeInt._ReaderIndex.MIXED_24] = function(self) return self:_ReadMixed(self:_ReadPair(self._ReadInt, 3)) end,
 
     -- Previously referenced strings
-    [LibSerialize._ReaderIndex.STRINGREF_8]  = function(self) return stringRefs[self:_ReadByte()] end,
-    [LibSerialize._ReaderIndex.STRINGREF_16] = function(self) return stringRefs[self:_ReadInt(2)] end,
-    [LibSerialize._ReaderIndex.STRINGREF_24] = function(self) return stringRefs[self:_ReadInt(3)] end,
+    [LibSerializeInt._ReaderIndex.STRINGREF_8]  = function(self) return self._stringRefs[self:_ReadByte()] end,
+    [LibSerializeInt._ReaderIndex.STRINGREF_16] = function(self) return self._stringRefs[self:_ReadInt(2)] end,
+    [LibSerializeInt._ReaderIndex.STRINGREF_24] = function(self) return self._stringRefs[self:_ReadInt(3)] end,
 
     -- Previously referenced tables
-    [LibSerialize._ReaderIndex.TABLEREF_8]  = function(self) return tableRefs[self:_ReadByte()] end,
-    [LibSerialize._ReaderIndex.TABLEREF_16] = function(self) return tableRefs[self:_ReadInt(2)] end,
-    [LibSerialize._ReaderIndex.TABLEREF_24] = function(self) return tableRefs[self:_ReadInt(3)] end,
+    [LibSerializeInt._ReaderIndex.TABLEREF_8]  = function(self) return self._tableRefs[self:_ReadByte()] end,
+    [LibSerializeInt._ReaderIndex.TABLEREF_16] = function(self) return self._tableRefs[self:_ReadInt(2)] end,
+    [LibSerializeInt._ReaderIndex.TABLEREF_24] = function(self) return self._tableRefs[self:_ReadInt(3)] end,
 }
 
 
@@ -882,10 +927,10 @@ LibSerialize._ReaderTable = {
 -- Returns the appropriate function from the writer table for the object's type.
 -- If the object's type isn't supported and opts.errorOnUnserializableType is true,
 -- then an error will be raised.
-function LibSerialize:_GetWriteFn(obj, opts)
+function LibSerializeInt:_GetWriteFn(obj)
     local typ = type(obj)
     local writeFn = self._WriterTable[typ]
-    if not writeFn and opts.errorOnUnserializableType then
+    if not writeFn and self._opts.errorOnUnserializableType then
         error(("Unhandled type: %s"):format(typ))
     end
 
@@ -895,10 +940,10 @@ end
 -- Returns true if all of the variadic arguments are serializable.
 -- Note that _GetWriteFn will raise a Lua error if it finds an
 -- unserializable type, unless this behavior is suppressed via options.
-function LibSerialize:_CanSerialize(opts, ...)
+function LibSerializeInt:_CanSerialize(...)
     for i = 1, select("#", ...) do
         local obj = select(i, ...)
-        local writeFn = self:_GetWriteFn(obj, opts)
+        local writeFn = self:_GetWriteFn(obj)
         if not writeFn then
             return false
         end
@@ -912,72 +957,72 @@ end
 -- key/value types must be serializable. Note that _CanSerialize
 -- will raise a Lua error if it finds an unserializable type, unless
 -- this behavior is suppressed via options.
-function LibSerialize:_ShouldSerialize(t, k, v, opts, filterFn)
-    return (not opts.filter or opts.filter(t, k, v)) and
+function LibSerializeInt:_ShouldSerialize(t, k, v, filterFn)
+    return (not self._opts.filter or self._opts.filter(t, k, v)) and
            (not filterFn or filterFn(t, k, v)) and
-           self:_CanSerialize(opts, k, v)
+           self:_CanSerialize(k, v)
 end
 
 -- Note that _GetWriteFn will raise a Lua error if it finds an
 -- unserializable type, unless this behavior is suppressed via options.
-function LibSerialize:_WriteObject(obj, opts)
-    local writeFn = self:_GetWriteFn(obj, opts)
+function LibSerializeInt:_WriteObject(obj)
+    local writeFn = self:_GetWriteFn(obj)
     if not writeFn then
         return false
     end
 
-    writeFn(self, obj, opts)
+    writeFn(self, obj)
     return true
 end
 
-function LibSerialize:_WriteByte(value)
+function LibSerializeInt:_WriteByte(value)
     self:_WriteInt(value, 1)
 end
 
-function LibSerialize:_WriteInt(n, threshold)
+function LibSerializeInt:_WriteInt(n, threshold)
     self._writeString(IntToString(n, threshold))
 end
 
 -- Lookup tables to map the number of required bytes to the
 -- appropriate reader table index.
 local numberIndices = {
-    [2] = LibSerialize._ReaderIndex.NUM_16_POS,
-    [3] = LibSerialize._ReaderIndex.NUM_24_POS,
-    [4] = LibSerialize._ReaderIndex.NUM_32_POS,
-    [7] = LibSerialize._ReaderIndex.NUM_64_POS,
+    [2] = LibSerializeInt._ReaderIndex.NUM_16_POS,
+    [3] = LibSerializeInt._ReaderIndex.NUM_24_POS,
+    [4] = LibSerializeInt._ReaderIndex.NUM_32_POS,
+    [7] = LibSerializeInt._ReaderIndex.NUM_64_POS,
 }
 local stringIndices = {
-    [1] = LibSerialize._ReaderIndex.STR_8,
-    [2] = LibSerialize._ReaderIndex.STR_16,
-    [3] = LibSerialize._ReaderIndex.STR_24,
+    [1] = LibSerializeInt._ReaderIndex.STR_8,
+    [2] = LibSerializeInt._ReaderIndex.STR_16,
+    [3] = LibSerializeInt._ReaderIndex.STR_24,
 }
 local tableIndices = {
-    [1] = LibSerialize._ReaderIndex.TABLE_8,
-    [2] = LibSerialize._ReaderIndex.TABLE_16,
-    [3] = LibSerialize._ReaderIndex.TABLE_24,
+    [1] = LibSerializeInt._ReaderIndex.TABLE_8,
+    [2] = LibSerializeInt._ReaderIndex.TABLE_16,
+    [3] = LibSerializeInt._ReaderIndex.TABLE_24,
 }
 local arrayIndices = {
-    [1] = LibSerialize._ReaderIndex.ARRAY_8,
-    [2] = LibSerialize._ReaderIndex.ARRAY_16,
-    [3] = LibSerialize._ReaderIndex.ARRAY_24,
+    [1] = LibSerializeInt._ReaderIndex.ARRAY_8,
+    [2] = LibSerializeInt._ReaderIndex.ARRAY_16,
+    [3] = LibSerializeInt._ReaderIndex.ARRAY_24,
 }
 local mixedIndices = {
-    [1] = LibSerialize._ReaderIndex.MIXED_8,
-    [2] = LibSerialize._ReaderIndex.MIXED_16,
-    [3] = LibSerialize._ReaderIndex.MIXED_24,
+    [1] = LibSerializeInt._ReaderIndex.MIXED_8,
+    [2] = LibSerializeInt._ReaderIndex.MIXED_16,
+    [3] = LibSerializeInt._ReaderIndex.MIXED_24,
 }
 local stringRefIndices = {
-    [1] = LibSerialize._ReaderIndex.STRINGREF_8,
-    [2] = LibSerialize._ReaderIndex.STRINGREF_16,
-    [3] = LibSerialize._ReaderIndex.STRINGREF_24,
+    [1] = LibSerializeInt._ReaderIndex.STRINGREF_8,
+    [2] = LibSerializeInt._ReaderIndex.STRINGREF_16,
+    [3] = LibSerializeInt._ReaderIndex.STRINGREF_24,
 }
 local tableRefIndices = {
-    [1] = LibSerialize._ReaderIndex.TABLEREF_8,
-    [2] = LibSerialize._ReaderIndex.TABLEREF_16,
-    [3] = LibSerialize._ReaderIndex.TABLEREF_24,
+    [1] = LibSerializeInt._ReaderIndex.TABLEREF_8,
+    [2] = LibSerializeInt._ReaderIndex.TABLEREF_16,
+    [3] = LibSerializeInt._ReaderIndex.TABLEREF_24,
 }
 
-LibSerialize._WriterTable = {
+LibSerializeInt._WriterTable = {
     ["nil"] = function(self)
         -- DebugPrint("Serializing nil")
         self:_WriteByte(readerIndexShift * self._ReaderIndex.NIL)
@@ -1041,12 +1086,12 @@ LibSerialize._WriterTable = {
         self:_WriteByte(readerIndexShift * (bool and self._ReaderIndex.BOOL_T or self._ReaderIndex.BOOL_F))
     end,
     ["string"] = function(self, str)
-        local ref = stringRefs[str]
+        local ref = self._stringRefs[str]
         if ref then
             -- DebugPrint("Serializing string ref:", str)
             local required = GetRequiredBytes(ref)
             self:_WriteByte(readerIndexShift * stringRefIndices[required])
-            self:_WriteInt(stringRefs[str], required)
+            self:_WriteInt(self._stringRefs[str], required)
         else
             local len = #str
             if len < 16 then
@@ -1062,22 +1107,22 @@ LibSerialize._WriterTable = {
 
             self._writeString(str)
             if len > 2 then
-                self:_AddReference(stringRefs, str)
+                self:_AddReference(self._stringRefs, str)
             end
         end
     end,
-    ["table"] = function(self, tab, opts)
-        local ref = tableRefs[tab]
+    ["table"] = function(self, tab)
+        local ref = self._tableRefs[tab]
         if ref then
             -- DebugPrint("Serializing table ref:", tab)
             local required = GetRequiredBytes(ref)
             self:_WriteByte(readerIndexShift * tableRefIndices[required])
-            self:_WriteInt(tableRefs[tab], required)
+            self:_WriteInt(self._tableRefs[tab], required)
         else
             -- Add a reference before trying to serialize the table's contents,
             -- so that if the table recursively references itself, we can still
             -- properly serialize it.
-            self:_AddReference(tableRefs, tab)
+            self:_AddReference(self._tableRefs, tab)
 
             local filter
             local mt = getmetatable(tab)
@@ -1095,7 +1140,7 @@ LibSerialize._WriterTable = {
             local totalArraySerializable = 0
             for i, v in ipairs(tab) do
                 arrayCount = i
-                if self:_ShouldSerialize(tab, i, v, opts, filter) then
+                if self:_ShouldSerialize(tab, i, v, filter) then
                     totalArraySerializable = totalArraySerializable + 1
                     if entireArraySerializable then
                         serializableArrayCount = i
@@ -1123,7 +1168,7 @@ LibSerialize._WriterTable = {
             local entireMapSerializable = true
             for k, v in pairs(tab) do
                 if not IsArrayKey(k, arrayCount) then
-                    if self:_ShouldSerialize(tab, k, v, opts, filter) then
+                    if self:_ShouldSerialize(tab, k, v, filter) then
                         mapCount = mapCount + 1
                     else
                         entireMapSerializable = false
@@ -1146,12 +1191,12 @@ LibSerialize._WriterTable = {
 
                 for i = 1, arrayCount do
                     local v = tab[i]
-                    if entireArraySerializable or self:_ShouldSerialize(tab, i, v, opts, filter) then
-                        self:_WriteObject(v, opts)
+                    if entireArraySerializable or self:_ShouldSerialize(tab, i, v, filter) then
+                        self:_WriteObject(v)
                     else
                         -- Since the keys are being omitted, write a `nil` entry
                         -- for any values that shouldn't be serialized.
-                        self:_WriteObject(nil, opts)
+                        self:_WriteObject(nil)
                     end
                 end
             elseif arrayCount ~= 0 then
@@ -1177,38 +1222,38 @@ LibSerialize._WriterTable = {
 
                 for i = 1, arrayCount do
                     local v = tab[i]
-                    if entireArraySerializable or self:_ShouldSerialize(tab, i, v, opts, filter) then
-                        self:_WriteObject(v, opts)
+                    if entireArraySerializable or self:_ShouldSerialize(tab, i, v, filter) then
+                        self:_WriteObject(v)
                     else
                         -- Since the keys are being omitted, write a `nil` entry
                         -- for any values that shouldn't be serialized.
-                        self:_WriteObject(nil, opts)
+                        self:_WriteObject(nil)
                     end
                 end
 
                 local mapCountWritten = 0
-                if opts.stable then
+                if self._opts.stable then
                     -- In order to ensure that the output is stable, we sort the map keys and write
                     -- them in the sorted order.
                     local mapKeys = {}
                     for k, v in pairs(tab) do
                         -- Exclude keys that have already been written via the previous loop.
-                        if not IsArrayKey(k, arrayCount) and (entireMapSerializable or self:_ShouldSerialize(tab, k, v, opts, filter)) then
+                        if not IsArrayKey(k, arrayCount) and (entireMapSerializable or self:_ShouldSerialize(tab, k, v, filter)) then
                             table_insert(mapKeys, k)
                         end
                     end
                     table_sort(mapKeys, StableKeySort)
                     for _, k in ipairs(mapKeys) do
-                        self:_WriteObject(k, opts)
-                        self:_WriteObject(tab[k], opts)
+                        self:_WriteObject(k)
+                        self:_WriteObject(tab[k])
                         mapCountWritten = mapCountWritten + 1
                     end
                 else
                     for k, v in pairs(tab) do
                         -- Exclude keys that have already been written via the previous loop.
-                        if not IsArrayKey(k, arrayCount) and (entireMapSerializable or self:_ShouldSerialize(tab, k, v, opts, filter)) then
-                            self:_WriteObject(k, opts)
-                            self:_WriteObject(v, opts)
+                        if not IsArrayKey(k, arrayCount) and (entireMapSerializable or self:_ShouldSerialize(tab, k, v, filter)) then
+                            self:_WriteObject(k)
+                            self:_WriteObject(v)
                             mapCountWritten = mapCountWritten + 1
                         end
                     end
@@ -1227,25 +1272,25 @@ LibSerialize._WriterTable = {
                     self:_WriteInt(mapCount, required)
                 end
 
-                if opts.stable then
+                if self._opts.stable then
                     -- In order to ensure that the output is stable, we sort the map keys and write
                     -- them in the sorted order.
                     local mapKeys = {}
                     for k, v in pairs(tab) do
-                        if entireMapSerializable or self:_ShouldSerialize(tab, k, v, opts, filter) then
+                        if entireMapSerializable or self:_ShouldSerialize(tab, k, v, filter) then
                             table_insert(mapKeys, k)
                         end
                     end
                     table_sort(mapKeys, StableKeySort)
                     for _, k in ipairs(mapKeys) do
-                        self:_WriteObject(k, opts)
-                        self:_WriteObject(tab[k], opts)
+                        self:_WriteObject(k)
+                        self:_WriteObject(tab[k])
                     end
                 else
                     for k, v in pairs(tab) do
-                        if entireMapSerializable or self:_ShouldSerialize(tab, k, v, opts, filter) then
-                            self:_WriteObject(k, opts)
-                            self:_WriteObject(v, opts)
+                        if entireMapSerializable or self:_ShouldSerialize(tab, k, v, filter) then
+                            self:_WriteObject(k)
+                            self:_WriteObject(v)
                         end
                     end
                 end
@@ -1259,39 +1304,28 @@ LibSerialize._WriterTable = {
     API support.
 --]]---------------------------------------------------------------------------
 
+local serializeTester = CreateSerializer(canSerializeFnOptions)
+
 function LibSerialize:IsSerializableType(...)
-    return self:_CanSerialize(canSerializeFnOptions, ...)
+    return serializeTester:_CanSerialize(canSerializeFnOptions, ...)
 end
 
 function LibSerialize:SerializeEx(opts, ...)
-    self:_ClearReferences()
-    local WriteString, FlushWriter = CreateWriter()
+    local ser = CreateSerializer(opts)
 
-    self._writeString = WriteString
-    self:_WriteByte(SERIALIZATION_VERSION)
-
-    -- Create a combined options table, starting with the defaults
-    -- and then overwriting any user-supplied keys.
-    local combinedOpts = {}
-    for k, v in pairs(defaultOptions) do
-        combinedOpts[k] = v
-    end
-    for k, v in pairs(opts) do
-        combinedOpts[k] = v
-    end
+    ser:_WriteByte(SERIALIZATION_VERSION)
 
     for i = 1, select("#", ...) do
         local input = select(i, ...)
-        if not self:_WriteObject(input, combinedOpts) then
+        if not ser:_WriteObject(input) then
             -- An unserializable object was passed as an argument.
             -- Write nil into its slot so that we deserialize a
             -- consistent number of objects from the resulting string.
-            self:_WriteObject(nil, combinedOpts)
+            ser:_WriteObject(nil)
         end
     end
 
-    self:_ClearReferences()
-    return FlushWriter()
+    return ser._flushWriter()
 end
 
 function LibSerialize:Serialize(...)
@@ -1299,15 +1333,12 @@ function LibSerialize:Serialize(...)
 end
 
 function LibSerialize:DeserializeValue(input)
-    self:_ClearReferences()
-    local ReadBytes, ReaderBytesLeft = CreateReader(input)
-
-    self._readBytes = ReadBytes
+    local deser = CreateDeserializer(input)
 
     -- Since there's only one compression version currently,
     -- no extra work needs to be done to decode the data.
-    local version = self:_ReadByte()
-    assert(version <= DESERIALIZATION_VERSION)
+    local version = deser:_ReadByte()
+    assert(version <= DESERIALIZATION_VERSION, "Unknown serialization version!")
 
     -- Since the objects we read may be nil, we need to explicitly
     -- track the number of results and assign by index so that we
@@ -1315,27 +1346,20 @@ function LibSerialize:DeserializeValue(input)
     local output = {}
     local outputSize = 0
 
-    while ReaderBytesLeft() > 0 do
+    while deser._readerBytesLeft() > 0 do
         outputSize = outputSize + 1
-        output[outputSize] = self:_ReadObject()
+        output[outputSize] = deser:_ReadObject()
     end
 
-    self:_ClearReferences()
-
-    if ReaderBytesLeft() < 0 then
+    if deser._readerBytesLeft() < 0 then
         error("Reader went past end of input")
     end
 
     return unpack(output, 1, outputSize)
 end
 
-function LibSerialize:_PostDeserialize(...)
-    self:_ClearReferences()
-    return ...
-end
-
 function LibSerialize:Deserialize(input)
-    return self:_PostDeserialize(pcall(self.DeserializeValue, self, input))
+    return pcall(self.DeserializeValue, self, input)
 end
 
 return LibSerialize

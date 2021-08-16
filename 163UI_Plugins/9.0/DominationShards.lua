@@ -104,6 +104,7 @@ SetOrHookScript(GameTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 SetOrHookScript(ItemRefTooltip, "OnTooltipSetItem", hookTooltipSetItem)
 SetOrHookScript(ShoppingTooltip1, "OnTooltipSetItem", hookTooltipSetItem)
 
+--[=[
 CoreDependCall("Blizzard_ItemSocketingUI", function()
 
     --[[------------------------------------------------------------
@@ -214,3 +215,4 @@ CoreDependCall("Blizzard_ItemSocketingUI", function()
         end
     end)
 end)
+--]=]

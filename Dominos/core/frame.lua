@@ -514,7 +514,7 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:ShowInOverrideUI(enable)
-    self.sets.showInOverrideUI = enable and true or false
+    self.sets.showInOverrideUI = (enable or self.id == "extra") and true or false --TODO 暂时强制打开
 
     self:SetAttribute('state-showinoverrideui', enable)
 end

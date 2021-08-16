@@ -226,6 +226,7 @@ map.nodes[42465345] = Rare({
 }) -- Smorgas the Feaster
 
 map.nodes[44215132] = Rare({
+    note=L["tahonta_note"],
     id=162586,
     quest=58783,
     rewards={
@@ -304,24 +305,15 @@ map.nodes[57007421] = Rare({
             {id=48861, quest=61720, note='('..GOO..' = '..OIL..') > '..OOZE}, -- Violet Mistake
             {id=48859, quest=61724, note=OOZE..' = '..GOO..' = '..OIL}, -- Oily Invertebrate
         }}),
+        Transmog({item=184302, slot=L["mail"], note='{npc:157308}'}), -- Residue-Coated Muck Waders
+        Transmog({item=184175, slot=L["wand"], note='{npc:157311}'}), -- Bone-Blistering Wand
+        Transmog({item=184301, slot=L["leather"], note='{npc:157309}'}), -- Twenty-Loop Violet Girdle
+        Transmog({item=184300, slot=L["cloak"], note='{npc:157312}'}), -- Fused Spineguard
+        Transmog({item=184156, slot=L["cosmetic"], note='{npc:157312}'}), -- Recovered Containment Pack
+        ns.reward.Spacer(),
+        Pet({item=181270, id=2960, note='{npc:157312}'}), -- Decaying Oozewalker
         Toy({item=183903}), -- Smelly Jelly
-        -- Item({item=184185, type=L["neck"], note=L["Boneslurp"]}), -- Grunge-Caked Collarbone
-        -- Item({item=184279, type=L["trinket"], note=L["Pulsing"]}), -- Siphoning Blood-Drinker
-        ns.reward.Spacer(),
-        ns.reward.Section('{npc:157308}'), -- Corrupted Sediment
-        Transmog({item=184302, slot=L["mail"], indent=true}), -- Residue-Coated Muck Waders
-        ns.reward.Spacer(),
-        ns.reward.Section('{npc:157311}'), -- Burnblister
-        Transmog({item=184175, slot=L["wand"], indent=true}), -- Bone-Blistering Wand
-        ns.reward.Spacer(),
-        ns.reward.Section('{npc:157309}'), -- Violet Mistake
-        Transmog({item=184301, slot=L["leather"], indent=true}), -- Twenty-Loop Violet Girdle
-        Mount({item=182079, id=1410, indent=true}), -- Slime-Covered Reins of the Hulking Deathroc
-        ns.reward.Spacer(),
-        ns.reward.Section('{npc:157312}'), -- Oily Invertebrate
-        Transmog({item=184300, slot=L["cloak"], indent=true}), -- Fused Spineguard
-        Item({item=184155, note=L["cosmetic"], quest=62804, indent=true}), -- Recovered Containment Pack
-        Pet({item=181270, id=2960, indent=true}) -- Decaying Oozewalker
+        Mount({item=182079, id=1410, note='{npc:157309}'}), -- Slime-Covered Reins of the Hulking Deathroc
     }
 })
 

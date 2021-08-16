@@ -455,6 +455,13 @@ function GSA:OnOptionCreate()
 								type = 'toggle',
 								name = L["Alert Drinking"],
 								desc = L["In arena, alert when enemy is drinking"],
+								order = 15,
+							},
+							success = { -- CastSuccess
+								type = 'toggle',
+								name = L["CastingSuccess"],
+								desc = L["CastingSuccess_Desc"],
+								--disabled = function() return gsadb.castStart end,
 								order = 20,
 							},
 							--tankTauntsON = { -- AuraApplied
@@ -517,7 +524,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["|cff69CCF0Mage|r"],
 								order = 90,
-								args = listOption({45438,12042,12472,198111,198144,86949,87024,190319,110909,342246,324220,353128},"auraApplied"),
+								args = listOption({45438,12042,12472,198111,198144,86949,87024,190319,110909,342246,324220,353128,82691,353084},"auraApplied"),
 							},
 							monk = { -- AuraApplied
 								type = 'group',
@@ -827,13 +834,6 @@ function GSA:OnOptionCreate()
 								desc = L["Also announce class name with trinket alert when hostile targets use PvP trinket in arena"],
 								--disabled = function() return not gsadb.trinket end,
 								order = 13,
-							},
-							success = { -- CastSuccess
-								type = 'toggle',
-								name = L["CastingSuccess"],
-								desc = L["CastingSuccess_Desc"],
-								--disabled = function() return gsadb.castStart end,
-								order = 15,
 							},
 							connected = { -- CastSuccess
 								type = 'toggle',

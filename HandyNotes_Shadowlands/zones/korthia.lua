@@ -194,6 +194,7 @@ map.nodes[46507959] = Rare({
     rewards={
         Achievement({id=15107, criteria=52276}),
         Item({item=187428, weekly=64553, covenant=VENTHYR}), -- Legend of the Animaswell
+        Transmog({item=187386, slot=L["mail"]}), -- Stygian Crystal Studded Legguards
         Item({item=186479, quest=64530, covenant=VENTHYR})
         -- Mount({item=186479, id=, covenant=VENTHYR}) -- Mastercraft Gravewing (can learn but not have id and can't show up in book)
     }
@@ -351,7 +352,8 @@ map.nodes[44604240] = Rare({
     rift=2,
     rewards={
         Achievement({id=15107, criteria=52273}),
-        Transmog({item=187400, slot=L["cloth"]}) -- Mantle of Screaming Shadows
+        Transmog({item=187400, slot=L["cloth"]}), -- Mantle of Screaming Shadows
+        Transmog({item=187362, slot=L["dagger"]}) -- Stinging Shadow Screamer
     }
 }) -- Screaming Shade
 
@@ -455,8 +457,8 @@ map.nodes[62065550] = Treasure({
     label=L["spectral_bound_chest"],
     rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
-        Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
-        Transmog({item=187240, note=L["cosmetic"]})  -- Field Warden's Watchful Eye
+        Transmog({item=187026, slot=L["cosmetic"]}), -- Field Warden's Torture Kit
+        Transmog({item=187240, slot=L["cosmetic"]})  -- Field Warden's Watchful Eye
     },
     pois={
         POI({50505370, 52305320, 52604970, 54205060, quest=64249}), -- west
@@ -623,7 +625,7 @@ map.nodes[51402010] = Relic({
 map.nodes[18503800] = Relic({
     quest=63908,
     note=L["korthian_shrine_note"],
-    research=5,
+    questDeps=64348,
     rewards={
         Achievement({id=15066, criteria=52254})
     }
@@ -632,7 +634,7 @@ map.nodes[18503800] = Relic({
 map.nodes[24365660] = Relic({
     quest=63923,
     note=L["korthian_shrine_note"],
-    research=5,
+    questDeps=64348,
     rewards={
         Achievement({id=15066, criteria=52267})
     }
@@ -641,7 +643,7 @@ map.nodes[24365660] = Relic({
 map.nodes[39404270] = Relic({
     quest=63922,
     note=L["korthian_shrine_note"],
-    research=5,
+    questDeps=64348,
     rewards={
         Achievement({id=15066, criteria=52266}),
         Toy({item=187159}) -- Shadow Slicing Shortsword
@@ -852,9 +854,9 @@ local MawswornC = Class('MawswornC', Treasure, {
     note=L["mawsworn_cache_note"],
     rlabel=ns.status.LightBlue(L["plus_research"]),
     rewards={
-        Transmog({item=187020, note=L["cosmetic"]}), -- Necrobinder's Shoulderpads
-        Transmog({item=187026, note=L["cosmetic"]}), -- Field Warden's Torture Kit
-        Transmog({item=187240, note=L["cosmetic"]}) -- Field Warden's Watchful Eye
+        Transmog({item=187020, slot=L["cosmetic"]}), -- Necrobinder's Shoulderpads
+        Transmog({item=187026, slot=L["cosmetic"]}), -- Field Warden's Torture Kit
+        Transmog({item=187240, slot=L["cosmetic"]}) -- Field Warden's Watchful Eye
     }
 })
 

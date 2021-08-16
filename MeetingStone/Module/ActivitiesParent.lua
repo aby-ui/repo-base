@@ -144,11 +144,20 @@ end
 
 function ActivitiesParent:MEETINGSTONE_QUEST_FETCHED()
     if QuestServies:IsActive() then
-        self:RegisterPanel(L['个人地下城周常'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
-                           QuestPanel, {before = L['魔兽主播活动']})
-        self:RegisterPanel(L['队伍地下城挑战'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
-                           QuestPanel2, {before = L['魔兽主播活动']})
-        self:SelectPanel(QuestPanel)
+        if QuestServies.questGroup.id == QuestServies.QuestType.GoldLeader then
+
+            self:RegisterPanel(L['金牌导师'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
+                               QuestPanel3, {before = L['魔兽主播活动']})
+            self:SelectPanel(QuestPanel3)
+        else
+            self:RegisterPanel(L['个人地下城周常'],
+                               [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]], QuestPanel,
+                               {before = L['魔兽主播活动']})
+            self:RegisterPanel(L['队伍地下城挑战'],
+                               [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]], QuestPanel2,
+                               {before = L['魔兽主播活动']})
+            self:SelectPanel(QuestPanel)
+        end
 
     else
         self:UnregisterPanel(L['个人地下城周常'])

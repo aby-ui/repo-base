@@ -29,19 +29,20 @@ local notDiscoveredNpcIDs = {}
 function RSNpcPOI.InitializeNotDiscoveredNpcs()
 	for npcID, _ in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
 		if (not RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
-			tinsert(notDiscoveredNpcIDs, npcID)
+			notDiscoveredNpcIDs[npcID] = true
 		end
 	end
 end
 
 local function RefreshNotDiscoveredNpcs(npcID)
-	if (not RSGeneralDB.GetAlreadyFoundEntity(npcID) and not RSUtils.Contains(notDiscoveredNpcIDs, npcID)) then
-		tinsert(notDiscoveredNpcIDs, npcID)
+	if (not RSGeneralDB.GetAlreadyFoundEntity(npcID) and not notDiscoveredNpcIDs[npcID]) then
+		notDiscoveredNpcIDs[npcID] = true
 	end
 end
 
 local function RemoveNotDiscoveredNpc(npcID)
 	if (npcID) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("RemoveNotDiscoveredNpc. NPC [%s] pasa a estar 'descubierto'", npcID))
 		notDiscoveredNpcIDs[npcID] = nil
 	end
 end
@@ -189,7 +190,7 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 	end
 
 	local POIs = {}
-	for _, npcID in ipairs(notDiscoveredNpcIDs) do
+	for npcID, _ in pairs(notDiscoveredNpcIDs) do
 		local filtered = false
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 

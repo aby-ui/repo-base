@@ -64,6 +64,7 @@ function Details:OpenRaidHistoryWindow (_raid, _boss, _difficulty, _role, _guild
         f:SetBackdropBorderColor (0, 0, 0, 1)
         
         --> menu title bar
+        --[=[]]
             local titlebar = CreateFrame ("frame", nil, f,"BackdropTemplate")
             titlebar:SetPoint ("topleft", f, "topleft", 2, -3)
             titlebar:SetPoint ("topright", f, "topright", -2, -3)
@@ -71,24 +72,40 @@ function Details:OpenRaidHistoryWindow (_raid, _boss, _difficulty, _role, _guild
             titlebar:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
             titlebar:SetBackdropColor (.5, .5, .5, 1)
             titlebar:SetBackdropBorderColor (0, 0, 0, 1)
+        --]=]
+
+            local titlebar = DF:CreateTitleBar(f, "Details! " .. Loc ["STRING_STATISTICS"])
             
         --> menu title
-            local titleLabel = DF:NewLabel (titlebar, titlebar, nil, "titulo", "Details! " .. Loc ["STRING_STATISTICS"], "GameFontNormal", 12) --{227/255, 186/255, 4/255}
-            titleLabel:SetPoint ("center", titlebar , "center")
-            titleLabel:SetPoint ("top", titlebar , "top", 0, -4)
+        --    local titleLabel = DF:NewLabel (titlebar, titlebar, nil, "titulo", "Details! " .. Loc ["STRING_STATISTICS"], "GameFontNormal", 12) --{227/255, 186/255, 4/255}
+        --    titleLabel:SetPoint ("center", titlebar , "center")
+        --    titleLabel:SetPoint ("top", titlebar , "top", 0, -4)
             
         --> close button
+        --[=[]]
             f.Close = CreateFrame ("button", "$parentCloseButton", f)
             f.Close:SetPoint ("right", titlebar, "right", -2, 0)
             f.Close:SetSize (16, 16)
+
             f.Close:SetNormalTexture (DF.folder .. "icons")
             f.Close:SetHighlightTexture (DF.folder .. "icons")
             f.Close:SetPushedTexture (DF.folder .. "icons")
+
             f.Close:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
             f.Close:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
             f.Close:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
             f.Close:SetAlpha (0.7)
             f.Close:SetScript ("OnClick", function() f:Hide() end)
+--]=]
+            --[=[]]
+            local closeButton = CreateFrame("button", "DetailsStatisticsWindowCloseButton", titlebar, "UIPanelCloseButton")
+            closeButton:SetWidth(32)
+            closeButton:SetHeight(32)
+            closeButton:SetText("X")
+            closeButton:SetFrameLevel(closeButton:GetFrameLevel()+2)
+
+            f.Close = closeButton
+--]=]
             
         if (not Details:GetTutorialCVar ("HISTORYPANEL_TUTORIAL")) then
             local tutorialFrame = CreateFrame ("frame", "$parentTutorialFrame",f,"BackdropTemplate")

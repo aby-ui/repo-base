@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 3.9.2 |r(|cff9482C99.1 Shadowlands|r)"
+ local GSA_VERSION = "|cffFF7D0A 3.10 |r(|cff9482C99.1 Shadowlands|r)"
  local GSA_TEST_BRANCH = ""
  local GSA_AUTHOR = " "
  local gsadb
@@ -75,6 +75,76 @@
  }
  self.GSA_TYPE = GSA_TYPE
 
+ local TrackedFriendlyDebuffs = {
+	 87204, 		-- Vampiric Touch Horrify
+	 196364, 	-- Unstable Affliction Silence
+	 1330, 		-- Garrote Silence
+	 1833, 		-- Cheap Shot
+	 6770, 		-- Sap
+	 3355, 		-- Freezing Trap
+	 212332, 	-- Smash (DK Abomination)
+	 212337,  	-- Powerful Smash (DK Abomination)
+	 91800,  	-- Gnaw (DK Ghoul)
+	 91797,  	-- Monstrous Claw (DK Ghoul)
+	 163505, 	-- Rake Stun
+	 199086, 	-- Warpath Stun
+	 202335, 	-- Double Barrel Stun
+	 215652, 	-- Shield of Virtue silence (Paladin)
+	 287254,		-- Remorseless Winter (Death Knight)
+	 357021,		-- Consecutive Concussion (Hunter)
+	 356727,		-- Spider Sting (Hunter)
+	 353084, 	-- Ring of Fire (Burning)
+
+	 -- Polymorph
+	 118, -- Sheep
+	 28271,-- Turtle
+	 28272, -- Pig
+	 61305, -- Black Cat
+	 61721, -- Rabbit
+	 61025, -- Serpent
+	 61780, -- Turkey
+	 161372, -- Peacock
+	 161355, -- Penguin
+	 161353, -- Polar Bear Cub
+	 161354, -- Monkey
+	 126819, -- Porcupine
+	 277787, -- Direhorn
+	 277792, -- Bumblebee
+
+	 --Hex (Shaman)
+	 51514, -- Frog
+	 210873, -- Compy
+	 211004, -- Spider
+	 211015, -- Cockroach
+	 211010, -- Snake
+	 269352, -- Skeletal Hatchling
+	 277778, -- Zandalari Tendonripper
+	 277784, -- Wicker Mongrel
+	 309328, -- Living Honey
+	 --
+	 82691, -- Ring of Frost (Debuff)
+	 5782, -- Fear (Warlock)
+	 33786, -- Cyclone (Druid)
+	 --[209753] = "success", -- Cyclone (Druid)
+	 19386, --Wyvern Sting (Hunter)
+	 20066, -- Repentence (Paladin)
+	 605, -- Mind Control (Priest)
+	 2637, -- Hibernate (Druid)/leave/lea
+	 1513, -- Scare Beast (Hunter)
+
+	 339, -- Entangling Roots
+	 235963 -- Entangling Roots PvP Talent
+ }
+
+ local EpicBGs = {
+	2118,	-- Wintergrasp [Epic]
+	30,		-- Alterac Valley
+	628,	-- Isle of Conquest
+	1280,	-- Southshore vs Tarren Mill
+	1191,	-- Trashcan
+	2197	-- Korrak's Revenge
+ }
+
  local dbDefaults = {
 	profile = {
 		all = false,
@@ -134,6 +204,7 @@
 	if not self.spellList then
 		self.spellList = self:GetSpellList()
 	end
+
 	for _,v in pairs(self.spellList) do
 		for _,spell in pairs(v) do
 			if dbDefaults.profile[spell] == nil then dbDefaults.profile[spell] = true end
@@ -242,38 +313,21 @@
 
  end
 
- -- Because arrays are for nerds
+ -- List of spells that need to be traked as Debuffs on ally players.
  function GSA:CheckFriendlyDebuffs(spellID)
-	if spellID == 87204 or			-- Vampiric Touch Horrify
-		spellID == 196364 or 		-- Unstable Affliction Silence
-		spellID == 1330 or 			-- Garrote Silence
-		spellID == 1833 or 			-- Cheap Shot
-		spellID == 6770 or 			-- Sap
-		spellID == 3355 or 			-- Freezing Trap
-		spellID == 212332 or 		-- Smash (DK Abomination)
-		spellID == 212337 or 		-- Powerful Smash (DK Abomination)
-		spellID == 91800 or 		-- Gnaw (DK Ghoul)
-		spellID == 91797 or 		-- Monstrous Claw (DK Ghoul)
-		spellID == 163505 or 		-- Rake Stun
-		spellID == 199086 or 		-- Warpath Stun
-		spellID == 202335 or 		-- Double Barrel Stun
-		spellID == 215652 or 		-- Shield of Virtue silence (Paladin)
-		spellID == 287254 or		-- Remorseless Winter (Death Knight)
-		spellID == 357021 or		-- Consecutive Concussion (Hunter)
-		spellID == 356727 then		-- Spider Sting (Hunter)
-		return true
-	end
+	 for k in pairs(TrackedFriendlyDebuffs) do
+		 if (TrackedFriendlyDebuffs[k] == spellID) then
+			 return true
+		 end
+	 end
 end
 
- -- Because arrays are for nerds
-function GSA:CheckForEpicBG(instanceMapID)	-- Determines if battleground is in list of epic bgs.
-	if instanceMapID == 2118 or		-- Wintergrasp [Epic]
-		instanceMapID == 30 or		-- Alterac Valley
-		instanceMapID == 628 or		-- Isle of Conquest
-		instanceMapID == 1280 or	-- Southshore vs Tarren Mill
-		instanceMapID == 1191 or	-- Trashcan
-		instanceMapID == 2197 then	-- Korrak's Revenge		
-		return true
+ -- List of battlegrounds that are Epic Battlegrounds
+function GSA:CheckForEpicBG(instanceMapID)
+	for k in pairs(EpicBGs) do
+		if (EpicBGs[k] == instanceMapID) then
+			return true
+		end
 	end
 end
 

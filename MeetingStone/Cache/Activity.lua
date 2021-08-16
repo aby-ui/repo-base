@@ -24,10 +24,8 @@ Activity:InitAttr{
     'DisplayType',
     'MaxMembers',
     'KilledBossCount',
-
-    'IsMythicPlusActivity',
-    'LeaderOverallDungeonScore',
-    'LeaderDungeonScoreInfo',
+    'LeaderScore',
+    'LeaderScoreInfo',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -64,7 +62,6 @@ function Activity:Update()
     local isDelisted = info.isDelisted
     local leader = info.leaderName
     local numMembers = info.numMembers
-    --9.1
     local leaderOverallDungeonScore = info.leaderOverallDungeonScore
     local leaderDungeonScoreInfo = info.leaderDungeonScoreInfo
 
@@ -103,10 +100,8 @@ function Activity:Update()
     self:SetPendingStatus(pendingStatus)
     self:SetApplicationDuration(appDuration)
     self:SetApplicationExpiration(GetTime() + appDuration)
-
-    self:SetIsMythicPlusActivity(isMythicPlusActivity)
-    self:SetLeaderOverallDungeonScore(leaderOverallDungeonScore or 0)
-    self:SetLeaderDungeonScoreInfo(leaderDungeonScoreInfo)
+    self:SetLeaderScore(leaderOverallDungeonScore or 0)
+    self:SetLeaderScoreInfo(leaderDungeonScoreInfo)
 
     if not self:UpdateCustomData(comment, title) then
         return false

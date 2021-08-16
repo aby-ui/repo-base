@@ -278,4 +278,128 @@
             </Frame>
         </Frames>
     </Frame>
+    <Frame name="MeetingStoneGoldLeaderPanelTemplate" hidden="true" virtual="true">
+        <Frames>
+            <Frame parentKey="Body" inherits="InsetFrameTemplate">
+                <Size y="220"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture parentKey="Bg" file="interface\lfgframe\ui-lfg-background-warfronts" alpha="0.5" setAllPoints="true"/>
+                    </Layer>
+                    <Layer level="ARTWORK">
+                        <FontString inherits="QuestFont_Super_Huge" text="金牌导师活动">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="10" y="-10"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="Time" inherits="GameFontNormal" text="活动时间">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" x="-10" y="-10"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="Label1" inherits="GameFontHighlight" text="活动介绍：">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="10" y="-50"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="Label2" inherits="GameFontHighlightSmallLeft" text="通过活动报名后，带领不同玩家通关史诗钥匙，赢取丰厚奖励！">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.Label1" relativePoint="BOTTOMLEFT" x="0" y="-15"/>
+                                <Anchor point="RIGHT" x="-10" y="0"/>
+                            </Anchors>
+                        </FontString>
+                        <FontString parentKey="ScoreLabel" inherits="GameFontHighlightSmallLeft" text="目前积分：">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" x="120" y="15"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentKey="RefreshBtn" inherits="UIPanelButtonTemplate" text="刷新">
+                        <Size x="100" y="22"/>
+                        <Anchors>
+                            <Anchor point="RIGHT" relativeKey="$parent.ScoreLabel" relativePoint="LEFT" x="-10"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="Ranking" text="导师排行">
+                        <Size x="100" y="22"/>
+                        <Anchors>
+                            <Anchor point="BOTTOM" relativeKey="$parent.RefreshBtn" relativePoint="BOTTOM"/>
+                            <Anchor point="RIGHT" x="-10" y="0"/>
+                        </Anchors>
+                        <NormalFont style="GameFontHighlight"/>
+                        <HighlightFont style="GameFontHighlight"/>
+                        <HighlightTexture alphaMode="ADD" file="Interface\Buttons\UI-Common-MouseHilight" setAllPoints="false">
+                            <Size y="3"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </HighlightTexture>
+                    </Button>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        self.Bg:SetDesaturated(true)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame parentKey="Summary" inherits="InsetFrameTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Body" relativePoint="BOTTOMLEFT" x="0" y="-25"/>
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-20"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString inherits="GameFontNormal" text="活动说明">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="5" y="5"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <ScrollFrame inherits="UIPanelScrollFrameTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="10" y="-10"/>
+                            <Anchor point="BOTTOMRIGHT" x="-30" y="10"/>
+                        </Anchors>
+                        <ScrollChild>
+                            <Frame>
+                                <Size x="1" y="1"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <FontString parentKey="Text" justifyV="TOP" wordwrap="true" inherits="GameFontHighlightLeft">
+                                            <Anchors>
+                                                <Anchor point="TOPLEFT"/>
+                                                <Anchor point="TOPRIGHT"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                                <Scripts>
+                                    <OnLoad>
+                                        self:GetParent():GetParent().Text = self.Text
+                                    </OnLoad>
+                                </Scripts>
+                            </Frame>
+                        </ScrollChild>
+                        <Scripts>
+                            <OnSizeChanged>
+                                self:GetScrollChild():SetWidth(self:GetWidth() - 10)
+                            </OnSizeChanged>
+                        </Scripts>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+        </Frames>
+    </Frame>
 </Ui>

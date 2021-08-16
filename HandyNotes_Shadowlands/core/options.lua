@@ -30,6 +30,7 @@ ns.optionDefaults = {
         show_pet_rewards = true,
         show_toy_rewards = true,
         show_transmog_rewards = true,
+        show_all_transmog_rewards = false,
 
         -- development
         development = false,
@@ -157,6 +158,14 @@ ns.options = {
                     name = L["options_transmog_rewards"],
                     desc = L["options_transmog_rewards_desc"],
                     order = 11,
+                    width = "full",
+                },
+                show_all_transmog_rewards = {
+                    type = "toggle",
+                    arg = "show_all_transmog_rewards",
+                    name = L["options_all_transmog_rewards"],
+                    desc = L["options_all_transmog_rewards_desc"],
+                    order = 12,
                     width = "full",
                 },
                 VisibilityHeader = {

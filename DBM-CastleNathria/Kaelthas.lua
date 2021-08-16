@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614184808")
+mod:SetRevision("20210806031505")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()--kael gets stuck on boss frames well after encounter has ended, therefor must not re-engage boss off this bug
@@ -578,7 +578,12 @@ function mod:SPELL_AURA_APPLIED(args)
 					specWarnBurningRemnants:Show(amount)
 					specWarnBurningRemnants:Play("stackhigh")
 				else
-					if not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then
+					local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+					local remaining
+					if expireTime then
+						remaining = expireTime-GetTime()
+					end
+					if (not remaining or remaining and remaining < 8.5) and not UnitIsDeadOrGhost("player") then
 						specWarnBurningRemnantsTaunt:Show(args.destName)
 						specWarnBurningRemnantsTaunt:Play("tauntboss")
 					else

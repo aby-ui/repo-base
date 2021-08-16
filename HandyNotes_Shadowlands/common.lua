@@ -24,12 +24,15 @@ ns.expansion = 9
 -------------------------------------------------------------------------------
 
 local ICONS = "Interface\\Addons\\"..ADDON_NAME.."\\artwork\\icons"
+local GLOWS = "Interface\\Addons\\"..ADDON_NAME.."\\artwork\\glows"
 local function Icon(name) return ICONS..'\\'..name..'.blp' end
+local function Glow(name) return GLOWS..'\\'..name..'.blp' end
 
 ns.icons.cov_sigil_ky = {Icon('covenant_kyrian'), nil}
 ns.icons.cov_sigil_nl = {Icon('covenant_necrolord'), nil}
 ns.icons.cov_sigil_nf = {Icon('covenant_nightfae'), nil}
 ns.icons.cov_sigil_vn = {Icon('covenant_venthyr'), nil}
+ns.icons.tormentor = {Icon('tormentor'), Glow('tormentor')}
 
 -------------------------------------------------------------------------------
 ---------------------------------- CALLBACKS ----------------------------------
@@ -233,6 +236,17 @@ ns.groups.ANIMA_VESSEL = Group('anima_vessel', 'chest_tl', {
         -- Anima vessels and caches cannot be seen until the "Vault Anima Tracker"
         -- upgrade is purchased from the Death's Advance quartermaster
         if not C_QuestLog.IsQuestFlaggedCompleted(64061) then return false end
+        return Group.IsEnabled(self)
+    end
+})
+
+ns.groups.BROKEN_MIRROR = Group('broken_mirror', 3854020, {
+    defaults=ns.GROUP_ALPHA75,
+    IsEnabled=function (self)
+        -- Broken mirrors are Venthyr-only (might have completed the quest and then swapped covenants)
+        if C_Covenants.GetActiveCovenantID() ~= 2 then return false end
+        -- Broken mirrors cannot be accessed until the quest "Repair and Restore" is completed
+        if not C_QuestLog.IsQuestFlaggedCompleted(59740) then return false end
         return Group.IsEnabled(self)
     end
 })

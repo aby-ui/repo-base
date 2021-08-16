@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2428, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210304010431")
+mod:SetRevision("20210813020226")
 mod:SetCreatureID(164261)
 mod:SetEncounterID(2383)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -167,7 +167,7 @@ function mod:OnCombatStart(delay)
 		timerOverwhelmCD:Start(5.5-delay, 1)
 		timerVolatileEjectionCD:Start(11.1-delay, 1)
 		timerDesolateCD:Start(24.4-delay, 1)
-		timerExpungeCD:Start(37.1-delay, 1)
+		timerExpungeCD:Start(35.5-delay, 1)
 		timerConsumeCD:Start(98.9-delay, 1)
 	elseif self:IsNormal() then
 		timerOverwhelmCD:Start(5.2-delay, 1)

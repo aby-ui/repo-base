@@ -6,9 +6,9 @@
 		
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 8722
-		_detalhes.alpha_build_counter = 8722 --if this is higher than the regular counter, use it instead
-		_detalhes.bcc_counter = 25
+		_detalhes.build_counter = 8782
+		_detalhes.alpha_build_counter = 8782 --if this is higher than the regular counter, use it instead
+		_detalhes.bcc_counter = 26
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
@@ -33,6 +33,14 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.1.0.8782.144", "August 11th, 2021"},
+		"Clicking on the minimap while the options panel is open will close it.",
+		"Fixed Raid Check plugin position when the window is anchored at the top of the monitor.",
+		"Shadow priest Void Erruption spells got merged into only one.",
+		"Added settings to adjust the scale or font size of the title bar menu (right click): /run Details.all_switch_config.font_size = 12; /run Details.all_switch_config.scale = 1.0;",
+		"Added transliteration to healing done.",
+		"Tiny Threat (plugin): added options to Hide the Pull Bar and Use Focus Target.",
+
 		{"v9.0.5.8637.144", "June 22nd, 2021"},
 		"Major update on Vanguard plugin.",
 		"Added utility module to Coach, this module will send interrupt, dispel, cc breaks, cooldown usege and battle resses to the Coach.",
@@ -197,6 +205,7 @@ do
 			_detalhes.InstancesToStoreData = { --mapId
 				[2296] = true, --castle narnia
 				[2450] = true, --sanctum of domination
+				[2450] = true,
 			}
 
 		--> armazena os escudos - Shields information for absorbs

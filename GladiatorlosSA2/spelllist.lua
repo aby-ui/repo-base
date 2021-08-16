@@ -22,6 +22,45 @@
 			--Was I drunk when I did this??
 			[345231] = "battlemaster",
 
+			-- Crowd Controls
+			--Polymorph (Mage)
+			[118] = "success", -- Sheep
+			[28271] = "success", -- Turtle
+			[28272] = "success", -- Pig
+			[61305] = "success", -- Black Cat
+			[61721] = "success", -- Rabbit
+			[61025] = "success", -- Serpent
+			[61780] = "success", -- Turkey
+			[161372] = "success", -- Peacock
+			[161355] = "success", -- Penguin
+			[161353] = "success", -- Polar Bear Cub
+			[161354] = "success", -- Monkey
+			[126819] = "success", -- Porcupine
+			[277787] = "success", -- Direhorn
+			[277792] = "success", -- Bumblebee
+
+			--Hex (Shaman)
+			[51514] = "success", -- Frog
+			[210873] = "success", -- Compy
+			[211004] = "success", -- Spider
+			[211015] = "success", -- Cockroach
+			[211010] = "success", -- Snake
+			[269352] = "success", -- Skeletal Hatchling
+			[277778] = "success", -- Zandalari Tendonripper
+			[277784] = "success", -- Wicker Mongrel
+			[309328] = "success", -- Living Honey
+			-- Others
+			[5782] = "success", -- Fear (Warlock)
+			[33786] = "success", -- Cyclone (Druid)
+			--[209753] = "success", -- Cyclone (Druid)
+			[19386] = "success", --Wyvern Sting (Hunter)
+			[20066] = "success", -- Repentence (Paladin)
+			[605] = "success", -- Mind Control (Priest)
+			[2637] = "success", -- Hibernate (Druid)/leave/lea
+			[1513] = "success", -- Scare Beast (Hunter)
+			[339] = "success", -- Entangling Roots
+			[235963] = "success", -- Entangling Roots Feral Talent
+
 			-- Covenant Abilities
 			[310143] = "soulshape", -- Nightfae Signature
 			[319217] = "podtender", -- Nightfae Cheat Death
@@ -131,6 +170,8 @@
 			[108978] = "alterTime",
 			[324220] = "deathborne", -- Necrolord
 			[353128] = "arcanosphere",
+			[82691] = "frozen", -- Ring of Froze Debuff
+			[353084] = "burns", -- Ring of Fire Debuff
 
 			-- Monk (Aura Applied)
 			[122278] = "dampenHarm",
@@ -566,43 +607,9 @@
 			[212620] = "dispel",	-- Singe Magic (PvP Talent, looks to be unused)
 			
 			-- CastSuccess (Major, cast-time CCs that went off)
-				--Polymorph (Mage)
-			[118] = "success", -- Sheep
-			[28271] = "success", -- Turtle
-			[28272] = "success", -- Pig
-			[61305] = "success", -- Black Cat
-			[61721] = "success", -- Rabbit
-			[61025] = "success", -- Serpent
-			[61780] = "success", -- Turkey
-			[161372] = "success", -- Peacock
-			[161355] = "success", -- Penguin
-			[161353] = "success", -- Polar Bear Cub
-			[161354] = "success", -- Monkey
-			[126819] = "success", -- Porcupine
-			[277787] = "success", -- Direhorn
-			[277792] = "success", -- Bumblebee
-			
 			[113724] = "success", -- Ring of Frost
-				--Hex (Shaman)
-			[51514] = "success", -- Frog
-			[210873] = "success", -- Compy
-			[211004] = "success", -- Spider
-			[211015] = "success", -- Cockroach
-			[211010] = "success", -- Snake		
-			[269352] = "success", -- Skeletal Hatchling
-			[277778] = "success", -- Zandalari Tendonripper
-			[277784] = "success", -- Wicker Mongrel
-			[309328] = "success", -- Living Honey
-				--
-			[5782] = "success", -- Fear (Warlock)
-			[33786] = "success", -- Cyclone (Druid)
-			--[209753] = "success", -- Cyclone (Druid)
-			[19386] = "success", --Wyvern Sting (Hunter)
-			[20066] = "success", -- Repentence (Paladin)
-			[605] = "success", -- Mind Control (Priest)
-			[2637] = "success", -- Hibernate (Druid)/leave/lea
-			[1513] = "success", -- Scare Beast (Hunter)
-			
+
+
 			-- Connected (Big Beefy cast-time abilities that successfully connect.)
 			[203286] = "connected", -- Greater Pyro
 			[116858] = "connected", -- Chaos Bolt

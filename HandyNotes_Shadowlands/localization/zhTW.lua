@@ -334,6 +334,7 @@ L["nirvaska_note"] = "只在世界任務 {wq:死亡宣告} 存在時啟動"
 L["ravenomous_note"] = "踩死此地區中立的 {npc:159901} 直到稀有刷新"
 L["sabriel_note"] = "可以作為苦痛劇場的冠軍之一出現。"
 L["schmitd_note"] = "使用附近的 {spell:313451} 破壞他的護盾。"
+L["tahonta_note"] = nil
 L["taskmaster_xox_note"] = "與 {npc:160204}，{npc:160230} 和 {npc:160226} 共享刷新。"
 L["theater_of_pain_note"] = "你每天第一次殺死首領都會有機會掉落坐騎。"
 L["zargox_the_reborn_note"] = [[
@@ -481,6 +482,18 @@ L["high_inquisitor_note"] = "把250個 {currency:1816} 交給 {npc:160248} 有�
 L["inquisitor_note"] = "把100個 {currency:1816} 交給 {npc:160248} 有機會獲得此罪孽石。"
 L["options_icons_inquisitors"] = "{achievement:14276}"
 L["options_icons_inquisitors_desc"] = "顯示 {achievement:14276} 成就中審判官的位置。"
+
+L["broken_mirror"] = nil
+L["broken_mirror_note"] = nil
+L["broken_mirror_crypt"] = nil
+L["broken_mirror_elite"] = nil
+L["broken_mirror_group"] = nil
+L["broken_mirror_house"] = nil
+L["broken_mirror_61818"] = nil
+L["broken_mirror_61819"] = nil
+L["broken_mirror_61827"] = nil
+L["options_icons_broken_mirror"] = nil
+L["options_icons_broken_mirror_desc"] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------------- THE MAW -----------------------------------
@@ -649,6 +662,13 @@ L["nilganihmaht_note"] = "你必須收集到5個戒指, 並且把它們帶給在
 L["calcis"] = "卡西斯"
 L["desmotaeron"] = "德司莫泰隆"
 
-L["zovault_note"] = "每天拖曳 {npc:179883} 到 {npc:179904} 處, 保證給予裂隙傳送門石."
+L["zovault_note"] = "每天拖曳 {npc:179883} 到 {npc:179904} 處, 保證給予崩陷裂隙石."
 L["options_icons_zovault"] = "{npc:179883}"
 L["options_icons_zovault_desc"] = "顯示 {npc:179883} 有可能的位置."
+
+L["tormentors"] = "托迦司折磨者"
+L["tormentors_note"] = [[
+折磨者事件每兩個小時在整點時刷新. 首領會依照下表所示的順序逐個刷新.
+
+{item:185972} 每個禮拜可以被拾取一次, 內含有50個 {currency:1906}.
+]]

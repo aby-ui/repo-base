@@ -267,11 +267,29 @@ local function CreatePluginFrames (data)
 		end
 	end
 
+	function ThreatMeter:GetUnitId()
+		local unitId
+		if (ThreatMeter.saveddata.usefocus) then
+			unitId = "focus"
+			if (not UnitExists(unitId)) then
+				unitId = "target"
+			end
+		else
+			unitId = "target"
+		end
+
+		return unitId
+	end
+
 	local Threater = function()
 
 		local options = ThreatMeter.options
 	
-		if (ThreatMeter.Actived and UnitExists ("target") and not _UnitIsFriend ("player", "target")) then
+		local unitId = ThreatMeter:GetUnitId()
+
+		if (ThreatMeter.Actived and UnitExists(unitId) and not _UnitIsFriend("player", unitId)) then
+
+			--> get the threat of all players
 			if (_IsInRaid()) then
 				for i = 1, _GetNumGroupMembers(), 1 do
 				
@@ -285,7 +303,7 @@ local function CreatePluginFrames (data)
 						return
 					end
 				
-					local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("raid"..i, "target")
+					local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("raid"..i, unitId)
 					if (status) then
 						threat_table [2] = threatpct
 						threat_table [3] = isTanking
@@ -310,7 +328,7 @@ local function CreatePluginFrames (data)
 						return
 					end
 				
-					local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("party"..i, "target")
+					local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("party"..i, unitId)
 					if (status) then
 						threat_table [2] = threatpct
 						threat_table [3] = isTanking
@@ -326,7 +344,7 @@ local function CreatePluginFrames (data)
 				local threat_table_index = ThreatMeter.player_list_hash [thisplayer_name]
 				local threat_table = ThreatMeter.player_list_indexes [threat_table_index]
 			
-				local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("player", "target")
+				local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("player", unitId)
 				if (status) then
 					threat_table [2] = threatpct
 					threat_table [3] = isTanking
@@ -344,7 +362,7 @@ local function CreatePluginFrames (data)
 				local threat_table_index = ThreatMeter.player_list_hash [thisplayer_name]
 				local threat_table = ThreatMeter.player_list_indexes [threat_table_index]
 			
-				local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("player", "target")
+				local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("player", unitId)
 				if (status) then
 					threat_table [2] = threatpct
 					threat_table [3] = isTanking
@@ -362,7 +380,7 @@ local function CreatePluginFrames (data)
 					local threat_table = ThreatMeter.player_list_indexes [threat_table_index]
 
 					if (threat_table) then
-						local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("pet", "target")
+						local isTanking, status, threatpct, rawthreatpct, threatvalue = _UnitDetailedThreatSituation ("pet", unitId)
 						if (status) then
 							threat_table [2] = threatpct
 							threat_table [3] = isTanking
@@ -391,14 +409,18 @@ local function CreatePluginFrames (data)
 			local lastIndex = 0
 			local shownMe = false
 			
+			local firstIndex = 1
 			local pullRow = ThreatMeter.ShownRows [1]
 			local me = ThreatMeter.player_list_indexes [ ThreatMeter.player_list_hash [player] ]
-			if (me) then
+			
+			if (me and not ThreatMeter.saveddata.hide_pull_bar) then
+				firstIndex = 2
+
 				local myThreat = me [6] or 0
 				local myRole = me [4]
 				
 				local topThreat = ThreatMeter.player_list_indexes [1]
-				local aggro = topThreat [6] * (CheckInteractDistance ("target", 3) and 1.1 or 1.3)
+				local aggro = topThreat [6] * (CheckInteractDistance(unitId, 3) and 1.1 or 1.3)
 				aggro = max(aggro, 0.001)
 				
 				pullRow:SetLeftText ("Pull Aggro At")
@@ -422,7 +444,7 @@ local function CreatePluginFrames (data)
 			end
 			
 			
-			for index = 2, #ThreatMeter.ShownRows do
+			for index = firstIndex, #ThreatMeter.ShownRows do
 				local thisRow = ThreatMeter.ShownRows [index]
 				local threat_actor = ThreatMeter.player_list_indexes [index-1]
 				
@@ -489,19 +511,20 @@ local function CreatePluginFrames (data)
 					end
 				end
 			end
-		
 		else
 			--print ("nao tem target")
 		end
-		
 	end
 	
 	function ThreatMeter:TargetChanged()
 		if (not ThreatMeter.Actived) then
 			return
 		end
-		local NewTarget = _UnitName ("target")
-		if (NewTarget and not _UnitIsFriend ("player", "target")) then
+
+		local unitId = ThreatMeter:GetUnitId()
+
+		local NewTarget = _UnitName(unitId)
+		if (NewTarget and not _UnitIsFriend("player", unitId)) then
 			target = NewTarget
 			Threater()
 		else
@@ -634,6 +657,23 @@ local build_options_panel = function()
 		},
 
 		{type = "blank"},
+
+		{
+			type = "toggle",
+			get = function() return ThreatMeter.saveddata.usefocus end,
+			set = function (self, fixedparam, value) ThreatMeter.saveddata.usefocus = value end,
+			desc = "Show threat for the focus target if there's one.",
+			name = "Track Focus Target (if any)"
+		},
+		{
+			type = "toggle",
+			get = function() return ThreatMeter.saveddata.hide_pull_bar end,
+			set = function (self, fixedparam, value) ThreatMeter.saveddata.hide_pull_bar = value end,
+			desc = "Hide Pull Aggro Bar",
+			name = "Hide Pull Aggro Bar"
+		},
+
+
 --[=[
 		{
 			type = "toggle",
@@ -716,6 +756,8 @@ function ThreatMeter:OnEvent (_, event, ...)
 				ThreatMeter.saveddata.useplayercolor = ThreatMeter.saveddata.useplayercolor or false
 				ThreatMeter.saveddata.playercolor = ThreatMeter.saveddata.playercolor or {1, 1, 1}
 				ThreatMeter.saveddata.useclasscolors = ThreatMeter.saveddata.useclasscolors or false
+				ThreatMeter.saveddata.usefocus = ThreatMeter.saveddata.usefocus or false
+				ThreatMeter.saveddata.hide_pull_bar = ThreatMeter.saveddata.hide_pull_bar or false
 
 				ThreatMeter.saveddata.playSound = ThreatMeter.saveddata.playSound or false
 				ThreatMeter.saveddata.playSoundFile = ThreatMeter.saveddata.playSoundFile or "Details Threat Warning Volume 3"

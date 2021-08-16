@@ -7,7 +7,7 @@ table.insert(UISpecialFrames, 'MeetingStone_MainPanel_AbyUI')
 function MainPanel:OnInitialize()
     GUI:Embed(self, 'Refresh', 'Help', 'Blocker')
 
-    self:SetSize(832, 447)
+    self:SetSize(922, 447)
     self:SetText(L['集合石'] .. ' Beta ' .. ADDON_VERSION)
     self:SetIcon(ADDON_LOGO)
     self:EnableUIPanel(true)
@@ -318,6 +318,20 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
     if activity:GetLeader() then
         tooltip:AddLine(format(LFG_LIST_TOOLTIP_LEADER, activity:GetLeaderText()))
 
+		--abyui
+        local score = activity:GetLeaderScore() or 0
+        if score > 0 then
+            local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+            tooltip:AddLine(format(L['队长大秘评分：%s'], color:WrapTextInColorCode(score)))
+            local info = activity:GetLeaderScoreInfo()
+            if info and info.mapScore and info.mapScore > 0 then
+                local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(info.mapScore) or HIGHLIGHT_FONT_COLOR
+                local levelText = format(info.finishedSuccess and "|cff00ff00%d层|r" or "|cff7f7f7f%d层|r", info.bestRunLevel or 0)
+                tooltip:AddLine(format("队长当前副本: %s / %s", color:WrapTextInColorCode(info.mapScore), levelText))
+            else
+                tooltip:AddLine(format("队长当前副本: |cff7f7f7f 无信息|r"))
+            end
+        end
         if activity:GetLeaderItemLevel() then
             tooltip:AddLine(format(L['队长物品等级：|cffffffff%s|r'], activity:GetLeaderItemLevel()))
         end
@@ -328,19 +342,6 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
             tooltip:AddLine(format(L['队长PvP 等级：|cffffffff%s|r'], activity:GetLeaderPvPRating()))
         end
 
-        local score = activity:GetLeaderOverallDungeonScore() or 0
-        if activity:IsMythicPlusActivity() or score > 0 then
-            local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
-            tooltip:AddLine(format(L['队长大秘评分：%s'], color:WrapTextInColorCode(score)))
-            local info = activity:GetLeaderDungeonScoreInfo()
-            if info and info.mapScore and info.mapScore > 0 then
-                local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(info.mapScore) or HIGHLIGHT_FONT_COLOR
-                local levelText = format(info.finishedSuccess and "|cff00ff00%d层|r" or "|cff7f7f7f%d层|r", info.bestRunLevel or 0)
-                tooltip:AddLine(format("队长当前副本: %s / %s", color:WrapTextInColorCode(info.mapScore), levelText))
-            else
-                tooltip:AddLine(format("队长当前副本: |cff7f7f7f 无信息|r"))
-            end
-        end
         tooltip:AddSepatator()
     end
 
@@ -367,31 +368,22 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
                             classColor.g, classColor.b)
         end
     else
-        --[[ Added
-        tooltip:AddSepatator()
-        tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_MEMBERS_SIMPLE, activity:GetNumMembers()))
-        for i = 1, activity:GetNumMembers() do
-            local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
-            local classColor = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
-            tooltip:AddLine(string.format(LFG_LIST_TOOLTIP_CLASS_ROLE, classLocalized, _G[role]), classColor.r, classColor.g, classColor.b)
-        end
-        --Added end--]]
-        --Added Style2
+
         local roles = {}
         local classInfo = {}
         for i = 1, activity:GetNumMembers() do
             local role, class, classLocalized = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
-            if (class) then
+            if class then
                 classInfo[class] = {
                     name = classLocalized,
                     color = RAID_CLASS_COLORS[class] or NORMAL_FONT_COLOR
                 }
-                if not roles[role] then roles[role] = {} end
-                if not roles[role][class] then roles[role][class] = 0 end
+                roles[role] = roles[role] or {}
+                roles[role][class] = roles[role][class] or 0
                 roles[role][class] = roles[role][class] + 1
             end
         end
-    
+        
         for role, classes in pairs(roles) do
             tooltip:AddLine(_G[role]..": ")
             for class, count in pairs(classes) do
@@ -401,7 +393,7 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
                 tooltip:AddLine(text)
             end
         end
-        --Added Style2 End
+
         local memberCounts = C_LFGList.GetSearchResultMemberCounts(activity:GetID())
         if memberCounts then
             tooltip:AddSepatator()
@@ -444,7 +436,7 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
         tooltip:AddDoubleLine(' ', GetFullVersion(version), 1, 1, 1, 0.5, 0.5, 0.5)
     end
 
-    --[===[@debug@
+    --[=[@debug@
     if activity:IsMeetingStone() then
         local source = activity:GetSource() or 1
         tooltip:AddLine(
@@ -455,7 +447,7 @@ function MainPanel:OpenActivityTooltip(activity, tooltip)
     tooltip:AddLine('ID: ' .. activity:GetID())
     tooltip:AddLine('Loot: ' .. tostring(activity:GetLoot()))
     tooltip:AddLine('Mode: ' .. tostring(activity:GetMode()))
-    --@end-debug@]===]
+    --@end-debug@]=]
 
     tooltip:Show()
 end
@@ -486,8 +478,9 @@ function MainPanel:OpenApplicantTooltip(applicant)
         GameTooltip:AddLine(string.format(LFG_LIST_HONOR_LEVEL_CURRENT_PVP, applicant:GetHonorLevel()), 1, 1, 1)
     end
 
+	--abyui
     local score = applicant:GetDungeonScore() or 0
-    if applicant:IsMythicPlusActivity() or score > 0 then
+    if score > 0 then
         local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
         GameTooltip:AddLine(format(L['大秘评分：%s'], color:WrapTextInColorCode(score)))
         local info = applicant:GetBestDungeonScore()

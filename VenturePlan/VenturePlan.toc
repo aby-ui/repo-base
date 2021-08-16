@@ -13,7 +13,7 @@
 ## Notes-zhTW: 冒險介面改善
 ## Notes-ptBR: Melhorias na interface de Aventuras.
 ## Author: foxlit
-## Version: 5.5-Beta修改版 2021.7.14
+## Version: 5.6.1修改版 2021.8.4
 ## Contributors 注: 9.1新版数据贡献者: TekGoNos, Zhavvorsa, PositiveKoodoo, Sehra, Ostjaevel, Ashmelev, Dphennessy, Simca, Legenjerry, Dastey, Zealvurte, LostTemple1990, Gaboros, Many other who posted logs!
 ## https://nga.178.com/read.php?tid=24880203
 ## https://www.townlong-yak.com/addons/venture-plan

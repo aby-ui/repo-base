@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2429, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614184808")
+mod:SetRevision("20210813020226")
 mod:SetCreatureID(165066)
 mod:SetEncounterID(2418)
 mod:SetUsedIcons(1, 2, 3)
@@ -66,7 +66,7 @@ local yellPetrifyingHowlFades					= mod:NewFadesYell(334852, 135241)--Shortname 
 --Huntsman Altimor
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22309))
 local timerSinseekerCD							= mod:NewCDCountTimer(49, 335114, nil, nil, nil, 3)
-local timerSpreadshotCD							= mod:NewCDTimer(12, 334404, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerSpreadshotCD							= mod:NewCDTimer(11.8, 334404, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
 --Hunting Gargon
 ----Margore
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(22312))
@@ -185,7 +185,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.sinSeekerCount = self.vb.sinSeekerCount + 1
 		--Mythic, Dog1: 49, Dog2: 60, Dog3: 50, dogs dead: 39.9
 		--Normal, Dog1: 50-51, Dog2: 60-61, Dog3: 50-51, dogs dead: 24.3
-		local timer = self:IsMythic() and (self.vb.phase == 4 and 25 or 60.2) or (self.vb.phase == 4 and 24.3 or 50)--self.vb.phase == 2 and 61.1 or
+		local timer = self:IsMythic() and (self.vb.phase == 4 and 25 or 60.2) or (self.vb.phase == 4 and 24.3 or 49.1)--self.vb.phase == 2 and 61.1 or
 		timerSinseekerCD:Start(timer, self.vb.sinSeekerCount+1)
 		if self.vb.phase == 3 and self:IsMythic() then
 			updateRangeFrame(self, true)--Force show during cast so it's up a little early
@@ -196,7 +196,7 @@ function mod:SPELL_CAST_START(args)
 		updateAllTimers(self)
 	elseif spellId == 334404 and self.vb.phase < 4 then--It's no longer every 6 seconds in P4, it's every 3.7, that's too much spam for any warning
 		warnSpreadshot:Show()
-		timerSpreadshotCD:Start(12)--More work required to determin causes of longer ones
+		timerSpreadshotCD:Start(11.8)--More work required to determin causes of longer ones
 	elseif spellId == 334971 then
 		timerJaggedClawsCD:Start()
 	elseif spellId == 334797 then
@@ -222,10 +222,10 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 334945 then--First event with target information, it's where we sync timers to
+	if spellId == 334945 then--Vicious Lunge, First event with target information, it's where we sync timers to
 		timerViciousLungeCD:Start()
 		timerSpreadshotCD:Stop()
-		timerSpreadshotCD:Start()--Resets bosses spreadshot timer
+		timerSpreadshotCD:Start(11.8)--Resets bosses spreadshot timer
 	elseif spellId == 334797 then
 		specWarnRipSoulHealer:Show(args.destName)
 		specWarnRipSoulHealer:Play("healfull")
@@ -238,16 +238,17 @@ function mod:SPELL_AURA_APPLIED(args)
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then
 			local amount = args.amount or 1
-			--local tauntStack = 3
-			--if self:IsHard() and self.Options.TauntBehavior == "TwoHardThreeEasy" or self.Options.TauntBehavior == "TwoAlways" then
-			--	tauntStack = 2
-			--end
 			if amount >= 2 then
 				if args:IsPlayer() then
 					specWarnJaggedClaws:Show(amount)
 					specWarnJaggedClaws:Play("stackhigh")
 				else
-					if not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) and not self:IsHealer() then--Can't taunt less you've dropped yours off, period.
+					local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+					local remaining
+					if expireTime then
+						remaining = expireTime-GetTime()
+					end
+					if (not remaining or remaining and remaining < 10.9) and not UnitIsDeadOrGhost("player") and not self:IsHealer() then
 						specWarnJaggedClawsTaunt:Show(args.destName)
 						specWarnJaggedClawsTaunt:Play("tauntboss")
 					else

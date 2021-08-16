@@ -8,8 +8,7 @@ function CreatePanel:OnInitialize()
 
     self:SetPoint('TOPLEFT')
     self:SetPoint('BOTTOMLEFT')
-    local panelWidth=169 --219
-    self:SetWidth(panelWidth)
+    self:SetWidth(219)
 
     local line = GUI:GetClass('VerticalLine'):New(self) do
         line:SetPoint('TOPLEFT', self, 'TOPRIGHT', -3, 5)
@@ -27,7 +26,7 @@ function CreatePanel:OnInitialize()
     --- frames
     local InfoWidget = CreateFrame('Frame', nil, ViewBoardWidget) do
         InfoWidget:SetPoint('TOPLEFT')
-        InfoWidget:SetSize(panelWidth, 120)
+        InfoWidget:SetSize(219, 120)
 
         local bg = InfoWidget:CreateTexture(nil, 'BACKGROUND', nil, 1)
         bg:SetPoint('TOPLEFT', -2, 2)
@@ -175,7 +174,7 @@ function CreatePanel:OnInitialize()
     --- options
     local ActivityOptions = GUI:GetClass('TitleWidget'):New(CreateWidget) do
         ActivityOptions:SetPoint('TOPLEFT')
-        ActivityOptions:SetSize(panelWidth, 66)
+        ActivityOptions:SetSize(219, 66)
         ActivityOptions:SetText(L['请选择活动属性'])
     end
 
@@ -208,12 +207,12 @@ function CreatePanel:OnInitialize()
     --- voice and item level
     local VoiceItemLevelWidget = GUI:GetClass('TitleWidget'):New(CreateWidget) do
         VoiceItemLevelWidget:SetPoint('BOTTOMLEFT')
-        VoiceItemLevelWidget:SetSize(panelWidth, 100)
+        VoiceItemLevelWidget:SetSize(219, 100)
     end
 
     local ItemLevel = GUI:GetClass('NumericBox'):New(VoiceItemLevelWidget) do
         ItemLevel:SetPoint('TOP', VoiceItemLevelWidget, 30, -3)
-        ItemLevel:SetSize(88, 23)
+        ItemLevel:SetSize(108, 23)
         ItemLevel:SetLabel(L['最低装等'])
         ItemLevel:SetValueStep(10)
         ItemLevel:SetMinMaxValues(0, 2000)
@@ -221,7 +220,7 @@ function CreatePanel:OnInitialize()
 
     local HonorLevel = GUI:GetClass('NumericBox'):New(VoiceItemLevelWidget) do
         HonorLevel:SetPoint('TOP', ItemLevel, 'BOTTOM', 0, -1)
-        HonorLevel:SetSize(88, 23)
+        HonorLevel:SetSize(108, 23)
         HonorLevel:SetLabel(L['荣誉等级'])
         HonorLevel:SetValueStep(1)
         HonorLevel:SetMinMaxValues(0, 2000)
@@ -232,7 +231,7 @@ function CreatePanel:OnInitialize()
             VoiceBox:ClearAllPoints()
             VoiceBox:SetParent(VoiceItemLevelWidget)
             VoiceBox:SetPoint('TOP', HonorLevel, 'BOTTOM', 2, -1)
-            VoiceBox:SetSize(83, 23)
+            VoiceBox:SetSize(103, 23)
         end)
         VoiceBox:SetScript('OnTextChanged', nil)
         VoiceBox:SetScript('OnEditFocusLost', nil)
@@ -259,7 +258,7 @@ function CreatePanel:OnInitialize()
         PrivateGroup:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]])
         PrivateGroup:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]])
         PrivateGroup:SetSize(22, 22)
-        PrivateGroup:SetPoint('TOPLEFT', VoiceBox, 'BOTTOMLEFT', -73, 0)
+        PrivateGroup:SetPoint('TOPLEFT', VoiceBox, 'BOTTOMLEFT', -83, 0)
         local text = PrivateGroup:CreateFontString(nil, 'ARTWORK')
         text:SetPoint('LEFT', PrivateGroup, 'RIGHT', 2, 0)
         PrivateGroup:SetFontString(text)

@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210804000023"),
+	Revision = parseCurseDate("20210815040147"),
 	DisplayVersion = "9.1.9 alpha", -- the string that is shown as version
 	ReleaseRevision = releaseDate(2021, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
@@ -7642,9 +7642,14 @@ function bossModPrototype:SetStage(stage)
 		self.vb.phase = stage
 	end
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
-		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.encounterId)--Mod, modId, Stage, Encounter Id (if available).
-		--Note, in Wrath dungeons some encounters return multiple Ids years ago, but blizzard consolidated them recently such as 217, 265 consolidated to just 1972
-		--TODO, see if Wrath Classic uses consolidated Ids or original dual Id system. if wrath classic uses dual Ids, DBM_SetStage using self.encounterId will need to be fixed
+		local returnEID
+		if self.multiEncounterPullDetection then
+			returnEID = self.multiEncounterPullDetection[1]
+		else
+			returnEID = self.encounterId
+		end
+		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, returnEID)--Mod, modId, Stage, Encounter Id (if available).
+		--Note, some encounters have more than one encounter Id, for these encounters, the first ID from mod is always returned regardless of actual engage ID triggered fight
 	end
 end
 
@@ -10692,11 +10697,11 @@ do
 				end
 			end
 			timer = timer and ((timer > 0 and timer) or self.timer + timer) or self.timer
+			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 			--AI timer api:
 			--Starting ai timer with (1) indicates it's a first timer after pull
 			--Starting timer with (2) or (3) indicates it's a stage 2 or stage 3 first timer
 			--Starting AI timer with anything above 3 indicarets it's a regular timer and to use shortest time in between two regular casts
-			local id = self.id..pformat((("\t%s"):rep(select("#", ...))), ...)
 			if self.type == "ai" then--A learning timer
 				if not DBM.Options.AITimer then return end
 				if timer > 4 then--Normal behavior.

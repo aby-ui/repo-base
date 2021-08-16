@@ -27,6 +27,6 @@
 
     <!-- <Include file="Blizzard\Blizzard.xml" /> -->
 
-    <!-- <Script file="Debug.lua" build="debug" /> -->
+    
     <!-- <Script file="Alpha.lua" build="alpha" /> -->
 </Ui>

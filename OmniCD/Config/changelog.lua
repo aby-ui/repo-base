@@ -1,6 +1,13 @@
 local E, L, C = select(2, ...):unpack()
 
 E.changelog = [=[
+v2.6.21
+    Nil error fix - missing localization. <iss#278>
+    Localization update for koKR, ruRU, zhTW.
+
+v2.6.21-sl
+    Added missing spells used for Covenant detection without Sync.
+
 v2.6.20-sl
     Feature Updates
         Tracks Covenant Signature and Class abilities for group members without OmniCD.

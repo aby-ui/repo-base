@@ -1251,6 +1251,12 @@ local default_global_data = {
 			["14"] = false,
 		},
 		current_exp_raid_encounters = {},
+
+	--> all switch settings (panel shown when right click the title bar)
+		all_switch_config = {
+			scale = 1,
+			font_size = 10,
+		},
 		
 	--> profile by spec
 		profile_by_spec = {},

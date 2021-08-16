@@ -593,7 +593,6 @@ do
         unit.power = UnitPower(unitid) or 0
         unit.powermax = UnitPowerMax(unitid) or 1
 		unit.absorb = UnitGetTotalAbsorbs(unitid)
-		unit.absorbmax = max(unit.absorb, unit.absorbmax or 0)
 
 		unit.threatValue = UnitThreatSituation("player", unitid) or 0
 		unit.threatSituation = ThreatReference[unit.threatValue]
@@ -646,8 +645,8 @@ do
 
 	-- UpdateIndicator_HealthBar: Updates the value on the health bar
 	function UpdateIndicator_HealthBar()
-		local healthRange = unit.healthmax + unit.absorbmax
-		visual.healthbar:SetMinMaxValues(0, healthRange)
+		local healthRange = max(unit.healthmax, unit.health + unit.absorb)
+        visual.healthbar:SetMinMaxValues(0, healthRange)
 		visual.healthbar:SetValue(unit.health, unit.absorb)
 
         if style.levelShowHealth then

@@ -1381,13 +1381,13 @@ function Factory.MissionPage(parent)
 	local sButton = CreateObject("PanelButton", f) do
 		s.StartButton = sButton
 		sButton:Hide()
-		sButton:SetWidth(26)
-		sButton:SetPoint("LEFT", uButton, "RIGHT", -190, 0)
+		sButton:SetWidth(110)
+		sButton:SetPoint("LEFT", uButton, "RIGHT", -300, 0)
 		sButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 		sButton:SetScript("OnEnter", UButton_OnEnter)
 		sButton:SetScript("OnClick", UButton_OnClick)
 		sButton:SetScript("OnLeave", HideOwnGameTooltip)
-		sButton:SetText("|TInterface/RaidFrame/UI-RaidFrame-Arrow:22:30:-3:-1|t")
+		sButton:SetText(L"Send Tentative Parties")
 	end
 	s.Toasts = {CreateObject("MissionToast", f)}
 	s.Toasts[1]:SetPoint("TOPLEFT", -295, -62)

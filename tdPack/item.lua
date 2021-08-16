@@ -16,6 +16,8 @@ function Item:New(parent, bag, slot)
 
     if type(itemID) == 'number' then
         local itemLink = tdPack:GetBagSlotLink(bag, slot)
+        local _
+        itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture = GetItemInfo(itemLink)
         itemLevel = U1GetRealItemLevel(itemLink)
     end
 

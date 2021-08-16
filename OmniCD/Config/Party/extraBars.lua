@@ -605,7 +605,7 @@ local extraBarsInfo = {
 				desc = L["Set the status bar width. Adjust height with \'Icon Size\'."] .. "\n\n" .. E.STR.MAX_RANGE,
 				order = 55,
 				type = "range",
-				min = 100, max = 999, softMax = 300, step = 1,
+				min = 50, max = 999, softMax = 300, step = 1,
 			},
 			textOfsX = {
 				name = L["Name Offset X"],

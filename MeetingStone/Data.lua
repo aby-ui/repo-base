@@ -290,7 +290,7 @@ CATEGORY = {
             [272] = true,   --塔扎维什
         },
         activities = {
-            [723] = true, --世界首领
+            [723] = true, -- 世界首领
         },
     },
 }

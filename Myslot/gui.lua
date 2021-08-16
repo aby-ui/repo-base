@@ -262,9 +262,8 @@ RegEvent("ADDON_LOADED", function()
         end
 
         local create = function(name)
-            if #exports >= MAX_PROFILES_COUNT then
-                MySlot:Print(L["Too many saved profiles, please use '/myslot trim' to clean up"])
-                return
+            while #exports > MAX_PROFILES_COUNT do
+                table.remove(exports, 1)
             end
 
             local txt = {

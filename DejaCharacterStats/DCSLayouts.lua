@@ -69,10 +69,6 @@ local StatScrollFrame = CreateFrame("ScrollFrame", nil, CharacterFrameInsetRight
 
 local DefaultTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
-	{ statKey = "CorruptionCategory" },
-		{ statKey = "CR_CORRUPTION", hideAt = 0 },
-		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
-		{ statKey = "CR_TOTAL_CORRUPTION", hideAt = 0 },
 	{ statKey = "AttributesCategory" },
         { statKey = "STRENGTH" },
         { statKey = "AGILITY" },
@@ -91,25 +87,25 @@ local DefaultTankData = DCS_TableData:MergeTable({
         { statKey = "PARRY", hideAt = 0 },
 		{ statKey = "BLOCK", hideAt = 0, showFunc = C_PaperDollInfo.OffhandHasShield },
 		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
-    { statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
-           { statKey = "ATTACK_DAMAGE" },
-           { statKey = "ATTACK_AP" },
-           { statKey = "DCS_ATTACK_ATTACKSPEED" },
-   		{ statKey = "WEAPON_DPS" },
-           { statKey = "SPELLPOWER" },
-           { statKey = "MANAREGEN" },
-           { statKey = "ENERGY_REGEN" },
-           { statKey = "DCS_RUNEREGEN" },
-           { statKey = "FOCUS_REGEN" },
-           { statKey = "GCD" },
-    { statKey = "GeneralCategory" },
-           { statKey = "HEALTH" },
-           { statKey = "DCS_POWER" },
-           { statKey = "DCS_ALTERNATEMANA" },
-           { statKey = "ITEMLEVEL", hidden = true },
-           { statKey = "MOVESPEED" },
-   		   { statKey = "DURABILITY_STAT" },
-           { statKey = "REPAIR_COST" },
+	{ statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
+        { statKey = "ATTACK_DAMAGE" },
+        { statKey = "ATTACK_AP" },
+        { statKey = "DCS_ATTACK_ATTACKSPEED" },
+		{ statKey = "WEAPON_DPS" },
+        { statKey = "SPELLPOWER" },
+        { statKey = "MANAREGEN" },
+        { statKey = "ENERGY_REGEN" },
+        { statKey = "DCS_RUNEREGEN" },
+        { statKey = "FOCUS_REGEN" },		
+        { statKey = "GCD" },
+	{ statKey = "GeneralCategory" },
+        { statKey = "HEALTH" },
+        { statKey = "DCS_POWER" },
+        { statKey = "DCS_ALTERNATEMANA" },
+        { statKey = "ITEMLEVEL", hidden = true },
+        { statKey = "MOVESPEED" },
+		{ statKey = "DURABILITY_STAT" },
+        { statKey = "REPAIR_COST" },
 	{ statKey = "RatingCategory" },
 		{ statKey = "CRITCHANCE_RATING", hideAt = 0 },
 		{ statKey = "HASTE_RATING", hideAt = 0 },
@@ -121,6 +117,10 @@ local DefaultTankData = DCS_TableData:MergeTable({
 		{ statKey = "PARRY_RATING", hideAt = 0 },
 		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
 		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
+	{ statKey = "CorruptionCategory" },
+		{ statKey = "CR_CORRUPTION", hideAt = 0 },
+		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
+		{ statKey = "CR_TOTAL_CORRUPTION", hideAt = 0 },
 	{ statKey = "HonorCategory", hidden = true},
 		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
 		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
@@ -130,12 +130,9 @@ local DefaultTankData = DCS_TableData:MergeTable({
 		{ statKey = "RATING_RBG", hideAt = 0 },
 		{ statKey = "CONQUEST_PROGRESS", hideAt = -1 },
 })
+
 local DefaultNonTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
-	{ statKey = "CorruptionCategory" },
-		{ statKey = "CR_CORRUPTION", hideAt = 0 },
-		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
-		{ statKey = "CR_TOTAL_CORRUPTION", hideAt = 0 },
 	{ statKey = "AttributesCategory" },
         { statKey = "STRENGTH" },
         { statKey = "AGILITY" },
@@ -149,25 +146,27 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
         { statKey = "MASTERY", hideAt = 0 },
         { statKey = "LIFESTEAL", hideAt = 0 },
         { statKey = "AVOIDANCE", hideAt = 0 },
-    { statKey = "GeneralCategory" },
-           { statKey = "HEALTH" },
-           { statKey = "DCS_POWER" },
-           { statKey = "DCS_ALTERNATEMANA" },
-           { statKey = "ITEMLEVEL", hidden = true },
-           { statKey = "MOVESPEED" },
-   		   { statKey = "DURABILITY_STAT" },
-           { statKey = "REPAIR_COST" },
-    { statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
-           { statKey = "ATTACK_DAMAGE" },
-           { statKey = "ATTACK_AP" },
-           { statKey = "DCS_ATTACK_ATTACKSPEED" },
-   		{ statKey = "WEAPON_DPS" },
-           { statKey = "SPELLPOWER" },
-           { statKey = "MANAREGEN" },
-           { statKey = "ENERGY_REGEN" },
-           { statKey = "DCS_RUNEREGEN" },
-           { statKey = "FOCUS_REGEN" },
-           { statKey = "GCD" },
+	{ statKey = "GeneralCategory" },
+        { statKey = "HEALTH" },
+        { statKey = "DCS_POWER" },
+        { statKey = "DCS_ALTERNATEMANA" },
+        { statKey = "ITEMLEVEL", hidden = true },
+        { statKey = "MOVESPEED" },
+		{ statKey = "DURABILITY_STAT" },
+        { statKey = "REPAIR_COST" },
+
+	{ statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
+        { statKey = "ATTACK_DAMAGE" },
+        { statKey = "ATTACK_AP" },
+        { statKey = "DCS_ATTACK_ATTACKSPEED" },
+		{ statKey = "WEAPON_DPS" },
+        { statKey = "SPELLPOWER" },
+        { statKey = "MANAREGEN" },
+        { statKey = "ENERGY_REGEN" },
+        { statKey = "DCS_RUNEREGEN" },
+        { statKey = "FOCUS_REGEN" },		
+        { statKey = "GCD" },
+
 	{ statKey = "DefenseCategory" },
         { statKey = "DODGE", hideAt = 0 },
         { statKey = "PARRY", hideAt = 0 },
@@ -184,6 +183,10 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
 		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
 		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
 		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
+	{ statKey = "CorruptionCategory" },
+		{ statKey = "CR_CORRUPTION", hideAt = 0 },
+		{ statKey = "CR_CORRUPTION_RESISTANCE", hideAt = 0 },
+		{ statKey = "CR_TOTAL_CORRUPTION", hideAt = 0 },
     { statKey = "HonorCategory", hidden = true},
    		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
    		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
@@ -231,6 +234,9 @@ for k, v in pairs(DCS_TableData.StatData) do
 			v.frame.Background:SetHeight(28)
 			if k == "CorruptionCategory" then
 				v.frame.Title:SetText(L["Corruption"])
+			end
+			if k == "ActiBlizzWalkout" then
+				v.frame.Title:SetText(L["#ActiBlizzWalkout |cff00c0ff<3|r"])
 			end
 			if k == "GeneralCategory" then
 				v.frame.Title:SetText(L["General"])
@@ -474,7 +480,7 @@ local function DCS_Table_Relevant()
 
 	for _, v in ipairs(ShownData) do
 		if v.hidden then v.hidden = false end
-	end
+	end 
 
     --abyui use default hidden
     for _, v1 in ipairs(ShownData) do
@@ -550,19 +556,27 @@ local function DCS_Table_Relevant()
 			if v.statKey == "CR_CORRUPTION_RESISTANCE" then v.hidden = true end
 			if v.statKey == "CR_TOTAL_CORRUPTION" then v.hidden = true end
 		end
+		if v.statKey == "ActiBlizzWalkout" then v.hidden = true end
+		if v.statKey == "BLACK_GIRLS_CODE" then v.hidden = true end
+		if v.statKey == "FUTURES" then v.hidden = true end
+		if v.statKey == "GIRLS_WHO_CODE" then v.hidden = true end
+		if v.statKey == "RAINN" then v.hidden = true end
+		if v.statKey == "WOMEN_IN__ANIMATION" then v.hidden = true end
+		if v.statKey == "WOMEN_IN_GAMES_INTL" then v.hidden = true end
+
 		--if v.statKey == "GeneralCategory" then v.hidden = true end
 		--if v.statKey == "OffenseCategory" then v.hidden = true end
 		--if v.statKey == "DefenseCategory" then v.hidden = true end
 		if v.statKey == "RatingCategory" then v.hidden = true end --ratings are invisible, so the category is also hidden
 		--visiblity of pvp info is off by default
-		if (hashonorlevel < 1 ) then
+		if (hashonorlevel < 1 ) then		
 			--print(hashonorlevel)
 			if v.statKey == "HonorCategory" then v.hidden = true end
 			if v.statKey == "HONOR_PROGRESS" then v.hidden = true end
 			if v.statKey == "HONOR_LEVEL" then v.hidden = true end
 		end
 		if (hasconquestquest == nil ) then --abyui
-			--print(hasconquestlevel)
+			--print(hasconquestlevel)	
 			if v.statKey == "ConquestCategory" then v.hidden = true end
 			if v.statKey == "RATING_2V2" then v.hidden = true end
 			if v.statKey == "RATING_3V3" then v.hidden = true end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614184808")
+mod:SetRevision("20210806031505")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -745,7 +745,12 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnDualistsRiposte:Show(amount)
 				specWarnDualistsRiposte:Play("stackhigh")
 			else
-				if not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then
+				local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+				local remaining
+				if expireTime then
+					remaining = expireTime-GetTime()
+				end
+				if (not remaining or remaining and remaining < 18.7) and not UnitIsDeadOrGhost("player") then
 					specWarnDualistsRiposteTaunt:Show(args.destName)
 					specWarnDualistsRiposteTaunt:Play("tauntboss")
 				else

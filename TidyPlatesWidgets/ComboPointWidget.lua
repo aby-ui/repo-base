@@ -94,7 +94,7 @@ function TidyPlatesWidgets.CreateComboPointWidget(parent)
 	if not isEnabled then
         blizzClassNameplate = NamePlateDriverFrame:GetClassNameplateBar()
         if blizzClassNameplate then
-            blizzClassNameplate:HideNameplateBar()
+            blizzClassNameplate:Hide()
             function blizzClassNameplate:ShowNameplateBar()
             end
         else

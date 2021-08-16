@@ -231,11 +231,11 @@ MDT.scaleMultiplier = {}
 local affixWeeks = {
     [1] =  {11,124,10,128}, --bursting storming fortified tormented
     [2] =  {6,3,9,128}, --raging volcanic tyrannical tormented
-    [3] =  {0,0,10,128},
-    [4] =  {0,0,9,128},
-    [5] =  {0,0,10,128},
-    [6] =  {0,0,9,128},
-    [7] =  {0,0,10,128},
+    [3] =  {122,12,10,128}, -- inspiring grievous fortified tormented
+    [4] =  {123,4,9,128}, -- spiteful necrotic tyrannical tormented
+    [5] =  {7,14,10,128}, -- bolstering quaking fortified tormented
+    [6] =  {8,124,9,128}, --sanguine storming tyrannical tormented
+    [7] =  {6,13,10,128}, --raging explosive fortified tormented
     [8] =  {0,0,9,128},
     [9] =  {0,0,10,128},
     [10] = {0,0,9,128},
@@ -1247,7 +1247,7 @@ function MDT:MakeSidePanel(frame)
 	frame.sidePanel.WidgetGroup:AddChild(dropdown)
 
 	---new profile,rename,export,delete
-	local buttonWidth = 80
+	local buttonWidth = 75
 	frame.sidePanelNewButton = AceGUI:Create("Button")
 	frame.sidePanelNewButton:SetText(L["New"])
 	frame.sidePanelNewButton:SetWidth(buttonWidth)
@@ -1517,7 +1517,7 @@ function MDT:MakeSidePanel(frame)
     local colorCogwheel = frame.AutomaticColorsCogwheel
     colorCogwheel:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\helpIconRnbw")
     colorCogwheel:SetImageSize(25,25)
-    colorCogwheel:SetWidth(35)
+    colorCogwheel:SetWidth(30)
     colorCogwheel:SetCallback("OnEnter",function(...)
         GameTooltip:SetOwner(colorCogwheel.frame, "ANCHOR_CURSOR")
         GameTooltip:AddLine(L["Click to adjust color settings"],1,1,1)
@@ -1635,7 +1635,7 @@ function MDT:MakeSidePanel(frame)
     local affixWeekWarning = frame.sidePanel.affixWeekWarning
     affixWeekWarning:SetImage("Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew")
     affixWeekWarning:SetImageSize(25,25)
-    affixWeekWarning:SetWidth(35)
+    affixWeekWarning:SetWidth(30)
     affixWeekWarning:SetCallback("OnEnter",function(...)
         GameTooltip:SetOwner(affixDropdown.frame, "ANCHOR_CURSOR")
         GameTooltip:AddLine(L["The selected affixes are not the ones of the current week"],1,1,1)
@@ -1716,7 +1716,7 @@ function MDT:MakeSidePanel(frame)
     local difficultyWarning = frame.sidePanel.difficultyWarning
     difficultyWarning:SetImage("Interface\\DialogFrame\\UI-Dialog-Icon-AlertNew")
     difficultyWarning:SetImageSize(25,25)
-    difficultyWarning:SetWidth(35)
+    difficultyWarning:SetWidth(30)
     difficultyWarning:SetCallback("OnEnter",function(...)
         GameTooltip:SetOwner(frame.sidePanel.DifficultySlider.frame, "ANCHOR_CURSOR")
         GameTooltip:AddLine(L["The selected dungeon level is below 10"],1,1,1)

@@ -334,6 +334,7 @@ L["nirvaska_note"] = "Only appears when the {wq:Deadly Reminder} world quest is 
 L["ravenomous_note"] = "Squash {npc:159901s} in the area until the rare spawns."
 L["sabriel_note"] = "Can appear as one of the champions in the Theater of Pain."
 L["schmitd_note"] = "Use nearby {spell:313451} to break his shield."
+L["tahonta_note"] = "The mount only drops if you have {npc:159239} with you!"
 L["taskmaster_xox_note"] = "Shares a spawn with {npc:160204}, {npc:160230} and {npc:160226}."
 L["theater_of_pain_note"] = "Your first boss kill each day has a chance to drop the mount."
 L["zargox_the_reborn_note"] = [[
@@ -481,6 +482,18 @@ L["high_inquisitor_note"] = "Turn in 250 {currency:1816} to {npc:160248} for a c
 L["inquisitor_note"] = "Turn in 100 {currency:1816} to {npc:160248} for a chance at this sinstone."
 L["options_icons_inquisitors"] = "Inquisitors"
 L["options_icons_inquisitors_desc"] = "Display inquisitor locations for the {achievement:14276} achievement."
+
+L["broken_mirror"] = "Broken Mirror"
+L["broken_mirror_note"] = "A group of three broken mirrors will be active each day. Use a {item:181363} to repair each mirror and open the |cFFFFFD00Forgotten Chest|r inside."
+L["broken_mirror_crypt"] = "Inside a crypt."
+L["broken_mirror_elite"] = "In a small room with elite mobs."
+L["broken_mirror_group"] = "Group"
+L["broken_mirror_house"] = "Inside the house."
+L["broken_mirror_61818"] = "In a small room with {npc:173699}."
+L["broken_mirror_61819"] = "In a small room on the ground floor."
+L["broken_mirror_61827"] = "In a small room."
+L["options_icons_broken_mirror"] = "Broken Mirrors"
+L["options_icons_broken_mirror_desc"] = "Display the locations of broken mirrors."
 
 -------------------------------------------------------------------------------
 ----------------------------------- THE MAW -----------------------------------
@@ -652,3 +665,10 @@ L["desmotaeron"] = "Desmotaeron"
 L["zovault_note"] = "Drag {npc:179883} to {npc:179904} once a day for guaranteed riftstones."
 L["options_icons_zovault"] = "{npc:179883}"
 L["options_icons_zovault_desc"] = "Display possible locations for {npc:179883}."
+
+L["tormentors"] = "Tormentors of Torghast"
+L["tormentors_note"] = [[
+A tormentor event spawns every 2 hours on the hour. The bosses will always spawn in the order listed below.
+
+The {item:185972} can be looted once a week and contains 50 {currency:1906}.
+]]
