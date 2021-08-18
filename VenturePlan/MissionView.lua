@@ -1,4 +1,4 @@
-local _, T = ...
+﻿local _, T = ...
 local EV, L, U, S = T.Evie, T.L, T.Util, T.Shadows
 
 local FollowerList, MissionRewards
@@ -492,7 +492,7 @@ local function Predictor_ShowResult(self, sim, incompleteModel, recoverUntil, re
 	if rngModel then
 		GameTooltip:SetText(hprefix .. L"Curse of Uncertainty", 1, 0.20, 0)
 	else
-		GameTooltip:SetText(hprefix .. (sim.won and L"Victorious" or L"Defeated"), 1,1,1)
+		GameTooltip:SetText(hprefix .. (sim.won and "|cff00ff00".."|TInterface/RaidFrame/ReadyCheck-Ready:14|t"..L"Victorious" or "|cffff0000".."|TInterface/RaidFrame/ReadyCheck-NotReady:15|t"..L"Defeated"))
 	end
 
 	if incompleteModel then

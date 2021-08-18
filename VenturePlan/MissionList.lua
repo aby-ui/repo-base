@@ -1,4 +1,4 @@
-local _, T = ...
+﻿local _, T = ...
 local EV, L, U, S = T.Evie, T.L, T.Util, T.Shadows
 
 local SetAchievementReward do
@@ -48,7 +48,7 @@ end
 local function LogCounter_Update()
 	local lc, c = MissionPage.LogCounter, T.GetMissionReportCount()
 	lc:SetShown(c > 0)
-	lc:SetText(BreakUpLargeNumbers(c))
+	lc:SetText("|cffffffff"..BreakUpLargeNumbers(c).."|r")
 end
 
 local bufferedTentativeGroup = {}
@@ -152,19 +152,18 @@ local function cmpMissionInfo(a,b)
 	if ac ~= bc then
 		return bc
 	end
-	ac, bc = a.sortGroup, b.sortGroup
-	if ac ~= bc then
-		return ac and ac > (bc or -1)
+	ac, bc = zPaiXu[lbs[a.missionID]], zPaiXu[lbs[b.missionID]]
+	if (ac == nil or lbs[a.missionID] == "Unknown") then
+	    print("|cffffcd00VenturePlan：|r|cffff4500任务ID:  |r|cffffcd00["..a.missionID.."]|r|cffff4500没有类型数据，请在aPaiXu.lua里添加该任务类型。|r")
+		ac = 0
 	end
-	ac, bc = a.offerEndTime, b.offerEndTime
-	if ac and bc and ac ~= bc then
-		return ac < bc
+	if (bc == nil or lbs[b.missionID] == "Unknown") then
+		bc = 0
 	end
-	ac, bc = a.durationSeconds, b.durationSeconds
-	if ac and bc and ac ~= bc then
-		return ac < bc
+	if ac == bc then
+		return a.durationSeconds < b.durationSeconds
 	end
-	return a.name < b.name
+	return ac < bc
 end
 local function pushMissionSet(ni, missions, skip, ...)
 	if not missions then return ni end

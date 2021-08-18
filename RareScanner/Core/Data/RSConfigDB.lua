@@ -69,6 +69,59 @@ end
 -- Sound options database
 ---============================================================================
 
+function RSConfigDB.AddCustomSound(name,file)
+	if (not private.db.sound.custom) then
+		private.db.sound.custom = {}
+	end
+	
+	if (file) then
+		private.db.sound.custom[name] = file
+	end
+end
+
+function RSConfigDB.GetCustomSound(name)
+	if (private.db.sound.custom and name and private.db.sound.custom[name]) then
+		return private.db.sound.custom[name]
+	end
+	
+	return nil
+end
+
+function RSConfigDB.GetCustomSounds()
+	return private.db.sound.custom
+end
+
+function RSConfigDB.DeleteCustomSound(name)
+	if (private.db.sound.custom and name and private.db.sound.custom[name]) then
+		private.db.sound.custom[name] = nil
+	
+		-- Checks if selected audios match with the deleted, in that case restores default values
+		if (RSConfigDB.GetSoundPlayedWithObjects() == name) then
+			RSConfigDB.SetSoundPlayedWithObjects("PVP Horde")
+		end
+		if (RSConfigDB.GetSoundPlayedWithNpcs() == name) then
+			RSConfigDB.SetSoundPlayedWithNpcs("Horn")
+		end
+	end
+end
+
+function RSConfigDB.GetSoundList()
+	local defaultList = {} 
+	
+	-- Add internal sounds
+	for name, file in pairs (RSConstants.DEFAULT_SOUNDS) do
+		defaultList[name] = file
+	end
+	
+	-- Add custom sounds
+	if (RSConfigDB.GetCustomSounds()) then
+		for name, file in pairs (RSConfigDB.GetCustomSounds()) do
+			defaultList[name] = RSConstants.EXTERNAL_SOUND_FOLDER..file
+		end
+	end
+	return defaultList;
+end
+
 function RSConfigDB.IsPlayingSound()
 	return private.db.sound.soundDisabled
 end

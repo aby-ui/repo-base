@@ -7,6 +7,7 @@ local LibStub = _G.LibStub
 
 local RareScanner = LibStub("AceAddon-3.0"):GetAddon("RareScanner")
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner", false)
+local LibDialog = LibStub("LibDialog-1.0")
 
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
@@ -25,19 +26,6 @@ local RSMinimap = private.ImportLib("RareScannerMinimap")
 -----------------------------------------------------------------------
 -- Config option functions.
 -----------------------------------------------------------------------
-
-private.SOUNDS = {
-	["Achievement Sound"] = 12891,
-	["Alarm Clock"] = 12867,
-	["Boat Docking"] = 5495,
-	["Siege Engineer Weapon"] = 38324,
-	["PVP Alliance"] = 8332,
-	["PVP Horde"] = 8333,
-	["Ready Check"] = 8960,
-	["Horn"] = 15880,
-	["Event Wardrum Ogre"] = 11773,
-	["Level Up"] = 124,
-}
 
 private.CHANNELS = {
 	["Master"] = AL["CHANNEL_MASTER"],
@@ -413,11 +401,109 @@ end
 
 local sound_options
 
-local function GetSoundOptions()
+local function GetSoundOptions()	
 	if not sound_options then
+		local addNewSound = function(name)
+			RSConfigDB.AddCustomSound(name)
+			
+			sound_options.args[name] = {
+				type = "group",
+				order = 1,
+				name = name,
+				handler = RareScanner,
+				desc = name,
+				args = {
+					infoSound = {
+						order = 1,
+						type = "description",
+						name = AL["SOUND_CUSTOM_FILE_INFO"],
+					},
+					infoSound1 = {
+						order = 2,
+						type = "description",
+						name = AL["SOUND_CUSTOM_FILE_INFO1"],
+					},
+					infoSound2 = {
+						order = 3,
+						type = "description",
+						name = AL["SOUND_CUSTOM_FILE_INFO2"],
+					},
+					infoSound3 = {
+						order = 4,
+						type = "description",
+						name = string.format(AL["SOUND_CUSTOM_FILE_INFO3"], AL["SOUND_RELOAD"]),
+					},
+					infoSound4 = {
+						order = 5,
+						type = "description",
+						name = AL["SOUND_CUSTOM_FILE_INFO4"],
+					},
+					infoSound5 = {
+						order = 6,
+						type = "description",
+						name = AL["SOUND_CUSTOM_FILE_INFO5"],
+					},
+					file = {
+						order = 7,
+						type = "input",
+						name = AL["SOUND_CUSTOM_FILE"],
+						desc = AL["SOUND_CUSTOM_FILE_DESC"],
+						get = function(_, value) 
+							return RSConfigDB.GetCustomSound(name)
+						end,
+						set = function(_, value)
+							RSConfigDB.AddCustomSound(name, value)
+							
+							-- Refresh lists
+							sound_options.args.soundPlayed.values = RSConfigDB.GetSoundList()
+							sound_options.args.soundObjectPlayed.values = RSConfigDB.GetSoundList()
+						end,
+						width = "full",
+					},
+					delete = {
+						order = 8.1,
+						name = AL["SOUND_DELETE"],
+						desc = AL["SOUND_DELETE_DESC"],
+						type = "execute",
+						func = function()
+							sound_options.args[name] = nil
+							RSConfigDB.DeleteCustomSound(name)
+							
+							-- Refresh lists
+							sound_options.args.soundPlayed.values = RSConfigDB.GetSoundList()
+							sound_options.args.soundObjectPlayed.values = RSConfigDB.GetSoundList()
+						end,
+						width = 0.8,
+					},
+					play = {
+						order = 8.2,
+						name = AL["SOUND_PLAY"],
+						desc = AL["SOUND_PLAY_DESC"],
+						type = "execute",
+						func = function()
+							if (RSConfigDB.GetCustomSound(name)) then
+								PlaySoundFile(RSConstants.EXTERNAL_SOUND_FOLDER..RSConfigDB.GetCustomSound(name), "Master")
+							end
+						end,
+						width = 0.8,
+					},
+					reload = {
+						order = 8.3,
+						name = AL["SOUND_RELOAD"],
+						desc = AL["SOUND_RELOAD_DESC"],
+						type = "execute",
+						func = function()
+							ReloadUI()
+						end,
+						width = 0.8,
+					},
+				}
+			}
+		end
+		
 		sound_options = {
 			type = "group",
-			order = 2,
+			order = 1,
 			name = AL["SOUND"],
 			handler = RareScanner,
 			desc = AL["SOUND_OPTIONS"],
@@ -433,22 +519,8 @@ local function GetSoundOptions()
 					end,
 					width = "full",
 				},
-				soundPlayed = {
-					order = 2,
-					type = "select",
-					dialogControl = 'LSM30_Sound',
-					name = AL["ALARM_SOUND"],
-					desc = AL["ALARM_SOUND_DESC"],
-					values = private.SOUNDS,
-					get = function() return RSConfigDB.GetSoundPlayedWithNpcs() end,
-					set = function(_, value)
-						RSConfigDB.SetSoundPlayedWithNpcs(value)
-					end,
-					width = "double",
-					disabled = function() return RSConfigDB.IsPlayingSound() end,
-				},
 				soundObjectDisabled = {
-					order = 3,
+					order = 2,
 					name = AL["DISABLE_OBJECTS_SOUND"],
 					desc = AL["DISABLE_OBJECTS_SOUND_DESC"],
 					type = "toggle",
@@ -458,22 +530,21 @@ local function GetSoundOptions()
 					end,
 					width = "full",
 				},
-				soundObjectPlayed = {
-					order = 4,
+				channel = {
+					order = 3.1,
 					type = "select",
-					dialogControl = 'LSM30_Sound',
-					name = AL["ALARM_TREASURES_SOUND"],
-					desc = AL["ALARM_TREASURES_SOUND_DESC"],
-					values = private.SOUNDS,
-					get = function() return RSConfigDB.GetSoundPlayedWithObjects() end,
+					name = AL["SOUND_CHANNEL"],
+					desc = AL["SOUND_CHANNEL_DESC"],
+					values = private.CHANNELS,
+					get = function() return RSConfigDB.GetSoundChannel() end,
 					set = function(_, value)
-						RSConfigDB.SetSoundPlayedWithObjects(value)
+						RSConfigDB.SetSoundChannel(value)
 					end,
-					width = "double",
-					disabled = function() return RSConfigDB.IsPlayingObjectsSound() end,
+					width = 1.5,
+					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
 				},
 				soundVolume = {
-					order = 5,
+					order = 3.2,
 					type = "range",
 					name = AL["SOUND_VOLUME"],
 					desc = AL["SOUND_VOLUME_DESC"],
@@ -485,24 +556,63 @@ local function GetSoundOptions()
 					set = function(_, value)
 						RSConfigDB.SetSoundVolume(value)
 					end,
-					width = "full",
+					width = 1.5,
 					disabled = function() return true or RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
 				},
-				channel = {
-					order = 6,
+				soundsSeparator = {
+					order = 4,
+					type = "header",
+					name = AL["SOUND_AUDIOS"],
+				},
+				soundPlayed = {
+					order = 6.1,
 					type = "select",
-					name = AL["SOUND_CHANNEL"],
-					desc = AL["SOUND_CHANNEL_DESC"],
-					values = private.CHANNELS,
-					get = function() return RSConfigDB.GetSoundChannel() end,
+					dialogControl = 'LSM30_Sound',
+					name = AL["ALARM_SOUND"],
+					desc = AL["ALARM_SOUND_DESC"],
+					values = RSConfigDB.GetSoundList(),
+					get = function() return RSConfigDB.GetSoundPlayedWithNpcs() end,
 					set = function(_, value)
-						RSConfigDB.SetSoundChannel(value)
+						RSConfigDB.SetSoundPlayedWithNpcs(value)
+					end,
+					width = 1.5,
+					disabled = function() return RSConfigDB.IsPlayingSound() end,
+				},
+				soundObjectPlayed = {
+					order = 6.2,
+					type = "select",
+					dialogControl = 'LSM30_Sound',
+					name = AL["ALARM_TREASURES_SOUND"],
+					desc = AL["ALARM_TREASURES_SOUND_DESC"],
+					values = RSConfigDB.GetSoundList(),
+					get = function() return RSConfigDB.GetSoundPlayedWithObjects() end,
+					set = function(_, value)
+						RSConfigDB.SetSoundPlayedWithObjects(value)
+					end,
+					width = 1.5,
+					disabled = function() return RSConfigDB.IsPlayingObjectsSound() end,
+				},
+				newCustomSound = {
+					order = 7,
+					type = "input",
+					name = AL["SOUND_ADD"],
+					desc = AL["SOUND_ADD_DESC"],
+					get = function(_, value) return private.sound_options_newCustomSound_input end,
+					set = function(_, value)
+						private.sound_options_newCustomSound_input = value
+						addNewSound(private.sound_options_newCustomSound_input);
 					end,
 					width = "normal",
-					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
 				}
 			},
 		}
+		
+		-- Preload already added custom sounds
+		if (RSConfigDB.GetCustomSounds()) then
+			for name, _ in pairs (RSConfigDB.GetCustomSounds()) do
+				addNewSound(name)
+			end
+		end
 	end
 
 	return sound_options
@@ -1862,7 +1972,7 @@ local function GetCollectionFilters()
 					name = AL["COLLECTION_FILTERS_APPLY"],
 					desc = AL["COLLECTION_FILTERS_APPLY_DESC"],
 					type = "execute",
-					func = function() StaticPopup_Show(RSConstants.START_COLLECTIONS_SCAN) end,
+					func = function() LibDialog:Spawn(RSConstants.START_COLLECTIONS_SCAN) end,
 					width = "normal",
 					disabled = function() return (not RSConfigDB.IsSearchingPets() and not RSConfigDB.IsSearchingMounts() and not RSConfigDB.IsSearchingToys() and not RSConfigDB.IsSearchingAppearances()) end,
 				},

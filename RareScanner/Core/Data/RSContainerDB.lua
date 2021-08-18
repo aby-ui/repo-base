@@ -309,9 +309,7 @@ end
 
 function RSContainerDB.GetContainerName(containerID)
 	if (containerID) then
-		if (private.dbglobal.object_names[GetLocale()][containerID]) then
-			return private.dbglobal.object_names[GetLocale()][containerID]
-		elseif (RSUtils.Contains(RSConstants.RELIC_CACHE, containerID)) then
+		if (RSUtils.Contains(RSConstants.RELIC_CACHE, containerID)) then
 			private.dbglobal.object_names[GetLocale()][containerID] = AL["RELIC_CACHE"]
 			return AL["RELIC_CACHE"]
 		elseif (RSUtils.Contains(RSConstants.PILE_BONES, containerID)) then
@@ -320,6 +318,11 @@ function RSContainerDB.GetContainerName(containerID)
 		elseif (RSUtils.Contains(RSConstants.SHARDHIDE_STASH, containerID)) then
 			private.dbglobal.object_names[GetLocale()][containerID] = AL["SHARDHIDE_STASH"]
 			return AL["SHARDHIDE_STASH"]
+		elseif (RSUtils.Contains(RSConstants.STOLEN_ANIMA_VESSEL, containerID) or RSUtils.Contains(RSConstants.STOLEN_ANIMA_VESSEL_RIFT, containerID)) then
+			private.dbglobal.object_names[GetLocale()][containerID] = AL["STOLEN_ANIMA_VESSEL"]
+			return AL["STOLEN_ANIMA_VESSEL"]
+		elseif (private.dbglobal.object_names[GetLocale()][containerID]) then
+			return private.dbglobal.object_names[GetLocale()][containerID]
 		end
 	end
 

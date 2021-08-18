@@ -4,6 +4,8 @@
 local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
+local LibDialog = LibStub("LibDialog-1.0")
+
 local RSCollectionsDB = private.NewLib("RareScannerCollectionsDB")
 
 -- Locales
@@ -655,7 +657,7 @@ local function UpdateEntitiesCollections()
 	RSLogger:PrintMessage(AL["LOG_DONE"])
 	
 	-- Ask for setting loot filters
-	StaticPopup_Show(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS)
+	LibDialog:Spawn(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS)
 end
 
 local loaded = false

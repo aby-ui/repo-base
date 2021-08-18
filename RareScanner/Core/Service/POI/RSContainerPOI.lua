@@ -32,7 +32,7 @@ local notDiscoveredContainerIDs = {}
 function RSContainerPOI.InitializeNotDiscoveredContainers()
 	for containerID, _ in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
 		if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
-			tinsert(notDiscoveredContainerIDs, containerID)
+			notDiscoveredContainerIDs[containerID] = true
 		end
 	end
 end
@@ -159,7 +159,7 @@ function RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, vignetteGUIDs, o
 	end
 
 	local POIs = {}
-	for _, containerID in ipairs(notDiscoveredContainerIDs) do
+	for containerID, _ in pairs(notDiscoveredContainerIDs) do
 		local filtered = false
 		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
 

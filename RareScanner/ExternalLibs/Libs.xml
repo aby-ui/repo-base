@@ -21,5 +21,6 @@
 	<Include file="LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
 	<!--<Include file="HereBeDragons\HereBeDragons-2.0.lua"/>-->
 	<!--<Include file="HereBeDragons\HereBeDragons-Pins-2.0.lua"/>-->
+	<!--<Include file="LibDialog-1.0-9.0.1.1\lib.xml"/>-->
 	
 </Ui>

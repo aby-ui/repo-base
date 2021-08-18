@@ -304,6 +304,23 @@ GTFO.SpellID["358091"] = {
   sound = 3;
 };
 
+GTFO.SpellID["356414"] = {
+  --desc = "Frost Lance (Oros Coldheart)";
+  sound = 3;
+};
+
+GTFO.SpellID["358973"] = {
+  --desc = "Wave of Terror (Executioner Varruth)";
+  sound = 3;
+  applicationOnly = true;
+  test = true;
+};
+
+GTFO.SpellID["353763"] = {
+  --desc = "Leeching Cleave (Nal'ragas)";
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -981,6 +998,29 @@ GTFO.SpellID["355173"] = {
   sound = 3;
 };
 
+GTFO.SpellID["352223"] = {
+  --desc = "Tortured Stomp (Vault Sentinel)";
+  sound = 3;
+};
+
+GTFO.SpellID["319689"] = {
+  --desc = "Spinning Blade";
+  sound = 3;
+};
+
+GTFO.SpellID["355226"] = {
+  --desc = "Lesser Subjugate Essence";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["355224"] = {
+  --desc = "Lesser Subjugate Spirit";
+  sound = 3;
+  applicationOnly = true;
+};
+
+
 --- ******************
 --- * Castle Nathria *
 --- ******************
@@ -1213,6 +1253,12 @@ GTFO.SpellID["350076"] = {
   sound = 3;
 };
 
+GTFO.SpellID["349890"] = {
+  --desc = "Suffering (Remnant of Ner'zhul)";
+  sound = 3;
+  tankSound = 0;
+};
+
 GTFO.SpellID["357435"] = {
   --desc = "Seeds of Fire (Borr-Gahn)";
   sound = 3;
@@ -1303,6 +1349,11 @@ GTFO.SpellID["348145"] = {
   sound = 3;
 };
 
+GTFO.SpellID["356649"] = {
+  --desc = "Calamity (Sylvanas Windrunner)";
+  sound = 3;
+};
+
 GTFO.SpellID["351870"] = {
   --desc = "Haunting Wave (Sylvanas Windrunner)";
   applicationOnly = true;
@@ -1327,8 +1378,15 @@ GTFO.SpellID["348109"] = {
 
 GTFO.SpellID["357091"] = {
   --desc = "Cleave Flesh (Bonesteel)";
+  applicationOnly = true;
   sound = 3;
   tankSound = 0;
+};
+
+GTFO.SpellID["355063"] = {
+  --desc = "Crushing Strike (Mawsworn Guard)";
+  sound = 3;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["358747"] = {

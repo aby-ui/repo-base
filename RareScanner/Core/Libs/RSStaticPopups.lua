@@ -4,6 +4,8 @@
 local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
+local LibDialog = LibStub("LibDialog-1.0")
+
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
@@ -19,34 +21,45 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 -- Start collections scan
 ---============================================================================
 
-StaticPopupDialogs[RSConstants.START_COLLECTIONS_SCAN] = {
+LibDialog:Register(RSConstants.START_COLLECTIONS_SCAN, {
 	text = AL["START_COLLECTIONS_SCAN"],
-	button1 = YES,
-	button2 = NO,
-	OnAccept = function (self) 
-		RSCollectionsDB.ApplyCollectionsEntitiesFilters()	
-	end,
-	OnCancel = function (self) end,
-	hideOnEscape = 1,
-	timeout = 0,
-	exclusive = 1,
-	whileDead = 1,
-}
+	no_close_button = true,
+    buttons = {
+        {
+            text = YES,
+            on_click = function(self, mouseButton, down)
+                RSCollectionsDB.ApplyCollectionsEntitiesFilters()	
+            end,
+        },
+        {
+            text = NO,
+            on_click = function(self, mouseButton, down)
+                LibDialog:Dismiss(RSConstants.START_COLLECTIONS_SCAN)
+            end,
+        },
+    },          
+})
+
 ---============================================================================
 -- Apply collections filters to loot displayed
 ---============================================================================
 
-StaticPopupDialogs[RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS] = {
+LibDialog:Register(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS, {
 	text = AL["APPLY_COLLECTIONS_LOOT_FILTERS"],
-	button1 = YES,
-	button2 = NO,
-	OnAccept = function (self) 
-		RSConfigDB.ApplyCollectionsLootFilters(); 
-		RSLogger:PrintMessage(AL["LOG_LOOT_FILTERS_APPLIED"])
-	end,
-	OnCancel = function (self) end,
-	hideOnEscape = 1,
-	timeout = 0,
-	exclusive = 1,
-	whileDead = 1,
-}
+	no_close_button = true,
+    buttons = {
+        {
+            text = YES,
+            on_click = function(self, mouseButton, down)
+				RSConfigDB.ApplyCollectionsLootFilters(); 
+				RSLogger:PrintMessage(AL["LOG_LOOT_FILTERS_APPLIED"])
+            end,
+        },
+        {
+            text = NO,
+            on_click = function(self, mouseButton, down)
+                LibDialog:Dismiss(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS)
+            end,
+        },
+    },          
+})

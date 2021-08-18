@@ -1,4 +1,4 @@
-local _, T = ...
+﻿local _, T = ...
 local EV = T.Evie
 local LibParse = LibStub("LibParse");
 
@@ -183,6 +183,7 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
 		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
 		EV("I_STORED_LOG_UPDATE")
+		if novel then return end;
 	end
 end
 function EV:I_RESET_STORED_LOGS()

@@ -1,4 +1,4 @@
-local _, T = ...
+﻿local _, T = ...
 local SpellInfo = T.KnownSpells
 
 local band, bor, floor = bit.band, bit.bor, math.floor
@@ -126,7 +126,7 @@ end
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
 do -- targets
-	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [777]=0, [1213]=0, [1301]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
+	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [777]=0, [1213]=0, [1237]=0, [1301]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -161,10 +161,12 @@ do -- targets
 		end
 	end
 	local adjCleave = {
-		[0x50]=3, [0x83]=1,
-		[0x62]=3, [0x63]=2, [0xa2]=3, [0xa3]=2,
-		[0x73]=4, [0x74]=3, [0xb3]=4, [0xb4]=3,
-		[0x51]=4, [0x70]=1, [0x82]=0,
+		[0x50]=3, [0x51]=4,
+		[0x62]=3, [0x63]=2,
+		[0x70]=1, [0x73]=4, [0x74]=3,
+		[0x82]=0, [0x83]=1,
+		[0xa3]=2,
+		[0xb0]=1, [0xb2]=3, --[0xb3]=4, [0xb4]=3,
 	}
 	local adjCleaveN = {
 		[0]={5,6,32,7,9,10,11,32,8,12},
@@ -845,10 +847,27 @@ end
 function mu:CheckCast(sourceIndex,sid)
 	local spellInfo,board = SpellInfo[sid], self.board
 	--only heal spell with single effect needs to be check
-	if spellInfo == nil or spellInfo[1] ~= nil or spellInfo.type ~= "heal" then
+	if spellInfo == nil or spellInfo[1] ~= nil then
 		return true
 	end
-	local targets = VS.GetTargets(sourceIndex, spellInfo.target, board)
+	local forkTargets = forkTargets[spellInfo.target]
+	local oracle = self.forkOracle
+	if forkTargets and oracle then
+		return true
+	end
+	local targets = VS.GetTargets(sourceIndex, forkTargets or spellInfo.target, board)
+	if targets and #targets == 0 then
+		if spellInfo.type == "nuke" and spellInfo.selfhealATK then
+			return true
+		end
+		return false
+	end
+	if spellInfo.healATK == nil then
+		return true
+	end
+	if spellInfo.shroudTurns or spellInfo.modDamageDealt then
+		return true
+	end
 	local cast = false
 	for i=1,targets and #targets or 0 do
 		local targetUnit = board[targets[i]]

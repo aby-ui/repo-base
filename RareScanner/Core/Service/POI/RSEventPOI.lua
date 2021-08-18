@@ -32,7 +32,7 @@ local notDiscoveredEventIDs = {}
 function RSEventPOI.InitializeNotDiscoveredEvents()
 	for eventID, _ in pairs (RSEventDB.GetAllInternalEventInfo()) do
 		if (not RSGeneralDB.GetAlreadyFoundEntity(eventID)) then
-			tinsert(notDiscoveredEventIDs, eventID)
+			notDiscoveredEventIDs[eventID] = true
 		end
 	end
 end
@@ -146,7 +146,7 @@ function RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMa
 	end
 
 	local POIs = {}
-	for _, eventID in ipairs(notDiscoveredEventIDs) do
+	for eventID, _ in pairs(notDiscoveredEventIDs) do
 		local filtered = false
 		local eventInfo = RSEventDB.GetInternalEventInfo(eventID)
 

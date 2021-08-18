@@ -21,7 +21,7 @@
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
-## Version: 9.1.8-13-g4ba6cbb
+## Version: 9.1.10
 
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml
@@ -31,6 +31,7 @@ Libs\LibSerialize\lib.xml
 localization.en.lua
 localization.cn.lua
 localization.tw.lua
+
 DBM-Core.lua
 DBM-Arrow.lua
 DBM-Flash.lua
@@ -38,6 +39,9 @@ DBM-RangeCheck.lua
 DBM-InfoFrame.lua
 DBM-HudMap.lua
 DBM-Nameplate.lua
+
+# Modules
+modules\Sounds.lua
 
 ## Title-zhCN: |cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cffffd200Deadly Boss Mods|r |cff69ccf0核心|r
 ## X-Vendor: AbyUI

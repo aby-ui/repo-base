@@ -1,4 +1,4 @@
-local Factory, AN, T = {}, ...
+﻿local Factory, AN, T = {}, ...
 local C, EV, L, U, S = C_Garrison, T.Evie, T.L, T.Util, {}
 local PROGRESS_MIN_STEP = 0.2
 local CovenKit = "NightFae"
@@ -357,7 +357,11 @@ local function CountdownText_SetCountdown(self, prefix, expireAt, suffix, rest, 
 	end
 end
 local function ResizedButton_SetText(self, text)
-	(self.Text or self):SetText(text)
+    if text ~= 0 then
+	    (self.Text or self):SetText("|cff00ff00"..text.."|r")
+	else
+	    (self.Text or self):SetText("|cff808080"..text.."|r")
+	end
 	self:SetWidth((self.Text or self):GetStringWidth()+26)
 end
 local function ResourceButton_Update(self, _event, currencyID)
@@ -727,7 +731,7 @@ local function FollowerList_Refresh(self, setXPGain)
 		for i=#fl+1,#wf do
 			wf[i]:Hide()
 		end
-		self:SetHeight(135+72*math.ceil(#fl/4))
+		self:SetHeight(170+72*math.ceil(#fl/4))
 		self.noRefresh = true
 	end
 	FollowerList_SyncToBoard(self)
@@ -1090,11 +1094,11 @@ local function AwayFollowers_OnEnter(self)
 	if #ft == 0 and nt == 0 then
 		GameTooltip:AddLine(L'All companions are ready for adventures.', 1,1,1);
 	elseif #ct ~= #ft or nt > 0 then
-		GameTooltip:AddLine((L'%d |4zz'):format(#ct-#ft), 0.4,0.6,0.93, 1)
-		GameTooltip:AddLine((L'%d |4companion is:companions are; ready for adventures.'):format(#ct-#ft-nt), 1,1,1, 1)
+		GameTooltip:AddLine((L'%d a total of attendants are available,among:'):format(#ct-#ft), 0.4,0.6,0.93, 1)
+		GameTooltip:AddLine((L'%d |4companion is:companions are; ready for adventures.'):format(#ct-#ft-nt), 0,1,0, 1)
 	end
 	if nt > 0 then
-		GameTooltip:AddLine((L'%d |4companion is:companions are; in a tentative party.'):format(nt), 1,1,1, 1)
+		GameTooltip:AddLine((L'%d |4companion is:companions are; in a tentative party.'):format(nt), 0.5,0.5,0.5, 1)
 	end
 	if #ft > 0 then
 		if GameTooltip:NumLines() > 1 then
@@ -1349,9 +1353,29 @@ function Factory.MissionPage(parent)
 		resButton:SetPoint("TOPLEFT", 70, -30)
 	end
 	local ccButton = CreateObject("ILButton", f) do
-		s.CompanionCounter = ccButton
-		ccButton.Icon:SetTexture("Interface/FriendsFrame/Battlenet-Battleneticon")
-		ccButton.Icon:SetTexCoord(6/32,26/32, 6/32,26/32)
+		s.CompanionCounter = ccButton	 
+		local timeElapsed = 0
+		f:HookScript("OnUpdate", function(self, elapsed)
+		timeElapsed = timeElapsed + elapsed
+		if timeElapsed > 0.2 then
+			timeElapsed = 0
+				local ft, ct, nt = {}, C_Garrison.GetFollowers(123), 0
+				for i=1,#ct do
+					local ci = ct[i]
+					if ci.status == GARRISON_FOLLOWER_ON_MISSION then
+						ci.timeLeft = C_Garrison.GetFollowerMissionTimeLeftSeconds(ci.followerID) or 86400
+						ft[#ft+1] = ci
+					elseif U.FollowerHasTentativeGroup(ci.followerID) then
+						nt = nt + 1
+					end
+					if #ct-#ft-nt ~= 0 then
+		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\Ready.blp")
+					else   
+		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\Work.blp")
+					end
+				end
+			end
+		end)
 		ccButton.Icon:SetBlendMode("ADD")
 		ccButton:SetPoint("LEFT", resButton, "RIGHT", 30, 0)
 		ccButton:SetScript("OnEnter", AwayFollowers_OnEnter)
@@ -2032,14 +2056,13 @@ function Factory.FollowerList(parent)
 	t:SetPoint("TOPLEFT", 0, -84)
 	t:SetPoint("BOTTOMRIGHT", 0, 84)
 	t:SetTexCoord(0,1,50/311,261/311)
-
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	t:SetText(FOLLOWERLIST_LABEL_TROOPS)
-	t:SetPoint("TOPLEFT", 12, -14)
+	t:SetPoint("TOPLEFT", 22, -12)
 	s.troops = {}
 	for i=1,2 do
 		s.troops[i] = CreateObject("FollowerListButton", f, true)
-		s.troops[i]:SetPoint("TOPLEFT", (i-1)*76+14, -35)
+		s.troops[i]:SetPoint("TOPLEFT", (i-1)*76+14, -30)
 	end
 	t = CreateObject("CommonHoverTooltip", CreateObject("InfoButton", f))
 	t:SetPoint("TOPRIGHT", -12, -12)
@@ -2049,11 +2072,11 @@ function Factory.FollowerList(parent)
 
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	t:SetText(COVENANT_MISSION_FOLLOWER_CATEGORY)
-	t:SetPoint("TOPLEFT", 12, -110)
+	t:SetPoint("TOPLEFT", 22, -115)
 	s.companions = {}
-	for i=1,20 do
+	for i=1,24 do
 		t = CreateObject("FollowerListButton", f, false)
-		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*72-130)
+		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*65-132)
 		s.companions[i] = t
 	end
 	f:SetPoint("LEFT", UIParent, "LEFT", 20, 0)
