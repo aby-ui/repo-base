@@ -180,7 +180,7 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 		cr.addonVersion = GetAddOnMetadata("VenturePlan", "Version")
 		local st = serialize(cr)
 		VP_MissionReports = VP_MissionReports or {}
-		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
+		if findReportSlot(VP_MissionReports, st, novel) then VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel} end
 		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
 		EV("I_STORED_LOG_UPDATE")
 		if novel then return end;
