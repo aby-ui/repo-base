@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-Unit-3.0"
-local MINOR_VERSION = tonumber(("20210629130945"):match("%d+")) or 33333333333333
+local MINOR_VERSION = tonumber(("20210825025843"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_Unit_MINOR_VERSION then
 	_G.DogTag_Unit_MINOR_VERSION = MINOR_VERSION
@@ -13,18 +13,19 @@ DogTag_Unit_funcs[#DogTag_Unit_funcs+1] = function(DogTag_Unit, DogTag)
 
 local L = DogTag_Unit.L
 local wow_ver = select(4, GetBuildInfo())
+local wow_600 = wow_ver >= 60000
 local wow_700 = wow_ver >= 70000
 
 DogTag:AddTag("Unit", "Combos", {
 	code = function (unit, target)
 		if unit and target then
-			if not GetComboPoints then
+			if wow_600 then
 				return UnitPower(unit, 4)
 			else
 				return GetComboPoints(unit, target)
 			end
 		else
-			if not GetComboPoints then
+			if wow_600 then
 				return UnitPower((UnitHasVehicleUI and UnitHasVehicleUI("player")) and "vehicle" or "player", 4)
 			else
 				return GetComboPoints((UnitHasVehicleUI and UnitHasVehicleUI("player")) and "vehicle" or "player", "target")

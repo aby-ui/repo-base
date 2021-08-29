@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2444, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210806022929")
+mod:SetRevision("20210826022932")
 mod:SetCreatureID(175729)
 mod:SetEncounterID(2432)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -199,7 +199,6 @@ function mod:SPELL_CAST_START(args)
 --	elseif spellId == 350096 or spellId == 350691 then--Mythic/Heroic likely and normal/LFR likely
 --		timerBurstofAgonyCD:Start()
 	elseif spellId == 351066 or spellId == 351067 or spellId == 351073 then--Shatter (Helm of Suffering, Malicious Gauntlets, Rattlecage of Agony)
-		self:SetStage(0)
 		self.vb.shatterCount = self.vb.shatterCount + 1
 		warnShatter:Show(self.vb.shatterCount)
 	elseif spellId == 350469 then

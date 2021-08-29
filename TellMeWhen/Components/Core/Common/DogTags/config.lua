@@ -67,7 +67,7 @@ TMW:NewClass("Config_EditBox_DogTags", "Config_EditBox"){
 	end,
 
 	METHOD_EXTENSIONS_PRE = {
-		OnTextChanged = function(self, userInput)			
+		OnTextChanged = function(self, userInput)
 			if userInput and (GetLocale() == "zhCN" or GetLocale() == "zhTW") then
 				-- It seems that bad things happen here while typing chinese characters
 				-- See http://wow.curseforge.com/addons/tellmewhen/tickets/641-typing-chinese-error/
@@ -77,9 +77,8 @@ TMW:NewClass("Config_EditBox_DogTags", "Config_EditBox"){
 			local DogTag = LibStub("LibDogTag-3.0")
 			local colorText = self:GetText()
 			if self.lastText ~= colorText then
-				local text = colorText:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
 				
-				self.lastText = DogTag:ColorizeCode(text):gsub("|r", "")
+				self.lastText = DogTag:ColorizeCode(colorText)
 				local position = self:GetCursorPosition()
 				local skip = 0
 				for i = 1, position do
@@ -149,14 +148,14 @@ Module.noTexture = true
 --Module.noTab = true
 
 local colors = {
-    tag = "00ffff", -- cyan
-    number = "ff7f7f", -- pink
-    modifier = "00ff00", -- green
-    literal = "ff7f7f", -- pink
-    operator = "ff7fff", -- fuchsia
-    grouping = "ffffff", -- white
-    kwarg = "ff0000", -- red
-    result = "ffffff", -- white
+	tag = "00ffff", -- cyan
+	number = "ff7f7f", -- pink
+	modifier = "00ff00", -- green
+	literal = "ff7f7f", -- pink
+	operator = "ff7fff", -- fuchsia
+	grouping = "ffffff", -- white
+	kwarg = "ff0000", -- red
+	result = "ffffff", -- white
 }
 
 local extendedTags = {
@@ -195,37 +194,42 @@ end
 
 -- Finds the tag that the cursor is currently in, or at the end of.
 local function getCurrentTag(editbox)
+	local text = editbox:GetText()
 	for i = editbox:GetCursorPosition(), 1, -1 do
-	    local t = editbox:GetText()
-	    local color = t:match("^|cff(%x%x%x%x%x%x)", i)
-	    
-	    if color then
-	    	local tokenType = TMW.tContains(colors, color)
-	    	if tokenType == "tag" or tokenType == "modifier" then
-		        local startPos, endPos = t:find("(.-)|cff", i+10)
+		local color = text:match("^|cff(%x%x%x%x%x%x)", i)
 
-		        if not endPos then
-		            startPos, endPos = t:find("(.*)", i+10)
-		        else
-		            endPos = endPos - 4    
+		if color then
+			local tokenType = TMW.tContains(colors, color)
+			if tokenType == "tag" or tokenType == "modifier" then
 
-		       		local whitespace = t:match("([ \t\r\n]*)|cff", startPos) or ""
+				local startPos, endPos = text:find("(.-)|cff", i+10)
+				if endPos then endPos = endPos - 4 end
+				
+				if not endPos then
+					startPos, endPos = text:find("(.-)|r", i+10)
+					if endPos then endPos = endPos - 2 end
+				end
 
-		       		-- If there is whitespace separating our cursor and the end of the tag that is being matched,
-		       		-- don't match it so that a new suggestion list will be shown
-		       		if (endPos - #whitespace < editbox:GetCursorPosition()) then
-		       			return nil
-		       		end
+				if not endPos then
+					startPos, endPos = text:find("(.*)", i+10)
+				else
+					local whitespace = text:match("([ \t\r\n]*)|cff", startPos) or ""
+					
+					-- If there is whitespace separating our cursor and the end of the tag that is being matched,
+					-- don't match it so that a new suggestion list will be shown
+					if (endPos - #whitespace < editbox:GetCursorPosition()) then
+						return nil
+					end
 
-		        end
-		        local tag = t:sub(startPos, endPos):trim()
+				end
+				local tag = text:sub(startPos, endPos):trim()
 
 
-		        return tag, startPos, endPos
-		    else
-		    	return nil
-		    end
-	    end
+				return tag, startPos, endPos
+			else
+				return nil
+			end
+		end
 	end
 end
 

@@ -795,7 +795,7 @@ if AL then
 	AL["SOUND_CUSTOM_FILE"] = "声音文件"
 	AL["SOUND_CUSTOM_FILE_DESC"] = "输入您复制到“RareScannerSounds”文件夹中的声音文件的名称。 例如：'myaudio.ogg'。"
 	AL["SOUND_CUSTOM_FILE_INFO"] = "使用说明"
-	AL["SOUND_CUSTOM_FILE_INFO1"] = "1. 创建文件夹“World of Warcraft\\_retail_\\Interface\\addons\\RareScannerSounds”"
+	AL["SOUND_CUSTOM_FILE_INFO1"] = "1. 创建文件夹“World of Warcraft\\_retail_\\Interface\\addons\\%s”"
 	AL["SOUND_CUSTOM_FILE_INFO2"] = "2. 复制你的OGG或MP3格式的音频文件到此文件夹"
 	AL["SOUND_CUSTOM_FILE_INFO3"] = "3. 如果你是在加载游戏后复制了文件，请使用按钮“%s”加载新的音频文件。"
 	AL["SOUND_CUSTOM_FILE_INFO4"] = "4. 输入文件名称并添加它。 例如“myaudio.ogg”"

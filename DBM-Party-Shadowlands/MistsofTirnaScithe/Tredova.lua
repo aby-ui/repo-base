@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2405, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201224023810")
+mod:SetRevision("20210823220630")
 mod:SetCreatureID(164517)
 mod:SetEncounterID(2393)
 mod:SetUsedIcons(1, 2, 3, 4, 5)--Probably doesn't use all 5, unsure number of mind link targets at max inteligence/energy
@@ -63,7 +63,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.mindLinkIcon = 1
 	self.vb.firstPray = false
-	timerAcidExpulsionCD:Start(8-delay)
+	timerAcidExpulsionCD:Start(7.1-delay)
 	timerMindLinkCD:Start(18.1-delay)
 	timerAcceleratedIncubationCD:Start(45.2-delay)
 	if self:IsMythic() then

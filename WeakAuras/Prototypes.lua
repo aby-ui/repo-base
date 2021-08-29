@@ -261,96 +261,96 @@ function Private.InitializeEncounterAndZoneLists()
       {
         L["Karazhan"],
         {
-          { L["Attumen the Huntsman"], 2444 },
-          { L["Moroes"], 2445 },
-          { L["Maiden of Virtue"], 2446 },
-          { L["Opera Hall"], 2447 },
-          { L["The Curator"], 2448 },
-          { L["Terestian Illhoof"], 2449 },
-          { L["Shade of Aran"], 2450 },
-          { L["Netherspite"], 2451 },
-          { L["Chess Event"], 2452 },
-          { L["Prince Malchezaar"], 2453 },
-          { L["Nightbane"], 2454 },
+          { L["Attumen the Huntsman"], 652 },
+          { L["Moroes"], 653 },
+          { L["Maiden of Virtue"], 654 },
+          { L["Opera Hall"], 655 },
+          { L["The Curator"], 656 },
+          { L["Terestian Illhoof"], 657 },
+          { L["Shade of Aran"], 658 },
+          { L["Netherspite"], 659 },
+          { L["Chess Event"], 660 },
+          { L["Prince Malchezaar"], 661 },
+          { L["Nightbane"], 662 },
         }
       },
       {
         L["Gruul's Lair"],
         {
-          { L["High King Maulgar"], 2455 },
-          { L["Gruul the Dragonkiller"], 2456 },
+          { L["High King Maulgar"], 649 },
+          { L["Gruul the Dragonkiller"], 650 },
         }
       },
       {
         L["Magtheridon's Lair"],
         {
-          { L["Magtheridon"], 2457 },
+          { L["Magtheridon"], 651 },
         }
       },
       {
         L["Coilfang: Serpentshrine Cavern"],
         {
-          { L["Hydross the Unstable"], 2458 },
-          { L["The Lurker Below"], 2459 },
-          { L["Leotheras the Blind"], 2460 },
-          { L["Fathom-Lord Karathress"], 2461 },
-          { L["Morogrim Tidewalker"], 2462 },
-          { L["Lady Vashj"], 2463 },
+          { L["Hydross the Unstable"], 623 },
+          { L["The Lurker Below"], 624 },
+          { L["Leotheras the Blind"], 625 },
+          { L["Fathom-Lord Karathress"], 626 },
+          { L["Morogrim Tidewalker"], 627 },
+          { L["Lady Vashj"], 628 },
         }
       },
       {
         L["Tempest Keep"],
         {
-          { L["Al'ar"], 2464 },
-          { L["Void Reaver"], 2465 },
-          { L["High Astromancer Solarian"], 2466 },
-          { L["Kael'thas Sunstrider"], 2467 },
+          { L["Al'ar"], 730 },
+          { L["Void Reaver"], 731 },
+          { L["High Astromancer Solarian"], 732 },
+          { L["Kael'thas Sunstrider"], 733 },
         }
       },
       {
         L["The Battle for Mount Hyjal"],
         {
-          { L["Rage Winterchill"], 2468 },
-          { L["Anetheron"], 2469 },
-          { L["Kaz'rogal"], 2470 },
-          { L["Azgalor"], 2471 },
-          { L["Archimonde"], 2472 },
+          { L["Rage Winterchill"], 618 },
+          { L["Anetheron"], 619 },
+          { L["Kaz'rogal"], 620 },
+          { L["Azgalor"], 621 },
+          { L["Archimonde"], 622 },
         }
       },
       {
         L["Black Temple"],
         {
-          { L["High Warlord Naj'entus"], 2473 },
-          { L["Supremus"], 2474 },
-          { L["Shade of Akama"], 2475 },
-          { L["Teron Gorefiend"], 2476 },
-          { L["Gurtogg Bloodboil"], 2477 },
-          { L["Reliquary of Souls"], 2478 },
-          { L["Mother Shahraz"], 2479 },
-          { L["The Illidari Council"], 2480 },
-          { L["Illidan Stormrage"], 2481 },
+          { L["High Warlord Naj'entus"], 601 },
+          { L["Supremus"], 602 },
+          { L["Shade of Akama"], 603 },
+          { L["Teron Gorefiend"], 604 },
+          { L["Gurtogg Bloodboil"], 605 },
+          { L["Reliquary of Souls"], 606 },
+          { L["Mother Shahraz"], 607 },
+          { L["The Illidari Council"], 608 },
+          { L["Illidan Stormrage"], 609 },
         }
       },
       {
         L["Zul'Aman"],
         {
-          { L["Akil'zon"], 2482 },
-          { L["Nalorakk"], 2483 },
-          { L["Jan'alai"], 2484 },
-          { L["Halazzi"], 2485 },
-          { L["Hex Lord Malacrass"], 2486 },
-          { L["Daakara"], 2487 },
+          { L["Akil'zon"], 1189 },
+          { L["Nalorakk"], 1190 },
+          { L["Jan'alai"], 1191 },
+          { L["Halazzi"], 1192 },
+          { L["Hex Lord Malacrass"], 1193 },
+          { L["Daakara"], 1194 },
         }
       },
       {
         L["The Sunwell Plateau"],
         {
-          { L["Kalecgos"], 2488 },
-          { L["Brutallus"], 2489 },
-          { L["Felmyst"], 2490 },
-          { L["Eredar Twins"], 2491 },
-          { L["M'uru"], 2492 },
-          { L["Kil'jaeden"], 2493 },
+          { L["Kalecgos"], 724 },
+          { L["Brutallus"], 725 },
+          { L["Felmyst"], 726 },
+          { L["Eredar Twins"], 727 },
+          { L["M'uru"], 728 },
+          { L["Kil'jaeden"], 729 },
         }
       },
     }
@@ -416,7 +416,7 @@ local function get_encounters_list()
 end
 
 local function get_zoneId_list()
-  if not WeakAuras.IsRetail() then return "" end
+  if WeakAuras.IsClassic() then return "" end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
@@ -1573,21 +1573,21 @@ Private.load_prototype = {
       hidden = true,
       init = "arg",
       test = "true",
-      enable = WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
     },
     {
       name = "zonegroupId",
       hidden = true,
       init = "arg",
       test = "true",
-      enable = WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
     },
     {
       name = "zoneIds",
       display = L["Zone ID(s)"],
       type = "string",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
       preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
@@ -1703,7 +1703,7 @@ Private.load_prototype = {
   }
 };
 
-local function AddUnitChangeInternalEvents(triggerUnit, t)
+local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
   if (triggerUnit == nil) then
     return
   end
@@ -1714,9 +1714,13 @@ local function AddUnitChangeInternalEvents(triggerUnit, t)
     tinsert(t, "PET_UPDATE")
   else
     if Private.multiUnitUnits[triggerUnit] then
+      local isPet
       for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
-        tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
-        WeakAuras.WatchUnitChange(unit)
+        isPet = WeakAuras.UnitIsPet(unit)
+        if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
+          tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
+          WeakAuras.WatchUnitChange(unit)
+        end
       end
     else
       tinsert(t, "UNIT_CHANGED_" .. string.lower(triggerUnit))
@@ -1732,10 +1736,14 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
 
   if Private.multiUnitUnits[triggerUnit] then
     for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
-      tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
+      if not WeakAuras.UnitIsPet(unit) then
+        tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
+      end
     end
   else
-    tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
+    if not WeakAuras.UnitIsPet(triggerUnit) then
+      tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
+    end
   end
 end
 
@@ -1771,11 +1779,32 @@ local function AddUnitEventForEvents(result, unit, event)
 end
 
 local unitHelperFunctions = {
+  UnitChangedForceEventsWithPets = function(trigger)
+    local events = {}
+    local includePets = trigger.use_includePets == true and trigger.includePets or nil
+    if Private.multiUnitUnits[trigger.unit] then
+      local isPet
+      for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
+        isPet = WeakAuras.UnitIsPet(unit)
+        if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
+          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        end
+      end
+    else
+      if trigger.unit then
+        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
+      end
+    end
+    return events
+  end,
+
   UnitChangedForceEvents = function(trigger)
     local events = {}
     if Private.multiUnitUnits[trigger.unit] then
       for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
-        tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        if not WeakAuras.UnitIsPet(unit) then
+          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        end
       end
     else
       if trigger.unit then
@@ -2267,6 +2296,7 @@ Private.event_prototypes = {
   },
   ["Health"] = {
     type = "unit",
+    includePets = "true",
     canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
@@ -2293,11 +2323,14 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
       return result
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Health"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -2357,6 +2390,14 @@ Private.event_prototypes = {
         display = L["Health (%)"],
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "deficit",
+        display = WeakAuras.newFeatureString .. L["Health Deficit"],
+        type = "number",
+        init = "total - value",
         store = true,
         conditionType = "number"
       },
@@ -2511,6 +2552,17 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "includePets",
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -2642,12 +2694,15 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
 
       return result
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -2836,6 +2891,14 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "deficit",
+        display = WeakAuras.newFeatureString .. L["Power Deficit"],
+        type = "number",
+        init = "total - value",
+        store = true,
+        conditionType = "number"
+      },
+      {
         name = "name",
         display = L["Unit Name"],
         type = "string",
@@ -2906,6 +2969,17 @@ Private.event_prototypes = {
         conditionType = "select",
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
+        name = "includePets",
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -6314,7 +6388,7 @@ Private.event_prototypes = {
       {
         name = "name",
         hidden = true,
-        init = "spell",
+        init = "name",
         test = "true",
         store = true
       },
@@ -7236,8 +7310,11 @@ Private.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
       AddRemainingCastInternalEvents(unit, result)
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
       return result
     end,
     loadFunc = function(trigger)
@@ -7245,7 +7322,7 @@ Private.event_prototypes = {
         WeakAuras.WatchForCastLatency()
       end
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     canHaveDuration = "timed",
     name = L["Cast"],
     init = function(trigger)
@@ -7458,6 +7535,17 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "includePets",
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -7621,7 +7709,7 @@ Private.event_prototypes = {
         "PLAYER_TARGET_CHANGED"
       },
       ["unit_events"] = {
-        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_AURA"}
+        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_AURA", "PLAYER_DAMAGE_DONE_MODS"}
       }
     },
     internal_events = function(trigger, untrigger)
@@ -7714,6 +7802,26 @@ Private.event_prototypes = {
         init = "WeakAuras.GetCritChance()",
         store = true,
         conditionType = "number"
+      },
+      {
+        name = "hitrating",
+        display = L["Hit Rating"],
+        type = "number",
+        init = "max(GetCombatRating(CR_HIT_MELEE), GetCombatRating(CR_HIT_RANGED), GetCombatRating(CR_HIT_SPELL))",
+        store = true,
+        enable = WeakAuras.IsBCC(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsBCC()
+      },
+      {
+        name = "hitpercent",
+        display = L["Hit (%)"],
+        type = "number",
+        init = "WeakAuras.GetHitChance()",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsBCC(),
+        hidden = not WeakAuras.IsBCC()
       },
       {
         name = "hasterating",

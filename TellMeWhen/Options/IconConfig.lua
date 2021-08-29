@@ -107,7 +107,7 @@ function IE:LoadIcon(isRefresh, icon)
 
 		local ic_old = CI.icon
 
-		if type(icon) == "table" then			
+		if type(icon) == "table" then
 			PlaySound(SOUNDKIT.IG_CHARACTER_INFO_TAB)
 			IE:SaveSettings()
 			
@@ -124,7 +124,7 @@ function IE:LoadIcon(isRefresh, icon)
 			CI.icon = nil
 			IE.TabGroups.ICON:SetChildrenEnabled(false)
 
-			if IE.CurrentTabGroup.identifier == "ICON" then
+			if IE.CurrentTabGroup and IE.CurrentTabGroup.identifier == "ICON" then
 				IE.ResetButton:Disable()
 			end
 		end

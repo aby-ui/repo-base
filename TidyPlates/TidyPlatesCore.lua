@@ -645,7 +645,7 @@ do
 
 	-- UpdateIndicator_HealthBar: Updates the value on the health bar
 	function UpdateIndicator_HealthBar()
-		local healthRange = max(unit.healthmax, unit.health + unit.absorb)
+		local healthRange = max(unit.healthmax, unit.health + (unit.absorb or 0))
         visual.healthbar:SetMinMaxValues(0, healthRange)
 		visual.healthbar:SetValue(unit.health, unit.absorb)
 

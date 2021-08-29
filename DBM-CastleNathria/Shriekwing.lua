@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2393, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614184808")
+mod:SetRevision("20210823220630")
 mod:SetCreatureID(164406)
 mod:SetEncounterID(2398)
 mod:SetUsedIcons(1, 2, 3)
@@ -214,7 +214,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerBlindSwipeCD:Stop()
 		timerWaveofBloodCD:Stop()
 		timerEchoingScreechCD:Stop()
-		timerEarsplittingShriekCD:Start(13.4)
+		timerEarsplittingShriekCD:Start(10.9)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(8)
 		end

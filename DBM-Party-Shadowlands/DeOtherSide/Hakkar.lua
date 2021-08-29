@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2408, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201122213043")
+mod:SetRevision("20210825002052")
 mod:SetCreatureID(166473)
 mod:SetEncounterID(2395)
 
@@ -68,7 +68,7 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.barrierActive = false
-	timerCorruptedBloodCD:Start(8.5-delay)--SUCCESS
+	timerCorruptedBloodCD:Start(8.1-delay)--SUCCESS
 	timerPiercingBarbCD:Start(10.1-delay)
 	timerBloodBarrierCD:Start(26.5-delay)--SUCCESS
 --	timerBloodBarrageCD:Start(22.5-delay)--It's cast instantly on barrier application, redundant timer
@@ -124,7 +124,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 322746 then
 		if args:IsPlayer() then
 			specWarnCorruptedBlood:Show()
-			specWarnCorruptedBlood:Play("runout")
+			specWarnCorruptedBlood:Play("scatter")
 			yellCorruptedBlood:Yell()
 			--if self.Options.RangeFrame then
 			--	DBM.RangeCheck:Show(8, debuffFilter)--Show everyone

@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = tonumber(("20210628175745"):match("%d+")) or 33333333333333
+local MINOR_VERSION = tonumber(("20210821131131"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_MINOR_VERSION then
 	_G.DogTag_MINOR_VERSION = MINOR_VERSION
@@ -1188,9 +1188,23 @@ local function getLiteralString(str, doubleQuote)
 	local t = newList()
 	t[#t+1] = quote_byte
 	local i = 1
+	local multibytes = 0
 	while i <= #data do
 		local v = data[i]
-		if v == quote_byte then
+
+		-- https://stackoverflow.com/a/44776334/2465631
+		if v >= 240 then     -- 0b11110000
+			multibytes = 4
+		elseif v >= 225 then -- 0b11100000
+			multibytes = 3
+		elseif v >= 192 then -- 0b11000000
+			multibytes = 2
+		end
+
+		if multibytes > 0 then
+			t[#t+1] = v
+			multibytes = multibytes - 1
+		elseif v == quote_byte then
 			t[#t+1] = backslash_byte
 			t[#t+1] = quote_byte
 		elseif v == newline_byte then
@@ -1675,18 +1689,24 @@ function DogTag:ColorizeCode(code)
 			if v == inString and not lastStringBackslash then
 				inString = false
 				t[#t+1] = string_char(v)
+				t[#t+1] = "|r"
 			else
 				t[#t+1] = string_char(v)
 			end
 		elseif v == open_bracket_byte then
+			if inCode == 0 then
+				t[#t+1] = "|r"
+			end
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.grouping
 			t[#t+1] = "["
+			t[#t+1] = "|r"
 			inCode = inCode + 1
 		elseif v == close_bracket_byte then
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.grouping
 			t[#t+1] = "]"
+			t[#t+1] = "|r"
 			inCode = inCode - 1
 			if inCode == 0 then
 				t[#t+1] = "|cff"
@@ -1698,14 +1718,17 @@ function DogTag:ColorizeCode(code)
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.grouping
 			t[#t+1] = "("
+			t[#t+1] = "|r"
 		elseif v == close_parenthesis_byte then
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.grouping
 			t[#t+1] = ")"
+			t[#t+1] = "|r"
 		elseif v == comma_byte then
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.grouping
 			t[#t+1] = ","
+			t[#t+1] = "|r"
 		elseif quotes[v] then
 			t[#t+1] = "|cff"
 			t[#t+1] = colors.literal
@@ -1725,6 +1748,7 @@ function DogTag:ColorizeCode(code)
 				t[#t+1] = "|cff"
 				t[#t+1] = colors.operator
 				t[#t+1] = isReserved
+				t[#t+1] = "|r"
 				i = i + #isReserved - 1
 			else
 				local j = i
@@ -1746,6 +1770,7 @@ function DogTag:ColorizeCode(code)
 					for q = i, j do
 						t[#t+1] = string_char(tokens[q])
 					end
+					t[#t+1] = "|r"
 					i = j
 				else
 					j = i
@@ -1767,6 +1792,7 @@ function DogTag:ColorizeCode(code)
 						for q = i, j do
 							t[#t+1] = string_char(tokens[q])
 						end
+						t[#t+1] = "|r"
 						i = j
 					else
 						t[#t+1] = string_char(v)
@@ -1778,10 +1804,11 @@ function DogTag:ColorizeCode(code)
 			lastChar = tokens[i]
 		end
 	end
-	t[#t+1] = "|r"
+	if inCode == 0 then
+		t[#t+1] = "|r"
+	end
 	tokens = del(tokens)
 	local s = table.concat(t)
-	s = s:gsub("|c%x%x%x%x%x%x%x%x(|[cr])", "%1")
 	if s == "|r" then
 		s = ""
 	end

@@ -43,6 +43,7 @@ function EF:ADDON_LOADED(addon)
 		EF:RegisterEvent("DELETE_ITEM_CONFIRM")
 		EF:RegisterEvent("PLAYER_ENTERING_WORLD")
 		EF:RegisterEvent("UNIT_INVENTORY_CHANGED")
+		EF:RegisterEvent("PLAYER_REGEN_DISABLED")
 		--DSH.RemoveButton = DSH.RemoveButton or CreateRemoveButton()
 
 		GameTooltip:HookScript("OnTooltipSetItem", function() DSH:ItemToolTip() end);
@@ -352,6 +353,20 @@ local function getFirstSetMatch()
 	end
 end
 
+function EF:PLAYER_REGEN_DISABLED()
+	if DSH.RemoveSetButton then
+		DSH.RemoveSetButton:Enable()
+		DSH.RemoveSetButton:Hide()
+		DSH.loadingSet = nil
+	end
+	if DSH.LDBOpen then
+		DSH.LDBOpen = false
+		DSH.SetC:Hide()
+		DSH:UpdateSetContainer()
+	end
+	
+end
+
 function EF:PLAYER_ENTERING_WORLD()
 	--Hook IsDisenchantable so you can't DE items with shard in them from addons
 	--Only Tested with Molinari
@@ -427,6 +442,7 @@ function EF:UNIT_SPELLCAST_SENT(unit, _, _, spellID)
 			DSH.RemoveSetButton:SetText("|cFF6C6C6C"..DSH.RemoveSetButton.text)
 			DSH.RemoveSetButton:Disable()
 			C_Timer.After(1.3, function()
+				if InCombatLockdown() then return end
 				if DSH.RemoveSetButton:IsVisible() then
 					DSH.RemoveSetButton:SetText(DSH.loadColor..DSH.RemoveSetButton.text)
 					DSH.RemoveSetButton:SetWidth(DSH.RemoveSetButton:GetTextWidth() + 10)
@@ -533,26 +549,18 @@ function DSH:LoadCurrentSet()
 		return
 	end
 	
-	local socketStartedOpen
-	if ItemSocketingFrame and ItemSocketingFrame:IsShown() then socketStartedOpen = true end
-	
 	DSH:UpdateShardsInBagsTable()
 
 	local missing = {}
-	
 	local shardsInSet = getShardsFromKey(DSH.db.char.sets[DSH.loadingSet].key)
+	local socketStartedOpen
+	if ItemSocketingFrame and ItemSocketingFrame:IsShown() then socketStartedOpen = true end
 	
 	for _, shard in pairs(shardsInSet) do
 		if not tContains(DSH.currentSet.shards, shard) then
 			table.insert(missing, shard)
 		end
 	end
-	
-	-- if not next(missing) then 
-		-- DSH.loadingSet = nil
-		-- DSH.UpdateSetButtons()
-		-- return
-	-- end
 	
 	local extraSlot = false
 	
@@ -711,8 +719,11 @@ end
 
 function DSH:UpdateRemoveShardButton()
 	--DSH.RemoveSetButton = DSH.RemoveSetButton or DSH:CreateRemoveButton(DSH.SetC)
+	if InCombatLockdown() then return end
+
 	if not DSH.RemoveSetButton then
 		DSH.RemoveSetButton = DSH:CreateRemoveButton(DSH.SetC)
+		if not DSH.RemoveSetButton then return end
 		DSH.RemoveSetButton:SetBackdropColor (0, 0, 0, 1)
 		DSH.RemoveSetButton:SetFrameStrata("DIALOG")
 		DSH.RemoveSetButton:SetHeight(SET_BUTTON_HEIGHT)
@@ -729,22 +740,19 @@ function DSH:UpdateRemoveShardButton()
 	
 	if DSH.removeShards and next(DSH.removeShards) ~= nil then
 		if DSH:GetBagFreeSpace() > 1 then
-			local button = DSH.RemoveSetButton
-			button:Show()
-			
-			button.text = L["REMOVE"].." ("..L[next(DSH.removeShards)]..")"
+			if not DSH.RemoveSetButton:IsVisible() then
+				DSH.RemoveSetButton:Show()
+				DSH.RemoveSetButton:Enable()
+			end
+			DSH.RemoveSetButton.text = L["REMOVE"].." ("..L[next(DSH.removeShards)]..")"
 			
 			local color = DSH.loadColor
-			if button:IsEnabled() then
-				button:SetText(color.. button.text)
-				button:SetWidth(button:GetTextWidth() + 10)
+			if DSH.RemoveSetButton:IsEnabled() then
+				DSH.RemoveSetButton:SetText(color.. DSH.RemoveSetButton.text)
+				DSH.RemoveSetButton:SetWidth(DSH.RemoveSetButton:GetTextWidth() + 10)
 				DSH:UpdateSetRemoveButtonPosition()
 			end
 			
-			--button:SetText(color.. button.text)
-			--button:SetWidth(button:GetTextWidth() + 10)
-			
-			--DSH:UpdateSetRemoveButtonPosition()
 			setRemoveButtonMacro(next(DSH.removeShards))
 		else
 			DSHPrint(L["BAG_FULL_BUTTON"])
@@ -832,7 +840,7 @@ local function createSetDeleteButton()
 	frame:SetScript("OnClick", function()
 		local deleteName = frame.setName
 		StaticPopupDialogs["DELETE_SHARD_SET"] = {
-			text = string.format(L["DELETE_SET_CONFIRM"], deleteName),--Do you want to greet the world today?",
+			text = string.format(L["DELETE_SET_CONFIRM"], deleteName),
 			button1 = ACCEPT,--"Yes",
 			button2 = CANCEL,--"No",
 			OnAccept = function()
@@ -940,10 +948,8 @@ end
 
 function DSH:UpdateSetButtons()
 	--dbpr("update set buttons")
-	
-	if not DSH.SetC then return end
+	if InCombatLockdown() or not DSH.SetC then return end
 	if not DSH.SetC:IsShown() then return end
-	if InCombatLockdown() then return end --abyui
 	
 	-- if not (DSH.SetC and DSH.SetC:IsShown()) then
 		-- return
@@ -1001,6 +1007,7 @@ end
 
 function DSH:UpdateSetContainer()
 	--dbpr("update")
+	if InCombatLockdown() then return end
 	if not DSH.SetC then return end
 	if DSH.LDBOpen then
 		DSH.SetC:SetParent(DSH.LDBButton)
@@ -1232,6 +1239,8 @@ function DSH:FormatFrame(frame, isButton)
 end
 
 function DSH:CreateRemoveButton(parent)
+	if InCombatLockdown() then return end
+
 	local button = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate, BackdropTemplate");
 	--button:SetPoint("LEFT", ItemSocketingSocket1, "RIGHT" , 5, 0)
 	button:SetNormalFontObject("GameFontNormal")
@@ -1248,6 +1257,7 @@ function DSH:CreateRemoveButton(parent)
 end
 
 function DSH:ToggleRemoveButton(show)
+	
 	DSH.RemoveButton = DSH.RemoveButton or DSH:CreateRemoveButton(DSH.DC)
 	DSH.RemoveButton:SetPoint("LEFT", ItemSocketingSocket1, "RIGHT" , 5, 0)
 	
@@ -1260,7 +1270,7 @@ function DSH:ToggleRemoveButton(show)
 		--item equipped
 		DSH.RemoveButton:SetAttribute("macrotext", "/use item:187532\n/script HideUIPanel(ItemSocketingFrame)\n/use "..DSH.lockedSocketBag.."\n/script SocketInventoryItem("..DSH.lockedSocketBag..")")
 	end
-
+	
 	if show then
 		DSH.RemoveButton:Show()
 	else

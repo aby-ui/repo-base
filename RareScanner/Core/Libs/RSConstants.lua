@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 44
-RSConstants.CURRENT_LOOT_DB_VERSION = 56
+RSConstants.CURRENT_LOOT_DB_VERSION = 57
 
 ---============================================================================
 -- Special events
@@ -77,7 +77,8 @@ RSConstants.PROFILE_DEFAULTS = {
 			soundObjectDisabled = false,
 			soundObjectPlayed = "PVP Horde",
 			soundVolume = 4,
-			soundChannel = "Master"
+			soundChannel = "Master",
+			soundCustomFolder = "RareScannerSounds"
 		},
 		display = {
 			displayButton = true,
@@ -196,7 +197,7 @@ RSConstants.DEFAULT_SOUNDS = {
 	["Level Up"] = "Interface\\AddOns\\RareScanner\\Media\\levelup2-4.ogg",
 }
 
-RSConstants.EXTERNAL_SOUND_FOLDER = "Interface\\AddOns\\RareScannerSounds\\"
+RSConstants.EXTERNAL_SOUND_FOLDER = "Interface\\AddOns\\%s\\%s"
 
 ---============================================================================
 -- CMD commands

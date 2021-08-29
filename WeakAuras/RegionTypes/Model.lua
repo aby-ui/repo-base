@@ -80,6 +80,7 @@ local regionFunctions = {
 local function create(parent)
   -- Main region
   local region = CreateFrame("FRAME", nil, UIParent);
+  region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);
@@ -161,16 +162,10 @@ local function ConfigureModel(region, model, data)
   end
 
   -- Enable model animation
-  if(data.advance) then
-    local elapsed = 0;
-    model:SetScript("OnUpdate", function(self, elaps)
-      Private.StartProfileSystem("model");
-      elapsed = elapsed + (elaps * 1000);
-      model:SetSequenceTime(data.sequence, elapsed);
-      Private.StopProfileSystem("model");
-    end)
+  if(data.advance and model:HasAnimation(data.sequence)) then
+    model:SetAnimation(data.sequence)
   else
-    model:SetScript("OnUpdate", nil)
+    model:SetAnimation(0)
   end
 end
 

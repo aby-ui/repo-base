@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2410, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210123235530")
+mod:SetRevision("20210825002052")
 mod:SetCreatureID(169769)
 mod:SetEncounterID(2396)
 
@@ -60,7 +60,7 @@ function mod:OnCombatStart(delay)
 	self.vb.soulCount = 0
 	timerCosmicArtificeCD:Start(3.7-delay, 1)--SUCCESS
 	timerSoulcrusherCD:Start(5.9-delay, 1)
-	timerMasterofDeathCD:Start(9.5-delay)
+	timerMasterofDeathCD:Start(9.3-delay)
 	timerShatterRealityCD:Start(60)
 end
 
@@ -131,8 +131,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.cosmicCount = 0
 		self.vb.soulCount = 0
 		timerCoalescing:Stop()
+		timerCosmicArtificeCD:Start(11.1, 1)--11-19 (maybe a case of pause/resume from previous stage?)
 		timerMasterofDeathCD:Start(15.6)
-		timerCosmicArtificeCD:Start(19.6, 1)
 		timerSoulcrusherCD:Start(21.8, 1)
 		timerShatterRealityCD:Start(76.4)
 	end

@@ -69,6 +69,14 @@ end
 -- Sound options database
 ---============================================================================
 
+function RSConfigDB.GetCustomSoundsFolder()
+	return private.db.sound.soundCustomFolder
+end
+
+function RSConfigDB.SetCustomSoundsFolder(value)
+	private.db.sound.soundCustomFolder = value
+end
+
 function RSConfigDB.AddCustomSound(name,file)
 	if (not private.db.sound.custom) then
 		private.db.sound.custom = {}
@@ -116,7 +124,7 @@ function RSConfigDB.GetSoundList()
 	-- Add custom sounds
 	if (RSConfigDB.GetCustomSounds()) then
 		for name, file in pairs (RSConfigDB.GetCustomSounds()) do
-			defaultList[name] = RSConstants.EXTERNAL_SOUND_FOLDER..file
+			defaultList[name] = string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), file)
 		end
 	end
 	return defaultList;

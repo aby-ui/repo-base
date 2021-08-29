@@ -958,7 +958,7 @@ function GenericTrigger.Rename(oldid, newid)
   Private.EveryFrameUpdateRename(oldid, newid)
 end
 
-local function MultiUnitLoop(Func, unit, ...)
+local function MultiUnitLoop(Func, unit, includePets, ...)
   unit = string.lower(unit)
   if unit == "boss" or unit == "arena" then
     for i = 1, MAX_BOSS_FRAMES do
@@ -969,21 +969,51 @@ local function MultiUnitLoop(Func, unit, ...)
       Func(unit..i, ...)
     end
   elseif unit == "group" then
-    Func("player", ...)
+    if includePets ~= "PetsOnly" then
+      Func("player", ...)
+    end
+    if includePets ~= nil then
+      Func("pet", ...)
+    end
     for i = 1, 4 do
-      Func("party"..i, ...)
+      if includePets ~= "PetsOnly" then
+        Func("party"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("partypet"..i, ...)
+      end
     end
     for i = 1, 40 do
-      Func("raid"..i, ...)
+      if includePets ~= "PetsOnly" then
+        Func("raid"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("raidpet"..i, ...)
+      end
     end
   elseif unit == "party" then
-    Func("player", ...)
+    if includePets ~= "PetsOnly" then
+      Func("player", ...)
+    end
+    if includePets ~= nil then
+      Func("pet", ...)
+    end
     for i = 1, 4 do
-      Func("party"..i, ...)
+      if includePets ~= "PetsOnly" then
+        Func("party"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("partypet"..i, ...)
+      end
     end
   elseif unit == "raid" then
     for i = 1, 40 do
-      Func("raid"..i, ...)
+      if includePets ~= "PetsOnly" then
+        Func("raid"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("raidpet"..i, ...)
+      end
     end
   else
     Func(unit, ...)
@@ -1014,16 +1044,17 @@ function LoadEvent(id, triggernum, data)
     end
   end
   if data.unit_events then
+    local includePets = data.includePets
     for unit, events in pairs(data.unit_events) do
       unit = string.lower(unit)
       for index, event in pairs(events) do
         MultiUnitLoop(
-          function(unit)
-            loaded_unit_events[unit] = loaded_unit_events[unit] or {};
-            loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
-            loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
-            loaded_unit_events[unit][event][id][triggernum] = data;
-          end, unit
+          function(u)
+            loaded_unit_events[u] = loaded_unit_events[u] or {};
+            loaded_unit_events[u][event] = loaded_unit_events[u][event] or {};
+            loaded_unit_events[u][event][id] = loaded_unit_events[u][event][id] or {}
+            loaded_unit_events[u][event][id][triggernum] = data;
+          end, unit, includePets
         )
       end
     end
@@ -1064,15 +1095,16 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
           end
         end
         if data.unit_events then
+          local includePets = data.includePets
           for unit, events in pairs(data.unit_events) do
             for index, event in pairs(events) do
               MultiUnitLoop(
-                function (unit)
-                  if not (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
-                    unitEventsToRegister[unit] = unitEventsToRegister[unit] or {}
-                    unitEventsToRegister[unit][event] = true
+                function (u)
+                  if not (genericTriggerRegisteredUnitEvents[u] and genericTriggerRegisteredUnitEvents[u][event]) then
+                    unitEventsToRegister[u] = unitEventsToRegister[u] or {}
+                    unitEventsToRegister[u][event] = true
                   end
-                end, unit
+                end, unit, includePets
               )
             end
           end
@@ -1144,6 +1176,7 @@ function GenericTrigger.Add(data, region)
         local trigger_events = {};
         local internal_events = {};
         local trigger_unit_events = {};
+        local includePets
         local trigger_subevents = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
@@ -1233,6 +1266,11 @@ function GenericTrigger.Add(data, region)
               if (type(force_events) == "function") then
                 force_events = force_events(trigger, untrigger)
               end
+
+
+              if prototype.includePets then
+                includePets = trigger.use_includePets == true and trigger.includePets or nil
+              end
             end
           end
         else -- CUSTOM
@@ -1297,13 +1335,18 @@ function GenericTrigger.Add(data, region)
                     hasParam = true
                   end
                 elseif trueEvent:match("^UNIT_") then
-                  MultiUnitLoop(
-                    function(unit)
-                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                      tinsert(trigger_unit_events[unit], trueEvent)
-                      isUnitEvent = true
-                    end, i
-                  )
+                  isUnitEvent = true
+
+                  if string.lower(strsub(i, #i - 3)) == "pets" then
+                    i = strsub(i, 1, #i-4)
+                    includePets = "PlayersAndPets"
+                  elseif string.lower(strsub(i, #i - 7)) == "petsonly" then
+                    includePets = "PetsOnly"
+                    i = strsub(i, 1, #i - 8)
+                  end
+
+                  trigger_unit_events[i] = trigger_unit_events[i] or {}
+                  tinsert(trigger_unit_events[i], trueEvent)
                 end
               end
               if isCLEU then
@@ -1347,6 +1390,7 @@ function GenericTrigger.Add(data, region)
           internal_events = internal_events,
           force_events = force_events,
           unit_events = trigger_unit_events,
+          includePets = includePets,
           inverse = trigger.use_inverse,
           subevents = trigger_subevents,
           durationFunc = durationFunc,
@@ -1593,6 +1637,7 @@ do
   local function swingTimerCheck(event, unit, guid, spell)
     if event ~= "PLAYER_EQUIPMENT_CHANGED" and unit and unit ~= "player" then return end
     Private.StartProfileSystem("generictrigger swing");
+    local now = GetTime()
     if event == "UNIT_ATTACK_SPEED" then
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
       offSpeedNew = offSpeedNew or 0
@@ -1600,8 +1645,9 @@ do
         if mainSpeedNew ~= mainSpeed then
           timer:CancelTimer(mainTimer)
           local multiplier = mainSpeedNew / mainSpeed
-          local timeLeft = (lastSwingMain + swingDurationMain - GetTime()) * multiplier
+          local timeLeft = (lastSwingMain + swingDurationMain - now) * multiplier
           swingDurationMain = mainSpeedNew
+          mainSwingOffset = (lastSwingMain + swingDurationMain) - (now + timeLeft)
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "main")
         end
       end
@@ -1609,7 +1655,7 @@ do
         if offSpeedNew ~= offSpeed then
           timer:CancelTimer(offTimer)
           local multiplier = offSpeedNew / mainSpeed
-          local timeLeft = (lastSwingOff + swingDurationOff - GetTime()) * multiplier
+          local timeLeft = (lastSwingOff + swingDurationOff - now) * multiplier
           swingDurationOff = offSpeedNew
           offTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "off")
         end
@@ -1664,9 +1710,7 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
       swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-      if not WeakAuras.IsBCC() then
-        swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
-      end
+      swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
       if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
@@ -2567,6 +2611,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     watchUnitChange:RegisterEvent("UNIT_FACTION")
     watchUnitChange:RegisterEvent("PLAYER_ENTERING_WORLD")
+    watchUnitChange:RegisterEvent("UNIT_PET")
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
@@ -2586,6 +2631,11 @@ function WeakAuras.WatchUnitChange(unit)
             watchUnitChange.nameplateFaction[unit] = reaction
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
           end
+        end
+      elseif event == "UNIT_PET" then
+        local pet = WeakAuras.unitToPetUnit[unit]
+        if pet then
+          WeakAuras.ScanEvents("UNIT_CHANGED_" .. pet, pet)
         end
       else
         local inRaid = IsInRaid()
@@ -3206,8 +3256,12 @@ do
           if(v:GetObjectType() == "FontString") then
             local text = v:GetText();
             if(text) then
-              local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) %(%d+ .+%)$");
-              if(name) then
+              local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+              if(name and name ~= "") then
+                return name, shortenedName;
+              end
+              _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+              if(name and name ~= "") then
                 return name, shortenedName;
               end
             end
@@ -3979,20 +4033,22 @@ WeakAuras.GetItemSubClassInfo = function(i)
   return GetItemSubClassInfo(classId, subClassId)
 end
 
-if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
-  WeakAuras.GetCritChance = function()
-    return max(GetRangedCritChance(), GetCritChance())
+WeakAuras.GetCritChance = function()
+  -- Based on what the wow paper doll does
+  local spellCrit = 0
+  for i = 2, MAX_SPELL_SCHOOLS or 7 do -- MAX_SPELL_SCHOOLS is nil on classic_era
+    spellCrit = max(spellCrit, GetSpellCritChance(i))
   end
-else
-  WeakAuras.GetCritChance = function()
-    -- Based on what the wow paper doll does
-    local spellCrit = GetSpellCritChance(2)
-    for i = 3, MAX_SPELL_SCHOOLS do
-      spellCrit = min(spellCrit, GetSpellCritChance(i))
-    end
-    return max(spellCrit, GetRangedCritChance(), GetCritChance())
-  end
+  return max(spellCrit, GetRangedCritChance(), GetCritChance())
 end
+
+WeakAuras.GetHitChance = function()
+  local melee = (GetCombatRatingBonus(CR_HIT_MELEE) or 0) + (GetHitModifier() or 0)
+  local ranged = (GetCombatRatingBonus(CR_HIT_RANGED) or 0) + (GetHitModifier() or 0)
+  local spell = (GetCombatRatingBonus(CR_HIT_SPELL) or 0) + (GetSpellHitModifier() or 0)
+  return max(melee, ranged, spell)
+end
+
 
 local types = {}
 tinsert(types, "custom")

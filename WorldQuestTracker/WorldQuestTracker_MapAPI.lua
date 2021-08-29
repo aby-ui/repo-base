@@ -803,7 +803,7 @@ end
 							local text = textString and textString:GetText()
 							if (text and text ~= "") then
 								text = text:gsub("(|c).*(|r)", "")
-								if (text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA) or text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA:lower()) or text:find("анимы")) then
+								if ((WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA)) or (WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA:lower()) or text:find("анимы"))) then
 									local animaAmount = tonumber(text:match("%d+"))
 									if (animaAmount) then
 										isArtifact = 9

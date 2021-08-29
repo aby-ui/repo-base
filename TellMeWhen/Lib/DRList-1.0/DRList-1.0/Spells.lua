@@ -1,5 +1,5 @@
 local Lib, version = LibStub("DRList-1.0")
-if Lib.spellList and version >= 23 then return end
+if Lib.spellList and version >= 25 then return end
 
 if Lib.gameExpansion == "retail" then
 
@@ -85,6 +85,7 @@ if Lib.gameExpansion == "retail" then
         [204490]  = "silence",         -- Sigil of Silence
 --      [78675]   = "silence",         -- Solar Beam (doesn't seem to DR)
         [202933]  = "silence",         -- Spider Sting
+        [356727]  = "silence",         -- Spider Venom
         [217824]  = "silence",         -- Shield of Virtue
         [15487]   = "silence",         -- Silence
         [1330]    = "silence",         -- Garrote
@@ -149,6 +150,7 @@ if Lib.gameExpansion == "retail" then
         [102359]  = "root",            -- Mass Entanglement
         [117526]  = "root",            -- Binding Shot (Note: debuff says stun but it's actually a root)
         [162480]  = "root",            -- Steel Trap
+        [273909]  = "root",            -- Steelclaw Trap
 --      [190927]  = "root_harpoon",    -- Harpoon (TODO: check if DRs with itself)
         [212638]  = "root",            -- Tracker's Net
         [201158]  = "root",            -- Super Sticky Tar
@@ -217,6 +219,7 @@ elseif Lib.gameExpansion == "tbc" then
         [118]   = "incapacitate", -- Polymorph (Rank 1)
         [12824] = "incapacitate", -- Polymorph (Rank 2)
         [12825] = "incapacitate", -- Polymorph (Rank 3)
+        [12826] = "incapacitate", -- Polymorph (Rank 4)
         [28271] = "incapacitate", -- Polymorph: Turtle
         [28272] = "incapacitate", -- Polymorph: Pig
         [20066] = "incapacitate", -- Repentance
@@ -262,6 +265,11 @@ elseif Lib.gameExpansion == "tbc" then
         [30153] = "stun", -- Intercept Stun (Rank 1)
         [30195] = "stun", -- Intercept Stun (Rank 2)
         [30197] = "stun", -- Intercept Stun (Rank 3)
+        [25273] = "stun", -- Intercept Stun (Rank 4)
+        [25274] = "stun", -- Intercept Stun (Rank 5)
+        [20253] = "stun", -- Intercept Stun 1 (These are probably invalid/unnecessary but im too lazy to test atm)
+        [20614] = "stun", -- Intercept Stun 2
+        [20615] = "stun", -- Intercept Stun 3
         [20549] = "stun", -- War Stomp (Racial)
         [4064]  = "stun", -- Rough Copper Bomb
         [4065]  = "stun", -- Large Copper Bomb

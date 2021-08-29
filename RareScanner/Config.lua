@@ -421,7 +421,9 @@ local function GetSoundOptions()
 					infoSound1 = {
 						order = 2,
 						type = "description",
-						name = AL["SOUND_CUSTOM_FILE_INFO1"],
+						name = function()
+							return string.format(AL["SOUND_CUSTOM_FILE_INFO1"], RSConfigDB.GetCustomSoundsFolder())
+						end,
 					},
 					infoSound2 = {
 						order = 3,
@@ -447,7 +449,9 @@ local function GetSoundOptions()
 						order = 7,
 						type = "input",
 						name = AL["SOUND_CUSTOM_FILE"],
-						desc = AL["SOUND_CUSTOM_FILE_DESC"],
+						desc = function()
+							return string.format(AL["SOUND_CUSTOM_FILE_DESC"], RSConfigDB.GetCustomSoundsFolder())
+						end,
 						get = function(_, value) 
 							return RSConfigDB.GetCustomSound(name)
 						end,
@@ -482,7 +486,8 @@ local function GetSoundOptions()
 						type = "execute",
 						func = function()
 							if (RSConfigDB.GetCustomSound(name)) then
-								PlaySoundFile(RSConstants.EXTERNAL_SOUND_FOLDER..RSConfigDB.GetCustomSound(name), "Master")
+								print(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(name)))
+								PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(name)), "Master")
 							end
 						end,
 						width = 0.8,
@@ -565,7 +570,7 @@ local function GetSoundOptions()
 					name = AL["SOUND_AUDIOS"],
 				},
 				soundPlayed = {
-					order = 6.1,
+					order = 5.1,
 					type = "select",
 					dialogControl = 'LSM30_Sound',
 					name = AL["ALARM_SOUND"],
@@ -579,7 +584,7 @@ local function GetSoundOptions()
 					disabled = function() return RSConfigDB.IsPlayingSound() end,
 				},
 				soundObjectPlayed = {
-					order = 6.2,
+					order = 5.2,
 					type = "select",
 					dialogControl = 'LSM30_Sound',
 					name = AL["ALARM_TREASURES_SOUND"],
@@ -592,6 +597,25 @@ local function GetSoundOptions()
 					width = 1.5,
 					disabled = function() return RSConfigDB.IsPlayingObjectsSound() end,
 				},
+				customSoundFolder = {
+					order = 6,
+					type = "input",
+					name = AL["SOUND_CUSTOM_FOLDER"],
+					desc = AL["SOUND_CUSTOM_FOLDER_DESC"],
+					get = function(_, value) return RSConfigDB.GetCustomSoundsFolder() end,
+					set = function(_, value)
+						RSConfigDB.SetCustomSoundsFolder(value)
+					end,
+					width = "full",
+					validate = function(_, value)
+						if (not value or value == '') then
+							return false
+						end
+						
+						return true
+					end,
+					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
+				},
 				newCustomSound = {
 					order = 7,
 					type = "input",
@@ -602,8 +626,16 @@ local function GetSoundOptions()
 						private.sound_options_newCustomSound_input = value
 						addNewSound(private.sound_options_newCustomSound_input);
 					end,
-					width = "normal",
-				}
+					width = 1.5,
+					validate = function(_, value)
+						if (not value or value == '') then
+							return false
+						end
+						
+						return true
+					end,
+					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
+				},
 			},
 		}
 		

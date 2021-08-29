@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibDogTag-3.0"
-local MINOR_VERSION = tonumber(("20210628175745"):match("%d+")) or 33333333333333
+local MINOR_VERSION = tonumber(("20210821131131"):match("%d+")) or 33333333333333
 
 if MINOR_VERSION > _G.DogTag_MINOR_VERSION then
 	_G.DogTag_MINOR_VERSION = MINOR_VERSION
@@ -846,7 +846,13 @@ function DogTag:OpenHelp()
 			local x = text:sub(3, -3)
 			x = "[" .. x .. "]"
 			x = DogTag:ColorizeCode(x)
-			local y = x:match("^|cff%x%x%x%x%x%x%[(|cff%x%x%x%x%x%x.*)|cff%x%x%x%x%x%x%]|r$") .. "|r"
+			-- Find the first opening bracket in the colored string,
+			-- which is the one we just prepended to `x`.
+			local first = string.find(x, "|cff%x%x%x%x%x%x%[") + 11
+			-- Find the last closing bracket in the colored string,
+			-- which is the one we just appended to `x`.
+			local last = string.find(x, "|cff%x%x%x%x%x%x%]|r[^%]]*$") - 1
+			local y = x:sub(first, last)
 			return y
 		end
 		return DogTag:ColorizeCode(text:sub(2, -2))

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2414, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201123180349")
+mod:SetRevision("20210821213231")
 mod:SetCreatureID(162060)
 mod:SetEncounterID(2358)
 
@@ -49,7 +49,7 @@ function mod:BlastTarget(targetname, uId)
 	if not targetname then return end
 	if targetname == UnitName("player") then
 		specWarnPurifyingBlast:Show()
-		specWarnPurifyingBlast:Play("runout")
+		specWarnPurifyingBlast:Play("scatter")
 		yellPurifyingBlast:Yell()
 	else
 		warnPurifyingBlast:Show(targetname)

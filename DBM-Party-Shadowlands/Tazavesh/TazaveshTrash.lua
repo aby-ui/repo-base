@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TazaveshTrash", "DBM-Party-Shadowlands", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210629170828")
+mod:SetRevision("20210825002052")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -30,7 +30,7 @@ local specWarnSparkBurn						= mod:NewSpecialWarningInterrupt(355930, false, nil
 local specWarnRefractionShield				= mod:NewSpecialWarningDispel(355980, "MagicDispeller", nil, nil, 1, 2)--Support Officer
 local specWarnHardLightBarrier				= mod:NewSpecialWarningInterrupt(355934, "HasInterrupt", nil, nil, 1, 2)--Support Officer
 local specWarnRiftBlasts					= mod:NewSpecialWarningDodge(352390, nil, nil, nil, 2, 2)--Zo'honn
-local specWarnHyperlightBolt				= mod:NewSpecialWarningInterrupt(354297, "Tank", nil, nil, 1, 2)--Support Officer/Zo'honn
+local specWarnHyperlightBolt				= mod:NewSpecialWarningInterrupt(354297, false, nil, 2, 1, 2)--Support Officer/Zo'honn (Spammy if interrupt off CD
 local specWarnEmpoweredGlyphofRestraint		= mod:NewSpecialWarningInterrupt(356537, "HasInterrupt", nil, nil, 1, 2)--Zo'honn casts this on everyone
 local specWarnLightshardRetreat				= mod:NewSpecialWarningDodge(357197, nil, nil, nil, 2, 2)--Lightshard Retreat
 local specWarnChronolightEnhancer			= mod:NewSpecialWarningRun(357229, "Tank", nil, nil, 4, 2)--Cartel Muscle

@@ -476,6 +476,15 @@ local GetDistance_Point = DF.GetDistance_Point
 	ff.divbar:SetPoint("topleft", ff, "topleft", 3, ff.divBarY)
 	ff.divbar:SetPoint("topright", ff, "topright", -3, ff.divBarY)
 
+	ff.overlayCaptcha = CreateFrame("frame", nil, ff, "BackdropTemplate")
+	ff.overlayCaptcha:SetPoint("topleft", ff.divbar, "topleft", -2, 0)
+	ff.overlayCaptcha:SetPoint("bottomright", ff, "bottomright", 0, 0)
+	ff.overlayCaptcha:SetFrameStrata("DIALOG")
+	ff.overlayCaptcha:SetBackdrop({bgFile = [[Interface\ACHIEVEMENTFRAME\UI-GuildAchievement-Parchment-Horizontal-Desaturated]], tileSize = 64, tile = true})
+	ff.overlayCaptcha:SetBackdropColor(0, 0, 0, 1)
+	ff.overlayCaptcha:EnableMouse(true)
+	ff.overlayCaptcha:Hide(true)
+
 	--row with buttons
 	ff.GroupButtonsFrame = CreateFrame("frame", nil, ff)
 
@@ -767,6 +776,15 @@ end
 	end)
 
 local playerEnteredWorldQuestZone = function(questID, npcID, npcName)
+
+	if (ff.buttonAcquired) then
+		ff.buttonAcquired:Hide()
+		QuestObjectiveFindGroup_ReleaseButton(ff.buttonAcquired)
+		ff.buttonAcquired = nil
+	end
+
+	ff.overlayCaptcha:Hide()
+
 	--> update the frame
 	local title, isNpc, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex
 	if (npcID) then
@@ -811,11 +829,37 @@ local playerEnteredWorldQuestZone = function(questID, npcID, npcName)
 		if (type (questID) == "number") then
 			title, factionID, tagID, tagName, worldQuestType, rarity, isElite, tradeskillLineIndex = WorldQuestTracker.GetQuest_Info (questID)
 
+			--print(tagID, worldQuestType, rarity, isElite) -- 136, 2, 1, true
+
 			if (isElite) then
 				groupButtons_OpenGroupFinder:Disable()
 				C_Timer.After (3, function()
 					groupButtons_OpenGroupFinder:Enable()
 				end)
+			end
+
+			--print(tagID, tagName, worldQuestType , rarity , isElite)
+
+			if ((tagID == 112 or tagID == 136) and worldQuestType == 2 and (rarity == 1 or rarity == 2) and isElite) then
+				groupButtons_OpenGroupFinder:Disable()
+				C_Timer.After(3, function()
+					groupButtons_OpenGroupFinder:Enable()
+				end)
+
+				local findButton = QuestObjectiveFindGroup_AcquireButton(ff, questID)
+				findButton:ClearAllPoints()
+				findButton:SetPoint("center", ff, "center", 0, -28)
+				findButton:SetSize(64, 64)
+				findButton:SetFrameStrata("FULLSCREEN")
+				findButton:Show()
+				ff.overlayCaptcha:Show()
+
+				--TODO > arrumar o auto hide to painel quando completar a quest
+				--TODO > fechar o painel quando entrar em grupo
+				--TODO > reabrir o painel se sair do grupo e ainda estiver na quest
+				--TODO > não poder abrir o frame do LFG enquanto estiver em combate
+
+				ff.buttonAcquired = findButton
 			end
 		end
 
@@ -883,6 +927,29 @@ local playerEnteredWorldQuestZone = function(questID, npcID, npcName)
 		end
 	end
 end
+
+hooksecurefunc("QuestObjectiveSetupBlockButton_AddRightButton", function(block, groupFinderButton, buttonType)
+	if (buttonType == "groupFinder") then
+--		for a, b in pairs(block.TrackedQuest) do
+--			print(a,b)
+--		end
+--		groupFinderButton
+
+		local questID = block and block.TrackedQuest and block.TrackedQuest.questID
+		if (questID) then
+			local questName = C_TaskQuest.GetQuestInfoByQuestID(questID)
+			if (questName) then
+				C_Timer.After(0.5, function()
+					if (ff:IsShown()) then
+						if (ff.CurrentQuestName == questName) then
+							--print("Hello!")
+						end
+					end
+				end)
+			end
+		end
+	end
+end)
 
 function ff:PlayerEnteredWorldQuestZone(questID, npcID, npcName)
 	C_Timer.After(0.6, function()
@@ -1226,6 +1293,10 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 				ff.IsInWQGroup = false
 				ff.PreviousLeader = nil
 				C_Timer.After (2, ff.DelayedCheckForDisband)
+
+				--check if the player is in a world quest zone
+				--may popup the group finder again
+				ff.CheckForQuestsInTheArea()
 			else
 				ff.GroupMembers = GetNumGroupMembers (LE_PARTY_CATEGORY_HOME) + 1
 				--> tell the rare finder the group has been modified
@@ -1233,11 +1304,13 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 			end
 		else
 			if (IsInGroup()) then
+				--player entered in a group
 				ff.IsInWQGroup = true
 				ff.GroupMembers = GetNumGroupMembers (LE_PARTY_CATEGORY_HOME) + 1
-				
-				--> player entered in a group
-				
+
+				if (ff.buttonAcquired) then
+					ff:HideFrame(true)
+				end
 			end
 		end
 		
@@ -1275,21 +1348,25 @@ ff:SetScript ("OnEvent", function (self, event, questID, arg2, arg3)
 	elseif (event == "PLAYER_LOGIN") then
 		if (not IsInGroup()) then
 			--attempt to get the quest the player is in at the login
-			local allQuestsInTheMap = C_TaskQuest.GetQuestsForPlayerByMapID(WorldQuestTracker.GetCurrentStandingMapAreaID())
-			if (allQuestsInTheMap) then
-				for index, questInfo in ipairs(allQuestsInTheMap) do
-					local questId = questInfo.questId
-					if(questInfo.inProgress) then
-						--show world quest popup
-						C_Timer.After(3, function()
-							ff:GetScript("OnEvent")(ff, "QUEST_ACCEPTED", questId)
-						end)
-					end
-				end
-			end
+			ff.CheckForQuestsInTheArea()
 		end
 	end
 end)
+
+function ff.CheckForQuestsInTheArea()
+	local allQuestsInTheMap = C_TaskQuest.GetQuestsForPlayerByMapID(WorldQuestTracker.GetCurrentStandingMapAreaID())
+	if (allQuestsInTheMap) then
+		for index, questInfo in ipairs(allQuestsInTheMap) do
+			local questId = questInfo.questId
+			if(questInfo.inProgress) then
+				--show world quest popup
+				C_Timer.After(3, function()
+					ff:GetScript("OnEvent")(ff, "QUEST_ACCEPTED", questId)
+				end)
+			end
+		end
+	end
+end
 
 ff.BQuestTrackerFreeWidgets = {}
 ff.BQuestTrackerUsedWidgets = {}

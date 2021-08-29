@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2400, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201124184127")
+mod:SetRevision("20210823220630")
 mod:SetCreatureID(164567)
 mod:SetEncounterID(2397)
 
@@ -92,7 +92,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 321006 then
 		warnSoulShackle:Show(args.destName)
 		--Droman
-		timerBewilderingPollenCD:Start(8.8)
+		timerBewilderingPollenCD:Start(7.3)
 		timerTearsoftheForestCD:Start(13.5)
 	elseif spellId == 323059 then
 		warnDromansWrath:Show(args.destName)

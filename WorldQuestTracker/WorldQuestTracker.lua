@@ -1272,9 +1272,11 @@ p:SetScript("OnEvent", function (self, event, arg1)
 
 		local displayInfo, cameraID, vo, duration, lineNumber, numLines, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
 		if (WorldQuestTracker.db.profile.talking_heads_heard[vo]) then
-			C_Timer.After(0.1, TalkingHeadFrame_CloseImmediately)
+			C_Timer.After(0.05, TalkingHeadFrame_CloseImmediately)
 		else
-			WorldQuestTracker.db.profile.talking_heads_heard[vo] = true
+			if (vo) then
+				WorldQuestTracker.db.profile.talking_heads_heard[vo] = true
+			end
 		end
 	end
 end)
@@ -1304,6 +1306,25 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 	oribosFlyMasterFrame:SetSize(116, 60)
 	DetailsFramework:ApplyStandardBackdrop(oribosFlyMasterFrame)
 	oribosFlyMasterFrame:Hide()
+
+	oribosFlyMasterFrame:RegisterEvent("PLAYER_STARTED_MOVING")
+	oribosFlyMasterFrame:RegisterEvent("PLAYER_STOPPED_MOVING")
+
+	local playerIsMoving = false
+
+	oribosFlyMasterFrame:SetScript("OnEvent", function(self, event)
+		if (event == "PLAYER_STARTED_MOVING") then
+			playerIsMoving = true
+
+		elseif (event == "PLAYER_STOPPED_MOVING") then
+			playerIsMoving = false
+		end
+	end)
+
+	if (not IsPlayerMoving()) then
+		oribosFlyMasterFrame:SetAlpha(0)
+		oribosFlyMasterFrame:EnableMouse(false)
+	end
 
 	oribosFlyMasterFrame.statusBar = CreateFrame("frame", "WorldQuestTrackerOribosFlyMasterFrameStatusBar", oribosFlyMasterFrame, "BackdropTemplate")
 	oribosFlyMasterFrame.statusBar:SetPoint("bottomleft", oribosFlyMasterFrame, "bottomleft", 0, 0)
@@ -1379,6 +1400,19 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 				end
 			--]=]
 
+			if (playerIsMoving) then
+				if (oribosFlyMasterFrame:GetAlpha() < 1) then
+					oribosFlyMasterFrame:SetAlpha(oribosFlyMasterFrame:GetAlpha() + (deltaTime*7))
+				end
+				oribosFlyMasterFrame:EnableMouse(true)
+			else
+				if (oribosFlyMasterFrame:GetAlpha() > 0) then
+					oribosFlyMasterFrame:SetAlpha(oribosFlyMasterFrame:GetAlpha() - deltaTime/5)
+				else
+					oribosFlyMasterFrame:EnableMouse(false)
+				end
+			end
+
 		--update korthia arrow
 			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, korthiaPortalX, korthiaPortalY) + (math.pi/2)) % (math.pi*2)
 			local playerYaw = GetPlayerFacing() or 0
@@ -1415,6 +1449,11 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 			oribosFlyMasterFrame:Show()
 			oribosFlyMasterFrame:SetScript("OnUpdate", trackerOnTick)
 			isFlymasterTrakcerEnabled = true
+			
+			if (not IsPlayerMoving()) then
+				oribosFlyMasterFrame:SetAlpha(0)
+				oribosFlyMasterFrame:EnableMouse(false)
+			end
 		end
 	end
 	oribosFlyMasterFrame.enableFlymasterTracker = enableFlymasterTracker

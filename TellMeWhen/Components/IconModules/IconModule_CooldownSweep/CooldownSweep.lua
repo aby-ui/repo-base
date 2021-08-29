@@ -233,6 +233,16 @@ function CooldownSweep:SetupForIcon(icon)
 	self.cooldown2:SetDrawSwipe(false)
 	self.cooldown2:SetDrawBling(false)
 
+	-- https://github.com/ascott18/TellMeWhen/issues/1914:
+	-- If a meta icon switches between hidden/shown timer text
+	-- but does not switch to an actual different duration,
+	-- OmniCC will see that the duration is the same and elect to
+	-- do nothing. This fixes that.
+	if OmniCC and OmniCC.Cooldown and OmniCC.Cooldown.Refresh then
+		OmniCC.Cooldown.Refresh(self.cooldown, true)
+		OmniCC.Cooldown.Refresh(self.cooldown2, true)
+	end
+
 
 	local attributes = icon.attributes
 	

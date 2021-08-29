@@ -7,8 +7,8 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Options
-	L[" and |cFFFF0000mirrored|r"] = "以及 |cFFFF0000鏡像|r"
-	L["-- Do not remove this comment, it is part of this aura: "] = "不要刪除此註解，這是此光環的一部分："
+	L[" and |cFFFF0000mirrored|r"] = "和 |cFFFF0000鏡射|r"
+	L["-- Do not remove this comment, it is part of this aura: "] = "-- 不要刪除此註解，這是此提醒效果的一部分: "
 	L[" rotated |cFFFF0000%s|r degrees"] = "旋轉 |cFFFF0000%s|r 度"
 	L["% of Progress"] = "進度%"
 	L["%i auras selected"] = "已選擇 %i 個提醒效果"
@@ -22,6 +22,8 @@ local L = WeakAuras.L
 	L["%s Inset: %d%%"] = "%s內縮: %d%%"
 	L["%s is not a valid SubEvent for COMBAT_LOG_EVENT_UNFILTERED"] = "%s 不是 COMBAT_LOG_EVENT_UNFILTERED 的有效 SubEvent"
 	L["%s Keep Aspect Ratio"] = "%s保持寬高比例"
+	--[[Translation missing --]]
+	L["%s Texture"] = "%s Texture"
 	L["%s total auras"] = "總共 %s 個提醒效果"
 	L["%s Zoom: %d%%"] = "%s檢視大小: %d%%"
 	L["%s, Border"] = "%s, 邊框"
@@ -36,7 +38,7 @@ local L = WeakAuras.L
 	L["|cFFFF0000Automatic|r length"] = "|cFFFF0000自動|r長度"
 	L["|cFFFF0000default|r texture"] = "|cFFFF0000預設|r材質"
 	L["|cFFFF0000desaturated|r "] = "|cFFFF0000去色|r "
-	L["|cFFFF0000Note:|r The unit '%s' is not a trackable unit."] = "|cFFFF0000注意：|r單位'%s'不是可追蹤的單位。"
+	L["|cFFFF0000Note:|r The unit '%s' is not a trackable unit."] = "|cFFFF0000注意:|r 單位 '%s' 不是可以監控的單位。"
 	L["|cFFffcc00Anchors:|r Anchored |cFFFF0000%s|r to frame's |cFFFF0000%s|r"] = "|cFFffcc00對齊:|r |cFFFF0000%s|r對齊到框架的|cFFFF0000%s|r"
 	L["|cFFffcc00Anchors:|r Anchored |cFFFF0000%s|r to frame's |cFFFF0000%s|r with offset |cFFFF0000%s/%s|r"] = "|cFFffcc00對齊:|r |cFFFF0000%s|r對齊到框架的|cFFFF0000%s|r，偏移|cFFFF0000%s/%s|r"
 	L["|cFFffcc00Anchors:|r Anchored to frame's |cFFFF0000%s|r"] = "|cFFffcc00對齊:|r 對齊到框架的|cFFFF0000%s|r"
@@ -64,6 +66,10 @@ local L = WeakAuras.L
 	L["Add Option"] = "新增選項"
 	L["Add Overlay"] = "加上疊加圖層"
 	L["Add Property Change"] = "新增屬性變化"
+	--[[Translation missing --]]
+	L["Add Raid Mark Information"] = "Add Raid Mark Information"
+	--[[Translation missing --]]
+	L["Add Role Information"] = "Add Role Information"
 	L["Add Snippet"] = "新增程式碼片段"
 	L["Add Sub Option"] = "新增子選項"
 	L["Add to group %s"] = "加入到群組 %s"
@@ -83,7 +89,7 @@ local L = WeakAuras.L
 	L["Anchor Point"] = "對齊點"
 	L["Anchored To"] = "對齊到"
 	L["And "] = "和 "
-	L["and"] = "以及"
+	L["and"] = "和"
 	L["and aligned left"] = "和靠左對齊"
 	L["and aligned right"] = "和靠右對齊"
 	L["and rotated left"] = "和向左旋轉"
@@ -257,7 +263,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Distribute Horizontally"] = "水平分佈"
 	L["Distribute Vertically"] = "垂直分佈"
 	L["Do not group this display"] = "不要群組這個提醒效果"
-	L["Do you want to ignore all future updates for this aura"] = "您是否要忽略此光環的所有未來更新"
+	L["Do you want to ignore all future updates for this aura"] = "是否要忽略此提醒效果未來的所有更新"
 	L["Documentation"] = "文件"
 	L["Done"] = "完成"
 	L["Drag to move"] = "滑鼠拖曳來移動"
@@ -318,11 +324,11 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "缺少圖示時要顯示的圖示"
 	L["False"] = "否 (False)"
 	L["Fetch Affected/Unaffected Names"] = "取得受影響/未受影響的名字"
-	L["Filter by Arena Spec"] = "依據競技場專精過濾"
+	L["Filter by Arena Spec"] = "依競技場專精過濾"
 	L["Filter by Class"] = "依職業過濾"
 	L["Filter by Group Role"] = "依角色職責過濾"
 	L["Filter by Nameplate Type"] = "依名條類型過濾"
-	L["Filter by Raid Role"] = "按團隊職責過濾"
+	L["Filter by Raid Role"] = "依團隊角色職責過濾"
 	L[ [=[Filter formats: 'Name', 'Name-Realm', '-Realm'.
 
 Supports multiple entries, separated by commas
@@ -426,6 +432,8 @@ Supports multiple entries, separated by commas
 	L["Ignored Spell ID"] = "忽略的法術 ID"
 	L["Import"] = "匯入"
 	L["Import a display from an encoded string"] = "從編碼字串匯入提醒效果"
+	--[[Translation missing --]]
+	L["Include Pets"] = "Include Pets"
 	L["Indent Size"] = "內縮大小"
 	L["Information"] = "資訊"
 	L["Inner"] = "內部"
@@ -450,7 +458,7 @@ Supports multiple entries, separated by commas
 	L["Length of |cFFFF0000%s|r"] = "|cFFFF0000%s|r的長度"
 	L["Limit"] = "限制"
 	L["Lines & Particles"] = "直線 & 粒子"
-	L["Linked aura: "] = "已連結光環："
+	L["Linked aura: "] = "已連結光環: "
 	L["Load"] = "載入"
 	L["Loaded"] = "已載入"
 	L["Lock Positions"] = "鎖定位置"
@@ -504,7 +512,7 @@ Supports multiple entries, separated by commas
 	L["Not a table"] = "不是 table"
 	L["Not all children have the same value for this option"] = "並非所有子項目的這個設定都使用相同的數值"
 	L["Not Loaded"] = "未載入"
-	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：自動說與大喊的訊息在副本外是會被阻擋的。"
+	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意: 副本外面無法在 '說' 和 '大喊' 頻道自動發送訊息，會被阻擋。"
 	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "注意: 現在已經永久性的停用舊的增益觸發，將會在近期改版中全面移除。"
 	L["Number of Entries"] = "項目數量"
 	L["Offer a guided way to create auras for your character"] = "用步驟導引的方式替角色建立提醒效果"
@@ -563,7 +571,7 @@ Supports multiple entries, separated by commas
 	L["Purple Rune"] = "紫色符文"
 	L["Put this display in a group"] = "將這個提醒效果放入群組中"
 	L["Radius"] = "半徑"
-	L["Raid Role"] = "團隊職責"
+	L["Raid Role"] = "團隊角色職責"
 	L["Ready for Install"] = "準備好安裝了"
 	L["Ready for Update"] = "準備好更新了"
 	L["Re-center X"] = "重新水平置中"
@@ -694,6 +702,10 @@ Supports multiple entries, separated by commas
 	L["The type of trigger"] = "觸發類型"
 	L["Then "] = "(then) 則 "
 	L["Thickness"] = "粗細"
+	--[[Translation missing --]]
+	L["This adds %raidMark as text replacements."] = "This adds %raidMark as text replacements."
+	--[[Translation missing --]]
+	L["This adds %role, %roleIcon as text replacements."] = "This adds %role, %roleIcon as text replacements."
 	L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements."] = "這會加入 %tooltip, %tooltip1, %tooltip2, %tooltip3 用來替換文字。"
 	L["This display is currently loaded"] = "這個提醒效果已經載入"
 	L["This display is not currently loaded"] = "這個提醒效果尚未載入"

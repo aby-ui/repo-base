@@ -1406,7 +1406,7 @@ function scanner_button:PlaySoundAlert(atlasName)
 	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
 --[[
 		if (RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithObjects())) then
-			PlaySoundFile(RSConstants.EXTERNAL_SOUND_FOLDER..RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithObjects()), RSConfigDB.GetSoundChannel())
+			PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithObjects())), RSConfigDB.GetSoundChannel())
 		else
 			PlaySoundFile(string.gsub(RSConstants.DEFAULT_SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
 		end
@@ -1415,7 +1415,7 @@ function scanner_button:PlaySoundAlert(atlasName)
 	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
 --[[	
 		if (RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithNpcs())) then
-			PlaySoundFile(RSConstants.EXTERNAL_SOUND_FOLDER..RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithNpcs()), RSConfigDB.GetSoundChannel())
+			PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithNpcs())), RSConfigDB.GetSoundChannel())
 		else
 			PlaySoundFile(string.gsub(RSConstants.DEFAULT_SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
 		end	

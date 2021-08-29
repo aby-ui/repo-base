@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210806031505")
+mod:SetRevision("20210826003641")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -154,11 +154,11 @@ local allTimers = {
 		[330965] = {0, 0, 60},
 
 		--Drain Essence
-		[346654] = {27.3, 19.8, 48.3},
+		[346654] = {27.3, 19.8, 46.6},
 		--Prideful Eruption (P2+)
-		[346657] = {0, 43.3, 48.3},
+		[346657] = {0, 43.3, 46.6},
 		--Soul Spikes (P3+)
-		[346762] = {0, 0, 48.3},
+		[346762] = {0, 0, 46.6},
 
 		--Evasive Lunge
 		[327497] = {25, 19.6, 13.3},--Phase 2 lunge can get in a bugged state and spam every 10 seconds in rare cases

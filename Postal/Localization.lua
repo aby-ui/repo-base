@@ -15,6 +15,9 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = true
 L["|cffeda55fControl-Click|r to attach similar items."] = true
 L["|cffeda55fCtrl-Click|r to return it to sender."] = true
 L["|cffeda55fShift-Click|r to take the contents."] = true
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = true
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -39,6 +42,7 @@ L["Adds a contact list next to the To: field."] = true
 L["AH-related mail"] = true
 L["All Alts"] = true
 L["Allows you to copy the contents of a mail."] = true
+L["Allows you to forward the contents of a mail."] = true
 L["Alts"] = true
 L["Auto-Attach similar items on Control-Click"] = true
 L["Autofill last person mailed"] = true
@@ -59,6 +63,7 @@ L["DoNotWant"] = true
 L["Enable Alt-Click to send mail"] = true
 L["Exclude randoms you interacted with"] = true
 L["Express"] = true
+L["Forward"] = true
 L["Friends"] = true
 L["Guild"] = true
 L["Help"] = true
@@ -120,6 +125,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Klick|r, um
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fStrg-Klick|r, um ähnliche Gegenstände anzuhängen."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fStrg-Klick|r, um diesen Gegenstand zurückzusenden."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Klick|r, um die Gegenstände zu entnehmen."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r Die Funktion wird nicht für Nachrichten unterstützt, die mit angehängtem Geld oder per Nachnahme gesendet werden.
+|cFFFFCC00*|r Die Funktion wird nicht für Nachrichten unterstützt, die mit stapelbaren Gegenstände im Anhang gesendet werden.
+|cFFFFCC00*|r Die Vorwärts-Taste wird in diesen Fällen deaktiviert.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -157,6 +167,7 @@ L["Adds a contact list next to the To: field."] = "Setzt eine Kontaktliste neben
 L["AH-related mail"] = "Auktionshausnachrichten"
 L["All Alts"] = "Alle Charaktere"
 L["Allows you to copy the contents of a mail."] = "Erlaubt Dir, die Inhalte einer Nachricht zu kopieren."
+L["Allows you to forward the contents of a mail."] = "Erlaubt Dir, die Inhalte einer Nachricht weiterzuleiten."
 L["Alts"] = "Twinks"
 L["Auto-Attach similar items on Control-Click"] = "Automatisches Anhängen ähnlicher Gegenstände bei STRG-Klick"
 L["Autofill last person mailed"] = "Namen der zuletzt angeschriebenen Person automatisch einfügen"
@@ -177,6 +188,7 @@ L["DoNotWant"] = "Unerwünscht-Taste"
 L["Enable Alt-Click to send mail"] = "Alt-Klick aktivieren, um Nachrichten zu senden."
 L["Exclude randoms you interacted with"] = "Zufallsspieler, mit denen Du Kontakt hattest, ausschließen"
 L["Express"] = "Express"
+L["Forward"] = "Vorwärts"
 L["Friends"] = "Freunde"
 L["Guild"] = "Gilde"
 L["Help"] = "Hilfe"
@@ -188,7 +200,7 @@ L["New Profile"] = "Neues Profil"
 L["New Profile Name:"] = "Neuer Profilname:"
 L["Non-AH related mail"] = "Nicht-AH betreffende Nachricht"
 L["Not all messages are shown, refreshing mailbox soon to continue Open All..."] = "Es werden nicht alle Nachrichten angezeigt, aktualisiere den Posteingang umgehend, um mit \"Alle öffnen\" fortzufahren."
-L["Not taking more items as there are now only %d regular bagslots free."] = "Es werden keine weiteren Gegenstände angenommen, weil nur mehr %s reguläre Taschenplätze frei sind."
+L["Not taking more items as there are now only %d regular bagslots free."] = "Es werden keine weiteren Gegenstände angenommen, da es jetzt nur noch %s reguläre Taschenplätze gibt."
 L["Open"] = "Öffnen"
 L["Open All"] = "Alle öffnen"
 L["Open all Auction cancelled mail"] = "Alle 'Auktion abgebrochen'-Nachrichten öffnen"
@@ -214,7 +226,7 @@ L["Reset Profile"] = "Profil zurücksetzen"
 L["Return"] = "Zurück"
 L["Select"] = "Auswählen"
 L["Set subject field to value of coins sent if subject is blank."] = "Setzt den Betreff auf die Menge des verschickten Goldes, falls der Betreff leer ist."
-L["Shows a clickable visual icon as to whether a mail will be returned or deleted on expiry."] = "Zeigt ein anklickbares visuelles Symbol, ob eine Mail zurückgeschickt oder nach ihrem Ablauf gelöscht werden wird"
+L["Shows a clickable visual icon as to whether a mail will be returned or deleted on expiry."] = "Zeigt ein anklickbares visuelles Symbol an, ob eine Nachricht zurückgeschickt oder nach dem Ablauf gelöscht wird."
 L["Skipping"] = "Überspringe"
 L["Some Messages May Have Been Skipped."] = "Einige Nachrichten können ausgelassen worden sein."
 L["Thaumaturge Vashreen"] = "Thaumaturg Vashreen"
@@ -236,6 +248,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Clic|r para
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clic|r para adjuntar objetos similares."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Clic|r para devolver correo al que te lo envió."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Clic|r para tomar el contenido."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La característica no es compatible con el correo enviado con dinero adjunto o cod enviado.
+|cFFFFCC00*|r La característica no se admite para el correo enviado con elementos apilables adjuntos.
+|cFFFFCC00*|r El botón Adelante se deshabilitará en estos casos.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -273,6 +290,7 @@ L["Adds a contact list next to the To: field."] = "Añade una lista de contactos
 L["AH-related mail"] = "(Correo relacionado con la casa de subastas)"
 L["All Alts"] = "Cualquier personaje"
 L["Allows you to copy the contents of a mail."] = "Te permite copiar el contenido de un correo."
+L["Allows you to forward the contents of a mail."] = "Permite reenviar el contenido de un correo."
 L["Alts"] = "Personajes secundarios"
 L["Auto-Attach similar items on Control-Click"] = "Autoadjuntar objetos similares con Ctrl-Clic"
 L["Autofill last person mailed"] = "Autorellenar con la última persona que mandaste correo"
@@ -293,6 +311,7 @@ L["DoNotWant"] = "No quiero"
 L["Enable Alt-Click to send mail"] = "Habilitar Alt-Clic para enviar correo"
 L["Exclude randoms you interacted with"] = "Excluir aleatorios con los que tú interactuaste"
 L["Express"] = "Rápido"
+L["Forward"] = "Adelante"
 L["Friends"] = "Amigos"
 L["Guild"] = "Hermandad"
 L["Help"] = "Ayuda"
@@ -352,6 +371,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+clic gauche
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+clic|r pour joindre les objets similaires."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+clic gauche|r pour renvoyer à l'expéditeur."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fMaj+clic gauche|r pour récupérer le contenu."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La fonctionnalité n’est pas prise en charge pour le courrier envoyé avec de l’argent attaché ou envoyé COD.
+|cFFFFCC00*|r La fonctionnalité n’est pas prise en charge pour les messages envoyés avec des éléments empilables attachés.
+|cFFFFCC00*|r Le bouton Transférer sera désactivé dans ces cas.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -388,6 +412,7 @@ L["Adds a contact list next to the To: field."] = "Ajoute une liste des contacts
 L["AH-related mail"] = "Courriers relatifs à l'HV"
 L["All Alts"] = "Tous les rerolls"
 L["Allows you to copy the contents of a mail."] = "Permet de copier le contenu d'un courrier."
+L["Allows you to forward the contents of a mail."] = "Vous permet de transférer le contenu d’un courrier."
 L["Alts"] = "Rerolls"
 L["Auto-Attach similar items on Control-Click"] = "Joindre les objets similaires avec Ctrl+clic"
 L["Autofill last person mailed"] = "Saisie auto. de la dernière personne contactée"
@@ -408,6 +433,7 @@ L["DoNotWant"] = "Ne Veux Pas"
 L["Enable Alt-Click to send mail"] = "Activer Alt+clic gauche pour envoyer le courrier"
 L["Exclude randoms you interacted with"] = "Exclure les inconnus avec qui vous avez interagi"
 L["Express"] = "Express"
+L["Forward"] = "En avant"
 L["Friends"] = "Amis"
 L["Guild"] = "Guilde"
 L["Help"] = "Aide"
@@ -467,6 +493,12 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-클릭|r으
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-클릭|r으로 같은 종류의 아이템을 첨부합니다."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-클릭|r으로 반송합니다."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-클릭|r으로 내용물을 수취합니다."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 첨부된 돈이 있거나 전송된 메일에는 기능이 지원되지 않습니다.
+|cFFFFCC00*|r 스택 가능한 항목이 연결된 메일에 대해 기능이 지원되지 않습니다.
+|cFFFFCC00*|r 이러한 경우 앞으로 버튼이 비활성화됩니다.
+]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -503,6 +535,7 @@ L["Adds a contact list next to the To: field."] = "받는이: 영역 옆에 연�
 L["AH-related mail"] = "경매 관련 우편"
 L["All Alts"] = "모든 다른 캐릭터"
 L["Allows you to copy the contents of a mail."] = "편지의 내용을 복사합니다."
+L["Allows you to forward the contents of a mail."] = "메일 내용을 전달할 수 있습니다."
 L["Alts"] = "현재 서버 다른 캐릭터"
 L["Auto-Attach similar items on Control-Click"] = "Ctrl-클릭으로 같은 종류의 아이템 자동 첨부하기"
 L["Autofill last person mailed"] = "마지막 수신자 자동 입력"
@@ -523,6 +556,7 @@ L["DoNotWant"] = "반송된 우편"
 L["Enable Alt-Click to send mail"] = "Alt-클릭으로 우편 보내기"
 L["Exclude randoms you interacted with"] = "불규칙적인 거래자 제외"
 L["Express"] = "빠른 우편"
+L["Forward"] = "전달"
 L["Friends"] = "친구"
 L["Guild"] = "길드"
 L["Help"] = "도움말"
@@ -582,6 +616,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+щелчо�
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fControl+щелчок|r чтобы прикрепить аналогичные предметы."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+щелчок|r чтобы вернуть отправителю."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift+щелчок|r чтобы взять содержимое."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r Функция не поддерживается для почты, отправленной с вложенными деньгами или отправленными COD. 
+|cFFFFCC00*|r Функция не поддерживается для почты, отправляемой с вложенными стекируемыми элементами. 
+|cFFFFCC00*|r В этих случаях кнопка «Вперед» будет отключена.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -619,6 +658,7 @@ L["Adds a contact list next to the To: field."] = "Добавляет списо
 L["AH-related mail"] = "Аукционные письма"
 L["All Alts"] = "Все альты"
 L["Allows you to copy the contents of a mail."] = "Позволяет скопировать текст письма."
+L["Allows you to forward the contents of a mail."] = "Позволяет пересылать содержимое письма."
 L["Alts"] = "Альты"
 L["Auto-Attach similar items on Control-Click"] = "Control+щелчок автоматически прикрепляет аналогичные предметы"
 L["Autofill last person mailed"] = "Ввести в строку адреса имя последнего, кому было отправлено письмо"
@@ -639,6 +679,7 @@ L["DoNotWant"] = "НеХоЧу!"
 L["Enable Alt-Click to send mail"] = "Включить посылку почты по Alt+щелчок"
 L["Exclude randoms you interacted with"] = "Исключать ПУГов, с которыми вы встречались."
 L["Express"] = "Доставка"
+L["Forward"] = "Вперёд"
 L["Friends"] = "Друзья"
 L["Guild"] = "Гильдия"
 L["Help"] = "Справка"
@@ -698,6 +739,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+点击|r将
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+点击|r附加类似物品。"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+点击|r将信退给发件人。"
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift+点击|r获得该邮件的内容副本。"
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 不支持随附资金或发送 COD 的邮件。
+|cFFFFCC00*|r 不支持附带可堆叠物品的邮件。
+|cFFFFCC00*|r 在这些情况下，前进按钮将被禁用。]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -734,6 +780,7 @@ L["Adds a contact list next to the To: field."] = "添加联系人列表到收�
 L["AH-related mail"] = "拍卖相关邮件"
 L["All Alts"] = "全部小号"
 L["Allows you to copy the contents of a mail."] = "允许你复制信的内容物。"
+L["Allows you to forward the contents of a mail."] = "允许您转发邮件的内容。"
 L["Alts"] = "小号"
 L["Auto-Attach similar items on Control-Click"] = "Ctrl+点击自动附加相同物品"
 L["Autofill last person mailed"] = "自动填写最后的收件人"
@@ -754,6 +801,7 @@ L["DoNotWant"] = "不想要"
 L["Enable Alt-Click to send mail"] = "允许 Alt+点击发送邮件"
 L["Exclude randoms you interacted with"] = "防止你随意地受到影响"
 L["Express"] = "快件"
+L["Forward"] = "向前"
 L["Friends"] = "好友"
 L["Guild"] = "公会"
 L["Help"] = "帮助"
@@ -813,6 +861,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-點擊: |r�
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-點擊|r附加類似物品。"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-點擊: |r返回信件。"
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-點擊: |r收取信件。"
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 不支援附加金錢或發送 COD 的郵件。
+|cFFFFCC00*|r 不支援附加可堆疊物品的郵件。
+|cFFFFCC00*|r 在這些情況下無法使用轉寄按鈕。]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -850,6 +903,7 @@ L["Adds a contact list next to the To: field."] = "在收件人輸入框旁邊�
 L["AH-related mail"] = "拍賣相關信件"
 L["All Alts"] = "所有分身"
 L["Allows you to copy the contents of a mail."] = "允許你複製信的內容物。"
+L["Allows you to forward the contents of a mail."] = "讓你轉寄郵件的內容。"
 L["Alts"] = "分身"
 L["Auto-Attach similar items on Control-Click"] = "Ctrl+點擊時自動附加相似物品"
 L["Autofill last person mailed"] = "自動填寫最後曾郵寄的人名"
@@ -870,9 +924,10 @@ L["DoNotWant"] = "不想要"
 L["Enable Alt-Click to send mail"] = "開啟Alt-點擊 發送信件"
 L["Exclude randoms you interacted with"] = "防止你隨意地受到影響"
 L["Express"] = "快速收發"
+L["Forward"] = "轉寄"
 L["Friends"] = "好友"
 L["Guild"] = "公會"
-L["Help"] = "幫助"
+L["Help"] = "說明"
 L["In Progress"] = "正在處理"
 L["Keep free space"] = "保持背包空位"
 L["Mouse click short cuts for mail."] = "點擊快速收發信件。"
@@ -929,6 +984,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r par
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clique|r para anexar itens semelhantes"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Click|r para retorná-lo ao remetente."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Click|r para pegar o conteúdo."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r O recurso não é suportado para e-mails enviados com dinheiro anexado ou enviado COD.
+|cFFFFCC00*|r O recurso não é suportado para e-mails enviados com itens empilháveis anexados.
+|cFFFFCC00*|r O botão para a frente será desativado nesses casos.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -966,6 +1026,7 @@ L["Adds a contact list next to the To: field."] = "Adiciona uma lista de contato
 L["AH-related mail"] = "Carta relacionada à CL"
 L["All Alts"] = "Todos os alts"
 L["Allows you to copy the contents of a mail."] = "Permite a você copiar o conteúdo de uma carta."
+L["Allows you to forward the contents of a mail."] = "Permite que você encaminhe o conteúdo de um e-mail."
 L["Alts"] = "Alts"
 L["Auto-Attach similar items on Control-Click"] = "Anexar itens semelhantes com Ctrl-Clique"
 L["Autofill last person mailed"] = "Auto-preencher última pessoa enviada"
@@ -986,6 +1047,7 @@ L["DoNotWant"] = "NãoQuerer"
 L["Enable Alt-Click to send mail"] = "Ativar Alt-Clique para enviar carta"
 L["Exclude randoms you interacted with"] = "Excluir aleatórios com quem você interagiu"
 L["Express"] = "Expresso"
+L["Forward"] = "Encaminhar"
 L["Friends"] = "Amigos"
 L["Guild"] = "Guilda"
 L["Help"] = "Ajuda"
@@ -1045,6 +1107,10 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r per
 L["|cffeda55fControl-Click|r to attach similar items."] = "Control-Click per allegare oggetti simili"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Click|r per rimandarla al mittente."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Click|r per prendere il contenuto."
+L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
+|cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La funzionalità non è supportata per la posta inviata con denaro allegato o inviato COD.
+|cFFFFCC00*|r La funzionalità non è supportata per la posta inviata con elementi impilabili allegati. |cFFFFCC00*|r In questi casi il pulsante Inoltra verrà disabilitato.]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
 |cFFFFCC00*|r You can Shift-Click 2 checkboxes to mass select every mail between the 2 checkboxes.
 |cFFFFCC00*|r You can Ctrl-Click a checkbox to mass select or unselect every mail from that sender.
@@ -1081,6 +1147,7 @@ L["Adds a contact list next to the To: field."] = "Aggiunge una lista dei contat
 L["AH-related mail"] = "Lettera relativa alla Casa d'Aste"
 L["All Alts"] = "Tutti gli Alt"
 L["Allows you to copy the contents of a mail."] = "Ti permette di copiare il contenuto di una lettera"
+L["Allows you to forward the contents of a mail."] = "Consente di inoltrare il contenuto di un messaggio di posta elettronica."
 L["Alts"] = "Alts"
 L["Auto-Attach similar items on Control-Click"] = "Allega in automatico oggetti simili con Control-Click"
 L["Autofill last person mailed"] = "Completa automaticamente con l'ultima persona a cui hai scritto"
@@ -1101,6 +1168,7 @@ L["DoNotWant"] = "Non-Lo-Voglio"
 L["Enable Alt-Click to send mail"] = "Abilita Alt-Click per mandare le lettere"
 L["Exclude randoms you interacted with"] = "Esculdi persone a caso con cui hai interagito"
 L["Express"] = "Veloce"
+L["Forward"] = "Inoltrare"
 L["Friends"] = "Amici"
 L["Guild"] = "Gilda"
 L["Help"] = "Aiuto"
