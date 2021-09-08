@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1744, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(106087)
 mod:SetEncounterID(1876)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -295,8 +295,7 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 212364 then--Feeding Time
 		self.vb.feedingTimeCast = self.vb.feedingTimeCast + 1
 		specWarnFeedingTime:Show(self.vb.feedingTimeCast)

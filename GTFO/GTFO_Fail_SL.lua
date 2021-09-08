@@ -1317,6 +1317,23 @@ GTFO.SpellID["346469"] = {
   sound = 3;
 };
 
+GTFO.SpellID["355058"] = {
+  --desc = "Glacial Winds (Kel'Thuzad)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["346469"] = {
+  --desc = "Freezing Blast (Kel'Thuzad)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["352355"] = {
+  --desc = "Undying Wrath (Kel'Thuzad)";
+  sound = 3;
+};
+
 GTFO.SpellID["352002"] = {
   --desc = "Shadow Fissure (Kel'Thuzad)";
   sound = 3;

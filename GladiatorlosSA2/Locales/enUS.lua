@@ -173,7 +173,7 @@ L["TankTauntsON"] = "Intimidation"
 L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage amplifcation effect originating from tank specializations."
 
 L["Connected"] = "Connected Alerts"
-L["Connected_Desc"] = "Plays a simple 'Connected' alert when certain very powerful cast-time abilities successfully complete their cast.|n|nGreater Pyroblast (|cff69CCF0Mage|r)|nMind Games (Priest)|nChaos Bolt (|cff9482C9Warlock|r)"
+L["Connected_Desc"] = "Plays a simple 'Connected' alert when certain very powerful cast-time abilities successfully complete their cast.|n|nThe Hunt (|cffA330C9Demon Hunter|r)|nGreater Pyroblast (|cff69CCF0Mage|r)|nMind Games (Priest)|nChaos Bolt (|cff9482C9Warlock|r)"
 
 L["CovenantAbilities"] = "Covenant Abilities"
 

@@ -56,7 +56,7 @@
 			[19386] = "success", --Wyvern Sting (Hunter)
 			[20066] = "success", -- Repentence (Paladin)
 			[605] = "success", -- Mind Control (Priest)
-			[2637] = "success", -- Hibernate (Druid)/leave/lea
+			[2637] = "success", -- Hibernate (Druid)
 			[1513] = "success", -- Scare Beast (Hunter)
 			[339] = "success", -- Entangling Roots
 			[235963] = "success", -- Entangling Roots Feral Talent
@@ -614,6 +614,7 @@
 			[203286] = "connected", -- Greater Pyro
 			[116858] = "connected", -- Chaos Bolt
 			[323673] = "connected", -- Mind Games
+			[323639] = "connected", -- The Hunt
 			
 			-- Purges
 			[528] = "purge",		-- Dispel Magic (Priest)
@@ -716,7 +717,7 @@
 			[207682] = "silenceSigil",
 			[211881] = "felEruption",
 			[203704] = "manaBreak",
-			[217832] = "imprison",		-- Demons Only (until 7.1.5 because lol holinka)
+			[217832] = "imprison",
 			[221527] = "imprison",		-- Honor Talent (on Players)
 			[196718] = "darkness",
 			[198013] = "eyeBeam",
@@ -1016,7 +1017,7 @@
 			[236236] = "disarm",
 			[236320] = "warBanner",
 			[6544] = "heroicLeap",
-			[206572] = "DragonCharge", -- Dragon Charge
+			[206572] = "DragonCharge",
 			[325886] = "ancientAftershock",
 			[324143] = "conquerorbanner", -- Necrolord
 			[307865] = "spearofbastion", -- Kyrian
@@ -1024,7 +1025,7 @@
 			[167105] = "colossusSmash",
 			[262161] = "colossusSmash", -- Warbreaker Talent
 		},
-		friendlyInterrupt = {			--friendly interrupt [spellid] = ".mp3 file name",
+		friendlyInterrupt = {
 			[19647] = "lockout", -- Spell Locks begin
 			[119910] = "lockout",
 			[171140] = "lockout",

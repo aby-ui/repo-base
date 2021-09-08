@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1732, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(103758)
 mod:SetEncounterID(1863)
 --mod:SetUsedIcons(8, 7, 6, 3, 2, 1)
@@ -570,8 +570,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
 --Phases can also be done with Nether Traversal (221875) with same timing.
 --However, this is more robust since unique spellids for each phase is better than same used for all 3
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 222130 then--Phase 2 Conversation
 		self.vb.phase = 2
 		self.vb.isPhaseChanging = true

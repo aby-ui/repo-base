@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1749, "DBM-BrokenIsles", 1, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041434")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(107023)
 mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -113,8 +113,7 @@ function mod:OnTranscriptorSync(msg, targetName)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 212837 and self:AntiSpam(4, 2) then--Only event. not targetting boss no timer sorry!
 		--Could sync, but I don't want to spam comms for this, that's just stupid.
 		timerCracklingJoltCD:Start()

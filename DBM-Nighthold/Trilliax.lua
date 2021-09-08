@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1731, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210118141911")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(104288)
 mod:SetEncounterID(1867)
 mod:SetUsedIcons(1)
@@ -305,8 +305,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 207620 then--Annihilation pre cast, faster than combat log
 		specWarnAnnihilation:Show()
 		specWarnAnnihilation:Play("farfromline")

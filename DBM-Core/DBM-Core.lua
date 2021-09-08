@@ -70,9 +70,9 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210828202140"),
-	DisplayVersion = "9.1.12 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2021, 8, 25) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	Revision = parseCurseDate("20210907041523"),
+	DisplayVersion = "9.1.13 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2021, 8, 31) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -271,6 +271,11 @@ DBM.DefaultOptions = {
 	SpecialWarningFlashCount3 = 3,
 	SpecialWarningFlashCount4 = 2,
 	SpecialWarningFlashCount5 = 3,
+	SpecialWarningVibrate1 = false,
+	SpecialWarningVibrate2 = false,
+	SpecialWarningVibrate3 = true,
+	SpecialWarningVibrate4 = true,
+	SpecialWarningVibrate5 = true,
 	SWarnClassColor = true,
 	ArrowPosX = 0,
 	ArrowPosY = -150,
@@ -280,6 +285,7 @@ DBM.DefaultOptions = {
 	DontShowTargetAnnouncements = true,
 	DontShowSpecialWarningText = false,
 	DontShowSpecialWarningFlash = false,
+	DontDoSpecialWarningVibrate = false,
 	DontPlaySpecialWarningSound = false,
 	DontPlayTrivialSpecialWarningSound = true,
 	DontShowBossTimers = false,
@@ -2045,7 +2051,7 @@ do
 		if timer > 0 and timer < 3 then
 			return DBM:AddMsg(L.TIME_TOO_SHORT)
 		end
-		local targetName = (UnitExists("target") and UnitIsEnemy("player", "target")) and UnitName("target") or nil--Filter non enemies in case player isn't targetting bos but another player/pet
+		local targetName = (UnitExists("target") and not UnitIsFriend("player", "target")) and UnitName("target") or nil--Filter non enemies in case player isn't targetting bos but another player/pet
 		if targetName then
 			sendSync("PT", timer.."\t"..LastInstanceMapID.."\t"..targetName)
 		else
@@ -10030,18 +10036,28 @@ do
 			end
 			self.combinedcount = 0
 			self.combinedtext = {}
-			if not UnitIsDeadOrGhost("player") and not DBM.Options.DontShowSpecialWarningFlash then
+			if not UnitIsDeadOrGhost("player") then
 				if noteHasName then
-					if DBM.Options.SpecialWarningFlash5 then--Not included in above if statement on purpose. we don't want to trigger else rule if noteHasName is true but SpecialWarningFlash5 is false
+					if not DBM.Options.DontShowSpecialWarningFlash and DBM.Options.SpecialWarningFlash5 then--Not included in above if statement on purpose. we don't want to trigger else rule if noteHasName is true but SpecialWarningFlash5 is false
 						local repeatCount = DBM.Options.SpecialWarningFlashCount5 or 1
 						DBM.Flash:Show(DBM.Options.SpecialWarningFlashCol5[1],DBM.Options.SpecialWarningFlashCol5[2], DBM.Options.SpecialWarningFlashCol5[3], DBM.Options.SpecialWarningFlashDura5, DBM.Options.SpecialWarningFlashAlph5, repeatCount-1)
 					end
+					if not DBM.Options.DontDoSpecialWarningVibrate and DBM.Options.SpecialWarningVibrate5 then
+						if C_GamePad and C_GamePad.SetVibration then
+							C_GamePad.SetVibration("High", 1)
+						end
+					end
 				else
 					local number = self.flash
-					if DBM.Options["SpecialWarningFlash"..number] then
+					if not DBM.Options.DontShowSpecialWarningFlash and DBM.Options["SpecialWarningFlash"..number] then
 						local repeatCount = DBM.Options["SpecialWarningFlashCount"..number] or 1
 						local flashcolor = DBM.Options["SpecialWarningFlashCol"..number]
 						DBM.Flash:Show(flashcolor[1], flashcolor[2], flashcolor[3], DBM.Options["SpecialWarningFlashDura"..number], DBM.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
+					end
+					if not DBM.Options.DontDoSpecialWarningVibrate and DBM.Options["SpecialWarningVibrate"..number] then
+						if C_GamePad and C_GamePad.SetVibration then
+							C_GamePad.SetVibration("High", 1)
+						end
 					end
 				end
 			end
@@ -10509,11 +10525,18 @@ do
 		if number and not noSound then
 			self:PlaySpecialWarningSound(number, force)
 		end
-		if number and DBM.Options["SpecialWarningFlash"..number] then
-			if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then return end--No flash if trivial
-			local flashColor = self.Options["SpecialWarningFlashCol"..number]
-			local repeatCount = self.Options["SpecialWarningFlashCount"..number] or 1
-			self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura"..number], self.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
+		if number then
+			if self.Options["SpecialWarningFlash"..number] then
+				if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then return end--No flash if trivial
+				local flashColor = self.Options["SpecialWarningFlashCol"..number]
+				local repeatCount = self.Options["SpecialWarningFlashCount"..number] or 1
+				self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura"..number], self.Options["SpecialWarningFlashAlph"..number], repeatCount-1)
+			end
+			if not self.Options.DontDoSpecialWarningVibrate and self.Options["SpecialWarningVibrate"..number] then
+				if C_GamePad and C_GamePad.SetVibration then
+					C_GamePad.SetVibration("High", 1)
+				end
+			end
 		end
 	end
 end
@@ -10679,7 +10702,7 @@ do
 				end
 			end
 			if DBM.Options.BadTimerAlert or DBM.Options.DebugMode and DBM.Options.DebugLevel > 1 then
-				if not self.type or (self.type ~= "target" and self.type ~= "active" and self.type ~= "fades" and self.type ~= "ai") then
+				if not self.type or (self.type ~= "target" and self.type ~= "active" and self.type ~= "fades" and self.type ~= "ai") and not self.allowdouble then
 					local bar = DBT:GetBar(id)
 					if bar then
 						local remaining = ("%.1f"):format(bar.timer)
@@ -10748,7 +10771,9 @@ do
 				end
 			end
 			fireEvent("DBM_TimerStart", id, msg, timer, self.icon, self.type, self.spellId, colorId, self.mod.id, self.keep, self.fade, self.name, guid)
-			tinsert(self.startedTimers, id)
+			if not findEntry(self.startedTimers, id) then--Make sure timer doesn't exist already before adding it
+				tinsert(self.startedTimers, id)
+			end
 			if not self.keep then--Don't ever remove startedTimers on a schedule, if it's a keep timer
 				self.mod:Unschedule(removeEntry, self.startedTimers, id)
 				self.mod:Schedule(timer, removeEntry, self.startedTimers, id)
@@ -12215,11 +12240,11 @@ do
 	"nameplate21", "nameplate22", "nameplate23", "nameplate24", "nameplate25", "nameplate26", "nameplate27", "nameplate28", "nameplate29", "nameplate30",
 	"nameplate31", "nameplate32", "nameplate33", "nameplate34", "nameplate35", "nameplate36", "nameplate37", "nameplate38", "nameplate39", "nameplate40",
 	"mouseover", "target"}
-	function bossModPrototype:ScanForMobs(creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, isFriendly, secondCreatureID, skipMarked, allAllowed)
+	function bossModPrototype:ScanForMobs(creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, allowFriendly, secondCreatureID, skipMarked, allAllowed)
 		if not optionName then optionName = self.findFastestComputer[1] end
 		if canSetIcons[optionName] or allAllowed then
 			--Declare variables.
-			DBM:Debug("canSetIcons or allAllowed true", 2)
+			DBM:Debug("canSetIcons or allAllowed true for "..(optionName or "nil"), 2)
 			local timeNow = GetTime()
 			if not creatureID then--This function must not be used to boss, so remove self.creatureId. Accepts cid, guid and cid table
 				error("DBM:ScanForMobs calld without creatureID")
@@ -12228,7 +12253,8 @@ do
 			iconSetMethod = iconSetMethod or 0--Set IconSetMethod -- 0: Descending / 1:Ascending / 2: Force Set / 9:Force Stop
 			scanningTime = scanningTime or 8
 			maxIcon = maxIcon or 8 --We only have 8 icons.
-			isFriendly = isFriendly or false
+			allowFriendly = allowFriendly or false
+			skipMarked = skipMarked or false
 			secondCreatureID = secondCreatureID or 0
 			scanInterval = scanInterval or 0.2
 			--With different scanID, this function can support multi scanning same time. Required for Nazgrim.
@@ -12250,15 +12276,15 @@ do
 			for _, unitid2 in ipairs(mobUids) do
 				local guid2 = UnitGUID(unitid2)
 				local cid2 = self:GetCIDFromGUID(guid2)
-				local isEnemy = UnitIsEnemy("player", unitid2) or true--If api returns nil, assume it's an enemy
+				local isFriend = UnitIsFriend("player", unitid2)
 				local isFiltered = false
-				if (not isFriendly and not isEnemy) or (skipMarked and not GetRaidTargetIndex(unitid2)) then
+				if (not allowFriendly and isFriend) or (skipMarked and GetRaidTargetIndex(unitid2)) then
 					isFiltered = true
-					DBM:Debug("A unit skipped because it's a filtered mob", 3)
+					DBM:Debug(unitid2.." was skipped because it's a filtered mob. Friend Flag: "..(isFriend and "true" or "false"), 2)
 				end
 				if not isFiltered then
 					if guid2 and type(creatureID) == "table" and creatureID[cid2] and not addsGUIDs[guid2] then
-						DBM:Debug("Match found, SHOULD be setting icon", 2)
+						DBM:Debug("Match found in mobUids, SHOULD be setting icon on "..unitid2, 2)
 						if type(creatureID[cid2]) == "number" then
 							SetRaidTarget(unitid2, creatureID[cid2])
 						else
@@ -12279,7 +12305,7 @@ do
 							return
 						end
 					elseif guid2 and ((guid2 == creatureID) or (cid2 == creatureID) or (cid2 == secondCreatureID)) and not addsGUIDs[guid2] then
-						DBM:Debug("Match found, SHOULD be setting icon", 2)
+						DBM:Debug("Match found in mobUids, SHOULD be setting icon on "..unitid2, 2)
 						if iconSetMethod == 2 then
 							SetRaidTarget(unitid2, mobIcon)
 						else
@@ -12306,15 +12332,15 @@ do
 				local unitid = uId.."target"
 				local guid = UnitGUID(unitid)
 				local cid = self:GetCIDFromGUID(guid)
-				local isEnemy = UnitIsEnemy("player", unitid) or true--If api returns nil, assume it's an enemy
+				local isFriend = UnitIsFriend("player", unitid)
 				local isFiltered = false
-				if (not isFriendly and not isEnemy) or (skipMarked and not GetRaidTargetIndex(unitid)) then
+				if (not allowFriendly and isFriend) or (skipMarked and GetRaidTargetIndex(unitid)) then
 					isFiltered = true
-					DBM:Debug("ScanForMobs aborting because filtered mob", 2)
+					DBM:Debug(unitid.." was skipped because it's a filtered mob. Friend Flag: "..(isFriend and "true" or "false"), 2)
 				end
 				if not isFiltered then
 					if guid and type(creatureID) == "table" and creatureID[cid] and not addsGUIDs[guid] then
-						DBM:Debug("Match found, SHOULD be setting icon", 2)
+						DBM:Debug("Match found in group target scan, SHOULD be setting icon on "..unitid, 2)
 						if type(creatureID[cid]) == "number" then
 							SetRaidTarget(unitid, creatureID[cid])
 						else
@@ -12335,7 +12361,7 @@ do
 							return
 						end
 					elseif guid and ((guid == creatureID) or (cid == creatureID) or (cid == secondCreatureID)) and not addsGUIDs[guid] then
-						DBM:Debug("Match found, SHOULD be setting icon", 2)
+						DBM:Debug("Match found in group target scan, SHOULD be setting icon on "..unitid, 2)
 						if iconSetMethod == 2 then
 							SetRaidTarget(unitid, mobIcon)
 						else
@@ -12359,7 +12385,7 @@ do
 				end
 			end
 			if timeNow < scanExpires[scanID] then--scan for limited times.
-				self:ScheduleMethod(scanInterval, "ScanForMobs", creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, isFriendly, secondCreatureID)
+				self:ScheduleMethod(scanInterval, "ScanForMobs", creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, allowFriendly, secondCreatureID, skipMarked, allAllowed)
 			else
 				DBM:Debug("Stopping ScanForMobs for: "..(optionName or "nil"), 2)
 				--clear variables

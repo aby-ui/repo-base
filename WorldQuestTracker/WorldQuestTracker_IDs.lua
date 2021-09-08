@@ -101,7 +101,7 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		[zoneQuests.BASTION] = 		true,
 		[zoneQuests.ARDENWEALD] =	true,
 		[zoneQuests.REVENDRETH] =	true,
-		--[zoneQuests.THEMAW] =		true,
+		[zoneQuests.THEMAW] =		true,
 		--[zoneQuests.ORIBOS] =		true,
 		
 	--BFA
@@ -198,6 +198,17 @@ WorldQuestTracker.mapTables = {
 			widgets = {},
 			Anchor_X = 0.002,
 			Anchor_Y = 0.34,
+			GrowRight = true,
+			show_on_map = {
+				[zoneQuests.THESHADOWLANDS] = true,
+			},
+		},
+
+		[zoneQuests.THEMAW] = {
+			widgets = {},
+			--Anchor_X = 0.31,
+			Anchor_X = 0.002,
+			Anchor_Y = 0.17,
 			GrowRight = true,
 			show_on_map = {
 				[zoneQuests.THESHADOWLANDS] = true,

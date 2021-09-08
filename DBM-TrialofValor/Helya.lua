@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -598,8 +598,7 @@ function mod:UNIT_HEALTH(uId)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 228372 then--Mists of Helheim (Phase 2)
 		self.vb.phase = 2
 		timerTentacleStrikeCD:Stop()

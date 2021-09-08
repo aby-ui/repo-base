@@ -190,5 +190,9 @@ GTFO.SpellID["79860"] = {
 	};
 };
 
+GTFO.SpellID["240448"] = {
+  --desc = "Quake (Mythic Affix)";
+  sound = 3;
+};
 
 end

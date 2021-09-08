@@ -37,6 +37,7 @@ local MICRO_BUTTON_NAMES = {
     ['QuestLogMicroButton'] = QUESTLOG_BUTTON,
     ['GuildMicroButton'] = LOOKINGFORGUILD,
     ['LFDMicroButton'] = DUNGEONS_BUTTON,
+    ['LFGMicroButton'] = LFG_BUTTON,
     ['EJMicroButton'] = ENCOUNTER_JOURNAL,
     ['MainMenuMicroButton'] = MAINMENU_BUTTON,
     ['StoreMicroButton'] = BLIZZARD_STORE,

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1713, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210119194005")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(101002)
 mod:SetEncounterID(1842)
 --mod:SetUsedIcons(8, 7, 6, 3, 2, 1)
@@ -281,8 +281,7 @@ function mod:UNIT_DIED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 205383 then--Fel Beam (fires for left and right) Does not fire for double beams
 		DBM:Debug("Single Beam", 2)
 	elseif spellId == 215961 then--Double Beam (fires for the double beam sequence where you get both beams back to back. Only fires at start of it not each beam*)

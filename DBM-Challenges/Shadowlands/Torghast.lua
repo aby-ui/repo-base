@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210802205751")
+mod:SetRevision("20210907150109")
 
 mod:RegisterCombat("scenario", 2162)--1911-1912 are outdoor areas
 mod.noStatistics = true
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608 330438 330471 294401 294517 296839 297020 242391 330573 332165 258938 329422 329423 329930 329908 329909 81008 351931",
+	"SPELL_CAST_START 288210 292903 295985 296748 295001 294362 304075 296523 270248 270264 270348 263085 215710 294526 294533 298844 297018 295942 294165 330118 258935 308026 335528 277040 329608 330438 330471 294401 294517 296839 297020 242391 330573 332165 258938 329422 329423 329930 329908 329909 81008 351931 353769 353573 354490 351090",
 	"SPELL_AURA_APPLIED 304093 277040",
 	"SPELL_AURA_APPLIED_DOSE 303678",
 	"SPELL_AURA_REMOVED 277040",
@@ -20,6 +20,9 @@ mod:RegisterEventsInCombat(
 --TODO https://shadowlands.wowhead.com/spell=303678/bone-shrapnel? not sure what i can do about it in a mod though, it's instant cast on death. warn when they are getting low if melee?
 --TODO https://shadowlands.wowhead.com/spell=299150/unnatural-power? boss buff stacks, basic DPS check
 --TODO, alert when a deadsoul scavenger is nearby?
+--TODO, 352215 cries of tormented fear interruptable?
+--TODO, right event for https://www.wowhead.com/spell=354493/soul-breaker#used-by-npc
+--TODO, is https://www.wowhead.com/spell=351621/impaling-spikes#guides the one with bone spikes coming out of ground that do massive damage? I need to get right spell for that and add a dodge/interrrupt to it
 local warnMightySlam				= mod:NewCastAnnounce(296748, 3)--Cast time to short to really dodge, this is just alert to at least mentally prepare for damage spike
 
 --The Maw (WIP, current combat handling doesn't permit this yet)
@@ -35,6 +38,8 @@ local specWarnProphecyOfDeath		= mod:NewSpecialWarningDodge(330471, nil, nil, ni
 local specWarnDiscordantBarrage		= mod:NewSpecialWarningDodge(294401, nil, nil, nil, 2, 2)
 local specWarnBindSouls				= mod:NewSpecialWarningDodge(297020, nil, nil, nil, 2, 2)
 local specWarnInferno				= mod:NewSpecialWarningDodge(335528, nil, nil, nil, 2, 2)
+local specWarnCarrionSwarm			= mod:NewSpecialWarningDodge(353573, nil, nil, nil, 2, 2)
+local specWarnTorturingSwipe		= mod:NewSpecialWarningDodge(354490, nil, nil, nil, 2, 2)
 local specWarnQuake					= mod:NewSpecialWarningJump(81008, nil, nil, nil, 2, 2)
 
 local specWarnGroundCrush			= mod:NewSpecialWarningRun(295985, nil, nil, nil, 4, 2)
@@ -66,6 +71,8 @@ local specWarnInnerFlames			= mod:NewSpecialWarningInterrupt(258935, "HasInterru
 local specWarnSoulofMist			= mod:NewSpecialWarningInterrupt(277040, "HasInterrupt", nil, nil, 1, 2)
 local specWarnTerror				= mod:NewSpecialWarningInterrupt(242391, "HasInterrupt", nil, nil, 1, 2)
 local specWarnBountyOfTheForest		= mod:NewSpecialWarningInterrupt(330573, "HasInterrupt", nil, nil, 1, 2)
+local specWarnShadowboltVolley		= mod:NewSpecialWarningInterrupt(353769, "HasInterrupt", nil, nil, 1, 2)
+local specWarnPersecute				= mod:NewSpecialWarningInterrupt(351090, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSoulofMistDispel		= mod:NewSpecialWarningDispel(277040, "MagicDispeller", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(303594, nil, nil, nil, 1, 8)
 
@@ -111,6 +118,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 329908 and self:AntiSpam(3, 2) then
 		specWarnCrushingSlam:Show()
 		specWarnCrushingSlam:Play("shockwave")
+	elseif spellId == 353573 and self:AntiSpam(3, 2) then
+		specWarnCarrionSwarm:Show()
+		specWarnCarrionSwarm:Play("shockwave")
+	elseif spellId == 354490 and self:AntiSpam(3, 2) then
+		specWarnTorturingSwipe:Show()
+		specWarnTorturingSwipe:Play("shockwave")
 	elseif spellId == 215710 and self:AntiSpam(4, 4) then
 		specWarnHowlingSouls:Show()
 		specWarnHowlingSouls:Play("aesoon")
@@ -212,6 +225,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 330573 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnBountyOfTheForest:Show(args.sourceName)
 		specWarnBountyOfTheForest:Play("kickcast")
+	elseif spellId == 353769 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnShadowboltVolley:Show(args.sourceName)
+		specWarnShadowboltVolley:Play("kickcast")
+	elseif spellId == 351090 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnPersecute:Show(args.sourceName)
+		specWarnPersecute:Play("kickcast")
 	end
 end
 

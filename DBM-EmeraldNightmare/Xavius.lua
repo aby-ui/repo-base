@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetUsedIcons(6, 2, 1)
@@ -422,8 +422,7 @@ function mod:SPELL_PERIODIC_ENERGIZE(_, _, _, _, destGUID, _, _, _, spellId)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 206341 then--Corruption Meteor (casting not in combat log, targetting is finally but I trust this more for timer in case targetting can be gamed.)
 		self.vb.meteorCount = self.vb.meteorCount + 1
 		if self.vb.phase == 3 then

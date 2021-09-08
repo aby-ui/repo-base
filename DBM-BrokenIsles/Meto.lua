@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2012, "DBM-BrokenIsles", 2, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041434")
+mod:SetRevision("20210905144823")
 mod:SetCreatureID(124592)
 --mod:SetEncounterID(1952)--Does not have one
 --mod:SetReCombatTime(20)
@@ -88,8 +88,7 @@ function mod:SPELL_AURA_APPLIED(args)
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 247585 and self:AntiSpam(3, 2) then--Seeds of Chaos
 		specSeedsofChaos:Show()
 		specSeedsofChaos:Play("169613")

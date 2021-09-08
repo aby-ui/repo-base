@@ -537,18 +537,17 @@ function CastBar:GetLatencyPadding()
 end
 
 function CastBar:SetUseSpellReactionColors(enable)
-	self.sets.useSpellReactionColors = enable or false
+	if enable then
+		self.sets.useSpellReactionColors = true
+	else
+		self.sets.useSpellReactionColors = false
+	end
+
 	self:UpdateColor()
 end
 
-function CastBar:UseSpellReactionColors(enable)
-	local state = self.sets.useSpellReactionColors
-
-	if self.sets.useSpellReactionColors == nil then
-		return true
-	end
-
-	return state
+function CastBar:UseSpellReactionColors()
+	return self.sets.useSpellReactionColors
 end
 
 -- force the casting bar to show with the override ui/pet battle ui

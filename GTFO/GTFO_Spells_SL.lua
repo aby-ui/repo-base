@@ -694,7 +694,8 @@ GTFO.SpellID["358243"] = {
 
 GTFO.SpellID["358204"] = {
   --desc = "Bellows' Flames (Screamspike)";
-  sound = 1;
+  sound = 2;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["355524"] = {

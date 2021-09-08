@@ -1,9 +1,9 @@
 ## Interface: 90100
 ## Title: Postal
-## Version: v3.7.2
-## X-Build: 478
-## X-ReleaseDate: 2021-08-23T15:09:27Z
-## X-Revision: 478
+## Version: v3.7.3
+## X-Build: 487
+## X-ReleaseDate: 2021-09-06T17:29:43Z
+## X-Revision: 487
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -35,6 +35,7 @@ Modules\BlackBook.lua
 Modules\DoNotWant.lua
 Modules\CarbonCopy.lua
 Modules\Forward.lua
+Modules\QuickAttach.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Postal 邮箱助手

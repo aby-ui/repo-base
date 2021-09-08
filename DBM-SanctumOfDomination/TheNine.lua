@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210828202140")
+mod:SetRevision("20210831171020")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -382,7 +382,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local amount = args.amount or 1
 		local icon = 0
 		local uId = DBM:GetRaidUnitId(args.destName)
-		for i = 1, 8 do
+		for i = 1, 8 do--Only up to 8 icons
 			if not fragmentTargets[i] then--Not yet assigned!
 				icon = i
 				fragmentTargets[i] = args.destName--Assign player name for infoframe even if they already have icon

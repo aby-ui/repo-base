@@ -51,6 +51,13 @@ local defaults = {
 			DisableBlizzardAutoComplete = false,
 			UseAutoComplete = true,
 		},
+		QuickAttach = {
+			EnableBag0 = true,
+			EnableBag1 = true,
+			EnableBag2 = true,
+			EnableBag3 = true,
+			EnableBag4 = true,
+		},
 	},
 	global = {
 		BlackBook = {
