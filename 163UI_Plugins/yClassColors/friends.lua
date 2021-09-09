@@ -208,6 +208,16 @@ if FriendsTooltip then
                             self:SetWidth(width + FRIENDS_TOOLTIP_MARGIN_WIDTH*2)
                         end
                     end
+
+                    -- 改了区域之后显示中国，改回来
+                    local areaName = gameAccountInfo.isWowMobile and LOCATION_MOBILE_APP or (gameAccountInfo.areaName or UNKNOWN);
+                    local realmName = gameAccountInfo.realmDisplayName or gameAccountInfo.realmID or UNKNOWN;
+                    if not gameAccountInfo.isInCurrentRegion then
+                        gameAccountInfoString:SetText(BNET_FRIEND_TOOLTIP_ZONE_AND_REALM:format(areaName, realmName));
+                        if gameAccountInfoString:GetBottom() < FriendsTooltip:GetBottom() + 10 then
+                            FriendsTooltip:SetHeight(FriendsTooltip:GetHeight()+15)
+                        end
+                    end
                 end
             end
         end
