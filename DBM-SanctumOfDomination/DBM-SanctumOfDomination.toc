@@ -35,3 +35,6 @@ FatescribeRohKalo.lua
 KelThuzad.lua
 SylvanasWindrunner.lua
 SanctumofDomTrash.lua
+
+
+## X-Vendor: AbyUI
