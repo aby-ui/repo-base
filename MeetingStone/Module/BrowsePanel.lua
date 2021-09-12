@@ -187,12 +187,12 @@ function BrowsePanel:OnInitialize()
                 key = 'Leader',
                 text = L['团长'],
                 style = 'LEFT',
-                width = 100,
+                width = 178,
                 showHandler = function(activity)
                     if activity:IsUnusable() then
-                        return activity:GetLeaderShort(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
+                        return activity:GetLeaderFullName(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
                     else
-                        return activity:GetLeaderShortText(), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
+                        return activity:GetLeaderFullName(), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
                                HIGHLIGHT_FONT_COLOR.b
                     end
                 end,

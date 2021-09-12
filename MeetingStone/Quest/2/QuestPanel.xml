@@ -306,7 +306,7 @@
                                 <Anchor point="TOPLEFT" x="10" y="-50"/>
                             </Anchors>
                         </FontString>
-                        <FontString parentKey="Label2" inherits="GameFontHighlightSmallLeft" text="通过活动报名后，带领不同玩家通关史诗钥匙，赢取丰厚奖励！">
+                        <FontString parentKey="Label2" inherits="GameFontHighlightSmallLeft" text="通过活动报名后，与不同玩家通关史诗钥石，更有希尔瓦娜斯雕像、统御头盔等丰厚奖品等你来拿！">
                             <Anchors>
                                 <Anchor point="TOPLEFT" relativeKey="$parent.Label1" relativePoint="BOTTOMLEFT" x="0" y="-15"/>
                                 <Anchor point="RIGHT" x="-10" y="0"/>

@@ -15,6 +15,7 @@
     <Include file="AceGUI-3.0\AceGUI-3.0.xml" />
     <Include file="AceConfig-3.0\AceConfig-3.0.xml" />
 -->
+    <Include file="LibShowUIPanel-1.0\LibShowUIPanel-1.0.xml" />
 
     <Script file="Env\Env.lua" />
     <Include file="LibClass-2.0\LibClass-2.0.xml" />

@@ -7,7 +7,7 @@ table.insert(UISpecialFrames, 'MeetingStone_MainPanel_AbyUI')
 function MainPanel:OnInitialize()
     GUI:Embed(self, 'Refresh', 'Help', 'Blocker')
 
-    self:SetSize(922, 447)
+    self:SetSize(1000, 447)
     self:SetText(L['集合石'] .. ' Beta ' .. ADDON_VERSION)
     self:SetIcon(ADDON_LOGO)
     self:EnableUIPanel(true)
