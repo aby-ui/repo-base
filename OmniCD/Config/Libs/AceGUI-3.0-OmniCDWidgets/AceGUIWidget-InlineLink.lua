@@ -152,7 +152,7 @@ local function Constructor()
 	label:SetWidth(100)
 	label:SetHeight(26)
 
-	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox-OmniCD"..num, frame, "BackdropTemplate")
+	local editbox = CreateFrame("EditBox", "AceGUI-3.0EditBox-OmniCD"..num, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	editbox:SetAutoFocus(false)
 	editbox:SetFontObject("GameFontHighlight-OmniCD") --ChatFontNormal
 	editbox:SetScript("OnEnter", Control_OnEnter)

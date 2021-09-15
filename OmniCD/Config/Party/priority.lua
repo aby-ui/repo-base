@@ -19,10 +19,8 @@ for k, v in pairs(E.L_PRIORITY) do
 	priority.args[k] = {
 		name = v,
 		order = 30 - C.Party.arena.priority[k],
-		--width = "double",
 		type = "range",
 		min = 1, max = 20, step = 1,
-		--descStyle = "inline",
 	}
 end
 

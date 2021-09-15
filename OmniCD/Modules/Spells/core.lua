@@ -19,10 +19,8 @@ E.spell_marked = {
 	[213602] = true,    -- Greater Fade
 	[1966]   = 79008,   -- Elusiveness
 	[79206]  = 290254,  -- Ancestral Gift
-	--[[
-	[190784] = 199542,  -- Steed of Glory
-	[23920]  = 213915,  -- Rebound
-	[5246]   = 275338,  -- Menace
-	[199086] = true,    -- Warpath
-	--]]
+--  [190784] = 199542,  -- Steed of Glory
+--  [23920]  = 213915,  -- Rebound
+--  [5246]   = 275338,  -- Menace
+--  [199086] = true,    -- Warpath
 }

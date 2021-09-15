@@ -31,6 +31,7 @@ end
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
 
+	-- s b
 	PlaySound(1217)
 	local fadeOut = frame.fadeOut
 	if fadeOut:IsPlaying() then
@@ -42,6 +43,7 @@ end
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
 
+	-- s b
 	local fadeIn = frame.fadeIn
 	if fadeIn:IsPlaying() then
 		fadeIn:Stop()
@@ -55,8 +57,13 @@ Methods
 local methods = {
 	["OnAcquire"] = function(self)
 		-- restore default values
-		self:SetHeight(22)
+		--[[ s r
+		self:SetHeight(24)
 		self:SetWidth(200)
+		]]
+		self:SetHeight(22)
+		self:SetWidth(200) -- this does nothing with ACD fixed at width_multiplier: 170
+		-- e
 		self:SetDisabled(false)
 		self:SetAutoWidth(false)
 		self:SetText()
@@ -82,10 +89,10 @@ local methods = {
 		self.disabled = disabled
 		if disabled then
 			self.frame:Disable()
-			self.frame:SetBackdropColor(0.2, 0.2, 0.2)
+			self.frame:SetBackdropColor(0.2, 0.2, 0.2) -- s a
 		else
 			self.frame:Enable()
-			self.frame:SetBackdropColor(0.725, 0.008, 0.008)
+			self.frame:SetBackdropColor(0.725, 0.008, 0.008) -- s a
 		end
 	end
 }
@@ -94,8 +101,13 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
+	--[[ s r
+	local name = "AceGUI30Button" .. AceGUI:GetNextWidgetNum(Type)
+	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate")
+	]]
 	local name = "AceGUI30Button-OmniCD" .. AceGUI:GetNextWidgetNum(Type)
-	local frame = CreateFrame("Button", name, UIParent, "UIPanelButtonTemplate, BackdropTemplate")
+	local frame = CreateFrame("Button", name, UIParent, BackdropTemplateMixin and "UIPanelButtonTemplate, BackdropTemplate" or "UIPanelButtonTemplate")
+	-- e
 	frame:Hide()
 
 	frame:EnableMouse(true)
@@ -109,7 +121,9 @@ local function Constructor()
 	text:SetPoint("BOTTOMRIGHT", -15, 1)
 	text:SetJustifyV("MIDDLE")
 
-	frame.Left:Hide()
+	-- s b
+	-- inherits UIPanelButtonNoTooltipTemplate
+	frame.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
 	frame.Right:Hide()
 	frame.Middle:Hide()
 	frame:SetHighlightTexture(nil)
@@ -120,9 +134,13 @@ local function Constructor()
 	frame:SetHighlightFontObject("GameFontHighlight-OmniCD")
 	frame:SetDisabledFontObject("GameFontDisable-OmniCD")
 	frame.bg = frame:CreateTexture(nil, "BORDER")
-	OmniCD[1].DisablePixelSnap(frame.bg)
-	frame.bg:SetPoint("TOPLEFT", frame.TopEdge, "BOTTOMLEFT")
-	frame.bg:SetPoint("BOTTOMRIGHT", frame.BottomEdge, "TOPRIGHT")
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		frame.bg:SetAllPoints()
+	else
+		OmniCD[1].DisablePixelSnap(frame.bg)
+		frame.bg:SetPoint("TOPLEFT", frame.TopEdge, "BOTTOMLEFT")
+		frame.bg:SetPoint("BOTTOMRIGHT", frame.BottomEdge, "TOPRIGHT")
+	end
 	frame.bg:SetColorTexture(0.0, 0.6, 0.4)
 	frame.bg:Hide()
 
@@ -141,6 +159,7 @@ local function Constructor()
 	fadeOut:SetToAlpha(0)
 	fadeOut:SetDuration(0.3)
 	fadeOut:SetSmoothing("OUT")
+	-- e
 
 	local widget = {
 		text  = text,

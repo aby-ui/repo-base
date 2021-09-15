@@ -1,9 +1,20 @@
 local E, L, C = select(2, ...):unpack()
 
 local GetNumGroupMembers = GetNumGroupMembers
+local GetUnitName = GetUnitName
+local UnitClass = UnitClass
 local UnitExists = UnitExists
 local UnitGUID = UnitGUID
+local UnitIsConnected = UnitIsConnected
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
+local UnitLevel = UnitLevel
+local UnitRace = UnitRace
+local C_Timer_NewTicker = C_Timer.NewTicker
+local C_PvP_IsWarModeDesired = C_PvP and C_PvP.IsWarModeDesired
+local LE_PARTY_CATEGORY_HOME = LE_PARTY_CATEGORY_HOME
 local P = E["Party"]
+local UPDATE_ROSTER_DELAY = 2
+local MSG_INFO_REQUEST_DELAY = 3
 
 P.groupInfo = {}
 P.pendingQueue = {}
@@ -25,19 +36,21 @@ P.userData = {
 	shadowlandsData = {}
 }
 
-P.zoneEvents = {
-	none  = { "PLAYER_FLAGS_CHANGED" },
-	arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
-	pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
-	party = { "CHALLENGE_MODE_START" },
-	raid  = { "ENCOUNTER_END" },
-	all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "PLAYER_FLAGS_CHANGED", "CHALLENGE_MODE_START", "ENCOUNTER_END" },
-}
-if E.isBCC then
-	P.zoneEvents.none = nil
-	P.zoneEvents.party = nil
-	P.zoneEvents.raid = nil
-	P.zoneEvents.all = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" }
+if E.isPreBCC then
+	P.zoneEvents = {
+		arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+	}
+else
+	P.zoneEvents = {
+		none  = { "PLAYER_FLAGS_CHANGED" },
+		arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		party = { "CHALLENGE_MODE_START" },
+		raid  = { "ENCOUNTER_END" },
+		all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "PLAYER_FLAGS_CHANGED", "CHALLENGE_MODE_START", "ENCOUNTER_END" },
+	}
 end
 
 do
@@ -50,14 +63,14 @@ do
 		anchorTimer = nil
 	end
 
-	local function SendRequestSync() -- [58]
-		local success = E.Comms:InspectPlayer()
+	local function SendRequestSync()
+		local success = E.Comms:InspectPlayer() -- GetSpecialization can fail for user joining LFR
 		if success then
 			E.Comms:RequestSync()
 			P.groupJoined = false
 			syncTimer = nil
 		else
-			C_Timer.After(3, SendRequestSync)
+			C_Timer.After(2, SendRequestSync)
 		end
 	end
 
@@ -68,16 +81,16 @@ do
 
 		local size = P:GetEffectiveNumGroupMembers()
 		local oldDisabled = P.disabled
-		P.disabled = not P.test and (P.disabledzone or size == 0 or
-			(size == 1 and P.isUserDisabled) or -- [82]
+		P.disabled = not P.test and (P.disabledzone or size == 0 or -- make absolutely sure this never returns nil
+			(size == 1 and P.isUserDisabled) or
 			(GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) == 0 and not E.profile.Party.visibility.finder) or
-			(size > E.profile.Party.visibility.size) or
-			(size > 5 and not P.isInDungeon and E.customUF.enabled and E.db.position.uf ~= "blizz" and not E.db.extraBars.raidCDBar.enabled)) --> FindAnchorFrame
+			(size > E.profile.Party.visibility.size))
 		if P.disabled then
 			if oldDisabled == false then
 				P:ResetModule()
 			end
 			P.groupJoined = false
+
 			return
 		elseif oldDisabled ~= false then
 			E.Comms:Enable()
@@ -85,8 +98,8 @@ do
 			force = true
 		end
 
-		for guid, info in pairs(P.groupInfo) do -- [42]
-			if not UnitExists(info.name) or (guid == E.userGUID and P.isUserDisabled) then -- [82]
+		for guid, info in pairs(P.groupInfo) do -- info wipes for group members exiting before you from queued-instances (Arena)
+			if not UnitExists(info.name) or (guid == E.userGUID and P.isUserDisabled) then
 				P.groupInfo[guid] = nil
 				info.bar:Hide()
 
@@ -104,15 +117,18 @@ do
 			end
 		end
 
-		local isInRaid = IsInRaid() -- [89]
+		local isInRaid = IsInRaid() -- in arena unit ID depends on the frame being used. partframes - Party123, CRF - Raid123
 		for i = 1, size do
 			local index = not isInRaid and i == size and 5 or i
 			local unit = isInRaid and E.RAID_UNIT[index] or E.PARTY_UNIT[index]
 			local guid = UnitGUID(unit)
 			local info = P.groupInfo[guid]
 			local _, class = UnitClass(unit)
+			local isDead = UnitIsDeadOrGhost(unit)
+			local isDeadOrOffline = isDead or not UnitIsConnected(unit)
+			local isUser = guid == E.userGUID
 
-			local pet = class == "HUNTER" and E.unitToPetId[unit]
+			local pet = (class == "HUNTER" or class == "WARLOCK")and E.unitToPetId[unit]
 			if pet then
 				local petGUID = UnitGUID(pet)
 				if petGUID then
@@ -125,36 +141,47 @@ do
 				if info.unit ~= unit then
 					info.index = index
 					info.unit = unit
-					info.bar.key = index
-					info.bar.unit = unit
-					info.bar.anchor.text:SetText(index)
 
-					-- update event unitIDs
-					if not E.isBCC then
-						if guid ~= E.userGUID then -- [96]
-							info.bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
-						end
+					local bar = info.bar
+					bar.key = index
+					bar.unit = unit
+					bar.anchor.text:SetText(index)
 
-						if info.maxHealth then
-							f:RegisterUnitEvent("UNIT_HEALTH", unit, unit)
-						end
+					-- Update event unitIDs
+					if not E.isPreBCC and not isUser then -- user registered in comms to make it work while user is disabled
+						bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 					end
-					info.bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]*
+					if info.glowIcons[125174] or info.preActiveIcons[5384] then -- Touch of Karma, Feign Death
+						bar:RegisterUnitEvent("UNIT_AURA", unit)
+					end
+					if isDead then
+						bar:RegisterUnitEvent("UNIT_HEALTH", unit)
+					end
+					bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
 				end
-				if force then -- [37]*
+
+				if isDeadOrOffline then
+					P:SetDisabledColorScheme(info)
+				else
+					P:SetEnabledColorScheme(info)
+				end
+
+				if force then -- LFR can fire GRU(while in a disabled zone) before PEW. -> force UpdateUnitBar on refresh/PEW
 					P.pendingQueue[#P.pendingQueue + 1] = guid
 					P:UpdateUnitBar(guid, true)
 				end
-			elseif guid == E.userGUID then
-				if not P.isUserDisabled then -- [82]
+			elseif isUser then
+				if not P.isUserDisabled then
 					P.groupInfo[guid] = P.userData
 					P.groupInfo[guid].index = index
 					P.groupInfo[guid].unit = unit
 					P.groupInfo[guid].petGUID = pet
+					P.groupInfo[guid].isDead = isDead
+					P.groupInfo[guid].isDeadOrOffline = isDeadOrOffline
 
-					P:UpdateUnitBar(guid, true) -- [49]
+					P:UpdateUnitBar(guid, true) -- define user info.bar in case inspection fails
 				end
-			elseif class then -- [32]
+			elseif class then -- nil check
 				local _,_, race = UnitRace(unit)
 				local name = GetUnitName(unit, true)
 				local level = UnitLevel(unit)
@@ -178,14 +205,14 @@ do
 					talentData = {},
 					invSlotData = {},
 					shadowlandsData = {},
+					isDead = isDead,
+					isDeadOrOffline = isDeadOrOffline,
 				}
-
-				P.loginsessionData[guid] = {}
 
 				P.pendingQueue[#P.pendingQueue + 1] = guid
 				P:UpdateUnitBar(guid, true)
 			else
-				E.TimerAfter(3, updateRosterInfo, true) -- [97]
+				E.TimerAfter(UPDATE_ROSTER_DELAY, updateRosterInfo, true)
 			end
 		end
 
@@ -193,20 +220,23 @@ do
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
 
-		if P.groupJoined or force then -- [101]
-			if anchorTimer then -- TODO: Temp Fix Healbot on RL, VuhDo w/ Group+Invert
+		if P.groupJoined or force then
+			-- Temp fix for Healbot, VuhDo
+			if anchorTimer then
 				anchorTimer:Cancel()
 			end
-			anchorTimer = C_Timer.NewTicker(10, AnchorFix, 1)
+			anchorTimer = C_Timer_NewTicker(5, AnchorFix, 2)
 
 			if syncTimer then
 				syncTimer:Cancel()
 			end
-			syncTimer = C_Timer.NewTicker(3, SendRequestSync, 1)
+			-- solo(test) set delay to 0 so glow, tmarks doesn't reset
+			-- else delay til 2nd pass for class nils
+			syncTimer = C_Timer_NewTicker(size == 1 and 0 or MSG_INFO_REQUEST_DELAY, SendRequestSync, 1)
 		end
 	end
 
-	function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh) -- [50]
+	function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh) -- fires on boss kills in dungeons
 		if ( isRefresh or GetNumGroupMembers() == 0 ) then
 			updateRosterInfo(true)
 		elseif ( isPEW ) then
@@ -242,7 +272,8 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		return
 	end
 
-	-- TODO: remove showPlayerEx option and enable it by default
+	wipe(E.Cooldowns.spellDestGUIDS)
+
 	-- TODO: if zone changed or isRefresh or first run
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
@@ -250,7 +281,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	P.profile = E.profile.Party
 	P.db = E.db
 	self.isUserHidden = not self.test and not E.db.general.showPlayer
-	self.isUserDisabled = self.isUserHidden and (not E.db.general.showPlayerEx or (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled)) -- [82]
+	self.isUserDisabled = self.isUserHidden and (not E.db.general.showPlayerEx or (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled))
 
 	E.Cooldowns:UpdateCombatLogVar()
 	E:SetActiveUnitFrameData()
@@ -260,16 +291,23 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	self:UpdateRaidPriority()
 
 	E.UnregisterEvents(self, self.zoneEvents.all)
-	E.RegisterEvents(self, self.zoneEvents[instanceType])
+	if self.isInDungeon then
+		local _,_, difficultyID = GetInstanceInfo()
+		if difficultyID == 8 then
+			E.RegisterEvents(self, self.zoneEvents[instanceType])
+		end
+	else
+		E.RegisterEvents(self, self.zoneEvents[instanceType])
+	end
 
-	self.isPvP = E.isBCC and true or (self.isInPvPInstance or (instanceType == "none" and C_PvP.IsWarModeDesired()))
+	self.isPvP = E.isPreBCC and true or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
 	--//
 
 	if self.isInPvPInstance then
 		self:ResetAllIcons("joinedPvP")
 	end
 
-	self:GROUP_ROSTER_UPDATE(true, isRefresh) -- [37]
+	self:GROUP_ROSTER_UPDATE(true, isRefresh) -- Don't ask, just do it!
 end
 
 function P:CHAT_MSG_BG_SYSTEM_NEUTRAL(arg1)
@@ -304,10 +342,10 @@ function P:PLAYER_FLAGS_CHANGED()
 	if ( InCombatLockdown() ) then return end
 
 	local oldpvp = self.isPvP
-	self.isPvP = C_PvP.IsWarModeDesired()
+	self.isPvP = C_PvP_IsWarModeDesired()
 	if oldpvp ~= self.isPvP then
 		self:UpdateBars()
-		self:UpdateExPosition() -- update layout
+		self:UpdateExPosition()
 		E.Comms:EnqueueInspect(true)
 	end
 end

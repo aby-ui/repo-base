@@ -60,7 +60,7 @@ local ProfileSharing = {
 			}
 		},
 		import = {
-			name = L["Import Profile"], --|cff99cdff
+			name = L["Import Profile"],
 			order = 200,
 			type = "group",
 			inline = true,
@@ -144,7 +144,7 @@ local ProfileSharing = {
 					values = ProfileValues,
 					get = function() return selectedProfileDest end,
 					set = function(_, value) selectedProfileDest = value end,
-					disabledItem = function() return selectedProfileSrc end,
+					disabledItem = function() return selectedProfileSrc end, -- myAce: this must be a function
 				},
 				copy = {
 					disabled = function() return not selectedProfileSrc or not selectedProfileZone or not selectedProfileOption or not selectedProfileDest end,

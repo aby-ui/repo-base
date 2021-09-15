@@ -75,7 +75,7 @@ end
 
 E.LoadPosition = function(f, key)
 	key = key or f.key
-	local db = f.db or E.db -- [57]
+	local db = f.db or E.db -- new namespace or internal
 	db.manualPos[key] = db.manualPos[key] or {}
 	db = db.manualPos[key]
 	local x = db.x
@@ -102,7 +102,7 @@ function OmniCD_AnchorOnMouseUp(self)
 	local bar = self:GetParent()
 	bar:StopMovingOrSizing()
 	SavePosition(bar)
-	--E.Libs.ACR:NotifyChange("OmniCD") -- if we're adding X/Y coordinates in option
+--  E:ACR_NotifyChange() -- if we're adding X/Y coordinates in option
 end
 
 E.SetWidth = function(anchor, padding)
@@ -215,7 +215,6 @@ end
 E.Noop = function() end
 
 do
-	local backdropFrames = {}
 	local backdropStyle = {}
 	local textureUVs = {
 		"TopLeftCorner",
@@ -255,17 +254,6 @@ do
 			if region then
 				E.DisablePixelSnap(region)
 			end
-		end
-
-		backdropFrames[frame] = backdrop
-	end
-
-	E.UpdateBackdrops = function()
-		for style, backdrop in pairs(backdropStyle) do
-			backdrop.edgeSize = E.PixelMult
-		end
-		for frame, backdrop in pairs(backdropFrames) do
-			frame:SetBackdrop(backdrop)
 		end
 	end
 end

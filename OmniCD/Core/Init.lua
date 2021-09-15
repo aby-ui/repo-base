@@ -2,7 +2,7 @@ local AddOnName, NS = ...
 
 local AddOn = LibStub("AceAddon-3.0"):NewAddon(AddOnName)
 AddOn.L = LibStub("AceLocale-3.0"):GetLocale(AddOnName)
-AddOn.defaults = { global = {}, profile = { modules = {["*"] = true} } }
+AddOn.defaults = { global = {}, profile = { modules = {["Party"] = true} } }
 
 NS[1] = AddOn
 NS[2] = AddOn.L
@@ -41,6 +41,8 @@ NS[1].Notes = GetAddOnMetadata(AddOnName, "Notes")
 NS[1].License = GetAddOnMetadata(AddOnName, "X-License")
 NS[1].WoWPatch, NS[1].WoWBuild, NS[1].WoWPatchReleaseDate, NS[1].TocVersion = GetBuildInfo()
 NS[1].LoginMessage = NS[1].userClassHexColor .. AddOnName .. " v" .. NS[1].Version .. "|r - /oc"
+NS[1].isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 NS[1].isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+NS[1].isPreBCC = NS[1].isClassic or NS[1].isBCC
 
 OmniCD = NS

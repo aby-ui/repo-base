@@ -27,8 +27,10 @@ function P:SetIconLayout(f, sortOrder)
 			icon:ClearAllPoints()
 			if numActive > 1 then
 				count = count + 1
-				--if not self.multiline and count == self.columns or (self.multiline and rows == 1 and E.db.priority[icon.type] <= self.breakPoint) then
 				if not self.multiline and count == self.columns or (self.multiline and (rows == 1 and E.db.priority[icon.type] <= self.breakPoint or (self.tripleline and rows == 2 and E.db.priority[icon.type] <= self.breakPoint2))) then
+					if self.tripleline and rows == 1 and E.db.priority[icon.type] <= self.breakPoint2 then
+						rows = rows + 1
+					end
 					icon:SetPoint(self.point, f.container, self.ofsX * rows, self.ofsY * rows)
 					count = 0
 					rows = rows + 1
@@ -136,14 +138,28 @@ function P:SetMarker(icon)
 end
 
 function P:SetAlpha(icon)
+	-- Alpha
 	if icon.statusBar and not E.db.extraBars[icon.statusBar.key].useIconAlpha then
 		icon:SetAlpha(1.0)
 	else
 		icon:SetAlpha(icon.active and E.db.icons.activeAlpha or E.db.icons.inactiveAlpha)
 	end
 
-	local charges = icon.maxcharges and tonumber(icon.Count:GetText())
-	icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0));
+	-- Color and Saturation
+	local info = P.groupInfo[icon.guid]
+	if not info then return end
+	if info.isDeadOrOffline then
+		icon.icon:SetDesaturated(true)
+		icon.icon:SetVertexColor(0.3, 0.3, 0.3)
+	else
+		if info.preActiveIcons[icon.spellID] and not icon.isHighlighted then
+			icon.icon:SetVertexColor(0.4, 0.4, 0.4)
+		else
+			icon.icon:SetVertexColor(1, 1, 1)
+		end
+		local charges = icon.maxcharges and tonumber(icon.Count:GetText())
+		icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0));
+	end
 end
 
 function P:SetSwipe(icon)
@@ -163,7 +179,7 @@ function P:SetCounter(icon)
 	else
 		local charges = icon.maxcharges and tonumber(icon.Count:GetText())
 		local noCount = charges and charges > 0 or (icon.isHighlighted and true) or not E.db.icons.showCounter
-		icon.cooldown:SetHideCountdownNumbers(noCount) -- [11]
+		icon.cooldown:SetHideCountdownNumbers(noCount) -- [11]*
 		icon.counter:SetScale(E.db.icons.counterScale)
 	end
 end
@@ -175,14 +191,6 @@ end
 function P:SetTooltip(icon)
 	icon:EnableMouse(E.db.icons.showTooltip)
 end
-
---[[
-function P:SetAtlas(icon)
-	if E.db.highlight.glow then
-		icon.NewItemTexture:SetAtlas(E.db.highlight.glowColor)
-	end
-end
-]]
 
 function P:ApplySettings(f)
 	self:SetAnchor(f)
@@ -197,6 +205,5 @@ function P:ApplySettings(f)
 		self:SetCounter(icon)
 		self:SetChargeScale(icon)
 		self:SetTooltip(icon)
-		--self:SetAtlas(icon)
 	end
 end

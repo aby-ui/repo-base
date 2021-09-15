@@ -6,27 +6,16 @@ InspectTooltip:SetOwner(UIParent, "ANCHOR_NONE")
 
 local strjoin = strjoin
 local strfind = string.find
+local strmatch = string.match
 local CanInspect = CanInspect
-local GetInspectSpecialization = GetInspectSpecialization
-local GetSpecialization = GetSpecialization
-local GetSpecializationInfo = GetSpecializationInfo
 local GetTalentInfo = GetTalentInfo
-local GetInspectSelectedPvpTalent = C_SpecializationInfo and C_SpecializationInfo.GetInspectSelectedPvpTalent
-local GetPvpTalentInfoByID = GetPvpTalentInfoByID
-local GetPvpTalentSlotInfo = C_SpecializationInfo and C_SpecializationInfo.GetPvpTalentSlotInfo
-local GetRenownLevel = C_CovenantSanctumUI and C_CovenantSanctumUI.GetRenownLevel
-local IsAzeriteEmpoweredItemByID = C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID
-local IsValidRuneforgeBaseItem = C_LegendaryCrafting and C_LegendaryCrafting.IsValidRuneforgeBaseItem
-local IsRuneforgeLegendary = C_LegendaryCrafting and C_LegendaryCrafting.IsRuneforgeLegendary
 local UnitIsDead = UnitIsDead
 local UnitIsConnected = UnitIsConnected
 local Comms = E["Comms"]
 local P = E["Party"]
-local soulbind_conduits_rank = E.soulbind_conduits_rank
-local covenant_IDToSpellID = E.covenant_IDToSpellID
 local item_merged = E.item_merged
 local INS_ONUPDATE_INTERVAL = 1
-local INS_DELAY_TIME = 2
+local INS_DELAY_TIME = 1
 local INS_PAUSE_TIME = 2
 local INS_TIME_LIMIT = 180
 local elapsedTime = 0
@@ -58,15 +47,15 @@ local function IsSoulbindRowEnhanced(soulbindID, row, renownLevel)
 	end
 end
 
-local invSlotIDs = {
+local invSlotIDs = { -- runeforgeBaseItems uses this index!
 	13, -- INVSLOT_TRINKET1
 	14, -- INVSLOT_TRINKET2
 	16, -- INVSLOT_MAINHAND
-	2,  -- INVSLOT_NECK
 	1,  -- INVSLOT_HEAD
+	2,  -- INVSLOT_NECK
 	3,  -- INVSLOT_SHOULDER
-	5,  -- INVSLOT_CHEST
 	15, -- INVSLOT_BACK
+	5,  -- INVSLOT_CHEST
 	9,  -- INVSLOT_WRIST
 	10, -- INVSLOT_HAND
 	6,  -- INVSLOT_WAIST
@@ -77,9 +66,9 @@ local invSlotIDs = {
 }
 local numInvSlotIDs = #invSlotIDs
 
-local runeforgeBaseItems = { -- [74]
+local runeforgeBaseItems = {
 	nil, nil, nil,
-	{ 173245, 172317, 172325, 171415 },
+	{ 173245, 172317, 172325, 171415 }, -- Miscellaneous[0], Cloth[1], Leather[2], Mail[3], Plate[4]
 	{ 178927, 178927, 178927, 178927 },
 	{ 173247, 172319, 172327, 171417 },
 	{ 173242, 173242, 173242, 173242 },
@@ -226,12 +215,15 @@ function Comms:RequestInspect()
 	for guid, added in pairs(queueEntries) do
 		local info = P.groupInfo[guid]
 		local isSyncedUnit = self.syncGUIDS[guid]
-		if info and not isSyncedUnit then -- [85]
+		if info and not isSyncedUnit then
 			local unit = info.unit
 			local elapsed = now - added
-			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT ) then -- [80]
+			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT ) then
+				-- Changing online status triggers GRU
 				self:DequeueInspect(guid)
-			elseif ( (E.isBCC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then  -- [54]
+			elseif ( (E.isPreBCC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then
+				-- CheckInteractDistance: BCC still has 28yd inspection range (zone wide in Legion?)
+				-- CanInspect: returns false for everyone joined before me on LFGR
 				staleEntries[guid] = added
 				queueEntries[guid] = nil
 			else
@@ -252,54 +244,425 @@ function Comms:INSPECT_READY(guid)
 	end
 end
 
-function Comms:InspectUnit(guid)
-	local info = P.groupInfo[guid]
-	if not info or self.syncGUIDS[guid] then -- [85]
-		ClearInspectPlayer()
-		return
-	end
+if E.isPreBCC then
+	local item_equipBonus = E.item_equipBonus
+	local item_setBonus = E.item_setBonus
+	local talentNameToRankID = E.talentNameToRankID
+	local S_ITEM_SET_NAME  = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
 
-	local unit = info.unit
-	local specID = GetInspectSpecialization(unit)
-	if not specID or specID == 0 then
-		return
-	end
+	function Comms:InspectUnit(guid)
+		local info = P.groupInfo[guid]
+		if not info or self.syncGUIDS[guid] then
+			ClearInspectPlayer()
+			return
+		end
 
-	info.spec = specID
-	info.talentData = {}
-	info.invSlotData = {}
-	info.shadowlandsData = {}
+		local unit = info.unit
+		info.spec = info.raceID
+		info.talentData = {}
+		info.invSlotData = {}
 
-	for i = 1, 7 do
-		for j = 1, 3 do
-			local _,_,_, selected, _, spellID = GetTalentInfo(i, j, 1, true, unit)
-			if selected then
-				info.talentData[spellID] = true
-				break
+		for i = 1, 3 do
+			for j = 1, 25 do
+				-- BCC: name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo
+				local name, _,_,_, currentRank = GetTalentInfo(i, j, true, unit)
+				if not name then break end
+				if currentRank > 0 then
+					local talent = talentNameToRankID[name]
+					if talent then
+						if type(talent[1]) == "table" then
+							for k = 1, #talent do
+								local t = talent[k]
+								local talentID = t[currentRank]
+								if talentID then
+									info.talentData[talentID] = true
+								end
+							end
+						else
+							local talentID = talent[currentRank]
+							if talentID then
+								info.talentData[talentID] = true
+							end
+						end
+					end
+				end
 			end
 		end
-	end
 
-	for i = 1, 3 do
-		local talentID = GetInspectSelectedPvpTalent(unit, i)
-		if talentID then
-			local _,_,_,_,_, spellID = GetPvpTalentInfoByID(talentID)
-			info.talentData[spellID] = "PVP"
+		for i = numInvSlotIDs, 1, -1 do
+			local slotID = invSlotIDs[i]
+			InspectTooltip:SetInventoryItem(unit, slotID)
+			local _, itemLink = InspectTooltip:GetItem()
+			if itemLink then
+				local itemID = GetItemInfoInstant(itemLink)
+				if itemID then
+					if i > 2 then
+
+						local equipID = item_equipBonus[itemID]
+						if equipID then
+							info.talentData[equipID] = true
+						end
+
+						local setBonus = item_setBonus[itemID]
+						if setBonus then
+							local bonusID, numRequired = setBonus[1], setBonus[2]
+							if not info.talentData[bonusID] then -- 1 cdr per set
+								for j = 10, InspectTooltip:NumLines() do
+									local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
+									local text = tooltipLine:GetText()
+									if text and text ~= "" then
+										local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
+										if name and numEquipped and numFullSet then
+											numEquipped = tonumber(numEquipped)
+											if numEquipped and numEquipped >= numRequired then
+												info.talentData[bonusID] = true
+											end
+											break
+										end
+									end
+								end
+							end
+						end
+					elseif i < 3 then
+						itemID = item_merged[itemID] or itemID
+						info.invSlotData[itemID] = true
+					end
+				end
+			end
 		end
+
+		if info.level == 200 then
+			local lvl = UnitLevel(unit)
+			info.level = lvl > 0 and lvl or 200
+		end
+
+		ClearInspectPlayer()
+		self:DequeueInspect(guid)
+
+		P:UpdateUnitBar(guid)
 	end
 
-	local runeforgePower = 0
-	for i = 1, numInvSlotIDs do
-		local slotID = invSlotIDs[i]
-		InspectTooltip:SetInventoryItem(unit, slotID)
-		local _, itemLink = InspectTooltip:GetItem()
-		if itemLink then
-			local itemID, _,_,_,_,_, itemSubClassID = GetItemInfoInstant(itemLink)
+	function Comms:InspectPlayer()
+		local guid = E.userGUID
+		local info = P.userData
+
+		info.spec = info.raceID
+		info.talentData = {}
+		info.invSlotData = {}
+		local tmp = {}
+
+		local c = 0
+		for i = 1, 3 do
+			for j = 1, 25 do
+				local name, _,_,_, currentRank = GetTalentInfo(i, j)
+				if not name then
+					break
+				end
+
+				if currentRank > 0 then
+					local talent = talentNameToRankID[name]
+					if talent then
+						if type(talent[1]) == "table" then
+							for k = 1, #talent do
+								local t = talent[k]
+								local talentID = t[currentRank]
+								if talentID then
+									info.talentData[talentID] = true
+									c = c + 1
+									tmp[c] = talentID
+								end
+							end
+						else
+							local talentID = talent[currentRank]
+							if talentID then
+								info.talentData[talentID] = true
+								c = c + 1
+								tmp[c] = talentID
+							end
+						end
+					end
+				end
+			end
+		end
+
+		local speed = UnitRangedDamage("player")
+		if speed and speed > 0 then
+			info.RAS = speed
+			c = c + 1
+			tmp[c] = -speed
+		end
+
+		local isDelimiter
+		for i = numInvSlotIDs, 1, -1 do
+			local slotID = invSlotIDs[i]
+			local itemID = GetInventoryItemID("player", slotID)
 			if itemID then
 				if i > 3 then
-					local baseItem = runeforgeBaseItems[i]
-					itemSubClassID = itemSubClassID == 0 and 1 or itemSubClassID
-					if itemID == baseItem[itemSubClassID] then
+					InspectTooltip:SetInventoryItem("player", slotID)
+
+					local equipID = item_equipBonus[itemID]
+					if equipID then
+						info.talentData[equipID] = true
+						c = c + 1
+						tmp[c] = equipID
+					end
+
+					local setBonus = item_setBonus[itemID]
+					if setBonus then
+						local bonusID, numRequired = setBonus[1], setBonus[2]
+						if not info.talentData[bonusID] then
+							for j = 10, InspectTooltip:NumLines() do
+								local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
+								local text = tooltipLine:GetText()
+								if text and text ~= "" then
+									local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
+									if name and numEquipped and numFullSet then
+										numEquipped = tonumber(numEquipped)
+										if numEquipped and numEquipped >= numRequired then
+											info.talentData[bonusID] = true
+											c = c + 1
+											tmp[c] = bonusID
+										end
+										break
+									end
+								end
+							end
+						end
+					end
+				elseif i < 3 then
+					if not isDelimiter then
+						c = c + 1
+						tmp[c] = "|"
+						isDelimiter = true
+					end
+					itemID = item_merged[itemID] or itemID
+					info.invSlotData[itemID] = true
+					c = c + 1
+					tmp[c] = itemID
+				end
+			end
+		end
+
+		local talentInvSlots = table.concat(tmp, ",")
+		E.syncData = strjoin(",", guid, info.spec, talentInvSlots)
+
+		if P.groupInfo[guid] then
+			P:UpdateUnitBar(guid)
+		end
+
+		return true
+	end
+else
+	local GetInspectSpecialization = GetInspectSpecialization
+	local GetSpecialization = GetSpecialization
+	local GetSpecializationInfo = GetSpecializationInfo
+	local GetInspectSelectedPvpTalent = C_SpecializationInfo.GetInspectSelectedPvpTalent
+	local GetPvpTalentInfoByID = GetPvpTalentInfoByID
+	local GetPvpTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo
+	-- 9.0
+	local GetRenownLevel = C_CovenantSanctumUI.GetRenownLevel
+	local IsValidRuneforgeBaseItem = C_LegendaryCrafting.IsValidRuneforgeBaseItem
+	local IsRuneforgeLegendary = C_LegendaryCrafting.IsRuneforgeLegendary
+	local soulbind_conduits_rank = E.soulbind_conduits_rank
+	local covenant_IDToSpellID = E.covenant_IDToSpellID
+
+	function Comms:InspectUnit(guid)
+		local info = P.groupInfo[guid]
+		if not info or self.syncGUIDS[guid] then
+			ClearInspectPlayer()
+			return
+		end
+
+		local unit = info.unit
+		local specID = GetInspectSpecialization(unit)
+		if not specID or specID == 0 then
+			return
+		end
+
+		info.spec = specID
+		info.talentData = {}
+		info.invSlotData = {}
+		info.shadowlandsData = {}
+
+		for i = 1, 7 do
+			for j = 1, 3 do
+				local _,_,_, selected, _, spellID = GetTalentInfo(i, j, 1, true, unit)
+				if selected then
+					info.talentData[spellID] = true
+					break
+				end
+			end
+		end
+
+		for i = 1, 3 do
+			local talentID = GetInspectSelectedPvpTalent(unit, i)
+			if talentID then
+				local _,_,_,_,_, spellID = GetPvpTalentInfoByID(talentID)
+				info.talentData[spellID] = "PVP"
+			end
+		end
+
+		local runeforgePower = 0
+		for i = 1, numInvSlotIDs do
+			local slotID = invSlotIDs[i]
+			InspectTooltip:SetInventoryItem(unit, slotID)
+			local _, itemLink = InspectTooltip:GetItem()
+			if itemLink then
+				local itemID, _,_,_,_,_, itemSubClassID = GetItemInfoInstant(itemLink)
+				if itemID then
+					if i > 3 then
+						local baseItem = runeforgeBaseItems[i]
+						itemSubClassID = itemSubClassID == 0 and 1 or itemSubClassID
+						if itemID == baseItem[itemSubClassID] then
+							local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
+							numBonusIDs = tonumber(numBonusIDs)
+							if numBonusIDs and bonusIDs then
+								local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
+								for j = 1, numBonusIDs do
+									local bonusID = t[j]
+									bonusID = tonumber(bonusID)
+									local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
+									if runeforgeDescID then
+										runeforgePower = runeforgeDescID
+										break
+									end
+								end
+							end
+							break
+						end
+					elseif i == 3 then
+						if itemID == 186414 then
+							info.talentData[itemID] = true
+						end
+					else
+						itemID = item_merged[itemID] or itemID
+						info.invSlotData[itemID] = true
+					end
+				end
+			end
+		end
+		info.shadowlandsData.runeforgeDescID = runeforgePower
+		info.talentData[runeforgePower] = "R"
+
+		if info.level == 200 then
+			local lvl = UnitLevel(unit)
+			info.level = lvl > 0 and lvl or 200
+		end
+
+		ClearInspectPlayer()
+		self:DequeueInspect(guid)
+
+		P:UpdateUnitBar(guid)
+	end
+
+	local function GetCovenantSoulbindData()
+		local info = P.userData
+
+		local covenantID = C_Covenants.GetActiveCovenantID();
+		if covenantID == 0 then
+			return covenantID
+		end
+
+		local covenantSpellID = covenant_IDToSpellID[covenantID]
+		info.talentData[covenantSpellID] = "C"
+		info.shadowlandsData.covenantID = covenantID
+
+		local soulbindID = C_Soulbinds.GetActiveSoulbindID();
+		if soulbindID == 0 then
+			return covenantID
+		end
+		info.shadowlandsData.soulbindID = soulbindID
+
+		local soulbindData = C_Soulbinds.GetSoulbindData(soulbindID);
+		local nodes = soulbindData.tree and soulbindData.tree.nodes
+		if not nodes then
+			return covenantID .. "," .. soulbindID
+		end
+
+		local renownLevel = GetRenownLevel()
+		local t = { covenantID, soulbindID }
+		for i = 1, #nodes do
+			local node = nodes[i]
+			if node.state == Enum.SoulbindNodeState.Selected then
+				local conduitID, conduitRank, row, spellID = node.conduitID, node.conduitRank, node.row, node.spellID
+				if conduitID ~= 0 then
+					spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank)
+					if IsSoulbindRowEnhanced(soulbindID, row, renownLevel) then
+						conduitRank = conduitRank + 2
+					end
+					local rankValue = soulbind_conduits_rank[spellID] and (soulbind_conduits_rank[spellID][conduitRank] or soulbind_conduits_rank[spellID][1])
+					info.shadowlandsData[conduitID] = conduitRank
+					info.talentData[spellID] = rankValue
+					t[#t + 1] = conduitID .. "-" .. conduitRank
+				elseif spellID ~= 0 then
+					info.shadowlandsData[spellID] = 0
+					info.talentData[spellID] = 0
+					t[#t + 1] = spellID
+				end
+			end
+		end
+
+		return E.FormatConcat(t, "%s,")
+	end
+
+	--|cff9d9d9d|Hitem:itemID:enchantID:gemID1:gemID2:gemID3:gemID4:suffixID:uniqueID:linkLevel:specializationID:upgradeTypeID:instanceDifficultyID:numBonusIDs[:bonusID1:bonusID2:...][:upgradeValue1:upgradeValue2:...]:relic1NumBonusIDs[:relic1BonusID1:relic1BonusID2:...]:relic2NumBonusIDs[:relic2BonusID1:relic2BonusID2:...]:relic3NumBonusIDs[:relic3BonusID1:relic3BonusID2:...]:|h["displayed text"]|h|r
+	function Comms:InspectPlayer()
+		local guid = E.userGUID, E.userClass
+		local info = P.userData
+
+		local specIndex = GetSpecialization()
+		local specID = GetSpecializationInfo(specIndex)
+		if not specID or specID == 0 then
+			return
+		end
+
+		info.spec = specID
+		info.talentData = {}
+		info.invSlotData = {}
+		info.shadowlandsData = {}
+		local tmp = {}
+
+		for i = 1, 7 do
+			local spellID
+			for j = 1, 3 do
+				local _,_,_, selected, _, id = GetTalentInfo(i, j, 1)
+				if selected then
+					spellID = id
+					info.talentData[id] = true
+					break
+				end
+			end
+			tmp[i] = spellID or 0
+		end
+
+		for i = 1, 3 do
+			local slotInfo = GetPvpTalentSlotInfo(i)
+			local talentID = slotInfo and slotInfo.selectedTalentID
+			if talentID then
+				local _,_,_,_,_, spellID = GetPvpTalentInfoByID(talentID)
+				info.talentData[spellID] = "PVP"
+				tmp[i + 7] = spellID
+			else
+				tmp[i + 7] = 0
+			end
+		end
+
+		local runeforgePower = 0
+		local specialSnowFlake = 0
+		for i = 1, numInvSlotIDs do
+			local slotID = invSlotIDs[i]
+			local itemID = GetInventoryItemID("player", slotID)
+			if i > 3 then
+				if itemID then
+					local itemLink = GetInventoryItemLink("player", slotID)
+					local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID)
+					local isBaseItem = IsValidRuneforgeBaseItem(itemLocation)
+					local isLegendary = IsRuneforgeLegendary(itemLocation)
+					if isBaseItem then
+						break
+					end
+
+					if isLegendary then
 						local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
 						numBonusIDs = tonumber(numBonusIDs)
 						if numBonusIDs and bonusIDs then
@@ -316,395 +679,31 @@ function Comms:InspectUnit(guid)
 						end
 						break
 					end
-				elseif i == 3 then
-					if itemID == 186414 then
-						info.talentData[itemID] = true
-					end
-				else
-					itemID = item_merged[itemID] or itemID
-					info.invSlotData[itemID] = true
 				end
-			end
-		end
-	end
-	info.shadowlandsData.runeforgeDescID = runeforgePower
-	info.talentData[runeforgePower] = "R"
-
-	if info.level == 200 then
-		local lvl = UnitLevel(unit)
-		info.level = lvl > 0 and lvl or 200
-	end
-
-	ClearInspectPlayer()
-	self:DequeueInspect(guid)
-
-	local covenantID = P.loginsessionData[guid] and P.loginsessionData[guid].covenantID
-	if covenantID then
-		info.shadowlandsData.covenantID = covenantID
-		info.talentData[E.covenant_IDToSpellID[covenantID]] = "C"
-	end
-
-	P:UpdateUnitBar(guid)
-end
-
-local function GetCovenantSoulbindData()
-	local info = P.userData
-
-	local covenantID = C_Covenants.GetActiveCovenantID();
-	if covenantID == 0 then
-		return covenantID
-	end
-
-	local covenantSpellID = covenant_IDToSpellID[covenantID]
-	info.shadowlandsData.covenantID = covenantSpellID
-	info.talentData[covenantSpellID] = "C"
-
-	local soulbindID = C_Soulbinds.GetActiveSoulbindID();
-	if soulbindID == 0 then
-		return covenantID
-	end
-	info.shadowlandsData.soulbindID = soulbindID
-
-	local soulbindData = C_Soulbinds.GetSoulbindData(soulbindID);
-	local nodes = soulbindData.tree and soulbindData.tree.nodes
-	if not nodes then
-		return covenantID .. "," .. soulbindID
-	end
-
-	local renownLevel = GetRenownLevel()
-	local t = { covenantID, soulbindID }
-	for i = 1, #nodes do
-		local node = nodes[i]
-		if node.state == Enum.SoulbindNodeState.Selected then
-			local conduitID, conduitRank, row, spellID = node.conduitID, node.conduitRank, node.row, node.spellID
-			if conduitID ~= 0 then
-				spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank)
-				if IsSoulbindRowEnhanced(soulbindID, row, renownLevel) then
-					conduitRank = conduitRank + 2
-				end
-				local rankValue = soulbind_conduits_rank[spellID] and (soulbind_conduits_rank[spellID][conduitRank] or soulbind_conduits_rank[spellID][1])
-				info.shadowlandsData[conduitID] = conduitRank
-				info.talentData[spellID] = rankValue
-				t[#t + 1] = conduitID .. "-" .. conduitRank
-			elseif spellID ~= 0 then
-				info.shadowlandsData[spellID] = 0
-				info.talentData[spellID] = 0
-				t[#t + 1] = spellID
-			end
-		end
-	end
-
-	return E.FormatConcat(t, "%s,")
-end
-
---|cff9d9d9d|Hitem:itemID:enchantID:gemID1:gemID2:gemID3:gemID4:suffixID:uniqueID:linkLevel:specializationID:upgradeTypeID:instanceDifficultyID:numBonusIDs[:bonusID1:bonusID2:...][:upgradeValue1:upgradeValue2:...]:relic1NumBonusIDs[:relic1BonusID1:relic1BonusID2:...]:relic2NumBonusIDs[:relic2BonusID1:relic2BonusID2:...]:relic3NumBonusIDs[:relic3BonusID1:relic3BonusID2:...]:|h["displayed text"]|h|r
-function Comms:InspectPlayer()
-	local guid = E.userGUID, E.userClass
-	local info = P.userData
-
-	local specIndex = GetSpecialization()
-	local specID = GetSpecializationInfo(specIndex) -- [58]
-	if not specID or specID == 0 then
-		return
-	end
-
-	info.spec = specID
-	info.talentData = {}
-	info.invSlotData = {}
-	info.shadowlandsData = {}
-	local tmp = {}
-
-	for i = 1, 7 do
-		local spellID
-		for j = 1, 3 do
-			local _,_,_, selected, _, id = GetTalentInfo(i, j, 1)
-			if selected then
-				spellID = id
-				info.talentData[id] = true
-				break
-			end
-		end
-		tmp[i] = spellID or 0
-	end
-
-	for i = 1, 3 do
-		local slotInfo = GetPvpTalentSlotInfo(i)
-		local talentID = slotInfo and slotInfo.selectedTalentID
-		if talentID then
-			local _,_,_,_,_, spellID = GetPvpTalentInfoByID(talentID)
-			info.talentData[spellID] = "PVP"
-			tmp[i + 7] = spellID
-		else
-			tmp[i + 7] = 0
-		end
-	end
-
-	local runeforgePower = 0
-	local specialSnowFlake = 0
-	for i = 1, numInvSlotIDs do
-		local slotID = invSlotIDs[i]
-		local itemID = GetInventoryItemID("player", slotID)
-		if i > 3 then
-			if itemID then
-				local itemLink = GetInventoryItemLink("player", slotID)
-				local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID)
-				local isBaseItem = IsValidRuneforgeBaseItem(itemLocation)
-				local isLegendary = IsRuneforgeLegendary(itemLocation)
-				if isBaseItem then
-					break
-				end
-
-				if isLegendary then
-					local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
-					numBonusIDs = tonumber(numBonusIDs)
-					if numBonusIDs and bonusIDs then
-						local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
-						for j = 1, numBonusIDs do
-							local bonusID = t[j]
-							bonusID = tonumber(bonusID)
-							local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
-							if runeforgeDescID then
-								runeforgePower = runeforgeDescID
-								break
-							end
-						end
-					end
-					break
-				end
-			end
-		elseif i == 3 then
-			if itemID == 186414 then
-				info.talentData[itemID] = true
-				specialSnowFlake = itemID
-			end
-		else
-			if itemID then
-				itemID = item_merged[itemID] or itemID
-				info.invSlotData[itemID] = true
-			end
-			tmp[i + 10] = itemID or 0
-		end
-	end
-	info.shadowlandsData.runeforgeDescID = runeforgePower
-	info.talentData[runeforgePower] = "R"
-
-	local talentInvSlots = table.concat(tmp, ",")
-	local covenantSoulbinds = GetCovenantSoulbindData()
-	E.syncData = strjoin(",", guid, specID, talentInvSlots, runeforgePower, covenantSoulbinds, specialSnowFlake)
-
-	if P.groupInfo[guid] then
-		P:UpdateUnitBar(guid)
-	end
-
-	return true
-end
-
-if not E.isBCC then return end
-
-local item_equipBonus = E.item_equipBonus
-local item_setBonus = E.item_setBonus
-local talentNameToRankID = E.talentNameToRankID
-local S_ITEM_SET_NAME  = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
-
-function Comms:InspectUnit(guid)
-	local info = P.groupInfo[guid]
-	if not info or self.syncGUIDS[guid] then
-		ClearInspectPlayer()
-		return
-	end
-
-	local unit = info.unit
-	info.spec = info.raceID
-	info.talentData = {}
-	info.invSlotData = {}
-
-	for i = 1, 3 do
-		for j = 1, 25 do
-			-- name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo
-			local name, _,_,_, currentRank = GetTalentInfo(i, j, true, unit)
-			if not name then break end
-			if currentRank > 0 then
-				local talent = talentNameToRankID[name]
-				if talent then
-					if type(talent[1]) == "table" then
-						for k = 1, #talent do
-							local t = talent[k]
-							local talentID = t[currentRank]
-							if talentID then
-								info.talentData[talentID] = true
-							end
-						end
-					else
-						local talentID = talent[currentRank]
-						if talentID then
-							info.talentData[talentID] = true
-						end
-					end
-				end
-			end
-		end
-	end
-
-	for i = numInvSlotIDs, 1, -1 do
-		local slotID = invSlotIDs[i]
-		InspectTooltip:SetInventoryItem(unit, slotID)
-		local _, itemLink = InspectTooltip:GetItem()
-		if itemLink then
-			local itemID = GetItemInfoInstant(itemLink)
-			if itemID then
-				if i > 2 then
-
-					local equipID = item_equipBonus[itemID]
-					if equipID then
-						info.talentData[equipID] = true
-					end
-
-					local setBonus = item_setBonus[itemID]
-					if setBonus then
-						local bonusID, numRequired = setBonus[1], setBonus[2]
-						if not info.talentData[bonusID] then -- 1 cdr per set
-							for j = 10, InspectTooltip:NumLines() do
-								local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
-								local text = tooltipLine:GetText()
-								if text and text ~= "" then
-									local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
-									if name and numEquipped and numFullSet then
-										numEquipped = tonumber(numEquipped)
-										if numEquipped and numEquipped >= numRequired then
-											info.talentData[bonusID] = true
-										end
-										break
-									end
-								end
-							end
-						end
-					end
-				else
-					itemID = item_merged[itemID] or itemID
-					info.invSlotData[itemID] = true
-				end
-			end
-		end
-	end
-
-	if info.level == 200 then
-		local lvl = UnitLevel(unit)
-		info.level = lvl > 0 and lvl or 200
-	end
-
-	ClearInspectPlayer()
-	self:DequeueInspect(guid)
-
-	P:UpdateUnitBar(guid)
-end
-
-function Comms:InspectPlayer()
-	local guid = E.userGUID
-	local info = P.userData
-
-	info.spec = info.raceID
-	info.talentData = {}
-	info.invSlotData = {}
-	local tmp = {}
-
-	local c = 0
-	for i = 1, 3 do
-		for j = 1, 25 do
-			local name, _,_,_, currentRank = GetTalentInfo(i, j)
-			if not name then
-				break
-			end
-
-			if currentRank > 0 then
-				local talent = talentNameToRankID[name]
-				if talent then
-					if type(talent[1]) == "table" then
-						for k = 1, #talent do
-							local t = talent[k]
-							local talentID = t[currentRank]
-							if talentID then
-								info.talentData[talentID] = true
-								c = c + 1
-								tmp[c] = talentID
-							end
-						end
-					else
-						local talentID = talent[currentRank]
-						if talentID then
-							info.talentData[talentID] = true
-							c = c + 1
-							tmp[c] = talentID
-						end
-					end
-				end
-			end
-		end
-	end
-
-	local speed = UnitRangedDamage("player")
-	if speed and speed > 0 then
-		info.RAS = speed
-		c = c + 1
-		tmp[c] = -speed
-	end
-
-	local isDelimiter
-	for i = numInvSlotIDs, 1, -1 do
-		local slotID = invSlotIDs[i]
-		local itemID = GetInventoryItemID("player", slotID)
-		if itemID then
-			if i > 2 then
-				InspectTooltip:SetInventoryItem("player", slotID)
-
-				local equipID = item_equipBonus[itemID]
-				if equipID then
-					info.talentData[equipID] = true
-					c = c + 1
-					tmp[c] = equipID
-				end
-
-				local setBonus = item_setBonus[itemID]
-				if setBonus then
-					local bonusID, numRequired = setBonus[1], setBonus[2]
-					if not info.talentData[bonusID] then
-						for j = 10, InspectTooltip:NumLines() do
-							local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
-							local text = tooltipLine:GetText()
-							if text and text ~= "" then
-								local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
-								if name and numEquipped and numFullSet then
-									numEquipped = tonumber(numEquipped)
-									if numEquipped and numEquipped >= numRequired then
-										info.talentData[bonusID] = true
-										c = c + 1
-										tmp[c] = bonusID
-									end
-									break
-								end
-							end
-						end
-					end
+			elseif i == 3 then
+				if itemID == 186414 then
+					info.talentData[itemID] = true
+					specialSnowFlake = itemID
 				end
 			else
-				if not isDelimiter then
-					c = c + 1
-					tmp[c] = "|"
-					isDelimiter = true
+				if itemID then
+					itemID = item_merged[itemID] or itemID
+					info.invSlotData[itemID] = true
 				end
-				itemID = item_merged[itemID] or itemID
-				info.invSlotData[itemID] = true
-				c = c + 1
-				tmp[c] = itemID
+				tmp[i + 10] = itemID or 0
 			end
 		end
+		info.shadowlandsData.runeforgeDescID = runeforgePower
+		info.talentData[runeforgePower] = "R"
+
+		local talentInvSlots = table.concat(tmp, ",")
+		local covenantSoulbinds = GetCovenantSoulbindData()
+		E.syncData = strjoin(",", guid, specID, talentInvSlots, runeforgePower, covenantSoulbinds, specialSnowFlake)
+
+		if P.groupInfo[guid] then
+			P:UpdateUnitBar(guid)
+		end
+
+		return true
 	end
-
-	local talentInvSlots = table.concat(tmp, ",")
-	E.syncData = strjoin(",", guid, info.spec, talentInvSlots)
-
-	if P.groupInfo[guid] then
-		P:UpdateUnitBar(guid)
-	end
-
-	return true
 end

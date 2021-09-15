@@ -60,7 +60,7 @@ function AutoTurnIn:ShowQuestLevelInWatchFrame()
 					if (questLogIndex) then
 						local questInfo = C_QuestLog.GetInfo(questLogIndex)
 						-- update calls are async and data could not be (yet or already) exist in log
-						if (questInfo.title and questInfo.title ~= "") then 	  
+						if (questInfo and questInfo.title and questInfo.title ~= "") then 	  
 							local questTypeIndex = GetQuestLogQuestType(questLogIndex)
 							local tagString = AutoTurnIn.QuestTypesIndex[questTypeIndex] or ""
 							local dailyMod = (questInfo.frequency == Enum.QuestFrequency.Daily or questInfo.frequency == Enum.QuestFrequency.Weekly) and "\*" or ""

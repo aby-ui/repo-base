@@ -116,20 +116,7 @@ function RSLootMixin:OnMouseDown()
 end
 
 function RSLootMixin:AddItem(itemID, numActive)
-	local itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
-	if (not iconFileDataID) then
-		self.itemID = itemID
-		-- It will be refired after recieving the item info
-		return true
-			-- If we have already more items than wanted
-	elseif (numActive > RSConfigDB.GetMaxNumItemsToShow()) then
-		return false
-	end
-
-	-- Apply filters
-	if (RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)) then
-		return false;
-	end
+	local itemLink, _, _, iconFileDataID, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(itemID)
 
 	-- Set item icon
 	self.Icon:SetTexture(iconFileDataID)
@@ -162,6 +149,4 @@ function RSLootMixin:AddItem(itemID, numActive)
 
 	self:GetParent():SetSize(self:GetWidth() * maxWidth, 20 * (floor(numActive/RSConfigDB.GetNumItemsPerRow()) + 1))
 	self:GetParent():SetPoint("TOP", self:GetParent():GetParent(), "BOTTOM", 0, -3)
-
-	return true
 end

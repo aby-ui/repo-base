@@ -8,7 +8,7 @@ local markEnhancedDesc = {}
 for k, v in pairs(E.spell_marked) do
 	if not C_Spell.DoesSpellExist(k) or (v ~= true and not C_Spell.DoesSpellExist(v)) then
 		E.spell_marked[k] = nil
-		--E.Write("Removing Invalid ID (Enhanced): |cffffd200" .. k)
+--      E.Write("Removing Invalid ID (Enhanced): |cffffd200" .. k)
 	else
 		local id = v == true and k or v
 		local name, _, icon = GetSpellInfo(id)
@@ -91,7 +91,6 @@ local highlight = {
 						end
 					end,
 					values = E.L_HIGHLIGHTS,
-					--descStyle = "inline",
 				},
 			}
 		},
@@ -116,7 +115,7 @@ local highlight = {
 					desc = L["%d: spellID.\n%d-%d: spellID-talentID (Mark spell if talent is selected)."] .. "\n\n" .. L["Use a semi-colon(;) to seperate multiple IDs."],
 					order = 2,
 					type = "input",
-					--multiline = 1, -- no support for this yet
+--                  multiline = 1, -- myAce: no support for this yet
 					width = "full",
 					get = function(info)
 						local t = E.DB.profile.Party[info[2]].highlight.markedSpells.str

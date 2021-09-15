@@ -237,7 +237,7 @@ do
 				local aclass, bclass = a.class, b.class
 				if aclass == bclass then
 					if a.spellID == b.spellID then
-						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name -- end with name so we don't see it shuffling around
+						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name -- end with name so it doesn't shuffle around on rl
 					end
 					return a.spellID < b.spellID
 				end
@@ -296,7 +296,7 @@ do
 			local icon = icons[i]
 			local info = P.groupInfo[icon.guid]
 			local spellIcon = info and info.spellIcons[icon.spellID]
-			if icon ~= spellIcon then -- [104]
+			if icon ~= spellIcon then -- for when UpdateUnitBar is called directly. <cf., UpdateBars pre-hide(remove all icons) extraBars>
 				P:RemoveIcon(icon)
 				tremove(icons, i)
 				n = n + 1
@@ -364,7 +364,7 @@ do
 			icon:Show()
 		end
 
-		if not noDelay or updateSettings then -- [88]
+		if not noDelay or updateSettings then -- run on no delay (nil-updateSettings can ignore subsequent true-updateSettings calls being on the same timer)
 			P:ApplyExSettings(key)
 		end
 
@@ -372,15 +372,15 @@ do
 	end
 
 
-	function P:SetExIconLayout(key, noDelay, sortOrder, updateSettings) -- removed all delay from options. we don't want a slouchy response
-		if self.disabled then -- [102]
+	function P:SetExIconLayout(key, noDelay, sortOrder, updateSettings)
+		if self.disabled then
 			return
 		end
 
 		if noDelay then
 			updateLayout(key, noDelay, sortOrder, updateSettings)
 		else
-			if not timers[key] then -- [33]
+			if not timers[key] then -- nil info err in sort on hideall w/o delay
 				timers[key] = E.TimerAfter(0.5, updateLayout, key, noDelay, sortOrder, updateSettings)
 			end
 		end
@@ -544,15 +544,20 @@ function P:SetExIconName(icon, key)
 end
 
 function P:SetExStatusBarColor(icon, key)
+	local info = P.groupInfo[icon.guid]
+	if not info then return end
+
 	local db = E.db.extraBars[key]
 	local c, r, g, b, a = RAID_CLASS_COLORS[icon.class]
 	local statusBar = icon.statusBar
 
-	-- inactive bg doesn't exist
+	-- Inactive bg doesn't exist
 
-	-- inactive text
+	-- Inactive text
 	if not db.hideBar or not icon.active then
-		if db.textColors.useClassColor.inactive then
+		if info.isDeadOrOffline then
+			r, g, b = 0.3, 0.3, 0.3
+		elseif db.textColors.useClassColor.inactive then
 			r, g, b = c.r, c.g, c.b
 		else
 			local db_text = db.textColors.inactiveColor
@@ -564,12 +569,14 @@ function P:SetExStatusBarColor(icon, key)
 	statusBar.BG:SetShown(not db.hideBar and not icon.active)
 	statusBar.Text:SetShown(db.hideBar or not icon.active)
 
-	-- inactive bar
+	-- Inactive bar
 	local db_bar = db.barColors.inactiveColor
 	local alpha = db.useIconAlpha and 1 or db_bar.a
 	local spellID = icon.spellID
-	if P.groupInfo[icon.guid].preActiveIcons[spellID] and spellID ~= 1022 and spellID ~= 204018 then -- [81] filter BOP/BOS
-		r, g, b, a = 0.7, 0.7, 0.7, alpha -- [A]
+	if info.isDeadOrOffline then
+		r, g, b, a = 0.3, 0.3, 0.3, alpha
+	elseif info.preActiveIcons[spellID] and spellID ~= 1022 and spellID ~= 204018 then -- BoP/BoS
+		r, g, b, a = 0.7, 0.7, 0.7, alpha
 	elseif db.barColors.useClassColor.inactive then
 		r, g, b, a = c.r, c.g, c.b, alpha
 	else
@@ -577,7 +584,7 @@ function P:SetExStatusBarColor(icon, key)
 	end
 	statusBar.BG:SetVertexColor(r, g, b, a)
 
-	--> active & recharge done in CastingBarFrame_OnLoad
+	--> Active & Recharge done in CastingBarFrame_OnLoad
 end
 
 function P:ApplyExSettings(key)
@@ -600,7 +607,6 @@ function P:ApplyExSettings(key)
 		self:SetCounter(icon)
 		self:SetChargeScale(icon)
 		self:SetTooltip(icon)
-		--self:SetAtlas(icon)
 	end
 end
 
@@ -611,7 +617,7 @@ function P:UpdateExPosition()
 
 	for key, f in pairs(self.extraBars) do
 		if E.db.extraBars[key].enabled then
-			self:SetExIconLayout(key, true, true, true) -- [105]
+			self:SetExIconLayout(key, true, true, true) -- if isGRU run once after iterating roster
 			E.LoadPosition(f)
 			f:Show()
 		else

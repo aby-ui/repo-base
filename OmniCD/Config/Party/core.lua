@@ -63,11 +63,11 @@ for key, name in pairs(E.L_ZONE) do
 			order = 20,
 			type = "select",
 			values = E.CFG_ZONE,
-			get = function(info) return E.DB.profile.Party[info[2] == "none" and "noneZoneSetting" or "scenarioZoneSetting"] end, -- [83]
+			get = function(info) return E.DB.profile.Party[info[2] == "none" and "noneZoneSetting" or "scenarioZoneSetting"] end,
 			set = function(info, value)
 				E.DB.profile.Party[info[2] == "none" and "noneZoneSetting" or "scenarioZoneSetting"] = value
 
-				P:Refresh(true) -- [76]
+				P:Refresh(true) -- don't cross check zone. We just changed it
 			end,
 		}
 	end
@@ -118,7 +118,7 @@ function P:ConfigBars(key, arg)
 
 	if arg == "priority" then
 		self:UpdateRaidPriority()
-		self:SetExIconLayout("raidCDBar", true, true) -- changed to nodelay
+		self:SetExIconLayout("raidCDBar", true, true)
 	elseif arg ~= "showAnchor" and arg ~= "locked" then
 		self:UpdatePositionValues()
 	end
@@ -143,7 +143,7 @@ function P:ConfigBars(key, arg)
 			self:SetAnchor(f)
 		elseif arg == "reset" then
 			E.LoadPosition(f)
-		else -- [20]
+		else -- columns/growUpward/displayInactive/paddingXY
 			self:SetIconLayout(f, arg == "priority")
 		end
 	end

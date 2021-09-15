@@ -24,6 +24,7 @@ function CD:Disable()
 
 	wipe(self.totemGUIDS)
 	wipe(self.petGUIDS)
+	wipe(self.spellDestGUIDS)
 
 	self.enabled = false
 end

@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 44
-RSConstants.CURRENT_LOOT_DB_VERSION = 57
+RSConstants.CURRENT_LOOT_DB_VERSION = 58
 
 ---============================================================================
 -- Special events
@@ -517,6 +517,7 @@ RSConstants.START_COLLECTIONS_SCAN = "RARESCANNER_START_COLLECTIONS_SCAN"
 
 RSConstants.RAID_WARNING_SHOWING_TIME = 3
 RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP = 0.015
+RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE = 0.096
 RSConstants.TOOLTIP_MAX_WIDTH = 250
 
 ---============================================================================

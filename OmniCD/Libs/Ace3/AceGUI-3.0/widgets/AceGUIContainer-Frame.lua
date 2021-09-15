@@ -41,9 +41,10 @@ end
 
 local function Frame_OnMouseDown(frame)
 	AceGUI:ClearFocus()
-	frame:StartMoving()
+	frame:StartMoving() -- s a
 end
 
+-- s b
 local function Frame_OnMouseUp(frame)
 	frame:StopMovingOrSizing()
 	local self = frame.obj
@@ -74,6 +75,17 @@ local function SizerSE_OnMouseDown(frame)
 	AceGUI:ClearFocus()
 end
 
+--[[ s -r
+local function SizerS_OnMouseDown(frame)
+	frame:GetParent():StartSizing("BOTTOM")
+	AceGUI:ClearFocus()
+end
+
+local function SizerE_OnMouseDown(frame)
+	frame:GetParent():StartSizing("RIGHT")
+	AceGUI:ClearFocus()
+end
+]]
 
 local function StatusBar_OnEnter(frame)
 	frame.obj:Fire("OnEnterStatusBar")
@@ -142,7 +154,13 @@ local methods = {
 
 	["EnableResize"] = function(self, state)
 		local func = state and "Show" or "Hide"
+		--[[ s r
+		self.sizer_se[func](self.sizer_se)
+		self.sizer_s[func](self.sizer_s)
+		self.sizer_e[func](self.sizer_e)
+		]]
 		self.sizer_seX[func](self.sizer_seX)
+		-- e
 	end,
 
 	-- called to set an external table to store status in
@@ -170,6 +188,21 @@ local methods = {
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
+--[[ s -r
+local FrameBackdrop = {
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+	tile = true, tileSize = 32, edgeSize = 32,
+	insets = { left = 8, right = 8, top = 8, bottom = 8 }
+}
+
+local PaneBackdrop  = {
+	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	tile = true, tileSize = 16, edgeSize = 16,
+	insets = { left = 3, right = 3, top = 5, bottom = 3 }
+}
+]]
 
 local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
@@ -180,26 +213,50 @@ local function Constructor()
 	frame:SetResizable(true)
 	frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetFrameLevel(100) -- Lots of room to draw under it
+	--[[ s r
+	frame:SetBackdrop(FrameBackdrop)
+	frame:SetBackdropColor(0, 0, 0, 1)
+	]]
 	OmniCD[1].BackdropTemplate(frame)
-	frame:SetBackdropColor(0.05, 0.05, 0.05, 0.75)
+	frame:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
+	--frame:SetClampedToScreen(true) -- s a let's not
+	-- e
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
 	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
-	frame:SetScript("OnMouseUp", Frame_OnMouseUp)
+	frame:SetScript("OnMouseUp", Frame_OnMouseUp) -- s a
 
-	local closebutton = OmniCD[1].CreateFlashButton(frame, CLOSE, 100, 22)
+	--[[ s r
+	local closebutton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+	closebutton:SetScript("OnClick", Button_OnClick)
+	closebutton:SetPoint("BOTTOMRIGHT", -27, 17)
+	closebutton:SetHeight(20)
+	closebutton:SetWidth(100)
+	closebutton:SetText(CLOSE)
+	]]
+	local closebutton = OmniCD[1].CreateFlashButton(frame, CLOSE, 100, 22) -- where is this getting pushed text position ???
 	closebutton:SetPoint("BOTTOM", 0, 10)
 	closebutton:SetScript("OnClick", Button_OnClick)
+	-- e
 
 	local statusbg = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	--[[ s r
+	statusbg:SetPoint("BOTTOMLEFT", 15, 15)
+	statusbg:SetPoint("BOTTOMRIGHT", -132, 15)
+	statusbg:SetHeight(24)
+	statusbg:SetBackdrop(PaneBackdrop)
+	statusbg:SetBackdropColor(0.1,0.1,0.1)
+	statusbg:SetBackdropBorderColor(0.4,0.4,0.4)
+	]]
 	statusbg:SetPoint("BOTTOMLEFT", 17, 15)
 	statusbg:SetPoint("BOTTOMRIGHT", closebutton, "BOTTOMLEFT", -20, 0)
 	statusbg:SetHeight(22)
 	statusbg:SetBackdrop(nil)
-	statusbg:Hide()
+	statusbg:Hide() -- this is where it displays the 'usage' parameter.
+	-- e
 	statusbg:SetScript("OnEnter", StatusBar_OnEnter)
 	statusbg:SetScript("OnLeave", StatusBar_OnLeave)
 
@@ -210,9 +267,40 @@ local function Constructor()
 	statustext:SetJustifyH("LEFT")
 	statustext:SetText("")
 
+	--[[ s r
+	local titlebg = frame:CreateTexture(nil, "OVERLAY")
+	titlebg:SetTexture(131080) -- Interface\\DialogFrame\\UI-DialogBox-Header
+	titlebg:SetTexCoord(0.31, 0.67, 0, 0.63)
+	titlebg:SetPoint("TOP", 0, 12)
+	titlebg:SetWidth(100)
+	titlebg:SetHeight(40)
+
+	local title = CreateFrame("Frame", nil, frame)
+	title:EnableMouse(true)
+	title:SetScript("OnMouseDown", Title_OnMouseDown)
+	title:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
+	title:SetAllPoints(titlebg)
+
+	local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
+
+	local titlebg_l = frame:CreateTexture(nil, "OVERLAY")
+	titlebg_l:SetTexture(131080) -- Interface\\DialogFrame\\UI-DialogBox-Header
+	titlebg_l:SetTexCoord(0.21, 0.31, 0, 0.63)
+	titlebg_l:SetPoint("RIGHT", titlebg, "LEFT")
+	titlebg_l:SetWidth(30)
+	titlebg_l:SetHeight(40)
+
+	local titlebg_r = frame:CreateTexture(nil, "OVERLAY")
+	titlebg_r:SetTexture(131080) -- Interface\\DialogFrame\\UI-DialogBox-Header
+	titlebg_r:SetTexCoord(0.67, 0.77, 0, 0.63)
+	titlebg_r:SetPoint("LEFT", titlebg, "RIGHT")
+	titlebg_r:SetWidth(30)
+	titlebg_r:SetHeight(40)
+	]]
 	local titlebg = frame:CreateTexture(nil, "OVERLAY")
 	titlebg:SetPoint("TOP")
-	titlebg:SetHeight(27)
+	titlebg:SetHeight(27) -- content padding, (width is set by OnAquire/SetTitle)
 
 	local title = CreateFrame("Frame", nil, frame)
 	title:EnableMouse(true)
@@ -222,6 +310,7 @@ local function Constructor()
 
 	local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal-OmniCD")
 	titletext:SetPoint("CENTER")
+	-- e
 
 	local sizer_se = CreateFrame("Frame", nil, frame)
 	sizer_se:SetPoint("BOTTOMRIGHT")
@@ -231,9 +320,43 @@ local function Constructor()
 	sizer_se:SetScript("OnMouseDown",SizerSE_OnMouseDown)
 	sizer_se:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
 
+	--[[ s r
+	local line1 = sizer_se:CreateTexture(nil, "BACKGROUND")
+	line1:SetWidth(14)
+	line1:SetHeight(14)
+	line1:SetPoint("BOTTOMRIGHT", -8, 8)
+	line1:SetTexture(137057) -- Interface\\Tooltips\\UI-Tooltip-Border
+	local x = 0.1 * 14/17
+	line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+	local line2 = sizer_se:CreateTexture(nil, "BACKGROUND")
+	line2:SetWidth(8)
+	line2:SetHeight(8)
+	line2:SetPoint("BOTTOMRIGHT", -8, 8)
+	line2:SetTexture(137057) -- Interface\\Tooltips\\UI-Tooltip-Border
+	local x = 0.1 * 8/17
+	line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
+
+	local sizer_s = CreateFrame("Frame", nil, frame)
+	sizer_s:SetPoint("BOTTOMRIGHT", -25, 0)
+	sizer_s:SetPoint("BOTTOMLEFT")
+	sizer_s:SetHeight(25)
+	sizer_s:EnableMouse(true)
+	sizer_s:SetScript("OnMouseDown", SizerS_OnMouseDown)
+	sizer_s:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
+
+	local sizer_e = CreateFrame("Frame", nil, frame)
+	sizer_e:SetPoint("BOTTOMRIGHT", 0, 25)
+	sizer_e:SetPoint("TOPRIGHT")
+	sizer_e:SetWidth(25)
+	sizer_e:EnableMouse(true)
+	sizer_e:SetScript("OnMouseDown", SizerE_OnMouseDown)
+	sizer_e:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
+	]]
 	local sizer_bg = sizer_se:CreateTexture(nil, "BACKGROUND")
 	sizer_bg:SetPoint("CENTER")
 	sizer_bg:SetTexture([[Interface\AddOns\OmniCD\Media\omnicd-bullet-resizer]])
+	-- e
 
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
@@ -245,7 +368,13 @@ local function Constructor()
 		titletext   = titletext,
 		statustext  = statustext,
 		titlebg     = titlebg,
-		sizer_seX   = sizer_se,
+		--[[ s r
+		sizer_se    = sizer_se,
+		sizer_s     = sizer_s,
+		sizer_e     = sizer_e,
+		]]
+		sizer_seX   = sizer_se, -- name change to block skins
+		-- e
 		content     = content,
 		frame       = frame,
 		type        = Type

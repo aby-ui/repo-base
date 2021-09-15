@@ -222,13 +222,12 @@ function RSGeneralDB.GetItemInfo(itemID)
 
 	-- The first time request the server for the information
 	if (not private.dbglobal.loot_info[itemID]) then
-		local retOk, itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = pcall(GetItemInfo, itemID)
+		local retOk, _, itemLink, itemRarity, _, _, _, _, _, itemEquipLoc, iconFileDataID, _, itemClassID, itemSubClassID, _, _, _, _ = pcall(GetItemInfo, itemID)
 		if (itemLink and itemRarity and itemEquipLoc and iconFileDataID and itemClassID and itemSubClassID) then
 			RSGeneralDB.SetItemInfo(itemID, itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID)
-			return unpack(private.dbglobal.loot_info[itemID])
 		end
 		return itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID
-			-- Next time return cache
+	-- Next time return cached data
 	else
 		return unpack(private.dbglobal.loot_info[itemID])
 	end

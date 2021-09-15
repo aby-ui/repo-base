@@ -1,6 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
-E.StaticPopupDialogs = {} -- upvalue global to switch
+E.StaticPopupDialogs = {}
 
 E.StaticPopupDialogs["OMNICD_Elv_MSG"] = {
 	text = E.userClassHexColor .. "OmniCD:|r " .. L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"],
@@ -19,7 +19,7 @@ E.StaticPopupDialogs["OMNICD_RELOADUI"] = {
 	text = "%s",
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() -- data2 is only passed on to OnAccept
+	OnAccept = function() -- data2 is only passed to OnAccept
 		EnableAddOn("Blizzard_CompactRaidFrames")
 		EnableAddOn("Blizzard_CUFProfiles")
 		C_UI.Reload()
@@ -60,7 +60,7 @@ E.StaticPopupDialogs["OMNICD_IMPORT_PROFILE"] = {
 	OnAccept = function(_, data)
 		E.ProfileSharing.CopyProfile(data.profileType, data.profileKey, data.profileData)
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile imported successfully!"])
-		E.Libs.ACR:NotifyChange("OmniCD")
+		E:ACR_NotifyChange()
 	end,
 	OnCancel = function()
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile import cancelled!"])
@@ -81,7 +81,7 @@ local function Button_OnEnter(self)
 end
 
 function E.GetStaticPopup()
-	local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	frame:Hide()
 	frame:SetPoint("CENTER", UIParent, "CENTER")
 	frame:SetSize(320, 72)
@@ -107,7 +107,7 @@ function E.GetStaticPopup()
 	frame.text = text
 
 	local function newButton(name)
-		local button = CreateFrame("Button", nil, frame, "BackdropTemplate")
+		local button = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		button:SetSize(128, 21)
 		E.BackdropTemplate(button)
 		button:SetBackdropColor(0.2, 0.2, 0.2, 1)

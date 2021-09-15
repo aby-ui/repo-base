@@ -52,12 +52,14 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
+	-- s b
 	frame.handleRight:Show()
 	frame.Thumb:SetColorTexture(1, 1, 1)
 end
 
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
+	-- s b
 	frame.handleRight:Hide()
 	frame.Thumb:SetColorTexture(0.8, 0.624, 0)
 end
@@ -124,10 +126,16 @@ local function EditBox_OnEnterPressed(frame)
 end
 
 local function EditBox_OnEnter(frame)
+	--[[ s r
+	frame:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+	]]
 	frame:SetBackdropBorderColor(0.5, 0.5, 0.5)
 end
 
 local function EditBox_OnLeave(frame)
+	--[[ s r
+	frame:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
+	]]
 	frame:SetBackdropBorderColor(0.2, 0.2, 0.25)
 end
 
@@ -158,6 +166,7 @@ local methods = {
 			self.editbox:SetTextColor(.5, .5, .5)
 			self.editbox:EnableMouse(false)
 			self.editbox:ClearFocus()
+			-- s b
 			self.slider.Thumb:SetColorTexture(.5, .5, .5)
 			self.slider.handleLeft:SetColorTexture(.5, .5, .5)
 		else
@@ -168,6 +177,7 @@ local methods = {
 			--self.valuetext:SetTextColor(1, 1, 1)
 			self.editbox:SetTextColor(1, 1, 1)
 			self.editbox:EnableMouse(true)
+			-- s b
 			self.slider.Thumb:SetColorTexture(0.8, 0.624, 0)
 			self.slider.handleLeft:SetColorTexture(0.8, 0.624, 0)
 		end
@@ -214,6 +224,20 @@ local methods = {
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
+--[[ s -r
+local SliderBackdrop  = {
+	bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
+	edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
+	tile = true, tileSize = 8, edgeSize = 8,
+	insets = { left = 3, right = 3, top = 6, bottom = 6 }
+}
+
+local ManualBackdrop = {
+	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+	edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
+	tile = true, edgeSize = 1, tileSize = 5,
+}
+]]
 
 local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
@@ -227,6 +251,13 @@ local function Constructor()
 	label:SetJustifyH("CENTER")
 	label:SetHeight(15)
 
+	--[[ s r
+	local slider = CreateFrame("Slider", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	slider:SetOrientation("HORIZONTAL")
+	slider:SetHeight(15)
+	slider:SetHitRectInsets(0, 0, -10, 0)
+	slider:SetBackdrop(SliderBackdrop)
+	]]
 	local slider = CreateFrame("Slider", nil, frame)
 	slider:SetOrientation("HORIZONTAL")
 	slider:SetHeight(10)
@@ -237,12 +268,19 @@ local function Constructor()
 	slider.bg:SetHeight(2 * OmniCD[1].PixelMult)
 	slider.bg:SetPoint("LEFT")
 	slider.bg:SetPoint("RIGHT")
+	-- e
 
+	--[[ s r
+	slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Horizontal")
+	slider:SetPoint("TOP", label, "BOTTOM")
+	]]
 	slider.Thumb = slider:CreateTexture(nil, "Artwork")
 	slider.Thumb:SetSize(4, 8)
 	slider.Thumb:SetColorTexture(0.8, 0.624, 0)
 	slider:SetThumbTexture(slider.Thumb)
 	slider:SetPoint("TOP", label, "BOTTOM")
+	-- e
+	-- s b
 	slider.handleLeft = slider:CreateTexture(nil, "Artwork")
 	OmniCD[1].DisablePixelSnap(slider.handleLeft)
 	slider.handleLeft:SetColorTexture(0.8, 0.624, 0)
@@ -256,6 +294,7 @@ local function Constructor()
 	slider.handleRight:SetPoint("BOTTOMRIGHT", slider.bg)
 	slider.handleRight:SetPoint("LEFT", slider.Thumb, "RIGHT")
 	slider.handleRight:Hide()
+	-- e
 	slider:SetPoint("LEFT", 3, 0)
 	slider:SetPoint("RIGHT", -3, 0)
 	slider:SetValue(0)
@@ -265,11 +304,19 @@ local function Constructor()
 	slider:SetScript("OnMouseUp", Slider_OnMouseUp)
 	slider:SetScript("OnMouseWheel", Slider_OnMouseWheel)
 
+	--[[ s r
+	local lowtext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+	lowtext:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 2, 3)
+
+	local hightext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
+	hightext:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -2, 3)
+	]]
 	local lowtext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
 	lowtext:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 2, -1)
 
 	local hightext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
 	hightext:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -2, -1)
+	-- e
 
 	local editbox = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	editbox:SetAutoFocus(false)
@@ -279,9 +326,17 @@ local function Constructor()
 	editbox:SetWidth(70)
 	editbox:SetJustifyH("CENTER")
 	editbox:EnableMouse(true)
+	--[[ s r
+	editbox:SetBackdrop(ManualBackdrop)
+	]]
 	OmniCD[1].BackdropTemplate(editbox)
+	-- e
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
+	--[[ s r
+	editbox:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
+	]]
 	editbox:SetBackdropBorderColor(0.2, 0.2, 0.25)
+	-- e
 	editbox:SetScript("OnEnter", EditBox_OnEnter)
 	editbox:SetScript("OnLeave", EditBox_OnLeave)
 	editbox:SetScript("OnEnterPressed", EditBox_OnEnterPressed)

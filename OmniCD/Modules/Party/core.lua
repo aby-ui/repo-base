@@ -23,7 +23,7 @@ function P:Enable()
 
 	self.enabled = true
 
-	E.Comms:InspectPlayer() -- [58]
+	E.Comms:InspectPlayer()
 
 	self:SetHooks()
 	self:CreateExBars()
@@ -68,7 +68,7 @@ function P:Refresh(full)
 		return
 	end
 
-	local instanceType = self.zone or select(2, IsInInstance()) -- [59]
+	local instanceType = self.zone or select(2, IsInInstance()) -- nil on init /rl
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
@@ -219,7 +219,7 @@ function P:IsTalent(talentID, guid)
 		local spec = runeforge_specID[talentID]
 		return not spec and true or spec == self.groupInfo[guid].spec
 	else
-		return talent -- [60]
+		return talent -- rankValue for Conduits
 	end
 end
 
@@ -251,13 +251,12 @@ function P:IsDeBuffActive(unit, spellID)
 	end
 end
 
-function P:UI_SCALE_CHANGED() -- [61]
+function P:UI_SCALE_CHANGED()
 	E:SetPixelMult()
 	self:ConfigSize(nil, true)
 	for key in pairs(self.extraBars) do
 		self:ConfigExSize(key, true)
 	end
-	--E.UpdateBackdrops() -- TODO: doesn't fix ace
 end
 
 E["Party"] = P

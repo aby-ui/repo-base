@@ -9,6 +9,7 @@
 	<Include file="Libs\RSUtils.lua"/>
 	<Include file="Libs\RSLogger.lua"/>
 	<Include file="Libs\RSTooltipScanners.lua"/>
+	<Include file="Libs\RSRoutines.lua"/>
 	
 	<!-- Data access libraries -->
 	<Include file="Data\RSMapDB.lua"/>

@@ -50,10 +50,6 @@ addOnTestMode.Aptechka = function(isTestEnabled)
 	Aptechka:ReconfigureProtected()
 end
 
-addOnTestMode.HealBot = function(isTestEnabled) -- player frame always shown ?
-	--HealBot_TestBars(isTestEnabled and 5) -- doesnt work. has test-names for unit key
-end
-
 addOnTestMode.Cell = function(isTestEnabled)
 	if isTestEnabled then
 		config.Cell = CellDB["general"]["showSolo"]
@@ -126,21 +122,6 @@ function TestMod:Test(key)
 		indicator.anchor:SetPoint("TOPLEFT", f.anchor, "TOPRIGHT")
 		indicator:Show()
 
-		--[[
-		for i = 1, f.numIcons do
-			local icon = f.icons[i]
-			local flash = icon.flashAnim
-			local newItemAnim = icon.newitemglowAnim
-			if ( flash:IsPlaying() or newItemAnim:IsPlaying() ) then
-				flash:Stop();
-				newItemAnim:Stop();
-			end
-			if icon:IsVisible() then
-				flash:Play();
-				newItemAnim:Play();
-			end
-		end
-		]]
 		for i = 1, f.numIcons do
 			local icon = f.icons[i]
 			if not icon.AnimFrame:IsVisible() then
@@ -186,7 +167,7 @@ function TestMod:PLAYER_REGEN_ENABLED()
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end
 
-function TestMod:PLAYER_LEAVING_WORLD() -- [68]
+function TestMod:PLAYER_LEAVING_WORLD() -- revert db on logout w/ test enabled
 	if P.test then
 		self:Test()
 	end

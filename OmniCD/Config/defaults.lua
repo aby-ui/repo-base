@@ -59,10 +59,13 @@ C["Party"] = {
 			["glowBuffs"] = true,
 			["glowType"] = "wardrobe",
 			["glowBuffTypes"] = {
-				["defensive"] = true,
-				["externalDefensive"] = true,
-				["raidDefensive"] = true,
+				["racial"] = false,
+				["trinket"] = false,
+				["covenant"] = false,
 				["immunity"] = true,
+				["externalDefensive"] = true,
+				["defensive"] = true,
+				["raidDefensive"] = true,
 				["offensive"] = false,
 				["counterCC"] = false,
 				["raidMovement"] = false,
@@ -115,13 +118,13 @@ C["Party"] = {
 					},
 				},
 				["barColors"] = {
-					["activeColor"] = {r=1,g=0,b=0,a=1}, -- A
-					["rechargeColor"] = {r=1,g=0.7,b=0,a=1}, -- A
+					["activeColor"] = {r=1,g=0,b=0,a=1},
+					["rechargeColor"] = {r=1,g=0.7,b=0,a=1},
 					["inactiveColor"] = {r=0,g=1,b=0,a=0.9},
 					["useClassColor"] = {
-						["active"] = false,
+						["active"] = true,
 						["inactive"] = true,
-						["recharge"] = false,
+						["recharge"] = true,
 					},
 				},
 				["bgColors"] = {
@@ -131,13 +134,15 @@ C["Party"] = {
 					["useClassColor"] = {
 						["active"] = false,
 						["inactive"] = false,
-						["recharge"] = false,
+						["recharge"] = true,
 					},
 				},
 				["reverseFill"] = true,
 				["useIconAlpha"] = false,
 				["hideSpark"] = false,
 				["hideBorder"] = false,
+				["showInterruptedSpell"] = false,
+				["showRaidTargetMark"] = false,
 				["statusBarWidth"] = 205,
 				["textOfsX"] = 3,
 				["textOfsY"] = 0,
@@ -160,7 +165,7 @@ C["Party"] = {
 				["groupGrowUpward"] = {},
 				["groupGrowLeft"] = {},
 				["groupPadding"] = 0,
-				["scale"] = 0.5,
+				["scale"] = 0.6,
 				["paddingX"] = -1,
 				["paddingY"] = -1,
 				["showName"] = true,
@@ -183,9 +188,9 @@ C["Party"] = {
 					["rechargeColor"] = {r=1,g=0.7,b=0},
 					["inactiveColor"] = {r=0,g=1,b=0,a=0.9},
 					["useClassColor"] = {
-						["active"] = false,
-						["inactive"] = false,
-						["recharge"] = false,
+						["active"] = true,
+						["inactive"] = true,
+						["recharge"] = true,
 					},
 				},
 				["bgColors"] = {
@@ -195,7 +200,7 @@ C["Party"] = {
 					["useClassColor"] = {
 						["active"] = false,
 						["inactive"] = false,
-						["recharge"] = false,
+						["recharge"] = true,
 					},
 				},
 				["reverseFill"] = true,
@@ -214,11 +219,10 @@ C["Party"] = {
 	},
 	noneZoneSetting = "arena",
 	scenarioZoneSetting = "arena",
-	sync = true,
 	customPriority = {},
 }
 
-if E.isBCC then
+if E.isPreBCC then
 	E.spellDefaults = {
 		42292,
 		28730,  26297,  28880,  20594,  20549,  7744,
@@ -240,7 +244,7 @@ else
 	E.spellDefaults = {
 		336135, 336126, 196029,
 		59752,
-		323436,
+		323436, 319217,
 		47482,  47528,  48707,  48792,  114556, 51052,
 		183752, 196555, 198589, 209258, 187827, 196718, 200166, 205604,
 		106839, 78675,  22812,  102342, 108238, 61336,  33891,

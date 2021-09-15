@@ -1,6 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
-local L_PVP_TRINKET = GetSpellInfo(42292) or GetSpellInfo(283167)
+local L_PVP_TRINKET = GetSpellInfo(42292) or GetSpellInfo(283167) or L["PvP Trinket"]
 local RACIAL_TRAITS = RACIAL_TRAITS and gsub(RACIAL_TRAITS, ":", "") or L["Racial Traits"]
 local DISARMROOTSILENCE = format("%s, %s, %s",LOC_TYPE_DISARM, LOC_TYPE_ROOT, LOC_TYPE_SILENCE)
 
@@ -66,14 +66,14 @@ E.TANK_SPEC = {
 	[581] = true,   -- Vengeance DH
 	[104] = true,   -- Guardian Druid
 	[268] = true,   -- Brewmaster Monk
-	[66]  = true,   -- Prot Paladin
-	[73]  = true,   -- Prot Warrior
+	[66] = true,    -- Prot Paladin
+	[73] = true,    -- Prot Warrior
 }
 
 E.HEALER_SPEC = {
 	[105] = true,   -- Restoration Druid
 	[270] = true,   -- Mistweaver
-	[65]  = true,   -- Holy Paladin
+	[65] = true,    -- Holy Paladin
 	[256] = true,   -- Disipline Priest
 	[257] = true,   -- Holy Priest
 	[264] = true,   -- Restoration Shaman
@@ -154,6 +154,9 @@ E.L_GLOW_ATLAS ={
 }
 
 E.L_HIGHLIGHTS = {
+	["racial"] = RACIAL_TRAITS,
+	["trinket"] = INVTYPE_TRINKET,
+	["covenant"] = L["Covenant"],
 	["immunity"] = L["Immunity"],
 	["externalDefensive"] = L["External Defensive"],
 	["defensive"] = L["Defensive"],
@@ -162,21 +165,6 @@ E.L_HIGHLIGHTS = {
 	["counterCC"] = L["Counter CC"],
 	["raidMovement"] = L["Raid Movement"],
 	["other"] = OTHER,
-}
-
-E.BOOKTYPE_CATEGORY = {
-	["WARRIOR"] = true,
-	["PALADIN"] = true,
-	["HUNTER"] = true,
-	["ROGUE"] = true,
-	["PRIEST"] = true,
-	["DEATHKNIGHT"] = true,
-	["SHAMAN"] = true,
-	["MAGE"] = true,
-	["WARLOCK"] = true,
-	["MONK"] = true,
-	["DRUID"] = true,
-	["DEMONHUNTER"] = true,
 }
 
 E.OTHER_SORT_ORDER = {
@@ -194,7 +182,7 @@ E.L_CATAGORY_OTHER = {
 }
 
 E.ICO = {
-	--["CLASS"] = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes",
+--  ["CLASS"] = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes",
 	["CLASS"] = "Interface\\Icons\\classicon_", -- individual icons if we're cropping tree icons
 	["PVPTRINKET"] = "Interface\\Icons\\ability_pvp_gladiatormedallion",
 	["RACIAL"] = "Interface\\Icons\\Achievement_character_human_female",
@@ -202,9 +190,8 @@ E.ICO = {
 	["COVENANT"] = 3257750,
 }
 
-if E.isBCC then
+if E.isPreBCC then
 	E.OTHER_SORT_ORDER[4] = nil
-
 	E.ICO.PVPTRINKET = "Interface\\Icons\\inv_jewelry_trinketpvp_01" -- inv_jewelry_trinketpvp_02 (horde)
 	E.ICO.RACIAL = "Interface\\Icons\\achievement_character_troll_male"
 	E.ICO.TRINKET = "Interface\\Icons\\inv_misc_armorkit_10"
@@ -222,7 +209,22 @@ E.TEXTURES = {
 	White8x8 = [[Interface\BUTTONS\White8x8]],
 }
 
-E.CLASSID = {
+E.BOOKTYPE_CATEGORY = {
+	["WARRIOR"] = true,
+	["PALADIN"] = true,
+	["HUNTER"] = true,
+	["ROGUE"] = true,
+	["PRIEST"] = true,
+	["DEATHKNIGHT"] = true,
+	["SHAMAN"] = true,
+	["MAGE"] = true,
+	["WARLOCK"] = true,
+	["MONK"] = true,
+	["DRUID"] = true,
+	["DEMONHUNTER"] = true,
+}
+
+E.CLASSID = { -- not CLASS_SORT_ORDER
 	"WARRIOR",
 	"PALADIN",
 	"HUNTER",
@@ -237,23 +239,24 @@ E.CLASSID = {
 	"DEMONHUNTER"
 }
 
-E.POWER_TYPE_SPEC = {
-	[250] = 1,      -- DK (Blood)
-	[253] = 1,      -- HUnter(BM)
-	[254] = 1,      -- Hunter (MM)
-	[255] = 1,      -- Hunter (SV)
-	[269] = true,   -- Monk (WW)
-	[65]  = true,   -- Paladin (Holy)
-	[66]  = true,   -- Paladin (Prot)
-	[70]  = true,   -- Paladin (Ret)
-	[260] = true,   -- Rogue (Outlaw)
-	[261] = true,   -- Rogue (Sub)
-	[71]  = 1,      -- Warrior (Arms)
-	[72]  = 1,      -- Warrior (Firu)
-	[73]  = 1,      -- Warrior (Prot)
-	[265] = true,   -- Warlock (Aff)
-	[266] = true,   -- Warlock (Demo)
-	[267] = true,   -- Warlock (Dest)
+-- 1 for Combo, Chi, etc., 3 for Rage, etc (ignoring 1 Chi spenders used ooc that starts combat)
+E.POWER_TYPE_SPEC_OCC_THRESHOLD = {
+	[250] = 3,  -- DK (Blood)
+	[253] = 3,  -- Hunter(BM)
+	[254] = 3,  -- Hunter (MM)
+	[255] = 3,  -- Hunter (SV)
+	[269] = 1,  -- Monk (WW)
+	[65] = 1,   -- Paladin (Holy)
+	[66] = 1,   -- Paladin (Prot)
+	[70] = 1,   -- Paladin (Ret)
+	[260] = 1,  -- Rogue (Outlaw)
+	[261] = 1,  -- Rogue (Sub)
+	[71] = 3,   -- Warrior (Arms)
+	[72] = 3,   -- Warrior (Fury)
+	[73] = 3,   -- Warrior (Prot)
+	[265] = 1,  -- Warlock (Aff)
+	[266] = 1,  -- Warlock (Demo)
+	[267] = 1,  -- Warlock (Dest)
 }
 
 E.POWER_TYPE_IDS = {
@@ -266,32 +269,46 @@ E.POWER_TYPE_IDS = {
 	["SOUL_SHARDS"] = Enum.PowerType.SoulShards,    -- 7
 }
 
---[[
-E.COVENANT_HEX_COLOR = {
+E.COVENANT_HEX_C = {
 	[321076] = "|cff2aa2ff",    -- KYRIAN_BLUE_COLOR
 	[321079] = "|cffe40d0d",    -- VENTHYR_RED_COLOR
 	[321077] = "|cff80b5fd",    -- NIGHT_FAE_BLUE_COLOR
 	[321078] = "|cff17c864",    -- NECROLORD_GREEN_COLOR
 }
 --> Desc
-]]
 
 E.HEX_C = {
-	CURSE_ORANGE = "|cfff16436", -- 0.945, 0.392, 0.212
-	TWITCH_PURPLE = "|cff9146ff", -- 0.569, 0.275, 1.0
-	PERFORMANCE_BLUE = "|cff99cdff", -- 0.596, 0.808, 1.0
-	OMNICD_RED = "|cffc10003", -- 0.757, 0.0, 0.012
-	OMNICD_MAROON = "|cff69000b", -- 0.412, 0.0, 0.043
+	CURSE_ORANGE = "|cfff16436",    -- 0.945, 0.392, 0.212
+	TWITCH_PURPLE = "|cff9146ff",   -- 0.569, 0.275, 1.0
+	PERFORMANCE_BLUE = "|cff99cdff",    -- 0.596, 0.808, 1.0
+	OMNICD_RED = "|cffc10003",      -- 0.757, 0.0, 0.012
+	OMNICD_MAROON = "|cff69000b",   -- 0.412, 0.0, 0.043
+}
+
+E.PROJECT_HEX_C = {
 	[1] = "|cff99cdff", -- WOW_PROJECT_MAINLINE
 	[2] = "|cff0291b0", -- WOW_PROJECT_CLASSIC
 	[5] = "|cff7bbb4e", -- WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 }
 
--- tree/tab maroon  0.412, 0.0, 0.043
--- checkbox maroon  0.536, 0.0, 0.056
--- checkbox red     0.725, 0.008, 0.008
--- checkbox green   0.008, 0.725, 0.008
--- checkbox yellow  0.8, 0.624, 0
--- flash btn green  0, 0.6, 0.4
--- flash btn red    0.725, 0.008, 0.008
--- slider knob yellow   1, 0.824, 0
+--[[
+	tree/tab maroon  0.412, 0.0, 0.043
+	checkbox maroon  0.536, 0.0, 0.056
+	checkbox red     0.725, 0.008, 0.008
+	checkbox green   0.008, 0.725, 0.008
+	checkbox yellow  0.8, 0.624, 0
+	flash btn green  0, 0.6, 0.4
+	flash btn red    0.725, 0.008, 0.008
+	slider knob yellow   1, 0.824, 0
+]]
+
+E.RAID_TARGET_MARKERS = {
+	[0x00000001] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",   -- Star
+	[0x00000002] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",   -- Circle
+	[0x00000004] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t",   -- Diamond
+	[0x00000008] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",   -- Triangle
+	[0x00000010] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t",   -- Moon
+	[0x00000020] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t",   -- Square
+	[0x00000040] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t",   -- Cross
+	[0x00000080] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",   -- Skull
+}

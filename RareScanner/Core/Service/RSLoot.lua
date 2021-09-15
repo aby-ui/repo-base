@@ -43,8 +43,12 @@ end
 local function IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)
 	local _, _, classIndex = UnitClass("player");
 	for categoryID, subcategories in pairs(private.CLASS_PROFICIENCIES[classIndex]) do
-		if (categoryID == itemClassID and not RSUtils.Contains(subcategories, itemSubClassID)) then
-			return false
+		if (categoryID == itemClassID) then
+			if (not RSUtils.Contains(subcategories, itemSubClassID)) then
+				return false
+			end
+			
+			return true
 		end
 	end
 	-- check if cloth and not cloak

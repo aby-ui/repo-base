@@ -33,6 +33,21 @@ local extraBarInfo = {
 	},
 }
 
+local disabledItems = {}
+local function GetDisabledItems(info)
+	wipe(disabledItems)
+	local db = E.DB.profile.Party[info[2]]
+	local bp = db.priority[db.position.breakPoint]
+	for k in pairs(E.L_PRIORITY) do
+		local prio = db.priority[k]
+		if prio >= bp then
+			disabledItems[k] = true
+		end
+	end
+	return disabledItems
+end
+local setDisabledItem = function(info) return GetDisabledItems(info) end
+
 local position = {
 	name = L["Position"],
 	type = "group",
@@ -65,7 +80,7 @@ local position = {
 	end,
 	args = {
 		uf = {
-			--disabled = function(info) local key = info[2] return E.DB.profile.Party[key].position.detached or not E.customUF.enabled end,
+--          disabled = function(info) local key = info[2] return E.DB.profile.Party[key].position.detached or not E.customUF.enabled end,
 			name = ADDONS,
 			desc = L["Select addon to override auto anchoring"],
 			order = 1,
@@ -83,7 +98,7 @@ local position = {
 							P:Test(key)
 						else
 							E.DB.profile.Party[key].position.uf = value
-							P:Refresh(true) -- [82]
+							P:Refresh(true)
 						end
 					end
 				else
@@ -164,7 +179,7 @@ local position = {
 			type = "select",
 			values = E.L_PRIORITY,
 			sorting = function(info) return E.SortHashToArray(E.L_PRIORITY, E.DB.profile.Party[info[2]].priority) end,
-			disabledItem = function(info) return E.DB.profile.Party[info[2]].position.breakPoint end, -- this must be a function
+			disabledItem = setDisabledItem,
 		},
 		paddingX = {
 			name = L["Padding X"],
@@ -215,7 +230,7 @@ local position = {
 							if not state and E.customUF.active == "blizz" and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
 								E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 							end
-							P:ConfigBars(key, "detached") -- [48]
+							P:ConfigBars(key, "detached")
 							P:UpdatePosition()
 						end
 					end,

@@ -8,6 +8,7 @@ local GameTooltip, CreateFrame = GameTooltip, CreateFrame
 local tempAutoHide, db
 
 local function resizeFrame(self)
+    if self:IsProtected() then return end
 	local settings = self.settings
 	local width = db.gap
 	local textOffset = settings.textOffset or db.textOffset

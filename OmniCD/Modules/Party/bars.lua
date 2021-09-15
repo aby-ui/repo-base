@@ -4,11 +4,15 @@ local tinsert = table.insert
 local tremove = table.remove
 local wipe = table.wipe
 local GetSpellLevelLearned = GetSpellLevelLearned
-if E.isBCC then
+if E.isPreBCC then
 	GetSpellLevelLearned = function() return 0 end
 end
+local UnitHealth = UnitHealth
+local UnitIsConnected = UnitIsConnected
+local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitSpellHaste = UnitSpellHaste
 local P = E["Party"]
+local unitToPetId = E.unitToPetId
 local spell_db = E.spell_db
 local spell_cdmod_haste = E.spell_cdmod_haste
 local spell_cdmod_talents = E.spell_cdmod_talents
@@ -19,15 +23,12 @@ local spell_cdmod_conduits_mult = E.spell_cdmod_conduits_mult
 local covenant_cdmod_conduits = E.covenant_cdmod_conduits
 local covenant_chmod_conduits = E.covenant_chmod_conduits
 local covenant_cdmod_items_mult = E.covenant_cdmod_items_mult
-local covenant_abilities = E.covenant_abilities
 local spell_enabled = P.spell_enabled
 local spell_modifiers = E.spell_modifiers
 local cd_start_dispels = E.cd_start_dispels
 local FEIGN_DEATH = 5384
 local TOUCH_OF_KARMA = 125174
 --local DEBUFF_HEARTSTOP_AURA = 214975 -- Patch 9.1 removed
-local INTIMIDATION_TACTICS = 352415
-local DOOR_OF_SHADOWS = 300728
 
 local bars = {}
 local unusedBars = {}
@@ -46,7 +47,7 @@ function OmniCD_BarOnHide(self)
 		P.userData.bar = nil
 	end
 
-	for i = #bars, 1, -1 do -- [31]
+	for i = #bars, 1, -1 do
 		local f = bars[i]
 		if f == self then
 			if f.timer_inCombatTicker then
@@ -81,35 +82,38 @@ function OmniCD_BarOnHide(self)
 		P:SetExIconLayout(key)
 	end
 
+	-- Registered unit events
+	--[[
+	self:UnregisterAllEvents()
 	self:UnregisterEvent("UNIT_AURA")
+	self:UnregisterEvent("UNIT_HEALTH")
 	self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	if not E.isBCC then
+	if not E.isPreBCC then
 		self:UnregisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	end
+	]]
+	self:UnregisterAllEvents()
 end
 
-local function UpdateDoorIconRR(info, active, modRate)
-	local newRate = (info.isIntTactics or 1) * modRate
-	local isRemoved = abs(1 - newRate) < 0.05
-	local now = GetTime()
+function P:SetEnabledColorScheme(info)
+	info.isDeadOrOffline = nil -- UNIT_HEALTH shouldn't fire for offline players
 
-	local icon = info.spellIcons[DOOR_OF_SHADOWS]
-	if icon then
-		local elapsed = (now - active.startTime) * modRate
-		local newTime = now - elapsed
-		local cd = (active.duration * modRate)
-
-		icon.cooldown:SetCooldown(newTime, cd, newRate * (info.modRate or 1))
-		active.startTime = newTime
-		active.duration = cd
-
+	for id, icon in pairs(info.spellIcons) do
 		local statusBar = icon.statusBar
-		if statusBar and isRemoved then
-			P.OmniCDCastingBarFrame_OnEvent(statusBar.CastingBar, E.db.extraBars[statusBar.key].reverseFill and "UNIT_SPELLCAST_CHANNEL_UPDATE" or "UNIT_SPELLCAST_CAST_UPDATE")
+		if statusBar then
+			if icon.active then
+				local castingBar = statusBar.CastingBar
+				local startColor, startBGColor, startTextColor = P.CastingBarFrame_GetEffectiveStartColor(castingBar, true);
+				castingBar:SetStatusBarColor(startColor:GetRGBA())
+				castingBar.BG:SetVertexColor(startBGColor:GetRGBA())
+				castingBar.Text:SetTextColor(startTextColor:GetRGB())
+			end
+			P:SetExStatusBarColor(icon, statusBar.key)
 		end
+		icon.icon:SetVertexColor(1, 1, 1)
+		local charges = icon.maxcharges and tonumber(icon.Count:GetText())
+		icon.icon:SetDesaturated(E.db.icons.desaturateActive and icon.active and not icon.isHighlighted and (not charges or charges == 0));
 	end
-
-	info.isIntTactics = not isRemoved and newRate
 end
 
 local function CooldownBarFrame_OnEvent(self, event, ...)
@@ -120,19 +124,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 	end
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
-		local unit, _, spellID = ...
-
-		if not info.shadowlandsData.covenantID then -- not checking for covenant changes
-			local covenantID = covenant_abilities[spellID]
-			if covenantID then
-				info.shadowlandsData.covenantID = covenantID
-				info.talentData[E.covenant_IDToSpellID[covenantID]] = "C"
-				P.loginsessionData[info.guid].covenantID = covenantID
-
-				P:UpdateUnitBar(guid)
-			end
-		end
-
+		local _,_, spellID = ... -- no unit check required, we're registering unit and pet as a pair
 		if (spell_enabled[spellID] or spell_modifiers[spellID]) and not cd_start_dispels[spellID] then
 			E.ProcessSpell(spellID, guid)
 		end
@@ -142,36 +134,37 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			return
 		end
 
-		if not info.maxHealth or info.maxHealth == 0 or not info.talentData[INTIMIDATION_TACTICS] then
-			self:UnregisterEvent(event)
-			return
-		end
-
-		local active = info.active[DOOR_OF_SHADOWS]
-		if not active then
-			self:UnregisterEvent(event)
-			return
-		end
-
-		local currentHealth = UnitHealth(unit)
-		if (currentHealth / info.maxHealth) < 0.5 then
-			if not info.isIntTactics then
-				UpdateDoorIconRR(info, active, 1/1.5)
+		if not UnitIsDeadOrGhost(unit) then
+			if E.isPreBCC then
+				local icon = info.spellIcons[20608] -- Reincarnation
+				if icon then
+					local currentHealth = UnitHealth(unit)
+					local maxHealth = UnitHealthMax(unit)
+					-- BCC
+					-- Reincarnation    20/30/40% (Rank 0/1/2)
+					-- Rebirth      400/750/1100/1600/2200/3200 (Rank1-6)
+					-- Soulstone    400/750/1100/1600/2200/2900 (Rank1-6)
+					-- Body/Spirit Healer   50% (seen 56%)
+					local mult = info.talentData[16184] and 0.3 or (info.talentData[16209] and 0.4) or 0.2
+					if currentHealth == math.floor(maxHealth * mult) then
+						P:StartCooldown(icon, icon.duration)
+					end
+				end
 			end
-		else
-			if info.isIntTactics then
-				UpdateDoorIconRR(info, active, 1.5)
-			end
+
+			P:SetEnabledColorScheme(info)
+			info.isDead = nil
+			self:UnregisterEvent(event)
 		end
 	elseif event == "UNIT_AURA" then
 		local unit = ...
-		if unit ~= info.unit then -- [94]
+		if unit ~= info.unit then
 			return
 		end
 
 		-- Patch 9.1 HSA removed
 		--[[
-		if not E.isBCC and P.isInArena then -- [95] -- HSA + Thundercharge tested
+		if not E.isPreBCC and P.isInArena then -- HSA + Thundercharge tested
 			if P:IsDeBuffActive(unit, DEBUFF_HEARTSTOP_AURA) then
 				if not info.auras.isHeartStopped then
 					P.UpdateCDRR(info, 1/0.7)
@@ -184,17 +177,17 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 				end
 			end
 		end
-		--]]
+		]]
 
 		if info.glowIcons[TOUCH_OF_KARMA] then
 			if not P:GetBuffDuration(unit, TOUCH_OF_KARMA) then
-				local icon = info.glowIcons[TOUCH_OF_KARMA] -- [40]
+				local icon = info.glowIcons[TOUCH_OF_KARMA]
 				if icon then
 					P:RemoveHighlight(icon)
 				end
 				-- Patch 9.1 HSA removed
 				--[[
-				if E.isBCC or not P.isInArena then
+				if E.isPreBCC or not P.isInArena then
 					self:UnregisterEvent(event)
 				end
 				]]
@@ -202,7 +195,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			end
 		elseif info.preActiveIcons[FEIGN_DEATH] then
 			if not P:GetBuffDuration(unit, FEIGN_DEATH) then
-				local icon = info.preActiveIcons[FEIGN_DEATH] -- [40]
+				local icon = info.preActiveIcons[FEIGN_DEATH]
 				if icon then
 					P:RemoveHighlight(icon)
 					info.preActiveIcons[FEIGN_DEATH] = nil
@@ -211,17 +204,17 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 				end
 				-- Patch 9.1 HSA removed
 				--[[
-				if E.isBCC or not P.isInArena then
+				if E.isPreBCC or not P.isInArena then
 					self:UnregisterEvent(event)
 				end
 				]]
 				self:UnregisterEvent(event)
 			end
-		--elseif E.isBCC or not P.isInArena then
+--      elseif E.isPreBCC or not P.isInArena then
 		else
 			self:UnregisterEvent(event)
 		end
-	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then -- player handled by Comms
+	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
 		local unit = ...
 		if unit ~= info.unit then
 			return
@@ -269,7 +262,7 @@ local function GetIcon(f, iconIndex)
 		numIcons = numIcons + 1
 		icon = CreateFrame("Button", "OmniCDIcon" .. numIcons, UIParent, "OmniCDButtonTemplate")
 		icon.counter = icon.cooldown:GetRegions()
-		for _, pieceName in ipairs(textureUVs) do -- statusbars doesn't seem to be affected
+		for _, pieceName in ipairs(textureUVs) do -- statusbars aren't affected
 			local region = icon[pieceName];
 			if region then
 				E.DisablePixelSnap(region)
@@ -307,7 +300,7 @@ function P:RemoveUnusedIcons(f, n)
 	end
 end
 
-function P:SetBarBackdrop(f) -- [52]
+function P:SetBarBackdrop(f) -- removed backdrop d/t overhead in 9.0
 	local icons = f.icons
 	for i = 1, f.numIcons do
 		local icon = icons[i]
@@ -319,12 +312,13 @@ local function IsSpellSpecTalent(guid, spec, spellID)
 	local info = P.groupInfo[guid]
 	local specID = info.spec
 	if specID then
-		if type(spec) == "table" then -- editor converts spec to array
+		-- Editing spell will convert spec, duration, and charges to arrays. boolean spec is coverted to spellID
+		if type(spec) == "table" then
 			for _, id in pairs(spec) do
 				if id < 599 then -- TODO: Temp fix
 					if id == specID then return true end
 				else
-					if P:IsTalent(id, guid) then return true end -- [62]
+					if P:IsTalent(id, guid) then return true end
 				end
 			end
 		elseif type(spec) == "number" then
@@ -335,7 +329,7 @@ local function IsSpellSpecTalent(guid, spec, spellID)
 	end
 end
 
-function P:UpdateUnitBar(guid, isGRU)
+function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spellIcons pointer
 	local info = self.groupInfo[guid]
 	local class = info.class
 	local raceID = info.raceID
@@ -357,24 +351,37 @@ function P:UpdateUnitBar(guid, isGRU)
 	f.unit = unit
 	f.anchor.text:SetText(index)
 
-	if not E.isBCC then
-		-- Patch 9.1 HSA removed
-		--[[
+	-- Patch 9.1 HSA removed
+	--[[
+	if not E.isPreBCC then
 		if self.isInArena then
 			f:RegisterUnitEvent("UNIT_AURA", unit)
 		else
 			f:UnregisterEvent("UNIT_AURA")
 		end
-		]]
-		if isntUser then -- [96]
-			f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
-		end
 	end
-	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit]) -- [41]
+	]]
+	if not E.isPreBCC and isntUser then
+		f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
+	end
+	if info.isDead then
+		f:RegisterUnitEvent("UNIT_HEALTH", unit)
+	end
+	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unitToPetId[unit]) -- info-to-bar frame association never changes now (still have to update registered unitID)
 
 	local isInspectedUnit = info.spec
 	local lvl = info.level
 	local iconIndex = 0
+	local loginsessionData = self.loginsessionData[guid]
+
+	if not E.Comms.syncGUIDS[guid] and not info.shadowlandsData.covenantID and isInspectedUnit and loginsessionData then
+		for k, v in pairs(loginsessionData) do
+			if v == "C" then
+				info.shadowlandsData.covenantID = E.covenant_abilities[k]
+			end
+			info.talentData[k] = v
+		end
+	end
 
 	for i = 1, 5 do
 		local spells = i == 1 and spell_db.PVPTRINKET or (i == 2 and spell_db.RACIAL) or (i == 3 and spell_db.TRINKET) or (i == 4 and spell_db.COVENANT) or (i == 5 and spell_db[class])
@@ -384,7 +391,7 @@ function P:UpdateUnitBar(guid, isGRU)
 				local spell = spells[j]
 				local spellID, spellType, spec, race, item, item2, talent, pve = spell.spellID, spell.type, spell.spec, spell.race, spell.item, spell.item2, spell.talent, spell.pve
 
-				local isValidSpell -- [62]
+				local isValidSpell
 				if spell_enabled[spellID] and (isntUser or (not self.isUserHidden or (E.db.extraBars.interruptBar.enabled and spellType == "interrupt") or (E.db.extraBars.raidCDBar.enabled and E.db.raidCDS[tostring(spellID)]))) then
 					if i == 2 then
 						if type(race) == "table" then
@@ -405,24 +412,26 @@ function P:UpdateUnitBar(guid, isGRU)
 						elseif i == 3 or i == 1 then
 							isValidSpell = self:IsEquipped(item, guid, item2)
 						end
-					else
+					else -- allow add-on-cast before inspecting unit so we can start CD
 						if i == 5 then
-							isValidSpell = lvl >= GetSpellLevelLearned(spellID) and not spec and not talent
+							isValidSpell = lvl >= GetSpellLevelLearned(spellID) and (not spec or (loginsessionData and loginsessionData[spec])) and not talent
 						elseif i == 3 then
 							isValidSpell = not item
+						elseif i == 4 then
+							isValidSpell = loginsessionData and loginsessionData[spec]
 						end
 					end
 				end
 
 				if isValidSpell then
-					local cd = P:GetValueByType(spell.duration, guid, item2)
-					if not E.isBCC or not P.isInArena or cd < 900 then
+					local cd = self:GetValueByType(spell.duration, guid, item2)
+					if not E.isPreBCC or not self.isInArena or cd < 900 then
 						local category, buffID, iconTexture = spell.class, spell.buff, spell.icon
-						local ch = P:GetValueByType(spell.charges, guid) or 1
+						local ch = self:GetValueByType(spell.charges, guid) or 1
 						if isInspectedUnit then
 							if i == 5 then
 								if spell_cdmod_haste[spellID] then
-									if E.isBCC then
+									if E.isPreBCC then
 										cd = cd + (info.RAS or 0) -- nil on inspect, requires sync
 									else
 										local haste = UnitSpellHaste(unit) or 0
@@ -435,12 +444,12 @@ function P:UpdateUnitBar(guid, isGRU)
 									if type(cdData[1]) == "table" then
 										for i = 1, #cdData do
 											local t = cdData[i]
-											if P:IsTalent(t[1], guid) then
+											if self:IsTalent(t[1], guid) then
 												cd = cd - t[2]
 											end
 										end
 									else
-										if P:IsTalent(cdData[1], guid) then
+										if self:IsTalent(cdData[1], guid) then
 											cd = cd - cdData[2]
 										end
 									end
@@ -450,9 +459,11 @@ function P:UpdateUnitBar(guid, isGRU)
 								if conduitData then
 									local rankValue = info.talentData[conduitData]
 									if rankValue then
-										if spellID == 212653 then -- TODO: Shimmer (intended?)
+										--[[ Dec. 23. 2020 Hotfixed
+										if spellID == 212653 then -- Shimmer
 											rankValue = rankValue / 2
 										end
+										]]
 										cd = cd - rankValue
 									end
 								end
@@ -462,12 +473,12 @@ function P:UpdateUnitBar(guid, isGRU)
 									if type(cdMult[1]) == "table" then
 										for i = 1, #cdMult do
 											local t = cdMult[i]
-											if P:IsTalent(t[1], guid) then
+											if self:IsTalent(t[1], guid) then
 												cd = cd * t[2]
 											end
 										end
 									else
-										if P:IsTalent(cdMult[1], guid) then
+										if self:IsTalent(cdMult[1], guid) then
 											cd = cd * cdMult[2]
 										end
 									end
@@ -482,7 +493,7 @@ function P:UpdateUnitBar(guid, isGRU)
 								end
 
 								local chData = spell_chmod_talents[spellID]
-								if chData and P:IsTalent(chData[1], guid) then
+								if chData and self:IsTalent(chData[1], guid) then
 									ch = ch + chData[2]
 								end
 							elseif i == 4 then
@@ -507,7 +518,7 @@ function P:UpdateUnitBar(guid, isGRU)
 						iconIndex = iconIndex + 1
 
 						local icon = f.icons[iconIndex] or GetIcon(f, iconIndex)
-						icon:Hide() -- [28]
+						icon:Hide() -- prevent extraBars icon being shown anchored to CRF d/t SetExIconLayout timer
 						icon.guid = guid
 						icon.spellID = spellID
 						icon.class = class
@@ -519,14 +530,15 @@ function P:UpdateUnitBar(guid, isGRU)
 						icon.Count:SetText(ch or (spellID == 323436 and info.auras.purifySoulStacks) or "")
 						icon.icon:SetTexture(iconTexture)
 						icon.active = nil
+						icon.tooltipID = nil
 
-						P:HideOverlayGlow(icon)
+						self:HideOverlayGlow(icon)
 
 						local active = info.active[spellID]
 						if active then
 							local charges
 							if icon.maxcharges then
-								if not active.charges then -- [15]
+								if not active.charges then
 									charges = icon.maxcharges - 1
 									active.charges = charges
 								else
@@ -534,25 +546,21 @@ function P:UpdateUnitBar(guid, isGRU)
 								end
 								icon.Count:SetText(charges)
 							else
-								active.charges = nil -- [15]
+								active.charges = nil -- nil err fix: when changed spec/talent no longer has charges
 								charges = -1
 							end
 
-							P:UpdateCooldown(icon, 0, charges) -- [40]
+							self:UpdateCooldown(icon, 0, charges)
 						else
 							icon.cooldown:Clear()
 						end
 
 						if info.preActiveIcons[spellID] then
-							info.preActiveIcons[spellID] = icon -- [40]
-							if not icon.isHighlighted then
-								icon.icon:SetVertexColor(0.4, 0.4, 0.4)
-							end
-						else
-							icon.icon:SetVertexColor(1, 1, 1)
+							info.preActiveIcons[spellID] = icon
+							self:HighlightIcon(icon, true)
 						end
 
-						info.spellIcons[spellID] = icon -- [40]
+						info.spellIcons[spellID] = icon
 
 						if i == 2 and race ~= 37 then
 							break
@@ -566,16 +574,16 @@ function P:UpdateUnitBar(guid, isGRU)
 
 	self:RemoveUnusedIcons(f, iconIndex + 1)
 
-	self:UpdateExBar(f, isGRU) -- [26]
+	self:UpdateExBar(f, isGRU)
 
-	if isntUser or not self.isUserHidden then -- [82]
+	if isntUser or not self.isUserHidden then
 		self:ApplySettings(f)
 		self:SetIconLayout(f, true)
 	end
 end
 
 function P:UpdateBars()
-	self:HideExBars(true) -- [27]
+	self:HideExBars(true) -- force to release icons for recycling
 
 	for guid in pairs(self.groupInfo) do
 		self:UpdateUnitBar(guid, true)

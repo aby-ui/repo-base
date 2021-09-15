@@ -44,7 +44,7 @@ local general = {
 					E.DB.profile.Party[key].general.zoneSelected = src
 				end
 
-				P:Refresh(true) -- [76]
+				P:Refresh(true) -- don't cross check zone. We just changed it
 			end,
 			confirm = E.ConfirmAction,
 		},
@@ -53,7 +53,7 @@ local general = {
 			desc = L["Reset current zone settings to default"],
 			order = 3,
 			type = "execute",
-			func = function(info) P:ResetOptions(info[2]) P:Refresh(true) end, -- [78]
+			func = function(info) P:ResetOptions(info[2]) P:Refresh(true) end,
 			confirm = E.ConfirmAction,
 		},
 		lb1 = {

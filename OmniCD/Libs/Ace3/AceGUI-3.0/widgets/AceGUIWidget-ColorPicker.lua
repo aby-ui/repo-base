@@ -124,7 +124,7 @@ local methods = {
 		if self.disabled then
 			self.frame:Disable()
 			self.text:SetTextColor(0.5, 0.5, 0.5)
-			self.colorSwatch:SetVertexColor(0.5, 0.5, 0.5)
+			self.colorSwatch:SetVertexColor(0.5, 0.5, 0.5) -- s a
 		else
 			self.frame:Enable()
 			self.text:SetTextColor(1, 1, 1)
@@ -145,25 +145,44 @@ local function Constructor()
 	frame:SetScript("OnClick", ColorSwatch_OnClick)
 
 	local colorSwatch = frame:CreateTexture(nil, "OVERLAY")
+	--[[ s r
+	colorSwatch:SetWidth(19)
+	colorSwatch:SetHeight(19)
+	colorSwatch:SetTexture(130939) -- Interface\\ChatFrame\\ChatFrameColorSwatch
+	]]
 	colorSwatch:SetWidth(24)
 	colorSwatch:SetHeight(16)
 	colorSwatch:SetColorTexture(1,1,1)
+	-- e
 	colorSwatch:SetPoint("LEFT")
 
-	local texture = frame:CreateTexture(nil, "BACKGROUND") -- border
+	local texture = frame:CreateTexture(nil, "BACKGROUND")
 	colorSwatch.background = texture
+	--[[ s r
+	texture:SetWidth(16)
+	texture:SetHeight(16)
+	texture:SetColorTexture(1, 1, 1)
+	]]
 	texture:SetWidth(26)
 	texture:SetHeight(18)
 	texture:SetColorTexture(0, 0, 0)
+	-- e
 	texture:SetPoint("CENTER", colorSwatch)
 	texture:Show()
 
 	local checkers = frame:CreateTexture(nil, "BACKGROUND")
 	colorSwatch.checkers = checkers
+	--[[ s r
+	checkers:SetWidth(14)
+	checkers:SetHeight(14)
+	checkers:SetTexture(188523) -- Tileset\\Generic\\Checkers
+	checkers:SetTexCoord(.25, 0, 0.5, .25)
+	]]
 	checkers:SetWidth(24)
 	checkers:SetHeight(16)
 	checkers:SetTexture(188523) -- Tileset\\Generic\\Checkers
 	checkers:SetTexCoord(.375, 0, 0.5, .25)
+	-- e
 	checkers:SetDesaturated(true)
 	checkers:SetVertexColor(1, 1, 1, 0.75)
 	checkers:SetPoint("CENTER", colorSwatch)

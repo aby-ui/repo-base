@@ -9,60 +9,47 @@ end
 
 local unitFrameData = {
 	--  [1] = AddOn name
-	--  [2] = Party frame name -%d
+	--  [2] = Party frame name ex) GroupNum%dUnitNum(-%d)
 	--  [3] = Party frame unit key
 	--  [4] = Delay
-	--	[5] = Max frame index
+	--  [5] = Max frame index
+	--  [6] = Min frame index
 
-	{   [1] = "VuhDo",  -- frame lvl: toplevel
-		[2] = "Vd1H",
+	{   [1] = "VuhDo", -- toplevel
+		[2] = "Vd%dH", -- panel# not group
 		[3] = "raidid",
 		[4] = 1,
+		[5] = 40,
 	},
-	{   [1] = "VuhDo-Panel2",
-		[2] = "Vd2H",
-		[3] = "raidid",
-		[4] = 1,
-	},
-	{   [1] = "VuhDo-Panel3",
-		[2] = "Vd3H",
-		[3] = "raidid",
-		[4] = 1,
-	},
-	{   [1] = "VuhDo-Panel4",
-		[2] = "Vd4H",
-		[3] = "raidid",
-		[4] = 1,
-	},
-	{   [1] = "VuhDo-Panel5",
-		[2] = "Vd5H",
-		[3] = "raidid",
-		[4] = 1,
-	},
-	{   [1] = "Grid2",  -- 3
-		[2] = "Grid2LayoutHeader1UnitButton",
+	{   [1] = "Grid2", -- 3
+		[2] = "Grid2LayoutHeader%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
 	},
 	{   [1] = "Aptechka",
-		[2] = "NugRaid1UnitButton",
+		[2] = "NugRaid%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
 	},
 	{   [1] = "InvenRaidFrames3",
-		[2] = "InvenRaidFrames3Group0UnitButton",
+		[2] = "InvenRaidFrames3Group%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
+		[5] = 5,
+		[6] = 0, -- Group0 for party
 	},
 	{   [1] = "Lime",
-		[2] = "LimeGroup0UnitButton",
+		[2] = "LimeGroup%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
+		[5] = 5,
+		[6] = 0,
 	},
 	{   [1] = "Plexus", -- 7
-		[2] = "PlexusLayoutHeader1UnitButton",
+		[2] = "PlexusLayoutHeader%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
+		[5] = 40, -- certain layout uses Header1 only
 	},
     {   [1] = "Grid",
    		[2] = "GridLayoutHeader1UnitButton",
@@ -77,7 +64,7 @@ local unitFrameData = {
 	{   [1] = "HealBot",
 		[2] = "HealBot_Action_HealUnit",
 		[3] = "unit",
-		[4] = 1,
+		[4] = 2,
 		[5] = 50,
 	},
 	{   [1] = "Cell",
@@ -98,13 +85,13 @@ local unitFrameData = {
 		[4] = 1,
 	},
 	{   [1] = "ElvUI-Raid",
-		[2] = "ElvUF_RaidGroup1UnitButton", -- For Group 1 or 'Raid Wide Sorting' enabled
+		[2] = "ElvUF_RaidGroup%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
-		[5] = 40,
+		[5] = 40, -- 'Raid Wide Sorting' uses RaidGroup1 only
 	},
 	{   [1] = "ElvUI-Raid40",
-		[2] = "ElvUF_Raid40Group1UnitButton",
+		[2] = "ElvUF_Raid40Group%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
 		[5] = 40,
@@ -113,6 +100,12 @@ local unitFrameData = {
 		[2] = "TukuiPartyUnitButton",
 		[3] = "unit",
 		[4] = 1,
+	},
+	{   [1] = "Tukui-Raid",
+		[2] = "TukuiRaidUnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
 	},
 	{   [1] = "ShadowUF",
 		[2] = "SUFHeaderpartyUnitButton",
@@ -123,10 +116,10 @@ local unitFrameData = {
 		[2] = "SUFHeaderraidUnitButton",
 		[3] = "unit",
 		[4] = 1,
-		[5] = 50,
+		[5] = 40,
 	},
-	{   [1] = "ShadowUF-Raid1",
-		[2] = "SUFHeaderraid1UnitButton",   -- For Group 1 with 'Separate raid frames' enabled in SUF
+	{   [1] = "ShadowUF-Raid1", -- 'Separate raid frames' option
+		[2] = "SUFHeaderraid%dUnitButton",
 		[3] = "unit",
 		[4] = 1,
 	},
@@ -135,7 +128,13 @@ local unitFrameData = {
 		[3] = "partyid",
 		[4] = 1,
 	},
-	{   [1] = "PitBull4",
+	{   [1] = "ZPerl-Raid",
+		[2] = "XPerl_Raid_Grp%dUnitButton",
+		[3] = "partyid",
+		[4] = 1,
+		[5] = 40
+	},
+	{   [1] = "PitBull4", -- no default raid frames
 		[2] = "PitBull4_Groups_PartyUnitButton",
 		[3] = "unit",
 		[4] = 1,
@@ -145,13 +144,23 @@ local unitFrameData = {
 		[3] = "unit",
 		[4] = 1,
 	},
+	{   [1] = "NDui-Raid",
+		[2] = "oUF_Raid%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+	},
 	{   [1] = "KkthnxUI",
 		[2] = "oUF_PartyUnitButton",
 		[3] = "unit",
 		[4] = 1,
 	},
+	{   [1] = "KkthnxUI-Raid",
+		[2] = "oUF_Raid%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+	},
 	{
-		[1] = "RUF",
+		[1] = "RUF", -- uses Blizzard raid frames
 		[2] = "oUF_RUF_PartyUnitButton",
 		[3] = "unit",
 		[4] = 1,
@@ -169,8 +178,20 @@ local unitFrameData = {
 		[4] = 1,
 	},
 	{
+		[1] = "ShestakUI-Raid",
+		[2] = "oUF_RaidHeal%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+	},
+	{
+		[1] = "ShestakUI-DPS-Raid",
+		[2] = "oUF_RaidDPS%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+	},
+	{
 		[1] = "GW2_UI",
-		[2] = "GwCompactparty",
+		[2] = "GwCompactPartyFrame",
 		[3] = "unit",
 		[4] = 1,
 	},
@@ -182,7 +203,27 @@ local unitFrameData = {
 	},
 	{
 		[1] = "GW2_UI-Raid",
-		[2] = "GwCompactraid",
+		[2] = "GwCompactRaidFrame",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40
+	},
+	{
+		[1] = "AltzUI",
+		[2] = "Altz_PartyUnitButton",
+		[3] = "unit",
+		[4] = 1,
+	},
+	{
+		[1] = "AltzUI-Raid-Healer",
+		[2] = "Altz_HealerRaidUnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40
+	},
+	{
+		[1] = "AltzUI-Raid-DPS",
+		[2] = "Altz_DpsRaidUnitButton",
 		[3] = "unit",
 		[4] = 1,
 		[5] = 40
@@ -198,6 +239,7 @@ function E:SetActiveUnitFrameData()
 			self.customUF.unit = enabled.unit
 			self.customUF.delay = enabled.delay
 			self.customUF.index = enabled.index
+			self.customUF.minIndex = enabled.minIndex
 		end
 		self.customUF.active = active
 	end
@@ -209,7 +251,7 @@ function E:UnitFrames()
 			auto = L["Auto"],
 			blizz = "Blizzard",
 		},
-		["enabled"] = false, -- [86]
+		["enabled"] = false,
 	}
 
 	for i = 1, #unitFrameData do
@@ -223,6 +265,7 @@ function E:UnitFrames()
 				["unit"] = unitFrame[3],
 				["delay"] = unitFrame[4],
 				["index"] = unitFrame[5] or 5,
+				["minIndex"] = unitFrame[6] or 1,
 			}
 
 			self.customUF.optionTable[name] = name
@@ -233,7 +276,7 @@ function E:UnitFrames()
 		end
 	end
 
-	if self.customUF.enabled then -- retain db value if no UI is enabled
+	if self.customUF.enabled then
 		for zone in pairs(self.CFG_ZONE) do
 			local uf = self.DB.profile.Party[zone].position.uf
 			if uf ~= "blizz" and not self.customUF.enabled[uf] then
@@ -247,7 +290,7 @@ function E:UnitFrames()
 			--E.StaticPopup_Show("OMNICD_Elv_MSG")
 		end
 
-		self:SetPixelMult() -- set after addons load
+		self:SetPixelMult()
 	end
 end
 

@@ -175,7 +175,7 @@
 		<Scripts>
 			<OnEnter>
 				_G["AceConfigDialogTooltip-OmniCD"]:SetOwner(self, "ANCHOR_RIGHT");
-				_G["AceConfigDialogTooltip-OmniCD"]:SetSpellByID(self.spellID);
+				_G["AceConfigDialogTooltip-OmniCD"]:SetSpellByID(self.tooltipID or self.spellID);
 			</OnEnter>
 			<OnLeave>
 				_G["AceConfigDialogTooltip-OmniCD"]:Hide();

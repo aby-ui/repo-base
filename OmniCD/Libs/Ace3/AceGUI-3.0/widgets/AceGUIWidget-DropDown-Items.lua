@@ -176,7 +176,10 @@ function ItemBase.Create(type)
 
 	local highlight = frame:CreateTexture(nil, "OVERLAY")
 	highlight:SetTexture(136810) -- Interface\\QuestFrame\\UI-QuestTitleHighlight
+	-- s b
 	highlight:SetTexCoord(0.5, 1, 0, 1)
+	--highlight:SetVertexColor(0.5, 0, 0)
+	-- e
 	highlight:SetBlendMode("ADD")
 	highlight:SetHeight(14)
 	highlight:ClearAllPoints()
@@ -316,7 +319,7 @@ do
 	local function Constructor()
 		local self = ItemBase.Create(widgetType)
 
-		self.text:SetFontObject("GameFontNormalSmall-OmniCD")
+		self.text:SetFontObject("GameFontNormalSmall-OmniCD") -- s a can't change color here > done in dropdown.lua
 
 		self.frame:SetScript("OnClick", Frame_OnClick)
 
@@ -375,7 +378,7 @@ do
 	local function Constructor()
 		local self = ItemBase.Create(widgetType)
 
-		self.text:SetFontObject("GameFontNormalSmall-OmniCD")
+		self.text:SetFontObject("GameFontNormalSmall-OmniCD") -- s a
 
 		self.frame:SetScript("OnClick", Frame_OnClick)
 

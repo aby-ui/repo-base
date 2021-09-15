@@ -202,7 +202,7 @@ local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
 	frame:Hide()
 
-	local editbox = CreateFrame("EditBox", "AceGUI-3.0SearchBox-OmniCD"..num, frame, "InputBoxTemplate, BackdropTemplate")
+	local editbox = CreateFrame("EditBox", "AceGUI-3.0SearchBox-OmniCD"..num, frame, BackdropTemplateMixin and "InputBoxTemplate, BackdropTemplate" or "InputBoxTemplate")
 	editbox:SetPoint("BOTTOMRIGHT", 0, 3) -- height is controlled by SetLabel
 	editbox.Left:SetTexture(nil)
 	editbox.Right:SetTexture(nil)
@@ -229,7 +229,7 @@ local function Constructor()
 	label:SetHeight(18)
 	label:SetJustifyH("LEFT")
 
-	local button = CreateFrame("Button", nil, editbox, "BackdropTemplate") -- 'Editbox' inherits UIPanelButtonTemplate>UIPanelButtonNoTooltipTemplate <Size x="40" y="22"/>
+	local button = CreateFrame("Button", nil, editbox, BackdropTemplateMixin and "BackdropTemplate" or nil) -- 'Editbox' inherits UIPanelButtonTemplate>UIPanelButtonNoTooltipTemplate <Size x="40" y="22"/>
 	button:SetWidth(22)
 	button:SetPoint("TOPRIGHT")
 	button:SetPoint("BOTTOMRIGHT")

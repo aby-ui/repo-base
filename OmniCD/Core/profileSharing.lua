@@ -1,7 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 
 local PS = CreateFrame("Frame")
-local Tooltip = E.Libs.ACD.tooltip
+local ACD_Tooltip = E.Libs.ACD.tooltip
 local Dialog
 
 LibStub("AceSerializer-3.0"):Embed(PS)
@@ -27,7 +27,7 @@ end
 local function Move_OnMouseDown(self, button)
 	if button == "LeftButton" and not self.isMoving then
 		self:StartMoving()
-		self:SetUserPlaced(false) -- [98]
+		self:SetUserPlaced(false) -- don't save to local layout file
 		self.isMoving = true
 	end
 end
@@ -60,17 +60,17 @@ local function EditBox_OnChar(self)
 end
 
 local function ExportEditBox_OnEnter()
-	Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
-	Tooltip:SetText(L["Press Ctrl+C to copy profile"])
+	ACD_Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
+	ACD_Tooltip:SetText(L["Press Ctrl+C to copy profile"])
 end
 
 local function ImportEditBox_OnEnter()
-	Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
-	Tooltip:SetText(L["Press Ctrl+V to paste profile"])
+	ACD_Tooltip:SetOwner(Dialog.ScrollFrame, "ANCHOR_TOPRIGHT")
+	ACD_Tooltip:SetText(L["Press Ctrl+V to paste profile"])
 end
 
 function E.CreateFlashButton(parent, text, width, height)
-	local Button = CreateFrame("Button", nil, parent, "BackdropTemplate")
+	local Button = CreateFrame("Button", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	Button:SetSize(width or 80, height or 20)
 	E.BackdropTemplate(Button)
 	Button:SetBackdropColor(0.725, 0.008, 0.008)
@@ -78,13 +78,17 @@ function E.CreateFlashButton(parent, text, width, height)
 	Button:SetScript("OnEnter", Button_OnEnter)
 	Button:SetScript("OnLeave", Button_OnLeave)
 	Button:SetNormalFontObject(E.GameFontHighlight)
-	--Button:SetHighlightFontObject(E.GameFontHighlight)
+--  Button:SetHighlightFontObject(E.GameFontHighlight)
 	Button:SetText(text or "")
 
 	Button.bg = Button:CreateTexture(nil, "BORDER")
-	E.DisablePixelSnap(Button.bg)
-	Button.bg:SetPoint("TOPLEFT", Button.TopEdge, "BOTTOMLEFT")
-	Button.bg:SetPoint("BOTTOMRIGHT", Button.BottomEdge, "TOPRIGHT")
+	if E.isClassic then
+		Button.bg:SetAllPoints()
+	else
+		E.DisablePixelSnap(Button.bg)
+		Button.bg:SetPoint("TOPLEFT", Button.TopEdge, "BOTTOMLEFT")
+		Button.bg:SetPoint("BOTTOMRIGHT", Button.BottomEdge, "TOPRIGHT")
+	end
 	Button.bg:SetColorTexture(0.0, 0.6, 0.4)
 	Button.bg:Hide()
 
@@ -109,7 +113,7 @@ end
 
 function PS.ShowProfileDialog(text)
 	if not Dialog then
-		Dialog = CreateFrame("Frame", "OmniCD_ProfileDialog", UIParent, "DialogBoxFrame") -- [99]
+		Dialog = CreateFrame("Frame", "OmniCD_ProfileDialog", UIParent, "DialogBoxFrame") -- inherit to draw over AceConfig, other methods didn't work unless strata is set to tooltip.
 		Dialog:SetPoint("CENTER")
 		Dialog:SetSize(600, 400)
 		Dialog:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -132,7 +136,7 @@ function PS.ShowProfileDialog(text)
 		Label:SetPoint("TOP", 0, -1)
 
 		-- Button
-		_G.OmniCD_ProfileDialogButton:Hide() --Mixin instead?
+		_G.OmniCD_ProfileDialogButton:Hide()
 
 		local Close = E.CreateFlashButton(Dialog, CLOSE) -- inherits DialogBoxFrame Button
 		Close:SetPoint("BOTTOM", 0, 16)
@@ -157,17 +161,15 @@ function PS.ShowProfileDialog(text)
 
 		-- Resizer
 		local Resizer = CreateFrame("Button", "OmniCD_ProfileDialogResizeButton", Dialog)
-		--[[
-		Resizer:SetPoint("BOTTOMRIGHT", -6, 7)
-		Resizer:SetSize(16, 16)
-		Resizer:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-		Resizer:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
-		Resizer:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
-		]]
 		-- TODO:
+--      Resizer:SetPoint("BOTTOMRIGHT", -6, 7)
+--      Resizer:SetSize(16, 16)
+--      Resizer:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+--      Resizer:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+--      Resizer:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
 		Resizer:SetPoint("BOTTOMRIGHT", -8, 8)
 		Resizer:SetSize(16, 16)
-		Resizer:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bullet-resizer]]) -- 8x8
+		Resizer:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bullet-resizer]])
 		local Resizer_Normal = Resizer:GetNormalTexture()
 		Resizer_Normal:SetPoint("BOTTOMRIGHT")
 		Resizer_Normal:SetPoint("TOPLEFT", Resizer, "CENTER")
@@ -179,11 +181,11 @@ function PS.ShowProfileDialog(text)
 		end)
 		Resizer:SetScript("OnMouseUp", function(self, button)
 			Dialog:StopMovingOrSizing()
-			--self:GetHighlightTexture():Show()
+--          self:GetHighlightTexture():Show()
 		end)
 
 		-- ScrollContainer
-		local ScrollContainer = CreateFrame("Frame", "OmniCD_ProfileDialogScrollContainer", Dialog, "BackdropTemplate")
+		local ScrollContainer = CreateFrame("Frame", "OmniCD_ProfileDialogScrollContainer", Dialog, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		ScrollContainer:SetPoint("TOPLEFT", 18, -28)
 		ScrollContainer:SetPoint("BOTTOMRIGHT", -38, 50)
 		E.BackdropTemplate(ScrollContainer)
@@ -203,7 +205,7 @@ function PS.ShowProfileDialog(text)
 			end
 		end)
 		ScrollFrame:SetScript("OnLeave", function()
-			Tooltip:Hide()
+			ACD_Tooltip:Hide()
 		end)
 
 		-- ScrollBar
@@ -211,7 +213,8 @@ function PS.ShowProfileDialog(text)
 		ScrollBar:ClearAllPoints()
 		ScrollBar:SetPoint("TOPLEFT", ScrollContainer, "TOPRIGHT", 4, -1)
 		ScrollBar:SetPoint("BOTTOMLEFT", ScrollContainer, "BOTTOMRIGHT", 4, 1)
-		--ScrollBar.ScrollUpButton:Hide()   ScrollBar.ScrollDownButton:Hide() -- updated OnValueChanged (AceGUI we can just hide)
+--      ScrollBar.ScrollUpButton:Hide()
+--      ScrollBar.ScrollDownButton:Hide() -- visibility updates on OnValueChanged -> set texture to nil. (AceGUI, we can just hide)
 		ScrollBar.ScrollUpButton:SetNormalTexture(nil)
 		ScrollBar.ScrollUpButton:SetPushedTexture(nil)
 		ScrollBar.ScrollUpButton:SetDisabledTexture(nil)
@@ -222,7 +225,7 @@ function PS.ShowProfileDialog(text)
 		ScrollBar.ScrollDownButton:SetHighlightTexture(nil)
 		ScrollBar.ThumbTexture:SetTexture([[Interface\BUTTONS\White8x8]])
 		ScrollBar.ThumbTexture:SetSize(16, 32)
-		ScrollBar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3) --  red is too much
+		ScrollBar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3)
 		ScrollBar.BG = ScrollBar:CreateTexture(nil, "BACKGROUND")
 		ScrollBar.BG:SetAllPoints()
 		ScrollBar.BG:SetColorTexture(0, 0, 0, 0.4)
@@ -231,7 +234,7 @@ function PS.ShowProfileDialog(text)
 		local EditBox = CreateFrame("EditBox", "OmniCD_ProfileDialogEditBox", ScrollFrame)
 		EditBox:SetSize(ScrollFrame:GetSize())
 		EditBox:SetMultiLine(true)
-		EditBox:SetAutoFocus(false) -- dont automatically focus
+		EditBox:SetAutoFocus(false)
 		EditBox:SetFontObject(E.GameFontHighlight) -- ChatFontNormal
 		EditBox:SetScript("OnEscapePressed", function(self)
 			self:ClearFocus()
@@ -243,7 +246,7 @@ function PS.ShowProfileDialog(text)
 			self:HighlightText(0, 0)
 		end)
 		EditBox:SetScript("OnLeave", function()
-			Tooltip:Hide()
+			ACD_Tooltip:Hide()
 		end)
 		ScrollFrame:SetScrollChild(EditBox)
 
@@ -256,9 +259,9 @@ function PS.ShowProfileDialog(text)
 	end
 
 	if text then
-		--Dialog:SetBackdropBorderColor(0.757, 0.0, 0.012, 0.6)
+--      Dialog:SetBackdropBorderColor(0.757, 0.0, 0.012, 0.6)
 		Dialog.Label:SetText(L["Export Profile"])
-		--Dialog.Label:SetTextColor(0.757, 0.0, 0.012)
+--      Dialog.Label:SetTextColor(0.757, 0.0, 0.012)
 		Dialog.Decode:Hide()
 		Dialog.Close:ClearAllPoints()
 		Dialog.Close:SetPoint("BOTTOM", 0, 16)
@@ -270,9 +273,9 @@ function PS.ShowProfileDialog(text)
 		Dialog.EditBox:SetScript("OnEnter", ExportEditBox_OnEnter)
 		Dialog.ScrollFrame:SetScript("OnEnter", nil)
 	else
-		--Dialog:SetBackdropBorderColor(0.596, 0.808, 1.0, 0.6)
+--      Dialog:SetBackdropBorderColor(0.596, 0.808, 1.0, 0.6)
 		Dialog.Label:SetText(L["Import Profile"])
-		--Dialog.Label:SetTextColor(0.596, 0.808, 1.0)
+--      Dialog.Label:SetTextColor(0.596, 0.808, 1.0)
 		Dialog.Decode:Show()
 		Dialog.Close:ClearAllPoints()
 		Dialog.Close:SetPoint("BOTTOMLEFT", Dialog, "BOTTOM", 2, 16)
@@ -330,7 +333,7 @@ function PS.Decode(encodedData)
 	return profileType, profileKey, profileData
 end
 
-function PS.CopyCustomSpells(profileData) -- Merge (overwrite duplicates)
+function PS.CopyCustomSpells(profileData) -- merge (overwrite duplicates)
 	for k, v in pairs(profileData) do
 		OmniCDDB.cooldowns[k] = v
 	end
@@ -375,7 +378,7 @@ function PS.ImportProfile(encodedData)
 	return profileType, profileKey
 end
 
--- OmniCDDB = {global, profileKeys, profile, namespaces, version, cooldowns}
+-- OmniCDDB keys: global, profileKeys, profile, namespaces, version, cooldowns
 local blackList = {
 	modules = true,
 }

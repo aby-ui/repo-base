@@ -3,7 +3,7 @@ local E, L, C = select(2, ...):unpack()
 local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local GetSpecializationInfoByID = GetSpecializationInfoByID
-if E.isBCC then
+if E.isPreBCC then
 	GetNumSpecializationsForClassID = function() return 0 end
 	GetSpecializationInfoForClassID = E.Noop
 	GetSpecializationInfoByID = E.Noop
@@ -37,8 +37,8 @@ local function GetClassIndexBySpellID(id)
 	end
 end
 
--- TODO: clean this up. gives me a headache everytime.
-function E:UpdateSpell(id, isInit, oldClass, oldType) -- [39]
+-- TODO: clean this up
+function E:UpdateSpell(id, isInit, oldClass, oldType) -- leave registered highlights to decay
 	local class, i = GetClassIndexBySpellID(id)
 	local v = OmniCDDB.cooldowns[id]
 	local vclass, vtype, force
@@ -104,7 +104,7 @@ end
 
 local isClassCategory = function(info)
 	local id = GetSpellID(info)
-	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- and OmniCDDB.cooldowns[id].class ~= "PVPTRINKET" -- 9.1 pvp-trinket itemID are merged
+	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- pvptrinket itemID are merged for 9.1, prevent editing
 end
 
 local getGlobalDurationCharge = function(info)
@@ -244,7 +244,7 @@ local customSpellInfo = {
 	lb1 = {
 		name = "\n", order = 7, type = "description",
 	},
-	-- TODO:
+	-- TODO: reminder
 	--[=[
 	customPriority = {
 		name = L["Custom Priority"],
@@ -275,7 +275,7 @@ local customSpellInfo = {
 	lb2 = {
 		name = "", order = 9, type = "description",
 	},
-	--]=]
+	]=]
 	talentId = {
 		hidden = isOthersCategory,
 		name = L["Talent ID"],
@@ -338,7 +338,7 @@ local customSpellInfo = {
 		order = 13,
 		type = "description",
 	},
-	--]]
+	]]
 	lb3 = {
 		name = "", order = 14, type = "description",
 	},
@@ -376,8 +376,8 @@ local customSpellInfo = {
 	lb4 = {
 		name = "\n", order = 16, type = "description",
 	},
-	-- TODO:
-	--[=[
+	-- TODO: reminder
+	--[[
 	addToAlerts = {
 		disabled = true,
 		name = "+ " .. L["Add to Alerts"],
@@ -388,10 +388,10 @@ local customSpellInfo = {
 
 		end,
 	}
-	--]=]
+	]]
 }
 
-if not E.isBCC then
+if not E.isPreBCC then
 	local customSpellSpecInfo = {
 		enabled = {
 			name = ENABLE,
@@ -453,7 +453,7 @@ if not E.isBCC then
 	local customSpellSpecGroup = {
 		hidden = function(info)
 			local specID = GetSpecID(info, 0)
-			if not specID then return end -- [77]
+			if not specID then return end -- inherited call on customSpellSpecInfo can be nil
 
 			local id = GetSpellID(info)
 			local class = OmniCDDB.cooldowns[id].class
@@ -619,7 +619,7 @@ function E:AddSpellEditor()
 	for id in pairs(OmniCDDB.cooldowns) do
 		if not C_Spell.DoesSpellExist(id) then
 			OmniCDDB.cooldowns[id] = nil
-			--E.Write("Removing Invalid ID (User Added): |cffffd200" .. id)
+--          E.Write("Removing Invalid ID (User Added): |cffffd200" .. id)
 		else
 			id = tostring(id)
 			SpellEditor.args.editor.args[id] = customSpellGroup

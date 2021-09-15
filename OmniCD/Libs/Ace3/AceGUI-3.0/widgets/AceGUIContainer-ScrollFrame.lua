@@ -42,6 +42,7 @@ local function ScrollBar_OnScrollValueChanged(frame, value)
 	frame.obj:SetScroll(value)
 end
 
+-- s b
 local function Thumb_OnEnter(frame)
 	frame.ThumbTexture:SetColorTexture(0.5, 0.5, 0.5)
 end
@@ -59,6 +60,7 @@ local function Thumb_OnMouseUp(frame)
 		frame.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3)
 	end
 end
+-- e
 
 --[[-----------------------------------------------------------------------------
 Methods
@@ -142,10 +144,12 @@ local methods = {
 				self:DoLayout()
 			end
 
+			-- s b (adjust scrollbar thumb size)
 			if height > 0 then
 				local thumbHeight = min( height*0.5, (height^2) / viewheight )
 				self.scrollbar.ThumbTexture:SetHeight(thumbHeight)
 			end
+			-- e
 
 			local value = (offset / (viewheight - height) * 1000)
 			if value > 1000 then value = 1000 end
@@ -206,17 +210,22 @@ local function Constructor()
 	scrollframe:SetScript("OnSizeChanged", ScrollFrame_OnSizeChanged)
 
 	local scrollbar = CreateFrame("Slider", ("AceConfigDialogScrollFrame%dScrollBar-OmniCD"):format(num), scrollframe, "UIPanelScrollBarTemplate")
+	--[[ s r (No one uses arrows, just hide them)
+	scrollbar:SetPoint("TOPLEFT", scrollframe, "TOPRIGHT", 4, -16)
+	scrollbar:SetPoint("BOTTOMLEFT", scrollframe, "BOTTOMRIGHT", 4, 16)
+	]]
 	scrollbar:SetPoint("TOPLEFT", scrollframe, "TOPRIGHT", 4, 0)
 	scrollbar:SetPoint("BOTTOMLEFT", scrollframe, "BOTTOMRIGHT", 4, 0)
 	scrollbar.ScrollUpButton:Hide()
 	scrollbar.ScrollDownButton:Hide()
 	scrollbar.ThumbTexture:SetTexture([[Interface\BUTTONS\White8x8]])
 	scrollbar.ThumbTexture:SetSize(16, 32)
-	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3)
+	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3) -- red is too much
 	scrollbar:SetScript("OnEnter", Thumb_OnEnter)
 	scrollbar:SetScript("OnLeave", Thumb_OnLeave)
 	scrollbar:SetScript("OnMouseDown", Thumb_OnMouseDown)
 	scrollbar:SetScript("OnMouseUp", Thumb_OnMouseUp)
+	-- e
 	scrollbar:SetMinMaxValues(0, 1000)
 	scrollbar:SetValueStep(1)
 	scrollbar:SetValue(0)

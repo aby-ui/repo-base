@@ -8,6 +8,8 @@ L[ [=[%d: spellID.
 --[[Translation missing --]]
 L["|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."] = "|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."
 --[[Translation missing --]]
+L["|cffff2020Friendly CD module must be enabled for the corresponding instance zone."] = "|cffff2020Friendly CD module must be enabled for the corresponding instance zone."
+--[[Translation missing --]]
 L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."] = "|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."
 L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020重要!|r 只有队友安装技能冷却插件 OmniCD 的队友才能取得誓盟和灵印资料。"
 L["> 1 minute"] = "> 1 分钟"
@@ -29,6 +31,8 @@ L["Alerts"] = "提示"
 L["All user set values will be lost. Do you want to proceed?"] = "所有用户设定值都将丢失。确定继续吗？"
 L["Always attach to Blizzard frames. By default, bars attach to whichever frame is visible, and if both are visible UF addon take precedence over Blizzard"] = "始终将其附加到暴雪框架上。 默认情况下，图标会附加到可见的框架，如果两个框架都可见，则插件优先于暴雪框架"
 L["Always Bottom"] = "总是在下方"
+--[[Translation missing --]]
+L["Always Show Cooldown Numbers"] = "Always Show Cooldown Numbers"
 L["Always Top"] = "总是在上方"
 L["Anchor"] = "锚点"
 L["Anchor Point"] = "锚点"
@@ -48,6 +52,8 @@ L["Auto"] = "自动"
 L["Bar"] = "Bar"
 --[[Translation missing --]]
 L["Bar width"] = "Bar width"
+--[[Translation missing --]]
+L["Battle Res"] = "Battle Res"
 --[[Translation missing --]]
 L["BG"] = "BG"
 L["Blizzard Raid Frames has been disabled by your AddOn(s). Enable and reload UI?"] = "暴雪团队框架已被你的插件禁用。 启用并重新加载UI？"
@@ -126,6 +132,8 @@ L["Decode failed!"] = "Decode failed!"
 L["Decompress failed!"] = "Decompress failed!"
 L["Default spells are reverted back to original values and removed from the list only"] = "默认技能将恢复初始值并从列表中删除"
 L["Defensive"] = "防御"
+--[[Translation missing --]]
+L["Desaturate color at 0 charge"] = "Desaturate color at 0 charge"
 L["Desaturate Colors"] = "降低颜色"
 L["Desaturate colors on active icons"] = "降低冷却图标上的颜色"
 L["Descending"] = "降序"
@@ -156,6 +164,8 @@ L["Enable initial spark and marching-ants animation"] = "Enable initial spark an
 L["Enable spell for this specialization"] = "启用这个专精的技能"
 --[[Translation missing --]]
 L["Enable to customize the 2nd row icons when using 'Double Row' layout."] = "Enable to customize the 2nd row icons when using 'Double Row' layout."
+--[[Translation missing --]]
+L["Enable to show cooldown numbers above 0 charges."] = "Enable to show cooldown numbers above 0 charges."
 L["Enter buff ID if it differs from spell ID for Highlights to work"] = "如果buff ID与法术ID不一样，请输入buff ID，这样就能工作"
 L["Enter item ID to enable spell when the item is equipped only"] = "输入物品 ID 来启用法术 (只在已装备该物品时)"
 --[[Translation missing --]]
@@ -222,6 +232,8 @@ L["Icon Position"] = "图标位置"
 L["Icon Scale Changed."] = "图标比例已更改"
 L["Icon Size"] = "图标尺寸"
 L["Icon size auto adjusts as a percentage of the anchored frame height"] = "根据对齐的框架高度百分比自动调整图标大小"
+--[[Translation missing --]]
+L["Icon Texture"] = "Icon Texture"
 L["Icons"] = "图标"
 L["Immunity"] = "免疫"
 L["Import"] = "导入"
@@ -235,6 +247,10 @@ L["Inactive Icon Opacity"] = "不在冷却中的图标透明度"
 L["INNER"] = "内部"
 --[[Translation missing --]]
 L["Interrupt Bar"] = "Interrupt Bar"
+--[[Translation missing --]]
+L["Interrupted Spell Icon"] = "Interrupted Spell Icon"
+--[[Translation missing --]]
+L["Interrupted Target Marker"] = "Interrupted Target Marker"
 L["Interrupts"] = "打断"
 L["Invalid ID"] = "无效的ID"
 --[[Translation missing --]]
@@ -262,6 +278,8 @@ L["MM Color"] = "MM Color"
 L["MM:SS Color"] = "MM:SS Color"
 --[[Translation missing --]]
 L["MM:SS Threshold"] = "MM:SS Threshold"
+--[[Translation missing --]]
+L["Mouseovering the icon will show the interrupted spell information regardless of \'Show Tooltip\' option."] = "Mouseovering the icon will show the interrupted spell information regardless of \'Show Tooltip\' option."
 --[[Translation missing --]]
 L["Move your group's Interrupt spells to the Interrupt Bar."] = "Move your group's Interrupt spells to the Interrupt Bar."
 --[[Translation missing --]]
@@ -315,6 +333,8 @@ L["Profile Type"] = "Profile Type"
 L["Profile Type: %s%s|r"] = "Profile Type: %s%s|r"
 --[[Translation missing --]]
 L["Profile unchanged from default!"] = "Profile unchanged from default!"
+--[[Translation missing --]]
+L["PvP Trinket"] = "PvP Trinket"
 --[[Translation missing --]]
 L["Quick Select"] = "Quick Select"
 --[[Translation missing --]]
@@ -411,6 +431,10 @@ L["Show player's spell bar"] = "显示玩家自己的法术监控"
 L["Show pvp trinket only while in Battlegrounds"] = "只在战场中显示pvp饰品"
 L["Show Spell ID in Tooltips"] = "鼠标提示显示法术ID"
 L["Show spell information when you mouseover an icon"] = "鼠标悬停在图标上显示法术提示"
+--[[Translation missing --]]
+L["Show the interrupted spell icon."] = "Show the interrupted spell icon."
+--[[Translation missing --]]
+L["Show the interrupted unit's target marker if it exists."] = "Show the interrupted unit's target marker if it exists."
 L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"] = "在自律或体温过低的情况下显示法术计时器。 可施于他人的法术会变暗"
 L["Show Tooltip"] = "显示提示"
 L["Show Trinket Only"] = "只显示饰品"

@@ -13,7 +13,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 local rc = LibStub("LibRangeCheck-2.0")
 
 -- LibAbout frames
-local LibAboutPanel = LibStub:GetLibrary("LibAboutPanel", true)
+local LibAboutPanel = LibStub:GetLibrary("LibAboutPanel-2.0", true)
 
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
@@ -30,6 +30,7 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 local RSUtils = private.ImportLib("RareScannerUtils")
 local RSQuestTracker = private.ImportLib("RareScannerQuestTracker")
+local RSRoutines = private.ImportLib("RareScannerRoutines")
 
 -- RareScanner services
 local RSRespawnTracker = private.ImportLib("RareScannerRespawnTracker")
@@ -37,6 +38,7 @@ local RSMap = private.ImportLib("RareScannerMap")
 local RSWorldMapHooks = private.ImportLib("RareScannerWorldMapHooks")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
+local RSLoot = private.ImportLib("RareScannerLoot")
 
 -- RareScanner other addons integration services
 local RSTomtom = private.ImportLib("RareScannerTomtom")
@@ -205,6 +207,93 @@ scanner_button.FilterEnabledButton:Hide()
 -- Loot bar
 scanner_button.LootBar = CreateFrame("Frame", "LootBar", scanner_button)
 scanner_button.LootBar.itemFramesPool = CreateFramePool("FRAME", scanner_button.LootBar, "RSLootTemplate");
+scanner_button.LootBar.itemFramesPool.InitItemList = function(self, atlasName, entityID)
+	self:ReleaseAll()
+	
+	if (not atlasName or not entityID) then
+		return
+	end
+	
+	local parent = self
+	parent.items = {}
+	parent.totalLoaded = 0
+
+	-- Extract entity loot
+	local updateCacheItemRoutine = RSRoutines.LoopRoutineNew()
+	if (RSConstants.IsNpcAtlas(atlasName) and RSNpcDB.GetNpcLoot(entityID)) then
+		updateCacheItemRoutine:Init(RSNpcDB.GetNpcLoot, 10, nil, nil, entityID)
+		parent.totalItems = RSUtils.GetTableLength(RSNpcDB.GetNpcLoot(entityID))
+	elseif (RSConstants.IsContainerAtlas(atlasName) and RSContainerDB.GetContainerLoot(entityID)) then
+		updateCacheItemRoutine:Init(RSContainerDB.GetContainerLoot, 10, nil, nil, entityID)
+		parent.totalItems = RSUtils.GetTableLength(RSContainerDB.GetContainerLoot(entityID))
+	else
+		return
+	end
+	
+	scanner_button:SetScript("OnUpdate", function()
+		local finished = updateCacheItemRoutine:Run(function(context, _, itemID)
+			if (C_Item.DoesItemExistByID(itemID)) then
+				parent:UpdateCacheItem(itemID)
+			else
+				parent.totalItems = self.totalItems - 1
+				RSLogger:PrintDebugMessage(string.format("Detectado ITEM [%s] para la entidad [%s] que no existe!.", itemID, entityID))
+			end
+		end)
+		if (finished) then
+			scanner_button:SetScript("OnUpdate", nil)
+		end
+	end)
+end
+scanner_button.LootBar.itemFramesPool.UpdateCacheItem = function(self, itemID)
+	if (not itemID or not self.items) then
+		return
+	end
+	
+	-- If enough items to show ignore the rest
+	if (self.totalLoaded >= RSConfigDB.GetMaxNumItemsToShow()) then
+		return
+	end
+	
+	-- Otherwise try to add the item
+	self.items[itemID] = {}
+	self.items[itemID].loaded = false
+	
+	local item = Item:CreateFromItemID(itemID)
+	item:ContinueOnItemLoad(function()
+		local _, _, _, itemEquipLoc, _, itemClassID, itemSubClassID = GetItemInfoInstant(itemID)
+		if (RSLoot.IsFiltered(itemID, item:GetItemLink(), item:GetItemQuality(), itemEquipLoc, itemClassID, itemSubClassID)) then
+			self.items[itemID] = nil
+			self.totalItems = self.totalItems - 1
+		else
+			self.items[itemID].loaded = true
+			self.totalLoaded = self.totalLoaded + 1
+		end
+		
+		if (self.totalLoaded >= RSConfigDB.GetMaxNumItemsToShow() and self:GetNumActive() == 0) then
+			self:ShowIfReady()
+		elseif (self.totalItems == self.totalLoaded) then
+			self:ShowIfReady()
+		end
+	end)
+end
+scanner_button.LootBar.itemFramesPool.ShowIfReady = function(self)
+	if (not self.items) then
+		return
+	end
+	
+	local currentIndex = 1
+	for itemID, _ in pairs (self.items) do
+		if (self.items[itemID].loaded) then
+			if (currentIndex <= RSConfigDB.GetMaxNumItemsToShow()) then
+				local itemFrame = self:Acquire()
+				itemFrame:AddItem(itemID, self:GetNumActive())
+				currentIndex = currentIndex + 1
+			else
+				break
+			end
+		end
+	end
+end
 scanner_button.LootBar.LootBarToolTip = CreateFrame("GameTooltip", "LootBarToolTip", scanner_button, "GameTooltipTemplate")
 scanner_button.LootBar.LootBarToolTip:SetScale(0.9)
 scanner_button.LootBar.LootBarToolTipComp1 = CreateFrame("GameTooltip", "LootBarToolTipComp1", nil, "GameTooltipTemplate")
@@ -237,7 +326,6 @@ scanner_button:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 scanner_button:RegisterEvent("PLAYER_TARGET_CHANGED")
 
 -- Items events
-scanner_button:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 scanner_button:RegisterEvent("LOOT_OPENED")
 
 -- Avoid addon on cinematics
@@ -450,18 +538,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 				else
 					RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
 				end
-			end
-		end
-		-- Loot info
-	elseif (event == "GET_ITEM_INFO_RECEIVED") then
-		local itemID = ...
-		for itemFrame in self.LootBar.itemFramesPool:EnumerateActive() do
-			if (itemFrame.itemID == itemID) then
-				local added = itemFrame:AddItem(itemID, self.LootBar.itemFramesPool:GetNumActive())
-				if (added == false) then
-					self.LootBar.itemFramesPool:Release(itemFrame)
-				end
-				break;
 			end
 		end
 	elseif (event == "LOOT_OPENED") then
@@ -1467,13 +1543,7 @@ function scanner_button:ShowButton()
 
 	-- show loot bar
 	if (RSConfigDB.IsDisplayingLootBar()) then
-		self:LoadLootBar()
-		-- call a second time just in case the game took
-		-- too long to fetch their data and they rendered
-		-- acuardly
-		C_Timer.After(2, function()
-			self:LoadLootBar()
-		end)
+		self.LootBar.itemFramesPool:InitItemList(self.atlasName, self.npcID)
 	else
 		self.LootBar.itemFramesPool:ReleaseAll()
 	end
@@ -1539,37 +1609,6 @@ function scanner_button:ShowButton()
 	self:StartHideTimer()
 end
 
-function scanner_button:LoadLootBar()
-	self.LootBar.itemFramesPool:ReleaseAll()
-	if (not self.npcID) then
-		return
-	end
-
-	-- Extract NPC loot
-	local itemIDs
-	if (RSConstants.IsNpcAtlas(self.atlasName)) then
-		itemIDs = RSNpcDB.GetNpcLoot(self.npcID)
-	elseif (RSConstants.IsContainerAtlas(self.atlasName)) then
-		itemIDs = RSContainerDB.GetContainerLoot(self.npcID)
-	end
-
-	if (itemIDs) then
-		local numItems = RSConfigDB.GetMaxNumItemsToShow()
-		for i, itemID in ipairs(itemIDs) do
-			if (i <= numItems) then
-				local itemFrame = self.LootBar.itemFramesPool:Acquire()
-				local added = itemFrame:AddItem(itemID, self.LootBar.itemFramesPool:GetNumActive())
-				if (added == false) then
-					self.LootBar.itemFramesPool:Release(itemFrame)
-					numItems = numItems + 1
-				end
-			else
-				break
-			end
-		end
-	end
-end
-
 function scanner_button:StartHideTimer()
 	if (RSConfigDB.GetAutoHideButtonTime() > 0) then
 		if (AUTOHIDING_TIMER) then
@@ -1621,7 +1660,7 @@ function RareScanner:OnInitialize()
 
 	-- Adds about panel to wow options
 	if (LibAboutPanel) then
-		self.optionsFrame = LibAboutPanel.new(nil, "RareScanner")
+		self.optionsFrame = LibAboutPanel:CreateAboutPanel("RareScanner")
 	end
 
 	-- Initialize setup panels
@@ -1648,161 +1687,219 @@ function RareScanner:OnInitialize()
 		RSMinimap.RefreshAllData()
 	end)
 
-	--RSLogger:PrintMessage("loaded")
+	--RSLogger:PrintDebugMessage("Cargado")
 end
 
 function RareScanner:InitializeSpecialEvents()
 	RareScanner:ShadowlandsPrePatch_Initialize()
 end
 
-local function DumpRepeatedLoot()
-	for npcID, npcLootFound in pairs(RSNpcDB.GetAllNpcsLootFound()) do
-		local cleanItemsList = RSUtils.FilterRepeated(npcLootFound, RSNpcDB.GetInteralNpcLoot(npcID))
-		if (cleanItemsList) then
-			RSNpcDB.SetNpcLootFound(npcID, cleanItemsList)
-		else
-			RSNpcDB.RemoveNpcLootFound(npcID)
-		end
-	end
-	for containerID, containerLootFound in pairs(RSContainerDB.GetAllContainersLootFound()) do
-		local cleanItemsList = RSUtils.FilterRepeated(containerLootFound, RSNpcDB.GetInteralNpcLoot(containerID))
-		if (cleanItemsList) then
-			RSContainerDB.SetContainerLootFound(containerID, cleanItemsList)
-		else
-			RSContainerDB.RemoveContainerLootFound(containerID)
-		end
-	end
-end
-
 local function RefreshDatabaseData()
+	RareScanner.db:RegisterDefaults(RSConstants.PROFILE_DEFAULTS)
+		
+	-- Creates a chain of routines to execute in order
+	local routines = {}
+		
 	-- Checks again if the rare names DB is totally updated
 	-- It could fail if a "script run too long" exception was launched on the first login
 	local currentDbVersion = RSGeneralDB.GetDbVersion()
-	local sync = true
 	if (not currentDbVersion.sync) then
-		for npcID, _ in pairs(RSNpcDB.GetAllInternalNpcInfo()) do
-			if (not RSNpcDB.GetNpcName(npcID)) then
-				RSLogger:PrintDebugMessage(string.format("NPC [%s]. Sin nombre, reintantando obtenerlo.", npcID))
-				RSNpcDB.GetNpcName(npcID);
-				sync = false
+		local recheckRareNamesRoutine = RSRoutines.LoopRoutineNew()
+		recheckRareNamesRoutine:Init(RSNpcDB.GetAllInternalNpcInfo, 1000, 
+			function(context, npcID, _)
+				if (not RSNpcDB.GetNpcName(npcID)) then
+					RSLogger:PrintDebugMessage(string.format("NPC [%s]. Sin nombre, reintentando obtenerlo.", npcID))
+				end
+				if (not RSNpcDB.GetNpcName(npcID)) then
+					context.sync = false
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage(string.format("Version sincronizada: [%s]", (context.sync == nil and 'true' or 'false')))
+				currentDbVersion.sync = context.sync
 			end
-		end
-	
-		-- Sets already found NPCs as NPCs if they were found as events
-		for _, npcID in ipairs (RSConstants.NPCS_WITH_EVENT_VIGNETTE) do
-			local npcInfo = RSGeneralDB.GetAlreadyFoundEntity(npcID)
-			if (npcInfo and npcInfo.atlasName ~= RSConstants.NPC_VIGNETTE) then
-				npcInfo.atlasName =	RSConstants.NPC_VIGNETTE
-				RSLogger:PrintDebugMessage(string.format("NPC [%s]. Estaba marcado como un evento, Corregido!.", npcID))
-			end
-		end
-
-		RSLogger:PrintDebugMessage(string.format("Version sincronizada: [%s]", (sync and 'true' or 'false')))
-		currentDbVersion.sync = sync
+		)
+		table.insert(routines, recheckRareNamesRoutine)
 	end
-
-	RareScanner.db:RegisterDefaults(RSConstants.PROFILE_DEFAULTS)
-
+	
 	-- Sync loot found with internal database and remove duplicates
 	local lootDbVersion = RSGeneralDB.GetLootDbVersion()
 	if (not lootDbVersion or lootDbVersion < RSConstants.CURRENT_LOOT_DB_VERSION) then
 		RSGeneralDB.SetLootDbVersion(RSConstants.CURRENT_LOOT_DB_VERSION)
-		DumpRepeatedLoot()
+		
+		local syncLocalNpcLootRoutine = RSRoutines.LoopRoutineNew()
+		syncLocalNpcLootRoutine:Init(RSNpcDB.GetAllNpcsLootFound, 200, 
+			function(context, npcID, npcLootFound)
+				local cleanItemsList = RSUtils.FilterRepeated(npcLootFound, RSNpcDB.GetInteralNpcLoot(npcID))
+				if (cleanItemsList) then
+					RSNpcDB.SetNpcLootFound(npcID, cleanItemsList)
+				else
+					RSNpcDB.RemoveNpcLootFound(npcID)
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage("Sincronizado loot de NPCs local con interno")
+			end
+		)
+		table.insert(routines, syncLocalNpcLootRoutine)
+		
+		local syncLocalContainercLootRoutine = RSRoutines.LoopRoutineNew()
+		syncLocalContainercLootRoutine:Init(RSContainerDB.GetAllContainersLootFound, 200, 
+			function(context, containerID, containerLootFound)
+				local cleanItemsList = RSUtils.FilterRepeated(containerLootFound, RSNpcDB.GetInteralNpcLoot(containerID))
+				if (cleanItemsList) then
+					RSContainerDB.SetContainerLootFound(containerID, cleanItemsList)
+				else
+					RSContainerDB.RemoveContainerLootFound(containerID)
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage("Sincronizado loot de Contenedores local con interno")
+			end
+		)
+		table.insert(routines, syncLocalContainercLootRoutine)
 	end
-
-	-- Initialize respawning tracker and scan the first time
-	RSRespawnTracker.Init()
-
+	
 	-- Sync NPC quests ids with internal database and remove duplicates and
 	-- Set already killed NPCs checking questID (internal database)
-	for npcID, npcInfo in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
-		if (npcInfo.questID) then
-			RSNpcDB.RemoveNpcQuestIdFound(npcID)
-			for _, questID in ipairs (npcInfo.questID) do
+	local syncLocalNpcQuestIdsRoutine = RSRoutines.LoopRoutineNew()
+	syncLocalNpcQuestIdsRoutine:Init(RSNpcDB.GetAllInternalNpcInfo, 200, 
+		function(context, npcID, npcInfo)
+			if (npcInfo.questID) then
+				RSNpcDB.RemoveNpcQuestIdFound(npcID)
+				for _, questID in ipairs (npcInfo.questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSNpcDB.IsNpcKilled(npcID)) then
+						RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El NPC[%s] no esta marcado como muerto, pero su mision (BD addon) esta completada", npcID))
+						-- The NPC will be tagged as dead as usual, it won't be until the next world quest reset
+						-- when the RespawnTracker will decide if this NPC died forever
+						RareScanner:ProcessKill(npcID, true)
+						break
+					end
+				end
+			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados NPCs muertos por questID (interna)")
+		end
+	)
+	table.insert(routines, syncLocalNpcQuestIdsRoutine)
+
+	-- Sync event quests ids with internal database and remove duplicates and
+	-- Set already completed events checking questID (internal database)
+	local syncLocalEventsQuestIdsRoutine = RSRoutines.LoopRoutineNew()
+	syncLocalEventsQuestIdsRoutine:Init(RSEventDB.GetAllInternalEventInfo, 200, 
+		function(context, eventID, eventInfo)
+			if (eventInfo.questID) then
+				RSEventDB.RemoveEventQuestIdFound(eventID)
+				for _, questID in ipairs(eventInfo.questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSEventDB.IsEventCompleted(eventID)) then
+						RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Evento[%s] no esta marcado como completado, pero su mision (BD addon) esta completada", eventID))
+						-- The Event will be tagged as completed as usual, it won't be until the next world quest reset
+						-- when the RespawnTracker will decide if this event is completed forever
+						RareScanner:ProcessCompletedEvent(eventID, true)
+						break
+					end
+				end
+			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados eventos completados por questID (interna)")
+		end
+	)
+	table.insert(routines, syncLocalEventsQuestIdsRoutine)
+
+	-- Sync container quests ids with internal database and remove duplicates and
+	-- Set already opened containers checking questID (internal database)
+	local syncLocalContainersQuestIdsRoutine = RSRoutines.LoopRoutineNew()
+	syncLocalContainersQuestIdsRoutine:Init(RSContainerDB.GetAllInternalContainerInfo, 200, 
+		function(context, containerID, containerInfo)
+			if (containerInfo.questID) then
+				RSContainerDB.RemoveContainerQuestIdFound(containerID)
+				for _, questID in ipairs(containerInfo.questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSContainerDB.IsContainerOpened(containerID)) then
+						RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Contenedor[%s] no esta marcado como cerrado, pero su mision (BD addon) esta completada", containerID))
+						-- The Container will be tagged as opened as usual, it won't be until the next world quest reset
+						-- when the RespawnTracker will decide if this container is opened forever
+						RareScanner:ProcessOpenContainer(containerID, true)
+						break
+					end
+				end
+			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados contenedores abiertos por questID (interna)")
+		end
+	)
+	table.insert(routines, syncLocalContainersQuestIdsRoutine)
+
+	-- Set already killed NPCs checking questID (local database)
+	local setKilledNpcsByQuestIdRoutine = RSRoutines.LoopRoutineNew()
+	setKilledNpcsByQuestIdRoutine:Init(RSNpcDB.GetAllNpcQuestIdsFound, 200, 
+		function(context, npcID, questsID)
+			for _, questID in ipairs(questsID) do
 				if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSNpcDB.IsNpcKilled(npcID)) then
-					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El NPC[%s] no esta marcado como muerto, pero su mision (BD addon) esta completada", npcID))
+					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El NPC[%s] no esta marcado como muerto, pero su mision (BD capturada) esta completada", npcID))
 					-- The NPC will be tagged as dead as usual, it won't be until the next world quest reset
 					-- when the RespawnTracker will decide if this NPC died forever
 					RareScanner:ProcessKill(npcID, true)
 					break
 				end
 			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados NPCs muertos por questID (local)")
 		end
-	end
+	)
+	table.insert(routines, setKilledNpcsByQuestIdRoutine)
 
-	-- Set already killed NPCs checking questID (local database)
-	for npcID, questsID in pairs (RSNpcDB.GetAllNpcQuestIdsFound()) do
-		for _, questID in ipairs(questsID) do
-			if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSNpcDB.IsNpcKilled(npcID)) then
-				RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El NPC[%s] no esta marcado como muerto, pero su mision (BD capturada) esta completada", npcID))
-				-- The NPC will be tagged as dead as usual, it won't be until the next world quest reset
-				-- when the RespawnTracker will decide if this NPC died forever
-				RareScanner:ProcessKill(npcID, true)
-				break
-			end
-		end
-	end
-
-	-- Sync event quests ids with internal database and remove duplicates and
-	-- Set already completed events checking questID (internal database)
-	for eventID, eventInfo in pairs (RSEventDB.GetAllInternalEventInfo()) do
-		if (eventInfo.questID) then
-			RSEventDB.RemoveEventQuestIdFound(eventID)
-			for _, questID in ipairs(eventInfo.questID) do
+	-- Set already completed events checking questID (local database)
+	local setCompletedEventsByQuestIdRoutine = RSRoutines.LoopRoutineNew()
+	setCompletedEventsByQuestIdRoutine:Init(RSEventDB.GetAllEventQuestIdsFound, 200, 
+		function(context, eventID, questsID)
+			for _, questID in ipairs(questsID) do
 				if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSEventDB.IsEventCompleted(eventID)) then
-					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Evento[%s] no esta marcado como completado, pero su mision (BD addon) esta completada", eventID))
+					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Evento[%s] no esta marcado como completado, pero su mision (BD capturada) esta completada", eventID))
 					-- The Event will be tagged as completed as usual, it won't be until the next world quest reset
 					-- when the RespawnTracker will decide if this event is completed forever
 					RareScanner:ProcessCompletedEvent(eventID, true)
 					break
 				end
 			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados eventos completados por questID (local)")
 		end
-	end
+	)
+	table.insert(routines, setCompletedEventsByQuestIdRoutine)
 
 	-- Set already completed events checking questID (local database)
-	for eventID, questsID in pairs (RSEventDB.GetAllEventQuestIdsFound()) do
-		for _, questID in ipairs(questsID) do
-			if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSEventDB.IsEventCompleted(eventID)) then
-				RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Evento[%s] no esta marcado como completado, pero su mision (BD capturada) esta completada", eventID))
-				-- The Event will be tagged as completed as usual, it won't be until the next world quest reset
-				-- when the RespawnTracker will decide if this event is completed forever
-				RareScanner:ProcessCompletedEvent(eventID, true)
-				break
-			end
-		end
-	end
-
-	-- Sync container quests ids with internal database and remove duplicates and
-	-- Set already opened containers checking questID (internal database)
-	for containerID, containerInfo in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
-		if (containerInfo.questID) then
-			RSContainerDB.RemoveContainerQuestIdFound(containerID)
-			for _, questID in ipairs(containerInfo.questID) do
+	local setContainersOpenedByQuestIdRoutine = RSRoutines.LoopRoutineNew()
+	setContainersOpenedByQuestIdRoutine:Init(RSContainerDB.GetAllContainerQuestIdsFound, 200,
+		function(context, containerID, questsID)
+			for _, questID in ipairs(questsID) do
 				if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSContainerDB.IsContainerOpened(containerID)) then
-					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Contenedor[%s] no esta marcado como cerrado, pero su mision (BD addon) esta completada", containerID))
+					RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Contenedor[%s] no esta marcado como cerrado, pero su mision (BD capturada) esta completada", containerID))
 					-- The Container will be tagged as opened as usual, it won't be until the next world quest reset
 					-- when the RespawnTracker will decide if this container is opened forever
 					RareScanner:ProcessOpenContainer(containerID, true)
 					break
 				end
 			end
+		end, 
+		function(context)			
+			RSLogger:PrintDebugMessage("Identificados contenedores abiertos por questID (local)")
 		end
-	end
+	)
+	table.insert(routines, setContainersOpenedByQuestIdRoutine)
 
-	-- Set already completed events checking questID (local database)
-	for containerID, questsID in pairs (RSContainerDB.GetAllContainerQuestIdsFound()) do
-		for _, questID in ipairs(questsID) do
-			if (C_QuestLog.IsQuestFlaggedCompleted(questID) and not RSContainerDB.IsContainerOpened(containerID)) then
-				RSLogger:PrintDebugMessage(string.format("RefreshDatabaseData. El Contenedor[%s] no esta marcado como cerrado, pero su mision (BD capturada) esta completada", containerID))
-				-- The Container will be tagged as opened as usual, it won't be until the next world quest reset
-				-- when the RespawnTracker will decide if this container is opened forever
-				RareScanner:ProcessOpenContainer(containerID, true)
-				break
-			end
-		end
-	end
-
+	-- Launch all the routines in order
+	local chainRoutines = RSRoutines.ChainLoopRoutineNew()
+	chainRoutines:Init(routines)
+	chainRoutines:Run(function(context)
+		-- Initialize respawning tracker and scan the first time
+		RSRespawnTracker.Init()
+	end)
+	
 	-- Clear previous overlay if active when closed the game
 	RSGeneralDB.RemoveOverlayActive()
 end
@@ -1810,22 +1907,30 @@ end
 local function UpdateRareNamesDB()
 	RSGeneralDB.AddDbVersion(RSConstants.CURRENT_DB_VERSION)
 
-	local ITERATIONS = 3
-	local current_iteration = 0
-
-	-- The addon read the names from the NPCs tooltips
-	-- This process doesn't respond always the firs time
-	-- so we call the process 3 times to be sure
-	local ticker = C_Timer.NewTicker(1, function()
-		for npcID, _ in pairs(RSNpcDB.GetAllInternalNpcInfo()) do
+	local npcNameScannerRoutine = RSRoutines.LoopRoutineNew()
+	npcNameScannerRoutine:Init(RSNpcDB.GetAllInternalNpcInfo, 100)
+	C_Timer.NewTicker(0.5, function(self)
+		local finished = npcNameScannerRoutine:Run(function(context, npcID, _)
 			RSNpcDB.GetNpcName(npcID);
+		end)
+	
+		if (finished) then
+			npcNameScannerRoutine:Reset()
+			self:Cancel()			
+		
+			-- Sets already found NPCs as NPCs if they were found as events
+			for _, npcID in ipairs (RSConstants.NPCS_WITH_EVENT_VIGNETTE) do
+				local npcInfo = RSGeneralDB.GetAlreadyFoundEntity(npcID)
+				if (npcInfo and npcInfo.atlasName ~= RSConstants.NPC_VIGNETTE) then
+					npcInfo.atlasName =	RSConstants.NPC_VIGNETTE
+					RSLogger:PrintDebugMessage(string.format("NPC [%s]. Estaba marcado como un evento, Corregido!.", npcID))
+				end
+			end
+			
+			-- Continue refreshing the rest of the database
+			RefreshDatabaseData()
 		end
-		current_iteration = current_iteration + 1
-
-		if (current_iteration == ITERATIONS) then
-			RefreshDatabaseData();
-		end
-	end, ITERATIONS);
+	end);
 end
 
 function RareScanner:InitializeDataBase()

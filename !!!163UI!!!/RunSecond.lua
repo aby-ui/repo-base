@@ -346,26 +346,56 @@ end)
 --被世界任务完成框遮挡
 CastingBarFrame:SetFrameStrata("DIALOG")
 
-if false and select(2, GetBuildInfo()) == "24330" then
-    hooksecurefunc("SendChatMessage", function(msg, ...)
-        local needSend = false
-        while(true) do
-            local start, finish, level, aff1, aff2, aff3, name = msg:find("\124cffa335ee\124Hkeystone:%d+:(%d+):(%d*):(%d*):(%d*)\124h%[(.-)%]\124h\124r")
-            if level then
-                --【钥石：艾萨拉之眼 10层：繁盛：暴怒：强韧】
-                local txt = format("【%s %d层", name, level)
-                if aff1 ~= "" then txt = txt.."："..C_ChallengeMode.GetAffixInfo(aff1) end
-                if aff2 ~= "" then txt = txt.."："..C_ChallengeMode.GetAffixInfo(aff2) end
-                if aff3 ~= "" then txt = txt.."："..C_ChallengeMode.GetAffixInfo(aff3) end
-                txt = txt .. "】"
-                msg = msg:sub(1,start-1) .. txt .. msg:sub(finish+1)
-                needSend = true
-            else
-                break
+do
+    -- 初次拾取钥石的信息
+    -- 7.0 "\124cffa335ee\124Hitem:158923::::::::120:65:4063232:::248:9:9:11:2:::\124h[史诗钥石]\124h\124r",
+    -- 9.1 "\124cffa335ee\124Hitem:180653::::::::60:70::::6:17:380:18:18:19:10:20:8:21:4:22:128:::::\124h[史诗钥石]\124h\124r"
+    local function KeystoneLevel(Hyperlink)
+        local itemId, map, level = string.match(Hyperlink, "|Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:%d*:%d*:(%d+):%d*:(%d+):%d*:(%d*):%d*:(%d*):%d*:(%d*):.-|h(.-)|h")
+        if itemId == "180653" then
+            local name = C_ChallengeMode.GetMapUIInfo(map)
+            if name then Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..format(CHALLENGE_MODE_KEYSTONE_HYPERLINK, name, level).."]|h") end
+        end
+        return Hyperlink
+    end
+
+    local filterLootKeyStone = function(self, event, msg, ...)
+        msg = msg:gsub("(\124Hitem:(%d+)::::::::%d*:%d*:%d*:%d*:%d*:%d+:%d+:.-|h.-|h)", KeystoneLevel)
+        return false, msg, ...
+    end
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filterLootKeyStone)
+
+    local function GetInventoryKeystone()
+        for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+            local slots = GetContainerNumSlots(container)
+            for slot=1, slots do
+                local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
+                local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
+                if itemString then
+                    return slotLink, itemString
+                end
             end
         end
-        if needSend then
-            SendChatMessage(msg, ...)
+    end
+
+    CoreOnEvent("ITEM_CHANGED", function(event, old, new)
+        local id = new and GetItemInfoInstant(new)
+        if id == 180653 then
+            CoreScheduleBucket("AbyUIShowKeyStone", 0.5, function()
+                local link = GetInventoryKeystone()
+                if link then
+                    local msg = "得到新钥石：" .. link
+                    --"\124cffa335ee\124Hkeystone:180653:380:18:10:8:4:128\124h[钥石：赤红深渊 (18)]\124h\124r"
+                    local affixes = {}
+                    affixes[1],affixes[2],affixes[3],affixes[4] = link:match("|Hkeystone:%d+:%d+:%d+:(%d*):(%d*):(%d*):(%d*)[0-9:]-|h(%b[])|h")
+                    for _, affix in pairs(affixes) do
+                        if affix and affix ~= "" then
+                            msg = msg .. " " .. C_ChallengeMode.GetAffixInfo(affix)
+                        end
+                    end
+                    U1Message(msg)
+                end
+            end)
         end
     end)
 end

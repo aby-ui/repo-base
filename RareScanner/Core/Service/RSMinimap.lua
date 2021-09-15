@@ -16,7 +16,9 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSMap = private.ImportLib("RareScannerMap")
 
 -- RareScanner general libraries
+local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
+local RSUtils = private.ImportLib("RareScannerUtils")
 
 ---============================================================================
 -- Update minimap icons
@@ -60,6 +62,14 @@ function RSMinimap.RefreshAllData(forzed)
 	if (not mapID or mapID == 0) then
 		return
 	end
+	
+	-- Gets player coordinates
+	local playerMapPosition = C_Map.GetPlayerMapPosition(mapID, "player")
+	local playerCoordX
+	local playerCoodY
+	if (playerMapPosition) then
+		playerCoordX, playerCoodY = playerMapPosition:GetXY()
+	end
 
 	-- If same zone ignore it
 	if (not forzed and previousMapID and previousMapID == mapID) then
@@ -88,7 +98,7 @@ function RSMinimap.RefreshAllData(forzed)
 		pin.POI = POI
 			
 		-- Ignore POIs from worldmap
-		if (not POI.worldmap) then
+		if (not POI.worldmap and (not playerCoordX or not playerCoodY or RSUtils.DistanceBetweenCoords(tonumber(POI.x), playerCoordX, tonumber(POI.y), playerCoodY) <= RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE)) then
 			pin.Texture:SetTexture(POI.Texture)
 			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, tonumber(POI.x), tonumber(POI.y), false, false)

@@ -109,10 +109,14 @@ end
 -- Arithmetic utils
 ---============================================================================
 
-function RSUtils.Distance(POIa, POIb)
-	local dx = POIa.x - POIb.x
-	local dy = POIa.y - POIb.y
+function RSUtils.DistanceBetweenCoords(x1, x2, y1, y2)
+	local dx = x1 - x2
+	local dy = y1 - y2
 	return math.sqrt ( (dx * dx) + (dy * dy) )
+end
+
+function RSUtils.Distance(POIa, POIb)
+	return RSUtils.DistanceBetweenCoords(POIa.x, POIb.x, POIa.y, POIb.y)
 end
 
 ---

@@ -14,7 +14,7 @@
 	<Include file="AceGUI-3.0-SharedMediaWidgets\AceGUI-3.0-SharedMediaWidgets\MarkersWidget.lua"/>
 	<Include file="AceConfig-3.0\AceConfig-3.0.xml"/>
 	<!--<Include file="AceDB-3.0\AceDB-3.0.xml"/>-->
-	<Include file="LibAboutPanel\LibAboutPanel.lua"/>
+	<Include file="LibAboutPanel-2.0\lib.xml"/>
 	<!--<Include file="AceDBOptions-3.0\AceDBOptions-3.0.xml"/>-->
 	<!--<Include file="AceSerializer-3.0\AceSerializer-3.0.xml"/>-->
 	<Include file="LibQTip-1.0\LibQTip-1.0.lua"/>

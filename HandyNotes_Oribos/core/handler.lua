@@ -23,7 +23,7 @@ local constantsicon = private.constants.icon
 
 local requires          = L["handler_tooltip_requires"]
 local RequiresQuest     = L["handler_tooltip_quest"]
-local RetrievindData    = L["handler_tooltip_data"]
+local RetrievingData    = L["handler_tooltip_data"]
 
 ----------------------------------------------------------------------------------------------------
 --------------------------------------------GET NPC NAMES-------------------------------------------
@@ -38,6 +38,7 @@ local function GetCreatureNamebyID(id)
     return name, sublabel
 end
 
+function addon:debugmsg() end --163ui
 ----------------------------------------------------------------------------------------------------
 ---------------------------------------------PROFESSIONS--------------------------------------------
 ----------------------------------------------------------------------------------------------------
@@ -59,6 +60,63 @@ local function HasTwoProfessions()
         return true
     end
     return false
+end
+
+----------------------------------------------------------------------------------------------------
+---------------------------------------FLIGHT MASTER WAYPOINT---------------------------------------
+----------------------------------------------------------------------------------------------------
+
+local fmaster_waypoint = 0
+local function CreateFlightMasterWaypoint()
+    local dropdown = private.db.fmaster_waypoint_dropdown
+
+    if dropdown == 1 then
+        -- create Blizzard waypoint
+        C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(1550, 47.02/100, 51.16/100))
+        C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+        fmaster_waypoint = 1
+        addon:debugmsg("Create Blizzard")
+    elseif IsAddOnLoaded("TomTom") and dropdown == 2 then
+        -- create TomTom waypoint
+        private.uid = TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)})
+        fmaster_waypoint = 1
+        addon:debugmsg("Create TomTom")
+    elseif dropdown == 3 then
+        -- create both waypoints
+        C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(1550, 47.02/100, 51.16/100))
+        C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+        if IsAddOnLoaded("TomTom") then
+            private.uid = TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)})
+        end
+        fmaster_waypoint = 1
+        addon:debugmsg("Create Both")
+    end
+end
+
+local function RemoveFlightMasterWaypoint()
+    local dropdown = private.db.fmaster_waypoint_dropdown
+
+    if fmaster_waypoint == 1 then
+        if dropdown == 1 then
+            -- remove Blizzard waypoint
+            C_Map.ClearUserWaypoint()
+            fmaster_waypoint = 0
+            addon:debugmsg("Remove Blizzard")
+        elseif IsAddOnLoaded("TomTom") and dropdown == 2 then
+            -- remove TomTom waypoint
+            TomTom:RemoveWaypoint(private.uid)
+            fmaster_waypoint = 0
+            addon:debugmsg("Remove TomTom")
+        elseif dropdown == 3 then
+            -- remove both waypoints
+            C_Map.ClearUserWaypoint()
+            if IsAddOnLoaded("TomTom") then
+                TomTom:RemoveWaypoint(private.uid)
+            end
+            fmaster_waypoint = 0
+            addon:debugmsg("Remove Both")
+        end
+    end
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -145,7 +203,7 @@ local function SetTooltip(tooltip, point)
             if C_QuestLog.GetTitleForQuestID(point.quest) ~= nil then
                 tooltip:AddLine(RequiresQuest..": ["..C_QuestLog.GetTitleForQuestID(point.quest).."] (ID: "..point.quest..")",1,0,0)
             else
-                tooltip:AddLine(RetrievindData,1,0,1) -- pink
+                tooltip:AddLine(RetrievingData,1,0,1) -- pink
                 C_Timer.After(1, function() addon:Refresh() end) -- Refresh
                 -- print("refreshed")
             end
@@ -378,64 +436,47 @@ end
 ----------------------------------------------EVENTS-----------------------------------------------
 
 local frame, events = CreateFrame("Frame"), {};
+function events:PLAYER_ENTERING_WORLD(...)
+    -- MapID is 1550 when you use the Portal to Korthia
+    if C_Map.GetBestMapForUnit("player") == 1550 then
+        RemoveFlightMasterWaypoint()
+    end
+end
+
 function events:ZONE_CHANGED(...)
     addon:Refresh()
 
-    if private.global.dev and private.db.show_prints then
-        print("Oribos: refreshed after ZONE_CHANGED")
-        print("MapID: "..C_Map.GetBestMapForUnit("player"))
-    end
+    addon:debugmsg("Oribos: refreshed after ZONE_CHANGED")
+    addon:debugmsg("MapID: "..C_Map.GetBestMapForUnit("player"))
 
     if C_Map.GetBestMapForUnit("player") == 1671 then
-        if private.db.fmaster_waypoint_dropdown == 1 or private.db.fmaster_waypoint_dropdown == 3 then
-            C_Map.ClearUserWaypoint()
-        end
-        if IsAddOnLoaded("TomTom") and (private.db.fmaster_waypoint_dropdown == 2 or private.db.fmaster_waypoint_dropdown == 3) then
-            TomTom:RemoveWaypoint(private.uid)
-        end
+        RemoveFlightMasterWaypoint()
     end
 end
 
 function events:ZONE_CHANGED_INDOORS(...)
     addon:Refresh()
 
-    if private.global.dev and private.db.show_prints then
-        print("Oribos: refreshed after ZONE_CHANGED_INDOORS")
-    end
+    addon:debugmsg("Oribos: refreshed after ZONE_CHANGED_INDOORS")
 
     -- Set automatically a waypoint (Blizzard, TomTom or both) to the flightmaster.
     if private.db.fmaster_waypoint and C_Map.GetBestMapForUnit("player") == 1671 then
-        if IsAddOnLoaded("TomTom") and private.db.fmaster_waypoint_dropdown == 2 or private.db.fmaster_waypoint_dropdown == 3 then
-            private.uid = TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)})
-        end
-        if private.db.fmaster_waypoint_dropdown == 1 or private.db.fmaster_waypoint_dropdown == 3 then
-            C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(1550, 47.02/100, 51.16/100))
-            C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-        end
+        CreateFlightMasterWaypoint()
     elseif C_Map.GetBestMapForUnit("player") == 1670 then
-        if private.db.fmaster_waypoint_dropdown == 1 or private.db.fmaster_waypoint_dropdown == 3 then
-            C_Map.ClearUserWaypoint()
-        end
-        if IsAddOnLoaded("TomTom") and (private.db.fmaster_waypoint_dropdown == 2 or private.db.fmaster_waypoint_dropdown == 3) then
-            TomTom:RemoveWaypoint(private.uid)
-        end
+        RemoveFlightMasterWaypoint()
     end
 end
 
 function events:QUEST_FINISHED(...)
     addon:Refresh()
 
-    if private.global.dev and private.db.show_prints then
-        print("Oribos: refreshed after QUEST_FINISHED")
-    end
+    addon:debugmsg("Oribos: refreshed after QUEST_FINISHED")
 end
 
 function events:SKILL_LINES_CHANGED(...)
     addon:Refresh()
 
-    if private.global.dev and private.db.show_prints then
-        print("Oribos: refreshed after SKILL_LINES_CHANGED")
-    end
+    addon:debugmsg("Oribos: refreshed after SKILL_LINES_CHANGED")
 end
 
 frame:SetScript("OnEvent", function(self, event, ...)

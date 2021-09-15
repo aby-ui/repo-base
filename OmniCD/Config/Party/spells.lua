@@ -3,6 +3,8 @@ local E, L, C = select(2, ...):unpack()
 local P = E["Party"]
 local SPELLS = type(SPELLS) == "string" and SPELLS or L["Spells"]
 
+-- Use module.db for plugins
+
 P.getSpell = function(info)
 	local tab = info[3] == "spells" and "spells" or "raidCDS"
 	return E.DB.profile.Party[info[2]][tab][info[#info]]
@@ -82,7 +84,6 @@ local spells = {
 	name = function(info) return isRaidCDOption(info) and L["Raid CD"] or SPELLS end,
 	order = 60,
 	type = "group",
-	--childGroups = "tab",
 	get = function(info) return E[info[1]].getSpell(info) end,
 	set = function(info, state) E[info[1]].setSpell(info, state) end,
 	args = {
@@ -98,7 +99,6 @@ local spells = {
 			type = "execute",
 			func = runClearAllDefault,
 			confirm = E.ConfirmAction,
-			--descStyle = "inline",
 		},
 		default = {
 			hidden = function(info) return isntSpellsOption(info) and isntRaidCDOption(info) end,
@@ -107,9 +107,8 @@ local spells = {
 			type = "execute",
 			func = runClearAllDefault,
 			confirm = E.ConfirmAction,
-			--descStyle = "inline",
 		},
-		-- TODO: Shows the type group of the searched spell. If we want to show a single spell we need to wrap it in a simple-group
+		-- TODO: reminder
 		--[[
 		searchBox = {
 			hidden = isntSpellsOption,
@@ -124,16 +123,14 @@ local spells = {
 				E.Libs.ACD:SelectGroup(E.AddOn, "Party", "arena", "spells", "DRUID", "cc")
 			end,
 		},
-		--]]
+		]]
 		showForbearanceCounter = {
-			hidden = isntSpellsOption,
+			hidden = E.isClassic or isntSpellsOption,
 			name = L["Show Forbearance CD"],
 			desc = L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"],
 			order = 4,
 			type = "toggle",
-			--get = P.getIcons,
-			--set = P.setIcons,
-			get = function(info) return E[info[1]].db.icons.showForbearanceCounter end, -- use P.db
+			get = function(info) return E[info[1]].db.icons.showForbearanceCounter end,
 			set = function(info, state) E[info[1]].db.icons.showForbearanceCounter = state end,
 		},
 		quickSelect = {
@@ -159,32 +156,9 @@ local spells = {
 }
 
 local borderlessCoords = {0.07, 0.93, 0.07, 0.93}
+E.borderlessCoords = borderlessCoords
 
-for i = 1, MAX_CLASSES do
-	local class = CLASS_SORT_ORDER[i]
-	--local iconCoords = CLASS_ICON_TCOORDS[class] -- back to individual class icons for tree frame
-	local name = LOCALIZED_CLASS_NAMES_MALE[class]
-	spells.args[class] = {
-		--icon = E.ICO.CLASS,
-		icon = E.ICO.CLASS .. class,
-		--iconCoords = iconCoords,
-		iconCoords = borderlessCoords,
-		name = name,
-		type = "group",
-		args = {}
-	}
-end
-
-spells.args.othersHeader = {
-	---[[ Make the group a line break
-	disabled = true,
-	name = "```",
-	--]]
-	order = 2000, -- default: 1000
-	type = "group",
-	args = {}
-}
-
+-- Fix ACCESS_VIOLATION error
 local numOthers = #E.OTHER_SORT_ORDER
 for i = 1, numOthers do
 	local class = E.OTHER_SORT_ORDER[i]
@@ -194,7 +168,30 @@ for i = 1, numOthers do
 		icon = icon,
 		iconCoords = borderlessCoords,
 		name = name,
-		order = 2000 + i,
+		order = i,
+		type = "group",
+		args = {}
+	}
+end
+
+spells.args.othersHeader = {
+	disabled = true,
+	name = "```", -- myAce: make the group a line break
+	order = 10,
+	type = "group",
+	args = {}
+}
+
+for i = 1, MAX_CLASSES do
+	local class = CLASS_SORT_ORDER[i] -- back to individual class icons for tree grp
+--  local iconCoords = CLASS_ICON_TCOORDS[class]
+	local name = LOCALIZED_CLASS_NAMES_MALE[class]
+	spells.args[class] = {
+--      icon = E.ICO.CLASS,
+		icon = E.ICO.CLASS .. class,
+--      iconCoords = iconCoords,
+		iconCoords = borderlessCoords,
+		name = name,
 		type = "group",
 		args = {}
 	}
@@ -223,10 +220,6 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 	if oldClass or force then -- oldClass(delete, class/type change), force(add new custom)
 		if oldClass then
 			spells.args[oldClass].args[oldType].args[sId] = nil
-			-- Edit
-			--[[
-			spells.args[oldClass].args[oldType].args[sId .. "E"] = nil
-			--]]
 			if next(spells.args[oldClass].args[oldType].args) == nil then
 				spells.args[oldClass].args[oldType] = nil
 			end
@@ -262,36 +255,27 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 
 				if t[sId] then
 					t[sId].order = order
-					-- Edit
-					--[[
-					t[sId .. "E"].order = order + 1
-					--]]
 				else
 					local icon, name = v.icon, v.name
-					local link = GetSpellLink(spellID)
+					local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[sId] = {
 						hidden = isRaidOptDisabledID,
 						image =  icon,
-						imageCoords = {0, 1, 0, 1},
+						imageCoords = borderlessCoords,
 						name = name,
 						desc = link,
 						order = order,
 						type = "toggle",
 					}
+				end
 
-					-- Edit
-					--[[
-					t[sId .. "E"] = {
-						hidden = isntSpellsOption,
-						name = "E",
-						desc = "Edit spell",
-						order = order + 2,
-						type = "execute",
-						func = function(info) E.EditSpell(nil, info[#info]:gsub("E", "")) end,
-						width = 0.25,
-					}
-					--]]
+				if E.isClassic then
+					local spell = Spell:CreateFromSpellID(spellID)
+					spell:ContinueOnSpellLoad(function()
+						local desc = spell:GetSpellDescription()
+						t[sId].desc = desc
+					end)
 				end
 
 				order = order + 1
@@ -329,32 +313,19 @@ function P:AddSpellPickerSpells()
 
 				local spellID, icon, name = v.spellID, v.icon, v.name
 				local sId = tostring(spellID)
-				local link = GetSpellLink(spellID)
+				local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID) -- TODO: check if classic can use hyperlinks
 
 				t[vtype].args[sId] = {
 					hidden = isRaidOptDisabledID,
 					image = icon,
-					imageCoords = {0, 1, 0, 1}, -- values doesn't matter, just needs to be added to crop
+					imageCoords = borderlessCoords, -- values doesn't matter, just needs to be added to crop
 					name = name,
 					desc = link,
 					order = order,
 					type = "toggle",
 				}
 
-				-- Edit
-				--[==[
-				t[vtype].args[sId .. "E"] = {
-					hidden = isntSpellsOption,
-					name = "E",
-					desc = "Edit spell",
-					order = order + 2,
-					type = "execute",
-					func = function(info) E.EditSpell(nil, info[#info]:gsub("E", "")) end,
-					width = 0.25, -- lags
-				}
-				--]==]
-
-				if class == "TRINKET" and v.item then -- SpellMixin not working for Covenant and Trinkets has been Hotfixed
+				if class == "TRINKET" and v.item then
 					local item = Item:CreateFromItemID(v.item)
 					if item then -- deprecate itemID check
 						item:ContinueOnItemLoad(function()
@@ -362,6 +333,13 @@ function P:AddSpellPickerSpells()
 							t[vtype].args[sId].name = itemName
 						end)
 					end
+				end
+				if E.isClassic then
+					local spell = Spell:CreateFromSpellID(spellID)
+					spell:ContinueOnSpellLoad(function()
+						local desc = spell:GetSpellDescription()
+						t[vtype].args[sId].desc = desc
+					end)
 				end
 
 				order = order + 1
@@ -371,7 +349,7 @@ function P:AddSpellPickerSpells()
 end
 
 function P:AddSpellPicker()
-	SortSpellList() -- we don't have trinket names at this point :(
+	SortSpellList() -- we don't have item names at this point, so it's sorted by spell name :(
 	self:AddSpellPickerSpells()
 
 	for key in pairs(E.CFG_ZONE) do

@@ -116,7 +116,6 @@ local icons = {
 
 						P:ConfigIcons(key, "borderColor")
 					end,
-					--descStyle = "inline",
 				},
 				borderPixels = {
 					name = L["Border Thickness"],

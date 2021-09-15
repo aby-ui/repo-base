@@ -19,7 +19,6 @@ local defaultFonts = {
 	["PT Sans Narrow Bold"] = "Interface\\AddOns\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf",
 }
 ]]
-
 local defaultFonts = {}
 
 if (LOCALE_koKR) then
@@ -111,8 +110,8 @@ local fontInfo = {
 		name = L["Font"],
 		order = 1,
 		type = "select",
-		--dialogControl = 'LSM30_Font',
-		--values = AceGUIWidgetLSMlists.font,
+--      dialogControl = "LSM30_Font",
+--      values = AceGUIWidgetLSMlists.font,
 		values = LSM_Font,
 	},
 	size = {
@@ -175,7 +174,7 @@ local General = {
 					inline = true,
 					args = fontInfo
 				},
-				---[=[
+				-- Until we add panel scaling
 				option = {
 					name = OPTIONS,
 					order = 4,
@@ -190,7 +189,6 @@ local General = {
 					inline = true,
 					args = fontInfo,
 				},
-				--]=]
 			}
 		},
 		textures = {
@@ -210,16 +208,16 @@ local General = {
 							name = L["Bar"],
 							order = 1,
 							type = "select",
-							--dialogControl = 'LSM30_Statusbar',
-							--values = AceGUIWidgetLSMlists.statusbar,
+--                          dialogControl = 'LSM30_Statusbar',
+--                          values = AceGUIWidgetLSMlists.statusbar,
 							values = LSM_Statusbar,
 						},
 						BG = {
 							name = L["BG"],
 							order = 2,
 							type = "select",
-							--dialogControl = 'LSM30_Statusbar',
-							--values = AceGUIWidgetLSMlists.statusbar,
+--                          dialogControl = 'LSM30_Statusbar',
+--                          values = AceGUIWidgetLSMlists.statusbar,
 							values = LSM_Statusbar,
 						},
 					}
@@ -300,13 +298,13 @@ local General = {
 }
 
 function E:AddGeneral()
-	-- preload fonts to prevent blank text on font change
+	-- Preload fonts to prevent blank text on dropdown items
 	E.dummyFrame.text = E.dummyFrame.text or E.dummyFrame:CreateFontString() -- if we need to hook dynamic updates
 	for fontName, fontPath in pairs(LSM:HashTable("font")) do
 		E.dummyFrame.text:SetFont(fontPath, 22)
 	end
 
-	-- convert table to something ACD can use as the values member
+	-- Convert table to something ACD can use as the values member
 	for _, fontName in pairs(LSM:List("font")) do
 		LSM_Font[fontName] = fontName
 	end

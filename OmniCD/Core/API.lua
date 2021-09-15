@@ -1,6 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
---[[
+--[=[
 OmniCD.AddUnitFrameData
 	Add new or overwrite pre-existing raid frame data for anchoring cooldown bars
 
@@ -19,13 +19,15 @@ function MyAddon:ADDON_LOADED(arg1)
 	if arg1 == "MyAddon" or arg1 == "OmniCD" then
 		local func = OmniCD and OmniCD.AddUnitFrameData
 		if func then
-			func("MyAddon", "MyPartyFrame", "MyUnitKey")
-			func("MyAddon-Raid", "MyRaidFrame", "MyUnitKey", 1, nil, 40)
+			func("MyAddon", "MyPartyUnitFrame", "MyUnitKey")
+			-- Use a hyphen after your addon name to add additional frames
+			func("MyAddon-Raid", "MyRaidUnitFrame", "MyUnitKey", 1, nil, 40)    -- unit 1-40
+			func("MyAddon-Raid-Sorted-by-Groups", "MyRaidGroup%dUnitFrame", "MyUnitKey", 1)     -- group 1-8, unit 1-5
 		end
 	end
 end
 
-Create reference func if it doesn't exist or can't use boolean as an argument to toggle on and off:
+Optional: Create reference func if it doesn't exist or can't use boolean as an argument to toggle on and off:
 function MyAddon.TestFunc(isTestEnabled)
 	if isTestEnabled then
 		toggle frames on
@@ -33,7 +35,7 @@ function MyAddon.TestFunc(isTestEnabled)
 		toggle frames off
 	end
 end
-]]
+]=]
 
 function OmniCD.AddUnitFrameData(Addon, RaidFrame, UnitKey, Delay, TestFunc, MaxFrameIndex)
 	if type(Addon) ~= "string" then

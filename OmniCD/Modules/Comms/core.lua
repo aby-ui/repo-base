@@ -10,10 +10,13 @@ function Comms:Enable()
 		return
 	end
 
-	--[AC] self:RegisterEvent("CHAT_MSG_ADDON")
+--  [AC] self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	if not E.isBCC then
+	if E.isPreBCC then
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
+	else
 		self:RegisterEventUnitPower()
+
 		self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 		self:RegisterEvent("UNIT_PET")
 		self:RegisterEvent("COVENANT_CHOSEN")
@@ -46,13 +49,7 @@ function Comms:Disable()
 	self.enabled = false
 end
 
-function Comms:PLAYER_SPECIALIZATION_CHANGED()
-	self:InspectPlayer()
-	self:SendSync()
-	self:RegisterEventUnitPower()
-end
-
-function Comms:UNIT_PET(unit) -- [73]
+function Comms:UNIT_PET(unit) -- changing spec will dismiss pet
 	local pet = E.unitToPetId[unit]
 	if not pet then
 		return
@@ -60,7 +57,7 @@ function Comms:UNIT_PET(unit) -- [73]
 
 	local guid = UnitGUID(unit)
 	local info = P.groupInfo[guid]
-	if info and info.spec == 253 then
+	if info and (info.class == "WARLOCK" or info.spec == 253) then
 		local petGUID = info.petGUID
 		if petGUID then
 			E.Cooldowns.petGUIDS[petGUID] = nil
@@ -74,9 +71,23 @@ function Comms:UNIT_PET(unit) -- [73]
 	end
 end
 
-function Comms:COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED()
-	self:InspectPlayer()
-	self:SendSync()
+function Comms:RegisterEventUnitPower()
+	local specIndex = GetSpecialization()
+	local specID = GetSpecializationInfo(specIndex)
+	local threshold = E.POWER_TYPE_SPEC_OCC_THRESHOLD[specID]
+
+	if not E.noPowerSync and threshold then
+		self.oocThreshold = threshold
+		if UnitAffectingCombat("player") then
+			self:PLAYER_REGEN_DISABLED()
+		else
+			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		end
+		self:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+	else
+		self.oocThreshold = nil
+		self:UnregisterEvent("UNIT_POWER_UPDATE")
+	end
 end
 
 E["Comms"] = Comms
